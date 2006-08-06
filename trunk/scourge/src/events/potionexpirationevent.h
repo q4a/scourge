@@ -49,6 +49,8 @@ public:
 	virtual bool doesReferenceCreature( Creature *creature );
 
   inline const char *getName() { return "PotionExpirationEvent"; }
+
+	virtual inline Creature *getCreature() { return creature; }
   
 };
 

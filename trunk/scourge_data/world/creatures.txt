@@ -143,8 +143,6 @@ M:/models/hellogirl,CTF_B.bmp,3,6,12,5,10,8,2.6,npc
 M:hellogirl-red
 M:/models/hellogirl,CTF_R.bmp,3,6,12,5,10,8,2.6,npc
 
-
-
 M:link-goron
 M:/models/link,goron.bmp,3,6,12,5,10,8,1.6,npc
 
@@ -153,106 +151,6 @@ M:/models/link,zora.bmp,3,6,12,5,10,8,1.6,npc
 
 M:link
 M:/models/link,link.bmp,3,6,12,5,10,8,1.6,npc
-
-
-
-M:nightcrawler
-M:/models/nightcrawler,NightCrawler.bmp,3,6,12,5,10,8,1.6,npc
-
-M:nightcrawler-red
-M:/models/nightcrawler,Ctf_r.bmp,3,6,12,5,10,8,1.6,npc
-
-M:nightcrawler-green
-M:/models/nightcrawler,Ctf_g.bmp,3,6,12,5,10,8,1.6,npc
-
-M:nightcrawler-blue
-M:/models/nightcrawler,Ctf_b.bmp,3,6,12,5,10,8,1.6,npc
-
-
-
-M:ogro-blue
-M:/models/ogro,ctf_b.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-red
-M:/models/ogro,ctf_r.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-arboshak
-M:/models/ogro,arboshak.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-cloth
-M:/models/ogro,cloth.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-darkam
-M:/models/ogro,darkam.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-freedom
-M:/models/ogro,freedom.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-gib
-M:/models/ogro,gib.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-gorash
-M:/models/ogro,gorash.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-gordogh
-M:/models/ogro,gordogh.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-grok
-M:/models/ogro,grok.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-igdosh
-M:/models/ogro,igdosh.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-khorne
-M:/models/ogro,khorne.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-nabogro
-M:/models/ogro,nabogro.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-ogrobase
-M:/models/ogro,ogrobase.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-sharokh
-M:/models/ogro,sharokh.bmp,3,6,12,5,10,8,1.6,npc
-
-M:ogro-slaanesh
-M:/models/ogro,slaanesh.bmp,3,6,12,5,10,8,1.6,npc
-
-
-
-M:orc
-M:/models/orc,aaa.bmp,3,6,12,5,10,8,2.0,npc
-
-M:orc-blackrock
-M:/models/orc,Blackrock.bmp,3,6,12,5,10,8,2.0,npc
-
-M:orc-bleed
-M:/models/orc,bleed2.bmp,3,6,12,5,10,8,2.0,npc
-
-M:orc-burn
-M:/models/orc,burn.bmp,3,6,12,5,10,8,2.0,npc
-
-M:orc-dragonmaw
-M:/models/orc,Dragonmaw.bmp,3,6,12,5,10,8,2.0,npc
-
-M:orc-stormreaver
-M:/models/orc,Stormreaver.bmp,3,6,12,5,10,8,2.0,npc
-
-M:orc-twilight
-M:/models/orc,twilight.bmp,3,6,12,5,10,8,2.0,npc
-
-
-
-M:purgator
-M:/models/purgator,purgatori.bmp,3,6,12,5,10,8,2.0,npc
-
-M:purgator-blue
-M:/models/purgator,ctf_b.bmp,3,6,12,5,10,8,2.0,npc
-
-M:purgator-red
-M:/models/purgator,ctf_r.bmp,3,6,12,5,10,8,2.0,npc
-
-
 
 M:twigletman-blue
 M:/models/twigletman,ctf_blue.bmp,3,6,12,5,10,8,2.0,npc
@@ -268,9 +166,6 @@ M:/models/twigletman,gg.bmp,3,6,12,5,10,8,2.0,npc
 
 M:twigletman-toxic
 M:/models/twigletman,toxic.bmp,3,6,12,5,10,8,2.0,npc
-
-
-
 
 M:yvonne-cammy
 M:/models/yvonne,cammy.bmp,3,6,12,5,10,8,2.0,npc
@@ -389,13 +284,22 @@ P:RESIST_HISTORY_MAGIC,30
 P:RESIST_DECEIT_MAGIC,20
 P:RESIST_CONFRONTATION_MAGIC,30
 
-
-
-
-
-
-
-
+M:Karzul Agmordexu,/portraits/karzul.bmp
+M:/models/ratamahatta,Gearwhore.bmp,40,10,11,7,6,6,3.5,npc
+I:Spiked flail
+I:Full face helmet
+I:Steel Shield
+I:Dragonscale armor
+S:Blast of Fury
+S:Flame of Azun
+S:Ring of Harm
+S:Malice Storm
+P:RESIST_NATURE_MAGIC,70
+P:RESIST_AWARENESS_MAGIC,70
+P:RESIST_LIFE_AND_DEATH_MAGIC,70
+P:RESIST_HISTORY_MAGIC,70
+P:RESIST_DECEIT_MAGIC,70
+P:RESIST_CONFRONTATION_MAGIC,70
 
 #############################
 # Monsters
@@ -1166,6 +1070,22 @@ P:RESIST_DECEIT_MAGIC,40
 P:RESIST_CONFRONTATION_MAGIC,55
 
 #############################
+M:Greater Aspect of Thazmord
+M:PHANTOM,/models/m101.bmp,15,11,12,9,4,8,2.8
+I:Darkflail
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Malice Storm
+S:Invisibility
+S:Enthrall fiend
+P:RESIST_NATURE_MAGIC,55
+P:RESIST_AWARENESS_MAGIC,55
+P:RESIST_LIFE_AND_DEATH_MAGIC,50
+P:RESIST_HISTORY_MAGIC,45
+P:RESIST_DECEIT_MAGIC,45
+P:RESIST_CONFRONTATION_MAGIC,45
+
 # level 15
 M:Greater Aspect of Thazmord
 M:PHANTOM,/models/m101.bmp,15,11,12,9,4,8,2.8
@@ -1198,3 +1118,8 @@ P:RESIST_LIFE_AND_DEATH_MAGIC,45
 P:RESIST_HISTORY_MAGIC,45
 P:RESIST_DECEIT_MAGIC,45
 P:RESIST_CONFRONTATION_MAGIC,55
+
+
+
+
+

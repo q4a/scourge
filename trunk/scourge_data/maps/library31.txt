@@ -1,3 +1,47 @@
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
+G:_INTRO_;Have you come to $torment us?
+G:_INTRO_;I deserve all I get: I am a $sinner.
+G:_INTRO_;Oh how I $long for a mug of ale...
+
+G:_UNKNOWN_;Uh, I don't know anything about that...
+G:_UNKNOWN_;I don't know. We see very little of this $level...
+
+G:torment,long;What you're not here to torture us $sinners? Nay, I think this is just another\
+deceiption of the evil ones. Go ahead, rend my flesh, torment my mind, I have resigned myself\
+to an eternity of pain.
+G:sinners,sinner;Yes, we are all sinners here. We toil eternally on this $level of the $Abyss. It\
+is a payback for our $crimes.
+G:crimes,crime;We're mostly petty criminals... adulterers, pick-pockets, etc. This $level of\
+the $Abyss is under the heel of the demon lord $Karzul. As punishment for our crimes, his minions\
+torment our minds and bodies eternally...
+G:Abyss;Don't tell me you don't know where you are? The demons of $Karzul apply their craft well\
+indeed. In case you can't remember, you're on this $level for having committed petty $crimes in\
+your former life.
+G:level;The $Abyss has an infinite number of levels. This one is a holding area for $sinners like\
+ourselves. It is ruled by the horrible demon lord $Karzul.
+G:Karzul;Trust me you don't want to know... he's the enemy of life, the despoiler of good, the\
+bringer of darkness. His words: bile, his breath: disease... If you still want to see him,\
+proceed to the end of this $level.
+
+N:371,202,Karak,1,commoner
+N:373,217,Gorak,1,commoner
+N:376,231,Fald,1,commoner
+N:406,166,Zorak,1,commoner
+N:406,264,Mergil,1,commoner
+N:422,161,Manni,1,commoner
+N:422,264,Lemy,1,commoner
+N:423,178,Rendd,1,commoner
+N:436,263,Xolt,1,commoner
+
+N:174,218,Karzul Agmordexu,1,commoner
+
+P:Karzul Agmordexu
+V:_INTRO_;Well, well... what have we here? Judging by your trembling, you $suspect who I am...
+V:_INTRO_;Don't be frightened, I $whish you no harm... yet.
+V:_UNKNOWN_;Please, allow me to turn you inside out.
+V:_UNKNOWN_;Ah the screams of the tortured! A lovely music, don't you agree?
+V:suspect;That's right, I am Karzul Agmordexu, Lord Protector of the 512th layer of the $Abyss. I\
+must really apologize for these grim surroundings. But fear not, if all goes according to\
+my $plan I will soon entertain guests in a much larger domain...
+# V:Abyss;
+# V:plan,
+
