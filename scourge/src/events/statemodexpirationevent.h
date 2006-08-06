@@ -49,6 +49,7 @@ public:
 	virtual bool doesReferenceCreature( Creature *creature );
 
   inline const char *getName() { return "StateModExpirationEvent"; }
+	virtual inline Creature *getCreature() { return creature; }
   
 };
 

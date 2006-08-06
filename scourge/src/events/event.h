@@ -83,6 +83,8 @@ public:
 	};
 
   virtual inline const char *getName() = 0;
+
+	virtual Creature *getCreature() { return NULL; }
   
   
 };

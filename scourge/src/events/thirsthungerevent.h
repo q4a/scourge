@@ -47,6 +47,7 @@ public:
 	virtual bool doesReferenceCreature( Creature *creature );
 
   inline const char *getName() { return "ThirstHungerEvent"; }
+	virtual inline Creature *getCreature() { return creature; }
   
 };
 

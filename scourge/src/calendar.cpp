@@ -74,11 +74,11 @@ void Calendar::cancelEvent(Event *e) {
 
 // FIXME: O(n)
 void Calendar::cancelEventsForCreature( Creature *creature ) {
+	//cerr << "Cancelling events for creature: " << creature->getName() << endl;
 	for( int i = 0; i < (int)scheduledEvents.size(); i++ ) {
     if( scheduledEvents[i]->doesReferenceCreature( creature ) ) {
 			//cerr << "\t+++ Canceling event " << scheduledEvents[i]->getName() << " for " << creature->getName() << endl;
       scheduledEvents[i]->scheduleDeleteEvent();
-      break;
     }
   }
 }
@@ -123,7 +123,11 @@ bool Calendar::update(int gameSpeed){
             cout << " >= ";
             scheduledEvents[i]->getEventDate().print(); 
             cout << " ? ";        
-            cout << "\tEvent:" << scheduledEvents[i]->getName() << endl;
+            cout << 
+							"\tEvent:" << scheduledEvents[i]->getName() << endl;
+
+						// this will cause exception once level is left. (but useful for debugging.)
+							//" creature=" << ( scheduledEvents[i]->getCreature() ? scheduledEvents[i]->getCreature()->getName() : "null" ) << endl;
         }  
         // eventDate >= currentDate ?
         if( !( currentDate.isInferiorTo( scheduledEvents[i]->getEventDate() ) ) ){
