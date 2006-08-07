@@ -37,6 +37,8 @@ using namespace std;
 #define SECRET_DOOR_CHANCE 10.0f
 #endif
 
+int totalWidth, totalHeight;
+
 /*
 width - max 31
 height - max 31
@@ -229,7 +231,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 	if(init == 1)
 		init = rand()%2;
 
-	//printf("Iteration: %d %d : %d %d\n", x_start, y_start, width, height);
+//	fprintf( stderr, "Iteration: %d %d : %d %d\n", x_start, y_start, width, height);
 
 	int horizontal = 0;		
 	int div = 0;
@@ -295,7 +297,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 	// make two rooms alongside 
 	if(horizontal){
 		while (( div < roomMinWidth ) || (width - div < roomMinWidth)){
-			div = (float)rand()/RAND_MAX * width;			
+			div = (int)( (float)rand()/RAND_MAX * width );
 		}
 
 //		printf("horizontal, div %d, w2 %d, h %d\n", div, width - div, height  );
@@ -319,7 +321,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 	} else {
 		// make two rooms, on on top of the other
 		while ((div < roomMinHeight) || (height - div < roomMinHeight)){
-			div = (float)rand() / RAND_MAX * height;
+			div = (int)( (float)rand() / RAND_MAX * height );
 		}
 		
 		
@@ -340,10 +342,8 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		if(passageHasDoor)
 			passage |= S_DOOR;  
 	}
-	
+		
 	int r = roomCount; //this->roomCount;
-	
-	
 	if(!subdivideMaze(roomA.x, roomA.y, roomA.w, roomA.h, 0)){
 	// if we cannot divide the space once more, make a room
 		room[r].x = roomA.x;
@@ -354,8 +354,10 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		//printf("N: %d x/y %d/%d w/h %d/%d\n", r, roomA.x, roomA.y, roomA.w, roomA.h);
 	
 		roomCount++;//this->roomCount++;
-		
 	}
+	assert( roomCount < 200 );
+
+	
 	r = roomCount;//this->roomCount;
 	if(!subdivideMaze(roomB.x, roomB.y, roomB.w, roomB.h, 0)){
 	//if we cannot divice the space once more, make a room
@@ -365,21 +367,32 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		room[r].h = roomB.h;
 		
 		//printf("N: %d x/y %d/%d w/h %d/%d\n", r, roomB.x, roomB.y, roomB.w, roomB.h);		
-		
+				
 		roomCount ++;//this->roomCount++;
 	}
+	assert( roomCount < 200 );
+	
 	
 	if(horizontal){
 		for(int y = 0; y < height; y++){
+			assert( x_start + div - 1 >=0 && 
+							x_start + div - 1 < totalWidth &&
+							y_start + y >= 0 && 
+							y_start + y < totalHeight );
 			nodes[x_start + div - 1][y_start + y ] -= E_PASS;
 		}
 	} else {
 		for(int x = 0; x < width; x++){
+			assert( x_start + x >= 0 && 
+							x_start + x < totalWidth &&
+							y_start + div - 1 >= 0 && 
+							y_start + div - 1 < totalHeight );
 			nodes[x_start + x][y_start + div - 1] -= S_PASS;
 		}
 	}
 		
 	//connect the rooms
+	assert( passage_x >= 0 && passage_x < totalWidth && passage_y >= 0 && passage_y < totalHeight );
 	nodes[passage_x][passage_y] |= passage;
 	
 	// the space has been subdivided successfully
@@ -399,6 +412,10 @@ void MondrianGenerator::initRoom( Room room ){
 			if(y < room.h - 1)
 				pass |= S_PASS;
 		
+			assert( x + room.x >= 0 && 
+							x + room.x < totalWidth && 
+							y + room.y >= 0 && 
+							y + room.y < totalHeight );
 			nodes[x + room.x][y + room.y] = ROOM | pass;
 		}
 	}
@@ -407,8 +424,9 @@ void MondrianGenerator::initRoom( Room room ){
 
 
 void MondrianGenerator::generate( Map *map, ShapePalette *shapePal ) {
+//	cerr << "MONDRIAN" << endl;
+
 	updateStatus(MESSAGE);
-	scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
 
   //Sint16 mapx, mapy;
 	for(Sint16 x = 0; x < width; x++) {    
@@ -430,10 +448,14 @@ void MondrianGenerator::generate( Map *map, ShapePalette *shapePal ) {
 
   this->roomCount = 0;
   
+	totalWidth = width;
+	totalHeight = height;
   subdivideMaze(0, 0, width, height, 1);
 
   //printMaze();
-  
+	//for( int i = 0; i < roomCount; i++ ) {
+		//cerr << "Room: " << i << " " << room[i].x << "," << room[i].y << " dim=" << room[i].w << "," << room[i].h << endl;
+	//}
 }
 
 
