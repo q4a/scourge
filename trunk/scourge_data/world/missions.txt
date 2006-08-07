@@ -224,8 +224,11 @@ D:Report back to me on anything unusal you witness. Let me know if you're able t
 D:any information about the Guardians of the Realm or Mothrazu. As always be careful and
 D:please behave! Remember, you're representing the best (and only) dungeon janitorial service in
 D:town.
-Y:Fixme
+Y:I must really sit down for this... So, you traveled through an ancient planar device to...
+Y:to... the Abyss?! And met a demon lord named $Karzul who promised to enter our world and
+Y:use his infernal powers to destroy it? I need time to think about this... I will post something
+Y:on the board soon... Meanwhile, talk to Melathor about $Karzul as well.
 N:Have you been able to unlock the door in Sabien's library and learn what lies beyond? 
 N:Remember to bring back anything important that is connected to the $Guardians of the Realm or
 N:the creature called $Mothrazu.
-S:fixme
+S:Investigate the warded door in Sabien's library

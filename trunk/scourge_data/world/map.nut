@@ -245,14 +245,17 @@ function converse( creature, question ) {
 					question == "lock" ||
 					question == "locked" ) ) {
 			scourgeGame.getMission().setCompleted();
-		} else if( scourgeGame.getMission().getChapter() == 7 &&
-							 ( question == "after" ||
-								 question == "stop" ) ) {
-			// remove map block at 294,223 to make door accessible
-			scourgeGame.getMission().removeMapPosition( 294, 223, 0 );
-		}
-  } 
-
+		} else if( scourgeGame.getMission().getChapter() == 7 ) {
+      if( question == "after" || question == "stop" ) {
+        // remove map block at 294,223 to make door accessible
+        scourgeGame.getMission().removeMapPosition( 294, 223, 0 );
+      }
+    }
+  } else if( creature.getName() == "Karzul Agmordexu" &&
+             !( scourgeGame.getMission().isCompleted() ) &&
+             ( question == "serves" || question == "gift" ) ) {
+    scourgeGame.getMission().setCompleted();
+  }
   return null;
 }
 
