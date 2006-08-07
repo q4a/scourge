@@ -568,8 +568,9 @@ void DungeonGenerator::printMaze() {
 }
 
 void DungeonGenerator::generate( Map *map, ShapePalette *shapePal ) {
+	//cerr << "DUNGEON" << endl;
+
   updateStatus(MESSAGE);
-  //scourge->getSDLHandler()->setHandlers((SDLEventHandler *)this, (SDLScreenView *)this);
   
   generateMaze();
   //  printMaze();  

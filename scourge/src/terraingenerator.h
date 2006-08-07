@@ -72,7 +72,7 @@ protected:
     int x, y, w, h;
     int valueBonus;
   } Room;
-  Room room[20];
+  Room room[200];
 
 
   Scourge *scourge;

@@ -32,7 +32,8 @@ N:422,264,Lemy,1,commoner
 N:423,178,Rendd,1,commoner
 N:436,263,Xolt,1,commoner
 
-N:174,218,Karzul Agmordexu,1,commoner
+# N:174,218,Karzul Agmordexu,1,commoner
+N:176,220,Karzul Agmordexu,1,commoner
 
 P:Karzul Agmordexu
 V:_INTRO_;Well, well... what have we here? Judging by your trembling, you $suspect who I am...
@@ -44,4 +45,5 @@ must really apologize for these grim surroundings. But fear not, if all goes acc
 my $plan I will soon entertain guests in a much larger domain...
 # V:Abyss;
 # V:plan,
+
 
