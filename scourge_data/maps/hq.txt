@@ -150,6 +150,8 @@ map on the $board.
 V:token,tokens;According to $Sabien, four such token items are what $Mothrazu seeks in order to activate\
 a gate to the $Abyss. Be sure to find them before she does! Look on the $board now and then to see if I marked\
 a location where we suspect the item can be found.
+V:Karzul;I don't know much about this fiend... Ask Melathor though, the gods know how but he always\
+seems up to date about news from the Abysss.
 
 ##########################################################
 P:Melathor of Allovium
@@ -210,7 +212,7 @@ When he attempted to double-cross the $fiend it eventually cost him his life.
 V:downfall;$Mycotharsius fell in an underground battle. He was preparing to cast a dark spell\
 that backfired and took his life. Some say he uttered a terrible curse with his last dying\
 breath to wreak vengeance upon the $fiend he suspected somehow caused his magic to misbehave.
-V:fiend;I believe its name was Karzuul, a lesser demon of disease. If you seek him, he can be\
+V:fiend;I believe its name was Karzul, a lesser demon of disease. If you seek him, he can be\
 found in the $Abyss.
 V:Abyss;It's the plane of evil. You would do well to stay away from it unless you're equipped\
 to fight its demonic hordes in mind and body. If you're still not deterred to enter this\
@@ -235,6 +237,13 @@ for the god of Nature? We have hacks like her by the dozens back in $Allovium...
 V:token,tokens;What, tokens you say? Yes, yes, you must find them! Uzudil is looking into it. Look\
 on the board now and then to see if he's posted anything yet. He may want you to become more powerful\
 before sending you out on such an important mission.
+V:Karzul;So he is real! I always thought the whole $Mycotharsius story was just tavern-gossip due to\
+too much Troll Stout... Hmmm, so this changes everything! You say, he plans to enter our world and\
+destroy it? Well he certainly can via the red teleporter. However, he should be relatively weak here\
+without a permanent $link to his home plane.
+V:link;I think what Karzul hinted at is such a thing. I am not sure how this is possible but it must\
+that the device $Mothrazu is carrying will provide (when activated) a conduit to the powers of the\
+Abyss. Using such a system would indeed allow $Karzul to exercise all his diabolic powers.
 
 # Npc-s:
 # Key:

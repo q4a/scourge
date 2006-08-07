@@ -301,6 +301,9 @@ P:RESIST_HISTORY_MAGIC,70
 P:RESIST_DECEIT_MAGIC,70
 P:RESIST_CONFRONTATION_MAGIC,70
 
+M:Quegazu the Reformed,/portraits/quegazu.bmp
+M:/models/xenoid,xenotype3.bmp,17,10,11,7,6,6,2.1,npc
+
 #############################
 # Monsters
 # level, hp, mp, ac

@@ -7,19 +7,19 @@ G:_UNKNOWN_;I don't know. We see very little of this $level...
 
 G:torment,long;What you're not here to torture us $sinners? Nay, I think this is just another\
 deceiption of the evil ones. Go ahead, rend my flesh, torment my mind, I have resigned myself\
-to an eternity of pain.
-G:sinners,sinner;Yes, we are all sinners here. We toil eternally on this $level of the $Abyss. It\
+to an eternity of suffering.
+G:sinners,sinner;Yes, we are all sinners here. We toil forever on this $level of the $Abyss. It\
 is a payback for our $crimes.
 G:crimes,crime;We're mostly petty criminals... adulterers, pick-pockets, etc. This $level of\
-the $Abyss is under the heel of the demon lord $Karzul. As punishment for our crimes, his minions\
-torment our minds and bodies eternally...
+the $Abyss is presided over by the fearsome demon lord $Karzul. As punishment for our crimes,\
+his minions torment our minds and bodies eternally...
 G:Abyss;Don't tell me you don't know where you are? The demons of $Karzul apply their craft well\
-indeed. In case you can't remember, you're on this $level for having committed petty $crimes in\
-your former life.
+indeed. In case you can't remember, you're on this $level for having committed small $crimes in\
+your former life. Were you a thief perhaps? Or cheat at cards? No one comes here without a reason...
 G:level;The $Abyss has an infinite number of levels. This one is a holding area for $sinners like\
 ourselves. It is ruled by the horrible demon lord $Karzul.
 G:Karzul;Trust me you don't want to know... he's the enemy of life, the despoiler of good, the\
-bringer of darkness. His words: bile, his breath: disease... If you still want to see him,\
+bringer of darkness. His words are bile and his breath: disease... If you still want to see him,\
 proceed to the end of this $level.
 
 N:371,202,Karak,1,commoner
@@ -43,7 +43,81 @@ V:_UNKNOWN_;Ah the screams of the tortured! A lovely music, don't you agree?
 V:suspect;That's right, I am Karzul Agmordexu, Lord Protector of the 512th layer of the $Abyss. I\
 must really apologize for these grim surroundings. But fear not, if all goes according to\
 my $plan I will soon entertain guests in a much larger domain...
-# V:Abyss;
-# V:plan,
+V:Abyss;Ah you mortals can be so entertaining! Look around you weakling! You will $soon call this\
+place your home. The smell you will never get used to. Here you will learn an appreciation for\
+eternal suffering. My minions will tear your sanity to shreds and break your body every day. And\
+since you're already dead, you will be at our disposal to repeat these procedures endlessly...
+V:plan,soon;I might as well let you in on my little secret. I plan to ascend into your world and\
+bring about its utter destruction. Why would I do that, you ask? You mortals need to be taught a\
+lesson in $humility. And who better to humiliate you than I the (future) lord of Hell? 
+V:humility;You live your lives in the world above as if your actions were confined to the\
+isolated realm you perceive as reality. As if deities were your servants you can bargain\
+with for your benefit. Soon the powers of the material realm will $shift... Soon I will\
+define your reality!
+V:shift;I'm awefully sorry to inform you that you just missed my other guest, one\
+named $Mothrazu. I hear this happens to you quite a lot... She was just here and is now\
+on her way back with a special package... a... a $gift from me to... well all of you.
+V:Mothrazu,druid;She is quite a charmer! And I must say, druids (especially the evil ones) are\
+so gullible. All I did was arise her latent anger over the destruction of nature, and\
+she now $serves me unerringly and quite against her better judgement. If she only knew\
+that she's being used as a pawn in a much grimmer game...
+V:serves,gift;As far as the $druid knows, she is carrying a device which will bring about a\
+subtle climate change (if you will) of your world. I really can't get into details, it's top\
+secret you know, so don't even ask.... Oh, all right, if you insist. I will add, that if\
+activated, my gift (this device) will allow for the completion of my plans by granting me\
+(and I shudder with delight) use of my infernal powers in your realm. Would you like a free\
+demonstration ot them? No? Perhaps some other $time then.
+V:time;Yes my guests the time will come when we meet $again. For now, I will let you live. I\
+must say, I am somewhat impressed that you managed pay me this visit here\
+in my home. I will follow your progress eagerly... perhaps I will make you my servants in my\
+new era of terror. Undeath will suite you just marvelously (although it did not work well\
+for $Mycotharsius... )
+V:again;Ta-ta for now my friends... I will see you $soon enough! Don't forget to try to chase\
+down the druid $Mothrazu, as it is entertaining for me to watch you squirm. I would not bother\
+to reveal my plans to her; it will do no good. She serves me out of her own free will...
+V:Mycotharsius;I hear he met his demise again... At your hands no less! Remind me to reward you\
+for this when make you my servants. That double-crossing wizard was a nuisance from the beginning.\
+Henchmen are of such low quality these days...
+V:Quegazu;So you've met the merchant, that demon-turned-holyman? Despite what he says, he's on the\
+brink... Just ask him about 'blood' or 'pain'. I let him fester in his tormented state as an\
+example that goodness cannot save you and reformation is just pretense.
 
 
+N:300,156,Quegazu the Reformed,18,merchant,SWORD;AXE;BOW;MACE;POLE;ARMOR;AMULET
+
+P:Quegazu the Reformed
+V:_INTRO_;Welcome, welcome $good masters to my humble $shop...
+V:_UNKNOWN_;Alas, poor Quegazu knows not of what wise master speaks.
+V:shop;Yes master, let us $trade. I sell you good weapons and armor for cheap... Quegazu is\
+honest and $good. You can trust all goods from Quegazu's $shop and his amulets will bring\
+good master luck.
+V:good;Yes, Quegazu is good. Not like other vile demons here and very much not like evil\
+tyrant $Karzul (may he fester in boils.) Quegazu chose life of light and helpfulness. He\
+can be trusted to $trade with good master. Quegazu $changed his evil ways and is a servant,\
+ever a servant of holy deity Minirmuir (blessed be he).
+V:change,changed;Quegazu see the light, Quegazu repent sins of past. Although sometimes\
+Quegazu still misses taste of $blood and weak $flesh of mortals he tries to not think about it.\
+He still longs now and then to hear the $screams of the damned he tries to not revel in\
+their $agony... Yes, Quegazu tries reeealy hard to respect others and give tha.. tha... 
+thanks for divine wisdom of Minirmuir.
+V:blood,flesh;Tempt us not good master... ah to rend the flesh and suck marrow from the bones!\
+To drive heated stakes through the... No! Quegazu must not think these vile thoughts.\
+Quegazu will now say seven prayers to Minirmuir...
+V:screams,agony;It is like music to my ears! The unending death gurgle of the tortured brings...\
+But no! Quegazu is reformed. He is filled with light and toils only for $good.
+V:Karzul;A master of darkness he is. Do not belive his promises! Stray not into his path for\
+surely will you be crushed like the fleas you are to his unholy might. A blight he is, even\
+here in the grimmest of all places. Quegazu knows $more... much more about this dark lord.
+V:more;Karzul was once a lowly demon like myself. However, his heart was so full of hatred that\
+even others of his kind shunned his presence. Then some time ago his ascendency to power began\
+when he made a pact with an evil sorceror named Mycotharsius. Have you $heard of him? He\
+eventually slew the wizard and raised him as an undead $worshipper.
+V:heard;So you have met this Mycotharsius! A foolish mortal he was to $trust $Karzul.
+V:worshipper,trust;Quegazu thinks Karzul's plan was at first a usual one: gather enough souls to\
+infiltrate the material realm vy establishing a secret cult of worshippers led by the\
+wizard Mycotharsius. Karzul being rather impatient saw this taking too long and chose a\
+different $path to speed his destruction of the world of mortals along.
+V:path;This is where Quegazu's knowledge becomes hazy. Quegazu is sorry to not be clearer and\
+thus better serve the forces of $good. As far as Quegazu knows, Karzul's latest cohort is a\
+creature named Mothrazu the druid. He is using her to continue where Mycotharsius failed in his\
+infernal game to bring an end to the world of mortals.
