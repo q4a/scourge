@@ -121,3 +121,11 @@ V:path;This is where Quegazu's knowledge becomes hazy. Quegazu is sorry to not b
 thus better serve the forces of $good. As far as Quegazu knows, Karzul's latest cohort is a\
 creature named Mothrazu the druid. He is using her to continue where Mycotharsius failed in his\
 infernal game to bring an end to the world of mortals.
+
+
+N:307,298,Narzegg the Vain,18,merchant,SCROLL;WAND;RING;STAFF;POTION;FOOD;DRINK
+P:Narzegg the Vain
+V:_INTRO_;Look at my $wares weakling mortals...
+V:_UNKNOWN_;Narzegg getting impatient with mortal weaklings...
+V:wares;Yes, $trade with gold weak mortals. I will supply you with what you need to live just\
+another day here in the land of $evil
