@@ -47,7 +47,7 @@ V:Abyss;Ah you mortals can be so entertaining! Look around you weakling! You wil
 place your home. The smell you will never get used to. Here you will learn an appreciation for\
 eternal suffering. My minions will tear your sanity to shreds and break your body every day. And\
 since you're already dead, you will be at our disposal to repeat these procedures endlessly...
-V:plan,soon;I might as well let you in on my little secret. I plan to ascend into your world and\
+V:plan,plans,soon;I might as well let you in on my little secret. I plan to ascend into your world and\
 bring about its utter destruction. Why would I do that, you ask? You mortals need to be taught a\
 lesson in $humility. And who better to humiliate you than I the (future) lord of Hell? 
 V:humility;You live your lives in the world above as if your actions were confined to the\
@@ -81,7 +81,10 @@ Henchmen are of such low quality these days...
 V:Quegazu;So you've met the merchant, that demon-turned-holyman? Despite what he says, he's on the\
 brink... Just ask him about 'blood' or 'pain'. I let him fester in his tormented state as an\
 example that goodness cannot save you and reformation is just pretense.
-
+V:deal;You want to strike a deal with me and become servants of my era of pending darkness?! Hahaha!\
+You amuse me... Yes, yes, there will be plenty of time for that once my $plans unfold. Once I\
+am the tyrant ruler supreme of all that you hold dear... We will revisit this issue, trust me.
+V:Narzegg;One day vanity will be his downfall. Until then he serves me well.
 
 N:300,156,Quegazu the Reformed,18,merchant,SWORD;AXE;BOW;MACE;POLE;ARMOR;AMULET
 
@@ -128,4 +131,23 @@ P:Narzegg the Vain
 V:_INTRO_;Look at my $wares weakling mortals...
 V:_UNKNOWN_;Narzegg getting impatient with mortal weaklings...
 V:wares;Yes, $trade with gold weak mortals. I will supply you with what you need to live just\
-another day here in the land of $evil
+another day here in the land of $evil. May your squishy flesh stay safe in the kingdom\
+of $Karzul.
+V:evil;Maybe weakling mortals have not noticed $where they are? Rejoice in the unholy might\
+of our horde! Narzegg wishes lumpy outsiders consider the $benefits of switching to the winning\
+side of evil. After all, Narzegg knows he's only $beautiful and $powerful because he toils\
+only for himself.
+V:benefit,benefits;Ah, so soft-covered mortals are interested in a deal perhaps? Maybe\
+they want to be as $confident, $wise and $fearsome as leaders of the demonic horde? Narzegg\
+thinks maybe they want to consult with Karzul. Maybe they should mention the word "deal" to\
+his infernal majesty.
+V:Karzul;A great leader of demons he is! Narzegg looks up to Karzul as a mentor in ways\
+of $evil. Karzul is a terrible demon lord who rules over this level of the Abyss. He excells\
+in finding new ways to torment the sinners in our charge. None else can revel in their death\
+gurgles with such passion! One day Narzegg will rule an Abyssal level. He shall name its capitol\
+city Karzulia after the great leader.
+V:beautiful,powerful,confident,wise,fearsome;Yes, Narzegg is a handsome demon... Many sinners say\
+so as well. He is also powerful and wise. Narzegg will one day lead demon race in glorious conquest\
+of other levels of the Abyss. Narzegg learned all his craft from might leader Karzul. In many ways\
+Narzegg is similar to Lord Karzul... except Narzegg has better profile. See?
+
