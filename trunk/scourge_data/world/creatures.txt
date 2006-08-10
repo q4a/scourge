@@ -312,25 +312,25 @@ M:/models/xenoid,xenotype2.bmp,17,10,11,7,6,6,2.1,npc
 # level, hp, mp, ac
 #############################
 # level 1
-M:An Imp
+M:Imp
 M:BUGGERLING,/models/m5.bmp,1,4,0,2,10,1,0.8
 I:Wooden club
 I:Horned helmet
 
-M:An Oozing Green Waddler
+M:Oozing Green Waddler
 M:SLIME,/models/m6.bmp,1,3,8,2,5,8
 I:Dirk
 S:Lesser healing touch
 
-M:A Buggerling
+M:Buggerling
 M:BUGGERLING,/models/m51.bmp,1,3,0,3,3,4,1.0
 I:Rounded mace
 
-M:A Red Bauul
+M:Red Bauul
 M:BAUUL,/models/m7.bmp,1,6,0,3,7,8,2
 I:Dirk
 
-M:A Giant Cobra
+M:Giant Cobra
 M:COBRA,/models/m13.bmp,1,4,0,3,5,2,2.0
 I:Dirk
 P:RESIST_NATURE_MAGIC,5
@@ -342,25 +342,25 @@ P:RESIST_CONFRONTATION_MAGIC,5
 
 #############################
 # level 2
-M:A Rabbid Rodent
+M:Rabbid Rodent
 M:BUGGERLING,/models/m52.bmp,2,4,6,0,10,5
 I:Dagger
 I:Ornatebow
 P:RESIST_NATURE_MAGIC,20
 
-M:A Gray Slimy Waddler
+M:Gray Slimy Waddler
 M:SLIME,/models/m62.bmp,2,5,7,0,5,8,1.6
 I:Battleaxe
 I:Horned helmet
 P:RESIST_HISTORY_MAGIC,30
 
-M:A Fleshworm
+M:Fleshworm
 M:BUGGERLING,/models/m53.bmp,2,5,7,3,2,5
 I:Dagger
 S:Lesser healing touch
 P:RESIST_CONFRONTATION_MAGIC,20
 
-M:A Kobold
+M:Kobold
 M:BUGGERLING,/models/m54.bmp,2,6,5,1,10,5
 I:Dagger
 I:Strongbow
@@ -372,7 +372,7 @@ P:RESIST_HISTORY_MAGIC,10
 # P:RESIST_DECEIT_MAGIC,10
 # P:RESIST_CONFRONTATION_MAGIC,10
 
-M:A Blue Bauul
+M:Blue Bauul
 M:BAUUL,/models/m71.bmp,2,6,5,2,5,2
 I:Strongbow
 I:Horned helmet
@@ -383,7 +383,7 @@ P:RESIST_HISTORY_MAGIC,10
 P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,10
 
-M:A False Cobra
+M:False Cobra
 M:COBRA,/models/m131.bmp,2,7,5,3,5,4,1.5
 I:Short sword
 # P:RESIST_NATURE_MAGIC,15
@@ -395,7 +395,7 @@ P:RESIST_HISTORY_MAGIC,15
 
 #############################
 # level 3
-M:A Dire Stench-Waddler
+M:Dire Stench-Waddler
 M:SLIME,/models/m62.bmp,3,4,6,0,8,8,1.6
 I:Dagger
 S:Burning stare
@@ -408,7 +408,7 @@ P:RESIST_LIFE_AND_DEATH_MAGIC,30
 # P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,20
 
-M:A Minor Spectre
+M:Minor Spectre
 M:BUGGERLING,/models/m55.bmp,3,3,7,4,4,5,1.6
 I:Dagger
 S:Burning stare
@@ -421,7 +421,7 @@ P:RESIST_HISTORY_MAGIC,20
 P:RESIST_DECEIT_MAGIC,30
 # P:RESIST_CONFRONTATION_MAGIC,10
 
-M:A Brawn
+M:Brawn
 M:BRAWN,/models/m9.bmp,3,6,0,3,9,2,1.4
 I:Long sword
 #I:Strongbow
@@ -433,7 +433,7 @@ I:Horned helmet
 P:RESIST_DECEIT_MAGIC,20
 P:RESIST_CONFRONTATION_MAGIC,30
 
-M:A Blue Brawn
+M:Blue Brawn
 M:BRAWN,/models/m91.bmp,3,7,0,4,7,3,1.8
 I:Long sword
 # P:RESIST_NATURE_MAGIC,10
@@ -443,7 +443,7 @@ I:Long sword
 P:RESIST_DECEIT_MAGIC,30
 P:RESIST_CONFRONTATION_MAGIC,35
 
-M:A Storm Cobra
+M:Storm Cobra
 M:COBRA,/models/m132.bmp,3,8,7,4,5,4,2.2
 I:Short sword
 S:Stinging light
@@ -456,7 +456,7 @@ P:RESIST_HISTORY_MAGIC,20
 
 #############################
 # level 4
-M:A Hydralisk
+M:Hydralisk
 M:HYDRALISK,/models/m8.bmp,4,6,0,6,8,6,2
 I:Long sword
 P:RESIST_NATURE_MAGIC,10
@@ -466,7 +466,7 @@ P:RESIST_HISTORY_MAGIC,10
 # P:RESIST_DECEIT_MAGIC,10
 # P:RESIST_CONFRONTATION_MAGIC,10
 
-M:A Red Brawn
+M:Red Brawn
 M:BRAWN,/models/m92.bmp,4,5,0,5,6,3,2.0
 I:Battleaxe
 #I:Strongbow
@@ -478,7 +478,7 @@ I:Horned helmet
 P:RESIST_DECEIT_MAGIC,40
 P:RESIST_CONFRONTATION_MAGIC,55
 
-M:A Lesser Phantom
+M:Lesser Phantom
 M:PHANTOM,/models/m10.bmp,4,5,8,5,3,7
 I:Dagger
 S:Burning stare
@@ -491,7 +491,7 @@ P:RESIST_HISTORY_MAGIC,10
 P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,10
 
-M:A flesh raptor
+M:flesh raptor
 M:RAPTOR,/models/m11.bmp,4,8,0,4,6,4,2
 I:Dagger
 # P:RESIST_NATURE_MAGIC,10
@@ -501,7 +501,7 @@ I:Dagger
 # P:RESIST_DECEIT_MAGIC,30
 # P:RESIST_CONFRONTATION_MAGIC,35
 
-M:A Rare Cobra
+M:Rare Cobra
 M:COBRA,/models/m133.bmp,4,9,5,4,5,7,2.2
 I:Short sword
 S:Cursed ways
@@ -515,7 +515,7 @@ P:RESIST_HISTORY_MAGIC,25
 
 #############################
 # level 5
-M:A Megalisk
+M:Megalisk
 M:HYDRALISK,/models/m8.bmp,5,7,4,5,8,6,2.4
 I:Long sword
 P:RESIST_NATURE_MAGIC,20
@@ -525,7 +525,7 @@ P:RESIST_HISTORY_MAGIC,30
 # P:RESIST_DECEIT_MAGIC,30
 # P:RESIST_CONFRONTATION_MAGIC,35
 
-M:A stone raptor
+M:Stone raptor
 M:RAPTOR,/models/m111.bmp,5,6,4,5,6,4,2.3
 I:Dagger
 # P:RESIST_NATURE_MAGIC,10
@@ -535,7 +535,7 @@ P:RESIST_AWARENESS_MAGIC,10
 P:RESIST_DECEIT_MAGIC,30
 # P:RESIST_CONFRONTATION_MAGIC,35
 
-M:A Vile Phantom
+M:Vile Phantom
 M:PHANTOM,/models/m101.bmp,5,4,12,6,5,7
 I:Dagger
 S:Burning stare
@@ -551,7 +551,7 @@ P:RESIST_HISTORY_MAGIC,40
 P:RESIST_DECEIT_MAGIC,30
 P:RESIST_CONFRONTATION_MAGIC,20
 
-M:A Pain Fairy
+M:Pain Fairy
 M:FAIRY,/models/m12.bmp,5,4,10,3,3,5,1.5
 I:Dagger
 S:Silent knives
@@ -566,7 +566,7 @@ P:RESIST_HISTORY_MAGIC,20
 P:RESIST_DECEIT_MAGIC,20
 P:RESIST_CONFRONTATION_MAGIC,20
 
-M:A Neural Cobra
+M:Neural Cobra
 M:COBRA,/models/m134.bmp,5,9,9,4,5,9,2.5
 I:Short sword
 S:Stinging light
@@ -581,7 +581,7 @@ P:RESIST_HISTORY_MAGIC,25
 
 #############################
 # level 6
-M:A Hydralisk Deathlord
+M:Hydralisk Deathlord
 M:HYDRALISK,/models/m8.bmp,6,8,6,5,8,8,2.6
 I:Long sword
 I:Strongbow
@@ -592,7 +592,7 @@ P:RESIST_HISTORY_MAGIC,40
 # P:RESIST_DECEIT_MAGIC,30
 # P:RESIST_CONFRONTATION_MAGIC,35
 
-M:A Spirit Phantom
+M:Spirit Phantom
 M:PHANTOM,/models/m102.bmp,6,5,12,5,5,5
 I:Dagger
 S:Silent knives
@@ -607,7 +607,7 @@ P:RESIST_HISTORY_MAGIC,50
 P:RESIST_DECEIT_MAGIC,40
 P:RESIST_CONFRONTATION_MAGIC,30
 
-M:A spirit raptor
+M:spirit raptor
 M:RAPTOR,/models/m112.bmp,6,7,10,3,7,4,2.3
 I:Dagger
 S:Burning stare
@@ -618,7 +618,7 @@ P:RESIST_AWARENESS_MAGIC,20
 P:RESIST_DECEIT_MAGIC,40
 P:RESIST_CONFRONTATION_MAGIC,35
 
-M:A Reek Fairy
+M:Reek Fairy
 M:FAIRY,/models/m121.bmp,6,5,20,6,3,4,2
 I:Dagger
 S:Silent knives
@@ -635,7 +635,7 @@ P:RESIST_CONFRONTATION_MAGIC,40
 
 #############################
 # level 7
-M:A Mordoraptor
+M:Mordoraptor
 M:RAPTOR,/models/m113.bmp,7,9,9,5,9,5,2.8
 I:Dagger
 S:Silent knives
@@ -647,7 +647,7 @@ P:RESIST_AWARENESS_MAGIC,30
 P:RESIST_DECEIT_MAGIC,50
 P:RESIST_CONFRONTATION_MAGIC,65
 
-M:A Marduk Fairy
+M:Marduk Fairy
 M:FAIRY,/models/m122.bmp,7,5,20,5,3,7,2.2
 I:Dagger
 I:Longbow
@@ -663,7 +663,7 @@ P:RESIST_CONFRONTATION_MAGIC,60
 
 #############################
 # level 8
-M:A Mernobus
+M:Mernobus
 M:FAIRY,/models/m123.bmp,8,10,20,6,10,8,2.5
 I:Dagger
 I:Strongbow
@@ -679,7 +679,7 @@ P:RESIST_HISTORY_MAGIC,80
 P:RESIST_DECEIT_MAGIC,80
 P:RESIST_CONFRONTATION_MAGIC,80
 
-M:An Poison Blade Frog,Poison Frog
+M:Poison Blade Frog,Poison Frog
 M:/models/frog,PoisonFrog.bmp,8,4,0,5,5,3,1.2
 I:Dirk
 I:Horned helmet
@@ -691,7 +691,7 @@ P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,10
 
 
-M:A Lesser Soulstealer,Soulstealer
+M:Lesser Soulstealer,Soulstealer
 M:/models/Bug,bug.bmp,8,5,0,4,7,4,0.8
 I:Dirk
 I:Horned helmet
@@ -702,7 +702,7 @@ P:RESIST_HISTORY_MAGIC,10
 P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,10
 
-M:A Necromancer,Necromancer
+M:Necromancer,Necromancer
 M:/models/demoness,necromancer.bmp,8,7,6,5,6,8,1.5
 I:Dirk
 S:Malice Storm
@@ -717,7 +717,7 @@ P:RESIST_CONFRONTATION_MAGIC,60
 
 #############################
 # level 9
-M:An Restless Spirit Frog,Spirit Frog
+M:Restless Spirit Frog,Spirit Frog
 M:/models/frog,TreeFrog.bmp,9,4,0,8,10,3,1.4
 I:Short sword
 I:Horned helmet
@@ -728,7 +728,7 @@ P:RESIST_HISTORY_MAGIC,10
 P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,12
 
-M:A Greater Soulstealer,Soulstealer
+M:Greater Soulstealer,Soulstealer
 M:/models/Bug,ctf_b.bmp,9,5,0,5,10,4,1.2
 I:Short sword
 I:Horned helmet
@@ -739,7 +739,7 @@ P:RESIST_HISTORY_MAGIC,10
 P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,40
 
-M:A Raving Necromancer,Necromancer
+M:Raving Necromancer,Necromancer
 M:/models/demoness,ice.bmp,9,6,12,6,10,6,1.8
 I:Dagger
 S:Malice Storm
@@ -769,7 +769,7 @@ P:RESIST_CONFRONTATION_MAGIC,50
 
 #############################
 # level 10
-M:An Shadow Frog,Shadow Frog
+M:Shadow Frog,Shadow Frog
 M:/models/frog,MultiColour.bmp,10,4,0,7,10,3,1.6
 I:Long sword
 I:Strongbow
@@ -781,7 +781,7 @@ P:RESIST_HISTORY_MAGIC,12
 P:RESIST_DECEIT_MAGIC,12
 P:RESIST_CONFRONTATION_MAGIC,10
 
-M:A Diabolic Soulstealer,Soulstealer
+M:Diabolic Soulstealer,Soulstealer
 M:/models/Bug,ctf_r.bmp,10,5,0,3,10,4,1.6
 I:Short sword
 I:Horned helmet
@@ -792,7 +792,7 @@ P:RESIST_HISTORY_MAGIC,12
 P:RESIST_DECEIT_MAGIC,0
 P:RESIST_CONFRONTATION_MAGIC,30
 
-M:An Unhinged Necromancer,Necromancer
+M:Unhinged Necromancer,Necromancer
 M:/models/demoness,ghost.bmp,10,6,12,5,10,4,2.0
 I:Dagger
 S:Malice Storm
@@ -825,7 +825,7 @@ P:RESIST_CONFRONTATION_MAGIC,55
 
 #############################
 # level 11
-M:A Host Mindslaught,Mindslaught
+M:Host Mindslaught,Mindslaught
 M:/models/frog,BigRed.bmp,11,4,0,7,10,3,1.8
 I:Long sword
 I:Strongbow
@@ -837,7 +837,7 @@ P:RESIST_HISTORY_MAGIC,20
 P:RESIST_DECEIT_MAGIC,20
 P:RESIST_CONFRONTATION_MAGIC,5
 
-M:A Nihilistic Necromancer,Necromancer
+M:Nihilistic Necromancer,Necromancer
 M:/models/demoness,succubus.bmp,11,6,15,7,10,4,2.2
 I:Dagger
 S:Malice Storm
@@ -866,23 +866,6 @@ P:RESIST_LIFE_AND_DEATH_MAGIC,48
 P:RESIST_HISTORY_MAGIC,20
 P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,50
-
-# Creatures
-# 
-# Key: (the old-way)
-# M:monster
-#   name[,(descriptive type for monsters | portrait for npcs)]
-#   md2 model, skin, level,hp,mp,natural armor,rareness,speed[,scale(overrides shapes.txt's scale),npc[,startX,startY]]
-# I:inventory (1 line per item ref. by name from items.txt)
-# S:spell
-# P:skill_name,percentage (skill level; used mainly for magic resistance)
-#
-# Notes: 
-#       hp,mp are multiplied by the level when the monster is created (natural armor isn't)
-# 	rareness=1-10 where 1 is most and 10 is least rare (for given level)
-#	speed=1-10 where 1 is the fastest and 10 is the slowest
-#       descriptiveType is only needed once per model
-
 
 #############################
 # level 12
@@ -1177,6 +1160,4 @@ P:RESIST_LIFE_AND_DEATH_MAGIC,40
 P:RESIST_HISTORY_MAGIC,30
 P:RESIST_DECEIT_MAGIC,20
 P:RESIST_CONFRONTATION_MAGIC,60
-
-
 
