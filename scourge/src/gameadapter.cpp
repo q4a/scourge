@@ -126,8 +126,23 @@ RenderedCreature *GameAdapter::createMonster( char *monster_name ) {
 	Creature *creature = NULL;
   Monster *monster = Monster::getMonsterByName( monster_name );
   if( !monster ) {
-    cerr << "*** Error: can't find monster: " << monster_name << endl;
-		return NULL;
+
+    /*
+    // Try to find the monster w/o the "A" or "An" prefix
+    // This is hacky code that should be removed once the
+    // maps were converted to the new creature names.
+    if( strlen( monster_name ) > 3 ) {
+      monster = Monster::getMonsterByName( monster_name + 2 ); // A_
+      if( !monster ) {
+        monster = Monster::getMonsterByName( monster_name + 3 ); // An_
+      }
+    }
+    */
+
+    if( !monster ) {
+      cerr << "*** Error: can't find monster: " << monster_name << endl;
+      return NULL;
+    }
 	}
 	GLShape *shape = session->getShapePalette()->
 		getCreatureShape( monster->getModelName(), 
