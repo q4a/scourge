@@ -76,6 +76,8 @@ MonsterToughness monsterToughness[] = {
 
 #define roll(min, max) ( ( ( max - min ) * rand() / RAND_MAX ) + min )
 
+#define getAn( name ) ( ( name[0] == 'a' || name[0] == 'e' || name[0] == 'i' || name[0] == 'o' || name[0] == 'u' || name[0] == 'y' ? "an" : "a" ) )
+
 Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = character;
@@ -104,7 +106,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape) : Rendere
   this->name = monster->getType();
   this->model_name = monster->getModelName();
   this->skin_name = monster->getSkinName();
-  sprintf(description, "You see %s", monster->getType());
+  sprintf(description, "You see %s %s", getAn( monster->getType() ), monster->getType() );
   this->originalSpeed = this->speed = monster->getSpeed();
   this->motion = Constants::MOTION_LOITER;
   this->armor = monster->getBaseArmor();

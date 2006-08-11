@@ -72,7 +72,7 @@ Fog::~Fog() {
   glDeleteTextures(1, (GLuint*)&overlay_tex);
   glDeleteTextures(1, (GLuint*)&shade_tex);
   if (players)
-     delete players;
+     delete[] players;
 }
 
 void Fog::reset() {
