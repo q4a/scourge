@@ -18,15 +18,7 @@ function prereqSuperTough( creature ) {
 }
 
 function actionSuperTough( creature ) {
-  //print( "In actionSuperTough. Creature=" + creature.getName() + ".\n" );
-  //print( "armor=" + armor + " type=" + typeof( armor ) + "\n" );
-  
-  delta <- ( armor / 100.0 ) * 5.0;
-  armor += delta;
-  if( delta.tointeger() > 0 ) {
-    scourgeGame.printMessage( "...armor is increased by " + delta.tointeger() +
-                              "pts! (Superior Toughness)" );
-  }
+  causeDefense( 5, "Superior toughness" );
 }
 
 
@@ -51,18 +43,9 @@ function actionMissileDefense( creature ) {
   // is it a ranged weapon?
   if( weapon != null ) {
   	print( "*** weapon=" + weapon.getName() + " ranged=" + weapon.isRanged().tostring() + "\n" );
-
     if( weapon.isRanged() ) {
-
-      delta <- ( armor / 100.0 ) * 25.0;
-      armor += delta;
-      if( delta.tointeger() > 0 ) {
-        scourgeGame.printMessage( "...armor is increased by " + delta.tointeger() +
-                                  "pts! (Missile Defense)" );
-      }
+      causeDefense( 25, "Dodging missiles" );
     }
-  } else {
-    //print( "*** no weapon.\n" );
   }
 }
 
@@ -96,12 +79,7 @@ function actionWarrage( creature ) {
   print( "*** skillCheck=" + skillCheck.tostring() + "\n" );
 
   if( skillCheck ) {
-    delta <- ( damage / 100.0 ) * 15.0;
-    damage += delta;
-    if( delta.tointeger() > 0 ) {
-      scourgeGame.printMessage( "...damage is increased by " + delta.tointeger() +
-                                "pts! (War-rage)" );
-    }
+    causeDamage( 15, "War rage" );
   }
 }
 
@@ -113,7 +91,7 @@ function prereqKillerblow( creature ) {
 }
 
 function actionKillerblow( creature ) {
-	print( "IMPLEMENT ME: In actionKillerblow\n" );
+	causeDamage( 10, "The terrible blow" );
 }
 
 
@@ -205,18 +183,87 @@ function prereqMystic( creature ) {
 }
 
 function actionMystic( creature ) {
-  delta <- ( armor / 100.0 ) * 15.0;
-  armor += delta;
-  if( delta.tointeger() > 0 ) {
-    scourgeGame.printMessage( "...armor is increased by " + delta.tointeger() +
-                              "pts! (Mystic Defense)" );
+  causeDefense( 15, "Chanelling mystic energies" );
+}
+
+
+// **********************************************
+// Small Arms Mastery
+function prereqSmallArmMastery( creature ) {
+  return( creature.isOfRootClass( "Cutpurse" ) );
+}
+
+function actionSmallArmMastery( creature ) {
+  weapon <- scourgeGame.getMission().getCurrentWeapon();
+  
+  // is it a ranged weapon?
+  if( weapon != null ) {
+
+    isSmall <- weapon.hasTag( "SMALL" );
+
+    print( "*** weapon=" + weapon.getName() + " is small=" + isSmall + "\n" );
+    
+    if( isSmall ) {
+      causeDamage( 10, "Small Arms Mastery" );
+    }
   }
 }
 
 
 
+// **********************************************
+// Neutralize Poison
+function prereqNeutPoison( creature ) {
+  return( creature.isOfRootClass( "Cutpurse" ) &&
+          creature.getLevel() >= 10 );
+}
+
+function actionNeutPoison( creature ) {
+  if( creature.getStateMod( 6 ) ) {
+    scourgeGame.printMessage( "This character is not currently poisoned." );
+    return;
+  }
+
+  if( !incrementDailyCount( creature, "NeutPoison.lastDateUsed", 3 ) ) {
+    scourgeGame.printMessage( "You already used this capability thrice today." );
+    return;
+  }
+
+  creature.setStateMod( 6, false );
+}
 
 
+
+// **********************************************
+// Arcane Stance
+function prereqArcaneStance( creature ) {
+    return( creature.isOfRootClass( "Scholar" ) );
+}
+
+function actionArcaneStance( creature ) {
+  causeDefense( 5, creature.getName() + " uses an Arcane Stance which" );
+}
+
+
+// **********************************************
+// Bow Mastery
+function prereqBowMastery( creature ) {
+  return( creature.isOfRootClass( "Scholar" ) &&
+          creature.getLevel() >= 10 );
+}
+
+function actionBowMastery( creature ) {
+  weapon <- scourgeGame.getMission().getCurrentWeapon();
+
+  // is it a ranged weapon?
+  if( weapon != null ) {
+    print( "*** weapon=" + weapon.getName() + " is ranged=" + 
+           weapon.isRanged().tostring() + "\n" );  
+    if( weapon.isRanged() ) {
+      causeDamage( 10, "masterful bow handling" );
+    }
+  }
+}
 
 
 
@@ -225,6 +272,24 @@ function actionMystic( creature ) {
 // =============================================================
 // Utility functions
 //
+
+function causeDamage( percent, message ) {
+  delta <- ( damage / 100.0 ) * percent;
+  damage += delta;
+  if( delta.tointeger() > 0 ) {
+    scourgeGame.printMessage( "..." + message + " causes " + 
+                              delta.tointeger() + " bonus damage!" );
+  }
+}
+
+function causeDefense( percent, message ) {
+  delta <- ( armor / 100.0 ) * percent;
+  armor += delta;
+  if( delta.tointeger() > 0 ) {
+    scourgeGame.printMessage( "..." + message + " causes " + 
+                              delta.tointeger() + " armor bonus!" );
+  }
+}
 
 /**
  * Returns true if the daily count for 'key' can be incremented.
