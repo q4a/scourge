@@ -131,7 +131,7 @@ Inventory::Inventory(Scourge *scourge) {
   cards->createLabel(115, 10, "Inventory:", INVENTORY, Constants::RED_COLOR); 
   inventoryWeightLabel = cards->createLabel(190, 10, NULL, INVENTORY);
 
-  coinsLabel = cards->createLabel(300, 170, NULL, INVENTORY);
+  coinsLabel = cards->createLabel(300, 155, NULL, INVENTORY);
   cards->createLabel(115, 155, "Equipped Items:", INVENTORY, Constants::RED_COLOR);
 
   invList = new ScrollingList(115, 15, 295, 125, scourge->getShapePalette()->getHighlightTexture(), this, 30);

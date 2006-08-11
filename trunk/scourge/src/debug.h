@@ -33,7 +33,7 @@
 #define CALENDAR_DEBUG 0
 
 // creature.cpp             
-#define GOD_MODE 0
+#define GOD_MODE 1
 #define MONSTER_IMORTALITY 0
                        
 // partyeditor.cpp (if non-1, defaults are added)
