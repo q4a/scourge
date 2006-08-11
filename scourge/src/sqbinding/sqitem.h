@@ -71,6 +71,7 @@ public:
   static int _getParry( HSQUIRRELVM vm );
 	static int _getAP( HSQUIRRELVM vm );
   static int _getTwoHanded( HSQUIRRELVM vm );
+  static int _hasTag( HSQUIRRELVM vm );
 
 	// armor
 	static int _getDefense( HSQUIRRELVM vm );

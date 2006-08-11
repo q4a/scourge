@@ -64,6 +64,15 @@ D:Only barbarians are allowed to use this special capability.
 # Rogue capabilities
 #######################################################
 
+S:Smallarm Mastery,SmallArmMastery,A,D,9,10
+D:Spending years fighting for their lives, rogues master the use
+D:of small arms (daggers and knives). With this capability, they cause
+D:extra points of damage in combat when wielding a small weapon.
+
+S:Neutralize Poison,NeutPoison,M,10,10
+D:The rogue's happy-go-lucky attitude is said to be an attribute to a
+D:quick healing physiology. With this skill, a high level rogue character
+D:can shake off the effects of poison up to three times a day.
 
 
 #######################################################
@@ -99,3 +108,17 @@ D:points from healthy party members with those who need it. It is rumored that
 D:players also take on some of each others' personalities. The prerequisite of
 D:this capability is 25 points of Awareness magic and having at least 5 levels.
 
+#######################################################
+# Scholar capabilities
+#######################################################
+
+S:Arcane Stance,ArcaneStance,A,D,11,10
+D:In your years of research you came across a lost treatiese on the art of
+D:defensive body movements in combat. Armed with this knowledge, the scholar
+D:can face an enemy in combat showing a least vulnerable side.
+
+S:Bow Mastery,BowMastery,A,A,12,10
+D:Many years of research teaches the scholar the perfect way to rain ranged
+D:attacks upon their enemies. Using the bow is as much about the contemplation
+D:of one's spirit as it is an execution of forms gleaned from ancient tomes.
+D:The high-level scholar receives an attack bonus with this capability.

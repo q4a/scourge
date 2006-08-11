@@ -59,6 +59,7 @@ ScriptClassMemberDecl SqItem::members[] = {
 	{ "int", "getPotionSkill", SqItem::_getPotionSkill, 0, 0, "" },
 	{ "int", "getPotionTime", SqItem::_getPotionTime, 0, 0, "" },
 	{ "int", "getSpellLevel", SqItem::_getSpellLevel, 0, 0, "" },
+  { "bool", "hasTag", SqItem::_hasTag, 0, 0, "Does this item have this tag?" },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqItem::classDecl = { SqItem::className, 0, members,
@@ -281,6 +282,13 @@ int SqItem::_getPotionTime( HSQUIRRELVM vm ) {
 int SqItem::_getSpellLevel( HSQUIRRELVM vm ) {
   GET_OBJECT(Item*)
   sq_pushinteger( vm, object->getRpgItem()->getSpellLevel() );
+  return 1;
+}
+
+int SqItem::_hasTag( HSQUIRRELVM vm ) {
+  GET_STRING( tag, 80 )
+  GET_OBJECT(Item*)
+  sq_pushbool( vm, object->getRpgItem()->hasTag( tag ) );
   return 1;
 }
 
