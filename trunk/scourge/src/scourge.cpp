@@ -1905,14 +1905,38 @@ void Scourge::createPartyUI() {
 	ystart += buttonHeight;
   endTurnButton = cards->createButton( xstart, ystart, 90, ystart + buttonHeight, "End Turn", 0 );
 	ystart += buttonHeight;
-  groupButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Group", 0 );
-	ystart += buttonHeight;
+  //groupButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Group", 0 );
+	//ystart += buttonHeight;
   inventoryButton = cards->createButton( xstart, ystart, 90, ystart + buttonHeight, "Party", 0 );
 	ystart += buttonHeight;
-  optionsButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Options", 0 );
-	ystart += buttonHeight;
-  quitButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Quit", 0 );
-	ystart += buttonHeight;
+  //optionsButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Options", 0 );
+	//ystart += buttonHeight;
+  //quitButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Quit", 0 );
+	//ystart += buttonHeight;
+
+	int quickButtonWidth = 24;
+	xstart = Scourge::PARTY_GUI_WIDTH - 8 - quickButtonWidth;
+	quitButton = 
+		cards->createButton( xstart, 0,  
+												 xstart + quickButtonWidth, quickButtonWidth, 
+												 "", 0, false, 
+												 getShapePalette()->getExitTexture() );
+	quitButton->setTooltip( "Exit game" );
+	xstart = Scourge::PARTY_GUI_WIDTH - 8 - quickButtonWidth * 2;
+	optionsButton = 
+		cards->createButton( xstart, 0,  
+												 xstart + quickButtonWidth, quickButtonWidth, 
+												 "", 0, false, 
+												 getShapePalette()->getOptionsTexture() );
+	optionsButton->setTooltip( "Game options" );
+	xstart = Scourge::PARTY_GUI_WIDTH - 8 - quickButtonWidth * 3;
+	groupButton = 
+		cards->createButton( xstart, 0,  
+												 xstart + quickButtonWidth, quickButtonWidth, 
+												 "", 0, true, 
+												 getShapePalette()->getGroupTexture() );
+	groupButton->setTooltip( "Move as a group" );
+
   groupButton->setToggle(true);
   groupButton->setSelected(true);
   roundButton->setToggle(true);
@@ -1928,39 +1952,46 @@ void Scourge::createPartyUI() {
   int playerInfoHeight = 95;
   //int playerButtonY = playerInfoHeight;
 
+	
+	int yy = quickButtonWidth + 2;
   for(int i = 0; i < 4; i++) {
-    playerInfo[i] = new Canvas( offsetX + playerButtonWidth * i, 20,
-                                offsetX + playerButtonWidth * (i + 1) - 25, 20 + playerInfoHeight,
+    playerInfo[i] = new Canvas( offsetX + playerButtonWidth * i, yy,
+                                offsetX + playerButtonWidth * (i + 1) - 25, yy + playerInfoHeight,
                                 this, this );
     cards->addWidget( playerInfo[i], 0 );
 		if( i == 0 ) {
-			playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 20,
-																	offsetX + playerButtonWidth * (i + 1), 20 + playerInfoHeight - 25,
+			playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, yy,
+																	offsetX + playerButtonWidth * (i + 1), yy + playerInfoHeight - 25,
 																	this, NULL, true );
 			cards->addWidget( playerHpMp[i], 0 );
 		} else {
-			playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 20,
+			playerHpMp[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, yy,
 																	offsetX + playerButtonWidth * (i + 1), 
-																	20 + playerInfoHeight - 50,
+																	yy + playerInfoHeight - 50,
 																	this, NULL, true );
 			cards->addWidget( playerHpMp[i], 0 );
 			dismissButton[i] = cards->createButton( offsetX + playerButtonWidth * (i + 1) - 25, 
-																							20 + playerInfoHeight - 50,
+																							yy + playerInfoHeight - 50,
 																							offsetX + playerButtonWidth * (i + 1), 
-																							20 + playerInfoHeight - 25,
-																							"D", 0 );
+																							yy + playerInfoHeight - 25,
+																							"", 																							
+																							0,
+																							false,
+																							getShapePalette()->getDismissTexture() );
+			dismissButton[i]->setTooltip( "Dismiss this character" );
 		}
     playerWeapon[i] = new Canvas( offsetX + playerButtonWidth * (i + 1) - 25, 
-																	20 + playerInfoHeight - 25,
+																	yy + playerInfoHeight - 25,
                                   offsetX + playerButtonWidth * (i + 1), 
-																	20 + playerInfoHeight,
+																	yy + playerInfoHeight,
                                   this, NULL, true );
     cards->addWidget( playerWeapon[i], 0 );
   }
-  int quickButtonWidth = (int)((float)(Scourge::PARTY_GUI_WIDTH - offsetX - 20) / 12.0f);
+  //int quickButtonWidth = (int)((float)(Scourge::PARTY_GUI_WIDTH - offsetX - 20) / 12.0f);	
+	int gap = 0;
   for( int i = 0; i < 12; i++ ) {
-    int xx = offsetX + quickButtonWidth * i + ( i / 4 ) * 8;
-    quickSpell[i] = new Canvas( xx, 0, xx + quickButtonWidth, 20,
+    int xx = offsetX + quickButtonWidth * i + ( i / 4 ) * gap;
+    quickSpell[i] = new Canvas( xx, 0, xx + quickButtonWidth, quickButtonWidth,
                                 this, NULL, true );
     quickSpell[i]->setTooltip( "Click to assign a spell, capability or magic item." );
     cards->addWidget( quickSpell[i], 0 );
@@ -2029,8 +2060,8 @@ void Scourge::drawWidgetContents(Widget *w) {
         }
       }
       return;
-    }
-  }
+		}
+	}
   for( int t = 0; t < 12; t++ ) {
     if( quickSpell[t] == w ) {
       quickSpell[t]->setGlowing( inventory->inStoreSpellMode() );

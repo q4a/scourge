@@ -80,6 +80,34 @@ void ShapePalette::initialize() {
   if(tmpImage) free(tmpImage);
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
+	tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP("/textures/exit.bmp", &tmpSurface, &tmpImage);
+	exitTexture = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
+  if(tmpImage) free(tmpImage);
+  if(tmpSurface) SDL_FreeSurface( tmpSurface );
+
+	tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/dismiss.bmp", &tmpSurface, &tmpImage );
+  dismiss = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
+	tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/options.bmp", &tmpSurface, &tmpImage );
+  options = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
+	tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/group.bmp", &tmpSurface, &tmpImage );
+  group = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
   // load map textures
   initMapGrid();
 

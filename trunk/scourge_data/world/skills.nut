@@ -201,7 +201,7 @@ function actionSmallArmMastery( creature ) {
 
     isSmall <- weapon.hasTag( "SMALL" );
 
-    print( "*** weapon=" + weapon.getName() + " is small=" + isSmall + "\n" );
+    print( "*** weapon=" + weapon.getName() + " is small=" + isSmall.tostring() + "\n" );
     
     if( isSmall ) {
       causeDamage( 10, "Small Arms Mastery" );

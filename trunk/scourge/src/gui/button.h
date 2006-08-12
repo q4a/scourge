@@ -39,6 +39,7 @@ class Button : public Widget {
   bool glowing;
   bool inverse;
 	int fontType;
+	GLuint texture;
 
  public: 
 
@@ -48,7 +49,7 @@ class Button : public Widget {
 	BOTTOM
   };
 
-  Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label=NULL);
+  Button( int x1, int y1, int x2, int y2, GLuint highlight, char *label=NULL, GLuint texture=0 );
   ~Button();
 
   inline void setInside( bool b ) { inside = b; }
