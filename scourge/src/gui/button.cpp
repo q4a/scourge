@@ -22,7 +22,7 @@
   *@author Gabor Torok
   */
 
-Button::Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label) : 
+Button::Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label, GLuint texture) : 
   Widget(x1, y1, x2 - x1, y2 - y1) {
   this->x2 = x2;
   this->y2 = y2;
@@ -37,6 +37,7 @@ Button::Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label) :
   this->glowing = false;
   this->inverse = false;
 	this->fontType = 0;
+	this->texture = texture;
 }
 
 Button::~Button() {
@@ -47,6 +48,32 @@ void Button::drawWidget(Widget *parent) {
   GuiTheme *theme = ((Window*)parent)->getTheme();
 
   drawButton( parent, 0, 0, x2 - x, y2 - y, toggle, selected, inverse, glowing, inside );
+
+	if( texture ) {
+		glDisable( GL_CULL_FACE );
+		glEnable( GL_ALPHA_TEST );
+		glAlphaFunc( GL_EQUAL, 0xff );
+		glEnable(GL_TEXTURE_2D);
+		glPushMatrix();
+		glBindTexture( GL_TEXTURE_2D, texture );
+		glColor4f(1, 1, 1, 1);
+		
+		glBegin( GL_QUADS );
+		glNormal3f( 0, 0, 1 );
+		glTexCoord2f( 0, 0 );
+		glVertex3f( 0, 0, 0 );
+		glTexCoord2f( 0, 1 );
+		glVertex3f( 0, getHeight(), 0 );
+		glTexCoord2f( 1, 1 );
+		glVertex3f( getWidth(), getHeight(), 0 );
+		glTexCoord2f( 1, 0 );
+		glVertex3f( getWidth(), 0, 0 );
+		glEnd();
+		glPopMatrix();
+		
+		glDisable( GL_ALPHA_TEST );
+		glDisable(GL_TEXTURE_2D);
+	}
 
   if( strlen( label ) ) {
     glPushMatrix();

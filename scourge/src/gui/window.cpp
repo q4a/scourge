@@ -867,10 +867,10 @@ void Window::drawBorder( int topY, int openHeight ) {
 }
 
 
-Button *Window::createButton(int x1, int y1, int x2, int y2, char *label, bool toggle){
+Button *Window::createButton(int x1, int y1, int x2, int y2, char *label, bool toggle, GLuint texture){
   if(widgetCount < MAX_WIDGET){
     Button * theButton;
-    theButton = new Button(x1, y1, x2, y2, scourgeGui->getHighlightTexture(), label);
+    theButton = new Button(x1, y1, x2, y2, scourgeGui->getHighlightTexture(), label, texture);
     theButton->setToggle(toggle);     
     addWidget((Widget *)theButton);
     return theButton;
