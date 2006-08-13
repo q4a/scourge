@@ -168,7 +168,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   bool lastEffectOn;
   int oldX;
   char version[100], min_version[20];
-  Window *mainWin;
+  Window *mainWin, *tbCombatWin;
   Button *inventoryButton;
   Button *endTurnButton;
   Button *optionsButton;

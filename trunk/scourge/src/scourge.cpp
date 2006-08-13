@@ -1612,7 +1612,11 @@ bool Scourge::createBattleTurns() {
     if(Battle::debugBattle) cerr << "++++++++++++++++++++++++++++++++++" << endl;
     if(Battle::debugBattle) cerr << "ROUND STARTS" << endl;
 
-    if(getUserConfiguration()->isBattleTurnBased()) groupButton->setVisible(false);
+    //if(getUserConfiguration()->isBattleTurnBased()) groupButton->setVisible(false);
+		if(getUserConfiguration()->isBattleTurnBased()) {
+			tbCombatWin->move( getScreenWidth() - tbCombatWin->getWidth(), 0 );
+			tbCombatWin->setVisible( true, false );
+		}
     return true;
   } else {
     return false;
@@ -1625,7 +1629,8 @@ void Scourge::resetUIAfterBattle() {
   party->restorePlayerSettings();
   if(getUserConfiguration()->isBattleTurnBased() &&
      party->isPlayerOnly()) party->togglePlayerOnly();
-  groupButton->setVisible(true);
+//  groupButton->setVisible(true);
+	tbCombatWin->setVisible( false );
   for(int i = 0; i < party->getPartySize(); i++) {
     party->getParty(i)->cancelTarget();
     ((MD2Shape*)party->getParty(i)->getShape())->setPauseAnimation( false );
@@ -1887,6 +1892,14 @@ void Scourge::fightProjectileHitTurn(Projectile *proj, int x, int y) {
 }
 
 void Scourge::createPartyUI() {
+
+	tbCombatWin = new Window( getSDLHandler(),
+														0, 0, 80 + 9, 52, "Combat",
+														false, Window::BASIC_WINDOW, "default" );
+	endTurnButton = tbCombatWin->createButton( 8, 0, 80, 20, "End Turn", 0 );
+	tbCombatWin->setVisible( false );
+	tbCombatWin->setLocked( true );
+
   sprintf(version, "S.C.O.U.R.G.E. v%s", SCOURGE_VERSION);
   sprintf(min_version, "S.C.O.U.R.G.E.");
   mainWin = new Window( getSDLHandler(),
@@ -1902,9 +1915,7 @@ void Scourge::createPartyUI() {
 	int buttonHeight = 19;
 	int ystart = 0;
   roundButton = cards->createButton( xstart, ystart, 90, ystart + buttonHeight, "Real-Time", 0 );
-	ystart += buttonHeight;
-  endTurnButton = cards->createButton( xstart, ystart, 90, ystart + buttonHeight, "End Turn", 0 );
-	ystart += buttonHeight;
+	ystart += buttonHeight;  	
   //groupButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Group", 0 );
 	//ystart += buttonHeight;
   inventoryButton = cards->createButton( xstart, ystart, 90, ystart + buttonHeight, "Party", 0 );
