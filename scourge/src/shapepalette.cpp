@@ -108,6 +108,20 @@ void ShapePalette::initialize() {
   if( tmpImage ) free( tmpImage );
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
+	tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/inventory.bmp", &tmpSurface, &tmpImage );
+  inventory = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
+	//tmpSurface = NULL;
+  //tmpImage = NULL;
+  //setupAlphaBlendedBMP( "/textures/wait.bmp", &tmpSurface, &tmpImage );
+	//waitTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  //if( tmpImage ) free( tmpImage );
+  //if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
   // load map textures
   initMapGrid();
 

@@ -1911,19 +1911,19 @@ void Scourge::createPartyUI() {
                         "default" );
   cards = new CardContainer(mainWin);
 
+	int offsetX = 32;
+
 	int xstart = 8;
-	int buttonHeight = 19;
-	int ystart = 0;
-  roundButton = cards->createButton( xstart, ystart, 90, ystart + buttonHeight, "Real-Time", 0 );
-	ystart += buttonHeight;  	
-  //groupButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Group", 0 );
-	//ystart += buttonHeight;
-  inventoryButton = cards->createButton( xstart, ystart, 90, ystart + buttonHeight, "Party", 0 );
-	ystart += buttonHeight;
-  //optionsButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Options", 0 );
-	//ystart += buttonHeight;
-  //quitButton = cards->createButton( xstart, ystart,  90, ystart + buttonHeight, "Quit", 0 );
-	//ystart += buttonHeight;
+	//int buttonHeight = 19;
+	//int ystart = 0;
+
+
+	roundButton = 
+		cards->createButton( 8, 0,  
+												 offsetX, Scourge::PARTY_GUI_HEIGHT - 30, 
+												 "", 0, false );
+
+	offsetX+=4;
 
 	int quickButtonWidth = 24;
 	xstart = Scourge::PARTY_GUI_WIDTH - 8 - quickButtonWidth;
@@ -1952,12 +1952,9 @@ void Scourge::createPartyUI() {
   groupButton->setSelected(true);
   roundButton->setToggle(true);
   roundButton->setSelected(true);
-  inventoryButton->setToggle(true);
-  inventoryButton->setSelected(false);
   optionsButton->setToggle(true);
   optionsButton->setSelected(false);
-
-  int offsetX = 90;
+  
   int playerButtonWidth = (Scourge::PARTY_GUI_WIDTH - 8 - offsetX) / 4;
   //int playerButtonHeight = 20;
   int playerInfoHeight = 95;
@@ -1999,9 +1996,20 @@ void Scourge::createPartyUI() {
     cards->addWidget( playerWeapon[i], 0 );
   }
   //int quickButtonWidth = (int)((float)(Scourge::PARTY_GUI_WIDTH - offsetX - 20) / 12.0f);	
+
+	int inventoryButtonWidth = 2 * quickButtonWidth;
+	inventoryButton = 
+		cards->createButton( offsetX, 0,  
+												 offsetX + inventoryButtonWidth, quickButtonWidth, 
+												 "", 0, true, 
+												 getShapePalette()->getInventoryTexture() );
+  inventoryButton->setToggle(true);
+  inventoryButton->setSelected(false);
+
+
 	int gap = 0;
   for( int i = 0; i < 12; i++ ) {
-    int xx = offsetX + quickButtonWidth * i + ( i / 4 ) * gap;
+    int xx = inventoryButtonWidth + offsetX + quickButtonWidth * i + ( i / 4 ) * gap;
     quickSpell[i] = new Canvas( xx, 0, xx + quickButtonWidth, quickButtonWidth,
                                 this, NULL, true );
     quickSpell[i]->setTooltip( "Click to assign a spell, capability or magic item." );
