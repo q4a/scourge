@@ -124,6 +124,7 @@ void MD2Shape::draw() {
 }
 
 void MD2Shape::outline( float r, float g, float b ) {
+/*
   useShadow = true;
   GLboolean blend;
   glGetBooleanv( GL_BLEND, &blend );
@@ -133,8 +134,12 @@ void MD2Shape::outline( float r, float g, float b ) {
   glDisable( GL_TEXTURE_2D );
   glPolygonMode( GL_FRONT, GL_LINE );
   glLineWidth( 4 );
-	//glEnable( GL_CULL_FACE );
-  //glCullFace( GL_FRONT );
+	
+	// ***
+	glEnable( GL_CULL_FACE );
+  glCullFace( GL_BACK );
+	// ***  
+  
   glColor3f( r, g, b );  
 
 	
@@ -160,9 +165,9 @@ void MD2Shape::outline( float r, float g, float b ) {
 	if( texture ) glEnable( GL_TEXTURE_2D );
   useShadow = false;
   glColor4f(1, 1, 1, 0.9f);
+*/
 
 
-/*
   glPolygonMode( GL_BACK, GL_LINE );
   glLineWidth( 4 );
   glEnable( GL_CULL_FACE );
@@ -185,7 +190,7 @@ void MD2Shape::outline( float r, float g, float b ) {
   glDisable( GL_CULL_FACE );
   glPolygonMode( GL_BACK, GL_FILL );
   glColor4f(1, 1, 1, 0.9f);
-*/	
+	
 }
 
 void MD2Shape::setDir(int dir) { 

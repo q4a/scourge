@@ -562,12 +562,16 @@ void ScourgeHandler::quickSpellAction( int index, int button ) {
           scourge->executeSpecialSkill( (SpecialSkill*)storable );
         }
       } else if( storable->getStorableType() == Storable::ITEM_STORABLE ) {
+        Item *item = (Item*)storable;
         if( button == SDL_BUTTON_RIGHT ) {
-          Item *item = (Item*)storable;
           scourge->getInfoGui()->setItem( item, scourge->getParty()->getPlayer()->getSkill(Skill::IDENTIFY_ITEM ) );
           if( !scourge->getInfoGui()->getWindow()->isVisible() ) scourge->getInfoGui()->getWindow()->setVisible( true );
         } else {
-          scourge->executeItem( (Item*)storable );
+          scourge->executeItem( item );
+          // remove scroll from quick slot after use
+          if( item->getRpgItem()->isScroll() ) {
+          	scourge->getParty()->getPlayer()->setQuickSpell( index, NULL );
+          }
         }
       } else {
         cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;
