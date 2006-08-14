@@ -109,7 +109,8 @@ public:
 
   GLuint cloud, candle, torchback, highlight;
   GLuint border, border2, gargoyle;
-  GLuint minimap, minimapMask, dismiss, exitTexture, options, group;
+  GLuint minimap, minimapMask, dismiss, exitTexture, options, group, inventory;
+	GLuint waitTexture;
 
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiTexture2() { return gui_texture2; }
@@ -125,6 +126,8 @@ public:
 	inline GLuint getExitTexture() { return exitTexture; }
 	inline GLuint getOptionsTexture() { return options; }
 	inline GLuint getGroupTexture() { return group; }
+	inline GLuint getInventoryTexture() { return inventory; }
+	inline GLuint getWaitTexture() { return waitTexture; }	
 
   inline int getPortraitCount() { return portraitTextures.size(); }
   inline GLuint getPortraitTexture( int index ) { return portraitTextures[ index ]; }
