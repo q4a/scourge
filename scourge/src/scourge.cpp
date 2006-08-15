@@ -1437,7 +1437,11 @@ void Scourge::playRound() {
         // go back to real-time, group-mode
         resetUIAfterBattle();
       }
+      // move all creatures
       moveCreatures();
+    } else {
+    	// move creatures not in combat
+    	moveCreatures( false );
     }
   }
 }
@@ -1651,7 +1655,8 @@ void Scourge::resetUIAfterBattle() {
   }
 }
 
-void Scourge::moveCreatures() {
+// if allCreatures == false, only creatures not in a battle turn are moved
+void Scourge::moveCreatures( bool allCreatures ) {
   // change animation if needed
   for(int i = 0; i < party->getPartySize(); i++) {
     if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
@@ -1666,14 +1671,21 @@ void Scourge::moveCreatures() {
   }
 
   // move the party members
-  party->movePlayers();
+  // if allCreatures is false, they're moved in Battle::moveCreature()
+	if( allCreatures ) party->movePlayers();
 
   // move visible monsters
-  for(int i = 0; i < session->getCreatureCount(); i++) {
-    if(!session->getCreature(i)->getStateMod(Constants::dead) &&
-       levelMap->isLocationVisible(toint(session->getCreature(i)->getX()),
-																	 toint(session->getCreature(i)->getY()))) {
-      moveMonster(session->getCreature(i));
+  for( int i = 0; i < session->getCreatureCount(); i++ ) {
+  	Creature *c = session->getCreature( i );
+    if( !c->getStateMod( Constants::dead ) &&
+				levelMap->isLocationVisible( toint( c->getX() ),
+					toint( c->getY() ) ) ) {
+			// move if allCreatures is true, or if monster has no target.
+			// otherwise move is in Battle::moveCreature()
+			if( allCreatures || 
+					!( c->hasTarget() && c->isTargetValid() ) ) {
+	      moveMonster( c );
+	  	}
     }
   }
 }
