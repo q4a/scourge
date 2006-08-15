@@ -717,7 +717,7 @@ protected:
   void resetNonParticipantAnimation( Battle *battle );
   bool createBattleTurns();
   void resetUIAfterBattle();
-  void moveCreatures();  
+  void moveCreatures( bool allCreatures=true );  
 
 	void addWanderingHeroes();
 };
