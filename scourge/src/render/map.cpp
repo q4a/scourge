@@ -1594,13 +1594,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     //if( session->getCurrentMission() &&
         //session->getCurrentMission()->isMissionCreature( later->creature ) ) {
       shape->outline( 0.15f, 0.15f, 0.4f );
-    }
-
-		if( later && later->pos && 
+    } else if( later && later->pos && 
 				later->pos->outlineColor ) {
 			shape->outline( later->pos->outlineColor );
 		}
-
 		shape->draw();
   } else if( later && later->item && !useShadow ) {
     
