@@ -2005,6 +2005,7 @@ void Scourge::createPartyUI() {
 												 getShapePalette()->getInventoryTexture() );
   inventoryButton->setToggle(true);
   inventoryButton->setSelected(false);
+	inventoryButton->setTooltip( "Inventory and party info" );
 
 
 	int gap = 0;

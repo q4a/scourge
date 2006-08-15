@@ -512,56 +512,57 @@ bool Battle::moveCreature() {
     return false;
   } else {
 
-    // someone killed our target, try to pick another one
-    if(creature->hasTarget() && !creature->isTargetValid()) {
-      //cerr << "*** Character has invalid target, selecting new one." << endl;
-      if( selectNewTarget() ) return true;
-    }
+		// someone killed our target, try to pick another one
+		// if the party leader has a valid target
+		if( creature->hasTarget() && !creature->isTargetValid() ) {
+			//cerr << "*** Character " << creature->getName() << " has invalid target, selecting new one." << endl;
+			if( selectNewTarget() ) return true;
+		}
 
-    // wait for animation to end
-    int a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
-    if( !( a == MD2_STAND || a == MD2_RUN )) return false;
+		// wait for animation to end
+		int a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
+		if( !( a == MD2_STAND || a == MD2_RUN )) return false;
 
-    if(creature->getSelX() != -1) {
-      bool moved = ( creature->moveToLocator() == NULL );
-      if( !( toint(oldX) == toint(creature->getX()) &&
-             toint(oldY) == toint(creature->getY()) ) ) {
-        ap--;
-      }
-      
-      if( !moved ) {
-        if( debugBattle ) {
-          cerr << "*** WARNING: character not moving." << 
-            " x,y=" << creature->getX() << "," << creature->getY() <<
-            " selX,selY=" << creature->getSelX() << "," << creature->getSelY() <<
-            " dist=" << dist << " range=" << range << 
-            " item=" << ( item ? item->getRpgItem()->getName() : "none" ) <<
-            " creature=" << creature->getName() << 
-            " target=" << ( creature->getTargetCreature() ? 
-                            creature->getTargetCreature()->getName() : 
-                            ( creature->getTargetItem() ? creature->getTargetItem()->getRpgItem()->getName() : 
-                              ( creature->getTargetX() > -1 ? "location" : "no-target" ))) << endl;
-          if( creature->getTargetCreature() ) {
-            cerr << "Target creature=" << creature->getTargetCreature()->getX() <<
-              "," << creature->getTargetCreature()->getY() << endl;
-          }
-        }
+		if(creature->getSelX() != -1) {
+			bool moved = ( creature->moveToLocator() == NULL );
+			if( !( toint(oldX) == toint(creature->getX()) &&
+						 toint(oldY) == toint(creature->getY()) ) ) {
+				ap--;
+			}
+			
+			if( !moved ) {
+				if( debugBattle ) {
+					cerr << "*** WARNING: character not moving." << 
+						" x,y=" << creature->getX() << "," << creature->getY() <<
+						" selX,selY=" << creature->getSelX() << "," << creature->getSelY() <<
+						" dist=" << dist << " range=" << range << 
+						" item=" << ( item ? item->getRpgItem()->getName() : "none" ) <<
+						" creature=" << creature->getName() << 
+						" target=" << ( creature->getTargetCreature() ? 
+														creature->getTargetCreature()->getName() : 
+														( creature->getTargetItem() ? creature->getTargetItem()->getRpgItem()->getName() : 
+															( creature->getTargetX() > -1 ? "location" : "no-target" ))) << endl;
+					if( creature->getTargetCreature() ) {
+						cerr << "Target creature=" << creature->getTargetCreature()->getX() <<
+							"," << creature->getTargetCreature()->getY() << endl;
+					}
+				}
 
-        // guess a new path
-        if( 1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
-          creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
-        }
-        if( session->getPreferences()->isBattleTurnBased() ) {          
-          if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
-        } else {
-          // is the below line needed?
-          ap--;
-        }
-      }
-    } else {
-      //cerr << "*** Character has no location, selecting new target." << endl;
-      return selectNewTarget();
-    }
+				// guess a new path
+				if( 1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
+					creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
+				}
+				if( session->getPreferences()->isBattleTurnBased() ) {          
+					if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
+				} else {
+					// is the below line needed?
+					ap--;
+				}
+			}
+		} else {
+			//cerr << "*** Character " << creature->getName() << " has no location, selecting new target." << endl;
+			return selectNewTarget();
+		}
   }
   return false;
 }

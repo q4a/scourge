@@ -352,7 +352,8 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   creature->setHunger( info->hunger );
 	creature->setAvailableSkillMod( info->availableSkillPoints );
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
-    creature->setSkill( i, info->skills[i] );
+    //creature->setSkill( i, info->skills[i] );
+		creature->skills[i] = info->skills[i];
     creature->skillsUsed[i] = info->skillsUsed[i];
 		creature->skillMod[i] = info->skillMod[i];
   }
