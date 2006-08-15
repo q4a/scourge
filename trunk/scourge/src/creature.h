@@ -169,7 +169,7 @@ class Creature : public RenderedCreature {
                                      float value );
   
   inline void setQuickSpell( int index, Storable *storable ) { 
-    for( int i = 0; i < 12; i++ ) {
+    for( int i = 0; storable && i < 12; i++ ) {
       if( quickSpell[ i ] == storable ) {
         // already stored
         return;

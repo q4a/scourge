@@ -71,6 +71,7 @@ void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
   currentFrame = 1;
   playedOnce = true;
   animationWaiting = -1;      
+	this->useShadow = false;
 
   attackEffect = false;
   setDir(Constants::MOVE_UP);
@@ -115,7 +116,7 @@ void MD2Shape::draw() {
   glCullFace( GL_BACK );
   bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   glEnable( GL_TEXTURE_2D );
-
+	
   AnimateMD2Model();      
  
   if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
@@ -168,6 +169,15 @@ void MD2Shape::outline( float r, float g, float b ) {
 */
 
 
+
+	useShadow = true;
+  GLboolean blend;
+  glGetBooleanv( GL_BLEND, &blend );
+  //glEnable( GL_BLEND );
+  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
+  glDisable( GL_TEXTURE_2D );
+	glFrontFace( GL_CCW );
   glPolygonMode( GL_BACK, GL_LINE );
   glLineWidth( 4 );
   glEnable( GL_CULL_FACE );
@@ -189,6 +199,9 @@ void MD2Shape::outline( float r, float g, float b ) {
 	glLineWidth( 1 );
   glDisable( GL_CULL_FACE );
   glPolygonMode( GL_BACK, GL_FILL );
+	if( !blend ) glDisable( GL_BLEND );
+	if( texture ) glEnable( GL_TEXTURE_2D );
+  useShadow = false;
   glColor4f(1, 1, 1, 0.9f);
 	
 }
@@ -289,7 +302,7 @@ void MD2Shape::AnimateMD2Model()
   // t = [0, 1] => 0 : beginning of the animation, 1 : end of the animation    
   float t = ReturnCurrentTime(nextFrame);
 
-  glBindTexture(GL_TEXTURE_2D, textureId);
+  if( !useShadow ) glBindTexture(GL_TEXTURE_2D, textureId);
 
   // Compute interpolated vertices        
   vect3d * currVertices, * nextVertices;    
@@ -341,7 +354,7 @@ void MD2Shape::AnimateMD2Model()
       // ptricmds[0]  :   s texture coordinate
       // ptricmds[1]  :   t texture coordinate
       // ptricmds[2]  :   vertex index to draw            
-      glTexCoord2f(((float *)ptricmds)[0], 1.0f - ((float *)ptricmds)[1]);            
+      if( !useShadow ) glTexCoord2f(((float *)ptricmds)[0], 1.0f - ((float *)ptricmds)[1]);            
       glVertex3fv( vect[ ptricmds[2] ] );
       nb--;
       ptricmds+=3;            
@@ -355,18 +368,18 @@ void MD2Shape::AnimateMD2Model()
 
 
 void MD2Shape::setupBlending() { 
-    glBlendFunc(GL_ONE, GL_ONE); 
+	glBlendFunc(GL_ONE, GL_ONE); 
 }
 
 void MD2Shape::endBlending() { 
 }
 
 bool MD2Shape::drawFirst() { 
-    return true; 
+	return true; 
 }
   // if true, the next two functions are called
 bool MD2Shape::drawLater() { 
-    return false; 
+	return false; 
 }
 
 // factory method to create shape
