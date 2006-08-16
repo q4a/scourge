@@ -115,12 +115,33 @@ void ShapePalette::initialize() {
   if( tmpImage ) free( tmpImage );
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
-	//tmpSurface = NULL;
-  //tmpImage = NULL;
-  //setupAlphaBlendedBMP( "/textures/wait.bmp", &tmpSurface, &tmpImage );
-	//waitTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  //if( tmpImage ) free( tmpImage );
-  //if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+	tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/wait.bmp", &tmpSurface, &tmpImage );
+	waitTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
+	tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/start.bmp", &tmpSurface, &tmpImage );
+	startTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
+	tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/paused.bmp", &tmpSurface, &tmpImage );
+	pausedTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
+	tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/realtime.bmp", &tmpSurface, &tmpImage );
+	realTimeTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
   // load map textures
   initMapGrid();

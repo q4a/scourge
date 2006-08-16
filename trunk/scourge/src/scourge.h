@@ -238,7 +238,7 @@ public:
 #define MINIMAP_WINDOW_WIDTH 200
 #define MINIMAP_WINDOW_HEIGHT 150
 
-  static const int PARTY_GUI_WIDTH=450;
+  static const int PARTY_GUI_WIDTH=486;
   static const int PARTY_GUI_HEIGHT=150;
   static const int PARTY_MIN_GUI_WIDTH=100;
   static const int INVENTORY_WIDTH = 420;
@@ -252,6 +252,7 @@ public:
   Scourge( UserConfiguration *config );
   ~Scourge();
 
+	inline Window *getTBCombatWin() { return tbCombatWin; }
   inline Button *getYesExitConfirm() { return yesExitConfirm; }
   inline Button *getNoExitConfirm() { return noExitConfirm; }
   inline Button *getInventoryButton() { return inventoryButton; }

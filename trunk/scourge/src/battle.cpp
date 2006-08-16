@@ -512,9 +512,12 @@ bool Battle::moveCreature() {
     return false;
   } else {
   
+		// in RT mode if the player has no target, make party follow player 
+		// (ie. they are running away)
   	bool playerHasTarget = 
-  		( session->getParty()->getPlayer()->hasTarget() &&
-	  		session->getParty()->getPlayer()->isTargetValid() ? true : false );
+			( session->getPreferences()->isBattleTurnBased() ||
+				session->getParty()->getPlayer()->hasTarget() &&
+				session->getParty()->getPlayer()->isTargetValid() ? true : false );
 		if( playerHasTarget ) {  	
 
 	    // someone killed our target, try to pick another one
