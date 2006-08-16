@@ -1923,7 +1923,7 @@ void Scourge::createPartyUI() {
                         "default" );
   cards = new CardContainer(mainWin);
 
-	int offsetX = 32;
+	int offsetX = 64;
 
 	int xstart = 8;
 	//int buttonHeight = 19;
@@ -1932,27 +1932,27 @@ void Scourge::createPartyUI() {
 
 	roundButton = 
 		cards->createButton( 8, 0,  
-												 offsetX, Scourge::PARTY_GUI_HEIGHT - 30, 
+												 offsetX, offsetX - 2, 
 												 "", 0, false );
 
 	offsetX+=4;
 
 	int quickButtonWidth = 24;
-	xstart = Scourge::PARTY_GUI_WIDTH - 8 - quickButtonWidth;
+	xstart = Scourge::PARTY_GUI_WIDTH - 10 - quickButtonWidth;
 	quitButton = 
 		cards->createButton( xstart, 0,  
 												 xstart + quickButtonWidth, quickButtonWidth, 
 												 "", 0, false, 
 												 getShapePalette()->getExitTexture() );
 	quitButton->setTooltip( "Exit game" );
-	xstart = Scourge::PARTY_GUI_WIDTH - 8 - quickButtonWidth * 2;
+	xstart = Scourge::PARTY_GUI_WIDTH - 10 - quickButtonWidth * 2;
 	optionsButton = 
 		cards->createButton( xstart, 0,  
 												 xstart + quickButtonWidth, quickButtonWidth, 
 												 "", 0, false, 
 												 getShapePalette()->getOptionsTexture() );
 	optionsButton->setTooltip( "Game options" );
-	xstart = Scourge::PARTY_GUI_WIDTH - 8 - quickButtonWidth * 3;
+	xstart = Scourge::PARTY_GUI_WIDTH - 10 - quickButtonWidth * 3;
 	groupButton = 
 		cards->createButton( xstart, 0,  
 												 xstart + quickButtonWidth, quickButtonWidth, 
@@ -2064,13 +2064,13 @@ void Scourge::drawWidgetContents(Widget *w) {
                p->getHp(), p->getMaxHp(),
                p->getMp(), p->getMaxMp() );
       w->setTooltip( msg );
-      Util::drawBar( 10, 5, ( i == 0 ? 65 : 40 ),
+      Util::drawBar( 10, 5, ( i == 0 ? 60 : 35 ),
                      (float)p->getHp(), (float)p->getMaxHp(),
                      -1, -1, -1, true,
                      NULL,
                      //mainWin->getTheme(),
                      Util::VERTICAL_LAYOUT );
-      Util::drawBar( 17, 5, ( i == 0 ? 65 : 40 ),
+      Util::drawBar( 17, 5, ( i == 0 ? 60 : 35 ),
                      (float)p->getMp(), (float)p->getMaxMp(),
                      0, 0, 1, false,
                      NULL,
@@ -2439,15 +2439,22 @@ void Scourge::toggleRoundUI(bool startRound) {
      getUserConfiguration()->isBattleTurnBased()) {
     if(!startRound &&
        !battleRound[battleTurn]->getCreature()->isMonster()) {
-      roundButton->setLabel("Begin Turn");
+      //roundButton->setLabel("Begin Turn");
+			roundButton->setTexture( getShapePalette()->getStartTexture() );
       roundButton->setGlowing(true);
     } else {
-      roundButton->setLabel("...in Turn...");
+      //roundButton->setLabel("...in Turn...");
+			roundButton->setTexture( getShapePalette()->getWaitTexture() );
       roundButton->setGlowing(false);
     }
   } else {
-    if(startRound) roundButton->setLabel("Real-Time      ");
-    else roundButton->setLabel("Paused");
+    if(startRound) {
+			//roundButton->setLabel("Real-Time      ");
+			roundButton->setTexture( getShapePalette()->getRealTimeTexture() );
+		} else { 
+			//roundButton->setLabel("Paused");
+			roundButton->setTexture( getShapePalette()->getPausedTexture() );
+		}
     roundButton->setGlowing(false);
   }
   roundButton->setSelected(startRound);
@@ -3001,7 +3008,7 @@ void Scourge::handleDismiss( int index ) {
 					 getParty()->getParty( index )->getCharacter()->getName() );
 	dismissHeroDialog->setText( msg );
 	dismissHeroDialog->setMode( index );
-	dismissHeroDialog->setVisible( true );
+	dismissHeroDialog->setVisible( true );	
 }
 
 void Scourge::descendDungeon( Location *pos ) {

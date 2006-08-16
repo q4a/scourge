@@ -59,6 +59,7 @@ class Button : public Widget {
   inline void setToggle(bool b) { toggle = b; }
   inline bool isToggle() { return toggle; }
 
+	inline void setTexture( GLuint texture ) { this->texture = texture; }
   inline void setGlowing(bool b) { glowing = b; }
   inline bool isGlowing() { return glowing; }
   /**

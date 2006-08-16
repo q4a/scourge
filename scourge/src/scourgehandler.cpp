@@ -205,6 +205,7 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
                                                "Turn-based" :
                                                "Real-time" ) );
       scourge->getMap()->addDescription( message, 0, 1, 1 );
+			scourge->getTBCombatWin()->setVisible( scourge->inTurnBasedCombat(), false );
     } else if(ea == SET_PLAYER_0){
       scourge->setPlayer(0);
     } else if(ea == SET_PLAYER_1){
@@ -362,10 +363,16 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 	} else if( widget == scourge->getDismissHeroDialog()->okButton ) {
 		scourge->getSession()->getParty()->
 			dismiss( scourge->getDismissHeroDialog()->getMode() );
+		//scourge->getDismissButton( scourge->getSession()->getParty()->
+															 //getPartySize() )->
+			//setTexture( 0 );
 		scourge->getDismissHeroDialog()->setVisible( false );
 	} else if( widget == scourge->getPcEditor()->getOkButton() ) {
     scourge->getSession()->getParty()->
-      hire( scourge->getPcEditor()->getCreature() );
+      hire( scourge->getPcEditor()->getCreature() );		
+		//scourge->getDismissButton( scourge->getSession()->getParty()->
+															 //getPartySize() - 1 )->
+			//setTexture( scourge->getShapePalette()->getDismissTexture() );
 		scourge->getPcEditor()->getWindow()->setVisible( false );
   } else if( widget == scourge->getPcEditor()->getCancelButton() ) {
 		scourge->getPcEditor()->getWindow()->setVisible( false );

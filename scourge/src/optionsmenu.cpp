@@ -316,6 +316,7 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
     }
     else if(widget == turnBasedBattle){
         uc ->setBattleTurnBased(turnBasedBattle->isChecked());
+				scourge->getTBCombatWin()->setVisible( scourge->inTurnBasedCombat(), false );
     }
     else if(widget == ovalCutoutShown){
         uc ->setOvalCutoutShown(ovalCutoutShown->isChecked());
