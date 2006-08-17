@@ -7,9 +7,9 @@ function enterMap( mapName ) {
   print( "Welcome to S.C.O.U.R.G.E.: Heroes of Lesser Renown\n" );
   print( "v" + scourgeGame.getVersion() + "\n" );
   print( "You are on the " + mapName + " map.\n" );
-	print( "Chapter=" + scourgeGame.getMission().getChapter() + "\n" );
+	print( "Chapter=" + scourgeGame.getMission().getChapter() + " Depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
 
-	if( mapName == "library3" && scourgeGame.getMission().getChapter() == 7 ) {
+	if( scourgeGame.getMission().getChapter() == 7 ) {
 		initChapter8();
 	}
 }
@@ -317,11 +317,27 @@ function damageHandlerCloakSafePass( attacker, item ) {
 function initChapter8() {
 	// modify sabien's intro text
 	i <- 0;
-	for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
-		if( scourgeGame.getMission().getCreature( i ).getName() == "Sabien Gartu" ) {
-			scourgeGame.getMission().getCreature( i ).setIntro( "_chapter8_" );
-			break;
+	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
+		for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+			if( scourgeGame.getMission().getCreature( i ).getName() == "Sabien Gartu" ) {
+				scourgeGame.getMission().getCreature( i ).setIntro( "_chapter8_" );
+				break;
+			}
 		}
+	} else if( scourgeGame.getMission().getDungeonDepth() == 1 ) {
+		// everyone is cursed and poisoned
+		i	<- 0;
+		for( i = 0; i < scourgeGame.getPartySize(); i++ ) {
+			// if not dead
+			if( !( scourgeGame.getPartyMember( i ).getStateMod( 13 ) ) ) {
+				// poisoned
+				scourgeGame.getPartyMember( i ).setStateMod( 6, true );
+				// cursed
+				scourgeGame.getPartyMember( i ).setStateMod( 7, true );
+			}
+		}
+
+		scourgeGame.showTextMessage( "You find yourself on a barren plain. The air is thick with moisture and very still. The bleak ground appears to emit a cancerous odor like the smell of death on a roadside cadaver. A sudden rush of despair hangs over you, clouding your senses... Is this the end? The tortured screams of unseen thousands drifts from beyond the nearest door. On this molten landscape filled with hopelessness and horror, even moving around seems to require an extra effort." );
 	}
 }
 
