@@ -9,7 +9,7 @@ function enterMap( mapName ) {
   print( "You are on the " + mapName + " map.\n" );
 	print( "Chapter=" + scourgeGame.getMission().getChapter() + " Depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
 
-	if( scourgeGame.getMission().getChapter() == 7 ) {
+	if( scourgeGame.getMission().getChapter() == 7 && mapName == "library3" ) {
 		initChapter8();
 	}
 }
