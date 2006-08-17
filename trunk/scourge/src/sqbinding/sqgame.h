@@ -51,6 +51,8 @@ public:
   // general
   static int _getVersion( HSQUIRRELVM vm );
   static int _getRootDir( HSQUIRRELVM vm );
+  
+  static int _showTextMessage( HSQUIRRELVM vm );
 
   // party-related
   static int _getPartySize( HSQUIRRELVM vm );

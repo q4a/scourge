@@ -37,5 +37,7 @@ libScourgeGui_a_SOURCES = \
 	window.h\
 	confirmdialog.cpp\
 	confirmdialog.h\
+	textdialog.cpp\
+	textdialog.h\
 	progress.cpp\
 	progress.h

@@ -93,6 +93,7 @@ class ScourgeView;
 class ScourgeHandler;
 class ConfirmDialog;
 class PcEditor;
+class TextDialog;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -127,6 +128,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   char infoMessage[2000];
   Inventory *inventory;
   Window *messageWin, *exitConfirmationDialog;
+  TextDialog *textDialog;
   InfoGui *infoGui;
   ConversationGui *conversationGui;
   Label *exitLabel;
@@ -694,10 +696,13 @@ public:
 
 	ConfirmDialog *getHireHeroDialog() { return hireHeroDialog; }
 	ConfirmDialog *getDismissHeroDialog() { return dismissHeroDialog; }
+	TextDialog *getTextDialog() { return textDialog; }
   PcEditor *getPcEditor() { return pcEditor; }
 
 	void handleWanderingHeroClick( Creature *creature );
 	void handleDismiss( int index );
+	
+	void showTextMessage( char *message );
 
 protected:
 
