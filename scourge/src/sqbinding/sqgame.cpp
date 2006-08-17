@@ -48,6 +48,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "void", "reloadNuts", SqGame::_reloadNuts, 0, 0, "Reload all currently used squirrel (.nut) files. The game engine will also do this for you automatically every 5 game minutes." },
   { "void", "documentSOM", SqGame::_documentSOM, 2, "xs", "Produce this documentation. The first argument is the location where the html files will be placed." },
   { "void", "runTests", SqGame::_runTests, 2, "xs", "Run internal tests of the rpg combat engine. Results are saved in path given as param to runTests()." },
+  { "void", "showTextMessage", SqGame::_showTextMessage, 2, "xs", "show a scrollable text message dialog." },
   { "string", "getDeityLocation", SqGame::_getDeityLocation, 4, "xnnn", "Get the deity whose presense is bound to this location (like an altar). Results the name of the deity." },    
   { 0,0,0,0,0 } // terminator
 };
@@ -220,6 +221,12 @@ int SqGame::_runTests( HSQUIRRELVM vm ) {
   GET_STRING( path, 255 )
   if( !strlen( path ) ) strcpy( path, "/home/gabor/sourceforge/scourge/api/tests" );
   CombatTest::executeTests( SqBinding::sessionRef, path );
+  return 0;
+}
+
+int SqGame::_showTextMessage( HSQUIRRELVM vm ) {
+  GET_STRING( message, 3000 )
+  SqBinding::sessionRef->getGameAdapter()->showTextMessage( message );
   return 0;
 }
 

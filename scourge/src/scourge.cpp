@@ -43,6 +43,7 @@
 #include "scourgeview.h"
 #include "scourgehandler.h"
 #include "gui/confirmdialog.h"
+#include "gui/textdialog.h"
 #include "pceditor.h"
 
 using namespace std;
@@ -78,6 +79,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   oldStory = currentStory = 0;
   lastTick = 0;
   messageWin = NULL;
+  textDialog = NULL;
   movingX = movingY = movingZ = MAP_WIDTH + 1;
   movingItem = NULL;
   nextMission = -1;
@@ -136,6 +138,7 @@ void Scourge::initUI() {
 
 	hireHeroDialog = new ConfirmDialog( getSDLHandler(), "Hire a Wandering Hero" );
 	dismissHeroDialog = new ConfirmDialog( getSDLHandler(), "Dismiss Party Member" );
+	textDialog = new TextDialog( getSDLHandler() );
 
   // load character, item sounds
   getSDLHandler()->getSound()->loadSounds( getUserConfiguration() );
@@ -1934,7 +1937,7 @@ void Scourge::createPartyUI() {
 		cards->createButton( 8, 0,  
 												 offsetX, offsetX - 2, 
 												 "", 0, false );
-
+	roundButton->setTooltip( "Pause game" );
 	offsetX+=4;
 
 	int quickButtonWidth = 24;
@@ -2442,18 +2445,22 @@ void Scourge::toggleRoundUI(bool startRound) {
       //roundButton->setLabel("Begin Turn");
 			roundButton->setTexture( getShapePalette()->getStartTexture() );
       roundButton->setGlowing(true);
+     	roundButton->setTooltip( "Begin Turn" );
     } else {
       //roundButton->setLabel("...in Turn...");
 			roundButton->setTexture( getShapePalette()->getWaitTexture() );
       roundButton->setGlowing(false);
+     	roundButton->setTooltip( "...In Turn..." );
     }
   } else {
     if(startRound) {
 			//roundButton->setLabel("Real-Time      ");
 			roundButton->setTexture( getShapePalette()->getRealTimeTexture() );
+			roundButton->setTooltip( "Pause Game" );
 		} else { 
 			//roundButton->setLabel("Paused");
 			roundButton->setTexture( getShapePalette()->getPausedTexture() );
+			roundButton->setTooltip( "Unpause game." );
 		}
     roundButton->setGlowing(false);
   }
@@ -3023,4 +3030,9 @@ void Scourge::ascendDungeon( Location *pos ) {
 	currentStory--;
 	changingStory = true;
 	gatepos = pos;
+}
+
+void Scourge::showTextMessage( char *message ) {
+	textDialog->setText( message );
+	textDialog->setVisible( true );
 }

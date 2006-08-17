@@ -34,6 +34,7 @@
 #include "shapepalette.h"
 #include "debug.h"
 #include "gui/confirmdialog.h"
+#include "gui/textdialog.h"
 #include "pceditor.h"
 
 
@@ -367,6 +368,9 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 															 //getPartySize() )->
 			//setTexture( 0 );
 		scourge->getDismissHeroDialog()->setVisible( false );
+  } else if( widget == scourge->getTextDialog()->win->closeButton ||
+						 widget == scourge->getTextDialog()->okButton ) {
+		scourge->getTextDialog()->setVisible( false );		
 	} else if( widget == scourge->getPcEditor()->getOkButton() ) {
     scourge->getSession()->getParty()->
       hire( scourge->getPcEditor()->getCreature() );		

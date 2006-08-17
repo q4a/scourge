@@ -114,6 +114,7 @@ public:
 	virtual inline GLuint getGuiTexture() { return 0; }
 	virtual inline GLuint getGuiTexture2() { return 0; }
   virtual inline GLuint loadSystemTexture( char *line ) { return 0; }
+  virtual inline void showTextMessage( char *message ) {}
 
   virtual bool isMissionCreature( RenderedCreature *creature );
   virtual bool hasParty();
@@ -182,7 +183,7 @@ public:
   inline void setDebugStr(char *s) { sdlHandler->setDebugStr(s); }
 
   virtual inline bool isHeadless() { return false; }
-
+  
   /**
    * Set up the opengl view.
    */
