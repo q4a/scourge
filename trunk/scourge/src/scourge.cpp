@@ -681,18 +681,21 @@ void Scourge::startMission() {
 void Scourge::addWanderingHeroes() {
 
 	if( !hasParty() ) return;
-
+	
 	int level = getSession()->getParty()->getAverageLevel();
 	int count = (int)( 5.0f * rand() / RAND_MAX ) + 5;
 	for( int i = 0; i < count; i++ ) {
+		// find a place for it near another creature
+		// note: this must be done before creating the new creature...
+		int n = (int)( (float)getSession()->getCreatureCount() * rand() / RAND_MAX );
+		int cx = toint( getSession()->getCreature( n )->getX() );
+		int cy = toint( getSession()->getCreature( n )->getY() );	
+		if( cx == 0 || cy == 0 ) {
+			cerr << "*** Error 0,0 coordinates for " << getSession()->getCreature( n )->getName() << endl;
+		}
+		assert( cx && cy );
 		RenderedCreature *creature = createWanderingHero( level );
-
-		// find a place for the here
-		RenderedCreature *c = 
-			getSession()->
-			getCreature( (int)( (float)(getSession()->getCreatureCount()) * 
-													rand() / RAND_MAX ) );
-		creature->findPlace( toint( c->getX() ), toint( c->getY() ) );
+		creature->findPlace( cx, cy );
 	}
 }
 
