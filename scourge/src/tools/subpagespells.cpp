@@ -5,8 +5,6 @@
 #include "common.h"
 #include "../common/constants.h"
 
-// TODO (rhys#1#): New and del spells.
-
 subPageSpells::subPageSpells()
 {
 	schoolStrArray = new wxArrayString;
@@ -35,7 +33,7 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 /**
 	Schools
 **/
-/*	wxStaticText *schoolsText =*/ new wxStaticText(page, -1, L"Schools", wxPoint(10,10));
+	new wxStaticText(page, -1, L"Schools", wxPoint(10,10));
 	for ( std::vector<School*>::iterator itr = dfSpells->data.begin(); itr != dfSpells->data.end(); itr++ )
 		schoolStrArray->Add( std2wx( (*itr)->name ) );
 	schoolList = new wxListBox(page, ID_subSpellsSchoolList, wxPoint(10,30), wxSize(200,90), *schoolStrArray);
@@ -45,45 +43,45 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 
 
 	// name
-/*	wxStaticText *nameText =*/ new wxStaticText(page, -1, _("Name"), wxPoint(220,60));
+	new wxStaticText(page, -1, _("Name"), wxPoint(220,60));
 	nameEdit = new wxTextCtrl(page, -1, std2wx(spell->name), wxPoint(220,80), wxSize(200,25));
 
 	// symbol
-/*	wxStaticText *symbolText =*/ new wxStaticText(page, -1, _("Symbol"), wxPoint(430,60));
+	new wxStaticText(page, -1, _("Symbol"), wxPoint(430,60));
 	symbolEdit = new wxTextCtrl(page, -1, std2wx(spell->symbol), wxPoint(430,80), wxSize(150,25));
 
 	// level
-/*	wxStaticText *levelText =*/ new wxStaticText(page, -1, _("Level"), wxPoint(590,60));
+	new wxStaticText(page, -1, _("Level"), wxPoint(590,60));
 	levelEdit = new wxTextCtrl(page, -1, std2wx(spell->level), wxPoint(590,80), wxSize(50,25));
 
 	// mana
-/*	wxStaticText *manaText =*/ new wxStaticText(page, -1, _("Mana"), wxPoint(650,60));
+	new wxStaticText(page, -1, _("Mana"), wxPoint(650,60));
 	manaEdit = new wxTextCtrl(page, -1, std2wx(spell->mana), wxPoint(650,80), wxSize(50,25));
 
 	// exp
-/*	wxStaticText *expText =*/ new wxStaticText(page, -1, _("Exp"), wxPoint(10,130));
+	new wxStaticText(page, -1, _("Exp"), wxPoint(10,130));
 	expEdit = new wxTextCtrl(page, -1, std2wx(spell->exp), wxPoint(10,150), wxSize(50,-1));
 
 	// failure rate
-/*	wxStaticText *failureRateText =*/ new wxStaticText(page, -1, _("Failure Rate"), wxPoint(70,130));
+	new wxStaticText(page, -1, _("Failure Rate"), wxPoint(70,130));
 	failureRateEdit = new wxTextCtrl(page, -1, std2wx(spell->failureRate), wxPoint(70,150), wxSize(50,25));
 
 	// action
-/*	wxStaticText *actionText =*/ new wxStaticText(page, -1, _("Action"), wxPoint(160,130));
+	new wxStaticText(page, -1, _("Action"), wxPoint(160,130));
 	actionEdit = new wxTextCtrl(page, -1, std2wx(spell->action), wxPoint(160,150), wxSize(100,25));
 
 	// distance
-/*	wxStaticText *distanceText =*/ new wxStaticText(page, -1, _("Distance"), wxPoint(270,130));
+	new wxStaticText(page, -1, _("Distance"), wxPoint(270,130));
 	distanceEdit = new wxTextCtrl(page, -1, std2wx(spell->distance), wxPoint(270,150), wxSize(50,25));
 
 	// area
-/*	wxStaticText *areaText =*/ new wxStaticText(page, -1, _("Area"), wxPoint(330,130));
+	new wxStaticText(page, -1, _("Area"), wxPoint(330,130));
 	wxString choices[2] = { L"single", L"group" };
 	areaCombo = new wxComboBox(page, -1, std2wx(spell->area), wxPoint(330,150),wxSize(80,25),
 			2,choices, wxCB_READONLY);
 
 	// CLIP
-/*	wxStaticText *clipText =*/ new wxStaticText(page, -1, _("Targets"), wxPoint(420,130));
+	new wxStaticText(page, -1, _("Targets"), wxPoint(420,130));
 	wxString clipStr[] = { L"Creature", L"Location", L"Item", L"Party" };
 	clipCheckList = new wxCheckListBox(page, -1, wxPoint(420,150), wxSize(85,90), 4,clipStr);
 	clipCheckList->Check(0, spell->target.find("C") != std::string::npos );
@@ -92,17 +90,17 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 	clipCheckList->Check(3, spell->target.find("P") != std::string::npos );
 
 	// speed
-/*	wxStaticText *speedText =*/ new wxStaticText(page, -1, _("Speed"), wxPoint(515,130));
+	new wxStaticText(page, -1, _("Speed"), wxPoint(515,130));
 	speedEdit = new wxTextCtrl(page, -1, std2wx(spell->speed), wxPoint(515,150), wxSize(50,25));
 
 	// effect
-/*	wxStaticText *effectText =*/ new wxStaticText(page, -1, _("Effect"), wxPoint(575,130));
+	new wxStaticText(page, -1, _("Effect"), wxPoint(575,130));
 	effectEdit = new wxTextCtrl(page, -1, std2wx(spell->effect), wxPoint(575,150), wxSize(150,25));
 
 /**
 	Icon
 **/
-/*	wxStaticText *iconText =*/ new wxStaticText(page, -1, _("Icon (x,y)"), wxPoint(25,180));
+	new wxStaticText(page, -1, _("Icon (x,y)"), wxPoint(25,180));
 	// icon_x
 	int x = atoi( spell->icon_x.c_str() );
 	iconXEdit = new wxTextCtrl(page, -1, std2wx(spell->icon_x), wxPoint(10,200), wxSize(30,25));
@@ -118,7 +116,7 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 
 
 	// disposition
-/*	wxStaticText *dispositionText =*/ new wxStaticText(page, -1, _("Disposition"), wxPoint(160,180));
+	new wxStaticText(page, -1, _("Disposition"), wxPoint(160,180));
 	wxString dispositionChoices[2] = { L"Friendly", L"Hostile" };
 	wxString disposition = L"Friendly";
 	if ( spell->disposition == "H" )	disposition = L"Hostile";
@@ -126,7 +124,7 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 			2,dispositionChoices, wxCB_READONLY);
 
 	// prerequisite
-/*	wxStaticText *prereqText = */new wxStaticText(page, -1, _("Prerequisite"), wxPoint(250,180));
+	new wxStaticText(page, -1, _("Prerequisite"), wxPoint(250,180));
 	wxString prereqChoices[] = { L"-none-", L"HP", L"AC",
 			L"blessed", L"empowered", L"enraged", L"ac_protected", L"magic_protected", L"invisible",	// good
 			L"drunk", L"poisoned", L"cursed", L"possessed", L"blinded", L"charmed", L"dead",			// bad
@@ -137,11 +135,11 @@ void subPageSpells::Init(wxNotebook *notebook, DF* dataFile, PageSpells *parent)
 			17,prereqChoices, wxCB_READONLY);
 
 	// sound
-/*	wxStaticText *soundText =*/ new wxStaticText(page, -1, _("Sound"), wxPoint(160,230));
+	new wxStaticText(page, -1, _("Sound"), wxPoint(160,230));
 	soundEdit = new wxTextCtrl(page, -1, std2wx(spell->sound), wxPoint(160,250), wxSize(200,25));
 
 	// notes
-/*	wxStaticText *notesText =*/ new wxStaticText(page, -1, _("Notes"), wxPoint(515,180));
+	new wxStaticText(page, -1, _("Notes"), wxPoint(515,180));
 	notesEdit = new wxTextCtrl(page, -1, std2wx(spell->notes), wxPoint(515,200), wxSize(230,90), wxTE_MULTILINE);
 
 
@@ -153,7 +151,7 @@ void subPageSpells::UpdatePage()
 /**
 	Schools
 **/
-/*	wxStaticText *schoolsText = */new wxStaticText(page, -1, L"Schools", wxPoint(10,10));
+	new wxStaticText(page, -1, L"Schools", wxPoint(10,10));
 	schoolStrArray->Clear();
 	for ( std::vector<School*>::iterator itr = dfSpells->data.begin(); itr != dfSpells->data.end(); itr++ )
 		schoolStrArray->Add( std2wx( (*itr)->name ) );
@@ -221,7 +219,8 @@ void subPageSpells::New()
 {
 	SetCurrent();
 
-	School *school = dfSpells->GetCurrent();
+//	School *school = dfSpells->GetCurrent();			!! DON'T DO THIS !!
+	School *school = currentSchool;
 	Spell *spell = new Spell;
 
 	school->spells.push_back( spell );
@@ -234,7 +233,7 @@ void subPageSpells::New()
 }
 void subPageSpells::Del()
 {
-	School *school = dfSpells->GetCurrent();
+	School *school = currentSchool;
 
 	if ( school->spells.size() == 1 )
 	{
