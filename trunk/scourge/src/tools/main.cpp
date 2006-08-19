@@ -189,8 +189,6 @@ bool MyApp::OnInit()
 			(wxObjectEventFunction) &PageSkills::OnTypeChange );
 
 	// Spells page events
-	frame->Connect( ID_SpellsSubNotebook, wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED,
-			(wxObjectEventFunction) &PageSpells::OnSubPageChange );
 	frame->Connect( ID_subSpellsSchoolList, wxEVT_COMMAND_LISTBOX_SELECTED,
 			(wxObjectEventFunction) &subPageSpells::OnSchoolChange );
 	frame->Connect( ID_subSpellsIconXScroll, wxEVT_SCROLL_THUMBTRACK,

@@ -27,6 +27,7 @@ void PageSpells::Init(wxNotebook *notebook, DF* dataFile)
 
 // Notebook
 	subNotebook = new wxNotebook(page, ID_SpellsSubNotebook);
+	subNotebook->Connect( wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, (wxObjectEventFunction)&PageSpells::OnSubPageChange, NULL, (wxEvtHandler*)this);
 
 	pageSchools->Init(subNotebook, dfSpells, this);
 	pageSpells->Init(subNotebook, dfSpells, this);
@@ -44,11 +45,36 @@ void PageSpells::UpdatePage()
 
 void PageSpells::Prev(int n)
 {
-	currentSubPage->Prev(n);
+	wxString str = subNotebook->GetPageText( subNotebook->GetSelection() );
+	if ( str == L"Schools" )
+	{
+		currentSubPage = pageSchools;
+		pageSchools->Prev(n);			// Need to do this, for some reason caling currentSubPage->Next(n) does not work!
+										// I have no idea what's wrong, need to look into it.
+	}
+	else
+	{
+		currentSubPage = pageSpells;
+		pageSpells->Prev(n);
+	}
+//	currentSubPage->Prev(n);
 }
 void PageSpells::Next(int n)
 {
-	currentSubPage->Next(n);
+	wxString str = subNotebook->GetPageText( subNotebook->GetSelection() );
+	if ( str == L"Schools" )
+	{
+		currentSubPage = pageSchools;
+		pageSchools->Next(n);			// Need to do this, for some reason caling currentSubPage->Next(n) does not work!
+										// I have no idea what's wrong, need to look into it.
+	}
+	else
+	{
+		currentSubPage = pageSpells;
+		pageSpells->Next(n);
+	}
+
+//	currentSubPage->Next(n);
 }
 void PageSpells::New()
 {
@@ -79,17 +105,15 @@ void PageSpells::ClearCurrent()
 
 void PageSpells::OnSubPageChange(wxCommandEvent& WXUNUSED(event))
 {
-	PageSpells *pPage = ((PageSpells*)currentPage);
+	currentSubPage->SetCurrent();	// Store current data item held
 
-	pPage->currentSubPage->SetCurrent();	// Store current data item held
-
-	wxString str = pPage->subNotebook->GetPageText( pPage->subNotebook->GetSelection() );
+	wxString str = subNotebook->GetPageText( subNotebook->GetSelection() );
 
 	if ( str == L"Schools" )
-		pPage->currentSubPage = pPage->pageSchools;
+		currentSubPage = pageSchools;
 	else
-		pPage->currentSubPage = pPage->pageSpells;
+		currentSubPage = pageSpells;
 
-	pPage->currentSubPage->UpdatePage();
-	pPage->currentSubPage->UpdatePageNumber();
+	currentSubPage->UpdatePage();
+	currentSubPage->UpdatePageNumber();
 }
