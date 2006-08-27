@@ -55,6 +55,7 @@ O:/portraits/w2.bmp
 O:/portraits/w3.bmp
 O:/portraits/w4.bmp
 O:/portraits/w5.bmp
+O:/portraits/w6.bmp
 O:/portraits/death.bmp
 
 # Character models
@@ -810,6 +811,14 @@ N:VASE
 N:0
 N:ffffffff
 3:/objects/vase.3ds
+3:1.0
+
+N:14
+N:1,1,1
+N:VASE2
+N:0
+N:ffffffff
+3:/objects/vase2.3ds
 3:1.0
 
 N:14
