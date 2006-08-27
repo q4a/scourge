@@ -1336,6 +1336,12 @@ I:A large vase, typically used to contain other items.
 I:A large painted vase
 I:18,17
 
+I:Dwarven Vase
+I:10,CONTAINER,70,0,VASE2
+I:An ornate vase displaying the mythical dwarven army of king Khuzod-Mog.
+I:A vase showing a dwarven host in battle.
+I:18,17
+
 I:Commode
 I:10,CONTAINER,130,0,COMMODE
 I:This dresser has seen better days
