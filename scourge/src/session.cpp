@@ -362,7 +362,10 @@ void Session::creatureDeath(Creature *creature) {
   }
   creature->setStateMod(Constants::dead, true);
 
-  if( !( creature->isMonster() ) ) {
+	// cancel target, otherwise segfaults on resurrection
+	creature->cancelTarget();
+
+	if( !( creature->isMonster() ) ) {
     char message[255];
     sprintf( message, "  %s dies!", creature->getName() );
     getGameAdapter()->startTextEffect( message );

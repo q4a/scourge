@@ -1500,7 +1500,11 @@ bool Creature::takeDamage( float damage, int effect_type, GLuint delay ) {
 }
 
 void Creature::resurrect( int rx, int ry ) {
-  setStateMod( Constants::dead, false );
+	// remove all state mod effects
+	for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
+		setStateMod( i, false );
+	}
+
   setHp( (int)( 3.0f * rand() / RAND_MAX ) + 1 );
   
   findPlace( rx, ry );
