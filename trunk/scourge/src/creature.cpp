@@ -95,7 +95,6 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   this->thirst=10;
   this->hunger=10;  
   this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name, session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->scale);
-//  if( !strcmp( name, "Alamont" ) ) ((MD2Shape*)shape)->setDebug( true );
   commonInit();  
 }
 
@@ -119,7 +118,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape) : Rendere
 
 void Creature::commonInit() {
 
-  ((MD2Shape*)shape)->setCreatureSpeed( speed );
+  ((AnimatedShape*)shape)->setCreatureSpeed( speed );
 
 	for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
 		lastArmor[i] = lastArmorSkill[i] = lastDodgePenalty[i] = 0;
@@ -446,7 +445,7 @@ bool Creature::move(Uint16 dir) {
   //if(character) return false;
 
   // is monster (or npc) doing something else?
-  if( ((MD2Shape*)getShape())->getCurrentAnimation() != MD2_RUN ) return false;
+  if( ((AnimatedShape*)getShape())->getCurrentAnimation() != MD2_RUN ) return false;
 
   switchDirection(false);
 
@@ -480,7 +479,7 @@ bool Creature::move(Uint16 dir) {
   
   if(!session->getMap()->moveCreature(toint(x), toint(y), toint(z), 
                                       toint(nx), toint(ny), toint(nz), this)) {
-    ((MD2Shape*)shape)->setDir(dir);
+    ((AnimatedShape*)shape)->setDir(dir);
     if( session->getMap()->getHasWater() &&
         !( toint(x) == toint(nx) &&
            toint(y) == toint(ny) ) ) {
@@ -749,7 +748,7 @@ Location *Creature::moveToLocator() {
  */
 Location *Creature::takeAStepOnPath() {
 	Location *position = NULL;
-  int a = ((MD2Shape*)getShape())->getCurrentAnimation();
+  int a = ((AnimatedShape*)getShape())->getCurrentAnimation();
   if((int)bestPath.size() > bestPathPos && a != MD2_TAUNT ) {
 
     // take a step on the bestPath
@@ -856,7 +855,7 @@ void Creature::computeAngle( GLfloat newX, GLfloat newY ) {
     angle = wantedAngle;
   }
   
-  ((MD2Shape*)shape)->setAngle( angle + 180.0f );
+  ((AnimatedShape*)shape)->setAngle( angle + 180.0f );
 }
 
 void Creature::showWaterEffect( GLfloat newX, GLfloat newY ) {

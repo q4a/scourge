@@ -656,7 +656,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                       zpos2 = (float)(zp) / DIV;
                       setupPosition(posX, posY, zp,
                                     xpos2, ypos2, zpos2,
-                                    ((MD2Shape*)pos[posX][posY][zp]->shape)->getDebugShape(), 
+                                    ((AnimatedShape*)pos[posX][posY][zp]->shape)->getDebugShape(), 
                                     NULL, NULL, NULL);
                       // end debug
                     }

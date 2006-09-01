@@ -1519,12 +1519,12 @@ void Scourge::resetNonParticipantAnimation( Battle *battle ) {
   for( int i = 0; i < session->getCreatureCount(); i++ ) {
     bool active = ( session->getCreature( i ) == battle->getCreature() ||
                     session->getCreature( i ) == battle->getCreature()->getTargetCreature() );
-    ((MD2Shape*)session->getCreature(i)->getShape())->setPauseAnimation( !active );
+    ((AnimatedShape*)session->getCreature(i)->getShape())->setPauseAnimation( !active );
   }
   for( int i = 0; i < getParty()->getPartySize(); i++ ) {
     bool active = ( getParty()->getParty( i ) == battle->getCreature() ||
                     getParty()->getParty( i ) == battle->getCreature()->getTargetCreature() );
-    ((MD2Shape*)getParty()->getParty( i )->getShape())->setPauseAnimation( !active );
+    ((AnimatedShape*)getParty()->getParty( i )->getShape())->setPauseAnimation( !active );
   }
 }
 
@@ -1643,7 +1643,7 @@ void Scourge::resetUIAfterBattle() {
 	tbCombatWin->setVisible( false );
   for(int i = 0; i < party->getPartySize(); i++) {
     party->getParty(i)->cancelTarget();
-    ((MD2Shape*)party->getParty(i)->getShape())->setPauseAnimation( false );
+    ((AnimatedShape*)party->getParty(i)->getShape())->setPauseAnimation( false );
     if(party->getParty(i)->anyMovesLeft()) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN, true);
     } else {
@@ -1656,7 +1656,7 @@ void Scourge::resetUIAfterBattle() {
         !( session->getCreature(i)->getMonster() &&
 					 session->getCreature(i)->getMonster()->isNpc() ) ) {
       session->getCreature(i)->setMotion( Constants::MOTION_LOITER );
-      ((MD2Shape*)session->getCreature(i)->getShape())->setPauseAnimation( false );
+      ((AnimatedShape*)session->getCreature(i)->getShape())->setPauseAnimation( false );
     }
   }
 }
@@ -1665,9 +1665,9 @@ void Scourge::resetUIAfterBattle() {
 void Scourge::moveCreatures( bool allCreatures ) {
   // change animation if needed
   for(int i = 0; i < party->getPartySize(); i++) {
-    if(((MD2Shape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
+    if(((AnimatedShape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);
-      ((MD2Shape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
+      ((AnimatedShape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
     } else if( party->getParty(i)->isMoving() ) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
 			party->getParty(i)->setMoving( false );
@@ -1708,10 +1708,10 @@ void Scourge::addGameSpeed(int speedFactor){
 void Scourge::moveMonster(Creature *monster) {
 
   // set running animation (currently move or attack)
-  if(((MD2Shape*)(monster->getShape()))->getAttackEffect()) {
+  if(((AnimatedShape*)(monster->getShape()))->getAttackEffect()) {
 		if( monster->getCharacter() ) cerr << "111" << endl;
     //monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
-    //((MD2Shape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
+    //((AnimatedShape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
     // don't move when attacking
     return;
   } else {

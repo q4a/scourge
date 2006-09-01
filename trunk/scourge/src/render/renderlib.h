@@ -35,6 +35,7 @@
 #include "gllocator.h"
 #include "3dsshape.h"
 #include "md2shape.h"
+#include "animatedshape.h"
 #include "Md2.h"
 #include "rendereditem.h"
 #include "renderedcreature.h"

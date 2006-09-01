@@ -39,101 +39,52 @@
 # include <map>
 
 #include "render.h"
-#include "glshape.h"
+#include "animatedshape.h"
 
-class MD2Shape : public GLShape  {
+class MD2Shape : public AnimatedShape  {
 
 // uncomment to show debug shapes
 //#define DEBUG_MD2 1
 
 private:
-  bool attackEffect;
   float div;
-  char *skin_name;
   GLuint textureId;
-  //float movex, movey, movez;  
   t3DModel * g_3DModel;                 // This holds the 3D Model info that we load in
-  int g_ViewMode;                       // make this GL_LINE_STRIP for outline
-  int dir;      
   vect3d *vect;     
       
   // Animation stuff
   float elapsedTime;
   float lastTime;  
-  bool pauseAnimation;
-  int currentAnim;
   int currentFrame; 
   int animationWaiting; // memorizes one animation waiting to be played
-  float angle;
-
-  bool debug;
   
   // To ensure that animations with few frames are played at least once entirely
   bool playedOnce; 
 
-  float creatureSpeed;
-      
-   
   // This draws and animates the .md2 model by interpoloated key frame animation
   void AnimateMD2Model();
   
   // This returns time t for the interpolation between the current and next key frame
   float ReturnCurrentTime(int nextFrame);
 
-  GLShape *debugShape;
+protected:
+  void commonInit(t3DModel * g_3DModel, GLuint textureId, float div);           
 
+public:     
   MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
            GLuint texture[], int width, int depth, int height,
            char *name, int descriptionGroup,
            Uint32 color, Uint8 shapePalIndex=0);
 
-public:     
-	~MD2Shape();
-
-  inline GLShape *getDebugShape() { return debugShape; }
-
-  inline void setCreatureSpeed( float n ) { creatureSpeed = n; }
-
-  inline void setDebug(bool b) { debug = b; }
-
-  inline bool getAttackEffect() { return attackEffect; }
-  inline void setAttackEffect(bool b) { attackEffect = b; }
+	virtual ~MD2Shape();
 
   void setCurrentAnimation(int numAnim, bool force=false);
-  inline int getCurrentAnimation() { return currentAnim; }
-
   void draw();
   void outline( float r, float g, float b );
   void setupToDraw();
-
-  void setDir(int dir);  
-  bool drawFirst();
-  // if true, the next two functions are called
-  bool drawLater();
-  void setupBlending();
-  void endBlending();  
-  void setPauseAnimation(bool pause);
   inline GLuint getTextureId() { return textureId; }
-  inline void setSkinName(char *s) { skin_name = s; }
-  inline char *getSkinName() { return skin_name; }
 
-  inline void setAngle(float angle) { 
-    float a = angle + 90.0f;
-    if(a >= 360.0f) a -= 360.0f;
-    this->angle = a; 
-  }
-  inline float getAngle() {
-    return angle;
-  }
 
-  // Factory method to create shape. It computes the dimensions and normalizes the
-  // model's points.
-  static MD2Shape *createShape(t3DModel *g_3DModel, GLuint textureId, float div,
-                               GLuint texture[], char *name, int descriptionGroup,
-                               Uint32 color, Uint8 shapePalIndex);
-
-protected:
-  void commonInit(t3DModel * g_3DModel, GLuint textureId, float div);
 };
 
 #endif

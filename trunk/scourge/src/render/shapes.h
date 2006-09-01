@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "modelwrapper.h"
 
 /**
   *@author Gabor Torok
@@ -51,7 +52,7 @@ typedef struct _ShapeValues {
 } ShapeValues;
 
 typedef struct _Md2ModelInfo {
-  t3DModel *model;
+  ModelWrapper model;
   char name[100];
   char filename[100];
   float scale;
@@ -293,8 +294,6 @@ protected:
   void setupAlphaBlendedBMPGrid(char *filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight, int red=0, int green=0, int blue=0, int nred=-1, int ngreen=-1, int nblue=-1);
   void swap(unsigned char & a, unsigned char & b);
   virtual int interpretShapesLine( FILE *fp, int n );
-  t3DModel *LoadMd2Model(char *file_name);
-  void UnloadMd2Model( t3DModel *model );
   void loadStencil( char *filename, int index );
 };
 

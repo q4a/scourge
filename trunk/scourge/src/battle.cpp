@@ -96,7 +96,7 @@ void Battle::reset( bool keepPaused ) {
   this->weaponWait = 0;
   this->range = 0.0f;
   creature->getShape()->setCurrentAnimation((int)MD2_STAND);
-  ((MD2Shape*)(creature->getShape()))->setAttackEffect(false);
+  ((AnimatedShape*)(creature->getShape()))->setAttackEffect(false);
 }
 
 void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<Battle *> *turns) {
@@ -159,13 +159,13 @@ bool Battle::fightTurn() {
     // in TB battle, wait for the animations to end before ending turn
     int a;
     if( session->getPreferences()->isBattleTurnBased()) {
-      a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
+      a =((AnimatedShape*)(creature->getShape()))->getCurrentAnimation();
       if( !( a == MD2_STAND || a == MD2_RUN )) {
         return false;
       }
       if( creature->getTargetCreature() && 
           !creature->getTargetCreature()->getStateMod( Constants::dead ) ) {
-        a =((MD2Shape*)(creature->getTargetCreature()->getShape()))->getCurrentAnimation();
+        a =((AnimatedShape*)(creature->getTargetCreature()->getShape()))->getCurrentAnimation();
         if( !( a == MD2_STAND || a == MD2_RUN )) {
           return false;
         }
@@ -181,7 +181,7 @@ bool Battle::fightTurn() {
 			!creature->getProjectiles()->empty() ) return false;
 
 	// wait for the animation to finish
-	int a = ((MD2Shape*)creature->getShape())->getCurrentAnimation();
+	int a = ((AnimatedShape*)creature->getShape())->getCurrentAnimation();
 	if( !( a == MD2_STAND || a == MD2_RUN )) return false;
 	
 
@@ -368,7 +368,7 @@ void Battle::executeAction() {
     hitWithItem();
   }
   creature->getShape()->setCurrentAnimation( (int)MD2_ATTACK, true );	  
-  ((MD2Shape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
+  ((AnimatedShape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
 
 	// pause after each hit
 	steps = 0;
@@ -434,7 +434,7 @@ void Battle::stepCloserToTarget() {
   }
 
   // wait for animation to end
-  int a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
+  int a =((AnimatedShape*)(creature->getShape()))->getCurrentAnimation();
   if( !( a == MD2_STAND || a == MD2_RUN )) {
     if(debugBattle) cerr << "\t\t\tWaiting for animation to end." << endl;
     return;
@@ -527,7 +527,7 @@ bool Battle::moveCreature() {
 	    }
 
 	    // wait for animation to end
-	    int a =((MD2Shape*)(creature->getShape()))->getCurrentAnimation();
+	    int a =((AnimatedShape*)(creature->getShape()))->getCurrentAnimation();
 	    if( !( a == MD2_STAND || a == MD2_RUN )) return false;
 
 	    if(creature->getSelX() != -1) {
@@ -648,7 +648,7 @@ void Battle::useSkill() {
           creature->getName(), 
           creature->getActionSkill()->getName());
   session->getMap()->addDescription(message, 1, 0.15f, 1);
-  ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
+  ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
 
   char *err = 
     creature->useSpecialSkill( creature->getActionSkill(), 
@@ -704,7 +704,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
           creature->getName(), 
           creature->getActionSpell()->getName());
   session->getMap()->addDescription(message, 1, 0.15f, 1);
-  ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
+  ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
 
   // spell succeeds?
   // FIXME: use stats like IQ here to modify spell success rate...
@@ -888,7 +888,7 @@ void Battle::prepareToHitMessage() {
                item->getItemName() );
     }
       session->getMap()->addDescription(message);
-    ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
+    ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
 
     // play item sound
     if(creature->isMonster() && 
@@ -902,7 +902,7 @@ void Battle::prepareToHitMessage() {
              creature->getName(), 
              creature->getTargetCreature()->getName() );
     session->getMap()->addDescription(message);
-    ((MD2Shape*)(creature->getShape()))->setAttackEffect(true);
+    ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
   }
 }
 
