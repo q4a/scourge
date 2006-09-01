@@ -29,7 +29,7 @@ private:
 
 public:
 
-	void loadModel( char *file_name );
+	void loadModel( char *path, char *name=NULL );
 	void unloadModel();
 	
 	inline t3DModel *getMd2() { return md2; }

@@ -24,51 +24,43 @@ using namespace std;
 
 CLoadMD2 md2Loader;
 
-void ModelWrapper::loadModel( char *file_name ) {	
-  char path[300];
-  sprintf(path, "%s%s", rootDir, file_name );
-  if( file_name[ strlen( file_name ) - 4 ] != '.' ) strcat( path, "/tris.md2" );
-  
-  char *tmp = strdup( path );
-  char *name = tmp;
-  name = strrchr( name, '/' );
-  if( !name ) {
-  	name = tmp;
-  	name = strrchr( name, '\\' );
-  	if( !name ) {
-  		cerr << "*** Error: can't determine model name. file=" << path << endl;
-  	}
-  }
-  
-  if( name ) {
-  	path[ strlen( path ) - strlen( name ) ] = '\0';
-  }
-  
+enum {
+	LOAD_MD2=0,
+	LOAD_MD3
+};
+
+void ModelWrapper::loadModel( char *path, char *name ) {	
+
+	int load = -1;
   char full[300];
-  sprintf( full, "%s%s", path, name );
-  
-	cerr << "&&&&&&&&&& Loading animated model: " << file_name << 
+  sprintf( full, "%s%s", rootDir, path );
+  if( !name || name[ strlen( name ) - 4 ] == '.' ) {
+		if( strcasecmp( path + strlen( path ) - 4, ".md2" ) ) strcat( full, "/tris.md2" );
+		load = LOAD_MD2;
+	} else {
+		load = LOAD_MD3;
+	}
+    
+	cerr << "&&&&&&&&&& Loading animated model: " << 
 			" path: " << path << 
-			" name: " << name << 
+			" name: " << ( name ? name : "NULL" ) << 
 			" full: " << full << endl;  
   
-	char *extension = name + strlen( name ) - 3;  
-	
-	if( !strcasecmp( extension, "md2" ) ) {		
+	if( load == LOAD_MD2 ) {		
 	  t3DModel *t3d = new t3DModel;
 	  md2Loader.ImportMD2( t3d, full ); 
 	  this->md2 = t3d;
 	  this->md3 = NULL;
-	} else if( !strcasecmp( extension, "md3" ) ) {
+	} else if( load == LOAD_MD3 ) {
 		CModelMD3 *md3 = new CModelMD3();
-		md3->LoadModel( path, name );		
+		md3->LoadModel( full, name );		
+		md3->SetTorsoAnimation( "TORSO_STAND" );
+		md3->SetLegsAnimation( "LEGS_IDLE" );
 	  this->md2 = NULL;
 	  this->md3 = md3;
 	} else {
-		cerr << "Don't know how to load model of type: " << extension << " file=" << file_name << endl;
+		cerr << "Don't know how to load model. path=" << path << " name=" << name << endl;
 	}
-	
-	free( tmp );
 }
 
 void ModelWrapper::unloadModel() {
