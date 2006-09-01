@@ -344,7 +344,7 @@ Shapes::~Shapes(){
 
 int Shapes::interpretShapesLine( FILE *fp, int n ) {
 
-  char path[300];
+//  char path[300];
   char line[255];  
 
   if(n == 'T') {
@@ -490,9 +490,9 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     info->scale = strtod(strtok(line + 1, ","), NULL);
 
     // store the md2 model and info
-    sprintf(path, "%s%s", rootDir, info->filename);
+//    sprintf(path, "%s%s", rootDir, info->filename);
 //      cerr << "Loading md2 model: " << path << " scale: " << info->scale << endl;
-    info->model = LoadMd2Model(path);
+		info->model.loadModel( info->filename );
 
     // store it
     string s = info->name;
@@ -652,19 +652,6 @@ char *Shapes::getRandomDescription(int descriptionGroup) {
   return NULL;
 }
 
-CLoadMD2 g_LoadMd2; 
-
-t3DModel *Shapes::LoadMd2Model(char *file_name) {
-  t3DModel *t3d = new t3DModel;    
-  g_LoadMd2.ImportMD2(t3d, file_name); 
-  return t3d;   
-}
-
-void Shapes::UnloadMd2Model( t3DModel *model ) {
-  g_LoadMd2.DeleteMD2( model );
-  delete model;
-}
-
 GLShape *Shapes::getCreatureShape( char *model_name, 
                                    char *skin_name, 
                                    float scale ) {
@@ -680,14 +667,11 @@ GLShape *Shapes::getCreatureShape( char *model_name,
     model_info = old_creature_models[model_name_str];
 	strcpy( realSkinName, skin_name );
   } else {
-	// load the model the new way
+		// load the model the new way
     if( creature_models.find( model_name_str ) == creature_models.end() ) {
       model_info = (Md2ModelInfo*)malloc( sizeof( Md2ModelInfo ) );
 
-      char path[300];
-      sprintf(path, "%s%s/tris.md2", rootDir, model_name);
-//      cerr << "&&&&&&&&&& Loading md2 model: " << path << endl;
-      model_info->model = LoadMd2Model(path);
+      model_info->model.loadModel( model_name );
       strcpy( model_info->name, model_name );
       model_info->scale = 1.0f;
 
@@ -745,8 +729,8 @@ GLShape *Shapes::getCreatureShape( char *model_name,
 
   // create the shape.
   // FIXME: shapeindex is always FIGHTER. Does it matter?
-  MD2Shape *shape = 
-    MD2Shape::createShape(model_info->model, skin_texture, 
+  AnimatedShape *shape = 
+    AnimatedShape::createShape( &(model_info->model), skin_texture, 
                           (scale == 0.0f ? model_info->scale : scale),
                           textureGroup[14], model_info->name, -1, 0xf0f0ffff, 0);
   shape->setSkinName(realSkinName);
@@ -812,7 +796,7 @@ void Shapes::decrementSkinRefCount( char *model_name,
     loaded_models.erase(model_info);
     creature_models.erase(model);
 
-    UnloadMd2Model( model_info->model );
+    model_info->model.unloadModel();
 
     free(model_info);
   }

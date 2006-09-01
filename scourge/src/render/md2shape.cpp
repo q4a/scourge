@@ -33,48 +33,29 @@ using namespace std;
 
 //#define DEBUG_MD2 1
 
-MD2Shape::MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
-                   GLuint texture[],
-                   int width, int depth, int height,
-                   char *name, int descriptionGroup,
-                   Uint32 color, Uint8 shapePalIndex) :
-  GLShape(0, width, depth, height/2, name, descriptionGroup, color, shapePalIndex) {
-  commonInit(g_3DModel, textureId, div);    
-#ifdef DEBUG_MD2
-  debugShape = new GLShape(0, this->width, this->depth, this->height, 
-                           name, descriptionGroup, color, shapePalIndex);
-  debugShape->initialize();
-#endif
+MD2Shape::MD2Shape( t3DModel * g_3DModel, GLuint textureId, float div, 
+										GLuint texture[], int width, int depth, int height,
+										char *name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
+  AnimatedShape( width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
+  commonInit( g_3DModel, textureId, div );
 }
 
 MD2Shape::~MD2Shape() {
   delete [] vect;
 }
 
-void MD2Shape::setPauseAnimation(bool pause) { 
-  pauseAnimation = pause; 
-}
-
 void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
   this->g_3DModel = g_3DModel;    
-  g_ViewMode = GL_TRIANGLES;
-  this->attackEffect = false;
   this->div = div; 
   this->textureId = textureId;
-  this->debug = false;
   
   // Animation stuff
   elapsedTime = 0.0f;
   lastTime = 0.0f;  
-  pauseAnimation = false;  
-  currentAnim = MD2_STAND;
+  // currentAnim = MD2_STAND;
   currentFrame = 1;
   playedOnce = true;
   animationWaiting = -1;      
-	this->useShadow = false;
-
-  attackEffect = false;
-  setDir(Constants::MOVE_UP);
   
   vect = new vect3d [g_3DModel->numVertices]; 
   for(int i = 0; i < g_3DModel->numVertices; i++){
@@ -108,7 +89,7 @@ void MD2Shape::draw() {
                 -(((float)(depth) / 2.0f) / DIV ) );
 
   // rotate to movement angle
-  glRotatef(angle - 90, 0.0f, 1.0f, 0.0f);
+  glRotatef(getAngle() - 90, 0.0f, 1.0f, 0.0f);
 
   // To make our model render somewhat faster, we do some front back culling.
   // It seems that Quake2 orders their polygons clock-wise.  
@@ -125,51 +106,6 @@ void MD2Shape::draw() {
 }
 
 void MD2Shape::outline( float r, float g, float b ) {
-/*
-  useShadow = true;
-  GLboolean blend;
-  glGetBooleanv( GL_BLEND, &blend );
-  glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
-  glDisable( GL_TEXTURE_2D );
-  glPolygonMode( GL_FRONT, GL_LINE );
-  glLineWidth( 4 );
-	
-	// ***
-	glEnable( GL_CULL_FACE );
-  glCullFace( GL_BACK );
-	// ***  
-  
-  glColor3f( r, g, b );  
-
-	
-	glPushMatrix();
-  // rotate to upright
-  glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-  glTranslatef( ((float)(width) / 2.0f) / DIV, 
-                0.25f / DIV, 
-                -(((float)(depth) / 2.0f) / DIV ) );
-
-  // rotate to movement angle
-  glRotatef(angle - 90, 0.0f, 1.0f, 0.0f);
-  AnimateMD2Model();      
-  glPopMatrix();    
-
-
-  glLineWidth( 1 );
-  //glDepthFunc( df );
-  //glCullFace( GL_BACK );
-  glDisable( GL_CULL_FACE );
-  glPolygonMode( GL_FRONT, GL_FILL );
-  if( !blend ) glDisable( GL_BLEND );
-	if( texture ) glEnable( GL_TEXTURE_2D );
-  useShadow = false;
-  glColor4f(1, 1, 1, 0.9f);
-*/
-
-
-
 	useShadow = true;
   GLboolean blend;
   glGetBooleanv( GL_BLEND, &blend );
@@ -192,7 +128,7 @@ void MD2Shape::outline( float r, float g, float b ) {
                 -(((float)(depth) / 2.0f) / DIV ) );
 
   // rotate to movement angle
-  glRotatef(angle - 90, 0.0f, 1.0f, 0.0f);
+  glRotatef(getAngle() - 90, 0.0f, 1.0f, 0.0f);
   AnimateMD2Model();      
   glPopMatrix();    
   
@@ -202,23 +138,7 @@ void MD2Shape::outline( float r, float g, float b ) {
 	if( !blend ) glDisable( GL_BLEND );
 	if( texture ) glEnable( GL_TEXTURE_2D );
   useShadow = false;
-  glColor4f(1, 1, 1, 0.9f);
-	
-}
-
-void MD2Shape::setDir(int dir) { 
-  this->dir = dir; 
-  switch(dir) {
-  case Constants::MOVE_UP:
-    angle = 0.0f; 
-    break;
-  case Constants::MOVE_LEFT:
-    angle = -90.0f; break;
-  case Constants::MOVE_RIGHT:
-    angle = 90.0f;break;
-  default:
-    angle = 180.0f;
-  }
+  glColor4f(1, 1, 1, 0.9f);	
 }
 
 void MD2Shape::setCurrentAnimation(int numAnim, bool force){    
@@ -243,18 +163,16 @@ void MD2Shape::setCurrentAnimation(int numAnim, bool force){
 }
 
 void MD2Shape::setupToDraw() {
-
 }
 
 // This returns time t for the interpolation between the current and next key frame
-float MD2Shape::ReturnCurrentTime(int nextFrame)
-{       
+float MD2Shape::ReturnCurrentTime(int nextFrame) {       
     float time = SDL_GetTicks();   
     elapsedTime = time - lastTime;    
     //float speed = ANIMATION_SPEED;
     
-    float speed = (7.0f - (7.0f * (creatureSpeed / 10.0f))) + 3.0f;
-		//float speed = ( 10.0f - creatureSpeed );
+    float speed = (7.0f - (7.0f * (getCreatureSpeed() / 10.0f))) + 3.0f;
+		//float speed = ( 10.0f - getCreatureSpeed() );
     if( speed < 2.0f ) speed = 2.0f;
     if( speed > 10.0f ) speed = 10.0f;
 
@@ -264,7 +182,7 @@ float MD2Shape::ReturnCurrentTime(int nextFrame)
     if (elapsedTime >= (1000.0f / speed) )
     {
         // Set current frame to the next key frame (which could be the start of the anim)
-        if(!pauseAnimation){
+        if( !isAnimationPaused() ){
             currentFrame = nextFrame;
         }               
         lastTime = time;
@@ -274,8 +192,7 @@ float MD2Shape::ReturnCurrentTime(int nextFrame)
 
 
 // This draws and animates the .md2 model by interpoloated key frame animation
-void MD2Shape::AnimateMD2Model()
-{
+void MD2Shape::AnimateMD2Model() {
   int *ptricmds ;
   int nb;               
 
@@ -308,7 +225,7 @@ void MD2Shape::AnimateMD2Model()
   vect3d * currVertices, * nextVertices;    
   currVertices = &g_3DModel->vertices[ g_3DModel->numVertices * currentFrame ];
   nextVertices = &g_3DModel->vertices[ g_3DModel->numVertices * nextFrame ];
-  if(!pauseAnimation){    
+  if( !isAnimationPaused() ){    
     for(int i = 0; i < g_3DModel->numVertices ; i++){
       vect[i][0] = (currVertices[i][0] + t * (nextVertices[i][0] - currVertices[i][0])) * div;
       vect[i][1] = (currVertices[i][1] + t * (nextVertices[i][1] - currVertices[i][1])) * div;
@@ -365,102 +282,4 @@ void MD2Shape::AnimateMD2Model()
     ptricmds++;
   }  
 }       
-
-
-void MD2Shape::setupBlending() { 
-	glBlendFunc(GL_ONE, GL_ONE); 
-}
-
-void MD2Shape::endBlending() { 
-}
-
-bool MD2Shape::drawFirst() { 
-	return true; 
-}
-  // if true, the next two functions are called
-bool MD2Shape::drawLater() { 
-	return false; 
-}
-
-// factory method to create shape
-MD2Shape *MD2Shape::createShape(t3DModel *g_3DModel, GLuint textureId, float div,
-                                GLuint texture[], char *name, int descriptionGroup,
-                                Uint32 color, Uint8 shapePalIndex) {
-  vect3d min;
-  vect3d max;
-  int width, depth, height;
-
-  // bogus initial value
-  width = depth = height = 1;
-
-  // mins/max-s
-  vect3d *point = &g_3DModel->vertices[ g_3DModel->numVertices * g_3DModel->pAnimations[MD2_STAND].startFrame ];
-  min[0] = min[1] = min[2] = 100000.0f; // BAD!!
-  max[0] = max[1] = max[2] = 0.0f;
-  for(int i = 0; i < g_3DModel->numVertices; i++) {
-    for(int t = 0; t < 3; t++) if(point[i][t] < min[t]) min[t] = point[i][t];
-    for(int t = 0; t < 3; t++) if(point[i][t] >= max[t]) max[t] = point[i][t];
-  }  
-  for(int t = 0; t < 3; t++) max[t] -= min[t];
-  
-  // set the dimensions
-  float fw = max[2] * div * DIV;
-  float fd = max[0] * div * DIV;
-  float fh = max[1] * div * DIV;
-  
-  // make it a square
-  if(fw > fd) fd = fw;
-  else fw = fd;
-
-  // make it a min size (otherwise pathing has issues)
-  if( fw < 3 ) fw = 3;
-  if( fd < 3 ) fd = 3;
-    
-  // set the shape's dimensions
-  width = (int)( fw + ( (float)((int)fw) == fw ? 0 : 1 ) );
-  depth = (int)( fd + ( (float)((int)fd) == fd ? 0 : 1 ) );
-  height = toint(fh);
-  
-  // normalize and center points
-  map<int, int> seenFrames;
-  for(int r = 0; r < MD2_CREATURE_ACTION_COUNT; r++) {
-
-    /*
-    // An attempt to keep creatures inside their cirlces.
-    // not sure it does anything...
-    // (Be sure to not set min/max for z.)
-    // local min/max for x,y (not z!)
-    vect3d *point = &g_3DModel->vertices[ g_3DModel->numVertices * g_3DModel->pAnimations[r].startFrame ];
-    min[0] = min[2] = 100000.0f; // BAD!!
-    max[0] = max[2] = 0.0f;
-    for(int i = 0; i < g_3DModel->numVertices; i++) {
-      if(point[i][0] < min[0]) min[0] = point[i][0];
-      if(point[i][2] < min[2]) min[2] = point[i][2];
-      if(point[i][0] >= max[0]) max[0] = point[i][0];
-      if(point[i][2] >= max[2]) max[2] = point[i][2];
-    }  
-    max[0] -= min[0];
-    max[2] -= min[2];
-    */
-    
-    for(int a = g_3DModel->pAnimations[r].startFrame; a < g_3DModel->pAnimations[r].endFrame; a++) {
-      if(seenFrames.find(a) == seenFrames.end()) {
-        point = &g_3DModel->vertices[ g_3DModel->numVertices * a ];
-        for(int i = 0; i < g_3DModel->numVertices; i++) {
-          for(int t = 0; t < 3; t++) point[i][t] -= min[t];
-          for(int t = 0; t < 3; t++) if(t != 1) point[i][t] -= (max[t] / 2.0f);
-        }
-        seenFrames[a] = 1;
-      }
-    }
-  }
-
-#ifdef DEBUG_MD2
-  cerr << "Creating MD2 shape for model=" << name << 
-    " width=" << width << " depth=" << depth << " height=" << height << endl;
-#endif
-
-  return new MD2Shape(g_3DModel,textureId,div,texture,width,depth,height,
-                      name,descriptionGroup,color,shapePalIndex);
-}
 

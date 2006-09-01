@@ -40,10 +40,18 @@ libScourgeRender_a_SOURCES = \
 	gltorch.h\
 	glteleporter.cpp\
 	glteleporter.h\
+	animatedshape.cpp\
+	animatedshape.h\
+	modelwrapper.cpp\
+	modelwrapper.h\
 	Md2.cpp\
 	Md2.h\
 	md2shape.cpp\
 	md2shape.h\
+	Md3.cpp\
+	Md3.h\
+	md3shape.cpp\
+	md3shape.h\
 	3ds.cpp\
 	3ds.h\
 	3dsshape.cpp\

@@ -303,7 +303,7 @@ void MiniMap::drawMap() {
             }
             glPushMatrix();          
             glTranslatef( cx, cy, 0 );
-            glRotatef( ((MD2Shape*)pos->creature->getShape())->getAngle(), 0, 0, 1 );
+            glRotatef( ((AnimatedShape*)pos->creature->getShape())->getAngle(), 0, 0, 1 );
             glBegin( GL_TRIANGLES );
             glVertex2f( width, width );
             glVertex2f( -width, width );

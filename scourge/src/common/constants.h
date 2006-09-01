@@ -743,6 +743,8 @@ struct tAnimationInfo
     char strName[255];          // This stores the name of the animation (Jump, Pain, etc..)
     int startFrame;             // This stores the first frame number for this animation
     int endFrame;               // This stores the last frame number for this animation
+		int loopingFrames;			// This stores the looping frames for this animation (not used)
+		int framesPerSecond;		// This stores the frames per second that this animation runs    
 };
 
 typedef float vect3d[3];
@@ -755,6 +757,13 @@ struct t3DModel
     int numOfObjects;                   // The number of objects in the model
     int numOfMaterials;                 // The number of materials for the model
     int numOfAnimations;                // The number of animations in this model
+		int currentAnim;					// The current index into pAnimations list 
+		int currentFrame;					// The current frame of the current animation 
+		int nextFrame;						// The next frame of animation to interpolate too
+		float t;							// The ratio of 0.0f to 1.0f between each key frame
+		float lastTime;						// This stores the last time that was stored		int numOfTags;						// This stores the number of tags in the model
+		t3DModel	**pLinks;				// This stores a list of pointers that are linked to this model
+		struct tMd3Tag		*pTags;			// This stores all the tags for the model animations
     float movex;                        // Needed to draw the model
     float movey;
     float movez;
