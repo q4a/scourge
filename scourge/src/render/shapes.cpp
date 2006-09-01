@@ -671,7 +671,7 @@ GLShape *Shapes::getCreatureShape( char *model_name,
     if( creature_models.find( model_name_str ) == creature_models.end() ) {
       model_info = (Md2ModelInfo*)malloc( sizeof( Md2ModelInfo ) );
 
-      model_info->model.loadModel( model_name );
+      model_info->model.loadModel( model_name, skin_name );
       strcpy( model_info->name, model_name );
       model_info->scale = 1.0f;
 
