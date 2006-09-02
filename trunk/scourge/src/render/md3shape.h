@@ -51,6 +51,9 @@ public:
   void outline( float r, float g, float b );
   void setupToDraw();
 
+protected:
+	void setCurrentAnimation( int numAnim, bool force, int whichPart );
+
 };
 
 #endif

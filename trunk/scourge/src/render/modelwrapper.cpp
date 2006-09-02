@@ -17,8 +17,12 @@
 
 #include <string>  
 #include "modelwrapper.h"
+#include "animatedshape.h"
+#include "md2shape.h"
+#include "md3shape.h"
 #include "Md2.h"
 #include "Md3.h"
+#include "glshape.h"
 
 using namespace std;
 
@@ -74,4 +78,69 @@ void ModelWrapper::unloadModel() {
 	} else {
 		cerr << "Don't know how to unload model." << endl;
 	} 
+}
+
+// factory method to create shape
+AnimatedShape *ModelWrapper::createShape( GLuint textureId, float div,
+																					GLuint texture[], char *name, int descriptionGroup,
+																					Uint32 color, Uint8 shapePalIndex) {
+  int width, depth, height;
+	normalizeModel( &width, &depth, &height, div, name );
+
+	if( md2 ) {
+		return new MD2Shape( md2, textureId, div, texture, width, depth, height,
+												 name, descriptionGroup, color, shapePalIndex );
+	} else if( md3 ) {
+		return new MD3Shape( md3, div, texture, width, depth, height,
+												 name, descriptionGroup, color, shapePalIndex );
+	} else {
+		cerr << "*** Error: Can't create animated shape." << endl;
+		return NULL;
+	}
+}
+
+void ModelWrapper::normalizeModel( int *width, int *depth, int *height, float div, char *name ) {
+	vect3d min, max;
+	min[0] = min[1] = min[2] = 100000.0f;	// BAD!!
+	max[0] = max[1] = max[2] = 0.0f;
+	// bogus initial value
+	*width = *depth = *height = 1;
+
+	if( md2 ) CLoadMD2::findBounds( md2, min, max );
+	else if( md3 ) md3->findBounds( min, max );
+	else cerr << "*** Error: can't find bounds for this type of model." << endl;
+			
+	for (int t = 0; t < 3; t++)	max[t] -= min[t];
+
+	if( md3 ) cerr << "*** 1 max=" << max[2] << "," << max[0] << "," << max[1] << endl;
+	if( md3 ) cerr << "*** 1 min=" << min[2] << "," << min[0] << "," << min[1] << endl;
+		
+	// set the dimensions
+	float fw = max[2] * div * DIV;
+	float fd = max[0] * div * DIV;
+	float fh = max[1] * div * DIV;
+		
+	// make it a square
+	if (fw > fd) fd = fw;
+	else fw	= fd;
+
+	if( md3 ) cerr << "*** 2 fw=" << fw << " fd=" << fd << " fh=" << fh << endl;
+		
+	// make it a min size (otherwise pathing has issues)
+	if ( fw < 3 )	fw = 3;
+	if ( fd < 3 )	fd = 3;
+		
+	// set the shape's dimensions
+	*width = (int)( fw + ( (float)((int)fw) == fw ? 0 : 1 ) );
+	*depth = (int)( fd + ( (float)((int)fd) == fd ? 0 : 1 ) );
+	*height = toint(fh);	
+
+	if( md3 )
+		cerr << "Creating shape for model=" << name << 
+		" width=" << *width << " depth=" << *depth << " height=" << *height << endl;
+	
+	if( md2 ) CLoadMD2::normalize( md2, min, max );
+	else if( md3 ) md3->normalize( min, max );
+	else cerr << "*** Error: can't normalize this type of model." << endl;
+	
 }

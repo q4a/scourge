@@ -1971,8 +1971,8 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 
 				// Either the same old pos reused or nothing there.
 				// If these are not true, we're leaking memory.
-				assert( pos[x + xp][y - yp][z + zp] == p ||
-								!( pos[x + xp][y - yp][z + zp] ) );
+				//assert( pos[x + xp][y - yp][z + zp] == p ||
+								//!( pos[x + xp][y - yp][z + zp] ) );
 				
 				pos[x + xp][y - yp][z + zp] = p;
 			}

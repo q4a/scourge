@@ -21,6 +21,7 @@
 #include "render.h"
 
 class CModelMD3;
+class AnimatedShape;
 
 class ModelWrapper  {
 private:
@@ -34,6 +35,13 @@ public:
 	
 	inline t3DModel *getMd2() { return md2; }
 	inline CModelMD3 *getMd3() { return md3; }
+
+	AnimatedShape *createShape( GLuint textureId, float div,
+															GLuint texture[], char *name, int descriptionGroup,
+															Uint32 color, Uint8 shapePalIndex);
+
+protected:
+	void normalizeModel( int *width, int *depth, int *height, float div, char *name );
 	
 };
 

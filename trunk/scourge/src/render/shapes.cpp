@@ -730,10 +730,10 @@ GLShape *Shapes::getCreatureShape( char *model_name,
   // create the shape.
   // FIXME: shapeindex is always FIGHTER. Does it matter?
   AnimatedShape *shape = 
-    AnimatedShape::createShape( &(model_info->model), skin_texture, 
-                          (scale == 0.0f ? model_info->scale : scale),
-                          textureGroup[14], model_info->name, -1, 0xf0f0ffff, 0);
-  shape->setSkinName(realSkinName);
+		model_info->model.createShape( skin_texture, 
+																	 (scale == 0.0f ? model_info->scale : scale),
+																	 textureGroup[14], model_info->name, -1, 0xf0f0ffff, 0);
+	shape->setSkinName(realSkinName);
   return shape;
 }
 

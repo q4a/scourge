@@ -277,3 +277,33 @@ void CLoadMD2::CleanUp()
     if(m_pSkins)     delete [] m_pSkins;        // Free the skins data        
     if(m_pFrames)    delete [] m_pFrames;       // Free the frames of animation    
 }
+
+void CLoadMD2::findBounds( t3DModel *pModel, vect3d min, vect3d max ) {
+	// mins/max-s
+	vect3d *point = &pModel->vertices[ 
+		pModel->numVertices * 
+		pModel->pAnimations[MD2_STAND].startFrame ];
+	for (int i = 0; i < pModel->numVertices; i++) {
+		for (int t = 0; t < 3; t++)	if (point[i][t] < min[t])	min[t] = point[i][t];
+		for (int t = 0; t < 3; t++)	if (point[i][t] >= max[t]) max[t] = point[i][t];
+	}  
+}
+
+void CLoadMD2::normalize( t3DModel *pModel, vect3d min, vect3d max ) {
+	// normalize and center points		
+	map<int, int> seenFrames;
+	//  for(int r = 0; r < MD2_CREATURE_ACTION_COUNT; r++) {
+	for (int r = 0; r < (int)pModel->pAnimations.size(); r++) {
+		for (int a = pModel->pAnimations[r].startFrame; a < pModel->pAnimations[r].endFrame; a++) {
+			if (seenFrames.find(a) == seenFrames.end()) {
+				vect3d *point = &pModel->vertices[ pModel->numVertices * a ];
+				for (int i = 0; i < pModel->numVertices; i++) {
+					for (int t = 0; t < 3; t++)	point[i][t] -= min[t];
+					for (int t = 0; t < 3; t++)	if (t != 1)	point[i][t] -= (max[t] / 2.0f);
+				}
+				seenFrames[a] = 1;
+			}
+		}
+	}
+}
+

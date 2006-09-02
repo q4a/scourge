@@ -17,6 +17,7 @@
 
 #include <string>  
 #include "Md3.h"
+#include "Md2.h"
 #include "md3shape.h"
 
 using namespace std;
@@ -67,6 +68,8 @@ void MD3Shape::draw() {
   bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   glEnable( GL_TEXTURE_2D );
 	
+	glScalef( div, div, div );
+	glTranslatef( 0, -md3->getMin()[0] * div, 0 );
 	md3->DrawModel();
  
   if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
@@ -99,7 +102,10 @@ void MD3Shape::outline( float r, float g, float b ) {
   // rotate to movement angle
   glRotatef(getAngle() - 90, 0.0f, 1.0f, 0.0f);
 
-	
+	//glTranslatef( -md3->getMin()[2], -md3->getMin()[0], -md3->getMin()[1] );
+	//glTranslatef( -md3->getMax()[2] / 2, 0, -md3->getMax()[1] / 2 );
+	glScalef( div, div, div );
+	glTranslatef( 0, -md3->getMin()[0] * div, 0 );
 	md3->DrawModel();
 
 
@@ -114,9 +120,38 @@ void MD3Shape::outline( float r, float g, float b ) {
   glColor4f(1, 1, 1, 0.9f);	
 }
 
-void MD3Shape::setCurrentAnimation(int numAnim, bool force){    
+void MD3Shape::setCurrentAnimation(int numAnim, bool force) {    
 	// convert to MD3 animation (I know this is lame)
-	
+	switch( numAnim ) {
+	case MD2_ATTACK:
+		md3->SetTorsoAnimation( "TORSO_ATTACK", force );
+		md3->SetLegsAnimation( "LEGS_IDLE", force );
+		break;
+	case MD2_STAND:
+		md3->SetTorsoAnimation( "TORSO_STAND", force );
+		md3->SetLegsAnimation( "LEGS_IDLE", force );
+		break;
+	case MD2_RUN:
+		md3->SetTorsoAnimation( "TORSO_STAND", force );
+		md3->SetLegsAnimation( "LEGS_WALK", force );
+		break;
+	case MD2_WAVE:
+	case MD2_POINT:
+	case MD2_SALUTE:
+	case MD2_TAUNT:
+		md3->SetTorsoAnimation( "TORSO_GESTURE", force );
+		md3->SetLegsAnimation( "LEGS_IDLE", force );
+		break;
+	case MD2_PAIN1:		
+	case MD2_PAIN2:
+	case MD2_PAIN3:
+		md3->SetTorsoAnimation( "TORSO_STAND2", force );
+		md3->SetLegsAnimation( "LEGS_IDLE", force );
+		break;
+	default:
+		cerr << "*** WARN: Unhandled movement in MD3Shape::setCurrentAnimation. numAnim=" << numAnim << endl;
+	}
+
 }
 
 void MD3Shape::setupToDraw() {

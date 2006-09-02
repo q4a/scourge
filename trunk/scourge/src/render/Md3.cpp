@@ -437,6 +437,9 @@ bool IsInString(string strString, string strSubString)
 
 CModelMD3::CModelMD3()
 {
+	for( int i = 0; i < 3; i++ ) {
+		this->min[i] = this->max[i] = 0;
+	}
 	// Here we initialize all our mesh structures for the character
 	memset(&m_Head,  0, sizeof(t3DModel));
 	memset(&m_Upper, 0, sizeof(t3DModel));
@@ -1349,6 +1352,59 @@ void CModelMD3::RenderModel(t3DModel *pModel)
 	}
 }
 
+void CModelMD3::findBounds( vect3d min, vect3d max ) {
+
+	vect3d lowerMin, lowerMax, upperMin, upperMax, headMin, headMax;
+	for( int i = 0; i < 3; i++ ) {
+		lowerMin[i] = upperMin[i] = headMin[i] = 100000;	// BAD!!
+		lowerMax[i] = upperMax[i] = headMax[i] = 0;
+	}
+
+	findModelBounds( &m_Lower, lowerMin, lowerMax );
+	findModelBounds( &m_Upper, upperMin, upperMax );
+	findModelBounds( &m_Head, headMin, headMax );
+
+	cerr << "md3: lower min=" << lowerMin[2] << "," << lowerMin[0] << "," << lowerMin[1] << endl;
+	cerr << "md3: lower max=" << lowerMax[2] << "," << lowerMax[0] << "," << lowerMax[1] << endl;
+
+	cerr << "md3: upper min=" << upperMin[2] << "," << upperMin[0] << "," << upperMin[1] << endl;
+	cerr << "md3: upper max=" << upperMax[2] << "," << upperMax[0] << "," << upperMax[1] << endl;
+
+	cerr << "md3: head min=" << headMin[2] << "," << headMin[0] << "," << headMin[1] << endl;
+	cerr << "md3: head max=" << headMax[2] << "," << headMax[0] << "," << headMax[1] << endl;
+
+	for( int i = 0; i < 3; i++ ) {
+		min[i] = lowerMin[i];
+		max[i] = upperMax[i];
+	}
+}
+
+void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
+	for(int o = 0; o < pModel->numOfObjects; o++) {
+		t3DObject *pObject = &pModel->pObject[o];
+		for( int t = 0; t < pObject->numOfVerts; t++ ) {
+			CVector3 vPoint = pObject->pVerts[ t ];
+
+			if (vPoint.x < min[2])	min[2] = vPoint.x;
+			if (vPoint.y < min[0])	min[0] = vPoint.y;
+			if (vPoint.z < min[1])	min[1] = vPoint.z;
+			if (vPoint.x >= max[2])	max[2] = vPoint.x;
+			if (vPoint.y >= max[0])	max[0] = vPoint.y;
+			if (vPoint.z >= max[1])	max[1] = vPoint.z;
+		}
+	}
+}
+
+void CModelMD3::normalize( vect3d min, vect3d max ) {
+	for( int i = 0; i < 3; i++ ) {
+		this->min[i] = min[i];
+		this->max[i] = max[i];
+	}
+}
+
+void CModelMD3::normalizeModel( t3DModel *pModel, vect3d min, vect3d max ) {
+}
+
 
 //////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
@@ -1358,7 +1414,7 @@ void CModelMD3::RenderModel(t3DModel *pModel)
 /////
 ///////////////////////////////// SET TORSO ANIMATION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::SetTorsoAnimation(char *strAnimation)
+void CModelMD3::SetTorsoAnimation(char *strAnimation, bool force)
 {
 	// Go through all of the animations in this model
 	for(int i = 0; i < m_Upper.numOfAnimations; i++)
@@ -1367,8 +1423,13 @@ void CModelMD3::SetTorsoAnimation(char *strAnimation)
 		if( !strcasecmp(m_Upper.pAnimations[i].strName, strAnimation) )
 		{
 			// Set the legs animation to the current animation we just found and return
+			if( m_Upper.currentAnim == i ) return;
 			m_Upper.currentAnim = i;
-			m_Upper.currentFrame = m_Upper.pAnimations[m_Upper.currentAnim].startFrame;
+			if( force ) {
+				m_Upper.currentFrame = m_Upper.pAnimations[m_Upper.currentAnim].startFrame;
+			} else {
+				m_Upper.nextFrame = m_Upper.pAnimations[m_Upper.currentAnim].startFrame;
+			}
 			return;
 		}
 	}
@@ -1381,7 +1442,7 @@ void CModelMD3::SetTorsoAnimation(char *strAnimation)
 /////
 ///////////////////////////////// SET LEGS ANIMATION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::SetLegsAnimation(char *strAnimation)
+void CModelMD3::SetLegsAnimation(char *strAnimation, bool force)
 {
 	// Go through all of the animations in this model
 	for(int i = 0; i < m_Lower.numOfAnimations; i++)
@@ -1390,8 +1451,13 @@ void CModelMD3::SetLegsAnimation(char *strAnimation)
 		if( !strcasecmp(m_Lower.pAnimations[i].strName, strAnimation) )
 		{
 			// Set the legs animation to the current animation we just found and return
+			if( m_Lower.currentAnim == i ) return;
 			m_Lower.currentAnim = i;
-			m_Lower.currentFrame = m_Lower.pAnimations[m_Lower.currentAnim].startFrame;
+			if( force ) {
+				m_Lower.currentFrame = m_Lower.pAnimations[m_Lower.currentAnim].startFrame;
+			} else {
+				m_Lower.nextFrame = m_Lower.pAnimations[m_Lower.currentAnim].startFrame;
+			}
 			return;
 		}
 	}
