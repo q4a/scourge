@@ -215,6 +215,9 @@ public:
 	// These our our init and deinit() C++ functions (Constructor/Deconstructor)
 	CModelMD3();
 	~CModelMD3();
+
+	void findBounds( vect3d min, vect3d max );
+	void normalize( vect3d min, vect3d max );
 	
 	// This loads the model from a path and name prefix.   It takes the path and
 	// model name prefix to be added to _upper.md3, _lower.md3 or _head.md3.
@@ -234,15 +237,22 @@ public:
 	void DestroyModel(t3DModel *pModel);
 
 	// This takes a string of an animation and sets the torso animation accordingly
-	void SetTorsoAnimation(char *strAnimation);
+	void SetTorsoAnimation(char *strAnimation, bool force=false );
 
 	// This takes a string of an animation and sets the legs animation accordingly
-	void SetLegsAnimation(char *strAnimation);
+	void SetLegsAnimation(char *strAnimation, bool force=false );
 
 	// This returns a pointer to a .md3 model in the character (kLower, kUpper, kHead, kWeapon)
 	t3DModel *GetModel(int whichPart);
+
+	inline float *getMin() { return min; }
+	inline float *getMax() { return max; }
 	
 private:
+	vect3d min, max;
+
+	void findModelBounds( t3DModel *pModel, vect3d min, vect3d max );
+	void normalizeModel( t3DModel *pModel, vect3d min, vect3d max );
 
 	// This loads the models textures with a given path
 	void LoadModelTextures(t3DModel *pModel, char *strPath);

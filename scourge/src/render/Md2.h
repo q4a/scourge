@@ -102,9 +102,11 @@ class CLoadMD2
 {
  
 public:
-    CLoadMD2();                                
-    bool ImportMD2(t3DModel *pModel, char *strFileName);    
+	CLoadMD2();                                
+	bool ImportMD2(t3DModel *pModel, char *strFileName);    
 	void DeleteMD2( t3DModel *pModel );
+	static void findBounds( t3DModel *pModel, vect3d min, vect3d max );
+	static void normalize( t3DModel *pModel, vect3d min, vect3d max );
 
 private:        
         

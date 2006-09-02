@@ -90,12 +90,6 @@ public:
   inline float getAngle() {
     return angle;
   }  
-
-  // Factory method to create shape. It computes the dimensions and normalizes the
-  // model's points.
-  static AnimatedShape *createShape( ModelWrapper *modelWrapper, GLuint textureId, float div,
-  																	GLuint texture[], char *name, int descriptionGroup,
-  																	Uint32 color, Uint8 shapePalIndex);
 };
 
 #endif
