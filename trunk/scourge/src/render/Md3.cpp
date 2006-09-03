@@ -440,6 +440,7 @@ CModelMD3::CModelMD3()
 	for( int i = 0; i < 3; i++ ) {
 		this->min[i] = this->max[i] = 0;
 	}
+	paused = false;
 	// Here we initialize all our mesh structures for the character
 	memset(&m_Head,  0, sizeof(t3DModel));
 	memset(&m_Upper, 0, sizeof(t3DModel));
@@ -654,6 +655,10 @@ bool CModelMD3::LoadModel(char *strPath, char *strModel)
 
 	// Link the upper body to the head when the tag "tag_head" is found in our tag array
 	LinkModel(&m_Upper, &m_Head, "tag_head");
+
+
+	SetTorsoAnimation( "TORSO_STAND", true );
+	SetLegsAnimation( "LEGS_IDLE", true );
 		
 	// The character was loaded correctly so return true
 	return true;
@@ -988,6 +993,9 @@ void  CModelMD3::LinkModel(t3DModel *pModel, t3DModel *pLink, char *strTagName)
 
 void CModelMD3::UpdateModel(t3DModel *pModel)
 {
+
+	if( paused ) return;
+
 	// Initialize a start and end frame, for models with no animation
 	int startFrame = 0;
 	int endFrame   = 1;
@@ -1069,6 +1077,7 @@ void CModelMD3::DrawModel()
 
 	// Draw the first link, which is the lower body.  This will then recursively go
 	// through the models attached to this model and drawn them.
+	glTranslatef( 0, 0, -min[1] ); // translate to floor.
 	DrawLink(&m_Lower);
 }
 
@@ -1159,7 +1168,6 @@ void CModelMD3::DrawLink(t3DModel *pModel)
 			finalMatrix[12] = vPosition.x;
 			finalMatrix[13] = vPosition.y;
 			finalMatrix[14] = vPosition.z;
-
 //////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
 
@@ -1257,6 +1265,32 @@ void CModelMD3::SetCurrentTime(t3DModel *pModel)
 
 void CModelMD3::RenderModel(t3DModel *pModel)
 {
+
+		// Make sure we have valid objects just in case. (size() is in the STL vector class)
+	if(pModel->pObject.size() <= 0) return;
+
+	/*
+	for(int i = 0; i < pModel->numOfObjects; i++) {
+		t3DObject *pObject = &pModel->pObject[i];
+		for( int frame = pModel->pAnimations[ pModel->currentAnim ].startFrame;
+				 frame < pModel->pAnimations[ pModel->currentAnim ].endFrame;
+				 frame++ ) {
+			int currentIndex = frame * pObject->numOfVerts; 
+			for(int j = 0; j < pObject->numOfFaces; j++) {
+				for(int whichVertex = 0; whichVertex < 3; whichVertex++) {
+					int index = pObject->pFaces[j].vertIndex[whichVertex];
+					CVector3 vPoint = pObject->pVerts[ currentIndex + index ];
+					
+					//vPoint1.x -= min[2];
+					//vPoint1.y -= min[0];
+					vPoint1.z -= min[1];
+				}
+			}
+		}
+	}
+	*/
+
+
 	// Make sure we have valid objects just in case. (size() is in the STL vector class)
 	if(pModel->pObject.size() <= 0) return;
 
@@ -1336,6 +1370,9 @@ void CModelMD3::RenderModel(t3DModel *pModel)
 					CVector3 vPoint1 = pObject->pVerts[ currentIndex + index ];
 					CVector3 vPoint2 = pObject->pVerts[ nextIndex + index];
 
+					//vPoint1.z -= min[1];
+					//vPoint2.z -= min[1];
+
 					// By using the equation: p(t) = p0 + t(p1 - p0), with a time t,
 					// we create a new vertex that is closer to the next key frame.
 					glVertex3f(vPoint1.x + pModel->t * (vPoint2.x - vPoint1.x),
@@ -1353,7 +1390,6 @@ void CModelMD3::RenderModel(t3DModel *pModel)
 }
 
 void CModelMD3::findBounds( vect3d min, vect3d max ) {
-
 	vect3d lowerMin, lowerMax, upperMin, upperMax, headMin, headMax;
 	for( int i = 0; i < 3; i++ ) {
 		lowerMin[i] = upperMin[i] = headMin[i] = 100000;	// BAD!!
@@ -1363,28 +1399,32 @@ void CModelMD3::findBounds( vect3d min, vect3d max ) {
 	findModelBounds( &m_Lower, lowerMin, lowerMax );
 	findModelBounds( &m_Upper, upperMin, upperMax );
 	findModelBounds( &m_Head, headMin, headMax );
-
-	cerr << "md3: lower min=" << lowerMin[2] << "," << lowerMin[0] << "," << lowerMin[1] << endl;
-	cerr << "md3: lower max=" << lowerMax[2] << "," << lowerMax[0] << "," << lowerMax[1] << endl;
-
-	cerr << "md3: upper min=" << upperMin[2] << "," << upperMin[0] << "," << upperMin[1] << endl;
-	cerr << "md3: upper max=" << upperMax[2] << "," << upperMax[0] << "," << upperMax[1] << endl;
-
-	cerr << "md3: head min=" << headMin[2] << "," << headMin[0] << "," << headMin[1] << endl;
-	cerr << "md3: head max=" << headMax[2] << "," << headMax[0] << "," << headMax[1] << endl;
+	
+	cerr << "BEFORE: md3: lower min=" << lowerMin[2] << "," << lowerMin[0] << "," << lowerMin[1] << endl;
+	cerr << "BEFORE: md3: lower max=" << lowerMax[2] << "," << lowerMax[0] << "," << lowerMax[1] << endl;
+	
+	cerr << "BEFORE: md3: upper min=" << upperMin[2] << "," << upperMin[0] << "," << upperMin[1] << endl;
+	cerr << "BEFORE: md3: upper max=" << upperMax[2] << "," << upperMax[0] << "," << upperMax[1] << endl;
+	
+	cerr << "BEFORE: md3: head min=" << headMin[2] << "," << headMin[0] << "," << headMin[1] << endl;
+	cerr << "BEFORE: md3: head max=" << headMax[2] << "," << headMax[0] << "," << headMax[1] << endl;
 
 	for( int i = 0; i < 3; i++ ) {
-		min[i] = lowerMin[i];
-		max[i] = upperMax[i];
+		min[i] = lowerMin[i];		
 	}
+
+	max[2] = upperMax[2];
+	max[1] = upperMax[1];
+	max[0] = upperMax[0] + lowerMax[0] + headMax[0];
 }
 
 void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
+
 	for(int o = 0; o < pModel->numOfObjects; o++) {
 		t3DObject *pObject = &pModel->pObject[o];
-		for( int t = 0; t < pObject->numOfVerts; t++ ) {
-			CVector3 vPoint = pObject->pVerts[ t ];
-
+		for(int j = 0; j < pObject->numOfVerts; j++) {
+			CVector3 vPoint = pObject->pVerts[ j ];
+			
 			if (vPoint.x < min[2])	min[2] = vPoint.x;
 			if (vPoint.y < min[0])	min[0] = vPoint.y;
 			if (vPoint.z < min[1])	min[1] = vPoint.z;
@@ -1395,14 +1435,24 @@ void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
 	}
 }
 
-void CModelMD3::normalize( vect3d min, vect3d max ) {
+void CModelMD3::normalize( vect3d pmin, vect3d pmax ) {
 	for( int i = 0; i < 3; i++ ) {
-		this->min[i] = min[i];
-		this->max[i] = max[i];
+		this->min[i] = pmin[i];
+		this->max[i] = pmax[i];
 	}
 }
 
 void CModelMD3::normalizeModel( t3DModel *pModel, vect3d min, vect3d max ) {
+	for(int o = 0; o < pModel->numOfObjects; o++) {
+		t3DObject *pObject = &pModel->pObject[o];
+		for(int j = 0; j < pObject->numOfVerts; j++) {
+			CVector3 *vPoint = &(pObject->pVerts[ j ]);
+
+			vPoint->x -= min[2];
+			vPoint->y -= min[0];
+			vPoint->z -= min[1];
+		}
+	}
 }
 
 
@@ -1422,6 +1472,7 @@ void CModelMD3::SetTorsoAnimation(char *strAnimation, bool force)
 		// If the animation name passed in is the same as the current animation's name
 		if( !strcasecmp(m_Upper.pAnimations[i].strName, strAnimation) )
 		{
+//			cerr << "UPPER: i=" << i << " name=" << m_Upper.pAnimations[i].strName << endl;
 			// Set the legs animation to the current animation we just found and return
 			if( m_Upper.currentAnim == i ) return;
 			m_Upper.currentAnim = i;
@@ -1450,6 +1501,7 @@ void CModelMD3::SetLegsAnimation(char *strAnimation, bool force)
 		// If the animation name passed in is the same as the current animation's name
 		if( !strcasecmp(m_Lower.pAnimations[i].strName, strAnimation) )
 		{
+//			cerr << "LOWER: i=" << i << " name=" << m_Lower.pAnimations[i].strName << endl;
 			// Set the legs animation to the current animation we just found and return
 			if( m_Lower.currentAnim == i ) return;
 			m_Lower.currentAnim = i;

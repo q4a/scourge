@@ -69,7 +69,7 @@ void MD3Shape::draw() {
   glEnable( GL_TEXTURE_2D );
 	
 	glScalef( div, div, div );
-	glTranslatef( 0, -md3->getMin()[0] * div, 0 );
+	md3->setAnimationPaused( isAnimationPaused() );
 	md3->DrawModel();
  
   if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
@@ -105,7 +105,8 @@ void MD3Shape::outline( float r, float g, float b ) {
 	//glTranslatef( -md3->getMin()[2], -md3->getMin()[0], -md3->getMin()[1] );
 	//glTranslatef( -md3->getMax()[2] / 2, 0, -md3->getMax()[1] / 2 );
 	glScalef( div, div, div );
-	glTranslatef( 0, -md3->getMin()[0] * div, 0 );
+	//glTranslatef( 0, -md3->getMin()[0] * div, 0 );
+	md3->setAnimationPaused( isAnimationPaused() );
 	md3->DrawModel();
 
 
@@ -139,13 +140,13 @@ void MD3Shape::setCurrentAnimation(int numAnim, bool force) {
 	case MD2_POINT:
 	case MD2_SALUTE:
 	case MD2_TAUNT:
-		md3->SetTorsoAnimation( "TORSO_GESTURE", force );
+		md3->SetTorsoAnimation( "TORSO_STAND", force );
 		md3->SetLegsAnimation( "LEGS_IDLE", force );
 		break;
 	case MD2_PAIN1:		
 	case MD2_PAIN2:
 	case MD2_PAIN3:
-		md3->SetTorsoAnimation( "TORSO_STAND2", force );
+		md3->SetTorsoAnimation( "TORSO_STAND", force );
 		md3->SetLegsAnimation( "LEGS_IDLE", force );
 		break;
 	default:

@@ -247,9 +247,11 @@ public:
 
 	inline float *getMin() { return min; }
 	inline float *getMax() { return max; }
+	inline void setAnimationPaused( bool b ) { paused = b; }
 	
 private:
 	vect3d min, max;
+	bool paused;
 
 	void findModelBounds( t3DModel *pModel, vect3d min, vect3d max );
 	void normalizeModel( t3DModel *pModel, vect3d min, vect3d max );

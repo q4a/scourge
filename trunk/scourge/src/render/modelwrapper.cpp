@@ -57,9 +57,7 @@ void ModelWrapper::loadModel( char *path, char *name ) {
 	  this->md3 = NULL;
 	} else if( load == LOAD_MD3 ) {
 		CModelMD3 *md3 = new CModelMD3();
-		md3->LoadModel( full, name );		
-		md3->SetTorsoAnimation( "TORSO_STAND" );
-		md3->SetLegsAnimation( "LEGS_IDLE" );
+		md3->LoadModel( full, name );				
 	  this->md2 = NULL;
 	  this->md3 = md3;
 	} else {
