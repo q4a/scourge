@@ -12,6 +12,7 @@
 #include <vector>
 #include "render.h"
 
+class ModelLoader;
 
 #define BYTE Uint8
 
@@ -213,18 +214,20 @@ class CModelMD3
 public:
 
 	// These our our init and deinit() C++ functions (Constructor/Deconstructor)
-	CModelMD3();
+	CModelMD3( ModelLoader *loader );
 	~CModelMD3();
+
+	void unloadSkinTextures();	
 
 	void findBounds( vect3d min, vect3d max );
 	void normalize( vect3d min, vect3d max );
 	
 	// This loads the model from a path and name prefix.   It takes the path and
 	// model name prefix to be added to _upper.md3, _lower.md3 or _head.md3.
-	bool LoadModel(char *strPath, char *strModel);
+	bool LoadModel(char *strPath, char *strModel );
 
 	// This loads the weapon and takes the same path and model name to be added to .md3
-	bool LoadWeapon(char *strPath, char *strModel);
+	bool LoadWeapon(char *strPath, char *strModel );
 
 	// This links a model to another model (pLink) so that it's the parent of that child.
 	// The strTagName is the tag, or joint, that they will be linked at (I.E. "tag_torso").
@@ -252,12 +255,13 @@ public:
 private:
 	vect3d min, max;
 	bool paused;
+	ModelLoader *loader;
 
 	void findModelBounds( t3DModel *pModel, vect3d min, vect3d max );
 	void normalizeModel( t3DModel *pModel, vect3d min, vect3d max );
 
 	// This loads the models textures with a given path
-	void LoadModelTextures(t3DModel *pModel, char *strPath);
+	void LoadModelTextures(t3DModel *pModel, char *strPath );
 
 	// This loads the animation config file (.cfg) for the character
 	bool LoadAnimations(char *strConfigFile);

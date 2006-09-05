@@ -45,7 +45,6 @@ private:
   float creatureSpeed;
   GLShape *debugShape;
   bool pauseAnimation;
-  char *skin_name;  
   
 protected:
   int currentAnim;  
@@ -79,8 +78,6 @@ public:
   inline int getCurrentAnimation() { return currentAnim; }  
   inline void setPauseAnimation(bool pause) { pauseAnimation = pause; }
   inline bool isAnimationPaused() { return pauseAnimation; }    
-  inline void setSkinName(char *s) { skin_name = s; }
-  inline char *getSkinName() { return skin_name; }  
 
   inline void setAngle(float angle) { 
     float a = angle + 90.0f;

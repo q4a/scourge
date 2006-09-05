@@ -19,10 +19,9 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include "modelwrapper.h"
 
 using namespace std;																				 
-
-void CreateTexture(Uint32 *texture, char *filename);
 
 //////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
@@ -435,12 +434,13 @@ bool IsInString(string strString, string strSubString)
 /////
 ///////////////////////////////// CMODEL MD3 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-CModelMD3::CModelMD3()
+CModelMD3::CModelMD3( ModelLoader *loader )
 {
 	for( int i = 0; i < 3; i++ ) {
 		this->min[i] = this->max[i] = 0;
 	}
 	paused = false;
+	this->loader = loader;
 	// Here we initialize all our mesh structures for the character
 	memset(&m_Head,  0, sizeof(t3DModel));
 	memset(&m_Upper, 0, sizeof(t3DModel));
@@ -457,6 +457,8 @@ CModelMD3::CModelMD3()
 
 CModelMD3::~CModelMD3()
 {
+	unloadSkinTextures();
+
 	// Here we free all of the meshes in our model
 	DestroyModel(&m_Head);
 	DestroyModel(&m_Upper);
@@ -464,6 +466,12 @@ CModelMD3::~CModelMD3()
 	DestroyModel(&m_Weapon);
 }	
 
+void CModelMD3::unloadSkinTextures() {
+	for( unsigned int j = 0; j < strTextures.size(); j++ ) {
+		cerr << "*** Deleting MD3 texture:" << strTextures[j] << endl;
+		loader->unloadSkinTexture( (char*)strTextures[j].c_str() );
+	}
+}
 
 ///////////////////////////////// DESTROY MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
@@ -526,7 +534,7 @@ t3DModel *CModelMD3::GetModel(int whichPart)
 /////
 ///////////////////////////////// LOAD MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CModelMD3::LoadModel(char *strPath, char *strModel)
+bool CModelMD3::LoadModel(char *strPath, char *strModel )
 {
 	char strLowerModel[255] = {0};	// This stores the file name for the lower.md3 model
 	char strUpperModel[255] = {0};	// This stores the file name for the upper.md3 model
@@ -618,9 +626,9 @@ bool CModelMD3::LoadModel(char *strPath, char *strModel)
 	// looks for each model.  Usually it is just color changes though.
 
 	// Load the lower, upper and head textures.  
-	LoadModelTextures(&m_Lower, strPath);
-	LoadModelTextures(&m_Upper, strPath);
-	LoadModelTextures(&m_Head,  strPath);
+	LoadModelTextures(&m_Lower, strPath );
+	LoadModelTextures(&m_Upper, strPath );
+	LoadModelTextures(&m_Head,  strPath );
 
 	// We added to this function the code that loads the animation config file
 
@@ -721,7 +729,7 @@ bool CModelMD3::LoadWeapon(char *strPath, char *strModel)
 
 	// We should have the textures needed for each weapon part loaded from the weapon's
 	// shader, so let's load them in the given path.
-	LoadModelTextures(&m_Weapon, strPath);
+	LoadModelTextures(&m_Weapon, strPath );
 
 	// Just like when we loaded the character mesh files, we need to link the weapon to
 	// our character.  The upper body mesh (upper.md3) holds a tag for the weapon.
@@ -741,7 +749,7 @@ bool CModelMD3::LoadWeapon(char *strPath, char *strModel)
 /////
 ///////////////////////////////// LOAD WEAPON \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::LoadModelTextures(t3DModel *pModel, char *strPath)
+void CModelMD3::LoadModelTextures(t3DModel *pModel, char *strPath )
 {
 	// This function loads the textures that are assigned to each mesh and it's
 	// sub-objects.  For instance, the Lara Croft character has a texture for the body
@@ -755,6 +763,17 @@ void CModelMD3::LoadModelTextures(t3DModel *pModel, char *strPath)
 	// we make sure that the texture map isn't already in our list.  If it is, we assign
 	// that texture index to our current models material texture ID.  If it's a new texture,
 	// then the new texture is loaded and added to our characters texture array: m_Textures[].
+
+	// fix the texture file names
+	for(int i = 0; i < pModel->numOfMaterials; i++) {
+		if(strlen(pModel->pMaterials[i].strFile) > 0) {
+			char strFullPath[255] = {0};
+			char *p = strchr( pModel->pMaterials[i].strFile, '\r' );
+			if( p ) *p = 0;
+			sprintf( strFullPath, "%s/%s", strPath, pModel->pMaterials[i].strFile );
+			strcpy( pModel->pMaterials[i].strFile, strFullPath );
+		}
+	}
 
 	// Go through all the materials that are assigned to this model
 	for(int i = 0; i < pModel->numOfMaterials; i++)
@@ -783,18 +802,14 @@ void CModelMD3::LoadModelTextures(t3DModel *pModel, char *strPath)
 			// Make sure before going any further that this is a new texture to be loaded
 			if(bNewTexture == false) continue;
 			
-			char strFullPath[255] = {0};
-
-			// Add the file name and path together so we can load the texture
-			char *p = strchr( pModel->pMaterials[i].strFile, '\r' );
-			if( p ) *p = 0;
-			cerr << "s=>" << pModel->pMaterials[i].strFile << "<" << endl;
-			sprintf(strFullPath, "%s/%s", strPath, pModel->pMaterials[i].strFile);
+			//m_Textures[strTextures.size()] = wrapper->loadSkinTexture( strPath, pModel->pMaterials[i].strFile );
+			cerr << "*** Loading MD3 texture: count=" << strTextures.size() << " file=" << pModel->pMaterials[i].strFile << endl;
+			m_Textures[strTextures.size()] = loader->loadSkinTexture( pModel->pMaterials[i].strFile );
 
 			// We pass in a reference to an index into our texture array member variable.
 			// The size() function returns the current loaded texture count.  Initially
 			// it will be 0 because we haven't added any texture names to our strTextures list.
-			CreateTexture(&(m_Textures[strTextures.size()]), strFullPath);
+			//CreateTexture(&(m_Textures[strTextures.size()]), strFullPath);
 
 			// Set the texture ID for this material by getting the current loaded texture count
 			pModel->pMaterials[i].texureId = strTextures.size();
@@ -1356,7 +1371,7 @@ void CModelMD3::RenderModel(t3DModel *pModel)
 					{
 						// Assign the texture coordinate to this vertex
 						glTexCoord2f(pObject->pTexVerts[ index ].x, 
-									 -pObject->pTexVerts[ index ].y);
+									 pObject->pTexVerts[ index ].y);
 					}
 
 //////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
@@ -1399,7 +1414,7 @@ void CModelMD3::findBounds( vect3d min, vect3d max ) {
 	findModelBounds( &m_Lower, lowerMin, lowerMax );
 	findModelBounds( &m_Upper, upperMin, upperMax );
 	findModelBounds( &m_Head, headMin, headMax );
-	
+/*	
 	cerr << "BEFORE: md3: lower min=" << lowerMin[2] << "," << lowerMin[0] << "," << lowerMin[1] << endl;
 	cerr << "BEFORE: md3: lower max=" << lowerMax[2] << "," << lowerMax[0] << "," << lowerMax[1] << endl;
 	
@@ -1408,7 +1423,7 @@ void CModelMD3::findBounds( vect3d min, vect3d max ) {
 	
 	cerr << "BEFORE: md3: head min=" << headMin[2] << "," << headMin[0] << "," << headMin[1] << endl;
 	cerr << "BEFORE: md3: head max=" << headMax[2] << "," << headMax[0] << "," << headMax[1] << endl;
-
+*/
 	for( int i = 0; i < 3; i++ ) {
 		min[i] = lowerMin[i];		
 	}
@@ -1419,12 +1434,10 @@ void CModelMD3::findBounds( vect3d min, vect3d max ) {
 }
 
 void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
-
 	for(int o = 0; o < pModel->numOfObjects; o++) {
 		t3DObject *pObject = &pModel->pObject[o];
 		for(int j = 0; j < pObject->numOfVerts; j++) {
 			CVector3 vPoint = pObject->pVerts[ j ];
-			
 			if (vPoint.x < min[2])	min[2] = vPoint.x;
 			if (vPoint.y < min[0])	min[0] = vPoint.y;
 			if (vPoint.z < min[1])	min[1] = vPoint.z;
@@ -1990,47 +2003,6 @@ void CLoadMD3::CleanUp()
 	// Close the current file pointer
 	fclose(m_FilePointer);						
 }
-
-/* function to load in bitmap as a GL texture */
-void CreateTexture(Uint32 *texture, char *filename) {
-
-	cerr << "Looking for texture: >" << filename << "<" << endl;
-
-  /* Create storage space for the texture */
-  SDL_Surface *TextureImage[1];
-
-  /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
-  if( ( TextureImage[0] = SDL_LoadBMP( filename ) ) ) {
-		cerr << "\tFOUND." << endl;
-
-    /* Create The Texture */
-    glGenTextures( 1, texture );
-
-    /* Typical Texture Generation Using Data From The Bitmap */
-    glBindTexture( GL_TEXTURE_2D, *texture );
-
-    /* Generate The Texture */
-    //	    glTexImage2D( GL_TEXTURE_2D, 0, 3,
-    //                    TextureImage[0]->w, TextureImage[0]->h, 0, GL_BGR,
-    //            			  GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
-
-    /* Linear Filtering */
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3,
-                      TextureImage[0]->w, TextureImage[0]->h,
-                      GL_BGR, GL_UNSIGNED_BYTE, TextureImage[0]->pixels);
-  } else {
-    *texture = 0;
-		cerr << "\tNOT FOUND." << endl;
-//    fprintf(stderr, "\tNot found.\n");
-  }
-//  fprintf(stderr, "\tStored texture at: %u\n", texture[0]);
-
-  /* Free up any memory we may have used */
-  if( TextureImage[0] ) SDL_FreeSurface( TextureImage[0] );
-}
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //

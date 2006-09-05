@@ -475,6 +475,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     // store it for now
     shapeValueVector.push_back(sv);
     return n;
+/*
   } else if(n == '2') {   
     Md2ModelInfo *info = new Md2ModelInfo();
     // name
@@ -498,6 +499,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     string s = info->name;
     old_creature_models[s] = info;
     return n;
+*/		
   } else if(n == 'P') {
     fgetc(fp);
     n = Constants::readLine(line, fp);
@@ -650,163 +652,6 @@ char *Shapes::getRandomDescription(int descriptionGroup) {
     return(char*)((*list)[n].c_str());
   }
   return NULL;
-}
-
-GLShape *Shapes::getCreatureShape( char *model_name, 
-                                   char *skin_name, 
-                                   float scale ) {
-
-  //cerr << "getCreatureShape: model_name=" << model_name << " skin=" << skin_name << endl;
-
-  // find the model the old way
-  Md2ModelInfo *model_info;
-  char realSkinName[300];
-
-  string model_name_str = model_name;
-  if(old_creature_models.find(model_name_str) != old_creature_models.end()) {  
-    model_info = old_creature_models[model_name_str];
-	strcpy( realSkinName, skin_name );
-  } else {
-		// load the model the new way
-    if( creature_models.find( model_name_str ) == creature_models.end() ) {
-      model_info = (Md2ModelInfo*)malloc( sizeof( Md2ModelInfo ) );
-
-      model_info->model.loadModel( model_name, skin_name );
-      strcpy( model_info->name, model_name );
-      model_info->scale = 1.0f;
-
-      creature_models[ model_name_str ] = model_info;
-    } else {
-	  //	  cerr << "&&&&&&&&&& Using already loaded md2 model: " << model_name_str << endl;
-      model_info = creature_models[ model_name_str ];
-    }
-
-    // increment its ref. count
-    if(loaded_models.find(model_info) == loaded_models.end()) {
-      loaded_models[model_info] = 1;
-    } else {
-      loaded_models[model_info] = loaded_models[model_info] + 1;
-    }
-
-    // expand the skin name location
-    sprintf( realSkinName, "%s/%s", model_name, skin_name );
-
-  /*      
-	// load monster sounds
-	if( monster )
-	  session->getGameAdapter()->loadMonsterSounds( model_name, 
-													monster->getSoundMap( model_name ) );
-  */
-  }
-  
-
-  // find or load the skin
-  string skin = realSkinName;
-  GLuint skin_texture;
-  char path[300];
-  if(creature_skins.find(skin) == creature_skins.end()){
-    if( !headless ) {
-      sprintf(path, "%s%s", rootDir, realSkinName);
-//      cerr << "&&&&&&&&&& Loading texture: " << path << endl;
-      CreateTexture(&skin_texture, path, 0);
-      //cerr << "&&&&&&&&&& Loaded texture: " << skin_texture << endl;
-      creature_skins[skin] = skin_texture;
-    }
-  } else {
-    skin_texture = creature_skins[skin];
-  }
-
-  // increment its ref. count
-  if(loaded_skins.find(skin_texture) == loaded_skins.end()) {
-    loaded_skins[skin_texture] = 1;
-  } else {
-    loaded_skins[skin_texture] = loaded_skins[skin_texture] + 1;
-  }
-  //  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
-  //	" count: " << loaded_skins[skin_texture] << endl;
-
-  //  cerr << "Creating creature shape with model: " << model << " and skin: " << skin << endl;
-
-  // create the shape.
-  // FIXME: shapeindex is always FIGHTER. Does it matter?
-  AnimatedShape *shape = 
-		model_info->model.createShape( skin_texture, 
-																	 (scale == 0.0f ? model_info->scale : scale),
-																	 textureGroup[14], model_info->name, -1, 0xf0f0ffff, 0);
-	shape->setSkinName(realSkinName);
-  return shape;
-}
-
-void Shapes::decrementSkinRefCount( char *model_name, 
-                                    char *skin_name ) {
-  string skin = skin_name;
-  GLuint skin_texture;
-  // look for old-style skin
-  if (creature_skins.find(skin) == creature_skins.end()) {
-    // look for new-style skin
-    char realSkinName[300];
-    sprintf( realSkinName, "%s/%s", model_name, skin_name );
-    skin = realSkinName;
-    if (creature_skins.find(skin) == creature_skins.end()) {
-      cerr << "&&&&&&&&&& WARNING: could not find skin: " << realSkinName << endl;
-      return;
-    } else {
-      skin_texture = creature_skins[skin];
-    }
-  } else {
-    skin_texture = creature_skins[skin];
-  }
-
-  if (loaded_skins.find(skin_texture) == loaded_skins.end()) {
-    cerr << "&&&&&&&&&& WARNING: could not find skin id=" << skin_texture << endl;
-    return;
-  }
-
-  loaded_skins[skin_texture] = loaded_skins[skin_texture] - 1;
-  //  cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
-  //	" count: " << loaded_skins[skin_texture] << endl;
-  // unload texture if no more references
-  if (loaded_skins[skin_texture] == 0) {
-//    cerr << "&&&&&&&&&& Deleting texture: " << skin_texture << endl;
-    loaded_skins.erase(skin_texture);
-    creature_skins.erase(skin);
-    glDeleteTextures(1, &skin_texture);
-  }
-
-  // ------------------------------------------------------
-  string model = model_name;
-  Md2ModelInfo *model_info;
-  if (creature_models.find(model) == creature_models.end()) {
-    // this is ok. It could be an old-style model (or non-monster)
-//    cerr << "&&&&&&&&&& Not unloading model: " << model << endl;
-    return;
-  } else {
-    model_info = creature_models[model];
-  }
-
-  if (loaded_models.find(model_info) == loaded_models.end()) {
-    cerr << "&&&&&&&&&& WARNING: could not find model id=" << model << endl;
-    return;
-  }
-
-  loaded_models[model_info] = loaded_models[model_info] - 1;
-  // unload model if no more references  
-  if (loaded_models[model_info] == 0) {
-//    cerr << "&&&&&&&&&& Deleting model: " << model << endl;
-    loaded_models.erase(model_info);
-    creature_models.erase(model);
-
-    model_info->model.unloadModel();
-
-    free(model_info);
-  }
-
-  /*
-  // unload monster sounds
-  if( monster )
-  session->getGameAdapter()->unloadMonsterSounds( model_name, 
-                          monster->getSoundMap( model_name ) );
-  */
 }
 
 // the next two methods are slow, only use during initialization
