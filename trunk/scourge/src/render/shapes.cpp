@@ -475,31 +475,6 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     // store it for now
     shapeValueVector.push_back(sv);
     return n;
-/*
-  } else if(n == '2') {   
-    Md2ModelInfo *info = new Md2ModelInfo();
-    // name
-    n = Constants::readLine(line, fp);
-    strcpy(info->name, line + 1);
-
-    // file
-    n = Constants::readLine(line, fp);
-    strcpy(info->filename, line + 1);
-
-    n = Constants::readLine(line, fp);
-    // scale
-    info->scale = strtod(strtok(line + 1, ","), NULL);
-
-    // store the md2 model and info
-//    sprintf(path, "%s%s", rootDir, info->filename);
-//      cerr << "Loading md2 model: " << path << " scale: " << info->scale << endl;
-		info->model.loadModel( info->filename );
-
-    // store it
-    string s = info->name;
-    old_creature_models[s] = info;
-    return n;
-*/		
   } else if(n == 'P') {
     fgetc(fp);
     n = Constants::readLine(line, fp);
