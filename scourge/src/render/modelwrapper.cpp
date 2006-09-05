@@ -52,35 +52,29 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 	char skinPath[300];
   Md2ModelInfo *model_info;
   string model_name_str = model_name;
-	if( old_creature_models.find( model_name_str ) != old_creature_models.end() ) {  
-		// find the model the old way
-		model_info = old_creature_models[ model_name_str ];
-		sprintf( skinPath, "%s/%s", model_name, skin_name );
-  } else {
 
-		// construct skin name
-		sprintf( skinPath, "%s%s/%s", rootDir, model_name, skin_name );
+	// construct skin name
+	sprintf( skinPath, "%s%s/%s", rootDir, model_name, skin_name );
 
-		// load the model the new way
-    if( creature_models.find( model_name_str ) == creature_models.end() ) {
-      model_info = (Md2ModelInfo*)malloc( sizeof( Md2ModelInfo ) );
+	// load the model the new way
+	if( creature_models.find( model_name_str ) == creature_models.end() ) {
+		model_info = (Md2ModelInfo*)malloc( sizeof( Md2ModelInfo ) );
 
-      model_info->wrapper.loadModel( model_name, skin_name, this );
-      strcpy( model_info->name, model_name );
-      model_info->scale = 1.0f;
+		model_info->wrapper.loadModel( model_name, skin_name, this );
+		strcpy( model_info->name, model_name );
+		model_info->scale = 1.0f;
 
-      creature_models[ model_name_str ] = model_info;
-    } else {
-      model_info = creature_models[ model_name_str ];
-    }
+		creature_models[ model_name_str ] = model_info;
+	} else {
+		model_info = creature_models[ model_name_str ];
+	}
 
-    // increment its ref. count
-    if(loaded_models.find(model_info) == loaded_models.end()) {
-      loaded_models[model_info] = 1;
-    } else {
-      loaded_models[model_info] = loaded_models[model_info] + 1;
-    }    
-  }
+	// increment its ref. count
+	if(loaded_models.find(model_info) == loaded_models.end()) {
+		loaded_models[model_info] = 1;
+	} else {
+		loaded_models[model_info] = loaded_models[model_info] + 1;
+	}    
   //  cerr << "Creating creature shape with model: " << model << " and skin: " << skin << endl;
 
   // create the shape.
@@ -170,8 +164,7 @@ void ModelLoader::decrementSkinRefCount( char *model_name,
   string model = model_name;
   Md2ModelInfo *model_info;
   if (creature_models.find(model) == creature_models.end()) {
-    // this is ok. It could be an old-style model (or non-monster)
-//    cerr << "&&&&&&&&&& Not unloading model: " << model << endl;
+    cerr << "&&&&&&&&&& Not unloading model: " << model << endl;
     return;
   } else {
     model_info = creature_models[model];

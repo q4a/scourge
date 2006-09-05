@@ -57,7 +57,6 @@ class ModelLoader {
 private:
 	bool headless;
 	GLuint *textureGroup;
-	std::map<std::string, Md2ModelInfo*> old_creature_models; 
 	std::map<std::string, GLuint> creature_skins;
 	std::map<GLuint, int> loaded_skins;
 	std::map<std::string, Md2ModelInfo*> creature_models;
