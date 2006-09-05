@@ -32,7 +32,7 @@ class GLShape;
 class GLTorch;
 class Session;
 class Monster;
-class CLoadMD2;
+class ModelWrapper;
 
 typedef struct _MapGridLocation {
   char name[80];
@@ -43,6 +43,8 @@ typedef struct _MapGridLocation {
 
 class ShapePalette : public Shapes {
 private:
+	ModelLoader *loader;
+
   GLuint gui_texture, gui_wood_texture, gui_texture2;
   std::map<int, GLuint> statModIcons;
 

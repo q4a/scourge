@@ -36,7 +36,6 @@ AnimatedShape::AnimatedShape( int width, int depth, int height,
 	this->creatureSpeed = 5;
 	this->currentAnim = 0;
 	this->pauseAnimation = false;
-	this->skin_name = NULL;
 	
 #ifdef DEBUG_MD2
   debugShape = new GLShape( 0, this->width, this->depth, this->height, 

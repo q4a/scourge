@@ -24,6 +24,7 @@ using namespace std;
 
 ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter()->isHeadless() ) {
   this->session = session;
+	this->loader = NULL;
   strcpy( aboutText, "" );
 }
 
@@ -48,6 +49,9 @@ void ShapePalette::preInitialize() {
 void ShapePalette::initialize() {
   // call "super"
   Shapes::initialize();
+
+	loader = new ModelLoader( headless, 
+														 textureGroup[ 14 ] );
 
   // load textures
   gui_texture = loadGLTextures("/textures/gui.bmp");
@@ -197,6 +201,7 @@ void ShapePalette::initialize() {
 }
 
 ShapePalette::~ShapePalette() {
+	delete loader;
   //    for(int i =0; i < (int)creature_models.size(); i++){
   //        delete creature_models[i];    
   //    }
@@ -258,13 +263,13 @@ GLShape *ShapePalette::getCreatureShape( char *model_name,
   } else {
     session->getGameAdapter()->loadCharacterSounds( model_name );
   }
-  return Shapes::getCreatureShape( model_name, skin_name, scale );
+  return loader->getCreatureShape( model_name, skin_name, scale );
 }
 
 void ShapePalette::decrementSkinRefCount( char *model_name, 
                                           char *skin_name,
                                           Monster *monster ) {
-  Shapes::decrementSkinRefCount( model_name, skin_name );
+  loader->decrementSkinRefCount( model_name, skin_name );
   // unload monster sounds
   if( monster ) {
     session->getGameAdapter()->

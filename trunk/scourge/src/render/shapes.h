@@ -51,13 +51,6 @@ typedef struct _ShapeValues {
   bool interactive;
 } ShapeValues;
 
-typedef struct _Md2ModelInfo {
-  ModelWrapper model;
-  char name[100];
-  char filename[100];
-  float scale;
-} Md2ModelInfo;
-
 typedef struct _CharacterModelInfo {
   char model_name[100];
   char skin_name[300]; 
@@ -199,11 +192,6 @@ protected:
   std::vector<ShapeValues*> shapeValueVector;
 
   // md2 data
-  std::map<std::string, Md2ModelInfo*> old_creature_models; 
-  std::map<std::string, GLuint> creature_skins;
-  std::map<GLuint, int> loaded_skins;
-  std::map<std::string, Md2ModelInfo*> creature_models;
-  std::map<Md2ModelInfo*, int> loaded_models;
   std::vector<CharacterModelInfo*> character_models;
 
   WallTheme *themes[100], *caveThemes[100];
@@ -277,13 +265,6 @@ public:
   GLuint loadGLTextures(char *fileName);
 
   GLuint getBMPData( char *filename, GLubyte **buf );
-
-  // Md2 shapes
-  virtual GLShape *getCreatureShape( char *model_name, 
-                                     char *skin_name, 
-                                     float scale=0.0f );
-  virtual void decrementSkinRefCount( char *model_name, 
-                                      char *skin_name );
 
   GLuint getCursorTexture( int cursorMode );
 

@@ -1973,8 +1973,17 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 				// If these are not true, we're leaking memory.
 				//assert( pos[x + xp][y - yp][z + zp] == p ||
 								//!( pos[x + xp][y - yp][z + zp] ) );
-				
-				pos[x + xp][y - yp][z + zp] = p;
+
+				if( pos[x + xp][y - yp][z + zp] && 
+						pos[x + xp][y - yp][z + zp] != p ) {
+					cerr << "error setting position:" << 
+						" x=" << ( x + xp ) <<
+						" y=" << ( y - yp ) <<
+						" z=" << ( z + zp ) <<
+						" shape=" << p->shape->getName() << endl;
+				} else {
+					pos[x + xp][y - yp][z + zp] = p;
+				}
 			}
 		}
 	}
@@ -2034,9 +2043,15 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 							z + zp >= MAP_VIEW_HEIGHT ) break;
 
 					// Assert we're dealing with the right shape
-					assert( pos[ x + xp ][ y - yp ][ z + zp ] == p );
-
-					pos[ x + xp ][ y - yp ][ z + zp ] = NULL;          
+					//assert( pos[ x + xp ][ y - yp ][ z + zp ] == p );
+					if( pos[ x + xp ][ y - yp ][ z + zp ] != p ) {
+						cerr << "Error removing position:" <<
+							" x=" << ( x + xp ) << 
+							" y=" << ( y - yp ) << 
+							" z=" << ( z + zp ) << endl;
+					} else {
+						pos[ x + xp ][ y - yp ][ z + zp ] = NULL;          
+					}
         }
       }
     }

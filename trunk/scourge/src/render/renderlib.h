@@ -43,5 +43,8 @@
 #include "shapes.h"
 #include "maprenderhelper.h"
 #include "projectilerenderer.h"
+#include "Md3.h"
+#include "md3shape.h"
+#include "modelwrapper.h"
 
 #endif
