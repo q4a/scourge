@@ -28,6 +28,8 @@ using namespace std;
 
 CLoadMD2 md2Loader;
 
+// #define DEBUG_LOADING 1
+
 enum {
 	LOAD_MD2=0,
 	LOAD_MD3
@@ -45,9 +47,11 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 																				char *skin_name, 
 																				float scale ) {
 
+#ifdef DEBUG_LOADING
   cerr << "=====================================================" << endl << 
 		"getCreatureShape: model_name=" << model_name << 
 		" skin=" << ( skin_name ? skin_name : "NULL" ) << endl;
+#endif
   
 	char skinPath[300];
   Md2ModelInfo *model_info;
@@ -75,7 +79,6 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 	} else {
 		loaded_models[model_info] = loaded_models[model_info] + 1;
 	}    
-  //  cerr << "Creating creature shape with model: " << model << " and skin: " << skin << endl;
 
   // create the shape.
   // FIXME: shapeindex is always FIGHTER. Does it matter?
@@ -90,9 +93,13 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 GLuint ModelLoader::loadSkinTexture( char *skin_name ) {
 
 	// md3-s load their own
+#ifdef DEBUG_LOADING
 	cerr << "&&&&&&&&&& Trying texture: " << skin_name << endl;
+#endif
 	if( skin_name[ strlen( skin_name ) - 4 ] != '.' ) {
+#ifdef DEBUG_LOADING
 		cerr << "\t&&&&&&&&&& skipping it." << endl;
+#endif
 		return 0;
 	}
 
@@ -101,9 +108,13 @@ GLuint ModelLoader::loadSkinTexture( char *skin_name ) {
   GLuint skin_texture;
   if(creature_skins.find(skin) == creature_skins.end()){
     if( !headless ) {
+#ifdef DEBUG_LOADING
       cerr << "&&&&&&&&&& Loading texture: " << skin_name << endl;
+#endif
       CreateTexture(&skin_texture, skin_name, 0);
+#ifdef DEBUG_LOADING
 			cerr << "\t&&&&&&&&&& Loaded texture: " << skin_texture << endl;
+#endif
       creature_skins[skin] = skin_texture;
     }
   } else {
@@ -116,8 +127,10 @@ GLuint ModelLoader::loadSkinTexture( char *skin_name ) {
   } else {
     loaded_skins[skin_texture] = loaded_skins[skin_texture] + 1;
 	}
+#ifdef DEBUG_LOADING
 	cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
 		" count: " << loaded_skins[skin_texture] << endl;
+#endif
 	
 	return skin_texture;
 }
@@ -142,11 +155,15 @@ void ModelLoader::unloadSkinTexture( char *skin_name ) {
   }
 
   loaded_skins[skin_texture] = loaded_skins[skin_texture] - 1;
+#ifdef DEBUG_LOADING
 	cerr << "&&&&&&&&&& Texture ref count at load for id: " << skin_texture << 
 		" count: " << loaded_skins[skin_texture] << endl;
+#endif
 	// unload texture if no more references
   if (loaded_skins[skin_texture] == 0) {
+#ifdef DEBUG_LOADING
     cerr << "&&&&&&&&&& Deleting texture: " << skin_texture << endl;
+#endif
     loaded_skins.erase(skin_texture);
     creature_skins.erase(skin);
     glDeleteTextures(1, &skin_texture);
@@ -164,7 +181,7 @@ void ModelLoader::decrementSkinRefCount( char *model_name,
   string model = model_name;
   Md2ModelInfo *model_info;
   if (creature_models.find(model) == creature_models.end()) {
-    cerr << "&&&&&&&&&& Not unloading model: " << model << endl;
+    cerr << "&&&&&&&&&& WARNING: Not unloading model: " << model << endl;
     return;
   } else {
     model_info = creature_models[model];
@@ -179,7 +196,9 @@ void ModelLoader::decrementSkinRefCount( char *model_name,
 
   // unload model if no more references  
   if (loaded_models[model_info] == 0) {
-//    cerr << "&&&&&&&&&& Deleting model: " << model << endl;
+#ifdef DEBUG_LOADING
+    cerr << "&&&&&&&&&& Deleting model: " << model << endl;
+#endif
     loaded_models.erase(model_info);
     creature_models.erase(model);
 
@@ -208,11 +227,13 @@ void ModelWrapper::loadModel( char *path, char *name, ModelLoader *loader ) {
 		load = LOAD_MD3;
 	}
     
+#ifdef DEBUG_LOADING
 	cerr << "&&&&&&&&&& Loading animated model: " << 
 		" type=" << ( load == LOAD_MD2 ? "md2" : ( load == LOAD_MD3 ? "md3" : "unknown" ) ) <<
 			" path: " << path << 
 			" name: " << ( name ? name : "NULL" ) << 
 			" full: " << full << endl;  
+#endif
   
 	if( load == LOAD_MD2 ) {		
 	  t3DModel *t3d = new t3DModel;
@@ -297,10 +318,11 @@ void ModelWrapper::normalizeModel( int *width, int *depth, int *height, float di
 	*depth = (int)( fd + ( (float)((int)fd) == fd ? 0 : 1 ) );
 	*height = toint(fh);	
 
-	if( md3 )
+#ifdef DEBUG_LOADING
 		cerr << "Creating shape of type=" << ( md2 ? "md2" : ( md3 ? "md3" : "unknown" ) ) << 
 		" for model=" << name << 
 		" width=" << *width << " depth=" << *depth << " height=" << *height << endl;
+#endif
 	
 	if( md2 ) CLoadMD2::normalize( md2, min, max );
 	else if( md3 ) md3->normalize( min, max );
