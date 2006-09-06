@@ -468,7 +468,7 @@ CModelMD3::~CModelMD3()
 
 void CModelMD3::unloadSkinTextures() {
 	for( unsigned int j = 0; j < strTextures.size(); j++ ) {
-		cerr << "*** Deleting MD3 texture:" << strTextures[j] << endl;
+//		cerr << "*** Deleting MD3 texture:" << strTextures[j] << endl;
 		loader->unloadSkinTexture( (char*)strTextures[j].c_str() );
 	}
 }
@@ -803,7 +803,7 @@ void CModelMD3::LoadModelTextures(t3DModel *pModel, char *strPath )
 			if(bNewTexture == false) continue;
 			
 			//m_Textures[strTextures.size()] = wrapper->loadSkinTexture( strPath, pModel->pMaterials[i].strFile );
-			cerr << "*** Loading MD3 texture: count=" << strTextures.size() << " file=" << pModel->pMaterials[i].strFile << endl;
+//			cerr << "*** Loading MD3 texture: count=" << strTextures.size() << " file=" << pModel->pMaterials[i].strFile << endl;
 			m_Textures[strTextures.size()] = loader->loadSkinTexture( pModel->pMaterials[i].strFile );
 
 			// We pass in a reference to an index into our texture array member variable.
