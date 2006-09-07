@@ -259,6 +259,7 @@ private:
 
 	void findModelBounds( t3DModel *pModel, vect3d min, vect3d max );
 	void normalizeModel( t3DModel *pModel, vect3d min, vect3d max );
+	void hashAnimations( t3DModel *pModel );
 
 	// This loads the models textures with a given path
 	void LoadModelTextures(t3DModel *pModel, char *strPath );

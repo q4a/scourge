@@ -1723,7 +1723,9 @@ void Scourge::moveMonster(Creature *monster) {
 
 	if( monster->getMotion() == Constants::MOTION_MOVE_AWAY ) {
 		monster->moveToLocator();
-	} else if( monster->getCharacter() || monster->getMotion() == Constants::MOTION_LOITER ) {
+	} else if( monster->getCharacter() || 
+						 ( monster->isNpc() && monster->getMotion() == Constants::MOTION_MOVE_TOWARDS ) ||
+						 monster->getMotion() == Constants::MOTION_LOITER ) {
     // attack the closest player
     if( BATTLES_ENABLED &&
         (int)(20.0f * rand()/RAND_MAX) == 0) {

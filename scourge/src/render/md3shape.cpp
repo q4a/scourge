@@ -121,7 +121,12 @@ void MD3Shape::outline( float r, float g, float b ) {
   glColor4f(1, 1, 1, 0.9f);	
 }
 
-void MD3Shape::setCurrentAnimation(int numAnim, bool force) {    
+void MD3Shape::setCurrentAnimation(int numAnim, bool force) {
+
+	currentAnim = numAnim;
+//	cerr << "-----------------------------------------------" << endl << 
+//		"numAnim=" << numAnim << endl;
+
 	// convert to MD3 animation (I know this is lame)
 	switch( numAnim ) {
 	case MD2_ATTACK:
@@ -144,9 +149,11 @@ void MD3Shape::setCurrentAnimation(int numAnim, bool force) {
 		md3->SetLegsAnimation( "LEGS_IDLE", force );
 		break;
 	case MD2_PAIN1:		
+		md3->SetTorsoAnimation( "TORSO_STAND2", force );
+		md3->SetLegsAnimation( "LEGS_IDLE", force );
 	case MD2_PAIN2:
 	case MD2_PAIN3:
-		md3->SetTorsoAnimation( "TORSO_STAND", force );
+		md3->SetTorsoAnimation( "TORSO_GESTURE", force );
 		md3->SetLegsAnimation( "LEGS_IDLE", force );
 		break;
 	default:

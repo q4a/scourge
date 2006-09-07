@@ -501,6 +501,9 @@ void CModelMD3::DestroyModel(t3DModel *pModel)
 
 	// Free the links associated with this model (We use free because we used malloc())
 	if(pModel->pLinks)		free(pModel->pLinks);
+
+	pModel->pAnimationMap.clear();
+	pModel->pAnimations.clear();
 }
 	
 
@@ -949,8 +952,22 @@ bool CModelMD3::LoadAnimations(char *strConfigFile)
 	m_Head.numOfAnimations = m_Head.pAnimations.size();
 	m_Weapon.numOfAnimations = m_Head.pAnimations.size();
 
+	hashAnimations( &m_Lower );
+	hashAnimations( &m_Upper );
+	hashAnimations( &m_Head );
+	hashAnimations( &m_Weapon );
+
+
 	// Return a success
 	return true;
+}
+
+void CModelMD3::hashAnimations( t3DModel *pModel ) {
+	pModel->pAnimationMap.clear();
+	for( unsigned int i = 0; i < pModel->pAnimations.size(); i++ ) {
+		string s = pModel->pAnimations[ i ].strName;
+		pModel->pAnimationMap[ s ] = i;
+	}
 }
 
 ///////////////////////////////// LINK MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
@@ -1038,6 +1055,11 @@ void CModelMD3::UpdateModel(t3DModel *pModel)
 	// To do this, we set nextFrame to the starting frame of this animation.
 	if(pModel->nextFrame == 0) 
 		pModel->nextFrame =  startFrame;
+
+	//cerr << "MD3: " << ( pModel == &(m_Upper) ? "UPPER" : "LOWER" ) << 
+//		" anim=" << pModel->currentAnim <<
+		//" start=" << startFrame << " end=" << endFrame << 
+		//" next=" << pModel->nextFrame << " current=" << pModel->currentFrame << endl;
 
 	// Next, we want to get the current time that we are interpolating by.  Remember,
 	// if t = 0 then we are at the beginning of the animation, where if t = 1 we are at the end.
@@ -1477,25 +1499,20 @@ void CModelMD3::normalizeModel( t3DModel *pModel, vect3d min, vect3d max ) {
 /////
 ///////////////////////////////// SET TORSO ANIMATION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::SetTorsoAnimation(char *strAnimation, bool force)
-{
-	// Go through all of the animations in this model
-	for(int i = 0; i < m_Upper.numOfAnimations; i++)
-	{
-		// If the animation name passed in is the same as the current animation's name
-		if( !strcasecmp(m_Upper.pAnimations[i].strName, strAnimation) )
-		{
-//			cerr << "UPPER: i=" << i << " name=" << m_Upper.pAnimations[i].strName << endl;
-			// Set the legs animation to the current animation we just found and return
-			if( m_Upper.currentAnim == i ) return;
-			m_Upper.currentAnim = i;
-			if( force ) {
-				m_Upper.currentFrame = m_Upper.pAnimations[m_Upper.currentAnim].startFrame;
-			} else {
-				m_Upper.nextFrame = m_Upper.pAnimations[m_Upper.currentAnim].startFrame;
-			}
-			return;
+void CModelMD3::SetTorsoAnimation(char *strAnimation, bool force) {
+	string s = strAnimation;
+	if( m_Upper.pAnimationMap.find( s ) != m_Upper.pAnimationMap.end() ) {
+		int i = m_Upper.pAnimationMap[ s ];
+		// Set the legs animation to the current animation we just found and return
+		if( m_Upper.currentAnim == i ) return;
+		m_Upper.currentAnim = i;
+		if( force ) {
+			m_Upper.currentFrame = m_Upper.pAnimations[m_Upper.currentAnim].startFrame;
+		} else {
+			m_Upper.nextFrame = m_Upper.pAnimations[m_Upper.currentAnim].startFrame;
 		}
+	} else {
+		cerr << "*** WARNING: can't find animation for upper: " << strAnimation << endl;
 	}
 }
 
@@ -1506,25 +1523,20 @@ void CModelMD3::SetTorsoAnimation(char *strAnimation, bool force)
 /////
 ///////////////////////////////// SET LEGS ANIMATION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::SetLegsAnimation(char *strAnimation, bool force)
-{
-	// Go through all of the animations in this model
-	for(int i = 0; i < m_Lower.numOfAnimations; i++)
-	{
-		// If the animation name passed in is the same as the current animation's name
-		if( !strcasecmp(m_Lower.pAnimations[i].strName, strAnimation) )
-		{
-//			cerr << "LOWER: i=" << i << " name=" << m_Lower.pAnimations[i].strName << endl;
-			// Set the legs animation to the current animation we just found and return
-			if( m_Lower.currentAnim == i ) return;
-			m_Lower.currentAnim = i;
-			if( force ) {
-				m_Lower.currentFrame = m_Lower.pAnimations[m_Lower.currentAnim].startFrame;
-			} else {
-				m_Lower.nextFrame = m_Lower.pAnimations[m_Lower.currentAnim].startFrame;
-			}
-			return;
-		}
+void CModelMD3::SetLegsAnimation(char *strAnimation, bool force) {
+	string s = strAnimation;
+	if( m_Lower.pAnimationMap.find( s ) != m_Lower.pAnimationMap.end() ) {
+		int i = m_Lower.pAnimationMap[ s ];
+		// Set the legs animation to the current animation we just found and return
+		if( m_Lower.currentAnim == i ) return;
+		m_Lower.currentAnim = i;
+		//if( force ) {
+		m_Lower.currentFrame = m_Lower.pAnimations[m_Lower.currentAnim].startFrame;
+		//} else {
+		//				m_Lower.nextFrame = m_Lower.pAnimations[m_Lower.currentAnim].startFrame;
+		//}
+	} else {
+		cerr << "*** WARNING: can't find animation for legs: " << strAnimation << endl;
 	}
 }
 

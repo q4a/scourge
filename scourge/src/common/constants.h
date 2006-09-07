@@ -768,6 +768,7 @@ struct t3DModel
     float movey;
     float movez;
     std::vector<tAnimationInfo> pAnimations; // The list of animations
+		std::map<std::string, int> pAnimationMap; // name->index into pAnimations.
     std::vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)
     std::vector<t3DObject> pObject;          // The object list for our model (frames)
     vect3d *vertices;                   // All vertices for every frame of the model
