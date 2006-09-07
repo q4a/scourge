@@ -714,7 +714,7 @@ Location *Creature::moveToLocator() {
     // if we've no more steps
     if( (int)bestPath.size() <= bestPathPos ) {
 			stopMoving();
-			setMotion( Constants::MOTION_MOVE_TOWARDS );
+			setMotion( Constants::MOTION_MOVE_TOWARDS );			
 			
 			// stop move-away-s
 			if( this == session->getParty()->getPlayer() ) {
@@ -875,6 +875,7 @@ void Creature::stopMoving() {
   bestPathPos = (int)bestPath.size();
   selX = selY = -1;
 	speed = originalSpeed;
+	getShape()->setCurrentAnimation( MD2_STAND );
 }
 
 bool Creature::anyMovesLeft() {
