@@ -116,6 +116,7 @@ void Monster::initMonsters() {
 
       strcpy(model_name, strtok(line + 1, ","));
       strcpy(skin_name, strtok(NULL, ","));
+			if( !strcmp( skin_name, "*" ) ) strcpy( skin_name, "" );
       int level = atoi(strtok(NULL, ","));
       int hp = atoi(strtok(NULL, ","));
       int mp = atoi(strtok(NULL, ","));

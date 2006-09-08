@@ -557,14 +557,26 @@ bool CModelMD3::LoadModel(char *strPath, char *strModel )
 
 	// Store the correct files names for the .md3 and .skin file for each body part.
 	// We concatinate this on top of the path name to be loaded from.
-	sprintf(strLowerModel, "%s/%s_lower.md3", strPath, strModel);
-	sprintf(strUpperModel, "%s/%s_upper.md3", strPath, strModel);
-	sprintf(strHeadModel,  "%s/%s_head.md3",  strPath, strModel);
+//	if( strlen( strModel ) ) {
+//		sprintf(strLowerModel, "%s/lower_%s.md3", strPath, strModel);
+//		sprintf(strUpperModel, "%s/upper_%s.md3", strPath, strModel);
+//		sprintf(strHeadModel,  "%s/head_%s.md3",  strPath, strModel);
+//	} else {
+		sprintf(strLowerModel, "%s/lower.md3", strPath );
+		sprintf(strUpperModel, "%s/upper.md3", strPath );
+		sprintf(strHeadModel,  "%s/head.md3",  strPath );
+//	}
 	
 	// Get the skin file names with their path
-	sprintf(strLowerSkin, "%s/%s_lower.skin", strPath, strModel);
-	sprintf(strUpperSkin, "%s/%s_upper.skin", strPath, strModel);
-	sprintf(strHeadSkin,  "%s/%s_head.skin",  strPath, strModel);
+	if( strlen( strModel ) ) {
+		sprintf(strLowerSkin, "%s/lower_%s.skin", strPath, strModel);
+		sprintf(strUpperSkin, "%s/upper_%s.skin", strPath, strModel);
+		sprintf(strHeadSkin,  "%s/head_%s.skin",  strPath, strModel);
+	} else {
+		sprintf(strLowerSkin, "%s/lower.skin", strPath);
+		sprintf(strUpperSkin, "%s/upper.skin", strPath);
+		sprintf(strHeadSkin,  "%s/head.skin",  strPath);
+	}
 	
 	// Next we want to load the character meshes.  The CModelMD3 class has member
 	// variables for the head, upper and lower body parts.  These are of type t3DModel.
@@ -639,7 +651,11 @@ bool CModelMD3::LoadModel(char *strPath, char *strModel )
 	char strConfigFile[255] = {0};	
 
 	// Add the path and file name prefix to the animation.cfg file
-	sprintf(strConfigFile,  "%s/%s_animation.cfg",  strPath, strModel);
+//	if( strlen( strModel ) ) {
+//		sprintf(strConfigFile,  "%s/animation_%s.cfg",  strPath, strModel);
+//	} else {
+		sprintf(strConfigFile,  "%s/animation.cfg",  strPath );
+//	}
 
 	// Load the animation config file (*_animation.config) and make sure it loaded properly
 	if(!LoadAnimations(strConfigFile))
@@ -1427,16 +1443,24 @@ void CModelMD3::RenderModel(t3DModel *pModel)
 }
 
 void CModelMD3::findBounds( vect3d min, vect3d max ) {
+	/*
 	vect3d lowerMin, lowerMax, upperMin, upperMax, headMin, headMax;
 	for( int i = 0; i < 3; i++ ) {
 		lowerMin[i] = upperMin[i] = headMin[i] = 100000;	// BAD!!
 		lowerMax[i] = upperMax[i] = headMax[i] = 0;
 	}
+	*/
 
-	findModelBounds( &m_Lower, lowerMin, lowerMax );
-	findModelBounds( &m_Upper, upperMin, upperMax );
-	findModelBounds( &m_Head, headMin, headMax );
-/*	
+	findModelBounds( &m_Lower, min, max );
+	cerr << "LOWER: min=" << min[1] << endl;
+	findModelBounds( &m_Upper, min, max );
+	cerr << "UPPER: min=" << min[1] << endl;
+	findModelBounds( &m_Head, min, max );
+	cerr << "HEAD: min=" << min[1] << endl;
+
+
+	
+	/*
 	cerr << "BEFORE: md3: lower min=" << lowerMin[2] << "," << lowerMin[0] << "," << lowerMin[1] << endl;
 	cerr << "BEFORE: md3: lower max=" << lowerMax[2] << "," << lowerMax[0] << "," << lowerMax[1] << endl;
 	
@@ -1445,7 +1469,9 @@ void CModelMD3::findBounds( vect3d min, vect3d max ) {
 	
 	cerr << "BEFORE: md3: head min=" << headMin[2] << "," << headMin[0] << "," << headMin[1] << endl;
 	cerr << "BEFORE: md3: head max=" << headMax[2] << "," << headMax[0] << "," << headMax[1] << endl;
-*/
+	*/
+
+	/*
 	for( int i = 0; i < 3; i++ ) {
 		min[i] = lowerMin[i];		
 	}
@@ -1453,19 +1479,38 @@ void CModelMD3::findBounds( vect3d min, vect3d max ) {
 	max[2] = upperMax[2];
 	max[1] = upperMax[1];
 	max[0] = upperMax[0] + lowerMax[0] + headMax[0];
+	*/
 }
 
 void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
+
+	if( pModel->pAnimations.size() == 0 ) return;
+	
+	for(int i = 0; i < pModel->numOfObjects; i++) {
+		t3DObject *pObject = &pModel->pObject[i];
+		for( int frame = pModel->pAnimations[ pModel->currentAnim ].startFrame;
+				 frame < pModel->pAnimations[ pModel->currentAnim ].endFrame;
+				 frame++ ) {
+			int currentIndex = frame * pObject->numOfVerts; 
+			for(int j = 0; j < pObject->numOfFaces; j++) {
+				for(int whichVertex = 0; whichVertex < 3; whichVertex++) {
+					int index = pObject->pFaces[j].vertIndex[whichVertex];
+					CVector3 vPoint = pObject->pVerts[ currentIndex + index ];
+
+/*
 	for(int o = 0; o < pModel->numOfObjects; o++) {
 		t3DObject *pObject = &pModel->pObject[o];
 		for(int j = 0; j < pObject->numOfVerts; j++) {
 			CVector3 vPoint = pObject->pVerts[ j ];
+*/			
 			if (vPoint.x < min[2])	min[2] = vPoint.x;
 			if (vPoint.y < min[0])	min[0] = vPoint.y;
 			if (vPoint.z < min[1])	min[1] = vPoint.z;
 			if (vPoint.x >= max[2])	max[2] = vPoint.x;
 			if (vPoint.y >= max[0])	max[0] = vPoint.y;
 			if (vPoint.z >= max[1])	max[1] = vPoint.z;
+				}
+			}
 		}
 	}
 }
