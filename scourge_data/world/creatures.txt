@@ -3,7 +3,7 @@
 # Key: (the old-way)
 # M:monster
 #   name[,(descriptive type for monsters | portrait for npcs)]
-#   md2 model, skin, level,hp,mp,natural armor,rareness,speed[,scale(overrides shapes.txt's scale),npc[,startX,startY]]
+#   ((md2 model dir, skin)|(md3 model dir,skin suffix)), level,hp,mp,natural armor,rareness,speed[,scale(overrides shapes.txt's scale),npc[,startX,startY]]
 # I:inventory (1 line per item ref. by name from items.txt)
 # S:spell
 # P:skill_name,percentage (skill level; used mainly for magic resistance)
@@ -21,6 +21,12 @@
 #  RESIST_HISTORY_MAGIC,
 #  RESIST_DECEIT_MAGIC,
 #  RESIST_CONFRONTATION_MAGIC	
+#
+# Models:
+# md2-s are ones where the skin ends in .bmp
+# Others are md3-s. Here the skin_suffix is used like this upper_<suffix>.skin, other files 
+# are expected to be upper.md3, lower.md3, head.md3, animation.cfg. Be sure to edit the
+# .skin files to use the .bmp textures.
 
 # This kind of declaration is part of the old-way; See description of new-way below
 W:BUGGERLING
@@ -43,7 +49,10 @@ h:sound/imp/hit1.wav,sound/imp/hit2.wav
 
 #############################
 # NPC types
-#
+# M:/models/npc/sfod8,Tengu.bmp,3,10,4,15,10,8,1.7,npc
+# M:/models/md3/krusty,default,3,10,4,15,10,8,1.7,npc
+# M:/models/md3/gork,gork,3,10,4,15,10,8,1.7,npc
+# M:/models/md3/mantis,red,3,10,4,15,10,8,1.7,npc
 M:Male Vagrant
 M:/models/npc/sfod8,Tengu.bmp,3,10,4,15,10,8,1.7,npc
 I:Bastard sword
@@ -53,6 +62,8 @@ I:Rusty Chainmail
 P:RESIST_NATURE_MAGIC,20
 P:RESIST_HISTORY_MAGIC,20
 
+# M:/models/npc/sfod8,abarlith.bmp,3,6,15,5,10,8,1.8,npc
+# M:/models/harley,harley,3,10,4,15,10,8,1.8,npc
 M:Male Traveling Wizard
 M:/models/npc/sfod8,abarlith.bmp,3,6,15,5,10,8,1.8,npc
 I:Dirk
@@ -313,25 +324,25 @@ M:/models/xenoid,xenotype2.bmp,17,10,11,7,6,6,2.1,npc
 #############################
 # level 1
 M:Imp
-M:BUGGERLING,/models/m5.bmp,1,4,0,2,10,1,0.8
+M:/models/oldstyle/bugger,m5.bmp,1,4,0,2,10,1,0.8
 I:Wooden club
 I:Horned helmet
 
 M:Oozing Green Waddler
-M:SLIME,/models/m6.bmp,1,3,8,2,5,8
+M:/models/oldstyle/slime,m6.bmp,1,3,8,2,5,8
 I:Dirk
 S:Lesser healing touch
 
 M:Buggerling
-M:BUGGERLING,/models/m51.bmp,1,3,0,3,3,4,1.0
+M:/models/oldstyle/bugger,m51.bmp,1,3,0,3,3,4,1.0
 I:Rounded mace
 
 M:Red Bauul
-M:BAUUL,/models/m7.bmp,1,6,0,3,7,8,2
+M:/models/oldstyle/bauul,m7.bmp,1,6,0,3,7,8,2
 I:Dirk
 
 M:Giant Cobra
-M:COBRA,/models/m13.bmp,1,4,0,3,5,2,2.0
+M:/models/oldstyle/cobra,m13.bmp,1,4,0,3,5,2,2.0
 I:Dirk
 P:RESIST_NATURE_MAGIC,5
 P:RESIST_AWARENESS_MAGIC,5
@@ -340,28 +351,70 @@ P:RESIST_HISTORY_MAGIC,5
 P:RESIST_DECEIT_MAGIC,5
 P:RESIST_CONFRONTATION_MAGIC,5
 
+
+# md2 models (moved from shapes.txt)
+# old-style declarations. See creatures.txt for new way.
+#2:BUGGERLING
+#2:/models/m5.md2
+#2:1.2
+
+#2:SLIME
+#2:/models/m6.md2
+#2:1.2
+
+#2:BAUUL
+#2:/models/m7.md2
+#2:1.2
+
+#2:HYDRALISK
+#2:/models/m8.md2
+#2:1.2
+
+#2:BRAWN
+#2:/models/m9.md2
+#2:1.2
+
+#2:PHANTOM
+#2:/models/m10.md2
+#2:2
+
+#2:RAPTOR
+#2:/models/m11.md2
+#2:2
+
+#2:FAIRY
+#2:/models/m12.md2
+#2:2
+
+#2:COBRA
+#2:/models/m13.md2
+#2:2
+
+
+
+
 #############################
 # level 2
 M:Rabbid Rodent
-M:BUGGERLING,/models/m52.bmp,2,4,6,0,10,5
+M:/models/oldstyle/bugger,m52.bmp,2,4,6,0,10,5
 I:Dagger
 I:Ornatebow
 P:RESIST_NATURE_MAGIC,20
 
 M:Gray Slimy Waddler
-M:SLIME,/models/m62.bmp,2,5,7,0,5,8,1.6
+M:/models/oldstyle/slime,m62.bmp,2,5,7,0,5,8,1.6
 I:Battleaxe
 I:Horned helmet
 P:RESIST_HISTORY_MAGIC,30
 
 M:Fleshworm
-M:BUGGERLING,/models/m53.bmp,2,5,7,3,2,5
+M:/models/oldstyle/bugger,m53.bmp,2,5,7,3,2,5
 I:Dagger
 S:Lesser healing touch
 P:RESIST_CONFRONTATION_MAGIC,20
 
 M:Kobold
-M:BUGGERLING,/models/m54.bmp,2,6,5,1,10,5
+M:/models/oldstyle/bugger,m54.bmp,2,6,5,1,10,5
 I:Dagger
 I:Strongbow
 S:Lesser healing touch
@@ -373,7 +426,7 @@ P:RESIST_HISTORY_MAGIC,10
 # P:RESIST_CONFRONTATION_MAGIC,10
 
 M:Blue Bauul
-M:BAUUL,/models/m71.bmp,2,6,5,2,5,2
+M:/models/oldstyle/bauul,m71.bmp,2,6,5,2,5,2
 I:Strongbow
 I:Horned helmet
 # P:RESIST_NATURE_MAGIC,10
@@ -384,7 +437,7 @@ P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,10
 
 M:False Cobra
-M:COBRA,/models/m131.bmp,2,7,5,3,5,4,1.5
+M:/models/oldstyle/cobra,m131.bmp,2,7,5,3,5,4,1.5
 I:Short sword
 # P:RESIST_NATURE_MAGIC,15
 P:RESIST_AWARENESS_MAGIC,15
@@ -396,7 +449,7 @@ P:RESIST_HISTORY_MAGIC,15
 #############################
 # level 3
 M:Dire Stench-Waddler
-M:SLIME,/models/m62.bmp,3,4,6,0,8,8,1.6
+M:/models/oldstyle/slime,m62.bmp,3,4,6,0,8,8,1.6
 I:Dagger
 S:Burning stare
 S:Stinging light
@@ -409,7 +462,7 @@ P:RESIST_LIFE_AND_DEATH_MAGIC,30
 P:RESIST_CONFRONTATION_MAGIC,20
 
 M:Minor Spectre
-M:BUGGERLING,/models/m55.bmp,3,3,7,4,4,5,1.6
+M:/models/oldstyle/bugger,m55.bmp,3,3,7,4,4,5,1.6
 I:Dagger
 S:Burning stare
 S:Stinging light
@@ -422,7 +475,7 @@ P:RESIST_DECEIT_MAGIC,30
 # P:RESIST_CONFRONTATION_MAGIC,10
 
 M:Brawn
-M:BRAWN,/models/m9.bmp,3,6,0,3,9,2,1.4
+M:/models/oldstyle/brawn,m9.bmp,3,6,0,3,9,2,1.4
 I:Long sword
 #I:Strongbow
 I:Horned helmet
@@ -434,7 +487,7 @@ P:RESIST_DECEIT_MAGIC,20
 P:RESIST_CONFRONTATION_MAGIC,30
 
 M:Blue Brawn
-M:BRAWN,/models/m91.bmp,3,7,0,4,7,3,1.8
+M:/models/oldstyle/brawn,m91.bmp,3,7,0,4,7,3,1.8
 I:Long sword
 # P:RESIST_NATURE_MAGIC,10
 # P:RESIST_AWARENESS_MAGIC,10
@@ -444,7 +497,7 @@ P:RESIST_DECEIT_MAGIC,30
 P:RESIST_CONFRONTATION_MAGIC,35
 
 M:Storm Cobra
-M:COBRA,/models/m132.bmp,3,8,7,4,5,4,2.2
+M:/models/oldstyle/cobra,m132.bmp,3,8,7,4,5,4,2.2
 I:Short sword
 S:Stinging light
 # P:RESIST_NATURE_MAGIC,20
@@ -457,7 +510,7 @@ P:RESIST_HISTORY_MAGIC,20
 #############################
 # level 4
 M:Hydralisk
-M:HYDRALISK,/models/m8.bmp,4,6,0,6,8,6,2
+M:/models/oldstyle/hydra,m8.bmp,4,6,0,6,8,6,2
 I:Long sword
 P:RESIST_NATURE_MAGIC,10
 P:RESIST_AWARENESS_MAGIC,10
@@ -467,7 +520,7 @@ P:RESIST_HISTORY_MAGIC,10
 # P:RESIST_CONFRONTATION_MAGIC,10
 
 M:Red Brawn
-M:BRAWN,/models/m92.bmp,4,5,0,5,6,3,2.0
+M:/models/oldstyle/brawn,m92.bmp,4,5,0,5,6,3,2.0
 I:Battleaxe
 #I:Strongbow
 I:Horned helmet
@@ -479,7 +532,7 @@ P:RESIST_DECEIT_MAGIC,40
 P:RESIST_CONFRONTATION_MAGIC,55
 
 M:Lesser Phantom
-M:PHANTOM,/models/m10.bmp,4,5,8,5,3,7
+M:/models/oldstyle/phantom,m10.bmp,4,5,8,5,3,7
 I:Dagger
 S:Burning stare
 S:Silent knives
@@ -492,7 +545,7 @@ P:RESIST_DECEIT_MAGIC,10
 P:RESIST_CONFRONTATION_MAGIC,10
 
 M:flesh raptor
-M:RAPTOR,/models/m11.bmp,4,8,0,4,6,4,2
+M:/models/oldstyle/raptor,m11.bmp,4,8,0,4,6,4,2
 I:Dagger
 # P:RESIST_NATURE_MAGIC,10
 # P:RESIST_AWARENESS_MAGIC,10
@@ -502,7 +555,7 @@ I:Dagger
 # P:RESIST_CONFRONTATION_MAGIC,35
 
 M:Rare Cobra
-M:COBRA,/models/m133.bmp,4,9,5,4,5,7,2.2
+M:/models/oldstyle/cobra,m133.bmp,4,9,5,4,5,7,2.2
 I:Short sword
 S:Cursed ways
 S:Remove curse
@@ -516,7 +569,7 @@ P:RESIST_HISTORY_MAGIC,25
 #############################
 # level 5
 M:Megalisk
-M:HYDRALISK,/models/m8.bmp,5,7,4,5,8,6,2.4
+M:/models/oldstyle/hydra,m8.bmp,5,7,4,5,8,6,2.4
 I:Long sword
 P:RESIST_NATURE_MAGIC,20
 P:RESIST_AWARENESS_MAGIC,20
@@ -526,7 +579,7 @@ P:RESIST_HISTORY_MAGIC,30
 # P:RESIST_CONFRONTATION_MAGIC,35
 
 M:Stone raptor
-M:RAPTOR,/models/m111.bmp,5,6,4,5,6,4,2.3
+M:/models/oldstyle/raptor,m111.bmp,5,6,4,5,6,4,2.3
 I:Dagger
 # P:RESIST_NATURE_MAGIC,10
 P:RESIST_AWARENESS_MAGIC,10
@@ -536,7 +589,7 @@ P:RESIST_DECEIT_MAGIC,30
 # P:RESIST_CONFRONTATION_MAGIC,35
 
 M:Vile Phantom
-M:PHANTOM,/models/m101.bmp,5,4,12,6,5,7
+M:/models/oldstyle/phantom,m101.bmp,5,4,12,6,5,7
 I:Dagger
 S:Burning stare
 S:Cursed ways
@@ -552,7 +605,7 @@ P:RESIST_DECEIT_MAGIC,30
 P:RESIST_CONFRONTATION_MAGIC,20
 
 M:Pain Fairy
-M:FAIRY,/models/m12.bmp,5,4,10,3,3,5,1.5
+M:/models/oldstyle/fairy,m12.bmp,5,4,10,3,3,5,1.5
 I:Dagger
 S:Silent knives
 S:Ring of Harm
@@ -567,7 +620,7 @@ P:RESIST_DECEIT_MAGIC,20
 P:RESIST_CONFRONTATION_MAGIC,20
 
 M:Neural Cobra
-M:COBRA,/models/m134.bmp,5,9,9,4,5,9,2.5
+M:/models/oldstyle/cobra,m134.bmp,5,9,9,4,5,9,2.5
 I:Short sword
 S:Stinging light
 S:Enthrall fiend
@@ -582,7 +635,7 @@ P:RESIST_HISTORY_MAGIC,25
 #############################
 # level 6
 M:Hydralisk Deathlord
-M:HYDRALISK,/models/m8.bmp,6,8,6,5,8,8,2.6
+M:/models/oldstyle/hydra,m8.bmp,6,8,6,5,8,8,2.6
 I:Long sword
 I:Strongbow
 P:RESIST_NATURE_MAGIC,30
@@ -593,7 +646,7 @@ P:RESIST_HISTORY_MAGIC,40
 # P:RESIST_CONFRONTATION_MAGIC,35
 
 M:Spirit Phantom
-M:PHANTOM,/models/m102.bmp,6,5,12,5,5,5
+M:/models/oldstyle/phantom,m102.bmp,6,5,12,5,5,5
 I:Dagger
 S:Silent knives
 S:Enthrall fiend
@@ -608,7 +661,7 @@ P:RESIST_DECEIT_MAGIC,40
 P:RESIST_CONFRONTATION_MAGIC,30
 
 M:spirit raptor
-M:RAPTOR,/models/m112.bmp,6,7,10,3,7,4,2.3
+M:/models/oldstyle/raptor,m112.bmp,6,7,10,3,7,4,2.3
 I:Dagger
 S:Burning stare
 # P:RESIST_NATURE_MAGIC,10
@@ -619,7 +672,7 @@ P:RESIST_DECEIT_MAGIC,40
 P:RESIST_CONFRONTATION_MAGIC,35
 
 M:Reek Fairy
-M:FAIRY,/models/m121.bmp,6,5,20,6,3,4,2
+M:/models/oldstyle/fairy,m121.bmp,6,5,20,6,3,4,2
 I:Dagger
 S:Silent knives
 S:Ring of Harm
@@ -636,7 +689,7 @@ P:RESIST_CONFRONTATION_MAGIC,40
 #############################
 # level 7
 M:Mordoraptor
-M:RAPTOR,/models/m113.bmp,7,9,9,5,9,5,2.8
+M:/models/oldstyle/raptor,m113.bmp,7,9,9,5,9,5,2.8
 I:Dagger
 S:Silent knives
 #need better spells
@@ -648,7 +701,7 @@ P:RESIST_DECEIT_MAGIC,50
 P:RESIST_CONFRONTATION_MAGIC,65
 
 M:Marduk Fairy
-M:FAIRY,/models/m122.bmp,7,5,20,5,3,7,2.2
+M:/models/oldstyle/fairy,m122.bmp,7,5,20,5,3,7,2.2
 I:Dagger
 I:Longbow
 S:Stinging light
@@ -664,7 +717,7 @@ P:RESIST_CONFRONTATION_MAGIC,60
 #############################
 # level 8
 M:Mernobus
-M:FAIRY,/models/m123.bmp,8,10,20,6,10,8,2.5
+M:/models/oldstyle/fairy,m123.bmp,8,10,20,6,10,8,2.5
 I:Dagger
 I:Strongbow
 S:Silent knives
@@ -880,7 +933,7 @@ P:RESIST_DECEIT_MAGIC,30
 P:RESIST_CONFRONTATION_MAGIC,35
 
 M:Fiendish Raptor
-M:RAPTOR,/models/m113.bmp,12,8,5,8,9,5,3.0
+M:/models/oldstyle/raptor,m113.bmp,12,8,5,8,9,5,3.0
 I:Darkflail
 P:RESIST_NATURE_MAGIC,25
 P:RESIST_AWARENESS_MAGIC,35
@@ -923,7 +976,7 @@ P:RESIST_CONFRONTATION_MAGIC,45
 #############################
 # level 13
 M:Lesser Aspect of Thazmord
-M:PHANTOM,/models/m102.bmp,13,9,12,9,4,8,2.3
+M:/models/oldstyle/phantom,m102.bmp,13,9,12,9,4,8,2.3
 I:Morning Star
 I:Full face helmet
 I:Steel Shield
@@ -949,7 +1002,7 @@ P:RESIST_DECEIT_MAGIC,30
 P:RESIST_CONFRONTATION_MAGIC,35
 
 M:Fiendish Raptor Avenger,Raptor
-M:RAPTOR,/models/m111.bmp,13,8,5,8,9,5,3.0
+M:/models/oldstyle/raptor,m111.bmp,13,8,5,8,9,5,3.0
 I:Darkflail
 P:RESIST_NATURE_MAGIC,30
 P:RESIST_AWARENESS_MAGIC,30
@@ -992,7 +1045,7 @@ P:RESIST_CONFRONTATION_MAGIC,50
 #############################
 # level 14
 M:Aspect of Thazmord
-M:PHANTOM,/models/m102.bmp,14,10,12,9,4,8,2.8
+M:/models/oldstyle/phantom,m102.bmp,14,10,12,9,4,8,2.8
 I:Darkflail
 I:Full face helmet
 I:Steel Shield
@@ -1018,7 +1071,7 @@ P:RESIST_DECEIT_MAGIC,35
 P:RESIST_CONFRONTATION_MAGIC,40
 
 M:Fiendish Raptor Master,Raptor
-M:RAPTOR,/models/m111.bmp,14,8,5,8,9,5,3.2
+M:/models/oldstyle/raptor,m111.bmp,14,8,5,8,9,5,3.2
 I:Darkflail
 P:RESIST_NATURE_MAGIC,35
 P:RESIST_AWARENESS_MAGIC,35
@@ -1061,24 +1114,7 @@ P:RESIST_CONFRONTATION_MAGIC,55
 #############################
 # Level 15
 M:Greater Aspect of Thazmord
-M:PHANTOM,/models/m101.bmp,15,11,12,9,4,8,2.8
-I:Darkflail
-I:Full face helmet
-I:Steel Shield
-I:Rusty Chainmail
-S:Malice Storm
-S:Invisibility
-S:Enthrall fiend
-P:RESIST_NATURE_MAGIC,55
-P:RESIST_AWARENESS_MAGIC,55
-P:RESIST_LIFE_AND_DEATH_MAGIC,50
-P:RESIST_HISTORY_MAGIC,45
-P:RESIST_DECEIT_MAGIC,45
-P:RESIST_CONFRONTATION_MAGIC,45
-
-# level 15
-M:Greater Aspect of Thazmord
-M:PHANTOM,/models/m101.bmp,15,11,12,9,4,8,2.8
+M:/models/oldstyle/phantom,m101.bmp,15,11,12,9,4,8,2.8
 I:Darkflail
 I:Full face helmet
 I:Steel Shield
