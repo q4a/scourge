@@ -22,11 +22,6 @@
 #  RESIST_DECEIT_MAGIC,
 #  RESIST_CONFRONTATION_MAGIC	
 #
-# Models:
-# md2-s are ones where the skin ends in .bmp
-# Others are md3-s. Here the skin_suffix is used like this upper_<suffix>.skin, other files 
-# are expected to be upper.md3, lower.md3, head.md3, animation.cfg. Be sure to edit the
-# .skin files to use the .bmp textures.
 
 # This kind of declaration is part of the old-way; See description of new-way below
 W:BUGGERLING
@@ -43,8 +38,11 @@ h:sound/imp/hit1.wav,sound/imp/hit2.wav
 #     the model entry to shapes.txt.
 #   skin is a filename only (in the above dir.)
 #   no need to declare sounds, the following are used if found in the directory:
-#     attack: gurp1/2,jump1/land1
-#     hit: pain100_1/2,pain75_1/2,pain50_1/2,pain25_1/2
+#     attack: gurp1.wav,gurp2.wav,jump1.wav,land1.wav,fall1.wav,gasp.wav,taunt.wav
+#     hit: pain25_1.wav,pain25_2.wav,pain50_1.wav,pain50_2.wav,pain75_1.wav,pain75_2.wav,pain100_1.wav,pain100_2.wav
+#
+# md3-s are used the same way (example: mantis) but the "skin" name refers to the skin suffix. So
+# for example "default" would load upper_default.skin, etc.
 
 
 #############################
