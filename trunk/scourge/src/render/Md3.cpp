@@ -1443,43 +1443,12 @@ void CModelMD3::RenderModel(t3DModel *pModel)
 }
 
 void CModelMD3::findBounds( vect3d min, vect3d max ) {
-	/*
-	vect3d lowerMin, lowerMax, upperMin, upperMax, headMin, headMax;
-	for( int i = 0; i < 3; i++ ) {
-		lowerMin[i] = upperMin[i] = headMin[i] = 100000;	// BAD!!
-		lowerMax[i] = upperMax[i] = headMax[i] = 0;
-	}
-	*/
-
 	findModelBounds( &m_Lower, min, max );
-	cerr << "LOWER: min=" << min[1] << endl;
+	//cerr << "LOWER: min=" << min[1] << endl;
 	findModelBounds( &m_Upper, min, max );
-	cerr << "UPPER: min=" << min[1] << endl;
+	//cerr << "UPPER: min=" << min[1] << endl;
 	findModelBounds( &m_Head, min, max );
-	cerr << "HEAD: min=" << min[1] << endl;
-
-
-	
-	/*
-	cerr << "BEFORE: md3: lower min=" << lowerMin[2] << "," << lowerMin[0] << "," << lowerMin[1] << endl;
-	cerr << "BEFORE: md3: lower max=" << lowerMax[2] << "," << lowerMax[0] << "," << lowerMax[1] << endl;
-	
-	cerr << "BEFORE: md3: upper min=" << upperMin[2] << "," << upperMin[0] << "," << upperMin[1] << endl;
-	cerr << "BEFORE: md3: upper max=" << upperMax[2] << "," << upperMax[0] << "," << upperMax[1] << endl;
-	
-	cerr << "BEFORE: md3: head min=" << headMin[2] << "," << headMin[0] << "," << headMin[1] << endl;
-	cerr << "BEFORE: md3: head max=" << headMax[2] << "," << headMax[0] << "," << headMax[1] << endl;
-	*/
-
-	/*
-	for( int i = 0; i < 3; i++ ) {
-		min[i] = lowerMin[i];		
-	}
-
-	max[2] = upperMax[2];
-	max[1] = upperMax[1];
-	max[0] = upperMax[0] + lowerMax[0] + headMax[0];
-	*/
+	//cerr << "HEAD: min=" << min[1] << endl;
 }
 
 void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
