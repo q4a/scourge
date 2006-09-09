@@ -272,7 +272,7 @@ void Monster::initMonsters() {
 void Monster::addMd2Sounds( char *model_name, map<int, vector<string>*>* currentSoundMap ) {
   char soundFile[5000];
 
-  sprintf( soundFile, "%s/gurp1.wav,%s/gurp2.wav,%s/jump1.wav,%s/land1.wav", 
+  sprintf( soundFile, "%s/gurp1.wav,%s/gurp2.wav,%s/jump1.wav,%s/land1.wav,%s/fall1.wav,%s/gasp.wav,%s/taunt.wav", 
 		  model_name, model_name, model_name, model_name );
   addSound( Constants::SOUND_TYPE_ATTACK, soundFile, currentSoundMap );
   
