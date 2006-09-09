@@ -23,7 +23,6 @@
 #   light blocking: 0,1
 # shape subtypes:
 # 3: 3ds object (lines: file, scale)
-# 2: md2 object (lines: name, file, scale)
 # T: torch (NORTH=0, EAST, SOUTH, WEST, NONE)
 # L: teleporter
 # [R: x,y,z] (optional: angles to rotate in inventory screen)
@@ -729,6 +728,14 @@ N:ffffffff
 
 N:14
 N:1,1,1
+N:CLAYMORE
+N:0
+N:ffffffff
+3:/objects/claymore.3ds
+3:30.0
+
+N:14
+N:1,1,1
 N:SWORD
 N:0
 N:ffffffff
@@ -1116,45 +1123,6 @@ N:0
 N:ffffffff
 3:/objects/pile.3ds
 3:1.3
-
-# md2 models
-# old-style declarations. See creatures.txt for new way.
-2:BUGGERLING
-2:/models/m5.md2
-2:1.2
-
-2:SLIME
-2:/models/m6.md2
-2:1.2
-
-2:BAUUL
-2:/models/m7.md2
-2:1.2
-
-2:HYDRALISK
-2:/models/m8.md2
-2:1.2
-
-2:BRAWN
-2:/models/m9.md2
-2:1.2
-
-2:PHANTOM
-2:/models/m10.md2
-2:2
-
-2:RAPTOR
-2:/models/m11.md2
-2:2
-
-2:FAIRY
-2:/models/m12.md2
-2:2
-
-2:COBRA
-2:/models/m13.md2
-2:2
-
 
 A:Welcome to the world of S.c.o.u.r.g.e.||S.c.o.u.r.g.e. is a rogue-like rpg that lets you
 A:control a group of four brave heroes. While working for a dungeon janitorial services company they

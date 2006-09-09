@@ -288,7 +288,7 @@ R:POWER,N,N,(10,E,4,19,L,4)
 R:MELEE_WEAPON,N,N,(50,E,2,95,L,1)
 
 I:Great sword
-I:7,SWORD,6.0,350,SWORD,48,0,2
+I:7,SWORD,6.0,350,CLAYMORE,48,0,2
 I:Only persons of exceeding strength can cleave their enemies to bits with this greatsword
 I:A two-handed greatsword
 I:7,3
@@ -324,7 +324,7 @@ R:POWER,N,N,(12,E,3,16,L,3)
 R:MELEE_WEAPON,N,N,(55,E,2,95,L,2)
 
 I:Goliompur
-I:5,SWORD,3.0,800,SWORD,48,0,4
+I:5,SWORD,3.0,800,CLAYMORE,48,0,4
 I:The fabled weapon of Goliompur was forged by elven smiths in the deep forests of Alovium eons ago. It is rumored to speak to those it chooses to be her leader.
 I:A weapon of exceeding craftsmanship. It is marked with strange runes.
 I:10,3
@@ -336,7 +336,7 @@ R:POWER,N,N,(16,E,5,18,L,5)
 R:MELEE_WEAPON,N,N,(60,E,2,90,L,1)
 
 I:Dextran
-I:4,SWORD,4.0,1200,SWORD,48,0,5
+I:4,SWORD,4.0,1200,CLAYMORE,48,0,5
 I:Legend tells of how king Haomen of the Nordic men hew his enemies in the battles at the fjords of Gormoth wielding this blade.
 I:You feel a crispness in the air and smell oaken notes while near this weapon.
 I:11,3

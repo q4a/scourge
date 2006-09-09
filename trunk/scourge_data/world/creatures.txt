@@ -49,10 +49,6 @@ h:sound/imp/hit1.wav,sound/imp/hit2.wav
 
 #############################
 # NPC types
-# M:/models/npc/sfod8,Tengu.bmp,3,10,4,15,10,8,1.7,npc
-# M:/models/md3/krusty,default,3,10,4,15,10,8,1.7,npc
-# M:/models/md3/gork,gork,3,10,4,15,10,8,1.7,npc
-# M:/models/md3/mantis,red,3,10,4,15,10,8,1.7,npc
 M:Male Vagrant
 M:/models/npc/sfod8,Tengu.bmp,3,10,4,15,10,8,1.7,npc
 I:Bastard sword
@@ -62,8 +58,6 @@ I:Rusty Chainmail
 P:RESIST_NATURE_MAGIC,20
 P:RESIST_HISTORY_MAGIC,20
 
-# M:/models/npc/sfod8,abarlith.bmp,3,6,15,5,10,8,1.8,npc
-# M:/models/harley,harley,3,10,4,15,10,8,1.8,npc
 M:Male Traveling Wizard
 M:/models/npc/sfod8,abarlith.bmp,3,6,15,5,10,8,1.8,npc
 I:Dirk
@@ -247,7 +241,7 @@ P:RESIST_HISTORY_MAGIC,40
 
 
 M:Melathor of Allovium,/portraits/melathor.bmp
-M:/models/npc/jd,picolo.bmp,6,8,10,15,10,8,2.0,npc,94,190
+M:/models/md3/gaben,default,6,8,10,15,10,8,1.6,npc,94,190
 I:Bastard sword
 I:Ornatebow
 I:Helmet with visor
@@ -976,7 +970,7 @@ P:RESIST_CONFRONTATION_MAGIC,45
 #############################
 # level 13
 M:Lesser Aspect of Thazmord
-M:/models/oldstyle/phantom,m102.bmp,13,9,12,9,4,8,2.3
+M:/models/md3/gork,blue,13,9,12,9,4,8,1.8
 I:Morning Star
 I:Full face helmet
 I:Steel Shield
@@ -1045,7 +1039,7 @@ P:RESIST_CONFRONTATION_MAGIC,50
 #############################
 # level 14
 M:Aspect of Thazmord
-M:/models/oldstyle/phantom,m102.bmp,14,10,12,9,4,8,2.8
+M:/models/md3/gork,red,14,10,12,9,4,8,2.1
 I:Darkflail
 I:Full face helmet
 I:Steel Shield
@@ -1114,7 +1108,7 @@ P:RESIST_CONFRONTATION_MAGIC,55
 #############################
 # Level 15
 M:Greater Aspect of Thazmord
-M:/models/oldstyle/phantom,m101.bmp,15,11,12,9,4,8,2.8
+M:/models/md3/gork,gork,15,11,12,9,4,8,2.5
 I:Darkflail
 I:Full face helmet
 I:Steel Shield
@@ -1161,6 +1155,20 @@ P:RESIST_HISTORY_MAGIC,25
 P:RESIST_DECEIT_MAGIC,15
 P:RESIST_CONFRONTATION_MAGIC,60
 
+M:Slaying Mantis Mutanoid,Mantis
+M:/models/md3/mantis,red,15,12,2,10,6,6,1.3
+I:Great sword
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Invisibility
+P:RESIST_NATURE_MAGIC,20
+P:RESIST_AWARENESS_MAGIC,25
+P:RESIST_LIFE_AND_DEATH_MAGIC,15
+P:RESIST_HISTORY_MAGIC,5
+P:RESIST_DECEIT_MAGIC,5
+P:RESIST_CONFRONTATION_MAGIC,10
+
 #############################
 # Level 16
 M:Agmordemon Warrior
@@ -1179,6 +1187,33 @@ P:RESIST_HISTORY_MAGIC,30
 P:RESIST_DECEIT_MAGIC,20
 P:RESIST_CONFRONTATION_MAGIC,60
 
+M:Slaying Mantis,Mantis
+M:/models/md3/mantis,blue,16,12,2,10,6,6,1.6
+I:Great sword
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Invisibility
+P:RESIST_NATURE_MAGIC,20
+P:RESIST_AWARENESS_MAGIC,25
+P:RESIST_LIFE_AND_DEATH_MAGIC,15
+P:RESIST_HISTORY_MAGIC,5
+P:RESIST_DECEIT_MAGIC,5
+P:RESIST_CONFRONTATION_MAGIC,10
+
+M:Bloodforged Soldier
+M:/models/md3/flex,default,16,12,0,10,6,3,1.5
+I:Great sword
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+P:RESIST_NATURE_MAGIC,40
+P:RESIST_AWARENESS_MAGIC,45
+P:RESIST_LIFE_AND_DEATH_MAGIC,45
+P:RESIST_HISTORY_MAGIC,45
+P:RESIST_DECEIT_MAGIC,45
+P:RESIST_CONFRONTATION_MAGIC,40
+
 #############################
 # Level 17
 M:Agmordemon Lord
@@ -1196,4 +1231,32 @@ P:RESIST_LIFE_AND_DEATH_MAGIC,40
 P:RESIST_HISTORY_MAGIC,30
 P:RESIST_DECEIT_MAGIC,20
 P:RESIST_CONFRONTATION_MAGIC,60
+
+M:Slaying Mantis Savant,Mantis
+M:/models/md3/mantis,default,17,12,2,10,6,6,2.0
+I:Great sword
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+S:Invisibility
+P:RESIST_NATURE_MAGIC,20
+P:RESIST_AWARENESS_MAGIC,25
+P:RESIST_LIFE_AND_DEATH_MAGIC,15
+P:RESIST_HISTORY_MAGIC,5
+P:RESIST_DECEIT_MAGIC,5
+P:RESIST_CONFRONTATION_MAGIC,10
+
+M:Bloodforged Commander
+M:/models/md3/flex,red,17,12,0,10,6,3,1.8
+I:Great sword
+I:Full face helmet
+I:Steel Shield
+I:Rusty Chainmail
+P:RESIST_NATURE_MAGIC,40
+P:RESIST_AWARENESS_MAGIC,45
+P:RESIST_LIFE_AND_DEATH_MAGIC,45
+P:RESIST_HISTORY_MAGIC,45
+P:RESIST_DECEIT_MAGIC,45
+P:RESIST_CONFRONTATION_MAGIC,40
+
 
