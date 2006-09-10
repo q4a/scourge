@@ -1451,11 +1451,24 @@ void CModelMD3::findBounds( vect3d min, vect3d max ) {
 void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
 
 	if( pModel->pAnimations.size() == 0 ) return;
+
+	int animationIndex = 0;
+	if( pModel == &m_Upper ) {
+		string s = "TORSO_STAND";
+		if( m_Upper.pAnimationMap.find( s ) != m_Upper.pAnimationMap.end() ) {
+			animationIndex = m_Upper.pAnimationMap[ s ];
+		}
+	} else if( pModel == &m_Lower ) {
+		string s = "LEGS_IDLE";
+		if( m_Lower.pAnimationMap.find( s ) != m_Lower.pAnimationMap.end() ) {
+			animationIndex = m_Lower.pAnimationMap[ s ];
+		}
+	}
 	
 	for(int i = 0; i < pModel->numOfObjects; i++) {
 		t3DObject *pObject = &pModel->pObject[i];
-		for( int frame = pModel->pAnimations[ 0 ].startFrame;
-				 frame < pModel->pAnimations[ 0 ].endFrame;
+		for( int frame = pModel->pAnimations[ animationIndex ].startFrame;
+				 frame < pModel->pAnimations[ animationIndex ].endFrame;
 				 frame++ ) {
 			int currentIndex = frame * pObject->numOfVerts; 
 			for(int j = 0; j < pObject->numOfFaces; j++) {
