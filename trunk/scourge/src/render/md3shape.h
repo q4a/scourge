@@ -29,6 +29,15 @@
 #include "animatedshape.h"
 #include "Md3.h"
 
+// this has to be unique per model instance (so we can reuse md3-s)
+typedef struct _AnimInfo {
+	int currentAnim;					// The current index into pAnimations list 
+	int currentFrame;					// The current frame of the current animation 
+	int nextFrame;						// The next frame of animation to interpolate too
+	float t;							// The ratio of 0.0f to 1.0f between each key frame
+	float lastTime;						// This stores the last time that was stored
+} AnimInfo;
+
 class MD3Shape : public AnimatedShape  {
 
 // uncomment to show debug shapes
@@ -37,6 +46,7 @@ class MD3Shape : public AnimatedShape  {
 private:
   float div;
 	CModelMD3 *md3;
+	AnimInfo aiUpper, aiLower, aiHead;
 
 public:     
   MD3Shape( CModelMD3 *md3, float div,
@@ -46,10 +56,11 @@ public:
 
 	virtual ~MD3Shape();
 
-  void setCurrentAnimation(int numAnim, bool force=false);
+  void setModelAnimation();
   void draw();
   void outline( float r, float g, float b );
   void setupToDraw();
+	AnimInfo *getAnimInfo( t3DModel *model );
 
 protected:
 	void setCurrentAnimation( int numAnim, bool force, int whichPart );

@@ -20,6 +20,7 @@
 #include <fstream>
 #include <math.h>
 #include "modelwrapper.h"
+#include "md3shape.h"
 
 using namespace std;																				 
 
@@ -448,7 +449,6 @@ CModelMD3::CModelMD3( ModelLoader *loader )
 	memset(&m_Weapon, 0, sizeof(t3DModel));
 }
 
-
 ///////////////////////////////// ~CMODEL MD3 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
 /////	This is our CModelMD3 deconstructor
@@ -684,8 +684,8 @@ bool CModelMD3::LoadModel(char *strPath, char *strModel )
 	LinkModel(&m_Upper, &m_Head, "tag_head");
 
 
-	SetTorsoAnimation( "TORSO_STAND", true );
-	SetLegsAnimation( "LEGS_IDLE", true );
+	//SetTorsoAnimation( "TORSO_STAND", true );
+	//SetLegsAnimation( "LEGS_IDLE", true );
 		
 	// The character was loaded correctly so return true
 	return true;
@@ -1039,10 +1039,12 @@ void  CModelMD3::LinkModel(t3DModel *pModel, t3DModel *pLink, char *strTagName)
 /////
 ///////////////////////////////// UPDATE MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*	
 
-void CModelMD3::UpdateModel(t3DModel *pModel)
+void CModelMD3::UpdateModel( t3DModel *pModel, MD3Shape *shape )
 {
 
 	if( paused ) return;
+
+	AnimInfo *ai = shape->getAnimInfo( pModel );
 
 	// Initialize a start and end frame, for models with no animation
 	int startFrame = 0;
@@ -1053,7 +1055,7 @@ void CModelMD3::UpdateModel(t3DModel *pModel)
 	// so there won't be any change.
 
 	// Here we grab the current animation that we are on from our model's animation list
-	tAnimationInfo *pAnim = &(pModel->pAnimations[pModel->currentAnim]);
+	tAnimationInfo *pAnim = &(pModel->pAnimations[ai->currentAnim]);
 
 	// If there is any animations for this model
 	if(pModel->numOfAnimations)
@@ -1065,12 +1067,23 @@ void CModelMD3::UpdateModel(t3DModel *pModel)
 	
 	// This gives us the next frame we are going to.  We mod the current frame plus
 	// 1 by the current animations end frame to make sure the next frame is valid.
-	pModel->nextFrame = (pModel->currentFrame + 1) % endFrame;
+	ai->nextFrame = (ai->currentFrame + 1) % endFrame;
+
+	//if( pModel == &( m_Upper ) ) {
+		//cerr << "Md3 anim=" << shape->getCurrentAnimation() << " start=" << startFrame << 
+			//" end=" << endFrame << " current=" << pModel->currentFrame << " next=" << pModel->nextFrame << endl;
+	//}
 
 	// If the next frame is zero, that means that we need to start the animation over.
 	// To do this, we set nextFrame to the starting frame of this animation.
-	if(pModel->nextFrame == 0) 
-		pModel->nextFrame =  startFrame;
+	if(ai->nextFrame == 0) {		
+		ai->nextFrame =  startFrame;
+		if( shape && pModel == &( m_Upper ) ) {
+			//cerr << "MD3 upper animation finished: annim=" << shape->getCurrentAnimation() << endl;
+			shape->animationFinished();
+		}
+	}
+		
 
 	//cerr << "MD3: " << ( pModel == &(m_Upper) ? "UPPER" : "LOWER" ) << 
 //		" anim=" << pModel->currentAnim <<
@@ -1080,7 +1093,7 @@ void CModelMD3::UpdateModel(t3DModel *pModel)
 	// Next, we want to get the current time that we are interpolating by.  Remember,
 	// if t = 0 then we are at the beginning of the animation, where if t = 1 we are at the end.
 	// Anything from 0 to 1 can be thought of as a percentage from 0 to 100 percent complete.
-	SetCurrentTime(pModel);
+	SetCurrentTime( pModel, shape );
 }
 
 ///////////////////////////////// DRAW MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
@@ -1089,7 +1102,7 @@ void CModelMD3::UpdateModel(t3DModel *pModel)
 /////
 ///////////////////////////////// DRAW MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::DrawModel()
+void CModelMD3::DrawModel( MD3Shape *shape )
 {
 	// This is the function that is called by the client (you) when using the 
 	// CModelMD3 class object.  You will notice that we rotate the model by
@@ -1108,8 +1121,8 @@ void CModelMD3::DrawModel()
 	// There is no need to pass in the head of weapon, since they don't have any animation.
 
 	// Update the leg and torso animations
-	UpdateModel(&m_Lower);
-	UpdateModel(&m_Upper);
+	UpdateModel( &m_Lower, shape );
+	UpdateModel( &m_Upper, shape );
 
 	// You might be thinking to draw the model we would just call RenderModel()
 	// 4 times for each body part and the gun right?  That sounds logical, but since
@@ -1131,7 +1144,7 @@ void CModelMD3::DrawModel()
 	// Draw the first link, which is the lower body.  This will then recursively go
 	// through the models attached to this model and drawn them.
 	glTranslatef( 0, 0, -min[1] ); // translate to floor.
-	DrawLink(&m_Lower);
+	DrawLink( &m_Lower, shape );
 }
 
 
@@ -1141,10 +1154,12 @@ void CModelMD3::DrawModel()
 /////
 ///////////////////////////////// DRAW LINK \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::DrawLink(t3DModel *pModel)
+void CModelMD3::DrawLink( t3DModel *pModel, MD3Shape *shape )
 {
 	// Draw the current model passed in (Initially the legs)
-	RenderModel(pModel);
+	RenderModel( pModel, shape );
+
+	AnimInfo *ai = shape->getAnimInfo( pModel );
 
 //////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
@@ -1183,26 +1198,26 @@ void CModelMD3::DrawLink(t3DModel *pModel)
 			// To find the current translation position for this frame of animation, we times
 			// the currentFrame by the number of tags, then add i.  This is similar to how
 			// the vertex key frames are interpolated.
-			CVector3 vPosition = pModel->pTags[pModel->currentFrame * pModel->numOfTags + i].vPosition;
+			CVector3 vPosition = pModel->pTags[ai->currentFrame * pModel->numOfTags + i].vPosition;
 
 			// Grab the next key frame translation position
-			CVector3 vNextPosition = pModel->pTags[pModel->nextFrame * pModel->numOfTags + i].vPosition;
+			CVector3 vNextPosition = pModel->pTags[ai->nextFrame * pModel->numOfTags + i].vPosition;
 		
 			// By using the equation: p(t) = p0 + t(p1 - p0), with a time t,
 			// we create a new translation position that is closer to the next key frame.
-			vPosition.x = vPosition.x + pModel->t * (vNextPosition.x - vPosition.x),
-			vPosition.y	= vPosition.y + pModel->t * (vNextPosition.y - vPosition.y),
-			vPosition.z	= vPosition.z + pModel->t * (vNextPosition.z - vPosition.z);			
+			vPosition.x = vPosition.x + ai->t * (vNextPosition.x - vPosition.x),
+			vPosition.y	= vPosition.y + ai->t * (vNextPosition.y - vPosition.y),
+			vPosition.z	= vPosition.z + ai->t * (vNextPosition.z - vPosition.z);			
 
 			// Now comes the more complex interpolation.  Just like the translation, we
 			// want to store the current and next key frame rotation matrix, then interpolate
 			// between the 2.
 
 			// Get a pointer to the start of the 3x3 rotation matrix for the current frame
-			pMatrix = &pModel->pTags[pModel->currentFrame * pModel->numOfTags + i].rotation[0][0];
+			pMatrix = &pModel->pTags[ai->currentFrame * pModel->numOfTags + i].rotation[0][0];
 
 			// Get a pointer to the start of the 3x3 rotation matrix for the next frame
-			pNextMatrix = &pModel->pTags[pModel->nextFrame * pModel->numOfTags + i].rotation[0][0];
+			pNextMatrix = &pModel->pTags[ai->nextFrame * pModel->numOfTags + i].rotation[0][0];
 
 			// Now that we have 2 1D arrays that store the matrices, let's interpolate them
 
@@ -1211,7 +1226,7 @@ void CModelMD3::DrawLink(t3DModel *pModel)
 			qNextQuat.CreateFromMatrix( pNextMatrix, 3 );
 
 			// Using spherical linear interpolation, we find the interpolated quaternion
-			qInterpolatedQuat = qQuat.Slerp(qQuat, qNextQuat, pModel->t);
+			qInterpolatedQuat = qQuat.Slerp(qQuat, qNextQuat, ai->t);
 
 			// Here we convert the interpolated quaternion into a 4x4 matrix
 			qInterpolatedQuat.CreateMatrix( finalMatrix );
@@ -1239,7 +1254,7 @@ void CModelMD3::DrawLink(t3DModel *pModel)
 				// Recursively draw the next model that is linked to the current one.
 				// This could either be a body part or a gun that is attached to
 				// the hand of the upper body model.
-				DrawLink(pLink);
+				DrawLink( pLink, shape );
 
 			// End the current matrix scope
 			glPopMatrix();
@@ -1254,9 +1269,11 @@ void CModelMD3::DrawLink(t3DModel *pModel)
 /////
 ///////////////////////////////// SET CURRENT TIME \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::SetCurrentTime(t3DModel *pModel)
+void CModelMD3::SetCurrentTime( t3DModel *pModel, MD3Shape *shape )
 {
 	float elapsedTime   = 0.0f;
+
+	AnimInfo *ai = shape->getAnimInfo( pModel );
 
 	// This function is very similar to finding the frames per second.
 	// Instead of checking when we reach a second, we check if we reach
@@ -1279,10 +1296,10 @@ void CModelMD3::SetCurrentTime(t3DModel *pModel)
 	float time = (float)SDL_GetTicks();
 
 	// Find the time that has elapsed since the last time that was stored
-	elapsedTime = time - pModel->lastTime;
+	elapsedTime = time - ai->lastTime;
 
 	// Store the animation speed for this animation in a local variable
-	int animationSpeed = pModel->pAnimations[pModel->currentAnim].framesPerSecond;
+	int animationSpeed = pModel->pAnimations[ai->currentAnim].framesPerSecond;
 
 	// To find the current t we divide the elapsed time by the ratio of:
 	//
@@ -1300,14 +1317,14 @@ void CModelMD3::SetCurrentTime(t3DModel *pModel)
 	if (elapsedTime >= (1000.0f / animationSpeed) )
 	{
 		// Set our current frame to the next key frame (which could be the start of the anim)
-		pModel->currentFrame = pModel->nextFrame;
+		ai->currentFrame = ai->nextFrame;
 
 		// Set our last time for the model to the current time
-		pModel->lastTime = time;
+		ai->lastTime = time;
 	}
 
 	// Set the t for the model to be used in interpolation
-	pModel->t = t;
+	ai->t = t;
 }
 
 ///////////////////////////////// RENDER MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
@@ -1316,33 +1333,13 @@ void CModelMD3::SetCurrentTime(t3DModel *pModel)
 /////
 ///////////////////////////////// RENDER MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::RenderModel(t3DModel *pModel)
+void CModelMD3::RenderModel( t3DModel *pModel, MD3Shape *shape )
 {
 
 		// Make sure we have valid objects just in case. (size() is in the STL vector class)
 	if(pModel->pObject.size() <= 0) return;
 
-	/*
-	for(int i = 0; i < pModel->numOfObjects; i++) {
-		t3DObject *pObject = &pModel->pObject[i];
-		for( int frame = pModel->pAnimations[ pModel->currentAnim ].startFrame;
-				 frame < pModel->pAnimations[ pModel->currentAnim ].endFrame;
-				 frame++ ) {
-			int currentIndex = frame * pObject->numOfVerts; 
-			for(int j = 0; j < pObject->numOfFaces; j++) {
-				for(int whichVertex = 0; whichVertex < 3; whichVertex++) {
-					int index = pObject->pFaces[j].vertIndex[whichVertex];
-					CVector3 vPoint = pObject->pVerts[ currentIndex + index ];
-					
-					//vPoint1.x -= min[2];
-					//vPoint1.y -= min[0];
-					vPoint1.z -= min[1];
-				}
-			}
-		}
-	}
-	*/
-
+	AnimInfo *ai = shape->getAnimInfo( pModel );
 
 	// Make sure we have valid objects just in case. (size() is in the STL vector class)
 	if(pModel->pObject.size() <= 0) return;
@@ -1364,10 +1361,10 @@ void CModelMD3::RenderModel(t3DModel *pModel)
 		// add that index to the initial face index, when indexing into the vertex array.
 
 		// Find the current starting index for the current key frame we are on
-		int currentIndex = pModel->currentFrame * pObject->numOfVerts; 
+		int currentIndex = ai->currentFrame * pObject->numOfVerts; 
 
 		// Since we are interpolating, we also need the index for the next key frame
-		int nextIndex = pModel->nextFrame * pObject->numOfVerts; 
+		int nextIndex = ai->nextFrame * pObject->numOfVerts; 
 
 //////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
@@ -1428,9 +1425,9 @@ void CModelMD3::RenderModel(t3DModel *pModel)
 
 					// By using the equation: p(t) = p0 + t(p1 - p0), with a time t,
 					// we create a new vertex that is closer to the next key frame.
-					glVertex3f(vPoint1.x + pModel->t * (vPoint2.x - vPoint1.x),
-							   vPoint1.y + pModel->t * (vPoint2.y - vPoint1.y),
-							   vPoint1.z + pModel->t * (vPoint2.z - vPoint1.z));
+					glVertex3f(vPoint1.x + ai->t * (vPoint2.x - vPoint1.x),
+							   vPoint1.y + ai->t * (vPoint2.y - vPoint1.y),
+							   vPoint1.z + ai->t * (vPoint2.z - vPoint1.z));
 
 //////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
@@ -1457,8 +1454,8 @@ void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
 	
 	for(int i = 0; i < pModel->numOfObjects; i++) {
 		t3DObject *pObject = &pModel->pObject[i];
-		for( int frame = pModel->pAnimations[ pModel->currentAnim ].startFrame;
-				 frame < pModel->pAnimations[ pModel->currentAnim ].endFrame;
+		for( int frame = pModel->pAnimations[ 0 ].startFrame;
+				 frame < pModel->pAnimations[ 0 ].endFrame;
 				 frame++ ) {
 			int currentIndex = frame * pObject->numOfVerts; 
 			for(int j = 0; j < pObject->numOfFaces; j++) {
@@ -1513,17 +1510,18 @@ void CModelMD3::normalizeModel( t3DModel *pModel, vect3d min, vect3d max ) {
 /////
 ///////////////////////////////// SET TORSO ANIMATION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::SetTorsoAnimation(char *strAnimation, bool force) {
+void CModelMD3::SetTorsoAnimation(char *strAnimation, bool force, MD3Shape *shape ) {
 	string s = strAnimation;
 	if( m_Upper.pAnimationMap.find( s ) != m_Upper.pAnimationMap.end() ) {
 		int i = m_Upper.pAnimationMap[ s ];
+		AnimInfo *ai = shape->getAnimInfo( &m_Upper );
 		// Set the legs animation to the current animation we just found and return
-		if( m_Upper.currentAnim == i ) return;
-		m_Upper.currentAnim = i;
+		if( ai->currentAnim == i ) return;
+		ai->currentAnim = i;
 		if( force ) {
-			m_Upper.currentFrame = m_Upper.pAnimations[m_Upper.currentAnim].startFrame;
+			ai->currentFrame = m_Upper.pAnimations[ai->currentAnim].startFrame;
 		} else {
-			m_Upper.nextFrame = m_Upper.pAnimations[m_Upper.currentAnim].startFrame;
+			ai->nextFrame = m_Upper.pAnimations[ai->currentAnim].startFrame;
 		}
 	} else {
 		cerr << "*** WARNING: can't find animation for upper: " << strAnimation << endl;
@@ -1537,17 +1535,18 @@ void CModelMD3::SetTorsoAnimation(char *strAnimation, bool force) {
 /////
 ///////////////////////////////// SET LEGS ANIMATION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::SetLegsAnimation(char *strAnimation, bool force) {
+void CModelMD3::SetLegsAnimation(char *strAnimation, bool force, MD3Shape *shape ) {
 	string s = strAnimation;
 	if( m_Lower.pAnimationMap.find( s ) != m_Lower.pAnimationMap.end() ) {
 		int i = m_Lower.pAnimationMap[ s ];
 		// Set the legs animation to the current animation we just found and return
-		if( m_Lower.currentAnim == i ) return;
-		m_Lower.currentAnim = i;
+		AnimInfo *ai = shape->getAnimInfo( &m_Lower );
+		if( ai->currentAnim == i ) return;
+		ai->currentAnim = i;
 		//if( force ) {
-		m_Lower.currentFrame = m_Lower.pAnimations[m_Lower.currentAnim].startFrame;
+		ai->currentFrame = m_Lower.pAnimations[ai->currentAnim].startFrame;
 		//} else {
-		//				m_Lower.nextFrame = m_Lower.pAnimations[m_Lower.currentAnim].startFrame;
+		//				ai->nextFrame = m_Lower.pAnimations[ai->currentAnim].startFrame;
 		//}
 	} else {
 		cerr << "*** WARNING: can't find animation for legs: " << strAnimation << endl;

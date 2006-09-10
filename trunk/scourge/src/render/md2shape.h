@@ -55,11 +55,7 @@ private:
   // Animation stuff
   float elapsedTime;
   float lastTime;  
-  int currentFrame; 
-  int animationWaiting; // memorizes one animation waiting to be played
-  
-  // To ensure that animations with few frames are played at least once entirely
-  bool playedOnce; 
+  int currentFrame;     
 
   // This draws and animates the .md2 model by interpoloated key frame animation
   void AnimateMD2Model();
@@ -78,7 +74,7 @@ public:
 
 	virtual ~MD2Shape();
 
-  void setCurrentAnimation(int numAnim, bool force=false);
+  void setModelAnimation();
   void draw();
   void outline( float r, float g, float b );
   void setupToDraw();

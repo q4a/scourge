@@ -139,7 +139,13 @@ bool Battle::fightTurn() {
   if(debugBattle) cerr << "TURN: creature=" << creature->getName() << 
     " ap=" << ap << 
     " wait=" << weaponWait << 
-    " nextTurn=" << nextTurn << endl;
+    " nextTurn=" << nextTurn << 
+		" hasTarget=" << creature->hasTarget() <<
+		" validTarget=" << creature->isTargetValid() <<
+		" action=" << creature->getAction() <<
+		" motion=" << creature->getMotion() <<
+		" animation=" << ((AnimatedShape*)creature->getShape())->getCurrentAnimation() <<
+		" attacking=" << ((AnimatedShape*)creature->getShape())->getAttackEffect() << endl;
 
   // are we alive?
   if(!creature || creature->getStateMod(Constants::dead) ||

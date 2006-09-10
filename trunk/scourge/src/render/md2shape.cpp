@@ -54,8 +54,7 @@ void MD2Shape::commonInit(t3DModel * g_3DModel, GLuint textureId,  float div) {
   lastTime = 0.0f;  
   // currentAnim = MD2_STAND;
   currentFrame = 1;
-  playedOnce = true;
-  animationWaiting = -1;      
+  //playedOnce = true;  
   
   vect = new vect3d [g_3DModel->numVertices]; 
   for(int i = 0; i < g_3DModel->numVertices; i++){
@@ -141,25 +140,8 @@ void MD2Shape::outline( float r, float g, float b ) {
   glColor4f(1, 1, 1, 0.9f);	
 }
 
-void MD2Shape::setCurrentAnimation(int numAnim, bool force){    
-  if(numAnim != currentAnim && numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT){
-    if( ( force && currentAnim == MD2_RUN ) || playedOnce ){
-      currentAnim = numAnim;                
-      currentFrame = g_3DModel->pAnimations[currentAnim].startFrame; 
-      
-      // MD2_STAND animation is too long, so we make it "interruptible"
-      if(currentAnim != MD2_STAND){
-        playedOnce = false;                    
-      }                
-    }
-    else{
-      // if animationWaiting != -1 there is already an animation waiting
-      // and we store only one at a time
-      if(animationWaiting == -1){
-        animationWaiting = currentAnim;
-      }
-    }
-  }
+void MD2Shape::setModelAnimation() {
+	currentFrame = g_3DModel->pAnimations[ currentAnim ].startFrame; 
 }
 
 void MD2Shape::setupToDraw() {
@@ -203,17 +185,7 @@ void MD2Shape::AnimateMD2Model() {
   // MD2_TAUNT animations must be played only once 
   if(nextFrame == 0){        
     nextFrame =  pAnim->startFrame;
-    playedOnce = true;        
-    
-    if( !(currentAnim == MD2_STAND || currentAnim == MD2_RUN) ) {
-      if(animationWaiting == - 1){
-        setCurrentAnimation(MD2_STAND);
-      } else{
-        setCurrentAnimation(animationWaiting);
-        animationWaiting = -1;
-      }
-      setAttackEffect(false);
-    }
+    animationFinished();
   }  
 
   // t = [0, 1] => 0 : beginning of the animation, 1 : end of the animation    

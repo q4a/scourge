@@ -47,7 +47,10 @@ private:
   bool pauseAnimation;
   
 protected:
-  int currentAnim;  
+  int currentAnim;
+	int animationWaiting; // memorizes one animation waiting to be played
+	// To ensure that animations with few frames are played at least once entirely
+  bool playedOnce; 
 
   AnimatedShape( int width, int depth, int height,
            			 char *name, int descriptionGroup,
@@ -74,10 +77,13 @@ public:
   inline bool getDebug() { return debug; }
   inline bool getAttackEffect() { return attackEffect; }
   inline void setAttackEffect(bool b) { attackEffect = b; }
-  virtual void setCurrentAnimation(int numAnim, bool force=false) = 0;
+  void setCurrentAnimation(int numAnim, bool force=false);
   inline int getCurrentAnimation() { return currentAnim; }  
   inline void setPauseAnimation(bool pause) { pauseAnimation = pause; }
   inline bool isAnimationPaused() { return pauseAnimation; }    
+
+	void animationFinished();
+	virtual void setModelAnimation() = 0;
 
   inline void setAngle(float angle) { 
     float a = angle + 90.0f;
