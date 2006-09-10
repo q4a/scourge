@@ -13,6 +13,7 @@
 #include "render.h"
 
 class ModelLoader;
+class MD3Shape;
 
 #define BYTE Uint8
 
@@ -168,7 +169,7 @@ class CLoadMD3
 public:
 
 	// This inits the data members
-	CLoadMD3();								
+	CLoadMD3();
 
 	// This is the function that you call to load the MD3 model
 	bool ImportMD3(t3DModel *pModel, char *strFileName);
@@ -234,16 +235,16 @@ public:
 	void LinkModel(t3DModel *pModel, t3DModel *pLink, char *strTagName);
 
 	// This renders the character to the screen
-	void DrawModel();
+	void DrawModel( MD3Shape *shape );
 
 	// This frees the character's data
 	void DestroyModel(t3DModel *pModel);
 
 	// This takes a string of an animation and sets the torso animation accordingly
-	void SetTorsoAnimation(char *strAnimation, bool force=false );
+	void SetTorsoAnimation(char *strAnimation, bool force, MD3Shape *shape );
 
 	// This takes a string of an animation and sets the legs animation accordingly
-	void SetLegsAnimation(char *strAnimation, bool force=false );
+	void SetLegsAnimation(char *strAnimation, bool force, MD3Shape *shape );
 
 	// This returns a pointer to a .md3 model in the character (kLower, kUpper, kHead, kWeapon)
 	t3DModel *GetModel(int whichPart);
@@ -268,16 +269,16 @@ private:
 	bool LoadAnimations(char *strConfigFile);
 
 	// This updates the models current frame of animation, and calls SetCurrentTime()
-	void UpdateModel(t3DModel *pModel);
+	void UpdateModel( t3DModel *pModel, MD3Shape *shape );
 
 	// This sets the lastTime, t, and the currentFrame of the models animation when needed
-	void SetCurrentTime(t3DModel *pModel);
+	void SetCurrentTime( t3DModel *pModel, MD3Shape *shape );
 
 	// This recursively draws the character models, starting with the lower.md3 model
-	void DrawLink(t3DModel *pModel);
+	void DrawLink( t3DModel *pModel, MD3Shape *shape );
 
 	// This a md3 model to the screen (not the whole character)
-	void RenderModel(t3DModel *pModel);
+	void RenderModel( t3DModel *pModel, MD3Shape *shape );
 
 	// Member Variables
 

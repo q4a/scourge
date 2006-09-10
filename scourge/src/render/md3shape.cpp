@@ -28,8 +28,16 @@ MD3Shape::MD3Shape( CModelMD3 *md3, float div,
 										GLuint texture[], int width, int depth, int height,
 										char *name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
   AnimatedShape( width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
-  this->md3 = md3;    
-  this->div = div; 
+	// clone the md3 so we have our own animation data
+  this->md3 = md3;
+  this->div = div;
+	aiLower.currentAnim = aiUpper.currentAnim = aiHead.currentAnim = 0;
+	aiLower.currentFrame = aiUpper.currentFrame = aiHead.currentFrame = 0;
+	aiLower.lastTime = aiUpper.lastTime = aiHead.lastTime = 0;
+	aiLower.nextFrame = aiUpper.nextFrame = aiHead.nextFrame = 0;
+	aiLower.t = aiUpper.t = aiHead.t = 0;
+	md3->SetTorsoAnimation( "TORSO_STAND", true, this );
+	md3->SetLegsAnimation( "LEGS_IDLE", true, this );
 }
 
 MD3Shape::~MD3Shape() {
@@ -70,7 +78,7 @@ void MD3Shape::draw() {
 	
 	glScalef( div, div, div );
 	md3->setAnimationPaused( isAnimationPaused() );
-	md3->DrawModel();
+	md3->DrawModel( this );
  
   if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
   glDisable(GL_CULL_FACE);
@@ -107,7 +115,7 @@ void MD3Shape::outline( float r, float g, float b ) {
 	glScalef( div, div, div );
 	//glTranslatef( 0, -md3->getMin()[0] * div, 0 );
 	md3->setAnimationPaused( isAnimationPaused() );
-	md3->DrawModel();
+	md3->DrawModel( this );
 
 
   glPopMatrix();    
@@ -121,47 +129,56 @@ void MD3Shape::outline( float r, float g, float b ) {
   glColor4f(1, 1, 1, 0.9f);	
 }
 
-void MD3Shape::setCurrentAnimation(int numAnim, bool force) {
+void MD3Shape::setModelAnimation() {
 
-	currentAnim = numAnim;
-//	cerr << "-----------------------------------------------" << endl << 
-//		"numAnim=" << numAnim << endl;
+ // cerr << "setting md3 model animation to=" << currentAnim << endl;
 
 	// convert to MD3 animation (I know this is lame)
-	switch( numAnim ) {
+	switch( currentAnim ) {
 	case MD2_ATTACK:
-		md3->SetTorsoAnimation( "TORSO_ATTACK", force );
-		md3->SetLegsAnimation( "LEGS_IDLE", force );
+		md3->SetTorsoAnimation( "TORSO_ATTACK", true, this );
+		md3->SetLegsAnimation( "LEGS_IDLE", true, this );
 		break;
 	case MD2_STAND:
-		md3->SetTorsoAnimation( "TORSO_STAND", force );
-		md3->SetLegsAnimation( "LEGS_IDLE", force );
+		md3->SetTorsoAnimation( "TORSO_STAND", true, this );
+		md3->SetLegsAnimation( "LEGS_IDLE", true, this );
 		break;
 	case MD2_RUN:
-		md3->SetTorsoAnimation( "TORSO_STAND", force );
-		md3->SetLegsAnimation( "LEGS_WALK", force );
+		md3->SetTorsoAnimation( "TORSO_STAND", true, this );
+		md3->SetLegsAnimation( "LEGS_WALK", true, this );
 		break;
 	case MD2_WAVE:
 	case MD2_POINT:
 	case MD2_SALUTE:
 	case MD2_TAUNT:
-		md3->SetTorsoAnimation( "TORSO_STAND", force );
-		md3->SetLegsAnimation( "LEGS_IDLE", force );
+		md3->SetTorsoAnimation( "TORSO_STAND", true, this );
+		md3->SetLegsAnimation( "LEGS_IDLE", true, this );
 		break;
 	case MD2_PAIN1:		
-		md3->SetTorsoAnimation( "TORSO_STAND2", force );
-		md3->SetLegsAnimation( "LEGS_IDLE", force );
+		md3->SetTorsoAnimation( "TORSO_STAND2", true, this );
+		md3->SetLegsAnimation( "LEGS_IDLE", true, this );
 	case MD2_PAIN2:
 	case MD2_PAIN3:
-		md3->SetTorsoAnimation( "TORSO_GESTURE", force );
-		md3->SetLegsAnimation( "LEGS_IDLE", force );
+		md3->SetTorsoAnimation( "TORSO_GESTURE", true, this );
+		md3->SetLegsAnimation( "LEGS_IDLE", true, this );
 		break;
 	default:
-		cerr << "*** WARN: Unhandled movement in MD3Shape::setCurrentAnimation. numAnim=" << numAnim << endl;
+		cerr << "*** WARN: Unhandled movement in MD3Shape::setCurrentAnimation. currentAnim=" << currentAnim << endl;
 	}
-
 }
 
 void MD3Shape::setupToDraw() {
 }
 
+AnimInfo *MD3Shape::getAnimInfo( t3DModel *model ) {
+	if( model == md3->GetModel( kLower ) ) {
+		return &aiLower;
+	} else if( model == md3->GetModel( kUpper ) ) {
+		return &aiUpper;
+	} else if( model == md3->GetModel( kHead ) ) {
+		return &aiHead;
+	} else {
+		cerr << "*** Error: can't find animation info for model." << endl;
+		return NULL;
+	}
+}

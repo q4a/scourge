@@ -1706,7 +1706,6 @@ void Scourge::addGameSpeed(int speedFactor){
 //#define MONSTER_FLEE_IF_LOW_HP
 
 void Scourge::moveMonster(Creature *monster) {
-
   // set running animation (currently move or attack)
   if(((AnimatedShape*)(monster->getShape()))->getAttackEffect()) {
 		if( monster->getCharacter() ) cerr << "111" << endl;

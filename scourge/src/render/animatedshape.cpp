@@ -20,6 +20,7 @@
 #include "animatedshape.h"
 #include "md2shape.h"
 #include "md3shape.h"
+#include "Md2.h"
 
 using namespace std;
 
@@ -35,7 +36,9 @@ AnimatedShape::AnimatedShape( int width, int depth, int height,
   setDir(Constants::MOVE_UP); // sets dir, angle
 	this->creatureSpeed = 5;
 	this->currentAnim = 0;
+	this->animationWaiting = -1;      
 	this->pauseAnimation = false;
+	this->playedOnce = true;  
 	
 #ifdef DEBUG_MD2
   debugShape = new GLShape( 0, this->width, this->depth, this->height, 
@@ -86,3 +89,38 @@ bool AnimatedShape::drawLater() {
 	return false; 
 }
 
+void AnimatedShape::animationFinished() {
+	//cerr << "animationFinished for " << getName() << " anim=" << currentAnim << endl;
+	playedOnce = true;            
+	// some animations only run once
+	if( !(currentAnim == MD2_STAND || currentAnim == MD2_RUN) ) {
+		if( animationWaiting == - 1 ){
+			setCurrentAnimation( MD2_STAND );
+		} else{
+			setCurrentAnimation( animationWaiting );
+			animationWaiting = -1;
+		}
+		setAttackEffect( false );
+	}
+}
+
+void AnimatedShape::setCurrentAnimation( int numAnim, bool force ){    
+  if( numAnim != currentAnim && numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT ){
+    if( ( force && currentAnim == MD2_RUN ) || playedOnce ){
+      currentAnim = numAnim;                
+      //currentFrame = g_3DModel->pAnimations[currentAnim].startFrame; 
+			setModelAnimation();
+      
+      // MD2_STAND animation is too long, so we make it "interruptible"
+      if( currentAnim != MD2_STAND ){
+        playedOnce = false;                    
+      }
+    } else {
+      // if animationWaiting != -1 there is already an animation waiting
+      // and we store only one at a time
+      if( animationWaiting == -1 ){
+        animationWaiting = currentAnim;
+      }
+    }
+  }
+}

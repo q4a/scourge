@@ -50,7 +50,7 @@ typedef struct _Md2ModelInfo {
 	ModelWrapper wrapper;
   char name[100];
   char filename[100];
-  float scale;
+  float scale;	
 } Md2ModelInfo;
 
 class ModelLoader {
