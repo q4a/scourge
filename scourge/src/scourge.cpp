@@ -857,6 +857,7 @@ bool Scourge::useItem(int x, int y, int z) {
                                  x, y, z,
                                  shape)) {
       levelMap->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
+			getParty()->setSelXY( x, y, false ); // get as close as possible to location
       return true;
     } else {
       if (useLever(pos)) {
