@@ -257,7 +257,7 @@ void Party::setTargetCreature(Creature *creature) {
  * If in group mode and the selected player can't move to the desired
  * location, pick someone else from the group who can make the move.
  */
-bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
+bool Party::setSelXY( Uint16 mapx, Uint16 mapy, bool cancelIfNotPossible ) {
   if( isPlayerOnly() ) {
     getPlayer()->cancelTarget();
   } else {
@@ -268,7 +268,7 @@ bool Party::setSelXY( Uint16 mapx, Uint16 mapy ) {
     }
   }
   // Try to move the current player
-	return getPlayer()->setSelXY( mapx, mapy, true, 500 );  
+	return getPlayer()->setSelXY( mapx, mapy, cancelIfNotPossible, 500 );  
 }
 
 bool Party::isPartyInRange() {
