@@ -323,9 +323,11 @@ void ScourgeView::drawInfos() {
     zpos2 = ((float)(message->z) / DIV);
 
     scourge->getSDLHandler()->drawTooltip( xpos2, ypos2, zpos2,
-                                  -( scourge->getMap()->getZRot() ),
-                                  -( scourge->getMap()->getYRot() ),
-                                  message->message );
+																					 -( scourge->getMap()->getZRot() ),
+																					 -( scourge->getMap()->getYRot() ),
+																					 message->message,
+																					 0, 0.15f, 0.05f,
+																					 1.0f / scourge->getSession()->getMap()->getZoom() );
   }
 }
 
@@ -618,7 +620,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
                                              -( scourge->getMap()->getZRot() ),
                                              -( scourge->getMap()->getYRot() ),
                                              cost,
-                                             0.5f, 0.2f, 0.0f );
+                                             0.5f, 0.2f, 0.0f,
+																						 1.0f / scourge->getMap()->getZoom() );
     }
     glPopMatrix();
   }
@@ -809,7 +812,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
                                                  -( scourge->getMap()->getZRot() ),
                                                  -( scourge->getMap()->getYRot() ),
                                                  cost,
-                                                 color.r, color.g, color.b );
+                                                 color.r, color.g, color.b,
+																								 1.0f / scourge->getMap()->getZoom() );
           glEnable( GL_DEPTH_TEST );
         }
       }
