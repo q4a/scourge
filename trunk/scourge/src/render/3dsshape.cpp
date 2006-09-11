@@ -170,7 +170,7 @@ void C3DSShape::resolveTextures() {
 
 
       // instead of loading the texture, get one of the already loaded textures
-      g_Texture[i] = shapePal->findTextureByName( g_3DModel.pMaterials[i].strFile );
+      g_Texture[i] = shapePal->findTextureByName( g_3DModel.pMaterials[i].strFile, true );
 			if( !g_Texture[i] ) cerr << "*** error: can't find 3ds texture reference: " << g_3DModel.pMaterials[i].strFile << endl;
       //cerr << "\tTexture: " << g_3DModel.pMaterials[i].strFile << " found? " << g_Texture[i] << endl;
     }
