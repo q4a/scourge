@@ -838,7 +838,8 @@ bool SDLHandler::intersects( int x, int y, int w, int h,
 void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2, 
                               float zrot, float yrot, 
                               char *message,
-                              float r, float g, float b ) {
+                              float r, float g, float b,
+															float zoom ) {
   int w = strlen( message ) * 8 + 4;
   int h = 20;
   int x = -2;
@@ -875,6 +876,8 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
   glTranslatef( xpos2, ypos2, zpos2 );
   glRotatef( zrot, 0.0f, 0.0f, 1.0f );
   glRotatef( yrot, 1.0f, 0.0f, 0.0f );
+
+	glScalef( zoom, zoom, zoom );
   
   glDisable( GL_CULL_FACE );
   glEnable( GL_BLEND );

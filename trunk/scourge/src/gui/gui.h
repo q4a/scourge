@@ -52,7 +52,7 @@ public:
   virtual void drawTooltip( float xpos2, float ypos2, float zpos2, 
                             float zrot, float yrot, 
                             char *message,
-                            float r=0, float g=0.15f, float b=0.05f ) = 0;
+                            float r=0, float g=0.15f, float b=0.05f, float zoom=1.0f ) = 0;
   virtual void setFontType( int fontType ) = 0;
   virtual GLuint loadSystemTexture( char *line ) = 0;
   virtual void unlockMouse() = 0;

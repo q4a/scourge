@@ -129,7 +129,8 @@ public:
   void drawTooltip( float xpos2, float ypos2, float zpos2, 
                     float zrot, float yrot, 
                     char *message,
-                    float r=0, float g=0.15f, float b=0.05f );
+                    float r=0, float g=0.15f, float b=0.05f,
+										float zoom=1.0f );
 
   inline void setDebugStr(char *s) { debugStr = s; }
   
