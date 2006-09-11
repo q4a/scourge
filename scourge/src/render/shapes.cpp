@@ -630,10 +630,13 @@ char *Shapes::getRandomDescription(int descriptionGroup) {
 }
 
 // the next two methods are slow, only use during initialization
-GLuint Shapes::findTextureByName(const char *filename) {
+GLuint Shapes::findTextureByName( const char *filename, bool loadIfMissing ) {
   for(int i = 0; i < texture_count; i++) {
     if(!strcasecmp(textures[i].filename, filename)) return textures[i].id;
   }
+	if( loadIfMissing ) {
+		return loadSystemTexture( (char*)filename );
+	}
   return 0;
 }
 

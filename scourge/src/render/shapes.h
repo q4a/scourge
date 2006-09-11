@@ -256,7 +256,7 @@ public:
   inline GLuint getRippleTexture() { return ripple_texture; }
   inline GLuint getAreaTexture() { return areaTex; }
 
-  GLuint findTextureByName(const char *filename);
+  GLuint findTextureByName(const char *filename, bool loadIfMissing=false );
   GLShape *findShapeByName(const char *name, bool variation=false);
   int findShapeIndexByName(const char *name);
   
