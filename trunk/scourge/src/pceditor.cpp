@@ -34,7 +34,7 @@
 
 using namespace std;
 
-// added comment to see if cia works
+// added comment to see if cia works (again)
 
 #define AVAILABLE_SKILL_POINTS 5
 #define PORTRAIT_SIZE 150
