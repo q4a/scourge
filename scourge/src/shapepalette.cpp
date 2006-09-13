@@ -280,6 +280,10 @@ void ShapePalette::decrementSkinRefCount( char *model_name,
   }
 }
 
+void ShapePalette::debugLoadedModels() {
+	loader->debugModelLoader();
+}
+
 void ShapePalette::loadNpcPortraits() {
   for( map<string, Monster*>::iterator i = Monster::monstersByName.begin(); 
        i != Monster::monstersByName.end(); ++i ) {

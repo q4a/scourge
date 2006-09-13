@@ -300,6 +300,7 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
     " itemCount=" << itemCount << endl;
   cerr << "***************************************" << endl;
   */
+	getShapePalette()->debugLoadedModels();
 }
 
 /** 
