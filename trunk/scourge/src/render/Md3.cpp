@@ -457,8 +457,6 @@ CModelMD3::CModelMD3( ModelLoader *loader )
 
 CModelMD3::~CModelMD3()
 {
-	unloadSkinTextures();
-
 	// Here we free all of the meshes in our model
 	DestroyModel(&m_Head);
 	DestroyModel(&m_Upper);
@@ -466,21 +464,21 @@ CModelMD3::~CModelMD3()
 	DestroyModel(&m_Weapon);
 }	
 
-void CModelMD3::unloadSkinTextures() {
-	for( unsigned int j = 0; j < strTextures.size(); j++ ) {
-//		cerr << "*** Deleting MD3 texture:" << strTextures[j] << endl;
-		loader->unloadSkinTexture( (char*)strTextures[j].c_str() );
-	}
-}
-
 ///////////////////////////////// DESTROY MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
 /////	This frees our Quake3 model and all it's associated data
 /////
 ///////////////////////////////// DESTROY MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::DestroyModel(t3DModel *pModel)
-{
+void CModelMD3::DestroyModel(t3DModel *pModel) {
+	/*
+	for(int i = 0; i < pModel->numOfMaterials; i++) {
+		if(strlen(pModel->pMaterials[i].strFile) > 0) {
+			loader->unloadSkinTexture( pModel->pMaterials[i].strFile );
+		}
+	}
+	*/
+
 	// To free a model, we need to go through every sub-object and delete
 	// their model data.  Since there is only one array of tags and links stored
 	// for the model and all of it's objects, we need to only free the model's 
@@ -537,14 +535,11 @@ t3DModel *CModelMD3::GetModel(int whichPart)
 /////
 ///////////////////////////////// LOAD MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CModelMD3::LoadModel(char *strPath, char *strModel )
+bool CModelMD3::LoadModel(char *strPath )
 {
 	char strLowerModel[255] = {0};	// This stores the file name for the lower.md3 model
 	char strUpperModel[255] = {0};	// This stores the file name for the upper.md3 model
 	char strHeadModel[255]  = {0};	// This stores the file name for the head.md3 model
-	char strLowerSkin[255]  = {0};	// This stores the file name for the lower.md3 skin
-	char strUpperSkin[255]  = {0};	// This stores the file name for the upper.md3 skin
-	char strHeadSkin[255]   = {0};	// This stores the file name for the head.md3 skin
 	CLoadMD3 loadMd3;				// This object allows us to load each .md3 and .skin file
 
 	// This function is where all the character loading is taken care of.  We use
@@ -553,7 +548,7 @@ bool CModelMD3::LoadModel(char *strPath, char *strModel )
 	// to load the correct mesh files.
 
 	// Make sure valid path and model names were passed in
-	if(!strPath || !strModel) return false;
+	if( !strPath ) return false;
 
 	// Store the correct files names for the .md3 and .skin file for each body part.
 	// We concatinate this on top of the path name to be loaded from.
@@ -566,17 +561,6 @@ bool CModelMD3::LoadModel(char *strPath, char *strModel )
 		sprintf(strUpperModel, "%s/upper.md3", strPath );
 		sprintf(strHeadModel,  "%s/head.md3",  strPath );
 //	}
-	
-	// Get the skin file names with their path
-	if( strlen( strModel ) ) {
-		sprintf(strLowerSkin, "%s/lower_%s.skin", strPath, strModel);
-		sprintf(strUpperSkin, "%s/upper_%s.skin", strPath, strModel);
-		sprintf(strHeadSkin,  "%s/head_%s.skin",  strPath, strModel);
-	} else {
-		sprintf(strLowerSkin, "%s/lower.skin", strPath);
-		sprintf(strUpperSkin, "%s/upper.skin", strPath);
-		sprintf(strHeadSkin,  "%s/head.skin",  strPath);
-	}
 	
 	// Next we want to load the character meshes.  The CModelMD3 class has member
 	// variables for the head, upper and lower body parts.  These are of type t3DModel.
@@ -608,54 +592,13 @@ bool CModelMD3::LoadModel(char *strPath, char *strModel )
 		return false;
 	}
 
-	// Load the lower skin (*_upper.skin) and make sure it loaded properly
-	if(!loadMd3.LoadSkin(&m_Lower, strLowerSkin))
-	{
-		// Display an error message telling us the file could not be found
-		cerr <<"Unable to load the LOWER skin!" << endl;
-		return false;
-	}
-
-	// Load the upper skin (*_upper.skin) and make sure it loaded properly
-	if(!loadMd3.LoadSkin(&m_Upper, strUpperSkin))
-	{
-		// Display an error message telling us the file could not be found
-		cerr <<"Unable to load the UPPER skin!" << endl;
-		return false;
-	}
-
-	// Load the head skin (*_head.skin) and make sure it loaded properly
-	if(!loadMd3.LoadSkin(&m_Head,  strHeadSkin))
-	{
-		// Display an error message telling us the file could not be found
-		cerr <<"Unable to load the HEAD skin!" << endl;
-		return false;
-	}
-
-	// Once the models and skins were loaded, we need to load then textures.
-	// We don't do error checking for this because we call CreateTexture() and 
-	// it already does error checking.  Most of the time there is only
-	// one or two textures that need to be loaded for each character.  There are
-	// different skins though for each character.  For instance, you could have a
-	// army looking Lara Croft, or the normal look.  You can have multiple types of
-	// looks for each model.  Usually it is just color changes though.
-
-	// Load the lower, upper and head textures.  
-	LoadModelTextures(&m_Lower, strPath );
-	LoadModelTextures(&m_Upper, strPath );
-	LoadModelTextures(&m_Head,  strPath );
+	//if( !loadSkins( strPath, strModel ) ) return false;
 
 	// We added to this function the code that loads the animation config file
 
 	// This stores the file name for the .cfg animation file
 	char strConfigFile[255] = {0};	
-
-	// Add the path and file name prefix to the animation.cfg file
-//	if( strlen( strModel ) ) {
-//		sprintf(strConfigFile,  "%s/animation_%s.cfg",  strPath, strModel);
-//	} else {
-		sprintf(strConfigFile,  "%s/animation.cfg",  strPath );
-//	}
+	sprintf(strConfigFile,  "%s/animation.cfg",  strPath );
 
 	// Load the animation config file (*_animation.config) and make sure it loaded properly
 	if(!LoadAnimations(strConfigFile))
@@ -691,6 +634,63 @@ bool CModelMD3::LoadModel(char *strPath, char *strModel )
 	return true;
 }
 
+bool CModelMD3::loadSkins( char *strPath, char *strModel, MD3Shape *shape ) {
+	char strLowerSkin[255]  = {0};	// This stores the file name for the lower.md3 skin
+	char strUpperSkin[255]  = {0};	// This stores the file name for the upper.md3 skin
+	char strHeadSkin[255]   = {0};	// This stores the file name for the head.md3 skin
+	CLoadMD3 loadMd3;
+
+	// Get the skin file names with their path
+	if( strlen( strModel ) ) {
+		sprintf(strLowerSkin, "%s/lower_%s.skin", strPath, strModel);
+		sprintf(strUpperSkin, "%s/upper_%s.skin", strPath, strModel);
+		sprintf(strHeadSkin,  "%s/head_%s.skin",  strPath, strModel);
+	} else {
+		sprintf(strLowerSkin, "%s/lower.skin", strPath);
+		sprintf(strUpperSkin, "%s/upper.skin", strPath);
+		sprintf(strHeadSkin,  "%s/head.skin",  strPath);
+	}
+
+	// Load the lower skin (*_upper.skin) and make sure it loaded properly
+	if(!loadMd3.LoadSkin( &m_Lower, strLowerSkin, shape ))
+	{
+		// Display an error message telling us the file could not be found
+		cerr <<"Unable to load the LOWER skin!" << endl;
+		return false;
+	}
+
+	// Load the upper skin (*_upper.skin) and make sure it loaded properly
+	if(!loadMd3.LoadSkin( &m_Upper, strUpperSkin, shape))
+	{
+		// Display an error message telling us the file could not be found
+		cerr <<"Unable to load the UPPER skin!" << endl;
+		return false;
+	}
+
+	// Load the head skin (*_head.skin) and make sure it loaded properly
+	if(!loadMd3.LoadSkin( &m_Head,  strHeadSkin, shape ))
+	{
+		// Display an error message telling us the file could not be found
+		cerr <<"Unable to load the HEAD skin!" << endl;
+		return false;
+	}
+
+	// Once the models and skins were loaded, we need to load then textures.
+	// We don't do error checking for this because we call CreateTexture() and 
+	// it already does error checking.  Most of the time there is only
+	// one or two textures that need to be loaded for each character.  There are
+	// different skins though for each character.  For instance, you could have a
+	// army looking Lara Croft, or the normal look.  You can have multiple types of
+	// looks for each model.  Usually it is just color changes though.
+
+	// Load the lower, upper and head textures.  
+	LoadModelTextures( &m_Lower, strPath, shape );
+	LoadModelTextures( &m_Upper, strPath, shape );
+	LoadModelTextures( &m_Head,  strPath, shape );
+
+	return true;
+}
+
 
 ///////////////////////////////// LOAD WEAPON \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
@@ -698,7 +698,7 @@ bool CModelMD3::LoadModel(char *strPath, char *strModel )
 /////
 ///////////////////////////////// LOAD WEAPON \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CModelMD3::LoadWeapon(char *strPath, char *strModel)
+bool CModelMD3::LoadWeapon( char *strPath, char *strModel, MD3Shape *shape )
 {
 	char strWeaponModel[255]  = {0};	// This stores the file name for the weapon model
 	char strWeaponShader[255] = {0};	// This stores the file name for the weapon shader.
@@ -739,7 +739,7 @@ bool CModelMD3::LoadWeapon(char *strPath, char *strModel)
 	sprintf(strWeaponShader, "%s/%s.shader", strPath, strModel);
 
 	// Load our textures associated with the gun from the weapon shader file
-	if(!loadMd3.LoadShader(&m_Weapon, strWeaponShader))
+	if(!loadMd3.LoadShader(&m_Weapon, strWeaponShader, shape ))
 	{
 		// Display the error message that we couldn't find the shader file and return false
 		cerr <<"Unable to load the SHADER file!" << endl;
@@ -748,7 +748,7 @@ bool CModelMD3::LoadWeapon(char *strPath, char *strModel)
 
 	// We should have the textures needed for each weapon part loaded from the weapon's
 	// shader, so let's load them in the given path.
-	LoadModelTextures(&m_Weapon, strPath );
+	LoadModelTextures(&m_Weapon, strPath, shape ); // fixme if ever used
 
 	// Just like when we loaded the character mesh files, we need to link the weapon to
 	// our character.  The upper body mesh (upper.md3) holds a tag for the weapon.
@@ -768,76 +768,23 @@ bool CModelMD3::LoadWeapon(char *strPath, char *strModel)
 /////
 ///////////////////////////////// LOAD WEAPON \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::LoadModelTextures(t3DModel *pModel, char *strPath )
-{
-	// This function loads the textures that are assigned to each mesh and it's
-	// sub-objects.  For instance, the Lara Croft character has a texture for the body
-	// and the face/head, and since she has the head as a sub-object in the lara_upper.md3 model, 
-	// the MD3 file needs to contain texture information for each separate object in the mesh.
-	// There is another thing to note too...  Some meshes use the same texture map as another 
-	// one. We don't want to load 2 of the same texture maps, so we need a way to keep track of
-	// which texture is already loaded so that we don't double our texture memory for no reason.
-	// This is controlled with a STL vector list of "strings".  Every time we load a texture
-	// we add the name of the texture to our list of strings.  Before we load another one,
-	// we make sure that the texture map isn't already in our list.  If it is, we assign
-	// that texture index to our current models material texture ID.  If it's a new texture,
-	// then the new texture is loaded and added to our characters texture array: m_Textures[].
-
+void CModelMD3::LoadModelTextures(t3DModel *pModel, char *strPath, MD3Shape *shape ) {
 	// fix the texture file names
-	for(int i = 0; i < pModel->numOfMaterials; i++) {
-		if(strlen(pModel->pMaterials[i].strFile) > 0) {
+	for(int i = 0; i < shape->getNumOfMaterials( pModel ); i++) {
+		if(strlen( shape->getMaterialInfos( pModel )->at( i ).strFile) > 0) {
 			char strFullPath[255] = {0};
-			char *p = strchr( pModel->pMaterials[i].strFile, '\r' );
+			char *p = strchr( shape->getMaterialInfos( pModel )->at( i ).strFile, '\r' );
 			if( p ) *p = 0;
-			sprintf( strFullPath, "%s/%s", strPath, pModel->pMaterials[i].strFile );
-			strcpy( pModel->pMaterials[i].strFile, strFullPath );
+			sprintf( strFullPath, "%s/%s", strPath, shape->getMaterialInfos( pModel )->at( i ).strFile );
+			strcpy( shape->getMaterialInfos( pModel )->at( i ).strFile, strFullPath );
 		}
 	}
 
 	// Go through all the materials that are assigned to this model
-	for(int i = 0; i < pModel->numOfMaterials; i++)
-	{
-		// Check to see if there is a file name to load in this material
-		if(strlen(pModel->pMaterials[i].strFile) > 0)
-		{
-			// Create a boolean to tell us if we have a new texture to load
-			bool bNewTexture = true;
-
-			// Go through all the textures in our string list to see if it's already loaded
-			for(unsigned int j = 0; j < strTextures.size(); j++)
-			{
-				// If the texture name is already in our list of texture, don't load it again.
-				if(!strcmp(pModel->pMaterials[i].strFile, strTextures[j].c_str()) )
-				{
-					// We don't need to load this texture since it's already loaded
-					bNewTexture = false;
-
-					// Assign the texture index to our current material textureID.
-					// This ID will them be used as an index into m_Textures[].
-					pModel->pMaterials[i].texureId = j;
-				}
-			}
-
-			// Make sure before going any further that this is a new texture to be loaded
-			if(bNewTexture == false) continue;
-			
-			//m_Textures[strTextures.size()] = wrapper->loadSkinTexture( strPath, pModel->pMaterials[i].strFile );
-//			cerr << "*** Loading MD3 texture: count=" << strTextures.size() << " file=" << pModel->pMaterials[i].strFile << endl;
-			m_Textures[strTextures.size()] = loader->loadSkinTexture( pModel->pMaterials[i].strFile );
-
-			// We pass in a reference to an index into our texture array member variable.
-			// The size() function returns the current loaded texture count.  Initially
-			// it will be 0 because we haven't added any texture names to our strTextures list.
-			//CreateTexture(&(m_Textures[strTextures.size()]), strFullPath);
-
-			// Set the texture ID for this material by getting the current loaded texture count
-			pModel->pMaterials[i].texureId = strTextures.size();
-
-			// Now we increase the loaded texture count by adding the texture name to our
-			// list of texture names.  Remember, this is used so we can check if a texture
-			// is already loaded before we load 2 of the same textures.  Make sure you
-			// understand what an STL vector list is.  We have a tutorial on it if you don't.
-			strTextures.push_back(pModel->pMaterials[i].strFile);
+	for(int i = 0; i < shape->getNumOfMaterials( pModel ); i++) {
+		if(strlen( shape->getMaterialInfos( pModel )->at( i ).strFile) > 0) {
+			shape->getTextures()->push_back( loader->loadSkinTexture( shape->getMaterialInfos( pModel )->at( i ).strFile ) );
+			shape->getMaterialInfos( pModel )->at( i ).texureId = shape->getTextures()->size() - 1;
 		}
 	}
 }
@@ -1378,10 +1325,10 @@ void CModelMD3::RenderModel( t3DModel *pModel, MD3Shape *shape )
 			glEnable(GL_TEXTURE_2D);
 
 			// Grab the texture index from the materialID index into our material list
-			int textureID = pModel->pMaterials[pObject->materialID].texureId;
+			int textureID = shape->getMaterialInfos( pModel )->at( pObject->materialID ).texureId;
 
 			// Bind the texture index that we got from the material textureID
-			glBindTexture(GL_TEXTURE_2D, m_Textures[textureID]);
+			glBindTexture(GL_TEXTURE_2D, shape->getTextures()->at(textureID));
 		}
 		else
 		{
@@ -1844,7 +1791,7 @@ void CLoadMD3::ConvertDataStructures(t3DModel *pModel, tMd3MeshInfo meshHeader)
 /////
 ///////////////////////////////// LOAD SKIN \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CLoadMD3::LoadSkin(t3DModel *pModel, char *strSkin)
+bool CLoadMD3::LoadSkin(t3DModel *pModel, char *strSkin, MD3Shape *shape)
 {
 	// Make sure valid data was passed in
 	if(!pModel || !strSkin) return false;
@@ -1929,14 +1876,14 @@ bool CLoadMD3::LoadSkin(t3DModel *pModel, char *strSkin)
 				texture.uTile = texture.vTile = 1;
 
 				// Store the material ID for this object and set the texture boolean to true
-				pModel->pObject[i].materialID = pModel->numOfMaterials;
+				pModel->pObject[i].materialID = shape->getNumOfMaterials( pModel );
 				pModel->pObject[i].bHasTexture = true;
 
 				// Here we increase the number of materials for the model
-				pModel->numOfMaterials++;
+				shape->setNumOfMaterials( pModel, shape->getNumOfMaterials( pModel ) + 1 );
 
 				// Add the local material info structure to our model's material list
-				pModel->pMaterials.push_back(texture);
+				shape->getMaterialInfos( pModel )->push_back(texture);
 			}
 		}
 	}
@@ -1953,7 +1900,7 @@ bool CLoadMD3::LoadSkin(t3DModel *pModel, char *strSkin)
 /////
 ///////////////////////////////// LOAD SHADER \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CLoadMD3::LoadShader(t3DModel *pModel, char *strShader)
+bool CLoadMD3::LoadShader( t3DModel *pModel, char *strShader, MD3Shape *shape )
 {
 	// Make sure valid data was passed in
 	if(!pModel || !strShader) return false;
@@ -2005,14 +1952,14 @@ bool CLoadMD3::LoadShader(t3DModel *pModel, char *strShader)
 		texture.uTile = texture.uTile = 1;
 
 		// Store the material ID for this object and set the texture boolean to true
-		pModel->pObject[currentIndex].materialID = pModel->numOfMaterials;
+		pModel->pObject[currentIndex].materialID = shape->getNumOfMaterials( pModel );
 		pModel->pObject[currentIndex].bHasTexture = true;
 
 		// Here we increase the number of materials for the model
-		pModel->numOfMaterials++;
+		shape->setNumOfMaterials( pModel, shape->getNumOfMaterials( pModel ) + 1 );
 
 		// Add the local material info structure to our model's material list
-		pModel->pMaterials.push_back(texture);
+		shape->getMaterialInfos( pModel )->push_back(texture);
 
 		// Here we increase the material index for the next texture (if any)
 		currentIndex++;

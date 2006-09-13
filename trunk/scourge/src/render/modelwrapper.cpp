@@ -86,7 +86,8 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 		model_info->wrapper.createShape( loadSkinTexture( skinPath ), 
 																		 (scale == 0.0f ? model_info->scale : scale),
 																		 textureGroup, model_info->name, 
-																		 -1, 0xf0f0ffff, 0);
+																		 -1, 0xf0f0ffff, 0,
+																		 model_name, skin_name );
 	return shape;
 }
 
@@ -138,7 +139,12 @@ GLuint ModelLoader::loadSkinTexture( char *skin_name ) {
 void ModelLoader::unloadSkinTexture( char *skin_name ) {
 
 	// md3-s unload their own
-	if( skin_name[ strlen( skin_name ) - 4 ] != '.' ) return;
+	if( skin_name[ strlen( skin_name ) - 4 ] != '.' ) {
+#ifdef DEBUG_LOADING
+		cerr << "\t&&&&&&&&&& skipping it." << endl;
+#endif
+		return;
+	}
 
   string skin = skin_name;
   GLuint skin_texture;
@@ -174,6 +180,12 @@ void ModelLoader::unloadSkinTexture( char *skin_name ) {
 void ModelLoader::decrementSkinRefCount( char *model_name, 
 																					char *skin_name ) {
 
+#ifdef DEBUG_LOADING
+  cerr << "=====================================================" << endl << 
+		"decrementSkinRefCount: model_name=" << model_name << 
+		" skin=" << ( skin_name ? skin_name : "NULL" ) << endl;
+#endif
+
 	char skinPath[300];
 	sprintf( skinPath, "%s%s/%s", rootDir, model_name, skin_name );
 	unloadSkinTexture( skinPath );
@@ -208,6 +220,27 @@ void ModelLoader::decrementSkinRefCount( char *model_name,
   }
 }
 
+void ModelLoader::debugModelLoader() {
+#ifdef DEBUG_LOADING
+	cerr << "****************************************" << endl;
+	cerr << "Loaded models: " << endl;
+	for( map<string, Md2ModelInfo*>::iterator i = creature_models.begin();
+			 i != creature_models.end(); ++i ) {
+		string key = i->first;
+		Md2ModelInfo *model_info = i->second;
+		cerr << "\t" << key << " " << loaded_models[ model_info ] << " references." << endl;
+	}
+	cerr << "Loaded skins: " << endl;
+	for( map<string, GLuint>::iterator i = creature_skins.begin();
+			 i != creature_skins.end(); ++i ) {
+		string key = i->first;
+		GLuint id = i->second;
+		cerr << "\t" << key << " " << loaded_skins[ id ] << " references." << endl;
+	}
+	cerr << "****************************************" << endl;
+#endif
+}
+
 
 
 // ----------------------------------------------------------
@@ -220,6 +253,7 @@ void ModelWrapper::loadModel( char *path, char *name, ModelLoader *loader ) {
 	int load = -1;
   char full[300];
   sprintf( full, "%s%s", rootDir, path );
+	// if name ends in .bmp (or other image extension) it's an md2
   if( !name || name[ strlen( name ) - 4 ] == '.' ) {
 		if( strcasecmp( path + strlen( path ) - 4, ".md2" ) ) strcat( full, "/tris.md2" );
 		load = LOAD_MD2;
@@ -242,7 +276,8 @@ void ModelWrapper::loadModel( char *path, char *name, ModelLoader *loader ) {
 	  this->md3 = NULL;
 	} else if( load == LOAD_MD3 ) {
 		CModelMD3 *md3 = new CModelMD3( loader );
-		md3->LoadModel( full, name );
+		md3->LoadModel( full );
+		//md3->loadSkins( full, name );
 	  this->md2 = NULL;
 	  this->md3 = md3;
 	} else {
@@ -265,8 +300,10 @@ void ModelWrapper::unloadModel() {
 
 // factory method to create shape
 AnimatedShape *ModelWrapper::createShape( GLuint textureId, float div,
-																					GLuint texture[], char *name, int descriptionGroup,
-																					Uint32 color, Uint8 shapePalIndex) {
+																					GLuint texture[], char *name, 
+																					int descriptionGroup,
+																					Uint32 color, Uint8 shapePalIndex,
+																					char *model_name, char *skin_name ) {
   int width, depth, height;
 	normalizeModel( &width, &depth, &height, div, name );
 
@@ -274,8 +311,13 @@ AnimatedShape *ModelWrapper::createShape( GLuint textureId, float div,
 		return new MD2Shape( md2, textureId, div, texture, width, depth, height,
 												 name, descriptionGroup, color, shapePalIndex );
 	} else if( md3 ) {
-		return new MD3Shape( md3, div, texture, width, depth, height,
-												 name, descriptionGroup, color, shapePalIndex );
+		MD3Shape *shape = 
+			new MD3Shape( md3, div, texture, width, depth, height,
+										name, descriptionGroup, color, shapePalIndex );
+		char full[300];
+		sprintf( full, "%s%s", rootDir, model_name );
+		md3->loadSkins( full, skin_name, shape );
+		return shape;
 	} else {
 		cerr << "*** Error: Can't create animated shape." << endl;
 		return NULL;

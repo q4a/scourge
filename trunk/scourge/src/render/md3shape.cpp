@@ -19,6 +19,7 @@
 #include "Md3.h"
 #include "Md2.h"
 #include "md3shape.h"
+#include "modelwrapper.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ MD3Shape::MD3Shape( CModelMD3 *md3, float div,
 	// clone the md3 so we have our own animation data
   this->md3 = md3;
   this->div = div;
+	numOfMaterialsUpper = numOfMaterialsLower = numOfMaterialsHead = 0;
 	aiLower.currentAnim = aiUpper.currentAnim = aiHead.currentAnim = 0;
 	aiLower.currentFrame = aiUpper.currentFrame = aiHead.currentFrame = 0;
 	aiLower.lastTime = aiUpper.lastTime = aiHead.lastTime = 0;
@@ -41,6 +43,18 @@ MD3Shape::MD3Shape( CModelMD3 *md3, float div,
 }
 
 MD3Shape::~MD3Shape() {
+	unloadSkinTextures( numOfMaterialsLower, &pMaterialLower );
+	unloadSkinTextures( numOfMaterialsUpper, &pMaterialUpper );
+	unloadSkinTextures( numOfMaterialsHead, &pMaterialHead );
+}
+
+void MD3Shape::unloadSkinTextures( int count, vector<tMaterialInfo> *materials ) {
+	for( int i = 0; i < count; i++) {
+		tMaterialInfo info = materials->at( i );
+		if( strlen( info.strFile ) > 0 ) {
+			md3->getLoader()->unloadSkinTexture( info.strFile );
+		}
+	}
 }
 
 void MD3Shape::draw() {
@@ -182,3 +196,42 @@ AnimInfo *MD3Shape::getAnimInfo( t3DModel *model ) {
 		return NULL;
 	}
 }
+
+std::vector<tMaterialInfo> *MD3Shape::getMaterialInfos( t3DModel *pModel ) {
+	if( pModel == md3->GetModel( kLower ) ) {
+		return &pMaterialLower;
+	} else if( pModel == md3->GetModel( kUpper ) ) {
+		return &pMaterialUpper;
+	} else if( pModel == md3->GetModel( kHead ) ) {
+		return &pMaterialHead;
+	} else {
+		cerr << "*** Error: can't find material info for model." << endl;
+		return NULL;
+	}
+}
+
+int MD3Shape::getNumOfMaterials( t3DModel *pModel ) {
+	if( pModel == md3->GetModel( kLower ) ) {
+		return numOfMaterialsLower;
+	} else if( pModel == md3->GetModel( kUpper ) ) {
+		return numOfMaterialsUpper;
+	} else if( pModel == md3->GetModel( kHead ) ) {
+		return numOfMaterialsHead;
+	} else {
+		cerr << "*** Error: can't find num of materials for model." << endl;
+		return 0;
+	}
+}
+
+void MD3Shape::setNumOfMaterials( t3DModel *pModel, int n ) {
+	if( pModel == md3->GetModel( kLower ) ) {
+		numOfMaterialsLower = n;
+	} else if( pModel == md3->GetModel( kUpper ) ) {
+		numOfMaterialsUpper = n;
+	} else if( pModel == md3->GetModel( kHead ) ) {
+		numOfMaterialsHead = n;
+	} else {
+		cerr << "*** Error: can't set num of materials for model." << endl;
+	}
+}
+

@@ -144,6 +144,7 @@ public:
                             Monster *monster=NULL);
   void decrementSkinRefCount(char *model_name, char *skin_name, 
                              Monster *monster=NULL);
+	void debugLoadedModels();
 
 protected:
   virtual int interpretShapesLine( FILE *fp, int n );

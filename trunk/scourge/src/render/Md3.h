@@ -175,10 +175,10 @@ public:
 	bool ImportMD3(t3DModel *pModel, char *strFileName);
 
 	// This loads a model's .skin file
-	bool LoadSkin(t3DModel *pModel, char *strSkin);
+	bool LoadSkin( t3DModel *pModel, char *strSkin, MD3Shape *shape );
 
 	// This loads a weapon's .shader file
-	bool LoadShader(t3DModel *pModel, char *strShader);
+	bool LoadShader(t3DModel *pModel, char *strShader, MD3Shape *shape );
 
 private:
 
@@ -218,17 +218,15 @@ public:
 	CModelMD3( ModelLoader *loader );
 	~CModelMD3();
 
-	void unloadSkinTextures();	
-
 	void findBounds( vect3d min, vect3d max );
 	void normalize( vect3d min, vect3d max );
 	
-	// This loads the model from a path and name prefix.   It takes the path and
-	// model name prefix to be added to _upper.md3, _lower.md3 or _head.md3.
-	bool LoadModel(char *strPath, char *strModel );
+	bool LoadModel(char *strPath );
+
+	bool loadSkins( char *strPath, char *strModel, MD3Shape *shape );
 
 	// This loads the weapon and takes the same path and model name to be added to .md3
-	bool LoadWeapon(char *strPath, char *strModel );
+	bool LoadWeapon(char *strPath, char *strModel, MD3Shape *shape  );
 
 	// This links a model to another model (pLink) so that it's the parent of that child.
 	// The strTagName is the tag, or joint, that they will be linked at (I.E. "tag_torso").
@@ -252,6 +250,7 @@ public:
 	inline float *getMin() { return min; }
 	inline float *getMax() { return max; }
 	inline void setAnimationPaused( bool b ) { paused = b; }
+	inline ModelLoader *getLoader() { return loader; }
 	
 private:
 	vect3d min, max;
@@ -263,7 +262,7 @@ private:
 	void hashAnimations( t3DModel *pModel );
 
 	// This loads the models textures with a given path
-	void LoadModelTextures(t3DModel *pModel, char *strPath );
+	void LoadModelTextures(t3DModel *pModel, char *strPath, MD3Shape *shape );
 
 	// This loads the animation config file (.cfg) for the character
 	bool LoadAnimations(char *strConfigFile);
@@ -281,17 +280,6 @@ private:
 	void RenderModel( t3DModel *pModel, MD3Shape *shape );
 
 	// Member Variables
-
-	// This stores the texture array for each of the textures assigned to this model
-	Uint32 m_Textures[MAX_TEXTURES];	
-
-	// This stores a list of all the names of the textures that have been loaded.  
-	// This was created so that we could check to see if a texture that is assigned
-	// to a mesh has already been loaded.  If so, then we don't need to load it again
-	// and we can assign the textureID to the same textureID as the first loaded texture.
-	// You could get rid of this variable by doing something tricky in the texture loading
-	// function, but I didn't want to make it too confusing to load the textures.
-	std::vector<std::string> strTextures;
 
 	// These are are models for the character's head and upper and lower body parts
 	t3DModel m_Head;

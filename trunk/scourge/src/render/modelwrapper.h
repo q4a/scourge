@@ -40,7 +40,8 @@ public:
 	void unloadModel();
 	AnimatedShape *createShape( GLuint textureId, float div,
 															GLuint texture[], char *name, int descriptionGroup,
-															Uint32 color, Uint8 shapePalIndex);
+															Uint32 color, Uint8 shapePalIndex,
+															char *model_name, char *skin_name );
 
 	void normalizeModel( int *width, int *depth, int *height, float div, char *name );
 	
@@ -74,6 +75,7 @@ public:
 																			char *skin_name );
 	GLuint loadSkinTexture( char *skin_name );
 	void unloadSkinTexture( char *skin_name );
+	void debugModelLoader();
 };
 
 #endif
