@@ -82,7 +82,8 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
                      Creature *creature,
 										 Creature *player,
                      int maxNodes,
-                     bool ignoreParty ) {
+                     bool ignoreParty,
+										 bool ignoreEndShape ) {
 
 	if( PATH_DEBUG ) 
 		cerr << "Util::findPath for " << creature->getName() << 
@@ -168,7 +169,7 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
           (Node.y >= 0) && (Node.y < MAP_DEPTH)) {
         
         // Determine cost of distance travelled
-        if( isBlocked( Node.x, Node.y, sx, sy, creature, player, map, ignoreParty ) ) {
+        if( isBlocked( Node.x, Node.y, sx, sy, dx, dy, creature, player, map, ignoreParty, ignoreEndShape ) ) {
           Node.gone = 1000;
         } else {
           Node.gone = BestNode.gone + 1;
@@ -282,14 +283,22 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
 // a simpler/quicker 2D version of Map::isBlocked()
 bool Util::isBlocked( Sint16 x, Sint16 y,
                       Sint16 shapeX, Sint16 shapeY, 
+											Sint16 dx, Sint16 dy,
                       Creature *creature, 
 											Creature *player,
 											Map *map,
-                      bool ignoreParty ) {
+                      bool ignoreParty,
+											bool ignoreEndShape ) {
   for( int sx = 0; sx < creature->getShape()->getWidth(); sx++ ) {
     for( int sy = 0; sy < creature->getShape()->getDepth(); sy++ ) {
       Location *loc = map->getLocation( x + sx, y - sy, 0 );
 			if( loc ) {
+				if( ignoreEndShape && 
+						loc->shape &&
+						loc->x <= dx && loc->x + loc->shape->getWidth() > dx &&
+						loc->y >= dy && loc->y - loc->shape->getDepth() < dy ) {
+					continue;
+				}
 				if( ignoreParty && 
 						loc->creature && 
 						loc->creature != player &&

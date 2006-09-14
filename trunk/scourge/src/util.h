@@ -80,7 +80,8 @@ public:
 												Creature *creature,
 												Creature *player,
 												int maxNodes,
-												bool ignoreParty );
+												bool ignoreParty,
+												bool ignoreEndShape );
 
   // some math functions
   static float dot_product(float v1[3], float v2[3]);
@@ -128,9 +129,9 @@ public:
 														 Creature *b, std::vector<Location> *bPath, int bStart );
 
 protected:
-  static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, 
+  static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Sint16 dx, Sint16 dy,
 												 Creature *creature, Creature *player, Map *map, 
-												 bool ignoreCreatures=false );
+												 bool ignoreCreatures=false, bool ignoreEndShape=false );
 
 };
 

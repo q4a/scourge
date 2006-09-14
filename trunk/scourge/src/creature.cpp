@@ -559,6 +559,7 @@ void Creature::moveAway( Creature *other ) {
 											this, 
 											player,
 											AWAY_DISTANCE * 2,
+											false,
 											false ); // true );
 			if( !path.empty() && 
 					!Util::isOutOfTheWay( this, &path, 0, 
@@ -668,7 +669,8 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
                   this, 
 									session->getParty()->getPlayer(),
                   maxNodes,
-                  ignoreParty );
+                  ignoreParty,
+									!cancelIfNotPossible );
 
   // Does the path lead to the destination?
   bool ret = false;
