@@ -57,6 +57,7 @@ private:
   ScrollingList *deityType;
   Canvas *portrait;
   Button *prevPortrait, *nextPortrait;
+  Button *male, *female;
   Canvas *model;
   Button *prevModel, *nextModel;
   Button *reroll;

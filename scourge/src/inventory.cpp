@@ -799,10 +799,11 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   int objectiveCount = 0;
   Creature * selectedP = scourge->getParty()->getParty(selected);
 
-  sprintf(nameAndClassStr, "%s, %s (level %d) (%s)", 
+  sprintf(nameAndClassStr, "%s, %s (level %d, %s) (%s)", 
           selectedP->getName(), 
           selectedP->getCharacter()->getName(), 
           selectedP->getLevel(),
+          (selectedP->getSex() == Constants::SEX_MALE ? "M" : "F" ),
           MagicSchool::getMagicSchool(selectedP->getDeityIndex())->getDeity());
   //nameAndClassLabel->setText(nameAndClassStr);  
   mainWin->setTitle( nameAndClassStr );
