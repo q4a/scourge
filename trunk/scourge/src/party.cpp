@@ -488,7 +488,7 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
 
   // assign random portraits
   for( int i = 0; i < pcCount; i++ ) {
-    pc[i]->setPortraitTextureIndex( (int)( (float)(session->getShapePalette()->getPortraitCount()) * rand()/RAND_MAX ) );
+    pc[i]->setPortraitTextureIndex( (int)( (float)(session->getShapePalette()->getPortraitCount( pc[i]->getSex() )) * rand()/RAND_MAX ) );
   }
 
   *partySize = pcCount;  

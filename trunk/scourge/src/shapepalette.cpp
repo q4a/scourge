@@ -245,7 +245,14 @@ int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
     n = Constants::readLine(line, fp);
     //      cerr << "*** Loading portrait: " << line << endl;
     if( strstr( line, "death" ) ) deathPortraitTexture = loadGLTextures( line );
-    else portraitTextures.push_back( loadGLTextures( line ) );
+    else {
+			int sex = Constants::SEX_MALE;
+			if( line[ strlen( line ) - 2 ] == ',' ) {
+				if( line[ strlen( line ) - 1 ] == 'F' ) sex = Constants::SEX_FEMALE;
+				line[ strlen( line ) - 2 ] = '\0';
+			}
+			portraitTextures[sex].push_back( loadGLTextures( line ) );
+		}
     return n;
   }
   return -1;

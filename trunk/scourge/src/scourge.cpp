@@ -2180,7 +2180,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   if( p->getStateMod( Constants::dead ) ) {
     glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getDeathPortraitTexture() );
   } else {
-    glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getPortraitTexture( p->getPortraitTextureIndex() ) );
+    glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() ) );
   }
   int portraitSize = ((Scourge::PARTY_GUI_WIDTH - 90) / 4);
   int offs = 15;

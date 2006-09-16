@@ -102,6 +102,7 @@ protected:
 	void setCharType( int charIndex );
 	void setDeityType( int deityIndex );
 	void createUI();
+	int getSex();
 };
 
 #endif

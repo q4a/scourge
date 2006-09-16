@@ -214,7 +214,8 @@ RenderedCreature *PartyEditor::createWanderingHero( int level ) {
 	pc->setDeityIndex( MagicSchool::getRandomSchoolIndex() );
 	
 	// assign portraits
-	pc->setPortraitTextureIndex( (int)( (float)(scourge->getShapePalette()->getPortraitCount()) * rand() / RAND_MAX ) );
+	pc->setSex( 4.0f * rand() / RAND_MAX >= 2.0f ? Constants::SEX_MALE : Constants::SEX_FEMALE );
+	pc->setPortraitTextureIndex( (int)( (float)(scourge->getShapePalette()->getPortraitCount( pc->getSex() )) * rand() / RAND_MAX ) );
 	
 	// compute starting skill levels
 	pcEditor->rollSkillsForCreature( pc );
