@@ -94,7 +94,6 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
-  this->sex = Constants::SEX_MALE;
   this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name, session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->scale);
   commonInit();  
 }
@@ -112,7 +111,6 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape) : Rendere
   this->armor = monster->getBaseArmor();
   this->armorChanged = true;
   this->bonusArmor=0;
-  this->sex = Constants::SEX_MALE;  
   this->shape = shape;  
   commonInit();
   monsterInit();
@@ -139,6 +137,7 @@ void Creature::commonInit() {
   this->bestPathPos = 0;
   this->inventory_count = 0;
   this->preferredWeapon = -1;
+	this->sex = Constants::SEX_MALE;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     equipped[i] = MAX_INVENTORY_SIZE;
   }
@@ -382,8 +381,8 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
     }
   }
   creature->portraitTextureIndex = info->portraitTextureIndex;
-  if( creature->portraitTextureIndex >= session->getShapePalette()->getPortraitCount() ) 
-    creature->portraitTextureIndex = session->getShapePalette()->getPortraitCount() - 1;
+  if( creature->portraitTextureIndex >= session->getShapePalette()->getPortraitCount( creature->getSex() ) ) 
+    creature->portraitTextureIndex = session->getShapePalette()->getPortraitCount( creature->getSex() ) - 1;
 
   // spells
   for(int i = 0; i < (int)info->spell_count; i++) {

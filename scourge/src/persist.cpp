@@ -249,8 +249,11 @@ CreatureInfo *Persist::loadCreature( File *file ) {
   file->read( &(info->dir) );
   file->read( &(info->speed) );
   file->read( &(info->motion) );
-  if( info->version >= 16 ) file->read( &(info->sex ) );
-  else info->sex = Constants::SEX_MALE;
+  if( info->version >= 16 ) {		
+		file->read( &(info->sex ) );
+  } else {
+		info->sex = Constants::SEX_MALE;
+	}
   file->read( &(info->armor) );
   file->read( &(info->bonusArmor) );
   file->read( &(info->thirst) );

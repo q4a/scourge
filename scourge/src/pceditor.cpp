@@ -130,7 +130,7 @@ void PcEditor::saveUI() {
 	creature->setMp();
 	
 	// sex
-	creature->setSex( male->isSelected() ? Constants::SEX_MALE : Constants::SEX_FEMALE );
+	creature->setSex( getSex() );
 
 	// deity
 	creature->setDeityIndex( deityType->getSelectedLine() );
@@ -172,7 +172,7 @@ void PcEditor::loadUI() {
 		deityType->setSelectedLine( deityIndex );
 		deityTypeDescription->setText( MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
 
-		for( int i = 0; i < scourge->getShapePalette()->getPortraitCount(); i++ ) {
+		for( int i = 0; i < scourge->getShapePalette()->getPortraitCount( creature->getSex() ); i++ ) {
 			if( creature->getPortraitTextureIndex() == i ) {
 				portraitIndex = i;
 				break;
@@ -256,6 +256,9 @@ Creature *PcEditor::createPartyMember() {
 	// assign portraits
 	c->setPortraitTextureIndex( portraitIndex );
 
+	// sex
+	c->setSex( getSex() );
+
 	return c;
 }
 
@@ -303,11 +306,11 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
     if( portraitIndex > 0 ) {
       portraitIndex--;
     } else {
-      portraitIndex = scourge->getShapePalette()->getPortraitCount() - 1;
+      portraitIndex = scourge->getShapePalette()->getPortraitCount( creature->getSex() ) - 1;
     }
     saveUI();
   } else if( widget == nextPortrait ) {
-    if( portraitIndex < scourge->getShapePalette()->getPortraitCount() - 1 ) {
+    if( portraitIndex < scourge->getShapePalette()->getPortraitCount( creature->getSex() ) - 1 ) {
       portraitIndex++;
     } else {
       portraitIndex = 0;
@@ -384,6 +387,10 @@ void PcEditor::setDeityType( int deityIndex ) {
     if( school ) deityTypeDescription->setText( school->getDeityDescription() );
     saveUI();
   }
+}
+
+int PcEditor::getSex() {
+	return( male->isSelected() ? Constants::SEX_MALE : Constants::SEX_FEMALE );
 }
 
 #define TEXT_WIDTH 55
@@ -583,7 +590,9 @@ not affect the game in any way.",
   portrait = new Canvas( secondColStart, yy, 
                          secondColStart + imageWidth, yy + PORTRAIT_SIZE, this );
   cards->addWidget( portrait, IMAGE_TAB );
-  portraitIndex = (int)( (float)( scourge->getShapePalette()->getPortraitCount() ) * rand()/RAND_MAX );
+	int maleCount = scourge->getShapePalette()->getPortraitCount( Constants::SEX_MALE );
+	int femaleCount = scourge->getShapePalette()->getPortraitCount( Constants::SEX_FEMALE );
+  portraitIndex = (int)( (float)( maleCount <= femaleCount ? maleCount : femaleCount ) * rand()/RAND_MAX );
   prevPortrait = cards->createButton( secondColStart, yy + PORTRAIT_SIZE + 10,
                                       secondColStart + imageWidth / 2 - 5, yy + PORTRAIT_SIZE + 10 + buttonHeight, 
                                       "<<", IMAGE_TAB );
@@ -613,7 +622,8 @@ void PcEditor::drawWidgetContents( Widget *w ) {
     glDisable( GL_CULL_FACE );
     glColor4f( 1, 1, 1, 1 );
     glBindTexture( GL_TEXTURE_2D, 
-                   scourge->getShapePalette()->getPortraitTexture( portraitIndex ) );
+                   scourge->getShapePalette()->
+									 getPortraitTexture( getSex(), portraitIndex ) );
     glBegin( GL_QUADS );
     glNormal3f( 0, 0, 1 );
     glTexCoord2f( 0, 0 );

@@ -50,7 +50,7 @@ private:
 
   Session *session;
   
-  std::vector<GLuint> portraitTextures;
+  std::vector<GLuint> portraitTextures[2];
   GLuint deathPortraitTexture;
   GLuint progressTexture, progressHighlightTexture;
 
@@ -135,8 +135,8 @@ public:
 	inline GLuint getStartTexture() { return startTexture; }	
 	inline GLuint getWaitTexture() { return waitTexture; }	
 
-  inline int getPortraitCount() { return portraitTextures.size(); }
-  inline GLuint getPortraitTexture( int index ) { return portraitTextures[ index ]; }
+  inline int getPortraitCount( int sex ) { return portraitTextures[sex].size(); }
+  inline GLuint getPortraitTexture( int sex, int index ) { return portraitTextures[sex][ index ]; }
   inline GLuint getDeathPortraitTexture() { return deathPortraitTexture; }
 
   // Md2 shapes

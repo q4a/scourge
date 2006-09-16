@@ -31,54 +31,56 @@
 # I: interactive icon (0,1)
 #
 # Character Portraits:
-# O:filename
+# O:filename,[M|F]
+# where: M-male, F-female
 #
 # Character models:
-# M:model-dir,skin (file in model-dir),scale
+# M:model-dir,skin (file in model-dir),scale,[M|F]
+# where: M-male, F-female
 #
 # Skill descriptions: (order is important: see constants.h)
 # S:name,description
 
 # Character portraits
-O:/portraits/m1.bmp
-O:/portraits/m2.bmp
-O:/portraits/m3.bmp
-O:/portraits/m4.bmp
-O:/portraits/m5.bmp
-O:/portraits/m6.bmp
-O:/portraits/m7.bmp
-O:/portraits/m8.bmp
-O:/portraits/m9.bmp
-O:/portraits/w1.bmp
-O:/portraits/w2.bmp
-O:/portraits/w3.bmp
-O:/portraits/w4.bmp
-O:/portraits/w5.bmp
-O:/portraits/w6.bmp
+O:/portraits/m1.bmp,M
+O:/portraits/m2.bmp,M
+O:/portraits/m3.bmp,M
+O:/portraits/m4.bmp,M
+O:/portraits/m5.bmp,M
+O:/portraits/m6.bmp,M
+O:/portraits/m7.bmp,M
+O:/portraits/m8.bmp,M
+O:/portraits/m9.bmp,M
+O:/portraits/w1.bmp,F
+O:/portraits/w2.bmp,F
+O:/portraits/w3.bmp,F
+O:/portraits/w4.bmp,F
+O:/portraits/w5.bmp,F
+O:/portraits/w6.bmp,F
 O:/portraits/death.bmp
 
 # Character models
-M:/models/character/blade,blade.bmp,2.0
-M:/models/character/pknight,knight.bmp,1.5
-M:/models/character/pknight,evil.bmp,1.5
-M:/models/character/pknight,ctf_b.bmp,1.5
-M:/models/character/pknight,ctf_r.bmp,1.5
-#M:/models/character/darkness,Darkness.bmp,1.5
-M:/models/character/darkness,estacado.bmp,1.5
-#M:/models/character/darkness,Morf.bmp,1.5
-#M:/models/character/darkness,ctf_b.bmp,1.5
-#M:/models/character/darkness,ctf_g.bmp,1.5
-M:/models/character/darkness,ctf_r.bmp,1.5
-M:/models/character/shinju,shinju.bmp,2.0
-M:/models/character/shinju,shinju_black.bmp,2.0
-M:/models/character/shinju,sunghi_blackhair.bmp,2.0
-M:/models/character/shinju,sunghi_redhair.bmp,2.0
-M:/models/character/sydney,sydney.bmp,1.7
-M:/models/character/sydney,ctf_b.bmp,1.7
-M:/models/character/sydney,ctf_r.bmp,1.7
-M:/models/character/yohko,Yohko.bmp,2.0
-M:/models/character/yohko,ctf_b.bmp,2.0
-#M:/models/character/yohko,ctf_r.bmp,2.0
+M:/models/character/blade,blade.bmp,2.0,M
+M:/models/character/pknight,knight.bmp,1.5,M
+M:/models/character/pknight,evil.bmp,1.5,M
+M:/models/character/pknight,ctf_b.bmp,1.5,M
+M:/models/character/pknight,ctf_r.bmp,1.5,M
+#M:/models/character/darkness,Darkness.bmp,1.5,M
+M:/models/character/darkness,estacado.bmp,1.5,M
+#M:/models/character/darkness,Morf.bmp,1.5,M
+#M:/models/character/darkness,ctf_b.bmp,1.5,M
+#M:/models/character/darkness,ctf_g.bmp,1.5,M
+M:/models/character/darkness,ctf_r.bmp,1.5,M
+M:/models/character/shinju,shinju.bmp,2.0,F
+M:/models/character/shinju,shinju_black.bmp,2.0,F
+M:/models/character/shinju,sunghi_blackhair.bmp,2.0,F
+M:/models/character/shinju,sunghi_redhair.bmp,2.0,F
+M:/models/character/sydney,sydney.bmp,1.7,F
+M:/models/character/sydney,ctf_b.bmp,1.7,F
+M:/models/character/sydney,ctf_r.bmp,1.7,F
+M:/models/character/yohko,Yohko.bmp,2.0,F
+M:/models/character/yohko,ctf_b.bmp,2.0,F
+#M:/models/character/yohko,ctf_r.bmp,2.0,F
 
 T:front.bmp
 T:top.bmp
