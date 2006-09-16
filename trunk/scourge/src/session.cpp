@@ -232,8 +232,8 @@ Creature *Session::newCreature(Monster *monster, GLShape *shape, bool loaded) {
   return c;
 }
 
-Creature *Session::newCreature( Character *character, char *name, int model ) {
-	Creature *c = new Creature( this, character, name, model );
+Creature *Session::newCreature( Character *character, char *name, int sex, int model ) {
+	Creature *c = new Creature( this, character, name, sex, model );
   creatures.push_back( c );
   return c;
 }

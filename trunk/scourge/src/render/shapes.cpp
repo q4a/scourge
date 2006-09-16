@@ -550,7 +550,10 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     strcpy( cmi->model_name, strtok( line, "," ) );
     strcpy( cmi->skin_name, strtok( NULL, "," ) );
     cmi->scale = atof( strtok( NULL, "," ) );
-    character_models.push_back( cmi );
+		char *p = strtok( NULL, "," );
+		int sex = ( p && *p == 'M' ? Constants::SEX_MALE : Constants::SEX_FEMALE );
+    character_models[sex].push_back( cmi );
+		
     return n;  
   }
   return -1;

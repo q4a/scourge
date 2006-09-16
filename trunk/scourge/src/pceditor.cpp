@@ -179,9 +179,9 @@ void PcEditor::loadUI() {
 			}
 		}
 
-		for( int i = 0; i < scourge->getShapePalette()->getCharacterModelInfoCount(); i++ ) {
-			if( !strcmp( creature->getModelName(), scourge->getShapePalette()->getCharacterModelInfo( i )->model_name ) &&
-					!strcmp( creature->getSkinName(), scourge->getShapePalette()->getCharacterModelInfo( i )->skin_name ) ) {
+		for( int i = 0; i < scourge->getShapePalette()->getCharacterModelInfoCount( creature->getSex() ); i++ ) {
+			if( !strcmp( creature->getModelName(), scourge->getShapePalette()->getCharacterModelInfo( creature->getSex(), i )->model_name ) &&
+					!strcmp( creature->getSkinName(), scourge->getShapePalette()->getCharacterModelInfo( creature->getSex(), i )->skin_name ) ) {
 				modelIndex = i;
 				break;
 			}
@@ -230,6 +230,7 @@ Creature *PcEditor::createPartyMember() {
 	Creature *c = new Creature( scourge->getSession(), 
                               Character::rootCharacters[ charType->getSelectedLine() ], 
                               strdup( nameField->getText() ), 
+															getSex(),
                               modelIndex );
 	c->setLevel( STARTING_PARTY_LEVEL ); 
 	c->setExp(0);
@@ -255,9 +256,6 @@ Creature *PcEditor::createPartyMember() {
 	
 	// assign portraits
 	c->setPortraitTextureIndex( portraitIndex );
-
-	// sex
-	c->setSex( getSex() );
 
 	return c;
 }
@@ -320,12 +318,12 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
     if( modelIndex > 0 ) {
       modelIndex--;
     } else {
-      modelIndex = scourge->getShapePalette()->getCharacterModelInfoCount() - 1;
+      modelIndex = scourge->getShapePalette()->getCharacterModelInfoCount( creature->getSex() ) - 1;
     }
     saveUI();
     willModelPlaySound = true;
   } else if( widget == nextModel ) {
-    if( modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount() - 1 ) {
+    if( modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount( creature->getSex() ) - 1 ) {
       modelIndex++;
     } else {
       modelIndex = 0;
@@ -340,9 +338,11 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
     rollSkills();
   } else if( widget == male ) {
   	female->setSelected( male->isSelected() ? false : true );
+		rollApperance();
   	saveUI();
   } else if( widget == female ) {
   	male->setSelected( female->isSelected() ? false : true );
+		rollApperance();
   	saveUI();  	
   } else {
     int n = 0;
@@ -590,10 +590,10 @@ not affect the game in any way.",
   portrait = new Canvas( secondColStart, yy, 
                          secondColStart + imageWidth, yy + PORTRAIT_SIZE, this );
   cards->addWidget( portrait, IMAGE_TAB );
-	int maleCount = scourge->getShapePalette()->getPortraitCount( Constants::SEX_MALE );
-	int femaleCount = scourge->getShapePalette()->getPortraitCount( Constants::SEX_FEMALE );
-  portraitIndex = (int)( (float)( maleCount <= femaleCount ? maleCount : femaleCount ) * rand()/RAND_MAX );
-  prevPortrait = cards->createButton( secondColStart, yy + PORTRAIT_SIZE + 10,
+	
+	rollApperance();
+  
+	prevPortrait = cards->createButton( secondColStart, yy + PORTRAIT_SIZE + 10,
                                       secondColStart + imageWidth / 2 - 5, yy + PORTRAIT_SIZE + 10 + buttonHeight, 
                                       "<<", IMAGE_TAB );
   nextPortrait = cards->createButton( secondColStart + imageWidth / 2 + 5, yy + PORTRAIT_SIZE + 10,
@@ -606,13 +606,21 @@ not affect the game in any way.",
   model = new Canvas( modelStart, yy, 
 											modelStart + modelWidth, yy + MODEL_SIZE, this );
   cards->addWidget( model, IMAGE_TAB );
-  modelIndex = (int)( (float)( scourge->getShapePalette()->getCharacterModelInfoCount() ) * rand()/RAND_MAX );
   prevModel = cards->createButton( modelStart, yy + MODEL_SIZE + 10,
                                    modelStart + modelWidth / 2 - 5, yy + MODEL_SIZE + 10 + buttonHeight, 
                                    "<<", IMAGE_TAB );
   nextModel = cards->createButton( modelStart + modelWidth / 2 + 5, yy + MODEL_SIZE + 10,
                                    modelStart + modelWidth, yy + MODEL_SIZE + 10 + buttonHeight,
                                    "    >>", IMAGE_TAB );
+}
+
+void PcEditor::rollApperance() {
+	int maleCount = scourge->getShapePalette()->getPortraitCount( Constants::SEX_MALE );
+	int femaleCount = scourge->getShapePalette()->getPortraitCount( Constants::SEX_FEMALE );
+  portraitIndex = (int)( (float)( maleCount <= femaleCount ? maleCount : femaleCount ) * rand()/RAND_MAX );
+	maleCount = scourge->getShapePalette()->getCharacterModelInfoCount( Constants::SEX_MALE );
+	femaleCount = scourge->getShapePalette()->getCharacterModelInfoCount( Constants::SEX_FEMALE );
+  modelIndex = (int)( (float)( maleCount <= femaleCount ? maleCount : femaleCount ) * rand()/RAND_MAX );
 }
 
 void PcEditor::drawWidgetContents( Widget *w ) {
@@ -640,7 +648,7 @@ void PcEditor::drawWidgetContents( Widget *w ) {
   } else if( w == model ) {
     // draw model
     CharacterModelInfo *cmi = scourge->getShapePalette()->
-      getCharacterModelInfo( modelIndex );
+      getCharacterModelInfo( getSex(), modelIndex );
     GLShape *shape;
     if( shapesMap.find( cmi ) == shapesMap.end() ) {
       shape = 

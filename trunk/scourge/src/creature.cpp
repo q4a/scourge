@@ -78,14 +78,14 @@ MonsterToughness monsterToughness[] = {
 
 #define getAn( name ) ( ( name[0] == 'a' || name[0] == 'e' || name[0] == 'i' || name[0] == 'o' || name[0] == 'u' || name[0] == 'y' ? "an" : "a" ) )
 
-Creature::Creature(Session *session, Character *character, char *name, int character_model_info_index) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
+Creature::Creature(Session *session, Character *character, char *name, int sex, int character_model_info_index) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = character;
   this->monster = NULL;
   this->name = name;
   this->character_model_info_index = character_model_info_index;
-  this->model_name = session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->model_name;
-  this->skin_name = session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->skin_name;
+  this->model_name = session->getShapePalette()->getCharacterModelInfo( sex, character_model_info_index )->model_name;
+  this->skin_name = session->getShapePalette()->getCharacterModelInfo( sex, character_model_info_index )->skin_name;
   sprintf(description, "%s the %s", name, character->getName());
   this->originalSpeed = this->speed = 5; // start neutral speed
   this->motion = Constants::MOTION_MOVE_TOWARDS;  
@@ -94,7 +94,8 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
-  this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name, session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->scale);
+  this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name, session->getShapePalette()->getCharacterModelInfo( sex, character_model_info_index )->scale);
+	this->sex = sex;
   commonInit();  
 }
 
@@ -112,6 +113,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape) : Rendere
   this->armorChanged = true;
   this->bonusArmor=0;
   this->shape = shape;  
+	this->sex = Constants::SEX_MALE;
   commonInit();
   monsterInit();
 }
@@ -136,8 +138,7 @@ void Creature::commonInit() {
 	this->cantMoveCounter = 0;
   this->bestPathPos = 0;
   this->inventory_count = 0;
-  this->preferredWeapon = -1;
-	this->sex = Constants::SEX_MALE;
+  this->preferredWeapon = -1;	
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     equipped[i] = MAX_INVENTORY_SIZE;
   }
@@ -331,6 +332,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
     creature = new Creature( session, 
                              Character::getCharacterByName((char*)info->character_name), 
                              strdup((char*)info->name),
+														 info->sex,
                              info->character_model_info_index );
   }
 //  cerr << "*** LOAD: creature=" << info->name << endl;
@@ -345,7 +347,6 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   //creature->setSpeed( info->speed );
   creature->setMotion( info->motion );
   //creature->setArmor( info->armor );
-  creature->setSex( info->sex );
   
   // info->bonusArmor: can't be used until calendar is also persisted
   //creature->setBonusArmor( info->bonusArmor );
