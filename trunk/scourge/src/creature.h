@@ -94,6 +94,7 @@ class Creature : public RenderedCreature {
   // character information
   char *name;
   int level, experience, hp, mp, startingHp, startingMp, ac, thirst, hunger, money, expOfNextLevel;
+  int sex;
   Character *character;
   int skills[Skill::SKILL_COUNT], skillBonus[Skill::SKILL_COUNT], skillMod[Skill::SKILL_COUNT];
 	int availableSkillMod;
@@ -151,6 +152,9 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Character *character, char *name, int character_model_info_index);
   Creature(Session *session, Monster *monster, GLShape *shape);
   ~Creature();
+  
+  inline void setSex( int n ) { this->sex = n; }
+  inline int getSex() { return this->sex; }
 
 	inline bool isMoving() { return moving; }
 	inline void setMoving( bool b ) { moving = b; }

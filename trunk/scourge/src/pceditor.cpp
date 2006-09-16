@@ -128,6 +128,9 @@ void PcEditor::saveUI() {
 	creature->setExp(0);
 	creature->setHp();
 	creature->setMp();
+	
+	// sex
+	creature->setSex( male->isSelected() ? Constants::SEX_MALE : Constants::SEX_FEMALE );
 
 	// deity
 	creature->setDeityIndex( deityType->getSelectedLine() );
@@ -139,6 +142,9 @@ void PcEditor::saveUI() {
 void PcEditor::loadUI() {
 	if( creature ) {
 		nameField->setText( creature->getName() );
+		
+		male->setSelected( creature->getSex() == Constants::SEX_MALE ? true : false );
+		female->setSelected( male->isSelected() ? false : true );
 
 		for(int i = 0; i < (int)Character::rootCharacters.size(); i++) {
 			if( Character::rootCharacters[i] == creature->getCharacter() ) {
@@ -329,6 +335,12 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		setDeityType( deityType->getSelectedLine() );
   } else if( widget == reroll ) {
     rollSkills();
+  } else if( widget == male ) {
+  	female->setSelected( male->isSelected() ? false : true );
+  	saveUI();
+  } else if( widget == female ) {
+  	male->setSelected( female->isSelected() ? false : true );
+  	saveUI();  	
   } else {
     int n = 0;
     for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
@@ -436,6 +448,16 @@ void PcEditor::createUI() {
 															 "What is your name, great hero? Enter it here, but choose wisely! You will not be able to change it again.",
 															 TEXT_WIDTH ), 
 										NAME_TAB );
+										
+										
+	male = cards->createButton( secondColStart, 150, secondColStart + 90, 170, "Male", NAME_TAB, true );
+	female = cards->createButton( secondColStart + 100, 150, secondColStart + 190, 170, "Female", NAME_TAB, true );
+	male->setSelected( true );
+	female->setSelected( false );	
+	cards->addWidget( new Label( secondColStart, 200, 
+															 "Select the sex of your hero. Besides some visual effects, it has no other impact on game mechanics.",
+															 TEXT_WIDTH ), 
+										NAME_TAB );										
 
 
 	// ----------------------------------------------

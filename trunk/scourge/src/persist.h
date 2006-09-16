@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 15
+#define PERSIST_VERSION 16
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -69,6 +69,7 @@ typedef struct _CreatureInfo {
   Uint8 monster_name[255];
   Uint32 hp, mp, exp, level, money, stateMod, protStateMod, x, y, z, dir;
   Uint32 speed, motion, armor, bonusArmor, thirst, hunger;
+  Uint8 sex;
   Uint32 availableSkillPoints;
   Uint32 skills[Skill::SKILL_COUNT];
   Uint32 skillMod[Skill::SKILL_COUNT];

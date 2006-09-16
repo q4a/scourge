@@ -204,6 +204,7 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
   file->write( &(info->dir) );
   file->write( &(info->speed) );
   file->write( &(info->motion) );
+  file->write( &(info->sex) );  
   file->write( &(info->armor) );
   file->write( &(info->bonusArmor) );
   file->write( &(info->thirst) );
@@ -248,6 +249,8 @@ CreatureInfo *Persist::loadCreature( File *file ) {
   file->read( &(info->dir) );
   file->read( &(info->speed) );
   file->read( &(info->motion) );
+  if( info->version >= 16 ) file->read( &(info->sex ) );
+  else info->sex = Constants::SEX_MALE;
   file->read( &(info->armor) );
   file->read( &(info->bonusArmor) );
   file->read( &(info->thirst) );

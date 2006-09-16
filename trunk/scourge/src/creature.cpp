@@ -94,6 +94,7 @@ Creature::Creature(Session *session, Character *character, char *name, int chara
   this->bonusArmor=0;
   this->thirst=10;
   this->hunger=10;  
+  this->sex = Constants::SEX_MALE;
   this->shape = session->getShapePalette()->getCreatureShape(model_name, skin_name, session->getShapePalette()->getCharacterModelInfo( character_model_info_index )->scale);
   commonInit();  
 }
@@ -111,7 +112,8 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape) : Rendere
   this->armor = monster->getBaseArmor();
   this->armorChanged = true;
   this->bonusArmor=0;
-  this->shape = shape;
+  this->sex = Constants::SEX_MALE;  
+  this->shape = shape;  
   commonInit();
   monsterInit();
 }
@@ -264,6 +266,7 @@ CreatureInfo *Creature::save() {
   info->dir = dir;
   info->speed = originalSpeed;
   info->motion = motion;
+  info->sex = sex;
   info->armor = 0;
   info->bonusArmor = bonusArmor;
   //info->bonusArmor = 0;
@@ -343,6 +346,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   //creature->setSpeed( info->speed );
   creature->setMotion( info->motion );
   //creature->setArmor( info->armor );
+  creature->setSex( info->sex );
   
   // info->bonusArmor: can't be used until calendar is also persisted
   //creature->setBonusArmor( info->bonusArmor );

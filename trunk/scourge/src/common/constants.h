@@ -303,6 +303,11 @@ public:
     MOTION_LOITER,
     MOTION_STAND
   };
+  
+  enum {
+  	SEX_MALE=0,
+  	SEX_FEMALE
+  };
 
 // This stores the speed of the animation between each key frame for md2 models
 // A higher value means a *faster* animation and NOT a *smoother* animation.
