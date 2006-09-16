@@ -103,6 +103,7 @@ protected:
 	void setDeityType( int deityIndex );
 	void createUI();
 	int getSex();
+	void rollApperance();
 };
 
 #endif

@@ -191,8 +191,8 @@ protected:
   // temp. shape data
   std::vector<ShapeValues*> shapeValueVector;
 
-  // md2 data
-  std::vector<CharacterModelInfo*> character_models;
+  // md2 data (male/female)
+  std::vector<CharacterModelInfo*> character_models[2];
 
   WallTheme *themes[100], *caveThemes[100];
   WallTheme *allThemes[100];
@@ -233,8 +233,8 @@ public:
   virtual void initialize();
   GLuint loadSystemTexture( char *line );
 
-  inline int getCharacterModelInfoCount() { return character_models.size(); }
-  inline CharacterModelInfo *getCharacterModelInfo( int index ) { return character_models[ index ]; }
+  inline int getCharacterModelInfoCount( int sex ) { return character_models[sex].size(); }
+  inline CharacterModelInfo *getCharacterModelInfo(  int sex, int index ) { return character_models[sex][ index ]; }
 
   void loadTheme( WallTheme *theme );
   void loadTheme( const char *name );

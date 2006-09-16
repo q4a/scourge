@@ -138,7 +138,7 @@ public:
     @return the creature created.
   */
   virtual Creature *newCreature( Monster *monster, GLShape *shape, bool loaded=false );
-	virtual Creature *newCreature( Character *character, char *name, int model );
+	virtual Creature *newCreature( Character *character, char *name, int sex, int model );
 	virtual bool removeCreatureRef( Creature *creature );
 	virtual void addCreatureRef( Creature *creature );
 

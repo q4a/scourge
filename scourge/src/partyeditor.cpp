@@ -199,10 +199,12 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
 }
 
 RenderedCreature *PartyEditor::createWanderingHero( int level ) {
+	int sex = 4.0f * rand() / RAND_MAX >= 2.0f ? Constants::SEX_MALE : Constants::SEX_FEMALE;
 	Creature *pc = scourge->getSession()->
 		newCreature( Character::getRandomCharacter( level ),
 								 Rpg::createName(), 
-								 (int)( (float)(scourge->getShapePalette()->getCharacterModelInfoCount()) * rand() / RAND_MAX ) );
+								 sex,
+								 (int)( (float)(scourge->getShapePalette()->getCharacterModelInfoCount( sex )) * rand() / RAND_MAX ) );
 	pc->setLevel( LEVEL ); 
 	pc->setExp(0);
 	pc->setHp();
@@ -214,8 +216,7 @@ RenderedCreature *PartyEditor::createWanderingHero( int level ) {
 	pc->setDeityIndex( MagicSchool::getRandomSchoolIndex() );
 	
 	// assign portraits
-	pc->setSex( 4.0f * rand() / RAND_MAX >= 2.0f ? Constants::SEX_MALE : Constants::SEX_FEMALE );
-	pc->setPortraitTextureIndex( (int)( (float)(scourge->getShapePalette()->getPortraitCount( pc->getSex() )) * rand() / RAND_MAX ) );
+	pc->setPortraitTextureIndex( (int)( (float)(scourge->getShapePalette()->getPortraitCount( sex )) * rand() / RAND_MAX ) );
 	
 	// compute starting skill levels
 	pcEditor->rollSkillsForCreature( pc );
