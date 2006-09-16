@@ -45,6 +45,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "int", "getSkillByName", SqCreature::_getSkillByName, SQ_MATCHTYPEMASKSTRING, "xs", "Same as getSkill() but instead of an index, the skill is referenced by name. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getSkillName()." },
   { "int", "getStateMod", SqCreature::_getStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value if the state-mod is in effect for this character. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
   { "int", "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value indicating if the character is protected from the given state mod. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
+	{ "int", "getSex", SqCreature::_getSex, 0, 0, "Returns the creature's sex: 0-male, 1-female." },
   { "float", "getArmor", SqCreature::_getArmor, 0, 0, "Return the armor value (sum of armor items worn modified by skills.)" },  
 
   { "void", "setLevel", SqCreature::_setLevel, SQ_MATCHTYPEMASKSTRING, "xn", "" },
@@ -59,6 +60,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "void", "setSkillByName", SqCreature::_setSkillByName, SQ_MATCHTYPEMASKSTRING, "xsn", "" },
   { "void", "setStateMod", SqCreature::_setStateMod, SQ_MATCHTYPEMASKSTRING, "xnb", "" },
   { "void", "setProtectedStateMod", SqCreature::_setProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xnb", "" },
+  { "void", "setSex", SqCreature::_setSex, SQ_MATCHTYPEMASKSTRING, "xn", "Set the creature's sex: 0-male, 1-female." },	
 
   // character methods
   { "bool", "isOfClass", SqCreature::_isOfClass, SQ_MATCHTYPEMASKSTRING, "xs", "Returns a boolean if the character is of the character class given in the argument. This function is slow because it does a string compare on the class's name." },  
@@ -128,6 +130,12 @@ int SqCreature::_getMoney( HSQUIRRELVM vm ) {
 int SqCreature::_getHp( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
   sq_pushinteger( vm, object->getHp() );
+  return 1;
+}
+
+int SqCreature::_getSex( HSQUIRRELVM vm ) {
+  GET_OBJECT(Creature*)
+  sq_pushinteger( vm, object->getSex() );
   return 1;
 }
 
@@ -290,6 +298,13 @@ int SqCreature::_setMp( HSQUIRRELVM vm ) {
   GET_INT( n );
   GET_OBJECT( Creature* )
   object->setMp( n );
+  return 0;
+}
+
+int SqCreature::_setSex( HSQUIRRELVM vm ) {
+  GET_INT( n );
+  GET_OBJECT( Creature* )
+  object->setSex( n );
   return 0;
 }
 

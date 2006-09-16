@@ -64,6 +64,7 @@ public:
   static int _getStateMod( HSQUIRRELVM vm );
   static int _getProtectedStateMod( HSQUIRRELVM vm );
   static int _getArmor( HSQUIRRELVM vm );  
+	static int _getSex( HSQUIRRELVM vm );
 
   // other
   static int _isOfClass( HSQUIRRELVM vm );
@@ -86,6 +87,7 @@ public:
   static int _setSkillByName( HSQUIRRELVM vm );
   static int _setStateMod( HSQUIRRELVM vm );
   static int _setProtectedStateMod( HSQUIRRELVM vm );
+	static int _setSex( HSQUIRRELVM vm );
 
 	// npc
 	static int _setIntro( HSQUIRRELVM vm );
