@@ -182,6 +182,7 @@ void ScourgeView::checkForInfo() {
       mapz = scourge->getMap()->getCursorMapZ();
       if( mapx < MAP_WIDTH) {
         Location *pos = scourge->getMap()->getLocation(mapx, mapy, mapz);
+				if( !pos ) pos = scourge->getMap()->getItemLocation( mapx, mapy );
         if( pos ) {
           int cursor;
           if( pos->creature &&
@@ -213,6 +214,7 @@ void ScourgeView::checkForInfo() {
       Uint16 mapz = scourge->getMap()->getCursorMapZ();
       if(mapx < MAP_WIDTH) {
         Location *pos = scourge->getMap()->getLocation(mapx, mapy, mapz);
+				if( !pos ) pos = scourge->getMap()->getItemLocation( mapx, mapy );
         if( pos ) {
           char s[300];
           void *obj = NULL;

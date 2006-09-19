@@ -159,6 +159,7 @@ class Map {
   int viewX, viewY, viewWidth, viewHeight;
   float mapx, mapy;
   Location *pos[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
+	Location *itemPos[MAP_WIDTH][MAP_DEPTH];
   EffectLocation *effect[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
   Location *posCache[MAX_POS_CACHE];
   signed int nbPosCache;
@@ -376,6 +377,8 @@ class Map {
   void setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *di=NULL);
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
   Shape *removeLocation(Sint16 x, Sint16 y, Sint16 z);
+	
+	Shape *removeItemPosition( Sint16 x, Sint16 y );
   
   void setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item);
   RenderedItem *removeItem(Sint16 x, Sint16 y, Sint16 z);
@@ -411,6 +414,7 @@ class Map {
   Location *getPosition(Sint16 x, Sint16 y, Sint16 z);
   /** This one returns even if shape doesn't originate at xyz */
   inline Location *getLocation(Sint16 x, Sint16 y, Sint16 z) { return pos[x][y][z]; }
+	inline Location *getItemLocation( Sint16 x, Sint16 y ) { return itemPos[x][y]; }
   inline Shape *getFloorPosition(Sint16 x, Sint16 y) { if(x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_DEPTH) return NULL; else return floorPositions[x][y]; }
   
   //void showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message);
@@ -607,7 +611,7 @@ class Map {
   void setupPosition(int posX, int posY, int posZ,
                      float xpos2, float ypos2, float zpos2,
                      Shape *shape, RenderedItem *item, RenderedCreature *creature, 
-                     EffectLocation *effect);
+                     EffectLocation *effect, bool itemPos=false);
   void drawGroundPosition(int posX, int posY,
 						  float xpos2, float ypos2,
 						  Shape *shape);

@@ -152,6 +152,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
       floorPositions[x][y] = NULL;
 	  for(int z = 0; z < MAP_VIEW_HEIGHT; z++) {
         pos[x][y][z] = NULL;
+				itemPos[x][y] = NULL;
         effect[x][y][z] = NULL;
       }      
     }
@@ -214,6 +215,11 @@ void Map::reset() {
           free(w);
         }
       }
+			if(itemPos[xp][yp]) {
+				Location *p = itemPos[xp][yp];
+				if( deleted.find( p ) == deleted.end() ) deleted.insert( p );
+				itemPos[xp][yp] = NULL;
+			}
       for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
         if(pos[xp][yp][zp]) {
           Location *p = pos[xp][yp][zp];
@@ -276,6 +282,7 @@ void Map::reset() {
 	  for(int z = 0; z < MAP_VIEW_HEIGHT; z++) {
         pos[x][y][z] = NULL;
         effect[x][y][z] = NULL;
+				itemPos[x][y] = NULL;
       }      
     }
   }
@@ -611,6 +618,28 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
               }
             }
           } else {
+
+						if( lightMap[chunkX][chunkY] &&
+								itemPos[posX][posY] && 
+								itemPos[posX][posY]->x == posX &&
+								itemPos[posX][posY]->y == posY ) {
+							
+							shape = itemPos[posX][posY]->shape;
+							
+							xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
+															xp + chunkOffsetX) / DIV;
+							ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
+															shape->getDepth() + 
+															yp + chunkOffsetY) / DIV;
+							
+							setupPosition( posX, posY, 0,
+														 xpos2, ypos2, zpos2,
+														 shape, 
+														 itemPos[posX][posY]->item, 
+														 NULL, NULL, true );
+						}
+
+
             for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
               if(lightMap[chunkX][chunkY] &&
                  effect[posX][posY][zp] &&
@@ -809,10 +838,11 @@ void Map::drawWaterPosition(int posX, int posY,
   glTranslatef( -xpos2, -ypos2, 0.0f);
 }
 
-void Map::setupPosition(int posX, int posY, int posZ,
-                        float xpos2, float ypos2, float zpos2,
-                        Shape *shape, RenderedItem *item, RenderedCreature *creature, 
-                        EffectLocation *effect) {
+void Map::setupPosition( int posX, int posY, int posZ,
+												 float xpos2, float ypos2, float zpos2,
+												 Shape *shape, RenderedItem *item, RenderedCreature *creature, 
+												 EffectLocation *effect, 
+												 bool itemPos ) {
 
   // This really doesn't make a difference unfortunately.
   //if(!isOnScreen(posX, posY, posZ)) return;
@@ -830,7 +860,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
     damage[damageCount].creature = creature;
     damage[damageCount].effect = effect;
     damage[damageCount].name = name;
-    damage[damageCount].pos = getLocation(posX, posY, posZ);
+    damage[damageCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
     damage[damageCount].inFront = false;
     damageCount++;
 
@@ -847,7 +877,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
     stencil[stencilCount].creature = creature;
     stencil[stencilCount].effect = NULL;
     stencil[stencilCount].name = name;
-    stencil[stencilCount].pos = getLocation(posX, posY, posZ);
+		stencil[stencilCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
     stencil[stencilCount].inFront = false;
     stencilCount++;
   } else if(!shape->isStencil()) {
@@ -861,7 +891,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
       other[otherCount].creature = creature;
       other[otherCount].effect = NULL;
       other[otherCount].name = name;
-      other[otherCount].pos = getLocation(posX, posY, posZ);
+      other[otherCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
       other[otherCount].inFront = false;
       otherCount++;
     }
@@ -874,7 +904,7 @@ void Map::setupPosition(int posX, int posY, int posZ,
       later[laterCount].creature = creature;
       later[laterCount].effect = NULL;
       later[laterCount].name = name;
-      later[laterCount].pos = getLocation(posX, posY, posZ);
+      later[laterCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
       later[laterCount].inFront = false;
       laterCount++;
     }
@@ -1947,7 +1977,8 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	resortShapes = mapChanged = true;
 	//cerr << "FIXME: Map::setPosition" << endl;
 
-	Location *p = pos[ x ][ y ][ z ];
+	bool isNonBlockingItem = ( item && !item->isBlocking() && !z );
+	Location *p = ( isNonBlockingItem ? itemPos[ x ][ y ] : pos[ x ][ y ][ z ] );
 	if( !p ) p = mapMemoryManager->newLocation();
 	p->shape = shape;
 	p->item = item;
@@ -1974,7 +2005,8 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 				//assert( pos[x + xp][y - yp][z + zp] == p ||
 								//!( pos[x + xp][y - yp][z + zp] ) );
 
-				if( pos[x + xp][y - yp][z + zp] && 
+				if( zp &&
+						pos[x + xp][y - yp][z + zp] && 
 						pos[x + xp][y - yp][z + zp] != p ) {
 					cerr << "error setting position:" << 
 						" x=" << ( x + xp ) <<
@@ -1982,7 +2014,10 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 						" z=" << ( z + zp ) <<
 						" shape=" << p->shape->getName() << endl;
 				} else {
-					pos[x + xp][y - yp][z + zp] = p;
+					if( isNonBlockingItem ) 
+						itemPos[x + xp][y - yp] = p;
+					else
+						pos[x + xp][y - yp][z + zp] = p;
 				}
 			}
 		}
@@ -2062,6 +2097,50 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
   return shape;
 }
 
+Shape *Map::removeItemPosition( Sint16 x, Sint16 y ) {
+	Shape *shape = NULL;
+	if( itemPos[x][y] &&
+			itemPos[x][y]->shape &&
+			itemPos[x][y]->x == x &&
+			itemPos[x][y]->y == y ) {
+		resortShapes = mapChanged = true;
+		shape = itemPos[x][y]->shape;
+		if( ((GLShape*)shape)->getEffectType() > -1 ) {
+			int ex = x + ((GLShape*)shape)->getEffectX();
+			int ey = y - shape->getDepth() - ((GLShape*)shape)->getEffectY();
+			int ez = ((GLShape*)shape)->getEffectZ();
+			removeEffect( ex, ey, ez );
+		}
+
+		Location *p = itemPos[ x ][ y ];
+
+    for(int xp = 0; xp < shape->getWidth(); xp++) {
+      for(int yp = 0; yp < shape->getDepth(); yp++) {
+
+				// I _hate_ c++... moving secret doors up causes array roll-over problems.
+				if( x + xp < 0 || 
+						y - yp < 0 || 
+						x + xp >= MAP_WIDTH || 
+						y - yp >= MAP_DEPTH ) break;
+
+				// Assert we're dealing with the right shape
+				//assert( pos[ x + xp ][ y - yp ][ z + zp ] == p );
+				if( itemPos[ x + xp ][ y - yp ] != p ) {
+					cerr << "Error removing item position:" <<
+						" x=" << ( x + xp ) << 
+						" y=" << ( y - yp ) << endl;
+				} else {
+					itemPos[ x + xp ][ y - yp ] = NULL;          
+				}
+			}
+		}
+
+		// Actually free the shape
+		mapMemoryManager->deleteLocation( p );
+  }
+  return shape;
+}
+
 // like getLocation, you can specify any position in the shape to remove it.
 Shape *Map::removeLocation(Sint16 x, Sint16 y, Sint16 z) {
   if( pos[x][y][z] && pos[x][y][z]->shape ) 
@@ -2078,8 +2157,14 @@ void Map::setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item) {
 }
 
 RenderedItem *Map::removeItem(Sint16 x, Sint16 y, Sint16 z) {
-	RenderedItem *item = ( pos[x][y][z] ? pos[x][y][z]->item : NULL );
-	removePosition( x, y, z );
+	RenderedItem *item = NULL;
+	if( !z && itemPos[x][y] && itemPos[x][y]->item ) {
+		item = itemPos[x][y]->item;
+		removeItemPosition( x, y );
+	} else {
+		item = ( pos[x][y][z] ? pos[x][y][z]->item : NULL );
+		removePosition( x, y, z );
+	}
 	return item;
 }
 
@@ -2583,6 +2668,7 @@ void Map::handleEvent( SDL_Event *event ) {
   // turn off outlining
   if( lastOutlinedX < MAP_WIDTH ) {
     Location *pos = getLocation( lastOutlinedX, lastOutlinedY, lastOutlinedZ );
+		if( !lastOutlinedZ && !pos ) pos = getItemLocation( lastOutlinedX, lastOutlinedY );
     if( pos ) {
       pos->outlineColor = NULL;
       lastOutlinedX = lastOutlinedY = lastOutlinedZ = MAP_WIDTH;
@@ -2627,6 +2713,8 @@ void Map::handleEvent( SDL_Event *event ) {
         Location *pos = getLocation( getCursorMapX(),
                                      getCursorMapY(),
                                      getCursorMapZ() );
+				if( !pos ) pos = getItemLocation( getCursorMapX(),
+																					getCursorMapY() );
         if( pos && preferences->isOutlineInteractiveItems() ) {
           Color *color = adapter->getOutlineColor( pos );
           if( color ) {

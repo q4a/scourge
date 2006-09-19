@@ -786,6 +786,7 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
   if(mapx < MAP_WIDTH) {
     //fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
     Location *loc = levelMap->getPosition(mapx, mapy, mapz);
+		if( !loc ) loc = levelMap->getItemLocation( mapx, mapy );
     if(loc) {
       char *description = NULL;
       Creature *creature = ((Creature*)(loc->creature));
@@ -826,11 +827,10 @@ void Scourge::startItemDragFromGui(Item *item) {
 bool Scourge::startItemDrag(int x, int y, int z) {
   if(movingItem) return false;
   Location *pos = levelMap->getPosition(x, y, z);
-  if(pos) {
-	if(getItem(pos)) {
-	  dragStartTime = SDL_GetTicks();
-	  return true;
-	}
+	if( !pos || !pos->item ) pos = levelMap->getItemLocation( x, y );
+  if(pos && getItem(pos) ) {
+		dragStartTime = SDL_GetTicks();
+		return true;
   }
   return false;
 }
@@ -848,6 +848,7 @@ bool Scourge::useItem(int x, int y, int z) {
   }
 
   Location *pos = levelMap->getPosition(x, y, z);
+	if( !pos ) pos = levelMap->getItemLocation( x, y );
   if (pos) {
     Shape *shape = (pos->item ? pos->item->getShape() : pos->shape);
     if (levelMap->isWallBetweenShapes(toint(party->getPlayer()->getX()),
@@ -891,28 +892,28 @@ bool Scourge::useItem(int x, int y, int z) {
 
 bool Scourge::getItem(Location *pos) {
     if(pos->item) {
-      if(levelMap->isWallBetween(pos->x, pos->y, pos->z,
-                            toint(party->getPlayer()->getX()),
-                            toint(party->getPlayer()->getY()),
-                            0)) {
-		levelMap->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
+			if(levelMap->isWallBetween(pos->x, pos->y, pos->z,
+																 toint(party->getPlayer()->getX()),
+																 toint(party->getPlayer()->getY()),
+																 0)) {
+				levelMap->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
 	  } else {
-        movingX = pos->x;
-        movingY = pos->y;
-        movingZ = pos->z;
-        movingItem = ((Item*)(pos->item));
-		int x = pos->x;
-		int y = pos->y;
-		int z = pos->z;
-        levelMap->removeItem(pos->x, pos->y, pos->z);
-		levelMap->dropItemsAbove(x, y, z, movingItem);
-		// draw the item as 'selected'
-		levelMap->setSelectedDropTarget(NULL);
-		//levelMap->handleMouseMove(movingX, movingY, movingZ);
-	  }
-	  return true;
-    }
-    return false;
+			movingX = pos->x;
+			movingY = pos->y;
+			movingZ = pos->z;
+			movingItem = ((Item*)(pos->item));
+			int x = pos->x;
+			int y = pos->y;
+			int z = pos->z;
+			levelMap->removeItem(pos->x, pos->y, pos->z);
+			levelMap->dropItemsAbove(x, y, z, movingItem);
+			// draw the item as 'selected'
+			levelMap->setSelectedDropTarget(NULL);
+			//levelMap->handleMouseMove(movingX, movingY, movingZ);
+		}
+		return true;
+	}
+	return false;
 }
 
 // drop an item from the inventory
@@ -960,18 +961,18 @@ int Scourge::dropItem(int x, int y) {
     levelMap->setSelectedDropTarget(NULL);
   } else {
     // see if it's blocked and get the value of z (stacking items)
-    Location *pos = levelMap->isBlocked(x, y, 0,
-                                   movingX, movingY, movingZ,
-                                   movingItem->getShape(), &z);
-    if(!pos &&
-       !levelMap->isWallBetween(toint(party->getPlayer()->getX()),
-                           toint(party->getPlayer()->getY()),
-                           toint(party->getPlayer()->getZ()),
-                           x, y, z)) {
-      levelMap->setItem(x, y, z, movingItem);
-    } else {
-      replace = true;
-    }
+		Location *pos = levelMap->isBlocked(x, y, 0,
+																				movingX, movingY, movingZ,
+																				movingItem->getShape(), &z);
+		if(!pos &&
+			 !levelMap->isWallBetween(toint(party->getPlayer()->getX()),
+																toint(party->getPlayer()->getY()),
+																toint(party->getPlayer()->getZ()),
+																x, y, z)) {
+			levelMap->setItem(x, y, z, movingItem);
+		} else {
+			replace = true;
+		}
   }
 
   // failed to drop item; put it back to where we got it from
