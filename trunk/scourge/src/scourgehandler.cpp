@@ -411,10 +411,14 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 
     if( scourge->getTargetSelectionFor() ) {
       Location *pos = scourge->getMap()->getLocation(mapx, mapy, mapz);
+			Location *itemPos = scourge->getMap()->getItemLocation( mapx, mapy );
       if( mapx < MAP_WIDTH && pos && pos->item ) {
         scourge->handleTargetSelectionOfItem( ((Item*)(pos->item)), pos->x, pos->y, pos->z );
         return;
-      }
+      } else if( mapx < MAP_WIDTH && itemPos && itemPos->item ) {
+        scourge->handleTargetSelectionOfItem( ((Item*)(itemPos->item)), itemPos->x, itemPos->y, itemPos->z );
+        return;
+      } 
     }
 
     if( scourge->useItem( mapx, mapy, mapz ) ) return;
