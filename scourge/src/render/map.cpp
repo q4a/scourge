@@ -1820,10 +1820,11 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
 	return shape;
 }
 
-Location *Map::isBlocked(Sint16 x, Sint16 y, Sint16 z, 
-                         Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, 
-                         Shape *s, 
-                         int *newz) {
+Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z, 
+													Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, 
+													Shape *s, 
+													int *newz,
+													bool useItemPos ) {
   int zz = z;
   for(int sx = 0; sx < s->getWidth(); sx++) {
     for(int sy = 0; sy < s->getDepth(); sy++) {
@@ -1854,7 +1855,22 @@ Location *Map::isBlocked(Sint16 x, Sint16 y, Sint16 z,
       }
     }
   }
-  if(newz) *newz = zz;
+  
+	// check itemPos space: cancel if item cannot be stored here... maybe better to 
+	// create a list of items at each location? (in itemPos[] only, inter-locking shapes
+	// are not supported by pos[]) For now, only 1 item per pos in itemPos[].
+	if( useItemPos && !zz ) {
+		for(int sx = 0; sx < s->getWidth(); sx++) {
+			for(int sy = 0; sy < s->getDepth(); sy++) {
+				Location *loc = itemPos[x + sx][y - sy];
+				if( loc && !( loc->x == shapeX && loc->y == shapeY ) ) {
+					return loc;
+				}
+			}
+		}
+	}
+
+	if(newz) *newz = zz;
   return NULL;
 }
 

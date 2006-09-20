@@ -961,9 +961,10 @@ int Scourge::dropItem(int x, int y) {
     levelMap->setSelectedDropTarget(NULL);
   } else {
     // see if it's blocked and get the value of z (stacking items)
-		Location *pos = levelMap->isBlocked(x, y, 0,
-																				movingX, movingY, movingZ,
-																				movingItem->getShape(), &z);
+		Location *pos = levelMap->isBlocked( x, y, 0,
+																				 movingX, movingY, movingZ,
+																				 movingItem->getShape(), &z, 
+																				 true );
 		if(!pos &&
 			 !levelMap->isWallBetween(toint(party->getPlayer()->getX()),
 																toint(party->getPlayer()->getY()),
@@ -982,9 +983,10 @@ int Scourge::dropItem(int x, int y) {
       // for now don't end the drag
       return z;
     } else {
-      levelMap->isBlocked(movingX, movingY, movingZ,
-                     -1, -1, -1,
-                     movingItem->getShape(), &z);
+			levelMap->isBlocked( movingX, movingY, movingZ,
+													 -1, -1, -1,
+													 movingItem->getShape(), &z,
+													 true );
       levelMap->setItem(movingX, movingY, z, movingItem);
     }
   }
