@@ -34,7 +34,7 @@
 
 using namespace std;
 
-//#define DEBUG_MOUSE_POS 1
+#define DEBUG_MOUSE_POS 1
 
 #define USE_LIGHTING 1
 
@@ -1261,9 +1261,11 @@ void Map::draw() {
   }
 
   // find the map floor coordinate (must be done after drawing is complete)
-  getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );    
-  cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-  cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+	if( !selectMode ) {
+		getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );    
+		cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+	}
 
   if( settings->isGridShowing() ) {
 
@@ -1993,7 +1995,7 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	resortShapes = mapChanged = true;
 	//cerr << "FIXME: Map::setPosition" << endl;
 
-	bool isNonBlockingItem = ( item && !item->isBlocking() && !z );
+	bool isNonBlockingItem = ( item && !item->isBlocking() && !z && settings->isItemPosEnabled() );
 	Location *p = ( isNonBlockingItem ? itemPos[ x ][ y ] : pos[ x ][ y ][ z ] );
 	if( !p ) p = mapMemoryManager->newLocation();
 	p->shape = shape;
@@ -2830,6 +2832,10 @@ bool GameMapSettings::isPlayerEnabled() {
   return true;
 }
 
+bool GameMapSettings::isItemPosEnabled() {
+	return true;
+}
+
 float GameMapSettings::getMinZoomIn() {
   return 0.5f;
 }
@@ -2862,6 +2868,10 @@ bool EditorMapSettings::isGridShowing() {
 
 bool EditorMapSettings::isPlayerEnabled() {
   return false;
+}
+
+bool EditorMapSettings::isItemPosEnabled() {
+	return false;
 }
 
 float EditorMapSettings::getMinZoomIn() {

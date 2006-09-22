@@ -50,6 +50,7 @@ public:
   virtual bool isLightMapEnabled() = 0;
   virtual bool isGridShowing() = 0;
   virtual bool isPlayerEnabled() = 0;
+	virtual bool isItemPosEnabled() = 0;
   virtual float getMinZoomIn() = 0;
   virtual float getMaxZoomOut() = 0;
   virtual float getMaxYRot() = 0;
@@ -64,6 +65,7 @@ public:
   bool isLightMapEnabled();
   bool isGridShowing();
   bool isPlayerEnabled();
+	bool isItemPosEnabled();
   float getMinZoomIn();
   float getMaxZoomOut();
   float getMaxYRot();
@@ -78,6 +80,7 @@ public:
   bool isLightMapEnabled();
   bool isGridShowing();
   bool isPlayerEnabled();
+	bool isItemPosEnabled();
   float getMinZoomIn();
   float getMaxZoomOut();
   float getMaxYRot();
