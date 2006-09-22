@@ -34,7 +34,7 @@
 
 using namespace std;
 
-#define DEBUG_MOUSE_POS 1
+#//define DEBUG_MOUSE_POS 1
 
 #define USE_LIGHTING 1
 
