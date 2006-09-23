@@ -250,11 +250,12 @@ Abyss. Using such a system would indeed allow $Karzul to exercise all his diabol
 #   N:x,y,name,level,type[,subtype]
 
 # merchants (subtype is item type)
-N:168,176,Anaril the Weapons Merchant,1,merchant,SWORD;AXE;BOW;MACE
-N:228,292,Mur the Potion Merchant,1,merchant,POTION
+N:168,176,Anaril the Weapons Merchant,1,merchant,SWORD;AXE;BOW;MACE;POLE
+N:228,292,Mur the Magics Merchant,1,merchant,POTION;WAND;RING;AMULET;STAFF
 N:104,204,Anduril the Armor Merchant,1,merchant,ARMOR
 N:200,224,Samaroon the Merchant,1,merchant,FOOD;DRINK
 N:101,231,Zila the Scribe,1,merchant,SCROLL
+
 
 # sages
 N:209,202,Uzudil the Hand,4,sage
