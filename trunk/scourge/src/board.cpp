@@ -267,8 +267,7 @@ void Board::initMissions() {
   // remove missions whose level is too low
   for( int i = 0; i < (int)availableMissions.size(); i++ ) {
     Mission *mission = availableMissions[ i ];
-    if( mission->isStoryLine() || 
-        mission->getLevel() < (int)( ave - 2.0f ) ) {
+    if( mission->isStoryLine() ) {
       // move the last element over the current storyline element
       availableMissions[ i ] = availableMissions[ availableMissions.size() - 1 ];
       availableMissions.pop_back();
@@ -283,8 +282,15 @@ void Board::initMissions() {
     availableMissions.push_back( storylineMissions[ storylineIndex ] );
 
   // maintain a set of missions
-  while( availableMissions.size() < 5 ) {
-    int level = (int)( ave + ( 4.0f * rand()/RAND_MAX ) ) - 2;
+	for( int counter = 0; availableMissions.size() < 8; counter++ ) {
+		int level;
+		if( counter % 2 == 0 ) {
+			// allow for low level mission
+			level = (int)( (float)( ave + 2 ) * rand()/RAND_MAX );
+		} else {
+			// allow for current level missions
+			level = (int)( ave + ( 4.0f * rand()/RAND_MAX ) ) - 2;
+		}
     if( level < 1 ) level = 1;
     int depth =  (int)((float)level / (float)(MAX_MISSION_DEPTH - 3) ) + 1 + (int)( 3.0f * rand()/RAND_MAX );
     if( depth > MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH;
