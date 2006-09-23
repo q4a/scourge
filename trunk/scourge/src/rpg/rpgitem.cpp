@@ -22,6 +22,9 @@ using namespace std;
 
 RpgItem *RpgItem::items[1000];
 
+// the smaller this number the more likely a container will show up in a room
+#define CONTAINER_CHANCE 10.0f
+
 map<int, map<int, vector<const RpgItem*>*>*> RpgItem::typesMap;
 map<string, const RpgItem *> RpgItem::itemsByName;
 vector<RpgItem*> RpgItem::containers;
@@ -194,13 +197,13 @@ RpgItem *RpgItem::getRandomItemFromTypes(int depth, int types[], int typeCount) 
 }
 
 RpgItem *RpgItem::getRandomContainer() {
-  int n = (int)((3.0f * (float)containers.size()) * rand()/RAND_MAX);
+  int n = (int)(( CONTAINER_CHANCE * (float)containers.size()) * rand()/RAND_MAX);
   if(n >= (int)containers.size()) return NULL;
   return containers[n];
 }
 
 RpgItem *RpgItem::getRandomContainerNS() {
-  int n = (int)((3.0f * (float)containersNS.size()) * rand()/RAND_MAX);
+  int n = (int)(( CONTAINER_CHANCE * (float)containersNS.size()) * rand()/RAND_MAX);
   if(n >= (int)containersNS.size()) return NULL;
   return containersNS[n];
 }
