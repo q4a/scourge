@@ -43,6 +43,7 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   labelA = win->createLabel( xStart, 15, "" );
   totalA = win->createLabel( xStart, 28, TOTAL );
   listA = new ItemList( scourge, win, 75, 35, 220, 210, this );
+	listA->setAllowCursed( false );
   win->addWidget( listA );
   sellButton = win->createButton( xStart, 35, 70, 55, "Sell" );
   infoButtonA = win->createButton( xStart, 60, 70, 80, "Info" );
@@ -51,6 +52,7 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   labelB = win->createLabel( 305, 15, "" );
   totalB = win->createLabel( 305, 28, TOTAL );
   listB = new ItemList( scourge, win, 300, 35, 220, 210, this );
+	listB->setAllowCursed( false );
   win->addWidget( listB );
   tradeButton = win->createButton( 530, 35, 595, 55, "Buy" );
   stealButton = win->createButton( 530, 60, 595, 80, "Steal" );  

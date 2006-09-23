@@ -34,6 +34,7 @@ ScrollingList( x, y, width, height, scourge->getShapePalette()->getHighlightText
   this->creature = creature;
   this->container = NULL;
   this->filter = NULL;
+	this->allowCursed = true;
 
   color = (Color*)malloc( MAX_INVENTORY_SIZE * sizeof( Color ) );
   name = (char**)malloc( MAX_INVENTORY_SIZE * sizeof( char* ) );
@@ -79,6 +80,9 @@ void ItemList::commonInit() {
         filter->find( item->getRpgItem()->getType() ) == filter->end() ) {
       continue;
     }
+
+		// cursed items?
+		if( !allowCursed && item->isCursed() ) continue;
 
     items.push_back( item );
 

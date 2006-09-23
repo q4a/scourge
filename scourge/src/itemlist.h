@@ -57,6 +57,7 @@ private:
   ItemRenderer *itemRenderer;
   std::set<int> *filter;
   std::vector<Item*> items;
+	bool allowCursed;
   
 	char **name;
 	Color *color;
@@ -70,6 +71,8 @@ public:
   inline Creature *getCreature() { return creature; }
   void setContainer( Item *container, std::set<int> *filter = NULL );
   inline Item *getContainer() { return container; }
+
+	inline void setAllowCursed( bool b ) { allowCursed = b; }
   
   char *getName();
   int getItemCount();
