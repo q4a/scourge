@@ -34,9 +34,10 @@ Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
   this->shape = session->getShapePalette()->getShape(shapeIndex);
   // for now objects larger than 1 height will block (we can change this later)
   // this is so the player is not blocked by swords and axes on the ground
-  this->blocking = (shape->getHeight() > 1 || 
-                    rpgItem->getType() == RpgItem::CONTAINER ||
-                    rpgItem->getType() == RpgItem::MISSION);
+	this->blocking = ( shape->getHeight() > 1 || 
+										 ( rpgItem->getType() == RpgItem::CONTAINER &&
+											 strcasecmp( rpgItem->getName(), "corpse" ) ) ||
+										 rpgItem->getType() == RpgItem::MISSION );
   this->containedItemCount = 0;
   this->spell = NULL;
   this->containsMagicItem = false;

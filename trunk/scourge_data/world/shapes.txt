@@ -406,7 +406,7 @@ N:ac8060ff
 #   shape index
 #   skip side: (none=0, FRONT_SIDE = 1, TOP_SIDE = 2, LEFT_RIGHT_SIDE = 4)
 #   stencil: 0,1
-#   light blocking: 0,1
+#   light 2blocking: 0,1
 P:0,1,1,1
 P:1,1,1,1
 P:2,1,1,1
@@ -845,7 +845,7 @@ N:CORPSE
 N:0
 N:ffffffff
 3:/objects/corpse.3ds
-3:0.65
+3:0.45
 
 # Constants::TABLE_INDEX
 N:14
