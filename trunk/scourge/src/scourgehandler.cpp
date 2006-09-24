@@ -559,7 +559,7 @@ void ScourgeHandler::quickSpellAction( int index, int button ) {
   if( scourge->getInventory()->inStoreSpellMode() ) {
     scourge->getParty()->getPlayer()->setQuickSpell( index, scourge->getInventory()->getStorable() );
     scourge->getInventory()->setStoreSpellMode( false );
-    if( scourge->getInventory()->isVisible() ) scourge->toggleInventoryWindow();
+    //if( scourge->getInventory()->isVisible() ) scourge->toggleInventoryWindow();
   } else {
     Creature *creature = scourge->getParty()->getPlayer();
     Storable *storable = creature->getQuickSpell( index );
