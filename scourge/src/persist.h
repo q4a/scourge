@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 16
+#define PERSIST_VERSION 17
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -40,6 +40,7 @@ typedef struct _ItemInfo {
   Uint32 blocking, currentCharges, weight;
   Uint32 quality;
   Uint32 price;
+	Uint32 identifiedBits;
   Uint8 spell_name[255];
   Uint32 containedItemCount;
   struct _ItemInfo *containedItems[MAX_CONTAINED_ITEMS];
