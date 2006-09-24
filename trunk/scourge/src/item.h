@@ -76,10 +76,33 @@ class Item : public RenderedItem, Storable {
   bool stateModSet;
   std::map<int, int> skillBonus;
   Session *session;	
+	Uint32 identifiedBits;
 
 public:
+
+	enum {
+		ID_BONUS=0,
+		ID_DAMAGE_MUL,
+		ID_MAGIC_DAMAGE,
+		ID_STATE_MOD,
+		ID_PROT_STATE_MOD,
+		ID_SKILL_BONUS,
+		ID_CURSED,
+
+		ID_COUNT
+	};
+
   Item(Session *session, RpgItem *rpgItem, int level=1, bool loading=false );
   ~Item();
+
+	inline void setIdentifiedBit( int bit, bool value ) {
+		if( value ) identifiedBits |= ( 1 << bit );  
+		else identifiedBits &= ( (Uint32)0xffff - (Uint32)( 1 << bit ) ); 
+	}
+	inline bool getIdentifiedBit( int bit ) { return( identifiedBits & ( 1 << bit ) ? true : false ); }  
+	void identify( int infoDetailLevel );
+	inline bool isIdentified() { return( isMagicItem() && identifiedBits >= ( 1 << ID_COUNT ) - 1 ); }
+
 
   ItemInfo *save();
   //ContainedItemInfo saveContainedItems();

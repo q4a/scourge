@@ -45,12 +45,18 @@ InfoGui::InfoGui(Scourge *scourge) {
   int y = (scourge->getSDLHandler()->getScreen()->h - height) / 2;
 
   win = scourge->createWindow( x, y, width, height, Constants::getMessage(Constants::INFO_GUI_TITLE) );
-  int bx = width / 2 - 52;
+  int bx = width / 2;
   int by = height - 55;
-  openButton = new Button( bx, by, bx + 105, by + 20, 
+  
+	openButton = new Button( bx - 100, by, bx - 5, by + 20, 
                            scourge->getShapePalette()->getHighlightTexture(), 
                            Constants::getMessage(Constants::CLOSE_LABEL) );
   win->addWidget((Widget*)openButton);
+
+  idButton = new Button( bx + 5, by, bx + 100, by + 20, 
+                           scourge->getShapePalette()->getHighlightTexture(), 
+                           "Identify" );
+  win->addWidget((Widget*)idButton);
   
   int n = 48;
   image = new Canvas( width - n - 10, 15, width - 10, 15 + 50, this );
@@ -75,13 +81,8 @@ InfoGui::~InfoGui() {
   delete win;
 }
 
-void InfoGui::setItem(Item *item, int level) { 
+void InfoGui::setItem( Item *item ) { 
   this->item = item; 
-  this->setInfoDetailLevel( level );
-}
-
-void InfoGui::setInfoDetailLevel(int level) { 
-  infoDetailLevel = level; 
   describe(); 
 }
 
@@ -91,7 +92,19 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
     return true;
   } else if(widget == openButton) {
     win->setVisible(false);
-  }
+  } else if( widget == idButton ) {
+		if( !item->isIdentified() ) {
+			item->identify( scourge->getParty()->getPlayer()->
+											getSkill( Skill::IDENTIFY_ITEM ) );
+			describe();
+			// hand out some experience
+			if( item->isIdentified() ) {
+				float n = (float)( item->getLevel() * 5 );
+				scourge->getParty()->getPlayer()->
+					addExperienceWithMessage( (int)( n + ( n * rand() / RAND_MAX ) ) );
+			}
+		}
+	}
   return false;
 }
 
@@ -282,14 +295,16 @@ void InfoGui::describe() {
   // DEBUG
   bool missedSomething = false;
   if(item->isMagicItem()) {
-    if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+    if( item->getIdentifiedBit( Item::ID_BONUS ) ) {
       sprintf(tmp, "|%d bonus to %s.", 
               item->getBonus(),
               (item->getRpgItem()->isWeapon() ? "attack and damage" : "armor points"));
       strcat(description, tmp);
-    } else missedSomething = true;
+    } else {
+			missedSomething = true;
+		}
     if( item->getDamageMultiplier() > 1 ) {
-      if( infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+      if( item->getIdentifiedBit( Item::ID_DAMAGE_MUL ) ) {
         if( item->getDamageMultiplier() == 2 ) {
           sprintf( tmp, "|Double damage");
           strcat( description, tmp );
@@ -311,10 +326,12 @@ void InfoGui::describe() {
           sprintf( tmp, " vs. any creature.");
           strcat( description, tmp );
         }
-      } else missedSomething = true;
+      } else {
+				missedSomething = true;
+			}
     }
     if(item->getSchool() ) {
-      if( infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+      if( item->getIdentifiedBit( Item::ID_MAGIC_DAMAGE ) ) {
         if(item->getRpgItem()->isWeapon()) {
           sprintf(tmp, "|Extra damage of %s %s magic.", 
                   item->describeMagicDamage(),
@@ -325,9 +342,11 @@ void InfoGui::describe() {
                   item->getSchool()->getName());
         }
         strcat(description, tmp);
-      } else missedSomething = true;
+      } else {
+				missedSomething = true;
+			}
     }
-    if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+    if( item->getIdentifiedBit( Item::ID_STATE_MOD ) ) {
       strcpy(tmp, "|Sets state mods:");
       bool found = false;
       for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
@@ -338,8 +357,10 @@ void InfoGui::describe() {
         }
       }
       if(found) strcat(description, tmp);
-    } else missedSomething = true;
-    if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+    } else {
+			missedSomething = true;
+		}
+    if( item->getIdentifiedBit( Item::ID_PROT_STATE_MOD ) ) {
       strcpy(tmp, "|Protects from state mods:");
       bool found = false;
       for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
@@ -350,8 +371,10 @@ void InfoGui::describe() {
         }
       }
       if(found) strcat(description, tmp);
-    } else missedSomething = true;
-    if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+    } else {
+			missedSomething = true;
+		}
+    if( item->getIdentifiedBit( Item::ID_SKILL_BONUS ) ) {
       bool found = false;
       map<int,int> *skillBonusMap = item->getSkillBonusMap();
       for(map<int, int>::iterator i=skillBonusMap->begin(); i!=skillBonusMap->end(); ++i) {
@@ -364,13 +387,15 @@ void InfoGui::describe() {
         strcat(description, "|Bonuses to skills:");
         strcat(description, tmp);
       }
-    } else missedSomething = true;
+    } else {
+			missedSomething = true;
+		}
     // cursed is hard to detect
     if( item->isCursed() ) {
       if( item->getShowCursed() || 
-          infoDetailLevel > (int)(200.0f * rand()/RAND_MAX)) {
+          item->getIdentifiedBit( Item::ID_CURSED ) ) {
         strcat(description, "|This item is cursed!");
-      }
+			}
     }
   } else if(item->getRpgItem()->getType() == RpgItem::SCROLL) {
     strcat(description, "|");

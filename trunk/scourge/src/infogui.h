@@ -39,11 +39,10 @@ class InfoGui : public WidgetView {
   Scourge *scourge;
   Item *item;
   Window *win;
-  Button *openButton;
+  Button *openButton, *idButton;
   ScrollingLabel *label;
   ScrollingLabel *nameLabel;
   Canvas *image;
-  int infoDetailLevel;
   char name[500], description[1000];
 
  public:
@@ -53,9 +52,7 @@ class InfoGui : public WidgetView {
   bool handleEvent(Widget *widget, SDL_Event *event);
 
   inline Item *getItem() { return item; }
-  void setItem(Item *item, int level);
-  inline int getInfoDetailLevel() { return infoDetailLevel; }
-  void setInfoDetailLevel(int level);
+  void setItem(Item *item);
   inline Window *getWindow() { return win; }
 
   void drawWidgetContents(Widget *w);

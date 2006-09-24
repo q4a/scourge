@@ -800,7 +800,7 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
         if( item ) {
           //item->getDetailedDescription(s, false);
           //description = s;
-          infoGui->setItem( item, getParty()->getPlayer()->getSkill(Skill::IDENTIFY_ITEM) );
+          infoGui->setItem( item );
           if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );
         } else {
           Shape *shape = loc->shape;
@@ -2591,7 +2591,7 @@ void Scourge::resetBattles() {
 }
 
 void Scourge::showItemInfoUI(Item *item, int level) {
-  infoGui->setItem( item, level );
+  infoGui->setItem( item );
   if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );
 }
 

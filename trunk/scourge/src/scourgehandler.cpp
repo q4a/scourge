@@ -579,7 +579,7 @@ void ScourgeHandler::quickSpellAction( int index, int button ) {
       } else if( storable->getStorableType() == Storable::ITEM_STORABLE ) {
         Item *item = (Item*)storable;
         if( button == SDL_BUTTON_RIGHT ) {
-          scourge->getInfoGui()->setItem( item, scourge->getParty()->getPlayer()->getSkill(Skill::IDENTIFY_ITEM ) );
+          scourge->getInfoGui()->setItem( item );
           if( !scourge->getInfoGui()->getWindow()->isVisible() ) scourge->getInfoGui()->getWindow()->setVisible( true );
         } else {
           scourge->executeItem( item );
