@@ -343,7 +343,7 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   case SDL_MOUSEBUTTONDOWN:
   toTop();
   if(!isLocked()) {
-    dragging = isInside(x, y);
+    dragging = ( event->button.button == SDL_BUTTON_LEFT && isInside(x, y) );
     dragX = x - getX();
     dragY = y - getY();
   }

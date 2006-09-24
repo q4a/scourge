@@ -485,11 +485,11 @@ bool SDLHandler::processEvents( bool *isActive ) {
       applyMouseOffset(event.button.x, event.button.y, &mx, &my);
       mouseEvent = SDL_MOUSEBUTTONDOWN;
       mouseButton = event.button.button;
-      mouseDragging = true;
-      if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
+      mouseDragging = ( event.button.button == SDL_BUTTON_LEFT );
+      //if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
         // don't process events during a fade
         if( fadeoutTimer <= 0 ) widget = Window::delegateEvent( &event, mx, my );
-      }
+      //}
       break;
     case SDL_ACTIVEEVENT:
       /* Something's happend with our focus
