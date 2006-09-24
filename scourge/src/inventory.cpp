@@ -411,7 +411,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     int itemIndex = invList->getSelectedLine();  
     if(itemIndex > -1) {
       Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
-      scourge->getInfoGui()->setItem( item, scourge->getParty()->getParty(selected)->getSkill( Skill::IDENTIFY_ITEM ) );
+      scourge->getInfoGui()->setItem( item );
       if(!scourge->getInfoGui()->getWindow()->isVisible()) 
         scourge->getInfoGui()->getWindow()->setVisible( true );
     }
@@ -432,7 +432,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     if( invLocation >= 0 && invLocation < Constants::INVENTORY_COUNT ) {
       Item *item = scourge->getParty()->getParty(selected)->getEquippedInventory( invLocation );
       if( item ) {
-        scourge->getInfoGui()->setItem( item, scourge->getParty()->getParty(selected)->getSkill( Skill::IDENTIFY_ITEM ) );
+        scourge->getInfoGui()->setItem( item );
         if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
           scourge->getInfoGui()->getWindow()->setVisible( true );
       }

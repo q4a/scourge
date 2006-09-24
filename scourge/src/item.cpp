@@ -577,6 +577,8 @@ bool Item::decrementCharges(){
 
 void Item::commonInit( bool loading ) {
 
+	identifiedBits = 0;
+
   // --------------
   // regular attribs
 
@@ -753,64 +755,72 @@ void Item::describeMagic(char *s, char *itemName) {
 
   strcpy( s, "" );
 
-  // Stored spell
-  if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell && spell ) {
-    strcat( s, spell->getSymbol() );
-    strcat( s, " " );
-  }
-
-  // Lesser, Greater, etc.
-  if( magicLevel > -1 ) {
-    strcat( s, Constants::MAGIC_ITEM_NAMES[ magicLevel ] );
-
-    // Protective if stateMods are changed
-    if( stateModSet ) {
-      strcat( s, " Protective" );
-    }
-  
-    // Slaying if there is a multiplier
-    if( damageMultiplier > 1 ) {
-      strcat( s, " Slaying" );
-    }
-      
-    strcat(s, " ");
-  }
+	if( isIdentified() ) {
+		// Stored spell
+		if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell && spell ) {
+			strcat( s, spell->getSymbol() );
+			strcat( s, " " );
+		}
+	
+		// Lesser, Greater, etc.
+		if( magicLevel > -1 ) {
+			strcat( s, Constants::MAGIC_ITEM_NAMES[ magicLevel ] );
+	
+			// Protective if stateMods are changed
+			if( stateModSet ) {
+				strcat( s, " Protective" );
+			}
+		
+			// Slaying if there is a multiplier
+			if( damageMultiplier > 1 ) {
+				strcat( s, " Slaying" );
+			}
+				
+			strcat(s, " ");
+		}
+	} else {
+		strcat(s, "??? ");
+	}
 
   // the item's name
   strcat(s, itemName);
   
-  // the bonus
-  if(bonus > 0) {
-    sprintf(tmp, " (+%d)", bonus);
-    strcat(s, tmp);
-  }
-  
-  // Describe the item.
-  // (this code has to be deterministic b/c it's called by 'load' also)
-  if( skillBonus.size() > 0 ) {
-    strcat( s, " of the " );
-
-    // use state_mod or magic school as the adjective
-    // e.g.: of the [ice|dire|planar|etc] Boar
-    if( school ) {
-      sprintf( tmp, "%s ", school->getSymbol() );
-      strcat( s, tmp );
-    } else if( stateModSet ) {
-      for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
-        if( stateMod[ i ] > 0 ) {
-          sprintf( tmp, "%s ", Constants::STATE_SYMBOLS[ i ] );
-          strcat( s, tmp );
-          break;
-        }
-      }
-    }
-
-    // use the first skill as the noun
-    map<int,int>::iterator i = skillBonus.begin();
-    int skill = i->first;
-    sprintf( tmp, "%s", Skill::skills[ skill ]->getSymbol() );
-    strcat( s, tmp );
-  }  
+	if( isIdentified() ) {
+		// the bonus
+		if(bonus > 0) {
+			sprintf(tmp, " (+%d)", bonus);
+			strcat(s, tmp);
+		}
+		
+		// Describe the item.
+		// (this code has to be deterministic b/c it's called by 'load' also)
+		if( skillBonus.size() > 0 ) {
+			strcat( s, " of the " );
+	
+			// use state_mod or magic school as the adjective
+			// e.g.: of the [ice|dire|planar|etc] Boar
+			if( school ) {
+				sprintf( tmp, "%s ", school->getSymbol() );
+				strcat( s, tmp );
+			} else if( stateModSet ) {
+				for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
+					if( stateMod[ i ] > 0 ) {
+						sprintf( tmp, "%s ", Constants::STATE_SYMBOLS[ i ] );
+						strcat( s, tmp );
+						break;
+					}
+				}
+			}
+	
+			// use the first skill as the noun
+			map<int,int>::iterator i = skillBonus.begin();
+			int skill = i->first;
+			sprintf( tmp, "%s", Skill::skills[ skill ]->getSymbol() );
+			strcat( s, tmp );
+		}  
+	} else {
+		strcat(s, " ???");
+	}
 }
 
 bool Item::isSpecial() { 
@@ -888,3 +898,104 @@ const char *Item::isStorable() {
 char *Item::getType() {
 	return getRpgItem()->getName();
 }
+
+void Item::identify( int infoDetailLevel ) {
+	identifiedBits = (Uint32)0x0000;
+	if( isMagicItem() ) {
+		if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+			setIdentifiedBit( Item::ID_BONUS, true );
+		} else {
+			setIdentifiedBit( Item::ID_BONUS, false );
+		}
+		if( getDamageMultiplier() > 1 ) {
+			if( infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {			
+				setIdentifiedBit( Item::ID_DAMAGE_MUL, true );
+			} else {
+				setIdentifiedBit( Item::ID_DAMAGE_MUL, false );
+			}
+    } else {
+			setIdentifiedBit( Item::ID_DAMAGE_MUL, true );
+		}
+    if(getSchool() ) {
+      if( infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+				setIdentifiedBit( Item::ID_MAGIC_DAMAGE, true );
+      } else {
+				setIdentifiedBit( Item::ID_MAGIC_DAMAGE, false );
+			}
+    } else {
+			setIdentifiedBit( Item::ID_MAGIC_DAMAGE, true );
+		}
+
+		bool found = false;
+		for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+			if(isStateModSet(i)) {
+				found = true;
+				break;
+			}
+		}
+		if( found ) {
+			if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+				setIdentifiedBit( Item::ID_STATE_MOD, true );
+			} else {
+				setIdentifiedBit( Item::ID_STATE_MOD, false );
+			}
+		} else {
+			setIdentifiedBit( Item::ID_STATE_MOD, true );
+		}
+
+		found = false;
+		for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+			if(isStateModProtected(i)) {
+				found = true;
+				break;
+			}
+		}
+		if(found) {
+			if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+				setIdentifiedBit( Item::ID_PROT_STATE_MOD, true );
+			} else {
+				setIdentifiedBit( Item::ID_PROT_STATE_MOD, false );
+			}
+		} else {
+			setIdentifiedBit( Item::ID_PROT_STATE_MOD, true );
+		}
+
+		found = false;
+		map<int,int> *skillBonusMap = getSkillBonusMap();
+		for(map<int, int>::iterator i=skillBonusMap->begin(); i!=skillBonusMap->end(); ++i) {
+			found = true;
+			break;
+		}
+		if(found) {
+			if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
+				setIdentifiedBit( Item::ID_SKILL_BONUS, true );
+			} else {
+				setIdentifiedBit( Item::ID_SKILL_BONUS, false );
+			}
+		} else {
+			setIdentifiedBit( Item::ID_SKILL_BONUS, true );
+		}
+    
+		// cursed is hard to detect
+    if( isCursed() ) {
+			if( infoDetailLevel > (int)(200.0f * rand()/RAND_MAX) ) {
+				setIdentifiedBit( Item::ID_CURSED, true );
+			} else {
+				setIdentifiedBit( Item::ID_CURSED, false );
+			}
+		} else {
+			setIdentifiedBit( Item::ID_CURSED, true );
+		}
+
+		if( isIdentified() ) {
+			describeMagic( itemName, rpgItem->getName() );
+			session->getMap()->addDescription( "An item was fully identified!" );
+			// update ui
+			session->getGameAdapter()->refreshInventoryUI();
+		}
+	} else {
+		identifiedBits = (Uint32)0xffff;
+	}
+	// fprintf( stderr, "skill=%d id=%x\n", infoDetailLevel, identifiedBits );
+}
+

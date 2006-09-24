@@ -135,8 +135,7 @@ bool ItemList::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
   bool ret = ScrollingList::handleEvent( parent, event, x, y );
   if( isInside( x, y ) && getSelectedLineCount() && event->button.button == SDL_BUTTON_RIGHT ) {
     scourge->getInfoGui()->
-    setItem( getSelectedItem( 0 ), 
-             scourge->getParty()->getPlayer()->getSkill( Skill::IDENTIFY_ITEM ) );
+    setItem( getSelectedItem( 0 ) );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   }
