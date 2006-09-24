@@ -313,23 +313,39 @@ bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y)
     innerDrag = false;
     dragging = false;
     return isInside(x, y);
-  case SDL_MOUSEBUTTONDOWN:
-    if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
-      innerDrag = false;
-      dragging = inside;
-      dragX = x - getX();
-      dragY = y - (scrollerY + getY());
-    } else if(isInside(x, y)) {
-      dragging = false;
-      innerDrag = (selectedLine != -1);
-      innerDragX = x;
-      innerDragY = y;
-
-      if( handler ) {
-        int index = getWordPos( x, y );
-        if( index > -1 ) handler->wordClicked( wordPos[ index ].word );
-      }
-    }
+	case SDL_MOUSEBUTTONDOWN:
+		if( event->button.button == SDL_BUTTON_WHEELUP ) {
+			if( isInside(x, y) && getHeight() > scrollerHeight ) {
+				value = (int)( (float)value - ( getHeight() / 15.0f ) );
+				if(value < 0)	value = 0;
+				if(value > 100)	value = 100;
+				scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+			}
+		} if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
+			if( isInside(x, y) && getHeight() > scrollerHeight ) {
+				value = (int)( (float)value + ( getHeight() / 15.0f ) );
+				if(value < 0)	value = 0;
+				if(value > 100)	value = 100;
+				scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+			}
+		} else if( event->button.button == SDL_BUTTON_LEFT ) {
+			if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
+				innerDrag = false;
+				dragging = inside;
+				dragX = x - getX();
+				dragY = y - (scrollerY + getY());
+			} else if(isInside(x, y)) {
+				dragging = false;
+				innerDrag = (selectedLine != -1);
+				innerDragX = x;
+				innerDragY = y;
+	
+				if( handler ) {
+					int index = getWordPos( x, y );
+					if( index > -1 ) handler->wordClicked( wordPos[ index ].word );
+				}
+			}
+		}
     break;
   }
   if(dragging) {

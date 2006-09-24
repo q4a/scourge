@@ -113,6 +113,8 @@ class ScrollingList : public Widget {
  private:
   void selectLine(int x, int y, bool addToSelection = false, bool mouseDown=false );
   void drawIcon( int x, int y, GLuint icon );  
+	void moveSelectionUp();
+	void moveSelectionDown();
 };
 
 #endif

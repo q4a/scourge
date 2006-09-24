@@ -318,20 +318,10 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
   case SDL_KEYUP:
   if(hasFocus()) {
     if(event->key.keysym.sym == SDLK_UP) {
-      /*
-       FIXME!
-      if(selectedLine) {
-        setSelectedLine(selectedLine - 1);
-      }
-       */
+      moveSelectionUp();
       return true;
     } else if(event->key.keysym.sym == SDLK_DOWN) {
-      /*
-       FIXME
-      if(selectedLine < count - 1) {
-        setSelectedLine(selectedLine + 1);
-      }
-       */
+      moveSelectionDown();
       return true;
     }
   }
@@ -344,47 +334,56 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 			innerDrag = false;
 			dragAndDropHandler->startDrag(this);
 		}
-    highlightBorders = (isInside(x, y) && dragAndDropHandler);
-      
-    tooltipLine = getLineAtPoint( x, y );
-    if( tooltipLine > -1 && 
-        ((Window*)parent)->getScourgeGui()->textWidth( list[ tooltipLine ] ) > getWidth() - scrollerWidth ) {
-      setTooltip( (char*)(list[ tooltipLine ]) );
-    } else {
-      setTooltip( "" );
-    }
+		highlightBorders = (isInside(x, y) && dragAndDropHandler);
+			
+		tooltipLine = getLineAtPoint( x, y );
+		if( tooltipLine > -1 && 
+				((Window*)parent)->getScourgeGui()->textWidth( list[ tooltipLine ] ) > getWidth() - scrollerWidth ) {
+			setTooltip( (char*)(list[ tooltipLine ]) );
+		} else {
+			setTooltip( "" );
+		}
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if(!dragging && isInside(x, y)) {
-      /*
+			/*
 			selectLine( x, y, 
-                  ( ( SDL_GetModState() & KMOD_SHIFT ) ||
-                    ( SDL_GetModState() & KMOD_CTRL ) ),
-                  false );
-      */                  
-      if(dragAndDropHandler) dragAndDropHandler->receive(this);
+									( ( SDL_GetModState() & KMOD_SHIFT ) ||
+										( SDL_GetModState() & KMOD_CTRL ) ),
+									false );
+			*/                  
+			if(dragAndDropHandler) dragAndDropHandler->receive(this);
 		}
-    eventType = ( x - getX() < scrollerWidth ? EVENT_DRAG : EVENT_ACTION );
+		eventType = ( x - getX() < scrollerWidth ? EVENT_DRAG : EVENT_ACTION );
 		innerDrag = false;
 		dragging = false;
-    //((Window*)parent)->getScourgeGui()->unlockMouse();
+		//((Window*)parent)->getScourgeGui()->unlockMouse();
 		return isInside(x, y);
 	case SDL_MOUSEBUTTONDOWN:
-		if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
-			innerDrag = false;
-			dragging = inside;
-			dragX = x - getX();
-			dragY = y - (scrollerY + getY());
-      //((Window*)parent)->getScourgeGui()->lockMouse( this );
-		} else if(isInside(x, y)) {
-			dragging = false;
-			selectLine( x, y, 
-                  ( ( SDL_GetModState() & KMOD_SHIFT ) ||
-                    ( SDL_GetModState() & KMOD_CTRL ) ), 
-                  true );
-			innerDrag = ( selectedLine );
-			innerDragX = x;
-			innerDragY = y;
+		if( event->button.button ) {
+			if( event->button.button == SDL_BUTTON_WHEELUP ) {
+				if( isInside(x, y) ) moveSelectionUp();
+			} if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
+				if( isInside(x, y) ) moveSelectionDown();
+			} else if( event->button.button == SDL_BUTTON_LEFT ||
+								 event->button.button == SDL_BUTTON_RIGHT ) {
+				if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
+					innerDrag = false;
+					dragging = inside;
+					dragX = x - getX();
+					dragY = y - (scrollerY + getY());
+					//((Window*)parent)->getScourgeGui()->lockMouse( this );
+				} else if(isInside(x, y)) {
+					dragging = false;
+					selectLine( x, y, 
+											( ( SDL_GetModState() & KMOD_SHIFT ) ||
+												( SDL_GetModState() & KMOD_CTRL ) ), 
+											true );
+					innerDrag = ( selectedLine );					
+					innerDragX = x;
+					innerDragY = y;
+				}
+			}
 		}
 		break;
 	}
@@ -417,3 +416,14 @@ void ScrollingList::setSelectedLine(int line) {
   }
 }
 
+void ScrollingList::moveSelectionUp() {
+	if( !selectedLine ) setSelectedLine( 0 );
+	else if( selectedLine[0] > 0 )
+		setSelectedLine( selectedLine[0] - 1 );
+}
+
+void ScrollingList::moveSelectionDown() {
+	if( !selectedLine ) setSelectedLine( 0 );
+	else if( selectedLine[0] < count - 1 )
+		setSelectedLine( selectedLine[0] + 1 );
+}
