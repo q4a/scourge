@@ -288,6 +288,7 @@ void Persist::saveItem( File *file, ItemInfo *info ) {
   file->write( &(info->weight) );
   file->write( &(info->quality) );
   file->write( &(info->price) );
+	file->write( &(info->identifiedBits) );
   file->write( info->spell_name, 255 );
   file->write( &(info->containedItemCount) );
   for(int i = 0; i < (int)info->containedItemCount; i++) {
@@ -320,6 +321,8 @@ ItemInfo *Persist::loadItem( File *file ) {
   file->read( &(info->weight) );
   file->read( &(info->quality) );
   file->read( &(info->price) );
+	if( info->version >= 17 ) file->read( &( info->identifiedBits ) );
+	else info->identifiedBits = 0;
   file->read( info->spell_name, 255 );
   file->read( &(info->containedItemCount) );
   for(int i = 0; i < (int)info->containedItemCount; i++) {

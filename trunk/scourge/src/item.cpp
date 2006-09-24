@@ -64,6 +64,7 @@ ItemInfo *Item::save() {
   info->weight = (Uint32)(weight * 100);
   info->quality = quality;
   info->price = price;
+	info->identifiedBits = identifiedBits;
 
 	// spells
   strcpy((char*)info->spell_name, (spell ? spell->getName() : ""));
@@ -135,6 +136,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
   item->weight = (float)(info->weight) / 100.0f;
   item->quality = info->quality;
   item->price = info->price;
+	item->identifiedBits = info->identifiedBits;
   
 	// container
 	item->containedItemCount = info->containedItemCount;
@@ -754,16 +756,16 @@ void Item::describeMagic(char *s, char *itemName) {
   char tmp[80];
 
   strcpy( s, "" );
-
-	if( isIdentified() ) {
-		// Stored spell
-		if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell && spell ) {
-			strcat( s, spell->getSymbol() );
-			strcat( s, " " );
-		}
 	
-		// Lesser, Greater, etc.
-		if( magicLevel > -1 ) {
+	// Stored spell
+	if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell && spell ) {
+		strcat( s, spell->getSymbol() );
+		strcat( s, " " );
+	}
+		
+	// Lesser, Greater, etc.
+	if( magicLevel > -1 ) {
+		if( isIdentified() ) {
 			strcat( s, Constants::MAGIC_ITEM_NAMES[ magicLevel ] );
 	
 			// Protective if stateMods are changed
@@ -777,9 +779,9 @@ void Item::describeMagic(char *s, char *itemName) {
 			}
 				
 			strcat(s, " ");
+		} else {
+			strcat(s, "??? ");
 		}
-	} else {
-		strcat(s, "??? ");
 	}
 
   // the item's name
@@ -819,7 +821,7 @@ void Item::describeMagic(char *s, char *itemName) {
 			strcat( s, tmp );
 		}  
 	} else {
-		strcat(s, " ???");
+		if( magicLevel > -1 ) strcat(s, " ???");
 	}
 }
 
