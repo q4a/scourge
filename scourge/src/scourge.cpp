@@ -1799,11 +1799,11 @@ void Scourge::closeAllContainerGuis() {
   containerGuiCount = 0;
 }
 
-void Scourge::refreshContainerGui(Item *container) {
+void Scourge::refreshContainerGui( Item *container ) {
   for(int i = 0; i < containerGuiCount; i++) {
-	if(containerGui[i]->getContainer() == container) {
-	  containerGui[i]->refresh();
-	}
+		if( !container || containerGui[i]->getContainer() == container ) {
+			containerGui[i]->refresh();
+		}
   }
 }
 
@@ -2401,10 +2401,16 @@ void Scourge::executeQuickSpell( Spell *spell ) {
 
 void Scourge::refreshInventoryUI(int playerIndex) {
   getInventory()->refresh(playerIndex);
+	if( getTradeDialog()->getWindow()->isVisible() ) 
+		getTradeDialog()->updateUI();
+	refreshContainerGui();
 }
 
 void Scourge::refreshInventoryUI() {
   getInventory()->refresh();
+	if( getTradeDialog()->getWindow()->isVisible() ) 
+		getTradeDialog()->updateUI();
+	refreshContainerGui();
 }
 
 void Scourge::updatePartyUI() {

@@ -165,8 +165,10 @@ Item *Item::load(Session *session, ItemInfo *info) {
     if(info->skillBonus[i]) item->skillBonus[i] = info->skillBonus[i];
   }
 
-  if( item->isMagicItem() )
-    item->describeMagic(item->itemName, item->rpgItem->getName());
+	// re-describe the item. describeMagic is called from commonInit at
+	// which point magicLevel can be 0, so it's important to re-describe
+	// the item. (since later magicLevel can be -1)
+	item->describeMagic(item->itemName, item->rpgItem->getName());
 
   return item;
 }
@@ -756,6 +758,7 @@ void Item::describeMagic(char *s, char *itemName) {
   char tmp[80];
 
   strcpy( s, "" );
+	//sprintf( s, "ML=%d,ID=%x", magicLevel, identifiedBits );
 	
 	// Stored spell
 	if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell && spell ) {

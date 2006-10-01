@@ -714,7 +714,7 @@ protected:
 
   void decideMonsterAction(Creature *monster);
 
-  void refreshContainerGui(Item *container);
+  void refreshContainerGui( Item *container=NULL );
 
   void createPartyUI();
 

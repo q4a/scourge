@@ -413,6 +413,10 @@ void ScrollingList::setSelectedLine(int line) {
     if(value < 0)	value = 0;
     if(value > 100)	value = 100;
     scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+		// on 0, align to the top of the control
+		if( selectedLine[ 0 ] == 0 ) {
+			scrollerY = value = 0;
+		}
   }
 }
 
