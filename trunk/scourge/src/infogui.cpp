@@ -376,11 +376,14 @@ void InfoGui::describe() {
 		}
     if( item->getIdentifiedBit( Item::ID_SKILL_BONUS ) ) {
       bool found = false;
+			char tmp2[80];
+			strcpy( tmp, "" );
       map<int,int> *skillBonusMap = item->getSkillBonusMap();
       for(map<int, int>::iterator i=skillBonusMap->begin(); i!=skillBonusMap->end(); ++i) {
         int skill = i->first;
         int bonus = i->second;
-        sprintf(tmp, " %s+%d", Skill::skills[skill]->getName(), bonus);
+        sprintf(tmp2, " %s+%d", Skill::skills[skill]->getName(), bonus);
+				strcat( tmp, tmp2 );
         found = true;
       }
       if(found) {
