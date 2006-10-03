@@ -344,12 +344,12 @@ class Creature : public RenderedCreature {
   inline void setName(char *s) { name = s; }
   inline void replaceName( char *s ) { free( name ); name = s; }
   void setCharacter(Character *c);
-  inline void setLevel(int n) { level = n; }
+  inline void setLevel(int n) { level = ( n < 0 ? 0 : n ); }
   void setExp();
-  inline void setExp(int n) { experience = n; }
+  inline void setExp(int n) { experience = ( n < 0 ? 0 : n ); }
   inline void setMoney(int n) { money = n; evalSpecialSkills(); }
-  inline void setHp(int n) { hp = n; evalSpecialSkills(); }
-  inline void setMp(int n) { mp = n; evalSpecialSkills(); }
+  inline void setHp(int n) { hp = ( n < 0 ? 0 : n ); evalSpecialSkills(); }
+  inline void setMp(int n) { mp = ( n < 0 ? 0 : n ); evalSpecialSkills(); }
   inline void setThirst(int n)  { if(n<0)n=0; if(n>10)n=10; thirst = n; evalSpecialSkills(); }
   inline void setHunger(int n)  { if(n<0)n=0; if(n>10)n=10; hunger = n; evalSpecialSkills(); } 
   void setHp();
