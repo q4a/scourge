@@ -1747,7 +1747,7 @@ void Map::initMapView( bool ignoreRot ) {
   float xdiff = 0;
   float ydiff = 0;
   
-  if( preferences->getAlwaysCenterMap() || mapCenterCreature ) {
+  if( settings->isPlayerEnabled() && ( preferences->getAlwaysCenterMap() || mapCenterCreature ) ) {
     RenderedCreature *c = ( mapCenterCreature ? mapCenterCreature : adapter->getPlayer() );
     if( c ) {
       xdiff = ( c->getX() - (float)( toint( c->getX() ) ) );
@@ -3015,7 +3015,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
-  if( !changingStory || !( adapter->hasParty() ) || fromRandom ) {
+  if( !changingStory || !( settings->isPlayerEnabled() ) || fromRandom ) {
     startx = info->start_x;
     starty = info->start_y;
   } else {
@@ -3090,7 +3090,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
     find a better AI solution as this code can place the party outside the walls.
     For now always leave "whitespace" around gates in edited levels.
   */
-  if( adapter->hasParty() ) {
+  if( settings->isPlayerEnabled() ) {
     int xx = startx;
     int yy = starty;
     int nx, ny;
