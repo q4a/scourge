@@ -671,39 +671,25 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
       ( groupMode || player || creature->isMonster() || wanderingHero )) {
     glEnable(GL_TEXTURE_2D);
     int n = 16;
-    //float x = 0.0f;
-    //float y = 0.0f;
-    int on = 0;
-    for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-      if(creature->getStateMod(i) && i != Constants::dead) {
-        on++;
-      }
-    }
     int count = 0;
-    for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-      if(creature->getStateMod(i) && i != Constants::dead) {
+    for(int i = 0; i < Constants::STATE_MOD_COUNT + 2; i++) {
 
-        /* DEBUG
-        glPushMatrix();
-        glTranslatef( xpos2, ypos2 - ( w * 2.0f ) - ( 1.0f / DIV ), zpos2 + 5);
-        glColor4f( 1, 1, 1, 1 );
-        glBegin( GL_LINES );
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( 0, w*2.0f, 0 );
-        glVertex3f( 0, w*2.0f, 0 );
-        glVertex3f( w*2.0f, w*2.0f, 0 );
-        glVertex3f( w*2.0f, w*2.0f, 0 );
-        glVertex3f( w*2.0f, 0, 0 );
-        glVertex3f( w*2.0f, 0, 0 );
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( w*2.0f, w*2.0f, 0 );
-        glVertex3f( 0, w*2.0f, 0 );
-        glVertex3f( w*2.0f, 0, 0 );
-        glEnd();
-        glPopMatrix();
-        */
+			GLuint icon = 255;
+			if( !creature->isMonster() &&
+					!wanderingHero &&
+					i == Constants::STATE_MOD_COUNT && 
+					creature->getThirst() <= 5 ) {
+				icon = scourge->getSession()->getShapePalette()->getThirstIcon();
+			} else if( !creature->isMonster() && 
+								 !wanderingHero &&
+								 i == Constants::STATE_MOD_COUNT + 1 &&
+								 creature->getHunger() <= 5 ) {
+				icon = scourge->getSession()->getShapePalette()->getHungerIcon();
+			} else if( creature->getStateMod( i ) && i != Constants::dead ) {
+				icon = scourge->getSession()->getShapePalette()->getStatModIcon( i );
+			}
 
+			if( icon < 255 ) {
         glPushMatrix();
         glTranslatef( xpos2 + w,
                       ypos2 - ( w * 2.0f ) - ( 1.0f / DIV ) + w,
@@ -715,10 +701,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
         glRotatef( (count * 30) + 180, 0, 0, 1 );
         glTranslatef( -7, -7, 0 );
 
-        GLuint icon = scourge->getSession()->getShapePalette()->getStatModIcon(i);
-        if(icon) {
-          glBindTexture( GL_TEXTURE_2D, icon );
-        }
+				glBindTexture( GL_TEXTURE_2D, icon );
         glBegin( GL_QUADS );
         glNormal3f( 0, 0, 1 );
         if(icon) glTexCoord2f( 0, 0 );

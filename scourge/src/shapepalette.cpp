@@ -168,6 +168,9 @@ void ShapePalette::initialize() {
     if(icon) statModIcons[i] = icon;
   }
 
+	thirstIcon = loadGLTextures( "/icons/t.bmp" );
+	hungerIcon = loadGLTextures( "/icons/h.bmp" );
+
   // set up the inventory tiles
   setupAlphaBlendedBMPGrid( "/textures/tiles.bmp", &tiles, tilesImage, 20, 18, 
 							32, 32, 71, 108, 108, 80, 80, 80 );
