@@ -47,6 +47,7 @@ private:
 
   GLuint gui_texture, gui_wood_texture, gui_texture2;
   std::map<int, GLuint> statModIcons;
+	GLuint thirstIcon, hungerIcon;
 
   Session *session;
   
@@ -90,6 +91,8 @@ public:
   GLuint formationTexIndex;
 
   inline GLuint getStatModIcon(int statModIndex) { if(statModIcons.find(statModIndex) == statModIcons.end()) return (GLuint)0; else return statModIcons[statModIndex]; }
+	inline GLuint getThirstIcon() { return thirstIcon; }
+	inline GLuint getHungerIcon() { return hungerIcon; }
 
   // cursor
   SDL_Surface *tiles, *spells;

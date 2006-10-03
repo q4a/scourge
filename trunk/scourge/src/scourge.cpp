@@ -2286,13 +2286,32 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   int yp = 1;
   float n = 12;
   int row = ( w->getWidth() / (int)n );
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-    if(p->getStateMod(i)) {
-      GLuint icon = getSession()->getShapePalette()->getStatModIcon(i);
-      if(icon) {
-        glBindTexture( GL_TEXTURE_2D, icon );
-      }
+  for(int i = 0; i < Constants::STATE_MOD_COUNT + 2; i++) {
+		GLuint icon = 255;
 
+		if( i == Constants::STATE_MOD_COUNT && 
+				p->getThirst() <= 5 ) {
+			icon = getSession()->getShapePalette()->getThirstIcon();
+			if( p->getThirst() <= 3 ) {
+				glColor4f( 1.0f, 0.2f, 0.2f, 0.5f );
+			} else {
+				glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+			}
+		} else if( i == Constants::STATE_MOD_COUNT + 1 &&
+							 p->getHunger() <= 5 ) {
+			icon = getSession()->getShapePalette()->getHungerIcon();
+			if( p->getHunger() <= 3 ) {
+				glColor4f( 1.0f, 0.2f, 0.2f, 0.5f );
+			} else {
+				glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+			}
+		} else if(p->getStateMod(i)) {
+      icon = getSession()->getShapePalette()->getStatModIcon(i);
+			glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+		}
+
+		if( icon < 255 ) {
+			glBindTexture( GL_TEXTURE_2D, icon );
       glPushMatrix();
       glTranslatef( 5 + xp * (n + 1),
                     w->getHeight() - (yp * (n + 1)),
