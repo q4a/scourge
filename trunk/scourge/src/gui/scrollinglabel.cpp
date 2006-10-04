@@ -316,17 +316,15 @@ bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y)
 	case SDL_MOUSEBUTTONDOWN:
 		if( event->button.button == SDL_BUTTON_WHEELUP ) {
 			if( isInside(x, y) && getHeight() > scrollerHeight ) {
-				value = (int)( (float)value - ( getHeight() / 15.0f ) );
-				if(value < 0)	value = 0;
-				if(value > 100)	value = 100;
-				scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+				scrollerY -= 15;
+				if( scrollerY < 0 ) scrollerY = 0;
+				value = (int)( scrollerY / ((float)(getHeight() - scrollerHeight) / 100.0f) );
 			}
 		} if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
 			if( isInside(x, y) && getHeight() > scrollerHeight ) {
-				value = (int)( (float)value + ( getHeight() / 15.0f ) );
-				if(value < 0)	value = 0;
-				if(value > 100)	value = 100;
-				scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+				scrollerY += 15;
+				if( scrollerY > getHeight() - scrollerHeight - 1 ) scrollerY = getHeight() - scrollerHeight - 1;
+				value = (int)( scrollerY / ((float)(getHeight() - scrollerHeight) / 100.0f) );
 			}
 		} else if( event->button.button == SDL_BUTTON_LEFT ) {
 			if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
