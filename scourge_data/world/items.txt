@@ -477,7 +477,7 @@ R:POWER,N,N,(15,E,2,17,L,2)
 R:RANGED_WEAPON,N,N,(30,E,2,80,L,1)
 
 I:Light crossbow
-I:6,BOW,1.5,750,BOW,8192,0,RANGED_WEAPON,2
+I:6,BOW,1.5,750,BOW,8192,0,2
 I:Though faster to reload than its pumped-up cousin, this crossbow has a shorter range and delivers less power.
 I:A crossbow with an orange wood handle
 I:2,4
