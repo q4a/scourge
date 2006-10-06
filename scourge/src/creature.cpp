@@ -29,6 +29,8 @@
 
 using namespace std;
 
+bool loading = false;
+
 //#define DEBUG_CAPABILITIES
 
 #define FAST_SPEED 1
@@ -335,6 +337,11 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
 														 info->sex,
                              info->character_model_info_index );
   }
+  
+  // don't recalculate skills
+  // NOTE: don't call return until loading=false.
+  loading = true;
+  
 //  cerr << "*** LOAD: creature=" << info->name << endl;
   creature->setDeityIndex( info->deityIndex );
   creature->setHp( info->hp );
@@ -353,14 +360,16 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
 
   creature->setThirst( info->thirst );
   creature->setHunger( info->hunger );
-	creature->setAvailableSkillMod( info->availableSkillPoints );
-  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
-    //creature->setSkill( i, info->skills[i] );
+	creature->setAvailableSkillMod( info->availableSkillPoints );	
+	
+	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 		creature->skills[i] = info->skills[i];
-    //creature->skillsUsed[i] = info->skillsUsed[i];
+		// Don't set skillBonus: it's reconstructed via the inventory.
+		//creature->skillBonus[i] = info->skillBonus[i];
+		// Don't set skillUsed: it's not used.
+		//creature->skillsUsed[i] = info->skillsUsed[i];
 		creature->skillMod[i] = info->skillMod[i];
-		creature->skillBonus[i] = info->skillBonus[i];
-  }
+  }	
   
   // stateMod and protStateMod not useful until calendar is also persisted
   //creature->stateMod = info->stateMod;
@@ -416,6 +425,9 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   creature->calculateExpOfNextLevel();
 
   creature->evalSpecialSkills();
+  
+  // recalculate skills from now on
+  loading = false;  
 
   return creature;
 }
@@ -2152,6 +2164,9 @@ void Creature::setSkillMod( int index, int value ) {
  * Recalculate skills when stats change.
  */
 void Creature::skillChanged( int index, int oldValue, int newValue ) {
+	// while loading don't update skill values.
+	if( loading ) return;
+
 	if( Skill::skills[ index ]->getGroup()->isStat() && character ) {
 		for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
 			int oldPrereq = 0;

@@ -1031,6 +1031,9 @@ void Shapes::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surface,
 }
 
 GLuint Shapes::loadSystemTexture( char *line ) {
+
+  if( headless ) return 0;
+
   if( texture_count >= MAX_SYSTEM_TEXTURE_COUNT ) {
     cerr << "Error: *** no more room for system textures!. Not loading: " << line << endl;
     return 0;
