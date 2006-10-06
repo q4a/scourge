@@ -357,8 +357,9 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     //creature->setSkill( i, info->skills[i] );
 		creature->skills[i] = info->skills[i];
-    creature->skillsUsed[i] = info->skillsUsed[i];
+    //creature->skillsUsed[i] = info->skillsUsed[i];
 		creature->skillMod[i] = info->skillMod[i];
+		creature->skillBonus[i] = info->skillBonus[i];
   }
   
   // stateMod and protStateMod not useful until calendar is also persisted

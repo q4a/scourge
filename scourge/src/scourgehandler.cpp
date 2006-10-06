@@ -161,9 +161,9 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
       scourge->getParty()->getPlayer()->startEffect( (int)( (float)Constants::EFFECT_COUNT * rand() / RAND_MAX ),
                                                      (Constants::DAMAGE_DURATION * 4) );
 
-    } else if(event->key.keysym.sym == SDLK_m) {
-      Map::debugMd2Shapes = ( Map::debugMd2Shapes ? false : true );
-      return false;
+//    } else if(event->key.keysym.sym == SDLK_m) {
+      //Map::debugMd2Shapes = ( Map::debugMd2Shapes ? false : true );
+      //return false;
     } else if(event->key.keysym.sym == SDLK_b) {
       Battle::debugBattle = ( Battle::debugBattle ? false : true );
       return false;

@@ -1164,10 +1164,12 @@ void Inventory::refresh(int player) {
 }
 
 void Inventory::positionWindow() {
-  mainWin->move( scourge->getPartyWindow()->getX() + 
-                 scourge->getPartyWindow()->getWidth() - 
-                 mainWin->getWidth(),
-                 scourge->getPartyWindow()->getY() - mainWin->getHeight() );
+	if( mainWin->getAnimation() == Window::SLIDE_UP ) {
+		mainWin->move( scourge->getPartyWindow()->getX() + 
+									 scourge->getPartyWindow()->getWidth() - 
+									 mainWin->getWidth(),
+									 scourge->getPartyWindow()->getY() - mainWin->getHeight() );
+	}
 }                 
 
 void Inventory::show(bool animate) { 
