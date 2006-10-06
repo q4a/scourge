@@ -67,14 +67,15 @@ void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, int off
   strcpy(path, rootDir);
   strcat(path, file_name);
 //  fprintf(stderr, "Loading 3ds file: %s\n", path);
-  g_Load3ds.Import3DS(&g_3DModel, path);         // Load our .3DS file into our model structure
+	if( !shapePal->isHeadless() ) {
+	  g_Load3ds.Import3DS(&g_3DModel, path);         // Load our .3DS file into our model structure
 
-  resolveTextures();
+	  resolveTextures();
 
-  normalizeModel();
+	  normalizeModel();
 
-  preRenderLight();
-
+	  preRenderLight();
+	}
 }
 
 void C3DSShape::normalizeModel() {

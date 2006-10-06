@@ -63,6 +63,8 @@ private:
 public: 
   ShapePalette( Session *session );
   ~ShapePalette();
+  
+  inline Session *getSession() { return session; }
 
   inline GLuint getProgressTexture() { return progressTexture; }
   inline GLuint getProgressHighlightTexture() { return progressHighlightTexture; }

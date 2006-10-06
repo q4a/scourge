@@ -26,6 +26,11 @@
 #include <stdlib.h>
 #include <strings.h>
 
+#include "creature.h"
+#include "persist.h"
+#include "io/file.h"
+
+
 using namespace std;
 
 /**
@@ -118,19 +123,16 @@ void Session::initData() {
   adapter->initUpdate("Initializing Special Skills...");
   SpecialSkill::initSkills();
 
-  adapter->initUpdate("Initializing...");
-
-  
-  
-  
-  
-  
+  adapter->initUpdate("Initializing map...");
   map = new Map( adapter, adapter->getPreferences(), getShapePalette() );
   
+  adapter->initUpdate("Initializing ui...");
   adapter->initUI();
 
+	adapter->initUpdate("finishing initialization...");
   adapter->initEnd();
-
+  
+ 	adapter->initUpdate("Initialization done.");
 }
 
 void Session::quit(int value) {
@@ -373,11 +375,78 @@ void Session::creatureDeath(Creature *creature) {
   }
 }
 
+// define below to enable savegame testing
+//#define TESTING_SAVEGAME 1
+
+void testSaveGame( Session *session ) {
+	cerr << "Loading savegame." << endl;  	
+	Uint32 storylineIndex;
+	Uint32 partySize;	
+	Creature *pc[MAX_PARTY_SIZE];	
+		
+	{
+	FILE *fp = fopen( "/home/gabor/.scourge/savegame.dat", "rb" );
+	File *file = new File( fp );
+	Uint32 n = PERSIST_VERSION;
+	file->read( &n );	
+	file->read( &storylineIndex );
+	file->read( &partySize );
+	cerr << "LOADING: " << endl;
+	for(int i = 0; i < (int)partySize; i++) {
+		CreatureInfo *info = Persist::loadCreature( file );
+		pc[i] = Creature::load( session, info );
+		if( i == 0 ) {
+			for( int t = 0; t < Skill::SKILL_COUNT; t++ ) {
+				cerr << "\tinfo=" << info->skills[t] <<
+				" infoMOD=" << info->skillMod[t] <<  
+				" SK=" << pc[i]->getSkill( t, false ) << 
+				" MOD=" << pc[i]->getSkillMod( t ) <<  
+				" BON=" << pc[i]->getSkillBonus( t ) <<  				
+				endl;
+			}
+		}
+		Persist::deleteCreatureInfo( info );		
+	}
+	delete file;
+	}
+
+	cerr << "Saving savegame." << endl;
+	{	
+	FILE *fp = fopen( "/home/gabor/.scourge/out.dat", "wb" );
+  if( !fp ) {
+    cerr << "Error creating savegame file!" << endl;
+    return;
+  }
+  File *file = new File( fp );
+  Uint32 n = PERSIST_VERSION;
+  file->write( &n );
+  file->write( &storylineIndex );
+  file->write( &partySize );
+  for(int i = 0; i < (int)partySize; i++) {
+    CreatureInfo *info = pc[i]->save();
+    Persist::saveCreature( file, info );
+    Persist::deleteCreatureInfo( info );
+  }
+  delete file;
+  }
+  
+ 	cerr << "AFTER SAVING: " << endl;
+	for( int t = 0; t < Skill::SKILL_COUNT; t++ ) {
+		cerr << "\tSK=" << pc[0]->getSkill( t, false ) << endl;
+	}
+  
+	cerr << "Done." << endl;  
+}
+
 int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 
 	int err = Constants::initRootDir( argc, argv );
 	if( err ) return err;
 
+#ifdef TESTING_SAVEGAME
+	adapter = new GameAdapter( adapter->getPreferences() );
+#endif
+	
   Session *session = new Session( adapter );
   session->initialize();
   if(argc >= 2 && !strcmp(argv[1], "--run-tests")) {
@@ -393,8 +462,12 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
     }
     return 0;
   }
+#ifndef TESTING_SAVEGAME  
   session->start();
-  
+#else  
+	testSaveGame( session );
+#endif
+
   return EXIT_SUCCESS;
 }
 

@@ -217,6 +217,8 @@ public:
   Shapes( bool headless );
   virtual ~Shapes();
 
+	inline bool isHeadless() { return headless; }
+
   inline SDL_Surface *getStencilSurface( int index ) { return stencil[ index ]; }
   inline GLubyte *getStencilImage( int index ) { return stencilImage[ index ]; }
   
