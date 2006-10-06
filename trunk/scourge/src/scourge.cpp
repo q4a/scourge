@@ -1343,7 +1343,8 @@ void Scourge::setUILayout() {
     mainWin->setLocked(false);
 //  if(inventory->getWindow()->isLocked()) {
     inventory->hide();
-//    inventory->getWindow()->setLocked(false);
+    inventory->getWindow()->setLocked( false );
+		inventory->getWindow()->setAnimation( Window::DEFAULT_ANIMATION );
 //  }
     netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER);
     netPlay->getWindow()->setLocked(false);
@@ -1359,6 +1360,8 @@ void Scourge::setUILayout() {
 //  if(inventory->getWindow()->isLocked()) {
     //inventory->getWindow()->setVisible(false);
     inventory->hide();
+		inventory->getWindow()->setLocked(true);
+		inventory->getWindow()->setAnimation( Window::SLIDE_UP );
 //    inventory->getWindow()->setLocked(false);
 //  }
     netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT * 2 - Window::SCREEN_GUTTER);
@@ -1379,6 +1382,8 @@ void Scourge::setUILayout() {
     mainWin->setLocked(true);
 //  if(inventory->getWindow()->isLocked()) {
     inventory->hide();
+		inventory->getWindow()->setLocked(true);
+		inventory->getWindow()->setAnimation( Window::SLIDE_UP );
 //    inventory->getWindow()->setLocked(false);
 //  }
     netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
@@ -1397,6 +1402,8 @@ void Scourge::setUILayout() {
                                  //getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
 //  inventory->getWindow()->setLocked(true);
     inventory->show(false);
+		inventory->getWindow()->setLocked(true);
+		inventory->getWindow()->setAnimation( Window::SLIDE_UP );
     //mapX = INVENTORY_WIDTH;
     mapX = 0;
     mapWidth = getSDLHandler()->getScreen()->w - INVENTORY_WIDTH;
