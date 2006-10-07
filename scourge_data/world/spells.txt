@@ -191,7 +191,7 @@ H:Trumpets sound. The noise is glorious as if a victory occurred.
 H:Warm air rises all around you. It comforts your tired limbs and seems to aid your recovery.
 #---------------------------------------------
 
-P:Ole Taffy's purty colors,Identifying,1,3,2,15,0,10,single,3,EFFECT_SWIRL,CLI,14,1,F
+P:Ole Taffy's purty colors,Identifying,1,3,2,15,0,10,single,3,EFFECT_SWIRL,LI,14,1,F
 W:sound/magic/teleport.wav
 D:Ole Taffy's parting gift to the world of magic was this spell which he used 
 D:to briefly glimpse information about his surroundings. When used with sufficient skill,

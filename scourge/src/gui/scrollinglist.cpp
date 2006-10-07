@@ -354,7 +354,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 			*/                  
 			if(dragAndDropHandler) dragAndDropHandler->receive(this);
 		}
-		eventType = ( x - getX() < scrollerWidth ? EVENT_DRAG : EVENT_ACTION );
+		eventType = ( dragging ? EVENT_DRAG : EVENT_ACTION );
 		innerDrag = false;
 		dragging = false;
 		//((Window*)parent)->getScourgeGui()->unlockMouse();

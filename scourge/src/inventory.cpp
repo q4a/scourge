@@ -400,7 +400,9 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   else if(widget == specialButton) setSelectedPlayerAndMode(selected, SPECIAL);
   else if(widget == missionButton)  setSelectedPlayerAndMode(selected, MISSION);
   else if(widget == partyButton) setSelectedPlayerAndMode(selected, PARTY);
-  else if(widget == invList && scourge->getTargetSelectionFor() ) {
+  else if(widget == invList && 
+					scourge->getTargetSelectionFor() && 
+					invList->getEventType() == ScrollingList::EVENT_ACTION ) {
     int itemIndex = invList->getSelectedLine();  
     if(itemIndex > -1) {
       Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
