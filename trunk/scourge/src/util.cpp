@@ -88,6 +88,7 @@ void Util::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
 	if( PATH_DEBUG ) 
 		cerr << "Util::findPath for " << creature->getName() << 
 		" maxNodes=" << maxNodes << " ignoreParty=" << ignoreParty << 
+		" ignoreEndShape=" << ignoreEndShape <<
 		endl;
 
   vector<CPathNode> OPEN;                 // STL Vectors chosen because of rapid
@@ -295,9 +296,13 @@ bool Util::isBlocked( Sint16 x, Sint16 y,
 			if( loc ) {
 				if( ignoreEndShape && 
 						loc->shape &&
-						loc->x <= dx && loc->x + loc->shape->getWidth() > dx &&
-						loc->y >= dy && loc->y - loc->shape->getDepth() < dy ) {
-					continue;
+						loc->x <= dx && loc->x + loc->shape->getWidth() >= dx &&
+						loc->y >= dy && loc->y - loc->shape->getDepth() <= dy ) {
+					if( PATH_DEBUG ) {
+						cerr << "*** ignoreEndShape allowed." << endl;
+					}
+					//continue;
+					return false;
 				}
 				if( ignoreParty && 
 						loc->creature && 
