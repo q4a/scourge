@@ -559,11 +559,11 @@ void GLShape::setLightBlocking(bool b) {
 }
 
 // loosely interpreted...
-bool GLShape::fitsInside(GLShape *smaller) {
+bool GLShape::fitsInside(GLShape *smaller, bool relaxedRules) {
   return (smaller->getHeight() < 2 ||
-          (width + 1 > smaller->getWidth() && 
-           depth + 1 > smaller->getDepth() &&
-           height + 1 > smaller->getHeight()));
+          (width + 1 > ( relaxedRules ? smaller->getWidth() / 2 : smaller->getWidth() ) && 
+           depth + 1 > ( relaxedRules ? smaller->getDepth() / 2 : smaller->getDepth() ) &&
+           height + 1 > ( relaxedRules ? smaller->getHeight() / 2 : smaller->getHeight() ) ) );
 }
 
 void GLShape::setCurrentAnimation (int numAnim, bool force){

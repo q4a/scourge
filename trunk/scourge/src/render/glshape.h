@@ -107,7 +107,7 @@ public:
   void setTexture( GLuint *textureGroup );
 
   inline void setSkipSide(int n) { skipside = n; }
-  bool fitsInside(GLShape *smaller);  
+  bool fitsInside( GLShape *smaller, bool relaxedRules=false );  
   bool isLightBlocking();
   void setLightBlocking(bool b);
   void draw();   

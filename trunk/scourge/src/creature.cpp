@@ -959,7 +959,7 @@ bool Creature::addInventory(Item *item, bool force) {
   if(inventory_count < MAX_INVENTORY_SIZE &&
      (force || !item->isBlocking() || 
       item->getRpgItem()->getEquip() ||
-      getShape()->fitsInside(item->getShape()))) {
+      getShape()->fitsInside( item->getShape(), true ) ) ) {
     inventory[inventory_count++] = item;
     inventoryWeight += item->getWeight(); 
 
