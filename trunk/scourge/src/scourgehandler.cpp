@@ -512,7 +512,11 @@ bool ScourgeHandler::handlePartyEvent(Widget *widget, SDL_Event *event) {
   } else {
     for( int t = 0; t < scourge->getParty()->getPartySize(); t++ ) {
       if( widget == scourge->getPlayerInfo( t ) ) {
-        if( scourge->getTargetSelectionFor() ) {
+        if( scourge->getTargetSelectionFor() &&
+						( scourge->getTargetSelectionFor()->getAction() != Constants::ACTION_CAST_SPELL ||
+							( scourge->getTargetSelectionFor()->getAction() == Constants::ACTION_CAST_SPELL &&
+								scourge->getTargetSelectionFor()->getActionSpell() &&
+								scourge->getTargetSelectionFor()->getActionSpell()->isCreatureTargetAllowed() ) ) ) {
           scourge->handleTargetSelectionOfCreature( scourge->getParty()->getParty( t ) );
         } else {
           scourge->setPlayer( t );
