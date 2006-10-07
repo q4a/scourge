@@ -875,9 +875,14 @@ bool Scourge::useItem(int x, int y, int z) {
         return true;
       } else if( usePool( pos ) ) {
         return true;
-      } else if(pos && pos->item && ((Item*)(pos->item))->getRpgItem()->getType() == RpgItem::CONTAINER) {
-        openContainerGui(((Item*)(pos->item)));
-        return true;
+      } else if( pos && pos->item && 
+								 ((Item*)(pos->item))->getRpgItem()->getType() == RpgItem::CONTAINER ) {
+				if( SDL_GetModState() & KMOD_CTRL ) {
+					openContainerGui(((Item*)(pos->item)));
+				} else {
+					getParty()->setSelXY( x, y, false ); // get as close as possible to location
+				}
+				return true;
       } else if( session->getSquirrel()->
 								 callMapPosMethod( "useShape", 
 																	 pos->x, 
