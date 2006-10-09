@@ -728,9 +728,12 @@ bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 
   } else {
     sprintf(msg, "%s cancelled a pending action.", c->getName());
     levelMap->addDescription(msg);
-  }
+		// cancel target selection ( cross cursor )
+		getTargetSelectionFor()->cancelTarget();
+		getTargetSelectionFor()->getBattle()->reset();
+  }	
   // turn off selection mode
-  setTargetSelectionFor(NULL);
+  setTargetSelectionFor(NULL);		
   return ret;
 }
 
@@ -752,10 +755,13 @@ bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
   } else {
     sprintf(msg, "%s cancelled a pending action.", c->getName());
     levelMap->addDescription(msg);
-  }
+		// cancel target selection ( cross cursor )
+		getTargetSelectionFor()->cancelTarget();
+		getTargetSelectionFor()->getBattle()->reset();
+	}
   // turn off selection mode
   setTargetSelectionFor(NULL);
-  return ret;
+	return ret;
 }
 
 bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
@@ -775,6 +781,9 @@ bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
   } else {
     sprintf( msg, "%s cancelled a pending action.", c->getName() );
     levelMap->addDescription( msg );
+		// cancel target selection ( cross cursor )
+		getTargetSelectionFor()->cancelTarget();
+		getTargetSelectionFor()->getBattle()->reset();
   }
   // turn off selection mode
   setTargetSelectionFor( NULL );
@@ -1668,9 +1677,12 @@ void Scourge::resetUIAfterBattle() {
   }
   // animate monsters again after TB combat (see resetNonParticipantAnimation() )
   for(int i = 0; i < session->getCreatureCount(); i++) {
-    if( !session->getCreature(i)->getStateMod( Constants::dead ) &&
+		if( !session->getCreature(i)->getStateMod( Constants::dead ) ) {    
+		/*
+		if( !session->getCreature(i)->getStateMod( Constants::dead ) &&
         !( session->getCreature(i)->getMonster() &&
 					 session->getCreature(i)->getMonster()->isNpc() ) ) {
+			*/
       session->getCreature(i)->setMotion( Constants::MOTION_LOITER );
       ((AnimatedShape*)session->getCreature(i)->getShape())->setPauseAnimation( false );
     }
