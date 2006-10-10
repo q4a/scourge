@@ -40,10 +40,14 @@ void ThirstHungerEvent::execute(){
     thirst = creature->getThirst();
     hunger = creature->getHunger();
     
-    thirst--; hunger--; 
+    thirst--; 
+		if( thirst < 0 ) thirst = 0;
+		hunger--; 
+		if( hunger < 0 ) hunger = 0;
     creature->setThirst(thirst);
     creature->setHunger(hunger); 
                  
+		int n;
     if(thirst == 5){
         sprintf(buff, "%s is thirsty.", creature->getName());     
         scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);            
@@ -66,11 +70,14 @@ void ThirstHungerEvent::execute(){
         // creature->setModState(nearly_dead);
     }
     else if( thirst == 0 ){
-        sprintf(buff, "%s dies from lack of water.", creature->getName());     
-        scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);
-        scourge->getSession()->creatureDeath(creature);
-        //scheduleDeleteEvent(); // see resurrection note above
-        return; // no need to go further        
+			n = (int)( 8.0f * rand() / RAND_MAX );
+			sprintf(buff, "%s looses %d hit points from dehydration!", creature->getName(), n );     
+			scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f); 
+			creature->setHp( creature->getHp() - n );
+			if( creature->getHp() <= 0 ) {
+        scourge->getSession()->creatureDeath( creature );
+        return;
+			}
     }        
     
     if(hunger == 5){
@@ -95,10 +102,14 @@ void ThirstHungerEvent::execute(){
         // creature->setModState(nearly_dead);
     } 
     else if( hunger == 0 ){
-        sprintf(buff, "%s dies from starvation.", creature->getName());     
-        scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f);
-        scourge->getSession()->creatureDeath(creature); 
-        //scheduleDeleteEvent(); // see resurrection note above
+			n = (int)( 8.0f * rand() / RAND_MAX );
+			sprintf(buff, "%s looses %d hit points from hunger!", creature->getName(), n );     
+			scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f); 
+			creature->setHp( creature->getHp() - n );
+			if( creature->getHp() <= 0 ) {
+        scourge->getSession()->creatureDeath( creature );
+        return;
+			}
     }                  
 }
 
