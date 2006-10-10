@@ -1523,6 +1523,8 @@ void Creature::resurrect( int rx, int ry ) {
 	for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
 		setStateMod( i, false );
 	}
+	if( getThirst() < 5 ) setThirst( 5 );
+	if( getHunger() < 5 ) setHunger( 5 );
 
   setHp( (int)( 3.0f * rand() / RAND_MAX ) + 1 );
   
