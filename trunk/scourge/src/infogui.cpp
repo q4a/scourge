@@ -48,12 +48,17 @@ InfoGui::InfoGui(Scourge *scourge) {
   int bx = width / 2;
   int by = height - 55;
   
-	openButton = new Button( bx - 100, by, bx - 5, by + 20, 
+	closeButton = new Button( bx - 150, by, bx - 55, by + 20, 
                            scourge->getShapePalette()->getHighlightTexture(), 
                            Constants::getMessage(Constants::CLOSE_LABEL) );
+  win->addWidget((Widget*)closeButton);
+
+	openButton = new Button( bx - 50, by, bx + 50, by + 20, 
+                           scourge->getShapePalette()->getHighlightTexture(), 
+                           Constants::getMessage(Constants::OPEN_CONTAINER_LABEL ) );
   win->addWidget((Widget*)openButton);
 
-  idButton = new Button( bx + 5, by, bx + 100, by + 20, 
+  idButton = new Button( bx + 55, by, bx + 150, by + 20, 
                            scourge->getShapePalette()->getHighlightTexture(), 
                            "Identify" );
   win->addWidget((Widget*)idButton);
@@ -84,13 +89,42 @@ InfoGui::~InfoGui() {
 void InfoGui::setItem( Item *item ) { 
   this->item = item; 
   describe(); 
+
+	int bx = win->getWidth() / 2;
+  int by = win->getHeight() - 55;
+	if( item->getRpgItem()->isContainer() ) {
+
+		idButton->setVisible( false );
+		openButton->setVisible( true );
+		closeButton->move( bx - 100, by );		
+		openButton->move( bx + 5, by );
+		idButton->move( 0, 0 );
+		/*
+		openButton->setVisible( true );		
+		closeButton->move( bx - 150, by );
+		openButton->move( bx - 50, by );
+		idButton->move( bx + 55, by );
+		*/
+	} else if( !item->isIdentified() && item->isMagicItem() ) {
+		openButton->setVisible( false );
+		idButton->setVisible( true );
+		closeButton->move( bx - 100, by );
+		openButton->move( 0, 0 );
+		idButton->move( bx + 5, by );
+	} else {
+		openButton->setVisible( false );
+		idButton->setVisible( false );
+		closeButton->move( bx - 45, by );
+		openButton->move( 0, 0 );
+		idButton->move( 0, 0 );
+	}
 }
 
 bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
   if(widget == win->closeButton) {
     win->setVisible(false);
     return true;
-  } else if(widget == openButton) {
+  } else if(widget == closeButton) {
     win->setVisible(false);
   } else if( widget == idButton ) {
 		if( !item->isIdentified() ) {
@@ -99,11 +133,14 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
 			describe();
 			// hand out some experience
 			if( item->isIdentified() ) {
+				setItem( item ); // re-draw buttons
 				float n = (float)( item->getLevel() * 5 );
 				scourge->getParty()->getPlayer()->
 					addExperienceWithMessage( (int)( n + ( n * rand() / RAND_MAX ) ) );
 			}
 		}
+	} else if( widget == openButton ) {
+		scourge->openContainerGui( item );
 	}
   return false;
 }

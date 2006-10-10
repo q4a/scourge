@@ -39,7 +39,7 @@ class InfoGui : public WidgetView {
   Scourge *scourge;
   Item *item;
   Window *win;
-  Button *openButton, *idButton;
+  Button *openButton, *idButton, *closeButton;
   ScrollingLabel *label;
   ScrollingLabel *nameLabel;
   Canvas *image;

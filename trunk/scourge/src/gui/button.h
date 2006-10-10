@@ -74,6 +74,11 @@ class Button : public Widget {
   bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
   void removeEffects(Widget *parent);
   void drawWidget(Widget *parent);
+	virtual inline void move(int x, int y) { 
+		x2 += ( x - this->x );
+		y2 += ( y - this->y );
+		Widget::move( x, y );
+	}
 
 	inline int getFontType() { return fontType; }
 	inline void setFontType( int n ) { fontType = n; }
