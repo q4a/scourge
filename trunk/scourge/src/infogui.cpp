@@ -128,15 +128,26 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
     win->setVisible(false);
   } else if( widget == idButton ) {
 		if( !item->isIdentified() ) {
-			item->identify( scourge->getParty()->getPlayer()->
-											getSkill( Skill::IDENTIFY_ITEM ) );
-			describe();
-			// hand out some experience
-			if( item->isIdentified() ) {
-				setItem( item ); // re-draw buttons
-				float n = (float)( item->getLevel() * 5 );
-				scourge->getParty()->getPlayer()->
-					addExperienceWithMessage( (int)( n + ( n * rand() / RAND_MAX ) ) );
+
+			char key[255];
+			sprintf( key, "ID_ITEM.%s", scourge->getParty()->getPlayer()->getName() );
+			int n = scourge->getSession()->getCountForDate( key );
+			if( n < 10 ) {
+				item->identify( scourge->getParty()->getPlayer()->
+												getSkill( Skill::IDENTIFY_ITEM ) );
+				describe();
+				// hand out some experience
+				if( item->isIdentified() ) {
+					setItem( item ); // re-draw buttons
+					float n = (float)( item->getLevel() * 5 );
+					scourge->getParty()->getPlayer()->
+						addExperienceWithMessage( (int)( n + ( n * rand() / RAND_MAX ) ) );
+				} else {
+					// there can only be 10 failures per hour
+					scourge->getSession()->setCountForDate( key, n + 1 );
+				}
+			} else {
+				scourge->showMessageDialog( "You must rest a while before identifying items again." );
 			}
 		}
 	} else if( widget == openButton ) {

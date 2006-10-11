@@ -241,3 +241,11 @@ bool Date::isADayLater(Date date) {
          (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() < getDay()));
 }
 
+bool Date::isAnHourLater(Date date) {
+  return(date.getYear() < getYear() ||
+         (date.getYear() == getYear() && date.getMonth() < getMonth()) ||
+         (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() < getDay()) ||
+				 (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() == getDay() && date.getHour() < getHour()));
+}
+
+

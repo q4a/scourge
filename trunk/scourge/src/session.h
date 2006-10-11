@@ -167,6 +167,17 @@ public:
     else return special[ rpgItem ];
   }
 
+	/**
+	 * How many times did this 'key' occur in the last hour?
+	 * if withinLastHour is false, a day is used.
+	 */
+	int getCountForDate( char *key, bool withinLastHour=true );
+	
+	/**
+	 * Store a key with data+value
+	 */
+	void setCountForDate( char *key, int value );
+
 protected:
   virtual void initData();
 
