@@ -80,7 +80,7 @@ void Session::start() {
 void Session::initData() {
 
   // move all this down to scourge
-  adapter->initStart(9, "Loading shapes...");
+  adapter->initStart(12, "Loading shapes...");
 
   shapePal->initialize();
 
@@ -471,4 +471,38 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
   return EXIT_SUCCESS;
 }
 
+int Session::getCountForDate( char *key, bool withinLastHour ) {
+	int count = 0;
+	char *value = getSquirrel()->getValue( key );
+	if( value != NULL ) {
+		char s[255];
+		strcpy( s, value );
+		char *p = strtok( s, "+" );		
+		if( p != NULL ) {
+			char *q = strtok( NULL, "+" );
+			Date *lastUsed = new Date( p );
+			Date now = getParty()->getCalendar()->getCurrentDate();
+
+			bool withinDate = ( withinLastHour && now.isAnHourLater( *lastUsed ) ||
+													!withinLastHour && now.isADayLater( *lastUsed ) );
+
+			// did specified amount of time pass?
+			if( !withinDate ) {				
+				if( q ) {
+					count = atoi( q );
+				}
+			}
+			delete lastUsed;
+		}
+	}
+	return count;
+}
+
+void Session::setCountForDate( char *key, int value ) {
+	char s[255];
+	sprintf( s, "%s+%d", 
+					 getParty()->getCalendar()->getCurrentDate().getShortString(), 
+					 value );
+	getSquirrel()->setValue( key, s );
+}
 

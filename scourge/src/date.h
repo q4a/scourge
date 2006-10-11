@@ -70,6 +70,7 @@ class Date {
   bool isEqualTo(Date d);
   void print();
   bool isADayLater(Date date);
+	bool isAnHourLater(Date date);
   char *getShortString();
   
   Date();
