@@ -458,6 +458,12 @@ N:NS_DOOR_TOP
 N:2
 N:aa6633ff
 
+# corners, door sides look weird when transparent
+#P:6,0,1,1
+#P:7,2,1,0
+#P:9,2,1,0
+#P:11,2,1,0
+
 P:8,0,0,1
 P:10,0,0,1
 
@@ -629,6 +635,15 @@ N:COLUMN
 N:6
 N:ffffffff
 3:/objects/column.3ds
+3:1.7
+
+# wood_col.3ds
+N:14
+N:1,1,1
+N:WOOD_COLUMN
+N:6
+N:ffffffff
+3:/objects/wood_col.3ds
 3:1.7
 
 # streetlight.3ds
