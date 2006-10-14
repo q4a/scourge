@@ -688,7 +688,6 @@ public:
 
   void mouseClickWhileExiting();
 
-  bool doesSaveGameExist(Session *session);
   bool saveGame(Session *session);  
   bool loadGame( Session *session, char *error );
 

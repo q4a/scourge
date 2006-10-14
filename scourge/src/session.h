@@ -70,6 +70,8 @@ private:
   std::vector<Creature*> creatures;
   SqBinding *squirrel;
   std::map<RpgItem*, Item*> special;
+	char savegame[255];
+	char valuefile[255];
 
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
@@ -177,6 +179,10 @@ public:
 	 * Store a key with data+value
 	 */
 	void setCountForDate( char *key, int value );
+
+	void setSavegameName( char *s );
+	inline char *getSavegameName() { return savegame; }
+	inline char *getValuefile() { return valuefile; }
 
 protected:
   virtual void initData();

@@ -35,6 +35,7 @@ class Window;
 class Label;
 class Button;
 class ScrollingLabel;
+class SavegameDialog;
 
 typedef struct _MenuItemParticle {
   int life;
@@ -98,6 +99,7 @@ private:
   Button *optionsButton;
   Button *aboutButton;
   Button *quitButton;
+	SavegameDialog *savegameDialog;
 
   Window *newGameConfirm;
   Button *newGameConfirmOK, *newGameConfirmCancel;
@@ -126,6 +128,8 @@ public:
   bool handleEvent(Widget *widget, SDL_Event *event);
   int getValue();
   void showNewGameConfirmationDialog();
+	void showSavegameDialog( bool inSaveMode=true );
+	void setSavegameSelected();
 
   void show();
   void hide();

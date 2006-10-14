@@ -430,8 +430,14 @@ void SDLHandler::applyMouseOffset(int x, int y, int *newX, int *newY) {
 
 void SDLHandler::mainLoop() {
   bool isActive = true;
-  while(true) {    
+	running = true;
+  while( true ) {
     if( processEvents( &isActive ) ) return;
+		if( !running ) {
+			if( popHandlers() ) {
+				return;
+			}
+		}
     if( isActive ) drawScreen();
     getSound()->checkMusic( gameAdapter->inTurnBasedCombat() );
   }

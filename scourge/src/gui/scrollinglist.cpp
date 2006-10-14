@@ -362,9 +362,15 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 	case SDL_MOUSEBUTTONDOWN:
 		if( event->button.button ) {
 			if( event->button.button == SDL_BUTTON_WHEELUP ) {
-				if( isInside(x, y) ) moveSelectionUp();
+				if( isInside(x, y) ) {
+					moveSelectionUp();
+					return true;
+				}
 			} if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
-				if( isInside(x, y) ) moveSelectionDown();
+				if( isInside(x, y) ) {
+					moveSelectionDown();
+					return true;
+				}
 			} else if( event->button.button == SDL_BUTTON_LEFT ||
 								 event->button.button == SDL_BUTTON_RIGHT ) {
 				if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
