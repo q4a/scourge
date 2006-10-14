@@ -50,9 +50,6 @@ using namespace std;
 
 #define MOUSE_ROT_DELTA 2
 
-#define SAVE_FILE "savegame.dat"
-#define VALUES_FILE "values.dat"
-
 #define HQ_MAP_NAME "hq"
 #define RANDOM_MAP_NAME "random"
 
@@ -162,13 +159,6 @@ void Scourge::start() {
 
     // evaluate results and start a missions
     int value = mainMenu->getValue();
-    if(value == NEW_GAME) {
-      if(doesSaveGameExist( session )) {
-        mainMenu->showNewGameConfirmationDialog();
-      } else {
-        mainMenu->showPartyEditor();
-      }
-    }
 
     if(value == NEW_GAME_START ||
        value == MULTIPLAYER_START ||
@@ -2720,24 +2710,13 @@ Color *Scourge::getOutlineColor( Location *pos ) {
   return view->getOutlineColor( pos );
 }
 
-bool Scourge::doesSaveGameExist(Session *session) {
-  char path[300];
-  get_file_name( path, 300, SAVE_FILE );
-  FILE *fp = fopen( path, "rb" );
-  bool ret = false;
-  if(fp) {
-    ret = true;
-    fclose( fp );
-  }
-  return ret;
-}
-
 bool Scourge::saveGame(Session *session) {
   session->getPreferences()->createConfigDir();
 
   {
     char path[300];
-    get_file_name( path, 300, SAVE_FILE );
+    get_file_name( path, 300, session->getSavegameName() );
+		cerr << "Saving: " << path << endl;
     FILE *fp = fopen( path, "wb" );
     if(!fp) {
       cerr << "Error creating savegame file! path=" << path << endl;
@@ -2760,7 +2739,8 @@ bool Scourge::saveGame(Session *session) {
 
   {
     char path[300];
-    get_file_name( path, 300, VALUES_FILE );
+    get_file_name( path, 300, getSession()->getValuefile() );
+		cerr << "Saving: " << path << endl;
     FILE *fp = fopen( path, "wb" );
     if(!fp) {
       cerr << "Error creating values file! path=" << path << endl;
@@ -2777,7 +2757,8 @@ bool Scourge::saveGame(Session *session) {
 bool Scourge::loadGame( Session *session, char *error ) {
 	char path[300];
 	strcpy( error, "" );
-	get_file_name( path, 300, SAVE_FILE );
+	get_file_name( path, 300, session->getSavegameName() );
+	cerr << "Loading: " << path << endl;
 	FILE *fp = fopen( path, "rb" );
 	if(!fp) {
 		return false;
@@ -2816,7 +2797,8 @@ bool Scourge::loadGame( Session *session, char *error ) {
 
 	{
 		char path[300];
-		get_file_name( path, 300, VALUES_FILE );
+		get_file_name( path, 300, getSession()->getValuefile() );
+		cerr << "Loading: " << path << endl;
 		FILE *fp = fopen( path, "rb" );
 		if( fp ) {
 			File *file = new File( fp );
@@ -2831,7 +2813,7 @@ bool Scourge::loadGame( Session *session, char *error ) {
 
 bool Scourge::testLoadGame( Session *session ) {
   char path[300];
-  get_file_name( path, 300, SAVE_FILE );
+  get_file_name( path, 300, session->getSavegameName() );
   FILE *fp = fopen( path, "rb" );
   if(!fp) {
     return false;

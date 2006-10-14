@@ -113,6 +113,8 @@ scourge_SOURCES = \
 	tradedialog.h\
 	healdialog.cpp\
 	healdialog.h\
+	savegamedialog.cpp\
+	savegamedialog.h\
 	donatedialog.cpp\
 	donatedialog.h\
 	texteffect.cpp\
