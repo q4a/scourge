@@ -125,6 +125,13 @@ void ShapePalette::initialize() {
 	waitTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
   if( tmpImage ) free( tmpImage );
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+	
+	tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/system.bmp", &tmpSurface, &tmpImage );
+	systemTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
