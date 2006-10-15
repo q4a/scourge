@@ -113,3 +113,33 @@ bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
 void Canvas::removeEffects(Widget *parent) {
   highlightBorders = false;
 }
+
+ImageCanvas::ImageCanvas( int x, int y, int x2, int y2, GLuint image ) : Canvas( x, y, x2, y2, this, NULL, false ) {
+	this->image = image;
+}
+  
+ImageCanvas::~ImageCanvas() {
+}
+
+void ImageCanvas::drawWidgetContents( Widget *w ) {
+	glEnable( GL_ALPHA_TEST );
+	glAlphaFunc( GL_EQUAL, 0xff );
+	glEnable(GL_TEXTURE_2D);
+	glPushMatrix();
+	glBindTexture( GL_TEXTURE_2D, image );
+	glColor4f(1, 1, 1, 1);
+	glBegin( GL_QUADS );
+	glNormal3f( 0, 0, 1 );
+	glTexCoord2f( 0, 0 );
+	glVertex3f( 0, 0, 0 );
+	glTexCoord2f( 0, 1 );
+	glVertex3f( 0, getHeight(), 0 );
+	glTexCoord2f( 1, 1 );
+	glVertex3f( getWidth(), getHeight(), 0 );
+	glTexCoord2f( 1, 0 );
+	glVertex3f( getWidth(), 0, 0 );
+	glEnd();
+	glPopMatrix();	
+	glDisable( GL_ALPHA_TEST );
+	glDisable(GL_TEXTURE_2D);
+}

@@ -17,19 +17,21 @@
 
 #include "savegamedialog.h"
 #include "scourge.h"
+#include "shapepalette.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/scrollinglist.h"
 #include "gui/textfield.h"
 #include "gui/label.h"
 #include "gui/confirmdialog.h"
+#include "gui/canvas.h"
 
 #define DEFAULT_SAVE_FILE "savegame.dat"
 
 SavegameDialog::SavegameDialog( Scourge *scourge ) {
   this->scourge = scourge;
   int w = 350;
-  int h = 300;
+  int h = 200;
   win = 
     scourge->createWindow( scourge->getScreenWidth() / 2 - w / 2, 
 													 scourge->getScreenHeight() / 2 - h / 2, 
@@ -44,10 +46,13 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
 														 scourge->getHighlightTexture() );
   win->addWidget( files );
 
-	save = win->createButton( w - 100, 10, w - 10, 30, "Save" );
-	load = win->createButton( w - 100, 10, w - 10, 30, "Load" );
+	ImageCanvas *c = new ImageCanvas( w - 55, 10, w - 15, 50, scourge->getShapePalette()->getSystemIconTexture() );
+	win->addWidget( c );
+
+	save = win->createButton( w - 105, h - 90, w - 15, h - 70, "Save" );
+	load = win->createButton( w - 105, h - 90, w - 15, h - 70, "Load" );
 	load->setVisible( false );
-	cancel = win->createButton( w - 100, 40, w - 10, 60, "Cancel" );
+	cancel = win->createButton( w - 105, h - 60, w - 15, h - 40, "Cancel" );
 
 	filenameCount = 0;
   filenames = (char**)malloc( MAX_SAVEGAME_COUNT * sizeof(char*) );

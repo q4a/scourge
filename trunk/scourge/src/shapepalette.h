@@ -118,6 +118,7 @@ public:
   GLuint border, border2, gargoyle;
   GLuint minimap, minimapMask, dismiss, exitTexture, options, group, inventory;
 	GLuint waitTexture, startTexture, realTimeTexture, pausedTexture;
+	GLuint systemTexture;
 
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiTexture2() { return gui_texture2; }
@@ -139,6 +140,8 @@ public:
 	inline GLuint getRealTimeTexture() { return realTimeTexture; }	
 	inline GLuint getStartTexture() { return startTexture; }	
 	inline GLuint getWaitTexture() { return waitTexture; }	
+
+	inline GLuint getSystemIconTexture() { return systemTexture; }
 
   inline int getPortraitCount( int sex ) { return portraitTextures[sex].size(); }
   inline GLuint getPortraitTexture( int sex, int index ) { return portraitTextures[sex][ index ]; }

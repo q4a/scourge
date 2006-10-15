@@ -64,5 +64,15 @@ class Canvas : public Widget {
   virtual inline bool hasSound() { return false; }
 };
 
+class ImageCanvas : public Canvas, WidgetView {
+private:
+	GLuint image;
+
+public:
+	ImageCanvas( int x, int y, int x2, int y2, GLuint image );
+  virtual ~ImageCanvas();
+	virtual void drawWidgetContents(Widget *w);
+};
+
 #endif
 
