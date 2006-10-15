@@ -346,14 +346,14 @@ void TerrainGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal) {
 void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
   // add monsters in every room
   if(monsters) {
-    int totalLevel = scourge->getParty()->getTotalLevel();
+    int totalLevel = (int)( (float)scourge->getParty()->getTotalLevel() * getMonsterLevelMod() );
     //fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
     for(int i = 0; i < roomCount; i++) {
       int areaCovered = 0;
       // don't crowd the rooms
       int roomAreaUsed = (int)(room[i].w * room[i].h * unitSide * 0.33f);
       int monsterLevelTotal = 0;
-      bool badAssMonsters = ((int)((float)(10 - depth) * rand()/RAND_MAX) == 0);
+      bool badAssMonsters = ( getUseBadassMonsters() && ((int)((float)(10 - depth) * rand()/RAND_MAX) == 0) );
       while(areaCovered < roomAreaUsed && (badAssMonsters || monsterLevelTotal < totalLevel)) {
         int monsterLevel = level;
         if(badAssMonsters && 0 == (int)(5.0f * rand()/RAND_MAX))

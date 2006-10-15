@@ -96,6 +96,10 @@ protected:
 
   virtual MapRenderHelper *getMapRenderHelper();
 
+	// Make cave rooms easier.
+	virtual inline float getMonsterLevelMod() { return 0.5f; }
+	virtual bool getUseBadassMonsters() { return false; }
+
 };
 
 #endif

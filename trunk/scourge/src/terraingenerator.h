@@ -174,6 +174,19 @@ protected:
   int getRoomIndex(int x, int y);
 
   Item *createRandomItem();
+
+	/**
+	 * Return a multiplier for figuring out the total monster level per room.
+	 * For example, in order to make caves easier, it returns 0.5f.
+	 * Harder rooms increase the chance of finding better treasure.
+	 */
+	virtual inline float getMonsterLevelMod() { return 1.0f; }
+
+	/**
+	 * Return a bool indicating whether or not extra-tough monsters should be
+	 * used. Harder rooms increase the chance of finding better treasure.
+	 */
+	virtual bool getUseBadassMonsters() { return true; }
   
 };
 
