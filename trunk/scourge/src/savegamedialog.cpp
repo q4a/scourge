@@ -77,9 +77,12 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 		scourge->getMainMenu()->setSavegameSelected();
   } else if( widget == save || widget == load ) {
 		setName();
-		if( widget == save && checkIfFileExists( name->getText() ) ) {
+		bool exists = checkIfFileExists( name->getText() );
+		if( widget == save && exists ) {
 			confirm->setText( "Are you sure you want to overwrite this file?" );
 			confirm->setVisible( true );
+		} else if( widget == load && !exists ) {
+			scourge->showMessageDialog( "Please select an existing file." );
 		} else {
 			win->setVisible( false );
 			scourge->getMainMenu()->setSavegameSelected();
