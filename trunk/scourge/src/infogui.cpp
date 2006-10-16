@@ -276,7 +276,8 @@ void InfoGui::describe() {
 		sprintf(tmp, "Power: %d|", item->getRpgItem()->getPotionPower() );
     strcat( description, tmp );
 	}
-  if( item->getRpgItem()->getMaxCharges() > 0 ) {
+  if( item->getRpgItem()->getMaxCharges() > 0 &&
+			( !item->getRpgItem()->hasSpell() || item->getSpell() ) ) {
     sprintf(tmp, "Charges: %d(%d)|", item->getCurrentCharges(), item->getRpgItem()->getMaxCharges() );
     strcat( description, tmp );
     if( item->getSpell() ) {
