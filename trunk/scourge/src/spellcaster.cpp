@@ -296,7 +296,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 
   // roll for the spell damage
   float damage = 0;
-  for(int i = 0; i < ( level / 2 ); i++) {
+  for(int i = 0; i <= ( level / 2 ); i++) {
     damage += spell->getAction();
 		if( !multiplyByLevel ) break;
   }
