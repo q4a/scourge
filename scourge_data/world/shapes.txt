@@ -58,6 +58,12 @@ O:/portraits/w3.bmp,F
 O:/portraits/w4.bmp,F
 O:/portraits/w5.bmp,F
 O:/portraits/w6.bmp,F
+O:/portraits/w11.bmp,F
+O:/portraits/w12.bmp,F
+O:/portraits/w13.bmp,F
+O:/portraits/w14.bmp,F
+O:/portraits/w15.bmp,F
+
 O:/portraits/death.bmp
 
 # Character models
