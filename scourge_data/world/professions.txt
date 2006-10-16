@@ -349,7 +349,7 @@ A:PLATE-
 # Warning: this is a root profession. 
 # Changing the name means updating every trainer in the maps/map.txt files.
 # **************************
-P:Magician,0,2,8,600
+P:Magician,0,2,12,600
 D:description goes here
 G:FIGHT_GROUP,2
 G:DEFEND_GROUP,2
@@ -387,7 +387,7 @@ G:SORCERY_GROUP,15
 # Warning: this is a root profession. 
 # Changing the name means updating every trainer in the maps/map.txt files.
 # **************************
-P:Healer,0,4,6,550
+P:Healer,0,4,8,550
 D:description goes here
 G:FIGHT_GROUP,8
 G:DEFEND_GROUP,10
@@ -426,7 +426,7 @@ G:LORE_GROUP,4
 # Warning: this is a root profession. 
 # Changing the name means updating every trainer in the maps/map.txt files.
 # **************************
-P:Scholar,0,5,5,500
+P:Scholar,0,5,7,500
 D:description goes here
 G:FIGHT_GROUP,6
 G:DEFEND_GROUP,6
@@ -465,7 +465,7 @@ G:STEALTH_GROUP,4
 # Warning: this is a root profession. 
 # Changing the name means updating every trainer in the maps/map.txt files.
 # **************************
-P:Cutpurse,0,8,2,450
+P:Cutpurse,0,8,4,450
 D:description goes here
 G:FIGHT_GROUP,8
 G:DEFEND_GROUP,8
