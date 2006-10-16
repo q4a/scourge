@@ -344,6 +344,10 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
   	male->setSelected( female->isSelected() ? false : true );
 		rollApperance();
   	saveUI();  	
+	} else if( widget == nameChangeButton ) {
+		char *s = Rpg::createName();
+		nameField->setText( s );
+		free( s );
   } else {
     int n = 0;
     for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
@@ -446,7 +450,8 @@ void PcEditor::createUI() {
 	// name
 	Label *p = cards->createLabel( secondColStart, 30, "Name:", NAME_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
-	nameField = new TextField( secondColStart, 50, 32 );
+	nameField = new TextField( secondColStart, 50, 22 );
+	nameChangeButton = cards->createButton( w - 80, 50, w - 20, 70, "Change", NAME_TAB );
   char *s = Rpg::createName();
   nameField->setText( s );
   free( s );
