@@ -46,6 +46,7 @@ private:
 	Button *nameButton, *profButton, *statsButton, *deityButton;
 	Button *imageButton, *okButton, *cancelButton;
 	TextField *nameField;
+	Button *nameChangeButton;
 	ScrollingList *charType;
 	ScrollingLabel *charTypeDescription;
 	Label *skillValue[10];
