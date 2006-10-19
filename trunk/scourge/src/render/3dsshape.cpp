@@ -28,9 +28,9 @@ C3DSShape::C3DSShape(char *file_name, float div, Shapes *shapePal,
 					 GLuint texture[],
 					 char *name, int descriptionGroup,
 					 Uint32 color, Uint8 shapePalIndex,
-					 int offsetx, int offsety) :
+					 float size_x, float size_y, float size_z) :
 	GLShape(0, 1, 1, 1, name, descriptionGroup, color, shapePalIndex) {
-	commonInit(file_name, div, shapePal, offsetx, offsety);
+	commonInit(file_name, div, shapePal, size_x, size_y, size_z);
 #ifdef DEBUG_3DS
   debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, shapePalIndex);
   debugShape->initialize();
@@ -53,13 +53,14 @@ C3DSShape::~C3DSShape() {
   glDeleteLists( displayListStart, 2 );
 }
 
-void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, int offsetx, int offsety) {
+void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z) {
   g_Texture[0] = 0;
   g_ViewMode = GL_TRIANGLES;
-  this->div = div;
+  this->divx = this->divy = this->divz = div;
   this->shapePal = shapePal;
-  this->offsetx = offsetx;
-  this->offsety = offsety;
+  this->size_x = size_x;
+  this->size_y = size_y;
+  this->size_z = size_z;  
 
   // First we need to actually load the .3DS file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("face.3ds").
@@ -135,20 +136,34 @@ void C3DSShape::normalizeModel() {
   float n = 0.25 / DIV;
   movez = n;
 
-  // calculate dimensions
-  float fw = maxx * div * DIV;
-  float fd = maxy * div * DIV;
-  float fh = maxz * div * DIV;
+	if( divx > 0 ) {
+	  // calculate dimensions where 'div' is given
+	  float fw = maxx * divx * DIV;
+	  float fd = maxy * divy * DIV;
+	  float fh = maxz * divz * DIV;
 
-  // set the shape's dimensions
-  this->width = (int)(fw + 0.5f);
-  if(this->width < 1) this->width = 1;
-  this->depth = (int)(fd + 0.5f);
-  if(this->depth < 1) this->depth = 1;
-  this->height = (int)(fh + 0.5f);
-  if(this->height < 1) this->height = 1;
+	  // set the shape's dimensions
+	  this->width = (int)(fw + 0.5f);
+	  if(this->width < 1) this->width = 1;
+	  this->depth = (int)(fd + 0.5f);
+	  if(this->depth < 1) this->depth = 1;
+	  this->height = (int)(fh + 0.5f);
+	  if(this->height < 1) this->height = 1;
+	} else {
+		// calculate 'div' where dimensions are given
+	  this->width = toint( size_x );
+	  if(this->width < 1) this->width = 1;
+	  this->depth = toint( size_y );
+	  if(this->depth < 1) this->depth = 1;
+	  this->height = toint( size_z );
+	  if(this->height < 1) this->height = 1;		
+	
+		divx = size_x / ( maxx * DIV );
+		divy = size_y / ( maxy * DIV );
+		divz = size_z / ( maxz * DIV );
+	}
 
-  //cerr << this->getName() << " width=" << width << " depth=" << depth << " height=" << height << endl;
+  cerr << this->getName() << " width=" << width << " depth=" << depth << " height=" << height << endl;
 }
 
 void C3DSShape::resolveTextures() {
@@ -344,9 +359,9 @@ void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
         }
 
         // Pass in the current vertex of the object (Corner of current face)
-        glVertex3f(pObject->pVerts[ index ].x * div, 
-                   pObject->pVerts[ index ].y * div, 
-                   pObject->pVerts[ index ].z * div);
+        glVertex3f(pObject->pVerts[ index ].x * divx, 
+                   pObject->pVerts[ index ].y * divy, 
+                   pObject->pVerts[ index ].z * divz);
       }
     }
 
@@ -376,8 +391,8 @@ void C3DSShape::draw() {
 
   glPushMatrix();
 
-  glTranslatef(-movex * div, 0.0f, 0.0f);
-  glTranslatef(0.0f, (getDepth() / DIV) - (movey * div), 0.0f);
+  glTranslatef(-movex * divx, 0.0f, 0.0f);
+  glTranslatef(0.0f, (getDepth() / DIV) - (movey * divy), 0.0f);
   glTranslatef(0.0f, 0.0f, movez);
 
   glCallList( displayListStart + (useShadow ? 1 : 0) );

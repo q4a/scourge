@@ -227,7 +227,8 @@ void Shapes::initialize() {
                     strdup(sv->name), 
                     sv->descriptionIndex,
                     sv->color,
-                    (i + 1));
+                    (i + 1),
+                    sv->m3ds_x, sv->m3ds_y, sv->m3ds_z );
     } else if(sv->torch > -1) {
       if(sv->torch == 5) {
         shapes[(i + 1)] =
@@ -430,7 +431,15 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
       n = Constants::readLine(line, fp);
       strcpy(sv->m3ds_name, line + 1);
       n = Constants::readLine(line, fp);
-      sv->m3ds_scale = strtod(line + 1, NULL);
+      if( strstr( line, "," ) ) {
+      	sv->m3ds_x = strtod( strtok( line, "," ), NULL );
+      	sv->m3ds_y = strtod( strtok( NULL, "," ), NULL );      	
+      	sv->m3ds_z = strtod( strtok( NULL, "," ), NULL );
+	      sv->m3ds_scale = 0;
+      } else {
+      	sv->m3ds_x = sv->m3ds_y = sv->m3ds_z = 0;
+	      sv->m3ds_scale = strtod(line + 1, NULL);
+	    }
     } else if(n == 'L') {
       n = Constants::readLine(line, fp);
       sv->teleporter = atoi( line + 1 );

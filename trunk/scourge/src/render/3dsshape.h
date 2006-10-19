@@ -44,7 +44,7 @@ typedef unsigned char BYTE;
 class C3DSShape : public GLShape  {
 
 private:
-  float div;
+  float divx, divy, divz;
   // This holds the texture info, referenced by an ID
   unsigned int g_Texture[MAX_TEXTURES];
   // This is 3DS class.  This should go in a good model class.
@@ -55,7 +55,7 @@ private:
   int g_ViewMode;
   float movex, movey, movez;
   Shapes *shapePal;
-  int offsetx, offsety;
+	float size_x, size_y, size_z;
   GLShape *debugShape;
   GLuint displayListStart;
   bool initialized;
@@ -63,7 +63,8 @@ private:
 public:   
   C3DSShape(char *file_name, float div, Shapes *shapePal,
 			GLuint texture[], char *name, int descriptionGroup,
-			Uint32 color, Uint8 shapePalIndex=0, int offsetx=0, int offsety=0);
+			Uint32 color, Uint8 shapePalIndex=0, 
+			float size_x=0, float size_y=0, float size_z=0);
   ~C3DSShape();
 
   void initialize();
@@ -77,7 +78,7 @@ public:
   void endBlending();
 
 protected:
-  void commonInit(char *file_name, float div, Shapes *shapePal, int offsetx, int offsety);
+  void commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z);
   void preRenderLight();
   void resolveTextures();
   void normalizeModel();

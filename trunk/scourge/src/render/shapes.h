@@ -43,6 +43,7 @@ typedef struct _ShapeValues {
   int torch;
   char m3ds_name[100];
   float m3ds_scale;
+  float m3ds_x, m3ds_y, m3ds_z;
   int teleporter;
   float xrot, yrot, zrot;
   int effectType;
