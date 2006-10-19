@@ -242,7 +242,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
     bool insideWidget = false;
     Widget *w = NULL;
     for(int t = 0; t < widgetCount; t++) {
-      if(this->widget[t]->isVisible()) {
+      if( this->widget[t]->isVisible() && this->widget[t]->isEnabled() ) {
         if(!insideWidget) {
           if(insideWidget = this->widget[t]->isInside(x - getX(), y - getY() - gutter)) {
             if(event->type == SDL_MOUSEBUTTONUP || 

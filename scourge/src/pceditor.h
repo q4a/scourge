@@ -94,7 +94,7 @@ public:
 	void rollSkillsForCreature( Creature *c );
 	Creature *createPartyMember();
 
-  void setCreature( Creature *creature=NULL );
+  void setCreature( Creature *creature=NULL, bool isEditable=true );
   inline Creature *getCreature() { return creature; }
 
 protected:  

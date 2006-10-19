@@ -40,6 +40,7 @@ Widget::Widget(int x, int y, int w, int h) {
   setHighlightedBorderColor( 1.0f, 0.8f, 0.4f );
   setFocusColor( 0.8f, 0.5f, 0.2f, 1 );
   visible = true;
+  enabled = true;
   debug = false;
   focus = false;
   alpha = 0.5f;
@@ -125,15 +126,22 @@ void Widget::drawButton( Widget *parent, int x, int y, int x2, int y2,
 
   int n = 0;
   GLuint tex;
-  if(toggle && selected) {
+	if(toggle && selected) {
     if( theme->getButtonSelectionBackground() ) {
       glEnable( GL_TEXTURE_2D );
       tex = theme->getButtonSelectionBackground()->texture;
       glBindTexture( GL_TEXTURE_2D, theme->getButtonSelectionBackground()->texture );
-      glColor4f( theme->getButtonSelectionBackground()->color.r,
-                 theme->getButtonSelectionBackground()->color.g,
-                 theme->getButtonSelectionBackground()->color.b,
-                 theme->getButtonSelectionBackground()->color.a );
+      if( isEnabled() ) {
+	      glColor4f( theme->getButtonSelectionBackground()->color.r,
+	                 theme->getButtonSelectionBackground()->color.g,
+	                 theme->getButtonSelectionBackground()->color.b,
+	                 theme->getButtonSelectionBackground()->color.a );
+			} else {
+	      glColor4f( theme->getButtonSelectionBackground()->color.r / 2,
+	                 theme->getButtonSelectionBackground()->color.g / 2,
+	                 theme->getButtonSelectionBackground()->color.b / 2,
+	                 theme->getButtonSelectionBackground()->color.a / 2.0f );			
+			}
       n = theme->getButtonSelectionBackground()->width;
     } else {
       applySelectionColor();
@@ -142,10 +150,17 @@ void Widget::drawButton( Widget *parent, int x, int y, int x2, int y2,
     glEnable( GL_TEXTURE_2D );
     tex = theme->getButtonBackground()->texture;
     glBindTexture( GL_TEXTURE_2D, theme->getButtonBackground()->texture );
-    glColor4f( theme->getButtonBackground()->color.r, 
-               theme->getButtonBackground()->color.g, 
-               theme->getButtonBackground()->color.b, 
-               theme->getButtonBackground()->color.a );
+    if( isEnabled() ) {
+	    glColor4f( theme->getButtonBackground()->color.r, 
+	               theme->getButtonBackground()->color.g, 
+	               theme->getButtonBackground()->color.b, 
+	               theme->getButtonBackground()->color.a );
+		} else {
+			    glColor4f( theme->getButtonBackground()->color.r / 2, 
+	               theme->getButtonBackground()->color.g / 2, 
+	               theme->getButtonBackground()->color.b / 2, 
+	               theme->getButtonBackground()->color.a / 2 );
+		}
     n = theme->getButtonBackground()->width;
   } else {
     applyBackgroundColor(true);
@@ -306,7 +321,7 @@ void Widget::drawButton( Widget *parent, int x, int y, int x2, int y2,
   }
 
 
-  if(inside) {
+  if( inside && isEnabled() ) {
     if( theme->getButtonHighlight() ) {
       glEnable( GL_TEXTURE_2D );
       glColor4f( theme->getButtonHighlight()->color.r, 
