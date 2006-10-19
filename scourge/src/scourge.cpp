@@ -654,6 +654,14 @@ void Scourge::startMission() {
       }// otherwise go back to HQ when coming from a mission
     }
   }
+
+	//cerr << "Saving party" << endl;
+	if(!session->isMultiPlayerGame()) {
+		if(!saveGame(session)) {
+			showMessageDialog( "Error saving game!" );
+		}
+	}
+
 #ifdef HAVE_SDL_NET
   session->stopClientServer();
 #endif

@@ -380,10 +380,14 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
 
   // inventory
   //creature->inventory_count = info->inventory_count;
+	cerr << "BEFORE: stateMod=" << creature->stateMod << " inventory_count=" << 
+		creature->inventory_count << " weight=" << creature->inventoryWeight << endl;
   for(int i = 0; i < (int)info->inventory_count; i++) {
     Item *item = Item::load( session, info->inventory[i] );
     if(item) creature->addInventory( item, true );
   }
+	cerr << "AFTER: stateMod=" << creature->stateMod << " inventory_count=" << 
+		creature->inventory_count << " weight=" << creature->inventoryWeight << endl;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(info->equipped[i] < MAX_INVENTORY_SIZE) { 
       creature->equipInventory(info->equipped[i]);
@@ -391,6 +395,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
       creature->equipped[i] = info->equipped[i];
     }
   }
+
   creature->portraitTextureIndex = info->portraitTextureIndex;
   if( creature->portraitTextureIndex >= session->getShapePalette()->getPortraitCount( creature->getSex() ) ) 
     creature->portraitTextureIndex = session->getShapePalette()->getPortraitCount( creature->getSex() ) - 1;
@@ -963,7 +968,7 @@ bool Creature::addInventory(Item *item, bool force) {
     inventory[inventory_count++] = item;
     inventoryWeight += item->getWeight(); 
 
-    if(item->getWeight() + inventoryWeight > getMaxInventoryWeight()) {
+    if(inventoryWeight > getMaxInventoryWeight()) {
       if( !isMonster() ) {
         char msg[80];
         sprintf(msg, "%s is overloaded.", getName());
