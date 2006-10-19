@@ -3040,7 +3040,7 @@ void Scourge::handleWanderingHeroClick( Creature *creature ) {
 		showMessageDialog( "You cannot hire more party members." );
 	} else {
 
-    pcEditor->setCreature( creature );
+    pcEditor->setCreature( creature, false );
     pcEditor->getWindow()->setVisible( true );
 
     /*

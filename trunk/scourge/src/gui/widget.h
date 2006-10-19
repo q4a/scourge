@@ -44,6 +44,7 @@ class Widget {
   bool tooltipShowing;
   GLuint displayList;
   bool invalid;
+  bool enabled;
 
  public: 
   Widget(int x, int y, int w, int h);
@@ -63,6 +64,9 @@ class Widget {
 
   virtual inline void setVisible(bool b) { visible = b; }
   virtual inline bool isVisible() { return visible; }
+  
+  virtual inline void setEnabled(bool b) { enabled = b; }
+  virtual inline bool isEnabled() { return enabled; }  
 
   virtual void drawWidget(Widget *parent) = 0;
 
@@ -87,7 +91,12 @@ class Widget {
   inline void applyColor() { glColor4f( color.r, color.g, color.b, color.a ); }
   inline void applyBorderColor() { glColor4f(borderColor.r, borderColor.g, borderColor.b, borderColor.a); }
   inline void applyHighlightedBorderColor() { glColor4f(borderColor2.r, borderColor2.g, borderColor2.b, borderColor2.a); }
-  inline void applyBackgroundColor(bool opaque=false) { glColor4f( background.r, background.g, background.b, (opaque ? 1.0f : 0.85f) ); }
+  inline void applyBackgroundColor(bool opaque=false) { 
+  	glColor4f( ( enabled ? background.r : background.r / 2 ), 
+  						 ( enabled ? background.g : background.g / 2 ),
+  						 ( enabled ? background.b : background.b / 2 ), 
+  						 ( opaque ? 1.0f : 0.85f ) ); 
+	}
   inline void applySelectionColor() { glColor4f( selColor.r, selColor.g, selColor.b, selColor.a ); }
   inline void applyFocusColor() { glColor4f( focusColor.r, focusColor.g, focusColor.b, focusColor.a ); }
 
