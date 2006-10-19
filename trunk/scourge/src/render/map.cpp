@@ -1752,7 +1752,7 @@ void Map::initMapView( bool ignoreRot ) {
     if( c ) {
       xdiff = ( c->getX() - (float)( toint( c->getX() ) ) );
       ydiff = ( c->getY() - (float)( toint( c->getY() ) ) );
-    }
+		}
   }
   float startx = -( (float)mapViewWidth / 2.0 + ( mapx - (float)x + xdiff ) ) / DIV;
   float starty = -( (float)mapViewDepth / 2.0 + ( mapy - (float)y + ydiff ) ) / DIV;
