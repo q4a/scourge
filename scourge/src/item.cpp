@@ -754,6 +754,10 @@ int Item::getMagicResistance() {
 }
 
 void Item::describeMagic(char *s, char *itemName) {
+
+	// not for scrolls :-(
+	if( rpgItem->getType() == RpgItem::SCROLL ) return;
+
   // e.g.: Lesser broadsword + 3 of nature magic
   char tmp[80];
 
