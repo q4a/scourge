@@ -432,7 +432,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
       strcpy(sv->m3ds_name, line + 1);
       n = Constants::readLine(line, fp);
       if( strstr( line, "," ) ) {
-      	sv->m3ds_x = strtod( strtok( line, "," ), NULL );
+      	sv->m3ds_x = strtod( strtok( line + 1, "," ), NULL );
       	sv->m3ds_y = strtod( strtok( NULL, "," ), NULL );      	
       	sv->m3ds_z = strtod( strtok( NULL, "," ), NULL );
 	      sv->m3ds_scale = 0;

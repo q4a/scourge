@@ -149,6 +149,8 @@ void C3DSShape::normalizeModel() {
 	  if(this->depth < 1) this->depth = 1;
 	  this->height = (int)(fh + 0.5f);
 	  if(this->height < 1) this->height = 1;
+
+		cerr << this->getName() << " size=" << fw << "," << fd << "," << fh << endl;
 	} else {
 		// calculate 'div' where dimensions are given
 	  this->width = toint( size_x );
@@ -161,9 +163,13 @@ void C3DSShape::normalizeModel() {
 		divx = size_x / ( maxx * DIV );
 		divy = size_y / ( maxy * DIV );
 		divz = size_z / ( maxz * DIV );
-	}
 
-  cerr << this->getName() << " width=" << width << " depth=" << depth << " height=" << height << endl;
+		/*
+		cerr << "div=(" << divx << "," << divy << "," << divz << ") " <<
+			"max=(" << maxx << "," << maxy << "," << maxz << ") " <<
+			"size=(" << size_x << "," << size_y << "," << size_z << ") " << endl;
+		*/
+	}  
 }
 
 void C3DSShape::resolveTextures() {
