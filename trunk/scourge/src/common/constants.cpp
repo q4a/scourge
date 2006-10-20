@@ -124,7 +124,7 @@ char *Constants::messages[][80] = {
   { "No skill points available." },
   { "Select a skill first." },
   { "S.C.O.U.R.G.E. dialog" },
-  { "Use gate to enter another level?" },
+  { "Use gate to descend a level?", "Use gate to ascend a level?" },
   { "A dead character cannot perform this action." },
   { "hp:" },
   { "ac:" },
