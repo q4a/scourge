@@ -380,14 +380,10 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
 
   // inventory
   //creature->inventory_count = info->inventory_count;
-	cerr << "BEFORE: stateMod=" << creature->stateMod << " inventory_count=" << 
-		creature->inventory_count << " weight=" << creature->inventoryWeight << endl;
   for(int i = 0; i < (int)info->inventory_count; i++) {
     Item *item = Item::load( session, info->inventory[i] );
     if(item) creature->addInventory( item, true );
   }
-	cerr << "AFTER: stateMod=" << creature->stateMod << " inventory_count=" << 
-		creature->inventory_count << " weight=" << creature->inventoryWeight << endl;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(info->equipped[i] < MAX_INVENTORY_SIZE) { 
       creature->equipInventory(info->equipped[i]);
@@ -550,12 +546,16 @@ bool Creature::isNpc() {
 }
 
 void Creature::moveAway( Creature *other ) {
+	bool tryHard = false;
 	// already moving away
 	if( getMotion() == Constants::MOTION_MOVE_AWAY ) {
 		if( cantMoveCounter > 5 ) {
 			cantMoveCounter = 0;
 			// pick a diff. path
+			tryHard = true;
+//			cerr << "*** DIFF PATH " << getName() << " when moving away from " << other->getName() << "." << endl;			
 		} else {
+//			cerr << "*** " << getName() << " is not moving away from " << other->getName() << "." << endl;
 			return;
 		}
 	}
@@ -581,7 +581,7 @@ void Creature::moveAway( Creature *other ) {
 											this, 
 											player,
 											AWAY_DISTANCE * 2,
-											false,
+											tryHard,
 											false ); // true );
 			if( !path.empty() && 
 					!Util::isOutOfTheWay( this, &path, 0, 
@@ -600,17 +600,29 @@ void Creature::moveAway( Creature *other ) {
 						intersectCount++;
 					}
 				}
+								
 				for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
 					Creature *c = session->getParty()->getParty( i );
-					if( c != this && 
-							Util::isOutOfTheWay( this, &path, 0, 
-																	 c, 
-																	 c->getPath(), 
-																	 c->getPathIndex() + 1 ) ) {
-						intersectCount++;
+					if( tryHard ) {
+						if( c != this && c != player && 
+							!Util::isOutOfTheWay( this, &path, 0, 
+																		 c, 
+																		 c->getPath(), 
+																		 c->getPathIndex() + 1 ) ) {
+							// c->moveAway( this );
+							c->moveAway( other );
+						}
+					} else {
+						if( c != this && 
+								Util::isOutOfTheWay( this, &path, 0, 
+																		 c, 
+																		 c->getPath(), 
+																		 c->getPathIndex() + 1 ) ) {
+							intersectCount++;
+						}
 					}
 				}
-
+				
 				// if this puts a pc out of range; that's bad
 				if( !this->isMonster() ) {
 					float dist = getDistance( session->getParty()->getPlayer() );
