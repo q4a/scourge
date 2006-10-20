@@ -582,6 +582,10 @@ bool Battle::moveCreature() {
 			creature->follow( session->getParty()->getPlayer() );
 			// actually take a step
 			creature->moveToLocator();
+			if( creature == session->getParty()->getPlayer() ) {
+				session->getMap()->center( toint( creature->getX() ), 
+																	 toint( creature->getY() ) );
+			}
 		}
   }
   return false;

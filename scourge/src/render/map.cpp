@@ -1746,7 +1746,6 @@ void Map::initMapView( bool ignoreRot ) {
   // adjust for centered-map movement
   float xdiff = 0;
   float ydiff = 0;
-  
   if( settings->isPlayerEnabled() && ( preferences->getAlwaysCenterMap() || mapCenterCreature ) ) {
     RenderedCreature *c = ( mapCenterCreature ? mapCenterCreature : adapter->getPlayer() );
     if( c ) {
