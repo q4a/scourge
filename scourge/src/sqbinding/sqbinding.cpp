@@ -451,7 +451,6 @@ bool SqBinding::callMapPosMethod( const char *name, int x, int y, int z ) {
     SQBool sqres;
     sq_getbool( vm, -1, &sqres );
     ret = (bool)sqres;
-		cerr << "ret=" << ret << endl;
   } else {
     cerr << "Can't find function " << name << endl;
     ret = false;

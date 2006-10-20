@@ -633,7 +633,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
 															yp + chunkOffsetY) / DIV;
 							
 							setupPosition( posX, posY, 0,
-														 xpos2, ypos2, zpos2,
+														 xpos2, ypos2, 0,
 														 shape, 
 														 itemPos[posX][posY]->item, 
 														 NULL, NULL, true );
@@ -2004,7 +2004,7 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	p->y = y;
 	p->z = z;
 	p->outlineColor = NULL;
-	
+
 	for(int xp = 0; xp < shape->getWidth(); xp++) {
 		for(int yp = 0; yp < shape->getDepth(); yp++) {
 			for(int zp = 0; zp < shape->getHeight(); zp++) {
