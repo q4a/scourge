@@ -3026,7 +3026,9 @@ void Scourge::mouseClickWhileExiting() {
     party->toggleRound(true);
     exitConfirmationDialog->setVisible(true);
   } else if( changingStory && !exitConfirmationDialog->isVisible() ) {
-    exitLabel->setText(Constants::getMessage(Constants::USE_GATE_LABEL));
+		exitLabel->setText( oldStory < currentStory ? 
+												Constants::messages[Constants::USE_GATE_LABEL][0] :
+												Constants::messages[Constants::USE_GATE_LABEL][1] );
     party->toggleRound(true);
     exitConfirmationDialog->setVisible(true);
   }
