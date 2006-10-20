@@ -189,9 +189,7 @@ void Party::setPlayer(int n, bool updateui) {
   if( updateui ) {
     //  move = 0;
     session->getMap()->refresh();
-    session->getMap()->center(toint(getPlayer()->getX()), toint(getPlayer()->getY()));
-    
-    session->getMap()->center(toint(player->getX()), toint(player->getY()), true);
+		session->getMap()->center(toint(player->getX()), toint(player->getY()), true);
     if(!session->getGameAdapter()->isHeadless()) {
       session->getGameAdapter()->refreshInventoryUI(n);  
       session->getGameAdapter()->setPlayerUI(n);

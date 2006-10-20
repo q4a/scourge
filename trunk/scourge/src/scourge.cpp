@@ -1909,7 +1909,7 @@ int Scourge::initMultiplayer() {
                          atoi(multiplayer->getServerPort()),
                          multiplayer->getUserName());
   }
-  Progress *progress = new Progress(this->getSDLHandler(), 10, getSession()->getShapePalette()->getProgressTexture(), getSession()->getShapePalette()->getProgressHighlightTexture() );
+  Progress *progress = new Progress(this->getSDLHandler(), 12, getSession()->getShapePalette()->getProgressTexture(), getSession()->getShapePalette()->getProgressHighlightTexture() );
   progress->updateStatus("Connecting to server");
   if(!session->getClient()->login()) {
     cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
@@ -2388,7 +2388,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 
 void Scourge::resetPartyUI() {
   Event *e;
-  Date d(0, 0, 4, 0, 0, 0); // 2 hours (format : sec, min, hours, days, months, years)
+  Date d(0, 0, 10, 0, 0, 0); // 2 hours (format : sec, min, hours, days, months, years)
   for(int i = 0; i < party->getPartySize() ; i++){
     e = new ThirstHungerEvent(party->getCalendar()->getCurrentDate(), d, party->getParty(i), this, Event::INFINITE_EXECUTIONS);
     party->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
@@ -2556,7 +2556,8 @@ void Scourge::initEnd() {
   progress = new Progress(this->getSDLHandler(),
                           getSession()->getShapePalette()->getProgressTexture(),
                           getSession()->getShapePalette()->getProgressHighlightTexture(),
-                          20, false, true);
+                          12, false, true);
+	progress->setStatus( 12 );
 }
 
 #define BOARD_GUI_WIDTH 600
