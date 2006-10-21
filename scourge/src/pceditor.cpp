@@ -81,7 +81,7 @@ void PcEditor::setCreature( Creature *c, bool isEditable ) {
     deleteCreature = true;
   }
 
-  availableSkillMod = AVAILABLE_SKILL_POINTS;
+  rollSkills();
 
 	detailsInfo->setCreature( win, creature );
 
@@ -273,6 +273,7 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 	if( widget == cancelButton ) {
 		win->setVisible( false );
 	} else if( widget == okButton ) {
+		if( creature ) creature->applySkillMods();
 		win->setVisible( false );
 	} else if( widget == nameButton ) {
 		cards->setActiveCard( NAME_TAB );
