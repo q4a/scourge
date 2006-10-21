@@ -42,25 +42,13 @@
 # S:name,description
 
 # Character portraits
-O:/portraits/m1.bmp,M
-O:/portraits/m2.bmp,M
-O:/portraits/m3.bmp,M
-O:/portraits/m4.bmp,M
-O:/portraits/m5.bmp,M
 O:/portraits/m6.bmp,M
 O:/portraits/m7.bmp,M
 O:/portraits/m8.bmp,M
 O:/portraits/m9.bmp,M
 O:/portraits/m10.bmp,M
-O:/portraits/w1.bmp,F
-O:/portraits/w2.bmp,F
-O:/portraits/w3.bmp,F
-O:/portraits/w4.bmp,F
-O:/portraits/w5.bmp,F
 O:/portraits/w6.bmp,F
-O:/portraits/w11.bmp,F
 O:/portraits/w12.bmp,F
-O:/portraits/w13.bmp,F
 O:/portraits/w14.bmp,F
 O:/portraits/w15.bmp,F
 
