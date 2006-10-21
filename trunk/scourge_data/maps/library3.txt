@@ -151,7 +151,7 @@ N:296,220,Sabien Gartu,15,sage
 #   N:x,y,name,level,type[,subtype]
 #
 # examples:
-# N:168,176,Anaril the Weapons Merchant,1,merchant,SWORD;AXE;BOW;MACE
+# N:168,176,Anaril the Weapons Merchant,1,merchant,SWORD;AXE;BOW;MACE;POLE
 # N:209,202,Uzudil the Hand,4,sage
 # N:167,257,Melathor of Allovium,1,trainer,NATURE_MAGIC;CONFRONTATION_MAGIC
 # N:201,212,Illadil the Healer,2,healer,Divine Awareness

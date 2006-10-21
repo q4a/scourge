@@ -226,9 +226,29 @@ D:please behave! Remember, you're representing the best (and only) dungeon janit
 D:town.
 Y:I must really sit down for this... So, you traveled through an ancient planar device to...
 Y:to... the Abyss?! And met a demon lord named $Karzul who promised to enter our world and
-Y:use his infernal powers to destroy it? I need time to think about this... I will post something
-Y:on the board soon... Meanwhile, talk to Melathor about $Karzul as well.
+Y:use his infernal powers to destroy it? If what you say is true, we must track down $Mothrazu
+Y:immediately. She must not be allowed to active the demon's gift. I'll have to research where
+Y:her lair may be. When I know more, I will post it on the board.
 N:Have you been able to unlock the door in Sabien's library and learn what lies beyond? 
 N:Remember to bring back anything important that is connected to the $Guardians of the Realm or
 N:the creature called $Mothrazu.
 S:Investigate the warded door in Sabien's library
+
+T:Chapter 9: A Thorny Argument for Divine Favor
+S:17,5,temple
+D:Our agents returned from abroad with exciting news! The lair of the rogue druid 
+D:Mothrazu has been found in an abandoned complex on the Isle of Emeril. Unfortunately
+D:we can't use our staple tactic of full frontal assault... it seems she's employed
+D:some clever wardings to thwart such a strategy. Therefore I regret to tell you that
+D:this time around we'll have to resort to using our heads. Before we can crush this
+D:druidic menace, you must go forth and secure some items of antimagic binding. Without
+D:such aid, we can't hope to infiltrate Mothrazu's domain. Of course nothing is ever
+D:simple. In order to find the items you seek, you must pay a visit to Hornaxx, one of
+D:the minor deities under Unamoin. Now, she owes us a debt for saving some of her acolytes
+D:a while back, but it will be up to you to convince this goddess of Arguments 
+D:to give you what you seek.
+Y:todo
+N:Have you visited Hornaxx the goddess of Arguments yet? Be sure to remind her of the 
+N:debt she owes us, and hope that in her divine wisdom, she rewards you with items of
+N:antimagic binding. With such aid, we can finally try to defeat Mothrazu.
+S:Ask Hornaxx goddess of Arguments to equip each pc with an antimagic binding item.
