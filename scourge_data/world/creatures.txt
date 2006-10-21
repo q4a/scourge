@@ -3,7 +3,7 @@
 # Key: (the old-way)
 # M:monster
 #   name[,(descriptive type for monsters | portrait for npcs)]
-#   ((md2 model dir, skin)|(md3 model dir,skin suffix)), level,hp,mp,natural armor,rareness,speed[,scale(overrides shapes.txt's scale),npc[,startX,startY]]
+#   ((md2 model dir, skin)|(md3 model dir,skin suffix)), level,hp,mp,natural armor,rareness,speed[,scale(overrides shapes.txt's scale),npc[,statemod]]
 # I:inventory (1 line per item ref. by name from items.txt)
 # S:spell
 # P:skill_name,percentage (skill level; used mainly for magic resistance)
@@ -220,7 +220,18 @@ M:/models/yvonne,Yvonne.bmp,3,6,12,5,10,8,2.0,npc
 
 
 
-
+M:Acolyte of Hornaxx
+M:/models/md3/yuri,default,17,10,10,10,6,3,1.5,npc
+I:Greataxe
+I:Full face helmet
+I:Steel Shield
+I:Heavy field plate
+P:RESIST_NATURE_MAGIC,10
+P:RESIST_AWARENESS_MAGIC,15
+P:RESIST_LIFE_AND_DEATH_MAGIC,15
+P:RESIST_HISTORY_MAGIC,15
+P:RESIST_DECEIT_MAGIC,15
+P:RESIST_CONFRONTATION_MAGIC,10
 
 
 #############################
@@ -229,7 +240,7 @@ M:/models/yvonne,Yvonne.bmp,3,6,12,5,10,8,2.0,npc
 
 # If you change Uzudil's name, grep for it in scourge.cpp.
 M:Uzudil the Hand,/portraits/uzudil.bmp
-M:/models/npc/jd,devred.bmp,6,12,10,15,10,8,2.6,npc,128,118
+M:/models/npc/jd,devred.bmp,6,12,10,15,10,8,2.6,npc
 I:Bastard sword
 I:Ornatebow
 I:Helmet with visor
@@ -239,7 +250,7 @@ P:RESIST_HISTORY_MAGIC,40
 
 
 M:Melathor of Allovium,/portraits/melathor.bmp
-M:/models/md3/gaben,default,6,8,10,15,10,8,1.6,npc,94,190
+M:/models/md3/gaben,default,6,8,10,15,10,8,1.6,npc
 I:Bastard sword
 I:Ornatebow
 I:Helmet with visor
@@ -248,7 +259,7 @@ P:RESIST_NATURE_MAGIC,30
 P:RESIST_HISTORY_MAGIC,40
 
 M:Orhithales Grimwise,/portraits/orhithales.bmp
-M:/models/npc/jd,Angel.bmp,6,12,8,15,10,8,2.2,npc,128,118
+M:/models/npc/jd,Angel.bmp,6,12,8,15,10,8,2.2,npc
 I:Bastard sword
 I:Ornatebow
 I:Helmet with visor
@@ -302,6 +313,19 @@ P:RESIST_AWARENESS_MAGIC,70
 P:RESIST_LIFE_AND_DEATH_MAGIC,70
 P:RESIST_HISTORY_MAGIC,70
 P:RESIST_DECEIT_MAGIC,70
+P:RESIST_CONFRONTATION_MAGIC,70
+
+M:Hornaxx the goddess of Arguments
+M:/models/md3/yuri,lilith,50,12,12,10,6,3,3.0,npc,2079
+I:Greataxe
+I:Full face helmet
+I:Steel Shield
+I:Heavy field plate
+P:RESIST_NATURE_MAGIC,70
+P:RESIST_AWARENESS_MAGIC,75
+P:RESIST_LIFE_AND_DEATH_MAGIC,75
+P:RESIST_HISTORY_MAGIC,75
+P:RESIST_DECEIT_MAGIC,75
 P:RESIST_CONFRONTATION_MAGIC,70
 
 M:Quegazu the Reformed
@@ -1211,32 +1235,6 @@ P:RESIST_LIFE_AND_DEATH_MAGIC,45
 P:RESIST_HISTORY_MAGIC,45
 P:RESIST_DECEIT_MAGIC,45
 P:RESIST_CONFRONTATION_MAGIC,40
-
-M:Priestess of Aalanor
-M:/models/md3/yuri,default,16,13,0,10,6,3,2.0
-I:Greataxe
-I:Full face helmet
-I:Steel Shield
-I:Heavy field plate
-P:RESIST_NATURE_MAGIC,10
-P:RESIST_AWARENESS_MAGIC,15
-P:RESIST_LIFE_AND_DEATH_MAGIC,15
-P:RESIST_HISTORY_MAGIC,15
-P:RESIST_DECEIT_MAGIC,15
-P:RESIST_CONFRONTATION_MAGIC,10
-
-M:Metaformed Priestess of Aalanor
-M:/models/md3/yuri,lilith,16,13,0,10,6,3,3.0
-I:Greataxe
-I:Full face helmet
-I:Steel Shield
-I:Heavy field plate
-P:RESIST_NATURE_MAGIC,10
-P:RESIST_AWARENESS_MAGIC,15
-P:RESIST_LIFE_AND_DEATH_MAGIC,15
-P:RESIST_HISTORY_MAGIC,15
-P:RESIST_DECEIT_MAGIC,15
-P:RESIST_CONFRONTATION_MAGIC,10
 
 #############################
 # Level 17

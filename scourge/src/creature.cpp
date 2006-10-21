@@ -1667,6 +1667,8 @@ void Creature::monsterInit() {
 		
     setSkill( i, n );
 		//cerr << "\t" << Skill::skills[ i ]->getName() << "=" << getSkill( i ) << endl;
+
+		stateMod = monster->getStartingStateMod();
   }
 
   // equip starting inventory

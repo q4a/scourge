@@ -50,6 +50,7 @@ Monster::Monster(char *type, char* descriptiveType, int level, int hp, int mp, c
   this->npc = npc;
   this->portrait = portrait;
   this->portraitTexture = 0;
+	this->statemod = 0;
 
   // approximate the base attack bonus: magic users get less than warriors
   baseAttackBonus = ( !mp ? 1.0f : 0.75f );
@@ -131,19 +132,14 @@ void Monster::initMonsters() {
       }
       bool npc = false;
       bool special = false;
-      int npcStartX = -1;
-      int npcStartY = -1;
+      GLuint statemod = 0;
       p = strtok(NULL, ",");
       if(p) {
         npc = ( strstr( p, "npc" ) ? true : false );
         special = ( strstr( p, "special" ) ? true : false );
         p = strtok( NULL, "," );
         if(p) {
-          npcStartX = atoi(p);
-          p = strtok( NULL, "," );
-          if(p) {
-            npcStartY = atoi(p);
-          }
+          statemod = atoi(p);
         }
       }
 
@@ -174,14 +170,17 @@ void Monster::initMonsters() {
       }
       last_monster = m;
       if( npc ) {
+				/*
         if( npcStartX > -1 && npcStartY > -1 ) {
           char tmp[80];
           sprintf( tmp, "%d,%d", npcStartX, npcStartY );
           string pos = tmp;
           npcPos[ pos ] = m;
         } else {
+				*/
           npcs.push_back( m );
-        }
+					m->setStartingStateMod( statemod );
+        //}
       } else if( special ) {
         // don't add to random monsters list
         // these are placed monsters like Mycotharsius.

@@ -414,6 +414,7 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
     }
   } else {
 
+		/*
     // add positioned npcs
     for( map<string, Monster*>::iterator i=Monster::npcPos.begin(); 
          i != Monster::npcPos.end(); ++i ) {
@@ -434,6 +435,7 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
       addItem( levelMap, creature, NULL, NULL, startX, startY );
       creature->moveTo( startX, startY, 0 );
     }
+		*/
 
     // add npc-s
     for(int i = 0; i < roomCount; i++) {

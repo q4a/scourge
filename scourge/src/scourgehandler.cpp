@@ -126,11 +126,11 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
       scourge->getParty()->getPlayer()->takeDamage( 1000 );
       return false;
     } else if(event->key.keysym.sym == SDLK_l) {
-      //cerr << "Lightmap is now=" << getMap()->toggleLightMap() << endl;
-
-      scourge->getParty()->getPlayer()->addExperience( 1000 );
-      //session->creatureDeath( scourge->getParty()->getPlayer() );
-
+			if( scourge->getParty()->getPlayer()->getLevel() < MAX_LEVEL ) {
+				scourge->getParty()->getPlayer()->setLevel( scourge->getParty()->getPlayer()->getLevel() + 1 );
+				scourge->updatePartyUI();
+				scourge->refreshInventoryUI();
+			}
       return false;
     } else if(event->key.keysym.sym == SDLK_d) {
       // add a day
