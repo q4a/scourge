@@ -51,6 +51,7 @@ O:/portraits/w6.bmp,F
 O:/portraits/w12.bmp,F
 O:/portraits/w14.bmp,F
 O:/portraits/w15.bmp,F
+O:/portraits/w1.bmp,F
 
 O:/portraits/death.bmp
 
