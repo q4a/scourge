@@ -315,6 +315,7 @@ P:RESIST_HISTORY_MAGIC,70
 P:RESIST_DECEIT_MAGIC,70
 P:RESIST_CONFRONTATION_MAGIC,70
 
+# statemod: 2079: 0,1,2,3,4 and 11 (blessed, empowered, enraged, ac_protected, magic_protected and invisible)
 M:Hornaxx the goddess of Arguments
 M:/models/md3/yuri,lilith,50,12,12,10,6,3,3.0,npc,2079
 I:Greataxe

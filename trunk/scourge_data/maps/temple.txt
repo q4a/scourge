@@ -6,3 +6,39 @@ G:_UNKNOWN_;Uh, I don't know anything about that...
 
 N:213,508,Acolyte of Hornaxx,1,commoner
 N:245,507,Acolyte of Hornaxx,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:231,492,Acolyte of Hornaxx,1,commoner
+N:254,313,Hornaxx the goddess of Arguments,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:231,492,Acolyte of Hornaxx,1,commoner
+N:254,313,Hornaxx the goddess of Arguments,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:231,492,Acolyte of Hornaxx,1,commoner
+N:254,313,Hornaxx the goddess of Arguments,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:231,492,Acolyte of Hornaxx,1,commoner
+N:254,313,Hornaxx the goddess of Arguments,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:231,492,Acolyte of Hornaxx,1,commoner
+N:254,313,Hornaxx the goddess of Arguments,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:231,492,Acolyte of Hornaxx,1,commoner
+N:254,313,Hornaxx the goddess of Arguments,1,commoner
