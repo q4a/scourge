@@ -97,12 +97,12 @@ void PcEditor::setCreature( Creature *c, bool isEditable ) {
 	// disable/enable some controls
 	prevModel->setEnabled( isEditable );
   nextModel->setEnabled( isEditable );
-  prevPortrait->setEnabled( isEditable );
-  nextPortrait->setEnabled( isEditable );
+  //prevPortrait->setEnabled( isEditable );
+  //nextPortrait->setEnabled( isEditable );
 	male->setEnabled( isEditable );
 	female->setEnabled( isEditable );
-	charType->setEnabled( isEditable );
-	deityType->setEnabled( isEditable );
+	//charType->setEnabled( isEditable );
+	//deityType->setEnabled( isEditable );
 }
 
 void PcEditor::deleteLoadedShapes() {
