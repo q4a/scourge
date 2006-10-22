@@ -327,7 +327,7 @@ D:A burning brazier
 D:A brazier radiates heat nearby
 
 D:2
-D:You see a shining marble column
+D:You see a shiny marble column
 D:The column supports the ceiling
 
 D:3
@@ -353,6 +353,12 @@ D:3
 D:This teleporter smells faintly of sulphur.
 D:It is the fabled red teleporter!
 D:Where does this teleporter lead?
+
+D:1
+D:A sturdy wooden column
+
+D:1
+D:A rack for our less fortunate guests.
 
 # unitside=16
 # unitoffset=2
@@ -639,7 +645,7 @@ N:ffffffff
 N:14
 N:1,1,1
 N:RACK
-N:6
+N:13
 N:ffffffff
 3:/objects/rack.3ds
 3:2,7,9
@@ -648,7 +654,7 @@ N:ffffffff
 N:14
 N:1,1,1
 N:RACK2
-N:6
+N:13
 N:ffffffff
 3:/objects/rack2.3ds
 3:7,2,9
@@ -657,7 +663,7 @@ N:ffffffff
 N:14
 N:1,1,1
 N:WOOD_COLUMN
-N:6
+N:12
 N:ffffffff
 3:/objects/wood_col.3ds
 3:2.50725,2.50725,11.9932
