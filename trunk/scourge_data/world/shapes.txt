@@ -609,7 +609,7 @@ N:ffffffff
 3:11.3155,3.20046,10.7748
 I:1
 
-# Constants::BRAZIER_INDEX]
+# Constants::BRAZIER_INDEX
 N:14
 N:3,3,3
 N:BRAZIER
@@ -634,6 +634,24 @@ N:6
 N:ffffffff
 3:/objects/column.3ds
 3:3.21317,3.22189,9.80901
+
+# rack.3ds
+N:14
+N:1,1,1
+N:RACK
+N:6
+N:ffffffff
+3:/objects/rack.3ds
+3:2,7,9
+
+# rack2.3ds
+N:14
+N:1,1,1
+N:RACK2
+N:6
+N:ffffffff
+3:/objects/rack2.3ds
+3:7,2,9
 
 # wood_col.3ds
 N:14
