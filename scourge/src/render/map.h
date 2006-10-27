@@ -140,6 +140,12 @@ class MapMemoryManager {
 };  
 
 
+typedef struct _Rug {
+	GLuint texture;
+	bool isHorizontal;
+	float angle;
+} Rug;
+
 // how many water points per 1 floor tile
 #define WATER_TILE_X 8
 #define WATER_TILE_Y 8
@@ -166,6 +172,7 @@ class Map {
   EffectLocation *effect[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
   Location *posCache[MAX_POS_CACHE];
   signed int nbPosCache;
+	Rug rugPos[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
   Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
   typedef struct _WaterTile {
     float z[WATER_TILE_X][WATER_TILE_Y];
@@ -401,6 +408,10 @@ class Map {
   
   void setFloorPosition(Sint16 x, Sint16 y, Shape *shape);
   Shape *removeFloorPosition(Sint16 x, Sint16 y);
+
+  void setRugPosition( Sint16 x, Sint16 y, Rug *rug );
+  void removeRugPosition( Sint16 x, Sint16 y );
+	inline bool hasRugAtPosition( Sint16 x, Sint16 y ) { return rugPos[x][y].texture != 0; }
   
   /**
    * Can shape at shapeX, shapeY, shapeZ move to location x, y, z?
@@ -616,6 +627,7 @@ class Map {
                      float xpos2, float ypos2, float zpos2,
                      Shape *shape, RenderedItem *item, RenderedCreature *creature, 
                      EffectLocation *effect, bool itemPos=false);
+	void drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk );
   void drawGroundPosition(int posX, int posY,
 						  float xpos2, float ypos2,
 						  Shape *shape);

@@ -132,9 +132,10 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
 				scourge->refreshInventoryUI();
 			}
       return false;
-    } else if(event->key.keysym.sym == SDLK_d) {
+    } else if(event->key.keysym.sym == SDLK_e) {
       // add a day
-      scourge->getSession()->getParty()->getCalendar()->addADay();
+      //scourge->getSession()->getParty()->getCalendar()->addADay();
+			scourge->getSession()->getMap()->toggleLightMap();
     } else if(event->key.keysym.sym == SDLK_f) {
       scourge->getMap()->useFrustum = ( scourge->getMap()->useFrustum ? false : true );
       scourge->getMap()->refresh();

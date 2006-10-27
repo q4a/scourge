@@ -214,11 +214,17 @@ protected:
 
   GLuint areaTex;
 
+	std::vector<GLuint> rugs;
+
 public: 
   Shapes( bool headless );
   virtual ~Shapes();
 
 	inline bool isHeadless() { return headless; }
+
+	inline int getRugCount() { return rugs.size(); }
+	inline GLuint getRug( int index ) { return rugs[ index ]; }
+	inline GLuint getRandomRug() { return rugs[ (int)( (float)(rugs.size()) * rand() / RAND_MAX ) ]; }
 
   inline SDL_Surface *getStencilSurface( int index ) { return stencil[ index ]; }
   inline GLubyte *getStencilImage( int index ) { return stencilImage[ index ]; }

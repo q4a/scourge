@@ -34,7 +34,7 @@
 
 using namespace std;
 
-#//define DEBUG_MOUSE_POS 1
+//#define DEBUG_MOUSE_POS 1
 
 #define USE_LIGHTING 1
 
@@ -145,17 +145,23 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
   this->debugGridFlag = false;
   this->drawGridFlag = false;
+
+	for( int x = 0; x < MAP_WIDTH / MAP_UNIT; x++ ) {
+		for( int y = 0; y < MAP_DEPTH / MAP_UNIT; y++ ) {
+			rugPos[x][y].texture = 0;
+		}
+	}
   
   // initialize shape graph of "in view shapes"
-  for(int x = 0; x < MAP_WIDTH; x++) {
-	for(int y = 0; y < MAP_DEPTH; y++) {
-      floorPositions[x][y] = NULL;
-	  for(int z = 0; z < MAP_VIEW_HEIGHT; z++) {
-        pos[x][y][z] = NULL;
+	for(int x = 0; x < MAP_WIDTH; x++) {
+		for(int y = 0; y < MAP_DEPTH; y++) {
+			floorPositions[x][y] = NULL;			
+			for(int z = 0; z < MAP_VIEW_HEIGHT; z++) {
+				pos[x][y][z] = NULL;
 				itemPos[x][y] = NULL;
-        effect[x][y][z] = NULL;
-      }      
-    }
+				effect[x][y][z] = NULL;
+			}      
+		}
   }
   // Init the pos cache
   for(int x = 0; x < MAX_POS_CACHE; x++) {
@@ -274,16 +280,22 @@ void Map::reset() {
   this->drawGridFlag = false;
   
   //cerr << "reset 6" << endl;  
+
+	for( int x = 0; x < MAP_WIDTH / MAP_UNIT; x++ ) {
+		for( int y = 0; y < MAP_DEPTH / MAP_UNIT; y++ ) {
+			rugPos[x][y].texture = 0;
+		}
+	}
   
   // initialize shape graph of "in view shapes"
-  for(int x = 0; x < MAP_WIDTH; x++) {
-	for(int y = 0; y < MAP_DEPTH; y++) {
-      floorPositions[x][y] = NULL;
-	  for(int z = 0; z < MAP_VIEW_HEIGHT; z++) {
-        pos[x][y][z] = NULL;
+	for(int x = 0; x < MAP_WIDTH; x++) {
+		for(int y = 0; y < MAP_DEPTH; y++) {
+			floorPositions[x][y] = NULL;
+			for(int z = 0; z < MAP_VIEW_HEIGHT; z++) {
+				pos[x][y][z] = NULL;
         effect[x][y][z] = NULL;
 				itemPos[x][y] = NULL;
-      }      
+			}      
     }
   }
   // Init the pos cache
@@ -564,9 +576,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
       chunks[chunkCount].cx = chunkX;
       chunks[chunkCount].cy = chunkY;
       chunkCount++;
-      
-            
-      
+
       // FIXME: this works except it draws other doors on the same
       // chunk that should be hidden. To really fix it, we need to
       // keep track of which side of the chunk to draw.
@@ -586,6 +596,12 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
           if(!drawSide) continue;
         }
       }
+
+			if( ( ground || water ) && rugPos[ chunkX ][ chunkY ].texture > 0 ) {
+				xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) / DIV;
+				ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
+				drawRug( &rugPos[ chunkX ][ chunkY ], xpos2, ypos2, chunkX, chunkY );
+			}
       
       for(int yp = 0; yp < MAP_UNIT; yp++) {
         for(int xp = 0; xp < MAP_UNIT; xp++) {
@@ -608,13 +624,13 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                               yp + chunkOffsetY) / DIV;
 
               if( water ) {
-                drawWaterPosition(posX, posY,
-                                  xpos2, ypos2,
-                                  shape);      
+								drawWaterPosition(posX, posY,
+																	xpos2, ypos2,
+																	shape);      
               } else {
                 drawGroundPosition(posX, posY,
-                                   xpos2, ypos2,
-                                   shape);      
+																	 xpos2, ypos2,
+																	 shape);      
               }
             }
           } else {
@@ -725,6 +741,56 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
       }
     }
   }
+}
+
+void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) {
+	glPushMatrix();
+	glTranslatef( xpos2, ypos2, 0.255f / DIV );
+	glRotatef( rug->angle, 0, 0, 1 );
+	float f = MAP_UNIT / DIV;
+	float offset = 2.5 / DIV;
+
+	float sx, sy, ex, ey;
+	// starting section
+	if( rug->isHorizontal ) {
+		sx = offset;
+		sy = offset * 2;
+		ex = f - offset;
+		ey = f - offset * 2;
+	} else {
+		sy = offset;
+		sx = offset * 2;
+		ey = f - offset;
+		ex = f - offset * 2;
+	}
+
+	glDisable( GL_CULL_FACE );
+	glEnable( GL_TEXTURE_2D );
+	glColor4f(1, 1, 1, 0.9f);
+	glBindTexture( GL_TEXTURE_2D, rug->texture );
+	glBegin( GL_QUADS );
+	if( rug->isHorizontal ) {
+		glTexCoord2f( 1, 0 );
+		glVertex2f( sx, sy );
+		glTexCoord2f( 1, 1 );
+		glVertex2f( ex, sy );
+		glTexCoord2f( 0, 1 );
+		glVertex2f( ex, ey );
+		glTexCoord2f( 0, 0 );
+		glVertex2f( sx, ey );
+	} else {
+		glTexCoord2f( 0, 0 );
+		glVertex2f( sx, sy );
+		glTexCoord2f( 1, 0 );
+		glVertex2f( ex, sy );
+		glTexCoord2f( 1, 1 );
+		glVertex2f( ex, ey );
+		glTexCoord2f( 0, 1 );
+		glVertex2f( sx, ey );
+	}
+	glEnd();
+	glDisable( GL_TEXTURE_2D );
+  glPopMatrix();
 }
 
 void Map::drawGroundPosition(int posX, int posY,
@@ -1793,6 +1859,10 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
   return NULL;
 }
 
+void Map::setRugPosition( Sint16 xchunk, Sint16 ychunk, Rug *rug ) {
+	memcpy( &(rugPos[ xchunk ][ ychunk ]), rug, sizeof( Rug ) );
+}
+
 void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
   floorPositions[x][y] = shape;
   WaterTile *w = (WaterTile*)malloc(sizeof(WaterTile));
@@ -1804,6 +1874,10 @@ void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
     }
   }
   water[createPairKey(x, y)] = w;
+}
+
+void Map::removeRugPosition( Sint16 xchunk, Sint16 ychunk ) {
+	rugPos[ xchunk ][ ychunk ].texture = 0;
 }
 
 Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {

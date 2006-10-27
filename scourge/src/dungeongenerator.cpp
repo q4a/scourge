@@ -598,6 +598,7 @@ bool DungeonGenerator::drawNodes(Map *map, ShapePalette *shapePal) {
   
   updateStatus("Fixing rooms");
   removeColumns(map, shapePal);
+	addRugs( map, shapePal );
 
   return true;
 }
