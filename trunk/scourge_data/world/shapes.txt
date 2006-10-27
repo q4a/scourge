@@ -1,5 +1,6 @@
 # Textures and shapes
 # keys:
+# U:rug texture
 # A:About screen text
 # T:texture file name
 # G:texture group (used for 'native' shapes): front,top,left-right
@@ -40,6 +41,11 @@
 #
 # Skill descriptions: (order is important: see constants.h)
 # S:name,description
+
+U:/textures/rugs/r1.bmp
+U:/textures/rugs/r2.bmp
+U:/textures/rugs/r3.bmp
+U:/textures/rugs/r4.bmp
 
 # Character portraits
 O:/portraits/m6.bmp,M

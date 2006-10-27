@@ -147,6 +147,7 @@ protected:
   virtual void createFreeSpaceMap(Map *map, ShapePalette *shapePal);
   virtual void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal);
   virtual void calculateRoomValues(Map *map, ShapePalette *shapePal);
+	virtual void addRugs( Map *map, ShapePalette *shapePal );
 
   // ===========================================
   // Utilities

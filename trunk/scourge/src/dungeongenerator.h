@@ -107,7 +107,7 @@ protected:
 
   // used by toMap
   void drawBasics(Map *map, ShapePalette *shapePal);
-  void removeColumns(Map *map, ShapePalette *shapePal);
+  void removeColumns(Map *map, ShapePalette *shapePal);	
 
   void initByLevel();
   void generateMaze();

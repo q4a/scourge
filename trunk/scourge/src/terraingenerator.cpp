@@ -866,3 +866,38 @@ int TerrainGenerator::getRoomIndex(int x, int y) {
   return -1;
 }
 
+void TerrainGenerator::addRugs( Map *map, ShapePalette *shapePal ) {
+	for(int roomIndex = 0; roomIndex < roomCount; roomIndex++) {
+    int startx = room[roomIndex].x;
+    //int endx = room[roomIndex].x + room[roomIndex].w - 1;
+    int starty = room[roomIndex].y;
+    //int endy = room[roomIndex].y + room[roomIndex].h - 1;
+
+		int n = (int)( 5.0f * rand() / RAND_MAX );
+		for( int i = 0; i < n; i++ ) {
+			// pick a random location in the room
+			int px = (int)( (float)( room[roomIndex].w ) * rand() / RAND_MAX ) + startx;
+			int py = (int)( (float)( room[roomIndex].h ) * rand() / RAND_MAX ) + starty;
+			if( !map->hasRugAtPosition( px, py ) ) {
+			
+				// pick an orientation
+				bool isHorizontal = ( (int)( 10.0f * rand() / RAND_MAX ) % 2 == 0 ? true : false );
+	
+				// save it
+				Rug rug;
+				rug.isHorizontal = isHorizontal;
+				rug.texture = shapePal->getRandomRug();
+				rug.angle = ( 30.0f * rand() / RAND_MAX ) - 15.0f;
+	
+				/*
+				cerr << "*** Adding rug (tex: " << rug.texture << ") at " << px << "," << py << 
+					" room: " << room[roomIndex].x << "," << room[roomIndex].y << 
+					"-" << ( room[roomIndex].w + room[roomIndex].x ) << "," <<
+					( room[roomIndex].h + room[roomIndex].y ) << endl;
+				*/					
+				map->setRugPosition( px, py, &rug );
+			}
+		}
+	}
+}
+

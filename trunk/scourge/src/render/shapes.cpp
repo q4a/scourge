@@ -356,6 +356,17 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     // texture declaration
     loadSystemTexture( line );
     return n;
+	} else if( n == 'U' ) {
+		// skip ':'
+    fgetc(fp);
+    n = Constants::readLine(line, fp);
+		SDL_Surface *tmpSurface = NULL;
+		GLubyte *tmpImage = NULL;
+		setupAlphaBlendedBMP( line, &tmpSurface, &tmpImage );
+		rugs.push_back( loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR ) );
+		if( tmpImage ) free( tmpImage );
+		if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+		return n;
   } else if(n == 'G') {
     // skip ':'
     fgetc(fp);
@@ -950,8 +961,8 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
       //(*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
       p[count++] = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
     }
-  //} else {
-		//cerr << "...not found!" << endl;
+//  } else {
+		//cerr << "...not found:" << filename << endl;
 	}
 
   (*image) = p;
