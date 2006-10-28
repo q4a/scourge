@@ -42,3 +42,103 @@ N:254,313,Hornaxx the goddess of Arguments,1,commoner
 
 N:231,492,Acolyte of Hornaxx,1,commoner
 N:254,313,Hornaxx the goddess of Arguments,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:162,477,Female Ranger,1,commoner
+N:201,477,Acolyte of Hornaxx,1,commoner
+N:231,473,Acolyte of Hornaxx,1,commoner
+N:260,476,Acolyte of Hornaxx,1,commoner
+N:299,471,Female Bard,1,commoner
+N:309,486,Male Rogue,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:162,477,Female Ranger,1,commoner
+N:201,477,Acolyte of Hornaxx,1,commoner
+N:231,473,Acolyte of Hornaxx,1,commoner
+N:260,476,Acolyte of Hornaxx,1,commoner
+N:299,471,Female Bard,1,commoner
+N:309,486,Male Rogue,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:162,477,Female Ranger,1,commoner
+N:201,477,Acolyte of Hornaxx,1,commoner
+N:231,473,Acolyte of Hornaxx,1,commoner
+N:260,476,Acolyte of Hornaxx,1,commoner
+N:299,471,Female Bard,1,commoner
+N:309,486,Male Rogue,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:162,477,Female Ranger,1,commoner
+N:201,477,Acolyte of Hornaxx,1,commoner
+N:231,473,Acolyte of Hornaxx,1,commoner
+N:260,476,Acolyte of Hornaxx,1,commoner
+N:299,471,Female Bard,1,commoner
+N:309,486,Male Rogue,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:162,477,Female Ranger,1,commoner
+N:201,477,Acolyte of Hornaxx,1,commoner
+N:231,473,Acolyte of Hornaxx,1,commoner
+N:260,476,Acolyte of Hornaxx,1,commoner
+N:299,471,Female Bard,1,commoner
+N:309,486,Male Rogue,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:162,477,Female Ranger,1,commoner
+N:201,477,Acolyte of Hornaxx,1,commoner
+N:231,473,Acolyte of Hornaxx,1,commoner
+N:260,476,Acolyte of Hornaxx,1,commoner
+N:299,471,Female Bard,1,commoner
+N:309,486,Male Rogue,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:162,477,Female Ranger,1,commoner
+N:201,477,Acolyte of Hornaxx,1,commoner
+N:231,473,Acolyte of Hornaxx,1,commoner
+N:260,476,Acolyte of Hornaxx,1,commoner
+N:299,471,Female Bard,1,commoner
+N:309,486,Male Rogue,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:162,477,Female Ranger,1,commoner
+N:201,477,Acolyte of Hornaxx,1,commoner
+N:231,473,Acolyte of Hornaxx,1,commoner
+N:260,476,Acolyte of Hornaxx,1,commoner
+N:299,471,Female Bard,1,commoner
+N:309,486,Male Rogue,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:162,477,Female Ranger,1,commoner
+N:201,477,Acolyte of Hornaxx,1,commoner
+N:231,473,Acolyte of Hornaxx,1,commoner
+N:260,476,Acolyte of Hornaxx,1,commoner
+N:299,471,Female Bard,1,commoner
+N:309,486,Male Rogue,1,commoner
+# Unknown npc-s found:
+# Key:
+#   N:x,y,name,level,type[,subtype]
+
+N:162,477,Female Ranger,1,commoner
+N:201,477,Acolyte of Hornaxx,1,commoner
+N:231,473,Acolyte of Hornaxx,1,commoner
+N:260,476,Acolyte of Hornaxx,1,commoner
+N:299,471,Female Bard,1,commoner
+N:309,486,Male Rogue,1,commoner
