@@ -11,6 +11,8 @@ function enterMap( mapName ) {
 
 	if( scourgeGame.getMission().getChapter() == 7 && mapName == "library3" ) {
 		initChapter8();
+	} else if( scourgeGame.getMission().getChapter() == 8 && mapName == "temple" ) {
+		initChapter9();
 	}
 }
 
@@ -228,7 +230,7 @@ function spellDamageHandler( caster, spell ) {
 // called when conversing with someone
 // return the answer string or null for no special handling
 function converse( creature, question ) {
-//  print( "Creature=" + creature.getName() + " question:" + question + "\n" );
+  print( "Creature=" + creature.getName() + " question:" + question + "\n" );
 
   // Orhithales will not give you information until the armor has been recovered
   if( creature.getName() == "Orhithales Grimwise" &&
@@ -255,7 +257,13 @@ function converse( creature, question ) {
              !( scourgeGame.getMission().isCompleted() ) &&
              ( question == "serves" || question == "gift" ) ) {
     scourgeGame.getMission().setCompleted();
-  }
+  }	else if( creature.getName() == "Positive Energy of Hornaxx" ) {
+		if( question.tolower() == "unamoin" ) {
+			storePartyLevel();
+		} else if( question.tolower() == "tokens" ) {
+			assignAntimagicItems();
+		}
+	}
   return null;
 }
 
@@ -341,3 +349,81 @@ function initChapter8() {
 	}
 }
 
+function initChapter9() {
+	i <- 0;
+	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
+		
+		s <- getChapter9Intro();
+		if( s != null ) {
+			for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+				if( scourgeGame.getMission().getCreature( i ).getName() == "Positive Energy of Hornaxx" ) {
+					scourgeGame.getMission().getCreature( i ).setIntro( s );
+				} else if( scourgeGame.getMission().getCreature( i ).getName() == "Negative Energy of Hornaxx" ) {
+					scourgeGame.getMission().getCreature( i ).setIntro( "_return_" );
+				}
+			}
+		}	
+	}
+}
+
+function getChapter9Intro() {
+	i <- 0;
+	for( i = 0; i < scourgeGame.getPartySize(); i++ ) {
+		key <- encodeKeyForCreature( scourgeGame.getPartyMember( i ), "hornaxx" );
+		value <- scourgeGame.getValue( key );
+		if( value != null ) {
+			numValue <- value.tointeger();
+			if( scourgeGame.getPartyMember( i ).getLevel() > numValue ) {
+				return "_return_true_";
+			} else {
+				return "_return_false_";
+			}
+		}
+	}
+	return null;
+}
+
+function storePartyLevel() {
+	i <- 0;
+	for( i = 0; i < scourgeGame.getPartySize(); i++ ) {
+		print( "storing for " + i + "\n" );
+		key <- encodeKeyForCreature( scourgeGame.getPartyMember( i ), "hornaxx" );
+		value <- scourgeGame.getValue( key );
+		if( value == null ) {
+			print( "Storing level for " + scourgeGame.getPartyMember( i ).getName() + "\n" );
+			scourgeGame.setValue( key, scourgeGame.getPartyMember( i ).getLevel().tostring() );
+		}
+	}
+}
+
+antimagicItems <- [ 
+  "Boots of antimagic binding",
+  "Antimagic foil hat",
+  "Antimagic chestplate"
+];
+
+function assignAntimagicItems() {
+	i <- 0;
+	t <- 0;
+	b <- false;
+	for( i = 0; i < scourgeGame.getPartySize(); i++ ) {
+		key <- encodeKeyForCreature( scourgeGame.getPartyMember( i ), "hornaxx-antimagic" );
+		value <- scourgeGame.getValue( key );
+		if( value == null ) {
+			// Assign items. 
+			// The first player gets more more if not all party positions are filled in.
+			n <- 1;
+			if( i == 0 ) n = n + ( 4 - scourgeGame.getPartySize() );
+			r <- 0;
+			for( r = 0; r < n; r++ ) {
+				scourgeGame.getPartyMember( i ).addInventoryByName( antimagicItems[ t++ ] );
+				if( t >= antimagicItems.len() ) t = 0;
+			}
+			scourgeGame.setValue( key, "true" );
+			b = true;
+		}
+	}
+	if( b ) {
+		scourgeGame.getMission().setCompleted( true );
+	}
+}

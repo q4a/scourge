@@ -71,6 +71,7 @@ public:
 	static int _isOfRootClass( HSQUIRRELVM vm );
   static int _getDeity( HSQUIRRELVM vm );
   static int _startConversation( HSQUIRRELVM vm );
+	static int _startConversationAbout( HSQUIRRELVM vm );
   static int _getTargetCreature( HSQUIRRELVM vm );
   static int _getItemAtLocation( HSQUIRRELVM vm );
 
@@ -91,6 +92,9 @@ public:
 
 	// npc
 	static int _setIntro( HSQUIRRELVM vm );
+
+	// other
+	static int _addInventoryByName( HSQUIRRELVM vm );
 };
 #endif
 

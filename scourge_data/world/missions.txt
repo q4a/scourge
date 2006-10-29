@@ -247,7 +247,10 @@ D:simple. In order to find the items you seek, you must pay a visit to Hornaxx, 
 D:the minor deities under Unamoin. Now, she owes us a debt for saving some of her acolytes
 D:a while back, but it will be up to you to convince this goddess of Arguments 
 D:to give you what you seek.
-Y:todo
+Y:Welcome back! I regret to say we cannot waste more time! Remember to wear the gifts of
+Y:the goddess and armed with antimagic binding objects enter the protected realm of
+Y:Mothrazu. You must defeat her or our entire world is at stake! I will post her location
+Y:on the board.
 N:Have you visited Hornaxx the goddess of Arguments yet? Be sure to remind her of the 
 N:debt she owes us, and hope that in her divine wisdom, she rewards you with items of
 N:antimagic binding. With such aid, we can finally try to defeat Mothrazu.

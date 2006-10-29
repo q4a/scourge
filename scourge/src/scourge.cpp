@@ -2902,8 +2902,11 @@ char *Scourge::getDeityLocation( Location *pos ) {
   return( ms ? ms->getDeity() : NULL );
 }
 
-void Scourge::startConversation( RenderedCreature *creature ) {
-  conversationGui->start( (Creature*)creature );
+void Scourge::startConversation( RenderedCreature *creature, char *message ) {
+	conversationGui->start( (Creature*)creature );
+	if( message ) {
+		conversationGui->wordClicked( message );
+	}
 }
 
 void Scourge::completeCurrentMission() {

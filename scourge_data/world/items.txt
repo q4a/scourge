@@ -1641,6 +1641,27 @@ I:A faint touch of electricity strokes your skin when nearing this many-sided me
 I:The piece of metal displays a feel of electricity.
 I:11,17
 
+I:Boots of antimagic binding
+I:17,MISSION,1.5,25,BOOTS,256
+I:This snazzy footwear positively sizzles with magic absorbtion as you tread the ground. 
+I:These boots were made for walking through a magic field.
+I:14,9
+A:5,5,5,ARMOR_DEFEND,0
+
+I:Antimagic foil hat
+I:17,MISSION,8,2,HELMET,1
+I:This foil wraps tightly around your head and apparently deflects all kinds of, uh, rays...
+I:A piece of metal foil you can wear as a hat.
+I:12,17
+A:0,0,1,ARMOR_DEFEND,0
+
+I:Antimagic chestplate
+I:17,MISSION,40,8000,ARMOR,8,0,5
+I:The armor is made to conform to the contours of the wearer. You can't help but admire the mold of its last owner.
+I:A shape-changing armor that fits creatures of all sizes.
+I:2,8
+A:12,12,12,ARMOR_DEFEND,0
+
 # Special items (only one exists in the world)
 # Special items are special b/c of the min_level on the second row.
 # For special items, rareness is reversed (ie. the bigger the number the more rare)

@@ -70,7 +70,9 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "Item", "getItemAtLocation", SqCreature::_getItemAtLocation, SQ_MATCHTYPEMASKSTRING, "xn", "Return the item currently equipped at the specified location. (location is left-hand, right-hand, etc.)" },
 
   { "void", "startConversation", SqCreature::_startConversation, 0, 0, "Start a conversation with this creature." },
+	{ "void", "startConversationAbout", SqCreature::_startConversationAbout, 0, 0, "Start a conversation with this creature about a specific topic." },
 	{ "void", "setIntro", SqCreature::_setIntro, 0, 0, "Set this NPC's intro text to the text referenced by this keyphrase in the <map>.txt file." },
+	{ "void", "addInventoryByName", SqCreature::_addInventoryByName, 0, 0, "Add a new item of this name to the creature's inventory." },
 
   { 0,0,0,0,0 } // terminator
 };
@@ -429,6 +431,13 @@ int SqCreature::_startConversation( HSQUIRRELVM vm ) {
   return 0;
 }
 
+int SqCreature::_startConversationAbout( HSQUIRRELVM vm ) {
+	GET_STRING( message, 120 )
+  GET_OBJECT(Creature*)
+  SqBinding::sessionRef->getGameAdapter()->startConversation( object, message );
+  return 0;
+}
+
 int SqCreature::_getTargetCreature( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
   if( object->getTargetCreature() ) {
@@ -474,3 +483,17 @@ int SqCreature::_setIntro( HSQUIRRELVM vm ) {
 	}
 	return 0;
 }
+
+int SqCreature::_addInventoryByName( HSQUIRRELVM vm ) {
+	GET_STRING( itemName, 255 )
+  GET_OBJECT( Creature* )
+
+	RpgItem *rpgItem = RpgItem::getItemByName( itemName );
+	if( !rpgItem ) {
+		cerr << "*** Can't find RpgItem for name=" << itemName << endl;
+		return sq_throwerror( vm, "Can't find RpgItem by this name." );
+	}
+	object->addInventory( SqBinding::sessionRef->newItem( rpgItem ), true );
+	return 0;
+}
+

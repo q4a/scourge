@@ -1,144 +1,96 @@
-G:_INTRO_;Welcome weary adventurer!.
-G:_UNKNOWN_;Uh, I don't know anything about that...
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
+G:_INTRO_;May you live as long as you're $worth stranger.
+G:_INTRO_;Feel at home and $toil in our temple, traveler.
+G:_UNKNOWN_;Perhaps you should ask her divine paradox, $Hornaxx herself...
+G:_UNKNOWN_;Yes, I follow, may I ask you for a $year in return?
+
+G:worth;This temple stands by the divine presense of $Hornaxx the goddess of arguments\
+and contradictions herself. Are you worthy of her time? There is only $one way to find out.
 
 N:213,508,Acolyte of Hornaxx,1,commoner
 N:245,507,Acolyte of Hornaxx,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
 N:231,492,Acolyte of Hornaxx,1,commoner
-N:254,313,Hornaxx the goddess of Arguments,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:231,492,Acolyte of Hornaxx,1,commoner
-N:254,313,Hornaxx the goddess of Arguments,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:231,492,Acolyte of Hornaxx,1,commoner
-N:254,313,Hornaxx the goddess of Arguments,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:231,492,Acolyte of Hornaxx,1,commoner
-N:254,313,Hornaxx the goddess of Arguments,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:231,492,Acolyte of Hornaxx,1,commoner
-N:254,313,Hornaxx the goddess of Arguments,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:231,492,Acolyte of Hornaxx,1,commoner
-N:254,313,Hornaxx the goddess of Arguments,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:162,477,Female Ranger,1,commoner
 N:201,477,Acolyte of Hornaxx,1,commoner
 N:231,473,Acolyte of Hornaxx,1,commoner
 N:260,476,Acolyte of Hornaxx,1,commoner
-N:299,471,Female Bard,1,commoner
-N:309,486,Male Rogue,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
+N:168,412,Acolyte of Hornaxx,1,commoner
+N:230,395,Acolyte of Hornaxx,1,commoner
+N:295,412,Acolyte of Hornaxx,1,commoner
 
 N:162,477,Female Ranger,1,commoner
-N:201,477,Acolyte of Hornaxx,1,commoner
-N:231,473,Acolyte of Hornaxx,1,commoner
-N:260,476,Acolyte of Hornaxx,1,commoner
 N:299,471,Female Bard,1,commoner
 N:309,486,Male Rogue,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
 
-N:162,477,Female Ranger,1,commoner
-N:201,477,Acolyte of Hornaxx,1,commoner
-N:231,473,Acolyte of Hornaxx,1,commoner
-N:260,476,Acolyte of Hornaxx,1,commoner
-N:299,471,Female Bard,1,commoner
-N:309,486,Male Rogue,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
+P:Positive Energy of Hornaxx
+V:_INTRO_;You have $sought me out for a glorious reason! Come closer mortal child...
+V:_UNKNOWN_;What you say is of no importance to me.
+V:sought;All seekers of $truth are welcome in my presence. As long as you show proper\
+respect to me and my $maker you are welcome in my temple.
+V:truth;Truth is never singular. All viewpoints are always represented. Therefore truth\
+is seldom subjective, rather it is shaped by the minds and intentions of its perceivers.\
+You should ask the twin energy of my divine paradox about the nature of truth as well.
+V:maker;I am but a speck of dust from his divinity!
+V:revelations;You will know mortal when the time is right. Meanwhile, ask my twin what you\
+should do to prepare for it.
+V:Unamoin;Ah you please me, wanderer! Great is the power of my maker, the weak cowers, and\
+the strong revels in his battle lust! What is it you seek? You may ask me for a $boon as you\
+have shown your dedication to Unamoin, god of Confrontation.
+V:boon;Items of antimagic binding? Yes I have heard of such a thing. However such gifts\
+will not come for free. Go forth and return to me when you have proven your $might in battle.
+V:might;In order for you to gain access to the items you seek, venture below this temple.\
+There in the shadowy crypts many have perished who sought divine favor. You will also try to\
+conquer your fears and show me I can bestow gifts upon you. I want you to go forth and do not\
+return until you have progressed in the arts of war, magic or other disciplines.
+V:_return_false_;I see you mortal... I follow your deeds. You have progressed much in the arts\
+of war and magic, but you are not ready for my gifts yet. Give yourself truly to my cause! Push\
+yourself to the limits of your abilities... Then I will consider gifting your with the divine\
+$boon you seek.
+V:_return_true_;You impress me again mortal! You have truly applied yourself in your chosen\
+disciplines and now you shall receive my holy gifts for your efforts. Behold the $tokens of the\
+Keeper of Arguments!
+V:tokens;Here take these objects of antimagic binding. With these, you will be able to break\
+through the barrier we cannot touch. Hurry now, it is unwise to tarry with the gifts of a\
+goddess.
 
-N:162,477,Female Ranger,1,commoner
-N:201,477,Acolyte of Hornaxx,1,commoner
-N:231,473,Acolyte of Hornaxx,1,commoner
-N:260,476,Acolyte of Hornaxx,1,commoner
-N:299,471,Female Bard,1,commoner
-N:309,486,Male Rogue,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
+P:Negative Energy of Hornaxx
+V:_INTRO_;Life is but a passing $shadow mortal. Better $prepare for your passing, lest it catch\
+you unawares.
+V:_UNKNOWN_;Speak of that no more!
+V:_UNKNOWN_;Harrguddh!
+V:truth;My twin speaks through your words mortal. She is both right and wrong in her assertions.\
+Truth is not subjective, however a single truth does exist for every situation. I feel you\
+will have to find such a conclusion in the near future. In the final hour of the world,\
+it will be up to you to correctly ascertain the $revelations.
+V:revelations;Perhaps ask my twin of that. She is shaping your futures even as our times\
+pass.
+V:prepare;Ready your mind and spirit for the great $trip to the lands on the $other side.\
+It is the final challenge the gods offer to a mortal soul. A keystone in the great\
+puzzle of your existence. To the quick, natural it comes and flows like water to the lazy.
+V:trip,other;Enough mortal! When your time comes, you will have no choice but to cross. Let\
+us speak of other $events more pressing in their proximity.
+V:shadow,event,events;I feel an $imbalance is cast over your world, mortal. An $evil grows somewhere in the\
+West. I cannot tell its exact location, but I feel its foul magic seeping through the veins\
+of the world. Yet we gods stand helpless at this invasion... There is an $outside power\
+guarding this seedling.
+V:imbalance,evil,shell;The energies I feel are evil in their source. There is also an entanglement\
+present here... an earthy feeling as if the very roots of the land waged war on the living.\
+Very strong this $magic is... it blocks my most divine reaches and thoughts.
+V:outside;These $evil energies are surrounded by a protective shell. This shell is not of your\
+world, mortal. It is not known to me at this time where the barrier was spawned, nor how to\
+reach past its walls. Be careful mortal in your approach for its $magic is beyond even my\
+powers.
+V:magic;As I said, I can only reach the edges of the protective $shell surounding this magical\
+phenomenon. However, even from this brief contact its powers overwhelm me... Black rock, earth\
+and roots I feel. Tenacious like jagged nails, suffocating like heavy sand it pushes my reach\
+back. You will need $protection from it, mortal if you plan to enter it.
+V:protection;Yes. You will need items of antimagic binding to survive entry into its fell domain.\
+But ask me not for these, though I would, I cannot grant you what you seek. My task here is\
+but to prophesize events of the future. To gain such a boon, you best $impress my twin energy\
+across the hall.
+V:impress;There are many ways you can do this. She is the positive energy, my twin opposite\
+an ancient paradox. Nothing makes her feel more content than the presence of those of her\
+disposition. Revel perhaps in her nature, the supreme deity of Confrontation: her maker.
+V:_return_;You seek a divine favor mortal. It is not me you need however. I am but the\
+describer of $events and tidings. The other side of my divine paradox is responsible for\
+altering the fabric of reality.
 
-N:162,477,Female Ranger,1,commoner
-N:201,477,Acolyte of Hornaxx,1,commoner
-N:231,473,Acolyte of Hornaxx,1,commoner
-N:260,476,Acolyte of Hornaxx,1,commoner
-N:299,471,Female Bard,1,commoner
-N:309,486,Male Rogue,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
 
-N:162,477,Female Ranger,1,commoner
-N:201,477,Acolyte of Hornaxx,1,commoner
-N:231,473,Acolyte of Hornaxx,1,commoner
-N:260,476,Acolyte of Hornaxx,1,commoner
-N:299,471,Female Bard,1,commoner
-N:309,486,Male Rogue,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:162,477,Female Ranger,1,commoner
-N:201,477,Acolyte of Hornaxx,1,commoner
-N:231,473,Acolyte of Hornaxx,1,commoner
-N:260,476,Acolyte of Hornaxx,1,commoner
-N:299,471,Female Bard,1,commoner
-N:309,486,Male Rogue,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:162,477,Female Ranger,1,commoner
-N:201,477,Acolyte of Hornaxx,1,commoner
-N:231,473,Acolyte of Hornaxx,1,commoner
-N:260,476,Acolyte of Hornaxx,1,commoner
-N:299,471,Female Bard,1,commoner
-N:309,486,Male Rogue,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:162,477,Female Ranger,1,commoner
-N:201,477,Acolyte of Hornaxx,1,commoner
-N:231,473,Acolyte of Hornaxx,1,commoner
-N:260,476,Acolyte of Hornaxx,1,commoner
-N:299,471,Female Bard,1,commoner
-N:309,486,Male Rogue,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:162,477,Female Ranger,1,commoner
-N:201,477,Acolyte of Hornaxx,1,commoner
-N:231,473,Acolyte of Hornaxx,1,commoner
-N:260,476,Acolyte of Hornaxx,1,commoner
-N:299,471,Female Bard,1,commoner
-N:309,486,Male Rogue,1,commoner
