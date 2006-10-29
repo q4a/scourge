@@ -528,3 +528,9 @@ void Session::setSavegameName( char *s ) {
 	}
 }
 
+Creature *Session::getCreatureByName( char *name ) {
+	for( unsigned int i = 0; i < creatures.size(); i++ ) {
+		if( !strcmp( creatures[i]->getName(), name ) ) return creatures[i];
+	}
+	return NULL;
+}

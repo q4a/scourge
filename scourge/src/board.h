@@ -100,14 +100,14 @@ public:
   static std::vector<std::string> unknownPhrases;
   static std::map<std::string, int> conversations;
   static std::vector<std::string> answers;
-  static std::map<Monster*,NpcConversation*> npcConversations;
+  static std::map<std::string,NpcConversation*> npcConversations;
   static std::map<std::string, NpcInfo*> npcInfos;
 
   static char *getIntro();
   static char *getAnswer( char *keyphrase );
-  static char *getIntro( Monster *npc );
-	static bool setIntro( Monster *npc, char *keyphrase );
-  static char *getAnswer( Monster *npc, char *keyphrase );
+  static char *getIntro( char *npc );
+	static bool setIntro( Creature *creature, char *keyphrase );
+  static char *getAnswer( char *npc, char *keyphrase );
   /**
    * Load extra data from text file alongside an edited map.
    * "fileName" in this case is the name of the .map binary file 
