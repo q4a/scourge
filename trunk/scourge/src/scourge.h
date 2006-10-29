@@ -663,7 +663,7 @@ public:
 
   static bool testLoadGame(Session *session);
 
-  void startConversation( RenderedCreature *creature );
+  void startConversation( RenderedCreature *creature, char *message=NULL );
 
   void drawItemIcon( Item *item, int size=25 );
 
