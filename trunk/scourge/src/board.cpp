@@ -31,7 +31,7 @@ vector<string> Mission::unknownPhrases;
 map<string, int> Mission::conversations;
 vector<string> Mission::answers;
 
-map<Monster*, NpcConversation*> Mission::npcConversations;
+map<string, NpcConversation*> Mission::npcConversations;
 map<string, NpcInfo*> Mission::npcInfos;
 
 //#define DEBUG_MODE 1
@@ -635,36 +635,44 @@ char *Mission::getAnswer( char *keyphrase ) {
   }
 }
 
-char *Mission::getIntro( Monster *npc ) {
-  if( npcConversations.find( npc ) == npcConversations.end() ) {
+char *Mission::getIntro( char *s ) {
+	string npc = s;
+  if( npcConversations.find( s ) == npcConversations.end() ) {
     //cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
     return NULL;
   }
-  NpcConversation *nc = npcConversations[ npc ];
+  NpcConversation *nc = npcConversations[ s ];
   return (char*)(nc->npc_intros[ (int)( (float)( nc->npc_intros.size() ) * rand()/RAND_MAX ) ].c_str());
 }
 
-bool Mission::setIntro( Monster *npc, char *keyphrase ) {
-	if( npcConversations.find( npc ) == npcConversations.end() ) {
-    cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
-    return false;
+bool Mission::setIntro( Creature *s, char *keyphrase ) {
+	NpcConversation *nc = NULL;
+	string npc = s->getMonster()->getType();
+	if( npcConversations.find( npc ) != npcConversations.end() ) {
+		nc = npcConversations[ npc ];
   }
-  NpcConversation *nc = npcConversations[ npc ];
-
+	if( !nc ) {
+		npc = npc = s->getName();
+		if( npcConversations.find( npc ) != npcConversations.end() ) {
+			nc = npcConversations[ npc ];
+		}
+	}
+	if( !nc ) return false;
 	string ks = keyphrase;
 	if( nc->npc_conversations.find( ks ) != nc->npc_conversations.end() ) {
 		nc->npc_intros.clear();
     nc->npc_intros.push_back( nc->npc_answers[ nc->npc_conversations[ ks ] ] );
 	} else {
-		cerr << "Can't find " << keyphrase << " in npc conversation for creature: " << npc->getType() << endl;
+		cerr << "Can't find " << keyphrase << " in npc conversation for creature: " << s->getName() << endl;
 		return false;
 	}
 	return true;
 }
 
-char *Mission::getAnswer( Monster *npc, char *keyphrase ) {
+char *Mission::getAnswer( char *s, char *keyphrase ) {
+	string npc = s;
   if( npcConversations.find( npc ) == npcConversations.end() ) {
-    cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
+    //cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
     return NULL;
   }
   NpcConversation *nc = npcConversations[ npc ];
@@ -690,7 +698,7 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
   unknownPhrases.clear();
   conversations.clear();
   answers.clear();
-  for (map<Monster*,NpcConversation*>::iterator i=npcConversations.begin(); i!=npcConversations.end(); ++i) {
+  for (map<string,NpcConversation*>::iterator i=npcConversations.begin(); i!=npcConversations.end(); ++i) {
     NpcConversation *npcConversation = i->second;
     delete npcConversation;
   }
@@ -758,7 +766,8 @@ void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool 
   char line[1000];
   int x, y, level;
   char npcName[255], npcType[255], npcSubType[1000];
-  Monster *currentNpc = NULL;
+  //Monster *currentNpc = NULL;
+	char *currentNpc = NULL;
   int n = fgetc(fp);
   while(n != EOF) {
     if(n == 'G') {
@@ -774,7 +783,16 @@ void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool 
       if( n == 'P' ) {
         fgetc(fp);
         n = Constants::readLine(line, fp);
-        currentNpc = Monster::getMonsterByName( line );
+        Monster *m = Monster::getMonsterByName( line );
+				if( m ) {
+					currentNpc = m->getType();
+				} else {
+					Creature *c = adapter->getSession()->getCreatureByName( line );
+					if( c ) currentNpc = c->getName();
+					else {
+						cerr << "*** Error: can't find creature named: " << line << endl;
+					}
+				}
       } else if( n == 'V' && currentNpc ) {    
         fgetc(fp);
         n = Constants::readLine(line, fp);

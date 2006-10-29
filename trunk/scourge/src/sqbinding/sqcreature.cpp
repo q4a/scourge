@@ -478,7 +478,7 @@ int SqCreature::_getItemAtLocation( HSQUIRRELVM vm ) {
 int SqCreature::_setIntro( HSQUIRRELVM vm ) {
 	GET_STRING( keyphrase, 80 )
   GET_OBJECT( Creature* )
-	if( !Mission::setIntro( object->getMonster(), keyphrase ) ) {
+	if( !Mission::setIntro( object, keyphrase ) ) {
 		return sq_throwerror( vm, "Error trying to set intro text." );
 	}
 	return 0;

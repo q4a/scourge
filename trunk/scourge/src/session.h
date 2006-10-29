@@ -146,6 +146,7 @@ public:
 
   inline int getCreatureCount() { return creatures.size(); }
   inline Creature *getCreature(int index) { return creatures[index]; }
+	Creature *getCreatureByName( char *name );
   inline int getItemCount() { return newItems.size(); }
   inline Item *getItem(int index) { return newItems[index]; }
   virtual void deleteCreaturesAndItems(bool missionItemsOnly=false);

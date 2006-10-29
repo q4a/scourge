@@ -148,7 +148,8 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 void ConversationGui::start( Creature *creature ) {
-  char *s = Mission::getIntro( creature->getMonster() );
+  char *s = Mission::getIntro( creature->getMonster()->getType() );
+	if( !s ) s = Mission::getIntro( creature->getName() );
   bool useCreature = ( s ? true : false );
   if( !s ) {
     s = Mission::getIntro();
@@ -201,7 +202,9 @@ void ConversationGui::wordClicked( char *word ) {
     }
   
     if( useCreature ) {
-      answer->setText( Mission::getAnswer( creature->getMonster(), word ) );
+			char *s = Mission::getAnswer( creature->getMonster()->getType(), word );
+			if( !s ) s = Mission::getAnswer( creature->getName(), word );
+			answer->setText( s );
     } else {
       answer->setText( Mission::getAnswer( word ) );
     }
