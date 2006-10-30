@@ -322,7 +322,7 @@ M:Narzegg the Vain
 M:/models/xenoid,xenotype2.bmp,17,10,11,7,6,6,2.1,npc
 
 # statemod: 2079: 0,1,2,3,4 and 11 (blessed, empowered, enraged, ac_protected, magic_protected and invisible)
-M:Positive Energy of Hornaxx
+M:Positive Energy of Hornaxx,/portraits/hornaxx.bmp
 M:/models/md3/yuri,lilith,30,12,12,10,6,3,3.0,npc,2079
 I:Greataxe
 I:Full face helmet
@@ -335,7 +335,7 @@ P:RESIST_HISTORY_MAGIC,75
 P:RESIST_DECEIT_MAGIC,75
 P:RESIST_CONFRONTATION_MAGIC,70
 
-M:Negative Energy of Hornaxx
+M:Negative Energy of Hornaxx,/portraits/hornaxx.bmp
 M:/models/md3/yuri,lilith,30,12,12,10,6,3,3.0,npc,2079
 I:Greataxe
 I:Full face helmet
