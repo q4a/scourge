@@ -53,6 +53,7 @@ O:/portraits/m7.bmp,M
 O:/portraits/m8.bmp,M
 O:/portraits/m9.bmp,M
 O:/portraits/m10.bmp,M
+O:/portraits/m11.bmp,M
 O:/portraits/w6.bmp,F
 O:/portraits/w12.bmp,F
 O:/portraits/w14.bmp,F
