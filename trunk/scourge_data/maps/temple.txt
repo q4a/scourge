@@ -1,10 +1,21 @@
 G:_INTRO_;May you live as long as you're $worth stranger.
-G:_INTRO_;Feel at home and $toil in our temple, traveler.
+G:_INTRO_;Feel at home traveler. May you rest here is long as you $need to.
 G:_UNKNOWN_;Perhaps you should ask her divine paradox, $Hornaxx herself...
-G:_UNKNOWN_;Yes, I follow, may I ask you for a $year in return?
-
 G:worth;This temple stands by the divine presense of $Hornaxx the goddess of arguments\
 and contradictions herself. Are you worthy of her time? There is only $one way to find out.
+G:one,myth;It was almost 2000 years ago when Uganloin the Bold declared this temple a holy space.\
+According to myth, one morning the high priest Uganloin was greeted with the divine manifestations\
+of the $goddess much like they appear to this day. $Hornaxx posed a riddle to Uganloin who in the\
+act of solving the thorny riddle put such a strain on his mental faculties that he passed from\
+the land of the living. It is said to be the highest honor among our faithful to pass the bounds\
+of mortality while pondering the divine mysteries of our $goddess.
+G:need;We are dedicated followers of $Hornaxx the goddess of Arguments and Contradictions.\
+We offer our hospitality to all travelers regardless of their religious affiliation. We urge\
+you to find out more about $Hornaxx, and if possible speak to her divine energies present here.
+G:Hornaxx,goddess;Hornaxx is the goddess of Arguments and Contradictions. Her divine presence\
+is more than just a $myth as actual manifestations of her twin paradox can be seen and\
+interacted with here within our walls. Follow the temple rooms due north to meet her. We also\
+offer our healing services for a nominal charge, most of which goes to repair our halls.
 
 N:213,508,Rajna the Professor,40,trainer,Scholar
 N:245,507,Master Healer Annu,40,trainer,Healer
@@ -28,8 +39,12 @@ V:traveling;$We have traveled south from Arthel through Orn. The road is a lonel
 scary place these days. It just seems like some kind of $event is about to happen.\
 And when it does, I for one will want to be below ground, with many feet of rock between\
 me and the outside world.
-V:companions,We;Oh, I travel with Lena and Romm. They're rooming in the other guest-cell. Lena\
+V:companions,We;Oh, I travel with $Lena and $Romm. They're rooming in the other guest-cell. Lena\
 is a wizard and Romm sells magic items.
+V:Lena;She is a pretty woman in her own way... I suppose...
+V:Romm;What can I say about dear Romm? He seems completely lost on what to make of traveling\
+with two women. Just between you and me, one day I will make him (and his money) mine! But you\
+won't go spreading rumors now, will you?
 V:event;Not sure what to make of it. Definitely ask the $godess if you talk to her.
 V:godess;Surely you know what place this is! It's the temple that houses manifestations of\
 her divine majesty, Hornaxx, goddess of arguments. Though not a $major god, her power is\
@@ -37,10 +52,39 @@ nevertheless great. You should do well to look her up if you need any questions 
 V:major;She is a minor deity. As such, she has a lord and maker... I couldn't figure out who\
 but then, I'm just a simple merchant.
 
-#P:Lena the Traveling Wizard
-#V:_INTRO_;
+P:Lena the Traveling Wizard
+V:_INTRO_;Please take your time browsing my $wares dear client!
+V:_UNKNOWN_;Perhaps your loftyness will consider purchasing a $spell instead?
+V:spell,wares;Yes, I am but a meager salesman, your Inflatedness. I $travel the land\
+so that your Highness can pick and choose the best magic there is.
+V:travel;I graciously thank your Selfishness for asking. Yes, I travel, my poor feet\
+are dusty from road. Months of marching saddle my aching back. My $companions and I\
+set out from Arthel three moons ago.
+V:companions;I $travel with Romm who is a dealer of charms and trinkets. My other companion\
+is the sniveling $knave Sorma... But such minor detail does not $interest your Valuedness, I can\
+tell. How about looking through my $wares instead?
+V:knave;Did I say that? Just because that lusty wench has been eying my Romm ever since we\
+left Arthel? Surely your Flatulance will not hold it against me? Oh, but to $travel is the\
+life...
+V:interest,Lena;A wicked woman she is, your Marbledness! Not worthy of your attention at all.
 
-#P:Romm the Charms Dealer
+P:Romm the Charms Dealer
+V:_INTRO_;I am a $happy man.
+V:_UNKNOWN_;Did you know that eating oysters is said to boost one's potency?
+V:_UNKNOWN_;This is the best I felt since me twenties!
+V:happy;How could I not be happy $traveling in the $company of two such pretty ladies?
+V:traveling,travel;I sell charms and trinkets. We set out from Arthel a while back. At first it\
+was just $Lena and I but soon we met $Sorma the weapons dealer. Life's never been the\
+same since...
+V:Lena;Yeah, me ol' battleaxe and I have traveled for a long time. At times I feel she\
+suspects I may have an eye for $Sorma though.
+V:Sorma;She is ...adventurous, fun and beautiful! What more can I ask for but to $travel with\
+them?
+V:company,companions;I tread the open road with my woman $Lena and a $Sorma the weapons merchant.\
+Do you think they're too young for me? I didn't think so either.
+V:money,rumor,rumors;Nah, she must be joking. Why the other day she asked to borrow some coins\
+from me... I feel like she must trust me a lot to ask for that!
+
 
 P:Positive Energy of Hornaxx
 V:_INTRO_;You have $sought me out for a glorious reason! Come closer mortal child...
