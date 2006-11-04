@@ -108,7 +108,9 @@ void PcEditor::setCreature( Creature *c, bool isEditable ) {
 void PcEditor::deleteLoadedShapes() {
   for( map<CharacterModelInfo*, GLShape*>::iterator i=shapesMap.begin(); i!=shapesMap.end(); ++i ) {
     CharacterModelInfo *cmi = i->first;
-    GLShape *shape = i->second;  
+    GLShape *shape = i->second;
+    // FIXME: next 3 lines should be 1 call. 
+    shape->cleanup(); 
     scourge->getShapePalette()->decrementSkinRefCount( cmi->model_name, cmi->skin_name );
     delete shape;
   }

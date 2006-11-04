@@ -198,7 +198,8 @@ Creature::~Creature(){
   if(this->character) free( name );
   session->getGameAdapter()->removeBattle(battle);
   delete battle;
-  // do this before deleting the shape
+  // FIXME: next 3 lines should be 1 call. 
+  shape->cleanup();  
   session->getShapePalette()->decrementSkinRefCount(model_name, skin_name, monster);
   delete shape;
 }

@@ -29,6 +29,8 @@
 #include "animatedshape.h"
 #include "Md3.h"
 
+class ModelLoader;
+
 // this has to be unique per model instance (so we can reuse md3-s)
 typedef struct _AnimInfo {
 	int currentAnim;					// The current index into pAnimations list 
@@ -44,8 +46,10 @@ class MD3Shape : public AnimatedShape  {
 //#define DEBUG_MD3 1
 
 private:
+  bool cleanupDone;
   float div;
 	CModelMD3 *md3;
+	ModelLoader *loader;
 	AnimInfo aiUpper, aiLower, aiHead;
 	
 	// This stores the texture array for each of the textures assigned to this model
@@ -55,13 +59,14 @@ private:
 	int numOfMaterialsUpper, numOfMaterialsLower, numOfMaterialsHead;
 
 public:     
-  MD3Shape( CModelMD3 *md3, float div,
+  MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div,
             GLuint texture[], int width, int depth, int height,
             char *name, int descriptionGroup,
             Uint32 color, Uint8 shapePalIndex=0 );
 
 	virtual ~MD3Shape();
 
+  void cleanup();
   void setModelAnimation();
   void draw();
   void outline( float r, float g, float b );

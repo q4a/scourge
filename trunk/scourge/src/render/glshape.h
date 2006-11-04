@@ -95,6 +95,7 @@ public:
   virtual ~GLShape();  
 
   virtual void initialize();
+  virtual inline void cleanup() {}
 
   void deleteVariationShapes();
   void createVariationShape( int textureIndex, GLuint *textureGroup );

@@ -431,16 +431,18 @@ void Map::moveMap(int dir) {
 
 void Map::removeCurrentEffects() {
   for( map<Uint32, EffectLocation*>::iterator i=currentEffectsMap.begin(); 
-       i!=currentEffectsMap.end(); ++i ) {
+       i!=currentEffectsMap.end(); ) {
     Uint32 key = i->first;
     EffectLocation *pos = i->second;
     if( !pos->isEffectOn() ) {
       int x, y, z;
       decodeTripletKey(key, &x, &y, &z);
-      currentEffectsMap.erase( i );
+      currentEffectsMap.erase( i++ );
       removeEffect( x, y, z );
       resortShapes = mapChanged = true;
-    }
+    } else {
+      ++i;
+    }       
   }
 
   

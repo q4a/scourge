@@ -25,12 +25,13 @@ using namespace std;
 
 //#define DEBUG_MD2 1
 
-MD3Shape::MD3Shape( CModelMD3 *md3, float div, 
+MD3Shape::MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div, 
 										GLuint texture[], int width, int depth, int height,
 										char *name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
   AnimatedShape( width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
 	// clone the md3 so we have our own animation data
   this->md3 = md3;
+  this->loader = loader;
   this->div = div;
 	numOfMaterialsUpper = numOfMaterialsLower = numOfMaterialsHead = 0;
 	aiLower.currentAnim = aiUpper.currentAnim = aiHead.currentAnim = 0;
@@ -40,21 +41,32 @@ MD3Shape::MD3Shape( CModelMD3 *md3, float div,
 	aiLower.t = aiUpper.t = aiHead.t = 0;
 	md3->SetTorsoAnimation( "TORSO_STAND", true, this );
 	md3->SetLegsAnimation( "LEGS_IDLE", true, this );
+	this->cleanupDone = false;
 }
 
 MD3Shape::~MD3Shape() {
+  if( !cleanupDone ) {
+      cerr << "*** WARN: call cleanup first!" << endl;
+  }
+}
+
+void MD3Shape::cleanup() {
+  // this has to be done before the md3 is killed
 	unloadSkinTextures( numOfMaterialsLower, &pMaterialLower );
 	unloadSkinTextures( numOfMaterialsUpper, &pMaterialUpper );
 	unloadSkinTextures( numOfMaterialsHead, &pMaterialHead );
+	cleanupDone = true;
 }
 
 void MD3Shape::unloadSkinTextures( int count, vector<tMaterialInfo> *materials ) {
-	for( int i = 0; i < count; i++) {
+  // can't use the md3 to get loader as it's been deleted by now.   
+	for( int i = 0; i < count && i < materials->size(); i++) {
 		tMaterialInfo info = materials->at( i );
 		if( strlen( info.strFile ) > 0 ) {
-			md3->getLoader()->unloadSkinTexture( info.strFile );
+			loader->unloadSkinTexture( info.strFile );
 		}
 	}
+	materials->clear();
 }
 
 void MD3Shape::draw() {

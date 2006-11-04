@@ -41,7 +41,8 @@ public:
 	AnimatedShape *createShape( GLuint textureId, float div,
 															GLuint texture[], char *name, int descriptionGroup,
 															Uint32 color, Uint8 shapePalIndex,
-															char *model_name, char *skin_name );
+															char *model_name, char *skin_name,
+                              ModelLoader *loader );
 
 	void normalizeModel( int *width, int *depth, int *height, float div, char *name );
 	

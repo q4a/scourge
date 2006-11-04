@@ -130,6 +130,12 @@ void SavegameDialog::show( bool inSaveMode ) {
 
 // will this work on windows?
 void SavegameDialog::findFiles() {
+     int count = 0;
+#ifdef WIN32
+       // when this is fixed (ie. implented for windows)
+       // also remove conditional code from mainmenu.cpp:showSavegameDialog()
+       strcpy( filenames[ count++ ], "savegame.dat" );
+#else     
 	char path[300];
 	if( get_config_dir_name( path, 300 ) != 0 ) {
 		cerr << "*** Error getting config dir name." << endl;
@@ -140,7 +146,6 @@ void SavegameDialog::findFiles() {
 		cerr << "*** Error can't open config dir." << endl;
 		return;
 	}
-	int count = 0;
 	struct dirent *entry;
 	while( ( entry = readdir( dir ) ) ) {
 		if( strstr( entry->d_name, ".dat" ) &&
@@ -149,7 +154,7 @@ void SavegameDialog::findFiles() {
 		}
 	}
 	closedir( dir );
-
+#endif
 	if( count != filenameCount ) {
 		filenameCount = count;
 		files->setLines( filenameCount, (const char**)filenames );
