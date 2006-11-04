@@ -3,19 +3,37 @@ G:_INTRO_;Feel at home traveler. May you rest here is long as you $need to.
 G:_UNKNOWN_;Perhaps you should ask her divine paradox, $Hornaxx herself...
 G:worth;This temple stands by the divine presense of $Hornaxx the goddess of arguments\
 and contradictions herself. Are you worthy of her time? There is only $one way to find out.
-G:one,myth;It was almost 2000 years ago when Uganloin the Bold declared this temple a holy space.\
+G:one,myth,myths;It was almost 2000 years ago when Uganloin the Bold declared this temple a holy space.\
 According to myth, one morning the high priest Uganloin was greeted with the divine manifestations\
 of the $goddess much like they appear to this day. $Hornaxx posed a riddle to Uganloin who in the\
 act of solving the thorny riddle put such a strain on his mental faculties that he passed from\
 the land of the living. It is said to be the highest honor among our faithful to pass the bounds\
 of mortality while pondering the divine mysteries of our $goddess.
-G:need;We are dedicated followers of $Hornaxx the goddess of Arguments and Contradictions.\
+G:need,traveler,travelers;We are dedicated followers of $Hornaxx the goddess of Arguments and Contradictions.\
 We offer our hospitality to all travelers regardless of their religious affiliation. We urge\
-you to find out more about $Hornaxx, and if possible speak to her divine energies present here.
+you to find out more about $Hornaxx, and if possible $speak to her divine energies present here.
 G:Hornaxx,goddess;Hornaxx is the goddess of Arguments and Contradictions. Her divine presence\
 is more than just a $myth as actual manifestations of her twin paradox can be seen and\
 interacted with here within our walls. Follow the temple rooms due north to meet her. We also\
-offer our healing services for a nominal charge, most of which goes to repair our halls.
+offer our healing services for a nominal charge, most of which goes to repair our $halls.
+G:speak;$Hornaxx will speak to all who approach her, through the manifestations of her\
+celestial energies. There have been instances over the years when those asking for her\
+favor were sent to $prove themselves first. If the quest was successful, the goddess rewarded\
+her faithful with a $boon.
+G:prove;What she asked for was different each time. The general theme of the quests seemed to\
+be one of self-betterment however here within our $halls. An overarching philosophy of the church of $Hornaxx is the\
+sharpening of the self through application of one's inner powers. There are some though, who\
+claim that $Hornaxx is interested in more skilled followers because of her $over-god.
+G:over-god;Who that is, is left for you to decide.
+G:boon;The gifts of divinity are well worth striving for, as I'm sure you know. But in order\
+to get them you must, $speak to her first!
+G:halls,temple,crypts;Out temple is very old. Some of the first $myths involving this place\
+are thousands of years old. This top level is where our church services are held. Here we\
+have rooms for $travelers who need a place to spend the night. To the north you will find\
+sacred halls where you can actually $speak with $Hornaxx the deity herself. Below this level\
+are the crypts. About 1000 years ago the crypts were sealed (save but two gates leading down)\
+in order to stop the invasion of creatures who now inhabit the levels below...
+
 
 N:213,508,Rajna the Professor,40,trainer,Scholar
 N:245,507,Master Healer Annu,40,trainer,Healer
