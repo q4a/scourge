@@ -10,9 +10,9 @@ Libs=
 PrivateResource=scourge_private.rc
 ResourceIncludes=
 MakeIncludes=
-Compiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\ -IC:\msys\1.0\home\Administrator\scourge\src\squirrel_@@_
-CppCompiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -I"C:\msys\1.0\home\Administrator\scourge\devcpp\SDL_net-1.2.5\include" -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -IC:\GnuWin32\include\freetype2 -IC:\GnuWin32\include\ -IC:\msys\1.0\home\Administrator\scourge\src\squirrel_@@_
-Linker=-O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -LC:\GnuWin32\lib -lfreetype -lSDL_mixer -lz_@@_C:\Dev-Cpp\lib\SDL_net-1.2.5\lib\SDL_net.lib_@@_
+Compiler=-g -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@_
+CppCompiler=-g -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@_
+Linker=-g -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -lfreetype -lSDL_mixer -lz_@@_
 IsCpp=1
 Icon=scourge.ico
 ExeOutput=..

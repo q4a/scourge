@@ -87,7 +87,8 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 																		 (scale == 0.0f ? model_info->scale : scale),
 																		 textureGroup, model_info->name, 
 																		 -1, 0xf0f0ffff, 0,
-																		 model_name, skin_name );
+																		 model_name, skin_name, 
+                                     this );
 	return shape;
 }
 
@@ -303,7 +304,8 @@ AnimatedShape *ModelWrapper::createShape( GLuint textureId, float div,
 																					GLuint texture[], char *name, 
 																					int descriptionGroup,
 																					Uint32 color, Uint8 shapePalIndex,
-																					char *model_name, char *skin_name ) {
+																					char *model_name, char *skin_name,
+                                          ModelLoader *loader ) {
   int width, depth, height;
 	normalizeModel( &width, &depth, &height, div, name );
 
@@ -312,7 +314,7 @@ AnimatedShape *ModelWrapper::createShape( GLuint textureId, float div,
 												 name, descriptionGroup, color, shapePalIndex );
 	} else if( md3 ) {
 		MD3Shape *shape = 
-			new MD3Shape( md3, div, texture, width, depth, height,
+			new MD3Shape( md3, loader, div, texture, width, depth, height,
 										name, descriptionGroup, color, shapePalIndex );
 		char full[300];
 		sprintf( full, "%s%s", rootDir, model_name );

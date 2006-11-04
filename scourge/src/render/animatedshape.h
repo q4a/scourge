@@ -59,6 +59,7 @@ protected:
 public:     
 	virtual ~AnimatedShape();
 
+  virtual inline void cleanup() {}
   virtual void draw() = 0;
   virtual void outline( float r, float g, float b ) = 0;
   virtual void setupToDraw() = 0;

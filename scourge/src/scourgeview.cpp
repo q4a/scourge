@@ -259,22 +259,26 @@ void ScourgeView::checkForInfo() {
     }
   }
   // timeout descriptions
+  // http://www.velocityreviews.com/forums/t283023-stl-stdmap-erase.html
   Uint32 now = SDL_GetTicks();
-  for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
+  for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ) {
     InfoMessage *message = i->first;
     Uint32 time = i->second;
     if( now - time > INFO_INTERVAL ) {
-      delete message;
-      infos.erase( i );
+      infos.erase( i++ );
+      delete message;      
+    } else {
+      ++i;
     }
   }
 }
 
 void ScourgeView::resetInfos() {
-  for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
+  // http://www.velocityreviews.com/forums/t283023-stl-stdmap-erase.html
+  for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ) {
     InfoMessage *message = i->first;
-    delete message;
-    infos.erase( i );
+    infos.erase( i++ );
+    delete message;    
   }
 }
 

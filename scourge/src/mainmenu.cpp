@@ -1153,7 +1153,18 @@ void MainMenu::showNewGameConfirmationDialog() {
 }
 
 void MainMenu::showSavegameDialog( bool inSaveMode ) {
+#ifdef WIN32
+    // hardcoded until savegamedialog.cpp is implented for windows
+    scourge->getSession()->setSavegameName( "savegame.dat" );
+		if( value == NEW_GAME ) {
+			showPartyEditor();
+		} else {
+			// end the main loop (see scourge::start())
+			scourge->getSDLHandler()->endMainLoop();
+		}
+#else     
 	savegameDialog->show( inSaveMode );
+#endif
 }
 
 void MainMenu::setSavegameSelected() {
