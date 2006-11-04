@@ -587,6 +587,7 @@ void Scourge::startMission() {
     donateDialog->getWindow()->setVisible( false );
     trainDialog->getWindow()->setVisible( false );
     pcEditor->getWindow()->setVisible( false );
+		tbCombatWin->setVisible( false );
 
     resetBattles();
 
