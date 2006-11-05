@@ -656,8 +656,11 @@ void Scourge::startMission() {
     }
   }
 
-	//cerr << "Saving party" << endl;
-	if(!session->isMultiPlayerGame()) {
+	// autosave party when quitting in hq and the lead player is not dead
+	// this is kind of stupid though... it should ask before saving.
+	if( !session->isMultiPlayerGame() && 
+			nextMission == -1 && 
+			!( getSession()->getParty()->getParty( 0 )->getStateMod( Constants::dead ) ) ) {
 		if(!saveGame(session)) {
 			showMessageDialog( "Error saving game!" );
 		}
