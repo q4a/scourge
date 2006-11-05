@@ -41,8 +41,7 @@ void RenderedProjectile::addProjectile( RenderedProjectile *proj ) {
 
 void RenderedProjectile::resetProjectiles() {
   for( map<RenderedCreature *, vector<RenderedProjectile*>*>::iterator i = projectiles.begin(); 
-       i != projectiles.end(); 
-       ++i ) {
+       i != projectiles.end(); ) {
     vector<RenderedProjectile*> *v = i->second;
     for( vector<RenderedProjectile*>::iterator e2 = v->begin(); 
          e2 != v->end(); 
@@ -51,7 +50,7 @@ void RenderedProjectile::resetProjectiles() {
       delete proj;
     }
     delete v;
-    projectiles.erase( i );
+    projectiles.erase( i++ );
   }
 }
 
