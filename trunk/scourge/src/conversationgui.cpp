@@ -269,4 +269,6 @@ void ConversationGui::drawWidgetContents(Widget *w) {
 
 void ConversationGui::hide() {
   win->setVisible( false );
+	// unpause the game
+	scourge->getParty()->toggleRound( false );
 }
