@@ -281,10 +281,11 @@ Uint32 ClientInfo::updateLag(int frame) {
     
     // FIXME: do this more efficiently
     // remove older frames
-    for(map<int,Uint32>::iterator i=lagMap.begin(); i!=lagMap.end(); ++i) {
+    for(map<int,Uint32>::iterator i=lagMap.begin(); i!=lagMap.end(); ) {
       int f = i->first;
       //      Uint32 t = i->second;
-      if(f <= frame) lagMap.erase(i);
+      if(f <= frame) lagMap.erase(i++);
+			else ++i;
     }
 
     // compute the lag
