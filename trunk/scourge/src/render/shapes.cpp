@@ -945,7 +945,7 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
     p = (GLubyte*)malloc(width * height * 4 * sizeof( GLubyte ));
     int count = 0;
     int c = 0;
-    unsigned char r,g,b;
+    unsigned char r,g,b,a;
     // the following lines extract R,G and B values from any bitmap
     for(int i = 0; i < width * height; ++i) {
       if(i > 0 && i % width == 0)
@@ -953,13 +953,18 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
       r = data[c++];
       g = data[c++];
       b = data[c++];
+			if( (*surface)->format->BytesPerPixel == 4 ) {
+				a = data[c++];
+			} else {
+				a = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
+			}
+			
 
       p[count++] = r;
       p[count++] = g;
       p[count++] = b;
-      //(*image)[count++] = (GLubyte)( (float)(b + g + r) / 3.0f );
-      //(*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
-      p[count++] = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
+			p[count++] = a;
+      //p[count++] = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
     }
 //  } else {
 		//cerr << "...not found:" << filename << endl;
