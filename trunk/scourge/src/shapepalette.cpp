@@ -283,9 +283,11 @@ GLShape *ShapePalette::getCreatureShape( char *model_name,
   return loader->getCreatureShape( model_name, skin_name, scale );
 }
 
-void ShapePalette::decrementSkinRefCount( char *model_name, 
-                                          char *skin_name,
-                                          Monster *monster ) {
+void ShapePalette::decrementSkinRefCountAndDeleteShape( char *model_name, 
+																												char *skin_name,
+																												GLShape *shape,
+																												Monster *monster ) {
+	shape->cleanup();
   loader->decrementSkinRefCount( model_name, skin_name );
   // unload monster sounds
   if( monster ) {
@@ -295,6 +297,8 @@ void ShapePalette::decrementSkinRefCount( char *model_name,
   } else {
     session->getGameAdapter()->unloadCharacterSounds( model_name );
   }
+	delete shape;
+	shape = NULL;
 }
 
 void ShapePalette::debugLoadedModels() {
