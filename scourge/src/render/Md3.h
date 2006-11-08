@@ -257,6 +257,7 @@ private:
 	bool paused;
 	ModelLoader *loader;
 
+  void clearModel( t3DModel *pModel );
 	void findModelBounds( t3DModel *pModel, vect3d min, vect3d max );
 	void normalizeModel( t3DModel *pModel, vect3d min, vect3d max );
 	void hashAnimations( t3DModel *pModel );
@@ -288,6 +289,8 @@ private:
 
 	// This store the players weapon model (optional load)
 	t3DModel m_Weapon;
+  
+  int getAnimationIndex( char *name, t3DModel *pModel );
 };
 
 

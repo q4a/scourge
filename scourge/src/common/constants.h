@@ -64,6 +64,7 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #include <map>
 #include <iostream>
 #include <errno.h>
+#include <string>
 
 #if defined( COMPILER_IS_UNIX_COMPATIBLE )
 #   include <unistd.h>
@@ -766,7 +767,8 @@ struct t3DModel
 		//int currentFrame;					// The current frame of the current animation 
 		//int nextFrame;						// The next frame of animation to interpolate too
 		//float t;							// The ratio of 0.0f to 1.0f between each key frame
-		//float lastTime;						// This stores the last time that was stored		
+		//float lastTime;						// This stores the last time that was stored
+		
 		int numOfTags;						// This stores the number of tags in the model
 		t3DModel	**pLinks;				// This stores a list of pointers that are linked to this model
 		struct tMd3Tag		*pTags;			// This stores all the tags for the model animations

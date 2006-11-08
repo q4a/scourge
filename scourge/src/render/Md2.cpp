@@ -53,12 +53,12 @@ bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName)
     // Read the header data
     fread(&m_Header, 1, sizeof(tMd2Header), m_FilePointer);
     if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-	  unsigned int *p = (unsigned int *)&m_Header;
-	  for(unsigned int n = 0; n < sizeof(tMd2Header) / sizeof(unsigned int); n++) {
-		*p = SDL_SwapLE32(*p);
-		p++;
-	  }
-	}
+      unsigned int *p = (unsigned int *)&m_Header;
+      for(unsigned int n = 0; n < sizeof(tMd2Header) / sizeof(unsigned int); n++) {
+        *p = SDL_SwapLE32(*p);
+        p++;
+      }
+    }
     
     // Make sure version is '8'
     if(m_Header.version != 8)
