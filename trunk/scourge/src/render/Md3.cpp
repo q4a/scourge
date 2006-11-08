@@ -22,7 +22,7 @@
 #include "modelwrapper.h"
 #include "md3shape.h"
 
-using namespace std;																				 
+using namespace std;
 
 //////////// *** NEW *** ////////// *** NEW *** ///////////// *** NEW *** ////////////////////
 
@@ -443,10 +443,25 @@ CModelMD3::CModelMD3( ModelLoader *loader )
 	paused = false;
 	this->loader = loader;
 	// Here we initialize all our mesh structures for the character
-	memset(&m_Head,  0, sizeof(t3DModel));
-	memset(&m_Upper, 0, sizeof(t3DModel));
-	memset(&m_Lower, 0, sizeof(t3DModel));
-	memset(&m_Weapon, 0, sizeof(t3DModel));
+  clearModel( &m_Head );
+  clearModel( &m_Upper );
+  clearModel( &m_Lower );
+  clearModel( &m_Weapon );
+}
+
+void CModelMD3::clearModel( t3DModel *pModel ) {
+  pModel->numOfObjects = 0;
+  pModel->numOfMaterials = 0;
+  pModel->numOfAnimations = 0;
+  pModel->numOfTags = 0;
+		pModel->pLinks = NULL;
+		pModel->pTags = NULL;
+    pModel->movex = 0;
+    pModel->movey = 0;
+    pModel->movez = 0;
+    pModel->vertices = NULL;
+    pModel->numVertices = 0;
+    pModel->pGlCommands = NULL;
 }
 
 ///////////////////////////////// ~CMODEL MD3 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
@@ -920,7 +935,6 @@ bool CModelMD3::LoadAnimations(char *strConfigFile)
 	hashAnimations( &m_Head );
 	hashAnimations( &m_Weapon );
 
-
 	// Return a success
 	return true;
 }
@@ -929,7 +943,7 @@ void CModelMD3::hashAnimations( t3DModel *pModel ) {
 	pModel->pAnimationMap.clear();
 	for( unsigned int i = 0; i < pModel->pAnimations.size(); i++ ) {
 		string s = pModel->pAnimations[ i ].strName;
-		pModel->pAnimationMap[ s ] = i;
+		pModel->pAnimationMap[ s ] = (int)i;
 	}
 }
 
@@ -1386,13 +1400,27 @@ void CModelMD3::RenderModel( t3DModel *pModel, MD3Shape *shape )
 	}
 }
 
+int CModelMD3::getAnimationIndex( char *name, t3DModel *pModel ) {
+  string s = name;
+  if( pModel->pAnimationMap.find( s ) != pModel->pAnimationMap.end() ) {
+    return pModel->pAnimationMap[ s ];
+  }
+  /*
+  for( int i = 0; i < (int)pModel->pAnimations.size(); i++ ) {
+    if( !strcmp( pModel->pAnimations[i].strName, name ) ) return i;
+  }
+  */
+  cerr << "*** WARN: can't find animation: " << name << endl;
+  return -1;
+}
+
 void CModelMD3::findBounds( vect3d min, vect3d max ) {
 	findModelBounds( &m_Lower, min, max );
-	//cerr << "LOWER: min=" << min[1] << endl;
+//	cerr << "LOWER: min=" << min[1] << endl;
 	findModelBounds( &m_Upper, min, max );
-	//cerr << "UPPER: min=" << min[1] << endl;
+//	cerr << "UPPER: min=" << min[1] << endl;
 	findModelBounds( &m_Head, min, max );
-	//cerr << "HEAD: min=" << min[1] << endl;
+//	cerr << "HEAD: min=" << min[1] << endl;
 }
 
 void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
@@ -1401,15 +1429,9 @@ void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
 
 	int animationIndex = 0;
 	if( pModel == &m_Upper ) {
-		string s = "TORSO_STAND";
-		if( m_Upper.pAnimationMap.find( s ) != m_Upper.pAnimationMap.end() ) {
-			animationIndex = m_Upper.pAnimationMap[ s ];
-		}
+    animationIndex = getAnimationIndex( "TORSO_STAND", &m_Upper ); 
 	} else if( pModel == &m_Lower ) {
-		string s = "LEGS_IDLE";
-		if( m_Lower.pAnimationMap.find( s ) != m_Lower.pAnimationMap.end() ) {
-			animationIndex = m_Lower.pAnimationMap[ s ];
-		}
+    animationIndex = getAnimationIndex( "LEGS_IDLE", &m_Lower ); 
 	}
 	
 	for(int i = 0; i < pModel->numOfObjects; i++) {
@@ -1471,9 +1493,8 @@ void CModelMD3::normalizeModel( t3DModel *pModel, vect3d min, vect3d max ) {
 ///////////////////////////////// SET TORSO ANIMATION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
 void CModelMD3::SetTorsoAnimation(char *strAnimation, bool force, MD3Shape *shape ) {
-	string s = strAnimation;
-	if( m_Upper.pAnimationMap.find( s ) != m_Upper.pAnimationMap.end() ) {
-		int i = m_Upper.pAnimationMap[ s ];
+  int i = getAnimationIndex( strAnimation, &m_Upper ); 
+  if( i > -1 ) {
 		AnimInfo *ai = shape->getAnimInfo( &m_Upper );
 		// Set the legs animation to the current animation we just found and return
 		if( ai->currentAnim == i ) return;
@@ -1495,10 +1516,9 @@ void CModelMD3::SetTorsoAnimation(char *strAnimation, bool force, MD3Shape *shap
 /////
 ///////////////////////////////// SET LEGS ANIMATION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::SetLegsAnimation(char *strAnimation, bool force, MD3Shape *shape ) {
-	string s = strAnimation;
-	if( m_Lower.pAnimationMap.find( s ) != m_Lower.pAnimationMap.end() ) {
-		int i = m_Lower.pAnimationMap[ s ];
+void CModelMD3::SetLegsAnimation(char *strAnimation, bool force, MD3Shape *shape ) {  
+  int i = getAnimationIndex( strAnimation, &m_Lower ); 
+  if( i > -1 ) {
 		// Set the legs animation to the current animation we just found and return
 		AnimInfo *ai = shape->getAnimInfo( &m_Lower );
 		if( ai->currentAnim == i ) return;
@@ -1569,6 +1589,18 @@ bool CLoadMD3::ImportMD3(t3DModel *pModel, char *strFileName)
 
 	// Read the header data and store it in our m_Header member variable
 	fread(&m_Header, 1, sizeof(tMd3Header), m_FilePointer);
+  if( SDL_BYTEORDER == SDL_BIG_ENDIAN ) {    
+    m_Header.version = SDL_SwapLE32( m_Header.version );
+    m_Header.numFrames = SDL_SwapLE32( m_Header.numFrames );
+    m_Header.numTags = SDL_SwapLE32( m_Header.numTags );
+    m_Header.numMeshes = SDL_SwapLE32( m_Header.numMeshes );
+    m_Header.numMaxSkins = SDL_SwapLE32( m_Header.numMaxSkins );
+    m_Header.headerSize = SDL_SwapLE32( m_Header.headerSize );
+    m_Header.tagStart = SDL_SwapLE32( m_Header.tagStart );
+    m_Header.tagEnd = SDL_SwapLE32( m_Header.tagEnd );
+    m_Header.fileSize = SDL_SwapLE32( m_Header.fileSize );
+  }
+
 
 	// Get the 4 character ID
 	char *ID = m_Header.fileID;
@@ -1614,6 +1646,22 @@ void CLoadMD3::ReadMD3Data(t3DModel *pModel)
 	// Here we allocate memory for the bone information and read the bones in.
 	m_pBones = new tMd3Bone [m_Header.numFrames];
 	fread(m_pBones, sizeof(tMd3Bone), m_Header.numFrames, m_FilePointer);
+  if( SDL_BYTEORDER == SDL_BIG_ENDIAN ) {
+    float f;
+    for( int bc = 0; bc < m_Header.numFrames; bc++ ) {
+      for( int t = 0; t < 3; t++ ) {
+        BSWAPF( m_pBones[bc].mins[t], f );
+        m_pBones[bc].mins[t] = f;
+        BSWAPF( m_pBones[bc].maxs[t], f );
+        m_pBones[bc].maxs[t] = f;
+        BSWAPF( m_pBones[bc].position[t], f );
+        m_pBones[bc].position[t] = f;
+      }
+      BSWAPF( m_pBones[bc].scale, f );
+      m_pBones[bc].scale = f;
+    }
+  }
+
 
 	// Since we don't care about the bone positions, we just free it immediately.
 	// It might be cool to display them so you could get a visual of them with the model.
@@ -1626,6 +1674,23 @@ void CLoadMD3::ReadMD3Data(t3DModel *pModel)
 	// an array of tags.
 	pModel->pTags = new tMd3Tag [m_Header.numFrames * m_Header.numTags];
 	fread(pModel->pTags, sizeof(tMd3Tag), m_Header.numFrames * m_Header.numTags, m_FilePointer);
+  if( SDL_BYTEORDER == SDL_BIG_ENDIAN ) {
+    float f;
+    for( int bc = 0; bc < m_Header.numFrames * m_Header.numTags; bc++ ) {
+      for( int x = 0; x < 3; x++ ) {
+        for( int y = 0; y < 3; y++ ) {
+          BSWAPF( pModel->pTags[bc].rotation[x][y], f );
+          pModel->pTags[bc].rotation[x][y] = f;
+        }
+      }
+      BSWAPF( pModel->pTags[bc].vPosition.x, f );
+      pModel->pTags[bc].vPosition.x = f;
+      BSWAPF( pModel->pTags[bc].vPosition.y, f );
+      pModel->pTags[bc].vPosition.y = f;
+      BSWAPF( pModel->pTags[bc].vPosition.z, f );
+      pModel->pTags[bc].vPosition.z = f;
+    }
+  }  
 
 	// Assign the number of tags to our model
 	pModel->numOfTags = m_Header.numTags;
@@ -1655,6 +1720,18 @@ void CLoadMD3::ReadMD3Data(t3DModel *pModel)
 		// Seek to the start of this mesh and read in it's header
 		fseek(m_FilePointer, meshOffset, SEEK_SET);
 		fread(&meshHeader, sizeof(tMd3MeshInfo), 1, m_FilePointer);
+    if( SDL_BYTEORDER == SDL_BIG_ENDIAN ) {
+      meshHeader.numMeshFrames = SDL_SwapLE32( meshHeader.numMeshFrames );
+      meshHeader.numSkins = SDL_SwapLE32( meshHeader.numSkins );
+      meshHeader.numVertices = SDL_SwapLE32( meshHeader.numVertices );
+      meshHeader.numTriangles = SDL_SwapLE32( meshHeader.numTriangles );
+      meshHeader.triStart = SDL_SwapLE32( meshHeader.triStart );
+      meshHeader.headerSize = SDL_SwapLE32( meshHeader.headerSize );
+      meshHeader.uvStart = SDL_SwapLE32( meshHeader.uvStart );
+      meshHeader.vertexStart = SDL_SwapLE32( meshHeader.vertexStart );
+      meshHeader.meshSize = SDL_SwapLE32( meshHeader.meshSize );
+    }
+
 
 		// Here we allocate all of our memory from the header's information
 		m_pSkins     = new tMd3Skin [meshHeader.numSkins];
@@ -1668,14 +1745,37 @@ void CLoadMD3::ReadMD3Data(t3DModel *pModel)
 		// Seek to the start of the triangle/face data, then read it in
 		fseek(m_FilePointer, meshOffset + meshHeader.triStart, SEEK_SET);
 		fread(m_pTriangles, sizeof(tMd3Face), meshHeader.numTriangles, m_FilePointer);
+    if( SDL_BYTEORDER == SDL_BIG_ENDIAN ) {
+      for( int bc = 0; bc < meshHeader.numTriangles; bc++ ) {
+        m_pTriangles[bc].vertexIndices[0] = SDL_SwapLE32( m_pTriangles[bc].vertexIndices[0] );
+        m_pTriangles[bc].vertexIndices[1] = SDL_SwapLE32( m_pTriangles[bc].vertexIndices[1] );
+        m_pTriangles[bc].vertexIndices[2] = SDL_SwapLE32( m_pTriangles[bc].vertexIndices[2] );
+      }
+    }
 
 		// Seek to the start of the UV coordinate data, then read it in
 		fseek(m_FilePointer, meshOffset + meshHeader.uvStart, SEEK_SET);
 		fread(m_pTexCoords, sizeof(tMd3TexCoord), meshHeader.numVertices, m_FilePointer);
-
+    if( SDL_BYTEORDER == SDL_BIG_ENDIAN ) {
+      float f;
+      for( int bc = 0; bc < meshHeader.numVertices; bc++ ) {
+        BSWAPF( m_pTexCoords[bc].textureCoord[0], f );
+        m_pTexCoords[bc].textureCoord[0] = f;
+        BSWAPF( m_pTexCoords[bc].textureCoord[1], f );
+        m_pTexCoords[bc].textureCoord[1] = f;
+      }
+    }
+    
 		// Seek to the start of the vertex/face index information, then read it in.
 		fseek(m_FilePointer, meshOffset + meshHeader.vertexStart, SEEK_SET);
 		fread(m_pVertices, sizeof(tMd3Triangle), meshHeader.numMeshFrames * meshHeader.numVertices, m_FilePointer);
+    if( SDL_BYTEORDER == SDL_BIG_ENDIAN ) {
+      for( int bc = 0; bc < meshHeader.numMeshFrames * meshHeader.numVertices; bc++ ) {
+        m_pVertices[bc].vertex[0] = SDL_SwapLE16( m_pVertices[bc].vertex[0] );
+        m_pVertices[bc].vertex[1] = SDL_SwapLE16( m_pVertices[bc].vertex[1] );
+        m_pVertices[bc].vertex[2] = SDL_SwapLE16( m_pVertices[bc].vertex[2] );        
+      }  
+    }
 
 		// Now that we have the data loaded into the Quake3 structures, let's convert them to
 		// our data types like t3DModel and t3DObject.  That way the rest of our model loading
