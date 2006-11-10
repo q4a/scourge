@@ -43,6 +43,21 @@ ModelLoader::ModelLoader( bool headless, GLuint *textureGroup ) {
 ModelLoader::~ModelLoader() {
 }
 
+void ModelLoader::clearModel( t3DModel *pModel ) {
+  pModel->numOfObjects = 0;
+  pModel->numOfMaterials = 0;
+  pModel->numOfAnimations = 0;
+  pModel->numOfTags = 0;
+  pModel->pLinks = NULL;
+  pModel->pTags = NULL;
+  pModel->movex = 0;
+  pModel->movey = 0;
+  pModel->movez = 0;
+  pModel->vertices = NULL;
+  pModel->numVertices = 0;
+  pModel->pGlCommands = NULL;
+}
+
 GLShape *ModelLoader::getCreatureShape( char *model_name, 
 																				char *skin_name, 
 																				float scale ) {

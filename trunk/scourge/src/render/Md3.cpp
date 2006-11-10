@@ -443,25 +443,10 @@ CModelMD3::CModelMD3( ModelLoader *loader )
 	paused = false;
 	this->loader = loader;
 	// Here we initialize all our mesh structures for the character
-  clearModel( &m_Head );
-  clearModel( &m_Upper );
-  clearModel( &m_Lower );
-  clearModel( &m_Weapon );
-}
-
-void CModelMD3::clearModel( t3DModel *pModel ) {
-  pModel->numOfObjects = 0;
-  pModel->numOfMaterials = 0;
-  pModel->numOfAnimations = 0;
-  pModel->numOfTags = 0;
-		pModel->pLinks = NULL;
-		pModel->pTags = NULL;
-    pModel->movex = 0;
-    pModel->movey = 0;
-    pModel->movez = 0;
-    pModel->vertices = NULL;
-    pModel->numVertices = 0;
-    pModel->pGlCommands = NULL;
+  ModelLoader::clearModel( &m_Head );
+  ModelLoader::clearModel( &m_Upper );
+  ModelLoader::clearModel( &m_Lower );
+  ModelLoader::clearModel( &m_Weapon );
 }
 
 ///////////////////////////////// ~CMODEL MD3 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*

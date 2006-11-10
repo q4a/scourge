@@ -68,6 +68,8 @@ public:
 	ModelLoader( bool headless, GLuint *textureGroup );
 
 	virtual ~ModelLoader();
+  
+  static void clearModel( t3DModel *pModel );
 
 	virtual GLShape *getCreatureShape( char *model_name, 
 																		 char *skin_name, 
