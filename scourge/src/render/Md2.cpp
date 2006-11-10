@@ -11,6 +11,7 @@
 
 #include "md2shape.h"
 #include "Md2.h"
+#include "modelwrapper.h"
 #include <math.h>
 #include <string>
 
@@ -69,7 +70,8 @@ bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName)
     }
 
     // Read in the model and animation data    
-    memset(pModel, 0, sizeof(t3DModel));
+    //memset(pModel, 0, sizeof(t3DModel));
+    ModelLoader::clearModel( pModel );
     ReadMD2Data(pModel);
     
     // Stores animation info    
