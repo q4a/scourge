@@ -707,20 +707,19 @@ bool isPowerOfTwo( GLuint n ) {
   return true;
 }
 
+// FIXME: this should be similar to loadTextureWithAlpha but adding alpha
+// screws up the stencils in caves. No time to debug now.
 GLuint Shapes::getBMPData( char *filename, GLubyte **buf ) {
-
-  if( headless ) return 0;
-
   char fn[300];
   strcpy(fn, rootDir);
   strcat(fn, filename);
 
 //  cerr << "loading lava data: " << fn << endl;
 
-  /* Create storage space for the texture */
+  // Create storage space for the texture
   SDL_Surface *TextureImage[1];
 
-  /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
+  // Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
   if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
 
     if( TextureImage[0]->w != TextureImage[0]->h && 
@@ -763,7 +762,7 @@ GLuint Shapes::getBMPData( char *filename, GLubyte **buf ) {
     cerr << "Unable to load " << fn << endl;
   }
 
-  /* Free up any memory we may have used */
+  // Free up any memory we may have used
   if( TextureImage[0] )
     SDL_FreeSurface( TextureImage[0] );
 
