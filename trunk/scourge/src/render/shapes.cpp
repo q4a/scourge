@@ -146,6 +146,7 @@ void WallTheme::debug() {
   }
 }
 
+Shapes *Shapes::instance = NULL;
 
 Shapes::Shapes( bool headless ){
   texture_count = 0;
@@ -153,6 +154,7 @@ Shapes::Shapes( bool headless ){
   themeCount = allThemeCount = caveThemeCount = 0;
   currentTheme = NULL;
   this->headless = headless;
+	if( !instance ) instance = this;
 }
 
 void Shapes::initialize() {
@@ -912,18 +914,25 @@ void Shapes::loadStencil( char *filename, int index ) {
   stencilImage[ index ] = p;
 }
 
-void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, 
-                                        GLubyte **image, int red, int green, int blue) {
+void Shapes::setupAlphaBlendedBMP( char *filename, 
+																	 SDL_Surface **surface, 
+																	 GLubyte **image, 
+																	 int red, int green, int blue,
+																	 bool isAbsPath,
+																	 bool swapImage ) {
 
   if( headless ) return;
 
-  //cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
-
   GLubyte *p = NULL;
   char fn[300];
-//  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
-  strcpy(fn, rootDir);
-  strcat(fn, filename);
+	if( isAbsPath ) {
+		strcpy( fn, filename );
+	} else {
+		strcpy( fn, rootDir );
+		strcat( fn, filename );
+	}
+  //cerr << "file: " << fn << " red=" << red << " green=" << green << " blue=" << blue << endl;
+
   if(((*surface) = SDL_LoadBMP( fn ))) {
 
 		//cerr << "...loaded!" << endl;
@@ -942,30 +951,46 @@ void Shapes::setupAlphaBlendedBMP(char *filename, SDL_Surface **surface,
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
 
+		if( swapImage ) {
+			int width  = (*surface)->w;
+			int height = (*surface)->h;		
+			int BytesPerPixel = (*surface)->format->BytesPerPixel;
+			for( int i = 0 ; i < (height / 2) ; ++i )
+				for( int j = 0 ; j < width * BytesPerPixel; j += BytesPerPixel )
+					for(int k = 0; k < BytesPerPixel; ++k)
+						swap( data[ (i * width * BytesPerPixel) + j + k], data[ ( (height - i - 1) * width * BytesPerPixel ) + j + k]);
+		}
+
     p = (GLubyte*)malloc(width * height * 4 * sizeof( GLubyte ));
     int count = 0;
     int c = 0;
     unsigned char r,g,b,a;
     // the following lines extract R,G and B values from any bitmap
     for(int i = 0; i < width * height; ++i) {
-      if(i > 0 && i % width == 0)
+      if(i > 0 && i % width == 0) {
         c += (  (*surface)->pitch - (width * (*surface)->format->BytesPerPixel) );
-      r = data[c++];
-      g = data[c++];
-      b = data[c++];
-			if( (*surface)->format->BytesPerPixel == 4 ) {
-				a = data[c++];
-			} else {
+			}
+
+			if( (*surface)->format->BytesPerPixel == 1 ) {
+				Uint32 pixel_value = (Uint32)data[c++];
+				SDL_GetRGB( pixel_value, (*surface)->format, (Uint8*)&b, (Uint8*)&g, (Uint8*)&r);
 				a = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
+			} else {
+				r = data[c++];
+				g = data[c++];
+				b = data[c++];
+				if( (*surface)->format->BytesPerPixel == 4 ) {
+					a = data[c++];
+				} else {
+					a = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
+				}
 			}
 			
-
-      p[count++] = r;
-      p[count++] = g;
-      p[count++] = b;
+			p[count++] = r;
+			p[count++] = g;
+			p[count++] = b;
 			p[count++] = a;
-      //p[count++] = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
-    }
+		}
 //  } else {
 		//cerr << "...not found:" << filename << endl;
 	}
@@ -1110,5 +1135,16 @@ GLuint Shapes::getCursorTexture( int cursorMode ) {
   default:
   return crosshair_texture;
   }
+}
+
+GLuint Shapes::loadTextureWithAlpha( char *filename, int r, int g, int b, bool isAbsPath, bool swapImage ) {
+	SDL_Surface *tmpSurface = NULL;
+	GLubyte *tmpImage = NULL;
+	instance->setupAlphaBlendedBMP( filename, &tmpSurface, &tmpImage, r, g, b, isAbsPath, swapImage );
+	GLuint texId = 0;
+	if( tmpImage ) texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+	if( tmpImage ) free( tmpImage );
+	if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+	return texId;
 }
 
