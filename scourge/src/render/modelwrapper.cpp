@@ -23,6 +23,7 @@
 #include "Md2.h"
 #include "Md3.h"
 #include "glshape.h"
+#include "shapes.h"
 
 using namespace std;
 
@@ -128,7 +129,10 @@ GLuint ModelLoader::loadSkinTexture( char *skin_name ) {
 #ifdef DEBUG_LOADING
       cerr << "&&&&&&&&&& Loading texture: " << skin_name << endl;
 #endif
-      CreateTexture(&skin_texture, skin_name, 0);
+      //CreateTexture(&skin_texture, skin_name, 0);
+
+			skin_texture = Shapes::loadTextureWithAlpha( skin_name, 0, 0, 0, true, true );
+
 #ifdef DEBUG_LOADING
 			cerr << "\t&&&&&&&&&& Loaded texture: " << skin_texture << endl;
 #endif
