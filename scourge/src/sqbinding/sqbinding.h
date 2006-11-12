@@ -161,6 +161,7 @@ public:
 
   // Squirrel object references
   HSQOBJECT refGame;
+	int partySize;
   HSQOBJECT refParty[MAX_PARTY_SIZE];
   HSQOBJECT refMission;
   std::vector<HSQOBJECT*> refCreature;

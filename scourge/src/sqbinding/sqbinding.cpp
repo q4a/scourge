@@ -63,6 +63,8 @@ SqBinding::SqBinding( Session *session ) {
   SqBinding::sessionRef = this->session = session;
   if( !binding ) SqBinding::binding = this;
 
+	partySize = 0;
+
   if( DEBUG_SQUIRREL ) cerr << "Initializing squirrel vm" << endl;
   vm = sq_open(1024); //creates a VM with initial stack size 1024
 
@@ -163,11 +165,12 @@ void SqBinding::partyChanged() {
 		}
   }
 
-  // release party references
-  for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+  // release party references (using the original party size)
+  for( int i = 0; i < partySize; i++ ) {
     sq_release( vm, &(refParty[ i ]) );  
   }
   partyMap.clear();
+	partySize = session->getParty()->getPartySize();
 
 	// create the party  
   for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
@@ -194,6 +197,7 @@ void SqBinding::startGame() {
 
   // create the party
   if( DEBUG_SQUIRREL ) cerr << "Creating party:" << endl;
+	partySize = session->getParty()->getPartySize();
   for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
     if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), &(refParty[i]) ) ) ) {
       // Set a token in the class so we can resolve the squirrel instance to a native creature.
@@ -231,6 +235,7 @@ void SqBinding::endGame() {
     sq_release( vm, &(refParty[ i ]) );  
   }
   partyMap.clear();
+	partySize = 0;
 
   // destroy the spell references
   for( int i = 0; i < (int)refSpell.size(); i++ ) {
