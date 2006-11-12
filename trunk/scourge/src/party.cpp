@@ -21,6 +21,7 @@
 #include "item.h"
 #include "creature.h"
 #include "shapepalette.h"
+#include "sqbinding/sqbinding.h"
 
 using namespace std;
 
@@ -626,17 +627,20 @@ int Party::getAverageLevel() {
 
 void Party::hire( Creature *creature ) {
 	// Remove from the session list
-	assert( session->removeCreatureRef( creature ) );
+	assert( session->removeCreatureRef( creature, partySize ) );
 
 	// add to party
 	party[ partySize++ ] = creature;
+
+	session->getSquirrel()->partyChanged();
 }
 
 void Party::dismiss( int index ) {
-	session->addCreatureRef( party[ index ] );
+	session->addCreatureRef( party[ index ], index );
 	for( int i = index; i < partySize - 1; i++ ) {
 		party[ i ] = party[ i + 1 ];
 	}
 	party[ --partySize ] = NULL;
+	session->getSquirrel()->partyChanged();
 }
 

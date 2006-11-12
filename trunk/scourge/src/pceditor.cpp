@@ -276,6 +276,7 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 	if( widget == cancelButton ) {
 		win->setVisible( false );
 	} else if( widget == okButton ) {
+		saveUI();
 		if( creature ) creature->applySkillMods();
 		win->setVisible( false );
 	} else if( widget == nameButton ) {

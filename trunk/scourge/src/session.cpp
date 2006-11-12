@@ -242,7 +242,7 @@ Creature *Session::newCreature( Character *character, char *name, int sex, int m
   return c;
 }
 
-bool Session::removeCreatureRef( Creature *creature ) {
+bool Session::removeCreatureRef( Creature *creature, int index ) {
 	for( vector<Creature*>::iterator i = creatures.begin(); i != creatures.end(); ++i ) {
 		Creature *c = *i;
 		if( c == creature ) {
@@ -253,7 +253,7 @@ bool Session::removeCreatureRef( Creature *creature ) {
 	return false;
 }
 
-void Session::addCreatureRef( Creature *creature ) {
+void Session::addCreatureRef( Creature *creature, int index ) {
 	creatures.push_back( creature );
 }
 
