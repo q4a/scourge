@@ -208,6 +208,9 @@ public:
   void startGame();
   void endGame();
 
+	// called when adding/removing party members
+	void partyChanged();
+
   bool startLevel();
   bool endLevel();
 

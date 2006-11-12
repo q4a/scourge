@@ -119,7 +119,68 @@ SqBinding::~SqBinding() {
 }
 
 
+void SqBinding::partyChanged() {
+	if( DEBUG_SQUIRREL ) {
+		cerr << "*** Party changed!" << endl;
+		cerr << "BEFORE: creatures=" << refCreature.size() << endl;
+	}
 
+	// remove from creatures if party member used to be a wandering hero
+	HSQOBJECT *obj;
+	for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+		if( creatureMap.find( session->getParty()->getParty(i) ) != creatureMap.end() ) {
+			obj = creatureMap[ session->getParty()->getParty(i) ];
+			for( vector<HSQOBJECT*>::iterator e = refCreature.begin(); e != refCreature.end(); ++e ) {
+				HSQOBJECT *ref = *e;
+				if( ref == obj ) {
+					refCreature.erase( e );
+					creatureMap.erase( session->getParty()->getParty(i) );
+					delete obj;
+					if( DEBUG_SQUIRREL ) cerr << "&&& Removed prior creature ref for " << 
+						session->getParty()->getParty(i)->getName() << endl;
+					break;
+				}
+			}
+			break;
+		}
+	}
+
+	// add a creature ref to any new creatures (dismissed heroes)
+  for( int i = 0; i < session->getCreatureCount(); i++ ) {
+		if( creatureMap.find( session->getCreature( i ) ) == creatureMap.end() ) {
+			if( DEBUG_SQUIRREL ) cerr << "&&& Adding creature ref for dismissed hero: " << 
+						session->getCreature( i )->getName() << endl;
+			obj = (HSQOBJECT*)malloc( sizeof( HSQOBJECT ) );
+			if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), obj ) ) ) {
+				// Set a token in the class so we can resolve the squirrel instance to a native creature.
+				// The value is the address of the native creature object.
+				setObjectValue( *obj, SCOURGE_ID_TOKEN, session->getCreature(i) );
+				refCreature.push_back( obj );
+				creatureMap[ session->getCreature(i) ] = obj;
+			} else {
+				cerr << "Unable instantiate class: " << creature->getClassName() << endl;
+			}
+		}
+  }
+
+  // release party references
+  for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+    sq_release( vm, &(refParty[ i ]) );  
+  }
+  partyMap.clear();
+
+	// create the party  
+  for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+    if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), &(refParty[i]) ) ) ) {
+      // Set a token in the class so we can resolve the squirrel instance to a native creature.
+      // The value is the address of the native creature object.
+      setObjectValue( refParty[i], SCOURGE_ID_TOKEN, session->getParty()->getParty(i) );
+      partyMap[ session->getParty()->getParty(i) ] = &(refParty[i]);
+    }
+  }
+
+	if( DEBUG_SQUIRREL ) cerr << "AFTER: creatures=" << refCreature.size() << endl;
+}
 
 void SqBinding::startGame() {
   // Create a game instance (root squirrel object)
