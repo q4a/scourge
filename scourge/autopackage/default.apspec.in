@@ -9,7 +9,7 @@ Packager: Gabor Torok <gabortorok@users.sourceforge.net>
 Summary: Scourge is a 3d roguelike game
 URL: http://scourge.sf.net
 License: GNU General Public License, Version 2
-SoftwareVersion: 0.16
+SoftwareVersion: 0.17
 AutopackageTarget: 1.0
 
 # Only uncomment InterfaceVersion if your package exposes interfaces to other software,
