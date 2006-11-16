@@ -1,14 +1,19 @@
-I would like to try using CMAKE to generate Makefile-s for this project. Therefore please download cmake from cmake.org and run:
+# To check out the code and data into a scourge directory
+svn co https://svn.sourceforge.net/svnroot/scourge/trunk scourge
 
-cmake .
+# To configure it
+cd scourge/scourge
+autoreconf -i
 
-at the prompt. This will produce a makefile that you can use the usual way.
+# To compile it
+cd ..
+mkdir build
+cd build
+../scourge/configure --enable-debug
+make
 
-The CMakeLists.txt file seems to work on linux platforms. On OSX and Windows it asked for additional information. I'm not sure if this can be fixed in CMakeLists.txt or if some modules (like FindGLUT) need to be changed. (If someone knows, please let me know.)
-
-I kept makefiles for some other platforms around (OS X, win32) until the CMAKE issues are resolved.
-
-If this turns out to be a total disaster we can go back to autoconf, etc.
+# Run
+./src/scourge -f
 
 Thanks,
 --Gabor
