@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 17
+#define PERSIST_VERSION 18
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -110,6 +110,20 @@ typedef struct _MapInfo {
   LocationInfo *pos[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
 } MapInfo;
 
+typedef struct _MissionInfo {
+	Uint32 version;
+  Uint8 level;
+  Uint8 depth;
+  Uint8 mapName[80];
+	Uint8 templateName[80];
+	Uint8 itemCount;
+	Uint8 itemName[100][255];
+	Uint8 itemDone[100];
+	Uint8 monsterCount;
+	Uint8 monsterName[100][255];
+	Uint8 monsterDone[100];
+} MissionInfo;
+
 class Persist {
 public:
   static LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
@@ -121,6 +135,10 @@ public:
   static void saveCreature( File *file, CreatureInfo *info );
   static CreatureInfo *loadCreature( File *file );
   static void deleteCreatureInfo( CreatureInfo *info );
+
+	static void saveMission( File *file, MissionInfo *info );
+  static MissionInfo *loadMission( File *file );
+  static void deleteMissionInfo( MissionInfo *info );
 
 protected:
   static void saveItem( File *file, ItemInfo *item );

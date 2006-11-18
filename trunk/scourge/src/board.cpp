@@ -43,6 +43,7 @@ map<string, NpcInfo*> Mission::npcInfos;
 Board::Board(Session *session) {
   this->session = session;
   this->storylineIndex = 0;
+	missionListCount = 0;
 
   char errMessage[500];
   char s[200];
@@ -209,8 +210,8 @@ Board::~Board() {
 }
 
 void Board::freeListText() {
-  if( availableMissions.size() ) {
-    for( int i = 0; i < (int)availableMissions.size(); i++ ) {
+  if( missionListCount ) {
+    for( int i = 0; i < missionListCount; i++ ) {
       free( missionText[i] );
     }
     free( missionText );
@@ -310,6 +311,7 @@ void Board::initMissions() {
 
   // init ui
   if(availableMissions.size()) {
+		missionListCount = availableMissions.size();
     missionText = (char**)malloc(availableMissions.size() * sizeof(char*));
     missionColor = (Color*)malloc(availableMissions.size() * sizeof(Color));
     for(int i = 0; i < (int)availableMissions.size(); i++) {
@@ -392,7 +394,7 @@ MissionTemplate::MissionTemplate( Board *board, char *name, char type, char *des
 MissionTemplate::~MissionTemplate() {
 }
 
-Mission *MissionTemplate::createMission( Session *session, int level, int depth ) {
+Mission *MissionTemplate::createMission( Session *session, int level, int depth, MissionInfo *info ) {
 
 //  cerr << "*** Creating level " << level << " mission, using template: " << this->name << endl;
 
@@ -405,13 +407,13 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
   char parsedFailure[2000];
   char s[2000];
   strcpy( s, name );
-  parseText( session, level, depth, s, parsedName, &items, &creatures );
+  parseText( session, level, depth, s, parsedName, &items, &creatures, info );
   strcpy( s, description );
-  parseText( session, level, depth, s, parsedDescription, &items, &creatures );
+  parseText( session, level, depth, s, parsedDescription, &items, &creatures, info );
   strcpy( s, success );
-  parseText( session, level, depth, s, parsedSuccess, &items, &creatures );
+  parseText( session, level, depth, s, parsedSuccess, &items, &creatures, info );
   strcpy( s, failure );
-  parseText( session, level, depth, s, parsedFailure, &items, &creatures );
+  parseText( session, level, depth, s, parsedFailure, &items, &creatures, info );
   
   Mission *mission = new Mission( board, 
                                   level, depth, parsedName, 
@@ -419,12 +421,41 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
                                   parsedFailure, NULL, mapType );
   for(map<string, RpgItem*>::iterator i=items.begin(); i!=items.end(); ++i) {
     RpgItem *item = i->second;
-    mission->addItem( item );
+		bool found = false;
+		bool value = false;
+		if( info ) {
+			for( int i = 0; i < info->itemCount; i++ ) {
+				if( !strcmp( (char*)info->itemName[ i ], item->getName() ) ) {
+					found = true;
+					value = info->itemDone[ i ];
+					break;
+				}
+			}
+			if( !found ) {
+				cerr << "*** Error: can't find rpgItem in saved mission: " << item->getName() << endl;
+			}
+		}
+    mission->addItem( item, value );
   }
   for(map<string, Monster*>::iterator i=creatures.begin(); i!=creatures.end(); ++i) {
     Monster *monster = i->second;
-    mission->addCreature( monster );
+		bool found = false;
+		bool value = false;
+		if( info ) {
+			for( int i = 0; i < info->monsterCount; i++ ) {
+				if( !strcmp( (char*)info->monsterName[ i ], monster->getType() ) ) {
+					found = true;
+					value = info->monsterDone[ i ];
+					break;
+				}
+			}
+			if( !found ) {
+				cerr << "*** Error: can't find Monster in saved mission: " << monster->getType() << endl;
+			}
+		}
+    mission->addCreature( monster, value );
   }
+	mission->setTemplateName( this->name );
 
   return mission;
 }                                               
@@ -432,7 +463,10 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth 
 void MissionTemplate::parseText( Session *session, int level, int depth,
                                  char *text, char *parsedText,
                                  map<string, RpgItem*> *items, 
-                                 map<string, Monster*> *creatures ) {
+                                 map<string, Monster*> *creatures,
+																 MissionInfo *info ) {
+	int itemCount = 0;
+	int monsterCount = 0;
   //cerr << "parsing text: " << text << endl;
   strcpy( parsedText, "" );
   char *p = strtok( text, " " );
@@ -449,8 +483,16 @@ void MissionTemplate::parseText( Session *session, int level, int depth,
         string s = varName;
         RpgItem *item;
         if( items->find( s ) == items->end() ) {
-          item = RpgItem::getRandomItem( 1 );
-          //item->setBlocking(true); // don't let monsters pick this up
+					if( info ) {
+						if( itemCount >= info->itemCount ) {
+								cerr << "*** error: itemCount out of range!" << endl;
+								item = RpgItem::getRandomItem( 1 );
+						} else {
+							item = RpgItem::getItemByName( (char*)info->itemName[ itemCount++ ] );
+						}
+					} else {
+						item = RpgItem::getRandomItem( 1 );
+					}
           (*items)[ s ] = item;
         } else {
           item = (*items)[s];
@@ -465,7 +507,16 @@ void MissionTemplate::parseText( Session *session, int level, int depth,
           // find a monster
           int monsterLevel = level;
           while( monsterLevel > 0 && !monster ) {
-            monster = Monster::getRandomMonster( monsterLevel );
+						if( info ) {
+							if( monsterCount >= info->monsterCount ) {
+								cerr << "*** error: monsterCount out of range!" << endl;
+								monster = Monster::getRandomMonster( monsterLevel );
+							} else {
+								monster = Monster::getMonsterByName( (char*)info->monsterName[ monsterCount++ ] );
+							}
+						} else {
+							monster = Monster::getRandomMonster( monsterLevel );
+						}
             if(!monster) {
               cerr << "Warning: no monsters defined for level: " << level << endl;
               monsterLevel--;
@@ -506,6 +557,7 @@ Mission::Mission( Board *board, int level, int depth,
   this->storyLine = false;
   this->mapX = this->mapY = 0;
   this->special[0] = '\0';
+	this->templateName[0] = '\0';
 
   // assign the map grid location
   if( mapName && strlen( mapName ) ) {
@@ -933,6 +985,42 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
     }
     fclose( fp );
   }
+}
+
+MissionInfo *Mission::save() {
+	MissionInfo *info = (MissionInfo*)malloc(sizeof(MissionInfo));
+  info->version = PERSIST_VERSION;
+  strncpy( (char*)info->templateName, getTemplateName(), 79);
+  info->templateName[79] = 0;
+	// FIXME: save map here
+	strcpy( (char*)info->mapName, "" );
+	info->level = getLevel();
+	info->depth = getDepth();
+	info->itemCount = itemList.size();
+	for( int i = 0; i < (int)itemList.size(); i++ ) {
+		strncpy( (char*)info->itemName[i], itemList[i]->getName(), 254 );
+		info->itemName[i][254] = '\0';
+		info->itemDone[i] = ( items[ itemList[i] ] ? 1 : 0 );
+	}
+	info->monsterCount = creatureList.size();
+	for( int i = 0; i < (int)creatureList.size(); i++ ) {
+		strncpy( (char*)info->monsterName[i], creatureList[i]->getType(), 254 );
+		info->monsterName[i][254] = '\0';
+		info->monsterDone[i] = ( creatures[ creatureList[i] ] ? 1 : 0 );
+	}
+	return info;
+}
+
+Mission *Mission::load( Session *session, MissionInfo *info ) {
+	// find the template
+	MissionTemplate *missionTemplate = session->getBoard()->
+		findTemplateByName( (char*)info->templateName );
+	if( !missionTemplate ) {
+		cerr << "Can't find template for name: " << info->templateName << endl;
+		return NULL;
+	}
+	cerr << "Loading mission with template: " << (char*)(info->templateName) << endl;
+	return missionTemplate->createMission( session, info->level, info->depth, info );
 }
 
 NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype ) {

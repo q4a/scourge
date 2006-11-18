@@ -19,6 +19,7 @@
 #define BOARD_H
 
 #include "common/constants.h"
+#include "persist.h"
 #include <map>
 #include <vector>
 #include <string>
@@ -91,6 +92,7 @@ private:
   // the mission's location on the map-grid
   int mapX, mapY;
   char special[80];
+	char templateName[80];
 public:
 
 #define INTRO_PHRASE "_INTRO_"
@@ -139,13 +141,13 @@ public:
   inline void setStoryLine( bool b ) { storyLine = b; }
   inline bool isStoryLine() { return storyLine; }
 
-  inline void addCreature( Monster *monster ) {
-    creatures[monster] = false;
+  inline void addCreature( Monster *monster, bool value=false ) {
+    creatures[monster] = value;
     creatureList.push_back( monster );
   }
 
-  inline void addItem( RpgItem *item ) {
-    items[item] = false;
+  inline void addItem( RpgItem *item, bool value=false ) {
+    items[item] = value;
     itemList.push_back( item );
   }
 
@@ -183,12 +185,18 @@ public:
   bool itemFound(Item *item);
   bool creatureSlain(Creature *creature);
 
-  int getItemCount() { return (int)itemList.size(); }
-  RpgItem *getItem( int index ) { return itemList[ index ]; }
-  bool getItemHandled( int index ) { return items[ itemList[ index ] ]; }
-  int getCreatureCount() { return (int)creatureList.size(); }
-  Monster *getCreature( int index ) { return creatureList[ index ]; }
-  bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
+  inline int getItemCount() { return (int)itemList.size(); }
+  inline RpgItem *getItem( int index ) { return itemList[ index ]; }
+  inline bool getItemHandled( int index ) { return items[ itemList[ index ] ]; }
+  inline int getCreatureCount() { return (int)creatureList.size(); }
+  inline Monster *getCreature( int index ) { return creatureList[ index ]; }
+  inline bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
+
+	inline char *getTemplateName() { return templateName; }
+	inline void setTemplateName( char *s ) { strcpy( templateName, s ); }
+
+	MissionInfo *save();
+	static Mission *load( Session *session, MissionInfo *info );
 
 private:
 	//static void addWanderingHeroes( GameAdapter *adapter );
@@ -217,12 +225,14 @@ private:
 public:
   MissionTemplate( Board *board, char *name, char mapType, char *description, char *success, char *failure );
   ~MissionTemplate();
-  Mission *createMission( Session *session, int level, int depth );
+  Mission *createMission( Session *session, int level, int depth, MissionInfo *info=NULL );
+	inline char *getName() { return name; }
 private:
   void parseText( Session *session, int level, int depth,
                   char *text, char *parsedText,
                   std::map<std::string, RpgItem*> *items, 
-                  std::map<std::string, Monster*> *creatures );
+                  std::map<std::string, Monster*> *creatures,
+									MissionInfo *info=NULL );
 };
 
 
@@ -237,6 +247,7 @@ class Board	{
 
   std::vector<Mission*> availableMissions;
 
+	int missionListCount;
   char **missionText;
   Color *missionColor;
 
@@ -259,6 +270,15 @@ public:
   
   inline int getMissionCount() { return availableMissions.size(); }
   inline Mission *getMission(int index) { return availableMissions[index]; }
+	inline void addMission( Mission *mission ) { availableMissions.push_back( mission ); }
+
+	inline MissionTemplate *findTemplateByName( char *name ) {
+		for( int i = 0; i < (int)templates.size(); i++ ) {
+			if( !strcmp( templates[i]->getName(), name ) ) return templates[i];
+		}
+		std::cerr << "*** Error: can't find template: " << name << std::endl;
+		return NULL;
+	}
 
  private:
   void freeListText();
