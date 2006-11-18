@@ -267,7 +267,7 @@ void Scourge::startMission() {
     // do this only once
     if(resetParty) {
       // clear the board
-      board->reset();
+      // board->reset(); // already done in loadGame
       // clear the current mission (otherwise weird crashes later)
       getSession()->setCurrentMission(NULL);
       // reset the party
@@ -2747,6 +2747,22 @@ bool Scourge::saveGame(Session *session) {
       Persist::saveCreature( file, info );
       Persist::deleteCreatureInfo( info );
     }
+		// save the current uncompleted missions
+		int missionCount = 0;
+		for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
+			if( !( session->getBoard()->getMission(i)->isCompleted() ||
+						 session->getBoard()->getMission(i)->isStoryLine() ) ) missionCount++;
+		}
+		n = missionCount;
+		file->write( &n );
+		for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
+			if( !( session->getBoard()->getMission(i)->isCompleted() ||
+						 session->getBoard()->getMission(i)->isStoryLine() ) ) {
+				MissionInfo *info = session->getBoard()->getMission(i)->save();
+				Persist::saveMission( file, info );
+				Persist::deleteMissionInfo( info );
+			}
+		}
     delete file;
   }
 
@@ -2777,10 +2793,10 @@ bool Scourge::loadGame( Session *session, char *error ) {
 		return false;
 	}
 	File *file = new File( fp );
-	Uint32 n = PERSIST_VERSION;
-	file->read( &n );
-	if( n < OLDEST_HANDLED_VERSION ) {
-		cerr << "*** Error: Savegame file is too old (v" << n <<
+	Uint32 version = PERSIST_VERSION;
+	file->read( &version );
+	if( version < OLDEST_HANDLED_VERSION ) {
+		cerr << "*** Error: Savegame file is too old (v" << version <<
 			" vs. current v" << PERSIST_VERSION <<
 			", vs. last handled v" << OLDEST_HANDLED_VERSION <<
 			"): ignoring data in file." << endl;
@@ -2788,12 +2804,13 @@ bool Scourge::loadGame( Session *session, char *error ) {
 		strcpy( error, "Error: Saved game version is too old." );
 		return false;
 	} else {
-		if( n < PERSIST_VERSION ) {
-			cerr << "*** Warning: loading older savegame file: v" << n <<
+		if( version < PERSIST_VERSION ) {
+			cerr << "*** Warning: loading older savegame file: v" << version <<
 				" vs. v" << PERSIST_VERSION << ". Will try to convert it." << endl;
 		}
 		Uint32 storylineIndex;
 		file->read( &storylineIndex );
+		Uint32 n;
 		file->read( &n );
 		Creature *pc[MAX_PARTY_SIZE];
 		for(int i = 0; i < (int)n; i++) {
@@ -2801,10 +2818,21 @@ bool Scourge::loadGame( Session *session, char *error ) {
 			pc[i] = session->getParty()->getParty(i)->load( session, info );
 			Persist::deleteCreatureInfo( info );
 		}
-
 		// set the new party
 		session->getParty()->setParty( n, pc, storylineIndex );
 
+		// load the current missions
+		session->getBoard()->reset();
+		if( version >= 18 ) {
+			file->read( &n );
+			cerr << "Loading " << n << " missions." << endl;
+			for( int i = 0; i < (int)n; i++ ) {
+				MissionInfo *info = Persist::loadMission( file );
+				session->getBoard()->addMission( Mission::load( session, info ) );
+				Persist::deleteMissionInfo( info );
+			}
+			cerr << "mission count=" << session->getBoard()->getMissionCount() << endl;
+		}
 		delete file;
 	}
 

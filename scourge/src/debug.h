@@ -33,7 +33,7 @@
 #define CALENDAR_DEBUG 0
 
 // creature.cpp             
-#define GOD_MODE 0
+#define GOD_MODE 1
 #define MONSTER_IMORTALITY 0
                        
 // partyeditor.cpp (if non-1, defaults are added)
@@ -43,7 +43,7 @@
 //#define CAVE_TEST 1
 #define CAVE_TEST_LEVEL 4
 #define BATTLES_ENABLED 1
-//#define DEBUG_KEYS 1
+#define DEBUG_KEYS 1
 //#define BASE_DEBUG 1
 
 // sqbinding.cpp                        

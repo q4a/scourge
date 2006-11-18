@@ -184,6 +184,10 @@ void Persist::deleteDiceInfo( DiceInfo *info ) {
   free( info );
 }
 
+void Persist::deleteMissionInfo( MissionInfo *info ) {
+  free( info );
+}
+
 void Persist::saveCreature( File *file, CreatureInfo *info ) {
   file->write( &(info->version) );
   file->write( info->name, 255 );
@@ -358,6 +362,44 @@ DiceInfo *Persist::loadDice( File *file ) {
   file->read( &(info->count) );
   file->read( &(info->sides) );
   file->read( &(info->mod) );
+  return info;
+}
+
+void Persist::saveMission( File *file, MissionInfo *info ) {
+  file->write( &(info->version) );
+	file->write( &(info->level) );
+	file->write( &(info->depth) );
+	file->write( info->mapName, 80 );
+	file->write( info->templateName, 80 );
+	file->write( &(info->itemCount) );
+	for( int i = 0; i < (int)info->itemCount; i++ ) {
+		file->write( info->itemName[ i ], 255 );
+		file->write( &(info->itemDone[ i ]) );
+	}
+	file->write( &(info->monsterCount) );
+	for( int i = 0; i < (int)info->monsterCount; i++ ) {
+		file->write( info->monsterName[ i ], 255 );
+		file->write( &(info->monsterDone[ i ]) );
+	}
+}
+
+MissionInfo *Persist::loadMission( File *file ) {
+  MissionInfo *info = (MissionInfo*)malloc(sizeof(MissionInfo));
+	file->read( &(info->version) );
+	file->read( &(info->level) );
+	file->read( &(info->depth) );
+	file->read( info->mapName, 80 );
+	file->read( info->templateName, 80 );
+	file->read( &(info->itemCount) );
+	for( int i = 0; i < (int)info->itemCount; i++ ) {
+		file->read( info->itemName[ i ], 255 );
+		file->read( &(info->itemDone[ i ]) );
+	}
+	file->read( &(info->monsterCount) );
+	for( int i = 0; i < (int)info->monsterCount; i++ ) {
+		file->read( info->monsterName[ i ], 255 );
+		file->read( &(info->monsterDone[ i ]) );
+	}
   return info;
 }
 
