@@ -231,6 +231,15 @@ protected:
   bool useTeleporter(Location *pos);
   bool useGate(Location *pos);
   bool usePool( Location *pos );
+	
+	// called from startMission
+	void resetGame();
+	void createMissionInfoMessage( Mission *lastMission );
+	bool createLevelMap( Mission *lastMission, bool fromRandomMap );
+	void showLevelInfo();
+	void cleanUpAfterMission();
+	bool changeLevel();
+	void endGame();
 
 public:
 #define TOP_GUI_WIDTH 400

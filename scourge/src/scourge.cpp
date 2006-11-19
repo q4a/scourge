@@ -245,10 +245,8 @@ void Scourge::startMission() {
   nextMission = -1;
   inHq = true;
 
-  TerrainGenerator *dg = NULL;
   Mission *lastMission = NULL;
-  char result[300];
-  char *scriptName;
+    
   while(true) {
 
     oldStory = currentStory;
@@ -266,52 +264,7 @@ void Scourge::startMission() {
 
     // do this only once
     if(resetParty) {
-      // clear the board
-      // board->reset(); // already done in loadGame
-      // clear the current mission (otherwise weird crashes later)
-      getSession()->setCurrentMission(NULL);
-      // reset the party
-      if(session->isMultiPlayerGame()) {
-        party->resetMultiplayer(multiplayer->getCreature());
-      } else {
-        party->reset();
-      }
-      // reset the calendar
-      party->getCalendar()->reset(true); // reset the time
-
-      // re-add party events (hack)
-      resetPartyUI();
-
-      Calendar *cal = getSession()->getParty()->getCalendar();
-      {
-        // Schedule an event to keep reloading scripts if they change on disk
-        Date d(0, 0, 1, 0, 0, 0); // (format : sec, min, hours, days, months, years)
-        Event *event = new ReloadEvent( cal->getCurrentDate(),
-                                        d,
-                                        Event::INFINITE_EXECUTIONS,
-                                        getSession(),
-                                        ReloadEvent::MODE_RELOAD_SCRIPTS );
-        cal->scheduleEvent( event );
-      }
-
-      {
-        // Schedule an event to regain MP now and then
-        Date d(0, 10, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
-        Event *event = new ReloadEvent( cal->getCurrentDate(),
-                                        d,
-                                        Event::INFINITE_EXECUTIONS,
-                                        getSession(),
-                                        ReloadEvent::MODE_REGAIN_POINTS );
-        cal->scheduleEvent( event );
-      }
-
-      // inventory needs the party
-      if(!inventory) {
-        inventory = new Inventory(this);
-      }
-
-      getSession()->getSquirrel()->startGame();
-
+			resetGame();
       resetParty = false;
     }
     //cerr << "Minimap reset" << endl;
@@ -320,14 +273,6 @@ void Scourge::startMission() {
     // ready the party
     //cerr << "Party reset" << endl;
     party->startPartyOnMission();
-
-    // save the party
-    //cerr << "Saving party" << endl;
-    if(!session->isMultiPlayerGame()) {
-      if(!saveGame(session)) {
-        showMessageDialog( "Error saving game!" );
-      }
-    }
 
     // position the players
     //cerr << "Calling resetMove" << endl;
@@ -341,161 +286,20 @@ void Scourge::startMission() {
     // clear infoMessage
     strcpy( infoMessage, "" );
 
-    bool mapCreated = true;
-    if(nextMission == -1) {
-
-      //cerr << "Showing Uzudil's message" << endl;
-      missionWillAwardExpPoints = false;
-
-      // in HQ map
-      inHq = true;
-
-      // store mission's outcome (mission may be deleted below)
-      if( lastMission ) {
-        sprintf( infoMessage,
-                 ( lastMission->isCompleted() ?
-                   lastMission->getSuccess() :
-                   lastMission->getFailure() ) );
-
-        if( lastMission->isCompleted() ) {
-          // Add XP points for making it back alive
-          char message[1000];
-          int exp = (lastMission->getLevel() + 1) * 100;
-          sprintf( message, " For returning alive, the party receives %d experience points. ", exp);
-          strcat( infoMessage, message );
-
-          for(int i = 0; i < getParty()->getPartySize(); i++) {
-            int level = getParty()->getParty(i)->getLevel();
-            if(!getParty()->getParty(i)->getStateMod(Constants::dead)) {
-              int n = getParty()->getParty(i)->addExperience(exp);
-              if(n > 0) {
-                if( level != getParty()->getParty(i)->getLevel() ) {
-                  sprintf(message, " %s gains a level! ", getParty()->getParty(i)->getName());
-                  strcat( infoMessage, message );
-                }
-              }
-            }
-          }
-        }
-
-        lastMission = NULL;
-      }
-
-      // init the missions board (this deletes completed missions)
-      //cerr << "Initializing board" << endl;
-      board->initMissions();
-
-      // display the HQ map
-      getSession()->setCurrentMission(NULL);
-      missionWillAwardExpPoints = false;
-
-
-#ifdef CAVE_TEST
-      dg = new CaveMaker( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
-      mapCreated = dg->toMap( levelMap, getSession()->getShapePalette() );
-      scriptName = RANDOM_MAP_NAME;
-#else
-      dg = NULL;
-      levelMap->loadMap( HQ_MAP_NAME, result, this, 1, currentStory, changingStory );
-      scriptName = HQ_MAP_NAME;
-#endif
-
-      //cerr << result << endl;
-
-    } else {
-      // in HQ map
-      inHq = false;
-
-      // Initialize the map with a random dungeon
-      getSession()->setCurrentMission(board->getMission(nextMission));
-      missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
-      bool loaded = false;
-      if( getSession()->getCurrentMission()->isEdited() ) {
-				//cerr << "EDITED" << endl;
-        // try to load the edited map
-        dg = NULL;
-        bool lastLevel = ( currentStory == getSession()->getCurrentMission()->getDepth() - 1 );
-				//cerr << "lastLevel=" << lastLevel << " currentStory=" << currentStory << " depth=" << getSession()->getCurrentMission()->getDepth() << endl;
-        
-				
-				if( lastLevel ) {
-
-					/**
-					 * If it's the last edited level, add mission items and monsters.
-					 * 
-					 * FIXME: this is very easy to break code. Relying on the last level
-					 * is bad because:
-					 * 1. the algorithm might change (it has for random-levels)
-					 * 2. if edited level 2 contains the mission monster, but missions.txt claims
-					 *    there are 5 levels, the creature won't be marked as such. (e.g. Myco.)
-					 */
-
-          vector< RenderedItem* > items;
-          vector< RenderedCreature* > creatures;
-          loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(),
-                                      result,
-                                      this,
-																			getSession()->getCurrentMission()->getLevel(),
-                                      currentStory,
-                                      changingStory,
-                                      fromRandomMap,
-                                      &items,
-                                      &creatures );
-
-          // add item/creature instances if last level (this is special handling for edited levels)
-          set<int> used;
-          for( int i = 0; i < (int)items.size(); i++ ) {
-            Item *item = (Item*)( items[i] );
-            for( int t = 0; t < (int)getSession()->getCurrentMission()->getItemCount(); t++ ) {
-							//cerr << "\tLooking for item: " << getSession()->getCurrentMission()->getItem( t )->getName() << endl;
-              if( getSession()->getCurrentMission()->getItem( t ) == item->getRpgItem() &&
-                  used.find( t ) == used.end() ) {
-								//cerr << "\t\tAdding item " << item->getName() << endl;
-                getSession()->getCurrentMission()->
-                  addItemInstance( item, item->getRpgItem() );
-                used.insert( t );
-              }
-            }
-          }
-          used.clear();
-          for( int i = 0; i < (int)creatures.size(); i++ ) {
-            Creature *creature = (Creature*)( creatures[i] );
-            if( creature->getMonster() ) {
-              for( int t = 0; t < (int)getSession()->getCurrentMission()->getCreatureCount(); t++ ) {
-								//cerr << "\tLooking for creature: " << getSession()->getCurrentMission()->getCreature( t )->getType() << endl;
-                if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() &&
-                    used.find( t ) == used.end() ) {
-									//cerr << "\t\tAdding creature " << creature->getName() << endl;
-                  getSession()->getCurrentMission()->
-                    addCreatureInstanceMap( creature, creature->getMonster() );
-                  used.insert( t );
-                }
-              }
-            }
-          }
-        } else {
-          loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(),
-                                      result,
-                                      this,
-																			getSession()->getCurrentMission()->getLevel(),
-                                      currentStory,
-                                      changingStory,
-                                      fromRandomMap );
-        }
-        scriptName = getSession()->getCurrentMission()->getMapName();
-      }
-
-      // if no edited map is found, make a random map
-      if( !loaded ) {
-				dg = TerrainGenerator::getGenerator( this, currentStory );
-        mapCreated = dg->toMap(levelMap, getSession()->getShapePalette());
-        scriptName = RANDOM_MAP_NAME;
-      }
-    }
+    bool mapCreated = createLevelMap( lastMission, fromRandomMap );
     if( mapCreated ) {
       changingStory = false;
 
 			if( inHq ) addWanderingHeroes();
+
+
+			// save the party
+			//cerr << "Saving party" << endl;
+			if(!session->isMultiPlayerGame()) {
+				if(!saveGame(session)) {
+					showMessageDialog( "Error saving game!" );
+				}
+			}
 
       // center map on the player
       levelMap->center(toint(party->getPlayer()->getX()),
@@ -508,40 +312,9 @@ void Scourge::startMission() {
       // hack to unfreeze animations, etc.
       party->forceStopRound();
 
-      // show an info dialog if infoMessage not already set with outcome of last mission
-      if( !strlen( infoMessage ) ) {
-        if(nextMission == -1) {
-          sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
-        } else if( teleportFailure ) {
-          teleportFailure = false;
-          sprintf(infoMessage, "Teleport spell failed!! Entering level %d", ( currentStory + 1 ));
-        } else {
-          sprintf(infoMessage, "Entering dungeon level %d", ( currentStory + 1 ));
-        }
+			// converse with Uzudil or show "welcome to level" message
+			showLevelInfo();
 
-        // show infoMessage text
-        showMessageDialog(infoMessage);
-        info_dialog_showing = true;
-      } else {
-
-        // start a conversation with Uzudil
-        // FIXME: this will not show teleport effect...
-
-        // FIXME hack code to find Uzudil.
-        Monster *m = Monster::getMonsterByName( "Uzudil the Hand" );
-        Creature *uzudil = NULL;
-        for( int i = 0; i < session->getCreatureCount(); i++ ) {
-          if( session->getCreature( i )->getMonster() == m ) {
-            uzudil = session->getCreature( i );
-            break;
-          }
-        }
-
-        if( !uzudil ) {
-          cerr << "*** Error: can't find Uzudil!" << endl;
-        }
-        conversationGui->start( uzudil, infoMessage, true );
-      }
       // set the map view
       setUILayout();
       // start the haunting tunes
@@ -559,103 +332,367 @@ void Scourge::startMission() {
       getSDLHandler()->getSound()->stopMusic();
       getSDLHandler()->fade( 0, 1, 20 );
     } else {
+			// dungeon generation failed (usualy fails to find space for something like a gate)
       showMessageDialog( "Error #666: Failed to create map." );
     }
-    // clean up after the mission
-    resetInfos();
 
-    // remove gui
-		hireHeroDialog->setVisible( false );
-		dismissHeroDialog->setVisible( false );
-    mainWin->setVisible(false);
-    messageWin->setVisible(false);
-    closeAllContainerGuis();
-    if(inventory->isVisible()) {
-      inventory->hide();
-      inventoryButton->setSelected( false );
-    }
-    if(optionsMenu->isVisible()) {
-      optionsMenu->hide();
-      optionsButton->setSelected( false );
-    }
-    if(boardWin->isVisible()) boardWin->setVisible(false);
-    netPlay->getWindow()->setVisible(false);
-    infoGui->getWindow()->setVisible(false);
-    conversationGui->hide();
-    tradeDialog->getWindow()->setVisible( false );
-    healDialog->getWindow()->setVisible( false );
-    donateDialog->getWindow()->setVisible( false );
-    trainDialog->getWindow()->setVisible( false );
-    pcEditor->getWindow()->setVisible( false );
-		tbCombatWin->setVisible( false );
+		cleanUpAfterMission();
 
-    resetBattles();
+		// remember the last mission
+		lastMission = session->getCurrentMission();
 
-    // delete active projectiles
-    Projectile::resetProjectiles();
+		// go the next level
+		if( changeLevel() ) break;
+  }
+	endGame();
+}
 
-    // delete the mission level's item and monster instances
-    // This will also delete mission items from inventory. The mission will
-    // still succeed.
-    if( session->getCurrentMission() )
-      session->getCurrentMission()->deleteItemMonsterInstances();
+void Scourge::resetGame() {
+	// clear the board
+	// board->reset(); // already done in loadGame
+	// clear the current mission (otherwise weird crashes later)
+	getSession()->setCurrentMission(NULL);
+	// reset the party
+	if(session->isMultiPlayerGame()) {
+		party->resetMultiplayer(multiplayer->getCreature());
+	} else {
+		party->reset();
+	}
+	// reset the calendar
+	party->getCalendar()->reset(true); // reset the time
 
-    session->deleteCreaturesAndItems(true);
+	// re-add party events (hack)
+	resetPartyUI();
 
-    // remember the last mission
-    lastMission = session->getCurrentMission();
+	Calendar *cal = getSession()->getParty()->getCalendar();
+	{
+		// Schedule an event to keep reloading scripts if they change on disk
+		Date d(0, 0, 1, 0, 0, 0); // (format : sec, min, hours, days, months, years)
+		Event *event = new ReloadEvent( cal->getCurrentDate(),
+																		d,
+																		Event::INFINITE_EXECUTIONS,
+																		getSession(),
+																		ReloadEvent::MODE_RELOAD_SCRIPTS );
+		cal->scheduleEvent( event );
+	}
 
-    // delete map
-    if( dg ) {
-      delete dg;
-      dg = NULL;
-    }
+	{
+		// Schedule an event to regain MP now and then
+		Date d(0, 10, 0, 0, 0, 0); // (format : sec, min, hours, days, months, years)
+		Event *event = new ReloadEvent( cal->getCurrentDate(),
+																		d,
+																		Event::INFINITE_EXECUTIONS,
+																		getSession(),
+																		ReloadEvent::MODE_REGAIN_POINTS );
+		cal->scheduleEvent( event );
+	}
 
-    //cerr << "Mission end: changingStory=" << changingStory << " inHQ=" << inHq << " teleporting=" << teleporting << " nextMission=" << nextMission << endl;
-    if(!changingStory) {
-      if(!inHq) {
-        if(teleporting) {
+	// inventory needs the party
+	if(!inventory) {
+		inventory = new Inventory(this);
+	}
+
+	getSession()->getSquirrel()->startGame();
+}
+
+void Scourge::createMissionInfoMessage( Mission *lastMission ) {
+	sprintf( infoMessage,
+					 ( lastMission->isCompleted() ?
+						 lastMission->getSuccess() :
+						 lastMission->getFailure() ) );
+
+	if( lastMission->isCompleted() ) {
+		// Add XP points for making it back alive
+		char message[1000];
+		int exp = (lastMission->getLevel() + 1) * 100;
+		sprintf( message, " For returning alive, the party receives %d experience points. ", exp);
+		strcat( infoMessage, message );
+
+		for(int i = 0; i < getParty()->getPartySize(); i++) {
+			int level = getParty()->getParty(i)->getLevel();
+			if(!getParty()->getParty(i)->getStateMod(Constants::dead)) {
+				int n = getParty()->getParty(i)->addExperience(exp);
+				if(n > 0) {
+					if( level != getParty()->getParty(i)->getLevel() ) {
+						sprintf(message, " %s gains a level! ", getParty()->getParty(i)->getName());
+						strcat( infoMessage, message );
+					}
+				}
+			}
+		}
+	}
+
+	lastMission = NULL;
+}
+
+bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
+	bool mapCreated = true;
+	TerrainGenerator *dg = NULL;
+	char result[300];
+	//char *scriptName;
+	if(nextMission == -1) {
+		// IN HQ
+
+		//cerr << "Showing Uzudil's message" << endl;
+		missionWillAwardExpPoints = false;
+
+		// in HQ map
+		inHq = true;
+
+		// store mission's outcome (mission may be deleted below)
+		if( lastMission ) {
+			createMissionInfoMessage( lastMission );
+		}
+
+		// init the missions board (this deletes completed missions)
+		//cerr << "Initializing board" << endl;
+		board->initMissions();
+
+		// display the HQ map
+		getSession()->setCurrentMission(NULL);
+		missionWillAwardExpPoints = false;
 
 
-          /*
-            When on the lower levels of a named mission, teleport to level 0
-            of the mission. Otherwise go back to HQ when coming from a mission.
-          */
-          if( getSession()->getCurrentMission() ) {
-            cerr << "current mission " << getSession()->getCurrentMission()->getMapName() << endl;
-          } else {
-            cerr << "no mission" << endl;
-          }
-          if( getSession()->getCurrentMission() &&
-              getSession()->getCurrentMission()->isEdited() &&
-              currentStory > 0 ) {
-            cerr << "\tgoing to level 0" << endl;
-            // to 0-th depth in edited map
-            oldStory = currentStory;
-            currentStory = 0;
-            changingStory = true;
-      //      gatepos = pos;
-          } else {
-            cerr << "\tgoing to hq" << endl;
-            // to HQ
-            oldStory = currentStory = 0;
-            nextMission = -1;
-          }
+#ifdef CAVE_TEST
+		dg = new CaveMaker( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
+		mapCreated = dg->toMap( levelMap, getSession()->getShapePalette() );
+//		scriptName = RANDOM_MAP_NAME;
+#else
+		dg = NULL;
+		levelMap->loadMap( HQ_MAP_NAME, result, this, 1, currentStory, changingStory );
+//		scriptName = HQ_MAP_NAME;
+#endif
+
+		//cerr << result << endl;
+
+	} else {
+		// NOT in HQ map
+		inHq = false;
+
+		// Initialize the map with a random dungeon
+		getSession()->setCurrentMission(board->getMission(nextMission));
+		missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
+		bool loaded = false;
+		if( getSession()->getCurrentMission()->isEdited() ) {
+			//cerr << "EDITED" << endl;
+			// try to load the edited map
+			dg = NULL;
+			bool lastLevel = ( currentStory == getSession()->getCurrentMission()->getDepth() - 1 );
+			//cerr << "lastLevel=" << lastLevel << " currentStory=" << currentStory << " depth=" << getSession()->getCurrentMission()->getDepth() << endl;
+
+
+			if( lastLevel ) {
+
+				/**
+				 * If it's the last edited level, add mission items and monsters.
+				 * 
+				 * FIXME: this is very easy to break code. Relying on the last level
+				 * is bad because:
+				 * 1. the algorithm might change (it has for random-levels)
+				 * 2. if edited level 2 contains the mission monster, but missions.txt claims
+				 *    there are 5 levels, the creature won't be marked as such. (e.g. Myco.)
+				 */
+
+				vector< RenderedItem* > items;
+				vector< RenderedCreature* > creatures;
+				loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(),
+																		result,
+																		this,
+																		getSession()->getCurrentMission()->getLevel(),
+																		currentStory,
+																		changingStory,
+																		fromRandomMap,
+																		&items,
+																		&creatures );
+
+				// add item/creature instances if last level (this is special handling for edited levels)
+				set<int> used;
+				for( int i = 0; i < (int)items.size(); i++ ) {
+					Item *item = (Item*)( items[i] );
+					for( int t = 0; t < (int)getSession()->getCurrentMission()->getItemCount(); t++ ) {
+						//cerr << "\tLooking for item: " << getSession()->getCurrentMission()->getItem( t )->getName() << endl;
+						if( getSession()->getCurrentMission()->getItem( t ) == item->getRpgItem() &&
+								used.find( t ) == used.end() ) {
+							//cerr << "\t\tAdding item " << item->getName() << endl;
+							getSession()->getCurrentMission()->
+								addItemInstance( item, item->getRpgItem() );
+							used.insert( t );
+						}
+					}
+				}
+				used.clear();
+				for( int i = 0; i < (int)creatures.size(); i++ ) {
+					Creature *creature = (Creature*)( creatures[i] );
+					if( creature->getMonster() ) {
+						for( int t = 0; t < (int)getSession()->getCurrentMission()->getCreatureCount(); t++ ) {
+							//cerr << "\tLooking for creature: " << getSession()->getCurrentMission()->getCreature( t )->getType() << endl;
+							if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() &&
+									used.find( t ) == used.end() ) {
+								//cerr << "\t\tAdding creature " << creature->getName() << endl;
+								getSession()->getCurrentMission()->
+									addCreatureInstanceMap( creature, creature->getMonster() );
+								used.insert( t );
+							}
+						}
+					}
+				}
+			} else {
+				loaded = levelMap->loadMap( getSession()->getCurrentMission()->getMapName(),
+																		result,
+																		this,
+																		getSession()->getCurrentMission()->getLevel(),
+																		currentStory,
+																		changingStory,
+																		fromRandomMap );
+			}
+//			scriptName = getSession()->getCurrentMission()->getMapName();
+		}
+
+		// if no edited map is found, make a random map
+		if( !loaded ) {
+			dg = TerrainGenerator::getGenerator( this, currentStory );
+			mapCreated = dg->toMap(levelMap, getSession()->getShapePalette());
+//			scriptName = RANDOM_MAP_NAME;
+		}
+	}
+
+	// delete map
+	if( dg ) {
+		delete dg;
+		dg = NULL;
+	}
+	
+	return mapCreated;
+}
+
+void Scourge::showLevelInfo() {
+	// show an info dialog if infoMessage not already set with outcome of last mission
+	if( !strlen( infoMessage ) ) {
+		if(nextMission == -1) {
+			sprintf(infoMessage, "Welcome to the S.C.O.U.R.G.E. Head Quarters");
+		} else if( teleportFailure ) {
+			teleportFailure = false;
+			sprintf(infoMessage, "Teleport spell failed!! Entering level %d", ( currentStory + 1 ));
+		} else {
+			sprintf(infoMessage, "Entering dungeon level %d", ( currentStory + 1 ));
+		}
+
+		// show infoMessage text
+		showMessageDialog(infoMessage);
+		info_dialog_showing = true;
+	} else {
+
+		// start a conversation with Uzudil
+		// FIXME: this will not show teleport effect...
+
+		// FIXME hack code to find Uzudil.
+		Monster *m = Monster::getMonsterByName( "Uzudil the Hand" );
+		Creature *uzudil = NULL;
+		for( int i = 0; i < session->getCreatureCount(); i++ ) {
+			if( session->getCreature( i )->getMonster() == m ) {
+				uzudil = session->getCreature( i );
+				break;
+			}
+		}
+
+		if( !uzudil ) {
+			cerr << "*** Error: can't find Uzudil!" << endl;
+		}
+		conversationGui->start( uzudil, infoMessage, true );
+	}
+}
+
+void Scourge::cleanUpAfterMission() {
+	// clean up after the mission
+	resetInfos();
+
+	// remove gui
+	hireHeroDialog->setVisible( false );
+	dismissHeroDialog->setVisible( false );
+	mainWin->setVisible(false);
+	messageWin->setVisible(false);
+	closeAllContainerGuis();
+	if(inventory->isVisible()) {
+		inventory->hide();
+		inventoryButton->setSelected( false );
+	}
+	if(optionsMenu->isVisible()) {
+		optionsMenu->hide();
+		optionsButton->setSelected( false );
+	}
+	if(boardWin->isVisible()) boardWin->setVisible(false);
+	netPlay->getWindow()->setVisible(false);
+	infoGui->getWindow()->setVisible(false);
+	conversationGui->hide();
+	tradeDialog->getWindow()->setVisible( false );
+	healDialog->getWindow()->setVisible( false );
+	donateDialog->getWindow()->setVisible( false );
+	trainDialog->getWindow()->setVisible( false );
+	pcEditor->getWindow()->setVisible( false );
+	tbCombatWin->setVisible( false );
+
+	resetBattles();
+
+	// delete active projectiles
+	Projectile::resetProjectiles();
+
+	// delete the mission level's item and monster instances
+	// This will also delete mission items from inventory. The mission will
+	// still succeed.
+	if( session->getCurrentMission() )
+		session->getCurrentMission()->deleteItemMonsterInstances();
+
+	session->deleteCreaturesAndItems(true);
+}
+
+bool Scourge::changeLevel() {
+	//cerr << "Mission end: changingStory=" << changingStory << " inHQ=" << inHq << " teleporting=" << teleporting << " nextMission=" << nextMission << endl;
+	if(!changingStory) {
+		if(!inHq) {
+			if(teleporting) {
+
+
+				/*
+					When on the lower levels of a named mission, teleport to level 0
+					of the mission. Otherwise go back to HQ when coming from a mission.
+				*/
+				if( getSession()->getCurrentMission() ) {
+					cerr << "current mission " << getSession()->getCurrentMission()->getMapName() << endl;
+				} else {
+					cerr << "no mission" << endl;
+				}
+				if( getSession()->getCurrentMission() &&
+						getSession()->getCurrentMission()->isEdited() &&
+						currentStory > 0 ) {
+					cerr << "\tgoing to level 0" << endl;
+					// to 0-th depth in edited map
+					oldStory = currentStory;
+					currentStory = 0;
+					changingStory = true;
+		//      gatepos = pos;
+				} else {
+					cerr << "\tgoing to hq" << endl;
+					// to HQ
+					oldStory = currentStory = 0;
+					nextMission = -1;
+				}
 
 
 
 //          nextMission = -1;
 //          oldStory = currentStory = 0;
-        } else {
-          break;
-        }
-      } else if(nextMission == -1) {
-        // if quiting in HQ, exit loop
-        break;
-      }// otherwise go back to HQ when coming from a mission
-    }
-  }
+			} else {
+				return true;
+			}
+		} else if(nextMission == -1) {
+			// if quiting in HQ, exit loop
+			return true;
+		}// otherwise go back to HQ when coming from a mission
+	}
+	return false;
+}
 
+void Scourge::endGame() {
 	// autosave party when quitting in hq and the lead player is not dead
 	// this is kind of stupid though... it should ask before saving.
 	if( !session->isMultiPlayerGame() && 
