@@ -907,7 +907,7 @@ N:CHAIR
 N:0
 N:ffffffff
 3:/objects/chair.3ds
-3:1.95866,2.45588,4.3134
+3:2,2,2
 
 N:14
 N:1,1,1
