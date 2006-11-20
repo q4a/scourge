@@ -76,6 +76,7 @@ private:
   int level;
   int depth;
   char mapName[80];
+	char savedMapName[300];
   bool edited;
   char name[80];
   char description[2000];
@@ -194,6 +195,9 @@ public:
 
 	inline char *getTemplateName() { return templateName; }
 	inline void setTemplateName( char *s ) { strcpy( templateName, s ); }
+
+	inline void setSavedMapName( char *s ) { strcpy( savedMapName, s ); }
+	inline char *getSavedMapName() { return savedMapName; }
 
 	MissionInfo *save();
 	static Mission *load( Session *session, MissionInfo *info );

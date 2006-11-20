@@ -456,6 +456,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
     mission->addCreature( monster, value );
   }
 	mission->setTemplateName( this->name );
+	if( info ) mission->setSavedMapName( (char*)info->mapName );
 
   return mission;
 }                                               
@@ -558,6 +559,7 @@ Mission::Mission( Board *board, int level, int depth,
   this->mapX = this->mapY = 0;
   this->special[0] = '\0';
 	this->templateName[0] = '\0';
+	strcpy( this->savedMapName, "" );
 
   // assign the map grid location
   if( mapName && strlen( mapName ) ) {
@@ -992,8 +994,7 @@ MissionInfo *Mission::save() {
   info->version = PERSIST_VERSION;
   strncpy( (char*)info->templateName, getTemplateName(), 79);
   info->templateName[79] = 0;
-	// FIXME: save map here
-	strcpy( (char*)info->mapName, "" );
+	strcpy( (char*)info->mapName, savedMapName );
 	info->level = getLevel();
 	info->depth = getDepth();
 	info->itemCount = itemList.size();
