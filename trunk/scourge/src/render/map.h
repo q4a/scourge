@@ -292,12 +292,13 @@ class Map {
   inline const char **getDesriptions() { return (const char **)descriptions; }
   inline Color *getDesriptionColors() { return descriptionsColor; }
 
-  void saveMap( char *name, char *result );
+  void saveMap( char *name, char *result, bool absolutePath=false );
   bool loadMap( char *name, char *result, StatusReport *report=NULL, 
 								int level=1, int depth=0, 
                 bool changingStory=false, bool fromRandom=false, 
                 std::vector< RenderedItem* > *items=NULL, 
-                std::vector< RenderedCreature* > *creatures=NULL );
+                std::vector< RenderedCreature* > *creatures=NULL, 
+								bool absolutePath=false );
   void loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth=0 );
 
   inline Uint16 getCursorMapX() { return cursorMapX; }

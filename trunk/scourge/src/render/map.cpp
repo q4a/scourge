@@ -2962,7 +2962,7 @@ float EditorMapSettings::getMaxYRot() {
 }
 
 
-void Map::saveMap( char *name, char *result ) {
+void Map::saveMap( char *name, char *result, bool absolutePath ) {
 
   if( !strlen( name ) ) {
     strcpy( result, "You need to name the map first." );
@@ -3029,7 +3029,11 @@ void Map::saveMap( char *name, char *result ) {
   }
 
   char fileName[300];
-  sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+	if( absolutePath ) {
+		strcpy( fileName, name );
+	} else {
+		sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+	}
 
   cerr << "saving map: " << fileName << endl;
 
@@ -3049,18 +3053,23 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 									 int level, int depth, 
 									 bool changingStory, bool fromRandom, 
 									 vector< RenderedItem* > *items, 
-									 vector< RenderedCreature* > *creatures ) {
+									 vector< RenderedCreature* > *creatures, 
+									 bool absolutePath ) {
   if( !strlen( name ) ) {
     strcpy( result, "Enter a name of a map to load." );
     return false;
   }
 
   char fileName[300];
-  if( depth > 0 ) {
-    sprintf( fileName, "%s/maps/%s%d.map", rootDir, name, depth );
-  } else {
-    sprintf( fileName, "%s/maps/%s.map", rootDir, name );
-  }
+	if( absolutePath ) {
+		strcpy( fileName, name );
+	} else {
+		if( depth > 0 ) {
+			sprintf( fileName, "%s/maps/%s%d.map", rootDir, name, depth );
+		} else {
+			sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+		}
+	}
   cerr << "Looking for map: " << fileName << endl;
 
   FILE *fp = fopen( fileName, "rb" );

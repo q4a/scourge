@@ -233,13 +233,17 @@ protected:
   bool usePool( Location *pos );
 	
 	// called from startMission
-	void resetGame();
+	void resetGame( bool resetParty );
 	void createMissionInfoMessage( Mission *lastMission );
 	bool createLevelMap( Mission *lastMission, bool fromRandomMap );
 	void showLevelInfo();
 	void cleanUpAfterMission();
 	bool changeLevel();
 	void endGame();
+	bool saveCurrentMap();
+	void getCurrentMapName( char *path );
+	void getSavedMapName( char *mapName );
+	bool loadMap( char *mapName, bool fromRandomMap, bool absolutePath );
 
 public:
 #define TOP_GUI_WIDTH 400
