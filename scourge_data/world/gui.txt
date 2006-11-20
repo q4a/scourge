@@ -54,3 +54,24 @@ T:none,0.45,0.3,0.3,1,1         # selected border
 T:none,1,0.69,0.35,1,1         # selected character border
 T:none,1,1,1,1,1		# textured window border
 
+T:steel
+T:gui/window,1,1,1,0.9,1           # window background
+T:darkuibutton,1,1,1,0.9,1              # window top/bottom (hack: if a<1 window is blended)
+T:none,0.3,0.3,0.3,1,1              # window border
+T:1,1,1,1                      # window title text
+T:1,1,1,1                      # window text
+T:gui/button,1,1,1,1,2,darkuinorth,darkuisouth,darkuieast,darkuiwest# button background
+T:buttonsel,1,1,1,1,2,darkuinorthsel,darkuisouthsel,darkuieastsel,darkuiwestsel# button selection background
+T:highlight,0.4,0.4,0.65,1,1      # button highlight texture
+T:none,0.3,0.3,0.3,1,1              # button border
+T:0.75,1,1,1                      # button text
+T:1,1,0.75,1                      # button selection text
+T:none,1,0.75,0.45,1,1           # list background
+T:none,0.15,0.15,0.15,1,1             # input background
+T:1,1,1,1                      # input text
+T:none,0.3,0.05,0.05,1,1         # selection background
+T:1,1,1,1                      # selection text
+T:none,0.45,0.3,0.3,1,1         # selected border
+T:none,1,0.69,0.35,1,1         # selected character border
+T:none,1,1,1,1,1,gui-steel/n,gui-steel/s,gui-steel/e,gui-steel/w,gui-steel/nw,gui-steel/ne,gui-steel/sw,gui-steel/se# textured window border
+
