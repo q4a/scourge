@@ -23,6 +23,8 @@ using namespace std;
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
+
+#include "gui/guitheme.h"
  
 
 // TODO : - warn if there is an unknown parameter in the config file ?
@@ -807,6 +809,9 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
         printf("Error: bad shadow mode: %d\n", shadows);
         printusage = true;
       }
+		} else if (strstr(argv[i], "--theme") == argv[i]) {
+			strcpy( GuiTheme::DEFAULT_THEME, argv[i] + 7 );
+			cerr << "Using gui theme: " << GuiTheme::DEFAULT_THEME << endl;
     } else if (!strcmp(argv[i], "--version")) {
       printf("Scourge, version %s\n", SCOURGE_VERSION);
       exit(0);
@@ -883,6 +888,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
     printf("\t--widthXX - use XX pixels for the screen width\n");
     printf("\t--heightXX - use XX pixels for the screen height\n");
     printf("\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n");
+		printf("\t--themeXYZ - use gui theme XYZ to draw the ui.\n");
     printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
 #ifdef HAVE_SDL_NET
     printf("Multiplayer options:\n");
