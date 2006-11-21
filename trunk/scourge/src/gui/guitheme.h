@@ -71,7 +71,7 @@ public:
   GuiTheme( char *name );
   virtual ~GuiTheme();
 
-  static const char *DEFAULT_THEME;
+  static char DEFAULT_THEME[255];
 
   static void initThemes( ScourgeGui *scourgeGui );
   static inline GuiTheme *getThemeByName( const char *name ) {
