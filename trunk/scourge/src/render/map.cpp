@@ -2961,7 +2961,19 @@ float EditorMapSettings::getMaxYRot() {
   return 90.0f;
 }
 
-
+/**
+ * Also need to save:
+ * ---- Location *itemPos[MAP_WIDTH][MAP_DEPTH];
+ * Rug rugPos[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
+ * hasWater
+ * float xrot, yrot, zrot;
+ * float xpos, ypos, zpos;
+ * std::map<Uint32, bool> locked;
+ * std::map<Uint32, Uint32> doorToKey;
+ * std::map<Uint32, Uint32> keyToDoor;
+ * RenderedCreature *mapCenterCreature;
+ * std::map<int,bool> secretDoors;
+ */
 void Map::saveMap( char *name, char *result, bool absolutePath ) {
 
   if( !strlen( name ) ) {
@@ -2994,6 +3006,18 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
         info->pos_count++;
       }
 
+			if( itemPos[x][y] &&
+					itemPos[x][y]->x == x &&
+					itemPos[x][y]->y == y &&
+					itemPos[x][y]->item ) {
+        info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, 0 );
+        strncpy( (char*)(info->pos[ info->pos_count ]->item_pos_name), 
+                 itemPos[x][y]->item->getType(),
+                 254 );
+        info->pos[ info->pos_count ]->item_pos_name[254] = 0;
+        info->pos_count++;
+      }
+
       for( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
         if( pos[x][y][z] &&
             pos[x][y][z]->x == x &&
@@ -3019,9 +3043,6 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
                      254 );
             info->pos[ info->pos_count ]->shape_name[254] = 0;
           }
-
-          // FIXME: save door info also
-
           info->pos_count++;
         }
       }
@@ -3099,7 +3120,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
-  if( !changingStory || !( settings->isPlayerEnabled() ) || fromRandom ) {
+  if( absolutePath || !changingStory || !( settings->isPlayerEnabled() ) || fromRandom ) {
     startx = info->start_x;
     starty = info->start_y;
   } else {
@@ -3129,6 +3150,14 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
       else cerr << "Map::load failed to find floor shape: " << info->pos[i]->floor_shape_name <<
         " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << endl;
     }
+
+		if( strlen( (char*)(info->pos[i]->item_pos_name) ) ) {
+			RenderedItem *item = adapter->createItem( (char*)( info->pos[i]->item_pos_name ), level, depth );
+			if( item ) {
+				setItem( info->pos[i]->x, info->pos[i]->y, 0, item );
+				if( items ) items->push_back( item );
+			} else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << ",0" << endl;
+		}
 
     if( strlen( (char*)( info->pos[i]->item_name ) ) ) {
       RenderedItem *item = adapter->createItem( (char*)( info->pos[i]->item_name ), level, depth );
