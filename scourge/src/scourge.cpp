@@ -364,6 +364,8 @@ bool Scourge::saveCurrentMap() {
 	getCurrentMapName( path );
 	cerr << "Saving current map: " << path << endl;
 
+	levelMap->startx = toint( session->getParty()->getPlayer()->getX() );
+	levelMap->starty = toint( session->getParty()->getPlayer()->getY() );
 	char result[300];
 	levelMap->saveMap( path, result, true );
 	cerr << "\tresult=" << result << endl;

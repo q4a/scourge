@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 18
+#define PERSIST_VERSION 19
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -96,6 +96,7 @@ typedef struct _LocationInfo {
   Uint8 shape_name[255];
   Uint8 item_name[255];
   Uint8 monster_name[255];
+	Uint8 item_pos_name[255];
   // door info
   Uint8 locked;
   Uint16 key_x, key_y, key_z;

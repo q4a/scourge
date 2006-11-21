@@ -27,6 +27,7 @@ LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
   info->y = y;
   info->z = z;
   
+  info->item_pos_name[0] = 0;
   info->item_name[0] = 0;
   info->monster_name[0] = 0;
   info->shape_name[0] = 0;
@@ -57,6 +58,13 @@ void Persist::saveMap( File *file, MapInfo *info ) {
     } else {
       file->write( info->pos[i]->floor_shape_name );
     }
+
+		Uint8 hasItemPos = ( strlen( (char*)( info->pos[i]->item_pos_name ) ) ? 1 : 0 );
+    file->write( &(hasItemPos) );
+    if( hasItemPos ) {
+			file->write( info->pos[i]->item_pos_name, 255 );
+		}
+
     if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
       file->write( info->pos[i]->shape_name, 255 );
     } else {
@@ -118,7 +126,15 @@ MapInfo *Persist::loadMap( File *file ) {
     if( info->pos[i]->floor_shape_name[0] ) {
       file->read( info->pos[i]->floor_shape_name + 1, 254 );
     }
-
+    
+		if( info->version >= 19 ) {
+			Uint8 hasItemPos;
+			file->read( &(hasItemPos) );
+			if( hasItemPos ) {
+				file->read( info->pos[i]->item_pos_name, 255 );
+			} else strcpy( (char*)( info->pos[i]->item_pos_name ), "" );
+		} else strcpy( (char*)( info->pos[i]->item_pos_name ), "" );
+			
     file->read( info->pos[i]->shape_name );
     if( info->pos[i]->shape_name[0] ) {
       file->read( info->pos[i]->shape_name + 1, 254 );
@@ -127,27 +143,12 @@ MapInfo *Persist::loadMap( File *file ) {
     Uint8 hasItem;
     file->read( &(hasItem) );
     if( hasItem ) {
-			/*
-			uncomment this to read older maps.. (if you're lucky..)
-			ItemInfo *ii = loadItem( file );
-			strcpy( (char*)( info->pos[i]->item_name ), (char*)( ii->rpgItem_name ) );
-			delete ii;
-			cerr << "FIXME: persist.cpp" << endl;
-			*/
 			file->read( info->pos[i]->item_name, 255 );
 		} else strcpy( (char*)( info->pos[i]->item_name ), "" );
 
     Uint8 hasCreature;
     file->read( &(hasCreature) );
     if( hasCreature ) {
-			/*
-			uncomment this to read older maps.. (if you're lucky..)
-			CreatureInfo *ci = loadCreature( file );
-			strcpy( (char*)( info->pos[i]->monster_name ), (char*)( ci->monster_name ) );
-			delete ci;
-			// FIXME: this should just load the string
-			cerr << "FIXME: persist.cpp" << endl;
-			*/
 			file->read( info->pos[i]->monster_name, 255 );
 		} else strcpy( (char*)( info->pos[i]->monster_name ), "" );
 
