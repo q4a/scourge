@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 19
+#define PERSIST_VERSION 20
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -102,6 +102,13 @@ typedef struct _LocationInfo {
   Uint16 key_x, key_y, key_z;
 } LocationInfo;
 
+typedef struct _RugInfo {
+	Uint32 texture;
+	Uint8 isHorizontal;
+	Uint32 angle;
+	Uint16 cx, cy;
+} RugInfo;
+
 typedef struct _MapInfo {
   Uint32 version;
   Uint16 start_x, start_y;
@@ -109,6 +116,8 @@ typedef struct _MapInfo {
   Uint32 pos_count;
   Uint8 theme_name[255];
   LocationInfo *pos[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
+	Uint32 rug_count;
+	RugInfo *rugPos[ ( MAP_WIDTH / MAP_UNIT ) * ( MAP_DEPTH / MAP_UNIT ) ];
 } MapInfo;
 
 typedef struct _MissionInfo {
@@ -128,6 +137,7 @@ typedef struct _MissionInfo {
 class Persist {
 public:
   static LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
+	static RugInfo *createRugInfo( Uint16 cx, Uint16 cy );
   static void saveMap( File *file, MapInfo *info );
   static MapInfo *loadMap( File *file );
   static void loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY );

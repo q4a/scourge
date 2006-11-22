@@ -3049,6 +3049,19 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
     }
   }
 
+	info->rug_count = 0;
+	for( int x = 0; x < MAP_WIDTH / MAP_UNIT; x++ ) {
+    for( int y = 0; y < MAP_DEPTH / MAP_UNIT; y++ ) {
+			if( rugPos[x][y].texture > 0 ) {
+				info->rugPos[ info->rug_count ] = Persist::createRugInfo( x, y );
+				info->rugPos[ info->rug_count ]->angle = toint( rugPos[x][y].angle * 100.0f );
+				info->rugPos[ info->rug_count ]->isHorizontal = ( rugPos[x][y].isHorizontal ? 1 : 0 );
+				info->rugPos[ info->rug_count ]->texture = rugPos[x][y].texture;
+				info->rug_count++;
+			}
+		}
+	}
+
   char fileName[300];
 	if( absolutePath ) {
 		strcpy( fileName, name );
@@ -3120,6 +3133,8 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
+	// When using an absolutePath (ie. saved generated maps) also start at the last
+	// saved position.
   if( absolutePath || !changingStory || !( settings->isPlayerEnabled() ) || fromRandom ) {
     startx = info->start_x;
     starty = info->start_y;
@@ -3182,6 +3197,19 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
     // FIXME: handle door info 
   }
+
+	// load rugs
+	Rug rug;
+	for( int i = 0; i < (int)info->rug_count; i++ ) {
+		//rug.angle = info->rugPos[i]->angle / 100.0f;
+		rug.angle = ( 30.0f * rand() / RAND_MAX ) - 15.0f; // fixme?
+		rug.isHorizontal = ( info->rugPos[i]->isHorizontal == 1 );
+		rug.texture = shapes->getRandomRug(); // fixme?
+		setRugPosition( info->rugPos[i]->cx,
+										info->rugPos[i]->cy,
+										&rug );
+	}
+
   if( report ) report->updateStatus( 4, 7, "Finishing map" );
 
   this->center( info->start_x, info->start_y, true );
