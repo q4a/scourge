@@ -58,6 +58,7 @@ void Persist::saveMap( File *file, MapInfo *info ) {
   file->write( &(info->grid_x) );
   file->write( &(info->grid_y) );
   file->write( info->theme_name, 255 );
+	file->write( &(info->hasWater) );
   file->write( &(info->pos_count) );
   for( int i = 0; i < (int)info->pos_count; i++ ) {
     file->write( &(info->pos[i]->x) );
@@ -133,6 +134,11 @@ MapInfo *Persist::loadMap( File *file ) {
   file->read( &(info->grid_x) );
   file->read( &(info->grid_y) );
   file->read( info->theme_name, 255 );
+	if( info->version >= 21 ) {
+		file->read( &(info->hasWater) );
+	} else {
+		info->hasWater = 0;
+	}
   file->read( &(info->pos_count) );
   for( int i = 0; i < (int)info->pos_count; i++ ) {
     info->pos[i] = (LocationInfo*)malloc(sizeof(LocationInfo));

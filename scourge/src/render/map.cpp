@@ -2964,14 +2964,11 @@ float EditorMapSettings::getMaxYRot() {
 /**
  * Also need to save:
  * ---- Location *itemPos[MAP_WIDTH][MAP_DEPTH];
- * Rug rugPos[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
- * hasWater
- * float xrot, yrot, zrot;
- * float xpos, ypos, zpos;
+ * ---- Rug rugPos[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
+ * ---- hasWater
  * std::map<Uint32, bool> locked;
  * std::map<Uint32, Uint32> doorToKey;
  * std::map<Uint32, Uint32> keyToDoor;
- * RenderedCreature *mapCenterCreature;
  * std::map<int,bool> secretDoors;
  */
 void Map::saveMap( char *name, char *result, bool absolutePath ) {
@@ -2989,6 +2986,8 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
 
   info->grid_x = mapGridX;
   info->grid_y = mapGridY;
+
+	info->hasWater = ( hasWater ? 1 : 0 );
 
   strncpy( (char*)info->theme_name, shapes->getCurrentThemeName(), 254 );
   info->theme_name[254] = 0;
@@ -3128,6 +3127,8 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
   // load the theme
   shapes->loadTheme( (const char*)info->theme_name );
+
+	setHasWater( info->hasWater == 1 ? true : false );
 
   if( report ) report->updateStatus( 2, 7, "Starting map" );
 
