@@ -41,6 +41,16 @@ LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
   return info;
 }
 
+RugInfo *Persist::createRugInfo( Uint16 cx, Uint16 cy ) {
+	RugInfo *info = (RugInfo*)malloc( sizeof( RugInfo ) );
+	info->cx = cx;
+	info->cy = cy;
+	info->angle = 0;
+	info->isHorizontal = 0;
+	info->texture = 0;
+	return info;
+}
+
 void Persist::saveMap( File *file, MapInfo *info ) {
   file->write( &(info->version) );
   file->write( &(info->start_x) );
@@ -90,6 +100,14 @@ void Persist::saveMap( File *file, MapInfo *info ) {
     file->write( &(info->pos[i]->key_y) );
     file->write( &(info->pos[i]->key_z) );
   }
+	file->write( &(info->rug_count) );
+  for( int i = 0; i < (int)info->rug_count; i++ ) {
+		file->write( &(info->rugPos[i]->cx) );
+		file->write( &(info->rugPos[i]->cy) );
+		file->write( &(info->rugPos[i]->texture) );
+		file->write( &(info->rugPos[i]->isHorizontal) );
+		file->write( &(info->rugPos[i]->angle) );
+	}
 }
 
 // FIXME: reuse this in loadmap
@@ -157,12 +175,28 @@ MapInfo *Persist::loadMap( File *file ) {
     file->read( &(info->pos[i]->key_y) );
     file->read( &(info->pos[i]->key_z) );
   }
+	if( info->version >= 20 ) {
+		file->read( &(info->rug_count) );
+		for( int i = 0; i < (int)info->rug_count; i++ ) {
+			info->rugPos[i] = (RugInfo*)malloc(sizeof(RugInfo));
+			file->read( &(info->rugPos[i]->cx) );
+			file->read( &(info->rugPos[i]->cy) );
+			file->read( &(info->rugPos[i]->texture) );
+			file->read( &(info->rugPos[i]->isHorizontal) );
+			file->read( &(info->rugPos[i]->angle) );
+		}
+	} else {
+		info->rug_count = 0;
+	}
   return info;
 }
 
 void Persist::deleteMapInfo( MapInfo *info ) {
   for( int i = 0; i < (int)info->pos_count; i++ ) {
     free( info->pos[i] );
+  }
+	for( int i = 0; i < (int)info->rug_count; i++ ) {
+    free( info->rugPos[i] );
   }
   free( info );
 }
