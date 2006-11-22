@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 20
+#define PERSIST_VERSION 21
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -118,6 +118,7 @@ typedef struct _MapInfo {
   LocationInfo *pos[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
 	Uint32 rug_count;
 	RugInfo *rugPos[ ( MAP_WIDTH / MAP_UNIT ) * ( MAP_DEPTH / MAP_UNIT ) ];
+	Uint8 hasWater;
 } MapInfo;
 
 typedef struct _MissionInfo {
