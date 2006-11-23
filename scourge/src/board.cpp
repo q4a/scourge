@@ -277,11 +277,6 @@ void Board::initMissions() {
     }
   }
 
-  // add the current storyline mission
-  if( storylineIndex >= 0 && storylineIndex <  (int)storylineMissions.size() &&
-     storylineMissions[ storylineIndex ]->getLevel() <= highest )
-    availableMissions.push_back( storylineMissions[ storylineIndex ] );
-
   // maintain a set of missions
 	for( int counter = 0; availableMissions.size() < 8; counter++ ) {
 		int level;
@@ -299,6 +294,12 @@ void Board::initMissions() {
     Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
     availableMissions.push_back( mission );
   }  
+
+  // add the current storyline mission at the top of the board
+  if( storylineIndex >= 0 && storylineIndex <  (int)storylineMissions.size() )
+    availableMissions.insert( availableMissions.begin(), 
+															storylineMissions[ storylineIndex ] );
+
 
 #ifdef DEBUG_MODE
   // debug missions
