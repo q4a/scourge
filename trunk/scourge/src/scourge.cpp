@@ -350,10 +350,10 @@ void Scourge::getSavedMapName( char *mapName ) {
 	char mapBaseName[80];
 	if( !session->getCurrentMission() ) {
 		strcpy( mapBaseName, "hq" );
-	} else if( !session->getCurrentMission()->isEdited() ) {
-		sprintf( mapBaseName, "%x", SDL_GetTicks() );
+	} else if( session->getCurrentMission()->isStoryLine() ) {
+		sprintf( mapBaseName, "sl%d", getBoard()->getStorylineIndex() );
 	} else {
-		strcpy( mapBaseName, session->getCurrentMission()->getMapName() );
+		sprintf( mapBaseName, "%x", SDL_GetTicks() );
 	}
 		
 	sprintf( mapName, "_%s_%s", tmp, mapBaseName );	
