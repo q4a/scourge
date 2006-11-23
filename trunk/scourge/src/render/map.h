@@ -103,19 +103,6 @@ typedef struct _DrawLater {
 #define POS_CACHE_HEIGHT   10
 #define MAX_POS_CACHE (POS_CACHE_WIDTH * POS_CACHE_DEPTH * POS_CACHE_HEIGHT)
 
-// used by locked doors
-class Pos3 {
-public:
-  int x, y, z;
-  Pos3(int x, int y, int z) {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-  }
-  ~Pos3() {
-  }
-};
-
 class Map;
 
 class MapMemoryManager {

@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 21
+#define PERSIST_VERSION 22
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -97,9 +97,6 @@ typedef struct _LocationInfo {
   Uint8 item_name[255];
   Uint8 monster_name[255];
 	Uint8 item_pos_name[255];
-  // door info
-  Uint8 locked;
-  Uint16 key_x, key_y, key_z;
 } LocationInfo;
 
 typedef struct _RugInfo {
@@ -108,6 +105,16 @@ typedef struct _RugInfo {
 	Uint32 angle;
 	Uint16 cx, cy;
 } RugInfo;
+
+typedef struct _LockedInfo {
+	Uint32 key;
+	Uint8 value;
+} LockedInfo;
+
+typedef struct _DoorInfo {
+	Uint32 key;
+	Uint32 value;
+} DoorInfo;
 
 typedef struct _MapInfo {
   Uint32 version;
@@ -119,6 +126,10 @@ typedef struct _MapInfo {
 	Uint32 rug_count;
 	RugInfo *rugPos[ ( MAP_WIDTH / MAP_UNIT ) * ( MAP_DEPTH / MAP_UNIT ) ];
 	Uint8 hasWater;
+	Uint32 locked_count;
+	LockedInfo *locked[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
+	Uint32 door_count;
+	DoorInfo *door[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
 } MapInfo;
 
 typedef struct _MissionInfo {
@@ -139,7 +150,9 @@ class Persist {
 public:
   static LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
 	static RugInfo *createRugInfo( Uint16 cx, Uint16 cy );
-  static void saveMap( File *file, MapInfo *info );
+	static LockedInfo *createLockedInfo( Uint32 key, Uint8 value );
+	static DoorInfo *createDoorInfo( Uint32 key, Uint32 value );
+	static void saveMap( File *file, MapInfo *info );
   static MapInfo *loadMap( File *file );
   static void loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY );
   static void deleteMapInfo( MapInfo *info );

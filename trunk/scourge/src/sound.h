@@ -65,9 +65,7 @@ public:
 #endif
   }
 
-#ifdef HAVE_SDL_MIXER
-  void stopMusic( int ms=3000 );
-#endif
+	void stopMusic( int ms=3000 );
 
   void loadSounds(Preferences *preferences);
   void loadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m,
