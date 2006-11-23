@@ -2969,7 +2969,7 @@ float EditorMapSettings::getMaxYRot() {
  * ---- std::map<Uint32, bool> locked;
  * ---- std::map<Uint32, Uint32> doorToKey;
  * ---- std::map<Uint32, Uint32> keyToDoor;
- * std::map<int,bool> secretDoors;
+ * ---- std::map<int,bool> secretDoors;
  * fog
  */
 void Map::saveMap( char *name, char *result, bool absolutePath ) {
@@ -3067,14 +3067,22 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
 	info->locked_count = 0;
   for( map<Uint32, bool>::iterator i = locked.begin(); i != locked.end(); ++i ) {
 		Uint32 key = i->first;
-		bool value = i->second;
-		info->locked[ info->locked_count++ ] = Persist::createLockedInfo( key, (Uint8)( value ? 1 : 0 ) );
+		Uint8 value = (Uint8)(i->second ? 1 : 0);
+		info->locked[ info->locked_count++ ] = Persist::createLockedInfo( key, value );
 	}
 	info->door_count = 0;
   for( map<Uint32, Uint32>::iterator i = doorToKey.begin(); i != doorToKey.end(); ++i ) {
 		Uint32 key = i->first;
 		Uint32 value = i->second;
 		info->door[ info->door_count++ ] = Persist::createDoorInfo( key, value );
+	}
+
+	// secret doors
+	info->secret_count = 0;
+  for( map<int, bool>::iterator i = secretDoors.begin(); i != secretDoors.end(); ++i ) {
+		Uint32 key = (Uint32)(i->first);
+		Uint8 value = (Uint8)(i->second ? 1 : 0);
+		info->secret[ info->secret_count++ ] = Persist::createLockedInfo( key, value );
 	}
 		 
 
@@ -3237,6 +3245,10 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 		keyToDoor[ info->door[ i ]->value ] = info->door[ i ]->key;
 	}
 
+	// secret doors
+	for( int i = 0; i < (int)info->secret_count; i++ ) {
+		secretDoors[ (int)(info->secret[ i ]->key) ] = ( info->secret[ i ]->value == 1 ? true : false );
+	}
 
   if( report ) report->updateStatus( 4, 7, "Finishing map" );
 
