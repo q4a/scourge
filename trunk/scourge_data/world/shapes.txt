@@ -5,7 +5,7 @@
 # T:texture file name
 # G:texture group (used for 'native' shapes): front,top,left-right
 # D:descriptions (first line=count)
-# N:native shape (box) lines: 
+# N:native shape (box) lines:zz 
 #    texture-group or theme reference: theme,xyz where 'xyz' is one of these:
 #       wall,corner,door_ew,door_ns,passage_floor,room_floor
 #    dimensions
@@ -898,7 +898,17 @@ N:TABLE
 N:0
 N:ffffffff
 3:/objects/table.3ds
+3:5,5,2.7411
+
+# Constants::TABLESQ_INDEX
+N:14
+N:1,1,1
+N:SQUARETABLE
+N:0
+N:ffffffff
+3:/objects/tablesq.3ds
 3:4.32371,5.44736,2.7411
+
 
 # Constants::CHAIR_INDEX
 N:14
