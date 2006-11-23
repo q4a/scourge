@@ -2966,10 +2966,11 @@ float EditorMapSettings::getMaxYRot() {
  * ---- Location *itemPos[MAP_WIDTH][MAP_DEPTH];
  * ---- Rug rugPos[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
  * ---- hasWater
- * std::map<Uint32, bool> locked;
- * std::map<Uint32, Uint32> doorToKey;
- * std::map<Uint32, Uint32> keyToDoor;
+ * ---- std::map<Uint32, bool> locked;
+ * ---- std::map<Uint32, Uint32> doorToKey;
+ * ---- std::map<Uint32, Uint32> keyToDoor;
  * std::map<int,bool> secretDoors;
+ * fog
  */
 void Map::saveMap( char *name, char *result, bool absolutePath ) {
 
@@ -3048,6 +3049,7 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
     }
   }
 
+	// save rugs
 	info->rug_count = 0;
 	for( int x = 0; x < MAP_WIDTH / MAP_UNIT; x++ ) {
     for( int y = 0; y < MAP_DEPTH / MAP_UNIT; y++ ) {
@@ -3060,6 +3062,21 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
 			}
 		}
 	}
+
+	// save doors
+	info->locked_count = 0;
+  for( map<Uint32, bool>::iterator i = locked.begin(); i != locked.end(); ++i ) {
+		Uint32 key = i->first;
+		bool value = i->second;
+		info->locked[ info->locked_count++ ] = Persist::createLockedInfo( key, (Uint8)( value ? 1 : 0 ) );
+	}
+	info->door_count = 0;
+  for( map<Uint32, Uint32>::iterator i = doorToKey.begin(); i != doorToKey.end(); ++i ) {
+		Uint32 key = i->first;
+		Uint32 value = i->second;
+		info->door[ info->door_count++ ] = Persist::createDoorInfo( key, value );
+	}
+		 
 
   char fileName[300];
 	if( absolutePath ) {
@@ -3210,6 +3227,16 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 										info->rugPos[i]->cy,
 										&rug );
 	}
+
+	// load doors
+	for( int i = 0; i < (int)info->locked_count; i++ ) {
+		locked[ info->locked[ i ]->key ] = ( info->locked[ i ]->value == 1 ? true : false );
+	}
+	for( int i = 0; i < (int)info->door_count; i++ ) {
+		doorToKey[ info->door[ i ]->key ] = info->door[ i ]->value;
+		keyToDoor[ info->door[ i ]->value ] = info->door[ i ]->key;
+	}
+
 
   if( report ) report->updateStatus( 4, 7, "Finishing map" );
 

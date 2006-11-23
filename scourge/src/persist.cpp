@@ -33,11 +33,6 @@ LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
   info->shape_name[0] = 0;
   info->floor_shape_name[0] = 0;
 
-  info->locked = 0;
-  info->key_x = 0;
-  info->key_y = 0;
-  info->key_z = 0;
-
   return info;
 }
 
@@ -48,6 +43,20 @@ RugInfo *Persist::createRugInfo( Uint16 cx, Uint16 cy ) {
 	info->angle = 0;
 	info->isHorizontal = 0;
 	info->texture = 0;
+	return info;
+}
+
+LockedInfo *Persist::createLockedInfo( Uint32 key, Uint8 value ) {
+	LockedInfo *info = (LockedInfo*)malloc( sizeof( LockedInfo ) );
+	info->key = key;
+	info->value = value;
+	return info;
+}
+
+DoorInfo *Persist::createDoorInfo( Uint32 key, Uint32 value ) {
+	DoorInfo *info = (DoorInfo*)malloc( sizeof( DoorInfo ) );
+	info->key = key;
+	info->value = value;
 	return info;
 }
 
@@ -95,11 +104,6 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 			//saveCreature( file, info->pos[i]->creature );
 			file->write( info->pos[i]->monster_name, 255 );
 		}
-
-    file->write( &(info->pos[i]->locked) );
-    file->write( &(info->pos[i]->key_x) );
-    file->write( &(info->pos[i]->key_y) );
-    file->write( &(info->pos[i]->key_z) );
   }
 	file->write( &(info->rug_count) );
   for( int i = 0; i < (int)info->rug_count; i++ ) {
@@ -108,6 +112,16 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 		file->write( &(info->rugPos[i]->texture) );
 		file->write( &(info->rugPos[i]->isHorizontal) );
 		file->write( &(info->rugPos[i]->angle) );
+	}
+	file->write( &(info->locked_count) );
+  for( int i = 0; i < (int)info->locked_count; i++ ) {
+		file->write( &(info->locked[i]->key) );
+		file->write( &(info->locked[i]->value) );
+	}
+	file->write( &(info->door_count) );
+  for( int i = 0; i < (int)info->door_count; i++ ) {
+		file->write( &(info->door[i]->key) );
+		file->write( &(info->door[i]->value) );
 	}
 }
 
@@ -176,10 +190,16 @@ MapInfo *Persist::loadMap( File *file ) {
 			file->read( info->pos[i]->monster_name, 255 );
 		} else strcpy( (char*)( info->pos[i]->monster_name ), "" );
 
-    file->read( &(info->pos[i]->locked) );
-    file->read( &(info->pos[i]->key_x) );
-    file->read( &(info->pos[i]->key_y) );
-    file->read( &(info->pos[i]->key_z) );
+		if( info->version < 22 ) {
+			// old door info (now unused)
+			Uint8 locked;
+			Uint16 key_x, key_y, key_z;
+
+			file->read( &(locked) );
+			file->read( &(key_x) );
+			file->read( &(key_y) );
+			file->read( &(key_z) );
+		}
   }
 	if( info->version >= 20 ) {
 		file->read( &(info->rug_count) );
@@ -194,6 +214,22 @@ MapInfo *Persist::loadMap( File *file ) {
 	} else {
 		info->rug_count = 0;
 	}
+	if( info->version >= 22 ) {
+		file->read( &(info->locked_count) );
+		for( int i = 0; i < (int)info->locked_count; i++ ) {
+			info->locked[i] = (LockedInfo*)malloc(sizeof(LockedInfo));
+			file->read( &(info->locked[i]->key) );
+			file->read( &(info->locked[i]->value) );
+		}
+		file->read( &(info->door_count) );
+		for( int i = 0; i < (int)info->door_count; i++ ) {
+			info->door[i] = (DoorInfo*)malloc(sizeof(DoorInfo));
+			file->read( &(info->door[i]->key) );
+			file->read( &(info->door[i]->value) );
+		}
+	} else {
+		info->locked_count = info->door_count = 0;
+	}
   return info;
 }
 
@@ -203,6 +239,12 @@ void Persist::deleteMapInfo( MapInfo *info ) {
   }
 	for( int i = 0; i < (int)info->rug_count; i++ ) {
     free( info->rugPos[i] );
+  }
+	for( int i = 0; i < (int)info->locked_count; i++ ) {
+    free( info->locked[i] );
+  }
+	for( int i = 0; i < (int)info->door_count; i++ ) {
+    free( info->door[i] );
   }
   free( info );
 }

@@ -153,6 +153,7 @@ void Sound::selectMusic( Preferences *preferences ) {
 #endif
 }
 
+
 #ifdef HAVE_SDL_MIXER
 void Sound::playMusic( Mix_Music *music, int ms ) {
   if( haveSound && music ) {
@@ -173,8 +174,10 @@ void Sound::playMusic( Mix_Music *music, int ms ) {
     }
   }
 }
+#endif
 
 void Sound::stopMusic( int ms ) {
+#ifdef HAVE_SDL_MIXER
   if(haveSound) {
 
     // remember where the level music is stopped
@@ -188,8 +191,9 @@ void Sound::stopMusic( int ms ) {
       Mix_HaltMusic();
     }
   }
-}
 #endif
+}
+
 
 void Sound::checkMusic( bool inCombat ) {
 #ifdef HAVE_SDL_MIXER
