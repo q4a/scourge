@@ -290,9 +290,9 @@ void Scourge::startMission() {
       // run mission
       getSDLHandler()->mainLoop();
 
-			// Save the current map (except the very first time...)
+			// Save the current map (except HQ...)
 			session->getPreferences()->createConfigDir();
-			if( !session->isMultiPlayerGame() ) {
+			if( !session->isMultiPlayerGame() && session->getCurrentMission() ) {
 				if( !saveCurrentMap() ) {
 					showMessageDialog( "Error saving current map." );
 				}

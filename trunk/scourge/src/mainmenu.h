@@ -71,6 +71,7 @@ private:
   Window *aboutDialog;
   ScrollingLabel *aboutText;
   Button *aboutOK;
+  int lastMenuTick; // this is when the program last drew the main menu (to make the sleep a bit more sensible) 
 
 #define MAX_LOGOS 100
   typedef struct _LogoSprite {
