@@ -57,6 +57,7 @@ const int MainMenu::values[] = {
 MainMenu::MainMenu(Scourge *scourge){
   this->scourge = scourge;
   this->cloudCount = 30;
+	this->lastMenuTick = 0;
   this->mainWin = NULL;
 	this->savegameDialog = new SavegameDialog( scourge );
   for(int i = 0; i < cloudCount; i++) {
@@ -198,7 +199,11 @@ void MainMenu::drawView() {
   //if( !partyEditor->isVisible() ) {
 
 		// HACK: needed on my X2 dual core system... life is hard...
-		SDL_Delay( 20 );
+		//SDL_Delay( 20 );
+	int tickNow = SDL_GetTicks();
+	if((tickNow - lastMenuTick) < 15)
+		SDL_Delay( 15 - (tickNow - lastMenuTick) );
+	lastMenuTick = SDL_GetTicks(); 
 
     drawMenu();
 
