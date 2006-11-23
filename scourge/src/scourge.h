@@ -241,9 +241,10 @@ protected:
 	bool changeLevel();
 	void endGame();
 	bool saveCurrentMap();
-	void getCurrentMapName( char *path );
+	void getCurrentMapName( char *path, int depth=-1 );
 	void getSavedMapName( char *mapName );
 	bool loadMap( char *mapName, bool fromRandomMap, bool absolutePath );
+	void deleteCurrentMapFiles();
 
 public:
 #define TOP_GUI_WIDTH 400

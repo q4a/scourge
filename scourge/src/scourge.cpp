@@ -290,9 +290,11 @@ void Scourge::startMission() {
       // run mission
       getSDLHandler()->mainLoop();
 
-			// Save the current map (except HQ...)
+			// Save the current map (except HQ and completed missions)
 			session->getPreferences()->createConfigDir();
-			if( !session->isMultiPlayerGame() && session->getCurrentMission() ) {
+			if( !session->isMultiPlayerGame() && 
+					session->getCurrentMission() &&
+					!session->getCurrentMission()->isCompleted() ) {
 				if( !saveCurrentMap() ) {
 					showMessageDialog( "Error saving current map." );
 				}
@@ -319,7 +321,7 @@ void Scourge::startMission() {
 	endGame();
 }
 
-void Scourge::getCurrentMapName( char *path ) {
+void Scourge::getCurrentMapName( char *path, int depth ) {
 	// save the current map:
 	// get and set the map's name
 	char mapName[300];
@@ -333,7 +335,7 @@ void Scourge::getCurrentMapName( char *path ) {
 	
 	// add the depth
 	char tmp[300];
-	sprintf( tmp, "%s_%d.map", mapName, oldStory );
+	sprintf( tmp, "%s_%d.map", mapName, ( depth >= 0 ? depth : oldStory ) );
 	
 	// convert to a path	
 	get_file_name( path, 300, tmp );
@@ -371,6 +373,16 @@ bool Scourge::saveCurrentMap() {
 	cerr << "\tresult=" << result << endl;
 
 	return true;
+}
+
+void Scourge::deleteCurrentMapFiles() {
+	char path[300];
+	for( int i = 0; i < session->getCurrentMission()->getDepth(); i++ ) {
+		getCurrentMapName( path, i );
+		cerr << "Deleting map file: " << path << endl;
+		int n = remove( path );
+		cerr << "\t" << ( !n ? "success" : "can't delete file" ) << endl;
+	}
 }
 
 void Scourge::resetGame( bool resetParty ) {
@@ -1992,6 +2004,9 @@ void Scourge::missionCompleted() {
 			getParty()->getParty(i)->addExperienceWithMessage( exp );
     }
   }
+
+	// Delete map files for this mission
+	deleteCurrentMapFiles();
 }
 
 #ifdef HAVE_SDL_NET
