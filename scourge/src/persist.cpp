@@ -123,6 +123,11 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 		file->write( &(info->door[i]->key) );
 		file->write( &(info->door[i]->value) );
 	}
+	file->write( &(info->secret_count) );
+  for( int i = 0; i < (int)info->secret_count; i++ ) {
+		file->write( &(info->secret[i]->key) );
+		file->write( &(info->secret[i]->value) );
+	}
 }
 
 // FIXME: reuse this in loadmap
@@ -230,6 +235,17 @@ MapInfo *Persist::loadMap( File *file ) {
 	} else {
 		info->locked_count = info->door_count = 0;
 	}
+	if( info->version >= 23 ) {
+		file->read( &(info->secret_count) );
+		for( int i = 0; i < (int)info->secret_count; i++ ) {
+			info->secret[i] = (LockedInfo*)malloc(sizeof(LockedInfo));
+			file->read( &(info->secret[i]->key) );
+			file->read( &(info->secret[i]->value) );
+		}
+	} else {
+		info->secret_count = 0;
+	}
+
   return info;
 }
 
@@ -245,6 +261,9 @@ void Persist::deleteMapInfo( MapInfo *info ) {
   }
 	for( int i = 0; i < (int)info->door_count; i++ ) {
     free( info->door[i] );
+  }
+	for( int i = 0; i < (int)info->secret_count; i++ ) {
+    free( info->secret[i] );
   }
   free( info );
 }
