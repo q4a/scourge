@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 23
+#define PERSIST_VERSION 24
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -118,6 +118,7 @@ typedef struct _DoorInfo {
 
 typedef struct _MapInfo {
   Uint32 version;
+	Uint8 map_type;
   Uint16 start_x, start_y;
   Uint16 grid_x, grid_y;
   Uint32 pos_count;

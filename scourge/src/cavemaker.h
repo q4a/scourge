@@ -71,8 +71,6 @@ public:
              Mission *mission);
   virtual ~CaveMaker();
 
-  
-
 protected:
   void randomize();
   void growCells();
