@@ -586,6 +586,18 @@ void Shapes::loadRandomCaveTheme() {
   GLCaveShape::initializeShapes( this );
 }
 
+void Shapes::loadCaveTheme( char *name ) {
+	for( int i = 0; i < caveThemeCount; i++ ) {
+		if( !strcmp( name, caveThemes[i]->getName() ) ) {
+			loadTheme( caveThemes[i] );
+			GLCaveShape::initializeShapes( this );
+			return;
+		}
+	}
+	cerr << "*** error: can't find cave theme: " << name << endl;
+	loadRandomCaveTheme();
+}
+
 void Shapes::loadRandomTheme() {
   //loadTheme( themes[ (int)( (float)(themeCount - 1) * rand()/RAND_MAX ) + 1 ] );
   loadTheme( themes[ (int)( (float)themeCount * rand()/RAND_MAX ) ] );

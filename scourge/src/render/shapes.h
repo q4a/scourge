@@ -249,6 +249,7 @@ public:
   void loadTheme( const char *name );
   void loadRandomTheme();
   void loadRandomCaveTheme();
+	void loadCaveTheme( char *name );
 
   inline GLuint getTexture(int index) { return textures[index].id; }
 
