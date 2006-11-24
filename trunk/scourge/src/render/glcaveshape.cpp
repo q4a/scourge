@@ -728,12 +728,12 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
                      MODE_INV, DIR_NW, CAVE_INDEX_INV_NW );
   shapeList[CAVE_INDEX_CROSS_NE] = 
     new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-                     strdup( names[ DIR_CROSS_NE ] ), shapeCount++,
+                     strdup( names[ CAVE_INDEX_CROSS_NE ] ), shapeCount++,
                      MODE_INV, DIR_CROSS_NE, CAVE_INDEX_CROSS_NE );
   shapeList[CAVE_INDEX_CROSS_NW] = 
     new GLCaveShape( shapes, texture, 
                      CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-                     strdup( names[ DIR_CROSS_NW ] ), shapeCount++,
+                     strdup( names[ CAVE_INDEX_CROSS_NW ] ), shapeCount++,
                      MODE_INV, DIR_CROSS_NW, CAVE_INDEX_CROSS_NW );
   shapeList[CAVE_INDEX_BLOCK] = 
     new GLCaveShape( shapes, texture,

@@ -62,6 +62,7 @@ DoorInfo *Persist::createDoorInfo( Uint32 key, Uint32 value ) {
 
 void Persist::saveMap( File *file, MapInfo *info ) {
   file->write( &(info->version) );
+	file->write( &(info->map_type) );
   file->write( &(info->start_x) );
   file->write( &(info->start_y) );
   file->write( &(info->grid_x) );
@@ -148,6 +149,11 @@ MapInfo *Persist::loadMap( File *file ) {
     cerr << "*** Warning: loading older map file: v" << info->version << 
       " vs. v" << PERSIST_VERSION << endl;
   }
+	if( info->version >= 24 ) {
+		file->read( &(info->map_type) );
+	} else {
+		info->map_type = 1; // default to room-type: MapRenderHelper::ROOM_HELPER
+	}
   file->read( &(info->start_x) );
   file->read( &(info->start_y) );
   file->read( &(info->grid_x) );

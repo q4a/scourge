@@ -42,9 +42,6 @@ using namespace std;
 
 #define ZOOM_DELTA 1.2f
 
-// set to 1 when location cache works
-#define USE_LOC_CACHE 0
-
 #define PI 3.14159f
 
 #define KEEP_MAP_SIZE 0
@@ -2990,6 +2987,10 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
 
 	info->hasWater = ( hasWater ? 1 : 0 );
 
+	info->map_type = ( getMapRenderHelper() == MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ] ?
+										 MapRenderHelper::CAVE_HELPER :
+										 MapRenderHelper::ROOM_HELPER );
+
   strncpy( (char*)info->theme_name, shapes->getCurrentThemeName(), 254 );
   info->theme_name[254] = 0;
 
@@ -3107,6 +3108,14 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
   sprintf( result, "Map saved: %s", name );
 }
 
+void Map::initForCave() {
+  shapes->loadRandomCaveTheme();
+
+  string ref = WallTheme::themeRefName[ WallTheme::THEME_REF_PASSAGE_FLOOR ];
+  GLuint *floorTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
+  setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, floorTextureGroup[ GLShape::TOP_SIDE ] );
+}
+
 bool Map::loadMap( char *name, char *result, StatusReport *report, 
 									 int level, int depth, 
 									 bool changingStory, bool fromRandom, 
@@ -3145,13 +3154,26 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
   // reset the map
   reset();
 
-  // it's a room-type map
-  setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
+
+	if( info->map_type == MapRenderHelper::ROOM_HELPER ) {
+		// it's a room-type map
+		setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
+		// load the theme
+		shapes->loadTheme( (const char*)info->theme_name );
+	} else if( info->map_type == MapRenderHelper::CAVE_HELPER ) {
+		// it's a room-type map
+		setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ] );
+
+		// prepare map for cave (load theme, etc.)
+		initForCave();
+	} else {
+		cerr << "*** error unknown map type: " << info->map_type << endl;
+		return false;
+	}
 
   edited = true;
 
-  // load the theme
-  shapes->loadTheme( (const char*)info->theme_name );
+
 
 	setHasWater( info->hasWater == 1 ? true : false );
 

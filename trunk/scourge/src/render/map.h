@@ -287,6 +287,7 @@ class Map {
                 std::vector< RenderedCreature* > *creatures=NULL, 
 								bool absolutePath=false );
   void loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth=0 );
+	void initForCave();
 
   inline Uint16 getCursorMapX() { return cursorMapX; }
   inline Uint16 getCursorMapY() { return cursorMapY; }

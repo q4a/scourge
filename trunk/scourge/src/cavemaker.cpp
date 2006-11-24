@@ -118,13 +118,9 @@ void CaveMaker::generate( Map *map, ShapePalette *shapePal ) {
 
 bool CaveMaker::drawNodes( Map *map, ShapePalette *shapePal ) {
 
-  shapePal->loadRandomCaveTheme();
+	map->initForCave();
 
-  string ref = WallTheme::themeRefName[ WallTheme::THEME_REF_PASSAGE_FLOOR ];
-  GLuint *floorTextureGroup = shapePal->getCurrentTheme()->getTextureGroup( ref );
-  map->setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, floorTextureGroup[ GLShape::TOP_SIDE ] );
-
-  for( int y = CAVE_CHUNK_SIZE; y < MAP_DEPTH; y += CAVE_CHUNK_SIZE ) {
+	for( int y = CAVE_CHUNK_SIZE; y < MAP_DEPTH; y += CAVE_CHUNK_SIZE ) {
     for( int x = 0; x < MAP_WIDTH - CAVE_CHUNK_SIZE; x += CAVE_CHUNK_SIZE ) {
       if( x < MAP_OFFSET || x >= MAP_OFFSET + w * CAVE_CHUNK_SIZE ||
           y < MAP_OFFSET + CAVE_CHUNK_SIZE || y >= MAP_OFFSET + ( h + 1 ) * CAVE_CHUNK_SIZE) {
