@@ -18,7 +18,7 @@
 #ifndef FOG_H
 #define FOG_H
 
-#include "../common/constants.h"
+#include "render.h"
 #include <set>
 
 class CFrustum;                
@@ -56,6 +56,8 @@ public:
   void reset();
   void draw( int sx, int sy, int w, int h, CFrustum *frustum );
   int getVisibility( int xp, int yp, Shape *shape );
+	void load( FogInfo *fogInfo );
+	void save( FogInfo *fogInfo );
 protected:
   void getScreenXY( GLdouble mapx, GLdouble mapy, GLdouble mapz,
                     GLdouble *screenx, GLdouble *screeny );

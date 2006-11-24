@@ -548,3 +548,18 @@ void Fog::createShadeTexture() {
 			   GL_RGB, GL_UNSIGNED_BYTE, shade_data);
 }
 
+void Fog::load( FogInfo *fogInfo ) {
+	for( int x = 0; x < MAP_WIDTH; x++ ) {
+		for( int y = 0; y < MAP_DEPTH; y++ ) {
+			fog[x][y] = fogInfo->fog[x][y];
+		}
+	}
+}
+
+void Fog::save( FogInfo *fogInfo ) {
+	for( int x = 0; x < MAP_WIDTH; x++ ) {
+		for( int y = 0; y < MAP_DEPTH; y++ ) {
+			fogInfo->fog[x][y] = fog[x][y];
+		}
+	}
+}

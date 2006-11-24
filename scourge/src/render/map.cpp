@@ -2967,7 +2967,8 @@ float EditorMapSettings::getMaxYRot() {
  * ---- std::map<Uint32, Uint32> doorToKey;
  * ---- std::map<Uint32, Uint32> keyToDoor;
  * ---- std::map<int,bool> secretDoors;
- * fog
+ * ---- fog
+ * deities
  */
 void Map::saveMap( char *name, char *result, bool absolutePath ) {
 
@@ -3085,6 +3086,9 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
 		Uint8 value = (Uint8)(i->second ? 1 : 0);
 		info->secret[ info->secret_count++ ] = Persist::createLockedInfo( key, value );
 	}
+
+	// save the fog
+	getMapRenderHelper()->saveHelper( &(info->fog_info) );
 		 
 
   char fileName[300];
@@ -3170,6 +3174,9 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
 		// prepare map for cave (load theme, etc.)
 		initForCave( (char*)info->theme_name );
+
+		// load the fog
+		getMapRenderHelper()->loadHelper( &(info->fog_info) );
 	} else {
 		cerr << "*** error unknown map type: " << info->map_type << endl;
 		return false;
