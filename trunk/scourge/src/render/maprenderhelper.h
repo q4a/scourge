@@ -55,6 +55,8 @@ public:
   inline virtual void visit( RenderedCreature *creature ) {}
   inline virtual void hideDeadParty() {}
   inline virtual bool isLightMapEnabled() { return true; }
+	inline virtual void loadHelper( FogInfo *fogInfo ) {}
+	inline virtual void saveHelper( FogInfo *fogInfo ) {}
 };
 
 class CaveRenderHelper : public MapRenderHelper {
@@ -71,6 +73,8 @@ public:
   virtual void visit( RenderedCreature *creature );
   virtual void hideDeadParty();
   inline virtual bool isLightMapEnabled() { return false; }
+	virtual void loadHelper( FogInfo *fogInfo );
+	virtual void saveHelper( FogInfo *fogInfo );
 };
 
 #define OVERLAY_SIZE 16

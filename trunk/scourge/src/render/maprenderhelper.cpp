@@ -67,6 +67,13 @@ void CaveRenderHelper::hideDeadParty() {
   fog->hideDeadParty();
 }
   
+void CaveRenderHelper::loadHelper( FogInfo *fogInfo ) {
+	fog->load( fogInfo );
+}
+
+void CaveRenderHelper::saveHelper( FogInfo *fogInfo ) {
+	fog->save( fogInfo );
+}
 
 
 

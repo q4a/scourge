@@ -129,6 +129,14 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 		file->write( &(info->secret[i]->key) );
 		file->write( &(info->secret[i]->value) );
 	}
+	for( int x = 0; x < MAP_WIDTH; x++ ) {
+		for( int y = 0; y < MAP_DEPTH; y++ ) {
+			file->write( &(info->fog_info.fog[x][y]) );
+			//for( int i = 0; i < 4; i++ ) {
+				//file->write( &(info->fog_info.players[x + (y * MAP_WIDTH)][i] ) );
+			//}
+		}
+	}
 }
 
 // FIXME: reuse this in loadmap
@@ -251,7 +259,25 @@ MapInfo *Persist::loadMap( File *file ) {
 	} else {
 		info->secret_count = 0;
 	}
-
+	if( info->version >= 25 ) {
+		for( int x = 0; x < MAP_WIDTH; x++ ) {
+			for( int y = 0; y < MAP_DEPTH; y++ ) {
+				file->read( &(info->fog_info.fog[x][y]) );
+				//for( int i = 0; i < 4; i++ ) {
+					//file->read( &(info->fog_info.players[x + (y * MAP_WIDTH)][i] ) );
+				//}
+			}
+		}
+	} else {
+		for( int x = 0; x < MAP_WIDTH; x++ ) {
+			for( int y = 0; y < MAP_DEPTH; y++ ) {
+				info->fog_info.fog[x][y] = 0; // FOG_UNVISITED
+				for( int i = 0; i < 4; i++ ) {
+					info->fog_info.players[x + (y * MAP_WIDTH)][i] = 5; // no player
+				}
+			}
+		}
+	}
   return info;
 }
 

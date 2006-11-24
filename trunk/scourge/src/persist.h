@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 24
+#define PERSIST_VERSION 25
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -116,6 +116,11 @@ typedef struct _DoorInfo {
 	Uint32 value;
 } DoorInfo;
 
+typedef struct _FogInfo {
+	Uint8 fog[MAP_WIDTH][MAP_DEPTH];
+	Uint8 players[MAP_WIDTH * MAP_DEPTH][4];
+} FogInfo;
+
 typedef struct _MapInfo {
   Uint32 version;
 	Uint8 map_type;
@@ -133,6 +138,7 @@ typedef struct _MapInfo {
 	DoorInfo *door[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
 	Uint32 secret_count;
 	LockedInfo *secret[ MAP_WIDTH * MAP_DEPTH ];
+	FogInfo fog_info;
 } MapInfo;
 
 typedef struct _MissionInfo {
