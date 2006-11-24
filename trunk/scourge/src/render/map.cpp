@@ -3108,8 +3108,12 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
   sprintf( result, "Map saved: %s", name );
 }
 
-void Map::initForCave() {
-  shapes->loadRandomCaveTheme();
+void Map::initForCave( char *themeName ) {
+	if( !themeName ) {
+		shapes->loadRandomCaveTheme();
+	} else {
+		shapes->loadCaveTheme( themeName );
+	}
 
   string ref = WallTheme::themeRefName[ WallTheme::THEME_REF_PASSAGE_FLOOR ];
   GLuint *floorTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
@@ -3165,7 +3169,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 		setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ] );
 
 		// prepare map for cave (load theme, etc.)
-		initForCave();
+		initForCave( (char*)info->theme_name );
 	} else {
 		cerr << "*** error unknown map type: " << info->map_type << endl;
 		return false;
