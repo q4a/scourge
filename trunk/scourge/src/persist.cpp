@@ -27,11 +27,13 @@ LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
   info->y = y;
   info->z = z;
   
-  info->item_pos_name[0] = 0;
-  info->item_name[0] = 0;
-  info->monster_name[0] = 0;
-  info->shape_name[0] = 0;
-  info->floor_shape_name[0] = 0;
+	// preset strings to all 0 for better compressability.
+	memset( info->item_pos_name, 0, sizeof( info->item_pos_name ) );
+	memset( info->item_name, 0, sizeof( info->item_name ) );
+	memset( info->monster_name, 0, sizeof( info->monster_name ) );
+	memset( info->shape_name, 0, sizeof( info->shape_name ) );
+	memset( info->floor_shape_name, 0, sizeof( info->floor_shape_name ) );
+	memset( info->magic_school_name, 0, sizeof( info->magic_school_name ) );
 
   return info;
 }
@@ -105,6 +107,13 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 			//saveCreature( file, info->pos[i]->creature );
 			file->write( info->pos[i]->monster_name, 255 );
 		}
+
+		Uint8 hasDeity = ( strlen( (char*)( info->pos[i]->magic_school_name ) ) ? 1 : 0 );
+    file->write( &(hasDeity) );
+    if( hasDeity ) {
+			file->write( info->pos[i]->magic_school_name, 255 );
+		}
+
   }
 	file->write( &(info->rug_count) );
   for( int i = 0; i < (int)info->rug_count; i++ ) {
@@ -208,6 +217,14 @@ MapInfo *Persist::loadMap( File *file ) {
     if( hasCreature ) {
 			file->read( info->pos[i]->monster_name, 255 );
 		} else strcpy( (char*)( info->pos[i]->monster_name ), "" );
+
+		if( info->version >= 26 ) {
+			Uint8 hasDeity;
+			file->read( &(hasDeity) );
+			if( hasDeity ) {
+				file->read( info->pos[i]->magic_school_name, 255 );
+			} else strcpy( (char*)( info->pos[i]->magic_school_name ), "" );
+		} else strcpy( (char*)( info->pos[i]->magic_school_name ), "" );
 
 		if( info->version < 22 ) {
 			// old door info (now unused)

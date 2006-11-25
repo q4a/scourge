@@ -28,6 +28,7 @@
 #include "rendereditem.h"
 #include "mapadapter.h"
 #include "../io/zipfile.h"
+#include "../rpg/spell.h"
 #include "maprenderhelper.h"
 #include "../debug.h"
 #include "projectilerenderer.h"
@@ -3045,6 +3046,14 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
                      254 );
             info->pos[ info->pos_count ]->shape_name[254] = 0;
           }
+
+					// save the deity locations
+					char *p = adapter->getMagicSchoolIndexForLocation( pos[x][y][z] );
+					if( p ) {
+						strncpy( (char*)info->pos[ info->pos_count ]->magic_school_name, p, 254 );
+						info->pos[ info->pos_count ]->magic_school_name[254] = 0;
+					}
+
           info->pos_count++;
         }
       }
@@ -3208,6 +3217,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
   if( report ) report->updateStatus( 3, 7, "Initializing map" );
   
   GLShape *shape;
+	DisplayInfo di;
   for( int i = 0; i < (int)info->pos_count; i++ ) {
 
     if( info->pos[i]->x >= MAP_WIDTH ||
@@ -3233,6 +3243,15 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 			} else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << ",0" << endl;
 		}
 
+		// load the deity locations
+		MagicSchool *ms = NULL;
+		if( strlen( (char*)info->pos[i]->magic_school_name ) ) {
+			ms = MagicSchool::getMagicSchoolByName( (char*)info->pos[i]->magic_school_name );
+      di.red = ms->getDeityRed();
+      di.green = ms->getDeityGreen();
+      di.blue = ms->getDeityBlue();
+		}
+
     if( strlen( (char*)( info->pos[i]->item_name ) ) ) {
       RenderedItem *item = adapter->createItem( (char*)( info->pos[i]->item_name ), level, depth );
       if( item ) {
@@ -3249,12 +3268,22 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
     } else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
       shape = shapes->
         findShapeByName( (char*)(info->pos[i]->shape_name), true );
-      if( shape ) setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape );
+      if( shape ) setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
       else cerr << "Map::load failed to find shape: " << info->pos[i]->shape_name <<
         " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     }
 
-    // FIXME: handle door info 
+    // load the deity locations
+		if( ms ) {
+			Location *pos = getPosition( info->pos[i]->x, 
+																	 info->pos[i]->y, 
+																	 info->pos[i]->z );
+			if( !pos ) {
+				cerr << "*** error: Can't find position to place deity!" << endl;
+			} else {
+				adapter->setMagicSchoolIndexForLocation( pos, ms->getName() );
+			}
+		}
   }
 
 	// load rugs

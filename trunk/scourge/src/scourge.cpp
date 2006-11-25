@@ -398,6 +398,9 @@ void Scourge::resetGame( bool resetParty ) {
 	levelMap->reset();
 	//cerr << "\tMap reset is done." << endl;
 
+	// reset the gods' locations
+	deityLocation.clear();
+
 	// do this only once
 	if(resetParty) {
 		// clear the board
@@ -3040,6 +3043,16 @@ void Scourge::printToConsole( const char *s ) {
 char *Scourge::getDeityLocation( Location *pos ) {
   MagicSchool *ms = getMagicSchoolLocation( pos );
   return( ms ? ms->getDeity() : NULL );
+}
+
+char *Scourge::getMagicSchoolIndexForLocation( Location *pos ) {
+	MagicSchool *ms = getMagicSchoolLocation( pos );
+	return( ms ? ms->getName() : NULL );
+}
+
+void Scourge::setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolName ) {
+	MagicSchool *ms = MagicSchool::getMagicSchoolByName( magicSchoolName );
+	addDeityLocation( pos, ms );
 }
 
 void Scourge::startConversation( RenderedCreature *creature, char *message ) {
