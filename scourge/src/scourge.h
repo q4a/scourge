@@ -342,6 +342,9 @@ public:
    */
   Color *getOutlineColor( Location *pos );
 
+	virtual char *getMagicSchoolIndexForLocation( Location *pos );
+	virtual void setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolName );
+
   inline int getCurrentDepth() { return currentStory; }
 	void descendDungeon( Location *pos );
 	void ascendDungeon( Location *pos );

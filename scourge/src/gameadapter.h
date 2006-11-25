@@ -123,6 +123,8 @@ public:
   virtual void saveMapData( const char *name );
   virtual inline Color *getOutlineColor( Location *pos ) { return NULL; }
   virtual inline bool inTurnBasedCombat() { return false; }
+	virtual char *getMagicSchoolIndexForLocation( Location *pos ) { return NULL; }
+	virtual void setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolName ) {}
 
   virtual inline void completeCurrentMission() {}
 

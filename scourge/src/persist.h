@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 25
+#define PERSIST_VERSION 26
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -97,6 +97,7 @@ typedef struct _LocationInfo {
   Uint8 item_name[255];
   Uint8 monster_name[255];
 	Uint8 item_pos_name[255];
+	Uint8 magic_school_name[255]; // the deity at this location
 } LocationInfo;
 
 typedef struct _RugInfo {
