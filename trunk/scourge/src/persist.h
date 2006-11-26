@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 27
+#define PERSIST_VERSION 28
 
 #define OLDEST_HANDLED_VERSION 15
 

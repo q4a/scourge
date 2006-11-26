@@ -200,7 +200,7 @@ void Scourge::start() {
         if( !failed ) {
           // do this to fix slowness in mainmenu the second time around
           glPushAttrib(GL_ENABLE_BIT);
-          startMission();
+          startMission( ( value != CONTINUE_GAME ) );
           glPopAttrib();
         }
       }
@@ -231,18 +231,20 @@ Scourge::~Scourge(){
   delete handler;
 }
 
-void Scourge::startMission() {
+void Scourge::startMission( bool startInHq ) {
 	bool resetParty = true;
 
 #if DEBUG_SQUIRREL
   squirrelWin->setVisible( true );
 #endif
 
-	// always start in hq
-  nextMission = -1;
-  inHq = true;
-	oldStory = currentStory = 0;
-  Mission *lastMission = NULL;
+	if( startInHq ) {
+		// always start in hq
+		nextMission = -1;
+		inHq = true;
+		oldStory = currentStory = 0;
+	}
+	Mission *lastMission = NULL;
 
   while(true) {
 		bool fromRandomMap = !( levelMap->isEdited() );
@@ -2837,6 +2839,8 @@ Color *Scourge::getOutlineColor( Location *pos ) {
   return view->getOutlineColor( pos );
 }
 
+#define HQ_MISSION_SAVED_NAME "__HQ__"
+
 bool Scourge::saveGame(Session *session) {  
 	char path[300];
   {
@@ -2850,6 +2854,21 @@ bool Scourge::saveGame(Session *session) {
     File *file = new File( fp );
     Uint32 n = PERSIST_VERSION;
     file->write( &n );
+	
+		Uint8 mission[255];
+		Uint8 story = 0;
+		Uint8 startInHq = 0;
+		if( session->getCurrentMission() ) {
+			story = oldStory;
+			strcpy( (char*)mission, session->getCurrentMission()->getName() );
+		} else {
+			startInHq = 1;
+			strcpy( (char*)mission, HQ_MISSION_SAVED_NAME );
+		}
+		file->write( &story );
+		file->write( mission, 255 );
+		file->write( &startInHq );
+
     n = session->getBoard()->getStorylineIndex();
     file->write( &n );
     n = session->getParty()->getPartySize();
@@ -2919,6 +2938,17 @@ bool Scourge::loadGame( Session *session, char *error ) {
 			cerr << "*** Warning: loading older savegame file: v" << version <<
 				" vs. v" << PERSIST_VERSION << ". Will try to convert it." << endl;
 		}
+
+		// load current mission/depth info
+		Uint8 story = 0;
+		Uint8 mission[255];
+		Uint8 startInHq = 0;
+		if( version >= 28 ) {
+			file->read( &story );
+			file->read( mission, 255 );
+			file->read( &startInHq );
+		}
+
 		Uint32 storylineIndex;
 		file->read( &storylineIndex );
 		Uint32 n;
@@ -2944,6 +2974,27 @@ bool Scourge::loadGame( Session *session, char *error ) {
 			}
 			cerr << "mission count=" << session->getBoard()->getMissionCount() << endl;
 		}
+
+		// start on the correct mission and story (depth)
+		nextMission = -1;
+		if( strcmp( (char*)mission, HQ_MISSION_SAVED_NAME ) ) {
+			for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
+				if( !strcmp( (char*)mission, session->getBoard()->getMission(i)->getName() ) ) {
+					nextMission = i;
+					break;
+				}
+			}
+			if( nextMission == -1 ) {
+				cerr << "*** Error: Can't find next mission: " << (char*)(mission) << endl;
+				// default to hq
+				story = 0;
+				startInHq = 1;
+			}
+		}
+		oldStory = currentStory = story;
+		inHq = ( startInHq == 1 ? true : false );
+		cerr << "Starting on mission index=" << nextMission << " depth=" << oldStory << endl;
+
 		delete file;
 	}
 

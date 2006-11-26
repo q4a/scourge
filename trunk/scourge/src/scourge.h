@@ -471,7 +471,7 @@ public:
     After the mission is over (when mainLoop returns) items and creatures created for this
     story are deleted, the UI is hidden, etc.
   */
-  void startMission();  
+  void startMission( bool startInHq );  
   
   /**
     Set up some variables so the mainLoop can quit and control can be transferred 
