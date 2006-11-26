@@ -369,7 +369,7 @@ bool Scourge::saveCurrentMap() {
 	levelMap->startx = toint( session->getParty()->getPlayer()->getX() );
 	levelMap->starty = toint( session->getParty()->getPlayer()->getY() );
 	char result[300];
-	levelMap->saveMap( path, result, true );
+	levelMap->saveMap( path, result, true, REF_TYPE_OBJECT );
 	cerr << "\tresult=" << result << endl;
 
 	return true;

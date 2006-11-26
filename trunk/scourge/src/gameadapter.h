@@ -142,6 +142,8 @@ public:
   virtual RenderedCreature *createMonster( char *monster_name );
   virtual RenderedCreature *getPlayer();
   virtual RenderedCreature *getParty( int index );
+	virtual RenderedItem *createItem( ItemInfo *info );
+  virtual RenderedCreature *createMonster( CreatureInfo *info );
 
   virtual inline bool startTextEffect( char *message ) { return false; }
 

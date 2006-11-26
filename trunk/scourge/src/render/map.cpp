@@ -2959,19 +2959,7 @@ float EditorMapSettings::getMaxYRot() {
   return 90.0f;
 }
 
-/**
- * Also need to save:
- * ---- Location *itemPos[MAP_WIDTH][MAP_DEPTH];
- * ---- Rug rugPos[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
- * ---- hasWater
- * ---- std::map<Uint32, bool> locked;
- * ---- std::map<Uint32, Uint32> doorToKey;
- * ---- std::map<Uint32, Uint32> keyToDoor;
- * ---- std::map<int,bool> secretDoors;
- * ---- fog
- * deities
- */
-void Map::saveMap( char *name, char *result, bool absolutePath ) {
+void Map::saveMap( char *name, char *result, bool absolutePath, int referenceType ) {
 
   if( !strlen( name ) ) {
     strcpy( result, "You need to name the map first." );
@@ -2980,6 +2968,8 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
 
   MapInfo *info = (MapInfo*)malloc(sizeof(MapInfo));
   info->version = PERSIST_VERSION;
+
+	info->reference_type = referenceType;
 
   info->start_x = startx;
   info->start_y = starty;
@@ -3014,10 +3004,14 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
 					itemPos[x][y]->y == y &&
 					itemPos[x][y]->item ) {
         info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, 0 );
-        strncpy( (char*)(info->pos[ info->pos_count ]->item_pos_name), 
-                 itemPos[x][y]->item->getType(),
-                 254 );
-        info->pos[ info->pos_count ]->item_pos_name[254] = 0;
+				if( referenceType == REF_TYPE_NAME ) {
+					strncpy( (char*)(info->pos[ info->pos_count ]->item_pos_name), 
+									 itemPos[x][y]->item->getType(),
+									 254 );
+					info->pos[ info->pos_count ]->item_pos_name[254] = 0;
+				} else {
+					info->pos[ info->pos_count ]->item_pos = itemPos[x][y]->item->save();
+				}
         info->pos_count++;
       }
 
@@ -3032,14 +3026,22 @@ void Map::saveMap( char *name, char *result, bool absolutePath ) {
           info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, z );
 
           if( pos[x][y][z]->item ) {
-						strncpy( (char*)( info->pos[ info->pos_count ]->item_name ), 
-										 pos[x][y][z]->item->getType(), 
-										 254 );
+						if( referenceType == REF_TYPE_NAME ) {
+							strncpy( (char*)( info->pos[ info->pos_count ]->item_name ), 
+											 pos[x][y][z]->item->getType(), 
+											 254 );
+						} else {
+							info->pos[ info->pos_count ]->item = pos[x][y][z]->item->save();
+						}
           } else if( pos[x][y][z]->creature ) {
-            strncpy( (char*)( info->pos[ info->pos_count ]->monster_name ), 
-										 pos[x][y][z]->creature->getType(), 
-										 254 );
-						info->pos[ info->pos_count ]->monster_name[254] = 0;
+						if( referenceType == REF_TYPE_NAME ) {
+							strncpy( (char*)( info->pos[ info->pos_count ]->monster_name ), 
+											 pos[x][y][z]->creature->getType(), 
+											 254 );
+							info->pos[ info->pos_count ]->monster_name[254] = 0;
+						} else {
+							info->pos[ info->pos_count ]->creature = pos[x][y][z]->creature->save();
+						}
           } else {
             strncpy( (char*)(info->pos[ info->pos_count ]->shape_name), 
                      pos[x][y][z]->shape->getName(),
@@ -3235,8 +3237,13 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
         " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << endl;
     }
 
-		if( strlen( (char*)(info->pos[i]->item_pos_name) ) ) {
-			RenderedItem *item = adapter->createItem( (char*)( info->pos[i]->item_pos_name ), level, depth );
+		if( strlen( (char*)(info->pos[i]->item_pos_name) ) || info->pos[i]->item_pos ) {
+			RenderedItem *item;
+			if( info->reference_type == REF_TYPE_NAME ) {
+				item = adapter->createItem( (char*)( info->pos[i]->item_pos_name ), level, depth );
+			} else {
+				item = adapter->createItem( info->pos[i]->item_pos );
+			}
 			if( item ) {
 				setItem( info->pos[i]->x, info->pos[i]->y, 0, item );
 				if( items ) items->push_back( item );
@@ -3252,14 +3259,24 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
       di.blue = ms->getDeityBlue();
 		}
 
-    if( strlen( (char*)( info->pos[i]->item_name ) ) ) {
-      RenderedItem *item = adapter->createItem( (char*)( info->pos[i]->item_name ), level, depth );
+    if( strlen( (char*)( info->pos[i]->item_name ) ) || info->pos[i]->item ) {
+			RenderedItem *item;
+			if( info->reference_type == REF_TYPE_NAME ) {
+				item = adapter->createItem( (char*)( info->pos[i]->item_name ), level, depth );
+			} else {
+				item = adapter->createItem( info->pos[i]->item );
+			}
       if( item ) {
         setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
         if( items ) items->push_back(  item );
       } else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
-    } else if( strlen( (char*)( info->pos[i]->monster_name ) ) ) {
-      RenderedCreature *creature = adapter->createMonster( (char*)( info->pos[i]->monster_name ) );
+    } else if( strlen( (char*)( info->pos[i]->monster_name ) ) || info->pos[i]->creature ) {
+			RenderedCreature *creature;
+			if( info->reference_type == REF_TYPE_NAME ) {
+				creature = adapter->createMonster( (char*)( info->pos[i]->monster_name ) );
+			} else {
+				creature = adapter->createMonster( info->pos[i]->creature );
+			}
       if( creature ) {
         setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
         creature->moveTo( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );

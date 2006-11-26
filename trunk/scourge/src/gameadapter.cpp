@@ -66,6 +66,7 @@ RenderedItem *GameAdapter::createItem( char *item_name, int level, int depth ) {
 	}
 	if( strcmp( item_name, "SCROLL" ) ) {
 		// FIXME: special case... do we need it? Test it.
+		//Spell *spell = MagicSchool::getRandomSpell( getLevel() );
 	}
 	Item *item = session->newItem( rpgItem, level );
 
@@ -74,6 +75,14 @@ RenderedItem *GameAdapter::createItem( char *item_name, int level, int depth ) {
 	}
 
 	return item;
+}
+
+RenderedItem *GameAdapter::createItem( ItemInfo *info ) {
+	return Item::load( session, info );
+}
+
+RenderedCreature *GameAdapter::createMonster( CreatureInfo *info ) {
+	return Creature::load( session, info );
 }
 
 void GameAdapter::fillContainer( Item *container, int level, int depth ) {
