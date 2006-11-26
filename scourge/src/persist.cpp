@@ -35,6 +35,10 @@ LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
 	memset( info->floor_shape_name, 0, sizeof( info->floor_shape_name ) );
 	memset( info->magic_school_name, 0, sizeof( info->magic_school_name ) );
 
+	info->item_pos = NULL;
+	info->item = NULL;
+	info->creature = NULL;
+
   return info;
 }
 
@@ -71,6 +75,7 @@ void Persist::saveMap( File *file, MapInfo *info ) {
   file->write( &(info->grid_y) );
   file->write( info->theme_name, 255 );
 	file->write( &(info->hasWater) );
+	file->write( &(info->reference_type) );
   file->write( &(info->pos_count) );
   for( int i = 0; i < (int)info->pos_count; i++ ) {
     file->write( &(info->pos[i]->x) );
@@ -82,10 +87,14 @@ void Persist::saveMap( File *file, MapInfo *info ) {
       file->write( info->pos[i]->floor_shape_name );
     }
 
-		Uint8 hasItemPos = ( strlen( (char*)( info->pos[i]->item_pos_name ) ) ? 1 : 0 );
+		Uint8 hasItemPos = ( strlen( (char*)( info->pos[i]->item_pos_name ) ) || info->pos[i]->item_pos ? 1 : 0 );
     file->write( &(hasItemPos) );
     if( hasItemPos ) {
-			file->write( info->pos[i]->item_pos_name, 255 );
+			if( info->reference_type == REF_TYPE_NAME ) {
+				file->write( info->pos[i]->item_pos_name, 255 );
+			} else {
+				saveItem( file, info->pos[i]->item_pos );
+			}
 		}
 
     if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
@@ -94,18 +103,24 @@ void Persist::saveMap( File *file, MapInfo *info ) {
       file->write( info->pos[i]->shape_name );
     }
     
-    Uint8 hasItem = ( strlen( (char*)( info->pos[i]->item_name ) ) ? 1 : 0 );
+    Uint8 hasItem = ( strlen( (char*)( info->pos[i]->item_name ) ) || info->pos[i]->item ? 1 : 0 );
     file->write( &(hasItem) );
     if( hasItem ) {
-			//saveItem( file, info->pos[i]->item );
-			file->write( info->pos[i]->item_name, 255 );
+			if( info->reference_type == REF_TYPE_NAME ) {
+				file->write( info->pos[i]->item_name, 255 );
+			} else {
+				saveItem( file, info->pos[i]->item );
+			}
 		}
 
-    Uint8 hasCreature = ( strlen( (char*)( info->pos[i]->monster_name ) ) ? 1 : 0 );
+    Uint8 hasCreature = ( strlen( (char*)( info->pos[i]->monster_name ) ) || info->pos[i]->creature ? 1 : 0 );
     file->write( &(hasCreature) );
     if( hasCreature ) {
-			//saveCreature( file, info->pos[i]->creature );
-			file->write( info->pos[i]->monster_name, 255 );
+			if( info->reference_type == REF_TYPE_NAME ) {
+				file->write( info->pos[i]->monster_name, 255 );
+			} else {
+				saveCreature( file, info->pos[i]->creature );
+			}
 		}
 
 		Uint8 hasDeity = ( strlen( (char*)( info->pos[i]->magic_school_name ) ) ? 1 : 0 );
@@ -181,6 +196,11 @@ MapInfo *Persist::loadMap( File *file ) {
 	} else {
 		info->hasWater = 0;
 	}
+	if( info->version >= 27 ) {
+		file->read( &(info->reference_type) );
+	} else {
+		info->reference_type = REF_TYPE_NAME;
+	}
   file->read( &(info->pos_count) );
   for( int i = 0; i < (int)info->pos_count; i++ ) {
     info->pos[i] = (LocationInfo*)malloc(sizeof(LocationInfo));
@@ -193,30 +213,48 @@ MapInfo *Persist::loadMap( File *file ) {
       file->read( info->pos[i]->floor_shape_name + 1, 254 );
     }
     
+		strcpy( (char*)( info->pos[i]->item_pos_name ), "" );
+		info->pos[i]->item_pos = NULL;
 		if( info->version >= 19 ) {
 			Uint8 hasItemPos;
 			file->read( &(hasItemPos) );
 			if( hasItemPos ) {
-				file->read( info->pos[i]->item_pos_name, 255 );
-			} else strcpy( (char*)( info->pos[i]->item_pos_name ), "" );
-		} else strcpy( (char*)( info->pos[i]->item_pos_name ), "" );
+				if( info->reference_type == REF_TYPE_NAME ) {
+					file->read( info->pos[i]->item_pos_name, 255 );
+				} else {
+					info->pos[i]->item_pos = loadItem( file );
+				}
+			}
+		}
 			
     file->read( info->pos[i]->shape_name );
     if( info->pos[i]->shape_name[0] ) {
       file->read( info->pos[i]->shape_name + 1, 254 );
     }
     
+		strcpy( (char*)( info->pos[i]->item_name ), "" );
+		info->pos[i]->item = NULL;
     Uint8 hasItem;
     file->read( &(hasItem) );
     if( hasItem ) {
-			file->read( info->pos[i]->item_name, 255 );
-		} else strcpy( (char*)( info->pos[i]->item_name ), "" );
+			if( info->reference_type == REF_TYPE_NAME ) {
+				file->read( info->pos[i]->item_name, 255 );
+			} else {
+				info->pos[i]->item = loadItem( file );
+			}
+		}
 
+		strcpy( (char*)( info->pos[i]->monster_name ), "" );
+		info->pos[i]->creature = NULL;
     Uint8 hasCreature;
     file->read( &(hasCreature) );
     if( hasCreature ) {
-			file->read( info->pos[i]->monster_name, 255 );
-		} else strcpy( (char*)( info->pos[i]->monster_name ), "" );
+			if( info->reference_type == REF_TYPE_NAME ) {
+				file->read( info->pos[i]->monster_name, 255 );
+			} else {
+				info->pos[i]->creature = loadCreature( file );
+			}
+		}
 
 		if( info->version >= 26 ) {
 			Uint8 hasDeity;
@@ -300,6 +338,9 @@ MapInfo *Persist::loadMap( File *file ) {
 
 void Persist::deleteMapInfo( MapInfo *info ) {
   for( int i = 0; i < (int)info->pos_count; i++ ) {
+		if( info->pos[i]->item_pos ) free( info->pos[i]->item_pos );
+		if( info->pos[i]->item ) free( info->pos[i]->item );
+		if( info->pos[i]->creature ) free( info->pos[i]->creature );
     free( info->pos[i] );
   }
 	for( int i = 0; i < (int)info->rug_count; i++ ) {

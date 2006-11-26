@@ -279,7 +279,7 @@ class Map {
   inline const char **getDesriptions() { return (const char **)descriptions; }
   inline Color *getDesriptionColors() { return descriptionsColor; }
 
-  void saveMap( char *name, char *result, bool absolutePath=false );
+  void saveMap( char *name, char *result, bool absolutePath=false, int referenceType=REF_TYPE_NAME );
   bool loadMap( char *name, char *result, StatusReport *report=NULL, 
 								int level=1, int depth=0, 
                 bool changingStory=false, bool fromRandom=false, 

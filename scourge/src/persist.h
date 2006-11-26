@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 26
+#define PERSIST_VERSION 27
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -95,8 +95,11 @@ typedef struct _LocationInfo {
   Uint8 floor_shape_name[255];
   Uint8 shape_name[255];
   Uint8 item_name[255];
+	ItemInfo *item;
   Uint8 monster_name[255];
+	CreatureInfo *creature;
 	Uint8 item_pos_name[255];
+	ItemInfo *item_pos;
 	Uint8 magic_school_name[255]; // the deity at this location
 } LocationInfo;
 
@@ -122,6 +125,9 @@ typedef struct _FogInfo {
 	Uint8 players[MAP_WIDTH * MAP_DEPTH][4];
 } FogInfo;
 
+#define REF_TYPE_NAME 0
+#define REF_TYPE_OBJECT 1
+
 typedef struct _MapInfo {
   Uint32 version;
 	Uint8 map_type;
@@ -129,6 +135,7 @@ typedef struct _MapInfo {
   Uint16 grid_x, grid_y;
   Uint32 pos_count;
   Uint8 theme_name[255];
+	Uint8 reference_type;
   LocationInfo *pos[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
 	Uint32 rug_count;
 	RugInfo *rugPos[ ( MAP_WIDTH / MAP_UNIT ) * ( MAP_DEPTH / MAP_UNIT ) ];
