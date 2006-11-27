@@ -218,12 +218,15 @@ public:
 
   inline double getFPS() { return fps; }
 
+	void saveScreen( char *path );
+
 protected:
-    bool popHandlers();
-    int resizeWindow( int width, int height );
-    int initGL( GLvoid );  
-    GLvoid buildFont( GLvoid );
-    void drawCursor();
+	void saveScreenShot( char *path );
+	bool popHandlers();
+	int resizeWindow( int width, int height );
+	int initGL( GLvoid );  
+	GLvoid buildFont( GLvoid );
+	void drawCursor();
 };
 
 #endif

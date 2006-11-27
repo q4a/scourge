@@ -20,6 +20,7 @@
 
 #include "common/constants.h"
 #include <map>
+#include <vector>
 
 class Scourge;
 class Window;
@@ -35,16 +36,20 @@ using namespace std;
 
 #define MAX_SAVEGAME_COUNT 100
 
+typedef struct _SavegameInfo {
+	char path[300];
+	char title[300];
+} SavegameInfo;
+
 class SavegameDialog {
 private:
   Scourge *scourge;
   Window *win;
   ScrollingList *files;
-  TextField *name;
-  Button *cancel, *save, *load;
+  Button *cancel, *save, *load, *newSave;
+	std::vector<SavegameInfo*> fileInfos;
 	int filenameCount;
 	char **filenames;
-	char selectedName[255];
 	ConfirmDialog *confirm;
 
 public:
@@ -52,13 +57,16 @@ public:
   ~SavegameDialog();
   inline Window *getWindow() { return win; }
   void handleEvent( Widget *widget, SDL_Event *event );
-	inline char *getSelectedName() { return selectedName; }
 	void show( bool inSaveMode = true );
 
 protected:
 	void findFiles();
-	void setName();
+	bool readFileDetails( char *path );
+	void createNewSaveGame();
+	bool saveIndexFile();
+	void makeDirectory( char *path );
 	bool checkIfFileExists( char *filename );
+	void saveScreenshot();
 };
 
 #endif

@@ -1,4 +1,3 @@
-
 /***************************************************************************
                           sdlhandler.cpp  -  description
                              -------------------
@@ -28,6 +27,10 @@
 #include "party.h"
 
 using namespace std;
+
+char willSavePath[300] = "";
+#define SCREEN_SHOT_WIDTH 256
+#define SCREEN_SHOT_HEIGHT 256
 
 char SDLHandler::NORMAL_FONT_NAME[255] = "";
 char SDLHandler::UI_FONT_NAME[255] = "";
@@ -639,6 +642,153 @@ void SDLHandler::processEventsAndRepaint() {
   drawScreen();
 }
 
+void SDLHandler::saveScreenShot( char *path ) {
+
+
+
+										/*
+	GLubyte *data = new GLubyte[SCREEN_SHOT_WIDTH * SCREEN_SHOT_HEIGHT * 3];
+
+	// read gl screen
+	glReadPixels( 0, 0, SCREEN_SHOT_WIDTH, SCREEN_SHOT_HEIGHT,
+								GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)data );
+
+	// create SDL surface
+	SDL_Surface *temp = SDL_CreateRGBSurface( SDL_SWSURFACE, 
+																						SCREEN_SHOT_WIDTH, 
+																						SCREEN_SHOT_HEIGHT, 32, 
+																						0x000000ff, 
+																						0x0000ff00, 
+																						0x00ff0000, 
+																						0xff000000 );
+
+	SDL_LockSurface( temp );
+
+	Uint32 *pdata = (Uint32 *)temp->pixels;
+
+	// copy into SDL surface
+	for( int y = temp->h - 1, y2 = 0; y >= 0 && y2 < SCREEN_SHOT_HEIGHT; --y, ++y2 )
+	{
+		for( int x = temp->w -1; x >= 0; --x )
+		{
+			pdata[y * temp->pitch/4 + x] =
+				SDL_MapRGBA( temp->format,
+										 data[ y2 * SCREEN_SHOT_WIDTH * 3 + x * 3 + 0 ],
+										 data[ y2 * SCREEN_SHOT_WIDTH * 3 + x * 3 + 1 ],
+										 data[ y2 * SCREEN_SHOT_WIDTH * 3 + x * 3 + 2 ],
+										 255 );
+		}
+	}
+
+	SDL_UnlockSurface( temp );
+
+	// save the surface
+	SDL_SaveBMP( temp, path );
+			
+	// delete screen data
+	SDL_FreeSurface( temp );
+	delete[] data;
+*/
+
+
+	SDL_Surface *surface = 
+		SDL_CreateRGBSurface( SDL_SWSURFACE, SCREEN_SHOT_WIDTH, SCREEN_SHOT_HEIGHT, 24,
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+            0x00FF0000, 0x0000FF00, 0x000000FF, 0);
+#else
+            0x000000FF, 0x0000FF00, 0x00FF0000, 0);
+#endif
+	//glReadBuffer( GL_BACK );
+	cerr << "Saving size=" << surface->w << "," << surface->h << endl;
+	cerr << "pitch=" << surface->pitch << endl;
+	glReadPixels( 0, 0, surface->w, surface->h, GL_BGR, GL_UNSIGNED_BYTE, surface->pixels );
+	SDL_SaveBMP( surface, path );
+	SDL_FreeSurface( surface );
+
+	/*
+	glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT );
+	glGetError();
+	//glReadBuffer( GL_FRONT );		
+	GLenum error = glGetError();
+	if( error != GL_NO_ERROR ) {
+		cerr << "glReadBuffer: Error=" << error << endl;
+	} else {
+		cerr << "glReadBuffer: No error." << endl;
+	}		
+
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	//glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+	//glPixelStorei(GL_PACK_SKIP_ROWS, 0);
+	//glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
+
+	error = glGetError();
+	if( error != GL_NO_ERROR ) {
+		cerr << "glPixelStorei: Error=" << error << endl;
+	} else {
+		cerr << "glPixelStorei: No error." << endl;
+	}		
+
+	glReadBuffer( GL_FRONT );
+	int bpp = screen->format->BytesPerPixel;
+	unsigned char *data = new unsigned char[ bpp * SCREEN_SHOT_WIDTH * SCREEN_SHOT_HEIGHT ];
+	glReadPixels( 0, 0, SCREEN_SHOT_WIDTH, SCREEN_SHOT_HEIGHT, 
+								( bpp == 4 ? GL_RGBA : GL_RGB ), 
+								GL_UNSIGNED_BYTE, 
+								data );
+	error = glGetError();
+	if( error != GL_NO_ERROR ) {
+		cerr << "glReadPixels: Error=" << error << endl;
+	} else {
+		cerr << "glReadPixels: No error." << endl;
+	}
+	glPopClientAttrib();
+
+	Uint32 rmask, gmask, bmask, amask;
+
+	// SDL interprets each pixel as a 32-bit number, so our masks must depend
+	// on the endianness (byte order) of the machine
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	rmask = 0xff000000;
+	gmask = 0x00ff0000;
+	bmask = 0x0000ff00;
+	amask = 0x000000ff;
+	//amask = 0;
+#else
+	rmask = 0x000000ff;
+	gmask = 0x0000ff00;
+	bmask = 0x00ff0000;
+	amask = 0xff000000;
+	//amask = 0;
+#endif
+
+	// Surface should be 4-byte aligned for speed
+	Uint16 pitch = SCREEN_SHOT_WIDTH * bpp;
+
+	cerr << "pitch=" << pitch << endl;
+	cerr << "screen width=" << screen->w << 
+		" pitch=" << screen->pitch <<
+		" calc=" << screen->w * screen->format->BytesPerPixel << endl;
+	SDL_Surface *surface = 
+		SDL_CreateRGBSurfaceFrom( data, 
+															SCREEN_SHOT_WIDTH, 
+															SCREEN_SHOT_HEIGHT, 
+															bpp * 8, 
+															pitch,
+															rmask,
+															gmask,
+															bmask,
+															0X00 );
+	if( surface ) {
+		cerr << "Saving: " << path << endl;
+		SDL_SaveBMP( surface, path );
+		SDL_FreeSurface( surface );
+	} else {
+		cerr << "*** Error: Couldn't create surface." << endl;
+	}
+	delete[] data;
+	*/
+}
+
 void SDLHandler::drawScreen() {
 
   if( !eventHandler ) {
@@ -720,9 +870,14 @@ if( showDebugInfo ) {
   glPopMatrix();
 }
 
-  /* Draw it to the screen */
-  SDL_GL_SwapBuffers( );
-  
+
+	/* Draw it to the screen */
+	SDL_GL_SwapBuffers( );
+
+	if( strlen( willSavePath ) ) {
+		saveScreenShot( willSavePath );
+		willSavePath[0] = '\0';
+	}
   
   /* Gather our frames per second */
   Frames++;
@@ -1076,3 +1231,6 @@ void SDLHandler::setCursorMode(int n, bool useTimer) {
   }
 }
 
+void SDLHandler::saveScreen( char *path ) {
+	strcpy( willSavePath, path );
+}

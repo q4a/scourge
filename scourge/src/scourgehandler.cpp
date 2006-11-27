@@ -36,7 +36,7 @@
 #include "gui/confirmdialog.h"
 #include "gui/textdialog.h"
 #include "pceditor.h"
-
+#include "savegamedialog.h"
 
 #define DRAG_START_TOLERANCE 5
 
@@ -333,6 +333,10 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->getPcEditor()->handleEvent( widget,event );
   }
 
+  if( scourge->getSaveDialog()->getWindow()->isVisible() ) {
+    scourge->getSaveDialog()->handleEvent( widget, event );
+  }
+
   // FIXME: this is hacky...
   if( handlePartyEvent( widget, event ) ) return true;
   int n = handleBoardEvent( widget, event );
@@ -510,6 +514,8 @@ bool ScourgeHandler::handlePartyEvent(Widget *widget, SDL_Event *event) {
     scourge->getParty()->togglePlayerOnly();
   } else if( widget == scourge->getRoundButton() ) {
     scourge->getParty()->toggleRound();
+	} else if( widget == scourge->getIOButton() ) {
+		scourge->getSaveDialog()->show( true );
   } else {
     for( int t = 0; t < scourge->getParty()->getPartySize(); t++ ) {
       if( widget == scourge->getPlayerInfo( t ) ) {

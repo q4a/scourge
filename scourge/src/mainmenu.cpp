@@ -1028,12 +1028,14 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     return false;
   } else if(widget == newGameButton) {
 		value = NEW_GAME;
-		showSavegameDialog( true );    
+		showPartyEditor();
+		//showSavegameDialog( true );    
     return false;
   } else if(widget == continueButton) {
     value = CONTINUE_GAME;
-		showSavegameDialog( false );
-    return false;
+		return true;
+		//showSavegameDialog( false );
+    //return false;
   } else if(widget == optionsButton) {
     value = OPTIONS;
     return true;
@@ -1091,8 +1093,8 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_KEYDOWN:
     switch(event->key.keysym.sym) {
-    case SDLK_1: value = NEW_GAME; showSavegameDialog( true ); return false;
-    case SDLK_2: value = CONTINUE_GAME; showSavegameDialog( false ); return false;
+    case SDLK_1: value = NEW_GAME; showPartyEditor(); return false;
+    case SDLK_2: value = CONTINUE_GAME; return true;
     case SDLK_3: value = MULTIPLAYER; return true;
     case SDLK_4: value = OPTIONS; return true;
     case SDLK_5: value = ABOUT; return true;
@@ -1134,11 +1136,10 @@ bool MainMenu::handleEvent(SDL_Event *event) {
       //value = ABOUT;
       return false;
 		} else if( value == NEW_GAME ) {
-			showSavegameDialog( true );
+			showPartyEditor();
 			return false;
 		} else if( value == CONTINUE_GAME ) {
-			showSavegameDialog( false );
-			return false;
+			return true;
     } else {
       return true;
     }
@@ -1173,6 +1174,7 @@ void MainMenu::showSavegameDialog( bool inSaveMode ) {
 }
 
 void MainMenu::setSavegameSelected() {
+	/*
 	if( strlen( savegameDialog->getSelectedName() ) ) {
 		// save the name of the file
 		scourge->getSession()->setSavegameName( savegameDialog->getSelectedName() );
@@ -1183,6 +1185,7 @@ void MainMenu::setSavegameSelected() {
 			scourge->getSDLHandler()->endMainLoop();
 		}
 	}
+	*/
 }
 
 void MainMenu::showPartyEditor() {
