@@ -268,6 +268,7 @@ public:
   void initMissions();
   void reset();
 
+	inline char *getStorylineTitle() { return storylineMissions[storylineIndex]->getName(); }
   inline int getStorylineIndex() { return storylineIndex; }
   void setStorylineIndex( int n );
   void storylineMissionCompleted( Mission *mission );

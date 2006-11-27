@@ -50,7 +50,6 @@ Session::Session(GameAdapter *adapter) {
   currentMission = NULL;
   squirrel = NULL;
 	strcpy( savegame, "" );
-	strcpy( valuefile, "" );
 }
 
 Session::~Session() {
@@ -509,23 +508,7 @@ void Session::setCountForDate( char *key, int value ) {
 }
 
 void Session::setSavegameName( char *s ) {
-	// add .dat to end if needed
-	char *p = strstr( s, ".dat" );
-	if( !p || *( p + 4) ) {
-		sprintf( savegame, "%s.dat", s );
-	} else {
-		strcpy( savegame, s ); 
-	}
-
-	// for backwards compatibility
-	if( !strcmp( savegame, "savegame.dat" ) ) {
-		strcpy( valuefile, "values.dat" );
-	} else {
-		char tmp[255];
-		strcpy( tmp, savegame );
-		p = strtok( tmp, "." );
-		sprintf( valuefile, "%s_values.dat", ( p ? p : s ) );
-	}
+	strcpy( savegame, s );
 }
 
 Creature *Session::getCreatureByName( char *name ) {

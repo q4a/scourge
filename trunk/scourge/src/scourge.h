@@ -94,6 +94,7 @@ class ScourgeHandler;
 class ConfirmDialog;
 class PcEditor;
 class TextDialog;
+class SavegameDialog;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -176,6 +177,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   Button *optionsButton;
   Button *quitButton;
   Button *roundButton;
+	Button *ioButton;
   Button *player1Button;
   Button *player2Button;
   Button *player3Button;
@@ -218,6 +220,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
 	ConfirmDialog *dismissHeroDialog;
 
   PcEditor *pcEditor;
+	SavegameDialog *saveDialog;
 
 protected:
   bool getItem(Location *pos);
@@ -276,6 +279,7 @@ public:
   inline Button *getOptionsButton() { return optionsButton; }
   inline Button *getQuitButton() { return quitButton; }
   inline Button *getRoundButton() { return roundButton; }
+	inline Button *getIOButton() { return ioButton; }
   inline Button *getPlayer1Button() { return player1Button; }
   inline Button *getPlayer2Button() { return player2Button; }
   inline Button *getPlayer3Button() { return player3Button; }
@@ -286,6 +290,7 @@ public:
   inline Canvas *getPlayerWeapon( int index ) { return playerWeapon[ index ]; }
   inline Canvas *getQuickSpell( int index ) { return quickSpell[ index ]; }
 	inline Button *getDismissButton( int index ) { return dismissButton[ index ]; }
+	inline SavegameDialog *getSaveDialog() { return saveDialog; }
 
   void movePartyToGateAndEndMission();
 
@@ -705,7 +710,7 @@ public:
 
   void mouseClickWhileExiting();
 
-  bool saveGame(Session *session);  
+  bool saveGame( Session *session, char *title );  
   bool loadGame( Session *session, char *error );
 
 	RenderedCreature *createWanderingHero( int level );

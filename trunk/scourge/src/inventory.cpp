@@ -288,7 +288,7 @@ Inventory::Inventory(Scourge *scourge) {
   squirrelWindow = cards->createButton( 115, 180, 245, 200, "Show Console", PARTY, true );
   squirrelWindow->setSelected( scourge->getSquirrelConsole()->isVisible() );
 
-  saveGameButton = cards->createButton( 115, 205, 245, 225, "Save Game", PARTY );
+//  saveGameButton = cards->createButton( 115, 205, 245, 225, "Save Game", PARTY );
 
   setSelectedPlayerAndMode(0, INVENTORY);
 }
@@ -674,12 +674,14 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
   } else if( widget == squirrelWindow ) {
     scourge->getSquirrelConsole()->setVisible( squirrelWindow->isSelected() );
+		/*
   } else if( widget == saveGameButton ) {
     if( !scourge->saveGame( scourge->getSession() ) ) {
       scourge->showMessageDialog( "Error saving game!" );
     } else {
       scourge->showMessageDialog( "Game saved successfully." );
     }
+		*/		
   } else if( widget == preferredWeaponButton[ 0 ] ) {
     if( creature->isEquippedWeapon( Constants::INVENTORY_LEFT_HAND ) ) {
       creature->setPreferredWeapon( Constants::INVENTORY_LEFT_HAND );

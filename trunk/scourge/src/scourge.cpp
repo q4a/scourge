@@ -45,6 +45,7 @@
 #include "gui/confirmdialog.h"
 #include "gui/textdialog.h"
 #include "pceditor.h"
+#include "savegamedialog.h"
 
 using namespace std;
 
@@ -189,6 +190,7 @@ void Scourge::start() {
         }
 #endif
 
+				/*
         if(value == CONTINUE_GAME) {
 					char error[255];
           if(!loadGame( session, error )) {
@@ -196,11 +198,13 @@ void Scourge::start() {
             failed = true;
           }
         }
+				*/
 
         if( !failed ) {
           // do this to fix slowness in mainmenu the second time around
           glPushAttrib(GL_ENABLE_BIT);
-          startMission( ( value != CONTINUE_GAME ) );
+          //startMission( ( value != CONTINUE_GAME ) );
+					startMission( true );
           glPopAttrib();
         }
       }
@@ -227,6 +231,7 @@ Scourge::~Scourge(){
   delete donateDialog;
   delete trainDialog;
   delete pcEditor;
+	delete saveDialog;
   delete view;
   delete handler;
 }
@@ -261,11 +266,13 @@ void Scourge::startMission( bool startInHq ) {
 
 			// save the party
 			//cerr << "Saving party" << endl;
+			/*
 			if( !session->isMultiPlayerGame() ) {
 				if( !saveGame( session ) ) {
 					showMessageDialog( "Error saving game!" );
 				}
 			}
+			*/
 
       // center map on the player
       levelMap->center( toint( party->getPlayer()->getX() ),
@@ -293,7 +300,7 @@ void Scourge::startMission( bool startInHq ) {
       getSDLHandler()->mainLoop();
 
 			// Save the current map (except HQ and completed missions)
-			session->getPreferences()->createConfigDir();
+			/*
 			if( !session->isMultiPlayerGame() && 
 					session->getCurrentMission() &&
 					!session->getCurrentMission()->isCompleted() ) {
@@ -301,6 +308,7 @@ void Scourge::startMission( bool startInHq ) {
 					showMessageDialog( "Error saving current map." );
 				}
 			}
+			*/
 
       getSession()->getSquirrel()->endLevel();
 
@@ -705,6 +713,7 @@ void Scourge::cleanUpAfterMission() {
 	donateDialog->getWindow()->setVisible( false );
 	trainDialog->getWindow()->setVisible( false );
 	pcEditor->getWindow()->setVisible( false );
+	saveDialog->getWindow()->setVisible( false );
 	tbCombatWin->setVisible( false );
 
 	resetBattles();
@@ -771,6 +780,7 @@ bool Scourge::changeLevel() {
 void Scourge::endGame() {
 	// autosave party when quitting in hq and the lead player is not dead
 	// this is kind of stupid though... it should ask before saving.
+	/*
 	if( !session->isMultiPlayerGame() && 
 			nextMission == -1 && 
 			!( getSession()->getParty()->getParty( 0 )->getStateMod( Constants::dead ) ) ) {
@@ -778,6 +788,7 @@ void Scourge::endGame() {
 			showMessageDialog( "Error saving game!" );
 		}
 	}
+	*/
 
 #ifdef HAVE_SDL_NET
   session->stopClientServer();
@@ -1389,6 +1400,9 @@ void Scourge::createUI() {
   donateDialog = new DonateDialog( this );
   trainDialog = new TrainDialog( this );
   pcEditor = new PcEditor( this );
+	saveDialog = new SavegameDialog( this );
+
+	session->getPreferences()->createConfigDir();
 
   int width =
     getSDLHandler()->getScreen()->w -
@@ -2089,6 +2103,7 @@ void Scourge::createPartyUI() {
 												 "", 0, false );
 	roundButton->setTooltip( "Pause game" );
 	offsetX+=4;
+	ioButton = cards->createButton( 8, offsetX, offsetX, offsetX + 20, "Disk", 0, false );
 
 	int quickButtonWidth = 24;
 	xstart = Scourge::PARTY_GUI_WIDTH - 10 - quickButtonWidth;
@@ -2841,10 +2856,12 @@ Color *Scourge::getOutlineColor( Location *pos ) {
 
 #define HQ_MISSION_SAVED_NAME "__HQ__"
 
-bool Scourge::saveGame(Session *session) {  
+bool Scourge::saveGame( Session *session, char *title ) {  
+	char tmp[300];
 	char path[300];
   {
-    get_file_name( path, 300, session->getSavegameName() );
+		sprintf( tmp, "%s/savegame.dat", session->getSavegameName() );
+    get_file_name( path, 300, tmp );
 		cerr << "Saving: " << path << endl;
     FILE *fp = fopen( path, "wb" );
     if(!fp) {
@@ -2854,6 +2871,11 @@ bool Scourge::saveGame(Session *session) {
     File *file = new File( fp );
     Uint32 n = PERSIST_VERSION;
     file->write( &n );
+
+		Uint8 savedTitle[255];
+		strncpy( (char*)savedTitle, title, 254 );
+		savedTitle[254] = '\0';
+		file->write( savedTitle, 255 );
 	
 		Uint8 mission[255];
 		Uint8 story = 0;
@@ -2898,7 +2920,8 @@ bool Scourge::saveGame(Session *session) {
   }
 
   {
-    get_file_name( path, 300, getSession()->getValuefile() );
+		sprintf( tmp, "%s/values.dat", session->getSavegameName() );
+    get_file_name( path, 300, tmp );
 		cerr << "Saving: " << path << endl;
     FILE *fp = fopen( path, "wb" );
     if(!fp) {
@@ -2916,7 +2939,11 @@ bool Scourge::saveGame(Session *session) {
 bool Scourge::loadGame( Session *session, char *error ) {
 	char path[300];
 	strcpy( error, "" );
-	get_file_name( path, 300, session->getSavegameName() );
+
+	char tmp[300];
+	sprintf( tmp, "%s/savegame.dat", session->getSavegameName() );
+	get_file_name( path, 300, tmp );
+
 	cerr << "Loading: " << path << endl;
 	FILE *fp = fopen( path, "rb" );
 	if(!fp) {
@@ -2938,6 +2965,9 @@ bool Scourge::loadGame( Session *session, char *error ) {
 			cerr << "*** Warning: loading older savegame file: v" << version <<
 				" vs. v" << PERSIST_VERSION << ". Will try to convert it." << endl;
 		}
+
+		Uint8 title[255];
+		file->read( title, 255 );
 
 		// load current mission/depth info
 		Uint8 story = 0;
@@ -2999,8 +3029,9 @@ bool Scourge::loadGame( Session *session, char *error ) {
 	}
 
 	{
-		char path[300];
-		get_file_name( path, 300, getSession()->getValuefile() );
+		char path[300], tmp[300];
+		sprintf( tmp, "%s/values.dat", session->getSavegameName() );
+		get_file_name( path, 300, tmp );
 		cerr << "Loading: " << path << endl;
 		FILE *fp = fopen( path, "rb" );
 		if( fp ) {
