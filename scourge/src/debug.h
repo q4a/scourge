@@ -55,5 +55,7 @@
 // show every PC's path
 #define PATH_DEBUG 0
 
+// #define DEBUG_SCREENSHOT 1
+
 #endif
 

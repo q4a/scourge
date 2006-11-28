@@ -374,15 +374,4 @@ void ScrollingLabel::removeEffects(Widget *parent) {
   inside = false;
 }
 
-int ScrollingLabel::getTextWidth( Widget *parent, const char *s ) {
-  string str = s;
-  int n;
-  if( textWidthCache.find( str ) == textWidthCache.end() ) {
-    n = ((Window*)parent)->getScourgeGui()->textWidth( s );
-    textWidthCache[ str ] = n;
-  } else {
-    n = textWidthCache[ str ];
-  }
-  return n;
-}
 
