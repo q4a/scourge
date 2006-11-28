@@ -280,6 +280,15 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->evalSpecialSkills();
     scourge->getParty()->startEffect( Constants::EFFECT_TELEPORT, 
                                       ( Constants::DAMAGE_DURATION * 4 ) );
+
+		// save the party the first time around
+		//cerr << "Saving party" << endl;
+		if( !scourge->getSession()->isMultiPlayerGame() && 
+				!strlen( scourge->getSession()->getSavegameName() ) ) {
+			if( !scourge->getSaveDialog()->createNewSaveGame() ) {
+				scourge->showMessageDialog( "Error saving game!" );
+			}
+		}
   }
 
   for(int i = 0; i < scourge->getContainerGuiCount(); i++) {

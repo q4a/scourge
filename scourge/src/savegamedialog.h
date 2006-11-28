@@ -60,12 +60,13 @@ public:
   void handleEvent( Widget *widget, SDL_Event *event );
 	void show( bool inSaveMode = true );
 
+	bool createNewSaveGame();
+
 protected:
 	void findFiles();
 	bool readFileDetails( char *path );
-	void createNewSaveGame();
-	bool saveIndexFile();
 	void makeDirectory( char *path );
+	void findFilesInDir( char *path, vector<string> *fileNameList );
 	bool checkIfFileExists( char *filename );
 	void saveScreenshot();
 	GLuint loadScreenshot( char *path );
