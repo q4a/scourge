@@ -27,7 +27,7 @@
 #include "gui/confirmdialog.h"
 #include "gui/canvas.h"
 
-#define DEFAULT_SAVE_FILE "savegame.dat"
+bool savegamesChanged = true;
 
 SavegameDialog::SavegameDialog( Scourge *scourge ) {
   this->scourge = scourge;
@@ -39,21 +39,23 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
                            w, h, 
                            "Saved games" );
 	win->createLabel( 10, 20, "Current saved games:" );
-  files = new ScrollingList( 10, 30, w - 130, h - 100, 
-														 scourge->getHighlightTexture() );
+  files = new ScrollingList( 10, 30, w - 130, h - 70, 
+														 scourge->getHighlightTexture(), NULL, 70 );
+	files->setTextLinewrap( true );
+	files->setIconBorder( true );
   win->addWidget( files );
 
-	newSave = win->createButton( w - 105, h - 120, w - 15, h - 100, "New Save" );
-	save = win->createButton( w - 105, h - 90, w - 15, h - 70, "Save" );
-	load = win->createButton( w - 105, h - 90, w - 15, h - 70, "Load" );
-	load->setVisible( false );
-	cancel = win->createButton( w - 105, h - 60, w - 15, h - 40, "Cancel" );
+	newSave = win->createButton( w - 105, 30, w - 15, 50, "New Save" );
+	save = win->createButton( w - 105, 60, w - 15, 80, "Save" );
+	load = win->createButton( w - 105, 90, w - 15, 110, "Load" );
+	cancel = win->createButton( w - 105, 120, w - 15, 140, "Cancel" );
 
 	filenameCount = 0;
   filenames = (char**)malloc( MAX_SAVEGAME_COUNT * sizeof(char*) );
   for( int i = 0; i < MAX_SAVEGAME_COUNT; i++ ) {
     filenames[i] = (char*)malloc( 120 * sizeof(char) );
   }
+	this->screens = (GLuint*)malloc( MAX_SAVEGAME_COUNT * sizeof( GLuint ) );
 
 	confirm = new ConfirmDialog( scourge->getSDLHandler(), 
 															 "Overwrite existing file?" );
@@ -107,16 +109,15 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 
 void SavegameDialog::show( bool inSaveMode ) {
 	if( inSaveMode ) {
-		save->setVisible( true );
-		load->setVisible( false );
-		win->setTitle( "Create a new saved game file" );
+		save->setEnabled( true );
+		newSave->setEnabled( true );
+		win->setTitle( "Create a new saved game or load an existing one" );
 	} else {
-		save->setVisible( false );
-		load->setVisible( true );
+		save->setEnabled( false );
+		newSave->setEnabled( false );
 		win->setTitle( "Open an existing saved game file" );
 	}
-	newSave->setVisible( save->isVisible() );
-	findFiles();
+	if( savegamesChanged ) findFiles();
 	win->setVisible( true );
 }
 
@@ -125,6 +126,10 @@ void SavegameDialog::findFiles() {
 		free( fileInfos[i] );
 	}
 	fileInfos.clear();
+
+	for( int i = 0; i < filenameCount; i++ ) {
+		if( screens[ i ] ) glDeleteTextures( 1, &(screens[ i ]) );
+	}
 
 	filenameCount = 0;
 	char path[300];
@@ -140,7 +145,16 @@ void SavegameDialog::findFiles() {
 					line[lineWidth] = '\0';
 					lineWidth = 0;
 					if( readFileDetails( line ) ) {
-						strcpy( filenames[filenameCount++], fileInfos[fileInfos.size() - 1]->title );
+						// add in reverse order
+						if( filenameCount > 0 ) {
+							for( int i = filenameCount; i > 0; i-- ) {
+								strcpy( filenames[ i ], filenames[ i - 1 ] );
+								screens[ i ] = screens[ i - 1 ];
+							}
+						}
+						filenameCount++;
+						strcpy( filenames[ 0 ], fileInfos[ fileInfos.size() - 1 ]->title );
+						screens[ 0 ] = loadScreenshot( fileInfos[ fileInfos.size() - 1 ]->path );						
 					}
 				}
 			} else {
@@ -149,7 +163,19 @@ void SavegameDialog::findFiles() {
 		}
 		fclose( fp );
 	}
-	files->setLines( filenameCount, (const char**)filenames );
+	files->setLines( filenameCount, (const char**)filenames, NULL, screens );
+	savegamesChanged = false;
+}
+
+GLuint SavegameDialog::loadScreenshot( char *dirName ) {
+	char tmp[300];
+	sprintf( tmp, "%s/screen.bmp", dirName );
+	char path[300];
+	get_file_name( path, 300, tmp );
+	//cerr << "Loading: " << path << endl;
+	GLuint n = Shapes::loadTextureWithAlpha( path, -1, -1, -1, true, false ); // -1 no alpha
+	//cerr << "\tid=" << n << endl;
+	return n;
 }
 
 bool SavegameDialog::readFileDetails( char *dirname ) {
@@ -221,8 +247,8 @@ void SavegameDialog::createNewSaveGame() {
 		// save the index file
 		if( saveIndexFile() ) {
 
-			// reload the list
-			findFiles();
+			// reload the next time
+			savegamesChanged = true;
 		
 			scourge->showMessageDialog( "Game saved successfully." );
 		} else {
@@ -233,66 +259,14 @@ void SavegameDialog::createNewSaveGame() {
 	}
 }
 
-//#define SCREEN_SHOT_WIDTH 320
-//#define SCREEN_SHOT_HEIGHT 200
-
-// fixme: make this faster
 void SavegameDialog::saveScreenshot() {
-
 	char tmp[300];
 	sprintf( tmp, "%s/screen.bmp", scourge->getSession()->getSavegameName() );
 	char path[300];
 	get_file_name( path, 300, tmp );
 	cerr << "Saving: " << path << endl;
-	scourge->getSDLHandler()->saveScreen( path );
-/*
-	// glReadBuffer( GL_FRONT );
-	GLubyte data[ SCREEN_SHOT_WIDTH * SCREEN_SHOT_HEIGHT * 3 ];
-	glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT );
-	glPixelStorei( GL_PACK_ROW_LENGTH, 0 ) ;
-	glPixelStorei( GL_PACK_ALIGNMENT, 1 ) ;
-	glReadPixels( 0, 0, SCREEN_SHOT_WIDTH, SCREEN_SHOT_HEIGHT, 
-								GL_RGB, GL_UNSIGNED_BYTE, data );
-	glPopClientAttrib();
-	
-	Uint32 rmask, gmask, bmask, amask;
 
-	// SDL interprets each pixel as a 32-bit number, so our masks must depend
-	// on the endianness (byte order) of the machine
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	rmask = 0xff000000;
-	gmask = 0x00ff0000;
-	bmask = 0x0000ff00;
-	amask = 0x000000ff;
-#else
-	rmask = 0x000000ff;
-	gmask = 0x0000ff00;
-	bmask = 0x00ff0000;
-	amask = 0xff000000;
-#endif
-	
-	SDL_Surface *surface = 
-		SDL_CreateRGBSurfaceFrom( data, 
-															SCREEN_SHOT_WIDTH, 
-															SCREEN_SHOT_HEIGHT, 
-															24, 
-															3 * SCREEN_SHOT_WIDTH, 
-															rmask,
-															gmask,
-															bmask,
-															amask );
-	if( surface ) {
-		char tmp[300];
-		sprintf( tmp, "%s/screen.bmp", scourge->getSession()->getSavegameName() );
-		char path[300];
-    get_file_name( path, 300, tmp );
-		cerr << "Saving: " << path << endl;
-		SDL_SaveBMP( surface, path );
-		SDL_FreeSurface( surface );
-	} else {
-		cerr << "*** Error: Couldn't create surface." << endl;
-	}
-	*/
+	scourge->getSDLHandler()->saveScreenNow( path );
 }
 
 bool SavegameDialog::saveIndexFile() {

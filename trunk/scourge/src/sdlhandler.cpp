@@ -25,12 +25,11 @@
 #include "sdlscreenview.h"
 #include "session.h"
 #include "party.h"
+#include "debug.h"
 
 using namespace std;
 
 char willSavePath[300] = "";
-#define SCREEN_SHOT_WIDTH 256
-#define SCREEN_SHOT_HEIGHT 256
 
 char SDLHandler::NORMAL_FONT_NAME[255] = "";
 char SDLHandler::UI_FONT_NAME[255] = "";
@@ -642,153 +641,6 @@ void SDLHandler::processEventsAndRepaint() {
   drawScreen();
 }
 
-void SDLHandler::saveScreenShot( char *path ) {
-
-
-
-										/*
-	GLubyte *data = new GLubyte[SCREEN_SHOT_WIDTH * SCREEN_SHOT_HEIGHT * 3];
-
-	// read gl screen
-	glReadPixels( 0, 0, SCREEN_SHOT_WIDTH, SCREEN_SHOT_HEIGHT,
-								GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)data );
-
-	// create SDL surface
-	SDL_Surface *temp = SDL_CreateRGBSurface( SDL_SWSURFACE, 
-																						SCREEN_SHOT_WIDTH, 
-																						SCREEN_SHOT_HEIGHT, 32, 
-																						0x000000ff, 
-																						0x0000ff00, 
-																						0x00ff0000, 
-																						0xff000000 );
-
-	SDL_LockSurface( temp );
-
-	Uint32 *pdata = (Uint32 *)temp->pixels;
-
-	// copy into SDL surface
-	for( int y = temp->h - 1, y2 = 0; y >= 0 && y2 < SCREEN_SHOT_HEIGHT; --y, ++y2 )
-	{
-		for( int x = temp->w -1; x >= 0; --x )
-		{
-			pdata[y * temp->pitch/4 + x] =
-				SDL_MapRGBA( temp->format,
-										 data[ y2 * SCREEN_SHOT_WIDTH * 3 + x * 3 + 0 ],
-										 data[ y2 * SCREEN_SHOT_WIDTH * 3 + x * 3 + 1 ],
-										 data[ y2 * SCREEN_SHOT_WIDTH * 3 + x * 3 + 2 ],
-										 255 );
-		}
-	}
-
-	SDL_UnlockSurface( temp );
-
-	// save the surface
-	SDL_SaveBMP( temp, path );
-			
-	// delete screen data
-	SDL_FreeSurface( temp );
-	delete[] data;
-*/
-
-
-	SDL_Surface *surface = 
-		SDL_CreateRGBSurface( SDL_SWSURFACE, SCREEN_SHOT_WIDTH, SCREEN_SHOT_HEIGHT, 24,
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-            0x00FF0000, 0x0000FF00, 0x000000FF, 0);
-#else
-            0x000000FF, 0x0000FF00, 0x00FF0000, 0);
-#endif
-	//glReadBuffer( GL_BACK );
-	cerr << "Saving size=" << surface->w << "," << surface->h << endl;
-	cerr << "pitch=" << surface->pitch << endl;
-	glReadPixels( 0, 0, surface->w, surface->h, GL_BGR, GL_UNSIGNED_BYTE, surface->pixels );
-	SDL_SaveBMP( surface, path );
-	SDL_FreeSurface( surface );
-
-	/*
-	glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT );
-	glGetError();
-	//glReadBuffer( GL_FRONT );		
-	GLenum error = glGetError();
-	if( error != GL_NO_ERROR ) {
-		cerr << "glReadBuffer: Error=" << error << endl;
-	} else {
-		cerr << "glReadBuffer: No error." << endl;
-	}		
-
-	glPixelStorei(GL_PACK_ALIGNMENT, 1);
-	//glPixelStorei(GL_PACK_ROW_LENGTH, 0);
-	//glPixelStorei(GL_PACK_SKIP_ROWS, 0);
-	//glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
-
-	error = glGetError();
-	if( error != GL_NO_ERROR ) {
-		cerr << "glPixelStorei: Error=" << error << endl;
-	} else {
-		cerr << "glPixelStorei: No error." << endl;
-	}		
-
-	glReadBuffer( GL_FRONT );
-	int bpp = screen->format->BytesPerPixel;
-	unsigned char *data = new unsigned char[ bpp * SCREEN_SHOT_WIDTH * SCREEN_SHOT_HEIGHT ];
-	glReadPixels( 0, 0, SCREEN_SHOT_WIDTH, SCREEN_SHOT_HEIGHT, 
-								( bpp == 4 ? GL_RGBA : GL_RGB ), 
-								GL_UNSIGNED_BYTE, 
-								data );
-	error = glGetError();
-	if( error != GL_NO_ERROR ) {
-		cerr << "glReadPixels: Error=" << error << endl;
-	} else {
-		cerr << "glReadPixels: No error." << endl;
-	}
-	glPopClientAttrib();
-
-	Uint32 rmask, gmask, bmask, amask;
-
-	// SDL interprets each pixel as a 32-bit number, so our masks must depend
-	// on the endianness (byte order) of the machine
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	rmask = 0xff000000;
-	gmask = 0x00ff0000;
-	bmask = 0x0000ff00;
-	amask = 0x000000ff;
-	//amask = 0;
-#else
-	rmask = 0x000000ff;
-	gmask = 0x0000ff00;
-	bmask = 0x00ff0000;
-	amask = 0xff000000;
-	//amask = 0;
-#endif
-
-	// Surface should be 4-byte aligned for speed
-	Uint16 pitch = SCREEN_SHOT_WIDTH * bpp;
-
-	cerr << "pitch=" << pitch << endl;
-	cerr << "screen width=" << screen->w << 
-		" pitch=" << screen->pitch <<
-		" calc=" << screen->w * screen->format->BytesPerPixel << endl;
-	SDL_Surface *surface = 
-		SDL_CreateRGBSurfaceFrom( data, 
-															SCREEN_SHOT_WIDTH, 
-															SCREEN_SHOT_HEIGHT, 
-															bpp * 8, 
-															pitch,
-															rmask,
-															gmask,
-															bmask,
-															0X00 );
-	if( surface ) {
-		cerr << "Saving: " << path << endl;
-		SDL_SaveBMP( surface, path );
-		SDL_FreeSurface( surface );
-	} else {
-		cerr << "*** Error: Couldn't create surface." << endl;
-	}
-	delete[] data;
-	*/
-}
-
 void SDLHandler::drawScreen() {
 
   if( !eventHandler ) {
@@ -796,6 +648,23 @@ void SDLHandler::drawScreen() {
     return;
   }
 
+	drawScreenInternal();
+
+	if( strlen( willSavePath ) ) {
+		saveScreenInternal( willSavePath );
+		willSavePath[0] = '\0';
+	}
+  
+  /* Gather our frames per second */
+	calculateFps();
+}
+
+void SDLHandler::saveScreenNow( char *path ) {
+	drawScreenInternal();
+	saveScreenInternal( path );
+}
+
+void SDLHandler::drawScreenInternal() {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   if(stencilBufferUsed) glClear( GL_STENCIL_BUFFER_BIT );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
@@ -809,51 +678,92 @@ void SDLHandler::drawScreen() {
   screenView->drawAfter();
 
   if( fadeoutTimer > 0 ) {
-    glPushMatrix();
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glDisable( GL_TEXTURE_2D );
-    glDisable( GL_DEPTH_TEST );
-
-    if( fadeoutStartAlpha < fadeoutEndAlpha ) {
-      glColor4f( 0, 0, 0, 
-                 ( fadeoutStartAlpha + 
-                   ( ( ( fadeoutEndAlpha - fadeoutStartAlpha ) * 
-                       fadeoutCurrentStep ) / (float)fadeoutSteps ) ) );
-    } else {
-      glColor4f( 0, 0, 0, 
-                 ( fadeoutStartAlpha -
-                   ( ( ( fadeoutStartAlpha - fadeoutEndAlpha ) * 
-                       fadeoutCurrentStep ) / (float)fadeoutSteps ) ) );
-    }
-    glLoadIdentity();
-    glBegin( GL_QUADS );
-    glVertex2d( 0, screen->h );
-    glVertex2d( screen->w, screen->h );
-    glVertex2d( screen->w, 0 );
-    glVertex2d( 0, 0 );
-    glEnd();
-
-    glEnable( GL_DEPTH_TEST );
-    glDisable( GL_BLEND );
-    glEnable( GL_TEXTURE_2D );
-    glPopMatrix();
-
-
-    Uint32 t = SDL_GetTicks();
-    if( t - fadeoutTimer > FADEOUT_SPEED ) {
-      fadeoutCurrentStep++;
-      if( fadeoutCurrentStep > fadeoutSteps ) {
-        fadeoutTimer = 0;
-      } else {
-        fadeoutTimer = t;
-      }
-    }
+		drawFadeout();
   }
 
   drawCursor();
 
-if( showDebugInfo ) {
+	if( showDebugInfo ) {
+		drawDebugInfo();
+	}
+
+	/* Draw it to the screen */
+	SDL_GL_SwapBuffers( );
+}
+
+#define SCREEN_SHOT_WIDTH 160
+#define SCREEN_SHOT_HEIGHT 120
+
+void SDLHandler::saveScreenInternal( char *path ) {
+
+#ifdef DEBUG_SCREENSHOT	
+	cerr << "*** Preparing for screenshot." << endl;
+#endif
+	SDL_Surface *surface = 
+		SDL_CreateRGBSurface( SDL_SWSURFACE, screen->w, screen->h, 24,
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+            0x00FF0000, 0x0000FF00, 0x000000FF, 0);
+#else
+            0x000000FF, 0x0000FF00, 0x00FF0000, 0);
+#endif
+	//glReadBuffer( GL_BACK );
+
+	// read the center of the screen
+	int sx = ( screen->w - surface->w ) / 2;
+	int sy = ( screen->h - surface->h ) / 2;
+#ifdef DEBUG_SCREENSHOT	
+	cerr << "*** Taking screenshot." << endl;
+#endif
+	glReadPixels( sx, sy, surface->w, surface->h, GL_BGR, GL_UNSIGNED_BYTE, surface->pixels );
+
+	// scale to desired size (also flip image at the same time)
+#ifdef DEBUG_SCREENSHOT	
+	cerr << "*** Prepating for scaling image." << endl;
+#endif
+	SDL_Surface *scaled = 
+		SDL_CreateRGBSurface( SDL_SWSURFACE, SCREEN_SHOT_WIDTH, SCREEN_SHOT_HEIGHT, 24,
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+            0x00FF0000, 0x0000FF00, 0x000000FF, 0);
+#else
+            0x000000FF, 0x0000FF00, 0x00FF0000, 0);
+#endif
+
+#ifdef DEBUG_SCREENSHOT	
+	cerr << "*** Scaling and flipping image." << endl;
+#endif
+	Uint8 *src = (Uint8*)surface->pixels;
+	Uint8 *dst = (Uint8*)scaled->pixels;
+	float dx = ( (float)surface->w / (float)scaled->w );
+	float dy = ( (float)surface->h / (float)scaled->h );
+	for( int x = 0; x < SCREEN_SHOT_WIDTH; x++ ) {
+		for( int y = 0; y < SCREEN_SHOT_HEIGHT; y++ ) {
+			memcpy( dst + ( scaled->pitch * y + x * scaled->format->BytesPerPixel ),
+							src + ( surface->pitch * ( surface->h - 1 - (int)(y * dy) ) + (int)(x * dx) * surface->format->BytesPerPixel ),
+							scaled->format->BytesPerPixel );
+		}
+	}
+
+#ifdef DEBUG_SCREENSHOT	
+	cerr << "*** Saving image." << endl;
+#endif
+	SDL_SaveBMP( scaled, path );
+	SDL_FreeSurface( surface );
+	SDL_FreeSurface( scaled );
+}
+
+void SDLHandler::calculateFps() {
+  Frames++;
+	GLint t = SDL_GetTicks();
+	if(t - T0 >= 2500) {
+		GLfloat seconds = (t - T0) / 1000.0;
+		fps = Frames / seconds;
+		//printf("%d frames in %g seconds = %g FPS\n", Frames, seconds, fps);
+		T0 = t;
+		Frames = 0;
+	}
+}
+
+void SDLHandler::drawDebugInfo() {
   glPushMatrix();
   glDisable( GL_DEPTH_TEST );
   glLoadIdentity();
@@ -870,27 +780,47 @@ if( showDebugInfo ) {
   glPopMatrix();
 }
 
-
-	/* Draw it to the screen */
-	SDL_GL_SwapBuffers( );
-
-	if( strlen( willSavePath ) ) {
-		saveScreenShot( willSavePath );
-		willSavePath[0] = '\0';
+void SDLHandler::drawFadeout() {
+	glPushMatrix();
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glDisable( GL_TEXTURE_2D );
+	glDisable( GL_DEPTH_TEST );
+	
+	if( fadeoutStartAlpha < fadeoutEndAlpha ) {
+		glColor4f( 0, 0, 0, 
+							 ( fadeoutStartAlpha + 
+								 ( ( ( fadeoutEndAlpha - fadeoutStartAlpha ) * 
+										 fadeoutCurrentStep ) / (float)fadeoutSteps ) ) );
+	} else {
+		glColor4f( 0, 0, 0, 
+							 ( fadeoutStartAlpha -
+								 ( ( ( fadeoutStartAlpha - fadeoutEndAlpha ) * 
+										 fadeoutCurrentStep ) / (float)fadeoutSteps ) ) );
 	}
-  
-  /* Gather our frames per second */
-  Frames++;
-  {
-    GLint t = SDL_GetTicks();
-    if(t - T0 >= 2500) {
-      GLfloat seconds = (t - T0) / 1000.0;
-      fps = Frames / seconds;
-      //printf("%d frames in %g seconds = %g FPS\n", Frames, seconds, fps);
-      T0 = t;
-      Frames = 0;
-    }
-  }
+	glLoadIdentity();
+	glBegin( GL_QUADS );
+	glVertex2d( 0, screen->h );
+	glVertex2d( screen->w, screen->h );
+	glVertex2d( screen->w, 0 );
+	glVertex2d( 0, 0 );
+	glEnd();
+	
+	glEnable( GL_DEPTH_TEST );
+	glDisable( GL_BLEND );
+	glEnable( GL_TEXTURE_2D );
+	glPopMatrix();
+	
+	
+	Uint32 t = SDL_GetTicks();
+	if( t - fadeoutTimer > FADEOUT_SPEED ) {
+		fadeoutCurrentStep++;
+		if( fadeoutCurrentStep > fadeoutSteps ) {
+			fadeoutTimer = 0;
+		} else {
+			fadeoutTimer = t;
+		}
+	}
 }
 
 void SDLHandler::fade( float startAlpha, float endAlpha, int steps ) {

@@ -46,6 +46,8 @@ ScrollingList::ScrollingList(int x, int y, int w, int h,
   this->colors = NULL;
   this->icons = NULL;
   this->highlight = highlight;
+	this->linewrap = false;
+	this->iconBorder = false;
   highlightBorders = false;
   debug = false;
   canGetFocusVar = Widget::canGetFocus();
@@ -58,6 +60,7 @@ ScrollingList::~ScrollingList() {
 }
 
 void ScrollingList::setLines(int count, const char *s[], const Color *colors, const GLuint *icons) { 
+	textWidthCache.clear();
   list = s; 
   this->colors = colors;
   this->icons = icons;
@@ -143,7 +146,7 @@ void ScrollingList::drawWidget(Widget *parent) {
       ypos = textPos + (i + 1) * lineHeight;
       // writing text is expensive, only print what's visible
       if( ypos >= 0 && ypos < getHeight() + lineHeight ) {
-        if(icons) drawIcon( scrollerWidth + 5, ypos - (lineHeight - 5), icons[i] );
+        if(icons) drawIcon( scrollerWidth + 5, ypos - (lineHeight - 5), icons[i], parent );
         if(colors) glColor4f( (colors + i)->r, (colors + i)->g, (colors + i)->b, 1 );
         else if( isSelected( i ) && theme->getSelectionText() ) {
           glColor4f( theme->getSelectionText()->r,
@@ -160,7 +163,18 @@ void ScrollingList::drawWidget(Widget *parent) {
             applyColor();
           }
         }
-        ((Window*)parent)->getScourgeGui()->texPrint(scrollerWidth + (icons ? (lineHeight + 5) : 5), ypos, list[i]);
+
+				int startYPos = ypos - ( lineHeight > 15 ? ( lineHeight - 15 ) : 0 );
+				int startXPos = scrollerWidth + (icons ? (lineHeight + 5) : 5);
+				char *p = (char*)list[i];
+				if( linewrap ) {
+					while( p && *p ) {
+						p = printLine( parent, startXPos, startYPos, p );    
+						startYPos += 15;
+					}
+				} else {
+					((Window*)parent)->getScourgeGui()->texPrint( startXPos, startYPos, p );
+				}
       }
     }
 
@@ -236,7 +250,69 @@ void ScrollingList::drawWidget(Widget *parent) {
   glLineWidth( 1.0f );
 }
 
-void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
+// FIXME: this is nearly the same method as in ScrollingLabel... needs to be refactored
+char *ScrollingList::printLine( Widget *parent, int x, int y, char *s ) {
+  GuiTheme *theme = ((Window*)parent)->getTheme();
+  int xp = x;
+
+  int space = getTextWidth( parent, " " );
+  char *wordEnd = strpbrk( s, " |" );  
+  char *p = s;
+  char *word;
+  char tmp;
+  while( p && *p ) {
+
+    // create word starting at p
+    if( wordEnd ) {
+      tmp = *wordEnd;
+      *wordEnd = 0;
+    } else {
+      tmp = 0;
+    }
+
+    int wordWidth = getTextWidth( parent, p );
+
+		if( theme->getWindowText() ) {
+			glColor4f( theme->getWindowText()->r,
+								 theme->getWindowText()->g,
+								 theme->getWindowText()->b,
+								 theme->getWindowText()->a );
+		} else {
+			applyColor();
+		}
+
+		word = p;
+
+    //cerr << "wordWidth=" << wordWidth << " xp=" << xp << " p=" << p << " width=" << getWidth() << " tmp=" << ( tmp ? tmp : '*' ) << endl;    
+
+    if( xp + wordWidth > getWidth() ) {
+      if( tmp ) *wordEnd = tmp;
+      return p;
+    }
+    ((Window*)parent)->getScourgeGui()->texPrint( xp, y, word );
+
+    // move caret
+    xp += wordWidth;
+    xp += space;
+
+    // move p past word end
+    if( !tmp ) return NULL;
+    *wordEnd = tmp;
+    p = wordEnd;
+
+    // end of line?
+    if( *p == '|' ) return p + 1;
+
+    // skip space
+    p++;
+
+    // find end of new word
+    wordEnd = strpbrk( p, " |" );
+  }
+  return NULL;
+}
+
+void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
   float n = lineHeight - 3;
 
   glEnable( GL_ALPHA_TEST );
@@ -258,10 +334,28 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon ) {
   if(icon) glTexCoord2f( 1, 0 );
   glVertex3f( n, 0, 0 );
   glEnd();
-  glPopMatrix();
 
   glDisable( GL_ALPHA_TEST );
   glDisable(GL_TEXTURE_2D);
+
+	if( iconBorder ) {
+		GuiTheme *theme = ((Window*)parent)->getTheme();
+		if( theme->getButtonBorder() ) {
+			glColor4f( theme->getButtonBorder()->color.r,
+								 theme->getButtonBorder()->color.g,
+								 theme->getButtonBorder()->color.b,
+								 theme->getButtonBorder()->color.a );
+		} else {
+			applyBorderColor();
+		}
+		glBegin( GL_LINE_LOOP );
+		glVertex2f( 0, 0 );
+		glVertex2f( 0, n );
+		glVertex2f( n, n );
+		glVertex2f( n, 0 );
+		glEnd();
+	}
+  glPopMatrix();
 }
 
 int ScrollingList::getLineAtPoint( int x, int y ) {

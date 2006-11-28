@@ -55,6 +55,8 @@ class ScrollingList : public Widget {
   int eventType;
   bool allowMultipleSelection;
   int tooltipLine;
+	bool linewrap;
+	bool iconBorder;
 
  public: 
 
@@ -67,6 +69,9 @@ class ScrollingList : public Widget {
 
   ScrollingList(int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler = NULL, int lineHeight=15);
   virtual ~ScrollingList();
+
+	inline void setTextLinewrap( bool b ) { linewrap = b; }
+	inline void setIconBorder( bool b ) { iconBorder = b; }
 
   inline void setAllowMultipleSelection( bool b ) { allowMultipleSelection = b; }
   inline bool getAllowMultipleSelection() { return allowMultipleSelection; }
@@ -112,9 +117,10 @@ class ScrollingList : public Widget {
 
  private:
   void selectLine(int x, int y, bool addToSelection = false, bool mouseDown=false );
-  void drawIcon( int x, int y, GLuint icon );  
+  void drawIcon( int x, int y, GLuint icon, Widget *parent );  
 	void moveSelectionUp();
 	void moveSelectionDown();
+	char *printLine( Widget *parent, int x, int y, char *s );
 };
 
 #endif

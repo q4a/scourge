@@ -141,10 +141,12 @@ class Widget {
 
  protected:
   bool debug;
+	std::map< std::string, int > textWidthCache;
   virtual void drawButton( Widget *parent, int x, int y, int x2, int y2, 
                            bool toggle, bool selected, bool inverse, 
                            bool glowing, bool inside );
   void breakText( char *text, int lineWidth, std::vector<std::string> *lines );
+	int getTextWidth( Widget *parent, const char *s );
 };
 
 #endif

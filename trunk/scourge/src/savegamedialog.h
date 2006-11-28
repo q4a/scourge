@@ -50,6 +50,7 @@ private:
 	std::vector<SavegameInfo*> fileInfos;
 	int filenameCount;
 	char **filenames;
+	GLuint *screens;
 	ConfirmDialog *confirm;
 
 public:
@@ -67,6 +68,7 @@ protected:
 	void makeDirectory( char *path );
 	bool checkIfFileExists( char *filename );
 	void saveScreenshot();
+	GLuint loadScreenshot( char *path );
 };
 
 #endif

@@ -558,3 +558,15 @@ void Widget::drawBorderedTexture( GLuint texture, int x, int y, int width, int h
 
 }
 
+int Widget::getTextWidth( Widget *parent, const char *s ) {
+  string str = s;
+  int n;
+  if( textWidthCache.find( str ) == textWidthCache.end() ) {
+    n = ((Window*)parent)->getScourgeGui()->textWidth( s );
+    textWidthCache[ str ] = n;
+  } else {
+    n = textWidthCache[ str ];
+  }
+  return n;
+}
+
