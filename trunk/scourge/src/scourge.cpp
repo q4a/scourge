@@ -264,16 +264,6 @@ void Scourge::startMission( bool startInHq ) {
 
 			if( inHq ) addWanderingHeroes();
 
-			// save the party
-			//cerr << "Saving party" << endl;
-			/*
-			if( !session->isMultiPlayerGame() ) {
-				if( !saveGame( session ) ) {
-					showMessageDialog( "Error saving game!" );
-				}
-			}
-			*/
-
       // center map on the player
       levelMap->center( toint( party->getPlayer()->getX() ),
                         toint( party->getPlayer()->getY() ),
@@ -300,7 +290,6 @@ void Scourge::startMission( bool startInHq ) {
       getSDLHandler()->mainLoop();
 
 			// Save the current map (except HQ and completed missions)
-			/*
 			if( !session->isMultiPlayerGame() && 
 					session->getCurrentMission() &&
 					!session->getCurrentMission()->isCompleted() ) {
@@ -308,7 +297,6 @@ void Scourge::startMission( bool startInHq ) {
 					showMessageDialog( "Error saving current map." );
 				}
 			}
-			*/
 
       getSession()->getSquirrel()->endLevel();
 
@@ -318,7 +306,7 @@ void Scourge::startMission( bool startInHq ) {
     } else {
 			// dungeon generation failed (usualy fails to find space for something like a gate)
       showMessageDialog( "Error #666: Failed to create map." );
-    }
+    }		
 
 		cleanUpAfterMission();
 
@@ -345,19 +333,13 @@ void Scourge::getCurrentMapName( char *path, int depth ) {
 	
 	// add the depth
 	char tmp[300];
-	sprintf( tmp, "%s_%d.map", mapName, ( depth >= 0 ? depth : oldStory ) );
+	sprintf( tmp, "%s/%s_%d.map", getSession()->getSavegameName(), mapName, ( depth >= 0 ? depth : oldStory ) );
 	
 	// convert to a path	
 	get_file_name( path, 300, tmp );
 }
 
 void Scourge::getSavedMapName( char *mapName ) {
-	// start with the savegame name
-	char tmp[80];
-	strcpy( tmp, session->getSavegameName() );
-	char *p = strrchr( tmp, '.' );
-	if( p ) *p = '\0';
-	
 	// add a unique id or the mapname
 	char mapBaseName[80];
 	if( !session->getCurrentMission() ) {
@@ -368,7 +350,7 @@ void Scourge::getSavedMapName( char *mapName ) {
 		sprintf( mapBaseName, "%x", SDL_GetTicks() );
 	}
 		
-	sprintf( mapName, "_%s_%s", tmp, mapBaseName );	
+	sprintf( mapName, "_%s", mapBaseName );	
 }
 
 bool Scourge::saveCurrentMap() {

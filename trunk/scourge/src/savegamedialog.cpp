@@ -28,6 +28,7 @@
 #include "gui/canvas.h"
 
 bool savegamesChanged = true;
+int maxFileSuffix = 0;
 
 SavegameDialog::SavegameDialog( Scourge *scourge ) {
   this->scourge = scourge;
@@ -80,7 +81,11 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
   } else if( widget == save ) {
 
 	} else if( widget == newSave ) {
-		createNewSaveGame();
+		if( createNewSaveGame() ) {
+			scourge->showMessageDialog( "Game saved successfully." );
+		} else {
+			scourge->showMessageDialog( "Error saving game." );
+		}
 	} else if( widget == load ) {
 
 
@@ -131,37 +136,29 @@ void SavegameDialog::findFiles() {
 		if( screens[ i ] ) glDeleteTextures( 1, &(screens[ i ]) );
 	}
 
-	filenameCount = 0;
 	char path[300];
-	get_file_name( path, 300, "index.txt" );
-	FILE *fp = fopen( path, "r" );
-	if( fp ) {
-		char line[300];
-		int lineWidth = 0;
-		int n;
-		while( ( n = fgetc( fp ) ) != EOF ) {
-			if( n == '\n' || n == '\r' ) {
-				if( lineWidth > 0 ) {
-					line[lineWidth] = '\0';
-					lineWidth = 0;
-					if( readFileDetails( line ) ) {
-						// add in reverse order
-						if( filenameCount > 0 ) {
-							for( int i = filenameCount; i > 0; i-- ) {
-								strcpy( filenames[ i ], filenames[ i - 1 ] );
-								screens[ i ] = screens[ i - 1 ];
-							}
-						}
-						filenameCount++;
-						strcpy( filenames[ 0 ], fileInfos[ fileInfos.size() - 1 ]->title );
-						screens[ 0 ] = loadScreenshot( fileInfos[ fileInfos.size() - 1 ]->path );						
-					}
+	get_file_name( path, 300, "" );
+	vector<string> fileNameList;
+	findFilesInDir( path, &fileNameList );
+
+	maxFileSuffix = 0;
+	filenameCount = 0;
+	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
+		string s = fileNameList[ i ];
+		if( s.substr( 0, 5 ) == "save_" && readFileDetails( (char*)s.c_str() ) ) {
+			// add in reverse order
+			if( filenameCount > 0 ) {
+				for( int i = filenameCount; i > 0; i-- ) {
+					strcpy( filenames[ i ], filenames[ i - 1 ] );
+					screens[ i ] = screens[ i - 1 ];
 				}
-			} else {
-				line[lineWidth++] = (char)n;
 			}
+			filenameCount++;
+			strcpy( filenames[ 0 ], fileInfos[ fileInfos.size() - 1 ]->title );
+			screens[ 0 ] = loadScreenshot( fileInfos[ fileInfos.size() - 1 ]->path );						
+			int n = (int)strtol( s.c_str() + 5, (char**)NULL, 16 );
+			if( n > maxFileSuffix ) maxFileSuffix = n;
 		}
-		fclose( fp );
 	}
 	files->setLines( filenameCount, (const char**)filenames, NULL, screens );
 	savegamesChanged = false;
@@ -220,10 +217,14 @@ bool SavegameDialog::readFileDetails( char *dirname ) {
 	return true;
 }
 
-void SavegameDialog::createNewSaveGame() {
+bool SavegameDialog::createNewSaveGame() {
+
+	// in case we're called from the outside
+	if( savegamesChanged ) findFiles();
+
 	// create a new save game
 	SavegameInfo *info = (SavegameInfo*)malloc( sizeof( SavegameInfo ) );
-	sprintf( (char*)info->path, "save_%x", (unsigned int)fileInfos.size() );
+	sprintf( (char*)info->path, "save_%x", ++maxFileSuffix ); // incr. maxFileSuffix in case we crash and the file is created
 	sprintf( (char*)info->title, "%s %s", 
 					 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
 					 scourge->getSession()->getBoard()->getStorylineTitle() );
@@ -244,18 +245,12 @@ void SavegameDialog::createNewSaveGame() {
 		getWindow()->setVisible( false );
 		saveScreenshot();
 
-		// save the index file
-		if( saveIndexFile() ) {
-
-			// reload the next time
-			savegamesChanged = true;
+		// reload the next time
+		savegamesChanged = true;
 		
-			scourge->showMessageDialog( "Game saved successfully." );
-		} else {
-			scourge->showMessageDialog( "Error saving index file." );
-		}
+		return true;
 	} else {
-		scourge->showMessageDialog( "Error saving game." );
+		return false;
 	}
 }
 
@@ -267,20 +262,6 @@ void SavegameDialog::saveScreenshot() {
 	cerr << "Saving: " << path << endl;
 
 	scourge->getSDLHandler()->saveScreenNow( path );
-}
-
-bool SavegameDialog::saveIndexFile() {
-	char path[300];
-	get_file_name( path, 300, "index.txt" );
-	FILE *fp = fopen( path, "w" );
-	if( fp ) {
-		for( unsigned int i = 0; i < fileInfos.size(); i++ ) {
-			fprintf( fp, "%s\n", fileInfos[i]->path );
-		}
-		fclose( fp );
-		return true;
-	}
-	return false;
 }
 
 void SavegameDialog::makeDirectory( char *path ) {
@@ -295,6 +276,25 @@ void SavegameDialog::makeDirectory( char *path ) {
 		perror( "SavegameDialog::makeDirectory: " );
 		exit(1);
 	}
+#endif
+}
+
+void SavegameDialog::findFilesInDir( char *path, vector<string> *fileNameList ) {
+#ifdef WIN32
+	cerr << "*** IMPLEMENT ME: SavegameDialog::findFilesInDir() for windows." << endl;
+	exit(1);
+#else
+	DIR *dir = opendir( path );
+	if( !dir ) {
+		cerr << "*** Error: can't open path: " << path << " error: " << errno << endl;
+		return;
+	}
+	struct dirent *de;
+	while( ( de = readdir( dir ) ) ) {
+		string s = de->d_name;
+		fileNameList->push_back( s );
+	}
+	closedir( dir );
 #endif
 }
 
