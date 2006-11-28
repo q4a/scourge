@@ -591,7 +591,8 @@ bool SDLHandler::processEvents( bool *isActive ) {
 void SDLHandler::drawCursor() {
   // for cursor: do alpha bit testing
   glEnable( GL_ALPHA_TEST );
-  glAlphaFunc( GL_EQUAL, 0xff );
+  // glAlphaFunc( GL_NOTEQUAL, 0 ); this might work better for people with the reverse alpha problem (see forums)
+	glAlphaFunc( GL_EQUAL, 0xff );
   glEnable(GL_TEXTURE_2D);
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_CULL_FACE);
@@ -695,6 +696,10 @@ void SDLHandler::drawScreenInternal() {
 #define SCREEN_SHOT_HEIGHT 120
 
 void SDLHandler::saveScreenInternal( char *path ) {
+	if( !gameAdapter->getPreferences()->getEnableScreenshots() ) {
+		cerr << "*** Screenshots disabled in options. Not saving: " << path << endl;
+		return;
+	}
 
 #ifdef DEBUG_SCREENSHOT	
 	cerr << "*** Preparing for screenshot." << endl;
