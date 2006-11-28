@@ -300,6 +300,7 @@ UserConfiguration::UserConfiguration(){
     shadows = 0;
     alwaysShowPath = true;
     tooltipEnabled = true;
+		enableScreenshots = true;
     tooltipInterval = 50;
     
     // game settings
@@ -573,6 +574,8 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set tooltipenabled %s\n", tooltipEnabled ? "true":"false");
     writeFile(configFile, textLine);
+		sprintf(textLine, "set enablescreenshots %s\n", enableScreenshots ? "true":"false");
+    writeFile(configFile, textLine);
     sprintf(textLine, "set tooltipinterval %d\n", tooltipInterval );
     writeFile(configFile, textLine);
     sprintf(textLine, "\n// Audio settings\n");
@@ -651,7 +654,8 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
        s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap" ||
        s1 == "keepmapsize" || s1 == "frameonfullscreen" || s1 == "turnbasedbattle" ||
        s1 == "ovalcutoutshown" || s1 == "outlineinteractiveitems" ||
-       s1 == "soundenabled" || s1 == "alwaysshowpath" || s1 == "tooltipenabled" ){
+       s1 == "soundenabled" || s1 == "alwaysshowpath" || s1 == "tooltipenabled" || 
+			 s1 == "enablescreenshots" ){
         if(s2 == "true"){
             paramValue = true;
         }
@@ -754,7 +758,9 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     }
     else if(s1 == "tooltipenabled" ) {
       tooltipEnabled = paramValue;
-    }
+    } else if( s1 == "enablescreenshots" ) {
+			enableScreenshots = paramValue;
+		}
     else if(s1 == "monstertoughness" ) {
       monsterToughness = atoi(s2.c_str());
       if( monsterToughness < 0 ) monsterToughness = 0;
@@ -1132,6 +1138,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set w 1024" << endl;
   configFile << "set h 768" << endl;
   configFile << "set bpp 32" << endl;
+	configFile << "set enablescreenshots true" << endl;
   configFile << "" << endl;
   configFile << "// Game settings" << endl;
   configFile << "set gamespeed 2  // 0 : fastest, 4 : slowest" << endl;

@@ -76,6 +76,7 @@ private:
   bool alwaysShowPath;
   bool tooltipEnabled;
   int tooltipInterval;
+	bool enableScreenshots;
   
   // game settings
   int gamespeed;
@@ -135,6 +136,7 @@ private:
   inline int getEffectsVolume() { return effectsVolume; }
   inline bool getAlwaysShowPath() { return alwaysShowPath; }
   inline bool getTooltipEnabled() { return tooltipEnabled; }
+	inline bool getEnableScreenshots() { return enableScreenshots; }
   inline int getTooltipInterval() { return tooltipInterval; }
   inline int getMonsterToughness() { return monsterToughness; }
   
@@ -165,6 +167,7 @@ private:
   inline void setEffectsVolume(int n) { effectsVolume = n; }
   inline void setAlwaysShowPath( bool b ) { alwaysShowPath = b; }
   inline void setTooltipEnabled( bool b ) { tooltipEnabled = b; }
+	inline void setEnableScreenshots( bool b ) { enableScreenshots = b; }
   inline void setTooltipInterval( int n ) { tooltipInterval = n; }
   inline void setMonsterToughness( int n ) { monsterToughness = n; }
   
