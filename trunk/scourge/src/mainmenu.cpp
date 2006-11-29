@@ -969,6 +969,11 @@ void MainMenu::drawWater() {
 
 bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
 
+	if( scourge->getSaveDialog()->getWindow()->isVisible() ) {
+    scourge->getSaveDialog()->handleEvent( widget, event );
+		return false;
+  }
+
   if(scourge->getOptionsMenu()->isVisible()) {
     scourge->getOptionsMenu()->handleEvent(widget, event);
     return false;
@@ -1033,7 +1038,8 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     return false;
   } else if(widget == continueButton) {
     value = CONTINUE_GAME;
-		return true;
+		scourge->getSaveDialog()->show( false );
+		return false;
 		//showSavegameDialog( false );
     //return false;
   } else if(widget == optionsButton) {
@@ -1094,7 +1100,7 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   case SDL_KEYDOWN:
     switch(event->key.keysym.sym) {
     case SDLK_1: value = NEW_GAME; showPartyEditor(); return false;
-    case SDLK_2: value = CONTINUE_GAME; return true;
+    case SDLK_2: value = CONTINUE_GAME; scourge->getSaveDialog()->show( false ); return false;
     case SDLK_3: value = MULTIPLAYER; return true;
     case SDLK_4: value = OPTIONS; return true;
     case SDLK_5: value = ABOUT; return true;
@@ -1139,7 +1145,8 @@ bool MainMenu::handleEvent(SDL_Event *event) {
 			showPartyEditor();
 			return false;
 		} else if( value == CONTINUE_GAME ) {
-			return true;
+			scourge->getSaveDialog()->show( false );
+			return false;
     } else {
       return true;
     }

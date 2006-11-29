@@ -243,8 +243,7 @@ protected:
 	void cleanUpAfterMission();
 	bool changeLevel();
 	void endGame();
-	bool saveCurrentMap();
-	void getCurrentMapName( char *path, int depth=-1 );
+	void getCurrentMapName( char *path, char *dirName=NULL, int depth=-1 );
 	void getSavedMapName( char *mapName );
 	bool loadMap( char *mapName, bool fromRandomMap, bool absolutePath );
 	void deleteCurrentMapFiles();
@@ -710,8 +709,8 @@ public:
 
   void mouseClickWhileExiting();
 
-  bool saveGame( Session *session, char *title );  
-  bool loadGame( Session *session, char *error );
+  bool saveGame( Session *session, char *dirName, char *title );  
+  bool loadGame( Session *session, char *dirName, char *error );
 
 	RenderedCreature *createWanderingHero( int level );
 
@@ -724,6 +723,8 @@ public:
 	void handleDismiss( int index );
 	
 	void showTextMessage( char *message );
+
+	bool saveCurrentMap( char *dirName=NULL );
 
 protected:
 

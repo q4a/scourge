@@ -50,6 +50,7 @@ Session::Session(GameAdapter *adapter) {
   currentMission = NULL;
   squirrel = NULL;
 	strcpy( savegame, "" );
+	strcpy( loadgame, "" );
 }
 
 Session::~Session() {

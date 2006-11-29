@@ -79,7 +79,12 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
     win->setVisible( false );
 		//scourge->getMainMenu()->setSavegameSelected();
   } else if( widget == save ) {
-
+		int n = files->getSelectedLine();
+		if( n > -1 && createSaveGame( fileInfos[n] ) ) {
+			scourge->showMessageDialog( "Game saved successfully." );
+		} else {
+			scourge->showMessageDialog( "Error saving game." );
+		}
 	} else if( widget == newSave ) {
 		if( createNewSaveGame() ) {
 			scourge->showMessageDialog( "Game saved successfully." );
@@ -87,7 +92,12 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 			scourge->showMessageDialog( "Error saving game." );
 		}
 	} else if( widget == load ) {
-
+		int n = files->getSelectedLine();
+		if( n > -1 ) {
+			getWindow()->setVisible( false );
+			scourge->getSession()->setLoadgameName( fileInfos[n]->path );
+			scourge->getSDLHandler()->endMainLoop();
+		}
 
 		/*
 		setName();
@@ -154,8 +164,8 @@ void SavegameDialog::findFiles() {
 				}
 			}
 			filenameCount++;
-			strcpy( filenames[ 0 ], fileInfos[ fileInfos.size() - 1 ]->title );
-			screens[ 0 ] = loadScreenshot( fileInfos[ fileInfos.size() - 1 ]->path );						
+			strcpy( filenames[ 0 ], fileInfos[ 0 ]->title );
+			screens[ 0 ] = loadScreenshot( fileInfos[ 0 ]->path );						
 			int n = (int)strtol( s.c_str() + 5, (char**)NULL, 16 );
 			if( n > maxFileSuffix ) maxFileSuffix = n;
 		}
@@ -212,7 +222,7 @@ bool SavegameDialog::readFileDetails( char *dirname ) {
 	SavegameInfo *info = (SavegameInfo*)malloc( sizeof( SavegameInfo ) );
 	strcpy( info->path, dirname );
 	strcpy( info->title, (char*)title );
-	fileInfos.push_back( info );
+	fileInfos.insert( fileInfos.begin(), info );
 
 	return true;
 }
@@ -223,40 +233,128 @@ bool SavegameDialog::createNewSaveGame() {
 	if( savegamesChanged ) findFiles();
 
 	// create a new save game
-	SavegameInfo *info = (SavegameInfo*)malloc( sizeof( SavegameInfo ) );
-	sprintf( (char*)info->path, "save_%x", ++maxFileSuffix ); // incr. maxFileSuffix in case we crash and the file is created
+	SavegameInfo info;
+	sprintf( (char*)info.path, "save_%x", ++maxFileSuffix ); // incr. maxFileSuffix in case we crash and the file is created
+	sprintf( (char*)info.title, "%s %s", 
+					 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
+					 scourge->getSession()->getBoard()->getStorylineTitle() );
+
+	// make its directory
+	char path[300];
+	get_file_name( path, 300, info.path );
+	makeDirectory( path );
+
+	return saveGameInternal( &info );
+}
+
+bool SavegameDialog::createSaveGame( SavegameInfo *info ) {
+	// create a new save game title
 	sprintf( (char*)info->title, "%s %s", 
 					 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
 					 scourge->getSession()->getBoard()->getStorylineTitle() );
-	fileInfos.push_back( info );
 
 	// make its directory
 	char path[300];
 	get_file_name( path, 300, info->path );
-	makeDirectory( path );
 
-	// set it to be the current savegame
-	scourge->getSession()->setSavegameName( info->path );
-
-	// save the game here
-	bool b = scourge->saveGame( scourge->getSession(), info->title );
-	if( b ) {
-
-		getWindow()->setVisible( false );
-		saveScreenshot();
-
-		// reload the next time
-		savegamesChanged = true;
-		
-		return true;
-	} else {
-		return false;
+	// delete the existing map files if saving over some other data
+	if( strcmp( scourge->getSession()->getSavegameName(), info->path ) ) {
+		char tmp[300];
+		vector<string> fileNameList;
+		findFilesInDir( path, &fileNameList );
+		for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
+			string s = fileNameList[i];
+			if( s.substr( 0, 1 ) == "_" ) {
+				sprintf( tmp, "%s/%s", path, s.c_str() );
+				cerr << "+++ removing old map file: " << tmp << endl;
+				int n = remove( tmp );
+				cerr << "\t" << ( !n ? "success" : "can't delete file" ) << endl;
+			}
+		}
 	}
+
+	return saveGameInternal( info );
 }
 
-void SavegameDialog::saveScreenshot() {
+bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
+	// save the game here
+	bool b = scourge->saveGame( scourge->getSession(), info->path, info->title );
+	if( b ) {
+
+		// if there is a current game and it's diff. than the one we're saving, copy the maps over
+		if( strcmp( scourge->getSession()->getSavegameName(), info->path ) && 
+				strlen( scourge->getSession()->getSavegameName() ) ) {
+			b = copyMaps( scourge->getSession()->getSavegameName(), info->path );
+		}
+
+		// pre-emptively save the current map (just in case it hasn't been done yet and we crash later
+		if( scourge->getSession()->getCurrentMission() ) {
+			scourge->saveCurrentMap( info->path );
+		}
+
+		if( b ) {
+	
+			getWindow()->setVisible( false );
+			saveScreenshot( info->path );
+	
+			// reload the next time
+			savegamesChanged = true;
+	
+			// set it to be the current savegame
+			scourge->getSession()->setSavegameName( info->path );
+			
+		}
+	}
+	return b;
+}
+
+bool SavegameDialog::copyMaps( char *fromDirName, char *toDirName ) {
+	char path[300];
+	get_file_name( path, 300, fromDirName );
+	vector<string> fileNameList;
+	findFilesInDir( path, &fileNameList );
+	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
+		string s = fileNameList[i];
+		if( s.substr( 0, 1 ) == "_" ) {
+			if( !copyFile( fromDirName, toDirName, (char*)s.c_str() ) ) return false;
+		}
+	}
+	return true;
+}
+
+#define BUFFER_SIZE 4096
+bool SavegameDialog::copyFile( char *fromDirName, char *toDirName, char *fileName ) {
 	char tmp[300];
-	sprintf( tmp, "%s/screen.bmp", scourge->getSession()->getSavegameName() );
+	
+	sprintf( tmp, "%s/%s", fromDirName, fileName );
+	char fromPath[300];
+	get_file_name( fromPath, 300, tmp );
+	
+	sprintf( tmp, "%s/%s", toDirName, fileName );
+	char toPath[300];
+	get_file_name( toPath, 300, tmp );
+
+	cerr << "+++ copying file: " << fromPath << " to " << toPath << endl;
+
+	FILE *from = fopen( fromPath, "rb" );
+	if( from ) {
+		FILE *to = fopen( toPath, "wb" );
+		if( to ) {
+			unsigned char buff[ BUFFER_SIZE ];
+			size_t count;
+			while( ( count = fread( buff, 1, BUFFER_SIZE, from ) ) ) fwrite( buff, 1, count, to );
+			bool result = feof( from );
+			fclose( to );
+			return result;
+		}
+		fclose( from );
+	}
+	return false;
+}
+
+void SavegameDialog::saveScreenshot( char *dirName ) {
+	char tmp[300];
+	sprintf( tmp, "%s/screen.bmp", dirName );
 	char path[300];
 	get_file_name( path, 300, tmp );
 	cerr << "Saving: " << path << endl;

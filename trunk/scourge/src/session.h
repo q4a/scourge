@@ -71,6 +71,7 @@ private:
   SqBinding *squirrel;
   std::map<RpgItem*, Item*> special;
 	char savegame[255];
+	char loadgame[255];
 
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
@@ -182,6 +183,9 @@ public:
 
 	void setSavegameName( char *s );
 	inline char *getSavegameName() { return savegame; }
+	inline void setLoadgameName( char *s ) { strcpy( loadgame, s ); }
+	inline char *getLoadgameName() { return loadgame; }
+	inline bool willLoadGame() { return( strlen( loadgame ) ? true : false ); }
 
 protected:
   virtual void initData();
