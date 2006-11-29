@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 28
+#define PERSIST_VERSION 29
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -153,6 +153,7 @@ typedef struct _MissionInfo {
 	Uint32 version;
   Uint8 level;
   Uint8 depth;
+	Uint8 completed;
   Uint8 mapName[80];
 	Uint8 templateName[80];
 	Uint8 itemCount;

@@ -257,22 +257,6 @@ bool SavegameDialog::createSaveGame( SavegameInfo *info ) {
 	char path[300];
 	get_file_name( path, 300, info->path );
 
-	// delete the existing map files if saving over some other data
-	if( strcmp( scourge->getSession()->getSavegameName(), info->path ) ) {
-		char tmp[300];
-		vector<string> fileNameList;
-		findFilesInDir( path, &fileNameList );
-		for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
-			string s = fileNameList[i];
-			if( s.substr( 0, 1 ) == "_" ) {
-				sprintf( tmp, "%s/%s", path, s.c_str() );
-				cerr << "+++ removing old map file: " << tmp << endl;
-				int n = remove( tmp );
-				cerr << "\t" << ( !n ? "success" : "can't delete file" ) << endl;
-			}
-		}
-	}
-
 	return saveGameInternal( info );
 }
 
@@ -292,6 +276,9 @@ bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
 			scourge->saveCurrentMap( info->path );
 		}
 
+		// delete any unreferenced map files (these are either from an old savegame or completed)
+		deleteUnreferencedMaps( info->path );
+
 		if( b ) {
 	
 			getWindow()->setVisible( false );
@@ -306,6 +293,46 @@ bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
 		}
 	}
 	return b;
+}
+
+void SavegameDialog::deleteUnreferencedMaps( char *dirName ) {
+	cerr << "Deleting unreferenced maps:" << endl;
+	vector<string> referencedMaps;
+	for( int i = 0; i < scourge->getSession()->getBoard()->getMissionCount(); i++ ) {
+		string s = scourge->getSession()->getBoard()->getMission( i )->getSavedMapName();
+		if( s != "" ) referencedMaps.push_back( s );
+	}
+	cerr << "\tstarting" << endl;
+
+	char path[300];
+	get_file_name( path, 300, dirName );
+	vector<string> fileNameList;
+	findFilesInDir( path, &fileNameList );
+	char tmp[300];
+	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
+		string s = fileNameList[i];
+		cerr << "\tconsidering: " << s << endl;
+		if( s.substr( 0, 1 ) == "_" ) {
+			
+			bool found = false;
+			for( unsigned int t = 0; t < referencedMaps.size(); t++ ) {
+				string z = referencedMaps[t];
+				if( s.substr( 0, z.length() ) == z ) {
+					found = true;
+					break;
+				}
+			}
+			cerr << "\tfound: " << found << endl;
+			
+			if( !found ) {
+				sprintf( tmp, "%s/%s", path, s.c_str() );
+				cerr << "\tDeleting map file: " << tmp << endl;
+				int n = remove( tmp );
+				cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
+			}
+		}
+	}
+	cerr << "\tDone." << endl;
 }
 
 bool SavegameDialog::copyMaps( char *fromDirName, char *toDirName ) {

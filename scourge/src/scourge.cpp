@@ -376,16 +376,6 @@ bool Scourge::saveCurrentMap( char *dirName ) {
 	return true;
 }
 
-void Scourge::deleteCurrentMapFiles() {
-	char path[300];
-	for( int i = 0; i < session->getCurrentMission()->getDepth(); i++ ) {
-		getCurrentMapName( path, NULL, i );
-		cerr << "Deleting map file: " << path << endl;
-		int n = remove( path );
-		cerr << "\t" << ( !n ? "success" : "can't delete file" ) << endl;
-	}
-}
-
 void Scourge::resetGame( bool resetParty ) {
 	oldStory = currentStory;
 
@@ -2014,9 +2004,6 @@ void Scourge::missionCompleted() {
 			getParty()->getParty(i)->addExperienceWithMessage( exp );
     }
   }
-
-	// Delete map files for this mission
-	deleteCurrentMapFiles();
 }
 
 #ifdef HAVE_SDL_NET
@@ -2891,17 +2878,11 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
       Persist::saveCreature( file, info );
       Persist::deleteCreatureInfo( info );
     }
-		// save the current uncompleted missions
-		int missionCount = 0;
-		for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
-			if( !( session->getBoard()->getMission(i)->isCompleted() ||
-						 session->getBoard()->getMission(i)->isStoryLine() ) ) missionCount++;
-		}
-		n = missionCount;
+		// save the current missions
+		n = session->getBoard()->getMissionCount();
 		file->write( &n );
 		for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
-			if( !( session->getBoard()->getMission(i)->isCompleted() ||
-						 session->getBoard()->getMission(i)->isStoryLine() ) ) {
+			if( !session->getBoard()->getMission(i)->isStoryLine() ) {
 				MissionInfo *info = session->getBoard()->getMission(i)->save();
 				Persist::saveMission( file, info );
 				Persist::deleteMissionInfo( info );
