@@ -253,7 +253,7 @@ bool SavegameDialog::createSaveGame( SavegameInfo *info ) {
 					 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
 					 scourge->getSession()->getBoard()->getStorylineTitle() );
 
-	// make its directory
+	// its directory
 	char path[300];
 	get_file_name( path, 300, info->path );
 
@@ -276,7 +276,9 @@ bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
 			scourge->saveCurrentMap( info->path );
 		}
 
-		// delete any unreferenced map files (these are either from an old savegame or completed)
+		// delete any unreferenced map files 
+		// (these are either left when saving over an old game 
+		// or completed and no longer on the board)
 		deleteUnreferencedMaps( info->path );
 
 		if( b ) {
@@ -296,13 +298,13 @@ bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
 }
 
 void SavegameDialog::deleteUnreferencedMaps( char *dirName ) {
-	cerr << "Deleting unreferenced maps:" << endl;
+	//cerr << "Deleting unreferenced maps:" << endl;
 	vector<string> referencedMaps;
 	for( int i = 0; i < scourge->getSession()->getBoard()->getMissionCount(); i++ ) {
 		string s = scourge->getSession()->getBoard()->getMission( i )->getSavedMapName();
 		if( s != "" ) referencedMaps.push_back( s );
 	}
-	cerr << "\tstarting" << endl;
+	//cerr << "\tstarting" << endl;
 
 	char path[300];
 	get_file_name( path, 300, dirName );
@@ -311,7 +313,7 @@ void SavegameDialog::deleteUnreferencedMaps( char *dirName ) {
 	char tmp[300];
 	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
 		string s = fileNameList[i];
-		cerr << "\tconsidering: " << s << endl;
+		//cerr << "\tconsidering: " << s << endl;
 		if( s.substr( 0, 1 ) == "_" ) {
 			
 			bool found = false;
@@ -322,17 +324,17 @@ void SavegameDialog::deleteUnreferencedMaps( char *dirName ) {
 					break;
 				}
 			}
-			cerr << "\tfound: " << found << endl;
+			//cerr << "\tfound: " << found << endl;
 			
 			if( !found ) {
 				sprintf( tmp, "%s/%s", path, s.c_str() );
-				cerr << "\tDeleting map file: " << tmp << endl;
+				cerr << "\tDeleting un-referenced map file: " << tmp << endl;
 				int n = remove( tmp );
 				cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
 			}
 		}
 	}
-	cerr << "\tDone." << endl;
+	//cerr << "\tDone." << endl;
 }
 
 bool SavegameDialog::copyMaps( char *fromDirName, char *toDirName ) {
