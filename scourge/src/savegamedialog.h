@@ -68,8 +68,12 @@ protected:
 	void makeDirectory( char *path );
 	void findFilesInDir( char *path, vector<string> *fileNameList );
 	bool checkIfFileExists( char *filename );
-	void saveScreenshot();
+	void saveScreenshot( char *dirName );
+	bool copyMaps( char *fromDirName, char *toDirName );
+	bool copyFile( char *fromDirName, char *toDirName, char *fileName );
 	GLuint loadScreenshot( char *path );
+	bool saveGameInternal( SavegameInfo *info );
+	bool createSaveGame( SavegameInfo *info );
 };
 
 #endif

@@ -146,20 +146,22 @@ void Scourge::initUI() {
 
 void Scourge::start() {  
   bool initMainMenu = true;
+	int value = CONTINUE_GAME;
   while(true) {
-
-    if(initMainMenu) {
-      initMainMenu = false;
-      mainMenu->show();
-      getSDLHandler()->getSound()->playMusicMenu();
-    }
-
-    getSDLHandler()->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
-    getSDLHandler()->mainLoop();
-    session->deleteCreaturesAndItems( false );
-
-    // evaluate results and start a missions
-    int value = mainMenu->getValue();
+		if( !session->willLoadGame() ) {
+			if(initMainMenu) {
+				initMainMenu = false;
+				mainMenu->show();
+				getSDLHandler()->getSound()->playMusicMenu();
+			}
+	
+			getSDLHandler()->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
+			getSDLHandler()->mainLoop();
+			session->deleteCreaturesAndItems( false );
+	
+			// evaluate results and start a missions
+			value = mainMenu->getValue();
+		}
 
     if(value == NEW_GAME_START ||
        value == MULTIPLAYER_START ||
@@ -168,7 +170,9 @@ void Scourge::start() {
 
       // fade away
       getSDLHandler()->getSound()->stopMusic();
-      getSDLHandler()->fade( 0, 1, 20 );
+			if( !session->willLoadGame() ) {
+				getSDLHandler()->fade( 0, 1, 20 );
+			}
       mainMenu->hide();
 
       initMainMenu = true;
@@ -190,21 +194,23 @@ void Scourge::start() {
         }
 #endif
 
-				/*
-        if(value == CONTINUE_GAME) {
+				bool loaded = false;
+				if( session->willLoadGame() ) {
 					char error[255];
-          if(!loadGame( session, error )) {
-            showMessageDialog( error );
-            failed = true;
-          }
-        }
-				*/
+					if( loadGame( session, session->getLoadgameName(), error ) ) {
+						session->setSavegameName( session->getLoadgameName() );
+						session->setLoadgameName( "" );
+						loaded = true;
+					} else {
+						showMessageDialog( error );
+						failed = true;
+					}
+				}
 
         if( !failed ) {
           // do this to fix slowness in mainmenu the second time around
           glPushAttrib(GL_ENABLE_BIT);
-          //startMission( ( value != CONTINUE_GAME ) );
-					startMission( true );
+					startMission( !loaded );
           glPopAttrib();
         }
       }
@@ -319,7 +325,7 @@ void Scourge::startMission( bool startInHq ) {
 	endGame();
 }
 
-void Scourge::getCurrentMapName( char *path, int depth ) {
+void Scourge::getCurrentMapName( char *path, char *dirName, int depth ) {
 	// save the current map:
 	// get and set the map's name
 	char mapName[300];
@@ -333,7 +339,10 @@ void Scourge::getCurrentMapName( char *path, int depth ) {
 	
 	// add the depth
 	char tmp[300];
-	sprintf( tmp, "%s/%s_%d.map", getSession()->getSavegameName(), mapName, ( depth >= 0 ? depth : oldStory ) );
+	sprintf( tmp, "%s/%s_%d.map", 
+					 ( dirName ? dirName : getSession()->getSavegameName() ), 
+					 mapName, 
+					 ( depth >= 0 ? depth : oldStory ) );
 	
 	// convert to a path	
 	get_file_name( path, 300, tmp );
@@ -353,9 +362,9 @@ void Scourge::getSavedMapName( char *mapName ) {
 	sprintf( mapName, "_%s", mapBaseName );	
 }
 
-bool Scourge::saveCurrentMap() {
+bool Scourge::saveCurrentMap( char *dirName ) {
 	char path[300];
-	getCurrentMapName( path );
+	getCurrentMapName( path, dirName );
 	cerr << "Saving current map: " << path << endl;
 
 	levelMap->startx = toint( session->getParty()->getPlayer()->getX() );
@@ -370,7 +379,7 @@ bool Scourge::saveCurrentMap() {
 void Scourge::deleteCurrentMapFiles() {
 	char path[300];
 	for( int i = 0; i < session->getCurrentMission()->getDepth(); i++ ) {
-		getCurrentMapName( path, i );
+		getCurrentMapName( path, NULL, i );
 		cerr << "Deleting map file: " << path << endl;
 		int n = remove( path );
 		cerr << "\t" << ( !n ? "success" : "can't delete file" ) << endl;
@@ -2838,11 +2847,11 @@ Color *Scourge::getOutlineColor( Location *pos ) {
 
 #define HQ_MISSION_SAVED_NAME "__HQ__"
 
-bool Scourge::saveGame( Session *session, char *title ) {  
+bool Scourge::saveGame( Session *session, char *dirName, char *title ) {  
 	char tmp[300];
 	char path[300];
   {
-		sprintf( tmp, "%s/savegame.dat", session->getSavegameName() );
+		sprintf( tmp, "%s/savegame.dat", dirName );
     get_file_name( path, 300, tmp );
 		cerr << "Saving: " << path << endl;
     FILE *fp = fopen( path, "wb" );
@@ -2902,7 +2911,7 @@ bool Scourge::saveGame( Session *session, char *title ) {
   }
 
   {
-		sprintf( tmp, "%s/values.dat", session->getSavegameName() );
+		sprintf( tmp, "%s/values.dat", dirName );
     get_file_name( path, 300, tmp );
 		cerr << "Saving: " << path << endl;
     FILE *fp = fopen( path, "wb" );
@@ -2918,12 +2927,12 @@ bool Scourge::saveGame( Session *session, char *title ) {
   return true;
 }
 
-bool Scourge::loadGame( Session *session, char *error ) {
+bool Scourge::loadGame( Session *session, char *dirName, char *error ) {
 	char path[300];
 	strcpy( error, "" );
 
 	char tmp[300];
-	sprintf( tmp, "%s/savegame.dat", session->getSavegameName() );
+	sprintf( tmp, "%s/savegame.dat", dirName );
 	get_file_name( path, 300, tmp );
 
 	cerr << "Loading: " << path << endl;
@@ -3012,7 +3021,7 @@ bool Scourge::loadGame( Session *session, char *error ) {
 
 	{
 		char path[300], tmp[300];
-		sprintf( tmp, "%s/values.dat", session->getSavegameName() );
+		sprintf( tmp, "%s/values.dat", dirName );
 		get_file_name( path, 300, tmp );
 		cerr << "Loading: " << path << endl;
 		FILE *fp = fopen( path, "rb" );
