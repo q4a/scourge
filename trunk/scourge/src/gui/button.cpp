@@ -52,7 +52,8 @@ void Button::drawWidget(Widget *parent) {
 	if( texture ) {
 		glDisable( GL_CULL_FACE );
 		glEnable( GL_ALPHA_TEST );
-		glAlphaFunc( GL_EQUAL, 0xff );
+		//glAlphaFunc( GL_EQUAL, 0xff );
+		glAlphaFunc( GL_NOTEQUAL, 0 );
 		glEnable(GL_TEXTURE_2D);
 		glPushMatrix();
 		glBindTexture( GL_TEXTURE_2D, texture );

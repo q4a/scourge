@@ -2249,7 +2249,8 @@ void Scourge::drawWidgetContents(Widget *w) {
             Storable *storable = getParty()->getPlayer()->getQuickSpell( t );
             w->setTooltip( (char*)(storable->getName()) );
             glEnable( GL_ALPHA_TEST );
-            glAlphaFunc( GL_EQUAL, 0xff );
+            //glAlphaFunc( GL_EQUAL, 0xff );
+						glAlphaFunc( GL_NOTEQUAL, 0 );
             glEnable(GL_TEXTURE_2D);
             glPushMatrix();
             //    glTranslatef( x, y, 0 );
@@ -2289,7 +2290,8 @@ void Scourge::drawWidgetContents(Widget *w) {
 void Scourge::drawItemIcon( Item *item, int n ) {
   glEnable( GL_TEXTURE_2D );
   glEnable( GL_ALPHA_TEST );
-  glAlphaFunc( GL_EQUAL, 0xff );
+  //glAlphaFunc( GL_EQUAL, 0xff );
+	glAlphaFunc( GL_NOTEQUAL, 0 );
   glBindTexture( GL_TEXTURE_2D,
                  getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ] );
   glColor4f(1, 1, 1, 1);

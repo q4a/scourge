@@ -567,7 +567,8 @@ void MainMenu::drawLogo() {
 
 
   glEnable( GL_ALPHA_TEST );
-  glAlphaFunc( GL_EQUAL, 0xff );
+  //glAlphaFunc( GL_EQUAL, 0xff );
+	glAlphaFunc( GL_NOTEQUAL, 0 );
   glEnable( GL_TEXTURE_2D );
   glPushMatrix();
   glLoadIdentity();

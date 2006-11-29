@@ -159,7 +159,8 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
 void InfoGui::drawWidgetContents(Widget *w) {
   if( w == image && item ) {
     glEnable( GL_ALPHA_TEST );
-    glAlphaFunc( GL_EQUAL, 0xff );
+    //glAlphaFunc( GL_EQUAL, 0xff );
+		glAlphaFunc( GL_NOTEQUAL, 0 );
     glEnable(GL_TEXTURE_2D);
     glPushMatrix();
     //    glTranslatef( x, y, 0 );
