@@ -457,7 +457,10 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
     mission->addCreature( monster, value );
   }
 	mission->setTemplateName( this->name );
-	if( info ) mission->setSavedMapName( (char*)info->mapName );
+	if( info ) {
+		mission->setSavedMapName( (char*)info->mapName );
+		mission->setCompleted( info->completed == 1 ? true : false );
+	}
 
   return mission;
 }                                               
@@ -998,6 +1001,7 @@ MissionInfo *Mission::save() {
 	strcpy( (char*)info->mapName, savedMapName );
 	info->level = getLevel();
 	info->depth = getDepth();
+	info->completed = ( completed ? 1 : 0 );
 	info->itemCount = itemList.size();
 	for( int i = 0; i < (int)itemList.size(); i++ ) {
 		strncpy( (char*)info->itemName[i], itemList[i]->getName(), 254 );

@@ -74,6 +74,7 @@ protected:
 	GLuint loadScreenshot( char *path );
 	bool saveGameInternal( SavegameInfo *info );
 	bool createSaveGame( SavegameInfo *info );
+	void deleteUnreferencedMaps( char *dirName );
 };
 
 #endif

@@ -561,6 +561,7 @@ void Persist::saveMission( File *file, MissionInfo *info ) {
   file->write( &(info->version) );
 	file->write( &(info->level) );
 	file->write( &(info->depth) );
+	file->write( &(info->completed) );
 	file->write( info->mapName, 80 );
 	file->write( info->templateName, 80 );
 	file->write( &(info->itemCount) );
@@ -580,6 +581,11 @@ MissionInfo *Persist::loadMission( File *file ) {
 	file->read( &(info->version) );
 	file->read( &(info->level) );
 	file->read( &(info->depth) );
+	if( info->version >= 29 ) {
+		file->read( &(info->completed) );
+	} else {
+		info->completed = 0;
+	}
 	file->read( info->mapName, 80 );
 	file->read( info->templateName, 80 );
 	file->read( &(info->itemCount) );
