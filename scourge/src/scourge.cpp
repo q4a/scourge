@@ -2856,6 +2856,11 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
 		strncpy( (char*)savedTitle, title, 254 );
 		savedTitle[254] = '\0';
 		file->write( savedTitle, 255 );
+
+		Uint8 date[40];
+		strncpy( (char*)date, getParty()->getCalendar()->getCurrentDate().getShortString(), 39 );
+		date[39] = 0;
+		file->write( date, 40 );
 	
 		Uint8 mission[255];
 		Uint8 story = 0;
@@ -2942,6 +2947,12 @@ bool Scourge::loadGame( Session *session, char *dirName, char *error ) {
 
 		Uint8 title[255];
 		file->read( title, 255 );
+
+		if( version >= 30 ) {
+			Uint8 date[40];
+			file->read( date, 40 );
+			getParty()->getCalendar()->setNextResetDate( (char*)date );
+		}
 
 		// load current mission/depth info
 		Uint8 story = 0;

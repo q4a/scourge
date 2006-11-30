@@ -309,7 +309,7 @@ bool Window::isInside(int x, int y) {
 
 bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   switch(event->type) {
-  case SDL_KEYDOWN:
+	case SDL_KEYDOWN:
     return false;
   case SDL_KEYUP:
   if(event->key.keysym.sym == SDLK_TAB) {
@@ -326,6 +326,7 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     }
     return true;
   } else if(event->key.keysym.sym == SDLK_ESCAPE && closeButton && !isLocked()) {
+		scourgeGui->blockEvent();
     setVisible(false);
     // raise the next unlocked window
     currentWin = NULL;

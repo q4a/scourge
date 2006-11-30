@@ -52,6 +52,7 @@ class Date {
   void addSeconds(int nbSec);
   void addDate(Date d); 
   void setDate(int s, int m, int h, int day, int month, int year);
+	void setDate( char *shortString );
      
   inline int getYear()        { return year; }
   inline int getMonth()       { return month; }
@@ -60,7 +61,7 @@ class Date {
   inline int getMin()         { return min; }
   inline int getSec()         { return sec; }
   inline char * getDateString()   { buildDateString();return dateString; }
-  void reset();    
+  void reset( char *shortString=NULL );    
   
   /*bool operator==(const Date &d);
   bool operator<=(const Date &d);

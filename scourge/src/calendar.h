@@ -43,6 +43,7 @@ class Calendar {
   int timeMultiplicator;
   GLint lastTick; 
   bool timeFrozen; 
+	char nextResetDate[40];
   
   std::vector<Event*> scheduledEvents;  
   
@@ -56,6 +57,9 @@ class Calendar {
   void reset(bool resetTime=true);
   void cancelEvent(Event *e);
 	void cancelEventsForCreature( Creature *creature );
+
+	// next time you reset, set the date to this
+	inline void setNextResetDate( char *s ) { strcpy( nextResetDate, s ); }
 
   // return date by value to avoid modification by other classes
   inline Date getCurrentDate() { return currentDate; }
