@@ -177,7 +177,7 @@ MainMenu::MainMenu(Scourge *scourge){
                             (scourge->getSDLHandler()->getScreen()->h/2) - (h/2), 
                             w, h,
                             "About S.c.o.u.r.g.e.",
-                            scourge->getShapePalette()->getGuiTexture(), false);
+                            scourge->getShapePalette()->getGuiTexture(), true );
   aboutText = new ScrollingLabel( 8, 0, 
                                   w - 18, 
                                   h - 65, 
@@ -1098,7 +1098,8 @@ bool MainMenu::handleEvent(SDL_Event *event) {
 
   int line = -1;
   switch(event->type) {
-  case SDL_KEYDOWN:
+  //case SDL_KEYDOWN:
+	case SDL_KEYUP:
     switch(event->key.keysym.sym) {
     case SDLK_1: value = NEW_GAME; showPartyEditor(); return false;
     case SDLK_2: value = CONTINUE_GAME; scourge->getSaveDialog()->show( false ); return false;
@@ -1109,8 +1110,8 @@ bool MainMenu::handleEvent(SDL_Event *event) {
     case SDLK_7: value = EDITOR; return true;
     default: break;
     }
-	break;
-  case SDL_KEYUP:
+	//break;
+  //case SDL_KEYUP:
 	if(event->key.keysym.sym == '8'){
 	  Scourge::blendA++; if(Scourge::blendA >= 11) Scourge::blendA = 0;
 	  fprintf(stderr, "blend: a=%d b=%d\n", Scourge::blendA, Scourge::blendB);

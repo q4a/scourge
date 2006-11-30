@@ -66,25 +66,34 @@ SavegameDialog::~SavegameDialog() {
 	delete win;
 }
 
+#define SAVE_MODE 1
+#define LOAD_MODE 2
+int selectedFile;
+
 void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	if( widget == confirm->okButton ) {
 		confirm->setVisible( false );
-		//setName();
-		win->setVisible( false );
-		//scourge->getMainMenu()->setSavegameSelected();
+		if( confirm->getMode() == SAVE_MODE ) {
+			if( createSaveGame( fileInfos[ selectedFile ] ) ) {
+				scourge->showMessageDialog( "Game saved successfully." );
+			} else {
+				scourge->showMessageDialog( "Error saving game." );
+			}
+		} else {
+			loadGame( selectedFile );
+		}
 	} else if( widget == confirm->cancelButton ) {
 		confirm->setVisible( false );
 	} else if( widget == cancel || widget == win->closeButton ) {
-		//strcpy( selectedName, "" );
     win->setVisible( false );
-		//scourge->getMainMenu()->setSavegameSelected();
   } else if( widget == save ) {
 		int n = files->getSelectedLine();
-		if( n > -1 && createSaveGame( fileInfos[n] ) ) {
-			scourge->showMessageDialog( "Game saved successfully." );
-		} else {
-			scourge->showMessageDialog( "Error saving game." );
-		}
+		if( n > -1 ) {
+			selectedFile = n;
+			confirm->setText( "Are you sure you want to overwrite this file?" );
+			confirm->setMode( SAVE_MODE );
+			confirm->setVisible( true );
+		}		
 	} else if( widget == newSave ) {
 		if( createNewSaveGame() ) {
 			scourge->showMessageDialog( "Game saved successfully." );
@@ -94,32 +103,22 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	} else if( widget == load ) {
 		int n = files->getSelectedLine();
 		if( n > -1 ) {
-			getWindow()->setVisible( false );
-			scourge->getSession()->setLoadgameName( fileInfos[n]->path );
-			scourge->getSDLHandler()->endMainLoop();
+			if( save->isEnabled() ) {
+				selectedFile = n;
+				confirm->setText( "Are you sure you want to load this file?" );
+				confirm->setMode( LOAD_MODE );
+				confirm->setVisible( true );
+			} else {
+				loadGame( n );
+			}
 		}
-
-		/*
-		setName();
-		bool exists = checkIfFileExists( name->getText() );
-		if( widget == save && exists ) {
-			confirm->setText( "Are you sure you want to overwrite this file?" );
-			confirm->setVisible( true );
-		} else if( widget == load && !exists ) {
-			scourge->showMessageDialog( "Please select an existing file." );
-		} else {
-			win->setVisible( false );
-			scourge->getMainMenu()->setSavegameSelected();
-		}
-		*/
-  } else if( widget == files ) {
-		/*
-    int line = files->getSelectedLine();
-    if( line > -1 ) {
-			name->setText( filenames[ line ] );
-		}
-		*/
 	}
+}
+
+void SavegameDialog::loadGame( int n ) {
+	getWindow()->setVisible( false );
+	scourge->getSession()->setLoadgameName( fileInfos[n]->path );
+	scourge->getSDLHandler()->endMainLoop();
 }
 
 void SavegameDialog::show( bool inSaveMode ) {

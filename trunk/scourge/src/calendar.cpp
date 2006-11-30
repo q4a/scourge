@@ -36,12 +36,14 @@ Calendar::Calendar(){
     timeMultiplicator = 6;
     lastTick = 0;
     timeFrozen = false;    
+		strcpy( nextResetDate, "" );
 }
 
 void Calendar::reset(bool resetTime){    
   lastTick = 0;
   if(resetTime) {
-    currentDate.reset();
+    currentDate.reset( nextResetDate );
+		strcpy( nextResetDate, "" );
     if(scheduledEvents.size()) 
       scheduledEvents.erase(scheduledEvents.begin(), scheduledEvents.end());
   }

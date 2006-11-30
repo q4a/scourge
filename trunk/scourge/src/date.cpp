@@ -47,6 +47,24 @@ Date::Date(int sec, int min, int hour, int day, int month, int year){
 }
 
 Date::Date( char *shortString ) {
+	setDate( shortString );
+}
+
+char *Date::getShortString() {
+  sprintf( shortString, "%d/%d/%d/%d/%d/%d", year, month, day, hour, min, sec );
+  return shortString;
+}
+
+void Date::setDate(int s, int m, int h, int day, int month, int year){
+	this->sec = s;      
+	this->min = m;    
+	this->hour = h;         
+	this->day = day;   
+	this->month = month;  
+	this->year = year;   
+}
+
+void Date::setDate( char *shortString ) {
   char *p = strdup( shortString );
   
   char *q = strtok( p, "/" );
@@ -70,22 +88,12 @@ Date::Date( char *shortString ) {
   free( p );
 }
 
-char *Date::getShortString() {
-  sprintf( shortString, "%d/%d/%d/%d/%d/%d", year, month, day, hour, min, sec );
-  return shortString;
-}
-
-void Date::setDate(int s, int m, int h, int day, int month, int year){
-    this->sec = s;      
-    this->min = m;    
-    this->hour = h;         
-    this->day = day;   
-    this->month = month;  
-    this->year = year;   
-}
-
-void Date::reset(){
-    setDate(0, 0, 0, 1, 1, 1128);   // 01/01/1128, 00:00:00
+void Date::reset( char *shortString ){
+	if( shortString && strlen( shortString ) ) {
+		setDate( shortString );
+	} else {
+		setDate( 0, 0, 0, 1, 1, 1128 );   // 01/01/1128, 00:00:00
+	}
 }
 
 void Date::addSeconds(int nbSec){

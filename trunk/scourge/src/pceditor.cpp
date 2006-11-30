@@ -422,7 +422,7 @@ void PcEditor::createUI() {
 	win = new Window( scourge->getSDLHandler(),
 										x, y, w, h,
 										"Character Details", 
-										false, 
+										true, 
 										Window::BASIC_WINDOW, 
 										"default" );
   win->setVisible( false );
