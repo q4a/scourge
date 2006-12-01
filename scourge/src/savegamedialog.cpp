@@ -19,6 +19,8 @@
 #include "scourge.h"
 #include "shapepalette.h"
 #include "persist.h"
+#include "creature.h"
+#include "rpg/character.h"
 #include "io/file.h"
 #include "gui/window.h"
 #include "gui/button.h"
@@ -213,8 +215,8 @@ bool SavegameDialog::readFileDetails( char *dirname ) {
 		}
 	}
 	
-	Uint8 title[255];
-	file->read( title, 255 );
+	Uint8 title[3000];
+	file->read( title, 3000 );
   
 	delete file;
 
@@ -226,6 +228,16 @@ bool SavegameDialog::readFileDetails( char *dirname ) {
 	return true;
 }
 
+void getPosition( int n, char *buff ) {
+	sprintf( buff, "%d", n );
+	switch( buff[ strlen( buff ) - 1 ] ) {
+	case '1': strcat( buff, "st" ); break;
+	case '2': strcat( buff, "nd" ); break;
+	case '3': strcat( buff, "rd" ); break;
+	default: strcat( buff, "th" );
+	}
+}
+
 bool SavegameDialog::createNewSaveGame() {
 
 	// in case we're called from the outside
@@ -234,9 +246,21 @@ bool SavegameDialog::createNewSaveGame() {
 	// create a new save game
 	SavegameInfo info;
 	sprintf( (char*)info.path, "save_%x", ++maxFileSuffix ); // incr. maxFileSuffix in case we crash and the file is created
-	sprintf( (char*)info.title, "%s %s", 
-					 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
-					 scourge->getSession()->getBoard()->getStorylineTitle() );
+	Creature *player = scourge->getParty()->getParty( 0 );
+	if( player ) {
+		char tmp[10];
+		getPosition( player->getLevel(), tmp );
+		sprintf( (char*)info.title, "%s %s, Party of %s the %s level %s", 
+						 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
+						 scourge->getSession()->getBoard()->getStorylineTitle(),
+						 player->getName(), 
+						 tmp, 
+						 player->getCharacter()->getName() );
+	} else {
+		sprintf( (char*)info.title, "%s %s", 
+						 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
+						 scourge->getSession()->getBoard()->getStorylineTitle() );
+	}
 
 	// make its directory
 	char path[300];
