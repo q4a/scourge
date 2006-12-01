@@ -38,7 +38,7 @@ using namespace std;
 
 typedef struct _SavegameInfo {
 	char path[300];
-	char title[300];
+	char title[3000];
 } SavegameInfo;
 
 class SavegameDialog {

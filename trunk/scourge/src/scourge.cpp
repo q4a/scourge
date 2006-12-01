@@ -2852,10 +2852,10 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
     Uint32 n = PERSIST_VERSION;
     file->write( &n );
 
-		Uint8 savedTitle[255];
-		strncpy( (char*)savedTitle, title, 254 );
-		savedTitle[254] = '\0';
-		file->write( savedTitle, 255 );
+		Uint8 savedTitle[3000];
+		strncpy( (char*)savedTitle, title, 2999 );
+		savedTitle[2999] = '\0';
+		file->write( savedTitle, 3000 );
 
 		Uint8 date[40];
 		strncpy( (char*)date, getParty()->getCalendar()->getCurrentDate().getShortString(), 39 );
@@ -2945,8 +2945,12 @@ bool Scourge::loadGame( Session *session, char *dirName, char *error ) {
 				" vs. v" << PERSIST_VERSION << ". Will try to convert it." << endl;
 		}
 
-		Uint8 title[255];
-		file->read( title, 255 );
+		Uint8 title[3000];
+		if( version >= 31 ) {
+			file->read( title, 3000 );
+		} else {
+			file->read( title, 255 );
+		}
 
 		if( version >= 30 ) {
 			Uint8 date[40];
