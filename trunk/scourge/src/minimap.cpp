@@ -182,7 +182,8 @@ void MiniMap::drawMap() {
     glPushMatrix();
     glDisable(GL_BLEND);
     glEnable( GL_ALPHA_TEST );
-    glAlphaFunc( GL_EQUAL, 0xff );
+    //glAlphaFunc( GL_EQUAL, 0xff );
+		glAlphaFunc( GL_NOTEQUAL, 0 );
     glEnable(GL_TEXTURE_2D);
     glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getMinimapMaskTexture() );
     glColor4f( 1, 1, 1, 1 );
@@ -340,7 +341,8 @@ void MiniMap::drawMap() {
     glPushMatrix();
     glDisable(GL_BLEND);
     glEnable( GL_ALPHA_TEST );
-    glAlphaFunc( GL_EQUAL, 0xff );
+    //glAlphaFunc( GL_EQUAL, 0xff );
+		glAlphaFunc( GL_NOTEQUAL, 0 );
     glEnable(GL_TEXTURE_2D);
     glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getMinimapTexture() );
     glColor4f( 1, 1, 1, 1 );
