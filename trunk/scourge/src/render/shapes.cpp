@@ -31,6 +31,8 @@ using namespace std;
 //#define VARIATION_BASE 10.0f
 #define VARIATION_BASE 4.0f
 
+bool debugFileLoading = false;
+
 char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
   "wall",
   "corner",
@@ -168,6 +170,8 @@ void Shapes::initialize() {
   areaTex = loadGLTextureBGRA(area, areaImage, GL_LINEAR);
   //areaTex = loadGLTextures("/area.bmp");
 
+	// default to textures
+	strcpy( cursorDir, "/textures" );
 
   // load the texture info
   char errMessage[500];
@@ -324,22 +328,17 @@ void Shapes::initialize() {
   loadStencil( "/cave/stencil-turn.bmp", STENCIL_OUTSIDE_TURN );
   loadStencil( "/cave/stencil-sides.bmp", STENCIL_SIDES );
 
-  setupAlphaBlendedBMP("/textures/cursor.bmp", &cursor, &cursorImage);
-  cursor_texture = loadGLTextureBGRA(cursor, cursorImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/textures/crosshair.bmp", &crosshair, &crosshairImage);
-  crosshair_texture = loadGLTextureBGRA(crosshair, crosshairImage);
-  setupAlphaBlendedBMP("/textures/attack.bmp", &attackCursor, &attackImage);
-  attack_texture = loadGLTextureBGRA(attackCursor, attackImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/textures/talk.bmp", &talkCursor, &talkImage);
-  talk_texture = loadGLTextureBGRA(talkCursor, talkImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/textures/use.bmp", &useCursor, &useImage);
-  use_texture = loadGLTextureBGRA(useCursor, useImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/textures/forbidden.bmp", &forbiddenCursor, &forbiddenImage);
-  forbidden_texture = loadGLTextureBGRA(forbiddenCursor, forbiddenImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/textures/ranged.bmp", &rangedCursor, &rangedImage);
-  ranged_texture = loadGLTextureBGRA(rangedCursor, rangedImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/textures/move.bmp", &moveCursor, &moveImage);
-  move_texture = loadGLTextureBGRA( moveCursor, moveImage, GL_LINEAR);
+	loadCursors();
+}
+
+void Shapes::loadCursors() {
+	debugFileLoading = true;
+	char path[300];
+	for( int i = 0; i < Constants::CURSOR_COUNT; i++ ) {
+		sprintf( path, "%s/%s", cursorDir, Constants::cursorTextureName[ i ] );
+		cursorTexture[i] = loadTextureWithAlpha( path );
+	}
+	debugFileLoading = false;
 }
 
 Shapes::~Shapes(){
@@ -577,6 +576,11 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     character_models[sex].push_back( cmi );
 		
     return n;  
+  } else if( n == 'C' ) {
+		// load cursor dir
+    fgetc( fp );
+    n = Constants::readLine( cursorDir, fp);
+		return n;
   }
   return -1;
 }
@@ -942,11 +946,14 @@ void Shapes::setupAlphaBlendedBMP( char *filename,
 		strcpy( fn, rootDir );
 		strcat( fn, filename );
 	}
-  //cerr << "file: " << fn << " red=" << red << " green=" << green << " blue=" << blue << endl;
+
+	if( debugFileLoading )
+		cerr << "file: " << fn << " red=" << red << " green=" << green << " blue=" << blue << endl;
 
   if(((*surface) = SDL_LoadBMP( fn ))) {
 
-		//cerr << "...loaded!" << endl;
+		if( debugFileLoading ) 
+			cerr << "...loaded! Bytes per pixel=" << (int)((*surface)->format->BytesPerPixel) << endl;
 
     // Rearrange the pixelData
     int width  = (*surface) -> w;
@@ -1128,6 +1135,8 @@ GLuint Shapes::loadSystemTexture( char *line ) {
 }
 
 GLuint Shapes::getCursorTexture( int cursorMode ) {
+	return cursorTexture[ cursorMode ];
+/*
   switch( cursorMode ) {
   case Constants::CURSOR_NORMAL: 
     return cursor_texture;
@@ -1146,6 +1155,7 @@ GLuint Shapes::getCursorTexture( int cursorMode ) {
   default:
   return crosshair_texture;
   }
+	*/
 }
 
 GLuint Shapes::loadTextureWithAlpha( char *filename, int r, int g, int b, bool isAbsPath, bool swapImage ) {

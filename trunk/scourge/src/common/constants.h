@@ -556,8 +556,12 @@ public:
     CURSOR_USE,
     CURSOR_FORBIDDEN,
     CURSOR_RANGED,
-    CURSOR_MOVE
+    CURSOR_MOVE,
+
+		CURSOR_COUNT // must be the last one
   };
+
+	static const char *cursorTextureName[];
 
   enum {
     SCOURGE_DEFAULT_FONT=0,

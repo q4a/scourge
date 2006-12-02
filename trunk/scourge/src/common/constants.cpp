@@ -176,73 +176,6 @@ PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB = NULL;
 PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB = NULL;
 PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB = NULL;
 
-/*
-char *Constants::SKILL_GROUP_NAMES[80] = {
-	"BASIC_GROUP",
-	"FIGHT_GROUP",
-	"DEFEND_GROUP",
-	"SORCERY_GROUP",
-	"SPIRIT_GROUP",
-	"LORE_GROUP",
-	"STEALTH_GROUP",
-};
-
-// must be the same order as the values
-char *Constants::SKILL_NAMES[80] = {
-	"SPEED",
-	"COORDINATION",
-	"POWER",
-	"IQ",
-	"LEADERSHIP",
-	"LUCK",
-	"PIETY",
-	"LORE",
-
-	"SWORD_WEAPON",
-	"AXE_WEAPON",
-	"BOW_WEAPON",
-	"MACE_WEAPON",
-	"POLE_WEAPON",
-	"HAND_TO_HAND_COMBAT",
-
-	"SHIELD_DEFEND",
-	"ARMOR_DEFEND",
-	"WEAPON_DEFEND",
-	"HAND_DEFEND",
-
-	"NATURE_MAGIC",
-	"AWARENESS_MAGIC",
-	"LIFE_AND_DEATH_MAGIC",
-	"HISTORY_MAGIC",
-	"DECEIT_MAGIC",
-	"CONFRONTATION_MAGIC",
-
-	"RESIST_NATURE_MAGIC",
-	"RESIST_AWARENESS_MAGIC",
-	"RESIST_LIFE_AND_DEATH_MAGIC",
-	"RESIST_HISTORY_MAGIC",
-	"RESIST_DECEIT_MAGIC",
-	"RESIST_CONFRONTATION_MAGIC",
-
-	"OPEN_LOCK",
-	"FIND_TRAP",
-	"FIND_SECRET_DOOR",
-	"MOVE_UNDETECTED",
-	"STEALING",
-
-	"ENCHANT_ITEM",
-	"IDENTIFY_ITEM",
-	"IDENTIFY_CREATURE"
-};
-char *Constants::SKILL_SYMBOL[ Constants::SKILL_COUNT ];
-char *Constants::SKILL_DESCRIPTION[ Constants::SKILL_COUNT ];
-int Constants::SKILL_USE[ Constants::SKILL_COUNT ];
-char *Constants::SKILL_GROUP_DESCRIPTION[ Constants::SKILL_GROUP_COUNT ];
-map<string,int> Constants::skillNameMap;
-map<int,vector<int>*> Constants::skillGroups;
-map<int,int> Constants::groupSkillMap;
-*/
-
 const char *Constants::POTION_SKILL_NAMES[] = {
   "HP", "MP", "AC"
 };
@@ -285,9 +218,19 @@ const char *Constants::npcTypeName[] = {
 };
 
 /*
-float Constants::textColor[][4]={{0.8f, 0.2f, 0.0f, 0.0f},
-                           {0.0f, 0.2f, 0.0f, 0.0f}
-                           };*/
+CURSOR_NORMAL=0,
+CURSOR_CROSSHAIR,
+CURSOR_ATTACK,
+CURSOR_TALK,
+CURSOR_USE,
+CURSOR_FORBIDDEN,
+CURSOR_RANGED,
+CURSOR_MOVE
+*/
+const char *Constants::cursorTextureName[] = {
+	"cursor.bmp","crosshair.bmp", "attack.bmp", "talk.bmp", 
+	"use.bmp", "forbidden.bmp", "ranged.bmp", "move.bmp"
+};
 
 bool Constants::multitexture = true;
 
@@ -701,7 +644,7 @@ int Constants::initRootDir( int argc, char *argv[] ) {
   }
 
   // do a final sanity check before running the game
-  if( !checkFile(rootDir, "/textures/cursor.bmp") ) {
+  if( !checkFile( rootDir, "/textures/test.txt" ) ) {
     cerr << "ERROR: check for files failed in data dir: " << rootDir << endl;
     cerr << "Either install the data files at the above location, or rebuild with ./configure --with-data-dir=<new location> or run the game from the source distribution's main directory (the one that contains src,data,etc.)" << endl;
     return 1;
@@ -730,7 +673,7 @@ void Constants::findLocalResources(const char *appPath, char *dir) {
   //cerr << "&^&^&^&^ appPath=" << appPath << endl;
 
   char testFile[80];
-  sprintf( testFile, "%s/textures/cursor.bmp", DATA_DIR_NAME );
+  sprintf( testFile, "%s/textures/test.txt", DATA_DIR_NAME );
   // Where are we running from?
   strcpy(dir, appPath);
 
