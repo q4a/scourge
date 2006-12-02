@@ -355,7 +355,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   creature->moveTo( info->x, info->y, info->z );
   creature->setDir( info->dir );
   //creature->setSpeed( info->speed );
-  creature->setMotion( info->motion );
+  //creature->setMotion( info->motion );
   //creature->setArmor( info->armor );
   
   // info->bonusArmor: can't be used until calendar is also persisted

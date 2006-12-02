@@ -76,6 +76,7 @@ protected:
 	bool createSaveGame( SavegameInfo *info );
 	void deleteUnreferencedMaps( char *dirName );
 	void loadGame( int n );
+	void setSavegameInfoTitle( SavegameInfo *info );
 };
 
 #endif

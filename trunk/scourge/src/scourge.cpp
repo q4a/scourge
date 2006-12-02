@@ -1893,7 +1893,9 @@ void Scourge::moveMonster(Creature *monster) {
     if(monster->getAction() == Constants::ACTION_NO_ACTION) {
       monster->decideMonsterAction();
     }
-  }
+  } else {
+		cerr << "monster not moving: " << monster->getType() << " motion=" << monster->getMotion() << endl;
+	}
 }
 
 void Scourge::openContainerGui(Item *container) {
