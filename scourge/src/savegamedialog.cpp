@@ -238,6 +238,31 @@ void getPosition( int n, char *buff ) {
 	}
 }
 
+void SavegameDialog::setSavegameInfoTitle( SavegameInfo *info ) {
+	Creature *player = scourge->getParty()->getParty( 0 );
+	if( player ) {
+		char tmp[10];
+		getPosition( player->getLevel(), tmp );
+		char place[40];
+		if( scourge->getSession()->getCurrentMission() ) {
+			sprintf( place, "Dungeon level %d.", ( scourge->getCurrentDepth() + 1 ) );
+		} else {
+			strcpy( place, "Resting at HQ." );
+		}
+		sprintf( (char*)info->title, "%s %s, Party of %s the %s level %s. %s", 
+						 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
+						 scourge->getSession()->getBoard()->getStorylineTitle(),
+						 player->getName(), 
+						 tmp, 
+						 player->getCharacter()->getName(),
+						 place );
+	} else {
+		sprintf( (char*)info->title, "%s %s", 
+						 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
+						 scourge->getSession()->getBoard()->getStorylineTitle() );
+	}
+}
+
 bool SavegameDialog::createNewSaveGame() {
 
 	// in case we're called from the outside
@@ -246,21 +271,7 @@ bool SavegameDialog::createNewSaveGame() {
 	// create a new save game
 	SavegameInfo info;
 	sprintf( (char*)info.path, "save_%x", ++maxFileSuffix ); // incr. maxFileSuffix in case we crash and the file is created
-	Creature *player = scourge->getParty()->getParty( 0 );
-	if( player ) {
-		char tmp[10];
-		getPosition( player->getLevel(), tmp );
-		sprintf( (char*)info.title, "%s %s, Party of %s the %s level %s", 
-						 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
-						 scourge->getSession()->getBoard()->getStorylineTitle(),
-						 player->getName(), 
-						 tmp, 
-						 player->getCharacter()->getName() );
-	} else {
-		sprintf( (char*)info.title, "%s %s", 
-						 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
-						 scourge->getSession()->getBoard()->getStorylineTitle() );
-	}
+	setSavegameInfoTitle( &info );
 
 	// make its directory
 	char path[300];
@@ -272,9 +283,7 @@ bool SavegameDialog::createNewSaveGame() {
 
 bool SavegameDialog::createSaveGame( SavegameInfo *info ) {
 	// create a new save game title
-	sprintf( (char*)info->title, "%s %s", 
-					 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
-					 scourge->getSession()->getBoard()->getStorylineTitle() );
+	setSavegameInfoTitle( info );
 
 	// its directory
 	char path[300];
