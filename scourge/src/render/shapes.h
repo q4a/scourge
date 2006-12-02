@@ -215,6 +215,8 @@ protected:
   GLuint areaTex;
 
 	std::vector<GLuint> rugs;
+	char cursorDir[255];
+	GLuint cursorTexture[ Constants::CURSOR_COUNT ];
 
 public: 
   Shapes( bool headless );
@@ -289,6 +291,7 @@ protected:
   void swap(unsigned char & a, unsigned char & b);
   virtual int interpretShapesLine( FILE *fp, int n );
   void loadStencil( char *filename, int index );
+	void loadCursors();
 };
 
 #endif
