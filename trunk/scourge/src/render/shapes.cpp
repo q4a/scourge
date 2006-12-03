@@ -172,6 +172,7 @@ void Shapes::initialize() {
 
 	// default to textures
 	strcpy( cursorDir, "/textures" );
+	cursorWidth = cursorHeight = 48;
 
   // load the texture info
   char errMessage[500];
@@ -579,7 +580,19 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
   } else if( n == 'C' ) {
 		// load cursor dir
     fgetc( fp );
-    n = Constants::readLine( cursorDir, fp);
+		n = Constants::readLine( line, fp);
+		char *p = strtok( line, "," );
+    if( p ) {
+			strcpy( cursorDir, p );
+			p = strtok( NULL, "," );
+			if( p ) {
+				cursorWidth = atoi( p );
+				p = strtok( NULL, "," );
+				if( p ) {
+					cursorHeight = atoi( p );
+				}
+			}
+		}
 		return n;
   }
   return -1;

@@ -598,6 +598,8 @@ public:
   ShapePalette *getShapePalette();
 
   GLuint getCursorTexture( int cursorMode );
+	int getCursorWidth();
+	int getCursorHeight();
 
   void loadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap );
   void unloadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap );

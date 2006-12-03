@@ -585,9 +585,6 @@ bool SDLHandler::processEvents( bool *isActive ) {
   return false;
 }
 
-#define CURSOR_WIDTH 48
-#define CURSOR_HEIGHT 48
-
 void SDLHandler::drawCursor() {
   // for cursor: do alpha bit testing
   glEnable( GL_ALPHA_TEST );
@@ -604,13 +601,13 @@ void SDLHandler::drawCursor() {
   glBegin( GL_QUADS );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 1, 1 );
-  glVertex2f( CURSOR_WIDTH, CURSOR_HEIGHT );
+  glVertex2f( gameAdapter->getCursorWidth(), gameAdapter->getCursorHeight() );
   glTexCoord2f( 0, 1 );
-  glVertex2f( 0, CURSOR_HEIGHT );
+  glVertex2f( 0, gameAdapter->getCursorHeight() );
   glTexCoord2f( 0, 0 );
   glVertex2f( 0, 0 );
   glTexCoord2f( 1, 0 );
-  glVertex2f( CURSOR_WIDTH, 0 );
+  glVertex2f( gameAdapter->getCursorWidth(), 0 );
   glEnd();
   glPopMatrix();
 

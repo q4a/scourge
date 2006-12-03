@@ -2815,6 +2815,14 @@ GLuint Scourge::getCursorTexture( int cursorMode ) {
   return session->getShapePalette()->getCursorTexture( cursorMode );
 }
 
+int Scourge::getCursorWidth() {
+  return session->getShapePalette()->getCursorWidth();
+}
+
+int Scourge::getCursorHeight() {
+  return session->getShapePalette()->getCursorHeight();
+}
+
 GLuint Scourge::getHighlightTexture() {
   return getShapePalette()->getHighlightTexture();
 }

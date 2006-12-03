@@ -64,8 +64,8 @@ O:/portraits/w1.bmp,F
 
 O:/portraits/death.bmp
 
-# cursor directory
-C:/textures/cursor
+# cursor directory,cursor width,cursor height
+C:/textures/cursor,40,40
 
 # Character models
 M:/models/character/blade,blade.bmp,2.0,M

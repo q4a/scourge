@@ -216,6 +216,7 @@ protected:
 
 	std::vector<GLuint> rugs;
 	char cursorDir[255];
+	int cursorWidth, cursorHeight;
 	GLuint cursorTexture[ Constants::CURSOR_COUNT ];
 
 public: 
@@ -281,6 +282,9 @@ public:
   GLuint getCursorTexture( int cursorMode );
 
 	static GLuint loadTextureWithAlpha( char *fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false );
+
+	inline int getCursorWidth() { return cursorWidth; }
+	inline int getCursorHeight() { return cursorHeight; }
 
 protected:
 	static Shapes *instance;
