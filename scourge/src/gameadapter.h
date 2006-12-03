@@ -110,6 +110,8 @@ public:
   virtual inline void setMissionDescriptionUI(char *s, int mapx, int mapy) {}
   virtual inline void showItemInfoUI(Item *item, int level) {}
   virtual inline GLuint getCursorTexture( int cursorMode ) { return 0; }
+	virtual inline int getCursorWidth() { return 0; }
+	virtual inline int getCursorHeight() { return 0; }
   virtual inline GLuint getHighlightTexture() { return 0; }
 	virtual inline GLuint getGuiTexture() { return 0; }
 	virtual inline GLuint getGuiTexture2() { return 0; }
