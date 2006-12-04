@@ -51,7 +51,8 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
 	newSave = win->createButton( w - 105, 30, w - 15, 50, "New Save" );
 	save = win->createButton( w - 105, 60, w - 15, 80, "Save" );
 	load = win->createButton( w - 105, 90, w - 15, 110, "Load" );
-	cancel = win->createButton( w - 105, 120, w - 15, 140, "Cancel" );
+	deleteSave = win->createButton( w - 105, 150, w - 15, 170, "Delete" );
+	cancel = win->createButton( w - 105, 210, w - 15, 230, "Cancel" );
 
 	filenameCount = 0;
   filenames = (char**)malloc( MAX_SAVEGAME_COUNT * sizeof(char*) );
@@ -70,6 +71,7 @@ SavegameDialog::~SavegameDialog() {
 
 #define SAVE_MODE 1
 #define LOAD_MODE 2
+#define DELETE_MODE 3
 int selectedFile;
 
 void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
@@ -80,6 +82,16 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 				scourge->showMessageDialog( "Game saved successfully." );
 			} else {
 				scourge->showMessageDialog( "Error saving game." );
+			}
+		} else if( confirm->getMode() == DELETE_MODE ) {
+			getWindow()->setVisible( false );
+			savegamesChanged = true;
+			char tmp[300];
+			get_file_name( tmp, 300, fileInfos[ selectedFile ]->path );
+			if( deleteDirectory( tmp ) ) {
+				scourge->showMessageDialog( "Game was successfully removed." );				
+			} else {
+				scourge->showMessageDialog( "Could not delete saved game." );
 			}
 		} else {
 			loadGame( selectedFile );
@@ -112,6 +124,18 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 				confirm->setVisible( true );
 			} else {
 				loadGame( n );
+			}
+		}
+	} else if( widget == deleteSave ) {
+		int n = files->getSelectedLine();
+		if( n > -1 ) {
+			if( !strcmp( fileInfos[ n ]->path, scourge->getSession()->getSavegameName() ) ) {
+				scourge->showMessageDialog( "You can't delete the current game." );
+			} else {
+				selectedFile = n;
+				confirm->setText( "Are you sure you want to delete this file?" );
+				confirm->setMode( DELETE_MODE );
+				confirm->setVisible( true );
 			}
 		}
 	}
@@ -456,6 +480,22 @@ void SavegameDialog::findFilesInDir( char *path, vector<string> *fileNameList ) 
 	closedir( dir );
 #endif
 }
+
+bool SavegameDialog::deleteDirectory( char *path ) {
+	vector<string> fileNameList;
+	findFilesInDir( path, &fileNameList );
+	char tmp[300];
+	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
+		sprintf( tmp, "%s/%s", path, fileNameList[i].c_str() );
+		cerr << "\tDeleting file: " << path << endl;
+		int n = remove( tmp );
+		cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
+	}
+	cerr << "\tDeleting directory: " << path << endl;
+	int n = remove( path );
+	cerr << "\t\t" << ( !n ? "success" : "can't delete directory" ) << endl;
+	return( !n ? true : false );
+}																																 	
 
 bool SavegameDialog::checkIfFileExists( char *filename ) {
 	char path[300];

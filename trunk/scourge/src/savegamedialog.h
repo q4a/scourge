@@ -46,7 +46,7 @@ private:
   Scourge *scourge;
   Window *win;
   ScrollingList *files;
-  Button *cancel, *save, *load, *newSave;
+  Button *cancel, *save, *load, *newSave, *deleteSave;
 	std::vector<SavegameInfo*> fileInfos;
 	int filenameCount;
 	char **filenames;
@@ -77,6 +77,7 @@ protected:
 	void deleteUnreferencedMaps( char *dirName );
 	void loadGame( int n );
 	void setSavegameInfoTitle( SavegameInfo *info );
+	bool deleteDirectory( char *path );
 };
 
 #endif
