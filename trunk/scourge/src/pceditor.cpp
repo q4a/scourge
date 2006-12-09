@@ -130,7 +130,7 @@ void PcEditor::saveUI() {
 		s = Rpg::createName();
 		deleteS = true;
 	}
-	creature->replaceName( strdup( s ) );
+	creature->setName( s );
 	if( deleteS ) free( s );
 	// character type
 	int index = charType->getSelectedLine();  

@@ -92,7 +92,7 @@ class Creature : public RenderedCreature {
   int preferredWeapon;
 
   // character information
-  char *name;
+  char name[255];
   int level, experience, hp, mp, startingHp, startingMp, ac, thirst, hunger, money, expOfNextLevel;
   int sex;
   Character *character;
@@ -341,8 +341,7 @@ class Creature : public RenderedCreature {
   inline bool getStateMod(int mod) { return (stateMod & (1 << mod) ? true : false); }  
   inline bool getProtectedStateMod(int mod) { return (protStateMod & (1 << mod) ? true : false); }  
 
-  inline void setName(char *s) { name = s; }
-  inline void replaceName( char *s ) { free( name ); name = s; }
+  inline void setName(char *s) { strncpy( name, s, 254 ); name[254]='\0'; }
   void setCharacter(Character *c);
   inline void setLevel(int n) { level = ( n < 0 ? 0 : n ); }
   void setExp();

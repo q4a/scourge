@@ -57,7 +57,7 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
 	filenameCount = 0;
   filenames = (char**)malloc( MAX_SAVEGAME_COUNT * sizeof(char*) );
   for( int i = 0; i < MAX_SAVEGAME_COUNT; i++ ) {
-    filenames[i] = (char*)malloc( 120 * sizeof(char) );
+    filenames[i] = (char*)malloc( 3000 * sizeof(char) );
   }
 	this->screens = (GLuint*)malloc( MAX_SAVEGAME_COUNT * sizeof( GLuint ) );
 
@@ -267,9 +267,17 @@ void SavegameDialog::setSavegameInfoTitle( SavegameInfo *info ) {
 	if( player ) {
 		char tmp[10];
 		getPosition( player->getLevel(), tmp );
-		char place[40];
+		char place[255];
+
 		if( scourge->getSession()->getCurrentMission() ) {
-			sprintf( place, "Dungeon level %d.", ( scourge->getCurrentDepth() + 1 ) );
+			if( strstr( scourge->getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
+				sprintf( place, "In a cave on level %d.", 
+								 ( scourge->getCurrentDepth() + 1 ) );
+			} else {
+				sprintf( place, "Dungeon level %d at %s.", 
+								 ( scourge->getCurrentDepth() + 1 ),
+								 scourge->getSession()->getCurrentMission()->getMapName() );
+			}
 		} else {
 			strcpy( place, "Resting at HQ." );
 		}

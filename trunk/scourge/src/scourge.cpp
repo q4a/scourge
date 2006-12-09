@@ -540,7 +540,10 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		// try to load a previously saved, random-generated map level
 		char path[300];
 		getCurrentMapName( path );
-		bool loaded = loadMap( path, fromRandomMap, true );
+		bool loaded = loadMap( path, fromRandomMap, true, 
+													 ( getSession()->getCurrentMission()->isEdited() ? 
+														 getSession()->getCurrentMission()->getMapName() : 
+														 NULL ) );
 
 		if( !loaded && getSession()->getCurrentMission()->isEdited() ) {
 			// try to load the edited map
@@ -565,7 +568,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	return mapCreated;
 }
 
-bool Scourge::loadMap( char *mapName, bool fromRandomMap, bool absolutePath ) {
+bool Scourge::loadMap( char *mapName, bool fromRandomMap, bool absolutePath, char *templateMapName ) {
 	bool loaded = false;
 	char result[300];
 	bool lastLevel = ( currentStory == getSession()->getCurrentMission()->getDepth() - 1 );
@@ -581,7 +584,8 @@ bool Scourge::loadMap( char *mapName, bool fromRandomMap, bool absolutePath ) {
 															fromRandomMap,
 															&items,
 															&creatures,
-															absolutePath );
+															absolutePath,
+															templateMapName );
 	cerr << "LOAD MAP result=" << result << endl;
 	if( lastLevel ) {
 
@@ -3003,12 +3007,17 @@ bool Scourge::loadGame( Session *session, char *dirName, char *error ) {
 			}
 			cerr << "mission count=" << session->getBoard()->getMissionCount() << endl;
 		}
+		// add current storyline mission (which is not saved)
+		session->getBoard()->setStorylineIndex( storylineIndex );
+		session->getBoard()->initMissions();
 
 		// start on the correct mission and story (depth)
 		nextMission = -1;
+		cerr << "Looking for mission:" << endl;
 		if( strcmp( (char*)mission, HQ_MISSION_SAVED_NAME ) ) {
 			for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
-				if( !strcmp( (char*)mission, session->getBoard()->getMission(i)->getName() ) ) {
+				cerr << "\tmission:" << session->getBoard()->getMission(i)->getName() << endl;
+				if( !strcmp( session->getBoard()->getMission(i)->getName(), (char*)mission ) ) {
 					nextMission = i;
 					break;
 				}
