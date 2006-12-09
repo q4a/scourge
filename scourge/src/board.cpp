@@ -818,6 +818,12 @@ void Mission::addWanderingHeroes( GameAdapter *adapter ) {
 }
 */
 void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly ) {
+
+	//cerr << "Current creatures:" << endl;
+	//for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
+		//cerr << "\t" << adapter->getSession()->getCreature(i)->getName() << endl;
+	//}
+
   FILE *fp = openMapDataFile( filename, "r" );
   if( !fp ) return;
 
@@ -898,8 +904,22 @@ void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool 
                pos->creature && 
                pos->creature->isMonster() && 
                ((Creature*)(pos->creature))->getMonster()->isNpc() ) ) {
-          cerr << "Error: npc definition in " << filename << 
-            " doesn't point to an npc. Line: " << line << endl;
+
+					// the creature moved, try to find it by name
+					bool found = false;
+					for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
+						if( !strcmp( npcInfo->name, adapter->getSession()->getCreature(i)->getName() ) ) {
+							found = true;
+							adapter->getSession()->getCreature(i)->setNpcInfo( npcInfo );
+							break;
+						}
+					}
+					if( !found ) {
+						cerr << "Error: npc definition in " << filename << 
+							" doesn't point to an npc. Line: " << line << " npc=" << npcInfo->name << endl;
+					//} else {
+						//cerr << "* found npc by name: " << npcInfo->name << endl;
+					}
         } else {
           ((Creature*)(pos->creature))->setNpcInfo( npcInfo );
         }

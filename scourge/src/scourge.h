@@ -245,7 +245,7 @@ protected:
 	void endGame();
 	void getCurrentMapName( char *path, char *dirName=NULL, int depth=-1 );
 	void getSavedMapName( char *mapName );
-	bool loadMap( char *mapName, bool fromRandomMap, bool absolutePath );	
+	bool loadMap( char *mapName, bool fromRandomMap, bool absolutePath, char *templateMapName=NULL );	
 
 public:
 #define TOP_GUI_WIDTH 400

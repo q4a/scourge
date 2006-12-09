@@ -84,7 +84,7 @@ Creature::Creature(Session *session, Character *character, char *name, int sex, 
   this->session = session;
   this->character = character;
   this->monster = NULL;
-  this->name = name;
+  setName( name );
   this->character_model_info_index = character_model_info_index;
   this->model_name = session->getShapePalette()->getCharacterModelInfo( sex, character_model_info_index )->model_name;
   this->skin_name = session->getShapePalette()->getCharacterModelInfo( sex, character_model_info_index )->skin_name;
@@ -105,7 +105,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape) : Rendere
   this->session = session;
   this->character = NULL;
   this->monster = monster;
-  this->name = monster->getType();
+  setName( monster->getType() );
   this->model_name = monster->getModelName();
   this->skin_name = monster->getSkinName();
   sprintf(description, "You see %s %s", getAn( monster->getType() ), monster->getType() );
@@ -195,7 +195,6 @@ Creature::~Creature(){
 	session->getParty()->getCalendar()->cancelEventsForCreature( this );
 
 	// now delete the creature
-  if(this->character) free( name );
   session->getGameAdapter()->removeBattle(battle);
   delete battle;
 	// delete the md2/3 shape
@@ -333,6 +332,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
                         monster->getScale(),
                         monster );
     creature = session->newCreature( monster, shape, true );
+		creature->setName( (char*)info->name ); // important for npc-s
   } else {
     creature = new Creature( session, 
                              Character::getCharacterByName((char*)info->character_name), 
@@ -2096,7 +2096,7 @@ void Creature::draw() {
 
 void Creature::setNpcInfo( NpcInfo *npcInfo ) { 
   this->npcInfo = npcInfo; 
-  this->name = npcInfo->name;
+  setName( npcInfo->name );
   sprintf( description, "You see %s", npcInfo->name );
 
   // for merchants, re-create inventory with the correct types

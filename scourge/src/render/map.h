@@ -285,7 +285,8 @@ class Map {
                 bool changingStory=false, bool fromRandom=false, 
                 std::vector< RenderedItem* > *items=NULL, 
                 std::vector< RenderedCreature* > *creatures=NULL, 
-								bool absolutePath=false );
+								bool absolutePath=false,
+								char *templateMapName=NULL );
   void loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth=0 );
 	void initForCave( char *themeName=NULL );
 

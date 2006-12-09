@@ -3118,7 +3118,10 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 
   Persist::deleteMapInfo( info );
 
-  adapter->saveMapData( (const char*)fileName );
+	// save npc info when saving from map editor (ie. map templates)
+	if( referenceType == REF_TYPE_NAME ) {
+		adapter->saveMapData( (const char*)fileName );
+	}
 
   sprintf( result, "Map saved: %s", name );
 }
@@ -3140,7 +3143,8 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 									 bool changingStory, bool fromRandom, 
 									 vector< RenderedItem* > *items, 
 									 vector< RenderedCreature* > *creatures, 
-									 bool absolutePath ) {
+									 bool absolutePath,
+									 char *templateMapName ) {
   if( !strlen( name ) ) {
     strcpy( result, "Enter a name of a map to load." );
     return false;
@@ -3338,7 +3342,18 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
   if( report ) report->updateStatus( 5, 7, "Loading creatures" );
 
   // load map-related data from text file
-  adapter->loadMapData( (const char*)fileName );
+  char txtfileName[300];
+	if( templateMapName ) {
+		if( depth > 0 ) {
+			sprintf( txtfileName, "%s/maps/%s%d.map", rootDir, templateMapName, depth );
+		} else {
+			sprintf( txtfileName, "%s/maps/%s.map", rootDir, templateMapName );
+		}
+	} else {
+		strcpy( txtfileName, fileName );
+	}
+  cerr << "Looking for txt file: " << txtfileName << endl;
+  adapter->loadMapData( (const char*)txtfileName );
   
   strcpy( this->name, name );
 
