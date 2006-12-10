@@ -166,6 +166,11 @@ int Mission::readConversationLine( FILE *fp, char *line, int n,
   char keyphrase[80], answer[4000];
   char last = line[ strlen( line ) - 1 ];
   char *p = strchr( line, ';' );
+	/*
+	This happens if the line has bad syntax or in 'general-only' mode when skipping
+	other lines.
+	*/
+	if( !p ) return last;
   strcpy( answer, p + 1 );
   strcpy( keyphrase, strtok( line, ";" ) );   
   //cerr << "1: keyphrase=" << keyphrase << endl;
