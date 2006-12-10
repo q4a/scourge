@@ -143,7 +143,10 @@ Item *Item::load(Session *session, ItemInfo *info) {
   int realCount = 0;
   for(int i = 0; i < (int)info->containedItemCount; i++) {
      Item *containedItem = Item::load( session, info->containedItems[i] );
-     if( containedItem ) item->containedItems[ realCount++ ] = containedItem;
+     if( containedItem ) {
+			 item->containedItems[ realCount++ ] = containedItem;
+			 if( containedItem->isMagicItem() ) item->containsMagicItem = true;
+		 }
   }
   item->containedItemCount = realCount;
     
