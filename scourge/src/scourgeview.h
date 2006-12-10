@@ -98,6 +98,7 @@ protected:
   void drawBorder();
   void showCreatureInfo( Creature *creature, bool player, bool selected, bool groupMode, bool wanderingHero );
   void drawDraggedItem();
+	void drawDisk( float w, float diff );
 };
 
 #endif

@@ -170,6 +170,9 @@ void Shapes::initialize() {
   areaTex = loadGLTextureBGRA(area, areaImage, GL_LINEAR);
   //areaTex = loadGLTextures("/area.bmp");
 
+	// load as a grayscale (use gray value as alpha)
+	selection = Shapes::loadTextureWithAlpha( "/textures/sel.bmp", 0, 0, 0, false, false, true );
+
 	// default to textures
 	strcpy( cursorDir, "/textures" );
 	cursorWidth = cursorHeight = 48;
@@ -947,7 +950,8 @@ void Shapes::setupAlphaBlendedBMP( char *filename,
 																	 GLubyte **image, 
 																	 int red, int green, int blue,
 																	 bool isAbsPath,
-																	 bool swapImage ) {
+																	 bool swapImage,
+																	 bool grayscale ) {
 
   if( headless ) return;
 
@@ -1013,7 +1017,12 @@ void Shapes::setupAlphaBlendedBMP( char *filename,
 				if( (*surface)->format->BytesPerPixel == 4 ) {
 					a = data[c++];
 				} else {
-					a = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
+					if( grayscale ) {
+						a = (GLubyte)( (float)( r + b + g ) / 3.0f );
+						if( a <= 0.05f ) a = 0;
+					} else {
+						a = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
+					}
 				}
 			}
 			
@@ -1171,10 +1180,10 @@ GLuint Shapes::getCursorTexture( int cursorMode ) {
 	*/
 }
 
-GLuint Shapes::loadTextureWithAlpha( char *filename, int r, int g, int b, bool isAbsPath, bool swapImage ) {
+GLuint Shapes::loadTextureWithAlpha( char *filename, int r, int g, int b, bool isAbsPath, bool swapImage, bool grayscale ) {
 	SDL_Surface *tmpSurface = NULL;
 	GLubyte *tmpImage = NULL;
-	instance->setupAlphaBlendedBMP( filename, &tmpSurface, &tmpImage, r, g, b, isAbsPath, swapImage );
+	instance->setupAlphaBlendedBMP( filename, &tmpSurface, &tmpImage, r, g, b, isAbsPath, swapImage, grayscale );
 	GLuint texId = 0;
 	if( tmpImage ) texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
 	if( tmpImage ) free( tmpImage );

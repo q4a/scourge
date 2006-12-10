@@ -219,6 +219,8 @@ protected:
 	int cursorWidth, cursorHeight;
 	GLuint cursorTexture[ Constants::CURSOR_COUNT ];
 
+	GLuint selection;
+
 public: 
   Shapes( bool headless );
   virtual ~Shapes();
@@ -281,16 +283,18 @@ public:
 
   GLuint getCursorTexture( int cursorMode );
 
-	static GLuint loadTextureWithAlpha( char *fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false );
+	static GLuint loadTextureWithAlpha( char *fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false, bool grayscale=false );
 
 	inline int getCursorWidth() { return cursorWidth; }
 	inline int getCursorHeight() { return cursorHeight; }
+
+	inline GLuint getSelection() { return selection; }
 
 protected:
 	static Shapes *instance;
   GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int gl_scale=GL_NEAREST);
   GLuint loadGLTextureBGRA(int w, int h, GLubyte *image, int gl_scale=GL_NEAREST);
-  void setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0, bool isAbsFile=false, bool swapImage=false );
+  void setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0, bool isAbsFile=false, bool swapImage=false, bool grayscale=false );
   void setupAlphaBlendedBMPGrid(char *filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight, int red=0, int green=0, int blue=0, int nred=-1, int ngreen=-1, int nblue=-1);
   void swap(unsigned char & a, unsigned char & b);
   virtual int interpretShapesLine( FILE *fp, int n );
