@@ -545,7 +545,25 @@ Color *ScourgeView::getOutlineColor( Location *pos ) {
   return ret;
 }
 
+void ScourgeView::drawDisk( float w, float diff ) {
+	float n = w * 2;
+	glEnable( GL_TEXTURE_2D );
+	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getSelection() );
+	glBegin( GL_QUADS );
+	//glNormal3f( 0, 0, 1 );
+	glTexCoord2f( 0, 0 );
+	glVertex2f( -diff, -diff );
+	glTexCoord2f( 0, 1 );
+	glVertex2f( -diff, n + diff );
+	glTexCoord2f( 1, 1 );
+	glVertex2f( n + diff, n + diff );
+	glTexCoord2f( 1, 0 );
+	glVertex2f( n + diff, -diff );
+	glEnd();
+	glDisable( GL_TEXTURE_2D );
+}
 
+//#define BASE_DEBUG 1
 void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool selected, bool groupMode, bool wanderingHero ) {
   glPushMatrix();
   //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
@@ -558,8 +576,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
   // draw circle
   double w = ((double)(creature->getShape()->getWidth()) / 2.0f) / DIV;
-  double d = (((double)(creature->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
-  double s = 0.35f / DIV;
+  //double w = (((double)(creature->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
+  double s = 0.15f / DIV;
 
   float xpos2, ypos2, zpos2;
 
@@ -572,8 +590,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     }
     // targetwidth oscillation
     targetWidth += targetWidthDelta;
-    if((targetWidthDelta < 0 && targetWidth < s) ||
-       (targetWidthDelta > 0 && targetWidth >= s + (5 * targetWidthDelta)))
+    if( ( targetWidthDelta < 0 && targetWidth < -s ) ||
+				( targetWidthDelta > 0 && targetWidth >= s ) )
       targetWidthDelta *= -1.0f;
 
     lastTargetTick = t;
@@ -615,8 +633,11 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     zpos2 = 0.0f / DIV;
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
-    glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
-    gluDisk(quadric, w - targetWidth, w, 12, 1);
+    //glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
+		glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 + 5);
+    //gluDisk(quadric, w - targetWidth, w, 12, 1);
+		drawDisk( w, targetWidth );
+		
 
     // in TB mode and paused?
     if( scourge->inTurnBasedCombat() && !( scourge->getParty()->isRealTimeMode() ) ) {
@@ -638,7 +659,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
       creature->getTargetCreature() &&
       !creature->getTargetCreature()->getStateMod( Constants::dead ) ) {
     double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / 2.0f) / DIV;
-    double td = (((double)(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
+    //double td = (((double)(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
     //double td = ((double)(creature->getTargetCreature()->getShape()->getDepth())) / DIV;
     glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
     xpos2 = ((float)(creature->getTargetCreature()->getX() - scourge->getMap()->getX()) / DIV);
@@ -646,8 +667,10 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     zpos2 = 0.0f / DIV;
     glPushMatrix();
     //glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
-    glTranslatef( xpos2 + tw, ypos2 - td, zpos2 + 5);
-    gluDisk(quadric, tw - targetWidth, tw, 12, 1);
+    //glTranslatef( xpos2 + tw, ypos2 - td, zpos2 + 5);
+		glTranslatef( xpos2, ypos2 - tw * 2 - 1 / DIV, zpos2 + 5);
+    //gluDisk(quadric, tw - targetWidth, tw, 12, 1);
+		drawDisk( tw, targetWidth );
 
     glPopMatrix();
   }
@@ -747,9 +770,11 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
-    glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);
+    //glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);
+		glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 + 5);
     if( groupMode || player || creature->isMonster() || wanderingHero ) {
-      gluDisk(quadric, w - s, w, 12, 1);
+      //gluDisk(quadric, w - s, w, 12, 1);
+			drawDisk( w, 0 );
 
       // in TB mode, player's turn and paused?
       if( scourge->inTurnBasedCombatPlayerTurn() && !( scourge->getParty()->isRealTimeMode() ) ) {
