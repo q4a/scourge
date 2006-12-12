@@ -46,6 +46,7 @@
 #include "gui/textdialog.h"
 #include "pceditor.h"
 #include "savegamedialog.h"
+#include "upload.h"
 
 using namespace std;
 
@@ -136,6 +137,8 @@ void Scourge::initUI() {
 
 	hireHeroDialog = new ConfirmDialog( getSDLHandler(), "Hire a Wandering Hero" );
 	dismissHeroDialog = new ConfirmDialog( getSDLHandler(), "Dismiss Party Member" );
+	confirmUpload = new ConfirmDialog( getSDLHandler(), "Need permission to upload score to web" );
+	confirmUpload->setText( "Upload your score to the internet?" );
 	textDialog = new TextDialog( getSDLHandler() );
 
   // load character, item sounds
@@ -678,6 +681,7 @@ void Scourge::cleanUpAfterMission() {
 	// remove gui
 	hireHeroDialog->setVisible( false );
 	dismissHeroDialog->setVisible( false );
+	confirmUpload->setVisible( false );
 	mainWin->setVisible(false);
 	messageWin->setVisible(false);
 	closeAllContainerGuis();
@@ -3331,4 +3335,48 @@ void Scourge::ascendDungeon( Location *pos ) {
 void Scourge::showTextMessage( char *message ) {
 	textDialog->setText( message );
 	textDialog->setVisible( true );
+}
+
+void Scourge::uploadScore() {
+	// "mode=add&user=Tipsy McStagger&score=5000&desc=OMG, I can't believe this works."
+
+	char user[1000];
+	sprintf( user, "%s the level %d %s", 
+					 getParty()->getParty(0)->getName(),
+					 getParty()->getParty(0)->getLevel(),
+					 getParty()->getParty(0)->getCharacter()->getName() );
+
+	char place[1000];
+	if( getSession()->getCurrentMission() ) {
+		if( strstr( getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
+			sprintf( place, "in a cave on level %d", 
+							 ( getCurrentDepth() + 1 ) );
+		} else {
+			sprintf( place, "in dungeon level %d at %s", 
+							 ( getCurrentDepth() + 1 ),
+							 getSession()->getCurrentMission()->getMapName() );
+		}
+	} else {
+		strcpy( place, "suddenly, while resting at HQ" );
+	}
+
+	char desc[1000];
+	sprintf( desc, "Expired %s. Reached chapter %d of the story.", 
+					 place, 
+					 ( getSession()->getBoard()->getStorylineIndex() + 1 ) );
+
+	char score[5000];
+	sprintf( score, "mode=add&user=%s&score=%d&desc=%s",
+					 user,
+					 getParty()->getParty(0)->getExp(),
+					 desc );
+
+	char result[300];	
+	Upload::uploadScoreToWeb( score, result );
+
+	showMessageDialog( result );
+}
+
+void Scourge::askToUploadScore() {
+	confirmUpload->setVisible( true );
 }

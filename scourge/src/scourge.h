@@ -218,6 +218,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
 
 	ConfirmDialog *hireHeroDialog;
 	ConfirmDialog *dismissHeroDialog;
+	ConfirmDialog *confirmUpload;
 
   PcEditor *pcEditor;
 	SavegameDialog *saveDialog;
@@ -717,6 +718,8 @@ public:
 
 	ConfirmDialog *getHireHeroDialog() { return hireHeroDialog; }
 	ConfirmDialog *getDismissHeroDialog() { return dismissHeroDialog; }
+	ConfirmDialog *getConfirmUpload() { return confirmUpload; }
+	void uploadScore();
 	TextDialog *getTextDialog() { return textDialog; }
   PcEditor *getPcEditor() { return pcEditor; }
 
@@ -724,6 +727,7 @@ public:
 	void handleDismiss( int index );
 	
 	void showTextMessage( char *message );
+	void askToUploadScore();
 
 	bool saveCurrentMap( char *dirName=NULL );
 

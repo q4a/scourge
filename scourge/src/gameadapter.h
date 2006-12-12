@@ -117,6 +117,7 @@ public:
 	virtual inline GLuint getGuiTexture2() { return 0; }
   virtual inline GLuint loadSystemTexture( char *line ) { return 0; }
   virtual inline void showTextMessage( char *message ) {}
+	virtual inline void askToUploadScore() {}
 
   virtual bool isMissionCreature( RenderedCreature *creature );
   virtual bool hasParty();

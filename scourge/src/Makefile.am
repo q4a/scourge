@@ -121,6 +121,8 @@ scourge_SOURCES = \
 	texteffect.h\
 	traindialog.cpp\
 	traindialog.h\
+	upload.cpp\
+	upload.h\
 	characterinfo.cpp\
 	characterinfo.h\
 	skillsview.cpp\
