@@ -372,6 +372,13 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 		scourge->getSession()->getParty()->
 			hire( (Creature*)scourge->getHireHeroDialog()->getObject() );
 		scourge->getHireHeroDialog()->setVisible( false );
+
+	} else if( widget == scourge->getConfirmUpload()->win->closeButton ||
+						 widget == scourge->getConfirmUpload()->cancelButton ) {
+		scourge->getConfirmUpload()->setVisible( false );
+	} else if( widget == scourge->getConfirmUpload()->okButton ) {
+		scourge->getConfirmUpload()->setVisible( false );
+		scourge->uploadScore();
 	} else if( widget == scourge->getDismissHeroDialog()->win->closeButton ||
 						 widget == scourge->getDismissHeroDialog()->cancelButton ) {
 		scourge->getDismissHeroDialog()->setVisible( false );

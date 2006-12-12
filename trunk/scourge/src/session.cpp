@@ -375,6 +375,17 @@ void Session::creatureDeath(Creature *creature) {
     sprintf( message, "  %s dies!", creature->getName() );
     getGameAdapter()->startTextEffect( message );
   }
+
+#ifdef HAVE_SDL_NET
+	bool foundLivePlayer = false;
+	for( int i = 0; i < getParty()->getPartySize(); i++ ) {
+		if( !getParty()->getParty( i )->getStateMod( Constants::dead ) ) {
+			foundLivePlayer = true;
+			break;
+		}
+	}
+	if( !foundLivePlayer ) getGameAdapter()->askToUploadScore();
+#endif
 }
 
 // define below to enable savegame testing
