@@ -52,14 +52,14 @@ To lexical_cast(From a)
 	}
 }
 
-static void send_string(TCPsocket sock, const std::string &str) {
-	#ifdef HAVE_SDL_NET
+#ifdef HAVE_SDL_NET
+static void send_string(TCPsocket sock, const std::string &str) {	
 	cerr << "SENDING: " << str << endl;
 	if( SDLNet_TCP_Send( sock, (void *)str.c_str(), str.length() ) != (int)str.length() ) {
 		throw error( "Bad write." );
-	}
-	#endif
+	}	
 }
+#endif
 
 int Upload::uploadScoreToWeb( char *score, char *result ) {
 	int errNum = 0;
