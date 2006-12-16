@@ -47,7 +47,7 @@ int SDLHandler::LARGE_FONT_SIZE = 0;
 //#define DEBUG_MOUSE_FOCUS 1
 
 bool SDLHandler::stencilBufferUsed = false;
-bool SDLHandler::showDebugInfo = true;
+bool SDLHandler::showDebugInfo = false;
 
 // milllis
 #define DOUBLE_CLICK_INTERVAL 500
