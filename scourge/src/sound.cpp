@@ -26,6 +26,10 @@ using namespace std;
 #define MISSION_MUSIC_COUNT 6.0f
 #define FIGHT_MUSIC_COUNT 1.0f
 
+char *Sound::TELEPORT = "sound/equip/teleport.wav";
+char *Sound::OPEN_DOOR = "sound/equip/push-heavy-door.wav";
+char *Sound::OPEN_BOX = "sound/equip/open-box.wav";
+
 Sound::Sound(Preferences *preferences) {
   haveSound = false;
 
@@ -215,6 +219,10 @@ void Sound::loadSounds(Preferences *preferences) {
   storeSound(0, Window::ACTION_SOUND);
   storeSound(0, Window::DROP_SUCCESS);
   storeSound(0, Window::DROP_FAILED);
+
+	storeSound( 0, TELEPORT );
+	storeSound( 0, OPEN_DOOR );
+	storeSound( 0, OPEN_BOX );
 
 //  cerr << "Loading battle sounds..." << endl;
   for(int i = 0; i < Battle::getSoundCount(); i++) {

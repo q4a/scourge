@@ -44,6 +44,11 @@ private:
 #endif
 
 public:
+
+	static char *TELEPORT;
+	static char *OPEN_DOOR;
+	static char *OPEN_BOX;
+
   Sound(Preferences *preferences);
   virtual ~Sound();
 

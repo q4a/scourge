@@ -1002,6 +1002,7 @@ bool Scourge::useItem(int x, int y, int z) {
       } else if( pos && pos->item && 
 								 ((Item*)(pos->item))->getRpgItem()->getType() == RpgItem::CONTAINER ) {
 				if( SDL_GetModState() & KMOD_CTRL ) {
+					getSDLHandler()->getSound()->playSound( Sound::OPEN_BOX );
 					openContainerGui(((Item*)(pos->item)));
 				} else {
 					getParty()->setSelXY( x, y, false ); // get as close as possible to location
@@ -1165,7 +1166,7 @@ bool Scourge::useTeleporter(Location *pos) {
     } else {
       // able to teleport if any party member is alive
       for(int i = 0; i < 4; i++) {
-        if(!party->getParty(i)->getStateMod(Constants::dead)) {
+        if(!party->getParty(i)->getStateMod(Constants::dead)) {					
           teleporting = true;
           return true;
         }
@@ -1238,8 +1239,10 @@ bool Scourge::useSecretDoor(Location *pos) {
       
       levelMap->setPosition( pos->x, pos->y, 0, post );
       if( wall->getWidth() > wall->getDepth() ) {
+				getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
         levelMap->setPosition( pos->x + wall->getWidth() - post->getWidth(), pos->y, 0, post );
       } else {
+				getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
         levelMap->setPosition( pos->x, pos->y - wall->getDepth() + post->getDepth(), 0, post );
       }
     } else {
@@ -1324,6 +1327,7 @@ bool Scourge::useDoor(Location *pos) {
         destroyDoor( ox, oy, oldDoorShape );
         levelMap->updateLightMap();
       } else {
+				getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
         levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
         levelMap->updateLightMap();
         levelMap->updateDoorLocation(doorX, doorY, doorZ,
@@ -1331,7 +1335,7 @@ bool Scourge::useDoor(Location *pos) {
       }
       return true;
     } else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
-      // rollback if blocked by a player
+      // rollback if blocked by a player			
       levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
       levelMap->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
       return true;
@@ -3202,6 +3206,7 @@ bool Scourge::playSelectedMission() {
 }
 
 void Scourge::movePartyToGateAndEndMission() {
+	if( teleporting ) getSDLHandler()->getSound()->playSound( Sound::TELEPORT );
   exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->setVisible(false);
   endMission();
