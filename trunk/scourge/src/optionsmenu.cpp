@@ -395,7 +395,10 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         uc->saveConfiguration();
         if(selectedMode == VIDEO){
             changeTakeEffectLabel -> setText("Some changes will only take effect upon restart");            
-        }       
+        }
+				scourge->toggleOptionsWindow();
+				scourge->showMessageDialog( "Saved: some options require a restart to take effect." );
+				return true;
     } else if(widget == musicVolume) {
       scourge->getSDLHandler()->getSound()->setMusicVolume(musicVolume->getValue());
       uc->setMusicVolume(musicVolume->getValue());
