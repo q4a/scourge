@@ -977,8 +977,7 @@ void Map::setupPosition( int posX, int posY, int posZ,
   }
 }
 
-void Map::draw() {
-
+void Map::preDraw() {
   // must move map before calling getMapXY(Z)AtScreenXY!
   if( move && !selectMode ) moveMap( move );
 
@@ -1055,6 +1054,25 @@ void Map::draw() {
     }
     adapter->setDebugStr(mapDebugStr);
   }
+}
+
+void Map::postDraw() {
+  glDisable( GL_SCISSOR_TEST );
+
+  // cancel mouse-based map movement (middle button)
+  if( mouseRot ) {
+    setXRot( 0 );
+    setYRot( 0 );
+    setZRot( 0 );
+  }
+  if( mouseZoom ) {
+    mouseZoom = false;
+    setZoomIn( false );
+    setZoomOut( false );
+  }
+}
+
+void Map::draw() {
   if( selectMode ) {
     for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
     for(int i = 0; i < laterCount; i++) doDrawShape(&later[i]);
@@ -1062,8 +1080,6 @@ void Map::draw() {
       if( isSecretDoor( stencil[i].pos ) )
           doDrawShape(&stencil[i]);
   } else {  
-
-
 
 #ifdef DEBUG_MOUSE_POS
   // debugging mouse position
@@ -1221,8 +1237,6 @@ void Map::draw() {
       doDrawShape(&other[i]);
     }
 
-
-
     // draw the walls: walls in front of the player will be transparent
     if( playerDrawLater ) {
 
@@ -1295,11 +1309,6 @@ void Map::draw() {
       }
     }
 
-
-
-
-
-    
     // draw the effects
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);  
@@ -1333,189 +1342,177 @@ void Map::draw() {
 		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
 	}
 
-  if( settings->isGridShowing() ) {
+  if( settings->isGridShowing() ) willDrawGrid();
+}
 
-    glDisable( GL_CULL_FACE );
-    glDisable( GL_TEXTURE_2D );
-    
-    glEnable(GL_BLEND);  
-    glDepthMask(GL_FALSE);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+void Map::willDrawGrid() {
 
-    // draw the starting position
-    float xpos2 = (float)( this->startx - getX() ) / DIV;
-    float ypos2 = (float)( this->starty - getY() - 1 ) / DIV;
-    float zpos2 = 0.0f / DIV;
-    float w = 2.0f /  DIV;
-    float h = 4.0f /  DIV;
-    if( useFrustum && 
-        frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w / DIV ) ) {
-      for( int i = 0; i < 2; i++ ) {
-        glPushMatrix();
-        glTranslatef( xpos2, ypos2, zpos2 );
-        if( i == 0 ) {
-          glColor4f( 1, 0, 0, 0.5f );
-          glBegin( GL_TRIANGLES );
-        } else {
-          glColor4f( 1, 0.7, 0, 0.5f );
-          glBegin( GL_LINE_LOOP );
-        }
-        
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( -w, -w, h );
-        glVertex3f( w, -w, h );
-        
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( -w, w, h );
-        glVertex3f( w, w, h );
-        
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( -w, -w, h );
-        glVertex3f( -w, w, h );
-        
-        glVertex3f( 0, 0, 0 );
-        glVertex3f( w, -w, h );
-        glVertex3f( w, w, h );
+	glDisable( GL_CULL_FACE );
+	glDisable( GL_TEXTURE_2D );
+
+	glEnable(GL_BLEND);  
+	glDepthMask(GL_FALSE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+	// draw the starting position
+	float xpos2 = (float)( this->startx - getX() ) / DIV;
+	float ypos2 = (float)( this->starty - getY() - 1 ) / DIV;
+	float zpos2 = 0.0f / DIV;
+	float w = 2.0f /  DIV;
+	float h = 4.0f /  DIV;
+	if( useFrustum && 
+			frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w / DIV ) ) {
+		for( int i = 0; i < 2; i++ ) {
+			glPushMatrix();
+			glTranslatef( xpos2, ypos2, zpos2 );
+			if( i == 0 ) {
+				glColor4f( 1, 0, 0, 0.5f );
+				glBegin( GL_TRIANGLES );
+			} else {
+				glColor4f( 1, 0.7, 0, 0.5f );
+				glBegin( GL_LINE_LOOP );
+			}
+
+			glVertex3f( 0, 0, 0 );
+			glVertex3f( -w, -w, h );
+			glVertex3f( w, -w, h );
+
+			glVertex3f( 0, 0, 0 );
+			glVertex3f( -w, w, h );
+			glVertex3f( w, w, h );
+
+			glVertex3f( 0, 0, 0 );
+			glVertex3f( -w, -w, h );
+			glVertex3f( -w, w, h );
+
+			glVertex3f( 0, 0, 0 );
+			glVertex3f( w, -w, h );
+			glVertex3f( w, w, h );
 
 
 
 
-        glVertex3f( 0, 0, h * 2 );
-        glVertex3f( -w, -w, h );
-        glVertex3f( w, -w, h );
-        
-        glVertex3f( 0, 0, h * 2 );
-        glVertex3f( -w, w, h );
-        glVertex3f( w, w, h );
-        
-        glVertex3f( 0, 0, h * 2 );
-        glVertex3f( -w, -w, h );
-        glVertex3f( -w, w, h );
-        
-        glVertex3f( 0, 0, h * 2 );
-        glVertex3f( w, -w, h );
-        glVertex3f( w, w, h );
-        
-        glEnd();
-        glPopMatrix();
-      }
-    }
+			glVertex3f( 0, 0, h * 2 );
+			glVertex3f( -w, -w, h );
+			glVertex3f( w, -w, h );
 
-    int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-    int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
-    float m = 0.5f / DIV;
+			glVertex3f( 0, 0, h * 2 );
+			glVertex3f( -w, w, h );
+			glVertex3f( w, w, h );
 
-    for(int i = 0; i < chunkCount; i++) {
+			glVertex3f( 0, 0, h * 2 );
+			glVertex3f( -w, -w, h );
+			glVertex3f( -w, w, h );
 
-      float n = (float)MAP_UNIT / DIV;
-      
-      glPushMatrix();
-      glTranslatef( chunks[i].x, chunks[i].y - ( 1.0f / DIV ), 0 );
-      
-      if( chunks[i].cx == chunkX &&
-          chunks[i].cy == chunkY ) {
-        glColor4f( 0,1,0,1 );
-        glLineWidth( 5 );
-      } else {
-        glColor4f( 1,1,1,1 );
-        glLineWidth( 1 );
-      }
-      glBegin( GL_LINE_LOOP );
-      glVertex3f( 0, 0, m );
-      glVertex3f( n, 0, m );
-      glVertex3f( n, n, m );
-      glVertex3f( 0, n, m );
-      glEnd();
+			glVertex3f( 0, 0, h * 2 );
+			glVertex3f( w, -w, h );
+			glVertex3f( w, w, h );
 
-      glPopMatrix();
-    }
+			glEnd();
+			glPopMatrix();
+		}
+	}
 
-    glPushMatrix();
+	int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+	int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
+	float m = 0.5f / DIV;
 
-    float xp = (float)(cursorFlatMapX - getX()) / DIV;
-    float yp = ((float)(cursorFlatMapY - getY()) - 1.0f) / DIV;
-    float cw = (float)cursorWidth / DIV;
-    float cd = -(float)cursorDepth / DIV;
-    m = ( cursorZ ? cursorZ : 0.5f ) / DIV;
-    float ch = (float)( cursorHeight + cursorZ ) / DIV;
+	for(int i = 0; i < chunkCount; i++) {
 
-    float red = 1.0f;
-    float green = 0.9f;
-    float blue = 0.15f;
-    bool found = false;
-    if( cursorFlatMapX < MAP_WIDTH && cursorFlatMapY < MAP_DEPTH ) {
-      for( int xx = cursorFlatMapX; xx < cursorFlatMapX + cursorWidth; xx++ ) {
-        for( int yy = cursorFlatMapY - 1; yy >= cursorFlatMapY - cursorDepth; yy-- ) {
-          for( int zz = 0; zz < cursorHeight; zz++ ) {
-            if( pos[xx][yy + 1][zz] ) {
-              found = true;
-              break;
-            }
-          }
-        }
-      }
-    }
-    if( found ) {
-      green = 0.15f;
-    }
-    
-    glColor4f( red, green, blue, 0.5f );
-    glTranslatef( xp, yp, 0 );
-    glBegin( GL_QUADS );
-    
-    glVertex3f( 0, 0, m );
-    glVertex3f( cw, 0, m );
-    glVertex3f( cw, cd, m );
-    glVertex3f( 0, cd, m );
+		float n = (float)MAP_UNIT / DIV;
 
-    glVertex3f( 0, 0, ch );
-    glVertex3f( cw, 0, ch );
-    glVertex3f( cw, cd, ch );
-    glVertex3f( 0, cd, ch );
+		glPushMatrix();
+		glTranslatef( chunks[i].x, chunks[i].y - ( 1.0f / DIV ), 0 );
 
-    glVertex3f( 0, 0, m );
-    glVertex3f( cw, 0, m );
-    glVertex3f( cw, 0, ch );
-    glVertex3f( 0, 0, ch );
+		if( chunks[i].cx == chunkX &&
+				chunks[i].cy == chunkY ) {
+			glColor4f( 0,1,0,1 );
+			glLineWidth( 5 );
+		} else {
+			glColor4f( 1,1,1,1 );
+			glLineWidth( 1 );
+		}
+		glBegin( GL_LINE_LOOP );
+		glVertex3f( 0, 0, m );
+		glVertex3f( n, 0, m );
+		glVertex3f( n, n, m );
+		glVertex3f( 0, n, m );
+		glEnd();
 
-    glVertex3f( 0, cd, m );
-    glVertex3f( cw, cd, m );
-    glVertex3f( cw, cd, ch );
-    glVertex3f( 0, cd, ch );
+		glPopMatrix();
+	}
 
-    glVertex3f( 0, 0, m );
-    glVertex3f( 0, cd, m );
-    glVertex3f( 0, cd, ch );
-    glVertex3f( 0, 0, ch );
+	glPushMatrix();
 
-    glVertex3f( cw, 0, m );
-    glVertex3f( cw, cd, m );
-    glVertex3f( cw, cd, ch );
-    glVertex3f( cw, 0, ch );
+	float xp = (float)(cursorFlatMapX - getX()) / DIV;
+	float yp = ((float)(cursorFlatMapY - getY()) - 1.0f) / DIV;
+	float cw = (float)cursorWidth / DIV;
+	float cd = -(float)cursorDepth / DIV;
+	m = ( cursorZ ? cursorZ : 0.5f ) / DIV;
+	float ch = (float)( cursorHeight + cursorZ ) / DIV;
 
-    glEnd();
-    glPopMatrix();
+	float red = 1.0f;
+	float green = 0.9f;
+	float blue = 0.15f;
+	bool found = false;
+	if( cursorFlatMapX < MAP_WIDTH && cursorFlatMapY < MAP_DEPTH ) {
+		for( int xx = cursorFlatMapX; xx < cursorFlatMapX + cursorWidth; xx++ ) {
+			for( int yy = cursorFlatMapY - 1; yy >= cursorFlatMapY - cursorDepth; yy-- ) {
+				for( int zz = 0; zz < cursorHeight; zz++ ) {
+					if( pos[xx][yy + 1][zz] ) {
+						found = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+	if( found ) {
+		green = 0.15f;
+	}
 
-    glEnable( GL_CULL_FACE );
-    glEnable( GL_TEXTURE_2D );
+	glColor4f( red, green, blue, 0.5f );
+	glTranslatef( xp, yp, 0 );
+	glBegin( GL_QUADS );
 
-    glDisable(GL_BLEND);  
-    glDepthMask(GL_TRUE);
-  } 
+	glVertex3f( 0, 0, m );
+	glVertex3f( cw, 0, m );
+	glVertex3f( cw, cd, m );
+	glVertex3f( 0, cd, m );
 
-  glDisable( GL_SCISSOR_TEST );
+	glVertex3f( 0, 0, ch );
+	glVertex3f( cw, 0, ch );
+	glVertex3f( cw, cd, ch );
+	glVertex3f( 0, cd, ch );
 
-  // cancel mouse-based map movement (middle button)
-  if( mouseRot ) {
-    setXRot( 0 );
-    setYRot( 0 );
-    setZRot( 0 );
-  }
-  if( mouseZoom ) {
-    mouseZoom = false;
-    setZoomIn( false );
-    setZoomOut( false );
-  }
+	glVertex3f( 0, 0, m );
+	glVertex3f( cw, 0, m );
+	glVertex3f( cw, 0, ch );
+	glVertex3f( 0, 0, ch );
+
+	glVertex3f( 0, cd, m );
+	glVertex3f( cw, cd, m );
+	glVertex3f( cw, cd, ch );
+	glVertex3f( 0, cd, ch );
+
+	glVertex3f( 0, 0, m );
+	glVertex3f( 0, cd, m );
+	glVertex3f( 0, cd, ch );
+	glVertex3f( 0, 0, ch );
+
+	glVertex3f( cw, 0, m );
+	glVertex3f( cw, cd, m );
+	glVertex3f( cw, cd, ch );
+	glVertex3f( cw, 0, ch );
+
+	glEnd();
+	glPopMatrix();
+
+	glEnable( GL_CULL_FACE );
+	glEnable( GL_TEXTURE_2D );
+
+	glDisable(GL_BLEND);  
+	glDepthMask(GL_TRUE);
 }
 
 void Map::sortShapes( DrawLater *playerDrawLater,
