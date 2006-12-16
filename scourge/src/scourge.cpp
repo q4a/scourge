@@ -1002,7 +1002,6 @@ bool Scourge::useItem(int x, int y, int z) {
       } else if( pos && pos->item && 
 								 ((Item*)(pos->item))->getRpgItem()->getType() == RpgItem::CONTAINER ) {
 				if( SDL_GetModState() & KMOD_CTRL ) {
-					getSDLHandler()->getSound()->playSound( Sound::OPEN_BOX );
 					openContainerGui(((Item*)(pos->item)));
 				} else {
 					getParty()->setSelXY( x, y, false ); // get as close as possible to location
@@ -1920,6 +1919,7 @@ void Scourge::openContainerGui(Item *container) {
   }
   // open new window
   if(containerGuiCount < MAX_CONTAINER_GUI) {
+		getSDLHandler()->getSound()->playSound( Sound::OPEN_BOX );
     containerGui[containerGuiCount++] = new ContainerGui(this, container,
                                                          10 + containerGuiCount * 15,
                                                          10 + containerGuiCount * 15);
