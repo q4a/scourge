@@ -78,7 +78,9 @@ void ScourgeView::drawView() {
   // in TB combat, center map when monster's turn
   centerOnMonsterInTB();  
 
+	scourge->getMap()->preDraw();
   scourge->getMap()->draw();
+	scourge->getMap()->postDraw();
   scourge->getMiniMap()->drawMap();
 
   // the boards outside the map
@@ -547,6 +549,13 @@ Color *ScourgeView::getOutlineColor( Location *pos ) {
 
 void ScourgeView::drawDisk( float w, float diff ) {
 	float n = w * 2;
+
+	glEnable( GL_DEPTH_TEST );
+  glDepthMask(GL_FALSE);
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glDisable( GL_CULL_FACE );
+
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getSelection() );
 	glBegin( GL_QUADS );
@@ -614,7 +623,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
       ypos2 = ((float)(pos.y - scourge->getMap()->getY()) / DIV);
       zpos2 = 0.0f / DIV;
       glPushMatrix();
-      glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
+      //glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
+			glTranslatef( xpos2 + w, ypos2 - w - 1 / DIV, zpos2 + 5);
       gluDisk(quadric, 0, 4, 12, 1);
       glPopMatrix();
     }
@@ -793,6 +803,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
             areaRot += AREA_ROT_DELTA;
             if( areaRot >= 360.0f ) areaRot -= 360.0f;
           }
+					float h = ( creature->getShape()->getWidth() / 2.0f ) / DIV;
+					glTranslatef( h, h, 0 );
           glRotatef( areaRot, 0, 0, 1 );
           glTranslatef( -( n / 2 ), -( n / 2 ), 0 );
 

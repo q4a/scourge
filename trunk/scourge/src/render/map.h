@@ -351,6 +351,8 @@ class Map {
   bool isLocationInLight(int x, int y, Shape *shape);
     
   void draw();
+	void preDraw();
+	void postDraw();
 
   void drawBorder();
   
@@ -549,7 +551,9 @@ class Map {
 
   void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
 
- protected:
+protected:
+
+	 void willDrawGrid();
 
 	 void setPositionInner( Sint16 x, Sint16 y, Sint16 z, 
 													Shape *shape, 
