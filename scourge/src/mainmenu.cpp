@@ -126,11 +126,18 @@ MainMenu::MainMenu(Scourge *scourge){
   continueButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Continue Game" );
   mainWin->addWidget((Widget*)continueButton);
   y += 30;
+
+/*
+
+// multiplayer is disabled for now (until it's fixed)
+
 #ifdef HAVE_SDL_NET
   multiplayer = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Multiplayer" );
   mainWin->addWidget((Widget*)multiplayer);
   y += 30;
 #endif
+*/
+
   optionsButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Options" );
   mainWin->addWidget((Widget*)optionsButton);
   y += 30;
@@ -521,9 +528,10 @@ void MainMenu::buildTextures() {
 
   for( int i = 0; menuText[i][0]; i++ ) {
 
-#ifndef HAVE_SDL_NET
+// multiplayer is disabled for now
+//#ifndef HAVE_SDL_NET
     if( i == 2 ) continue;
-#endif
+//#endif
 
     MenuItem *mi = new MenuItem();
     mi->active = ( i == 0 ? true : false );
