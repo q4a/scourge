@@ -101,7 +101,7 @@ Creature::Creature(Session *session, Character *character, char *name, int sex, 
   commonInit();  
 }
 
-Creature::Creature(Session *session, Monster *monster, GLShape *shape) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
+Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool initMonster ) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = NULL;
   this->monster = monster;
@@ -117,7 +117,8 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape) : Rendere
   this->shape = shape;  
 	this->sex = Constants::SEX_MALE;
   commonInit();
-  monsterInit();
+	this->level = monster->getLevel();
+	if( initMonster ) monsterInit();
 }
 
 void Creature::commonInit() {

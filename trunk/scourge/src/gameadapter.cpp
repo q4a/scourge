@@ -158,7 +158,7 @@ RenderedCreature *GameAdapter::createMonster( char *monster_name ) {
 											monster->getSkinName(), 
 											monster->getScale(),
 											monster );
-	creature = session->newCreature( monster, shape, true );
+	creature = session->newCreature( monster, shape );
 
   //creature->calculateExpOfNextLevel();
 
