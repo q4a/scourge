@@ -2541,7 +2541,7 @@ void Scourge::executeSpecialSkill( SpecialSkill *skill ) {
   */
 }
 
-void Scourge::executeItem( Item *item ) {
+bool Scourge::executeItem( Item *item ) {
   Creature *creature = getParty()->getPlayer();
   creature->setAction(Constants::ACTION_CAST_SPELL,
                       item,
@@ -2551,6 +2551,8 @@ void Scourge::executeItem( Item *item ) {
   } else {
     creature->setTargetCreature(creature);
   }
+	// remove scroll from quick slot after use
+	return( item->getRpgItem()->isScroll() ? true : false );
 }
 
 void Scourge::executeQuickSpell( Spell *spell ) {

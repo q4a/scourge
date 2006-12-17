@@ -609,11 +609,9 @@ void ScourgeHandler::quickSpellAction( int index, int button ) {
           scourge->getInfoGui()->setItem( item );
           if( !scourge->getInfoGui()->getWindow()->isVisible() ) scourge->getInfoGui()->getWindow()->setVisible( true );
         } else {
-          scourge->executeItem( item );
-          // remove scroll from quick slot after use
-          if( item->getRpgItem()->isScroll() ) {
-          	scourge->getParty()->getPlayer()->setQuickSpell( index, NULL );
-          }
+          if( scourge->executeItem( item ) ) {
+						scourge->getParty()->getPlayer()->setQuickSpell( index, NULL );
+					}          
         }
       } else {
         cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;
