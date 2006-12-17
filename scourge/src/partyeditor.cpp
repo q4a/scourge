@@ -319,6 +319,8 @@ void PartyEditor::addStartingInventory( Creature *pc ) {
 			pc->addSpell(Spell::getSpellByName("Teleportation"));
 			pc->addSpell(Spell::getSpellByName("Recall to life"));
 			pc->addSpell(Spell::getSpellByName("Blast of Fury"));        
+			pc->addSpell(Spell::getSpellByName("Dori's Tumblers"));        
+			pc->addSpell(Spell::getSpellByName("Gust of wind"));        
 			pc->setMp( 5000 );
 			pc->setMoney( 10000 );
 		}

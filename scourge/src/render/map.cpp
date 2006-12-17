@@ -2010,7 +2010,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   effect[x][y][z]->effect->setSize( width, height );
   currentEffectsMap[ createTripletKey( x, y, z ) ] = effect[x][y][z];
 
-  effect[x][y][z]->effect->setDisplayInfo( di );
+  if( di ) effect[x][y][z]->effect->setDisplayInfo( di );
 
   // need to do this to make sure effect shows up
   resortShapes = mapChanged = true;

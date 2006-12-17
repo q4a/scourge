@@ -62,6 +62,8 @@ class SpellCaster {
   void causeDamage( bool multiplyByLevel=true, GLuint delay=0, GLfloat mult=1.0f );
   void setStateMod(int mod, bool setting=true);
   void circleAttack();
+	void windAttack();
+	void openLocked();
   void hailAttack();
   void resurrect();
 
