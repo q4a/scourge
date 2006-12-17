@@ -231,7 +231,7 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
 
 // creatures created for the mission
 Creature *Session::newCreature(Monster *monster, GLShape *shape, bool loaded) {
-  Creature *c = new Creature(this, monster, shape, loaded);
+  Creature *c = new Creature(this, monster, shape, !loaded);
   creatures.push_back( c );
   return c;
 }
