@@ -705,7 +705,10 @@ public:
 
   void executeQuickSpell( Spell *spell );
   void executeSpecialSkill( SpecialSkill *skill );
-  void executeItem( Item *item );
+	/**
+	 * @return true if the item cannot be used anymore
+	 */
+  bool executeItem( Item *item );
 
   void describeLocation(int mapx, int mapy, int mapz);
 

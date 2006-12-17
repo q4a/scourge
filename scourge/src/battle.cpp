@@ -688,10 +688,19 @@ void Battle::castSpell( bool alwaysSucceeds ) {
     int itemIndex = creature->findInInventory(creature->getActionItem());
     if(itemIndex > -1) {
       if( creature->getActionItem()->getRpgItem()->getMaxCharges() > 0 ) {
-        creature->getActionItem()->setCurrentCharges( 
-          creature->getActionItem()->getCurrentCharges() - 1 );
-        sprintf(message, "Your %s feels lighter.", creature->getActionItem()->getItemName() );
-        session->getMap()->addDescription( message );
+				if( creature->getActionItem()->getCurrentCharges() <= 0 ) {
+					sprintf(message, "Your %s is out of charges.", creature->getActionItem()->getItemName() );
+					session->getMap()->addDescription( message );
+					creature->cancelTarget();
+					// also cancel path
+					if( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
+					return;
+				} else {
+					creature->getActionItem()->setCurrentCharges( 
+						creature->getActionItem()->getCurrentCharges() - 1 );
+					sprintf(message, "Your %s feels lighter.", creature->getActionItem()->getItemName() );
+					session->getMap()->addDescription( message );
+				}
       } else {
         creature->removeInventory(itemIndex);
         sprintf(message, "%s crumbles into dust.", creature->getActionItem()->getItemName());
