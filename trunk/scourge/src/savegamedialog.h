@@ -63,7 +63,7 @@ public:
 	bool createNewSaveGame();
 
 protected:
-	void findFiles();
+	bool findFiles();
 	bool readFileDetails( char *path );
 	void makeDirectory( char *path );
 	void findFilesInDir( char *path, vector<string> *fileNameList );

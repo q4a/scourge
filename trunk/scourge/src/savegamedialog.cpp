@@ -153,15 +153,22 @@ void SavegameDialog::show( bool inSaveMode ) {
 		newSave->setEnabled( true );
 		win->setTitle( "Create a new saved game or load an existing one" );
 	} else {
+		// check for save games
 		save->setEnabled( false );
 		newSave->setEnabled( false );
 		win->setTitle( "Open an existing saved game file" );
 	}
-	if( savegamesChanged ) findFiles();
+	if( savegamesChanged ) {
+		if( !findFiles() ) {
+			scourge->showMessageDialog( "No savegames have been created yet." );
+			savegamesChanged = true; // check again next time
+			return;
+		}
+	}
 	win->setVisible( true );
 }
 
-void SavegameDialog::findFiles() {
+bool SavegameDialog::findFiles() {
 	for( unsigned int i = 0; i < fileInfos.size(); i++ ) {
 		free( fileInfos[i] );
 	}
@@ -197,6 +204,7 @@ void SavegameDialog::findFiles() {
 	}
 	files->setLines( filenameCount, (const char**)filenames, NULL, screens );
 	savegamesChanged = false;
+	return( filenameCount > 0 );
 }
 
 GLuint SavegameDialog::loadScreenshot( char *dirName ) {
