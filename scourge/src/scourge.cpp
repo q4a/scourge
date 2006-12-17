@@ -3119,7 +3119,7 @@ void Scourge::updateStatus( int status, int maxStatus, const char *message ) {
 
 bool Scourge::isLevelShaded() {
   // don't shade the first depth of and edited map (incl. hq)
-  return( !( getSession()->getMap()->isEdited() && oldStory == 0 ) &&
+  return( !( getSession()->getMap()->isEdited() && getCurrentDepth() == 0 ) &&
           getSession()->getPreferences()->isOvalCutoutShown() );
 }
 

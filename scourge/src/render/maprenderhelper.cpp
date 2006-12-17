@@ -22,6 +22,8 @@
 #include "shapes.h"
 #include "mapadapter.h"
 
+using namespace std;
+
 MapRenderHelper *MapRenderHelper::helpers[] = {
   new CaveRenderHelper(),
   new RoomRenderHelper()

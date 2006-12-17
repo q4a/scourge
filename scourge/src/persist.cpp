@@ -76,6 +76,7 @@ void Persist::saveMap( File *file, MapInfo *info ) {
   file->write( info->theme_name, 255 );
 	file->write( &(info->hasWater) );
 	file->write( &(info->reference_type) );
+	file->write( &(info->edited) );
   file->write( &(info->pos_count) );
   for( int i = 0; i < (int)info->pos_count; i++ ) {
     file->write( &(info->pos[i]->x) );
@@ -200,6 +201,11 @@ MapInfo *Persist::loadMap( File *file ) {
 		file->read( &(info->reference_type) );
 	} else {
 		info->reference_type = REF_TYPE_NAME;
+	}
+	if( info->version >= 32 ) {
+		file->read( &(info->edited) );
+	} else {
+		info->edited = true;
 	}
   file->read( &(info->pos_count) );
   for( int i = 0; i < (int)info->pos_count; i++ ) {

@@ -3098,6 +3098,7 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 	// save the fog
 	getMapRenderHelper()->saveHelper( &(info->fog_info) );
 		 
+	info->edited = edited;
 
   char fileName[300];
 	if( absolutePath ) {
@@ -3194,7 +3195,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 		return false;
 	}
 
-  edited = true;
+	edited = info->edited;
 
 
 
