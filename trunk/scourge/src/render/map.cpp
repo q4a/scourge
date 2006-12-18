@@ -180,6 +180,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
   helper = NULL;
 
+	laterCount = stencilCount = otherCount = damageCount = 0;
+
   addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
   addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
 }
@@ -314,6 +316,8 @@ void Map::reset() {
   selectedDropTarget = NULL;
 
   if( helper ) helper->reset();
+
+	laterCount = stencilCount = otherCount = damageCount = 0;
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
