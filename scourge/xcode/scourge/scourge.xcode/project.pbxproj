@@ -102,8 +102,8 @@
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
-				763486E10AFF97540005C950,
-				763486E20AFF97540005C950,
+				76624F040B37065D00C7EBC2,
+				76624F050B37065D00C7EBC2,
 				76081D5A0A558A7E00281DB9,
 				768B7B6C095012C90077FD12,
 				7688A67B0926E1F700AB1291,
@@ -119,6 +119,8 @@
 				761CF68708E264DB00DCC558,
 				761CF68808E264DB00DCC558,
 				7659BC650A34532600A9C52E,
+				763486E10AFF97540005C950,
+				763486E20AFF97540005C950,
 				7659BC660A34532600A9C52E,
 				7657FF2A0A961A4100EEB96C,
 				7657FF2B0A961A4100EEB96C,
@@ -3002,6 +3004,36 @@
 			settings = {
 			};
 		};
+		76624F040B37065D00C7EBC2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = upload.cpp;
+			path = ../../src/upload.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76624F050B37065D00C7EBC2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = upload.h;
+			path = ../../src/upload.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		76624F060B37065D00C7EBC2 = {
+			fileRef = 76624F040B37065D00C7EBC2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76624F070B37065D00C7EBC2 = {
+			fileRef = 76624F050B37065D00C7EBC2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		7674A65905D5F9EB00A583B9 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -3070,6 +3102,18 @@
 		};
 		7674A89005D5FED300A583B9 = {
 			fileRef = 7674A88F05D5FED300A583B9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		767D1B900B11734700DEF58A = {
+			fileRef = 76B7AA5C0A34145A00531DE2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		767D1B9A0B11738500DEF58A = {
+			fileRef = 76B7AAC10A34148500531DE2;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -5158,6 +5202,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				767D1B9A0B11738500DEF58A,
+				767D1B900B11734700DEF58A,
 				76C973F70738A22200462FAD,
 				76C973F80738A22200462FAD,
 			);
@@ -5526,6 +5572,7 @@
 				763486F50AFF97960005C950,
 				763486F70AFF97960005C950,
 				763486F90AFF97960005C950,
+				76624F070B37065D00C7EBC2,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5695,6 +5742,7 @@
 				763486F40AFF97960005C950,
 				763486F60AFF97960005C950,
 				763486F80AFF97960005C950,
+				76624F060B37065D00C7EBC2,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
