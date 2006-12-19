@@ -165,8 +165,8 @@ G:0,0,0
 H:HQ,S
 H:themes/francisco/wall,themes/francisco/walltop,themes/francisco/wall,themes/francisco/wallv1
 H:themes/francisco/corner,themes/francisco/woodtop,themes/francisco/corner
-H:textures/metal,textures/metal,textures/door2NS
-H:textures/door2NS,textures/metal,textures/metal
+H:textures/woodtop,textures/woodtop,textures/door2NS
+H:textures/door2NS,textures/woodtop,textures/woodtop
 H:themes/francisco/floor4,themes/francisco/floor4,themes/francisco/floor4,themes/francisco/floor4v1
 H:themes/francisco/floor5,themes/francisco/floor5,themes/francisco/floor5,themes/francisco/floor5v1
 H:themes/francisco/corner,themes/francisco/woodtop,themes/francisco/corner
@@ -265,8 +265,8 @@ H:0.5,0.6,0.8,0.8,1
 H:BlueBrick
 H:themes/francisco/wall,themes/francisco/walltop,themes/francisco/wall,themes/francisco/wallv1
 H:themes/francisco/wood,themes/francisco/woodtop,themes/francisco/wood
-H:textures/woodtop,themes/francisco/woodtop,textures/doorEW
-H:textures/doorNS,themes/francisco/woodtop,textures/woodtop
+H:textures/woodtop,themes/francisco/woodtop,textures/door2NS
+H:textures/door2NS,themes/francisco/woodtop,textures/woodtop
 H:themes/francisco/floor7,themes/francisco/floor7,themes/francisco/floor7,themes/francisco/floor7v1
 H:themes/francisco/brickfloor,themes/francisco/brickfloor,themes/francisco/brickfloor,themes/francisco/brickfloorv1
 H:themes/francisco/wood,themes/francisco/woodtop,themes/francisco/wood
