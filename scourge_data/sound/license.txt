@@ -1,0 +1,34 @@
+============================
+Music files:
+============================
+The music and sounds for S.C.O.U.R.G.E. are the property of their authors.  
+Any requests to reuse them in your own projects (whether commercial or not) should be directed to them. 
+You can contact them at these adresses:
+* Toofan Hosseinnezhad: <retrix at users.sourceforge.net>
+* Vincent Fiack: <vfiack at gmail.com>
+* Joel Ross: <joel.binarybrain at gmail.com>
+
+FileName		Music Title		Author
+---------		------------		-------
+menu.ogg		Menu pour Scourge	Vincent Fiack
+headquarter.ogg		Quartier Général	Vincent Fiack
+track01.ogg		Dark Times		Toofan Hosseinnezhad
+track02.ogg		Promenade Lugubre	Vincent Fiack
+track03.ogg		Dans les sous-sols	Vincent Fiack
+track04.ogg		L'excursion		Vincent Fiack
+track05.ogg		Dungeon shadows		Toofan Hosseinnezhad
+track06.ogg		Sur un theme de ...	Vincent Fiack
+fight01.ogg		Demo Mix		Joel Ross
+
+============================
+Sound files: (wav files)
+============================
+FileName					Author
+---------					-------
+Toofan Hosseinnezhad 
+All character sounds (in models/character) and all sounds in sound/ except as noted below.
+
+Vincent Fiack
+sound/equip/open-box.wav
+sound/equip/teleport.wav
+sound/equip/push-heavy-door.wav
