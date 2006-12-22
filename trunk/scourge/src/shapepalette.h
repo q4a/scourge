@@ -117,8 +117,9 @@ public:
   GLuint cloud, candle, torchback, highlight;
   GLuint border, border2, gargoyle;
   GLuint minimap, minimapMask, dismiss, exitTexture, options, group, inventory;
-	GLuint waitTexture, startTexture, realTimeTexture, pausedTexture;
-	GLuint systemTexture;
+  GLuint waitTexture, startTexture, realTimeTexture, pausedTexture;
+  GLuint systemTexture;
+  GLuint ioTexture;
 
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiTexture2() { return gui_texture2; }
@@ -130,18 +131,20 @@ public:
   inline GLuint getGargoyleTexture() { return gargoyle; }
   inline GLuint getMinimapTexture() { return minimap; }
   inline GLuint getMinimapMaskTexture() { return minimapMask; }
-	inline GLuint getDismissTexture() { return dismiss; }
-	inline GLuint getExitTexture() { return exitTexture; }
-	inline GLuint getOptionsTexture() { return options; }
-	inline GLuint getGroupTexture() { return group; }
-	inline GLuint getInventoryTexture() { return inventory; }
+  inline GLuint getDismissTexture() { return dismiss; }
+  inline GLuint getExitTexture() { return exitTexture; }
+  inline GLuint getOptionsTexture() { return options; }
+  inline GLuint getGroupTexture() { return group; }
+  inline GLuint getInventoryTexture() { return inventory; }
 	
-	inline GLuint getPausedTexture() { return pausedTexture; }	
-	inline GLuint getRealTimeTexture() { return realTimeTexture; }	
-	inline GLuint getStartTexture() { return startTexture; }	
-	inline GLuint getWaitTexture() { return waitTexture; }	
+  inline GLuint getPausedTexture() { return pausedTexture; }	
+  inline GLuint getRealTimeTexture() { return realTimeTexture; }	
+  inline GLuint getStartTexture() { return startTexture; }	
+  inline GLuint getWaitTexture() { return waitTexture; }	
 
-	inline GLuint getSystemIconTexture() { return systemTexture; }
+  inline GLuint getIoTexture() { return ioTexture; }	
+
+  inline GLuint getSystemIconTexture() { return systemTexture; }
 
   inline int getPortraitCount( int sex ) { return portraitTextures[sex].size(); }
   inline GLuint getPortraitTexture( int sex, int index ) { return portraitTextures[sex][ index ]; }
