@@ -2089,13 +2089,12 @@ void Scourge::createPartyUI() {
 	//int ystart = 0;
 
 
-	roundButton = 
-		cards->createButton( 8, 0,  
-												 offsetX, offsetX - 2, 
-												 "", 0, false );
-	roundButton->setTooltip( "Pause game" );
-	offsetX+=4;
-	ioButton = cards->createButton( 8, offsetX, offsetX, offsetX + 20, "Disk", 0, false );
+	roundButton = cards->createButton( 8, 0, offsetX, offsetX - 2, "", 0, false );
+	roundButton->setTooltip( "Pause game" );	
+	ioButton = cards->createButton( 8, offsetX, offsetX, 2 * offsetX - 6, "", 0, false );
+    ioButton->setTexture( getShapePalette()->getIoTexture() );
+    ioButton->setTooltip( "Load or Save Game" );	
+    offsetX+=4;
 
 	int quickButtonWidth = 24;
 	xstart = Scourge::PARTY_GUI_WIDTH - 10 - quickButtonWidth;

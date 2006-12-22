@@ -119,14 +119,21 @@ void ShapePalette::initialize() {
   if( tmpImage ) free( tmpImage );
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
-	tmpSurface = NULL;
+  tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/wait.bmp", &tmpSurface, &tmpImage );
-	waitTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  waitTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
+  tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/io.bmp", &tmpSurface, &tmpImage );
+  ioTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
   if( tmpImage ) free( tmpImage );
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 	
-	tmpSurface = NULL;
+  tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/system.bmp", &tmpSurface, &tmpImage );
 	systemTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
