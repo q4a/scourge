@@ -2909,7 +2909,12 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
       Persist::deleteCreatureInfo( info );
     }
 		// save the current missions
-		n = session->getBoard()->getMissionCount();
+    n = 0;
+		for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
+			if( !session->getBoard()->getMission(i)->isStoryLine() ) {
+        n++;
+      }
+    }
 		file->write( &n );
 		for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
 			if( !session->getBoard()->getMission(i)->isStoryLine() ) {
