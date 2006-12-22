@@ -242,7 +242,7 @@ void Board::reset() {
 void Board::initMissions() {
   // free ui
   freeListText();
-
+  
   // remove completed missions
   for (vector<Mission*>::iterator e=availableMissions.begin(); e!=availableMissions.end(); ++e) {
     Mission *mission = *e;
@@ -252,6 +252,7 @@ void Board::initMissions() {
       e = availableMissions.begin();
     }
   }
+
 
   // find the highest and lowest levels in the party
   int highest = 0;
@@ -299,11 +300,14 @@ void Board::initMissions() {
     Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
     availableMissions.push_back( mission );
   }  
+  
 
   // add the current storyline mission at the top of the board
-  if( storylineIndex >= 0 && storylineIndex <  (int)storylineMissions.size() )
+  if( storylineIndex >= 0 && storylineIndex <  (int)storylineMissions.size() ) {
     availableMissions.insert( availableMissions.begin(), 
 															storylineMissions[ storylineIndex ] );
+  }
+
 
 
 #ifdef DEBUG_MODE
