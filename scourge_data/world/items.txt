@@ -1415,49 +1415,49 @@ I:10,11
 #
 
 I:Apple
-I:10,FOOD,0.1,5,APPLE,1
+I:10,FOOD,0.1,5,APPLE,0,1
 I:A tiny red apple
 I:An apple
 I:10,10
 
 I:Big Apple
-I:8,FOOD,0.1,5,APPLE,1
+I:8,FOOD,0.1,5,APPLE,0,1
 I:A large apple
 I:A large apple
 I:10,10
 
 I:Bread
-I:8,FOOD,0.1,5,BREAD,1
+I:8,FOOD,0.1,5,BREAD,0,1
 I:A small loaf of vegan, raw, organic, whole-wheat, dairy/dolphin-free, protein-enriched bread
 I:A loaf of bread
 I:8,10
 
 I:Chocolate
-I:8,FOOD,0.2,50,BREAD,1
+I:8,FOOD,0.2,50,BREAD,0,1
 I:A slab of dark chocolate
 I:A chocolate bar
 I:12,4
 
 I:Mushroom
-I:8,FOOD,0.4,25,MUSHROOM,1
+I:8,FOOD,0.4,25,MUSHROOM,0,1
 I:A giant, orange mushroom with purple dots
 I:An alarming mushroom
 I:15,10
 
 I:Tiny egg
-I:8,FOOD,0.1,5,EGG,1
+I:8,FOOD,0.1,5,EGG,0,1
 I:A tiny yellow and brown speckled egg
 I:A small egg
 I:13,10
 
 I:Big egg
-I:8,FOOD,0.5,50,EGG,1
+I:8,FOOD,0.5,50,EGG,0,1
 I:A large, hard bird's egg
 I:A large egg
 I:13,10
 
 I:Mutton meat
-I:6,FOOD,1.0,80,MEAT,2
+I:6,FOOD,1.0,80,MEAT,0,2
 I:Your basic adventurer's fare, mutton-rump-roast, slightly turned...
 I:A few slices of mutton meat
 I:8,11
@@ -1467,49 +1467,49 @@ I:8,11
 #
 
 I:Water potion
-I:10,DRINK,0.2,5,BOTTLE,1
+I:10,DRINK,0.2,5,BOTTLE,0,1
 I:A small potion-bottle, filled with a fresh water
 I:A small bottle of clear liquid
 I:7,17
 
 I:Water bottle
-I:10,DRINK,0.5,30,BOTTLE,3
+I:10,DRINK,0.5,30,BOTTLE,0,3
 I:A bottle of stream water
 I:A bottle of odorless fluid
 I:7,17
 
 I:Milk
-I:10,DRINK,0.5,50,BOTTLE,3
+I:10,DRINK,0.5,50,BOTTLE,0,3
 I:A bottle of untreated milk
 I:Some milk
 I:2,15
 
 I:Wine bottle
-I:10,DRINK,0.5,75,BOTTLE,3
+I:10,DRINK,0.5,75,BOTTLE,0,3
 I:A dusty bottle of wine with an upside-down label that reads "Goats do roam"... I guess they do
 I:A bottle of dark fluid
 I:7,17
 
 I:Fine wine bottle
-I:10,DRINK,0.5,300,BOTTLE,5
+I:10,DRINK,0.5,300,BOTTLE,0,5
 I:A cellar aged bottle of vintage wine with a label that reads "Coates de Rhone"
 I:A bottle of reddish liquid
 I:7,17
 
 I:Water barrel
-I:10,DRINK,4.0,200,BOTTLE,8
+I:10,DRINK,4.0,200,BOTTLE,0,8
 I:A large barrel full of fresh water
 I:A barrel filled with some liquid
 I:7,17
 
 I:Wine barrel
-I:10,DRINK,4.0,400,BOTTLE,8
+I:10,DRINK,4.0,400,BOTTLE,0,8
 I:A large barrel filled with wine from Korim.
 I:A barrel filled with dark liquid
 I:7,17
 
 I:Beer barrel
-I:8,DRINK,4.0,300,BOTTLE,8
+I:8,DRINK,4.0,300,BOTTLE,0,8
 I:A large barrel that contains dwarven ale with bits of bread and mutton...
 I:A barrel full of foamy liquid
 I:7,17
@@ -1519,77 +1519,77 @@ I:7,17
 #
 
 I:Health potion
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:A medicine-bottle, filled with a health potion
 I:A medicine bottle
 I:17,14
 P:6,HP
 
 I:Liquid armor
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:This bottle contains a gray oozing liquid.
 I:A round gray bottle
 I:12,14
 P:6,AC,15
 
 I:Potion of Speed
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:This bottle contains some exotic, green oil
 I:A small vial of green oil
 I:19,14
 P:2,SPEED,15
 
 I:Potion of Coordination
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:This bottle contains some exotic, red oil
 I:A small vial of red oil
 I:1,15
 P:2,COORDINATION,15
 
 I:Potion of Power
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:This bottle contains some exotic, blue oil
 I:A small vial of blue oil
 I:10,14
 P:2,POWER,15
 
 I:Potion of IQ
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:This bottle contains some exotic, brown oil
 I:A small vial of brown oil
 I:20,14
 P:2,IQ,15
 
 I:Potion of Leadership
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:This bottle contains some exotic, purple oil
 I:A small vial of purple oil
 I:14,14
 P:2,LEADERSHIP,15
 
 I:Potion of Luck
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:This bottle contains some exotic, silver oil
 I:A small vial of silver oil
 I:9,14
 P:2,LUCK,15
 
 I:Potion of Piety
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:This bottle contains some exotic, golden oil
 I:A small vial of golden oil
 I:15,14
 P:2,PIETY,15
 
 I:Potion of Lore
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:This bottle contains some exotic, yellow oil
 I:A small vial of yellow oil
 I:18,14
 P:2,LORE,15
 
 I:Magic potion
-I:5,POTION,0.2,5,POTION,1
+I:5,POTION,0.2,5,POTION,0,1
 I:A bottle, filled with a magic potion
 I:A bottle of blue liquid
 I:16,14
