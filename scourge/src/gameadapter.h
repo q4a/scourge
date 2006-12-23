@@ -161,6 +161,7 @@ public:
   }
 
 	virtual RenderedCreature *createWanderingHero( int level ) { return NULL; }
+	virtual bool useDoor( Location *pos, bool openLocked=false ) { return false; }
 	
 };
 

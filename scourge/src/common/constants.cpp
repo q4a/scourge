@@ -164,6 +164,8 @@ char *Constants::messages[][80] = {
   { "A two handed item requires two free hands." },
 	{ "TRAIN" },
 	{ "SKILL" },
+	{ "A magical force turns the lock's tumbles to open.",
+		"Some kind of summoned energy opens the lock." }
 };
 
 int Constants::messageCount[] = {

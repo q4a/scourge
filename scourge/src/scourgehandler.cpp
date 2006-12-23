@@ -435,11 +435,13 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
 			Location *itemPos = scourge->getMap()->getItemLocation( mapx, mapy );
       if( mapx < MAP_WIDTH && pos && pos->item ) {
         scourge->handleTargetSelectionOfItem( ((Item*)(pos->item)), pos->x, pos->y, pos->z );
-        return;
       } else if( mapx < MAP_WIDTH && itemPos && itemPos->item ) {
         scourge->handleTargetSelectionOfItem( ((Item*)(itemPos->item)), itemPos->x, itemPos->y, itemPos->z );
-        return;
-      } 
+      } else {
+				// make sure the selected action can target a location
+				scourge->handleTargetSelectionOfLocation( mapx, mapy, mapz );
+			}
+			return;
     }
 
     if( scourge->useItem( mapx, mapy, mapz ) ) return;
@@ -447,12 +449,6 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
     // click on the scourge->getMap()
     mapx = scourge->getMap()->getCursorFlatMapX();
     mapy = scourge->getMap()->getCursorFlatMapY();
-
-    // make sure the selected action can target a location
-    if( scourge->getTargetSelectionFor() ) {
-      scourge->handleTargetSelectionOfLocation( mapx, mapy, mapz );
-      return;
-    }
 
     // Make party move to new location
     int xx = mapx - ( scourge->getParty()->getPlayer()->getShape()->getWidth() / 2);

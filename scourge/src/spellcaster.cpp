@@ -483,7 +483,14 @@ void SpellCaster::setStateMod(int mod, bool setting) {
 }
 
 void SpellCaster::openLocked() {
-	cerr << "SpellCaster::openLocked: implement me!" << endl;
+	Location *pos = battle->getSession()->getMap()->getLocation( battle->getCreature()->getTargetX(), 
+																															 battle->getCreature()->getTargetY(),
+																															 battle->getCreature()->getTargetZ() );
+	if( pos ) {
+		battle->getSession()->getGameAdapter()->useDoor( pos, true );
+	} else {
+		battle->getSession()->getMap()->addDescription( "Click on a door for this spell." );
+	}
 }
 
 void SpellCaster::windAttack() {
@@ -497,7 +504,9 @@ void SpellCaster::windAttack() {
   Creature *targets[100];
   int targetCount = 0;
   Creature *c = battle->getCreature()->getTargetCreature();
-	for( int r = spellEffectSize; r < radius; r += spellEffectSize ) {
+	for( int r = spellEffectSize; r; r += spellEffectSize ) {
+		if( r > radius ) r = radius;
+
 		for( int angle = 0; angle < 360; angle += 10 ) {
 			int x = toint( sx + ( (float)r * cos( Util::degreesToRadians( (float)angle ) ) ) );
 			int y = toint( sy - ( (float)r * sin( Util::degreesToRadians( (float)angle ) ) ) );
@@ -528,6 +537,8 @@ void SpellCaster::windAttack() {
 				}
 			}
 		}
+
+		if( r >= radius ) break;
 	}
   battle->getCreature()->setTargetCreature( c );
 }
