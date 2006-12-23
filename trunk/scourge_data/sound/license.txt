@@ -32,3 +32,11 @@ Vincent Fiack
 sound/equip/open-box.wav
 sound/equip/teleport.wav
 sound/equip/push-heavy-door.wav
+ui/roll.wav
+ui/press.wav
+equip/equip1.wav
+equip/cant_equip.wav
+
+voices for :
+models/character/darkness
+models/character/yohko

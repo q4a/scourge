@@ -504,8 +504,13 @@ void SpellCaster::windAttack() {
   Creature *targets[100];
   int targetCount = 0;
   Creature *c = battle->getCreature()->getTargetCreature();
+	DisplayInfo di;
 	for( int r = spellEffectSize; r; r += spellEffectSize ) {
 		if( r > radius ) r = radius;
+
+		di.red = 0.1f;
+		di.green = 1 - (float)r / (float)radius;
+		di.blue = (float)r / (float)radius;
 
 		for( int angle = 0; angle < 360; angle += 10 ) {
 			int x = toint( sx + ( (float)r * cos( Util::degreesToRadians( (float)angle ) ) ) );
@@ -514,7 +519,8 @@ void SpellCaster::windAttack() {
 	//      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
 				battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_GREEN, 
 																										 (Constants::DAMAGE_DURATION * 4), 
-																										 spellEffectSize, spellEffectSize );
+																										 spellEffectSize, spellEffectSize, 
+																										 (GLuint)( r * 25 ), false, &di );
 				targetCount = battle->getSession()->getMap()->getCreaturesInArea( x, y, spellEffectSize, (RenderedCreature**)targets );
 				for( int i = 0; i < targetCount; i++ ) {
 					if( seen.find( targets[ i ] ) == seen.end() && 
