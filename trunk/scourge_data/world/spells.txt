@@ -79,7 +79,7 @@ D:The caster draws from the well of ordered peace that drifts in the void of Ear
 D:With urgency the target's spiritual balance is restored and cursed ways surrendered.
 D:This spell un-equips cursed items.
 
-P:Gust of wind,Windy,  5,18,220,15,1d2+1,10,group,6,EFFECT_GREEN,CLI,2,2,H
+P:Gust of wind,Windy,  5,18,220,15,1d2+1,10,group,6,EFFECT_GREEN,CLI,8,2,H
 W:sound/equip/teleport.wav
 D:With the wave of an arm in an age-long predescribed sacred motion, the weaver communes with
 D:the elemental forces of the wind to create a protective aura around her. The wind knocks all
@@ -125,7 +125,7 @@ P:Divine healing touch,Healing,4,20,50,10,8d8+2,0,single,3,EFFECT_SWIRL,C,6,1,F,
 W:sound/magic/healing.wav
 D:Heals a large amount of damaged hit points. The spell's power increases with the caster's level.
 
-P:Dori's Tumblers,Opening,1,3,2,5,0,10,single,3,EFFECT_SWIRL,LI,14,1,F
+P:Dori's Tumblers,Opening,1,3,2,5,0,10,single,3,EFFECT_SWIRL,LI,9,2,F
 W:sound/magic/teleport.wav
 D:The caster is briefly able to manipulate all manners of closed objects. Locked doors and
 D:crates snap open when this spell is cast.
