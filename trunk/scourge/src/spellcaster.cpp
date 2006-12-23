@@ -488,8 +488,6 @@ void SpellCaster::openLocked() {
 																															 battle->getCreature()->getTargetZ() );
 	if( pos ) {
 		battle->getSession()->getGameAdapter()->useDoor( pos, true );
-	} else {
-		battle->getSession()->getMap()->addDescription( "Click on a door for this spell." );
 	}
 }
 

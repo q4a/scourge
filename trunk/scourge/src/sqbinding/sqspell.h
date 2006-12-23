@@ -65,6 +65,7 @@ public:
   static int _isLocationTargetAllowed( HSQUIRRELVM vm );
   static int _isItemTargetAllowed( HSQUIRRELVM vm );
   static int _isPartyTargetAllowed( HSQUIRRELVM vm );
+	static int _isDoorTargetAllowed( HSQUIRRELVM vm );
 
   // magic school
   static int _getSchoolName( HSQUIRRELVM vm );

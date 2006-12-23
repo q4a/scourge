@@ -11,7 +11,7 @@
 #
 # Symbol (for spells) is used to modify item name if item contains the spell. (e.g.: staffs, rings, etc.)
 #
-# CLIP=C-creature target, L-location target, I-item target, P-target is the party
+# CLIPD=C-creature target, L-location target, I-item target, P-target is the party, D-door
 # F|H=F-Friendly, H-Hostile (it's how monsters use spells)
 # pre-requisite:
 # for Friendly spells: (reverse for hostile: high hp, etc.)
@@ -125,7 +125,7 @@ P:Divine healing touch,Healing,4,20,50,10,8d8+2,0,single,3,EFFECT_SWIRL,C,6,1,F,
 W:sound/magic/healing.wav
 D:Heals a large amount of damaged hit points. The spell's power increases with the caster's level.
 
-P:Dori's Tumblers,Opening,1,3,2,5,0,10,single,3,EFFECT_SWIRL,LI,9,2,F
+P:Dori's Tumblers,Opening,1,3,2,5,0,10,single,3,EFFECT_SWIRL,D,9,2,F
 W:sound/magic/teleport.wav
 D:The caster is briefly able to manipulate all manners of closed objects. Locked doors and
 D:crates snap open when this spell is cast.

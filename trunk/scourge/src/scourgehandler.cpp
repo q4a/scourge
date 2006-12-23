@@ -437,6 +437,8 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
         scourge->handleTargetSelectionOfItem( ((Item*)(pos->item)), pos->x, pos->y, pos->z );
       } else if( mapx < MAP_WIDTH && itemPos && itemPos->item ) {
         scourge->handleTargetSelectionOfItem( ((Item*)(itemPos->item)), itemPos->x, itemPos->y, itemPos->z );
+			} else if( mapx < MAP_WIDTH && scourge->getSession()->getMap()->isDoor( mapx, mapy ) ) {
+				scourge->handleTargetSelectionOfDoor( mapx, mapy, mapz );
       } else {
 				// make sure the selected action can target a location
 				scourge->handleTargetSelectionOfLocation( mapx, mapy, mapz );

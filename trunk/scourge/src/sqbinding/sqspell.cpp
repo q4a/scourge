@@ -42,6 +42,7 @@ ScriptClassMemberDecl SqSpell::members[] = {
   { "bool", "isItemTargetAllowed", SqSpell::_isItemTargetAllowed, 0, 0, "Can the spell target an item?" },
   { "bool", "isLocationTargetAllowed", SqSpell::_isLocationTargetAllowed, 0, 0, "Can the spell target a location?" },
   { "bool", "isPartyTargetAllowed", SqSpell::_isPartyTargetAllowed, 0, 0, "Can the spell target the party?" },
+	{ "bool", "isDoorTargetAllowed", SqSpell::_isDoorTargetAllowed, 0, 0, "Can the spell target a door?" },
   { "string", "getSchoolName", SqSpell::_getSchoolName, 0, 0, "Get the spell's magic school's name." },
   { "string", "getSchoolShortName", SqSpell::_getSchoolShortName, 0, 0, "Get the spell's magic school's short name." },
   { "string", "getDeity", SqSpell::_getDeity, 0, 0, "Get the spell's magic school's patron deity's name." },
@@ -177,6 +178,11 @@ int SqSpell::_isPartyTargetAllowed( HSQUIRRELVM vm ) {
   return 1;
 }
 
+int SqSpell::_isDoorTargetAllowed( HSQUIRRELVM vm ) {
+  GET_OBJECT(Spell*)
+  sq_pushbool( vm, object->isDoorTargetAllowed() );
+  return 1;
+}
 
   // magic school
 int SqSpell::_getSchoolName( HSQUIRRELVM vm ) {
