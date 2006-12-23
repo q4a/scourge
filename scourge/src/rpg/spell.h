@@ -66,7 +66,7 @@ class Spell : public Storable {
   int speed;
   int effect;
   MagicSchool *school;  
-  bool creatureTarget, locationTarget, itemTarget, partyTarget;
+  bool creatureTarget, locationTarget, itemTarget, partyTarget, doorTarget;
   int iconTileX, iconTileY;
   bool friendly;
   int stateModPrereq;
@@ -78,7 +78,8 @@ class Spell : public Storable {
 
   Spell(char *name, char *symbol, int level, int mp, int exp, int failureRate, Dice *action, 
         int distance, int targetType, int speed, int effect, bool creatureTarget, 
-        bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school,
+        bool locationTarget, bool itemTarget, bool partyTarget, bool doorTarget,
+				MagicSchool *school,
         int iconTileX, int iconTileY, bool friendly, int stateModPrereq );
   ~Spell();
 
@@ -119,6 +120,7 @@ class Spell : public Storable {
   inline bool isLocationTargetAllowed() { return locationTarget; }
   inline bool isItemTargetAllowed() { return itemTarget; }
   inline bool isPartyTargetAllowed() { return partyTarget; }
+	inline bool isDoorTargetAllowed() { return doorTarget; }
 
   static Spell *getSpellByName(char *name);
 };

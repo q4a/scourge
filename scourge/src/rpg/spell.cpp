@@ -129,7 +129,8 @@ void MagicSchool::initMagic() {
 	  bool creatureTarget = (strchr(s, 'C') != NULL);
 	  bool locationTarget = (strchr(s, 'L') != NULL);
 	  bool itemTarget = (strchr(s, 'I') != NULL);
-      bool partyTarget = (strchr(s, 'P') != NULL);
+		bool partyTarget = (strchr(s, 'P') != NULL);
+		bool doorTarget = (strchr(s, 'D') != NULL);
 	  int iconTileX = atoi( strtok( NULL, "," ) ) - 1;
 	  int iconTileY = atoi( strtok( NULL, "," ) ) - 1;
 
@@ -171,7 +172,7 @@ void MagicSchool::initMagic() {
 	  
 	  currentSpell = new Spell( strdup(name), strdup( symbol ), level, mp, exp, failureRate, 
                               action, distance, targetType, speed, effect, 
-                              creatureTarget, locationTarget, itemTarget, partyTarget,
+                              creatureTarget, locationTarget, itemTarget, partyTarget, doorTarget,
                               current, iconTileX, iconTileY, 
                               friendly, stateModPrereq );
 	  current->addSpell( currentSpell );
@@ -255,9 +256,10 @@ Spell *MagicSchool::getRandomSpell(int level) {
 
 
 Spell::Spell(char *name, char *symbol, int level, int mp, int exp, int failureRate, Dice *action, 
-			 int distance, int targetType, int speed, int effect, bool creatureTarget, 
-			 bool locationTarget, bool itemTarget, bool partyTarget, MagicSchool *school,
-			 int iconTileX, int iconTileY, bool friendly, int stateModPrereq ) {
+						 int distance, int targetType, int speed, int effect, bool creatureTarget, 
+						 bool locationTarget, bool itemTarget, bool partyTarget, bool doorTarget,
+						 MagicSchool *school,
+						 int iconTileX, int iconTileY, bool friendly, int stateModPrereq ) {
   this->name = name;
   this->symbol = symbol;
   this->sound = NULL;
@@ -274,6 +276,7 @@ Spell::Spell(char *name, char *symbol, int level, int mp, int exp, int failureRa
   this->locationTarget = locationTarget;
   this->itemTarget = itemTarget;
   this->partyTarget = partyTarget;
+	this->doorTarget = doorTarget;
   this->school = school;
   this->iconTileX = iconTileX;
   this->iconTileY = iconTileY;

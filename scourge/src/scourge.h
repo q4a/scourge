@@ -664,6 +664,8 @@ public:
   bool handleTargetSelectionOfCreature( Creature *potentialTarget );
   bool handleTargetSelectionOfItem( Item *item, int x=0, int y=0, int z=0 );
   bool handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 mapz );
+	bool handleTargetSelectionOfDoor( Uint16 mapx, Uint16 mapy, Uint16 mapz );
+	void cancelTargetSelection();
 
   void teleport( bool toHQ=true );
 

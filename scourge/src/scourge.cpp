@@ -826,9 +826,46 @@ bool Scourge::inTurnBasedCombatPlayerTurn() {
           !battleRound[battleTurn]->getCreature()->isMonster());
 }
 
+void Scourge::cancelTargetSelection() {
+	char msg[1000];
+	sprintf( msg, "%s cancelled a pending action.||Select", getTargetSelectionFor()->getName() );
+
+	bool b = false;
+	if( getTargetSelectionFor()->getActionSpell()->isCreatureTargetAllowed() ) {
+		strcat( msg, " a creature" );
+		b = true;
+	}
+	if( getTargetSelectionFor()->getActionSpell()->isItemTargetAllowed() ) {
+		if( b ) strcat( msg, " or" );
+		strcat( msg, " an item" );
+		b = true;
+	}
+	if( getTargetSelectionFor()->getActionSpell()->isLocationTargetAllowed() ) {
+		if( b ) strcat( msg, " or" );
+		strcat( msg, " a location" );
+		b = true;
+	}
+	if( getTargetSelectionFor()->getActionSpell()->isDoorTargetAllowed() ) {
+		if( b ) strcat( msg, " or" );
+		strcat( msg, " a door" );
+		b = true;
+	}
+	if( getTargetSelectionFor()->getActionSpell()->isPartyTargetAllowed() ) {
+		if( b ) strcat( msg, " or" );
+		strcat( msg, " the party" );
+		b = true;
+	}
+	strcat( msg, " for this spell." );
+
+	// cancel target selection ( cross cursor )
+	getTargetSelectionFor()->cancelTarget();
+	getTargetSelectionFor()->getBattle()->reset();
+
+	showTextMessage( msg );
+}																					
+
 bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 mapz ) {
   bool ret = false;
-  char msg[80];
   Creature *c = getTargetSelectionFor();
   if(c->getAction() == Constants::ACTION_CAST_SPELL &&
      c->getActionSpell() &&
@@ -841,11 +878,28 @@ bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 
     levelMap->addDescription(msg);
     ret = true;
   } else {
-    sprintf(msg, "%s cancelled a pending action.", c->getName());
+		cancelTargetSelection();
+  }	
+  // turn off selection mode
+  setTargetSelectionFor(NULL);		
+  return ret;
+}
+
+bool Scourge::handleTargetSelectionOfDoor( Uint16 mapx, Uint16 mapy, Uint16 mapz ) {
+  bool ret = false;
+  Creature *c = getTargetSelectionFor();
+  if(c->getAction() == Constants::ACTION_CAST_SPELL &&
+     c->getActionSpell() &&
+     c->getActionSpell()->isDoorTargetAllowed() ) {
+
+    // assign this door
+    c->setTargetLocation(mapx, mapy, 0);
+    char msg[80];
+    sprintf(msg, "%s selected a target", c->getName());
     levelMap->addDescription(msg);
-		// cancel target selection ( cross cursor )
-		getTargetSelectionFor()->cancelTarget();
-		getTargetSelectionFor()->getBattle()->reset();
+    ret = true;
+  } else {
+    cancelTargetSelection();
   }	
   // turn off selection mode
   setTargetSelectionFor(NULL);		
@@ -854,7 +908,6 @@ bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 
 
 bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
   bool ret = false;
-  char msg[80];
   Creature *c = getTargetSelectionFor();
   // make sure the selected action can target a creature
   if(c->getAction() == Constants::ACTION_CAST_SPELL &&
@@ -868,11 +921,7 @@ bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
     levelMap->addDescription(msg);
     ret = true;
   } else {
-    sprintf(msg, "%s cancelled a pending action.", c->getName());
-    levelMap->addDescription(msg);
-		// cancel target selection ( cross cursor )
-		getTargetSelectionFor()->cancelTarget();
-		getTargetSelectionFor()->getBattle()->reset();
+    cancelTargetSelection();
 	}
   // turn off selection mode
   setTargetSelectionFor(NULL);
@@ -881,7 +930,6 @@ bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
 
 bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
   bool ret = false;
-  char msg[80];
   // make sure the selected action can target an item
   Creature *c = getTargetSelectionFor();
   if(c->getAction() == Constants::ACTION_CAST_SPELL &&
@@ -890,15 +938,12 @@ bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
 
     // assign this creature
     c->setTargetItem( x, y, z, item );
+		char msg[80];
     sprintf( msg, "%s targeted %s.", c->getName(), item->getRpgItem()->getName() );
     levelMap->addDescription( msg );
     ret = true;
   } else {
-    sprintf( msg, "%s cancelled a pending action.", c->getName() );
-    levelMap->addDescription( msg );
-		// cancel target selection ( cross cursor )
-		getTargetSelectionFor()->cancelTarget();
-		getTargetSelectionFor()->getBattle()->reset();
+    cancelTargetSelection();
   }
   // turn off selection mode
   setTargetSelectionFor( NULL );
