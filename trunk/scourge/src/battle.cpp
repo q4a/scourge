@@ -1207,13 +1207,20 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
       }
     }
 
-    // target creature death
-    if(creature->getTargetCreature()->takeDamage( toint( damage ), effect, delay)) {
+    /*
+			Note: in case of a creature hitting itself (like a spell fumble)
+			creature->getTargetCreature() will return null after creature death.
+			Having a ptr to the original is needed.
+		*/
+		Creature *tc = creature->getTargetCreature(); 
+
+		// target creature death
+    if( tc->takeDamage( toint( damage ), effect, delay)) {
       // only in RT mode... otherwise in TB mode character won't move
       if( !session->getPreferences()->isBattleTurnBased() )
         creature->getShape()->setCurrentAnimation((int)MD2_TAUNT); 
 
-      sprintf(message, "...%s is killed!", creature->getTargetCreature()->getName());
+      sprintf(message, "...%s is killed!", tc->getName());
       session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 
       // add exp. points and money
@@ -1223,10 +1230,10 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
         // FIXME: try to move to party.cpp
         for(int i = 0; i < session->getParty()->getPartySize(); i++) {
 					// Add the exp for the killed creature
-					session->getParty()->getParty( i )->addExperience( creature->getTargetCreature() );
+					session->getParty()->getParty( i )->addExperience( tc );
 
 					if(!session->getParty()->getParty(i)->getStateMod(Constants::dead)) {
-            int n = session->getParty()->getParty(i)->addMoney(creature->getTargetCreature());
+            int n = session->getParty()->getParty(i)->addMoney( tc );
             if(n > 0) {
               sprintf(message, "%s finds %d coins!", session->getParty()->getParty(i)->getName(), n);
               session->getMap()->addDescription(message);
@@ -1237,8 +1244,8 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 
         // see if this is a mission objective
         if(session->getCurrentMission() && 
-           creature->getTargetCreature()->getMonster() &&
-           session->getCurrentMission()->creatureSlain(creature->getTargetCreature())) {
+           tc->getMonster() &&
+           session->getCurrentMission()->creatureSlain( tc )) {
           session->getGameAdapter()->missionCompleted();
         }
       }

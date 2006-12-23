@@ -511,6 +511,16 @@ class Map {
     }
   }
 
+  inline void getKeyLocation( int doorX, int doorY, int doorZ, 
+															int *keyX, int *keyY, int *keyZ ) {
+    Uint32 key = createTripletKey( doorX, doorY, doorZ );
+    if( doorToKey.find( key ) != doorToKey.end() ) {
+      decodeTripletKey( doorToKey[ key ], keyX, keyY, keyZ );
+    } else {
+      *keyX = *keyY = *keyZ = -1;
+    }
+  }
+
   inline void updateDoorLocation(int oldDoorX, int oldDoorY, int oldDoorZ, 
                                  int newDoorX, int newDoorY, int newDoorZ) {
     //cerr << "**********************" << endl;

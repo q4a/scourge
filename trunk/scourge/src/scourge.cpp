@@ -1175,7 +1175,7 @@ bool Scourge::useTeleporter(Location *pos) {
   return false;
 }
 
-bool Scourge::useLever(Location *pos) {
+bool Scourge::useLever( Location *pos, bool showMessage ) {
   Shape *newShape = NULL;
   if(pos->shape == getSession()->getShapePalette()->findShapeByName("SWITCH_OFF")) {
     newShape = getSession()->getShapePalette()->findShapeByName("SWITCH_ON");
@@ -1193,15 +1193,18 @@ bool Scourge::useLever(Location *pos) {
     levelMap->setPosition(keyX, keyY, keyZ, newShape);
     // unlock the door
     levelMap->setLocked(doorX, doorY, doorZ, (levelMap->isLocked(doorX, doorY, doorZ) ? false : true));
-    // show message, depending on distance from key to door
-    float d = Constants::distance(keyX,  keyY, 1, 1, doorX, doorY, 1, 1);
-    if(d < 20.0f) {
-      levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED_CLOSE));
-    } else if(d >= 20.0f && d < 100.0f) {
-      levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED));
-    } else {
-      levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED_FAR));
-    }
+
+		if( showMessage ) {
+			// show message, depending on distance from key to door
+			float d = Constants::distance(keyX,  keyY, 1, 1, doorX, doorY, 1, 1);
+			if(d < 20.0f) {
+				levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED_CLOSE));
+			} else if(d >= 20.0f && d < 100.0f) {
+				levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED));
+			} else {
+				levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED_FAR));
+			}
+		}
     return true;
   }
   return false;
@@ -1277,7 +1280,7 @@ bool Scourge::useSecretDoor(Location *pos) {
   return ret;
 }
 
-bool Scourge::useDoor(Location *pos) {
+bool Scourge::useDoor( Location *pos, bool openLocked ) {
   Shape *newDoorShape = NULL;
   Shape *oldDoorShape = pos->shape;
   if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR")) {
@@ -1304,9 +1307,18 @@ bool Scourge::useDoor(Location *pos) {
                     above && above->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR_TOP")) ?
                    true : false);
     //cerr << "DOOR is closed? " << closed << endl;
-    if (closed && levelMap->isLocked(doorX, doorY, doorZ)) {
-      levelMap->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
-      return true;
+    if( closed && levelMap->isLocked( doorX, doorY, doorZ ) ) {
+			if( openLocked ) {
+				int keyX, keyY, keyZ;
+				levelMap->getKeyLocation( doorX, doorY, doorZ, &keyX, &keyY, &keyZ );
+				assert( keyX > -1 || keyY > -1 || keyZ > -1 );
+				bool b = useLever( levelMap->getLocation( keyX, keyY, keyZ ), false );
+				assert( b );
+				levelMap->addDescription( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ) );
+			} else {
+				levelMap->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
+				return true;
+			}
     }
 
     // switch door
@@ -1322,7 +1334,7 @@ bool Scourge::useDoor(Location *pos) {
     if ( !blocker ) {
 
       // there is a chance that the door will be destroyed
-      if ( 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
+      if( !openLocked && 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
         destroyDoor( ox, oy, oldDoorShape );
         levelMap->updateLightMap();
       } else {
@@ -1331,6 +1343,9 @@ bool Scourge::useDoor(Location *pos) {
         levelMap->updateLightMap();
         levelMap->updateDoorLocation(doorX, doorY, doorZ,
                                      nx, ny, toint(party->getPlayer()->getZ()));
+				if( openLocked ) {
+					startDoorEffect( Constants::EFFECT_GREEN, ox, oy, oldDoorShape );
+				}
       }
       return true;
     } else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
@@ -1349,15 +1364,18 @@ bool Scourge::useDoor(Location *pos) {
 }
 
 void Scourge::destroyDoor( Sint16 ox, Sint16 oy, Shape *shape ) {
-  levelMap->addDescription( "The door splinters into many, tiny pieces!", 0, 1, 1 );
-  for( int i = 0; i < 8; i++ ) {
-	int x = ox + (int)( (float)( shape->getWidth() ) * rand() / RAND_MAX );
-	int y = oy - (int)( (float)( shape->getDepth() ) * rand() / RAND_MAX );
-	int z = 2 + (int)(( ( (float)( shape->getHeight() ) / 2.0f ) - 2.0f ) * rand() / RAND_MAX );
-//	cerr << "starting effects at: " << x << "," << y << "," << z << endl;
-	levelMap->startEffect( x, y, z, Constants::EFFECT_DUST,
-						   (GLuint)( (float)Constants::DAMAGE_DURATION / 2.0f ), 2, 2,
-						   (GLuint)((float)(i) / 4.0f * (float)Constants::DAMAGE_DURATION) );
+	levelMap->addDescription( "The door splinters into many, tiny pieces!", 0, 1, 1 );
+	startDoorEffect( Constants::EFFECT_DUST, ox, oy, shape );
+}
+
+void Scourge::startDoorEffect( int effect, Sint16 ox, Sint16 oy, Shape *shape ) {
+	for( int i = 0; i < 8; i++ ) {
+		int x = ox + (int)( (float)( shape->getWidth() ) * rand() / RAND_MAX );
+		int y = oy - (int)( (float)( shape->getDepth() ) * rand() / RAND_MAX );
+		int z = 2 + (int)(( ( (float)( shape->getHeight() ) / 2.0f ) - 2.0f ) * rand() / RAND_MAX );
+		levelMap->startEffect( x, y, z, effect,
+													 (GLuint)( (float)Constants::DAMAGE_DURATION / 2.0f ), 2, 2,
+													 (GLuint)((float)(i) / 4.0f * (float)Constants::DAMAGE_DURATION) );
   }
 }
 

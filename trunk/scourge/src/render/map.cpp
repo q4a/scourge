@@ -2732,7 +2732,7 @@ bool Map::isDoor(Shape *shape) {
          shape == shapes->findShapeByName("NS_DOOR"));
 }
 
-void Map::setLocked(int doorX, int doorY, int doorZ, bool value) {
+void Map::setLocked( int doorX, int doorY, int doorZ, bool value ) {
   locked[createTripletKey(doorX, doorY, doorZ)] = value;
   //Location *p = pos[doorX][doorY][doorZ];
 }

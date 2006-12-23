@@ -227,10 +227,11 @@ protected:
   bool getItem(Location *pos);
   // returns new z coordinate
   int dropItem(int x, int y);
-  bool useLever(Location *pos);
+  bool useLever( Location *pos, bool showMessage=true );
   bool useSecretDoor(Location *pos);
-  bool useDoor(Location *pos);
+
   void destroyDoor( Sint16 ox, Sint16 oy, Shape *shape );
+	void startDoorEffect( int effect, Sint16 ox, Sint16 oy, Shape *shape );
   bool useBoard(Location *pos);
   bool useTeleporter(Location *pos);
   bool useGate(Location *pos);
@@ -733,6 +734,8 @@ public:
 	void askToUploadScore();
 
 	bool saveCurrentMap( char *dirName=NULL );
+
+	bool useDoor( Location *pos, bool openLocked=false );
 
 protected:
 
