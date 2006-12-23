@@ -493,37 +493,42 @@ void SpellCaster::windAttack() {
   int radius = getRadius( spellEffectSize, &sx, &sy );
 
   // walk around the circle
+	set<Creature*> seen;
   Creature *targets[100];
   int targetCount = 0;
   Creature *c = battle->getCreature()->getTargetCreature();
-  for( int angle = 0; angle < 360; angle += 10 ) {
-    int x = toint( sx + ( (float)radius * cos( Util::degreesToRadians( (float)angle ) ) ) );
-    int y = toint( sy - ( (float)radius * sin( Util::degreesToRadians( (float)angle ) ) ) );
-    if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
-//      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
-			battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_GREEN, 
-                                                   (Constants::DAMAGE_DURATION * 4), 
-                                                   spellEffectSize, spellEffectSize );
-      targetCount = battle->getSession()->getMap()->getCreaturesInArea( x, y, spellEffectSize, (RenderedCreature**)targets );
-      for( int i = 0; i < targetCount; i++ ) {
-        if( battle->getCreature()->canAttack( targets[ i ] ) ) {
-          battle->getCreature()->setTargetCreature( targets[ i ] );
-          causeDamage( true );
-					// knock the creature back
-					int cx = toint( targets[ i ]->getX() );
-					int cy = toint( targets[ i ]->getY() );
-					int px = toint( cx + ( 2.0f * cos( Util::degreesToRadians( (float)angle ) ) ) );
-					int py = toint( cy - ( 2.0f * sin( Util::degreesToRadians( (float)angle ) ) ) );
-					if( !( battle->getSession()->getMap()->
-								 moveCreature( cx, cy, 0, 
-															 px, py, 0, 
-															 targets[ i ] ) ) ) {
-						targets[ i ]->moveTo( px, py, 0 );
+	for( int r = spellEffectSize; r < radius; r += spellEffectSize ) {
+		for( int angle = 0; angle < 360; angle += 10 ) {
+			int x = toint( sx + ( (float)r * cos( Util::degreesToRadians( (float)angle ) ) ) );
+			int y = toint( sy - ( (float)r * sin( Util::degreesToRadians( (float)angle ) ) ) );
+			if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
+	//      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
+				battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_GREEN, 
+																										 (Constants::DAMAGE_DURATION * 4), 
+																										 spellEffectSize, spellEffectSize );
+				targetCount = battle->getSession()->getMap()->getCreaturesInArea( x, y, spellEffectSize, (RenderedCreature**)targets );
+				for( int i = 0; i < targetCount; i++ ) {
+					if( seen.find( targets[ i ] ) == seen.end() && 
+							battle->getCreature()->canAttack( targets[ i ] ) ) {
+						seen.insert( targets[ i ] );
+						battle->getCreature()->setTargetCreature( targets[ i ] );
+						causeDamage( true );
+						// knock the creature back
+						int cx = toint( targets[ i ]->getX() );
+						int cy = toint( targets[ i ]->getY() );
+						int px = toint( cx + ( 2.0f * cos( Util::degreesToRadians( (float)angle ) ) ) );
+						int py = toint( cy - ( 2.0f * sin( Util::degreesToRadians( (float)angle ) ) ) );
+						if( !( battle->getSession()->getMap()->
+									 moveCreature( cx, cy, 0, 
+																 px, py, 0, 
+																 targets[ i ] ) ) ) {
+							targets[ i ]->moveTo( px, py, 0 );
+						}
 					}
-        }
-      }
-    }
-  }
+				}
+			}
+		}
+	}
   battle->getCreature()->setTargetCreature( c );
 }
 
