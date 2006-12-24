@@ -465,8 +465,7 @@ void SavegameDialog::saveScreenshot( char *dirName ) {
 
 void SavegameDialog::makeDirectory( char *path ) {
 #ifdef WIN32
-	cerr << "*** IMPLEMENT ME: SavegameDialog::makeDirectory() for windows." << endl;
-	exit(1);
+    CreateDirectory(path, NULL);
 #else
 	int err = mkdir( path, S_IRWXU|S_IRGRP|S_IXGRP );
 	if(err) {
@@ -480,8 +479,25 @@ void SavegameDialog::makeDirectory( char *path ) {
 
 void SavegameDialog::findFilesInDir( char *path, vector<string> *fileNameList ) {
 #ifdef WIN32
-	cerr << "*** IMPLEMENT ME: SavegameDialog::findFilesInDir() for windows." << endl;
-	exit(1);
+       std:string winpath = path;
+       winpath += "*.*";
+
+cout << "*** find files in dir : " << winpath << endl;
+
+    WIN32_FIND_DATA FindData;
+    HANDLE hFind = FindFirstFile (winpath.c_str(), &FindData);
+    if (hFind == INVALID_HANDLE_VALUE) {
+        cerr << "*** Error: can't open path: " << path << endl;
+		return;
+    }
+    
+cout << "=> " << FindData.cFileName << endl;
+    fileNameList->push_back( FindData.cFileName );
+    while (FindNextFile (hFind, &FindData)) {
+    cout << "=> " << FindData.cFileName << endl;
+        fileNameList->push_back( FindData.cFileName );
+    }
+    FindClose (hFind);    
 #else
 	DIR *dir = opendir( path );
 	if( !dir ) {
