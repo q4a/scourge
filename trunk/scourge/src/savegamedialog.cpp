@@ -479,22 +479,18 @@ void SavegameDialog::makeDirectory( char *path ) {
 
 void SavegameDialog::findFilesInDir( char *path, vector<string> *fileNameList ) {
 #ifdef WIN32
-       std:string winpath = path;
-       winpath += "*.*";
-
-cout << "*** find files in dir : " << winpath << endl;
+    std:string winpath = path;
+    winpath += "/*.*";
 
     WIN32_FIND_DATA FindData;
     HANDLE hFind = FindFirstFile (winpath.c_str(), &FindData);
     if (hFind == INVALID_HANDLE_VALUE) {
-        cerr << "*** Error: can't open path: " << path << endl;
+        cerr << "*** Error: can't open path: " << path << " error: " << GetLastError() << endl;
 		return;
     }
     
-cout << "=> " << FindData.cFileName << endl;
     fileNameList->push_back( FindData.cFileName );
     while (FindNextFile (hFind, &FindData)) {
-    cout << "=> " << FindData.cFileName << endl;
         fileNameList->push_back( FindData.cFileName );
     }
     FindClose (hFind);    
@@ -519,12 +515,20 @@ bool SavegameDialog::deleteDirectory( char *path ) {
 	char tmp[300];
 	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
 		sprintf( tmp, "%s/%s", path, fileNameList[i].c_str() );
-		cerr << "\tDeleting file: " << path << endl;
-		int n = remove( tmp );
+		cerr << "\tDeleting file: " << tmp << endl;
+#ifdef WIN32
+          int n = !DeleteFile(tmp);
+#else
+		  int n = remove( tmp );
+#endif
 		cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
 	}
 	cerr << "\tDeleting directory: " << path << endl;
+#ifdef WIN32
+    int n = !RemoveDirectory(path);
+#else
 	int n = remove( path );
+#endif
 	cerr << "\t\t" << ( !n ? "success" : "can't delete directory" ) << endl;
 	return( !n ? true : false );
 }																																 	
