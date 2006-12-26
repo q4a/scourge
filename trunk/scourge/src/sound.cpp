@@ -87,7 +87,7 @@ Sound::~Sound() {
 }
 
 // randomly select mission music, load others if needed
-void Sound::selectMusic( Preferences *preferences ) {
+void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 #ifdef HAVE_SDL_MIXER
 	if( haveSound ) {
    // load fixed musics if needed
@@ -110,29 +110,34 @@ void Sound::selectMusic( Preferences *preferences ) {
      }
    }
 
-  //selects mission music
-  int n = (int)( (float)MISSION_MUSIC_COUNT * rand() / RAND_MAX)+1;
-  if(missionMusicIndex != n ) {
-    missionMusicIndex = n;
 
-    // unload the current one
-    if(missionMusic) {
-      Mix_FreeMusic(missionMusic);
-      missionMusic = NULL;
-    }
+  //select mission music
+  // unload the current one
+  if(missionMusic) {
+    Mix_FreeMusic(missionMusic);
+    missionMusic = NULL;
+  }
 
-    // load the new one
-    char fn[300];
-    sprintf( fn, "%s/sound/music/track%02d.ogg", rootDir, missionMusicIndex);
-    missionMusic = Mix_LoadMUS( fn );
-    if( !missionMusic ) {
-      cerr << "*** Error: couldn't load music: " << fn << endl;
-      cerr << "\t" << Mix_GetError() << endl;
-    }
+  char fn[300];
+  if(mission && mission->getMusicTrack()) {
+       //selects mission specific track 
+       sprintf( fn, "%s/sound/music/%s.ogg", rootDir, mission->getMusicTrack());
+  }
+  else {
+      //selects random one
+      missionMusicIndex = (int)( (float)MISSION_MUSIC_COUNT * rand() / RAND_MAX)+1;
+      sprintf( fn, "%s/sound/music/track%02d.ogg", rootDir, missionMusicIndex);
+  }
+  
+  // load the new one
+  missionMusic = Mix_LoadMUS( fn );
+  if( !missionMusic ) {
+    cerr << "*** Error: couldn't load music: " << fn << endl;
+    cerr << "\t" << Mix_GetError() << endl;
   }
 
   // selects fight music
-  n = (int)( (float)FIGHT_MUSIC_COUNT * rand() / RAND_MAX)+1;
+  int n = (int)( (float)FIGHT_MUSIC_COUNT * rand() / RAND_MAX)+1;
   if( fightMusicIndex != n ) {
     fightMusicIndex = n;
 

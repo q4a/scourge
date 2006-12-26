@@ -3,6 +3,9 @@
 # Key:
 # M:type,mission template name
 # D:description (multi-line)
+# Z:musical track
+# Y:success text
+# N:failure text
 # where "type" is a char from locations.txt
 #
 
@@ -14,6 +17,7 @@ D:Our client (a magic user of sorts) has promised a handsome
 D:reward. He also noted that the item is more important
 D:than it appears and is therefore under the protection of
 D:an entity you may not wish to disappoint...
+Z:track01
 Y:Excellent job! Our client told me to pass on his warm thanks
 Y:to you for recovering his lost ${item1}.
 N:Remember, you still haven't found the ${item1}!
@@ -25,6 +29,7 @@ D:Apparently, the object is quite valuable. What makes his case
 D:unusually interesting is that everyone who has gazed upon this $item1
 D:has gone mad. If you should meet some of these unfortunate souls while
 D:on your mission, do dispatch them quickly.
+Z:track02
 Y:Many thanks for completing this mission. One more unsavory client is off
 Y:our backs for now, happy with his recovered ${item1}.
 N:Please complete this mission quickly! Remember, you're looking for
@@ -38,6 +43,7 @@ D:which has taken residence on its lowest level underground. Should you...
 D:er, die, while on your mission, your belongings will be transferred to
 D:the Corporation. (In fact your items will be inventoried while you are
 D:away.) Best of luck, and no need to sign the timesheets this time.
+Z:track03
 Y:I can't believe you managed to complete this mission... er... I mean
 Y:I never had any doubts at all! ${creature1} is a tough opponent.
 N:Ah, so you're still alive and at it... Good! Remember you're out
@@ -50,6 +56,7 @@ D:most interested in ascertaining that the ${creature1} is removed and is
 D:paying in real gold for this job to be done. She has agreed to not
 D:haunt the premises while this work is underway as long as you are done
 D:by nightfall.
+Z:track04
 Y:Finished just in time! Good job! ${creature1} must have been hard to defeat.
 N:The time draws near when our vampiric client must return to his domain.
 N:Trust me you won't want to be around him, so get on with killing {$creature1}.
@@ -60,6 +67,7 @@ D:crew to the ruins of one of its abandoned temples. They view it as a
 D:stain on their reputation if places of (former) glory become infested
 D:with monsters. In particular, they wish for a certain ${creature1} and
 D:a ${creature2} to be neutralized.
+Z:track05
 Y:Very good, the local order of Soroughoz will be pleased. And in turn, it's
 Y:always good for us to keep them happy.
 N:Just a reminder to finish cleaning the abandoned temple of Soroughoz.
@@ -71,6 +79,7 @@ D:a raiding party hired by one of the family's enemies. Fortunatelly, the
 D:thieves never made it home with their loot. They were ambushed by a small
 D:force of trolls on a forest road. The item seemed useless to the trolls
 D:who discarded it during their stay at an abandoned ruin.
+Z:track06
 Y:Excellent work as always! The noble family will be eternally thankful to
 Y:us for recovering their heirloom object.
 N:The noble family's steward contacted us again last night asking about

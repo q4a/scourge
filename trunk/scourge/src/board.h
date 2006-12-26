@@ -79,6 +79,7 @@ private:
 	char savedMapName[300];
   bool edited;
   char name[80];
+  char music[255];
   char description[2000];
   char success[2000];
   char failure[2000];
@@ -128,6 +129,7 @@ public:
 
   Mission( Board *board, int level, int depth, 
            char *name, char *description, 
+           char *music,
            char *success, char *failure,
            char *mapName, char mapType='C' );
   ~Mission();
@@ -174,6 +176,7 @@ public:
   inline void setCompleted( bool b ) { completed = b; }
   inline char *getName() { return name; }
   inline char *getDescription() { return description; }
+  inline char *getMusicTrack() { return (music && music[0]) ? music : NULL; }
   inline char *getSuccess() { return success; }
   inline char *getFailure() { return failure; }
   inline int getLevel() { return level; }
@@ -192,7 +195,7 @@ public:
   inline int getCreatureCount() { return (int)creatureList.size(); }
   inline Monster *getCreature( int index ) { return creatureList[ index ]; }
   inline bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
-
+  
 	inline char *getTemplateName() { return templateName; }
 	inline void setTemplateName( char *s ) { strcpy( templateName, s ); }
 
@@ -224,10 +227,11 @@ private:
   char name[80];
   char mapType;
   char description[2000];
+  char music[255];
   char success[2000];
   char failure[2000];
 public:
-  MissionTemplate( Board *board, char *name, char mapType, char *description, char *success, char *failure );
+  MissionTemplate( Board *board, char *name, char mapType, char *description, char *music, char *success, char *failure );
   ~MissionTemplate();
   Mission *createMission( Session *session, int level, int depth, MissionInfo *info=NULL );
 	inline char *getName() { return name; }

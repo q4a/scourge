@@ -58,6 +58,7 @@ Board::Board(Session *session) {
   Mission *current_mission = NULL;
   char type;
   char name[255], line[255], description[2000], 
+    music[255],
     success[2000], failure[2000], mapName[80];
   //char keyphrase[80],answer[4000];
   //Monster *currentNpc = NULL;
@@ -76,6 +77,12 @@ Board::Board(Session *session) {
         strcat( description, line + 1 );
       }
 
+      strcpy( music, "" );
+      if( n == 'Z' ) {
+        n = Constants::readLine( line, fp );
+        strcat( music, line + 1 );
+      }
+
       strcpy( success, "" );
       while( n == 'Y' ) {
         n = Constants::readLine( line, fp );
@@ -90,7 +97,7 @@ Board::Board(Session *session) {
         strcat( failure, line + 1 );
       }
 
-      templates.push_back( new MissionTemplate( this, name, type, description, success, failure ) );
+      templates.push_back( new MissionTemplate( this, name, type, description, music, success, failure ) );
     } else if( n == 'T' ) {
       // skip ':'
       fgetc( fp );
@@ -112,6 +119,12 @@ Board::Board(Session *session) {
         strcat( description, line + 1 );
       }
 
+      strcpy( music, "" );
+      if( n == 'Z' ) {
+        n = Constants::readLine( line, fp );
+        strcat( music, line + 1 );
+      }
+
       strcpy( success, "" );
       while( n == 'Y' ) {
         n = Constants::readLine( line, fp );
@@ -126,7 +139,7 @@ Board::Board(Session *session) {
         strcat( failure, line + 1 );
       }
 
-      current_mission = new Mission( this, level, depth, name, description, success, failure, mapName );
+      current_mission = new Mission( this, level, depth, name, description, music, success, failure, mapName );
       current_mission->setStoryLine( true );
       storylineMissions.push_back( current_mission );
 
@@ -392,11 +405,12 @@ void Board::storylineMissionCompleted( Mission *mission ) {
 
 
 
-MissionTemplate::MissionTemplate( Board *board, char *name, char type, char *description, char *success, char *failure ) {
+MissionTemplate::MissionTemplate( Board *board, char *name, char type, char *description, char *music, char *success, char *failure ) {
   this->board = board;
   strcpy( this->name, name );
   this->mapType = type;
   strcpy( this->description, description );
+  strcpy( this->music, music);
   strcpy( this->success, success );
   strcpy( this->failure, failure );
 }
@@ -425,9 +439,11 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
   strcpy( s, failure );
   parseText( session, level, depth, s, parsedFailure, &items, &creatures, info );
   
+  //TODO VF: select music from multi-tracks missions
+  
   Mission *mission = new Mission( board, 
                                   level, depth, parsedName, 
-                                  parsedDescription, parsedSuccess, 
+                                  parsedDescription, music, parsedSuccess, 
                                   parsedFailure, NULL, mapType );
   for(map<string, RpgItem*>::iterator i=items.begin(); i!=items.end(); ++i) {
     RpgItem *item = i->second;
@@ -557,6 +573,7 @@ void MissionTemplate::parseText( Session *session, int level, int depth,
 
 Mission::Mission( Board *board, int level, int depth, 
                   char *name, char *description, 
+                  char *music,
                   char *success, char *failure,
                   char *mapName, char mapType ) {
   this->board = board;
@@ -564,6 +581,7 @@ Mission::Mission( Board *board, int level, int depth,
   this->depth = depth;
   strcpy( this->name, name );
   strcpy( this->description, description );
+  strcpy( this->music, music );
   strcpy( this->success, success );
   strcpy( this->failure, failure );
   strcpy( this->mapName, ( mapName ? mapName : "" ) );
