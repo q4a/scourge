@@ -102,6 +102,7 @@ private:
   int fadeoutSteps, fadeoutCurrentStep;
 
 	bool running;
+	bool cursorVisible;
 
 public: 
 
@@ -121,6 +122,7 @@ public:
   SDLHandler( GameAdapter *gameAdapter );
   virtual ~SDLHandler();
 
+	inline void setCursorVisible( bool b ) { cursorVisible = b; }
 	inline void endMainLoop() { running = false; }
 
   void fade( float startAlpha, float endAlpha, int steps = 50 );

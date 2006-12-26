@@ -64,6 +64,12 @@ int Map::dir_index[] = { Constants::MOVE_UP, Constants::MOVE_LEFT, Constants::MO
 
 bool Map::debugMd2Shapes = false;
 
+bool mouseMove = false;
+int mouseMoveX = 0;
+int mouseMoveY = 0;
+float moveAngle = 0;
+float moveDelta = 0;
+
 const float Map::shadowTransformMatrix[16] = { 
 	1, 0, 0, 0,
 	0, 1, 0, 0,
@@ -359,75 +365,6 @@ void Map::center(Sint16 x, Sint16 y, bool force) {
     this->y = ny;
     this->mapx = nx;
     this->mapy = ny;
-  }
-}
-
-/**
-   Move and rotate map.
-   Modifiers: 
-   -CTRL + arrow keys / mouse at edge of screen: rotate map
-   -arrow keys / mouse at edge of screen: move map fast
-   -SHIFT + arrow keys / mouse at edge of screen: slow move map
-   -SHIFT + CTRL + arrow keys / mouse at edge of screen: slow rotate map
- */
-void Map::moveMap(int dir) {
-  if (SDL_GetModState() & KMOD_CTRL) {
-    float rot;
-    if (SDL_GetModState() & KMOD_SHIFT) {
-      rot = 1.5f;
-    } else {
-      rot = 5.0f;
-    }
-    if (dir & Constants::MOVE_DOWN) setYRot(-1.0f * rot);
-    if (dir & Constants::MOVE_UP) setYRot(rot);
-    if (dir & Constants::MOVE_RIGHT) setZRot(-1.0f * rot);
-    if (dir & Constants::MOVE_LEFT) setZRot(rot);
-  } else if ( !preferences->getAlwaysCenterMap() ) {
-
-    // stop rotating (angle of rotation is kept)
-    setYRot(0);
-    setZRot(0);
-
-    // normalize z rot to 0-359
-    float z = getZRot();
-    if (z < 0) z += 360;
-    if (z >= 360) z -= 360;
-    float zrad = Constants::toRadians(z);
-
-    //	cerr << "-------------------" << endl;
-    //	cerr << "x=" << x << " y=" << y << " zrot=" << z << endl;
-
-    mapChanged = resortShapes = true;
-    float delta = (SDL_GetModState() & KMOD_SHIFT ? 0.5f : 1.0f);
-    if (dir & Constants::MOVE_DOWN) {
-      mapx += delta * sin(zrad);
-      mapy += delta * cos(zrad);
-    }
-    if (dir & Constants::MOVE_UP) {
-      mapx += delta * -sin(zrad);
-      mapy += delta * -cos(zrad);
-    }
-    if (dir & Constants::MOVE_LEFT) {
-      mapx += delta * -cos(zrad);
-      mapy += delta * sin(zrad);
-    }
-    if (dir & Constants::MOVE_RIGHT) {
-      mapx += delta * cos(zrad);
-      mapy += delta * -sin(zrad);
-    }
-
-    //	cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
-
-    if (mapy > MAP_DEPTH - mapViewDepth) mapy = MAP_DEPTH - mapViewDepth;
-    if (mapy < 0) mapy = 0;
-    if (mapx > MAP_WIDTH - mapViewWidth) mapx = MAP_WIDTH - mapViewWidth;
-    if (mapx < 0) mapx = 0;
-    //	cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
-
-    x = (int)rint(mapx);
-    y = (int)rint(mapy);
-    //	cerr << "FINAL: x=" << x << " y=" << y << endl;
-
   }
 }
 
@@ -2755,6 +2692,89 @@ bool Map::isLocationInLight( int x, int y, Shape *shape ) {
   return ( helper && helper->isVisible( x, y, shape ) );
 }
 
+/**
+   Move and rotate map.
+   Modifiers: 
+   -CTRL + arrow keys / mouse at edge of screen: rotate map
+   -arrow keys / mouse at edge of screen: move map fast
+   -SHIFT + arrow keys / mouse at edge of screen: slow move map
+   -SHIFT + CTRL + arrow keys / mouse at edge of screen: slow rotate map
+ */
+void Map::moveMap(int dir) {
+  if (SDL_GetModState() & KMOD_CTRL) {
+    float rot;
+    if (SDL_GetModState() & KMOD_SHIFT) {
+      rot = 1.5f;
+    } else {
+      rot = 5.0f;
+    }
+    if (dir & Constants::MOVE_DOWN) setYRot(-1.0f * rot);
+    if (dir & Constants::MOVE_UP) setYRot(rot);
+    if (dir & Constants::MOVE_RIGHT) setZRot(-1.0f * rot);
+    if (dir & Constants::MOVE_LEFT) setZRot(rot);
+  } else if ( !preferences->getAlwaysCenterMap() ) {
+
+    // stop rotating (angle of rotation is kept)
+    setYRot(0);
+    setZRot(0);
+
+		mapChanged = resortShapes = true;
+		float delta = (SDL_GetModState() & KMOD_SHIFT ? 0.5f : 1.0f);
+		if( mouseMove ) {
+
+			// normalize z rot to 0-359
+			float z = moveAngle - ( getZRot() - 90 );
+			if (z < 0) z += 360;
+			if (z >= 360) z -= 360;
+			float zrad = Constants::toRadians(z);
+
+			mapx += -moveDelta / 5.0f * sin(zrad);
+			mapy += moveDelta / 5.0f * cos(zrad);
+			moveDelta = 0; // reset to only move when the mouse is moved
+		} else {
+			
+			// normalize z rot to 0-359
+			float z = getZRot();
+			if (z < 0) z += 360;
+			if (z >= 360) z -= 360;
+			float zrad = Constants::toRadians(z);
+
+			//	cerr << "-------------------" << endl;
+			//	cerr << "x=" << x << " y=" << y << " zrot=" << z << endl;
+				
+			if (dir & Constants::MOVE_DOWN) {
+				mapx += delta * sin(zrad);
+				mapy += delta * cos(zrad);
+			}
+			if (dir & Constants::MOVE_UP) {
+				mapx += delta * -sin(zrad);
+				mapy += delta * -cos(zrad);
+			}
+			if (dir & Constants::MOVE_LEFT) {
+				mapx += delta * -cos(zrad);
+				mapy += delta * sin(zrad);
+			}
+			if (dir & Constants::MOVE_RIGHT) {
+				mapx += delta * cos(zrad);
+				mapy += delta * -sin(zrad);
+			}
+		}
+
+    //	cerr << "xdelta=" << xdelta << " ydelta=" << ydelta << endl;
+
+    if (mapy > MAP_DEPTH - mapViewDepth) mapy = MAP_DEPTH - mapViewDepth;
+    if (mapy < 0) mapy = 0;
+    if (mapx > MAP_WIDTH - mapViewWidth) mapx = MAP_WIDTH - mapViewWidth;
+    if (mapx < 0) mapx = 0;
+    //	cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
+
+    x = (int)rint(mapx);
+    y = (int)rint(mapy);
+    //	cerr << "FINAL: x=" << x << " y=" << y << endl;
+
+  }
+}
+
 void Map::handleEvent( SDL_Event *event ) {
 
   // turn off outlining
@@ -2772,8 +2792,18 @@ void Map::handleEvent( SDL_Event *event ) {
   switch(event->type) {
   case SDL_MOUSEMOTION:
     if(mouseRot) {
-      setZRot(-event->motion.xrel * MOUSE_ROT_DELTA);
+			adapter->setCursorVisible( false );
+      setZRot(event->motion.xrel * MOUSE_ROT_DELTA);
       setYRot(-event->motion.yrel * MOUSE_ROT_DELTA);
+		} else if( mouseMove ) {
+			adapter->setCursorVisible( false );
+			int q;
+			moveDelta = sqrt( (float)( event->motion.xrel * event->motion.xrel ) + 
+												(float)( event->motion.yrel * event->motion.yrel ) ) / zoom;
+			Constants::getQuadrantAndAngle( event->motion.xrel, event->motion.yrel, 
+																			&q, &moveAngle );
+			mouseMoveScreen = true;
+			setMove(Constants::MOVE_UP ); // so move != 0
     } else {
       //sdlHandler->applyMouseOffset(event->motion.x, event->motion.y, &mx, &my);
       mx = event->motion.x;
@@ -2823,6 +2853,10 @@ void Map::handleEvent( SDL_Event *event ) {
   if( event->button.button ) {
     if( event->button.button == SDL_BUTTON_MIDDLE ) {
       mouseRot = true;
+		} else if( event->button.button == SDL_BUTTON_RIGHT ) {
+			mouseMove = true;
+			mouseMoveX = event->button.x;
+			mouseMoveY = event->button.y;
     } if( event->button.button == SDL_BUTTON_WHEELUP ) {
       mouseZoom = true;
       setZoomIn(false);
@@ -2834,16 +2868,21 @@ void Map::handleEvent( SDL_Event *event ) {
     }
   }
   break;  
-  case SDL_MOUSEBUTTONUP:
-  if( event->button.button ) {
-    if( event->button.button == SDL_BUTTON_MIDDLE ) {
-      mouseRot = false;
-      setXRot(0);
-      setYRot(0);
-      setZRot(0);
-    }
-  } 
-  break;
+	case SDL_MOUSEBUTTONUP:
+		adapter->setCursorVisible( true );
+		if( event->button.button ) {
+			if( event->button.button == SDL_BUTTON_MIDDLE ||
+					event->button.button == SDL_BUTTON_RIGHT ) {
+				mouseRot = false;
+				mouseMove = false;
+				moveDelta = 0;
+				setXRot(0);
+				setYRot(0);
+				setZRot(0);
+				move = 0;
+			}
+		} 
+		break;
   case SDL_KEYDOWN:
   case SDL_KEYUP:
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"

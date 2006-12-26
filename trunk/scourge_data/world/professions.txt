@@ -370,13 +370,47 @@ D:description goes here
 G:FIGHT_GROUP,4
 G:DEFEND_GROUP,4
 G:SORCERY_GROUP,20
+C:Terminal Energy
 
+# sorcerors
+# ===================================================================
+P:Necromantic Sorceror:Apprentice Sorceror,20
+D:description goes here
+G:FIGHT_GROUP,10
+G:DEFEND_GROUP,10
+G:SORCERY_GROUP,30
+C:Speedy Casting
+C:Undead Thralls
+
+P:Sorceror of the Planes:Apprentice Sorceror,20
+D:description goes here
+G:FIGHT_GROUP,10
+G:DEFEND_GROUP,10
+G:SORCERY_GROUP,30
+C:Planar Assistance
+
+# magical wiseman types
+# ===================================================================
 P:Wild One:Magician,10
 D:description goes here
 G:FIGHT_GROUP,10
 G:DEFEND_GROUP,10
 G:SORCERY_GROUP,15
+C:Mystic Defense
 
+P:Loreweilder:Wild One,20
+D:description goes here
+G:FIGHT_GROUP,15
+G:DEFEND_GROUP,15
+G:SORCERY_GROUP,25
+C:Improved Mystic Defense
+
+P:Iron Mage:Wild One,20
+D:description goes here
+G:FIGHT_GROUP,15
+G:DEFEND_GROUP,20
+G:SORCERY_GROUP,25
+C:Improved Mystic Defense
 
 # Clerical types
 # ===================================================================

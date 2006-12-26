@@ -73,13 +73,14 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
   //return false;
   //}
 
+	bool wasMapMoving = scourge->getMap()->isMapMoving();
   scourge->getMap()->handleEvent( event );
 
   int mx, my;
   switch(event->type) {
   case SDL_MOUSEMOTION:
 
-    if( !scourge->getMap()->isMouseRotating() ) {
+    if( !( scourge->getMap()->isMouseRotating() || wasMapMoving ) ) {
 
       mx = event->motion.x;
       my = event->motion.y;
@@ -111,7 +112,10 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
     break;
   case SDL_MOUSEBUTTONUP:
     if(event->button.button) {
-      processGameMouseClick(scourge->getSDLHandler()->mouseX, scourge->getSDLHandler()->mouseY, event->button.button);
+      processGameMouseClick( scourge->getSDLHandler()->mouseX, 
+														 scourge->getSDLHandler()->mouseY, 
+														 event->button.button, 
+														 wasMapMoving );
       scourge->mouseClickWhileExiting();
     }
     break;
@@ -406,7 +410,7 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
   return false;
 }
 
-void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
+void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, bool wasMapMoving ) {
   // don't drag if you haven't started yet
   willStartDrag = false;
 
@@ -466,7 +470,7 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button) {
       }
     }
 
-  } else if( button == SDL_BUTTON_RIGHT ) {
+  } else if( button == SDL_BUTTON_RIGHT && !wasMapMoving ) {
     scourge->describeLocation( scourge->getMap()->getCursorMapX(), 
                                scourge->getMap()->getCursorMapY(), 
                                scourge->getMap()->getCursorMapZ());

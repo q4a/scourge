@@ -648,6 +648,8 @@ public:
 		return (180.0f * rad) / 3.14159;
   }
 
+	static void getQuadrantAndAngle( float nx, float ny, int *q, float *angle );
+
 	static int initRootDir( int argc, char *argv[] );
 
 private:
