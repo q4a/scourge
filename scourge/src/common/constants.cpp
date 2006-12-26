@@ -714,3 +714,20 @@ char* GetDataPath(char *file)
 	return path;
 }
 
+void Constants::getQuadrantAndAngle( float nx, float ny, int *q, float *angle ) {
+  if( nx == 0 ) *angle = ( ny <= 0 ? ( 90.0f + 180.0f ) : 90.0f );
+  else *angle = Constants::toAngle( atan( ny / nx ) );
+  //cerr << "x=" << nx << " y=" << ny << " angle=" << (*angle) << endl;
+
+  // read about the arctan problem: 
+  // http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
+  *q = 1;
+  if( nx < 0 ) {     // Quadrant 2 & 3
+    *q = ( ny >= 0 ? 2 : 3 );
+    (*angle) += 180;
+  } else if( ny < 0 ) { // Quadrant 4
+    *q = 4;
+    (*angle) += 360;
+  }
+	//cerr << "\tfinal angle=" << (*angle) << " quadrant=" << (*q) << endl;
+}

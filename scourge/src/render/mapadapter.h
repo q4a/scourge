@@ -30,6 +30,7 @@ public:
   MapAdapter();
   virtual ~MapAdapter();
 
+	virtual void setCursorVisible( bool b ) = 0;
   virtual int getScreenWidth() = 0;
   virtual int getScreenHeight() = 0;
   virtual Uint16 getMouseX() = 0;

@@ -82,6 +82,7 @@ SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
   fadeoutSteps = 16;
   fadeoutCurrentStep = 0;
   fadeoutTimer = 0;
+	cursorVisible = true;
 }
 
 SDLHandler::~SDLHandler(){
@@ -465,7 +466,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
       mouseButton = event.button.button;
       mouseEvent = SDL_MOUSEMOTION;
       // don't process events during a fade
-      if( fadeoutTimer <= 0 ) widget = Window::delegateEvent( &event, mouseX, mouseY );
+      if( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mouseX, mouseY );
       if(!widget) {
         mouseIsMovingOverMap = true;
         lastMouseMoveTime = now;
@@ -483,7 +484,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
                          abs(lastMouseY - event.button.y) < DOUBLE_CLICK_TOLERANCE);
         lastLeftClick = now;
         // don't process events during a fade
-        if( fadeoutTimer <= 0 ) widget = Window::delegateEvent( &event, mx, my );
+        if( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my );
       }
       lastMouseX = event.button.x;
       lastMouseY = event.button.y;
@@ -496,7 +497,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
       mouseDragging = ( event.button.button == SDL_BUTTON_LEFT );
       //if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
         // don't process events during a fade
-        if( fadeoutTimer <= 0 ) widget = Window::delegateEvent( &event, mx, my );
+        if( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my );
       //}
       break;
     case SDL_ACTIVEEVENT:
@@ -529,7 +530,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
     case SDL_KEYDOWN:
     applyMouseOffset(mouseX, mouseY, &mx, &my);
     // don't process events during a fade
-    if( fadeoutTimer <= 0 ) widget = Window::delegateEvent( &event, mx, my );
+    if( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my );
     break;
     case SDL_QUIT:
     quit(0); // handle quit requests
@@ -678,7 +679,7 @@ void SDLHandler::drawScreenInternal() {
 		drawFadeout();
   }
 
-  drawCursor();
+  if( cursorVisible ) drawCursor();
 
 	if( showDebugInfo ) {
 		drawDebugInfo();

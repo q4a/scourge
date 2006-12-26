@@ -50,7 +50,7 @@ public:
   bool handleEvent(Widget *widget, SDL_Event *event);
 
 protected:
-  void processGameMouseClick( Uint16 x, Uint16 y, Uint8 button );
+  void processGameMouseClick( Uint16 x, Uint16 y, Uint8 button, bool wasMapMoving );
   bool handleCreatureClick( Uint16 mapx, Uint16 mapy, Uint16 mapz );
   bool handlePartyEvent( Widget *widget, SDL_Event *event );
   void quickSpellAction( int index, int button=SDL_BUTTON_LEFT );

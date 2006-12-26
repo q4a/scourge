@@ -58,6 +58,7 @@ public:
   virtual inline void initVideo() {}
   virtual inline void initUI() {}
   virtual inline void start() {}
+	virtual inline void setCursorVisible( bool b ) {}
   virtual inline int getScreenWidth() { return 0; }
   virtual inline int getScreenHeight() { return 0; }
   virtual inline void playSound(const char *sound) {}
@@ -180,6 +181,7 @@ public:
   virtual inline SDLHandler *getSDLHandler() { return sdlHandler; }
   virtual inline void setCursorMode( int cursor, bool useTimer=false ) { sdlHandler->setCursorMode( cursor, useTimer ); }
 
+	virtual void setCursorVisible( bool b ) { getSDLHandler()->setCursorVisible( b ); }
   virtual inline int getScreenWidth() { return getSDLHandler()->getScreen()->w; }
   virtual inline int getScreenHeight() { return getSDLHandler()->getScreen()->h; }
   virtual void playSound(const char *sound);
