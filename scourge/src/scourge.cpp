@@ -290,7 +290,7 @@ void Scourge::startMission( bool startInHq ) {
       // set the map view
       setUILayout();
       // start the haunting tunes
-      getSDLHandler()->getSound()->selectMusic( getPreferences() );
+      getSDLHandler()->getSound()->selectMusic( getPreferences(), session->getCurrentMission());
       if(inHq) getSDLHandler()->getSound()->playMusicHQ();
       else getSDLHandler()->getSound()->playMusicMission();
       getSDLHandler()->fade( 1, 0, 20 );

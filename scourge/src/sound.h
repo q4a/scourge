@@ -24,6 +24,7 @@
 #include "common/constants.h"
 #include "gui/window.h"
 #include "userconfiguration.h"
+#include "board.h"
 
 class Sound {
 private:
@@ -88,7 +89,7 @@ public:
   void setMusicVolume(int volume);
   void setEffectsVolume(int volume);
 
-  void selectMusic( Preferences *preferences );
+  void selectMusic( Preferences *preferences, Mission *mission=NULL );
 
   void checkMusic( bool inCombat );
 
