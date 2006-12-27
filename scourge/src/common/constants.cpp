@@ -165,12 +165,14 @@ char *Constants::messages[][80] = {
 	{ "TRAIN" },
 	{ "SKILL" },
 	{ "A magical force turns the lock's tumbles to open.",
-		"Some kind of summoned energy opens the lock." }
+		"Some kind of summoned energy opens the lock." },
+	{ "Killed by", "Annihilated by", "Slain by", "Brought low by", "Dropped by", 
+		"Ruined by", "Extinguished by", "Laid low by" }
 };
 
 int Constants::messageCount[] = {
   3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1,
-  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 8
 };
 
 // opengl extension routines

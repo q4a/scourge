@@ -160,7 +160,7 @@ public:
   inline void setCurrentMission(Mission *mission) { currentMission = mission; }
 
   virtual Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
-  virtual void creatureDeath(Creature *creature);
+  virtual void creatureDeath( Creature *creature );
 
   inline SqBinding *getSquirrel() { return squirrel; }
 

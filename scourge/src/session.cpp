@@ -337,7 +337,7 @@ Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radi
   return p;
 }
 
-void Session::creatureDeath(Creature *creature) {
+void Session::creatureDeath( Creature *creature ) {
 
   bool result;
   squirrel->callBoolMethod( "creatureDeath", 
@@ -367,6 +367,8 @@ void Session::creatureDeath(Creature *creature) {
   }
   creature->setStateMod(Constants::dead, true);
 
+	creature->setCauseOfDeath( creature->getPendingCauseOfDeath() );
+
 	// cancel target, otherwise segfaults on resurrection
 	creature->cancelTarget();
 
@@ -384,7 +386,14 @@ void Session::creatureDeath(Creature *creature) {
 			break;
 		}
 	}
-	if( !foundLivePlayer ) getGameAdapter()->askToUploadScore();
+	if( !foundLivePlayer ) {
+		/*
+		Hack: only info about the lead player is uploaded. Set the cause of death on that 
+		player now. This is a hack so cod need not be persisted in savegame.
+		*/
+		getParty()->getParty( 0 )->setCauseOfDeath( creature->getCauseOfDeath() );
+		getGameAdapter()->askToUploadScore();
+	}
 #endif
 }
 

@@ -448,6 +448,7 @@ public:
 		TRAINING_AVAILABLE,
 		SKILL_POINTS_AVAILABLE,
 		LOCKED_DOOR_OPENS_MAGICALLY,
+		CAUSE_OF_DEATH,
 
 	// last one
 	MESSAGE_COUNT
@@ -791,6 +792,7 @@ struct t3DModel
     int *pGlCommands;                   // The glCommands used to draw the model faster
 };
 
+#define getAn( name ) ( ( name[0] == 'a' || name[0] == 'e' || name[0] == 'i' || name[0] == 'o' || name[0] == 'u' || name[0] == 'y' ? "an" : "a" ) )
 
 typedef unsigned char byte;
 

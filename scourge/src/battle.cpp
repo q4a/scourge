@@ -958,6 +958,13 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
         session->getMap()->addDescription( message );
         Creature *oldTarget = creature->getTargetCreature();
         creature->setTargetCreature( tmpTarget );
+
+				char tmp[255];
+				sprintf( tmp, "%s %s own fumbling hands", 
+								 Constants::getMessage( Constants::CAUSE_OF_DEATH ),
+								 ( creature->getSex() == Constants::SEX_MALE ? "his" : "her" ) );
+				creature->setPendingCauseOfDeath( tmp );
+
         dealDamage( ( MIN_FUMBLE_RANGE * rand() / RAND_MAX ) + 
                     ( MIN_FUMBLE_RANGE / 2.0f ) );
         creature->setTargetCreature( oldTarget );
@@ -1149,6 +1156,26 @@ void Battle::hitWithItem() {
 					getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
 					damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
 				}
+
+				char tmp[255];
+				strcpy( tmp, Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
+				strcat( tmp, " " );
+				if( creature->isMonster() ) {
+					strcat( tmp, getAn( creature->getMonster()->getType() ) );
+					strcat( tmp, " " );
+					strcat( tmp, creature->getMonster()->getType() );
+				} else {
+					strcat( tmp, creature->getName() );
+				}
+				if( item ) {
+					strcat( tmp, " weilding " );
+					strcat( tmp, getAn( item->getName() ) );
+					strcat( tmp, " " );
+					strcat( tmp, item->getName() );
+				} else {
+					strcat( tmp, " in a flurry of blows" );
+				}
+				creature->getTargetCreature()->setPendingCauseOfDeath( tmp );
 		
 				dealDamage( damage );
 		
@@ -1156,6 +1183,18 @@ void Battle::hitWithItem() {
 					// apply extra spell-like damage of magic items
 					float spellDamage = applyMagicItemSpellDamage();
 					if( spellDamage > -1 ) {
+
+						strcpy( tmp, Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
+						strcat( tmp, " magical damage by " );
+						if( creature->isMonster() ) {
+							strcat( tmp, getAn( creature->getMonster()->getType() ) );
+							strcat( tmp, " " );
+							strcat( tmp, creature->getMonster()->getType() );
+						} else {
+							strcat( tmp, creature->getName() );
+						}
+						creature->getTargetCreature()->setPendingCauseOfDeath( tmp );
+
 						dealDamage( damage, Constants::EFFECT_GREEN, true );
 					}
 				}
@@ -1215,13 +1254,15 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 		Creature *tc = creature->getTargetCreature(); 
 
 		// target creature death
-    if( tc->takeDamage( toint( damage ), effect, delay)) {
+    if( tc->takeDamage( toint( damage ), effect, delay ) ) {
+
       // only in RT mode... otherwise in TB mode character won't move
       if( !session->getPreferences()->isBattleTurnBased() )
         creature->getShape()->setCurrentAnimation((int)MD2_TAUNT); 
 
       sprintf(message, "...%s is killed!", tc->getName());
       session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
+			if( !tc->isMonster() ) session->getMap()->addDescription( tc->getCauseOfDeath(), 1.0f, 0.5f, 0.5f);
 
       // add exp. points and money
       if( !IS_AUTO_CONTROL( creature ) ) {
