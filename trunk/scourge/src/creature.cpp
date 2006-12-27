@@ -78,8 +78,6 @@ MonsterToughness monsterToughness[] = {
 
 #define roll(min, max) ( ( ( max - min ) * rand() / RAND_MAX ) + min )
 
-#define getAn( name ) ( ( name[0] == 'a' || name[0] == 'e' || name[0] == 'i' || name[0] == 'o' || name[0] == 'u' || name[0] == 'y' ? "an" : "a" ) )
-
 Creature::Creature(Session *session, Character *character, char *name, int sex, int character_model_info_index) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
   this->character = character;
@@ -123,6 +121,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool init
 
 void Creature::commonInit() {
 
+	this->causeOfDeath[0] = 0;
   ((AnimatedShape*)shape)->setCreatureSpeed( speed );
 
 	for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
@@ -1513,7 +1512,10 @@ vector<RenderedProjectile*> *Creature::getProjectiles() {
 /**
  take some damage
 */
-bool Creature::takeDamage( float damage, int effect_type, GLuint delay ) {
+bool Creature::takeDamage( float damage, 
+													 int effect_type, 
+													 GLuint delay ) {
+	
   int intDamage = toint( damage );
   addRecentDamage( intDamage );
 
@@ -1531,8 +1533,9 @@ bool Creature::takeDamage( float damage, int effect_type, GLuint delay ) {
 
   // creature death here so it can be used from script
   if( hp <= 0 ) {
-    if( ( isMonster() && !MONSTER_IMORTALITY ) || !GOD_MODE )
-      session->creatureDeath( this );
+		if( ( isMonster() && !MONSTER_IMORTALITY ) || !GOD_MODE ) {
+			session->creatureDeath( this );
+		}
     return true;
   } else {
     return false;

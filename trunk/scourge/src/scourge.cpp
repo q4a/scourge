@@ -3435,8 +3435,9 @@ void Scourge::uploadScore() {
 	}
 
 	char desc[1000];
-	sprintf( desc, "Expired %s. Reached chapter %d of the story.", 
+	sprintf( desc, "Expired %s. Cause of death: %s. Reached chapter %d of the story.", 
 					 place, 
+					 getParty()->getParty(0)->getCauseOfDeath(),
 					 ( getSession()->getBoard()->getStorylineIndex() + 1 ) );
 
 	char score[5000];

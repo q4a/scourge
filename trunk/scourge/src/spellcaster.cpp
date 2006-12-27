@@ -87,8 +87,8 @@ void SpellCaster::spellFailed() {
       battle->getSession()->getMap()->addDescription( message, 1, 0.15f, 1 );
       Creature *oldTarget = battle->getCreature()->getTargetCreature();
       battle->getCreature()->setTargetCreature( tmpTarget );
-      
-      causeDamage( true, 0, 0.5 );
+			
+			causeDamage( true, 0, 0.5 );
       
       battle->getCreature()->setTargetCreature( oldTarget );
     }
@@ -342,6 +342,12 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
   battle->getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
   battle->getSession()->getSquirrel()->callSpellEvent( creature, spell, "spellDamageHandler" );
   damage = battle->getSession()->getSquirrel()->getGlobalVariable( "damage" );
+
+	char tmp[255];
+	sprintf( tmp, "%s the %s spell", 
+					 Constants::getMessage( Constants::CAUSE_OF_DEATH ),
+					 spell->getName() );
+	creature->getTargetCreature()->setPendingCauseOfDeath( tmp );
 
   // cause damage, kill creature, gain levels, etc.
   battle->dealDamage( damage, 

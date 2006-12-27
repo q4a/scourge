@@ -43,6 +43,12 @@ void StateModExpirationEvent::execute() {
       char message[80];
       sprintf(message, "%s suffers poison damage!", creature->getName());
       session->getMap()->addDescription(message, 0.05f, 1.0f, 0.05f);
+
+			char tmp2[255];
+			sprintf( tmp2, "%s poison.", 
+							 Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
+			creature->getTargetCreature()->setPendingCauseOfDeath( tmp2 );
+
       creature->getBattle()->dealDamage(4.0f*rand()/RAND_MAX, 
                                         //4, 
                                         Constants::EFFECT_GREEN, true);

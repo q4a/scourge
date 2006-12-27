@@ -75,6 +75,7 @@ void ThirstHungerEvent::execute(){
 			scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f); 
 			creature->setHp( creature->getHp() - n );
 			if( creature->getHp() <= 0 ) {
+				creature->setCauseOfDeath( "Died of thirst" );
         scourge->getSession()->creatureDeath( creature );
         return;
 			}
@@ -107,6 +108,7 @@ void ThirstHungerEvent::execute(){
 			scourge->getMap()->addDescription(buff, 1.0f, 0.5f, 0.5f); 
 			creature->setHp( creature->getHp() - n );
 			if( creature->getHp() <= 0 ) {
+				creature->setCauseOfDeath( "Expired due to famine" );
         scourge->getSession()->creatureDeath( creature );
         return;
 			}
