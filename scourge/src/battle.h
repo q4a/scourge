@@ -143,6 +143,7 @@ class Battle {
   // return true if game paused
   bool pauseBeforePlayerTurn();
   void initTurnStep( bool callScript=false );
+	int getAdjustedWait( int originalWait );
   void executeAction();
   void stepCloserToTarget();
   bool selectNewTarget();

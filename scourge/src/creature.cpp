@@ -2158,6 +2158,7 @@ void Creature::evalSpecialSkills() {
 	}
 	char tmp[120];
   specialSkills.clear();
+	specialSkillNames.clear();
   HSQOBJECT *param = session->getSquirrel()->getCreatureRef( this );
   if( param ) {
     bool result;
@@ -2169,6 +2170,8 @@ void Creature::evalSpecialSkills() {
                         &result );
       if( result ) {
         specialSkills.insert( ss );
+				string skillName = ss->getName();
+				specialSkillNames.insert( skillName );
 				if( oldSpecialSkills.find( ss ) == oldSpecialSkills.end() ) {
 					if( session->getParty()->isPartyMember( this ) ) {
 						sprintf( tmp, "%s gains the %s special ability!", getName(), ss->getName() );

@@ -134,6 +134,7 @@ class Creature : public RenderedCreature {
   NpcInfo *npcInfo;
 
   std::set<SpecialSkill*> specialSkills;
+	std::set<std::string> specialSkillNames;
 
   bool mapChanged;
 
@@ -173,6 +174,10 @@ class Creature : public RenderedCreature {
 
 	void applyRecurringSpecialSkills();
   void evalSpecialSkills();
+	inline bool hasCapability( char *name ) {
+		std::string skillName = name;
+		return specialSkillNames.find( skillName ) != specialSkillNames.end();
+	}
   inline bool hasSpecialSkill( SpecialSkill *ss ) { return specialSkills.find(ss) != specialSkills.end(); }
   char *useSpecialSkill( SpecialSkill *specialSkill, 
                          bool manualOnly );

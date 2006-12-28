@@ -106,6 +106,12 @@ D:can extend the effectiveness of the armor worn by connecting with the
 D:mystic energies of the deity Xelphate. The prerequisite to this capability
 D:is being a magic user and having at least 25% skill in History magic.
 
+S:Speedy Casting,SpeedyCast,A,A,1,1
+D:You have studied the art of spell casting since an early age. The basics of
+D:this discipline are second nature to you and therefore you are able to
+D:conjure up magic faster than others. The prerequisites to this skill is high
+D:levels in the magical skills.
+
 #######################################################
 # Healer capabilities
 #######################################################

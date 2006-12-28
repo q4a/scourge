@@ -46,6 +46,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "int", "getStateMod", SqCreature::_getStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value if the state-mod is in effect for this character. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
   { "int", "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value indicating if the character is protected from the given state mod. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
 	{ "int", "getSex", SqCreature::_getSex, 0, 0, "Returns the creature's sex: 0-male, 1-female." },
+	{ "bool", "hasCapability", SqCreature::_hasCapability, 0, 0, "Does this creature currently able to use this special capability?" },
   { "float", "getArmor", SqCreature::_getArmor, 0, 0, "Return the armor value (sum of armor items worn modified by skills.)" },  
 
   { "void", "setLevel", SqCreature::_setLevel, SQ_MATCHTYPEMASKSTRING, "xn", "" },
@@ -138,6 +139,14 @@ int SqCreature::_getHp( HSQUIRRELVM vm ) {
 int SqCreature::_getSex( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
   sq_pushinteger( vm, object->getSex() );
+  return 1;
+}
+
+int SqCreature::_hasCapability( HSQUIRRELVM vm ) {
+	GET_STRING( name, 80 )
+	GET_OBJECT(Creature*)
+	SQBool b = object->hasCapability( name );
+  sq_pushbool( vm, b );
   return 1;
 }
 
