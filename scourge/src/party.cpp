@@ -51,6 +51,7 @@ Party::~Party() {
 }
 
 void Party::deleteParty() {
+	partySet.clear();
   for(int i = 0; i < getPartySize(); i++) {
     if(party[i]) {
       delete party[i];
@@ -66,7 +67,7 @@ void Party::reset() {
   deleteParty();
   if(loadedCount) {
     for(int i = 0; i < loadedCount; i++) {
-      party[i] = loadedParty[i];
+      party[i] = loadedParty[i];			
     }
     partySize = loadedCount;
     loadedCount = 0;
@@ -77,6 +78,9 @@ void Party::reset() {
     session->getGameAdapter()->createParty( party, &partySize );
   }
   player = party[0];
+	for( int i = 0; i < partySize; i++ ) {
+		partySet.insert( party[i] );
+	}
 
 #ifdef TEST_POSSESSION
   cerr << "****************************" << endl;
@@ -99,6 +103,7 @@ void Party::resetMultiplayer(Creature *c) {
   party[0] = player = c;
   party[1] = party[2] = party[3] = NULL;
   partySize = 1;
+	partySet.insert( c );
 #ifdef HAVE_SDL_NET
   // upload your character to the server
   session->getClient()->sendCharacter(player->save());
@@ -631,16 +636,21 @@ void Party::hire( Creature *creature ) {
 
 	// add to party
 	party[ partySize++ ] = creature;
+	partySet.insert( creature );
 
 	session->getSquirrel()->partyChanged();
 }
 
-void Party::dismiss( int index ) {
+void Party::dismiss( int index ) {	
 	session->addCreatureRef( party[ index ], index );
 	for( int i = index; i < partySize - 1; i++ ) {
 		party[ i ] = party[ i + 1 ];
 	}
 	party[ --partySize ] = NULL;
+	partySet.clear();
+	for( int i = 0; i < partySize; i++ ) {
+		partySet.insert( party[i] );
+	}
 	session->getSquirrel()->partyChanged();
 }
 

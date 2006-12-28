@@ -248,7 +248,8 @@ Creature *PcEditor::createPartyMember() {
 	c->setExp(0);
 	c->setHp();
 	c->setMp();
-	c->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
+	//c->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
+	c->setHunger(1);
 	c->setThirst((int)(5.0f * rand()/RAND_MAX) + 5); 
 
   // stats

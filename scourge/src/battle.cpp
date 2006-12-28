@@ -1262,7 +1262,8 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 
       sprintf(message, "...%s is killed!", tc->getName());
       session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
-			if( !tc->isMonster() ) session->getMap()->addDescription( tc->getCauseOfDeath(), 1.0f, 0.5f, 0.5f);
+			if( session->getParty()->isPartyMember( tc ) ) 
+				session->getMap()->addDescription( tc->getCauseOfDeath(), 1.0f, 0.5f, 0.5f);
 
       // add exp. points and money
       if( !IS_AUTO_CONTROL( creature ) ) {

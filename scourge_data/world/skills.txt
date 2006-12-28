@@ -42,7 +42,6 @@ D:when using melee weapons, you cause extra damage resulting from your battle-
 D:lust. The prerequisites for this capability are having more than 30% melee
 D:skill.
 
-# P:Barbarian:Warrior,20
 S:Killer Blow,Killerblow,A,D,8,10
 D:Being a barbarian is hard work. Not only are you not allowed to read, bathe,
 D:or act in any way trans-gender, you also subsist on an unhealthy diet lacking in

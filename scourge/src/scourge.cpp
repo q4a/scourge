@@ -2579,7 +2579,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 
 void Scourge::resetPartyUI() {
   Event *e;
-  Date d(0, 0, 10, 0, 0, 0); // 2 hours (format : sec, min, hours, days, months, years)
+  Date d(0, 0, 10, 0, 0, 0); // 10 hours (format : sec, min, hours, days, months, years)
   for(int i = 0; i < party->getPartySize() ; i++){
     e = new ThirstHungerEvent(party->getCalendar()->getCurrentDate(), d, party->getParty(i), this, Event::INFINITE_EXECUTIONS);
     party->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
@@ -3435,7 +3435,7 @@ void Scourge::uploadScore() {
 	}
 
 	char desc[1000];
-	sprintf( desc, "Expired %s. Cause of death: %s. Reached chapter %d of the story.", 
+	sprintf( desc, "Expired %s. Cause of demise: %s. Reached chapter %d of the story.", 
 					 place, 
 					 getParty()->getParty(0)->getCauseOfDeath(),
 					 ( getSession()->getBoard()->getStorylineIndex() + 1 ) );
