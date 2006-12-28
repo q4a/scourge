@@ -57,7 +57,8 @@ void SpecialSkill::initSkills() {
       if( p ) {
         switch(*p) {
         case 'A': type = SpecialSkill::SKILL_TYPE_AUTOMATIC; break;
-        case 'M': type = SpecialSkill::SKILL_TYPE_MANUAL; break;
+				case 'M': type = SpecialSkill::SKILL_TYPE_MANUAL; break;
+				case 'R': type = SpecialSkill::SKILL_TYPE_RECURRING; break;
         default: cerr << "Unknown special skill type: " << (*p) << endl;
                 type = SpecialSkill::SKILL_TYPE_MANUAL;
         }

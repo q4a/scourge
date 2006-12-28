@@ -73,6 +73,7 @@ class Date {
   bool isADayLater(Date date);
 	bool isAnHourLater(Date date);
   char *getShortString();
+	float getDateInSeconds();
   
   Date();
   Date(int sec, int min, int hour, int day, int month, int year);

@@ -256,4 +256,15 @@ bool Date::isAnHourLater(Date date) {
 				 (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() == getDay() && date.getHour() < getHour()));
 }
 
+float Date::getDateInSeconds() {
+	Uint32 f = 
+		getSec() + 
+		60 * getMin() + 
+		60 * 60 * getHour() + 
+		60 * 60 * 24 * getDay() + 
+		60 * 60 * 24 * dayInMonth[ getMonth() ] * getMonth() +
+		60 * 60 * 24 * dayInMonth[ getMonth() ] * 12 * getYear();
+	cerr << "Date::getDateInSeconds()=" << f << endl;
+	return (float)f;
+}
 

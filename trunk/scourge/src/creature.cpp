@@ -2267,6 +2267,16 @@ void Creature::setProtectedStateMod(int mod, bool setting) {
   evalSpecialSkills();
 }
 
+void Creature::applyRecurringSpecialSkills() {
+	for(int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++) {
+    SpecialSkill *skill = SpecialSkill::getSpecialSkill(t);   
+    if( skill->getType() == SpecialSkill::SKILL_TYPE_RECURRING &&
+        hasSpecialSkill( skill ) ) {
+			useSpecialSkill( skill, false );
+		}
+	}
+}
+
 float Creature::applyAutomaticSpecialSkills( int event, 
                                            char *varName,
                                            float varValue ) {

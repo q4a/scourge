@@ -8,7 +8,7 @@
 # icon tile x,y are from spells.bmp
 # D:Description of skill (multiple lines)
 #
-# type is: (M-manual,A-automatic)
+# type is: (M-manual,A-automatic,R-recurring)
 # event is: (A-armor)
 #
 # The prereq function can be slow-ish, but the action should execute
@@ -17,6 +17,31 @@
 # TODO: add prereq special skills here to create a rough tree of what
 # sages show. This also helps with not running too many prereq functions.
 
+# Others not yet implemented
+# gabor@scourge:~/scourge/trunk$ grep 'C:' scourge_data/world/professions.txt | sort | uniq | awk -F: ' { print "# S:" $2; }'
+# S:Adaptive Mind
+# S:Aura of Fear
+# S:Crazy Wisdom Defense
+# S:Critical hit
+# S:Damaging Aura
+# S:Exploit Lore
+# S:Heal Command Word
+# S:Healing Aura
+# S:Leadership bonus
+# S:Displacement
+# S:Planar Assistance
+# S:Shadow Soul
+# S:Shadow walk
+# S:Silent Kill
+# S:Speedy Casting
+# S:Strict Moral Code
+# S:Weapon Command
+# S:Undead Thralls
+# S:Unseen servant
+# S:Weapon Calling
+# S:Weapon Finesse
+# S:Weapon Level Bonus
+# S:Wilderness survival
 
 #######################################################
 # Fighter capabilities
@@ -49,15 +74,6 @@ D:vitamins and fiber. Fortunately you may freely partake in many fittingly, barb
 D:activities such as the contest of killing an opponent with a single blow. This 
 D:training is useful on the battlefield where you may take a bonus to your attacks.
 D:Only barbarians are allowed to use this special capability.
-
-# C:Improved War-rage
-
-# P:Elite Berserker:Barbarian,30
-# C:Superior War-rage
-# C:Damaging Aura
-# C:Shadow Soul
-
-
 
 #######################################################
 # Rogue capabilities
@@ -106,6 +122,13 @@ D:in your party. The healer temporarily joins everyone's fate and shares hit
 D:points from healthy party members with those who need it. It is rumored that
 D:players also take on some of each others' personalities. The prerequisite of
 D:this capability is 25 points of Awareness magic and having at least 5 levels.
+
+S:Healing Aura,HealingAura,R,1,1
+D:A palpable aura of holy innocence surround you. This force originates from
+D:celestial powers as long as you remain favored by your deity. While you travel
+D:with this aura, you and those around you naturally recover from injuries. The
+D:prerequisite to obtaining this capability is a noble profession such as a healer
+D:or certain types of high level warriors.
 
 #######################################################
 # Scholar capabilities

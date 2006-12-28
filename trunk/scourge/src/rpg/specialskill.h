@@ -41,6 +41,7 @@ public:
   enum {
     SKILL_TYPE_AUTOMATIC,
     SKILL_TYPE_MANUAL,
+		SKILL_TYPE_RECURRING,
     SKILL_TYPE_COUNT
   };
 

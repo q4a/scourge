@@ -171,6 +171,7 @@ class Creature : public RenderedCreature {
 
   inline GLfloat getAngle() { return angle; }
 
+	void applyRecurringSpecialSkills();
   void evalSpecialSkills();
   inline bool hasSpecialSkill( SpecialSkill *ss ) { return specialSkills.find(ss) != specialSkills.end(); }
   char *useSpecialSkill( SpecialSkill *specialSkill, 
@@ -350,9 +351,9 @@ class Creature : public RenderedCreature {
 
   inline void setName(char *s) { strncpy( name, s, 254 ); name[254]='\0'; }
   void setCharacter(Character *c);
-  inline void setLevel(int n) { level = ( n < 0 ? 0 : n ); }
+  inline void setLevel(int n) { level = ( n < 0 ? 0 : n ); evalSpecialSkills(); }
   void setExp();
-  inline void setExp(int n) { experience = ( n < 0 ? 0 : n ); }
+  inline void setExp(int n) { experience = ( n < 0 ? 0 : n ); evalSpecialSkills(); }
   inline void setMoney(int n) { money = n; evalSpecialSkills(); }
   inline void setHp(int n) { hp = ( n < 0 ? 0 : n ); evalSpecialSkills(); }
   inline void setMp(int n) { mp = ( n < 0 ? 0 : n ); evalSpecialSkills(); }

@@ -74,6 +74,8 @@ class Party : public CreatureGroupInfo {
 
   void regainMp();
 
+	void applyRecurringSpecialSkills();
+
   inline int getStorylineIndex() { return storylineIndex; }
 
   void reset();

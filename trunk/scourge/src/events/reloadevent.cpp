@@ -28,13 +28,15 @@ Event(currentDate, timeOut, nbExecutionsToDo) {
 }
 
 void ReloadEvent::execute(){
-  switch( mode ) {
-  case MODE_RELOAD_SCRIPTS:
-  session->getSquirrel()->reloadScripts(); break;
-  case MODE_REGAIN_POINTS:
-  session->getParty()->regainMp(); break;
-  default:
-  cerr << "Unknown mode " << mode << " in ReloadEvent." << endl;
+	switch( mode ) {
+	case MODE_RELOAD_SCRIPTS:
+		session->getSquirrel()->reloadScripts(); break;
+	case MODE_REGAIN_POINTS:
+		session->getParty()->regainMp();
+		session->getParty()->applyRecurringSpecialSkills(); 
+		break;
+	default:
+		cerr << "Unknown mode " << mode << " in ReloadEvent." << endl;
   }
 }
 
