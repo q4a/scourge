@@ -2149,6 +2149,14 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
 
 void Creature::evalSpecialSkills() {
   //if( !isMonster() ) cerr << "In Creature::evalSpecialSkills for " << getName() << endl;
+	set<SpecialSkill*> oldSpecialSkills;
+	for(int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++) {
+		SpecialSkill *ss = SpecialSkill::getSpecialSkill(t);
+		if( specialSkills.find( ss ) != specialSkills.end() ) {
+			oldSpecialSkills.insert( ss );
+		}
+	}
+	char tmp[120];
   specialSkills.clear();
   HSQOBJECT *param = session->getSquirrel()->getCreatureRef( this );
   if( param ) {
@@ -2161,9 +2169,25 @@ void Creature::evalSpecialSkills() {
                         &result );
       if( result ) {
         specialSkills.insert( ss );
+				if( oldSpecialSkills.find( ss ) == oldSpecialSkills.end() ) {
+					if( session->getParty()->isPartyMember( this ) ) {
+						sprintf( tmp, "%s gains the %s special ability!", getName(), ss->getName() );
+						session->getMap()->addDescription( tmp, 0.3f, 1.0f, 0.2f );
+					}
+				}
       }
     }
   }
+	for(int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++) {
+		SpecialSkill *ss = SpecialSkill::getSpecialSkill(t);
+		if( specialSkills.find( ss ) == specialSkills.end() &&
+				oldSpecialSkills.find( ss ) != oldSpecialSkills.end() ) {
+			if( session->getParty()->isPartyMember( this ) ) {
+				sprintf( tmp, "%s looses the %s special ability!", getName(), ss->getName() );
+				session->getMap()->addDescription( tmp, 1.0f, 0.3f, 0.2f );
+			}
+		}
+	}
 }
 
 void Creature::setSkill(int index, int value) { 

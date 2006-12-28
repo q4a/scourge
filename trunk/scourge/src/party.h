@@ -60,6 +60,7 @@ class Party : public CreatureGroupInfo {
   Creature *loadedParty[MAX_PARTY_SIZE];
   int loadedCount;
   std::map<int,Creature*> maxSkills;
+	std::set<Creature*> partySet;
 
  public:
 
@@ -68,6 +69,8 @@ class Party : public CreatureGroupInfo {
 
   inline Creature *getHighestSkillPC( int skill ) { return ( maxSkills.find( skill ) != maxSkills.end() ? maxSkills[ skill ] : NULL ); }
   void recomputeMaxSkills();
+
+	inline bool isPartyMember( Creature *c ) { return( partySet.find( c ) != partySet.end() ); }
 
   void regainMp();
 

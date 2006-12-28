@@ -318,6 +318,19 @@ G:SORCERY_GROUP,10
 W:TWO_HANDED-
 A:METAL-
 
+P:Elite War-caster:War-mage,20
+D:description goes here
+G:FIGHT_GROUP,30
+G:DEFEND_GROUP,25
+G:SORCERY_GROUP,20
+
+P:Battle Mage Savant:War-mage,20
+D:description goes here
+G:FIGHT_GROUP,25
+G:DEFEND_GROUP,25
+G:SORCERY_GROUP,25
+A:PLATE-
+
 # Religious fighter types
 # ===================================================================
 P:Military chaplain:Man-at-arms,10
@@ -326,6 +339,18 @@ G:FIGHT_GROUP,20
 G:DEFEND_GROUP,20
 G:SPIRIT_GROUP,10
 W:TWO_HANDED-
+
+P:Celestial Commander:Military chaplain,20
+D:description goes here
+G:FIGHT_GROUP,30
+G:DEFEND_GROUP,30
+G:SPIRIT_GROUP,20
+
+P:Spirit-bound Fighter:Military chaplain,20
+D:description goes here
+G:FIGHT_GROUP,35
+G:DEFEND_GROUP,25
+G:SPIRIT_GROUP,20
 
 # Weapons scholar types
 # ===================================================================
@@ -336,6 +361,18 @@ G:DEFEND_GROUP,20
 G:LORE_GROUP,10
 W:TWO_HANDED-
 A:PLATE-
+
+P:Arcane Commander:Arcane fighter,20
+D:description goes here
+G:FIGHT_GROUP,30
+G:DEFEND_GROUP,25
+G:LORE_GROUP,20
+
+P:Fighting Pedagog:Arcane fighter,20
+D:description goes here
+G:FIGHT_GROUP,25
+G:DEFEND_GROUP,30
+G:LORE_GROUP,25
 
 
 
@@ -412,6 +449,33 @@ G:DEFEND_GROUP,20
 G:SORCERY_GROUP,25
 C:Improved Mystic Defense
 
+# spiritual magic types
+# ===================================================================
+P:Soulshard:Magician,10
+D:description goes here
+G:FIGHT_GROUP,8
+G:DEFEND_GROUP,10
+G:SORCERY_GROUP,15
+G:SPIRIT_GROUP,5
+C:Mystic Defense
+
+P:Severed Spirit:Soulshard,20
+D:description goes here
+G:FIGHT_GROUP,15
+G:DEFEND_GROUP,20
+G:SORCERY_GROUP,20
+G:SPIRIT_GROUP,15
+
+P:Devotee of Rhun:Soulshard,20
+D:description goes here
+G:FIGHT_GROUP,15
+G:DEFEND_GROUP,15
+G:SORCERY_GROUP,20
+G:SPIRIT_GROUP,20
+
+
+
+
 # Clerical types
 # ===================================================================
 # ===================================================================
@@ -443,12 +507,38 @@ G:FIGHT_GROUP,16
 G:DEFEND_GROUP,20
 G:SPIRIT_GROUP,20
 
+P:Master Cleric:Clerical Aide,20
+D:description goes here
+G:FIGHT_GROUP,20
+G:DEFEND_GROUP,25
+G:SPIRIT_GROUP,30
+
+P:Battle Priest:Clerical Aide,20
+D:description goes here
+G:FIGHT_GROUP,25
+G:DEFEND_GROUP,25
+G:SPIRIT_GROUP,25
+
 P:Traveling Medic:Healer,10
 D:description goes here
 G:FIGHT_GROUP,18
 G:DEFEND_GROUP,18
 G:SPIRIT_GROUP,16
 G:LORE_GROUP,4
+
+P:Nature's Ally:Traveling Medic,20
+D:description goes here
+G:FIGHT_GROUP,20
+G:DEFEND_GROUP,25
+G:SPIRIT_GROUP,20
+G:LORE_GROUP,8
+
+P:Battleborn Healer:Traveling Medic,20
+D:description goes here
+G:FIGHT_GROUP,25
+G:DEFEND_GROUP,22
+G:SPIRIT_GROUP,20
+G:LORE_GROUP,8
 
 
 # Scholar types
@@ -482,12 +572,40 @@ G:FIGHT_GROUP,12
 G:DEFEND_GROUP,12
 G:LORE_GROUP,20
 
+P:Neophyte Master:Scholar,20
+D:description goes here
+G:FIGHT_GROUP,20
+G:DEFEND_GROUP,18
+G:LORE_GROUP,25
+
+P:Battlefield Scholar:Scholar,20
+D:description goes here
+G:FIGHT_GROUP,25
+G:DEFEND_GROUP,18
+G:LORE_GROUP,22
+
 P:Field Scientist:Scholar,10
 D:description goes here
 G:FIGHT_GROUP,14
 G:DEFEND_GROUP,14
 G:LORE_GROUP,18
 G:STEALTH_GROUP,4
+
+P:Arcane Study:Scholar,20
+D:description goes here
+G:FIGHT_GROUP,18
+G:DEFEND_GROUP,18
+G:LORE_GROUP,25
+G:STEALTH_GROUP,10
+
+P:Assistant Loremaster:Scholar,20
+D:description goes here
+G:FIGHT_GROUP,18
+G:DEFEND_GROUP,20
+G:LORE_GROUP,25
+G:STEALTH_GROUP,8
+
+
 
 
 # Rogue types
@@ -521,6 +639,18 @@ G:FIGHT_GROUP,16
 G:DEFEND_GROUP,16
 G:STEALTH_GROUP,20
 
+P:Master Thief:Thief,20
+D:description goes here
+G:FIGHT_GROUP,25
+G:DEFEND_GROUP,22
+G:STEALTH_GROUP,30
+
+P:Assassin in Training:Thief,20
+D:description goes here
+G:FIGHT_GROUP,28
+G:DEFEND_GROUP,20
+G:STEALTH_GROUP,30
+
 P:Gutter-sage:Cutpurse,10
 D:description goes here
 G:FIGHT_GROUP,14
@@ -528,5 +658,17 @@ G:DEFEND_GROUP,14
 G:STEALTH_GROUP,18
 G:LORE_GROUP,4
 
+P:Rouge Magician:Gutter-sage,20
+D:description goes here
+G:FIGHT_GROUP,18
+G:DEFEND_GROUP,18
+G:STEALTH_GROUP,25
+G:LORE_GROUP,8
 
+P:Underworld Spellcaster:Gutter-sage,20
+D:description goes here
+G:FIGHT_GROUP,16
+G:DEFEND_GROUP,16
+G:STEALTH_GROUP,25
+G:LORE_GROUP,15
 
