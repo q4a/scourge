@@ -126,6 +126,31 @@ function actionNaturalHealing( creature ) {
 }
 
 
+// **********************************************
+// Healing Aura
+function prereqHealingAura( creature ) {
+  return( ( creature.isOfRootClass( "Warrior" ) && creature.getLevel() >= 20 ) ||
+					( creature.isOfRootClass( "Scholar" ) && creature.getLevel() >= 20 ) ||
+					( creature.isOfRootClass( "Healer" ) && creature.getLevel() >= 10 ) );
+}
+
+function actionHealingAura( creature ) {
+	n <- creature.getLevel() / 7 + 1;
+	i <- 0;	
+	hp <- 0;
+	healed <- false;
+	for( i = 0; i < scourgeGame.getPartySize(); i++ ) {
+		hp = scourgeGame.getPartyMember( i ).getHp() + n;
+		if( hp > scourgeGame.getPartyMember( i ).getMaxHp() ) 
+			hp = scourgeGame.getPartyMember( i ).getMaxHp();
+		if( hp != scourgeGame.getPartyMember( i ).getHp() ) healed = true;
+		scourgeGame.getPartyMember( i ).setHp( hp );
+  }
+	if( healed ) 
+		scourgeGame.printMessage( creature.getName() + "'s holy innocence sooths your pains." );
+}
+
+
 
 
 // **********************************************
