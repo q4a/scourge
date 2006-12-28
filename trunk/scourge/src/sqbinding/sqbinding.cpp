@@ -464,9 +464,23 @@ bool SqBinding::callSpellEvent( Creature *creature,
   return false;
 }
 
+bool SqBinding::callSkillEvent( Creature *creature, 
+																const char *skillName, 
+																const char *function ) {
+  HSQOBJECT *creatureParam = getCreatureRef( creature );
+  if( creatureParam ) {
+    return callTwoArgMethod( function, 
+                             creatureParam,
+														 NULL,
+                             skillName );
+  }
+  return false;
+}
+
 bool SqBinding::callTwoArgMethod( const char *name,
                                   HSQOBJECT *param1,
-                                  HSQOBJECT *param2 ) {
+                                  HSQOBJECT *param2,
+																	const char *s ) {
   bool ret;
   int top = sq_gettop( vm ); //saves the stack size before the call
   sq_pushroottable( vm ); //pushes the global table
@@ -474,7 +488,11 @@ bool SqBinding::callTwoArgMethod( const char *name,
   if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
     sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
     sq_pushobject( vm, *param1 );
-    sq_pushobject( vm, *param2 );
+		if( s ) {
+			sq_pushstring( vm, _SC( s ), -1 );
+		} else {
+			sq_pushobject( vm, *param2 );
+		}
     sq_call( vm, 3, 0 ); //calls the function
     ret = true;
   } else {

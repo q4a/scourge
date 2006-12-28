@@ -65,6 +65,7 @@ public:
   static int _getProtectedStateMod( HSQUIRRELVM vm );
   static int _getArmor( HSQUIRRELVM vm );  
 	static int _getSex( HSQUIRRELVM vm );
+	static int _hasCapability( HSQUIRRELVM vm );
 
   // other
   static int _isOfClass( HSQUIRRELVM vm );

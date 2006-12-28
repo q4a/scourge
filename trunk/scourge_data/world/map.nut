@@ -222,6 +222,26 @@ function spellDamageHandler( caster, spell ) {
   }
 }
 
+// The waitHandlerXYZ functions allow you to modify the 'wait' time of the
+// item, spell or skill used in a combat turn.
+// Assumem that a global variable named 'turnWait' exists. Change it to the
+// desired new value, or leave as is if no change is needed.
+function waitHandlerSkill( attacker, skillName ) {
+	print( "waitHandlerSkill: " + attacker.getName() + " wait=" + turnWait + "\n" );
+}
+
+function waitHandlerSpell( caster, spell ) {
+	print( "waitHandlerSpell: " + caster.getName() + " wait=" + turnWait + "\n" );
+	if( caster.hasCapability( "Speedy Casting" ) == true ) {
+		turnWait = turnWait * 0.75;
+		scourgeGame.printMessage( caster.getName() + " conjures up magic with blinding speed!" );
+	}
+}
+
+// if item is null, it's a bare-handed attack
+function waitHandlerItem( attacker, item ) {
+	print( "waitHandlerItem: " + attacker.getName() + " wait=" + turnWait + "\n" );
+}
 
 // =============================================================
 // Conversation methods

@@ -151,6 +151,23 @@ function actionHealingAura( creature ) {
 }
 
 
+// **********************************************
+// Speedy Casting
+function prereqSpeedyCast( creature ) {
+	/*
+	return( creature.getSkillByName( "LIFE_AND_DEATH_MAGIC" ) >= 75 ||
+					creature.getSkillByName( "DECEIT_MAGIC" ) >= 75 ||
+					creature.getSkillByName( "NATURE_MAGIC" ) >= 75 ||
+					creature.getSkillByName( "AWARENESS_MAGIC" ) >= 75 ||
+					creature.getSkillByName( "HISTORY_MAGIC" ) >= 75 ||
+          creature.getSkillByName( "CONFRONTATION_MAGIC" ) >= 75 );
+					*/
+	return true;
+}
+
+function actionSpeedyCast( creature ) {
+	// the action is handled via the waitHandlerSpell function in map.nut.
+}
 
 
 // **********************************************

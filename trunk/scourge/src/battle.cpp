@@ -301,6 +301,28 @@ int Battle::calculateRange( Item *item ) {
   return range;
 }
 
+int Battle::getAdjustedWait( int originalWait ) {
+	getSession()->getSquirrel()->setGlobalVariable( "turnWait", originalWait );
+	if( creature->getActionSkill() ) {
+		getSession()->getSquirrel()->callSkillEvent( creature, 
+																								 creature->getActionSkill()->getName(), 
+																								 "waitHandlerSkill" );
+	} else if( creature->getActionSpell() ) {
+		getSession()->getSquirrel()->callSpellEvent( creature, 
+																								 creature->getActionSpell(), 
+																								 "waitHandlerSpell" );
+	} else {
+		getSession()->getSquirrel()->callItemEvent( creature, 
+																								item, 
+																								"waitHandlerItem" );
+	}
+	int newWait = (int)getSession()->getSquirrel()->getGlobalVariable( "turnWait" );
+	//if( originalWait != newWait ) {
+		//cerr << "turnWait was " << originalWait << " and now is " << newWait << endl;
+	//}
+	return newWait;
+}																										 	
+
 void Battle::initTurnStep( bool callScript ) {
   dist = creature->getDistanceToTarget();
 
@@ -311,13 +333,13 @@ void Battle::initTurnStep( bool callScript ) {
     if( creature->getActionSkill() ) {
       range = calculateRange();
       if(nextTurn > 0) weaponWait = nextTurn;
-      else weaponWait = creature->getActionSkill()->getSpeed();
+      else weaponWait = getAdjustedWait( creature->getActionSkill()->getSpeed() );
       nextTurn = 0;
       if(debugBattle) cerr << "\tUsing capability: " << creature->getActionSkill()->getName() << endl;
     } else if(creature->getActionSpell()) {
       range = calculateRange();
       if(nextTurn > 0) weaponWait = nextTurn;
-      else weaponWait = creature->getActionSpell()->getSpeed();
+      else weaponWait = getAdjustedWait( creature->getActionSpell()->getSpeed() );
       nextTurn = 0;
       if(debugBattle) cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
     } else {
@@ -329,7 +351,7 @@ void Battle::initTurnStep( bool callScript ) {
         if(debugBattle) cerr << "\tUsing bare hands." << endl;
       }
       // How many steps to wait before being able to use the weapon.
-      weaponWait = toint( creature->getWeaponAPCost( item ) );
+      weaponWait = getAdjustedWait( toint( creature->getWeaponAPCost( item ) ) );
       // Make turn-based mode a little snappier
       //if( session->getPreferences()->isBattleTurnBased() ) {
       //  weaponWait /= 2;
