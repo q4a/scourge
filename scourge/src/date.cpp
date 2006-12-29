@@ -96,97 +96,75 @@ void Date::reset( char *shortString ){
 	}
 }
 
-void Date::addSeconds(int nbSec){
-    
-#ifdef DEBUG_DATE
-    cout << " add " << nbSec << " TO ";    
-    print();    
-#endif              
-    // This algo suppose that nbSec <= 60, otherwise, it doesn't work properly
-    if(nbSec > 60) {
-        nbSec = 60;
-    }
-    sec += nbSec;
-                
-    if(sec > 59){            
-        sec -= 60;    
-        min ++;
-                        
-        if(min > 59){                
-            min = 0;    
-            hour++;
-                
-            if(hour > 23){                
-                hour = 0;
-                day ++;                                    
-                        
-                if(day > dayInMonth[month]){
-                    day = 1;
-                    month ++;
-                                                        
-                    if(month > 12){
-                        month = 1;
-                        year ++;                    
-                    }              
-                }
-            }
-        }  
-    } 
-#ifdef DEBUG_DATE
-    cout << " result : "; 
-    print();
-    cout << endl;
-#endif
+void Date::addSec( int n ) {
+	sec += n;
+	if( sec > 59 ) {
+		sec -= 60;
+		addMin( 1 );
+	}
 }
 
-void Date::addDate(Date d){
-    int s, m, h, dy, dy2, mth,  y;
-    int nbMonth;
-    
-#ifdef DEBUG_DATE
-    cout << "addDate :";
-    d.print();
-    cout << " TO ";
-    this->print(); cout << endl;
-#endif
-    
-    s = d.getSec();
-    m = d.getMin();
-    h = d.getHour();
-    dy = d.getDay();
-    mth = d.getMonth();
-    y = d.getYear();
-        
-    s += sec;
-    sec = s % 60;
-    m += min;    
-    min = (m + s/60) % 60;    
-    h += hour;
-    hour = (h + m/60) %24;
-    
-    dy += day;  
-    dy2 = dy;
-    day = dy2;
-    nbMonth = 0;    
-    while(dy2 -= dayInMonth[nbMonth + 1] > 0){         
-        day = dy2;        
-        nbMonth++;
-    }                
-    mth += month - 1;
-#ifdef DEBUG_DATE
-    cout << "mth =" << mth << " month=" << month << " nbMonth=" << nbMonth << endl; 
-#endif
-    month = ((mth + nbMonth) % 12) + 1;    
-    y += year;
-    year = (y + mth/12);
-    
+void Date::addMin( int n ) {
+	min += n;
+	if( min > 59 ) {
+		min -= 60;
+		addHour( 1 );
+	}
+}
 
-#ifdef DEBUG_DATE    
-    cout << " = ";
-    this->print();
-    cout << endl;
+void Date::addHour( int n ) {
+	hour += n;
+	if( hour > 23 ) {
+		hour -= 24;
+		addDay( 1 );
+	}
+}
+
+void Date::addDay( int n ) {
+	day += n;
+	if( day >= dayInMonth[ month + 1 ] ) {
+		day -= dayInMonth[ month + 1 ];
+		addMonth( 1 );
+	}
+}
+
+void Date::addMonth( int n ) {
+	month += n;
+	if( month > 11 ) {
+		month -= 12;		
+		addYear( 1 );
+	}
+	// FIXME?
+	if( day >= dayInMonth[ month + 1 ] ) {
+		day = dayInMonth[ month + 1 ] - 1;
+	}
+}
+
+void Date::addYear( int n ) {
+	year += n;
+}
+
+void Date::addDate( Date d ) {
+#ifdef DEBUG_DATE
+	cout << "addDate :";
+	d.print();
+	cout << " TO ";
+	this->print(); 
+	cout << endl;
 #endif
 
+	addSec( d.getSec() );
+	addMin( d.getMin() );
+	addHour( d.getHour() );
+	addDay( d.getDay() );
+	addMonth( d.getMonth() );
+	addYear( d.getYear() );
+	
+#ifdef DEBUG_DATE
+	cout << "final RESULT: ";
+	this->print(); 
+	cout << endl;
+#endif
 }
 
 
@@ -256,15 +234,4 @@ bool Date::isAnHourLater(Date date) {
 				 (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() == getDay() && date.getHour() < getHour()));
 }
 
-float Date::getDateInSeconds() {
-	Uint32 f = 
-		getSec() + 
-		60 * getMin() + 
-		60 * 60 * getHour() + 
-		60 * 60 * 24 * getDay() + 
-		60 * 60 * 24 * dayInMonth[ getMonth() ] * getMonth() +
-		60 * 60 * 24 * dayInMonth[ getMonth() ] * 12 * getYear();
-	cerr << "Date::getDateInSeconds()=" << f << endl;
-	return (float)f;
-}
 

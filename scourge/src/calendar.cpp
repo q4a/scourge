@@ -113,7 +113,7 @@ bool Calendar::update(int gameSpeed){
             case 4 : setTimeMultiplicator(1); break;
         }
         */
-        currentDate.addSeconds(timeMultiplicator);
+        currentDate.addSec(timeMultiplicator);
         if( CALENDAR_DEBUG ) cerr << "time: " << currentDate.getDateString() << endl;
     }        
     
@@ -147,14 +147,23 @@ bool Calendar::update(int gameSpeed){
             
             // and re-adds it if needed
             if(CALENDAR_DEBUG) cout << " readd ? ";
-            if(    e->getNbExecutionsToDo() == Event::INFINITE_EXECUTIONS
-                || e->getNbExecutions() < e->getNbExecutionsToDo()){
-                if(CALENDAR_DEBUG) cout << " Yes" << endl;
-                Date d;
-                d = e->getEventDate();
-                d.addDate( e->getTimeOut() );                
-                e->setEventDate( d );
-                scheduleEvent( e );
+						if(    e->getNbExecutionsToDo() == Event::INFINITE_EXECUTIONS
+									 || e->getNbExecutions() < e->getNbExecutionsToDo()){
+							
+							Date d;
+							//d = e->getEventDate();
+							d.setDate( currentDate.getShortString() );
+							d.addDate( e->getTimeOut() );
+
+							if(CALENDAR_DEBUG) {
+								cout << " Yes" << endl;
+								cout << "Readding event at date: " << endl;
+								d.print();
+								cout << endl;
+							}
+							
+							e->setEventDate( d );
+							scheduleEvent( e );
             }
             else{
                 // Don't need this event anymore
