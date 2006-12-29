@@ -49,10 +49,16 @@ class Date {
   static const char * monthName[13];
   static const char * dayName[8]; 
     
-  void addSeconds(int nbSec);
   void addDate(Date d); 
   void setDate(int s, int m, int h, int day, int month, int year);
 	void setDate( char *shortString );
+
+	void addSec( int n );
+	void addMin( int n );
+	void addHour( int n );
+	void addDay( int n );
+	void addMonth( int n );
+	void addYear( int n );
      
   inline int getYear()        { return year; }
   inline int getMonth()       { return month; }
@@ -73,7 +79,6 @@ class Date {
   bool isADayLater(Date date);
 	bool isAnHourLater(Date date);
   char *getShortString();
-	float getDateInSeconds();
   
   Date();
   Date(int sec, int min, int hour, int day, int month, int year);
