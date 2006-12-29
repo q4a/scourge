@@ -229,7 +229,10 @@ MapEditor::~MapEditor() {
 }
 
 void MapEditor::drawView() {
+
+	scourge->getMap()->preDraw();
   scourge->getMap()->draw();
+	scourge->getMap()->postDraw();
 
   miniMap->drawMap();
 

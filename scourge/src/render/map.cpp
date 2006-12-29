@@ -3021,7 +3021,7 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 
 	info->hasWater = ( hasWater ? 1 : 0 );
 
-	info->map_type = ( getMapRenderHelper() == MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ] ?
+	info->map_type = ( helper == MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ] ?
 										 MapRenderHelper::CAVE_HELPER :
 										 MapRenderHelper::ROOM_HELPER );
 
@@ -3141,7 +3141,7 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 	}
 
 	// save the fog
-	getMapRenderHelper()->saveHelper( &(info->fog_info) );
+	if( helper ) helper->saveHelper( &(info->fog_info) );
 		 
 	info->edited = edited;
 
