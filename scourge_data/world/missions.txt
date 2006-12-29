@@ -264,3 +264,18 @@ N:Have you visited Hornaxx the goddess of Arguments yet? Be sure to remind her o
 N:debt she owes us, and hope that in her divine wisdom, she rewards you with items of
 N:antimagic binding. With such aid, we can finally try to defeat Mothrazu.
 S:Ask Hornaxx goddess of Arguments to equip each pc with an antimagic binding item.
+
+T:Chapter 10: Where Wild Weeds Grow
+S:19,3,emeril
+D:Mothrazu's lair is finally ready for our assault. Peril beyond description awaits
+D:within its crumbling halls, but luckily the land finally has heroes like it did in
+D:the age of the Guardians of the Realm. For you brave adventurers one misguided adept
+D:of nature should not pose a serious threat. ...Unless she is aided by extraplanar powers.
+D:...Or managed to activate whatever device she acquired in the Abyss. ...Or, well, there
+D:are many other scenarios where your doom is all but certain. But let us not dwell upon
+D:such morbid travails! You will succeed for.. uh.. for sure. Remember to wear your armor
+D:of antimagic bindings, for Mothrazu's realm is protected by a poisonous miasma.
+Y:fixme
+N:fixme
+S:Neutralize one hideous druidic menace
+
