@@ -224,6 +224,7 @@ class Map {
   bool mouseMoveScreen;
   Uint16 move;
   bool mouseRot, mouseZoom;
+	int mouseRotDir;
 
   Uint16 cursorMapX, cursorMapY, cursorMapZ, cursorFlatMapX, cursorFlatMapY;
   Uint16 cursorChunkX, cursorChunkY;

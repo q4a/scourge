@@ -95,6 +95,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
   mouseMoveScreen = true;
   mouseZoom = mouseRot = false;
+	mouseRotDir = 1;
   move = 0;
 
   mapViewWidth = MVW;
@@ -2793,7 +2794,7 @@ void Map::handleEvent( SDL_Event *event ) {
   case SDL_MOUSEMOTION:
     if(mouseRot) {
 			adapter->setCursorVisible( false );
-      setZRot(event->motion.xrel * MOUSE_ROT_DELTA);
+      setZRot( mouseRotDir * event->motion.xrel * MOUSE_ROT_DELTA);
       setYRot(-event->motion.yrel * MOUSE_ROT_DELTA);
 		} else if( mouseMove ) {
 			adapter->setCursorVisible( false );
@@ -2853,6 +2854,7 @@ void Map::handleEvent( SDL_Event *event ) {
   if( event->button.button ) {
     if( event->button.button == SDL_BUTTON_MIDDLE ) {
       mouseRot = true;
+			mouseRotDir = ( event->button.y - viewY < viewHeight / 2 ? 1 : -1 );
 		} else if( event->button.button == SDL_BUTTON_RIGHT ) {
 			mouseMove = true;
 			mouseMoveX = event->button.x;
