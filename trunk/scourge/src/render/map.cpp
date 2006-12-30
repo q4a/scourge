@@ -3398,7 +3398,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
   cerr << "Looking for txt file: " << txtfileName << endl;
   adapter->loadMapData( (const char*)txtfileName );
   
-  strcpy( this->name, name );
+  strcpy( this->name, ( templateMapName ? templateMapName : name ) );
 
   if( report ) report->updateStatus( 6, 7, "Starting party" );
 

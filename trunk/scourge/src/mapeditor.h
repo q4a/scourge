@@ -42,6 +42,7 @@ class Item;
 class Monster;
 class GLShape;
 class MiniMap;
+class Monster;
 
 class MapEditor : public SDLEventHandler, SDLScreenView {
 private:
@@ -83,6 +84,7 @@ private:
   // lists
   ScrollingList *shapeList, *itemList, *creatureList;
   char **shapeNames, **itemNames, **creatureNames;
+	std::map<std::string, Monster*> creatures;
 
   std::map<Monster*,GLShape*> creatureOutlines;
 
