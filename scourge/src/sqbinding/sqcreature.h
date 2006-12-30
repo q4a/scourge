@@ -66,6 +66,9 @@ public:
   static int _getArmor( HSQUIRRELVM vm );  
 	static int _getSex( HSQUIRRELVM vm );
 	static int _hasCapability( HSQUIRRELVM vm );
+	static int _isCharacter( HSQUIRRELVM vm );
+	static int _isMonster( HSQUIRRELVM vm );
+	static int _isNpc( HSQUIRRELVM vm );
 
   // other
   static int _isOfClass( HSQUIRRELVM vm );

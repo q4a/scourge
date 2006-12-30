@@ -176,6 +176,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   for (map<string, Monster*>::iterator i = creatureMap->begin(); 
         i != creatureMap->end(); ++i ) {
     string name = i->first;
+		Monster *monster = i->second;
     /*
     Monster *monster = (Monster*)( i->second );
     GLShape *shape = scourge->getSession()->getShapePalette()->
@@ -185,9 +186,11 @@ MapEditor::MapEditor( Scourge *scourge ) {
                        monster);
     seen.push_back( shape );
     */
-    char *p = (char*)name.c_str();
     creatureNames[ count ] = (char*)malloc( 120 * sizeof(char) );
-    strcpy( creatureNames[ count ], p );
+    //strcpy( creatureNames[ count ], p );
+		sprintf( creatureNames[ count ], "%d - %s", monster->getLevel(), name.c_str() );
+		string s = creatureNames[ count ];
+		creatures[ s ] = monster;
     count++;
   }
   creatureList->setLines( creatureMap->size(), (const char**)creatureNames );
@@ -436,7 +439,9 @@ bool MapEditor::getShape( GLShape **shape,
   if( creature ) *creature = NULL;
   if( creatureButton->isSelected() && 
       creatureList->getSelectedLine() > -1 ) {
-    Monster *monster = Monster::getMonsterByName( creatureNames[ creatureList->getSelectedLine() ] );
+		string s = creatureNames[ creatureList->getSelectedLine() ];
+		Monster *monster = creatures[ s ];
+    //Monster *monster = Monster::getMonsterByName( creatureNames[ creatureList->getSelectedLine() ] );
     // cache creature shapes
     if( creatureOutlines.find( monster ) == creatureOutlines.end() ) {
       creatureOutlines[ monster ] = scourge->getSession()->getShapePalette()->
@@ -505,7 +510,8 @@ bool MapEditor::getShape( GLShape **shape,
 void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
   if( scourge->getSDLHandler()->mouseX < mainWin->getX() && 
       ( button == SDL_BUTTON_LEFT || 
-        button == SDL_BUTTON_RIGHT ) ) {
+        button == SDL_BUTTON_RIGHT && 
+				( SDL_GetModState() & KMOD_SHIFT ) ) ) {
 
     // draw the correct walls in this chunk
     int xx = scourge->getMap()->getCursorFlatMapX();

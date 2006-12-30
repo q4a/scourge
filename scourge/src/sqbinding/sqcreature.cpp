@@ -75,6 +75,10 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "void", "setIntro", SqCreature::_setIntro, 0, 0, "Set this NPC's intro text to the text referenced by this keyphrase in the <map>.txt file." },
 	{ "void", "addInventoryByName", SqCreature::_addInventoryByName, 0, 0, "Add a new item of this name to the creature's inventory." },
 
+	{ "bool", "isCharacter", SqCreature::_isCharacter, 0, 0, "Is this creature a pc?" },
+	{ "bool", "isMonster", SqCreature::_isMonster, 0, 0, "Is this creature a monster?" },
+	{ "bool", "isNpc", SqCreature::_isNpc, 0, 0, "Is this creature an npc?" },
+
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqCreature::classDecl = { SqCreature::className, 0, members, 
@@ -504,5 +508,26 @@ int SqCreature::_addInventoryByName( HSQUIRRELVM vm ) {
 	}
 	object->addInventory( SqBinding::sessionRef->newItem( rpgItem ), true );
 	return 0;
+}
+
+int SqCreature::_isCharacter( HSQUIRRELVM vm ) {
+	GET_OBJECT( Creature* )
+	SQBool b = ( object->isMonster() ? false : true );
+	sq_pushbool( vm, b );
+	return 1;
+}
+
+int SqCreature::_isMonster( HSQUIRRELVM vm ) {
+	GET_OBJECT( Creature* )
+	SQBool b = ( object->isMonster() ? true : false );
+	sq_pushbool( vm, b );
+	return 1;
+}
+
+int SqCreature::_isNpc( HSQUIRRELVM vm ) {
+	GET_OBJECT( Creature* )
+	SQBool b = ( object->isNpc() ? true : false );
+	sq_pushbool( vm, b );
+	return 1;
 }
 

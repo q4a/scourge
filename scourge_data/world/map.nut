@@ -13,6 +13,8 @@ function enterMap( mapName ) {
 		initChapter8();
 	} else if( scourgeGame.getMission().getChapter() == 8 && mapName == "temple" ) {
 		initChapter9();
+	} else if( scourgeGame.getMission().getChapter() == 9 && mapName == "emeril" ) {
+		initChapter10();
 	}
 }
 
@@ -227,11 +229,11 @@ function spellDamageHandler( caster, spell ) {
 // Assumem that a global variable named 'turnWait' exists. Change it to the
 // desired new value, or leave as is if no change is needed.
 function waitHandlerSkill( attacker, skillName ) {
-	print( "waitHandlerSkill: " + attacker.getName() + " wait=" + turnWait + "\n" );
+//	print( "waitHandlerSkill: " + attacker.getName() + " wait=" + turnWait + "\n" );
 }
 
 function waitHandlerSpell( caster, spell ) {
-	print( "waitHandlerSpell: " + caster.getName() + " wait=" + turnWait + "\n" );
+//	print( "waitHandlerSpell: " + caster.getName() + " wait=" + turnWait + "\n" );
 	if( caster.hasCapability( "Speedy Casting" ) == true ) {
 		turnWait = turnWait * 0.75;
 		scourgeGame.printMessage( caster.getName() + " conjures up magic with blinding speed!" );
@@ -240,7 +242,7 @@ function waitHandlerSpell( caster, spell ) {
 
 // if item is null, it's a bare-handed attack
 function waitHandlerItem( attacker, item ) {
-	print( "waitHandlerItem: " + attacker.getName() + " wait=" + turnWait + "\n" );
+//	print( "waitHandlerItem: " + attacker.getName() + " wait=" + turnWait + "\n" );
 }
 
 // =============================================================
@@ -403,6 +405,46 @@ function getChapter9Intro() {
 	return null;
 }
 
+antimagicItems <- [ 
+  "Boots of antimagic binding",
+  "Antimagic foil hat",
+  "Antimagic chestplate"
+];
+
+antimagicItemLocations <- [
+	256, 1, 8
+];
+
+function initChapter10() {
+	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
+		scourgeGame.showTextMessage( "The ancient walls appear to cave inward as if pushed on by the very roots of the forest from above. A metallic smell cuts the air and the noises echoing from the deep chill your bones. A grinding sound wells from beneath your feet as if the wheels of a great machine are turning. Could this be the contdown to Mothrazu's infernal plans?" );
+	}
+
+	// poison party members without antimagic binding armor
+	i <- 0;
+	found <- false;
+	equippedItem <- null;
+	t <- 0;
+	for( i = 0; i < scourgeGame.getPartySize(); i++ ) {
+		found = false;
+		for( t = 0; t < antimagicItemLocations.len(); t++ ) {
+			equippedItem = scourgeGame.getPartyMember( i ).getItemAtLocation( antimagicItemLocations[ t ] );
+			if( equippedItem != null ) {
+				if( equippedItem.getName() == antimagicItems[ t ] ) {
+					found = true;
+					break;
+				}
+			}
+		}
+		if( !found ) {
+			scourgeGame.printMessage( 
+				scourgeGame.getPartyMember( i ).getName() + 
+				" feels very ill suddenly." );
+			scourgeGame.getPartyMember( i ).setStateMod( 6, true );
+		}
+	}
+}
+
 function storePartyLevel() {
 	i <- 0;
 	for( i = 0; i < scourgeGame.getPartySize(); i++ ) {
@@ -415,12 +457,6 @@ function storePartyLevel() {
 		}
 	}
 }
-
-antimagicItems <- [ 
-  "Boots of antimagic binding",
-  "Antimagic foil hat",
-  "Antimagic chestplate"
-];
 
 function assignAntimagicItems() {
 	i <- 0;
