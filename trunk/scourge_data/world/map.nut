@@ -417,7 +417,15 @@ antimagicItemLocations <- [
 
 function initChapter10() {
 	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
-		scourgeGame.showTextMessage( "The ancient walls appear to cave inward as if pushed on by the very roots of the forest from above. A metallic smell cuts the air and the noises echoing from the deep chill your bones. A grinding sound wells from beneath your feet as if the wheels of a great machine are turning. Could this be the contdown to Mothrazu's infernal plans?" );
+		scourgeGame.showTextMessage( "The ancient walls appear to cave inward as if pushed " +
+																 "on by the very roots of the forest from above. " +
+																 "A metallic smell cuts the air and the noises echoing " +
+																 "from the deep chill your bones. " +
+																 "||A grinding sound wells from beneath your feet as if the " +
+																 "wheels of a great machine are turning. " + 
+																 "Could this be the contdown to Mothrazu's infernal plans? " +
+																 "||And as if that wasn't freeky enough, frequent quakes " +
+																 "shake the dungeon..." );
 	}
 
 	// poison party members without antimagic binding armor
