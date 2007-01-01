@@ -264,7 +264,31 @@ void SqBinding::endGame() {
 
 
 
+void SqBinding::registerCreature( Creature *ptr ) {
+	HSQOBJECT *obj = (HSQOBJECT*)malloc( sizeof( HSQOBJECT ) );
+	if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), obj ) ) ) {
+		// Set a token in the class so we can resolve the squirrel instance to a native creature.
+		// The value is the address of the native creature object.
+		setObjectValue( *obj, SCOURGE_ID_TOKEN, ptr );
+		refCreature.push_back( obj );
+		creatureMap[ ptr ] = obj;
+	} else {
+		cerr << "Unable instantiate class: " << creature->getClassName() << endl;
+	}
+}
 
+void SqBinding::registerItem( Item *ptr ) {
+	HSQOBJECT *obj = (HSQOBJECT*)malloc( sizeof( HSQOBJECT ) );
+	if( SQ_SUCCEEDED( instantiateClass( _SC( item->getClassName() ), obj ) ) ) {
+		// Set a token in the class so we can resolve the squirrel instance to a native creature.
+		// The value is the address of the native creature object.
+		setObjectValue( *(obj), SCOURGE_ID_TOKEN, ptr );
+		refItem.push_back( obj );
+		itemMap[ ptr ] = obj;
+	} else {
+		cerr << "Unable instantiate class: " << creature->getClassName() << endl;
+	}
+}
 
 bool SqBinding::startLevel() {
   // create the Mission
@@ -275,33 +299,14 @@ bool SqBinding::startLevel() {
 
   // create the creatures of the level
   if( DEBUG_SQUIRREL ) cerr << "Creating level's creatures:" << endl;  
-  HSQOBJECT *obj;
   for( int i = 0; i < session->getCreatureCount(); i++ ) {
-    obj = (HSQOBJECT*)malloc( sizeof( HSQOBJECT ) );
-    if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), obj ) ) ) {
-      // Set a token in the class so we can resolve the squirrel instance to a native creature.
-      // The value is the address of the native creature object.
-      setObjectValue( *obj, SCOURGE_ID_TOKEN, session->getCreature(i) );
-      refCreature.push_back( obj );
-      creatureMap[ session->getCreature(i) ] = obj;
-    } else {
-      cerr << "Unable instantiate class: " << creature->getClassName() << endl;
-    }
+		registerCreature( session->getCreature(i) );
   }
 
   // create the items of the level
   if( DEBUG_SQUIRREL ) cerr << "Creating level's items:" << endl;  
   for( int i = 0; i < session->getItemCount(); i++ ) {
-    obj = (HSQOBJECT*)malloc( sizeof( HSQOBJECT ) );
-    if( SQ_SUCCEEDED( instantiateClass( _SC( item->getClassName() ), obj ) ) ) {
-      // Set a token in the class so we can resolve the squirrel instance to a native creature.
-      // The value is the address of the native creature object.
-      setObjectValue( *(obj), SCOURGE_ID_TOKEN, session->getItem(i) );
-      refItem.push_back( obj );
-      itemMap[ session->getItem(i) ] = obj;
-    } else {
-      cerr << "Unable instantiate class: " << creature->getClassName() << endl;
-    }
+		registerItem( session->getItem( i ) );
   }
 
   bool ret = callMapMethod( "enterMap", session->getMap()->getName() );

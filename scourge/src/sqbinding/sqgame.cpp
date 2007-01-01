@@ -50,6 +50,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "void", "runTests", SqGame::_runTests, 2, "xs", "Run internal tests of the rpg combat engine. Results are saved in path given as param to runTests()." },
   { "void", "showTextMessage", SqGame::_showTextMessage, 2, "xs", "show a scrollable text message dialog." },
   { "string", "getDeityLocation", SqGame::_getDeityLocation, 4, "xnnn", "Get the deity whose presense is bound to this location (like an altar). Results the name of the deity." },    
+	{ "void", "endConversation", SqGame::_endConversation, 0, 0, "Close the conversation dialog." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members, 
@@ -249,5 +250,10 @@ int SqGame::_getDeityLocation( HSQUIRRELVM vm ) {
   } else {
     return sq_throwerror( vm, _SC( "Location not found." ) );
   }
+}
+
+int SqGame::_endConversation( HSQUIRRELVM vm ) {
+	SqBinding::sessionRef->getGameAdapter()->endConversation();
+	return 0;
 }
 

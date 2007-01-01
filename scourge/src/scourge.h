@@ -690,6 +690,7 @@ public:
   static bool testLoadGame(Session *session);
 
   void startConversation( RenderedCreature *creature, char *message=NULL );
+	void endConversation();
 
   void drawItemIcon( Item *item, int size=25 );
 

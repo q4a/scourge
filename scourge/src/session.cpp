@@ -229,6 +229,51 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
   return item;
 }
 
+Creature *Session::replaceCreature( Creature *creature, char *newCreatureType ) {
+	int cx = toint( creature->getX() );
+	int cy = toint( creature->getY() );
+	int cz = toint( creature->getZ() );
+	getMap()->removeCreature( cx, cy, cz );
+	creature->moveTo( -1, -1, 0 ); // remove its marker
+	creature->setStateMod( Constants::dead, true ); // make sure it doesn't move
+
+	Monster *monster = Monster::getMonsterByName( newCreatureType );
+	if( !monster ) {
+		cerr << "*** Error: no monster named " << newCreatureType << endl;
+		return NULL;
+	}
+	GLShape *shape = getShapePalette()->
+		getCreatureShape( monster->getModelName(), 
+											monster->getSkinName(), 
+											monster->getScale(),
+											monster );
+	Creature *replacement = newCreature( monster, shape );
+	
+	// register with squirrel
+	getSquirrel()->registerCreature( replacement );
+	for( int i = 0; i < replacement->getInventoryCount(); i++ ) {
+		getSquirrel()->registerItem( replacement->getInventory( i ) );
+	}
+		
+	int fx, fy;
+	replacement->findPlace( cx, cy, &fx, &fy );
+	replacement->cancelTarget();
+
+	getMap()->startEffect( fx, fy, 1, 
+												 Constants::EFFECT_DUST, 
+												 (Constants::DAMAGE_DURATION * 4), 
+												 replacement->getShape()->getWidth(), 
+												 replacement->getShape()->getDepth() );
+	char msg[120];
+	sprintf( msg, "%s transforms into another shape in front of your very eyes!", 
+					 creature->getName() );
+	getMap()->addDescription( msg );
+
+	cerr << "is npc? " << replacement->isNpc() << endl;
+
+	return replacement;
+}
+
 // creatures created for the mission
 Creature *Session::newCreature(Monster *monster, GLShape *shape, bool loaded) {
   Creature *c = new Creature(this, monster, shape, !loaded);

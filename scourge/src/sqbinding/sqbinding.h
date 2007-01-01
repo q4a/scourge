@@ -215,6 +215,9 @@ public:
   bool startLevel();
   bool endLevel();
 
+	void registerCreature( Creature *ptr );
+	void registerItem( Item *ptr );
+
   void compileBuffer( const char *s );
 
   static bool getObjectValue( HSQUIRRELVM vm, const char *key, void **ptr );

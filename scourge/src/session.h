@@ -141,6 +141,7 @@ public:
   */
   virtual Creature *newCreature( Monster *monster, GLShape *shape, bool loaded=false );
 	virtual Creature *newCreature( Character *character, char *name, int sex, int model );
+	virtual Creature *replaceCreature( Creature *creature, char *newCreatureType );
 	virtual bool removeCreatureRef( Creature *creature, int index );
 	virtual void addCreatureRef( Creature *creature, int index );
 
