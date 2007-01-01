@@ -49,6 +49,7 @@ public:
   // general
   static int _getCreatureCount( HSQUIRRELVM vm );
   static int _getCreature( HSQUIRRELVM vm );
+	static int _replaceCreature( HSQUIRRELVM vm );
 
   static int _getItemCount( HSQUIRRELVM vm );
   static int _getItem( HSQUIRRELVM vm );

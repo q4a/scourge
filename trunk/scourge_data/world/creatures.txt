@@ -299,7 +299,7 @@ P:RESIST_DECEIT_MAGIC,20
 P:RESIST_CONFRONTATION_MAGIC,30
 
 M:Karzul Agmordexu,/portraits/karzul.bmp
-M:/models/ratamahatta,Gearwhore.bmp,40,10,11,7,6,6,3.5,npc
+M:/models/ratamahatta,Gearwhore.bmp,25,10,11,7,6,6,3.5,npc
 I:Spiked flail
 I:Full face helmet
 I:Steel Shield
@@ -347,6 +347,41 @@ P:RESIST_LIFE_AND_DEATH_MAGIC,75
 P:RESIST_HISTORY_MAGIC,75
 P:RESIST_DECEIT_MAGIC,75
 P:RESIST_CONFRONTATION_MAGIC,70
+
+M:Mothrazu,/portraits/mothrazu.bmp
+M:/models/npc/alita,alita.bmp,20,10,15,10,9,6,1.7,npc
+I:Scythe of Milmoril
+I:Embroidered Guard Gloves
+I:Horned helmet
+I:Padded Robes
+S:Cursed ways
+S:Gust of wind
+S:Divine healing touch
+S:Blast of Fury
+P:RESIST_NATURE_MAGIC,100
+P:RESIST_AWARENESS_MAGIC,85
+P:RESIST_LIFE_AND_DEATH_MAGIC,50
+P:RESIST_HISTORY_MAGIC,75
+P:RESIST_DECEIT_MAGIC,55
+P:RESIST_CONFRONTATION_MAGIC,50
+
+M:Mothrazu Pain Incarnate
+M:/models/md3/area51,purple,20,10,15,10,9,6,3.0
+I:Scythe of Milmoril
+I:Embroidered Guard Gloves
+I:Horned helmet
+I:Padded Robes
+S:Cursed ways
+S:Gust of wind
+S:Divine healing touch
+S:Blast of Fury
+P:RESIST_NATURE_MAGIC,100
+P:RESIST_AWARENESS_MAGIC,85
+P:RESIST_LIFE_AND_DEATH_MAGIC,50
+P:RESIST_HISTORY_MAGIC,75
+P:RESIST_DECEIT_MAGIC,55
+P:RESIST_CONFRONTATION_MAGIC,50
+
 
 #############################
 # Monsters

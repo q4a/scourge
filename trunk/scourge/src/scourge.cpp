@@ -3229,6 +3229,10 @@ void Scourge::startConversation( RenderedCreature *creature, char *message ) {
 	}
 }
 
+void Scourge::endConversation() {
+	conversationGui->hide();
+}
+
 void Scourge::completeCurrentMission() {
   getSession()->getCurrentMission()->setCompleted( true );
   if( getSession()->getCurrentMission()->isStoryLine() )

@@ -285,8 +285,25 @@ function converse( creature, question ) {
 		} else if( question.tolower() == "tokens" ) {
 			assignAntimagicItems();
 		}
+	} else if( creature.getName() == "Mothrazu" &&
+						 question.tolower() == "doom" ) {
+		mothrazuTransforms( creature );
 	}
   return null;
+}
+
+function mothrazuTransforms( creature ) {
+	scourgeGame.endConversation();
+	replacement <- scourgeGame.getMission().
+		replaceCreature( creature, 
+										 "Mothrazu Pain Incarnate" );
+	// statemod: 0,1,2,3,4 and 11 (blessed, empowered, enraged, ac_protected, magic_protected and invisible)
+	replacement.setStateMod( 0, true );
+	replacement.setStateMod( 1, true );
+	replacement.setStateMod( 2, true );
+	replacement.setStateMod( 3, true );
+	replacement.setStateMod( 4, true );
+	replacement.setStateMod( 11, true );
 }
 
 // =============================================================

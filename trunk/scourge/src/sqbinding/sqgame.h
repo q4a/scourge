@@ -81,6 +81,8 @@ public:
   static int _reloadNuts( HSQUIRRELVM vm );
   static int _documentSOM( HSQUIRRELVM vm );
   static int _runTests( HSQUIRRELVM vm );
+
+	static int _endConversation( HSQUIRRELVM vm );
 };
 
 #endif
