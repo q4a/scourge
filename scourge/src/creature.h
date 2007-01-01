@@ -443,7 +443,7 @@ class Creature : public RenderedCreature {
   /**
    * Try to heal someone; returns true if someone was found.
    */
-  bool castHealingSpell();
+  bool castHealingSpell();	
 
   float getDistanceToTarget( RenderedCreature *creature=NULL );
 	float getDistance( RenderedCreature *other );
@@ -451,6 +451,7 @@ class Creature : public RenderedCreature {
 
   bool isWithPrereq( Spell *spell );
   Creature *findClosestTargetWithPrereq( Spell *spell );
+	bool useOffensiveSpell( Spell *spell, float dist, Creature *possibleTarget );
 
   inline void setStateModEvent(int mod, Event *event) { stateModEventMap[mod] = event; }
   inline Event *getStateModEvent(int mod) { return(stateModEventMap.find(mod) == stateModEventMap.end() ? NULL : stateModEventMap[mod]); }

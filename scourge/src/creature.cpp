@@ -1984,20 +1984,18 @@ void Creature::decideMonsterAction() {
                             p->getShape()->getDepth());
       
       // can monster use magic?
-      if(getSpellCount()) {
-        for(int i = 0; i < getSpellCount(); i++) {
-          Spell *spell = getSpell(i);
-          if( spell->getMp() < getMp() && !( spell->isFriendly() ) ) {
-            if((spell->getDistance() == 1 && dist <= MIN_DISTANCE) ||
-               (spell->getDistance() > 1 && dist > MIN_DISTANCE)) {
-              setAction(Constants::ACTION_CAST_SPELL, 
-                        NULL,
-                        spell);
-              setMotion(Constants::MOTION_MOVE_TOWARDS);
-              setTargetCreature(p);
-              return;
-            }
-          }
+      if( getSpellCount() ) {
+        for( int i = 0; i < getSpellCount(); i++ ) {
+          Spell *spell = getSpell( i );
+
+					if( useOffensiveSpell( spell, dist, p ) ) {
+						setAction( Constants::ACTION_CAST_SPELL, 
+											 NULL,
+											 spell );
+						setMotion( Constants::MOTION_MOVE_TOWARDS );
+						setTargetCreature( p );
+						return;
+					}
         }
       }
 
@@ -2006,6 +2004,21 @@ void Creature::decideMonsterAction() {
       setTargetCreature(p);
     }
   }
+}
+
+bool Creature::useOffensiveSpell( Spell *spell, float dist, Creature *possibleTarget ) {
+	if( spell->getMp() < getMp() && !( spell->isFriendly() ) ) {
+
+		// if there is a prereq. and the target already has it, skip this spell.
+		if( spell->hasStateModPrereq() &&
+				possibleTarget->isWithPrereq( spell ) ) return false;
+
+		if( ( spell->getDistance() == 1 && dist <= MIN_DISTANCE ) ||
+				( spell->getDistance() > 1 && dist > MIN_DISTANCE ) ) {
+			return true;
+		}
+	}
+	return false;
 }
 
 float Creature::getDistanceToSel() {
