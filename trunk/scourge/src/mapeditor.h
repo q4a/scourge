@@ -55,16 +55,15 @@ private:
   
   // UI
   Window *mainWin;
-  Button *doneButton;
   Button *wallButton;
   Button *doorButton;
   Button *eraseButton;
   Button *shapeButton;
   Button *itemButton;
+	Button *furnitureButton;
   Button *creatureButton;
   Button *startPosButton;
   Button *floorType;
-  Button *mapButton;
   std::vector<Button *> toggleButtonList;
                                                                                              
   TextField *nameText;
@@ -82,8 +81,8 @@ private:
   MapWidget *mapWidget;
   
   // lists
-  ScrollingList *shapeList, *itemList, *creatureList;
-  char **shapeNames, **itemNames, **creatureNames;
+  ScrollingList *shapeList, *itemList, *creatureList, *furnitureList;
+  char **shapeNames, **itemNames, **creatureNames, **furnitureNames;
 	std::map<std::string, Monster*> creatures;
 
   std::map<Monster*,GLShape*> creatureOutlines;
@@ -105,10 +104,15 @@ public:
   inline bool isVisible() { return mainWin->isVisible(); }
 
 protected:
+	void createNewMapDialog();
   void processMouseMotion( Uint8 button, int editorZ );
   bool getShape( GLShape **shape,
                  Item **item = NULL,
                  Creature **creature = NULL );
+	void addNewItem( char *name,
+									 GLShape **shape, 
+									 Item **item, 
+									 Creature **creature );
 
   void addWall( Sint16 mapx, Sint16 mapy, int dir );
   void addDoor( Sint16 mapx, Sint16 mapy, int dir );
