@@ -265,6 +265,7 @@ private:
   inline bool isContainer() { return( type == CONTAINER ? true : false ); }
   inline bool isScroll() { return( type == SCROLL ? true : false ); }
 	inline bool hasSpell() { return( itemTypes[ type ].hasSpell ); }
+	inline bool isOther() { return( type == OTHER ? true : false ); }
 
 
 

@@ -29,8 +29,8 @@
 using namespace std;
 
 char *floorTypeName[80] = { 
-  "FLOOR_TILE",
-  "ROOM_FLOOR_TILE"
+  "Tile: Passage",
+  "Tile: Room"
 };
 
 /**
@@ -60,6 +60,8 @@ MapEditor::MapEditor( Scourge *scourge ) {
 
   mapSettings = new EditorMapSettings();
 
+	createNewMapDialog();
+
   int w = 200;
   mainWin = new Window( scourge->getSDLHandler(),
                         scourge->getScreenWidth() - w, 0,
@@ -71,28 +73,148 @@ MapEditor::MapEditor( Scourge *scourge ) {
 
 	int startx = 8;
 	w -= 2;
-  
-  doneButton = mainWin->createButton( startx, 5, w - 10, 20, "Done" );
 
-  wallButton = mainWin->createButton( startx, 25, w - 10, 45, "Wall", true );
+	int yy = 8;
+	int ystep = 24;
+
+	mainWin->createLabel( 5, yy + 10, "Name:" );
+  nameText = mainWin->createTextField( 60, yy, 10 );
+	yy += ystep;
+
+	loadButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, "Load" );
+  saveButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 5, yy + 20, "Save" );
+	yy += ystep;
+
+  wallButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, "Wall", true );
   toggleButtonList.push_back( wallButton );
   wallButton->setSelected( true );
-  doorButton = mainWin->createButton( startx, 50, w - 10, 70, "Door", true );
+  doorButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, "Door", true );
   toggleButtonList.push_back( doorButton );
+	yy += ystep;
+  
+  
 
-  mainWin->createLabel( 5, 87, "Name:" );
-  nameText = mainWin->createTextField( 60, 75, 10 );
-  loadButton = mainWin->createButton( startx, 100, ( w - 10 ) / 2, 120, "Load" );
-  saveButton = mainWin->createButton( ( w - 10 ) / 2 + 5, 100, w - 5, 120, "Save" );
+  newButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, "Properties" );
+  floorType = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, floorTypeName[ 1 ], true );
+	yy += ystep;
 
-  newButton = mainWin->createButton( startx, 125, w - 10, 145, "Map Properties" );
-  floorType = mainWin->createButton( startx, 150, w - 10, 170, floorTypeName[ 1 ], true );
-
-  startPosButton = mainWin->createButton( startx, 175, w - 10, 195, "Starting Position", true );
+  startPosButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, "Start Pos", true );
   toggleButtonList.push_back( startPosButton );
+	yy += ystep;
 
-  mapButton = mainWin->createButton( startx, 200, w - 10, 220, "Map Location" );
+  // Lists
+  vector<Shape*> seen;  
 
+  // items
+  itemButton = mainWin->createButton( startx, yy, w - 10, yy + 20, "Item", true );
+	toggleButtonList.push_back( itemButton );
+	yy += ystep;
+  itemList = new ScrollingList( startx, yy, w - 16, 100, 
+                                scourge->getShapePalette()->getHighlightTexture() );
+  mainWin->addWidget( itemList );
+	yy += 104;
+	
+
+	furnitureButton = mainWin->createButton( startx, yy, w - 10, yy + 20, "Furniture", true );	
+  toggleButtonList.push_back( furnitureButton );
+	yy += ystep;
+	furnitureList = new ScrollingList( startx, yy, w - 16, 100, 
+																		 scourge->getShapePalette()->getHighlightTexture() );
+  mainWin->addWidget( furnitureList );
+	yy += 104;
+
+	// separate items from furniture
+	map<string, const RpgItem *> *itemMap = RpgItem::getItemMap();
+	vector<RpgItem*> itemVector;
+	vector<RpgItem*> furnitureVector;
+  for (map<string, const RpgItem*>::iterator i = itemMap->begin(); 
+        i != itemMap->end(); ++i ) {
+    string name = i->first;
+    RpgItem *item = (RpgItem*)( i->second );
+    Shape *shape = scourge->getShapePalette()->getShape( item->getShapeIndex() );
+    seen.push_back( shape );
+		if( item->isContainer() || item->isOther() ) {
+			furnitureVector.push_back( item );
+		} else {
+			itemVector.push_back( item );
+		}
+  }
+
+	itemNames = (char**)malloc( itemVector.size() * sizeof(char*) );
+	for( unsigned int i = 0; i < itemVector.size(); i++ ) {
+		itemNames[ i ] = (char*)malloc( 120 * sizeof(char) );
+		strcpy( itemNames[ i ], itemVector[ i ]->getName() );
+	}
+	itemList->setLines( itemVector.size(), (const char**)itemNames );
+
+	furnitureNames = (char**)malloc( furnitureVector.size() * sizeof(char*) );
+	for( unsigned int i = 0; i < furnitureVector.size(); i++ ) {
+		furnitureNames[ i ] = (char*)malloc( 120 * sizeof(char) );
+		strcpy( furnitureNames[ i ], furnitureVector[ i ]->getName() );
+	}
+  furnitureList->setLines( furnitureVector.size(), (const char**)furnitureNames );
+  
+  // creatures
+  creatureButton = mainWin->createButton( startx, yy, w - 10, yy + 20, "Creature", true );
+  toggleButtonList.push_back( creatureButton );
+	yy += ystep;
+  creatureList = new ScrollingList( startx, yy, w - 16, 100, 
+                                    scourge->getShapePalette()->getHighlightTexture() );
+  mainWin->addWidget( creatureList );
+	yy += 104;
+  map<string, Monster*> *creatureMap = &(Monster::monstersByName);
+  creatureNames = (char**)malloc( creatureMap->size() * sizeof(char*) );
+  int count = 0;
+  for (map<string, Monster*>::iterator i = creatureMap->begin(); 
+        i != creatureMap->end(); ++i ) {
+    string name = i->first;
+		Monster *monster = i->second;
+    /*
+    Monster *monster = (Monster*)( i->second );
+    GLShape *shape = scourge->getSession()->getShapePalette()->
+      getCreatureShape(monster->getModelName(), 
+                       monster->getSkinName(), 
+                       monster->getScale(),
+                       monster);
+    seen.push_back( shape );
+    */
+    creatureNames[ count ] = (char*)malloc( 120 * sizeof(char) );
+    //strcpy( creatureNames[ count ], p );
+		sprintf( creatureNames[ count ], "%d - %s", monster->getLevel(), name.c_str() );
+		string s = creatureNames[ count ];
+		creatures[ s ] = monster;
+    count++;
+  }
+  creatureList->setLines( creatureMap->size(), (const char**)creatureNames );
+
+  // shapes
+  shapeButton = mainWin->createButton( startx, yy, w - 10, yy + 20, "Shape", true );
+  toggleButtonList.push_back( shapeButton );
+	yy += ystep;
+  shapeList = new ScrollingList( startx, yy, w - 16, 100, 
+                                 scourge->getShapePalette()->getHighlightTexture() );
+  mainWin->addWidget( shapeList );
+	yy += 104;
+
+  map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
+  shapeNames = (char**)malloc( shapeMap->size() * sizeof(char*) );
+  count = 0;
+  for (map<string, GLShape*>::iterator i = shapeMap->begin(); i != shapeMap->end(); ++i ) {
+    string name = i->first;
+    GLShape *shape = i->second;
+    if( !contains( &seen, shape ) ) {
+      char *p = (char*)name.c_str();
+      shapeNames[ count ] = (char*)malloc( 120 * sizeof(char) );
+      strcpy( shapeNames[ count ], p );
+      count++;
+    }
+  }
+  shapeList->setLines( count, (const char**)shapeNames );
+
+  miniMap = new MiniMap( scourge, true ); 
+}                                                                         
+
+void MapEditor::createNewMapDialog() {
   // new map ui
   int nw = 450;
   int nh = 400;
@@ -104,6 +226,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
                           GuiTheme::DEFAULT_THEME );
   newMapWin->setVisible( false );
   newMapWin->setModal( true );
+	int startx = 8;
   newMapWin->createLabel( startx, 20, "Map level (0-50):" );
   levelText = newMapWin->createTextField( 150, 10, 20 );
   newMapWin->createLabel( startx, 40, "Map depth (0-10):" );
@@ -135,91 +258,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   okButton = newMapWin->createButton( nw - bw * 3 - 10, 345, nw - bw * 2 - 5, 365, "New Map" );
   applyButton = newMapWin->createButton( nw - bw * 2 + 5, 345, nw - bw - 5, 365, "Apply" );
   cancelButton = newMapWin->createButton( nw - bw, 345, nw - 5, 365, "Cancel" );
-
-  // Lists
-  vector<Shape*> seen;
-  int h = 240;
-  int d = 150;
-
-  // items
-  itemButton = mainWin->createButton( startx, h, w - 10, h + 20, "Item", true );
-  toggleButtonList.push_back( itemButton );
-  itemList = new ScrollingList( startx, h + 30, w - 16, 100, 
-                                scourge->getShapePalette()->getHighlightTexture() );
-  mainWin->addWidget( itemList );
-  map<string, const RpgItem *> *itemMap = RpgItem::getItemMap();
-  itemNames = (char**)malloc( itemMap->size() * sizeof(char*) );
-  int count = 0;
-  for (map<string, const RpgItem*>::iterator i = itemMap->begin(); 
-        i != itemMap->end(); ++i ) {
-    string name = i->first;
-    RpgItem *item = (RpgItem*)( i->second );
-    Shape *shape = scourge->getShapePalette()->getShape( item->getShapeIndex() );
-    seen.push_back( shape );
-    char *p = (char*)name.c_str();
-    itemNames[ count ] = (char*)malloc( 120 * sizeof(char) );
-    strcpy( itemNames[ count ], p );
-    count++;
-  }
-  itemList->setLines( itemMap->size(), (const char**)itemNames );
-  h += d;
-  
-  // creatures
-  creatureButton = mainWin->createButton( startx, h, w - 10, h + 20, "Creature", true );
-  toggleButtonList.push_back( creatureButton );
-  creatureList = new ScrollingList( startx, h + 30, w - 16, 100, 
-                                    scourge->getShapePalette()->getHighlightTexture() );
-  mainWin->addWidget( creatureList );
-  map<string, Monster*> *creatureMap = &(Monster::monstersByName);
-  creatureNames = (char**)malloc( creatureMap->size() * sizeof(char*) );
-  count = 0;
-  for (map<string, Monster*>::iterator i = creatureMap->begin(); 
-        i != creatureMap->end(); ++i ) {
-    string name = i->first;
-		Monster *monster = i->second;
-    /*
-    Monster *monster = (Monster*)( i->second );
-    GLShape *shape = scourge->getSession()->getShapePalette()->
-      getCreatureShape(monster->getModelName(), 
-                       monster->getSkinName(), 
-                       monster->getScale(),
-                       monster);
-    seen.push_back( shape );
-    */
-    creatureNames[ count ] = (char*)malloc( 120 * sizeof(char) );
-    //strcpy( creatureNames[ count ], p );
-		sprintf( creatureNames[ count ], "%d - %s", monster->getLevel(), name.c_str() );
-		string s = creatureNames[ count ];
-		creatures[ s ] = monster;
-    count++;
-  }
-  creatureList->setLines( creatureMap->size(), (const char**)creatureNames );
-  h += d;
-
-  // shapes
-  shapeButton = mainWin->createButton( startx, h, w - 10, h + 20, "Shape", true );
-  toggleButtonList.push_back( shapeButton );
-  shapeList = new ScrollingList( startx, h + 30, w - 16, 100, 
-                                 scourge->getShapePalette()->getHighlightTexture() );
-  mainWin->addWidget( shapeList );
-  map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
-  shapeNames = (char**)malloc( shapeMap->size() * sizeof(char*) );
-  count = 0;
-  for (map<string, GLShape*>::iterator i = shapeMap->begin(); i != shapeMap->end(); ++i ) {
-    string name = i->first;
-    GLShape *shape = i->second;
-    if( !contains( &seen, shape ) ) {
-      char *p = (char*)name.c_str();
-      shapeNames[ count ] = (char*)malloc( 120 * sizeof(char) );
-      strcpy( shapeNames[ count ], p );
-      count++;
-    }
-  }
-  shapeList->setLines( count, (const char**)shapeNames );
-  h += d;
-
-  miniMap = new MiniMap( scourge, true ); 
-}                                                                         
+}
 
 MapEditor::~MapEditor() {
   map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
@@ -348,10 +387,6 @@ bool MapEditor::handleEvent(SDL_Event *event) {
 }
 
 bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
-  if( widget == doneButton ) {
-    hide();
-    return true;
-  }
 
   int found = -1;
   for( int i = 0; i < (int)toggleButtonList.size(); i++ ) {
@@ -458,44 +493,11 @@ bool MapEditor::getShape( GLShape **shape,
     return true;
   } else if( itemButton->isSelected() &&
              itemList->getSelectedLine() > -1 ) {
-    RpgItem *rpgItem = 
-      RpgItem::getItemByName( itemNames[ itemList->getSelectedLine() ] );
-    *shape = scourge->getShapePalette()->getShape( rpgItem->getShapeIndex() );
-    if( item ) {
-      cerr << "new item" << endl;
-      *item = scourge->getSession()->newItem( rpgItem, level );
-      // fill the container with random items
-      if( rpgItem->isContainer() ) {
-        // some items
-        int n = (int)(3.0f * rand() / RAND_MAX);
-        for(int i = 0; i < n; i++) {
-          RpgItem *containedItem = RpgItem::getRandomItem( depth );
-          if(containedItem) 
-            (*item)->addContainedItem(scourge->getSession()->
-                                      newItem(containedItem, level), 
-                                      true);
-        }
-        // some spells
-        if(!((int)(25.0f * rand() / RAND_MAX))) {
-          int n = (int)(2.0f * rand() / RAND_MAX) + 1;
-					int spellLevel = level / 5;
-          for(int i = 0; i < n; i++) {
-            Spell *spell = MagicSchool::getRandomSpell( spellLevel );
-            if( spell ) {
-              Item *scroll = scourge->getSession()->
-                newItem(RpgItem::getItemByName("Scroll"), level, spell);
-              (*item)->addContainedItem(scroll, true);
-            }
-          }
-        }
-
-        // print summary
-        cerr << "Container contents:" << endl;
-        for( int i = 0; i < (*item)->getContainedItemCount(); i++ ) {
-          cerr << "\t" << (*item)->getContainedItem( i )->getRpgItem()->getName() << endl;
-        }
-      }
-    }
+		addNewItem( itemNames[ itemList->getSelectedLine() ], shape, item, creature );
+    return true;
+  } else if( furnitureButton->isSelected() &&
+             furnitureList->getSelectedLine() > -1 ) {
+		addNewItem( furnitureNames[ furnitureList->getSelectedLine() ], shape, item, creature );
     return true;
   } else if( shapeButton->isSelected() && 
              shapeList->getSelectedLine() > -1 ) {
@@ -505,6 +507,49 @@ bool MapEditor::getShape( GLShape **shape,
   } else {
     return false;
   }
+}
+
+void MapEditor::addNewItem( char *name,
+														GLShape **shape, 
+														Item **item, 
+														Creature **creature ) {
+	RpgItem *rpgItem = RpgItem::getItemByName( name );
+	*shape = scourge->getShapePalette()->getShape( rpgItem->getShapeIndex() );
+	if( item ) {
+		cerr << "new item" << endl;
+		*item = scourge->getSession()->newItem( rpgItem, level );
+		// fill the container with random items
+		if( rpgItem->isContainer() ) {
+			// some items
+			int n = (int)(3.0f * rand() / RAND_MAX);
+			for(int i = 0; i < n; i++) {
+				RpgItem *containedItem = RpgItem::getRandomItem( depth );
+				if(containedItem) 
+					(*item)->addContainedItem(scourge->getSession()->
+																		newItem(containedItem, level), 
+																		true);
+			}
+			// some spells
+			if(!((int)(25.0f * rand() / RAND_MAX))) {
+				int n = (int)(2.0f * rand() / RAND_MAX) + 1;
+				int spellLevel = level / 5;
+				for(int i = 0; i < n; i++) {
+					Spell *spell = MagicSchool::getRandomSpell( spellLevel );
+					if( spell ) {
+						Item *scroll = scourge->getSession()->
+							newItem(RpgItem::getItemByName("Scroll"), level, spell);
+						(*item)->addContainedItem(scroll, true);
+					}
+				}
+			}
+	
+			// print summary
+			cerr << "Container contents:" << endl;
+			for( int i = 0; i < (*item)->getContainedItemCount(); i++ ) {
+				cerr << "\t" << (*item)->getContainedItem( i )->getRpgItem()->getName() << endl;
+			}
+		}
+	}
 }
 
 void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
