@@ -45,6 +45,8 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "int", "getDungeonDepth", SqMission::_getDungeonDepth, 0, 0, "Get the current depth." },
 	{ "void", "descendDungeon", SqMission::_descendDungeon, 0, 0, "Travel one dungeon level lower." },
 	{ "void", "ascendDungeon", SqMission::_ascendDungeon, 0, 0, "Travel one dungeon level higher." },
+	{ "bool", "areQuakesEnabled", SqMission::_areQuakesEnabled, 0, 0, "Are earthquakes enabled on this level?" },
+	{ "void", "setQuakesEnabled", SqMission::_setQuakesEnabled, 0, 0, "Set to true if quakes are enabled on this level. (False by default.)" },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -180,3 +182,16 @@ int SqMission::_ascendDungeon( HSQUIRRELVM vm ) {
 		SqBinding::sessionRef->getMap()->getLocation( x, y, z ) );
 	return 0;
 }
+
+int SqMission::_setQuakesEnabled( HSQUIRRELVM vm ) {
+	GET_BOOL( b )
+	SqBinding::sessionRef->getMap()->setQuakesEnabled( b );
+	return 0;
+}
+
+int SqMission::_areQuakesEnabled( HSQUIRRELVM vm ) {
+	SQBool b = SqBinding::sessionRef->getMap()->areQuakesEnabled();
+	sq_pushbool( vm, b );
+	return 1;
+}
+
