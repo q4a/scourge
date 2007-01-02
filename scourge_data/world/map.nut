@@ -468,6 +468,9 @@ function initChapter10() {
 			scourgeGame.getPartyMember( i ).setStateMod( 6, true );
 		}
 	}
+
+	// start the earthquakes
+	scourgeGame.getMission().setQuakesEnabled( true );
 }
 
 function storePartyLevel() {

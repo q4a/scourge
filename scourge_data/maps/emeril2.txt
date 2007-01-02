@@ -17,9 +17,12 @@ I expected someone younger...
 V:me,Mothrazu,druid;I am but a humble $servant of $nature. Allow me to introduce myself\
 through my $work: I have grand $plans for this world! Soon nature will reclaim what\
 humanity has taken from her. The roots hunger for blood! The soil rages in slow turmoil\
-at what you have done! The time for retribution is now, the plants are your judges and I\
-am your executioner.
-V:servant,nature,dream;Once I was just another acolyte of Amod-Rheinur. Then I received a holy\
+at what you have done! Perhaps you have felt the $earthquakes? The time for retribution\
+is now: the wilderness is your judge and I am her enforcer.
+V:earthquakes,quakes,earthquake,quake;Amod-Rheinur sees that I'm close to completing my task.\
+He revels in humanity's demise and shakes the earth as a celestial sign of approval! Thank\
+you Wise one, I will not disappoint you!
+V:servant,nature,dream,correct,task;Once I was just another acolyte of Amod-Rheinur. Then I received a holy\
 visitation. In a waking dream the enraged god demanded a task from me: to restore nature's\
 domain in the material realm.||Long have humanity abused this land for its riches! Your\
 cities sprawl and fill the earth with refuse. You log the forest and mine the hills. You\
@@ -28,7 +31,7 @@ destroy all that sustains your existance.||Amod showed me a vision of the future
 madness is not stopped. A world without vegetation and animal life. Cities surrounded by\
 deserts and choking miasma.||My $plan is simple: acquire an extra-planar shortcut to reverse\
 the decay and ensure it never happens again!
-V:plans;Through much bodily sacrifise I trained myself in the sacred arts of nature. I\
+V:plans,plan;Through much bodily sacrifise I trained myself in the sacred arts of nature. I\
 opened the secret $portal at Gormoril. I endured hell's agents and faced the $vilest one. He\
 understood my plight and found it in his dark heart to endowe me with his grace: an ancient\
 $device of life-bringing and wonder! Once $activated, it will produce a new generation of\
@@ -39,9 +42,15 @@ locked door as Amod thought me in my $dream. And as he promised the red teleport
 active. If I may say so, a minor blunder the $Guardians of the Realm did not intend to happen.\
 They were so afraid to loose any of their precious "information" that they could not\
 destroy the teleporter when they had the chance.
-V:Guardians,Realm;fixme
-V:vilest,demon,Karzul;fixme
-V:device,activated;The fiend $Karzul gave me this wonderous device! How it came to him,\
+V:Guardians,Realm;Those good-for-naught librarian knights had it all wrong! Instead of squerreling\
+endless tomes of knowledge away in their hole at $Gormoril they should have taken the axe to\
+the rotten core. They should've got rid of humanity when they had the $chance. But now this\
+task falls to me.
+V:chance;The red teleporter of $Gormoril was in their control at the time. Too bad that their\
+love of humanity prevented them from doing the $correct thing...
+V:vilest,demon,Karzul;Oh you have visited the great evil one? To this day I don't know how he\
+came to my aid. No matter however, with his wonderous $gift I will surely accomplish my $task.
+V:device,activated,gift;The fiend $Karzul gave me this wonderous device! How it came to him,\
 I do not know. But it is a marvel, look! I will plant this tiny metallic seed... perform,\
 the $ritual... and out of it will grow a great tree.||It will mature with unnatural speed.\
 Its roots will descend many miles into earth..., its boughs will break the ancient ceilings\
@@ -55,9 +64,12 @@ in the morning... a new dawn will greet the survivors. Only those worthy of Amod
 the trees, the mountains, the lakes and the wild! I will bring this new dawn and the much\
 needed apocalypse before. The earth must be cleansed, and there is $nothing that you can\
 do to $stop me.
+V:ritual;Ritual? Ha-ha how little you understand of nature's true power... All this seed needs\
+is water... and I intend to give it plenty!
 V:nothing,stop;Your theories of $Karzul are just chatter. This I do of my own free will,\
-not because of any Abyssal influence. Your minds are affected by the malaize... If your\
-lives must be forfeit in order to activate the $device, so be it... many more will follow.\
-Prepare for $doom humans. You will be first to enjoy the afterlife, courtesy of Amod!
+not because of any Abyssal influence. Your minds are affected by the malaize...||If your\
+lives must be forfeit in order to activate the $device, so be it... many more will follow.||Witness\
+the shapeshifting transformation granted by the divine light of Amod! Prepare\
+for $doom humans!!!
 
 

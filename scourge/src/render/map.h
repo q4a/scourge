@@ -235,6 +235,8 @@ class Map {
   RenderedCreature *mapCenterCreature;
   std::map<int,bool> secretDoors;
 
+	bool quakesEnabled;
+
  public:
   bool useFrustum;
   static bool debugMd2Shapes;
@@ -245,6 +247,9 @@ class Map {
 
   Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes );
   ~Map();
+
+	inline void setQuakesEnabled( bool b ) { quakesEnabled = b; }
+	inline bool areQuakesEnabled() { return quakesEnabled; }
 
   void addSecretDoor( int x, int y );
   bool isSecretDoor( Location *pos );

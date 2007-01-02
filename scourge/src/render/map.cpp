@@ -70,6 +70,22 @@ int mouseMoveY = 0;
 float moveAngle = 0;
 float moveDelta = 0;
 
+
+// how long to wait between quakes
+#define QUAKE_DELAY 45000
+
+// how long each quake lasts
+#define QUAKE_DURATION 4000
+
+// how fast is a quake?
+#define QUAKE_TICK_FREQ 50
+
+float quakeOffsX = 0;
+float quakeOffsY = 0;
+Uint32 quakeStartTime = 0;
+Uint32 nextQuakeStartTime = 0;
+Uint32 lastQuakeTick = 0;
+
 const float Map::shadowTransformMatrix[16] = { 
 	1, 0, 0, 0,
 	0, 1, 0, 0,
@@ -188,6 +204,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   helper = NULL;
 
 	laterCount = stencilCount = otherCount = damageCount = 0;
+
+	quakesEnabled = false;
 
   addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
   addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
@@ -325,6 +343,8 @@ void Map::reset() {
   if( helper ) helper->reset();
 
 	laterCount = stencilCount = otherCount = damageCount = 0;
+
+	quakesEnabled = false;
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -1763,6 +1783,34 @@ void Map::initMapView( bool ignoreRot ) {
   float startz = 0.0;
 
   glTranslatef( startx, starty, startz );
+
+	if( quakesEnabled ) {
+		Uint32 now = SDL_GetTicks();
+
+		// is it time to quake again?
+		if( now >= nextQuakeStartTime ) {
+			nextQuakeStartTime = 
+				now +
+				QUAKE_DELAY + 
+				(int)( ( QUAKE_DELAY / 2.0f ) * rand() / RAND_MAX );
+			addDescription( "A tremor shakes the earth..." );
+			// start a quake unless this is the very first time
+			quakeStartTime = ( quakeStartTime == 0 ? nextQuakeStartTime : now );
+		}
+
+		// is it quaking now?
+		if( now - quakeStartTime < QUAKE_DURATION ) {
+			if( now - lastQuakeTick >= QUAKE_TICK_FREQ ) {
+				quakeOffsX = (3.0f * rand() / RAND_MAX ) / DIV;
+				quakeOffsY = (3.0f * rand() / RAND_MAX ) / DIV;
+				lastQuakeTick = now;				
+			}
+		} else {
+			quakeOffsX = quakeOffsY = 0;
+		}
+
+		glTranslatef( quakeOffsX, quakeOffsY, 0 );
+	}
 }
 
 Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,RenderedCreature *newCreature) {

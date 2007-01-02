@@ -262,7 +262,7 @@ Y:Mothrazu. You must defeat her or our entire world is at stake! I will post her
 Y:on the board.
 N:Have you visited Hornaxx the goddess of Arguments yet? Be sure to remind her of the 
 N:debt she owes us, and hope that in her divine wisdom, she rewards you with items of
-N:antimagic binding. With such aid, we can finally try to defeat Mothrazu.
+N:antimagic binding. With such aid, we can finally try to defeat $Mothrazu.
 S:Ask Hornaxx goddess of Arguments to equip each pc with an antimagic binding item.
 
 T:Chapter 10: Where Wild Weeds Grow
@@ -276,6 +276,8 @@ D:are many other scenarios where your doom is all but certain. But let us not dw
 D:such morbid travails! You will succeed for.. uh.. for sure. Remember to wear your armor
 D:of antimagic bindings, for Mothrazu's realm is protected by a poisonous miasma.
 Y:fixme
-N:fixme
+N:Our time is limited. Be careful not to take too long, or $Mothrazu may well accomplish
+N:her vile deed. Now that our agents have finally located her lair, you should eliminate
+N:her once and for all!
 S:Neutralize one hideous druidic menace
 

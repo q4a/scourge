@@ -68,6 +68,9 @@ public:
 	static int _getDungeonDepth( HSQUIRRELVM vm );
 	static int _descendDungeon( HSQUIRRELVM vm );
 	static int _ascendDungeon( HSQUIRRELVM vm );
+
+	static int _setQuakesEnabled( HSQUIRRELVM vm );
+	static int _areQuakesEnabled( HSQUIRRELVM vm );
 };
 
 #endif
