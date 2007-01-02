@@ -28,9 +28,9 @@
 
 using namespace std;
 
-char *floorTypeName[80] = { 
-  "Tile: Passage",
-  "Tile: Room"
+char *floorTypeName[2][80] = { 
+  { "FLOOR_TILE", "Tile: Passage" },
+  { "ROOM_FLOOR_TILE", "Tile: Room" }
 };
 
 /**
@@ -95,7 +95,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   
 
   newButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, "Properties" );
-  floorType = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, floorTypeName[ 1 ], true );
+  floorType = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, floorTypeName[ 1 ][ 1 ], true );
 	yy += ystep;
 
   startPosButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, "Start Pos", true );
@@ -441,7 +441,7 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == cancelButton ) {
     newMapWin->setVisible( false );
   } else if( widget == floorType ) {
-    floorType->setLabel( floorTypeName[ floorType->isSelected() ? 0 : 1 ] );
+    floorType->setLabel( floorTypeName[ floorType->isSelected() ? 0 : 1 ][ 1 ] );
   } else if( widget == mapWidget->getCanvas() ) {
 //    mapWidget->setPosition( scourge->getMouseX() - newMapWin->getX() - mapWidget->getCanvas()->getX(),
 //                            scourge->getMouseY() - newMapWin->getY() - mapWidget->getCanvas()->getY() - Window::TOP_HEIGHT );
@@ -1006,7 +1006,7 @@ void MapEditor::addFloor( Sint16 mapx, Sint16 mapy ) {
   scourge->getMap()->
     setFloorPosition( mapx, mapy + MAP_UNIT, 
                       scourge->getShapePalette()->
-                      findShapeByName( floorTypeName[ floorType->isSelected() ? 0 : 1 ], 
+                      findShapeByName( floorTypeName[ floorType->isSelected() ? 0 : 1 ][ 0 ], 
                                        true ) );
 }
 
