@@ -372,6 +372,10 @@ D:A sturdy wooden column
 D:1
 D:A rack for our less fortunate guests.
 
+D:2
+D:You see dense vegetation.
+D:Some plants grow here.
+
 # unitside=16
 # unitoffset=2
 # wallheight=12
@@ -1183,6 +1187,51 @@ N:0
 N:ffffffff
 3:/objects/pile.3ds
 3:3.5685,3.39385,4.93225
+
+# pine.3ds
+N:14
+N:1,1,1
+N:PINE_TREE
+N:14
+N:ffffffff
+3:/objects/pine.3ds
+3:4,4,12
+
+# willow.3ds
+N:14
+N:1,1,1
+N:WILLOW_TREE
+N:14
+N:ffffffff
+3:/objects/willow.3ds
+3:4,4,8
+
+# oak.3ds
+N:14
+N:1,1,1
+N:OAK_TREE
+N:14
+N:ffffffff
+3:/objects/oak.3ds
+3:4,4,8
+
+# oak2.3ds
+N:14
+N:1,1,1
+N:OAK2_TREE
+N:14
+N:ffffffff
+3:/objects/oak2.3ds
+3:4,4,10
+
+# bush.3ds
+N:14
+N:1,1,1
+N:BUSH
+N:14
+N:ffffffff
+3:/objects/bush.3ds
+3:2,2,2
 
 A:Welcome to the world of S.c.o.u.r.g.e.||S.c.o.u.r.g.e. is a rogue-like rpg that lets you
 A:control a group of four brave heroes. While working for a dungeon janitorial services company they

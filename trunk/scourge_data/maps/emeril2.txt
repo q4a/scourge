@@ -15,7 +15,7 @@ V:warned;My agents are the trees themselves! Their very souls bring $me news tha
 are being followed by a group of "heroes". I guess it must be you, although I must say,\
 I expected someone younger...
 V:me,Mothrazu,druid;I am but a humble $servant of $nature. Allow me to introduce myself\
-through my $work: I have grand $plans for this world! Soon nature will reclaim what\
+through my work: I have grand $plans for this world! Soon nature will reclaim what\
 humanity has taken from her. The roots hunger for blood! The soil rages in slow turmoil\
 at what you have done! Perhaps you have felt the $earthquakes? The time for retribution\
 is now: the wilderness is your judge and I am her enforcer.
@@ -71,5 +71,4 @@ not because of any Abyssal influence. Your minds are affected by the malaize...|
 lives must be forfeit in order to activate the $device, so be it... many more will follow.||Witness\
 the shapeshifting transformation granted by the divine light of Amod! Prepare\
 for $doom humans!!!
-
 
