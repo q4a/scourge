@@ -330,7 +330,7 @@ void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
             if (pObject->pTexVerts) {
               glTexCoord2f(pObject->pTexVerts[ index ].x, -pObject->pTexVerts[ index ].y);
             }
-          } else {
+          } //else {
 
             // Make sure there is a valid material/color assigned to this object.
             // You should always at least assign a material color to an object, 
@@ -347,7 +347,7 @@ void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
               c[1] = (float)pColor[1] / 255.0f;
               c[2] = (float)pColor[2] / 255.0f;
             }
-          }
+          //}
 
           // FIXME: will need to figure out some way to do this
           /*
