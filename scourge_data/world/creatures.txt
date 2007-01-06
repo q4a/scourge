@@ -382,7 +382,6 @@ P:RESIST_HISTORY_MAGIC,75
 P:RESIST_DECEIT_MAGIC,55
 P:RESIST_CONFRONTATION_MAGIC,50
 
-
 #############################
 # Monsters
 # level, hp, mp, ac
