@@ -39,7 +39,19 @@ function creatureDeath( creature ) {
     // Myco. starts a conversation before he dies, revealing much...
 		scourgeGame.getMission().setCompleted( true );
     creature.startConversation( creature );
-  }
+  } else if( creature.getName() == "Mothrazu Pain Incarnate" ) {
+		scourgeGame.getMission().setCompleted( true );
+		scourgeGame.showTextMessage( "The creature once known as Mothrazu sinks to one knee... " +
+																 "Her breath comes in sharp gasps, as she growls:||" +
+																 "\"I curse you humans...You may have defeated me but by " +
+																 "Amod's grace, I still have one task left...\"||" +
+																 "She reaches into a pouch and throws something small " +
+																 "and silvery into the grove trees at the center of the room.||" +
+																 "\"You will never find it... Karzul's gift will mature and " +
+																 "continue where I failed. May the plants be merciful to your " +
+																 "malevolent souls... Amod! I am close...\"||" +
+																 "With that Mothrazu passes from this world." );
+	}
   return true;
 }
 

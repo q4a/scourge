@@ -275,7 +275,14 @@ D:...Or managed to activate whatever device she acquired in the Abyss. ...Or, we
 D:are many other scenarios where your doom is all but certain. But let us not dwell upon
 D:such morbid travails! You will succeed for.. uh.. for sure. Remember to wear your armor
 D:of antimagic bindings, for Mothrazu's realm is protected by a poisonous miasma.
-Y:fixme
+Y:Excellent job eradicating the $druid. She truly was a menace of global proportions.||
+Y:Now... about another thing... I'm afraid the powers that be are less than pleased by
+Y:you turning the Isle of Emeril into a hotbead of the budding apocalypse.|| Since you
+Y:have returned the complex where you defeated $Mothrazu is no more. In its place stands
+Y:an unnatural tree. (And I use the word 'tree' loosely here.) It is enormous and clearly
+Y:extraplanar in nature.|| An event of this magnitude is out of the range of problems we 
+Y:normally deal with, therefore I asked $Melathor to research a solution. Talk to him before
+Y:going to your next mission. Ask him about the Tree of Emeril.||
 N:Our time is limited. Be careful not to take too long, or $Mothrazu may well accomplish
 N:her vile deed. Now that our agents have finally located her lair, you should eliminate
 N:her once and for all!
