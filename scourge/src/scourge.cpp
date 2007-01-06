@@ -728,24 +728,22 @@ bool Scourge::changeLevel() {
 
 				/*
 					When on the lower levels of a named mission, teleport to level 0
-					of the mission. Otherwise go back to HQ when coming from a mission.
+					of the mission if the current level is a random level. 
+					Otherwise go back to HQ when coming from a mission.
+					
+					This weirdness is needed so the party can talk to Orhithales.
+					Hopefully we can delete this code in the future. :-|
 				*/
-				if( getSession()->getCurrentMission() ) {
-					cerr << "current mission " << getSession()->getCurrentMission()->getMapName() << endl;
-				} else {
-					cerr << "no mission" << endl;
-				}
 				if( getSession()->getCurrentMission() &&
 						getSession()->getCurrentMission()->isEdited() &&
-						currentStory > 0 ) {
-					cerr << "\tgoing to level 0" << endl;
+						currentStory > 0 &&
+						!getMap()->isEdited() ) {
 					// to 0-th depth in edited map
 					oldStory = currentStory;
 					currentStory = 0;
 					changingStory = true;
 		//      gatepos = pos;
 				} else {
-					cerr << "\tgoing to hq" << endl;
 					// to HQ
 					oldStory = currentStory = 0;
 					nextMission = -1;
