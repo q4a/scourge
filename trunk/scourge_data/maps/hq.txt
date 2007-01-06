@@ -244,6 +244,7 @@ without a permanent $link to his home plane.
 V:link;I think what Karzul hinted at is such a thing. I am not sure how this is possible but it must\
 that the device $Mothrazu is carrying will provide (when activated) a conduit to the powers of the\
 Abyss. Using such a system would indeed allow $Karzul to exercise all his diabolic powers.
+V:Tree of Emeril;[FIXME: chapter 11]
 
 # Npc-s:
 # Key:
