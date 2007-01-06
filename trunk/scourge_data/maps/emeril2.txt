@@ -11,10 +11,13 @@ P:Mothrazu
 V:_INTRO_;You are the adventurers I've been $warned about?! You must be joking! You are old...
 V:_UNKNOWN_;The gods have abandoned us, truly...
 V:_UNKNOWN_;What I do... my work... it is a true wonder of nature...
-V:warned;My agents are the trees themselves! Their very souls bring $me news that my moves\
+V:warned;My agents are the $trees themselves! Their very souls bring $me news that my moves\
 are being followed by a group of "heroes". I guess it must be you, although I must say,\
 I expected someone younger...
-V:me,Mothrazu,druid;I am but a humble $servant of $nature. Allow me to introduce myself\
+V:trees;This is my home away from home... an underground sacred grove which by the grace\
+of Amod is able to survive here where no sun shines. It is but a sign of things to come.\
+Soon the plants will take over the world again. Rejoice! $I am ushering in a new age of rebirth.
+V:me,I,Mothrazu,druid;I am but a humble $servant of $nature. Allow me to introduce myself\
 through my work: I have grand $plans for this world! Soon nature will reclaim what\
 humanity has taken from her. The roots hunger for blood! The soil rages in slow turmoil\
 at what you have done! Perhaps you have felt the $earthquakes? The time for retribution\
