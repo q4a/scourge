@@ -21,6 +21,7 @@
 #include "common/constants.h"
 #include <map>
 #include <vector>
+#include <set>
 
 class Scourge;
 class Window;
@@ -62,6 +63,8 @@ public:
 
 	bool createNewSaveGame();
 
+	void deleteUnvisitedMaps( char *dirName, std::set<std::string> *visitedMaps );
+
 protected:
 	bool findFiles();
 	bool readFileDetails( char *path );
@@ -74,10 +77,10 @@ protected:
 	GLuint loadScreenshot( char *path );
 	bool saveGameInternal( SavegameInfo *info );
 	bool createSaveGame( SavegameInfo *info );
-	void deleteUnreferencedMaps( char *dirName );
 	void loadGame( int n );
 	void setSavegameInfoTitle( SavegameInfo *info );
 	bool deleteDirectory( char *path );
+	void deleteUnreferencedMaps( char *dirName );
 };
 
 #endif
