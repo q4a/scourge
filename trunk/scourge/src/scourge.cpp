@@ -151,6 +151,10 @@ void Scourge::start() {
   bool initMainMenu = true;
 	int value = CONTINUE_GAME;
   while(true) {
+
+		// forget all the known maps
+		visitedMaps.clear();
+
 		if( !session->willLoadGame() ) {
 			if(initMainMenu) {
 				initMainMenu = false;
@@ -201,6 +205,8 @@ void Scourge::start() {
 				if( session->willLoadGame() ) {
 					char error[255];
 					if( loadGame( session, session->getLoadgameName(), error ) ) {
+						// delete any maps saved since our last save but not used in the savegame.
+						getSaveDialog()->deleteUnvisitedMaps( session->getLoadgameName(), &visitedMaps );
 						session->setSavegameName( session->getLoadgameName() );
 						session->setLoadgameName( "" );
 						loaded = true;
@@ -328,7 +334,7 @@ void Scourge::startMission( bool startInHq ) {
 	endGame();
 }
 
-void Scourge::getCurrentMapName( char *path, char *dirName, int depth ) {
+void Scourge::getCurrentMapName( char *path, char *dirName, int depth, char *mapFileName ) {
 	// save the current map:
 	// get and set the map's name
 	char mapName[300];
@@ -339,16 +345,23 @@ void Scourge::getCurrentMapName( char *path, char *dirName, int depth ) {
 	}
 	if( session->getCurrentMission() ) 
 		session->getCurrentMission()->setSavedMapName( mapName );
-	
+
 	// add the depth
 	char tmp[300];
-	sprintf( tmp, "%s/%s_%d.map", 
-					 ( dirName ? dirName : getSession()->getSavegameName() ), 
+	sprintf( tmp, "%s_%d.map", 
 					 mapName, 
 					 ( depth >= 0 ? depth : oldStory ) );
+
+	if( mapFileName ) strcpy( mapFileName, tmp );
+
+	// add the directory name
+	char tmp2[300];
+	sprintf( tmp2, "%s/%s", 
+					 ( dirName ? dirName : getSession()->getSavegameName() ), 
+					 tmp );
 	
 	// convert to a path	
-	get_file_name( path, 300, tmp );
+	get_file_name( path, 300, tmp2 );
 }
 
 void Scourge::getSavedMapName( char *mapName ) {
@@ -367,8 +380,13 @@ void Scourge::getSavedMapName( char *mapName ) {
 
 bool Scourge::saveCurrentMap( char *dirName ) {
 	char path[300];
-	getCurrentMapName( path, dirName );
+	char mapFileName[40];
+	getCurrentMapName( path, dirName, -1, mapFileName );
 	cerr << "Saving current map: " << path << endl;
+
+	// remember that we have seen this map
+	string s = mapFileName;
+	visitedMaps.insert( s );
 
 	levelMap->startx = toint( session->getParty()->getPlayer()->getX() );
 	levelMap->starty = toint( session->getParty()->getPlayer()->getY() );
@@ -2984,6 +3002,24 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
 				Persist::deleteMissionInfo( info );
 			}
 		}
+
+		// Remember the current map. This little hack is needed because the current
+		// map will be saved right after the savegame.
+		char tmpPath[300];
+		char mapFileName[40];
+		getCurrentMapName( tmpPath, dirName, -1, mapFileName );
+		string s = mapFileName;
+		visitedMaps.insert( s );
+
+		// save the list of visited maps		
+		n = visitedMaps.size();
+		file->write( &n );
+		Uint8 tmp[300];
+		for( set<string>::iterator i = visitedMaps.begin(); i != visitedMaps.end(); ++i ) {
+			string s = *i;
+			strcpy( (char*)tmp, s.c_str() );
+			file->write( tmp, 300 );
+		}
     delete file;
   }
 
@@ -3085,6 +3121,18 @@ bool Scourge::loadGame( Session *session, char *dirName, char *error ) {
 		// add current storyline mission (which is not saved)
 		session->getBoard()->setStorylineIndex( storylineIndex );
 		session->getBoard()->initMissions();
+
+		// load the list of visited maps
+		if( version >= 33 ) {
+			visitedMaps.clear();
+			file->read( &n );
+			Uint8 tmp[300];
+			for( unsigned int i = 0; i < n; i++ ) {
+				file->read( tmp, 300 );
+				string s = (char*)tmp;
+				visitedMaps.insert( s );
+			}
+		}
 
 		// start on the correct mission and story (depth)
 		nextMission = -1;
@@ -3416,13 +3464,13 @@ void Scourge::showTextMessage( char *message ) {
 void Scourge::uploadScore() {
 	// "mode=add&user=Tipsy McStagger&score=5000&desc=OMG, I can't believe this works."
 
-	char user[1000];
+	char user[2000];
 	sprintf( user, "%s the level %d %s", 
 					 getParty()->getParty(0)->getName(),
 					 getParty()->getParty(0)->getLevel(),
 					 getParty()->getParty(0)->getCharacter()->getName() );
 
-	char place[1000];
+	char place[2000];
 	if( getSession()->getCurrentMission() ) {
 		if( strstr( getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
 			sprintf( place, "in a cave on level %d", 
@@ -3432,11 +3480,30 @@ void Scourge::uploadScore() {
 							 ( getCurrentDepth() + 1 ),
 							 getSession()->getCurrentMission()->getMapName() );
 		}
+		char mission[200];
+		strcpy( mission, " while attempting to " );
+		if( getSession()->getCurrentMission()->isSpecial() ) {
+			strcat( mission, getSession()->getCurrentMission()->getSpecial() );
+		} else if( getSession()->getCurrentMission()->getCreatureCount() > 0 ) {
+			strcat( mission, " kill " );
+			char *p = getSession()->getCurrentMission()->getCreature( 0 )->getType();
+			strcat( mission, getAn( p ) );
+			strcat( mission, " " );
+			strcat( mission, p );
+		} else if( getSession()->getCurrentMission()->getItemCount() > 0 ) {
+			strcat( mission, " recover " );
+			char *p = getSession()->getCurrentMission()->getItem( 0 )->getName();
+			strcat( mission, getAn( p ) );
+			strcat( mission, " " );
+			strcat( mission, p );
+		}
+
+		strcat( place, mission );
 	} else {
 		strcpy( place, "suddenly, while resting at HQ" );
 	}
 
-	char desc[1000];
+	char desc[2000];
 	sprintf( desc, "Expired %s. Cause of demise: %s. Reached chapter %d of the story.", 
 					 place, 
 					 getParty()->getParty(0)->getCauseOfDeath(),

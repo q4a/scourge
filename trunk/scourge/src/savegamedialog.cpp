@@ -369,6 +369,36 @@ bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
 	return b;
 }
 
+void SavegameDialog::deleteUnvisitedMaps( char *dirName, set<string> *visitedMaps ) {
+
+	/*
+	cerr << "*** deleteUnvisitedMaps, visited maps:" << endl;
+	for( set<string>::iterator i = visitedMaps->begin(); i != visitedMaps->end(); ++i ) {
+		string s = *i;
+		cerr << "\t" << s << endl;
+	}
+	cerr << "****************************" << endl;
+	*/
+
+	char path[300];
+	get_file_name( path, 300, dirName );
+	vector<string> fileNameList;
+	findFilesInDir( path, &fileNameList );
+	char tmp[300];
+	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
+		string s = fileNameList[i];
+		//cerr << "\tconsidering: " << s << endl;
+		if( s.substr( 0, 1 ) == "_" ) {
+			if( visitedMaps->find( s ) == visitedMaps->end() ) {
+				sprintf( tmp, "%s/%s", path, s.c_str() );
+				cerr << "\tDeleting un-visited map file: " << tmp << endl;
+				int n = remove( tmp );
+				cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
+			}
+		}
+	}
+}
+
 void SavegameDialog::deleteUnreferencedMaps( char *dirName ) {
 	//cerr << "Deleting unreferenced maps:" << endl;
 	vector<string> referencedMaps;
