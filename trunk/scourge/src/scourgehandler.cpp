@@ -190,7 +190,7 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
       } else if( scourge->getTargetSelectionFor() ) {
         // cancel target selection ( cross cursor )
         scourge->getTargetSelectionFor()->cancelTarget();
-        scourge->getTargetSelectionFor()->getBattle()->reset();
+        scourge->getTargetSelectionFor()->getBattle()->reset( false, true );
         scourge->setTargetSelectionFor( NULL );
         return false;
       } else if( scourge->getExitConfirmationDialog()->isVisible() ) {
@@ -246,7 +246,7 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
     } else if( ea == NEXT_WEAPON && scourge->getParty()->getPlayer() ) {
       if( scourge->getParty()->getPlayer()->nextPreferredWeapon() ) {
         // reset but don't pause again
-        scourge->getParty()->getPlayer()->getBattle()->reset( true );
+        scourge->getParty()->getPlayer()->getBattle()->reset( true, true );
       }
       if( scourge->getInventory()->isVisible() ) scourge->getInventory()->refresh();
     } else if(ea == TOGGLE_MAP_CENTER){
@@ -571,7 +571,7 @@ bool ScourgeHandler::handlePartyEvent(Widget *widget, SDL_Event *event) {
           }
           if( scourge->getParty()->getPlayer()->nextPreferredWeapon() ) {
             // reset but don't pause again
-            scourge->getParty()->getPlayer()->getBattle()->reset( true );
+            scourge->getParty()->getPlayer()->getBattle()->reset( true, true );
           }
           if( scourge->getInventory()->isVisible() ) scourge->getInventory()->refresh();
         }

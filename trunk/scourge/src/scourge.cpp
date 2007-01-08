@@ -876,7 +876,7 @@ void Scourge::cancelTargetSelection() {
 
 	// cancel target selection ( cross cursor )
 	getTargetSelectionFor()->cancelTarget();
-	getTargetSelectionFor()->getBattle()->reset();
+	getTargetSelectionFor()->getBattle()->reset( false, true );
 
 	showTextMessage( msg );
 }																					
