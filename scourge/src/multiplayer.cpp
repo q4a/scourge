@@ -58,6 +58,7 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
 
   // allocate strings for list
   // FIXME: use a character set not the party here
+	/*
   Party::createHardCodedParty(scourge->getSession(), pc, &pcCount);
   charStr = (char**)malloc(pcCount * sizeof(char*));
   for(int i = 0; i < pcCount; i++) {
@@ -67,6 +68,7 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
             pc[i]->getLevel());
   }
   characterList->setLines(pcCount, (const char**)charStr);
+	*/
 }
 
 MultiplayerDialog::~MultiplayerDialog() {

@@ -720,7 +720,7 @@ public:
   void mouseClickWhileExiting();
 
   bool saveGame( Session *session, char *dirName, char *title );  
-  bool loadGame( Session *session, char *dirName, char *error );
+  bool loadGame( Session *session, char *dirName, char *error );	
 
 	RenderedCreature *createWanderingHero( int level );
 
@@ -743,9 +743,11 @@ public:
 
 protected:
 
-   void drawPortrait( Widget *w, Creature *p );
+	bool doLoadGame( Session *session, char *dirName, char *error );
 
-   int initMultiplayer();
+	void drawPortrait( Widget *w, Creature *p );
+
+	int initMultiplayer();
 
   void createUI();
 

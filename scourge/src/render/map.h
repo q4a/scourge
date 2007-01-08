@@ -236,6 +236,7 @@ class Map {
   std::map<int,bool> secretDoors;
 
 	bool quakesEnabled;
+	bool descriptionsEnabled;
 
  public:
   bool useFrustum;
@@ -250,6 +251,9 @@ class Map {
 
 	inline void setQuakesEnabled( bool b ) { quakesEnabled = b; }
 	inline bool areQuakesEnabled() { return quakesEnabled; }
+
+	inline void setDescriptionsEnabled( bool b ) { descriptionsEnabled = b; }
+	inline bool areDescriptionsEnabled( bool b ) { return descriptionsEnabled; }
 
   void addSecretDoor( int x, int y );
   bool isSecretDoor( Location *pos );
