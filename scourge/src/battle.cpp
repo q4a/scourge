@@ -87,10 +87,10 @@ Battle::Battle(Session *session, Creature *creature) {
 Battle::~Battle() {
 }
 
-void Battle::reset( bool keepPaused ) {
+void Battle::reset( bool keepPaused, bool keepAP ) {
   if(debugBattle) cerr << "*** reset: creature=" << creature->getName() << endl;
   this->steps = 0;
-  this->startingAp = this->ap = toint( creature->getMaxAP() );
+  if( !keepAP ) this->startingAp = this->ap = toint( creature->getMaxAP() );
   this->projectileHit = false;
   if( !keepPaused ) this->paused = false;
   this->weaponWait = 0;
