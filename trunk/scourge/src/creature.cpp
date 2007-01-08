@@ -333,6 +333,10 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
                         monster );
     creature = session->newCreature( monster, shape, true );
 		creature->setName( (char*)info->name ); // important for npc-s
+		
+		// fixme: throw away this code when saving stats_mods and calendar events is implemented
+		// for now, set a monsters stat mods as declared in creatures.txt
+		creature->stateMod = monster->getStartingStateMod();
   } else {
     creature = new Creature( session, 
                              Character::getCharacterByName((char*)info->character_name), 

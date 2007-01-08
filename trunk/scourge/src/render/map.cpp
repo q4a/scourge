@@ -206,6 +206,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	laterCount = stencilCount = otherCount = damageCount = 0;
 
 	quakesEnabled = false;
+	descriptionsEnabled = true;
 
   addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
   addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
@@ -345,6 +346,7 @@ void Map::reset() {
 	laterCount = stencilCount = otherCount = damageCount = 0;
 
 	quakesEnabled = false;
+	// descriptionsEnabled = false;
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -1793,9 +1795,9 @@ void Map::initMapView( bool ignoreRot ) {
 				now +
 				QUAKE_DELAY + 
 				(int)( ( QUAKE_DELAY / 2.0f ) * rand() / RAND_MAX );
-			addDescription( "A tremor shakes the earth..." );
 			// start a quake unless this is the very first time
 			quakeStartTime = ( quakeStartTime == 0 ? nextQuakeStartTime : now );
+			if( quakeStartTime == now ) addDescription( "A tremor shakes the earth..." );
 		}
 
 		// is it quaking now?
@@ -1946,6 +1948,8 @@ Location *Map::getPosition(Sint16 x, Sint16 y, Sint16 z) {
 }
 
 void Map::addDescription(char *desc, float r, float g, float b) {
+	if( !descriptionsEnabled ) return;
+
   strncpy(descriptions[descriptionCount], desc, 120);
   // zero terminate just in case desc.length > 120
   descriptions[descriptionCount][119] = 0;

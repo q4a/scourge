@@ -295,6 +295,8 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 				scourge->showMessageDialog( "Error saving game!" );
 			}
 		}
+
+		scourge->getSession()->getMap()->setDescriptionsEnabled( true );
   }
 
   for(int i = 0; i < scourge->getContainerGuiCount(); i++) {

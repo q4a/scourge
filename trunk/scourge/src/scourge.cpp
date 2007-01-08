@@ -154,6 +154,7 @@ void Scourge::start() {
 
 		// forget all the known maps
 		visitedMaps.clear();
+		levelMap->setDescriptionsEnabled( false );
 
 		if( !session->willLoadGame() ) {
 			if(initMainMenu) {
@@ -458,7 +459,7 @@ void Scourge::resetGame( bool resetParty ) {
 		if(!inventory) {
 			inventory = new Inventory(this);
 		}
-	
+
 		getSession()->getSquirrel()->startGame();
 	}
 	//cerr << "Minimap reset" << endl;
@@ -3041,6 +3042,12 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
 }
 
 bool Scourge::loadGame( Session *session, char *dirName, char *error ) {
+	bool b = doLoadGame( session, dirName, error );
+	getMap()->addDescription( b ? (char*)"Game loaded successfully." : error );
+	return b;
+}
+
+bool Scourge::doLoadGame( Session *session, char *dirName, char *error ) {
 	char path[300];
 	strcpy( error, "" );
 

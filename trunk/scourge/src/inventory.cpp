@@ -925,9 +925,10 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     for(int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++) {
       SpecialSkill *ss = SpecialSkill::getSpecialSkill(t);   
 			if( scourge->getParty()->getParty( selected )->hasSpecialSkill( ss ) ) {
+				// display recurring skills as automatic
 				sprintf(specialText[knownSpecialSkills.size()], "%s (%s)", 
 								ss->getName(), 
-								(ss->getType() == SpecialSkill::SKILL_TYPE_AUTOMATIC ? "A" : "M"));
+								(ss->getType() == SpecialSkill::SKILL_TYPE_MANUAL ? "M" : "A"));
 				specialIcons[knownSpecialSkills.size()] = scourge->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ];
 				if( scourge->getParty()->getParty( selected )->hasSpecialSkill( ss ) ) {
 					specialColor[knownSpecialSkills.size()].r = 1;

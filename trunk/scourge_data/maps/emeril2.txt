@@ -13,24 +13,42 @@ V:_UNKNOWN_;The gods have abandoned us, truly...
 V:_UNKNOWN_;What I do... my work... it is a true wonder of nature...
 V:warned;My agents are the $trees themselves! Their very souls bring $me news that my moves\
 are being followed by a group of "heroes". I guess it must be you, although I must say,\
-I expected someone younger...
+I expected someone younger... From what that blubbering $fool told me I'd have thought I am\
+being chased by $Guardians themselves.
+V:fool,Melathor;Yes, yes, I was the one who sent Melathor to waylay your little adventuring\
+party. Not only did I underestimate your tenacity (which rest assured will end here tonight)\
+but I placed too much value of that $molting fool.||Although he didn't do too poorly for a guy,\
+already $dead. His only other job was to deal with that pest of a wizard, $Sabien. Needless\
+to say he managed to fumble both tasks.
+V:Sabien;Uh yes, why not dredge up the past! Yes, I'm afraid the kidnapping of the wizard\
+Sabien was also my doing. Shame on me! And double shame on me for not doing the job personally.\
+The next time I need something done, I will definitely not go with hired help. $Melathor and\
+his contractors the dwarven poets (I would gladly entertain you with their work...) were more\
+than useless. In the end his failed mission didn't amount to much, as Sabien couldn't\
+open the door to the red teleporter anyway. I had to research the spell to unlock that door\
+myself. The library of $Gormoril and its red teleporter still gives me the shivers...
+V:dead,molting;In case you didn't notice the awful stench, the loosely assembled bodyparts, or the\
+gaunt, haunted eyes, I've got news for you: $Melathor was an undead sorceror. I'm not exactly\
+sure how he originally met his end, although he claimed he fell deep under the earth in an\
+epic battle against the demon $Karzul. I have trouble believing this, given how the fiend\
+readily assisted me in my $plans.
 V:trees;This is my home away from home... an underground sacred grove which by the grace\
-of Amod is able to survive here where no sun shines. It is but a sign of things to come.\
+of $Amod is able to survive here where no sun shines. It is but a sign of things to come.\
 Soon the plants will take over the world again. Rejoice! $I am ushering in a new age of rebirth.
 V:me,I,Mothrazu,druid;I am but a humble $servant of $nature. Allow me to introduce myself\
 through my work: I have grand $plans for this world! Soon nature will reclaim what\
 humanity has taken from her. The roots hunger for blood! The soil rages in slow turmoil\
 at what you have done! Perhaps you have felt the $earthquakes? The time for retribution\
 is now: the wilderness is your judge and I am her enforcer.
-V:earthquakes,quakes,earthquake,quake;Amod-Rheinur sees that I'm close to completing my task.\
+V:earthquakes,quakes,earthquake,quake;$Amod-Rheinur sees that I'm close to completing my task.\
 He revels in humanity's demise and shakes the earth as a celestial sign of approval! Thank\
 you Wise one, I will not disappoint you!
-V:servant,nature,dream,correct,task;Once I was just another acolyte of Amod-Rheinur. Then I received a holy\
+V:servant,nature,dream,correct,task;Once I was just another acolyte of $Amod-Rheinur. Then I received a holy\
 visitation. In a waking dream the enraged god demanded a task from me: to restore nature's\
 domain in the material realm.||Long have humanity abused this land for its riches! Your\
 cities sprawl and fill the earth with refuse. You log the forest and mine the hills. You\
 cut paths through the wilderness and hunt beyond your need. By callous greed you carelessly\
-destroy all that sustains your existance.||Amod showed me a vision of the future if this\
+destroy all that sustains your existance.||$Amod showed me a vision of the future if this\
 madness is not stopped. A world without vegetation and animal life. Cities surrounded by\
 deserts and choking miasma.||My $plan is simple: acquire an extra-planar shortcut to reverse\
 the decay and ensure it never happens again!
@@ -39,23 +57,34 @@ opened the secret $portal at Gormoril. I endured hell's agents and faced the $vi
 understood my plight and found it in his dark heart to endowe me with his grace: an ancient\
 $device of life-bringing and wonder! Once $activated, it will produce a new generation of\
 allies and enable the trees to exact vengence on their tormentors.
-V:portal,Gormoril,library;Ha-ha, I arrived before you did! That cur, Sabien put up a fight\
+V:portal,Gormoril,library;Ha-ha, I arrived before you did! That cur, $Sabien put up a fight\
 but determined as I was, he prooved no match. Once with him out of the way, I opened the\
-locked door as Amod thought me in my $dream. And as he promised the red teleporter remained\
+locked door as $Amod thought me in my $dream. And as he promised the red teleporter remained\
 active. If I may say so, a minor blunder the $Guardians of the Realm did not intend to happen.\
 They were so afraid to loose any of their precious "information" that they could not\
 destroy the teleporter when they had the chance.
-V:Guardians,Realm;Those good-for-naught librarian knights had it all wrong! Instead of squerreling\
-endless tomes of knowledge away in their hole at $Gormoril they should have taken the axe to\
-the rotten core. They should've got rid of humanity when they had the $chance. But now this\
-task falls to me.
+V:Guardians,Realm;A legend nothing more... such humality, dedication and caring never existed\
+in human beings. Still... it makes me wonder if the tales of knights roaming the countryside,\
+defending the weak, battling evil are true? Needless to say, nothing was seen of them in the\
+last thousand years. Some say they were all killed in a final stand against the dark hordes.\
+While alive, the Guardians not only concerned themselves with fighting demons but also worked\
+to preserve the history of the age.||But those good-for-naught librarian knights had it all wrong!\
+Instead of squerreling endless tomes of knowledge away in their hole at $Gormoril they should\
+have taken the axe to the rotten core. They should've got rid of humanity when they had\
+the $chance. But now this task falls to me.
 V:chance;The red teleporter of $Gormoril was in their control at the time. Too bad that their\
 love of humanity prevented them from doing the $correct thing...
 V:vilest,demon,Karzul;Oh you have visited the great evil one? To this day I don't know how he\
-came to my aid. No matter however, with his wonderous $gift I will surely accomplish my $task.
+came to my aid. No matter however, with his wonderous $gift I will surely accomplish\
+my $task.||Aye, all evil he is... a blight and a festering sore. Yet, we all have our calling.\
+To torment the sinner, to balance the lazy, aimless benevolence of others is his, as I see it.\
+Don't be quick to rush to judgement concerning this demon... If you cannot accept him for what\
+he is, at least remember: the fiend's intelligence is borne of the countless souls he has\
+devoured over the years.||In his dark halls, amidst the screams of agony and sulphorous stench\
+of bile he ever devises plans of great complexity!
 V:device,activated,gift;The fiend $Karzul gave me this wonderous device! How it came to him,\
 I do not know. But it is a marvel, look! I will plant this tiny metallic seed... perform,\
-the $ritual... and out of it will grow a great tree.||It will mature with unnatural speed.\
+the $ritual... and out of it will grow a $great tree.||It will mature with unnatural speed.\
 Its roots will descend many miles into earth..., its boughs will break the ancient ceilings\
 above us. In no time at all, it will tower over the world! Once grown, it will be a source\
 of nature's chaotic energy. It will produce many fast-growing, un-stoppable spawn which will\
@@ -67,21 +96,24 @@ in the morning... a new dawn will greet the survivors. Only those worthy of Amod
 the trees, the mountains, the lakes and the wild! I will bring this new dawn and the much\
 needed apocalypse before. The earth must be cleansed, and there is $nothing that you can\
 do to $stop me.
+V:great;It is a tree like no other. Its surface pulsates with extraplanar energy. Its boughs\
+reach the skyward with unstopable determination. No stone, metal or earth can stand in its way.\
+The tree being borne from this seed of the Abyss is intelligent beyond any earthly plant! This\
+tree can see and hear. It can defend itself from peril, produce offspring that can move about:\
+it is like an anchor, a dimensional lock in the material realm.||And there is only one thing it\
+craves: the domination of our land. And that, my friends, is as it should be. The land belongs to\
+the wild things of nature. And with this $gift from $Karzul I intend to make it so again.
 V:ritual;Ritual? Ha-ha how little you understand of nature's true power... All this seed needs\
 is water... and I intend to give it plenty!
 V:nothing,stop;Your theories of $Karzul are just chatter. This I do of my own free will,\
 not because of any Abyssal influence. Your minds are affected by the malaize...||If your\
 lives must be forfeit in order to activate the $device, so be it... many more will follow.||Witness\
-the shapeshifting transformation granted by the divine light of Amod! Prepare\
+the shapeshifting transformation granted by the divine light of $Amod! Prepare\
 for $doom humans!!!
-
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:326,249,Mothrazu,1,commoner
-# Unknown npc-s found:
-# Key:
-#   N:x,y,name,level,type[,subtype]
-
-N:326,249,Mothrazu,1,commoner
+V:Amod,Amod-Rheinur;Say his name only with the greatest respect! Amod-Rheinur is the protector\
+of Nature, the Golden Producer, the Celestial Green Thumb! These $trees only survive by his\
+grace alone. No sun shines here under the earth and what water wells from below would not\
+suffice to sustain a grove this size. I feel his radiance nearby... My actions... deplorable\
+as they may seem... are driven by his holy oversight. I am a vessel, nothing more. The\
+end I bring is a fitting finish to a decadent civilization lost in its transgressions.\
+I am but a humble $druid my wrath however channels a deity!
