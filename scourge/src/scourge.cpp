@@ -492,7 +492,7 @@ void Scourge::createMissionInfoMessage( Mission *lastMission ) {
 		// Add XP points for making it back alive
 		char message[1000];
 		int exp = (lastMission->getLevel() + 1) * 100;
-		sprintf( message, " For returning alive, the party receives %d experience points. ", exp);
+		sprintf( message, "||For returning alive, the party receives %d experience points. ", exp);
 		strcat( infoMessage, message );
 
 		for(int i = 0; i < getParty()->getPartySize(); i++) {
@@ -1063,11 +1063,11 @@ bool Scourge::useItem(int x, int y, int z) {
         return true;
       } else if( pos && pos->item && 
 								 ((Item*)(pos->item))->getRpgItem()->getType() == RpgItem::CONTAINER ) {
-				if( SDL_GetModState() & KMOD_CTRL ) {
+				//if( SDL_GetModState() & KMOD_CTRL ) {
 					openContainerGui(((Item*)(pos->item)));
-				} else {
-					getParty()->setSelXY( x, y, false ); // get as close as possible to location
-				}
+				//} else {
+					//getParty()->setSelXY( x, y, false ); // get as close as possible to location
+				//}
 				return true;
       } else if( session->getSquirrel()->
 								 callMapPosMethod( "useShape", 

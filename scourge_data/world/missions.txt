@@ -282,7 +282,7 @@ Y:have returned the complex where you defeated $Mothrazu is no more. In its plac
 Y:an unnatural tree. (And I use the word 'tree' loosely here.) It is enormous and clearly
 Y:extraplanar in nature.|| An event of this magnitude is out of the range of problems we 
 Y:normally deal with, therefore I asked $Melathor to research a solution. Talk to him before
-Y:going to your next mission. Ask him about the Tree of Emeril.||
+Y:going to your next mission. Ask him about the Tree of Emeril.
 N:Our time is limited. Be careful not to take too long, or $Mothrazu may well accomplish
 N:her vile deed. Now that our agents have finally located her lair, you should eliminate
 N:her once and for all!
