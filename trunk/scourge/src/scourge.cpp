@@ -151,7 +151,11 @@ void Scourge::initUI() {
 }
 
 void Scourge::start() {  
-	bool initMainMenu = true;
+
+    // initialize the random number generator
+    srand( (unsigned int)time( (time_t *)NULL ) );
+
+    bool initMainMenu = true;
 	int value = CONTINUE_GAME;
   while(true) {
 

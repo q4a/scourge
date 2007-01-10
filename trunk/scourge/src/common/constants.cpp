@@ -593,11 +593,11 @@ int Constants::initRootDir( int argc, char *argv[] ) {
 #else
 #ifdef ENABLE_BINRELOC
   cerr << "\tusing binreloc..." << endl;
-//  rootDir = (char*)BR_DATADIR( "/data" );
-  char tmp[40];
-  strcpy( tmp, "/" );
-  strcat( tmp, DATA_DIR_NAME );
-  strcpy( rootDir, (char*)BR_DATADIR( tmp ) );
+  char *p = br_find_data_dir( DATA_DIR_NAME );
+  char tmp[255];
+  sprintf( tmp, "%s/%s", br_find_data_dir( "" ), DATA_DIR_NAME );
+  strcpy( rootDir, tmp );
+  free( p );
 #else
   cerr << "\tnot using binreloc..." << endl;
   strcpy( rootDir, DATA_DIR );
