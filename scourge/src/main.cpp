@@ -21,6 +21,7 @@
 #include "gameadapter.h"
 #include "session.h"
 #include "scourge.h"
+#include "common/binreloc.h"
 
 using namespace std;
 
@@ -39,6 +40,12 @@ GameAdapter *createGameAdapter(UserConfiguration *config) {
 }
 
 int main(int argc, char *argv[]) {
+  BrInitError error; 
+  if( br_init( &error ) == 0 && error != BR_INIT_ERROR_DISABLED ) { 
+      printf( "Warning: BinReloc failed to initialize (error code %d)\n", error ); 
+      printf( "Will fallback to hardcoded default path.\n" ); 
+  }
+    
   UserConfiguration *userConfiguration = new UserConfiguration();  
   userConfiguration->loadConfiguration();    
   userConfiguration->parseCommandLine(argc, argv); 

@@ -19,7 +19,7 @@
 #define CONSTANTS_H
 
 // autopackage's binary relocation lib
-#include "prefix.h"
+#include "binreloc.h"
 
 // from tuxracer
 #if defined ( __MWERKS__ ) || defined( _MSC_VER ) || defined( WIN32 )
