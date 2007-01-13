@@ -1,7 +1,7 @@
 [Project]
 FileName=scourge.dev
 Name=scourge
-UnitCount=302
+UnitCount=304
 Type=0
 Ver=1
 ObjFiles=
@@ -10,9 +10,9 @@ Libs=
 PrivateResource=scourge_private.rc
 ResourceIncludes=
 MakeIncludes=
-Compiler=-g -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@_
-CppCompiler=-g -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@_
-Linker=-g -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -lfreetype -lSDL_mixer -lz_@@_
+Compiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@__@@__@@_
+CppCompiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@_
+Linker=-O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -lfreetype -lSDL_mixer -lSDL_net -lz_@@_
 IsCpp=1
 Icon=scourge.ico
 ExeOutput=..
@@ -2858,16 +2858,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit282]
-FileName=..\src\common\prefix.h
-CompileCpp=1
-Folder=common
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit283]
 FileName=..\src\common\constants.cpp
 CompileCpp=1
 Folder=common
@@ -2877,7 +2867,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit284]
+[Unit283]
 FileName=..\src\common\constants.h
 CompileCpp=1
 Folder=common
@@ -2887,17 +2877,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit285]
-FileName=..\src\common\prefix.c
-CompileCpp=1
-Folder=common
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit286]
+[Unit284]
 FileName=..\src\pceditor.cpp
 CompileCpp=1
 Folder=scourge
@@ -2907,7 +2887,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit287]
+[Unit285]
 FileName=..\src\pceditor.h
 CompileCpp=1
 Folder=scourge
@@ -2917,7 +2897,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit288]
+[Unit286]
 FileName=..\src\mondrian.cpp
 CompileCpp=1
 Folder=scourge
@@ -2927,7 +2907,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit289]
+[Unit287]
 FileName=..\src\mondrian.h
 CompileCpp=1
 Folder=scourge
@@ -2937,7 +2917,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit290]
+[Unit288]
 FileName=..\src\gui\textdialog.cpp
 CompileCpp=1
 Folder=gui
@@ -2947,7 +2927,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit291]
+[Unit289]
 FileName=..\src\gui\textdialog.h
 CompileCpp=1
 Folder=gui
@@ -2957,7 +2937,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit292]
+[Unit290]
 FileName=..\src\debug.h
 CompileCpp=1
 Folder=scourge
@@ -2967,7 +2947,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit293]
+[Unit291]
 FileName=..\src\savegamedialog.h
 CompileCpp=1
 Folder=scourge
@@ -2977,7 +2957,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit294]
+[Unit292]
 FileName=..\src\savegamedialog.cpp
 CompileCpp=1
 Folder=scourge
@@ -2987,7 +2967,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit295]
+[Unit293]
 FileName=..\src\render\modelwrapper.h
 CompileCpp=1
 Folder=render
@@ -2997,7 +2977,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit296]
+[Unit294]
 FileName=..\src\render\animatedshape.cpp
 CompileCpp=1
 Folder=render
@@ -3007,7 +2987,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit297]
+[Unit295]
 FileName=..\src\render\animatedshape.h
 CompileCpp=1
 Folder=render
@@ -3017,7 +2997,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit298]
+[Unit296]
 FileName=..\src\render\Md3.cpp
 CompileCpp=1
 Folder=render
@@ -3027,7 +3007,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit299]
+[Unit297]
 FileName=..\src\render\Md3.h
 CompileCpp=1
 Folder=render
@@ -3037,7 +3017,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit300]
+[Unit298]
 FileName=..\src\render\md3shape.cpp
 CompileCpp=1
 Folder=render
@@ -3047,7 +3027,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit301]
+[Unit299]
 FileName=..\src\render\md3shape.h
 CompileCpp=1
 Folder=render
@@ -3057,10 +3037,50 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit302]
+[Unit300]
 FileName=..\src\render\modelwrapper.cpp
 CompileCpp=1
 Folder=render
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit301]
+FileName=..\src\common\binreloc.h
+CompileCpp=1
+Folder=common
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit302]
+FileName=..\src\common\binreloc.c
+CompileCpp=1
+Folder=common
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit303]
+FileName=..\src\upload.cpp
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit304]
+FileName=..\src\upload.h
+CompileCpp=1
+Folder=scourge
 Compile=1
 Link=1
 Priority=1000

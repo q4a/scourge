@@ -326,9 +326,17 @@ void SDLHandler::setVideoMode( Preferences * uc ) {
   
   /* initialize SDL */
   if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
-	fprintf( stderr, "Video initialization failed: %s\n", SDL_GetError( ) );
-	quit( 1 );
+	   fprintf( stderr, "Video initialization failed: %s\n", SDL_GetError( ) );
+	   quit( 1 );
   }
+  
+#ifdef HAVE_SDL_NET
+  // initialize SDL_net
+  if( SDLNet_Init() == -1 ) {
+    cerr << "*** error: SDLNet_Init: " << SDL_GetError() << endl;
+    exit(2);
+  }
+#endif  
   
   /* Fetch the video info */
   videoInfo = SDL_GetVideoInfo( );
