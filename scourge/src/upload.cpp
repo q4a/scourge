@@ -123,7 +123,10 @@ int Upload::uploadScoreToWeb( char *score, char *result ) {
 			cerr << "Closing socket..." << endl;
 			SDLNet_TCP_Close(sock);
 			sock = NULL;
-		}
+		} else {
+      cerr << "*** Error: unable to resolve address: " << TARGET_HOST << ":" << TARGET_PORT << endl;
+      cerr << "\tError: " << SDLNet_GetError() << endl;
+    } 
 	} catch( error *err ) { 
 		cerr << "Exception caught." << err->message << endl;
 		strcpy( result, err->message.c_str() );
