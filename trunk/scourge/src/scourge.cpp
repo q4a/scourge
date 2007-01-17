@@ -3187,6 +3187,10 @@ bool Scourge::doLoadGame( Session *session, char *dirName, char *error ) {
 			cerr << "*** Warning: can't find values file." << endl;
 		}
 	}
+	
+	strcpy( session->getScoreid(), "" );
+	loadScoreid( dirName, session->getScoreid() );
+	cerr << "SCOREID=" << session->getScoreid() << endl;
   return true;
 }
 
@@ -3529,12 +3533,60 @@ void Scourge::uploadScore() {
 					 getParty()->getParty(0)->getExp(),
 					 desc );
 
-	char result[300];	
-	Upload::uploadScoreToWeb( score, result );
+	if( strlen( session->getScoreid() ) > 0 ) {
+		strcat( score, "&id=" );
+		strcat( score, session->getScoreid() );
+	}
 
-	showMessageDialog( result );
+	char result[300];	
+	if( !Upload::uploadScoreToWeb( score, result ) ) {
+		cerr << "Success: " << result << endl;
+		
+		if( strlen( session->getSavegameName() ) &&
+				strlen( result ) < 40 && 
+				!strlen( session->getScoreid() ) ) {
+			strcpy( session->getScoreid(), result );
+			saveScoreid( session->getSavegameName(), session->getScoreid() );
+		}
+		showMessageDialog( "Score was successfully uploaded." );
+	} else {
+		showMessageDialog( result );
+	}
 }
 
 void Scourge::askToUploadScore() {
 	confirmUpload->setVisible( true );
 }
+
+bool Scourge::saveScoreid( char *dirName, char *p ) {
+	char path[300];
+	char tmp[300];
+	sprintf( tmp, "%s/scoreid.dat", dirName );
+	get_file_name( path, 300, tmp );
+
+	FILE *fp = fopen( path, "w" );
+	if( !fp ) {
+		cerr << "Error creating scoreid file! path=" << path << endl;
+		return false;
+	}
+	fprintf( fp, "%s", p );
+	fclose( fp );
+	return true;
+}
+
+bool Scourge::loadScoreid( char *dirName, char *p ) {
+	char path[300];
+	char tmp[300];
+	sprintf( tmp, "%s/scoreid.dat", dirName );
+	get_file_name( path, 300, tmp );
+
+	FILE *fp = fopen( path, "r" );
+	if( !fp ) {
+		cerr << "Error reading scoreid file! path=" << path << endl;
+		return false;
+	}
+	fscanf( fp, "%s", p );
+	fclose( fp );
+	return true;
+}
+

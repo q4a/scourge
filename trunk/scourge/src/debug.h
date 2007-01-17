@@ -43,7 +43,7 @@
 //#define CAVE_TEST 1
 #define CAVE_TEST_LEVEL 4
 #define BATTLES_ENABLED 1
-//#define DEBUG_KEYS 1
+#define DEBUG_KEYS 1
 //#define BASE_DEBUG 1
 
 // sqbinding.cpp                        
