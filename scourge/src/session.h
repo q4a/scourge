@@ -72,6 +72,7 @@ private:
   std::map<RpgItem*, Item*> special;
 	char savegame[255];
 	char loadgame[255];
+	char scoreid[40];
 
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
@@ -187,6 +188,8 @@ public:
 	inline void setLoadgameName( char *s ) { strcpy( loadgame, s ); }
 	inline char *getLoadgameName() { return loadgame; }
 	inline bool willLoadGame() { return( strlen( loadgame ) ? true : false ); }
+
+	inline char *getScoreid() { return scoreid; }
 
 protected:
   virtual void initData();

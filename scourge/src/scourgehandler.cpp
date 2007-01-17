@@ -127,6 +127,7 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
 
 #ifdef DEBUG_KEYS
     if(event->key.keysym.sym == SDLK_d) {
+			scourge->getParty()->getPlayer()->setPendingCauseOfDeath( "Testing" );
       scourge->getParty()->getPlayer()->takeDamage( 1000 );
       return false;
     } else if(event->key.keysym.sym == SDLK_l) {

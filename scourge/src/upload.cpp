@@ -26,8 +26,9 @@
 using namespace std;
 
 #define TARGET_HOST "scourge.sourceforge.net"
-#define TARGET_URL "/highscore/score.php"
+#define TARGET_URL "/highscore/score2.php"
 #define TARGET_PORT 80
+#define SUCCESS_STR "add-success: "
 
 struct error
 {
@@ -97,10 +98,11 @@ int Upload::uploadScoreToWeb( char *score, char *result ) {
 			// print out the entire string
 			char res[5000];
 			int count = SDLNet_TCP_Recv( sock, res, sizeof( res ) );
+			cerr << ">>>";
 			for( int i = 0; i < count; i++ ) {
 				cerr << res[i];
 			}
-			cerr << endl;
+			cerr << "<<<" << endl;
 			cerr << "Got " << count << " bytes." << endl;
 
 			if( count < 10 ) {
@@ -117,7 +119,21 @@ int Upload::uploadScoreToWeb( char *score, char *result ) {
 				errNum = 1;
 			} else {
 				cerr << "Post succeeded." << endl;
-				strcpy( result, "Your results have been uploaded." );
+				res[count] = '\0';
+				char *p = strstr( res, SUCCESS_STR );
+				if( p ) {
+					char *q = strpbrk( p, "\n\r" );
+					if( q ) {
+						*q = 0;
+						strcpy( result, p + strlen( SUCCESS_STR ) );
+					} else {
+						sprintf( result, "Can't parse result: ", res );
+						errNum = 1;
+					}
+				} else {
+					sprintf( result, "Bad result: ", res );
+					errNum = 1;
+				}
 			}
 			
 			cerr << "Closing socket..." << endl;

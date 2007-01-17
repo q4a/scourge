@@ -51,6 +51,7 @@ Session::Session(GameAdapter *adapter) {
   squirrel = NULL;
 	strcpy( savegame, "" );
 	strcpy( loadgame, "" );
+	strcpy( scoreid, "" );
 }
 
 Session::~Session() {

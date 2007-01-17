@@ -765,6 +765,9 @@ protected:
   void moveCreatures( bool allCreatures=true );  
 
 	void addWanderingHeroes();
+
+	bool saveScoreid( char *dirName, char *p );
+	bool loadScoreid( char *dirName, char *p );
 };
 
 #endif
