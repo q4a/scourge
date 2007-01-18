@@ -3045,6 +3045,10 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
     delete file;
   }
 
+	// Re-save the scoreid. This is so that if we save over an existing game, the scoreid
+	// is updated
+	saveScoreid( dirName, session->getScoreid() );
+
   return true;
 }
 
