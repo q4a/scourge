@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
       printf( "Warning: BinReloc failed to initialize (error code %d)\n", error ); 
       printf( "Will fallback to hardcoded default path.\n" ); 
   }
-    
+
   UserConfiguration *userConfiguration = new UserConfiguration();  
   userConfiguration->loadConfiguration();    
   userConfiguration->parseCommandLine(argc, argv); 

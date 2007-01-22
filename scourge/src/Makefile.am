@@ -1,4 +1,6 @@
-INCLUDES = -I$(srcdir) -I$(srcdir)/gui -I$(srcdir)/events -I$(srcdir)/rpg
+localedir = $(datadir)/locale
+INCLUDES = -I$(srcdir) -I$(srcdir)/gui -I$(srcdir)/events -I$(srcdir)/rpg -I../intl -I$(top_srcdir)/intl
+DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 LDADD = $(top_builddir)/src/common/libScourgeCommon.a \
 	$(top_builddir)/src/freetype/libScourgeFreeType.a \
 	$(top_builddir)/src/gui/libScourgeGui.a \
@@ -10,8 +12,8 @@ LDADD = $(top_builddir)/src/common/libScourgeCommon.a \
 	$(top_builddir)/src/sqstdlib/libSqstdlib.a \
 	$(top_builddir)/src/squirrel/libSquirrel.a \
 	$(top_builddir)/src/events/libScourgeEvents.a \
-	$(top_builddir)/src/test/libScourgeTest.a
-
+	$(top_builddir)/src/test/libScourgeTest.a \
+	@LIBINTL@
 
 AM_CPPFLAGS = $(BINRELOC_CFLAGS) -DBR_PTHREAD=0
 

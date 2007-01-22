@@ -6,6 +6,9 @@ AC_INIT(src/scourge.h)
 AM_INIT_AUTOMAKE(scourge, "0.18")
 AM_CONFIG_HEADER(config.h)
 
+dnl internationalization macros
+AM_GNU_GETTEXT
+
 dnl Check system type
 AC_CANONICAL_HOST
 
@@ -487,6 +490,28 @@ fi
 CPPFLAGS="$saved_CPPFLAGS" 
 TR_CPPFLAGS="$TR_CPPFLAGS $GL_CPPFLAGS"
 
+
+dnl --------------------------------------------------------------------------
+dnl Borrowed from the Battle for Wesnoth: create the translations directory.
+dnl --------------------------------------------------------------------------
+AC_CONFIG_COMMANDS([translations],
+[rm -rf translations
+case $srcdir in
+/*) topdir=$srcdir ;;
+*)  topdir=`pwd`/$srcdir ;;
+esac
+domain="scourge"
+# Symlinks that allow message catalogs to be used from build tree
+if test -w $srcdir; then
+for lang in `cat $srcdir/po/LINGUAS`
+do
+    mkdir -p $srcdir/../scourge_data/translations/$lang/LC_MESSAGES
+    cp -f $topdir/po/$lang.gmo $srcdir/../scourge_data/translations/$lang/LC_MESSAGES/$domain.mo
+done
+fi
+])
+
+
 dnl --------------------------------------------------------------------------
 dnl Other options
 dnl --------------------------------------------------------------------------
@@ -508,7 +533,7 @@ CFLAGS="$TR_CFLAGS"
 CXXFLAGS="$TR_CXXFLAGS"
 LIBS="$LIBS $TR_LIBS"
 
-AC_OUTPUT(Makefile src/Makefile \
+AC_OUTPUT(Makefile src/Makefile  intl/Makefile po/Makefile.in \
 src/common/Makefile \
 src/gui/Makefile \
 src/test/Makefile \
