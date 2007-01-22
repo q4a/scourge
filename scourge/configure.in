@@ -503,11 +503,14 @@ esac
 domain="scourge"
 # Symlinks that allow message catalogs to be used from build tree
 if test -w $srcdir; then
-for lang in `cat $srcdir/po/LINGUAS`
-do
+  pushd po
+  make update-po
+  popd
+  for lang in `cat $srcdir/po/LINGUAS`
+  do
     mkdir -p $srcdir/../scourge_data/translations/$lang/LC_MESSAGES
     cp -f $topdir/po/$lang.gmo $srcdir/../scourge_data/translations/$lang/LC_MESSAGES/$domain.mo
-done
+  done
 fi
 ])
 
