@@ -1,0 +1,41 @@
+# Hungarian translations for scourge package.
+# Copyright (C) 2007 Free Software Foundation, Inc.
+# This file is distributed under the same license as the scourge package.
+# Gabor Torok <cctorok@yahoo.com>, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: scourge\n"
+"Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
+"POT-Creation-Date: 2007-01-20 21:57-0800\n"
+"PO-Revision-Date: 2007-01-20 21:57-0800\n"
+"Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
+"Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: src/mainmenu.cpp:50
+msgid "New Game"
+msgstr "Új Játék"
+
+#: src/mainmenu.cpp:51
+msgid "Continue Game"
+msgstr "Játék Folytatása"
+
+#: src/mainmenu.cpp:52
+msgid "Multiplayer Game"
+msgstr ""
+
+#: src/mainmenu.cpp:53
+msgid "Options"
+msgstr "Beállitások"
+
+#: src/mainmenu.cpp:54
+msgid "About S.c.o.u.r.g.e."
+msgstr ""
+
+#: src/mainmenu.cpp:55
+msgid "Quit"
+msgstr "Kilépés"

@@ -47,7 +47,13 @@ using namespace std;
 #define MAX_PARTICLE_LIFE 50
 
 const char *MainMenu::menuText[] = { 
-  "New Game", "Continue Game", "Multiplayer Game", "Options", "About S.c.o.u.r.g.e.", "Quit", ""
+  N_( "New Game" ), 
+	N_( "Continue Game" ), 
+	N_( "Multiplayer Game" ), 
+	N_( "Options" ), 
+	N_( "About S.c.o.u.r.g.e."), 
+	N_( "Quit" ), 
+	""
 };
 
 const int MainMenu::values[] = {
@@ -537,7 +543,7 @@ void MainMenu::buildTextures() {
     mi->active = ( i == 0 ? true : false );
     for( int t = 0; t < 20; t++ ) mi->particle[t].life = 0;
     menuItemList.push_back( mi );
-    strcpy( mi->text, menuText[i] );
+    strcpy( mi->text, _( menuText[i] ) );
     mi->value = values[i];
     
     // Create texture and copy minimap date from backbuffer on it    
@@ -557,7 +563,7 @@ void MainMenu::buildTextures() {
     mi->x = x;
     mi->y = y;
     glColor4f( 1, 1, 1, 1 );
-    scourge->getSDLHandler()->texPrint( x, y, menuText[i] );
+    scourge->getSDLHandler()->texPrint( x, y, _( menuText[i] ) );
     y += height;
 
     // Copy to a texture

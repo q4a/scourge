@@ -76,6 +76,11 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #   include <sys/stat.h>
 #endif
 
+#include <libintl.h>
+#define _(String) gettext (String)
+#define gettext_noop(String) String
+#define N_(String) gettext_noop (String)
+
 #ifdef WIN32
 #define SEPARATOR '\\'
 #else
@@ -115,8 +120,8 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 
 #define toint(x) (int)(x<0 ? (x - 0.5f) : (x + 0.5f))
 
-//extern char rootDir[300];
-extern char *rootDir;
+extern char rootDir[300];
+extern char localeDir[300];
 extern char configDir[300];
 extern int get_config_dir_name( char *buff, int len );
 extern int get_config_file_name( char *buff, int len );
@@ -652,6 +657,8 @@ public:
 	static void getQuadrantAndAngle( float nx, float ny, int *q, float *angle );
 
 	static int initRootDir( int argc, char *argv[] );
+
+	static int findLocaleDir();
 
 private:
   static bool checkFile(const char *dir, const char *file);

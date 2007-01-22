@@ -41,7 +41,8 @@ const char *Constants::adminUserName = "admin";
 
 // assign the data dir
 //char rootDir[300] = DATA_DIR;
-char *rootDir = NULL;
+char rootDir[300];
+char localeDir[300];
 char configDir[300] = CONFIG_DIR;
 
 int get_config_dir_name( char *buff, int len )
@@ -580,10 +581,25 @@ void Constants::initConstants() {
   Constants::badStateMod.push_back( Constants::paralysed );
 }
 
+#define TEST_FILE "scourge.mo"
+int Constants::findLocaleDir() {
+	// Set the working locale. 
+	// To change it, change the env var LANGUAGE or LANG (order of precedence.)
+	setlocale( LC_ALL, "C" );
+	setlocale( LC_MESSAGES, "" );
+	
+	// assume translations dir in rootDir
+	sprintf( localeDir, "%s/translations", rootDir );
+	cerr << "Looking for localized resources in: " << bindtextdomain( "scourge", localeDir ) << endl;
+	bind_textdomain_codeset( "scourge", "UTF-8" );
+
+	textdomain( "scourge" ); 
+
+	return 1;
+}
+
 int Constants::initRootDir( int argc, char *argv[] ) {
 
-  // Only allocate once. (May leak some mem. but saves a lot of headaches.)
-  rootDir = (char*)malloc( 300 * sizeof( char ) );
   // init the rootdir via binreloc
   cerr << "Constructing root path:" << endl;
 #ifdef WIN32
@@ -653,6 +669,8 @@ int Constants::initRootDir( int argc, char *argv[] ) {
     cerr << "Either install the data files at the above location, or rebuild with ./configure --with-data-dir=<new location> or run the game from the source distribution's main directory (the one that contains src,data,etc.)" << endl;
     return 1;
   }
+
+	findLocaleDir();
 
   cerr << "Starting session. Final rootDir=" << rootDir << endl;
 
