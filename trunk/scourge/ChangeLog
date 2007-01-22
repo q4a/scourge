@@ -1,3 +1,9 @@
+2007-01-21  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): Add intl.
+	(EXTRA_DIST): Add config.rpath, m4/ChangeLog.
+	* configure.in (AC_OUTPUT): Add intl/Makefile, po/Makefile.in.
+
 2007-01-19  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* Makefile.am (SUBDIRS): Add intl, po.
