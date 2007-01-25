@@ -591,7 +591,7 @@ int Constants::findLocaleDir() {
 	// assume translations dir in rootDir
 	sprintf( localeDir, "%s/translations", rootDir );
 	cerr << "Looking for localized resources in: " << bindtextdomain( "scourge", localeDir ) << endl;
-	bind_textdomain_codeset( "scourge", "UTF-8" );
+	bind_textdomain_codeset( "scourge", "UTF8" );
 
 	textdomain( "scourge" ); 
 

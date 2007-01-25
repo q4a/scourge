@@ -30,6 +30,7 @@ class SDLEventHandler;
 class SDLScreenView;
 class Preferences;
 class Sound;
+class FontMgr;
 
 /**
   *@author Gabor Torok
@@ -79,6 +80,8 @@ private:
   
   // truetype font  
   freetype_font_data font, uiFont, monoFont, largeFont;
+  TTF_Font *ttf_font, *ttf_uiFont, *ttf_monoFont, *ttf_largeFont;
+	FontMgr *fontMngrNormal, *fontMngrUi, *fontMngrFixed, *fontMngrLarge;
   bool font_initialized;
   int fontType;
 
@@ -200,6 +203,8 @@ public:
   void texPrint(GLfloat x, GLfloat y, const char *fmt, ...);
   int textWidth( const char *fmt, ... );
   const freetype_font_data *getCurrentFont();
+  TTF_Font *getCurrentTTFFont();
+	FontMgr *getCurrentFontManager();
   void initFonts();
 
   GLvoid glPrint( const char *fmt, ... );

@@ -27,6 +27,7 @@
 #include "gui/scrollinglabel.h"
 #include "shapepalette.h"
 #include "savegamedialog.h"
+#include "freetype/fontmgr.h"
 
 using namespace std;
 
@@ -64,7 +65,6 @@ MainMenu::MainMenu(Scourge *scourge){
   this->scourge = scourge;
   this->cloudCount = 30;
 	this->lastMenuTick = 0;
-  this->mainWin = NULL;
 	this->savegameDialog = new SavegameDialog( scourge );
   for(int i = 0; i < cloudCount; i++) {
 	cloud[i].x = (int)((float)scourge->getSDLHandler()->getScreen()->w * rand()/RAND_MAX);
@@ -92,68 +92,7 @@ MainMenu::MainMenu(Scourge *scourge){
     star[i].x = (int)( (float)scourge->getSDLHandler()->getScreen()->w * rand()/RAND_MAX );
     star[i].y = top + (int)( ((float)scourge->getSDLHandler()->getScreen()->h - (top * 2 + WATER_HEIGHT)) * rand()/RAND_MAX );
   }
-  // The new style gui
-#ifdef HAVE_SDL_NET
-  /*
-  mainWin = new Window( scourge->getSDLHandler(),
-												50, top + 230, 270, 250, 
-												"Main Menu", 
-												scourge->getShapePalette()->getGuiTexture(),
-												false,
-                        Window::BASIC_WINDOW, 
-                        scourge->getShapePalette()->getGuiTexture2() );
-  */
-
-  mainWin = new Window( scourge->getSDLHandler(),
-						50, top + 230, 270, 250, 
-						"Main Menu", false, Window::BASIC_WINDOW,
-						GuiTheme::DEFAULT_THEME );
-
-#else
-  /*
-  mainWin = new Window( scourge->getSDLHandler(),
-												50, top + 230, 270, 220, 
-												"Main Menu", 
-												scourge->getShapePalette()->getGuiTexture(),
-												false,
-                        Window::BASIC_WINDOW, 
-                        scourge->getShapePalette()->getGuiTexture2() );
-  */
-  mainWin = new Window( scourge->getSDLHandler(),
-						50, top + 230, 270, 220, 
-						"Main Menu", false, Window::BASIC_WINDOW,
-						GuiTheme::DEFAULT_THEME );
-#endif
-    
-  int y = 30;
-  newGameButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "New Game" );
-  mainWin->addWidget((Widget*)newGameButton);
-  y += 30;
-  continueButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Continue Game" );
-  mainWin->addWidget((Widget*)continueButton);
-  y += 30;
-
-/*
-
-// multiplayer is disabled for now (until it's fixed)
-
-#ifdef HAVE_SDL_NET
-  multiplayer = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Multiplayer" );
-  mainWin->addWidget((Widget*)multiplayer);
-  y += 30;
-#endif
-*/
-
-  optionsButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Options" );
-  mainWin->addWidget((Widget*)optionsButton);
-  y += 30;
-  aboutButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "About" );
-  mainWin->addWidget((Widget*)aboutButton);
-  y += 30;
-  quitButton = new Button( 10, y, 260, y + 20, scourge->getShapePalette()->getHighlightTexture(), "Quit" );
-  mainWin->addWidget((Widget*)quitButton);
-  y += 30;
-  
+  // The new style gui  
   int w = 250;
   int h = 120;
   newGameConfirm = new Window(scourge->getSDLHandler(),
@@ -168,19 +107,7 @@ MainMenu::MainMenu(Scourge *scourge){
   newGameConfirm->setVisible( false );
   newGameConfirm->setModal( true );
 
-/*
-  newGameButton->setTooltip( "Start a new game" );
-  continueButton->setTooltip( "Load a saved party to continue the game" );
-#ifdef HAVE_SDL_NET
-  multiplayer->setTooltip( "Start or join a cooperative network game" );
-#endif
-  optionsButton->setTooltip( "Edit the game's options" );
-  aboutButton->setTooltip( "About S.C.O.U.R.G.E." );
-  quitButton->setTooltip( "Quit the game to work on more important things" );
-*/  
-
   partyEditor = new PartyEditor( scourge );
-
   
   // about dialog
   w = 500;
@@ -202,17 +129,48 @@ MainMenu::MainMenu(Scourge *scourge){
                                        ( h - 35 ), 
                                        Constants::getMessage( Constants::OK_LABEL ) );
   aboutDialog->setVisible( false );
-
 }
 
 MainMenu::~MainMenu(){
 }
 
 void MainMenu::drawView() {
-  //if( !partyEditor->isVisible() ) {
 
-		// HACK: needed on my X2 dual core system... life is hard...
-		//SDL_Delay( 20 );
+	
+	/*
+//  glEnable(GL_BLEND);
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glPushMatrix();
+  glLoadIdentity();
+
+	glDisable( GL_CULL_FACE );
+
+	glColor3f( 0.1, 0.35, 0.05 );
+	glBegin( GL_QUADS );
+	glVertex2f( 50, 50 );
+	glVertex2f( 500, 50 );
+	glVertex2f( 500, 500 );
+	glVertex2f( 50, 500 );
+	glEnd();
+
+  glEnable( GL_TEXTURE_2D );
+	glTranslatef( 0, 0, 10 );
+
+	glColor3f( 1, 1, 1 );
+	scourge->getSDLHandler()->getCurrentFontManager()->drawTextUTF8( _( "New Game" ), 100, 100 );
+
+	glColor3f( 1, 0, 1 );
+	scourge->getSDLHandler()->getCurrentFontManager()->drawTextUTF8( _( "New Game" ), 100, 140 );
+
+	glColor3f( 0, 1, 1 );
+	scourge->getSDLHandler()->getCurrentFontManager()->drawTextUTF8( _( "New Game" ), 100, 180 );
+
+  glPopMatrix();
+	return;
+	*/
+
+
 	int tickNow = SDL_GetTicks();
 	if((tickNow - lastMenuTick) < 15)
 		SDL_Delay( 15 - (tickNow - lastMenuTick) );
@@ -241,7 +199,6 @@ void MainMenu::drawView() {
     }
     drawClouds(false, true);
     glDisable(GL_STENCIL_TEST);
-  //}
       
   // draw the blended water
   glEnable(GL_BLEND);  
@@ -256,13 +213,7 @@ void MainMenu::drawView() {
   drawStars();
 
   glDisable(GL_DEPTH_TEST);
-  //if( !partyEditor->isVisible() ) {
     drawClouds(true, false);
-  //}
-  
-  
-
-  // drawWater();
 
   
   glDisable(GL_TEXTURE_2D);
@@ -280,31 +231,9 @@ void MainMenu::drawView() {
   glDisable(GL_ALPHA_TEST);
   glPopMatrix();
 
-  /*
-  if( !partyEditor->isVisible() ) {
-    drawLogo();
-  }
-  */
-
-
-  /*
-  // debug tile images
-  glPixelZoom( 1.0, -1.0 );
-  for( int x = 0; x < 20; x++ ) {
-    for( int y = 0; y < 18; y++ ) {
-      glRasterPos2f( x * 34, y * 34 );
-      glDrawPixels( 32, 32, GL_BGRA, GL_UNSIGNED_BYTE, 
-                    scourge->getShapePalette()->tilesImage[x][y] );
-    }
-  }
-  */
-
 
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
-//}
-
-//void MainMenu::drawAfter() {
 
   // draw the boards
   if(openingTop > 0) {
@@ -382,7 +311,6 @@ void MainMenu::drawView() {
     }
   }
 
-  //if( !partyEditor->isVisible() && openingTop <= top ) {
 	if( openingTop <= top ) {
     drawLogo();
   }
@@ -392,12 +320,10 @@ void MainMenu::drawAfter() {
 }
 
 void MainMenu::show() { 
-//  mainWin->setVisible(true); 
   logoRot = -scourge->getShapePalette()->logo->h;
 }
 
 void MainMenu::hide() { 
-  //mainWin->setVisible(false); 
   openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
 }
 
@@ -524,7 +450,7 @@ void MainMenu::drawActiveMenuItem( float divisor, int count ) {
 }
 
 void MainMenu::buildTextures() {
-  scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
+  //scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 
   int x = 50;
   int y = top + 230;
@@ -574,7 +500,7 @@ void MainMenu::buildTextures() {
                       x, scourge->getSDLHandler()->getScreen()->h - ( y - 20 ), 
                       width, height, 0 );
   }
-  scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+  //scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 }
 
 void MainMenu::drawLogo() {
@@ -1033,7 +959,6 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
 
   if( widget == partyEditor->getCancelButton() ) {
     partyEditor->setVisible( false );
-    //mainWin->setVisible( true );
     return false;
   } else if( widget == partyEditor->getStartGameButton() ) {
     partyEditor->setVisible( false );
@@ -1046,30 +971,6 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == newGameConfirmCancel ) {
     newGameConfirm->setVisible( false );
     return false;
-  } else if(widget == newGameButton) {
-		value = NEW_GAME;
-		showPartyEditor();
-		//showSavegameDialog( true );    
-    return false;
-  } else if(widget == continueButton) {
-    value = CONTINUE_GAME;
-		scourge->getSaveDialog()->show( false );
-		return false;
-		//showSavegameDialog( false );
-    //return false;
-  } else if(widget == optionsButton) {
-    value = OPTIONS;
-    return true;
-  } else if(widget == aboutButton) {
-    aboutDialog->setVisible( true );
-    //value = ABOUT;
-    return false;
-  } else if(widget == multiplayer) {
-    value = MULTIPLAYER;
-    return true;
-  } else if(widget == quitButton) {
-    value = QUIT;
-    return true;
   }
   return false;
 }
@@ -1185,32 +1086,12 @@ void MainMenu::showSavegameDialog( bool inSaveMode ) {
 	savegameDialog->show( inSaveMode );
 }
 
-void MainMenu::setSavegameSelected() {
-	/*
-	if( strlen( savegameDialog->getSelectedName() ) ) {
-		// save the name of the file
-		scourge->getSession()->setSavegameName( savegameDialog->getSelectedName() );
-		if( value == NEW_GAME ) {
-			showPartyEditor();
-		} else {
-			// end the main loop (see scourge::start())
-			scourge->getSDLHandler()->endMainLoop();
-		}
-	}
-	*/
-}
-
 void MainMenu::showPartyEditor() {
-  //mainWin->setVisible( false );
   partyEditor->setVisible( true );
 }
 
 void MainMenu::createParty( Creature **pc, int *partySize ) { 
   partyEditor->createParty( pc, partySize ); 
-}
-
-bool MainMenu::isVisible() { 
-  return mainWin->isVisible(); 
 }
 
 RenderedCreature *MainMenu::createWanderingHero( int level ) {

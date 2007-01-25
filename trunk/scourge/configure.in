@@ -188,6 +188,16 @@ if test "x$enable_sdl" != "xno" ; then
 		   echo "*** SDL_net not found.  Configuring without network support."
 		fi
 	fi
+	
+	dnl Check for SDL_ttf
+	AC_CHECK_LIB( SDL_ttf, TTF_Init, 
+	      have_SDL_ttf=yes, have_SDL_ttf=no )
+
+	if test "x$have_SDL_ttf" = "xyes" ; then 
+	   TR_LIBS="$TR_LIBS -lSDL_ttf"
+	else
+	   AC_MSG_ERROR([Cannot find SDL_ttf library])
+	fi
 	LIBS="$saved_LIBS"
     else
 	echo "*** SDL not found.  Configuring without audio or joystick support."

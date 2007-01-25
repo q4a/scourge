@@ -1273,10 +1273,10 @@ A:Additional testing and general hazing from the very helpful members of rpgcode
 A:Many happy interruptions in bugfixing by Abe & Asha|
 
 # Fonts (normal, ui, fixed_width, large)
-F:fonts/Vera.ttf,8
-F:fonts/Dalelands.ttf,9
-F:fonts/VeraMono.ttf,8
-F:fonts/Cas_antn.ttf,18
+F:fonts/Vera.ttf,10
+F:fonts/Dalelands.ttf,10
+F:fonts/VeraMono.ttf,10
+F:fonts/Cas_antn.ttf,32
 
 
 
