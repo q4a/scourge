@@ -8,4 +8,6 @@ libScourgeFreeType_a_SOURCES = \
 	FreeType.cpp\
 	FreeType.h\
 	OGLFT.cpp\
-	OGLFT.h
+	OGLFT.h\
+	fontmgr.cpp\
+	fontmgr.h

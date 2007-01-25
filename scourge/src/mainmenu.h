@@ -93,13 +93,6 @@ private:
   } Star;
   Star star[500];
 
-  Window *mainWin;
-  Button *newGameButton;
-  Button *continueButton;
-  Button *multiplayer;
-  Button *optionsButton;
-  Button *aboutButton;
-  Button *quitButton;
 	SavegameDialog *savegameDialog;
 
   Window *newGameConfirm;
@@ -130,11 +123,9 @@ public:
   int getValue();
   void showNewGameConfirmationDialog();
 	void showSavegameDialog( bool inSaveMode=true );
-	void setSavegameSelected();
 
   void show();
   void hide();
-  bool isVisible();
   void showPartyEditor();
   void createParty( Creature **pc, int *partySize );
 	RenderedCreature *createWanderingHero( int level );

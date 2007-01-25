@@ -26,6 +26,7 @@
 #include "session.h"
 #include "party.h"
 #include "debug.h"
+#include "freetype/fontmgr.h"
 
 using namespace std;
 
@@ -86,6 +87,7 @@ SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
 }
 
 SDLHandler::~SDLHandler(){
+	// close fonts, etc.
 }
 
 void SDLHandler::pushHandlers(SDLEventHandler *eventHandler,
@@ -328,6 +330,11 @@ void SDLHandler::setVideoMode( Preferences * uc ) {
   if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
 	   fprintf( stderr, "Video initialization failed: %s\n", SDL_GetError( ) );
 	   quit( 1 );
+  }
+
+  if( TTF_Init() < 0 ) {
+    fprintf( stderr, "Couldn't initialize SDL_ttf: %s\n", SDL_GetError() );
+    quit( 1 );
   }
   
 #ifdef HAVE_SDL_NET
@@ -860,6 +867,43 @@ const freetype_font_data *SDLHandler::getCurrentFont() {
   return (const freetype_font_data*)p;
 }
 
+TTF_Font *SDLHandler::getCurrentTTFFont() {
+
+  initFonts();
+
+  TTF_Font *p;
+  switch( fontType ) {
+	case Constants::SCOURGE_UI_FONT: 
+		p = ttf_uiFont; break;
+  case Constants::SCOURGE_MONO_FONT:
+    p = ttf_monoFont; break;
+  case Constants::SCOURGE_LARGE_FONT:
+    p = ttf_largeFont; break;
+  default:
+    p = ttf_font;
+  }
+  return p;
+}
+
+FontMgr *SDLHandler::getCurrentFontManager() {
+
+  initFonts();
+
+  FontMgr *p;
+  switch( fontType ) {
+	case Constants::SCOURGE_UI_FONT: 
+		p = fontMngrUi; break;
+  case Constants::SCOURGE_MONO_FONT:
+    p = fontMngrFixed; break;
+  case Constants::SCOURGE_LARGE_FONT:
+    p = fontMngrLarge; break;
+  default:
+    p = fontMngrNormal;
+  }
+  return p;
+}
+
+
 int SDLHandler::textWidth( const char *fmt, ... ) {
   char str[256]; // Holds our string
   va_list ap;     // Pointer to our list of elements
@@ -876,7 +920,10 @@ int SDLHandler::textWidth( const char *fmt, ... ) {
 
   initFonts();
 
-  return getTextLengthSimple( *(getCurrentFont()), str );
+	//return getTextLengthSimple( *(getCurrentFont()), str );
+	SDL_Rect r;
+	getCurrentFontManager()->textSizeUTF8( str, &r );
+	return r.w;
 }
 
 void SDLHandler::texPrint(GLfloat x, GLfloat y, 
@@ -896,20 +943,51 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
 
   initFonts();
 
-  freetype_print_simple( *(getCurrentFont()), x, y, str );
+//  freetype_print_simple( *(getCurrentFont()), x, y, str );
+
+	getCurrentFontManager()->drawTextUTF8( str, x, y );
 }
 
 void SDLHandler::initFonts() {
   if(!font_initialized) {
     char s[200];
-		sprintf( s, "%s/%s", rootDir, NORMAL_FONT_NAME );
+		
+    sprintf( s, "%s/%s", rootDir, NORMAL_FONT_NAME );
     font.init( s, NORMAL_FONT_SIZE );
-		sprintf( s, "%s/%s", rootDir, UI_FONT_NAME );
+    ttf_font = TTF_OpenFont( s, NORMAL_FONT_SIZE );
+    if( !ttf_font ) {
+      fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", NORMAL_FONT_SIZE, s, SDL_GetError());
+      quit( 2 );
+    }
+		fontMngrNormal = new FontMgr( ttf_font, 1, 1, 1, 0, 0, 0 );
+		
+    sprintf( s, "%s/%s", rootDir, UI_FONT_NAME );
     uiFont.init( s, UI_FONT_SIZE );
-		sprintf( s, "%s/%s", rootDir, FIXED_FONT_NAME );
+    ttf_uiFont = TTF_OpenFont( s, UI_FONT_SIZE );
+    if( !ttf_uiFont ) {
+      fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", UI_FONT_SIZE, s, SDL_GetError());
+      quit( 2 );
+    }
+		fontMngrUi = new FontMgr( ttf_uiFont, 1, 1, 1, 0, 0, 0 );
+		
+    sprintf( s, "%s/%s", rootDir, FIXED_FONT_NAME );
     monoFont.init( s, FIXED_FONT_SIZE );
-		sprintf( s, "%s/%s", rootDir, LARGE_FONT_NAME );
+    ttf_monoFont = TTF_OpenFont( s, FIXED_FONT_SIZE );
+    if( !ttf_monoFont ) {
+      fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", FIXED_FONT_SIZE, s, SDL_GetError());
+      quit( 2 );
+    }
+		fontMngrFixed = new FontMgr( ttf_monoFont, 1, 1, 1, 0, 0, 0 );
+		
+    sprintf( s, "%s/%s", rootDir, LARGE_FONT_NAME );
     largeFont.init( s, LARGE_FONT_SIZE );
+    ttf_largeFont = TTF_OpenFont( s, LARGE_FONT_SIZE );
+    if( !ttf_largeFont ) {
+      fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", LARGE_FONT_SIZE, s, SDL_GetError());
+      quit( 2 );
+    }
+		fontMngrLarge = new FontMgr( ttf_largeFont, 1, 1, 1, 0, 0, 0 );
+    
     font_initialized = true;
   }
 }
