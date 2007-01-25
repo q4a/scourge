@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-01-23 20:54-0800\n"
+"POT-Creation-Date: 2007-01-25 08:25-0800\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -16,26 +16,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/mainmenu.cpp:50 src/mainmenu.cpp:238
+#: src/mainmenu.cpp:51
 msgid "New Game"
 msgstr "New Game"
 
-#: src/mainmenu.cpp:51
+#: src/mainmenu.cpp:52
 msgid "Continue Game"
 msgstr "Continue Game"
 
-#: src/mainmenu.cpp:52
+#: src/mainmenu.cpp:53
 msgid "Multiplayer Game"
 msgstr "Multiplayer Game"
 
-#: src/mainmenu.cpp:53
+#: src/mainmenu.cpp:54
 msgid "Options"
 msgstr "Options"
 
-#: src/mainmenu.cpp:54
+#: src/mainmenu.cpp:55
 msgid "About S.c.o.u.r.g.e."
 msgstr "About S.c.o.u.r.g.e."
 
-#: src/mainmenu.cpp:55
+#: src/mainmenu.cpp:56
 msgid "Quit"
 msgstr "Quit"
