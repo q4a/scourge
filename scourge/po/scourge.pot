@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-01-23 20:54-0800\n"
+"POT-Creation-Date: 2007-01-25 08:25-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,26 +16,26 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/mainmenu.cpp:50 src/mainmenu.cpp:238
+#: src/mainmenu.cpp:51
 msgid "New Game"
 msgstr ""
 
-#: src/mainmenu.cpp:51
+#: src/mainmenu.cpp:52
 msgid "Continue Game"
 msgstr ""
 
-#: src/mainmenu.cpp:52
+#: src/mainmenu.cpp:53
 msgid "Multiplayer Game"
 msgstr ""
 
-#: src/mainmenu.cpp:53
+#: src/mainmenu.cpp:54
 msgid "Options"
 msgstr ""
 
-#: src/mainmenu.cpp:54
+#: src/mainmenu.cpp:55
 msgid "About S.c.o.u.r.g.e."
 msgstr ""
 
-#: src/mainmenu.cpp:55
+#: src/mainmenu.cpp:56
 msgid "Quit"
 msgstr ""

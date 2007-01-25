@@ -69,7 +69,7 @@ private:
   SDL_Color foreground;
   SDL_Color background;
 
-	Uint16 unicodeBuffer[1024];
+	Uint16 unicodeBuffer[5000];
 
   GlyphInfo *loadChar( Uint16 c );
 	GLuint loadTextureColorKey( SDL_Surface *surface, 

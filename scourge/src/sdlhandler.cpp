@@ -945,7 +945,7 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
 
 //  freetype_print_simple( *(getCurrentFont()), x, y, str );
 
-	getCurrentFontManager()->drawTextUTF8( str, x, y );
+	getCurrentFontManager()->drawTextUTF8( str, x, y - 10 );
 }
 
 void SDLHandler::initFonts() {
