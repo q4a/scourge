@@ -116,7 +116,7 @@ MainMenu::MainMenu(Scourge *scourge){
                             (scourge->getSDLHandler()->getScreen()->w/2) - (w/2), 
                             (scourge->getSDLHandler()->getScreen()->h/2) - (h/2), 
                             w, h,
-                            "About S.c.o.u.r.g.e.",
+                            _( "About S.c.o.u.r.g.e." ),
                             scourge->getShapePalette()->getGuiTexture(), true );
   aboutText = new ScrollingLabel( 8, 0, 
                                   w - 18, 
@@ -284,18 +284,18 @@ void MainMenu::drawView() {
     glLoadIdentity();
     glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
     char version[100];
-    sprintf(version, "Scourge version %s", SCOURGE_VERSION);
+    sprintf(version, _( "Scourge version %s" ), SCOURGE_VERSION);
     scourge->getSDLHandler()->texPrint( 0, 0, version );
     glColor3f( 0.8, 0.75, 0.65 );
     int y = 14;
-    scourge->getSDLHandler()->texPrint( 0, y, "Optionally compiled modules:" );
+    scourge->getSDLHandler()->texPrint( 0, y, _( "Optionally compiled modules:" ) );
     y += 14;
 #ifdef HAVE_SDL_NET
-    scourge->getSDLHandler()->texPrint( 0, y, "[Network]" );
+    scourge->getSDLHandler()->texPrint( 0, y, _( "[Network]" ) );
     y += 14;
 #endif
 #ifdef HAVE_SDL_MIXER
-    scourge->getSDLHandler()->texPrint( 0, y, "[Sound]" );
+    scourge->getSDLHandler()->texPrint( 0, y, _( "[Sound]" ) );
     y += 14;
 #endif
     glPopMatrix();
