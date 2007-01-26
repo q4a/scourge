@@ -1274,9 +1274,11 @@ A:Many happy interruptions in bugfixing by Abe & Asha|
 
 # Fonts (normal, ui, fixed_width, large)
 F:fonts/Vera.ttf,10
-F:fonts/Dalelands.ttf,10
+F:fonts/sherwood/SHERWOOD.TTF,12
 F:fonts/VeraMono.ttf,10
-F:fonts/Cas_antn.ttf,32
+F:fonts/vinque/vinque.ttf,24
+# F:fonts/Cas_antn.ttf,20
+# F:fonts/Dalelands.ttf,10
 
 
 
