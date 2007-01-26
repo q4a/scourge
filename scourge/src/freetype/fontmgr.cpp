@@ -46,6 +46,10 @@ bgRed(bgRed), bgGreen(bgGreen), bgBlue(bgBlue) {
 	background.g = (Uint8)(255 * bgGreen);
 	background.b = (Uint8)(255 * bgBlue);
 
+	shadowColor.r = (Uint8)40;
+	shadowColor.g = (Uint8)40;
+	shadowColor.b = (Uint8)40;
+
 	height = TTF_FontHeight(ttfFont);
 	ascent = TTF_FontAscent(ttfFont);
 	descent = TTF_FontDescent(ttfFont);
@@ -236,6 +240,11 @@ GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 											&(g->maxy), 
 											&(g->advance) );
 
+		SDL_Surface *shadow = TTF_RenderUNICODE_Shaded( ttfFont, 
+																										 letter, 
+																										 shadowColor,
+																										 background );
+
 		SDL_Surface *surface = TTF_RenderUNICODE_Shaded( ttfFont, 
 																										 letter, 
 																										 foreground,
@@ -244,7 +253,7 @@ GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 		if( surface ) {
 			g->w = surface->w;
 			g->h = surface->h;
-			g->tex = loadTextureColorKey( surface, texcoord, 0, 0, 0 );
+			g->tex = loadTextureColorKey( surface, shadow, texcoord, 0, 0, 0 );
 			g->texMinX = texcoord[ 0 ];
 			g->texMinY = texcoord[ 1 ];
 			g->texMaxX = texcoord[ 2 ];
@@ -264,7 +273,9 @@ GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 //  to the color key. Pixels that match the color key get an
 //  alpha of zero while all other pixels get an alpha of
 //  one.
-GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface, 
+#define SHADOW_DIFF 2
+GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
+																		 SDL_Surface *shadow,
 																		 GLfloat *texcoord,
 																		 int ckr, 
 																		 int ckg, 
@@ -272,7 +283,7 @@ GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
 	GLuint texture;
 	int w, h;
 	SDL_Surface *image;
-	SDL_Rect area;
+	SDL_Rect area, area2;
 	Uint32 colorkey;
 
 	// Use the surface width and height expanded to powers of 2 
@@ -317,7 +328,17 @@ GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
 	area.y = 0;
 	area.w = surface->w;
 	area.h = surface->h;
+
+	area2.x = 0;
+	area2.y = SHADOW_DIFF;
+	area2.w = surface->w;
+	area2.h = surface->h;
+
+	//SDL_BlitSurface(shadow, &area, image, &area2);
 	SDL_BlitSurface(surface, &area, image, &area);
+
+	
+	
 
 	// Create an OpenGL texture for the image 
 

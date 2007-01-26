@@ -955,6 +955,7 @@ void SDLHandler::initFonts() {
     sprintf( s, "%s/%s", rootDir, NORMAL_FONT_NAME );
     font.init( s, NORMAL_FONT_SIZE );
     ttf_font = TTF_OpenFont( s, NORMAL_FONT_SIZE );
+		TTF_SetFontStyle( ttf_font, TTF_STYLE_BOLD );
     if( !ttf_font ) {
       fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", NORMAL_FONT_SIZE, s, SDL_GetError());
       quit( 2 );
