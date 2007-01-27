@@ -1273,14 +1273,18 @@ A:Additional testing and general hazing from the very helpful members of rpgcode
 A:Many happy interruptions in bugfixing by Abe & Asha|
 
 # Fonts (normal, ui, fixed_width, large)
-F:fonts/Vera.ttf,10
-F:fonts/sherwood/SHERWOOD.TTF,12
-F:fonts/VeraMono.ttf,10
-F:fonts/vinque/vinque.ttf,24
-# F:fonts/Cas_antn.ttf,20
-# F:fonts/Dalelands.ttf,10
-
-
-
-
+#
+# ttf-file, size, style, y-offset
+#
+# where style is a decimal "or"-ed value of: (from SDL_ttf.h)
+# TTF_STYLE_NORMAL	0x00
+# TTF_STYLE_BOLD	0x01
+# TTF_STYLE_ITALIC	0x02
+# TTF_STYLE_UNDERLINE	0x04
+# (e.g.: 3 is bold+italic)
+#
+F:fonts/Vera.ttf,10,1,-10
+F:fonts/sherwood/SHERWOOD.TTF,12,0,-12
+F:fonts/VeraMono.ttf,10,0,-10
+F:fonts/vinque/vinque.ttf,24,0,0
 

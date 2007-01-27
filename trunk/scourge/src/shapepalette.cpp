@@ -235,22 +235,18 @@ int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
 		fgetc(fp);
     n = Constants::readLine(line, fp);
 		char *p = strtok( line, "," );
-		if( SDLHandler::NORMAL_FONT_SIZE == 0 ) {
-			strcpy( SDLHandler::NORMAL_FONT_NAME, p );
-			SDLHandler::NORMAL_FONT_SIZE = atoi( strtok( NULL, "," ) );
-        } else if( SDLHandler::UI_FONT_SIZE == 0 ) {
-			strcpy( SDLHandler::UI_FONT_NAME, p );
-			SDLHandler::UI_FONT_SIZE = atoi( strtok( NULL, "," ) );
-		} else if( SDLHandler::FIXED_FONT_SIZE == 0 ) {
-			strcpy( SDLHandler::FIXED_FONT_NAME, p );
-			SDLHandler::FIXED_FONT_SIZE = atoi( strtok( NULL, "," ) );
-		} else if( SDLHandler::LARGE_FONT_SIZE == 0 ) {
-			strcpy( SDLHandler::LARGE_FONT_NAME, p );
-			SDLHandler::LARGE_FONT_SIZE = atoi( strtok( NULL, "," ) );
-		} else {
-			cerr << "*** Error: extra font lines ignored in shapes.txt" << endl;
-		}
-		return n;
+
+    SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
+    strcpy( info->path, p );
+    info->size = atoi( strtok( NULL, "," ) );
+    info->style = atoi( strtok( NULL, "," ) );
+    info->yoffset = atoi( strtok( NULL, "," ) );
+    info->font = NULL;
+    info->fontMgr = NULL;
+
+    SDLHandler::fontInfos.push_back( info );
+		
+    return n;
 	} else if( n == 'A' ) {
     fgetc(fp);
     n = Constants::readLine(line, fp);

@@ -22,7 +22,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include "gui/gui.h"
-#include "freetype/FreeType.h"
 
 class Widget;
 class GameAdapter;                          
@@ -79,9 +78,6 @@ private:
   SDL_Event *storedEvent; 
   
   // truetype font  
-  freetype_font_data font, uiFont, monoFont, largeFont;
-  TTF_Font *ttf_font, *ttf_uiFont, *ttf_monoFont, *ttf_largeFont;
-	FontMgr *fontMngrNormal, *fontMngrUi, *fontMngrFixed, *fontMngrLarge;
   bool font_initialized;
   int fontType;
 
@@ -109,14 +105,16 @@ private:
 
 public: 
 
-	static char NORMAL_FONT_NAME[255];
-	static char UI_FONT_NAME[255];
-	static char FIXED_FONT_NAME[255];
-	static char LARGE_FONT_NAME[255];
-	static int NORMAL_FONT_SIZE;
-	static int UI_FONT_SIZE;
-	static int FIXED_FONT_SIZE;
-	static int LARGE_FONT_SIZE;
+  typedef struct _FontInfo {
+    char path[300];
+    int size;
+    int style;
+    int yoffset;
+
+    TTF_Font *font;
+    FontMgr *fontMgr;
+  } FontInfo;
+  static std::vector<FontInfo*> fontInfos;
 
   static bool showDebugInfo;
 
@@ -202,7 +200,6 @@ public:
   inline int getFontType() { return fontType; }
   void texPrint(GLfloat x, GLfloat y, const char *fmt, ...);
   int textWidth( const char *fmt, ... );
-  const freetype_font_data *getCurrentFont();
   TTF_Font *getCurrentTTFFont();
 	FontMgr *getCurrentFontManager();
   void initFonts();
@@ -232,7 +229,6 @@ protected:
 	bool popHandlers();
 	int resizeWindow( int width, int height );
 	int initGL( GLvoid );  
-	GLvoid buildFont( GLvoid );
 	void drawCursor();
 
 	void drawScreenInternal();

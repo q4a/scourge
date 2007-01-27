@@ -32,14 +32,7 @@ using namespace std;
 
 char willSavePath[300] = "";
 
-char SDLHandler::NORMAL_FONT_NAME[255] = "";
-char SDLHandler::UI_FONT_NAME[255] = "";
-char SDLHandler::FIXED_FONT_NAME[255] = "";
-char SDLHandler::LARGE_FONT_NAME[255] = "";
-int SDLHandler::NORMAL_FONT_SIZE = 0;
-int SDLHandler::UI_FONT_SIZE = 0;
-int SDLHandler::FIXED_FONT_SIZE = 0;
-int SDLHandler::LARGE_FONT_SIZE = 0;
+vector<SDLHandler::FontInfo*> SDLHandler::fontInfos;
 
 #define FORBIDDEN_CURSOR_TIME 2000
 
@@ -852,55 +845,14 @@ void SDLHandler::fade( float startAlpha, float endAlpha, int steps ) {
   setCursorMode( Constants::CURSOR_NORMAL );
 }
 
-const freetype_font_data *SDLHandler::getCurrentFont() {
-  freetype_font_data *p;
-  switch( fontType ) {
-	case Constants::SCOURGE_UI_FONT: 
-		p = &uiFont; break;
-  case Constants::SCOURGE_MONO_FONT:
-    p = &monoFont; break;
-  case Constants::SCOURGE_LARGE_FONT:
-    p = &largeFont; break;
-  default:
-    p = &font;
-  }
-  return (const freetype_font_data*)p;
-}
-
 TTF_Font *SDLHandler::getCurrentTTFFont() {
-
   initFonts();
-
-  TTF_Font *p;
-  switch( fontType ) {
-	case Constants::SCOURGE_UI_FONT: 
-		p = ttf_uiFont; break;
-  case Constants::SCOURGE_MONO_FONT:
-    p = ttf_monoFont; break;
-  case Constants::SCOURGE_LARGE_FONT:
-    p = ttf_largeFont; break;
-  default:
-    p = ttf_font;
-  }
-  return p;
+  return fontInfos[ fontType ]->font;
 }
 
 FontMgr *SDLHandler::getCurrentFontManager() {
-
   initFonts();
-
-  FontMgr *p;
-  switch( fontType ) {
-	case Constants::SCOURGE_UI_FONT: 
-		p = fontMngrUi; break;
-  case Constants::SCOURGE_MONO_FONT:
-    p = fontMngrFixed; break;
-  case Constants::SCOURGE_LARGE_FONT:
-    p = fontMngrLarge; break;
-  default:
-    p = fontMngrNormal;
-  }
-  return p;
+  return fontInfos[ fontType ]->fontMgr;
 }
 
 
@@ -944,51 +896,30 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
   initFonts();
 
 //  freetype_print_simple( *(getCurrentFont()), x, y, str );
-
-	getCurrentFontManager()->drawTextUTF8( str, x, y - 10 );
+	fontInfos[ fontType ]->fontMgr->drawTextUTF8( str, 
+                                                toint( x ), 
+                                                toint( y + fontInfos[ fontType ]->yoffset ) );
 }
 
 void SDLHandler::initFonts() {
-  if(!font_initialized) {
+  if( !font_initialized ) {
     char s[200];
-		
-    sprintf( s, "%s/%s", rootDir, NORMAL_FONT_NAME );
-    font.init( s, NORMAL_FONT_SIZE );
-    ttf_font = TTF_OpenFont( s, NORMAL_FONT_SIZE );
-		TTF_SetFontStyle( ttf_font, TTF_STYLE_BOLD );
-    if( !ttf_font ) {
-      fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", NORMAL_FONT_SIZE, s, SDL_GetError());
-      quit( 2 );
+    cerr << "Loading " << fontInfos.size() << " fonts: " << endl;
+    for( unsigned int i = 0; i < fontInfos.size(); i++ ) {
+      FontInfo *info = fontInfos[i];
+      cerr << "\t" << info->path << endl;
+      sprintf( s, "%s/%s", rootDir, info->path );
+      info->font = TTF_OpenFont( s, info->size );
+      TTF_SetFontStyle( info->font, info->style );
+      if( !info->font ) {
+        fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", info->size, s, SDL_GetError());
+        quit( 2 );
+      } else {
+        cerr << "\t\tSuccess." << endl;
+        info->fontMgr = new FontMgr( info->font, 1, 1, 1, 0, 0, 0 );
+      }
     }
-		fontMngrNormal = new FontMgr( ttf_font, 1, 1, 1, 0, 0, 0 );
-		
-    sprintf( s, "%s/%s", rootDir, UI_FONT_NAME );
-    uiFont.init( s, UI_FONT_SIZE );
-    ttf_uiFont = TTF_OpenFont( s, UI_FONT_SIZE );
-    if( !ttf_uiFont ) {
-      fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", UI_FONT_SIZE, s, SDL_GetError());
-      quit( 2 );
-    }
-		fontMngrUi = new FontMgr( ttf_uiFont, 1, 1, 1, 0, 0, 0 );
-		
-    sprintf( s, "%s/%s", rootDir, FIXED_FONT_NAME );
-    monoFont.init( s, FIXED_FONT_SIZE );
-    ttf_monoFont = TTF_OpenFont( s, FIXED_FONT_SIZE );
-    if( !ttf_monoFont ) {
-      fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", FIXED_FONT_SIZE, s, SDL_GetError());
-      quit( 2 );
-    }
-		fontMngrFixed = new FontMgr( ttf_monoFont, 1, 1, 1, 0, 0, 0 );
-		
-    sprintf( s, "%s/%s", rootDir, LARGE_FONT_NAME );
-    largeFont.init( s, LARGE_FONT_SIZE );
-    ttf_largeFont = TTF_OpenFont( s, LARGE_FONT_SIZE );
-    if( !ttf_largeFont ) {
-      fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", LARGE_FONT_SIZE, s, SDL_GetError());
-      quit( 2 );
-    }
-		fontMngrLarge = new FontMgr( ttf_largeFont, 1, 1, 1, 0, 0, 0 );
-    
+    cerr << "Done loading fonts." << endl;
     font_initialized = true;
   }
 }
