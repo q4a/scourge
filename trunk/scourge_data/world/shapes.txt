@@ -1283,8 +1283,8 @@ A:Many happy interruptions in bugfixing by Abe & Asha|
 # TTF_STYLE_UNDERLINE	0x04
 # (e.g.: 3 is bold+italic)
 #
-F:fonts/Vera.ttf,10,1,-10
+F:fonts/Vera.ttf,10,1,-12
 F:fonts/sherwood/SHERWOOD.TTF,12,0,-12
-F:fonts/VeraMono.ttf,10,0,-10
+F:fonts/VeraMono.ttf,10,0,-12
 F:fonts/vinque/vinque.ttf,24,0,0
 

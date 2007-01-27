@@ -31,6 +31,8 @@ using namespace std;
 
 int FontMgr::initCounter = 0;
 
+#define SHADOW_DIFF 2
+
 FontMgr::FontMgr( TTF_Font *font, 
 									float fgRed, float fgGreen, float fgBlue,
 									float bgRed, float bgGreen, float bgBlue ) : 
@@ -46,9 +48,9 @@ bgRed(bgRed), bgGreen(bgGreen), bgBlue(bgBlue) {
 	background.g = (Uint8)(255 * bgGreen);
 	background.b = (Uint8)(255 * bgBlue);
 
-	shadowColor.r = (Uint8)40;
-	shadowColor.g = (Uint8)40;
-	shadowColor.b = (Uint8)40;
+	shadowColor.r = (Uint8)10;
+	shadowColor.g = (Uint8)10;
+	shadowColor.b = (Uint8)10;
 
 	height = TTF_FontHeight(ttfFont);
 	ascent = TTF_FontAscent(ttfFont);
@@ -241,9 +243,9 @@ GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 											&(g->advance) );
 
 		SDL_Surface *shadow = TTF_RenderUNICODE_Shaded( ttfFont, 
-																										 letter, 
-																										 shadowColor,
-																										 background );
+																										letter, 
+																										shadowColor,
+																										background );
 
 		SDL_Surface *surface = TTF_RenderUNICODE_Shaded( ttfFont, 
 																										 letter, 
@@ -251,8 +253,8 @@ GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 																										 background );
 
 		if( surface ) {
-			g->w = surface->w;
-			g->h = surface->h;
+			g->w = surface->w + SHADOW_DIFF;
+			g->h = surface->h + SHADOW_DIFF;
 			g->tex = loadTextureColorKey( surface, shadow, texcoord, 0, 0, 0 );
 			g->texMinX = texcoord[ 0 ];
 			g->texMinY = texcoord[ 1 ];
@@ -261,6 +263,7 @@ GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 			glyphs[ c ] = g;
 			cerr << "glyph count=" << glyphs.size() << endl;
 			SDL_FreeSurface( surface );
+			if( shadow ) SDL_FreeSurface( shadow );
 		} else {
 			cerr << "*** Unable to render glyph: c=" << c << endl;
 		}
@@ -273,7 +276,6 @@ GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 //  to the color key. Pixels that match the color key get an
 //  alpha of zero while all other pixels get an alpha of
 //  one.
-#define SHADOW_DIFF 2
 GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
 																		 SDL_Surface *shadow,
 																		 GLfloat *texcoord,
@@ -288,12 +290,12 @@ GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
 
 	// Use the surface width and height expanded to powers of 2 
 
-	w = power_of_two( surface->w );
-	h = power_of_two( surface->h );
+	w = power_of_two( surface->w + SHADOW_DIFF );
+	h = power_of_two( surface->h + SHADOW_DIFF );
 	texcoord[0] = 0.0f;										 // Min X 
 	texcoord[1] = 0.0f;										 // Min Y 
-	texcoord[2] = (GLfloat)surface->w / w; // Max X 
-	texcoord[3] = (GLfloat)surface->h / h; // Max Y 
+	texcoord[2] = (GLfloat)(surface->w + SHADOW_DIFF) / w; // Max X 
+	texcoord[3] = (GLfloat)(surface->h + SHADOW_DIFF) / h; // Max Y 
 
 	image = SDL_CreateRGBSurface(
 															SDL_SWSURFACE,
@@ -322,6 +324,7 @@ GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
 
 	colorkey = SDL_MapRGBA(surface->format, ckr, ckg, ckb, 0);
 	SDL_SetColorKey(surface, SDL_SRCCOLORKEY, colorkey);
+	SDL_SetColorKey(shadow, SDL_SRCCOLORKEY, colorkey);
 
 	// Copy the surface into the GL texture image 
 	area.x = 0;
@@ -329,12 +332,12 @@ GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
 	area.w = surface->w;
 	area.h = surface->h;
 
-	area2.x = 0;
+	area2.x = SHADOW_DIFF;
 	area2.y = SHADOW_DIFF;
 	area2.w = surface->w;
 	area2.h = surface->h;
 
-	//SDL_BlitSurface(shadow, &area, image, &area2);
+	SDL_BlitSurface(shadow, &area, image, &area2);
 	SDL_BlitSurface(surface, &area, image, &area);
 
 	
@@ -348,6 +351,8 @@ GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexImage2D(GL_TEXTURE_2D,
 							 0,
 							 GL_RGBA,
