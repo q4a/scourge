@@ -31,26 +31,18 @@ using namespace std;
 
 int FontMgr::initCounter = 0;
 
-#define SHADOW_DIFF 2
-
-FontMgr::FontMgr( TTF_Font *font, 
-									float fgRed, float fgGreen, float fgBlue,
-									float bgRed, float bgGreen, float bgBlue ) : 
-ttfFont(font),
-fgRed(fgRed), fgGreen(fgGreen), fgBlue(fgBlue),
-bgRed(bgRed), bgGreen(bgGreen), bgBlue(bgBlue) {
+FontMgr::FontMgr( TTF_Font *font, int shadowX, int shadowY ) : 
+ttfFont(font), shadowX( shadowX ), shadowY( shadowY ) {
 	initCounter++;
-	foreground.r = (Uint8)(255 * fgRed);
-	foreground.g  = (Uint8)(255 * fgGreen);
-	foreground.b = (Uint8)(255 * fgBlue);
-
-	background.r = (Uint8)(255 * bgRed);
-	background.g = (Uint8)(255 * bgGreen);
-	background.b = (Uint8)(255 * bgBlue);
+	foreground.r = 255;
+	foreground.g  = 255;
+	foreground.b = 255;
+	foreground.unused = 0;
 
 	shadowColor.r = (Uint8)10;
 	shadowColor.g = (Uint8)10;
 	shadowColor.b = (Uint8)10;
+	shadowColor.unused = 0;
 
 	height = TTF_FontHeight(ttfFont);
 	ascent = TTF_FontAscent(ttfFont);
@@ -112,7 +104,9 @@ void FontMgr::drawTextUTF8(char *text, int x, int y) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	// NOTE: important: GL_REPLACE causes colors to not render correctly. The madness!
+	//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	unicodeBuffer[0] = UNICODE_BOM_NATIVE;
 	UTF8_to_UNICODE( unicodeBuffer, text, strlen( text ) );
@@ -129,7 +123,7 @@ void FontMgr::drawText(char *text, int x, int y) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	unicodeBuffer[0] = UNICODE_BOM_NATIVE;
 	LATIN1_to_UNICODE( unicodeBuffer, text, strlen( text ) );
@@ -165,7 +159,6 @@ void FontMgr::drawUNICODE( Uint16 *p, int x, int y ) {
 			glTexCoord2f(texMaxX, texMinY); glVertex2f(right,    top);
 			glTexCoord2f(texMinX, texMaxY); glVertex2f( left, bottom);
 			glTexCoord2f(texMaxX, texMaxY); glVertex2f(right, bottom);
-			
 			glEnd();
 			
 			x += g->advance;
@@ -227,6 +220,8 @@ static int power_of_two(int input) {
 	return value;
 }
 
+SDL_Color background = { 0, 0, 0, 0 };
+
 GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 	if( glyphs.find( c ) == glyphs.end() ) {
 		GLfloat texcoord[4];
@@ -250,18 +245,18 @@ GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 		SDL_Surface *surface = TTF_RenderUNICODE_Shaded( ttfFont, 
 																										 letter, 
 																										 foreground,
-																										 background );
+																											background );
 
 		if( surface ) {
-			g->w = surface->w + SHADOW_DIFF;
-			g->h = surface->h + SHADOW_DIFF;
+			g->w = surface->w + shadowX;
+			g->h = surface->h + shadowY;
 			g->tex = loadTextureColorKey( surface, shadow, texcoord, 0, 0, 0 );
 			g->texMinX = texcoord[ 0 ];
 			g->texMinY = texcoord[ 1 ];
 			g->texMaxX = texcoord[ 2 ];
 			g->texMaxY = texcoord[ 3 ];
 			glyphs[ c ] = g;
-			cerr << "glyph count=" << glyphs.size() << endl;
+			if( glyphs.size() % 10 == 0 ) cerr << " glyph count=" << glyphs.size() << endl;
 			SDL_FreeSurface( surface );
 			if( shadow ) SDL_FreeSurface( shadow );
 		} else {
@@ -289,13 +284,12 @@ GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
 	Uint32 colorkey;
 
 	// Use the surface width and height expanded to powers of 2 
-
-	w = power_of_two( surface->w + SHADOW_DIFF );
-	h = power_of_two( surface->h + SHADOW_DIFF );
+	w = power_of_two( surface->w + shadowX );
+	h = power_of_two( surface->h + shadowY );
 	texcoord[0] = 0.0f;										 // Min X 
 	texcoord[1] = 0.0f;										 // Min Y 
-	texcoord[2] = (GLfloat)(surface->w + SHADOW_DIFF) / w; // Max X 
-	texcoord[3] = (GLfloat)(surface->h + SHADOW_DIFF) / h; // Max Y 
+	texcoord[2] = (GLfloat)(surface->w + shadowX) / w; // Max X 
+	texcoord[3] = (GLfloat)(surface->h + shadowY) / h; // Max Y 
 
 	image = SDL_CreateRGBSurface(
 															SDL_SWSURFACE,
@@ -318,7 +312,6 @@ GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
 	}
 
 	// Set up so that colorkey pixels become transparent 
-
 	colorkey = SDL_MapRGBA(image->format, ckr, ckg, ckb, 0);
 	SDL_FillRect(image, NULL, colorkey);
 
@@ -332,27 +325,25 @@ GLuint FontMgr::loadTextureColorKey( SDL_Surface *surface,
 	area.w = surface->w;
 	area.h = surface->h;
 
-	area2.x = SHADOW_DIFF;
-	area2.y = SHADOW_DIFF;
+	// render the shadow offset...
+	// FIXME: shadow font is not perfect but close
+	area2.x = shadowX;
+	area2.y = shadowY;
 	area2.w = surface->w;
 	area2.h = surface->h;
 
-	SDL_BlitSurface(shadow, &area, image, &area2);
+  SDL_BlitSurface(shadow, &area, image, &area2);
 	SDL_BlitSurface(surface, &area, image, &area);
 
-	
-	
-
 	// Create an OpenGL texture for the image 
-
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexImage2D(GL_TEXTURE_2D,
 							 0,
 							 GL_RGBA,

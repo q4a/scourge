@@ -61,13 +61,11 @@ private:
   int length;
   int pointSize;
   int style;
-  float fgRed, fgGreen, fgBlue;
-  float bgRed, bgGreen, bgBlue;
+	int shadowX, shadowY;
 
   TTF_Font *ttfFont;
 
   SDL_Color foreground;
-  SDL_Color background;
 	SDL_Color shadowColor;
 
 	Uint16 unicodeBuffer[5000];
@@ -89,9 +87,7 @@ private:
 
 public:
 
-  FontMgr( TTF_Font *ttfFont, 
-					 float fgRed, float fgGreen, float fgBlue,
-					 float bgRed, float bgGreen, float bgBlue );
+  FontMgr( TTF_Font *ttfFont, int shadowX, int shadowY );
 
   ~FontMgr();
   inline int getLineSkip() { return lineSkip; }

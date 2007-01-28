@@ -110,6 +110,7 @@ public:
     int size;
     int style;
     int yoffset;
+		int shadowX, shadowY;
 
     TTF_Font *font;
     FontMgr *fontMgr;
