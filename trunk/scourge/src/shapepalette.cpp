@@ -241,6 +241,8 @@ int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
     info->size = atoi( strtok( NULL, "," ) );
     info->style = atoi( strtok( NULL, "," ) );
     info->yoffset = atoi( strtok( NULL, "," ) );
+		info->shadowX = atoi( strtok( NULL, "," ) );
+		info->shadowY = atoi( strtok( NULL, "," ) );
     info->font = NULL;
     info->fontMgr = NULL;
 

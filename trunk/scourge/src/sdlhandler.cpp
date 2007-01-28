@@ -916,7 +916,7 @@ void SDLHandler::initFonts() {
         quit( 2 );
       } else {
         cerr << "\t\tSuccess." << endl;
-        info->fontMgr = new FontMgr( info->font, 1, 1, 1, 0, 0, 0 );
+        info->fontMgr = new FontMgr( info->font, info->shadowX, info->shadowY );
       }
     }
     cerr << "Done loading fonts." << endl;
@@ -951,7 +951,9 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
                               char *message,
                               float r, float g, float b,
 															float zoom ) {
-  int w = strlen( message ) * 8 + 4;
+	setFontType( Constants::SCOURGE_MONO_FONT );
+	int w = textWidth( message ) + 10;
+  //int w = strlen( message ) * 8 + 4;
   int h = 20;
   int x = -2;
   int y = -14;
@@ -1044,7 +1046,6 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
   }
   
   glColor4f( 1, 1, 1, 1 );
-  setFontType( Constants::SCOURGE_MONO_FONT );
   texPrint( 0, 0, "%s", message );
   setFontType( Constants::SCOURGE_DEFAULT_FONT );
   glPopMatrix();
