@@ -26,6 +26,8 @@ endif
 bin_PROGRAMS = scourge
 
 scourge_SOURCES = \
+	configlang.cpp\
+	configlang.h\
 	preferences.h\
 	persist.cpp\
 	persist.h\
