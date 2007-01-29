@@ -1,3 +1,5 @@
 # List of source files which contain translatable strings.
 
 src/mainmenu.cpp
+../scourge_data/config/scourge.cfg
+

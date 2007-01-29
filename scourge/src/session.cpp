@@ -29,6 +29,7 @@
 #include "creature.h"
 #include "persist.h"
 #include "io/file.h"
+#include "configlang.h"
 
 
 using namespace std;
@@ -510,6 +511,11 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 
 	int err = Constants::initRootDir( argc, argv );
 	if( err ) return err;
+
+#ifdef TESTING_CONFIG
+	ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );
+	exit( 0 );
+#endif
 
 #ifdef TESTING_SAVEGAME
 	adapter = new GameAdapter( adapter->getPreferences() );
