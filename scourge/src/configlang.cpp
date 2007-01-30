@@ -126,6 +126,7 @@ void ConfigLang::debug( ConfigNode *node, string indent ) {
 void ConfigLang::parse( char *config ) {
 	bool inQuotes = false;
 	bool inValue = false;
+  bool inComment = false;
 	string name;
 	int pos = 0;
 
@@ -134,43 +135,46 @@ void ConfigLang::parse( char *config ) {
 
 	for( unsigned int i = 0; i < strlen( config ); i++ ) {
 		char c = config[i];
-		if( c == '[' ) {
-			pos = i + 1;
-		} else if( c == ']' ) {
-			string tag = cleanText( config + pos, i - pos );
-			if( tag.at( 0 ) == '/' ) {
-				node = parents.top();
-				parents.pop();
-				assert( node );
-			} else {
-				if( node == NULL ) {
-					document = node = new ConfigNode( tag );
-					parents.push( node );
-				} else {
-					ConfigNode *tmp = new ConfigNode( tag );
-					node->addChild( tmp );
-					parents.push( node );
-					node = tmp;
-				}
-			}
-			pos = i + 1;
-		} else if( c == '=' ) {
-			name = cleanText( config + pos, i - pos );
-			pos = i + 1;
-			inValue = true;
-		} else if( c == '\"' ) {
+    if( !( inComment || inQuotes ) && c == '[' ) {
+      pos = i + 1;
+    } else if( !( inComment || inQuotes ) && c == ']' ) {
+      string tag = cleanText( config + pos, i - pos );
+      if( tag.at( 0 ) == '/' ) {
+        node = parents.top();
+        parents.pop();
+        assert( node );
+      } else {
+        if( node == NULL ) {
+          document = node = new ConfigNode( tag );
+          parents.push( node );
+        } else {
+          ConfigNode *tmp = new ConfigNode( tag );
+          node->addChild( tmp );
+          parents.push( node );
+          node = tmp;
+        }
+      }
+      pos = i + 1;
+    } else if( !( inComment || inQuotes ) && c == '=' ) {
+      name = cleanText( config + pos, i - pos );
+      pos = i + 1;
+      inValue = true;
+    } else if( !inComment && c == '\"' ) {
 			inQuotes = ( inQuotes ? false : true );
 		} else if( config[ i - 1 ] != '\\' && 
-							 inValue && 
 							 ( c == '\n' || c == '\r' ) ) {
-			string value = cleanText( config + pos, i - pos );
-
-			node->addValue( name, new ConfigValue( (char*)(value.c_str()) ) );
-
-			inQuotes = false;
-			pos = i + 1;
-			inValue = false;
-		}
+      if( inComment ) {
+        inComment = false;
+      } else if( inValue ) {
+        string value = cleanText( config + pos, i - pos );
+        node->addValue( name, new ConfigValue( (char*)(value.c_str()) ) );
+        inQuotes = false;
+        pos = i + 1;
+        inValue = false;
+      }
+		} else if( !inQuotes && c == '#' ) {
+      inComment = true;
+    }
 	}
 }
 
@@ -208,8 +212,6 @@ string ConfigLang::cleanText( char *p, int n ) {
 				(*(p + i + 1) == '\r' || 
 				 *(p + i + 1) == '\n' ) ) {
 			// don't add end-of-line markers
-    } else if( c == '\t' ) {
-      s += " ";
 		} else {
       if( startEOL ) {
         startEOL = false;
