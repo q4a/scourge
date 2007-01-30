@@ -242,7 +242,7 @@ void ShapePalette::initFonts( ConfigLang *config ) {
       ConfigNode *node = (*faces)[0];
   
       SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
-      strcpy( info->path, node->getValueAsString( "path" ).c_str() );
+      strcpy( info->path, node->getValueAsString( "path" ) );
       info->size = (int)node->getValueAsFloat( "size" );
       info->style = (int)node->getValueAsFloat( "style" );
       info->yoffset = (int)node->getValueAsFloat( "yoffset" );
@@ -257,7 +257,7 @@ void ShapePalette::initFonts( ConfigLang *config ) {
 }
 
 void ShapePalette::initAbout( ConfigLang *config ) {
-  strcpy( aboutText, config->getDocument()->getValueAsString( "about" ).c_str() );
+  strcpy( aboutText, config->getDocument()->getValueAsString( "about" ) );
 }
 
 int ShapePalette::interpretShapesLine( FILE *fp, int n ) {

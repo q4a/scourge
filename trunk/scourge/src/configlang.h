@@ -41,9 +41,9 @@ public:
 	~ConfigValue();
 
 	float getAsFloat();
-	std::string getAsString();
+	const char *getAsString();
 };
-				
+
 class ConfigNode {
 private:
 	std::string name;
@@ -62,7 +62,7 @@ public:
 	inline std::vector<ConfigNode*>* getChildren() { return &children; }
 
   // convenience methods
-  inline std::string getValueAsString( std::string name ) {
+  inline const char *getValueAsString( std::string name ) {
     if( values.find( name ) == values.end() ) {
       return "";
     } else {
