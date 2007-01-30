@@ -49,16 +49,43 @@ private:
 	std::string name;
 	std::map<std::string,ConfigValue*> values;
 	std::vector<ConfigNode*> children;
+  std::map<std::string, std::vector<ConfigNode*>*> childrenByName;
 
 public:
 	ConfigNode( std::string name );
 	~ConfigNode();
-	inline void addChild( ConfigNode *node ) { children.push_back( node ); }
+	void addChild( ConfigNode *node );
 	inline void addValue( std::string name, ConfigValue *value ) { values[ name ] = value; }
 
 	inline std::string getName() { return name; }
 	inline std::map<std::string, ConfigValue*>* getValues() { return &values; }
 	inline std::vector<ConfigNode*>* getChildren() { return &children; }
+
+  // convenience methods
+  inline std::string getValueAsString( std::string name ) {
+    if( values.find( name ) == values.end() ) {
+      return "";
+    } else {
+      return values[ name ]->getAsString();
+    }
+  }
+
+  inline float getValueAsFloat( std::string name ) {
+    if( values.find( name ) == values.end() ) {
+      return 0;
+    } else {
+      return values[ name ]->getAsFloat();
+    }
+  }
+
+  inline std::vector<ConfigNode*> *getChildrenByName( std::string name ) {
+    if( childrenByName.find( name ) == childrenByName.end() ) {
+      return NULL;
+    } else {
+      return childrenByName[ name ];
+    }
+  }
+
 };
 
 class ConfigLang {
@@ -73,6 +100,7 @@ public:
 	~ConfigLang();
 	void debug( ConfigNode *node, std::string indent="" );
 	inline void debug() { debug( document ); }
+  inline ConfigNode *getDocument() { return document; }
 
 	static ConfigLang *load( char *file );
 };
