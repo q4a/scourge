@@ -47,8 +47,8 @@ float ConfigValue::getAsFloat() {
 	return valueNum;
 }
 	
-std::string ConfigValue::getAsString() {
-	return valueStr;
+const char *ConfigValue::getAsString() {
+	return( translatable ? _( valueStr.c_str() ) : valueStr.c_str() );
 }
 
 ConfigNode::ConfigNode( string name ) {
