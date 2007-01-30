@@ -232,7 +232,7 @@ ShapePalette::~ShapePalette() {
 }
 
 void ShapePalette::initFonts( ConfigLang *config ) {
-  vector<ConfigNode*> *fonts = config->getDocument()->getChildren();
+  vector<ConfigNode*> *fonts = config->getDocument()->getChildrenByName( "fonts" );
   ConfigNode *fontsNode = (*fonts)[0];
 
   string fontNames[] = { "normal", "ui", "mono", "large" };
@@ -257,7 +257,13 @@ void ShapePalette::initFonts( ConfigLang *config ) {
 }
 
 void ShapePalette::initAbout( ConfigLang *config ) {
-  strcpy( aboutText, config->getDocument()->getValueAsString( "about" ) );
+	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "about" );
+	string about;
+	about += (*v)[0]->getValueAsString( "text1" );
+	about += (*v)[0]->getValueAsString( "text2" );
+	about += (*v)[0]->getValueAsString( "text3" );
+	about += (*v)[0]->getValueAsString( "text4" );
+  strcpy( aboutText, about.c_str() );
 }
 
 int ShapePalette::interpretShapesLine( FILE *fp, int n ) {

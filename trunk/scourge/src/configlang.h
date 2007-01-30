@@ -33,7 +33,7 @@ public:
 private:
 	int type;
 	bool translatable;
-	std::string valueStr;
+	std::string valueStr, translateStr;
 	float valueNum;
 
 public:

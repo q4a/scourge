@@ -24,13 +24,22 @@ using namespace std;
 
 ConfigValue::ConfigValue( char *value ) {
 	translatable = false;
+	translateStr = "";
 	char *start = strchr( value, '\"' );
 	if( start ) {
 		char *end = strrchr( value, '\"' );
 		if( end ) *end = '\0';
 		valueStr = start + 1;
 		char *p = strchr( value, '_' );
-		if( p && p < start ) translatable = true;
+		if( p && p < start ) {
+			translatable = true;
+			translateStr = _( start + 1 );
+#ifdef DEBUG_CONFIG_FILE
+			if( translateStr == valueStr ) {
+				cerr << "No translation for: " << ( start + 1 ) << endl;
+			}
+#endif
+		}
 		type = STRING_TYPE;
 		valueNum = 0;
 	} else {
@@ -48,7 +57,7 @@ float ConfigValue::getAsFloat() {
 }
 	
 const char *ConfigValue::getAsString() {
-	return( translatable ? _( valueStr.c_str() ) : valueStr.c_str() );
+	return( translatable ? translateStr.c_str() : valueStr.c_str() );
 }
 
 ConfigNode::ConfigNode( string name ) {
@@ -89,9 +98,9 @@ void ConfigNode::addChild( ConfigNode *node ) {
 
 ConfigLang::ConfigLang( char *config ) {
 	document = NULL;
-	cerr << config << endl;
+	//cerr << config << endl;
 	parse( config );
-	debug();
+	//debug();
 }
 
 ConfigLang::~ConfigLang() {
@@ -204,7 +213,7 @@ string ConfigLang::cleanText( char *p, int n ) {
 		} else {
       if( startEOL ) {
         startEOL = false;
-        s += " ";
+        //s += " ";
       }      
 			s += c;
 		}
