@@ -507,6 +507,8 @@ void testSaveGame( Session *session ) {
 	cerr << "Done." << endl;  
 }
 
+//#define TESTING_CONFIG
+
 int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 
 	int err = Constants::initRootDir( argc, argv );
@@ -514,6 +516,7 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 
 #ifdef TESTING_CONFIG
 	ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );
+  delete config;
 	exit( 0 );
 #endif
 

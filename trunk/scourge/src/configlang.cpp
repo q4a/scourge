@@ -56,6 +56,12 @@ ConfigNode::ConfigNode( string name ) {
 }
 
 ConfigNode::~ConfigNode() {
+  for( map<string, vector<ConfigNode*>*>::iterator i = childrenByName.begin(); 
+			 i != childrenByName.end(); ++i ) {
+		string name = i->first;
+		vector<ConfigNode*> *v = i->second;
+    delete v;
+  }
 	for( vector<ConfigNode*>::iterator i = children.begin(); 
 			 i != children.end(); ++i ) {
 		ConfigNode *node = *i;
@@ -67,6 +73,18 @@ ConfigNode::~ConfigNode() {
 		ConfigValue *value = i->second;
 		delete value;
 	}
+}
+
+void ConfigNode::addChild( ConfigNode *node ) { 
+  children.push_back( node ); 
+  vector<ConfigNode*> *v;
+  if( childrenByName.find( node->getName() ) == childrenByName.end() ) {
+    v = new vector<ConfigNode*>();
+    childrenByName[ node->getName() ] = v;
+  } else {
+    v = childrenByName[ node->getName() ];
+  }
+  v->push_back( node );
 }
 
 ConfigLang::ConfigLang( char *config ) {
@@ -170,14 +188,24 @@ string ConfigLang::cleanText( char *p, int n ) {
 
 	// remove end-of-line \-s
 	string s = "";
+  bool startEOL = false;
 	for( int i = start; i < end; i++ ) {
 		char c = *(p + i);
-		if( c == '\\' && 
+    if( c == '\n' || c == '\r' ) {
+      // don't add EOL chars
+      startEOL = true;
+    } else if( c == '\\' && 
 				i + 1 < end && 
 				(*(p + i + 1) == '\r' || 
 				 *(p + i + 1) == '\n' ) ) {
 			// don't add end-of-line markers
+    } else if( c == '\t' ) {
+      s += " ";
 		} else {
+      if( startEOL ) {
+        startEOL = false;
+        s += " ";
+      }      
 			s += c;
 		}
 	}

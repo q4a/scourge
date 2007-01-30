@@ -19,6 +19,7 @@
 #include "session.h"
 #include "rpg/rpglib.h"
 #include "render/renderlib.h"
+#include "configlang.h"
 
 using namespace std;
 
@@ -49,6 +50,12 @@ void ShapePalette::preInitialize() {
 void ShapePalette::initialize() {
   // call "super"
   Shapes::initialize();
+
+  // configure
+  ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );
+  initAbout( config );
+  initFonts( config );
+  delete config;
 
 	loader = new ModelLoader( headless, 
 														 textureGroup[ 14 ] );
@@ -224,6 +231,35 @@ ShapePalette::~ShapePalette() {
   //    }
 }
 
+void ShapePalette::initFonts( ConfigLang *config ) {
+  vector<ConfigNode*> *fonts = config->getDocument()->getChildren();
+  ConfigNode *fontsNode = (*fonts)[0];
+
+  string fontNames[] = { "normal", "ui", "mono", "large" };
+  for( int i = 0; i < 4; i++ ) {
+    vector<ConfigNode*> *faces = fontsNode->getChildrenByName( fontNames[i] );
+    if( faces ) {
+      ConfigNode *node = (*faces)[0];
+  
+      SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
+      strcpy( info->path, node->getValueAsString( "path" ).c_str() );
+      info->size = (int)node->getValueAsFloat( "size" );
+      info->style = (int)node->getValueAsFloat( "style" );
+      info->yoffset = (int)node->getValueAsFloat( "yoffset" );
+  		info->shadowX = (int)node->getValueAsFloat( "shadowX" );
+  		info->shadowY = (int)node->getValueAsFloat( "shadowY" );
+      info->font = NULL;
+      info->fontMgr = NULL;
+  
+      SDLHandler::fontInfos.push_back( info );
+    }
+  }
+}
+
+void ShapePalette::initAbout( ConfigLang *config ) {
+  strcpy( aboutText, config->getDocument()->getValueAsString( "about" ).c_str() );
+}
+
 int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
 
   // call super
@@ -234,6 +270,7 @@ int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
 	if( n == 'F' ) {
 		fgetc(fp);
     n = Constants::readLine(line, fp);
+    /*
 		char *p = strtok( line, "," );
 
     SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
@@ -247,13 +284,15 @@ int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
     info->fontMgr = NULL;
 
     SDLHandler::fontInfos.push_back( info );
-		
+		*/
     return n;
 	} else if( n == 'A' ) {
     fgetc(fp);
     n = Constants::readLine(line, fp);
+    /*
     if( strlen( aboutText ) ) strcat( aboutText, " " );
     strcat( aboutText, line );
+    */
     return n;
   } else if( n == 'O' ) {
     fgetc(fp);

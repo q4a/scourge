@@ -33,6 +33,7 @@ class GLTorch;
 class Session;
 class Monster;
 class ModelWrapper;
+class ConfigLang;
 
 typedef struct _MapGridLocation {
   char name[80];
@@ -161,6 +162,8 @@ public:
 
 protected:
   virtual int interpretShapesLine( FILE *fp, int n );
+  void initFonts( ConfigLang *config );
+  void initAbout( ConfigLang *config );
 };
 
 #endif
