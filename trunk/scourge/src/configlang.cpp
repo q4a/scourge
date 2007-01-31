@@ -114,19 +114,34 @@ void ConfigNode::addValue( std::string name, ConfigValue *value ) {
   }
 }
 
-void ConfigNode::finishNode() {
-  string id = getValueAsString( "extends" );
-  ConfigNode *super = (*(config->getIdMap()))[id];
-  if( super ) {
-    for( map<string, ConfigValue*>::iterator i = super->getValues()->begin(); 
-         i != super->getValues()->end(); ++i ) {
-      string name = i->first;
-      ConfigValue *value = i->second;
-      if( !hasValue( name ) ) addValue( name, new ConfigValue( value ) );
-    }
-  } else {
-    cerr << "*** Error: can't find node with id=" << id << endl;
-  }
+void ConfigNode::copyFromNode( ConfigNode *node ) {
+	// copy the values
+	for( map<string, ConfigValue*>::iterator i = node->getValues()->begin(); 
+			 i != node->getValues()->end(); ++i ) {
+		string name = i->first;
+		if( name != "id" ) {
+			ConfigValue *value = i->second;
+			addValue( name, new ConfigValue( value ) );
+		}
+	}
+
+	// copy the children
+	for( vector<ConfigNode*>::iterator i = node->getChildren()->begin();
+			 i != node->getChildren()->end(); ++i ) {
+		ConfigNode *child = *i;
+		ConfigNode *c = new ConfigNode( config, child->getName() );
+		addChild( c );
+		c->copyFromNode( child );
+	}
+}
+
+void ConfigNode::extendNode( std::string id ) {
+	ConfigNode *super = (*(config->getIdMap()))[id];
+	if( super ) {
+		copyFromNode( super );
+	} else {
+		cerr << "*** Error: can't find node with id=" << id << endl;
+	}
 }
 
 ConfigLang::ConfigLang( char *config ) {
@@ -173,11 +188,17 @@ void ConfigLang::parse( char *config ) {
     } else if( !( inComment || inQuotes ) && c == ']' ) {
       string tag = cleanText( config + pos, i - pos );
       if( tag.at( 0 ) == '/' ) {
-        node->finishNode();
         node = parents.top();
         parents.pop();
         assert( node );
       } else {
+				string::size_type n = tag.find( ',' );
+				string extends = "";
+				if( n != string::npos ) {
+					extends = tag.substr( n + 1 );
+					tag = tag.substr( 0, n );
+					cerr << tag << " extends " << extends << endl;
+				}
         if( node == NULL ) {
           document = node = new ConfigNode( this, tag );
           parents.push( node );
@@ -187,6 +208,9 @@ void ConfigLang::parse( char *config ) {
           parents.push( node );
           node = tmp;
         }
+				if( extends != "" ) {
+					node->extendNode( extends );
+				}
       }
       pos = i + 1;
     } else if( !( inComment || inQuotes ) && c == '=' ) {

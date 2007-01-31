@@ -97,7 +97,11 @@ public:
     }
   }
 
-  void finishNode();
+  void extendNode( std::string id );
+
+protected:
+	// copy node's values and children into this node
+	void copyFromNode( ConfigNode *node );
 
 };
 
