@@ -183,7 +183,9 @@ void ConfigLang::parse( char *config ) {
 
 	for( unsigned int i = 0; i < strlen( config ); i++ ) {
 		char c = config[i];
-    if( !( inComment || inQuotes ) && c == '[' ) {
+		if( !inQuotes && c == '#' ) {
+      inComment = true;
+    } else if( !( inComment || inQuotes ) && c == '[' ) {
       pos = i + 1;
     } else if( !( inComment || inQuotes ) && c == ']' ) {
       string tag = cleanText( config + pos, i - pos );
@@ -230,8 +232,6 @@ void ConfigLang::parse( char *config ) {
         pos = i + 1;
         inValue = false;
       }
-		} else if( !inQuotes && c == '#' ) {
-      inComment = true;
     }
 	}
 }
