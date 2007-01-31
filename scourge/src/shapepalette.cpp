@@ -52,9 +52,14 @@ void ShapePalette::initialize() {
   Shapes::initialize();
 
   // configure
-  ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );
+  ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );  
   initAbout( config );
   initFonts( config );
+  delete config;
+
+  // just for testing
+  config = ConfigLang::load( "config/pcmodel.cfg" );
+  config->debug();
   delete config;
 
 	loader = new ModelLoader( headless, 

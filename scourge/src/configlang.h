@@ -21,7 +21,9 @@
 #include <vector>
 #include <map>
 
+class ConfigValue;
 class ConfigNode;
+class ConfigLang;
 
 class ConfigValue {
 public:
@@ -38,6 +40,7 @@ private:
 
 public:
 	ConfigValue( char *value );
+  ConfigValue( ConfigValue *value );
 	~ConfigValue();
 
 	float getAsFloat();
@@ -46,18 +49,22 @@ public:
 
 class ConfigNode {
 private:
+  ConfigLang *config;
 	std::string name;
+  std::string id;
 	std::map<std::string,ConfigValue*> values;
 	std::vector<ConfigNode*> children;
   std::map<std::string, std::vector<ConfigNode*>*> childrenByName;
 
 public:
-	ConfigNode( std::string name );
+	ConfigNode( ConfigLang *config, std::string name );
 	~ConfigNode();
 	void addChild( ConfigNode *node );
-	inline void addValue( std::string name, ConfigValue *value ) { values[ name ] = value; }
+	void addValue( std::string name, ConfigValue *value );
 
+  inline ConfigLang *getConfig() { return config; }
 	inline std::string getName() { return name; }
+  inline std::string getId() { return id; }
 	inline std::map<std::string, ConfigValue*>* getValues() { return &values; }
 	inline std::vector<ConfigNode*>* getChildren() { return &children; }
 
@@ -78,6 +85,10 @@ public:
     }
   }
 
+  inline bool hasValue( std::string name ) {
+    return( values.find( name ) != values.end() );
+  }
+
   inline std::vector<ConfigNode*> *getChildrenByName( std::string name ) {
     if( childrenByName.find( name ) == childrenByName.end() ) {
       return NULL;
@@ -86,21 +97,24 @@ public:
     }
   }
 
+  void finishNode();
+
 };
 
 class ConfigLang {
 private:
+  std::map<std::string, ConfigNode*> idmap;
 	ConfigNode *document;
 	ConfigLang( char *config );
 	void parse( char *config );
 	std::string cleanText( char *p, int n );
-	
 
 public:
 	~ConfigLang();
 	void debug( ConfigNode *node, std::string indent="" );
 	inline void debug() { debug( document ); }
   inline ConfigNode *getDocument() { return document; }
+  inline std::map<std::string, ConfigNode*> *getIdMap() { return &idmap; }
 
 	static ConfigLang *load( char *file );
 };
