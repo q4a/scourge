@@ -22,6 +22,14 @@
 
 using namespace std;
 
+ConfigValue::ConfigValue( ConfigValue *value ) {
+  this->translatable = value->translatable;
+  this->translateStr = value->translateStr;
+  this->valueStr = value->valueStr;
+  this->valueNum = value->valueNum;
+  this->type = value->type;
+}
+
 ConfigValue::ConfigValue( char *value ) {
 	translatable = false;
 	translateStr = "";
@@ -60,8 +68,10 @@ const char *ConfigValue::getAsString() {
 	return( translatable ? translateStr.c_str() : valueStr.c_str() );
 }
 
-ConfigNode::ConfigNode( string name ) {
+ConfigNode::ConfigNode( ConfigLang *config, string name ) {
+  this->config = config;
 	this->name = name;
+  this->id = "";
 }
 
 ConfigNode::~ConfigNode() {
@@ -96,11 +106,34 @@ void ConfigNode::addChild( ConfigNode *node ) {
   v->push_back( node );
 }
 
+void ConfigNode::addValue( std::string name, ConfigValue *value ) { 
+  values[ name ] = value; 
+  if( name == "id" ) {
+    this->id = value->getAsString();
+    (*(config->getIdMap()))[ id ] = this;  
+  }
+}
+
+void ConfigNode::finishNode() {
+  string id = getValueAsString( "extends" );
+  ConfigNode *super = (*(config->getIdMap()))[id];
+  if( super ) {
+    for( map<string, ConfigValue*>::iterator i = super->getValues()->begin(); 
+         i != super->getValues()->end(); ++i ) {
+      string name = i->first;
+      ConfigValue *value = i->second;
+      if( !hasValue( name ) ) addValue( name, new ConfigValue( value ) );
+    }
+  } else {
+    cerr << "*** Error: can't find node with id=" << id << endl;
+  }
+}
+
 ConfigLang::ConfigLang( char *config ) {
 	document = NULL;
 	//cerr << config << endl;
 	parse( config );
-	//debug();
+	debug();
 }
 
 ConfigLang::~ConfigLang() {
@@ -140,15 +173,16 @@ void ConfigLang::parse( char *config ) {
     } else if( !( inComment || inQuotes ) && c == ']' ) {
       string tag = cleanText( config + pos, i - pos );
       if( tag.at( 0 ) == '/' ) {
+        node->finishNode();
         node = parents.top();
         parents.pop();
         assert( node );
       } else {
         if( node == NULL ) {
-          document = node = new ConfigNode( tag );
+          document = node = new ConfigNode( this, tag );
           parents.push( node );
         } else {
-          ConfigNode *tmp = new ConfigNode( tag );
+          ConfigNode *tmp = new ConfigNode( this, tag );
           node->addChild( tmp );
           parents.push( node );
           node = tmp;
