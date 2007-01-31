@@ -161,9 +161,9 @@ public:
 	void debugLoadedModels();
 
 protected:
-  virtual int interpretShapesLine( FILE *fp, int n );
   void initFonts( ConfigLang *config );
   void initAbout( ConfigLang *config );
+	void initPcPortraits( ConfigLang *config );
 };
 
 #endif

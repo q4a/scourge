@@ -57,9 +57,9 @@ void ShapePalette::initialize() {
   initFonts( config );
   delete config;
 
-  // just for testing
   config = ConfigLang::load( "config/pcmodel.cfg" );
   config->debug();
+	initPcPortraits( config );
   delete config;
 
 	loader = new ModelLoader( headless, 
@@ -271,56 +271,27 @@ void ShapePalette::initAbout( ConfigLang *config ) {
   strcpy( aboutText, about.c_str() );
 }
 
-int ShapePalette::interpretShapesLine( FILE *fp, int n ) {
+void ShapePalette::initPcPortraits( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "portraits" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "portrait" );
 
-  // call super
-  int super = Shapes::interpretShapesLine( fp, n );
-  if( super != -1 ) return super;
-
-  char line[255];
-	if( n == 'F' ) {
-		fgetc(fp);
-    n = Constants::readLine(line, fp);
-    /*
-		char *p = strtok( line, "," );
-
-    SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
-    strcpy( info->path, p );
-    info->size = atoi( strtok( NULL, "," ) );
-    info->style = atoi( strtok( NULL, "," ) );
-    info->yoffset = atoi( strtok( NULL, "," ) );
-		info->shadowX = atoi( strtok( NULL, "," ) );
-		info->shadowY = atoi( strtok( NULL, "," ) );
-    info->font = NULL;
-    info->fontMgr = NULL;
-
-    SDLHandler::fontInfos.push_back( info );
-		*/
-    return n;
-	} else if( n == 'A' ) {
-    fgetc(fp);
-    n = Constants::readLine(line, fp);
-    /*
-    if( strlen( aboutText ) ) strcat( aboutText, " " );
-    strcat( aboutText, line );
-    */
-    return n;
-  } else if( n == 'O' ) {
-    fgetc(fp);
-    n = Constants::readLine(line, fp);
-    //      cerr << "*** Loading portrait: " << line << endl;
-    if( strstr( line, "death" ) ) deathPortraitTexture = loadGLTextures( line );
-    else {
-			int sex = Constants::SEX_MALE;
-			if( line[ strlen( line ) - 2 ] == ',' ) {
-				if( line[ strlen( line ) - 1 ] == 'F' ) sex = Constants::SEX_FEMALE;
-				line[ strlen( line ) - 2 ] = '\0';
-			}
-			portraitTextures[sex].push_back( loadGLTextures( line ) );
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+		string image = node->getValueAsString( "image" );
+		string sex = node->getValueAsString( "sex" );
+		if( strstr( image.c_str(), "death" ) ) {
+			deathPortraitTexture = 
+				loadGLTextures( (char*)image.c_str() );
+		} else {
+			int sexNum = ( sex == "M" ? 
+										 Constants::SEX_MALE : 
+										 Constants::SEX_FEMALE );
+			portraitTextures[sexNum].push_back( 
+				loadGLTextures( (char*)image.c_str() ) );
 		}
-    return n;
-  }
-  return -1;
+	}
 }
 
 GLShape *ShapePalette::getCreatureShape( char *model_name, 

@@ -148,7 +148,7 @@ ConfigLang::ConfigLang( char *config ) {
 	document = NULL;
 	//cerr << config << endl;
 	parse( config );
-	debug();
+	//debug();
 }
 
 ConfigLang::~ConfigLang() {
