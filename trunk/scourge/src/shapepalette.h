@@ -162,8 +162,10 @@ public:
 
 protected:
   void initFonts( ConfigLang *config );
+	void initCursor( ConfigLang *config );
   void initAbout( ConfigLang *config );
 	void initPcPortraits( ConfigLang *config );
+	void initPcModels( ConfigLang *config );
 };
 
 #endif

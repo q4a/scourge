@@ -53,13 +53,17 @@ void ShapePalette::initialize() {
 
   // configure
   ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );  
-  initAbout( config );
-  initFonts( config );
+  initAbout( config );  
   delete config;
 
+	config = ConfigLang::load( "config/ui.cfg" );  
+	initFonts( config );
+	initCursor( config );
+	delete config;
+
   config = ConfigLang::load( "config/pcmodel.cfg" );
-  config->debug();
 	initPcPortraits( config );
+	initPcModels( config );
   delete config;
 
 	loader = new ModelLoader( headless, 
@@ -261,6 +265,16 @@ void ShapePalette::initFonts( ConfigLang *config ) {
   }
 }
 
+void ShapePalette::initCursor( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "cursor" );
+
+	strcpy( cursorDir, (*v)[0]->getValueAsString( "path" ) );
+	cursorWidth = (int)((*v)[0]->getValueAsFloat( "width" ));
+	cursorHeight = (int)((*v)[0]->getValueAsFloat( "height" ));
+
+	loadCursors();
+}
+
 void ShapePalette::initAbout( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "about" );
 	string about;
@@ -291,6 +305,26 @@ void ShapePalette::initPcPortraits( ConfigLang *config ) {
 			portraitTextures[sexNum].push_back( 
 				loadGLTextures( (char*)image.c_str() ) );
 		}
+	}
+}
+
+void ShapePalette::initPcModels( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "models" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "model" );
+
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+		CharacterModelInfo *cmi = (CharacterModelInfo*)malloc( sizeof( CharacterModelInfo ) );
+		strcpy( cmi->model_name, node->getValueAsString( "path" ) );
+		strcpy( cmi->skin_name, node->getValueAsString( "skin" ) );
+		cmi->scale = node->getValueAsFloat( "scale" );
+		string sex = node->getValueAsString( "sex" );
+		int sexNum = ( sex == "M" ? 
+									 Constants::SEX_MALE : 
+									 Constants::SEX_FEMALE );
+		character_models[sexNum].push_back( cmi );
 	}
 }
 

@@ -19,6 +19,7 @@
 #define GUI_GUI_H
 
 #include "../common/constants.h"
+#include "../configlang.h"
 
 class Widget;
 

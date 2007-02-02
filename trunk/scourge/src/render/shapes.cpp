@@ -332,7 +332,7 @@ void Shapes::initialize() {
   loadStencil( "/cave/stencil-turn.bmp", STENCIL_OUTSIDE_TURN );
   loadStencil( "/cave/stencil-sides.bmp", STENCIL_SIDES );
 
-	loadCursors();
+	//loadCursors();
 }
 
 void Shapes::loadCursors() {
@@ -571,6 +571,8 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     // load the character models
     fgetc( fp );
     n = Constants::readLine(line, fp);
+
+		/*
     CharacterModelInfo *cmi = (CharacterModelInfo*)malloc( sizeof( CharacterModelInfo ) );
     strcpy( cmi->model_name, strtok( line, "," ) );
     strcpy( cmi->skin_name, strtok( NULL, "," ) );
@@ -578,12 +580,13 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
 		char *p = strtok( NULL, "," );
 		int sex = ( p && *p == 'M' ? Constants::SEX_MALE : Constants::SEX_FEMALE );
     character_models[sex].push_back( cmi );
-		
+		*/
     return n;  
   } else if( n == 'C' ) {
 		// load cursor dir
     fgetc( fp );
 		n = Constants::readLine( line, fp);
+		/*
 		char *p = strtok( line, "," );
     if( p ) {
 			strcpy( cursorDir, p );
@@ -596,6 +599,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
 				}
 			}
 		}
+		*/
 		return n;
   }
   return -1;
