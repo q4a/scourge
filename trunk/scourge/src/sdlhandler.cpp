@@ -904,10 +904,10 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
 void SDLHandler::initFonts() {
   if( !font_initialized ) {
     char s[200];
-    cerr << "Loading " << fontInfos.size() << " fonts: " << endl;
+    //cerr << "Loading " << fontInfos.size() << " fonts: " << endl;
     for( unsigned int i = 0; i < fontInfos.size(); i++ ) {
       FontInfo *info = fontInfos[i];
-      cerr << "\t" << info->path << endl;
+      //cerr << "\t" << info->path << endl;
       sprintf( s, "%s/%s", rootDir, info->path );
       info->font = TTF_OpenFont( s, info->size );
       TTF_SetFontStyle( info->font, info->style );
@@ -915,11 +915,11 @@ void SDLHandler::initFonts() {
         fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", info->size, s, SDL_GetError());
         quit( 2 );
       } else {
-        cerr << "\t\tSuccess." << endl;
+        //cerr << "\t\tSuccess." << endl;
         info->fontMgr = new FontMgr( info->font, info->shadowX, info->shadowY );
       }
     }
-    cerr << "Done loading fonts." << endl;
+    //cerr << "Done loading fonts." << endl;
     font_initialized = true;
   }
 }

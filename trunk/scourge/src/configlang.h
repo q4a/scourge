@@ -49,6 +49,7 @@ public:
 
 class ConfigNode {
 private:
+	ConfigNode *super;
   ConfigLang *config;
 	std::string name;
   std::string id;
@@ -67,6 +68,8 @@ public:
   inline std::string getId() { return id; }
 	inline std::map<std::string, ConfigValue*>* getValues() { return &values; }
 	inline std::vector<ConfigNode*>* getChildren() { return &children; }
+	inline ConfigNode *getSuper() { return super; }
+	inline void setSuper( ConfigNode *super ) { this->super = super; }
 
   // convenience methods
   inline const char *getValueAsString( std::string name ) {

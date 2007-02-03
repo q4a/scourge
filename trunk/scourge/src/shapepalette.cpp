@@ -67,6 +67,7 @@ void ShapePalette::initialize() {
   config = ConfigLang::load( "config/map.cfg" );
 	initRugs( config );
   initSystemTextures( config );
+	initNativeShapes( config );
   delete config;
 
 
@@ -363,14 +364,64 @@ void ShapePalette::initSystemTextures( ConfigLang *config ) {
   char tmp[3000];  
   strcpy( tmp, node->getValueAsString( "path" ) );
 
-  cerr << "SYSTEM TEXTURES: >>>" << tmp << "<<<" << endl;
-
   char *p = strtok( tmp, "," );
   while( p ) {
-    cerr << "\t>>>" << p << "<<<" << endl;
     loadSystemTexture( p );
     p = strtok( NULL, "," );
   }
+}
+
+void ShapePalette::initNativeShapes( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "native_shapes" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "native_shape" );
+
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+
+    // texture group
+		ShapeValues *sv = new ShapeValues();
+		if( node->hasValue( "texture_group" ) ) {
+			strcpy( sv->textureGroupIndex, node->getValueAsString( "texture_group" ) );
+		} else {
+			sprintf( sv->textureGroupIndex, "theme,%s", node->getValueAsString( "theme" ) );
+		}
+
+    sv->xrot = sv->yrot = sv->zrot = 0.0f;
+
+    // dimensions
+    sv->width = toint( node->getValueAsFloat( "x" ) );
+    sv->depth = toint( node->getValueAsFloat( "y" ) );
+    sv->height = toint( node->getValueAsFloat( "z" ) );
+
+    // name
+    strcpy( sv->name, node->getValueAsString( "name" ) );
+
+    // description
+    sv->descriptionIndex = toint( node->getValueAsFloat( "description" ) );
+
+    // color
+    sv->color = strtoul( node->getValueAsString( "color" ), NULL, 16 );
+
+    // extra for torches:
+//    sv->torch = -1;
+//    sv->teleporter = 0;
+		sv->torch = toint( node->getValueAsFloat( "torch" ) ) - 1;
+		sv->teleporter = toint( node->getValueAsFloat( "teleporter" ) );
+		sv->m3ds_name[0] = '\0';
+
+    sv->effectType = -1;
+
+    sv->interactive = ( node->getValueAsFloat( "interactive" ) > 0 ? true : false );
+
+    sv->skipSide = toint( node->getValueAsFloat( "skip_side" ) );
+    sv->stencil = toint( node->getValueAsFloat( "stencil" ) );
+    sv->blocksLight = toint( node->getValueAsFloat( "light_blocking" ) );
+
+    // store it for now
+    shapeValueVector.push_back(sv);
+	}
 }
 
 GLShape *ShapePalette::getCreatureShape( char *model_name, 
