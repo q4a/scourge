@@ -138,10 +138,10 @@ void Scourge::initUI() {
   optionsMenu = new OptionsMenu(this);
   multiplayer = new MultiplayerDialog(this);
 
-	hireHeroDialog = new ConfirmDialog( getSDLHandler(), "Hire a Wandering Hero" );
-	dismissHeroDialog = new ConfirmDialog( getSDLHandler(), "Dismiss Party Member" );
-	confirmUpload = new ConfirmDialog( getSDLHandler(), "Need permission to upload score to web" );
-	confirmUpload->setText( "Upload your score to the internet?" );
+	hireHeroDialog = new ConfirmDialog( getSDLHandler(), _( "Hire a Wandering Hero" ) );
+	dismissHeroDialog = new ConfirmDialog( getSDLHandler(), _( "Dismiss Party Member" ) );
+	confirmUpload = new ConfirmDialog( getSDLHandler(), _( "Need permission to upload score to web" ) );
+	confirmUpload->setText( _( "Upload your score to the internet?" ) );
 	textDialog = new TextDialog( getSDLHandler() );
 
   // load character, item sounds

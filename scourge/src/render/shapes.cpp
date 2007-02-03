@@ -152,11 +152,45 @@ Shapes *Shapes::instance = NULL;
 
 Shapes::Shapes( bool headless ){
   texture_count = 0;
-  textureGroupCount = 0;
+  textureGroupCount = 1;
+	textureGroup[0][0] = textureGroup[0][1] = textureGroup[0][2] = 0;
   themeCount = allThemeCount = caveThemeCount = 0;
   currentTheme = NULL;
   this->headless = headless;
 	if( !instance ) instance = this;
+}
+
+GLuint *Shapes::findOrMakeTextureGroup( char *s ) {
+	char tmp[255];
+	strcpy( tmp, s );
+
+	GLuint tg[3];
+
+	int c = 0;
+	char *token = strtok( tmp, "," );
+	while( token && c < 3 ) {
+		tg[ c++ ] = findTextureByName( token, true );
+		token = strtok( NULL, "," );
+	}
+
+	// try to find this texture group
+	for( int i = 0; i < textureGroupCount; i++ ) {
+		if( tg[ 0 ] == textureGroup[ i ][ 0 ] &&
+				tg[ 1 ] == textureGroup[ i ][ 1 ] &&
+				tg[ 2 ] == textureGroup[ i ][ 2 ] ) {
+			cerr << "*** Found existing texture group: " << i << endl;
+			return textureGroup[ i ];
+		}
+	}
+
+	// make a new one if not found
+	textureGroup[ textureGroupCount ][ 0 ] = tg[ 0 ];
+	textureGroup[ textureGroupCount ][ 1 ] = tg[ 1 ];
+	textureGroup[ textureGroupCount ][ 2 ] = tg[ 2 ];
+	cerr << "*** Created new texture group: " << textureGroupCount << endl;
+	textureGroupCount++;
+	
+	return textureGroup[ textureGroupCount - 1 ];
 }
 
 void Shapes::initialize() {
@@ -213,13 +247,20 @@ void Shapes::initialize() {
     // Resolve the texture group.
     // For theme-based shapes, leave texture NULL, they will be resolved later.
     bool themeBasedShape = false;
-    GLuint *texture = NULL;
+    GLuint *texture = textureGroup[ 0 ];
+		if( strlen( sv->theme ) ) {
+			themeBasedShape = true;
+		} else if( strlen( sv->textures ) ) {
+			texture = findOrMakeTextureGroup( sv->textures );
+		}
+		/*
     if( strlen(sv->textureGroupIndex) < 5 ) {
       texture = textureGroup[ atoi( sv->textureGroupIndex) ];
     } else {
       texture = textureGroup[ 0 ];
       themeBasedShape = true;
     }
+		*/
 
     if(sv->teleporter) {
       shapes[(i + 1)] =
@@ -275,7 +316,8 @@ void Shapes::initialize() {
     // Call this when all other intializations are done.
     if(themeBasedShape) {
       themeShapes.push_back( shapes[(i + 1)] );
-      string s = ( sv->textureGroupIndex + 6 );
+      //string s = ( sv->textureGroupIndex + 6 );
+			string s = sv->theme;
       themeShapeRef.push_back( s );
     } else {
       if( !headless ) shapes[(i + 1)]->initialize();
@@ -417,7 +459,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
 
     // texture group
     ShapeValues *sv = new ShapeValues();
-    strcpy( sv->textureGroupIndex, line );
+    //strcpy( sv->textureGroupIndex, line );
 
     sv->xrot = sv->yrot = sv->zrot = 0.0f;
 
