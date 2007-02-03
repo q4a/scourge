@@ -336,13 +336,13 @@ void Shapes::initialize() {
 }
 
 void Shapes::loadCursors() {
-	debugFileLoading = true;
+	//debugFileLoading = true;
 	char path[300];
 	for( int i = 0; i < Constants::CURSOR_COUNT; i++ ) {
 		sprintf( path, "%s/%s", cursorDir, Constants::cursorTextureName[ i ] );
 		cursorTexture[i] = loadTextureWithAlpha( path );
 	}
-	debugFileLoading = false;
+	//debugFileLoading = false;
 }
 
 Shapes::~Shapes(){
@@ -507,7 +507,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
   } else if(n == 'P') {
     fgetc(fp);
     n = Constants::readLine(line, fp);
-
+/*
     int index = atoi(strtok(line, ","));
 //      cerr << "options for shape, index=" << index << " size=" << shapeValueVector.size() << endl;
 
@@ -515,6 +515,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     sv->skipSide = atoi(strtok(NULL, ","));
     sv->stencil = atoi(strtok(NULL, ","));
     sv->blocksLight = atoi(strtok(NULL, ","));
+*/		
     return n;
   } else if( n == 'H' ) {
     fgetc(fp);

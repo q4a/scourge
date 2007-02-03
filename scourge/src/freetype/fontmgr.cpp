@@ -256,7 +256,7 @@ GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 			g->texMaxX = texcoord[ 2 ];
 			g->texMaxY = texcoord[ 3 ];
 			glyphs[ c ] = g;
-			if( glyphs.size() % 10 == 0 ) cerr << " glyph count=" << glyphs.size() << endl;
+			// if( glyphs.size() % 10 == 0 ) cerr << " glyph count=" << glyphs.size() << endl;
 			SDL_FreeSurface( surface );
 			if( shadow ) SDL_FreeSurface( shadow );
 		} else {

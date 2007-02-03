@@ -72,6 +72,7 @@ ConfigNode::ConfigNode( ConfigLang *config, string name ) {
   this->config = config;
 	this->name = name;
   this->id = "";
+	this->super = NULL;
 }
 
 ConfigNode::~ConfigNode() {
@@ -138,7 +139,23 @@ void ConfigNode::copyFromNode( ConfigNode *node ) {
 void ConfigNode::extendNode( std::string id ) {
 	ConfigNode *super = (*(config->getIdMap()))[id];
 	if( super ) {
-		copyFromNode( super );
+		// build a stack of parent nodes
+		stack<ConfigNode*> hier;
+		hier.push( super );
+		while( super->getSuper() ) {
+			hier.push( super->getSuper() );
+			super = super->getSuper();
+		}
+
+		// copy into current node in reverse order
+		while( !hier.empty() ) {
+			super = hier.top();
+			hier.pop();
+			copyFromNode( super );
+		}
+
+		// remember our parent node
+		setSuper( super );
 	} else {
 		cerr << "*** Error: can't find node with id=" << id << endl;
 	}
@@ -199,7 +216,7 @@ void ConfigLang::parse( char *config ) {
 				if( n != string::npos ) {
 					extends = tag.substr( n + 1 );
 					tag = tag.substr( 0, n );
-					cerr << tag << " extends " << extends << endl;
+					//cerr << tag << " extends " << extends << endl;
 				}
         if( node == NULL ) {
           document = node = new ConfigNode( this, tag );
@@ -225,6 +242,7 @@ void ConfigLang::parse( char *config ) {
 							 ( c == '\n' || c == '\r' ) ) {
       if( inComment ) {
         inComment = false;
+				pos = i + 1;
       } else if( inValue ) {
         string value = cleanText( config + pos, i - pos );
         node->addValue( name, new ConfigValue( (char*)(value.c_str()) ) );

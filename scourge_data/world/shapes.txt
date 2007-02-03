@@ -374,170 +374,6 @@ D:Some plants grow here.
 # unitoffset=2
 # wallheight=12
 
-# Constants::EW_WALL_INDEX
-N:theme,wall
-N:2,12,12
-N:EW_WALL
-N:0
-N:ac8060ff
-
-# Constants::EW_WALL_EXTRA_INDEX
-N:theme,wall
-N:2,14,12
-N:EW_WALL_EXTRA
-N:0
-N:ac8060ff
-
-# Constants::EW_WALL_TWO_EXTRAS_INDEX
-N:theme,wall
-N:2,16,12
-N:EW_WALL_TWO_EXTRAS
-N:0
-N:ac8060ff
-
-# Constants::NS_WALL_INDEX
-N:theme,wall
-N:12,2,12
-N:NS_WALL
-N:0
-N:ac8060ff
-
-# Constants::NS_WALL_EXTRA_INDEX
-N:theme,wall
-N:14,2,12
-N:NS_WALL_EXTRA
-N:0
-N:ac8060ff
-
-# Constants::NS_WALL_TWO_EXTRAS_INDEX
-N:theme,wall
-N:16,2,12
-N:NS_WALL_TWO_EXTRAS
-N:0
-N:ac8060ff
-
-# P:shape options
-#   shape index
-#   skip side: (none=0, FRONT_SIDE = 1, TOP_SIDE = 2, LEFT_RIGHT_SIDE = 4)
-#   stencil: 0,1
-#   light 2blocking: 0,1
-P:0,1,1,1
-P:1,1,1,1
-P:2,1,1,1
-P:3,4,1,1
-P:4,4,1,1
-P:5,4,1,1
-
-# Constants::CORNER_INDEX
-N:theme,corner
-N:2,2,12
-N:CORNER
-N:0
-N:ac8060ff
-
-# Constants::DOOR_SIDE_INDEX
-N:theme,corner
-N:2,2,10
-N:DOOR_SIDE
-N:2
-N:aa6633ff
-
-# Constants::EW_DOOR_INDEX
-N:theme,door_ew
-N:1,6,10
-N:EW_DOOR
-N:1
-N:aa6633ff
-I:1
-
-# Constants::EW_DOOR_TOP_INDEX
-N:theme,headboard
-N:2,12,2
-N:EW_DOOR_TOP
-N:2
-N:aa6633ff
-
-# Constants::NS_DOOR_INDEX
-N:theme,door_ns
-N:6,1,10
-N:NS_DOOR
-N:1
-N:aa6633ff
-I:1
-
-# Constants::NS_DOOR_TOP_INDEX
-N:theme,headboard
-N:12,2,2
-N:NS_DOOR_TOP
-N:2
-N:aa6633ff
-
-# corners, door sides look weird when transparent
-#P:6,0,1,1
-#P:7,2,1,0
-#P:9,2,1,0
-#P:11,2,1,0
-
-P:8,0,0,1
-P:10,0,0,1
-
-# Constants::FLOOR_TILE_INDEX
-N:theme,passage_floor
-N:16,16,0
-N:FLOOR_TILE
-N:0
-N:806040ff
-
-# Constants::ROOM_FLOOR_TILE_INDEX
-N:theme,room_floor
-N:16,16,0
-N:ROOM_FLOOR_TILE
-N:0
-N:a08040ff
-
-# Constants::ROOM2_FLOOR_TILE_INDEX
-#N:theme,room_floor
-#N:16,16,0
-#N:ROOM2_FLOOR_TILE
-#N:0
-#N:a08040ff
-
-P:12,5,0,0
-P:13,5,0,0
-#P:14,5,0,0
-
-# Constants::LAMP_NORTH_INDEX
-N:14
-N:1,1,2
-N:LAMP_NORTH
-N:3
-N:ffffffff
-T:0
-
-# Constants::LAMP_SOUTH_INDEX
-N:14
-N:1,1,2
-N:LAMP_SOUTH
-N:3
-N:ffffffff
-T:2
-
-# Constants::LAMP_WEST_INDEX
-N:14
-N:1,1,2
-N:LAMP_WEST
-N:3
-N:ffffffff
-T:3
-
-# Constants::LAMP_EAST_INDEX
-N:14
-N:1,1,2
-N:LAMP_EAST
-N:3
-N:ffffffff
-T:1
-
 # Constants::LAMP_BASE_INDEX
 #N:2
 #N:1,1,2
@@ -562,58 +398,6 @@ N:ffffffff
 3:/objects/secret.3ds
 3:1.32,1.14315,6.984
 
-# Secret door in lifted position. 
-# Must be in the same order as the corresponding wall pieces.
-N:theme,wall
-N:2,12,12
-N:SECRET_EW_WALL
-N:0
-N:ac8060ff
-
-# Constants::EW_WALL_EXTRA_INDEX
-N:theme,wall
-N:2,14,12
-N:SECRET_EW_WALL_EXTRA
-N:0
-N:ac8060ff
-
-# Constants::EW_WALL_TWO_EXTRAS_INDEX
-N:theme,wall
-N:2,16,12
-N:SECRET_EW_WALL_TWO_EXTRAS
-N:0
-N:ac8060ff
-
-# Constants::NS_WALL_INDEX
-N:theme,wall
-N:12,2,12
-N:SECRET_NS_WALL
-N:0
-N:ac8060ff
-
-# Constants::NS_WALL_EXTRA_INDEX
-N:theme,wall
-N:14,2,12
-N:SECRET_NS_WALL_EXTRA
-N:0
-N:ac8060ff
-
-# Constants::NS_WALL_TWO_EXTRAS_INDEX
-N:theme,wall
-N:16,2,12
-N:SECRET_NS_WALL_TWO_EXTRAS
-N:0
-N:ac8060ff
-
-
-
-
-# Constants::EMPTY_SHAPE_INDEX
-N:2
-N:1,1,1
-N:EMPTY_SHAPE
-N:3
-N:ffffffff
 
 # board.3ds
 N:14,
@@ -624,14 +408,6 @@ N:ffffffff
 3:/objects/board.3ds
 3:11.3155,3.20046,10.7748
 I:1
-
-# Constants::BRAZIER_INDEX
-N:14
-N:3,3,3
-N:BRAZIER
-N:5
-N:e820ffff
-T:5
 
 # Constants::BRAZIER_BASE_INDEX
 N:14
@@ -723,29 +499,6 @@ N:ffffffff
 3:/objects/stove.3ds
 3:2.15986,4.36447,8.58571
 
-# Constants::TELEPORTER_INDEX
-N:2
-N:3,3,14
-N:TELEPORTER
-N:7
-N:0020ffff
-L:1
-
-# the Abyssal teleporter
-N:2
-N:3,3,14
-N:RED_TELEPORTER
-N:11
-N:ff2000ff
-L:2
-
-# Constants::TELEPORTER_BASE_INDEX
-N:3
-N:3,3,1
-N:TELEPORTER_BASE
-N:7
-N:f0f0ffff
-I:1
 
 # gate-up.3ds
 N:14
@@ -817,33 +570,6 @@ N:ffffffff
 3:/objects/staff.3ds
 3:7.67049,0.273565,0.287643
 
-# Constants::BOOKSHELF_INDEX
-N:10
-N:2,5,7
-N:BOOKSHELF
-N:0
-N:0000ffff
-
-# Constants::CHEST_INDEX
-N:11
-N:2,3,2
-N:CHEST
-N:0
-N:ffaa80ff
-
-# Constants::BOOKSHELF2_INDEX
-N:12
-N:5,2,7
-N:BOOKSHELF2
-N:0
-N:0000ffff
-
-# Constants::CHEST2_INDEX
-N:13
-N:3,2,2
-N:CHEST2
-N:0
-N:ffaa80ff
 
 N:14
 N:1,1,1

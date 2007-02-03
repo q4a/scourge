@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-01-29 22:12-0800\n"
+"POT-Creation-Date: 2007-02-02 22:06-0800\n"
 "PO-Revision-Date: 2007-01-20 21:57-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -57,11 +57,11 @@ msgstr "[Hálózat]"
 msgid "[Sound]"
 msgstr "[Zene]"
 
-#: ../scourge_data/config/scourge.cfg:4
+#: ../scourge_data/config/scourge.cfg:12
 msgid "Welcome to the world of S.c.o.u.r.g.e."
 msgstr "Isten hozott a S.c.o.u.r.g.e.-nél"
 
-#: ../scourge_data/config/scourge.cfg:6
+#: ../scourge_data/config/scourge.cfg:14
 msgid ""
 "||S.c.o.u.r.g.e. is a rogue-like rpg that lets you control a group of four "
 "brave heroes.While working for a dungeon janitorial services company they "
@@ -75,23 +75,26 @@ msgid ""
 "unfold in either frantic real-time or thoughtful turn-based presentation.||"
 msgstr "||A S.c.o.u.r.g.e. egy rpg||"
 
-#: ../scourge_data/config/scourge.cfg:18
+#: ../scourge_data/config/scourge.cfg:26
 msgid ""
 "So stay a while... hunker down for adventure in the true underworld. The "
 "noxious fumes and A:psychedelic molds from the very walls of the crypts "
 "below the city of Horghh await.||"
 msgstr "Maradj egy darabig... a Horghh városa vár.||"
 
-#: ../scourge_data/config/scourge.cfg:22
+#: ../scourge_data/config/scourge.cfg:30
 msgid ""
 "Credits and miscellany:|-----------------------|Code and bad artwork by "
-"Uzudil|Amazing portraits by Ben|Music by Toofan and Vincent|Rpg expertese by "
-"Michi, Elscouta, Nolendil|Forums and web administration by Charlie|More "
-"coding by daroth-u and Callahan|Web/cvs/svn and other services by "
-"sourceforge.net|Additional 3d objects by |Enforcement of the law by Mormuth "
-"the Hairy|Dwarven poetry by the Order of the Grizzled Pony|Quake models from "
-"polycount|Textures by the wadfather|(see README file for details on "
-"contributions.)|Playtesting and mostly civil encouragement by many at "
-"happypenguin.org|Additional testing and general hazing from the very helpful "
-"members of rpgcodex.com|Many happy interruptions in bugfixing by Abe & Asha|"
+"Uzudil|Amazing portraits by Ben|Additional portraits by Omnisicent Colossus|"
+"Music by Toofan and Vincent|Rpg expertese by Michi, Elscouta, Nolendil|"
+"SCOURGEweb.org maintained and hosted by Omniscient Colossus|Original Forums "
+"and web administration by Charlie|More coding by daroth-u and Callahan|Web/"
+"cvs/svn and other services by sourceforge.net|Additional 3d objects by "
+"Omniscient Colossus|Enforcement of the law by Mormuth the Hairy|Dwarven "
+"poetry by the Order of the Grizzled Pony|Quake models from polycount|"
+"Textures by the wadfather|Texture Tweaking by Omniscient Colossus|(see "
+"README file for details on contributions.)|Playtesting and mostly civil "
+"encouragement by many at happypenguin.org|Additional testing and general "
+"hazing from the very helpful members of rpgcodex.com|Many happy "
+"interruptions in bugfixing by Abe & Asha|"
 msgstr "Sokat segitettek az alábbiak:|"
