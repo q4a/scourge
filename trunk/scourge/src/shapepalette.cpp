@@ -380,13 +380,20 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
-    // texture group
 		ShapeValues *sv = new ShapeValues();
+
+
+		strcpy( sv->theme, node->getValueAsString( "theme" ) );
+		strcpy( sv->textures, node->getValueAsString( "textures" ) );
+
+		/*
+    // texture group		
 		if( node->hasValue( "texture_group" ) ) {
 			strcpy( sv->textureGroupIndex, node->getValueAsString( "texture_group" ) );
 		} else {
 			sprintf( sv->textureGroupIndex, "theme,%s", node->getValueAsString( "theme" ) );
 		}
+		*/
 
     sv->xrot = sv->yrot = sv->zrot = 0.0f;
 
@@ -421,6 +428,29 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 
     // store it for now
     shapeValueVector.push_back(sv);
+
+		/*
+		
+			fixme: make sure everything is initialized in ShapeValues typedef.
+		
+			char theme[40];
+			char textures[255];
+			int width, height, depth;
+			char name[100];
+			int descriptionIndex;
+			long color;
+			int skipSide, stencil, blocksLight;
+			int torch;
+			char m3ds_name[100];
+			float m3ds_scale;
+			float m3ds_x, m3ds_y, m3ds_z;
+			int teleporter;
+			float xrot, yrot, zrot;
+			int effectType;
+			int effectWidth, effectDepth, effectHeight;
+			int effectX, effectY, effectZ;
+			bool interactive;
+	*/
 	}
 }
 

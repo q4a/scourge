@@ -34,7 +34,9 @@ class Shapes;
 
 // temporary information when constructing shapes from a file
 typedef struct _ShapeValues {
-  char textureGroupIndex[100]; // index or theme ref.
+  // char textureGroupIndex[100]; // index or theme ref.
+	char theme[40];
+	char textures[255];
   int width, height, depth;
   char name[100];
   int descriptionIndex;
@@ -300,6 +302,7 @@ protected:
   virtual int interpretShapesLine( FILE *fp, int n );
   void loadStencil( char *filename, int index );
 	void loadCursors();
+	GLuint *findOrMakeTextureGroup( char *s );
 };
 
 #endif
