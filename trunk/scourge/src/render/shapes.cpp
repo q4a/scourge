@@ -359,18 +359,22 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     n = Constants::readLine(line, fp);
 
     // texture declaration
-    loadSystemTexture( line );
+    //loadSystemTexture( line );
     return n;
 	} else if( n == 'U' ) {
 		// skip ':'
     fgetc(fp);
     n = Constants::readLine(line, fp);
+
+    /*
 		SDL_Surface *tmpSurface = NULL;
 		GLubyte *tmpImage = NULL;
 		setupAlphaBlendedBMP( line, &tmpSurface, &tmpImage );
 		rugs.push_back( loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR ) );
 		if( tmpImage ) free( tmpImage );
 		if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+    */
+
 		return n;
   } else if(n == 'G') {
     // skip ':'

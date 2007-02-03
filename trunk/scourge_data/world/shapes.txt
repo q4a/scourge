@@ -42,86 +42,80 @@
 # Skill descriptions: (order is important: see constants.h)
 # S:name,description
 
-U:/textures/rugs/r1.bmp
-U:/textures/rugs/r2.bmp
-U:/textures/rugs/r3.bmp
-U:/textures/rugs/r4.bmp
+#U:/textures/rugs/r1.bmp
+#U:/textures/rugs/r2.bmp
+#U:/textures/rugs/r3.bmp
+#U:/textures/rugs/r4.bmp
 
 # Character portraits
-O:/portraits/m6.bmp,M
-O:/portraits/m7.bmp,M
-O:/portraits/m8.bmp,M
-O:/portraits/m9.bmp,M
-O:/portraits/m10.bmp,M
-O:/portraits/m11.bmp,M
-O:/portraits/w6.bmp,F
-O:/portraits/w12.bmp,F
-O:/portraits/w14.bmp,F
-O:/portraits/w15.bmp,F
-O:/portraits/w16.bmp,F
-O:/portraits/w17.bmp,F
-O:/portraits/w1.bmp,F
+#O:/portraits/m6.bmp,M
+#O:/portraits/m7.bmp,M
+#O:/portraits/m8.bmp,M
+#O:/portraits/m9.bmp,M
+#O:/portraits/m10.bmp,M
+#O:/portraits/m11.bmp,M
+#O:/portraits/w6.bmp,F
+#O:/portraits/w12.bmp,F
+#O:/portraits/w14.bmp,F
+#O:/portraits/w15.bmp,F
+#O:/portraits/w16.bmp,F
+#O:/portraits/w17.bmp,F
+#O:/portraits/w1.bmp,F
 
-O:/portraits/death.bmp
+#O:/portraits/death.bmp
 
 # cursor directory,cursor width,cursor height
-C:/textures/cursor,40,40
+#C:/textures/cursor,40,40
 
 # Character models
 # Note: add new models at the end of the list!
-M:/models/character/blade,blade.bmp,2.0,M
-M:/models/character/pknight,knight.bmp,1.5,M
-M:/models/character/pknight,evil.bmp,1.5,M
-M:/models/character/pknight,ctf_b.bmp,1.5,M
-M:/models/character/pknight,ctf_r.bmp,1.5,M
-#M:/models/character/darkness,Darkness.bmp,1.5,M
-M:/models/character/darkness,estacado.bmp,1.5,M
-#M:/models/character/darkness,Morf.bmp,1.5,M
-#M:/models/character/darkness,ctf_b.bmp,1.5,M
-#M:/models/character/darkness,ctf_g.bmp,1.5,M
-M:/models/character/darkness,ctf_r.bmp,1.5,M
-M:/models/character/shinju,shinju.bmp,2.0,F
-M:/models/character/shinju,shinju_black.bmp,2.0,F
-M:/models/character/shinju,sunghi_blackhair.bmp,2.0,F
-M:/models/character/shinju,sunghi_redhair.bmp,2.0,F
-M:/models/character/sydney,sydney.bmp,1.7,F
-M:/models/character/sydney,ctf_b.bmp,1.7,F
-M:/models/character/sydney,ctf_r.bmp,1.7,F
-M:/models/character/yohko,Yohko.bmp,2.0,F
-M:/models/character/yohko,ctf_b.bmp,2.0,F
-#M:/models/character/yohko,ctf_r.bmp,2.0,F
-M:/models/character/gladius,default,1.5,M
+#M:/models/character/blade,blade.bmp,2.0,M
+#M:/models/character/pknight,knight.bmp,1.5,M
+#M:/models/character/pknight,evil.bmp,1.5,M
+#M:/models/character/pknight,ctf_b.bmp,1.5,M
+#M:/models/character/pknight,ctf_r.bmp,1.5,M
+#M:/models/character/darkness,estacado.bmp,1.5,M
+#M:/models/character/darkness,ctf_r.bmp,1.5,M
+#M:/models/character/shinju,shinju.bmp,2.0,F
+#M:/models/character/shinju,shinju_black.bmp,2.0,F
+#M:/models/character/shinju,sunghi_blackhair.bmp,2.0,F
+#M:/models/character/shinju,sunghi_redhair.bmp,2.0,F
+#M:/models/character/sydney,sydney.bmp,1.7,F
+#M:/models/character/sydney,ctf_b.bmp,1.7,F
+#M:/models/character/sydney,ctf_r.bmp,1.7,F
+#M:/models/character/yohko,Yohko.bmp,2.0,F
+#M:/models/character/yohko,ctf_b.bmp,2.0,F
+#M:/models/character/gladius,default,1.5,M
 
-T:front.bmp
-T:top.bmp
-T:side.bmp
-T:wood.bmp
-T:top.bmp
-T:copper.bmp
-T:woodtop.bmp
-T:fronttop.bmp
-T:light.bmp
-T:flame.bmp
-T:doorNS.bmp
-T:doorEW.bmp
-T:bookshelf.bmp
-T:chestfront.bmp
-T:chestside.bmp
-T:chesttop.bmp
-T:marble.bmp
-T:metal.bmp
-T:ring2.bmp
-T:iron.bmp
-T:gui-wood.bmp
-T:map.bmp
-T:darkui.bmp
-#T:floor4.bmp
-T:litewood.bmp
-T:brick.bmp
-T:screw.bmp
-T:rock.bmp
-T:skulls.bmp
-T:floor7.bmp
+#T:front.bmp
+#T:top.bmp
+#T:side.bmp
+#T:wood.bmp
+#T:top.bmp
+#T:copper.bmp
+#T:woodtop.bmp
+#T:fronttop.bmp
+#T:light.bmp
+#T:flame.bmp
+#T:doorNS.bmp
+#T:doorEW.bmp
+#T:bookshelf.bmp
+#T:chestfront.bmp
+#T:chestside.bmp
+#T:chesttop.bmp
+#T:marble.bmp
+#T:metal.bmp
+#T:ring2.bmp
+#T:iron.bmp
+#T:gui-wood.bmp
+#T:map.bmp
+#T:darkui.bmp
+#T:litewood.bmp
+#T:brick.bmp
+#T:screw.bmp
+#T:rock.bmp
+#T:skulls.bmp
+#T:floor7.bmp
 
 # This is "old-school". It's only used for "native" objects: chest, bookcase, etc.
 # Walls, floors and doors now use themes (much more flexible; see below)

@@ -166,6 +166,8 @@ protected:
   void initAbout( ConfigLang *config );
 	void initPcPortraits( ConfigLang *config );
 	void initPcModels( ConfigLang *config );
+  void initRugs( ConfigLang *config );
+  void initSystemTextures( ConfigLang *config );
 };
 
 #endif
