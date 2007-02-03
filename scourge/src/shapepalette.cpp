@@ -48,8 +48,6 @@ void ShapePalette::preInitialize() {
 }
 
 void ShapePalette::initialize() {
-  // call "super"
-  Shapes::initialize();
 
   // configure
   ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );  
@@ -65,6 +63,17 @@ void ShapePalette::initialize() {
 	initPcPortraits( config );
 	initPcModels( config );
   delete config;
+
+  config = ConfigLang::load( "config/map.cfg" );
+	initRugs( config );
+  initSystemTextures( config );
+  delete config;
+
+
+
+
+  // call "super"
+  Shapes::initialize();
 
 	loader = new ModelLoader( headless, 
 														 textureGroup[ 14 ] );
@@ -326,6 +335,42 @@ void ShapePalette::initPcModels( ConfigLang *config ) {
 									 Constants::SEX_FEMALE );
 		character_models[sexNum].push_back( cmi );
 	}
+}
+
+void ShapePalette::initRugs( ConfigLang *config ) {
+  vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "rugs" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "rug" );
+
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+
+		SDL_Surface *tmpSurface = NULL;
+		GLubyte *tmpImage = NULL;
+		setupAlphaBlendedBMP( (char*)node->getValueAsString( "path" ), &tmpSurface, &tmpImage );
+		rugs.push_back( loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR ) );
+		if( tmpImage ) free( tmpImage );
+		if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+  }
+}
+
+void ShapePalette::initSystemTextures( ConfigLang *config ) {
+  vector<ConfigNode*> *v = config->getDocument()->
+    getChildrenByName( "system_textures" );
+  ConfigNode *node = (*v)[0];
+  
+  char tmp[3000];  
+  strcpy( tmp, node->getValueAsString( "path" ) );
+
+  cerr << "SYSTEM TEXTURES: >>>" << tmp << "<<<" << endl;
+
+  char *p = strtok( tmp, "," );
+  while( p ) {
+    cerr << "\t>>>" << p << "<<<" << endl;
+    loadSystemTexture( p );
+    p = strtok( NULL, "," );
+  }
 }
 
 GLShape *ShapePalette::getCreatureShape( char *model_name, 
