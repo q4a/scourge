@@ -190,6 +190,7 @@ protected:
 
   // shape descriptions
   std::vector<std::vector<std::string>*> descriptions;
+	std::map<std::string,int> descriptionIndex;
 
   // temp. shape data
   std::vector<ShapeValues*> shapeValueVector;
