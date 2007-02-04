@@ -422,7 +422,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     // skip ':'
     fgetc(fp);
     n = Constants::readLine(line, fp);
-
+		/*
     // parse native texture group
     int c = 0;
     char *token = strtok(line, ",");
@@ -435,6 +435,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
     if(c == 3) {
       textureGroupCount++;
     }
+		*/
     return n;
   } else if(n == 'D') {
     fgetc(fp);
