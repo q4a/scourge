@@ -456,7 +456,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
   } else if(n == 'N') {
     fgetc(fp);
     n = Constants::readLine(line, fp);
-
+		/*
     // texture group
     ShapeValues *sv = new ShapeValues();
     //strcpy( sv->textureGroupIndex, line );
@@ -545,6 +545,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
 
     // store it for now
     shapeValueVector.push_back(sv);
+		*/
     return n;
   } else if(n == 'P') {
     fgetc(fp);

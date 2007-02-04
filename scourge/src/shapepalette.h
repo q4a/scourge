@@ -34,6 +34,7 @@ class Session;
 class Monster;
 class ModelWrapper;
 class ConfigLang;
+class ConfigNode;
 
 typedef struct _MapGridLocation {
   char name[80];
@@ -169,7 +170,10 @@ protected:
   void initRugs( ConfigLang *config );
   void initSystemTextures( ConfigLang *config );
 	void initNativeShapes( ConfigLang *config );
+	void init3dsShapes( ConfigLang *config );
 	void initThemes( ConfigLang *config );
+
+	ShapeValues *createShapeValues( ConfigNode *node );
 };
 
 #endif

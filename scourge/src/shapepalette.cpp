@@ -69,6 +69,7 @@ void ShapePalette::initialize() {
   initSystemTextures( config );
 	initThemes( config );
 	initNativeShapes( config );
+	init3dsShapes( config );
   delete config;
 
 
@@ -432,6 +433,90 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 	}
 }
 
+// initialize to default values
+ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
+	ShapeValues *sv = new ShapeValues();
+	sv->theme[0] = 0;
+	sv->textures[0] = 0;
+	sv->width = sv->height = sv->depth = 0;
+	sv->name[0] = 0;
+	sv->descriptionIndex = 14; // no description
+	sv->color = 0;
+	sv->skipSide = sv->stencil = sv->blocksLight = 0;
+	sv->torch = -1;
+	sv->m3ds_name[0] = 0;
+	sv->m3ds_scale = 0;
+	sv->m3ds_x = sv->m3ds_y = sv->m3ds_z = 0;
+	sv->teleporter = 0;
+	sv->xrot = sv->yrot = sv->zrot = 0;
+	sv->effectType = -1;
+	sv->effectWidth = sv->effectDepth = sv->effectHeight = 0;
+	sv->effectX = sv->effectY = sv->effectZ = 0;
+	sv->interactive = false;
+
+
+	// load some common values
+	strcpy( sv->name, node->getValueAsString( "name" ) );
+	sv->descriptionIndex = toint( node->getValueAsFloat( "description" ) );
+	sv->color = strtoul( node->getValueAsString( "color" ), NULL, 16 );
+	sv->interactive = ( node->getValueAsFloat( "interactive" ) > 0 ? true : false );
+
+	if( node->hasValue( "rotate" ) ) {
+		char rotation[128];
+		strcpy( rotation, node->getValueAsString( "rotate" ) );
+		sv->xrot = atof( strtok( rotation, "," ) );
+		sv->yrot = atof( strtok( NULL, "," ) );
+		sv->zrot = atof( strtok( NULL, "," ) );
+	}
+	
+	if( node->hasValue( "effect" ) ) {
+		char effect[128];
+		strcpy( effect, node->getValueAsString( "effect" ) );
+		char *p = strtok( effect, "," );
+		for( int i = 0; i < Constants::EFFECT_COUNT; i++ ) {
+			if( !strcmp( p, Constants::EFFECT_NAMES[ i ] ) ) {
+				sv->effectType = i;
+				break;
+			}
+		}
+		if( sv->effectType > -1 ) {
+			sv->effectWidth = atoi( strtok( NULL, "," ) );
+			sv->effectDepth = atoi( strtok( NULL, "," ) );
+			sv->effectHeight = atoi( strtok( NULL, "," ) );
+			sv->effectX = atoi( strtok( NULL, "," ) );
+			sv->effectY = atoi( strtok( NULL, "," ) );
+			sv->effectZ = atoi( strtok( NULL, "," ) );
+		}
+	}
+
+	return sv;
+}
+
+void ShapePalette::init3dsShapes( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "3ds_shapes" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "3ds_shape" );
+
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+
+		ShapeValues *sv = createShapeValues( node );
+
+		strcpy( sv->m3ds_name, node->getValueAsString( "path" ) );
+
+		// dimensions
+		char tmp[100];
+		strcpy( tmp, node->getValueAsString( "dimensions" ) );
+		sv->m3ds_x = atof( strtok( tmp, "," ) );
+		sv->m3ds_y = atof( strtok( NULL, "," ) );
+		sv->m3ds_z = atof( strtok( NULL, "," ) );
+
+    // store it for now
+    shapeValueVector.push_back(sv);
+	}
+}
+
 void ShapePalette::initNativeShapes( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->
 		getChildrenByName( "native_shapes" );
@@ -441,47 +526,22 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
-		ShapeValues *sv = new ShapeValues();
+		ShapeValues *sv = createShapeValues( node );
 
+		// dimensions
+		char tmp[100];
+		strcpy( tmp, node->getValueAsString( "dimensions" ) );
+		sv->width = atoi( strtok( tmp, "," ) );
+		sv->depth = atoi( strtok( NULL, "," ) );
+		sv->height = atoi( strtok( NULL, "," ) );
 
 		strcpy( sv->theme, node->getValueAsString( "theme" ) );
 		strcpy( sv->textures, node->getValueAsString( "textures" ) );
 
-		/*
-    // texture group		
-		if( node->hasValue( "texture_group" ) ) {
-			strcpy( sv->textureGroupIndex, node->getValueAsString( "texture_group" ) );
-		} else {
-			sprintf( sv->textureGroupIndex, "theme,%s", node->getValueAsString( "theme" ) );
-		}
-		*/
-
-    sv->xrot = sv->yrot = sv->zrot = 0.0f;
-
-    // dimensions
-    sv->width = toint( node->getValueAsFloat( "x" ) );
-    sv->depth = toint( node->getValueAsFloat( "y" ) );
-    sv->height = toint( node->getValueAsFloat( "z" ) );
-
-    // name
-    strcpy( sv->name, node->getValueAsString( "name" ) );
-
-    // description
-    sv->descriptionIndex = toint( node->getValueAsFloat( "description" ) );
-
-    // color
-    sv->color = strtoul( node->getValueAsString( "color" ), NULL, 16 );
-
     // extra for torches:
-//    sv->torch = -1;
-//    sv->teleporter = 0;
 		sv->torch = toint( node->getValueAsFloat( "torch" ) ) - 1;
 		sv->teleporter = toint( node->getValueAsFloat( "teleporter" ) );
 		sv->m3ds_name[0] = '\0';
-
-    sv->effectType = -1;
-
-    sv->interactive = ( node->getValueAsFloat( "interactive" ) > 0 ? true : false );
 
     sv->skipSide = toint( node->getValueAsFloat( "skip_side" ) );
     sv->stencil = toint( node->getValueAsFloat( "stencil" ) );
@@ -489,29 +549,6 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 
     // store it for now
     shapeValueVector.push_back(sv);
-
-		/*
-		
-			fixme: make sure everything is initialized in ShapeValues typedef.
-		
-			char theme[40];
-			char textures[255];
-			int width, height, depth;
-			char name[100];
-			int descriptionIndex;
-			long color;
-			int skipSide, stencil, blocksLight;
-			int torch;
-			char m3ds_name[100];
-			float m3ds_scale;
-			float m3ds_x, m3ds_y, m3ds_z;
-			int teleporter;
-			float xrot, yrot, zrot;
-			int effectType;
-			int effectWidth, effectDepth, effectHeight;
-			int effectX, effectY, effectZ;
-			bool interactive;
-	*/
 	}
 }
 
