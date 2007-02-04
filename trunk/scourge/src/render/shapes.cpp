@@ -440,7 +440,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
   } else if(n == 'D') {
     fgetc(fp);
     n = Constants::readLine(line, fp);
-
+		/*
     // read description lines
     int count = atoi(line);
     if(count > 0) {
@@ -453,6 +453,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
       }
 //        cerr << "added " << count << " lines of description. # of description groups=" << descriptions.size() << endl;
     }
+		*/
     return n;
   } else if(n == 'N') {
     fgetc(fp);

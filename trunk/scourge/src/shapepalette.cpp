@@ -67,6 +67,7 @@ void ShapePalette::initialize() {
   config = ConfigLang::load( "config/map.cfg" );
 	initRugs( config );
   initSystemTextures( config );
+	initDescriptions( config );
 	initThemes( config );
 	initNativeShapes( config );
 	init3dsShapes( config );
@@ -457,7 +458,16 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 
 	// load some common values
 	strcpy( sv->name, node->getValueAsString( "name" ) );
-	sv->descriptionIndex = toint( node->getValueAsFloat( "description" ) );
+	
+	string id = node->getValueAsString( "description" );
+	if( id.length() > 0 ) {
+		if( descriptionIndex.find( id ) != descriptionIndex.end() ) {
+			sv->descriptionIndex = descriptionIndex[ id ];
+		} else {
+			cerr << "*** Warning: could not find description id=" << id << endl;
+		}
+	}
+
 	sv->color = strtoul( node->getValueAsString( "color" ), NULL, 16 );
 	sv->interactive = ( node->getValueAsFloat( "interactive" ) > 0 ? true : false );
 
@@ -490,6 +500,29 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	}
 
 	return sv;
+}
+
+void ShapePalette::initDescriptions( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "descriptions" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "description_group" );
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+		
+		string id = node->getValueAsString( "id" );
+		descriptionIndex[ id ] = descriptions.size();
+		vector<string> *list = new vector<string>();
+		descriptions.push_back( list );
+
+		vector<ConfigNode*> *vvv = 
+			node->getChildrenByName( "description" );
+		for( unsigned int t = 0; t < vvv->size(); t++ ) {
+			ConfigNode *node = (*vvv)[t];
+			string s = node->getValueAsString( "text" );
+			list->push_back( s );
+		}
+	}
 }
 
 void ShapePalette::init3dsShapes( ConfigLang *config ) {

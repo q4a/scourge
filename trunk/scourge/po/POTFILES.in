@@ -3,4 +3,5 @@
 src/mainmenu.cpp
 src/scourge.cpp
 ../scourge_data/config/scourge.cfg
+../scourge_data/config/map.cfg
 

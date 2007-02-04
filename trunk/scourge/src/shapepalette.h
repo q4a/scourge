@@ -172,6 +172,7 @@ protected:
 	void initNativeShapes( ConfigLang *config );
 	void init3dsShapes( ConfigLang *config );
 	void initThemes( ConfigLang *config );
+	void initDescriptions( ConfigLang *config );
 
 	ShapeValues *createShapeValues( ConfigNode *node );
 };
