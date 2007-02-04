@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-03 10:35+0100\n"
+"POT-Creation-Date: 2007-02-04 08:32-0800\n"
 "PO-Revision-Date: 2007-02-04 11:18+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -57,6 +57,22 @@ msgstr "[Supporto di rete]"
 #: src/mainmenu.cpp:298
 msgid "[Sound]"
 msgstr "[Suono]"
+
+#: src/scourge.cpp:141
+msgid "Hire a Wandering Hero"
+msgstr ""
+
+#: src/scourge.cpp:142
+msgid "Dismiss Party Member"
+msgstr ""
+
+#: src/scourge.cpp:143
+msgid "Need permission to upload score to web"
+msgstr ""
+
+#: src/scourge.cpp:144
+msgid "Upload your score to the internet?"
+msgstr ""
 
 #: ../scourge_data/config/scourge.cfg:12
 msgid "Welcome to the world of S.c.o.u.r.g.e."
@@ -127,3 +143,147 @@ msgstr ""
 "addizionale e consulenze iniziali: i membri di rpgcodex.com, sempre pronti "
 "ad aiutare chi ne ha bisogno|Molteplici allegre interruzioni nella "
 "correzione dei bug:Abe & Asha|"
+
+#: ../scourge_data/config/map.cfg:187
+msgid "Pale weeds grow over these ancient walls"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:190
+msgid "The walls crumble with age, yet appear sturdy"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:193
+msgid "Dark limestone walls mark these corridors"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:199
+msgid "It appears to be a thick wooden door"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:202
+msgid "A dungeon door made of wood"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:205
+msgid "The aged oak door is scarred by knife points and torch flame"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:211
+msgid "The door frames seem to be made of some hard wood"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:214
+msgid "The wood around the doors is reinforced by metal nails"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:220
+msgid "A torch blazes nearby"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:223
+msgid "The light is firmly attached to the wall, you cannot get it"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:226
+msgid "It is a burning torch"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:232
+msgid "A large wooden board that describes available missions"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:235
+msgid "Click on the board to learn about your missions"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:238
+msgid "The corporate 'brains' of S.C.O.U.R.G.E. inc."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:244
+msgid "A burning brazier"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:247
+msgid "A brazier radiates heat nearby"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:253
+msgid "You see a shiny marble column"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:256
+msgid "The column supports the ceiling"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:262
+msgid "This teleporter is here courtesy of the management"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:265
+msgid "This teleporter can take you back to headquarters"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:268
+msgid "It is a teleporter"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:274
+msgid "These stairs lead to another level"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:277
+msgid "Stairs leading into darkness"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:280
+msgid "You see a flight of stairs"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:286
+msgid "It's a rusty lever."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:289
+msgid "It is best to leave that alone."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:292
+msgid "Touch it: it may add new germs to your collection."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:298
+msgid "It's a calm pool of liquid radiating energy."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:301
+msgid "It appears to be a shallow pool of liquid."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:307
+msgid "This teleporter smells faintly of sulphur."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:310
+msgid "It is the fabled red teleporter!"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:313
+msgid "Where does this teleporter lead?"
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:319
+msgid "A sturdy wooden column."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:325
+msgid "A rack for our less fortunate guests."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:331
+msgid "You see dense vegetation."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:334
+msgid "Some plants grow here."
+msgstr ""
