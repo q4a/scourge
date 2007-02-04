@@ -66,7 +66,7 @@ char *GLCaveShape::names[] = {
 vector<CVector3*> GLCaveShape::points;
 vector<vector<CaveFace*>*> GLCaveShape::polys;
 
-//#define DEBUG 1
+//#define DEBUG_CAVE_SHAPE 1
 
 #define LIGHT_ANGLE_HORIZ 125.0f
 #define LIGHT_ANGLE_VERT 45.0f
@@ -144,7 +144,7 @@ void GLCaveShape::drawFaces() {
   vector<CaveFace*>* face = polys[ caveIndex ];
   if( !face ) cerr << "Can't find face for shape: " << 
     getName() << " caveIndex=" << caveIndex << endl;
-#ifdef DEBUG
+#ifdef DEBUG_CAVE_SHAPE
   for( int t = 0; t < 2; t++ ) {
     if( useShadow ) return;
     if( t == 1 ) {
@@ -168,7 +168,7 @@ void GLCaveShape::drawFaces() {
       glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::TOP_SIDE ] );
     break;
     }
-#ifdef DEBUG
+#ifdef DEBUG_CAVE_SHAPE
     glBegin( t == 0 ? GL_TRIANGLES : GL_LINE_LOOP );
 #else
     glBegin( GL_TRIANGLES );
@@ -188,7 +188,7 @@ void GLCaveShape::drawFaces() {
     glVertex3f( xyz->x, xyz->y, xyz->z );
     glEnd();
   }
-#ifdef DEBUG
+#ifdef DEBUG_CAVE_SHAPE
   }
   glEnable( GL_TEXTURE_2D );
   glEnable( GL_DEPTH_TEST );

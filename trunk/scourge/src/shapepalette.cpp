@@ -67,6 +67,7 @@ void ShapePalette::initialize() {
   config = ConfigLang::load( "config/map.cfg" );
 	initRugs( config );
   initSystemTextures( config );
+	initThemes( config );
 	initNativeShapes( config );
   delete config;
 
@@ -369,6 +370,66 @@ void ShapePalette::initSystemTextures( ConfigLang *config ) {
     loadSystemTexture( p );
     p = strtok( NULL, "," );
   }
+}
+
+void ShapePalette::initThemes( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "themes" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "theme" );
+
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+
+		bool special = ( node->getValueAsFloat( "special" ) > 0 );
+		bool cave = ( node->getValueAsFloat( "cave" ) > 0 );
+
+		WallTheme *theme = new WallTheme( (char*)(node->getValueAsString( "name" )), this );
+		theme->setSpecial( special );
+		theme->setCave( cave );
+		
+		// read the shape ref-s
+		char line[1000];
+		for(int ref = 0; ref < WallTheme::THEME_REF_COUNT; ref++) {
+			strcpy( line, node->getValueAsString( WallTheme::themeRefName[ ref ] ) );
+
+			char *p = strtok( line, "," );
+			int i = 0;
+			while( p && i < MAX_TEXTURE_COUNT ) {
+				theme->addTextureName( ref, i, (const char *)p );
+				p = strtok( NULL, "," );
+				i++;
+			}
+			if( i < 3 ) {
+				cerr << "*** Error: theme=" << theme->getName() << " has wrong number of textures for line=" << (ref + 1) << endl;
+			}
+			theme->setFaceCount( ref, i );
+		}
+
+		// read the multitexture info
+		for(int i = 0; i < WallTheme::MULTI_TEX_COUNT; i++) {
+			if( i == 0 ) strcpy( line, node->getValueAsString( "medium_multitexture" ) );
+			else strcpy( line, node->getValueAsString( "dark_multitexture" ) );
+
+			char *p = strtok( line, "," );
+			theme->setMultiTexRed( i, atof( p ) );
+			p = strtok( NULL, "," );
+			theme->setMultiTexGreen( i, atof( p ) );
+			p = strtok( NULL, "," );
+			theme->setMultiTexBlue( i, atof( p ) );
+			p = strtok( NULL, "," );
+			theme->setMultiTexInt( i, atof( p ) );
+			p = strtok( NULL, "," );
+			theme->setMultiTexSmooth( i, ( atoi( p ) != 0 ) );
+		}
+		
+		if( !special && !cave ) {
+			themes[ themeCount++ ] = theme;
+		} else if( cave ) {
+			caveThemes[ caveThemeCount++ ] = theme;
+		}
+		allThemes[ allThemeCount++ ] = theme;
+	}
 }
 
 void ShapePalette::initNativeShapes( ConfigLang *config ) {
