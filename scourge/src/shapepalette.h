@@ -169,6 +169,7 @@ protected:
   void initRugs( ConfigLang *config );
   void initSystemTextures( ConfigLang *config );
 	void initNativeShapes( ConfigLang *config );
+	void initThemes( ConfigLang *config );
 };
 
 #endif

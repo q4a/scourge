@@ -82,7 +82,7 @@ class WallTheme {
 
  private:
   static const int NAME_LENGTH = 40;
-  char *name;
+  char name[80];
   char textures[THEME_REF_COUNT][MAX_TEXTURE_COUNT][NAME_LENGTH]; // holds the text of a theme
   GLuint textureGroup[THEME_REF_COUNT][MAX_TEXTURE_COUNT];
   int faceCount[THEME_REF_COUNT];

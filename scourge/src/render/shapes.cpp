@@ -44,7 +44,7 @@ char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
 };
 
 WallTheme::WallTheme( char *name, Shapes *shapePal ) {
-  this->name = name;
+  strcpy( this->name, name );
   this->shapePal = shapePal;
   for(int i = 0; i < THEME_REF_COUNT; i++)
     themeRefMap[ themeRefName[i] ] = i;
@@ -178,7 +178,7 @@ GLuint *Shapes::findOrMakeTextureGroup( char *s ) {
 		if( tg[ 0 ] == textureGroup[ i ][ 0 ] &&
 				tg[ 1 ] == textureGroup[ i ][ 1 ] &&
 				tg[ 2 ] == textureGroup[ i ][ 2 ] ) {
-			cerr << "*** Found existing texture group: " << i << endl;
+			//cerr << "*** Found existing texture group: " << i << endl;
 			return textureGroup[ i ];
 		}
 	}
@@ -187,7 +187,7 @@ GLuint *Shapes::findOrMakeTextureGroup( char *s ) {
 	textureGroup[ textureGroupCount ][ 0 ] = tg[ 0 ];
 	textureGroup[ textureGroupCount ][ 1 ] = tg[ 1 ];
 	textureGroup[ textureGroupCount ][ 2 ] = tg[ 2 ];
-	cerr << "*** Created new texture group: " << textureGroupCount << endl;
+	//cerr << "*** Created new texture group: " << textureGroupCount << endl;
 	textureGroupCount++;
 	
 	return textureGroup[ textureGroupCount - 1 ];
@@ -562,6 +562,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
   } else if( n == 'H' ) {
     fgetc(fp);
     n = Constants::readLine(line, fp);
+		/*
     bool special = false;
     bool cave = false;
     char *m = strrchr( line, ',' );
@@ -613,6 +614,7 @@ int Shapes::interpretShapesLine( FILE *fp, int n ) {
       caveThemes[ caveThemeCount++ ] = theme;
     }
     allThemes[ allThemeCount++ ] = theme;
+		*/
     return n;
   } else if( n == 'M' ) {
     // load the character models
@@ -675,20 +677,18 @@ void Shapes::loadRandomTheme() {
 }
 
 void Shapes::loadTheme(const char *themeName) {
-//  cerr << "*** Using theme: " << themeName << endl;
+  //cerr << "*** Using theme: >" << themeName << "<" << endl;
 
   // find that theme!
   WallTheme *theme = NULL;
   for(int i = 0; i < allThemeCount; i++) {
+		//cerr << "\tconsidering >>>" << allThemes[i]->getName() << "<<" << endl;
     if( !strcmp( allThemes[i]->getName(), themeName ) ) {
       theme = allThemes[i];
       break;
     }
   }
-  if( !theme ) {
-    cerr << "*** Error: Can't find theme: " << themeName << endl;
-    exit(1);
-  }
+	assert( theme );
 
   loadTheme( theme );
 }
