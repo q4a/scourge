@@ -216,7 +216,6 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   ScourgeView *view;
   ScourgeHandler *handler;
 
-	ConfirmDialog *hireHeroDialog;
 	ConfirmDialog *dismissHeroDialog;
 	ConfirmDialog *confirmUpload;
 
@@ -724,7 +723,6 @@ public:
 
 	RenderedCreature *createWanderingHero( int level );
 
-	ConfirmDialog *getHireHeroDialog() { return hireHeroDialog; }
 	ConfirmDialog *getDismissHeroDialog() { return dismissHeroDialog; }
 	ConfirmDialog *getConfirmUpload() { return confirmUpload; }
 	void uploadScore();
