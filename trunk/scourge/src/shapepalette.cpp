@@ -383,8 +383,8 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
-		bool special = ( node->getValueAsFloat( "special" ) > 0 );
-		bool cave = ( node->getValueAsFloat( "cave" ) > 0 );
+		bool special = node->getValueAsBool( "special" );
+		bool cave = node->getValueAsBool( "cave" );
 
 		WallTheme *theme = new WallTheme( (char*)(node->getValueAsString( "name" )), this );
 		theme->setSpecial( special );
@@ -469,7 +469,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	}
 
 	sv->color = strtoul( node->getValueAsString( "color" ), NULL, 16 );
-	sv->interactive = ( node->getValueAsFloat( "interactive" ) > 0 ? true : false );
+	sv->interactive = node->getValueAsBool( "interactive" );
 
 	if( node->hasValue( "rotate" ) ) {
 		char rotation[128];

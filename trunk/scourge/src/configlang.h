@@ -88,6 +88,17 @@ public:
     }
   }
 
+	inline bool getValueAsBool( std::string name ) {
+    if( values.find( name ) == values.end() ) {
+      return false;
+    } else {
+      return( !strcasecmp( values[ name ]->getAsString(), "true" ) ||
+							!strcasecmp( values[ name ]->getAsString(), "yes" ) ||
+							!strcasecmp( values[ name ]->getAsString(), "on" ) ||
+							values[ name ]->getAsFloat() > 0 );
+    }
+  }
+
   inline bool hasValue( std::string name ) {
     return( values.find( name ) != values.end() );
   }

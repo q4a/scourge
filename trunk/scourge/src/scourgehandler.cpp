@@ -374,14 +374,6 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->runSquirrelConsole();
   } else if( widget == scourge->getSquirrelClear() ) {
     scourge->clearSquirrelConsole();
-  } else if( widget == scourge->getHireHeroDialog()->win->closeButton ||
-						 widget == scourge->getHireHeroDialog()->cancelButton ) {
-		scourge->getHireHeroDialog()->setVisible( false );
-	} else if( widget == scourge->getHireHeroDialog()->okButton ) {
-		scourge->getSession()->getParty()->
-			hire( (Creature*)scourge->getHireHeroDialog()->getObject() );
-		scourge->getHireHeroDialog()->setVisible( false );
-
 	} else if( widget == scourge->getConfirmUpload()->win->closeButton ||
 						 widget == scourge->getConfirmUpload()->cancelButton ) {
 		scourge->getConfirmUpload()->setVisible( false );

@@ -20,6 +20,7 @@
 #include "rpg/rpglib.h"
 #include "session.h"
 #include "shapepalette.h"
+#include "configlang.h"
 
 using namespace std;
 
@@ -290,8 +291,44 @@ char *trim( char *s ) {
 	return s;
 }
 
+void Item::initItemTypes( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "types" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "type" );
+
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+
+		ItemType itemType;
+		strcpy( itemType.name, node->getValueAsString( "name" ) );
+		cerr << "itemType.name=" << itemType.name << endl;
+		itemType.isWeapon = node->getValueAsBool( "isWeapon" );
+		itemType.isArmor = node->getValueAsBool( "isArmor" );
+		itemType.isRandom = node->getValueAsBool( "isRandom" );
+		itemType.isRanged = node->getValueAsBool( "isRanged" );
+		itemType.hasSpell = node->getValueAsBool( "hasSpell" );
+		itemType.isEnchantable = node->getValueAsBool( "isEnchantable" );
+		RpgItem::itemTypes.push_back( itemType );
+      
+		if( itemType.isRandom ) {
+			RpgItem::randomTypes[ RpgItem::randomTypeCount++ ] = RpgItem::itemTypes.size() - 1;
+		}
+	}
+}
+
 // this should really be in RpgItem but that class can't reference ShapePalette and shapes.
 void Item::initItems( ShapePalette *shapePal ) {
+
+	ConfigLang *config = ConfigLang::load( "config/item.cfg" );  
+  initItemTypes( config );  
+  delete config;
+
+
+
+
+
+
   char errMessage[500];
   char s[200];
   sprintf(s, "%s/world/items.txt", rootDir);
@@ -312,6 +349,8 @@ void Item::initItems( ShapePalette *shapePal ) {
       // skip ':'
       fgetc(fp);
       n = Constants::readLine( line, fp );
+
+					 /*
       ItemType itemType;
       strcpy( itemType.name, strtok( line, "," ) );
       char *p = trim( strtok( NULL, "," ) );
@@ -330,6 +369,7 @@ void Item::initItems( ShapePalette *shapePal ) {
       if( itemType.isRandom ) {
         RpgItem::randomTypes[ RpgItem::randomTypeCount++ ] = RpgItem::itemTypes.size() - 1;
       }
+			*/
     } else if( n == 'I' ) {
       // skip ':'
       fgetc(fp);

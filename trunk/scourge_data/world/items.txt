@@ -60,23 +60,23 @@
 # Item types: (must match enum in rpgitem.h)
 # name,isWeapon,isArmor,isRandom,isRanged,hasSpell,isEnchantable
 # Don't change the order, just add new ones at the end
-T:SWORD,    1,0,1,0,0,1
-T:AXE,      1,0,1,0,0,1
-T:BOW,      1,0,1,1,0,1
-T:MACE,     1,0,1,0,0,1
-T:CONTAINER,0,0,0,0,0,0
-T:ARMOR,    0,1,1,0,0,1
-T:FOOD,     0,0,1,0,0,0
-T:DRINK,    0,0,1,0,0,0
-T:POTION,   0,0,1,0,0,0
-T:OTHER,    0,0,0,0,0,0
-T:MISSION,  0,0,0,0,0,0
-T:SCROLL,   0,0,0,0,0,0
-T:POLE,     1,0,1,0,0,1
-T:WAND,     0,0,1,0,1,0
-T:RING,     0,0,1,0,1,1
-T:AMULET,   0,0,1,0,1,1
-T:STAFF,    1,0,1,0,1,1
+#T:SWORD,    1,0,1,0,0,1
+#T:AXE,      1,0,1,0,0,1
+#T:BOW,      1,0,1,1,0,1
+#T:MACE,     1,0,1,0,0,1
+#T:CONTAINER,0,0,0,0,0,0
+#T:ARMOR,    0,1,1,0,0,1
+#T:FOOD,     0,0,1,0,0,0
+#T:DRINK,    0,0,1,0,0,0
+#T:POTION,   0,0,1,0,0,0
+#T:OTHER,    0,0,0,0,0,0
+#T:MISSION,  0,0,0,0,0,0
+#T:SCROLL,   0,0,0,0,0,0
+#T:POLE,     1,0,1,0,0,1
+#T:WAND,     0,0,1,0,1,0
+#T:RING,     0,0,1,0,1,1
+#T:AMULET,   0,0,1,0,1,1
+#T:STAFF,    1,0,1,0,1,1
 
 
 ##################################################################

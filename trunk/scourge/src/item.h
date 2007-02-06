@@ -32,6 +32,7 @@ class MagicSchool;
 class Dice;
 class Session;
 class ShapePalette;
+class ConfigLang;
 
 /**
   *@author Gabor Torok
@@ -190,6 +191,8 @@ public:
   DiceInfo *saveDice( Dice *dice );
   static DiceInfo *saveEmptyDice();
   static Dice *loadDice( Session *session, DiceInfo *info );
+
+	static void initItemTypes( ConfigLang *config );
         
 };
 
