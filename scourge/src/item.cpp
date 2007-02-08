@@ -302,7 +302,6 @@ void Item::initItemTypes( ConfigLang *config ) {
 
 		ItemType itemType;
 		strcpy( itemType.name, node->getValueAsString( "name" ) );
-		cerr << "itemType.name=" << itemType.name << endl;
 		itemType.isWeapon = node->getValueAsBool( "isWeapon" );
 		itemType.isArmor = node->getValueAsBool( "isArmor" );
 		itemType.isRandom = node->getValueAsBool( "isRandom" );
@@ -317,11 +316,170 @@ void Item::initItemTypes( ConfigLang *config ) {
 	}
 }
 
+void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "items" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "item" );
+
+	char name[255], type[255], shape[255];
+  char long_description[500], short_description[120];
+  char temp[1000];
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+		
+		// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
+		strcpy( name, node->getValueAsString( "name" ) );
+		int rareness = toint( node->getValueAsFloat( "rareness" ) );
+		strcpy( type, node->getValueAsString( "type" ) );
+		float weight = node->getValueAsFloat( "weight" );
+		int price = toint( node->getValueAsFloat( "price" ) );
+
+		strcpy( shape, node->getValueAsString( "shape" ) );
+    int inventory_location = toint( node->getValueAsFloat( "inventory_location" ) );
+    int minDepth = toint( node->getValueAsFloat( "min_depth" ) );
+		int minLevel = toint( node->getValueAsFloat( "min_level" ) );
+		int maxCharges = toint( node->getValueAsFloat( "max_charges" ) );
+			      
+		strcpy( long_description, node->getValueAsString( "description" ) );
+    strcpy( short_description, node->getValueAsString( "short_description" ) );
+      
+			// I:tileX,tileY ( from data/tiles.bmp, count is 1-based )
+		strcpy( temp, node->getValueAsString( "icon" ) );
+		int tileX = atoi( strtok( temp, "," ) );
+		int tileY = atoi( strtok( NULL, "," ) );
+
+		// resolve strings
+		int type_index = RpgItem::getTypeByName( type );    
+		//cerr << "item: looking for shape: " << shape << endl;
+		int shape_index = shapePal->findShapeIndexByName( shape );
+		//cerr << "\tindex=" << shape_index << endl;
+
+		RpgItem *last = new RpgItem( strdup( name ), rareness, type_index, weight, price,
+												strdup( long_description ), strdup( short_description ),
+												inventory_location, shape_index,
+												minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
+		GLShape *s = shapePal->findShapeByName(shape);
+		RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );
+
+		last->setSpellLevel( toint( node->getValueAsFloat( "spell_level" ) ) );
+
+		strcpy( temp, node->getValueAsString( "tags" ) );
+		char *p = strtok( temp, "," );
+		while( p ) {
+			string s = strdup( p );
+			last->addTag( s );
+			p = strtok( NULL, "," );
+		}
+
+		vector<ConfigNode*> *weapons = node->getChildrenByName( "weapon" );
+		if( weapons != NULL && weapons->size() > 0 ) {
+			ConfigNode *weapon = (*weapons)[0];
+
+			int baseDamage = toint( weapon->getValueAsFloat( "damage" ) );
+			const char *p = weapon->getValueAsString( "damage_type" );
+			int damageType = 0;
+			if( strlen( p ) ) damageType = RpgItem::getDamageTypeForLetter( p[0] );
+			int skill = Skill::getSkillIndexByName( (char*)weapon->getValueAsString( "skill" ) );
+			int parry = toint( weapon->getValueAsFloat( "parry" ) );
+			int ap = toint( weapon->getValueAsFloat( "ap" ) );
+			int range = toint( weapon->getValueAsFloat( "range" ) );
+			if( range < (int)MIN_DISTANCE ) range = (int)MIN_DISTANCE;
+			int twoHanded = toint( weapon->getValueAsFloat( "two_handed" ) );
+			last->setWeapon( baseDamage, damageType, skill, parry, ap, range, twoHanded );
+		}
+
+		vector<ConfigNode*> *armors = node->getChildrenByName( "armor" );
+		if( armors != NULL && armors->size() > 0 ) {
+			ConfigNode *armor = (*armors)[0];
+
+			// A:defense_vs_slashing,defense_vs_piercing,defense_vs_crushing,skill,dodge_penalty
+			int defense[ RpgItem::DAMAGE_TYPE_COUNT ];
+			defense[ RpgItem::DAMAGE_TYPE_SLASHING ] = 
+				toint( armor->getValueAsFloat( "slash_defense" ) );
+			defense[ RpgItem::DAMAGE_TYPE_PIERCING ] = 
+				toint( armor->getValueAsFloat( "pierce_defense" ) );
+			defense[ RpgItem::DAMAGE_TYPE_CRUSHING ] = 
+				toint( armor->getValueAsFloat( "crush_defense" ) );
+			int skill = Skill::getSkillIndexByName( (char*)armor->getValueAsString( "skill" ) );
+			int dodgePenalty = toint( armor->getValueAsFloat( "dodge_penalty" ) );
+			last->setArmor( defense, skill, dodgePenalty );
+		}
+
+		vector<ConfigNode*> *potions = node->getChildrenByName( "potion" );
+		if( potions != NULL && potions->size() > 0 ) {
+			ConfigNode *potion = (*potions)[0];
+
+			// power,potionSkill,[potionTimeInMinutes]
+			int power = toint( potion->getValueAsFloat( "power" ) );
+			
+			
+			char *potionSkill = (char*)potion->getValueAsString( "skill" );
+			int skill = -1;
+      if( potionSkill != NULL && strlen( potionSkill ) ) {
+        skill = Skill::getSkillIndexByName( potionSkill );
+        if( skill < 0 ) {
+          // try special potion 'skills' like HP, AC boosts
+          skill = Constants::getPotionSkillByName( potionSkill );
+          if( skill == -1 ) {
+            cerr << "*** WARNING: cannot find potion_skill: " << potionSkill << endl;
+          }
+        }
+      }
+
+			int time = toint( potion->getValueAsFloat( "time" ) );
+			last->setPotion( power, skill, time );
+		}
+
+		vector<ConfigNode*> *adjustments = node->getChildrenByName( "skill_adjustment" );
+		for( unsigned int t = 0; adjustments != NULL && t < adjustments->size(); t++ ) {
+			ConfigNode *adjustment = (*adjustments)[t];
+			strcpy( temp, adjustment->getValueAsString( "adjustment" ) );
+			char *p = strtok( temp, "," );			
+			if( p ) {
+				int skill = Skill::getSkillByName( p )->getIndex();				
+				// armor has only 1 type of influence
+				for( int i = 0; i < ( last->isWeapon() ? INFLUENCE_TYPE_COUNT : 1 ); i++ ) {
+					p = strtok( NULL, "," );
+					if( p && *p != 'N' ) {
+						for( int t = 0; t < INFLUENCE_LIMIT_COUNT; t++ ) {
+							WeaponInfluence wi;
+							wi.limit = atoi( t == MIN_INFLUENCE ? p + 1 : p ); // ignore (
+							p = strtok( NULL, "," );
+							wi.type = *p;
+							p = strtok( NULL, "," );
+							strcpy( temp, p );
+							// ignore )
+							if( t == MAX_INFLUENCE ) *( temp + strlen( temp ) - 1 ) = 0;
+							wi.base = atof( temp );							
+							/*
+							cerr << last->getName() << 
+								" skill: " << Skill::skills[ skill ]->getName() <<
+								" type: " << i <<
+								" limit type: " << t << 
+								" LIM=" << wi.limit << 
+								" TYPE=" << wi.type << 
+								" BASE=" << wi.base << 
+								endl;
+							*/
+							last->setWeaponInfluence( skill, i, t, wi );
+							if( t == MIN_INFLUENCE ) p = strtok( NULL, "," );
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//#define ENABLE_CONVERSION 1
+
 // this should really be in RpgItem but that class can't reference ShapePalette and shapes.
 void Item::initItems( ShapePalette *shapePal ) {
 
 	ConfigLang *config = ConfigLang::load( "config/item.cfg" );  
   initItemTypes( config );  
+	initItemEntries( config, shapePal );
   delete config;
 
 
@@ -377,6 +535,8 @@ void Item::initItems( ShapePalette *shapePal ) {
 			// read the rest of the line
       n = Constants::readLine( name, fp );
 
+			/*
+
 			// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
 			n = Constants::readLine( line, fp );
       int rareness = atoi( strtok( line + 1, "," ) );
@@ -431,12 +591,31 @@ void Item::initItems( ShapePalette *shapePal ) {
       int shape_index = shapePal->findShapeIndexByName( shape );
 			//cerr << "\tindex=" << shape_index << endl;
 
+#ifdef ENABLE_CONVERSION
+			cerr << "[/item]" << endl;
+			cerr << "[item]" << endl;
+			cerr << "\tname=\"" << name << "\"" << endl;
+			if( rareness != 0 ) cerr << "\trareness=" << rareness << endl;
+			if( type != 0 ) cerr << "\ttype=\"" << type << "\"" << endl;
+			if( weight != 0 ) cerr << "\tweight=" << weight << endl;
+			if( price != 0 ) cerr << "\tprice=" << price << endl;
+			cerr << "\tdescription=_( \"" << long_description << "\" )" << endl;
+			cerr << "\tshort_description=_( \"" << short_description << "\" )" << endl;
+			if( inventory_location != 0 ) cerr << "\tinventory_location=" << inventory_location << endl;
+			cerr << "\tshape=\"" << shape << "\"" << endl;
+			if( minDepth != 0 ) cerr << "\tmin_depth=" << minDepth << endl;
+			if( minLevel != 0 ) cerr << "\tmin_level=" << minLevel << endl;
+			if( maxCharges != 0 ) cerr << "\tmax_charges=" << maxCharges << endl;
+			cerr << "\ticon=\"" << tileX << "," << tileY << "\"" << endl;			
+#endif
+
 			last = new RpgItem( strdup( name ), rareness, type_index, weight, price,
 													strdup( long_description ), strdup( short_description ),
 													inventory_location, shape_index,
 													minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
       GLShape *s = shapePal->findShapeByName(shape);
       RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );
+			*/
     } else if( n == 'W' && last ) {
       // skip ':'
       fgetc(fp);
@@ -444,26 +623,49 @@ void Item::initItems( ShapePalette *shapePal ) {
 			// read the rest of the line
       n = Constants::readLine( line, fp );
 
+			/*
+
 			// W:base_damage,damage_type[S|P|C],skill,parry,ap,range,two_handed
 			int baseDamage = atoi( strtok( line, "," ) );
 			int damageType = RpgItem::getDamageTypeForLetter( *( strtok( NULL, "," ) ) );
 			int skill = Skill::getSkillIndexByName( strtok( NULL, "," ) );
 			int parry = atoi( strtok( NULL, "," ) );
 			int ap = atoi( strtok( NULL, "," ) );
-			int range = atoi( strtok( NULL, "," ) );
+			int originalRange = atoi( strtok( NULL, "," ) );
+			int range = originalRange;
       if( range < (int)MIN_DISTANCE ) range = (int)MIN_DISTANCE;
 			int twoHanded = atoi( strtok( NULL, "," ) );
 			last->setWeapon( baseDamage, damageType, skill, parry, ap, range, twoHanded );
+
+#ifdef ENABLE_CONVERSION
+			cerr << "\t[weapon]" << endl;
+			if( baseDamage != 0 ) cerr << "\t\tdamage=" << baseDamage << endl;
+			if( damageType != 0 ) cerr << "\t\tdamage_type=\"" << RpgItem::DAMAGE_TYPE_LETTER[ damageType ] << "\"" << endl;
+			cerr << "\t\tskill=\"" << Skill::skills[skill]->getName() << "\"" << endl;
+			if( parry != 0 ) cerr << "\t\tparry=" << parry << endl;
+			if( ap != 0 ) cerr << "\t\tap=" << ap << endl;
+			if( originalRange != 0 ) cerr << "\t\trange=" << range << endl;
+			if( twoHanded != 0 ) cerr << "\t\ttwo_handed=" << twoHanded << endl;
+			cerr << "\t[/weapon]" << endl;
+#endif			
+		*/
+
 		} else if( n == 'R' && last ) {
 			// skip ':'
       fgetc(fp);
       
 			// read the rest of the line
       n = Constants::readLine( line, fp );
+			/*
+#ifdef ENABLE_CONVERSION
+			cerr << "\t[skill_adjustment]" << endl;
+			cerr << "\t\tadjustment=\"" << line << "\"" << endl;
+			cerr << "\t[/skill_adjustment]" << endl;
+#endif
 
 			char *p = strtok( line, "," );			
 			if( p ) {
-				int skill = Skill::getSkillByName( p )->getIndex();
+				int skill = Skill::getSkillByName( p )->getIndex();				
         // armor has only 1 type of influence
 				for( int i = 0; i < ( last->isWeapon() ? INFLUENCE_TYPE_COUNT : 1 ); i++ ) {
 					p = strtok( NULL, "," );
@@ -478,22 +680,13 @@ void Item::initItems( ShapePalette *shapePal ) {
 							// ignore )
 							if( t == MAX_INFLUENCE ) *( temp + strlen( temp ) - 1 ) = 0;
 							wi.base = atof( temp );							
-							/*
-							cerr << last->getName() << 
-								" skill: " << Skill::skills[ skill ]->getName() <<
-								" type: " << i <<
-								" limit type: " << t << 
-								" LIM=" << wi.limit << 
-								" TYPE=" << wi.type << 
-								" BASE=" << wi.base << 
-								endl;
-							*/
 							last->setWeaponInfluence( skill, i, t, wi );
 							if( t == MIN_INFLUENCE ) p = strtok( NULL, "," );
 						}
 					}
 				}
 			}
+			*/
     } else if( n == 'A' && last ) {
       // skip ':'
       fgetc(fp);
@@ -501,6 +694,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 			// read the rest of the line
       n = Constants::readLine( line, fp );
 
+			/*
 			// A:defense_vs_slashing,defense_vs_piercing,defense_vs_crushing,skill,dodge_penalty
 			int defense[ RpgItem::DAMAGE_TYPE_COUNT ];
 			for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
@@ -509,6 +703,16 @@ void Item::initItems( ShapePalette *shapePal ) {
 			int skill = Skill::getSkillIndexByName( strtok( NULL, "," ) );
 			int dodgePenalty = atoi( strtok( NULL, "," ) );
 			last->setArmor( defense, skill, dodgePenalty );
+#ifdef ENABLE_CONVERSION
+			cerr << "\t[armor]" << endl;
+			cerr << "\t\tskill=\"" << Skill::skills[skill]->getName() << "\"" << endl;
+			if( dodgePenalty != 0 ) cerr << "\t\tdodge_penalty=" << dodgePenalty << endl;
+			if( defense[0] != 0 ) cerr << "\t\tslash_defense=" << defense[0] << endl;
+			if( defense[1] != 0 ) cerr << "\t\tpierce_defense=" << defense[1] << endl;
+			if( defense[2] != 0 ) cerr << "\t\tcrush_defense=" << defense[2] << endl;
+			cerr << "\t[/armor]" << endl;
+#endif
+		*/
 
     } else if( n == 'P' && last ) {
       // skip ':'
@@ -517,6 +721,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 			// read the rest of the line
       n = Constants::readLine( line, fp );
 
+			/*
 			// power,potionSkill,[potionTimeInMinutes]
 			int power = atoi( strtok( line, "," ) );
 			
@@ -537,21 +742,37 @@ void Item::initItems( ShapePalette *shapePal ) {
 			int time = ( p ? atoi( p ) : 0 );
 			last->setPotion( power, skill, time );
 
+#ifdef ENABLE_CONVERSION
+			cerr << "\t[potion]" << endl;
+			if( power != 0 ) cerr << "\t\tpower=" << power << endl;
+			cerr << "\t\tskill=" << potionSkill << endl;
+			if( time != 0 ) cerr << "\t\ttime=" << time << endl;
+			cerr << "\t[/potion]" << endl;
+#endif
+			*/
+				
     } else if( n == 'E' && last ) {
       // skip ':'
       fgetc(fp);
       
+			/*
 			// read the rest of the line
       n = Constants::readLine( line, fp );
-			
+#ifdef ENABLE_CONVERSION
+			cerr << "\tspell_level=" << line << endl;
+#endif			
 			// E:spell-level (for items that can cast spells)
 			last->setSpellLevel( atoi( line ) );
-
+			*/
     } else if(n == 'G' && last) {
       // skip ':'
       fgetc(fp);
       // read the rest of the line
       n = Constants::readLine( line, fp );
+			/*
+#ifdef ENABLE_CONVERSION
+			cerr << "\ttags=\"" << line << "\"" << endl;
+#endif
       char *p = strtok( line, "," );
       while( p ) {
 				string s = strdup( p );
@@ -561,6 +782,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 				last->addTag( s );
         p = strtok( NULL, "," );
       }
+			*/
     } else if(n == 'S') {
       fgetc(fp);
       n = Constants::readLine(line, fp);

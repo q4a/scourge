@@ -193,6 +193,7 @@ public:
   static Dice *loadDice( Session *session, DiceInfo *info );
 
 	static void initItemTypes( ConfigLang *config );
+	static void initItemEntries( ConfigLang *config, ShapePalette *shapePal );
         
 };
 
