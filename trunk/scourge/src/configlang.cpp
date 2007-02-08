@@ -310,7 +310,9 @@ ConfigLang *ConfigLang::load( char *file ) {
 	}
 	std::stringstream ss;
 	ss << in.rdbuf();
+	Uint32 now = SDL_GetTicks();
 	ConfigLang *config = new ConfigLang( (char*)( ss.str().c_str() ) );
+	cerr << "Parsed " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
 	in.close();
 	return config;
 }
