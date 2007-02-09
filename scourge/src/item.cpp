@@ -318,15 +318,13 @@ void Item::initItemTypes( ConfigLang *config ) {
 
 void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "items" );
-	vector<ConfigNode*> *vv = (*v)[0]->
 		getChildrenByName( "item" );
 
 	char name[255], type[255], shape[255];
   char long_description[500], short_description[120];
   char temp[1000];
-	for( unsigned int i = 0; i < vv->size(); i++ ) {
-		ConfigNode *node = (*vv)[i];
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
 		
 		// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
 		strcpy( name, node->getValueAsString( "name" ) );
@@ -519,9 +517,24 @@ void Item::initSounds( ConfigLang *config ) {
 void Item::initItems( ShapePalette *shapePal ) {
 	ConfigLang *config = ConfigLang::load( "config/item.cfg" );  
   initItemTypes( config );  
-	initSounds( config );
-	initItemEntries( config, shapePal );
+	initSounds( config );	
   delete config;
+
+	config = ConfigLang::load( "config/weapon.cfg" );  
+	initItemEntries( config, shapePal );
+	delete config;
+
+	config = ConfigLang::load( "config/armor.cfg" );  
+	initItemEntries( config, shapePal );
+	delete config;
+
+	config = ConfigLang::load( "config/magicitem.cfg" );  
+	initItemEntries( config, shapePal );
+	delete config;
+
+	config = ConfigLang::load( "config/otheritem.cfg" );  
+	initItemEntries( config, shapePal );
+	delete config;
 }
 
 const char *Item::getRandomSound() {
