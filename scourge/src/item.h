@@ -33,6 +33,7 @@ class Dice;
 class Session;
 class ShapePalette;
 class ConfigLang;
+class ConfigNode;
 
 /**
   *@author Gabor Torok
@@ -194,7 +195,12 @@ public:
 
 	static void initItemTypes( ConfigLang *config );
 	static void initItemEntries( ConfigLang *config, ShapePalette *shapePal );
-        
+	static void initSounds( ConfigLang *config );
+	static void decodeInfluenceBlock( RpgItem *item, 
+																		int skill, 
+																		std::vector<ConfigNode*> *nodes, 
+																		int influenceType );
+	
 };
 
 #endif
