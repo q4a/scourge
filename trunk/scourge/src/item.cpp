@@ -434,40 +434,83 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		vector<ConfigNode*> *adjustments = node->getChildrenByName( "skill_adjustment" );
 		for( unsigned int t = 0; adjustments != NULL && t < adjustments->size(); t++ ) {
 			ConfigNode *adjustment = (*adjustments)[t];
-			strcpy( temp, adjustment->getValueAsString( "adjustment" ) );
-			char *p = strtok( temp, "," );			
+
+			int skill = Skill::
+				getSkillByName( (char*)adjustment->
+												getValueAsString( "skill" ) )->getIndex();
+
+			decodeInfluenceBlock( last, 
+														skill, 
+														adjustment->getChildrenByName( "ap" ), 
+														AP_INFLUENCE );
+			decodeInfluenceBlock( last, 
+														skill, 
+														adjustment->getChildrenByName( "armor" ), 
+														AP_INFLUENCE );
+			decodeInfluenceBlock( last, 
+														skill, 
+														adjustment->getChildrenByName( "cth" ), 
+														CTH_INFLUENCE );
+			decodeInfluenceBlock( last, 
+														skill, 
+														adjustment->getChildrenByName( "damage" ), 
+														DAM_INFLUENCE );
+		}
+	}
+}
+
+void Item::decodeInfluenceBlock( RpgItem *item, 
+																 int skill, 
+																 vector<ConfigNode*> *nodes, 
+																 int influenceType ) {
+	char tmp[300];
+	if( nodes ) {
+		ConfigNode *node = (*nodes)[0];
+		for( int t = 0; t < INFLUENCE_LIMIT_COUNT; t++ ) {
+			strcpy( tmp, node->getValueAsString( t == MIN_INFLUENCE ? "min" : "max" ) );
+			char *p = strtok( tmp, "," );
 			if( p ) {
-				int skill = Skill::getSkillByName( p )->getIndex();				
-				// armor has only 1 type of influence
-				for( int i = 0; i < ( last->isWeapon() ? INFLUENCE_TYPE_COUNT : 1 ); i++ ) {
-					p = strtok( NULL, "," );
-					if( p && *p != 'N' ) {
-						for( int t = 0; t < INFLUENCE_LIMIT_COUNT; t++ ) {
-							WeaponInfluence wi;
-							wi.limit = atoi( t == MIN_INFLUENCE ? p + 1 : p ); // ignore (
-							p = strtok( NULL, "," );
-							wi.type = *p;
-							p = strtok( NULL, "," );
-							strcpy( temp, p );
-							// ignore )
-							if( t == MAX_INFLUENCE ) *( temp + strlen( temp ) - 1 ) = 0;
-							wi.base = atof( temp );							
-							/*
-							cerr << last->getName() << 
-								" skill: " << Skill::skills[ skill ]->getName() <<
-								" type: " << i <<
-								" limit type: " << t << 
-								" LIM=" << wi.limit << 
-								" TYPE=" << wi.type << 
-								" BASE=" << wi.base << 
-								endl;
-							*/
-							last->setWeaponInfluence( skill, i, t, wi );
-							if( t == MIN_INFLUENCE ) p = strtok( NULL, "," );
-						}
-					}
-				}
+				WeaponInfluence wi;
+				wi.limit = atoi( p ); // ignore (
+				p = strtok( NULL, "," );
+				wi.type = ( !strcmp( p, "linear" ) ? 'L' : 'E' );
+				p = strtok( NULL, "," );
+				wi.base = atof( p );
+				/*
+				cerr << item->getName() << " skill:" << Skill::skills[skill]->getName() << 
+					" influence: "<< 
+					( influenceType == AP_INFLUENCE ? "ap" : ( influenceType == CTH_INFLUENCE ? "cth" : "dam" ) ) <<
+					" " << ( t == MIN_INFLUENCE ? "min" : "max" ) << " " <<
+					"limie=" << wi.limit << " type=" << wi.type << " base=" << wi.base << endl;
+				*/					
+				item->setWeaponInfluence( skill, influenceType, t, wi );
 			}
+		}
+	}
+}
+
+void Item::initSounds( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "sounds" );
+	char tmp[1000];
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+
+		strcpy( tmp, node->getValueAsString( "sounds" ) );
+		char *p = strtok(tmp, ",");
+		int type_index = RpgItem::getTypeByName(p);
+		vector<string> *sounds = NULL;
+		if(Item::soundMap.find(type_index) != Item::soundMap.end()) {
+			sounds = Item::soundMap[type_index];
+		} else {
+			sounds = new vector<string>;
+			Item::soundMap[type_index] = sounds;
+		}
+		p = strtok(NULL, ",");
+		while(p) {
+			string f = p;
+			sounds->push_back(f);
+			p = strtok(NULL, ",");
 		}
 	}
 }
@@ -479,6 +522,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 
 	ConfigLang *config = ConfigLang::load( "config/item.cfg" );  
   initItemTypes( config );  
+	initSounds( config );
 	initItemEntries( config, shapePal );
   delete config;
 
@@ -486,7 +530,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 
 
 
-
+/*
   char errMessage[500];
   char s[200];
   sprintf(s, "%s/world/items.txt", rootDir);
@@ -508,7 +552,6 @@ void Item::initItems( ShapePalette *shapePal ) {
       fgetc(fp);
       n = Constants::readLine( line, fp );
 
-					 /*
       ItemType itemType;
       strcpy( itemType.name, strtok( line, "," ) );
       char *p = trim( strtok( NULL, "," ) );
@@ -527,15 +570,12 @@ void Item::initItems( ShapePalette *shapePal ) {
       if( itemType.isRandom ) {
         RpgItem::randomTypes[ RpgItem::randomTypeCount++ ] = RpgItem::itemTypes.size() - 1;
       }
-			*/
     } else if( n == 'I' ) {
       // skip ':'
       fgetc(fp);
       
 			// read the rest of the line
       n = Constants::readLine( name, fp );
-
-			/*
 
 			// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
 			n = Constants::readLine( line, fp );
@@ -615,15 +655,13 @@ void Item::initItems( ShapePalette *shapePal ) {
 													minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
       GLShape *s = shapePal->findShapeByName(shape);
       RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );
-			*/
+
     } else if( n == 'W' && last ) {
       // skip ':'
       fgetc(fp);
       
 			// read the rest of the line
       n = Constants::readLine( line, fp );
-
-			/*
 
 			// W:base_damage,damage_type[S|P|C],skill,parry,ap,range,two_handed
 			int baseDamage = atoi( strtok( line, "," ) );
@@ -648,7 +686,7 @@ void Item::initItems( ShapePalette *shapePal ) {
 			if( twoHanded != 0 ) cerr << "\t\ttwo_handed=" << twoHanded << endl;
 			cerr << "\t[/weapon]" << endl;
 #endif			
-		*/
+
 
 		} else if( n == 'R' && last ) {
 			// skip ':'
@@ -656,20 +694,40 @@ void Item::initItems( ShapePalette *shapePal ) {
       
 			// read the rest of the line
       n = Constants::readLine( line, fp );
-			/*
+
 #ifdef ENABLE_CONVERSION
 			cerr << "\t[skill_adjustment]" << endl;
-			cerr << "\t\tadjustment=\"" << line << "\"" << endl;
-			cerr << "\t[/skill_adjustment]" << endl;
+//			cerr << "\t\tadjustment=\"" << line << "\"" << endl;
 #endif
 
 			char *p = strtok( line, "," );			
 			if( p ) {
+
+#ifdef ENABLE_CONVERSION
+			cerr << "\t\tskill=" << p << endl;
+#endif
 				int skill = Skill::getSkillByName( p )->getIndex();				
         // armor has only 1 type of influence
 				for( int i = 0; i < ( last->isWeapon() ? INFLUENCE_TYPE_COUNT : 1 ); i++ ) {
 					p = strtok( NULL, "," );
 					if( p && *p != 'N' ) {
+
+#ifdef ENABLE_CONVERSION
+					string influenceType;
+					if( i == 0 ) {
+						if( last->isWeapon() ) {
+							influenceType = "ap";
+						} else {
+							influenceType = "armor";
+						}
+					} else if( i == 1 ) {
+						influenceType = "cth";
+					} else {
+						influenceType = "damage";
+					}
+					cerr << "\t\t[" << influenceType << "]" << endl;
+#endif
+
 						for( int t = 0; t < INFLUENCE_LIMIT_COUNT; t++ ) {
 							WeaponInfluence wi;
 							wi.limit = atoi( t == MIN_INFLUENCE ? p + 1 : p ); // ignore (
@@ -679,14 +737,30 @@ void Item::initItems( ShapePalette *shapePal ) {
 							strcpy( temp, p );
 							// ignore )
 							if( t == MAX_INFLUENCE ) *( temp + strlen( temp ) - 1 ) = 0;
-							wi.base = atof( temp );							
+							wi.base = atof( temp );
 							last->setWeaponInfluence( skill, i, t, wi );
 							if( t == MIN_INFLUENCE ) p = strtok( NULL, "," );
+
+#ifdef ENABLE_CONVERSION
+							if( t == MIN_INFLUENCE ) {
+								cerr << "\t\t\tmin";
+							} else {
+								cerr << "\t\t\tmax";
+							}
+							cerr << "=\"" << wi.limit << "," << ( wi.type == 'L' ? "linear" : "exponential" ) << "," << wi.base << "\"" << endl;
+#endif
 						}
+#ifdef ENABLE_CONVERSION
+						cerr << "\t\t[/" << influenceType << "]" << endl;
+#endif
 					}
 				}
 			}
-			*/
+
+#ifdef ENABLE_CONVERSION
+			cerr << "\t[/skill_adjustment]" << endl;
+#endif
+	
     } else if( n == 'A' && last ) {
       // skip ':'
       fgetc(fp);
@@ -694,7 +768,6 @@ void Item::initItems( ShapePalette *shapePal ) {
 			// read the rest of the line
       n = Constants::readLine( line, fp );
 
-			/*
 			// A:defense_vs_slashing,defense_vs_piercing,defense_vs_crushing,skill,dodge_penalty
 			int defense[ RpgItem::DAMAGE_TYPE_COUNT ];
 			for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
@@ -712,7 +785,6 @@ void Item::initItems( ShapePalette *shapePal ) {
 			if( defense[2] != 0 ) cerr << "\t\tcrush_defense=" << defense[2] << endl;
 			cerr << "\t[/armor]" << endl;
 #endif
-		*/
 
     } else if( n == 'P' && last ) {
       // skip ':'
@@ -721,7 +793,6 @@ void Item::initItems( ShapePalette *shapePal ) {
 			// read the rest of the line
       n = Constants::readLine( line, fp );
 
-			/*
 			// power,potionSkill,[potionTimeInMinutes]
 			int power = atoi( strtok( line, "," ) );
 			
@@ -749,13 +820,11 @@ void Item::initItems( ShapePalette *shapePal ) {
 			if( time != 0 ) cerr << "\t\ttime=" << time << endl;
 			cerr << "\t[/potion]" << endl;
 #endif
-			*/
 				
     } else if( n == 'E' && last ) {
       // skip ':'
       fgetc(fp);
       
-			/*
 			// read the rest of the line
       n = Constants::readLine( line, fp );
 #ifdef ENABLE_CONVERSION
@@ -763,13 +832,11 @@ void Item::initItems( ShapePalette *shapePal ) {
 #endif			
 			// E:spell-level (for items that can cast spells)
 			last->setSpellLevel( atoi( line ) );
-			*/
     } else if(n == 'G' && last) {
       // skip ':'
       fgetc(fp);
       // read the rest of the line
       n = Constants::readLine( line, fp );
-			/*
 #ifdef ENABLE_CONVERSION
 			cerr << "\ttags=\"" << line << "\"" << endl;
 #endif
@@ -782,7 +849,6 @@ void Item::initItems( ShapePalette *shapePal ) {
 				last->addTag( s );
         p = strtok( NULL, "," );
       }
-			*/
     } else if(n == 'S') {
       fgetc(fp);
       n = Constants::readLine(line, fp);
@@ -806,6 +872,7 @@ void Item::initItems( ShapePalette *shapePal ) {
     }
   }
   fclose(fp);
+	*/
 }
 
 const char *Item::getRandomSound() {
