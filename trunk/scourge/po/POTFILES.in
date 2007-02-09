@@ -5,4 +5,8 @@ src/scourge.cpp
 ../scourge_data/config/scourge.cfg
 ../scourge_data/config/map.cfg
 ../scourge_data/config/item.cfg
+../scourge_data/config/weapon.cfg
+../scourge_data/config/armor.cfg
+../scourge_data/config/magicitem.cfg
+../scourge_data/config/otheritem.cfg
 
