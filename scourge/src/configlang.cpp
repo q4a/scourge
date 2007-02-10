@@ -161,6 +161,12 @@ void ConfigNode::extendNode( std::string id ) {
 	}
 }
 
+void ConfigNode::getKeys( std::set<std::string> *keyset ) {
+	for( map<string,ConfigValue*>::iterator e = values.begin(); e != values.end(); ++e ) {
+		keyset->insert( e->first );
+	}
+}
+
 ConfigLang::ConfigLang( char *config ) {
 	document = NULL;
 	//cerr << config << endl;

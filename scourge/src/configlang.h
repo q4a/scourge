@@ -20,6 +20,7 @@
 #include "common/constants.h"
 #include <vector>
 #include <map>
+#include <set>
 
 class ConfigValue;
 class ConfigNode;
@@ -88,6 +89,10 @@ public:
     }
   }
 
+	inline int getValueAsInt( std::string name ) {
+    return toint( getValueAsFloat( name ) );
+  }
+
 	inline bool getValueAsBool( std::string name ) {
     if( values.find( name ) == values.end() ) {
       return false;
@@ -98,6 +103,9 @@ public:
 							values[ name ]->getAsFloat() > 0 );
     }
   }
+
+	void getKeys( std::set<std::string> *keyset );
+	
 
   inline bool hasValue( std::string name ) {
     return( values.find( name ) != values.end() );

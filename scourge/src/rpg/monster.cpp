@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "monster.h"
+#include "../configlang.h"
 
 using namespace std;
 
@@ -82,7 +83,190 @@ bool Monster::getIndexOrFindByIndex(Monster **monster, int *index) {
   return false;
 }
 
+void Monster::finishCreatureTag( Monster *last_monster ) {
+	if( last_monster ) {
+		if( last_monster->items.size() ) {
+			cerr << "\tinventory=\"";
+			for( unsigned int i = 0; i < last_monster->items.size(); i++ ) {
+				if( i > 0 ) cerr << ",";
+				cerr << last_monster->items[i]->getName();
+			}
+			cerr << "\"" << endl;
+		}
+		if( last_monster->spells.size() ) {
+			cerr << "\tspells=\"";
+			for( unsigned int i = 0; i < last_monster->spells.size(); i++ ) {
+				if( i > 0 ) cerr << ",";
+				cerr << last_monster->spells[i]->getName();
+			}
+			cerr << "\"" << endl;
+		}
+		if( last_monster->skills.size() ) {
+			cerr << "\t[skills]" << endl;
+			for( map<string,int>::iterator e = last_monster->skills.begin(); e != last_monster->skills.end(); ++e ) {
+				string name = e->first;
+				int value = e->second;
+				cerr << "\t\t" << name << "=" << value << endl;
+			}
+			cerr << "\t[/skills]" << endl;
+		}
+		cerr << "[/creature]" << endl;
+	}
+}
+
+void Monster::initSounds( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "sound" );
+
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+		
+		string monsterType_str = node->getValueAsString( "monster" );
+		map<int, vector<string>*> *currentSoundMap;
+		if( soundMap.find( monsterType_str ) == soundMap.end() ) {
+			currentSoundMap = new map<int, vector<string>*>();
+			soundMap[monsterType_str] = currentSoundMap;
+		} else {
+			currentSoundMap = soundMap[monsterType_str];
+		}      
+
+		char sounds[1000];
+		strcpy( sounds, node->getValueAsString( "attack" ) );
+		if( strlen( sounds ) ) {
+			addSound( Constants::SOUND_TYPE_ATTACK, sounds, currentSoundMap );
+		}
+		strcpy( sounds, node->getValueAsString( "hit" ) );
+		if( strlen( sounds ) ) {
+			addSound( Constants::SOUND_TYPE_HIT, sounds, currentSoundMap );
+		}
+	}
+}
+
+void Monster::initCreatures( ConfigLang *config ) {
+	char name[255], model_name[255], skin_name[255];
+	char portrait[255], type[255], tmp[3000];
+
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "creature" );
+
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+
+		strcpy( name, node->getValueAsString( "name" ) );
+		strcpy( portrait, node->getValueAsString( "portrait" ) );
+		strcpy( type, node->getValueAsString( "type" ) );
+		strcpy( model_name, node->getValueAsString( "model" ) );
+		strcpy( skin_name, node->getValueAsString( "skin" ) );
+		if( !strcmp( skin_name, "*" ) ) strcpy( skin_name, "" );
+		int level = node->getValueAsInt( "level" );
+		int hp = node->getValueAsInt( "hp" );
+		int mp = node->getValueAsInt( "mp" );
+		int armor = node->getValueAsInt( "armor" );
+		int rareness = node->getValueAsInt( "rareness" );
+		int speed = node->getValueAsInt( "speed" );
+		float scale = node->getValueAsFloat( "scale" );
+		bool npc = node->getValueAsBool( "npc" );
+		bool special = node->getValueAsBool( "special" );		
+		GLuint statemod = node->getValueAsInt( "statemod" );
+
+		Monster *m = 
+			new Monster( strdup(name), 
+									 ( strlen( type ) ? strdup( type ) : NULL ),
+									 level, hp, mp, 
+									 strdup(model_name), strdup(skin_name), 
+									 rareness, speed, armor, 
+									 scale, npc, ( strlen( portrait ) ? strdup( portrait ) : NULL ) );
+		if( npc ) {
+			npcs.push_back( m );
+			m->setStartingStateMod( statemod );
+		} else if( special ) {
+			// don't add to random monsters list
+			// these are placed monsters like Mycotharsius.
+		} else {
+			vector<Monster*> *list = NULL;
+			if(monsters.find(level) == monsters.end()) {
+				list = new vector<Monster*>();
+				monsters[level] = list;
+			} else {
+				list = monsters[level];
+			}
+			list->push_back( m );
+		}
+		string s = name;
+		monstersByName[s] = m;
+
+		// store type and add sounds
+		string typeStr = m->getModelName();
+		bool found = false;
+		for(int i = 0; i < (int)monsterTypes.size(); i++) {
+			if(!strcmp(monsterTypes[i].c_str(), m->getModelName())) {
+				found = true;
+				break;
+			}
+		}
+		if(!found) {
+			if( !npc ) monsterTypes.push_back(typeStr);
+
+			if( soundMap.find( typeStr ) == soundMap.end() ) {
+				currentSoundMap = new map<int, vector<string>*>();      
+				soundMap[typeStr] = currentSoundMap;
+			} else {
+				currentSoundMap = soundMap[typeStr];
+			}
+			addMd2Sounds( m->getModelName(), currentSoundMap );
+		}
+
+		// inventory
+		strcpy( tmp, node->getValueAsString( "inventory" ) );
+		char *p = strtok( tmp, "," );
+		while( p ) {
+			m->addItem( RpgItem::getItemByName( p ) );
+			p = strtok( NULL, "," );
+		}
+
+		// spells
+		strcpy( tmp, node->getValueAsString( "spells" ) );
+		p = strtok( tmp, "," );
+		while( p ) {
+			m->addSpell( Spell::getSpellByName( p ) );
+			p = strtok( NULL, "," );
+		}
+
+		// skills
+		vector<ConfigNode*> *vv = config->getDocument()->
+			getChildrenByName( "skills" );
+		if( vv && vv->size() ) {
+			ConfigNode *n = (*vv)[0];
+			set<string> names;
+			n->getKeys( &names );
+			for( set<string>::iterator e = names.begin(); e != names.end(); ) {
+				string skillStr = *e;
+				int value = n->getValueAsInt( name );
+				m->skills[ skillStr ] = value;
+			}
+		}
+	}
+}
+
+//#define CONVERT_CREATURES 1
+
 void Monster::initMonsters() {
+
+	ConfigLang *config = ConfigLang::load( "config/npc.cfg" );
+	initCreatures( config );
+	delete config;
+
+	config = ConfigLang::load( "config/monster.cfg" );
+	initSounds( config );
+	initCreatures( config );
+	delete config;
+
+
+
+
+
+
+	/*
   char errMessage[500];
   char s[200];
   sprintf(s, "%s/world/creatures.txt", rootDir);
@@ -104,6 +288,7 @@ void Monster::initMonsters() {
       fgetc(fp);
       // read the rest of the line
       n = Constants::readLine(line, fp);
+			
 
       strcpy( name, strtok( line, "," ) );
       char *p = strtok( NULL, "," );
@@ -143,13 +328,30 @@ void Monster::initMonsters() {
         }
       }
 
-      /*
-      cerr << "adding monster: " << name << " level: " << level << 
-        " hp: " << hp << " mp: " << mp << " armor: " << armor << 
-        " rareness: " << rareness << " scale=" << scale << 
-        " speed=" << speed <<
-        endl;
-        */
+#ifdef CONVERT_CREATURES
+			finishCreatureTag( last_monster );
+			cerr << "[creature]" << endl;
+			cerr << "\tname=\"" << name << "\"" << endl;
+			if( strlen( portrait ) ) {
+				if( npc || special ) {
+					cerr << "\tportrait=\"" << portrait << "\"" << endl;
+				} else {
+					cerr << "\ttype=\"" << portrait << "\"" << endl;
+				}
+			}
+			cerr << "\tlevel=" << level << endl;
+			cerr << "\thp=" << hp << endl;
+			cerr << "\tmp=" << mp << endl;
+			cerr << "\tmodel=\"" << model_name << "\"" << endl;
+			cerr << "\tskin=\"" << skin_name << "\"" << endl;
+			cerr << "\trareness=" << rareness << endl;
+			cerr << "\tspeed=" << speed << endl;
+			cerr << "\tarmor=" << armor << endl;
+			cerr << "\tscale=" << scale << endl;			
+			if( statemod ) cerr << "\tstatemod=" << statemod << endl;
+			if( npc ) cerr << "\tnpc=\"true\"" << endl;
+			if( special ) cerr << "\tspecial=\"true\"" << endl;
+#endif
 
       // HACK: for monster-s portrait is descriptive type
       // for npc-s it's the portrait path.
@@ -170,14 +372,12 @@ void Monster::initMonsters() {
       }
       last_monster = m;
       if( npc ) {
-				/*
-        if( npcStartX > -1 && npcStartY > -1 ) {
-          char tmp[80];
-          sprintf( tmp, "%d,%d", npcStartX, npcStartY );
-          string pos = tmp;
-          npcPos[ pos ] = m;
-        } else {
-				*/
+//         if( npcStartX > -1 && npcStartY > -1 ) {
+//           char tmp[80];
+//           sprintf( tmp, "%d,%d", npcStartX, npcStartY );
+//           string pos = tmp;
+//           npcPos[ pos ] = m;
+//         } else {
           npcs.push_back( m );
 					m->setStartingStateMod( statemod );
         //}
@@ -231,26 +431,28 @@ void Monster::initMonsters() {
       n = Constants::readLine(line, fp);
       // add spell to monster
       last_monster->addSpell(Spell::getSpellByName(line));
-    } else if(n == 'W') {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
+			
+		} else if(n == 'W') {
+			fgetc(fp);
+			n = Constants::readLine(line, fp);
+			
+			string monsterType_str = line;
+			if( soundMap.find( monsterType_str ) == soundMap.end() ) {
+				currentSoundMap = new map<int, vector<string>*>();      
+				soundMap[monsterType_str] = currentSoundMap;
+			} else {
+				currentSoundMap = soundMap[monsterType_str];
+			}      
+		} else if(n == 'a' && currentSoundMap) {	  
+			fgetc(fp);
+			n = Constants::readLine(line, fp);
+			addSound( Constants::SOUND_TYPE_ATTACK, line, currentSoundMap );
+		} else if(n == 'h' && currentSoundMap) {
+			fgetc(fp);
+			n = Constants::readLine(line, fp);
+			addSound( Constants::SOUND_TYPE_HIT, line, currentSoundMap );
 
-	  string monsterType_str = line;
-	  if( soundMap.find( monsterType_str ) == soundMap.end() ) {
-		currentSoundMap = new map<int, vector<string>*>();      
-		soundMap[monsterType_str] = currentSoundMap;
-	  } else {
-		currentSoundMap = soundMap[monsterType_str];
-	  }      
-    } else if(n == 'a' && currentSoundMap) {	  
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-	  addSound( Constants::SOUND_TYPE_ATTACK, line, currentSoundMap );
-    } else if(n == 'h' && currentSoundMap) {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-	  addSound( Constants::SOUND_TYPE_HIT, line, currentSoundMap );
-    } else if(n == 'P' && last_monster) {
+		} else if(n == 'P' && last_monster) {
       // skip ':'
       fgetc(fp);
       // read the rest of the line
@@ -261,11 +463,16 @@ void Monster::initMonsters() {
       int n = atoi(strtok(NULL, ","));
       last_monster->skills[skillStr] = n;
       //cerr << "\tsetting skill level: " << skillStr << "=" << n << endl;
+			
     } else {
       n = Constants::readLine(line, fp);
     }
   }
+#ifdef CONVERT_CREATURES
+	finishCreatureTag( last_monster );
+#endif
   fclose(fp);
+	*/
 }
 
 void Monster::addMd2Sounds( char *model_name, map<int, vector<string>*>* currentSoundMap ) {
