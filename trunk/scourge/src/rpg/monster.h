@@ -128,7 +128,6 @@ protected:
   static void addSound( int type, char *line, std::map<int, std::vector<std::string>*>* currentSoundMap );
 
 private:
-	static void finishCreatureTag( Monster *last_monster );
 	static void initCreatures( ConfigLang *config );
 	static void initSounds( ConfigLang *config );
 };
