@@ -25,6 +25,8 @@
 #include "rpgitem.h"
 #include "spell.h"
 
+class ConfigLang;
+
 /**
   *@author Gabor Torok
   */
@@ -118,13 +120,17 @@ public:
   static const char *getMonsterType(char *type);
   static const Monster *getRandomNpc();
 
- protected:
+protected:
   static void addMd2Sounds( char *model_name, std::map<int, std::vector<std::string>*>* currentSoundMap );
   /**
    * add a coma-delimited list of sound files
    */
   static void addSound( int type, char *line, std::map<int, std::vector<std::string>*>* currentSoundMap );
 
+private:
+	static void finishCreatureTag( Monster *last_monster );
+	static void initCreatures( ConfigLang *config );
+	static void initSounds( ConfigLang *config );
 };
 
 #endif
