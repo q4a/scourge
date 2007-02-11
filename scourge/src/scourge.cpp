@@ -115,7 +115,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 void Scourge::initUI() {
 
   // init UI themes
-  GuiTheme::initThemes( getSDLHandler() );
+  //GuiTheme::initThemes( getSDLHandler() );
 
   // for now pass map in
   this->levelMap = session->getMap();
@@ -133,10 +133,10 @@ void Scourge::initUI() {
   createPartyUI();
 
   // show the main menu
-  mainMenu = new MainMenu(this);
+  //mainMenu = new MainMenu(this);
   mapEditor = new MapEditor( this );
-  optionsMenu = new OptionsMenu(this);
-  multiplayer = new MultiplayerDialog(this);
+  //optionsMenu = new OptionsMenu(this);
+  //multiplayer = new MultiplayerDialog(this);
 
 	dismissHeroDialog = new ConfirmDialog( getSDLHandler(), _( "Dismiss Party Member" ) );
 	confirmUpload = new ConfirmDialog( getSDLHandler(), _( "Need permission to upload score to web" ) );
@@ -147,20 +147,40 @@ void Scourge::initUI() {
   getSDLHandler()->getSound()->loadSounds( getUserConfiguration() );
 
   view->initUI();
+
+	  // re-create progress bar for map loading (recreate with different options)
+  progress = new Progress(this->getSDLHandler(),
+                          getSession()->getShapePalette()->getProgressTexture(),
+                          getSession()->getShapePalette()->getProgressHighlightTexture(),
+                          12, false, true);
+	progress->setStatus( 12 );
 }
 
-void Scourge::start() {  
+void Scourge::start() {
 
-    // initialize the random number generator
-    srand( (unsigned int)time( (time_t *)NULL ) );
+	// init UI themes
+  GuiTheme::initThemes( getSDLHandler() );
+	mainMenu = new MainMenu(this);
+	optionsMenu = new OptionsMenu(this);
+  multiplayer = new MultiplayerDialog(this);
+	saveDialog = new SavegameDialog( this );
+	session->getPreferences()->createConfigDir();
+	getSDLHandler()->getSound()->loadUISounds( getUserConfiguration() );
+	optionsButton = NULL;
 
-    bool initMainMenu = true;
+	// start a thread to load everything else
+	// session->initData(); // crashes X
+
+
+	// initialize the random number generator
+	srand( (unsigned int)time( (time_t *)NULL ) );
+
+	bool initMainMenu = true;
 	int value = CONTINUE_GAME;
   while(true) {
 
 		// forget all the known maps
-		visitedMaps.clear();
-		levelMap->setDescriptionsEnabled( false );
+		visitedMaps.clear();		
 
 		if( !session->willLoadGame() ) {
 			if(initMainMenu) {
@@ -259,6 +279,9 @@ Scourge::~Scourge(){
 }
 
 void Scourge::startMission( bool startInHq ) {
+
+	levelMap->setDescriptionsEnabled( false );
+
 	bool resetParty = true;
 
 #if DEBUG_SQUIRREL
@@ -1463,7 +1486,7 @@ void Scourge::toggleOptionsWindow() {
     //	party->toggleRound(true);
 	optionsMenu->show();
   }
-  optionsButton->setSelected( optionsMenu->isVisible() );
+  if( optionsButton ) optionsButton->setSelected( optionsMenu->isVisible() );
 }
 
 // create the ui
@@ -1476,10 +1499,7 @@ void Scourge::createUI() {
   healDialog = new HealDialog( this );
   donateDialog = new DonateDialog( this );
   trainDialog = new TrainDialog( this );
-  pcEditor = new PcEditor( this );
-	saveDialog = new SavegameDialog( this );
-
-	session->getPreferences()->createConfigDir();
+  pcEditor = new PcEditor( this );	
 
   int width =
     getSDLHandler()->getScreen()->w -
@@ -2747,8 +2767,9 @@ void Scourge::togglePlayerOnlyUI(bool playerOnly) {
 }
 
   // initialization events
-void Scourge::initStart(int statusCount, char *message) {
-  getSession()->getShapePalette()->preInitialize();
+void Scourge::initStart(int statusCount, char *message) {  
+	/*
+	getSession()->getShapePalette()->preInitialize();
   progress = new Progress(this->getSDLHandler(),
                           getSession()->getShapePalette()->getProgressTexture(),
                           getSession()->getShapePalette()->getProgressHighlightTexture(),
@@ -2757,15 +2778,17 @@ void Scourge::initStart(int statusCount, char *message) {
   // Don't print text during startup. On windows this causes font corruption.
 //  progress->updateStatus(message);
   progress->updateStatus(NULL);
+	*/
 }
 
 void Scourge::initUpdate(char *message) {
   // Don't print text during startup. On windows this causes font corruption.
 //  progress->updateStatus(message);
-  progress->updateStatus(NULL);
+  //progress->updateStatus(NULL);
 }
 
 void Scourge::initEnd() {
+	/*
   delete progress;
   // re-create progress bar for map loading (recreate with different options)
   progress = new Progress(this->getSDLHandler(),
@@ -2773,6 +2796,7 @@ void Scourge::initEnd() {
                           getSession()->getShapePalette()->getProgressHighlightTexture(),
                           12, false, true);
 	progress->setStatus( 12 );
+	*/
 }
 
 #define BOARD_GUI_WIDTH 600

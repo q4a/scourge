@@ -226,6 +226,8 @@ public:
 	void saveScreen( char *path );
 	void saveScreenNow( char *path );
 
+	void setUpdate( char *message, int n=-1, int total=-1 );
+
 protected:	
 	bool popHandlers();
 	int resizeWindow( int width, int height );

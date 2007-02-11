@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-09 08:13-0800\n"
+"POT-Creation-Date: 2007-02-11 13:33-0800\n"
 "PO-Revision-Date: 2007-01-20 21:57-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -16,44 +16,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/mainmenu.cpp:51
+#: src/mainmenu.cpp:53
 msgid "New Game"
 msgstr "Új Játék"
 
-#: src/mainmenu.cpp:52
+#: src/mainmenu.cpp:54
 msgid "Continue Game"
 msgstr "Játék Folytatása"
 
-#: src/mainmenu.cpp:53
+#: src/mainmenu.cpp:55
 msgid "Multiplayer Game"
 msgstr ""
 
-#: src/mainmenu.cpp:54
+#: src/mainmenu.cpp:56
 msgid "Options"
 msgstr "Beállitások"
 
-#: src/mainmenu.cpp:55 src/mainmenu.cpp:119
+#: src/mainmenu.cpp:57 src/mainmenu.cpp:121
 msgid "About S.c.o.u.r.g.e."
 msgstr "Játék Leírása"
 
-#: src/mainmenu.cpp:56
+#: src/mainmenu.cpp:58
 msgid "Quit"
 msgstr "Kilépés"
 
-#: src/mainmenu.cpp:287
+#: src/mainmenu.cpp:253
 #, c-format
 msgid "Scourge version %s"
 msgstr "Scourge verzió %s"
 
-#: src/mainmenu.cpp:291
+#: src/mainmenu.cpp:257
 msgid "Optionally compiled modules:"
 msgstr "Modulák"
 
-#: src/mainmenu.cpp:294
+#: src/mainmenu.cpp:260
 msgid "[Network]"
 msgstr "[Hálózat]"
 
-#: src/mainmenu.cpp:298
+#: src/mainmenu.cpp:264
 msgid "[Sound]"
 msgstr "[Zene]"
 

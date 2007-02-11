@@ -74,6 +74,7 @@ public:
 	void stopMusic( int ms=3000 );
 
   void loadSounds(Preferences *preferences);
+	void loadUISounds(Preferences *preferences);
   void loadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m,
 						  Preferences *preferences );
   void unloadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m );

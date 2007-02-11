@@ -47,6 +47,8 @@ using namespace std;
 #define MENU_ITEM_PARTICLE_ZOOM 1.1f
 #define MAX_PARTICLE_LIFE 50
 
+bool eventsEnabled = false;
+
 const char *MainMenu::menuText[] = { 
   N_( "New Game" ), 
 	N_( "Continue Game" ), 
@@ -107,7 +109,7 @@ MainMenu::MainMenu(Scourge *scourge){
   newGameConfirm->setVisible( false );
   newGameConfirm->setModal( true );
 
-  partyEditor = new PartyEditor( scourge );
+  partyEditor = NULL;
   
   // about dialog
   w = 500;
@@ -135,42 +137,6 @@ MainMenu::~MainMenu(){
 }
 
 void MainMenu::drawView() {
-
-	
-	/*
-//  glEnable(GL_BLEND);
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  glPushMatrix();
-  glLoadIdentity();
-
-	glDisable( GL_CULL_FACE );
-
-	glColor3f( 0.1, 0.35, 0.05 );
-	glBegin( GL_QUADS );
-	glVertex2f( 50, 50 );
-	glVertex2f( 500, 50 );
-	glVertex2f( 500, 500 );
-	glVertex2f( 50, 500 );
-	glEnd();
-
-  glEnable( GL_TEXTURE_2D );
-	glTranslatef( 0, 0, 10 );
-
-	glColor3f( 1, 1, 1 );
-	scourge->getSDLHandler()->getCurrentFontManager()->drawTextUTF8( _( "New Game" ), 100, 100 );
-
-	glColor3f( 1, 0, 1 );
-	scourge->getSDLHandler()->getCurrentFontManager()->drawTextUTF8( _( "New Game" ), 100, 140 );
-
-	glColor3f( 0, 1, 1 );
-	scourge->getSDLHandler()->getCurrentFontManager()->drawTextUTF8( _( "New Game" ), 100, 180 );
-
-  glPopMatrix();
-	return;
-	*/
-
-
 	int tickNow = SDL_GetTicks();
 	if((tickNow - lastMenuTick) < 15)
 		SDL_Delay( 15 - (tickNow - lastMenuTick) );
@@ -296,8 +262,16 @@ void MainMenu::drawView() {
 #endif
 #ifdef HAVE_SDL_MIXER
     scourge->getSDLHandler()->texPrint( 0, y, _( "[Sound]" ) );
-    y += 14;
+		y += 14;    
 #endif
+		if( strlen( getUpdate() ) ) {
+			scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN );
+			glColor3f( 0.9, 0.15, 0.15 );
+			scourge->getSDLHandler()->texPrint( 0, y, getUpdate() );
+			y += 14;
+		} 
+		eventsEnabled = scourge->getSession()->isDataInitialized();
+		if( eventsEnabled ) scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_NORMAL );
     glPopMatrix();
 
     if(openingTop > top) {
@@ -565,108 +539,12 @@ void MainMenu::drawLogo() {
     if( logoRot < 120 - ( ( 1024 - scourge->getScreenHeight() ) / 4 ) ) {
       logoTicks = t;
       logoRot += 8;
-    }
-    candleFlameX = scourge->getSDLHandler()->getScreen()->w - 215 + (int)(4.0 * rand()/RAND_MAX) - 4;
-    candleFlameY = top + 385 + (int)(4.0 * rand()/RAND_MAX) - 4;
-  }
-
-  // draw candle flame
-  glEnable( GL_TEXTURE_2D );
-  glEnable(GL_BLEND);  
-  glBlendFunc(GL_SRC_COLOR, GL_ONE);
-  //setBlendFunc();
-  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->candle );
-  glColor4f( 0.7, 0.7, 0.3, 0.5 );
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef( candleFlameX, candleFlameY, 0 ); 
-  w = 64;
-  h = 64;
-  glBegin( GL_QUADS );
-  glNormal3f(0.0f, 0.0f, 1.0f);
-  glTexCoord2f( 1.0f, 1.0f );
-  glVertex3f(w, h, 0);
-  glTexCoord2f( 1.0f, 0.0f );
-  glVertex3f(w, 0, 0);
-  glTexCoord2f( 0.0f, 0.0f );
-  glVertex3f(0, 0, 0);
-  glTexCoord2f( 0.0f, 1.0f );
-  glVertex3f(0, h, 0);
-  glEnd();
-  glPopMatrix();
-  glDisable( GL_TEXTURE_2D );
-  glDisable( GL_BLEND );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /*
-  //  if((int)(5.0f * rand()/RAND_MAX) == 0) 
-  addLogoSprite();
-  drawLogoSprites();
-
-  drawParticles();
-
-  //  glDisable( GL_DEPTH_TEST );
-  glEnable( GL_TEXTURE_2D );
-  glEnable(GL_BLEND);  
-  //  glBlendFunc( GL_SRC_ALPHA, GL_DST_ALPHA );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-  //  scourge->setBlendFunc();
-  glPushMatrix();
-  glLoadIdentity();
-  glRotatef(logoRot, 0, 0, 1 );
-  glTranslatef( 70, top + 10 - abs((int)(logoRot / 0.25f)), 500 );
-  float zoom = (logoRot / (LOGO_ROT_POS / LOGO_ZOOM)) + 1.0f;
-  glScalef( zoom, zoom, 1 );
-  float w = scourge->getShapePalette()->logo->w;
-  float h = scourge->getShapePalette()->logo->h;
-  glColor4f( 1, 1, 1, 1 );
-  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
-  glBegin( GL_QUADS );
-  glNormal3f(0.0f, 0.0f, 1.0f);
-  glTexCoord2f( 1.0f, 1.0f );
-  glVertex3f(w, h, 0);
-  glTexCoord2f( 1.0f, 0.0f );
-  glVertex3f(w, 0, 0);
-  glTexCoord2f( 0.0f, 0.0f );
-  glVertex3f(0, 0, 0);
-  glTexCoord2f( 0.0f, 1.0f );
-  glVertex3f(0, h, 0);
-  glEnd();
-  glPopMatrix();
-  glDisable( GL_TEXTURE_2D );
-  glDisable( GL_BLEND );
-  //  glEnable( GL_DEPTH_TEST );
-
-  GLint t = SDL_GetTicks();
-  if(t - logoTicks > logoTicksDelta) {
-    logoTicks = t;
-    logoRot += logoRotDelta;
-    if(logoRotDelta < 0) {
-      logoRotDelta += -LOGO_DELTA;
-      if(logoRot <= LOGO_ROT_NEG ) {
-        logoRotDelta = LOGO_DELTA;
-      }
     } else {
-      logoRotDelta += LOGO_DELTA;
-      if(logoRot >= LOGO_ROT_POS) {
-        logoRotDelta = -LOGO_DELTA;   
-      }
-    }
+			// initialize universe (nice how this is hidden here...)
+			scourge->getSession()->initData();
+		}
     candleFlameX = scourge->getSDLHandler()->getScreen()->w - 215 + (int)(4.0 * rand()/RAND_MAX) - 4;
     candleFlameY = top + 385 + (int)(4.0 * rand()/RAND_MAX) - 4;
-    moveLogoSprites();
   }
 
   // draw candle flame
@@ -695,121 +573,6 @@ void MainMenu::drawLogo() {
   glPopMatrix();
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_BLEND );
-  */
-}
-
-void MainMenu::addLogoSprite() {
-  if(logoSpriteCount >= MAX_LOGOS - 1) return;
-  logoSprite[logoSpriteCount].x = 70.0f;
-  logoSprite[logoSpriteCount].y = 10 - abs((int)(logoRot / 0.25f));
-  logoSprite[logoSpriteCount].angle = 1.0f + (88.0f * rand()/RAND_MAX);
-  logoSprite[logoSpriteCount].quadrant = (int)(4.0f * rand()/RAND_MAX);
-  logoSprite[logoSpriteCount].steps = 0;
-  logoSprite[logoSpriteCount].rot = logoRot;
-  logoSpriteCount++;
-}
-
-void MainMenu::drawLogoSprites() {
-  for(int i = 0; i < logoSpriteCount; i++) {
-    glEnable( GL_TEXTURE_2D );
-    glEnable(GL_BLEND);  
-    //	GL_ONE_MINUS_SRC_COLOR, GL_ZERO
-    // GL_DST_COLOR, GL_ONE
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE );    
-    //scourge->setBlendFunc();
-    glPushMatrix();
-    glLoadIdentity();
-    //glRotatef(logoSprite[i].rot, 0, 0, 1 );
-    glTranslatef( logoSprite[i].x, top + logoSprite[i].y, 500 );
-    float zoom = 1.2f;
-    glScalef( zoom, zoom, 1 );
-    float w = scourge->getShapePalette()->logo->w;
-    float h = scourge->getShapePalette()->logo->h;
-
-    //float alpha = (float)logoSprite[i].steps / 70.0f;
-    //if(alpha >= 0.5f) alpha = 0.5f - (logoSprite[i].steps / 10.0f);
-    float alpha = 0.2f;
-
-    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
-    glColor4f( 0.10f, 0.15f, 0.05f, alpha );
-    glBegin( GL_QUADS );
-    glNormal3f(0.0f, 0.0f, 1.0f);
-    glTexCoord2f( 1.0f, 1.0f );
-    glVertex3f(w, h, 0);
-    glTexCoord2f( 1.0f, 0.0f );
-    glVertex3f(w, 0, 0);
-    glTexCoord2f( 0.0f, 0.0f );
-    glVertex3f(0, 0, 0);
-    glTexCoord2f( 0.0f, 1.0f );
-    glVertex3f(0, h, 0);
-    glEnd();
-    glPopMatrix();
-    glDisable( GL_TEXTURE_2D );
-    glDisable( GL_BLEND );  
-  }
-}
-
-void MainMenu::moveLogoSprites() {
-  for(int i = 0; i < logoSpriteCount; i++) {
-    //	cerr << "i=" << i << " steps=" << logoSprite[i].steps << " alpha=" << alpha << endl;
-    logoSprite[i].steps++;
-    float w = scourge->getShapePalette()->logo->w;
-    float h = scourge->getShapePalette()->logo->h;
-
-    //logoSprite[i].y += LOGO_SPRITE_DELTA;
-
-    //float rad = PI / (180.0f / logoSprite[i].angle);
-    switch(logoSprite[i].quadrant) {
-    case 0:
-      //logoSprite[i].x += cos(rad) * LOGO_SPRITE_DELTA;
-      //logoSprite[i].y -= sin(rad) * LOGO_SPRITE_DELTA;
-      logoSprite[i].y -= LOGO_SPRITE_DELTA;
-      break;
-    case 1:
-      //logoSprite[i].x += cos(rad) * LOGO_SPRITE_DELTA;
-      //logoSprite[i].y += sin(rad) * LOGO_SPRITE_DELTA;
-      logoSprite[i].y += LOGO_SPRITE_DELTA;
-      break;
-    case 2:
-      //logoSprite[i].x -= cos(rad) * LOGO_SPRITE_DELTA;
-      //logoSprite[i].y += sin(rad) * LOGO_SPRITE_DELTA;
-      logoSprite[i].x -= LOGO_SPRITE_DELTA;
-      break;
-    case 3:
-      //logoSprite[i].x -= cos(rad) * LOGO_SPRITE_DELTA;
-      //logoSprite[i].y -= sin(rad) * LOGO_SPRITE_DELTA;
-      logoSprite[i].x -= LOGO_SPRITE_DELTA;
-      break;
-    }
-
-    // delete if off-screen
-    if(logoSprite[i].steps > 80 || 
-       logoSprite[i].x <= -w * 2.0f || logoSprite[i].x >= scourge->getSDLHandler()->getScreen()->w ||
-       logoSprite[i].y <= -h * 2.0f || logoSprite[i].y >= scourge->getSDLHandler()->getScreen()->h) {
-      logoSprite[i].x = logoSprite[logoSpriteCount - 1].x;
-      logoSprite[i].y = logoSprite[logoSpriteCount - 1].y;
-      logoSprite[i].angle = logoSprite[logoSpriteCount - 1].angle;
-      logoSprite[i].quadrant = logoSprite[logoSpriteCount - 1].quadrant;
-      logoSprite[i].steps = logoSprite[logoSpriteCount - 1].steps;
-      logoSprite[i].rot = logoSprite[logoSpriteCount - 1].rot;
-      logoSpriteCount--;
-      i--;
-    }
-  }
-}
-
-void MainMenu::drawParticles() {
-  /*
-	// draw particles from logo to right like a torch
-  for(int i = 0; i < PARTICLE_COUNT; i++) {
-	if(particle[i] == null) {
-	  particle[i] = new Particle();
-	  particle[i]->x = 80;
-	  particle[i]->y = 10 + (30.0f * rand()/RAND_MAX);
-
-	}
-  }
-  */
 }
 
 void MainMenu::drawStars() {
@@ -910,6 +673,8 @@ void MainMenu::drawWater() {
 
 bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
 
+	if( !eventsEnabled ) return false;
+
 	if( scourge->getSaveDialog()->getWindow()->isVisible() ) {
     scourge->getSaveDialog()->handleEvent( widget, event );
 		return false;
@@ -920,7 +685,7 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     return false;
   }
 
-  if( partyEditor->isVisible() ) {
+  if( partyEditor && partyEditor->isVisible() ) {
     partyEditor->handleEvent( widget, event );
 		//return false;
   }
@@ -957,10 +722,10 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
     return false;
   }
 
-  if( widget == partyEditor->getCancelButton() ) {
+  if( partyEditor && widget == partyEditor->getCancelButton() ) {
     partyEditor->setVisible( false );
     return false;
-  } else if( widget == partyEditor->getStartGameButton() ) {
+  } else if( partyEditor && widget == partyEditor->getStartGameButton() ) {
     partyEditor->setVisible( false );
     value = NEW_GAME_START;
     return true;
@@ -976,6 +741,8 @@ bool MainMenu::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 bool MainMenu::handleEvent(SDL_Event *event) {
+
+	if( !eventsEnabled ) return false;
 
   if( aboutDialog->isVisible() ) {
     return false;
@@ -996,7 +763,7 @@ bool MainMenu::handleEvent(SDL_Event *event) {
     return false;
   }
 
-  if( partyEditor->isVisible() ) {
+  if( partyEditor && partyEditor->isVisible() ) {
     partyEditor->handleEvent( NULL, event );
 		//return false;
   }
@@ -1087,14 +854,17 @@ void MainMenu::showSavegameDialog( bool inSaveMode ) {
 }
 
 void MainMenu::showPartyEditor() {
+	if( !partyEditor ) partyEditor = new PartyEditor( scourge );
   partyEditor->setVisible( true );
 }
 
 void MainMenu::createParty( Creature **pc, int *partySize ) { 
+	if( !partyEditor ) partyEditor = new PartyEditor( scourge );
   partyEditor->createParty( pc, partySize ); 
 }
 
 RenderedCreature *MainMenu::createWanderingHero( int level ) {
+	if( !partyEditor ) partyEditor = new PartyEditor( scourge );
 	return partyEditor->createWanderingHero( level );
 }
 

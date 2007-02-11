@@ -25,6 +25,9 @@
   */
 
 class SDLScreenView {
+private:
+	char updateEvent[300];
+
 public: 
 	SDLScreenView();
 	virtual ~SDLScreenView();
@@ -34,6 +37,9 @@ public:
 
   /** Draw stuff on top of the gui */
   virtual void drawAfter() = 0;
+
+	virtual void setUpdate( char *p ) { strcpy( updateEvent, p ); }
+	virtual char *getUpdate() { return updateEvent; }
 };
 
 #endif

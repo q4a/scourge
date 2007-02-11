@@ -77,7 +77,11 @@ private:
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
 
+	bool dataInitialized;
+
 public:
+
+	static Session *instance;
 
 
   /**
@@ -191,8 +195,9 @@ public:
 
 	inline char *getScoreid() { return scoreid; }
 
-protected:
   virtual void initData();
+	virtual void doInitData();
+	inline bool isDataInitialized() { return dataInitialized; }
 
 };
 

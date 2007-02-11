@@ -23,6 +23,8 @@
 
 using namespace std;
 
+#define UPDATE_MESSAGE "Loading Shapes"
+
 ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter()->isHeadless() ) {
   this->session = session;
 	this->loader = NULL;
@@ -45,9 +47,7 @@ void ShapePalette::preInitialize() {
 
 
   highlight = loadGLTextures("/textures/highlight.bmp");
-}
 
-void ShapePalette::initialize() {
 
   // configure
   ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );  
@@ -59,7 +59,29 @@ void ShapePalette::initialize() {
 	initCursor( config );
 	delete config;
 
-  config = ConfigLang::load( "config/pcmodel.cfg" );
+	  // set up the logo
+  setupAlphaBlendedBMP("/textures/logo2.bmp", &logo, &logoImage);
+  logo_texture = loadGLTextureBGRA(logo, logoImage, GL_LINEAR);
+  setupAlphaBlendedBMP("/textures/chain.bmp", &chain, &chainImage);
+  chain_texture = loadGLTextureBGRA(chain, chainImage, GL_LINEAR);
+
+  // set up the scourge
+  setupAlphaBlendedBMP("/textures/scourge.bmp", &scourge, &scourgeImage);
+
+  gui_texture = loadGLTextures("/textures/gui.bmp");
+  gui_texture2 = loadGLTextures("/textures/gui2.bmp");
+//  paper_doll_texture = loadGLTextures("/paperdoll.bmp");
+  cloud = loadGLTextures("/textures/cloud.bmp");
+  candle = loadGLTextures("/textures/candle.bmp");
+
+  border = loadGLTextures("/textures/border.bmp");
+  border2 = loadGLTextures("/textures/border2.bmp");
+
+  gui_wood_texture = this->findTextureByName( "gui-wood.bmp", true );
+}
+
+void ShapePalette::initialize() {
+  ConfigLang *config = ConfigLang::load( "config/pcmodel.cfg" );
 	initPcPortraits( config );
 	initPcModels( config );
   delete config;
@@ -83,14 +105,6 @@ void ShapePalette::initialize() {
 														 textureGroup[ 14 ] );
 
   // load textures
-  gui_texture = loadGLTextures("/textures/gui.bmp");
-  gui_texture2 = loadGLTextures("/textures/gui2.bmp");
-//  paper_doll_texture = loadGLTextures("/paperdoll.bmp");
-  cloud = loadGLTextures("/textures/cloud.bmp");
-  candle = loadGLTextures("/textures/candle.bmp");
-
-  border = loadGLTextures("/textures/border.bmp");
-  border2 = loadGLTextures("/textures/border2.bmp");
   SDL_Surface *tmpSurface = NULL;
   
   GLubyte *tmpImage = NULL;
@@ -233,17 +247,6 @@ void ShapePalette::initialize() {
   }
   
   setupAlphaBlendedBMP("/textures/paperdoll.bmp", &paperDoll, &paperDollImage);
-
-  // set up the logo
-  setupAlphaBlendedBMP("/textures/logo2.bmp", &logo, &logoImage);
-  logo_texture = loadGLTextureBGRA(logo, logoImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/textures/chain.bmp", &chain, &chainImage);
-  chain_texture = loadGLTextureBGRA(chain, chainImage, GL_LINEAR);
-
-  // set up the scourge
-  setupAlphaBlendedBMP("/textures/scourge.bmp", &scourge, &scourgeImage);
-
-  gui_wood_texture = this->findTextureByName("gui-wood.bmp");
 }
 
 ShapePalette::~ShapePalette() {
@@ -306,6 +309,9 @@ void ShapePalette::initPcPortraits( ConfigLang *config ) {
 
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
+
+		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+
 		string image = node->getValueAsString( "image" );
 		string sex = node->getValueAsString( "sex" );
 		if( strstr( image.c_str(), "death" ) ) {
@@ -329,6 +335,9 @@ void ShapePalette::initPcModels( ConfigLang *config ) {
 
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
+
+		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+
 		CharacterModelInfo *cmi = (CharacterModelInfo*)malloc( sizeof( CharacterModelInfo ) );
 		strcpy( cmi->model_name, node->getValueAsString( "path" ) );
 		strcpy( cmi->skin_name, node->getValueAsString( "skin" ) );
@@ -349,6 +358,8 @@ void ShapePalette::initRugs( ConfigLang *config ) {
 
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
+
+		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
 
 		SDL_Surface *tmpSurface = NULL;
 		GLubyte *tmpImage = NULL;
@@ -382,6 +393,8 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
+
+		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
 
 		bool special = node->getValueAsBool( "special" );
 		bool cave = node->getValueAsBool( "cave" );
@@ -509,6 +522,8 @@ void ShapePalette::initDescriptions( ConfigLang *config ) {
 		getChildrenByName( "description_group" );
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
+
+		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
 		
 		string id = node->getValueAsString( "id" );
 		descriptionIndex[ id ] = descriptions.size();
@@ -534,6 +549,8 @@ void ShapePalette::init3dsShapes( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
+		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+
 		ShapeValues *sv = createShapeValues( node );
 
 		strcpy( sv->m3ds_name, node->getValueAsString( "path" ) );
@@ -558,6 +575,8 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
+		
+		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
 
 		ShapeValues *sv = createShapeValues( node );
 

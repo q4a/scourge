@@ -1185,3 +1185,24 @@ void SDLHandler::setCursorMode(int n, bool useTimer) {
 void SDLHandler::saveScreen( char *path ) {
 	strcpy( willSavePath, path );
 }
+
+void SDLHandler::setUpdate( char *message, int n, int total ) {
+	if( !strlen( message ) ) {
+		screenView->setUpdate( message );
+	} else {
+		char tmp[500];
+		if( n > -1 && total > -1 ) {
+			sprintf( tmp, "[%s", message );
+			int percent = (int)( n / ( total / 100.0f) );
+			for( int i = 0; i < percent; i++ ) {
+				tmp[ strlen( message ) + i ] = '.';
+			}
+			tmp[ strlen( message ) + percent ] = ']';
+			tmp[ strlen( message ) + percent + 1 ] = '\0';
+		} else {
+			sprintf( tmp, "[%s]", message );
+		}
+		screenView->setUpdate( tmp );
+	}
+	processEventsAndRepaint();
+}
