@@ -24,6 +24,8 @@
 
 using namespace std;
 
+#define UPDATE_MESSAGE "Loading Items"
+
 map<int, vector<string> *> Item::soundMap;
 
 Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
@@ -300,6 +302,8 @@ void Item::initItemTypes( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
+		Session::instance->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+
 		ItemType itemType;
 		strcpy( itemType.name, node->getValueAsString( "name" ) );
 		itemType.isWeapon = node->getValueAsBool( "isWeapon" );
@@ -325,6 +329,8 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
   char temp[1000];
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
+
+		Session::instance->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, v->size() );
 		
 		// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
 		strcpy( name, node->getValueAsString( "name" ) );
@@ -493,6 +499,8 @@ void Item::initSounds( ConfigLang *config ) {
 	char tmp[1000];
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
+
+		Session::instance->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, v->size() );
 
 		strcpy( tmp, node->getValueAsString( "sounds" ) );
 		char *p = strtok(tmp, ",");

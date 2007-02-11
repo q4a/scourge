@@ -23,6 +23,8 @@ using namespace std;
   *@author Gabor Torok
   */
 
+#define UPDATE_MESSAGE "Loading Creatures"
+
 map<int, vector<Monster*>* > Monster::monsters;
 map<string, Monster*> Monster::monstersByName;
 map<string, map<int, vector<string>*>*> Monster::soundMap;
@@ -89,6 +91,8 @@ void Monster::initSounds( ConfigLang *config ) {
 
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
+
+		config->setUpdate( UPDATE_MESSAGE, i, v->size() );
 		
 		string monsterType_str = node->getValueAsString( "monster" );
 		map<int, vector<string>*> *currentSoundMap;
@@ -120,6 +124,8 @@ void Monster::initCreatures( ConfigLang *config ) {
 
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
+
+		config->setUpdate( UPDATE_MESSAGE, i, v->size() );
 
 		strcpy( name, node->getValueAsString( "name" ) );
 		strcpy( portrait, node->getValueAsString( "portrait" ) );

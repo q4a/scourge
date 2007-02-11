@@ -20,6 +20,7 @@
 using namespace std;
 
 SDLScreenView::SDLScreenView(){
+	updateEvent[0] = 0;
 }
 SDLScreenView::~SDLScreenView(){
 }

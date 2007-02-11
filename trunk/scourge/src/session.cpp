@@ -31,8 +31,9 @@
 #include "io/file.h"
 #include "configlang.h"
 
-
 using namespace std;
+
+Session *Session::instance = NULL;
 
 /**
  *@author Gabor Torok
@@ -53,6 +54,8 @@ Session::Session(GameAdapter *adapter) {
 	strcpy( savegame, "" );
 	strcpy( loadgame, "" );
 	strcpy( scoreid, "" );
+	dataInitialized = false;
+	Session::instance = this;
 }
 
 Session::~Session() {
@@ -74,69 +77,76 @@ void Session::initialize() {
   shapePal = new ShapePalette(this);
   adapter->setSession(this);
   adapter->initVideo();
-  initData();  
+	shapePal->preInitialize();
+	// init the fonts and ui
+  //adapter->initStart(12, "Loading shapes...");
 }
 
 void Session::start() {
   adapter->start();
 }
 
-void Session::initData() {
-
-  // move all this down to scourge
-  adapter->initStart(12, "Loading shapes...");
-
-  shapePal->initialize();
-
-  adapter->initUpdate("Loading characters...");  
-
-  adapter->initUpdate("Loading items...");
-
+void Session::doInitData() {
+	cerr << "doInitData: start" << endl;
+	
+	adapter->setUpdate( _( "Loading Shapes" ) );
+	shapePal->initialize();
+	
 	// read the skills, etc.
+	adapter->setUpdate( _( "Loading Professions" ) );
 	Rpg::initRpg();
-
-  // initialize the items
-  Item::initItems(getShapePalette());
-
-  adapter->initUpdate("Loading spells...");
-  // initialize magic
-  MagicSchool::initMagic();
-
+	
+	// initialize the items
+	adapter->setUpdate( _( "Loading Items" ) );
+	Item::initItems( shapePal );
+	
+	// initialize magic
+	adapter->setUpdate( _( "Loading Spells" ) );
+	MagicSchool::initMagic();
+	
 	// init professions
-  Character::initCharacters();
+	adapter->setUpdate( _( "Loading Characters" ) );
+	Character::initCharacters();
+	
+	
+	// initialize the monsters (they use items, magic)
+	adapter->setUpdate( _( "Loading Creatures" ) );
+	Monster::initMonsters();
 
-  adapter->initUpdate("Loading monsters...");
+	adapter->setUpdate( _( "Loading Portraits" ) );
+	shapePal->loadNpcPortraits();
+	
+	
+	// create the mission board
+	adapter->setUpdate( _( "Loading Missions" ) );
+	board = new Board( this );
+	
+	
+	// do this before the inventory and optionsdialog (so Z is less than of those)
+	adapter->setUpdate( _( "Initializing Party" ) );
+	party = new Party( this );
+	
+	adapter->setUpdate( _( "Initializing Scripting" ) );
+	squirrel = new SqBinding( this );
+	
+	adapter->setUpdate( _( "Loading Skills" ) );
+	SpecialSkill::initSkills();
+	
+	adapter->setUpdate( _( "Creating Map" ) );
+	map = new Map( adapter, adapter->getPreferences(), getShapePalette() );
+		
+	adapter->setUpdate( _( "Initializing UI" ) );
+	adapter->initUI();
+	
+	adapter->setUpdate( "" );
+	cerr << "doInitData: done" << endl;
+}
 
-  // initialize the monsters (they use items, magic)
-  Monster::initMonsters();
-  shapePal->loadNpcPortraits();
-
-  adapter->initUpdate("Loading missions...");
-
-  // create the mission board
-  board = new Board(this);
-
-  adapter->initUpdate("Creating party...");
-
-  // do this before the inventory and optionsdialog (so Z is less than of those)
-  party = new Party(this);
-
-  adapter->initUpdate("Starting Squirrel VM...");
-  squirrel = new SqBinding( this );
-
-  adapter->initUpdate("Initializing Special Skills...");
-  SpecialSkill::initSkills();
-
-  adapter->initUpdate("Initializing map...");
-  map = new Map( adapter, adapter->getPreferences(), getShapePalette() );
-  
-  adapter->initUpdate("Initializing ui...");
-  adapter->initUI();
-
-	adapter->initUpdate("finishing initialization...");
-  adapter->initEnd();
-  
- 	adapter->initUpdate("Initialization done.");
+void Session::initData() {
+	if( !dataInitialized ) {
+		dataInitialized = true;
+		doInitData();
+	}
 }
 
 void Session::quit(int value) {

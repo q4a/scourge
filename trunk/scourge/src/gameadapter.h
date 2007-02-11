@@ -56,6 +56,8 @@ public:
 
   // general UI
   virtual inline void initVideo() {}
+	virtual inline void repaintScreen() {}
+	virtual inline void setUpdate( char *message, int n=-1, int total=-1 ) {}
   virtual inline void initUI() {}
   virtual inline void start() {}
 	virtual inline void setCursorVisible( bool b ) {}
@@ -179,6 +181,10 @@ public:
   virtual ~SDLOpenGLAdapter();
 
   virtual void initVideo();
+	virtual void repaintScreen() { getSDLHandler()->processEventsAndRepaint(); }
+	virtual inline void setUpdate( char *message, int n=-1, int total=-1 ) {
+		getSDLHandler()->setUpdate( message, n, total );
+	}
   virtual inline SDLHandler *getSDLHandler() { return sdlHandler; }
   virtual inline void setCursorMode( int cursor, bool useTimer=false ) { sdlHandler->setCursorMode( cursor, useTimer ); }
 

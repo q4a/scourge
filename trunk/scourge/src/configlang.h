@@ -142,6 +142,8 @@ public:
   inline ConfigNode *getDocument() { return document; }
   inline std::map<std::string, ConfigNode*> *getIdMap() { return &idmap; }
 
+	void setUpdate( char *message, int n=-1, int total=-1 );
+
 	static ConfigLang *load( char *file );
 };
 

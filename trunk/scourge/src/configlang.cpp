@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "configlang.h"
+#include "session.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -323,3 +324,6 @@ ConfigLang *ConfigLang::load( char *file ) {
 	return config;
 }
 
+void ConfigLang::setUpdate( char *message, int n, int total ) {
+	Session::instance->getGameAdapter()->setUpdate( message, n, total );
+}

@@ -137,10 +137,6 @@ public:
   void drawMenu();
   void drawActiveMenuItem( float divisor, int count );
   void buildTextures();
-  void addLogoSprite();
-  void drawLogoSprites();
-  void moveLogoSprites();
-  void drawParticles();
   void drawStars();
 };
 

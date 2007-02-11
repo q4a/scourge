@@ -35,6 +35,7 @@ class Monster;
 class ModelWrapper;
 class ConfigLang;
 class ConfigNode;
+class SDLScreenView;
 
 typedef struct _MapGridLocation {
   char name[80];

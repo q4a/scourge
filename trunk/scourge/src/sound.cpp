@@ -216,8 +216,8 @@ void Sound::checkMusic( bool inCombat ) {
 #endif
 }
 
-void Sound::loadSounds(Preferences *preferences) {
-  if(!haveSound) return;
+void Sound::loadUISounds(Preferences *preferences) {
+	if(!haveSound) return;
 
 //  cerr << "Loading UI sounds..." << endl;
   storeSound(0, Window::ROLL_OVER_SOUND);
@@ -228,6 +228,14 @@ void Sound::loadSounds(Preferences *preferences) {
 	storeSound( 0, TELEPORT );
 	storeSound( 0, OPEN_DOOR );
 	storeSound( 0, OPEN_BOX );
+
+	setEffectsVolume(preferences->getEffectsVolume());
+
+}
+
+void Sound::loadSounds(Preferences *preferences) {
+  if(!haveSound) return;
+
 
 //  cerr << "Loading battle sounds..." << endl;
   for(int i = 0; i < Battle::getSoundCount(); i++) {
