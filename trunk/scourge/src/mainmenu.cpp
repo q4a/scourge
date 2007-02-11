@@ -265,13 +265,13 @@ void MainMenu::drawView() {
 		y += 14;    
 #endif
 		if( strlen( getUpdate() ) ) {
-			scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN );
 			glColor3f( 0.9, 0.15, 0.15 );
 			scourge->getSDLHandler()->texPrint( 0, y, getUpdate() );
 			y += 14;
-		} 
+		}
 		eventsEnabled = scourge->getSession()->isDataInitialized();
 		if( eventsEnabled ) scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_NORMAL );
+		else scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN );
     glPopMatrix();
 
     if(openingTop > top) {

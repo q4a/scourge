@@ -77,14 +77,18 @@ private:
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
 
-	bool dataInitialized;
+	int dataInitialized;
 
 public:
 
+	enum {
+		NOT_INITIALIZED=0,
+		INIT_STARTED,
+		INIT_DONE
+	};
 	static Session *instance;
-
-
-  /**
+  
+	/**
    * The main method for a project to run a game.
    * Pass in a GameAdapter implementation (eg.: Scourge class)
    * @return the value when the game exits. You can return this
@@ -197,7 +201,7 @@ public:
 
   virtual void initData();
 	virtual void doInitData();
-	inline bool isDataInitialized() { return dataInitialized; }
+	inline bool isDataInitialized() { return dataInitialized == INIT_DONE; }
 
 };
 

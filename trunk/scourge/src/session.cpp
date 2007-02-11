@@ -54,7 +54,7 @@ Session::Session(GameAdapter *adapter) {
 	strcpy( savegame, "" );
 	strcpy( loadgame, "" );
 	strcpy( scoreid, "" );
-	dataInitialized = false;
+	dataInitialized = NOT_INITIALIZED;
 	Session::instance = this;
 }
 
@@ -143,9 +143,10 @@ void Session::doInitData() {
 }
 
 void Session::initData() {
-	if( !dataInitialized ) {
-		dataInitialized = true;
+	if( dataInitialized == NOT_INITIALIZED ) {
+		dataInitialized = INIT_STARTED;
 		doInitData();
+		dataInitialized = INIT_DONE;
 	}
 }
 
