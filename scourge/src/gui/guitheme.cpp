@@ -80,6 +80,8 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
 
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
+
+		//config->setUpdate( "Loading UI themes", i, vv->size() );
   
 		const char *name = node->getValueAsString( "name" );
 		GuiTheme *theme = new GuiTheme( strdup( name ) );
