@@ -25,6 +25,7 @@
 #include "gui/label.h"
 #include "gui/button.h"
 #include "gui/scrollinglabel.h"
+#include "gui/progress.h"
 #include "shapepalette.h"
 #include "savegamedialog.h"
 #include "freetype/fontmgr.h"
@@ -131,6 +132,12 @@ MainMenu::MainMenu(Scourge *scourge){
                                        ( h - 35 ), 
                                        Constants::getMessage( Constants::OK_LABEL ) );
   aboutDialog->setVisible( false );
+
+
+	progress = new Progress( scourge->getSDLHandler(),
+													 scourge->getSession()->getShapePalette()->getProgressTexture(),
+													 scourge->getSession()->getShapePalette()->getProgressHighlightTexture(),
+													 100, false, false );
 }
 
 MainMenu::~MainMenu(){
@@ -264,14 +271,6 @@ void MainMenu::drawView() {
     scourge->getSDLHandler()->texPrint( 0, y, _( "[Sound]" ) );
 		y += 14;    
 #endif
-		if( strlen( getUpdate() ) ) {
-			glColor3f( 0.9, 0.15, 0.15 );
-			scourge->getSDLHandler()->texPrint( 0, y, getUpdate() );
-			y += 14;
-		}
-		eventsEnabled = scourge->getSession()->isDataInitialized();
-		if( eventsEnabled ) scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_NORMAL );
-		else scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN );
     glPopMatrix();
 
     if(openingTop > top) {
@@ -290,7 +289,47 @@ void MainMenu::drawView() {
   }
 }
 
+#define MAX_STATUS 30.0f
 void MainMenu::drawAfter() {
+	if( strlen( getUpdate() ) ) {
+		glPushMatrix();
+		
+		glLoadIdentity();
+		glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glDisable( GL_TEXTURE_2D );
+		glColor4f( 0, 0, 0, 0.75f );
+		glBegin( GL_QUADS );
+		glVertex3f( 0, 0, 0 );
+		glVertex3f( 0, scourge->getScreenHeight(), 0 );
+		glVertex3f( scourge->getScreenWidth(), scourge->getScreenHeight(), 0 );
+		glVertex3f( scourge->getScreenWidth(), 0, 0 );
+		glEnd();		
+		glEnable( GL_TEXTURE_2D );
+		glDisable( GL_BLEND );
+
+		glLoadIdentity();
+    glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
+		int y = -70;
+		glColor3f( 0.8, 0.75, 0.65 );
+		if( getUpdateTotal() > -1 ) {
+			scourge->getSDLHandler()->
+				texPrint( 35, y - 3, "%s: %d%%", 
+									getUpdate(), 
+									(int)( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / 100.0f ) ) );
+			glTranslatef( 180, y - 15, 0 );
+
+			progress->updateStatusLight( NULL, 
+																	 (int)( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / MAX_STATUS ) ), 
+																	 (int)MAX_STATUS );
+		} else {
+			scourge->getSDLHandler()->texPrint( 35, y - 3, getUpdate() );
+		}
+		glPopMatrix();
+	}
+	eventsEnabled = scourge->getSession()->isDataInitialized();
+	if( eventsEnabled ) scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_NORMAL );
+	else scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN );
 }
 
 void MainMenu::show() { 
@@ -486,7 +525,7 @@ void MainMenu::drawLogo() {
   glEnable( GL_TEXTURE_2D );
   glPushMatrix();
   glLoadIdentity();
-  glTranslatef( 70, logoRot, 500 );
+  glTranslatef( 70, logoRot, 0 );
   float w = scourge->getShapePalette()->logo->w;
   float h = scourge->getShapePalette()->logo->h;
   glColor4f( 1, 1, 1, 1 );
@@ -510,7 +549,7 @@ void MainMenu::drawLogo() {
     glTranslatef( ( !i ? 100 : 
                     70 + scourge->getShapePalette()->logo->w - 30 - 
                     scourge->getShapePalette()->chain->w ), 
-                  logoRot - scourge->getShapePalette()->chain->h, 500 );
+                  logoRot - scourge->getShapePalette()->chain->h, 0 );
     float w = scourge->getShapePalette()->chain->w;
     float h = scourge->getShapePalette()->chain->h;
     glColor4f( 1, 1, 1, 1 );
