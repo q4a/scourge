@@ -36,6 +36,7 @@ class Label;
 class Button;
 class ScrollingLabel;
 class SavegameDialog;
+class Progress;
 
 typedef struct _MenuItemParticle {
   int life;
@@ -101,6 +102,8 @@ private:
   static const char *menuText[];
   static const int values[];
   std::vector< MenuItem* > menuItemList;
+
+	Progress *progress;
   
 public:
 #define NEW_GAME 1

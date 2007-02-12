@@ -27,6 +27,7 @@
 class SDLScreenView {
 private:
 	char updateEvent[300];
+	int updateValue, updateTotal;
 
 public: 
 	SDLScreenView();
@@ -38,8 +39,11 @@ public:
   /** Draw stuff on top of the gui */
   virtual void drawAfter() = 0;
 
-	virtual void setUpdate( char *p ) { strcpy( updateEvent, p ); }
-	virtual char *getUpdate() { return updateEvent; }
+	virtual bool setUpdate( char *p, int n=-1, int total=-1 );
+	
+	virtual inline char *getUpdate() { return updateEvent; }
+	virtual inline int getUpdateValue() { return updateValue; }
+	virtual inline int getUpdateTotal() { return updateTotal; }
 };
 
 #endif

@@ -36,6 +36,42 @@ Progress::Progress(ScourgeGui *scourgeGui, GLuint texture, GLuint highlight,
 Progress::~Progress() {
 }
 
+void Progress::updateStatusLight( const char *message, int n, int max ) {
+  if(n != -1) status = n;
+  if(max != -1) maxStatus = max;
+
+  int w = 10;  
+  int gap = 3;
+
+  int width = maxStatus *  ( w + gap ) + 20;
+
+  // display as % if too large
+  int maxWidth = scourgeGui->getScreenWidth() - 50;
+  if( width >= maxWidth ) {
+    maxStatus = (int)((float)( maxStatus * maxWidth ) / (float)width);
+    status = (int)((float)( status * maxWidth ) / (float)width);
+    width = maxWidth;
+  }
+
+  glColor4f(1, 1, 1, 1);
+  if( message && strlen( message ) ) scourgeGui->texPrint( 0, 22, message );
+  
+  for( int i = 0; i < 2; i++ ) {
+    switch( i ) {
+    case 0: glColor4f( 0.5f, 0.5f, 0.5f, 0.8f ); break;
+    case 1: glColor4f( 1, 1, 1, 0.8f ); break;
+    }
+    Widget::drawBorderedTexture( highlight, 
+                                 0, 0, 
+                                 HIGHLIGHT_BORDER * 2 + ( i == 0 ? maxStatus : status ) * ( w + gap ), 
+                                 20,
+                                 HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
+  }
+  //status++;
+  
+	glDisable( GL_ALPHA_TEST );
+}
+
 void Progress::updateStatus(const char *message, bool updateScreen, int n, int max, int alt, bool drawScreen) {
   if(n != -1) status = n;
   if(max != -1) maxStatus = max;
