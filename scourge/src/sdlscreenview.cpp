@@ -29,21 +29,16 @@ SDLScreenView::~SDLScreenView(){
 
 // return true if the screen needs to be updated
 bool SDLScreenView::setUpdate( char *message, int n, int total ) {
-	bool ret = true;
-	/*
-	if( n > -1 && total > -1 ) {
-		int oldPercent = (int)( updateValue / ( total / 100.0f) );
-		int percent = (int)( n / ( total / 100.0f) );
-		ret = ( percent < oldPercent || ( percent - oldPercent ) >= 10 );
-	} else {
-		ret = true;
-	}
-	*/
+	int oldValue = updateValue;
+	int percent = (int)( n / ( total / 100.0f) );
 
 	strcpy( this->updateEvent, message );
 	this->updateValue = n;
 	this->updateTotal = total;
 
-	return ret;
+	return( oldValue <= 0 || 
+					updateValue <= 0 || 
+					percent == 100 || 
+					( updateValue % 10 ) == 0 ? true : false );
 }
 

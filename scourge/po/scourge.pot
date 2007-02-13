@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-11 13:33-0800\n"
+"POT-Creation-Date: 2007-02-12 20:52-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,44 +16,44 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/mainmenu.cpp:53
+#: src/mainmenu.cpp:54
 msgid "New Game"
 msgstr ""
 
-#: src/mainmenu.cpp:54
+#: src/mainmenu.cpp:55
 msgid "Continue Game"
 msgstr ""
 
-#: src/mainmenu.cpp:55
+#: src/mainmenu.cpp:56
 msgid "Multiplayer Game"
 msgstr ""
 
-#: src/mainmenu.cpp:56
+#: src/mainmenu.cpp:57
 msgid "Options"
 msgstr ""
 
-#: src/mainmenu.cpp:57 src/mainmenu.cpp:121
+#: src/mainmenu.cpp:58 src/mainmenu.cpp:122
 msgid "About S.c.o.u.r.g.e."
 msgstr ""
 
-#: src/mainmenu.cpp:58
+#: src/mainmenu.cpp:59
 msgid "Quit"
 msgstr ""
 
-#: src/mainmenu.cpp:253
+#: src/mainmenu.cpp:260
 #, c-format
 msgid "Scourge version %s"
 msgstr ""
 
-#: src/mainmenu.cpp:257
+#: src/mainmenu.cpp:264
 msgid "Optionally compiled modules:"
 msgstr ""
 
-#: src/mainmenu.cpp:260
+#: src/mainmenu.cpp:267
 msgid "[Network]"
 msgstr ""
 
-#: src/mainmenu.cpp:264
+#: src/mainmenu.cpp:271
 msgid "[Sound]"
 msgstr ""
 
@@ -373,7 +373,8 @@ msgstr ""
 #: ../scourge_data/config/weapon.cfg:596
 msgid ""
 "The blade of this sword is made from laying many strips of metal upon each "
-"other in a twisted "
+"other in a twisted 'snake' formation. This gives the weapon its exceptional "
+"strength."
 msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:597
