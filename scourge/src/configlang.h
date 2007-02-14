@@ -36,7 +36,7 @@ public:
 private:
 	int type;
 	bool translatable;
-	std::string valueStr, translateStr;
+	std::string valueStr, translateStr, original;
 	float valueNum;
 
 public:
@@ -46,6 +46,7 @@ public:
 
 	float getAsFloat();
 	const char *getAsString();
+	inline std::string getOriginal() { return original; }
 };
 
 class ConfigNode {
@@ -65,7 +66,7 @@ public:
 	void addValue( std::string name, ConfigValue *value );
 
   inline ConfigLang *getConfig() { return config; }
-	inline std::string getName() { return name; }
+	inline std::string getName() { return name; }	
   inline std::string getId() { return id; }
 	inline std::map<std::string, ConfigValue*>* getValues() { return &values; }
 	inline std::vector<ConfigNode*>* getChildren() { return &children; }

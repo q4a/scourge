@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-12 20:52-0800\n"
+"POT-Creation-Date: 2007-02-13 21:44-0800\n"
 "PO-Revision-Date: 2007-02-04 11:18+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -284,49 +284,69 @@ msgstr ""
 msgid "Some plants grow here."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:8
+#: ../scourge_data/config/weapon.cfg:3
 msgid ""
 "It's an old carving knife. The long dulled blade sports a surprising number "
 "of dents."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:9
+#: ../scourge_data/config/weapon.cfg:4
+msgid "Kitchen Knife"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:11
 msgid "A rusty carving knife"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:26
+#: ../scourge_data/config/weapon.cfg:22
 msgid "A lightweight weapon that is built for speed. A favorite of assassins!"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:27
+#: ../scourge_data/config/weapon.cfg:23
+msgid "Dirk"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:30
 msgid "A small dirk"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:77
+#: ../scourge_data/config/weapon.cfg:74
 msgid ""
 "This dirk sports a menacing extra notch at its end. Monsters are sure to run "
 "screaming from this horror!"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:78
+#: ../scourge_data/config/weapon.cfg:75
+msgid "Curved Dirk"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:82
 msgid "A dirk with a spike"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:128
+#: ../scourge_data/config/weapon.cfg:126
 msgid ""
 "The throwing dagger is a well balanced weapon, favored by the feared "
 "assassin-poets of the Order of the Grizzled Pony."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:129
+#: ../scourge_data/config/weapon.cfg:127
+msgid "Throwing Dagger"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:134
 msgid "A well-balanced throwing dagger."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:173
+#: ../scourge_data/config/weapon.cfg:172
 msgid "Many-a-throats were silenced by this here black iron"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:174
+#: ../scourge_data/config/weapon.cfg:173
+msgid "Dagger"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:180
 msgid "A curiously shaped dagger"
 msgstr ""
 
@@ -337,505 +357,713 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:226
+msgid "Hunting Knife"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:233
 msgid "A hunting knife with a serrated edge."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:270
+#: ../scourge_data/config/weapon.cfg:271
 msgid ""
 "This knife bears the symbol of Unamoin. The god is enthroned on a seat of "
 "flame, before him stand a long line of souls, to be sacrificed for the "
 "divine feast."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:271
+#: ../scourge_data/config/weapon.cfg:272
+msgid "Ceremonial Dagger"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:279
 msgid "A wide-bladed ceremonial dagger."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:322
+#: ../scourge_data/config/weapon.cfg:324
 msgid "A dwarven shortsword of average workmanship"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:323
+#: ../scourge_data/config/weapon.cfg:325
+msgid "Short sword"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:332
 msgid "A stubby short sword"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:373
+#: ../scourge_data/config/weapon.cfg:376
 msgid ""
 "Longer and wider than a shortsword, the dwarven military brand is sometimes "
 "held with two hands. It is designed for close-quarter underground melee "
 "fighting."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:374
+#: ../scourge_data/config/weapon.cfg:377
+msgid "Dwarven sword"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:385
 msgid "A sword of dwarven make."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:426
+#: ../scourge_data/config/weapon.cfg:430
 msgid ""
 "Officer in the royal guard wear this pointed swords as a sign of rank. "
 "They're usually not used in actual combat but are only carried during a "
 "ceremony."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:427
+#: ../scourge_data/config/weapon.cfg:431
+msgid "Ornamental officer sword"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:439
 msgid "A strange pointed sword."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:483
+#: ../scourge_data/config/weapon.cfg:488
 msgid ""
 "A bastard sword can be wielded either by one or both hands... (If you still "
 "have both hands)"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:484
+#: ../scourge_data/config/weapon.cfg:489
+msgid "Bastard sword"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:497
 msgid "The rusty bastard sword has seen plenty of use"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:540
+#: ../scourge_data/config/weapon.cfg:546
 msgid "The longsword is the noble weapon of the knights"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:541
+#: ../scourge_data/config/weapon.cfg:547
+msgid "Long sword"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:555
 msgid "A well-balanced, shiny longsword"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:596
+#: ../scourge_data/config/weapon.cfg:603
 msgid ""
 "The blade of this sword is made from laying many strips of metal upon each "
 "other in a twisted 'snake' formation. This gives the weapon its exceptional "
 "strength."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:597
+#: ../scourge_data/config/weapon.cfg:604
+msgid "Twisted sword"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:612
 msgid "A blade with a snake-like form"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:652
+#: ../scourge_data/config/weapon.cfg:660
 msgid ""
 "Adopted from an invading force of Southern pirates, these heavy cutlasses "
 "can deliver a crushing blow."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:653
+#: ../scourge_data/config/weapon.cfg:661
+msgid "Royal Cutlass"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:669
 msgid "A cutlass with a curved, heavy blade"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:709
+#: ../scourge_data/config/weapon.cfg:718
 msgid "A smaller version of the royal cutlass that can be held in one hand."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:710
+#: ../scourge_data/config/weapon.cfg:719
+msgid "Nederianese Cutlass"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:727
 msgid "A small cutlass"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:765
+#: ../scourge_data/config/weapon.cfg:775
 msgid ""
 "These swords were designed to be used from horseback. As such they tend to "
 "be top-heavy and awkward to use in melee."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:766
+#: ../scourge_data/config/weapon.cfg:776
+msgid "Cavalry Sabre"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:784
 msgid "A strangely-balanced utilitarian sword"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:821
+#: ../scourge_data/config/weapon.cfg:832
 msgid ""
 "Mostly used by the aristocracy, these weapons were designed to puncture "
 "armor rather to strike with the edge. They require extreme finesse when used "
 "and are more likely to break."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:822
+#: ../scourge_data/config/weapon.cfg:833
+msgid "Rapier"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:841
 msgid "A long pointed sword with not much of an edge."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:878
+#: ../scourge_data/config/weapon.cfg:890
 msgid ""
 "Only persons of exceeding strength can cleave their enemies to bits with "
 "this greatsword"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:879
+#: ../scourge_data/config/weapon.cfg:891
+msgid "Great sword"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:899
 msgid "A two-handed greatsword"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:935
+#: ../scourge_data/config/weapon.cfg:948
 msgid ""
 "Wrought by the elvish metal smiths of Allovium, this blade is specially "
 "prepared to slay dragons."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:936
+#: ../scourge_data/config/weapon.cfg:949
+msgid "Purple Worm Slayer"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:957
 msgid "A purple curved sword"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:991
+#: ../scourge_data/config/weapon.cfg:1005
 msgid "This graceful, single-edged sword cannot be left out of any rpg!"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:992
+#: ../scourge_data/config/weapon.cfg:1006
+msgid "Katana"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1014
 msgid "A single-edge sword of mythic proportions!"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1051
+#: ../scourge_data/config/weapon.cfg:1066
 msgid ""
 "The fabled weapon of Goliompur was forged by elven smiths in the deep "
 "forests of Alovium eons ago. It is rumored to speak to those it chooses to "
 "be her leader."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1052
+#: ../scourge_data/config/weapon.cfg:1067
+msgid "Goliompur"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1075
 msgid "A weapon of exceeding craftsmanship. It is marked with strange runes."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1112
+#: ../scourge_data/config/weapon.cfg:1128
 msgid ""
 "Legend tells of how king Haomen of the Nordic men hew his enemies in the "
 "battles at the fjords of Gormoth wielding this blade."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1113
+#: ../scourge_data/config/weapon.cfg:1129
+msgid "Dextran"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1137
 msgid ""
 "You feel a crispness in the air and smell oaken notes while near this weapon."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1173
+#: ../scourge_data/config/weapon.cfg:1190
 msgid "A battleaxe forged under the mountain in darkness and silence"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1174
+#: ../scourge_data/config/weapon.cfg:1191
+msgid "Battleaxe"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1198
 msgid "The sturdy battleaxe also serves as a walking stick"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1228
+#: ../scourge_data/config/weapon.cfg:1246
 msgid ""
 "Weapon of the feared dwarven assassins, the throwing axe returns to its "
 "owner after its arc of death!"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1229
+#: ../scourge_data/config/weapon.cfg:1247
+msgid "Throwing axe"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1254
 msgid "A short-handled throwing axe"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1284
+#: ../scourge_data/config/weapon.cfg:1303
 msgid ""
 "The Gorlish scouts of the Underlake clans carry these axes. The scouts are "
 "able to scale the sheerest rock faces of their underground realm, so the "
 "axes are used as weapons as well as climbing gear."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1285
+#: ../scourge_data/config/weapon.cfg:1304
+msgid "Gorlish Axe"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1312
 msgid "A hooked medium axe"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1340
+#: ../scourge_data/config/weapon.cfg:1360
 msgid ""
 "This giant, two-handed axe is the rough weapon of the wandering executioner."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1341
+#: ../scourge_data/config/weapon.cfg:1361
+msgid "Greataxe"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1369
 msgid "A crudely-made two-handed axe"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1397
+#: ../scourge_data/config/weapon.cfg:1418
 msgid ""
 "This weapon is obviously the work of an orc or ogre smith. It's handle is "
 "too wide for most human hands."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1398
+#: ../scourge_data/config/weapon.cfg:1419
+msgid "Chomper"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1427
 msgid "A large axe with a serrated blade"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1453
+#: ../scourge_data/config/weapon.cfg:1475
 msgid ""
 "This is the very weapon which, wielded by Thuzgorod the Red slew the goblin "
 "king in the dwarven wars of Uzmagil."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1454
+#: ../scourge_data/config/weapon.cfg:1476
+msgid "Persuader"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1484
 msgid "A stout axe with strange runes"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1510
+#: ../scourge_data/config/weapon.cfg:1533
 msgid ""
 "This is the Golden Axe once held by the many arms of Thulionix the dwarven "
 "god of suffering."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1511
+#: ../scourge_data/config/weapon.cfg:1534
+msgid "Golden Axe"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1542
 msgid "A small axe of pale gold color"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1567
+#: ../scourge_data/config/weapon.cfg:1591
 msgid "This small gnomish bow is made of a light gray wood"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1568
+#: ../scourge_data/config/weapon.cfg:1592
+msgid "Smallbow"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1599
 msgid "A small bow"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1623
+#: ../scourge_data/config/weapon.cfg:1648
 msgid "This bow is made of a strong wood with artistic carvings on its handles"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1624
+#: ../scourge_data/config/weapon.cfg:1649
+msgid "Ornatebow"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1657
 msgid "A nicely crafted, strong bow"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1680
+#: ../scourge_data/config/weapon.cfg:1706
 msgid ""
 "While cumbersome to reload, the crossbow delivers an armor-piercing greeting "
 "to any foe."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1681
+#: ../scourge_data/config/weapon.cfg:1707
+msgid "Crossbow"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1715
 msgid "A large crossbow"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1737
+#: ../scourge_data/config/weapon.cfg:1764
 msgid ""
 "Though faster to reload than its pumped-up cousin, this crossbow has a "
 "shorter range and delivers less power."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1738
+#: ../scourge_data/config/weapon.cfg:1765
+msgid "Light crossbow"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1773
 msgid "A crossbow with an orange wood handle"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1794
+#: ../scourge_data/config/weapon.cfg:1822
 msgid "This large bow is the most common weapon of Sylvian rangers"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1795
+#: ../scourge_data/config/weapon.cfg:1823
+msgid "Longbow"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1831
 msgid "A long bow adorned with a leaf symbol"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1851
+#: ../scourge_data/config/weapon.cfg:1880
 msgid ""
 "The elven armies under Mondiuvelen the Hale once carried these large bows"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1852
+#: ../scourge_data/config/weapon.cfg:1881
+msgid "Strongbow"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1889
 msgid "A large bow with an ivory sight-piece"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1908
+#: ../scourge_data/config/weapon.cfg:1938
 msgid ""
 "The Sylvian bow of Bolinfupur kills silently. It is made from a single piece "
 "of blood stone."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1909
+#: ../scourge_data/config/weapon.cfg:1939
+msgid "Bolinfupur"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:1947
 msgid "This bow is made from a dull grayish-red substance that resembles stone"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1965
+#: ../scourge_data/config/weapon.cfg:1996
 msgid ""
 "This roughly hewn tree-limb barely qualifies as a primitive weapon. The "
 "handle is worn by years of head-bashing."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:1966
+#: ../scourge_data/config/weapon.cfg:1997
+msgid "Wooden club"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2004
 msgid "Your basic, non-enchanted, non-spiked wooden club."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2021
+#: ../scourge_data/config/weapon.cfg:2053
 msgid ""
 "The clerical weapon of choice! Dispense holy bashing of heads and denting of "
 "armor with this divine instrument of bludgeoning."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2022
+#: ../scourge_data/config/weapon.cfg:2054
+msgid "Rounded mace"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2061
 msgid "A metal-headed mace with a plain wooden handle."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2077
+#: ../scourge_data/config/weapon.cfg:2110
 msgid ""
 "The main advantage when using a morning star over its bestudded brother the "
 "Spiked Flail, is that the user need not bother with the weapon's business "
 "end getting stuck in the target."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2078
+#: ../scourge_data/config/weapon.cfg:2111
+msgid "Morning Star"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2119
 msgid "A metal ball on a chain"
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2134
+#: ../scourge_data/config/weapon.cfg:2168
 msgid ""
 "Favorite backup weapon of the knight. Should your sword be lost or "
 "irretrievable lodged in an opponent, reach for the flail and wade in the "
 "gore with a smile."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2135
+#: ../scourge_data/config/weapon.cfg:2169
+msgid "Spiked flail"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2177
 msgid "Spiked ball dangles at the end of a chain of impressive length."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2191
+#: ../scourge_data/config/weapon.cfg:2226
 msgid ""
 "Once used by the dead-eater ogre legions of the Crimson Leaf as a weapon for "
 "crowd control. This mace is to be held by two large hands."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2192
+#: ../scourge_data/config/weapon.cfg:2227
+msgid "Double-fisted Maragon"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2235
 msgid "An enormous two-handed mace."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2249
+#: ../scourge_data/config/weapon.cfg:2285
 msgid ""
 "Created quite by accident, this black flail was the side-effect of a failed "
 "experiment at the school of war-wizardry."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2250
+#: ../scourge_data/config/weapon.cfg:2286
+msgid "Darkflail"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2294
 msgid "The black flail emits a humming noise."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2306
+#: ../scourge_data/config/weapon.cfg:2343
 msgid ""
 "Descendant of Glauis the legendary talking mace of Horom, this agile weapon "
 "is also a ferocious combatant."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2307
+#: ../scourge_data/config/weapon.cfg:2344
+msgid "Warmaster"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2352
 msgid "This mace is surrounded by a near-visible aura of blood-lust."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2363
+#: ../scourge_data/config/weapon.cfg:2401
 msgid ""
 "This long wooden pole serves both as a walking stick and fighting staff."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2364
+#: ../scourge_data/config/weapon.cfg:2402
+msgid "Quarter Staff"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2409
 msgid "A long wood pole."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2421
+#: ../scourge_data/config/weapon.cfg:2460
 msgid ""
 "A mid-range weapon of precision and finesse, the javelin grew in popularity "
 "as a court hunting weapon under Haladil."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2422
+#: ../scourge_data/config/weapon.cfg:2461
+msgid "Javelin"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2468
 msgid "A finely crafted, lightweight lance."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2479
+#: ../scourge_data/config/weapon.cfg:2519
 msgid ""
 "Forged in the ice-caverns of the ancient troll halls of Gormoril (not a "
 "masterpiece of precision) this iron lance is made for a large fighter."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2480
+#: ../scourge_data/config/weapon.cfg:2520
+msgid "Longspear"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2528
 msgid "A rough iron pole with a sharpened tip."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2538
+#: ../scourge_data/config/weapon.cfg:2579
 msgid ""
 "An ancient long reaching weapon of a gladiatorial history. This trident "
 "bears the symbol of the sea-lords of Urtap."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2539
+#: ../scourge_data/config/weapon.cfg:2580
+msgid "Trident"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2588
 msgid "A long metal pole with three barbed prongs."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2597
+#: ../scourge_data/config/weapon.cfg:2639
 msgid "This weapon was once held by the royal guard of the late king Haladil."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2598
+#: ../scourge_data/config/weapon.cfg:2640
+msgid "Halberd"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2648
 msgid "A long pole with an axe blade at its top."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2655
+#: ../scourge_data/config/weapon.cfg:2698
 msgid "A reaping scythe strengthened and sharpened for more than just crops."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2656
+#: ../scourge_data/config/weapon.cfg:2699
+msgid "War-scythe"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2707
 msgid "A wicked curved blade atop a simple wooden pole."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2713
+#: ../scourge_data/config/weapon.cfg:2757
 msgid ""
 "The dryad lich Milmoril needs no introduction. This long black scythe with "
 "the saw-blade and bone handle was her choice weapon."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2714
+#: ../scourge_data/config/weapon.cfg:2758
+msgid "Scythe of Milmoril"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2766
 msgid "A large black scythe of excellent (if evil) workmanship."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2771
+#: ../scourge_data/config/weapon.cfg:2816
 msgid ""
 "The legend of the dead king Iconoclastus, powers the sword against creatures "
 "who cast spells. The late king's hatred of all things magical was well known."
 msgstr ""
 
-#: ../scourge_data/config/weapon.cfg:2772
+#: ../scourge_data/config/weapon.cfg:2817
+msgid "Brand of Iconoclast"
+msgstr ""
+
+#: ../scourge_data/config/weapon.cfg:2826
 msgid "This bastard sword seems to glow with an unhealthy shine."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:8
+#: ../scourge_data/config/armor.cfg:3
 msgid ""
 "Not much warmth reaches your stiff fingers in these homemade gloves. It also "
 "appears that either this is not a single pair or the previous owner's left "
 "hand was much larger than the right."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:9
+#: ../scourge_data/config/armor.cfg:4
+msgid "Leather Work Gloves"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:11
 msgid "A pair of ill-made, ill-fitting leather gloves."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:25
+#: ../scourge_data/config/armor.cfg:21
 msgid ""
 "This embroidered pair of heavy leather gloves bears the symbols of the "
 "Horghh city guards. In places it is worn very thin, yet it appears to be "
 "exceptionally sturdy."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:26
+#: ../scourge_data/config/armor.cfg:22
+msgid "Embroidered Guard Gloves"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:29
 msgid "A comfortable pair of heavy leather gloves."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:42
+#: ../scourge_data/config/armor.cfg:39
 msgid ""
 "This chainmail mitten is full of dents and scratches. Despite the occasional "
 "rust-spots, it fits admirably and provides good protection in combat."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:43
+#: ../scourge_data/config/armor.cfg:40
+msgid "Link Gauntlet"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:47
 msgid "A pair of sturdy chainmail mittens."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:68
+#: ../scourge_data/config/armor.cfg:66
 msgid ""
 "A few minutes of cleaning reveals a rare find: a full-plait armored gauntlet "
 "still in tact rescued from the depths."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:69
+#: ../scourge_data/config/armor.cfg:67
+msgid "Plaite Gauntlet"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:74
 msgid "A dirty pair of plait-mail armored gauntlets."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:95
+#: ../scourge_data/config/armor.cfg:93
 msgid ""
 "Your enemies may laugh at your dorky headgear, however, it does protect you "
 "from dull, bludgeoning objects"
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:96
+#: ../scourge_data/config/armor.cfg:94
+msgid "Horned helmet"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:101
 msgid "A stylish helmet adorned with the horns of a slain foe"
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:113
+#: ../scourge_data/config/armor.cfg:112
 msgid ""
 "Finally a head-gear designed to protect others from viewing the hideous "
 "wounds you have acquired over the years."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:114
+#: ../scourge_data/config/armor.cfg:113
+msgid "Full face helmet"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:120
 msgid "A clunky helmet with narrow slits for the eyes and nose."
 msgstr ""
 
@@ -846,224 +1074,308 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/armor.cfg:140
+msgid "Helmet with visor"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:148
 msgid "A dented metal helmet with a removable visor."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:166
+#: ../scourge_data/config/armor.cfg:167
 msgid ""
 "This large helmet covers your entire face and parts of your neck and "
 "shoulders. It is worn mostly by knights."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:167
+#: ../scourge_data/config/armor.cfg:168
+msgid "Knight's helmet"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:176
 msgid "A giant metal orb of a helmet. The visor is rusted shut."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:193
+#: ../scourge_data/config/armor.cfg:195
 msgid ""
 "This is the typical wizard's hat. It's as if the hat is begging others to "
 "mock its wearer. (Of course, this is generally when the mocker is engulfed "
 "in flames...)"
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:194
+#: ../scourge_data/config/armor.cfg:196
+msgid "Pointy Hat"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:203
 msgid "A light blue broad rimmed hat with a weird pointy top."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:209
+#: ../scourge_data/config/armor.cfg:212
 msgid ""
 "In early autumn when the nights start to cool and that old feeling returns, "
 "to hop over the backyard fence and follow a trail wherever it may lead... "
 "this is the hat you'd reach for."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:210
+#: ../scourge_data/config/armor.cfg:213
+msgid "Adventuring Hat"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:220
 msgid "A brown leather hat with a feather."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:225
+#: ../scourge_data/config/armor.cfg:229
 msgid ""
 "I'm sure the couple flimsy boards held together by cat-gut will provide tons "
 "of life-saving cover in battle. On the positive side, at least it's a small, "
 "maneuverable shield."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:226
+#: ../scourge_data/config/armor.cfg:230
+msgid "Buckler"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:237
 msgid "A small home-made wooden shield."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:243
+#: ../scourge_data/config/armor.cfg:248
 msgid ""
 "The shield's hard wood is dried and flame toughened. It is covered in "
 "martial colors and someone jokingly painted a bulls-eye on it."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:244
+#: ../scourge_data/config/armor.cfg:249
+msgid "Wooden Shield"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:256
 msgid "A well-made, sturdy wooden shield."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:262
+#: ../scourge_data/config/armor.cfg:268
 msgid ""
 "This triangular metal shield would be a boon to any adventuring knight, if "
 "not for the the countless dents and rust-spots that cover its surface."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:263
+#: ../scourge_data/config/armor.cfg:269
+msgid "Steel Shield"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:277
 msgid "A triangular metal shield."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:297
+#: ../scourge_data/config/armor.cfg:304
 msgid ""
 "A symbolic, painted dragon roars to life on this shield, as if to only "
 "remind its wearer of the absolute futility of carrying it against an actual "
 "one."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:298
+#: ../scourge_data/config/armor.cfg:305
+msgid "Ornate Dragon Shield"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:313
 msgid "A metal shield covered with the painting of an ornate dragon."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:332
+#: ../scourge_data/config/armor.cfg:340
 msgid ""
 "A heavy duty cavalry shield, designed to withstand an impact by the lance of "
 "a horse-mounted rider, charging at full speed. Judging by the gaping whole "
 "in its center, it failed to do so last time."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:333
+#: ../scourge_data/config/armor.cfg:341
+msgid "Cavalry Shield"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:349
 msgid "A heavy metal shield."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:367
+#: ../scourge_data/config/armor.cfg:376
 msgid ""
 "A shield cleverly constructed from the cured hide of a mountain troll. These "
 "were especially popular during the dwarven-troll war when each side used "
 "such handiwork to idle away the time between skirmishes."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:368
+#: ../scourge_data/config/armor.cfg:377
+msgid "Trollhide Shield"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:385
 msgid "A gray shield featuring advanced troll-hide technology."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:402
+#: ../scourge_data/config/armor.cfg:412
 msgid ""
 "If one is smitten due to a lack of protective cover, will anyone hear of the "
 "tragedy? In order for such paradox to not come to pass, the clerics of "
 "Minirmuir created these divine shields."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:403
+#: ../scourge_data/config/armor.cfg:413
+msgid "Shield of the Golden Lotus"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:421
 msgid "A shield exhibiting golden harmony and unperturbable peace."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:437
+#: ../scourge_data/config/armor.cfg:448
 msgid ""
 "The lightweight cloth keeps you warm (and ready to party) but does not "
 "protect you from weapon attacks."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:438
+#: ../scourge_data/config/armor.cfg:449
+msgid "Toga"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:456
 msgid "A white bedsheet that's been made into robes."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:454
+#: ../scourge_data/config/armor.cfg:466
 msgid ""
 "A much worn and slept-in traveling garment which looks to also have served "
 "as an item of personal hygiene."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:455
+#: ../scourge_data/config/armor.cfg:467
+msgid "Traveling cloak"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:474
 msgid "A worn brownish cloak."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:471
+#: ../scourge_data/config/armor.cfg:484
 msgid ""
 "A travel cloak of quality workmanship. It looks to actually stave off the "
 "cold of the outdoors."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:472
+#: ../scourge_data/config/armor.cfg:485
+msgid "Heavy woodland cloak"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:492
 msgid "A heavy-weight traveling cloak."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:488
+#: ../scourge_data/config/armor.cfg:502
 msgid ""
 "The usual gamete of spellcasters lets the user perform much agitated hand "
 "waving as required by the casted spell."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:489
+#: ../scourge_data/config/armor.cfg:503
+msgid "Robes of the Sorcerer"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:511
 msgid "These robes have magic symbols on their sleeves and hood."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:508
+#: ../scourge_data/config/armor.cfg:523
 msgid ""
 "These robes are cleverly padded to protect its frail wearer a little longer "
 "in battle."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:509
+#: ../scourge_data/config/armor.cfg:524
+msgid "Padded Robes"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:532
 msgid "These robes seem to be padded on the inside."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:528
+#: ../scourge_data/config/armor.cfg:544
 msgid ""
 "Ye olde leather armor is created from the cured and toughened skin of thy "
 "foe. On this particular model the leather pieces are clumsily held together "
 "by what appears to be the guts of thy foe."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:529
+#: ../scourge_data/config/armor.cfg:545
+msgid "Leather Armor"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:552
 msgid "Looks to be an old piece of leather armor"
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:553
+#: ../scourge_data/config/armor.cfg:570
 msgid ""
 "As a small evolutionary step in leather armor technology, this model sports "
 "blunted metal studs, built more to intimidate rather than to cause actual "
 "damage. Still, there is a lot to be said for looking cool."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:554
+#: ../scourge_data/config/armor.cfg:571
+msgid "Studded Leather Armor"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:579
 msgid "This leather armor piece has embedded metal studs."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:580
+#: ../scourge_data/config/armor.cfg:598
 msgid ""
 "This indeed -is- your parents' armor. It is rusty, ill-fitting with a few "
 "links missing here and there. It's also quite heavy, makes a lot of noise "
 "and seems to be home for a very nice family of rodents."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:581
+#: ../scourge_data/config/armor.cfg:599
+msgid "Rusty Chainmail"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:606
 msgid "The rust is the only thing that holds this chainmail's links together"
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:614
+#: ../scourge_data/config/armor.cfg:633
 msgid ""
 "One finds strange things in the deep places of the earth... This city "
 "guard's uniform is one such curiosity. What ill fate befell the wearer of "
 "this finely crafted chainmail?"
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:615
+#: ../scourge_data/config/armor.cfg:634
+msgid "Guard's Chainmail"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:642
 msgid "It appears to be an official city guard chainmail."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:649
+#: ../scourge_data/config/armor.cfg:669
 msgid ""
 "This is the fabled mythril mail of the elves of Alovium. The metal is "
 "lightweight, flexible, never rusts of deforms. It's light blue in color and "
 "is known to be easy to enchant."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:650
+#: ../scourge_data/config/armor.cfg:670
+msgid "Mythril Mail"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:678
 msgid ""
 "You feel that in spite of its light weight this armor is well designed to "
 "deflect damage."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:684
+#: ../scourge_data/config/armor.cfg:705
 msgid ""
 "This type of armor is constructed by attaching strips of metal to chain or "
 "leather. This particular model was created by the dwarven smiths under the "
@@ -1071,206 +1383,290 @@ msgid ""
 "but the sharpest weapons."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:685
+#: ../scourge_data/config/armor.cfg:706
+msgid "Banded Mail"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:714
 msgid "Banded strips of metal compose the main sections of this armor."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:719
+#: ../scourge_data/config/armor.cfg:741
 msgid ""
 "Congratulations. Wearing a set of heavy-gage, full plate mail officially "
 "qualifies you as a human tank. Though you're virtually untouchable by "
 "conventional weapons, you can be heard for miles."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:720
+#: ../scourge_data/config/armor.cfg:742
+msgid "Heavy field plate"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:750
 msgid "An incredibly heavy set of full plate mail armor."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:754
+#: ../scourge_data/config/armor.cfg:777
 msgid ""
 "Like other elven works, this platemail is a study in perfection. It is "
 "lightweight, resilient and quite comfortable to wear for long periods of "
 "time."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:755
+#: ../scourge_data/config/armor.cfg:778
+msgid "Elven platemail"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:786
 msgid "A well-fitted set of lightweight platemail armor."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:789
+#: ../scourge_data/config/armor.cfg:813
 msgid ""
 "The half-ogre wizard, Enarol supposedly created this white armor from the "
 "skin of flayed relative."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:790
+#: ../scourge_data/config/armor.cfg:814
+msgid "Enarol's Ogre Skin"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:822
 msgid "Stinky white armor that seems rough to the touch."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:824
+#: ../scourge_data/config/armor.cfg:849
 msgid ""
 "This armor is made from the hide of a magical dragon. If that sounds hard to "
 "believe, wait until you see how well this armor protects its wearer in "
 "battle."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:825
+#: ../scourge_data/config/armor.cfg:850
+msgid "Dragonscale armor"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:858
 msgid "Armor made from the scales of some beast."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:866
+#: ../scourge_data/config/armor.cfg:892
 msgid ""
 "This armor is made to protect mages. It's created from a transdimensional "
 "goo that protects the user while letting them cast spells."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:867
-msgid "Armor made from space-goo."
+#: ../scourge_data/config/armor.cfg:893
+msgid "Smeth's Slimy Defender"
 msgstr ""
 
 #: ../scourge_data/config/armor.cfg:901
+msgid "Armor made from space-goo."
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:928
 msgid ""
 "This gold colored armor offers the highest levels of protection. Imbued with "
 "the magic contained in its yellow strands of fleece it protects the wearer "
 "via a mystic aura of repulsion."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:902
-msgid "Lightweight gold colored armor, made from some kind of wool."
-msgstr ""
-
-#: ../scourge_data/config/armor.cfg:936
-msgid "Slightly worn workboots. They smell about as good as they look."
+#: ../scourge_data/config/armor.cfg:929
+msgid "Merzul Goldenfleece"
 msgstr ""
 
 #: ../scourge_data/config/armor.cfg:937
+msgid "Lightweight gold colored armor, made from some kind of wool."
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:964
+msgid "Slightly worn workboots. They smell about as good as they look."
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:965
+msgid "Workboots"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:972
 msgid "Comfortable looking workboots."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:952
+#: ../scourge_data/config/armor.cfg:981
 msgid ""
 "Workboots of a more complex construction. The toebox is encased in steel "
 "making your toes at least dry and safe."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:953
+#: ../scourge_data/config/armor.cfg:982
+msgid "Steel-toed Workboots"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:989
 msgid "Workboots with a steel reinforced toebox."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:968
+#: ../scourge_data/config/armor.cfg:998
 msgid ""
 "These heavy duty boots are designed to last a lifetime. However long that "
 "may be..."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:969
+#: ../scourge_data/config/armor.cfg:999
+msgid "Leather boots"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:1007
 msgid "A nice pair of leather boots"
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:986
+#: ../scourge_data/config/armor.cfg:1017
 msgid ""
 "Boots made specifically for walking all over other folks. This pair in "
 "particular seems made for battle."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:987
+#: ../scourge_data/config/armor.cfg:1018
+msgid "Warboots"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:1026
 msgid "Combat boots with a bad attitude."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:1014
+#: ../scourge_data/config/armor.cfg:1045
 msgid ""
 "These blue robes blend its wearer into nearby shadows, granting an "
 "invisibility-like protection."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:1015
+#: ../scourge_data/config/armor.cfg:1046
+msgid "Cloak of Safe Passage"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:1055
 msgid "You have to look carefully to notice this blue cloak."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:1034
+#: ../scourge_data/config/armor.cfg:1066
 msgid ""
 "Infused with the hateful spirit of Unamoin, this cloak assists its wearer in "
 "combat, but at a price..."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:1035
+#: ../scourge_data/config/armor.cfg:1067
+msgid "Cloak of Hateful Vengeance"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:1076
 msgid "These red robes radiate palpable dread."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:1054
+#: ../scourge_data/config/armor.cfg:1087
 msgid ""
 "This snazzy footwear positively sizzles with magic absorbtion as you tread "
 "the ground. "
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:1055
+#: ../scourge_data/config/armor.cfg:1088
+msgid "Boots of antimagic binding"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:1095
 msgid "These boots were made for walking through a magic field."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:1072
+#: ../scourge_data/config/armor.cfg:1106
 msgid ""
 "This foil wraps tightly around your head and apparently deflects all kinds "
 "of, uh, rays..."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:1073
+#: ../scourge_data/config/armor.cfg:1107
+msgid "Antimagic foil hat"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:1114
 msgid "A piece of metal foil you can wear as a hat."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:1088
+#: ../scourge_data/config/armor.cfg:1123
 msgid ""
 "The armor is made to conform to the contours of the wearer. You can't help "
 "but admire the mold of its last owner."
 msgstr ""
 
-#: ../scourge_data/config/armor.cfg:1089
+#: ../scourge_data/config/armor.cfg:1124
+msgid "Antimagic chestplate"
+msgstr ""
+
+#: ../scourge_data/config/armor.cfg:1132
 msgid "A shape-changing armor that fits creatures of all sizes."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:8
+#: ../scourge_data/config/magicitem.cfg:3
 msgid "A short bluish stone casts a pale light from the end of this wand."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:9
+#: ../scourge_data/config/magicitem.cfg:4
+msgid "Blue opal wand"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:12
 msgid "A simple wand with a blue opal affixed to its top."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:22
+#: ../scourge_data/config/magicitem.cfg:18
 msgid ""
 "Two wooden threads lacquered in gold twine to form the handle of this wand."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:23
+#: ../scourge_data/config/magicitem.cfg:19
+msgid "Golden spiral wand"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:27
 msgid "A wand covered in gold paint"
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:36
+#: ../scourge_data/config/magicitem.cfg:33
 msgid ""
 "This heavy golden wand bears the symbol of an ancient dwarven kingdom. "
 "Created as much as a symbol of reign as to store potent magic."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:37
+#: ../scourge_data/config/magicitem.cfg:34
+msgid "Scepter of the Dwarven Kings"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:43
 msgid "A large wand bears a strange symbol"
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:51
+#: ../scourge_data/config/magicitem.cfg:49
 msgid ""
 "Rumor has it the troll mystic Urgle locked some of his essence in this "
 "strange looking wand."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:52
+#: ../scourge_data/config/magicitem.cfg:50
+msgid "Urgle's claw"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:59
 msgid "A gray wand that bears the likeness of a hook or a claw."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:66
+#: ../scourge_data/config/magicitem.cfg:65
 msgid ""
 "Romanoff the vampiric ranger assassin met his end when battling a goblin "
 "mage wielding this strange wand."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:67
+#: ../scourge_data/config/magicitem.cfg:66
+msgid "Romanoff's Final Rebuke"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:75
 msgid "A reddish wand with a shrunken humanoid skull at its top."
 msgstr ""
 
@@ -1281,206 +1677,302 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/magicitem.cfg:82
+msgid "The wand of the Secret Flame"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:91
 msgid "A white wand whose many branches end in hooked bloody claws."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:96
+#: ../scourge_data/config/magicitem.cfg:97
 msgid ""
 "This grayish-blue steel ring is favored by the dwarven miners of Thuzgol."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:97
+#: ../scourge_data/config/magicitem.cfg:98
+msgid "Dwarven steel ring"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:106
 msgid "An unadorned gray steel ring"
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:110
+#: ../scourge_data/config/magicitem.cfg:112
 msgid ""
 "A green ring adorned by a leaf motif that runs around both its inner and "
 "outer sides."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:111
+#: ../scourge_data/config/magicitem.cfg:113
+msgid "Elven leaf ring"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:121
 msgid "A green ring with leaves etched on its surface."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:124
+#: ../scourge_data/config/magicitem.cfg:127
 msgid ""
 "This red ring has clearly seen its share of action. Its surface is marred by "
 "countless chips and dings."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:125
+#: ../scourge_data/config/magicitem.cfg:128
+msgid "Orc war-ring"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:137
 msgid "A red ring that looks like it was used in place of a knife."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:139
+#: ../scourge_data/config/magicitem.cfg:143
 msgid ""
 "This gold ring with bright green stone was worn by Count Uluf the late Court "
 "Astronomer."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:140
+#: ../scourge_data/config/magicitem.cfg:144
+msgid "Ceremonial ring of Count Uluf"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:153
 msgid "A small gold ring with a green gem."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:154
+#: ../scourge_data/config/magicitem.cfg:159
 msgid ""
 "A strange sygil is etched into the precious gem embedded in the mouth of a "
 "dragon on top of this ring."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:155
-msgid "This ring is clearly a seal of some sort."
+#: ../scourge_data/config/magicitem.cfg:160
+msgid "Zarnan's Sealer"
 msgstr ""
 
 #: ../scourge_data/config/magicitem.cfg:169
+msgid "This ring is clearly a seal of some sort."
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:175
 msgid ""
 "This powerful ring was one of the few crafted by the elven jewelers of "
 "Arthel."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:170
-msgid "A blue metal ring with a sparkling stone."
-msgstr ""
-
-#: ../scourge_data/config/magicitem.cfg:184
-msgid "A cheap mountain quartz is framed in copper on a strip of leather."
+#: ../scourge_data/config/magicitem.cfg:176
+msgid "Ring of Arthel's Pride"
 msgstr ""
 
 #: ../scourge_data/config/magicitem.cfg:185
+msgid "A blue metal ring with a sparkling stone."
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:191
+msgid "A cheap mountain quartz is framed in copper on a strip of leather."
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:192
+msgid "Crystal amulet"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:200
 msgid "A clear stone adorns this necklace."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:198
+#: ../scourge_data/config/magicitem.cfg:206
 msgid "The full face of the red sun smiles reassuringly from its golden chain."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:199
+#: ../scourge_data/config/magicitem.cfg:207
+msgid "Talizman of the Sun"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:215
 msgid "A golden necklace with a carving of the sun."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:212
+#: ../scourge_data/config/magicitem.cfg:221
 msgid ""
 "The mysterious forest spirit Dhiki is the patron entity of the Torunga "
 "people who crafted this amulet in her likeness."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:213
+#: ../scourge_data/config/magicitem.cfg:222
+msgid "Amulet of Dhiki the Forest Spirit"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:230
 msgid "A green stone shines in this amulet."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:226
+#: ../scourge_data/config/magicitem.cfg:236
 msgid ""
 "A mysterious single eye peers embedded in purple stone, hanging from a "
 "silver chain."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:227
+#: ../scourge_data/config/magicitem.cfg:237
+msgid "Amulet of Watcher"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:246
 msgid "The eye of this amulet watches you."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:241
+#: ../scourge_data/config/magicitem.cfg:252
 msgid "A healing hand faces palm out on the pendant of this hanging talisman."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:242
+#: ../scourge_data/config/magicitem.cfg:253
+msgid "Amulet of Guiding Hand"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:262
 msgid "A talisman with the etching of a hand."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:256
+#: ../scourge_data/config/magicitem.cfg:268
 msgid "Ragnar the dwarven usurper is portrayed on this rare hanging charm."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:257
+#: ../scourge_data/config/magicitem.cfg:269
+msgid "Token of Ragnar"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:278
 msgid "A picture of a dwarven warrior shows on this amulet."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:271
+#: ../scourge_data/config/magicitem.cfg:284
 msgid ""
 "When near you feel a calming sensation emanate from the stone of this "
 "talisman."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:272
+#: ../scourge_data/config/magicitem.cfg:285
+msgid "Amulet of Shielding Aura"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:294
 msgid "This rare amulet has a calming feel to it."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:286
+#: ../scourge_data/config/magicitem.cfg:300
 msgid "A simple wooden staff, yet tendrils of magic intrigue your senses."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:287
+#: ../scourge_data/config/magicitem.cfg:301
+msgid "Wooden Staff"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:309
 msgid "A simple wooden staff."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:346
+#: ../scourge_data/config/magicitem.cfg:361
 msgid "The snake worshipping halfling mages of Orn crafted this steel staff."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:347
+#: ../scourge_data/config/magicitem.cfg:362
+msgid "Snake Staff"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:370
 msgid "A metal staff with the leering head of a cobra."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:406
+#: ../scourge_data/config/magicitem.cfg:422
 msgid ""
 "The tale of Zordok is one of caution. It's rumored, the hapless lizard mage "
 "managed to trap himself in a staff such as this one."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:407
+#: ../scourge_data/config/magicitem.cfg:423
+msgid "Staff of Zordok the Clumsy"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:432
 msgid "The wooden staff emits quiet whimpering noises when held."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:467
+#: ../scourge_data/config/magicitem.cfg:484
 msgid ""
 "Don't pick up this staff. Get Zoran's instead... yes, Zoran's staff is much "
 "better made."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:468
+#: ../scourge_data/config/magicitem.cfg:485
+msgid "Staff of Resentful Thoughts"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:494
 msgid "A staff made of a gray wood."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:528
+#: ../scourge_data/config/magicitem.cfg:546
 msgid ""
 "Magical runes run the entire length of this staff. It is unmistakeably to be "
 "used for something magical."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:529
+#: ../scourge_data/config/magicitem.cfg:547
+msgid "Staff of the Magus"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:556
 msgid "A black staff with golden runes."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:589
+#: ../scourge_data/config/magicitem.cfg:608
 msgid ""
 "Pure evil emanates from the horned skull head set atop this staff. The "
 "ornamental top appears to suggest you rid yourself of your party members."
 msgstr ""
 
-#: ../scourge_data/config/magicitem.cfg:590
+#: ../scourge_data/config/magicitem.cfg:609
+msgid "Horned Staff of the Shade"
+msgstr ""
+
+#: ../scourge_data/config/magicitem.cfg:618
 msgid "A red pole with a horned skull attached to its top."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:7
-#: ../scourge_data/config/otheritem.cfg:27
+#: ../scourge_data/config/otheritem.cfg:3
+#: ../scourge_data/config/otheritem.cfg:25
 msgid "A wooden chest with metal re-inforced edges"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:8
-#: ../scourge_data/config/otheritem.cfg:28
+#: ../scourge_data/config/otheritem.cfg:4
+msgid "Chest"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:9
+#: ../scourge_data/config/otheritem.cfg:31
 msgid "An ancient chest"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:17
-#: ../scourge_data/config/otheritem.cfg:37
+#: ../scourge_data/config/otheritem.cfg:14
+#: ../scourge_data/config/otheritem.cfg:36
 msgid "A bookshelf containing tomes of old"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:18
+#: ../scourge_data/config/otheritem.cfg:15
+msgid "Bookshelf"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:20
 msgid "A large bookshelf"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:38
+#: ../scourge_data/config/otheritem.cfg:26
+msgid "Chest2"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:37
+msgid "Bookshelf2"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:42
 msgid "A large books-elf"
 msgstr ""
 
@@ -1489,400 +1981,596 @@ msgid "The decomposing corpse of one once strong and able"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:48
+msgid "Corpse"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:53
 msgid "A decomposing corpse"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:57
+#: ../scourge_data/config/otheritem.cfg:58
 msgid "A large wooden barrel, typical in these dungeons"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:58
+#: ../scourge_data/config/otheritem.cfg:59
+msgid "Barrel"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:64
 msgid "A wooden barrel"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:67
+#: ../scourge_data/config/otheritem.cfg:69
 msgid "A very exciting wooden crate!"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:68
+#: ../scourge_data/config/otheritem.cfg:70
+msgid "Crate"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:75
 msgid "A crate"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:77
+#: ../scourge_data/config/otheritem.cfg:80
 msgid "A large vase, typically used to contain other items."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:78
+#: ../scourge_data/config/otheritem.cfg:81
+msgid "Vase"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:86
 msgid "A large painted vase"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:87
+#: ../scourge_data/config/otheritem.cfg:91
 msgid "An ornate vase displaying the mythical dwarven army of king Khuzod-Mog."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:88
-msgid "A vase showing a dwarven host in battle."
+#: ../scourge_data/config/otheritem.cfg:92
+msgid "Dwarven Vase"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:97
+msgid "A vase showing a dwarven host in battle."
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:102
 msgid "This dresser has seen better days"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:98
-msgid "A common commode"
-msgstr ""
-
-#: ../scourge_data/config/otheritem.cfg:107
-msgid "A large featureless wooden table"
+#: ../scourge_data/config/otheritem.cfg:103
+msgid "Commode"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:108
+msgid "A common commode"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:113
+msgid "A large featureless wooden table"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:114
+msgid "Table"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:119
 msgid "A large table"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:117
+#: ../scourge_data/config/otheritem.cfg:124
 msgid "A simple wooden chair"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:118
+#: ../scourge_data/config/otheritem.cfg:125
+msgid "Chair"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:130
 msgid "A simple chair"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:127
+#: ../scourge_data/config/otheritem.cfg:135
 msgid "It seems to be a pedestal of some sort"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:128
+#: ../scourge_data/config/otheritem.cfg:136
+msgid "Pedestal"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:141
 msgid "A pedestal maybe?"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:137
+#: ../scourge_data/config/otheritem.cfg:146
 msgid "The large potted plant apparently needs no sunlight to thrive."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:138
+#: ../scourge_data/config/otheritem.cfg:147
+msgid "Large potted plant"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:152
 msgid "A large potted plant"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:147
+#: ../scourge_data/config/otheritem.cfg:157
 msgid "A comfortable looking bed albeit somewhat moth-eaten."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:148
+#: ../scourge_data/config/otheritem.cfg:158
+msgid "Bed"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:163
 msgid "A bed for resting"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:157
+#: ../scourge_data/config/otheritem.cfg:168
 msgid "A small black stove radiates heat."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:158
+#: ../scourge_data/config/otheritem.cfg:169
+msgid "Stove"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:174
 msgid "A small stove"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:167
+#: ../scourge_data/config/otheritem.cfg:179
 msgid "A long worktable carved from splintery wood"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:168
+#: ../scourge_data/config/otheritem.cfg:180
+msgid "Desk"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:185
 msgid "A long worktable"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:177
+#: ../scourge_data/config/otheritem.cfg:190
 msgid "A bench for sitting"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:178
+#: ../scourge_data/config/otheritem.cfg:191
+msgid "Bench"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:196
 msgid "A bench"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:188
+#: ../scourge_data/config/otheritem.cfg:201
 msgid "You think this scroll has magical symbols on it"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:189
+#: ../scourge_data/config/otheritem.cfg:202
+msgid "Scroll"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:208
 msgid "A magic scroll"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:199
+#: ../scourge_data/config/otheritem.cfg:213
 msgid "A tiny red apple"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:200
+#: ../scourge_data/config/otheritem.cfg:214
+msgid "Apple"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:221
 msgid "An apple"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:211
-#: ../scourge_data/config/otheritem.cfg:212
+#: ../scourge_data/config/otheritem.cfg:226
+#: ../scourge_data/config/otheritem.cfg:234
 msgid "A large apple"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:223
+#: ../scourge_data/config/otheritem.cfg:227
+msgid "Big Apple"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:239
 msgid ""
 "A small loaf of vegan, raw, organic, whole-wheat, dairy/dolphin-free, "
 "protein-enriched bread"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:224
-msgid "A loaf of bread"
-msgstr ""
-
-#: ../scourge_data/config/otheritem.cfg:235
-msgid "A slab of dark chocolate"
-msgstr ""
-
-#: ../scourge_data/config/otheritem.cfg:236
-msgid "A chocolate bar"
+#: ../scourge_data/config/otheritem.cfg:240
+msgid "Bread"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:247
-msgid "A giant, orange mushroom with purple dots"
+msgid "A loaf of bread"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:248
-msgid "An alarming mushroom"
+#: ../scourge_data/config/otheritem.cfg:252
+msgid "A slab of dark chocolate"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:259
-msgid "A tiny yellow and brown speckled egg"
+#: ../scourge_data/config/otheritem.cfg:253
+msgid "Chocolate"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:260
+msgid "A chocolate bar"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:265
+msgid "A giant, orange mushroom with purple dots"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:266
+msgid "Mushroom"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:273
+msgid "An alarming mushroom"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:278
+msgid "A tiny yellow and brown speckled egg"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:279
+msgid "Tiny egg"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:286
 msgid "A small egg"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:271
+#: ../scourge_data/config/otheritem.cfg:291
 msgid "A large, hard bird's egg"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:272
+#: ../scourge_data/config/otheritem.cfg:292
+msgid "Big egg"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:299
 msgid "A large egg"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:283
+#: ../scourge_data/config/otheritem.cfg:304
 msgid "Your basic adventurer's fare, mutton-rump-roast, slightly turned..."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:284
+#: ../scourge_data/config/otheritem.cfg:305
+msgid "Mutton meat"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:312
 msgid "A few slices of mutton meat"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:295
+#: ../scourge_data/config/otheritem.cfg:317
 msgid "A small potion-bottle, filled with a fresh water"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:296
+#: ../scourge_data/config/otheritem.cfg:318
+msgid "Water potion"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:325
 msgid "A small bottle of clear liquid"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:307
+#: ../scourge_data/config/otheritem.cfg:330
 msgid "A bottle of stream water"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:308
+#: ../scourge_data/config/otheritem.cfg:331
+msgid "Water bottle"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:338
 msgid "A bottle of odorless fluid"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:319
+#: ../scourge_data/config/otheritem.cfg:343
 msgid "A bottle of untreated milk"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:320
+#: ../scourge_data/config/otheritem.cfg:344
+msgid "Milk"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:351
 msgid "Some milk"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:331
+#: ../scourge_data/config/otheritem.cfg:356
 msgid "A dusty bottle of wine with an upside-down label that reads "
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:332
+#: ../scourge_data/config/otheritem.cfg:357
+msgid "Wine bottle"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:364
 msgid "A bottle of dark fluid"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:343
+#: ../scourge_data/config/otheritem.cfg:369
 msgid "A cellar aged bottle of vintage wine with a label that reads "
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:344
+#: ../scourge_data/config/otheritem.cfg:370
+msgid "Fine wine bottle"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:377
 msgid "A bottle of reddish liquid"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:355
+#: ../scourge_data/config/otheritem.cfg:382
 msgid "A large barrel full of fresh water"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:356
+#: ../scourge_data/config/otheritem.cfg:383
+msgid "Water barrel"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:390
 msgid "A barrel filled with some liquid"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:367
+#: ../scourge_data/config/otheritem.cfg:395
 msgid "A large barrel filled with wine from Korim."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:368
+#: ../scourge_data/config/otheritem.cfg:396
+msgid "Wine barrel"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:403
 msgid "A barrel filled with dark liquid"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:379
+#: ../scourge_data/config/otheritem.cfg:408
 msgid ""
 "A large barrel that contains dwarven ale with bits of bread and mutton..."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:380
+#: ../scourge_data/config/otheritem.cfg:409
+msgid "Beer barrel"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:416
 msgid "A barrel full of foamy liquid"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:391
+#: ../scourge_data/config/otheritem.cfg:421
 msgid "A medicine-bottle, filled with a health potion"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:392
+#: ../scourge_data/config/otheritem.cfg:422
+msgid "Health potion"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:429
 msgid "A medicine bottle"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:407
+#: ../scourge_data/config/otheritem.cfg:438
 msgid "This bottle contains a gray oozing liquid."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:408
+#: ../scourge_data/config/otheritem.cfg:439
+msgid "Liquid armor"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:446
 msgid "A round gray bottle"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:424
+#: ../scourge_data/config/otheritem.cfg:456
 msgid "This bottle contains some exotic, green oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:425
+#: ../scourge_data/config/otheritem.cfg:457
+msgid "Potion of Speed"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:464
 msgid "A small vial of green oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:441
+#: ../scourge_data/config/otheritem.cfg:474
 msgid "This bottle contains some exotic, red oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:442
+#: ../scourge_data/config/otheritem.cfg:475
+msgid "Potion of Coordination"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:482
 msgid "A small vial of red oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:458
+#: ../scourge_data/config/otheritem.cfg:492
 msgid "This bottle contains some exotic, blue oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:459
+#: ../scourge_data/config/otheritem.cfg:493
+msgid "Potion of Power"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:500
 msgid "A small vial of blue oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:475
+#: ../scourge_data/config/otheritem.cfg:510
 msgid "This bottle contains some exotic, brown oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:476
+#: ../scourge_data/config/otheritem.cfg:511
+msgid "Potion of IQ"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:518
 msgid "A small vial of brown oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:492
+#: ../scourge_data/config/otheritem.cfg:528
 msgid "This bottle contains some exotic, purple oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:493
+#: ../scourge_data/config/otheritem.cfg:529
+msgid "Potion of Leadership"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:536
 msgid "A small vial of purple oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:509
+#: ../scourge_data/config/otheritem.cfg:546
 msgid "This bottle contains some exotic, silver oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:510
+#: ../scourge_data/config/otheritem.cfg:547
+msgid "Potion of Luck"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:554
 msgid "A small vial of silver oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:526
+#: ../scourge_data/config/otheritem.cfg:564
 msgid "This bottle contains some exotic, golden oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:527
+#: ../scourge_data/config/otheritem.cfg:565
+msgid "Potion of Piety"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:572
 msgid "A small vial of golden oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:543
+#: ../scourge_data/config/otheritem.cfg:582
 msgid "This bottle contains some exotic, yellow oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:544
+#: ../scourge_data/config/otheritem.cfg:583
+msgid "Potion of Lore"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:590
 msgid "A small vial of yellow oil"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:560
+#: ../scourge_data/config/otheritem.cfg:600
 msgid "A bottle, filled with a magic potion"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:561
+#: ../scourge_data/config/otheritem.cfg:601
+msgid "Magic potion"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:608
 msgid "A bottle of blue liquid"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:576
+#: ../scourge_data/config/otheritem.cfg:617
 msgid ""
 "This is the fabled Wand of Nausiation that once brought to its knees an "
 "entire Wourghish legion."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:577
+#: ../scourge_data/config/otheritem.cfg:618
+msgid "Wand of Nausiation"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:624
 msgid "You think this stick might have magical properties"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:587
+#: ../scourge_data/config/otheritem.cfg:629
 msgid ""
 "It very much looks to be the sort of thing that while you're curious to open "
 "it, common sense tells you that it's best to leave the box closed."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:588
+#: ../scourge_data/config/otheritem.cfg:630
+msgid "Treasure Chest"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:636
 msgid "It looks to be a wizard's treasure chest"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:598
+#: ../scourge_data/config/otheritem.cfg:641
 msgid "Boots of someone named "
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:599
+#: ../scourge_data/config/otheritem.cfg:642
+msgid "Boots of Mycotharsius"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:648
 msgid "Boots inscribed with the word "
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:609
+#: ../scourge_data/config/otheritem.cfg:653
 msgid ""
 "It's a simple map and yet... strange suggestions arise in your mind: worship "
 "Karzuul and you'll be spared!"
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:610
+#: ../scourge_data/config/otheritem.cfg:654
+msgid "Abyssal Map"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:660
 msgid "A map that seems to radiate evil."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:620
+#: ../scourge_data/config/otheritem.cfg:665
 msgid ""
 "It seems like this star-shaped flat piece of metal is emitting a sweet smell."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:621
+#: ../scourge_data/config/otheritem.cfg:666
+msgid "The myriagonal token of Unamoin"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:672
 msgid "A flat piece of metal with many sides."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:631
+#: ../scourge_data/config/otheritem.cfg:677
 msgid ""
 "This vaguely oval-shaped piece of material makes you laugh every time you "
 "look at it."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:632
+#: ../scourge_data/config/otheritem.cfg:678
+msgid "The nonagonal token of Soroughoz"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:684
 msgid "An oval-shaped piece of cloth that seems laughably important."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:642
+#: ../scourge_data/config/otheritem.cfg:689
 msgid ""
 "A faint touch of electricity strokes your skin when nearing this many-sided "
 "metal piece."
 msgstr ""
 
-#: ../scourge_data/config/otheritem.cfg:643
+#: ../scourge_data/config/otheritem.cfg:690
+msgid "The hendecagonal token of Garzul-Meg-Aonrod"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:696
 msgid "The piece of metal displays a feel of electricity."
 msgstr ""

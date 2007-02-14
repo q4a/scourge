@@ -32,6 +32,7 @@ ConfigValue::ConfigValue( ConfigValue *value ) {
 }
 
 ConfigValue::ConfigValue( char *value ) {
+	original = value;
 	translatable = false;
 	translateStr = "";
 	char *start = strchr( value, '\"' );
@@ -180,19 +181,20 @@ ConfigLang::~ConfigLang() {
 }
 
 void ConfigLang::debug( ConfigNode *node, string indent ) {
-	cerr << indent << node->getName() << endl;
+	cerr << indent << "[" << node->getName() << "]" << endl;
 	string s = indent + "  ";
 	for( map<string, ConfigValue*>::iterator i = node->getValues()->begin(); 
 			 i != node->getValues()->end(); ++i ) {
 		string name = i->first;
 		ConfigValue *value = i->second;
-		cerr << s << name << "=" << value->getAsString() << endl;
+		cerr << s << name << "=" << value->getOriginal() << endl;
 	}
 	for( vector<ConfigNode*>::iterator i = node->getChildren()->begin(); 
 			 i != node->getChildren()->end(); ++i ) {
 		ConfigNode *n = *i;
 		debug( n, s );
 	}
+	cerr << indent << "[/" << node->getName() << "]" << endl;
 }
 
 void ConfigLang::parse( char *config ) {

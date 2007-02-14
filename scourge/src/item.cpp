@@ -521,6 +521,20 @@ void Item::initSounds( ConfigLang *config ) {
 	}
 }
 
+void Item::addNameTag( ConfigLang *config, char *name, char *newName ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "item" );
+
+	char value[255], tmp[255];
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+		strcpy( value, node->getValueAsString( name ) );
+		sprintf( tmp, "_( \"%s\" )", value ); 
+		node->addValue( newName, new ConfigValue( tmp ) );
+	}
+	config->debug();
+}
+
 // this should really be in RpgItem but that class can't reference ShapePalette and shapes.
 void Item::initItems( ShapePalette *shapePal ) {
 	ConfigLang *config = ConfigLang::load( "config/item.cfg" );  
@@ -529,18 +543,26 @@ void Item::initItems( ShapePalette *shapePal ) {
   delete config;
 
 	config = ConfigLang::load( "config/weapon.cfg" );  
+	//cerr << "--- weapon.cfg -------------------------" << endl;
+	//addNameTag( config, "name", "display_name" );
 	initItemEntries( config, shapePal );
 	delete config;
 
 	config = ConfigLang::load( "config/armor.cfg" );  
+	//cerr << "--- armor.cfg -------------------------" << endl;
+	//addNameTag( config, "name", "display_name" );
 	initItemEntries( config, shapePal );
 	delete config;
 
 	config = ConfigLang::load( "config/magicitem.cfg" );  
+	//cerr << "--- magicitem.cfg -------------------------" << endl;
+	//addNameTag( config, "name", "display_name" );
 	initItemEntries( config, shapePal );
 	delete config;
 
 	config = ConfigLang::load( "config/otheritem.cfg" );  
+	//cerr << "--- otheritem.cfg -------------------------" << endl;
+	//addNameTag( config, "name", "display_name" );
 	initItemEntries( config, shapePal );
 	delete config;
 }
