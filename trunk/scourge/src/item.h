@@ -200,6 +200,7 @@ public:
 																		int skill, 
 																		std::vector<ConfigNode*> *nodes, 
 																		int influenceType );
+	static void addNameTag( ConfigLang *config, char *name, char *newName );
 	
 };
 
