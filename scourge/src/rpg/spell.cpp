@@ -87,6 +87,38 @@ MagicSchool::~MagicSchool() {
   shortName = NULL;
 }
 
+
+void MagicSchool::finishSchoolTag( MagicSchool *school, Spell *spell ) {
+
+	if( spell ) Spell::finishSpellTag( spell );
+
+	cerr << "\tdeity_description=_( \"" << school->getDeityDescription() << "\" )" << endl;
+	for( unsigned int i = 0; i < school->lowDonate.size(); i++ ) {
+		cerr << "\t[low_donate]" << endl;
+		cerr << "\t\ttext=_( \"" << school->lowDonate[i] << "\" )" << endl;
+		cerr << "\t[/low_donate]" << endl;
+	}
+	for( unsigned int i = 0; i < school->neutralDonate.size(); i++ ) {
+		cerr << "\t[neutral_donate]" << endl;
+		cerr << "\t\ttext=_( \"" << school->neutralDonate[i] << "\" )" << endl;
+		cerr << "\t[/neutral_donate]" << endl;
+	}
+	for( unsigned int i = 0; i < school->highDonate.size(); i++ ) {
+		cerr << "\t[high_donate]" << endl;
+		cerr << "\t\ttext=_( \"" << school->highDonate[i] << "\" )" << endl;
+		cerr << "\t[/high_donate]" << endl;
+	}
+	cerr << "[/magic_school]" << endl;
+}
+
+void Spell::finishSpellTag( Spell *spell ) {
+	if( spell->getSound() ) cerr << "\t\tsound=\"" << spell->getSound() << "\"" << endl;
+	if( strlen( spell->getNotes() ) ) cerr << "\t\tnotes=_( \"" << spell->getNotes() << "\" )" << endl;
+	cerr << "\t[/spell]" << endl;
+}
+
+//#define CONVERT_SPELLS 1
+
 void MagicSchool::initMagic() {
   char errMessage[500];
   char s[200];
@@ -101,130 +133,174 @@ void MagicSchool::initMagic() {
   MagicSchool *current = NULL;
   Spell *currentSpell = NULL;
   char name[255], notes[255], dice[255];
-  char line[255], symbol[255];
+  char line[255], symbol[255], targetTypeStr[255], prereqName[255];
   int n = fgetc(fp);
   while(n != EOF) {
-	if( n == 'P' ) {
-	  // skip ':'
-	  fgetc(fp);
-	  // read the rest of the line
-	  n = Constants::readLine(line, fp);
+		if( n == 'P' ) {
+			// skip ':'
+			fgetc(fp);
+			// read the rest of the line
+			n = Constants::readLine(line, fp);
+	
+			// name, level, mana, exp, failure rate, action, distance, single/group target, notes
+			strcpy(name, strtok(line, ","));
+			strcpy( symbol, strtok(NULL, ",") );
+			int level =  atoi(strtok(NULL, ","));
+			int mp =  atoi(strtok(NULL, ","));
+			int exp =  atoi(strtok(NULL, ","));
+			int failureRate = atoi(strtok(NULL, ","));
+			strcpy(dice, strtok(NULL, ","));
+			int distance = atoi(strtok(NULL, ","));
+			if(distance < (int)MIN_DISTANCE) distance = (int)MIN_DISTANCE;
+			int targetType = (!strcmp(strtok(NULL, ","), "single") ? 
+							SINGLE_TARGET : GROUP_TARGET);
+			int speed = atoi(strtok(NULL, ","));
+			int effect = Constants::getEffectByName(strtok(NULL, ","));
+				//cerr << "*** looking up: " << s << " effect=" << effect << endl;
+			char *s = strtok(NULL, ",");
+			strcpy( targetTypeStr, s );
+			bool creatureTarget = (strchr(s, 'C') != NULL);
+			bool locationTarget = (strchr(s, 'L') != NULL);
+			bool itemTarget = (strchr(s, 'I') != NULL);
+			bool partyTarget = (strchr(s, 'P') != NULL);
+			bool doorTarget = (strchr(s, 'D') != NULL);
+			int iconTileX = atoi( strtok( NULL, "," ) ) - 1;
+			int iconTileY = atoi( strtok( NULL, "," ) ) - 1;
+	
+			// Friendly/Hostile marker
+			char *fh = strtok( NULL, "," );
+			bool friendly = false;
+			int stateModPrereq = -1;
+			strcpy( prereqName, "" );
+			if( fh ) {
+				friendly = ( *fh == 'F' );
+				char *prereq = strtok( NULL, "," );
+				if( prereq ) {
+					strcpy( prereqName, prereq );
+					// is it a potion state mod?
+					int n = Constants::getPotionSkillByName( prereq );
+					if( n == -1 ) {
+						n = Constants::getStateModByName( (const char*)prereq );
+					}
+					stateModPrereq = n;
+					if( stateModPrereq == -1 ) {
+						cerr << "Error: spell=" << name << endl;
+						cerr << "\tCan't understand prereq for spell: " << prereq << endl;
+					}
+				}
+			}
+	
+			if(!current) {
+				cerr << "*** ignoring spell: " << name << " because no school of magic was specified." << endl;
+				continue;
+			}
+	
+	
+			Dice *action = new Dice(strdup(dice));
+	
+				/*
+			cerr << "adding spell: " << name << " level: " << level << " mp: " << mp << 
+			" exp: " << exp << " failureRate: " << failureRate << 
+			" action: " << action->toString() << " distance: " << distance << 
+			" targetType: " << targetType << endl;
+				*/          
 
-	  // name, level, mana, exp, failure rate, action, distance, single/group target, notes
-	  strcpy(name, strtok(line, ","));
-    strcpy( symbol, strtok(NULL, ",") );
-	  int level =  atoi(strtok(NULL, ","));
-	  int mp =  atoi(strtok(NULL, ","));
-	  int exp =  atoi(strtok(NULL, ","));
-	  int failureRate = atoi(strtok(NULL, ","));
-	  strcpy(dice, strtok(NULL, ","));
-	  int distance = atoi(strtok(NULL, ","));
-    if(distance < (int)MIN_DISTANCE) distance = (int)MIN_DISTANCE;
-	  int targetType = (!strcmp(strtok(NULL, ","), "single") ? 
-						SINGLE_TARGET : GROUP_TARGET);
-	  int speed = atoi(strtok(NULL, ","));
-	  int effect = Constants::getEffectByName(strtok(NULL, ","));
-      //cerr << "*** looking up: " << s << " effect=" << effect << endl;
-	  char *s = strtok(NULL, ",");
-	  bool creatureTarget = (strchr(s, 'C') != NULL);
-	  bool locationTarget = (strchr(s, 'L') != NULL);
-	  bool itemTarget = (strchr(s, 'I') != NULL);
-		bool partyTarget = (strchr(s, 'P') != NULL);
-		bool doorTarget = (strchr(s, 'D') != NULL);
-	  int iconTileX = atoi( strtok( NULL, "," ) ) - 1;
-	  int iconTileY = atoi( strtok( NULL, "," ) ) - 1;
-
-    // Friendly/Hostile marker
-    char *fh = strtok( NULL, "," );
-    bool friendly = false;
-    int stateModPrereq = -1;
-    if( fh ) {
-      friendly = ( *fh == 'F' );
-      char *prereq = strtok( NULL, "," );
-      if( prereq ) {
-        // is it a potion state mod?
-        int n = Constants::getPotionSkillByName( prereq );
-        if( n == -1 ) {
-          n = Constants::getStateModByName( (const char*)prereq );
-        }
-        stateModPrereq = n;
-        if( stateModPrereq == -1 ) {
-          cerr << "Error: spell=" << name << endl;
-          cerr << "\tCan't understand prereq for spell: " << prereq << endl;
-        }
-      }
-    }
-
-	  if(!current) {
-      cerr << "*** ignoring spell: " << name << " because no school of magic was specified." << endl;
-      continue;
-	  }
+#ifdef CONVERT_SPELLS
+			if( currentSpell ) Spell::finishSpellTag( currentSpell );
+			cerr << "\t[spell]" << endl;
+			cerr << "\t\tname=\"" << name << "\"" << endl;
+			cerr << "\t\tdisplay_name=_( \"" << name << "\" )" << endl;
+			cerr << "\t\tsymbol=_( \"" << symbol << "\" )" << endl;
+			cerr << "\t\tlevel=" << level << endl;
+			cerr << "\t\tmp=" << mp << endl;
+			cerr << "\t\texp=" << exp << endl;
+			cerr << "\t\tfailureRate=" << failureRate << endl;
+			cerr << "\t\taction=\"" << dice << "\"" << endl;
+			cerr << "\t\tdistance=" << distance << endl;
+			cerr << "\t\ttargetType=\"" << ( targetType == SINGLE_TARGET ? "single" : "group" ) << "\"" << endl;
+			cerr << "\t\tspeed=" << speed << endl;
+			cerr << "\t\teffect=\"" << Constants::EFFECT_NAMES[effect] << "\"" << endl;
+			cerr << "\t\ttarget=\"" << targetTypeStr << "\"" << endl;
+			cerr << "\t\ticon=\"" << ( iconTileX + 1 ) << "," << ( iconTileY + 1 ) << endl;
+			if( friendly ) cerr << "\t\tfriendly=\"true\"" << endl;
+			if( strlen( prereqName ) ) cerr << "\t\tprerequisite=\"" << prereqName << "\"" << endl;
+#endif
+			
+			currentSpell = new Spell( strdup(name), strdup( symbol ), level, mp, exp, failureRate, 
+																action, distance, targetType, speed, effect, 
+																creatureTarget, locationTarget, itemTarget, partyTarget, doorTarget,
+																current, iconTileX, iconTileY, 
+																friendly, stateModPrereq );
+			current->addSpell( currentSpell );
 
 
-	  Dice *action = new Dice(strdup(dice));
 
-      /*
-	  cerr << "adding spell: " << name << " level: " << level << " mp: " << mp << 
-		" exp: " << exp << " failureRate: " << failureRate << 
-		" action: " << action->toString() << " distance: " << distance << 
-		" targetType: " << targetType << endl;
-      */          
-	  
-	  currentSpell = new Spell( strdup(name), strdup( symbol ), level, mp, exp, failureRate, 
-                              action, distance, targetType, speed, effect, 
-                              creatureTarget, locationTarget, itemTarget, partyTarget, doorTarget,
-                              current, iconTileX, iconTileY, 
-                              friendly, stateModPrereq );
-	  current->addSpell( currentSpell );
-	} else if( n == 'W' && currentSpell ) {
-	  fgetc(fp);
-	  n = Constants::readLine(line, fp);
-	  currentSpell->setSound( strdup(line) );
-	} else if( n == 'D' && currentSpell ) {
-	  fgetc(fp);
-	  n = Constants::readLine(line, fp);
-	  currentSpell->addNotes(" ");
-	  currentSpell->addNotes(line);
-	} else if( n == 'S' ) {
-	  fgetc(fp);
-	  n = Constants::readLine(line, fp);
-
-	  strcpy(name, strtok(line, ","));
-	  strcpy(notes, strtok(NULL, ","));
-	  int skill = Skill::getSkillIndexByName(strtok(NULL, ","));
-	  int resistSkill = Skill::getSkillIndexByName(strtok(NULL, ","));
-    float red = (float)strtod( strtok(NULL, ","), NULL );
-    float green = (float)strtod( strtok(NULL, ","), NULL );
-    float blue = (float)strtod( strtok(NULL, ","), NULL );
-    strcpy(symbol, strtok(NULL, ","));
-
-
-	  //cerr << "adding school: " << name << " provider deity: " << notes << " skill=" << skill << " resist skill=" << resistSkill << endl;
-
-	  current = new MagicSchool( strdup(name), strdup(notes), skill, resistSkill, red, green, blue, strdup( symbol ) );
-	  schools[schoolCount++] = current;
-    string nameStr = name;
-    schoolMap[nameStr] = current;
-  } else if( n == 'G' && current ) {
-    n = Constants::readLine(line, fp);
-    current->addToDeityDescription( line + 1 );
-  } else if( n == 'L' && current ) {
-    fgetc(fp);
-	  n = Constants::readLine(line, fp);
-    current->lowDonate.push_back( line );
-  } else if( n == 'N' && current ) {
-    fgetc(fp);
-	  n = Constants::readLine(line, fp);
-    current->neutralDonate.push_back( line );
-  } else if( n == 'H' && current ) {
-    fgetc(fp);
-	  n = Constants::readLine(line, fp);
-    current->highDonate.push_back( line );  
-	} else {
-	  n = Constants::readLine(line, fp);
-  }
+		} else if( n == 'W' && currentSpell ) {
+			fgetc(fp);
+			n = Constants::readLine(line, fp);
+			currentSpell->setSound( strdup(line) );
+		} else if( n == 'D' && currentSpell ) {
+			fgetc(fp);
+			n = Constants::readLine(line, fp);
+			currentSpell->addNotes(" ");
+			currentSpell->addNotes(line);
+		} else if( n == 'S' ) {
+			fgetc(fp);
+			n = Constants::readLine(line, fp);
+	
+			strcpy(name, strtok(line, ","));
+			strcpy(notes, strtok(NULL, ","));
+			int skill = Skill::getSkillIndexByName(strtok(NULL, ","));
+			int resistSkill = Skill::getSkillIndexByName(strtok(NULL, ","));
+			float red = (float)strtod( strtok(NULL, ","), NULL );
+			float green = (float)strtod( strtok(NULL, ","), NULL );
+			float blue = (float)strtod( strtok(NULL, ","), NULL );
+			strcpy(symbol, strtok(NULL, ","));
+	
+	
+			//cerr << "adding school: " << name << " provider deity: " << notes << " skill=" << skill << " resist skill=" << resistSkill << endl;
+	
+	#ifdef CONVERT_SPELLS
+			if( current ) finishSchoolTag( current, currentSpell );
+			currentSpell = NULL;
+			cerr << "[magic_school]" << endl;
+			cerr << "\tname=\"" << name << "\"" << endl;
+			cerr << "\tdisplay_name=_( \"" << name << "\" )" << endl;
+			cerr << "\tdeity=\"" << notes << "\"" << endl;
+			cerr << "\tskill=\"" << Skill::skills[skill]->getName() << "\"" << endl;
+			cerr << "\tresist_skill=\"" << Skill::skills[resistSkill]->getName() << "\"" << endl;
+			cerr << "\trgb=\"" << red << "," << green << "," << blue << "\"" << endl;
+			cerr << "\tsymbol=_( \"" << symbol << "\" )" << endl;			
+	#endif
+	
+			current = new MagicSchool( strdup(name), strdup(notes), skill, resistSkill, red, green, blue, strdup( symbol ) );
+			schools[schoolCount++] = current;
+			string nameStr = name;
+			schoolMap[nameStr] = current;
+		} else if( n == 'G' && current ) {
+			n = Constants::readLine(line, fp);
+			current->addToDeityDescription( line + 1 );
+		} else if( n == 'L' && current ) {
+			fgetc(fp);
+			n = Constants::readLine(line, fp);
+			current->lowDonate.push_back( line );
+		} else if( n == 'N' && current ) {
+			fgetc(fp);
+			n = Constants::readLine(line, fp);
+			current->neutralDonate.push_back( line );
+		} else if( n == 'H' && current ) {
+			fgetc(fp);
+			n = Constants::readLine(line, fp);
+			current->highDonate.push_back( line );  
+		} else {
+			n = Constants::readLine(line, fp);
+		}
   }
   fclose(fp);
+
+#ifdef CONVERT_SPELLS
+	if( current ) finishSchoolTag( current, currentSpell );
+#endif
 }
 
 const char *MagicSchool::getRandomString( vector<string> *v ) {
