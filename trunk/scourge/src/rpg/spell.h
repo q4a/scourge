@@ -123,6 +123,8 @@ class Spell : public Storable {
 	inline bool isDoorTargetAllowed() { return doorTarget; }
 
   static Spell *getSpellByName(char *name);
+
+	static void finishSpellTag( Spell *spell );
 };
 
 
@@ -176,6 +178,9 @@ class MagicSchool {
  protected:
   inline void addSpell( Spell *spell ) { spells.push_back( spell ); }
   const char *getRandomString( std::vector<std::string> *v );
+
+private:
+	static void finishSchoolTag( MagicSchool *school, Spell *spell );	
 };
 
 #endif
