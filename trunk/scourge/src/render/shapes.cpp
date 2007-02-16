@@ -252,7 +252,8 @@ void Shapes::initialize() {
     } else if(sv->torch > -1) {
       if(sv->torch == 5) {
         shapes[(i + 1)] =
-        new GLTorch(texture, textures[9].id,
+        new GLTorch(texture, findTextureByName( "flame.bmp", true ),
+										//textures[9].id,
                     sv->width, sv->depth, sv->height,
                     strdup(sv->name),
                     sv->descriptionIndex,
@@ -260,7 +261,8 @@ void Shapes::initialize() {
                     (i + 1));
       } else {
         shapes[(i + 1)] =
-        new GLTorch(texture, textures[9].id,
+        new GLTorch(texture, findTextureByName( "flame.bmp", true ),
+										//textures[9].id,
                     sv->width, sv->depth, sv->height,
                     strdup(sv->name),
                     sv->descriptionIndex,
