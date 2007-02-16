@@ -10,3 +10,4 @@ src/scourge.cpp
 ../scourge_data/config/magicitem.cfg
 ../scourge_data/config/otheritem.cfg
 ../scourge_data/config/spell.cfg
+../scourge_data/config/book.cfg
