@@ -117,7 +117,7 @@ public:
   SDL_Surface *scourge;
   GLubyte *scourgeImage;
 
-  GLuint cloud, candle, torchback, highlight;
+  GLuint cloud, candle, highlight;
   GLuint border, border2, gargoyle;
   GLuint minimap, minimapMask, dismiss, exitTexture, options, group, inventory;
   GLuint waitTexture, startTexture, realTimeTexture, pausedTexture;
