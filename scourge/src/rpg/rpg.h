@@ -19,6 +19,7 @@
 #define RPG_H
 
 #include "../common/constants.h"
+#include "../configlang.h"
 #include <vector>
 #include <map>
 

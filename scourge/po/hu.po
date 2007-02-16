@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-13 21:44-0800\n"
+"POT-Creation-Date: 2007-02-15 21:21-0800\n"
 "PO-Revision-Date: 2007-01-20 21:57-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -2544,4 +2544,660 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:696
 msgid "The piece of metal displays a feel of electricity."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:36
+msgid "Nature"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:41
+msgid "Lake"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:44
+msgid "Lesser healing touch"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:45 ../scourge_data/config/spell.cfg:228
+#: ../scourge_data/config/spell.cfg:314
+msgid "Healing"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:60
+msgid ""
+" Increases the target's HP by a minimal amount. The spell's power increases "
+"with the caster's level."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:64
+msgid "Bless group"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:65
+msgid "Blessing"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:80
+msgid ""
+" Drawing on the ancient spirits of nature the caster raises the party's "
+"ability to succeed in vanquishing their foes."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:84
+msgid "Cursed ways"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:85
+msgid "Encursing"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:99
+msgid ""
+" Nature's wraith hampers the target creatures in endeavors great and small. "
+"Every activity they attempt seems ill fated, ripe with strife.  The more "
+"they struggle the more net of the curse closes in. The effects of the spell "
+"will wear off after a while."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:103
+msgid "Remove curse"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:104
+msgid "Curse Removing"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:119
+msgid ""
+" The caster draws from the well of ordered peace that drifts in the void of "
+"Earth's creations. With urgency the target's spiritual balance is restored "
+"and cursed ways surrendered. This spell un-equips cursed items."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:123
+msgid "Gust of wind"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:124
+msgid "Windy"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:137
+msgid ""
+" With the wave of an arm in an age-long predescribed sacred motion, the "
+"weaver communes with the elemental forces of the wind to create a protective "
+"aura around her. The wind knocks all enemies back and causes some amount of "
+"sonic damage."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:139
+msgid ""
+"The god of nature is an unpredictable fellow, even for a god. If you've ever "
+"experienced a sunny day suddenly ruined by the tidal wave from hell, you "
+"know what I'm talking about. Amod-Rheinur delights in the simple things: a "
+"good story around the campfire or strong ale shared by friends."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:141
+msgid "A quick breeze flutters as if in annoyance."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:144
+msgid ""
+"The smell around you reminds you of a sewer. Oh wait, you are in the sewers!"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:147
+msgid "All grows quiet for a moment. You hear water dripping nearby."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:150
+msgid ""
+"You hear a simple bird call. It's like a half-wakened dream; brief and gone."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:153
+msgid "There is a floral scent to the air: fragrant and delicate."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:156
+msgid "The air warms around you and you feel elated and strong."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:161
+msgid "Divine Awareness"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:166
+msgid "Spectral"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:169
+msgid "Body of stone"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:170 ../scourge_data/config/spell.cfg:334
+#: ../scourge_data/config/spell.cfg:460
+msgid "Protecting"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:185
+msgid ""
+" Temporarily increase target's AC.  Spell power and interval increase with "
+"caster's level."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:189
+msgid "Empower friend"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:190
+msgid "Empowering"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:205
+msgid ""
+" A party member is empowered for a period of time after the caster embarks "
+"to spiritually understand the divine nature of the target being."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:209
+msgid "Burning stare"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:210
+msgid "Burning"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:223
+msgid ""
+" Simply by looking at the target the caster charges the surrounding air with "
+"spiritual energy which delivers a hot blast of burning matter and thus "
+"damaging the target. With practice the damage caused by this spell is "
+"increased."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:227
+msgid "Divine healing touch"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:243
+msgid ""
+" Heals a large amount of damaged hit points. The spell's power increases "
+"with the caster's level."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:247
+msgid "Dori's Tumblers"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:248
+msgid "Opening"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:262
+msgid ""
+" The caster is briefly able to manipulate all manners of closed objects. "
+"Locked doors and crates snap open when this spell is cast."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:264
+msgid ""
+"Achieving awareness beyond the needs of the self is the reason followers of "
+"Minirmuir meditate for hours each day. She is basically a peaceful deity who "
+"considers all beings equal in the world. Needless killing, and wanton "
+"destruction however are likely to evoke her wrath."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:266
+msgid ""
+"Suddenly you loose focus, a reptilian ego rising to overtake your senses."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:269
+msgid "The room sways momentarily and you struggle to stay upright."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:272
+msgid "You feel nothing; all is at peace."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:275
+msgid "Strain as you might, the peace of the void is not within your grasp."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:278
+msgid "Your movements grow catlike, balanced and easy, yet sinuous with power."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:281
+msgid "A flower blooms in your mind and you soar over an unknown landscape."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:286
+msgid "Life and Death"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:291
+msgid "Karma"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:294
+msgid "Flame of Azun"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:295
+msgid "Flaming"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:309
+msgid " Temporarily blind a group of enemies contained within a 5' cube."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:313
+msgid "Greater healing touch"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:329
+msgid ""
+" Increases the target's HP by a medium amount. The spell's power increases "
+"with the caster's level."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:333
+msgid "Protective clay"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:349
+msgid ""
+" The party's armor is augmented by the caster drawing a ward from nearby "
+"rocks, clay and roots. "
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:353
+msgid "Enthrall fiend"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:354
+msgid "Possessing"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:368
+msgid ""
+" The caster attempts to control the target creature's subconscious. This is "
+"done by concentrating on extinguishing the flame of perceived self-control "
+"which in the target's mind parts chaos from order. Once this barrier is "
+"broken subconscious thought gains equal precedence to life support functions "
+"and thought-possession becomes possible."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:372
+msgid "Break from possession"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:373
+msgid "Possession Breaking"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:388
+msgid ""
+" The caster attempts to break another magic user's thought-control of the "
+"target creature. To break the link of possession, the new caster will have "
+"to momentarily subject himself completely to this task and thus proving the "
+"selfless valour the gods require to restore the target's control of the "
+"subconscious."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:392
+msgid "Recall to life"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:393
+msgid "Resurrecting"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:408
+msgid ""
+" Reaching across the very fabric of the realm of shadows the caster attempts "
+"to resurrect any dead comrades. This spell is rumored to have a very high "
+"failure rate."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:410
+msgid ""
+"Absolute neutrality and nihilistic certainty best characterize Garzul. All "
+"beings that live are drifting slowly towards their unavoidable end in his "
+"eyes. Those whose time already passed rest in his peaceful halls, only "
+"waiting for the right summons to waken them from their cold slumber."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:412
+msgid ""
+"Decay is all about you. Your mood is dragged low by a terrible certainty."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:415
+msgid ""
+"Death suddenly feels very near. Faint lights suggest the ghosts of those "
+"before you wailing in the walls."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:418
+msgid "You sense that perhaps you will live another day."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:421
+msgid "A loud boom travels up from the bowels of the earth."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:424
+msgid "Small animals scurry off at the edges of your vision."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:427
+msgid "The smell of fresh air fills your mind with hope and perseverance."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:432
+msgid "History and Lore"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:437
+msgid "Lore"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:440
+msgid "Ole Taffy's purty colors"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:441
+msgid "Identifying"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:455
+msgid ""
+" Ole Taffy's parting gift to the world of magic was this spell which he "
+"used  to briefly glimpse information about his surroundings. When used with "
+"sufficient skill, this spell displays the true nature of items and creatures "
+"around. It may even reveal traps."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:459
+msgid "Art of protection"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:475
+msgid ""
+" Resistance to magic is increased when the caster's lore of magics is "
+"explored."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:479
+msgid "Invisibility"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:480
+msgid "Invisible"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:495
+msgid ""
+" The target's mortal shell is temporarily stripped from the soul, resulting "
+"in partial invisibility. The strength of the connection of body and soul is "
+"not to be denied however, and soon the effects wear off when the two meld "
+"again."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:499
+msgid "Teleportation"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:500
+msgid "Teleporting"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:514
+msgid ""
+" By focusing to remember details about another location (HQ in this case) "
+"the caster is able teleport the entire party to that location. Use this "
+"spell to return to head-quarters when the battle is too intense. Just "
+"remember, upon failure, this spell may place you in an even less desirable "
+"location..."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:516
+msgid ""
+"Xelphate broods over the unending cycles of human history. Under her "
+"watchful eye the greatest of human triumphs and the saddest of tragedies "
+"unfold with undulating regularity. She alone is the keeper of the grandest "
+"mystery: the reason and conclusion for our existence in the world."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:518
+msgid "The room suddenly grows dark. You feel the very walls edge towards you."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:521
+msgid ""
+"An ominous sound floats up from the dark. Your mind trembles before its "
+"might."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:524
+msgid "You smell... cabbage?!"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:527
+msgid ""
+"Beneath your feet, the earth cracks suddenly. Before you could react, the "
+"cracks heal and the ground smooths out again."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:530
+msgid "Trumpets sound. The noise is glorious as if a victory occurred."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:533
+msgid ""
+"Warm air rises all around you. It comforts your tired limbs and seems to aid "
+"your recovery."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:538
+msgid "Ambush Trickery and Deceit"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:543
+msgid "Chaos"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:546
+msgid "Silent knives"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:547
+msgid "Attacking"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:560
+msgid ""
+" The caster summons a knife which is magically hurled at the target.  The "
+"power of this spell increases with caster's level."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:564
+msgid "Poison of ignorance"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:565
+msgid "Poisoning"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:579
+msgid ""
+" The caster entices the bile from the world's ignorants to damage a group of "
+"creatures near the target."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:583
+msgid "Transmute poison"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:584
+msgid "Poison Neutralizing"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:599
+msgid ""
+" Drawing upon the strength of the soul the caster fools the target "
+"creature's body into processing poison as if it were a harmless substance. "
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:603
+msgid "Blast of Fury"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:604
+msgid "Blasting"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:617
+msgid ""
+" After some time spent in meditation upon pain and carnage, the caster "
+"unleashes her thought's physical manifestation as a wide cone of anti-matter "
+"fury."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:619
+msgid ""
+"If gods can be said to have a sense of humor, surely Soroughoz is the  "
+"jester among them all. He delights in unexpected endings and endless twists "
+"of plot. At a time saving one from certain demise only to be  sent to the "
+"halls of Garzul moments later makes him roll with diabolical mirth. He is "
+"also a gambler, champion of the underdog and the bane of the mighty."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:623
+msgid "Confrontation"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:628
+msgid "Abyss"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:631
+msgid "Stinging light"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:632
+msgid "Stinging"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:645
+msgid ""
+" The caster hurls a number of projectiles of light at the target.  Upon "
+"contact with a creature the projectiles cause searing damage. The number of "
+"missiles increases with caster's level."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:649
+msgid "Divine Aggressor"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:650
+msgid "Aggressive"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:665
+msgid ""
+" Arhareim, the hammer of gods in conjured to envelop the party in seething "
+"warlust for a period of time."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:669
+msgid "Malice Storm"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:670
+msgid "Storming"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:683
+msgid ""
+" The caster summons vast energies of the astral plains. These appear as "
+"tendrils of malicious energy penetrating the material plane."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:687
+msgid "Ring of Harm"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:688
+msgid "Harming"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:701
+msgid ""
+" Enraged with hatred for his foes, the caster becomes a focus of conduit for "
+"Unamoin's earthly manifestation. Intense waves of malevolent energy spreads "
+"from the castor's body seeking to eradicate hostile life-forms around him."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:705
+msgid "Unholy Decimator"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:706
+msgid "Decimating"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:719
+msgid ""
+" Spoken of only in hushed tones, the Unholy Decimator is the creation of the "
+"undead baul wizard, Shamoul the Morbid. A vortex of unholy energy  drains a "
+"single victim of its very life-force."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:721
+msgid ""
+"The clamor of battle is music to the ears of the god of confrontation.  "
+"Nothing pleases her more than a good plague or years of war between "
+"neighboring tribes. Disguised servants of Unamoin travel among the populace, "
+"inciting riots, poisoning wells and dominating the minds of the weak."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:723
+msgid ""
+"A wall of wind in an angry gust, sweeps you off your feet. You scramble to "
+"regain your footing."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:726
+msgid ""
+"A towering giant oppresses your mind. You ego cracks under the weight like "
+"an eggshell."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:729
+msgid ""
+"An attempt is made to comfort you, yet why does it feel like is delivered "
+"with a warhammer?"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:732
+msgid ""
+"Colors bloom in your field of vision. The hues are mostly reds and purples. "
+"They quickly fade to darkness."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:735
+msgid ""
+"You're seized by a rise of warlust. Your hear your heart in your ears like "
+"the drumming of a marching army."
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:738
+msgid ""
+"Your vision suddenly focuses to a red tunnel. Air whistles in your ears as "
+"if you're moving at a high speed."
 msgstr ""

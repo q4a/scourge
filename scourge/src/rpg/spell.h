@@ -124,7 +124,6 @@ class Spell : public Storable {
 
   static Spell *getSpellByName(char *name);
 
-	static void finishSpellTag( Spell *spell );
 };
 
 
@@ -179,8 +178,6 @@ class MagicSchool {
   inline void addSpell( Spell *spell ) { spells.push_back( spell ); }
   const char *getRandomString( std::vector<std::string> *v );
 
-private:
-	static void finishSchoolTag( MagicSchool *school, Spell *spell );	
 };
 
 #endif
