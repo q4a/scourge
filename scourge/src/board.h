@@ -217,7 +217,8 @@ private:
                                    std::vector<std::string> *intros,
                                    std::vector<std::string> *unknownPhrases,
                                    std::map<std::string, int> *conversations,
-                                   std::vector<std::string> *answers );  
+                                   std::vector<std::string> *answers );
+  
 };                                  
 
 

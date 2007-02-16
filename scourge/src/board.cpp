@@ -23,6 +23,7 @@
 #include "item.h"
 #include "creature.h"
 #include "shapepalette.h"
+#include "configlang.h"
 
 using namespace std;
 
@@ -45,128 +46,71 @@ Board::Board(Session *session) {
   this->storylineIndex = 0;
 	missionListCount = 0;
 
-  char errMessage[500];
-  char s[200];
-  sprintf(s, "%s/world/missions.txt", rootDir);
-  FILE *fp = fopen(s, "r");
-  if(!fp) {        
-    sprintf(errMessage, "Unable to find the file: %s!", s);
-    cerr << errMessage << endl;
-    exit(1);
-  }
-
-  Mission *current_mission = NULL;
   char type;
   char name[255], line[255], description[2000], 
     music[255],
     success[2000], failure[2000], mapName[80];
-  //char keyphrase[80],answer[4000];
-  //Monster *currentNpc = NULL;
-  int n = fgetc(fp);
-  while(n != EOF) {
-    if( n == 'M' ) {
-      // skip ':'
-      fgetc( fp );
-      n = Constants::readLine( line, fp );
-      type = line[0];
-      strcpy( name, line + 2 );
-      strcpy( description, "" );
-      while( n == 'D' ) {
-        n = Constants::readLine( line, fp );
-        if( strlen( description ) ) strcat( description, " " );
-        strcat( description, line + 1 );
-      }
 
-      strcpy( music, "" );
-      if( n == 'Z' ) {
-        n = Constants::readLine( line, fp );
-        strcat( music, line + 1 );
-      }
+  ConfigLang *config = ConfigLang::load( "config/mission.cfg" );
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "template" );
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
 
-      strcpy( success, "" );
-      while( n == 'Y' ) {
-        n = Constants::readLine( line, fp );
-        if( strlen( success ) ) strcat( success, " " );
-        strcat( success, line + 1 );
-      }
+		config->setUpdate( "Loading missions", i, v->size() );
 
-      strcpy( failure, "" );
-      while( n == 'N' ) {
-        n = Constants::readLine( line, fp );
-        if( strlen( failure ) ) strcat( failure, " " );
-        strcat( failure, line + 1 );
-      }
+    type = node->getValueAsString( "type" )[0] + ( 'A' - 'a' );
+    strcpy( name, node->getValueAsString( "name" ) );
+    strcpy( description, node->getValueAsString( "description" ) );
+    strcpy( music, node->getValueAsString( "music" ) );
+    strcpy( success, node->getValueAsString( "success" ) );
+    strcpy( failure, node->getValueAsString( "failure" ) );
+    templates.push_back( new MissionTemplate( this, name, type, description, music, success, failure ) );
+  }
 
-      templates.push_back( new MissionTemplate( this, name, type, description, music, success, failure ) );
-    } else if( n == 'T' ) {
-      // skip ':'
-      fgetc( fp );
-      // read the name
-      n = Constants::readLine( name, fp );
+  v = config->getDocument()->
+		getChildrenByName( "mission" );
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
 
-      // read the level and depth
-      n = Constants::readLine( line, fp );
-      int level = atoi( strtok( line + 1, "," ) );
-      int depth = atoi( strtok( NULL, ",") );
-      char *p = strtok( NULL, "," );
-      if( p ) strcpy( mapName, p );
-      else strcpy( mapName, "" );
+		config->setUpdate( "Loading missions", i, v->size() );
 
-      strcpy( description, "" );
-      while( n == 'D' ) {
-        n = Constants::readLine( line, fp );
-        if( strlen( description ) ) strcat( description, " " );
-        strcat( description, line + 1 );
-      }
+    // read the level and depth
+    int level = node->getValueAsInt( "level" );
+    int depth = node->getValueAsInt( "depth" );
+    strcpy( mapName, node->getValueAsString( "map" ) );
+    strcpy( description, node->getValueAsString( "description" ) );
+    strcpy( music, node->getValueAsString( "music" ) );
+    strcpy( success, node->getValueAsString( "success" ) );
+    strcpy( failure, node->getValueAsString( "failure" ) );
 
-      strcpy( music, "" );
-      if( n == 'Z' ) {
-        n = Constants::readLine( line, fp );
-        strcat( music, line + 1 );
-      }
+    Mission *current_mission = new Mission( this, level, depth, name, description, music, success, failure, mapName );
+    current_mission->setStoryLine( true );
+    storylineMissions.push_back( current_mission );
 
-      strcpy( success, "" );
-      while( n == 'Y' ) {
-        n = Constants::readLine( line, fp );
-        if( strlen( success ) ) strcat( success, " " );
-        strcat( success, line + 1 );
-      }
 
-      strcpy( failure, "" );
-      while( n == 'N' ) {
-        n = Constants::readLine( line, fp );
-        if( strlen( failure ) ) strcat( failure, " " );
-        strcat( failure, line + 1 );
-      }
-
-      current_mission = new Mission( this, level, depth, name, description, music, success, failure, mapName );
-      current_mission->setStoryLine( true );
-      storylineMissions.push_back( current_mission );
-
-    } else if(n == 'I' && current_mission) {
-      fgetc(fp);
-      n = Constants::readLine( line, fp );
-      RpgItem *item = RpgItem::getItemByName(line);
+    vector<ConfigNode*> *vv = config->getDocument()->
+      getChildrenByName( "item" );
+    for( unsigned int i = 0; vv && i < vv->size(); i++ ) {
+      ConfigNode *itemNode = (*vv)[i];
+      RpgItem *item = RpgItem::getItemByName( (char*)itemNode->getValueAsString( "name" ) );
       current_mission->addItem( item );
-    
-    } else if(n == 'C' && current_mission) {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-      Monster *monster = Monster::getMonsterByName(line);
+    }
+    vv = config->getDocument()->getChildrenByName( "creature" );
+    for( unsigned int i = 0; vv && i < vv->size(); i++ ) {
+      ConfigNode *monsterNode = (*vv)[i];
+      Monster *monster = Monster::getMonsterByName( (char*)monsterNode->getValueAsString( "name" ) );
       if( !monster ) {
         cerr << "*** Error: can't find mission monster \"" << line << "\"." << endl;
         exit( 1 );
       }
       current_mission->addCreature( monster );
-    } else if(n == 'S' && current_mission) {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-      current_mission->setSpecial( line );
-    } else {
-      n = Constants::readLine(line, fp);
     }
+    
+    if( strlen( node->getValueAsString( "special" ) ) )
+        current_mission->setSpecial( (char*)node->getValueAsString( "special" ) );
   }
-  fclose(fp);
+  delete( config );
 }
 
 int Mission::readConversationLine( FILE *fp, char *line, int n,
