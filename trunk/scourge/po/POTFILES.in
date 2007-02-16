@@ -11,3 +11,4 @@ src/scourge.cpp
 ../scourge_data/config/otheritem.cfg
 ../scourge_data/config/spell.cfg
 ../scourge_data/config/book.cfg
+../scourge_data/config/mission.cfg
