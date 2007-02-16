@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-15 21:21-0800\n"
+"POT-Creation-Date: 2007-02-16 11:01-0800\n"
 "PO-Revision-Date: 2007-02-04 11:18+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -3229,4 +3229,22 @@ msgstr ""
 msgid ""
 "Your vision suddenly focuses to a red tunnel. Air whistles in your ears as "
 "if you're moving at a high speed."
+msgstr ""
+
+#: ../scourge_data/config/book.cfg:5
+msgid "Treatiese on the Handling of Imps"
+msgstr ""
+
+#: ../scourge_data/config/book.cfg:7
+msgid ""
+"There are those who claim that great accomplishments can be achieved by "
+"harnessing the energies of Imps."
+msgstr ""
+
+#: ../scourge_data/config/book.cfg:11
+msgid "Hiking the Dimension of Excrutiating Nausia"
+msgstr ""
+
+#: ../scourge_data/config/book.cfg:14
+msgid "Be sure to bring a paper bag."
 msgstr ""
