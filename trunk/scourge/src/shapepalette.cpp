@@ -665,43 +665,29 @@ void ShapePalette::initMapGrid() {
     }
   }
 
-  // load the locations
-  char errMessage[500];
-  char s[200];
-  sprintf(s, "%s/world/locations.txt", rootDir);
-  FILE *fp = fopen(s, "r");
-  if(!fp) {        
-    sprintf(errMessage, "Unable to find the file: %s!", s);
-    cerr << errMessage << endl;
-    exit(1);
-  }
+  char tmp[200];
+	ConfigLang *config = ConfigLang::load( "config/location.cfg" );
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "location" );
 
-  char line[255];
-  int n = fgetc(fp);
-  while(n != EOF) {
-    if(n == 'L') {
-      // skip ':'
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
 
-      MapGridLocation *loc = (MapGridLocation*)malloc( sizeof( MapGridLocation ) );
-      strcpy( loc->name, strtok( line, "," ) );
-      loc->x = atoi( strtok( NULL, "," ) );
-      loc->y = atoi( strtok( NULL, "," ) );
-      char *p = strtok( NULL, "," );
-      loc->type = *p;
-      loc->random = ( p[ 1 ] == 'R' );
+		config->setUpdate( "Loading Locations", i, v->size() );
 
-      if( mapGridLocationByType.find( loc->type ) == mapGridLocationByType.end() ) {
-        mapGridLocationByType[ loc->type ] = new vector<MapGridLocation*>();
-      }
-      mapGridLocationByType[ loc->type ]->push_back( loc );
-    } else {
-      // skip this line
-      n = Constants::readLine(line, fp);
+    MapGridLocation *loc = (MapGridLocation*)malloc( sizeof( MapGridLocation ) );
+    strcpy( loc->name, node->getValueAsString( "name" ) );
+    strcpy( tmp, node->getValueAsString( "position" ) );
+    loc->x = atoi( strtok( tmp, "," ) );                   
+    loc->y = atoi( strtok( NULL, "," ) );
+    loc->type = node->getValueAsString( "type" )[0] + ( 'A' - 'a' );
+    loc->random = node->getValueAsBool( "random" );
+    
+    if( mapGridLocationByType.find( loc->type ) == mapGridLocationByType.end() ) {
+      mapGridLocationByType[ loc->type ] = new vector<MapGridLocation*>();
     }
+    mapGridLocationByType[ loc->type ]->push_back( loc );
   }
-  fclose(fp);
 }
 
 /**
