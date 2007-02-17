@@ -27,132 +27,91 @@ vector<Character*> Character::character_list;
 vector<Character*> Character::rootCharacters;
 
 void Character::initCharacters() {
-  char errMessage[500];
-  char s[200];
-  sprintf(s, "%s/world/professions.txt", rootDir);
-  FILE *fp = fopen(s, "r");
-  if(!fp) {        
-    sprintf(errMessage, "Unable to find the file: %s!", s);
-    cerr << errMessage << endl;
-    exit(1);
-  }
-
   Character *last = NULL;
   char compoundName[255];
   char name[255];
   char parent[255];
   char line[255], dupLine[255];
-  int n = fgetc(fp);
-  while(n != EOF) {
-    if(n == 'P') {
-      // skip ':'
-      fgetc(fp);
-      // read the rest of the line
-      n = Constants::readLine(line, fp);
 
-      // find the name and the parent
-      strcpy( dupLine, line );
-      strcpy( compoundName, strtok( dupLine, "," ) );      
-      strcpy( name, strtok( compoundName, ":" ) );
-      char *p = strtok( NULL, ":" );
-      if( p ) {
-        strcpy( parent, p );
-      } else {
-        strcpy( parent, "" );
-      }      
-      
-      int minLevelReq, hp, mp, levelProgression;
-      minLevelReq = hp = mp = levelProgression = 0;
-      p = strtok( line, "," );			
-      if( p ) {
-        // ignore the first token
-        p = strtok( NULL, "," );				
-        if( p ) {
-          minLevelReq = atoi( p );
-          p = strtok( NULL, "," );					
-          if( p ) {
-            hp = atoi( p );
-            mp = atoi( strtok( NULL, "," ) );
-            levelProgression = atoi(strtok(NULL, ","));
-          }
-        }
-      }
+	ConfigLang *config = ConfigLang::load( "config/profession.cfg" );
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "profession" );
 
-      //cerr << "adding character class: " << name << 
-//        " parent: " << parent <<
-        //" hp: " << hp << " mp: " << mp << " min leel: " << 
-        //minLevelReq << " levelProg=" << levelProgression << endl;
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
 
-      last = new Character( strdup( name ), 
-                            ( strlen( parent ) ? strdup( parent ) : NULL ), 
-                            hp, mp, 
-                            levelProgression, minLevelReq );
-      string s = name;
-      character_class[s] = last;
-      character_list.push_back(last);
-    } else if( n == 'D' && last ) {
-      fgetc( fp );
-      n = Constants::readLine( line, fp );
-      if( strlen( last->description ) ) strcat( last->description, " " );
-      strcat( last->description, strdup( line ) );
-    } else if( n == 'S' && last ) {
-			fgetc( fp );
-			n = Constants::readLine( line, fp );
-			char *p = strtok( line, "," );
-			last->skills[ Skill::getSkillByName( p )->getIndex() ] = atoi( strtok( NULL, "," ) );
-    } else if( n == 'G' && last ) {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-			char *p = strtok( line, "," );
-			strcpy( name, p );				
-			int value = atoi( strtok( NULL, "," ) );
-			SkillGroup *group = SkillGroup::getGroupByName( name );
-			for( int i = 0; i < group->getSkillCount(); i++ ) {
-				last->skills[ group->getSkill( i )->getIndex() ] = value;
+		config->setUpdate( "Loading Professions", i, v->size() );
+
+
+		// find the name and the parent
+		strcpy( name, node->getValueAsString( "name" ) );
+		strcpy( parent, node->getValueAsString( "parent" ) );
+		int minLevelReq = node->getValueAsInt( "min_level" );
+		int hp = node->getValueAsInt( "hp" );
+		int mp = node->getValueAsInt( "mp" );
+		int levelProgression = node->getValueAsInt( "level_progression" );
+
+		last = new Character( strdup( name ), 
+													( strlen( parent ) ? strdup( parent ) : NULL ), 
+													hp, mp, 
+													levelProgression, minLevelReq );
+		string s = name;
+		character_class[s] = last;
+		character_list.push_back(last);
+
+		strcpy( last->description, node->getValueAsString( "description" ) );
+		
+		vector<ConfigNode*> *vv = config->getDocument()->
+			getChildrenByName( "skills" );
+		if( vv ) {
+			ConfigNode *skillNode = (*vv)[0];
+			for( map<string,ConfigValue*>::iterator e = skillNode->getValues()->begin();
+					 e != skillNode->getValues()->end(); ++e ) {
+				string name = e->first;
+				ConfigValue *value = e->second;
+				last->skills[ Skill::getSkillByName( (char*)name.c_str() )->getIndex() ] = (int)value->getAsFloat();
 			}
-		/*
-    } else if( n == 'C' && last ) {
-		*/
-		} else if( n == 'W' && last ) {
-			fgetc(fp);
-      n = Constants::readLine(line, fp);
-			char *p = strtok( line, "," );
-			while( p ) {				
-				char *lastChar = p + strlen( p ) - 1;
-				bool allowed = ( *lastChar == '+' );				
-				*lastChar = '\0';
-				string s = strdup( p );
-				if( !( *p == '*' ) && RpgItem::tagsDescriptions.find( s ) == RpgItem::tagsDescriptions.end() ) {
-					cerr << "*** Warning: item tag has no description: " << s << endl;
+		}
+		vv = config->getDocument()->
+			getChildrenByName( "groups" );
+		if( vv ) {
+			ConfigNode *skillNode = (*vv)[0];
+			for( map<string,ConfigValue*>::iterator e = skillNode->getValues()->begin();
+					 e != skillNode->getValues()->end(); ++e ) {
+				string name = e->first;
+				ConfigValue *value = e->second;
+				SkillGroup *group = SkillGroup::getGroupByName( (char*)name.c_str() );
+				for( int i = 0; i < group->getSkillCount(); i++ ) {
+					last->skills[ group->getSkill( i )->getIndex() ] = (int)value->getAsFloat();
 				}
-				if( allowed ) last->allowedWeaponTags.insert( s );
-				else last->forbiddenWeaponTags.insert( s );
-				p = strtok( NULL, "," );
 			}
-    } else if( n == 'A' && last ) {
-			fgetc(fp);
-      n = Constants::readLine(line, fp);
-			char *p = strtok( line, "," );
-			while( p ) {
-				char *lastChar = p + strlen( p ) - 1;
-				bool allowed = ( *lastChar == '+' );				
-				*lastChar = '\0';
-				string s = strdup( p );
-				if( !( *p == '*' ) && RpgItem::tagsDescriptions.find( s ) == RpgItem::tagsDescriptions.end() ) {
-					cerr << "*** Warning: item tag has no description: " << s << endl;
-				}
-				if( allowed ) last->allowedArmorTags.insert( s );
-				else last->forbiddenArmorTags.insert( s );
-				p = strtok( NULL, "," );
-			}
-    } else {
-      n = Constants::readLine( line, fp );
-    }
-  }
-  fclose(fp);
+		}
+		addItemTags( node->getValueAsString( "allowed_weapons" ), &(last->allowedWeaponTags) );
+		addItemTags( node->getValueAsString( "forbidden_weapons" ), &(last->forbiddenWeaponTags) );
+		addItemTags( node->getValueAsString( "allowed_armor" ), &(last->allowedArmorTags) );
+		addItemTags( node->getValueAsString( "forbidden_armor" ), &(last->forbiddenArmorTags) );
+	}
+
+	delete( config );
 
   buildTree();
 }
+
+void Character::addItemTags( const char *s, set<string> *list ) {
+	char line[1000];
+	strcpy( line, s );
+	char *p = strtok( line, "," );
+	while( p ) {				
+		//char *lastChar = p + strlen( p ) - 1;
+		//*lastChar = '\0';
+		string s = strdup( p );
+		if( !( *p == '*' ) && RpgItem::tagsDescriptions.find( s ) == RpgItem::tagsDescriptions.end() ) {
+			cerr << "*** Warning: item tag has no description: " << s << endl;
+		}
+		list->insert( s );
+		p = strtok( NULL, "," );
+	}
+}		
 
 Character::Character( char *name, char *parentName, 
                       int startingHp, int startingMp, 

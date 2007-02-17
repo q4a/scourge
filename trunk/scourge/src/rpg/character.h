@@ -42,6 +42,7 @@ private:
   Character *parent;
   std::vector<Character*> children;
   std::map<int,int> skills;
+	std::map<std::string,int> groups;
   std::vector<std::string> capabilities;
 	std::set<std::string> allowedWeaponTags;
 	std::set<std::string> forbiddenWeaponTags;
@@ -88,6 +89,10 @@ public:
 	}
 
   static void initCharacters();
+	static void addItemTags( const char *s, std::set<std::string> *list );
+
+	void finishProfessionTag();
+	void printSet( std::set<std::string> *s, char *tagName );
   static void buildTree();
 protected:
 	void describeProfession();

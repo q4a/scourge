@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-16 15:21-0800\n"
+"POT-Creation-Date: 2007-02-17 14:14-0800\n"
 "PO-Revision-Date: 2007-01-20 21:57-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -838,6 +838,7 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:2344
+#: ../scourge_data/config/profession.cfg:76
 msgid "Warmaster"
 msgstr ""
 
@@ -3695,4 +3696,358 @@ msgstr ""
 
 #: ../scourge_data/config/mission.cfg:182
 msgid "Neutralize one hideous druidic menace"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:7
+msgid "Man-at-arms"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:12
+#: ../scourge_data/config/profession.cfg:38
+#: ../scourge_data/config/profession.cfg:52
+#: ../scourge_data/config/profession.cfg:67
+#: ../scourge_data/config/profession.cfg:82
+#: ../scourge_data/config/profession.cfg:97
+#: ../scourge_data/config/profession.cfg:112
+#: ../scourge_data/config/profession.cfg:127
+#: ../scourge_data/config/profession.cfg:142
+#: ../scourge_data/config/profession.cfg:157
+#: ../scourge_data/config/profession.cfg:173
+#: ../scourge_data/config/profession.cfg:189
+#: ../scourge_data/config/profession.cfg:205
+#: ../scourge_data/config/profession.cfg:221
+#: ../scourge_data/config/profession.cfg:237
+#: ../scourge_data/config/profession.cfg:253
+#: ../scourge_data/config/profession.cfg:269
+#: ../scourge_data/config/profession.cfg:286
+#: ../scourge_data/config/profession.cfg:301
+#: ../scourge_data/config/profession.cfg:316
+#: ../scourge_data/config/profession.cfg:331
+#: ../scourge_data/config/profession.cfg:346
+#: ../scourge_data/config/profession.cfg:363
+#: ../scourge_data/config/profession.cfg:378
+#: ../scourge_data/config/profession.cfg:393
+#: ../scourge_data/config/profession.cfg:408
+#: ../scourge_data/config/profession.cfg:424
+#: ../scourge_data/config/profession.cfg:440
+#: ../scourge_data/config/profession.cfg:456
+#: ../scourge_data/config/profession.cfg:472
+#: ../scourge_data/config/profession.cfg:488
+#: ../scourge_data/config/profession.cfg:504
+#: ../scourge_data/config/profession.cfg:521
+#: ../scourge_data/config/profession.cfg:536
+#: ../scourge_data/config/profession.cfg:552
+#: ../scourge_data/config/profession.cfg:568
+#: ../scourge_data/config/profession.cfg:583
+#: ../scourge_data/config/profession.cfg:598
+#: ../scourge_data/config/profession.cfg:615
+#: ../scourge_data/config/profession.cfg:630
+#: ../scourge_data/config/profession.cfg:648
+#: ../scourge_data/config/profession.cfg:677
+#: ../scourge_data/config/profession.cfg:692
+#: ../scourge_data/config/profession.cfg:707
+#: ../scourge_data/config/profession.cfg:722
+#: ../scourge_data/config/profession.cfg:737
+#: ../scourge_data/config/profession.cfg:752
+#: ../scourge_data/config/profession.cfg:767
+#: ../scourge_data/config/profession.cfg:783
+#: ../scourge_data/config/profession.cfg:799
+#: ../scourge_data/config/profession.cfg:818
+#: ../scourge_data/config/profession.cfg:846
+#: ../scourge_data/config/profession.cfg:861
+#: ../scourge_data/config/profession.cfg:876
+#: ../scourge_data/config/profession.cfg:891
+#: ../scourge_data/config/profession.cfg:907
+#: ../scourge_data/config/profession.cfg:923
+#: ../scourge_data/config/profession.cfg:941
+#: ../scourge_data/config/profession.cfg:970
+#: ../scourge_data/config/profession.cfg:985
+#: ../scourge_data/config/profession.cfg:1000
+#: ../scourge_data/config/profession.cfg:1015
+#: ../scourge_data/config/profession.cfg:1031
+#: ../scourge_data/config/profession.cfg:1047
+#: ../scourge_data/config/profession.cfg:1066
+#: ../scourge_data/config/profession.cfg:1095
+#: ../scourge_data/config/profession.cfg:1110
+#: ../scourge_data/config/profession.cfg:1125
+#: ../scourge_data/config/profession.cfg:1140
+#: ../scourge_data/config/profession.cfg:1156
+#: ../scourge_data/config/profession.cfg:1172
+msgid "description goes here"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:32
+msgid "Warrior"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:46
+msgid "Barbarian"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:61
+msgid "Elite Berserker"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:91
+msgid "Spirit Commander"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:106
+msgid "Veteran Warrior"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:121
+msgid "Elite Battle-beast"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:136
+msgid "Prime Dominator"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:151
+msgid "Champion of Justice"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:167
+msgid "Primus Lictor"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:183
+msgid "Fighting Guardian of Truth"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:199
+msgid "Supreme Executioner"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:215
+msgid "Lightbringer Warrior"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:231
+msgid "Learned Battle Master"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:247
+msgid "Planar Ally Knight"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:263
+msgid "Wandering Hand"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:280
+msgid "Mercenary"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:295
+msgid "Veteran Soldier of Fortune"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:310
+msgid "Elite Old Hand"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:325
+msgid "Mastermind Commander"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:340
+msgid "Assassin"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:357
+msgid "Master Assassin"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:372
+msgid "Spy Mastermind"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:387
+msgid "Outdoorsman"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:402
+msgid "Master Ranger"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:418
+msgid "Elite Wilderness Guard"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:434
+msgid "Elite Arcane Ranger"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:450
+msgid "War-called Hermit"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:466
+msgid "Nature's Vengence"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:482
+msgid "Insane War-Scholar"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:498
+msgid "War-mage"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:515
+msgid "Elite War-caster"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:530
+msgid "Battle Mage Savant"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:546
+msgid "Military chaplain"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:562
+msgid "Celestial Commander"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:577
+msgid "Spirit-bound Fighter"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:592
+msgid "Arcane fighter"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:609
+msgid "Arcane Commander"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:624
+msgid "Fighting Pedagog"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:643
+msgid "Magician"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:671
+msgid "Apprentice Sorceror"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:686
+msgid "Necromantic Sorceror"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:701
+msgid "Sorceror of the Planes"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:716
+msgid "Wild One"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:731
+msgid "Loreweilder"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:746
+msgid "Iron Mage"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:761
+msgid "Soulshard"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:777
+msgid "Severed Spirit"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:793
+msgid "Devotee of Rhun"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:813
+msgid "Healer"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:840
+msgid "Clerical Aide"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:855
+msgid "Master Cleric"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:870
+msgid "Battle Priest"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:885
+msgid "Traveling Medic"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:901
+msgid "Nature's Ally"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:917
+msgid "Battleborn Healer"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:936
+msgid "Scholar"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:964
+msgid "Adjunct"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:979
+msgid "Neophyte Master"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:994
+msgid "Battlefield Scholar"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1009
+msgid "Field Scientist"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1025
+msgid "Arcane Study"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1041
+msgid "Assistant Loremaster"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1061
+msgid "Cutpurse"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1089
+msgid "Thief"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1104
+msgid "Master Thief"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1119
+msgid "Assassin in Training"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1134
+msgid "Gutter-sage"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1150
+msgid "Rouge Magician"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1166
+msgid "Underworld Spellcaster"
 msgstr ""

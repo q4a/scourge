@@ -313,8 +313,8 @@ void MainMenu::drawAfter() {
 		*/
 
 		glLoadIdentity();
-    //glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
-		int y = 75;
+    glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
+		int y = 70;
 		int x = 100;
 		float maxStatus = ( scourge->getScreenWidth() - 200 ) / 20.0f;
 		glColor3f( 0.8, 0.75, 0.65 );
