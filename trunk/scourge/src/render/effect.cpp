@@ -52,8 +52,8 @@ Effect::Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, GLSha
 }
 
 void Effect::commonInit() {
-  flameTex = shapePal->getTexture(9);
-  ringTex = shapePal->getTexture(18);
+  flameTex = shapePal->findTextureByName( "flame.bmp", true );
+  ringTex = shapePal->findTextureByName( "ring2.bmp", true );
   rippleTex = shapePal->getRippleTexture();
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     particle[i] = NULL;

@@ -76,6 +76,7 @@ Board::Board(Session *session) {
 		config->setUpdate( "Loading missions", i, v->size() );
 
     // read the level and depth
+		strcpy( name, node->getValueAsString( "name" ) );
     int level = node->getValueAsInt( "level" );
     int depth = node->getValueAsInt( "depth" );
     strcpy( mapName, node->getValueAsString( "map" ) );

@@ -233,7 +233,7 @@ void Shapes::initialize() {
 
     if(sv->teleporter) {
       shapes[(i + 1)] =
-				new GLTeleporter( texture, textures[9].id,
+				new GLTeleporter( texture, findTextureByName( "flame.bmp", true ),
 													sv->width, sv->depth, sv->height,
 													strdup(sv->name), 
 													sv->descriptionIndex,
