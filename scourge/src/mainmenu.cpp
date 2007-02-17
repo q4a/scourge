@@ -273,7 +273,7 @@ void MainMenu::drawView() {
 #endif
     glPopMatrix();
 
-    if(openingTop > top) {
+    if( openingTop > top && scourge->getSession()->isDataInitialized() ) {
       Uint32 t = SDL_GetTicks();
       if( t - lastTick > 40 ) {
         int d = (scourge->getSDLHandler()->getScreen()->h - openingTop) / 20;
@@ -287,13 +287,16 @@ void MainMenu::drawView() {
 	if( openingTop <= top ) {
     drawLogo();
   }
+
+	// initialize universe (nice how this is hidden here...)
+	scourge->getSession()->initData();
 }
 
-#define MAX_STATUS 30.0f
 void MainMenu::drawAfter() {
 	if( strlen( getUpdate() ) ) {
 		glPushMatrix();
-		
+				
+		/*
 		glLoadIdentity();
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -307,23 +310,26 @@ void MainMenu::drawAfter() {
 		glEnd();		
 		glEnable( GL_TEXTURE_2D );
 		glDisable( GL_BLEND );
+		*/
 
 		glLoadIdentity();
-    glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
-		int y = -70;
+    //glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
+		int y = 75;
+		int x = 100;
+		float maxStatus = ( scourge->getScreenWidth() - 200 ) / 20.0f;
 		glColor3f( 0.8, 0.75, 0.65 );
 		if( getUpdateTotal() > -1 ) {
 			scourge->getSDLHandler()->
-				texPrint( 35, y - 3, "%s: %d%%", 
+				texPrint( x, y - 3, "%s: %d%%", 
 									getUpdate(), 
 									(int)( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / 100.0f ) ) );
-			glTranslatef( 180, y - 15, 0 );
+			glTranslatef( x + 150, y - 15, 0 );
 
 			progress->updateStatusLight( NULL, 
-																	 (int)( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / MAX_STATUS ) ), 
-																	 (int)MAX_STATUS );
+																	 (int)( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / maxStatus ) ), 
+																	 (int)maxStatus );
 		} else {
-			scourge->getSDLHandler()->texPrint( 35, y - 3, getUpdate() );
+			scourge->getSDLHandler()->texPrint( x, y - 3, getUpdate() );
 		}
 		glPopMatrix();
 	}
@@ -578,9 +584,6 @@ void MainMenu::drawLogo() {
     if( logoRot < 120 - ( ( 1024 - scourge->getScreenHeight() ) / 4 ) ) {
       logoTicks = t;
       logoRot += 8;
-    } else {
-			// initialize universe (nice how this is hidden here...)
-			scourge->getSession()->initData();
 		}
     candleFlameX = scourge->getSDLHandler()->getScreen()->w - 215 + (int)(4.0 * rand()/RAND_MAX) - 4;
     candleFlameY = top + 385 + (int)(4.0 * rand()/RAND_MAX) - 4;
