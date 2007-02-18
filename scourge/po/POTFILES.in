@@ -13,3 +13,4 @@ src/scourge.cpp
 ../scourge_data/config/book.cfg
 ../scourge_data/config/mission.cfg
 ../scourge_data/config/profession.cfg
+../scourge_data/config/ability.cfg

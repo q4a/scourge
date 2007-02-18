@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-17 14:14-0800\n"
+"POT-Creation-Date: 2007-02-17 21:35-0800\n"
 "PO-Revision-Date: 2007-02-04 11:18+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -4079,4 +4079,174 @@ msgstr ""
 
 #: ../scourge_data/config/profession.cfg:1166
 msgid "Underworld Spellcaster"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:42
+msgid "Superior toughness"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:43
+msgid ""
+"Having been born and raised for the art of combat, you are a warrior who "
+"shakes off pain that would cripple a lesser person. In battle your natural "
+"abilities serve as an extra layer of armor. The player must be an at least "
+"3rd level fighter  or rogue type in order to use this capability."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:52
+msgid "Missile Defense"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:53
+msgid ""
+"You specialize in missile weapons to the point of being able to "
+"automatically predict the path of high-speed, incoming missiles. This innate "
+"knowledge grants you an extra bonus when defending against missile weapons. "
+"The prerequisites for this capability is an at least 3rd level player with "
+"the bow skill of 20."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:62
+msgid "War-rage"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:63
+msgid ""
+"You rejoice in destruction of all who stand in your way. For every attack "
+"when using melee weapons, you cause extra damage resulting from your battle- "
+"lust. The prerequisites for this capability are having more than 30 skill."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:72
+msgid "Killer Blow"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:73
+msgid ""
+"Being a barbarian is hard work. Not only are you not allowed to read, bathe, "
+"or act in any way trans-gender, you also subsist on an unhealthy diet "
+"lacking in vitamins and fiber. Fortunately you may freely partake in many "
+"fittingly, barbaric activities such as the contest of killing an opponent "
+"with a single blow. This  training is useful on the battlefield where you "
+"may take a bonus to your attacks. Only barbarians are allowed to use this "
+"special capability."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:82
+msgid "Smallarm Mastery"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:83
+msgid ""
+"Spending years fighting for their lives, rogues master the use of small arms "
+"(daggers and knives). With this capability, they cause extra points of "
+"damage in combat when wielding a small weapon."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:92
+msgid "Neutralize Poison"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:93
+msgid ""
+"The rogue's happy-go-lucky attitude is said to be an attribute to a quick "
+"healing physiology. With this skill, a high level rogue character can shake "
+"off the effects of poison up to three times a day."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:101
+msgid "Terminal Energy"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:102
+msgid ""
+"A mage when caught in battle and reduced to very few hit points will gain "
+"back magic points in a final desperate act of survival. The prerequisite  to "
+"this capability is to be a magic user or student of lore teetering on the "
+"verge of death."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:111
+msgid "Mystic Defense"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:112
+msgid ""
+"Using this capability, a mage or student of lore can extend the "
+"effectiveness of the armor worn by connecting with the  mystic energies of "
+"the deity Xelphate. The prerequisite to this capability is being a magic "
+"user and having at least 25"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:121
+msgid "Speedy Casting"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:122
+msgid ""
+"You have studied the art of spell casting since an early age. The basics of "
+"this discipline are second nature to you and therefore you are able to "
+"conjure up magic faster than others. The prerequisites to this skill is high "
+"levels in the magical skills."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:131
+msgid "Natural Healing"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:132
+msgid ""
+"Your closeness to nature imbues your being with raw energy. You can  "
+"innately transform this into a healing force and cure your minor ailments "
+"twice a day. The prerequisite for this capability is having at least 25  "
+"points of nature magic skill."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:140
+msgid "Vitality Transfer"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:141
+msgid ""
+"When invoked, this capability attempts to balance everyone's health scores "
+"in your party. The healer temporarily joins everyone's fate and shares hit "
+"points from healthy party members with those who need it. It is rumored that "
+"players also take on some of each others' personalities. The prerequisite of "
+"this capability is 25 points of Awareness magic and having at least 5 levels."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:149
+msgid "Healing Aura"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:150
+msgid ""
+"A palpable aura of holy innocence surround you. This force originates from "
+"celestial powers as long as you remain favored by your deity. While you "
+"travel with this aura, you and those around you naturally recover from "
+"injuries. The prerequisite to obtaining this capability is a noble "
+"profession such as a healer or certain types of high level warriors."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:158
+msgid "Arcane Stance"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:159
+msgid ""
+"In your years of research you came across a lost treatiese on the art of "
+"defensive body movements in combat. Armed with this knowledge, the scholar "
+"can face an enemy in combat showing a least vulnerable side."
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:168
+msgid "Bow Mastery"
+msgstr ""
+
+#: ../scourge_data/config/ability.cfg:169
+msgid ""
+"Many years of research teaches the scholar the perfect way to rain ranged "
+"attacks upon their enemies. Using the bow is as much about the contemplation "
+"of one's spirit as it is an execution of forms gleaned from ancient tomes. "
+"The high-level scholar receives an attack bonus with this capability."
 msgstr ""
