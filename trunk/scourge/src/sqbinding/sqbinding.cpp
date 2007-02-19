@@ -101,14 +101,14 @@ SqBinding::SqBinding( Session *session ) {
   // compile some static scripts:
   // Special skills
   char s[200];
-  sprintf(s, "%s/world/skills.nut", rootDir);
+  sprintf(s, "%s/script/skills.nut", rootDir);
   if( !compile( s ) ) {
     cerr << "Error: *** Unable to compile special skills code: " << s << endl;
   }
   registerScript( s );
 
   // map interaction
-  sprintf(s, "%s/world/map.nut", rootDir);
+  sprintf(s, "%s/script/map.nut", rootDir);
   if( !compile( s ) ) {
     cerr << "Error: *** Unable to compile map interaction code: " << s << endl;
   }
