@@ -28,10 +28,8 @@ vector<Character*> Character::rootCharacters;
 
 void Character::initCharacters() {
   Character *last = NULL;
-  char compoundName[255];
   char name[255];
   char parent[255];
-  char line[255], dupLine[255];
 
 	ConfigLang *config = ConfigLang::load( "config/profession.cfg" );
 	vector<ConfigNode*> *v = config->getDocument()->
@@ -61,8 +59,7 @@ void Character::initCharacters() {
 
 		strcpy( last->description, node->getValueAsString( "description" ) );
 		
-		vector<ConfigNode*> *vv = config->getDocument()->
-			getChildrenByName( "skills" );
+		vector<ConfigNode*> *vv = node->getChildrenByName( "skills" );
 		if( vv ) {
 			ConfigNode *skillNode = (*vv)[0];
 			for( map<string,ConfigValue*>::iterator e = skillNode->getValues()->begin();
@@ -72,8 +69,7 @@ void Character::initCharacters() {
 				last->skills[ Skill::getSkillByName( (char*)name.c_str() )->getIndex() ] = (int)value->getAsFloat();
 			}
 		}
-		vv = config->getDocument()->
-			getChildrenByName( "groups" );
+		vv = node->getChildrenByName( "groups" );
 		if( vv ) {
 			ConfigNode *skillNode = (*vv)[0];
 			for( map<string,ConfigValue*>::iterator e = skillNode->getValues()->begin();

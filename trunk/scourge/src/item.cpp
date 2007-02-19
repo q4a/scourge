@@ -521,6 +521,20 @@ void Item::initSounds( ConfigLang *config ) {
 	}
 }
 
+void Item::initTags( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "tags" );
+	if( v ) {
+		ConfigNode *node = (*v)[0];
+		map<string, ConfigValue*> *values = node->getValues();
+		for( map<string, ConfigValue*>::iterator e = values->begin(); e != values->end(); ++e ) {
+			string name = e->first;
+			ConfigValue *value = e->second;
+			RpgItem::tagsDescriptions[ name ] = value->getAsString();
+		}
+	}
+}
+
 void Item::addNameTag( ConfigLang *config, char *name, char *newName ) {
 	vector<ConfigNode*> *v = config->getDocument()->
 		getChildrenByName( "item" );
@@ -539,7 +553,8 @@ void Item::addNameTag( ConfigLang *config, char *name, char *newName ) {
 void Item::initItems( ShapePalette *shapePal ) {
 	ConfigLang *config = ConfigLang::load( "config/item.cfg" );  
   initItemTypes( config );  
-	initSounds( config );	
+	initSounds( config );
+	initTags( config );
   delete config;
 
 	config = ConfigLang::load( "config/weapon.cfg" );  
