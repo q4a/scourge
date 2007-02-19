@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-17 21:35-0800\n"
+"POT-Creation-Date: 2007-02-18 21:10-0800\n"
 "PO-Revision-Date: 2007-02-04 11:18+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -282,6 +282,38 @@ msgstr ""
 
 #: ../scourge_data/config/map.cfg:334
 msgid "Some plants grow here."
+msgstr ""
+
+#: ../scourge_data/config/item.cfg:90
+msgid "two-handed weapons"
+msgstr ""
+
+#: ../scourge_data/config/item.cfg:91
+msgid "large $$"
+msgstr ""
+
+#: ../scourge_data/config/item.cfg:92
+msgid "$$ made of metal"
+msgstr ""
+
+#: ../scourge_data/config/item.cfg:93
+msgid "bludgeoning weapons"
+msgstr ""
+
+#: ../scourge_data/config/item.cfg:94
+msgid "small $$"
+msgstr ""
+
+#: ../scourge_data/config/item.cfg:95
+msgid "robes"
+msgstr ""
+
+#: ../scourge_data/config/item.cfg:96
+msgid "plate-mail"
+msgstr ""
+
+#: ../scourge_data/config/item.cfg:97
+msgid "ranged weapons"
 msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:3
@@ -4058,6 +4090,7 @@ msgid "Cutpurse"
 msgstr ""
 
 #: ../scourge_data/config/profession.cfg:1089
+#: ../scourge_data/config/rpg.cfg:286
 msgid "Thief"
 msgstr ""
 
@@ -4249,4 +4282,476 @@ msgid ""
 "attacks upon their enemies. Using the bow is as much about the contemplation "
 "of one's spirit as it is an execution of forms gleaned from ancient tomes. "
 "The high-level scholar receives an attack bonus with this capability."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:4 ../scourge_data/config/rpg.cfg:5
+msgid "BASIC_GROUP"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:8
+msgid "SPEED"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:9
+msgid ""
+"Speed determines how fast the character is able to cast a spell or swing a "
+"sword."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:10
+msgid "Dragon"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:14
+msgid "COORDINATION"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:15
+msgid ""
+"More coordinated characters are able to deflect more damage using armor."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:16
+msgid "Wolf"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:20
+msgid "POWER"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:21
+msgid ""
+"The higher a character's power the more damage his/her attach will cause."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:22
+msgid "Troll"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:26
+msgid "IQ"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:27
+msgid "A character with higher IQ is better suited to spellcasting."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:28
+msgid "Boar"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:32
+msgid "LEADERSHIP"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:33
+msgid ""
+"Leadership determines bartering power and rallies your troops in battle."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:34
+msgid "Bear"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:38
+msgid "LUCK"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:39
+msgid ""
+"Luck affects almost all aspects of gameplay from spellcasting to unlocking "
+"doors."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:40
+msgid "Fiend"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:44
+msgid "PIETY"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:45
+msgid "A pious character follows his/her deity's wishes more closely."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:46
+msgid "Tiger"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:50
+msgid "LORE"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:51
+msgid ""
+"Using lore a character is able identify items more easily and understand new "
+"concepts."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:52
+msgid "Hydra"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:57 ../scourge_data/config/rpg.cfg:58
+msgid "FIGHT_GROUP"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:61
+msgid "MELEE_WEAPON"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:62
+msgid ""
+"This is your combat skill for close quarters. Most basic weapons fall in "
+"this category."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:63
+msgid "Drake"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:69
+msgid "RANGED_WEAPON"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:70
+msgid "This skill is used when fighting using a bow-type weapon."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:71
+msgid "Sparrow"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:77
+msgid "LARGE_WEAPON"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:78
+msgid "This skill is used when fighting using over-sized weapons."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:79
+msgid "King"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:85
+msgid "HAND_TO_HAND_COMBAT"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:86
+msgid "This skill is used when fighting with bare hands."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:87
+msgid "Priest"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:92 ../scourge_data/config/rpg.cfg:93
+msgid "DEFEND_GROUP"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:96
+msgid "SHIELD_DEFEND"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:97
+msgid "This skill is used when using a shield to deflect an attack."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:98
+msgid "Giant"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:104
+msgid "ARMOR_DEFEND"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:105
+msgid "This skill is used when using armor to deflect an attack."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:106
+msgid "Centaur"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:112
+msgid "DODGE_ATTACK"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:113
+msgid ""
+"This skill lets you side-step or otherwise avoid being hit by an attacker."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:114
+msgid "Serpent"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:119 ../scourge_data/config/rpg.cfg:120
+msgid "SORCERY_GROUP"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:123
+msgid "LIFE_AND_DEATH_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:124
+msgid ""
+"This skill describes your proficiency with spells from the school of life "
+"and death."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:125
+msgid "Sand"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:131
+msgid "DECEIT_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:132
+msgid ""
+"This skill describes your proficiency with spells from the school of deceit."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:133
+msgid "Joker"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:139
+msgid "CONFRONTATION_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:140
+msgid ""
+"This skill describes your proficiency with spells from the school of "
+"confrontation."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:141
+msgid "Demon"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:147
+msgid "RESIST_LIFE_AND_DEATH_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:148
+msgid ""
+"Having this skill helps you resist spells from the school of life and death."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:149
+msgid "Gods"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:155
+msgid "RESIST_DECEIT_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:156
+msgid "Having this skill helps you resist spells from the school of deceit."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:157
+msgid "Night"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:163
+msgid "RESIST_CONFRONTATION_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:164
+msgid ""
+"Having this skill helps you resist spells from the school of confrontation."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:165
+msgid "Angel"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:170 ../scourge_data/config/rpg.cfg:171
+msgid "SPIRIT_GROUP"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:174
+msgid "NATURE_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:175
+msgid ""
+"This skill describes your proficiency with spells from the school of nature."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:176
+msgid "Pixie"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:182
+msgid "AWARENESS_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:183
+msgid ""
+"This skill describes your proficiency with spells from the school of "
+"awareness."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:184
+msgid "Void"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:190
+msgid "RESIST_NATURE_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:191
+msgid "Having this skill helps you resist spells from the school of nature."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:192
+msgid "Law"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:198
+msgid "RESIST_AWARENESS_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:199
+msgid "Having this skill helps you resist spells from the school of awareness."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:200
+msgid "Moth"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:205 ../scourge_data/config/rpg.cfg:206
+msgid "LORE_GROUP"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:209
+msgid "HISTORY_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:210
+msgid ""
+"This skill describes your proficiency with spells from the school of history."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:211
+msgid "Helix"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:217
+msgid "RESIST_HISTORY_MAGIC"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:218
+msgid "Having this skill helps you resist spells from the school of history."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:219
+msgid "Brand"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:225
+msgid "ENCHANT_ITEM"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:226
+msgid ""
+"Your proficiency with this skill determines how well you create enchanted "
+"items."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:227
+msgid "Sorcerer"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:233
+msgid "IDENTIFY_ITEM"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:234
+msgid "This skill measures your ability to identify new items."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:235
+msgid "Sage"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:241
+msgid "IDENTIFY_CREATURE"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:242
+msgid "This skill measures your ability to identify new creatures."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:243
+msgid "Loremaster"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:248 ../scourge_data/config/rpg.cfg:249
+msgid "STEALTH_GROUP"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:252
+msgid "OPEN_LOCK"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:253
+msgid "A character with this skill can open locked doors better."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:254
+msgid "Shade"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:260
+msgid "FIND_TRAP"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:261
+msgid "This skill helps you avoid falling into traps."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:262
+msgid "Bard"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:268
+msgid "FIND_SECRET_DOOR"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:269
+msgid "This skill lets you find secret doors."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:270
+msgid "Scion"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:276
+msgid "MOVE_UNDETECTED"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:277
+msgid ""
+"With the aid of this skill you can move without your enemies detecting you."
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:278
+msgid "Silence"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:284
+msgid "STEALING"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:285
+msgid ""
+"The higher you progress in this still the better you're able to lift items "
+"from merchants."
 msgstr ""

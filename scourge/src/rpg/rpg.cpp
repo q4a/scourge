@@ -30,49 +30,43 @@ vector<char*> Rpg::firstSyl;
 vector<char*> Rpg::midSyl;
 vector<char*> Rpg::endSyl;
 
-void Rpg::initRpg() {
-  char errMessage[500];
-  char s[200];
-  sprintf(s, "%s/world/rpg.txt", rootDir);
-  FILE *fp = fopen(s, "r");
-  if(!fp) {        
-    sprintf(errMessage, "Unable to find the file: %s!", s);
-    cerr << errMessage << endl;
-    exit(1);
-  }
-
+void Rpg::initRpg() { 
 	Skill *lastSkill = NULL;
 	SkillGroup *lastGroup = NULL;
   char line[255];
 	char skillName[80], skillSymbol[80], skillDescription[255];
 	char groupName[80], groupDescription[255];
-  int n = fgetc(fp);
-  while(n != EOF) {
-		if( n == 'S' ) {
-			fgetc( fp );
-			n = Constants::readLine( line, fp );				
-			strcpy( skillName, strtok( line, "," ) );
-			strcpy( skillSymbol, strtok( NULL, "," ) );
-			strcpy( skillDescription, strtok( NULL, "," ) );
+	
+	ConfigLang *config = ConfigLang::load( "config/rpg.cfg" );
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "group" );
 
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+
+		config->setUpdate( "Loading Skills", i, v->size() );
+
+		strcpy( groupName, node->getValueAsString( "name" ) );
+		strcpy( groupDescription, node->getValueAsString( "description" ) );
+		
+		lastGroup = new SkillGroup( groupName, groupDescription );
+
+		vector<ConfigNode*> *vv = node->getChildrenByName( "skill" );
+		for( unsigned int i = 0; vv && i < vv->size(); i++ ) {
+			ConfigNode *skillNode = (*vv)[i];
+
+			strcpy( skillName, skillNode->getValueAsString( "name" ) );
+			strcpy( skillSymbol, skillNode->getValueAsString( "symbol" ) );
+			strcpy( skillDescription, skillNode->getValueAsString( "description" ) );
 			lastSkill = 
 				new Skill( skillName, 
 									 skillDescription, 
 									 skillSymbol, 
 									 lastGroup );
-    } else if( n == 'G' ) {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
 
-			strcpy( groupName, strtok( line, "," ) );
-			strcpy( groupDescription, strtok( line, "," ) );
-			lastGroup = new SkillGroup( groupName, groupDescription );
-		} else if( n == 'P' && lastSkill ) {
-			fgetc(fp);
-			n = Constants::readLine(line, fp);
-
-			lastSkill->setPreReqMultiplier( atoi( strtok( line, "," ) ) );
-			char *p = strtok( NULL, "," );
+			lastSkill->setPreReqMultiplier( skillNode->getValueAsInt( "prereq_multiplier" ) );
+			strcpy( line, skillNode->getValueAsString( "prereq_skills" ) );
+			char *p = strtok( line, "," );
 			while( p ) {
 				Skill *stat = Skill::getSkillByName( p );
 				if( !stat ) {
@@ -82,43 +76,34 @@ void Rpg::initRpg() {
 				lastSkill->addPreReqStat( stat );
 				p = strtok( NULL, "," );
 			}
-		} else if( n == 'T' ) {
-			fgetc(fp);
-      n = Constants::readLine(line, fp);
-			char *p = strtok( line, "," );
-			string name = strdup( p );
+		}
+	}
+
+	v = config->getDocument()->
+		getChildrenByName( "names" );
+	if( v ) {
+		ConfigNode *node = (*v)[0];
+		strcpy( line,node ->getValueAsString( "first" ) );
+		char *p = strtok( line, "," );
+		while( p != NULL ) {
+			firstSyl.push_back( strdup( p ) );
 			p = strtok( NULL, "," );
-			string value = strdup( p );
-			RpgItem::tagsDescriptions[ name ] = value;
-		} else if( n == 'F' ) {
-			fgetc( fp );
-			n = Constants::readLine( line, fp );
-			char *p = strtok( line, "," );
-			while( p != NULL ) {
-				firstSyl.push_back( strdup( p ) );
-				p = strtok( NULL, "," );
-			}
-		} else if( n == 'M' ) {
-			fgetc( fp );
-			n = Constants::readLine( line, fp );
-			char *p = strtok( line, "," );
-			while( p != NULL ) {
-				midSyl.push_back( strdup( p ) );
-				p = strtok( NULL, "," );
-			}
-		} else if( n == 'E' ) {
-			fgetc( fp );
-			n = Constants::readLine( line, fp );
-			char *p = strtok( line, "," );
-			while( p != NULL ) {
-				endSyl.push_back( strdup( p ) );
-				p = strtok( NULL, "," );
-			}
-    } else {
-      n = Constants::readLine( line, fp );
-    }
-  }
-  fclose(fp);
+		}
+		strcpy( line,node ->getValueAsString( "middle" ) );
+		p = strtok( line, "," );
+		while( p != NULL ) {
+			midSyl.push_back( strdup( p ) );
+			p = strtok( NULL, "," );
+		}
+		strcpy( line,node ->getValueAsString( "last" ) );
+		p = strtok( line, "," );
+		while( p != NULL ) {
+			endSyl.push_back( strdup( p ) );
+			p = strtok( NULL, "," );
+		}
+	}
+
+	delete( config );
 }
 
 // Create a random, cheeseball, fantasy name
