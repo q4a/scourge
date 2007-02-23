@@ -51,6 +51,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "void", "showTextMessage", SqGame::_showTextMessage, 2, "xs", "show a scrollable text message dialog." },
   { "string", "getDeityLocation", SqGame::_getDeityLocation, 4, "xnnn", "Get the deity whose presense is bound to this location (like an altar). Results the name of the deity." },    
 	{ "void", "endConversation", SqGame::_endConversation, 0, 0, "Close the conversation dialog." },
+	{ "string", "getTranslatedString", SqGame::_getTranslatedString, 0, 0, "Get the translated version of this string. Calls GNU gettext." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members, 
@@ -255,5 +256,11 @@ int SqGame::_getDeityLocation( HSQUIRRELVM vm ) {
 int SqGame::_endConversation( HSQUIRRELVM vm ) {
 	SqBinding::sessionRef->getGameAdapter()->endConversation();
 	return 0;
+}
+
+int SqGame::_getTranslatedString( HSQUIRRELVM vm ) {
+	GET_STRING( s, 3000 )
+	sq_pushstring( vm, _( s ), -1 );
+  return 1;
 }
 

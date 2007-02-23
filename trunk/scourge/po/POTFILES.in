@@ -15,6 +15,7 @@ src/scourge.cpp
 ../scourge_data/config/profession.cfg
 ../scourge_data/config/ability.cfg
 ../scourge_data/config/rpg.cfg
+../scourge_data/script/map.nut
 ../scourge_data/maps/hq.cfg
 ../scourge_data/maps/hq1.cfg
 ../scourge_data/maps/library.cfg
@@ -27,3 +28,4 @@ src/scourge.cpp
 ../scourge_data/maps/tower1.cfg
 ../scourge_data/maps/temple.cfg
 ../scourge_data/maps/emeril2.cfg
+

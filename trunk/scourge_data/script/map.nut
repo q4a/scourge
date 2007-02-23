@@ -5,7 +5,8 @@
 // Called when entering map                    
 function enterMap( mapName ) {
   print( "Welcome to S.C.O.U.R.G.E.: Heroes of Lesser Renown\n" );
-  print( "v" + scourgeGame.getVersion() + "\n" );
+  // print( "v" + scourgeGame.getVersion() + "\n" );
+	print( "v" + scourgeGame.getVersion() + "\n" );
   print( "You are on the " + mapName + " map.\n" );
 	print( "Chapter=" + scourgeGame.getMission().getChapter() + " Depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
 
@@ -41,16 +42,7 @@ function creatureDeath( creature ) {
     creature.startConversation( creature );
   } else if( creature.getName() == "Mothrazu Pain Incarnate" ) {
 		scourgeGame.getMission().setCompleted( true );
-		scourgeGame.showTextMessage( "The creature once known as Mothrazu sinks to one knee... " +
-																 "Her breath comes in sharp gasps, as she growls:||" +
-																 "\"I curse you humans...You may have defeated me but by " +
-																 "Amod's grace, I still have one task left...\"||" +
-																 "She reaches into a pouch and throws something small " +
-																 "and silvery into the grove trees at the center of the room.||" +
-																 "\"You will never find it... Karzul's gift will mature and " +
-																 "continue where I failed. May the plants be merciful to your " +
-																 "malevolent souls... Amod! I am close...\"||" +
-																 "With that Mothrazu passes from this world." );
+		scourgeGame.showTextMessage( _( "The creature once known as Mothrazu sinks to one knee... Her breath comes in sharp gasps, as she growls:||\"I curse you humans...You may have defeated me but by Amod's grace, I still have one task left...\"||She reaches into a pouch and throws something small and silvery into the grove trees at the center of the room.||\"You will never find it... Karzul's gift will mature and continue where I failed. May the plants be merciful to your malevolent souls... Amod! I am close...\"||With that Mothrazu passes from this world." ) );
 	}
   return true;
 }
@@ -115,25 +107,25 @@ function usePool( x, y, z ) {
 
   helped <- false;
   if( deity == playersDeity ) {
-    scourgeGame.printMessage( "The mighty lord " + deity + " reaches towards you," );
+    scourgeGame.printMessage( format( _( "The mighty lord %s reaches towards you," ), deity ) );
     if( !incrementDailyCount( player, "deity.help.lastDateUsed", 3 ) ) {
-      scourgeGame.printMessage( "...alas, the deity can aid you no more today." );
+      scourgeGame.printMessage( _( "...alas, the deity can aid you no more today." ) );
     } else {
       helped = true;
       player.setHp( player.getHp() + 
                     ( rand() * 
                       ( 2.0 * player.getLevel().tofloat() ) / 
                       RAND_MAX ).tointeger() + 1 );
-      scourgeGame.printMessage( "...and fills your spirit with energy." );
+      scourgeGame.printMessage( _( "...and fills your spirit with energy." ) );
     }
   } else if( oppositeDeity == playersDeity ) {
-    scourgeGame.printMessage( "Your presence angers the mighty lord " + deity + "!" );
+    scourgeGame.printMessage( format( _( "Your presence angers the mighty lord %s!" ), deity ) );
     player.takeDamage( ( rand() * 
                          ( 2.0 * player.getLevel().tofloat() ) / 
                          RAND_MAX ) + 1.0 );
-    scourgeGame.printMessage( "...the deity's wrath scours your flesh!" );
+    scourgeGame.printMessage( _( "...the deity's wrath scours your flesh!" ) );
   } else {
-    scourgeGame.printMessage( "The mighty lord " + deity + " ignores you." );
+    scourgeGame.printMessage( format( _( "The mighty lord %s ignores you." ), deity ) );
   }
 
   // deity specific actions
@@ -248,7 +240,7 @@ function waitHandlerSpell( caster, spell ) {
 //	print( "waitHandlerSpell: " + caster.getName() + " wait=" + turnWait + "\n" );
 	if( caster.hasCapability( "Speedy Casting" ) == true ) {
 		turnWait = turnWait * 0.75;
-		scourgeGame.printMessage( caster.getName() + " conjures up magic with blinding speed!" );
+		scourgeGame.printMessage( format( _( "%s conjures up magic with blinding speed!" ), caster.getName() ) );
 	}
 }
 
@@ -269,36 +261,36 @@ function converse( creature, question ) {
   // Orhithales will not give you information until the armor has been recovered
   if( creature.getName() == "Orhithales Grimwise" &&
       !( scourgeGame.getMission().isCompleted() ) &&
-      ( question == "dragonscale" ||
-        question == "armor" ) ) {
-    return "Yes, yes... quite so... carry on!";
+      ( question == _( "dragonscale" ) ||
+        question == _( "armor" ) ) ) {
+    return _( "Yes, yes... quite so... carry on!" );
   } else if( creature.getName() == "Sabien Gartu" ) {
 		if( !( scourgeGame.getMission().isCompleted() ) &&
 				scourgeGame.getMission().getChapter() != 7 &&
-				( question == "door" ||
-					question == "seal" ||
-					question == "sealed" ||
-					question == "lock" ||
-					question == "locked" ) ) {
+				( question == _( "door" ) ||
+					question == _( "seal" ) ||
+					question == _( "sealed" ) ||
+					question == _( "lock" ) ||
+					question == _( "locked" ) ) ) {
 			scourgeGame.getMission().setCompleted();
 		} else if( scourgeGame.getMission().getChapter() == 7 ) {
-      if( question == "after" || question == "stop" ) {
+      if( question == _( "after" ) || question == _( "stop" ) ) {
         // remove map block at 294,223 to make door accessible
         scourgeGame.getMission().removeMapPosition( 294, 223, 0 );
       }
     }
   } else if( creature.getName() == "Karzul Agmordexu" &&
              !( scourgeGame.getMission().isCompleted() ) &&
-             ( question == "serves" || question == "gift" ) ) {
+             ( question == _( "serves" ) || question == _( "gift" ) ) ) {
     scourgeGame.getMission().setCompleted();
   }	else if( creature.getName() == "Positive Energy of Hornaxx" ) {
 		if( question.tolower() == "unamoin" ) {
 			storePartyLevel();
-		} else if( question.tolower() == "tokens" ) {
+		} else if( question.tolower() == _( "tokens" ) ) {
 			assignAntimagicItems();
 		}
 	} else if( creature.getName() == "Mothrazu" &&
-						 question.tolower() == "doom" ) {
+						 question.tolower() == _( "doom" ) ) {
 		mothrazuTransforms( creature );
 	}
   return null;
@@ -323,12 +315,11 @@ function mothrazuTransforms( creature ) {
 function useBrandOfIconoclast( creature, item ) {
   if( creature.getTargetCreature() != null &&
       creature.getTargetCreature().getMaxMp() > 0 ) {
-    scourgeGame.printMessage( "...Brand of Iconoclast growls in a low tone..." );
+    scourgeGame.printMessage( _( "...Brand of Iconoclast growls in a low tone..." ) );
     delta <- ( damage / 100.0 ) * 10.0;
     damage += delta;
     if( delta.tointeger() > 0 ) {
-      scourgeGame.printMessage( "...damage is increased by " + delta.tointeger() +
-                                "pts!" );
+      scourgeGame.printMessage( format( _( "...damage is increased by %d pts!" ), delta.tointeger() ) );
     }
   }
 }
@@ -340,8 +331,7 @@ function spellDamageHandlerCloakHateVen( caster, spell ) {
     delta <- ( damage / 100.0 ) * 15.0;
     damage += delta;
     if( delta.tointeger() > 0 ) {
-      scourgeGame.printMessage( "...damage is reduced by " + delta.tointeger() +
-                                "pts! (Cloak of Hateful Vengeance)" );
+      scourgeGame.printMessage( format( _( "...damage is reduced by %d pts! (Cloak of Hateful Vengeance)" ), delta.tointeger() ) );
     }
 
     incrementCloakHateVenUse( caster.getTargetCreature() );
@@ -367,8 +357,7 @@ function damageHandlerCloakSafePass( attacker, item ) {
     delta <- ( damage / 100.0 ) * 10.0;
     damage += delta;
     if( delta.tointeger() > 0 ) {
-      scourgeGame.printMessage( "...damage is reduced by " + delta.tointeger() +
-                                "pts! (Cloak of Safe Passage)" );
+      scourgeGame.printMessage( format( _( "...damage is reduced by %d pts! (Cloak of Safe Passage)" ), delta.tointeger() ) );
     }
   }
 }
@@ -396,7 +385,7 @@ function initChapter8() {
 			}
 		}
 
-		scourgeGame.showTextMessage( "You find yourself on a barren plain. The air is thick with moisture and very still. The bleak ground appears to emit a cancerous odor like the smell of death on a roadside cadaver. A sudden rush of despair hangs over you, clouding your senses... Is this the end? The tortured screams of unseen thousands drifts from beyond the nearest door. On this molten landscape filled with hopelessness and horror, even moving around seems to require an extra effort." );
+		scourgeGame.showTextMessage( _( "You find yourself on a barren plain. The air is thick with moisture and very still. The bleak ground appears to emit a cancerous odor like the smell of death on a roadside cadaver. A sudden rush of despair hangs over you, clouding your senses... Is this the end? The tortured screams of unseen thousands drifts from beyond the nearest door. On this molten landscape filled with hopelessness and horror, even moving around seems to require an extra effort." ) );
 	}
 }
 
@@ -446,15 +435,7 @@ antimagicItemLocations <- [
 
 function initChapter10() {
 	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
-		scourgeGame.showTextMessage( "The ancient walls appear to cave inward as if pushed " +
-																 "on by the very roots of the forest from above. " +
-																 "A metallic smell cuts the air and the noises echoing " +
-																 "from the deep chill your bones. " +
-																 "||A grinding sound wells from beneath your feet as if the " +
-																 "wheels of a great machine are turning. " + 
-																 "Could this be the contdown to Mothrazu's infernal plans? " +
-																 "||And as if that wasn't freeky enough, frequent quakes " +
-																 "shake the dungeon..." );
+		scourgeGame.showTextMessage( _( "The ancient walls appear to cave inward as if pushed on by the very roots of the forest from above. A metallic smell cuts the air and the noises echoing from the deep chill your bones. ||A grinding sound wells from beneath your feet as if the wheels of a great machine are turning. Could this be the contdown to Mothrazu's infernal plans? ||And as if that wasn't freeky enough, frequent quakes shake the dungeon..." ) );
 	}
 
 	// poison party members without antimagic binding armor
@@ -474,9 +455,8 @@ function initChapter10() {
 			}
 		}
 		if( !found ) {
-			scourgeGame.printMessage( 
-				scourgeGame.getPartyMember( i ).getName() + 
-				" feels very ill suddenly." );
+			scourgeGame.printMessage( format( _( "%s feels very ill suddenly." ), 
+																				scourgeGame.getPartyMember( i ).getName() ) );
 			scourgeGame.getPartyMember( i ).setStateMod( 6, true );
 		}
 	}
@@ -523,3 +503,13 @@ function assignAntimagicItems() {
 		scourgeGame.getMission().setCompleted( true );
 	}
 }
+
+function _( s ) {
+	r <- scourgeGame.getTranslatedString( s );
+	return r;
+}
+
+function noop( s ) {
+	return s;
+}
+

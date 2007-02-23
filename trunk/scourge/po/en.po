@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-22 16:32-0800\n"
+"POT-Creation-Date: 2007-02-22 21:35-0800\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -4728,6 +4728,151 @@ msgid ""
 "from merchants."
 msgstr ""
 
+#: ../scourge_data/script/map.nut:45
+msgid ""
+"The creature once known as Mothrazu sinks to one knee... Her breath comes in "
+"sharp gasps, as she growls:||\"I curse you humans...You may have defeated me "
+"but by Amod's grace, I still have one task left...\"||She reaches into a "
+"pouch and throws something small and silvery into the grove trees at the "
+"center of the room.||\"You will never find it... Karzul's gift will mature "
+"and continue where I failed. May the plants be merciful to your malevolent "
+"souls... Amod! I am close...\"||With that Mothrazu passes from this world."
+msgstr ""
+
+#: ../scourge_data/script/map.nut:110
+#, c-format
+msgid "The mighty lord %s reaches towards you,"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:112
+msgid "...alas, the deity can aid you no more today."
+msgstr ""
+
+#: ../scourge_data/script/map.nut:119
+msgid "...and fills your spirit with energy."
+msgstr ""
+
+#: ../scourge_data/script/map.nut:122
+#, c-format
+msgid "Your presence angers the mighty lord %s!"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:126
+msgid "...the deity's wrath scours your flesh!"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:128
+#, c-format
+msgid "The mighty lord %s ignores you."
+msgstr ""
+
+#: ../scourge_data/script/map.nut:243
+#, c-format
+msgid "%s conjures up magic with blinding speed!"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:264
+msgid "dragonscale"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:265
+msgid "armor"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:266
+msgid "Yes, yes... quite so... carry on!"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:270
+msgid "door"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:271
+msgid "seal"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:272
+msgid "sealed"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:273
+msgid "lock"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:274 ../scourge_data/maps/library.cfg:52
+msgid "locked"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:277
+msgid "after"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:277
+msgid "stop"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:284
+msgid "serves"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:284
+msgid "gift"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:289 ../scourge_data/maps/temple.cfg:173
+#, fuzzy
+msgid "tokens"
+msgstr "Options"
+
+#: ../scourge_data/script/map.nut:293 ../scourge_data/maps/hq.cfg:144
+msgid "doom"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:318
+msgid "...Brand of Iconoclast growls in a low tone..."
+msgstr ""
+
+#: ../scourge_data/script/map.nut:322
+#, c-format
+msgid "...damage is increased by %d pts!"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:334
+#, c-format
+msgid "...damage is reduced by %d pts! (Cloak of Hateful Vengeance)"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:360
+#, c-format
+msgid "...damage is reduced by %d pts! (Cloak of Safe Passage)"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:388
+msgid ""
+"You find yourself on a barren plain. The air is thick with moisture and very "
+"still. The bleak ground appears to emit a cancerous odor like the smell of "
+"death on a roadside cadaver. A sudden rush of despair hangs over you, "
+"clouding your senses... Is this the end? The tortured screams of unseen "
+"thousands drifts from beyond the nearest door. On this molten landscape "
+"filled with hopelessness and horror, even moving around seems to require an "
+"extra effort."
+msgstr ""
+
+#: ../scourge_data/script/map.nut:438
+msgid ""
+"The ancient walls appear to cave inward as if pushed on by the very roots of "
+"the forest from above. A metallic smell cuts the air and the noises echoing "
+"from the deep chill your bones. ||A grinding sound wells from beneath your "
+"feet as if the wheels of a great machine are turning. Could this be the "
+"contdown to Mothrazu's infernal plans? ||And as if that wasn't freeky "
+"enough, frequent quakes shake the dungeon..."
+msgstr ""
+
+#: ../scourge_data/script/map.nut:458
+#, c-format
+msgid "%s feels very ill suddenly."
+msgstr ""
+
 #: ../scourge_data/maps/hq.cfg:4
 msgid "Anaril the Weapons Merchant"
 msgstr ""
@@ -4953,10 +5098,6 @@ msgid ""
 "the balance of nature! Beware of awakening the wrath of $Amod! Fell $news as "
 "this is, it was high time mankind has learned to fear the awesome might of "
 "the god of nature..."
-msgstr ""
-
-#: ../scourge_data/maps/hq.cfg:144
-msgid "doom"
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:145
@@ -5670,10 +5811,6 @@ msgid ""
 "Well, as you can imagine, there is much to learn, what with all these $books "
 "around. $Sabien's main area of interest appears to be closely tied to a "
 "$locked door on the fourth level."
-msgstr ""
-
-#: ../scourge_data/maps/library.cfg:52
-msgid "locked"
 msgstr ""
 
 #: ../scourge_data/maps/library.cfg:53
@@ -7600,11 +7737,6 @@ msgid ""
 "disciplines and now you shall receive my holy gifts for your efforts. Behold "
 "the $tokens of the Keeper of Arguments!"
 msgstr ""
-
-#: ../scourge_data/maps/temple.cfg:173
-#, fuzzy
-msgid "tokens"
-msgstr "Options"
 
 #: ../scourge_data/maps/temple.cfg:174
 msgid ""
