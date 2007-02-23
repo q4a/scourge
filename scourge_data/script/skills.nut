@@ -18,7 +18,7 @@ function prereqSuperTough( creature ) {
 }
 
 function actionSuperTough( creature ) {
-  causeDefense( 5, "Superior toughness" );
+  causeDefense( 5, _( "Superior toughness" ) );
 }
 
 
@@ -44,7 +44,7 @@ function actionMissileDefense( creature ) {
   if( weapon != null ) {
   	print( "*** weapon=" + weapon.getName() + " ranged=" + weapon.isRanged().tostring() + "\n" );
     if( weapon.isRanged() ) {
-      causeDefense( 25, "Dodging missiles" );
+      causeDefense( 25, _( "Dodging missiles" ) );
     }
   }
 }
@@ -79,7 +79,7 @@ function actionWarrage( creature ) {
   print( "*** skillCheck=" + skillCheck.tostring() + "\n" );
 
   if( skillCheck ) {
-    causeDamage( 15, "War rage" );
+    causeDamage( 15, _( "War rage" ) );
   }
 }
 
@@ -91,7 +91,7 @@ function prereqKillerblow( creature ) {
 }
 
 function actionKillerblow( creature ) {
-	causeDamage( 10, "The terrible blow" );
+	causeDamage( 10, _( "The terrible blow" ) );
 }
 
 
@@ -106,7 +106,7 @@ function prereqNaturalHealing( creature ) {
 
 function actionNaturalHealing( creature ) {
   if( !incrementDailyCount( creature, "NaturalHealing.lastDateUsed", 2 ) ) {
-    scourgeGame.printMessage( "...but already used this capability twice today." );
+    scourgeGame.printMessage( _( "...but already used this capability twice today." ) );
     return;
   }
 
@@ -118,9 +118,9 @@ function actionNaturalHealing( creature ) {
     amount = creature.getMaxHp() - creature.getHp();
   
   if( amount == 1 ) {
-    scourgeGame.printMessage( "...and heals 1 hit point." );
+    scourgeGame.printMessage( _( "...and heals 1 hit point." ) );
   } else {
-    scourgeGame.printMessage( "...and heals " + amount + " hit points." );
+    scourgeGame.printMessage( format( _( "...and heals %d hit points." ), amount ) );
   }
   creature.setHp( creature.getHp() + amount );
 }
@@ -147,7 +147,7 @@ function actionHealingAura( creature ) {
 		scourgeGame.getPartyMember( i ).setHp( hp );
   }
 	if( healed ) 
-		scourgeGame.printMessage( creature.getName() + "'s holy innocence sooths your pains." );
+		scourgeGame.printMessage( format( _( "%s's holy innocence sooths your pains." ), creature.getName() ) );
 }
 
 
@@ -178,7 +178,7 @@ function prereqVitality( creature ) {
 function actionVitality( creature ) {
 
   if( !incrementDailyCount( creature, "VitalityTransfer.lastDateUsed", 3 ) ) {
-    scourgeGame.printMessage( "...but already used this capability three times today." );
+    scourgeGame.printMessage( _( "...but already used this capability three times today." ) );
     return;
   }
 
@@ -192,7 +192,7 @@ function actionVitality( creature ) {
     scourgeGame.getPartyMember( i ).setHp( aveHp.tointeger() );
   }
 
-  scourgeGame.printMessage( "...the divine healing affects all party members." );
+  scourgeGame.printMessage( _( "...the divine healing affects all party members." ) );
 }
 
 
@@ -209,7 +209,7 @@ function actionTerminal( creature ) {
     if( creature.getMp() < creature.getMaxMp() ) {
       n <- ( creature.getMaxMp().tofloat() / 20.0 ).tointeger();
       creature.setMp( creature.getMp() + n );
-      scourgeGame.printMessage( "...nearing death, " + creature.getName() + " gains " + n + " MP (Terminal Energy)." );
+      scourgeGame.printMessage( format( _( "...nearing death, %s gains %d MP (Terminal Energy)." ), creature.getName(), n ) );
     }
   }
 }
@@ -223,7 +223,7 @@ function prereqMystic( creature ) {
 }
 
 function actionMystic( creature ) {
-  causeDefense( 15, "Chanelling mystic energies" );
+  causeDefense( 15, _( "Chanelling mystic energies" ) );
 }
 
 
@@ -244,7 +244,7 @@ function actionSmallArmMastery( creature ) {
     print( "*** weapon=" + weapon.getName() + " is small=" + isSmall.tostring() + "\n" );
     
     if( isSmall ) {
-      causeDamage( 10, "Small Arms Mastery" );
+      causeDamage( 10, _( "Small Arms Mastery" ) );
     }
   }
 }
@@ -260,12 +260,12 @@ function prereqNeutPoison( creature ) {
 
 function actionNeutPoison( creature ) {
   if( creature.getStateMod( 6 ) ) {
-    scourgeGame.printMessage( "This character is not currently poisoned." );
+    scourgeGame.printMessage( _( "This character is not currently poisoned." ) );
     return;
   }
 
   if( !incrementDailyCount( creature, "NeutPoison.lastDateUsed", 3 ) ) {
-    scourgeGame.printMessage( "You already used this capability thrice today." );
+    scourgeGame.printMessage( _( "You already used this capability thrice today." ) );
     return;
   }
 
@@ -281,7 +281,7 @@ function prereqArcaneStance( creature ) {
 }
 
 function actionArcaneStance( creature ) {
-  causeDefense( 5, creature.getName() + " uses an Arcane Stance which" );
+  causeDefense( 5, format( _( "%s uses an Arcane Stance which" ), creature.getName() ) );
 }
 
 
@@ -300,7 +300,7 @@ function actionBowMastery( creature ) {
     print( "*** weapon=" + weapon.getName() + " is ranged=" + 
            weapon.isRanged().tostring() + "\n" );  
     if( weapon.isRanged() ) {
-      causeDamage( 10, "masterful bow handling" );
+      causeDamage( 10, _( "masterful bow handling" ) );
     }
   }
 }
@@ -317,8 +317,8 @@ function causeDamage( percent, message ) {
   delta <- ( damage / 100.0 ) * percent;
   damage += delta;
   if( delta.tointeger() > 0 ) {
-    scourgeGame.printMessage( "..." + message + " causes " + 
-                              delta.tointeger() + " bonus damage!" );
+    scourgeGame.printMessage( 
+			format( _( "...%s causes %d bonus damage!" ), message, delta.tointeger() ) );
   }
 }
 
@@ -326,8 +326,8 @@ function causeDefense( percent, message ) {
   delta <- ( armor / 100.0 ) * percent;
   armor += delta;
   if( delta.tointeger() > 0 ) {
-    scourgeGame.printMessage( "..." + message + " causes " + 
-                              delta.tointeger() + " armor bonus!" );
+    scourgeGame.printMessage( 
+			format( _( "...%s causes %d armor bonus!" ), message, delta.tointeger() ) );
   }
 }
 

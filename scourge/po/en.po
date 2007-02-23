@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-22 21:35-0800\n"
+"POT-Creation-Date: 2007-02-22 21:48-0800\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -4086,7 +4086,7 @@ msgstr ""
 msgid "Underworld Spellcaster"
 msgstr ""
 
-#: ../scourge_data/config/ability.cfg:42
+#: ../scourge_data/config/ability.cfg:42 ../scourge_data/script/skills.nut:21
 msgid "Superior toughness"
 msgstr ""
 
@@ -4871,6 +4871,84 @@ msgstr ""
 #: ../scourge_data/script/map.nut:458
 #, c-format
 msgid "%s feels very ill suddenly."
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:47
+msgid "Dodging missiles"
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:82
+msgid "War rage"
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:94
+msgid "The terrible blow"
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:109
+msgid "...but already used this capability twice today."
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:121
+msgid "...and heals 1 hit point."
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:123
+#, c-format
+msgid "...and heals %d hit points."
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:150
+#, c-format
+msgid "%s's holy innocence sooths your pains."
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:181
+msgid "...but already used this capability three times today."
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:195
+msgid "...the divine healing affects all party members."
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:212
+#, c-format
+msgid "...nearing death, %s gains %d MP (Terminal Energy)."
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:226
+msgid "Chanelling mystic energies"
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:247
+msgid "Small Arms Mastery"
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:263
+msgid "This character is not currently poisoned."
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:268
+msgid "You already used this capability thrice today."
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:284
+#, c-format
+msgid "%s uses an Arcane Stance which"
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:303
+msgid "masterful bow handling"
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:321
+#, c-format
+msgid "...%s causes %d bonus damage!"
+msgstr ""
+
+#: ../scourge_data/script/skills.nut:330
+#, c-format
+msgid "...%s causes %d armor bonus!"
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:4
