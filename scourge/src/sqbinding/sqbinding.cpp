@@ -28,6 +28,7 @@
 #include "../squirrel/sqstdio.h"
 #include "../squirrel/sqstdaux.h"
 #include "../squirrel/sqstdmath.h"
+#include "../squirrel/sqstdstring.h"
 #include "../io/file.h"
 #include "../render/map.h"
 #include "../debug.h"
@@ -78,6 +79,7 @@ SqBinding::SqBinding( Session *session ) {
 
   // init the math lib
   sqstd_register_mathlib( vm );
+	sqstd_register_stringlib( vm );
 
   // Define some squirrel classes:
 

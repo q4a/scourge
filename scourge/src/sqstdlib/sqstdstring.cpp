@@ -71,7 +71,7 @@ static SQInteger _string_format(HSQUIRRELVM v)
 	sq_getstring(v,2,&format);
 	SQInteger allocated = (sq_getsize(v,2)+1)*sizeof(SQChar);
 	dest = sq_getscratchpad(v,allocated);
-	SQInteger n = 0,i = 0, nparam = 3, w;
+	SQInteger n = 0,i = 0, nparam = 3, w=0;
 	while(format[n] != '\0') {
 		if(format[n] != '%') {
 			assert(i < allocated);
@@ -116,8 +116,8 @@ static SQInteger _string_format(HSQUIRRELVM v)
 				return sq_throwerror(v,_SC("invalid format"));
 			}
 			n++;
-			if((allocated-i) < addlen)
-				allocated += addlen;
+			//if((allocated-i) < addlen)
+			allocated += addlen;
 			dest = sq_getscratchpad(v,allocated);
 			switch(valtype) {
 			case 's': i += scsprintf(&dest[i],fmt,ts); break;

@@ -83,6 +83,8 @@ public:
   static int _runTests( HSQUIRRELVM vm );
 
 	static int _endConversation( HSQUIRRELVM vm );
+
+	static int _getTranslatedString( HSQUIRRELVM vm );
 };
 
 #endif
