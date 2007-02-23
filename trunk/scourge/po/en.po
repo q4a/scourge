@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-18 21:10-0800\n"
+"POT-Creation-Date: 2007-02-22 16:32-0800\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -3114,7 +3114,8 @@ msgstr ""
 msgid "Confrontation"
 msgstr ""
 
-#: ../scourge_data/config/spell.cfg:628
+#: ../scourge_data/config/spell.cfg:628 ../scourge_data/maps/hq.cfg:156
+#: ../scourge_data/maps/library31.cfg:98 ../scourge_data/maps/tower1.cfg:16
 msgid "Abyss"
 msgstr ""
 
@@ -4725,4 +4726,3447 @@ msgstr ""
 msgid ""
 "The higher you progress in this still the better you're able to lift items "
 "from merchants."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:4
+msgid "Anaril the Weapons Merchant"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:12
+msgid "Mur the Magics Merchant"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:20
+msgid "Anduril the Armor Merchant"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:28
+msgid "Samaroon the Merchant"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:36
+msgid "Zila the Scribe"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:44
+msgid "Uzudil the Hand"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:51
+msgid "Melathor of Allovium"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:59
+msgid "Pu Master of Arms"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:67
+msgid "Sillione Trainer of Rogues"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:75
+msgid "Joalin the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:83
+msgid "Illadil the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:91
+msgid "Sinth the Master Healer"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:99
+msgid "Auluna the Bone Doctor"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:107
+msgid "Irin the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:115 ../scourge_data/maps/library.cfg:36
+#: ../scourge_data/maps/library3.cfg:59 ../scourge_data/maps/library31.cfg:90
+#: ../scourge_data/maps/thuzgol.cfg:142 ../scourge_data/maps/tower.cfg:44
+#: ../scourge_data/maps/tower1.cfg:4 ../scourge_data/maps/temple.cfg:100
+#: ../scourge_data/maps/emeril2.cfg:11
+msgid "_INTRO_"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:116
+msgid ""
+"I am $Melathor. Would you like to $trade items, $train magics or hear $news "
+"of the world? ...Or would you care to sample my $potions?"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:117 ../scourge_data/maps/library.cfg:39
+#: ../scourge_data/maps/library3.cfg:61 ../scourge_data/maps/library31.cfg:93
+#: ../scourge_data/maps/thuzgol.cfg:144 ../scourge_data/maps/tower.cfg:46
+#: ../scourge_data/maps/tower1.cfg:6 ../scourge_data/maps/temple.cfg:102
+#: ../scourge_data/maps/emeril2.cfg:13
+msgid "_UNKNOWN_"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:118
+msgid "Alas I know not of that to which you refer..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:119
+msgid "My time is too short to speak of that."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:120 ../scourge_data/maps/thuzgol.cfg:177
+msgid "Melathor"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:121
+msgid ""
+"I hail from the wooded lands of $Allovium, kingdom of the $deep elves. I am "
+"a practitioner of the arts of $magic. My specialty lies in infusing the "
+"spirit with the substance of archaic brews. Enlightenment is reached only "
+"through thoughtful suffering and my $potions can cause you to negate the "
+"very fabric of reality!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:122
+msgid "Allovium"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:123
+msgid ""
+"The rolling hilly forested gardens of Allovium of the elves is indeed a site "
+"to behold. Perhaps in version two we will venture outside this wretched "
+"building so you can see it for yourself. As for now, how about some $potions?"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:124
+msgid "deep"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:125
+msgid ""
+"We are called the deep elves because our kingdom lies at the heart of the "
+"old forest of of $Allovium. Rare it is when the deep elves venture forth "
+"into the world... Rare it is when the mankind threatens to bring the world "
+"to the brink of the $apocalypse... but there, I probably said too $much. I "
+"believe it's nigh time for one of my $potions..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:126
+msgid "apocalypse"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:127
+msgid ""
+"Did I say that? Surely things aren't so grim! Here, have one of my $potions."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:128
+msgid "much"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:129
+msgid ""
+"Please excuse the ramblings of an old mage... Much transpires in this new "
+"world of humans that spells doom for an old forest-dweller like myself. "
+"Luckily my $potions keep me in good company!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:130 ../scourge_data/maps/temple.cfg:128
+msgid "magic"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:131
+msgid ""
+"Yes, yes, I can teach you the basics... There is not much to it actually, "
+"just try to not blow up anyone in your party. Let me know if you want to "
+"$trade spells or if you need to $train in magics. Of course, it all goes "
+"smoother if you have a sip of my $potions..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:132
+#, fuzzy
+msgid "potions"
+msgstr "Options"
+
+#: ../scourge_data/maps/hq.cfg:133
+msgid ""
+"Ah yes, now you're talking! I don't understand why some people won't indulge "
+"more... they're lovely, you see? Different colors, shapes and smells in "
+"these vials. The happiest stuff on this side of $Allovium. Let me know if "
+"you want to $trade some!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:134
+msgid "trade"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:135 ../scourge_data/maps/hq.cfg:251
+msgid ""
+"When trading, you can sell items, buy items or trade items of equivalent "
+"value. You will find that some merchants only sell a certain type of item. "
+"Also, your leadership skill will determine the prices you're offered."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:136
+msgid "train"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:137 ../scourge_data/maps/hq.cfg:252
+msgid ""
+"You can assign the skill bonus points yourself when gaining a level. "
+"However, paying for assisted training is the only way to really achieve high "
+"levels in your chosen discipline!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:138
+msgid "news"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:139
+msgid ""
+"You will get what you deserve! I've been saying this for years... Humans "
+"have got to learn their place in the world! You can't just build cities "
+"willy-nilly everywhere! Nature will retake its own. Surely, you have heard "
+"the latest news from Hanath? Creatures made from the very woods descended "
+"upon centers of civilization! The rocks behind which you hide will offer no "
+"resistance from the might of $Amod!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:140
+msgid "Amod"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:141
+msgid ""
+"Amod-Rheinur is the protector god of Nature. Many spells of strange $magic "
+"are fueled by his divine power! Now where did I put my latest $potions?"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:142
+msgid "nature"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:143
+msgid ""
+"So you spoke to $Uzudil, did you? Did he say the $doom of mankind was "
+"nothing to worry about? Methinks it may not be the case! Beware of upsetting "
+"the balance of nature! Beware of awakening the wrath of $Amod! Fell $news as "
+"this is, it was high time mankind has learned to fear the awesome might of "
+"the god of nature..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:144
+msgid "doom"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:145
+msgid ""
+"Yes doom! Our end as the ruling races of Earth is coming to a close. It's "
+"been a nice ride really. Aside from wars, meaningless religious differences, "
+"some basal characteristics of the lesser races (human, ehmm...) and the "
+"existence of the Yoddlers' Guild, it's been fun. But now, prepare for the "
+"end! Where are my $potions?!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:146 ../scourge_data/maps/thuzgol.cfg:157
+msgid "Uzudil"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:147
+msgid ""
+"The Hand, huh? I can't tell you much about him. Try to not make him your "
+"enemy is what I say... he looks like the sort who is entirely without a "
+"sense of humor. Mayheps if he tried one of $potions he'd have more friends."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:148 ../scourge_data/maps/library3.cfg:82
+#: ../scourge_data/maps/library31.cfg:114 ../scourge_data/maps/tower.cfg:57
+msgid "Mycotharsius"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:149
+msgid ""
+"Ah yes, I remember him well. He was a gifted magic user who turned to side "
+"with the $evil forces that eventually brought about his $downfall. You can "
+"only be so lucky that he is not alive today..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:150 ../scourge_data/maps/library31.cfg:129
+#: ../scourge_data/maps/temple.cfg:161
+msgid "evil"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:151
+msgid ""
+"I believe he made a pact with a lesser entity from the $Abyss to learn more "
+"of the dark arts. When he attempted to double-cross the $fiend it eventually "
+"cost him his life."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:152
+msgid "downfall"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:153
+msgid ""
+"$Mycotharsius fell in an underground battle. He was preparing to cast a dark "
+"spell that backfired and took his life. Some say he uttered a terrible curse "
+"with his last dying breath to wreak vengeance upon the $fiend he suspected "
+"somehow caused his magic to misbehave."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:154
+msgid "fiend"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:155
+msgid ""
+"I believe its name was Karzul, a lesser demon of disease. If you seek him, "
+"he can be found in the $Abyss."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:157
+msgid ""
+"It's the plane of evil. You would do well to stay away from it unless you're "
+"equipped to fight its demonic hordes in mind and body. If you're still not "
+"deterred to enter this dreadful place you will need to first find a $way in."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:158
+msgid "way"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:159
+msgid ""
+"In the past evil clerics set up special red teleporters in their temples "
+"that had the power to travel between the planes. However, even if you "
+"survive the trip, you will need to come equipped with some very specific "
+"$objects... Surely now you don't intend to go through with this madness?! "
+"Here try one of my $potions instead."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:160 ../scourge_data/maps/tower1.cfg:22
+msgid "objects"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:161
+msgid ""
+"Uh... I can't recall exactly. Something about a Ping of Rotection? Or was it "
+"a special pair of socks that unleash fiery, blinding Fury of the Just upon "
+"the dominions of demons? You'll have to forgive me, it's been quite a while "
+"since my own adventures."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:162 ../scourge_data/maps/thuzgol.cfg:153
+#: ../scourge_data/maps/tower1.cfg:24
+msgid "Order,Grizzled,Pony"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:163
+msgid ""
+"The Order of the Grizzled Pony? The dwarves? Surely they're a harmless lot! "
+"I've never had any ill dealings with them. In fact I hear their poetry is "
+"quite lovely. Although I must confess, I've never had the pleasure of a "
+"recital."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:164 ../scourge_data/maps/emeril2.cfg:20
+msgid "Sabien"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:165
+msgid ""
+"Hmm, sorry it doesn't ring a bell. A wizard you say? Strange I've come to "
+"know most everyone in the business... all of those still alive that is. In "
+"fact even those of... err... 'extended' existence as well. But I've never "
+"heard of a wizard named Sabien."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:166 ../scourge_data/maps/thuzgol.cfg:204
+msgid "Orhithales"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:167 ../scourge_data/maps/hq.cfg:219
+msgid "The ancient sage Orhithales lives in $Thuzgol."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:168 ../scourge_data/maps/thuzgol.cfg:198
+msgid "Thuzgol"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:169 ../scourge_data/maps/hq.cfg:220
+msgid ""
+"The great dwarven city of Thuzgol is home to the Groez-Duil: the mountain "
+"dwarves."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:170 ../scourge_data/maps/emeril2.cfg:4
+msgid "Mothrazu"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:171
+msgid ""
+"Well from what you tell me about her, she sounds like some kind of insane, "
+"cult-leader for the god of Nature? We have hacks like her by the dozens back "
+"in $Allovium..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:172
+msgid "token,tokens"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:173
+msgid ""
+"What, tokens you say? Yes, yes, you must find them! Uzudil is looking into "
+"it. Look on the board now and then to see if he's posted anything yet. He "
+"may want you to become more powerful before sending you out on such an "
+"important mission."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:174 ../scourge_data/maps/library31.cfg:133
+msgid "Karzul"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:175
+msgid ""
+"So he is real! I always thought the whole $Mycotharsius story was just "
+"tavern-gossip due to too much Troll Stout... Hmmm, so this changes "
+"everything! You say, he plans to enter our world and destroy it? Well he "
+"certainly can via the red teleporter. However, he should be relatively weak "
+"here without a permanent $link to his home plane."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:176
+msgid "link"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:177
+msgid ""
+"I think what Karzul hinted at is such a thing. I am not sure how this is "
+"possible but it must that the device $Mothrazu is carrying will provide "
+"(when activated) a conduit to the powers of the Abyss. Using such a system "
+"would indeed allow $Karzul to exercise all his diabolic powers."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:178
+msgid "Tree of Emeril"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:179
+msgid "[FIXME: chapter 11]"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:183
+msgid ""
+"Welcome brave adventurers in the mighty halls of the $S.C.O.U.R.G.E. Dungeon "
+"Extermination Services Company! My $name is Uzudil the $Hand. Should you "
+"need an update on the current $news, just ask. Feel free to explore the head-"
+"quarters without worry: there are no $monsters here."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:184 ../scourge_data/maps/thuzgol.cfg:145
+msgid "That is beyond my knowledge..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:185 ../scourge_data/maps/library3.cfg:63
+#: ../scourge_data/maps/thuzgol.cfg:146
+msgid "I can't help you with that."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:186
+msgid "SCOURGE"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:187
+msgid ""
+"Think of these halls as your new home, for the time to come. The S.C.O.U.R.G."
+"E. corporation was established to help out-of-luck adventurers stay out of "
+"trouble and keep their skills sharp at the same time. This is strictly a "
+"business proposition. The $owners ask no questions of you. Your past "
+"(however tainted it may be) is your secret to keep. The only thing that "
+"matters here is to keep our $clients happy. I am sure, you will find the "
+"$missions... 'challenging'."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:188
+msgid "name"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:189
+msgid ""
+"Although Uzudil is my proper name, most folks call me 'the $Hand' because my "
+"$job is to handle the company's daily affairs for the $owners. Check back "
+"with me between $missions for $news about our $clients."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:190
+msgid "Hand"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:191
+msgid ""
+"Besides talking to $clients, I specialize in... uh... 'handling the peace' "
+"here at head-quarters. As you can see we have many different types of people "
+"traveling through here so we have a strict set of $rules."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:192
+msgid "rules"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:193
+msgid ""
+"The house rules are simple: HQ is neutral grounds. As such there is no "
+"tolerance for fighting here. Save your energy for the $monsters... you'll "
+"need it!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:194
+msgid "job"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:195
+msgid ""
+"Mostly I am the mediator between our $clients and the $owners and you, the "
+"adventurers."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:196
+msgid "owners"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:197
+msgid "I sense that you're not yet ready to learn about them."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:198
+msgid "clients"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:199
+msgid ""
+"Trust me you would not want to meet them... Madmen, evil sorcerers, crazed "
+"clerics and (occasionally) aberrations seek our help. In order to establish "
+"their strongholds in this dimension, they cannot waste their magical "
+"energies cleaning their future homes themselves. So they pay us to do it and "
+"as a bonus they remain anonymous. Sure it's dirty work, but someone's gotta "
+"do it..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:200
+msgid "board"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:201
+msgid ""
+"Yes, check the board frequently for new missions. It's located in the room "
+"with the purple flames. This is where I post new $missions as they arrive "
+"from our $clients."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:202
+msgid "missions"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:203
+msgid ""
+"Our $clients requests come in the form of missions which I nail up on the "
+"$board in the room with purple flames. If you see missions printed in "
+"purple, remember that those are more important. The client is usually under "
+"time pressure and thus will pay more for the mission's timely completion!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:204
+msgid ""
+"Currently I have only vague rumors to tell you. However, check back again "
+"soon as I have a feeling that more important information will be arriving "
+"soon. I've heard from a reliable source that in the mountainous regions of "
+"the Hanath realm $nature itself rose against humanity! Horrible plant "
+"monsters leveled entire cities in endless waves of attacks. Still this is "
+"only a rumor, and I doubt it would effect us much this far away... If you "
+"are concerned, ask $Melathor about nature spelling doom for humanity."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:205
+msgid ""
+"He is the 'wise' elven wizard in the room to the south. Let me know if he "
+"causes any trouble... he is... 'dependent' on his concoctions and sometimes "
+"he forgets the $rules."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:206
+msgid ""
+"Not much to worry about I say... the only piece of nature we see here are "
+"the roots and rocks under the earth."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:207 ../scourge_data/maps/library3.cfg:94
+msgid "monsters"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:208
+msgid ""
+"Many a fearsome vermin ye will encounter on your travels! Some use their "
+"strength and some their magic to try to annihilate you. It's best to be "
+"prepared with high level weapons, magic and lots of healing potions! Also, "
+"you can always return here to HQ to catch some rest."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:209
+msgid ""
+"An astute student of magic he was. Unfortunately he lacked the strength to "
+"stay far away from the powers of darkness."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:210
+msgid ""
+"Nooo... don't talk about them! They torment me with their $awful poetry. "
+"It's a group of dwarven terrorist poets that has been causing trouble in the "
+"underworld."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:211
+msgid ""
+"Although I've never met him in person, he appears to be of decent sorts. I "
+"usually only interact with (what I assume is) his familiar. A harmless "
+"humanoid creature short statured with shifty eyes. I believe Sabien wishes "
+"to remain anonymous... if that is his name at all..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:212
+msgid ""
+"The plane of absolute evil... never been there myself, but I've heard it "
+"said that those who visit simply cannot leave! Must be a mad party!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:213
+msgid "awful"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:214
+msgid ""
+"Yes it's quite bad even for dwarven poetry. Here is an example I received. "
+"It's a sort of a threatening letter they sent, in order to stop us from "
+"snooping after the $Order. It reads: 'Stay out of the business of the Order, "
+"unless you want us to murder, those close to you and then, send poems of the "
+"same pen.' Aaagh! I don't think I can take much more of this!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:215 ../scourge_data/maps/library.cfg:44
+#: ../scourge_data/maps/emeril2.cfg:36
+msgid "Guardians,Realm"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:216
+msgid ""
+"The Guardians of the Realm was the peace-keeping force of the land a long "
+"time ago. Unfortunately, they no longer exist: they were all $killed in the "
+"final battle against the forces of darkness eons ago."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:217
+msgid "end,killed"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:218
+msgid ""
+"The $Guardians of the Realm fought and died valiantly at the fords of the "
+"great river Manar in a cataclysmic final battle against the forces of "
+"darkness. I don't know much about this great conflict, save that none of the "
+"$Guardians survived."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:221
+msgid ""
+"Sorry, I haven't a clue... Ask $Melathor, she sounds to be his kind... or "
+"better yet, ask $Sabien about her. After all, he was directly involved in "
+"her plans. I marked his location on map on the $board."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:222
+msgid ""
+"According to $Sabien, four such token items are what $Mothrazu seeks in "
+"order to activate a gate to the $Abyss. Be sure to find them before she "
+"does! Look on the $board now and then to see if I marked a location where we "
+"suspect the item can be found."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:223
+msgid ""
+"I don't know much about this fiend... Ask Melathor though, the gods know how "
+"but he always seems up to date about news from the Abysss."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:227 ../scourge_data/maps/library.cfg:40
+#: ../scourge_data/maps/library31.cfg:167 ../scourge_data/maps/thuzgol.cfg:197
+msgid "Uh, I don't know anything about that..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:228
+msgid ""
+"Perhaps someone else can tell you that. But I'll tell you about this $place "
+"and the $missions we work on if you want..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:229
+msgid "That's interesting but let me tell you about $times of old..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:230
+msgid "You sure have a funny way of talking..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:231
+msgid "Those were them $times!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:232
+msgid "Mmm-mmm, that was some fine $gruel!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:233
+msgid "You look like an out-of-work $adventurer!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:234
+msgid "times"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:235
+msgid ""
+"I reckon it must've been during the reign of $Haladil the grim when I was "
+"just a young lad. I would roam the country slay monsters, right wrongs and "
+"the like."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:236
+msgid "Haladil"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:237
+msgid ""
+"He sure was $grim for a king! In fact, he never smiled until his dying day."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:238
+msgid "grim"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:239
+msgid "They say he lost his ability to smile when our lives became so $easy."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:240
+msgid "easy"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:241
+msgid ""
+"$Haladil had $nothing more to do, you see? There is virtually no crime, the "
+"streets are safe and there are no more wars to be fought."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:242
+msgid "nothing"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:243
+msgid "Well, that's why we're all working for $S.C.O.U.R.G.E. Inc, right?"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:244
+msgid ""
+"It's not a bad $place to work... the $gruel is always warm, they pay in real "
+"gold and at least your $sword isn't rusting on a peg by the fire."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:245
+msgid "gruel"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:246
+msgid ""
+"Go look in the kitchen if you want some. It's the best part of this $place!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:247
+msgid "place"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:248
+msgid ""
+"Behold the mighty halls of the $S.C.O.U.R.G.E. headquarters. Here you can "
+"$train your skills, $trade items, rest and select your next $mission."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:249
+msgid "sword"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:250
+msgid ""
+"Any items you find lying around are yours to take. You can even $trade them "
+"for coin."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:253
+msgid "mission"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:254
+msgid ""
+"Go to the room with the purple flames. There you will find the $board which "
+"lists the available missions. $Uzudil handles our $clients mostly on account "
+"of them wishing to remain anonymous. "
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:255
+msgid ""
+"It is a great wooden structure in the room with the purple flames. Every "
+"$mission we get here at the $S.C.O.U.R.G.E. headquarters is posted on it. "
+"You can also talk to $Uzudil for more information."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:256
+msgid ""
+"Each client's $mission is posted on the $board. This way you can pick and "
+"choose which type of jobs you want to work on. I've never met any of our "
+"clients which is just as well... I hear they're powerful wizards who can "
+"turn you into an ant if they wish."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:257
+msgid "adventurer"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:258
+msgid ""
+"Why that's nothing to be ashamed of! I myself used to thwart evil back in "
+"the old $times. But now that our lives are so $easy, I make my living "
+"exterminating critters for our $clients."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:259
+msgid ""
+"He is the large red fellow in the room with the $board. He handles our "
+"$clients, keeps the head-quarters stocked and organizes our missions. Talk "
+"to him if you want to know more about the work."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:260
+msgid "Whatever you do... don't drink his potions!"
+msgstr ""
+
+#: ../scourge_data/maps/hq1.cfg:4
+msgid "Muzilin the healer"
+msgstr ""
+
+#: ../scourge_data/maps/hq1.cfg:12
+msgid "Remor the Golden"
+msgstr ""
+
+#: ../scourge_data/maps/hq1.cfg:20
+msgid "Marad"
+msgstr ""
+
+#: ../scourge_data/maps/hq1.cfg:28
+msgid "Professor Erithol"
+msgstr ""
+
+#: ../scourge_data/maps/hq1.cfg:36
+msgid "Almojn of Aladur"
+msgstr ""
+
+#: ../scourge_data/maps/hq1.cfg:44
+msgid "Raminor"
+msgstr ""
+
+#: ../scourge_data/maps/hq1.cfg:51
+msgid "Magril"
+msgstr ""
+
+#: ../scourge_data/maps/hq1.cfg:58
+msgid "Simane of Aladur"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:4
+msgid "Zorna the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:12
+msgid "Kazna the Merchant"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:20
+msgid "Mirna the Magics Trainer"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:28
+msgid "Zurna the Defense Trainer"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:37
+msgid "Feel at home in the $ancient library of $Gormoril, traveler!"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:38
+msgid "Welcome to $Gormoril!"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:41
+msgid "You should ask Sabien the Mage... perhaps he knows of what you speak..."
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:42
+msgid "ancient,Gormoril"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:43
+msgid ""
+"This underground library was founded thousands of years ago by an order "
+"called the $Guardians of the Realm. Within it they tried to preserve all the "
+"knowledge of their age. Many of the $books you see around you are priceless "
+"volumes... Please try to be aware of this as you move around."
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:45
+msgid ""
+"They were an ancient peace-keeping force. Sadly all of them were destroyed "
+"in the final battle against the forces of darkness. $Sabien would know more "
+"about them."
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:46
+msgid "library,books"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:47
+msgid ""
+"Some of the books are magical and all of them rare. Throughout the ages, "
+"various thinkers, scholars and seers called the library of $Gormoril their "
+"home. Our current master $Sabien is a high level mage."
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:48
+msgid "Sabien,Sabien's"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:49
+msgid ""
+"We don't actually know much about him. Mostly he spends is time in $research "
+"on the fourth level. A word of caution, however: some of the library levels "
+"have been infested with monsters as of late. We know not where they came "
+"from and Sabien doesn't seem to mind them much. I'm sure that for heroes of "
+"your rank, they will be but a minor irritation."
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:50 ../scourge_data/maps/library3.cfg:74
+#: ../scourge_data/maps/thuzgol.cfg:147
+msgid "research"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:51
+msgid ""
+"Well, as you can imagine, there is much to learn, what with all these $books "
+"around. $Sabien's main area of interest appears to be closely tied to a "
+"$locked door on the fourth level."
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:52
+msgid "locked"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:53
+msgid ""
+"Ask $Sabien what is behind this door... We only suspect and are not $allowed "
+"to tell..."
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:54
+msgid "allowed"
+msgstr ""
+
+#: ../scourge_data/maps/library.cfg:55
+msgid ""
+"Remember traveler, this is an $ancient place... $Sabien's residence here is "
+"but a drop in the vast river of time... All of us are watched over by divine "
+"guardians, but for us in the $library their gaze comes from much closer..."
+msgstr ""
+
+#: ../scourge_data/maps/library1.cfg:4
+msgid "Zelta the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/library1.cfg:12
+msgid "Korga the Trainer"
+msgstr ""
+
+#: ../scourge_data/maps/library1.cfg:20
+msgid "Mirtha the Merchant"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:4
+msgid "Sabien Gartu"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:11
+msgid "Kerra the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:19
+msgid "Birna the Rogue Trainer"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:27
+msgid "Morra the Magics Merchant"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:35
+msgid "Merka the Personal Trainer"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:43
+msgid "Kikka the Bone Healer"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:51
+msgid "Samek the Merchant of War"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:60
+msgid "Ah, there you are... I've been $waiting for you!"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:62
+msgid "Sadly, I know not of which you speak..."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:64
+msgid "Uzudil,SCOURGE"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:65
+msgid ""
+"Yes, yes I know. Uzudil the Hand of S.c.o.u.r.g.e. Inc. sent me the $map. I "
+"know why you are here..."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:66
+msgid "waiting"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:67
+msgid ""
+"I have the $map that $Uzudil sent me. When you're $ready, I can tell you all "
+"that I know regarding this matter."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:68
+msgid "map"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:69
+msgid ""
+"This map fragment definitely depicts a section of the $Abyss. I am well "
+"familiar with its tortured landscape for shall I say... $personal reasons."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:70
+msgid "personal,incident"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:71
+msgid ""
+"I'd rather not talk about that at this time... the memories are still too "
+"painful for me."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:72 ../scourge_data/maps/thuzgol.cfg:175
+#: ../scourge_data/maps/tower1.cfg:18
+msgid "Karzuul"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:73
+msgid ""
+"A fiend he is. Karzuul is the Lord of Madness and rules the 512th layer of "
+"the $Abyss. In battle he is a merciless hunter, as an enemy he ruins all you "
+"hold dear, the corruptor of hope and a stain on the divine soul of the "
+"cosmos. Do not treat him lightly! His connection to $Mycotharsius is surely "
+"not an accident... "
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:75
+msgid ""
+"My research varied over the years... I was a student of Minirmuir once, "
+"attempting to attain perfect knowledge and thus transcend my mortal body to "
+"live in eternal peace, at one with the void. However... things changed... "
+"after the... $incident I took up a different path. I am currently seeking to "
+"restore to the world, that which was once known but is now lost... the safe "
+"operation of a very powerful artifact. One that though complex and dangerous "
+"is located very close nearby... in fact, it's right behind this locked $door."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:76
+msgid "Guardians,Guardian,Guards,Guard,Realm"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:77
+msgid ""
+"Their legend is one of sorrow... thousands of years ago, after the defeat of "
+"an invasion of demons, a group of heroes banded together to form the order "
+"that came to be called the Guardians of the Realm. Though mostly a peace-"
+"keeping force, they also concerned themselves with the preservation of all "
+"knowledge of their age. This $library is one of a few they built around the "
+"world to house the rare books in which the Guardians recorded known history, "
+"astronomy and all other sciences and magic they learned. Their hope was to "
+"pass on their vast body of knowledge and let future generations know how to "
+"deal with another war should the $Abyss invade again. Sadly, before their "
+"work could be completed, in a final and cataclysmic battle, the demons "
+"destroyed them all... There is talk of betrayal: a treachery from within the "
+"ranks of the order is said to have caused their demise."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:78
+msgid "ready"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:79
+msgid ""
+"Well, let's start with what you already know. $Mycotharsius had me abducted "
+"by those $dwarves but thanks to you, I am free again and able to resume my "
+"$research in the $library."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:80
+msgid "dwarves,Grizzled,Pony"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:81
+msgid ""
+"The Order of the Grizzled Pony? Alas not much good can be said of them. They "
+"maintain their meager existence as both poetic and rogue hacks, selling "
+"their services to other low-lifes like $Mycotharsius."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:83
+msgid ""
+"I hear he met his end again... this has happened before you know. He died in "
+"combat once, but was resurrected by a demonic entity named $Karzuul. I think "
+"the demon took pleasure in bestowing the curse of unlife on the mage, to "
+"teach him a lesson in loyalty perhaps... At any rate, what is more "
+"interesting about Mycotharsius, is his $boss."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:84
+msgid "boss,Mothrazu,Mothrazu's"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:85
+msgid ""
+"Now we're getting to the meat of our story! Mothrazu! Now there is something "
+"awful...  On the surface, she appears to be just another evil $druid, bent "
+"on the destruction of civilization. I'm sure you've heard the rumors: she "
+"wants to restore the world to what it was before the rise of the races. Her "
+"image of a world covered in forest is a bit of a cliche, you see? I don't "
+"buy it... there is something more here... especially, when you look at the "
+"evidence: a $map of the $Abyss? No, I don't think what we're dealing with is "
+"just a lowly $druid bent on revenge."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:86
+msgid "druid"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:87
+msgid ""
+"To all outward appearances, she is a servant of the god of Nature. Even if "
+"she is evil, this is possible. Amod-Rheinur is a neutral deity who doesn't "
+"concern herself with the means to achieve her goals. However, I believe "
+"there is more to her story than what she'd let us believe: simple $revenge."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:88
+msgid "revenge"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:89
+msgid ""
+"I believe $Mothrazu wants to travel to the $Abyss for some reason. You may "
+"have heard this in the ramblings of $Mycotharsius as well. (He let me know "
+"that much during my time of captivity.) What she wants from the dimension of "
+"evil is not known to me yet....  But, I think this is the reason why she had "
+"me captured. You see, this $library here is an ancient building. And like "
+"most things that are very old, it holds its own share of $secrets..."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:90
+msgid "library,Gormoril"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:91
+msgid ""
+"This building was built ages ago by the $Guardians of the Realm. You may "
+"have heard of this order of peace-keepers... At any rate, they created these "
+"underground wardens to safely store all the information they uncovered "
+"during their time. The building had many masters before me and it is likely "
+"it will have many more after I pass. The only thing constant here are the "
+"priceless books and the $servants."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:92
+msgid "servants"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:93
+msgid ""
+"They are a bit weird, aren't they? It took me a while to get used to them. "
+"But at least they get along with the $monsters."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:95
+msgid ""
+"Yeah about that... they only appeared a couple of years ago... Not sure "
+"where they came from either."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:96 ../scourge_data/maps/tower1.cfg:12
+msgid "secrets"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:97
+msgid ""
+"It took me years of study to unravel this mystery and I can't say I fully "
+"understand it still. However, I do believe it relates to $Mothrazu's "
+"$Abyssal travel plans... You see, several hundred years after the "
+"construction of this $library, when the $Guards of Realm were destroyed and "
+"the building stood empty, an order of evil monks took up residence here. "
+"They constructed a $planar gate, an unholy device that leads only to one "
+"place: to the world below... the $Abyss!"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:98
+msgid "planar,gate,device"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:99
+msgid ""
+"You may have heard of this device referred to as a red teleporter. Once "
+"$activated it can be used as a bi-directional portal to the world of demons. "
+"I have been researching its history and use, and I think this knowledge is "
+"what $Mothrazu seeks, and that is why she had me kidnapped."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:100
+msgid "activation,activated,activate"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:101
+msgid ""
+"As I said, my studies are not complete... From what I learned so far, it "
+"seems that even the order of monks who created the $device realized how "
+"dangerous it can be and went to extra lengths to protect against its "
+"accidental opening. This protection is in the form of a set of ancient wards "
+"that keep the $door behind me sealed. "
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:102
+msgid "door,seal,sealed,lock,locked"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:103
+msgid ""
+"Long have I labored to open the seal and enter the room behind this door. "
+"Research in many tomes of magic led me believe that four $tokens are "
+"required to safely enter and activate the $planar gate. One of these you've "
+"already found: the Dragon-scale armor of the $Guards of the Realm. $Uzudil "
+"sent me this item along with the $map. The other $three are scattered in "
+"various locations. You must retrieve these items in order to ensure that "
+"$Mothrazu doesn't find them first."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:104
+msgid "token,tokens,three"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:105
+msgid ""
+"I sent $Uzudil some notes on where I think these tokens are located. He can "
+"help you with the travel arrangements. However, waste no time! If $Mothrazu "
+"should get the tokens first and enter the $Abyss, who knows what evil she is "
+"planing to unleash! Of course, then $worse things still may occur..."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:106
+msgid "worse"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:107
+msgid ""
+"You see, once the $planar gate is $activated, travel is possible in both "
+"directions... Not only can one enter the $Abyss, but our world will stand "
+"open to an invasion from there as well... Luckily most demons are relatively "
+"weak in this dimension. Without some sort of anchor or connection to their "
+"unholy lairs, they have no power in the material realm."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:108
+msgid "Abyss,Abyssal"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:109
+msgid ""
+"It's the plane of sorrow. The home of the bringers of darkness. Though it "
+"has many names, they all mean the same thing: a boundless dimension without "
+"hope, mercy and grace."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:110
+msgid "_chapter8_"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:111
+msgid ""
+"She was here! I don't know by what foul magic, but $Mothrazu passed through "
+"the $door without activiting it with tokens. I have tried to stop her, I... "
+"I... used all my arcane art, yet she proved too $powerful for me. Hurry and "
+"try to $stop her! I see you brought the tokens. With them the door will open!"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:112
+msgid "powerful"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:113
+msgid ""
+"It took but a flick of her hand and I stood petrified as though rooted to "
+"the spot. Tendrils of a fibrous material clouded my brain and kept me "
+"motionless... I am sorry I cannot be more help. You must go $after her "
+"now... I am... afraid..."
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:114
+msgid "stop,after"
+msgstr ""
+
+#: ../scourge_data/maps/library3.cfg:115
+msgid ""
+"Hurry! She is inside this warded gate! She must not travel through the "
+"$planar device! Yet she may already have done so... I still have not been "
+"able to find out what it is she seeks in the $Abyss. If you do not find her "
+"beyond this $gate the only thing left is to travel to the Abyss and hunt her "
+"down there."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:4
+msgid "Karak"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:11
+msgid "Gorak"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:18
+msgid "Fald"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:25
+msgid "Zorak"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:32
+msgid "Mergil"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:39
+msgid "Manni"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:46
+msgid "Lemy"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:53
+msgid "Rendd"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:60
+msgid "Xolt"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:67
+msgid "Karzul Agmordexu"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:74
+msgid "Quegazu the Reformed"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:82
+msgid "Narzegg the Vain"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:91
+msgid ""
+"Well, well... what have we here? Judging by your trembling, you $suspect who "
+"I am..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:92
+msgid "Don't be frightened, I $wish you no harm... yet."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:94
+msgid "Please, allow me to turn you inside out."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:95
+msgid "Ah the screams of the tortured! A lovely music, don't you agree?"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:96
+msgid "wish,suspect"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:97
+msgid ""
+"That's right, I am Karzul Agmordexu, Lord Protector of the 512th layer of "
+"the $Abyss. I must really apologize for these grim surroundings. But fear "
+"not, if all goes according to my $plan I will soon entertain guests in a "
+"much larger domain..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:99
+msgid ""
+"Ah you mortals can be so entertaining! Look around you weakling! You will "
+"$soon call this place your home. The smell you will never get used to. Here "
+"you will learn an appreciation for eternal suffering. My minions will tear "
+"your sanity to shreds and break your body every day. And since you're "
+"already dead, you will be at our disposal to repeat these procedures "
+"endlessly..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:100
+msgid "plan,plans,soon"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:101
+msgid ""
+"I might as well let you in on my little secret. I plan to ascend into your "
+"world and bring about its utter destruction. Why would I do that, you ask? "
+"You mortals need to be taught a lesson in $humility. And who better to "
+"humiliate you than I the (future) lord of Hell? "
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:102
+msgid "humility"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:103
+msgid ""
+"You live your lives in the world above as if your actions were confined to "
+"the isolated realm you perceive as reality. As if deities were your servants "
+"you can bargain with for your benefit. Soon the powers of the material realm "
+"will $shift... Soon I will define your reality!"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:104
+msgid "shift"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:105
+msgid ""
+"I'm awefully sorry to inform you that you just missed my other guest, one "
+"named $Mothrazu. I hear this happens to you quite a lot... She was just here "
+"and is now on her way back with a special package... a... a $gift from me "
+"to... well all of you."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:106
+msgid "Mothrazu,druid"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:107
+msgid ""
+"She is quite a charmer! And I must say, druids (especially the evil ones) "
+"are so gullible. All I did was arise her latent anger over the destruction "
+"of nature, and she now $serves me unerringly and quite against her better "
+"judgement. If she only knew that she's being used as a pawn in a much "
+"grimmer game..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:108
+msgid "serves,gift"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:109
+msgid ""
+"As far as the $druid knows, she is carrying a device which will bring about "
+"a subtle climate change (if you will) of your world. I really can't get into "
+"details, it's top secret you know, so don't even ask.... Oh, all right, if "
+"you insist. I will add, that if activated, my gift (this device) will allow "
+"for the completion of my plans by granting me (and I shudder with delight) "
+"use of my infernal powers in your realm. Would you like a free demonstration "
+"ot them? No? Perhaps some other $time then."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:110
+msgid "time"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:111
+msgid ""
+"Yes my guests the time will come when we will meet $again. For now, I will "
+"let you live. I must say, I am somewhat impressed that you managed pay me "
+"this visit here in my home. I will follow your progress eagerly... perhaps I "
+"will make you my servants in my new era of terror. Undeath will suite you "
+"just marvelously (although it did not work well for $Mycotharsius... )"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:112
+msgid "again"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:113
+msgid ""
+"Ta-ta for now my friends... I will see you $soon enough! Don't forget to try "
+"to chase down the druid $Mothrazu, as it is entertaining for me to watch you "
+"squirm. I would not bother to reveal my plans to her; it will do no good. "
+"She serves me out of her own free will..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:115
+msgid ""
+"I hear he met his demise again... At your hands no less! Remind me to reward "
+"you for this when I  make you my servants. That double-crossing wizard was a "
+"nuisance from the beginning. Henchmen are of such low quality these days..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:116
+msgid "Quegazu"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:117
+msgid ""
+"So you've met the merchant, that demon-turned-holyman? Despite what he says, "
+"he's on the brink... Just ask him about 'blood' or 'pain'. I let him fester "
+"in his tormented state as an example that goodness cannot save you and "
+"reformation is just pretense."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:118
+msgid "deal"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:119
+msgid ""
+"You want to strike a deal with me and become servants of my era of pending "
+"darkness?! Hahaha! You amuse me... Yes, yes, there will be plenty of time "
+"for that once my $plans unfold. Once I am the tyrant ruler supreme of all "
+"that you hold dear... We will revisit this issue, trust me."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:120
+msgid "Narzegg"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:121
+msgid "One day vanity will be his downfall. Until then he serves me well."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:125
+msgid "Look at my $wares weakling mortals..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:126
+msgid "Narzegg getting impatient with mortal weaklings..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:127
+msgid "wares"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:128
+msgid ""
+"Yes, $trade with gold weak mortals. I will supply you with what you need to "
+"live just another day here in the land of $evil. May your squishy flesh stay "
+"safe in the kingdom of $Karzul."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:130
+msgid ""
+"Maybe weakling mortals have not noticed $where they are? Rejoice in the "
+"unholy might of our horde! Narzegg wishes lumpy outsiders consider the "
+"$benefits of switching to the winning side of evil. After all, Narzegg knows "
+"he's only $beautiful and $powerful because he toils only for himself."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:131
+msgid "benefit,benefits"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:132
+msgid ""
+"Ah, so soft-covered mortals are interested in a deal perhaps? Maybe they "
+"want to be as $confident, $wise and $fearsome as leaders of the demonic "
+"horde? Narzegg thinks maybe they want to consult with Karzul. Maybe they "
+"should mention the word 'deal' to his infernal majesty."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:134
+msgid ""
+"A great leader of demons he is! Narzegg looks up to Karzul as a mentor in "
+"ways of $evil. Karzul is a terrible demon lord who rules over this level of "
+"the Abyss. He excells in finding new ways to torment the sinners in our "
+"charge. None else can revel in their death gurgles with such passion! One "
+"day Narzegg will rule an Abyssal level. He shall name its capitol city "
+"Karzulia after the great leader."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:135
+msgid "beautiful,powerful,confident,wise,fearsome"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:136
+msgid ""
+"Yes, Narzegg is a handsome demon... Many sinners say so as well. He is also "
+"powerful and wise. Narzegg will one day lead demon race in glorious conquest "
+"of other levels of the Abyss. Narzegg learned all his craft from might "
+"leader Karzul. In many ways Narzegg is similar to Lord Karzul... except "
+"Narzegg has better profile. See?"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:140
+msgid "Welcome, welcome $good masters to my humble $shop..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:141
+msgid "Alas, poor Quegazu knows not of what wise master speaks."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:142
+msgid "shop"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:143
+msgid ""
+"Yes master, let us $trade. I sell you good weapons and armor for cheap... "
+"Quegazu is honest and $good. You can trust all goods from Quegazu's $shop "
+"and his amulets will bring good master luck."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:144
+msgid "good"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:145
+msgid ""
+"Yes, Quegazu is good. Not like other vile demons here and very much not like "
+"evil tyrant $Karzul (may he fester in boils.) Quegazu chose life of light "
+"and helpfulness. He can be trusted to $trade with good master. Quegazu "
+"$changed his evil ways and is a servant, ever a servant of holy deity "
+"Minirmuir (blessed be he)."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:146
+msgid "change,changed"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:147
+msgid ""
+"Quegazu see the light, Quegazu repent sins of past. Although sometimes "
+"Quegazu still misses taste of $blood and weak $flesh of mortals he tries to "
+"not think about it. He still longs now and then to hear the $screams of the "
+"damned he tries to not revel in their $agony... Yes, Quegazu tries reeealy "
+"hard to respect others and give tha.. tha... thanks for divine wisdom of "
+"Minirmuir."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:148
+msgid "blood,flesh"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:149
+msgid ""
+"Tempt us not good master... ah to rend the flesh and suck marrow from the "
+"bones! To drive heated stakes through the... No! Quegazu must not think "
+"these vile thoughts. Quegazu will now say seven prayers to Minirmuir..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:150
+msgid "screams,agony"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:151
+msgid ""
+"It is like music to the ears! The unending death gurgle of the tortured "
+"brings... But no! Quegazu is reformed. He is filled with light and toils "
+"only for $good."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:152
+msgid ""
+"A master of darkness he is. Do not belive his promises! Stray not into his "
+"path for surely will you be crushed like the fleas you are to his unholy "
+"might. A blight he is, even here in the grimmest of all places. Quegazu "
+"knows $more... much more about this dark lord."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:153
+msgid "more"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:154
+msgid ""
+"Karzul was once a lowly demon like myself. However, his heart was so full of "
+"hatred that even others of his kind shunned his presence. Then some time ago "
+"his ascendency to power began when he made a pact with an evil sorceror "
+"named Mycotharsius. Have you $heard of him? He eventually slew the wizard "
+"and raised him as an undead $worshipper."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:155
+msgid "heard"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:156
+msgid ""
+"So you have met this Mycotharsius! A foolish mortal he was to $trust $Karzul."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:157
+msgid "worshipper,trust"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:158
+msgid ""
+"Quegazu thinks Karzul's plan was at first a usual one: gather enough souls "
+"to infiltrate the material realm by establishing a secret cult of "
+"worshippers led by the wizard Mycotharsius. Karzul being rather impatient "
+"saw this taking too long and chose a different $path. A faster way to move "
+"his evil plans along..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:159
+msgid "path"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:160
+msgid ""
+"This is where Quegazu's knowledge becomes hazy. Quegazu is sorry to not be "
+"clearer and thus better serve the forces of $good. As far as Quegazu knows, "
+"Karzul's latest cohort is a creature named Mothrazu the druid. He is using "
+"her to continue where Mycotharsius failed in his infernal game to bring an "
+"end to the world of mortals."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:164
+msgid "Have you come to $torment us?"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:165
+msgid "I deserve all I get: I am a $sinner."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:166
+msgid "Oh how I $long for a mug of ale..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:168
+msgid "I don't know. We see very little of this $level..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:169
+msgid "torment,long"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:170
+msgid ""
+"What you're not here to torture us $sinners? Nay, I think this is just "
+"another deceiption of the evil ones. Go ahead, rend my flesh, torment my "
+"mind, I have resigned myself to an eternity of suffering."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:171
+msgid "sinners,sinner"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:172
+msgid ""
+"Yes, we are all sinners here. We toil forever on this $level of the $Abyss. "
+"It is a payback for our $crimes."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:173
+msgid "crimes,crime"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:174
+msgid ""
+"We're mostly petty criminals... adulterers, pick-pockets, etc. This $level "
+"of the $Abyss is presided over by the fearsome demon lord $Karzul. As "
+"punishment for our crimes, his minions torment our minds and bodies "
+"eternally..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:175
+msgid ""
+"Don't tell me you don't know where you are? The demons of $Karzul apply "
+"their craft well indeed. In case you can't remember, you're on this $level "
+"for having committed small $crimes in your former life. Were you a thief "
+"perhaps? Or cheat at cards? No one comes here without a reason..."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:176
+msgid "level"
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:177
+msgid ""
+"The $Abyss has an infinite number of levels. This one is a holding area for "
+"$sinners like ourselves. It is ruled by the horrible demon lord $Karzul."
+msgstr ""
+
+#: ../scourge_data/maps/library31.cfg:178
+msgid ""
+"Trust me you don't want to know... he's the enemy of life, the despoiler of "
+"good, the bringer of darkness. His words are bile and his breath: disease... "
+"If you still want to see him, proceed to the end of this $level."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:4
+msgid "Azmagol the Blacksmith"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:12
+msgid "Doro Dealer of Sorcery"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:20
+msgid "Anuil the Alchemist"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:28
+msgid "Scinibar the Storekeeper"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:36
+msgid "Ezmarith the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:44
+msgid "Blackheart the Constructor"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:52
+msgid "Flintforge the Grafter"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:60
+msgid "Thazmagul Firebeard"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:68
+msgid "Sygil the Wizard"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:76
+msgid "Aggorod the Warmaster"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:84
+msgid "Flint a Teacher of Scoundrels"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:92
+msgid "Idmaril the Folklorist"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:100
+msgid "Orhithales Grimwise"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:107
+msgid "Ydromor"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:114
+msgid "Razmit"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:121
+msgid "Scenegar"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:128
+msgid "Almaril"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:135
+msgid "Gilmaril"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:143
+msgid ""
+"Be welcome in my humble home but please be quick to state your business and "
+"be off. I am a busy man and my $research will not wait."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:148
+msgid ""
+"I work on unraveling the $history of the town of $Thuzgol. I can tell you "
+"information about the $city itself, its $history or the $catacombs below. "
+"But enough about me... you look like you work for $Uzudil at S.C.O.U.R.G.E. "
+"Inc. Did he send you to gather information? Was there $something you were "
+"meant to ask me about?"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:149
+msgid "something"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:150
+msgid "Quite so, something to ask $about..."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:151
+msgid "about"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:152
+msgid ""
+"...About $something? I don't know what your assignments are! Are you wasting "
+"my time?!"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:154
+msgid ""
+"So... you've heard about the Order of the Grizzled Pony. Finally $Thuzgol is "
+"putting its mark on the pages of history! Well, as much as the locals might "
+"idolize them, they're still just a bunch of no-good $thugs. I wouldn't go "
+"around saying this, but trust me I know. The Order is not all it's cracked "
+"up to be. "
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:155
+msgid "thugs"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:156
+msgid ""
+"My $sources tell me, that in the last manifestation of the insanity of the "
+"$Order, they hooked up with an undead wizard named $Mycotharsius. Who the "
+"wizard worked for, I couldn't tell. All I know is it's rumored, he kept a "
+"lair in the $catacombs below this very city. He apparently meant to call "
+"upon the wrath of $nature itself to destroy humanity. That was a score of "
+"years ago and by now I'm sure he's plan has been foiled. If I had known at "
+"the time that he was right here below our noses, I would've gone looking for "
+"him myself."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:158
+msgid ""
+"He and I go way back. Back before I knew how to mix my first potion or fry "
+"my first Rahuzmil with a Burning Stare, Uzudil and I hunted together near "
+"the northern city of $Grimvil. We are still good friends, helping each other "
+"out when we can."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:159
+msgid "Grimvil"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:160
+msgid ""
+"A lovely place. Lakes, pine-trees, clean air and endless snowfields. I think "
+"after my $research here is done, I shall journey there again and dwell over "
+"one of the $fjords."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:161
+msgid "fjords"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:162
+msgid "A funny word that is. Most peculiar!"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:163
+msgid "sources"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:164
+msgid ""
+"Of course, I can't tell you that. One must always protect one's sources!"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:165
+msgid "Thuzgol,city"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:166
+msgid ""
+"Thuzgol is located deep in the mountains in the middle of the continent. The "
+"city is home to the mountain dwarves, also known as the Groez-Duil. Among "
+"them most excel at the craft of the smith, the healer and the occasional "
+"artist. In fact you may have heard that the city is the original home of the "
+"$Order of the Grizzled Pony. Although the group moved on to terrorize other "
+"parts of the world, in Thuzgol they still enjoy a hero's reputation. Their "
+"contributions to the world of $poetry are not for the faint at heart! "
+"However, to be fair, the lure of their terrible verse does help the tourist "
+"industry. Let me know if you're interested in a brief $history of the city!"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:167
+msgid "history"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:168
+msgid ""
+"Well let me see... the earliest records of $Thuzgol date back to the reign "
+"of Ironball the Raider-King. According to these documents, he single-"
+"handedly founded the city by forcibly taking dwarves from his neighboring "
+"hill-side clans. His rule is followed by years of darkness: the Goblin wars "
+"under Ruadil. I arrived in Thuzgol during this time and have committed her "
+"history to paper ever since. After vanquishing the Goblin hordes, relative "
+"peace ruled for hundreds of years. During this time it was decided that the "
+"people of $Thuzgol shall be called the $Groez-Duil."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:169
+msgid "Groez-Duil"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:170
+msgid ""
+"Yes, you see, just being called 'dwarf' is insulting as well as nondescript. "
+"It's bad enough that most travelers confuse males and females (just ask the "
+"locals) but foreigners cannot be expected to keep track of the multiplicity "
+"that is the dwarven clan system. The complexity of such relationships is so "
+"hard to comprehend, that as a matter of simplification, a suitable pseudonym "
+"was $sought."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:171 ../scourge_data/maps/temple.cfg:147
+msgid "sought"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:172
+msgid ""
+"At first, the collective might of clans was to be named Groerum. However, as "
+"many learned in the ways of linguistics quickly pointed out, this means "
+"'udder-grease' in the flowery tongue of a hill-side clan. The Groerum was "
+"then renamed Groez and in an attempt to appease the warlike clan of Duil, "
+"their name was appended to the new title of the mountain dwarf collective. "
+"Now all dwarves living in $Thuzgol proudly name themselves members of the "
+"Groez-Duil. Fascinating, isn't it?"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:173
+msgid "Mycotharsius,map,boots"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:174
+msgid ""
+"Mycotharsius showed cunning in his chosen craft early on in his career. He "
+"soon turned to the darker arts and became a powerful sorcerer of the school "
+"of the magic of Life and Death. But even this didn't satisfy his cravings "
+"for power, because later he entered a diabolical pact with a servant of evil "
+"named $Karzuul. True to his nature, the demon eventually turned on the "
+"wizard. Some say Mycotharsius fell in battle because his spell back-fired. "
+"You would do well to search the $catacombs for answers to your questions."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:176
+msgid ""
+"Not much is known of him. Most likely Karzuul was a demon of the Abyss, the "
+"plane of elemental evil. I would guess, he offered greater power to "
+"$Mycotharsius in exchange for the wizard performing a service for the demon. "
+"The details of this pact are lost to time and here-say."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:178
+msgid "Works for $Uzudil you say? Never heard of him."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:179
+msgid "nature,fire,witch,tokens"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:180
+msgid ""
+"You must be referring to that awful piece of poetry (naturally, attributed "
+"to the $Order) about the tokens? |'First find the four tokens|Lead the witch "
+"to the spire|Use sygils to bind her|And unleash nature's fire!'| I must say, "
+"I've been trying to figure this one out myself but to no avail. Perhaps "
+"searching the lair of $Mycotharsius will shine some light on this mystery?"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:181
+msgid "catacombs,below"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:182
+msgid ""
+"Below the city of $Thuzgol lie the vast catacombs of an elder race. In all "
+"my years of $research about the $history of the city, never did I find any "
+"written records of those who inhabited this place before the $Groez-Duil. "
+"Today none dare to venture into its dank passages. Occasionally we here "
+"things stir below... dark things, not of this earth. Still, you should "
+"descend the slimy $stairs and have a look. I have a feeling the depths hold "
+"the answer to the riddle of what happened to $Mycotharsius."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:183
+msgid "stairs"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:184
+msgid ""
+"Uh, yeah... about the stairs. All I can tell you is that they do exist. "
+"Unfortunately, I've misplaced my maps of the city and don't know where they "
+"stairs leading to the $catacombs are located. Good luck finding them!"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:185
+msgid "dragonscale,armor"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:186
+msgid ""
+"Very interesting! How very, very fascinating. No, this is not the armor of "
+"$Mycotharsius, make no mistake. This dragonscale armor was not made in these "
+"parts for oh... 1200 years now. It was once the mark of the $Guardians of "
+"the Realm. The fact that you found one below the city of $Thuzgol means "
+"either that it's a portions of its $history I have not come upon so far, but "
+"more likely that the armor was brought here from $someplace else."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:187
+msgid "Guardians,realm"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:188
+msgid ""
+"I only vaguely know of the Guardians of the Realm. I believe a long time ago "
+"they were a military organization assembled to protect peace in the land. It "
+"was rumored that the head of the Guardians was a supreme entity, perhaps "
+"even of divine nature..."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:189
+msgid "someplace"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:190
+msgid ""
+"I don't know from where this armor came to rest in the $catacombs. You "
+"should ask this of $Uzudil when you see him next. I suspect if he doesn't "
+"know what to make of it, he'd know who does."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:194
+msgid "Welcome weary adventurer to $Thuzgol, city of the $mountain dwarves!"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:195
+msgid ""
+"May you find rest in $Thuzgol, where our women have the softest $beards!"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:196
+msgid "Feel at home in $Thuzgol! May your $beard cover your toes!"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:199
+msgid ""
+"Behold the mighty city of the $mountain dwarves! Here you will find all the "
+"you seek, be it drink, weapon or spells of magic. If you want to know about "
+"the city's $history, ask $Orhithales. We're quite famous for our poetry. "
+"Would you like me to $recite some?"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:200
+msgid "mountain"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:201
+msgid ""
+"We are the mountain dwarves, distant relatives of the hill dwarves. "
+"Obviously as you probably already noted, we're quite stronger, more "
+"intelligent and ...er... well just better."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:202
+msgid "beards,beard"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:203
+msgid ""
+"Yes they're lovely. Outsiders find it hard to tell dwarven women apart from "
+"men, due to the fact that both sexes sport luxurious, flowing beards. With "
+"practice however you can sort out the confusion. Women's beards are smooth "
+"and silky. Men have coarse facial hair that is quite unpleasant to touch. No "
+"doubt you will make mistakes while visiting a local house of pleasure..."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:205
+msgid ""
+"He is the wisest of us all. He arrived in the city before the $Goblin wars "
+"and worked to repel that enemy. Now he works mostly on his research about "
+"the $history of $Thuzgol. He lives in the house with the purple flames on "
+"the outside. He is a quiet fellow, but be sure not to $anger him!"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:206
+msgid "Ask $Orhithales about it."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:207
+msgid "anger"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:208
+msgid ""
+"He doesn't like to be interrupted in his work. The reason why lives in "
+"$Thuzgol is because we leave him in piece so he can work on his research "
+"about the $history of the town. If you bother him, you may wish to never "
+"have set foot in his halls."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:209
+msgid ""
+"Ah yes, I'm quite the expert on the subject of the Order of the Grizzled "
+"Pony, you know! The Order is very secretive, yes! Their $lairs are guarded "
+"by Tyrant Hydralisk Deathlords except... uh... you see... they're "
+"lycanthropes, yes! Every full moon they turn into wolves. And $members of "
+"the Order themselves are dwarves among dwarves! They huge! At least 5 foot "
+"tall! Completely covered in fur and smell lovely like turned butter and "
+"sloshed ale. Ah, what a life it must be to travel with the Order..."
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:210
+msgid "lairs"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:211
+msgid ""
+"Their lairs are flying castles in the sky! Halls after halls of glittering "
+"gems and finely worked stone. Gold and silver is everywhere in the very "
+"joints of the timbers of their homes!"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:212
+msgid "members"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:213
+msgid ""
+"Well, now that you ask, I've never actually met one of them... but I've read "
+"their poetry! It's got the loveliest dwarven cadences! Shall I $recite a "
+"piece?"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:214
+msgid "recite"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:215
+msgid ""
+"Here is one I like:|'The journey calls me from the rumbling brook|Oh a forth "
+"night jaunt in the shady wood,|Adventurer, seek 'ever and tarry not|Be off "
+"ere, thy cousin's lot!'|It's a masterpiece! One day I will figure out its "
+"meaning. Would you like to hear $another one?"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:216
+msgid "another"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:217
+msgid ""
+"As soon as I lair eyes on you, I knew you could appreciate the finer arts! "
+"Here is another creation of the $Order |'With axe in hand I shall fall|Send "
+"in my place another from the hall|And as we march down upon the hordes of "
+"the foe|Among their ranks only fear shall we sow!'| Ah the majesty! Have you "
+"had $enough yet?"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:218
+msgid "enough"
+msgstr ""
+
+#: ../scourge_data/maps/thuzgol.cfg:219
+msgid ""
+"Were you a mountain dwarf in a previous life?! You are of the Groez-Duil in "
+"spirit! Here is another, also created by the $Order |'First find the four "
+"tokens|Lead the witch to the spire|Use sygils to bind her|And unleash "
+"nature's fire!'| Not sure what this one means either... must be a drinking "
+"song."
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:4
+msgid "Samoan the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:12
+msgid "Uxuril the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:20
+msgid "Farona the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:28
+msgid "Yxaliz the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:36
+msgid "Seremor the Healer"
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:45
+msgid "Be welcome in our humble $monastery wanderer."
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:47
+msgid "I'm afraid I can't help you with that."
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:48
+msgid "May you find that which you seek."
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:49
+msgid "monks,monastery"
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:50
+msgid ""
+"Within these bare walls, we offer our devotion to the gods. We also act as a "
+"$safe haven for those abroad. You too may $rest within our halls for as long "
+"as you like."
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:51
+msgid "safe,rest"
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:52
+msgid ""
+"Currently we have no guests staying with us. Ever since the $haunting began "
+"in our $cellars, we've had no visitors."
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:53
+msgid "haunting"
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:54
+msgid ""
+"A couple of months ago, one of our order did not return from the $cellars "
+"when he went looking for candles. None of us dare venture $down there ever "
+"since."
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:55
+msgid "cellars,down"
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:56
+msgid ""
+"We hear strange noises coming from below... they sound like frogs croaking. "
+"If you wish to investigate, please use the stairs next to the main worship "
+"hall."
+msgstr ""
+
+#: ../scourge_data/maps/tower.cfg:58
+msgid ""
+"Hmm... no, I can't say I've ever heard that name before. We're just peaceful "
+"$monks here."
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:5
+msgid ""
+"Stay your hand but for a $moment, intruders of my realm... I have $much to "
+"tell."
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:7
+msgid "A blue bird sings in a shrill voice. Doom lies in its song..."
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:8
+msgid "Embrace the children of the night. They hold the key to eternity."
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:9
+msgid ""
+"Is not chance a dagger blunt on one side and gravely sharp on the other?"
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:10
+msgid "moment,much"
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:11
+msgid ""
+"The pull of the depths are strong... Abyss-bound as I breathe my last, I "
+"must reveal to you the dark $secrets I was sworn to protect. I toiled long "
+"for $her... (cough) but listen, do you know this tune: fa-lala-laaa-le-grum-"
+"grum?"
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:13
+msgid ""
+"I was an important figure, you see? Fa-la-la-le-grum-grum! What a lovely "
+"tune it is! 'Tis a pity this noble throat shall sing no more. Not since $her "
+"arrival anyway. What little time I had to practice my art, instead I toiled "
+"for $her. 'Go to the $Abyss Myco!' she would demand. That hag! I hate $her, "
+"I do! I will tell you all I know. Use my knowledge to stop $her plans!"
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:14
+msgid "Mothrazu,her"
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:15
+msgid ""
+"Who? Fa-ra-rum-grum-grum-lalalee. (cough) ...Oh Mothrazu you mean. She is "
+"nothing to me anymore... But beware! (cough) a powerful sorcerer she is, "
+"yes! Her hate of civilization (cities in fact) knows no boundaries. She will "
+"destroy this world and rebuild it according to her image: a vast sprawl of "
+"dark $trees. It was she, who asked me to travel to the very depths of the "
+"$Abyss."
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:17
+msgid ""
+"A dark, evil place that is... home to the most vile, outer ones. Their names "
+"cannot be whispered, their breath is death and to gaze on them is madness! "
+"Fa-ra-rum! I don't know why $Mothrazu wanted me to $travel there. Maybe just "
+"to torture me for my failures? La-la-lee, La-la-loo! I've been there before "
+"you know... the fiend $Karzuul was my downfall once. Haha! But I escaped; "
+"seek the red $teleporters!"
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:19
+msgid ""
+"Disease, he sickens the very thoughts! I served that dark lord before "
+"Mothrazu and now I will serve him again... (sighs) my fate is bound to the "
+"$Abyss. Fa-ra-ra-lee... I wish I knew the words to this song."
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:20
+msgid "Sabien,kidnap,travel"
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:21
+msgid ""
+"Well I can't travel to the $Abyss on my own. Many of the red $teleporters "
+"are now locked... and always, always bring the $objects!| Anyway  I paid the "
+"$Order of the Grizzled Pony to kidnap Sabien. The wizard knows the way... A "
+"bumbling magician he might be, yet, his skill is gifted beyond the others'."
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:23
+msgid "Rum-rum-lala-lee!"
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:25
+msgid ""
+"The dwarves are the worst poets I've every met. Believe me, I would rather "
+"end my life here than to have to listen to their verse. However, they're "
+"much better at roguish tasks, such as $kidnap. They did manage to snatch "
+"Sabien, and yet he $somehow, escaped."
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:26
+msgid "somehow"
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:27
+msgid ""
+"So it was you who helped $Sabien escape from the $Order of the Grizzled "
+"Pony! I should have known. The dwarves accepting a bribe was not a part of "
+"my plans. Fa-ra-lee-la-lum! It doesn't matter now... I just hope you're "
+"clever enough to stop $her as well."
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:28 ../scourge_data/maps/emeril2.cfg:24
+msgid "trees"
+msgstr ""
+
+#: ../scourge_data/maps/tower1.cfg:29
+msgid ""
+"Yes that is $her plan: $Mothrazu intends to destroy the cities and cover the "
+"world in a forest. As a creature of nature, she claims it is her duty to do "
+"so. La-la-lee-rum-grum-grum! What a lovely tune. If you want to find $her, "
+"look in the deepest forests. She is the branch that holds the leaves, the "
+"trunk that supports the boughs... She is life and she is its destruction."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:4
+msgid "Rajna the Professor"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:12
+msgid "Master Healer Annu"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:20
+msgid "Sermel the trainer of wizards"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:28
+msgid "Marra Acolyte of Hornaxx"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:36
+msgid "Felra Acolyte of Hornaxx"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:44
+msgid "Argal Acolyte of Hornaxx"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:52
+msgid "Durhel Acolyte of Hornaxx"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:60
+msgid "Zirno Acolyte of Hornaxx"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:68
+msgid "Manat Acolyte of Hornaxx"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:76
+msgid "Sorma the Arms Dealer"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:84
+msgid "Lena the Traveling Wizard"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:92
+msgid "Romm the Charms Dealer"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:101
+msgid "Please take your time browsing my $wares dear client!"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:103
+msgid "Perhaps your loftyness will consider purchasing a $spell instead?"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:104
+msgid "spell,wares"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:105
+msgid ""
+"Yes, I am but a meager salesman, your Inflatedness. I $travel the land so "
+"that your Highness can pick and choose the best magic there is."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:106
+msgid "travel"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:107
+msgid ""
+"I graciously thank your Selfishness for asking. Yes, I travel, my poor feet "
+"are dusty from road. Months of marching saddle my aching back. My "
+"$companions and I set out from Arthel three moons ago."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:108
+msgid "companions"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:109
+msgid ""
+"I $travel with Romm who is a dealer of charms and trinkets. My other "
+"companion is the sniveling $knave Sorma... But such minor detail does not "
+"$interest your Valuedness, I can tell. How about looking through my $wares "
+"instead?"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:110
+msgid "knave"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:111
+msgid ""
+"Did I say that? Just because that lusty wench has been eying my Romm ever "
+"since we left Arthel? Surely your Flatulance will not hold it against me? "
+"Oh, but to $travel is the life..."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:112
+msgid "interest,Lena"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:113
+msgid ""
+"A wicked woman she is, your Marbledness! Not worthy of your attention at all."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:117
+msgid "Welcome mortal. You represent those of my $favor in this temple."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:118
+msgid "Speak of that no more!"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:119
+msgid "Harrguddh!"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:120
+msgid "favored,favor"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:121
+msgid ""
+"Yes, I remember when your organization helped clerics of my devotion. For "
+"that I am grateful. In return, let me tell you of my fear of a growning "
+"$shadow in the land. I foresee an $event in the near future that may bring a "
+"creeping darkness to all."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:122
+msgid "shadow,event,events"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:123
+msgid ""
+"I feel an $imbalance is cast over your world, mortal. An $evil grows "
+"somewhere in the West. I cannot tell its exact location, but I feel its foul "
+"magic seeping through the veins of the world. Yet we gods stand helpless "
+"against this invasion... There is an $outside power guarding this seedling."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:124
+msgid "imbalance,evil,shell"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:125
+msgid ""
+"The energies I feel are evil in their source. There is also an entanglement "
+"present here... an earthy feeling as if the very roots of the land waged war "
+"on the living. Very strong this $magic is... it blocks my most divine "
+"reaches and thoughts."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:126
+msgid "outside"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:127
+msgid ""
+"These $evil energies are surrounded by a protective shell. This shell is not "
+"of your world, mortal. It is not known to me at this time where the barrier "
+"was spawned, nor how to reach past its walls. Be careful mortal in your "
+"approach for its $magic is beyond even my powers."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:129
+msgid ""
+"As I have said, I can only reach the edges of the protective $shell "
+"surounding this magical phenomenon. However, even from this brief contact "
+"its powers overwhelm me... Black rock, earth and roots I feel. Tenacious "
+"like jagged nails, suffocating like heavy sand as it pushes my reach back. "
+"You will need $protection from it, mortal if you plan to enter it."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:130
+msgid "protection"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:131
+msgid ""
+"Yes. You will need items of antimagic binding to survive entry into its fell "
+"domain. But ask me not for these, though I would, I cannot grant you what "
+"you seek. My task here is but to prophesize events of the future. To gain "
+"such a boon, you best $impress my twin energy across the hall."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:132
+msgid "impress"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:133
+msgid ""
+"There are many ways you can do this. She is the positive energy, my twin "
+"opposite an ancient paradox. Nothing makes her feel more content than the "
+"presence of those of her disposition. Revel perhaps in her nature, the "
+"supreme deity of Confrontation: her maker."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:134
+msgid "_return_"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:135
+msgid ""
+"You seek a divine favor mortal. It is not me you need however. I am but the "
+"describer of $events and tidings. The other side of my divine paradox is "
+"responsible for altering the fabric of reality."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:136
+msgid "truth"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:137
+msgid ""
+"My twin speaks through your words mortal. She is both right and wrong in her "
+"assertions. Truth is not subjective, however a single truth does exist for "
+"every situation. I feel you will have to find such a conclusion in the near "
+"future. In the final hour of the world, it will be up to you to correctly "
+"ascertain the $revelations."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:138
+msgid "revelations"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:139
+msgid ""
+"Perhaps ask my twin of that. She is shaping your futures even as our times "
+"pass."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:143
+msgid ""
+"You have $sought me out for a glorious reason! Come closer mortal child..."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:144
+msgid "Have you come to $argue mortal? I do like a good argument!"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:145
+msgid ""
+"How do you define $good, mortal? Is it the opposite of $vile? If there were "
+"no evil, would there still be good?"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:146
+msgid "What you say is of no importance to me."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:148
+msgid ""
+"All seekers of $truth are welcome in my presence. As long as you show proper "
+"respect to me and my $maker you are welcome in my temple."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:149
+msgid ""
+"Truth is never singular. All viewpoints are always represented. Therefore "
+"truth is seldom subjective, rather it is shaped by the minds and intentions "
+"of its perceivers. You should ask the twin energy of my divine paradox about "
+"the nature of truth as well."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:150
+msgid "maker"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:151
+msgid "I am but a speck of dust from his divinity!"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:152
+msgid ""
+"You will know mortal when the time is right. Meanwhile, ask my twin what you "
+"should do to prepare for it."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:153
+msgid "argue"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:154
+msgid ""
+"Ah, you know how to please me... I do like to test just how far your mortal "
+"minds can reach. Suppose for example I were to ask you to tell me what it "
+"means to be $good? Is it being kind? Does this kindness have limits?"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:155
+msgid "good,vile"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:156
+msgid ""
+"My mind often wonders of this paradox. For I see your kind call themselves "
+"good yet perform vile deeds when others can't watch. By this evidence, I ask "
+"you: if there were no evil, would $everyone be called good, or $none be "
+"named as such."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:157
+msgid "everyone"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:158
+msgid ""
+"Ah but you see, $good is what sets us apart from others who aren't. So it's "
+"not as simple as you propose. In order for you to be good, I would have to "
+"be evil. So now mortal, tell me: am I $evil?"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:159
+msgid "none"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:160
+msgid ""
+"A pessimist, eh? Perhaps you should find talking to my twin across the hall "
+"more fruitful. I can't stand your attitude of blank dismissal of the "
+"complexities of the world. Begone from my sight!"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:162
+msgid ""
+"Interesting... I'll say to you mortal, it is a fact not known to me. Gods "
+"don't concern themselves with such definitions of easy classification. Our "
+"work is not limited by death. Yet... we are bound to the soul and living "
+"spark in each of you. Without your belief we could not exist. Perhaps this "
+"is a subject I should bring up when speaking with my $maker. "
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:163
+msgid "Unamoin"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:164
+msgid ""
+"Ah you please me, wanderer! Great is the power of my maker, the weak cowers, "
+"and the strong revels in his battle lust! What is it you seek? You may ask "
+"me for a $boon as you have shown your dedication to Unamoin, god of "
+"Confrontation."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:165
+msgid "boon"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:166
+msgid ""
+"Items of antimagic binding? Yes I have heard of such a thing. However such "
+"gifts will not come for free. Go forth and return to me when you have proven "
+"your $might in battle."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:167
+msgid "might"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:168
+msgid ""
+"In order for you to gain access to the items you seek, venture below this "
+"temple. There in the shadowy crypts many have perished who sought divine "
+"favor. You will also try to conquer your fears and show me I can bestow "
+"gifts upon you. I want you to go forth and do not return until you have "
+"progressed in the arts of war, magic or other disciplines."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:169
+msgid "_return_false_"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:170
+msgid ""
+"I see you mortal... I follow your deeds. You have progressed much in the "
+"arts of war and magic, but you are not ready for my gifts yet. Give yourself "
+"truly to my cause! Push yourself to the limits of your abilities... Then I "
+"will consider gifting your with the divine $boon you seek."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:171
+msgid "_return_true_"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:172
+msgid ""
+"You impress me again mortal! You have truly applied yourself in your chosen "
+"disciplines and now you shall receive my holy gifts for your efforts. Behold "
+"the $tokens of the Keeper of Arguments!"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:173
+#, fuzzy
+msgid "tokens"
+msgstr "Options"
+
+#: ../scourge_data/maps/temple.cfg:174
+msgid ""
+"Here take these objects of antimagic binding. With these, you will be able "
+"to break through the barrier we cannot touch. Hurry now, it is unwise to "
+"tarry with the gifts of a goddess."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:178
+msgid "I am a $happy man."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:179
+msgid "Did you know that eating oysters is said to boost one's potency?"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:180
+msgid "This is the best I felt since me twenties!"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:181
+msgid "happy"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:182
+msgid ""
+"How could I not be happy $traveling in the $company of two such pretty "
+"ladies?"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:183
+msgid "traveling,travel"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:184
+msgid ""
+"I sell charms and trinkets. We set out from Arthel a while back. At first it "
+"was just $Lena and I but soon we met $Sorma the weapons dealer. Life's never "
+"been the same since..."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:185
+msgid "Lena"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:186
+msgid ""
+"Yeah, me ol' battleaxe and I have traveled for a long time. At times I feel "
+"she suspects I may have an eye for $Sorma though."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:187
+msgid "Sorma"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:188
+msgid ""
+"She is ...adventurous, fun and beautiful! What more can I ask for but to "
+"$travel with them?"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:189
+msgid "company,companions"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:190
+msgid ""
+"I tread the open road with my woman $Lena and a $Sorma the weapons merchant. "
+"Do you think they're too young for me? I didn't think so either."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:191
+msgid "money,rumor,rumors"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:192
+msgid ""
+"Nah, she must be joking. Why the other day she asked to borrow some coins "
+"from me... I feel like she must trust me a lot to ask for that!"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:196
+msgid "Can I help you choose a $weapon, worthy of your skills, traveler?"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:197
+msgid ""
+"I am terribly sorry, but my meager knownledge keeps me from following your "
+"thoughts."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:198
+msgid "weapon"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:199
+msgid ""
+"I am a $traveling arms dealer. My $companions and I make our living selling "
+"our wares to customers of shall I say... distinctive taste... in this region."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:200
+msgid "traveling"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:201
+msgid ""
+"$We have traveled south from Arthel through Orn. The road is a lonely and "
+"scary place these days. It just seems like some kind of $event is about to "
+"happen. And when it does, I for one will want to be below ground, with many "
+"feet of rock between me and the outside world."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:202
+msgid "companions,We"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:203
+msgid ""
+"Oh, I travel with $Lena and $Romm. They're rooming in the other guest-cell. "
+"Lena is a wizard and Romm sells magic items."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:204
+msgid "She is a pretty woman in her own way... I suppose..."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:205
+msgid "Romm"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:206
+msgid ""
+"What can I say about dear Romm? He seems completely lost on what to make of "
+"traveling with two women. Just between you and me, one day I will make him "
+"(and his money) mine! But you won't go spreading rumors now, will you?"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:207
+msgid "event"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:208
+msgid ""
+"Not sure what to make of it. Definitely ask the $godess if you talk to her."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:209
+msgid "godess"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:210
+msgid ""
+"Surely you know what place this is! It's the temple that houses "
+"manifestations of her divine majesty, Hornaxx, goddess of arguments. Though "
+"not a $major god, her power is nevertheless great. You should do well to "
+"look her up if you need any questions answered."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:211
+msgid "major"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:212
+msgid ""
+"She is a minor deity. As such, she has a lord and maker... I couldn't figure "
+"out who but then, I'm just a simple merchant."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:216
+msgid "May you live as long as you're $worth stranger."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:217
+msgid "Feel at home traveler. May you rest here is long as you $need to."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:218
+msgid "Perhaps you should ask her divine paradox, $Hornaxx herself..."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:219
+msgid "worth"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:220
+msgid ""
+"This temple stands by the divine presense of $Hornaxx the goddess of "
+"arguments and contradictions herself. Are you worthy of her time? There is "
+"only $one way to find out."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:221
+msgid "one,myth,myths"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:222
+msgid ""
+"It was almost 2000 years ago when Uganloin the Bold declared this temple a "
+"holy space. According to myth, one morning the high priest Uganloin was "
+"greeted with the divine manifestations of the $goddess much like they appear "
+"to this day. $Hornaxx posed a riddle to Uganloin who in the act of solving "
+"the thorny riddle put such a strain on his mental faculties that he passed "
+"from the land of the living. It is said to be the highest honor among our "
+"faithful to pass the bounds of mortality while pondering the divine "
+"mysteries of our $goddess."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:223
+msgid "need,traveler,travelers"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:224
+msgid ""
+"We are dedicated followers of $Hornaxx the goddess of Arguments and "
+"Contradictions. We offer our hospitality to all travelers regardless of "
+"their religious affiliation. We urge you to find out more about $Hornaxx, "
+"and if possible $speak to her divine energies present here."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:225
+msgid "Hornaxx,goddess"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:226
+msgid ""
+"Hornaxx is the goddess of Arguments and Contradictions. Her divine presence "
+"is more than just a $myth as actual manifestations of her twin paradox can "
+"be seen and interacted with here within our walls. Follow the temple rooms "
+"due north to meet her. We also offer our healing services for a nominal "
+"charge, most of which goes to repair our $halls."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:227
+msgid "speak"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:228
+msgid ""
+"$Hornaxx will speak to all who approach her, through the manifestations of "
+"her celestial energies. There have been instances over the years when those "
+"asking for her favor were sent to $prove themselves first. If the quest was "
+"successful, the goddess rewarded her faithful with a $boon."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:229
+msgid "prove"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:230
+msgid ""
+"What she asked for was different each time. The general theme of the quests "
+"seemed to be one of self-betterment however here within our $halls. An "
+"overarching philosophy of the church of $Hornaxx is the sharpening of the "
+"self through application of one's inner powers. There are some though, who "
+"claim that $Hornaxx is interested in more skilled followers because of her "
+"$over-god."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:231
+msgid "over-god"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:232
+msgid "Who that is, is left for you to decide."
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:233
+msgid ""
+"The gifts of divinity are well worth striving for, as I'm sure you know. But "
+"in order to get them you must, $speak to her first!"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:234
+msgid "halls,temple,crypts"
+msgstr ""
+
+#: ../scourge_data/maps/temple.cfg:235
+msgid ""
+"Out temple is very old. Some of the first $myths involving this place are "
+"thousands of years old. This top level is where our church services are "
+"held. Here we have rooms for $travelers who need a place to spend the night. "
+"To the north you will find sacred halls where you can actually $speak with "
+"$Hornaxx the deity herself. Below this level are the crypts. About 1000 "
+"years ago the crypts were sealed (save but two gates leading down) in order "
+"to stop the invasion of creatures who now inhabit the levels below..."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:12
+msgid ""
+"You are the adventurers I've been $warned about?! You must be joking! You "
+"are old..."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:14
+msgid "The gods have abandoned us, truly..."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:15
+msgid "What I do... my work... it is a true wonder of nature..."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:16
+msgid "warned"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:17
+msgid ""
+"My agents are the $trees themselves! Their very souls bring $me news that my "
+"moves are being followed by a group of 'heroes'. I guess it must be you, "
+"although I must say, I expected someone younger... From what that blubbering "
+"$fool told me I'd have thought I am being chased by $Guardians themselves."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:18
+msgid "fool,Melathor"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:19
+msgid ""
+"Yes, yes, I was the one who sent Melathor to waylay your little adventuring "
+"party. Not only did I underestimate your tenacity (which rest assured will "
+"end here tonight) but I placed too much value of that $molting fool.||"
+"Although he didn't do too poorly for a guy, already $dead. His only other "
+"job was to deal with that pest of a wizard, $Sabien. Needless to say he "
+"managed to fumble both tasks."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:21
+msgid ""
+"Uh yes, why not dredge up the past! Yes, I'm afraid the kidnapping of the "
+"wizard Sabien was also my doing. Shame on me! And double shame on me for not "
+"doing the job personally. The next time I need something done, I will "
+"definitely not go with hired help. $Melathor and his contractors the dwarven "
+"poets (I would gladly entertain you with their work...) were more than "
+"useless. In the end his failed mission didn't amount to much, as Sabien "
+"couldn't open the door to the red teleporter anyway. I had to research the "
+"spell to unlock that door myself. The library of $Gormoril and its red "
+"teleporter still gives me the shivers..."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:22
+msgid "dead,molting"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:23
+msgid ""
+"In case you didn't notice the awful stench, the loosely assembled bodyparts, "
+"or the gaunt, haunted eyes, I've got news for you: $Melathor was an undead "
+"sorceror. I'm not exactly sure how he originally met his end, although he "
+"claimed he fell deep under the earth in an epic battle against the demon "
+"$Karzul. I have trouble believing this, given how the fiend readily assisted "
+"me in my $plans."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:25
+msgid ""
+"This is my home away from home... an underground sacred grove which by the "
+"grace of $Amod is able to survive here where no sun shines. It is but a sign "
+"of things to come. Soon the plants will take over the world again. Rejoice! "
+"$I am ushering in a new age of rebirth."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:26
+msgid "me,I,Mothrazu,druid"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:27
+msgid ""
+"I am but a humble $servant of $nature. Allow me to introduce myself through "
+"my work: I have grand $plans for this world! Soon nature will reclaim what "
+"humanity has taken from her. The roots hunger for blood! The soil rages in "
+"slow turmoil at what you have done! Perhaps you have felt the $earthquakes? "
+"The time for retribution is now: the wilderness is your judge and I am her "
+"enforcer."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:28
+msgid "earthquakes,quakes,earthquake,quake"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:29
+msgid ""
+"$Amod-Rheinur sees that I'm close to completing my task. He revels in "
+"humanity's demise and shakes the earth as a celestial sign of approval! "
+"Thank you Wise one, I will not disappoint you!"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:30
+msgid "servant,nature,dream,correct,task"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:31
+msgid ""
+"Once I was just another acolyte of $Amod-Rheinur. Then I received a holy "
+"visitation. In a waking dream the enraged god demanded a task from me: to "
+"restore nature's domain in the material realm.||Long have humanity abused "
+"this land for its riches! Your cities sprawl and fill the earth with refuse. "
+"You log the forest and mine the hills. You cut paths through the wilderness "
+"and hunt beyond your need. By callous greed you carelessly destroy all that "
+"sustains your existance.||$Amod showed me a vision of the future if this "
+"madness is not stopped. A world without vegetation and animal life. Cities "
+"surrounded by deserts and choking miasma.||My $plan is simple: acquire an "
+"extra-planar shortcut to reverse the decay and ensure it never happens again!"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:32
+msgid "plans,plan"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:33
+msgid ""
+"Through much bodily sacrifise I trained myself in the sacred arts of nature. "
+"I opened the secret $portal at Gormoril. I endured hell's agents and faced "
+"the $vilest one. He understood my plight and found it in his dark heart to "
+"endowe me with his grace: an ancient $device of life-bringing and wonder! "
+"Once $activated, it will produce a new generation of allies and enable the "
+"trees to exact vengence on their tormentors."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:34
+msgid "portal,Gormoril,library"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:35
+msgid ""
+"Ha-ha, I arrived before you did! That cur, $Sabien put up a fight but "
+"determined as I was, he prooved no match. Once with him out of the way, I "
+"opened the locked door as $Amod thought me in my $dream. And as he promised "
+"the red teleporter remained active. If I may say so, a minor blunder the "
+"$Guardians of the Realm did not intend to happen. They were so afraid to "
+"loose any of their precious 'information' that they could not destroy the "
+"teleporter when they had the chance."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:37
+msgid ""
+"A legend nothing more... such humality, dedication and caring never existed "
+"in human beings. Still... it makes me wonder if the tales of knights roaming "
+"the countryside, defending the weak, battling evil are true? Needless to "
+"say, nothing was seen of them in the last thousand years. Some say they were "
+"all killed in a final stand against the dark hordes. While alive, the "
+"Guardians not only concerned themselves with fighting demons but also worked "
+"to preserve the history of the age.||But those good-for-naught librarian "
+"knights had it all wrong! Instead of squerreling endless tomes of knowledge "
+"away in their hole at $Gormoril they should have taken the axe to the rotten "
+"core. They should've got rid of humanity when they had the $chance. But now "
+"this task falls to me."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:38
+msgid "chance"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:39
+msgid ""
+"The red teleporter of $Gormoril was in their control at the time. Too bad "
+"that their love of humanity prevented them from doing the $correct thing..."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:40
+msgid "vilest,demon,Karzul"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:41
+msgid ""
+"Oh you have visited the great evil one? To this day I don't know how he came "
+"to my aid. No matter however, with his wonderous $gift I will surely "
+"accomplish my $task.||Aye, all evil he is... a blight and a festering sore. "
+"Yet, we all have our calling. To torment the sinner, to balance the lazy, "
+"aimless benevolence of others is his, as I see it. Don't be quick to rush to "
+"judgement concerning this demon... If you cannot accept him for what he is, "
+"at least remember: the fiend's intelligence is borne of the countless souls "
+"he has devoured over the years.||In his dark halls, amidst the screams of "
+"agony and sulphorous stench of bile he ever devises plans of great "
+"complexity!"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:42
+msgid "device,activated,gift"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:43
+msgid ""
+"The fiend $Karzul gave me this wonderous device! How it came to him, I do "
+"not know. But it is a marvel, look! I will plant this tiny metallic seed... "
+"perform, the $ritual... and out of it will grow a $great tree.||It will "
+"mature with unnatural speed. Its roots will descend many miles into "
+"earth..., its boughs will break the ancient ceilings above us. In no time at "
+"all, it will tower over the world! Once grown, it will be a source of "
+"nature's chaotic energy. It will produce many fast-growing, un-stoppable "
+"spawn which will wander the land and replicate: clone themselves in nature's "
+"wooden fashion. These spawn will grow in all conditions! Their roots will "
+"break apart civilization's conventional strongholds. Their noxious fumes "
+"will send lethal spores over cities and destroy all! Their leaves will shine "
+"crimson and reflect the rays as the sun sets for the last time over "
+"humanity...||And in the morning... a new dawn will greet the survivors. Only "
+"those worthy of Amod's peace: the trees, the mountains, the lakes and the "
+"wild! I will bring this new dawn and the much needed apocalypse before. The "
+"earth must be cleansed, and there is $nothing that you can do to $stop me."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:44
+msgid "great"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:45
+msgid ""
+"It is a tree like no other. Its surface pulsates with extraplanar energy. "
+"Its boughs reach the skyward with unstopable determination. No stone, metal "
+"or earth can stand in its way. The tree being borne from this seed of the "
+"Abyss is intelligent beyond any earthly plant! This tree can see and hear. "
+"It can defend itself from peril, produce offspring that can move about: it "
+"is like an anchor, a dimensional lock in the material realm.||And there is "
+"only one thing it craves: the domination of our land. And that, my friends, "
+"is as it should be. The land belongs to the wild things of nature. And with "
+"this $gift from $Karzul I intend to make it so again."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:46
+msgid "ritual"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:47
+msgid ""
+"Ritual? Ha-ha how little you understand of nature's true power... All this "
+"seed needs is water... and I intend to give it plenty!"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:48
+msgid "nothing,stop"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:49
+msgid ""
+"Your theories of $Karzul are just chatter. This I do of my own free will, "
+"not because of any Abyssal influence. Your minds are affected by the "
+"malaize...||If your lives must be forfeit in order to activate the $device, "
+"so be it... many more will follow.||Witness the shapeshifting transformation "
+"granted by the divine light of $Amod! Prepare for $doom humans!!!"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:50
+msgid "Amod,Amod-Rheinur"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:51
+msgid ""
+"Say his name only with the greatest respect! Amod-Rheinur is the protector "
+"of Nature, the Golden Producer, the Celestial Green Thumb! These $trees only "
+"survive by his grace alone. No sun shines here under the earth and what "
+"water wells from below would not suffice to sustain a grove this size. I "
+"feel his radiance nearby... My actions... deplorable as they may seem... are "
+"driven by his holy oversight. I am a vessel, nothing more. The end I bring "
+"is a fitting finish to a decadent civilization lost in its transgressions. I "
+"am but a humble $druid my wrath however channels a deity!"
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:55
+msgid "You will suffer here..."
+msgstr ""
+
+#: ../scourge_data/maps/emeril2.cfg:56
+msgid "Hmmm, it escapes me just now."
 msgstr ""

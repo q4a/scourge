@@ -15,3 +15,15 @@ src/scourge.cpp
 ../scourge_data/config/profession.cfg
 ../scourge_data/config/ability.cfg
 ../scourge_data/config/rpg.cfg
+../scourge_data/maps/hq.cfg
+../scourge_data/maps/hq1.cfg
+../scourge_data/maps/library.cfg
+../scourge_data/maps/library1.cfg
+../scourge_data/maps/library2.cfg
+../scourge_data/maps/library3.cfg
+../scourge_data/maps/library31.cfg
+../scourge_data/maps/thuzgol.cfg
+../scourge_data/maps/tower.cfg
+../scourge_data/maps/tower1.cfg
+../scourge_data/maps/temple.cfg
+../scourge_data/maps/emeril2.cfg
