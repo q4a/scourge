@@ -145,7 +145,7 @@ public:
 
 	void setUpdate( char *message, int n=-1, int total=-1 );
 
-	static ConfigLang *load( char *file );
+	static ConfigLang *load( char *file, bool absolutePath=false );
 };
 
 #endif

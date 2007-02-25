@@ -309,10 +309,15 @@ string ConfigLang::cleanText( char *p, int n ) {
 	//return string( p + start, end - start );
 }
 
-ConfigLang *ConfigLang::load( char *file ) {
-	string rootDirString = rootDir;
+ConfigLang *ConfigLang::load( char *file, bool absolutePath ) {
+	string rootDirString;
+	if( absolutePath ) rootDirString = "";
+	else {
+		rootDirString = rootDir;
+		rootDirString += "/";
+	}
 	ifstream in;
-	in.open( ( rootDirString + "/" + file ).c_str(), ios::in );
+	in.open( ( rootDirString + file ).c_str(), ios::in );
 	if( !in ) {
 		cerr << "Cannot open file: " << file << endl;
 		return NULL;

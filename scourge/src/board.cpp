@@ -789,13 +789,240 @@ void Mission::addWanderingHeroes( GameAdapter *adapter ) {
 	}
 }
 */
+
+string getKeyValue( string key ) {
+	string::size_type n = key.find( "." );
+	if( n == string::npos ) {
+		cerr << "Bad answer string name: " << key << endl;
+		return "";
+	} else {
+		string k;
+		string::size_type m = key.find( ".", n + 1 );
+		return( m == string::npos ? key.substr( n + 1 ) : key.substr( n + 1, m - n - 1 ) );
+	}
+}
+
+void Mission::initConversations( ConfigLang *config, GameAdapter *adapter, bool generalOnly ) {
+	map<string,string> keyphrases;
+	map<string,map<string,vector<string>*>*> answers;
+
+	char *currentNpc;
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "conversation" );
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+
+		char *name = (char*)node->getValueAsString( "name" );
+		
+		// if it's NOT general
+		currentNpc = NULL;
+		if( strcmp( name, "general" ) ) {
+			
+			if( generalOnly ) continue;
+
+			Monster *m = Monster::getMonsterByName( name );
+			if( m ) {
+				currentNpc = m->getType();
+			} else {
+				Creature *c = adapter->getSession()->getCreatureByName( name );
+				if( c ) currentNpc = c->getName();
+				else {
+					cerr << "*** Error: can't find creature named: " << name << endl;
+				}
+			}
+		}
+				
+		for( map<string,ConfigValue*>::iterator e = node->getValues()->begin();
+				 e != node->getValues()->end(); ++e ) {
+			string key = e->first;
+			ConfigValue *value = e->second;
+			
+			if( key == "name" ) {
+				// do nothing
+			} else if( key.substr( 0, 3 ) == "key" ) {
+				string k = getKeyValue( key );
+				if( k != "" ) {
+					keyphrases[k] = value->getAsString();
+				}
+			}	else {
+				string k = getKeyValue( key );
+				if( k != "" ) {
+					string currentName = ( currentNpc == NULL ? "general" : currentNpc );
+					map<string,vector<string>*> *m;
+					if( answers.find( currentName ) == answers.end() ) {
+						m = new map<string,vector<string>*>();
+						answers[currentName] = m;
+					} else {
+						m = answers[currentName];
+					}
+					vector<string>* v;
+					if( m->find( k ) == m->end() ) {
+						v = new vector<string>();
+						(*m)[k] = v;
+					} else {
+						v = (*m)[k];
+					}
+					v->push_back( value->getAsString() );
+				}
+			}
+		}
+	}
+
+	for( map<string,map<string,vector<string>*>*>::iterator e = answers.begin();
+			 e != answers.end(); ++e ) {
+		string phase = e->first;
+		map<string,vector<string>*>* m = e->second;
+
+		for( map<string,vector<string>*>::iterator e2 = m->begin();
+				 e2 != m->end(); ++e2 ) {
+			string key = e2->first;
+			vector<string> *v = e2->second;
+			if( keyphrases.find( key ) == keyphrases.end() ) {
+				cerr << "*** Error: can't find conversation keyphrase id=" << key << endl;
+			} else {
+				string keyphrase = keyphrases[ key ];
+				for( unsigned int i = 0; i < v->size(); i++ ) {
+					string answer = (*v)[i];
+					if( phase == "general" ) {
+						setGeneralConversationLine( keyphrase, answer );
+					} else {
+						setConversationLine( phase, keyphrase, answer );
+					}
+				}
+			}
+		}
+	}
+
+	// cleanup
+}
+
+void Mission::setGeneralConversationLine( string keyphrase, string answer ) {
+	storeConversationLine( keyphrase, 
+												 answer,
+												 &Mission::intros, 
+												 &Mission::unknownPhrases,
+												 &Mission::conversations,
+												 &Mission::answers );
+}
+
+void Mission::setConversationLine( string npc, string keyphrase, string answer ) {
+	NpcConversation *npcConv;
+	if( Mission::npcConversations.find( npc ) == Mission::npcConversations.end() ) {
+		npcConv = new NpcConversation();
+		Mission::npcConversations[ npc ] = npcConv;
+	} else {
+		npcConv = Mission::npcConversations[ npc ];
+	}
+	
+	storeConversationLine( keyphrase, 
+												 answer, 
+												 &npcConv->npc_intros, 
+												 &npcConv->npc_unknownPhrases,
+												 &npcConv->npc_conversations,
+												 &npcConv->npc_answers );
+}												 	
+
+void Mission::storeConversationLine( string keyphrase, 
+																		 string answer,
+																		 vector<string> *intros,
+																		 vector<string> *unknownPhrases,
+																		 map<string, int> *conversations,
+																		 vector<string> *answers ) {
+	if( keyphrase == INTRO_PHRASE ) {
+    intros->push_back( answer );
+  } else if( keyphrase == UNKNOWN_PHRASE ) {
+    unknownPhrases->push_back( answer );
+  } else {
+		char line[300];
+		strcpy( line, keyphrase.c_str() );
+
+    char tmp[80];
+    char *p = strtok( line, "," );
+    while( p ) {
+      strcpy( tmp, p );
+      string lower = Util::toLowerCase( tmp );
+      (*conversations)[ lower ] = answers->size();
+      p = strtok( NULL, "," );
+    }
+    answers->push_back( answer );
+  }
+}
+
+void Mission::initNpcs( ConfigLang *config, GameAdapter *adapter ) {
+	char line[1000];
+  int x, y, level;
+  char npcName[255], npcType[255], npcSubType[1000];
+
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "npc" );
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+
+		strcpy( line, node->getValueAsString( "position" ) );
+    x = atoi( strtok( line, "," ) );
+		y = atoi( strtok( NULL, "," ) );
+		strcpy( npcName, node->getValueAsString( "name" ) );
+		level = node->getValueAsInt( "level" );
+		strcpy( npcType, node->getValueAsString( "type" ) );
+		strcpy( npcSubType, node->getValueAsString( "subtype" ) );
+  
+		// store npc info
+		string key = getNpcInfoKey( x,y );
+		NpcInfo *npcInfo = 
+			new NpcInfo( x, y, 
+									 strdup( npcName ), 
+									 level, 
+									 strdup( npcType ), 
+									 ( strlen( npcSubType ) ? 
+										 strdup( npcSubType ) : 
+										 NULL ) );
+		npcInfos[ key ] = npcInfo;
+  
+		// Assign to creature
+		Location *pos = adapter->getSession()->getMap()->getLocation( x, y, 0 );
+		if( !( pos && 
+					 pos->creature && 
+					 pos->creature->isMonster() && 
+					 ((Creature*)(pos->creature))->getMonster()->isNpc() ) ) {
+			
+			// the creature moved, try to find it by name
+			bool found = false;
+			for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
+				if( !strcmp( npcInfo->name, adapter->getSession()->getCreature(i)->getName() ) ) {
+					found = true;
+					adapter->getSession()->getCreature(i)->setNpcInfo( npcInfo );
+					break;
+				}
+			}
+			if( !found ) {
+				cerr << "Error: npc definition." << 
+					"Line: " << line << " npc=" << npcInfo->name << 
+					" doesn't point to an npc." << endl;
+				//} else {
+				//cerr << "* found npc by name: " << npcInfo->name << endl;
+			}
+		} else {
+			((Creature*)(pos->creature))->setNpcInfo( npcInfo );
+		}
+	}
+}
+
 void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly ) {
+
+	char tmp[300];
+	getMapConfigFile( filename, tmp );
+
+	ConfigLang *config = ConfigLang::load( tmp, true );
+	initConversations( config, adapter, generalOnly );
+	if( !generalOnly ) initNpcs( config, adapter );
+	delete config;
 
 	//cerr << "Current creatures:" << endl;
 	//for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
 		//cerr << "\t" << adapter->getSession()->getCreature(i)->getName() << endl;
 	//}
 
+	/*
   FILE *fp = openMapDataFile( filename, "r" );
   if( !fp ) return;
 
@@ -809,7 +1036,6 @@ void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool 
     if(n == 'G') {
       fgetc(fp);
       n = Constants::readLine(line, fp);
-
       n = readConversationLine( fp, line, n, 
                                 &Mission::intros, 
                                 &Mission::unknownPhrases,
@@ -832,7 +1058,6 @@ void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool 
       } else if( n == 'V' && currentNpc ) {    
         fgetc(fp);
         n = Constants::readLine(line, fp);
-  
         NpcConversation *npcConv;
         if( Mission::npcConversations.find( currentNpc ) == Mission::npcConversations.end() ) {
           npcConv = new NpcConversation();
@@ -903,6 +1128,7 @@ void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool 
     }
   }
   fclose(fp);
+	*/
 }
 
 NpcInfo *Mission::getNpcInfo( int x, int y ) {
@@ -915,6 +1141,20 @@ string Mission::getNpcInfoKey( int x, int y ) {
   sprintf( line, "%d,%d", x, y );
   string key = line;
   return key;
+}
+
+void Mission::getMapConfigFile( const char *filename, const char *out ) {
+  char s[200];
+	strncpy( s, filename, 200 );
+  char *p = strrchr( s, '.' );
+  if( p && 
+      strlen( p ) >= 4 && 
+      !strncmp( p, ".map", 4 ) ) {
+    strcpy( p, ".cfg" );
+  } else {
+    strcat( s, ".cfg" );
+  }
+	strcpy( (char*)out, s );
 }
 
 FILE *Mission::openMapDataFile( const char *filename, const char *mode ) {
