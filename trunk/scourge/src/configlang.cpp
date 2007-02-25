@@ -180,21 +180,21 @@ ConfigLang::~ConfigLang() {
 	delete document;
 }
 
-void ConfigLang::debug( ConfigNode *node, string indent ) {
-	cerr << indent << "[" << node->getName() << "]" << endl;
+void ConfigLang::debug( ConfigNode *node, string indent, ostream &out ) {
+	out << indent << "[" << node->getName() << "]" << endl;
 	string s = indent + "  ";
 	for( map<string, ConfigValue*>::iterator i = node->getValues()->begin(); 
 			 i != node->getValues()->end(); ++i ) {
 		string name = i->first;
 		ConfigValue *value = i->second;
-		cerr << s << name << "=" << value->getOriginal() << endl;
+		out << s << name << "=" << value->getOriginal() << endl;
 	}
 	for( vector<ConfigNode*>::iterator i = node->getChildren()->begin(); 
 			 i != node->getChildren()->end(); ++i ) {
 		ConfigNode *n = *i;
-		debug( n, s );
+		debug( n, s, out );
 	}
-	cerr << indent << "[/" << node->getName() << "]" << endl;
+	out << indent << "[/" << node->getName() << "]" << endl;
 }
 
 void ConfigLang::parse( char *config ) {
@@ -309,6 +309,10 @@ string ConfigLang::cleanText( char *p, int n ) {
 	//return string( p + start, end - start );
 }
 
+ConfigLang *ConfigLang::fromString( char *str ) {
+	return new ConfigLang( str );
+}
+
 ConfigLang *ConfigLang::load( char *file, bool absolutePath ) {
 	string rootDirString;
 	if( absolutePath ) rootDirString = "";
@@ -325,7 +329,7 @@ ConfigLang *ConfigLang::load( char *file, bool absolutePath ) {
 	std::stringstream ss;
 	ss << in.rdbuf();
 	Uint32 now = SDL_GetTicks();
-	ConfigLang *config = new ConfigLang( (char*)( ss.str().c_str() ) );
+	ConfigLang *config = fromString( (char*)( ss.str().c_str() ) );
 	cerr << "Parsed " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
 	in.close();
 	return config;
@@ -333,4 +337,23 @@ ConfigLang *ConfigLang::load( char *file, bool absolutePath ) {
 
 void ConfigLang::setUpdate( char *message, int n, int total ) {
 	Session::instance->getGameAdapter()->setUpdate( message, n, total );
+}
+
+void ConfigLang::save( char *file, bool absolutePath ) {
+	string rootDirString;
+	if( absolutePath ) rootDirString = "";
+	else {
+		rootDirString = rootDir;
+		rootDirString += "/";
+	}
+	ofstream out;
+	out.open( ( rootDirString + file ).c_str(), ios::out );
+	if( !out ) {
+		cerr << "Cannot open file: " << file << endl;
+	} else {
+		Uint32 now = SDL_GetTicks();
+		debug( getDocument(), "", out );
+		out.close();
+		cerr << "Saved " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
+	}
 }
