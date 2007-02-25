@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-22 21:48-0800\n"
+"POT-Creation-Date: 2007-02-24 22:22-0800\n"
 "PO-Revision-Date: 2007-02-04 11:18+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -5036,26 +5036,10 @@ msgstr ""
 msgid "Irin the Healer"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:115 ../scourge_data/maps/library.cfg:36
-#: ../scourge_data/maps/library3.cfg:59 ../scourge_data/maps/library31.cfg:90
-#: ../scourge_data/maps/thuzgol.cfg:142 ../scourge_data/maps/tower.cfg:44
-#: ../scourge_data/maps/tower1.cfg:4 ../scourge_data/maps/temple.cfg:100
-#: ../scourge_data/maps/emeril2.cfg:11
-msgid "_INTRO_"
-msgstr ""
-
 #: ../scourge_data/maps/hq.cfg:116
 msgid ""
 "I am $Melathor. Would you like to $trade items, $train magics or hear $news "
 "of the world? ...Or would you care to sample my $potions?"
-msgstr ""
-
-#: ../scourge_data/maps/hq.cfg:117 ../scourge_data/maps/library.cfg:39
-#: ../scourge_data/maps/library3.cfg:61 ../scourge_data/maps/library31.cfg:93
-#: ../scourge_data/maps/thuzgol.cfg:144 ../scourge_data/maps/tower.cfg:46
-#: ../scourge_data/maps/tower1.cfg:6 ../scourge_data/maps/temple.cfg:102
-#: ../scourge_data/maps/emeril2.cfg:13
-msgid "_UNKNOWN_"
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:118

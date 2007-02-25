@@ -33,6 +33,7 @@ class Item;
 class Session;
 class Board;
 class GameAdapter;
+class ConfigLang;
 
 /**
   *@author Gabor Torok
@@ -209,6 +210,17 @@ private:
 	//static void addWanderingHeroes( GameAdapter *adapter );
   static void loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly=false );
   static FILE *openMapDataFile( const char *filename, const char *mode );
+	static void getMapConfigFile( const char *filename, const char *out );
+	static void initConversations( ConfigLang *config, GameAdapter *adapter, bool generalOnly );
+	static void initNpcs( ConfigLang *config, GameAdapter *adapter );
+	static void setGeneralConversationLine( std::string keyphrase, std::string answer );
+	static void setConversationLine( std::string npc, std::string keyphrase, std::string answer );
+	static void storeConversationLine( std::string keyphrase, 
+																		 std::string answer,
+																		 std::vector<std::string> *intros,
+																		 std::vector<std::string> *unknownPhrases,
+																		 std::map<std::string, int> *conversations,
+																		 std::vector<std::string> *answers );
   static NpcInfo *getNpcInfo( int x, int y );
   static std::string getNpcInfoKey( int x, int y );
   
