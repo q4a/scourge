@@ -809,7 +809,7 @@ void Mission::initConversations( ConfigLang *config, GameAdapter *adapter, bool 
 	char *currentNpc;
 	vector<ConfigNode*> *v = config->getDocument()->
 		getChildrenByName( "conversation" );
-	for( unsigned int i = 0; i < v->size(); i++ ) {
+	for( unsigned int i = 0; v && i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
 		char *name = (char*)node->getValueAsString( "name" );
@@ -955,7 +955,7 @@ void Mission::initNpcs( ConfigLang *config, GameAdapter *adapter ) {
 
 	vector<ConfigNode*> *v = config->getDocument()->
 		getChildrenByName( "npc" );
-	for( unsigned int i = 0; i < v->size(); i++ ) {
+	for( unsigned int i = 0; v && i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
 		strcpy( line, node->getValueAsString( "position" ) );
@@ -1008,127 +1008,12 @@ void Mission::initNpcs( ConfigLang *config, GameAdapter *adapter ) {
 }
 
 void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly ) {
-
 	char tmp[300];
 	getMapConfigFile( filename, tmp );
-
 	ConfigLang *config = ConfigLang::load( tmp, true );
 	initConversations( config, adapter, generalOnly );
 	if( !generalOnly ) initNpcs( config, adapter );
 	delete config;
-
-	//cerr << "Current creatures:" << endl;
-	//for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
-		//cerr << "\t" << adapter->getSession()->getCreature(i)->getName() << endl;
-	//}
-
-	/*
-  FILE *fp = openMapDataFile( filename, "r" );
-  if( !fp ) return;
-
-  char line[1000];
-  int x, y, level;
-  char npcName[255], npcType[255], npcSubType[1000];
-  //Monster *currentNpc = NULL;
-	char *currentNpc = NULL;
-  int n = fgetc(fp);
-  while(n != EOF) {
-    if(n == 'G') {
-      fgetc(fp);
-      n = Constants::readLine(line, fp);
-      n = readConversationLine( fp, line, n, 
-                                &Mission::intros, 
-                                &Mission::unknownPhrases,
-                                &Mission::conversations,
-                                &Mission::answers );
-    } else if( !generalOnly ) {
-      if( n == 'P' ) {
-        fgetc(fp);
-        n = Constants::readLine(line, fp);
-        Monster *m = Monster::getMonsterByName( line );
-				if( m ) {
-					currentNpc = m->getType();
-				} else {
-					Creature *c = adapter->getSession()->getCreatureByName( line );
-					if( c ) currentNpc = c->getName();
-					else {
-						cerr << "*** Error: can't find creature named: " << line << endl;
-					}
-				}
-      } else if( n == 'V' && currentNpc ) {    
-        fgetc(fp);
-        n = Constants::readLine(line, fp);
-        NpcConversation *npcConv;
-        if( Mission::npcConversations.find( currentNpc ) == Mission::npcConversations.end() ) {
-          npcConv = new NpcConversation();
-          Mission::npcConversations[ currentNpc ] = npcConv;
-        } else {
-          npcConv = Mission::npcConversations[ currentNpc ];
-        }
-  
-        n = readConversationLine( fp, line, n, 
-                                  &npcConv->npc_intros, 
-                                  &npcConv->npc_unknownPhrases,
-                                  &npcConv->npc_conversations,
-                                  &npcConv->npc_answers );
-      } else if( n == 'N' ) { 
-        fgetc( fp );
-        n = Constants::readLine(line, fp);
-  
-        x = atoi( strtok( line, "," ) );
-        y = atoi( strtok( NULL, "," ) );
-        strcpy( npcName, strtok( NULL, "," ) );
-        level = atoi( strtok( NULL, "," ) );
-        strcpy( npcType, strtok( NULL, "," ) );
-        char *p = strtok( NULL, "," );
-        strcpy( npcSubType, ( p ? p : "" ) );
-  
-        // store npc info
-        string key = getNpcInfoKey( x,y );
-        NpcInfo *npcInfo = 
-          new NpcInfo( x, y, 
-                       strdup( npcName ), 
-                       level, 
-                       strdup( npcType ), 
-                       ( strlen( npcSubType ) ? 
-                         strdup( npcSubType ) : 
-                         NULL ) );
-        npcInfos[ key ] = npcInfo;
-  
-        // Assign to creature
-        Location *pos = adapter->getSession()->getMap()->getLocation( x, y, 0 );
-        if( !( pos && 
-               pos->creature && 
-               pos->creature->isMonster() && 
-               ((Creature*)(pos->creature))->getMonster()->isNpc() ) ) {
-
-					// the creature moved, try to find it by name
-					bool found = false;
-					for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
-						if( !strcmp( npcInfo->name, adapter->getSession()->getCreature(i)->getName() ) ) {
-							found = true;
-							adapter->getSession()->getCreature(i)->setNpcInfo( npcInfo );
-							break;
-						}
-					}
-					if( !found ) {
-						cerr << "Error: npc definition in " << filename << 
-							" doesn't point to an npc. Line: " << line << " npc=" << npcInfo->name << endl;
-					//} else {
-						//cerr << "* found npc by name: " << npcInfo->name << endl;
-					}
-        } else {
-          ((Creature*)(pos->creature))->setNpcInfo( npcInfo );
-        }
-      } else {
-        n = Constants::readLine(line, fp);
-      }
-    } else {
-      n = Constants::readLine(line, fp);
-    }
-  }
-  fclose(fp);
-	*/
 }
 
 NpcInfo *Mission::getNpcInfo( int x, int y ) {
@@ -1157,34 +1042,10 @@ void Mission::getMapConfigFile( const char *filename, const char *out ) {
 	strcpy( (char*)out, s );
 }
 
-FILE *Mission::openMapDataFile( const char *filename, const char *mode ) {
-
-  // Create the text file name from the map file name.
-  char s[200];
-  strncpy( s, filename, 200 );
-  char *p = strrchr( s, '.' );
-  if( p && 
-      strlen( p ) >= 4 && 
-      !strncmp( p, ".map", 4 ) ) {
-    strcpy( p, ".txt" );
-  } else {
-    strcat( s, ".txt" );
-  }
-
-  // Open the file
-  cerr << "*** Opening: " << s << " in mode: " << mode << endl;
-  FILE *fp = fopen( s, mode );
-  if(!fp) {        
-    char errMessage[500];
-    sprintf( errMessage, "Unable to find the file: %s!", s );
-    cerr << errMessage << endl;
-    return NULL;
-  }
-  return fp;
-}
-
 void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
-  // find new npc-s
+  
+	// FIXME: probably better to look in the config file for this info.
+	// find new npc-s
   int total = 0;
   vector< Creature* > newNpcs;
   for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
@@ -1200,29 +1061,74 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
   }
 
   // append to txt file the new npc info
-  if( newNpcs.size() > 0 ) {
-    cerr << "Saving npcInfos: " << newNpcs.size() << " out of " << total << endl;
-    FILE *fp = openMapDataFile( filename, "a" );
-    if( !fp ) return;
+	
+	char path[300];
+	getMapConfigFile( filename, path );
+	ConfigLang *config = ConfigLang::load( path, true );
+	if( !config ) {
+		config = ConfigLang::fromString( strdup( "[map]\n[/map]\n" ) );
+	}
+	
+	// Are there default conversation elements?
+	int maxKey = 0;
+	ConfigNode *general = NULL;
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "conversation" );
+	for( unsigned int i = 0; v && i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+		if( !strcmp( node->getValueAsString( "name" ), "general" ) ) {
+			general = node;
+			break;
+		}
+		for( map<std::string, ConfigValue*>::iterator e = node->getValues()->begin();
+				 e != node->getValues()->end(); ++e ) {
+			string key = e->first;
+			// ConfigValue *value = e->second;
+			if( key == "name" ) {
+			} else {
+				string k = getKeyValue( key );
+				int n = atoi( k.c_str() );
+				if( n > maxKey ) maxKey = n;
+			}
+		}
+	}
 
-    // Are there default conversation elements?
-    if( Mission::intros.size() == 0 ) 
-      fprintf( fp, "G:_INTRO_;Welcome weary adventurer!.\n" );
-    if( Mission::unknownPhrases.size() == 0 ) 
-      fprintf( fp, "G:_UNKNOWN_;Uh, I don't know anything about that...\n" );
+	char tmp[300];
+	if( !general ) {
+		general = new ConfigNode( config, "conversation" );
+		general->addValue( "name", new ConfigValue( strdup( "\"general\"" ) ) );
+		maxKey++;
+		sprintf( tmp, "keyphrase.%d", ( maxKey ) );
+		general->addValue( tmp, new ConfigValue( strdup( "\"_INTRO_\"" ) ) );
+		sprintf( tmp, "answer.%d", ( maxKey ) );
+		general->addValue( tmp, new ConfigValue( strdup( "_( \"Welcome weary adventurer!\" )" ) ) );
+		maxKey++;
+		sprintf( tmp, "keyphrase.%d", ( maxKey ) );
+		general->addValue( tmp, new ConfigValue( strdup( "\"_UNKNOWN_\"" ) ) );
+		sprintf( tmp, "answer.%d", ( maxKey ) );
+		general->addValue( tmp, new ConfigValue( strdup( "_( \"Uh, I don't know anything about that...\" )" ) ) );
+		config->getDocument()->addChild( general );
+	}
 
-    fprintf( fp, "# Unknown npc-s found:\n" );
-    fprintf( fp, "# Key:\n" );
-    fprintf( fp, "#   N:x,y,name,level,type[,subtype]\n\n" );
-    for( int i = 0; i < (int)newNpcs.size(); i++ ) {
-      Creature *creature = newNpcs[ i ];
-      fprintf( fp, "N:%d,%d,%s,1,commoner\n", 
-               toint( creature->getX() ), 
-               toint( creature->getY() ), 
-               creature->getMonster()->getType() );
-    }
-    fclose( fp );
-  }
+	for( int i = 0; i < (int)newNpcs.size(); i++ ) {
+		Creature *creature = newNpcs[ i ];
+
+		ConfigNode *node = new ConfigNode( config, "npc" );
+		sprintf( tmp, "\"%s\"", creature->getMonster()->getType() );
+		node->addValue( "name", new ConfigValue( strdup( tmp ) ) );
+		sprintf( tmp, "_( \"%s\" )", creature->getMonster()->getType() );
+		node->addValue( "display_name", new ConfigValue( strdup( tmp ) ) );
+		sprintf( tmp, "\"%d,%d\"", toint( creature->getX() ),  toint( creature->getY() ) );
+		node->addValue( "position", new ConfigValue( strdup( tmp ) ) );
+		node->addValue( "type", new ConfigValue( strdup( "\"commoner\"" ) ) );
+		node->addValue( "level", new ConfigValue( strdup( "1" ) ) );
+		config->getDocument()->addChild( node );
+	}
+	
+	// save out to the file again
+	config->save( path, true );
+
+	delete config;
 }
 
 MissionInfo *Mission::save() {

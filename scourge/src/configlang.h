@@ -138,14 +138,16 @@ private:
 
 public:
 	~ConfigLang();
-	void debug( ConfigNode *node, std::string indent="" );
-	inline void debug() { debug( document ); }
+	void debug( ConfigNode *node, std::string indent, std::ostream &out );
+	inline void debug() { debug( document, "", std::cerr ); }
   inline ConfigNode *getDocument() { return document; }
   inline std::map<std::string, ConfigNode*> *getIdMap() { return &idmap; }
 
 	void setUpdate( char *message, int n=-1, int total=-1 );
 
 	static ConfigLang *load( char *file, bool absolutePath=false );
+	static ConfigLang *fromString( char *str );
+	void save( char *file, bool absolutePath=false );
 };
 
 #endif
