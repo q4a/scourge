@@ -583,6 +583,7 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
           scourge->getMap()->setItem( xx, yy + 1, editorZ, item );
         } else if( creature ) {
           scourge->getMap()->setCreature( xx, yy + 1, editorZ, creature );
+					creature->moveTo( xx, yy + 1, editorZ );
         } else if( shape ) {
 					cerr << "editorZ=" << editorZ << endl;
           scourge->getMap()->setPosition( xx, yy + 1, editorZ, shape );
