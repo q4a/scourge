@@ -1043,25 +1043,7 @@ void Mission::getMapConfigFile( const char *filename, const char *out ) {
 }
 
 void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
-  
-	// FIXME: probably better to look in the config file for this info.
-	// find new npc-s
-  int total = 0;
-  vector< Creature* > newNpcs;
-  for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
-    Creature *creature = adapter->getSession()->getCreature( i );
-    if( creature->getMonster() && 
-				creature->getMonster()->isNpc() ) {
-      total++;
-      if( toint( creature->getX() ) && toint( creature->getY() ) &&
-          !getNpcInfo( toint( creature->getX() ), toint( creature->getY() ) ) ) {
-        newNpcs.push_back( creature );
-      }
-    }
-  }
-
   // append to txt file the new npc info
-	
 	char path[300];
 	getMapConfigFile( filename, path );
 	ConfigLang *config = ConfigLang::load( path, true );
@@ -1110,19 +1092,36 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
 		config->getDocument()->addChild( general );
 	}
 
-	for( int i = 0; i < (int)newNpcs.size(); i++ ) {
-		Creature *creature = newNpcs[ i ];
-
-		ConfigNode *node = new ConfigNode( config, "npc" );
-		sprintf( tmp, "\"%s\"", creature->getMonster()->getType() );
-		node->addValue( "name", new ConfigValue( strdup( tmp ) ) );
-		sprintf( tmp, "_( \"%s\" )", creature->getMonster()->getType() );
-		node->addValue( "display_name", new ConfigValue( strdup( tmp ) ) );
-		sprintf( tmp, "\"%d,%d\"", toint( creature->getX() ),  toint( creature->getY() ) );
-		node->addValue( "position", new ConfigValue( strdup( tmp ) ) );
-		node->addValue( "type", new ConfigValue( strdup( "\"commoner\"" ) ) );
-		node->addValue( "level", new ConfigValue( strdup( "1" ) ) );
-		config->getDocument()->addChild( node );
+	// find new npc-s
+  for( int i = 0; i < adapter->getSession()->getCreatureCount(); i++ ) {
+    Creature *creature = adapter->getSession()->getCreature( i );
+    if( creature->getMonster() && 
+				creature->getMonster()->isNpc() ) {
+			sprintf( tmp, "%d,%d", toint( creature->getX() ),  toint( creature->getY() ) );
+			string position = tmp;
+			bool foundNpc = false;
+			vector<ConfigNode*> *v = config->getDocument()->
+				getChildrenByName( "npc" );
+			for( unsigned int i = 0; v && i < v->size(); i++ ) {
+				ConfigNode *node = (*v)[i];
+				if( node->getValueAsString( "position" ) == position ) {
+					foundNpc = true;
+					break;
+				}
+			}
+			if( !foundNpc ) {
+				ConfigNode *node = new ConfigNode( config, "npc" );
+				sprintf( tmp, "\"%s\"", creature->getMonster()->getType() );
+				node->addValue( "name", new ConfigValue( strdup( tmp ) ) );
+				sprintf( tmp, "_( \"%s\" )", creature->getMonster()->getType() );
+				node->addValue( "display_name", new ConfigValue( strdup( tmp ) ) );
+				sprintf( tmp, "\"%d,%d\"", toint( creature->getX() ),  toint( creature->getY() ) );
+				node->addValue( "position", new ConfigValue( strdup( tmp ) ) );
+				node->addValue( "type", new ConfigValue( strdup( "\"commoner\"" ) ) );
+				node->addValue( "level", new ConfigValue( strdup( "1" ) ) );
+				config->getDocument()->addChild( node );
+			}
+		}
 	}
 	
 	// save out to the file again
