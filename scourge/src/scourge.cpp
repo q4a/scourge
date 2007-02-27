@@ -2075,7 +2075,7 @@ void Scourge::showMessageDialog(char *message) {
   Window::showMessageDialog(getSDLHandler(),
 							getSDLHandler()->getScreen()->w / 2 - 200,
 							getSDLHandler()->getScreen()->h / 2 - 55,
-							400, 110, Constants::messages[Constants::SCOURGE_DIALOG][0],
+							400, 110, _( Constants::messages[Constants::SCOURGE_DIALOG][0] ),
 							getSession()->getShapePalette()->getGuiTexture(),
 							message);
 }
@@ -3445,8 +3445,8 @@ void Scourge::mouseClickWhileExiting() {
     exitConfirmationDialog->setVisible(true);
   } else if( changingStory && !exitConfirmationDialog->isVisible() ) {
 		exitLabel->setText( oldStory < currentStory ? 
-												Constants::messages[Constants::USE_GATE_LABEL][0] :
-												Constants::messages[Constants::USE_GATE_LABEL][1] );
+												_( Constants::messages[Constants::USE_GATE_LABEL][0] ) :
+												_( Constants::messages[Constants::USE_GATE_LABEL][1] ) );
     party->toggleRound(true);
     exitConfirmationDialog->setVisible(true);
   }

@@ -812,7 +812,7 @@ void Item::describeMagic(char *s, char *itemName) {
 	// Lesser, Greater, etc.
 	if( magicLevel > -1 ) {
 		if( isIdentified() ) {
-			strcat( s, Constants::MAGIC_ITEM_NAMES[ magicLevel ] );
+			strcat( s, _( Constants::MAGIC_ITEM_NAMES[ magicLevel ] ) );
 	
 			// Protective if stateMods are changed
 			if( stateModSet ) {
@@ -853,7 +853,7 @@ void Item::describeMagic(char *s, char *itemName) {
 			} else if( stateModSet ) {
 				for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
 					if( stateMod[ i ] > 0 ) {
-						sprintf( tmp, "%s ", Constants::STATE_SYMBOLS[ i ] );
+						sprintf( tmp, "%s ", _( Constants::STATE_SYMBOLS[ i ] ) );
 						strcat( s, tmp );
 						break;
 					}

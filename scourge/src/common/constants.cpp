@@ -19,23 +19,6 @@
 
 using namespace std;
 
-char Constants::inventory_location[][80] = {
-  "head",
-  "neck",
-  "back",
-  "chest",
-  "left hand",
-  "right hand",
-  "belt",
-  "legs",
-  "feet",
-  "ring1",
-  "ring2",
-  "ring3",
-  "ring4",
-  "ranged weapon"
-};
-
 const char *Constants::localhost = "localhost";
 const char *Constants::adminUserName = "admin";
 
@@ -95,80 +78,86 @@ int get_file_name( char *buff, int len, char *fileName ) {
 
 //sprintf(s, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
 char *Constants::messages[][80] = {
-  {
-	"Infamy awaits in the dungeons of Scourge!",
-	"Another day, another sewer! Welcome to Scourge!",
-	"Happy hunting; welcome to Scourge!" },
-  { "That item is out of your reach",
-	"You can't touch that",
-	"You have to be closer to get that",
-	"You are too far to reach it" },
-  { "The door is blocked",
-	"Something is blocking that door",
-	"You can't use that door; something is in the way" },
-  { "You are now in single-step mode" },
-  { "You are now in group mode" },
-  { "Paused: you have entered turn-based mode" },
-  { "Un-paused: you are in real-time mode" },
-  { "Close" },
-  { "Drop Item" },
-  { "Open Item" },
-  { "Drag items to/from the list, Right click for info" },
-  { "Play Mission" },
-  { "Do you really want to exit this mission?" },
-  { "Teleport back to base?" },
-  { "OK" },
-  { "Cancel" },
-  { "Yes" },
-  { "No" },
-  { "Select a character who is alive and has leveled up." },
-  { "No skill points available." },
-  { "Select a skill first." },
-  { "S.C.O.U.R.G.E. dialog" },
-  { "Use gate to descend a level?", "Use gate to ascend a level?" },
-  { "A dead character cannot perform this action." },
-  { "hp:" },
-  { "ac:" },
-  { "Your magic fizzles and dies.",
-	"Only the roaches are impressed by your mumbled words.",
-	"The silence is broken only by some crickets nearby.",
-	"Bazzoomm! A small cloud of smoke rises to the ceiling." },
-  { "Your character cannot equip that item." },
-  { "Fill out the server details, first." },
-  { "Unable to connect to server." },
-
-  { "You hear a very loud, metallic sound nearby.",
-    "Something clicks.",
-    "The loud twang doesn't help; this is freaky enough already."  },
-  { "A muffled, metalic, grating noise echoes from the dark.",
-    "You've done something... you're not sure what but you hope it's had dinner." },
-  { "You feel the resonance of an almost sub-tonal bass note.",
-    "An omnious sound floats from a distant corner." },
-  { "Suck! It is locked shut!",
-    "Try as you might, you can't open it.",
-    "Perhaps it's locked." },
-  { "This teleporter is off-line.",
-    "Nothing happens.",
-    "The teleporter blinks unimpressively." },
-  { "Information" },
-  { "Delete old saved game?" },
-  { "You're not experienced enough to equip it yet." },
-  { "Change key" },
-  { "Waiting for new key (Esc to cancel)" },
-  { "Conversation" },
-  { "Trade" },
-  { "Train" },
-  { "Healing Services" },
-  { "Donate to Temple" },
-  { "You don't meet the prerequisites for this capability." },
-  { "You need cannot activate an automatic capability." },
-  { "A two handed item requires two free hands." },
-	{ "TRAIN" },
-	{ "SKILL" },
-	{ "A magical force turns the lock's tumbles to open.",
-		"Some kind of summoned energy opens the lock." },
-	{ "Killed by", "Annihilated by", "Slain by", "Brought low by", "Dropped by", 
-		"Ruined by", "Extinguished by", "Laid low by" }
+	{
+		N_("Infamy awaits in the dungeons of Scourge!"),
+		N_("Another day, another sewer! Welcome to Scourge!"),
+		N_("Happy hunting; welcome to Scourge!")},
+	{ N_("That item is out of your reach"),
+		N_("You can't touch that"),
+		N_("You have to be closer to get that"),
+		N_("You are too far to reach it")},
+	{ N_("The door is blocked"),
+		N_("Something is blocking that door"),
+		N_("You can't use that door; something is in the way")},
+	{ N_("You are now in single-step mode")},
+	{ N_("You are now in group mode")},
+	{ N_("Paused: you have entered turn-based mode")},
+	{ N_("Un-paused: you are in real-time mode")},
+	{ N_("Close")},
+	{ N_("Drop Item")},
+	{ N_("Open Item")},
+	{ N_("Drag items to/from the list, Right click for info")},
+	{ N_("Play Mission")},
+	{ N_("Do you really want to exit this mission?")},
+	{ N_("Teleport back to base?")},
+	{ N_("OK")},
+	{ N_("Cancel")},
+	{ N_("Yes")},
+	{ N_("No")},
+	{ N_("Select a character who is alive and has leveled up.")},
+	{ N_("No skill points available.")},
+	{ N_("Select a skill first.")},
+	{ N_("S.C.O.U.R.G.E. dialog")},
+	{ N_("Use gate to descend a level?" ), 
+		N_( "Use gate to ascend a level?")},
+	{ N_("A dead character cannot perform this action.")},
+	{ N_("hp:")},
+	{ N_("ac:")},
+	{ N_("Your magic fizzles and dies."),
+		N_("Only the roaches are impressed by your mumbled words."),
+		N_("The silence is broken only by some crickets nearby."),
+		N_("Bazzoomm! A small cloud of smoke rises to the ceiling.")},
+	{ N_("Your character cannot equip that item.")},
+	{ N_("Fill out the server details, first.")},
+	{ N_("Unable to connect to server.")},
+	{ N_("You hear a very loud, metallic sound nearby."),
+		N_("Something clicks."),
+		N_("The loud twang doesn't help; this is freaky enough already.")},
+	{ N_("A muffled, metalic, grating noise echoes from the dark."),
+		N_("You've done something... you're not sure what but you hope it's had dinner.")},
+	{ N_("You feel the resonance of an almost sub-tonal bass note."),
+		N_("An omnious sound floats from a distant corner.")},
+	{ N_("Suck! It is locked shut!"),
+		N_("Try as you might, you can't open it."),
+		N_("Perhaps it's locked.")},
+	{ N_("This teleporter is off-line."),
+		N_("Nothing happens."),
+		N_("The teleporter blinks unimpressively.")},
+	{ N_("Information")},
+	{ N_("Delete old saved game?")},
+	{ N_("You're not experienced enough to equip it yet.")},
+	{ N_("Change key")},
+	{ N_("Waiting for new key (Esc to cancel)")},
+	{ N_("Conversation")},
+	{ N_("Trade")},
+	{ N_("Train")},
+	{ N_("Healing Services")},
+	{ N_("Donate to Temple")},
+	{ N_("You don't meet the prerequisites for this capability.")},
+	{ N_("You need cannot activate an automatic capability.")},
+	{ N_("A two handed item requires two free hands.")},
+	{ N_("TRAIN")},
+	{ N_("SKILL")},
+	{ N_("A magical force turns the lock's tumbles to open."),
+		N_("Some kind of summoned energy opens the lock.")},
+	{ N_("Killed by" ), 
+		N_("Annihilated by"), 
+		N_("Slain by"), 
+		N_("Brought low by"), 
+		N_("Dropped by"), 
+		N_("Ruined by"), 
+		N_("Extinguished by"), 
+		N_("Laid low by")}
 };
 
 int Constants::messageCount[] = {
@@ -182,25 +171,55 @@ PFNGLMULTITEXCOORD2FARBPROC glSDLMultiTexCoord2fARB = NULL;
 PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB = NULL;
 
 const char *Constants::POTION_SKILL_NAMES[] = {
-  "HP", "MP", "AC"
+  "HP", 
+	"MP", 
+	"AC"
 };
 
+// FIXME: these need display names
 const char *Constants::STATE_NAMES[] = {
-  "blessed", "empowered", "enraged", "ac_protected", "magic_protected",
-  "drunk", "poisoned", "cursed", "possessed", "blinded", "paralysed", "invisible",
-  "overloaded", "dead", "asleep"
+  "blessed", 
+	"empowered", 
+	"enraged", 
+	"ac_protected", 
+	"magic_protected",
+  "drunk", 
+	"poisoned", 
+	"cursed", 
+	"possessed", 
+	"blinded", 
+	"paralysed", 
+	"invisible",
+  "overloaded", 
+	"dead", 
+	"asleep"
 };
 const char *Constants::STATE_SYMBOLS[] = {
-  "Air", "Earth", "Fire", "Stone", "Water",
-  "Jelly", "Ice", "Planar", "Astral", "Dire", "Cave", "Acid",
-  "Spirit", "Mist", "Quiet"
+  N_("Air"), 
+	N_("Earth"), 
+	N_("Fire"), 
+	N_("Stone"), 
+	N_("Water"),
+  N_("Jelly"), 
+	N_("Ice"), 
+	N_("Planar"), 
+	N_("Astral"), 
+	N_("Dire"), 
+	N_("Cave"), 
+	N_("Acid"),
+  N_("Spirit"), 
+	N_("Mist"), 
+	N_("Quiet")
 };
 
 vector<int> Constants::goodStateMod;
 vector<int> Constants::badStateMod;
 
 const char *Constants::MAGIC_ITEM_NAMES[] = {
-  "Lesser", "Greater", "Champion", "Divine"
+  N_("Lesser"), 
+	N_("Greater"), 
+	N_("Champion"), 
+	N_("Divine")
 };
 
 const Color *Constants::MAGIC_ITEM_COLOR[] = {
@@ -218,8 +237,13 @@ const char *Constants::EFFECT_NAMES[] = {
   "EFFECT_HAIL", "EFFECT_TOWER", "EFFECT_BLAST"
 };
 
+// FIXME: these need display names
 const char *Constants::npcTypeName[] = {
-  "commoner", "merchant", "healer", "sage", "trainer"
+  "commoner", 
+	"merchant", 
+	"healer", 
+	"sage", 
+	"trainer"
 };
 
 /*
@@ -247,7 +271,7 @@ Constants::~Constants(){
 
 char *Constants::getMessage(int index) {
   int n = (int)((float)messageCount[index] * rand() / RAND_MAX);
-  return messages[index][n];
+  return _( messages[index][n] );
 }
 
 // return -1 on failure, or (-2 - i) on success
