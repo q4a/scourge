@@ -894,6 +894,18 @@ void Mission::initConversations( ConfigLang *config, GameAdapter *adapter, bool 
 	}
 
 	// cleanup
+	for( map<string,map<string,vector<string>*>*>::iterator e = answers.begin();
+			 e != answers.end(); ++e ) {
+		//string phase = e->first;
+		map<string,vector<string>*>* m = e->second;
+		for( map<string,vector<string>*>::iterator e2 = m->begin();
+				 e2 != m->end(); ++e2 ) {
+			//string key = e2->first;
+			vector<string> *v = e2->second;
+			free( v );
+		}
+		free( m );
+	}
 }
 
 void Mission::setGeneralConversationLine( string keyphrase, string answer ) {
@@ -1048,7 +1060,7 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
 	getMapConfigFile( filename, path );
 	ConfigLang *config = ConfigLang::load( path, true );
 	if( !config ) {
-		config = ConfigLang::fromString( strdup( "[map]\n[/map]\n" ) );
+		config = ConfigLang::fromString( "[map]\n[/map]\n" );
 	}
 	
 	// Are there default conversation elements?
@@ -1078,17 +1090,17 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
 	char tmp[300];
 	if( !general ) {
 		general = new ConfigNode( config, "conversation" );
-		general->addValue( "name", new ConfigValue( strdup( "\"general\"" ) ) );
+		general->addValue( "name", new ConfigValue( "\"general\"" ) );
 		maxKey++;
 		sprintf( tmp, "keyphrase.%d", ( maxKey ) );
-		general->addValue( tmp, new ConfigValue( strdup( "\"_INTRO_\"" ) ) );
+		general->addValue( tmp, new ConfigValue( "\"_INTRO_\"" ) );
 		sprintf( tmp, "answer.%d", ( maxKey ) );
-		general->addValue( tmp, new ConfigValue( strdup( "_( \"Welcome weary adventurer!\" )" ) ) );
+		general->addValue( tmp, new ConfigValue( "_( \"Welcome weary adventurer!\" )" ) );
 		maxKey++;
 		sprintf( tmp, "keyphrase.%d", ( maxKey ) );
-		general->addValue( tmp, new ConfigValue( strdup( "\"_UNKNOWN_\"" ) ) );
+		general->addValue( tmp, new ConfigValue( "\"_UNKNOWN_\"" ) );
 		sprintf( tmp, "answer.%d", ( maxKey ) );
-		general->addValue( tmp, new ConfigValue( strdup( "_( \"Uh, I don't know anything about that...\" )" ) ) );
+		general->addValue( tmp, new ConfigValue( "_( \"Uh, I don't know anything about that...\" )" ) );
 		config->getDocument()->addChild( general );
 	}
 
@@ -1102,8 +1114,8 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
 			bool foundNpc = false;
 			vector<ConfigNode*> *v = config->getDocument()->
 				getChildrenByName( "npc" );
-			for( unsigned int i = 0; v && i < v->size(); i++ ) {
-				ConfigNode *node = (*v)[i];
+			for( unsigned int t = 0; v && t < v->size(); t++ ) {
+				ConfigNode *node = (*v)[t];
 				if( node->getValueAsString( "position" ) == position ) {
 					foundNpc = true;
 					break;
@@ -1112,17 +1124,20 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
 			if( !foundNpc ) {
 				ConfigNode *node = new ConfigNode( config, "npc" );
 				sprintf( tmp, "\"%s\"", creature->getMonster()->getType() );
-				node->addValue( "name", new ConfigValue( strdup( tmp ) ) );
+				node->addValue( "name", new ConfigValue( tmp ) );
 				sprintf( tmp, "_( \"%s\" )", creature->getMonster()->getType() );
-				node->addValue( "display_name", new ConfigValue( strdup( tmp ) ) );
+				node->addValue( "display_name", new ConfigValue( tmp ) );
 				sprintf( tmp, "\"%d,%d\"", toint( creature->getX() ),  toint( creature->getY() ) );
-				node->addValue( "position", new ConfigValue( strdup( tmp ) ) );
-				node->addValue( "type", new ConfigValue( strdup( "\"commoner\"" ) ) );
-				node->addValue( "level", new ConfigValue( strdup( "1" ) ) );
+				node->addValue( "position", new ConfigValue( tmp ) );
+				node->addValue( "type", new ConfigValue( "\"commoner\"" ) );
+				node->addValue( "level", new ConfigValue( "1" ) );
 				config->getDocument()->addChild( node );
 			}
 		}
 	}
+
+	// FIXME: should also delete unused references to npcs (ie. ones removed
+	// from the map). But that is not simple to do...
 	
 	// save out to the file again
 	config->save( path, true );

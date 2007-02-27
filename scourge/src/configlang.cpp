@@ -31,7 +31,8 @@ ConfigValue::ConfigValue( ConfigValue *value ) {
   this->type = value->type;
 }
 
-ConfigValue::ConfigValue( char *value ) {
+ConfigValue::ConfigValue( char *pValue ) {
+	char *value = strdup( pValue );
 	original = value;
 	translatable = false;
 	translateStr = "";
@@ -57,6 +58,7 @@ ConfigValue::ConfigValue( char *value ) {
 		valueNum = atof( value );
 		type = NUMBER_TYPE;
 	}
+	free( value );
 }
 
 ConfigValue::~ConfigValue() {
