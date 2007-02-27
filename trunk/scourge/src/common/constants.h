@@ -296,7 +296,6 @@ public:
   static const int INVENTORY_WEAPON_RANGED = 8192;
   static const int INVENTORY_GLOVE = 16382;
   static const int INVENTORY_COUNT = 15;
-  static char inventory_location[][80];
 
   static const int MAP_GRID_TILE_WIDTH = 6;
   static const int MAP_GRID_TILE_HEIGHT = 5;

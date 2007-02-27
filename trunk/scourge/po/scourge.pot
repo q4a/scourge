@@ -8,13 +8,470 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-24 22:22-0800\n"
+"POT-Creation-Date: 2007-02-26 21:55-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: src/common/constants.cpp:82
+msgid "Infamy awaits in the dungeons of Scourge!"
+msgstr ""
+
+#: src/common/constants.cpp:83
+msgid "Another day, another sewer! Welcome to Scourge!"
+msgstr ""
+
+#: src/common/constants.cpp:84
+msgid "Happy hunting; welcome to Scourge!"
+msgstr ""
+
+#: src/common/constants.cpp:85
+msgid "That item is out of your reach"
+msgstr ""
+
+#: src/common/constants.cpp:86
+msgid "You can't touch that"
+msgstr ""
+
+#: src/common/constants.cpp:87
+msgid "You have to be closer to get that"
+msgstr ""
+
+#: src/common/constants.cpp:88
+msgid "You are too far to reach it"
+msgstr ""
+
+#: src/common/constants.cpp:89
+msgid "The door is blocked"
+msgstr ""
+
+#: src/common/constants.cpp:90
+msgid "Something is blocking that door"
+msgstr ""
+
+#: src/common/constants.cpp:91
+msgid "You can't use that door; something is in the way"
+msgstr ""
+
+#: src/common/constants.cpp:92
+msgid "You are now in single-step mode"
+msgstr ""
+
+#: src/common/constants.cpp:93
+msgid "You are now in group mode"
+msgstr ""
+
+#: src/common/constants.cpp:94
+msgid "Paused: you have entered turn-based mode"
+msgstr ""
+
+#: src/common/constants.cpp:95
+msgid "Un-paused: you are in real-time mode"
+msgstr ""
+
+#: src/common/constants.cpp:96
+msgid "Close"
+msgstr ""
+
+#: src/common/constants.cpp:97
+msgid "Drop Item"
+msgstr ""
+
+#: src/common/constants.cpp:98
+msgid "Open Item"
+msgstr ""
+
+#: src/common/constants.cpp:99
+msgid "Drag items to/from the list, Right click for info"
+msgstr ""
+
+#: src/common/constants.cpp:100
+msgid "Play Mission"
+msgstr ""
+
+#: src/common/constants.cpp:101
+msgid "Do you really want to exit this mission?"
+msgstr ""
+
+#: src/common/constants.cpp:102
+msgid "Teleport back to base?"
+msgstr ""
+
+#: src/common/constants.cpp:103
+msgid "OK"
+msgstr ""
+
+#: src/common/constants.cpp:104
+msgid "Cancel"
+msgstr ""
+
+#: src/common/constants.cpp:105
+msgid "Yes"
+msgstr ""
+
+#: src/common/constants.cpp:106
+msgid "No"
+msgstr ""
+
+#: src/common/constants.cpp:107
+msgid "Select a character who is alive and has leveled up."
+msgstr ""
+
+#: src/common/constants.cpp:108
+msgid "No skill points available."
+msgstr ""
+
+#: src/common/constants.cpp:109
+msgid "Select a skill first."
+msgstr ""
+
+#: src/common/constants.cpp:110
+msgid "S.C.O.U.R.G.E. dialog"
+msgstr ""
+
+#: src/common/constants.cpp:111
+msgid "Use gate to descend a level?"
+msgstr ""
+
+#: src/common/constants.cpp:112
+msgid "Use gate to ascend a level?"
+msgstr ""
+
+#: src/common/constants.cpp:113
+msgid "A dead character cannot perform this action."
+msgstr ""
+
+#: src/common/constants.cpp:114
+msgid "hp:"
+msgstr ""
+
+#: src/common/constants.cpp:115
+msgid "ac:"
+msgstr ""
+
+#: src/common/constants.cpp:116
+msgid "Your magic fizzles and dies."
+msgstr ""
+
+#: src/common/constants.cpp:117
+msgid "Only the roaches are impressed by your mumbled words."
+msgstr ""
+
+#: src/common/constants.cpp:118
+msgid "The silence is broken only by some crickets nearby."
+msgstr ""
+
+#: src/common/constants.cpp:119
+msgid "Bazzoomm! A small cloud of smoke rises to the ceiling."
+msgstr ""
+
+#: src/common/constants.cpp:120
+msgid "Your character cannot equip that item."
+msgstr ""
+
+#: src/common/constants.cpp:121
+msgid "Fill out the server details, first."
+msgstr ""
+
+#: src/common/constants.cpp:122
+msgid "Unable to connect to server."
+msgstr ""
+
+#: src/common/constants.cpp:123
+msgid "You hear a very loud, metallic sound nearby."
+msgstr ""
+
+#: src/common/constants.cpp:124
+msgid "Something clicks."
+msgstr ""
+
+#: src/common/constants.cpp:125
+msgid "The loud twang doesn't help; this is freaky enough already."
+msgstr ""
+
+#: src/common/constants.cpp:126
+msgid "A muffled, metalic, grating noise echoes from the dark."
+msgstr ""
+
+#: src/common/constants.cpp:127
+msgid ""
+"You've done something... you're not sure what but you hope it's had dinner."
+msgstr ""
+
+#: src/common/constants.cpp:128
+msgid "You feel the resonance of an almost sub-tonal bass note."
+msgstr ""
+
+#: src/common/constants.cpp:129
+msgid "An omnious sound floats from a distant corner."
+msgstr ""
+
+#: src/common/constants.cpp:130
+msgid "Suck! It is locked shut!"
+msgstr ""
+
+#: src/common/constants.cpp:131
+msgid "Try as you might, you can't open it."
+msgstr ""
+
+#: src/common/constants.cpp:132
+msgid "Perhaps it's locked."
+msgstr ""
+
+#: src/common/constants.cpp:133
+msgid "This teleporter is off-line."
+msgstr ""
+
+#: src/common/constants.cpp:134
+msgid "Nothing happens."
+msgstr ""
+
+#: src/common/constants.cpp:135
+msgid "The teleporter blinks unimpressively."
+msgstr ""
+
+#: src/common/constants.cpp:136
+msgid "Information"
+msgstr ""
+
+#: src/common/constants.cpp:137
+msgid "Delete old saved game?"
+msgstr ""
+
+#: src/common/constants.cpp:138
+msgid "You're not experienced enough to equip it yet."
+msgstr ""
+
+#: src/common/constants.cpp:139
+msgid "Change key"
+msgstr ""
+
+#: src/common/constants.cpp:140
+msgid "Waiting for new key (Esc to cancel)"
+msgstr ""
+
+#: src/common/constants.cpp:141
+msgid "Conversation"
+msgstr ""
+
+#: src/common/constants.cpp:142
+msgid "Trade"
+msgstr ""
+
+#: src/common/constants.cpp:143
+msgid "Train"
+msgstr ""
+
+#: src/common/constants.cpp:144
+msgid "Healing Services"
+msgstr ""
+
+#: src/common/constants.cpp:145
+msgid "Donate to Temple"
+msgstr ""
+
+#: src/common/constants.cpp:146
+msgid "You don't meet the prerequisites for this capability."
+msgstr ""
+
+#: src/common/constants.cpp:147
+msgid "You need cannot activate an automatic capability."
+msgstr ""
+
+#: src/common/constants.cpp:148
+msgid "A two handed item requires two free hands."
+msgstr ""
+
+#: src/common/constants.cpp:149
+msgid "TRAIN"
+msgstr ""
+
+#: src/common/constants.cpp:150
+msgid "SKILL"
+msgstr ""
+
+#: src/common/constants.cpp:151
+msgid "A magical force turns the lock's tumbles to open."
+msgstr ""
+
+#: src/common/constants.cpp:152
+msgid "Some kind of summoned energy opens the lock."
+msgstr ""
+
+#: src/common/constants.cpp:153
+msgid "Killed by"
+msgstr ""
+
+#: src/common/constants.cpp:154
+msgid "Annihilated by"
+msgstr ""
+
+#: src/common/constants.cpp:155
+msgid "Slain by"
+msgstr ""
+
+#: src/common/constants.cpp:156
+msgid "Brought low by"
+msgstr ""
+
+#: src/common/constants.cpp:157
+msgid "Dropped by"
+msgstr ""
+
+#: src/common/constants.cpp:158
+msgid "Ruined by"
+msgstr ""
+
+#: src/common/constants.cpp:159
+msgid "Extinguished by"
+msgstr ""
+
+#: src/common/constants.cpp:160
+msgid "Laid low by"
+msgstr ""
+
+#: src/common/constants.cpp:198
+msgid "Air"
+msgstr ""
+
+#: src/common/constants.cpp:199
+msgid "Earth"
+msgstr ""
+
+#: src/common/constants.cpp:200
+msgid "Fire"
+msgstr ""
+
+#: src/common/constants.cpp:201
+msgid "Stone"
+msgstr ""
+
+#: src/common/constants.cpp:202
+msgid "Water"
+msgstr ""
+
+#: src/common/constants.cpp:203
+msgid "Jelly"
+msgstr ""
+
+#: src/common/constants.cpp:204
+msgid "Ice"
+msgstr ""
+
+#: src/common/constants.cpp:205
+msgid "Planar"
+msgstr ""
+
+#: src/common/constants.cpp:206
+msgid "Astral"
+msgstr ""
+
+#: src/common/constants.cpp:207
+msgid "Dire"
+msgstr ""
+
+#: src/common/constants.cpp:208
+msgid "Cave"
+msgstr ""
+
+#: src/common/constants.cpp:209
+msgid "Acid"
+msgstr ""
+
+#: src/common/constants.cpp:210
+msgid "Spirit"
+msgstr ""
+
+#: src/common/constants.cpp:211
+msgid "Mist"
+msgstr ""
+
+#: src/common/constants.cpp:212
+msgid "Quiet"
+msgstr ""
+
+#: src/common/constants.cpp:219
+msgid "Lesser"
+msgstr ""
+
+#: src/common/constants.cpp:220
+msgid "Greater"
+msgstr ""
+
+#: src/common/constants.cpp:221
+msgid "Champion"
+msgstr ""
+
+#: src/common/constants.cpp:222
+msgid "Divine"
+msgstr ""
+
+#: src/session.cpp:92
+msgid "Loading Shapes"
+msgstr ""
+
+#: src/session.cpp:96
+msgid "Loading Professions"
+msgstr ""
+
+#: src/session.cpp:100
+msgid "Loading Items"
+msgstr ""
+
+#: src/session.cpp:104
+msgid "Loading Spells"
+msgstr ""
+
+#: src/session.cpp:108
+msgid "Loading Characters"
+msgstr ""
+
+#: src/session.cpp:113
+msgid "Loading Creatures"
+msgstr ""
+
+#: src/session.cpp:116
+msgid "Loading Portraits"
+msgstr ""
+
+#: src/session.cpp:121
+msgid "Loading Missions"
+msgstr ""
+
+#: src/session.cpp:126
+msgid "Initializing Party"
+msgstr ""
+
+#: src/session.cpp:129
+msgid "Initializing Scripting"
+msgstr ""
+
+#: src/session.cpp:132
+msgid "Loading Skills"
+msgstr ""
+
+#: src/session.cpp:135
+msgid "Creating Map"
+msgstr ""
+
+#: src/session.cpp:138
+msgid "Initializing UI"
+msgstr ""
+
+#: src/scourge.cpp:141
+msgid "Dismiss Party Member"
+msgstr ""
+
+#: src/scourge.cpp:142
+msgid "Need permission to upload score to web"
+msgstr ""
+
+#: src/scourge.cpp:143
+msgid "Upload your score to the internet?"
+msgstr ""
 
 #: src/mainmenu.cpp:54
 msgid "New Game"
@@ -55,18 +512,6 @@ msgstr ""
 
 #: src/mainmenu.cpp:271
 msgid "[Sound]"
-msgstr ""
-
-#: src/scourge.cpp:141
-msgid "Dismiss Party Member"
-msgstr ""
-
-#: src/scourge.cpp:142
-msgid "Need permission to upload score to web"
-msgstr ""
-
-#: src/scourge.cpp:143
-msgid "Upload your score to the internet?"
 msgstr ""
 
 #: ../scourge_data/config/scourge.cfg:12
