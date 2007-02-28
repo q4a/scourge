@@ -194,6 +194,25 @@ const char *Constants::STATE_NAMES[] = {
 	"dead", 
 	"asleep"
 };
+
+const char *Constants::STATE_DISPLAY_NAMES[] = {
+  N_( "blessed" ), 
+	N_( "empowered" ), 
+	N_( "enraged" ), 
+	N_( "ac_protected" ), 
+	N_( "magic_protected" ),
+  N_( "drunk" ), 
+	N_( "poisoned" ), 
+	N_( "cursed" ), 
+	N_( "possessed" ), 
+	N_( "blinded" ), 
+	N_( "paralysed" ), 
+	N_( "invisible" ),
+  N_( "overloaded" ), 
+	N_( "dead" ), 
+	N_( "asleep" )
+};
+
 const char *Constants::STATE_SYMBOLS[] = {
   N_("Air"), 
 	N_("Earth"), 
@@ -232,12 +251,21 @@ const Color *Constants::MAGIC_ITEM_COLOR[] = {
 const Color *Constants::SPECIAL_ITEM_COLOR = new Color( 1, 1, 0.5, 1 );
 
 const char *Constants::EFFECT_NAMES[] = {
-  "EFFECT_FLAMES", "EFFECT_GLOW", "	EFFECT_TELEPORT", "EFFECT_GREEN", "EFFECT_EXPLOSION",
-  "EFFECT_SWIRL", "EFFECT_CAST_SPELL", "EFFECT_RING", "EFFECT_RIPPLE", "EFFECT_DUST",
-  "EFFECT_HAIL", "EFFECT_TOWER", "EFFECT_BLAST"
+  "EFFECT_FLAMES", 
+	"EFFECT_GLOW", 
+	"EFFECT_TELEPORT", 
+	"EFFECT_GREEN", 
+	"EFFECT_EXPLOSION",
+  "EFFECT_SWIRL", 
+	"EFFECT_CAST_SPELL", 
+	"EFFECT_RING", 
+	"EFFECT_RIPPLE", 
+	"EFFECT_DUST",
+  "EFFECT_HAIL", 
+	"EFFECT_TOWER", 
+	"EFFECT_BLAST"
 };
 
-// FIXME: these need display names
 const char *Constants::npcTypeName[] = {
   "commoner", 
 	"merchant", 
@@ -246,19 +274,23 @@ const char *Constants::npcTypeName[] = {
 	"trainer"
 };
 
-/*
-CURSOR_NORMAL=0,
-CURSOR_CROSSHAIR,
-CURSOR_ATTACK,
-CURSOR_TALK,
-CURSOR_USE,
-CURSOR_FORBIDDEN,
-CURSOR_RANGED,
-CURSOR_MOVE
-*/
+const char *Constants::npcTypeDisplayName[] = {
+  N_( "commoner" ), 
+	N_( "merchant" ), 
+	N_( "healer" ), 
+	N_( "sage" ), 
+	N_( "trainer" )
+};
+
 const char *Constants::cursorTextureName[] = {
-	"cursor.bmp","crosshair.bmp", "attack.bmp", "talk.bmp", 
-	"use.bmp", "forbidden.bmp", "ranged.bmp", "move.bmp"
+	"cursor.bmp",
+	"crosshair.bmp", 
+	"attack.bmp", 
+	"talk.bmp", 
+	"use.bmp", 
+	"forbidden.bmp", 
+	"ranged.bmp", 
+	"move.bmp"
 };
 
 bool Constants::multitexture = true;

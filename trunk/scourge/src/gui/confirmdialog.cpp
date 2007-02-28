@@ -28,14 +28,14 @@ ConfirmDialog::ConfirmDialog( ScourgeGui *scourgeGui, char *title ) {
 										( scourgeGui->getScreenWidth() / 2 ) - ( CONFIRM_WIDTH / 2 ),
 										( scourgeGui->getScreenHeight() / 2 ) - ( CONFIRM_HEIGHT / 2 ),
 										CONFIRM_WIDTH, CONFIRM_HEIGHT,
-										( title ? title : (char*)"Confirmation" ),
+										( title ? title : (char*)_( "Confirmation" ) ),
 										scourgeGui->getGuiTexture(), true, 
 										Window::BASIC_WINDOW,
 										scourgeGui->getGuiTexture2() );
   int mx = CONFIRM_WIDTH / 2;
-  okButton = new Button( mx - 80, 60, mx - 10, 80, scourgeGui->getHighlightTexture(), "Ok" );
+  okButton = new Button( mx - 80, 60, mx - 10, 80, scourgeGui->getHighlightTexture(), _( "Ok" ) );
   win->addWidget( (Widget*)okButton );
-  cancelButton = new Button( mx + 10, 60, mx + 80, 80, scourgeGui->getHighlightTexture(), "No" );
+  cancelButton = new Button( mx + 10, 60, mx + 80, 80, scourgeGui->getHighlightTexture(), _( "No" ) );
   win->addWidget( (Widget*)cancelButton );
   label = new Label( 20, 30, "" );
   win->addWidget( (Widget*)label );

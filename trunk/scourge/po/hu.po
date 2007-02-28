@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-26 21:55-0800\n"
+"POT-Creation-Date: 2007-02-27 21:24-0800\n"
 "PO-Revision-Date: 2007-02-20 22:31-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -15,6 +15,156 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: src/events/statemodexpirationevent.cpp:44
+#, c-format
+msgid "%s suffers poison damage!"
+msgstr ""
+
+#: src/events/statemodexpirationevent.cpp:48
+#, c-format
+msgid "%s poison."
+msgstr ""
+
+#: src/events/statemodexpirationevent.cpp:70
+#, c-format
+msgid "%1$s is not %2$s any more."
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:52
+#, c-format
+msgid "%s is thirsty."
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:56
+#, c-format
+msgid "%s is really thirsty."
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:61
+#, c-format
+msgid "%s is beginning to dehydrate!"
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:67
+#, c-format
+msgid "%s is totally dehydrated!"
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:74
+#, c-format
+msgid "%1$s looses %2$d hit points from dehydration!"
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:78
+msgid "Died of thirst"
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:85
+#, c-format
+msgid "%s is hungry."
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:89
+#, c-format
+msgid "%s is really hungry."
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:94
+#, c-format
+msgid "%s is starving!"
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:100
+#, c-format
+msgid "%s feels really weak!"
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:107
+#, c-format
+msgid "%1$s looses %2$d hit points from hunger!"
+msgstr ""
+
+#: src/events/thirsthungerevent.cpp:111
+msgid "Expired due to famine"
+msgstr ""
+
+#: src/events/potionexpirationevent.cpp:71
+#, c-format
+msgid "%s feels vulnerable..."
+msgstr ""
+
+#: src/events/potionexpirationevent.cpp:84
+#, c-format
+msgid "%s feels a loss of contentment."
+msgstr ""
+
+#: src/render/map.cpp:3059
+msgid "You need to name the map first."
+msgstr ""
+
+#: src/render/map.cpp:3244 src/render/map.cpp:3482
+msgid "Enter a name of a map to load."
+msgstr ""
+
+#: src/render/map.cpp:3265
+msgid "Loading map"
+msgstr ""
+
+#: src/render/map.cpp:3270
+msgid "Loading theme"
+msgstr ""
+
+#: src/render/map.cpp:3301
+msgid "Starting map"
+msgstr ""
+
+#: src/render/map.cpp:3318
+msgid "Initializing map"
+msgstr ""
+
+#: src/render/map.cpp:3431
+msgid "Finishing map"
+msgstr ""
+
+#: src/render/map.cpp:3437
+msgid "Loading creatures"
+msgstr ""
+
+#: src/render/map.cpp:3455
+msgid "Starting party"
+msgstr ""
+
+#: src/render/map.cpp:3475
+#, c-format
+msgid "Map loaded: %s"
+msgstr ""
+
+#: src/render/map.cpp:3496
+#, c-format
+msgid "Can't find map: %s"
+msgstr ""
+
+#: src/render/map.cpp:3506
+#, c-format
+msgid "Map header loaded: %s"
+msgstr ""
+
+#: src/gui/confirmdialog.cpp:31
+msgid "Confirmation"
+msgstr ""
+
+#: src/gui/confirmdialog.cpp:36
+msgid "Ok"
+msgstr ""
+
+#: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:106
+msgid "No"
+msgstr ""
+
+#: src/rpg/character.cpp:41 src/session.cpp:96
+msgid "Loading Professions"
+msgstr ""
 
 #: src/common/constants.cpp:82
 msgid "Infamy awaits in the dungeons of Scourge!"
@@ -110,10 +260,6 @@ msgstr ""
 
 #: src/common/constants.cpp:105
 msgid "Yes"
-msgstr ""
-
-#: src/common/constants.cpp:106
-msgid "No"
 msgstr ""
 
 #: src/common/constants.cpp:107
@@ -333,89 +479,166 @@ msgstr ""
 msgid "Laid low by"
 msgstr ""
 
-#: src/common/constants.cpp:198
-msgid "Air"
-msgstr ""
-
 #: src/common/constants.cpp:199
-msgid "Earth"
+msgid "blessed"
 msgstr ""
 
 #: src/common/constants.cpp:200
-msgid "Fire"
+msgid "empowered"
 msgstr ""
 
 #: src/common/constants.cpp:201
-msgid "Stone"
+msgid "enraged"
 msgstr ""
 
 #: src/common/constants.cpp:202
-msgid "Water"
+msgid "ac_protected"
 msgstr ""
 
 #: src/common/constants.cpp:203
-msgid "Jelly"
+msgid "magic_protected"
 msgstr ""
 
 #: src/common/constants.cpp:204
-msgid "Ice"
+msgid "drunk"
 msgstr ""
 
 #: src/common/constants.cpp:205
-msgid "Planar"
-msgstr ""
+#, fuzzy
+msgid "poisoned"
+msgstr "Beállitások"
 
 #: src/common/constants.cpp:206
-msgid "Astral"
+msgid "cursed"
 msgstr ""
 
 #: src/common/constants.cpp:207
-msgid "Dire"
+msgid "possessed"
 msgstr ""
 
 #: src/common/constants.cpp:208
-msgid "Cave"
+msgid "blinded"
 msgstr ""
 
 #: src/common/constants.cpp:209
-msgid "Acid"
+msgid "paralysed"
 msgstr ""
 
 #: src/common/constants.cpp:210
-msgid "Spirit"
+msgid "invisible"
 msgstr ""
 
 #: src/common/constants.cpp:211
-msgid "Mist"
+msgid "overloaded"
 msgstr ""
 
 #: src/common/constants.cpp:212
+msgid "dead"
+msgstr ""
+
+#: src/common/constants.cpp:213
+msgid "asleep"
+msgstr ""
+
+#: src/common/constants.cpp:217
+msgid "Air"
+msgstr ""
+
+#: src/common/constants.cpp:218
+msgid "Earth"
+msgstr ""
+
+#: src/common/constants.cpp:219
+msgid "Fire"
+msgstr ""
+
+#: src/common/constants.cpp:220
+msgid "Stone"
+msgstr ""
+
+#: src/common/constants.cpp:221
+msgid "Water"
+msgstr ""
+
+#: src/common/constants.cpp:222
+msgid "Jelly"
+msgstr ""
+
+#: src/common/constants.cpp:223
+msgid "Ice"
+msgstr ""
+
+#: src/common/constants.cpp:224
+msgid "Planar"
+msgstr ""
+
+#: src/common/constants.cpp:225
+msgid "Astral"
+msgstr ""
+
+#: src/common/constants.cpp:226
+msgid "Dire"
+msgstr ""
+
+#: src/common/constants.cpp:227
+msgid "Cave"
+msgstr ""
+
+#: src/common/constants.cpp:228
+msgid "Acid"
+msgstr ""
+
+#: src/common/constants.cpp:229
+msgid "Spirit"
+msgstr ""
+
+#: src/common/constants.cpp:230
+msgid "Mist"
+msgstr ""
+
+#: src/common/constants.cpp:231
 #, fuzzy
 msgid "Quiet"
 msgstr "Kilépés"
 
-#: src/common/constants.cpp:219
+#: src/common/constants.cpp:238
 msgid "Lesser"
 msgstr ""
 
-#: src/common/constants.cpp:220
+#: src/common/constants.cpp:239
 msgid "Greater"
 msgstr ""
 
-#: src/common/constants.cpp:221
+#: src/common/constants.cpp:240
 msgid "Champion"
 msgstr ""
 
-#: src/common/constants.cpp:222
+#: src/common/constants.cpp:241
 msgid "Divine"
+msgstr ""
+
+#: src/common/constants.cpp:278
+msgid "commoner"
+msgstr ""
+
+#: src/common/constants.cpp:279
+msgid "merchant"
+msgstr ""
+
+#: src/common/constants.cpp:280
+msgid "healer"
+msgstr ""
+
+#: src/common/constants.cpp:281
+msgid "sage"
+msgstr ""
+
+#: src/common/constants.cpp:282
+msgid "trainer"
 msgstr ""
 
 #: src/session.cpp:92
 msgid "Loading Shapes"
-msgstr ""
-
-#: src/session.cpp:96
-msgid "Loading Professions"
 msgstr ""
 
 #: src/session.cpp:100
@@ -2959,7 +3182,9 @@ msgid "It looks to be a wizard's treasure chest"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:641
-msgid "Boots of someone named "
+msgid ""
+"Boots of someone named 'Mycotharsius'. Judging from the smell, the owner "
+"must have been host to a large group of parasitic micro-organisms."
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:642
@@ -2967,7 +3192,7 @@ msgid "Boots of Mycotharsius"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:648
-msgid "Boots inscribed with the word "
+msgid "Boots inscribed with the word 'Mycotharsius'."
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:653

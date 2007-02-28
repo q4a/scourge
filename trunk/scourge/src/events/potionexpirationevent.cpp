@@ -68,7 +68,7 @@ void PotionExpirationEvent::execute() {
 	  return;
 	case Constants::AC:
 	  creature->setBonusArmor(creature->getBonusArmor() - amount);
-	  sprintf(msg, "%s feels vulnerable...", creature->getName());
+	  sprintf(msg, _( "%s feels vulnerable..." ), creature->getName());
 	  session->getMap()->addDescription(msg, 0.2f, 1, 1);
 	  creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 	  return;
@@ -81,7 +81,7 @@ void PotionExpirationEvent::execute() {
 							creature->getSkillBonus(potionSkill) - 
 							amount);
 	//	recalcAggregateValues();
-	sprintf(msg, "%s feels a loss of contentment.", creature->getName());
+	sprintf(msg, _( "%s feels a loss of contentment." ), creature->getName());
 	session->getMap()->addDescription(msg, 0.2f, 1, 1);
 	creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
   }

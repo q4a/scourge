@@ -497,6 +497,7 @@ public:
 	STATE_MOD_COUNT
   };
   static const char *STATE_NAMES[];
+	static const char *STATE_DISPLAY_NAMES[];
   static const char *STATE_SYMBOLS[];
   // return -1 on failure, 0+ on success
   static int getStateModByName( const char *p );
@@ -627,6 +628,7 @@ public:
   };
 
   static const char *npcTypeName[];
+	static const char *npcTypeDisplayName[];
 
   // the speed when hand fighting is used instead of a weapon
   static const int HAND_WEAPON_SPEED = 5;

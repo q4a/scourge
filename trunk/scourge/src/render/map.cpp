@@ -3056,7 +3056,7 @@ float EditorMapSettings::getMaxYRot() {
 void Map::saveMap( char *name, char *result, bool absolutePath, int referenceType ) {
 
   if( !strlen( name ) ) {
-    strcpy( result, "You need to name the map first." );
+    strcpy( result, _( "You need to name the map first." ) );
     return;
   }
 
@@ -3241,7 +3241,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 									 bool absolutePath,
 									 char *templateMapName ) {
   if( !strlen( name ) ) {
-    strcpy( result, "Enter a name of a map to load." );
+    strcpy( result, _( "Enter a name of a map to load." ) );
     return false;
   }
 
@@ -3262,12 +3262,12 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
     sprintf( result, "Can't find map: %s", name );
     return false;
   }
-  if( report ) report->updateStatus( 0, 7, "Loading map" );
+  if( report ) report->updateStatus( 0, 7, _( "Loading map" ) );
   File *file = new ZipFile( fp, ZipFile::ZIP_READ );
   MapInfo *info = Persist::loadMap( file );
   delete file;
 
-  if( report ) report->updateStatus( 1, 7, "Loading theme" );
+  if( report ) report->updateStatus( 1, 7, _( "Loading theme" ) );
 
   // reset the map
   reset();
@@ -3298,7 +3298,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
 	setHasWater( info->hasWater == 1 ? true : false );
 
-  if( report ) report->updateStatus( 2, 7, "Starting map" );
+  if( report ) report->updateStatus( 2, 7, _( "Starting map" ) );
 
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
@@ -3315,7 +3315,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
   mapGridX = info->grid_x;
   mapGridY = info->grid_y;
 
-  if( report ) report->updateStatus( 3, 7, "Initializing map" );
+  if( report ) report->updateStatus( 3, 7, _( "Initializing map" ) );
   
   GLShape *shape;
 	DisplayInfo di;
@@ -3428,13 +3428,13 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 		secretDoors[ (int)(info->secret[ i ]->key) ] = ( info->secret[ i ]->value == 1 ? true : false );
 	}
 
-  if( report ) report->updateStatus( 4, 7, "Finishing map" );
+  if( report ) report->updateStatus( 4, 7, _( "Finishing map" ) );
 
   this->center( info->start_x, info->start_y, true );
 
   Persist::deleteMapInfo( info );
 
-  if( report ) report->updateStatus( 5, 7, "Loading creatures" );
+  if( report ) report->updateStatus( 5, 7, _( "Loading creatures" ) );
 
   // load map-related data from text file
   char txtfileName[300];
@@ -3452,7 +3452,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
   
   strcpy( this->name, ( templateMapName ? templateMapName : name ) );
 
-  if( report ) report->updateStatus( 6, 7, "Starting party" );
+  if( report ) report->updateStatus( 6, 7, _( "Starting party" ) );
 
   /* 
     FIXME: Place the party at the start. This code attempts to find a place
@@ -3472,14 +3472,14 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
       }
     }
   }
-  sprintf( result, "Map loaded: %s", name );
+  sprintf( result, _( "Map loaded: %s" ), name );
   return true;
 }
 
 void Map::loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth ) {
   Uint16 tmpX, tmpY;
   if( !strlen( name ) ) {
-    strcpy( result, "Enter a name of a map to load." );
+    strcpy( result, _( "Enter a name of a map to load." ) );
     return;
   }
 
@@ -3493,7 +3493,7 @@ void Map::loadMapLocation( char *name, char *result, int *gridX, int *gridY, int
 
   FILE *fp = fopen( fileName, "rb" );
   if( !fp ) {
-    sprintf( result, "Can't find map: %s", name );
+    sprintf( result, _( "Can't find map: %s" ), name );
     return;
   }
   File *file = new ZipFile( fp, ZipFile::ZIP_READ );
@@ -3503,7 +3503,7 @@ void Map::loadMapLocation( char *name, char *result, int *gridX, int *gridY, int
   *gridX = (int)tmpX;
   *gridY = (int)tmpY;
 
-  sprintf( result, "Map header loaded: %s", name );
+  sprintf( result, _( "Map header loaded: %s" ), name );
 }
 
 
