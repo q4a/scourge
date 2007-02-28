@@ -151,7 +151,7 @@ int SqGame::_getStateModName( HSQUIRRELVM vm ) {
     return sq_throwerror( vm, _SC( "Party index is out of range." ) );
   }
 
-  sq_pushstring( vm, _SC( Constants::STATE_NAMES[ index ] ), -1 );
+  sq_pushstring( vm, _SC( _( Constants::STATE_DISPLAY_NAMES[ index ] ) ), -1 );
   return 1;
 }
 

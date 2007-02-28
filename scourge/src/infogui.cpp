@@ -402,7 +402,7 @@ void InfoGui::describe() {
       for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
         if(item->isStateModSet(i)) {
           strcat(tmp, " ");
-          strcat(tmp, Constants::STATE_NAMES[i]);
+          strcat( tmp, _( Constants::STATE_DISPLAY_NAMES[i] ) );
           found = true;
         }
       }
@@ -416,7 +416,7 @@ void InfoGui::describe() {
       for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
         if(item->isStateModProtected(i)) {
           strcat(tmp, " ");
-          strcat(tmp, Constants::STATE_NAMES[i]);
+          strcat( tmp, _( Constants::STATE_DISPLAY_NAMES[i] ) );
           found = true;
         }
       }

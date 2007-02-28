@@ -393,9 +393,9 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
   object->setStateMod( mod, setting );
     
   if(setting) {
-    sprintf( msg, "%s is %s.", object->getName(), Constants::STATE_NAMES[ mod ] );
+    sprintf( msg, "%s is %s.", object->getName(), _( Constants::STATE_DISPLAY_NAMES[ mod ] ) );
   } else {
-    sprintf(msg, "%s is not %s any more.", object->getName(), Constants::STATE_NAMES[ mod ] );
+    sprintf(msg, "%s is not %s any more.", object->getName(), _( Constants::STATE_DISPLAY_NAMES[ mod ] ) );
   }
   SqBinding::sessionRef->getMap()->addDescription(msg, 1, 0.15f, 1);
   

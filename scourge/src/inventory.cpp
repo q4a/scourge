@@ -820,7 +820,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
       if(selectedP->getStateMod(t)) {
-        sprintf(stateLine[stateCount], "%s", Constants::STATE_NAMES[t]);
+        sprintf(stateLine[stateCount], "%s", _( Constants::STATE_DISPLAY_NAMES[t] ) );
         icons[stateCount] = scourge->getShapePalette()->getStatModIcon(t);
         stateCount++;
       }
@@ -831,7 +831,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     stateCount = 0;
     for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
       if(selectedP->getProtectedStateMod(t)) {
-        sprintf(protStateLine[stateCount], "%s", Constants::STATE_NAMES[t]);
+        sprintf(protStateLine[stateCount], "%s", _( Constants::STATE_DISPLAY_NAMES[t] ) );
         protIcons[stateCount] = scourge->getShapePalette()->getStatModIcon(t);
         stateCount++;
       }

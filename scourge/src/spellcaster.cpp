@@ -458,11 +458,11 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     if(setting) {
       sprintf(msg, "%s is %s.", 
               creature->getName(), 
-              Constants::STATE_NAMES[mod]);
+              _( Constants::STATE_DISPLAY_NAMES[mod] ) );
     } else {
       sprintf(msg, "%s is not %s any more.", 
               creature->getName(), 
-              Constants::STATE_NAMES[mod]);
+              _( Constants::STATE_DISPLAY_NAMES[mod] ) );
     }
     battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
     

@@ -38,7 +38,7 @@ void Character::initCharacters() {
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
-		config->setUpdate( "Loading Professions", i, v->size() );
+		config->setUpdate( _( "Loading Professions" ), i, v->size() );
 
 
 		// find the name and the parent

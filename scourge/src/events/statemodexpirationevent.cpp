@@ -41,11 +41,11 @@ void StateModExpirationEvent::execute() {
       Creature *tmp = creature->getTargetCreature();
       creature->setTargetCreature(creature);
       char message[80];
-      sprintf(message, "%s suffers poison damage!", creature->getName());
+      sprintf(message, _( "%s suffers poison damage!" ), creature->getName());
       session->getMap()->addDescription(message, 0.05f, 1.0f, 0.05f);
 
 			char tmp2[255];
-			sprintf( tmp2, "%s poison.", 
+			sprintf( tmp2, _( "%s poison." ), 
 							 Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
 			creature->getTargetCreature()->setPendingCauseOfDeath( tmp2 );
 
@@ -67,9 +67,9 @@ void StateModExpirationEvent::executeBeforeDelete() {
   creature->setStateMod(stateMod, false);
   
   char msg[255];
-  sprintf(msg, "%s is not %s any more.", 
-          creature->getName(), 
-          Constants::STATE_NAMES[stateMod]);
+  sprintf( msg, _( "%1$s is not %2$s any more." ), 
+					 creature->getName(), 
+					 _( Constants::STATE_DISPLAY_NAMES[stateMod] ) );
   session->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
 }
