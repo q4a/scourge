@@ -792,6 +792,8 @@ int Item::getMagicResistance() {
   return( 3 * ( ( getLevel() / 10 ) + getMagicLevel() ) ); 
 }
 
+#define DEBUG_ITEM_ID 0
+
 void Item::describeMagic(char *s, char *itemName) {
 
 	// not for scrolls :-(
@@ -800,8 +802,96 @@ void Item::describeMagic(char *s, char *itemName) {
   // e.g.: Lesser broadsword + 3 of nature magic
   char tmp[80];
 
+
+	if( magicLevel > -1 ) {
+		if( DEBUG_ITEM_ID || isIdentified() ) {
+			char format[1000];
+			/* This represents the format of an identified item. Please do not translate the strings,
+			only rearrange them to work with your language. I expect the stuff after $bonus can
+			be dropped for most languages. An example of the final string created by the code after
+			parsing this message would be: 
+			"Ethereal Greater Protective Slaying Longsword (+4) of the Ice Dragon"
+			*/
+			strcpy( format, _( "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $of $school" ) );
+			char *p = strtok( format, " " );
+			strcpy( s, "" );
+			while( p ) {
+	
+				if( !strcmp( p, "$spellsymbol" ) ) {
+					if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell && spell ) {
+						if( strlen( s ) ) strcat( s, " " );
+						strcat( s, spell->getSymbol() );
+					}
+				} else if( !strcmp( p, "$magiclevel" ) ) {
+					if( magicLevel > -1 ) {
+						if( strlen( s ) ) strcat( s, " " );
+						strcat( s, _( Constants::MAGIC_ITEM_NAMES[ magicLevel ] ) );
+					}
+				}	else if( !strcmp( p, "$protective" ) ) {
+					if( stateModSet ) {
+						if( strlen( s ) ) strcat( s, " " );
+						strcat( s, " Protective" );
+					}
+				} else if( !strcmp( p, "$slaying" ) ) {
+					if( damageMultiplier > 1 ) {
+						if( strlen( s ) ) strcat( s, " " );
+						strcat( s, " Slaying" );
+					}
+					if( strlen( s ) ) strcat( s, " " );
+				} else if( !strcmp( p, "$itemname" ) ) {
+					if( strlen( s ) ) strcat( s, " " );
+					strcat( s, itemName );
+				} else if( !strcmp( p, "$bonus" ) ) {
+					if(bonus > 0) {
+						if( strlen( s ) ) strcat( s, " " );
+						sprintf(tmp, " (+%d)", bonus);
+						strcat(s, tmp);
+					}
+				} else if( !strcmp( p, "$of" ) ) {
+					if( skillBonus.size() > 0 ) {
+						if( strlen( s ) ) strcat( s, " " );
+						strcat( s, "of the" );
+					}
+				} else if( !strcmp( p, "$school" ) ) {
+					if( skillBonus.size() > 0 ) {
+						
+						// use state_mod or magic school as the adjective
+						// e.g.: of the [ice|dire|planar|etc] Boar
+						if( school ) {
+							if( strlen( s ) ) strcat( s, " " );
+							strcat( s, school->getSymbol() );
+						} else if( stateModSet ) {
+							for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
+								if( stateMod[ i ] > 0 ) {
+									if( strlen( s ) ) strcat( s, " " );
+									strcat( s, _( Constants::STATE_SYMBOLS[ i ] ) );
+									break;
+								}
+							}
+						}
+						
+						// use the first skill as the noun
+						map<int,int>::iterator i = skillBonus.begin();
+						int skill = i->first;
+						if( strlen( s ) ) strcat( s, " " );
+						strcat( s, Skill::skills[ skill ]->getSymbol() );
+					}
+				} else {
+					if( strlen( s ) ) strcat( s, " " );
+					strcat( s, p );
+				}
+				p = strtok( NULL, " " );
+			}
+		} else {
+			sprintf( s, "??? %s ???", itemName );
+		}
+	} else {
+		strcpy( s, itemName );
+	}
+
+
+	/*
   strcpy( s, "" );
-	//sprintf( s, "ML=%d,ID=%x", magicLevel, identifiedBits );
 	
 	// Stored spell
 	if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell && spell ) {
@@ -869,6 +959,7 @@ void Item::describeMagic(char *s, char *itemName) {
 	} else {
 		if( magicLevel > -1 ) strcat(s, " ???");
 	}
+	*/
 }
 
 bool Item::isSpecial() { 
