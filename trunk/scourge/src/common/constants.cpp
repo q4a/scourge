@@ -144,7 +144,7 @@ char *Constants::messages[][80] = {
 	{ N_("Healing Services")},
 	{ N_("Donate to Temple")},
 	{ N_("You don't meet the prerequisites for this capability.")},
-	{ N_("You need cannot activate an automatic capability.")},
+	{ N_("You cannot activate an automatic capability.")},
 	{ N_("A two handed item requires two free hands.")},
 	{ N_("TRAIN")},
 	{ N_("SKILL")},

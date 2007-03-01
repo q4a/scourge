@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-27 21:24-0800\n"
+"POT-Creation-Date: 2007-02-28 22:07-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -424,7 +424,7 @@ msgid "You don't meet the prerequisites for this capability."
 msgstr ""
 
 #: src/common/constants.cpp:147
-msgid "You need cannot activate an automatic capability."
+msgid "You cannot activate an automatic capability."
 msgstr ""
 
 #: src/common/constants.cpp:148
@@ -681,6 +681,11 @@ msgstr ""
 
 #: src/session.cpp:138
 msgid "Initializing UI"
+msgstr ""
+
+#: src/item.cpp:815
+msgid ""
+"$spellsymbol $magiclevel $protective $slaying $itemname $bonus $of $school"
 msgstr ""
 
 #: src/scourge.cpp:141
@@ -2959,7 +2964,9 @@ msgid "Some milk"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:356
-msgid "A dusty bottle of wine with an upside-down label that reads "
+msgid ""
+"A dusty bottle of wine with an upside-down label that reads 'Goats do "
+"roam'... I guess they do"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:357
@@ -2971,7 +2978,9 @@ msgid "A bottle of dark fluid"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:369
-msgid "A cellar aged bottle of vintage wine with a label that reads "
+msgid ""
+"A cellar aged bottle of vintage wine with a label that reads 'Coates de "
+"Rhone'"
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:370
