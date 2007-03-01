@@ -876,7 +876,7 @@ void Item::describeMagic(char *s, char *itemName) {
 						if( strlen( s ) ) strcat( s, " " );
 						strcat( s, Skill::skills[ skill ]->getSymbol() );
 					}
-				} else {
+				} else if( *p != '$' ) {
 					if( strlen( s ) ) strcat( s, " " );
 					strcat( s, p );
 				}
