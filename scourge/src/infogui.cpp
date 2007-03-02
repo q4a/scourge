@@ -243,7 +243,7 @@ void InfoGui::describe() {
   if( item->getRpgItem()->isWeapon() ) {
     sprintf(tmp, "Damage: %d percent|", item->getRpgItem()->getDamage() );
     strcat( description, tmp );
-		sprintf(tmp, "Damage Type: %s|", RpgItem::DAMAGE_TYPE_NAME[ item->getRpgItem()->getDamageType() ] );
+		sprintf(tmp, "Damage Type: %s|", _( RpgItem::DAMAGE_TYPE_NAME[ item->getRpgItem()->getDamageType() ] ) );
     strcat( description, tmp );
 		sprintf(tmp, "Skill: %s|", Skill::skills[ item->getRpgItem()->getDamageSkill() ]->getName() );
 		strcat( description, tmp );
@@ -264,7 +264,7 @@ void InfoGui::describe() {
 	if( item->getRpgItem()->isArmor() ) {
 		for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
 			sprintf(tmp, "Defense vs. %s damage: %d|", 
-							RpgItem::DAMAGE_TYPE_NAME[ i ], 
+							_( RpgItem::DAMAGE_TYPE_NAME[ i ] ), 
 							item->getRpgItem()->getDefense( i ) );
 			strcat( description, tmp );
 		}

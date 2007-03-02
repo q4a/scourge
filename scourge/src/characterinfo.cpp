@@ -98,14 +98,14 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK:%d-%d %s CTH:%d (%s) %s", 
               toint( min ), toint( max ), 
-							RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ],
+							_( RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ] ),
 							toint( skill ),
 							getAPRDescription(p, left, buff),
               left->getRpgItem()->getName() );
     else
       sprintf(s, "ATK:%d %s CTH:%d (%s) %s", 
               toint( min ), 
-							RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ],
+							_( RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ] ),
 							toint( skill ),
 							getAPRDescription(p, left, buff),
               left->getRpgItem()->getName() );
@@ -123,14 +123,14 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK:%d-%d %s CTH:%d (%s) %s", 
               toint( min ), toint( max ), 
-							RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ],
+							_( RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ] ),
 							toint( skill ),
 							getAPRDescription(p, right, buff),
               right->getRpgItem()->getName() );
     else
       sprintf(s, "ATK:%d %s CTH:%d (%s) %s", 
               toint( min ), 
-							RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ],
+							_( RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ] ),
 							toint( skill ),
 							getAPRDescription(p, right, buff),
               right->getRpgItem()->getName() );
@@ -148,14 +148,14 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     if( toint( max ) > toint( min ) ) 
       sprintf(s, "ATK:%d-%d %s CTH:%d (%s) %s", 
               toint( min ), toint( max ), 
-							RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ],
+							_( RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ] ),
 							toint( skill ),
 							getAPRDescription(p, ranged, buff),
               ranged->getRpgItem()->getName() );
     else
       sprintf(s, "ATK:%d %s CTH:%d (%s) %s", 
               toint( min ), 
-							RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ],
+							_( RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ] ),
 							toint( skill ),
 							getAPRDescription(p, ranged, buff),
               ranged->getRpgItem()->getName() );
@@ -172,13 +172,13 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 	if( toint( max ) > toint( min ) ) 
 		sprintf(s, "ATK:%d-%d %s CTH:%d (%s) Bare Hands", 
 						toint( min ), toint( max ), 
-						RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
+						_( RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ] ),
 						toint( skill ),
 						getAPRDescription(p, NULL, buff) );
 	else
 		sprintf(s, "ATK:%d %s CTH:%d (%s) Bare Hands", 
 						toint( min ), 
-						RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ],
+						_( RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ] ),
 						toint( skill ),
 						getAPRDescription(p, NULL, buff) );
 	if( -1 == p->getPreferredWeapon() ) {

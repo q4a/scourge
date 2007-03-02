@@ -155,14 +155,8 @@ private:
 		DAMAGE_TYPE_COUNT
 	};
 	static char *DAMAGE_TYPE_NAME[];
-	static char DAMAGE_TYPE_LETTER[];
-	static inline int getDamageTypeForLetter( char c ) {
-		for( int i = 0; i < DAMAGE_TYPE_COUNT; i++ ) {
-			if( DAMAGE_TYPE_LETTER[ i ] == c ) return i;
-		}
-		std::cerr << "*** Error can't find damage type for letter: " << c << std::endl;
-		return DAMAGE_TYPE_SLASHING;
-	}
+	// static char DAMAGE_TYPE_LETTER[];
+	static int getDamageTypeForLetter( char c );
 
   static RpgItem *items[1000];
   static int itemCount;
@@ -170,7 +164,7 @@ private:
 	static std::map<std::string,std::string> tagsDescriptions;
 	static const char *getTagDescription( std::string tag );
 
-  static char *influenceTypeName[ INFLUENCE_TYPE_COUNT ];
+  //static char *influenceTypeName[ INFLUENCE_TYPE_COUNT ];
 
 	RpgItem( char *name, int rareness, int type, float weight, int price, 
 					 char *desc, char *shortDesc, int equip, int shape_index, 

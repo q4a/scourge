@@ -80,7 +80,7 @@ public:
   inline const char *isStorable() { 
     return( getType() == SKILL_TYPE_MANUAL ? 
             NULL :
-            "Only 'manual' capabilities can be stored." ); 
+            _( "Only 'manual' capabilities can be stored." ) ); 
   }
 
   inline const char *getName() { return name; }
