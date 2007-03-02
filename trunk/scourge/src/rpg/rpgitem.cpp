@@ -35,9 +35,13 @@ std::vector<ItemType> RpgItem::itemTypes;
 int RpgItem::randomTypes[ITEM_TYPE_COUNT];
 int RpgItem::randomTypeCount = 0;
 std::map<std::string,std::string> RpgItem::tagsDescriptions;
-char *RpgItem::DAMAGE_TYPE_NAME[] = { "Slashing", "Piercing", "Crushing" };
-char RpgItem::DAMAGE_TYPE_LETTER[] = { 'S', 'P', 'C' };
-char *RpgItem::influenceTypeName[] = { "AP", "CTH", "DAM" };
+char *RpgItem::DAMAGE_TYPE_NAME[] = { 
+  N_( "Slashing" ), 
+  N_( "Piercing" ), 
+  N_( "Crushing" )
+};
+// char RpgItem::DAMAGE_TYPE_LETTER[] = { 'S', 'P', 'C' };
+//char *RpgItem::influenceTypeName[] = { "AP", "CTH", "DAM" };
 
 RpgItem::RpgItem( char *name, int rareness, int type, float weight, int price, 
 									char *desc, char *shortDesc, int equip, int shape_index, 
@@ -231,4 +235,13 @@ void RpgItem::setWeaponInfluence( int skill, int type, int limit, WeaponInfluenc
 
 WeaponInfluence *RpgItem::getWeaponInfluence( int skill, int type, int limit ) {
 	return &(weaponInfluence[skill][type][limit]);
+}
+
+int RpgItem::getDamageTypeForLetter( char c ) {
+  for( int i = 0; i < DAMAGE_TYPE_COUNT; i++ ) {
+    if( _( DAMAGE_TYPE_NAME[ i ] )[0] == c ) return i;
+    //if( DAMAGE_TYPE_LETTER[ i ] == c ) return i;
+  }
+  std::cerr << "*** Error can't find damage type for letter: " << c << std::endl;
+  return DAMAGE_TYPE_SLASHING;
 }

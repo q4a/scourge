@@ -370,7 +370,7 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
     // check for magic item state mod protections
     protectiveItem = object->getProtectedStateMod(mod);
     if(protectiveItem && 0 == (int)(2.0f * rand()/RAND_MAX)) {
-      sprintf(msg, "%s resists the spell with magic item!", 
+      sprintf(msg, _( "%s resists the spell with magic item!" ), 
               object->getName());
       SqBinding::sessionRef->getMap()->addDescription(msg, 1, 0.15f, 1);    
       return 0;
@@ -393,9 +393,9 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
   object->setStateMod( mod, setting );
     
   if(setting) {
-    sprintf( msg, "%s is %s.", object->getName(), _( Constants::STATE_DISPLAY_NAMES[ mod ] ) );
+    sprintf( msg, _( "%s is %s." ), object->getName(), _( Constants::STATE_DISPLAY_NAMES[ mod ] ) );
   } else {
-    sprintf(msg, "%s is not %s any more.", object->getName(), _( Constants::STATE_DISPLAY_NAMES[ mod ] ) );
+    sprintf(msg, _( "%s is not %s any more." ), object->getName(), _( Constants::STATE_DISPLAY_NAMES[ mod ] ) );
   }
   SqBinding::sessionRef->getMap()->addDescription(msg, 1, 0.15f, 1);
   
