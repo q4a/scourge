@@ -168,7 +168,7 @@ private:
   static int itemCount;
 
 	static std::map<std::string,std::string> tagsDescriptions;
-	static void describeTag( char *buffer, char *prefix, std::string tag, char *postfix, char *token );
+	static const char *getTagDescription( std::string tag );
 
   static char *influenceTypeName[ INFLUENCE_TYPE_COUNT ];
 

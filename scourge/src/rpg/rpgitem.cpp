@@ -215,24 +215,12 @@ RpgItem *RpgItem::getItemByName(char *name) {
   return item;
 }
 
-void RpgItem::describeTag( char *buffer, char *prefix, string tag, char *postfix, char *token ) {
-	strcpy( buffer, prefix );
-	if( RpgItem::tagsDescriptions.find( tag ) != RpgItem::tagsDescriptions.end() ) {
-		char tmp[255];
-		strcpy( tmp, tagsDescriptions[ tag ].c_str() );
-		char *p = strtok( tmp, " " );
-		while( p ) {
-			if( !strcmp( p, "$$" ) ) strcat( buffer, token );
-			else strcat( buffer, p );
-			p = strtok( NULL, " " );
-			if( p ) strcat( buffer, " " );
-		}
-	} else {
-		 strcat( buffer, token );
-		 strcat( buffer, " of type " );
-		 strcat( buffer, tag.c_str() );
-	}
-	strcat( buffer, postfix );
+const char *RpgItem::getTagDescription( string tag ) {
+  if( RpgItem::tagsDescriptions.find( tag ) != RpgItem::tagsDescriptions.end() ) {
+    return tagsDescriptions[ tag ].c_str();
+  } else {
+    return tag.c_str();
+  }
 }
 
 void RpgItem::setWeaponInfluence( int skill, int type, int limit, WeaponInfluence influence ) {
