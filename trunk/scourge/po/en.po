@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-02-28 22:07-0800\n"
+"POT-Creation-Date: 2007-03-01 16:29-0800\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -164,6 +164,58 @@ msgstr ""
 
 #: src/rpg/character.cpp:41 src/session.cpp:96
 msgid "Loading Professions"
+msgstr ""
+
+#: src/rpg/character.cpp:175
+msgid "Skill bonuses to:|"
+msgstr ""
+
+#: src/rpg/character.cpp:224
+msgid "Can use any weapons, except:|"
+msgstr ""
+
+#: src/rpg/character.cpp:226
+msgid "Can use any armor, except:|"
+msgstr ""
+
+#: src/rpg/character.cpp:237
+msgid "Can use any weapons.|"
+msgstr ""
+
+#: src/rpg/character.cpp:239
+msgid "Can use any armor.|"
+msgstr ""
+
+#: src/rpg/character.cpp:245
+msgid "Not allowed to use any weapons, except:|"
+msgstr ""
+
+#: src/rpg/character.cpp:247
+msgid "Not allowed to use any armor, except:|"
+msgstr ""
+
+#: src/rpg/character.cpp:258
+msgid "Not allowed to use any weapons.|"
+msgstr ""
+
+#: src/rpg/character.cpp:260
+msgid "Not allowed to use any armor.|"
+msgstr ""
+
+#: src/rpg/character.cpp:268
+msgid "Can use weapons:"
+msgstr ""
+
+#: src/rpg/character.cpp:270
+msgid "Can use armor:"
+msgstr ""
+
+#: src/rpg/character.cpp:280
+msgid "Not allowed to use weapons:"
+msgstr ""
+
+#: src/rpg/character.cpp:282
+msgid "Not allowed to use armor:"
 msgstr ""
 
 #: src/common/constants.cpp:82
@@ -930,35 +982,35 @@ msgid "Some plants grow here."
 msgstr ""
 
 #: ../scourge_data/config/item.cfg:90
-msgid "two-handed weapons"
+msgid "Two-handed"
 msgstr ""
 
 #: ../scourge_data/config/item.cfg:91
-msgid "large $$"
+msgid "Large"
 msgstr ""
 
 #: ../scourge_data/config/item.cfg:92
-msgid "$$ made of metal"
+msgid "Made of Metal"
 msgstr ""
 
 #: ../scourge_data/config/item.cfg:93
-msgid "bludgeoning weapons"
+msgid "Bludgeoning"
 msgstr ""
 
 #: ../scourge_data/config/item.cfg:94
-msgid "small $$"
+msgid "Small"
 msgstr ""
 
 #: ../scourge_data/config/item.cfg:95
-msgid "robes"
+msgid "Robes"
 msgstr ""
 
 #: ../scourge_data/config/item.cfg:96
-msgid "plate-mail"
+msgid "Plate-mail"
 msgstr ""
 
 #: ../scourge_data/config/item.cfg:97
-msgid "ranged weapons"
+msgid "Ranged Weapons"
 msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:3
