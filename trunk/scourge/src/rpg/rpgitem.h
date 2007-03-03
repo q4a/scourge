@@ -157,6 +157,7 @@ private:
 	static char *DAMAGE_TYPE_NAME[];
 	// static char DAMAGE_TYPE_LETTER[];
 	static int getDamageTypeForLetter( char c );
+	static char getDamageTypeLetter( int type );
 
   static RpgItem *items[1000];
   static int itemCount;

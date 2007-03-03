@@ -287,10 +287,10 @@ void Board::initMissions() {
       sprintf(missionText[i], "L:%d, S:%d, %s %s%s", 
               availableMissions[i]->getLevel(), 
               availableMissions[i]->getDepth(), 
-              ( availableMissions[i]->isStoryLine() ? "(STORY)" : 
-                ( strstr( availableMissions[i]->getMapName(), "caves" ) ? "(CAVE)" : "" ) ),
+              ( availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : 
+                ( strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : "" ) ),
               availableMissions[i]->getName(),
-              (availableMissions[i]->isCompleted() ? "(completed)" : ""));
+              (availableMissions[i]->isCompleted() ? _( "(completed)" ) : ""));
       missionColor[i].r = 1.0f;
       missionColor[i].g = 1.0f;
       missionColor[i].b = 0.0f;

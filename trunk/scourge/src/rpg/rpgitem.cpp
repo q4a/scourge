@@ -245,3 +245,7 @@ int RpgItem::getDamageTypeForLetter( char c ) {
   std::cerr << "*** Error can't find damage type for letter: " << c << std::endl;
   return DAMAGE_TYPE_SLASHING;
 }
+
+char RpgItem::getDamageTypeLetter( int type ) {
+	return _( DAMAGE_TYPE_NAME[ type ] )[0];
+}

@@ -830,12 +830,12 @@ void Item::describeMagic(char *s, char *itemName) {
 				}	else if( !strcmp( p, "$protective" ) ) {
 					if( stateModSet ) {
 						if( strlen( s ) ) strcat( s, " " );
-						strcat( s, " Protective" );
+						strcat( s, _( "Protective" ) );
 					}
 				} else if( !strcmp( p, "$slaying" ) ) {
 					if( damageMultiplier > 1 ) {
 						if( strlen( s ) ) strcat( s, " " );
-						strcat( s, " Slaying" );
+						strcat( s, _( "Slaying" ) );
 					}
 					if( strlen( s ) ) strcat( s, " " );
 				} else if( !strcmp( p, "$itemname" ) ) {
@@ -850,7 +850,7 @@ void Item::describeMagic(char *s, char *itemName) {
 				} else if( !strcmp( p, "$of" ) ) {
 					if( skillBonus.size() > 0 ) {
 						if( strlen( s ) ) strcat( s, " " );
-						strcat( s, "of the" );
+						strcat( s, _( "of the" ) );
 					}
 				} else if( !strcmp( p, "$school" ) ) {
 					if( skillBonus.size() > 0 ) {

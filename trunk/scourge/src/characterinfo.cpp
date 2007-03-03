@@ -41,7 +41,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 
   int y = 15;
   char s[80];
-  sprintf(s, "Exp: %u(%u)", p->getExp(), p->getExpOfNextLevel());
+  sprintf(s, _( "Exp: %u(%u)" ), p->getExp(), p->getExpOfNextLevel());
 	if( theme->getWindowText() ) {
 		glColor4f( theme->getWindowText()->r,
 							 theme->getWindowText()->g,
@@ -59,15 +59,15 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   } else {
     w->applyColor();
   }
-  sprintf(s, "HP: %d (%d)", p->getHp(), p->getMaxHp());
+  sprintf(s, _( "HP: %d (%d)" ), p->getHp(), p->getMaxHp());
   scourge->getSDLHandler()->texPrint(5, y + 15, s);
-  sprintf(s, "MP: %d (%d)", p->getMp(), p->getMaxMp());
+  sprintf(s, _( "MP: %d (%d)" ), p->getMp(), p->getMaxMp());
   scourge->getSDLHandler()->texPrint(5, y + 30, s);
-  sprintf(s, "Thirst: %d (10)", p->getThirst());
+  sprintf(s, _( "Thirst: %d (10)" ), p->getThirst());
   scourge->getSDLHandler()->texPrint(5, y + 45, s);
-  sprintf(s, "Hunger: %d (10)", p->getHunger());
+  sprintf(s, _( "Hunger: %d (10)" ), p->getHunger());
   scourge->getSDLHandler()->texPrint(5, y + 60, s);
-  sprintf(s, "AP: %d (%d)", p->getBattle()->getAP(), toint( p->getMaxAP() ) );
+  sprintf(s, _( "AP: %d (%d)" ), p->getBattle()->getAP(), toint( p->getMaxAP() ) );
   scourge->getSDLHandler()->texPrint(5, y + 75, s);
 
 
@@ -76,10 +76,15 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   int initiative;
 	float armor, dodgePenalty;
   creature->getInitiative( &initiative );
-  sprintf(s, "Initiative: %d DEF: S:%d P:%d C:%d", 
+  sprintf(s, "%s: %d %s: %c:%d %c:%d %c:%d", 
+					_( "Initiative" ),
 					initiative,
+					_( "DEF" ),
+					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_SLASHING ),
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_SLASHING ) ),
+					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_PIERCING ),
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_PIERCING ) ),
+					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_CRUSHING ),
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
   scourge->getSDLHandler()->texPrint( 5, y + 90, s );
 
@@ -96,16 +101,20 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     p->getAttack( left, &max, &min );
 		p->getCth( left, &cth, &skill, false );
     if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK:%d-%d %s CTH:%d (%s) %s", 
+      sprintf(s, "%s:%d-%d %s %s:%d (%s) %s", 
+							_( "ATK" ),
               toint( min ), toint( max ), 
 							_( RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ] ),
+							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, left, buff),
               left->getRpgItem()->getName() );
     else
-      sprintf(s, "ATK:%d %s CTH:%d (%s) %s", 
+      sprintf(s, "%s:%d %s %s:%d (%s) %s", 
+							_( "ATK" ),
               toint( min ), 
 							_( RpgItem::DAMAGE_TYPE_NAME[ left->getRpgItem()->getDamageType() ] ),
+							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, left, buff),
               left->getRpgItem()->getName() );
@@ -121,16 +130,20 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     p->getAttack( right, &max, &min );
 		p->getCth( right, &cth, &skill, false );
     if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK:%d-%d %s CTH:%d (%s) %s", 
+      sprintf(s, "%s:%d-%d %s %s:%d (%s) %s", 
+							_( "ATK" ),
               toint( min ), toint( max ), 
 							_( RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ] ),
+							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, right, buff),
               right->getRpgItem()->getName() );
     else
-      sprintf(s, "ATK:%d %s CTH:%d (%s) %s", 
+      sprintf(s, "%s:%d %s %s:%d (%s) %s", 
+							_( "ATK" ),
               toint( min ), 
 							_( RpgItem::DAMAGE_TYPE_NAME[ right->getRpgItem()->getDamageType() ] ),
+							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, right, buff),
               right->getRpgItem()->getName() );
@@ -146,16 +159,20 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
     p->getAttack( ranged, &max, &min );
 		p->getCth( ranged, &cth, &skill, false );
     if( toint( max ) > toint( min ) ) 
-      sprintf(s, "ATK:%d-%d %s CTH:%d (%s) %s", 
+      sprintf(s, "%s:%d-%d %s %s:%d (%s) %s", 
+							_( "ATK" ),
               toint( min ), toint( max ), 
 							_( RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ] ),
+							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, ranged, buff),
               ranged->getRpgItem()->getName() );
     else
-      sprintf(s, "ATK:%d %s CTH:%d (%s) %s", 
+      sprintf(s, "%s:%d %s %s:%d (%s) %s", 
+							_( "ATK" ),
               toint( min ), 
 							_( RpgItem::DAMAGE_TYPE_NAME[ ranged->getRpgItem()->getDamageType() ] ),
+							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, ranged, buff),
               ranged->getRpgItem()->getName() );
@@ -170,17 +187,23 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 	p->getAttack( NULL, &max, &min );
 	p->getCth( NULL, &cth, &skill, false );
 	if( toint( max ) > toint( min ) ) 
-		sprintf(s, "ATK:%d-%d %s CTH:%d (%s) Bare Hands", 
+		sprintf(s, "%s:%d-%d %s %s:%d (%s) %s", 
+						_( "ATK" ),
 						toint( min ), toint( max ), 
 						_( RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ] ),
+						_( "CTH" ),
 						toint( skill ),
-						getAPRDescription(p, NULL, buff) );
+						getAPRDescription(p, NULL, buff),
+						_( "Bare Hands" ) );
 	else
-		sprintf(s, "ATK:%d %s CTH:%d (%s) Bare Hands", 
+		sprintf(s, "%s:%d %s %s:%d (%s) %s", 
+						_( "ATK" ),
 						toint( min ), 
 						_( RpgItem::DAMAGE_TYPE_NAME[ RpgItem::DAMAGE_TYPE_CRUSHING ] ),
+						_( "CTH" ),
 						toint( skill ),
-						getAPRDescription(p, NULL, buff) );
+						getAPRDescription(p, NULL, buff),
+						_( "Bare Hands" ) );
 	if( -1 == p->getPreferredWeapon() ) {
 		glColor4f( 1, 0.35f, 0, 1 );
 	} else {
@@ -200,9 +223,9 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 char *CharacterInfoUI::getAPRDescription( Creature *p, Item *item, char *buff ) {
   float apr = p->getAttacksPerRound( item );
   if( apr >= 1.0f ) {
-    sprintf( buff, "%.2f APR", apr );
+    sprintf( buff, _( "%.2f APR" ), apr );
   } else {
-    sprintf( buff, "per %.2f R", ( 100.0f / (apr * 100.0f) ) );
+    sprintf( buff, _( "per %.2f R" ), ( 100.0f / (apr * 100.0f) ) );
   }
   return buff;
 }
