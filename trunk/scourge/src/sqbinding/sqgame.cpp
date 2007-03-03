@@ -138,7 +138,7 @@ int SqGame::_getSkillName( HSQUIRRELVM vm ) {
 }
 
 int SqGame::_getStateModCount( HSQUIRRELVM vm ) {
-  sq_pushinteger( vm, Constants::STATE_MOD_COUNT );
+  sq_pushinteger( vm, StateMod::STATE_MOD_COUNT );
   return 1;
 }
 
@@ -147,11 +147,11 @@ int SqGame::_getStateModName( HSQUIRRELVM vm ) {
   if( SQ_FAILED( sq_getinteger( vm, 2, &index ) ) ) {
     return sq_throwerror( vm, _SC( "Can't get index in getSkillName." ) );
   }
-  if( index < 0 || index >= Constants::STATE_MOD_COUNT  ) {
+  if( index < 0 || index >= StateMod::STATE_MOD_COUNT  ) {
     return sq_throwerror( vm, _SC( "Party index is out of range." ) );
   }
 
-  sq_pushstring( vm, _SC( _( Constants::STATE_DISPLAY_NAMES[ index ] ) ), -1 );
+  sq_pushstring( vm, _SC( StateMod::stateMods[ index ]->getName() ), -1 );
   return 1;
 }
 

@@ -382,7 +382,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   //creature->stateMod = info->stateMod;
   //creature->protStateMod = info->protStateMod;
   // these two don't req. events:
-  if(info->stateMod & (1 << Constants::dead)) creature->setStateMod(Constants::dead, true);
+  if(info->stateMod & (1 << StateMod::dead)) creature->setStateMod(StateMod::dead, true);
   //if(info->stateMod & (1 << Constants::leveled)) creature->setStateMod(Constants::leveled, true);
 
   // inventory
@@ -739,7 +739,7 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
     // play command sound
     if(x > -1 && 
        0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
-       !getStateMod(Constants::dead)) {
+       !getStateMod(StateMod::dead)) {
       //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
       playCharacterSound( GameAdapter::COMMAND_SOUND );
     }
@@ -993,7 +993,7 @@ bool Creature::addInventory(Item *item, bool force) {
         sprintf(msg, "%s is overloaded.", getName());
         session->getMap()->addDescription(msg);
       }
-      setStateMod(Constants::overloaded, true);
+      setStateMod(StateMod::overloaded, true);
     }
 
     // check if the mission is over
@@ -1025,13 +1025,13 @@ Item *Creature::removeInventory(int index) {
     // drop from inventory
     item = inventory[index];
     inventoryWeight -= item->getWeight();
-    if(getStateMod(Constants::overloaded) && inventoryWeight < getMaxInventoryWeight()) {
+    if(getStateMod(StateMod::overloaded) && inventoryWeight < getMaxInventoryWeight()) {
       if( !isMonster() ) {
         char msg[80];
         sprintf(msg, "%s is not overloaded anymore.", getName());
         session->getMap()->addDescription(msg);
       }
-      setStateMod(Constants::overloaded, false);
+      setStateMod(StateMod::overloaded, false);
     }
     for(int i = index; i < inventory_count - 1; i++) {
       inventory[i] = inventory[i + 1];
@@ -1246,13 +1246,13 @@ void Creature::equipInventory(int index) {
         //item->debugMagic("Equip: ");
 
         // set the good attributes
-        for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+        for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
           if(item->isStateModSet(i)) {
             this->setStateMod(i, true);
           }
         }
         // set the protected attributes
-        for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+        for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
           if(item->isStateModProtected(i)) {
             this->setProtectedStateMod(i, true);
           }
@@ -1297,13 +1297,13 @@ int Creature::doff(int index) {
         //item->debugMagic("Doff: ");
 
         // set the good attributes
-        for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+        for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
           if(item->isStateModSet(i)) {
             this->setStateMod(i, false);
           }
         }
         // set the protected attributes
-        for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+        for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
           if(item->isStateModProtected(i)) {
             this->setProtectedStateMod(i, false);
           }
@@ -1548,7 +1548,7 @@ bool Creature::takeDamage( float damage,
 
 void Creature::resurrect( int rx, int ry ) {
 	// remove all state mod effects
-	for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
+	for( int i = 0; i < StateMod::STATE_MOD_COUNT; i++ ) {
 		setStateMod( i, false );
 	}
 	if( getThirst() < 5 ) setThirst( 5 );
@@ -1607,7 +1607,7 @@ int Creature::addExperience(int delta) {
 
 int Creature::addExperienceWithMessage( int exp ) {
   int n = 0;
-  if( !getStateMod( Constants::dead ) ) {
+  if( !getStateMod( StateMod::dead ) ) {
     char message[120];
     int oldLevel = level;
     n = addExperience( exp );
@@ -1775,7 +1775,7 @@ bool Creature::addSpell(Spell *spell) {
 bool Creature::isTargetValid() {
   // is it a non-creature target? (item or location)
   if(!getTargetCreature()) return true;
-  if(getTargetCreature()->getStateMod(Constants::dead)) return false;
+  if(getTargetCreature()->getStateMod(StateMod::dead)) return false;
   // when attacking, attack the opposite kind (unless possessed)
   // however, you can cast spells on anyone
   if(getAction() == Constants::ACTION_NO_ACTION && 
@@ -1787,20 +1787,20 @@ bool Creature::canAttack(RenderedCreature *creature, int *cursor) {
   // when attacking, attack the opposite kind (unless possessed)
   bool ret;
   if( isMonster() ) {
-    if( !getStateMod( Constants::possessed ) ) {
-      ret = ( ( !creature->isMonster() && !creature->getStateMod(Constants::possessed) ) ||
-              ( creature->isMonster() && creature->getStateMod(Constants::possessed) ) );
+    if( !getStateMod( StateMod::possessed ) ) {
+      ret = ( ( !creature->isMonster() && !creature->getStateMod(StateMod::possessed) ) ||
+              ( creature->isMonster() && creature->getStateMod(StateMod::possessed) ) );
     } else {
-      ret = ( ( !creature->isMonster() && creature->getStateMod(Constants::possessed) ) ||
-              ( creature->isMonster() && !creature->getStateMod(Constants::possessed) ) );
+      ret = ( ( !creature->isMonster() && creature->getStateMod(StateMod::possessed) ) ||
+              ( creature->isMonster() && !creature->getStateMod(StateMod::possessed) ) );
     }
   } else {
-    if( !getStateMod( Constants::possessed ) ) {
-      ret = ( ( creature->isMonster() && !creature->getStateMod(Constants::possessed) ) ||
-              ( !creature->isMonster() && creature->getStateMod(Constants::possessed) ) );
+    if( !getStateMod( StateMod::possessed ) ) {
+      ret = ( ( creature->isMonster() && !creature->getStateMod(StateMod::possessed) ) ||
+              ( !creature->isMonster() && creature->getStateMod(StateMod::possessed) ) );
     } else {
-      ret = ( ( !creature->isMonster() && !creature->getStateMod(Constants::possessed) ) ||
-              ( creature->isMonster() && creature->getStateMod(Constants::possessed) ) );
+      ret = ( ( !creature->isMonster() && !creature->getStateMod(StateMod::possessed) ) ||
+              ( creature->isMonster() && creature->getStateMod(StateMod::possessed) ) );
     }
   }
   if( ret && cursor ) {
@@ -1869,9 +1869,9 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 
   // who are the possible targets?
   vector<Creature*> possibleTargets;
-  if( getStateMod( Constants::possessed ) ) {
+  if( getStateMod( StateMod::possessed ) ) {
     for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-      if( !session->getParty()->getParty( i )->getStateMod( Constants::dead ) &&
+      if( !session->getParty()->getParty( i )->getStateMod( StateMod::dead ) &&
           session->getParty()->getParty( i )->isWithPrereq( spell ) )
         possibleTargets.push_back( session->getParty()->getParty( i ) );
     }
@@ -1879,7 +1879,7 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
     for( int i = 0; i < session->getCreatureCount(); i++ ) {
       if( session->getCreature( i )->isMonster() &&
           !session->getCreature( i )->getMonster()->isNpc() &&
-          !session->getCreature( i )->getStateMod( Constants::dead ) &&
+          !session->getCreature( i )->getStateMod( StateMod::dead ) &&
           session->getCreature( i )->isWithPrereq( spell ) ) 
         possibleTargets.push_back( session->getCreature( i ) );
     }
@@ -1943,7 +1943,7 @@ bool Creature::castHealingSpell() {
 void Creature::decideMonsterAction() {
   //if( !( isMonster() || getStateMod( Constants::possessed ) ) ) return;
 
-  if( !isMonster() && getStateMod( Constants::possessed ) ) {
+  if( !isMonster() && getStateMod( StateMod::possessed ) ) {
     Creature *p = 
       session->getParty()->getClosestPlayer( toint(getX()), toint(getY()), 
                                              getShape()->getWidth(),
@@ -1968,7 +1968,7 @@ void Creature::decideMonsterAction() {
     
     // try to attack someone
     Creature *p;
-    if(getStateMod(Constants::possessed)) {
+    if(getStateMod(StateMod::possessed)) {
       p = session->getClosestVisibleMonster(toint(getX()), toint(getY()), 
                                                       getShape()->getWidth(),
                                                       getShape()->getDepth(),
@@ -2714,43 +2714,43 @@ float Creature::getDefenderStateModPercent( bool magical ) {
       overloaded,
     */
     float delta = 0.0f;
-    if(getStateMod(Constants::blessed)) {
+    if(getStateMod(StateMod::blessed)) {
       delta += (10.0f * rand()/RAND_MAX);
     }
-    if(getStateMod(Constants::empowered)) {
+    if(getStateMod(StateMod::empowered)) {
       delta += (10.0f * rand()/RAND_MAX) + 5;
     }
-    if(getStateMod(Constants::enraged)) {
+    if(getStateMod(StateMod::enraged)) {
       delta += (10.0f * rand()/RAND_MAX) + 8;
     }
-    if(getStateMod(Constants::drunk)) {
+    if(getStateMod(StateMod::drunk)) {
       delta += (14.0f * rand()/RAND_MAX) - 7;
     }
-    if(getStateMod(Constants::cursed)) {
+    if(getStateMod(StateMod::cursed)) {
       delta -= ((10.0f * rand()/RAND_MAX) + 5);
     }
-    if(getStateMod(Constants::blinded)) {
+    if(getStateMod(StateMod::blinded)) {
       delta -= (10.0f * rand()/RAND_MAX);
     }
-    if(!magical && getTargetCreature()->getStateMod(Constants::ac_protected)) {
+    if(!magical && getTargetCreature()->getStateMod(StateMod::ac_protected)) {
       delta -= (7.0f * rand()/RAND_MAX);
     }
-    if(magical && getTargetCreature()->getStateMod(Constants::magic_protected)) {
+    if(magical && getTargetCreature()->getStateMod(StateMod::magic_protected)) {
       delta -= (7.0f * rand()/RAND_MAX);
     }
-    if(getTargetCreature()->getStateMod(Constants::blessed)) {
+    if(getTargetCreature()->getStateMod(StateMod::blessed)) {
       delta -= (5.0f * rand()/RAND_MAX);
     }
-    if(getTargetCreature()->getStateMod(Constants::cursed)) {
+    if(getTargetCreature()->getStateMod(StateMod::cursed)) {
       delta += (5.0f * rand()/RAND_MAX);
     }
-    if(getTargetCreature()->getStateMod(Constants::overloaded)) {
+    if(getTargetCreature()->getStateMod(StateMod::overloaded)) {
       delta += (2.0f * rand()/RAND_MAX);
     }
-    if(getTargetCreature()->getStateMod(Constants::blinded)) {
+    if(getTargetCreature()->getStateMod(StateMod::blinded)) {
       delta += (2.0f * rand()/RAND_MAX);
     }
-    if(getTargetCreature()->getStateMod(Constants::invisible)) {
+    if(getTargetCreature()->getStateMod(StateMod::invisible)) {
       delta -= (10.0f * rand()/RAND_MAX);
     }
     return delta;
@@ -2779,28 +2779,28 @@ float Creature::getAttackerStateModPercent() {
   	overloaded,
   */
   float delta = 0.0f;
-  if(getStateMod(Constants::blessed)) {
+  if(getStateMod(StateMod::blessed)) {
     delta += (15.0f * rand()/RAND_MAX);
   }
-  if(getStateMod(Constants::empowered)) {
+  if(getStateMod(StateMod::empowered)) {
     delta += (15.0f * rand()/RAND_MAX) + 10;
   }
-  if(getStateMod(Constants::enraged)) {
+  if(getStateMod(StateMod::enraged)) {
     delta -= (10.0f * rand()/RAND_MAX);
   }
-  if(getStateMod(Constants::drunk)) {
+  if(getStateMod(StateMod::drunk)) {
     delta += (30.0f * rand()/RAND_MAX) - 15;
   }
-  if(getStateMod(Constants::cursed)) {
+  if(getStateMod(StateMod::cursed)) {
     delta -= ((15.0f * rand()/RAND_MAX) + 10);
   }
-  if(getStateMod(Constants::blinded)) {
+  if(getStateMod(StateMod::blinded)) {
     delta -= (15.0f * rand()/RAND_MAX);
   }
-  if(getStateMod(Constants::overloaded)) {
+  if(getStateMod(StateMod::overloaded)) {
     delta -= (10.0f * rand()/RAND_MAX);
   }
-  if(getStateMod(Constants::invisible)) {
+  if(getStateMod(StateMod::invisible)) {
     delta += (5.0f * rand()/RAND_MAX) + 5;
   }
   return delta;

@@ -504,7 +504,7 @@ void Persist::saveItem( File *file, ItemInfo *info ) {
   file->write( info->monster_type, 255 );
   file->write( info->magic_school_name, 255 );
   saveDice( file, info->magicDamage );
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
     file->write( &(info->stateMod[i]) );
   }
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
@@ -538,7 +538,7 @@ ItemInfo *Persist::loadItem( File *file ) {
   file->read( info->monster_type, 255 );
   file->read( info->magic_school_name, 255 );
   info->magicDamage = loadDice( file );
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
     file->read( &(info->stateMod[i]) );
   }
 	for(int i = 0; i < Skill::SKILL_COUNT; i++) {

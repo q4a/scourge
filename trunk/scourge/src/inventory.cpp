@@ -60,14 +60,14 @@ Inventory::Inventory(Scourge *scourge) {
   for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
     this->pcInvText[i] = (char*)malloc(120 * sizeof(char));
   }
-  this->stateLine = (char**)malloc(Constants::STATE_MOD_COUNT * sizeof(char*));
-  this->icons = (GLuint*)malloc(Constants::STATE_MOD_COUNT * sizeof(GLuint));
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+  this->stateLine = (char**)malloc(StateMod::STATE_MOD_COUNT * sizeof(char*));
+  this->icons = (GLuint*)malloc(StateMod::STATE_MOD_COUNT * sizeof(GLuint));
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
     this->stateLine[i] = (char*)malloc(120 * sizeof(char));
   }
-  this->protStateLine = (char**)malloc(Constants::STATE_MOD_COUNT * sizeof(char*));
-  this->protIcons = (GLuint*)malloc(Constants::STATE_MOD_COUNT * sizeof(GLuint));
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+  this->protStateLine = (char**)malloc(StateMod::STATE_MOD_COUNT * sizeof(char*));
+  this->protIcons = (GLuint*)malloc(StateMod::STATE_MOD_COUNT * sizeof(GLuint));
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
     this->protStateLine[i] = (char*)malloc(120 * sizeof(char));
   }
   this->objectiveText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
@@ -450,7 +450,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if(widget == equipButton) {
     equipItem();
   } else if(widget == eatDrinkButton) {
-    if(scourge->getParty()->getParty(selected)->getStateMod(Constants::dead)) {
+    if(scourge->getParty()->getParty(selected)->getStateMod(StateMod::dead)) {
       scourge->showMessageDialog(Constants::getMessage(Constants::DEAD_CHARACTER_ERROR));
     } else {
       int itemIndex = invList->getSelectedLine();  
@@ -818,9 +818,9 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   case CHARACTER:         
 
     stateCount = 0;
-    for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
+    for(int t = 0; t < StateMod::STATE_MOD_COUNT; t++) {
       if(selectedP->getStateMod(t)) {
-        sprintf(stateLine[stateCount], "%s", _( Constants::STATE_DISPLAY_NAMES[t] ) );
+				strcpy( stateLine[stateCount], StateMod::stateMods[t]->getDisplayName() );
         icons[stateCount] = scourge->getShapePalette()->getStatModIcon(t);
         stateCount++;
       }
@@ -829,9 +829,9 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
                         (const Color *)NULL, (stateCount ? (const GLuint*)icons : NULL));
 
     stateCount = 0;
-    for(int t = 0; t < Constants::STATE_MOD_COUNT; t++) {
+    for(int t = 0; t < StateMod::STATE_MOD_COUNT; t++) {
       if(selectedP->getProtectedStateMod(t)) {
-        sprintf(protStateLine[stateCount], "%s", _( Constants::STATE_DISPLAY_NAMES[t] ) );
+				strcpy( protStateLine[stateCount], StateMod::stateMods[t]->getDisplayName() );
         protIcons[stateCount] = scourge->getShapePalette()->getStatModIcon(t);
         stateCount++;
       }

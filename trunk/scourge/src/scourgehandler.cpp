@@ -241,7 +241,7 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
       scourge->toggleOptionsWindow();
     } else if(ea == SET_NEXT_FORMATION_STOP){
       if(scourge->getParty()->getFormation() < Creature::FORMATION_COUNT - 1) scourge->getParty()->setFormation(scourge->getParty()->getFormation() + 1);
-      else scourge->getParty()->setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
+      else scourge->getParty()->setFormation( Creature::DIAMOND_FORMATION );
     } else if(ea == TOGGLE_MINIMAP ){
       scourge->getMiniMap()->setShowMiniMap( scourge->getMiniMap()->isMiniMapShown() ? false : true );
     } else if( ea == NEXT_WEAPON && scourge->getParty()->getPlayer() ) {
@@ -487,7 +487,7 @@ bool ScourgeHandler::handleCreatureClick( Uint16 mapx, Uint16 mapy, Uint16 mapz 
         scourge->getConversationGui()->start( ((Creature*)(loc->creature)) );
         return true;
       } else if( loc->creature->isMonster() ||
-                 loc->creature->getStateMod( Constants::possessed ) ) {
+                 loc->creature->getStateMod( StateMod::possessed ) ) {
         // follow this creature
         scourge->getParty()->setTargetCreature( ((Creature*)(loc->creature)) );
         // show path

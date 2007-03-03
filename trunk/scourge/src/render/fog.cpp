@@ -112,7 +112,7 @@ void Fog::visit( RenderedCreature *player ) {
 
 void Fog::hideDeadParty() {
   for( int i = 0; i < map->getAdapter()->getPartySize(); i++ ) {
-    if( map->getAdapter()->getParty(i)->getStateMod( Constants::dead ) ) {
+    if( map->getAdapter()->getParty(i)->getStateMod( StateMod::dead ) ) {
       for( int x = 0; x < FOG_WIDTH; x++ ) {
         for( int y = 0; y < FOG_DEPTH; y++ ) {
           if( fog[x][y] == FOG_CLEAR ) {

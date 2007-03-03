@@ -73,7 +73,6 @@ Session::~Session() {
 }
 
 void Session::initialize() {
-  Constants::initConstants();
   shapePal = new ShapePalette(this);
   adapter->setSession(this);
   adapter->initVideo();
@@ -248,7 +247,7 @@ Creature *Session::replaceCreature( Creature *creature, char *newCreatureType ) 
 	int cz = toint( creature->getZ() );
 	getMap()->removeCreature( cx, cy, cz );
 	creature->moveTo( -1, -1, 0 ); // remove its marker
-	creature->setStateMod( Constants::dead, true ); // make sure it doesn't move
+	creature->setStateMod( StateMod::dead, true ); // make sure it doesn't move
 
 	Monster *monster = Monster::getMonsterByName( newCreatureType );
 	if( !monster ) {
@@ -372,8 +371,8 @@ Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radi
   float minDist = 0;
   Creature *p = NULL;
   for(int i = 0; i < getCreatureCount(); i++) {
-    if(!getCreature(i)->getStateMod(Constants::dead) && 
-       !getCreature(i)->getStateMod(Constants::possessed) && 
+    if(!getCreature(i)->getStateMod(StateMod::dead) && 
+       !getCreature(i)->getStateMod(StateMod::possessed) && 
        !( getCreature(i)->getMonster() && getCreature(i)->getMonster()->isNpc() ) &&
        map->isLocationVisible(toint(getCreature(i)->getX()), 
                               toint(getCreature(i)->getY())) &&
@@ -423,7 +422,7 @@ void Session::creatureDeath( Creature *creature ) {
     // make it contain all items, no matter what size
     item->addContainedItem(creature->removeInventory(0), true);
   }
-  creature->setStateMod(Constants::dead, true);
+  creature->setStateMod(StateMod::dead, true);
 
 	creature->setCauseOfDeath( creature->getPendingCauseOfDeath() );
 
@@ -439,7 +438,7 @@ void Session::creatureDeath( Creature *creature ) {
 #ifdef HAVE_SDL_NET
 	bool foundLivePlayer = false;
 	for( int i = 0; i < getParty()->getPartySize(); i++ ) {
-		if( !getParty()->getParty( i )->getStateMod( Constants::dead ) ) {
+		if( !getParty()->getParty( i )->getStateMod( StateMod::dead ) ) {
 			foundLivePlayer = true;
 			break;
 		}

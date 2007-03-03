@@ -29,7 +29,7 @@ using namespace std;
 
 #define MIN_FUMBLE_RANGE 4.0f
 
-#define IS_AUTO_CONTROL( creature ) ( ( creature->isMonster() || creature->getStateMod( Constants::possessed ) ) )
+#define IS_AUTO_CONTROL( creature ) ( ( creature->isMonster() || creature->getStateMod( StateMod::possessed ) ) )
 
 bool Battle::debugBattle = DEBUG_BATTLE;
 
@@ -148,7 +148,7 @@ bool Battle::fightTurn() {
 		" attacking=" << ((AnimatedShape*)creature->getShape())->getAttackEffect() << endl;
 
   // are we alive?
-  if(!creature || creature->getStateMod(Constants::dead) ||
+  if(!creature || creature->getStateMod(StateMod::dead) ||
      (creature->getAction() == Constants::ACTION_NO_ACTION &&
       !IS_AUTO_CONTROL( creature ) && !getAvailablePartyTarget()) ) {
 	if( debugBattle ) cerr << "*** Reset 2" << endl;
@@ -170,7 +170,7 @@ bool Battle::fightTurn() {
         return false;
       }
       if( creature->getTargetCreature() && 
-          !creature->getTargetCreature()->getStateMod( Constants::dead ) ) {
+          !creature->getTargetCreature()->getStateMod( StateMod::dead ) ) {
         a =((AnimatedShape*)(creature->getTargetCreature()->getShape()))->getCurrentAnimation();
         if( !( a == MD2_STAND || a == MD2_RUN )) {
           return false;
@@ -260,7 +260,7 @@ bool Battle::pauseBeforePlayerTurn() {
       // center on player
       for (int i = 0; i < session->getParty()->getPartySize(); i++) {
         if (session->getParty()->getParty(i) == creature &&
-            !creature->getStateMod(Constants::possessed)) {
+            !creature->getStateMod(StateMod::possessed)) {
           session->getParty()->setPlayer(i);
           break;
         }
@@ -620,7 +620,7 @@ Creature *Battle::getAvailablePartyTarget() {
                      session->getMap()->isLocationInLight(toint(session->getParty()->getParty(i)->getX()), 
                                                           toint(session->getParty()->getParty(i)->getY()),
                                                           session->getParty()->getParty(i)->getShape()));
-    if( visible && !session->getParty()->getParty(i)->getStateMod(Constants::dead) ) {
+    if( visible && !session->getParty()->getParty(i)->getStateMod(StateMod::dead) ) {
       Creature *c = session->getParty()->getParty(i)->getBattle()->getAvailableTarget();
       if( c ) return c;
     }
@@ -634,7 +634,7 @@ Creature *Battle::getAvailableTarget() {
     return NULL;
   }
   Creature *target;
-  if(creature->getStateMod(Constants::possessed)) {
+  if(creature->getStateMod(StateMod::possessed)) {
     target = session->getParty()->getClosestPlayer(toint(creature->getX()), 
                                                    toint(creature->getY()), 
                                                    creature->getShape()->getWidth(),
@@ -770,28 +770,28 @@ void Battle::castSpell( bool alwaysSucceeds ) {
   	overloaded,
   */
   float delta = 0.0f;
-  if(creature->getStateMod(Constants::blessed)) {
+  if(creature->getStateMod(StateMod::blessed)) {
     delta += (10.0f * rand()/RAND_MAX);
   }
-  if(creature->getStateMod(Constants::empowered)) {
+  if(creature->getStateMod(StateMod::empowered)) {
     delta += (10.0f * rand()/RAND_MAX) + 5;
   }
-  if(creature->getStateMod(Constants::enraged)) {
+  if(creature->getStateMod(StateMod::enraged)) {
     delta -= (10.0f * rand()/RAND_MAX);
   }
-  if(creature->getStateMod(Constants::drunk)) {
+  if(creature->getStateMod(StateMod::drunk)) {
     delta += (14.0f * rand()/RAND_MAX) - 7;
   }
-  if(creature->getStateMod(Constants::cursed)) {
+  if(creature->getStateMod(StateMod::cursed)) {
     delta += ((8.0f * rand()/RAND_MAX) + 7);
   }
-  if(creature->getStateMod(Constants::blinded)) {
+  if(creature->getStateMod(StateMod::blinded)) {
     delta -= (10.0f * rand()/RAND_MAX);
   }
-  if(creature->getStateMod(Constants::overloaded)) {
+  if(creature->getStateMod(StateMod::overloaded)) {
     delta -= (8.0f * rand()/RAND_MAX);
   }
-  if(creature->getStateMod(Constants::invisible)) {
+  if(creature->getStateMod(StateMod::invisible)) {
     delta += (5.0f * rand()/RAND_MAX) + 5;
   }
 
@@ -1296,7 +1296,7 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 					// Add the exp for the killed creature
 					session->getParty()->getParty( i )->addExperience( tc );
 
-					if(!session->getParty()->getParty(i)->getStateMod(Constants::dead)) {
+					if(!session->getParty()->getParty(i)->getStateMod(StateMod::dead)) {
             int n = session->getParty()->getParty(i)->addMoney( tc );
             if(n > 0) {
               sprintf(message, "%s finds %d coins!", session->getParty()->getParty(i)->getName(), n);

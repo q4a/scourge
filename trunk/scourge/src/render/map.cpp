@@ -911,7 +911,7 @@ void Map::setupPosition( int posX, int posY, int posZ,
     stencil[stencilCount].inFront = false;
     stencilCount++;
   } else if(!shape->isStencil()) {
-    bool invisible = (creature && creature->getStateMod(Constants::invisible));
+    bool invisible = (creature && creature->getStateMod(StateMod::invisible));
     if(!invisible && shape->drawFirst()) {
       other[otherCount].xpos = xpos2;
       other[otherCount].ypos = ypos2;
@@ -1642,9 +1642,9 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
                                        later->effect->getDamageEffect());
     }
   } else if( later && later->creature && !useShadow ) {
-    if(later->creature->getStateMod(Constants::invisible)) {
+    if(later->creature->getStateMod(StateMod::invisible)) {
       glColor4f(0.3, 0.8f, 1.0f, 1.0f);    
-    } else if(later->creature->getStateMod(Constants::possessed)) {
+    } else if(later->creature->getStateMod(StateMod::possessed)) {
       glColor4f(1.0, 0.3f, 0.8f, 1.0f);    
     }
     
@@ -3465,7 +3465,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
     int yy = starty;
     int nx, ny;
     for( int t = 0; t < adapter->getPartySize(); t++ ) {
-      if( !adapter->getParty(t)->getStateMod( Constants::dead ) ) {
+      if( !adapter->getParty(t)->getStateMod( StateMod::dead ) ) {
         adapter->getParty(t)->findPlace( xx, yy, &nx, &ny );
         xx = nx;
         yy = ny;

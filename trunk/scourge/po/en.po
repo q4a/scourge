@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-02 17:33-0800\n"
+"POT-Creation-Date: 2007-03-02 21:54-0800\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -19,16 +19,6 @@ msgstr ""
 #: src/events/statemodexpirationevent.cpp:44
 #, c-format
 msgid "%s suffers poison damage!"
-msgstr ""
-
-#: src/events/statemodexpirationevent.cpp:48
-#, c-format
-msgid "%s poison."
-msgstr ""
-
-#: src/events/statemodexpirationevent.cpp:70
-#, c-format
-msgid "%1$s is not %2$s any more."
 msgstr ""
 
 #: src/events/thirsthungerevent.cpp:52
@@ -174,7 +164,7 @@ msgstr ""
 msgid "Crushing"
 msgstr ""
 
-#: src/rpg/character.cpp:41 src/session.cpp:96
+#: src/rpg/character.cpp:41 src/session.cpp:95
 msgid "Loading Professions"
 msgstr ""
 
@@ -511,193 +501,39 @@ msgstr ""
 msgid "Some kind of summoned energy opens the lock."
 msgstr ""
 
-#: src/common/constants.cpp:153
-msgid "Killed by"
-msgstr ""
-
-#: src/common/constants.cpp:154
-msgid "Annihilated by"
-msgstr ""
-
-#: src/common/constants.cpp:155
-msgid "Slain by"
-msgstr ""
-
-#: src/common/constants.cpp:156
-msgid "Brought low by"
-msgstr ""
-
-#: src/common/constants.cpp:157
-msgid "Dropped by"
-msgstr ""
-
-#: src/common/constants.cpp:158
-msgid "Ruined by"
-msgstr ""
-
-#: src/common/constants.cpp:159
-msgid "Extinguished by"
-msgstr ""
-
-#: src/common/constants.cpp:160
-msgid "Laid low by"
-msgstr ""
-
-#: src/common/constants.cpp:199 ../scourge_data/config/rpg.cfg:4
-msgid "blessed"
-msgstr ""
-
-#: src/common/constants.cpp:200 ../scourge_data/config/rpg.cfg:12
-msgid "empowered"
-msgstr ""
-
-#: src/common/constants.cpp:201 ../scourge_data/config/rpg.cfg:20
-msgid "enraged"
-msgstr ""
-
-#: src/common/constants.cpp:202 ../scourge_data/config/rpg.cfg:28
-msgid "ac_protected"
-msgstr ""
-
-#: src/common/constants.cpp:203 ../scourge_data/config/rpg.cfg:36
-msgid "magic_protected"
-msgstr ""
-
-#: src/common/constants.cpp:204 ../scourge_data/config/rpg.cfg:44
-msgid "drunk"
-msgstr ""
-
-#: src/common/constants.cpp:205 ../scourge_data/config/rpg.cfg:51
-#, fuzzy
-msgid "poisoned"
-msgstr "Options"
-
-#: src/common/constants.cpp:206 ../scourge_data/config/rpg.cfg:59
-msgid "cursed"
-msgstr ""
-
-#: src/common/constants.cpp:207 ../scourge_data/config/rpg.cfg:67
-msgid "possessed"
-msgstr ""
-
-#: src/common/constants.cpp:208 ../scourge_data/config/rpg.cfg:75
-msgid "blinded"
-msgstr ""
-
-#: src/common/constants.cpp:209 ../scourge_data/config/rpg.cfg:83
-msgid "paralysed"
-msgstr ""
-
-#: src/common/constants.cpp:210 ../scourge_data/config/rpg.cfg:91
-msgid "invisible"
-msgstr ""
-
-#: src/common/constants.cpp:211 ../scourge_data/config/rpg.cfg:99
-msgid "overloaded"
-msgstr ""
-
-#: src/common/constants.cpp:212 ../scourge_data/config/rpg.cfg:106
-msgid "dead"
-msgstr ""
-
-#: src/common/constants.cpp:213 ../scourge_data/config/rpg.cfg:113
-msgid "asleep"
-msgstr ""
-
-#: src/common/constants.cpp:217 ../scourge_data/config/rpg.cfg:8
-msgid "Air"
-msgstr ""
-
-#: src/common/constants.cpp:218 ../scourge_data/config/rpg.cfg:16
-msgid "Earth"
-msgstr ""
-
-#: src/common/constants.cpp:219 ../scourge_data/config/rpg.cfg:24
-msgid "Fire"
-msgstr ""
-
-#: src/common/constants.cpp:220 ../scourge_data/config/rpg.cfg:32
-msgid "Stone"
-msgstr ""
-
-#: src/common/constants.cpp:221 ../scourge_data/config/rpg.cfg:40
-msgid "Water"
-msgstr ""
-
-#: src/common/constants.cpp:222 ../scourge_data/config/rpg.cfg:47
-msgid "Jelly"
-msgstr ""
-
-#: src/common/constants.cpp:223 ../scourge_data/config/rpg.cfg:55
-msgid "Ice"
-msgstr ""
-
-#: src/common/constants.cpp:224 ../scourge_data/config/rpg.cfg:63
-msgid "Planar"
-msgstr ""
-
-#: src/common/constants.cpp:225 ../scourge_data/config/rpg.cfg:71
-msgid "Astral"
-msgstr ""
-
-#: src/common/constants.cpp:226 ../scourge_data/config/rpg.cfg:79
-msgid "Dire"
-msgstr ""
-
-#: src/common/constants.cpp:227 ../scourge_data/config/rpg.cfg:87
-msgid "Cave"
-msgstr ""
-
-#: src/common/constants.cpp:228 ../scourge_data/config/rpg.cfg:95
-msgid "Acid"
-msgstr ""
-
-#: src/common/constants.cpp:229 ../scourge_data/config/rpg.cfg:102
-msgid "Spirit"
-msgstr ""
-
-#: src/common/constants.cpp:230 ../scourge_data/config/rpg.cfg:109
-msgid "Mist"
-msgstr ""
-
-#: src/common/constants.cpp:231 ../scourge_data/config/rpg.cfg:116
-#, fuzzy
-msgid "Quiet"
-msgstr "Quit"
-
-#: src/common/constants.cpp:238
+#: src/common/constants.cpp:180
 msgid "Lesser"
 msgstr ""
 
-#: src/common/constants.cpp:239
+#: src/common/constants.cpp:181
 msgid "Greater"
 msgstr ""
 
-#: src/common/constants.cpp:240
+#: src/common/constants.cpp:182
 msgid "Champion"
 msgstr ""
 
-#: src/common/constants.cpp:241
+#: src/common/constants.cpp:183
 msgid "Divine"
 msgstr ""
 
-#: src/common/constants.cpp:278
+#: src/common/constants.cpp:220
 msgid "commoner"
 msgstr ""
 
-#: src/common/constants.cpp:279
+#: src/common/constants.cpp:221
 msgid "merchant"
 msgstr ""
 
-#: src/common/constants.cpp:280
+#: src/common/constants.cpp:222
 msgid "healer"
 msgstr ""
 
-#: src/common/constants.cpp:281
+#: src/common/constants.cpp:223
 msgid "sage"
 msgstr ""
 
-#: src/common/constants.cpp:282
+#: src/common/constants.cpp:224
 msgid "trainer"
 msgstr ""
 
@@ -706,51 +542,51 @@ msgstr ""
 msgid "%s resists the spell with magic item!"
 msgstr ""
 
-#: src/session.cpp:92
+#: src/session.cpp:91
 msgid "Loading Shapes"
 msgstr ""
 
-#: src/session.cpp:100
+#: src/session.cpp:99
 msgid "Loading Items"
 msgstr ""
 
-#: src/session.cpp:104
+#: src/session.cpp:103
 msgid "Loading Spells"
 msgstr ""
 
-#: src/session.cpp:108
+#: src/session.cpp:107
 msgid "Loading Characters"
 msgstr ""
 
-#: src/session.cpp:113
+#: src/session.cpp:112
 msgid "Loading Creatures"
 msgstr ""
 
-#: src/session.cpp:116
+#: src/session.cpp:115
 msgid "Loading Portraits"
 msgstr ""
 
-#: src/session.cpp:121
+#: src/session.cpp:120
 msgid "Loading Missions"
 msgstr ""
 
-#: src/session.cpp:126
+#: src/session.cpp:125
 msgid "Initializing Party"
 msgstr ""
 
-#: src/session.cpp:129
+#: src/session.cpp:128
 msgid "Initializing Scripting"
 msgstr ""
 
-#: src/session.cpp:132
+#: src/session.cpp:131
 msgid "Loading Skills"
 msgstr ""
 
-#: src/session.cpp:135
+#: src/session.cpp:134
 msgid "Creating Map"
 msgstr ""
 
-#: src/session.cpp:138
+#: src/session.cpp:137
 msgid "Initializing UI"
 msgstr ""
 
@@ -5009,6 +4845,10 @@ msgid ""
 "The high-level scholar receives an attack bonus with this capability."
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:4
+msgid "blessed"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:6
 #, c-format
 msgid "%s is blessed"
@@ -5017,6 +4857,14 @@ msgstr ""
 #: ../scourge_data/config/rpg.cfg:7
 #, c-format
 msgid "%s is not blessed anymore"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:8
+msgid "Air"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:12
+msgid "empowered"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:14
@@ -5029,6 +4877,14 @@ msgstr ""
 msgid "%s is not empowered anymore"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:16
+msgid "Earth"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:20
+msgid "enraged"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:22
 #, c-format
 msgid "%s is enraged"
@@ -5037,6 +4893,14 @@ msgstr ""
 #: ../scourge_data/config/rpg.cfg:23
 #, c-format
 msgid "%s is not enraged anymore"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:24
+msgid "Fire"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:28
+msgid "ac_protected"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:30
@@ -5049,6 +4913,14 @@ msgstr ""
 msgid "%s is not protected anymore"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:32
+msgid "Stone"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:36
+msgid "magic_protected"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:38
 #, c-format
 msgid "%s is protected against magic"
@@ -5057,6 +4929,14 @@ msgstr ""
 #: ../scourge_data/config/rpg.cfg:39
 #, c-format
 msgid "%s is not protected against magic anymore"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:40
+msgid "Water"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:44
+msgid "drunk"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:45
@@ -5069,6 +4949,15 @@ msgstr ""
 msgid "%s is not drunk anymore"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:47
+msgid "Jelly"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:51
+#, fuzzy
+msgid "poisoned"
+msgstr "Options"
+
 #: ../scourge_data/config/rpg.cfg:53
 #, fuzzy, c-format
 msgid "%s is poisoned"
@@ -5077,6 +4966,14 @@ msgstr "Options"
 #: ../scourge_data/config/rpg.cfg:54
 #, c-format
 msgid "%s is not poisoned anymore"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:55
+msgid "Ice"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:59
+msgid "cursed"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:61
@@ -5089,6 +4986,14 @@ msgstr ""
 msgid "%s is not cursed anymore"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:63
+msgid "Planar"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:67
+msgid "possessed"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:69
 #, c-format
 msgid "%s is possessed"
@@ -5097,6 +5002,14 @@ msgstr ""
 #: ../scourge_data/config/rpg.cfg:70
 #, c-format
 msgid "%s is not possessed anymore"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:71
+msgid "Astral"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:75
+msgid "blinded"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:77
@@ -5109,6 +5022,14 @@ msgstr ""
 msgid "%s is not blinded anymore"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:79
+msgid "Dire"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:83
+msgid "paralysed"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:85
 #, c-format
 msgid "%s is paralysed"
@@ -5117,6 +5038,14 @@ msgstr ""
 #: ../scourge_data/config/rpg.cfg:86
 #, c-format
 msgid "%s is not paralysed anymore"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:87
+msgid "Cave"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:91
+msgid "invisible"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:93
@@ -5129,6 +5058,14 @@ msgstr ""
 msgid "%s is not invisible anymore"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:95
+msgid "Acid"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:99
+msgid "overloaded"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:100
 #, c-format
 msgid "%s is overloaded"
@@ -5137,6 +5074,14 @@ msgstr ""
 #: ../scourge_data/config/rpg.cfg:101
 #, c-format
 msgid "%s is not overloaded anymore"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:102
+msgid "Spirit"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:106
+msgid "dead"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:107
@@ -5149,6 +5094,14 @@ msgstr ""
 msgid "%s is resurrected"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:109
+msgid "Mist"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:113
+msgid "asleep"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:114
 #, c-format
 msgid "%s is asleep"
@@ -5158,6 +5111,11 @@ msgstr ""
 #, c-format
 msgid "%s is awake"
 msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:116
+#, fuzzy
+msgid "Quiet"
+msgstr "Quit"
 
 #: ../scourge_data/config/rpg.cfg:121 ../scourge_data/config/rpg.cfg:122
 msgid "BASIC_GROUP"

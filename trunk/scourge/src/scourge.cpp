@@ -526,7 +526,7 @@ void Scourge::createMissionInfoMessage( Mission *lastMission ) {
 
 		for(int i = 0; i < getParty()->getPartySize(); i++) {
 			int level = getParty()->getParty(i)->getLevel();
-			if(!getParty()->getParty(i)->getStateMod(Constants::dead)) {
+			if(!getParty()->getParty(i)->getStateMod(StateMod::dead)) {
 				int n = getParty()->getParty(i)->addExperience(exp);
 				if(n > 0) {
 					if( level != getParty()->getParty(i)->getLevel() ) {
@@ -1216,7 +1216,7 @@ int Scourge::dropItem(int x, int y) {
 
 bool Scourge::useGate(Location *pos) {
   for (int i = 0; i < party->getPartySize(); i++) {
-    if (!party->getParty(i)->getStateMod(Constants::dead)) {
+    if (!party->getParty(i)->getStateMod(StateMod::dead)) {
       if (pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_UP")) {
         ascendDungeon( pos );
         return true;
@@ -1255,7 +1255,7 @@ bool Scourge::useTeleporter(Location *pos) {
     } else {
       // able to teleport if any party member is alive
       for(int i = 0; i < 4; i++) {
-        if(!party->getParty(i)->getStateMod(Constants::dead)) {					
+        if(!party->getParty(i)->getStateMod(StateMod::dead)) {					
           teleporting = true;
           return true;
         }
@@ -1787,11 +1787,11 @@ bool Scourge::createBattleTurns() {
 
   // anybody doing anything?
   for( int i = 0; i < party->getPartySize(); i++ ) {
-    if( !party->getParty(i)->getStateMod(Constants::dead) ) {
+    if( !party->getParty(i)->getStateMod(StateMod::dead) ) {
       // possessed creature attacks fellows...
 //      if(party->getParty(i)->getTargetCreature() &&
 //         party->getParty(i)->getStateMod(Constants::possessed)) {
-      if( party->getParty(i)->getStateMod( Constants::possessed ) ) {
+      if( party->getParty(i)->getStateMod( StateMod::possessed ) ) {
         Creature *target = session->getParty()->getClosestPlayer(toint(party->getParty(i)->getX()),
                                                                  toint(party->getParty(i)->getY()),
                                                                  party->getParty(i)->getShape()->getWidth(),
@@ -1816,7 +1816,7 @@ bool Scourge::createBattleTurns() {
     }
   }
   for (int i = 0; i < session->getCreatureCount(); i++) {
-    if (!session->getCreature(i)->getStateMod(Constants::dead) &&
+    if (!session->getCreature(i)->getStateMod(StateMod::dead) &&
         session->getCreature(i)->getMonster() &&
         !session->getCreature(i)->getMonster()->isNpc() &&
         levelMap->isLocationVisible(toint(session->getCreature(i)->getX()),
@@ -1853,7 +1853,7 @@ bool Scourge::createBattleTurns() {
     for (int i = 0; i < party->getPartySize(); i++) {
       bool visible = ( levelMap->isLocationVisible(toint(party->getParty(i)->getX()),
                                               toint(party->getParty(i)->getY())) );
-      if( visible && !party->getParty(i)->getStateMod(Constants::dead) ) {
+      if( visible && !party->getParty(i)->getStateMod(StateMod::dead) ) {
         bool found = false;
         for( int t = 0; t < battleCount; t++ ) {
           if( battle[t] == party->getParty(i)->getBattle() ) {
@@ -1903,7 +1903,7 @@ void Scourge::resetUIAfterBattle() {
   }
   // animate monsters again after TB combat (see resetNonParticipantAnimation() )
   for(int i = 0; i < session->getCreatureCount(); i++) {
-		if( !session->getCreature(i)->getStateMod( Constants::dead ) ) {    
+		if( !session->getCreature(i)->getStateMod( StateMod::dead ) ) {    
 		/*
 		if( !session->getCreature(i)->getStateMod( Constants::dead ) &&
         !( session->getCreature(i)->getMonster() &&
@@ -1937,7 +1937,7 @@ void Scourge::moveCreatures( bool allCreatures ) {
   // move visible monsters
   for( int i = 0; i < session->getCreatureCount(); i++ ) {
   	Creature *c = session->getCreature( i );
-    if( !c->getStateMod( Constants::dead ) &&
+    if( !c->getStateMod( StateMod::dead ) &&
 				levelMap->isLocationVisible( toint( c->getX() ),
 					toint( c->getY() ) ) ) {
 			// move if allCreatures is true, or if monster has no target.
@@ -2435,7 +2435,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   glPushMatrix();
   glEnable( GL_TEXTURE_2D );
   glColor4f( 1, 1, 1, 1 );
-  if( p->getStateMod( Constants::dead ) ) {
+  if( p->getStateMod( StateMod::dead ) ) {
     glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getDeathPortraitTexture() );
   } else {
     glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() ) );
@@ -2473,19 +2473,19 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
     }
   }
 
-  if( p->getStateMod( Constants::possessed ) ) {
+  if( p->getStateMod( StateMod::possessed ) ) {
     glColor4f( ( darker ? 0.5f : 1.0f ), 0, 0, 0.5f );
     shade = true;
-  } else if( p->getStateMod( Constants::invisible ) ) {
+  } else if( p->getStateMod( StateMod::invisible ) ) {
     glColor4f( 0, ( darker ? 0.375f : 0.75f ), ( darker ? 0.5f : 1.0f ), 0.5f );
     shade = true;
-  } else if( p->getStateMod( Constants::poisoned ) ) {
+  } else if( p->getStateMod( StateMod::poisoned ) ) {
     glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.375f : 0.75f ), 0, 0.5f );
     shade = true;
-  } else if( p->getStateMod( Constants::blinded ) ) {
+  } else if( p->getStateMod( StateMod::blinded ) ) {
     glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.5f : 1.0f ), ( darker ? 0.5f : 1.0f ), 0.5f );
     shade = true;
-  } else if( p->getStateMod( Constants::cursed ) ) {
+  } else if( p->getStateMod( StateMod::cursed ) ) {
     glColor4f( ( darker ? 0.375f : 0.75f ), 0, ( darker ? 0.375f : 0.75f ), 0.5f );
     shade = true;
   }
@@ -2541,10 +2541,10 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   int yp = 1;
   float n = 12;
   int row = ( w->getWidth() / (int)n );
-  for(int i = 0; i < Constants::STATE_MOD_COUNT + 2; i++) {
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
 		GLuint icon = 255;
 
-		if( i == Constants::STATE_MOD_COUNT && 
+		if( i == StateMod::STATE_MOD_COUNT && 
 				p->getThirst() <= 5 ) {
 			icon = getSession()->getShapePalette()->getThirstIcon();
 			if( p->getThirst() <= 3 ) {
@@ -2552,7 +2552,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 			} else {
 				glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
 			}
-		} else if( i == Constants::STATE_MOD_COUNT + 1 &&
+		} else if( i == StateMod::STATE_MOD_COUNT + 1 &&
 							 p->getHunger() <= 5 ) {
 			icon = getSession()->getShapePalette()->getHungerIcon();
 			if( p->getHunger() <= 3 ) {
@@ -2702,7 +2702,7 @@ void Scourge::updatePartyUI() {
   // refresh levelMap if any party member's effect is on
   bool effectOn = false;
   for(int i = 0; i < party->getPartySize(); i++) {
-	if(!party->getParty(i)->getStateMod(Constants::dead) && party->getParty(i)->isEffectOn()) {
+	if(!party->getParty(i)->getStateMod(StateMod::dead) && party->getParty(i)->isEffectOn()) {
 	  effectOn = true;
 	  break;
 	}
@@ -3376,7 +3376,7 @@ void Scourge::movePartyToGateAndEndMission() {
   // move the creature to the gate so it will be near it on the next level
   if( gatepos ) {
     for (int i = 0; i < getParty()->getPartySize(); i++) {
-      if (!getParty()->getParty(i)->getStateMod(Constants::dead)) {
+      if (!getParty()->getParty(i)->getStateMod(StateMod::dead)) {
         getParty()->getParty(i)->moveTo( gatepos->x, gatepos->y, gatepos->z );
       }
     }

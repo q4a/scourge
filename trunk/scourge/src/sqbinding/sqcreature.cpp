@@ -394,9 +394,9 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
   object->setStateMod( mod, setting );
     
   if(setting) {
-    strcpy( msg, StateMod::stateMods[ mod ]->getSetState() );
+    sprintf( msg, StateMod::stateMods[ mod ]->getSetState(), object->getName() );
   } else {
-    strcpy( msg, StateMod::stateMods[ mod ]->getUnsetState() );
+    sprintf( msg, StateMod::stateMods[ mod ]->getUnsetState(), object->getName() );
   }
   SqBinding::sessionRef->getMap()->addDescription(msg, 1, 0.15f, 1);
   
