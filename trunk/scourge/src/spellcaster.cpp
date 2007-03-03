@@ -407,7 +407,8 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     Creature *creature = targets[i];
 
     bool protectiveItem = false;
-    if(!Constants::isStateModTransitionWanted(mod, setting)) {
+    if( !StateMod::stateMods[ mod ]->isStateModTransitionWanted( setting ) ) {
+    //if(!Constants::isStateModTransitionWanted(mod, setting)) {
 
       // bad effects should only happen to enemies
       if(!battle->getCreature()->canAttack( creature )) continue;

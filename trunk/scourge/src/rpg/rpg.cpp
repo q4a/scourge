@@ -30,79 +30,124 @@ vector<char*> Rpg::firstSyl;
 vector<char*> Rpg::midSyl;
 vector<char*> Rpg::endSyl;
 
-void Rpg::initRpg() { 
-	Skill *lastSkill = NULL;
-	SkillGroup *lastGroup = NULL;
+map<string, StateMod*> StateMod::stateModsByName;
+vector<StateMod*> StateMod::stateMods;
+vector<StateMod*> StateMod::goodStateMods;
+vector<StateMod*> StateMod::badStateMods;
+
+void Rpg::initSkills( ConfigLang *config ) {
+  Skill *lastSkill = NULL;
+  SkillGroup *lastGroup = NULL;
   char line[255];
-	char skillName[80], skillSymbol[80], skillDescription[255];
-	char groupName[80], groupDescription[255];
-	
-	ConfigLang *config = ConfigLang::load( "config/rpg.cfg" );
+  char skillName[80], skillSymbol[80], skillDescription[255];
+  char groupName[80], groupDescription[255];
+  
+  vector<ConfigNode*> *v = config->getDocument()->
+    getChildrenByName( "group" );
+  
+  for( unsigned int i = 0; i < v->size(); i++ ) {
+    ConfigNode *node = (*v)[i];
+    
+    config->setUpdate( "Loading Skills", i, v->size() );
+    
+    strcpy( groupName, node->getValueAsString( "name" ) );
+    strcpy( groupDescription, node->getValueAsString( "description" ) );
+    
+    lastGroup = new SkillGroup( groupName, groupDescription );
+    
+    vector<ConfigNode*> *vv = node->getChildrenByName( "skill" );
+    for( unsigned int i = 0; vv && i < vv->size(); i++ ) {
+      ConfigNode *skillNode = (*vv)[i];
+      
+      strcpy( skillName, skillNode->getValueAsString( "name" ) );
+      strcpy( skillSymbol, skillNode->getValueAsString( "symbol" ) );
+      strcpy( skillDescription, skillNode->getValueAsString( "description" ) );
+      lastSkill = 
+        new Skill( skillName, 
+                   skillDescription, 
+                   skillSymbol, 
+                   lastGroup );
+      
+      lastSkill->setPreReqMultiplier( skillNode->getValueAsInt( "prereq_multiplier" ) );
+      strcpy( line, skillNode->getValueAsString( "prereq_skills" ) );
+      char *p = strtok( line, "," );
+      while( p ) {
+        Skill *stat = Skill::getSkillByName( p );
+        if( !stat ) {
+          cerr << "*** Error: Can't find stat named: " << p << endl;
+          exit( 1 );
+        }
+        lastSkill->addPreReqStat( stat );
+        p = strtok( NULL, "," );
+      }
+    }
+  }
+}
+
+void Rpg::initNames( ConfigLang *config ) {
+  char line[4000];
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "group" );
-
-	for( unsigned int i = 0; i < v->size(); i++ ) {
-		ConfigNode *node = (*v)[i];
-
-		config->setUpdate( "Loading Skills", i, v->size() );
-
-		strcpy( groupName, node->getValueAsString( "name" ) );
-		strcpy( groupDescription, node->getValueAsString( "description" ) );
-		
-		lastGroup = new SkillGroup( groupName, groupDescription );
-
-		vector<ConfigNode*> *vv = node->getChildrenByName( "skill" );
-		for( unsigned int i = 0; vv && i < vv->size(); i++ ) {
-			ConfigNode *skillNode = (*vv)[i];
-
-			strcpy( skillName, skillNode->getValueAsString( "name" ) );
-			strcpy( skillSymbol, skillNode->getValueAsString( "symbol" ) );
-			strcpy( skillDescription, skillNode->getValueAsString( "description" ) );
-			lastSkill = 
-				new Skill( skillName, 
-									 skillDescription, 
-									 skillSymbol, 
-									 lastGroup );
-
-			lastSkill->setPreReqMultiplier( skillNode->getValueAsInt( "prereq_multiplier" ) );
-			strcpy( line, skillNode->getValueAsString( "prereq_skills" ) );
-			char *p = strtok( line, "," );
-			while( p ) {
-				Skill *stat = Skill::getSkillByName( p );
-				if( !stat ) {
-					cerr << "*** Error: Can't find stat named: " << p << endl;
-					exit( 1 );
-				}
-				lastSkill->addPreReqStat( stat );
-				p = strtok( NULL, "," );
-			}
-		}
-	}
-
-	v = config->getDocument()->
-		getChildrenByName( "names" );
+    getChildrenByName( "names" );
 	if( v ) {
 		ConfigNode *node = (*v)[0];
-		strcpy( line,node ->getValueAsString( "first" ) );
+		strcpy( line, node ->getValueAsString( "first" ) );
 		char *p = strtok( line, "," );
 		while( p != NULL ) {
 			firstSyl.push_back( strdup( p ) );
+      //cerr << "first: " << firstSyl[ firstSyl.size() - 1 ] << endl;
 			p = strtok( NULL, "," );
 		}
-		strcpy( line,node ->getValueAsString( "middle" ) );
+		strcpy( line, node ->getValueAsString( "middle" ) );
 		p = strtok( line, "," );
 		while( p != NULL ) {
 			midSyl.push_back( strdup( p ) );
+      //cerr << "mid: " << midSyl[ midSyl.size() - 1 ] << endl;
 			p = strtok( NULL, "," );
 		}
-		strcpy( line,node ->getValueAsString( "last" ) );
+		strcpy( line, node ->getValueAsString( "last" ) );
 		p = strtok( line, "," );
 		while( p != NULL ) {
 			endSyl.push_back( strdup( p ) );
+      //cerr << "last: " << endSyl[ endSyl.size() - 1 ] << endl;
 			p = strtok( NULL, "," );
 		}
 	}
+  //cerr << "first: " << firstSyl.size() << " mid: " << midSyl.size() << " end: " << endSyl.size() << endl;
+}
 
+void Rpg::initStateMods( ConfigLang *config ) {
+  vector<ConfigNode*> *v = config->getDocument()->
+  getChildrenByName( "state-mod" );
+
+  for( unsigned int i = 0; i < v->size(); i++ ) {
+    ConfigNode *node = (*v)[i];
+    
+    config->setUpdate( "Loading StateMods", i, v->size() );
+
+    string name = node->getValueAsString( "name" );
+    int type = ( !strcmp( node->getValueAsString( "type" ), "bad" ) ? 
+                 StateMod::BAD : 
+                 ( !strcmp( node->getValueAsString( "type" ), "good" ) ? StateMod::GOOD : StateMod::NEITHER ) );
+    StateMod *stateMod = new StateMod( (char*)name.c_str(),
+                                       (char*)node->getValueAsString( "display_name" ),
+                                       (char*)node->getValueAsString( "symbol" ),
+                                       (char*)node->getValueAsString( "setstate" ),
+                                       (char*)node->getValueAsString( "unsetstate" ),
+                                       type, 
+                                       (int)StateMod::stateMods.size() );
+    StateMod::stateMods.push_back( stateMod );
+    StateMod::stateModsByName[ name ] = stateMod;
+    if( type == StateMod::GOOD ) StateMod::goodStateMods.push_back( stateMod );
+    if( type == StateMod::BAD ) StateMod::badStateMods.push_back( stateMod );
+  }
+  cerr << "** Read " << StateMod::stateMods.size() << " state mods." << endl;
+}
+
+void Rpg::initRpg() { 
+	ConfigLang *config = ConfigLang::load( "config/rpg.cfg" );
+  initSkills( config );
+  initStateMods( config );
+  initNames( config );
 	delete( config );
 }
 
@@ -153,5 +198,47 @@ SkillGroup::SkillGroup( char *name, char *description ) {
 }
 
 SkillGroup::~SkillGroup() {
+}
+
+StateMod::StateMod( char *name, char *displayName, char *symbol, char *setState, char *unsetState, int type, int index ) {
+  strcpy( this->name, name );
+  strcpy( this->displayName, displayName );
+  strcpy( this->symbol, symbol );
+  strcpy( this->setState, setState );
+  strcpy( this->unsetState, unsetState );
+  this->type = type;
+  this->index = index;
+}
+
+StateMod::~StateMod() {
+}
+
+StateMod *StateMod::getRandomGood() {
+  return goodStateMods[ (int)( (float)goodStateMods.size() * rand() / RAND_MAX ) ];
+}
+
+StateMod *StateMod::getRandomBad() {
+  return badStateMods[ (int)( (float)goodStateMods.size() * rand() / RAND_MAX ) ];
+}
+  
+bool StateMod::isStateModTransitionWanted( bool setting ) {
+  bool effectFound = false;
+  for(int i = 0; i < (int)goodStateMods.size(); i++) {
+    if(goodStateMods[i] == this) {
+      effectFound = true;
+      break;
+    }
+  }
+  if(effectFound && setting) return true;
+
+  effectFound = false;
+  for(int i = 0; i < (int)badStateMods.size(); i++) {
+    if(badStateMods[i] == this) {
+      effectFound = true;
+      break;
+    }
+  }
+  if( ( effectFound || this == stateMods[StateMod::dead] ) && !setting ) return true;
+  return false;
 }
 

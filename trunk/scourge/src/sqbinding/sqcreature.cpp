@@ -362,11 +362,12 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
   GET_INT( mod )
   GET_OBJECT( Creature* )
 
-  cerr << "Setting: mod=" << Constants::STATE_NAMES[ mod ] << " to " << setting << endl;
+  cerr << "Setting: mod=" << StateMod::stateMods[ mod ]->getName() << " to " << setting << endl;
 
   char msg[200];
   bool protectiveItem = false;
-  if( !Constants::isStateModTransitionWanted( mod, setting ) ) {
+  if( !StateMod::stateMods[ mod ]->isStateModTransitionWanted( setting ) ) {
+  //if( !Constants::isStateModTransitionWanted( mod, setting ) ) {
     // check for magic item state mod protections
     protectiveItem = object->getProtectedStateMod(mod);
     if(protectiveItem && 0 == (int)(2.0f * rand()/RAND_MAX)) {
@@ -393,9 +394,9 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
   object->setStateMod( mod, setting );
     
   if(setting) {
-    sprintf( msg, _( "%s is %s." ), object->getName(), _( Constants::STATE_DISPLAY_NAMES[ mod ] ) );
+    strcpy( msg, StateMod::stateMods[ mod ]->getSetState() );
   } else {
-    sprintf(msg, _( "%s is not %s any more." ), object->getName(), _( Constants::STATE_DISPLAY_NAMES[ mod ] ) );
+    strcpy( msg, StateMod::stateMods[ mod ]->getUnsetState() );
   }
   SqBinding::sessionRef->getMap()->addDescription(msg, 1, 0.15f, 1);
   
