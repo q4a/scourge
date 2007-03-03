@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-02 22:08-0800\n"
+"POT-Creation-Date: 2007-03-03 09:35-0800\n"
 "PO-Revision-Date: 2007-02-04 11:18+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -591,9 +591,99 @@ msgstr ""
 msgid "Initializing UI"
 msgstr ""
 
+#: src/board.cpp:290
+msgid "(STORY)"
+msgstr ""
+
+#: src/board.cpp:291
+msgid "(CAVE)"
+msgstr ""
+
+#: src/board.cpp:293
+msgid "(completed)"
+msgstr ""
+
 #: src/item.cpp:815
 msgid ""
 "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $of $school"
+msgstr ""
+
+#: src/item.cpp:833
+msgid "Protective"
+msgstr ""
+
+#: src/item.cpp:838
+msgid "Slaying"
+msgstr ""
+
+#: src/item.cpp:853
+msgid "of the"
+msgstr ""
+
+#: src/characterinfo.cpp:44
+#, c-format
+msgid "Exp: %u(%u)"
+msgstr ""
+
+#: src/characterinfo.cpp:62
+#, c-format
+msgid "HP: %d (%d)"
+msgstr ""
+
+#: src/characterinfo.cpp:64
+#, c-format
+msgid "MP: %d (%d)"
+msgstr ""
+
+#: src/characterinfo.cpp:66
+#, c-format
+msgid "Thirst: %d (10)"
+msgstr ""
+
+#: src/characterinfo.cpp:68
+#, c-format
+msgid "Hunger: %d (10)"
+msgstr ""
+
+#: src/characterinfo.cpp:70
+#, c-format
+msgid "AP: %d (%d)"
+msgstr ""
+
+#: src/characterinfo.cpp:80
+msgid "Initiative"
+msgstr ""
+
+#: src/characterinfo.cpp:82
+msgid "DEF"
+msgstr ""
+
+#: src/characterinfo.cpp:105 src/characterinfo.cpp:114
+#: src/characterinfo.cpp:134 src/characterinfo.cpp:143
+#: src/characterinfo.cpp:163 src/characterinfo.cpp:172
+#: src/characterinfo.cpp:191 src/characterinfo.cpp:200
+msgid "ATK"
+msgstr ""
+
+#: src/characterinfo.cpp:108 src/characterinfo.cpp:117
+#: src/characterinfo.cpp:137 src/characterinfo.cpp:146
+#: src/characterinfo.cpp:166 src/characterinfo.cpp:175
+#: src/characterinfo.cpp:194 src/characterinfo.cpp:203
+msgid "CTH"
+msgstr ""
+
+#: src/characterinfo.cpp:197 src/characterinfo.cpp:206 src/battle.cpp:1453
+msgid "Bare Hands"
+msgstr ""
+
+#: src/characterinfo.cpp:226
+#, c-format
+msgid "%.2f APR"
+msgstr ""
+
+#: src/characterinfo.cpp:228
+#, c-format
+msgid "per %.2f R"
 msgstr ""
 
 #: src/battle.cpp:677
@@ -765,10 +855,6 @@ msgstr ""
 #: src/battle.cpp:1441
 #, c-format
 msgid "In Range"
-msgstr ""
-
-#: src/battle.cpp:1453
-msgid "Bare Hands"
 msgstr ""
 
 #: src/scourge.cpp:141
