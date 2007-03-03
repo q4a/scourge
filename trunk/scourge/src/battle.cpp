@@ -60,8 +60,6 @@ enum {
   WAIT,
 };
 
-char *actionName[] = { "NO ACTION", "LOITER", "ATTACK", "MOVE", "NO_TARGET", "WAIT"};
-
 Battle::Battle() {
   this->creature = NULL;
 }
@@ -676,7 +674,7 @@ bool Battle::selectNewTarget() {
 }
 
 void Battle::useSkill() {
-  sprintf(message, "%s uses capability %s!", 
+  sprintf(message, _( "%1$s uses capability %2$s!" ), 
           creature->getName(), 
           creature->getActionSkill()->getName());
   session->getMap()->addDescription(message, 1, 0.15f, 1);
@@ -711,7 +709,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
     if(itemIndex > -1) {
       if( creature->getActionItem()->getRpgItem()->getMaxCharges() > 0 ) {
 				if( creature->getActionItem()->getCurrentCharges() <= 0 ) {
-					sprintf(message, "Your %s is out of charges.", creature->getActionItem()->getItemName() );
+					sprintf(message, _( "Your %s is out of charges." ), creature->getActionItem()->getItemName() );
 					session->getMap()->addDescription( message );
 					creature->cancelTarget();
 					// also cancel path
@@ -720,19 +718,19 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 				} else {
 					creature->getActionItem()->setCurrentCharges( 
 						creature->getActionItem()->getCurrentCharges() - 1 );
-					sprintf(message, "Your %s feels lighter.", creature->getActionItem()->getItemName() );
+					sprintf(message, _( "Your %s feels lighter." ), creature->getActionItem()->getItemName() );
 					session->getMap()->addDescription( message );
 				}
       } else {
         creature->removeInventory(itemIndex);
-        sprintf(message, "%s crumbles into dust.", creature->getActionItem()->getItemName());
+        sprintf(message, _( "%s crumbles into dust." ), creature->getActionItem()->getItemName());
         session->getMap()->addDescription(message);
       }
       if(!session->getGameAdapter()->isHeadless()) 
         session->getGameAdapter()->refreshInventoryUI();
     } else {
       // scroll was removed from inventory before casting
-      sprintf(message, "Couldn't find scroll, cancelled spell.");
+      sprintf( message, _( "Couldn't find scroll, cancelled spell." ) );
       session->getMap()->addDescription(message);
       creature->cancelTarget();
       // also cancel path
@@ -741,7 +739,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
     }
   }
 
-  sprintf(message, "%s casts %s!", 
+  sprintf(message, _( "%1$s casts %2$s!" ), 
           creature->getName(), 
           creature->getActionSpell()->getName());
   session->getMap()->addDescription(message, 1, 0.15f, 1);
@@ -804,11 +802,11 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 	bool failed = false;
   if( !alwaysSucceeds && !projectileHit ) {
 		if( (int)( maxSkill * rand() / RAND_MAX ) > skill + delta ) {
-			sprintf( message, "...%s needs more practice.", creature->getName() );
+			sprintf( message, _( "...%s needs more practice." ), creature->getName() );
 			session->getMap()->addDescription( message, 1, 0.15f, 1 );
 			failed = true;
 		} else if( (int)((100.0f * rand() / RAND_MAX) + delta) < creature->getActionSpell()->getFailureRate() ) {
-			session->getMap()->addDescription( "...the magic fails inexplicably!", 1, 0.15f, 1 );
+			session->getMap()->addDescription( _( "...the magic fails inexplicably!" ), 1, 0.15f, 1 );
 			failed = true;
 		}
 	}
@@ -834,7 +832,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 }
 
 void Battle::launchProjectile() {
-  sprintf(message, "...%s shoots a projectile", creature->getName());
+  sprintf(message, _( "...%s shoots a projectile" ), creature->getName());
   session->getMap()->addDescription(message); 
   if(!Projectile::addProjectile(creature, creature->getTargetCreature(), item, 
                                 new ShapeProjectileRenderer( session->getShapePalette()->findShapeByName("ARROW") ),
@@ -918,12 +916,12 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
 void Battle::prepareToHitMessage() {
   if(item) {
     if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-      sprintf(message, "%s attacks %s with %s!", 
+      sprintf(message, _( "%1$s attacks %2$s with %3$s!" ), 
               creature->getName(), 
               creature->getTargetCreature()->getName(),
               item->getItemName() );
     } else {
-      sprintf( message, "%s attacks %s with %s!", 
+      sprintf( message, _( "%1$s attacks %2$s with %3$s!" ), 
                creature->getName(), 
                creature->getTargetCreature()->getName(),
                item->getItemName() );
@@ -939,7 +937,7 @@ void Battle::prepareToHitMessage() {
     session->playSound( getRandomSound(handheldSwishSoundStart, handheldSwishSoundCount) );
 
   } else {
-    sprintf( message, "%s attacks %s with bare hands!", 
+    sprintf( message, _( "%1$s attacks %2$s with bare hands!" ), 
              creature->getName(), 
              creature->getTargetCreature()->getName() );
     session->getMap()->addDescription(message);
@@ -976,13 +974,14 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
       if( tmpTarget ) {
         // play item sound
         if(item) session->playSound(item->getRandomSound());
-        sprintf( message, "...fumble: hits %s instead!", tmpTarget->getName() );
+        sprintf( message, _( "...fumble: hits %s instead!" ), tmpTarget->getName() );
         session->getMap()->addDescription( message );
         Creature *oldTarget = creature->getTargetCreature();
         creature->setTargetCreature( tmpTarget );
 
+				// COD not translated
 				char tmp[255];
-				sprintf( tmp, "%s %s own fumbling hands", 
+				sprintf( tmp, "%s %s own fumbling hands",  
 								 Constants::getMessage( Constants::CAUSE_OF_DEATH ),
 								 ( creature->getSex() == Constants::SEX_MALE ? "his" : "her" ) );
 				creature->setPendingCauseOfDeath( tmp );
@@ -1005,26 +1004,26 @@ void Battle::applyHighAttackRoll( float *damage, float attack, float min, float 
     int mul = (int)( 8.0f * rand()/RAND_MAX );
     switch( mul ) {
     case 2:
-    strcpy(message, "...precise hit: double damage!");
+    strcpy(message, _( "...precise hit: double damage!" ) );
     session->getMap()->addDescription(message);
     (*damage) *= mul;
     break;
 
     case 3:
-    strcpy(message, "...precise hit: triple damage!");
+    strcpy(message, _( "...precise hit: triple damage!" ) );
     session->getMap()->addDescription(message);
     (*damage) *= mul;
     break;
 
     case 4:
-    strcpy(message, "...precise hit: quad damage!");
+    strcpy(message, _( "...precise hit: quad damage!" ) );
     session->getMap()->addDescription(message);
     (*damage) *= mul;
     break;
 
     case 0:
     if( percent >= 98 ) {
-      strcpy(message, "...precise hit: instant kill!");
+      strcpy(message, _( "...precise hit: instant kill!" ) );
       session->getMap()->addDescription(message);
       (*damage) = 1000;
     }
@@ -1049,16 +1048,16 @@ void Battle::applyMagicItemDamage( float *damage ) {
     }
     if( mul < 1 ) mul = 1;
     if( mul == 2 ) {
-      strcpy( message, "...double damage!" );
+      strcpy( message, _( "...double damage!" ) );
       session->getMap()->addDescription( message );
     } else if( mul == 3 ) {
-      strcpy( message, "...triple damage!" );
+      strcpy( message, _( "...triple damage!" ) );
       session->getMap()->addDescription( message );
     } else if( mul == 4 ) {
-      strcpy( message, "...quad damage!" );
+      strcpy( message, _( "...quad damage!" ) );
       session->getMap()->addDescription( message );
     } else if( mul > 4 ) {
-      sprintf( message, "...%d-times damage!", mul );
+      sprintf( message, _( "...%d-times damage!" ), mul );
       session->getMap()->addDescription( message );
     }
     (*damage) *= mul;
@@ -1086,13 +1085,13 @@ float Battle::applyMagicItemSpellDamage() {
     if( damage < 0 ) damage = 0;
 
     char msg[200];
-    sprintf( msg, "...%s attacks %s with %s magic.", 
+    sprintf( msg, _( "...%1$s attacks %2$s with %3$s magic." ), 
              creature->getName(), 
              creature->getTargetCreature()->getName(),
              item->getSchool()->getShortName() );
     getSession()->getMap()->addDescription( msg, 1, 0.15f, 1 );
     if( resistance > 0 ) {
-      sprintf( msg, "%s resists the magic with %d.", 
+      sprintf( msg, _( "%s resists the magic with %d." ), 
                creature->getTargetCreature()->getName(),
                resistance );
       getSession()->getMap()->addDescription( msg, 1, 0.15f, 1 );
@@ -1118,7 +1117,7 @@ void Battle::hitWithItem() {
 			Item *parryItem = NULL;
 			float parry = creature->getTargetCreature()->getParry( &parryItem );
 			if( parry > cth ) {
-				sprintf( message, "...%s blocks attack with %s!", 
+				sprintf( message, _( "...%1$s blocks attack with %2$s!" ), 
 								 creature->getTargetCreature()->getName(),
 								 parryItem->getName() );
 				session->getMap()->addDescription( message );
@@ -1134,11 +1133,11 @@ void Battle::hitWithItem() {
 	
 				// cursed items
 				if( item && item->isCursed() ) {
-					session->getMap()->addDescription("...Using cursed item!");
+					session->getMap()->addDescription( _( "...Using cursed item!" ) );
 					attack -= ( attack / 3.0f );
 				}
 	
-				sprintf( message, "...%s attacks for %d points.", 
+				sprintf( message, _( "...%s attacks for %d points." ), 
 								 creature->getName(), toint( attack ) );
 				session->getMap()->addDescription( message );
 				if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
@@ -1157,7 +1156,7 @@ void Battle::hitWithItem() {
 										item ? item->getRpgItem()->getDamageType() : 0,
 										item );
 				if( toint( armor ) > 0 ) {
-					sprintf( message, "...%s's armor blocks %d points", 
+					sprintf( message, _( "...%s's armor blocks %d points" ), 
 									 creature->getTargetCreature()->getName(), toint( armor ) );
 					session->getMap()->addDescription( message );
 				}
@@ -1179,6 +1178,7 @@ void Battle::hitWithItem() {
 					damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
 				}
 
+				// COD not translated
 				char tmp[255];
 				strcpy( tmp, Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
 				strcat( tmp, " " );
@@ -1223,13 +1223,13 @@ void Battle::hitWithItem() {
 			}
 		} else {
 			// a miss
-			sprintf(message, "...%s dodges the attack.", 
+			sprintf(message, _( "...%s dodges the attack." ), 
 							creature->getTargetCreature()->getName() );
 			session->getMap()->addDescription(message);
 		}
 	} else {
 		// a miss
-		sprintf(message, "...%s misses the target.", 
+		sprintf(message, _( "...%s misses the target." ), 
 						creature->getName() );
 		session->getMap()->addDescription(message);
 	}
@@ -1253,7 +1253,7 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
     float extra = ((float)damage / 100.0f) * delta;
 		damage += extra;
 
-    sprintf(message, "...%s hits for %d points of damage", 
+    sprintf(message, _( "...%s hits for %d points of damage" ), 
 						creature->getName(), toint( damage ) );
     session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
     
@@ -1282,7 +1282,7 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
       if( !session->getPreferences()->isBattleTurnBased() )
         creature->getShape()->setCurrentAnimation((int)MD2_TAUNT); 
 
-      sprintf(message, "...%s is killed!", tc->getName());
+      sprintf(message, _( "...%s is killed!" ), tc->getName());
       session->getMap()->addDescription(message, 1.0f, 0.5f, 0.5f);
 			if( session->getParty()->isPartyMember( tc ) ) 
 				session->getMap()->addDescription( tc->getCauseOfDeath(), 1.0f, 0.5f, 0.5f);
@@ -1299,7 +1299,7 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 					if(!session->getParty()->getParty(i)->getStateMod(StateMod::dead)) {
             int n = session->getParty()->getParty(i)->addMoney( tc );
             if(n > 0) {
-              sprintf(message, "%s finds %d coins!", session->getParty()->getParty(i)->getName(), n);
+              sprintf(message, _( "%s finds %d coins!" ), session->getParty()->getParty(i)->getName(), n);
               session->getMap()->addDescription(message);
             }
           }
@@ -1315,7 +1315,7 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
       }
     }
   } else {
-    sprintf(message, "...no damaged caused.");
+    sprintf(message, _( "...no damaged caused." ) );
     session->getMap()->addDescription(message);
   }
 }
@@ -1399,13 +1399,13 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
 
   if( sameTarget ) {
     if( creature->getAction() == Constants::ACTION_CAST_SPELL ) {
-      sprintf( buff, "Targeted" );
+      sprintf( buff, _( "Targeted" ) );
       color->r = 0.6f;
       color->g = 0.1f;
       color->b = 0.6f;
       return true;
     } else if( creature->getAction() == Constants::ACTION_SPECIAL ) {
-      sprintf( buff, "Targeted" );
+      sprintf( buff, _( "Targeted" ) );
       color->r = 0;
       color->g = 0.3f;
       color->b = 0.6f;
@@ -1429,16 +1429,16 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
       color->g = 0.2f;
       color->b = 0;
       if( creature->isPathToTargetCreature() ) {
-        sprintf( buff, "Out of Range. Move: %d", (int)( creature->getPath()->size() ) );
+        sprintf( buff, _( "Out of Range. Move: %d" ), (int)( creature->getPath()->size() ) );
       } else {
-        sprintf( buff, "Out of Range" );
+        sprintf( buff, _( "Out of Range" ) );
       }
     } else {
       color->r = 0.3f;
       color->g = 0.3f;
       color->b = 0.3f;
       // could still be in range for spell or skill
-      sprintf( buff, ( range >= dist ? "In Range" : "Out of Range" ) );
+      sprintf( buff, ( range >= dist ? _( "In Range" ) : _( "Out of Range" ) ) );
     }
     return true;
   }
@@ -1449,9 +1449,9 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
 //    weaponWait /= 2;
 //  }
   
-  sprintf( buff, "%s: %d", 
-					 ( item ? item->getRpgItem()->getName() : "Bare Hands" ), 
-					 ( sameTarget && nextTurn > 0 ? nextTurn : weaponWait ) );
+	sprintf( buff, "%s: %d", 
+				 ( item ? item->getRpgItem()->getName() : _( "Bare Hands" ) ), 
+				 ( sameTarget && nextTurn > 0 ? nextTurn : weaponWait ) );
 	color->r = 0.6f;
 	color->g = 0;
 	color->b = 0;

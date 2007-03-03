@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-02 21:54-0800\n"
+"POT-Creation-Date: 2007-03-02 22:08-0800\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -593,6 +593,181 @@ msgstr ""
 #: src/item.cpp:815
 msgid ""
 "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $of $school"
+msgstr ""
+
+#: src/battle.cpp:677
+#, c-format
+msgid "%1$s uses capability %2$s!"
+msgstr ""
+
+#: src/battle.cpp:712
+#, c-format
+msgid "Your %s is out of charges."
+msgstr ""
+
+#: src/battle.cpp:721
+#, c-format
+msgid "Your %s feels lighter."
+msgstr ""
+
+#: src/battle.cpp:726
+#, c-format
+msgid "%s crumbles into dust."
+msgstr ""
+
+#: src/battle.cpp:733
+#, c-format
+msgid "Couldn't find scroll, cancelled spell."
+msgstr ""
+
+#: src/battle.cpp:742
+#, c-format
+msgid "%1$s casts %2$s!"
+msgstr ""
+
+#: src/battle.cpp:805
+#, c-format
+msgid "...%s needs more practice."
+msgstr ""
+
+#: src/battle.cpp:809
+msgid "...the magic fails inexplicably!"
+msgstr ""
+
+#: src/battle.cpp:835
+#, c-format
+msgid "...%s shoots a projectile"
+msgstr ""
+
+#: src/battle.cpp:919 src/battle.cpp:924
+#, c-format
+msgid "%1$s attacks %2$s with %3$s!"
+msgstr ""
+
+#: src/battle.cpp:940
+#, c-format
+msgid "%1$s attacks %2$s with bare hands!"
+msgstr ""
+
+#: src/battle.cpp:977
+#, c-format
+msgid "...fumble: hits %s instead!"
+msgstr ""
+
+#: src/battle.cpp:1007
+msgid "...precise hit: double damage!"
+msgstr ""
+
+#: src/battle.cpp:1013
+msgid "...precise hit: triple damage!"
+msgstr ""
+
+#: src/battle.cpp:1019
+msgid "...precise hit: quad damage!"
+msgstr ""
+
+#: src/battle.cpp:1026
+msgid "...precise hit: instant kill!"
+msgstr ""
+
+#: src/battle.cpp:1051
+msgid "...double damage!"
+msgstr ""
+
+#: src/battle.cpp:1054
+msgid "...triple damage!"
+msgstr ""
+
+#: src/battle.cpp:1057
+msgid "...quad damage!"
+msgstr ""
+
+#: src/battle.cpp:1060
+#, c-format
+msgid "...%d-times damage!"
+msgstr ""
+
+#: src/battle.cpp:1088
+#, c-format
+msgid "...%1$s attacks %2$s with %3$s magic."
+msgstr ""
+
+#: src/battle.cpp:1094
+#, c-format
+msgid "%s resists the magic with %d."
+msgstr ""
+
+#: src/battle.cpp:1120
+#, c-format
+msgid "...%1$s blocks attack with %2$s!"
+msgstr ""
+
+#: src/battle.cpp:1136
+msgid "...Using cursed item!"
+msgstr ""
+
+#: src/battle.cpp:1140
+#, c-format
+msgid "...%s attacks for %d points."
+msgstr ""
+
+#: src/battle.cpp:1159
+#, c-format
+msgid "...%s's armor blocks %d points"
+msgstr ""
+
+#: src/battle.cpp:1226
+#, c-format
+msgid "...%s dodges the attack."
+msgstr ""
+
+#: src/battle.cpp:1232
+#, c-format
+msgid "...%s misses the target."
+msgstr ""
+
+#: src/battle.cpp:1256
+#, c-format
+msgid "...%s hits for %d points of damage"
+msgstr ""
+
+#: src/battle.cpp:1285
+#, fuzzy, c-format
+msgid "...%s is killed!"
+msgstr "Options"
+
+#: src/battle.cpp:1302
+#, c-format
+msgid "%s finds %d coins!"
+msgstr ""
+
+#: src/battle.cpp:1318
+#, c-format
+msgid "...no damaged caused."
+msgstr ""
+
+#: src/battle.cpp:1402 src/battle.cpp:1408
+#, c-format
+msgid "Targeted"
+msgstr ""
+
+#: src/battle.cpp:1432
+#, c-format
+msgid "Out of Range. Move: %d"
+msgstr ""
+
+#: src/battle.cpp:1434 src/battle.cpp:1441
+#, c-format
+msgid "Out of Range"
+msgstr ""
+
+#: src/battle.cpp:1441
+#, c-format
+msgid "In Range"
+msgstr ""
+
+#: src/battle.cpp:1453
+msgid "Bare Hands"
 msgstr ""
 
 #: src/scourge.cpp:141
