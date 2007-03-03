@@ -34,6 +34,11 @@ private:
 public:	
 	static void initRpg();
 	static char *createName();
+
+protected:
+  static void initSkills( ConfigLang *config );
+  static void initNames( ConfigLang *config );
+  static void initStateMods( ConfigLang *config );
 };
 
 class Skill {
@@ -160,6 +165,70 @@ public:
 
 	// fast access
 	static std::vector<SkillGroup*> groups;
+};
+
+class StateMod {
+private:
+  char name[80];
+  char displayName[255];
+  char symbol[255];
+  char setState[255];
+  char unsetState[255];
+  int type;
+  int index;
+
+public:
+  enum {
+  	blessed=0,
+  	empowered,
+  	enraged,
+  	ac_protected,
+  	magic_protected,
+  	drunk,
+  	poisoned,
+  	cursed,
+  	possessed,
+  	blinded,
+  	paralysed,
+  	invisible,
+  	overloaded,
+  	dead,
+  	asleep,
+  
+  	// must be last
+  	STATE_MOD_COUNT
+  };
+
+  enum {
+    NEITHER=0,
+    BAD,
+    GOOD
+  };
+
+  StateMod( char *name, char *displayName, char *symbol, char *setState, char *unsetState, int type, int index );
+  ~StateMod();
+
+  static std::map<std::string, StateMod*> stateModsByName;
+  static std::vector<StateMod*> stateMods;
+  static std::vector<StateMod*> goodStateMods;
+  static std::vector<StateMod*> badStateMods;
+	static inline StateMod *getStateModByName( char *name ) {
+		std::string s = name;
+		return( stateModsByName.find( s ) == stateModsByName.end() ? NULL : stateModsByName[ s ] );
+	}
+
+  static StateMod *getRandomGood();
+  static StateMod *getRandomBad();
+  
+  bool isStateModTransitionWanted( bool setting );
+
+  inline char *getName() { return name; }
+  inline char *getDisplayName() { return displayName; }
+  inline char *getSetState() { return setState; }
+  inline char *getUnsetState() { return unsetState; }
+  inline int getType() { return type; }
+  inline char *getSymbol() { return symbol; }
+  inline int getIndex() { return index; }
 };
 
 #endif

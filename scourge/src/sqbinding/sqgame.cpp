@@ -157,7 +157,7 @@ int SqGame::_getStateModName( HSQUIRRELVM vm ) {
 
 int SqGame::_getStateModByName( HSQUIRRELVM vm ) {
   GET_STRING( stateModName, 40 );
-  int n = Constants::getStateModByName( stateModName );
+  int n = StateMod::getStateModByName( stateModName )->getIndex();
   if( n < 0 ) return sq_throwerror( vm, _SC( "No state mod by that name." ) );
   sq_pushinteger( vm, n );
   return 1;

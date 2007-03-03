@@ -181,7 +181,12 @@ void MagicSchool::initMagic() {
 				// is it a potion state mod?
 				int n = Constants::getPotionSkillByName( line );
 				if( n == -1 ) {
-					n = Constants::getStateModByName( (const char*)line );
+          StateMod *mod = StateMod::getStateModByName( line );
+          if( !mod ) {
+            cerr << "Can't find state mod: >" << line << "<" << endl;
+            exit( 1 );
+          }
+					n = mod->getIndex();
 				}
 				stateModPrereq = n;
 				if( stateModPrereq == -1 ) {

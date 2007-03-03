@@ -738,7 +738,7 @@ void Item::enchant( int newMagicLevel ) {
     n = (int)(3.0f * rand()/RAND_MAX) + 1;
     if(n > 0) stateModSet = true;
     for(int i = 0; i < n; i++) {
-      stateMod[Constants::getRandomGoodStateMod()] = 1;
+      stateMod[ StateMod::getRandomGood()->getIndex() ] = 1;
     }
     n = (int)(3.0f * rand()/RAND_MAX) + 1;
     for(int i = 0; i < n; i++) {
@@ -762,12 +762,12 @@ void Item::enchant( int newMagicLevel ) {
     n = (int)(3.0f * rand()/RAND_MAX) + 1;
     if(n > 0) stateModSet = true;
     for(int i = 0; i < n; i++) {
-      stateMod[Constants::getRandomGoodStateMod()] = 1;
+      stateMod[ StateMod::getRandomGood()->getIndex() ] = 1;
     }
     n = (int)(3.0f * rand()/RAND_MAX) + 1;
     if(n > 0) stateModSet = true;
     for(int i = 0; i < n; i++) {
-      stateMod[Constants::getRandomBadStateMod()] = 2;
+      stateMod[ StateMod::getRandomBad()->getIndex() ] = 2;
     }
     n = (int)(3.0f * rand()/RAND_MAX) + 2;
     for(int i = 0; i < n; i++) {
@@ -864,7 +864,7 @@ void Item::describeMagic(char *s, char *itemName) {
 							for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
 								if( stateMod[ i ] > 0 ) {
 									if( strlen( s ) ) strcat( s, " " );
-									strcat( s, _( Constants::STATE_SYMBOLS[ i ] ) );
+									strcat( s, StateMod::stateMods[ i ]->getSymbol() );
 									break;
 								}
 							}
@@ -982,8 +982,8 @@ void Item::debugMagic(char *s) {
   cerr << "\tSchool: " << (school ? school->getName() : "null") << endl;
   cerr << "\tstate mods:" << endl;
   for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
-    if(this->isStateModSet(i)) cerr << "set: " << Constants::STATE_NAMES[i] << endl;
-    if(this->isStateModProtected(i)) cerr << "protected: " << Constants::STATE_NAMES[i] << endl;
+    if(this->isStateModSet(i)) cerr << "set: " << StateMod::stateMods[i]->getName() << endl;
+    if(this->isStateModProtected(i)) cerr << "protected: " << StateMod::stateMods[i]->getName() << endl;
   }
   cerr << "\tskill bonuses:" << endl;
   for(map<int, int>::iterator i=skillBonus.begin(); i!=skillBonus.end(); ++i) {
