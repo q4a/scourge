@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-03 09:35-0800\n"
+"POT-Creation-Date: 2007-03-03 14:01-0800\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -276,7 +276,8 @@ msgstr ""
 msgid "Un-paused: you are in real-time mode"
 msgstr ""
 
-#: src/common/constants.cpp:96
+#: src/common/constants.cpp:96 src/containergui.cpp:40 src/healdialog.cpp:49
+#: src/conversationgui.cpp:79 src/donatedialog.cpp:50
 msgid "Close"
 msgstr ""
 
@@ -457,11 +458,11 @@ msgstr ""
 msgid "Conversation"
 msgstr ""
 
-#: src/common/constants.cpp:142
+#: src/common/constants.cpp:142 src/conversationgui.cpp:104
 msgid "Trade"
 msgstr ""
 
-#: src/common/constants.cpp:143
+#: src/common/constants.cpp:143 src/conversationgui.cpp:100
 msgid "Train"
 msgstr ""
 
@@ -542,6 +543,166 @@ msgstr ""
 msgid "%s resists the spell with magic item!"
 msgstr ""
 
+#: src/creature.cpp:217
+#, c-format
+msgid "%1$s's skill in %2$s has increased."
+msgstr ""
+
+#: src/creature.cpp:228
+#, c-format
+msgid "%1$s is not allowed to equip %2$s."
+msgstr ""
+
+#: src/creature.cpp:541
+msgid "Can't find path to target. Sorry!"
+msgstr ""
+
+#: src/creature.cpp:990
+#, fuzzy, c-format
+msgid "%s is overloaded."
+msgstr "Options"
+
+#: src/creature.cpp:1028
+#, c-format
+msgid "%s is not overloaded anymore."
+msgstr ""
+
+#: src/creature.cpp:1062
+#, c-format
+msgid "%s is not hungry at the moment."
+msgstr ""
+
+#: src/creature.cpp:1073
+#, c-format
+msgid "%1$s eats %2$s."
+msgstr ""
+
+#: src/creature.cpp:1077 src/creature.cpp:1095 src/creature.cpp:1110
+#, fuzzy, c-format
+msgid "%s is used up."
+msgstr "Options"
+
+#: src/creature.cpp:1083
+#, c-format
+msgid "%s is not thirsty at the moment."
+msgstr ""
+
+#: src/creature.cpp:1090
+#, c-format
+msgid "%1$s drinks %2$s."
+msgstr ""
+
+#: src/creature.cpp:1105
+#, c-format
+msgid "%1$s drinks from %2$s."
+msgstr ""
+
+#: src/creature.cpp:1115
+msgid "You cannot eat or drink that!"
+msgstr ""
+
+#: src/creature.cpp:1135
+#, c-format
+msgid "%s heals %d points."
+msgstr ""
+
+#: src/creature.cpp:1144
+#, c-format
+msgid "%s receives %d magic points."
+msgstr ""
+
+#: src/creature.cpp:1152
+#, c-format
+msgid "%s feels impervious to damage!"
+msgstr ""
+
+#: src/creature.cpp:1172
+#, c-format
+msgid "%s feels at peace."
+msgstr ""
+
+#: src/creature.cpp:1202
+#, c-format
+msgid "%1$s will consume %2$s."
+msgstr ""
+
+#: src/creature.cpp:1206
+#, c-format
+msgid "%1$s will cast %2$s."
+msgstr ""
+
+#: src/creature.cpp:1210
+#, c-format
+msgid "%1$s will use capability %2$s."
+msgstr ""
+
+#: src/creature.cpp:1561
+#, c-format
+msgid "%s is raised from the dead!"
+msgstr ""
+
+#: src/creature.cpp:1595
+#, c-format
+msgid "  %s levels up!"
+msgstr ""
+
+#: src/creature.cpp:1612
+#, c-format
+msgid "%s gains %d experience points."
+msgstr ""
+
+#: src/creature.cpp:1615
+#, c-format
+msgid "%s gains a level!"
+msgstr ""
+
+#: src/creature.cpp:1619
+#, c-format
+msgid "%s looses %d experience points!"
+msgstr ""
+
+#: src/creature.cpp:2097
+#, fuzzy
+msgid "*Mission*"
+msgstr "Options"
+
+#: src/creature.cpp:2187
+#, c-format
+msgid "%1$s gains the %2$s special ability!"
+msgstr ""
+
+#: src/creature.cpp:2199
+#, c-format
+msgid "%1$s looses the %2$s special ability!"
+msgstr ""
+
+#: src/creature.cpp:2395
+msgid "...Attack from blind-spot!"
+msgstr ""
+
+#: src/creature.cpp:2531 src/creature.cpp:2580
+msgid "skill"
+msgstr ""
+
+#: src/creature.cpp:2535 src/creature.cpp:2579 src/infogui.cpp:377
+msgid "vs."
+msgstr ""
+
+#: src/creature.cpp:2537
+msgid "bonus"
+msgstr ""
+
+#: src/creature.cpp:2575 src/characterinfo.cpp:108 src/characterinfo.cpp:117
+#: src/characterinfo.cpp:137 src/characterinfo.cpp:146
+#: src/characterinfo.cpp:166 src/characterinfo.cpp:175
+#: src/characterinfo.cpp:194 src/characterinfo.cpp:203
+msgid "CTH"
+msgstr ""
+
+#: src/creature.cpp:2577
+msgid "max"
+msgstr ""
+
 #: src/session.cpp:91
 msgid "Loading Shapes"
 msgstr ""
@@ -590,6 +751,19 @@ msgstr ""
 msgid "Initializing UI"
 msgstr ""
 
+#: src/containergui.cpp:38
+msgid "Info"
+msgstr ""
+
+#: src/containergui.cpp:149
+#, c-format
+msgid "%1$s is placed in %2$s."
+msgstr ""
+
+#: src/containergui.cpp:159
+msgid "The item won't fit in that container!"
+msgstr ""
+
 #: src/board.cpp:290
 msgid "(STORY)"
 msgstr ""
@@ -600,6 +774,28 @@ msgstr ""
 
 #: src/board.cpp:293
 msgid "(completed)"
+msgstr ""
+
+#: src/healdialog.cpp:38 src/healdialog.cpp:77 src/healdialog.cpp:153
+#: src/donatedialog.cpp:39 src/donatedialog.cpp:78 src/donatedialog.cpp:105
+msgid "Coins Available:"
+msgstr ""
+
+#: src/healdialog.cpp:48
+msgid "Buy"
+msgstr ""
+
+#: src/healdialog.cpp:74 src/donatedialog.cpp:73
+#: ../scourge_data/maps/library31.cfg:176
+msgid "level"
+msgstr ""
+
+#: src/healdialog.cpp:142
+msgid "You can't afford the healing."
+msgstr ""
+
+#: src/healdialog.cpp:170
+msgid "The healing spell was cast."
 msgstr ""
 
 #: src/item.cpp:815
@@ -660,15 +856,9 @@ msgstr ""
 #: src/characterinfo.cpp:105 src/characterinfo.cpp:114
 #: src/characterinfo.cpp:134 src/characterinfo.cpp:143
 #: src/characterinfo.cpp:163 src/characterinfo.cpp:172
-#: src/characterinfo.cpp:191 src/characterinfo.cpp:200
+#: src/characterinfo.cpp:191 src/characterinfo.cpp:200 src/infogui.cpp:323
+#: src/infogui.cpp:328 src/infogui.cpp:333
 msgid "ATK"
-msgstr ""
-
-#: src/characterinfo.cpp:108 src/characterinfo.cpp:117
-#: src/characterinfo.cpp:137 src/characterinfo.cpp:146
-#: src/characterinfo.cpp:166 src/characterinfo.cpp:175
-#: src/characterinfo.cpp:194 src/characterinfo.cpp:203
-msgid "CTH"
 msgstr ""
 
 #: src/characterinfo.cpp:197 src/characterinfo.cpp:206 src/battle.cpp:1453
@@ -866,6 +1056,340 @@ msgstr ""
 
 #: src/scourge.cpp:143
 msgid "Upload your score to the internet?"
+msgstr ""
+
+#: src/date.cpp:28
+msgid "January"
+msgstr ""
+
+#: src/date.cpp:29
+msgid "February"
+msgstr ""
+
+#: src/date.cpp:30
+msgid "March"
+msgstr ""
+
+#: src/date.cpp:31
+msgid "April"
+msgstr ""
+
+#: src/date.cpp:32
+msgid "May"
+msgstr ""
+
+#: src/date.cpp:33
+msgid "June"
+msgstr ""
+
+#: src/date.cpp:34
+msgid "July"
+msgstr ""
+
+#: src/date.cpp:35
+msgid "August"
+msgstr ""
+
+#: src/date.cpp:36
+msgid "September"
+msgstr ""
+
+#: src/date.cpp:37
+msgid "October"
+msgstr ""
+
+#: src/date.cpp:38
+msgid "November"
+msgstr ""
+
+#: src/date.cpp:39
+msgid "December"
+msgstr ""
+
+#: src/date.cpp:44
+msgid "Monday"
+msgstr ""
+
+#: src/date.cpp:45
+msgid "Tuesday"
+msgstr ""
+
+#: src/date.cpp:46
+msgid "Wednesday"
+msgstr ""
+
+#: src/date.cpp:47
+msgid "Thursday"
+msgstr ""
+
+#: src/date.cpp:48
+msgid "Friday"
+msgstr ""
+
+#: src/date.cpp:49
+msgid "Saturday"
+msgstr ""
+
+#: src/date.cpp:50
+msgid "Sunday"
+msgstr ""
+
+#: src/conversationgui.cpp:48
+msgid "Talking to "
+msgstr ""
+
+#: src/conversationgui.cpp:73
+msgid "Talk about:"
+msgstr ""
+
+#: src/conversationgui.cpp:85
+msgid "Commoner: No services"
+msgstr ""
+
+#: src/conversationgui.cpp:88
+msgid "Sage:"
+msgstr ""
+
+#: src/conversationgui.cpp:94
+msgid "Healer:"
+msgstr ""
+
+#: src/conversationgui.cpp:95 ../scourge_data/config/spell.cfg:45
+#: ../scourge_data/config/spell.cfg:228 ../scourge_data/config/spell.cfg:314
+msgid "Healing"
+msgstr ""
+
+#: src/conversationgui.cpp:96
+msgid "Donate"
+msgstr ""
+
+#: src/conversationgui.cpp:99
+msgid "Trainer:"
+msgstr ""
+
+#: src/conversationgui.cpp:103
+msgid "Merchant:"
+msgstr ""
+
+#: src/conversationgui.cpp:166
+#, c-format
+msgid "Talking to %s"
+msgstr ""
+
+#: src/donatedialog.cpp:40
+msgid "Amount:"
+msgstr ""
+
+#: src/donatedialog.cpp:43
+msgid "Donate!"
+msgstr ""
+
+#: src/donatedialog.cpp:69
+#, c-format
+msgid "Temple of %s"
+msgstr ""
+
+#: src/donatedialog.cpp:95
+msgid "Enter the amount you want to donate."
+msgstr ""
+
+#: src/infogui.cpp:63
+msgid "Identify"
+msgstr ""
+
+#: src/infogui.cpp:70
+#, fuzzy
+msgid "Name:"
+msgstr "New Game"
+
+#: src/infogui.cpp:75
+msgid "Detailed Description:"
+msgstr ""
+
+#: src/infogui.cpp:150
+msgid "You must rest a while before identifying items again."
+msgstr ""
+
+#: src/infogui.cpp:190
+msgid "|Requirements:|"
+msgstr ""
+
+#: src/infogui.cpp:202
+#, fuzzy, c-format
+msgid "%s is too low.|"
+msgstr "Options"
+
+#: src/infogui.cpp:208
+#, c-format
+msgid "Bonus for %s!|"
+msgstr ""
+
+#: src/infogui.cpp:218
+msgid "All requirements met.|"
+msgstr ""
+
+#: src/infogui.cpp:237
+#, c-format
+msgid "Level: %d|"
+msgstr ""
+
+#: src/infogui.cpp:239
+#, c-format
+msgid "Weight: %.2f|"
+msgstr ""
+
+#: src/infogui.cpp:241
+#, c-format
+msgid "Price: %d|"
+msgstr ""
+
+#: src/infogui.cpp:244
+#, c-format
+msgid "Damage: %d percent|"
+msgstr ""
+
+#: src/infogui.cpp:246
+#, c-format
+msgid "Damage Type: %s|"
+msgstr ""
+
+#: src/infogui.cpp:248 src/infogui.cpp:271
+#, c-format
+msgid "Skill: %s|"
+msgstr ""
+
+#: src/infogui.cpp:251
+#, c-format
+msgid "Parry: %d percent of %s skill|"
+msgstr ""
+
+#: src/infogui.cpp:256
+#, c-format
+msgid "AP cost: %d|"
+msgstr ""
+
+#: src/infogui.cpp:260
+#, c-format
+msgid "Range: %d|"
+msgstr ""
+
+#: src/infogui.cpp:266
+#, c-format
+msgid "Defense vs. %s damage: %d|"
+msgstr ""
+
+#: src/infogui.cpp:273
+#, c-format
+msgid "Dodge penalty: %d|"
+msgstr ""
+
+#: src/infogui.cpp:277
+#, c-format
+msgid "Power: %d|"
+msgstr ""
+
+#: src/infogui.cpp:282
+#, c-format
+msgid "Charges: %d(%d)|"
+msgstr ""
+
+#: src/infogui.cpp:285
+#, c-format
+msgid "Spell: %s|"
+msgstr ""
+
+#: src/infogui.cpp:292
+#, c-format
+msgid "Duration: %d|"
+msgstr ""
+
+#: src/infogui.cpp:297
+#, c-format
+msgid "Two handed weapon.|"
+msgstr ""
+
+#: src/infogui.cpp:301
+#, c-format
+msgid "Optionally handed weapon.|"
+msgstr ""
+
+#: src/infogui.cpp:309
+#, c-format
+msgid "|Attack Info for each player:|"
+msgstr ""
+
+#: src/infogui.cpp:325 src/infogui.cpp:331
+msgid "APR"
+msgstr ""
+
+#: src/infogui.cpp:352
+#, c-format
+msgid "|%d bonus to attack and damage."
+msgstr ""
+
+#: src/infogui.cpp:354
+#, c-format
+msgid "|%d bonus to armor points."
+msgstr ""
+
+#: src/infogui.cpp:363
+#, c-format
+msgid "|Double damage"
+msgstr ""
+
+#: src/infogui.cpp:366
+#, c-format
+msgid "|Triple damage"
+msgstr ""
+
+#: src/infogui.cpp:369
+#, c-format
+msgid "|Quad damage"
+msgstr ""
+
+#: src/infogui.cpp:372
+#, c-format
+msgid "|%dX damage"
+msgstr ""
+
+#: src/infogui.cpp:380
+msgid " vs. any creature."
+msgstr ""
+
+#: src/infogui.cpp:389
+#, c-format
+msgid "|Extra damage of %1$s %2$s magic."
+msgstr ""
+
+#: src/infogui.cpp:393
+#, c-format
+msgid "|Extra %d pts of %s magic resistance."
+msgstr ""
+
+#: src/infogui.cpp:403
+msgid "|Sets state mods:"
+msgstr ""
+
+#: src/infogui.cpp:417
+msgid "|Protects from state mods:"
+msgstr ""
+
+#: src/infogui.cpp:443
+msgid "|Bonuses to skills:"
+msgstr ""
+
+#: src/infogui.cpp:453
+msgid "|This item is cursed!"
+msgstr ""
+
+#: src/infogui.cpp:458
+msgid "School: "
+msgstr ""
+
+#: src/infogui.cpp:465
+msgid ""
+"|You have a feeling there is more to this item than what you've been able to "
+"glean..."
 msgstr ""
 
 #: src/mainmenu.cpp:54
@@ -3439,11 +3963,6 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:44
 msgid "Lesser healing touch"
-msgstr ""
-
-#: ../scourge_data/config/spell.cfg:45 ../scourge_data/config/spell.cfg:228
-#: ../scourge_data/config/spell.cfg:314
-msgid "Healing"
 msgstr ""
 
 #: ../scourge_data/config/spell.cfg:60
@@ -7837,10 +8356,6 @@ msgid ""
 "perhaps? Or cheat at cards? No one comes here without a reason..."
 msgstr ""
 
-#: ../scourge_data/maps/library31.cfg:176
-msgid "level"
-msgstr ""
-
 #: ../scourge_data/maps/library31.cfg:177
 msgid ""
 "The $Abyss has an infinite number of levels. This one is a holding area for "
@@ -9488,19 +10003,11 @@ msgid "Hmmm, it escapes me just now."
 msgstr ""
 
 #, fuzzy
-#~ msgid "Name"
-#~ msgstr "New Game"
-
-#, fuzzy
 #~ msgid "Multiplier"
 #~ msgstr "Multiplayer Game"
 
 #, fuzzy
 #~ msgid "Action"
-#~ msgstr "Options"
-
-#, fuzzy
-#~ msgid "Disposition"
 #~ msgstr "Options"
 
 #, fuzzy

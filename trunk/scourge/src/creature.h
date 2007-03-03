@@ -102,7 +102,6 @@ class Creature : public RenderedCreature {
   GLuint stateMod, protStateMod;
   Monster *monster;
 
-  char description[300];
   GLint lastTick;
   int speed, originalSpeed;
   float armor;
@@ -245,8 +244,6 @@ class Creature : public RenderedCreature {
   inline int getFacingDirection() { return this->facingDirection; }
   
   
-  inline char *getDescription() { return description; }
-
   inline void setLastTick(GLint n) { this->lastTick = n; }
   inline GLint getLastTick() { return lastTick; }
 

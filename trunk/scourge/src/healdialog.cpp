@@ -25,8 +25,6 @@
 #include "gui/scrollinglabel.h"
 #include "shapepalette.h"
 
-#define COINS_AVAILABLE "Coins Available:"
-
 HealDialog::HealDialog( Scourge *scourge ) {
   this->scourge = scourge;
   this->creature = NULL;
@@ -37,7 +35,7 @@ HealDialog::HealDialog( Scourge *scourge ) {
                            w, h, 
                            Constants::getMessage( Constants::HEAL_DIALOG_TITLE ) );
   creatureLabel = win->createLabel( 10, 15, "" );
-  coinLabel = win->createLabel( 10, 30, COINS_AVAILABLE );
+  coinLabel = win->createLabel( 10, 30, _( "Coins Available:" ) );
   spellList = new ScrollingList( 10, 40, w - 20, 110, 
                                  scourge->getHighlightTexture(), 
                                  NULL, 30 );
@@ -47,8 +45,8 @@ HealDialog::HealDialog( Scourge *scourge ) {
 
   h = 20;
   int y = win->getHeight() - h - 30;
-  applyButton = win->createButton( w - 160, y, w - 90, y + h, "Buy" );
-  closeButton = win->createButton( w - 80, y, w - 10, y + h, "Close" );
+  applyButton = win->createButton( w - 160, y, w - 90, y + h, _( "Buy" ) );
+  closeButton = win->createButton( w - 80, y, w - 10, y + h, _( "Close" ) );
 
   this->spellText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
   this->spellIcons = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
@@ -73,10 +71,10 @@ void HealDialog::updateUI() {
   prices.clear();
 
   char s[255];
-  sprintf( s, "%s (level %d)", creature->getName(), creature->getNpcInfo()->level );
+  sprintf( s, "%s (%s %d)", creature->getName(), _( "level" ), creature->getNpcInfo()->level );
   creatureLabel->setText( s );
   sprintf( s, "%s %d", 
-           COINS_AVAILABLE, 
+           _( "Coins Available:" ), 
            scourge->getParty()->getPlayer()->getMoney() );
   coinLabel->setText( s );
 
@@ -141,7 +139,7 @@ void HealDialog::handleEvent( Widget *widget, SDL_Event *event ) {
   
 void HealDialog::heal( Spell *spell, int price ) {
   if( price > scourge->getParty()->getPlayer()->getMoney() ) {
-    scourge->showMessageDialog( "You can't afford the healing." );
+    scourge->showMessageDialog( _( "You can't afford the healing." ) );
     return;
   }
 
@@ -152,7 +150,7 @@ void HealDialog::heal( Spell *spell, int price ) {
   // update the coin label
   char s[255];
   sprintf( s, "%s %d", 
-           COINS_AVAILABLE, 
+           _( "Coins Available:" ), 
            scourge->getParty()->getPlayer()->getMoney() );
   coinLabel->setText( s );
 
@@ -169,7 +167,7 @@ void HealDialog::heal( Spell *spell, int price ) {
   // (FIXME: this is a hack. The spell should be cast via the usual battle mechanism.)
   creature->getBattle()->castSpell( true );
 
-  scourge->showMessageDialog( "The healing spell was cast." );
+  scourge->showMessageDialog( _( "The healing spell was cast." ) );
 }
 
 void HealDialog::showSpellDescription( Spell *spell ) {

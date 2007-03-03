@@ -26,8 +26,6 @@
 
 using namespace std;
 
-#define COINS_AVAILABLE "Coins Available:"
-
 DonateDialog::DonateDialog( Scourge *scourge ) {
   this->scourge = scourge;
   this->creature = NULL;
@@ -38,18 +36,18 @@ DonateDialog::DonateDialog( Scourge *scourge ) {
                            w, h, 
                            Constants::getMessage( Constants::DONATE_DIALOG_TITLE ) );
   creatureLabel = win->createLabel( 10, 15, "" );
-  coinLabel = win->createLabel( 10, 30, COINS_AVAILABLE );
-  win->createLabel( 10, 55, "Amount:" );
+  coinLabel = win->createLabel( 10, 30, _( "Coins Available:" ) );
+  win->createLabel( 10, 55, _( "Amount:" ) );
   amount = new TextField( 70, 45, 28 );
   win->addWidget( amount );
-  applyButton = win->createButton( 320, 45, 390, 70, "Donate!" );
+  applyButton = win->createButton( 320, 45, 390, 70, _( "Donate!" ) );
   
   result = new ScrollingLabel( 10, 75, w - 20, 65, "" );
   win->addWidget( result );
 
   h = 20;
   int y = win->getHeight() - h - 30;
-  closeButton = win->createButton( w - 80, y, w - 10, y + h, "Close" );
+  closeButton = win->createButton( w - 80, y, w - 10, y + h, _( "Close" ) );
 }
 
 DonateDialog::~DonateDialog() {
@@ -67,14 +65,17 @@ void DonateDialog::updateUI() {
   MagicSchool *ms = 
     MagicSchool::getMagicSchoolByName( creature->getNpcInfo()->subtypeStr );
   
+	char tmp[255];
+	sprintf( tmp, _( "Temple of %s" ), ms->getDeity() );
   char s[255];
-  sprintf( s, "%s (level %d), Temple of %s.", 
+  sprintf( s, "%s (%s %d), %s.", 
            creature->getName(), 
+					 _( "level" ),
            creature->getNpcInfo()->level,
-           ms->getDeity() );
+           tmp );
   creatureLabel->setText( s );
   sprintf( s, "%s %d", 
-           COINS_AVAILABLE, 
+           _( "Coins Available:" ), 
            scourge->getParty()->getPlayer()->getMoney() );
   coinLabel->setText( s );
 
@@ -91,7 +92,7 @@ void DonateDialog::handleEvent( Widget *widget, SDL_Event *event ) {
   
 void DonateDialog::donate( int amount ) {
   if( amount <= 0 ) {
-    scourge->showMessageDialog( "Enter the amount you want to donate." );
+    scourge->showMessageDialog( _( "Enter the amount you want to donate." ) );
     return;
   }
 
@@ -101,7 +102,7 @@ void DonateDialog::donate( int amount ) {
   // update the coin label
   char s[255];
   sprintf( s, "%s %d", 
-           COINS_AVAILABLE, 
+           _( "Coins Available:" ), 
            scourge->getParty()->getPlayer()->getMoney() );
   coinLabel->setText( s );
   this->amount->clearText();

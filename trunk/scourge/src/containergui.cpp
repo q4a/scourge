@@ -35,9 +35,9 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
                     Window::SIMPLE_WINDOW, "wood" );
   openButton = new Button( 5, 5, 105, 25, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
-  infoButton = new Button( 110, 5, 210, 25, scourge->getShapePalette()->getHighlightTexture(), "Info" );
+  infoButton = new Button( 110, 5, 210, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Info" ) );
   win->addWidget((Widget*)infoButton);
-  closeButton = new Button( 215, 5, 315, 25, scourge->getShapePalette()->getHighlightTexture(), "Close" );
+  closeButton = new Button( 215, 5, 315, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Close" ) );
   win->addWidget((Widget*)closeButton);
 
   list = new ScrollingList( 10, 35, 300, 245 - 30, 
@@ -146,7 +146,7 @@ void ContainerGui::receive(Widget *widget) {
 	 scourge->getMovingItem() != container) {
 	if(container->addContainedItem(scourge->getMovingItem())) {
 	  // message: the container accepted the item
-	  sprintf(message, "%s is placed in %s.", 
+	  sprintf(message, _( "%1$s is placed in %2$s." ), 
 			  scourge->getMovingItem()->getItemName(), 
 			  container->getItemName());
 	  scourge->getMap()->addDescription(message);	  
@@ -156,7 +156,7 @@ void ContainerGui::receive(Widget *widget) {
 	} else {
 	  // message: the container is full
     scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
-    scourge->showMessageDialog("The item won't fit in that container!");
+    scourge->showMessageDialog( _( "The item won't fit in that container!" ) );
 	}
   }
 }
