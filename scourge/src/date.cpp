@@ -24,18 +24,30 @@ int Date::dayInMonth[13] = {
 };
 
 const char * Date::monthName[13] = {
-    NULL, 
-    "January", "February", 
-    "March", "April", 
-    "May", "June", 
-    "July", "August", 
-    "September", "October", 
-    "November", "December"
+	NULL, 
+	N_( "January" ), 
+	N_( "February" ), 
+	N_( "March" ), 
+	N_( "April" ), 
+	N_( "May" ), 
+	N_( "June" ), 
+  N_( "July" ), 
+	N_( "August" ), 
+  N_( "September" ), 
+	N_( "October" ), 
+  N_( "November" ), 
+	N_( "December" )
 };
 
 const char * Date::dayName[8] = {
-    NULL, "Monday", "Tuesday", "Wednesday", "Thursday", 
-    "Friday", "Saturday", "Sunday"
+	NULL, 
+	N_( "Monday" ), 
+	N_( "Tuesday" ), 
+	N_( "Wednesday" ), 
+	N_( "Thursday" ), 
+	N_( "Friday" ), 
+	N_( "Saturday" ), 
+	N_( "Sunday" )
 };
  
 Date::Date(){    
@@ -206,15 +218,14 @@ void Date::print(){
 void Date::buildDateString(){
     char buff[10];
                 
-    buff[0] = monthName[month][0];
-    buff[1] = monthName[month][1];
-    buff[2] = monthName[month][2];
+    buff[0] = _( monthName[month] )[0];
+    buff[1] = _( monthName[month] )[1];
+    buff[2] = _( monthName[month] )[2];
     buff[3] = ' ';
     buff[4] = '\0';    
     
-    sprintf(dateString, "%s %.2d %.2d:%.2d:%.2d", 
-            buff, (int)day, (int)hour, (int)min, (int)sec); 
-             
+    sprintf( dateString, "%s %.2d %.2d:%.2d", 
+						 buff, (int)day, (int)hour, (int)min );
 }
 
 Date::~Date(){

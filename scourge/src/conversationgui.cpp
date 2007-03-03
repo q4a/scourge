@@ -45,7 +45,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 
   win = scourge->createWindow( x, y, width, height, Constants::getMessage(Constants::CONVERSATION_GUI_TITLE) );
 
-  label = win->createLabel( 10, 15, "Talking to " );
+  label = win->createLabel( 10, 15, _( "Talking to " ) );
 
   int sy = 130;
   canvas = new Canvas( width - 130, 5, width - 10, sy - 10, this );
@@ -70,38 +70,38 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   wordCount = 0;
 
   sy = 260;
-  win->createLabel( 9, sy, "Talk about:" );
+  win->createLabel( 9, sy, _( "Talk about:" ) );
   entry = new TextField( 80, sy - 10, 28 );
   win->addWidget( entry );
 
   y = sy + 10;
   x = width - 70;
-  closeButton = win->createButton( x, y, x + 60, y + 20, "Close" );
+  closeButton = win->createButton( x, y, x + 60, y + 20, _( "Close" ) );
 
   cards = new CardContainer( win );
   x = 10;
 
   // commoner
-  cards->createLabel( x, y + 13, "Commoner: No services", Constants::NPC_TYPE_COMMONER );
+  cards->createLabel( x, y + 13, _( "Commoner: No services" ), Constants::NPC_TYPE_COMMONER );
 
   // sage
-  cards->createLabel( x, y + 13, "Sage:", Constants::NPC_TYPE_SAGE );  
-  //identifyButton = cards->createButton( x + 70, y, x + 170, y + 20, "Id Item", Constants::NPC_TYPE_SAGE );
-  //uncurseItemButton = cards->createButton( x + 175, y, x + 275, y + 20, "UnCurse", Constants::NPC_TYPE_SAGE );
-  //rechargeButton = cards->createButton( x + 280, y, x + 380, y + 20, "Recharge", Constants::NPC_TYPE_SAGE );
+  cards->createLabel( x, y + 13, _( "Sage:" ), Constants::NPC_TYPE_SAGE );  
+  //identifyButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Id Item" ), Constants::NPC_TYPE_SAGE );
+  //uncurseItemButton = cards->createButton( x + 175, y, x + 275, y + 20, _( "UnCurse" ), Constants::NPC_TYPE_SAGE );
+  //rechargeButton = cards->createButton( x + 280, y, x + 380, y + 20, _( "Recharge" ), Constants::NPC_TYPE_SAGE );
 
   // healer
-  cards->createLabel( x, y + 13, "Healer:", Constants::NPC_TYPE_HEALER );  
-  healButton = cards->createButton( x + 70, y, x + 170, y + 20, "Healing", Constants::NPC_TYPE_HEALER );
-  donateButton = cards->createButton( x + 175, y, x + 275, y + 20, "Donate", Constants::NPC_TYPE_HEALER );
+  cards->createLabel( x, y + 13, _( "Healer:" ), Constants::NPC_TYPE_HEALER );  
+  healButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Healing" ), Constants::NPC_TYPE_HEALER );
+  donateButton = cards->createButton( x + 175, y, x + 275, y + 20, _( "Donate" ), Constants::NPC_TYPE_HEALER );
 
   // trainer
-  cards->createLabel( x, y + 13, "Trainer:", Constants::NPC_TYPE_TRAINER );  
-  trainButton = cards->createButton( x + 70, y, x + 170, y + 20, "Train", Constants::NPC_TYPE_TRAINER );
+  cards->createLabel( x, y + 13, _( "Trainer:" ), Constants::NPC_TYPE_TRAINER );  
+  trainButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Train" ), Constants::NPC_TYPE_TRAINER );
 
   // merchant
-  cards->createLabel( x, y + 13, "Merchant:", Constants::NPC_TYPE_MERCHANT );  
-  tradeButton = cards->createButton( x + 70, y, x + 170, y + 20, "Trade", Constants::NPC_TYPE_MERCHANT );
+  cards->createLabel( x, y + 13, _( "Merchant:" ), Constants::NPC_TYPE_MERCHANT );  
+  tradeButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Trade" ), Constants::NPC_TYPE_MERCHANT );
   
   win->setVisible( false );
 }
@@ -163,7 +163,7 @@ void ConversationGui::start( Creature *creature, char *message, bool useCreature
   this->creature = creature;
   this->useCreature = useCreature;
   char tmp[ 80 ];
-  sprintf( tmp, "Talking to %s", creature->getName() );
+  sprintf( tmp, _( "Talking to %s" ), creature->getName() );
   label->setText( tmp );
   answer->setText( message );
   win->setVisible( true );
