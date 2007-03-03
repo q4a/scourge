@@ -187,7 +187,9 @@ void InfoGui::drawWidgetContents(Widget *w) {
 
 void InfoGui::describeRequirements( char *description, int influenceTypeCount ) {
   char tmp[1000];
-  strcat( description, _( "|Requirements:|" ) );
+	strcat( description, "|" );
+  strcat( description, _( "Requirements" ) );
+	strcat( description, ":|" );
   for( int r = 0; r < scourge->getParty()->getPartySize(); r++ ) {
     sprintf( tmp, "%s: ", scourge->getParty()->getParty( r )->getName() );
     strcat( description, tmp );
@@ -199,14 +201,16 @@ void InfoGui::describeRequirements( char *description, int influenceTypeCount ) 
         if( minValue->base > 0 || maxValue->base > 0 ) {
           int skill = scourge->getParty()->getParty( r )->getSkill( i );
           if( minValue->limit > skill ) {
-            sprintf( tmp, _( "%s is too low.|" ), Skill::skills[ i ]->getName() );
+            sprintf( tmp, _( "%s is too low." ), Skill::skills[ i ]->getName() );
             strcat( description, tmp );
+						strcat( description, "|" );
             found = true;
             // only show a skill once
             break;
           } else if( maxValue->limit < skill ) {
-            sprintf( tmp, _( "Bonus for %s!|" ), Skill::skills[ i ]->getName() );
+            sprintf( tmp, _( "Bonus for %s!" ), Skill::skills[ i ]->getName() );
             strcat( description, tmp );
+						strcat( description, "|" );
             found = true;
             // only show a skill once
             break;
@@ -215,7 +219,8 @@ void InfoGui::describeRequirements( char *description, int influenceTypeCount ) 
       }
     }
     if( !found ) {
-      strcat( description, _( "All requirements met.|" ) );
+      strcat( description, _( "All requirements met." ) );
+			strcat( description, "|" );
     }
   }
 }
@@ -234,80 +239,100 @@ void InfoGui::describe() {
   strcat(description, "||");
 
   // basic info
-  sprintf(tmp, _( "Level: %d|" ), item->getLevel());
+  sprintf(tmp, _( "Level: %d" ), item->getLevel());
   strcat( description, tmp );
-  sprintf(tmp, _( "Weight: %.2f|" ), item->getWeight());
+	strcat( description, "|" );
+  sprintf(tmp, _( "Weight: %.2f" ), item->getWeight());
   strcat( description, tmp );
-  sprintf(tmp, _( "Price: %d|" ), item->getPrice());
+	strcat( description, "|" );
+  sprintf(tmp, _( "Price: %d" ), item->getPrice());
   strcat( description, tmp );
+	strcat( description, "|" );
   if( item->getRpgItem()->isWeapon() ) {
-    sprintf(tmp, _( "Damage: %d percent|" ), item->getRpgItem()->getDamage() );
+    sprintf(tmp, _( "Damage: %d percent" ), item->getRpgItem()->getDamage() );
     strcat( description, tmp );
-		sprintf(tmp, _( "Damage Type: %s|" ), _( RpgItem::DAMAGE_TYPE_NAME[ item->getRpgItem()->getDamageType() ] ) );
+		strcat( description, "|" );
+		sprintf(tmp, _( "Damage Type: %s" ), _( RpgItem::DAMAGE_TYPE_NAME[ item->getRpgItem()->getDamageType() ] ) );
     strcat( description, tmp );
-		sprintf(tmp, _( "Skill: %s|" ), Skill::skills[ item->getRpgItem()->getDamageSkill() ]->getName() );
+		strcat( description, "|" );
+		sprintf(tmp, _( "Skill: %s" ), Skill::skills[ item->getRpgItem()->getDamageSkill() ]->getName() );
 		strcat( description, tmp );
+		strcat( description, "|" );
 		if( item->getRpgItem()->getParry() > 0 ) {
-			sprintf(tmp, _( "Parry: %d percent of %s skill|" ), item->getRpgItem()->getParry(), 
+			sprintf(tmp, _( "Parry: %d percent of %s skill" ), item->getRpgItem()->getParry(), 
 							Skill::skills[ item->getRpgItem()->getDamageSkill() ]->getName() );
 			strcat( description, tmp );
+			strcat( description, "|" );
 		}
 		if( item->getRpgItem()->getAP() > 0 ) {
-			sprintf(tmp, _( "AP cost: %d|" ), item->getRpgItem()->getAP() );
+			sprintf(tmp, _( "AP cost: %d" ), item->getRpgItem()->getAP() );
 			strcat( description, tmp );
+			strcat( description, "|" );
 		}
 		if( item->getRange() > MIN_DISTANCE ) {
-			sprintf(tmp, _( "Range: %d|" ), item->getRange());
+			sprintf(tmp, _( "Range: %d" ), item->getRange());
 			strcat( description, tmp );
+			strcat( description, "|" );
 		}    
 	}
 	if( item->getRpgItem()->isArmor() ) {
 		for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
-			sprintf(tmp, _( "Defense vs. %s damage: %d|" ), 
+			sprintf(tmp, _( "Defense vs. %s damage: %d" ), 
 							_( RpgItem::DAMAGE_TYPE_NAME[ i ] ), 
 							item->getRpgItem()->getDefense( i ) );
 			strcat( description, tmp );
+			strcat( description, "|" );
 		}
-		sprintf(tmp, _( "Skill: %s|" ), Skill::skills[ item->getRpgItem()->getDefenseSkill() ]->getName() );
+		sprintf(tmp, _( "Skill: %s" ), Skill::skills[ item->getRpgItem()->getDefenseSkill() ]->getName() );
 		strcat( description, tmp );
-		sprintf(tmp, _( "Dodge penalty: %d|" ), item->getRpgItem()->getDodgePenalty() );
+		strcat( description, "|" );
+		sprintf(tmp, _( "Dodge penalty: %d" ), item->getRpgItem()->getDodgePenalty() );
     strcat( description, tmp );
+		strcat( description, "|" );
 	}
 	if( item->getRpgItem()->getPotionPower() ) {
-		sprintf(tmp, _( "Power: %d|" ), item->getRpgItem()->getPotionPower() );
+		sprintf(tmp, _( "Power: %d" ), item->getRpgItem()->getPotionPower() );
     strcat( description, tmp );
+		strcat( description, "|" );
 	}
   if( item->getRpgItem()->getMaxCharges() > 0 &&
 			( !item->getRpgItem()->hasSpell() || item->getSpell() ) ) {
-    sprintf(tmp, _( "Charges: %d(%d)|" ), item->getCurrentCharges(), item->getRpgItem()->getMaxCharges() );
+    sprintf(tmp, _( "Charges: %d(%d)" ), item->getCurrentCharges(), item->getRpgItem()->getMaxCharges() );
     strcat( description, tmp );
+		strcat( description, "|" );
     if( item->getSpell() ) {
-      sprintf( tmp, _( "Spell: %s|" ), item->getSpell()->getName() );
+      sprintf( tmp, _( "Spell: %s" ), item->getSpell()->getName() );
       strcat( description, tmp );
+			strcat( description, "|" );
       sprintf( tmp, "%s|", item->getSpell()->getNotes() );
       strcat( description, tmp );
     }
   }
   if( item->getRpgItem()->getPotionTime() > 0 ) {
-    sprintf(tmp, _( "Duration: %d|" ), item->getRpgItem()->getPotionTime());
+    sprintf(tmp, _( "Duration: %d" ), item->getRpgItem()->getPotionTime());
     strcat( description, tmp );
+		strcat( description, "|" );
   }
   switch( item->getRpgItem()->getTwoHanded() ) {
   case RpgItem::ONLY_TWO_HANDED: 
-    sprintf( tmp, _( "Two handed weapon.|" ) );
-  strcat( description, tmp );
+		sprintf( tmp, _( "Two handed weapon." ) );
+	strcat( description, tmp );
+	strcat( description, "|" );
   break;
   case RpgItem::OPTIONAL_TWO_HANDED:
-    sprintf( tmp, _( "Optionally handed weapon.|" ) );
+    sprintf( tmp, _( "Optionally handed weapon." ) );
   strcat( description, tmp );
+	strcat( description, "|" );
   break;
   default:
     break;
   }
   
   if( item->getRpgItem()->isWeapon() ) {
-    sprintf( tmp, _( "|Attack Info for each player:|" ) );
+    sprintf( tmp, _( "Attack Info for each player:" ) );
+		strcat( description, "|" );
     strcat( description, tmp );
+		strcat( description, "|" );
     float max, min;
     for( int i = 0; i < scourge->getSession()->getParty()->getPartySize(); i++ ) {
       char *err = 
@@ -349,10 +374,11 @@ void InfoGui::describe() {
     if( item->getIdentifiedBit( Item::ID_BONUS ) ) {
 
 			if( item->getRpgItem()->isWeapon() ) {
-				sprintf(tmp, _( "|%d bonus to attack and damage." ), item->getBonus() );
+				sprintf(tmp, _( "%d bonus to attack and damage." ), item->getBonus() );
 			} else {
-				sprintf(tmp, _( "|%d bonus to armor points." ), item->getBonus() );
+				sprintf(tmp, _( "%d bonus to armor points." ), item->getBonus() );
 			}
+			strcat( description, "|" );
       strcat(description, tmp);
     } else {
 			missedSomething = true;
@@ -360,16 +386,20 @@ void InfoGui::describe() {
     if( item->getDamageMultiplier() > 1 ) {
       if( item->getIdentifiedBit( Item::ID_DAMAGE_MUL ) ) {
         if( item->getDamageMultiplier() == 2 ) {
-          sprintf( tmp, _( "|Double damage" ) );
+          sprintf( tmp, _( "Double damage" ) );
+					strcat( description, "|" );
           strcat( description, tmp );
         } else if( item->getDamageMultiplier() == 3 ) {
-          sprintf( tmp, _( "|Triple damage" ) );
+          sprintf( tmp, _( "Triple damage" ) );
+					strcat( description, "|" );
           strcat( description, tmp );
         } else if( item->getDamageMultiplier() == 4 ) {
-          sprintf( tmp, _( "|Quad damage" ) );
+          sprintf( tmp, _( "Quad damage" ) );
+					strcat( description, "|" );
           strcat( description, tmp );
         } else if( item->getDamageMultiplier() > 4 ) {
-          sprintf( tmp, _( "|%dX damage" ), item->getDamageMultiplier());
+          sprintf( tmp, _( "%dX damage" ), item->getDamageMultiplier());
+					strcat( description, "|" );
           strcat( description, tmp );
         }
         if( item->getMonsterType() ) {
@@ -386,21 +416,22 @@ void InfoGui::describe() {
     if(item->getSchool() ) {
       if( item->getIdentifiedBit( Item::ID_MAGIC_DAMAGE ) ) {
         if(item->getRpgItem()->isWeapon()) {
-          sprintf(tmp, _( "|Extra damage of %1$s %2$s magic." ), 
+          sprintf(tmp, _( "Extra damage of %1$s %2$s magic." ), 
                   item->describeMagicDamage(),
                   item->getSchool()->getName());
         } else {
-          sprintf(tmp, _( "|Extra %d pts of %s magic resistance." ), 
+          sprintf(tmp, _( "Extra %d pts of %s magic resistance." ), 
                   item->getMagicResistance(),
                   item->getSchool()->getName());
         }
+				strcat( description, "|" );
         strcat(description, tmp);
       } else {
 				missedSomething = true;
 			}
     }
     if( item->getIdentifiedBit( Item::ID_STATE_MOD ) ) {
-      strcpy(tmp, _( "|Sets state mods:" ) );
+      strcpy(tmp, _( "Sets state mods:" ) );
       bool found = false;
       for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
         if(item->isStateModSet(i)) {
@@ -409,12 +440,15 @@ void InfoGui::describe() {
           found = true;
         }
       }
-      if(found) strcat(description, tmp);
+      if(found) {
+				strcat( description, "|" );
+				strcat(description, tmp);
+			}
     } else {
 			missedSomething = true;
 		}
     if( item->getIdentifiedBit( Item::ID_PROT_STATE_MOD ) ) {
-      strcpy(tmp, _( "|Protects from state mods:" ) );
+      strcpy(tmp, _( "Protects from state mods:" ) );
       bool found = false;
       for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
         if(item->isStateModProtected(i)) {
@@ -423,7 +457,10 @@ void InfoGui::describe() {
           found = true;
         }
       }
-      if(found) strcat(description, tmp);
+      if(found) {
+				strcat( description, "|" );
+				strcat(description, tmp);
+			}
     } else {
 			missedSomething = true;
 		}
@@ -440,7 +477,8 @@ void InfoGui::describe() {
         found = true;
       }
       if(found) {
-        strcat(description, _( "|Bonuses to skills:" ) );
+        strcat(description, _( "Bonuses to skills:" ) );
+				strcat( description, "|" );
         strcat(description, tmp);
       }
     } else {
@@ -450,7 +488,8 @@ void InfoGui::describe() {
     if( item->isCursed() ) {
       if( item->getShowCursed() || 
           item->getIdentifiedBit( Item::ID_CURSED ) ) {
-        strcat(description, _( "|This item is cursed!" ) );
+				strcat( description, "|" );
+        strcat(description, _( "This item is cursed!" ) );
 			}
     }
   } else if(item->getRpgItem()->getType() == RpgItem::SCROLL) {
@@ -462,7 +501,8 @@ void InfoGui::describe() {
   }
 
   if( missedSomething ) {
-    strcat( description, _( "|You have a feeling there is more to this item than what you've been able to glean..." ) );
+		strcat( description, "|" );
+    strcat( description, _( "You have a feeling there is more to this item than what you've been able to glean..." ) );
   }
 
   label->setText(description);
