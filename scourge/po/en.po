@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-03 14:01-0800\n"
+"POT-Creation-Date: 2007-03-03 14:16-0800\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -684,7 +684,7 @@ msgstr ""
 msgid "skill"
 msgstr ""
 
-#: src/creature.cpp:2535 src/creature.cpp:2579 src/infogui.cpp:377
+#: src/creature.cpp:2535 src/creature.cpp:2579 src/infogui.cpp:407
 msgid "vs."
 msgstr ""
 
@@ -856,8 +856,8 @@ msgstr ""
 #: src/characterinfo.cpp:105 src/characterinfo.cpp:114
 #: src/characterinfo.cpp:134 src/characterinfo.cpp:143
 #: src/characterinfo.cpp:163 src/characterinfo.cpp:172
-#: src/characterinfo.cpp:191 src/characterinfo.cpp:200 src/infogui.cpp:323
-#: src/infogui.cpp:328 src/infogui.cpp:333
+#: src/characterinfo.cpp:191 src/characterinfo.cpp:200 src/infogui.cpp:348
+#: src/infogui.cpp:353 src/infogui.cpp:358
 msgid "ATK"
 msgstr ""
 
@@ -1210,185 +1210,185 @@ msgstr ""
 msgid "You must rest a while before identifying items again."
 msgstr ""
 
-#: src/infogui.cpp:190
-msgid "|Requirements:|"
+#: src/infogui.cpp:191
+msgid "Requirements"
 msgstr ""
 
-#: src/infogui.cpp:202
+#: src/infogui.cpp:204
 #, fuzzy, c-format
-msgid "%s is too low.|"
+msgid "%s is too low."
 msgstr "Options"
 
-#: src/infogui.cpp:208
+#: src/infogui.cpp:211
 #, c-format
-msgid "Bonus for %s!|"
+msgid "Bonus for %s!"
 msgstr ""
 
-#: src/infogui.cpp:218
-msgid "All requirements met.|"
+#: src/infogui.cpp:222
+msgid "All requirements met."
 msgstr ""
 
-#: src/infogui.cpp:237
+#: src/infogui.cpp:242
 #, c-format
-msgid "Level: %d|"
+msgid "Level: %d"
 msgstr ""
 
-#: src/infogui.cpp:239
+#: src/infogui.cpp:245
 #, c-format
-msgid "Weight: %.2f|"
+msgid "Weight: %.2f"
 msgstr ""
 
-#: src/infogui.cpp:241
+#: src/infogui.cpp:248
 #, c-format
-msgid "Price: %d|"
+msgid "Price: %d"
 msgstr ""
 
-#: src/infogui.cpp:244
+#: src/infogui.cpp:252
 #, c-format
-msgid "Damage: %d percent|"
+msgid "Damage: %d percent"
 msgstr ""
 
-#: src/infogui.cpp:246
+#: src/infogui.cpp:255
 #, c-format
-msgid "Damage Type: %s|"
+msgid "Damage Type: %s"
 msgstr ""
 
-#: src/infogui.cpp:248 src/infogui.cpp:271
+#: src/infogui.cpp:258 src/infogui.cpp:286
 #, c-format
-msgid "Skill: %s|"
+msgid "Skill: %s"
 msgstr ""
 
-#: src/infogui.cpp:251
+#: src/infogui.cpp:262
 #, c-format
-msgid "Parry: %d percent of %s skill|"
+msgid "Parry: %d percent of %s skill"
 msgstr ""
 
-#: src/infogui.cpp:256
+#: src/infogui.cpp:268
 #, c-format
-msgid "AP cost: %d|"
-msgstr ""
-
-#: src/infogui.cpp:260
-#, c-format
-msgid "Range: %d|"
-msgstr ""
-
-#: src/infogui.cpp:266
-#, c-format
-msgid "Defense vs. %s damage: %d|"
+msgid "AP cost: %d"
 msgstr ""
 
 #: src/infogui.cpp:273
 #, c-format
-msgid "Dodge penalty: %d|"
+msgid "Range: %d"
 msgstr ""
 
-#: src/infogui.cpp:277
+#: src/infogui.cpp:280
 #, c-format
-msgid "Power: %d|"
+msgid "Defense vs. %s damage: %d"
 msgstr ""
 
-#: src/infogui.cpp:282
+#: src/infogui.cpp:289
 #, c-format
-msgid "Charges: %d(%d)|"
+msgid "Dodge penalty: %d"
 msgstr ""
 
-#: src/infogui.cpp:285
+#: src/infogui.cpp:294
 #, c-format
-msgid "Spell: %s|"
+msgid "Power: %d"
 msgstr ""
 
-#: src/infogui.cpp:292
+#: src/infogui.cpp:300
 #, c-format
-msgid "Duration: %d|"
+msgid "Charges: %d(%d)"
 msgstr ""
 
-#: src/infogui.cpp:297
+#: src/infogui.cpp:304
 #, c-format
-msgid "Two handed weapon.|"
+msgid "Spell: %s"
 msgstr ""
 
-#: src/infogui.cpp:301
+#: src/infogui.cpp:312
 #, c-format
-msgid "Optionally handed weapon.|"
+msgid "Duration: %d"
 msgstr ""
 
-#: src/infogui.cpp:309
+#: src/infogui.cpp:318
 #, c-format
-msgid "|Attack Info for each player:|"
+msgid "Two handed weapon."
 msgstr ""
 
-#: src/infogui.cpp:325 src/infogui.cpp:331
+#: src/infogui.cpp:323
+#, c-format
+msgid "Optionally handed weapon."
+msgstr ""
+
+#: src/infogui.cpp:332
+#, c-format
+msgid "Attack Info for each player:"
+msgstr ""
+
+#: src/infogui.cpp:350 src/infogui.cpp:356
 msgid "APR"
 msgstr ""
 
-#: src/infogui.cpp:352
+#: src/infogui.cpp:377
 #, c-format
-msgid "|%d bonus to attack and damage."
+msgid "%d bonus to attack and damage."
 msgstr ""
 
-#: src/infogui.cpp:354
+#: src/infogui.cpp:379
 #, c-format
-msgid "|%d bonus to armor points."
-msgstr ""
-
-#: src/infogui.cpp:363
-#, c-format
-msgid "|Double damage"
-msgstr ""
-
-#: src/infogui.cpp:366
-#, c-format
-msgid "|Triple damage"
-msgstr ""
-
-#: src/infogui.cpp:369
-#, c-format
-msgid "|Quad damage"
-msgstr ""
-
-#: src/infogui.cpp:372
-#, c-format
-msgid "|%dX damage"
-msgstr ""
-
-#: src/infogui.cpp:380
-msgid " vs. any creature."
+msgid "%d bonus to armor points."
 msgstr ""
 
 #: src/infogui.cpp:389
 #, c-format
-msgid "|Extra damage of %1$s %2$s magic."
+msgid "Double damage"
 msgstr ""
 
 #: src/infogui.cpp:393
 #, c-format
-msgid "|Extra %d pts of %s magic resistance."
+msgid "Triple damage"
 msgstr ""
 
-#: src/infogui.cpp:403
-msgid "|Sets state mods:"
+#: src/infogui.cpp:397
+#, c-format
+msgid "Quad damage"
 msgstr ""
 
-#: src/infogui.cpp:417
-msgid "|Protects from state mods:"
+#: src/infogui.cpp:401
+#, c-format
+msgid "%dX damage"
 msgstr ""
 
-#: src/infogui.cpp:443
-msgid "|Bonuses to skills:"
+#: src/infogui.cpp:410
+msgid " vs. any creature."
 msgstr ""
 
-#: src/infogui.cpp:453
-msgid "|This item is cursed!"
+#: src/infogui.cpp:419
+#, c-format
+msgid "Extra damage of %1$s %2$s magic."
 msgstr ""
 
-#: src/infogui.cpp:458
+#: src/infogui.cpp:423
+#, c-format
+msgid "Extra %d pts of %s magic resistance."
+msgstr ""
+
+#: src/infogui.cpp:434
+msgid "Sets state mods:"
+msgstr ""
+
+#: src/infogui.cpp:451
+msgid "Protects from state mods:"
+msgstr ""
+
+#: src/infogui.cpp:480
+msgid "Bonuses to skills:"
+msgstr ""
+
+#: src/infogui.cpp:492
+msgid "This item is cursed!"
+msgstr ""
+
+#: src/infogui.cpp:497
 msgid "School: "
 msgstr ""
 
-#: src/infogui.cpp:465
+#: src/infogui.cpp:505
 msgid ""
-"|You have a feeling there is more to this item than what you've been able to "
+"You have a feeling there is more to this item than what you've been able to "
 "glean..."
 msgstr ""
 
