@@ -49,7 +49,7 @@ typedef struct _ItemInfo {
   Uint8 monster_type[255];
   Uint8 magic_school_name[255];
   DiceInfo *magicDamage;
-  Uint8 stateMod[Constants::STATE_MOD_COUNT];
+  Uint8 stateMod[StateMod::STATE_MOD_COUNT];
   Uint8 skillBonus[Skill::SKILL_COUNT];
 
 } ItemInfo;

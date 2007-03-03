@@ -22,6 +22,7 @@
 #include "persist.h"
 #include "render/rendereditem.h"
 #include "storable.h"
+#include "rpg/rpg.h"
 #include <vector>
 
 class RpgItem;
@@ -74,7 +75,7 @@ class Item : public RenderedItem, Storable {
   MagicSchool *school; // magic damage by a school (or NULL if N/A)
   Dice *magicDamage; 
   bool cursed;
-  int stateMod[Constants::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
+  int stateMod[StateMod::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
   bool stateModSet;
   std::map<int, int> skillBonus;
   Session *session;	

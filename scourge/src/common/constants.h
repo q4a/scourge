@@ -347,51 +347,6 @@ public:
 // The max value of a skill under normal circumstances.
 #define MAX_SKILL 100
 
-// define some active region labels
-  enum {
-	INV_PLAYER_0 = 0,
-	INV_PLAYER_1,
-	INV_PLAYER_2,
-	INV_PLAYER_3,
-	INV_MODE_INVENTORY,
-	INV_MODE_PROPERTIES,
-	INV_MODE_SPELLS,
-	INV_MODE_LOG,
-	MENU_0,
-	MENU_1,
-	MENU_2,
-	MENU_3,
-	MENU_4,
-	ESCAPE,
-	SHOW_INVENTORY,
-	SHOW_OPTIONS,
-	SKILL_LIST,
-	ITEM_LIST,
-	DIAMOND_FORMATION,
-	STAGGERED_FORMATION,
-	SQUARE_FORMATION,
-	ROW_FORMATION,
-	SCOUT_FORMATION,
-	CROSS_FORMATION,
-	PLAYER_1,
-	PLAYER_2,
-	PLAYER_3,
-	PLAYER_4,
-	PLAYER_ONLY,
-	MOVE_ITEM_TO_PLAYER_0,
-	MOVE_ITEM_TO_PLAYER_1,
-	MOVE_ITEM_TO_PLAYER_2,
-	MOVE_ITEM_TO_PLAYER_3,
-	DROP_ITEM,
-	EQUIP_ITEM,
-	FIX_ITEM,
-	ENCHANT_ITEM,
-	REMOVE_CURSE_ITEM,
-	COMBINE_ITEM,
-	IDENTIFY_ITEM
-
-  };
-
   // Directions (a bitfield so they can be combined)
   static const Uint16 MOVE_UP = 1;
   static const Uint16 MOVE_DOWN = 2;
@@ -475,37 +430,6 @@ public:
   static const char *POTION_SKILL_NAMES[];
   // return -1 on failure, or (-2 - i) on success
   static int getPotionSkillByName(char *p);
-
-  enum {
-	blessed=0,
-	empowered,
-	enraged,
-	ac_protected,
-	magic_protected,
-	drunk,
-	poisoned,
-	cursed,
-	possessed,
-	blinded,
-	paralysed,
-	invisible,
-	overloaded,
-	dead,
-	asleep,
-
-	// must be last
-	STATE_MOD_COUNT
-  };
-  static const char *STATE_NAMES[];
-	static const char *STATE_DISPLAY_NAMES[];
-  static const char *STATE_SYMBOLS[];
-  // return -1 on failure, 0+ on success
-  static int getStateModByName( const char *p );
-  static std::vector<int> goodStateMod, badStateMod;
-  static int getRandomGoodStateMod();
-  static int getRandomBadStateMod();
-  static bool isStateModTransitionWanted(int mod, bool setting);
-  static void initConstants();
 
   enum {
     LESSER_MAGIC_ITEM=0,

@@ -218,7 +218,7 @@ void ShapePalette::initialize() {
 
   // load the status modifier icons
   char path[ 255 ];
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
     sprintf(path, "/icons/i%d.bmp", i);
     GLuint icon = loadGLTextures(path);
 //    cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;

@@ -111,7 +111,7 @@ void ScourgeView::centerOnMonsterInTB() {
   if( scourge->inTurnBasedCombat() ) {
     Battle *battle = scourge->getCurrentBattle();
     Creature *c = battle->getCreature();
-    if( c->isMonster() || c->getStateMod( Constants::possessed ) ) {
+    if( c->isMonster() || c->getStateMod( StateMod::possessed ) ) {
       scourge->getMap()->setMapCenterCreature( c );
       scourge->getMap()->center( toint( c->getX() ), toint( c->getY() ), true );
     }
@@ -607,7 +607,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   }
 
   // show path
-  if( !creature->getStateMod( Constants::dead ) &&
+  if( !creature->getStateMod( StateMod::dead ) &&
 			( ( PATH_DEBUG && !creature->isMonster() ) ||
 				( player && scourge->inTurnBasedCombat() ) ) ) {
     for( int i = creature->getPathIndex();
@@ -631,7 +631,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   }
 
   // Yellow for move creature target
-  if( !creature->getStateMod( Constants::dead ) &&
+  if( !creature->getStateMod( StateMod::dead ) &&
       player && creature->getSelX() > -1 &&
       !creature->getTargetCreature() &&
       !(creature->getSelX() == toint(creature->getX()) &&
@@ -664,10 +664,10 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   }
 
   // red for attack target
-  if( !creature->getStateMod( Constants::dead ) &&
+  if( !creature->getStateMod( StateMod::dead ) &&
       player &&
       creature->getTargetCreature() &&
-      !creature->getTargetCreature()->getStateMod( Constants::dead ) ) {
+      !creature->getTargetCreature()->getStateMod( StateMod::dead ) ) {
     double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / 2.0f) / DIV;
     //double td = (((double)(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
     //double td = ((double)(creature->getTargetCreature()->getShape()->getDepth())) / DIV;
@@ -704,25 +704,25 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   }
 
   // draw state mods
-  if( !creature->getStateMod( Constants::dead ) &&
+  if( !creature->getStateMod( StateMod::dead ) &&
       ( groupMode || player || creature->isMonster() || wanderingHero )) {
     glEnable(GL_TEXTURE_2D);
     int n = 16;
     int count = 0;
-    for(int i = 0; i < Constants::STATE_MOD_COUNT + 2; i++) {
+    for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
 
 			GLuint icon = 255;
 			if( !creature->isMonster() &&
 					!wanderingHero &&
-					i == Constants::STATE_MOD_COUNT && 
+					i == StateMod::STATE_MOD_COUNT && 
 					creature->getThirst() <= 5 ) {
 				icon = scourge->getSession()->getShapePalette()->getThirstIcon();
 			} else if( !creature->isMonster() && 
 								 !wanderingHero &&
-								 i == Constants::STATE_MOD_COUNT + 1 &&
+								 i == StateMod::STATE_MOD_COUNT + 1 &&
 								 creature->getHunger() <= 5 ) {
 				icon = scourge->getSession()->getShapePalette()->getHungerIcon();
-			} else if( creature->getStateMod( i ) && i != Constants::dead ) {
+			} else if( creature->getStateMod( i ) && i != StateMod::dead ) {
 				icon = scourge->getSession()->getShapePalette()->getStatModIcon( i );
 			}
 
@@ -757,7 +757,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     glDisable(GL_TEXTURE_2D);
   }
 
-  if( !creature->getStateMod( Constants::dead ) ) {
+  if( !creature->getStateMod( StateMod::dead ) ) {
 
 #ifdef BASE_DEBUG
     // base debug

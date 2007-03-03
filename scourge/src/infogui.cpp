@@ -399,7 +399,7 @@ void InfoGui::describe() {
     if( item->getIdentifiedBit( Item::ID_STATE_MOD ) ) {
       strcpy(tmp, "|Sets state mods:");
       bool found = false;
-      for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+      for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
         if(item->isStateModSet(i)) {
           strcat(tmp, " ");
           strcat( tmp, StateMod::stateMods[i]->getDisplayName() );
@@ -413,7 +413,7 @@ void InfoGui::describe() {
     if( item->getIdentifiedBit( Item::ID_PROT_STATE_MOD ) ) {
       strcpy(tmp, "|Protects from state mods:");
       bool found = false;
-      for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+      for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
         if(item->isStateModProtected(i)) {
           strcat(tmp, " ");
           strcat( tmp, StateMod::stateMods[i]->getDisplayName() );

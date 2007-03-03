@@ -150,14 +150,14 @@ char *Constants::messages[][80] = {
 	{ N_("SKILL")},
 	{ N_("A magical force turns the lock's tumbles to open."),
 		N_("Some kind of summoned energy opens the lock.")},
-	{ N_("Killed by" ), 
-		N_("Annihilated by"), 
-		N_("Slain by"), 
-		N_("Brought low by"), 
-		N_("Dropped by"), 
-		N_("Ruined by"), 
-		N_("Extinguished by"), 
-		N_("Laid low by")}
+	{ "Killed by",  // cause of death is not interantionalized
+		"Annihilated by", 
+		"Slain by", 
+		"Brought low by", 
+		"Dropped by", 
+		"Ruined by", 
+		"Extinguished by", 
+		"Laid low by"}
 };
 
 int Constants::messageCount[] = {
@@ -175,64 +175,6 @@ const char *Constants::POTION_SKILL_NAMES[] = {
 	"MP", 
 	"AC"
 };
-
-// FIXME: these need display names
-const char *Constants::STATE_NAMES[] = {
-  "blessed", 
-	"empowered", 
-	"enraged", 
-	"ac_protected", 
-	"magic_protected",
-  "drunk", 
-	"poisoned", 
-	"cursed", 
-	"possessed", 
-	"blinded", 
-	"paralysed", 
-	"invisible",
-  "overloaded", 
-	"dead", 
-	"asleep"
-};
-
-const char *Constants::STATE_DISPLAY_NAMES[] = {
-  N_( "blessed" ), 
-	N_( "empowered" ), 
-	N_( "enraged" ), 
-	N_( "ac_protected" ), 
-	N_( "magic_protected" ),
-  N_( "drunk" ), 
-	N_( "poisoned" ), 
-	N_( "cursed" ), 
-	N_( "possessed" ), 
-	N_( "blinded" ), 
-	N_( "paralysed" ), 
-	N_( "invisible" ),
-  N_( "overloaded" ), 
-	N_( "dead" ), 
-	N_( "asleep" )
-};
-
-const char *Constants::STATE_SYMBOLS[] = {
-  N_("Air"), 
-	N_("Earth"), 
-	N_("Fire"), 
-	N_("Stone"), 
-	N_("Water"),
-  N_("Jelly"), 
-	N_("Ice"), 
-	N_("Planar"), 
-	N_("Astral"), 
-	N_("Dire"), 
-	N_("Cave"), 
-	N_("Acid"),
-  N_("Spirit"), 
-	N_("Mist"), 
-	N_("Quiet")
-};
-
-vector<int> Constants::goodStateMod;
-vector<int> Constants::badStateMod;
 
 const char *Constants::MAGIC_ITEM_NAMES[] = {
   N_("Lesser"), 
@@ -311,15 +253,6 @@ int Constants::getPotionSkillByName(char *p) {
   if(!p || !strlen(p)) return -1;
   for(int i = 0; i < POTION_SKILL_COUNT; i++) {
     if(!strcmp(p, POTION_SKILL_NAMES[i])) return (-2 - i);
-  }
-  return -1;
-}
-
-// return -1 on failure, 0+ on success
-int Constants::getStateModByName( const char *p ) {
-  if(!p || !strlen(p)) return -1;
-  for(int i = 0; i < STATE_MOD_COUNT; i++) {
-    if(!strcmp(p, STATE_NAMES[i])) return i;
   }
   return -1;
 }
@@ -591,50 +524,6 @@ void Constants::checkTexture(char *message, int w, int h) {
     cerr << "*****************************" << endl;
     cerr << "*****************************" << endl;
   }
-}
-
-bool Constants::isStateModTransitionWanted(int mod, bool setting) {
-  bool effectFound = false;
-  for(int i = 0; i < (int)goodStateMod.size(); i++) {
-    if(goodStateMod[i] == mod) {
-      effectFound = true;
-      break;
-    }
-  }
-  if(effectFound && setting) return true;
-
-  effectFound = false;
-  for(int i = 0; i < (int)badStateMod.size(); i++) {
-    if(badStateMod[i] == mod) {
-      effectFound = true;
-      break;
-    }
-  }
-  if((effectFound || mod == Constants::dead) && !setting) return true;
-  return false;
-}
-
-int Constants::getRandomGoodStateMod() {
-  return goodStateMod[(int)((float)goodStateMod.size()*rand()/RAND_MAX)];
-}
-
-int Constants::getRandomBadStateMod() {
-  return badStateMod[(int)((float)badStateMod.size()*rand()/RAND_MAX)];
-}
-
-void Constants::initConstants() {
-  Constants::goodStateMod.push_back( Constants::blessed );
-  Constants::goodStateMod.push_back( Constants::empowered );
-  Constants::goodStateMod.push_back( Constants::enraged );
-  Constants::goodStateMod.push_back( Constants::ac_protected );
-  Constants::goodStateMod.push_back( Constants::magic_protected );
-  Constants::goodStateMod.push_back( Constants::invisible );
-
-  Constants::badStateMod.push_back( Constants::poisoned );
-  Constants::badStateMod.push_back( Constants::cursed );
-  Constants::badStateMod.push_back( Constants::possessed );
-  Constants::badStateMod.push_back( Constants::blinded );
-  Constants::badStateMod.push_back( Constants::paralysed );
 }
 
 #define TEST_FILE "scourge.mo"

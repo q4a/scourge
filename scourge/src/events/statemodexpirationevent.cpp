@@ -34,10 +34,10 @@ StateModExpirationEvent::~StateModExpirationEvent(){
 }
 
 void StateModExpirationEvent::execute() {
-  if(creature->getStateMod(Constants::dead)) return;
-  if(stateMod == Constants::poisoned) {
+  if(creature->getStateMod(StateMod::dead)) return;
+  if(stateMod == StateMod::poisoned) {
     // apply poison damage
-    if(creature->getStateMod(Constants::poisoned)) {
+    if(creature->getStateMod( StateMod::poisoned )) {
       Creature *tmp = creature->getTargetCreature();
       creature->setTargetCreature(creature);
       char message[80];
@@ -45,7 +45,7 @@ void StateModExpirationEvent::execute() {
       session->getMap()->addDescription(message, 0.05f, 1.0f, 0.05f);
 
 			char tmp2[255];
-			sprintf( tmp2, _( "%s poison." ), 
+			sprintf( tmp2, "%s poison.", 
 							 Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
 			creature->getTargetCreature()->setPendingCauseOfDeath( tmp2 );
 
@@ -61,15 +61,13 @@ void StateModExpirationEvent::executeBeforeDelete() {
   // Don't need this event anymore    
   scheduleDeleteEvent();        
   
-  if( creature->getStateMod(Constants::dead) ||
+  if( creature->getStateMod(StateMod::dead) ||
       !( creature->getStateMod( stateMod ) ) ) return;
   
   creature->setStateMod(stateMod, false);
   
   char msg[255];
-  sprintf( msg, _( "%1$s is not %2$s any more." ), 
-					 creature->getName(), 
-					 _( Constants::STATE_DISPLAY_NAMES[stateMod] ) );
+	sprintf( msg, StateMod::stateMods[ stateMod ]->getUnsetState(), creature->getName() );
   session->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
 }

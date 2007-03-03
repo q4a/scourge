@@ -57,7 +57,7 @@ void PotionExpirationEvent::execute() {
   // Don't need this event anymore    
   scheduleDeleteEvent();        
 
-  if(creature->getStateMod(Constants::dead)) return;
+  if(creature->getStateMod(StateMod::dead)) return;
 
   char msg[255];
   if(potionSkill < 0) {

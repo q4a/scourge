@@ -88,8 +88,8 @@ void Party::reset() {
   cerr << "Warning: possession testing is turned on." << endl;
   cerr << "****************************" << endl;
   cerr << "****************************" << endl;
-  if( partySize > 2 && party[2] ) party[2]->setStateMod( Constants::possessed, true );
-  if( partySize > 3 && party[3] ) party[3]->setStateMod( Constants::possessed, true );
+  if( partySize > 2 && party[2] ) party[2]->setStateMod( StateMod::possessed, true );
+  if( partySize > 3 && party[3] ) party[3]->setStateMod( StateMod::possessed, true );
 #endif 
 
   recomputeMaxSkills();
@@ -116,7 +116,7 @@ void Party::resetMultiplayer(Creature *c) {
 // set player to be the first non-dead character
 void Party::setFirstLivePlayer() {
   for(int i = 0; i < getPartySize(); i++) {
-    if(!party[i]->getStateMod(Constants::dead)) {
+    if(!party[i]->getStateMod(StateMod::dead)) {
       //setPlayer(getParty(i));
       setPlayer(i);
       break;
@@ -126,7 +126,7 @@ void Party::setFirstLivePlayer() {
 
 int Party::getFirstLivePlayer() {
   for(int i = 0; i < getPartySize(); i++) {
-    if(!party[i]->getStateMod(Constants::dead)) {
+    if(!party[i]->getStateMod(StateMod::dead)) {
       return i;
     }
   }
@@ -141,7 +141,7 @@ void Party::startPartyOnMission() {
   partyDead = false;
   
   setFirstLivePlayer();
-  setFormation(Constants::DIAMOND_FORMATION - Constants::DIAMOND_FORMATION);
+  setFormation( Creature::DIAMOND_FORMATION );
   getPlayer()->cancelTarget();
   
   // init the rest of the party
@@ -171,7 +171,7 @@ bool Party::switchToNextLivePartyMember() {
 	// switch to next player
 	n++; if(n >= getPartySize()) n = 0;
 	for(int t = 0; t < getPartySize(); t++) {
-		if(!party[n]->getStateMod(Constants::dead)) {
+		if(!party[n]->getStateMod(StateMod::dead)) {
 			setPlayer(n);
 			break;
 		}
@@ -203,7 +203,7 @@ void Party::setPlayer(int n, bool updateui) {
 
     // play selection sound
     if(lastPlayer != player) {
-      if(lastPlayer && !player->getStateMod(Constants::dead)) {
+      if(lastPlayer && !player->getStateMod(StateMod::dead)) {
         //session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
         player->playCharacterSound( GameAdapter::SELECT_SOUND );
       }
@@ -266,7 +266,7 @@ bool Party::setSelXY( Uint16 mapx, Uint16 mapy, bool cancelIfNotPossible ) {
     getPlayer()->cancelTarget();
   } else {
     for( int i = 0; i < getPartySize(); i++ ) {
-      if( !getParty(i)->getStateMod( Constants::dead ) ) {
+      if( !getParty(i)->getStateMod( StateMod::dead ) ) {
         getParty(i)->cancelTarget();        
       }
     }
@@ -278,7 +278,7 @@ bool Party::setSelXY( Uint16 mapx, Uint16 mapy, bool cancelIfNotPossible ) {
 bool Party::isPartyInRange() {
 	bool canMove = true;
 	for( int t = 0; t < getPartySize(); t++ ) {
-		if( !party[t]->getStateMod( Constants::dead ) && 
+		if( !party[t]->getStateMod( StateMod::dead ) && 
 				party[t] != player ) {
 			if( party[t]->getDistanceToSel() > player->getDistanceToSel() &&
 					party[t]->getDistance( player ) > 7 ) {
@@ -294,7 +294,7 @@ void Party::movePlayers() {
   if( player_only ) {
     // move everyone
     for (int i = 0; i < getPartySize(); i++) {
-      if (!party[i]->getStateMod(Constants::dead)) {
+      if (!party[i]->getStateMod(StateMod::dead)) {
         party[i]->moveToLocator();
       }
     }
@@ -303,7 +303,7 @@ void Party::movePlayers() {
   } else { // In group mode:
 
     // move the leader
-    if( !player->getStateMod(Constants::dead) ) {
+    if( !player->getStateMod(StateMod::dead) ) {
 			//if( isPartyInRange() ) {
 				player->moveToLocator();
 				session->getMap()->center(toint(player->getX()), toint(player->getY()));				
@@ -311,7 +311,7 @@ void Party::movePlayers() {
 
     // others follow the player
 		for (int t = 0; t < getPartySize(); t++) {
-			if (!party[t]->getStateMod(Constants::dead) && party[t] != player) {
+			if (!party[t]->getStateMod(StateMod::dead) && party[t] != player) {
 				// If the non-leader is done moving try to follow again.
 				// This will be a no-op in follow() if we're close enough.
 				if( !getParty(t)->anyMovesLeft() ) {
@@ -353,7 +353,7 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[0]->setMp();
   pc[0]->setHunger(8);
   pc[0]->setThirst(7); 
-  pc[0]->setStateMod(Constants::blessed, true);
+  pc[0]->setStateMod(StateMod::blessed, true);
 
   pc[1] = new Creature(session, 
                        Character::getRandomCharacter(), 
@@ -366,8 +366,8 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[1]->setMp();
   pc[1]->setHunger(10);
   pc[1]->setThirst(9);
-  pc[1]->setStateMod(Constants::drunk, true);
-  pc[1]->setStateMod(Constants::cursed, true);      
+  pc[1]->setStateMod(StateMod::drunk, true);
+  pc[1]->setStateMod(StateMod::cursed, true);      
 
   pc[2] = new Creature(session, 
                        Character::getRandomCharacter(), 
@@ -380,9 +380,9 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[2]->setMp();
   pc[2]->setHunger(3);
   pc[2]->setThirst(2);
-  pc[2]->setStateMod(Constants::ac_protected, true);
-  pc[2]->setStateMod(Constants::magic_protected, true);
-  pc[2]->setStateMod(Constants::cursed, true);
+  pc[2]->setStateMod(StateMod::ac_protected, true);
+  pc[2]->setStateMod(StateMod::magic_protected, true);
+  pc[2]->setStateMod(StateMod::cursed, true);
   //  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) 
   //  	if(i != Constants::dead) pc[2]->setStateMod(i, true);
 
@@ -397,7 +397,7 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   pc[3]->setMp();
   pc[3]->setHunger(10);
   pc[3]->setThirst(10);
-  //pc[3]->setStateMod(Constants::possessed, true);          
+  //pc[3]->setStateMod(StateMod::possessed, true);          
 
   // compute starting skill levels
   for(int i = 0; i < pcCount; i++) {
@@ -519,8 +519,8 @@ Creature *Party::getClosestPlayer(int x, int y, int w, int h, int radius) {
   float minDist = 0;
   Creature *p = NULL;
   for(int i = 0; i < getPartySize(); i++) {
-	if(!party[i]->getStateMod(Constants::dead) &&
-       !party[i]->getStateMod(Constants::possessed)) {
+	if(!party[i]->getStateMod(StateMod::dead) &&
+       !party[i]->getStateMod(StateMod::possessed)) {
 	  float dist = Constants::distance(x, y, w, h,
                                      party[i]->getX(),
                                      party[i]->getY(),
@@ -538,7 +538,7 @@ Creature *Party::getClosestPlayer(int x, int y, int w, int h, int radius) {
 
 void Party::startEffect(int effect_type, int duration) {
   for(int i = 0; i < getPartySize(); i++) {
-	if(!party[i]->getStateMod(Constants::dead)) {
+	if(!party[i]->getStateMod(StateMod::dead)) {
 	  party[i]->startEffect(effect_type, duration);
 	}
   }
@@ -578,7 +578,7 @@ void Party::savePlayerSettings() {
 }
 
 void Party::restorePlayerSettings() {
-  if(savedPlayer->getStateMod(Constants::dead)) setFirstLivePlayer();
+  if(savedPlayer->getStateMod(StateMod::dead)) setFirstLivePlayer();
   else if(player != savedPlayer) {
     for(int i = 0; i < getPartySize(); i++) {
       if(party[i] == savedPlayer) {
@@ -599,7 +599,7 @@ bool Party::isEquipped( Item *item ) {
 
 void Party::regainMp() {
   for( int i = 0; i < getPartySize(); i++ ) {
-    if( !getParty( i )->getStateMod( Constants::dead ) &&
+    if( !getParty( i )->getStateMod( StateMod::dead ) &&
 				getParty( i )->getStartingMp() > 0 &&
         getParty( i )->getMp() < getParty( i )->getMaxMp() ) {
       getParty( i )->setMp( getParty( i )->getMp() + 1 );
@@ -609,7 +609,7 @@ void Party::regainMp() {
 
 void Party::applyRecurringSpecialSkills() {
 	for( int i = 0; i < getPartySize(); i++ ) {
-		if( !getParty( i )->getStateMod( Constants::dead ) ) {
+		if( !getParty( i )->getStateMod( StateMod::dead ) ) {
 			getParty( i )->applyRecurringSpecialSkills();
 		}
 	}

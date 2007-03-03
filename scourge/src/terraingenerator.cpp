@@ -534,7 +534,7 @@ bool TerrainGenerator::addParty(Map *map, ShapePalette *shapePal) {
   int yy = MAP_OFFSET + ( room[0].y + room[0].h / 2 ) * MAP_UNIT;
   int nx, ny;
   for( int r = 0; r < scourge->getParty()->getPartySize(); r++ ) {
-    if( !scourge->getParty()->getParty(r)->getStateMod( Constants::dead ) ) {
+    if( !scourge->getParty()->getParty(r)->getStateMod( StateMod::dead ) ) {
       scourge->getParty()->getParty(r)->findPlace( xx, yy, &nx, &ny );
       if( nx == -1 && ny == -1 ) return false;
       xx = nx;

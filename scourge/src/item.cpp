@@ -87,7 +87,7 @@ ItemInfo *Item::save() {
   strcpy((char*)info->monster_type, (this->monsterType ? monsterType : ""));
   strcpy((char*)info->magic_school_name, (this->school ? school->getName() : ""));
   info->magicDamage = (school ? saveDice( magicDamage ) : saveEmptyDice());
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
     info->stateMod[i] = this->stateMod[i];
   }
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
@@ -164,7 +164,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
   if( !item->getMonsterType() ) item->damageMultiplier = 1;
   item->school = MagicSchool::getMagicSchoolByName( (char*)info->magic_school_name );
   item->magicDamage = Item::loadDice( session, info->magicDamage );
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
     item->stateMod[i] = info->stateMod[i];
   }
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
@@ -652,7 +652,7 @@ void Item::commonInit( bool loading ) {
   school = NULL;
   magicDamage = NULL;
   stateModSet = false;
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) stateMod[i] = 0;
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) stateMod[i] = 0;
 
   if( rpgItem->isEnchantable() && !loading ) {
     // roll for magic
@@ -861,7 +861,7 @@ void Item::describeMagic(char *s, char *itemName) {
 							if( strlen( s ) ) strcat( s, " " );
 							strcat( s, school->getSymbol() );
 						} else if( stateModSet ) {
-							for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
+							for( int i = 0; i < StateMod::STATE_MOD_COUNT; i++ ) {
 								if( stateMod[ i ] > 0 ) {
 									if( strlen( s ) ) strcat( s, " " );
 									strcat( s, StateMod::stateMods[ i ]->getSymbol() );
@@ -981,7 +981,7 @@ void Item::debugMagic(char *s) {
   cerr << "\tdamageMultiplier=" << damageMultiplier << " vs. monsterType=" << (monsterType ? monsterType : "null") << endl;
   cerr << "\tSchool: " << (school ? school->getName() : "null") << endl;
   cerr << "\tstate mods:" << endl;
-  for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
     if(this->isStateModSet(i)) cerr << "set: " << StateMod::stateMods[i]->getName() << endl;
     if(this->isStateModProtected(i)) cerr << "protected: " << StateMod::stateMods[i]->getName() << endl;
   }
@@ -1066,7 +1066,7 @@ void Item::identify( int infoDetailLevel ) {
 		}
 
 		bool found = false;
-		for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+		for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
 			if(isStateModSet(i)) {
 				found = true;
 				break;
@@ -1083,7 +1083,7 @@ void Item::identify( int infoDetailLevel ) {
 		}
 
 		found = false;
-		for(int i = 0; i < Constants::STATE_MOD_COUNT; i++) {
+		for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
 			if(isStateModProtected(i)) {
 				found = true;
 				break;

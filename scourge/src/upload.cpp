@@ -127,11 +127,11 @@ int Upload::uploadScoreToWeb( char *score, char *result ) {
 						*q = 0;
 						strcpy( result, p + strlen( SUCCESS_STR ) );
 					} else {
-						sprintf( result, "Can't parse result: ", res );
+						sprintf( result, "Can't parse result: %s", res );
 						errNum = 1;
 					}
 				} else {
-					sprintf( result, "Bad result: ", res );
+					sprintf( result, "Bad result: %s", res );
 					errNum = 1;
 				}
 			}

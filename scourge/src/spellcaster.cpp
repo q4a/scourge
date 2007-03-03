@@ -68,7 +68,7 @@ void SpellCaster::spellFailed() {
     
     Creature *tmpTarget;
     if( battle->getCreature()->isMonster() || 
-        battle->getCreature()->getStateMod( Constants::possessed ) ) {
+        battle->getCreature()->getStateMod( StateMod::possessed ) ) {
       tmpTarget = battle->getSession()->getClosestVisibleMonster(toint(battle->getCreature()->getX()), 
                                                                  toint(battle->getCreature()->getY()), 
                                                                  battle->getCreature()->getShape()->getWidth(),
@@ -123,43 +123,43 @@ void SpellCaster::spellSucceeded() {
       launchProjectile(0);
     }
   } else if(!strcasecmp(spell->getName(), "Invisibility")) {
-    setStateMod(Constants::invisible);
+    setStateMod(StateMod::invisible);
   } else if(!strcasecmp(spell->getName(), "Art of protection")) {
-    setStateMod(Constants::magic_protected);
+    setStateMod(StateMod::magic_protected);
   } else if(!strcasecmp(spell->getName(), "Divine Aggressor")) {
-    setStateMod(Constants::enraged);
+    setStateMod(StateMod::enraged);
   } else if(!strcasecmp(spell->getName(), "Protective clay")) {
-    setStateMod(Constants::ac_protected);
+    setStateMod(StateMod::ac_protected);
   } else if(!strcasecmp(spell->getName(), "Empower friend")) {
-    setStateMod(Constants::empowered);
+    setStateMod(StateMod::empowered);
   } else if(!strcasecmp(spell->getName(), "Bless group")) {
-    setStateMod(Constants::blessed);
+    setStateMod(StateMod::blessed);
   } else if(!strcasecmp(spell->getName(), "Flame of Azun")) {
     if(projectileHit) {
-      setStateMod(Constants::blinded);
+      setStateMod(StateMod::blinded);
     } else {
       launchProjectile(1, false);
     }
   } else if(!strcasecmp(spell->getName(), "Poison of ignorance")) {
     if(projectileHit) {
-      setStateMod(Constants::poisoned);
+      setStateMod(StateMod::poisoned);
     } else {
       launchProjectile(1, false);
     }
   } else if(!strcasecmp(spell->getName(), "Transmute poison")) {
-      setStateMod(Constants::poisoned, false);
+      setStateMod(StateMod::poisoned, false);
   } else if(!strcasecmp(spell->getName(), "Cursed ways")) {
     if(projectileHit) {
-      setStateMod(Constants::cursed);
+      setStateMod(StateMod::cursed);
     } else {
       launchProjectile(1, false);
     }
   } else if(!strcasecmp(spell->getName(), "Remove curse")) {
-    setStateMod(Constants::cursed, false);
+    setStateMod(StateMod::cursed, false);
   } else if(!strcasecmp(spell->getName(), "Enthrall fiend")) {
-    setStateMod(Constants::possessed);
+    setStateMod(StateMod::possessed);
   } else if(!strcasecmp(spell->getName(), "Break from possession")) {
-    setStateMod(Constants::possessed, false);
+    setStateMod(StateMod::possessed, false);
   } else if(!strcasecmp(spell->getName(), "Ole Taffy's purty colors")) {
     viewInfo();
   } else if(!strcasecmp(spell->getName(), "Ring of Harm")) {
@@ -357,7 +357,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 
 void SpellCaster::resurrect() {
   for( int i = 0; i < battle->getSession()->getParty()->getPartySize(); i++ ) {
-    if( battle->getSession()->getParty()->getParty(i)->getStateMod( Constants::dead ) ) {
+    if( battle->getSession()->getParty()->getParty(i)->getStateMod( StateMod::dead ) ) {
       battle->getSession()->getParty()->getParty(i)->
         resurrect( toint( battle->getCreature()->getX() ),
                    toint( battle->getCreature()->getY() ) );
@@ -457,13 +457,9 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     
     char msg[200];
     if(setting) {
-      sprintf(msg, "%s is %s.", 
-              creature->getName(), 
-              _( Constants::STATE_DISPLAY_NAMES[mod] ) );
+			sprintf( msg, StateMod::stateMods[mod]->getSetState(), creature->getName() );
     } else {
-      sprintf(msg, "%s is not %s any more.", 
-              creature->getName(), 
-              _( Constants::STATE_DISPLAY_NAMES[mod] ) );
+			sprintf( msg, StateMod::stateMods[mod]->getUnsetState(), creature->getName() );
     }
     battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
     

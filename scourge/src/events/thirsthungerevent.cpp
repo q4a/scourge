@@ -30,7 +30,7 @@ void ThirstHungerEvent::execute(){
     int thirst, hunger;
     char buff[255];  
     
-    if(creature -> getStateMod(Constants::dead)){
+    if(creature -> getStateMod(StateMod::dead)){
       // FIXME: needs testing. I commented it out in case the player is resurrected.
       // Don't need this event anymore          
       //scheduleDeleteEvent();        
