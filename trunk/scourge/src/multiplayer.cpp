@@ -30,28 +30,33 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
   this->scourge = scourge;
   mainWin = new Window( scourge->getSDLHandler(),
                         250, 250, 440, 250, 
-                        "Multiplayer Setup", 
+                        _( "Multiplayer Setup" ), 
                         scourge->getShapePalette()->getGuiTexture(),
                         true, Window::BASIC_WINDOW,
                         scourge->getShapePalette()->getGuiTexture2() );
   mainWin->setModal( true );
-  startServer = mainWin->createButton( 10, 10, 160, 30, "Host a game", true );
+  startServer = mainWin->createButton( 10, 10, 160, 30, _( "Host a game" ), true );
   startServer->setSelected(true);
 
-  mainWin->createLabel( 90, 55, "--- OR ---" );
+  mainWin->createLabel( 90, 55, _( "--- OR ---" ) );
 
-  mainWin->createLabel( 10, 80, "Server address:" );
+	char tmp[300];
+	sprintf( tmp, "%s:", _( "Server address" ) );
+  mainWin->createLabel( 10, 80, tmp );
   serverName = mainWin->createTextField( 10, 85, 30);
-  mainWin->createLabel( 10, 120, "Server port:" );
+	sprintf( tmp, "%s:", _( "Server port" ) );
+  mainWin->createLabel( 10, 120, tmp );
   serverPort = mainWin->createTextField( 10, 125, 10 );
-  mainWin->createLabel( 10, 160, "Username:" );
+	sprintf( tmp, "%s:", _( "Username" ) );
+  mainWin->createLabel( 10, 160, tmp );
   userName = mainWin->createTextField( 10, 165, 30 );
   
-  joinServer = mainWin->createButton( 10, 190, 160, 210, "Join a game", true );
-  okButton = mainWin->createButton( 330, 180, 430, 210, "Start Game" );
+  joinServer = mainWin->createButton( 10, 190, 160, 210, _( "Join a game" ), true );
+  okButton = mainWin->createButton( 330, 180, 430, 210, _( "Start Game" ) );
   
   
-  mainWin->createLabel( 230, 20, "Select a character:" );
+	sprintf( tmp, "%s:", _( "Select a character" ) );
+  mainWin->createLabel( 230, 20, tmp );
   characterList = new ScrollingList( 230, 30, 200, 130, 
                                      scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( characterList );

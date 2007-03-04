@@ -29,8 +29,8 @@
 using namespace std;
 
 char *floorTypeName[2][80] = { 
-  { "FLOOR_TILE", "Tile: Passage" },
-  { "ROOM_FLOOR_TILE", "Tile: Room" }
+  { "FLOOR_TILE", N_( "Tile: Passage" ) },
+  { "ROOM_FLOOR_TILE", N_( "Tile: Room" ) }
 };
 
 /**
@@ -66,7 +66,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   mainWin = new Window( scourge->getSDLHandler(),
                         scourge->getScreenWidth() - w, 0,
                         w, scourge->getScreenHeight(),
-                        "Map Editor", false, Window::BASIC_WINDOW,
+                        _( "Map Editor" ), false, Window::BASIC_WINDOW,
                         GuiTheme::DEFAULT_THEME );
   mainWin->setVisible( false );
   mainWin->setLocked( true );
@@ -77,28 +77,28 @@ MapEditor::MapEditor( Scourge *scourge ) {
 	int yy = 8;
 	int ystep = 24;
 
-	mainWin->createLabel( 5, yy + 10, "Name:" );
+	mainWin->createLabel( 5, yy + 10, _( "Name:" ) );
   nameText = mainWin->createTextField( 60, yy, 10 );
 	yy += ystep;
 
-	loadButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, "Load" );
-  saveButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 5, yy + 20, "Save" );
+	loadButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Load" ) );
+  saveButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 5, yy + 20, _( "Save" ) );
 	yy += ystep;
 
-  wallButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, "Wall", true );
+  wallButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Wall" ), true );
   toggleButtonList.push_back( wallButton );
   wallButton->setSelected( true );
-  doorButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, "Door", true );
+  doorButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, _( "Door" ), true );
   toggleButtonList.push_back( doorButton );
 	yy += ystep;
   
   
 
-  newButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, "Properties" );
-  floorType = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, floorTypeName[ 1 ][ 1 ], true );
+  newButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Properties" ) );
+  floorType = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, _( floorTypeName[ 1 ][ 1 ] ), true );
 	yy += ystep;
 
-  startPosButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, "Start Pos", true );
+  startPosButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Start Pos" ), true );
   toggleButtonList.push_back( startPosButton );
 	yy += ystep;
 
@@ -106,7 +106,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   vector<Shape*> seen;  
 
   // items
-  itemButton = mainWin->createButton( startx, yy, w - 10, yy + 20, "Item", true );
+  itemButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Item" ), true );
 	toggleButtonList.push_back( itemButton );
 	yy += ystep;
   itemList = new ScrollingList( startx, yy, w - 16, 100, 
@@ -115,7 +115,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
 	yy += 104;
 	
 
-	furnitureButton = mainWin->createButton( startx, yy, w - 10, yy + 20, "Furniture", true );	
+	furnitureButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Furniture" ), true );	
   toggleButtonList.push_back( furnitureButton );
 	yy += ystep;
 	furnitureList = new ScrollingList( startx, yy, w - 16, 100, 
@@ -155,7 +155,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   furnitureList->setLines( furnitureVector.size(), (const char**)furnitureNames );
   
   // creatures
-  creatureButton = mainWin->createButton( startx, yy, w - 10, yy + 20, "Creature", true );
+  creatureButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Creature" ), true );
   toggleButtonList.push_back( creatureButton );
 	yy += ystep;
   creatureList = new ScrollingList( startx, yy, w - 16, 100, 
@@ -188,7 +188,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   creatureList->setLines( creatureMap->size(), (const char**)creatureNames );
 
   // shapes
-  shapeButton = mainWin->createButton( startx, yy, w - 10, yy + 20, "Shape", true );
+  shapeButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Shape" ), true );
   toggleButtonList.push_back( shapeButton );
 	yy += ystep;
   shapeList = new ScrollingList( startx, yy, w - 16, 100, 
@@ -220,18 +220,21 @@ void MapEditor::createNewMapDialog() {
   int nh = 400;
   newMapWin = new Window( scourge->getSDLHandler(),
                           40, 40, nw, nh,
-                          "Map Properties", 
+                          _( "Map Properties" ), 
                           false, 
                           Window::BASIC_WINDOW,
                           GuiTheme::DEFAULT_THEME );
   newMapWin->setVisible( false );
   newMapWin->setModal( true );
 	int startx = 8;
-  newMapWin->createLabel( startx, 20, "Map level (0-50):" );
+	char tmp[300];
+	sprintf( tmp, "%s (0-50):", _( "Map level" ) );
+  newMapWin->createLabel( startx, 20, tmp );
   levelText = newMapWin->createTextField( 150, 10, 20 );
-  newMapWin->createLabel( startx, 40, "Map depth (0-10):" );
+	sprintf( tmp, "%s (0-10):", _( "Map depth" ) );
+  newMapWin->createLabel( startx, 40, tmp );
   depthText = newMapWin->createTextField( 150, 30, 20 );
-  newMapWin->createLabel( startx, 60, "Map theme:" );
+  newMapWin->createLabel( startx, 60, _( "Map theme:" ) );
 	nw -= 12;
 
 
@@ -250,14 +253,14 @@ void MapEditor::createNewMapDialog() {
   themeList->setLines( scourge->getShapePalette()->getAllThemeCount(), 
                        (const char**)themeNames );
 
-  newMapWin->createLabel( startx, 130, "Select map location: (click on map, drag to move)" );
+  newMapWin->createLabel( startx, 130, _( "Select map location: (click on map, drag to move)" ) );
   mapWidget = new MapWidget( scourge, newMapWin, startx, 140, nw - startx, 335 );
   newMapWin->addWidget( mapWidget->getCanvas() );
 
   int bw = nw / 6;
-  okButton = newMapWin->createButton( nw - bw * 3 - 10, 345, nw - bw * 2 - 5, 365, "New Map" );
-  applyButton = newMapWin->createButton( nw - bw * 2 + 5, 345, nw - bw - 5, 365, "Apply" );
-  cancelButton = newMapWin->createButton( nw - bw, 345, nw - 5, 365, "Cancel" );
+  okButton = newMapWin->createButton( nw - bw * 3 - 10, 345, nw - bw * 2 - 5, 365, _( "New Map" ) );
+  applyButton = newMapWin->createButton( nw - bw * 2 + 5, 345, nw - bw - 5, 365, _( "Apply" ) );
+  cancelButton = newMapWin->createButton( nw - bw, 345, nw - 5, 365, _( "Cancel" ) );
 }
 
 MapEditor::~MapEditor() {
@@ -294,13 +297,16 @@ void MapEditor::drawView() {
     Location *pos = scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX(), 
                                                     scourge->getMap()->getCursorFlatMapY(),
                                                     0 );
-    scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d C:%d,%d Shape=%s Item=%s Creature=%s", 
+    scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d C:%d,%d %s=%s %s=%s %s=%s", 
                                         scourge->getMap()->getCursorFlatMapX(), 
                                         scourge->getMap()->getCursorFlatMapY(), 
                                         scourge->getMap()->getCursorChunkX(), 
                                         scourge->getMap()->getCursorChunkY(),
+																				_( "Shape" ),
                                         ( pos ? pos->shape->getName() : "NULL" ),
+																				_( "Item" ),
                                         ( pos && pos->item ? ((Item*)(pos->item))->getRpgItem()->getName() : "NULL" ),
+																				_( "Creature" ),
                                         ( pos && pos->creature ? pos->creature->getName() : "NULL" ) );
   }
   glTranslatef( 50, 50, 0 );
@@ -441,7 +447,7 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == cancelButton ) {
     newMapWin->setVisible( false );
   } else if( widget == floorType ) {
-    floorType->setLabel( floorTypeName[ floorType->isSelected() ? 0 : 1 ][ 1 ] );
+    floorType->setLabel( _( floorTypeName[ floorType->isSelected() ? 0 : 1 ][ 1 ] ) );
   } else if( widget == mapWidget->getCanvas() ) {
 //    mapWidget->setPosition( scourge->getMouseX() - newMapWin->getX() - mapWidget->getCanvas()->getX(),
 //                            scourge->getMouseY() - newMapWin->getY() - mapWidget->getCanvas()->getY() - Window::TOP_HEIGHT );

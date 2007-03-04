@@ -36,7 +36,7 @@ NetPlay::NetPlay(Scourge *scourge) {
   mainWin = new Window( scourge->getSDLHandler(),
                         0, scourge->getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT, 
                         width, Scourge::PARTY_GUI_HEIGHT, 
-                        "Chat", 
+                        _( "Chat" ), 
                         scourge->getShapePalette()->getGuiTexture(), false,
                         Window::BASIC_WINDOW,
                         scourge->getShapePalette()->getGuiTexture2() );

@@ -172,7 +172,8 @@ void Character::describeProfession() {
 
 	// describe the top few skills
 	// first loop thru to see if skill-groups are supported
-	strcat( s, _( "Skill bonuses to:|" ) );
+	strcat( s, _( "Skill bonuses to:" ) );
+	strcat( s, "|" );
 	map<SkillGroup*,int> groupCount;
 	for( map<int, int>::iterator i = skills.begin(); i != skills.end(); ++i ) {
 		Skill *skill = Skill::skills[ i->first ];
@@ -221,9 +222,11 @@ void Character::describeAcl( char *s, set<string> *allowed, set<string> *forbidd
 	if( allowed->find( all ) != allowed->end() ) {
 		if( forbidden->size() > 0 ) {
       if( itemType == ITEM_TYPE_WEAPON ) {
-        strcat( s, _( "Can use any weapons, except:|" ) );
+        strcat( s, _( "Can use any weapons, except:" ) );
+				strcat( s, "|" );
       } else {
-        strcat( s, _( "Can use any armor, except:|" ) );
+        strcat( s, _( "Can use any armor, except:" ) );
+				strcat( s, "|" );
       }
 			for( set<string>::iterator i = forbidden->begin(); i != forbidden->end(); ++i ) {
 				string tag = *i;
@@ -234,17 +237,21 @@ void Character::describeAcl( char *s, set<string> *allowed, set<string> *forbidd
 			}
 		} else {
       if( itemType == ITEM_TYPE_WEAPON ) {
-        strcat( s, _( "Can use any weapons.|" ) );
+        strcat( s, _( "Can use any weapons." ) );
+				strcat( s, "|" );
       } else {
-        strcat( s, _( "Can use any armor.|" ) );
+        strcat( s, _( "Can use any armor." ) );
+				strcat( s, "|" );
       }
 		}
 	} else if( forbidden->find( all ) != forbidden->end() ) {
 		if( allowed->size() > 0 ) {
       if( itemType == ITEM_TYPE_WEAPON ) {
-        strcat( s, _( "Not allowed to use any weapons, except:|" ) );
+        strcat( s, _( "Not allowed to use any weapons, except:" ) );
+				strcat( s, "|" );
       } else {
-        strcat( s, _( "Not allowed to use any armor, except:|" ) );
+        strcat( s, _( "Not allowed to use any armor, except:" ) );
+				strcat( s, "|" );
       }
 			for( set<string>::iterator i = allowed->begin(); i != allowed->end(); ++i ) {
 				string tag = *i;
@@ -255,9 +262,11 @@ void Character::describeAcl( char *s, set<string> *allowed, set<string> *forbidd
 			}
 		} else {
       if( itemType == ITEM_TYPE_WEAPON ) {
-        strcat( s, _( "Not allowed to use any weapons.|" ) );
+        strcat( s, _( "Not allowed to use any weapons." ) );
+				strcat( s, "|" );
       } else {
-        strcat( s, _( "Not allowed to use any armor.|" ) );
+        strcat( s, _( "Not allowed to use any armor." ) );
+				strcat( s, "|" );
       }
 		}
 	} else {

@@ -102,7 +102,7 @@ MainMenu::MainMenu(Scourge *scourge){
                               (scourge->getSDLHandler()->getScreen()->w/2) - (w/2), 
                               (scourge->getSDLHandler()->getScreen()->h/2) - (h/2), 
                               w, h,
-                              "New Game Confirmation",
+                              _( "New Game Confirmation" ),
                               scourge->getShapePalette()->getGuiTexture(), false);
   newGameConfirmOK = newGameConfirm->createButton( 40, 55, 110, 75, Constants::getMessage( Constants::OK_LABEL ) );
   newGameConfirmCancel = newGameConfirm->createButton( 140, 55, 210, 75, Constants::getMessage( Constants::CANCEL_LABEL ));

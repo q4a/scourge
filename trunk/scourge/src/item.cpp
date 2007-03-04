@@ -24,8 +24,6 @@
 
 using namespace std;
 
-#define UPDATE_MESSAGE "Loading Items"
-
 map<int, vector<string> *> Item::soundMap;
 
 Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
@@ -256,31 +254,31 @@ void Item::getDetailedDescription(char *s, bool precise){
              " *Mission*" : ""));
   }
   */
-
+	
   if(type == RpgItem::DRINK || type == RpgItem::POTION || type == RpgItem::FOOD){
     sprintf(s, "(L:%d) %s%s%s", 
             getLevel(), 
-            ( isCursed() && getShowCursed() ? "*Cursed* " : "" ),
+            ( isCursed() && getShowCursed() ? _( "*Cursed* " ) : "" ),
             (precise ? itemName : rpgItem->getShortDesc()),
             (session->getCurrentMission() && 
              session->getCurrentMission()->isMissionItem( this ) ? 
-             " *Mission*" : ""));
+             _( " *Mission*" ) : ""));
   } else if(type == RpgItem::SCROLL) {
     sprintf(s, "(L:%d) %s%s%s", 
             getLevel(), 
-            ( isCursed() && getShowCursed() ? "*Cursed* " : "" ),
+            ( isCursed() && getShowCursed() ? _( "*Cursed* " ) : "" ),
             itemName,
             (session->getCurrentMission() && 
              session->getCurrentMission()->isMissionItem( this ) ? 
-             " *Mission*" : ""));
+             _( " *Mission*" ) : ""));
   } else {
     sprintf(s, "(L:%d) %s%s%s", 
             getLevel(), 
-            ( isCursed() && getShowCursed() ? "*Cursed* " : "" ),
+            ( isCursed() && getShowCursed() ? _( "*Cursed* " ) : "" ),
             (precise ? itemName : rpgItem->getShortDesc()),
             (session->getCurrentMission() && 
              session->getCurrentMission()->isMissionItem( this ) ? 
-             " *Mission*" : ""));
+             _( " *Mission*" ) : ""));
   }
 }
 
@@ -302,7 +300,7 @@ void Item::initItemTypes( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
-		Session::instance->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+		Session::instance->getGameAdapter()->setUpdate( _( "Loading Items" ), i, vv->size() );
 
 		ItemType itemType;
 		strcpy( itemType.name, node->getValueAsString( "name" ) );
@@ -330,7 +328,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
-		Session::instance->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, v->size() );
+		Session::instance->getGameAdapter()->setUpdate( _( "Loading Items" ), i, v->size() );
 		
 		// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
 		strcpy( name, node->getValueAsString( "name" ) );
@@ -500,7 +498,7 @@ void Item::initSounds( ConfigLang *config ) {
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
-		Session::instance->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, v->size() );
+		Session::instance->getGameAdapter()->setUpdate( _( "Loading Items" ), i, v->size() );
 
 		strcpy( tmp, node->getValueAsString( "sounds" ) );
 		char *p = strtok(tmp, ",");
@@ -535,20 +533,6 @@ void Item::initTags( ConfigLang *config ) {
 	}
 }
 
-void Item::addNameTag( ConfigLang *config, char *name, char *newName ) {
-	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "item" );
-
-	char value[255], tmp[255];
-	for( unsigned int i = 0; i < v->size(); i++ ) {
-		ConfigNode *node = (*v)[i];
-		strcpy( value, node->getValueAsString( name ) );
-		sprintf( tmp, "_( \"%s\" )", value ); 
-		node->addValue( newName, new ConfigValue( tmp ) );
-	}
-	config->debug();
-}
-
 // this should really be in RpgItem but that class can't reference ShapePalette and shapes.
 void Item::initItems( ShapePalette *shapePal ) {
 	ConfigLang *config = ConfigLang::load( "config/item.cfg" );  
@@ -558,26 +542,18 @@ void Item::initItems( ShapePalette *shapePal ) {
   delete config;
 
 	config = ConfigLang::load( "config/weapon.cfg" );  
-	//cerr << "--- weapon.cfg -------------------------" << endl;
-	//addNameTag( config, "name", "display_name" );
 	initItemEntries( config, shapePal );
 	delete config;
 
 	config = ConfigLang::load( "config/armor.cfg" );  
-	//cerr << "--- armor.cfg -------------------------" << endl;
-	//addNameTag( config, "name", "display_name" );
 	initItemEntries( config, shapePal );
 	delete config;
 
 	config = ConfigLang::load( "config/magicitem.cfg" );  
-	//cerr << "--- magicitem.cfg -------------------------" << endl;
-	//addNameTag( config, "name", "display_name" );
 	initItemEntries( config, shapePal );
 	delete config;
 
 	config = ConfigLang::load( "config/otheritem.cfg" );  
-	//cerr << "--- otheritem.cfg -------------------------" << endl;
-	//addNameTag( config, "name", "display_name" );
 	initItemEntries( config, shapePal );
 	delete config;
 }
@@ -888,78 +864,6 @@ void Item::describeMagic(char *s, char *itemName) {
 	} else {
 		strcpy( s, itemName );
 	}
-
-
-	/*
-  strcpy( s, "" );
-	
-	// Stored spell
-	if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell && spell ) {
-		strcat( s, spell->getSymbol() );
-		strcat( s, " " );
-	}
-		
-	// Lesser, Greater, etc.
-	if( magicLevel > -1 ) {
-		if( isIdentified() ) {
-			strcat( s, _( Constants::MAGIC_ITEM_NAMES[ magicLevel ] ) );
-	
-			// Protective if stateMods are changed
-			if( stateModSet ) {
-				strcat( s, " Protective" );
-			}
-		
-			// Slaying if there is a multiplier
-			if( damageMultiplier > 1 ) {
-				strcat( s, " Slaying" );
-			}
-				
-			strcat(s, " ");
-		} else {
-			strcat(s, "??? ");
-		}
-	}
-
-  // the item's name
-  strcat(s, itemName);
-  
-	if( isIdentified() ) {
-		// the bonus
-		if(bonus > 0) {
-			sprintf(tmp, " (+%d)", bonus);
-			strcat(s, tmp);
-		}
-		
-		// Describe the item.
-		// (this code has to be deterministic b/c it's called by 'load' also)
-		if( skillBonus.size() > 0 ) {
-			strcat( s, " of the " );
-	
-			// use state_mod or magic school as the adjective
-			// e.g.: of the [ice|dire|planar|etc] Boar
-			if( school ) {
-				sprintf( tmp, "%s ", school->getSymbol() );
-				strcat( s, tmp );
-			} else if( stateModSet ) {
-				for( int i = 0; i < Constants::STATE_MOD_COUNT; i++ ) {
-					if( stateMod[ i ] > 0 ) {
-						sprintf( tmp, "%s ", _( Constants::STATE_SYMBOLS[ i ] ) );
-						strcat( s, tmp );
-						break;
-					}
-				}
-			}
-	
-			// use the first skill as the noun
-			map<int,int>::iterator i = skillBonus.begin();
-			int skill = i->first;
-			sprintf( tmp, "%s", Skill::skills[ skill ]->getSymbol() );
-			strcat( s, tmp );
-		}  
-	} else {
-		if( magicLevel > -1 ) strcat(s, " ???");
-	}
-	*/
 }
 
 bool Item::isSpecial() { 
@@ -1004,7 +908,7 @@ void Item::setCurrentCharges( int n ) {
 void Item::setSpell( Spell *spell ) { 
   this->spell = spell; 
   if( getRpgItem()->getType() == RpgItem::SCROLL ) {
-    sprintf( this->itemName, "Scroll of %s", spell->getName() ); 
+    sprintf( this->itemName, _( "Scroll of %s" ), spell->getName() ); 
   } else {
     describeMagic( itemName, rpgItem->getName() );
   }
@@ -1128,7 +1032,7 @@ void Item::identify( int infoDetailLevel ) {
 
 		if( isIdentified() ) {
 			describeMagic( itemName, rpgItem->getName() );
-			session->getMap()->addDescription( "An item was fully identified!" );
+			session->getMap()->addDescription( _( "An item was fully identified!" ) );
 			// update ui
 			session->getGameAdapter()->refreshInventoryUI();
 		}
