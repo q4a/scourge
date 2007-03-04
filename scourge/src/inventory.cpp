@@ -107,32 +107,35 @@ Inventory::Inventory(Scourge *scourge) {
   int buttonHeight = 20;
   int descriptionHeight = 100;
   int yy = 0;
-  inventoryButton = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Inventory", true);
+  inventoryButton = mainWin->createButton( 0, yy, 105, yy + buttonHeight, _( "Inventory" ), true);
   yy += buttonHeight;
-  skillsButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Skills", true);
+  skillsButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, _( "Skills" ), true);
   yy += buttonHeight;
-  spellsButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Spells", true);
+  spellsButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, _( "Spells" ), true);
   yy += buttonHeight;
-  specialButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Capabilities", true);
+  specialButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, _( "Capabilities" ), true);
   yy += buttonHeight;
-  missionButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Mission", true);
+  missionButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, _( "Mission" ), true);
   yy += buttonHeight;
-  partyButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Party", true);
+  partyButton   = mainWin->createButton( 0, yy, 105, yy + buttonHeight, _( "Party" ), true);
   yy += buttonHeight;
 
   yy = mainWin->getHeight() - 50;
-  closeButton = mainWin->createButton( 0, yy, 105, yy + buttonHeight, "Hide" );
+  closeButton = mainWin->createButton( 0, yy, 105, yy + buttonHeight, _( "Hide" ) );
 
   cards = new CardContainer(mainWin);
 
 
   // -------------------------------------------
   // inventory page	
-  cards->createLabel(115, 10, "Inventory:", INVENTORY, Constants::RED_COLOR); 
+	char tmp[300];
+	sprintf( tmp, "%s:", _( "Inventory" ) );
+  cards->createLabel(115, 10, tmp, INVENTORY, Constants::RED_COLOR); 
   inventoryWeightLabel = cards->createLabel(190, 10, NULL, INVENTORY);
 
   coinsLabel = cards->createLabel(300, 155, NULL, INVENTORY);
-  cards->createLabel(115, 155, "Equipped Items:", INVENTORY, Constants::RED_COLOR);
+	sprintf( tmp, "%s:", _( "Equipped Items" ) );
+  cards->createLabel(115, 155, tmp, INVENTORY, Constants::RED_COLOR);
 
   invList = new ScrollingList(115, 15, 295, 125, scourge->getShapePalette()->getHighlightTexture(), this, 30);
   cards->addWidget(invList, INVENTORY);
@@ -142,66 +145,71 @@ Inventory::Inventory(Scourge *scourge) {
   cards->addWidget(paperDoll, INVENTORY);
 
   yy = START_OF_SECOND_BUTTON_SET;
-  equipButton    = cards->createButton( 0, yy, 105, yy + buttonHeight, "Don/Doff", INVENTORY);
+  equipButton    = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Don/Doff" ), INVENTORY);
   yy+=buttonHeight;
   openButton     = cards->createButton( 0, yy, 105, yy + buttonHeight, Constants::getMessage(Constants::OPEN_CONTAINER_LABEL), INVENTORY ); 
   yy+=buttonHeight;
-  eatDrinkButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Eat/Drink", INVENTORY );
+  eatDrinkButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Eat/Drink" ), INVENTORY );
   yy+=buttonHeight;
-  castScrollButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Cast Spell", INVENTORY );
+  castScrollButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Cast Spell" ), INVENTORY );
   yy+=buttonHeight;
-  transcribeButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Transcribe", INVENTORY );
+  transcribeButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Transcribe" ), INVENTORY );
   yy+=buttonHeight;
-  enchantButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Enchant", INVENTORY );
+  enchantButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Enchant" ), INVENTORY );
   yy+=buttonHeight;
-  infoButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Info", INVENTORY );
+  infoButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Info" ), INVENTORY );
   yy+=buttonHeight;
-  poolButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Pool Money", INVENTORY );
+  poolButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Pool Money" ), INVENTORY );
   yy+=buttonHeight;
-  storeItemButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Store", INVENTORY, true );
+  storeItemButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Store" ), INVENTORY, true );
   yy+=buttonHeight;
 
   yy+=5;
-  cards->createLabel( 3, yy + 14, "Selected Weapon:", INVENTORY );
+	sprintf( tmp, "%s:", _( "Selected Weapon" ) );
+  cards->createLabel( 3, yy + 14, tmp, INVENTORY );
   yy+=buttonHeight;
   preferredWeaponLocation[0] = Constants::INVENTORY_LEFT_HAND;
   preferredWeaponLocation[1] = Constants::INVENTORY_RIGHT_HAND;
   preferredWeaponLocation[2] = Constants::INVENTORY_WEAPON_RANGED;
   preferredWeaponButton[ 0 ] = 
-    cards->createButton( 0, yy, 105, yy + buttonHeight, "Left hand", 
+    cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Left hand" ), 
                          INVENTORY, true );
   preferredWeaponButton[ 0 ]->setSelected( false );
   yy+=buttonHeight;
   preferredWeaponButton[ 1 ] = 
-    cards->createButton( 0, yy, 105, yy + buttonHeight, "Right hand", 
+    cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Right hand" ), 
                          INVENTORY, true );
   preferredWeaponButton[ 1 ]->setSelected( false );
   yy+=buttonHeight;
   preferredWeaponButton[ 2 ] = 
-    cards->createButton( 0, yy, 105, yy + buttonHeight, "Ranged", 
+    cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Ranged" ), 
                          INVENTORY, true );
   preferredWeaponButton[ 2 ]->setSelected( false );
   yy+=buttonHeight;
 
   // -------------------------------------------
   // character info
-  cards->createLabel(115, 10, "Character stats:", CHARACTER, Constants::RED_COLOR);
+	sprintf( tmp, "%s:", _( "Character stats" ) );
+  cards->createLabel(115, 10, tmp, CHARACTER, Constants::RED_COLOR);
   charInfoUI = new CharacterInfoUI( scourge );
   int canvasHeight = 190;
   attrCanvas     = new Canvas( 115, 15, 405, canvasHeight, charInfoUI );
   cards->addWidget( attrCanvas, CHARACTER );
 
   int skillY = canvasHeight + 15;
-  cards->createLabel(115, skillY, "Current State:", CHARACTER, Constants::RED_COLOR);
+	sprintf( tmp, "%s:", _( "Current State" ) );
+  cards->createLabel(115, skillY, tmp, CHARACTER, Constants::RED_COLOR);
   stateList = new ScrollingList(115, skillY + 5, 140, 70, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(stateList, CHARACTER);
   
-  cards->createLabel(265, skillY, "Protected States:", CHARACTER, Constants::RED_COLOR);
+	sprintf( tmp, "%s:", _( "Protected States" ) );
+  cards->createLabel(265, skillY, tmp, CHARACTER, Constants::RED_COLOR);
   protStateList = new ScrollingList(265, skillY + 5, 140, 70, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(protStateList, CHARACTER);
 
   skillY += 85;
-  strcpy(skillsStr, "Skills:");
+	sprintf( tmp, "%s:", _( "Skills" ) );
+  strcpy(skillsStr, tmp);
   skillLabel = cards->createLabel(115, skillY, skillsStr, CHARACTER, Constants::RED_COLOR);
   //skillList = new ScrollingList(115, skillY + 5, 290, 405 - ( skillY + 5 ), scourge->getShapePalette()->getHighlightTexture());
   skillList = new SkillsView( scourge, 115, skillY + 5, 290, 405 - ( skillY + 5 ) );
@@ -209,56 +217,60 @@ Inventory::Inventory(Scourge *scourge) {
 
 	//yy = START_OF_SECOND_BUTTON_SET;
 	yy = skillY - 10;
-  skillModLabel = cards->createLabel( 5, yy + 10, "Skill: 0", CHARACTER );
+	sprintf( tmp, "%s: 0", _( "Skill" ) );
+  skillModLabel = cards->createLabel( 5, yy + 10, tmp, CHARACTER );
   yy+=buttonHeight;
-	addModButton = cards->createButton( 0, yy, 52, yy + buttonHeight, "Add", CHARACTER );
-	delModButton = cards->createButton( 53, yy, 105, yy + buttonHeight, "Del", CHARACTER );
+	addModButton = cards->createButton( 0, yy, 52, yy + buttonHeight, _( "Add" ), CHARACTER );
+	delModButton = cards->createButton( 53, yy, 105, yy + buttonHeight, _( "Del" ), CHARACTER );
   yy+=buttonHeight;
-	acceptModButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Accept", CHARACTER );
+	acceptModButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Accept" ), CHARACTER );
   yy+=buttonHeight;
 
   // -------------------------------------------
   // spellbook
-  cards->createLabel(115, 10, "School of magic: (with provider deity)", SPELL, Constants::RED_COLOR);
+  cards->createLabel(115, 10, _( "School of magic: (with provider deity)" ), SPELL, Constants::RED_COLOR);
   schoolList = new ScrollingList(115, 15, 290, 100, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(schoolList, SPELL);
-  cards->createLabel(115, 135, "Spells memorized:", SPELL, Constants::RED_COLOR);
+	sprintf( tmp, "%s:", _( "Spells memorized" ) );
+  cards->createLabel(115, 135, tmp, SPELL, Constants::RED_COLOR);
   spellList = new ScrollingList(115, 140, 290, 150, scourge->getShapePalette()->getHighlightTexture(), NULL, 30);
   cards->addWidget(spellList, SPELL);
-  cards->createLabel(115, 310, "Spell notes:", SPELL, Constants::RED_COLOR);
+	sprintf( tmp, "%s:", _( "Spell notes" ) );
+  cards->createLabel(115, 310, tmp, SPELL, Constants::RED_COLOR);
   spellDescriptionLabel = new ScrollingLabel( 115, 325, 290, descriptionHeight, "" );
   cards->addWidget(spellDescriptionLabel, SPELL);
 
   yy = START_OF_SECOND_BUTTON_SET;
-  castButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Cast", SPELL);
+  castButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Cast" ), SPELL);
   yy+=buttonHeight;
-  storeSpellButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Store", SPELL, true);
+  storeSpellButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Store" ), SPELL, true);
   yy+=buttonHeight;
   storable = NULL;
 
   // -------------------------------------------
   // special skills
-  cards->createLabel(115, 10, "Special Capabilities", SPECIAL, Constants::RED_COLOR);
-  cards->createLabel(115, 25, "(If grayed-out, you don't have the capability.)", SPECIAL, Constants::RED_COLOR);
+  cards->createLabel(115, 10, _( "Special Capabilities" ), SPECIAL, Constants::RED_COLOR);
+  cards->createLabel(115, 25, _( "(If grayed-out, you don't have the capability.)" ), SPECIAL, Constants::RED_COLOR);
   specialList = new ScrollingList(115, 30, 290, 265, scourge->getShapePalette()->getHighlightTexture(), NULL, 30);
   cards->addWidget(specialList, SPECIAL);
-  cards->createLabel(115, 310, "Capability Description:", SPECIAL, Constants::RED_COLOR);
+	sprintf( tmp, "%s:", _( "Capability Description" ) );
+  cards->createLabel(115, 310, tmp, SPECIAL, Constants::RED_COLOR);
   specialDescriptionLabel = new ScrollingLabel( 115, 325, 290, descriptionHeight, "" );
   cards->addWidget(specialDescriptionLabel, SPECIAL);
 
   yy = START_OF_SECOND_BUTTON_SET;
-  useSpecialButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Use", SPECIAL);
+  useSpecialButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Use" ), SPECIAL);
   yy += buttonHeight;
-  storeSpecialButton = cards->createButton( 0, yy, 105, yy + buttonHeight, "Store", SPECIAL, true);
+  storeSpecialButton = cards->createButton( 0, yy, 105, yy + buttonHeight, _( "Store" ), SPECIAL, true);
   yy += buttonHeight;
   //storeSpell = NULL;
 
   // -------------------------------------------
   // mission
-  cards->createLabel(115, 10, "Current Mission", MISSION, Constants::RED_COLOR);
+  cards->createLabel(115, 10, _( "Current Mission" ), MISSION, Constants::RED_COLOR);
   missionDescriptionLabel = new ScrollingLabel(115, 25, 295, 275, "");
   cards->addWidget(missionDescriptionLabel, MISSION);
-  cards->createLabel(115, 320, "Mission Objectives", MISSION, Constants::RED_COLOR);
+  cards->createLabel(115, 320, _( "Mission Objectives" ), MISSION, Constants::RED_COLOR);
   objectiveList = new ScrollingList(115, 325, 295, 100, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(objectiveList, MISSION);
 
@@ -266,26 +278,28 @@ Inventory::Inventory(Scourge *scourge) {
 
   // -------------------------------------------
   // party
-  cards->createLabel( 115, 10, "Group formation:", PARTY );
+	sprintf( tmp, "%s:", _( "Group formation" ) );
+  cards->createLabel( 115, 10, tmp, PARTY );
   formationList = new ScrollingList(115, 20, 295, 100, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(formationList, PARTY);
-  strcpy( formationText[0], "Diamond" );
-  strcpy( formationText[1], "Staggered" );
-  strcpy( formationText[2], "Square" );
-  strcpy( formationText[3], "Row" );
-  strcpy( formationText[4], "Scout" );
-  strcpy( formationText[5], "Cross" );
+  strcpy( formationText[0], _( "Diamond" ) );
+  strcpy( formationText[1], _( "Staggered" ) );
+  strcpy( formationText[2], _( "Square" ) );
+  strcpy( formationText[3], _( "Row" ) );
+  strcpy( formationText[4], _( "Scout" ) );
+  strcpy( formationText[5], _( "Cross" ) );
   formationList->setLines( 6, (const char**)formationText );
 
-  cards->createLabel( 115, 145, "Interface Layout:", PARTY );
-  layoutButton1 = cards->createButton( 115, 155, 205, 175, "Floating", PARTY );
+	sprintf( tmp, "%s:", _( "Interface Layout" ) );
+  cards->createLabel( 115, 145, tmp, PARTY );
+  layoutButton1 = cards->createButton( 115, 155, 205, 175, _( "Floating" ), PARTY );
   layoutButton1->setToggle( true );
-  layoutButton2 = cards->createButton( 210, 155, 300, 175, "Bottom", PARTY );
+  layoutButton2 = cards->createButton( 210, 155, 300, 175, _( "Bottom" ), PARTY );
   layoutButton2->setToggle( true );
-  layoutButton4 = cards->createButton( 305, 155, 395, 175, "Inventory", PARTY );
+  layoutButton4 = cards->createButton( 305, 155, 395, 175, _( "Inventory" ), PARTY );
   layoutButton4->setToggle( true );
 
-  squirrelWindow = cards->createButton( 115, 180, 245, 200, "Show Console", PARTY, true );
+  squirrelWindow = cards->createButton( 115, 180, 245, 200, _( "Show Console" ), PARTY, true );
   squirrelWindow->setSelected( scourge->getSquirrelConsole()->isVisible() );
 
 //  saveGameButton = cards->createButton( 115, 205, 245, 225, "Save Game", PARTY );
@@ -426,7 +440,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       }
     }
     char msg[120];
-    sprintf( msg, "Party members give all their money to %s.", creature->getName() );
+    sprintf( msg, _( "Party members give all their money to %s." ), creature->getName() );
     scourge->getMap()->addDescription( msg );
     refresh();
   } else if( widget == paperDoll && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
@@ -545,7 +559,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     Spell *spell = getSelectedSpell();
     if(spell) {
       if(spell->getMp() > creature->getMp()) {
-        scourge->showMessageDialog("Not enough Magic Points to cast this spell!");
+        scourge->showMessageDialog( _( "Not enough Magic Points to cast this spell!" ) );
       } else {
         // set this as a quickspell if there is space
         for( int i = 0; i < 12; i++ ) {
@@ -573,10 +587,10 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       if( item->getSpell() ) {
         storable = (Storable*)item;
       } else {
-        scourge->showMessageDialog("This item is out of charges.");
+        scourge->showMessageDialog( _( "This item is out of charges." ) );
       }
     } else {
-      scourge->showMessageDialog("You may only store items with spells.");
+      scourge->showMessageDialog( _( "You may only store items with spells." ) );
     }
     if( !storable ) {
       storeItemButton->setSelected( false );
@@ -598,10 +612,10 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
           }
           if(!mainWin->isLocked()) mainWin->setVisible(false);
         } else {
-          scourge->showMessageDialog("This item is out of charges.");
+          scourge->showMessageDialog( _( "This item is out of charges." ) );
         }
       } else {
-        scourge->showMessageDialog("You cannot cast a spell with this item.");
+        scourge->showMessageDialog( _( "You cannot cast a spell with this item." ) );
       }
     }
   } else if(widget == transcribeButton) {
@@ -613,21 +627,21 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
            creature->getMp() > 0) {
           bool res = creature->addSpell(item->getSpell());
           if(res) {
-            scourge->showMessageDialog("Spell was entered into your spellbook.");
+            scourge->showMessageDialog( _( "Spell was entered into your spellbook." ) );
             // destroy the scroll
             creature->removeInventory(itemIndex);
             refresh();
             char msg[120];
-            sprintf(msg, "%s crumbles into dust.", item->getItemName());
+            sprintf(msg, _( "%s crumbles into dust." ), item->getItemName());
             scourge->getMap()->addDescription(msg);
           } else {
-            scourge->showMessageDialog("You already know this spell");
+            scourge->showMessageDialog( _( "You already know this spell" ) );
           }
         } else {
-        scourge->showMessageDialog("You are not proficient enough to transcribe this scroll.");
+        scourge->showMessageDialog( _( "You are not proficient enough to transcribe this scroll." ) );
         }
       } else {
-        scourge->showMessageDialog("You can only transcribe scrolls!");
+        scourge->showMessageDialog( _( "You can only transcribe scrolls!" ) );
       }
     }
   } else if(widget == enchantButton) {
@@ -635,9 +649,9 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
       Item *item = creature->getInventory(itemIndex);
       if(item->isMagicItem()) {
-        scourge->showMessageDialog("This item is already enchanted.");
+        scourge->showMessageDialog( _( "This item is already enchanted." ) );
       } else if(!item->getRpgItem()->isEnchantable()) {
-        scourge->showMessageDialog("This item cannot be enchanted.");
+        scourge->showMessageDialog( _( "This item cannot be enchanted." ) );
       } else {
         Date now = scourge->getParty()->getCalendar()->getCurrentDate();
         if(now.isADayLater(creature->getLastEnchantDate())) {
@@ -646,19 +660,19 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
             int level = creature->getSkill( Skill::ENCHANT_ITEM );
             item->enchant( (level - 20) / 20 );
             refresh();
-            scourge->showMessageDialog("You succesfully enchanted an item!");
+            scourge->showMessageDialog( _( "You succesfully enchanted an item!" ) );
             char tmp[255];
             item->getDetailedDescription(tmp);
             char msg[255];
-            sprintf(msg, "You created: %s.", tmp);
+            sprintf(msg, _( "You created: %s." ) , tmp);
             scourge->getMap()->addDescription(msg);
             creature->startEffect( Constants::EFFECT_SWIRL, Constants::DAMAGE_DURATION * 4 );
           } else {
-            scourge->showMessageDialog("You failed to enchant the item.");
+            scourge->showMessageDialog( _( "You failed to enchant the item." ) );
           }
           creature->setLastEnchantDate(now);
         } else {
-          scourge->showMessageDialog("You can only enchant one item per day.");
+          scourge->showMessageDialog( _( "You can only enchant one item per day." ) );
         }
       }
     }
@@ -707,7 +721,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 		int skill = skillList->getSelectedLine();
 		if( skill > -1 && creature->getAvailableSkillMod() > 0 ) {
 			if( Skill::skills[ skill ]->getGroup()->isStat() ) {
-				scourge->showMessageDialog( "Stats cannot be improved this way." );
+				scourge->showMessageDialog( _( "Stats cannot be improved this way." ) );
 			}	else {
 				creature->setSkillMod( skill, creature->getSkillMod( skill ) + 1 );
 				creature->setAvailableSkillMod( creature->getAvailableSkillMod() - 1 );
@@ -731,15 +745,15 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
 		}
 		if( hasMods ) {
 			if( creature->getAvailableSkillMod() > 0 ) {
-				scourge->showMessageDialog( "You still have skill points to distribute." );
+				scourge->showMessageDialog( _( "You still have skill points to distribute." ) );
 			} else {
 				assert( !confirmDialog->isVisible() );
 				confirmDialog->setMode( APPLY_SKILL_MODS );
-				confirmDialog->setText( "Are you sure you want to apply the selected skill points?" );
+				confirmDialog->setText( _( "Are you sure you want to apply the selected skill points?" ) );
 				confirmDialog->setVisible( true );
 			}
 		} else {
-			scourge->showMessageDialog( "This character has no skill points to apply." );
+			scourge->showMessageDialog( _( "This character has no skill points to apply." ) );
 		}
 	} else if( widget == confirmDialog->okButton ) {
 		confirmDialog->setVisible( false );
@@ -803,9 +817,10 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
   int objectiveCount = 0;
   Creature * selectedP = scourge->getParty()->getParty(selected);
 
-  sprintf(nameAndClassStr, "%s, %s (level %d, %s) (%s)", 
+  sprintf(nameAndClassStr, "%s, %s (%s %d, %s) (%s)", 
           selectedP->getName(), 
           selectedP->getCharacter()->getName(), 
+					_( "level" ),
           selectedP->getLevel(),
           (selectedP->getSex() == Constants::SEX_MALE ? "M" : "F" ),
           MagicSchool::getMagicSchool(selectedP->getDeityIndex())->getDeity());
@@ -841,15 +856,19 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 		
     skillList->setCreature( selectedP, scourge->getParty() );
 
-		sprintf( tmp, "Skill: %d", selectedP->getAvailableSkillMod() );
+		sprintf( tmp, "%s: %d", _( "Skill" ), selectedP->getAvailableSkillMod() );
 		skillModLabel->setText( tmp );
     break;
 
   case INVENTORY:
-    sprintf(inventoryWeightStr, " (Total : %2.2fkg / %2.2fkg)", 
-            selectedP->getInventoryWeight(), selectedP->getMaxInventoryWeight());     
+    sprintf(inventoryWeightStr, " (%s : %2.2f%s / %2.2f%s)", 
+						_( "Total" ),
+            selectedP->getInventoryWeight(), 
+						_( "kg" ),
+						selectedP->getMaxInventoryWeight(),
+						_( "kg" ) );     
     inventoryWeightLabel->setText(inventoryWeightStr);
-    sprintf(coinsStr, "Coins: %d", selectedP->getMoney());
+    sprintf(coinsStr, "%s: %d", _( "Coins" ), selectedP->getMoney());
     coinsLabel->setText(coinsStr);
     for(int t = 0; t < selectedP->getInventoryCount(); t++) {
       Item *item = selectedP->getInventory(t);
@@ -952,19 +971,22 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
     break;
   case MISSION:
     if(scourge->getSession()->getCurrentMission()) {
-      sprintf(missionText, "%s:|Depth: %d out of %d.|%s", 
+			sprintf( tmp, _( "Depth: %d out of %d." ), 
+							 ( scourge->getCurrentDepth() + 1 ),
+							 scourge->getSession()->getCurrentMission()->getDepth() );
+      sprintf(missionText, "%s:|%s|%s", 
               scourge->getSession()->getCurrentMission()->getName(),
-              (scourge->getCurrentDepth() + 1),
-              scourge->getSession()->getCurrentMission()->getDepth(),
+              tmp,
               scourge->getSession()->getCurrentMission()->getDescription());
       objectiveCount = 
       scourge->getSession()->getCurrentMission()->getItemCount() +
       scourge->getSession()->getCurrentMission()->getCreatureCount();   
       for(int t = 0; t < scourge->getSession()->getCurrentMission()->getItemCount(); t++) {
-        sprintf(objectiveText[t], "Find %s. %s", 
-                scourge->getSession()->getCurrentMission()->getItem(t)->getName(),
+				sprintf( tmp, _( "Find %s" ), scourge->getSession()->getCurrentMission()->getItem(t)->getName() );
+        sprintf(objectiveText[t], "%s. %s", 
+                tmp,
                 (scourge->getSession()->getCurrentMission()->getItemHandled(t) ? 
-                 "(completed)" : "(not yet found)"));
+                 _( "(completed)" ) : _( "(not yet found)" ) ) );
         if(scourge->getSession()->getCurrentMission()->getItemHandled(t)) {
           missionColor[t].r = 0.2f;
           missionColor[t].g = 0.7f;
@@ -977,10 +999,11 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       }
       int start = scourge->getSession()->getCurrentMission()->getItemCount();
       for(int t = 0; t < scourge->getSession()->getCurrentMission()->getCreatureCount(); t++) {
-        sprintf(objectiveText[start + t], "Vanquish %s. %s", 
-                scourge->getSession()->getCurrentMission()->getCreature(t)->getType(),
+				sprintf( tmp, _( "Vanquish %s." ), scourge->getSession()->getCurrentMission()->getCreature(t)->getType() );
+        sprintf(objectiveText[start + t], "%s. %s", 
+                tmp,
                 (scourge->getSession()->getCurrentMission()->getCreatureHandled(t) ? 
-                 "(completed)" : "(not yet done)"));
+                 _( "(completed)" ) : _( "(not yet done)" ) ) );
         if(scourge->getSession()->getCurrentMission()->getCreatureHandled(t)) {
           missionColor[start + t].r = 0.2f;
           missionColor[start + t].g = 0.7f;
@@ -997,9 +1020,10 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       }
       if( !objectiveCount ) {
         objectiveCount = 1;
-        sprintf( objectiveText[0], "Special. %s", 
+        sprintf( objectiveText[0], "%s. %s", 
+								 _( "Special" ),
                  ( scourge->getSession()->getCurrentMission()->isCompleted() ?
-                   "(completed)" : "(not yet done)" ) );
+                   _( "(completed)" ) : _( "(not yet done)" ) ) );
         if( scourge->getSession()->getCurrentMission()->isCompleted() ) {
           missionColor[0].r = 0.2f;
           missionColor[0].g = 0.7f;
@@ -1051,7 +1075,7 @@ void Inventory::receive(Widget *widget) {
 
 bool Inventory::startDrag(Widget *widget, int x, int y) {
   if( scourge->getTradeDialog()->getWindow()->isVisible() ) {
-    scourge->showMessageDialog( "Can't change inventory while trading." );
+    scourge->showMessageDialog( _( "Can't change inventory while trading." ) );
     return false;
   }
   
@@ -1061,7 +1085,7 @@ bool Inventory::startDrag(Widget *widget, int x, int y) {
 //    cerr << "cursed? " << scourge->getParty()->getParty(selected)->getInventory( itemIndex )->isCursed() << endl;
     if( scourge->getParty()->getParty(selected)->isEquipped( itemIndex ) &&
         scourge->getParty()->getParty(selected)->getInventory( itemIndex )->isCursed() ) {
-      scourge->showMessageDialog( "Can't remove cursed item!" );
+      scourge->showMessageDialog( _( "Can't remove cursed item!" ) );
       return false;
     }
     dropItem();
@@ -1072,7 +1096,7 @@ bool Inventory::startDrag(Widget *widget, int x, int y) {
       Item *item = scourge->getParty()->getParty(selected)->getItemAtLocation((1 << (y / 16)));
       if(item) {
         if( item->isCursed() ) {
-          scourge->showMessageDialog( "Can't remove cursed item!" );
+          scourge->showMessageDialog( _( "Can't remove cursed item!" ) );
           return false;
         } else {
 
@@ -1097,7 +1121,7 @@ int Inventory::putItem() {
     if(scourge->getParty()->getParty(selected)->addInventory(item)) {
       // message: the player accepted the item
       char message[120];
-      sprintf(message, "%s picks up %s.", 
+      sprintf(message, _( "%s picks up %s." ), 
               scourge->getParty()->getParty(selected)->getName(),
               item->getItemName());
       scourge->getMap()->addDescription(message);
@@ -1110,7 +1134,7 @@ int Inventory::putItem() {
     } else {
       // message: the player's inventory is full
       scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
-      scourge->showMessageDialog("You can't fit the item!");
+      scourge->showMessageDialog( _( "You can't fit the item!" ) );
     }
   }
   return -1;
@@ -1148,7 +1172,7 @@ void Inventory::dropItem() {
                            scourge->getParty()->getParty(selected)->getZ());
     */                           
     char message[120];
-    sprintf(message, "%s drops %s.", 
+    sprintf(message, _( "%s drops %s." ), 
             scourge->getParty()->getParty(selected)->getName(),
             item->getItemName());
     scourge->getMap()->addDescription(message);

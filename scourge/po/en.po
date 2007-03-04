@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-03 14:16-0800\n"
+"POT-Creation-Date: 2007-03-04 14:21-0800\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -169,54 +169,54 @@ msgid "Loading Professions"
 msgstr ""
 
 #: src/rpg/character.cpp:175
-msgid "Skill bonuses to:|"
+msgid "Skill bonuses to:"
 msgstr ""
 
-#: src/rpg/character.cpp:224
-msgid "Can use any weapons, except:|"
+#: src/rpg/character.cpp:225
+msgid "Can use any weapons, except:"
 msgstr ""
 
-#: src/rpg/character.cpp:226
-msgid "Can use any armor, except:|"
+#: src/rpg/character.cpp:228
+msgid "Can use any armor, except:"
 msgstr ""
 
-#: src/rpg/character.cpp:237
-msgid "Can use any weapons.|"
+#: src/rpg/character.cpp:240
+msgid "Can use any weapons."
 msgstr ""
 
-#: src/rpg/character.cpp:239
-msgid "Can use any armor.|"
+#: src/rpg/character.cpp:243
+msgid "Can use any armor."
 msgstr ""
 
-#: src/rpg/character.cpp:245
-msgid "Not allowed to use any weapons, except:|"
+#: src/rpg/character.cpp:250
+msgid "Not allowed to use any weapons, except:"
 msgstr ""
 
-#: src/rpg/character.cpp:247
-msgid "Not allowed to use any armor, except:|"
+#: src/rpg/character.cpp:253
+msgid "Not allowed to use any armor, except:"
 msgstr ""
 
-#: src/rpg/character.cpp:258
-msgid "Not allowed to use any weapons.|"
-msgstr ""
-
-#: src/rpg/character.cpp:260
-msgid "Not allowed to use any armor.|"
+#: src/rpg/character.cpp:265
+msgid "Not allowed to use any weapons."
 msgstr ""
 
 #: src/rpg/character.cpp:268
+msgid "Not allowed to use any armor."
+msgstr ""
+
+#: src/rpg/character.cpp:277
 msgid "Can use weapons:"
 msgstr ""
 
-#: src/rpg/character.cpp:270
+#: src/rpg/character.cpp:279
 msgid "Can use armor:"
 msgstr ""
 
-#: src/rpg/character.cpp:280
+#: src/rpg/character.cpp:289
 msgid "Not allowed to use weapons:"
 msgstr ""
 
-#: src/rpg/character.cpp:282
+#: src/rpg/character.cpp:291
 msgid "Not allowed to use armor:"
 msgstr ""
 
@@ -309,7 +309,7 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: src/common/constants.cpp:104
+#: src/common/constants.cpp:104 src/mapeditor.cpp:263
 msgid "Cancel"
 msgstr ""
 
@@ -543,6 +543,44 @@ msgstr ""
 msgid "%s resists the spell with magic item!"
 msgstr ""
 
+#: src/multiplayer.cpp:33
+#, fuzzy
+msgid "Multiplayer Setup"
+msgstr "Multiplayer Game"
+
+#: src/multiplayer.cpp:38
+msgid "Host a game"
+msgstr ""
+
+#: src/multiplayer.cpp:41
+msgid "--- OR ---"
+msgstr ""
+
+#: src/multiplayer.cpp:44
+msgid "Server address"
+msgstr ""
+
+#: src/multiplayer.cpp:47
+msgid "Server port"
+msgstr ""
+
+#: src/multiplayer.cpp:50
+msgid "Username"
+msgstr ""
+
+#: src/multiplayer.cpp:54
+msgid "Join a game"
+msgstr ""
+
+#: src/multiplayer.cpp:55
+#, fuzzy
+msgid "Start Game"
+msgstr "Multiplayer Game"
+
+#: src/multiplayer.cpp:58
+msgid "Select a character"
+msgstr ""
+
 #: src/creature.cpp:217
 #, c-format
 msgid "%1$s's skill in %2$s has increased."
@@ -707,7 +745,7 @@ msgstr ""
 msgid "Loading Shapes"
 msgstr ""
 
-#: src/session.cpp:99
+#: src/session.cpp:99 src/item.cpp:303 src/item.cpp:331 src/item.cpp:501
 msgid "Loading Items"
 msgstr ""
 
@@ -751,7 +789,7 @@ msgstr ""
 msgid "Initializing UI"
 msgstr ""
 
-#: src/containergui.cpp:38
+#: src/containergui.cpp:38 src/inventory.cpp:160
 msgid "Info"
 msgstr ""
 
@@ -772,7 +810,8 @@ msgstr ""
 msgid "(CAVE)"
 msgstr ""
 
-#: src/board.cpp:293
+#: src/board.cpp:293 src/inventory.cpp:989 src/inventory.cpp:1006
+#: src/inventory.cpp:1026
 msgid "(completed)"
 msgstr ""
 
@@ -785,7 +824,7 @@ msgstr ""
 msgid "Buy"
 msgstr ""
 
-#: src/healdialog.cpp:74 src/donatedialog.cpp:73
+#: src/healdialog.cpp:74 src/inventory.cpp:823 src/donatedialog.cpp:73
 #: ../scourge_data/maps/library31.cfg:176
 msgid "level"
 msgstr ""
@@ -798,21 +837,39 @@ msgstr ""
 msgid "The healing spell was cast."
 msgstr ""
 
-#: src/item.cpp:815
+#: src/item.cpp:261 src/item.cpp:269 src/item.cpp:277
+msgid "*Cursed* "
+msgstr ""
+
+#: src/item.cpp:265 src/item.cpp:273 src/item.cpp:281
+#, fuzzy
+msgid " *Mission*"
+msgstr "Options"
+
+#: src/item.cpp:791
 msgid ""
 "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $of $school"
 msgstr ""
 
-#: src/item.cpp:833
+#: src/item.cpp:809
 msgid "Protective"
 msgstr ""
 
-#: src/item.cpp:838
+#: src/item.cpp:814
 msgid "Slaying"
 msgstr ""
 
-#: src/item.cpp:853
+#: src/item.cpp:829
 msgid "of the"
+msgstr ""
+
+#: src/item.cpp:911
+#, c-format
+msgid "Scroll of %s"
+msgstr ""
+
+#: src/item.cpp:1035
+msgid "An item was fully identified!"
 msgstr ""
 
 #: src/characterinfo.cpp:44
@@ -890,7 +947,7 @@ msgstr ""
 msgid "Your %s feels lighter."
 msgstr ""
 
-#: src/battle.cpp:726
+#: src/battle.cpp:726 src/inventory.cpp:635
 #, c-format
 msgid "%s crumbles into dust."
 msgstr ""
@@ -1046,6 +1103,339 @@ msgstr ""
 msgid "In Range"
 msgstr ""
 
+#: src/netplay.cpp:39
+msgid "Chat"
+msgstr ""
+
+#: src/inventory.cpp:110 src/inventory.cpp:132 src/inventory.cpp:299
+msgid "Inventory"
+msgstr ""
+
+#: src/inventory.cpp:112 src/inventory.cpp:211
+msgid "Skills"
+msgstr ""
+
+#: src/inventory.cpp:114
+msgid "Spells"
+msgstr ""
+
+#: src/inventory.cpp:116
+msgid "Capabilities"
+msgstr ""
+
+#: src/inventory.cpp:118
+#, fuzzy
+msgid "Mission"
+msgstr "Options"
+
+#: src/inventory.cpp:120
+msgid "Party"
+msgstr ""
+
+#: src/inventory.cpp:124
+msgid "Hide"
+msgstr ""
+
+#: src/inventory.cpp:137
+msgid "Equipped Items"
+msgstr ""
+
+#: src/inventory.cpp:148
+msgid "Don/Doff"
+msgstr ""
+
+#: src/inventory.cpp:152
+msgid "Eat/Drink"
+msgstr ""
+
+#: src/inventory.cpp:154
+msgid "Cast Spell"
+msgstr ""
+
+#: src/inventory.cpp:156
+msgid "Transcribe"
+msgstr ""
+
+#: src/inventory.cpp:158
+msgid "Enchant"
+msgstr ""
+
+#: src/inventory.cpp:162
+msgid "Pool Money"
+msgstr ""
+
+#: src/inventory.cpp:164 src/inventory.cpp:246 src/inventory.cpp:264
+msgid "Store"
+msgstr ""
+
+#: src/inventory.cpp:168
+msgid "Selected Weapon"
+msgstr ""
+
+#: src/inventory.cpp:175
+msgid "Left hand"
+msgstr ""
+
+#: src/inventory.cpp:180
+msgid "Right hand"
+msgstr ""
+
+#: src/inventory.cpp:185
+msgid "Ranged"
+msgstr ""
+
+#: src/inventory.cpp:192
+msgid "Character stats"
+msgstr ""
+
+#: src/inventory.cpp:200
+msgid "Current State"
+msgstr ""
+
+#: src/inventory.cpp:205
+msgid "Protected States"
+msgstr ""
+
+#: src/inventory.cpp:220 src/inventory.cpp:859
+msgid "Skill"
+msgstr ""
+
+#: src/inventory.cpp:223
+msgid "Add"
+msgstr ""
+
+#: src/inventory.cpp:224
+msgid "Del"
+msgstr ""
+
+#: src/inventory.cpp:226
+msgid "Accept"
+msgstr ""
+
+#: src/inventory.cpp:231
+msgid "School of magic: (with provider deity)"
+msgstr ""
+
+#: src/inventory.cpp:234
+msgid "Spells memorized"
+msgstr ""
+
+#: src/inventory.cpp:238
+msgid "Spell notes"
+msgstr ""
+
+#: src/inventory.cpp:244
+msgid "Cast"
+msgstr ""
+
+#: src/inventory.cpp:252
+msgid "Special Capabilities"
+msgstr ""
+
+#: src/inventory.cpp:253
+msgid "(If grayed-out, you don't have the capability.)"
+msgstr ""
+
+#: src/inventory.cpp:256
+msgid "Capability Description"
+msgstr ""
+
+#: src/inventory.cpp:262
+msgid "Use"
+msgstr ""
+
+#: src/inventory.cpp:270
+msgid "Current Mission"
+msgstr ""
+
+#: src/inventory.cpp:273
+msgid "Mission Objectives"
+msgstr ""
+
+#: src/inventory.cpp:281
+msgid "Group formation"
+msgstr ""
+
+#: src/inventory.cpp:285
+msgid "Diamond"
+msgstr ""
+
+#: src/inventory.cpp:286
+msgid "Staggered"
+msgstr ""
+
+#: src/inventory.cpp:287
+msgid "Square"
+msgstr ""
+
+#: src/inventory.cpp:288
+msgid "Row"
+msgstr ""
+
+#: src/inventory.cpp:289
+msgid "Scout"
+msgstr ""
+
+#: src/inventory.cpp:290
+msgid "Cross"
+msgstr ""
+
+#: src/inventory.cpp:293
+msgid "Interface Layout"
+msgstr ""
+
+#: src/inventory.cpp:295
+msgid "Floating"
+msgstr ""
+
+#: src/inventory.cpp:297
+msgid "Bottom"
+msgstr ""
+
+#: src/inventory.cpp:302
+msgid "Show Console"
+msgstr ""
+
+#: src/inventory.cpp:443
+#, c-format
+msgid "Party members give all their money to %s."
+msgstr ""
+
+#: src/inventory.cpp:562
+msgid "Not enough Magic Points to cast this spell!"
+msgstr ""
+
+#: src/inventory.cpp:590 src/inventory.cpp:615
+msgid "This item is out of charges."
+msgstr ""
+
+#: src/inventory.cpp:593
+msgid "You may only store items with spells."
+msgstr ""
+
+#: src/inventory.cpp:618
+msgid "You cannot cast a spell with this item."
+msgstr ""
+
+#: src/inventory.cpp:630
+msgid "Spell was entered into your spellbook."
+msgstr ""
+
+#: src/inventory.cpp:638
+msgid "You already know this spell"
+msgstr ""
+
+#: src/inventory.cpp:641
+msgid "You are not proficient enough to transcribe this scroll."
+msgstr ""
+
+#: src/inventory.cpp:644
+msgid "You can only transcribe scrolls!"
+msgstr ""
+
+#: src/inventory.cpp:652
+msgid "This item is already enchanted."
+msgstr ""
+
+#: src/inventory.cpp:654
+msgid "This item cannot be enchanted."
+msgstr ""
+
+#: src/inventory.cpp:663
+msgid "You succesfully enchanted an item!"
+msgstr ""
+
+#: src/inventory.cpp:667
+#, c-format
+msgid "You created: %s."
+msgstr ""
+
+#: src/inventory.cpp:671
+msgid "You failed to enchant the item."
+msgstr ""
+
+#: src/inventory.cpp:675
+msgid "You can only enchant one item per day."
+msgstr ""
+
+#: src/inventory.cpp:724
+msgid "Stats cannot be improved this way."
+msgstr ""
+
+#: src/inventory.cpp:748
+msgid "You still have skill points to distribute."
+msgstr ""
+
+#: src/inventory.cpp:752
+msgid "Are you sure you want to apply the selected skill points?"
+msgstr ""
+
+#: src/inventory.cpp:756
+msgid "This character has no skill points to apply."
+msgstr ""
+
+#: src/inventory.cpp:865
+msgid "Total"
+msgstr ""
+
+#: src/inventory.cpp:867 src/inventory.cpp:869
+msgid "kg"
+msgstr ""
+
+#: src/inventory.cpp:871
+#, fuzzy
+msgid "Coins"
+msgstr "Options"
+
+#: src/inventory.cpp:974
+#, c-format
+msgid "Depth: %d out of %d."
+msgstr ""
+
+#: src/inventory.cpp:985
+#, c-format
+msgid "Find %s"
+msgstr ""
+
+#: src/inventory.cpp:989
+msgid "(not yet found)"
+msgstr ""
+
+#: src/inventory.cpp:1002
+#, c-format
+msgid "Vanquish %s."
+msgstr ""
+
+#: src/inventory.cpp:1006 src/inventory.cpp:1026
+msgid "(not yet done)"
+msgstr ""
+
+#: src/inventory.cpp:1024
+msgid "Special"
+msgstr ""
+
+#: src/inventory.cpp:1078
+msgid "Can't change inventory while trading."
+msgstr ""
+
+#: src/inventory.cpp:1088 src/inventory.cpp:1099
+msgid "Can't remove cursed item!"
+msgstr ""
+
+#: src/inventory.cpp:1124
+#, fuzzy, c-format
+msgid "%s picks up %s."
+msgstr "Options"
+
+#: src/inventory.cpp:1137
+msgid "You can't fit the item!"
+msgstr ""
+
+#: src/inventory.cpp:1175
+#, c-format
+msgid "%s drops %s."
+msgstr ""
+
 #: src/scourge.cpp:141
 msgid "Dismiss Party Member"
 msgstr ""
@@ -1197,7 +1587,7 @@ msgstr ""
 msgid "Identify"
 msgstr ""
 
-#: src/infogui.cpp:70
+#: src/infogui.cpp:70 src/mapeditor.cpp:80
 #, fuzzy
 msgid "Name:"
 msgstr "New Game"
@@ -1416,6 +1806,10 @@ msgstr "About S.c.o.u.r.g.e."
 msgid "Quit"
 msgstr "Quit"
 
+#: src/mainmenu.cpp:105
+msgid "New Game Confirmation"
+msgstr ""
+
 #: src/mainmenu.cpp:260
 #, c-format
 msgid "Scourge version %s"
@@ -1431,6 +1825,87 @@ msgstr ""
 
 #: src/mainmenu.cpp:271
 msgid "[Sound]"
+msgstr ""
+
+#: src/mapeditor.cpp:32
+msgid "Tile: Passage"
+msgstr ""
+
+#: src/mapeditor.cpp:33
+msgid "Tile: Room"
+msgstr ""
+
+#: src/mapeditor.cpp:69
+msgid "Map Editor"
+msgstr ""
+
+#: src/mapeditor.cpp:84
+msgid "Load"
+msgstr ""
+
+#: src/mapeditor.cpp:85
+msgid "Save"
+msgstr ""
+
+#: src/mapeditor.cpp:88
+msgid "Wall"
+msgstr ""
+
+#: src/mapeditor.cpp:91
+msgid "Door"
+msgstr ""
+
+#: src/mapeditor.cpp:97
+msgid "Properties"
+msgstr ""
+
+#: src/mapeditor.cpp:101
+msgid "Start Pos"
+msgstr ""
+
+#: src/mapeditor.cpp:109 src/mapeditor.cpp:307
+msgid "Item"
+msgstr ""
+
+#: src/mapeditor.cpp:118
+msgid "Furniture"
+msgstr ""
+
+#: src/mapeditor.cpp:158 src/mapeditor.cpp:309
+msgid "Creature"
+msgstr ""
+
+#: src/mapeditor.cpp:191 src/mapeditor.cpp:305
+msgid "Shape"
+msgstr ""
+
+#: src/mapeditor.cpp:223
+msgid "Map Properties"
+msgstr ""
+
+#: src/mapeditor.cpp:231
+msgid "Map level"
+msgstr ""
+
+#: src/mapeditor.cpp:234
+msgid "Map depth"
+msgstr ""
+
+#: src/mapeditor.cpp:237
+msgid "Map theme:"
+msgstr ""
+
+#: src/mapeditor.cpp:256
+msgid "Select map location: (click on map, drag to move)"
+msgstr ""
+
+#: src/mapeditor.cpp:261
+#, fuzzy
+msgid "New Map"
+msgstr "New Game"
+
+#: src/mapeditor.cpp:262
+msgid "Apply"
 msgstr ""
 
 #: src/rpg/specialskill.h:83
