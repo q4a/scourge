@@ -315,7 +315,7 @@ void Projectile::moveProjectiles(Session *session) {
 #ifdef DEBUG_MOVEMENT 
             cerr << "PROJ: max steps, from=" << proj->getCreature()->getName() << endl;                     
 #endif
-            session->getMap()->addDescription( "Projectile did not reach the target (max steps)." );
+            session->getMap()->addDescription( _( "Projectile did not reach the target (max steps)." ) );
             removedProjectiles.push_back(proj);
           }
           
@@ -386,7 +386,7 @@ void Projectile::moveProjectiles(Session *session) {
                 cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;                     
 #endif
                 // hit something
-                session->getMap()->addDescription( "Projectile did not reach the target (blocked)." );
+                session->getMap()->addDescription( _( "Projectile did not reach the target (blocked)." ) );
                 blocked = true;
               }
             }

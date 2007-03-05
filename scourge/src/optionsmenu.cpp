@@ -42,30 +42,30 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   
   mainWin = new Window( scourge->getSDLHandler(),
                         100, 170, WIN_WIDTH, 320, 
-                        "Options", 
+                        _( "Options" ), 
                         scourge->getShapePalette()->getGuiTexture(),
                         true, Window::BASIC_WINDOW,
                         scourge->getShapePalette()->getGuiTexture2());
     
   int x = 8;
-  gameSettingsButton = mainWin->createButton(x, 0, x + BUTTON_WIDTH, SPACING, "Gameplay", true);
+  gameSettingsButton = mainWin->createButton(x, 0, x + BUTTON_WIDTH, SPACING, _( "Gameplay" ), true);
   x += BUTTON_WIDTH;
-  videoButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, "Video", true);
+  videoButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, _( "Video" ), true);
   x += BUTTON_WIDTH;
-  audioButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, "Audio", true);
+  audioButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, _( "Audio" ), true);
   x += BUTTON_WIDTH;
-  controlsButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, "Controls", true);           
+  controlsButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, _( "Controls" ), true);           
 
   x = 10;
-  saveButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, "Save", false);      
+  saveButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, _( "Save" ), false);      
   x += BUTTON_WIDTH + MINOR_SPACING;
-  closeButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, "Close", false);      
+  closeButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, _( "Close" ), false);      
   
   cards = new CardContainer(mainWin);
   
   // Controls tab
   int y = YPOS;
-  keyBindingsLabel = cards->createLabel(XPOS, y + 10, "Key bindings", CONTROLS, Constants::RED_COLOR);
+  keyBindingsLabel = cards->createLabel(XPOS, y + 10, _( "Key bindings" ), CONTROLS, Constants::RED_COLOR);
   y += SPACING + MINOR_SPACING;
   controlBindingsList = new ScrollingList(XPOS, y, X_SIZE, 190, scourge->getShapePalette()->getHighlightTexture());
   cards->addWidget(controlBindingsList, CONTROLS);
@@ -78,36 +78,36 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
 
   // Game settings tab
   y = YPOS;
-  gameSpeedML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, "Game speed", 100);
-  gameSpeedML -> addText(strdup("Very slow"));
-  gameSpeedML -> addText(strdup("Slow"));
-  gameSpeedML -> addText(strdup("Normal"));
-  gameSpeedML -> addText(strdup("Fast"));
-  gameSpeedML -> addText(strdup("Fastest"));    
+  gameSpeedML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Game speed" ), 100);
+  gameSpeedML -> addText(strdup( _( "Very slow" )));
+  gameSpeedML -> addText(strdup( _( "Slow" ) ));
+  gameSpeedML -> addText(strdup( _( "Normal" )));
+  gameSpeedML -> addText(strdup( _( "Fast" )));
+  gameSpeedML -> addText(strdup( _( "Fastest" )));    
   cards->addWidget(gameSpeedML, GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  alwaysCenterMapCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Always center map", GAME_SETTINGS);
+  alwaysCenterMapCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Always center map" ), GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  keepMapSize = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Keep zoom when switching layouts", GAME_SETTINGS);
+  keepMapSize = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Keep zoom when switching layouts" ), GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  frameOnFullScreen = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Frame map in fullscreen mode", GAME_SETTINGS);
+  frameOnFullScreen = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Frame map in fullscreen mode" ), GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  turnBasedBattle = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Is battle turn-based?", GAME_SETTINGS);
+  turnBasedBattle = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Is battle turn-based?" ), GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  ovalCutoutShown = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Shadow overlay?", GAME_SETTINGS);
+  ovalCutoutShown = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Shadow overlay?" ), GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  outlineInteractiveItems = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Outline items?", GAME_SETTINGS);
+  outlineInteractiveItems = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Outline items?" ), GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  //alwaysShowPath = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Show path in TB battle?", GAME_SETTINGS);
+  //alwaysShowPath = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Show path in TB battle?" ), GAME_SETTINGS);
   //y += SPACING + MINOR_SPACING;
-  tooltipEnabled = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Show tooltips", GAME_SETTINGS);
+  tooltipEnabled = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Show tooltips" ), GAME_SETTINGS);
   y += SPACING + MINOR_SPACING;
-  tooltipInterval = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 200, "Tooltip Delay:");
+  tooltipInterval = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 200, _( "Tooltip Delay:" ) );
   cards->addWidget(tooltipInterval, GAME_SETTINGS);
    
   // Video settings tabs        
   y = YPOS;
-  videoResolutionML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, "Screen resolution", 100);
+  videoResolutionML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Screen resolution" ), 100);
   int nbModes, i;
   char **modes;    
   modes = scourge->getSDLHandler()->getVideoModes(nbModes);    
@@ -117,38 +117,38 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   cards->addWidget(videoResolutionML, VIDEO);    
   
   y += SPACING + MINOR_SPACING;
-  fullscreenCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Fullscreen", VIDEO);    
+  fullscreenCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Fullscreen" ), VIDEO);    
   y += SPACING + MINOR_SPACING;
-  resizeableCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Window resizeable", VIDEO);
+  resizeableCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Window resizeable" ), VIDEO);
   y += SPACING + MINOR_SPACING;
-  doublebufCheckbox  = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Use double buffering", VIDEO);    
+  doublebufCheckbox  = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use double buffering" ), VIDEO);    
   y += SPACING + MINOR_SPACING;
-  stencilbufCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Use stencil buffer", VIDEO );    
+  stencilbufCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use stencil buffer" ), VIDEO );    
   y += SPACING + MINOR_SPACING;
-  forceHwsurfCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Force hardware surfaces", VIDEO);
+  forceHwsurfCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Force hardware surfaces" ), VIDEO);
   y += SPACING + MINOR_SPACING;
-  forceSwsurfCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Force software surfaces", VIDEO);
+  forceSwsurfCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Force software surfaces" ), VIDEO);
   y += SPACING + MINOR_SPACING;
-  multitexturingCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Use multitexturing", VIDEO);    
+  multitexturingCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use multitexturing" ), VIDEO);    
   y += SPACING + MINOR_SPACING;
-  hwpalCheckbox   = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Use hardware palette", VIDEO);
+  hwpalCheckbox   = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use hardware palette" ), VIDEO);
   y += SPACING + MINOR_SPACING;
-  hwaccelCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, "Use hardware acceleration", VIDEO); 
+  hwaccelCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use hardware acceleration" ), VIDEO); 
   y += SPACING + MINOR_SPACING;
-  shadowsML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, "Shadows", 100);
-  shadowsML -> addText("None");  
-  shadowsML -> addText("Some");
-  shadowsML -> addText("All");       
+  shadowsML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Shadows" ), 100);
+  shadowsML -> addText(_( "None" ));  
+  shadowsML -> addText(_( "Some" ));
+  shadowsML -> addText(_( "All" ));       
   cards->addWidget(shadowsML, VIDEO);       
   y += SPACING + MINOR_SPACING;
   changeTakeEffectLabel = cards->createLabel(XPOS, y, " ", VIDEO, Constants::BLUE_COLOR);
   
   // audio
   y = YPOS;
-  musicVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 128, "Music Volume:");
+  musicVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 128, _( "Music Volume:" ));
   cards->addWidget(musicVolume, AUDIO);
   y += SPACING + MINOR_SPACING + 15;
-  effectsVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 128, "Effects Volume:");
+  effectsVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 128, _( "Effects Volume:" ));
   cards->addWidget(effectsVolume, AUDIO);
   
   selectedMode = GAME_SETTINGS;
@@ -394,10 +394,10 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
     else if(widget == saveButton){
         uc->saveConfiguration();
         if(selectedMode == VIDEO){
-            changeTakeEffectLabel -> setText("Some changes will only take effect upon restart");            
+            changeTakeEffectLabel -> setText(_( "Some changes will only take effect upon restart" ) );
         }
 				scourge->toggleOptionsWindow();
-				scourge->showMessageDialog( "Saved: some options require a restart to take effect." );
+				scourge->showMessageDialog( _( "Saved: some options require a restart to take effect." ) );
 				return true;
     } else if(widget == musicVolume) {
       scourge->getSDLHandler()->getSound()->setMusicVolume(musicVolume->getValue());

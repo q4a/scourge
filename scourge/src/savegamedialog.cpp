@@ -40,19 +40,19 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
     scourge->createWindow( scourge->getScreenWidth() / 2 - w / 2, 
 													 scourge->getScreenHeight() / 2 - h / 2, 
                            w, h, 
-                           "Saved games" );
-	win->createLabel( 10, 20, "Current saved games:" );
+                           _( "Saved games" ) );
+	win->createLabel( 10, 20, _( "Current saved games:" ) );
   files = new ScrollingList( 10, 30, w - 130, h - 70, 
 														 scourge->getHighlightTexture(), NULL, 70 );
 	files->setTextLinewrap( true );
 	files->setIconBorder( true );
   win->addWidget( files );
 
-	newSave = win->createButton( w - 105, 30, w - 15, 50, "New Save" );
-	save = win->createButton( w - 105, 60, w - 15, 80, "Save" );
-	load = win->createButton( w - 105, 90, w - 15, 110, "Load" );
-	deleteSave = win->createButton( w - 105, 150, w - 15, 170, "Delete" );
-	cancel = win->createButton( w - 105, 210, w - 15, 230, "Cancel" );
+	newSave = win->createButton( w - 105, 30, w - 15, 50, _( "New Save" ) );
+	save = win->createButton( w - 105, 60, w - 15, 80, _( "Save" ) );
+	load = win->createButton( w - 105, 90, w - 15, 110, _( "Load" ) );
+	deleteSave = win->createButton( w - 105, 150, w - 15, 170, _( "Delete" ) );
+	cancel = win->createButton( w - 105, 210, w - 15, 230, _( "Cancel" ) );
 
 	filenameCount = 0;
   filenames = (char**)malloc( MAX_SAVEGAME_COUNT * sizeof(char*) );
@@ -62,7 +62,7 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
 	this->screens = (GLuint*)malloc( MAX_SAVEGAME_COUNT * sizeof( GLuint ) );
 
 	confirm = new ConfirmDialog( scourge->getSDLHandler(), 
-															 "Overwrite existing file?" );
+															 _( "Overwrite existing file?" ) );
 }
 
 SavegameDialog::~SavegameDialog() {
@@ -79,9 +79,9 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 		confirm->setVisible( false );
 		if( confirm->getMode() == SAVE_MODE ) {
 			if( createSaveGame( fileInfos[ selectedFile ] ) ) {
-				scourge->showMessageDialog( "Game saved successfully." );
+				scourge->showMessageDialog( _( "Game saved successfully." ) );
 			} else {
-				scourge->showMessageDialog( "Error saving game." );
+				scourge->showMessageDialog( _( "Error saving game." ) );
 			}
 		} else if( confirm->getMode() == DELETE_MODE ) {
 			getWindow()->setVisible( false );
@@ -89,9 +89,9 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 			char tmp[300];
 			get_file_name( tmp, 300, fileInfos[ selectedFile ]->path );
 			if( deleteDirectory( tmp ) ) {
-				scourge->showMessageDialog( "Game was successfully removed." );				
+				scourge->showMessageDialog( _( "Game was successfully removed." ) );
 			} else {
-				scourge->showMessageDialog( "Could not delete saved game." );
+				scourge->showMessageDialog( _( "Could not delete saved game." ) );
 			}
 		} else {
 			loadGame( selectedFile );
@@ -104,22 +104,22 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 		int n = files->getSelectedLine();
 		if( n > -1 ) {
 			selectedFile = n;
-			confirm->setText( "Are you sure you want to overwrite this file?" );
+			confirm->setText( _( "Are you sure you want to overwrite this file?" ) );
 			confirm->setMode( SAVE_MODE );
 			confirm->setVisible( true );
 		}		
 	} else if( widget == newSave ) {
 		if( createNewSaveGame() ) {
-			scourge->showMessageDialog( "Game saved successfully." );
+			scourge->showMessageDialog( _( "Game saved successfully." ) );
 		} else {
-			scourge->showMessageDialog( "Error saving game." );
+			scourge->showMessageDialog( _( "Error saving game." ) );
 		}
 	} else if( widget == load ) {
 		int n = files->getSelectedLine();
 		if( n > -1 ) {
 			if( save->isEnabled() ) {
 				selectedFile = n;
-				confirm->setText( "Are you sure you want to load this file?" );
+				confirm->setText( _( "Are you sure you want to load this file?" ) );
 				confirm->setMode( LOAD_MODE );
 				confirm->setVisible( true );
 			} else {
@@ -130,10 +130,10 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 		int n = files->getSelectedLine();
 		if( n > -1 ) {
 			if( !strcmp( fileInfos[ n ]->path, scourge->getSession()->getSavegameName() ) ) {
-				scourge->showMessageDialog( "You can't delete the current game." );
+				scourge->showMessageDialog( _( "You can't delete the current game." ) );
 			} else {
 				selectedFile = n;
-				confirm->setText( "Are you sure you want to delete this file?" );
+				confirm->setText( _( "Are you sure you want to delete this file?" ) );
 				confirm->setMode( DELETE_MODE );
 				confirm->setVisible( true );
 			}
@@ -151,16 +151,16 @@ void SavegameDialog::show( bool inSaveMode ) {
 	if( inSaveMode ) {
 		save->setEnabled( true );
 		newSave->setEnabled( true );
-		win->setTitle( "Create a new saved game or load an existing one" );
+		win->setTitle( _( "Create a new saved game or load an existing one" ) );
 	} else {
 		// check for save games
 		save->setEnabled( false );
 		newSave->setEnabled( false );
-		win->setTitle( "Open an existing saved game file" );
+		win->setTitle( _( "Open an existing saved game file" ) );
 	}
 	if( savegamesChanged ) {
 		if( !findFiles() ) {
-			scourge->showMessageDialog( "No savegames have been created yet." );
+			scourge->showMessageDialog( _( "No savegames have been created yet." ) );
 			savegamesChanged = true; // check again next time
 			return;
 		}
@@ -279,22 +279,22 @@ void SavegameDialog::setSavegameInfoTitle( SavegameInfo *info ) {
 
 		if( scourge->getSession()->getCurrentMission() ) {
 			if( strstr( scourge->getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
-				sprintf( place, "In a cave on level %d.", 
+				sprintf( place, _( "In a cave on level %d." ), 
 								 ( scourge->getCurrentDepth() + 1 ) );
 			} else {
-				sprintf( place, "Dungeon level %d at %s.", 
+				sprintf( place, _( "Dungeon level %d at %s." ), 
 								 ( scourge->getCurrentDepth() + 1 ),
 								 scourge->getSession()->getCurrentMission()->getMapName() );
 			}
 		} else {
 			strcpy( place, "Resting at HQ." );
 		}
-		sprintf( (char*)info->title, "%s %s, Party of %s the %s level %s. %s", 
+		char tmp2[300];
+		sprintf( tmp2, _( "Party of %s the %s level %s." ), player->getName(), tmp, player->getCharacter()->getName() );
+		sprintf( (char*)info->title, "%s %s, %s %s", 
 						 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
 						 scourge->getSession()->getBoard()->getStorylineTitle(),
-						 player->getName(), 
-						 tmp, 
-						 player->getCharacter()->getName(),
+						 tmp2,
 						 place );
 	} else {
 		sprintf( (char*)info->title, "%s %s", 

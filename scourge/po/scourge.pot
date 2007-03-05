@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-04 14:21-0800\n"
+"POT-Creation-Date: 2007-03-04 21:10-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -277,7 +277,7 @@ msgid "Un-paused: you are in real-time mode"
 msgstr ""
 
 #: src/common/constants.cpp:96 src/containergui.cpp:40 src/healdialog.cpp:49
-#: src/conversationgui.cpp:79 src/donatedialog.cpp:50
+#: src/optionsmenu.cpp:62 src/conversationgui.cpp:79 src/donatedialog.cpp:50
 msgid "Close"
 msgstr ""
 
@@ -309,7 +309,8 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: src/common/constants.cpp:104 src/mapeditor.cpp:263
+#: src/common/constants.cpp:104 src/savegamedialog.cpp:55
+#: src/mapeditor.cpp:263
 msgid "Cancel"
 msgstr ""
 
@@ -868,6 +869,14 @@ msgstr ""
 msgid "An item was fully identified!"
 msgstr ""
 
+#: src/projectile.cpp:318
+msgid "Projectile did not reach the target (max steps)."
+msgstr ""
+
+#: src/projectile.cpp:389
+msgid "Projectile did not reach the target (blocked)."
+msgstr ""
+
 #: src/characterinfo.cpp:44
 #, c-format
 msgid "Exp: %u(%u)"
@@ -1103,6 +1112,162 @@ msgstr ""
 msgid "Chat"
 msgstr ""
 
+#: src/optionsmenu.cpp:45 src/mainmenu.cpp:57
+msgid "Options"
+msgstr ""
+
+#: src/optionsmenu.cpp:51
+msgid "Gameplay"
+msgstr ""
+
+#: src/optionsmenu.cpp:53
+msgid "Video"
+msgstr ""
+
+#: src/optionsmenu.cpp:55
+msgid "Audio"
+msgstr ""
+
+#: src/optionsmenu.cpp:57
+msgid "Controls"
+msgstr ""
+
+#: src/optionsmenu.cpp:60 src/savegamedialog.cpp:52 src/mapeditor.cpp:85
+msgid "Save"
+msgstr ""
+
+#: src/optionsmenu.cpp:68
+msgid "Key bindings"
+msgstr ""
+
+#: src/optionsmenu.cpp:81
+msgid "Game speed"
+msgstr ""
+
+#: src/optionsmenu.cpp:82
+msgid "Very slow"
+msgstr ""
+
+#: src/optionsmenu.cpp:83
+msgid "Slow"
+msgstr ""
+
+#: src/optionsmenu.cpp:84
+msgid "Normal"
+msgstr ""
+
+#: src/optionsmenu.cpp:85
+msgid "Fast"
+msgstr ""
+
+#: src/optionsmenu.cpp:86
+msgid "Fastest"
+msgstr ""
+
+#: src/optionsmenu.cpp:89
+msgid "Always center map"
+msgstr ""
+
+#: src/optionsmenu.cpp:91
+msgid "Keep zoom when switching layouts"
+msgstr ""
+
+#: src/optionsmenu.cpp:93
+msgid "Frame map in fullscreen mode"
+msgstr ""
+
+#: src/optionsmenu.cpp:95
+msgid "Is battle turn-based?"
+msgstr ""
+
+#: src/optionsmenu.cpp:97
+msgid "Shadow overlay?"
+msgstr ""
+
+#: src/optionsmenu.cpp:99
+msgid "Outline items?"
+msgstr ""
+
+#: src/optionsmenu.cpp:103
+msgid "Show tooltips"
+msgstr ""
+
+#: src/optionsmenu.cpp:105
+msgid "Tooltip Delay:"
+msgstr ""
+
+#: src/optionsmenu.cpp:110
+msgid "Screen resolution"
+msgstr ""
+
+#: src/optionsmenu.cpp:120
+msgid "Fullscreen"
+msgstr ""
+
+#: src/optionsmenu.cpp:122
+msgid "Window resizeable"
+msgstr ""
+
+#: src/optionsmenu.cpp:124
+msgid "Use double buffering"
+msgstr ""
+
+#: src/optionsmenu.cpp:126
+msgid "Use stencil buffer"
+msgstr ""
+
+#: src/optionsmenu.cpp:128
+msgid "Force hardware surfaces"
+msgstr ""
+
+#: src/optionsmenu.cpp:130
+msgid "Force software surfaces"
+msgstr ""
+
+#: src/optionsmenu.cpp:132
+msgid "Use multitexturing"
+msgstr ""
+
+#: src/optionsmenu.cpp:134
+msgid "Use hardware palette"
+msgstr ""
+
+#: src/optionsmenu.cpp:136
+msgid "Use hardware acceleration"
+msgstr ""
+
+#: src/optionsmenu.cpp:138
+msgid "Shadows"
+msgstr ""
+
+#: src/optionsmenu.cpp:139
+msgid "None"
+msgstr ""
+
+#: src/optionsmenu.cpp:140
+msgid "Some"
+msgstr ""
+
+#: src/optionsmenu.cpp:141
+msgid "All"
+msgstr ""
+
+#: src/optionsmenu.cpp:148
+msgid "Music Volume:"
+msgstr ""
+
+#: src/optionsmenu.cpp:151
+msgid "Effects Volume:"
+msgstr ""
+
+#: src/optionsmenu.cpp:397
+msgid "Some changes will only take effect upon restart"
+msgstr ""
+
+#: src/optionsmenu.cpp:400
+msgid "Saved: some options require a restart to take effect."
+msgstr ""
+
 #: src/inventory.cpp:110 src/inventory.cpp:132 src/inventory.cpp:299
 msgid "Inventory"
 msgstr ""
@@ -1203,7 +1368,7 @@ msgstr ""
 msgid "Del"
 msgstr ""
 
-#: src/inventory.cpp:226
+#: src/inventory.cpp:226 src/pceditor.cpp:453
 msgid "Accept"
 msgstr ""
 
@@ -1442,6 +1607,89 @@ msgstr ""
 msgid "Upload your score to the internet?"
 msgstr ""
 
+#: src/savegamedialog.cpp:43
+msgid "Saved games"
+msgstr ""
+
+#: src/savegamedialog.cpp:44
+msgid "Current saved games:"
+msgstr ""
+
+#: src/savegamedialog.cpp:51
+msgid "New Save"
+msgstr ""
+
+#: src/savegamedialog.cpp:53 src/mapeditor.cpp:84
+msgid "Load"
+msgstr ""
+
+#: src/savegamedialog.cpp:54
+msgid "Delete"
+msgstr ""
+
+#: src/savegamedialog.cpp:65
+msgid "Overwrite existing file?"
+msgstr ""
+
+#: src/savegamedialog.cpp:82 src/savegamedialog.cpp:113
+msgid "Game saved successfully."
+msgstr ""
+
+#: src/savegamedialog.cpp:84 src/savegamedialog.cpp:115
+msgid "Error saving game."
+msgstr ""
+
+#: src/savegamedialog.cpp:92
+msgid "Game was successfully removed."
+msgstr ""
+
+#: src/savegamedialog.cpp:94
+msgid "Could not delete saved game."
+msgstr ""
+
+#: src/savegamedialog.cpp:107
+msgid "Are you sure you want to overwrite this file?"
+msgstr ""
+
+#: src/savegamedialog.cpp:122
+msgid "Are you sure you want to load this file?"
+msgstr ""
+
+#: src/savegamedialog.cpp:133
+msgid "You can't delete the current game."
+msgstr ""
+
+#: src/savegamedialog.cpp:136
+msgid "Are you sure you want to delete this file?"
+msgstr ""
+
+#: src/savegamedialog.cpp:154
+msgid "Create a new saved game or load an existing one"
+msgstr ""
+
+#: src/savegamedialog.cpp:159
+msgid "Open an existing saved game file"
+msgstr ""
+
+#: src/savegamedialog.cpp:163
+msgid "No savegames have been created yet."
+msgstr ""
+
+#: src/savegamedialog.cpp:282
+#, c-format
+msgid "In a cave on level %d."
+msgstr ""
+
+#: src/savegamedialog.cpp:285
+#, c-format
+msgid "Dungeon level %d at %s."
+msgstr ""
+
+#: src/savegamedialog.cpp:293
+#, c-format
+msgid "Party of %s the %s level %s."
+msgstr ""
+
 #: src/date.cpp:28
 msgid "January"
 msgstr ""
@@ -1581,7 +1829,7 @@ msgstr ""
 msgid "Identify"
 msgstr ""
 
-#: src/infogui.cpp:70 src/mapeditor.cpp:80
+#: src/infogui.cpp:70 src/pceditor.cpp:465 src/mapeditor.cpp:80
 msgid "Name:"
 msgstr ""
 
@@ -1775,6 +2023,105 @@ msgid ""
 "glean..."
 msgstr ""
 
+#: src/pceditor.cpp:424
+msgid "Character Details"
+msgstr ""
+
+#: src/pceditor.cpp:439
+msgid "Name"
+msgstr ""
+
+#: src/pceditor.cpp:441
+msgid "Profession"
+msgstr ""
+
+#: src/pceditor.cpp:443
+msgid "Stats"
+msgstr ""
+
+#: src/pceditor.cpp:445
+msgid "Deity"
+msgstr ""
+
+#: src/pceditor.cpp:447
+msgid "Image"
+msgstr ""
+
+#: src/pceditor.cpp:458
+msgid "Dismiss"
+msgstr ""
+
+#: src/pceditor.cpp:468
+msgid "Change"
+msgstr ""
+
+#: src/pceditor.cpp:474
+msgid ""
+"What is your name, great hero? Enter it here, but choose wisely! You will "
+"not be able to change it again."
+msgstr ""
+
+#: src/pceditor.cpp:479
+msgid "Male"
+msgstr ""
+
+#: src/pceditor.cpp:480
+msgid "Female"
+msgstr ""
+
+#: src/pceditor.cpp:484
+msgid ""
+"Select the sex of your hero. Besides some visual effects, it has no other "
+"impact on game mechanics."
+msgstr ""
+
+#: src/pceditor.cpp:491
+msgid "Profession:"
+msgstr ""
+
+#: src/pceditor.cpp:495
+msgid ""
+"Which starting profession most closely resembles your hero? Your character "
+"will evolve into a more powerful and refined practicer of the chosen art. "
+"Below is a brief description of the strengths and weaknesses of each "
+"profession."
+msgstr ""
+
+#: src/pceditor.cpp:523
+msgid "Statistics:"
+msgstr ""
+
+#: src/pceditor.cpp:549
+msgid "Points Remaining:"
+msgstr ""
+
+#: src/pceditor.cpp:551
+msgid "Reroll"
+msgstr ""
+
+#: src/pceditor.cpp:564
+msgid "Patron Deity:"
+msgstr ""
+
+#: src/pceditor.cpp:568
+msgid ""
+"At times on your journey you may be reduced to nothing but a prayer. "
+"Therefore it is important to keep in mind to whom such requests are "
+"directed. Given below is a list of known deities of the land with a brief "
+"description for each."
+msgstr ""
+
+#: src/pceditor.cpp:596
+msgid "Appearance:"
+msgstr ""
+
+#: src/pceditor.cpp:600
+msgid ""
+"You may now choose a portrait and a character model to represent your hero. "
+"Your appearance is only a matter of personal choice, it will not affect the "
+"game in any way."
+msgstr ""
+
 #: src/mainmenu.cpp:54
 msgid "New Game"
 msgstr ""
@@ -1785,10 +2132,6 @@ msgstr ""
 
 #: src/mainmenu.cpp:56
 msgid "Multiplayer Game"
-msgstr ""
-
-#: src/mainmenu.cpp:57
-msgid "Options"
 msgstr ""
 
 #: src/mainmenu.cpp:58 src/mainmenu.cpp:122
@@ -1830,14 +2173,6 @@ msgstr ""
 
 #: src/mapeditor.cpp:69
 msgid "Map Editor"
-msgstr ""
-
-#: src/mapeditor.cpp:84
-msgid "Load"
-msgstr ""
-
-#: src/mapeditor.cpp:85
-msgid "Save"
 msgstr ""
 
 #: src/mapeditor.cpp:88
