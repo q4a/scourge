@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-04 21:10-0800\n"
+"POT-Creation-Date: 2007-03-04 21:33-0800\n"
 "PO-Revision-Date: 2007-03-03 14:10-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -149,6 +149,7 @@ msgid "Ok"
 msgstr ""
 
 #: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:106
+#: src/scourge.cpp:1542
 msgid "No"
 msgstr ""
 
@@ -314,7 +315,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/common/constants.cpp:105
+#: src/common/constants.cpp:105 src/scourge.cpp:1540
 msgid "Yes"
 msgstr ""
 
@@ -792,12 +793,12 @@ msgstr ""
 msgid "Info"
 msgstr ""
 
-#: src/containergui.cpp:149
+#: src/containergui.cpp:149 src/scourge.cpp:1172
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr ""
 
-#: src/containergui.cpp:159
+#: src/containergui.cpp:159 src/scourge.cpp:1163 src/scourge.cpp:1169
 msgid "The item won't fit in that container!"
 msgstr ""
 
@@ -1465,7 +1466,7 @@ msgstr ""
 msgid "Party members give all their money to %s."
 msgstr ""
 
-#: src/inventory.cpp:562
+#: src/inventory.cpp:562 src/scourge.cpp:2669
 msgid "Not enough Magic Points to cast this spell!"
 msgstr ""
 
@@ -1610,6 +1611,238 @@ msgstr ""
 
 #: src/scourge.cpp:143
 msgid "Upload your score to the internet?"
+msgstr ""
+
+#: src/scourge.cpp:342
+msgid "Error saving current map."
+msgstr ""
+
+#: src/scourge.cpp:353
+msgid "Error #666: Failed to create map."
+msgstr ""
+
+#: src/scourge.cpp:524
+#, c-format
+msgid "For returning alive, the party receives %d experience points."
+msgstr ""
+
+#: src/scourge.cpp:535
+#, c-format
+msgid " %s gains a level! "
+msgstr ""
+
+#: src/scourge.cpp:694
+#, c-format
+msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
+msgstr ""
+
+#: src/scourge.cpp:697
+#, c-format
+msgid "Teleport spell failed!! Entering level %d"
+msgstr ""
+
+#: src/scourge.cpp:699
+#, c-format
+msgid "Entering dungeon level %d"
+msgstr ""
+
+#: src/scourge.cpp:878
+#, c-format
+msgid "%s cancelled a pending action."
+msgstr ""
+
+#: src/scourge.cpp:883
+msgid "Select a creature for this spell."
+msgstr ""
+
+#: src/scourge.cpp:888
+msgid "Select an item for this spell."
+msgstr ""
+
+#: src/scourge.cpp:893
+msgid "Select a location for this spell."
+msgstr ""
+
+#: src/scourge.cpp:898
+msgid "Select a door for this spell."
+msgstr ""
+
+#: src/scourge.cpp:903
+msgid "Select the party for this spell."
+msgstr ""
+
+#: src/scourge.cpp:924 src/scourge.cpp:945
+#, c-format
+msgid "%s selected a target"
+msgstr ""
+
+#: src/scourge.cpp:967
+#, c-format
+msgid "%1$s will target %2$s"
+msgstr ""
+
+#: src/scourge.cpp:989
+#, c-format
+msgid "%1$s targeted %2$s."
+msgstr ""
+
+#: src/scourge.cpp:1156
+#, fuzzy, c-format
+msgid "%1$s picks up %2$s."
+msgstr "Elfogyott a %s"
+
+#: src/scourge.cpp:1361
+msgid "Something is blocking the door from closing."
+msgstr ""
+
+#: src/scourge.cpp:1459
+msgid "The door splinters into many, tiny pieces!"
+msgstr ""
+
+#: src/scourge.cpp:1511
+msgid "Messages"
+msgstr ""
+
+#: src/scourge.cpp:1535
+msgid "Leave level?"
+msgstr ""
+
+#: src/scourge.cpp:1547
+msgid "Squirrel Console"
+msgstr ""
+
+#: src/scourge.cpp:1555
+msgid "Run"
+msgstr ""
+
+#: src/scourge.cpp:1556
+msgid "Clear"
+msgstr ""
+
+#: src/scourge.cpp:1958
+#, c-format
+msgid "Speed set to %d\n"
+msgstr ""
+
+#: src/scourge.cpp:2119
+msgid "For completing the mission"
+msgstr ""
+
+#: src/scourge.cpp:2121
+#, c-format
+msgid "The party receives %d points."
+msgstr ""
+
+#: src/scourge.cpp:2146
+msgid "Connecting to server"
+msgstr ""
+
+#: src/scourge.cpp:2153
+msgid "Connected!"
+msgstr ""
+
+#: src/scourge.cpp:2175
+msgid "Combat"
+msgstr ""
+
+#: src/scourge.cpp:2177
+msgid "End Turn"
+msgstr ""
+
+#: src/scourge.cpp:2200
+msgid "Pause game"
+msgstr ""
+
+#: src/scourge.cpp:2203
+msgid "Load or Save Game"
+msgstr ""
+
+#: src/scourge.cpp:2213
+msgid "Exit game"
+msgstr ""
+
+#: src/scourge.cpp:2220
+#, fuzzy
+msgid "Game options"
+msgstr "Beállitások"
+
+#: src/scourge.cpp:2227
+msgid "Move as a group"
+msgstr ""
+
+#: src/scourge.cpp:2267
+msgid "Dismiss this character"
+msgstr ""
+
+#: src/scourge.cpp:2286
+msgid "Inventory and party info"
+msgstr ""
+
+#: src/scourge.cpp:2294
+msgid "Click to assign a spell, capability or magic item."
+msgstr ""
+
+#: src/scourge.cpp:2330
+msgid "HP"
+msgstr ""
+
+#: src/scourge.cpp:2332
+msgid "MP"
+msgstr ""
+
+#: src/scourge.cpp:2352
+msgid "Current Weapon: Bare Hands"
+msgstr ""
+
+#: src/scourge.cpp:2357
+#, c-format
+msgid "Current Weapon: %s"
+msgstr ""
+
+#: src/scourge.cpp:2742
+msgid "Begin Turn"
+msgstr ""
+
+#: src/scourge.cpp:2747
+msgid "...In Turn..."
+msgstr ""
+
+#: src/scourge.cpp:2753
+#, fuzzy
+msgid "Pause Game"
+msgstr "Új Játék"
+
+#: src/scourge.cpp:2757
+msgid "Unpause game."
+msgstr ""
+
+#: src/scourge.cpp:2792
+msgid "Available Missions"
+msgstr ""
+
+#: src/scourge.cpp:2798
+msgid "Drag map to look around."
+msgstr ""
+
+#: src/scourge.cpp:2866
+msgid "This spell has no effect here..."
+msgstr ""
+
+#: src/scourge.cpp:3054
+msgid "Game loaded successfully."
+msgstr ""
+
+#: src/scourge.cpp:3080
+msgid "Error: Saved game version is too old."
+msgstr ""
+
+#: src/scourge.cpp:3436
+msgid "You cannot hire more party members."
+msgstr ""
+
+#: src/scourge.cpp:3456
+#, c-format
+msgid "Would you like to dismiss %s the %s?"
 msgstr ""
 
 #: src/savegamedialog.cpp:43
