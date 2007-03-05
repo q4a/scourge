@@ -421,7 +421,7 @@ void PcEditor::createUI() {
 
 	win = new Window( scourge->getSDLHandler(),
 										x, y, w, h,
-										"Character Details", 
+										_( "Character Details" ), 
 										true, 
 										Window::BASIC_WINDOW, 
 										"default" );
@@ -436,66 +436,66 @@ void PcEditor::createUI() {
 	int secondColStart = firstColWidth + 20;
 	int secondColWidth = w - secondColStart - 20;
 
-	nameButton = win->createButton( x, y, firstColWidth, y + buttonHeight, "Name", true );
+	nameButton = win->createButton( x, y, firstColWidth, y + buttonHeight, _( "Name" ), true );
 	y += buttonHeight + buttonSpace;
-	profButton = win->createButton( x, y, firstColWidth, y + buttonHeight, "Profession", true );
+	profButton = win->createButton( x, y, firstColWidth, y + buttonHeight, _( "Profession" ), true );
 	y += buttonHeight + buttonSpace;
-	statsButton = win->createButton( x, y, firstColWidth, y + buttonHeight, "Stats", true );
+	statsButton = win->createButton( x, y, firstColWidth, y + buttonHeight, _( "Stats" ), true );
 	y += buttonHeight + buttonSpace;
-	deityButton = win->createButton( x, y, firstColWidth, y + buttonHeight, "Deity", true );
+	deityButton = win->createButton( x, y, firstColWidth, y + buttonHeight, _( "Deity" ), true );
 	y += buttonHeight + buttonSpace;
-	imageButton = win->createButton( x, y, firstColWidth, y + buttonHeight, "Image", true );
+	imageButton = win->createButton( x, y, firstColWidth, y + buttonHeight, _( "Image" ), true );
 	y += buttonHeight + buttonSpace;
 	okButton = win->createButton( x, 
 																h - x - buttonHeight - win->getGutter(), 
 																firstColWidth, 
 																h - x - win->getGutter(), 
-																"Accept" );
+																_( "Accept" ) );
 	cancelButton = win->createButton( x + firstColWidth + buttonSpace, 
 																		h - x - buttonHeight - win->getGutter(), 
 																		firstColWidth + buttonSpace + firstColWidth, 
 																		h - x - win->getGutter(), 
-																		"Dismiss" );
+																		_( "Dismiss" ) );
 
 	cards = new CardContainer( win );  
 
 
 	// ----------------------------------------------
 	// name
-	Label *p = cards->createLabel( secondColStart, 30, "Name:", NAME_TAB );
+	Label *p = cards->createLabel( secondColStart, 30, _( "Name:" ), NAME_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 	nameField = new TextField( secondColStart, 50, 22 );
-	nameChangeButton = cards->createButton( w - 80, 50, w - 20, 70, "Change", NAME_TAB );
+	nameChangeButton = cards->createButton( w - 80, 50, w - 20, 70, _( "Change" ), NAME_TAB );
   char *s = Rpg::createName();
   nameField->setText( s );
   free( s );
 	cards->addWidget( nameField, NAME_TAB );
 	cards->addWidget( new Label( secondColStart, 90, 
-															 "What is your name, great hero? Enter it here, but choose wisely! You will not be able to change it again.",
+															 _( "What is your name, great hero? Enter it here, but choose wisely! You will not be able to change it again." ),
 															 TEXT_WIDTH ), 
 										NAME_TAB );
 										
 										
-	male = cards->createButton( secondColStart, 150, secondColStart + 90, 170, "Male", NAME_TAB, true );
-	female = cards->createButton( secondColStart + 100, 150, secondColStart + 190, 170, "Female", NAME_TAB, true );
+	male = cards->createButton( secondColStart, 150, secondColStart + 90, 170, _( "Male" ), NAME_TAB, true );
+	female = cards->createButton( secondColStart + 100, 150, secondColStart + 190, 170, _( "Female" ), NAME_TAB, true );
 	male->setSelected( true );
 	female->setSelected( false );	
 	cards->addWidget( new Label( secondColStart, 200, 
-															 "Select the sex of your hero. Besides some visual effects, it has no other impact on game mechanics.",
+															 _( "Select the sex of your hero. Besides some visual effects, it has no other impact on game mechanics." ),
 															 TEXT_WIDTH ), 
 										NAME_TAB );										
 
 
 	// ----------------------------------------------
 	// class
-	p = cards->createLabel( secondColStart, 30, "Profession:", CLASS_TAB );
+	p = cards->createLabel( secondColStart, 30, _( "Profession:" ), CLASS_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 	cards->addWidget( new Label( secondColStart, 50, 
-															 "Which starting profession most closely resembles your hero? \
+															 _( "Which starting profession most closely resembles your hero? \
 Your character will evolve into a more powerful and refined practicer \
 of the chosen art. Below is a brief description of the strengths and \
-weaknesses of each profession.",
+weaknesses of each profession." ),
 															 TEXT_WIDTH ), 
 										CLASS_TAB );
 
@@ -520,7 +520,7 @@ weaknesses of each profession.",
 
 	// ----------------------------------------------
 	// stats
-	p = cards->createLabel( secondColStart, 30, "Statistics:", STAT_TAB );
+	p = cards->createLabel( secondColStart, 30, _( "Statistics:" ), STAT_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 	int n = 0;
@@ -546,9 +546,9 @@ weaknesses of each profession.",
 			n++;
 		}
 	}
-	cards->createLabel( secondColStart + 180 + 25 + 15, 60, "Points Remaining:", STAT_TAB );
+	cards->createLabel( secondColStart + 180 + 25 + 15, 60, _( "Points Remaining:" ), STAT_TAB );
 	remainingLabel = cards->createLabel( secondColStart + 180 + 25 + 15, 80, "0", STAT_TAB );
-  reroll = cards->createButton( secondColStart + 180 + 25 + 15, 100, w - 10, 120, "Reroll", STAT_TAB );
+  reroll = cards->createButton( secondColStart + 180 + 25 + 15, 100, w - 10, 120, _( "Reroll" ), STAT_TAB );
 
 	int detailsHeight = 145;
   detailsInfo = new CharacterInfoUI( scourge );
@@ -561,13 +561,13 @@ weaknesses of each profession.",
 
 	// ----------------------------------------------
 	// deity
-	p = cards->createLabel( secondColStart, 30, "Patron Deity:", DEITY_TAB );
+	p = cards->createLabel( secondColStart, 30, _( "Patron Deity:" ), DEITY_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 	cards->addWidget( new Label( secondColStart, 50, 
-															 "At times on your journey you may be reduced to nothing but a prayer. \
+															 _( "At times on your journey you may be reduced to nothing but a prayer. \
 Therefore it is important to keep in mind to whom such requests are directed. Given below is a list \
-of known deities of the land with a brief description for each.",
+of known deities of the land with a brief description for each." ),
 															 TEXT_WIDTH ), 
 										DEITY_TAB );
 
@@ -593,13 +593,13 @@ of known deities of the land with a brief description for each.",
 
 	// ----------------------------------------------
 	// appearence
-	p = cards->createLabel( secondColStart, 30, "Appearance:", IMAGE_TAB );
+	p = cards->createLabel( secondColStart, 30, _( "Appearance:" ), IMAGE_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 	cards->addWidget( new Label( secondColStart, 50, 
-															 "You may now choose a portrait and a character model \
+															 _( "You may now choose a portrait and a character model \
 to represent your hero. Your appearance is only a matter of personal choice, it will \
-not affect the game in any way.",
+not affect the game in any way." ),
 															 TEXT_WIDTH ), 
 										IMAGE_TAB );
 

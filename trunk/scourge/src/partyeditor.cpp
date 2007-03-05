@@ -80,117 +80,8 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
   //
 
 	if( pcEditor->getWindow()->isVisible() ) pcEditor->handleEvent( widget,event );
-
-	/*
-  int oldStep = step;
-  if( widget == toChar0 ) {
-    step = CREATE_CHAR_0;
-  } else if( widget == toLastChar ) {
-    //step = CREATE_CHAR_3;
-		step = CREATE_CHAR_0 + STARTING_PARTY_SIZE - 1;
-  } else {
-    for( int i = 0; i < STARTING_PARTY_SIZE; i++ ) {
-      if( widget == info[i].back ) {
-        if( i == 0 ) step = INTRO_TEXT;
-        else step = 1 + ( i - 1 );
-      } else if( widget == info[i].next ) {
-        //if( i == MAX_PARTY_SIZE - 1 ) step = OUTRO_TEXT;
-				if( i == STARTING_PARTY_SIZE - 1 ) step = OUTRO_TEXT;
-        else step = 1 + ( i + 1 );
-      } else if( widget == info[i].charType ) {
-        setCharType( i, info[i].charType->getSelectedLine() );
-      } else if( widget == info[i].deityType ) {
-        setDeityType( i, info[i].deityType->getSelectedLine() );
-      } else if( widget == info[i].prevPortrait ) {
-        if( info[i].portraitIndex > 0 ) {
-          info[i].portraitIndex--;
-        } else {
-          info[i].portraitIndex = scourge->getShapePalette()->getPortraitCount() - 1;
-        }
-        saveUI( (Creature**)tmp );
-      } else if( widget == info[i].nextPortrait ) {
-        if( info[i].portraitIndex < scourge->getShapePalette()->getPortraitCount() - 1 ) {
-          info[i].portraitIndex++;
-        } else {
-          info[i].portraitIndex = 0;
-        }
-        saveUI( (Creature**)tmp );
-      } else if( widget == info[i].prevModel ) {
-        if( info[i].modelIndex > 0 ) {
-          info[i].modelIndex--;
-        } else {
-          info[i].modelIndex = scourge->getShapePalette()->getCharacterModelInfoCount()-1;
-        }
-        saveUI( (Creature**)tmp );          
-        willPlaySound = true;
-      } else if( widget == info[i].nextModel ) {
-        if( info[i].modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount() - 1 ) {
-          info[i].modelIndex++;
-        } else {
-          info[i].modelIndex = 0;
-        }
-        saveUI( (Creature**)tmp );
-        willPlaySound = true;
-      } else if( widget == info[i].skillRerollButton ) {
-        rollSkills( &( info[ i ] ) );
-//        updateUI( &( info[ i ] ), i );
-        saveUI( (Creature**)tmp );
-      } else if( widget == info[i].skillAddButton && info[i].availableSkillMod ) {
-        int n = info[i].skills->getSelectedLine();
-        Character *c = Character::rootCharacters[ info->charType->getSelectedLine() ];
-        // is it ok?
-        int newValue = info[ i ].skill[ n ] + info[ i ].skillMod[ n ] + 1;
-				bool allowed = false;
-				if( Skill::skills[ n ]->getGroup()->isStat() ) {
-					allowed = ( newValue < 20 );
-				} else {
-					int maxSkill = c->getSkill( n );
-					allowed = ( ( maxSkill >= 0 && newValue <= maxSkill ) || newValue <= 99 );
-				}
-				if( allowed ) {
-					info[ i ].availableSkillMod--;
-					info[ i ].skillMod[ n ]++;
-					saveUI( (Creature**)tmp );
-        }
-      } else if( widget == info[i].skillSubButton && info[i].availableSkillMod < AVAILABLE_SKILL_POINTS ) {
-        int n = info[i].skills->getSelectedLine();
-        if( info[ i ].skillMod[ n ] ) {
-          info[ i ].availableSkillMod++;
-          info[ i ].skillMod[ n ]--;
-          saveUI( (Creature**)tmp );
-        }
-      } else if( widget == info[i].skills->getWidget() ) {
-        info[i].skillDescription->setText( Skill::skills[ info[i].skills->getSelectedLine() ]->getDescription() );
-      }
-    }
-  }
-  if( oldStep != step ) {
-    cards->setActiveCard( step );
-  }
-	*/
 }
 
-/*
-void PartyEditor::setCharType( int pcIndex, int charIndex ) {
-  if( charIndex > -1 ) {     
-    Character *character = Character::rootCharacters[ charIndex ];
-    if( character ) {
-      info[ pcIndex ].charTypeDescription->setText( character->getDescription() );
-      rollSkills( &( info[ pcIndex ] ) );
-      saveUI( (Creature**)tmp );
-    }
-  }
-}
-
-void PartyEditor::setDeityType( int pcIndex, int deityIndex ) {
-  if( deityIndex > -1 ) {
-    MagicSchool *school = MagicSchool::getMagicSchool( deityIndex );
-    if( school ) info[ pcIndex ].deityTypeDescription->setText( school->getDeityDescription() );
-    saveUI( (Creature**)tmp );
-  }
-}
-*/
-      
 void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInventory ) {
 	for( int i = 0; i < STARTING_PARTY_SIZE; i++ )
 		pc[i] = pcEditor->createPartyMember();
@@ -326,19 +217,6 @@ void PartyEditor::addStartingInventory( Creature *pc ) {
 		}
 	}
 }
-
-/*
-void PartyEditor::updateUI( CharacterInfo *info, int index ) {
-  if( tmp[ index ] ) {
-    info->skills->setCreature( tmp[ index ], this );
-		info->skillDescription->setText( Skill::skills[ info->skills->getSelectedLine() ]->getDescription() );
-  }
-
-  char msg[80];
-  sprintf( msg, "Remaining skill points: %d", info->availableSkillMod );
-  info->skillLabel->setText( msg );
-}
-*/
 
 bool PartyEditor::isVisible() { 
   return pcEditor->getWindow()->isVisible(); 
