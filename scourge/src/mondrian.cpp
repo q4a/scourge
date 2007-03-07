@@ -426,7 +426,7 @@ void MondrianGenerator::initRoom( Room room ){
 void MondrianGenerator::generate( Map *map, ShapePalette *shapePal ) {
 //	cerr << "MONDRIAN" << endl;
 
-	updateStatus(MESSAGE);
+	updateStatus( _( "Assembling Dungeon Level" ) );
 
   //Sint16 mapx, mapy;
 	for(Sint16 x = 0; x < width; x++) {    
@@ -464,13 +464,13 @@ bool MondrianGenerator::drawNodes(Map *map, ShapePalette *shapePal) {
   map->setHasWater( FORCE_WATER || 
                     0 == (int)(5.0f * rand()/RAND_MAX) );
 
-  updateStatus("Loading theme");
+  updateStatus( _( "Loading theme" ) );
   shapePal->loadRandomTheme();
 
-  updateStatus("Drawing walls");
+  updateStatus( _( "Drawing walls" ) );
   drawBasics(map, shapePal);
   
-  updateStatus("Fixing rooms");
+  updateStatus( _( "Fixing rooms" ) );
   removeColumns(map, shapePal);
 	addRugs( map, shapePal );
 

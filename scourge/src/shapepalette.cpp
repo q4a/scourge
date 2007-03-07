@@ -310,7 +310,7 @@ void ShapePalette::initPcPortraits( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
-		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
 		string image = node->getValueAsString( "image" );
 		string sex = node->getValueAsString( "sex" );
@@ -336,7 +336,7 @@ void ShapePalette::initPcModels( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
-		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
 		CharacterModelInfo *cmi = (CharacterModelInfo*)malloc( sizeof( CharacterModelInfo ) );
 		strcpy( cmi->model_name, node->getValueAsString( "path" ) );
@@ -359,7 +359,7 @@ void ShapePalette::initRugs( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
-		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
 		SDL_Surface *tmpSurface = NULL;
 		GLubyte *tmpImage = NULL;
@@ -394,7 +394,7 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
-		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
 		bool special = node->getValueAsBool( "special" );
 		bool cave = node->getValueAsBool( "cave" );
@@ -523,7 +523,7 @@ void ShapePalette::initDescriptions( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
-		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 		
 		string id = node->getValueAsString( "id" );
 		descriptionIndex[ id ] = descriptions.size();
@@ -549,7 +549,7 @@ void ShapePalette::init3dsShapes( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
-		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
 		ShapeValues *sv = createShapeValues( node );
 
@@ -576,7 +576,7 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 		
-		session->getGameAdapter()->setUpdate( UPDATE_MESSAGE, i, vv->size() );
+		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
 		ShapeValues *sv = createShapeValues( node );
 

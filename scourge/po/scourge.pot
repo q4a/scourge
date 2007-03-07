@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-04 21:33-0800\n"
+"POT-Creation-Date: 2007-03-06 22:01-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,7 +101,7 @@ msgstr ""
 msgid "Loading map"
 msgstr ""
 
-#: src/render/map.cpp:3270
+#: src/render/map.cpp:3270 src/dungeongenerator.cpp:593 src/mondrian.cpp:467
 msgid "Loading theme"
 msgstr ""
 
@@ -278,7 +278,8 @@ msgid "Un-paused: you are in real-time mode"
 msgstr ""
 
 #: src/common/constants.cpp:96 src/containergui.cpp:40 src/healdialog.cpp:49
-#: src/optionsmenu.cpp:62 src/conversationgui.cpp:79 src/donatedialog.cpp:50
+#: src/tradedialog.cpp:55 src/optionsmenu.cpp:62 src/conversationgui.cpp:79
+#: src/donatedialog.cpp:50 src/traindialog.cpp:60
 msgid "Close"
 msgstr ""
 
@@ -540,7 +541,7 @@ msgstr ""
 msgid "trainer"
 msgstr ""
 
-#: src/sqbinding/sqcreature.cpp:374
+#: src/sqbinding/sqcreature.cpp:374 src/spellcaster.cpp:430
 #, c-format
 msgid "%s resists the spell with magic item!"
 msgstr ""
@@ -639,7 +640,7 @@ msgstr ""
 msgid "You cannot eat or drink that!"
 msgstr ""
 
-#: src/creature.cpp:1135
+#: src/creature.cpp:1135 src/spellcaster.cpp:223
 #, c-format
 msgid "%s heals %d points."
 msgstr ""
@@ -649,7 +650,7 @@ msgstr ""
 msgid "%s receives %d magic points."
 msgstr ""
 
-#: src/creature.cpp:1152
+#: src/creature.cpp:1152 src/spellcaster.cpp:239
 #, c-format
 msgid "%s feels impervious to damage!"
 msgstr ""
@@ -740,7 +741,9 @@ msgstr ""
 msgid "max"
 msgstr ""
 
-#: src/session.cpp:91
+#: src/shapepalette.cpp:313 src/shapepalette.cpp:339 src/shapepalette.cpp:362
+#: src/shapepalette.cpp:397 src/shapepalette.cpp:526 src/shapepalette.cpp:552
+#: src/shapepalette.cpp:579 src/session.cpp:91
 msgid "Loading Shapes"
 msgstr ""
 
@@ -788,7 +791,18 @@ msgstr ""
 msgid "Initializing UI"
 msgstr ""
 
-#: src/containergui.cpp:38 src/inventory.cpp:160
+#: src/session.cpp:280
+#, c-format
+msgid "%s transforms into another shape in front of your very eyes!"
+msgstr ""
+
+#: src/session.cpp:434
+#, c-format
+msgid "  %s dies!"
+msgstr ""
+
+#: src/containergui.cpp:38 src/tradedialog.cpp:43 src/tradedialog.cpp:53
+#: src/inventory.cpp:160
 msgid "Info"
 msgstr ""
 
@@ -819,12 +833,12 @@ msgstr ""
 msgid "Coins Available:"
 msgstr ""
 
-#: src/healdialog.cpp:48
+#: src/healdialog.cpp:48 src/tradedialog.cpp:51
 msgid "Buy"
 msgstr ""
 
 #: src/healdialog.cpp:74 src/inventory.cpp:823 src/donatedialog.cpp:73
-#: ../scourge_data/maps/library31.cfg:176
+#: src/traindialog.cpp:94 ../scourge_data/maps/library31.cfg:176
 msgid "level"
 msgstr ""
 
@@ -876,6 +890,14 @@ msgstr ""
 
 #: src/projectile.cpp:389
 msgid "Projectile did not reach the target (blocked)."
+msgstr ""
+
+#: src/scourgeview.cpp:655
+msgid "Move"
+msgstr ""
+
+#: src/scourgeview.cpp:930
+msgid "cost"
 msgstr ""
 
 #: src/characterinfo.cpp:44
@@ -992,7 +1014,7 @@ msgstr ""
 msgid "%1$s attacks %2$s with bare hands!"
 msgstr ""
 
-#: src/battle.cpp:977
+#: src/battle.cpp:977 src/spellcaster.cpp:86
 #, c-format
 msgid "...fumble: hits %s instead!"
 msgstr ""
@@ -1111,6 +1133,85 @@ msgstr ""
 
 #: src/netplay.cpp:39
 msgid "Chat"
+msgstr ""
+
+#: src/tradedialog.cpp:38 src/tradedialog.cpp:47 src/tradedialog.cpp:93
+#: src/tradedialog.cpp:95
+msgid "Selected Total:"
+msgstr ""
+
+#: src/tradedialog.cpp:42
+msgid "Sell"
+msgstr ""
+
+#: src/tradedialog.cpp:52
+msgid "Steal"
+msgstr ""
+
+#: src/tradedialog.cpp:57 src/tradedialog.cpp:89
+msgid "Available Coins:"
+msgstr ""
+
+#: src/tradedialog.cpp:59
+msgid "Clr"
+msgstr ""
+
+#: src/tradedialog.cpp:62
+msgid "Diff"
+msgstr ""
+
+#: src/tradedialog.cpp:64
+msgid "Shift+click to select multiple items, right click to get info."
+msgstr ""
+
+#: src/tradedialog.cpp:91
+msgid "Selected Coins:"
+msgstr ""
+
+#: src/tradedialog.cpp:163 src/tradedialog.cpp:204 src/tradedialog.cpp:247
+msgid "Inventories changed."
+msgstr ""
+
+#: src/tradedialog.cpp:170
+msgid "Select items to buy."
+msgstr ""
+
+#: src/tradedialog.cpp:173
+msgid "You are not offering enough to trade."
+msgstr ""
+
+#: src/tradedialog.cpp:199
+msgid "Selected items traded."
+msgstr ""
+
+#: src/tradedialog.cpp:210
+msgid "Select items to sell."
+msgstr ""
+
+#: src/tradedialog.cpp:226
+msgid "Selected items sold."
+msgstr ""
+
+#: src/tradedialog.cpp:253
+msgid "Select items to steal."
+msgstr ""
+
+#: src/tradedialog.cpp:293
+msgid "You succesfully burgled the items!"
+msgstr ""
+
+#: src/tradedialog.cpp:306
+#, c-format
+msgid "%s looses %d coins!"
+msgstr ""
+
+#: src/tradedialog.cpp:316
+#, c-format
+msgid "Item confiscated: %s"
+msgstr ""
+
+#: src/tradedialog.cpp:321
+msgid "Your burgling attempt failed. Items and ex. were confiscated."
 msgstr ""
 
 #: src/optionsmenu.cpp:45 src/mainmenu.cpp:57
@@ -1596,6 +1697,19 @@ msgstr ""
 msgid "%s drops %s."
 msgstr ""
 
+#: src/dungeongenerator.cpp:573 src/mondrian.cpp:429
+#: src/terraingenerator.cpp:119
+msgid "Assembling Dungeon Level"
+msgstr ""
+
+#: src/dungeongenerator.cpp:596 src/mondrian.cpp:470
+msgid "Drawing walls"
+msgstr ""
+
+#: src/dungeongenerator.cpp:599 src/mondrian.cpp:473
+msgid "Fixing rooms"
+msgstr ""
+
 #: src/scourge.cpp:141
 msgid "Dismiss Party Member"
 msgstr ""
@@ -1921,6 +2035,54 @@ msgstr ""
 msgid "Party of %s the %s level %s."
 msgstr ""
 
+#: src/terraingenerator.cpp:135
+msgid "Compressing free space"
+msgstr ""
+
+#: src/terraingenerator.cpp:138
+msgid "Adding containers"
+msgstr ""
+
+#: src/terraingenerator.cpp:141
+msgid "Adding gates"
+msgstr ""
+
+#: src/terraingenerator.cpp:147
+msgid "Adding party"
+msgstr ""
+
+#: src/terraingenerator.cpp:154
+msgid "Adding teleporters"
+msgstr ""
+
+#: src/terraingenerator.cpp:160
+msgid "Locking doors and chests"
+msgstr ""
+
+#: src/terraingenerator.cpp:163
+msgid "Calculating room values"
+msgstr ""
+
+#: src/terraingenerator.cpp:166
+msgid "Adding mission objectives"
+msgstr ""
+
+#: src/terraingenerator.cpp:169
+msgid "Adding monsters"
+msgstr ""
+
+#: src/terraingenerator.cpp:172
+msgid "Adding items"
+msgstr ""
+
+#: src/terraingenerator.cpp:175
+msgid "Adding furniture"
+msgstr ""
+
+#: src/terraingenerator.cpp:179
+msgid "Cleaning up"
+msgstr ""
+
 #: src/date.cpp:28
 msgid "January"
 msgstr ""
@@ -2054,6 +2216,69 @@ msgstr ""
 
 #: src/donatedialog.cpp:95
 msgid "Enter the amount you want to donate."
+msgstr ""
+
+#: src/traindialog.cpp:61
+msgid "Train!"
+msgstr ""
+
+#: src/traindialog.cpp:96
+msgid "Cost"
+msgstr ""
+
+#: src/traindialog.cpp:114
+#, c-format
+msgid "%s, I cannot teach you. "
+msgstr ""
+
+#: src/traindialog.cpp:116
+#, c-format
+msgid "You must seek out one who can train a %s."
+msgstr ""
+
+#: src/traindialog.cpp:121 src/traindialog.cpp:127
+#, c-format
+msgid "%s, I can teach you no more. "
+msgstr ""
+
+#: src/traindialog.cpp:123
+msgid "You must seek a higher level trainer."
+msgstr ""
+
+#: src/traindialog.cpp:129
+msgid "You must learn by yourself from now on."
+msgstr ""
+
+#: src/traindialog.cpp:134
+#, c-format
+msgid "%s, you are not yet ready."
+msgstr ""
+
+#: src/traindialog.cpp:136
+#, c-format
+msgid "Come back when you've reached level %d."
+msgstr ""
+
+#: src/traindialog.cpp:142
+#, c-format
+msgid "%s, you are ready to learn."
+msgstr ""
+
+#: src/traindialog.cpp:144
+msgid "Select your next profession from the list below."
+msgstr ""
+
+#: src/traindialog.cpp:149
+msgid "min level"
+msgstr ""
+
+#: src/traindialog.cpp:178
+msgid "You cannot afford the training!"
+msgstr ""
+
+#: src/traindialog.cpp:189
+#, c-format
+msgid "Congratulation %1$s, you are now a %2$s."
 msgstr ""
 
 #: src/infogui.cpp:63
@@ -2254,6 +2479,18 @@ msgid ""
 "glean..."
 msgstr ""
 
+#: src/scourgehandler.cpp:214
+msgid "Combat is now Turn-based."
+msgstr ""
+
+#: src/scourgehandler.cpp:216
+msgid "Combat is now Real-time."
+msgstr ""
+
+#: src/scourgehandler.cpp:298
+msgid "Error saving game!"
+msgstr ""
+
 #: src/pceditor.cpp:424
 msgid "Character Details"
 msgstr ""
@@ -2392,6 +2629,30 @@ msgstr ""
 
 #: src/mainmenu.cpp:271
 msgid "[Sound]"
+msgstr ""
+
+#: src/spellcaster.cpp:318
+#, c-format
+msgid "%s dodges some of the damage."
+msgstr ""
+
+#: src/spellcaster.cpp:329
+#, c-format
+msgid "%1$s attacks %2$s with %3$s."
+msgstr ""
+
+#: src/spellcaster.cpp:335
+#, c-format
+msgid "%s resists the spell with %d."
+msgstr ""
+
+#: src/spellcaster.cpp:420
+#, c-format
+msgid "%s resists the spell! [%d]"
+msgstr ""
+
+#: src/spellcaster.cpp:440
+msgid "Cursed items have been doffed."
 msgstr ""
 
 #: src/mapeditor.cpp:32

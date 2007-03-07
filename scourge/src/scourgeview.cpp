@@ -652,7 +652,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     // in TB mode and paused?
     if( scourge->inTurnBasedCombat() && !( scourge->getParty()->isRealTimeMode() ) ) {
       char cost[40];
-      sprintf( cost, "Move: %d", (int)(creature->getPath()->size()) );
+      sprintf( cost, "%s: %d", _( "Move" ), (int)(creature->getPath()->size()) );
       scourge->getSDLHandler()->drawTooltip( 0, 0, 0,
                                              -( scourge->getMap()->getZRot() ),
                                              -( scourge->getMap()->getYRot() ),
@@ -923,10 +923,11 @@ void ScourgeView::drawAfter() {
     Creature *c = scourge->getCurrentBattle()->getCreature();
     char msg[80];
     if( c->getPath()->size() > 0 && !c->getBattle()->isInRangeOfTarget() ) {
-      sprintf( msg, "%s %d/%d (cost %d)",
+      sprintf( msg, "%s %d/%d (%s %d)",
                c->getName(),
                c->getBattle()->getAP(),
                c->getBattle()->getStartingAP(),
+							 _( "cost" ),
                (int)( c->getPath()->size() ) );
     } else {
       sprintf( msg, "%s %d/%d",

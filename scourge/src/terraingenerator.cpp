@@ -116,7 +116,7 @@ bool TerrainGenerator::toMap( Map *map, ShapePalette *shapePal ) {
   start = SDL_GetTicks();
   generate( map, shapePal );
 
-  updateStatus(MESSAGE);
+  updateStatus( _( "Assembling Dungeon Level" ) );
     
   // loop until successfully drawn nodes onto map
   int status = progress->getStatus();
@@ -132,51 +132,51 @@ bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   bool ret = drawNodes( map, shapePal );
   if( !ret ) goto cleanup;
 
-  updateStatus("Compressing free space");
+  updateStatus( _( "Compressing free space" ) );
   createFreeSpaceMap(map, shapePal);
   
-  updateStatus("Adding containers");
+  updateStatus( _( "Adding containers" ) );
   addContainers(map, shapePal);  
   
-  updateStatus("Adding gates");
+  updateStatus( _( "Adding gates" ) );
   if( !addStairs(map, shapePal) ) {
     ret = false;
     goto cleanup;
   }
 
-  updateStatus("Adding party");
+  updateStatus( _( "Adding party" ) );
   if( !addParty( map, shapePal ) ) {
     ret = false;
     goto cleanup;
   }
   
   // add a teleporters
-  updateStatus("Adding teleporters");
+  updateStatus( _( "Adding teleporters" ) );
   if( !addTeleporters(map, shapePal) ) {
     ret = false;
     goto cleanup;
   }
   
-  updateStatus("Locking doors and chests");
+  updateStatus( _( "Locking doors and chests" ) );
   lockDoors(map, shapePal);
   
-  updateStatus("Calculating room values");
+  updateStatus( _( "Calculating room values" ) );
   calculateRoomValues(map, shapePal);
   
-  updateStatus("Adding mission objectives");
+  updateStatus( _( "Adding mission objectives" ) );
   addMissionObjectives(map, shapePal);
   
-  updateStatus("Adding monsters");
+  updateStatus( _( "Adding monsters" ) );
   addMonsters(map, shapePal);
   
-  updateStatus("Adding items");
+  updateStatus( _( "Adding items" ) );
   addItems(map, shapePal);
   
-  updateStatus("Adding furniture");
+  updateStatus( _( "Adding furniture" ) );
   addFurniture(map, shapePal);
   
 cleanup:
-  updateStatus("Cleaning up");
+  updateStatus( _( "Cleaning up" ) );
   deleteFreeSpaceMap(map, shapePal);
   
   return ret;

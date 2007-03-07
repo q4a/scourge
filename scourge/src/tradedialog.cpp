@@ -24,12 +24,6 @@ tradedialog.cpp  -  description
 
 using namespace std;
 
-#define AVAILABLE_COINS "Available Coins:"
-#define TOTAL "Selected Total:"
-#define SELECTED_COINS "Selected Coins:"
-#define STEAL_SUCCESS "You succesfully burgled the items!"
-#define STEAL_FAILURE "Your burgling attempt failed. Items and ex. were confiscated."
-
 TradeDialog::TradeDialog( Scourge *scourge ) {
   this->scourge = scourge;
   this->creature = NULL;
@@ -41,33 +35,33 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   //win->setModal( true );
 	int xStart = 8;
   labelA = win->createLabel( xStart, 15, "" );
-  totalA = win->createLabel( xStart, 28, TOTAL );
+  totalA = win->createLabel( xStart, 28, _( "Selected Total:" ) );
   listA = new ItemList( scourge, win, 75, 35, 220, 210, this );
 	listA->setAllowCursed( false );
   win->addWidget( listA );
-  sellButton = win->createButton( xStart, 35, 70, 55, "Sell" );
-  infoButtonA = win->createButton( xStart, 60, 70, 80, "Info" );
+  sellButton = win->createButton( xStart, 35, 70, 55, _( "Sell" ) );
+  infoButtonA = win->createButton( xStart, 60, 70, 80, _( "Info" ) );
 
   
   labelB = win->createLabel( 305, 15, "" );
-  totalB = win->createLabel( 305, 28, TOTAL );
+  totalB = win->createLabel( 305, 28, _( "Selected Total:" ) );
   listB = new ItemList( scourge, win, 300, 35, 220, 210, this );
 	listB->setAllowCursed( false );
   win->addWidget( listB );
-  tradeButton = win->createButton( 530, 35, 595, 55, "Buy" );
-  stealButton = win->createButton( 530, 60, 595, 80, "Steal" );  
-  infoButtonB = win->createButton( 530, 85, 595, 105, "Info" );
+  tradeButton = win->createButton( 530, 35, 595, 55, _( "Buy" ) );
+  stealButton = win->createButton( 530, 60, 595, 80, _( "Steal" ) );  
+  infoButtonB = win->createButton( 530, 85, 595, 105, _( "Info" ) );
 
-  closeButton = win->createButton( 530, 290, 595, 310, "Close" );
+  closeButton = win->createButton( 530, 290, 595, 310, _( "Close" ) );
   
-  coinAvailA = win->createLabel( xStart, 260, AVAILABLE_COINS );
+  coinAvailA = win->createLabel( xStart, 260, _( "Available Coins:" ) );
   coinTradeA = win->createLabel( xStart, 280, "$0" );
-  coinReset = win->createButton( 180, 270, 220, 290, "Clr" );
+  coinReset = win->createButton( 180, 270, 220, 290, _( "Clr" ) );
   coinPlusA = win->createButton( 225, 270, 265, 290, "+1" );
   coinMinusA = win->createButton( 270, 270, 310, 290, "-1" );
-  coinRest = win->createButton( 315, 270, 355, 290, "Diff" );
+  coinRest = win->createButton( 315, 270, 355, 290, _( "Diff" ) );
 
-  win->createLabel( xStart, 305, "Shift+click to select multiple items, right click to get info." );
+  win->createLabel( xStart, 305, _( "Shift+click to select multiple items, right click to get info." ) );
 }
 
 TradeDialog::~TradeDialog() {
@@ -92,13 +86,13 @@ void TradeDialog::updateUI() {
 
 void TradeDialog::updateLabels() {
   char tmp[120];
-  sprintf( tmp, "%s $%d", AVAILABLE_COINS, scourge->getParty()->getPlayer()->getMoney() );
+  sprintf( tmp, "%s $%d", _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney() );
   coinAvailA->setText( tmp );
-  sprintf( tmp, "%s $%d", SELECTED_COINS, tradeA );
+  sprintf( tmp, "%s $%d", _( "Selected Coins:" ), tradeA );
   coinTradeA->setText( tmp );
-  sprintf( tmp, "%s $%d", TOTAL, ( getSelectedTotal( listA ) + tradeA ) );
+  sprintf( tmp, "%s $%d", _( "Selected Total:" ), ( getSelectedTotal( listA ) + tradeA ) );
   totalA->setText( tmp );
-  sprintf( tmp, "%s $%d", TOTAL, getSelectedTotal( listB ) );
+  sprintf( tmp, "%s $%d", _( "Selected Total:" ), getSelectedTotal( listB ) );
   totalB->setText( tmp );
 }
 
@@ -166,17 +160,17 @@ void TradeDialog::render( const Widget *widget, const Item *item, int bufferSize
 
 void TradeDialog::trade() {
   if( !validateInventory() ) {
-    scourge->showMessageDialog( "Inventories changed." );
+    scourge->showMessageDialog( _( "Inventories changed." ) );
     return;
   }
   
   int totalA = getSelectedTotal( listA ) + tradeA;
   int totalB = getSelectedTotal( listB );
   if( !totalB ) {
-    scourge->showMessageDialog( "Select items to buy." );
+    scourge->showMessageDialog( _( "Select items to buy." ) );
     return;
   } else if( totalA < totalB ) {
-    scourge->showMessageDialog( "You are not offering enough to trade." );
+    scourge->showMessageDialog( _( "You are not offering enough to trade." ) );
     return;
   } else if( totalA > totalB ) {
     // FIXME: show are you sure? dialog.
@@ -202,18 +196,18 @@ void TradeDialog::trade() {
   
   updateUI();
   scourge->refreshInventoryUI();
-  scourge->showMessageDialog( "Selected items traded." );
+  scourge->showMessageDialog( _( "Selected items traded." ) );
 }
 
 void TradeDialog::sell() {
   if( !validateInventory() ) {
-    scourge->showMessageDialog( "Inventories changed." );
+    scourge->showMessageDialog( _( "Inventories changed." ) );
     return;
   }
   
   int totalA = getSelectedTotal( listA );
   if( !totalA ) {
-    scourge->showMessageDialog( "Select items to sell." );
+    scourge->showMessageDialog( _( "Select items to sell." ) );
     return;
   }
   
@@ -229,7 +223,7 @@ void TradeDialog::sell() {
   
   updateUI();
   scourge->refreshInventoryUI();
-  scourge->showMessageDialog( "Selected items sold." );
+  scourge->showMessageDialog( _( "Selected items sold." ) );
 }
 
 /**
@@ -250,13 +244,13 @@ void TradeDialog::sell() {
  */
 void TradeDialog::steal() {
   if( !validateInventory() ) {
-    scourge->showMessageDialog( "Inventories changed." );
+    scourge->showMessageDialog( _( "Inventories changed." ) );
     return;
   }
 
   int totalB = getSelectedTotal( listB );
   if( !totalB ) {
-    scourge->showMessageDialog( "Select items to steal." );
+    scourge->showMessageDialog( _( "Select items to steal." ) );
     return;
   }
   
@@ -296,7 +290,7 @@ void TradeDialog::steal() {
     // add experience (gain level, etc.)
     scourge->getParty()->getPlayer()->addExperienceWithMessage( exp );
 
-    p = STEAL_SUCCESS;
+    p = _( "You succesfully burgled the items!" );
   } else {
     // remove experience
     scourge->getParty()->getPlayer()->addExperienceWithMessage( -exp );
@@ -309,7 +303,7 @@ void TradeDialog::steal() {
     price -= money;
     scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() - money );
     char s[ 255 ];
-    sprintf( s, "%s looses %d coins!", scourge->getParty()->getPlayer()->getName(), money );
+    sprintf( s, _( "%s looses %d coins!" ), scourge->getParty()->getPlayer()->getName(), money );
     scourge->getMap()->addDescription( s, 1, 0.05f, 0.05f );
 
     // remove some items
@@ -319,12 +313,12 @@ void TradeDialog::steal() {
         scourge->getParty()->getPlayer()->removeInventory( i );
         creature->addInventory( item, true );
         price -= prices[ item ];
-        sprintf( s, "Item confiscated: %s", item->getRpgItem()->getName() );
+        sprintf( s, _( "Item confiscated: %s" ), item->getRpgItem()->getName() );
         scourge->getMap()->addDescription( s, 1, 0.05f, 0.05f );
       }
     }
 
-    p = STEAL_FAILURE;
+    p = _( "Your burgling attempt failed. Items and ex. were confiscated." );
   }
 
   updateUI();
@@ -344,3 +338,4 @@ bool TradeDialog::validateInventory() {
   }
   return true;
 }
+

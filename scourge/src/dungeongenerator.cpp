@@ -570,7 +570,7 @@ void DungeonGenerator::printMaze() {
 void DungeonGenerator::generate( Map *map, ShapePalette *shapePal ) {
 	//cerr << "DUNGEON" << endl;
 
-  updateStatus(MESSAGE);
+  updateStatus( _( "Assembling Dungeon Level" ) );
   
   generateMaze();
   //  printMaze();  
@@ -590,13 +590,13 @@ bool DungeonGenerator::drawNodes(Map *map, ShapePalette *shapePal) {
   map->setHasWater( FORCE_WATER || 
                     0 == (int)(5.0f * rand()/RAND_MAX) );
 
-  updateStatus("Loading theme");
+  updateStatus( _( "Loading theme" ) );
   shapePal->loadRandomTheme();
 
-  updateStatus("Drawing walls");
+  updateStatus( _( "Drawing walls" ) );
   drawBasics(map, shapePal);
   
-  updateStatus("Fixing rooms");
+  updateStatus( _( "Fixing rooms" ) );
   removeColumns(map, shapePal);
 	addRugs( map, shapePal );
 
