@@ -39,8 +39,6 @@ class DisplayInfo;
 class Location;
 class MapRenderHelper;
 
-#define MESSAGE "Assembling Dungeon Level"
-
 #define LOCKED_DOOR_RAND 8.0f
 
 // raise the magic item level by 1 for every 3 levels (magic item level [0,1,2,3])

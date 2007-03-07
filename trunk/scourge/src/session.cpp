@@ -277,7 +277,7 @@ Creature *Session::replaceCreature( Creature *creature, char *newCreatureType ) 
 												 replacement->getShape()->getWidth(), 
 												 replacement->getShape()->getDepth() );
 	char msg[120];
-	sprintf( msg, "%s transforms into another shape in front of your very eyes!", 
+	sprintf( msg, _( "%s transforms into another shape in front of your very eyes!" ), 
 					 creature->getName() );
 	getMap()->addDescription( msg );
 
@@ -431,7 +431,7 @@ void Session::creatureDeath( Creature *creature ) {
 
 	if( !( creature->isMonster() ) ) {
     char message[255];
-    sprintf( message, "  %s dies!", creature->getName() );
+    sprintf( message, _( "  %s dies!" ), creature->getName() );
     getGameAdapter()->startTextEffect( message );
   }
 

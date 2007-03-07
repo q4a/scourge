@@ -83,7 +83,7 @@ void SpellCaster::spellFailed() {
     }
     if( tmpTarget ) {
       char message[200];
-      sprintf( message, "...fumble: hits %s instead!", tmpTarget->getName() );
+      sprintf( message, _( "...fumble: hits %s instead!" ), tmpTarget->getName() );
       battle->getSession()->getMap()->addDescription( message, 1, 0.15f, 1 );
       Creature *oldTarget = battle->getCreature()->getTargetCreature();
       battle->getCreature()->setTargetCreature( tmpTarget );
@@ -220,7 +220,7 @@ void SpellCaster::increaseHP() {
     n = creature->getTargetCreature()->getMaxHp() - creature->getTargetCreature()->getHp();
   creature->getTargetCreature()->setHp((int)(creature->getTargetCreature()->getHp() + n));
   char msg[200];
-  sprintf(msg, "%s heals %d points.", creature->getTargetCreature()->getName(), n);
+  sprintf(msg, _( "%s heals %d points." ), creature->getTargetCreature()->getName(), n);
   battle->getSession()->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 }
@@ -236,7 +236,7 @@ void SpellCaster::increaseAC() {
 
   creature->getTargetCreature()->setBonusArmor(creature->getTargetCreature()->getBonusArmor() + n);
   char msg[200];
-  sprintf(msg, "%s feels impervious to damage!", creature->getTargetCreature()->getName());
+  sprintf(msg, _( "%s feels impervious to damage!" ), creature->getTargetCreature()->getName());
   battle->getSession()->getMap()->addDescription(msg, 0.2f, 1, 1);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 
@@ -315,7 +315,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 	float dodge = ( creature->getTargetCreature()->getDodge( creature ) * rand() / RAND_MAX );
 	if( skill < dodge ) {
 		damage /= 2.0f;
-		sprintf( msg, "%s dodges some of the damage.", 
+		sprintf( msg, _( "%s dodges some of the damage." ), 
 						 creature->getTargetCreature()->getName() );
 		battle->getSession()->getMap()->addDescription( msg, 1, 0.15f, 1 );
 	}
@@ -326,13 +326,13 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 		damage -= (((float)damage / 150.0f) * resistance);
 	}
 
-  sprintf(msg, "%s attacks %s with %s.", 
+  sprintf(msg, _( "%1$s attacks %2$s with %3$s." ), 
           creature->getName(), 
           creature->getTargetCreature()->getName(),
           spell->getName());
   battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
   if( resistance > 0 && !lowDamage ) {
-    sprintf(msg, "%s resists the spell with %d.", 
+    sprintf(msg, _( "%s resists the spell with %d." ), 
             creature->getTargetCreature()->getName(),
             resistance);
     battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
@@ -343,6 +343,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
   battle->getSession()->getSquirrel()->callSpellEvent( creature, spell, "spellDamageHandler" );
   damage = battle->getSession()->getSquirrel()->getGlobalVariable( "damage" );
 
+	// not internationalized
 	char tmp[255];
 	sprintf( tmp, "%s the %s spell", 
 					 Constants::getMessage( Constants::CAUSE_OF_DEATH ),
@@ -416,7 +417,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       // roll for resistance
       char msg[200];
       if((int)(100.0f * rand()/RAND_MAX) < creature->getSkill(spell->getSchool()->getResistSkill())) {    
-        sprintf(msg, "%s resists the spell! [%d]", 
+        sprintf(msg, _( "%s resists the spell! [%d]" ), 
                 creature->getName(), 
                 creature->getSkill(spell->getSchool()->getResistSkill()));
         battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
@@ -426,7 +427,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       // check for magic item state mod protections
       protectiveItem = creature->getProtectedStateMod(mod);
       if(protectiveItem && 0 == (int)(2.0f * rand()/RAND_MAX)) {
-        sprintf(msg, "%s resists the spell with magic item!", 
+        sprintf(msg, _( "%s resists the spell with magic item!" ), 
                 creature->getName());
         battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);    
         continue;
@@ -436,7 +437,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     if(!strcasecmp(spell->getName(), "Remove curse")) {
       // remove cursed items
       if( creature->removeCursedItems() ) {
-        battle->getSession()->getMap()->addDescription( "Cursed items have been doffed.", 1, 0.15f, 1 );
+        battle->getSession()->getMap()->addDescription( _( "Cursed items have been doffed." ), 1, 0.15f, 1 );
       }
     }
 

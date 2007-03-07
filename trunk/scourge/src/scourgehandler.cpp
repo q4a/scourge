@@ -210,9 +210,11 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
       scourge->resetBattles();
       scourge->getUserConfiguration()->setBattleTurnBased( scourge->getUserConfiguration()->isBattleTurnBased() ? false : true );
       char message[80];
-      sprintf( message, "Combat is now %s.", ( scourge->getUserConfiguration()->isBattleTurnBased() ?
-                                               "Turn-based" :
-                                               "Real-time" ) );
+			if( scourge->getUserConfiguration()->isBattleTurnBased() ) {
+				strcpy( message, _( "Combat is now Turn-based." ) );
+			} else {
+				strcpy( message, _( "Combat is now Real-time." ) );
+			}
       scourge->getMap()->addDescription( message, 0, 1, 1 );
 			scourge->getTBCombatWin()->setVisible( scourge->inTurnBasedCombat(), false );
     } else if(ea == SET_PLAYER_0){
@@ -293,7 +295,7 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 		if( !scourge->getSession()->isMultiPlayerGame() && 
 				!strlen( scourge->getSession()->getSavegameName() ) ) {
 			if( !scourge->getSaveDialog()->createNewSaveGame() ) {
-				scourge->showMessageDialog( "Error saving game!" );
+				scourge->showMessageDialog( _( "Error saving game!" ) );
 			}
 		}
 
