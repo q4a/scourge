@@ -986,7 +986,7 @@ bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
     // assign this creature
     c->setTargetItem( x, y, z, item );
 		char msg[80];
-    sprintf( msg, _( "%1$s targeted %2$s." ), c->getName(), item->getRpgItem()->getName() );
+    sprintf( msg, _( "%1$s targeted %2$s." ), c->getName(), item->getRpgItem()->getDisplayName() );
     levelMap->addDescription( msg );
     ret = true;
   } else {
@@ -2354,7 +2354,7 @@ void Scourge::drawWidgetContents(Widget *w) {
         Item *item = party->getParty( i )->getItemAtLocation( party->getParty( i )->getPreferredWeapon() );
         if(item &&
            item->getRpgItem()->isWeapon() ) {
-          sprintf( msg, _( "Current Weapon: %s" ), item->getRpgItem()->getName() );
+          sprintf( msg, _( "Current Weapon: %s" ), item->getRpgItem()->getDisplayName() );
           w->setTooltip( msg );
           drawItemIcon( item );
         }
@@ -3234,7 +3234,7 @@ bool Scourge::testLoadGame( Session *session ) {
     for( int i = 0; i < (int)n; i++ ) {
       cerr << "\t" << pc[i]->getName() << endl;
       for( int t = 0; t < pc[i]->getInventoryCount(); t++ ) {
-        cerr << "\t\t" << pc[i]->getInventory(t)->getRpgItem()->getName() << endl;
+        cerr << "\t\t" << pc[i]->getInventory(t)->getRpgItem()->getDisplayName() << endl;
       }
     }
 

@@ -26,6 +26,7 @@ ScriptClassMemberDecl SqItem::members[] = {
   { "void", "_typeof", SqItem::_squirrel_typeof, 1, 0, "" },
   { "void", "constructor", SqItem::_constructor, 0, 0, "" },
   { "string", "getName", SqItem::_getName, 0, 0, "" },
+	{ "string", "getDisplayName", SqItem::_getName, 0, 0, "" },
   { "int", "getLevel", SqItem::_getLevel, 0, 0, "" },
   { "int", "getWeight", SqItem::_getWeight, 0, 0, "" },
   { "int", "getPrice", SqItem::_getPrice, 0, 0, "" },
@@ -88,6 +89,12 @@ int SqItem::_constructor( HSQUIRRELVM vm ) {
 int SqItem::_getName( HSQUIRRELVM vm ) {
   GET_OBJECT(Item*)
   sq_pushstring( vm, _SC( object->getRpgItem()->getName() ), -1 );
+  return 1;
+}
+
+int SqItem::_getDisplayName( HSQUIRRELVM vm ) {
+  GET_OBJECT(Item*)
+  sq_pushstring( vm, _SC( object->getRpgItem()->getDisplayName() ), -1 );
   return 1;
 }
 

@@ -67,7 +67,7 @@ class RpgItem {
 private:
 
 	// the basics
-	char *name, *desc, *shortDesc;
+	char *name, *desc, *shortDesc, *displayName;
 	int rareness;
 	int type;
 	float weight; 
@@ -167,7 +167,8 @@ private:
 
   //static char *influenceTypeName[ INFLUENCE_TYPE_COUNT ];
 
-	RpgItem( char *name, int rareness, int type, float weight, int price, 
+	RpgItem( char *name, char *displayName, 
+					 int rareness, int type, float weight, int price, 
 					 char *desc, char *shortDesc, int equip, int shape_index, 
 					 int minDepth=0, int minLevel=0, 
 					 int maxCharges=0,
@@ -187,6 +188,7 @@ private:
 	}
 
   inline char *getName() { return name; }
+	inline char *getDisplayName() { return displayName; }
   inline int getRareness()  { return rareness; }
   inline float getWeight() { return weight; }
   inline int getPrice() { return price; }

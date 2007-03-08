@@ -43,12 +43,14 @@ char *RpgItem::DAMAGE_TYPE_NAME[] = {
 // char RpgItem::DAMAGE_TYPE_LETTER[] = { 'S', 'P', 'C' };
 //char *RpgItem::influenceTypeName[] = { "AP", "CTH", "DAM" };
 
-RpgItem::RpgItem( char *name, int rareness, int type, float weight, int price, 
+RpgItem::RpgItem( char *name, char *displayName, 
+									int rareness, int type, float weight, int price, 
 									char *desc, char *shortDesc, int equip, int shape_index, 
 									int minDepth, int minLevel, 
 									int maxCharges,
 									int iconTileX, int iconTileY ) {
   this->name = name;
+	this->displayName = displayName;
   this->rareness = rareness;
   this->type = type;
   this->weight = weight;

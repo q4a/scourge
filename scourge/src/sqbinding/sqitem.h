@@ -42,6 +42,7 @@ public:
 
   // general
   static int _getName( HSQUIRRELVM vm );
+	static int _getDisplayName( HSQUIRRELVM vm );
   static int _getLevel( HSQUIRRELVM vm );
   static int _getWeight( HSQUIRRELVM vm );
   static int _getPrice( HSQUIRRELVM vm );

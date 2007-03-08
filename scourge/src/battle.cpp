@@ -1376,7 +1376,7 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
       return true;
     } else if( creature->getAction() == Constants::ACTION_EAT_DRINK ) {
       sprintf( buff, "%s: %d", 
-               creature->getActionItem()->getRpgItem()->getName(),
+               creature->getActionItem()->getRpgItem()->getDisplayName(),
                ( nextTurn > 0 ? nextTurn : weaponWait ) );
       color->r = 0;
       color->g = 0.6f;
@@ -1450,7 +1450,7 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
 //  }
   
 	sprintf( buff, "%s: %d", 
-				 ( item ? item->getRpgItem()->getName() : _( "Bare Hands" ) ), 
+				 ( item ? item->getRpgItem()->getDisplayName() : _( "Bare Hands" ) ), 
 				 ( sameTarget && nextTurn > 0 ? nextTurn : weaponWait ) );
 	color->r = 0.6f;
 	color->g = 0;
