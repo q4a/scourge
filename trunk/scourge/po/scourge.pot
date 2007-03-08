@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-06 22:01-0800\n"
+"POT-Creation-Date: 2007-03-07 21:22-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -747,7 +747,7 @@ msgstr ""
 msgid "Loading Shapes"
 msgstr ""
 
-#: src/session.cpp:99 src/item.cpp:303 src/item.cpp:331 src/item.cpp:501
+#: src/session.cpp:99 src/item.cpp:303 src/item.cpp:331 src/item.cpp:502
 msgid "Loading Items"
 msgstr ""
 
@@ -858,29 +858,29 @@ msgstr ""
 msgid " *Mission*"
 msgstr ""
 
-#: src/item.cpp:791
+#: src/item.cpp:792
 msgid ""
 "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $of $school"
 msgstr ""
 
-#: src/item.cpp:809
+#: src/item.cpp:810
 msgid "Protective"
 msgstr ""
 
-#: src/item.cpp:814
+#: src/item.cpp:815
 msgid "Slaying"
 msgstr ""
 
-#: src/item.cpp:829
+#: src/item.cpp:830
 msgid "of the"
 msgstr ""
 
-#: src/item.cpp:911
+#: src/item.cpp:912
 #, c-format
 msgid "Scroll of %s"
 msgstr ""
 
-#: src/item.cpp:1035
+#: src/item.cpp:1037
 msgid "An item was fully identified!"
 msgstr ""
 

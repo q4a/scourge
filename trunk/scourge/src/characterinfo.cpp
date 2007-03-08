@@ -108,7 +108,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, left, buff),
-              left->getRpgItem()->getName() );
+              left->getRpgItem()->getDisplayName() );
     else
       sprintf(s, "%s:%d %s %s:%d (%s) %s", 
 							_( "ATK" ),
@@ -117,7 +117,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, left, buff),
-              left->getRpgItem()->getName() );
+              left->getRpgItem()->getDisplayName() );
 		if( Constants::INVENTORY_LEFT_HAND == p->getPreferredWeapon() ) {
 			glColor4f( 1, 0.35f, 0, 1 );
 		} else {
@@ -137,7 +137,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, right, buff),
-              right->getRpgItem()->getName() );
+              right->getRpgItem()->getDisplayName() );
     else
       sprintf(s, "%s:%d %s %s:%d (%s) %s", 
 							_( "ATK" ),
@@ -146,7 +146,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, right, buff),
-              right->getRpgItem()->getName() );
+              right->getRpgItem()->getDisplayName() );
 		if( Constants::INVENTORY_RIGHT_HAND == p->getPreferredWeapon() ) {
 			glColor4f( 1, 0.35f, 0, 1 );
 		} else {
@@ -166,7 +166,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, ranged, buff),
-              ranged->getRpgItem()->getName() );
+              ranged->getRpgItem()->getDisplayName() );
     else
       sprintf(s, "%s:%d %s %s:%d (%s) %s", 
 							_( "ATK" ),
@@ -175,7 +175,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 							_( "CTH" ),
 							toint( skill ),
 							getAPRDescription(p, ranged, buff),
-              ranged->getRpgItem()->getName() );
+              ranged->getRpgItem()->getDisplayName() );
 		if( Constants::INVENTORY_WEAPON_RANGED == p->getPreferredWeapon() ) {
 			glColor4f( 1, 0.35f, 0, 1 );
 		} else {

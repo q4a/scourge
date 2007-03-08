@@ -43,7 +43,7 @@ Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
   this->spell = NULL;
   this->containsMagicItem = false;
   this->showCursed = false;
-  sprintf(this->itemName, "%s", rpgItem->getName());
+  sprintf( this->itemName, "%s", rpgItem->getDisplayName() );
 
   commonInit( loading );
 
@@ -172,7 +172,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
 	// re-describe the item. describeMagic is called from commonInit at
 	// which point magicLevel can be 0, so it's important to re-describe
 	// the item. (since later magicLevel can be -1)
-	item->describeMagic(item->itemName, item->rpgItem->getName());
+	item->describeMagic(item->itemName, item->rpgItem->getDisplayName());
 
   return item;
 }
@@ -322,7 +322,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 	vector<ConfigNode*> *v = config->getDocument()->
 		getChildrenByName( "item" );
 
-	char name[255], type[255], shape[255];
+	char name[255], displayName[255], type[255], shape[255];
   char long_description[500], short_description[120];
   char temp[1000];
 	for( unsigned int i = 0; i < v->size(); i++ ) {
@@ -332,6 +332,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		
 		// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
 		strcpy( name, node->getValueAsString( "name" ) );
+		strcpy( displayName, node->getValueAsString( "display_name" ) );
 		int rareness = toint( node->getValueAsFloat( "rareness" ) );
 		strcpy( type, node->getValueAsString( "type" ) );
 		float weight = node->getValueAsFloat( "weight" );
@@ -357,7 +358,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		int shape_index = shapePal->findShapeIndexByName( shape );
 		//cerr << "\tindex=" << shape_index << endl;
 
-		RpgItem *last = new RpgItem( strdup( name ), rareness, type_index, weight, price,
+		RpgItem *last = new RpgItem( strdup( name ), strdup( displayName ), rareness, type_index, weight, price,
 												strdup( long_description ), strdup( short_description ),
 												inventory_location, shape_index,
 												minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
@@ -641,7 +642,7 @@ void Item::commonInit( bool loading ) {
 
   // describe spell-holding items also
   if( magicLevel < 0 && RpgItem::itemTypes[ rpgItem->getType() ].hasSpell ) {
-    describeMagic( itemName, rpgItem->getName() );
+    describeMagic( itemName, rpgItem->getDisplayName() );
   }
 }
 
@@ -760,7 +761,7 @@ void Item::enchant( int newMagicLevel ) {
   // turn off "vs. any creature"
   if( !monsterType ) damageMultiplier = 1;
 
-  describeMagic(itemName, rpgItem->getName());
+  describeMagic(itemName, rpgItem->getDisplayName());
 }
 
 // max about 30 points (must be deterministic)
@@ -910,7 +911,7 @@ void Item::setSpell( Spell *spell ) {
   if( getRpgItem()->getType() == RpgItem::SCROLL ) {
     sprintf( this->itemName, _( "Scroll of %s" ), spell->getName() ); 
   } else {
-    describeMagic( itemName, rpgItem->getName() );
+    describeMagic( itemName, rpgItem->getDisplayName() );
   }
 }
 
@@ -939,6 +940,7 @@ const char *Item::isStorable() {
 }
 
 char *Item::getType() {
+	// how is an item saved in a map? (this is not displayName)
 	return getRpgItem()->getName();
 }
 
@@ -1031,7 +1033,7 @@ void Item::identify( int infoDetailLevel ) {
 		}
 
 		if( isIdentified() ) {
-			describeMagic( itemName, rpgItem->getName() );
+			describeMagic( itemName, rpgItem->getDisplayName() );
 			session->getMap()->addDescription( _( "An item was fully identified!" ) );
 			// update ui
 			session->getGameAdapter()->refreshInventoryUI();

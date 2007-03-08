@@ -313,7 +313,7 @@ void TradeDialog::steal() {
         scourge->getParty()->getPlayer()->removeInventory( i );
         creature->addInventory( item, true );
         price -= prices[ item ];
-        sprintf( s, _( "Item confiscated: %s" ), item->getRpgItem()->getName() );
+        sprintf( s, _( "Item confiscated: %s" ), item->getRpgItem()->getDisplayName() );
         scourge->getMap()->addDescription( s, 1, 0.05f, 0.05f );
       }
     }
@@ -329,7 +329,7 @@ void TradeDialog::steal() {
 bool TradeDialog::validateInventory() {
   for( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
     Item *item = listA->getSelectedItem( i );
-    cerr << "item=" << item->getRpgItem()->getName() << " index=" << scourge->getParty()->getPlayer()->findInInventory( item ) << endl;
+    cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInInventory( item ) << endl;
     if( scourge->getParty()->getPlayer()->findInInventory( item ) == -1 ) return false;
   }
   for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {

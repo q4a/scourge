@@ -143,14 +143,14 @@ MapEditor::MapEditor( Scourge *scourge ) {
 	itemNames = (char**)malloc( itemVector.size() * sizeof(char*) );
 	for( unsigned int i = 0; i < itemVector.size(); i++ ) {
 		itemNames[ i ] = (char*)malloc( 120 * sizeof(char) );
-		strcpy( itemNames[ i ], itemVector[ i ]->getName() );
+		strcpy( itemNames[ i ], itemVector[ i ]->getDisplayName() );
 	}
 	itemList->setLines( itemVector.size(), (const char**)itemNames );
 
 	furnitureNames = (char**)malloc( furnitureVector.size() * sizeof(char*) );
 	for( unsigned int i = 0; i < furnitureVector.size(); i++ ) {
 		furnitureNames[ i ] = (char*)malloc( 120 * sizeof(char) );
-		strcpy( furnitureNames[ i ], furnitureVector[ i ]->getName() );
+		strcpy( furnitureNames[ i ], furnitureVector[ i ]->getDisplayName() );
 	}
   furnitureList->setLines( furnitureVector.size(), (const char**)furnitureNames );
   
@@ -305,7 +305,7 @@ void MapEditor::drawView() {
 																				_( "Shape" ),
                                         ( pos ? pos->shape->getName() : "NULL" ),
 																				_( "Item" ),
-                                        ( pos && pos->item ? ((Item*)(pos->item))->getRpgItem()->getName() : "NULL" ),
+                                        ( pos && pos->item ? ((Item*)(pos->item))->getRpgItem()->getDisplayName() : "NULL" ),
 																				_( "Creature" ),
                                         ( pos && pos->creature ? pos->creature->getName() : "NULL" ) );
   }
@@ -552,7 +552,7 @@ void MapEditor::addNewItem( char *name,
 			// print summary
 			cerr << "Container contents:" << endl;
 			for( int i = 0; i < (*item)->getContainedItemCount(); i++ ) {
-				cerr << "\t" << (*item)->getContainedItem( i )->getRpgItem()->getName() << endl;
+				cerr << "\t" << (*item)->getContainedItem( i )->getRpgItem()->getDisplayName() << endl;
 			}
 		}
 	}

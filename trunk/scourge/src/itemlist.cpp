@@ -120,7 +120,7 @@ void ItemList::commonInit() {
 }
 
 char *ItemList::getName() {
-  return( creature ? creature->getName() : container->getRpgItem()->getName() );	
+  return( creature ? creature->getName() : container->getRpgItem()->getDisplayName() );	
 }
 
 int ItemList::getItemCount() {

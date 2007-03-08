@@ -2506,7 +2506,7 @@ float Creature::getInfluenceBonus( Item *weapon,
 				n = -( minInfluence->limit - value ) * minInfluence->base;
 				break;
 			default:
-				cerr << "*** Error: unknown influence type for item: " << weapon->getRpgItem()->getName() << endl;
+				cerr << "*** Error: unknown influence type for item: " << weapon->getRpgItem()->getDisplayName() << endl;
 			}
 		} else if( maxInfluence->limit > -1 && maxInfluence->limit < value ) {
 			switch( maxInfluence->type ) {
@@ -2519,7 +2519,7 @@ float Creature::getInfluenceBonus( Item *weapon,
 				n = ( value - maxInfluence->limit ) * maxInfluence->base;
 				break;
 			default:
-				cerr << "*** Error: unknown influence type for item: " << weapon->getRpgItem()->getName() << endl;
+				cerr << "*** Error: unknown influence type for item: " << weapon->getRpgItem()->getDisplayName() << endl;
 			}
 		}
 		

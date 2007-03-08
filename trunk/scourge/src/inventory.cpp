@@ -982,7 +982,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       scourge->getSession()->getCurrentMission()->getItemCount() +
       scourge->getSession()->getCurrentMission()->getCreatureCount();   
       for(int t = 0; t < scourge->getSession()->getCurrentMission()->getItemCount(); t++) {
-				sprintf( tmp, _( "Find %s" ), scourge->getSession()->getCurrentMission()->getItem(t)->getName() );
+				sprintf( tmp, _( "Find %s" ), scourge->getSession()->getCurrentMission()->getItem(t)->getDisplayName() );
         sprintf(objectiveText[t], "%s. %s", 
                 tmp,
                 (scourge->getSession()->getCurrentMission()->getItemHandled(t) ? 
