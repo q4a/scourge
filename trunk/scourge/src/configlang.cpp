@@ -178,6 +178,11 @@ ConfigLang::ConfigLang( char *config ) {
 	//debug();
 }
 
+ConfigLang::ConfigLang( vector<string> *lines ) {
+	document = NULL;
+	parse( lines );
+}
+
 ConfigLang::~ConfigLang() {
 	delete document;
 }
@@ -197,6 +202,84 @@ void ConfigLang::debug( ConfigNode *node, string indent, ostream &out ) {
 		debug( n, s, out );
 	}
 	out << indent << "[/" << node->getName() << "]" << endl;
+}
+
+#define WHITESPACE " \t\n\r"
+void ConfigLang::parse( vector<string> *lines ) {
+	bool inValue = false;
+	string name, value, extends;
+	ConfigNode *node = NULL;
+	stack<ConfigNode*> parents;
+
+	for( unsigned int i = 0; i < lines->size(); i++ ) {
+		string s = (*lines)[i];
+		if( inValue ) {
+			int index = s.find_last_not_of( WHITESPACE );
+			if( s[index] == '\\' ) {
+				value += s.substr( 0, index + 1 );
+			} else {
+				value += s.substr( 0, index + 1 );
+				node->addValue( name, new ConfigValue( (char*)(value.c_str()) ) );
+				inValue = false;
+			}
+		}	else {
+			string::size_type first = s.find_first_not_of( WHITESPACE );
+			if( first != string::npos ) {
+				
+				if( s[first] == '#' ) {
+					// skip comment
+				} else if( s[first] == '[' ) {
+					string::size_type last = s.find( ']' );
+					if( last != string::npos ) {
+						if( s[first + 1] == '/' ) {
+							// end tag
+							node = parents.top();
+							parents.pop();
+							assert( node );
+						} else {
+							// start tag
+							string tag = s.substr( first + 1, last - ( first + 1 ) );
+
+							string::size_type n = tag.find( ',' );
+							string extends = "";
+							if( n != string::npos ) {
+								extends = tag.substr( n + 1 );
+								tag = tag.substr( 0, n );
+							}
+
+							if( !node ) {
+								document = node = new ConfigNode( this, tag );
+								parents.push( node );
+							} else {
+								ConfigNode *tmp = new ConfigNode( this, tag );
+								node->addChild( tmp );
+								parents.push( node );
+								node = tmp;
+							}
+							if( extends != "" ) {
+								node->extendNode( extends );
+							}
+						}
+					}
+				} else {
+					string::size_type eq = s.find( '=', first );
+					if( eq != string::npos ) {
+						string::size_type nameLast = s.find_last_not_of( WHITESPACE, eq );
+						name = s.substr( first, nameLast - first );
+						string::size_type valueStart = s.find_first_not_of( WHITESPACE, eq + 1 );
+						string::size_type valueEnd = s.find_last_not_of( WHITESPACE );
+						if( s[valueEnd] == '\\' ) {
+							value = s.substr( valueStart, valueEnd - valueStart );
+							inValue = true;
+						} else {
+							node->addValue( name, new ConfigValue( (char*)(s.substr( valueStart, valueEnd - valueStart + 1 ).c_str()) ) ); 
+						}
+					}
+				}
+			}
+		}
+	}
+	assert( parents.empty() );
 }
 
 void ConfigLang::parse( char *config ) {
@@ -315,6 +398,12 @@ ConfigLang *ConfigLang::fromString( char *str ) {
 	return new ConfigLang( str );
 }
 
+ConfigLang *ConfigLang::fromString( vector<string> *lines ) {
+	return new ConfigLang( lines );
+}
+
+#define LINE_PARSER 1
+
 ConfigLang *ConfigLang::load( char *file, bool absolutePath ) {
 	string rootDirString;
 	if( absolutePath ) rootDirString = "";
@@ -328,13 +417,34 @@ ConfigLang *ConfigLang::load( char *file, bool absolutePath ) {
 		cerr << "Cannot open file: " << file << endl;
 		return NULL;
 	}
+
+	Uint32 now = SDL_GetTicks();
+#if LINE_PARSER == 1
+	vector<string> lines;
+	while( in.rdstate() == ifstream::goodbit ) {
+		string line;
+		getline( in, line );
+		lines.push_back( line );
+	}
+
+//	for( unsigned int i = 0; i < lines.size(); i++ ) {
+//		cerr << lines[i] << endl;
+//	}
+//	cerr << "read " << lines.size() << " lines." << endl;
+
+	ConfigLang *config  = new ConfigLang( &lines );
+#else
 	std::stringstream ss;
 	ss << in.rdbuf();
-	Uint32 now = SDL_GetTicks();
+
 	ConfigLang *config = fromString( (char*)( ss.str().c_str() ) );
+#endif
+
 	cerr << "Parsed " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
 	in.close();
 	return config;
+	
+	return NULL;
 }
 
 void ConfigLang::setUpdate( char *message, int n, int total ) {
