@@ -133,7 +133,9 @@ private:
   std::map<std::string, ConfigNode*> idmap;
 	ConfigNode *document;
 	ConfigLang( char *config );
+	ConfigLang( std::vector<std::string> *lines );
 	void parse( char *config );
+	void parse( std::vector<std::string> *lines );
 	std::string cleanText( char *p, int n );
 
 public:
@@ -147,6 +149,7 @@ public:
 
 	static ConfigLang *load( char *file, bool absolutePath=false );
 	static ConfigLang *fromString( char *str );
+	static ConfigLang *fromString( std::vector<std::string> *lines );
 	void save( char *file, bool absolutePath=false );
 };
 

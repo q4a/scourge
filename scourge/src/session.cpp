@@ -525,7 +525,7 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 	if( err ) return err;
 
 #ifdef TESTING_CONFIG
-	ConfigLang *config = ConfigLang::load( "config/pcmodel.cfg" );
+	ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );
 	config->debug();
   delete config;
 	exit( 0 );
