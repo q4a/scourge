@@ -214,7 +214,7 @@ void Creature::changeProfession( Character *c ) {
 			int newValue = getSkill( i ) + ( oldValue > 0 ? maxValue - oldValue : maxValue );
 			setSkill( i, newValue );
 			
-			sprintf( message, _( "%1$s's skill in %2$s has increased." ), getName(), Skill::skills[ i ]->getName() );
+			sprintf( message, _( "%1$s's skill in %2$s has increased." ), getName(), Skill::skills[ i ]->getDisplayName() );
 			session->getMap()->addDescription( message );
 		}
 	}
@@ -1207,7 +1207,7 @@ void Creature::setAction(int action,
     break;
   case Constants::ACTION_SPECIAL:
     this->battle->invalidate();
-    sprintf(msg, _( "%1$s will use capability %2$s." ), getName(), skill->getName());
+    sprintf(msg, _( "%1$s will use capability %2$s." ), getName(), skill->getDisplayName());
     break;
   case Constants::ACTION_NO_ACTION:
     // no-op
@@ -2184,7 +2184,7 @@ void Creature::evalSpecialSkills() {
 				specialSkillNames.insert( skillName );
 				if( oldSpecialSkills.find( ss ) == oldSpecialSkills.end() ) {
 					if( session->getParty()->isPartyMember( this ) ) {
-						sprintf( tmp, _( "%1$s gains the %2$s special ability!" ), getName(), ss->getName() );
+						sprintf( tmp, _( "%1$s gains the %2$s special ability!" ), getName(), ss->getDisplayName() );
 						session->getMap()->addDescription( tmp, 0.3f, 1.0f, 0.2f );
 					}
 				}
@@ -2196,7 +2196,7 @@ void Creature::evalSpecialSkills() {
 		if( specialSkills.find( ss ) == specialSkills.end() &&
 				oldSpecialSkills.find( ss ) != oldSpecialSkills.end() ) {
 			if( session->getParty()->isPartyMember( this ) ) {
-				sprintf( tmp, _( "%1$s looses the %2$s special ability!" ), getName(), ss->getName() );
+				sprintf( tmp, _( "%1$s looses the %2$s special ability!" ), getName(), ss->getDisplayName() );
 				session->getMap()->addDescription( tmp, 1.0f, 0.3f, 0.2f );
 			}
 		}
@@ -2302,7 +2302,7 @@ float Creature::applyAutomaticSpecialSkills( int event,
         skill->getType() == SpecialSkill::SKILL_TYPE_AUTOMATIC &&
         hasSpecialSkill( skill ) ) {
 #ifdef DEBUG_CAPABILITIES
-      cerr << "\tusing capability: " << skill->getName() << 
+      cerr << "\tusing capability: " << skill->getDisplayName() << 
         " and setting var: " << 
         varName << "=" << varValue << endl;
 #endif
@@ -2529,7 +2529,7 @@ float Creature::getInfluenceBonus( Item *weapon,
 			sprintf( message, "...%s %s:%s %d-%d %s %d, %s=%.2f", 
 							 debugMessage, 
 							 _( "skill" ),
-							 Skill::skills[i]->getName(), 
+							 Skill::skills[i]->getDisplayName(), 
 							 minInfluence->limit, 
 							 maxInfluence->limit, 
 							 _( "vs." ),

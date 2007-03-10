@@ -65,9 +65,11 @@ public:
 
   static int _getSkillCount( HSQUIRRELVM vm );
   static int _getSkillName( HSQUIRRELVM vm );
+  static int _getSkillDisplayName( HSQUIRRELVM vm );
 
   static int _getStateModCount( HSQUIRRELVM vm );
   static int _getStateModName( HSQUIRRELVM vm );
+  static int _getStateModDisplayName( HSQUIRRELVM vm );
   static int _getStateModByName( HSQUIRRELVM vm );
 
   static int _getDateString( HSQUIRRELVM vm );

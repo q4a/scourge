@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-07 21:22-0800\n"
+"POT-Creation-Date: 2007-03-09 17:49-0800\n"
 "PO-Revision-Date: 2007-02-04 11:18+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -2743,7 +2743,7 @@ msgstr "Nuova partita"
 msgid "Apply"
 msgstr ""
 
-#: src/rpg/specialskill.h:83
+#: src/rpg/specialskill.h:85
 msgid "Only 'manual' capabilities can be stored."
 msgstr ""
 
@@ -5642,7 +5642,7 @@ msgstr ""
 msgid "History and Lore"
 msgstr ""
 
-#: ../scourge_data/config/spell.cfg:437
+#: ../scourge_data/config/spell.cfg:437 ../scourge_data/config/rpg.cfg:167
 msgid "Lore"
 msgstr ""
 
@@ -7235,12 +7235,16 @@ msgstr ""
 msgid "Quiet"
 msgstr "Esci"
 
-#: ../scourge_data/config/rpg.cfg:121 ../scourge_data/config/rpg.cfg:122
+#: ../scourge_data/config/rpg.cfg:121
+msgid "Basic Group"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:122
 msgid "BASIC_GROUP"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:125
-msgid "SPEED"
+msgid "Speed"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:126
@@ -7254,7 +7258,7 @@ msgid "Dragon"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:131
-msgid "COORDINATION"
+msgid "Coordination"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:132
@@ -7267,7 +7271,7 @@ msgid "Wolf"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:137
-msgid "POWER"
+msgid "Power"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:138
@@ -7292,7 +7296,7 @@ msgid "Boar"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:149
-msgid "LEADERSHIP"
+msgid "Leadership"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:150
@@ -7305,7 +7309,7 @@ msgid "Bear"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:155
-msgid "LUCK"
+msgid "Luck"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:156
@@ -7319,8 +7323,9 @@ msgid "Fiend"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:161
-msgid "PIETY"
-msgstr ""
+#, fuzzy
+msgid "Piety"
+msgstr "Esci"
 
 #: ../scourge_data/config/rpg.cfg:162
 msgid "A pious character follows his/her deity's wishes more closely."
@@ -7328,10 +7333,6 @@ msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:163
 msgid "Tiger"
-msgstr ""
-
-#: ../scourge_data/config/rpg.cfg:167
-msgid "LORE"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:168
@@ -7344,12 +7345,16 @@ msgstr ""
 msgid "Hydra"
 msgstr ""
 
-#: ../scourge_data/config/rpg.cfg:174 ../scourge_data/config/rpg.cfg:175
+#: ../scourge_data/config/rpg.cfg:174
 msgid "FIGHT_GROUP"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:175
+msgid "Fight Group"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:178
-msgid "MELEE_WEAPON"
+msgid "Melee Weapon"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:179
@@ -7363,7 +7368,7 @@ msgid "Drake"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:186
-msgid "RANGED_WEAPON"
+msgid "Ranged Weapon"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:187
@@ -7375,7 +7380,7 @@ msgid "Sparrow"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:194
-msgid "LARGE_WEAPON"
+msgid "Large Weapon"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:195
@@ -7387,7 +7392,7 @@ msgid "King"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:202
-msgid "HAND_TO_HAND_COMBAT"
+msgid "Hand to Hand Combat"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:203
@@ -7398,12 +7403,16 @@ msgstr ""
 msgid "Priest"
 msgstr ""
 
-#: ../scourge_data/config/rpg.cfg:209 ../scourge_data/config/rpg.cfg:210
+#: ../scourge_data/config/rpg.cfg:209
 msgid "DEFEND_GROUP"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:210
+msgid "Defend Group"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:213
-msgid "SHIELD_DEFEND"
+msgid "Shield Defend"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:214
@@ -7415,7 +7424,7 @@ msgid "Giant"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:221
-msgid "ARMOR_DEFEND"
+msgid "Armor Defend"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:222
@@ -7427,7 +7436,7 @@ msgid "Centaur"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:229
-msgid "DODGE_ATTACK"
+msgid "Dodge Attack"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:230
@@ -7439,12 +7448,16 @@ msgstr ""
 msgid "Serpent"
 msgstr ""
 
-#: ../scourge_data/config/rpg.cfg:236 ../scourge_data/config/rpg.cfg:237
+#: ../scourge_data/config/rpg.cfg:236
+msgid "Sorcery Group"
+msgstr ""
+
+#: ../scourge_data/config/rpg.cfg:237
 msgid "SORCERY_GROUP"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:240
-msgid "LIFE_AND_DEATH_MAGIC"
+msgid "Life and Death Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:241
@@ -7458,7 +7471,7 @@ msgid "Sand"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:248
-msgid "DECEIT_MAGIC"
+msgid "Deceit Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:249
@@ -7471,7 +7484,7 @@ msgid "Joker"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:256
-msgid "CONFRONTATION_MAGIC"
+msgid "Confrontation Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:257
@@ -7485,7 +7498,7 @@ msgid "Demon"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:264
-msgid "RESIST_LIFE_AND_DEATH_MAGIC"
+msgid "Resist Life and Death Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:265
@@ -7498,7 +7511,7 @@ msgid "Gods"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:272
-msgid "RESIST_DECEIT_MAGIC"
+msgid "Resist Deceit Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:273
@@ -7510,7 +7523,7 @@ msgid "Night"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:280
-msgid "RESIST_CONFRONTATION_MAGIC"
+msgid "Resist Confrontation Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:281
@@ -7522,12 +7535,16 @@ msgstr ""
 msgid "Angel"
 msgstr ""
 
-#: ../scourge_data/config/rpg.cfg:287 ../scourge_data/config/rpg.cfg:288
+#: ../scourge_data/config/rpg.cfg:287
 msgid "SPIRIT_GROUP"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:288
+msgid "Spirit Group"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:291
-msgid "NATURE_MAGIC"
+msgid "Nature Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:292
@@ -7540,7 +7557,7 @@ msgid "Pixie"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:299
-msgid "AWARENESS_MAGIC"
+msgid "Awareness Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:300
@@ -7554,7 +7571,7 @@ msgid "Void"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:307
-msgid "RESIST_NATURE_MAGIC"
+msgid "Resist Nature Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:308
@@ -7566,7 +7583,7 @@ msgid "Law"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:315
-msgid "RESIST_AWARENESS_MAGIC"
+msgid "Resist Awareness Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:316
@@ -7577,12 +7594,16 @@ msgstr ""
 msgid "Moth"
 msgstr ""
 
-#: ../scourge_data/config/rpg.cfg:322 ../scourge_data/config/rpg.cfg:323
+#: ../scourge_data/config/rpg.cfg:322
 msgid "LORE_GROUP"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:323
+msgid "Lore Group"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:326
-msgid "HISTORY_MAGIC"
+msgid "History Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:327
@@ -7595,7 +7616,7 @@ msgid "Helix"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:334
-msgid "RESIST_HISTORY_MAGIC"
+msgid "Resist History Magic"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:335
@@ -7607,7 +7628,7 @@ msgid "Brand"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:342
-msgid "ENCHANT_ITEM"
+msgid "Enchant Item"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:343
@@ -7621,7 +7642,7 @@ msgid "Sorcerer"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:350
-msgid "IDENTIFY_ITEM"
+msgid "Identify Item"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:351
@@ -7633,7 +7654,7 @@ msgid "Sage"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:358
-msgid "IDENTIFY_CREATURE"
+msgid "Identify Creature"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:359
@@ -7644,12 +7665,16 @@ msgstr ""
 msgid "Loremaster"
 msgstr ""
 
-#: ../scourge_data/config/rpg.cfg:365 ../scourge_data/config/rpg.cfg:366
+#: ../scourge_data/config/rpg.cfg:365
 msgid "STEALTH_GROUP"
 msgstr ""
 
+#: ../scourge_data/config/rpg.cfg:366
+msgid "Stealth Group"
+msgstr ""
+
 #: ../scourge_data/config/rpg.cfg:369
-msgid "OPEN_LOCK"
+msgid "Open Lock"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:370
@@ -7661,7 +7686,7 @@ msgid "Shade"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:377
-msgid "FIND_TRAP"
+msgid "Find Trap"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:378
@@ -7673,7 +7698,7 @@ msgid "Bard"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:385
-msgid "FIND_SECRET_DOOR"
+msgid "Find Secret Door"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:386
@@ -7685,7 +7710,7 @@ msgid "Scion"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:393
-msgid "MOVE_UNDETECTED"
+msgid "Move Undetected"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:394
@@ -7698,7 +7723,7 @@ msgid "Silence"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:401
-msgid "STEALING"
+msgid "Stealing"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:402

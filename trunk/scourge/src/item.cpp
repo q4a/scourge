@@ -887,14 +887,14 @@ void Item::debugMagic(char *s) {
   cerr << "\tSchool: " << (school ? school->getName() : "null") << endl;
   cerr << "\tstate mods:" << endl;
   for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-    if(this->isStateModSet(i)) cerr << "set: " << StateMod::stateMods[i]->getName() << endl;
-    if(this->isStateModProtected(i)) cerr << "protected: " << StateMod::stateMods[i]->getName() << endl;
+    if(this->isStateModSet(i)) cerr << "set: " << StateMod::stateMods[i]->getDisplayName() << endl;
+    if(this->isStateModProtected(i)) cerr << "protected: " << StateMod::stateMods[i]->getDisplayName() << endl;
   }
   cerr << "\tskill bonuses:" << endl;
   for(map<int, int>::iterator i=skillBonus.begin(); i!=skillBonus.end(); ++i) {
     int skill = i->first;
     int bonus = i->second;
-    cerr << "\t\t" << Skill::skills[skill]->getName() << " +" << bonus << endl;
+    cerr << "\t\t" << Skill::skills[skill]->getDisplayName() << " +" << bonus << endl;
   }
   cerr << "-----------" << endl;
 }

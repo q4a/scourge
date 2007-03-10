@@ -35,9 +35,11 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "Creature", "getPlayer", SqGame::_getPlayer, 0, 0, "Get the currently selected character." },
   { "int", "getSkillCount", SqGame::_getSkillCount, 0, 0, "Get the number of skills in the game." },
   { "string", "getSkillName", SqGame::_getSkillName, 0, 0, "Get the given skill's name. The first param is the index of the skill." },
+  { "string", "getSkillDisplayName", SqGame::_getSkillDisplayName, 0, 0, "Get the given skill's name. The first param is the index of the skill." },
   { "Mission", "getMission", SqGame::_getMission, 0, 0, "Get the current mission object." },
   { "int", "getStateModCount", SqGame::_getStateModCount, 0, 0, "Return the number of state modifiers in the game." },
   { "string", "getStateModName", SqGame::_getStateModName, 2, "xn", "Get the given state mod's name. The first param is the index of the state mod." },
+  { "string", "getStateModDisplayName", SqGame::_getStateModDisplayName, 2, "xn", "Get the given state mod's name. The first param is the index of the state mod." },
   { "int", "getStateModByName", SqGame::_getStateModByName, 2, "xs", "Get the index of the state given in the param to this function." },
   { "string", "getDateString", SqGame::_getDateString, 0, 0, "Get the current game date. It is returned in the game's date format: (yyyy/m/d/h/m/s)" },
   { "bool", "isADayLater", SqGame::_isADayLater, 2, "xs", "Is the given date a day later than the current game date? The first parameter is a date in game date format. (yyyy/m/d/h/m/s)" },
@@ -137,6 +139,19 @@ int SqGame::_getSkillName( HSQUIRRELVM vm ) {
   return 1;
 }
 
+int SqGame::_getSkillDisplayName( HSQUIRRELVM vm ) {
+  int index;
+  if( SQ_FAILED( sq_getinteger( vm, 2, &index ) ) ) {
+    return sq_throwerror( vm, _SC( "Can't get index in getSkillName." ) );
+  }
+  if( index < 0 || index >= Skill::SKILL_COUNT  ) {
+    return sq_throwerror( vm, _SC( "Party index is out of range." ) );
+  }
+
+  sq_pushstring( vm, _SC( Skill::skills[ index ]->getDisplayName() ), -1 );
+  return 1;
+}
+
 int SqGame::_getStateModCount( HSQUIRRELVM vm ) {
   sq_pushinteger( vm, StateMod::STATE_MOD_COUNT );
   return 1;
@@ -152,6 +167,19 @@ int SqGame::_getStateModName( HSQUIRRELVM vm ) {
   }
 
   sq_pushstring( vm, _SC( StateMod::stateMods[ index ]->getName() ), -1 );
+  return 1;
+}
+
+int SqGame::_getStateModDisplayName( HSQUIRRELVM vm ) {
+  int index;
+  if( SQ_FAILED( sq_getinteger( vm, 2, &index ) ) ) {
+    return sq_throwerror( vm, _SC( "Can't get index in getSkillName." ) );
+  }
+  if( index < 0 || index >= StateMod::STATE_MOD_COUNT  ) {
+    return sq_throwerror( vm, _SC( "Party index is out of range." ) );
+  }
+
+  sq_pushstring( vm, _SC( StateMod::stateMods[ index ]->getDisplayName() ), -1 );
   return 1;
 }
 

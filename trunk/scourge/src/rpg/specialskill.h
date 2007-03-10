@@ -31,6 +31,7 @@
 class SpecialSkill : public Storable {
 private:
   const char *name;
+  const char *displayName;
   const char *description;
   int type, event;
   const char *squirrelFuncPrereq;
@@ -67,6 +68,7 @@ public:
   static void initSkills();
 
   SpecialSkill( const char *name, 
+                const char *displayName,
                 const char *description, 
                 int type,
                 int event,
@@ -84,6 +86,7 @@ public:
   }
 
   inline const char *getName() { return name; }
+  inline const char *getDisplayName() { return displayName; }
   inline const char *getDescription() { return description; }
   inline const char *getSquirrelFunctionPrereq() { return squirrelFuncPrereq; }
   inline const char *getSquirrelFunctionAction() { return squirrelFuncAction; }

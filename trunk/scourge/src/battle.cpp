@@ -333,7 +333,7 @@ void Battle::initTurnStep( bool callScript ) {
       if(nextTurn > 0) weaponWait = nextTurn;
       else weaponWait = getAdjustedWait( creature->getActionSkill()->getSpeed() );
       nextTurn = 0;
-      if(debugBattle) cerr << "\tUsing capability: " << creature->getActionSkill()->getName() << endl;
+      if(debugBattle) cerr << "\tUsing capability: " << creature->getActionSkill()->getDisplayName() << endl;
     } else if(creature->getActionSpell()) {
       range = calculateRange();
       if(nextTurn > 0) weaponWait = nextTurn;
@@ -676,7 +676,7 @@ bool Battle::selectNewTarget() {
 void Battle::useSkill() {
   sprintf(message, _( "%1$s uses capability %2$s!" ), 
           creature->getName(), 
-          creature->getActionSkill()->getName());
+          creature->getActionSkill()->getDisplayName());
   session->getMap()->addDescription(message, 1, 0.15f, 1);
   ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
 
@@ -1384,7 +1384,7 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
       return true;
     } else if( creature->getAction() == Constants::ACTION_SPECIAL ) {
       sprintf( buff, "%s: %d", 
-               creature->getActionSkill()->getName(), 
+               creature->getActionSkill()->getDisplayName(), 
                ( nextTurn > 0 ? nextTurn : weaponWait ) );
       color->r = 0;
       color->g = 0.3f;
