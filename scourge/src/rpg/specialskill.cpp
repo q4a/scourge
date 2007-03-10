@@ -29,7 +29,7 @@ map<string,SpecialSkill*> SpecialSkill::skillsByName;
 void SpecialSkill::initSkills() {
   int type, event, iconTileX, iconTileY;
   char name[255], line[255], description[2000], 
-    prereq[255], action[255];
+    prereq[255], action[255], displayName[255];
 
 	ConfigLang *config = ConfigLang::load( "config/ability.cfg" );
 	vector<ConfigNode*> *v = config->getDocument()->
@@ -41,6 +41,7 @@ void SpecialSkill::initSkills() {
 		config->setUpdate( "Loading Abilities", i, v->size() );
 
 		strcpy( name, node->getValueAsString( "name" ) );
+    strcpy( displayName, node->getValueAsString( "display_name" ) );
     strcpy( prereq, node->getValueAsString( "prereq_function" ) );
 		strcpy( action, node->getValueAsString( "action_function" ) );
 
@@ -86,6 +87,7 @@ void SpecialSkill::initSkills() {
 		//cerr << "Storing special skill: " << name << " (" << prereq << "," << action << ")" << endl;
 		SpecialSkill *ss = 
 			new SpecialSkill( strdup( name ), 
+                        strdup( displayName ),
 												strdup( description ), 
 												type, 
 												event,
@@ -101,7 +103,8 @@ void SpecialSkill::initSkills() {
 	delete( config );
 }
 
-SpecialSkill::SpecialSkill( const char *name, 
+SpecialSkill::SpecialSkill( const char *name,
+                            const char *displayName,
                             const char *description, 
                             int type,
                             int event,
@@ -110,6 +113,7 @@ SpecialSkill::SpecialSkill( const char *name,
                             int iconTileX,
                             int iconTileY ) {
   this->name = name;
+  this->displayName = displayName;
   this->description = description;
   this->type = type;
   this->event = event;

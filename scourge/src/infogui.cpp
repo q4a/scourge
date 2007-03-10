@@ -201,14 +201,14 @@ void InfoGui::describeRequirements( char *description, int influenceTypeCount ) 
         if( minValue->base > 0 || maxValue->base > 0 ) {
           int skill = scourge->getParty()->getParty( r )->getSkill( i );
           if( minValue->limit > skill ) {
-            sprintf( tmp, _( "%s is too low." ), Skill::skills[ i ]->getName() );
+            sprintf( tmp, _( "%s is too low." ), Skill::skills[ i ]->getDisplayName() );
             strcat( description, tmp );
 						strcat( description, "|" );
             found = true;
             // only show a skill once
             break;
           } else if( maxValue->limit < skill ) {
-            sprintf( tmp, _( "Bonus for %s!" ), Skill::skills[ i ]->getName() );
+            sprintf( tmp, _( "Bonus for %s!" ), Skill::skills[ i ]->getDisplayName() );
             strcat( description, tmp );
 						strcat( description, "|" );
             found = true;
@@ -255,12 +255,12 @@ void InfoGui::describe() {
 		sprintf(tmp, _( "Damage Type: %s" ), _( RpgItem::DAMAGE_TYPE_NAME[ item->getRpgItem()->getDamageType() ] ) );
     strcat( description, tmp );
 		strcat( description, "|" );
-		sprintf(tmp, _( "Skill: %s" ), Skill::skills[ item->getRpgItem()->getDamageSkill() ]->getName() );
+		sprintf(tmp, _( "Skill: %s" ), Skill::skills[ item->getRpgItem()->getDamageSkill() ]->getDisplayName() );
 		strcat( description, tmp );
 		strcat( description, "|" );
 		if( item->getRpgItem()->getParry() > 0 ) {
 			sprintf(tmp, _( "Parry: %d percent of %s skill" ), item->getRpgItem()->getParry(), 
-							Skill::skills[ item->getRpgItem()->getDamageSkill() ]->getName() );
+							Skill::skills[ item->getRpgItem()->getDamageSkill() ]->getDisplayName() );
 			strcat( description, tmp );
 			strcat( description, "|" );
 		}
@@ -283,7 +283,7 @@ void InfoGui::describe() {
 			strcat( description, tmp );
 			strcat( description, "|" );
 		}
-		sprintf(tmp, _( "Skill: %s" ), Skill::skills[ item->getRpgItem()->getDefenseSkill() ]->getName() );
+		sprintf(tmp, _( "Skill: %s" ), Skill::skills[ item->getRpgItem()->getDefenseSkill() ]->getDisplayName() );
 		strcat( description, tmp );
 		strcat( description, "|" );
 		sprintf(tmp, _( "Dodge penalty: %d" ), item->getRpgItem()->getDodgePenalty() );
@@ -472,7 +472,7 @@ void InfoGui::describe() {
       for(map<int, int>::iterator i=skillBonusMap->begin(); i!=skillBonusMap->end(); ++i) {
         int skill = i->first;
         int bonus = i->second;
-        sprintf(tmp2, " %s+%d", Skill::skills[skill]->getName(), bonus);
+        sprintf(tmp2, " %s+%d", Skill::skills[skill]->getDisplayName(), bonus);
 				strcat( tmp, tmp2 );
         found = true;
       }

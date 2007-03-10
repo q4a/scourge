@@ -83,7 +83,7 @@ void SkillsView::setCreature( Creature *creature, CreatureGroupInfo *info ) {
       sprintf( skillLine[ lineCounter ], "%d%s - %s", 
                creature->getSkill( t, false ), 
 							 mod,
-               Skill::skills[ t ]->getName() );
+               Skill::skills[ t ]->getDisplayName() );
 			if( creature->getSkillMod( t ) > 0 ) {
 				skillColor[ lineCounter ].r = 0;
 				skillColor[ lineCounter ].g = 1;

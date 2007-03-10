@@ -39,8 +39,8 @@ void Rpg::initSkills( ConfigLang *config ) {
   Skill *lastSkill = NULL;
   SkillGroup *lastGroup = NULL;
   char line[255];
-  char skillName[80], skillSymbol[80], skillDescription[255];
-  char groupName[80], groupDescription[255];
+  char skillName[80], skillDisplayName[255], skillSymbol[80], skillDescription[255];
+  char groupName[80], groupDisplayName[255], groupDescription[255];
   
   vector<ConfigNode*> *v = config->getDocument()->
     getChildrenByName( "group" );
@@ -51,19 +51,22 @@ void Rpg::initSkills( ConfigLang *config ) {
     config->setUpdate( "Loading Skills", i, v->size() );
     
     strcpy( groupName, node->getValueAsString( "name" ) );
+    strcpy( groupDisplayName, node->getValueAsString( "display_name" ) );
     strcpy( groupDescription, node->getValueAsString( "description" ) );
     
-    lastGroup = new SkillGroup( groupName, groupDescription );
+    lastGroup = new SkillGroup( groupName, groupDisplayName, groupDescription );
     
     vector<ConfigNode*> *vv = node->getChildrenByName( "skill" );
     for( unsigned int i = 0; vv && i < vv->size(); i++ ) {
       ConfigNode *skillNode = (*vv)[i];
       
       strcpy( skillName, skillNode->getValueAsString( "name" ) );
+      strcpy( skillDisplayName, skillNode->getValueAsString( "display_name" ) );
       strcpy( skillSymbol, skillNode->getValueAsString( "symbol" ) );
       strcpy( skillDescription, skillNode->getValueAsString( "description" ) );
       lastSkill = 
         new Skill( skillName, 
+                   skillDisplayName,
                    skillDescription, 
                    skillSymbol, 
                    lastGroup );
@@ -166,8 +169,9 @@ char *Rpg::createName() {
 }
 
 
-Skill::Skill( char *name, char *description, char *symbol, SkillGroup *group ) {
+Skill::Skill( char *name, char *displayName, char *description, char *symbol, SkillGroup *group ) {
 	strcpy( this->name, name );
+  strcpy( this->displayName, displayName );
 	strcpy( this->description, description );
 	strcpy( this->symbol, symbol );
 	this->group = group;
@@ -183,8 +187,9 @@ Skill::Skill( char *name, char *description, char *symbol, SkillGroup *group ) {
 Skill::~Skill() {
 }
 
-SkillGroup::SkillGroup( char *name, char *description ) {
+SkillGroup::SkillGroup( char *name, char *displayName, char *description ) {
 	strcpy( this->name, name );
+  strcpy( this->displayName, displayName );
 	strcpy( this->description, description );
 	// hack: first group is the stats
 	this->isStatSkill = ( groups.size() == 0 );

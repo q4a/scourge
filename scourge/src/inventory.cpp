@@ -946,7 +946,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 			if( scourge->getParty()->getParty( selected )->hasSpecialSkill( ss ) ) {
 				// display recurring skills as automatic
 				sprintf(specialText[knownSpecialSkills.size()], "%s (%s)", 
-								ss->getName(), 
+								ss->getDisplayName(), 
 								(ss->getType() == SpecialSkill::SKILL_TYPE_MANUAL ? "M" : "A"));
 				specialIcons[knownSpecialSkills.size()] = scourge->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ];
 				if( scourge->getParty()->getParty( selected )->hasSpecialSkill( ss ) ) {

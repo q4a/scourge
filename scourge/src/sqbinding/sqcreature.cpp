@@ -362,7 +362,7 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
   GET_INT( mod )
   GET_OBJECT( Creature* )
 
-  cerr << "Setting: mod=" << StateMod::stateMods[ mod ]->getName() << " to " << setting << endl;
+  cerr << "Setting: mod=" << StateMod::stateMods[ mod ]->getDisplayName() << " to " << setting << endl;
 
   char msg[200];
   bool protectiveItem = false;

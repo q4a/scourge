@@ -44,6 +44,7 @@ protected:
 class Skill {
 private:
 	char name[80];
+  char displayName[255];
 	char description[120];
 	char symbol[80];
 	std::vector<Skill*> preReqStats;
@@ -103,7 +104,7 @@ public:
     SKILL_COUNT
 	};
 
-	Skill( char *name, char *description, char *symbol, SkillGroup *group );
+	Skill( char *name, char *displayName, char *description, char *symbol, SkillGroup *group );
 	~Skill();
 
 	inline void setPreReqMultiplier( int n ) { preReqStatMultiplier = n; }
@@ -113,6 +114,7 @@ public:
 	inline Skill *getPreReqStat( int index ) { return preReqStats[ index ]; }
 
 	inline char *getName() { return name; }
+	inline char *getDisplayName() { return displayName; }
 	inline char *getDescription() { return description; }
 	inline char *getSymbol() { return symbol; }
 	inline SkillGroup *getGroup() { return group; }
@@ -137,17 +139,19 @@ public:
 class SkillGroup {
 private:
 	char name[80];
+  char displayName[255];
 	char description[255];
 	int index;
 	bool isStatSkill;
 	std::vector<Skill*> skills;
 
 public:
-	SkillGroup( char *name, char *description );
+	SkillGroup( char *name, char *displayName, char *description );
 	~SkillGroup();
 
 	inline bool isStat() { return isStatSkill; }
 	inline char *getName() { return name; }
+  inline char *getDisplayName() { return displayName; }
 	inline char *getDescription() { return description; }
 	inline int getIndex() { return index; }
 
