@@ -216,7 +216,7 @@ void ConfigLang::parse( vector<string> *lines ) {
 		if( inValue ) {
 			int index = s.find_last_not_of( WHITESPACE );
 			if( s[index] == '\\' ) {
-				value += s.substr( 0, index + 1 );
+				value += s.substr( 0, index );
 			} else {
 				value += s.substr( 0, index + 1 );
 				node->addValue( name, new ConfigValue( (char*)(value.c_str()) ) );
