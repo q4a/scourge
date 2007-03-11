@@ -35,6 +35,7 @@ class SkillGroup;
 class Character  {
 private:
   char *name;
+	char *displayName;
   char *parentName;
   int startingHp, startingMp, level_progression;
   int minLevelReq;
@@ -50,12 +51,13 @@ private:
 	std::set<std::string> forbiddenArmorTags;
 
 public:
-  Character( char *name, char *parentName, 
+  Character( char *name, char *displayName, char *parentName, 
              int startingHp, int startingMp, 
              int level_progression, int minLevelReq );
   ~Character();
 
   inline char *getName() { return name; };
+	inline char *getDisplayName() { return displayName; };
   inline int getStartingHp() { return startingHp; }  
   inline int getStartingMp() { return startingMp; }  
   inline int getLevelProgression() { return level_progression; }  

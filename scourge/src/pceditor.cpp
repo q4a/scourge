@@ -507,7 +507,7 @@ weaknesses of each profession." ),
   charTypeStr = (char**)malloc( Character::rootCharacters.size() * sizeof(char*));
   for(int i = 0; i < (int)Character::rootCharacters.size(); i++) {
     charTypeStr[i] = (char*)malloc( 120 * sizeof(char) );
-    strcpy( charTypeStr[i], Character::rootCharacters[i]->getName() );
+    strcpy( charTypeStr[i], Character::rootCharacters[i]->getDisplayName() );
   }
   charType->setLines( (int)Character::rootCharacters.size(), (const char**)charTypeStr );
   int charIndex = (int)( (float)( Character::rootCharacters.size() ) * rand()/RAND_MAX );

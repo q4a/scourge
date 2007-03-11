@@ -3455,7 +3455,7 @@ void Scourge::handleDismiss( int index ) {
 	char msg[300];
 	sprintf( msg, _( "Would you like to dismiss %s the %s?" ), 
 					 getParty()->getParty( index )->getName(),
-					 getParty()->getParty( index )->getCharacter()->getName() );
+					 getParty()->getParty( index )->getCharacter()->getDisplayName() );
 	dismissHeroDialog->setText( msg );
 	dismissHeroDialog->setMode( index );
 	dismissHeroDialog->setVisible( true );	
@@ -3488,7 +3488,7 @@ void Scourge::uploadScore() {
 	sprintf( user, "%s the level %d %s", 
 					 getParty()->getParty(0)->getName(),
 					 getParty()->getParty(0)->getLevel(),
-					 getParty()->getParty(0)->getCharacter()->getName() );
+					 getParty()->getParty(0)->getCharacter()->getDisplayName() );
 
 	char place[2000];
 	if( getSession()->getCurrentMission() ) {

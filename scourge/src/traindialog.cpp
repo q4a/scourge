@@ -113,7 +113,7 @@ void TrainDialog::updateUI() {
 		errorLabel2->setColor( 1, 0, 0 );
 		sprintf( s, _( "%s, I cannot teach you. " ), player->getName() );
 		errorLabel->setText( s );
-		sprintf( s, _( "You must seek out one who can train a %s." ), rc->getName() );
+		sprintf( s, _( "You must seek out one who can train a %s." ), rc->getDisplayName() );
 		errorLabel2->setText( s );
 	} else if( creature->getNpcInfo()->level < player->getLevel() ) {
 		errorLabel->setColor( 0, 1, 1 );
@@ -145,7 +145,7 @@ void TrainDialog::updateUI() {
 
 		for( int i = 0; i < player->getCharacter()->getChildCount(); i++ ) {
 			sprintf( text[i], "%s (%s %d)", 
-							 player->getCharacter()->getChild(i)->getName(),
+							 player->getCharacter()->getChild(i)->getDisplayName(),
 							 _( "min level" ),
 							 player->getCharacter()->getChild(i)->getMinLevelReq() );
 		}
@@ -188,7 +188,7 @@ void TrainDialog::train( Character *newProfession ) {
 	char tmp[120];
 	sprintf( tmp, _( "Congratulation %1$s, you are now a %2$s." ),
 					 player->getName(),
-					 player->getCharacter()->getName() );
+					 player->getCharacter()->getDisplayName() );
 	scourge->showMessageDialog( tmp );
 }
 

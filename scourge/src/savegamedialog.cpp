@@ -290,7 +290,7 @@ void SavegameDialog::setSavegameInfoTitle( SavegameInfo *info ) {
 			strcpy( place, "Resting at HQ." );
 		}
 		char tmp2[300];
-		sprintf( tmp2, _( "Party of %s the %s level %s." ), player->getName(), tmp, player->getCharacter()->getName() );
+		sprintf( tmp2, _( "Party of %s the %s level %s." ), player->getName(), tmp, player->getCharacter()->getDisplayName() );
 		sprintf( (char*)info->title, "%s %s, %s %s", 
 						 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
 						 scourge->getSession()->getBoard()->getStorylineTitle(),
