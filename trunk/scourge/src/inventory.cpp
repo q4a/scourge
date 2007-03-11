@@ -819,7 +819,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 
   sprintf(nameAndClassStr, "%s, %s (%s %d, %s) (%s)", 
           selectedP->getName(), 
-          selectedP->getCharacter()->getName(), 
+          selectedP->getCharacter()->getDisplayName(), 
 					_( "level" ),
           selectedP->getLevel(),
           (selectedP->getSex() == Constants::SEX_MALE ? "M" : "F" ),

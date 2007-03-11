@@ -29,6 +29,7 @@ vector<Character*> Character::rootCharacters;
 void Character::initCharacters() {
   Character *last = NULL;
   char name[255];
+	char displayName[255];
   char parent[255];
 
 	ConfigLang *config = ConfigLang::load( "config/profession.cfg" );
@@ -43,13 +44,15 @@ void Character::initCharacters() {
 
 		// find the name and the parent
 		strcpy( name, node->getValueAsString( "name" ) );
+		strcpy( displayName, node->getValueAsString( "display_name" ) );
 		strcpy( parent, node->getValueAsString( "parent" ) );
 		int minLevelReq = node->getValueAsInt( "min_level" );
 		int hp = node->getValueAsInt( "hp" );
 		int mp = node->getValueAsInt( "mp" );
 		int levelProgression = node->getValueAsInt( "level_progression" );
 
-		last = new Character( strdup( name ), 
+		last = new Character( strdup( name ),
+													strdup( displayName ),
 													( strlen( parent ) ? strdup( parent ) : NULL ), 
 													hp, mp, 
 													levelProgression, minLevelReq );
@@ -109,10 +112,11 @@ void Character::addItemTags( const char *s, set<string> *list ) {
 	}
 }		
 
-Character::Character( char *name, char *parentName, 
+Character::Character( char *name, char *displayName, char *parentName, 
                       int startingHp, int startingMp, 
                       int level_progression, int minLevelReq ) {
   this->name = name;
+	this->displayName = displayName;
   this->parentName = parentName;
   this->startingHp = startingHp;
   this->startingMp = startingMp;
