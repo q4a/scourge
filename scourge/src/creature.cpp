@@ -1203,7 +1203,7 @@ void Creature::setAction(int action,
     break;
   case Constants::ACTION_CAST_SPELL:
     this->battle->invalidate();
-    sprintf(msg, _( "%1$s will cast %2$s." ), getName(), spell->getName());
+    sprintf(msg, _( "%1$s will cast %2$s." ), getName(), spell->getDisplayName());
     break;
   case Constants::ACTION_SPECIAL:
     this->battle->invalidate();

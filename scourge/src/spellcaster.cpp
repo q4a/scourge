@@ -329,7 +329,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
   sprintf(msg, _( "%1$s attacks %2$s with %3$s." ), 
           creature->getName(), 
           creature->getTargetCreature()->getName(),
-          spell->getName());
+          spell->getDisplayName());
   battle->getSession()->getMap()->addDescription(msg, 1, 0.15f, 1);
   if( resistance > 0 && !lowDamage ) {
     sprintf(msg, _( "%s resists the spell with %d." ), 
@@ -347,7 +347,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 	char tmp[255];
 	sprintf( tmp, "%s the %s spell", 
 					 Constants::getMessage( Constants::CAUSE_OF_DEATH ),
-					 spell->getName() );
+					 spell->getDisplayName() );
 	creature->getTargetCreature()->setPendingCauseOfDeath( tmp );
 
   // cause damage, kill creature, gain levels, etc.

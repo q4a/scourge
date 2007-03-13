@@ -48,6 +48,7 @@ public:
 
   // spell related
   static int _getName( HSQUIRRELVM vm );
+  static int _getDisplayName( HSQUIRRELVM vm );
   static int _getLevel( HSQUIRRELVM vm );
   static int _getMp( HSQUIRRELVM vm );
   static int _getExp( HSQUIRRELVM vm );
@@ -69,6 +70,7 @@ public:
 
   // magic school
   static int _getSchoolName( HSQUIRRELVM vm );
+  static int _getSchoolDisplayName( HSQUIRRELVM vm );
   static int _getSchoolShortName( HSQUIRRELVM vm );
   static int _getDeity( HSQUIRRELVM vm );
   static int _getSkill( HSQUIRRELVM vm );

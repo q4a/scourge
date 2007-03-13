@@ -54,6 +54,7 @@ class MagicSchool;
 class Spell : public Storable {
  private:
   char *name;
+  char *displayName;
   char *sound;
   int level;
   int mp;
@@ -76,7 +77,7 @@ class Spell : public Storable {
 
  public:
 
-  Spell(char *name, char *symbol, int level, int mp, int exp, int failureRate, Dice *action, 
+  Spell(char *name, char *displayName, char *symbol, int level, int mp, int exp, int failureRate, Dice *action, 
         int distance, int targetType, int speed, int effect, bool creatureTarget, 
         bool locationTarget, bool itemTarget, bool partyTarget, bool doorTarget,
 				MagicSchool *school,
@@ -98,6 +99,7 @@ class Spell : public Storable {
   inline int getIconTileX() { return iconTileX; }
   inline int getIconTileY() { return iconTileY; }
   inline const char *getName() { return (const char*)name; }
+  inline const char *getDisplayName() { return (const char*)displayName; }
   inline int getAction() { return action->roll(); }
   inline int getLevel()  { return level; }
   inline int getMp() { return mp; }
@@ -131,6 +133,7 @@ class Spell : public Storable {
 class MagicSchool {
  private:
   char *name;
+  char *displayName;
   char *shortName;
   char *deity;
   char deityDescription[3000];
@@ -145,10 +148,11 @@ class MagicSchool {
   static std::map<std::string, MagicSchool*> schoolMap;
 
  public:
-  MagicSchool(char *name, char *deity, int skill, int resistSkill, float red, float green, float blue, char *symbol);
+  MagicSchool(char *name, char *displayName, char *deity, int skill, int resistSkill, float red, float green, float blue, char *symbol);
   ~MagicSchool();
 
   inline char *getName() { return name; }
+  inline char *getDisplayName() { return displayName; }
   inline char *getShortName() { return shortName; }
   inline char *getDeity() { return deity; }
   inline char *getDeityDescription() { return deityDescription; }

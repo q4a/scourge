@@ -339,7 +339,7 @@ void Battle::initTurnStep( bool callScript ) {
       if(nextTurn > 0) weaponWait = nextTurn;
       else weaponWait = getAdjustedWait( creature->getActionSpell()->getSpeed() );
       nextTurn = 0;
-      if(debugBattle) cerr << "\tUsing spell: " << creature->getActionSpell()->getName() << endl;
+      if(debugBattle) cerr << "\tUsing spell: " << creature->getActionSpell()->getDisplayName() << endl;
     } else {
       item = creature->getBestWeapon(dist, callScript );      
       range = calculateRange( item );
@@ -741,7 +741,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 
   sprintf(message, _( "%1$s casts %2$s!" ), 
           creature->getName(), 
-          creature->getActionSpell()->getName());
+          creature->getActionSpell()->getDisplayName());
   session->getMap()->addDescription(message, 1, 0.15f, 1);
   ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
 
@@ -1368,7 +1368,7 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
   if( includeActions && session->getParty()->getPlayer() == creature ) {
     if( creature->getAction() == Constants::ACTION_CAST_SPELL ) {
       sprintf( buff, "%s: %d", 
-               creature->getActionSpell()->getName(), 
+               creature->getActionSpell()->getDisplayName(), 
                ( nextTurn > 0 ? nextTurn : weaponWait ) );
       color->r = 0.6f;
       color->g = 0.1f;

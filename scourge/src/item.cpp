@@ -909,7 +909,7 @@ void Item::setCurrentCharges( int n ) {
 void Item::setSpell( Spell *spell ) { 
   this->spell = spell; 
   if( getRpgItem()->getType() == RpgItem::SCROLL ) {
-    sprintf( this->itemName, _( "Scroll of %s" ), spell->getName() ); 
+    sprintf( this->itemName, _( "Scroll of %s" ), spell->getDisplayName() ); 
   } else {
     describeMagic( itemName, rpgItem->getDisplayName() );
   }
