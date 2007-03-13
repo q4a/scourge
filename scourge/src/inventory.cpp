@@ -975,7 +975,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
 							 ( scourge->getCurrentDepth() + 1 ),
 							 scourge->getSession()->getCurrentMission()->getDepth() );
       sprintf(missionText, "%s:|%s|%s", 
-              scourge->getSession()->getCurrentMission()->getName(),
+              scourge->getSession()->getCurrentMission()->getDisplayName(),
               tmp,
               scourge->getSession()->getCurrentMission()->getDescription());
       objectiveCount = 
