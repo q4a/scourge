@@ -102,7 +102,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool init
   this->session = session;
   this->character = NULL;
   this->monster = monster;
-  setName( monster->getType() );
+  setName( monster->getDisplayName() );
   this->model_name = monster->getModelName();
   this->skin_name = monster->getSkinName();
   this->originalSpeed = this->speed = monster->getSpeed();

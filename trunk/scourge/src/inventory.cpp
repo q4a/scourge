@@ -999,7 +999,7 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
       }
       int start = scourge->getSession()->getCurrentMission()->getItemCount();
       for(int t = 0; t < scourge->getSession()->getCurrentMission()->getCreatureCount(); t++) {
-				sprintf( tmp, _( "Vanquish %s." ), scourge->getSession()->getCurrentMission()->getCreature(t)->getType() );
+				sprintf( tmp, _( "Vanquish %s." ), scourge->getSession()->getCurrentMission()->getCreature(t)->getDisplayName() );
         sprintf(objectiveText[start + t], "%s. %s", 
                 tmp,
                 (scourge->getSession()->getCurrentMission()->getCreatureHandled(t) ? 

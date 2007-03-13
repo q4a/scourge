@@ -476,7 +476,7 @@ void MissionTemplate::parseText( Session *session, int level, int depth,
           item = (*items)[s];
         }
         // FIXME: also copy text before and after the variable
-        strcat( parsedText, item->getName() );
+        strcat( parsedText, item->getDisplayName() );
       } else if( strstr( varName, "creature" ) ) {
         string s = varName;
         Monster *monster = NULL;
@@ -509,7 +509,7 @@ void MissionTemplate::parseText( Session *session, int level, int depth,
           monster = (*creatures)[s];
         }
         // FIXME: also copy text before and after the variable
-        strcat( parsedText, monster->getType() );
+        strcat( parsedText, monster->getDisplayName() );
       }
     } else {
       strcat( parsedText, p );

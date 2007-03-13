@@ -247,6 +247,8 @@ src/configlang.h
 ../scourge_data/config/profession.cfg
 ../scourge_data/config/ability.cfg
 ../scourge_data/config/rpg.cfg
+../scourge_data/config/npc.cfg
+../scourge_data/config/monster.cfg
 ../scourge_data/script/map.nut
 ../scourge_data/script/skills.nut
 ../scourge_data/maps/hq.cfg
