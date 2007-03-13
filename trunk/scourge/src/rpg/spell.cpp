@@ -68,8 +68,9 @@ Dice::~Dice() {
 
 
 
-MagicSchool::MagicSchool(char *name, char *deity, int skill, int resistSkill, float red, float green, float blue, char *symbol) {
+MagicSchool::MagicSchool(char *name, char *displayName, char *deity, int skill, int resistSkill, float red, float green, float blue, char *symbol) {
   this->name = name;
+  this->displayName = displayName;
   this->shortName = strdup(name);
   shortName = strtok(shortName, " ");
   this->deity = deity;
@@ -96,7 +97,7 @@ void MagicSchool::initMagic() {
 
 	MagicSchool *current = NULL;
   Spell *currentSpell = NULL;
-  char name[255], notes[255], dice[255];
+  char name[255], displayName[255], notes[255], dice[255];
   char line[2000], symbol[255], targetTypeStr[255], prereqName[255];
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
@@ -104,6 +105,7 @@ void MagicSchool::initMagic() {
 		config->setUpdate( UPDATE_MESSAGE, i, v->size() );
 
 		strcpy( name, node->getValueAsString( "name" ) );
+    strcpy( displayName, node->getValueAsString( "display_name" ) );
 		strcpy( notes, node->getValueAsString( "deity" ) );
 		int skill = Skill::getSkillIndexByName( (char*)node->getValueAsString( "skill" ) );
 		int resistSkill = Skill::getSkillIndexByName( (char*)node->getValueAsString( "resist_skill" ) );
@@ -113,6 +115,7 @@ void MagicSchool::initMagic() {
 		float blue = (float)strtod( strtok( NULL, "," ), NULL );
 		strcpy( symbol, node->getValueAsString( "symbol" ) );
 		current = new MagicSchool( strdup(name), 
+                               strdup(displayName), 
 															 strdup(notes), 
 															 skill, 
 															 resistSkill, 
@@ -147,6 +150,7 @@ void MagicSchool::initMagic() {
 			ConfigNode *node2 = (*vv)[i];
 			
 			strcpy( name, node2->getValueAsString( "name" ) );
+      strcpy( displayName, node2->getValueAsString( "display_name" ) );
 			strcpy( symbol, node2->getValueAsString( "symbol" ) );
 			int level = node2->getValueAsInt( "level" );
 			int mp = node2->getValueAsInt( "mp" );
@@ -195,7 +199,7 @@ void MagicSchool::initMagic() {
 				}
 			}
 			
-			currentSpell = new Spell( strdup(name), strdup( symbol ), level, mp, exp, failureRate, 
+			currentSpell = new Spell( strdup(name), strdup( displayName ), strdup( symbol ), level, mp, exp, failureRate, 
 																action, distance, targetType, speed, effect, 
 																creatureTarget, locationTarget, itemTarget, partyTarget, doorTarget,
 																current, iconTileX, iconTileY, 
@@ -241,12 +245,13 @@ Spell *MagicSchool::getRandomSpell(int level) {
 
 
 
-Spell::Spell(char *name, char *symbol, int level, int mp, int exp, int failureRate, Dice *action, 
+Spell::Spell(char *name, char *displayName, char *symbol, int level, int mp, int exp, int failureRate, Dice *action, 
 						 int distance, int targetType, int speed, int effect, bool creatureTarget, 
 						 bool locationTarget, bool itemTarget, bool partyTarget, bool doorTarget,
 						 MagicSchool *school,
 						 int iconTileX, int iconTileY, bool friendly, int stateModPrereq ) {
   this->name = name;
+  this->displayName = displayName;
   this->symbol = symbol;
   this->sound = NULL;
   this->level = level;

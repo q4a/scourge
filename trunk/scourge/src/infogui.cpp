@@ -301,7 +301,7 @@ void InfoGui::describe() {
     strcat( description, tmp );
 		strcat( description, "|" );
     if( item->getSpell() ) {
-      sprintf( tmp, _( "Spell: %s" ), item->getSpell()->getName() );
+      sprintf( tmp, _( "Spell: %s" ), item->getSpell()->getDisplayName() );
       strcat( description, tmp );
 			strcat( description, "|" );
       sprintf( tmp, "%s|", item->getSpell()->getNotes() );

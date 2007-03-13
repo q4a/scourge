@@ -25,6 +25,7 @@ ScriptClassMemberDecl SqSpell::members[] = {
   { "void", "_typeof", SqSpell::_squirrel_typeof, 1, 0, "" },
   { "void", "constructor", SqSpell::_constructor, 0, 0, "" },
   { "string", "getName", SqSpell::_getName, 0, 0, "Get the name of the spell." },
+  { "string", "getDisplayName", SqSpell::_getDisplayName, 0, 0, "Get the name of the spell." },
   { "int", "getLevel", SqSpell::_getLevel, 0, 0, "Get the spell's level (min level of caster)." },
   { "int", "getMp", SqSpell::_getMp, 0, 0, "Get the MP used up when casting this spell." },
   { "int", "getExp", SqSpell::_getMp, 0, 0, "Get the experience gained when casting this spell." },
@@ -44,6 +45,7 @@ ScriptClassMemberDecl SqSpell::members[] = {
   { "bool", "isPartyTargetAllowed", SqSpell::_isPartyTargetAllowed, 0, 0, "Can the spell target the party?" },
 	{ "bool", "isDoorTargetAllowed", SqSpell::_isDoorTargetAllowed, 0, 0, "Can the spell target a door?" },
   { "string", "getSchoolName", SqSpell::_getSchoolName, 0, 0, "Get the spell's magic school's name." },
+  { "string", "getSchoolDisplayName", SqSpell::_getSchoolDisplayName, 0, 0, "Get the spell's magic school's name." },
   { "string", "getSchoolShortName", SqSpell::_getSchoolShortName, 0, 0, "Get the spell's magic school's short name." },
   { "string", "getDeity", SqSpell::_getDeity, 0, 0, "Get the spell's magic school's patron deity's name." },
   { "int", "getSkill", SqSpell::_getSkill, 0, 0, "Get the skill checked when using this spell." },
@@ -73,6 +75,12 @@ int SqSpell::_constructor( HSQUIRRELVM vm ) {
 int SqSpell::_getName( HSQUIRRELVM vm ) {
   GET_OBJECT(Spell*)
   sq_pushstring( vm, _SC( object->getName() ), -1 );
+  return 1;
+}
+
+int SqSpell::_getDisplayName( HSQUIRRELVM vm ) {
+  GET_OBJECT(Spell*)
+  sq_pushstring( vm, _SC( object->getDisplayName() ), -1 );
   return 1;
 }
 
@@ -188,6 +196,12 @@ int SqSpell::_isDoorTargetAllowed( HSQUIRRELVM vm ) {
 int SqSpell::_getSchoolName( HSQUIRRELVM vm ) {
   GET_OBJECT(Spell*)
   sq_pushstring( vm, _SC( object->getSchool()->getName() ), -1 );
+  return 1;
+}
+
+int SqSpell::_getSchoolDisplayName( HSQUIRRELVM vm ) {
+  GET_OBJECT(Spell*)
+  sq_pushstring( vm, _SC( object->getSchool()->getDisplayName() ), -1 );
   return 1;
 }
 
