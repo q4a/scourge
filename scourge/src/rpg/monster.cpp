@@ -34,8 +34,9 @@ vector<Monster*> Monster::npcs;
 map<string, Monster*> Monster::npcPos;
 map<string, string> Monster::modelToDescriptiveType;
 
-Monster::Monster(char *type, char* descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait) {
+Monster::Monster(char *type, char *displayName, char* descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait) {
   this->type = type;
+	this->displayName = displayName;
   if( descriptiveType ) {
     string modelStr = model;
     string descriptiveTypeStr = descriptiveType;
@@ -118,6 +119,7 @@ void Monster::initSounds( ConfigLang *config ) {
 void Monster::initCreatures( ConfigLang *config ) {
 	char name[255], model_name[255], skin_name[255];
 	char portrait[255], type[255], tmp[3000];
+	char displayName[255];
 
 	vector<ConfigNode*> *v = config->getDocument()->
 		getChildrenByName( "creature" );
@@ -128,6 +130,7 @@ void Monster::initCreatures( ConfigLang *config ) {
 		config->setUpdate( UPDATE_MESSAGE, i, v->size() );
 
 		strcpy( name, node->getValueAsString( "name" ) );
+		strcpy( displayName, node->getValueAsString( "display_name" ) );
 		strcpy( portrait, node->getValueAsString( "portrait" ) );
 		strcpy( type, node->getValueAsString( "type" ) );
 		strcpy( model_name, node->getValueAsString( "model" ) );
@@ -145,7 +148,7 @@ void Monster::initCreatures( ConfigLang *config ) {
 		GLuint statemod = node->getValueAsInt( "statemod" );
 
 		Monster *m = 
-			new Monster( strdup(name), 
+			new Monster( strdup(name), strdup( displayName ),
 									 ( strlen( type ) ? strdup( type ) : NULL ),
 									 level, hp, mp, 
 									 strdup(model_name), strdup(skin_name), 
@@ -226,11 +229,13 @@ void Monster::initCreatures( ConfigLang *config ) {
 void Monster::initMonsters() {
 	ConfigLang *config = ConfigLang::load( "config/npc.cfg" );
 	initCreatures( config );
+	config->save( "config/npc2.cfg" );
 	delete config;
 
 	config = ConfigLang::load( "config/monster.cfg" );
 	initSounds( config );
 	initCreatures( config );
+	config->save( "config/monster2.cfg" );
 	delete config;
 }
 

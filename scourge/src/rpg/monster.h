@@ -35,6 +35,7 @@ class Monster  {
 
  private:
   char *type;
+	char *displayName;
   char *descriptiveType;
   int hp;
   int mp;
@@ -63,7 +64,7 @@ class Monster  {
   static std::map<std::string, std::string> modelToDescriptiveType;
 
 public:
-  Monster(char *type, char *descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait);
+  Monster(char *type, char *displayName, char *descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait);
   ~Monster();
 
   static std::map<std::string, std::map<int, std::vector<std::string>*>*> soundMap;
@@ -75,6 +76,7 @@ public:
   inline int getRareness() { return rareness; }
   inline int getSpeed() { return speed; }
   inline char *getType() { return type; };
+	inline char *getDisplayName() { return displayName; };
   inline static char *getDescriptiveType( char *modelName ) {
     std::string modelStr = modelName;
     if( modelToDescriptiveType.find( modelStr ) == modelToDescriptiveType.end() ) 

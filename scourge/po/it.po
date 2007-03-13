@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-09 17:49-0800\n"
+"POT-Creation-Date: 2007-03-13 11:18-0700\n"
 "PO-Revision-Date: 2007-02-04 11:18+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -166,59 +166,59 @@ msgstr ""
 msgid "Crushing"
 msgstr ""
 
-#: src/rpg/character.cpp:41 src/session.cpp:95
+#: src/rpg/character.cpp:42 src/session.cpp:95
 msgid "Loading Professions"
 msgstr ""
 
-#: src/rpg/character.cpp:175
+#: src/rpg/character.cpp:179
 msgid "Skill bonuses to:"
 msgstr ""
 
-#: src/rpg/character.cpp:225
+#: src/rpg/character.cpp:229
 msgid "Can use any weapons, except:"
 msgstr ""
 
-#: src/rpg/character.cpp:228
+#: src/rpg/character.cpp:232
 msgid "Can use any armor, except:"
 msgstr ""
 
-#: src/rpg/character.cpp:240
+#: src/rpg/character.cpp:244
 msgid "Can use any weapons."
 msgstr ""
 
-#: src/rpg/character.cpp:243
+#: src/rpg/character.cpp:247
 msgid "Can use any armor."
 msgstr ""
 
-#: src/rpg/character.cpp:250
+#: src/rpg/character.cpp:254
 msgid "Not allowed to use any weapons, except:"
 msgstr ""
 
-#: src/rpg/character.cpp:253
+#: src/rpg/character.cpp:257
 msgid "Not allowed to use any armor, except:"
 msgstr ""
 
-#: src/rpg/character.cpp:265
+#: src/rpg/character.cpp:269
 msgid "Not allowed to use any weapons."
 msgstr ""
 
-#: src/rpg/character.cpp:268
+#: src/rpg/character.cpp:272
 msgid "Not allowed to use any armor."
 msgstr ""
 
-#: src/rpg/character.cpp:277
+#: src/rpg/character.cpp:281
 msgid "Can use weapons:"
 msgstr ""
 
-#: src/rpg/character.cpp:279
+#: src/rpg/character.cpp:283
 msgid "Can use armor:"
 msgstr ""
 
-#: src/rpg/character.cpp:289
+#: src/rpg/character.cpp:293
 msgid "Not allowed to use weapons:"
 msgstr ""
 
-#: src/rpg/character.cpp:291
+#: src/rpg/character.cpp:295
 msgid "Not allowed to use armor:"
 msgstr ""
 
@@ -819,15 +819,15 @@ msgstr ""
 msgid "The item won't fit in that container!"
 msgstr ""
 
-#: src/board.cpp:290
+#: src/board.cpp:292
 msgid "(STORY)"
 msgstr ""
 
-#: src/board.cpp:291
+#: src/board.cpp:293
 msgid "(CAVE)"
 msgstr ""
 
-#: src/board.cpp:293 src/inventory.cpp:989 src/inventory.cpp:1006
+#: src/board.cpp:295 src/inventory.cpp:989 src/inventory.cpp:1006
 #: src/inventory.cpp:1026
 msgid "(completed)"
 msgstr ""
@@ -7732,6 +7732,528 @@ msgid ""
 "from merchants."
 msgstr ""
 
+#: ../scourge_data/config/npc.cfg:5
+msgid "Male Vagrant"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:24
+msgid "Male Traveling Wizard"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:48
+msgid "Male Knight"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:67
+msgid "Male Rogue"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:86
+msgid "Female Hobo"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:105
+msgid "Female Bard"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:129
+msgid "Female Ranger"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:149
+msgid "Female Priestess"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:168
+msgid "hellogirl-002"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:182
+msgid "hellogirl"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:196
+msgid "hellogirl-blue"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:210
+msgid "hellogirl-red"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:224
+msgid "link-goron"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:238
+msgid "link-zora"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:252 ../scourge_data/maps/hq.cfg:176
+msgid "link"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:266
+msgid "twigletman-blue"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:280
+msgid "twigletman-red"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:294
+msgid "twigletman-eXodus"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:308
+msgid "twigletman-gg"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:322
+msgid "twigletman-toxic"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:336
+msgid "yvonne-cammy"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:350
+msgid "yvonne-challenge"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:364
+msgid "yvonne-chunli"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:378
+msgid "yvonne-commando"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:392
+msgid "yvonne-blue"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:406
+msgid "yvonne-red"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:420
+msgid "yvonne-green"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:434
+msgid "yvonne-white"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:448
+msgid "yvonne-demon"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:462
+msgid "yvonne-jeans"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:476
+msgid "yvonne-lizard"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:490
+msgid "yvonne-morrigan"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:504
+msgid "yvonne-ominous"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:518
+msgid "yvonne-stealth"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:532
+msgid "yvonne-tech"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:546
+msgid "yvonne"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:560
+msgid "Acolyte of Hornaxx"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:583 ../scourge_data/maps/hq.cfg:44
+msgid "Uzudil the Hand"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:603 ../scourge_data/maps/hq.cfg:51
+msgid "Melathor of Allovium"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:623 ../scourge_data/maps/thuzgol.cfg:100
+msgid "Orhithales Grimwise"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:643
+msgid "Mycotharsius the Mad"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:668 ../scourge_data/maps/library3.cfg:4
+msgid "Sabien Gartu"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:693 ../scourge_data/maps/library31.cfg:67
+msgid "Karzul Agmordexu"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:718 ../scourge_data/maps/library31.cfg:74
+msgid "Quegazu the Reformed"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:732 ../scourge_data/maps/library31.cfg:82
+msgid "Narzegg the Vain"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:746
+msgid "Positive Energy of Hornaxx"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:771
+msgid "Negative Energy of Hornaxx"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:796 ../scourge_data/maps/hq.cfg:170
+#: ../scourge_data/maps/emeril2.cfg:4
+msgid "Mothrazu"
+msgstr ""
+
+#: ../scourge_data/config/npc.cfg:821
+msgid "Mothrazu Pain Incarnate"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:25
+msgid "Imp"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:39
+msgid "Oozing Green Waddler"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:54
+msgid "Buggerling"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:68
+msgid "Red Bauul"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:82
+msgid "Giant Cobra"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:104
+msgid "Rabbid Rodent"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:121
+msgid "Gray Slimy Waddler"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:138
+msgid "Fleshworm"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:156
+msgid "Kobold"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:175
+msgid "Blue Bauul"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:194
+msgid "False Cobra"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:212
+msgid "Dire Stench-Waddler"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:232
+msgid "Minor Spectre"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:253
+msgid "Brawn"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:271
+msgid "Blue Brawn"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:289
+msgid "Storm Cobra"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:308
+msgid "Hydralisk"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:327
+msgid "Red Brawn"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:345
+msgid "Lesser Phantom"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:368
+msgid "flesh raptor"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:382
+msgid "Rare Cobra"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:401
+msgid "Megalisk"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:420
+msgid "Stone raptor"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:438
+msgid "Vile Phantom"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:461
+msgid "Pain Fairy"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:484
+msgid "Neural Cobra"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:503
+msgid "Hydralisk Deathlord"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:522
+msgid "Spirit Phantom"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:545
+msgid "spirit raptor"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:565
+msgid "Reek Fairy"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:588
+msgid "Mordoraptor"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:608
+msgid "Marduk Fairy"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:631
+msgid "Mernobus"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:654
+msgid "Poison Blade Frog"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:677
+msgid "Lesser Soulstealer"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:700
+msgid "Necromancer"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:724
+msgid "Restless Spirit Frog"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:747
+msgid "Greater Soulstealer"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:770
+msgid "Raving Necromancer"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:794
+msgid "Skeleton Warrior"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:818
+msgid "Shadow Frog"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:841
+msgid "Diabolic Soulstealer"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:864
+msgid "Unhinged Necromancer"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:888
+msgid "Skeleton Summoner"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:912
+msgid "Host Mindslaught"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:935
+msgid "Nihilistic Necromancer"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:959
+msgid "Greater Skeleton Warrior"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:983
+msgid "Lesser Guargloo"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1005
+msgid "Fiendish Raptor"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1027
+msgid "Minor Undead Gatekeeper"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1051
+msgid "Ogre Cleric of Unamoin"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1074
+msgid "Lesser Aspect of Thazmord"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1097
+msgid "Guargloo Skirmisher"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1120
+msgid "Fiendish Raptor Avenger"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1143
+msgid "Undead Gatekeeper Warrior"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1167
+msgid "Ogre Priest of Unamoin"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1190
+msgid "Aspect of Thazmord"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1213
+msgid "Greater Guargloo Chieften"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1236
+msgid "Fiendish Raptor Master"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1259
+msgid "Gatekeeper Wraith"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1283
+msgid "Warogre Fanatic of Unamoin"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1306
+msgid "Greater Aspect of Thazmord"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1329
+msgid "Warogre Beserker of Unamoin"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1352
+msgid "Lesser Agmordemon"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1375
+msgid "Slaying Mantis Mutanoid"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1399
+msgid "Agmordemon Warrior"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1422
+msgid "Slaying Mantis"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1446
+msgid "Bloodforged Soldier"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1468
+msgid "Agmordemon Lord"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1491
+msgid "Slaying Mantis Savant"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1515
+msgid "Bloodforged Commander"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1537
+msgid "Bloodforged Spiker"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1560
+msgid "Lesser Mithral Fiend"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1582
+#: ../scourge_data/config/monster.cfg:1693
+msgid "Undead Soulhorder"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1604
+msgid "Abyss-spawned Archer"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1626
+msgid "Abyss-spawned Mauler"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1648
+msgid "Elite Bloodforged Ranger"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1671
+msgid "Mithral Fiend Captain"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1715
+msgid "Soulhord Endlord"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1738
+msgid "Abyss-spawned Warmage"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1761
+msgid "Mithral Shade"
+msgstr ""
+
 #: ../scourge_data/script/map.nut:45
 msgid ""
 "The creature once known as Mothrazu sinks to one knee... Her breath comes in "
@@ -7973,14 +8495,6 @@ msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:36
 msgid "Zila the Scribe"
-msgstr ""
-
-#: ../scourge_data/maps/hq.cfg:44
-msgid "Uzudil the Hand"
-msgstr ""
-
-#: ../scourge_data/maps/hq.cfg:51
-msgid "Melathor of Allovium"
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:59
@@ -8307,10 +8821,6 @@ msgid ""
 "dwarves."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:170 ../scourge_data/maps/emeril2.cfg:4
-msgid "Mothrazu"
-msgstr ""
-
 #: ../scourge_data/maps/hq.cfg:171
 msgid ""
 "Well from what you tell me about her, she sounds like some kind of insane, "
@@ -8341,10 +8851,6 @@ msgid ""
 "everything! You say, he plans to enter our world and destroy it? Well he "
 "certainly can via the red teleporter. However, he should be relatively weak "
 "here without a permanent $link to his home plane."
-msgstr ""
-
-#: ../scourge_data/maps/hq.cfg:176
-msgid "link"
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:177
@@ -8908,10 +9414,6 @@ msgstr ""
 msgid "Mirtha the Merchant"
 msgstr ""
 
-#: ../scourge_data/maps/library3.cfg:4
-msgid "Sabien Gartu"
-msgstr ""
-
 #: ../scourge_data/maps/library3.cfg:11
 msgid "Kerra the Healer"
 msgstr ""
@@ -9294,18 +9796,6 @@ msgstr ""
 
 #: ../scourge_data/maps/library31.cfg:60
 msgid "Xolt"
-msgstr ""
-
-#: ../scourge_data/maps/library31.cfg:67
-msgid "Karzul Agmordexu"
-msgstr ""
-
-#: ../scourge_data/maps/library31.cfg:74
-msgid "Quegazu the Reformed"
-msgstr ""
-
-#: ../scourge_data/maps/library31.cfg:82
-msgid "Narzegg the Vain"
 msgstr ""
 
 #: ../scourge_data/maps/library31.cfg:91
@@ -9778,10 +10268,6 @@ msgstr ""
 
 #: ../scourge_data/maps/thuzgol.cfg:92
 msgid "Idmaril the Folklorist"
-msgstr ""
-
-#: ../scourge_data/maps/thuzgol.cfg:100
-msgid "Orhithales Grimwise"
 msgstr ""
 
 #: ../scourge_data/maps/thuzgol.cfg:107
