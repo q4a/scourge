@@ -80,6 +80,7 @@ private:
 	char savedMapName[300];
   bool edited;
   char name[80];
+  char displayName[255];
   char music[255];
   char description[2000];
   char success[2000];
@@ -129,7 +130,7 @@ public:
   static void saveMapData( GameAdapter *adapter, const char *fileName );
 
   Mission( Board *board, int level, int depth, 
-           char *name, char *description, 
+           char *name, char *displayName, char *description, 
            char *music,
            char *success, char *failure,
            char *mapName, char mapType='C' );
@@ -176,6 +177,7 @@ public:
   inline bool isCompleted() { return completed; }
   inline void setCompleted( bool b ) { completed = b; }
   inline char *getName() { return name; }
+  inline char *getDisplayName() { return displayName; }
   inline char *getDescription() { return description; }
   inline char *getMusicTrack() { return (music && music[0]) ? music : NULL; }
   inline char *getSuccess() { return success; }
@@ -237,16 +239,18 @@ class MissionTemplate {
 private:
   Board *board;
   char name[80];
+  char displayName[255];
   char mapType;
   char description[2000];
   char music[255];
   char success[2000];
   char failure[2000];
 public:
-  MissionTemplate( Board *board, char *name, char mapType, char *description, char *music, char *success, char *failure );
+  MissionTemplate( Board *board, char *name, char *displayName, char mapType, char *description, char *music, char *success, char *failure );
   ~MissionTemplate();
   Mission *createMission( Session *session, int level, int depth, MissionInfo *info=NULL );
 	inline char *getName() { return name; }
+  inline char *getDisplayName() { return displayName; }
 private:
   void parseText( Session *session, int level, int depth,
                   char *text, char *parsedText,
@@ -284,7 +288,7 @@ public:
   void initMissions();
   void reset();
 
-	inline char *getStorylineTitle() { return storylineMissions[storylineIndex]->getName(); }
+	inline char *getStorylineTitle() { return storylineMissions[storylineIndex]->getDisplayName(); }
   inline int getStorylineIndex() { return storylineIndex; }
   void setStorylineIndex( int n );
   void storylineMissionCompleted( Mission *mission );

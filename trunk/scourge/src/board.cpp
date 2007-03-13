@@ -47,7 +47,7 @@ Board::Board(Session *session) {
 	missionListCount = 0;
 
   char type;
-  char name[255], line[255], description[2000], 
+  char name[255], displayName[255], line[255], description[2000], 
     music[255],
     success[2000], failure[2000], mapName[80];
 
@@ -61,11 +61,12 @@ Board::Board(Session *session) {
 
     type = node->getValueAsString( "type" )[0] + ( 'A' - 'a' );
     strcpy( name, node->getValueAsString( "name" ) );
+    strcpy( displayName, node->getValueAsString( "display_name" ) );
     strcpy( description, node->getValueAsString( "description" ) );
     strcpy( music, node->getValueAsString( "music" ) );
     strcpy( success, node->getValueAsString( "success" ) );
     strcpy( failure, node->getValueAsString( "failure" ) );
-    templates.push_back( new MissionTemplate( this, name, type, description, music, success, failure ) );
+    templates.push_back( new MissionTemplate( this, name, displayName, type, description, music, success, failure ) );
   }
 
   v = config->getDocument()->
@@ -77,6 +78,7 @@ Board::Board(Session *session) {
 
     // read the level and depth
 		strcpy( name, node->getValueAsString( "name" ) );
+    strcpy( displayName, node->getValueAsString( "display_name" ) );
     int level = node->getValueAsInt( "level" );
     int depth = node->getValueAsInt( "depth" );
     strcpy( mapName, node->getValueAsString( "map" ) );
@@ -85,7 +87,7 @@ Board::Board(Session *session) {
     strcpy( success, node->getValueAsString( "success" ) );
     strcpy( failure, node->getValueAsString( "failure" ) );
 
-    Mission *current_mission = new Mission( this, level, depth, name, description, music, success, failure, mapName );
+    Mission *current_mission = new Mission( this, level, depth, name, displayName, description, music, success, failure, mapName );
     current_mission->setStoryLine( true );
     storylineMissions.push_back( current_mission );
 
@@ -289,7 +291,7 @@ void Board::initMissions() {
               availableMissions[i]->getDepth(), 
               ( availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : 
                 ( strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : "" ) ),
-              availableMissions[i]->getName(),
+              availableMissions[i]->getDisplayName(),
               (availableMissions[i]->isCompleted() ? _( "(completed)" ) : ""));
       missionColor[i].r = 1.0f;
       missionColor[i].g = 1.0f;
@@ -350,9 +352,10 @@ void Board::storylineMissionCompleted( Mission *mission ) {
 
 
 
-MissionTemplate::MissionTemplate( Board *board, char *name, char type, char *description, char *music, char *success, char *failure ) {
+MissionTemplate::MissionTemplate( Board *board, char *name, char *displayName, char type, char *description, char *music, char *success, char *failure ) {
   this->board = board;
   strcpy( this->name, name );
+  strcpy( this->displayName, displayName );
   this->mapType = type;
   strcpy( this->description, description );
   strcpy( this->music, music);
@@ -387,7 +390,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
   //TODO VF: select music from multi-tracks missions
   
   Mission *mission = new Mission( board, 
-                                  level, depth, parsedName, 
+                                  level, depth, parsedName, parsedName, 
                                   parsedDescription, music, parsedSuccess, 
                                   parsedFailure, NULL, mapType );
   for(map<string, RpgItem*>::iterator i=items.begin(); i!=items.end(); ++i) {
@@ -517,7 +520,7 @@ void MissionTemplate::parseText( Session *session, int level, int depth,
 
 
 Mission::Mission( Board *board, int level, int depth, 
-                  char *name, char *description, 
+                  char *name, char *displayName, char *description, 
                   char *music,
                   char *success, char *failure,
                   char *mapName, char mapType ) {
@@ -525,6 +528,7 @@ Mission::Mission( Board *board, int level, int depth,
   this->level = level;
   this->depth = depth;
   strcpy( this->name, name );
+  strcpy( this->displayName, displayName );
   strcpy( this->description, description );
   strcpy( this->music, music );
   strcpy( this->success, success );
