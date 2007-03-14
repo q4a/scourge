@@ -63,6 +63,9 @@ private:
   GLuint mapGrid[ Constants::MAP_GRID_TILE_WIDTH ][ Constants::MAP_GRID_TILE_HEIGHT ];
   std::map<char, std::vector<MapGridLocation*>*> mapGridLocationByType;
 
+	std::map<std::string,GLuint> namedTextures;
+	SDL_Rect inventoryHoles[ Constants::INVENTORY_COUNT ];
+
 public: 
   ShapePalette( Session *session );
   ~ShapePalette();
@@ -162,6 +165,16 @@ public:
 																						Monster *monster=NULL );
 	void debugLoadedModels();
 
+	inline GLuint getNamedTexture( std::string name ) {
+		return( namedTextures.find( name ) == namedTextures.end() ? 0 : namedTextures[ name ] );
+	}
+	inline SDL_Rect *getInventoryHole( int inventoryLocation ) {
+		return( inventoryLocation >= 0 && 
+						inventoryLocation < Constants::INVENTORY_COUNT ? 
+						&( inventoryHoles[ inventoryLocation ] ) : 
+						NULL );
+	}
+
 protected:
   void initFonts( ConfigLang *config );
 	void initCursor( ConfigLang *config );
@@ -174,6 +187,8 @@ protected:
 	void init3dsShapes( ConfigLang *config );
 	void initThemes( ConfigLang *config );
 	void initDescriptions( ConfigLang *config );
+	void initNamedTextures( ConfigLang *config );
+	void initInventory( ConfigLang *config );
 
 	ShapeValues *createShapeValues( ConfigNode *node );
 };

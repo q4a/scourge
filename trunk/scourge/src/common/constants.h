@@ -297,6 +297,8 @@ public:
   static const int INVENTORY_GLOVE = 16382;
   static const int INVENTORY_COUNT = 15;
 
+	static const char *inventoryTags[];
+
   static const int MAP_GRID_TILE_WIDTH = 6;
   static const int MAP_GRID_TILE_HEIGHT = 5;
   static const int MAP_GRID_TILE_PIXEL_WIDTH = 256;

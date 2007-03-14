@@ -31,7 +31,7 @@ using namespace std;
 //#define VARIATION_BASE 10.0f
 #define VARIATION_BASE 4.0f
 
-bool debugFileLoading = false;
+bool Shapes::debugFileLoad = false;
 
 char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
   "wall",
@@ -349,13 +349,11 @@ void Shapes::initialize() {
 }
 
 void Shapes::loadCursors() {
-	//debugFileLoading = true;
 	char path[300];
 	for( int i = 0; i < Constants::CURSOR_COUNT; i++ ) {
 		sprintf( path, "%s/%s", cursorDir, Constants::cursorTextureName[ i ] );
 		cursorTexture[i] = loadTextureWithAlpha( path );
 	}
-	//debugFileLoading = false;
 }
 
 Shapes::~Shapes(){
@@ -722,13 +720,15 @@ void Shapes::setupAlphaBlendedBMP( char *filename,
 		strcat( fn, filename );
 	}
 
-	if( debugFileLoading )
+if( debugFileLoad ) {
 		cerr << "file: " << fn << " red=" << red << " green=" << green << " blue=" << blue << endl;
+}
 
   if(((*surface) = SDL_LoadBMP( fn ))) {
 
-		if( debugFileLoading ) 
+if( debugFileLoad ) {
 			cerr << "...loaded! Bytes per pixel=" << (int)((*surface)->format->BytesPerPixel) << endl;
+}
 
     // Rearrange the pixelData
     int width  = (*surface) -> w;
@@ -789,8 +789,10 @@ void Shapes::setupAlphaBlendedBMP( char *filename,
 			p[count++] = b;
 			p[count++] = a;
 		}
-//  } else {
-		//cerr << "...not found:" << filename << endl;
+  } else {
+		if( debugFileLoad ) {
+			cerr << "...not found:" << filename << endl;
+		}
 	}
 
   (*image) = p;
