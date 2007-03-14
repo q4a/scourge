@@ -57,6 +57,8 @@ void ShapePalette::preInitialize() {
 	config = ConfigLang::load( "config/ui.cfg" );  
 	initFonts( config );
 	initCursor( config );
+	initNamedTextures( config );
+	initInventory( config );
 	delete config;
 
 	  // set up the logo
@@ -279,6 +281,45 @@ void ShapePalette::initFonts( ConfigLang *config ) {
       SDLHandler::fontInfos.push_back( info );
     }
   }
+}
+
+void ShapePalette::initNamedTextures( ConfigLang *config ) {
+//	Shapes::debugFileLoad = true;
+	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "texture" );
+	for( unsigned int i = 0; v && i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+		string name = node->getValueAsString( "name" );
+		char *value = (char*)node->getValueAsString( "value" );
+
+		namedTextures[ name ] = loadTextureWithAlpha( value );
+	}
+//	Shapes::debugFileLoad = false;
+}
+
+void ShapePalette::initInventory( ConfigLang *config ) {
+	for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+		inventoryHoles[ i ].x = inventoryHoles[ i ].y = inventoryHoles[ i ].w = inventoryHoles[ i ].h = 0;
+	}
+	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "inventory" );
+	if( v ) {
+		char tmp[255];
+		for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+			char *s = (char*)(*v)[0]->getValueAsString( Constants::inventoryTags[ i ] );
+			if( s ) {
+				strcpy( tmp, s );
+				char *p = strtok( tmp, "," );
+				inventoryHoles[ i ].x = atoi( p );
+				p = strtok( NULL, "," );
+				inventoryHoles[ i ].y = atoi( p );
+				p = strtok( NULL, "," );
+				inventoryHoles[ i ].w = atoi( p );
+				p = strtok( NULL, "," );
+				inventoryHoles[ i ].h = atoi( p );
+			} else {
+				cerr << "*** Error: Can't find inventory tag: " << Constants::inventoryTags[ i ] << endl;
+			}
+		}
+	}
 }
 
 void ShapePalette::initCursor( ConfigLang *config ) {

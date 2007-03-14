@@ -85,6 +85,8 @@ scourge_SOURCES = \
 	sound.h\
 	inventory.cpp\
 	inventory.h\
+	equip.cpp\
+	equip.h\
 	shapepalette.cpp\
 	shapepalette.h\
 	util.cpp\

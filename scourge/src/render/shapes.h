@@ -224,6 +224,8 @@ protected:
 
 	GLuint selection;
 
+	static bool debugFileLoad;
+
 public: 
   Shapes( bool headless );
   virtual ~Shapes();

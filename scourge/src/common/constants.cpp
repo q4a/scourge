@@ -235,6 +235,10 @@ const char *Constants::cursorTextureName[] = {
 	"move.bmp"
 };
 
+const char *Constants::inventoryTags[] = {
+	"HEAD", "NECK", "BACK", "CHEST", "LEFT_HAND", "RIGHT_HAND", "BELT", "LEGS", "FEET", "RING1", "RING2", "RING3", "RING4", "WEAPON_RANGED", "GLOVE"
+};
+
 bool Constants::multitexture = true;
 
 Constants::Constants(){
