@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-14 11:48-0700\n"
+"POT-Creation-Date: 2007-03-14 21:56-0700\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -677,70 +677,70 @@ msgstr ""
 msgid "%1$s will use capability %2$s."
 msgstr ""
 
-#: src/creature.cpp:1561
+#: src/creature.cpp:1574
 #, c-format
 msgid "%s is raised from the dead!"
 msgstr ""
 
-#: src/creature.cpp:1595
+#: src/creature.cpp:1608
 #, c-format
 msgid "  %s levels up!"
 msgstr ""
 
-#: src/creature.cpp:1612
+#: src/creature.cpp:1625
 #, c-format
 msgid "%s gains %d experience points."
 msgstr ""
 
-#: src/creature.cpp:1615
+#: src/creature.cpp:1628
 #, c-format
 msgid "%s gains a level!"
 msgstr ""
 
-#: src/creature.cpp:1619
+#: src/creature.cpp:1632
 #, c-format
 msgid "%s looses %d experience points!"
 msgstr ""
 
-#: src/creature.cpp:2097
+#: src/creature.cpp:2110
 #, fuzzy
 msgid "*Mission*"
 msgstr "Options"
 
-#: src/creature.cpp:2187
+#: src/creature.cpp:2200
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2199
+#: src/creature.cpp:2212
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2395
+#: src/creature.cpp:2408
 msgid "...Attack from blind-spot!"
 msgstr ""
 
-#: src/creature.cpp:2531 src/creature.cpp:2580
+#: src/creature.cpp:2544 src/creature.cpp:2593
 msgid "skill"
 msgstr ""
 
-#: src/creature.cpp:2535 src/creature.cpp:2579 src/infogui.cpp:407
+#: src/creature.cpp:2548 src/creature.cpp:2592 src/infogui.cpp:407
 msgid "vs."
 msgstr ""
 
-#: src/creature.cpp:2537
+#: src/creature.cpp:2550
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2575 src/characterinfo.cpp:108 src/characterinfo.cpp:117
+#: src/creature.cpp:2588 src/characterinfo.cpp:108 src/characterinfo.cpp:117
 #: src/characterinfo.cpp:137 src/characterinfo.cpp:146
 #: src/characterinfo.cpp:166 src/characterinfo.cpp:175
 #: src/characterinfo.cpp:194 src/characterinfo.cpp:203
 msgid "CTH"
 msgstr ""
 
-#: src/creature.cpp:2577
+#: src/creature.cpp:2590
 msgid "max"
 msgstr ""
 

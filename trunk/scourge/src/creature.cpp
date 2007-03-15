@@ -1221,63 +1221,76 @@ void Creature::setAction(int action,
   if(strlen(msg)) session->getMap()->addDescription(msg, 1, 1, 0.5f);
 }
 
-void Creature::equipInventory(int index) {
+void Creature::equipInventory( int index, int locationHint ) {
   this->battle->invalidate();
   // doff
   if(doff(index)) return;
   // don
   // FIXME: take into account: two-handed weapons, min skill req-s., etc.
   Item *item = getInventory(index);
-  for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
-    // if the slot is empty and the item can be worn here
-    if(item->getRpgItem()->getEquip() & ( 1 << i ) && 
-       equipped[i] == MAX_INVENTORY_SIZE) {
-      equipped[i] = index;
 
-      // once worn, show if it's cursed
-      item->setShowCursed( true );
+	int place = -1;
+	vector<int> places;
+	for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+		// if the slot is empty and the item can be worn here
+		if(item->getRpgItem()->getEquip() & ( 1 << i ) && 
+			 equipped[i] == MAX_INVENTORY_SIZE) {
+			if( i == locationHint ) {
+				place = i;
+				break;
+			}
+			places.push_back( i );
+		}
+	}
+	if( place == -1 && places.size() ) {
+		place = places[ (int)( (float)( places.size() ) * rand() / RAND_MAX ) ];
+	}
+	if( place > -1 ) {
+		equipped[ place ] = index;
 
-      // handle magic attrib settings
-      if(item->isMagicItem()) {
+		// once worn, show if it's cursed
+		item->setShowCursed( true );
+		
+		// handle magic attrib settings
+		if(item->isMagicItem()) {
+			
+			//item->debugMagic("Equip: ");
+			
+			// set the good attributes
+			for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
+				if(item->isStateModSet(i)) {
+					this->setStateMod(i, true);
+				}
+			}
+			// set the protected attributes
+			for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
+				if(item->isStateModProtected(i)) {
+					this->setProtectedStateMod(i, true);
+				}
+			}
+			// skill bonuses
+			map<int,int> *m = item->getSkillBonusMap();
+			for(map<int,int>::iterator e=m->begin(); e!=m->end(); ++e) {
+				int skill = e->first;
+				int bonus = e->second;
+				setSkillBonus(skill, getSkillBonus(skill) + bonus);
+			}
+			// if armor, enhance magic resistance
+			if(!item->getRpgItem()->isWeapon() && 
+				 item->getSchool()) {
+				int skill = item->getSchool()->getResistSkill();
+				setSkillBonus(skill, getSkillBonus(skill) + item->getMagicResistance());
+			}
+			// refresh map for invisibility, etc.
+			session->getMap()->refresh();
+		}
+		
+		// call script
+		if( !monster ) session->getSquirrel()->callItemEvent( this, item, "equipItem" );
 
-        //item->debugMagic("Equip: ");
-
-        // set the good attributes
-        for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-          if(item->isStateModSet(i)) {
-            this->setStateMod(i, true);
-          }
-        }
-        // set the protected attributes
-        for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-          if(item->isStateModProtected(i)) {
-            this->setProtectedStateMod(i, true);
-          }
-        }
-        // skill bonuses
-        map<int,int> *m = item->getSkillBonusMap();
-        for(map<int,int>::iterator e=m->begin(); e!=m->end(); ++e) {
-          int skill = e->first;
-          int bonus = e->second;
-          setSkillBonus(skill, getSkillBonus(skill) + bonus);
-        }
-        // if armor, enhance magic resistance
-        if(!item->getRpgItem()->isWeapon() && 
-           item->getSchool()) {
-          int skill = item->getSchool()->getResistSkill();
-          setSkillBonus(skill, getSkillBonus(skill) + item->getMagicResistance());
-        }
-        // refresh map for invisibility, etc.
-        session->getMap()->refresh();
-      }
-
-      // call script
-      if( !monster ) session->getSquirrel()->callItemEvent( this, item, "equipItem" );
-
-      // recalc current weapon
-      recalcAggregateValues();
-      return;
-    }
+		// recalc current weapon
+		recalcAggregateValues();
+		return;
   }
 }
 

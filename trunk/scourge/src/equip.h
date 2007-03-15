@@ -74,9 +74,6 @@ public:
 	void drawWidgetContents( Widget *w );
 
 protected:
-	int putItem();
-	void equipItem();
-	void dropItem();
   Item *getItemAtPos( int x, int y );
   int getHoleAtPos( int x, int y );
 };
