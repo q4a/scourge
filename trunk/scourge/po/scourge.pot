@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-13 17:45-0700\n"
+"POT-Creation-Date: 2007-03-14 11:48-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1907,47 +1907,47 @@ msgstr ""
 msgid "Current Weapon: %s"
 msgstr ""
 
-#: src/scourge.cpp:2748
+#: src/scourge.cpp:2749
 msgid "Begin Turn"
 msgstr ""
 
-#: src/scourge.cpp:2753
+#: src/scourge.cpp:2754
 msgid "...In Turn..."
 msgstr ""
 
-#: src/scourge.cpp:2759
+#: src/scourge.cpp:2760
 msgid "Pause Game"
 msgstr ""
 
-#: src/scourge.cpp:2763
+#: src/scourge.cpp:2764
 msgid "Unpause game."
 msgstr ""
 
-#: src/scourge.cpp:2798
+#: src/scourge.cpp:2799
 msgid "Available Missions"
 msgstr ""
 
-#: src/scourge.cpp:2804
+#: src/scourge.cpp:2805
 msgid "Drag map to look around."
 msgstr ""
 
-#: src/scourge.cpp:2872
+#: src/scourge.cpp:2873
 msgid "This spell has no effect here..."
 msgstr ""
 
-#: src/scourge.cpp:3060
+#: src/scourge.cpp:3061
 msgid "Game loaded successfully."
 msgstr ""
 
-#: src/scourge.cpp:3086
+#: src/scourge.cpp:3087
 msgid "Error: Saved game version is too old."
 msgstr ""
 
-#: src/scourge.cpp:3442
+#: src/scourge.cpp:3443
 msgid "You cannot hire more party members."
 msgstr ""
 
-#: src/scourge.cpp:3462
+#: src/scourge.cpp:3463
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr ""
@@ -2479,15 +2479,15 @@ msgid ""
 "glean..."
 msgstr ""
 
-#: src/scourgehandler.cpp:219
+#: src/scourgehandler.cpp:220
 msgid "Combat is now Turn-based."
 msgstr ""
 
-#: src/scourgehandler.cpp:221
+#: src/scourgehandler.cpp:222
 msgid "Combat is now Real-time."
 msgstr ""
 
-#: src/scourgehandler.cpp:303
+#: src/scourgehandler.cpp:304
 msgid "Error saving game!"
 msgstr ""
 
