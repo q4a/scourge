@@ -47,13 +47,14 @@ Equip::Equip(Scourge *scourge) {
 	this->scourge = scourge;
 	this->creature = NULL;
 	this->backgroundTexture = scourge->getShapePalette()->getNamedTexture( "equip" );
+  this->currentHole = -1;
 
 	mainWin = new Window( scourge->getSDLHandler(),
                         ( scourge->getSDLHandler()->getScreen()->w - WIN_WIDTH ) / 2, 
                         ( scourge->getSDLHandler()->getScreen()->h - WIN_HEIGHT ) / 2,
                         WIN_WIDTH, WIN_HEIGHT,
                         "", false, Window::SIMPLE_WINDOW, "default" );
-	canvas = new Canvas( 8, 0, EQUIP_WIDTH + 8, EQUIP_HEIGHT, this, this);
+	canvas = new Canvas( 8, 0, EQUIP_WIDTH + 8 + 2, EQUIP_HEIGHT + 2, this, this);
   mainWin->addWidget( canvas );
 }
 
@@ -69,6 +70,10 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 
 bool Equip::handleEvent(SDL_Event *event) {
   switch(event->type) {
+  case SDL_MOUSEMOTION:
+    currentHole = getHoleAtPos( event->motion.x - mainWin->getX() - 8, 
+                                event->motion.y - mainWin->getY() - TITLE_HEIGHT );
+    break;
   case SDL_MOUSEBUTTONUP:
     break;     
   case SDL_KEYUP:
@@ -81,6 +86,25 @@ bool Equip::handleEvent(SDL_Event *event) {
   default: break;
   }
   return false;
+}
+
+Item *Equip::getItemAtPos( int x, int y ) {
+  int hole = getHoleAtPos( x, y );
+  return( hole > -1 && creature ? creature->getEquippedInventory( hole ) : NULL );
+}
+
+int Equip::getHoleAtPos( int x, int y ) {
+  SDL_Rect point;
+  point.x = x;
+  point.y = y;
+  point.w = point.h = 1;
+  for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+    SDL_Rect *rect = scourge->getShapePalette()->getInventoryHole( i );
+    if( SDLHandler::intersects( rect, &point ) ) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 void Equip::receive(Widget *widget) {
@@ -164,16 +188,19 @@ void Equip::setCreature( Creature *creature ) {
 void Equip::drawWidgetContents( Widget *w ) {
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, backgroundTexture );
+  glPushMatrix();
+  glTranslatef( 1, 1, 0 );
 	glBegin( GL_QUADS );
 	glTexCoord2d( 0, 1 );
-	glVertex2d( 0, w->getHeight() );
+	glVertex2d( 0, EQUIP_HEIGHT );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( 0, 0 );
 	glTexCoord2d( 1, 0 );
-	glVertex2d( w->getWidth(), 0 );
+	glVertex2d( EQUIP_WIDTH, 0 );
 	glTexCoord2d( 1, 1 );
-	glVertex2d( w->getWidth(), w->getHeight() );
+	glVertex2d( EQUIP_WIDTH, EQUIP_HEIGHT );
 	glEnd();
+  glPopMatrix();
 	if( creature ) {
 		for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
 			Item *item = creature->getEquippedInventory( i );
@@ -199,5 +226,18 @@ void Equip::drawWidgetContents( Widget *w ) {
 			}
 		}
 	}
+
+  if( currentHole > -1 ) {
+    SDL_Rect *rect = scourge->getShapePalette()->getInventoryHole( currentHole );
+    glDisable( GL_TEXTURE_2D );
+    mainWin->setTopWindowBorderColor();
+    glBegin( GL_LINE_LOOP );
+    glVertex2d( rect->x, rect->y + rect->h );
+    glVertex2d( rect->x, rect->y );
+    glVertex2d( rect->x + rect->w, rect->y );
+    glVertex2d( rect->x + rect->w, rect->y + rect->h );
+    glEnd();
+    glColor4f( 1, 1, 1, 1 );
+  }
 }
 

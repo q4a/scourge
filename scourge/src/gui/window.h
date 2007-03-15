@@ -186,6 +186,9 @@ class Window : public Widget {
 
 	inline int getGutter() { return gutter; }
 
+  void setTopWindowBorderColor();
+  void setWindowBorderColor();
+
 protected:
   void commonInit(ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type);
 	void drawBorder( int topY, int openHeight );

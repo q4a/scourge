@@ -35,12 +35,14 @@ class Creature;
 class Scourge;
 class Storable;
 class ConfirmDialog;
+class Item;
 
 class Equip : public DragAndDropHandler, WidgetView {
 private:
 	Scourge *scourge;
 	Creature *creature;
 	GLuint backgroundTexture;
+  int currentHole;
 
 	Window *mainWin;
   Canvas *canvas;
@@ -75,6 +77,8 @@ protected:
 	int putItem();
 	void equipItem();
 	void dropItem();
+  Item *getItemAtPos( int x, int y );
+  int getHoleAtPos( int x, int y );
 };
 
 #endif

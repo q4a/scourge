@@ -670,29 +670,37 @@ void Window::drawTitle( int topY, int openHeight ) {
 	glPopMatrix();
 }
 
+void Window::setTopWindowBorderColor() {
+  if( theme->getSelectedBorder() ) {
+    glColor4f( theme->getSelectedBorder()->color.r,
+               theme->getSelectedBorder()->color.g,
+               theme->getSelectedBorder()->color.b,
+               theme->getSelectedBorder()->color.a );
+  } else {
+    applyHighlightedBorderColor();
+  }
+}
+
+void Window::setWindowBorderColor() {
+  //  } else if(isLocked()) {
+  //    glColor3f(0.5f, 0.3f, 0.2f);
+  //  } else 
+  if( theme->getWindowBorder() ) {
+    glColor4f( theme->getWindowBorder()->color.r, 
+               theme->getWindowBorder()->color.g,
+               theme->getWindowBorder()->color.b,
+               theme->getWindowBorder()->color.a );
+  } else {
+    applyBorderColor();
+  }
+}
+
 void Window::drawLineBorder( int topY, int openHeight ) {
 	// add a border
 	if(currentWin == this) {
-		if( theme->getSelectedBorder() ) {
-			glColor4f( theme->getSelectedBorder()->color.r,
-								 theme->getSelectedBorder()->color.g,
-								 theme->getSelectedBorder()->color.b,
-								 theme->getSelectedBorder()->color.a );
-		} else {
-			applyHighlightedBorderColor();
-		}
+    setTopWindowBorderColor();
 	} else {
-//  } else if(isLocked()) {
-//    glColor3f(0.5f, 0.3f, 0.2f);
-//  } else 
-		if( theme->getWindowBorder() ) {
-		glColor4f( theme->getWindowBorder()->color.r, 
-							 theme->getWindowBorder()->color.g,
-							 theme->getWindowBorder()->color.b,
-							 theme->getWindowBorder()->color.a );
-		} else {
-			applyBorderColor();
-		}
+    setWindowBorderColor();
 	}
 
 	if( this == currentWin || isLocked() || isModal() ) {
