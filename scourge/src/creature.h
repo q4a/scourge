@@ -310,7 +310,7 @@ class Creature : public RenderedCreature {
   bool eatDrink(Item *item);
   bool computeNewItemWeight(RpgItem * rpgItem);
   // equip or doff if already equipped
-  void equipInventory(int index);
+  void equipInventory( int index, int locationHint=-1 );
   int doff(int index);
   // return the equip index (inventory location) for an inventory index
   int getEquippedIndex(int index);

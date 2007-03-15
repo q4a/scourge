@@ -34,6 +34,7 @@ Canvas::Canvas(int x, int y, int x2, int y2, WidgetView *view,
   this->inside = false;
   this->glowing = false;
   highlightBorders = false;
+	drawBorders = true;
 }
 
 Canvas::~Canvas() {
@@ -61,24 +62,26 @@ void Canvas::drawWidget(Widget *parent) {
   }
 
   // draw the border
-  if(highlightBorders) {
-    glLineWidth( 3.0f );
-  }
-  if( theme->getButtonBorder() ) {
-    glColor4f( theme->getButtonBorder()->color.r,
-               theme->getButtonBorder()->color.g,
-               theme->getButtonBorder()->color.b,
-               theme->getButtonBorder()->color.a );
-  } else {
-    applyBorderColor();
-  }  
-  glBegin( GL_LINE_LOOP );
-  glVertex2d(0, 0);
-  glVertex2d(0, y2 - y);
-  glVertex2d(x2 - x, y2 - y);
-  glVertex2d(x2 - x, 0);
-  glEnd();
-  glLineWidth( 1.0f );
+	if( drawBorders ) {
+		if(highlightBorders) {
+			glLineWidth( 3.0f );
+		}
+		if( theme->getButtonBorder() ) {
+			glColor4f( theme->getButtonBorder()->color.r,
+								 theme->getButtonBorder()->color.g,
+								 theme->getButtonBorder()->color.b,
+								 theme->getButtonBorder()->color.a );
+		} else {
+			applyBorderColor();
+		}  
+		glBegin( GL_LINE_LOOP );
+		glVertex2d(0, 0);
+		glVertex2d(0, y2 - y);
+		glVertex2d(x2 - x, y2 - y);
+		glVertex2d(x2 - x, 0);
+		glEnd();
+		glLineWidth( 1.0f );
+	}
 }
 
 bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {

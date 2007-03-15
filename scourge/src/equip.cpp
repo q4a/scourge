@@ -42,6 +42,8 @@ using namespace std;
 #define EQUIP_HEIGHT 360
 #define WIN_WIDTH EQUIP_WIDTH + 20
 #define WIN_HEIGHT EQUIP_HEIGHT + 24
+#define CANVAS_OFFSET_X 4
+#define CANVAS_OFFSET_Y TITLE_HEIGHT
 
 Equip::Equip(Scourge *scourge) {
 	this->scourge = scourge;
@@ -54,7 +56,8 @@ Equip::Equip(Scourge *scourge) {
                         ( scourge->getSDLHandler()->getScreen()->h - WIN_HEIGHT ) / 2,
                         WIN_WIDTH, WIN_HEIGHT,
                         "", false, Window::SIMPLE_WINDOW, "default" );
-	canvas = new Canvas( 8, 0, EQUIP_WIDTH + 8 + 2, EQUIP_HEIGHT + 2, this, this);
+	canvas = new Canvas( CANVAS_OFFSET_X, 0, EQUIP_WIDTH + CANVAS_OFFSET_X + 2, EQUIP_HEIGHT + 2, this, this);
+	canvas->setDrawBorders( false );
   mainWin->addWidget( canvas );
 }
 
@@ -71,8 +74,8 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 bool Equip::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEMOTION:
-    currentHole = getHoleAtPos( event->motion.x - mainWin->getX() - 8, 
-                                event->motion.y - mainWin->getY() - TITLE_HEIGHT );
+    currentHole = getHoleAtPos( event->motion.x - mainWin->getX() - CANVAS_OFFSET_X, 
+                                event->motion.y - mainWin->getY() - CANVAS_OFFSET_Y );
     break;
   case SDL_MOUSEBUTTONUP:
     break;     
@@ -107,78 +110,66 @@ int Equip::getHoleAtPos( int x, int y ) {
   return -1;
 }
 
-void Equip::receive(Widget *widget) {
-	if( putItem() != -1 ) equipItem();
+void Equip::receive( Widget *widget ) {
+	if( creature ) {
+		Item *item = scourge->getMovingItem();
+		if( item ) {
+			char *err = creature->canEquipItem( item );
+			if( err ) {
+				scourge->showMessageDialog( err );
+				scourge->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
+			} else {
+				if( creature->addInventory( item ) ) {
+					// message: the player accepted the item
+					char message[120];
+					snprintf( message, 119, _( "%s picks up %s." ), 
+									 creature->getName(),
+									 item->getItemName() );
+					scourge->getMap()->addDescription( message );
+					scourge->endItemDrag();
+					int index = creature->findInInventory( item );
+					creature->equipInventory( index, currentHole );
+					scourge->getSDLHandler()->getSound()->playSound( Window::DROP_SUCCESS );
+				} else {
+					// message: the player's inventory is full
+					scourge->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
+					scourge->showMessageDialog( _( "You can't fit the item!" ) );
+				}
+			}
+		}
+	}
 }
 
-bool Equip::startDrag(Widget *widget, int x, int y) {
+bool Equip::startDrag( Widget *widget, int x, int y ) {
+	if( creature ) {
+	
+		if( scourge->getTradeDialog()->getWindow()->isVisible() ) {
+			scourge->showMessageDialog( _( "Can't change inventory while trading." ) );
+			return false;
+		}
+		
+		// what's equiped at this inventory slot?
+		currentHole = getHoleAtPos( x, y );
+		Item *item = getItemAtPos( x, y );
+		if( item ) {
+			if( item->isCursed() ) {
+				scourge->showMessageDialog( _( "Can't remove cursed item!" ) );
+				return false;
+			} else {
+	
+				creature->removeInventory( creature->findInInventory( item ) );
+				scourge->startItemDragFromGui( item );
+				char message[120];
+				snprintf(message, 119, _( "%s drops %s." ), 
+								creature->getName(),
+								item->getItemName() );
+				scourge->getMap()->addDescription( message );
+	
+				return true;
+			}
+		}
+	}
   return false;
-}
-
-int Equip::putItem() {
-	int index = -1;
-	/*
-  Item *item = scourge->getMovingItem();
-  if(item) {
-    if(scourge->getParty()->getParty(selected)->addInventory(item)) {
-      // message: the player accepted the item
-      char message[120];
-      sprintf(message, _( "%s picks up %s." ), 
-              scourge->getParty()->getParty(selected)->getName(),
-              item->getItemName());
-      scourge->getMap()->addDescription(message);
-      scourge->endItemDrag();
-      index = scourge->getParty()->getParty(selected)->findInInventory(item);
-      //setSelectedPlayerAndMode(selected, INVENTORY);
-      //invList->setSelectedLine(index);
-      scourge->getSDLHandler()->getSound()->playSound(Window::DROP_SUCCESS);
-      return index;
-    } else {
-      // message: the player's inventory is full
-      scourge->getSDLHandler()->getSound()->playSound(Window::DROP_FAILED);
-      scourge->showMessageDialog( _( "You can't fit the item!" ) );
-    }
-  }
-	*/
-  return index;
-}
-
-void Equip::equipItem() {
-	/*
-  int itemIndex = invList->getSelectedLine();  
-  if(itemIndex > -1 && 
-     scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
-    Item *item = scourge->getParty()->getParty(selected)->getInventory(itemIndex);
-
-    char *err = scourge->getParty()->getParty(selected)->canEquipItem( item );
-    if( err ) {
-      scourge->showMessageDialog( err );
-      scourge->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
-    } else {
-      scourge->getParty()->getParty(selected)->equipInventory(itemIndex);
-      // recreate list strings
-      //refresh();
-      scourge->getSDLHandler()->getSound()->playSound(Window::DROP_SUCCESS);
-    }
-  }
-	*/
-}
-
-void Equip::dropItem() {
-	/*
-  int itemIndex = invList->getSelectedLine();  
-  if(itemIndex > -1 && 
-     scourge->getParty()->getParty(selected)->getInventoryCount() > itemIndex) {
-    Item *item = scourge->getParty()->getParty(selected)->removeInventory(itemIndex);
-    scourge->startItemDragFromGui(item);
-    char message[120];
-    sprintf(message, _( "%s drops %s." ), 
-            scourge->getParty()->getParty(selected)->getName(),
-            item->getItemName());
-    scourge->getMap()->addDescription(message);
-    setSelectedPlayerAndMode(selected, INVENTORY);
-  }
-	*/
 }
 
 void Equip::setCreature( Creature *creature ) {
@@ -237,7 +228,6 @@ void Equip::drawWidgetContents( Widget *w ) {
     glVertex2d( rect->x + rect->w, rect->y );
     glVertex2d( rect->x + rect->w, rect->y + rect->h );
     glEnd();
-    glColor4f( 1, 1, 1, 1 );
   }
 }
 
