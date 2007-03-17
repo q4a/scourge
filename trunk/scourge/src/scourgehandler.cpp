@@ -37,7 +37,7 @@
 #include "gui/textdialog.h"
 #include "pceditor.h"
 #include "savegamedialog.h"
-#include "equip.h"
+#include "pcui.h"
 
 #define DRAG_START_TOLERANCE 5
 
@@ -64,8 +64,8 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
     return false;
   }
 
-	if( scourge->getEquip()->getWindow()->isVisible() && 
-      scourge->getEquip()->handleEvent(event) ) {
+	if( scourge->getPcUi()->getWindow()->isVisible() && 
+      scourge->getPcUi()->handleEvent(event) ) {
     return false;
   }
 
@@ -318,8 +318,8 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->getInventory()->handleEvent( widget, event );
   }
 
-	if( scourge->getEquip()->getWindow()->isVisible() ) {
-    scourge->getEquip()->handleEvent( widget, event );
+	if( scourge->getPcUi()->getWindow()->isVisible() ) {
+    scourge->getPcUi()->handleEvent( widget, event );
   }
 
   if( scourge->getOptionsMenu()->isVisible() ) {

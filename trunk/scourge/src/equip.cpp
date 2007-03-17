@@ -38,56 +38,34 @@ using namespace std;
   *@author Gabor Torok
   */
 
-#define EQUIP_WIDTH 260
-#define EQUIP_HEIGHT 360
-#define WIN_WIDTH EQUIP_WIDTH + 20
-#define WIN_HEIGHT EQUIP_HEIGHT + 24
-#define CANVAS_OFFSET_X 4
-#define CANVAS_OFFSET_Y TITLE_HEIGHT
-
-Equip::Equip(Scourge *scourge) {
+Equip::Equip( Scourge *scourge, Window *window ) {
 	this->scourge = scourge;
 	this->creature = NULL;
 	this->backgroundTexture = scourge->getShapePalette()->getNamedTexture( "equip" );
   this->currentHole = -1;
+	this->window = window;
 
-	mainWin = new Window( scourge->getSDLHandler(),
-                        ( scourge->getSDLHandler()->getScreen()->w - WIN_WIDTH ) / 2, 
-                        ( scourge->getSDLHandler()->getScreen()->h - WIN_HEIGHT ) / 2,
-                        WIN_WIDTH, WIN_HEIGHT,
-                        "", false, Window::SIMPLE_WINDOW, "default" );
 	canvas = new Canvas( CANVAS_OFFSET_X, 0, EQUIP_WIDTH + CANVAS_OFFSET_X + 2, EQUIP_HEIGHT + 2, this, this);
 	canvas->setDrawBorders( false );
-  mainWin->addWidget( canvas );
 }
 
 Equip::~Equip() {
 }
 
 bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
-  if( widget == mainWin->closeButton ) {
-    scourge->toggleInventoryWindow();
-	}
   return false;
 }
 
 bool Equip::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEMOTION:
-    currentHole = getHoleAtPos( event->motion.x - mainWin->getX() - CANVAS_OFFSET_X, 
-                                event->motion.y - mainWin->getY() - CANVAS_OFFSET_Y );
+    currentHole = getHoleAtPos( event->motion.x - window->getX() - CANVAS_OFFSET_X, 
+                                event->motion.y - window->getY() - CANVAS_OFFSET_Y );
     break;
   case SDL_MOUSEBUTTONUP:
     break;     
-  case SDL_KEYUP:
-    switch(event->key.keysym.sym) {
-    case SDLK_ESCAPE: 
-    scourge->toggleInventoryWindow();
-    return true;
-    default: break;
-    }
-  default: break;
-  }
+	default: break;
+	}
   return false;
 }
 
@@ -221,7 +199,7 @@ void Equip::drawWidgetContents( Widget *w ) {
   if( currentHole > -1 ) {
     SDL_Rect *rect = scourge->getShapePalette()->getInventoryHole( currentHole );
     glDisable( GL_TEXTURE_2D );
-    mainWin->setTopWindowBorderColor();
+    window->setTopWindowBorderColor();
     glBegin( GL_LINE_LOOP );
     glVertex2d( rect->x, rect->y + rect->h );
     glVertex2d( rect->x, rect->y );

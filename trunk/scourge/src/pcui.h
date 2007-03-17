@@ -1,5 +1,5 @@
 /***************************************************************************
-                          equip.h  -  description
+                          pcui.h  -  description
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef EQUIP_H
-#define EQUIP_H
+#ifndef PCUI_H
+#define PCUI_H
 
 #include <iostream>
 #include <vector>
@@ -36,50 +36,25 @@ class Scourge;
 class Storable;
 class ConfirmDialog;
 class Item;
+class Equip;
 
-#define EQUIP_WIDTH 260
-#define EQUIP_HEIGHT 360
-#define CANVAS_OFFSET_X 4
-#define CANVAS_OFFSET_Y TITLE_HEIGHT
-
-class Equip : public DragAndDropHandler, WidgetView {
+class PcUi {
 private:
 	Scourge *scourge;
 	Creature *creature;
-	GLuint backgroundTexture;
-  int currentHole;
-	Window *window;
-  Canvas *canvas;
-	Label *inventoryWeightLabel, *coinsLabel;
-	char inventoryWeightStr[80], coinsStr[80];
-	Button *equipButton, *fixButton, *removeCurseButton, *poolButton;
-	Button *combineButton, *enchantButton, *identifyButton, *openButton;
-	Button *eatDrinkButton, *castScrollButton, *transcribeButton, *infoButton;
-  Button *storeItemButton;
-  int preferredWeaponLocation[3];
-  Button *preferredWeaponButton[3];
-  Storable *storable;
+
+	Window *mainWin;
+	Equip *equip;
 
 public:
-	Equip( Scourge *scourge, Window *window );
-	~Equip();
+	PcUi( Scourge *scourge );
+	~PcUi();
 
-  inline Storable *getStorable() { return storable; }
-
-  inline Widget *getWidget() { return canvas; }
+  inline Window *getWindow() { return mainWin; }
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
 
-	// drag-n-drop
-	void receive( Widget *widget );
-	bool startDrag( Widget *widget, int x=0, int y=0 );
-
-	void drawWidgetContents( Widget *w );
-
-protected:
-  Item *getItemAtPos( int x, int y );
-  int getHoleAtPos( int x, int y );
 };
 
 #endif
