@@ -95,7 +95,7 @@ class ConfirmDialog;
 class PcEditor;
 class TextDialog;
 class SavegameDialog;
-class Equip;
+class PcUi;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -129,7 +129,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   bool missionWillAwardExpPoints;
   char infoMessage[2000];
   Inventory *inventory;
-	Equip *equip;
+	PcUi *pcui;
   Window *messageWin, *exitConfirmationDialog;
   TextDialog *textDialog;
   InfoGui *infoGui;
@@ -435,7 +435,7 @@ public:
   */
   inline Inventory *getInventory() { return inventory; }
 
-	inline Equip *getEquip() { return equip; }
+	inline PcUi *getPcUi() { return pcui; }
   
   /**
     Increase the game speed.

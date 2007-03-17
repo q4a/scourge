@@ -47,7 +47,7 @@
 #include "pceditor.h"
 #include "savegamedialog.h"
 #include "upload.h"
-#include "equip.h"
+#include "pcui.h"
 
 using namespace std;
 
@@ -101,7 +101,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 
   battleCount = 0;
   inventory = NULL;
-	equip = NULL;
+	pcui = NULL;
   containerGuiCount = 0;
   changingStory = false;
 
@@ -489,7 +489,7 @@ void Scourge::resetGame( bool resetParty ) {
 		// inventory needs the party
 		if(!inventory) {
 			inventory = new Inventory(this);
-			equip = new Equip( this );
+			pcui = new PcUi( this );
 		}
 
 		getSession()->getSquirrel()->startGame();
@@ -739,7 +739,7 @@ void Scourge::cleanUpAfterMission() {
 	closeAllContainerGuis();
 	if(inventory->isVisible()) {
 		inventory->hide();
-		equip->getWindow()->setVisible( false );
+		pcui->getWindow()->setVisible( false );
 		inventoryButton->setSelected( false );
 	}
 	if(optionsMenu->isVisible()) {
@@ -1479,10 +1479,10 @@ void Scourge::toggleInventoryWindow() {
   if(inventory->isVisible()) {
     //if(!inventory->getWindow()->isLocked()) inventory->hide();
     inventory->hide();
-		equip->getWindow()->setVisible( false );
+		pcui->getWindow()->setVisible( false );
   } else {
     inventory->show();
-		equip->getWindow()->setVisible( true );
+		pcui->getWindow()->setVisible( true );
   }
   inventoryButton->setSelected( inventory->isVisible() );
 }
@@ -2686,7 +2686,7 @@ void Scourge::executeQuickSpell( Spell *spell ) {
 }
 
 void Scourge::refreshInventoryUI(int playerIndex) {
-	getEquip()->setCreature( party->getParty( playerIndex ) );
+	getPcUi()->setCreature( party->getParty( playerIndex ) );
   getInventory()->refresh(playerIndex);
 	if( getTradeDialog()->getWindow()->isVisible() ) 
 		getTradeDialog()->updateUI();

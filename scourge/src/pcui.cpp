@@ -1,0 +1,85 @@
+/***************************************************************************
+                          pcui.cpp  -  description
+                             -------------------
+    begin                : Sat May 3 2003
+    copyright            : (C) 2003 by Gabor Torok
+    email                : cctorok@yahoo.com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "pcui.h"
+#include "rpg/rpglib.h"
+#include "sdlhandler.h"
+#include "sdleventhandler.h"
+#include "sdlscreenview.h"
+#include "scourge.h"
+#include "item.h"
+#include "creature.h"
+#include "equip.h"
+
+using namespace std;
+
+/**
+  *@author Gabor Torok
+  */
+
+#define WIN_WIDTH EQUIP_WIDTH + 20
+#define WIN_HEIGHT EQUIP_HEIGHT + 24
+
+PcUi::PcUi( Scourge *scourge ) {
+	this->scourge = scourge;
+	this->creature = NULL;
+
+	mainWin = new Window( scourge->getSDLHandler(),
+                        ( scourge->getSDLHandler()->getScreen()->w - WIN_WIDTH ) / 2, 
+                        ( scourge->getSDLHandler()->getScreen()->h - WIN_HEIGHT ) / 2,
+                        WIN_WIDTH, WIN_HEIGHT,
+                        "", false, Window::SIMPLE_WINDOW, "default" );
+ equip = new Equip( scourge, mainWin );
+ mainWin->addWidget( equip->getWidget() );
+}
+
+PcUi::~PcUi() {
+}
+
+bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
+
+	equip->handleEvent( widget, event );
+
+  if( widget == mainWin->closeButton ) {
+    scourge->toggleInventoryWindow();
+	}
+  return false;
+}
+
+bool PcUi::handleEvent(SDL_Event *event) {
+
+	equip->handleEvent( event );
+
+  switch(event->type) {
+  case SDL_KEYUP:
+    switch(event->key.keysym.sym) {
+    case SDLK_ESCAPE: 
+    scourge->toggleInventoryWindow();
+    return true;
+    default: break;
+    }
+  default: break;
+  }
+  return false;
+}
+
+void PcUi::setCreature( Creature *creature ) {
+	this->creature = creature;
+	equip->setCreature( creature );
+}
+
+
