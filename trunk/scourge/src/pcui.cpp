@@ -48,8 +48,10 @@ PcUi::PcUi( Scourge *scourge ) {
                         "", false, Window::SIMPLE_WINDOW, "default" );
  equip = new Equip( scourge, mainWin, 0, 0, EQUIP_WIDTH, EQUIP_HEIGHT );
  mainWin->addWidget( equip->getWidget() );
- inven = new Inven( scourge, mainWin, 0, EQUIP_HEIGHT, WIN_WIDTH, 200 - TITLE_HEIGHT );
+ inven = new Inven( scourge, mainWin, 0, EQUIP_HEIGHT, WIN_WIDTH, 183 - TITLE_HEIGHT );
  mainWin->addWidget( inven->getWidget() );
+ mainWin->addWidget( new Label( 5, EQUIP_HEIGHT + 185 - TITLE_HEIGHT + 10, 
+																_( "Right click for info, double-click to open." ) ) );
 }
 
 PcUi::~PcUi() {

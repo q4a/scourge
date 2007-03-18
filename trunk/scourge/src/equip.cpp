@@ -57,6 +57,21 @@ Equip::~Equip() {
 }
 
 bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
+	if( scourge->getSDLHandler()->isDoubleClick ) {
+		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - window->getX() - x, 
+															 scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT );
+		if( item && item->getRpgItem()->isContainer() ) {
+			scourge->openContainerGui(item);
+		}
+	} else if( scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
+		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - window->getX() - x, 
+															 scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT );
+		if( item ) {
+			scourge->getInfoGui()->setItem( item );
+			if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
+				scourge->getInfoGui()->getWindow()->setVisible( true );
+		}
+	}
   return false;
 }
 

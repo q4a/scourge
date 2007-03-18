@@ -64,8 +64,9 @@ public:
 
 protected:
   Item *getItemAtPos( int x, int y );
-	bool findInventoryPosition( Item *item, bool useExistingLocationForSameItem=true );
+	bool findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem=true );
 	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
+	void convertMousePos( int x, int y, int *invX, int *invY );
 };
 
 #endif

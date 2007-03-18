@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-17 17:05-0700\n"
+"POT-Creation-Date: 2007-03-18 15:57-0700\n"
 "PO-Revision-Date: 2007-02-04 11:18+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -585,163 +585,163 @@ msgstr "Partita via rete"
 msgid "Select a character"
 msgstr ""
 
-#: src/creature.cpp:219
+#: src/creature.cpp:224
 #, c-format
 msgid "%1$s's skill in %2$s has increased."
 msgstr ""
 
-#: src/creature.cpp:230
+#: src/creature.cpp:235
 #, c-format
 msgid "%1$s is not allowed to equip %2$s."
 msgstr ""
 
-#: src/creature.cpp:543
+#: src/creature.cpp:548
 msgid "Can't find path to target. Sorry!"
 msgstr ""
 
-#: src/creature.cpp:992
+#: src/creature.cpp:1002
 #, fuzzy, c-format
 msgid "%s is overloaded."
 msgstr "Opzioni"
 
-#: src/creature.cpp:1030
+#: src/creature.cpp:1063
 #, c-format
 msgid "%s is not overloaded anymore."
 msgstr ""
 
-#: src/creature.cpp:1064
+#: src/creature.cpp:1099
 #, c-format
 msgid "%s is not hungry at the moment."
 msgstr ""
 
-#: src/creature.cpp:1075
+#: src/creature.cpp:1110
 #, c-format
 msgid "%1$s eats %2$s."
 msgstr ""
 
-#: src/creature.cpp:1079 src/creature.cpp:1097 src/creature.cpp:1112
+#: src/creature.cpp:1114 src/creature.cpp:1132 src/creature.cpp:1147
 #, fuzzy, c-format
 msgid "%s is used up."
 msgstr "Opzioni"
 
-#: src/creature.cpp:1085
+#: src/creature.cpp:1120
 #, c-format
 msgid "%s is not thirsty at the moment."
 msgstr ""
 
-#: src/creature.cpp:1092
+#: src/creature.cpp:1127
 #, c-format
 msgid "%1$s drinks %2$s."
 msgstr ""
 
-#: src/creature.cpp:1107
+#: src/creature.cpp:1142
 #, c-format
 msgid "%1$s drinks from %2$s."
 msgstr ""
 
-#: src/creature.cpp:1117
+#: src/creature.cpp:1152
 msgid "You cannot eat or drink that!"
 msgstr ""
 
-#: src/creature.cpp:1137 src/spellcaster.cpp:223
+#: src/creature.cpp:1172 src/spellcaster.cpp:223
 #, c-format
 msgid "%s heals %d points."
 msgstr ""
 
-#: src/creature.cpp:1146
+#: src/creature.cpp:1181
 #, c-format
 msgid "%s receives %d magic points."
 msgstr ""
 
-#: src/creature.cpp:1154 src/spellcaster.cpp:239
+#: src/creature.cpp:1189 src/spellcaster.cpp:239
 #, c-format
 msgid "%s feels impervious to damage!"
 msgstr ""
 
-#: src/creature.cpp:1174
+#: src/creature.cpp:1209
 #, c-format
 msgid "%s feels at peace."
 msgstr ""
 
-#: src/creature.cpp:1204
+#: src/creature.cpp:1239
 #, c-format
 msgid "%1$s will consume %2$s."
 msgstr ""
 
-#: src/creature.cpp:1208
+#: src/creature.cpp:1243
 #, c-format
 msgid "%1$s will cast %2$s."
 msgstr ""
 
-#: src/creature.cpp:1212
+#: src/creature.cpp:1247
 #, c-format
 msgid "%1$s will use capability %2$s."
 msgstr ""
 
-#: src/creature.cpp:1576
+#: src/creature.cpp:1632
 #, c-format
 msgid "%s is raised from the dead!"
 msgstr ""
 
-#: src/creature.cpp:1610
+#: src/creature.cpp:1666
 #, c-format
 msgid "  %s levels up!"
 msgstr ""
 
-#: src/creature.cpp:1627
+#: src/creature.cpp:1683
 #, c-format
 msgid "%s gains %d experience points."
 msgstr ""
 
-#: src/creature.cpp:1630
+#: src/creature.cpp:1686
 #, c-format
 msgid "%s gains a level!"
 msgstr ""
 
-#: src/creature.cpp:1634
+#: src/creature.cpp:1690
 #, c-format
 msgid "%s looses %d experience points!"
 msgstr ""
 
-#: src/creature.cpp:2112
+#: src/creature.cpp:2168
 #, fuzzy
 msgid "*Mission*"
 msgstr "Opzioni"
 
-#: src/creature.cpp:2202
+#: src/creature.cpp:2258
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2214
+#: src/creature.cpp:2270
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2410
+#: src/creature.cpp:2466
 msgid "...Attack from blind-spot!"
 msgstr ""
 
-#: src/creature.cpp:2546 src/creature.cpp:2595
+#: src/creature.cpp:2602 src/creature.cpp:2651
 msgid "skill"
 msgstr ""
 
-#: src/creature.cpp:2550 src/creature.cpp:2594 src/infogui.cpp:407
+#: src/creature.cpp:2606 src/creature.cpp:2650 src/infogui.cpp:407
 msgid "vs."
 msgstr ""
 
-#: src/creature.cpp:2552
+#: src/creature.cpp:2608
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2590 src/characterinfo.cpp:108 src/characterinfo.cpp:117
+#: src/creature.cpp:2646 src/characterinfo.cpp:108 src/characterinfo.cpp:117
 #: src/characterinfo.cpp:137 src/characterinfo.cpp:146
 #: src/characterinfo.cpp:166 src/characterinfo.cpp:175
 #: src/characterinfo.cpp:194 src/characterinfo.cpp:203
 msgid "CTH"
 msgstr ""
 
-#: src/creature.cpp:2592
+#: src/creature.cpp:2648
 msgid "max"
 msgstr ""
 
