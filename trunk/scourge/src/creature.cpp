@@ -203,6 +203,11 @@ Creature::~Creature(){
 																				 skin_name, 
 																				 shape,
 																				 monster );
+	// delete the inventory infos
+	for( map<Item*,InventoryInfo*>::iterator e = invInfos.begin(); e != invInfos.end(); ++e ) {
+		InventoryInfo *info = e->second;
+		delete info;
+	}
 }
 
 void Creature::changeProfession( Character *c ) {
@@ -983,6 +988,11 @@ bool Creature::addInventory(Item *item, bool force) {
      (force || !item->isBlocking() || 
       item->getRpgItem()->getEquip() ||
       getShape()->fitsInside( item->getShape(), true ) ) ) {
+		
+		InventoryInfo *info = getInventoryInfo( item, true );
+		info->equipIndex = -1;
+		info->inventoryIndex = inventory_count;
+
     inventory[inventory_count++] = item;
     inventoryWeight += item->getWeight(); 
 
@@ -1008,21 +1018,44 @@ bool Creature::addInventory(Item *item, bool force) {
   }
 }
 
-int Creature::findInInventory(Item *item) {
+InventoryInfo *Creature::getInventoryInfo( Item *item, bool createIfMissing ) {
+	if( invInfos.find( item ) == invInfos.end() ) {
+		if( createIfMissing ) {
+			InventoryInfo *info = new InventoryInfo();
+			invInfos[ item ] = info;
+			return info;
+		} else {
+			return NULL;
+		}
+	} else {
+		return invInfos[ item ];
+	}
+}
+
+int Creature::findInInventory( Item *item ) {
+	InventoryInfo *info = getInventoryInfo( item );
+	return( info ? info->inventoryIndex : -1 );
+	/*
   for(int i = 0; i < inventory_count; i++) {
     Item *invItem = inventory[i];
     if(item == invItem) return i;
   }
   return -1;
+	*/
 }
 
 Item *Creature::removeInventory(int index) { 
   Item *item = NULL;
-  if(index < inventory_count) {
+  if( index < inventory_count ) {
     // drop item if carrying it
-    doff(index);
+    doff( index );
     // drop from inventory
-    item = inventory[index];
+
+		InventoryInfo *info = getInventoryInfo( item );
+		invInfos.erase( item );
+		delete( info );
+		
+    item = inventory[ index ];
     inventoryWeight -= item->getWeight();
     if(getStateMod(StateMod::overloaded) && inventoryWeight < getMaxInventoryWeight()) {
       if( !isMonster() ) {
@@ -1034,6 +1067,8 @@ Item *Creature::removeInventory(int index) {
     }
     for(int i = index; i < inventory_count - 1; i++) {
       inventory[i] = inventory[i + 1];
+			InventoryInfo *info = getInventoryInfo( inventory[i] );
+			info->inventoryIndex--;
     }
     inventory_count--;
     // adjust equipped indexes too
@@ -1048,7 +1083,7 @@ Item *Creature::removeInventory(int index) {
 }
 
 bool Creature::eatDrink(int index){
-  return eatDrink(getInventory(index));
+  return eatDrink( getInventory( index ) );
 }
 
 bool Creature::eatDrink(Item *item) {
@@ -1248,6 +1283,10 @@ void Creature::equipInventory( int index, int locationHint ) {
 		place = places[ (int)( (float)( places.size() ) * rand() / RAND_MAX ) ];
 	}
 	if( place > -1 ) {
+		
+		InventoryInfo *info = getInventoryInfo( item );
+		info->equipIndex = place;
+
 		equipped[ place ] = index;
 
 		// once worn, show if it's cursed
@@ -1302,6 +1341,8 @@ int Creature::doff(int index) {
     if(equipped[i] == index) {
       Item *item = getInventory(index);
       equipped[i] = MAX_INVENTORY_SIZE;
+			InventoryInfo *info = getInventoryInfo( item );
+			info->equipIndex = -1;
 
       // handle magic attrib settings
       if(item->isMagicItem()) {
@@ -1367,19 +1408,26 @@ bool Creature::isEquippedWeapon( int location ) {
 
 
 bool Creature::isEquipped( Item *item ) {
+	InventoryInfo *info = getInventoryInfo( item );
+	return( info && info->equipIndex > -1 );
+	/*
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(equipped[i] < MAX_INVENTORY_SIZE &&
        inventory[ equipped[i] ] == item ) return true;
   }
   return false;
+	*/
 }
 
 bool Creature::isEquipped( int inventoryIndex ) {
+	if( inventoryIndex < 0 || inventoryIndex >= inventory_count ) return false;
+	return isEquipped( inventory[ inventoryIndex ] );
+	/*
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if( equipped[i] == inventoryIndex ) return true;
   }
   return false;
-
+	*/
 }
 
 bool Creature::removeCursedItems() {
@@ -1398,14 +1446,21 @@ bool Creature::removeCursedItems() {
 /**
    Get equipped index of inventory index. (Where is the item worn?)
 */
-int Creature::getEquippedIndex(int index) {
+int Creature::getEquippedIndex( int index ) {
+	if( index < 0 || index >= inventory_count ) return -1;
+	InventoryInfo *info = getInventoryInfo( inventory[ index ] );
+	return info->equipIndex;
+	/*
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(equipped[i] == index) return i;
   }
   return -1;
+	*/
 }
 
 bool Creature::isItemInInventory(Item *item) {
+	return( getInventoryInfo( item ) ? true : false );
+	/*
   for(int i = 0; i < inventory_count; i++) {
     if(inventory[i] == item || 
        (inventory[i]->getRpgItem()->getType() == RpgItem::CONTAINER &&
@@ -1413,6 +1468,7 @@ bool Creature::isItemInInventory(Item *item) {
       return true;
   }
   return false;
+	*/
 }
 
 Item *Creature::getItemAtLocation(int location) {
