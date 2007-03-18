@@ -58,6 +58,12 @@ class RenderedProjectile;
 // how many times to attempt to move to range
 #define MAX_FAILED_MOVE_ATTEMPTS 10
 
+class InventoryInfo {
+public:
+	int inventoryIndex;
+	int equipIndex;
+};
+
 class Creature : public RenderedCreature {
   
  private:
@@ -142,6 +148,7 @@ class Creature : public RenderedCreature {
 
 	char causeOfDeath[255], pendingCauseOfDeath[255];
 	bool inventoryArranged;
+	std::map<Item*, InventoryInfo*> invInfos;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -309,7 +316,6 @@ class Creature : public RenderedCreature {
   // returns true if ate/drank item completely and false else
   bool eatDrink(int index);  
   bool eatDrink(Item *item);
-  bool computeNewItemWeight(RpgItem * rpgItem);
   // equip or doff if already equipped
   void equipInventory( int index, int locationHint=-1 );
   int doff(int index);
@@ -321,6 +327,8 @@ class Creature : public RenderedCreature {
   bool isEquipped( Item *item );
   bool isEquipped( int inventoryIndex );
   bool removeCursedItems();
+	InventoryInfo *getInventoryInfo( Item *item, bool createIfMissing=false );
+	
 
   // return the best equipped weapon that works on this distance, 
   // or NULL if none are available
