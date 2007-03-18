@@ -250,12 +250,39 @@ void Inven::drawWidgetContents( Widget *widget ) {
 	glPushMatrix();
 	glTranslatef( OFFSET_X, OFFSET_Y, 0 );
 
-	glEnable( GL_BLEND );
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA );
 	glDisable( GL_TEXTURE_2D );
 	window->setTopWindowBorderColor();
+
+	glEnable( GL_BLEND );
+	//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+
 	int colCount = canvas->getWidth() / GRID_SIZE;
 	int rowCount = canvas->getHeight() / GRID_SIZE;
+
+	if( scourge->getMovingItem() ) {
+		int currentX, currentY;
+		convertMousePos( scourge->getSDLHandler()->mouseX - window->getX() - x, 
+										 scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT, 
+										 &currentX, &currentY );
+		int px = currentX;
+		int py = currentY;
+		if( px >= 0 && px + scourge->getMovingItem()->getInventoryWidth() <= colCount &&
+				py >= 0 && py + scourge->getMovingItem()->getInventoryHeight() <= rowCount ) {
+			px *= GRID_SIZE;
+			py *= GRID_SIZE;
+			int pw = scourge->getMovingItem()->getInventoryWidth() * GRID_SIZE;
+			int ph = scourge->getMovingItem()->getInventoryHeight() * GRID_SIZE;
+			//cerr << "pw=" << pw << " ph=" << ph << endl;
+			glBegin( GL_QUADS );
+			glVertex2d( px, py + ph );
+			glVertex2d( px, py );
+			glVertex2d( px + pw, py );
+			glVertex2d( px + pw, py + ph );
+			glEnd();
+		}
+	}
+
 	for( int yy = 0; yy <= rowCount; yy++ ) {
 		glBegin( GL_LINE_LOOP );
 		glVertex2d( 0, yy * GRID_SIZE );
