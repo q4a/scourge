@@ -141,6 +141,7 @@ class Creature : public RenderedCreature {
 	bool moving;
 
 	char causeOfDeath[255], pendingCauseOfDeath[255];
+	bool inventoryArranged;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -478,6 +479,9 @@ class Creature : public RenderedCreature {
   bool rollSecretDoor( Location *pos );
   void resetSecretDoorAttempts();
 	char *getType();
+
+	inline bool isInventoryArranged() { return inventoryArranged; }
+	inline void setInventoryArranged( bool b ) { inventoryArranged = b; }
 
  protected:
 

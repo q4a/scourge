@@ -119,6 +119,8 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool init
 
 void Creature::commonInit() {
 
+	this->inventoryArranged = false;
+
 	this->causeOfDeath[0] = 0;
   ((AnimatedShape*)shape)->setCreatureSpeed( speed );
 

@@ -24,6 +24,7 @@
 #include "item.h"
 #include "creature.h"
 #include "equip.h"
+#include "inven.h"
 
 using namespace std;
 
@@ -31,8 +32,10 @@ using namespace std;
   *@author Gabor Torok
   */
 
-#define WIN_WIDTH EQUIP_WIDTH + 20
-#define WIN_HEIGHT EQUIP_HEIGHT + 24
+#define EQUIP_WIDTH 260
+#define EQUIP_HEIGHT 360
+#define WIN_WIDTH EQUIP_WIDTH + 300
+#define WIN_HEIGHT EQUIP_HEIGHT + 200
 
 PcUi::PcUi( Scourge *scourge ) {
 	this->scourge = scourge;
@@ -43,8 +46,10 @@ PcUi::PcUi( Scourge *scourge ) {
                         ( scourge->getSDLHandler()->getScreen()->h - WIN_HEIGHT ) / 2,
                         WIN_WIDTH, WIN_HEIGHT,
                         "", false, Window::SIMPLE_WINDOW, "default" );
- equip = new Equip( scourge, mainWin );
+ equip = new Equip( scourge, mainWin, 0, 0, EQUIP_WIDTH, EQUIP_HEIGHT );
  mainWin->addWidget( equip->getWidget() );
+ inven = new Inven( scourge, mainWin, 0, EQUIP_HEIGHT, WIN_WIDTH, 200 - TITLE_HEIGHT );
+ mainWin->addWidget( inven->getWidget() );
 }
 
 PcUi::~PcUi() {
@@ -53,6 +58,8 @@ PcUi::~PcUi() {
 bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 
 	equip->handleEvent( widget, event );
+
+	inven->handleEvent( widget, event );
 
   if( widget == mainWin->closeButton ) {
     scourge->toggleInventoryWindow();
@@ -63,6 +70,8 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 bool PcUi::handleEvent(SDL_Event *event) {
 
 	equip->handleEvent( event );
+
+	inven->handleEvent( event );
 
   switch(event->type) {
   case SDL_KEYUP:
@@ -80,6 +89,7 @@ bool PcUi::handleEvent(SDL_Event *event) {
 void PcUi::setCreature( Creature *creature ) {
 	this->creature = creature;
 	equip->setCreature( creature );
+	inven->setCreature( creature );
 }
 
 

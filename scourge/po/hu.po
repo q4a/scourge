@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-14 21:56-0700\n"
+"POT-Creation-Date: 2007-03-17 17:05-0700\n"
 "PO-Revision-Date: 2007-03-03 14:10-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -582,163 +582,163 @@ msgstr ""
 msgid "Select a character"
 msgstr ""
 
-#: src/creature.cpp:217
+#: src/creature.cpp:219
 #, c-format
 msgid "%1$s's skill in %2$s has increased."
 msgstr ""
 
-#: src/creature.cpp:228
+#: src/creature.cpp:230
 #, c-format
 msgid "%1$s is not allowed to equip %2$s."
 msgstr ""
 
-#: src/creature.cpp:541
+#: src/creature.cpp:543
 msgid "Can't find path to target. Sorry!"
 msgstr ""
 
-#: src/creature.cpp:990
+#: src/creature.cpp:992
 #, c-format
 msgid "%s is overloaded."
 msgstr ""
 
-#: src/creature.cpp:1028
+#: src/creature.cpp:1030
 #, c-format
 msgid "%s is not overloaded anymore."
 msgstr ""
 
-#: src/creature.cpp:1062
+#: src/creature.cpp:1064
 #, c-format
 msgid "%s is not hungry at the moment."
 msgstr ""
 
-#: src/creature.cpp:1073
+#: src/creature.cpp:1075
 #, c-format
 msgid "%1$s eats %2$s."
 msgstr ""
 
-#: src/creature.cpp:1077 src/creature.cpp:1095 src/creature.cpp:1110
+#: src/creature.cpp:1079 src/creature.cpp:1097 src/creature.cpp:1112
 #, c-format
 msgid "%s is used up."
 msgstr "Elfogyott a %s"
 
-#: src/creature.cpp:1083
+#: src/creature.cpp:1085
 #, c-format
 msgid "%s is not thirsty at the moment."
 msgstr ""
 
-#: src/creature.cpp:1090
+#: src/creature.cpp:1092
 #, c-format
 msgid "%1$s drinks %2$s."
 msgstr ""
 
-#: src/creature.cpp:1105
+#: src/creature.cpp:1107
 #, c-format
 msgid "%1$s drinks from %2$s."
 msgstr ""
 
-#: src/creature.cpp:1115
+#: src/creature.cpp:1117
 msgid "You cannot eat or drink that!"
 msgstr ""
 
-#: src/creature.cpp:1135 src/spellcaster.cpp:223
+#: src/creature.cpp:1137 src/spellcaster.cpp:223
 #, c-format
 msgid "%s heals %d points."
 msgstr ""
 
-#: src/creature.cpp:1144
+#: src/creature.cpp:1146
 #, c-format
 msgid "%s receives %d magic points."
 msgstr ""
 
-#: src/creature.cpp:1152 src/spellcaster.cpp:239
+#: src/creature.cpp:1154 src/spellcaster.cpp:239
 #, c-format
 msgid "%s feels impervious to damage!"
 msgstr ""
 
-#: src/creature.cpp:1172
+#: src/creature.cpp:1174
 #, c-format
 msgid "%s feels at peace."
 msgstr ""
 
-#: src/creature.cpp:1202
+#: src/creature.cpp:1204
 #, c-format
 msgid "%1$s will consume %2$s."
 msgstr ""
 
-#: src/creature.cpp:1206
+#: src/creature.cpp:1208
 #, c-format
 msgid "%1$s will cast %2$s."
 msgstr ""
 
-#: src/creature.cpp:1210
+#: src/creature.cpp:1212
 #, c-format
 msgid "%1$s will use capability %2$s."
 msgstr ""
 
-#: src/creature.cpp:1574
+#: src/creature.cpp:1576
 #, c-format
 msgid "%s is raised from the dead!"
 msgstr ""
 
-#: src/creature.cpp:1608
+#: src/creature.cpp:1610
 #, c-format
 msgid "  %s levels up!"
 msgstr ""
 
-#: src/creature.cpp:1625
+#: src/creature.cpp:1627
 #, c-format
 msgid "%s gains %d experience points."
 msgstr ""
 
-#: src/creature.cpp:1628
+#: src/creature.cpp:1630
 #, c-format
 msgid "%s gains a level!"
 msgstr ""
 
-#: src/creature.cpp:1632
+#: src/creature.cpp:1634
 #, c-format
 msgid "%s looses %d experience points!"
 msgstr ""
 
-#: src/creature.cpp:2110
+#: src/creature.cpp:2112
 #, fuzzy
 msgid "*Mission*"
 msgstr "Beállitások"
 
-#: src/creature.cpp:2200
+#: src/creature.cpp:2202
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2212
+#: src/creature.cpp:2214
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2408
+#: src/creature.cpp:2410
 msgid "...Attack from blind-spot!"
 msgstr ""
 
-#: src/creature.cpp:2544 src/creature.cpp:2593
+#: src/creature.cpp:2546 src/creature.cpp:2595
 msgid "skill"
 msgstr ""
 
-#: src/creature.cpp:2548 src/creature.cpp:2592 src/infogui.cpp:407
+#: src/creature.cpp:2550 src/creature.cpp:2594 src/infogui.cpp:407
 msgid "vs."
 msgstr ""
 
-#: src/creature.cpp:2550
+#: src/creature.cpp:2552
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2588 src/characterinfo.cpp:108 src/characterinfo.cpp:117
+#: src/creature.cpp:2590 src/characterinfo.cpp:108 src/characterinfo.cpp:117
 #: src/characterinfo.cpp:137 src/characterinfo.cpp:146
 #: src/characterinfo.cpp:166 src/characterinfo.cpp:175
 #: src/characterinfo.cpp:194 src/characterinfo.cpp:203
 msgid "CTH"
 msgstr ""
 
-#: src/creature.cpp:2590
+#: src/creature.cpp:2592
 msgid "max"
 msgstr ""
 
@@ -748,7 +748,7 @@ msgstr ""
 msgid "Loading Shapes"
 msgstr ""
 
-#: src/session.cpp:99 src/item.cpp:303 src/item.cpp:331 src/item.cpp:502
+#: src/session.cpp:99 src/item.cpp:305 src/item.cpp:341 src/item.cpp:512
 msgid "Loading Items"
 msgstr ""
 
@@ -851,38 +851,38 @@ msgstr ""
 msgid "The healing spell was cast."
 msgstr ""
 
-#: src/item.cpp:261 src/item.cpp:269 src/item.cpp:277
+#: src/item.cpp:262 src/item.cpp:270 src/item.cpp:278
 msgid "*Cursed* "
 msgstr ""
 
-#: src/item.cpp:265 src/item.cpp:273 src/item.cpp:281
+#: src/item.cpp:266 src/item.cpp:274 src/item.cpp:282
 #, fuzzy
 msgid " *Mission*"
 msgstr "Beállitások"
 
-#: src/item.cpp:792
+#: src/item.cpp:802
 msgid ""
 "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $of $school"
 msgstr ""
 
-#: src/item.cpp:810
+#: src/item.cpp:820
 msgid "Protective"
 msgstr ""
 
-#: src/item.cpp:815
+#: src/item.cpp:825
 msgid "Slaying"
 msgstr ""
 
-#: src/item.cpp:830
+#: src/item.cpp:840
 msgid "of the"
 msgstr ""
 
-#: src/item.cpp:912
+#: src/item.cpp:922
 #, c-format
 msgid "Scroll of %s"
 msgstr ""
 
-#: src/item.cpp:1037
+#: src/item.cpp:1047
 msgid "An item was fully identified!"
 msgstr ""
 
@@ -2928,35 +2928,35 @@ msgstr ""
 msgid "Some plants grow here."
 msgstr ""
 
-#: ../scourge_data/config/item.cfg:90
+#: ../scourge_data/config/item.cfg:97
 msgid "Two-handed"
 msgstr ""
 
-#: ../scourge_data/config/item.cfg:91
+#: ../scourge_data/config/item.cfg:98
 msgid "Large"
 msgstr ""
 
-#: ../scourge_data/config/item.cfg:92
+#: ../scourge_data/config/item.cfg:99
 msgid "Made of Metal"
 msgstr ""
 
-#: ../scourge_data/config/item.cfg:93
+#: ../scourge_data/config/item.cfg:100
 msgid "Bludgeoning"
 msgstr ""
 
-#: ../scourge_data/config/item.cfg:94
+#: ../scourge_data/config/item.cfg:101
 msgid "Small"
 msgstr ""
 
-#: ../scourge_data/config/item.cfg:95
+#: ../scourge_data/config/item.cfg:102
 msgid "Robes"
 msgstr ""
 
-#: ../scourge_data/config/item.cfg:96
+#: ../scourge_data/config/item.cfg:103
 msgid "Plate-mail"
 msgstr ""
 
-#: ../scourge_data/config/item.cfg:97
+#: ../scourge_data/config/item.cfg:104
 msgid "Ranged Weapons"
 msgstr ""
 

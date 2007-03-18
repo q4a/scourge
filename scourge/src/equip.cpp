@@ -38,14 +38,18 @@ using namespace std;
   *@author Gabor Torok
   */
 
-Equip::Equip( Scourge *scourge, Window *window ) {
+Equip::Equip( Scourge *scourge, Window *window, int x, int y, int w, int h ) {
 	this->scourge = scourge;
 	this->creature = NULL;
 	this->backgroundTexture = scourge->getShapePalette()->getNamedTexture( "equip" );
   this->currentHole = -1;
 	this->window = window;
+	this->x = x;
+	this->y = y;
+	this->w = w;
+	this->h = h;
 
-	canvas = new Canvas( CANVAS_OFFSET_X, 0, EQUIP_WIDTH + CANVAS_OFFSET_X + 2, EQUIP_HEIGHT + 2, this, this);
+	canvas = new Canvas( x, y, x + w, y + h, this, this);
 	canvas->setDrawBorders( false );
 }
 
@@ -59,8 +63,8 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 bool Equip::handleEvent(SDL_Event *event) {
   switch(event->type) {
   case SDL_MOUSEMOTION:
-    currentHole = getHoleAtPos( event->motion.x - window->getX() - CANVAS_OFFSET_X, 
-                                event->motion.y - window->getY() - CANVAS_OFFSET_Y );
+    currentHole = getHoleAtPos( event->motion.x - window->getX() - x, 
+                                event->motion.y - window->getY() - TITLE_HEIGHT );
     break;
   case SDL_MOUSEBUTTONUP:
     break;     
@@ -154,22 +158,19 @@ void Equip::setCreature( Creature *creature ) {
 	this->creature = creature;
 }
 
-void Equip::drawWidgetContents( Widget *w ) {
+void Equip::drawWidgetContents( Widget *widget ) {
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, backgroundTexture );
-  glPushMatrix();
-  glTranslatef( 1, 1, 0 );
 	glBegin( GL_QUADS );
 	glTexCoord2d( 0, 1 );
-	glVertex2d( 0, EQUIP_HEIGHT );
+	glVertex2d( 0, h );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( 0, 0 );
 	glTexCoord2d( 1, 0 );
-	glVertex2d( EQUIP_WIDTH, 0 );
+	glVertex2d( w, 0 );
 	glTexCoord2d( 1, 1 );
-	glVertex2d( EQUIP_WIDTH, EQUIP_HEIGHT );
+	glVertex2d( w, h );
 	glEnd();
-  glPopMatrix();
 	if( creature ) {
 		for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
 			Item *item = creature->getEquippedInventory( i );
