@@ -104,11 +104,13 @@ bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   if( inside && dragAndDropHandler ) dragAndDropHandler->receive(this);
   dragging = false;
   return inside;
-  case SDL_MOUSEBUTTONDOWN:
-  dragging = inside;
-  dragX = x - getX();
-  dragY = y - getY();
-  break;
+	case SDL_MOUSEBUTTONDOWN:
+		if( event->button.button == SDL_BUTTON_LEFT ) {
+			dragging = inside;
+			dragX = x - getX();
+			dragY = y - getY();
+		}
+		break;
   }
   return false;
 }

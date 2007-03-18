@@ -38,6 +38,8 @@
 using namespace std;
 
 #define GRID_SIZE 30
+#define OFFSET_X 5
+#define OFFSET_Y 5
 
 Inven::Inven( Scourge *scourge, Window *window, int x, int y, int w, int h ) {
 	this->scourge = scourge;
@@ -62,6 +64,21 @@ bool Inven::handleEvent( SDL_Event *event ) {
 }
 
 bool Inven::handleEvent( Widget *widget, SDL_Event *event ) {
+	if( scourge->getSDLHandler()->isDoubleClick ) {
+		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - window->getX() - x, 
+															 scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT );
+		if( item && item->getRpgItem()->isContainer() ) {
+			scourge->openContainerGui(item);
+		}
+	} else if( scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
+		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - window->getX() - x, 
+															 scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT );
+		if( item ) {
+			scourge->getInfoGui()->setItem( item );
+			if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
+				scourge->getInfoGui()->getWindow()->setVisible( true );
+		}
+	}
   return false;
 }
 
@@ -71,7 +88,9 @@ void Inven::receive( Widget *widget ) {
 		if( item ) {
 
 			// try to fit it
-			if( !findInventoryPosition( item ) ) {
+			if( !findInventoryPosition( item, 
+																	scourge->getSDLHandler()->mouseX - window->getX() - x, 
+																	scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT ) ) {
 				scourge->showMessageDialog( _( "Can't fit item in inventory." ) );
 			} else {
 				if( creature->addInventory( item ) ) {
@@ -124,15 +143,22 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
   return false;
 }
 
+void Inven::convertMousePos( int x, int y, int *invX, int *invY ) {
+	*invX = ( x - OFFSET_X ) / GRID_SIZE;
+	*invY = ( y - OFFSET_Y ) / GRID_SIZE;
+}
+
 // Note: this is O(n)
 Item *Inven::getItemAtPos( int x, int y ) {
 	for( int i = 0; creature && i < creature->getInventoryCount(); i++ ) {
 		if( !creature->isEquipped( i ) ) {
 			Item *item = creature->getInventory( i );
-			if( x >= item->getInventoryX() * GRID_SIZE && 
-					x < ( item->getInventoryX() + item->getInventoryWidth() ) * GRID_SIZE &&
-					y >= item->getInventoryY() * GRID_SIZE && 
-					y < ( item->getInventoryY() + item->getInventoryHeight() ) * GRID_SIZE ) {
+			int posX, posY;
+			convertMousePos( x, y, &posX, &posY );
+			if( posX >= item->getInventoryX() && 
+					posX < item->getInventoryX() + item->getInventoryWidth() &&
+					posY >= item->getInventoryY() && 
+					posY < item->getInventoryY() + item->getInventoryHeight() ) {
 				return item;
 			}
 		}
@@ -141,19 +167,37 @@ Item *Inven::getItemAtPos( int x, int y ) {
 }
 
 // note: optimize this, current O(n^2)
-bool Inven::findInventoryPosition( Item *item, bool useExistingLocationForSameItem ) {
+bool Inven::findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem ) {
 	if( creature ) {
 		int colCount = canvas->getWidth() / GRID_SIZE;
 		int rowCount = canvas->getHeight() / GRID_SIZE;
+
+		int selX = -1;
+		int selY = -1;
+
+		int posX, posY;
+		convertMousePos( x, y, &posX, &posY );
+
 		for( int xx = 0; xx < colCount; xx++ ) {
 			for( int yy = 0; yy < rowCount; yy++ ) {
 				if( xx + item->getInventoryWidth() <= colCount &&
 						yy + item->getInventoryHeight() <= rowCount && 
 						checkInventoryLocation( item, useExistingLocationForSameItem, xx, yy ) ) {
-					item->setInventoryLocation( xx, yy );
-					return true;
+					if( posX == xx && posY == yy ) {
+						selX = xx;
+						selY = yy;
+						break;
+					} else if( selX == -1 ) {
+						selX = xx;
+						selY = yy;
+					}
 				}
 			}
+		}
+		
+		if( selX > -1 ) {
+			item->setInventoryLocation( selX, selY );
+			return true;
 		}
 	}
 	return false;
@@ -204,7 +248,7 @@ void Inven::drawWidgetContents( Widget *widget ) {
 	glEnd();
 
 	glPushMatrix();
-	glTranslatef( 5, 5, 0 );
+	glTranslatef( OFFSET_X, OFFSET_Y, 0 );
 
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA );
@@ -267,7 +311,7 @@ void Inven::setCreature( Creature *creature ) {
 		for( int t = 0; creature && t < creature->getInventoryCount(); t++ ) {
 			if( !creature->isEquipped( t ) ) {
 				Item *item = creature->getInventory( t );
-				findInventoryPosition( item, false );
+				findInventoryPosition( item, -1, -1, false );
 			}
 		}
 		creature->setInventoryArranged( true );
