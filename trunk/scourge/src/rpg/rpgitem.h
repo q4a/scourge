@@ -42,6 +42,7 @@ class GameAdapter;
 typedef struct _ItemType {
   char name[40];
   bool isWeapon, isArmor, isRandom, isRanged, hasSpell, isEnchantable;
+	int inventoryWidth, inventoryHeight;
 } ItemType;
 
 enum {
@@ -263,6 +264,9 @@ private:
   inline bool isScroll() { return( type == SCROLL ? true : false ); }
 	inline bool hasSpell() { return( itemTypes[ type ].hasSpell ); }
 	inline bool isOther() { return( type == OTHER ? true : false ); }
+
+	inline int getInventoryWidth() { return itemTypes[ type ].inventoryWidth; }
+	inline int getInventoryHeight() { return itemTypes[ type ].inventoryHeight; }
 
 
 

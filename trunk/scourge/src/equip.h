@@ -37,11 +37,6 @@ class Storable;
 class ConfirmDialog;
 class Item;
 
-#define EQUIP_WIDTH 260
-#define EQUIP_HEIGHT 360
-#define CANVAS_OFFSET_X 4
-#define CANVAS_OFFSET_Y TITLE_HEIGHT
-
 class Equip : public DragAndDropHandler, WidgetView {
 private:
 	Scourge *scourge;
@@ -50,21 +45,11 @@ private:
   int currentHole;
 	Window *window;
   Canvas *canvas;
-	Label *inventoryWeightLabel, *coinsLabel;
-	char inventoryWeightStr[80], coinsStr[80];
-	Button *equipButton, *fixButton, *removeCurseButton, *poolButton;
-	Button *combineButton, *enchantButton, *identifyButton, *openButton;
-	Button *eatDrinkButton, *castScrollButton, *transcribeButton, *infoButton;
-  Button *storeItemButton;
-  int preferredWeaponLocation[3];
-  Button *preferredWeaponButton[3];
-  Storable *storable;
+	int x, y, w, h;
 
 public:
-	Equip( Scourge *scourge, Window *window );
+	Equip( Scourge *scourge, Window *window, int x, int y, int w, int h );
 	~Equip();
-
-  inline Storable *getStorable() { return storable; }
 
   inline Widget *getWidget() { return canvas; }
 	bool handleEvent( SDL_Event *event );

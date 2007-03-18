@@ -89,6 +89,8 @@ scourge_SOURCES = \
 	pcui.h\
 	equip.cpp\
 	equip.h\
+	inven.cpp\
+	inven.h\
 	shapepalette.cpp\
 	shapepalette.h\
 	util.cpp\

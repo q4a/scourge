@@ -1,5 +1,5 @@
 /***************************************************************************
-                          pcui.h  -  description
+                          inven.h  -  description
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PCUI_H
-#define PCUI_H
+#ifndef INVEN_H
+#define INVEN_H
 
 #include <iostream>
 #include <vector>
@@ -36,27 +36,36 @@ class Scourge;
 class Storable;
 class ConfirmDialog;
 class Item;
-class Equip;
-class Inven;
 
-class PcUi {
+class Inven : public DragAndDropHandler, WidgetView {
 private:
 	Scourge *scourge;
 	Creature *creature;
-
-	Window *mainWin;
-	Equip *equip;
-	Inven *inven;
+	GLuint backgroundTexture;
+  int currentHole;
+	Window *window;
+  Canvas *canvas;
+	int x, y, w, h;
 
 public:
-	PcUi( Scourge *scourge );
-	~PcUi();
+	Inven( Scourge *scourge, Window *window, int x, int y, int w, int h );
+	~Inven();
 
-  inline Window *getWindow() { return mainWin; }
+  inline Widget *getWidget() { return canvas; }
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
 
+	// drag-n-drop
+	void receive( Widget *widget );
+	bool startDrag( Widget *widget, int x=0, int y=0 );
+
+	void drawWidgetContents( Widget *w );
+
+protected:
+  Item *getItemAtPos( int x, int y );
+	bool findInventoryPosition( Item *item, bool useExistingLocationForSameItem=true );
+	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
 };
 
 #endif

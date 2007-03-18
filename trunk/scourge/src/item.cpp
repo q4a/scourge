@@ -44,6 +44,7 @@ Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
   this->containsMagicItem = false;
   this->showCursed = false;
   sprintf( this->itemName, "%s", rpgItem->getDisplayName() );
+	inventoryX = inventoryY = 0;
 
   commonInit( loading );
 
@@ -297,6 +298,7 @@ void Item::initItemTypes( ConfigLang *config ) {
 	vector<ConfigNode*> *vv = (*v)[0]->
 		getChildrenByName( "type" );
 
+	char tmp[20];
 	for( unsigned int i = 0; i < vv->size(); i++ ) {
 		ConfigNode *node = (*vv)[i];
 
@@ -310,6 +312,14 @@ void Item::initItemTypes( ConfigLang *config ) {
 		itemType.isRanged = node->getValueAsBool( "isRanged" );
 		itemType.hasSpell = node->getValueAsBool( "hasSpell" );
 		itemType.isEnchantable = node->getValueAsBool( "isEnchantable" );
+		strcpy( tmp, node->getValueAsString( "defaultDimension" ) );
+		char *p = strtok( tmp, "," );
+		if( p ) {
+			itemType.inventoryWidth = atoi( p );
+			itemType.inventoryHeight = atoi( strtok( NULL, "," ) );
+		} else {
+			itemType.inventoryWidth = itemType.inventoryHeight = 1;
+		}
 		RpgItem::itemTypes.push_back( itemType );
       
 		if( itemType.isRandom ) {
@@ -1042,5 +1052,13 @@ void Item::identify( int infoDetailLevel ) {
 		identifiedBits = (Uint32)0xffff;
 	}
 	// fprintf( stderr, "skill=%d id=%x\n", infoDetailLevel, identifiedBits );
+}
+
+int Item::getInventoryWidth() { 
+	return rpgItem->getInventoryWidth(); 
+}
+
+int Item::getInventoryHeight() { 
+	return rpgItem->getInventoryHeight(); 
 }
 

@@ -81,6 +81,8 @@ class Item : public RenderedItem, Storable {
   Session *session;	
 	Uint32 identifiedBits;
 
+	int inventoryX, inventoryY;
+
 public:
 
 	enum {
@@ -97,6 +99,15 @@ public:
 
   Item(Session *session, RpgItem *rpgItem, int level=1, bool loading=false );
   ~Item();
+
+	inline void setInventoryLocation( int x, int y ) {
+		inventoryX = x;
+		inventoryY = y;
+	}
+	inline int getInventoryX() { return inventoryX; }
+	inline int getInventoryY() { return inventoryY; }
+	int getInventoryWidth();
+	int getInventoryHeight();
 
 	inline void setIdentifiedBit( int bit, bool value ) {
 		if( value ) identifiedBits |= ( 1 << bit );  
