@@ -32,8 +32,8 @@ using namespace std;
   *@author Gabor Torok
   */
 
-#define EQUIP_WIDTH 260
-#define EQUIP_HEIGHT 360
+#define EQUIP_WIDTH 230
+#define EQUIP_HEIGHT 300
 #define WIN_WIDTH EQUIP_WIDTH + 300
 #define WIN_HEIGHT EQUIP_HEIGHT + 200
 
