@@ -48,6 +48,7 @@ Equip::Equip( Scourge *scourge, Window *window, int x, int y, int w, int h ) {
 	this->y = y;
 	this->w = w;
 	this->h = h;
+	this->lastItem = NULL;
 
 	canvas = new Canvas( x, y, x + w, y + h, this, this);
 	canvas->setDrawBorders( false );
@@ -76,10 +77,24 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 bool Equip::handleEvent(SDL_Event *event) {
+	Item *item;
+	char tooltip[ 500 ];
   switch(event->type) {
   case SDL_MOUSEMOTION:
     currentHole = getHoleAtPos( event->motion.x - window->getX() - x, 
                                 event->motion.y - window->getY() - TITLE_HEIGHT );
+
+		item = getItemInHole( currentHole );
+		if( item != lastItem ) {
+			lastItem = item;
+			if( item ) {
+				item->getTooltip( tooltip );
+				canvas->setTooltip( tooltip );
+			} else {
+				canvas->setTooltip( NULL );
+			}
+		}
+
     break;
   case SDL_MOUSEBUTTONUP:
     break;     
@@ -88,9 +103,13 @@ bool Equip::handleEvent(SDL_Event *event) {
   return false;
 }
 
+Item *Equip::getItemInHole( int hole ) {
+	return( hole > -1 && creature ? creature->getEquippedInventory( hole ) : NULL );
+}
+
 Item *Equip::getItemAtPos( int x, int y ) {
   int hole = getHoleAtPos( x, y );
-  return( hole > -1 && creature ? creature->getEquippedInventory( hole ) : NULL );
+  return getItemInHole( hole );
 }
 
 int Equip::getHoleAtPos( int x, int y ) {

@@ -1093,10 +1093,10 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h ) {
 								 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b,
 								 1 );
 			glBegin( GL_LINE_LOOP );
-			glVertex2d( x, y + h );
-			glVertex2d( x, y );
-			glVertex2d( x + w, y );
-			glVertex2d( x + w, y + h );
+			glVertex2d( x + 1, y + h - 1 );
+			glVertex2d( x + 1, y + 1 );
+			glVertex2d( x + w - 1, y + 1 );
+			glVertex2d( x + w - 1, y + h - 1 );
 			glEnd();
 			glEnable( GL_TEXTURE_2D );
 			glColor4f( 1, 1, 1, 1 );
@@ -1106,3 +1106,48 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h ) {
 	}
 }
 
+void Item::getTooltip( char *tooltip ) {
+	char tmp[500];
+	strcpy( tooltip, getName() );
+	if( getRpgItem()->isWeapon() ) {
+		sprintf( tmp, "|%s:%d%%(%c)", 
+						 _( "DAM" ), getRpgItem()->getDamage(),
+						 RpgItem::getDamageTypeLetter( getRpgItem()->getDamageType() ) );
+		strcat( tooltip, tmp );
+		if( getRpgItem()->getAP() > 0 ) {
+			sprintf( tmp, " %s:%d", _( "AP" ), getRpgItem()->getAP() );
+			strcat( tooltip, tmp );
+		}
+		if( getRange() > MIN_DISTANCE ) {
+			sprintf( tmp, " %s:%d", _( "RANGE" ), getRange() );
+			strcat( tooltip, tmp );
+		}
+	} else if( getRpgItem()->isArmor() ) {
+		strcat( tooltip, "|" );
+		strcat( tooltip, _( "DEF" ) );
+		strcat( tooltip, ":" );
+		for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
+			sprintf(tmp, _( " %d(%c)" ), 
+							getRpgItem()->getDefense( i ),
+							RpgItem::getDamageTypeLetter( i ) );
+			strcat( tooltip, tmp );
+		}
+	}
+	if( getRpgItem()->getPotionPower() ) {
+		sprintf( tmp, "|%s:%d", _( "Power" ), getRpgItem()->getPotionPower() );
+		strcat( tooltip, tmp );
+	}
+	if( getRpgItem()->getMaxCharges() > 0 &&
+			( !getRpgItem()->hasSpell() || getSpell() ) ) {
+		sprintf( tmp, "|%s:%d(%d)", _( "Charges" ), getCurrentCharges(), getRpgItem()->getMaxCharges() );
+		strcat( tooltip, tmp );
+		if( getSpell() ) {
+			sprintf( tmp, "|%s:%s", _( "Spell" ), getSpell()->getDisplayName() );
+			strcat( tooltip, tmp );
+		}
+	}
+	if( getRpgItem()->getPotionTime() > 0 ) {
+		sprintf( tmp, "|%s:%d", _( "Duration" ), getRpgItem()->getPotionTime());
+		strcat( tooltip, tmp );
+	}
+}

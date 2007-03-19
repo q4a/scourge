@@ -46,6 +46,7 @@ private:
 	Window *window;
   Canvas *canvas;
 	int x, y, w, h;
+	Item *lastItem;
 
 public:
 	Equip( Scourge *scourge, Window *window, int x, int y, int w, int h );
@@ -65,6 +66,7 @@ public:
 protected:
   Item *getItemAtPos( int x, int y );
   int getHoleAtPos( int x, int y );
+	Item *getItemInHole( int hole );
 };
 
 #endif
