@@ -35,6 +35,7 @@ class Session;
 class ShapePalette;
 class ConfigLang;
 class ConfigNode;
+class Scourge;
 
 /**
   *@author Gabor Torok
@@ -99,6 +100,8 @@ public:
 
   Item(Session *session, RpgItem *rpgItem, int level=1, bool loading=false );
   ~Item();
+
+	void renderIcon( Scourge *scourge, int x, int y, int w, int h );
 
 	inline void setInventoryLocation( int x, int y ) {
 		inventoryX = x;

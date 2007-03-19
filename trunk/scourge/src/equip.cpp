@@ -176,6 +176,7 @@ void Equip::setCreature( Creature *creature ) {
 void Equip::drawWidgetContents( Widget *widget ) {
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, backgroundTexture );
+	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_QUADS );
 	glTexCoord2d( 0, 1 );
 	glVertex2d( 0, h );
@@ -192,21 +193,7 @@ void Equip::drawWidgetContents( Widget *widget ) {
       if( item ) {
 				SDL_Rect *rect = scourge->getShapePalette()->getInventoryHole( i );
 				if( rect && rect->w && rect->h ) {
-					GLuint tex = scourge->getShapePalette()->
-						tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ];
-					glEnable( GL_ALPHA_TEST );
-					glAlphaFunc( GL_NOTEQUAL, 0 );
-					glBindTexture( GL_TEXTURE_2D, tex );
-					glBegin( GL_QUADS );
-					glTexCoord2d( 0, 1 );
-					glVertex2d( rect->x, rect->y + rect->h );
-					glTexCoord2d( 0, 0 );
-					glVertex2d( rect->x, rect->y );
-					glTexCoord2d( 1, 0 );
-					glVertex2d( rect->x + rect->w, rect->y );
-					glTexCoord2d( 1, 1 );
-					glVertex2d( rect->x + rect->w, rect->y + rect->h );
-					glEnd();
+					item->renderIcon( scourge, rect->x, rect->y, rect->w, rect->h );
 				}
 			}
 		}

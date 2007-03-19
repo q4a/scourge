@@ -954,7 +954,11 @@ char *Item::getType() {
 	return getRpgItem()->getName();
 }
 
+#define DEBUG_IDENTIFY_ITEM 1
 void Item::identify( int infoDetailLevel ) {
+#ifdef DEBUG_IDENTIFY_ITEM
+	infoDetailLevel = 500;
+#endif
 	identifiedBits = (Uint32)0x0000;
 	if( isMagicItem() ) {
 		if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
@@ -1060,5 +1064,45 @@ int Item::getInventoryWidth() {
 
 int Item::getInventoryHeight() { 
 	return rpgItem->getInventoryHeight(); 
+}
+
+void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h ) {
+	glColor4f( 1, 1, 1, 1 );
+	GLuint tex = session->getShapePalette()->
+		tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ];
+	glEnable( GL_ALPHA_TEST );
+	glAlphaFunc( GL_NOTEQUAL, 0 );
+	glBindTexture( GL_TEXTURE_2D, tex );
+	glBegin( GL_QUADS );
+	glTexCoord2d( 0, 1 );
+	glVertex2d( x, y + h );
+	glTexCoord2d( 0, 0 );
+	glVertex2d( x, y );
+	glTexCoord2d( 1, 0 );
+	glVertex2d( x + w, y );
+	glTexCoord2d( 1, 1 );
+	glVertex2d( x + w, y + h );
+	glEnd();
+	glDisable( GL_ALPHA_TEST );
+
+	if( isMagicItem() ) {
+		if( isIdentified() ) {
+			glDisable( GL_TEXTURE_2D );
+			glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r,
+								 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g,
+								 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b,
+								 1 );
+			glBegin( GL_LINE_LOOP );
+			glVertex2d( x, y + h );
+			glVertex2d( x, y );
+			glVertex2d( x + w, y );
+			glVertex2d( x + w, y + h );
+			glEnd();
+			glEnable( GL_TEXTURE_2D );
+			glColor4f( 1, 1, 1, 1 );
+		} else {
+			scourge->getSDLHandler()->texPrint( x + 2, y + 12, "?" );
+		}
+	}
 }
 

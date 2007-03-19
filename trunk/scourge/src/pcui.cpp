@@ -34,23 +34,24 @@ using namespace std;
 
 #define EQUIP_WIDTH 230
 #define EQUIP_HEIGHT 300
-#define WIN_WIDTH EQUIP_WIDTH + 300
-#define WIN_HEIGHT EQUIP_HEIGHT + 200
+#define INVEN_WIDTH 530
+#define INVEN_HEIGHT 160
+#define WIN_WIDTH EQUIP_WIDTH + 320
+#define WIN_HEIGHT EQUIP_HEIGHT + 220
 
 PcUi::PcUi( Scourge *scourge ) {
 	this->scourge = scourge;
 	this->creature = NULL;
 
-	mainWin = new Window( scourge->getSDLHandler(),
-                        ( scourge->getSDLHandler()->getScreen()->w - WIN_WIDTH ) / 2, 
-                        ( scourge->getSDLHandler()->getScreen()->h - WIN_HEIGHT ) / 2,
-                        WIN_WIDTH, WIN_HEIGHT,
-                        "", false, Window::SIMPLE_WINDOW, "default" );
- equip = new Equip( scourge, mainWin, 0, 0, EQUIP_WIDTH, EQUIP_HEIGHT );
+	mainWin = scourge->createWindow( ( scourge->getSDLHandler()->getScreen()->w - WIN_WIDTH ) / 2, 
+																	 ( scourge->getSDLHandler()->getScreen()->h - WIN_HEIGHT ) / 2,
+																	 WIN_WIDTH, WIN_HEIGHT,
+																	 _( "Character Information" ) );
+ equip = new Equip( scourge, mainWin, 10, 5, EQUIP_WIDTH, EQUIP_HEIGHT );
  mainWin->addWidget( equip->getWidget() );
- inven = new Inven( scourge, mainWin, 0, EQUIP_HEIGHT, WIN_WIDTH, 183 - TITLE_HEIGHT );
+ inven = new Inven( scourge, mainWin, 10, EQUIP_HEIGHT + 15, INVEN_WIDTH, INVEN_HEIGHT );
  mainWin->addWidget( inven->getWidget() );
- mainWin->addWidget( new Label( 5, EQUIP_HEIGHT + 185 - TITLE_HEIGHT + 10, 
+ mainWin->addWidget( new Label( 8, WIN_HEIGHT - 30, 
 																_( "Right click for info, double-click to open." ) ) );
 }
 
