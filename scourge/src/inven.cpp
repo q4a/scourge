@@ -309,7 +309,10 @@ void Inven::drawWidgetContents( Widget *widget ) {
 				int iy = item->getInventoryY() * GRID_SIZE;
 				int iw = item->getInventoryWidth() * GRID_SIZE;
 				int ih = item->getInventoryHeight() * GRID_SIZE;
+
+				item->renderIcon( scourge, ix, iy, iw, ih );
 	
+				/*
 				GLuint tex = scourge->getShapePalette()->
 					tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ];
 				glEnable( GL_ALPHA_TEST );
@@ -325,6 +328,7 @@ void Inven::drawWidgetContents( Widget *widget ) {
 				glTexCoord2d( 1, 1 );
 				glVertex2d( ix + iw, iy + ih );
 				glEnd();
+				*/
 			}
 		}
 	}
