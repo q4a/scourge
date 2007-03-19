@@ -952,9 +952,26 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
                               float r, float g, float b,
 															float zoom ) {
 	setFontType( Constants::SCOURGE_MONO_FONT );
-	int w = textWidth( message ) + 10;
+
+	int w = 0;
+	vector<string> lines;
+	vector<int> widths;
+	char tmp[3000];
+	strncpy( tmp, message, 2999 );
+	tmp[2999] = '\0';
+	char *p = strtok( tmp, "|" );
+	while( p ) {
+		string s = p;
+		lines.push_back( s );
+		int ww = textWidth( p ) + 10;
+		widths.push_back( ww );
+		if( w < ww ) w = ww;
+		p = strtok( NULL, "|" );
+	}
+
+	//int w = textWidth( message ) + 10;
   //int w = strlen( message ) * 8 + 4;
-  int h = 20;
+  int h = 20 * lines.size();
   int x = -2;
   int y = -14;
 
@@ -986,7 +1003,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
   }
 
   glPushMatrix();
-  glTranslatef( xpos2, ypos2, zpos2 );
+  glTranslatef( xpos2, ypos2 - ( y + h - 20 ), zpos2 );
   glRotatef( zrot, 0.0f, 0.0f, 1.0f );
   glRotatef( yrot, 1.0f, 0.0f, 0.0f );
 
@@ -1046,7 +1063,12 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
   }
   
   glColor4f( 1, 1, 1, 1 );
-  texPrint( 0, 0, "%s", message );
+	for( unsigned int i = 0; i < lines.size(); i++ ) {
+		int ww = widths[ i ];
+		int x = (int)( ( w - ww ) / 2.0f ) + 5;
+		texPrint( x, i * 20, "%s", lines[i].c_str() );
+	}
+  //texPrint( 0, 0, "%s", message );
   setFontType( Constants::SCOURGE_DEFAULT_FONT );
   glPopMatrix();
 }

@@ -51,6 +51,7 @@ Inven::Inven( Scourge *scourge, Window *window, int x, int y, int w, int h ) {
 	this->y = y;
 	this->w = w;
 	this->h = h;
+	this->lastItem = NULL;
 
 	canvas = new Canvas( x, y, x + w, y + h, this, this);
 	canvas->setDrawBorders( false );
@@ -60,6 +61,20 @@ Inven::~Inven() {
 }
 
 bool Inven::handleEvent( SDL_Event *event ) {
+	if( event->type == SDL_MOUSEMOTION ) {
+		Item *item = getItemAtPos( event->motion.x - window->getX() - x, 
+															 event->motion.y - window->getY() - y - TITLE_HEIGHT );
+		if( item != lastItem ) {
+			lastItem = item;
+			if( item ) {
+				char tooltip[ 500 ];
+				item->getTooltip( tooltip );
+				canvas->setTooltip( tooltip );
+			} else {
+				canvas->setTooltip( NULL );
+			}
+		}
+	}
 	return false;
 }
 
@@ -311,29 +326,12 @@ void Inven::drawWidgetContents( Widget *widget ) {
 				int ih = item->getInventoryHeight() * GRID_SIZE;
 
 				item->renderIcon( scourge, ix, iy, iw, ih );
-	
-				/*
-				GLuint tex = scourge->getShapePalette()->
-					tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ];
-				glEnable( GL_ALPHA_TEST );
-				glAlphaFunc( GL_NOTEQUAL, 0 );
-				glBindTexture( GL_TEXTURE_2D, tex );
-				glBegin( GL_QUADS );
-				glTexCoord2d( 0, 1 );
-				glVertex2d( ix, iy + ih );
-				glTexCoord2d( 0, 0 );
-				glVertex2d( ix, iy );
-				glTexCoord2d( 1, 0 );
-				glVertex2d( ix + iw, iy );
-				glTexCoord2d( 1, 1 );
-				glVertex2d( ix + iw, iy + ih );
-				glEnd();
-				*/
 			}
 		}
 	}
 
 	glPopMatrix();
+	glDisable( GL_TEXTURE_2D );
 }
 
 void Inven::setCreature( Creature *creature ) { 

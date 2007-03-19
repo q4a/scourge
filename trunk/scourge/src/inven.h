@@ -46,6 +46,7 @@ private:
 	Window *window;
   Canvas *canvas;
 	int x, y, w, h;
+	Item *lastItem;
 
 public:
 	Inven( Scourge *scourge, Window *window, int x, int y, int w, int h );

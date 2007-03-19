@@ -102,6 +102,7 @@ public:
   ~Item();
 
 	void renderIcon( Scourge *scourge, int x, int y, int w, int h );
+	void getTooltip( char *tooltip );
 
 	inline void setInventoryLocation( int x, int y ) {
 		inventoryX = x;
