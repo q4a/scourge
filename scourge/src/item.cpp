@@ -1133,6 +1133,11 @@ void Item::getTooltip( char *tooltip ) {
 			strcat( tooltip, tmp );
 		}
 	}
+	if( getLevel() > 1 ) {
+		sprintf( tmp, "|%s:%d", 
+						 _( "Level" ), getLevel() );
+		strcat( tooltip, tmp );
+	}
 	if( getRpgItem()->getPotionPower() ) {
 		sprintf( tmp, "|%s:%d", _( "Power" ), getRpgItem()->getPotionPower() );
 		strcat( tooltip, tmp );
