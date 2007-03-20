@@ -67,16 +67,25 @@ TR_LIBS=""
 dnl Only override CXXFLAGS and CFLAGS if not already defined
 if test "x$CXXFLAGS" = "x" -a "x$CFLAGS" = "x" ; then
 	TR_CPPFLAGS=""
-	TR_CFLAGS="-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
-	TR_CXXFLAGS="-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
+	TR_CFLAGS=""
+	TR_CXXFLAGS=""
 	TR_LIBS=""
-
-	case "$host" in
-	i*86-*-*) TR_CFLAGS="$TR_CFLAGS -falign-loops=2 -falign-jumps=2 -falign-functions=2";
-		TR_CXXFLAGS="$TR_CXXFLAGS -falign-loops=2 -falign-jumps=2 -falign-functions=2";;
-	alpha*-*-linux-*) TR_CFLAGS="$TR_CFLAGS -mieee";;
-	esac
 fi
+
+AC_ARG_ENABLE([optimized],
+	      AS_HELP_STRING([--enable-optimized], [enable compiler optimizations]),
+	      [if test "x${enableval}" = "xyes" ; then
+			TR_CPPFLAGS=""
+			TR_CFLAGS="-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
+			TR_CXXFLAGS="-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
+			TR_LIBS=""
+
+			case "$host" in
+			i*86-*-*) TR_CFLAGS="$TR_CFLAGS -falign-loops=2 -falign-jumps=2 -falign-functions=2";
+				TR_CXXFLAGS="$TR_CXXFLAGS -falign-loops=2 -falign-jumps=2 -falign-functions=2";;
+			alpha*-*-linux-*) TR_CFLAGS="$TR_CFLAGS -mieee";;
+			esac	      
+	       fi])
 
 AC_ARG_ENABLE([debug],
 	      AS_HELP_STRING([--enable-debug], [enable debug in scourge]),

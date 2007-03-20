@@ -971,7 +971,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 
 	//int w = textWidth( message ) + 10;
   //int w = strlen( message ) * 8 + 4;
-  int h = 20 * lines.size();
+  int h = 12 * lines.size() + 5;
   int x = -2;
   int y = -14;
 
@@ -1066,7 +1066,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 	for( unsigned int i = 0; i < lines.size(); i++ ) {
 		int ww = widths[ i ];
 		int x = (int)( ( w - ww ) / 2.0f ) + 5;
-		texPrint( x, i * 20, "%s", lines[i].c_str() );
+		texPrint( x, i * 12, "%s", lines[i].c_str() );
 	}
   //texPrint( 0, 0, "%s", message );
   setFontType( Constants::SCOURGE_DEFAULT_FONT );
