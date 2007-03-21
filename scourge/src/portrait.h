@@ -1,5 +1,5 @@
 /***************************************************************************
-                          pcui.h  -  description
+                          portrait.h  -  description
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PCUI_H
-#define PCUI_H
+#ifndef PORTRAIT_H
+#define PORTRAIT_H
 
 #include <iostream>
 #include <vector>
@@ -36,29 +36,26 @@ class Scourge;
 class Storable;
 class ConfirmDialog;
 class Item;
-class Equip;
-class Inven;
-class Portrait;
 
-class PcUi {
+class Portrait : public WidgetView {
 private:
 	Scourge *scourge;
 	Creature *creature;
-
-	Window *mainWin;
-	Equip *equip;
-	Inven *inven;
-	Portrait *portrait;
+	GLuint backgroundTexture;
+	Window *window;
+  Canvas *canvas;
+	int x, y, w, h;
 
 public:
-	PcUi( Scourge *scourge );
-	~PcUi();
+	Portrait( Scourge *scourge, Window *window, int x, int y, int w, int h );
+	~Portrait();
 
-  inline Window *getWindow() { return mainWin; }
+  inline Widget *getWidget() { return canvas; }
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
 
+	void drawWidgetContents( Widget *w );
 };
 
 #endif

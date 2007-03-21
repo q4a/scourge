@@ -743,6 +743,8 @@ public:
 
 	bool useDoor( Location *pos, bool openLocked=false );
 
+	void drawPortrait( Creature *p, int width, int height, int offs_x=0, int offs_y=0 );
+
 protected:
 
 	bool doLoadGame( Session *session, char *dirName, char *error );

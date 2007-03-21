@@ -91,6 +91,8 @@ scourge_SOURCES = \
 	equip.h\
 	inven.cpp\
 	inven.h\
+	portrait.cpp\
+	portrait.h\
 	shapepalette.cpp\
 	shapepalette.h\
 	util.cpp\

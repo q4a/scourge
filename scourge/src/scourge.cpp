@@ -2442,6 +2442,38 @@ void Scourge::drawItemIcon( Item *item, int n ) {
 }
 
 void Scourge::drawPortrait( Widget *w, Creature *p ) {
+	int portraitSize = ((Scourge::PARTY_GUI_WIDTH - 90) / 4);
+	int offs = 15;
+	
+	drawPortrait( p, portraitSize, portraitSize, offs );
+
+  // draw selection border
+  if( p == getParty()->getPlayer() ) {
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    float lineWidth = 5.0f;
+    glLineWidth( 5.0f );
+    GuiTheme *theme = mainWin->getTheme();
+    if( theme->getSelectedCharacterBorder() ) {
+      glColor4f( theme->getSelectedCharacterBorder()->color.r,
+                 theme->getSelectedCharacterBorder()->color.g,
+                 theme->getSelectedCharacterBorder()->color.b,
+                 0.5f );
+    } else {
+      mainWin->applySelectionColor();
+    }
+    glBegin( GL_LINE_LOOP );
+    glVertex2f( lineWidth / 2.0f, lineWidth / 2.0f );
+    glVertex2f( lineWidth / 2.0f, w->getHeight() - lineWidth / 2.0f );
+    glVertex2f( w->getWidth() - lineWidth / 2.0f, w->getHeight() - lineWidth / 2.0f );
+    glVertex2f( w->getWidth() - lineWidth / 2.0f, lineWidth / 2.0f );
+    glEnd();
+    glLineWidth( 1.0f );
+    glDisable( GL_BLEND );
+  }
+}
+
+void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int offs_y ) {
   glPushMatrix();
   glEnable( GL_TEXTURE_2D );
   glColor4f( 1, 1, 1, 1 );
@@ -2450,18 +2482,16 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   } else {
     glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() ) );
   }
-  int portraitSize = ((Scourge::PARTY_GUI_WIDTH - 90) / 4);
-  int offs = 15;
   glBegin( GL_QUADS );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
-  glVertex2i( -offs, 0 );
+  glVertex2i( -offs_x, -offs_y );
   glTexCoord2f( 1, 0 );
-  glVertex2i( portraitSize - offs, 0 );
+  glVertex2i( width - offs_x, -offs_y );
   glTexCoord2f( 1, 1 );
-  glVertex2i( portraitSize - offs, portraitSize );
+  glVertex2i( width - offs_x, height - offs_y );
   glTexCoord2f( 0, 1 );
-  glVertex2i( -offs, portraitSize );
+  glVertex2i( -offs_x, height - offs_y );
   glEnd();
   glDisable( GL_TEXTURE_2D );
 
@@ -2504,9 +2534,9 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glBegin( GL_QUADS );
     glVertex2i( 0, 0 );
-    glVertex2i( portraitSize, 0 );
-    glVertex2i( portraitSize, portraitSize );
-    glVertex2i( 0, portraitSize );
+    glVertex2i( width, 0 );
+    glVertex2i( width, height );
+    glVertex2i( 0, height );
     glEnd();
     glDisable( GL_BLEND );
   }
@@ -2550,7 +2580,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   int xp = 0;
   int yp = 1;
   float n = 12;
-  int row = ( w->getWidth() / (int)n );
+  int row = ( width / (int)n );
   for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
 		GLuint icon = 255;
 
@@ -2579,7 +2609,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
 			glBindTexture( GL_TEXTURE_2D, icon );
       glPushMatrix();
       glTranslatef( 5 + xp * (n + 1),
-                    w->getHeight() - (yp * (n + 1)),
+                    width - (yp * (n + 1)),
                     0 );
       glBegin( GL_QUADS );
       glNormal3f( 0, 0, 1 );
@@ -2603,30 +2633,7 @@ void Scourge::drawPortrait( Widget *w, Creature *p ) {
   }
   glDisable(GL_TEXTURE_2D);
 
-  // draw selection border
-  if( p == getParty()->getPlayer() ) {
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    float lineWidth = 5.0f;
-    glLineWidth( 5.0f );
-    GuiTheme *theme = mainWin->getTheme();
-    if( theme->getSelectedCharacterBorder() ) {
-      glColor4f( theme->getSelectedCharacterBorder()->color.r,
-                 theme->getSelectedCharacterBorder()->color.g,
-                 theme->getSelectedCharacterBorder()->color.b,
-                 0.5f );
-    } else {
-      mainWin->applySelectionColor();
-    }
-    glBegin( GL_LINE_LOOP );
-    glVertex2f( lineWidth / 2.0f, lineWidth / 2.0f );
-    glVertex2f( lineWidth / 2.0f, w->getHeight() - lineWidth / 2.0f );
-    glVertex2f( w->getWidth() - lineWidth / 2.0f, w->getHeight() - lineWidth / 2.0f );
-    glVertex2f( w->getWidth() - lineWidth / 2.0f, lineWidth / 2.0f );
-    glEnd();
-    glLineWidth( 1.0f );
-    glDisable( GL_BLEND );
-  }
+
 }
 
 void Scourge::resetPartyUI() {
