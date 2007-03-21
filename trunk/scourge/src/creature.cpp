@@ -2979,3 +2979,4 @@ bool Creature::rollSecretDoor( Location *pos ) {
 void Creature::resetSecretDoorAttempts() {
   secretDoorAttempts.clear();
 }
+

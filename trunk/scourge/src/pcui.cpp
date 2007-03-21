@@ -25,6 +25,7 @@
 #include "creature.h"
 #include "equip.h"
 #include "inven.h"
+#include "portrait.h"
 
 using namespace std;
 
@@ -36,6 +37,8 @@ using namespace std;
 #define EQUIP_HEIGHT 300
 #define INVEN_WIDTH 530
 #define INVEN_HEIGHT 160
+#define PORTRAIT_WIDTH 290
+#define PORTRAIT_HEIGHT 300
 #define WIN_WIDTH EQUIP_WIDTH + 320
 #define WIN_HEIGHT EQUIP_HEIGHT + 220
 
@@ -51,18 +54,22 @@ PcUi::PcUi( Scourge *scourge ) {
  mainWin->addWidget( equip->getWidget() );
  inven = new Inven( scourge, mainWin, 10, EQUIP_HEIGHT + 15, INVEN_WIDTH, INVEN_HEIGHT );
  mainWin->addWidget( inven->getWidget() );
+ portrait = new Portrait( scourge, mainWin, 20 + EQUIP_WIDTH, 5, PORTRAIT_WIDTH, PORTRAIT_HEIGHT );
+ mainWin->addWidget( portrait->getWidget() );
  mainWin->addWidget( new Label( 8, WIN_HEIGHT - 30, 
 																_( "Right click for info, double-click to open." ) ) );
 }
 
 PcUi::~PcUi() {
+	delete equip;
+	delete inven;
+	delete portrait;
 }
 
 bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
-
 	equip->handleEvent( widget, event );
-
 	inven->handleEvent( widget, event );
+	portrait->handleEvent( widget, event );
 
   if( widget == mainWin->closeButton ) {
     scourge->toggleInventoryWindow();
@@ -71,10 +78,9 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 bool PcUi::handleEvent(SDL_Event *event) {
-
 	equip->handleEvent( event );
-
 	inven->handleEvent( event );
+	portrait->handleEvent( event );
 
   switch(event->type) {
   case SDL_KEYUP:
@@ -93,6 +99,7 @@ void PcUi::setCreature( Creature *creature ) {
 	this->creature = creature;
 	equip->setCreature( creature );
 	inven->setCreature( creature );
+	portrait->setCreature( creature );
 }
 
 
