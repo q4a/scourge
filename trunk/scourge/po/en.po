@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-19 10:37-0700\n"
+"POT-Creation-Date: 2007-03-21 20:47-0700\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -909,19 +909,23 @@ msgstr ""
 msgid " %d(%c)"
 msgstr ""
 
-#: src/item.cpp:1137 ../scourge_data/config/rpg.cfg:137
+#: src/item.cpp:1138
+msgid "Level"
+msgstr ""
+
+#: src/item.cpp:1142 ../scourge_data/config/rpg.cfg:137
 msgid "Power"
 msgstr ""
 
-#: src/item.cpp:1142
+#: src/item.cpp:1147
 msgid "Charges"
 msgstr ""
 
-#: src/item.cpp:1145
+#: src/item.cpp:1150
 msgid "Spell"
 msgstr ""
 
-#: src/item.cpp:1150
+#: src/item.cpp:1155
 msgid "Duration"
 msgstr ""
 
@@ -1602,7 +1606,7 @@ msgstr ""
 msgid "Party members give all their money to %s."
 msgstr ""
 
-#: src/inventory.cpp:562 src/scourge.cpp:2675
+#: src/inventory.cpp:562 src/scourge.cpp:2682
 msgid "Not enough Magic Points to cast this spell!"
 msgstr ""
 
@@ -1948,48 +1952,48 @@ msgstr ""
 msgid "Current Weapon: %s"
 msgstr ""
 
-#: src/scourge.cpp:2749
+#: src/scourge.cpp:2756
 msgid "Begin Turn"
 msgstr ""
 
-#: src/scourge.cpp:2754
+#: src/scourge.cpp:2761
 msgid "...In Turn..."
 msgstr ""
 
-#: src/scourge.cpp:2760
+#: src/scourge.cpp:2767
 #, fuzzy
 msgid "Pause Game"
 msgstr "New Game"
 
-#: src/scourge.cpp:2764
+#: src/scourge.cpp:2771
 msgid "Unpause game."
 msgstr ""
 
-#: src/scourge.cpp:2799
+#: src/scourge.cpp:2806
 msgid "Available Missions"
 msgstr ""
 
-#: src/scourge.cpp:2805
+#: src/scourge.cpp:2812
 msgid "Drag map to look around."
 msgstr ""
 
-#: src/scourge.cpp:2873
+#: src/scourge.cpp:2880
 msgid "This spell has no effect here..."
 msgstr ""
 
-#: src/scourge.cpp:3061
+#: src/scourge.cpp:3068
 msgid "Game loaded successfully."
 msgstr ""
 
-#: src/scourge.cpp:3087
+#: src/scourge.cpp:3094
 msgid "Error: Saved game version is too old."
 msgstr ""
 
-#: src/scourge.cpp:3443
+#: src/scourge.cpp:3450
 msgid "You cannot hire more party members."
 msgstr ""
 
-#: src/scourge.cpp:3463
+#: src/scourge.cpp:3470
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr ""
