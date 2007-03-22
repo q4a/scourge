@@ -41,7 +41,7 @@ class Portrait : public WidgetView {
 private:
 	Scourge *scourge;
 	Creature *creature;
-	GLuint backgroundTexture;
+	GLuint backgroundTexture, barTexture;
 	Window *window;
   Canvas *canvas;
 	int x, y, w, h;
@@ -56,6 +56,9 @@ public:
 	void setCreature( Creature *creature );
 
 	void drawWidgetContents( Widget *w );
+
+protected:
+	void drawBar( int x, int y, int value, int maxValue=100, int mod=0 );
 };
 
 #endif
