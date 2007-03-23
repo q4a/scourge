@@ -745,7 +745,11 @@ public:
 
 	void drawPortrait( Creature *p, int width, int height, int offs_x=0, int offs_y=0 );
 
+  void describeAttacks( Creature *p, int x, int y );
+
 protected:
+
+  char *getAPRDescription( Creature *p, Item *item, char *buff );
 
 	bool doLoadGame( Session *session, char *dirName, char *error );
 

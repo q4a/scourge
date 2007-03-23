@@ -102,26 +102,48 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 
 	glColor4f( 1, 1, 1, 1 );
-	scourge->getSDLHandler()->texPrint( 80, 50, "%s %s (%d)", 
+	scourge->getSDLHandler()->texPrint( 80, 50, "%s %s", 
 																			( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
-																			creature->getCharacter()->getDisplayName(),
-																			creature->getLevel() );
+																			creature->getCharacter()->getDisplayName() );
 	scourge->getSDLHandler()->texPrint( 80, 65, "%s:%d %s:%d", _( "Level" ), creature->getLevel(), _( "XP" ), creature->getExp() );
 
+  // hp/mp
+  int y = 110;
+  scourge->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
+  drawBar( 110, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
+  scourge->getSDLHandler()->texPrint( 230, y, "%d/%d", creature->getHp(), creature->getMaxHp() );
+
+  y += 15;
+  scourge->getSDLHandler()->texPrint( 10, y, _( "MP" ) );
+  drawBar( 110, y - 10, creature->getMp(), creature->getMaxMp(), 0, 0, 1, 1 );
+  scourge->getSDLHandler()->texPrint( 230, y, "%d/%d", creature->getMp(), creature->getMaxMp() );
+
+  y += 15;
+  drawHorizontalLine( y - 9 );
+  
 	// stats
+  y += 5;
 	for( int i = 0; i < SkillGroup::stats->getSkillCount(); i++ ) {
-		int y = 110 + ( i * 15 );
+		int yy = y + ( i * 15 );
 		Skill *skill = SkillGroup::stats->getSkill( i );
 		int bonus = creature->getSkillBonus( skill->getIndex() );
 		int value = creature->getSkill( skill->getIndex() ) - bonus;
-		scourge->getSDLHandler()->texPrint( 10, y, skill->getDisplayName() );
-		drawBar( 110, y - 10, value, 20, bonus );
+		scourge->getSDLHandler()->texPrint( 10, yy, skill->getDisplayName() );
+		drawBar( 110, yy - 10, value, 20, 0, 1, 0, 1, bonus );
 		if( bonus > 0 ) {
-			scourge->getSDLHandler()->texPrint( 230, y, "%d(%d)", ( value + bonus ), bonus );
+			scourge->getSDLHandler()->texPrint( 230, yy, "%d(%d)", ( value + bonus ), bonus );
 		} else {
-			scourge->getSDLHandler()->texPrint( 230, y, "%d", value );
+			scourge->getSDLHandler()->texPrint( 230, yy, "%d", value );
 		}
 	}
+
+  y += 120;
+  drawHorizontalLine( y - 9 );
+  y += 5;
+
+  scourge->describeAttacks( creature, 5, y );
+
+
 
 	glPushMatrix();
 	glTranslatef( OFFSET_X, OFFSET_Y, 0 );
@@ -130,7 +152,7 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	glDisable( GL_TEXTURE_2D );
 }
 
-void Portrait::drawBar( int x, int y, int value, int maxValue, int mod ) {
+void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int b, int a, int mod ) {
 	glPushMatrix();
 	glEnable( GL_TEXTURE_2D );
 	glTranslatef( x, y, 0 );
@@ -168,7 +190,7 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int mod ) {
 	if( v > maxValue ) v = maxValue;
 	n = (int)( (float)v * (float)BAR_INNER_WIDTH / (float)maxValue );
 	glDisable( GL_TEXTURE_2D );
-	glColor4f( 0, 1, 0, 1 );
+	glColor4f( r, g, b, a );
 	glBegin( GL_QUADS );
 	glVertex2d( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
 	glVertex2d( BAR_X, BAR_Y );
@@ -198,3 +220,23 @@ void Portrait::setCreature( Creature *creature ) {
 	this->creature = creature; 
 }
 
+void Portrait::drawHorizontalLine( int y ) {
+  glLineWidth( 2 );
+  glDisable( GL_TEXTURE_2D );
+  //window->setTopWindowBorderColor();
+	glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+  glBegin( GL_LINES );
+  glColor4f( 0.45, 0.25f, 0, 0.75f );
+  glVertex2d( 20, y );
+  glColor4f( 1, 0.75f, 0, 0.75f );
+  glVertex2d( ( canvas->getWidth() - 20 ) / 2, y );
+  glVertex2d( ( canvas->getWidth() - 20 ) / 2, y );
+  glColor4f( 0.45, 0.25f, 0, 0.75f );
+  glVertex2d( canvas->getWidth() - 20, y );
+  glEnd();
+  glDisable( GL_BLEND );
+  glColor4f( 1, 1, 1, 1 );
+  glEnable( GL_TEXTURE_2D );
+  glLineWidth( 1 );
+}
