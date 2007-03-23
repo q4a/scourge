@@ -9,6 +9,7 @@ AM_CONFIG_HEADER(config.h)
 dnl internationalization macros
 AC_GNU_SOURCE
 AM_GNU_GETTEXT
+# AM_GNU_GETTEXT_VERSION
 
 dnl Check system type
 AC_CANONICAL_HOST
@@ -234,7 +235,7 @@ fi
 
 saved_LIBS="$LIBS"
 
-AC_DEFUN( [CHECK_FOR_GL_LIB], [
+AC_DEFUN([CHECK_FOR_GL_LIB], [
     AC_MSG_CHECKING([for $GL_LIB_NAME library])
     LIBS="$saved_LIBS $TR_LIBS $GL_LDOPTS -l$GL_LIB_NAME"
     AC_TRY_LINK( , , have_GL=yes, have_GL=no)
@@ -257,7 +258,7 @@ AC_DEFUN( [CHECK_FOR_GL_LIB], [
     fi
 ])
 
-AC_DEFUN( [FIND_GL_LIB], [
+AC_DEFUN([FIND_GL_LIB], [
     if test "x$with_gl_lib_name" = "x" ; then
         GL_LIB_NAME="GL"
     else
@@ -310,7 +311,7 @@ dnl --------------------------------------------------------------------------
 
 AC_ARG_WITH(glu-lib-name, [  --with-glu-lib-name=NAME GLU library name])
 
-AC_DEFUN( [CHECK_FOR_GLU_LIB], [
+AC_DEFUN([CHECK_FOR_GLU_LIB], [
     AC_MSG_CHECKING([for $GLU_LIB_NAME library])
     LIBS="$saved_LIBS $TR_LIBS -l$GLU_LIB_NAME"
     AC_TRY_LINK( , , have_GLU=yes, have_GLU=no)
@@ -436,7 +437,7 @@ fi
 dnl check for gl.h
 saved_CPPFLAGS="$CPPFLAGS"
 
-AC_DEFUN( CHECK_FOR_GL_H, [
+AC_DEFUN([CHECK_FOR_GL_H], [
     CPPFLAGS="$saved_CPPFLAGS $GL_CPPFLAGS $TR_CPPFLAGS"
 
     AC_MSG_CHECKING([for GL/gl.h])
