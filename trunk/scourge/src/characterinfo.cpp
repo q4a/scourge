@@ -70,7 +70,8 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   sprintf(s, _( "AP: %d (%d)" ), p->getBattle()->getAP(), toint( p->getMaxAP() ) );
   scourge->getSDLHandler()->texPrint(5, y + 75, s);
 
-  scourge->describeAttacks( p, 0, y + 90 );
+	scourge->describeDefense( p, 0, y + 90 );
+  scourge->describeAttacks( p, 0, y + 105 );
   
   Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false, theme );
   Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp(), -1, -1, -1, true, theme );

@@ -107,8 +107,15 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 																			creature->getCharacter()->getDisplayName() );
 	scourge->getSDLHandler()->texPrint( 80, 65, "%s:%d %s:%d", _( "Level" ), creature->getLevel(), _( "XP" ), creature->getExp() );
 
-  // hp/mp
-  int y = 110;
+	scourge->describeAttacks( creature, 80, 80, true );
+
+	// hp/mp
+  int y = 117;	
+	scourge->describeDefense( creature, 10, y );
+	glColor4f( 1, 1, 1, 1 );
+	y += 18;
+	drawHorizontalLine( y - 14 );
+	glColor4f( 1, 1, 1, 1 );
   scourge->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
   drawBar( 110, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
   scourge->getSDLHandler()->texPrint( 230, y, "%d/%d", creature->getHp(), creature->getMaxHp() );
@@ -136,14 +143,6 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 			scourge->getSDLHandler()->texPrint( 230, yy, "%d", value );
 		}
 	}
-
-  y += 120;
-  drawHorizontalLine( y - 9 );
-  y += 5;
-
-  scourge->describeAttacks( creature, 5, y );
-
-
 
 	glPushMatrix();
 	glTranslatef( OFFSET_X, OFFSET_Y, 0 );
@@ -175,28 +174,32 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	if( mod > 0 ) {
 		v = value + mod;
 		if( v > maxValue ) v = maxValue;
+		if( v > 0 ) {
+			n = (int)( (float)v * (float)BAR_INNER_WIDTH / (float)maxValue );
+			glDisable( GL_TEXTURE_2D );
+			glColor4f( 0, 0.5f, 1, 1 );
+			glBegin( GL_QUADS );
+			glVertex2d( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
+			glVertex2d( BAR_X, BAR_Y );
+			glVertex2d( BAR_X + n, BAR_Y );
+			glVertex2d( BAR_X + n, BAR_Y + BAR_INNER_HEIGHT );
+			glEnd();	
+		}
+	}
+
+	v = value;
+	if( v > maxValue ) v = maxValue;
+	if( v > 0 ) {
 		n = (int)( (float)v * (float)BAR_INNER_WIDTH / (float)maxValue );
 		glDisable( GL_TEXTURE_2D );
-		glColor4f( 0, 0.5f, 1, 1 );
+		glColor4f( r, g, b, a );
 		glBegin( GL_QUADS );
 		glVertex2d( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
 		glVertex2d( BAR_X, BAR_Y );
 		glVertex2d( BAR_X + n, BAR_Y );
 		glVertex2d( BAR_X + n, BAR_Y + BAR_INNER_HEIGHT );
-		glEnd();	
+		glEnd();
 	}
-
-	v = value;
-	if( v > maxValue ) v = maxValue;
-	n = (int)( (float)v * (float)BAR_INNER_WIDTH / (float)maxValue );
-	glDisable( GL_TEXTURE_2D );
-	glColor4f( r, g, b, a );
-	glBegin( GL_QUADS );
-	glVertex2d( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
-	glVertex2d( BAR_X, BAR_Y );
-	glVertex2d( BAR_X + n, BAR_Y );
-	glVertex2d( BAR_X + n, BAR_Y + BAR_INNER_HEIGHT );
-	glEnd();
 
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
