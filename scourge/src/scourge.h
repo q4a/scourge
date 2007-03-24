@@ -745,9 +745,12 @@ public:
 
 	void drawPortrait( Creature *p, int width, int height, int offs_x=0, int offs_y=0 );
 
-  void describeAttacks( Creature *p, int x, int y );
+  void describeAttacks( Creature *p, int x, int y, bool currentOnly=false );
+	void describeDefense( Creature *p, int x, int y );
 
 protected:
+
+	bool describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull );
 
   char *getAPRDescription( Creature *p, Item *item, char *buff );
 

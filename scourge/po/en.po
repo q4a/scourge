@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-21 20:47-0700\n"
+"POT-Creation-Date: 2007-03-24 08:39-0700\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -733,10 +733,7 @@ msgstr ""
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2646 src/characterinfo.cpp:108 src/characterinfo.cpp:117
-#: src/characterinfo.cpp:137 src/characterinfo.cpp:146
-#: src/characterinfo.cpp:166 src/characterinfo.cpp:175
-#: src/characterinfo.cpp:194 src/characterinfo.cpp:203
+#: src/creature.cpp:2646 src/scourge.cpp:3668
 msgid "CTH"
 msgstr ""
 
@@ -900,7 +897,7 @@ msgstr ""
 msgid "RANGE"
 msgstr ""
 
-#: src/item.cpp:1127 src/characterinfo.cpp:82
+#: src/item.cpp:1127 src/scourge.cpp:3620
 msgid "DEF"
 msgstr ""
 
@@ -973,32 +970,6 @@ msgstr ""
 #: src/characterinfo.cpp:70
 #, c-format
 msgid "AP: %d (%d)"
-msgstr ""
-
-#: src/characterinfo.cpp:80
-msgid "Initiative"
-msgstr ""
-
-#: src/characterinfo.cpp:105 src/characterinfo.cpp:114
-#: src/characterinfo.cpp:134 src/characterinfo.cpp:143
-#: src/characterinfo.cpp:163 src/characterinfo.cpp:172
-#: src/characterinfo.cpp:191 src/characterinfo.cpp:200 src/infogui.cpp:348
-#: src/infogui.cpp:353 src/infogui.cpp:358
-msgid "ATK"
-msgstr ""
-
-#: src/characterinfo.cpp:197 src/characterinfo.cpp:206 src/battle.cpp:1453
-msgid "Bare Hands"
-msgstr ""
-
-#: src/characterinfo.cpp:226
-#, c-format
-msgid "%.2f APR"
-msgstr ""
-
-#: src/characterinfo.cpp:228
-#, c-format
-msgid "per %.2f R"
 msgstr ""
 
 #: src/battle.cpp:677
@@ -1170,6 +1141,10 @@ msgstr ""
 #: src/battle.cpp:1441
 #, c-format
 msgid "In Range"
+msgstr ""
+
+#: src/battle.cpp:1453
+msgid "Bare Hands"
 msgstr ""
 
 #: src/netplay.cpp:39
@@ -1998,6 +1973,29 @@ msgstr ""
 msgid "Would you like to dismiss %s the %s?"
 msgstr ""
 
+#: src/scourge.cpp:3618
+msgid "Initiative"
+msgstr ""
+
+#: src/scourge.cpp:3655 src/scourge.cpp:3662 src/infogui.cpp:348
+#: src/infogui.cpp:353 src/infogui.cpp:358
+msgid "ATK"
+msgstr ""
+
+#: src/scourge.cpp:3669 src/infogui.cpp:350 src/infogui.cpp:356
+msgid "APR"
+msgstr ""
+
+#: src/scourge.cpp:3725
+#, c-format
+msgid "%.2f"
+msgstr ""
+
+#: src/scourge.cpp:3727
+#, c-format
+msgid "per %.2f R"
+msgstr ""
+
 #: src/savegamedialog.cpp:43
 msgid "Saved games"
 msgstr ""
@@ -2452,10 +2450,6 @@ msgstr ""
 #: src/infogui.cpp:332
 #, c-format
 msgid "Attack Info for each player:"
-msgstr ""
-
-#: src/infogui.cpp:350 src/infogui.cpp:356
-msgid "APR"
 msgstr ""
 
 #: src/infogui.cpp:377
