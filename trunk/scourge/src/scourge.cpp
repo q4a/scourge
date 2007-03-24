@@ -3614,16 +3614,16 @@ void Scourge::describeDefense( Creature *p, int x, int y ) {
 	int initiative;
 	float armor, dodgePenalty;
 	p->getInitiative( &initiative );
-	sprintf(s, "%s: %d %s: %c:%d %c:%d %c:%d", 
+	sprintf(s, "%s: %d %s:%d(%c) %d%c %d(%c)", 
 					_( "Initiative" ),
 					initiative,
 					_( "DEF" ),
-					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_SLASHING ),
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_SLASHING ) ),
-					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_PIERCING ),
+					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_SLASHING ),
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_PIERCING ) ),
-					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_CRUSHING ),
-					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
+					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_PIERCING ),
+					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_CRUSHING ) ),
+					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_CRUSHING ) );
 	getSDLHandler()->texPrint( x, y, s );
 }
 

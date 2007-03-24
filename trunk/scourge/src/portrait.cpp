@@ -125,6 +125,13 @@ void Portrait::drawWidgetContents( Widget *widget ) {
   drawBar( 110, y - 10, creature->getMp(), creature->getMaxMp(), 0, 0, 1, 1 );
   scourge->getSDLHandler()->texPrint( 230, y, "%d/%d", creature->getMp(), creature->getMaxMp() );
 
+	y += 15;
+  scourge->getSDLHandler()->texPrint( 10, y, _( "AP" ) );
+	int maxAp = (int)creature->getMaxAP();
+	int ap = ( scourge->inTurnBasedCombatPlayerTurn() ? creature->getBattle()->getAP() : maxAp );
+  drawBar( 110, y - 10, ap, maxAp, 1, 0, 1, 1 );
+  scourge->getSDLHandler()->texPrint( 230, y, "%d/%d", ap, maxAp );
+
   y += 15;
   drawHorizontalLine( y - 9 );
   
