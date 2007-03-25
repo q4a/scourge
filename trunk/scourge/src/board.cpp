@@ -1027,9 +1027,11 @@ void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool 
 	char tmp[300];
 	getMapConfigFile( filename, tmp );
 	ConfigLang *config = ConfigLang::load( tmp, true );
-	initConversations( config, adapter, generalOnly );
-	if( !generalOnly ) initNpcs( config, adapter );
-	delete config;
+	if( config ) {
+		initConversations( config, adapter, generalOnly );
+		if( !generalOnly ) initNpcs( config, adapter );
+		delete config;
+	}
 }
 
 NpcInfo *Mission::getNpcInfo( int x, int y ) {
