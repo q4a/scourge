@@ -267,6 +267,7 @@ GlyphInfo *FontMgr::loadChar( Uint16 c ) {
 }
 
 
+
 //  Create a texture from a surface. Set the alpha according
 //  to the color key. Pixels that match the color key get an
 //  alpha of zero while all other pixels get an alpha of

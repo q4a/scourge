@@ -1,0 +1,171 @@
+import sys, os
+
+# create build environment and options
+env = Environment()
+opts = Options()
+
+# OPTION debug
+opts.Add(BoolOption('debug', 'Set to yes (or 1) to build for debug', 'no'))
+# OPTION strip
+opts.Add(BoolOption('strip', 'Set to no (or 0) to avoid stripping binaries', 'yes'))
+# OPTION warning
+opts.Add(BoolOption('warnings', 'Set to yes (or 1) to print all warnings', 'yes'))
+# OPTION root, prefix, bindir, datadir 
+opts.AddOptions(('root', 'Path to the fakeroot directory', '/'),
+	('prefix', 'Path to prefix to default destinations', '/usr/local'),
+	('bindir', 'Path for binaries', 'bin'),
+	('datadir', 'Path for data files', 'share/scourge'))
+# Adding options to the environment
+env = Environment(options = opts)
+
+
+# Taking care of installation
+root = env['root']
+prefix = env['prefix']
+bindir = env['bindir']
+datadir = env['datadir']
+bin_dir = data_dir = DATA_DIR = ''
+install_arg = prefix_arg = datadir_arg = False
+
+for arg in sys.argv:
+	if arg.find('install') == 0:
+		install_arg = True
+	elif arg.find('prefix') == 0:
+		prefix_arg = True
+	elif arg.find('datadir') == 0:
+		datadir_arg = True
+
+if prefix_arg or datadir_arg: # relocation required
+	if prefix_arg:
+		DATA_DIR = os.path.join(prefix, datadir) # WITHOUT fakeroot
+	else:
+		DATA_DIR = datadir
+
+if install_arg: # installation required
+	DATA_DIR = os.path.join(prefix, datadir) # WITHOUT fakeroot
+	if os.path.isabs(prefix):
+		prefix = prefix[1:]
+	bin_dir = os.path.join(root, prefix, bindir) # WITH fakeroot
+	data_dir = os.path.join(root, prefix, datadir) # WITH fakeroot
+
+
+# OPTION no_mingw
+if env['PLATFORM'] == 'cygwin':
+	opts.Add(BoolOption('no_mingw', 'Set to yes (or 1) to build without mingw', 'no'))
+	env = Environment(options = opts)
+
+# PLATFORM mingw under cygwin
+if env['PLATFORM'] == 'cygwin' and not int(env['no_mingw']):
+	# add mingw specific options
+	opts.AddOptions(
+		PathOption('mingw_cygdir', 'where your mingw installation is located under cygwin', '/mingw'),
+		PathOption('mingw_windir', 'where your mingw installation is located under cygwin', 'F:/Programmi/Dev-Cpp')
+    )
+	env = Environment(options = opts)
+
+	mingw_cygdir = env['mingw_cygdir']
+	mingw_windir = env['mingw_windir']
+
+	env.Replace(CXX = [mingw_cygdir + '/bin/g++'])
+	env.Replace(LINK = [mingw_cygdir + '/bin/g++'])
+	env.Append(CXXFLAGS = ['-I"' + mingw_windir + '/include/SDL"'])
+	env.Append(CXXFLAGS = ['-O2', '-D_REENTRANT', '-mwindows'])
+	env.Append(LIBS = ['mingw32', 'SDLmain', 'SDL'])
+	env.Append(LINKFLAGS = ['-mwindows'])
+
+# PLATFORM posix or pure cygwin
+else:
+	# determine compiler and linker flags for SDL
+	env.ParseConfig('sdl-config --cflags')
+	env.ParseConfig('sdl-config --libs')
+	# add additional compiler flags
+	if not int(env['debug']):
+		env.Append(CXXFLAGS = ['-O2'])
+
+# env.Append(LINKFLAGS = ['-lm'])
+# env.Append(LINKFLAGS = ['-lz'])
+# env.Append(LINKFLAGS = ['-lGL'])
+# env.Append(LINKFLAGS = ['-lGLU'])		
+env.Append(CXXFLAGS = ['-Isrc/squirrel'])
+env.Append(CCFLAGS = ['-Isrc/squirrel'])
+
+# generate help for options
+Help(opts.GenerateHelpText(env))
+
+# build for debug
+if int(env['debug']):
+	env.Append(CXXFLAGS = ['-g'])
+	# of course no stripping if debug
+	env['strip'] = 0
+
+# strip binaries
+if int(env['strip']):
+	env.Append(LINKFLAGS = ['-s'])
+
+# print all warnings
+if int(env['warnings']):
+	env.Append(CXXFLAGS = ['-Wall'])
+
+# define the DATA_DIR constant if required
+if DATA_DIR != '': # installation required
+	if DATA_DIR[len(DATA_DIR) - 1] != '/': # a trailing / must exists
+		DATA_DIR = DATA_DIR + '/'
+	env.Append(CXXFLAGS = ['-DDATA_DIR=\\"' + DATA_DIR + '\\"'])
+
+# check for libraries and headers (if not cleaning)
+if not env.GetOption('clean'):
+	print ":: Checking for libs"
+	conf = Configure(env)
+	if not conf.CheckLibWithHeader('SDL', 'SDL.h', 'c', 'SDL_Init(SDL_INIT_VIDEO);', autoadd = 0):
+		print 'Did not find libSDL, exiting!'
+		Exit(1)
+	if not conf.CheckLibWithHeader('SDL_mixer', 'SDL_mixer.h', 'c', 'Mix_CloseAudio();'):
+		print 'Did not find libSDL_mixer, exiting!'
+		Exit(1)
+	else:
+		env.Append(CXXFLAGS = ['-DHAVE_SDL_MIXER=1'])
+	if not conf.CheckLibWithHeader('SDL_net', 'SDL_net.h', 'c', 'SDLNet_Quit();'):
+		print 'Did not find libSDL_net, exiting!'
+		Exit(1)
+	else:
+		env.Append(CXXFLAGS = ['-DHAVE_SDL_NET=1'])
+	if not conf.CheckLibWithHeader('SDL_ttf', 'SDL_ttf.h', 'c', 'TTF_Init();'):
+		print 'Did not find libSDL_ttf, exiting!'
+		Exit(1)
+
+	# GL and GLU
+	if str(Platform()) == 'win32':
+		env.AppendUnique(LIBS = [
+			'opengl32.lib',
+			'glu32.lib'
+		])
+	else:
+		if not conf.CheckCHeader('GL/gl.h') or \
+			not conf.CheckCHeader('GL/glu.h') or \
+			not conf.CheckLib('GL', 'glBegin') or \
+			not conf.CheckLib('GLU', 'gluLookAt'):
+				print 'Did not find GL or GLU, exiting!'
+				Exit(1)
+	env = conf.Finish()
+
+#env.Append(CXXFLAGS = ['-DWIN32'])
+
+
+# print compile/clean message
+if not env.GetOption('clean'):
+	if env['PLATFORM'] == 'cygwin' and not int(env['no_mingw']):
+		print ":: Compiling for mingw under cygwin"
+	elif env['PLATFORM'] == 'cygwin':
+		print ":: Compiling for cygwin"
+	else:
+		print ":: Compiling for posix"
+else:
+	print ":: Cleaning"
+
+
+# export variables and run sub scripts
+Export('env', 'opts', 'bin_dir', 'data_dir')
+SConscript('src/SConscript', build_dir='build', duplicate=0)
+# SConscript('data/SConscript')
+
+
