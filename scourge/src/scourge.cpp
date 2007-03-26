@@ -371,12 +371,15 @@ void Scourge::getCurrentMapName( char *path, char *dirName, int depth, char *map
 	// get and set the map's name
 	char mapName[300];
 	getSavedMapName( mapName );
-	if( session->getCurrentMission() && 
-			strlen( session->getCurrentMission()->getSavedMapName() ) ) {
+	if( session->getCurrentMission() ) {
+		if( strlen( session->getCurrentMission()->getSavedMapName() ) ) {
 			strcpy( mapName, session->getCurrentMission()->getSavedMapName() );
+			cerr << "Reusing existing mission map name: " << mapName << endl;
+		} else {
+			session->getCurrentMission()->setSavedMapName( mapName );
+			cerr << "Assiging new mission map name: " << mapName << endl;
+		}
 	}
-	if( session->getCurrentMission() ) 
-		session->getCurrentMission()->setSavedMapName( mapName );
 
 	// add the depth
 	char tmp[300];
