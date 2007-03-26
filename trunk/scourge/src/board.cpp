@@ -244,7 +244,7 @@ void Board::initMissions() {
   }
 
   // maintain a set of missions
-	for( int counter = 0; availableMissions.size() < 8; counter++ ) {
+	for( int counter = 0; availableMissions.size() < 8 && counter < 8; counter++ ) {
 		int level;
 		if( counter % 2 == 0 ) {
 			// allow for low level mission
@@ -257,8 +257,19 @@ void Board::initMissions() {
     int depth =  (int)((float)level / (float)(MAX_MISSION_DEPTH - 3) ) + 1 + (int)( 3.0f * rand()/RAND_MAX );
     if( depth > MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH;
     int templateIndex = (int)( (float)( templates.size() ) * rand()/RAND_MAX );
-    Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
-    availableMissions.push_back( mission );
+		// Create a new mission but only keep it if there isn't another mission with this name already.
+		// This is because missions are 'found' on load via name, so names have to be unique.
+		Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
+		bool found = false;
+		for( unsigned int i = 0; i < availableMissions.size(); i++ ) {
+			if( !strcmp( mission->getName(), availableMissions[i]->getName() ) ) {
+				found = true;
+				break;
+			}
+		}
+		if( !found ) {
+			availableMissions.push_back( mission );
+		}
   }  
   
 
@@ -1183,7 +1194,7 @@ Mission *Mission::load( Session *session, MissionInfo *info ) {
 		cerr << "Can't find template for name: " << info->templateName << endl;
 		return NULL;
 	}
-	cerr << "Loading mission with template: " << (char*)(info->templateName) << endl;
+	cerr << "Loading mission with template: " << (char*)(info->templateName) << " map: " << info->mapName << endl;
 	return missionTemplate->createMission( session, info->level, info->depth, info );
 }
 
