@@ -30,6 +30,7 @@
 #include "shapepalette.h"
 #include "skillsview.h"
 #include "gui/confirmdialog.h"
+#include "pcui.h"
 
 /**
   *@author Gabor Torok
@@ -41,12 +42,11 @@ using namespace std;
 #define OFFSET_X 5
 #define OFFSET_Y 5
 
-Inven::Inven( Scourge *scourge, Window *window, int x, int y, int w, int h ) {
-	this->scourge = scourge;
+Inven::Inven( PcUi *pcUi, int x, int y, int w, int h ) {
+	this->pcUi = pcUi;
 	this->creature = NULL;
-	this->backgroundTexture = scourge->getShapePalette()->getNamedTexture( "inven" );
+	this->backgroundTexture = pcUi->getScourge()->getShapePalette()->getNamedTexture( "inven" );
   this->currentHole = -1;
-	this->window = window;
 	this->x = x;
 	this->y = y;
 	this->w = w;
@@ -62,8 +62,8 @@ Inven::~Inven() {
 
 bool Inven::handleEvent( SDL_Event *event ) {
 	if( event->type == SDL_MOUSEMOTION ) {
-		Item *item = getItemAtPos( event->motion.x - window->getX() - x, 
-															 event->motion.y - window->getY() - y - TITLE_HEIGHT );
+		Item *item = getItemAtPos( event->motion.x - pcUi->getWindow()->getX() - x, 
+															 event->motion.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
 		if( item != lastItem ) {
 			lastItem = item;
 			if( item ) {
@@ -74,39 +74,53 @@ bool Inven::handleEvent( SDL_Event *event ) {
 				canvas->setTooltip( NULL );
 			}
 		}
+	} else if( event->type == SDL_MOUSEBUTTONDOWN ) {
+		cerr << "down" << endl;
+	} else if( event->type == SDL_MOUSEBUTTONUP ) {
+		cerr << "up" << endl;
+		Item *item = getItemAtPos( event->button.x - pcUi->getWindow()->getX() - x, 
+															 event->button.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
+		if( pcUi->isInfoSelected() ) {
+			showInfo( item );
+			pcUi->unselectButtons();
+		}
 	}
 	return false;
 }
 
 bool Inven::handleEvent( Widget *widget, SDL_Event *event ) {
-	if( scourge->getSDLHandler()->isDoubleClick ) {
-		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - window->getX() - x, 
-															 scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT );
+	if( pcUi->getScourge()->getSDLHandler()->isDoubleClick ) {
+		Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+															 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
 		if( item && item->getRpgItem()->isContainer() ) {
-			scourge->openContainerGui(item);
+			pcUi->getScourge()->openContainerGui(item);
 		}
-	} else if( scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
-		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - window->getX() - x, 
-															 scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT );
+	} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
+		Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+															 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
 		if( item ) {
-			scourge->getInfoGui()->setItem( item );
-			if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
-				scourge->getInfoGui()->getWindow()->setVisible( true );
+			showInfo( item );
 		}
 	}
   return false;
 }
 
+void Inven::showInfo( Item *item ) {
+	pcUi->getScourge()->getInfoGui()->setItem( item );
+	if( !pcUi->getScourge()->getInfoGui()->getWindow()->isVisible() ) 
+		pcUi->getScourge()->getInfoGui()->getWindow()->setVisible( true );
+}
+
 void Inven::receive( Widget *widget ) {
 	if( creature ) {
-		Item *item = scourge->getMovingItem();
+		Item *item = pcUi->getScourge()->getMovingItem();
 		if( item ) {
 
 			// try to fit it
 			if( !findInventoryPosition( item, 
-																	scourge->getSDLHandler()->mouseX - window->getX() - x, 
-																	scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT ) ) {
-				scourge->showMessageDialog( _( "Can't fit item in inventory." ) );
+																	pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+																	pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT ) ) {
+				pcUi->getScourge()->showMessageDialog( _( "Can't fit item in inventory." ) );
 			} else {
 				if( creature->addInventory( item ) ) {
 					// message: the player accepted the item
@@ -114,13 +128,13 @@ void Inven::receive( Widget *widget ) {
 					snprintf( message, 119, _( "%s picks up %s." ), 
 									 creature->getName(),
 									 item->getItemName() );
-					scourge->getMap()->addDescription( message );
-					scourge->endItemDrag();
-					scourge->getSDLHandler()->getSound()->playSound( Window::DROP_SUCCESS );
+					pcUi->getScourge()->getMap()->addDescription( message );
+					pcUi->getScourge()->endItemDrag();
+					pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_SUCCESS );
 				} else {
 					// message: the player's inventory is full
-					scourge->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
-					scourge->showMessageDialog( _( "You can't fit the item!" ) );
+					pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
+					pcUi->getScourge()->showMessageDialog( _( "You can't fit the item!" ) );
 				}
 			}
 		}
@@ -128,10 +142,10 @@ void Inven::receive( Widget *widget ) {
 }
 
 bool Inven::startDrag( Widget *widget, int x, int y ) {
-	if( creature && !scourge->getMovingItem() ) {
+	if( creature && !pcUi->getScourge()->getMovingItem() ) {
 	
-		if( scourge->getTradeDialog()->getWindow()->isVisible() ) {
-			scourge->showMessageDialog( _( "Can't change inventory while trading." ) );
+		if( pcUi->getScourge()->getTradeDialog()->getWindow()->isVisible() ) {
+			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while trading." ) );
 			return false;
 		}
 		
@@ -139,17 +153,17 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
 		Item *item = getItemAtPos( x, y );
 		if( item ) {
 			if( item->isCursed() ) {
-				scourge->showMessageDialog( _( "Can't remove cursed item!" ) );
+				pcUi->getScourge()->showMessageDialog( _( "Can't remove cursed item!" ) );
 				return false;
 			} else {
 	
 				creature->removeInventory( creature->findInInventory( item ) );
-				scourge->startItemDragFromGui( item );
+				pcUi->getScourge()->startItemDragFromGui( item );
 				char message[120];
 				snprintf(message, 119, _( "%s drops %s." ), 
 								creature->getName(),
 								item->getItemName() );
-				scourge->getMap()->addDescription( message );
+				pcUi->getScourge()->getMap()->addDescription( message );
 	
 				return true;
 			}
@@ -266,7 +280,7 @@ void Inven::drawWidgetContents( Widget *widget ) {
 	glTranslatef( OFFSET_X, OFFSET_Y, 0 );
 
 	glDisable( GL_TEXTURE_2D );
-	window->setTopWindowBorderColor();
+	pcUi->getWindow()->setTopWindowBorderColor();
 
 	glEnable( GL_BLEND );
 	//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -275,19 +289,19 @@ void Inven::drawWidgetContents( Widget *widget ) {
 	int colCount = canvas->getWidth() / GRID_SIZE;
 	int rowCount = canvas->getHeight() / GRID_SIZE;
 
-	if( scourge->getMovingItem() ) {
+	if( pcUi->getScourge()->getMovingItem() ) {
 		int currentX, currentY;
-		convertMousePos( scourge->getSDLHandler()->mouseX - window->getX() - x, 
-										 scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT, 
+		convertMousePos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+										 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT, 
 										 &currentX, &currentY );
 		int px = currentX;
 		int py = currentY;
-		if( px >= 0 && px + scourge->getMovingItem()->getInventoryWidth() <= colCount &&
-				py >= 0 && py + scourge->getMovingItem()->getInventoryHeight() <= rowCount ) {
+		if( px >= 0 && px + pcUi->getScourge()->getMovingItem()->getInventoryWidth() <= colCount &&
+				py >= 0 && py + pcUi->getScourge()->getMovingItem()->getInventoryHeight() <= rowCount ) {
 			px *= GRID_SIZE;
 			py *= GRID_SIZE;
-			int pw = scourge->getMovingItem()->getInventoryWidth() * GRID_SIZE;
-			int ph = scourge->getMovingItem()->getInventoryHeight() * GRID_SIZE;
+			int pw = pcUi->getScourge()->getMovingItem()->getInventoryWidth() * GRID_SIZE;
+			int ph = pcUi->getScourge()->getMovingItem()->getInventoryHeight() * GRID_SIZE;
 			//cerr << "pw=" << pw << " ph=" << ph << endl;
 			glBegin( GL_QUADS );
 			glVertex2d( px, py + ph );
@@ -325,7 +339,7 @@ void Inven::drawWidgetContents( Widget *widget ) {
 				int iw = item->getInventoryWidth() * GRID_SIZE;
 				int ih = item->getInventoryHeight() * GRID_SIZE;
 
-				item->renderIcon( scourge, ix, iy, iw, ih );
+				item->renderIcon( pcUi->getScourge(), ix, iy, iw, ih );
 			}
 		}
 	}

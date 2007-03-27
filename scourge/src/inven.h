@@ -36,20 +36,20 @@ class Scourge;
 class Storable;
 class ConfirmDialog;
 class Item;
+class PcUi;
 
 class Inven : public DragAndDropHandler, WidgetView {
 private:
-	Scourge *scourge;
 	Creature *creature;
 	GLuint backgroundTexture;
   int currentHole;
-	Window *window;
+	PcUi *pcUi;
   Canvas *canvas;
 	int x, y, w, h;
 	Item *lastItem;
 
 public:
-	Inven( Scourge *scourge, Window *window, int x, int y, int w, int h );
+	Inven( PcUi *pcUi, int x, int y, int w, int h );
 	~Inven();
 
   inline Widget *getWidget() { return canvas; }
@@ -68,6 +68,7 @@ protected:
 	bool findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem=true );
 	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
 	void convertMousePos( int x, int y, int *invX, int *invY );
+	void showInfo( Item *item );
 };
 
 #endif

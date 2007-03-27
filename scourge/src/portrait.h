@@ -36,18 +36,18 @@ class Scourge;
 class Storable;
 class ConfirmDialog;
 class Item;
+class PcUi;
 
 class Portrait : public WidgetView {
 private:
-	Scourge *scourge;
+	PcUi *pcUi;
 	Creature *creature;
 	GLuint backgroundTexture, barTexture;
-	Window *window;
   Canvas *canvas;
 	int x, y, w, h;
 
 public:
-	Portrait( Scourge *scourge, Window *window, int x, int y, int w, int h );
+	Portrait( PcUi *pcUi, int x, int y, int w, int h );
 	~Portrait();
 
   inline Widget *getWidget() { return canvas; }

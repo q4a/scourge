@@ -36,20 +36,20 @@ class Scourge;
 class Storable;
 class ConfirmDialog;
 class Item;
+class PcUi;
 
 class Equip : public DragAndDropHandler, WidgetView {
 private:
-	Scourge *scourge;
 	Creature *creature;
 	GLuint backgroundTexture;
   int currentHole;
-	Window *window;
+	PcUi *pcUi;
   Canvas *canvas;
 	int x, y, w, h;
 	Item *lastItem;
 
 public:
-	Equip( Scourge *scourge, Window *window, int x, int y, int w, int h );
+	Equip( PcUi *pcUi, int x, int y, int w, int h );
 	~Equip();
 
   inline Widget *getWidget() { return canvas; }
