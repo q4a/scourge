@@ -44,21 +44,32 @@ class PcUi {
 private:
 	Scourge *scourge;
 	Creature *creature;
-
 	Window *mainWin;
 	Equip *equip;
 	Inven *inven;
 	Portrait *portrait;
+	Button *use, *transcribe, *enchant, *info, *store;
+	Label *status;
 
 public:
 	PcUi( Scourge *scourge );
 	~PcUi();
 
   inline Window *getWindow() { return mainWin; }
+	inline Scourge *getScourge() { return scourge; }
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
 
+	bool isUseSelected();
+	bool isEnchantSelected();
+	bool isTranscribeSelected();
+	bool isInfoSelected();
+	bool isStoreSelected();
+	void unselectButtons();
+
+protected:
+	void toggleButtons( Button *button );
 };
 
 #endif

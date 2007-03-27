@@ -31,6 +31,7 @@
 #include "shapepalette.h"
 #include "skillsview.h"
 #include "gui/confirmdialog.h"
+#include "pcui.h"
 
 using namespace std;
 
@@ -38,12 +39,11 @@ using namespace std;
   *@author Gabor Torok
   */
 
-Equip::Equip( Scourge *scourge, Window *window, int x, int y, int w, int h ) {
-	this->scourge = scourge;
+Equip::Equip( PcUi *pcUi, int x, int y, int w, int h ) {
+	this->pcUi = pcUi;
 	this->creature = NULL;
-	this->backgroundTexture = scourge->getShapePalette()->getNamedTexture( "equip" );
+	this->backgroundTexture = pcUi->getScourge()->getShapePalette()->getNamedTexture( "equip" );
   this->currentHole = -1;
-	this->window = window;
 	this->x = x;
 	this->y = y;
 	this->w = w;
@@ -58,19 +58,19 @@ Equip::~Equip() {
 }
 
 bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
-	if( scourge->getSDLHandler()->isDoubleClick ) {
-		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - window->getX() - x, 
-															 scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT );
+	if( pcUi->getScourge()->getSDLHandler()->isDoubleClick ) {
+		Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+															 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
 		if( item && item->getRpgItem()->isContainer() ) {
-			scourge->openContainerGui(item);
+			pcUi->getScourge()->openContainerGui(item);
 		}
-	} else if( scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
-		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - window->getX() - x, 
-															 scourge->getSDLHandler()->mouseY - window->getY() - y - TITLE_HEIGHT );
+	} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
+		Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+															 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
 		if( item ) {
-			scourge->getInfoGui()->setItem( item );
-			if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
-				scourge->getInfoGui()->getWindow()->setVisible( true );
+			pcUi->getScourge()->getInfoGui()->setItem( item );
+			if( !pcUi->getScourge()->getInfoGui()->getWindow()->isVisible() ) 
+				pcUi->getScourge()->getInfoGui()->getWindow()->setVisible( true );
 		}
 	}
   return false;
@@ -81,8 +81,8 @@ bool Equip::handleEvent(SDL_Event *event) {
 	char tooltip[ 500 ];
   switch(event->type) {
   case SDL_MOUSEMOTION:
-    currentHole = getHoleAtPos( event->motion.x - window->getX() - x, 
-                                event->motion.y - window->getY() - TITLE_HEIGHT );
+    currentHole = getHoleAtPos( event->motion.x - pcUi->getWindow()->getX() - x, 
+                                event->motion.y - pcUi->getWindow()->getY() - TITLE_HEIGHT );
 
 		item = getItemInHole( currentHole );
 		if( item != lastItem ) {
@@ -118,7 +118,7 @@ int Equip::getHoleAtPos( int x, int y ) {
   point.y = y;
   point.w = point.h = 1;
   for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
-    SDL_Rect *rect = scourge->getShapePalette()->getInventoryHole( i );
+    SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
     if( SDLHandler::intersects( rect, &point ) ) {
       return i;
     }
@@ -128,12 +128,12 @@ int Equip::getHoleAtPos( int x, int y ) {
 
 void Equip::receive( Widget *widget ) {
 	if( creature ) {
-		Item *item = scourge->getMovingItem();
+		Item *item = pcUi->getScourge()->getMovingItem();
 		if( item ) {
 			char *err = creature->canEquipItem( item );
 			if( err ) {
-				scourge->showMessageDialog( err );
-				scourge->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
+				pcUi->getScourge()->showMessageDialog( err );
+				pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
 			} else {
 				if( creature->addInventory( item ) ) {
 					// message: the player accepted the item
@@ -141,15 +141,15 @@ void Equip::receive( Widget *widget ) {
 					snprintf( message, 119, _( "%s picks up %s." ), 
 									 creature->getName(),
 									 item->getItemName() );
-					scourge->getMap()->addDescription( message );
-					scourge->endItemDrag();
+					pcUi->getScourge()->getMap()->addDescription( message );
+					pcUi->getScourge()->endItemDrag();
 					int index = creature->findInInventory( item );
 					creature->equipInventory( index, currentHole );
-					scourge->getSDLHandler()->getSound()->playSound( Window::DROP_SUCCESS );
+					pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_SUCCESS );
 				} else {
 					// message: the player's inventory is full
-					scourge->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
-					scourge->showMessageDialog( _( "You can't fit the item!" ) );
+					pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
+					pcUi->getScourge()->showMessageDialog( _( "You can't fit the item!" ) );
 				}
 			}
 		}
@@ -159,8 +159,8 @@ void Equip::receive( Widget *widget ) {
 bool Equip::startDrag( Widget *widget, int x, int y ) {
 	if( creature ) {
 	
-		if( scourge->getTradeDialog()->getWindow()->isVisible() ) {
-			scourge->showMessageDialog( _( "Can't change inventory while trading." ) );
+		if( pcUi->getScourge()->getTradeDialog()->getWindow()->isVisible() ) {
+			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while trading." ) );
 			return false;
 		}
 		
@@ -169,17 +169,17 @@ bool Equip::startDrag( Widget *widget, int x, int y ) {
 		Item *item = getItemAtPos( x, y );
 		if( item ) {
 			if( item->isCursed() ) {
-				scourge->showMessageDialog( _( "Can't remove cursed item!" ) );
+				pcUi->getScourge()->showMessageDialog( _( "Can't remove cursed item!" ) );
 				return false;
 			} else {
 	
 				creature->removeInventory( creature->findInInventory( item ) );
-				scourge->startItemDragFromGui( item );
+				pcUi->getScourge()->startItemDragFromGui( item );
 				char message[120];
 				snprintf(message, 119, _( "%s drops %s." ), 
 								creature->getName(),
 								item->getItemName() );
-				scourge->getMap()->addDescription( message );
+				pcUi->getScourge()->getMap()->addDescription( message );
 	
 				return true;
 			}
@@ -210,18 +210,18 @@ void Equip::drawWidgetContents( Widget *widget ) {
 		for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
 			Item *item = creature->getEquippedInventory( i );
       if( item ) {
-				SDL_Rect *rect = scourge->getShapePalette()->getInventoryHole( i );
+				SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
 				if( rect && rect->w && rect->h ) {
-					item->renderIcon( scourge, rect->x, rect->y, rect->w, rect->h );
+					item->renderIcon( pcUi->getScourge(), rect->x, rect->y, rect->w, rect->h );
 				}
 			}
 		}
 	}
 
   if( currentHole > -1 ) {
-    SDL_Rect *rect = scourge->getShapePalette()->getInventoryHole( currentHole );
+    SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( currentHole );
     glDisable( GL_TEXTURE_2D );
-    window->setTopWindowBorderColor();
+    pcUi->getWindow()->setTopWindowBorderColor();
     glBegin( GL_LINE_LOOP );
     glVertex2d( rect->x, rect->y + rect->h );
     glVertex2d( rect->x, rect->y );

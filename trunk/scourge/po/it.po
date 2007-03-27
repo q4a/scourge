@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-25 11:10+0200\n"
+"POT-Creation-Date: 2007-03-26 20:07-0700\n"
 "PO-Revision-Date: 2007-02-27 19:01+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -150,7 +150,7 @@ msgid "Ok"
 msgstr "Ok"
 
 #: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:106
-#: src/scourge.cpp:1548
+#: src/scourge.cpp:1551
 msgid "No"
 msgstr "No"
 
@@ -317,7 +317,7 @@ msgstr "OK"
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/common/constants.cpp:105 src/scourge.cpp:1546
+#: src/common/constants.cpp:105 src/scourge.cpp:1549
 msgid "Yes"
 msgstr "Sì"
 
@@ -735,7 +735,7 @@ msgstr "contro"
 msgid "bonus"
 msgstr "bonus"
 
-#: src/creature.cpp:2646 src/scourge.cpp:3668
+#: src/creature.cpp:2646 src/scourge.cpp:3671
 msgid "CTH"
 msgstr ""
 
@@ -808,24 +808,24 @@ msgstr " %s muore!"
 msgid "Info"
 msgstr "Info"
 
-#: src/containergui.cpp:149 src/scourge.cpp:1176
+#: src/containergui.cpp:149 src/scourge.cpp:1179
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr "%1$s è riposto in %2$s."
 
-#: src/containergui.cpp:159 src/scourge.cpp:1167 src/scourge.cpp:1173
+#: src/containergui.cpp:159 src/scourge.cpp:1170 src/scourge.cpp:1176
 msgid "The item won't fit in that container!"
 msgstr "L'oggetto non entrerà nel contenitore!"
 
-#: src/board.cpp:292
+#: src/board.cpp:303
 msgid "(STORY)"
 msgstr "(STORIA)"
 
-#: src/board.cpp:293
+#: src/board.cpp:304
 msgid "(CAVE)"
 msgstr "(GROTTA)"
 
-#: src/board.cpp:295 src/inventory.cpp:989 src/inventory.cpp:1006
+#: src/board.cpp:306 src/inventory.cpp:989 src/inventory.cpp:1006
 #: src/inventory.cpp:1026
 msgid "(completed)"
 msgstr "(completato)"
@@ -899,7 +899,7 @@ msgstr "CA"
 msgid "RANGE"
 msgstr "GITTATA"
 
-#: src/item.cpp:1127 src/scourge.cpp:3620
+#: src/item.cpp:1127 src/scourge.cpp:3623
 msgid "DEF"
 msgstr ""
 
@@ -1581,7 +1581,7 @@ msgstr "Mostra console"
 msgid "Party members give all their money to %s."
 msgstr "I membri del gruppo danno tutte le monete a %s."
 
-#: src/inventory.cpp:562 src/scourge.cpp:2682
+#: src/inventory.cpp:562 src/scourge.cpp:2685
 msgid "Not enough Magic Points to cast this spell!"
 msgstr "Non hai abbastanza Punti Magia per questo incantesimo!"
 
@@ -1748,249 +1748,249 @@ msgstr "Errore nel salvare la mappa attuale."
 msgid "Error #666: Failed to create map."
 msgstr "Errore 666: non riesco a creare la mappa."
 
-#: src/scourge.cpp:527
+#: src/scourge.cpp:530
 #, c-format
 msgid "For returning alive, the party receives %d experience points."
 msgstr ""
 "Per essere tornati vivi, i membri del gruppo ricevono %d punti esperienza "
 "ciascuno."
 
-#: src/scourge.cpp:538
+#: src/scourge.cpp:541
 #, c-format
 msgid " %s gains a level! "
 msgstr " %s guadagna un livello!"
 
-#: src/scourge.cpp:697
+#: src/scourge.cpp:700
 #, c-format
 msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
 msgstr "Benvenuti al quartier generale di S.C.O.U.R.G.E."
 
-#: src/scourge.cpp:700
+#: src/scourge.cpp:703
 #, c-format
 msgid "Teleport spell failed!! Entering level %d"
 msgstr "Incantesimo Teletrasporto fallito! State entrando nel livello %d"
 
-#: src/scourge.cpp:702
+#: src/scourge.cpp:705
 #, c-format
 msgid "Entering dungeon level %d"
 msgstr "State entrando nel livello %d"
 
-#: src/scourge.cpp:882
+#: src/scourge.cpp:885
 #, c-format
 msgid "%s cancelled a pending action."
 msgstr "%s ha cancellato un'azione in sospeso."
 
-#: src/scourge.cpp:887
+#: src/scourge.cpp:890
 msgid "Select a creature for this spell."
 msgstr "Seleziona una creatura per questo incantesimo."
 
-#: src/scourge.cpp:892
+#: src/scourge.cpp:895
 msgid "Select an item for this spell."
 msgstr "Seleziona un oggetto per questo incantesimo."
 
-#: src/scourge.cpp:897
+#: src/scourge.cpp:900
 msgid "Select a location for this spell."
 msgstr "Seleziona un luogo per questo incantesimo."
 
-#: src/scourge.cpp:902
+#: src/scourge.cpp:905
 msgid "Select a door for this spell."
 msgstr "Seleziona una porta per questo incantesimo."
 
-#: src/scourge.cpp:907
+#: src/scourge.cpp:910
 msgid "Select the party for this spell."
 msgstr "Seleziona il gruppo per questo incantesimo."
 
-#: src/scourge.cpp:928 src/scourge.cpp:949
+#: src/scourge.cpp:931 src/scourge.cpp:952
 #, c-format
 msgid "%s selected a target"
 msgstr "%s ha scelto un bersaglio"
 
-#: src/scourge.cpp:971
+#: src/scourge.cpp:974
 #, c-format
 msgid "%1$s will target %2$s"
 msgstr "%1$s userà %2$s come bersaglio"
 
-#: src/scourge.cpp:993
+#: src/scourge.cpp:996
 #, c-format
 msgid "%1$s targeted %2$s."
 msgstr "%1$s ha scelto %2$s come bersaglio."
 
-#: src/scourge.cpp:1160
+#: src/scourge.cpp:1163
 #, c-format
 msgid "%1$s picks up %2$s."
 msgstr "%1$s raccoglie %2$s."
 
-#: src/scourge.cpp:1365
+#: src/scourge.cpp:1368
 msgid "Something is blocking the door from closing."
 msgstr "Qualcosa impedisce a questa porta di chiudersi."
 
-#: src/scourge.cpp:1463
+#: src/scourge.cpp:1466
 msgid "The door splinters into many, tiny pieces!"
 msgstr "La porta si frantuma in tanti, piccoli pezzi!"
 
-#: src/scourge.cpp:1517
+#: src/scourge.cpp:1520
 msgid "Messages"
 msgstr "Messaggi"
 
-#: src/scourge.cpp:1541
+#: src/scourge.cpp:1544
 msgid "Leave level?"
 msgstr "Abbandonare il livello?"
 
-#: src/scourge.cpp:1553
+#: src/scourge.cpp:1556
 msgid "Squirrel Console"
 msgstr ""
 
-#: src/scourge.cpp:1561
+#: src/scourge.cpp:1564
 msgid "Run"
 msgstr "Esegui"
 
-#: src/scourge.cpp:1562
+#: src/scourge.cpp:1565
 msgid "Clear"
 msgstr "Pulisci"
 
-#: src/scourge.cpp:1964
+#: src/scourge.cpp:1967
 #, c-format
 msgid "Speed set to %d\n"
 msgstr "Velocità impostata su %d\n"
 
-#: src/scourge.cpp:2125
+#: src/scourge.cpp:2128
 msgid "For completing the mission"
 msgstr "Per aver completato la missione"
 
-#: src/scourge.cpp:2127
+#: src/scourge.cpp:2130
 #, c-format
 msgid "The party receives %d points."
 msgstr "Il gruppo riceve %d punti."
 
-#: src/scourge.cpp:2152
+#: src/scourge.cpp:2155
 msgid "Connecting to server"
 msgstr "Mi connetto al server"
 
-#: src/scourge.cpp:2159
+#: src/scourge.cpp:2162
 msgid "Connected!"
 msgstr "Connesso!"
 
-#: src/scourge.cpp:2181
+#: src/scourge.cpp:2184
 msgid "Combat"
 msgstr "Combattimento"
 
-#: src/scourge.cpp:2183
+#: src/scourge.cpp:2186
 msgid "End Turn"
 msgstr "Fine turno"
 
-#: src/scourge.cpp:2206
+#: src/scourge.cpp:2209
 msgid "Pause game"
 msgstr "Pausa"
 
-#: src/scourge.cpp:2209
+#: src/scourge.cpp:2212
 msgid "Load or Save Game"
 msgstr "Carica o salva una partita"
 
-#: src/scourge.cpp:2219
+#: src/scourge.cpp:2222
 msgid "Exit game"
 msgstr "Esci"
 
-#: src/scourge.cpp:2226
+#: src/scourge.cpp:2229
 msgid "Game options"
 msgstr "Opzioni del gioco"
 
-#: src/scourge.cpp:2233
+#: src/scourge.cpp:2236
 msgid "Move as a group"
 msgstr "Muoversi come gruppo"
 
-#: src/scourge.cpp:2273
+#: src/scourge.cpp:2276
 msgid "Dismiss this character"
 msgstr "Licenzia questo membro del gruppo"
 
-#: src/scourge.cpp:2292
+#: src/scourge.cpp:2295
 msgid "Inventory and party info"
 msgstr "Informazioni sull'inventario e il gruppo"
 
-#: src/scourge.cpp:2300
+#: src/scourge.cpp:2303
 msgid "Click to assign a spell, capability or magic item."
 msgstr "Clicca per assegnare un incantesimo, una capacità o un oggetto magico."
 
-#: src/scourge.cpp:2336
+#: src/scourge.cpp:2339
 msgid "HP"
 msgstr "PF"
 
-#: src/scourge.cpp:2338
+#: src/scourge.cpp:2341
 msgid "MP"
 msgstr "PM"
 
-#: src/scourge.cpp:2358
+#: src/scourge.cpp:2361
 msgid "Current Weapon: Bare Hands"
 msgstr "Arma attuale: Mani nude"
 
-#: src/scourge.cpp:2363
+#: src/scourge.cpp:2366
 #, c-format
 msgid "Current Weapon: %s"
 msgstr "Arma attuale: %s"
 
-#: src/scourge.cpp:2756
+#: src/scourge.cpp:2759
 msgid "Begin Turn"
 msgstr "Inizio turno"
 
-#: src/scourge.cpp:2761
+#: src/scourge.cpp:2764
 msgid "...In Turn..."
 msgstr "...in turno..."
 
-#: src/scourge.cpp:2767
+#: src/scourge.cpp:2770
 msgid "Pause Game"
 msgstr "Pausa"
 
-#: src/scourge.cpp:2771
+#: src/scourge.cpp:2774
 msgid "Unpause game."
 msgstr "Togli pausa."
 
-#: src/scourge.cpp:2806
+#: src/scourge.cpp:2809
 msgid "Available Missions"
 msgstr "Missioni disponibili"
 
-#: src/scourge.cpp:2812
+#: src/scourge.cpp:2815
 msgid "Drag map to look around."
 msgstr "Trascina la mappa per guardare in giro."
 
-#: src/scourge.cpp:2880
+#: src/scourge.cpp:2883
 msgid "This spell has no effect here..."
 msgstr "Questo incantesimo non ha effetto qui..."
 
-#: src/scourge.cpp:3068
+#: src/scourge.cpp:3071
 msgid "Game loaded successfully."
 msgstr "Partita caricata con successo."
 
-#: src/scourge.cpp:3094
+#: src/scourge.cpp:3097
 msgid "Error: Saved game version is too old."
 msgstr "Errore: la partita salvata ha una versione troppo vecchia."
 
-#: src/scourge.cpp:3450
+#: src/scourge.cpp:3453
 msgid "You cannot hire more party members."
 msgstr "Non puoi assumere altri membri."
 
-#: src/scourge.cpp:3470
+#: src/scourge.cpp:3473
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr "Vuoi davvero licenziare %s il %s?"
 
-#: src/scourge.cpp:3618
+#: src/scourge.cpp:3621
 msgid "Initiative"
 msgstr "Iniziativa"
 
-#: src/scourge.cpp:3655 src/scourge.cpp:3662 src/infogui.cpp:348
+#: src/scourge.cpp:3658 src/scourge.cpp:3665 src/infogui.cpp:348
 #: src/infogui.cpp:353 src/infogui.cpp:358
 msgid "ATK"
 msgstr "ATK"
 
-#: src/scourge.cpp:3669 src/infogui.cpp:350 src/infogui.cpp:356
+#: src/scourge.cpp:3672 src/infogui.cpp:350 src/infogui.cpp:356
 msgid "APR"
 msgstr ""
 
-#: src/scourge.cpp:3725
+#: src/scourge.cpp:3728
 #, c-format
 msgid "%.2f"
 msgstr ""
 
-#: src/scourge.cpp:3727
+#: src/scourge.cpp:3730
 #, c-format
 msgid "per %.2f R"
 msgstr ""
@@ -6389,12 +6389,6 @@ msgid ""
 "again! He vows to "
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:65
-msgid ""
-" for us in the near future. Actually, this worries me far more than most "
-"missions we accept..."
-msgstr ""
-
 #: ../scourge_data/config/mission.cfg:66
 msgid ""
 "Remember to find the wand for $Sabien! He is an important client and he's in "
@@ -6499,15 +6493,6 @@ msgstr ""
 msgid ""
 "Our agents have located Mycotharsius in the cellars of a peaceful monastery "
 "called "
-msgstr ""
-
-#: ../scourge_data/config/mission.cfg:116
-msgid ""
-", near the city of Orn. You must journey here and confront him. Before "
-"ridding the world of him for good, find out as much as you can about why he "
-"hired the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid "
-"however, that his failures made Mycotharsius quite Mad. Therefore if all he "
-"can offer is gibberish, try to look around his lair for clues."
 msgstr ""
 
 #: ../scourge_data/config/mission.cfg:117
