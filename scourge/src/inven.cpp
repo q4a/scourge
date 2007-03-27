@@ -74,16 +74,6 @@ bool Inven::handleEvent( SDL_Event *event ) {
 				canvas->setTooltip( NULL );
 			}
 		}
-	} else if( event->type == SDL_MOUSEBUTTONDOWN ) {
-		cerr << "down" << endl;
-	} else if( event->type == SDL_MOUSEBUTTONUP ) {
-		cerr << "up" << endl;
-		Item *item = getItemAtPos( event->button.x - pcUi->getWindow()->getX() - x, 
-															 event->button.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
-		if( pcUi->isInfoSelected() ) {
-			showInfo( item );
-			pcUi->unselectButtons();
-		}
 	}
 	return false;
 }
@@ -95,11 +85,12 @@ bool Inven::handleEvent( Widget *widget, SDL_Event *event ) {
 		if( item && item->getRpgItem()->isContainer() ) {
 			pcUi->getScourge()->openContainerGui(item);
 		}
-	} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
+	} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT || ( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT && pcUi->isInfoSelected() ) ) {
 		Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
 															 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
 		if( item ) {
 			showInfo( item );
+			pcUi->unselectButtons();
 		}
 	}
   return false;
