@@ -3732,3 +3732,110 @@ char *Scourge::getAPRDescription( Creature *p, Item *item, char *buff ) {
   return buff;
 }
 
+bool Scourge::enchantItem( Creature *creature, Item *item ) {
+	bool ret = false;
+	if( creature && item ) {
+		if(item->isMagicItem()) {
+			showMessageDialog( _( "This item is already enchanted." ) );
+		} else if(!item->getRpgItem()->isEnchantable()) {
+			showMessageDialog( _( "This item cannot be enchanted." ) );
+		} else {
+			Date now = getParty()->getCalendar()->getCurrentDate();
+			if( now.isADayLater( creature->getLastEnchantDate() ) ) {
+				int level = (int)((float)creature->getSkill( Skill::ENCHANT_ITEM ) * rand()/RAND_MAX);					
+				if(level > 20) {
+					int level = creature->getSkill( Skill::ENCHANT_ITEM );
+					item->enchant( (level - 20) / 20 );
+					showMessageDialog( _( "You succesfully enchanted an item!" ) );
+					char tmp[255];
+					item->getDetailedDescription(tmp);
+					char msg[255];
+					sprintf(msg, _( "You created: %s." ) , tmp);
+					getMap()->addDescription(msg);
+					creature->startEffect( Constants::EFFECT_SWIRL, Constants::DAMAGE_DURATION * 4 );
+					ret = true;
+				} else {
+					showMessageDialog( _( "You failed to enchant the item." ) );
+				}
+				creature->setLastEnchantDate(now);
+			} else {
+				showMessageDialog( _( "You can only enchant one item per day." ) );
+			}
+		}
+	}
+	return ret;
+}	 	
+
+bool Scourge::transcribeItem( Creature *creature, Item *item ) {
+	bool ret = false;
+	if( creature && item ) {
+		if(item->getSpell()) {
+			if(creature->getSkill(item->getSpell()->getSchool()->getSkill()) > item->getSpell()->getLevel() * 5 &&
+				 creature->getMp() > 0) {
+				bool res = creature->addSpell(item->getSpell());
+				if(res) {
+					showMessageDialog( _( "Spell was entered into your spellbook." ) );
+					// destroy the scroll
+					creature->removeInventory( creature->findInInventory( item ) );
+					char msg[120];
+					sprintf(msg, _( "%s crumbles into dust." ), item->getItemName());
+					getMap()->addDescription(msg);
+					ret = true;
+				} else {
+					showMessageDialog( _( "You already know this spell" ) );
+				}
+			} else {
+				showMessageDialog( _( "You are not proficient enough to transcribe this scroll." ) );
+			}
+		} else {
+			showMessageDialog( _( "You can only transcribe scrolls!" ) );
+		}
+	}
+	return ret;
+}
+
+bool Scourge::useItem( Creature *creature, Item *item ) {
+	bool ret = false;
+	if( creature && item ) {
+		if( creature->getStateMod( StateMod::dead ) ) {
+			showMessageDialog( Constants::getMessage( Constants::DEAD_CHARACTER_ERROR ) );
+		} else {
+
+			// open containers
+			if( item->getRpgItem()->getType() == RpgItem::CONTAINER ) {
+				openContainerGui(item);
+				ret = true;
+
+				// cast spell containing item
+			} else if( item->getSpell() ) {
+				if( item->getRpgItem()->getMaxCharges() == 0 || item->getCurrentCharges() > 0 ) {
+					creature->setAction(Constants::ACTION_CAST_SPELL, 
+															item,
+															item->getSpell());
+					if( !item->getSpell()->isPartyTargetAllowed() ) {
+						setTargetSelectionFor( creature );
+					} else {
+						creature->setTargetCreature( creature );
+          }
+					ret = true;
+				} else {
+					showMessageDialog( _( "This item is out of charges." ) );
+				}
+
+				// eat/drink food, drink or potion
+			} else if( item->getRpgItem()->getType() == RpgItem::DRINK ||
+								 item->getRpgItem()->getType() == RpgItem::FOOD || 
+								 item->getRpgItem()->getType() == RpgItem::POTION ) {
+				// this action will occur in the next battle round
+				creature->setAction( Constants::ACTION_EAT_DRINK, item, NULL );
+				creature->setTargetCreature( creature );
+				//if( !mainWin->isLocked() ) mainWin->setVisible( false );
+				ret = true;
+			} else {
+				showMessageDialog( _( "You cannot use this item." ) );
+			}
+		}
+	}
+	return ret;
+}
+
