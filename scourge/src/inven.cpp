@@ -85,11 +85,28 @@ bool Inven::handleEvent( Widget *widget, SDL_Event *event ) {
 		if( item && item->getRpgItem()->isContainer() ) {
 			pcUi->getScourge()->openContainerGui(item);
 		}
-	} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT || ( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT && pcUi->isInfoSelected() ) ) {
+	} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
 		Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
 															 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
 		if( item ) {
 			showInfo( item );
+			pcUi->unselectButtons();
+		}
+	} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT ) {
+		Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+															 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
+		if( creature && item ) {
+			if( pcUi->isEnchantSelected() ) {
+				pcUi->getScourge()->enchantItem( creature, item );
+			} else if( pcUi->isInfoSelected() ) {
+				showInfo( item );
+			} else if( pcUi->isStoreSelected() ) {
+				// FIXME
+			} else if( pcUi->isTranscribeSelected() ) {
+				pcUi->getScourge()->transcribeItem( creature, item );
+			} else if( pcUi->isUseSelected() ) {
+				pcUi->getScourge()->useItem( creature, item );
+			}
 			pcUi->unselectButtons();
 		}
 	}

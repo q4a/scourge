@@ -622,6 +622,10 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     int itemIndex = invList->getSelectedLine();  
     if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
       Item *item = creature->getInventory(itemIndex);
+			if( scourge->transcribeItem( creature, item ) ) {
+				refresh();
+			}
+			/*
       if(item->getSpell()) {
         if(creature->getSkill(item->getSpell()->getSchool()->getSkill()) > item->getSpell()->getLevel() * 5 &&
            creature->getMp() > 0) {
@@ -643,11 +647,16 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
       } else {
         scourge->showMessageDialog( _( "You can only transcribe scrolls!" ) );
       }
+			*/
     }
   } else if(widget == enchantButton) {
     int itemIndex = invList->getSelectedLine();  
     if(itemIndex > -1 && creature->getInventoryCount() > itemIndex) {
       Item *item = creature->getInventory(itemIndex);
+			if( scourge->enchantItem( creature,item ) ) {
+				refresh();
+			}
+			/*
       if(item->isMagicItem()) {
         scourge->showMessageDialog( _( "This item is already enchanted." ) );
       } else if(!item->getRpgItem()->isEnchantable()) {
@@ -675,6 +684,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
           scourge->showMessageDialog( _( "You can only enchant one item per day." ) );
         }
       }
+			*/
     }
   } else if( widget == formationList ) {
     scourge->getParty()->setFormation( formationList->getSelectedLine() );

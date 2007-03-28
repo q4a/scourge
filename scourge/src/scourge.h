@@ -748,6 +748,10 @@ public:
   void describeAttacks( Creature *p, int x, int y, bool currentOnly=false );
 	void describeDefense( Creature *p, int x, int y );
 
+	bool enchantItem( Creature *creature, Item *item );
+	bool transcribeItem( Creature *creature, Item *item );
+	bool useItem( Creature *creature, Item *item );
+
 protected:
 
 	bool describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull );

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-26 20:07-0700\n"
+"POT-Creation-Date: 2007-03-27 21:22-0700\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -823,8 +823,8 @@ msgstr ""
 msgid "(CAVE)"
 msgstr ""
 
-#: src/board.cpp:306 src/inventory.cpp:989 src/inventory.cpp:1006
-#: src/inventory.cpp:1026
+#: src/board.cpp:306 src/inventory.cpp:999 src/inventory.cpp:1016
+#: src/inventory.cpp:1036
 msgid "(completed)"
 msgstr ""
 
@@ -837,7 +837,7 @@ msgstr ""
 msgid "Buy"
 msgstr ""
 
-#: src/healdialog.cpp:74 src/inventory.cpp:823 src/donatedialog.cpp:73
+#: src/healdialog.cpp:74 src/inventory.cpp:833 src/donatedialog.cpp:73
 #: src/traindialog.cpp:94 ../scourge_data/maps/library31.cfg:176
 msgid "level"
 msgstr ""
@@ -987,7 +987,7 @@ msgstr ""
 msgid "Your %s feels lighter."
 msgstr ""
 
-#: src/battle.cpp:726 src/inventory.cpp:635
+#: src/battle.cpp:726 src/scourge.cpp:3781
 #, c-format
 msgid "%s crumbles into dust."
 msgstr ""
@@ -1476,7 +1476,7 @@ msgstr ""
 msgid "Protected States"
 msgstr ""
 
-#: src/inventory.cpp:220 src/inventory.cpp:859
+#: src/inventory.cpp:220 src/inventory.cpp:869
 msgid "Skill"
 msgstr ""
 
@@ -1585,7 +1585,7 @@ msgstr ""
 msgid "Not enough Magic Points to cast this spell!"
 msgstr ""
 
-#: src/inventory.cpp:590 src/inventory.cpp:615
+#: src/inventory.cpp:590 src/inventory.cpp:615 src/scourge.cpp:3822
 msgid "This item is out of charges."
 msgstr ""
 
@@ -1597,121 +1597,80 @@ msgstr ""
 msgid "You cannot cast a spell with this item."
 msgstr ""
 
-#: src/inventory.cpp:630
-msgid "Spell was entered into your spellbook."
-msgstr ""
-
-#: src/inventory.cpp:638
-msgid "You already know this spell"
-msgstr ""
-
-#: src/inventory.cpp:641
-msgid "You are not proficient enough to transcribe this scroll."
-msgstr ""
-
-#: src/inventory.cpp:644
-msgid "You can only transcribe scrolls!"
-msgstr ""
-
-#: src/inventory.cpp:652
-msgid "This item is already enchanted."
-msgstr ""
-
-#: src/inventory.cpp:654
-msgid "This item cannot be enchanted."
-msgstr ""
-
-#: src/inventory.cpp:663
-msgid "You succesfully enchanted an item!"
-msgstr ""
-
-#: src/inventory.cpp:667
-#, c-format
-msgid "You created: %s."
-msgstr ""
-
-#: src/inventory.cpp:671
-msgid "You failed to enchant the item."
-msgstr ""
-
-#: src/inventory.cpp:675
-msgid "You can only enchant one item per day."
-msgstr ""
-
-#: src/inventory.cpp:724
+#: src/inventory.cpp:734
 msgid "Stats cannot be improved this way."
 msgstr ""
 
-#: src/inventory.cpp:748
+#: src/inventory.cpp:758
 msgid "You still have skill points to distribute."
 msgstr ""
 
-#: src/inventory.cpp:752
+#: src/inventory.cpp:762
 msgid "Are you sure you want to apply the selected skill points?"
 msgstr ""
 
-#: src/inventory.cpp:756
+#: src/inventory.cpp:766
 msgid "This character has no skill points to apply."
 msgstr ""
 
-#: src/inventory.cpp:865
+#: src/inventory.cpp:875
 msgid "Total"
 msgstr ""
 
-#: src/inventory.cpp:867 src/inventory.cpp:869
+#: src/inventory.cpp:877 src/inventory.cpp:879
 msgid "kg"
 msgstr ""
 
-#: src/inventory.cpp:871
+#: src/inventory.cpp:881
 #, fuzzy
 msgid "Coins"
 msgstr "Options"
 
-#: src/inventory.cpp:974
+#: src/inventory.cpp:984
 #, c-format
 msgid "Depth: %d out of %d."
 msgstr ""
 
-#: src/inventory.cpp:985
+#: src/inventory.cpp:995
 #, c-format
 msgid "Find %s"
 msgstr ""
 
-#: src/inventory.cpp:989
+#: src/inventory.cpp:999
 msgid "(not yet found)"
 msgstr ""
 
-#: src/inventory.cpp:1002
+#: src/inventory.cpp:1012
 #, c-format
 msgid "Vanquish %s."
 msgstr ""
 
-#: src/inventory.cpp:1006 src/inventory.cpp:1026
+#: src/inventory.cpp:1016 src/inventory.cpp:1036
 msgid "(not yet done)"
 msgstr ""
 
-#: src/inventory.cpp:1024
+#: src/inventory.cpp:1034
 msgid "Special"
 msgstr ""
 
-#: src/inventory.cpp:1078
+#: src/inventory.cpp:1088
 msgid "Can't change inventory while trading."
 msgstr ""
 
-#: src/inventory.cpp:1088 src/inventory.cpp:1099
+#: src/inventory.cpp:1098 src/inventory.cpp:1109
 msgid "Can't remove cursed item!"
 msgstr ""
 
-#: src/inventory.cpp:1124
+#: src/inventory.cpp:1134
 #, fuzzy, c-format
 msgid "%s picks up %s."
 msgstr "Options"
 
-#: src/inventory.cpp:1137
+#: src/inventory.cpp:1147
 msgid "You can't fit the item!"
 msgstr ""
 
-#: src/inventory.cpp:1175
+#: src/inventory.cpp:1185
 #, c-format
 msgid "%s drops %s."
 msgstr ""
@@ -1994,6 +1953,51 @@ msgstr ""
 #: src/scourge.cpp:3730
 #, c-format
 msgid "per %.2f R"
+msgstr ""
+
+#: src/scourge.cpp:3739
+msgid "This item is already enchanted."
+msgstr ""
+
+#: src/scourge.cpp:3741
+msgid "This item cannot be enchanted."
+msgstr ""
+
+#: src/scourge.cpp:3749
+msgid "You succesfully enchanted an item!"
+msgstr ""
+
+#: src/scourge.cpp:3753
+#, c-format
+msgid "You created: %s."
+msgstr ""
+
+#: src/scourge.cpp:3758
+msgid "You failed to enchant the item."
+msgstr ""
+
+#: src/scourge.cpp:3762
+msgid "You can only enchant one item per day."
+msgstr ""
+
+#: src/scourge.cpp:3777
+msgid "Spell was entered into your spellbook."
+msgstr ""
+
+#: src/scourge.cpp:3785
+msgid "You already know this spell"
+msgstr ""
+
+#: src/scourge.cpp:3788
+msgid "You are not proficient enough to transcribe this scroll."
+msgstr ""
+
+#: src/scourge.cpp:3791
+msgid "You can only transcribe scrolls!"
+msgstr ""
+
+#: src/scourge.cpp:3835
+msgid "You cannot use this item."
 msgstr ""
 
 #: src/savegamedialog.cpp:43
