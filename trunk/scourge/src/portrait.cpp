@@ -187,7 +187,13 @@ void Portrait::showSkills() {
 void Portrait::drawSkill( Skill *skill, int yy ) {
 	int bonus = creature->getSkillBonus( skill->getIndex() );
 	int value = creature->getSkill( skill->getIndex() ) - bonus;
-	pcUi->getScourge()->getSDLHandler()->texPrint( 10, yy, skill->getDisplayName() );
+	char tmp[20];
+	strncpy( tmp, skill->getDisplayName(), 16 );
+	tmp[16] = '\0';
+	if( strlen( skill->getDisplayName() ) > 16 ) {
+		strcat( tmp, "." );
+	}
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, yy, tmp );
 	drawBar( 130, yy - 10, value, ( skill->getGroup()->isStat() ? 20 : 100 ), 0, 1, 0, 1, bonus );
 	if( bonus > 0 ) {
 		pcUi->getScourge()->getSDLHandler()->texPrint( 250, yy, "%d(%d)", ( value + bonus ), bonus );
