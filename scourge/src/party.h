@@ -105,6 +105,10 @@ class Party : public CreatureGroupInfo {
   // because the entire party is dead (the mission failed)
   bool switchToNextLivePartyMember();
 
+	bool nextPartyMember();
+	bool previousPartyMember();
+	int getPlayerIndex();
+
   void togglePlayerOnly(bool keepTargets = false);
 
   void forceStopRound();

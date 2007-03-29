@@ -327,7 +327,9 @@ void ShapePalette::initCursor( ConfigLang *config ) {
 
 	strcpy( cursorDir, (*v)[0]->getValueAsString( "path" ) );
 	cursorWidth = (int)((*v)[0]->getValueAsFloat( "width" ));
+	if( cursorWidth <= 0 ) cursorWidth = 48;
 	cursorHeight = (int)((*v)[0]->getValueAsFloat( "height" ));
+	if( cursorHeight <= 0 ) cursorHeight = 48;
 
 	loadCursors();
 }
