@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-27 21:22-0700\n"
+"POT-Creation-Date: 2007-03-28 22:18-0700\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -741,9 +741,9 @@ msgstr ""
 msgid "max"
 msgstr ""
 
-#: src/shapepalette.cpp:354 src/shapepalette.cpp:380 src/shapepalette.cpp:403
-#: src/shapepalette.cpp:438 src/shapepalette.cpp:567 src/shapepalette.cpp:593
-#: src/shapepalette.cpp:620 src/session.cpp:91
+#: src/shapepalette.cpp:356 src/shapepalette.cpp:382 src/shapepalette.cpp:405
+#: src/shapepalette.cpp:440 src/shapepalette.cpp:569 src/shapepalette.cpp:595
+#: src/shapepalette.cpp:622 src/session.cpp:91
 msgid "Loading Shapes"
 msgstr ""
 

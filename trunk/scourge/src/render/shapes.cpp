@@ -209,7 +209,6 @@ void Shapes::initialize() {
 
 	// default to textures
 	strcpy( cursorDir, "/textures" );
-	cursorWidth = cursorHeight = 48;
 
   // resolve texture groups
   for(int i = 0; i < textureGroupCount; i++) {

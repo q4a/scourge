@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-27 21:22-0700\n"
+"POT-Creation-Date: 2007-03-28 22:18-0700\n"
 "PO-Revision-Date: 2007-02-27 19:01+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -743,9 +743,9 @@ msgstr ""
 msgid "max"
 msgstr "max"
 
-#: src/shapepalette.cpp:354 src/shapepalette.cpp:380 src/shapepalette.cpp:403
-#: src/shapepalette.cpp:438 src/shapepalette.cpp:567 src/shapepalette.cpp:593
-#: src/shapepalette.cpp:620 src/session.cpp:91
+#: src/shapepalette.cpp:356 src/shapepalette.cpp:382 src/shapepalette.cpp:405
+#: src/shapepalette.cpp:440 src/shapepalette.cpp:569 src/shapepalette.cpp:595
+#: src/shapepalette.cpp:622 src/session.cpp:91
 msgid "Loading Shapes"
 msgstr "Caricamento forme"
 

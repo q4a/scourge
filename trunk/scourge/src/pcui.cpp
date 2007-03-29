@@ -36,11 +36,11 @@ using namespace std;
 
 #define EQUIP_WIDTH 230
 #define EQUIP_HEIGHT 300
-#define INVEN_WIDTH 530
+#define INVEN_WIDTH 570
 #define INVEN_HEIGHT 160
 #define PORTRAIT_WIDTH 290
 #define PORTRAIT_HEIGHT 300
-#define WIN_WIDTH EQUIP_WIDTH + 320
+#define WIN_WIDTH EQUIP_WIDTH + 320 + 40
 #define WIN_HEIGHT EQUIP_HEIGHT + 245
 #define DEFAULT_STATUS "Right click for info, double-click to open."
 
@@ -77,6 +77,33 @@ PcUi::PcUi( Scourge *scourge ) {
  x += 33;
  status = new Label( x + 5, y + 22, _( DEFAULT_STATUS ) );
  mainWin->addWidget( status );
+
+ x = WIN_WIDTH - 12 - 33 - 33;
+ prev = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "prev" ) );
+ prev->setTooltip( _( "Switch to previous party member" ) );
+ x += 33;
+ next = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "next" ) );
+ next->setTooltip( _( "Switch to next party member" ) );
+
+ x = WIN_WIDTH - 12 - 33;
+ y = 5;
+ stats = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "stats" ) );
+ stats->setTooltip( _( "Show character stats" ) );
+ stats->setSelected( true );
+ y += 33;
+ skills = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "skills" ) );
+ skills->setTooltip( _( "Show character skills" ) );
+ 
+ y = PORTRAIT_HEIGHT - 33 - 33;
+ up = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "up" ) );
+ up->setTooltip( _( "Page skills up" ) );
+ y += 33;
+ down = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "down" ) );
+ down->setTooltip( _( "Page skills down" ) );
+
+ up->setEnabled( false );
+ down->setEnabled( false );
+
 }
 
 PcUi::~PcUi() {
@@ -102,6 +129,26 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 		toggleButtons( enchant );
 	} else if( widget == store ) {
 		toggleButtons( store );
+	} else if( widget == prev ) {
+		scourge->getParty()->previousPartyMember();
+	} else if( widget == next ) {
+		scourge->getParty()->nextPartyMember();
+	} else if( widget == stats ) {
+		stats->setSelected( true );
+		skills->setSelected( false );
+		up->setEnabled( false );
+		down->setEnabled( false );
+		portrait->setMode( Portrait::STATS_MODE );
+	} else if( widget == skills ) {
+		stats->setSelected( false );
+		skills->setSelected( true );
+		up->setEnabled( true );
+		down->setEnabled( true );
+		portrait->setMode( Portrait::SKILLS_MODE );
+	} else if( widget == up ) {
+		portrait->scrollSkillsUp();
+	} else if( widget == down ) {
+		portrait->scrollSkillsDown();
 	}
   return false;
 }

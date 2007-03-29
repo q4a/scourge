@@ -161,13 +161,7 @@ void Party::setPartyMotion(int motion) {
 bool Party::switchToNextLivePartyMember() {
 	Creature *oldPlayer = player;
 	// find the player's index
-	int n = -1;
-	for(int t = 0; t < getPartySize(); t++) {
-		if(party[t] == player) {
-			n = t;
-			break;
-		}
-	}			
+	int n = getPlayerIndex();
 	// switch to next player
 	n++; if(n >= getPartySize()) n = 0;
 	for(int t = 0; t < getPartySize(); t++) {
@@ -180,6 +174,33 @@ bool Party::switchToNextLivePartyMember() {
 	bool res = (oldPlayer != player);
 	if(!res) partyDead = true;
 	return res;
+}
+
+bool Party::nextPartyMember() {
+	Creature *oldPlayer = player;
+	int n = getPlayerIndex();
+	n++; 
+	if( n >= getPartySize() ) n = 0;
+	setPlayer( n );
+	return( oldPlayer != player );
+}
+
+bool Party::previousPartyMember() {
+	Creature *oldPlayer = player;
+	int n = getPlayerIndex();
+	n--; 
+	if( n < 0 ) n = getPartySize() - 1;
+	setPlayer( n );
+	return( oldPlayer != player );
+}
+
+int Party::getPlayerIndex() {
+	for( int t = 0; t < getPartySize(); t++ ) {
+		if( party[ t ] == player ) {
+			return t;
+		}
+	}
+	return -1;
 }
 
 void Party::setPlayer(int n, bool updateui) {

@@ -37,6 +37,7 @@ class Storable;
 class ConfirmDialog;
 class Item;
 class PcUi;
+class Skill;
 
 class Portrait : public WidgetView {
 private:
@@ -45,11 +46,23 @@ private:
 	GLuint backgroundTexture, barTexture;
   Canvas *canvas;
 	int x, y, w, h;
+	int mode;
+	int skillOffset;
 
 public:
+
+	enum {
+		STATS_MODE=0,
+		SKILLS_MODE
+	};
+
 	Portrait( PcUi *pcUi, int x, int y, int w, int h );
 	~Portrait();
 
+	inline void setMode( int n ) { mode = n; }
+	inline int getMode() { return mode; }
+	void scrollSkillsUp();
+	void scrollSkillsDown();
   inline Widget *getWidget() { return canvas; }
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
@@ -60,6 +73,9 @@ public:
 protected:
 	void drawBar( int x, int y, int value, int maxValue=100, int r=0, int g=1, int b=0, int a=1, int mod=0 );
   void drawHorizontalLine( int y );
+	void showStats();
+	void showSkills();
+	void drawSkill( Skill *skill, int yy );
 };
 
 #endif

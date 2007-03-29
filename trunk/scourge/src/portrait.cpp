@@ -57,6 +57,8 @@ Portrait::Portrait( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->y = y;
 	this->w = w;
 	this->h = h;
+	this->mode = STATS_MODE;
+	this->skillOffset = SkillGroup::stats->getSkillCount();
 
 	canvas = new Canvas( x, y, x + w, y + h, this );
 	canvas->setDrawBorders( false );
@@ -109,6 +111,17 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 
 	pcUi->getScourge()->describeAttacks( creature, 80, 80, true );
 
+	if( mode == STATS_MODE ) {
+		showStats();
+	} else {
+		showSkills();
+	}
+
+	glDisable( GL_TEXTURE_2D );
+
+}
+
+void Portrait::showStats() {
 	// hp/mp
   int y = 117;	
 	pcUi->getScourge()->describeDefense( creature, 10, y );
@@ -117,20 +130,20 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	drawHorizontalLine( y - 14 );
 	glColor4f( 1, 1, 1, 1 );
   pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
-  drawBar( 110, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 230, y, "%d/%d", creature->getHp(), creature->getMaxHp() );
+  drawBar( 130, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 250, y, "%d/%d", creature->getHp(), creature->getMaxHp() );
 
   y += 15;
   pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "MP" ) );
-  drawBar( 110, y - 10, creature->getMp(), creature->getMaxMp(), 0, 0, 1, 1 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 230, y, "%d/%d", creature->getMp(), creature->getMaxMp() );
+  drawBar( 130, y - 10, creature->getMp(), creature->getMaxMp(), 0, 0, 1, 1 );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 250, y, "%d/%d", creature->getMp(), creature->getMaxMp() );
 
 	y += 15;
   pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "AP" ) );
 	int maxAp = (int)creature->getMaxAP();
 	int ap = ( pcUi->getScourge()->inTurnBasedCombatPlayerTurn() ? creature->getBattle()->getAP() : maxAp );
-  drawBar( 110, y - 10, ap, maxAp, 1, 0, 1, 1 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 230, y, "%d/%d", ap, maxAp );
+  drawBar( 130, y - 10, ap, maxAp, 1, 0, 1, 1 );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 250, y, "%d/%d", ap, maxAp );
 
   y += 15;
   drawHorizontalLine( y - 9 );
@@ -140,22 +153,47 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	for( int i = 0; i < SkillGroup::stats->getSkillCount(); i++ ) {
 		int yy = y + ( i * 15 );
 		Skill *skill = SkillGroup::stats->getSkill( i );
-		int bonus = creature->getSkillBonus( skill->getIndex() );
-		int value = creature->getSkill( skill->getIndex() ) - bonus;
-		pcUi->getScourge()->getSDLHandler()->texPrint( 10, yy, skill->getDisplayName() );
-		drawBar( 110, yy - 10, value, 20, 0, 1, 0, 1, bonus );
-		if( bonus > 0 ) {
-			pcUi->getScourge()->getSDLHandler()->texPrint( 230, yy, "%d(%d)", ( value + bonus ), bonus );
-		} else {
-			pcUi->getScourge()->getSDLHandler()->texPrint( 230, yy, "%d", value );
+		drawSkill( skill, yy );
+	}
+}
+
+void Portrait::scrollSkillsUp() {
+	skillOffset -= 12;
+	if( skillOffset < SkillGroup::stats->getSkillCount() ) {
+		skillOffset = SkillGroup::stats->getSkillCount();
+	}
+}
+
+void Portrait::scrollSkillsDown() {
+	skillOffset += 12;
+	if( skillOffset > (int)( Skill::skills.size() - 12 ) ) {
+		skillOffset = (int)( Skill::skills.size() - 12 );
+	}
+}
+
+void Portrait::showSkills() {
+	int y = 117;
+	for( int i = 0; i < 12; i++, y += 15 ) {
+		Skill *skill = Skill::skills[ skillOffset + i ];
+		glColor4f( 1, 1, 1, 1 );
+		drawSkill( skill, y );
+		if( skill->getGroup()->getSkill( 0 ) == skill && 
+				skill != SkillGroup::groups[1]->getSkill( 0 ) ) {
+			drawHorizontalLine( y - 12 );
 		}
 	}
+}
 
-	glPushMatrix();
-	glTranslatef( OFFSET_X, OFFSET_Y, 0 );
-	
-	glPopMatrix();
-	glDisable( GL_TEXTURE_2D );
+void Portrait::drawSkill( Skill *skill, int yy ) {
+	int bonus = creature->getSkillBonus( skill->getIndex() );
+	int value = creature->getSkill( skill->getIndex() ) - bonus;
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, yy, skill->getDisplayName() );
+	drawBar( 130, yy - 10, value, ( skill->getGroup()->isStat() ? 20 : 100 ), 0, 1, 0, 1, bonus );
+	if( bonus > 0 ) {
+		pcUi->getScourge()->getSDLHandler()->texPrint( 250, yy, "%d(%d)", ( value + bonus ), bonus );
+	} else {
+		pcUi->getScourge()->getSDLHandler()->texPrint( 250, yy, "%d", value );
+	}
 }
 
 void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int b, int a, int mod ) {
