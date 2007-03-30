@@ -411,6 +411,7 @@ ConfigLang *ConfigLang::load( char *file, bool absolutePath ) {
 		rootDirString = rootDir;
 		rootDirString += "/";
 	}
+//	cerr << "File:" << ( rootDirString + file ) << endl;
 	ifstream in;
 	in.open( ( rootDirString + file ).c_str(), ios::in );
 	if( !in ) {
