@@ -48,7 +48,7 @@ void Rpg::initSkills( ConfigLang *config ) {
   for( unsigned int i = 0; i < v->size(); i++ ) {
     ConfigNode *node = (*v)[i];
     
-    config->setUpdate( "Loading Skills", i, v->size() );
+    config->setUpdate( _("Loading Skills"), i, v->size() );
     
     strcpy( groupName, node->getValueAsString( "name" ) );
     strcpy( groupDisplayName, node->getValueAsString( "display_name" ) );
@@ -125,7 +125,7 @@ void Rpg::initStateMods( ConfigLang *config ) {
   for( unsigned int i = 0; i < v->size(); i++ ) {
     ConfigNode *node = (*v)[i];
     
-    config->setUpdate( "Loading StateMods", i, v->size() );
+    config->setUpdate( _("Loading StateMods"), i, v->size() );
 
     string name = node->getValueAsString( "name" );
     int type = ( !strcmp( node->getValueAsString( "type" ), "bad" ) ? 

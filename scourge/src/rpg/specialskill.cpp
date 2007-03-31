@@ -38,7 +38,7 @@ void SpecialSkill::initSkills() {
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
-		config->setUpdate( "Loading Abilities", i, v->size() );
+		config->setUpdate(_( "Loading Abilities"), i, v->size() );
 
 		strcpy( name, node->getValueAsString( "name" ) );
     strcpy( displayName, node->getValueAsString( "display_name" ) );

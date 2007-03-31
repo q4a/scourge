@@ -716,7 +716,7 @@ void ShapePalette::initMapGrid() {
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
-		config->setUpdate( "Loading Locations", i, v->size() );
+		config->setUpdate( _("Loading Locations"), i, v->size() );
 
     MapGridLocation *loc = (MapGridLocation*)malloc( sizeof( MapGridLocation ) );
     strcpy( loc->name, node->getValueAsString( "name" ) );
