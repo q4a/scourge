@@ -197,7 +197,7 @@ void Portrait::showSkills() {
 }
 
 // #define SKILL_NAME_LENGTH 16
-#define SKILL_BUTTON_SIZE 11
+#define SKILL_BUTTON_SIZE 10
 void Portrait::drawSkill( Skill *skill, int yy ) {
 	int bonus = creature->getSkillBonus( skill->getIndex() );
 	int value = creature->getSkill( skill->getIndex() ) - bonus;
@@ -215,7 +215,7 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 
 	if( !skill->getGroup()->isStat() ) {
 		yy += 15;
-		x = 50;
+		x = 80;
 		drawBar( x, yy - 10, value, ( skill->getGroup()->isStat() ? 20 : 100 ), 0, 1, 0, 1, bonus );
 		if( bonus > 0 ) {
 			pcUi->getScourge()->getSDLHandler()->texPrint( x + 130, yy, "%d(%d)", ( value + bonus ), bonus );
@@ -227,14 +227,17 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 				if( creature->getAvailableSkillMod() > 0 ) glColor3f( 1, 1, 1 );
 				else glColor3f( 0.5, 0.5, 0.5 );
 				glPushMatrix();
-				int xx = ( i == 0 ? x - 20 : x + 115 );
+				int dy = yy + 1;
+				int xx = ( i == 0 ? x - 17 : x + 115 );
 				glBegin( GL_LINE_LOOP );
-				glVertex2f( xx, yy + SKILL_BUTTON_SIZE - 10 );
-				glVertex2f( xx, yy - 10 );
-				glVertex2f( xx + SKILL_BUTTON_SIZE, yy - 10 );
-				glVertex2f( xx + SKILL_BUTTON_SIZE, yy + SKILL_BUTTON_SIZE - 10 );
+				glVertex2f( xx, dy + SKILL_BUTTON_SIZE - 10 );
+				glVertex2f( xx, dy - 10 );
+				glVertex2f( xx + SKILL_BUTTON_SIZE, dy - 10 );
+				glVertex2f( xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE - 10 );
 				glEnd();
-				pcUi->getScourge()->getSDLHandler()->texPrint( xx + 1, yy, ( i == 0 ? "-" : "+" ) );
+				pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
+				pcUi->getScourge()->getSDLHandler()->texPrint( xx + 2, dy, ( i == 0 ? "-" : "+" ) );
+				pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 				glPopMatrix();
 			}
 		}
