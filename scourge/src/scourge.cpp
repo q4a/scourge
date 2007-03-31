@@ -3611,23 +3611,27 @@ bool Scourge::loadScoreid( char *dirName, char *p ) {
 
 void Scourge::describeDefense( Creature *p, int x, int y ) {
 	char s[80];
-
-	glColor4f( 0, 1, 1, 1 );
-	//glColor4f( 0, 1, 0.25f, 1 );
+	
 	int initiative;
 	float armor, dodgePenalty;
 	p->getInitiative( &initiative );
-	sprintf(s, "%s: %d %s:%d(%c) %d%c %d(%c)", 
-					_( "Initiative" ),
-					initiative,
+
+	glColor4f( 1, 0.35f, 0, 1 );
+	sprintf(s, "%s:%d", _( "Initiative" ), initiative );
+	getSDLHandler()->texPrint( x, y, s );
+
+	sprintf(s, "%s:%d(%c)", 
 					_( "DEF" ),
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_SLASHING ) ),
-					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_SLASHING ),
+					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_SLASHING ) );
+	getSDLHandler()->texPrint( x, y + 12, s );
+
+	sprintf(s, "%d(%c),%d(%c)", 
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_PIERCING ) ),
 					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_PIERCING ),
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_CRUSHING ) ),
 					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_CRUSHING ) );
-	getSDLHandler()->texPrint( x, y, s );
+	getSDLHandler()->texPrint( x, y + 24, s );
 }
 
 bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull ) {
@@ -3670,11 +3674,7 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
 		}
 		sprintf( line2, "%s:%d", _( "CTH" ), toint( skill ) );
 		sprintf( line3, "%s:%s", _( "APR" ), getAPRDescription( p, item, buff ) );
-		if( inventoryLocation == p->getPreferredWeapon() ) {
-			glColor4f( 1, 0.35f, 0, 1 );
-		} else {
-			glColor4f( 0.7f, 0.7f, 0.7f, 1 );
-		}
+		glColor4f( 1, 0.35f, 0, 1 );
 		getSDLHandler()->texPrint( x + 34, y, line1 );
 		getSDLHandler()->texPrint( x + 34, y + 12, line2 );
 		getSDLHandler()->texPrint( x + 34, y + 24, line3 );
