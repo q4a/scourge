@@ -58,7 +58,7 @@ Portrait::Portrait( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->w = w;
 	this->h = h;
 	this->mode = STATS_MODE;
-	this->skillOffset = SkillGroup::stats->getSkillCount();
+	this->skillOffset = 1;
 
 	canvas = new Canvas( x, y, x + w, y + h, this );
 	canvas->setDrawBorders( false );
@@ -98,18 +98,24 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 		glPopMatrix();
 	}
 
+	int y = 25;
 	glColor4f( 1, 0.8f, 0, 1 );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
-	pcUi->getScourge()->getSDLHandler()->texPrint( 80, 30, creature->getName() );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, creature->getName() );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+	y += 17;
 
 	glColor4f( 1, 1, 1, 1 );
-	pcUi->getScourge()->getSDLHandler()->texPrint( 80, 50, "%s %s", 
+	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s", 
 																			( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
 																			creature->getCharacter()->getDisplayName() );
-	pcUi->getScourge()->getSDLHandler()->texPrint( 80, 65, "%s:%d %s:%d", _( "Level" ), creature->getLevel(), _( "XP" ), creature->getExp() );
+	y += 15;
+	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s:%d %s:%d", _( "Level" ), creature->getLevel(), _( "XP" ), creature->getExp() );
 
-	pcUi->getScourge()->describeAttacks( creature, 80, 80, true );
+	y += 15;
+	pcUi->getScourge()->describeAttacks( creature, 80, y, true );
+	pcUi->getScourge()->describeDefense( creature, 200, y );
+	glColor4f( 1, 1, 1, 1 );
 
 	if( mode == STATS_MODE ) {
 		showStats();
@@ -124,26 +130,24 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 void Portrait::showStats() {
 	// hp/mp
   int y = 117;	
-	pcUi->getScourge()->describeDefense( creature, 10, y );
-	glColor4f( 1, 1, 1, 1 );
-	y += 18;
-	drawHorizontalLine( y - 14 );
+//	y += 18;
+	drawHorizontalLine( y - 12 );
 	glColor4f( 1, 1, 1, 1 );
   pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
-  drawBar( 130, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 250, y, "%d/%d", creature->getHp(), creature->getMaxHp() );
+  drawBar( 120, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", creature->getHp(), creature->getMaxHp() );
 
   y += 15;
   pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "MP" ) );
-  drawBar( 130, y - 10, creature->getMp(), creature->getMaxMp(), 0, 0, 1, 1 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 250, y, "%d/%d", creature->getMp(), creature->getMaxMp() );
+  drawBar( 120, y - 10, creature->getMp(), creature->getMaxMp(), 0, 0, 1, 1 );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", creature->getMp(), creature->getMaxMp() );
 
 	y += 15;
   pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "AP" ) );
 	int maxAp = (int)creature->getMaxAP();
 	int ap = ( pcUi->getScourge()->inTurnBasedCombatPlayerTurn() ? creature->getBattle()->getAP() : maxAp );
-  drawBar( 130, y - 10, ap, maxAp, 1, 0, 1, 1 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 250, y, "%d/%d", ap, maxAp );
+  drawBar( 120, y - 10, ap, maxAp, 1, 0, 1, 1 );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", ap, maxAp );
 
   y += 15;
   drawHorizontalLine( y - 9 );
@@ -158,47 +162,89 @@ void Portrait::showStats() {
 }
 
 void Portrait::scrollSkillsUp() {
-	skillOffset -= 12;
-	if( skillOffset < SkillGroup::stats->getSkillCount() ) {
-		skillOffset = SkillGroup::stats->getSkillCount();
+	skillOffset--;
+	if( skillOffset < 1 ) {
+		skillOffset = (int)SkillGroup::groups.size() - 1;
 	}
 }
 
 void Portrait::scrollSkillsDown() {
-	skillOffset += 12;
-	if( skillOffset > (int)( Skill::skills.size() - 12 ) ) {
-		skillOffset = (int)( Skill::skills.size() - 12 );
+	skillOffset++;
+	if( skillOffset >= (int)SkillGroup::groups.size() ) {
+		skillOffset = 1;
 	}
 }
 
 void Portrait::showSkills() {
-	int y = 117;
-	for( int i = 0; i < 12; i++, y += 15 ) {
-		Skill *skill = Skill::skills[ skillOffset + i ];
+	int y = 110;
+	glColor4f( 1, 1, 1, 1 );
+	SkillGroup *sg = SkillGroup::groups[ skillOffset ];
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, "%s:%d",
+																								 _( "Available Skill Points" ), 
+																								 creature->getAvailableSkillMod() );
+	drawHorizontalLine( y + 4 );
+	y += 18;
+
+	glColor4f( 1, 0.35f, 0, 1 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 160, y, sg->getDisplayName() );
+	glColor4f( 1, 1, 1, 1 );
+
+	for( int i = 0; i < sg->getSkillCount(); i++, y += 30 ) {
+		Skill *skill = sg->getSkill( i );
 		glColor4f( 1, 1, 1, 1 );
 		drawSkill( skill, y );
-		if( skill->getGroup()->getSkill( 0 ) == skill && 
-				skill != SkillGroup::groups[1]->getSkill( 0 ) ) {
-			drawHorizontalLine( y - 12 );
-		}
 	}
 }
 
+// #define SKILL_NAME_LENGTH 16
+#define SKILL_BUTTON_SIZE 11
 void Portrait::drawSkill( Skill *skill, int yy ) {
 	int bonus = creature->getSkillBonus( skill->getIndex() );
 	int value = creature->getSkill( skill->getIndex() ) - bonus;
-	char tmp[20];
-	strncpy( tmp, skill->getDisplayName(), 16 );
-	tmp[16] = '\0';
-	if( strlen( skill->getDisplayName() ) > 16 ) {
+	/*
+	char tmp[SKILL_NAME_LENGTH + 1];
+	strncpy( tmp, skill->getDisplayName(), SKILL_NAME_LENGTH );
+	tmp[SKILL_NAME_LENGTH] = '\0';
+	if( strlen( skill->getDisplayName() ) > SKILL_NAME_LENGTH ) {
 		strcat( tmp, "." );
 	}
-	pcUi->getScourge()->getSDLHandler()->texPrint( 10, yy, tmp );
-	drawBar( 130, yy - 10, value, ( skill->getGroup()->isStat() ? 20 : 100 ), 0, 1, 0, 1, bonus );
-	if( bonus > 0 ) {
-		pcUi->getScourge()->getSDLHandler()->texPrint( 250, yy, "%d(%d)", ( value + bonus ), bonus );
+	*/
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, yy, skill->getDisplayName() );
+	
+	
+
+	if( !skill->getGroup()->isStat() ) {
+		yy += 15;
+		x = 50;
+		drawBar( x, yy - 10, value, ( skill->getGroup()->isStat() ? 20 : 100 ), 0, 1, 0, 1, bonus );
+		if( bonus > 0 ) {
+			pcUi->getScourge()->getSDLHandler()->texPrint( x + 130, yy, "%d(%d)", ( value + bonus ), bonus );
+		} else {
+			pcUi->getScourge()->getSDLHandler()->texPrint( x + 130, yy, "%d", value );
+		}
+		if( !skill->getGroup()->isStat() ) {
+			for( int i = 0; i < 2; i++ ) {
+				if( creature->getAvailableSkillMod() > 0 ) glColor3f( 1, 1, 1 );
+				else glColor3f( 0.5, 0.5, 0.5 );
+				glPushMatrix();
+				int xx = ( i == 0 ? x - 20 : x + 115 );
+				glBegin( GL_LINE_LOOP );
+				glVertex2f( xx, yy + SKILL_BUTTON_SIZE - 10 );
+				glVertex2f( xx, yy - 10 );
+				glVertex2f( xx + SKILL_BUTTON_SIZE, yy - 10 );
+				glVertex2f( xx + SKILL_BUTTON_SIZE, yy + SKILL_BUTTON_SIZE - 10 );
+				glEnd();
+				pcUi->getScourge()->getSDLHandler()->texPrint( xx + 1, yy, ( i == 0 ? "-" : "+" ) );
+				glPopMatrix();
+			}
+		}
 	} else {
-		pcUi->getScourge()->getSDLHandler()->texPrint( 250, yy, "%d", value );
+		drawBar( 120, yy - 10, value, ( skill->getGroup()->isStat() ? 20 : 100 ), 0, 1, 0, 1, bonus );
+		if( bonus > 0 ) {
+			pcUi->getScourge()->getSDLHandler()->texPrint( 240, yy, "%d(%d)", ( value + bonus ), bonus );
+		} else {
+			pcUi->getScourge()->getSDLHandler()->texPrint( 240, yy, "%d", value );
+		}
 	}
 }
 

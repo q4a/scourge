@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-03-28 22:18-0700\n"
+"POT-Creation-Date: 2007-03-30 22:30-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -730,7 +730,7 @@ msgstr ""
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2646 src/scourge.cpp:3671
+#: src/creature.cpp:2646 src/scourge.cpp:3675
 msgid "CTH"
 msgstr ""
 
@@ -893,7 +893,7 @@ msgstr ""
 msgid "RANGE"
 msgstr ""
 
-#: src/item.cpp:1127 src/scourge.cpp:3623
+#: src/item.cpp:1127 src/scourge.cpp:3624
 msgid "DEF"
 msgstr ""
 
@@ -1923,16 +1923,16 @@ msgstr ""
 msgid "Would you like to dismiss %s the %s?"
 msgstr ""
 
-#: src/scourge.cpp:3621
+#: src/scourge.cpp:3620
 msgid "Initiative"
 msgstr ""
 
-#: src/scourge.cpp:3658 src/scourge.cpp:3665 src/infogui.cpp:348
+#: src/scourge.cpp:3662 src/scourge.cpp:3669 src/infogui.cpp:348
 #: src/infogui.cpp:353 src/infogui.cpp:358
 msgid "ATK"
 msgstr ""
 
-#: src/scourge.cpp:3672 src/infogui.cpp:350 src/infogui.cpp:356
+#: src/scourge.cpp:3676 src/infogui.cpp:350 src/infogui.cpp:356
 msgid "APR"
 msgstr ""
 
