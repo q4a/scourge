@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
-    email                : cctorok@yahoo.com
+    email                : cctorok@yahoo.co
  ***************************************************************************/
 
 /***************************************************************************
@@ -59,19 +59,73 @@ Portrait::Portrait( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->h = h;
 	this->mode = STATS_MODE;
 	this->skillOffset = 1;
+	this->currentSkill = NULL;
+	this->currentMode = 0;
 
 	canvas = new Canvas( x, y, x + w, y + h, this );
 	canvas->setDrawBorders( false );
 }
 
 Portrait::~Portrait() {
+  for( map<string,ActionRect*>::iterator e = boxes.begin(); e != boxes.end(); ++e ) {
+		ActionRect *rect = e->second;
+		delete rect;
+	}
+	boxes.clear();
 }
 
+string getBoxKey( Skill *skill, int mode ) {
+  char tmp[ 300 ];
+  sprintf( tmp, "%s,%d", skill->getName(), mode );
+  string s = tmp;
+  return s;
+}
+
+bool Portrait::findCurrentSkill( int px, int py ) {
+	SkillGroup *sg = SkillGroup::groups[ skillOffset ];
+	currentSkill = NULL;
+	currentMode = 0;
+	for( int i = 0; i < sg->getSkillCount(); i++ ) {
+			 for( int t = 0; t < 2; t++ ) {
+			 			string key = getBoxKey( sg->getSkill( i ), t );
+			 			if( boxes.find( key ) != boxes.end() )  {
+								ActionRect *rect = boxes[ key ];
+								if( rect->containsPoint( px, py ) ) {
+							     currentSkill = sg->getSkill( i );
+							     currentMode = t;
+							     return true;
+								}
+						 }
+				}
+	}
+	return false;
+}		 
+
 bool Portrait::handleEvent( SDL_Event *event ) {
+  if( event->type == SDL_MOUSEMOTION ) {
+			if( mode == SKILLS_MODE ) {
+				findCurrentSkill( event->motion.x - pcUi->getWindow()->getX() - x, 
+													event->motion.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );					
+			}
+	}
 	return false;
 }
 
 bool Portrait::handleEvent( Widget *widget, SDL_Event *event ) {
+  if( mode == SKILLS_MODE && 
+			pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT && 
+			event->type == SDL_MOUSEBUTTONUP ) {
+			if( findCurrentSkill( event->button.x - pcUi->getWindow()->getX() - x, 
+														event->button.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT ) ) {
+			  if( currentMode == 0 && creature->getSkillMod( currentSkill->getIndex() ) > 0 ) {
+						creature->setAvailableSkillMod( creature->getAvailableSkillMod() + 1 );
+						creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) - 1 );
+			  } else if( currentMode == 1 && creature->getAvailableSkillMod() > 0 ) {
+					creature->setAvailableSkillMod( creature->getAvailableSkillMod() - 1 );
+					creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) + 1 );
+				}
+			}
+  }
   return false;
 }
 
@@ -119,8 +173,10 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 
 	if( mode == STATS_MODE ) {
 		showStats();
-	} else {
+	} else if( mode == SKILLS_MODE ) {
 		showSkills();
+	} else {
+		showStateMods();
 	}
 
 	glDisable( GL_TEXTURE_2D );
@@ -179,6 +235,8 @@ void Portrait::showSkills() {
 	int y = 110;
 	glColor4f( 1, 1, 1, 1 );
 	SkillGroup *sg = SkillGroup::groups[ skillOffset ];
+	if( creature->getHasAvailableSkillPoints() ) glColor3f( 1, 0, 0 );
+	else glColor3f( 1, 1, 1 );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, "%s:%d",
 																								 _( "Available Skill Points" ), 
 																								 creature->getAvailableSkillMod() );
@@ -199,7 +257,7 @@ void Portrait::showSkills() {
 // #define SKILL_NAME_LENGTH 16
 #define SKILL_BUTTON_SIZE 10
 void Portrait::drawSkill( Skill *skill, int yy ) {
-	int bonus = creature->getSkillBonus( skill->getIndex() );
+	int bonus = creature->getSkillBonus( skill->getIndex() ) + creature->getSkillMod( skill->getIndex() );
 	int value = creature->getSkill( skill->getIndex() ) - bonus;
 	/*
 	char tmp[SKILL_NAME_LENGTH + 1];
@@ -215,7 +273,7 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 
 	if( !skill->getGroup()->isStat() ) {
 		yy += 15;
-		x = 80;
+		int x = 80;
 		drawBar( x, yy - 10, value, ( skill->getGroup()->isStat() ? 20 : 100 ), 0, 1, 0, 1, bonus );
 		if( bonus > 0 ) {
 			pcUi->getScourge()->getSDLHandler()->texPrint( x + 130, yy, "%d(%d)", ( value + bonus ), bonus );
@@ -224,21 +282,35 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 		}
 		if( !skill->getGroup()->isStat() ) {
 			for( int i = 0; i < 2; i++ ) {
-				if( creature->getAvailableSkillMod() > 0 ) glColor3f( 1, 1, 1 );
-				else glColor3f( 0.5, 0.5, 0.5 );
-				glPushMatrix();
-				int dy = yy + 1;
+				
+				int dy = yy + 1 - 10;
 				int xx = ( i == 0 ? x - 17 : x + 115 );
+				string key = getBoxKey( skill, i );
+				if( boxes.find( key ) == boxes.end() ) {
+						boxes[ key ] = new ActionRect( xx, dy, xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE );
+				}
+				if( creature->getHasAvailableSkillPoints() ) {
+						if( currentSkill == skill && currentMode == i ) {
+						  glColor3f( 1, 1, 0 );
+						} else {
+							glColor3f( 1, 1, 1 );
+						}
+				} else glColor3f( 0.5, 0.5, 0.5 );
+				
 				glBegin( GL_LINE_LOOP );
-				glVertex2f( xx, dy + SKILL_BUTTON_SIZE - 10 );
-				glVertex2f( xx, dy - 10 );
-				glVertex2f( xx + SKILL_BUTTON_SIZE, dy - 10 );
-				glVertex2f( xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE - 10 );
+				glVertex2f( xx, dy + SKILL_BUTTON_SIZE );
+				glVertex2f( xx, dy );
+				glVertex2f( xx + SKILL_BUTTON_SIZE, dy );
+				glVertex2f( xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE );
 				glEnd();
-				pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
-				pcUi->getScourge()->getSDLHandler()->texPrint( xx + 2, dy, ( i == 0 ? "-" : "+" ) );
-				pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
-				glPopMatrix();
+				glBegin( GL_LINES );
+				glVertex2f( xx, dy + SKILL_BUTTON_SIZE / 2 );
+				glVertex2f( xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE / 2 );
+				if( i > 0 ) {
+            glVertex2f( xx + SKILL_BUTTON_SIZE / 2, dy );
+            glVertex2f( xx + SKILL_BUTTON_SIZE / 2, dy + SKILL_BUTTON_SIZE);
+        }
+				glEnd();
 			}
 		}
 	} else {
@@ -249,6 +321,26 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 			pcUi->getScourge()->getSDLHandler()->texPrint( 240, yy, "%d", value );
 		}
 	}
+}
+
+void Portrait::showStateMods() {
+  int y = 110;
+	glColor4f( 1, 1, 1, 1 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Thirst" ) );
+  drawBar( 110, y - 10, creature->getThirst(), 10 );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 225, y, "%d/%d", creature->getThirst(), 10 );
+  y += 15;
+	
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Hunger" ) );
+  drawBar( 110, y - 10, creature->getHunger(), 10 );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 225, y, "%d/%d", creature->getHunger(), 10 );
+  y += 15;
+  
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Carrying (kg)" ) );
+  drawBar( 110, y - 10, (int)( creature->getInventoryWeight() * 100 ), (int)( creature->getMaxInventoryWeight() * 100 ) );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 225, y, "%2.2f/%2.2f", creature->getInventoryWeight(), creature->getMaxInventoryWeight() );		
+	drawHorizontalLine( y + 4 );
+	y += 18;
 }
 
 void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int b, int a, int mod ) {

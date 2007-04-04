@@ -139,6 +139,7 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
     } else if(event->key.keysym.sym == SDLK_l) {
 			if( scourge->getParty()->getPlayer()->getLevel() < MAX_LEVEL ) {
 				scourge->getParty()->getPlayer()->setLevel( scourge->getParty()->getPlayer()->getLevel() + 1 );
+				scourge->getParty()->getPlayer()->setAvailableSkillMod( scourge->getParty()->getPlayer()->getAvailableSkillMod() + 10 );
 				scourge->updatePartyUI();
 				scourge->refreshInventoryUI();
 			}
