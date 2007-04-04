@@ -93,17 +93,24 @@ PcUi::PcUi( Scourge *scourge ) {
  y += 33;
  skills = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "skills" ) );
  skills->setTooltip( _( "Show character skills" ) );
+ y += 33;
+ statemods = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "stateMods" ) );
+ statemods->setTooltip( _( "Show additional info about the character" ) );
  
- y = PORTRAIT_HEIGHT - 33 - 33;
+ y = PORTRAIT_HEIGHT - 33 - 33 - 33;
  up = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "up" ) );
  up->setTooltip( _( "Page skills up" ) );
  y += 33;
  down = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "down" ) );
  down->setTooltip( _( "Page skills down" ) );
+ y += 33;
+ applyMods = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "applySkillMods" ) );
+ applyMods->setTooltip( _( "Apply Skill Modifications" ) );
+ 
 
  up->setEnabled( false );
  down->setEnabled( false );
-
+ applyMods->setEnabled( false );
 }
 
 PcUi::~PcUi() {
@@ -136,19 +143,38 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 	} else if( widget == stats ) {
 		stats->setSelected( true );
 		skills->setSelected( false );
+		statemods->setSelected( false );
 		up->setEnabled( false );
 		down->setEnabled( false );
+		applyMods->setEnabled( false );		
 		portrait->setMode( Portrait::STATS_MODE );
 	} else if( widget == skills ) {
 		stats->setSelected( false );
 		skills->setSelected( true );
+		statemods->setSelected( false );	
 		up->setEnabled( true );
 		down->setEnabled( true );
+		applyMods->setEnabled( true );
 		portrait->setMode( Portrait::SKILLS_MODE );
+	} else if( widget == statemods ) {
+		stats->setSelected( false );
+		skills->setSelected( false );
+		statemods->setSelected( true );
+		up->setEnabled( false );
+		down->setEnabled( false );
+		applyMods->setEnabled( false );		
+		portrait->setMode( Portrait::STATE_MODS );		
 	} else if( widget == up ) {
 		portrait->scrollSkillsUp();
 	} else if( widget == down ) {
 		portrait->scrollSkillsDown();
+	} else if( widget == applyMods && creature && creature->getHasAvailableSkillPoints() ) {
+		if( creature->getAvailableSkillMod() > 0 ) {
+				scourge->showMessageDialog( _( "You still have skill points to distribute." ) );
+		} else {
+			creature->applySkillMods();
+			scourge->showMessageDialog( _( "All available skill points have been applied." ) );
+		}
 	}
   return false;
 }

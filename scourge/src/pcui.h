@@ -49,8 +49,8 @@ private:
 	Inven *inven;
 	Portrait *portrait;
 	Button *use, *transcribe, *enchant, *info, *store;
-	Button *prev, *next, *stats, *skills;
-	Button *up, *down;
+	Button *prev, *next, *stats, *skills, *statemods;
+	Button *up, *down, *applyMods;
 	Label *status;
 
 public:

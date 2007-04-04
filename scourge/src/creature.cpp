@@ -172,6 +172,7 @@ void Creature::commonInit() {
   this->portraitTextureIndex = 0;
   this->deityIndex = -1;
 	this->availableSkillMod = 0;
+	this->hasAvailableSkillPoints = false;
 
   // Yes, monsters have inventory weight issues too
   inventoryWeight =  0.0f;  
@@ -2337,6 +2338,7 @@ void Creature::applySkillMods() {
 		}
 	}
 	availableSkillMod = 0;
+	hasAvailableSkillPoints = false;
 }
 
 void Creature::setStateMod(int mod, bool setting) { 

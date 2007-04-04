@@ -39,6 +39,19 @@ class Item;
 class PcUi;
 class Skill;
 
+class ActionRect {
+public:
+			int x, y, x2, y2;
+			ActionRect( int x, int y, int x2, int y2 ) {
+			  this->x = x;
+			  this->y = y;
+			  this->x2 = x2;
+			  this->y2 = y2;
+			}
+			~ActionRect() {}
+			inline bool containsPoint( int px, int py ) { return( x <= px && x2 > px && y <= py && y2 > py ); }
+};
+
 class Portrait : public WidgetView {
 private:
 	PcUi *pcUi;
@@ -48,12 +61,16 @@ private:
 	int x, y, w, h;
 	int mode;
 	int skillOffset;
+	Skill *currentSkill;
+	int currentMode;
+	std::map<std::string, ActionRect*> boxes;
 
 public:
 
 	enum {
 		STATS_MODE=0,
-		SKILLS_MODE
+		SKILLS_MODE,
+		STATE_MODS
 	};
 
 	Portrait( PcUi *pcUi, int x, int y, int w, int h );
@@ -75,7 +92,9 @@ protected:
   void drawHorizontalLine( int y );
 	void showStats();
 	void showSkills();
+	void showStateMods();
 	void drawSkill( Skill *skill, int yy );
+	bool findCurrentSkill( int px, int py );
 };
 
 #endif

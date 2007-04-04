@@ -104,6 +104,7 @@ class Creature : public RenderedCreature {
   Character *character;
   int skills[Skill::SKILL_COUNT], skillBonus[Skill::SKILL_COUNT], skillMod[Skill::SKILL_COUNT];
 	int availableSkillMod;
+	bool hasAvailableSkillPoints;
 	int skillsUsed[Skill::SKILL_COUNT];
   GLuint stateMod, protStateMod;
   Monster *monster;
@@ -378,9 +379,13 @@ class Creature : public RenderedCreature {
   inline int getSkillBonus(int index) { return skillBonus[index]; }
 	void setSkillMod( int index, int value );
 	inline int getSkillMod( int index ) { return skillMod[index];}
-	void applySkillMods();		
+	void applySkillMods();
+	bool getHasAvailableSkillPoints() { return hasAvailableSkillPoints; }		
 	inline int getAvailableSkillMod() { return availableSkillMod; }
-	inline void setAvailableSkillMod( int n ) { availableSkillMod = n; }
+	inline void setAvailableSkillMod( int n ) { 
+ 	  availableSkillMod = n;
+		 if( !hasAvailableSkillPoints && n > 0 ) hasAvailableSkillPoints = true; 
+  }
   void setStateMod(int mod, bool setting);
   void setProtectedStateMod(int mod, bool setting);
 
