@@ -57,7 +57,11 @@ void Button::drawWidget(Widget *parent) {
 		glEnable(GL_TEXTURE_2D);
 		glPushMatrix();
 		glBindTexture( GL_TEXTURE_2D, texture );
-		glColor4f(1, 1, 1, 1);
+		if( isEnabled() ) {
+			glColor4f( 1, 1, 1, 1 );
+		} else {
+			glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
+		}
 		
 		glBegin( GL_QUADS );
 		glNormal3f( 0, 0, 1 );

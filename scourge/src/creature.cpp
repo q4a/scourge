@@ -147,7 +147,9 @@ void Creature::commonInit() {
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     skillBonus[i] = skillsUsed[i] = skillMod[i]= 0;
   }
-  this->stateMod = 0;
+  //this->stateMod = ( 1 << StateMod::dead ) - 1;
+  //this->protStateMod = ( 1 << StateMod::dead ) - 1;
+	this->stateMod = 0;
   this->protStateMod = 0;
   this->level = 1;
   this->experience = 0;

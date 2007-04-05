@@ -229,13 +229,13 @@ void Monster::initCreatures( ConfigLang *config ) {
 void Monster::initMonsters() {
 	ConfigLang *config = ConfigLang::load( "config/npc.cfg" );
 	initCreatures( config );
-	config->save( "config/npc2.cfg" );
+	//config->save( "config/npc2.cfg" );
 	delete config;
 
 	config = ConfigLang::load( "config/monster.cfg" );
 	initSounds( config );
 	initCreatures( config );
-	config->save( "config/monster2.cfg" );
+	//config->save( "config/monster2.cfg" );
 	delete config;
 }
 

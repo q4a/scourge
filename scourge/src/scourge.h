@@ -745,6 +745,8 @@ public:
 
 	void drawPortrait( Creature *p, int width, int height, int offs_x=0, int offs_y=0 );
 
+	int drawStateMod( int x, int y, int stateMod, Creature *p, int size=12, bool showName=false, bool protect=false );
+
   void describeAttacks( Creature *p, int x, int y, bool currentOnly=false );
 	void describeDefense( Creature *p, int x, int y );
 
