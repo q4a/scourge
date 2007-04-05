@@ -347,13 +347,29 @@ void Portrait::showStateMods() {
 	glColor4f( 1, 1, 1, 1 );
 	y += 15;
 	int x = 10;
-	for( int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++ ) {
-		x += pcUi->getScourge()->drawStateMod( x, y, i, creature, 12, true );
-		if( x >= 270 ) {
-			x = 10;
-			y += 15;
-		}
-	}
+
+	GLuint icon;
+	char name[255];
+	Color color;
+	int size = 12;
+  for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
+		if( pcUi->getScourge()->getStateModIcon( &icon, name, &color, creature, i ) ) {
+
+			// will it fit?
+			int textWidth = pcUi->getScourge()->getSDLHandler()->textWidth( name ) + 20 + size;
+			if( x + textWidth > this->w - 20 ) {
+				x = 10;
+				y += 15;
+			}
+
+			drawStateModIcon( icon, name, color, x, y, size );
+
+			glPopMatrix();
+
+			x += textWidth;
+      
+    }
+  }
 	y += 15;
 
 	drawHorizontalLine( y - 12 );
@@ -363,14 +379,46 @@ void Portrait::showStateMods() {
 	glColor4f( 1, 1, 1, 1 );
 	y += 15;
 	x = 10;
-	for( int i = 0; i < StateMod::STATE_MOD_COUNT; i++ ) {
-		x += pcUi->getScourge()->drawStateMod( x, y, i, creature, 12, true, true );
-		if( x >= 270 ) {
-			x = 10;
-			y += 15;
-		}
-	}
+	for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
+		if( pcUi->getScourge()->getStateModIcon( &icon, name, &color, creature, i, true ) ) {
+
+			// will it fit?
+			int textWidth = pcUi->getScourge()->getSDLHandler()->textWidth( name ) + 20 + size;
+			if( x + textWidth > this->w - 20 ) {
+				x = 10;
+				y += 15;
+			}
+
+			drawStateModIcon( icon, name, color, x, y, size );
+
+			glPopMatrix();
+
+			x += textWidth;
+      
+    }
+  }
 	y += 15;
+}
+
+void Portrait::drawStateModIcon( GLuint icon, char *name, Color color, int x, int y, int size ) {
+	glBindTexture( GL_TEXTURE_2D, icon );
+	glColor4f( color.r, color.g, color.b, color.a );
+	glPushMatrix();
+	glTranslatef( x, y - size, 0 );
+	glBegin( GL_QUADS );
+	glNormal3f( 0, 0, 1 );
+	glTexCoord2f( 0, 0 );
+	glVertex3f( 0, 0, 0 );
+	glTexCoord2f( 0, 1 );
+	glVertex3f( 0, size, 0 );
+	glTexCoord2f( 1, 1 );
+	glVertex3f( size, size, 0 );
+	glTexCoord2f( 1, 0 );
+	glVertex3f( size, 0, 0 );
+	glEnd();
+
+	glColor4f( 1, 1, 1, 1 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 10, name );
 }
 
 void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int b, int a, int mod ) {
