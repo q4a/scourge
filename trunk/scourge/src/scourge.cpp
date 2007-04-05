@@ -2584,8 +2584,27 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
   int yp = 1;
   int n = 12;
   int row = ( width / (int)( n + 1 ) );
+	GLuint icon;
+	char name[255];
+	Color color;
   for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
-		if( drawStateMod( 5 + xp * (n + 1), height - (yp * (n + 1)), i, p, n ) ) {
+		if( getStateModIcon( &icon, name, &color, p, i ) ) {
+			glBindTexture( GL_TEXTURE_2D, icon );
+			glColor4f( color.r, color.g, color.b, color.a );
+			glPushMatrix();
+			glTranslatef( 5 + xp * (n + 1), height - (yp * (n + 1)) - n, 0 );
+			glBegin( GL_QUADS );
+			glNormal3f( 0, 0, 1 );
+			glTexCoord2f( 0, 0 );
+			glVertex3f( 0, 0, 0 );
+			glTexCoord2f( 0, 1 );
+			glVertex3f( 0, n, 0 );
+			glTexCoord2f( 1, 1 );
+			glVertex3f( n, n, 0 );
+			glTexCoord2f( 1, 0 );
+			glVertex3f( n, 0, 0 );
+			glEnd();
+			glPopMatrix();
       xp++;
       if(xp >= row) {
         xp = 0;
@@ -2594,65 +2613,48 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
     }
   }
   glDisable(GL_TEXTURE_2D);
-
-
 }
 
-int Scourge::drawStateMod( int x, int y, int stateMod, Creature *p, int size, bool showName, bool protect ) {
-	GLuint icon = 255;
-	char name[255];
-	
+bool Scourge::getStateModIcon( GLuint *icon, char *name, Color *color, Creature *p, int stateMod, bool protect ) {
+	*icon = 255;
 	if( !protect && stateMod == StateMod::STATE_MOD_COUNT && p->getThirst() <= 5 ) {
-		icon = getSession()->getShapePalette()->getThirstIcon();
+		*icon = getSession()->getShapePalette()->getThirstIcon();
 		strcpy( name, _( "Thirst" ) );
 		if( p->getThirst() <= 3 ) {
-			glColor4f( 1.0f, 0.2f, 0.2f, 0.5f );
+			color->r = 1;
+			color->g = 0.2f;
+			color->b = 0.2f;
+			color->a = 0.5f;
 		} else {
-			glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+			color->r = 1;
+			color->g = 1;
+			color->b = 1;
+			color->a = 0.5f;
 		}
 	} else if( !protect && stateMod == StateMod::STATE_MOD_COUNT + 1 && p->getHunger() <= 5 ) {
-		icon = getSession()->getShapePalette()->getHungerIcon();
+		*icon = getSession()->getShapePalette()->getHungerIcon();
 		strcpy( name, _( "Hunger" ) );
 		if( p->getHunger() <= 3 ) {
-			glColor4f( 1.0f, 0.2f, 0.2f, 0.5f );
+			color->r = 1;
+			color->g = 0.2f;
+			color->b = 0.2f;
+			color->a = 0.5f;
 		} else {
-			glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+			color->r = 1;
+			color->g = 1;
+			color->b = 1;
+			color->a = 0.5f;
 		}
 	} else if( ( !protect && p->getStateMod( stateMod ) ) || 
 						 ( protect && p->getProtectedStateMod( stateMod ) ) ) {
-		icon = getSession()->getShapePalette()->getStatModIcon( stateMod );
+		*icon = getSession()->getShapePalette()->getStatModIcon( stateMod );
 		strcpy( name, StateMod::stateMods[ stateMod ]->getDisplayName() );
-		glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+		color->r = 1;
+		color->g = 1;
+		color->b = 1;
+		color->a = 0.5f;
 	}
-
-	int ret = 0;
-	if( icon < 255 ) {
-		glBindTexture( GL_TEXTURE_2D, icon );
-		glPushMatrix();
-		glTranslatef( x, y - size, 0 );
-		glBegin( GL_QUADS );
-		glNormal3f( 0, 0, 1 );
-		if(icon) glTexCoord2f( 0, 0 );
-		glVertex3f( 0, 0, 0 );
-		if(icon) glTexCoord2f( 0, 1 );
-		glVertex3f( 0, size, 0 );
-		if(icon) glTexCoord2f( 1, 1 );
-		glVertex3f( size, size, 0 );
-		if(icon) glTexCoord2f( 1, 0 );
-		glVertex3f( size, 0, 0 );
-		glEnd();
-		ret += size;
-		
-		if( showName ) {
-			glColor4f( 1, 1, 1, 1 );
-			getSDLHandler()->texPrint( size + 5, 10, name );
-			ret += getSDLHandler()->textWidth( name ) + 10;
-		}
-
-		glPopMatrix();
-	}
-
-	return ret;
+	return( *icon < 255 );
 }
 
 void Scourge::resetPartyUI() {
