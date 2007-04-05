@@ -327,20 +327,50 @@ void Portrait::showStateMods() {
   int y = 110;
 	glColor4f( 1, 1, 1, 1 );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Thirst" ) );
-  drawBar( 110, y - 10, creature->getThirst(), 10 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 225, y, "%d/%d", creature->getThirst(), 10 );
+  drawBar( 100, y - 10, creature->getThirst(), 10 );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%d/%d", creature->getThirst(), 10 );
   y += 15;
 	
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Hunger" ) );
-  drawBar( 110, y - 10, creature->getHunger(), 10 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 225, y, "%d/%d", creature->getHunger(), 10 );
+  drawBar( 100, y - 10, creature->getHunger(), 10 );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%d/%d", creature->getHunger(), 10 );
   y += 15;
   
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Carrying (kg)" ) );
-  drawBar( 110, y - 10, (int)( creature->getInventoryWeight() * 100 ), (int)( creature->getMaxInventoryWeight() * 100 ) );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 225, y, "%2.2f/%2.2f", creature->getInventoryWeight(), creature->getMaxInventoryWeight() );		
+  drawBar( 100, y - 10, (int)( creature->getInventoryWeight() * 100 ), (int)( creature->getMaxInventoryWeight() * 100 ) );
+  pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%2.1f/%2.1f", creature->getInventoryWeight(), creature->getMaxInventoryWeight() );
 	drawHorizontalLine( y + 4 );
 	y += 18;
+
+	glColor4f( 1, 0.35f, 0, 1 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Character Conditions:" ) );
+	glColor4f( 1, 1, 1, 1 );
+	y += 15;
+	int x = 10;
+	for( int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++ ) {
+		x += pcUi->getScourge()->drawStateMod( x, y, i, creature, 12, true );
+		if( x >= 270 ) {
+			x = 10;
+			y += 15;
+		}
+	}
+	y += 15;
+
+	drawHorizontalLine( y - 12 );
+
+	glColor4f( 1, 0.35f, 0, 1 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Immune to Conditions:" ) );
+	glColor4f( 1, 1, 1, 1 );
+	y += 15;
+	x = 10;
+	for( int i = 0; i < StateMod::STATE_MOD_COUNT; i++ ) {
+		x += pcUi->getScourge()->drawStateMod( x, y, i, creature, 12, true, true );
+		if( x >= 270 ) {
+			x = 10;
+			y += 15;
+		}
+	}
+	y += 15;
 }
 
 void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int b, int a, int mod ) {
