@@ -43,12 +43,14 @@ Equip::Equip( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->pcUi = pcUi;
 	this->creature = NULL;
 	this->backgroundTexture = pcUi->getScourge()->getShapePalette()->getNamedTexture( "equip" );
+	this->scrollTexture = pcUi->getScourge()->getShapePalette()->getNamedTexture( "scroll" );
   this->currentHole = -1;
 	this->x = x;
 	this->y = y;
 	this->w = w;
 	this->h = h;
 	this->lastItem = NULL;
+	this->mode = EQUIP_MODE;
 
 	canvas = new Canvas( x, y, x + w, y + h, this, this);
 	canvas->setDrawBorders( false );
@@ -59,18 +61,22 @@ Equip::~Equip() {
 
 bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 	if( pcUi->getScourge()->getSDLHandler()->isDoubleClick ) {
-		Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
-															 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
-		if( item && item->getRpgItem()->isContainer() ) {
-			pcUi->getScourge()->openContainerGui(item);
+		if( mode == EQUIP_MODE ) {
+			Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+																 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
+			if( item && item->getRpgItem()->isContainer() ) {
+				pcUi->getScourge()->openContainerGui(item);
+			}
 		}
 	} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
-		Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
-															 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
-		if( item ) {
-			pcUi->getScourge()->getInfoGui()->setItem( item );
-			if( !pcUi->getScourge()->getInfoGui()->getWindow()->isVisible() ) 
-				pcUi->getScourge()->getInfoGui()->getWindow()->setVisible( true );
+		if( mode == EQUIP_MODE ) {
+			Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+																 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
+			if( item ) {
+				pcUi->getScourge()->getInfoGui()->setItem( item );
+				if( !pcUi->getScourge()->getInfoGui()->getWindow()->isVisible() ) 
+					pcUi->getScourge()->getInfoGui()->getWindow()->setVisible( true );
+			}
 		}
 	}
   return false;
@@ -80,18 +86,20 @@ bool Equip::handleEvent(SDL_Event *event) {
 	Item *item;
 	char tooltip[ 500 ];
   switch(event->type) {
-  case SDL_MOUSEMOTION:
-    currentHole = getHoleAtPos( event->motion.x - pcUi->getWindow()->getX() - x, 
-                                event->motion.y - pcUi->getWindow()->getY() - TITLE_HEIGHT );
-
-		item = getItemInHole( currentHole );
-		if( item != lastItem ) {
-			lastItem = item;
-			if( item ) {
-				item->getTooltip( tooltip );
-				canvas->setTooltip( tooltip );
-			} else {
-				canvas->setTooltip( NULL );
+	case SDL_MOUSEMOTION:
+		if( mode == EQUIP_MODE ) {
+			currentHole = getHoleAtPos( event->motion.x - pcUi->getWindow()->getX() - x, 
+																	event->motion.y - pcUi->getWindow()->getY() - TITLE_HEIGHT );
+	
+			item = getItemInHole( currentHole );
+			if( item != lastItem ) {
+				lastItem = item;
+				if( item ) {
+					item->getTooltip( tooltip );
+					canvas->setTooltip( tooltip );
+				} else {
+					canvas->setTooltip( NULL );
+				}
 			}
 		}
 
@@ -127,7 +135,7 @@ int Equip::getHoleAtPos( int x, int y ) {
 }
 
 void Equip::receive( Widget *widget ) {
-	if( creature ) {
+	if( mode == EQUIP_MODE && creature ) {
 		Item *item = pcUi->getScourge()->getMovingItem();
 		if( item ) {
 			char *err = creature->canEquipItem( item );
@@ -157,7 +165,7 @@ void Equip::receive( Widget *widget ) {
 }
 
 bool Equip::startDrag( Widget *widget, int x, int y ) {
-	if( creature ) {
+	if( mode == EQUIP_MODE && creature ) {
 	
 		if( pcUi->getScourge()->getTradeDialog()->getWindow()->isVisible() ) {
 			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while trading." ) );
@@ -194,7 +202,13 @@ void Equip::setCreature( Creature *creature ) {
 
 void Equip::drawWidgetContents( Widget *widget ) {
 	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D, backgroundTexture );
+	glEnable( GL_ALPHA_TEST );
+	glAlphaFunc( GL_NOTEQUAL, 0 );
+	if( mode == EQUIP_MODE ) {
+		glBindTexture( GL_TEXTURE_2D, backgroundTexture );
+	} else {
+		glBindTexture( GL_TEXTURE_2D, scrollTexture );
+	}
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_QUADS );
 	glTexCoord2d( 0, 1 );
@@ -206,19 +220,22 @@ void Equip::drawWidgetContents( Widget *widget ) {
 	glTexCoord2d( 1, 1 );
 	glVertex2d( w, h );
 	glEnd();
+	glDisable( GL_ALPHA_TEST );
 	if( creature ) {
-		for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
-			Item *item = creature->getEquippedInventory( i );
-      if( item ) {
-				SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
-				if( rect && rect->w && rect->h ) {
-					item->renderIcon( pcUi->getScourge(), rect->x, rect->y, rect->w, rect->h );
+		if( mode == EQUIP_MODE ) {
+			for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+				Item *item = creature->getEquippedInventory( i );
+				if( item ) {
+					SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
+					if( rect && rect->w && rect->h ) {
+						item->renderIcon( pcUi->getScourge(), rect->x, rect->y, rect->w, rect->h );
+					}
 				}
 			}
 		}
 	}
 
-  if( currentHole > -1 ) {
+  if( mode == EQUIP_MODE && currentHole > -1 ) {
     SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( currentHole );
     glDisable( GL_TEXTURE_2D );
     pcUi->getWindow()->setTopWindowBorderColor();

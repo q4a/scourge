@@ -51,6 +51,8 @@ private:
 	Button *use, *transcribe, *enchant, *info, *store;
 	Button *prev, *next, *stats, *skills, *statemods;
 	Button *up, *down, *applyMods;
+	Button *equipButton, *spellsButton, *capabilitiesButton;
+	Button *cast, *storeSpell;
 	Label *status;
 
 public:
@@ -72,6 +74,7 @@ public:
 
 protected:
 	void toggleButtons( Button *button );
+	void toggleLeftButtons( Button *button );
 };
 
 #endif

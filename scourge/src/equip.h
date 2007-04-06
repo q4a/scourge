@@ -41,14 +41,22 @@ class PcUi;
 class Equip : public DragAndDropHandler, WidgetView {
 private:
 	Creature *creature;
-	GLuint backgroundTexture;
+	GLuint backgroundTexture, scrollTexture;
   int currentHole;
 	PcUi *pcUi;
   Canvas *canvas;
 	int x, y, w, h;
 	Item *lastItem;
+	int mode;
 
 public:
+
+	enum {
+		EQUIP_MODE=0,
+		SPELLS_MODE,
+		CAPABILITIES_MODE
+	};
+
 	Equip( PcUi *pcUi, int x, int y, int w, int h );
 	~Equip();
 
@@ -56,6 +64,8 @@ public:
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
+	inline void setMode( int mode ) { this->mode = mode; }
+	inline int getMode() { return mode; }
 
 	// drag-n-drop
 	void receive( Widget *widget );
