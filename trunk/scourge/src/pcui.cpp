@@ -36,12 +36,12 @@ using namespace std;
 
 #define EQUIP_WIDTH 230
 #define EQUIP_HEIGHT 300
-#define INVEN_WIDTH 570
+#define INVEN_WIDTH 605
 #define INVEN_HEIGHT 160
 #define PORTRAIT_WIDTH 290
 #define PORTRAIT_HEIGHT 300
-#define WIN_WIDTH EQUIP_WIDTH + 320 + 40
-#define WIN_HEIGHT EQUIP_HEIGHT + 245
+#define WIN_WIDTH EQUIP_WIDTH + 320 + 40 + 35
+#define WIN_HEIGHT EQUIP_HEIGHT + 240
 #define DEFAULT_STATUS "Right click for info, double-click to open."
 
 PcUi::PcUi( Scourge *scourge ) {
@@ -52,65 +52,85 @@ PcUi::PcUi( Scourge *scourge ) {
 																	 ( scourge->getSDLHandler()->getScreen()->h - WIN_HEIGHT ) / 2,
 																	 WIN_WIDTH, WIN_HEIGHT,
 																	 _( "Character Information" ) );
- equip = new Equip( this, 10, 5, EQUIP_WIDTH, EQUIP_HEIGHT );
- mainWin->addWidget( equip->getWidget() );
- inven = new Inven( this, 10, EQUIP_HEIGHT + 15, INVEN_WIDTH, INVEN_HEIGHT );
- mainWin->addWidget( inven->getWidget() );
- portrait = new Portrait( this, 20 + EQUIP_WIDTH, 5, PORTRAIT_WIDTH, PORTRAIT_HEIGHT );
- mainWin->addWidget( portrait->getWidget() );
- int x = 12;
- int y = EQUIP_HEIGHT + 20 + INVEN_HEIGHT;
- use = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "use" ) );
- use->setTooltip( _( "Use item" ) );
- x += 33;
- transcribe = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "transcribe" ) );
- transcribe->setTooltip( _( "Transcribe scroll into the spellbook" ) );
- x += 33;
- enchant = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "enchant" ) );
- enchant->setTooltip( _( "Enchant item" ) );
- x += 33;
- info = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "info" ) );
- info->setTooltip( _( "Show item information" ) );
- x += 33;
- store = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "store" ) );
- store->setTooltip( _( "Store item in quick-spell slot" ) );
- x += 33;
- status = new Label( x + 5, y + 22, _( DEFAULT_STATUS ) );
- mainWin->addWidget( status );
+	int x = 10;
+	int y = 5;
+	equipButton = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "equipButton" ) );
+	equipButton->setSelected( true );
+	equipButton->setTooltip( _( "Show paperdoll inventory" ) );
+	y += 33;
+	spellsButton = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "spellsButton" ) );
+	spellsButton->setSelected( false );
+	spellsButton->setTooltip( _( "Show spellbook" ) );
+	y += 33;
+	capabilitiesButton = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "capabilitiesButton" ) );
+	capabilitiesButton->setSelected( false );
+	capabilitiesButton->setTooltip( _( "Show special capabilities" ) );
 
- x = WIN_WIDTH - 12 - 33 - 33;
- prev = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "prev" ) );
- prev->setTooltip( _( "Switch to previous party member" ) );
- x += 33;
- next = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "next" ) );
- next->setTooltip( _( "Switch to next party member" ) );
-
- x = WIN_WIDTH - 12 - 33;
- y = 5;
- stats = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "stats" ) );
- stats->setTooltip( _( "Show character stats" ) );
- stats->setSelected( true );
- y += 33;
- skills = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "skills" ) );
- skills->setTooltip( _( "Show character skills" ) );
- y += 33;
- statemods = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "stateMods" ) );
- statemods->setTooltip( _( "Show additional info about the character" ) );
- 
- y = PORTRAIT_HEIGHT - 33 - 33 - 33;
- up = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "up" ) );
- up->setTooltip( _( "Page skills up" ) );
- y += 33;
- down = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "down" ) );
- down->setTooltip( _( "Page skills down" ) );
- y += 33;
- applyMods = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "applySkillMods" ) );
- applyMods->setTooltip( _( "Apply Skill Modifications" ) );
- 
-
- up->setEnabled( false );
- down->setEnabled( false );
- applyMods->setEnabled( false );
+	x += 40;
+	equip = new Equip( this, x, 5, EQUIP_WIDTH, EQUIP_HEIGHT );
+	mainWin->addWidget( equip->getWidget() );
+	inven = new Inven( this, 10, EQUIP_HEIGHT + 10, INVEN_WIDTH, INVEN_HEIGHT );
+	mainWin->addWidget( inven->getWidget() );
+	portrait = new Portrait( this, x + 5 + EQUIP_WIDTH, 5, PORTRAIT_WIDTH, PORTRAIT_HEIGHT );
+	mainWin->addWidget( portrait->getWidget() );
+	x = 12;
+	y = EQUIP_HEIGHT + 15 + INVEN_HEIGHT;
+	use = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "use" ) );
+	use->setTooltip( _( "Use item" ) );
+	x += 33;
+	transcribe = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "transcribe" ) );
+	transcribe->setTooltip( _( "Transcribe scroll into the spellbook" ) );
+	x += 33;
+	enchant = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "enchant" ) );
+	enchant->setTooltip( _( "Enchant item" ) );
+	x += 33;
+	info = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "info" ) );
+	info->setTooltip( _( "Show item information" ) );
+	x += 33;
+	store = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "store" ) );
+	store->setTooltip( _( "Store item in quick-spell slot" ) );
+	x += 33;
+	status = new Label( x + 5, y + 22, _( DEFAULT_STATUS ) );
+	mainWin->addWidget( status );
+	
+	x = WIN_WIDTH - 12 - 33 - 33;
+	prev = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "prev" ) );
+	prev->setTooltip( _( "Switch to previous party member" ) );
+	x += 33;
+	next = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "next" ) );
+	next->setTooltip( _( "Switch to next party member" ) );
+	
+	x = WIN_WIDTH - 12 - 33;
+	y = 5;
+	stats = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "stats" ) );
+	stats->setTooltip( _( "Show character stats" ) );
+	stats->setSelected( true );
+	y += 33;
+	skills = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "skills" ) );
+	skills->setTooltip( _( "Show character skills" ) );
+	y += 33;
+	statemods = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "stateMods" ) );
+	statemods->setTooltip( _( "Show additional info about the character" ) );
+	
+	y = PORTRAIT_HEIGHT - 33 - 33 - 33 + 5;
+	up = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "up" ) );
+	up->setTooltip( _( "Page skills up" ) );
+	y += 33;
+	down = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "down" ) );
+	down->setTooltip( _( "Page skills down" ) );
+	cast = mainWin->createButton( 10, y, 10 + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "cast" ) );
+	cast->setTooltip( _( "Cast spell or use capability" ) );
+	y += 33;
+	applyMods = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "applySkillMods" ) );
+	applyMods->setTooltip( _( "Apply Skill Modifications" ) );
+	storeSpell = mainWin->createButton( 10, y, 10 + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "store" ) );
+	storeSpell->setTooltip( _( "Store spell or capability in a quickspell slot" ) );
+	
+	up->setEnabled( false );
+	down->setEnabled( false );
+	applyMods->setEnabled( false );
+	cast->setEnabled( false );
+	storeSpell->setEnabled( false );
 }
 
 PcUi::~PcUi() {
@@ -175,8 +195,25 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 			creature->applySkillMods();
 			scourge->showMessageDialog( _( "All available skill points have been applied." ) );
 		}
-	}
+	} else if( widget == equipButton ) {
+		toggleLeftButtons( equipButton );
+		equip->setMode( Equip::EQUIP_MODE );
+	} else if( widget == spellsButton ) {
+		toggleLeftButtons( spellsButton );
+		equip->setMode( Equip::SPELLS_MODE );
+	} else if( widget == capabilitiesButton ) {
+		toggleLeftButtons( capabilitiesButton );
+		equip->setMode( Equip::CAPABILITIES_MODE );
+	} 
   return false;
+}
+
+void PcUi::toggleLeftButtons( Button *button ) {
+	if( button != equipButton ) equipButton->setSelected( false );
+	if( button != spellsButton ) spellsButton->setSelected( false );
+	if( button != capabilitiesButton ) capabilitiesButton->setSelected( false );
+	cast->setEnabled( button != equipButton );
+	storeSpell->setEnabled( button != equipButton );
 }
 
 void PcUi::toggleButtons( Button *button ) {
