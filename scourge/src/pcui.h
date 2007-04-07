@@ -50,7 +50,7 @@ private:
 	Portrait *portrait;
 	Button *use, *transcribe, *enchant, *info, *store;
 	Button *prev, *next, *stats, *skills, *statemods;
-	Button *up, *down, *applyMods;
+	Button *up, *down, *applyMods, *poolMoney;
 	Button *equipButton, *spellsButton, *capabilitiesButton;
 	Button *cast, *storeSpell;
 	Label *status;

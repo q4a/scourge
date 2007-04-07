@@ -112,7 +112,10 @@ PcUi::PcUi( Scourge *scourge ) {
 	statemods = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "stateMods" ) );
 	statemods->setTooltip( _( "Show additional info about the character" ) );
 	
-	y = PORTRAIT_HEIGHT - 33 - 33 - 33 + 5;
+	y = PORTRAIT_HEIGHT - 33 - 33 - 33 - 33 + 5;
+	poolMoney = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "pool" ) );
+	poolMoney->setTooltip( _( "Give all of the party's coins to this character" ) );
+	y += 33;
 	up = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "up" ) );
 	up->setTooltip( _( "Page skills up" ) );
 	y += 33;
@@ -128,6 +131,7 @@ PcUi::PcUi( Scourge *scourge ) {
 	
 	up->setEnabled( false );
 	down->setEnabled( false );
+	poolMoney->setEnabled( true );
 	applyMods->setEnabled( false );
 	cast->setEnabled( false );
 	storeSpell->setEnabled( false );
@@ -184,6 +188,19 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 		down->setEnabled( false );
 		applyMods->setEnabled( false );		
 		portrait->setMode( Portrait::STATE_MODS );		
+	} else if( widget == poolMoney ) {
+		if( creature ) {
+			for( int i = 0; i < scourge->getSession()->getParty()->getPartySize(); i++ ) {
+				Creature *c = scourge->getSession()->getParty()->getParty(i);
+				if( c != creature ) {
+					creature->setMoney( creature->getMoney() + c->getMoney() );
+					c->setMoney( 0 );
+				}
+			}
+			char msg[120];
+			sprintf( msg, _( "Party members give all their money to %s." ), creature->getName() );
+			scourge->showMessageDialog( msg );
+		}
 	} else if( widget == up ) {
 		portrait->scrollSkillsUp();
 	} else if( widget == down ) {
