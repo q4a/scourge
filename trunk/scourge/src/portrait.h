@@ -96,6 +96,7 @@ protected:
 	void drawSkill( Skill *skill, int yy );
 	bool findCurrentSkill( int px, int py );
 	void drawStateModIcon( GLuint icon, char *name, Color color, int x, int y, int size );
+	void drawResistance( int x, int y, char *icon, int skill );
 };
 
 #endif

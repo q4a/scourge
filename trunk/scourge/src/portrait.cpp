@@ -221,6 +221,42 @@ void Portrait::showStats() {
 		Skill *skill = SkillGroup::stats->getSkill( i );
 		drawSkill( skill, yy );
 	}
+	y += SkillGroup::stats->getSkillCount() * 15 - 5;
+
+	// resistances
+	int x = 5; int step = 46;
+	glEnable( GL_TEXTURE_2D );
+	drawResistance( x, y, "nature", Skill::RESIST_NATURE_MAGIC ); x += step;
+	drawResistance( x, y, "divine", Skill::RESIST_AWARENESS_MAGIC ); x += step;
+	drawResistance( x, y, "life", Skill::RESIST_LIFE_AND_DEATH_MAGIC ); x += step;
+	drawResistance( x, y, "history", Skill::RESIST_HISTORY_MAGIC ); x += step;
+	drawResistance( x, y, "tricks", Skill::RESIST_DECEIT_MAGIC ); x += step;
+	drawResistance( x, y, "confrontation", Skill::RESIST_CONFRONTATION_MAGIC ); x += step;
+}
+
+void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
+	int size = 20;
+	glPushMatrix();
+	glTranslatef( x, y, 0 );
+	glEnable( GL_ALPHA_TEST );
+	glAlphaFunc( GL_NOTEQUAL, 0 );
+	glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( icon ) );
+	glColor4f( 1, 1, 1, 1 );
+	glBegin( GL_QUADS );
+	glTexCoord2d( 0, 1 );
+	glVertex2d( 0, size );
+	glTexCoord2d( 0, 0 );
+	glVertex2d( 0, 0 );
+	glTexCoord2d( 1, 0 );
+	glVertex2d( size, 0 );
+	glTexCoord2d( 1, 1 );
+	glVertex2d( size, size );
+	glEnd();
+	glDisable( GL_ALPHA_TEST );
+	if( creature ) {
+		pcUi->getScourge()->getSDLHandler()->texPrint( size, 15, "%d%%", creature->getSkill( skill, false ) );
+	}
+	glPopMatrix();
 }
 
 void Portrait::scrollSkillsUp() {
