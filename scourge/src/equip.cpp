@@ -119,8 +119,13 @@ bool Equip::handleEvent(SDL_Event *event) {
 									MagicSchool::getMagicSchool( schoolIndex )->getSpell( spellIndex ) :
 									NULL );
 				if( spell && creature && creature->isSpellMemorized( spell ) ) {
-					sprintf( tmp, "%s:|%s", spell->getDisplayName(), spell->getNotes() );
-					canvas->setTooltip( Util::addLineBreaks( tmp, tooltip ) );
+					Util::addLineBreaks( spell->getNotes(), tmp );
+					sprintf( tooltip, "%s:|%s|%s:%d %s:%d", 
+									 spell->getDisplayName(), 
+									 tmp,
+									 _( "Level" ), spell->getLevel(),
+									 _( "MP Cost" ), spell->getMp() );
+					canvas->setTooltip( tooltip );
 				} else {
 					canvas->setTooltip( "" );
 				}
