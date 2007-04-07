@@ -39,6 +39,8 @@ using namespace std;
   *@author Gabor Torok
   */
 
+#define SPELL_SIZE 30
+
 Equip::Equip( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->pcUi = pcUi;
 	this->creature = NULL;
@@ -51,6 +53,8 @@ Equip::Equip( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->h = h;
 	this->lastItem = NULL;
 	this->mode = EQUIP_MODE;
+	this->schoolIndex = -1;
+	this->spellIndex = -1;
 
 	canvas = new Canvas( x, y, x + w, y + h, this, this);
 	canvas->setDrawBorders( false );
@@ -83,14 +87,17 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 bool Equip::handleEvent(SDL_Event *event) {
+	int si, spi, mx, my;
 	Item *item;
-	char tooltip[ 500 ];
+	Spell *spell;
+	char tooltip[ 3000 ], tmp[3000];
   switch(event->type) {
 	case SDL_MOUSEMOTION:
+		mx = event->motion.x - pcUi->getWindow()->getX() - x;
+		my = event->motion.y - pcUi->getWindow()->getY() - TITLE_HEIGHT;
 		if( mode == EQUIP_MODE ) {
-			currentHole = getHoleAtPos( event->motion.x - pcUi->getWindow()->getX() - x, 
-																	event->motion.y - pcUi->getWindow()->getY() - TITLE_HEIGHT );
-	
+			schoolIndex = spellIndex = -1;
+			currentHole = getHoleAtPos( mx, my );
 			item = getItemInHole( currentHole );
 			if( item != lastItem ) {
 				lastItem = item;
@@ -101,6 +108,23 @@ bool Equip::handleEvent(SDL_Event *event) {
 					canvas->setTooltip( NULL );
 				}
 			}
+		} else if( mode == SPELLS_MODE ) {
+			lastItem = NULL;
+			si = getSchoolIndex( mx, my );
+			spi = getSpellIndex( mx, my, si );
+			if( schoolIndex != si || spellIndex != spi ) {
+				schoolIndex = si;
+				spellIndex = spi;
+				spell = ( schoolIndex > -1 && spellIndex > -1 ? 
+									MagicSchool::getMagicSchool( schoolIndex )->getSpell( spellIndex ) :
+									NULL );
+				if( spell && creature && creature->isSpellMemorized( spell ) ) {
+					sprintf( tmp, "%s:|%s", spell->getDisplayName(), spell->getNotes() );
+					canvas->setTooltip( Util::addLineBreaks( tmp, tooltip ) );
+				} else {
+					canvas->setTooltip( "" );
+				}
+			}
 		}
 
     break;
@@ -109,6 +133,18 @@ bool Equip::handleEvent(SDL_Event *event) {
 	default: break;
 	}
   return false;
+}
+
+int Equip::getSchoolIndex( int x, int y ) {
+	int n = ( y - 20 ) / 47;
+	return( n >= 0 && n < MagicSchool::getMagicSchoolCount() ? n : -1 );
+}
+
+int Equip::getSpellIndex( int x, int y, int schoolIndex ) {
+	int n = ( x - 20 ) / ( SPELL_SIZE + 2 );
+	return( schoolIndex > -1 && 
+					n >= 0 && 
+					n < MagicSchool::getMagicSchool( schoolIndex )->getSpellCount() ? n : -1 );
 }
 
 Item *Equip::getItemInHole( int hole ) {
@@ -232,6 +268,53 @@ void Equip::drawWidgetContents( Widget *widget ) {
 					}
 				}
 			}
+		} else if( mode == SPELLS_MODE ) {
+			int startX = 20;
+			int xx = startX;
+			int yy = 20;
+			for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
+				MagicSchool *school = MagicSchool::getMagicSchool( i );
+				glColor4f( 1, 0.35f, 0, 1 );
+				//pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
+				pcUi->getScourge()->getSDLHandler()->texPrint( xx, yy, school->getDisplayName() );
+				//pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+				yy += 5;
+				for( int t = 0; t < school->getSpellCount(); t++, xx += SPELL_SIZE + 2 ) {
+					Spell *spell = school->getSpell( t );
+					if( creature && creature->isSpellMemorized( spell ) ) {
+						glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
+						glColor4f( 1, 1, 1, 1 );
+						glBegin( GL_QUADS );
+						glTexCoord2d( 0, 1 );
+						glVertex2d( xx, yy + SPELL_SIZE );
+						glTexCoord2d( 0, 0 );
+						glVertex2d( xx, yy );
+						glTexCoord2d( 1, 0 );
+						glVertex2d( xx + SPELL_SIZE, yy );
+						glTexCoord2d( 1, 1 );
+						glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
+						glEnd();
+					}
+					if( schoolIndex == i && spellIndex == t ) {
+						glColor4f( 1, 1, 0, 1 );
+					} else {
+						pcUi->getWindow()->setTopWindowBorderColor();
+					}
+					glDisable( GL_TEXTURE_2D );
+					glBegin( GL_LINE_LOOP );
+					glVertex2d( xx, yy + SPELL_SIZE );
+					glVertex2d( xx, yy );
+					glVertex2d( xx + SPELL_SIZE, yy );
+					glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
+					glEnd();
+					glEnable( GL_TEXTURE_2D );
+				}
+
+				xx = startX;
+				yy += SPELL_SIZE + 12;
+			}
+		}	else {
+
 		}
 	}
 
