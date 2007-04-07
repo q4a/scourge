@@ -48,6 +48,8 @@ private:
 	int x, y, w, h;
 	Item *lastItem;
 	int mode;
+	int schoolIndex;
+	int spellIndex;
 
 public:
 
@@ -77,6 +79,8 @@ protected:
   Item *getItemAtPos( int x, int y );
   int getHoleAtPos( int x, int y );
 	Item *getItemInHole( int hole );
+	int getSchoolIndex( int x, int y );
+	int getSpellIndex( int x, int y, int schoolIndex );
 };
 
 #endif

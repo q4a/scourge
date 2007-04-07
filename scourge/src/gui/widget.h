@@ -39,7 +39,7 @@ class Widget {
   bool focus;
   float alpha, alphaInc;
   GLint lastTick;
-  char tooltip[255];
+  char tooltip[3000];
   GLuint tooltipTicks;
   bool tooltipShowing;
   GLuint displayList;
@@ -130,7 +130,7 @@ class Widget {
 
   virtual inline bool hasSound() { return true; }
 
-  inline void setTooltip( char *s ) { strncpy( tooltip, ( s ? s : "" ), 255); tooltip[254] = '\0'; }
+  inline void setTooltip( char *s ) { strncpy( tooltip, ( s ? s : "" ), 2999); tooltip[2999] = '\0'; }
   inline char *getTooltip() { return tooltip; }
 
   void drawTooltip( Widget *parent );

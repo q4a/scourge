@@ -630,3 +630,22 @@ char *Util::toLowerCase( char *s ) {
   return s;
 }
 
+// FIXME: take into account, existing |-s in text
+char *Util::addLineBreaks( const char *in, char *out, int lineLength ) {
+	strcpy( out, "" );
+	char tmp[3000];
+	strcpy( tmp, in );
+	char *token = strtok( tmp, " \r\n\t" );
+	int count = 0;
+	while( token ) {
+		if( count + strlen( token ) >= lineLength ) {
+			strcat( out, "|" );
+			count = 0;
+		}
+		strcat( out, token );
+		strcat( out, " " );
+		count += strlen( token ) + 1;
+		token = strtok( NULL, " \r\n\t" );
+	}
+	return out;
+}

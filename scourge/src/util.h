@@ -128,6 +128,8 @@ public:
 	static bool isOutOfTheWay( Creature *a, std::vector<Location> *aPath, int aStart,
 														 Creature *b, std::vector<Location> *bPath, int bStart );
 
+	static char *addLineBreaks( const char *in, char *out, int lineLength=40 );
+
 protected:
   static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Sint16 dx, Sint16 dy,
 												 Creature *creature, Creature *player, Map *map, 
