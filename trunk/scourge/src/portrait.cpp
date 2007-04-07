@@ -157,16 +157,23 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, creature->getName() );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
-	y += 17;
+	//y += 17;
 
 	glColor4f( 1, 1, 1, 1 );
-	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s", 
-																			( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
-																			creature->getCharacter()->getDisplayName() );
+	y = 15;
+	int x = 200;
+	pcUi->getScourge()->getSDLHandler()->texPrint( x, y, "%s:%d", _( "Level" ), creature->getLevel() );
 	y += 15;
-	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s:%d %s:%d", _( "Level" ), creature->getLevel(), _( "XP" ), creature->getExp() );
+	pcUi->getScourge()->getSDLHandler()->texPrint( x, y, "%s:%d", _( "XP" ), creature->getExp() );
+	y += 15;
+	pcUi->getScourge()->getSDLHandler()->texPrint( x, y, "%s:%d", _( "Coins" ), creature->getMoney() );
 
-	y += 15;
+	y = 25 + 17;
+	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s", 
+																								 ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
+																								 creature->getCharacter()->getDisplayName() );	
+	y += 25;
+
 	pcUi->getScourge()->describeAttacks( creature, 80, y, true );
 	pcUi->getScourge()->describeDefense( creature, 200, y );
 	glColor4f( 1, 1, 1, 1 );
@@ -185,9 +192,8 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 
 void Portrait::showStats() {
 	// hp/mp
-  int y = 117;	
+  int y = 110;	
 //	y += 18;
-	drawHorizontalLine( y - 12 );
 	glColor4f( 1, 1, 1, 1 );
   pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
   drawBar( 120, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
