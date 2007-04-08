@@ -47,6 +47,20 @@ using namespace std;
 #define BAR_Y 4
 #define BAR_INNER_WIDTH 102
 #define BAR_INNER_HEIGHT 4
+#define RESISTANCE_WIDTH 46
+
+char *resistanceIcons[] = {
+	"nature", "divine", "life", "history", "tricks", "confrontation"
+};
+int resistanceSkills[] = {
+	Skill::RESIST_NATURE_MAGIC,
+	Skill::RESIST_AWARENESS_MAGIC,
+	Skill::RESIST_LIFE_AND_DEATH_MAGIC,
+	Skill::RESIST_HISTORY_MAGIC,
+	Skill::RESIST_DECEIT_MAGIC,
+	Skill::RESIST_CONFRONTATION_MAGIC
+};
+int resistanceCount = 6;
 
 Portrait::Portrait( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->pcUi = pcUi;
@@ -102,11 +116,20 @@ bool Portrait::findCurrentSkill( int px, int py ) {
 }		 
 
 bool Portrait::handleEvent( SDL_Event *event ) {
-  if( event->type == SDL_MOUSEMOTION ) {
-			if( mode == SKILLS_MODE ) {
-				findCurrentSkill( event->motion.x - pcUi->getWindow()->getX() - x, 
-													event->motion.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );					
+	if( event->type == SDL_MOUSEMOTION ) {
+		int mx = event->motion.x - pcUi->getWindow()->getX() - x;
+		int my = event->motion.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT;
+		if( mode == SKILLS_MODE ) {
+			findCurrentSkill( mx, my );
+		} else if( mode == STATS_MODE ) {
+			int index = -1;
+			if( my >= 250 ) {
+				index = ( mx - 10 ) / RESISTANCE_WIDTH;
 			}
+			canvas->setTooltip( index > -1 && index < resistanceCount ? 
+													Skill::skills[ resistanceSkills[ index ] ]->getDisplayName() : 
+													(char*)"" );
+		}
 	}
 	return false;
 }
@@ -192,7 +215,7 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 
 void Portrait::showStats() {
 	// hp/mp
-  int y = 110;	
+  int y = 105;	
 //	y += 18;
 	glColor4f( 1, 1, 1, 1 );
   pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
@@ -221,17 +244,18 @@ void Portrait::showStats() {
 		Skill *skill = SkillGroup::stats->getSkill( i );
 		drawSkill( skill, yy );
 	}
-	y += SkillGroup::stats->getSkillCount() * 15 - 5;
+	y += SkillGroup::stats->getSkillCount() * 15;
 
-	// resistances
-	int x = 5; int step = 46;
+	// resistances y=250
+	glColor4f( 1, 0.35f, 0, 1 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y - 2, "%s:", _( "Resistances" ) );
+	glColor4f( 1, 1, 1, 1 );
+	int x = 5;
 	glEnable( GL_TEXTURE_2D );
-	drawResistance( x, y, "nature", Skill::RESIST_NATURE_MAGIC ); x += step;
-	drawResistance( x, y, "divine", Skill::RESIST_AWARENESS_MAGIC ); x += step;
-	drawResistance( x, y, "life", Skill::RESIST_LIFE_AND_DEATH_MAGIC ); x += step;
-	drawResistance( x, y, "history", Skill::RESIST_HISTORY_MAGIC ); x += step;
-	drawResistance( x, y, "tricks", Skill::RESIST_DECEIT_MAGIC ); x += step;
-	drawResistance( x, y, "confrontation", Skill::RESIST_CONFRONTATION_MAGIC ); x += step;
+	for( int i = 0; i < resistanceCount; i++ ) {
+		drawResistance( x, y, resistanceIcons[ i ], resistanceSkills[ i ] ); 
+		x += RESISTANCE_WIDTH;
+	}
 }
 
 void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
@@ -443,6 +467,7 @@ void Portrait::showStateMods() {
 }
 
 void Portrait::drawStateModIcon( GLuint icon, char *name, Color color, int x, int y, int size ) {
+	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, icon );
 	glColor4f( color.r, color.g, color.b, color.a );
 	glPushMatrix();
