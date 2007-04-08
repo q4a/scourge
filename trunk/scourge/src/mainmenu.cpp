@@ -344,6 +344,7 @@ void MainMenu::show() {
 
 void MainMenu::hide() { 
   openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
+	freeTextures(); // free up some texture space
 }
 
 void MainMenu::drawMenu() {
@@ -466,6 +467,17 @@ void MainMenu::drawActiveMenuItem( float divisor, int count ) {
       }
     }
   }
+}
+
+void MainMenu::freeTextures() {
+	for( unsigned int i = 0; i < menuItemList.size(); i++ ) {
+		MenuItem *mi = menuItemList[ i ];
+		glDeleteTextures( 1, mi->texture );
+		free( mi->textureInMemory );
+		delete mi;
+	}
+	menuItemList.clear();
+	initTextures = false;
 }
 
 void MainMenu::buildTextures() {

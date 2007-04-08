@@ -140,6 +140,7 @@ public:
   void drawMenu();
   void drawActiveMenuItem( float divisor, int count );
   void buildTextures();
+	void freeTextures();
   void drawStars();
 };
 
