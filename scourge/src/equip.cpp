@@ -41,6 +41,11 @@ using namespace std;
 
 #define SPELL_SIZE 30
 
+// fixme: this should be a property of the magicschool and should come from the .cfg file.
+char *schoolIcons[] = {
+	"nature", "divine", "life", "history", "tricks", "confrontation"
+};
+
 Equip::Equip( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->pcUi = pcUi;
 	this->creature = NULL;
@@ -279,9 +284,30 @@ void Equip::drawWidgetContents( Widget *widget ) {
 			int yy = 20;
 			for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
 				MagicSchool *school = MagicSchool::getMagicSchool( i );
+
+				int size = 15;
+				glPushMatrix();
+				glTranslatef( xx, yy - 12, 0 );
+				glEnable( GL_ALPHA_TEST );
+				glAlphaFunc( GL_NOTEQUAL, 0 );
+				glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ) );
+				glColor4f( 1, 1, 1, 1 );
+				glBegin( GL_QUADS );
+				glTexCoord2d( 0, 1 );
+				glVertex2d( 0, size );
+				glTexCoord2d( 0, 0 );
+				glVertex2d( 0, 0 );
+				glTexCoord2d( 1, 0 );
+				glVertex2d( size, 0 );
+				glTexCoord2d( 1, 1 );
+				glVertex2d( size, size );
+				glEnd();
+				glDisable( GL_ALPHA_TEST );
+				glPopMatrix();
+
 				glColor4f( 1, 0.35f, 0, 1 );
 				//pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
-				pcUi->getScourge()->getSDLHandler()->texPrint( xx, yy, school->getDisplayName() );
+				pcUi->getScourge()->getSDLHandler()->texPrint( xx + size, yy, school->getDisplayName() );
 				//pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 				yy += 5;
 				for( int t = 0; t < school->getSpellCount(); t++, xx += SPELL_SIZE + 2 ) {
