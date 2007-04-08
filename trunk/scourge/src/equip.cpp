@@ -69,22 +69,42 @@ Equip::~Equip() {
 }
 
 bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
-	if( pcUi->getScourge()->getSDLHandler()->isDoubleClick ) {
-		if( mode == EQUIP_MODE ) {
-			Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
-																 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
-			if( item && item->getRpgItem()->isContainer() ) {
-				pcUi->getScourge()->openContainerGui(item);
+	if( widget == canvas ) {
+		if( pcUi->getScourge()->getSDLHandler()->isDoubleClick ) {
+			if( mode == EQUIP_MODE ) {
+				Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+																	 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
+				if( item && item->getRpgItem()->isContainer() ) {
+					pcUi->getScourge()->openContainerGui(item);
+				}
 			}
-		}
-	} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
-		if( mode == EQUIP_MODE ) {
-			Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
-																 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
-			if( item ) {
-				pcUi->getScourge()->getInfoGui()->setItem( item );
-				if( !pcUi->getScourge()->getInfoGui()->getWindow()->isVisible() ) 
-					pcUi->getScourge()->getInfoGui()->getWindow()->setVisible( true );
+		} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
+			if( mode == EQUIP_MODE ) {
+				Item *item = getItemAtPos( pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x, 
+																	 pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT );
+				if( item ) {
+					pcUi->getScourge()->getInfoGui()->setItem( item );
+					if( !pcUi->getScourge()->getInfoGui()->getWindow()->isVisible() ) 
+						pcUi->getScourge()->getInfoGui()->getWindow()->setVisible( true );
+				}
+			}
+		} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT ) {
+			if( mode == SPELLS_MODE ) {
+				int mx = pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x;
+				int my = pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - TITLE_HEIGHT;
+				int si = getSchoolIndex( mx, my );
+				int spi = getSpellIndex( mx, my, si );
+				Spell *spell = ( si > -1 && spi > -1 ? 
+												 MagicSchool::getMagicSchool( si )->getSpell( spi ) :
+												 NULL );
+				if( spell ) {
+					if( pcUi->isCastSelected() ) {
+						castSpell( spell );
+					} else if( pcUi->isStoreSelected() ) {
+						storeSpell( spell );
+					}
+				}
+				pcUi->unselectSpellButtons();
 			}
 		}
 	}
@@ -138,8 +158,6 @@ bool Equip::handleEvent(SDL_Event *event) {
 		}
 
     break;
-  case SDL_MOUSEBUTTONUP:
-    break;     
 	default: break;
 	}
   return false;
@@ -379,5 +397,40 @@ void Equip::drawWidgetContents( Widget *widget ) {
     glVertex2d( rect->x + rect->w, rect->y + rect->h );
     glEnd();
   }
+}
+
+void Equip::castSpell( Spell *spell ) {
+	if( spell ) {
+		if( spell->getMp() > creature->getMp() ) {
+			pcUi->getScourge()->showMessageDialog( _( "Not enough Magic Points to cast this spell!" ) );
+		} else {
+			// set this as a quickspell if there is space
+			for( int i = 0; i < 12; i++ ) {
+				if( !creature->getQuickSpell( i ) ) {
+					creature->setQuickSpell( i, spell );
+					break;
+				}
+			}
+			
+			creature->setAction( Constants::ACTION_CAST_SPELL, NULL, spell );
+			if( !spell->isPartyTargetAllowed() ) {
+				pcUi->getScourge()->setTargetSelectionFor( creature );
+			} else {
+				creature->setTargetCreature( creature );
+			}
+		}
+	}
+}
+
+void Equip::storeSpell( Spell *spell ) {
+	if( spell ) {
+		Storable *storable = spell;
+		const char *p = storable->isStorable();
+		if( p ) {
+			pcUi->getScourge()->showMessageDialog( (char*)p );
+		} else {
+			// FIXME: do something with the spell
+		}
+	}
 }
 

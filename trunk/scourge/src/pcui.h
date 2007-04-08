@@ -71,10 +71,14 @@ public:
 	bool isInfoSelected();
 	bool isStoreSelected();
 	void unselectButtons();
+	bool isCastSelected();
+	bool isStoreSpellSelected();
+	void unselectSpellButtons();
 
 protected:
 	void toggleButtons( Button *button );
 	void toggleLeftButtons( Button *button );
+	void toggleSpellButtons( Button *widget );
 };
 
 #endif

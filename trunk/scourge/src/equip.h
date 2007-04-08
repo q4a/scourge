@@ -37,6 +37,7 @@ class Storable;
 class ConfirmDialog;
 class Item;
 class PcUi;
+class Spell;
 
 class Equip : public DragAndDropHandler, WidgetView {
 private:
@@ -81,6 +82,8 @@ protected:
 	Item *getItemInHole( int hole );
 	int getSchoolIndex( int x, int y );
 	int getSpellIndex( int x, int y, int schoolIndex );
+	void castSpell( Spell *spell );
+	void storeSpell( Spell *spell );
 };
 
 #endif
