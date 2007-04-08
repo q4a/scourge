@@ -285,9 +285,26 @@ void Equip::drawWidgetContents( Widget *widget ) {
 			for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
 				MagicSchool *school = MagicSchool::getMagicSchool( i );
 
-				int size = 15;
 				glPushMatrix();
 				glTranslatef( xx, yy - 12, 0 );
+				
+				int size = 15;
+				int width = w - 55;
+				
+				glDisable( GL_TEXTURE_2D );
+				glEnable( GL_BLEND );
+				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+				// glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+				glColor4f( 0, 0, 0, 0.75 );
+				glBegin( GL_QUADS );
+				glVertex2d( 0, size );
+				glVertex2d( 0, 1 );
+				glVertex2d( size + width, 1 );
+				glVertex2d( size + width, size );
+				glEnd();
+				glDisable( GL_BLEND );
+				glEnable( GL_TEXTURE_2D );
+				
 				glEnable( GL_ALPHA_TEST );
 				glAlphaFunc( GL_NOTEQUAL, 0 );
 				glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ) );
@@ -303,12 +320,14 @@ void Equip::drawWidgetContents( Widget *widget ) {
 				glVertex2d( size, size );
 				glEnd();
 				glDisable( GL_ALPHA_TEST );
-				glPopMatrix();
 
 				glColor4f( 1, 0.35f, 0, 1 );
-				//pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
-				pcUi->getScourge()->getSDLHandler()->texPrint( xx + size, yy, school->getDisplayName() );
-				//pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+				pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
+				pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 13, school->getDisplayName() );
+				pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+
+				glPopMatrix();
+
 				yy += 5;
 				for( int t = 0; t < school->getSpellCount(); t++, xx += SPELL_SIZE + 2 ) {
 					Spell *spell = school->getSpell( t );

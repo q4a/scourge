@@ -1664,7 +1664,7 @@ int Creature::addExperience(int delta) {
     hp += character->getStartingHp();
     mp += character->getStartingMp();
     calculateExpOfNextLevel();
-    availableSkillMod += character->getSkillBonus();
+		setAvailableSkillMod( getAvailableSkillMod() + character->getSkillBonus() );
     char message[255];
     sprintf( message, _( "  %s levels up!" ), getName() );
     session->getGameAdapter()->startTextEffect( message );
