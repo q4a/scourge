@@ -121,12 +121,12 @@ PcUi::PcUi( Scourge *scourge ) {
 	y += 33;
 	down = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "down" ) );
 	down->setTooltip( _( "Page skills down" ) );
-	cast = mainWin->createButton( 10, y, 10 + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "cast" ) );
+	cast = mainWin->createButton( 10, y, 10 + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "cast" ) );
 	cast->setTooltip( _( "Cast spell or use capability" ) );
 	y += 33;
 	applyMods = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "applySkillMods" ) );
 	applyMods->setTooltip( _( "Apply Skill Modifications" ) );
-	storeSpell = mainWin->createButton( 10, y, 10 + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "store" ) );
+	storeSpell = mainWin->createButton( 10, y, 10 + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "store" ) );
 	storeSpell->setTooltip( _( "Store spell or capability in a quickspell slot" ) );
 	
 	up->setEnabled( false );
@@ -221,7 +221,9 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 	} else if( widget == capabilitiesButton ) {
 		toggleLeftButtons( capabilitiesButton );
 		equip->setMode( Equip::CAPABILITIES_MODE );
-	} 
+	}	else if( widget == cast || widget == storeSpell ) {
+		toggleSpellButtons( (Button*)widget );
+	}
   return false;
 }
 
@@ -268,6 +270,28 @@ bool PcUi::isStoreSelected() {
 
 void PcUi::unselectButtons() {
 	toggleButtons( NULL );
+}
+
+bool PcUi::isCastSelected() {
+	return cast->isSelected();
+}
+
+bool PcUi::isStoreSpellSelected() {
+	return storeSpell->isSelected();
+}
+
+void PcUi::unselectSpellButtons() {
+	toggleSpellButtons( NULL );
+}
+
+void PcUi::toggleSpellButtons( Button *button ) {
+	if( button != cast ) cast->setSelected( false );
+	if( button != storeSpell ) storeSpell->setSelected( false );
+	if( cast->isSelected() || storeSpell->isSelected() ) {
+		status->setText( _( "Click on a spell or capability to select it..." ) );
+	} else {
+		status->setText( _( DEFAULT_STATUS ) );
+	}
 }
 
 bool PcUi::handleEvent(SDL_Event *event) {
