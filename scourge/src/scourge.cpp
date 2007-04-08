@@ -2616,7 +2616,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 }
 
 bool Scourge::getStateModIcon( GLuint *icon, char *name, Color *color, Creature *p, int stateMod, bool protect ) {
-	*icon = 255;
+	*icon = 0;
 	if( !protect && stateMod == StateMod::STATE_MOD_COUNT && p->getThirst() <= 5 ) {
 		*icon = getSession()->getShapePalette()->getThirstIcon();
 		strcpy( name, _( "Thirst" ) );
@@ -2645,8 +2645,8 @@ bool Scourge::getStateModIcon( GLuint *icon, char *name, Color *color, Creature 
 			color->b = 1;
 			color->a = 0.5f;
 		}
-	} else if( ( !protect && p->getStateMod( stateMod ) ) || 
-						 ( protect && p->getProtectedStateMod( stateMod ) ) ) {
+	} else if( ( stateMod < StateMod::STATE_MOD_COUNT && !protect && p->getStateMod( stateMod ) ) || 
+						 ( stateMod < StateMod::STATE_MOD_COUNT && protect && p->getProtectedStateMod( stateMod ) ) ) {
 		*icon = getSession()->getShapePalette()->getStatModIcon( stateMod );
 		strcpy( name, StateMod::stateMods[ stateMod ]->getDisplayName() );
 		color->r = 1;
@@ -2654,7 +2654,7 @@ bool Scourge::getStateModIcon( GLuint *icon, char *name, Color *color, Creature 
 		color->b = 1;
 		color->a = 0.5f;
 	}
-	return( *icon < 255 );
+	return( *icon > 0 );
 }
 
 void Scourge::resetPartyUI() {
