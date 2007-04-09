@@ -954,34 +954,42 @@ char *Item::getType() {
 	return getRpgItem()->getName();
 }
 
-#define DEBUG_IDENTIFY_ITEM 1
+
+/**
+ * Sets identification bit to true if random function eveluates more than infoDetailLevel
+ * with specified cap modifier.
+ * @param bit 
+ * @param modifier 
+ * @param infoDetailLevel 
+ */
+void Item::trySetIDBit(int bit, float modifier, int infoDetailLevel) {
+	//If not yet set
+	if(!getIdentifiedBit( bit ))
+	{
+		if(infoDetailLevel > (int)(modifier * rand()/RAND_MAX)) {
+			setIdentifiedBit( bit, true );
+		} else {
+			setIdentifiedBit( bit, false );
+		}
+	}
+}
+
+//#define DEBUG_IDENTIFY_ITEM 1
 void Item::identify( int infoDetailLevel ) {
 #ifdef DEBUG_IDENTIFY_ITEM
 	infoDetailLevel = 500;
 #endif
-	identifiedBits = (Uint32)0x0000;
+	//identifiedBits = (Uint32)0x0000;
 	if( isMagicItem() ) {
-		if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
-			setIdentifiedBit( Item::ID_BONUS, true );
-		} else {
-			setIdentifiedBit( Item::ID_BONUS, false );
-		}
+		trySetIDBit(Item::ID_BONUS,100.0f, infoDetailLevel);
 		if( getDamageMultiplier() > 1 ) {
-			if( infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {			
-				setIdentifiedBit( Item::ID_DAMAGE_MUL, true );
-			} else {
-				setIdentifiedBit( Item::ID_DAMAGE_MUL, false );
-			}
-    } else {
+			trySetIDBit(Item::ID_DAMAGE_MUL,100.0f, infoDetailLevel);
+    		} else {
 			setIdentifiedBit( Item::ID_DAMAGE_MUL, true );
 		}
-    if(getSchool() ) {
-      if( infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
-				setIdentifiedBit( Item::ID_MAGIC_DAMAGE, true );
-      } else {
-				setIdentifiedBit( Item::ID_MAGIC_DAMAGE, false );
-			}
-    } else {
+		if(getSchool() ) {
+			trySetIDBit(Item::ID_MAGIC_DAMAGE,100.0f, infoDetailLevel);
+		} else {
 			setIdentifiedBit( Item::ID_MAGIC_DAMAGE, true );
 		}
 
@@ -993,11 +1001,7 @@ void Item::identify( int infoDetailLevel ) {
 			}
 		}
 		if( found ) {
-			if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
-				setIdentifiedBit( Item::ID_STATE_MOD, true );
-			} else {
-				setIdentifiedBit( Item::ID_STATE_MOD, false );
-			}
+			trySetIDBit(Item::ID_STATE_MOD,100.0f, infoDetailLevel);
 		} else {
 			setIdentifiedBit( Item::ID_STATE_MOD, true );
 		}
@@ -1010,11 +1014,7 @@ void Item::identify( int infoDetailLevel ) {
 			}
 		}
 		if(found) {
-			if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
-				setIdentifiedBit( Item::ID_PROT_STATE_MOD, true );
-			} else {
-				setIdentifiedBit( Item::ID_PROT_STATE_MOD, false );
-			}
+			trySetIDBit(Item::ID_PROT_STATE_MOD,100.0f, infoDetailLevel);
 		} else {
 			setIdentifiedBit( Item::ID_PROT_STATE_MOD, true );
 		}
@@ -1026,22 +1026,14 @@ void Item::identify( int infoDetailLevel ) {
 			break;
 		}
 		if(found) {
-			if(infoDetailLevel > (int)(100.0f * rand()/RAND_MAX)) {
-				setIdentifiedBit( Item::ID_SKILL_BONUS, true );
-			} else {
-				setIdentifiedBit( Item::ID_SKILL_BONUS, false );
-			}
+			trySetIDBit(Item::ID_SKILL_BONUS,100.0f, infoDetailLevel);
 		} else {
 			setIdentifiedBit( Item::ID_SKILL_BONUS, true );
 		}
     
 		// cursed is hard to detect
     if( isCursed() ) {
-			if( infoDetailLevel > (int)(200.0f * rand()/RAND_MAX) ) {
-				setIdentifiedBit( Item::ID_CURSED, true );
-			} else {
-				setIdentifiedBit( Item::ID_CURSED, false );
-			}
+			trySetIDBit(Item::ID_SKILL_BONUS,200.0f, infoDetailLevel);
 		} else {
 			setIdentifiedBit( Item::ID_CURSED, true );
 		}
@@ -1053,6 +1045,7 @@ void Item::identify( int infoDetailLevel ) {
 			session->getGameAdapter()->refreshInventoryUI();
 		}
 	} else {
+		//No need for identification - item not magical
 		identifiedBits = (Uint32)0xffff;
 	}
 	// fprintf( stderr, "skill=%d id=%x\n", infoDetailLevel, identifiedBits );

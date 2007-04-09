@@ -59,6 +59,8 @@ class Item : public RenderedItem, Storable {
   char itemName[255];
   bool containsMagicItem;
   bool showCursed;
+  void trySetIDBit(int bit, float modifier, int infoDetailLevel);
+
 
 
 
@@ -94,7 +96,7 @@ public:
 		ID_PROT_STATE_MOD,
 		ID_SKILL_BONUS,
 		ID_CURSED,
-
+		//number of bits that represents item identification
 		ID_COUNT
 	};
 
@@ -119,6 +121,7 @@ public:
 	}
 	inline bool getIdentifiedBit( int bit ) { return( identifiedBits & ( 1 << bit ) ? true : false ); }  
 	void identify( int infoDetailLevel );
+	//Returns true if all bits in identifiedBits are set to true
 	inline bool isIdentified() { return( isMagicItem() && identifiedBits >= ( 1 << ID_COUNT ) - 1 ); }
 
 
