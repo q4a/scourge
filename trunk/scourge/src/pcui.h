@@ -74,6 +74,7 @@ public:
 	bool isCastSelected();
 	bool isStoreSpellSelected();
 	void unselectSpellButtons();
+  void receiveInventory();
 
 protected:
 	void toggleButtons( Button *button );

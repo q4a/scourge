@@ -2323,7 +2323,8 @@ void Scourge::receive( Widget *widget ) {
         inTurnBasedCombat() ) return;
 
     getParty()->setPlayer( selected );
-    inventory->receive( widget );
+    //Put items to the new inventory so location would be assigned
+    pcui->receiveInventory();
   }
 }
 

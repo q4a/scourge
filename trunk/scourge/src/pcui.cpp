@@ -319,4 +319,6 @@ void PcUi::setCreature( Creature *creature ) {
 	portrait->setCreature( creature );
 }
 
-
+void PcUi::receiveInventory() {
+  inven->receive( inven->getWidget() );
+}
