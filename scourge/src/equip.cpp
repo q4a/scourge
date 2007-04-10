@@ -40,6 +40,7 @@ using namespace std;
   */
 
 #define SPELL_SIZE 30
+#define DEBUG_SPECIAL_SKILL 0
 
 // fixme: this should be a property of the magicschool and should come from the .cfg file.
 char *schoolIcons[] = {
@@ -60,6 +61,7 @@ Equip::Equip( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->mode = EQUIP_MODE;
 	this->schoolIndex = -1;
 	this->spellIndex = -1;
+	this->specialSkill = NULL;
 
 	canvas = new Canvas( x, y, x + w, y + h, this, this);
 	canvas->setDrawBorders( false );
@@ -100,13 +102,22 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 				if( spell ) {
 					if( pcUi->isCastSelected() ) {
 						castSpell( spell );
-					} else if( pcUi->isStoreSelected() ) {
+					} else if( pcUi->isStoreSpellSelected() ) {
 						storeSpell( spell );
 					}
 				}
 				pcUi->unselectSpellButtons();
+			} else if( mode == CAPABILITIES_MODE ) {
+				if( specialSkill ) {
+					if( pcUi->isCastSelected() ) {
+						useSpecialSkill( specialSkill );
+					} else if( pcUi->isStoreSpellSelected() ) {
+						storeSpecialSkill( specialSkill );
+					}
+				}
+				pcUi->unselectSpellButtons();
 			}
-		}
+		} 
 	}
   return false;
 }
@@ -162,6 +173,22 @@ bool Equip::handleEvent(SDL_Event *event) {
 	}
   return false;
 }
+
+/*
+// FIXME: brittle. This will break if drawCapabilities is changed.
+SpecialSkill *Equip::findSpecialSkill( int x, int y ) {
+	int startX = 20;
+	int xx = startX;
+	int yy = 20;
+	yy += 5;
+	for( int i = 0; i < SpecialSkill::getSpecialSkillCount(); i++ ) {
+		SpecialSkill *ss = SpecialSkill::getSpecialSkill( i );   
+		if( 1 || creature->hasSpecialSkill( ss ) ) {
+			
+		}
+	}
+}
+*/
 
 int Equip::getSchoolIndex( int x, int y ) {
 	int n = ( y - 20 ) / 47;
@@ -287,106 +314,26 @@ void Equip::drawWidgetContents( Widget *widget ) {
 	glDisable( GL_ALPHA_TEST );
 	if( creature ) {
 		if( mode == EQUIP_MODE ) {
-			for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
-				Item *item = creature->getEquippedInventory( i );
-				if( item ) {
-					SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
-					if( rect && rect->w && rect->h ) {
-						item->renderIcon( pcUi->getScourge(), rect->x, rect->y, rect->w, rect->h );
-					}
-				}
-			}
+			drawEquipment();
 		} else if( mode == SPELLS_MODE ) {
-			int startX = 20;
-			int xx = startX;
-			int yy = 20;
-			for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
-				MagicSchool *school = MagicSchool::getMagicSchool( i );
-
-				glPushMatrix();
-				glTranslatef( xx, yy - 12, 0 );
-				
-				int size = 15;
-				int width = w - 55;
-				
-				glDisable( GL_TEXTURE_2D );
-				glEnable( GL_BLEND );
-				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-				// glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
-				glColor4f( 0, 0, 0, 0.75 );
-				glBegin( GL_QUADS );
-				glVertex2d( 0, size );
-				glVertex2d( 0, 1 );
-				glVertex2d( size + width, 1 );
-				glVertex2d( size + width, size );
-				glEnd();
-				glDisable( GL_BLEND );
-				glEnable( GL_TEXTURE_2D );
-				
-				glEnable( GL_ALPHA_TEST );
-				glAlphaFunc( GL_NOTEQUAL, 0 );
-				glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ) );
-				glColor4f( 1, 1, 1, 1 );
-				glBegin( GL_QUADS );
-				glTexCoord2d( 0, 1 );
-				glVertex2d( 0, size );
-				glTexCoord2d( 0, 0 );
-				glVertex2d( 0, 0 );
-				glTexCoord2d( 1, 0 );
-				glVertex2d( size, 0 );
-				glTexCoord2d( 1, 1 );
-				glVertex2d( size, size );
-				glEnd();
-				glDisable( GL_ALPHA_TEST );
-
-				glColor4f( 1, 0.35f, 0, 1 );
-				pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
-				pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 13, school->getDisplayName() );
-				pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
-
-				glPopMatrix();
-
-				yy += 5;
-				for( int t = 0; t < school->getSpellCount(); t++, xx += SPELL_SIZE + 2 ) {
-					Spell *spell = school->getSpell( t );
-					if( creature && creature->isSpellMemorized( spell ) ) {
-						glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
-						glColor4f( 1, 1, 1, 1 );
-						glBegin( GL_QUADS );
-						glTexCoord2d( 0, 1 );
-						glVertex2d( xx, yy + SPELL_SIZE );
-						glTexCoord2d( 0, 0 );
-						glVertex2d( xx, yy );
-						glTexCoord2d( 1, 0 );
-						glVertex2d( xx + SPELL_SIZE, yy );
-						glTexCoord2d( 1, 1 );
-						glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
-						glEnd();
-					}
-					if( schoolIndex == i && spellIndex == t ) {
-						glColor4f( 1, 1, 0, 1 );
-					} else {
-						pcUi->getWindow()->setTopWindowBorderColor();
-					}
-					glDisable( GL_TEXTURE_2D );
-					glBegin( GL_LINE_LOOP );
-					glVertex2d( xx, yy + SPELL_SIZE );
-					glVertex2d( xx, yy );
-					glVertex2d( xx + SPELL_SIZE, yy );
-					glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
-					glEnd();
-					glEnable( GL_TEXTURE_2D );
-				}
-
-				xx = startX;
-				yy += SPELL_SIZE + 12;
-			}
+			drawSpells();
 		}	else {
-
+			drawCapabilities();
 		}
 	}
+}
 
-  if( mode == EQUIP_MODE && currentHole > -1 ) {
+void Equip::drawEquipment() {
+	for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+		Item *item = creature->getEquippedInventory( i );
+		if( item ) {
+			SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
+			if( rect && rect->w && rect->h ) {
+				item->renderIcon( pcUi->getScourge(), rect->x, rect->y, rect->w, rect->h );
+			}
+		}
+	}
+	if( currentHole > -1 ) {
     SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( currentHole );
     glDisable( GL_TEXTURE_2D );
     pcUi->getWindow()->setTopWindowBorderColor();
@@ -397,6 +344,212 @@ void Equip::drawWidgetContents( Widget *widget ) {
     glVertex2d( rect->x + rect->w, rect->y + rect->h );
     glEnd();
   }
+}
+
+void Equip::drawSpells() {
+	int startX = 20;
+	int xx = startX;
+	int yy = 20;
+	for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
+		MagicSchool *school = MagicSchool::getMagicSchool( i );
+
+		glPushMatrix();
+		glTranslatef( xx, yy - 12, 0 );
+
+		int size = 15;
+		int width = w - 55;
+
+		glDisable( GL_TEXTURE_2D );
+		glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		// glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+		glColor4f( 0, 0, 0, 0.75 );
+		glBegin( GL_QUADS );
+		glVertex2d( 0, size );
+		glVertex2d( 0, 1 );
+		glVertex2d( size + width, 1 );
+		glVertex2d( size + width, size );
+		glEnd();
+		glDisable( GL_BLEND );
+		glEnable( GL_TEXTURE_2D );
+
+		glEnable( GL_ALPHA_TEST );
+		glAlphaFunc( GL_NOTEQUAL, 0 );
+		glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ) );
+		glColor4f( 1, 1, 1, 1 );
+		glBegin( GL_QUADS );
+		glTexCoord2d( 0, 1 );
+		glVertex2d( 0, size );
+		glTexCoord2d( 0, 0 );
+		glVertex2d( 0, 0 );
+		glTexCoord2d( 1, 0 );
+		glVertex2d( size, 0 );
+		glTexCoord2d( 1, 1 );
+		glVertex2d( size, size );
+		glEnd();
+		glDisable( GL_ALPHA_TEST );
+
+		glColor4f( 1, 0.35f, 0, 1 );
+		pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
+		pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 13, school->getDisplayName() );
+		pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+
+		glPopMatrix();
+
+		yy += 5;
+		for( int t = 0; t < school->getSpellCount(); t++, xx += SPELL_SIZE + 2 ) {
+			Spell *spell = school->getSpell( t );
+			if( creature && creature->isSpellMemorized( spell ) ) {
+				glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
+				glColor4f( 1, 1, 1, 1 );
+				glBegin( GL_QUADS );
+				glTexCoord2d( 0, 1 );
+				glVertex2d( xx, yy + SPELL_SIZE );
+				glTexCoord2d( 0, 0 );
+				glVertex2d( xx, yy );
+				glTexCoord2d( 1, 0 );
+				glVertex2d( xx + SPELL_SIZE, yy );
+				glTexCoord2d( 1, 1 );
+				glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
+				glEnd();
+			}
+			if( schoolIndex == i && spellIndex == t ) {
+				glColor4f( 1, 1, 0, 1 );
+			} else {
+				pcUi->getWindow()->setTopWindowBorderColor();
+			}
+			glDisable( GL_TEXTURE_2D );
+			glBegin( GL_LINE_LOOP );
+			glVertex2d( xx, yy + SPELL_SIZE );
+			glVertex2d( xx, yy );
+			glVertex2d( xx + SPELL_SIZE, yy );
+			glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
+			glEnd();
+			glEnable( GL_TEXTURE_2D );
+		}
+
+		xx = startX;
+		yy += SPELL_SIZE + 12;
+	}
+}
+
+void Equip::drawCapabilities() {
+	int startX = 20;
+	int xx = startX;
+	int yy = 20;
+
+	glPushMatrix();
+	glTranslatef( xx, yy - 12, 0 );
+		
+	int size = 15;
+	int width = w - 55;
+	
+	glDisable( GL_TEXTURE_2D );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	// glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+	glColor4f( 0, 0, 0, 0.75 );
+	glBegin( GL_QUADS );
+	glVertex2d( 0, size );
+	glVertex2d( 0, 1 );
+	glVertex2d( size + width, 1 );
+	glVertex2d( size + width, size );
+	glEnd();
+	glDisable( GL_BLEND );
+	glEnable( GL_TEXTURE_2D );
+	
+	glColor4f( 1, 0.35f, 0, 1 );
+	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
+	pcUi->getScourge()->getSDLHandler()->texPrint( size + 5, 13, _( "Special Capabilities" ) );
+	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+
+	glPopMatrix();
+
+	int mx = pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x;
+	int my = pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - TITLE_HEIGHT;
+
+	yy += 5;
+	bool found = false;
+	for( int i = 0; i < SpecialSkill::getSpecialSkillCount(); i++ ) {
+		SpecialSkill *ss = SpecialSkill::getSpecialSkill( i );   
+		if( DEBUG_SPECIAL_SKILL || creature->hasSpecialSkill( ss ) ) {
+
+			if( !found &&
+					mx >= xx && mx < xx + SPELL_SIZE &&
+					yy >= yy && my < yy + SPELL_SIZE ) {
+				if( specialSkill != ss ) {
+					specialSkill = ss;
+					char tmp[3000], tooltip[3000];
+					Util::addLineBreaks( ss->getDescription(), tmp );
+					sprintf( tooltip, "%s:|%s|%s", 
+									 ss->getDisplayName(), 
+									 tmp,
+									 ss->getType() == SpecialSkill::SKILL_TYPE_MANUAL ? 
+									 _( "Manual Capability" ) : 
+									 _( "Automatic Capability" ) );
+					canvas->setTooltip( tooltip );
+				}
+				found = true;
+			}
+
+			glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ] );
+			glColor4f( 1, 1, 1, 1 );
+			glBegin( GL_QUADS );
+			glTexCoord2d( 0, 1 );
+			glVertex2d( xx, yy + SPELL_SIZE );
+			glTexCoord2d( 0, 0 );
+			glVertex2d( xx, yy );
+			glTexCoord2d( 1, 0 );
+			glVertex2d( xx + SPELL_SIZE, yy );
+			glTexCoord2d( 1, 1 );
+			glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
+			glEnd();
+
+			if( specialSkill == ss ) {
+				glColor4f( 1, 1, 0, 1 );
+			} else {
+				pcUi->getWindow()->setTopWindowBorderColor();
+			}
+			glDisable( GL_TEXTURE_2D );
+			glBegin( GL_LINE_LOOP );
+			glVertex2d( xx, yy + SPELL_SIZE );
+			glVertex2d( xx, yy );
+			glVertex2d( xx + SPELL_SIZE, yy );
+			glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
+			glEnd();
+			glEnable( GL_TEXTURE_2D );
+
+			xx += SPELL_SIZE + 2;
+			if( xx > w - 50 ) {
+				xx = startX;
+				yy += SPELL_SIZE + 2;
+			}
+		}
+	}
+	if( !found ) {
+		specialSkill = false;
+		canvas->setTooltip( "" );
+	}
+}
+
+void Equip::useSpecialSkill( SpecialSkill *ss ) {
+	if( ss && ( DEBUG_SPECIAL_SKILL || creature->hasSpecialSkill( ss ) ) ) {
+		if( ss->getType() != SpecialSkill::SKILL_TYPE_MANUAL ) {
+			pcUi->getScourge()->showMessageDialog( _( "Only manual type capabilities can be used this way." ) );
+		} else {
+
+			creature->setAction( Constants::ACTION_SPECIAL, NULL, NULL, ss );
+			creature->setTargetCreature( creature );
+	
+			// set this as a quickspell if there is space
+			for( int i = 0; i < 12; i++ ) {
+				if( !creature->getQuickSpell( i ) ) {
+					creature->setQuickSpell( i, ss );
+					break;
+				}
+			}
+		}
+	}
 }
 
 void Equip::castSpell( Spell *spell ) {
@@ -424,13 +577,25 @@ void Equip::castSpell( Spell *spell ) {
 
 void Equip::storeSpell( Spell *spell ) {
 	if( spell ) {
-		Storable *storable = spell;
-		const char *p = storable->isStorable();
-		if( p ) {
-			pcUi->getScourge()->showMessageDialog( (char*)p );
+		storeStorable( (Storable*)spell );
+	}
+}
+
+void Equip::storeSpecialSkill( SpecialSkill *ss ) {
+	if( ss && ( DEBUG_SPECIAL_SKILL || creature->hasSpecialSkill( ss ) ) ) {
+		if( ss->getType() != SpecialSkill::SKILL_TYPE_MANUAL ) {
+			pcUi->getScourge()->showMessageDialog( _( "Only manual type capabilities can be stored." ) );
 		} else {
-			// FIXME: do something with the spell
+			storeStorable( (Storable*)ss );
 		}
 	}
 }
 
+void Equip::storeStorable( Storable *storable ) {
+	const char *p = storable->isStorable();
+	if( p ) {
+		pcUi->getScourge()->showMessageDialog( (char*)p );
+	} else {
+		// FIXME: do something with the spell
+	}
+}

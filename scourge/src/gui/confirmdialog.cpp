@@ -50,6 +50,8 @@ ConfirmDialog::~ConfirmDialog() {
 	
 void ConfirmDialog::setText( char *text ) {
 	label->setText( text );
+	int textWidth = win->getScourgeGui()->textWidth( text );
+	label->move( ( CONFIRM_WIDTH - textWidth ) / 2, 30 );
 }
 
 void ConfirmDialog::setVisible( bool b ) {
