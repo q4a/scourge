@@ -1098,7 +1098,8 @@ void Window::showMessageDialog(ScourgeGui *scourgeGui,
                                  x, y, w, h, 
                                  title, 
                                  texture, false );
-    message_label = message_dialog->createLabel(10, 30, message);
+		int textWidth = scourgeGui->textWidth( message );
+    message_label = message_dialog->createLabel( ( w - textWidth ) / 2, 30, message);
     message_button = message_dialog->createButton((w / 2) - 50, 
 																									h - 30 - message_dialog->getGutter() - 5, 
                                                   (w / 2) + 50, 
@@ -1109,6 +1110,8 @@ void Window::showMessageDialog(ScourgeGui *scourgeGui,
     message_dialog->move(x, y);
     message_dialog->resize(w, h);
     message_label->setText(message);
+		int textWidth = scourgeGui->textWidth( message );
+		message_label->move( ( w - textWidth ) / 2, 30 );
     message_button->setLabel(buttonLabel);
   }
   message_dialog->setVisible(true);

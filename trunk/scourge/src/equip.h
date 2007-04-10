@@ -38,6 +38,7 @@ class ConfirmDialog;
 class Item;
 class PcUi;
 class Spell;
+class SpecialSkill;
 
 class Equip : public DragAndDropHandler, WidgetView {
 private:
@@ -51,6 +52,7 @@ private:
 	int mode;
 	int schoolIndex;
 	int spellIndex;
+	SpecialSkill *specialSkill;
 
 public:
 
@@ -84,6 +86,12 @@ protected:
 	int getSpellIndex( int x, int y, int schoolIndex );
 	void castSpell( Spell *spell );
 	void storeSpell( Spell *spell );
+	void drawCapabilities();
+	void drawSpells();
+	void drawEquipment();
+	void storeSpecialSkill( SpecialSkill *ss );
+	void storeStorable( Storable *storable );
+	void useSpecialSkill( SpecialSkill *ss );
 };
 
 #endif
