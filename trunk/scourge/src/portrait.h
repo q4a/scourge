@@ -97,6 +97,7 @@ protected:
 	bool findCurrentSkill( int px, int py );
 	void drawStateModIcon( GLuint icon, char *name, Color color, int x, int y, int size );
 	void drawResistance( int x, int y, char *icon, int skill );
+	void setCurrentWeaponTooltip();
 };
 
 #endif

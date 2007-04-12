@@ -119,37 +119,64 @@ bool Portrait::handleEvent( SDL_Event *event ) {
 	if( event->type == SDL_MOUSEMOTION ) {
 		int mx = event->motion.x - pcUi->getWindow()->getX() - x;
 		int my = event->motion.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT;
-		if( mode == SKILLS_MODE ) {
-			findCurrentSkill( mx, my );
-		} else if( mode == STATS_MODE ) {
-			int index = -1;
-			if( my >= 250 ) {
-				index = ( mx - 10 ) / RESISTANCE_WIDTH;
+		if( creature && mx >= 80 && mx < 200 && my >= 55 && my < 90 ) {
+			setCurrentWeaponTooltip();
+		} else {
+			if( mode == SKILLS_MODE ) {
+				findCurrentSkill( mx, my );
+			} else if( mode == STATS_MODE ) {
+				int index = -1;
+				if( my >= 250 ) {
+					index = ( mx - 10 ) / RESISTANCE_WIDTH;
+				}
+				canvas->setTooltip( index > -1 && index < resistanceCount ? 
+														Skill::skills[ resistanceSkills[ index ] ]->getDisplayName() : 
+														(char*)"" );
 			}
-			canvas->setTooltip( index > -1 && index < resistanceCount ? 
-													Skill::skills[ resistanceSkills[ index ] ]->getDisplayName() : 
-													(char*)"" );
 		}
 	}
 	return false;
 }
 
 bool Portrait::handleEvent( Widget *widget, SDL_Event *event ) {
-  if( mode == SKILLS_MODE && 
-			pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT && 
+	if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT && 
 			event->type == SDL_MOUSEBUTTONUP ) {
+		int mx = event->button.x - pcUi->getWindow()->getX() - x;
+		int my = event->button.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT;
+		if( creature && mx >= 80 && mx < 200 && my >= 55 && my < 90 ) {
+			if( creature->nextPreferredWeapon() ) {
+				// reset but don't pause again
+				creature->getBattle()->reset( true, true );
+				setCurrentWeaponTooltip();
+			}
+		} else if( mode == SKILLS_MODE ) {
 			if( findCurrentSkill( event->button.x - pcUi->getWindow()->getX() - x, 
 														event->button.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT ) ) {
-			  if( currentMode == 0 && creature->getSkillMod( currentSkill->getIndex() ) > 0 ) {
-						creature->setAvailableSkillMod( creature->getAvailableSkillMod() + 1 );
-						creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) - 1 );
-			  } else if( currentMode == 1 && creature->getAvailableSkillMod() > 0 ) {
+				if( currentMode == 0 && creature->getSkillMod( currentSkill->getIndex() ) > 0 ) {
+					creature->setAvailableSkillMod( creature->getAvailableSkillMod() + 1 );
+					creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) - 1 );
+				} else if( currentMode == 1 && creature->getAvailableSkillMod() > 0 ) {
 					creature->setAvailableSkillMod( creature->getAvailableSkillMod() - 1 );
 					creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) + 1 );
 				}
 			}
+		}
   }
   return false;
+}
+
+void Portrait::setCurrentWeaponTooltip() {
+	if( creature ) {
+		char tmp[ 1000 ];
+		sprintf( tmp, "%s:%s (%s)", 
+						 _( "Current attack" ), 
+						 ( Constants::INVENTORY_LEFT_HAND == creature->getPreferredWeapon() ? _( "Left Hand" ) :
+							 ( Constants::INVENTORY_RIGHT_HAND == creature->getPreferredWeapon() ? _( "Right Hand" ) :
+								 ( Constants::INVENTORY_WEAPON_RANGED == creature->getPreferredWeapon() ? _( "Ranged Weapon" ) :
+									 _( "Bare Hands" ) ) ) ),
+						 _( "Click to change" ) );
+		canvas->setTooltip( tmp );
+	}
 }
 
 void Portrait::drawWidgetContents( Widget *widget ) {
