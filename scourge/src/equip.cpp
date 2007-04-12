@@ -325,12 +325,23 @@ void Equip::drawWidgetContents( Widget *widget ) {
 
 void Equip::drawEquipment() {
 	for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
 		Item *item = creature->getEquippedInventory( i );
 		if( item ) {
-			SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
 			if( rect && rect->w && rect->h ) {
+				glEnable( GL_TEXTURE_2D );
 				item->renderIcon( pcUi->getScourge(), rect->x, rect->y, rect->w, rect->h );
 			}
+		}
+		if( ( 1 << i ) == creature->getPreferredWeapon() ) {
+			glDisable( GL_TEXTURE_2D );
+			glColor4f( 1, 0.35f, 0, 1 );
+			glBegin( GL_LINE_LOOP );
+			glVertex2d( rect->x, rect->y + rect->h );
+			glVertex2d( rect->x, rect->y );
+			glVertex2d( rect->x + rect->w, rect->y );
+			glVertex2d( rect->x + rect->w, rect->y + rect->h );
+			glEnd();
 		}
 	}
 	if( currentHole > -1 ) {
