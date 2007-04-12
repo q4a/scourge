@@ -44,6 +44,9 @@ using namespace std;
 #define WIN_HEIGHT EQUIP_HEIGHT + 240
 #define DEFAULT_STATUS "Right click for info, double-click to open."
 
+#define EQUIP_CARD 0
+#define MISSION_CARD 0
+
 PcUi::PcUi( Scourge *scourge ) {
 	this->scourge = scourge;
 	this->creature = NULL;
@@ -65,10 +68,20 @@ PcUi::PcUi( Scourge *scourge ) {
 	capabilitiesButton = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "capabilitiesButton" ) );
 	capabilitiesButton->setSelected( false );
 	capabilitiesButton->setTooltip( _( "Show special capabilities" ) );
+	y += 33;
+	missionButton = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "missionButton" ) );
+	missionButton->setSelected( false );
+	missionButton->setTooltip( _( "Show info about the current mission" ) );
 
 	x += 40;
+	//CardContainer *cc = new CardContainer( mainWin );
 	equip = new Equip( this, x, 5, EQUIP_WIDTH, EQUIP_HEIGHT );
+	//cc->addWidget( equip->getWidget(), EQUIP_CARD );
 	mainWin->addWidget( equip->getWidget() );
+	missionInfo = new MissionInfoUI( this, x, 5, EQUIP_WIDTH, EQUIP_HEIGHT );
+	missionInfo->hide();
+	//cc->addWidget( missionInfo, MISSION_CARD );
+
 	inven = new Inven( this, 10, EQUIP_HEIGHT + 10, INVEN_WIDTH, INVEN_HEIGHT );
 	mainWin->addWidget( inven->getWidget() );
 	portrait = new Portrait( this, x + 5 + EQUIP_WIDTH, 5, PORTRAIT_WIDTH, PORTRAIT_HEIGHT );
@@ -215,12 +228,18 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 	} else if( widget == equipButton ) {
 		toggleLeftButtons( equipButton );
 		equip->setMode( Equip::EQUIP_MODE );
+		//cc->setActiveCard( EQUIP_CARD );
 	} else if( widget == spellsButton ) {
 		toggleLeftButtons( spellsButton );
 		equip->setMode( Equip::SPELLS_MODE );
+		//cc->setActiveCard( EQUIP_CARD );
 	} else if( widget == capabilitiesButton ) {
 		toggleLeftButtons( capabilitiesButton );
 		equip->setMode( Equip::CAPABILITIES_MODE );
+		//cc->setActiveCard( EQUIP_CARD );
+	} else if( widget == missionButton ) {
+		toggleLeftButtons( missionButton );
+		//cc->setActiveCard( MISSION_CARD );
 	}	else if( widget == cast || widget == storeSpell ) {
 		toggleSpellButtons( (Button*)widget );
 	}
@@ -231,8 +250,17 @@ void PcUi::toggleLeftButtons( Button *button ) {
 	if( button != equipButton ) equipButton->setSelected( false );
 	if( button != spellsButton ) spellsButton->setSelected( false );
 	if( button != capabilitiesButton ) capabilitiesButton->setSelected( false );
-	cast->setEnabled( button != equipButton );
-	storeSpell->setEnabled( button != equipButton );
+	if( button != missionButton ) missionButton->setSelected( false );
+	bool b = ( button == spellsButton || button == capabilitiesButton );
+	cast->setEnabled( b );
+	storeSpell->setEnabled( b );
+	if( missionButton->isSelected() ) {
+		missionInfo->show();
+		equip->getWidget()->setVisible( false );
+	} else {
+		missionInfo->hide();
+		equip->getWidget()->setVisible( true );
+	}
 }
 
 void PcUi::toggleButtons( Button *button ) {
@@ -317,6 +345,7 @@ void PcUi::setCreature( Creature *creature ) {
 	equip->setCreature( creature );
 	inven->setCreature( creature );
 	portrait->setCreature( creature );
+	missionInfo->refresh();
 }
 
 void PcUi::receiveInventory() {

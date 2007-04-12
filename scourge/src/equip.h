@@ -39,6 +39,8 @@ class Item;
 class PcUi;
 class Spell;
 class SpecialSkill;
+class ScrollingLabel;
+class ScrollingList;
 
 class Equip : public DragAndDropHandler, WidgetView {
 private:
@@ -59,7 +61,8 @@ public:
 	enum {
 		EQUIP_MODE=0,
 		SPELLS_MODE,
-		CAPABILITIES_MODE
+		CAPABILITIES_MODE,
+		MISSION_MODE
 	};
 
 	Equip( PcUi *pcUi, int x, int y, int w, int h );
@@ -92,6 +95,23 @@ protected:
 	void storeSpecialSkill( SpecialSkill *ss );
 	void storeStorable( Storable *storable );
 	void useSpecialSkill( SpecialSkill *ss );
+};
+
+class MissionInfoUI {
+private:
+	PcUi *pcUi;
+	int x, y, w, h;
+	ScrollingLabel *description;
+	ScrollingList *objectiveList;
+	char **objectiveText;
+	Color *missionColor;
+
+public:
+	MissionInfoUI( PcUi *pcUi, int x, int y, int w, int h );
+	~MissionInfoUI();
+	void refresh();
+	void show();
+	void hide();
 };
 
 #endif
