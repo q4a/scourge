@@ -39,6 +39,8 @@ class Item;
 class Equip;
 class Inven;
 class Portrait;
+class MissionInfoUI;
+class CardContainer;
 
 class PcUi {
 private:
@@ -46,12 +48,14 @@ private:
 	Creature *creature;
 	Window *mainWin;
 	Equip *equip;
+	CardContainer *cc;
+	MissionInfoUI *missionInfo;
 	Inven *inven;
 	Portrait *portrait;
 	Button *use, *transcribe, *enchant, *info, *store;
 	Button *prev, *next, *stats, *skills, *statemods;
 	Button *up, *down, *applyMods, *poolMoney;
-	Button *equipButton, *spellsButton, *capabilitiesButton;
+	Button *equipButton, *spellsButton, *capabilitiesButton, *missionButton;
 	Button *cast, *storeSpell;
 	Label *status;
 

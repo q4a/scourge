@@ -32,6 +32,7 @@
 #include "skillsview.h"
 #include "gui/confirmdialog.h"
 #include "pcui.h"
+#include "gui/scrollinglabel.h"
 
 using namespace std;
 
@@ -317,7 +318,7 @@ void Equip::drawWidgetContents( Widget *widget ) {
 			drawEquipment();
 		} else if( mode == SPELLS_MODE ) {
 			drawSpells();
-		}	else {
+		} else {
 			drawCapabilities();
 		}
 	}
@@ -609,4 +610,118 @@ void Equip::storeStorable( Storable *storable ) {
 	} else {
 		// FIXME: do something with the spell
 	}
+}
+
+MissionInfoUI::MissionInfoUI( PcUi *pcUi, int x, int y, int w, int h ) {
+	this->pcUi = pcUi;
+	this->x = x;
+	this->y = y;
+	this->w = w;
+	this->h = h;
+
+	description = new ScrollingLabel( x, y, w, h - 50, "" );
+	pcUi->getWindow()->addWidget( description );
+	this->objectiveText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
+  this->missionColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
+  for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
+    this->objectiveText[i] = (char*)malloc(120 * sizeof(char));
+  }
+	objectiveList = new ScrollingList( x, y + h - 45, w, 45, pcUi->getScourge()->getShapePalette()->getHighlightTexture() );
+	pcUi->getWindow()->addWidget( objectiveList );
+}
+
+MissionInfoUI::~MissionInfoUI() {
+	// should free objectiveText
+}
+
+void MissionInfoUI::refresh() {
+	char missionText[3000];
+	int objectiveCount;
+	char tmp[80];
+	Scourge *scourge = pcUi->getScourge();
+	if( scourge->getSession()->getCurrentMission() ) {
+		sprintf( tmp, _( "Depth: %d out of %d." ), 
+						 ( scourge->getCurrentDepth() + 1 ),
+						 scourge->getSession()->getCurrentMission()->getDepth() );
+		sprintf( missionText, "%s:|%s|%s", 
+						 scourge->getSession()->getCurrentMission()->getDisplayName(),
+						 tmp,
+						 scourge->getSession()->getCurrentMission()->getDescription() );
+		objectiveCount = 
+			scourge->getSession()->getCurrentMission()->getItemCount() +
+			scourge->getSession()->getCurrentMission()->getCreatureCount();   
+		for(int t = 0; t < scourge->getSession()->getCurrentMission()->getItemCount(); t++) {
+			sprintf( tmp, _( "Find %s" ), scourge->getSession()->getCurrentMission()->getItem(t)->getDisplayName() );
+			sprintf(objectiveText[t], "%s. %s", 
+							tmp,
+							(scourge->getSession()->getCurrentMission()->getItemHandled(t) ? 
+							 _( "(completed)" ) : _( "(not yet found)" ) ) );
+			if(scourge->getSession()->getCurrentMission()->getItemHandled(t)) {
+				missionColor[t].r = 0.2f;
+				missionColor[t].g = 0.7f;
+				missionColor[t].b = 0.2f;
+			} else {
+				missionColor[t].r = 0.7f;
+				missionColor[t].g = 0.2f;
+				missionColor[t].b = 0.2f;
+			}
+		}
+		int start = scourge->getSession()->getCurrentMission()->getItemCount();
+		for(int t = 0; t < scourge->getSession()->getCurrentMission()->getCreatureCount(); t++) {
+			sprintf( tmp, _( "Vanquish %s." ), scourge->getSession()->getCurrentMission()->getCreature(t)->getDisplayName() );
+			sprintf(objectiveText[start + t], "%s. %s", 
+							tmp,
+							(scourge->getSession()->getCurrentMission()->getCreatureHandled(t) ? 
+							 _( "(completed)" ) : _( "(not yet done)" ) ) );
+			if(scourge->getSession()->getCurrentMission()->getCreatureHandled(t)) {
+				missionColor[start + t].r = 0.2f;
+				missionColor[start + t].g = 0.7f;
+				missionColor[start + t].b = 0.2f;
+			} else {
+				missionColor[start + t].r = 0.7f;
+				missionColor[start + t].g = 0.2f;
+				missionColor[start + t].b = 0.2f;
+			}
+		}
+		start += scourge->getSession()->getCurrentMission()->getCreatureCount();
+		for(int t = objectiveCount; t < MAX_INVENTORY_SIZE; t++) {
+			strcpy(objectiveText[t], "");
+		}
+		if( !objectiveCount ) {
+			objectiveCount = 1;
+			sprintf( objectiveText[0], "%s. %s", 
+							 _( "Special" ),
+							 ( scourge->getSession()->getCurrentMission()->isCompleted() ?
+								 _( "(completed)" ) : _( "(not yet done)" ) ) );
+			if( scourge->getSession()->getCurrentMission()->isCompleted() ) {
+				missionColor[0].r = 0.2f;
+				missionColor[0].g = 0.7f;
+				missionColor[0].b = 0.2f;
+			} else {
+				missionColor[0].r = 0.7f;
+				missionColor[0].g = 0.2f;
+				missionColor[0].b = 0.2f;
+			}
+		}
+	} else {
+		objectiveCount = 0;
+		strcpy(missionText, _( "No current mission." ) );
+		for(int t = 0; t < MAX_INVENTORY_SIZE; t++) {
+			strcpy( objectiveText[t], "" );
+		}
+	}
+	description->setText( missionText );
+	objectiveList->setLines( objectiveCount, 
+													 (const char **)objectiveText,
+													 missionColor );
+}
+
+void MissionInfoUI::show() {
+	description->setVisible( true );
+	objectiveList->setVisible( true );
+}
+
+void MissionInfoUI::hide() {
+	description->setVisible( false );
+	objectiveList->setVisible( false );
 }
