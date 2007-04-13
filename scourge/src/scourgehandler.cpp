@@ -563,7 +563,7 @@ bool ScourgeHandler::handlePartyEvent(Widget *widget, SDL_Event *event) {
           scourge->getInventory()->showSkills();
           if( scourge->getParty()->getPlayer() != scourge->getParty()->getParty( t ) ) {
             scourge->getParty()->setPlayer( t );
-            if( !scourge->getInventory()->isVisible() ) scourge->toggleInventoryWindow();
+            if( !scourge->getPcUi()->getWindow()->isVisible() ) scourge->toggleInventoryWindow();
           } else {
             scourge->toggleInventoryWindow();
           }
@@ -630,7 +630,7 @@ void ScourgeHandler::quickSpellAction( int index, int button ) {
       }
     } else {
       scourge->getInventory()->showSpells();
-      if( !scourge->getInventory()->isVisible() ) scourge->toggleInventoryWindow();
+      if( !scourge->getPcUi()->getWindow()->isVisible() ) scourge->toggleInventoryWindow();
     }
   }
 }

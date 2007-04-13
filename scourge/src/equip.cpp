@@ -619,15 +619,17 @@ MissionInfoUI::MissionInfoUI( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->w = w;
 	this->h = h;
 
-	description = new ScrollingLabel( x, y, w, h - 50, "" );
+	description = new ScrollingLabel( x, y, w, h - 95, "" );
 	pcUi->getWindow()->addWidget( description );
 	this->objectiveText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
   this->missionColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
   for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
     this->objectiveText[i] = (char*)malloc(120 * sizeof(char));
   }
-	objectiveList = new ScrollingList( x, y + h - 45, w, 45, pcUi->getScourge()->getShapePalette()->getHighlightTexture() );
+	objectivesLabel = pcUi->getWindow()->createLabel( x, y + h - 80, _( "Mission Objectives" ) );
+	objectiveList = new ScrollingList( x, y + h - 75, w, 45, pcUi->getScourge()->getShapePalette()->getHighlightTexture() );
 	pcUi->getWindow()->addWidget( objectiveList );
+	consoleButton = pcUi->getWindow()->createButton( x, y + h - 25, x + w, y + h - 5, _( "Show Squirrel Console" ) );
 }
 
 MissionInfoUI::~MissionInfoUI() {
@@ -719,9 +721,14 @@ void MissionInfoUI::refresh() {
 void MissionInfoUI::show() {
 	description->setVisible( true );
 	objectiveList->setVisible( true );
+	objectivesLabel->setVisible( true );
+	consoleButton->setVisible( true );
 }
 
 void MissionInfoUI::hide() {
 	description->setVisible( false );
 	objectiveList->setVisible( false );
+	objectivesLabel->setVisible( false );
+	consoleButton->setVisible( false );
 }
+
