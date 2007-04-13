@@ -740,9 +740,11 @@ void Scourge::cleanUpAfterMission() {
 	mainWin->setVisible(false);
 	messageWin->setVisible(false);
 	closeAllContainerGuis();
+	if( pcui->getWindow()->isVisible() ) {
+		pcui->hide();
+	}
 	if(inventory->isVisible()) {
 		inventory->hide();
-		pcui->getWindow()->setVisible( false );
 		inventoryButton->setSelected( false );
 	}
 	if(optionsMenu->isVisible()) {
@@ -1479,15 +1481,15 @@ void Scourge::startDoorEffect( int effect, Sint16 ox, Sint16 oy, Shape *shape ) 
 }
 
 void Scourge::toggleInventoryWindow() {
-  if(inventory->isVisible()) {
+  if( pcui->getWindow()->isVisible() ) {
     //if(!inventory->getWindow()->isLocked()) inventory->hide();
-    inventory->hide();
-		pcui->getWindow()->setVisible( false );
+    //inventory->hide();
+		pcui->hide();
   } else {
-    inventory->show();
-		pcui->getWindow()->setVisible( true );
+    //inventory->show();
+		pcui->show();
   }
-  inventoryButton->setSelected( inventory->isVisible() );
+  inventoryButton->setSelected( pcui->getWindow()->isVisible() );
 }
 
 void Scourge::toggleOptionsWindow() {
@@ -1652,7 +1654,7 @@ void Scourge::setUILayout() {
     //inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH,
                                  //getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
 //  inventory->getWindow()->setLocked(true);
-    inventory->show(false);
+//    inventory->show(false);
 		inventory->getWindow()->setLocked(true);
 		inventory->getWindow()->setAnimation( Window::SLIDE_UP );
     //mapX = INVENTORY_WIDTH;
@@ -2723,6 +2725,7 @@ void Scourge::refreshInventoryUI(int playerIndex) {
 }
 
 void Scourge::refreshInventoryUI() {
+	getPcUi()->setCreature( party->getPlayer() );
   getInventory()->refresh();
 	if( getTradeDialog()->getWindow()->isVisible() ) 
 		getTradeDialog()->updateUI();

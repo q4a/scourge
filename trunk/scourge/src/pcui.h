@@ -64,6 +64,9 @@ public:
 	~PcUi();
 
   inline Window *getWindow() { return mainWin; }
+	void show();
+	void hide();
+	void refresh();
 	inline Scourge *getScourge() { return scourge; }
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );

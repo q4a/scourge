@@ -51,8 +51,8 @@ PcUi::PcUi( Scourge *scourge ) {
 	this->scourge = scourge;
 	this->creature = NULL;
 
-	mainWin = scourge->createWindow( ( scourge->getSDLHandler()->getScreen()->w - WIN_WIDTH ) / 2, 
-																	 ( scourge->getSDLHandler()->getScreen()->h - WIN_HEIGHT ) / 2,
+	mainWin = scourge->createWindow( ( scourge->getScreenWidth() - ( WIN_WIDTH ) ) / 2, 
+																	 ( scourge->getScreenHeight() - ( WIN_HEIGHT ) ) / 2,
 																	 WIN_WIDTH, WIN_HEIGHT,
 																	 _( "Character Information" ) );
 	int x = 10;
@@ -242,6 +242,8 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 		//cc->setActiveCard( MISSION_CARD );
 	}	else if( widget == cast || widget == storeSpell ) {
 		toggleSpellButtons( (Button*)widget );
+	} else if( widget == missionInfo->getConsoleButton() ) {
+		scourge->getSquirrelConsole()->setVisible( true );
 	}
   return false;
 }
@@ -346,8 +348,23 @@ void PcUi::setCreature( Creature *creature ) {
 	inven->setCreature( creature );
 	portrait->setCreature( creature );
 	missionInfo->refresh();
+	refresh();
 }
 
 void PcUi::receiveInventory() {
   inven->receive( inven->getWidget() );
+}
+
+void PcUi::show() {
+	refresh();
+	mainWin->setVisible( true );
+}
+
+void PcUi::hide() {
+	mainWin->setVisible( false );
+}
+
+void PcUi::refresh() {
+	next->setEnabled( !scourge->inTurnBasedCombat() );
+	prev->setEnabled( !scourge->inTurnBasedCombat() );
 }

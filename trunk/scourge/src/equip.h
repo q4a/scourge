@@ -41,6 +41,8 @@ class Spell;
 class SpecialSkill;
 class ScrollingLabel;
 class ScrollingList;
+class Label;
+class Button;
 
 class Equip : public DragAndDropHandler, WidgetView {
 private:
@@ -103,6 +105,8 @@ private:
 	int x, y, w, h;
 	ScrollingLabel *description;
 	ScrollingList *objectiveList;
+	Label *objectivesLabel;
+	Button *consoleButton;
 	char **objectiveText;
 	Color *missionColor;
 
@@ -112,6 +116,8 @@ public:
 	void refresh();
 	void show();
 	void hide();
+
+	inline Button *getConsoleButton() { return consoleButton; }
 };
 
 #endif
