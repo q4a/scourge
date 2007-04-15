@@ -167,6 +167,8 @@ public:
 
 	virtual RenderedCreature *createWanderingHero( int level ) { return NULL; }
 	virtual bool useDoor( Location *pos, bool openLocked=false ) { return false; }
+
+	virtual inline void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f) {}
 	
 };
 

@@ -96,6 +96,7 @@ class PcEditor;
 class TextDialog;
 class SavegameDialog;
 class PcUi;
+class TextScroller;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -111,6 +112,7 @@ class PcUi;
 */ 
 class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusReport {
  private:
+	TextScroller *descriptionScroller;
   Party *party;
   Map *levelMap;
   MapSettings *mapSettings;
@@ -273,6 +275,7 @@ public:
   Scourge( UserConfiguration *config );
   ~Scourge();
 
+	inline TextScroller *getDescriptionScroller() { return descriptionScroller; }
 	inline Window *getTBCombatWin() { return tbCombatWin; }
   inline Button *getYesExitConfirm() { return yesExitConfirm; }
   inline Button *getNoExitConfirm() { return noExitConfirm; }
@@ -293,6 +296,8 @@ public:
   inline Canvas *getQuickSpell( int index ) { return quickSpell[ index ]; }
 	inline Button *getDismissButton( int index ) { return dismissButton[ index ]; }
 	inline SavegameDialog *getSaveDialog() { return saveDialog; }
+
+	virtual void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f);
 
   void movePartyToGateAndEndMission();
 

@@ -29,6 +29,7 @@
 #include "gui/progress.h"
 #include "gui/scrollinglist.h"
 #include "debug.h"
+#include "textscroller.h"
 
 using namespace std;  
 
@@ -99,6 +100,8 @@ void ScourgeView::drawView() {
   drawBorder();
 
   drawTextEffect();  
+
+	scourge->getDescriptionScroller()->draw();
 
   // Hack: A container window may have been closed by hitting the Esc. button.
   if(Window::windowWasClosed) {

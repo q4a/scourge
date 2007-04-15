@@ -124,6 +124,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   this->adapter = adapter;
   this->preferences = preferences;  
   this->shapes = shapes;
+
   // only use 1 (disabled) or 0 (enabled)
   LIGHTMAP_ENABLED=0;
   zoom = 1.0f;
