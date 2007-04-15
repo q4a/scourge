@@ -87,6 +87,8 @@ scourge_SOURCES = \
 	inventory.h\
 	pcui.cpp\
 	pcui.h\
+	textscroller.cpp\
+	textscroller.h\
 	equip.cpp\
 	equip.h\
 	inven.cpp\

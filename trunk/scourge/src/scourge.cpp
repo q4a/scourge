@@ -48,6 +48,7 @@
 #include "savegamedialog.h"
 #include "upload.h"
 #include "pcui.h"
+#include "textscroller.h"
 
 using namespace std;
 
@@ -102,6 +103,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   battleCount = 0;
   inventory = NULL;
 	pcui = NULL;
+	descriptionScroller = NULL;
   containerGuiCount = 0;
   changingStory = false;
 
@@ -278,6 +280,7 @@ Scourge::~Scourge(){
 	delete saveDialog;
   delete view;
   delete handler;
+	delete descriptionScroller;
 }
 
 void Scourge::startMission( bool startInHq ) {
@@ -493,6 +496,7 @@ void Scourge::resetGame( bool resetParty ) {
 		if(!inventory) {
 			inventory = new Inventory(this);
 			pcui = new PcUi( this );
+			descriptionScroller = new TextScroller( this );
 		}
 
 		getSession()->getSquirrel()->startGame();
@@ -3859,5 +3863,9 @@ bool Scourge::useItem( Creature *creature, Item *item ) {
 		}
 	}
 	return ret;
+}
+
+void Scourge::addDescription(char *description, float r, float g, float b) {
+	descriptionScroller->addDescription( description, r, g, b );
 }
 
