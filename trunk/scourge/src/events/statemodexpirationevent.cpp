@@ -42,7 +42,7 @@ void StateModExpirationEvent::execute() {
       creature->setTargetCreature(creature);
       char message[80];
       sprintf(message, _( "%s suffers poison damage!" ), creature->getName());
-      session->getMap()->addDescription(message, 0.05f, 1.0f, 0.05f);
+      session->getGameAdapter()->addDescription(message, 0.05f, 1.0f, 0.05f);
 
 			char tmp2[255];
 			sprintf( tmp2, "%s poison.", 
@@ -68,7 +68,7 @@ void StateModExpirationEvent::executeBeforeDelete() {
   
   char msg[255];
 	sprintf( msg, StateMod::stateMods[ stateMod ]->getUnsetState(), creature->getName() );
-  session->getMap()->addDescription(msg, 0.2f, 1, 1);
+  session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
   creature->startEffect(Constants::EFFECT_GREEN, (Constants::DAMAGE_DURATION * 4));
 }
 

@@ -246,10 +246,10 @@ void Party::toggleRound(bool test) {
 void Party::toggleRound() {
   startRound = (startRound ? false : true);
   if(startRound){
-    session->getMap()->addDescription(Constants::getMessage(Constants::REAL_TIME_MODE), 0.5f, 0.5f, 1.0f);
+    session->getGameAdapter()->addDescription(Constants::getMessage(Constants::REAL_TIME_MODE), 0.5f, 0.5f, 1.0f);
   }
   else{
-    session->getMap()->addDescription(Constants::getMessage(Constants::TURN_MODE), 0.5f, 0.5f, 1.0f);    
+    session->getGameAdapter()->addDescription(Constants::getMessage(Constants::TURN_MODE), 0.5f, 0.5f, 1.0f);    
   }
    
   // Freeze / unfreeze calendar
@@ -586,9 +586,9 @@ void Party::togglePlayerOnly(bool keepTargets) {
     }
   }
   if(player_only)
-    session->getMap()->addDescription(Constants::getMessage(Constants::SINGLE_MODE), 0.5f, 0.5f, 1.0f);
+    session->getGameAdapter()->addDescription(Constants::getMessage(Constants::SINGLE_MODE), 0.5f, 0.5f, 1.0f);
   else
-    session->getMap()->addDescription(Constants::getMessage(Constants::GROUP_MODE), 0.5f, 0.5f, 1.0f);
+    session->getGameAdapter()->addDescription(Constants::getMessage(Constants::GROUP_MODE), 0.5f, 0.5f, 1.0f);
   if(!session->getGameAdapter()->isHeadless()) 
     session->getGameAdapter()->togglePlayerOnlyUI(!isPlayerOnly());
 }

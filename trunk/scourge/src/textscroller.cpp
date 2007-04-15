@@ -22,7 +22,7 @@ using namespace std;
 
 #define LINE_HEIGHT 15
 #define LINES_SHOWN 7
-#define SCROLL_SPEED 50
+#define SCROLL_SPEED 100
 #define OFFSET_DELTA 1
 
 TextScroller::TextScroller( Scourge *scourge ) {

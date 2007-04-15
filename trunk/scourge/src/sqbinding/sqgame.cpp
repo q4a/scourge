@@ -231,7 +231,7 @@ int SqGame::_eraseValue( HSQUIRRELVM vm ) {
 
 int SqGame::_printMessage( HSQUIRRELVM vm ) {
   GET_STRING( message, 80 )
-  SqBinding::sessionRef->getMap()->addDescription( message, 1, 0, 1 );
+  SqBinding::sessionRef->getGameAdapter()->addDescription( message, 1, 0, 1 );
   return 0;
 }
 

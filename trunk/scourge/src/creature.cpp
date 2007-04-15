@@ -225,7 +225,7 @@ void Creature::changeProfession( Character *c ) {
 			setSkill( i, newValue );
 			
 			sprintf( message, _( "%1$s's skill in %2$s has increased." ), getName(), Skill::skills[ i ]->getDisplayName() );
-			session->getMap()->addDescription( message );
+			session->getGameAdapter()->addDescription( message );
 		}
 	}
 
@@ -236,7 +236,7 @@ void Creature::changeProfession( Character *c ) {
 			if( !c->canEquip( item->getRpgItem() ) ) {
 				doff( equipped[i] );
 				sprintf( message, _( "%1$s is not allowed to equip %2$s." ), getName(), item->getName() );
-				session->getMap()->addDescription( message );				 
+				session->getGameAdapter()->addDescription( message );				 
 			}
 		}
 	}
@@ -548,7 +548,7 @@ void Creature::setTargetCreature( Creature *c, bool findPath ) {
           }
         }
         //cerr << "...no path was found." << endl;
-        session->getMap()->addDescription( _( "Can't find path to target. Sorry!" ) );
+        session->getGameAdapter()->addDescription( _( "Can't find path to target. Sorry!" ) );
 				session->getGameAdapter()->setCursorMode( Constants::CURSOR_FORBIDDEN );
       }
     }
@@ -1003,7 +1003,7 @@ bool Creature::addInventory(Item *item, bool force) {
       if( !isMonster() ) {
         char msg[80];
         sprintf(msg, _( "%s is overloaded." ), getName());
-        session->getMap()->addDescription(msg);
+        session->getGameAdapter()->addDescription(msg);
       }
       setStateMod(StateMod::overloaded, true);
     }
@@ -1064,7 +1064,7 @@ Item *Creature::removeInventory(int index) {
       if( !isMonster() ) {
         char msg[80];
         sprintf(msg, _( "%s is not overloaded anymore." ), getName());
-        session->getMap()->addDescription(msg);
+        session->getGameAdapter()->addDescription(msg);
       }
       setStateMod(StateMod::overloaded, false);
     }
@@ -1100,7 +1100,7 @@ bool Creature::eatDrink(Item *item) {
   if(type == RpgItem::FOOD){
     if(getHunger() == 10){                
       sprintf(msg, _( "%s is not hungry at the moment." ), getName()); 
-      session->getMap()->addDescription(msg); 
+      session->getGameAdapter()->addDescription(msg); 
       return false;
     }
 
@@ -1111,29 +1111,29 @@ bool Creature::eatDrink(Item *item) {
     strcpy(buff, rpgItem->getShortDesc());
     buff[0] = tolower(buff[0]);
     sprintf(msg, _( "%1$s eats %2$s." ), getName(), buff);
-    session->getMap()->addDescription(msg);
+    session->getGameAdapter()->addDescription(msg);
     bool b = item->decrementCharges();
     if(b) {
       sprintf(msg, _( "%s is used up." ), item->getItemName());
-      session->getMap()->addDescription(msg);
+      session->getGameAdapter()->addDescription(msg);
     }
     return b;
   } else if(type == RpgItem::DRINK){
     if(getThirst() == 10){                
       sprintf(msg, _( "%s is not thirsty at the moment." ), getName()); 
-      session->getMap()->addDescription(msg); 
+      session->getGameAdapter()->addDescription(msg); 
       return false;
     }
     setThirst(getThirst() + level);
     strcpy(buff, rpgItem->getShortDesc());
     buff[0] = tolower(buff[0]);
     sprintf(msg, _( "%1$s drinks %2$s." ), getName(), buff);
-    session->getMap()->addDescription(msg); 
+    session->getGameAdapter()->addDescription(msg); 
     // TODO : according to the alcool rate set drunk state or not            
     bool b = item->decrementCharges();
     if(b) {
       sprintf(msg, _( "%s is used up." ), item->getItemName());
-      session->getMap()->addDescription(msg);
+      session->getGameAdapter()->addDescription(msg);
     }
     return b;
   } else if(type == RpgItem::POTION) {
@@ -1143,16 +1143,16 @@ bool Creature::eatDrink(Item *item) {
     buff[0] = tolower(buff[0]);
     setThirst(getThirst() + level);
     sprintf(msg, _( "%1$s drinks from %2$s." ), getName(), buff);
-    session->getMap()->addDescription(msg); 
+    session->getGameAdapter()->addDescription(msg); 
     usePotion(item);
     bool b = item->decrementCharges();
     if(b) {
       sprintf(msg, _( "%s is used up." ), item->getItemName());
-      session->getMap()->addDescription(msg);
+      session->getGameAdapter()->addDescription(msg);
     }
     return b;
   } else {
-    session->getMap()->addDescription( _( "You cannot eat or drink that!" ), 1, 0.2f, 0.2f);
+    session->getGameAdapter()->addDescription( _( "You cannot eat or drink that!" ), 1, 0.2f, 0.2f);
     return false;
   }
 }
@@ -1173,7 +1173,7 @@ void Creature::usePotion(Item *item) {
         n = getMaxHp() - getHp();
       setHp(getHp() + n);
       sprintf(msg, _( "%s heals %d points." ), getName(), n);
-      session->getMap()->addDescription(msg, 0.2f, 1, 1);
+      session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
       startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
       return;
     case Constants::MP:
@@ -1182,7 +1182,7 @@ void Creature::usePotion(Item *item) {
         n = getMaxMp() - getMp();
       setMp(getMp() + n);
       sprintf(msg, _( "%s receives %d magic points." ), getName(), n);
-      session->getMap()->addDescription(msg, 0.2f, 1, 1);
+      session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
       startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
       return;
     case Constants::AC:
@@ -1190,7 +1190,7 @@ void Creature::usePotion(Item *item) {
         bonusArmor += item->getRpgItem()->getPotionPower();
         recalcAggregateValues();
         sprintf(msg, _( "%s feels impervious to damage!" ), getName());
-        session->getMap()->addDescription(msg, 0.2f, 1, 1);
+        session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
         startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 
         // add calendar event to remove armor bonus
@@ -1210,7 +1210,7 @@ void Creature::usePotion(Item *item) {
     skillBonus[skill] += item->getRpgItem()->getPotionPower();
     //	recalcAggregateValues();
     sprintf(msg, _( "%s feels at peace." ), getName());
-    session->getMap()->addDescription(msg, 0.2f, 1, 1);
+    session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
     startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 
     // add calendar event to remove armor bonus
@@ -1258,7 +1258,7 @@ void Creature::setAction(int action,
     cerr << "*** Error: unknown action " << action << endl;
     return;
   }
-  if(strlen(msg)) session->getMap()->addDescription(msg, 1, 1, 0.5f);
+  if(strlen(msg)) session->getGameAdapter()->addDescription(msg, 1, 1, 0.5f);
 }
 
 void Creature::equipInventory( int index, int locationHint ) {
@@ -1633,7 +1633,7 @@ void Creature::resurrect( int rx, int ry ) {
 
   char msg[120];
   sprintf( msg, _( "%s is raised from the dead!" ), getName() );
-  session->getMap()->addDescription( msg, 0, 1, 1 );
+  session->getGameAdapter()->addDescription( msg, 0, 1, 1 );
 }
 
 // add exp after killing a creature
@@ -1684,14 +1684,14 @@ int Creature::addExperienceWithMessage( int exp ) {
     n = addExperience( exp );
     if( n > 0 ) {
       sprintf( message, _( "%s gains %d experience points." ), getName(), n );
-      session->getMap()->addDescription( message );
+      session->getGameAdapter()->addDescription( message );
       if( oldLevel != level ) {
         sprintf( message, _( "%s gains a level!" ), getName() );
-        session->getMap()->addDescription( message, 1.0f, 0.5f, 0.5f );
+        session->getGameAdapter()->addDescription( message, 1.0f, 0.5f, 0.5f );
       }
     } else if( n < 0 ) {
       sprintf( message, _( "%s looses %d experience points!" ), getName(), -n );
-      session->getMap()->addDescription( message, 1.0f, 0.05f, 0.05f );
+      session->getGameAdapter()->addDescription( message, 1.0f, 0.05f, 0.05f );
     }
   }
   return n;
@@ -2259,7 +2259,7 @@ void Creature::evalSpecialSkills() {
 				if( oldSpecialSkills.find( ss ) == oldSpecialSkills.end() ) {
 					if( session->getParty()->isPartyMember( this ) ) {
 						sprintf( tmp, _( "%1$s gains the %2$s special ability!" ), getName(), ss->getDisplayName() );
-						session->getMap()->addDescription( tmp, 0.3f, 1.0f, 0.2f );
+						session->getGameAdapter()->addDescription( tmp, 0.3f, 1.0f, 0.2f );
 					}
 				}
       }
@@ -2271,7 +2271,7 @@ void Creature::evalSpecialSkills() {
 				oldSpecialSkills.find( ss ) != oldSpecialSkills.end() ) {
 			if( session->getParty()->isPartyMember( this ) ) {
 				sprintf( tmp, _( "%1$s looses the %2$s special ability!" ), getName(), ss->getDisplayName() );
-				session->getMap()->addDescription( tmp, 1.0f, 0.3f, 0.2f );
+				session->getGameAdapter()->addDescription( tmp, 1.0f, 0.3f, 0.2f );
 			}
 		}
 	}
@@ -2467,7 +2467,7 @@ float Creature::getDodge( Creature *attacker, Item *weapon ) {
 	float dodge = getSkill( Skill::DODGE_ATTACK ) - dodgePenalty;
 	if( !inFOV ) {
 		dodge /= 2.0f;
-		session->getMap()->addDescription( _( "...Attack from blind-spot!" ) );
+		session->getGameAdapter()->addDescription( _( "...Attack from blind-spot!" ) );
 	}
 	return dodge;
 }
@@ -2611,7 +2611,7 @@ float Creature::getInfluenceBonus( Item *weapon,
 							 value, 
 							 _( "bonus" ),
 							 n );
-			session->getMap()->addDescription( message );
+			session->getGameAdapter()->addDescription( message );
 		}
 		
 		bonus += n;
@@ -2654,7 +2654,7 @@ void Creature::getCth( Item *weapon, float *cth, float *skill, bool showDebug ) 
 						 _( "vs." ),
 						 _( "skill" ),
 						  *skill );
-		session->getMap()->addDescription( message );
+		session->getGameAdapter()->addDescription( message );
 	}
 }
 
