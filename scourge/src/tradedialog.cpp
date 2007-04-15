@@ -304,7 +304,7 @@ void TradeDialog::steal() {
     scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() - money );
     char s[ 255 ];
     sprintf( s, _( "%s looses %d coins!" ), scourge->getParty()->getPlayer()->getName(), money );
-    scourge->getMap()->addDescription( s, 1, 0.05f, 0.05f );
+    scourge->addDescription( s, 1, 0.05f, 0.05f );
 
     // remove some items
     for( int i = 0; i < scourge->getParty()->getPlayer()->getInventoryCount(); i++ ) {
@@ -314,7 +314,7 @@ void TradeDialog::steal() {
         creature->addInventory( item, true );
         price -= prices[ item ];
         sprintf( s, _( "Item confiscated: %s" ), item->getRpgItem()->getDisplayName() );
-        scourge->getMap()->addDescription( s, 1, 0.05f, 0.05f );
+        scourge->addDescription( s, 1, 0.05f, 0.05f );
       }
     }
 

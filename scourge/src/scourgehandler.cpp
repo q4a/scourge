@@ -222,7 +222,7 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
 			} else {
 				strcpy( message, _( "Combat is now Real-time." ) );
 			}
-      scourge->getMap()->addDescription( message, 0, 1, 1 );
+      scourge->addDescription( message, 0, 1, 1 );
 			scourge->getTBCombatWin()->setVisible( scourge->inTurnBasedCombat(), false );
     } else if(ea == SET_PLAYER_0){
       scourge->setPlayer(0);

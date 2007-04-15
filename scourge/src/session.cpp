@@ -279,7 +279,7 @@ Creature *Session::replaceCreature( Creature *creature, char *newCreatureType ) 
 	char msg[120];
 	sprintf( msg, _( "%s transforms into another shape in front of your very eyes!" ), 
 					 creature->getName() );
-	getMap()->addDescription( msg );
+	getGameAdapter()->addDescription( msg );
 
 	cerr << "is npc? " << replacement->isNpc() << endl;
 

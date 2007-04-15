@@ -135,6 +135,7 @@ void Scourge::initUI() {
   netPlay = new NetPlay(this);
   createUI();
   createPartyUI();
+	descriptionScroller = new TextScroller( this );
 
   // show the main menu
   //mainMenu = new MainMenu(this);
@@ -496,7 +497,6 @@ void Scourge::resetGame( bool resetParty ) {
 		if(!inventory) {
 			inventory = new Inventory(this);
 			pcui = new PcUi( this );
-			descriptionScroller = new TextScroller( this );
 		}
 
 		getSession()->getSquirrel()->startGame();
@@ -935,7 +935,7 @@ bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 
     c->setTargetLocation(mapx, mapy, 0);
     char msg[80];
     sprintf(msg, _( "%s selected a target" ), c->getName());
-    levelMap->addDescription(msg);
+    getDescriptionScroller()->addDescription(msg);
     ret = true;
   } else {
 		cancelTargetSelection();
@@ -956,7 +956,7 @@ bool Scourge::handleTargetSelectionOfDoor( Uint16 mapx, Uint16 mapy, Uint16 mapz
     c->setTargetLocation(mapx, mapy, 0);
     char msg[80];
     sprintf(msg, _( "%s selected a target" ), c->getName());
-    levelMap->addDescription(msg);
+    getDescriptionScroller()->addDescription(msg);
     ret = true;
   } else {
     cancelTargetSelection();
@@ -978,7 +978,7 @@ bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
     c->setTargetCreature( potentialTarget );
     char msg[80];
     sprintf(msg, _( "%1$s will target %2$s" ), c->getName(), c->getTargetCreature()->getName());
-    levelMap->addDescription(msg);
+    getDescriptionScroller()->addDescription(msg);
     ret = true;
   } else {
     cancelTargetSelection();
@@ -1000,7 +1000,7 @@ bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
     c->setTargetItem( x, y, z, item );
 		char msg[80];
     sprintf( msg, _( "%1$s targeted %2$s." ), c->getName(), item->getRpgItem()->getDisplayName() );
-    levelMap->addDescription( msg );
+    getDescriptionScroller()->addDescription( msg );
     ret = true;
   } else {
     cancelTargetSelection();
@@ -1040,7 +1040,7 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
         }
       }
       if(description) {
-        levelMap->addDescription(description);
+        getDescriptionScroller()->addDescription(description);
       }
     }
   }
@@ -1086,7 +1086,7 @@ bool Scourge::useItem(int x, int y, int z) {
                                  party->getPlayer()->getShape(),
                                  x, y, z,
                                  shape)) {
-      levelMap->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
+      getDescriptionScroller()->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
 			getParty()->setSelXY( x, y, false ); // get as close as possible to location
       return true;
     } else {
@@ -1130,7 +1130,7 @@ bool Scourge::getItem(Location *pos) {
 																 toint(party->getPlayer()->getX()),
 																 toint(party->getPlayer()->getY()),
 																 0)) {
-				levelMap->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
+				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
 	  } else {
 			movingX = pos->x;
 			movingY = pos->y;
@@ -1169,7 +1169,7 @@ int Scourge::dropItem(int x, int y) {
         sprintf(message, _( "%1$s picks up %2$s." ),
                 c->getName(),
                 movingItem->getItemName());
-        levelMap->addDescription(message);
+        getDescriptionScroller()->addDescription(message);
         // if the inventory is open, update it
         if(inventory->isVisible()) inventory->refresh();
       } else {
@@ -1185,7 +1185,7 @@ int Scourge::dropItem(int x, int y) {
         sprintf(message, _( "%1$s is placed in %2$s." ),
                 movingItem->getItemName(),
                 levelMap->getSelectedDropTarget()->item->getItemName());
-        levelMap->addDescription(message);
+        getDescriptionScroller()->addDescription(message);
         // if this container's gui is open, update it
         refreshContainerGui(((Item*)(levelMap->getSelectedDropTarget()->item)));
       }
@@ -1265,7 +1265,7 @@ bool Scourge::useTeleporter(Location *pos) {
   if( p && p->shape && 
 			p->shape == getSession()->getShapePalette()->findShapeByName("TELEPORTER") ) {
     if(levelMap->isLocked(pos->x, pos->y, pos->z)) {
-      levelMap->addDescription(Constants::getMessage(Constants::TELEPORTER_OFFLINE));
+      getDescriptionScroller()->addDescription(Constants::getMessage(Constants::TELEPORTER_OFFLINE));
       return true;
     } else {
       // able to teleport if any party member is alive
@@ -1303,11 +1303,11 @@ bool Scourge::useLever( Location *pos, bool showMessage ) {
 			// show message, depending on distance from key to door
 			float d = Constants::distance(keyX,  keyY, 1, 1, doorX, doorY, 1, 1);
 			if(d < 20.0f) {
-				levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED_CLOSE));
+				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_OPENED_CLOSE));
 			} else if(d >= 20.0f && d < 100.0f) {
-				levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED));
+				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_OPENED));
 			} else {
-				levelMap->addDescription(Constants::getMessage(Constants::DOOR_OPENED_FAR));
+				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_OPENED_FAR));
 			}
 		}
     return true;
@@ -1371,7 +1371,7 @@ bool Scourge::useSecretDoor(Location *pos) {
         } else {
           levelMap->setPosition( pos->x, pos->y - wall->getDepth() + post->getDepth(), 0, post );
         }
-        levelMap->addDescription( _( "Something is blocking the door from closing." ) );
+        getDescriptionScroller()->addDescription( _( "Something is blocking the door from closing." ) );
         return false;
       }
 
@@ -1419,9 +1419,9 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 				assert( keyX > -1 || keyY > -1 || keyZ > -1 );
 				bool b = useLever( levelMap->getLocation( keyX, keyY, keyZ ), false );
 				assert( b );
-				levelMap->addDescription( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ) );
+				getDescriptionScroller()->addDescription( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ) );
 			} else {
-				levelMap->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
+				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
 				return true;
 			}
     }
@@ -1456,7 +1456,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
     } else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
       // rollback if blocked by a player			
       levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
-      levelMap->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
+      getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
       return true;
     } else {
       // Deeestroy!
@@ -1469,7 +1469,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 }
 
 void Scourge::destroyDoor( Sint16 ox, Sint16 oy, Shape *shape ) {
-	levelMap->addDescription( _( "The door splinters into many, tiny pieces!" ), 0, 1, 1 );
+	getDescriptionScroller()->addDescription( _( "The door splinters into many, tiny pieces!" ), 0, 1, 1 );
 	startDoorEffect( Constants::EFFECT_DUST, ox, oy, shape );
 }
 
@@ -1971,7 +1971,7 @@ void Scourge::addGameSpeed(int speedFactor){
   char msg[80];
   getUserConfiguration()->setGameSpeedLevel(getUserConfiguration()->getGameSpeedLevel() + speedFactor);
   sprintf(msg, _( "Speed set to %d\n" ), getUserConfiguration()->getGameSpeedTicks());
-  levelMap->addDescription(msg);
+  getDescriptionScroller()->addDescription(msg);
 }
 
 //#define MONSTER_FLEE_IF_LOW_HP
@@ -2131,10 +2131,10 @@ void Scourge::missionCompleted() {
 
     // how many points?
     int exp = (getSession()->getCurrentMission()->getLevel() + 1) * 100;
-    levelMap->addDescription( _( "For completing the mission" ), 0, 1, 1);
+    getDescriptionScroller()->addDescription( _( "For completing the mission" ), 0, 1, 1);
     char message[200];
     sprintf(message, _( "The party receives %d points." ), exp);
-    levelMap->addDescription(message, 0, 1, 1);
+    getDescriptionScroller()->addDescription(message, 0, 1, 1);
 
     for(int i = 0; i < getParty()->getPartySize(); i++) {
 			getParty()->getParty(i)->addExperienceWithMessage( exp );

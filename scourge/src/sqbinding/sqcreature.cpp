@@ -373,7 +373,7 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
     if(protectiveItem && 0 == (int)(2.0f * rand()/RAND_MAX)) {
       sprintf(msg, _( "%s resists the spell with magic item!" ), 
               object->getName());
-      SqBinding::sessionRef->getMap()->addDescription(msg, 1, 0.15f, 1);    
+      SqBinding::sessionRef->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    
       return 0;
     }
   }
@@ -398,7 +398,7 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
   } else {
     sprintf( msg, StateMod::stateMods[ mod ]->getUnsetState(), object->getName() );
   }
-  SqBinding::sessionRef->getMap()->addDescription(msg, 1, 0.15f, 1);
+  SqBinding::sessionRef->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);
   
   // cancel existing event if any
   if( e ) {

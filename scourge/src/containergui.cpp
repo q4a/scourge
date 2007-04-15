@@ -149,7 +149,7 @@ void ContainerGui::receive(Widget *widget) {
 	  sprintf(message, _( "%1$s is placed in %2$s." ), 
 			  scourge->getMovingItem()->getItemName(), 
 			  container->getItemName());
-	  scourge->getMap()->addDescription(message);	  
+	  scourge->addDescription(message);	  
 	  scourge->endItemDrag();
 	  showContents();
     scourge->getSDLHandler()->getSound()->playSound(Window::DROP_SUCCESS);

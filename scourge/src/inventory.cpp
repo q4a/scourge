@@ -441,7 +441,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
     }
     char msg[120];
     sprintf( msg, _( "Party members give all their money to %s." ), creature->getName() );
-    scourge->getMap()->addDescription( msg );
+    scourge->addDescription( msg );
     refresh();
   } else if( widget == paperDoll && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
     int invLocation = ( scourge->getSDLHandler()->mouseY - paperDoll->getY() - mainWin->getY() ) / 16 - 1;
@@ -637,7 +637,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
             refresh();
             char msg[120];
             sprintf(msg, _( "%s crumbles into dust." ), item->getItemName());
-            scourge->getMap()->addDescription(msg);
+            scourge->addDescription(msg);
           } else {
             scourge->showMessageDialog( _( "You already know this spell" ) );
           }
@@ -674,7 +674,7 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
             item->getDetailedDescription(tmp);
             char msg[255];
             sprintf(msg, _( "You created: %s." ) , tmp);
-            scourge->getMap()->addDescription(msg);
+            scourge->addDescription(msg);
             creature->startEffect( Constants::EFFECT_SWIRL, Constants::DAMAGE_DURATION * 4 );
           } else {
             scourge->showMessageDialog( _( "You failed to enchant the item." ) );
@@ -1134,7 +1134,7 @@ int Inventory::putItem() {
       sprintf(message, _( "%s picks up %s." ), 
               scourge->getParty()->getParty(selected)->getName(),
               item->getItemName());
-      scourge->getMap()->addDescription(message);
+      scourge->addDescription(message);
       scourge->endItemDrag();
       int index = scourge->getParty()->getParty(selected)->findInInventory(item);
       setSelectedPlayerAndMode(selected, INVENTORY);
@@ -1185,7 +1185,7 @@ void Inventory::dropItem() {
     sprintf(message, _( "%s drops %s." ), 
             scourge->getParty()->getParty(selected)->getName(),
             item->getItemName());
-    scourge->getMap()->addDescription(message);
+    scourge->addDescription(message);
     setSelectedPlayerAndMode(selected, INVENTORY);
   }
 }
