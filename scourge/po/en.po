@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-04-05 09:03-0700\n"
+"POT-Creation-Date: 2007-04-16 14:55-0700\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -89,53 +89,53 @@ msgstr ""
 msgid "%s feels a loss of contentment."
 msgstr ""
 
-#: src/render/map.cpp:3059
+#: src/render/map.cpp:3021
 msgid "You need to name the map first."
 msgstr ""
 
-#: src/render/map.cpp:3244 src/render/map.cpp:3482
+#: src/render/map.cpp:3206 src/render/map.cpp:3444
 msgid "Enter a name of a map to load."
 msgstr ""
 
-#: src/render/map.cpp:3265
+#: src/render/map.cpp:3227
 msgid "Loading map"
 msgstr ""
 
-#: src/render/map.cpp:3270 src/dungeongenerator.cpp:593 src/mondrian.cpp:467
+#: src/render/map.cpp:3232 src/dungeongenerator.cpp:593 src/mondrian.cpp:467
 msgid "Loading theme"
 msgstr ""
 
-#: src/render/map.cpp:3301
+#: src/render/map.cpp:3263
 msgid "Starting map"
 msgstr ""
 
-#: src/render/map.cpp:3318
+#: src/render/map.cpp:3280
 msgid "Initializing map"
 msgstr ""
 
-#: src/render/map.cpp:3431
+#: src/render/map.cpp:3393
 msgid "Finishing map"
 msgstr ""
 
-#: src/render/map.cpp:3437
+#: src/render/map.cpp:3399
 msgid "Loading creatures"
 msgstr ""
 
-#: src/render/map.cpp:3455
+#: src/render/map.cpp:3417
 msgid "Starting party"
 msgstr ""
 
-#: src/render/map.cpp:3475
+#: src/render/map.cpp:3437
 #, c-format
 msgid "Map loaded: %s"
 msgstr ""
 
-#: src/render/map.cpp:3496
+#: src/render/map.cpp:3458
 #, c-format
 msgid "Can't find map: %s"
 msgstr ""
 
-#: src/render/map.cpp:3506
+#: src/render/map.cpp:3468
 #, c-format
 msgid "Map header loaded: %s"
 msgstr ""
@@ -149,7 +149,7 @@ msgid "Ok"
 msgstr ""
 
 #: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:106
-#: src/scourge.cpp:1551
+#: src/scourge.cpp:1531
 msgid "No"
 msgstr ""
 
@@ -330,7 +330,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/common/constants.cpp:105 src/scourge.cpp:1549
+#: src/common/constants.cpp:105 src/scourge.cpp:1529
 msgid "Yes"
 msgstr ""
 
@@ -747,7 +747,7 @@ msgstr ""
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2650 src/scourge.cpp:3693
+#: src/creature.cpp:2650 src/scourge.cpp:3648
 msgid "CTH"
 msgstr ""
 
@@ -821,12 +821,12 @@ msgstr ""
 msgid "Info"
 msgstr ""
 
-#: src/containergui.cpp:149 src/scourge.cpp:1179
+#: src/containergui.cpp:149 src/scourge.cpp:1180
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr ""
 
-#: src/containergui.cpp:159 src/scourge.cpp:1170 src/scourge.cpp:1176
+#: src/containergui.cpp:159 src/scourge.cpp:1171 src/scourge.cpp:1177
 msgid "The item won't fit in that container!"
 msgstr ""
 
@@ -896,48 +896,48 @@ msgstr ""
 msgid "Scroll of %s"
 msgstr ""
 
-#: src/item.cpp:1051
+#: src/item.cpp:1043
 msgid "An item was fully identified!"
 msgstr ""
 
-#: src/item.cpp:1114
+#: src/item.cpp:1107
 msgid "DAM"
 msgstr ""
 
-#: src/item.cpp:1118
+#: src/item.cpp:1111
 msgid "AP"
 msgstr ""
 
-#: src/item.cpp:1122
+#: src/item.cpp:1115
 msgid "RANGE"
 msgstr ""
 
-#: src/item.cpp:1127 src/scourge.cpp:3642
+#: src/item.cpp:1120 src/scourge.cpp:3597
 msgid "DEF"
 msgstr ""
 
-#: src/item.cpp:1130
+#: src/item.cpp:1123
 #, c-format
 msgid " %d(%c)"
 msgstr ""
 
-#: src/item.cpp:1138
+#: src/item.cpp:1131
 msgid "Level"
 msgstr ""
 
-#: src/item.cpp:1142 ../scourge_data/config/rpg.cfg:137
+#: src/item.cpp:1135 ../scourge_data/config/rpg.cfg:137
 msgid "Power"
 msgstr ""
 
-#: src/item.cpp:1147
+#: src/item.cpp:1140
 msgid "Charges"
 msgstr ""
 
-#: src/item.cpp:1150
+#: src/item.cpp:1143
 msgid "Spell"
 msgstr ""
 
-#: src/item.cpp:1155
+#: src/item.cpp:1148
 msgid "Duration"
 msgstr ""
 
@@ -949,11 +949,11 @@ msgstr ""
 msgid "Projectile did not reach the target (blocked)."
 msgstr ""
 
-#: src/scourgeview.cpp:655
+#: src/scourgeview.cpp:646
 msgid "Move"
 msgstr ""
 
-#: src/scourgeview.cpp:930
+#: src/scourgeview.cpp:921
 msgid "cost"
 msgstr ""
 
@@ -1002,7 +1002,7 @@ msgstr ""
 msgid "Your %s feels lighter."
 msgstr ""
 
-#: src/battle.cpp:726 src/scourge.cpp:3799
+#: src/battle.cpp:726 src/scourge.cpp:3754
 #, c-format
 msgid "%s crumbles into dust."
 msgstr ""
@@ -1199,7 +1199,7 @@ msgstr ""
 msgid "Selected Coins:"
 msgstr ""
 
-#: src/tradedialog.cpp:163 src/tradedialog.cpp:204 src/tradedialog.cpp:247
+#: src/tradedialog.cpp:163 src/tradedialog.cpp:208 src/tradedialog.cpp:251
 msgid "Inventories changed."
 msgstr ""
 
@@ -1211,37 +1211,41 @@ msgstr ""
 msgid "You are not offering enough to trade."
 msgstr ""
 
-#: src/tradedialog.cpp:199
+#: src/tradedialog.cpp:189
+msgid "Can't fit item in inventory."
+msgstr ""
+
+#: src/tradedialog.cpp:203
 msgid "Selected items traded."
 msgstr ""
 
-#: src/tradedialog.cpp:210
+#: src/tradedialog.cpp:214
 msgid "Select items to sell."
 msgstr ""
 
-#: src/tradedialog.cpp:226
+#: src/tradedialog.cpp:230
 msgid "Selected items sold."
 msgstr ""
 
-#: src/tradedialog.cpp:253
+#: src/tradedialog.cpp:257
 msgid "Select items to steal."
 msgstr ""
 
-#: src/tradedialog.cpp:293
+#: src/tradedialog.cpp:297
 msgid "You succesfully burgled the items!"
 msgstr ""
 
-#: src/tradedialog.cpp:306
+#: src/tradedialog.cpp:310
 #, c-format
 msgid "%s looses %d coins!"
 msgstr ""
 
-#: src/tradedialog.cpp:316
+#: src/tradedialog.cpp:320
 #, c-format
 msgid "Item confiscated: %s"
 msgstr ""
 
-#: src/tradedialog.cpp:321
+#: src/tradedialog.cpp:325
 msgid "Your burgling attempt failed. Items and ex. were confiscated."
 msgstr ""
 
@@ -1596,11 +1600,11 @@ msgstr ""
 msgid "Party members give all their money to %s."
 msgstr ""
 
-#: src/inventory.cpp:562 src/scourge.cpp:2703
+#: src/inventory.cpp:562 src/scourge.cpp:2657
 msgid "Not enough Magic Points to cast this spell!"
 msgstr ""
 
-#: src/inventory.cpp:590 src/inventory.cpp:615 src/scourge.cpp:3840
+#: src/inventory.cpp:590 src/inventory.cpp:615 src/scourge.cpp:3795
 msgid "This item is out of charges."
 msgstr ""
 
@@ -1703,323 +1707,319 @@ msgstr ""
 msgid "Fixing rooms"
 msgstr ""
 
-#: src/scourge.cpp:143
+#: src/scourge.cpp:144
 msgid "Dismiss Party Member"
 msgstr ""
 
-#: src/scourge.cpp:144
+#: src/scourge.cpp:145
 msgid "Need permission to upload score to web"
 msgstr ""
 
-#: src/scourge.cpp:145
+#: src/scourge.cpp:146
 msgid "Upload your score to the internet?"
 msgstr ""
 
-#: src/scourge.cpp:344
+#: src/scourge.cpp:343
 msgid "Error saving current map."
 msgstr ""
 
-#: src/scourge.cpp:355
+#: src/scourge.cpp:354
 msgid "Error #666: Failed to create map."
 msgstr ""
 
-#: src/scourge.cpp:530
+#: src/scourge.cpp:528
 #, c-format
 msgid "For returning alive, the party receives %d experience points."
 msgstr ""
 
-#: src/scourge.cpp:541
+#: src/scourge.cpp:539
 #, c-format
 msgid " %s gains a level! "
 msgstr ""
 
-#: src/scourge.cpp:700
+#: src/scourge.cpp:698
 #, c-format
 msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
 msgstr ""
 
-#: src/scourge.cpp:703
+#: src/scourge.cpp:701
 #, c-format
 msgid "Teleport spell failed!! Entering level %d"
 msgstr ""
 
-#: src/scourge.cpp:705
+#: src/scourge.cpp:703
 #, c-format
 msgid "Entering dungeon level %d"
 msgstr ""
 
-#: src/scourge.cpp:885
+#: src/scourge.cpp:884
 #, c-format
 msgid "%s cancelled a pending action."
 msgstr ""
 
-#: src/scourge.cpp:890
+#: src/scourge.cpp:889
 msgid "Select a creature for this spell."
 msgstr ""
 
-#: src/scourge.cpp:895
+#: src/scourge.cpp:894
 msgid "Select an item for this spell."
 msgstr ""
 
-#: src/scourge.cpp:900
+#: src/scourge.cpp:899
 msgid "Select a location for this spell."
 msgstr ""
 
-#: src/scourge.cpp:905
+#: src/scourge.cpp:904
 msgid "Select a door for this spell."
 msgstr ""
 
-#: src/scourge.cpp:910
+#: src/scourge.cpp:909
 msgid "Select the party for this spell."
 msgstr ""
 
-#: src/scourge.cpp:931 src/scourge.cpp:952
+#: src/scourge.cpp:930 src/scourge.cpp:952
 #, c-format
 msgid "%s selected a target"
 msgstr ""
 
-#: src/scourge.cpp:974
+#: src/scourge.cpp:975
 #, c-format
 msgid "%1$s will target %2$s"
 msgstr ""
 
-#: src/scourge.cpp:996
+#: src/scourge.cpp:997
 #, c-format
 msgid "%1$s targeted %2$s."
 msgstr ""
 
-#: src/scourge.cpp:1163
+#: src/scourge.cpp:1164
 #, fuzzy, c-format
 msgid "%1$s picks up %2$s."
 msgstr "Options"
 
-#: src/scourge.cpp:1368
+#: src/scourge.cpp:1369
 msgid "Something is blocking the door from closing."
 msgstr ""
 
-#: src/scourge.cpp:1466
+#: src/scourge.cpp:1467
 msgid "The door splinters into many, tiny pieces!"
 msgstr ""
 
-#: src/scourge.cpp:1520
-msgid "Messages"
-msgstr ""
-
-#: src/scourge.cpp:1544
+#: src/scourge.cpp:1524
 msgid "Leave level?"
 msgstr ""
 
-#: src/scourge.cpp:1556
+#: src/scourge.cpp:1536
 msgid "Squirrel Console"
 msgstr ""
 
-#: src/scourge.cpp:1564
+#: src/scourge.cpp:1544
 msgid "Run"
 msgstr ""
 
-#: src/scourge.cpp:1565
+#: src/scourge.cpp:1545
 msgid "Clear"
 msgstr ""
 
-#: src/scourge.cpp:1967
+#: src/scourge.cpp:1919
 #, c-format
 msgid "Speed set to %d\n"
 msgstr ""
 
-#: src/scourge.cpp:2128
+#: src/scourge.cpp:2081
 msgid "For completing the mission"
 msgstr ""
 
-#: src/scourge.cpp:2130
+#: src/scourge.cpp:2083
 #, c-format
 msgid "The party receives %d points."
 msgstr ""
 
-#: src/scourge.cpp:2155
+#: src/scourge.cpp:2108
 msgid "Connecting to server"
 msgstr ""
 
-#: src/scourge.cpp:2162
+#: src/scourge.cpp:2115
 msgid "Connected!"
 msgstr ""
 
-#: src/scourge.cpp:2184
+#: src/scourge.cpp:2137
 msgid "Combat"
 msgstr ""
 
-#: src/scourge.cpp:2186
+#: src/scourge.cpp:2139
 msgid "End Turn"
 msgstr ""
 
-#: src/scourge.cpp:2209
+#: src/scourge.cpp:2162
 msgid "Pause game"
 msgstr ""
 
-#: src/scourge.cpp:2212
+#: src/scourge.cpp:2165
 msgid "Load or Save Game"
 msgstr ""
 
-#: src/scourge.cpp:2222
+#: src/scourge.cpp:2175
 msgid "Exit game"
 msgstr ""
 
-#: src/scourge.cpp:2229
+#: src/scourge.cpp:2182
 #, fuzzy
 msgid "Game options"
 msgstr "Options"
 
-#: src/scourge.cpp:2236
+#: src/scourge.cpp:2189
 msgid "Move as a group"
 msgstr ""
 
-#: src/scourge.cpp:2276
+#: src/scourge.cpp:2229
 msgid "Dismiss this character"
 msgstr ""
 
-#: src/scourge.cpp:2295
+#: src/scourge.cpp:2248
 msgid "Inventory and party info"
 msgstr ""
 
-#: src/scourge.cpp:2303
+#: src/scourge.cpp:2256
 msgid "Click to assign a spell, capability or magic item."
 msgstr ""
 
-#: src/scourge.cpp:2339
+#: src/scourge.cpp:2293
 msgid "HP"
 msgstr ""
 
-#: src/scourge.cpp:2341
+#: src/scourge.cpp:2295
 msgid "MP"
 msgstr ""
 
-#: src/scourge.cpp:2361
+#: src/scourge.cpp:2315
 msgid "Current Weapon: Bare Hands"
 msgstr ""
 
-#: src/scourge.cpp:2366
+#: src/scourge.cpp:2320
 #, c-format
 msgid "Current Weapon: %s"
 msgstr ""
 
-#: src/scourge.cpp:2622
+#: src/scourge.cpp:2576
 msgid "Thirst"
 msgstr ""
 
-#: src/scourge.cpp:2636
+#: src/scourge.cpp:2590
 msgid "Hunger"
 msgstr ""
 
-#: src/scourge.cpp:2777
+#: src/scourge.cpp:2732
 msgid "Begin Turn"
 msgstr ""
 
-#: src/scourge.cpp:2782
+#: src/scourge.cpp:2737
 msgid "...In Turn..."
 msgstr ""
 
-#: src/scourge.cpp:2788
+#: src/scourge.cpp:2743
 #, fuzzy
 msgid "Pause Game"
 msgstr "New Game"
 
-#: src/scourge.cpp:2792
+#: src/scourge.cpp:2747
 msgid "Unpause game."
 msgstr ""
 
-#: src/scourge.cpp:2827
+#: src/scourge.cpp:2782
 msgid "Available Missions"
 msgstr ""
 
-#: src/scourge.cpp:2833
+#: src/scourge.cpp:2788
 msgid "Drag map to look around."
 msgstr ""
 
-#: src/scourge.cpp:2901
+#: src/scourge.cpp:2856
 msgid "This spell has no effect here..."
 msgstr ""
 
-#: src/scourge.cpp:3089
+#: src/scourge.cpp:3044
 msgid "Game loaded successfully."
 msgstr ""
 
-#: src/scourge.cpp:3115
+#: src/scourge.cpp:3070
 msgid "Error: Saved game version is too old."
 msgstr ""
 
-#: src/scourge.cpp:3471
+#: src/scourge.cpp:3426
 msgid "You cannot hire more party members."
 msgstr ""
 
-#: src/scourge.cpp:3491
+#: src/scourge.cpp:3446
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr ""
 
-#: src/scourge.cpp:3638
+#: src/scourge.cpp:3593
 msgid "Initiative"
 msgstr ""
 
-#: src/scourge.cpp:3680 src/scourge.cpp:3687 src/infogui.cpp:348
+#: src/scourge.cpp:3635 src/scourge.cpp:3642 src/infogui.cpp:348
 #: src/infogui.cpp:353 src/infogui.cpp:358
 msgid "ATK"
 msgstr ""
 
-#: src/scourge.cpp:3694 src/infogui.cpp:350 src/infogui.cpp:356
+#: src/scourge.cpp:3649 src/infogui.cpp:350 src/infogui.cpp:356
 msgid "APR"
 msgstr ""
 
-#: src/scourge.cpp:3746
+#: src/scourge.cpp:3701
 #, c-format
 msgid "%.2f"
 msgstr ""
 
-#: src/scourge.cpp:3748
+#: src/scourge.cpp:3703
 #, c-format
 msgid "per %.2f R"
 msgstr ""
 
-#: src/scourge.cpp:3757
+#: src/scourge.cpp:3712
 msgid "This item is already enchanted."
 msgstr ""
 
-#: src/scourge.cpp:3759
+#: src/scourge.cpp:3714
 msgid "This item cannot be enchanted."
 msgstr ""
 
-#: src/scourge.cpp:3767
+#: src/scourge.cpp:3722
 msgid "You succesfully enchanted an item!"
 msgstr ""
 
-#: src/scourge.cpp:3771
+#: src/scourge.cpp:3726
 #, c-format
 msgid "You created: %s."
 msgstr ""
 
-#: src/scourge.cpp:3776
+#: src/scourge.cpp:3731
 msgid "You failed to enchant the item."
 msgstr ""
 
-#: src/scourge.cpp:3780
+#: src/scourge.cpp:3735
 msgid "You can only enchant one item per day."
 msgstr ""
 
-#: src/scourge.cpp:3795
+#: src/scourge.cpp:3750
 msgid "Spell was entered into your spellbook."
 msgstr ""
 
-#: src/scourge.cpp:3803
+#: src/scourge.cpp:3758
 msgid "You already know this spell"
 msgstr ""
 
-#: src/scourge.cpp:3806
+#: src/scourge.cpp:3761
 msgid "You are not proficient enough to transcribe this scroll."
 msgstr ""
 
-#: src/scourge.cpp:3809
+#: src/scourge.cpp:3764
 msgid "You can only transcribe scrolls!"
 msgstr ""
 
-#: src/scourge.cpp:3853
+#: src/scourge.cpp:3808
 msgid "You cannot use this item."
 msgstr ""
 
