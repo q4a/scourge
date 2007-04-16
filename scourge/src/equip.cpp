@@ -241,7 +241,7 @@ void Equip::receive( Widget *widget ) {
 					snprintf( message, 119, _( "%s picks up %s." ), 
 									 creature->getName(),
 									 item->getItemName() );
-					pcUi->getScourge()->getMap()->addDescription( message );
+					pcUi->getScourge()->addDescription( message );
 					pcUi->getScourge()->endItemDrag();
 					int index = creature->findInInventory( item );
 					creature->equipInventory( index, currentHole );
@@ -279,7 +279,7 @@ bool Equip::startDrag( Widget *widget, int x, int y ) {
 				snprintf(message, 119, _( "%s drops %s." ), 
 								creature->getName(),
 								item->getItemName() );
-				pcUi->getScourge()->getMap()->addDescription( message );
+				pcUi->getScourge()->addDescription( message );
 	
 				return true;
 			}

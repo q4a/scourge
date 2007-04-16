@@ -42,10 +42,10 @@ void TextScroller::addDescription( char *description, float r, float g, float b 
 	color.insert( color.begin(), new Color( r, g, b, 1 ) );
 	text.insert( text.begin(), s );
 	if( text.size() == MAX_QUEUE_SIZE ) {
-		text.erase( text.end() );
+		text.erase( text.end() - 1 );
 		Color *c = color[ color.size() - 1 ];
 		delete( c );
-		color.erase( color.end() );
+		color.erase( color.end() - 1 );
 	}
 }
 

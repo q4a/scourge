@@ -145,12 +145,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   floorTex = 0;
 
   mapCenterCreature = NULL;
-  
-  descriptionCount = 0;
-  descriptionsChanged = false;
-  for(int i = 0; i < MAX_DESCRIPTION_COUNT; i++)
-	descriptions[i] = (char*)malloc(120 * sizeof(char));
-  
+    
   this->xrot = 0.0f;
   this->yrot = 30.0f;
   this->zrot = 45.0f;
@@ -207,17 +202,13 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	laterCount = stencilCount = otherCount = damageCount = 0;
 
 	quakesEnabled = false;
-	descriptionsEnabled = true;
 
-  addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
-  addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
+  adapter->addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
+  adapter->addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
 }
 
 Map::~Map(){
   reset();
-  // delete the descriptions
-  for(int i = 0; i < MAX_DESCRIPTION_COUNT; i++)
-    free(descriptions[i]);
   delete frustum;
   if( helper ) delete helper;
 }
@@ -286,9 +277,6 @@ void Map::reset() {
   mapCenterCreature = NULL;
   secretDoors.clear();
   
-//  descriptionCount = 0;
-//  descriptionsChanged = false;
-  
   this->xrot = 0.0f;
   this->yrot = 30.0f;
   this->zrot = 45.0f;
@@ -347,7 +335,6 @@ void Map::reset() {
 	laterCount = stencilCount = otherCount = damageCount = 0;
 
 	quakesEnabled = false;
-	// descriptionsEnabled = false;
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -1798,7 +1785,7 @@ void Map::initMapView( bool ignoreRot ) {
 				(int)( ( QUAKE_DELAY / 2.0f ) * rand() / RAND_MAX );
 			// start a quake unless this is the very first time
 			quakeStartTime = ( quakeStartTime == 0 ? nextQuakeStartTime : now );
-			if( quakeStartTime == now ) addDescription( "A tremor shakes the earth..." );
+			if( quakeStartTime == now ) adapter->addDescription( "A tremor shakes the earth..." );
 		}
 
 		// is it quaking now?
@@ -1946,32 +1933,6 @@ Location *Map::getPosition(Sint16 x, Sint16 y, Sint16 z) {
       pos[x][y][z]->y == y &&
       pos[x][y][z]->z == z))) return pos[x][y][z];
   return NULL;
-}
-
-void Map::addDescription(char *desc, float r, float g, float b) {
-	if( !descriptionsEnabled ) return;
-
-  strncpy(descriptions[descriptionCount], desc, 120);
-  // zero terminate just in case desc.length > 120
-  descriptions[descriptionCount][119] = 0;
-  // set the color
-  descriptionsColor[descriptionCount].r = r;
-  descriptionsColor[descriptionCount].g = g;
-  descriptionsColor[descriptionCount].b = b;
-
-  // delete the first one if max reached
-  if(descriptionCount == MAX_DESCRIPTION_COUNT - 1) {
-    for(int i = 0; i < (MAX_DESCRIPTION_COUNT - 1); i++) {
-      strcpy(descriptions[i], descriptions[i + 1]);
-      descriptionsColor[i].r = descriptionsColor[i + 1].r;
-      descriptionsColor[i].g = descriptionsColor[i + 1].g;
-      descriptionsColor[i].b = descriptionsColor[i + 1].b;
-    }
-  } else {
-    descriptionCount++;
-  }
-
-  descriptionsChanged = true;
 }
 
 void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, 
@@ -2298,7 +2259,7 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
 						sprintf( message, "%s picks up %s.", 
 										 creature->getName(), 
 										 item->getItemName() );
-						addDescription( message );        
+						adapter->addDescription( message );        
 					}
 				}
 			}
@@ -2356,7 +2317,7 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
 							sprintf(message, "%s picks up %s.", 
 											creature->getName(), 
 											item->getItemName());
-							addDescription(message);
+							adapter->addDescription(message);
 						} else {
 							cerr << "*** Error: when moving " << creature->getName() << " path contained a non-item position." << endl;
 						}

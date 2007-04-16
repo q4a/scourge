@@ -92,8 +92,6 @@ void ScourgeView::drawView() {
   
   drawMapInfos();
 
-  drawDescriptions( scourge->getMessageList() );
-
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );
 
@@ -370,16 +368,6 @@ void ScourgeView::checkForDropTarget() {
     } else {
       needToCheckDropLocation = true;
     }
-  }
-}
-
-void ScourgeView::drawDescriptions(ScrollingList *list) {
-  if( scourge->getMap()->didDescriptionsChange()) {
-    scourge->getMap()->setDescriptionsChanged( false );
-    list->setLines( scourge->getMap()->getDescriptionCount(),
-                    scourge->getMap()->getDesriptions(),
-                    scourge->getMap()->getDesriptionColors() );
-    list->setSelectedLine( scourge->getMap()->getDescriptionCount() - 1);
   }
 }
 
