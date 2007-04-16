@@ -39,7 +39,7 @@ TextScroller::~TextScroller() {
 
 void TextScroller::addDescription( char *description, float r, float g, float b ) {
 	string s = description;
-	color.push_back( new Color( r, g, b, 1 ) );
+	color.insert( color.begin(), new Color( r, g, b, 1 ) );
 	text.insert( text.begin(), s );
 	if( text.size() == MAX_QUEUE_SIZE ) {
 		text.erase( text.end() );
@@ -73,7 +73,7 @@ void TextScroller::draw() {
 	for( unsigned int i = 0; i < LINES_SHOWN && i < text.size(); i++ ) {
 		if( text[ i ] != "" ) {
 			Color *c = color[ i ];
-			float a = c->a * ( ( LINES_SHOWN - i ) / (float)LINES_SHOWN );
+			float a = c->a * ( ( LINES_SHOWN - ( i + ( offset / (float)LINE_HEIGHT ) ) ) / (float)LINES_SHOWN );
 			glColor4f( c->r, c->g, c->b, a  );
 			scourge->getSDLHandler()->texPrint( x, y, text[ i ].c_str() );
 		}
