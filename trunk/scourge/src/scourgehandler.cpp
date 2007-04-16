@@ -421,12 +421,16 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, bool wasMapMoving ) {
+
+	
+
   // don't drag if you haven't started yet
   willStartDrag = false;
 
   Uint16 mapx, mapy, mapz;
   //Creature *c = getTargetSelectionFor();
   if(button == SDL_BUTTON_LEFT) {
+    bool shouldCloseAllContainers = true;
 
     mapx = scourge->getMap()->getCursorMapX();
     mapy = scourge->getMap()->getCursorMapY();
@@ -434,8 +438,12 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, boo
 
     scourge->selectDropTarget( mapx, mapy, mapz );
 
+
     // clicking on a creature
-    if( handleCreatureClick( mapx, mapy, mapz ) ) return;
+    if( handleCreatureClick( mapx, mapy, mapz ) )
+{
+	 return;
+}
 
     // click on an item
     if( mapx > MAP_WIDTH ) {
@@ -444,23 +452,43 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, boo
       mapz = 0;
     }
 
+
     if( scourge->getTargetSelectionFor() ) {
+
+
       Location *pos = scourge->getMap()->getLocation(mapx, mapy, mapz);
 			Location *itemPos = scourge->getMap()->getItemLocation( mapx, mapy );
       if( mapx < MAP_WIDTH && pos && pos->item ) {
         scourge->handleTargetSelectionOfItem( ((Item*)(pos->item)), pos->x, pos->y, pos->z );
+	shouldCloseAllContainers = false;
       } else if( mapx < MAP_WIDTH && itemPos && itemPos->item ) {
         scourge->handleTargetSelectionOfItem( ((Item*)(itemPos->item)), itemPos->x, itemPos->y, itemPos->z );
+	shouldCloseAllContainers = false;
 			} else if( mapx < MAP_WIDTH && scourge->getSession()->getMap()->isDoor( mapx, mapy ) ) {
 				scourge->handleTargetSelectionOfDoor( mapx, mapy, mapz );
+	shouldCloseAllContainers = false;
       } else {
+	shouldCloseAllContainers = false;
 				// make sure the selected action can target a location
 				scourge->handleTargetSelectionOfLocation( mapx, mapy, mapz );
 			}
+
 			return;
     }
+	
 
-    if( scourge->useItem( mapx, mapy, mapz ) ) return;
+
+
+    if( scourge->useItem( mapx, mapy, mapz ) ) 
+{
+return;
+}
+
+    if(shouldCloseAllContainers && !scourge->inTurnBasedCombatPlayerTurn())
+    {
+	scourge->closeAllContainerGuis();
+
+    }	
 
     // click on the scourge->getMap()
     mapx = scourge->getMap()->getCursorFlatMapX();
@@ -471,6 +499,9 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, boo
     int yy = mapy + 1 + ( scourge->getParty()->getPlayer()->getShape()->getHeight() / 2);
     if( !scourge->getParty()->setSelXY( xx, yy ) ) {
       scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN, true );
+
+
+	
     }
 
     // start round

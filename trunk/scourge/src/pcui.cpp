@@ -355,6 +355,11 @@ void PcUi::receiveInventory() {
   inven->receive( inven->getWidget() );
 }
 
+bool PcUi::receiveInventory(Item *item) {
+  return inven->receive(item, false);
+}
+
+
 void PcUi::show() {
 	refresh();
 	mainWin->setVisible( true );

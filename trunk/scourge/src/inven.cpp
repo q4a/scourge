@@ -121,41 +121,51 @@ void Inven::showInfo( Item *item ) {
 
 void Inven::receive( Widget *widget ) {
 	if( creature ) {
-		//Put item in the most left/top availabel position
-		int xPos = 0;
-		int yPos = 0;
-		//If dialog visible put item on the mouse position
-		if(pcUi->getWindow()->isVisible())
-		{
-			xPos = pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x;
-			yPos = pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT;
-		}		
 		Item *item = pcUi->getScourge()->getMovingItem();
 		if( item ) {
-
-			// try to fit it
-			if( !findInventoryPosition( item, 
-						xPos, 
-						yPos ) ) {
+			if(!receive(item, pcUi->getWindow()->isVisible()))
+			{
 				pcUi->getScourge()->showMessageDialog( _( "Can't fit item in inventory." ) );
-			} else {
-				if( creature->addInventory( item ) ) {
-					// message: the player accepted the item
-					char message[120];
-					snprintf( message, 119, _( "%s picks up %s." ), 
-									 creature->getName(),
-									 item->getItemName() );
-					pcUi->getScourge()->getMap()->addDescription( message );
-					pcUi->getScourge()->endItemDrag();
-					pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_SUCCESS );
-				} else {
-					// message: the player's inventory is full
-					pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
-					pcUi->getScourge()->showMessageDialog( _( "You can't fit the item!" ) );
-				}
 			}
 		}
 	}
+}
+
+
+bool Inven::receive(Item *item, bool atCursor)
+{
+	//Put item in the most left/top availabel position
+	int xPos = 0;
+	int yPos = 0;
+	//If dialog visible put item on the mouse position
+	if(atCursor)
+	{
+		xPos = pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x;
+		yPos = pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - y - TITLE_HEIGHT;
+	}		
+
+	// try to fit it
+	if( !findInventoryPosition( item, 
+				xPos, 
+				yPos ) ) {
+		return false;
+	} else {
+		if( creature->addInventory( item ) ) {
+			// message: the player accepted the item
+			char message[120];
+			snprintf( message, 119, _( "%s picks up %s." ), 
+								creature->getName(),
+								item->getItemName() );
+			pcUi->getScourge()->getMap()->addDescription( message );
+			pcUi->getScourge()->endItemDrag();
+			pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_SUCCESS );
+		} else {
+			// message: the player's inventory is full
+			pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
+			return false;
+		}
+	}
+	return true;
 }
 
 bool Inven::startDrag( Widget *widget, int x, int y ) {

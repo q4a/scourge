@@ -57,9 +57,13 @@ public:
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
 
+	//receive by other means
+	bool receive(Item *item, bool atCursor);
 	// drag-n-drop
 	void receive( Widget *widget );
 	bool startDrag( Widget *widget, int x=0, int y=0 );
+
+
 
 	void drawWidgetContents( Widget *w );
 

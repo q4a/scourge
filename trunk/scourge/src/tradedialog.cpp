@@ -184,8 +184,12 @@ void TradeDialog::trade() {
   }
   for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {
     Item *item = listB->getSelectedItem( i );
+    if(!scourge->getPcUi()->receiveInventory(item))
+    {
+	scourge->showMessageDialog( _( "Can't fit item in inventory." ) );
+	return;
+    }
     creature->removeInventory( creature->findInInventory( item ) );
-    scourge->getParty()->getPlayer()->addInventory( item, true );
   }
   
   // move money
