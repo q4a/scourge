@@ -25,13 +25,16 @@ using namespace std;
 #define SCROLL_SPEED 100
 #define OFFSET_DELTA 1
 #define MAX_QUEUE_SIZE 200
+#define SCROLL_WIDTH 500
 
 TextScroller::TextScroller( Scourge *scourge ) {
 	this->scourge = scourge;
 	this->xp = 300;
 	this->yp = 0;
+  lineOffset = 0;
 	offset = 0;
 	lastCheck = SDL_GetTicks();
+  inside = false;
 }
 
 TextScroller::~TextScroller() {
@@ -51,7 +54,11 @@ void TextScroller::addDescription( char *description, float r, float g, float b 
 
 void TextScroller::draw() {
 
-	if( scourge->getParty()->isRealTimeMode() ) {
+  if( !inside ) {
+    lineOffset = 0;
+  }
+
+	if( scourge->getParty()->isRealTimeMode() && !inside ) {
 		Uint32 now = SDL_GetTicks();
 		if( now - lastCheck > SCROLL_SPEED ) {
 			lastCheck = now;
@@ -59,21 +66,50 @@ void TextScroller::draw() {
 			if( offset >= LINE_HEIGHT ) {
 				offset = 0;
 				text.insert( text.begin(), "" );
+        color.insert( color.begin(), new Color( 0, 0, 0, 0 ) );
 			}
 		}
 	}
+
+  int height = LINES_SHOWN * LINE_HEIGHT;
 
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef( xp, yp, 0 );
 	glDisable( GL_DEPTH_TEST );
+
+  if( inside ) {
+    int margin = 10;
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glDisable( GL_TEXTURE_2D );
+    glColor4f( 1, 1, 1, 0.25f );
+    glBegin( GL_QUADS );
+    glVertex2d( -margin, height );
+    glVertex2d( -margin, 0 );
+    glVertex2d( SCROLL_WIDTH + margin, 0 );
+    glVertex2d( SCROLL_WIDTH + margin, height );
+    glEnd();
+    glColor4f( 0.75f, 0.75f, 0.75f, 1 );
+    glBegin( GL_LINE_LOOP );
+    glVertex2d( -margin, height );
+    glVertex2d( -margin, 0 );
+    glVertex2d( SCROLL_WIDTH + margin, 0 );
+    glVertex2d( SCROLL_WIDTH + margin, height );
+    glEnd();
+    glDisable( GL_BLEND );
+    glEnable( GL_TEXTURE_2D );
+  }
+
 	int x = 0;
-	int y = LINES_SHOWN * LINE_HEIGHT - offset;
+	int y = height - offset;
 	// cerr << "text.size=" << text.size() << endl;
-	for( unsigned int i = 0; i < LINES_SHOWN && i < text.size(); i++ ) {
+	for( unsigned int i = lineOffset; (int)i < lineOffset + LINES_SHOWN && i < text.size(); i++ ) {
 		if( text[ i ] != "" ) {
 			Color *c = color[ i ];
-			float a = c->a * ( ( LINES_SHOWN - ( i + ( offset / (float)LINE_HEIGHT ) ) ) / (float)LINES_SHOWN );
+      float a;
+      if( inside ) a = 1;
+      else a = c->a * ( ( LINES_SHOWN - ( ( i - lineOffset ) + ( offset / (float)LINE_HEIGHT ) ) ) / (float)LINES_SHOWN );
 			glColor4f( c->r, c->g, c->b, a  );
 			scourge->getSDLHandler()->texPrint( x, y, text[ i ].c_str() );
 		}
@@ -90,4 +126,24 @@ void TextScroller::scrollUp() {
 void TextScroller::scrollDown() {
 }
 
+bool TextScroller::handleEvent( SDL_Event *event ) {
+  int mx = scourge->getSDLHandler()->mouseX;
+  int my = scourge->getSDLHandler()->mouseY;
+  inside = ( mx >= xp && mx < xp + SCROLL_WIDTH &&
+             my >= yp && my < yp + LINES_SHOWN * LINE_HEIGHT );
+  if( event->type == SDL_MOUSEBUTTONDOWN ) {
+    if( inside ) {
+      if( event->button.button == SDL_BUTTON_WHEELUP ) {
+        lineOffset++;
+        if( lineOffset + LINES_SHOWN >= (int)text.size() ) {
+          lineOffset = text.size() - LINES_SHOWN + 1;
+        }
+      } else if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
+        lineOffset--;
+        if( lineOffset < 0 ) lineOffset = 0;
+      }
+    }
+  }
+  return inside;
+}
 

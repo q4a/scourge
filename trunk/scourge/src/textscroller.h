@@ -32,6 +32,8 @@ private:
 	int offset;
 	Uint32 lastCheck;
 	int xp, yp;
+  bool inside;
+  int lineOffset;
 
 public:
 	TextScroller( Scourge *scourge );
@@ -44,6 +46,7 @@ public:
 	inline void move( int x, int y ) { this->xp = x; this->yp = y; }
 	inline int getX() { return xp; }
 	inline int getY() { return yp; }
+  bool handleEvent( SDL_Event *event );
 };
 
 #endif
