@@ -937,6 +937,7 @@ bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 
     sprintf(msg, _( "%s selected a target" ), c->getName());
     getDescriptionScroller()->addDescription(msg);
     ret = true;
+    closeAllContainerGuis();
   } else {
 		cancelTargetSelection();
   }	
@@ -961,6 +962,7 @@ bool Scourge::handleTargetSelectionOfDoor( Uint16 mapx, Uint16 mapy, Uint16 mapz
   } else {
     cancelTargetSelection();
   }	
+
   // turn off selection mode
   setTargetSelectionFor(NULL);		
   return ret;
@@ -2047,6 +2049,7 @@ void Scourge::openContainerGui(Item *container) {
                                                          10 + containerGuiCount * 15);
   }
 }
+
 
 void Scourge::closeContainerGui(ContainerGui *gui) {
   if(containerGuiCount <= 0) return;

@@ -20,6 +20,7 @@ tradedialog.h  -  description
 
 #include "common/constants.h"
 #include "itemlist.h"
+#include "pcui.h"
 #include <map>
 
 class Scourge;
@@ -28,6 +29,7 @@ class Window;
 class Label;
 class Widget;
 class Item;
+class PcUi;
 
 class TradeDialog : public ItemRenderer {
 private:

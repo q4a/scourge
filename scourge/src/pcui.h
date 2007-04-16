@@ -81,7 +81,8 @@ public:
 	bool isCastSelected();
 	bool isStoreSpellSelected();
 	void unselectSpellButtons();
-  void receiveInventory();
+	void receiveInventory();
+	bool receiveInventory(Item *item);
 
 protected:
 	void toggleButtons( Button *button );
