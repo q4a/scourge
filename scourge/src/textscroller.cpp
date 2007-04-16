@@ -75,7 +75,7 @@ void TextScroller::draw() {
 
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( xp, yp, 0 );
+	glTranslatef( xp, ( scourge->inTurnBasedCombat() ? yp + 50 : yp ), 0 );
 	glDisable( GL_DEPTH_TEST );
 
   if( inside ) {
