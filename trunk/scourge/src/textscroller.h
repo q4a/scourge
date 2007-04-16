@@ -28,8 +28,10 @@ class TextScroller {
 private:
 	Scourge *scourge;
 	std::vector<std::string> text;
+	std::vector<Color*> color;
 	int offset;
 	Uint32 lastCheck;
+	int xp, yp;
 
 public:
 	TextScroller( Scourge *scourge );
@@ -39,6 +41,9 @@ public:
 	void draw();
 	void scrollUp();
 	void scrollDown();
+	inline void move( int x, int y ) { this->xp = x; this->yp = y; }
+	inline int getX() { return xp; }
+	inline int getY() { return yp; }
 };
 
 #endif
