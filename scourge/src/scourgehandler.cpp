@@ -38,6 +38,7 @@
 #include "pceditor.h"
 #include "savegamedialog.h"
 #include "pcui.h"
+#include "textscroller.h"
 
 #define DRAG_START_TOLERANCE 5
 
@@ -52,6 +53,8 @@ ScourgeHandler::~ScourgeHandler() {
 
 bool ScourgeHandler::handleEvent(SDL_Event *event) {
   int ea;
+
+  if( scourge->getDescriptionScroller()->handleEvent( event ) ) return false;
 
   for( int i = 0; i < scourge->getContainerGuiCount(); i++ ) {
     if( scourge->getContainerGui( i )->handleEvent( event ) ) {
