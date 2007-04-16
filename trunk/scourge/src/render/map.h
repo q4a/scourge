@@ -177,13 +177,6 @@ class Map {
   static const int X_CENTER_TOLERANCE = 8;
   static const int Y_CENTER_TOLERANCE = 8;
 
-  // on screen item descriptions
-  static const int MAX_DESCRIPTION_COUNT = 200;
-  int descriptionCount;
-  bool descriptionsChanged;
-  char *descriptions[MAX_DESCRIPTION_COUNT];
-  Color descriptionsColor[MAX_DESCRIPTION_COUNT];
-
   bool lightMapChanged;
   int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
   
@@ -236,7 +229,6 @@ class Map {
   std::map<int,bool> secretDoors;
 
 	bool quakesEnabled;
-	bool descriptionsEnabled;
 
  public:
   bool useFrustum;
@@ -251,9 +243,6 @@ class Map {
 
 	inline void setQuakesEnabled( bool b ) { quakesEnabled = b; }
 	inline bool areQuakesEnabled() { return quakesEnabled; }
-
-	inline void setDescriptionsEnabled( bool b ) { descriptionsEnabled = b; }
-	inline bool areDescriptionsEnabled( bool b ) { return descriptionsEnabled; }
 
   void addSecretDoor( int x, int y );
   bool isSecretDoor( Location *pos );
@@ -281,13 +270,6 @@ class Map {
 
   inline bool isEdited() { return edited; }
   inline char *getName() { return name; }
-
-  // descriptions
-  inline bool didDescriptionsChange() { return descriptionsChanged; }
-  inline void setDescriptionsChanged( bool b ) { descriptionsChanged = b; }
-  inline int getDescriptionCount() { return descriptionCount; }
-  inline const char **getDesriptions() { return (const char **)descriptions; }
-  inline Color *getDesriptionColors() { return descriptionsColor; }
 
   void saveMap( char *name, char *result, bool absolutePath=false, int referenceType=REF_TYPE_NAME );
   bool loadMap( char *name, char *result, StatusReport *report=NULL, 
@@ -438,8 +420,6 @@ class Map {
   void showCreatureInfo(RenderedCreature *creature, bool player, bool selected, bool groupMode);
   
   void initMapView(bool ignoreRot = false);
-  
-  void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f);
   
   void moveMap(int dir);
 

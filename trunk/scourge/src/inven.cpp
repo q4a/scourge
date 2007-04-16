@@ -156,7 +156,7 @@ bool Inven::receive(Item *item, bool atCursor)
 			snprintf( message, 119, _( "%s picks up %s." ), 
 								creature->getName(),
 								item->getItemName() );
-			pcUi->getScourge()->getMap()->addDescription( message );
+			pcUi->getScourge()->addDescription( message );
 			pcUi->getScourge()->endItemDrag();
 			pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_SUCCESS );
 		} else {
@@ -190,7 +190,7 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
 				snprintf(message, 119, _( "%s drops %s." ), 
 								creature->getName(),
 								item->getItemName() );
-				pcUi->getScourge()->getMap()->addDescription( message );
+				pcUi->getScourge()->addDescription( message );
 	
 				return true;
 			}

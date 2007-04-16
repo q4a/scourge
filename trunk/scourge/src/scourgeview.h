@@ -94,7 +94,6 @@ protected:
   void drawCreatureInfos();
   void drawInfos();
   void checkForDropTarget();
-  void drawDescriptions(ScrollingList *list);  
   void drawBorder();
   void showCreatureInfo( Creature *creature, bool player, bool selected, bool groupMode, bool wanderingHero );
   void drawDraggedItem();

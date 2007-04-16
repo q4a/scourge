@@ -132,12 +132,11 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   char infoMessage[2000];
   Inventory *inventory;
 	PcUi *pcui;
-  Window *messageWin, *exitConfirmationDialog;
+  Window *exitConfirmationDialog;
   TextDialog *textDialog;
   InfoGui *infoGui;
   ConversationGui *conversationGui;
   Label *exitLabel;
-  ScrollingList *messageList;
   Button *yesExitConfirm, *noExitConfirm;
   int movingX, movingY, movingZ;
   Item *movingItem;  
@@ -302,8 +301,6 @@ public:
   void movePartyToGateAndEndMission();
 
   inline NetPlay *getNetPlay() { return netPlay; }
-
-  inline ScrollingList *getMessageList() { return messageList; }
 
   inline bool isInHQ() { return inHq; }
 
