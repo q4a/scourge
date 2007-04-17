@@ -34,6 +34,7 @@ private:
 	int xp, yp;
   bool inside;
   int lineOffset;
+	GLuint scrollTexture;
 
 public:
 	TextScroller( Scourge *scourge );
