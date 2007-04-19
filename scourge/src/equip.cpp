@@ -96,7 +96,8 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 				// reset buttons first b/c it changes the cursor
 				bool cast = pcUi->isCastSelected();
 				bool store = pcUi->isStoreSelected();
-				pcUi->unselectSpellButtons();
+				if( cast ) pcUi->hide();
+				else pcUi->unselectSpellButtons();
 
 				int mx = pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x;
 				int my = pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - TITLE_HEIGHT;
@@ -116,7 +117,8 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 				// reset buttons first b/c it changes the cursor
 				bool cast = pcUi->isCastSelected();
 				bool store = pcUi->isStoreSelected();
-				pcUi->unselectSpellButtons();
+				if( cast ) pcUi->hide();
+				else pcUi->unselectSpellButtons();
 
 				if( specialSkill ) {
 					if( cast ) {
