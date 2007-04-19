@@ -33,7 +33,7 @@ private:
 	Uint32 lastCheck;
 	int xp, yp;
   bool inside;
-  int lineOffset;
+  int lineOffset, startOffset;
 	GLuint scrollTexture;
 
 public:
