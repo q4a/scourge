@@ -55,6 +55,7 @@ PcUi::PcUi( Scourge *scourge ) {
 																	 ( scourge->getScreenHeight() - ( WIN_HEIGHT ) ) / 2,
 																	 WIN_WIDTH, WIN_HEIGHT,
 																	 _( "Character Information" ) );
+	mainWin->addWindowListener( this );
 	int x = 10;
 	int y = 5;
 	equipButton = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "equipButton" ) );
@@ -273,8 +274,10 @@ void PcUi::toggleButtons( Button *button ) {
 	if( button != store ) store->setSelected( false );
 	if( info->isSelected() || use->isSelected() || transcribe->isSelected() || enchant->isSelected() || store->isSelected() ) {
 		status->setText( _( "Click on an item to select it..." ) );
+		scourge->setCursorMode( Constants::CURSOR_CROSSHAIR );
 	} else {
 		status->setText( _( DEFAULT_STATUS ) );
+		scourge->setCursorMode( Constants::CURSOR_NORMAL );
 	}
 }
 
@@ -319,8 +322,10 @@ void PcUi::toggleSpellButtons( Button *button ) {
 	if( button != storeSpell ) storeSpell->setSelected( false );
 	if( cast->isSelected() || storeSpell->isSelected() ) {
 		status->setText( _( "Click on a spell or capability to select it..." ) );
+		scourge->setCursorMode( Constants::CURSOR_CROSSHAIR );
 	} else {
 		status->setText( _( DEFAULT_STATUS ) );
+		scourge->setCursorMode( Constants::CURSOR_NORMAL );
 	}
 }
 
@@ -340,6 +345,11 @@ bool PcUi::handleEvent(SDL_Event *event) {
   default: break;
   }
   return false;
+}
+
+void PcUi::windowClosing() {
+	toggleButtons( NULL );
+	toggleSpellButtons( NULL );
 }
 
 void PcUi::setCreature( Creature *creature ) {

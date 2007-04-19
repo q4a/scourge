@@ -93,6 +93,11 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 			}
 		} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT ) {
 			if( mode == SPELLS_MODE ) {
+				// reset buttons first b/c it changes the cursor
+				bool cast = pcUi->isCastSelected();
+				bool store = pcUi->isStoreSelected();
+				pcUi->unselectSpellButtons();
+
 				int mx = pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x;
 				int my = pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - TITLE_HEIGHT;
 				int si = getSchoolIndex( mx, my );
@@ -101,22 +106,25 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 												 MagicSchool::getMagicSchool( si )->getSpell( spi ) :
 												 NULL );
 				if( spell ) {
-					if( pcUi->isCastSelected() ) {
+					if( cast ) {
 						castSpell( spell );
-					} else if( pcUi->isStoreSpellSelected() ) {
+					} else if( store ) {
 						storeSpell( spell );
 					}
 				}
-				pcUi->unselectSpellButtons();
 			} else if( mode == CAPABILITIES_MODE ) {
+				// reset buttons first b/c it changes the cursor
+				bool cast = pcUi->isCastSelected();
+				bool store = pcUi->isStoreSelected();
+				pcUi->unselectSpellButtons();
+
 				if( specialSkill ) {
-					if( pcUi->isCastSelected() ) {
+					if( cast ) {
 						useSpecialSkill( specialSkill );
-					} else if( pcUi->isStoreSpellSelected() ) {
+					} else if( store ) {
 						storeSpecialSkill( specialSkill );
 					}
 				}
-				pcUi->unselectSpellButtons();
 			}
 		} 
 	}

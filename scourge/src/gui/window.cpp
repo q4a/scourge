@@ -996,6 +996,9 @@ void Window::setVisible(bool b, bool animate) {
       openHeight = getHeight();
     }
   } else {
+		for( unsigned int i = 0; i < listeners.size(); i++ ) {
+			listeners[i]->windowClosing();
+		}
     y = currentY;
     windowWasClosed = true;
     nextWindowToTop();

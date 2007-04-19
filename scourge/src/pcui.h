@@ -42,7 +42,7 @@ class Portrait;
 class MissionInfoUI;
 class CardContainer;
 
-class PcUi {
+class PcUi : public WindowListener {
 private:
 	Scourge *scourge;
 	Creature *creature;
@@ -62,6 +62,8 @@ private:
 public:
 	PcUi( Scourge *scourge );
 	~PcUi();
+
+	virtual void windowClosing();
 
   inline Window *getWindow() { return mainWin; }
 	void show();

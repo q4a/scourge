@@ -25,6 +25,7 @@
 #include "checkbox.h"
 #include "textfield.h"
 #include "guitheme.h"
+#include <vector>
 
 /**
   *@author Gabor Torok
@@ -37,6 +38,17 @@ class Checkbox;
 class TextField;
 
 #define TITLE_HEIGHT 21
+
+class WindowListener {
+public:
+	WindowListener() {
+	}
+
+	virtual ~WindowListener() {
+	}
+
+	virtual void windowClosing() = 0;
+};
 
 class Window : public Widget {
  private:
@@ -78,6 +90,8 @@ class Window : public Widget {
   static Window *mouseLockWindow;
   static Widget *mouseLockWidget;
 
+	std::vector<WindowListener*> listeners;
+
  public: 
 
   enum {
@@ -109,6 +123,8 @@ class Window : public Widget {
 		  bool hasCloseButton=true, int type=BASIC_WINDOW, const char *themeName=NULL );
 
   ~Window();
+
+	void addWindowListener( WindowListener *listener) { listeners.push_back( listener ); }
 
   void setMouseLock( Widget *widget );
 

@@ -33,7 +33,7 @@ TextScroller::TextScroller( Scourge *scourge ) {
 	this->scourge = scourge;
 	this->xp = 300;
 	this->yp = 0;
-  lineOffset = 0;
+  startOffset = lineOffset = 0;
 	offset = 0;
 	lastCheck = SDL_GetTicks();
   inside = false;
@@ -70,6 +70,15 @@ void TextScroller::draw() {
 				offset = 0;
 				text.insert( text.begin(), "" );
         color.insert( color.begin(), new Color( 0, 0, 0, 0 ) );
+				for( unsigned int i = LINES_SHOWN; i < text.size(); i++ ) {
+					if( text[i] == "" ) {
+						text.erase( text.begin() + i );
+						Color *c = color[ i ];
+						delete( c );
+						color.erase( color.begin() + i );
+						i--;
+					}
+				}
 			}
 		}
 	}
@@ -88,14 +97,14 @@ void TextScroller::draw() {
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glDisable( GL_TEXTURE_2D );
     // glColor4f( 1, 1, 1, 0.25f );
-		glColor4f( 0, 0, 0, 0.25f );
+		glColor4f( 0, 0, 0, 0.5f );
     glBegin( GL_QUADS );
     glVertex2d( -margin, height + margin );
     glVertex2d( -margin, 0 );
     glVertex2d( SCROLL_WIDTH + margin, 0 );
     glVertex2d( SCROLL_WIDTH + margin, height + margin );
     glEnd();
-    glColor4f( 0.75f, 0.75f, 0.75f, 1 );
+    glColor4f( 0.5f, 0.5f, 0.5f, 1 );
     glBegin( GL_LINE_LOOP );
     glVertex2d( -margin, height + margin );
     glVertex2d( -margin, 0 );
@@ -155,11 +164,21 @@ bool TextScroller::handleEvent( SDL_Event *event ) {
 	int mx = scourge->getSDLHandler()->mouseX;
 	int my = scourge->getSDLHandler()->mouseY;
 	int ytop = ( scourge->inTurnBasedCombat() ? yp + 50 : yp );
+	bool before = inside;
 	inside = ( mx >= xp && mx < xp + SCROLL_WIDTH &&
 						 my >= ytop && my < ytop + LINES_SHOWN * LINE_HEIGHT &&
 						 !( scourge->getSession()->getMap()->isMouseRotating() || 
 								scourge->getSession()->getMap()->isMouseZooming() ||
 								scourge->getSession()->getMap()->isMapMoving() ) );
+	if( inside && !before ) {
+		startOffset = lineOffset = 0;
+		for( unsigned int i = 0; i < text.size(); i++ ) {
+			if( text[i] != "" ) {
+				startOffset = lineOffset = i;
+				break;
+			}
+		}
+	}
 	if( event->type == SDL_MOUSEBUTTONDOWN ) {
 		if( inside ) {
 			if( event->button.button == SDL_BUTTON_WHEELUP ) {
@@ -169,7 +188,7 @@ bool TextScroller::handleEvent( SDL_Event *event ) {
 				}
 			} else if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
 				lineOffset--;
-				if( lineOffset < 0 ) lineOffset = 0;
+				if( lineOffset < startOffset ) lineOffset = startOffset;
 			}
 		}
 	}
