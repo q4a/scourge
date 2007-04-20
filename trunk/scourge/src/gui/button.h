@@ -30,7 +30,6 @@ class Button : public Widget {
   int x2, y2;
   char label[255];
   bool inside; // was the last event inside the button?
-  float alpha, alphaInc;
   GLint lastTick;
   int labelPos;
   bool toggle;

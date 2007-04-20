@@ -28,8 +28,6 @@ Button::Button(int x1, int y1, int x2, int y2, GLuint highlight, char *label, GL
   this->y2 = y2;
   setLabel( label );
   labelPos = CENTER;
-  alpha = 0.5f;
-  alphaInc = 0.05f;
   lastTick = 0;
   toggle = selected = false;
   inside = false;
@@ -57,8 +55,12 @@ void Button::drawWidget(Widget *parent) {
 		glEnable(GL_TEXTURE_2D);
 		glPushMatrix();
 		glBindTexture( GL_TEXTURE_2D, texture );
+		if( glowing || inside ) {
+			glEnable( GL_BLEND );	
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		}
 		if( isEnabled() ) {
-			glColor4f( 1, 1, 1, 1 );
+			glColor4f( 1, 1, 1, ( glowing || inside ? getAlpha() + 0.3f : 1 ) );
 		} else {
 			glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 		}
@@ -78,6 +80,9 @@ void Button::drawWidget(Widget *parent) {
 		
 		glDisable( GL_ALPHA_TEST );
 		glDisable(GL_TEXTURE_2D);
+		if( glowing || inside ) {
+			glDisable( GL_BLEND );
+		}
 	}
 
   if( strlen( label ) ) {
