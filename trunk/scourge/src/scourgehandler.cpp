@@ -195,10 +195,10 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
   case SDL_KEYUP:
 
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
-      if( scourge->getInventory()->inStoreSpellMode() ) {
-        scourge->getInventory()->setStoreSpellMode( false );
-        return false;
-      } else if( scourge->getTargetSelectionFor() ) {
+			if( scourge->getPcUi()->getStorable() ) {
+				scourge->getPcUi()->clearStorable();
+				return false;
+			} else if( scourge->getTargetSelectionFor() ) {
         // cancel target selection ( cross cursor )
         scourge->getTargetSelectionFor()->cancelTarget();
         scourge->getTargetSelectionFor()->getBattle()->reset( false, true );
@@ -627,11 +627,10 @@ bool ScourgeHandler::handlePartyEvent(Widget *widget, SDL_Event *event) {
 }
 
 void ScourgeHandler::quickSpellAction( int index, int button ) {
-  if( scourge->getInventory()->inStoreSpellMode() ) {
-    scourge->getParty()->getPlayer()->setQuickSpell( index, scourge->getInventory()->getStorable() );
-    scourge->getInventory()->setStoreSpellMode( false );
-    //if( scourge->getInventory()->isVisible() ) scourge->toggleInventoryWindow();
-  } else {
+	if( scourge->getPcUi()->getStorable() ) {
+		scourge->getParty()->getPlayer()->setQuickSpell( index, scourge->getPcUi()->getStorable() );
+		scourge->getPcUi()->clearStorable();
+	} else {
     Creature *creature = scourge->getParty()->getPlayer();
     Storable *storable = creature->getQuickSpell( index );
     if( storable ) {

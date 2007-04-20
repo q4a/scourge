@@ -85,6 +85,8 @@ public:
 	void unselectSpellButtons();
 	void receiveInventory();
 	bool receiveInventory(Item *item);
+	Storable *getStorable();
+	void clearStorable();
 
 protected:
 	void toggleButtons( Button *button );

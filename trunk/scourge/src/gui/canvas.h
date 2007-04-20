@@ -66,6 +66,8 @@ class Canvas : public Widget {
 
   // don't play sound when the value changes
   virtual inline bool hasSound() { return false; }
+
+	void cancelDrag();
 };
 
 class ImageCanvas : public Canvas, WidgetView {

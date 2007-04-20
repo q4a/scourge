@@ -37,6 +37,7 @@ class Storable;
 class ConfirmDialog;
 class Item;
 class PcUi;
+class Storable;
 
 class Inven : public DragAndDropHandler, WidgetView {
 private:
@@ -47,10 +48,14 @@ private:
   Canvas *canvas;
 	int x, y, w, h;
 	Item *lastItem;
+	Storable *storable;
 
 public:
 	Inven( PcUi *pcUi, int x, int y, int w, int h );
 	~Inven();
+
+	inline Storable *getStorable() { return storable; }
+	inline void clearStorable() { storable = NULL; }
 
   inline Widget *getWidget() { return canvas; }
 	bool handleEvent( SDL_Event *event );
@@ -73,6 +78,7 @@ protected:
 	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
 	void convertMousePos( int x, int y, int *invX, int *invY );
 	void showInfo( Item *item );
+	void storeItem( Item *item );
 };
 
 #endif

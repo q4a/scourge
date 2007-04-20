@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-04-16 14:55-0700\n"
+"POT-Creation-Date: 2007-04-19 20:58-0700\n"
 "PO-Revision-Date: 2007-02-27 19:01+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -2541,15 +2541,15 @@ msgid ""
 "glean..."
 msgstr "Hai la sensazione che questo non sia un oggetto comune."
 
-#: src/scourgehandler.cpp:221
+#: src/scourgehandler.cpp:224
 msgid "Combat is now Turn-based."
 msgstr "Il combattimento è ora in modalità a turni"
 
-#: src/scourgehandler.cpp:223
+#: src/scourgehandler.cpp:226
 msgid "Combat is now Real-time."
 msgstr "Il combattimento è ora in modalità tempo reale"
 
-#: src/scourgehandler.cpp:305
+#: src/scourgehandler.cpp:308
 msgid "Error saving game!"
 msgstr "Errore nel salvare la partita!"
 

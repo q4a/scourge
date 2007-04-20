@@ -383,3 +383,13 @@ void PcUi::refresh() {
 	next->setEnabled( !scourge->inTurnBasedCombat() );
 	prev->setEnabled( !scourge->inTurnBasedCombat() );
 }
+
+Storable *PcUi::getStorable() { 
+	return( equip->getStorable() ? equip->getStorable() : inven->getStorable() );
+}
+
+void PcUi::clearStorable() {
+	equip->clearStorable();
+	inven->clearStorable();
+}
+
