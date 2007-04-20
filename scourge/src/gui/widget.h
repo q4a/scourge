@@ -141,6 +141,7 @@ class Widget {
 
  protected:
   bool debug;
+	inline float getAlpha() { return alpha; }
 	std::map< std::string, int > textWidthCache;
   virtual void drawButton( Widget *parent, int x, int y, int x2, int y2, 
                            bool toggle, bool selected, bool inverse, 
