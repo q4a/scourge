@@ -115,6 +115,10 @@ bool Canvas::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   return false;
 }
 
+void Canvas::cancelDrag() {
+	dragging = false;
+}
+
 void Canvas::removeEffects(Widget *parent) {
   highlightBorders = false;
 }

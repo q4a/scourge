@@ -33,6 +33,7 @@
 #include "gui/confirmdialog.h"
 #include "pcui.h"
 #include "gui/scrollinglabel.h"
+#include "storable.h"
 
 using namespace std;
 
@@ -63,6 +64,7 @@ Equip::Equip( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->schoolIndex = -1;
 	this->spellIndex = -1;
 	this->specialSkill = NULL;
+	this->storable = NULL;
 
 	canvas = new Canvas( x, y, x + w, y + h, this, this);
 	canvas->setDrawBorders( false );
@@ -95,9 +97,8 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 			if( mode == SPELLS_MODE ) {
 				// reset buttons first b/c it changes the cursor
 				bool cast = pcUi->isCastSelected();
-				bool store = pcUi->isStoreSelected();
-				if( cast ) pcUi->hide();
-				else pcUi->unselectSpellButtons();
+				bool store = pcUi->isStoreSpellSelected();
+				pcUi->hide();
 
 				int mx = pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x;
 				int my = pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - TITLE_HEIGHT;
@@ -116,9 +117,8 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 			} else if( mode == CAPABILITIES_MODE ) {
 				// reset buttons first b/c it changes the cursor
 				bool cast = pcUi->isCastSelected();
-				bool store = pcUi->isStoreSelected();
-				if( cast ) pcUi->hide();
-				else pcUi->unselectSpellButtons();
+				bool store = pcUi->isStoreSpellSelected();
+				pcUi->hide();
 
 				if( specialSkill ) {
 					if( cast ) {
@@ -614,11 +614,13 @@ void Equip::storeSpecialSkill( SpecialSkill *ss ) {
 }
 
 void Equip::storeStorable( Storable *storable ) {
+	this->storable = NULL;
 	const char *p = storable->isStorable();
 	if( p ) {
 		pcUi->getScourge()->showMessageDialog( (char*)p );
 	} else {
-		// FIXME: do something with the spell
+		this->storable = storable;
+		pcUi->getScourge()->addDescription( _( "Click a quickspell slot to store this spell." ) );
 	}
 }
 

@@ -2327,7 +2327,7 @@ void Scourge::drawWidgetContents(Widget *w) {
 	}
   for( int t = 0; t < 12; t++ ) {
     if( quickSpell[t] == w ) {
-      quickSpell[t]->setGlowing( inventory->inStoreSpellMode() );
+      quickSpell[t]->setGlowing( pcui->getStorable() != NULL ? true : false );
       for(int i = 0; i < party->getPartySize(); i++) {
         if( party->getParty( i ) == getParty()->getPlayer() ) {
           if( getParty()->getPlayer()->getQuickSpell( t ) ) {

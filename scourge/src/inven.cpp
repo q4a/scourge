@@ -31,6 +31,7 @@
 #include "skillsview.h"
 #include "gui/confirmdialog.h"
 #include "pcui.h"
+#include "storable.h"
 
 /**
   *@author Gabor Torok
@@ -52,6 +53,7 @@ Inven::Inven( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->w = w;
 	this->h = h;
 	this->lastItem = NULL;
+	this->storable = NULL;
 
 	canvas = new Canvas( x, y, x + w, y + h, this, this);
 	canvas->setDrawBorders( false );
@@ -98,14 +100,19 @@ bool Inven::handleEvent( Widget *widget, SDL_Event *event ) {
 		if( creature && item ) {
 			if( pcUi->isEnchantSelected() ) {
 				pcUi->getScourge()->enchantItem( creature, item );
+				canvas->cancelDrag();
 			} else if( pcUi->isInfoSelected() ) {
 				showInfo( item );
+				canvas->cancelDrag();
 			} else if( pcUi->isStoreSelected() ) {
-				// FIXME
+				storeItem( item );
+				canvas->cancelDrag();
 			} else if( pcUi->isTranscribeSelected() ) {
 				pcUi->getScourge()->transcribeItem( creature, item );
+				canvas->cancelDrag();
 			} else if( pcUi->isUseSelected() ) {
 				pcUi->getScourge()->useItem( creature, item );
+				canvas->cancelDrag();
 			}
 			pcUi->unselectButtons();
 		}
@@ -385,6 +392,19 @@ void Inven::setCreature( Creature *creature ) {
 			}
 		}
 		creature->setInventoryArranged( true );
+	}
+}
+
+void Inven::storeItem( Item *item ) {
+	this->storable = NULL;
+	Storable *s = (Storable*)item;
+	const char *p = s->isStorable();
+	if( p ) {
+		pcUi->getScourge()->showMessageDialog( (char*)p );
+	} else {
+		this->storable = s;
+		pcUi->getScourge()->addDescription( _( "Click a quickspell slot to store this item." ) );
+		pcUi->hide();
 	}
 }
 

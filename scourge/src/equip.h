@@ -43,6 +43,7 @@ class ScrollingLabel;
 class ScrollingList;
 class Label;
 class Button;
+class Storable;
 
 class Equip : public DragAndDropHandler, WidgetView {
 private:
@@ -57,6 +58,7 @@ private:
 	int schoolIndex;
 	int spellIndex;
 	SpecialSkill *specialSkill;
+	Storable *storable;
 
 public:
 
@@ -82,6 +84,9 @@ public:
 	bool startDrag( Widget *widget, int x=0, int y=0 );
 
 	void drawWidgetContents( Widget *w );
+
+	inline Storable *getStorable() { return storable; }
+	inline void clearStorable() { storable = NULL; }
 
 protected:
   Item *getItemAtPos( int x, int y );
