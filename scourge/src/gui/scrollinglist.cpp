@@ -433,6 +433,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 			
 		tooltipLine = getLineAtPoint( x, y );
 		if( tooltipLine > -1 && 
+				!linewrap &&
 				((Window*)parent)->getScourgeGui()->textWidth( list[ tooltipLine ] ) > getWidth() - scrollerWidth ) {
 			setTooltip( (char*)(list[ tooltipLine ]) );
 		} else {
