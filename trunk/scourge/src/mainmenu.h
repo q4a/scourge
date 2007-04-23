@@ -65,6 +65,7 @@ private:
   GLint logoTicks;
   GLint logoTicksDelta;
   int top, openingTop;
+	bool musicStarted;
   Uint32 lastTick, lastTickMenu;
   int candleFlameX, candleFlameY;
   PartyEditor *partyEditor;
