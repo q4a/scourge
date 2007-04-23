@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-04-19 20:58-0700\n"
+"POT-Creation-Date: 2007-04-22 21:05-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -897,7 +897,7 @@ msgstr ""
 msgid "DAM"
 msgstr ""
 
-#: src/item.cpp:1111
+#: src/item.cpp:1111 src/characterinfo.cpp:51
 msgid "AP"
 msgstr ""
 
@@ -950,34 +950,24 @@ msgstr ""
 msgid "cost"
 msgstr ""
 
-#: src/characterinfo.cpp:44
-#, c-format
-msgid "Exp: %u(%u)"
+#: src/characterinfo.cpp:46
+msgid "Basic Statistics:"
 msgstr ""
 
-#: src/characterinfo.cpp:62
-#, c-format
-msgid "HP: %d (%d)"
+#: src/characterinfo.cpp:49 src/scourge.cpp:2293
+msgid "HP"
 msgstr ""
 
-#: src/characterinfo.cpp:64
-#, c-format
-msgid "MP: %d (%d)"
+#: src/characterinfo.cpp:50 src/scourge.cpp:2295
+msgid "MP"
 msgstr ""
 
-#: src/characterinfo.cpp:66
-#, c-format
-msgid "Thirst: %d (10)"
+#: src/characterinfo.cpp:54
+msgid "Unarmed Attack:"
 msgstr ""
 
-#: src/characterinfo.cpp:68
-#, c-format
-msgid "Hunger: %d (10)"
-msgstr ""
-
-#: src/characterinfo.cpp:70
-#, c-format
-msgid "AP: %d (%d)"
+#: src/characterinfo.cpp:58
+msgid "Unarmed Defense:"
 msgstr ""
 
 #: src/battle.cpp:677
@@ -1871,14 +1861,6 @@ msgstr ""
 
 #: src/scourge.cpp:2256
 msgid "Click to assign a spell, capability or magic item."
-msgstr ""
-
-#: src/scourge.cpp:2293
-msgid "HP"
-msgstr ""
-
-#: src/scourge.cpp:2295
-msgid "MP"
 msgstr ""
 
 #: src/scourge.cpp:2315

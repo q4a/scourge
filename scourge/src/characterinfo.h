@@ -46,11 +46,7 @@ public:
   CharacterInfoUI( Scourge *scourge );
   ~CharacterInfoUI();
 
-  inline void setCreature( Window *win, 
-                           Creature *creature ) { 
-    this->win = win;
-    this->creature = creature; 
-  }
+  void setCreature( Window *win, Creature *creature );
   inline Creature *getCreature() { return creature; }
   inline Window *getWindow() { return win; }
 

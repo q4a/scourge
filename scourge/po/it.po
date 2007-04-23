@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-04-19 20:58-0700\n"
+"POT-Creation-Date: 2007-04-22 21:05-0700\n"
 "PO-Revision-Date: 2007-02-27 19:01+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -900,7 +900,7 @@ msgstr "Hai identificato completamente un oggetto!"
 msgid "DAM"
 msgstr "DAN"
 
-#: src/item.cpp:1111
+#: src/item.cpp:1111 src/characterinfo.cpp:51
 msgid "AP"
 msgstr "CA"
 
@@ -953,35 +953,26 @@ msgstr "Muovi"
 msgid "cost"
 msgstr "costo"
 
-#: src/characterinfo.cpp:44
-#, c-format
-msgid "Exp: %u(%u)"
-msgstr "Esp: %u(%u)"
+#: src/characterinfo.cpp:46
+#, fuzzy
+msgid "Basic Statistics:"
+msgstr "Caratteristiche:"
 
-#: src/characterinfo.cpp:62
-#, c-format
-msgid "HP: %d (%d)"
-msgstr "PF: %d (%d)"
+#: src/characterinfo.cpp:49 src/scourge.cpp:2293
+msgid "HP"
+msgstr "PF"
 
-#: src/characterinfo.cpp:64
-#, c-format
-msgid "MP: %d (%d)"
-msgstr "PM: %d (%d)"
+#: src/characterinfo.cpp:50 src/scourge.cpp:2295
+msgid "MP"
+msgstr "PM"
 
-#: src/characterinfo.cpp:66
-#, c-format
-msgid "Thirst: %d (10)"
-msgstr "Sete: %d (10)"
+#: src/characterinfo.cpp:54
+msgid "Unarmed Attack:"
+msgstr ""
 
-#: src/characterinfo.cpp:68
-#, c-format
-msgid "Hunger: %d (10)"
-msgstr "Fame: %d (10)"
-
-#: src/characterinfo.cpp:70
-#, c-format
-msgid "AP: %d (%d)"
-msgstr "PA: %d (%d)"
+#: src/characterinfo.cpp:58
+msgid "Unarmed Defense:"
+msgstr ""
 
 #: src/battle.cpp:677
 #, c-format
@@ -1878,14 +1869,6 @@ msgstr "Informazioni sull'inventario e il gruppo"
 #: src/scourge.cpp:2256
 msgid "Click to assign a spell, capability or magic item."
 msgstr "Clicca per assegnare un incantesimo, una capacità o un oggetto magico."
-
-#: src/scourge.cpp:2293
-msgid "HP"
-msgstr "PF"
-
-#: src/scourge.cpp:2295
-msgid "MP"
-msgstr "PM"
 
 #: src/scourge.cpp:2315
 msgid "Current Weapon: Bare Hands"
@@ -12288,6 +12271,24 @@ msgstr "Qui tu soffrirai..."
 #: ../scourge_data/maps/emeril2.cfg:56
 msgid "Hmmm, it escapes me just now."
 msgstr ""
+
+#~ msgid "Exp: %u(%u)"
+#~ msgstr "Esp: %u(%u)"
+
+#~ msgid "HP: %d (%d)"
+#~ msgstr "PF: %d (%d)"
+
+#~ msgid "MP: %d (%d)"
+#~ msgstr "PM: %d (%d)"
+
+#~ msgid "Thirst: %d (10)"
+#~ msgstr "Sete: %d (10)"
+
+#~ msgid "Hunger: %d (10)"
+#~ msgstr "Fame: %d (10)"
+
+#~ msgid "AP: %d (%d)"
+#~ msgstr "PA: %d (%d)"
 
 #~ msgid "Messages"
 #~ msgstr "Messaggi"

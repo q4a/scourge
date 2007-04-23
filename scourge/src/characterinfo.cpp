@@ -36,49 +36,33 @@ CharacterInfoUI::~CharacterInfoUI() {
 void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   if( !( win && creature ) ) return;
 
-  GuiTheme *theme = win->getTheme();
+  //GuiTheme *theme = win->getTheme();
   Creature *p = creature;
+	glDisable( GL_TEXTURE_2D );
+	glColor4f( 1, 1, 1, 1 );
 
-  int y = 15;
-  char s[80];
-  sprintf(s, _( "Exp: %u(%u)" ), p->getExp(), p->getExpOfNextLevel());
-	if( theme->getWindowText() ) {
-		glColor4f( theme->getWindowText()->r,
-							 theme->getWindowText()->g,
-							 theme->getWindowText()->b,
-							 theme->getWindowText()->a );
-	} else {
-		w->applyColor();
-	}
-  scourge->getSDLHandler()->texPrint(5, y, s);
-  if( theme->getWindowText() ) {
-    glColor4f( theme->getWindowText()->r,
-               theme->getWindowText()->g,
-               theme->getWindowText()->b,
-               theme->getWindowText()->a );
-  } else {
-    w->applyColor();
-  }
-  sprintf(s, _( "HP: %d (%d)" ), p->getHp(), p->getMaxHp());
-  scourge->getSDLHandler()->texPrint(5, y + 15, s);
-  sprintf(s, _( "MP: %d (%d)" ), p->getMp(), p->getMaxMp());
-  scourge->getSDLHandler()->texPrint(5, y + 30, s);
-  sprintf(s, _( "Thirst: %d (10)" ), p->getThirst());
-  scourge->getSDLHandler()->texPrint(5, y + 45, s);
-  sprintf(s, _( "Hunger: %d (10)" ), p->getHunger());
-  scourge->getSDLHandler()->texPrint(5, y + 60, s);
-  sprintf(s, _( "AP: %d (%d)" ), p->getBattle()->getAP(), toint( p->getMaxAP() ) );
-  scourge->getSDLHandler()->texPrint(5, y + 75, s);
+  int y = 0;
+	glColor4f( 1, 0.35f, 0, 1 );
+	scourge->getSDLHandler()->texPrint( 10, y + 15, _( "Basic Statistics:" ) );
 
-	scourge->describeDefense( p, 0, y + 90 );
-  scourge->describeAttacks( p, 0, y + 105 );
+	glColor4f( 1, 1, 1, 1 );
+	scourge->getSDLHandler()->texPrint( 10, y + 30, "%s: %d", _( "HP" ), p->getMaxHp() );
+  scourge->getSDLHandler()->texPrint( 10, y + 45, "%s: %d", _( "MP" ), p->getMaxMp() );
+  scourge->getSDLHandler()->texPrint( 10, y + 60, "%s: %d", _( "AP" ), toint( p->getMaxAP() ) );
   
-  Util::drawBar( 160,  y - 3, 120, (float)p->getExp(), (float)p->getExpOfNextLevel(), 1.0f, 0.65f, 1.0f, false, theme );
-  Util::drawBar( 160, y + 12, 120, (float)p->getHp(), (float)p->getMaxHp(), -1, -1, -1, true, theme );
-  Util::drawBar( 160, y + 27, 120, (float)p->getMp(), (float)p->getMaxMp(), 0.45f, 0.65f, 1.0f, false, theme );
-  Util::drawBar( 160, y + 42, 120, (float)p->getThirst(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
-  Util::drawBar( 160, y + 57, 120, (float)p->getHunger(), 10.0f, 0.45f, 0.65f, 1.0f, false, theme );
-  Util::drawBar( 160, y + 72, 120, (float)p->getBattle()->getAP(), p->getMaxAP(), 0.45f, 0.65f, 1.0f, false, theme );
+	glColor4f( 1, 0.35f, 0, 1 );
+	scourge->getSDLHandler()->texPrint( 10, y + 75, _( "Unarmed Attack:" ) );
+  scourge->describeAttacks( p, 10, y + 90, true );
+
+	glColor4f( 1, 0.35f, 0, 1 );
+	scourge->getSDLHandler()->texPrint( 160, y + 75, _( "Unarmed Defense:" ) );
+	scourge->describeDefense( p, 160, y + 90 );
 }
 
+void CharacterInfoUI::setCreature( Window *win, 
+																	 Creature *creature ) { 
+	this->win = win;
+	this->creature = creature; 
+	creature->setPreferredWeapon( -1 );
+}
 
