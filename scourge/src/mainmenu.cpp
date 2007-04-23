@@ -29,6 +29,7 @@
 #include "shapepalette.h"
 #include "savegamedialog.h"
 #include "freetype/fontmgr.h"
+#include "sound.h"
 
 using namespace std;
 
@@ -86,6 +87,7 @@ MainMenu::MainMenu(Scourge *scourge){
 
   top = (scourge->getSDLHandler()->getScreen()->h - 600) / 2;
   openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
+	musicStarted = false;
   lastTick = 0;
   lastTickMenu = 0;
   initTextures = false;
@@ -286,6 +288,10 @@ void MainMenu::drawView() {
 
 	if( openingTop <= top ) {
     drawLogo();
+		if( !musicStarted ) {
+			scourge->getSDLHandler()->getSound()->playMusicMenu();
+			musicStarted = true;
+		}
   }
 
 	// initialize universe (nice how this is hidden here...)
@@ -344,6 +350,7 @@ void MainMenu::show() {
 
 void MainMenu::hide() { 
   openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
+	musicStarted = false;
 	freeTextures(); // free up some texture space
 }
 

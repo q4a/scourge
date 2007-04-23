@@ -189,7 +189,6 @@ void Scourge::start() {
 			if(initMainMenu) {
 				initMainMenu = false;
 				mainMenu->show();
-				getSDLHandler()->getSound()->playMusicMenu();
 			}
 	
 			getSDLHandler()->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);

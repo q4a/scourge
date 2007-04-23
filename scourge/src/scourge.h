@@ -483,7 +483,7 @@ public:
     story are deleted, the UI is hidden, etc.
   */
   void startMission( bool startInHq );  
-  
+
   /**
     Set up some variables so the mainLoop can quit and control can be transferred 
     back to startMission.
