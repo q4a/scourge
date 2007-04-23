@@ -63,6 +63,8 @@ void Canvas::drawWidget(Widget *parent) {
 
   // draw the border
 	if( drawBorders ) {
+		glDisable( GL_TEXTURE_2D );
+		glDisable( GL_BLEND );
 		if(highlightBorders) {
 			glLineWidth( 3.0f );
 		}
