@@ -98,33 +98,37 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 				// reset buttons first b/c it changes the cursor
 				bool cast = pcUi->isCastSelected();
 				bool store = pcUi->isStoreSpellSelected();
-				pcUi->hide();
-
-				int mx = pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x;
-				int my = pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - TITLE_HEIGHT;
-				int si = getSchoolIndex( mx, my );
-				int spi = getSpellIndex( mx, my, si );
-				Spell *spell = ( si > -1 && spi > -1 ? 
-												 MagicSchool::getMagicSchool( si )->getSpell( spi ) :
-												 NULL );
-				if( spell ) {
-					if( cast ) {
-						castSpell( spell );
-					} else if( store ) {
-						storeSpell( spell );
+				if( cast || store ) {
+					pcUi->hide();
+	
+					int mx = pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x;
+					int my = pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - TITLE_HEIGHT;
+					int si = getSchoolIndex( mx, my );
+					int spi = getSpellIndex( mx, my, si );
+					Spell *spell = ( si > -1 && spi > -1 ? 
+													 MagicSchool::getMagicSchool( si )->getSpell( spi ) :
+													 NULL );
+					if( spell ) {
+						if( cast ) {
+							castSpell( spell );
+						} else if( store ) {
+							storeSpell( spell );
+						}
 					}
 				}
 			} else if( mode == CAPABILITIES_MODE ) {
 				// reset buttons first b/c it changes the cursor
 				bool cast = pcUi->isCastSelected();
 				bool store = pcUi->isStoreSpellSelected();
-				pcUi->hide();
-
-				if( specialSkill ) {
-					if( cast ) {
-						useSpecialSkill( specialSkill );
-					} else if( store ) {
-						storeSpecialSkill( specialSkill );
+				if( cast || store ) {
+					pcUi->hide();
+	
+					if( specialSkill ) {
+						if( cast ) {
+							useSpecialSkill( specialSkill );
+						} else if( store ) {
+							storeSpecialSkill( specialSkill );
+						}
 					}
 				}
 			}
