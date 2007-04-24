@@ -297,9 +297,10 @@ void MapEditor::drawView() {
     Location *pos = scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX(), 
                                                     scourge->getMap()->getCursorFlatMapY(),
                                                     0 );
-    scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d C:%d,%d %s=%s %s=%s %s=%s", 
+    scourge->getSDLHandler()->texPrint( 50, 120, "F:%d,%d,%d C:%d,%d %s=%s %s=%s %s=%s", 
                                         scourge->getMap()->getCursorFlatMapX(), 
                                         scourge->getMap()->getCursorFlatMapY(), 
+																				scourge->getMap()->cursorZ,
                                         scourge->getMap()->getCursorChunkX(), 
                                         scourge->getMap()->getCursorChunkY(),
 																				_( "Shape" ),
