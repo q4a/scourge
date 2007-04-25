@@ -92,14 +92,13 @@ Board::Board(Session *session) {
     storylineMissions.push_back( current_mission );
 
 
-    vector<ConfigNode*> *vv = config->getDocument()->
-      getChildrenByName( "item" );
+    vector<ConfigNode*> *vv = node->getChildrenByName( "item" );
     for( unsigned int i = 0; vv && i < vv->size(); i++ ) {
       ConfigNode *itemNode = (*vv)[i];
       RpgItem *item = RpgItem::getItemByName( (char*)itemNode->getValueAsString( "name" ) );
       current_mission->addItem( item );
     }
-    vv = config->getDocument()->getChildrenByName( "creature" );
+    vv = node->getChildrenByName( "creature" );
     for( unsigned int i = 0; vv && i < vv->size(); i++ ) {
       ConfigNode *monsterNode = (*vv)[i];
       Monster *monster = Monster::getMonsterByName( (char*)monsterNode->getValueAsString( "name" ) );
