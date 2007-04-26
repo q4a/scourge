@@ -2667,19 +2667,23 @@ void Scourge::executeQuickSpell( Spell *spell ) {
 }
 
 void Scourge::refreshInventoryUI(int playerIndex) {
-	getPcUi()->setCreature( party->getParty( playerIndex ) );
-  getInventory()->refresh(playerIndex);
-	if( getTradeDialog()->getWindow()->isVisible() ) 
-		getTradeDialog()->updateUI();
-	refreshContainerGui();
+	if( getPcUi() ) {
+		getPcUi()->setCreature( party->getParty( playerIndex ) );
+		getInventory()->refresh(playerIndex);
+		if( getTradeDialog()->getWindow()->isVisible() ) 
+			getTradeDialog()->updateUI();
+		refreshContainerGui();
+	}
 }
 
 void Scourge::refreshInventoryUI() {
-	getPcUi()->setCreature( party->getPlayer() );
-  getInventory()->refresh();
-	if( getTradeDialog()->getWindow()->isVisible() ) 
-		getTradeDialog()->updateUI();
-	refreshContainerGui();
+	if( getPcUi() ) {
+		getPcUi()->setCreature( party->getPlayer() );
+		getInventory()->refresh();
+		if( getTradeDialog()->getWindow()->isVisible() ) 
+			getTradeDialog()->updateUI();
+		refreshContainerGui();
+	}
 }
 
 void Scourge::updatePartyUI() {

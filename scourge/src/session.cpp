@@ -604,3 +604,9 @@ Creature *Session::getCreatureByName( char *name ) {
 	}
 	return NULL;
 }
+
+void Session::setCurrentMission( Mission *mission ) { 
+	currentMission = mission; 
+	getGameAdapter()->refreshInventoryUI();
+}
+

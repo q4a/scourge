@@ -167,7 +167,7 @@ public:
   inline Party *getParty() { return party; }
   inline Preferences *getPreferences() { return getGameAdapter()->getPreferences(); }
   inline Mission *getCurrentMission() { return currentMission; }
-  inline void setCurrentMission(Mission *mission) { currentMission = mission; }
+  void setCurrentMission(Mission *mission);
 
   virtual Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
   virtual void creatureDeath( Creature *creature );
