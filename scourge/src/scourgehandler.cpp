@@ -377,10 +377,10 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
     if( scourge->playSelectedMission() ) return true;
   }
 
-  if( widget == scourge->getYesExitConfirm() ) {
+  if( widget == scourge->getExitConfirmationDialog()->okButton ) {
     scourge->movePartyToGateAndEndMission();
     return true;
-  } else if( widget == scourge->getNoExitConfirm() ) {
+  } else if( widget == scourge->getExitConfirmationDialog()->cancelButton ) {
     scourge->closeExitConfirmationDialog();
     return false;
   } else if( widget == scourge->getSquirrelRun() ||

@@ -1512,10 +1512,14 @@ void Scourge::createUI() {
   trainDialog = new TrainDialog( this );
   pcEditor = new PcEditor( this );	
 
+	exitConfirmationDialog = new ConfirmDialog( getSDLHandler(), _( "Leave level?" ) );
+	exitConfirmationDialog->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
+/*
   // FIXME: try to encapsulate this in a class...
   //  exitConfirmationDialog = NULL;
   int w = 400;
   int h = 120;
+
   exitConfirmationDialog = new Window(getSDLHandler(),
                                       (getSDLHandler()->getScreen()->w/2) - (w/2),
                                       (getSDLHandler()->getScreen()->h/2) - (h/2),
@@ -1531,7 +1535,7 @@ void Scourge::createUI() {
   exitConfirmationDialog->addWidget((Widget*)noExitConfirm);
   exitLabel = new Label(20, 25, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
-
+*/
   squirrelWin = new Window( getSDLHandler(), 5, 0, getSDLHandler()->getScreen()->w - 10, 200, _( "Squirrel Console" ),
                             getSession()->getShapePalette()->getGuiTexture(), true,
                             Window::BASIC_WINDOW, getSession()->getShapePalette()->getGuiTexture2() );
@@ -2148,6 +2152,7 @@ void Scourge::createPartyUI() {
                         Scourge::PARTY_GUI_HEIGHT,
                         version, false, Window::BASIC_WINDOW,
                         "default" );
+	mainWin->setLocked( true );
   cards = new CardContainer(mainWin);
 
 	int offsetX = 64;
@@ -2860,7 +2865,7 @@ void Scourge::teleport( bool toHQ ) {
   } else if( toHQ ) {
     //oldStory = currentStory = 0;
     teleporting = true;
-    exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+    exitConfirmationDialog->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
     party->toggleRound(true);
     exitConfirmationDialog->setVisible(true);
   } else {
@@ -2871,7 +2876,7 @@ void Scourge::teleport( bool toHQ ) {
 		currentStory = (int)( (float)( session->getCurrentMission()->getDepth() ) * rand() / RAND_MAX );
 		changingStory = true;
 
-    exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+    exitConfirmationDialog->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
     party->toggleRound(true);
     exitConfirmationDialog->setVisible(true);
   }
@@ -3338,7 +3343,7 @@ bool Scourge::playSelectedMission() {
 
 void Scourge::movePartyToGateAndEndMission() {
 	if( teleporting ) getSDLHandler()->getSound()->playSound( Sound::TELEPORT );
-  exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
+  exitConfirmationDialog->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->setVisible(false);
   endMission();
   // move the creature to the gate so it will be near it on the next level
@@ -3362,7 +3367,7 @@ void Scourge::closeExitConfirmationDialog() {
   teleporting = false;
   changingStory = false;
   currentStory = oldStory;
-  exitLabel->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
+  exitConfirmationDialog->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->setVisible(false);
 }
 
@@ -3408,13 +3413,13 @@ void Scourge::updateBoard() {
 // I have no recollection about what this is for...
 void Scourge::mouseClickWhileExiting() {
   if( teleporting && !exitConfirmationDialog->isVisible() ) {
-    exitLabel->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
+    exitConfirmationDialog->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
     party->toggleRound(true);
     exitConfirmationDialog->setVisible(true);
   } else if( changingStory && !exitConfirmationDialog->isVisible() ) {
-		exitLabel->setText( oldStory < currentStory ? 
-												_( Constants::messages[Constants::USE_GATE_LABEL][0] ) :
-												_( Constants::messages[Constants::USE_GATE_LABEL][1] ) );
+		exitConfirmationDialog->setText( oldStory < currentStory ? 
+																		 _( Constants::messages[Constants::USE_GATE_LABEL][0] ) :
+																		 _( Constants::messages[Constants::USE_GATE_LABEL][1] ) );
     party->toggleRound(true);
     exitConfirmationDialog->setVisible(true);
   }
