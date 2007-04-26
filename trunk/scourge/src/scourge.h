@@ -132,12 +132,12 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   char infoMessage[2000];
   Inventory *inventory;
 	PcUi *pcui;
-  Window *exitConfirmationDialog;
+  ConfirmDialog *exitConfirmationDialog;
   TextDialog *textDialog;
   InfoGui *infoGui;
   ConversationGui *conversationGui;
-  Label *exitLabel;
-  Button *yesExitConfirm, *noExitConfirm;
+  //Label *exitLabel;
+  //Button *yesExitConfirm, *noExitConfirm;
   int movingX, movingY, movingZ;
   Item *movingItem;  
   GLint lastTick;
@@ -276,8 +276,8 @@ public:
 
 	inline TextScroller *getDescriptionScroller() { return descriptionScroller; }
 	inline Window *getTBCombatWin() { return tbCombatWin; }
-  inline Button *getYesExitConfirm() { return yesExitConfirm; }
-  inline Button *getNoExitConfirm() { return noExitConfirm; }
+  //inline Button *getYesExitConfirm() { return yesExitConfirm; }
+  //inline Button *getNoExitConfirm() { return noExitConfirm; }
   inline Button *getInventoryButton() { return inventoryButton; }
   inline Button *getEndTurnButton() { return endTurnButton; }
   inline Button *getOptionsButton() { return optionsButton; }
@@ -539,7 +539,7 @@ public:
 
   void closeExitConfirmationDialog();
 
-  inline Window *getExitConfirmationDialog() { return exitConfirmationDialog; }
+  inline ConfirmDialog *getExitConfirmationDialog() { return exitConfirmationDialog; }
 
   /**
     A helper method to create a window with the "wood" look. (e.g. a container ui)
