@@ -626,6 +626,7 @@ void Mission::checkMissionCompleted() {
       return;
     }
   }
+	board->getSession()->getGameAdapter()->refreshInventoryUI();
   if( storyLine ) board->storylineMissionCompleted( this );
 }
 
