@@ -809,6 +809,10 @@ bool MainMenu::handleEvent(SDL_Event *event) {
     return false;
   }
 
+	if( scourge->getSaveDialog()->getWindow()->isVisible() ) {
+		return false;
+  }
+
   if( savegameDialog->getWindow()->isVisible() ) {
 		savegameDialog->handleEvent( NULL, event );
     return false;

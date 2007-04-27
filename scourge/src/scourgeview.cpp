@@ -695,29 +695,16 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   }
 
   // draw state mods
-  if( !creature->getStateMod( StateMod::dead ) &&
-      ( groupMode || player || creature->isMonster() || wanderingHero )) {
+  if( !creature->getStateMod( StateMod::dead ) && 
+			( groupMode || player || creature->isMonster() || wanderingHero ) ) {
     glEnable(GL_TEXTURE_2D);
     int n = 16;
     int count = 0;
+		GLuint icon;
+		char name[255];
+		Color color;
     for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
-
-			GLuint icon = 255;
-			if( !creature->isMonster() &&
-					!wanderingHero &&
-					i == StateMod::STATE_MOD_COUNT && 
-					creature->getThirst() <= 5 ) {
-				icon = scourge->getSession()->getShapePalette()->getThirstIcon();
-			} else if( !creature->isMonster() && 
-								 !wanderingHero &&
-								 i == StateMod::STATE_MOD_COUNT + 1 &&
-								 creature->getHunger() <= 5 ) {
-				icon = scourge->getSession()->getShapePalette()->getHungerIcon();
-			} else if( creature->getStateMod( i ) && i != StateMod::dead ) {
-				icon = scourge->getSession()->getShapePalette()->getStatModIcon( i );
-			}
-
-			if( icon < 255 ) {
+			if( scourge->getStateModIcon( &icon, name, &color, creature, i ) ) {
         glPushMatrix();
         glTranslatef( xpos2 + w,
                       ypos2 - ( w * 2.0f ) - ( 1.0f / DIV ) + w,
