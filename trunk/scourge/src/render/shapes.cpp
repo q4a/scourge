@@ -312,14 +312,14 @@ void Shapes::initialize() {
                                                      shapeValueVector.end());
 
   // add some special, "internal" shapes
-  shapes[shapeCount] = 
-  new GLTorch(textureGroup[14], textures[9].id,
-              1, 1, 2,
-              strdup("SPELL_FIREBALL"),
-              0,
-              strtoul("6070ffff", NULL, 16),
-              shapeCount, 
-              torchback, Constants::SOUTH); // Hack: use SOUTH for a spell
+	shapes[shapeCount] =
+		new GLTorch(textureGroup[ 0 ], findTextureByName( "flame.bmp", true ),
+								1, 1, 2,
+								strdup("SPELL_FIREBALL"),
+								0,
+								strtoul("6070ffff", NULL, 16),
+								shapeCount, 
+								torchback, Constants::SOUTH); // Hack: use SOUTH for a spell
   shapes[shapeCount]->setSkipSide(false);
   shapes[shapeCount]->setStencil(false);
   shapes[shapeCount]->setLightBlocking(false);  
