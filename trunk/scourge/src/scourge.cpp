@@ -2575,7 +2575,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 
 bool Scourge::getStateModIcon( GLuint *icon, char *name, Color *color, Creature *p, int stateMod, bool protect ) {
 	*icon = 0;
-	if( !protect && stateMod == StateMod::STATE_MOD_COUNT && p->getThirst() <= 5 ) {
+	if( !protect && stateMod == StateMod::STATE_MOD_COUNT && !p->isMonster() && p->getThirst() <= 5 ) {
 		*icon = getSession()->getShapePalette()->getThirstIcon();
 		strcpy( name, _( "Thirst" ) );
 		if( p->getThirst() <= 3 ) {
@@ -2589,7 +2589,7 @@ bool Scourge::getStateModIcon( GLuint *icon, char *name, Color *color, Creature 
 			color->b = 1;
 			color->a = 0.5f;
 		}
-	} else if( !protect && stateMod == StateMod::STATE_MOD_COUNT + 1 && p->getHunger() <= 5 ) {
+	} else if( !protect && stateMod == StateMod::STATE_MOD_COUNT + 1 && !p->isMonster() && p->getHunger() <= 5 ) {
 		*icon = getSession()->getShapePalette()->getHungerIcon();
 		strcpy( name, _( "Hunger" ) );
 		if( p->getHunger() <= 3 ) {
