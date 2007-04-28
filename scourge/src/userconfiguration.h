@@ -87,6 +87,8 @@ private:
   bool ovalCutoutShown;
   bool outlineInteractiveItems;
   int combatInfoDetail;
+  bool hideInventoriesOnMove;
+
 
   // audio settings
   bool soundEnabled;
@@ -129,6 +131,7 @@ private:
   inline bool isBattleTurnBased() { return turnBasedBattle; }
   inline bool isOvalCutoutShown() { return ovalCutoutShown; }
   inline bool isOutlineInteractiveItems() { return outlineInteractiveItems; }
+  inline bool isHideInventoriesOnMove() { return hideInventoriesOnMove; }
   inline int getCombatInfoDetail() { return combatInfoDetail; }
   inline int getSoundFreq() { return soundFreq; }
   inline bool isSoundEnabled() { return soundEnabled; }

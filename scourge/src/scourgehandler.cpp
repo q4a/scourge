@@ -485,10 +485,9 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, boo
 return;
 }
 
-    if(shouldCloseAllContainers && !scourge->inTurnBasedCombatPlayerTurn())
+    if(shouldCloseAllContainers && !scourge->inTurnBasedCombatPlayerTurn() && scourge->getUserConfiguration()->isHideInventoriesOnMove())
     {
 	scourge->closeAllContainerGuis();
-
     }	
 
     // click on the scourge->getMap()
