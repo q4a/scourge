@@ -196,10 +196,15 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 
 	
 	if( creature ) {
+		glScissor( pcUi->getWindow()->getX() + x + 12, 
+							 pcUi->getScourge()->getScreenHeight() - ( pcUi->getWindow()->getY() + y + TITLE_HEIGHT + 14 + 77 ), 
+							 62, 77 );
+		glEnable( GL_SCISSOR_TEST );
 		glPushMatrix();
 		glTranslatef( 12, 14, 0 );
-		pcUi->getScourge()->drawPortrait( creature, 62, 77 );
+		pcUi->getScourge()->drawPortrait( creature, 62 + 20, 77, 10 );
 		glPopMatrix();
+		glDisable( GL_SCISSOR_TEST );
 	}
 
 	int y = 25;
