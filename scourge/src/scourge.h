@@ -764,7 +764,7 @@ protected:
 
 	bool doLoadGame( Session *session, char *dirName, char *error );
 
-	void drawPortrait( Widget *w, Creature *p );
+	void drawPortrait( Widget *w, Creature *p=NULL );
 
 	int initMultiplayer();
 

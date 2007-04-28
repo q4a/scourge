@@ -27,7 +27,7 @@
  */
  
 // battle.cpp
-#define DEBUG_BATTLE true
+#define DEBUG_BATTLE false
 
 // calendar.cpp
 #define CALENDAR_DEBUG 0

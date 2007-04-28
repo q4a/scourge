@@ -166,9 +166,13 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 
 // FIXME: reuse this in loadmap
 void Persist::loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY ) {
-  Uint32 i32;
+  Uint32 version;
+	Uint8 i8;
   Uint16 i16;
-  file->read( &i32 );
+  file->read( &version );
+	if( version >= 24 ) {
+		file->read( &i8 );
+	}
   file->read( &i16 );
   file->read( &i16 );
   file->read( gridX );

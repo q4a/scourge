@@ -2331,7 +2331,7 @@ void Scourge::drawWidgetContents(Widget *w) {
 	}
 	for( int i = party->getPartySize(); i < MAX_PARTY_SIZE; i++ ) {
 		if(playerInfo[i] == w) {
-			drawPortrait( w, party->getParty( i ) );
+			drawPortrait( w );
 			return;
 		}
 	}
