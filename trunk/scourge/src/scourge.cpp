@@ -2329,6 +2329,12 @@ void Scourge::drawWidgetContents(Widget *w) {
       return;
 		}
 	}
+	for( int i = party->getPartySize(); i < MAX_PARTY_SIZE; i++ ) {
+		if(playerInfo[i] == w) {
+			drawPortrait( w, party->getParty( i ) );
+			return;
+		}
+	}
   for( int t = 0; t < 12; t++ ) {
     if( quickSpell[t] == w ) {
       quickSpell[t]->setGlowing( pcui->getStorable() != NULL ? true : false );
@@ -2438,7 +2444,9 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
   glPushMatrix();
   glEnable( GL_TEXTURE_2D );
   glColor4f( 1, 1, 1, 1 );
-  if( p->getStateMod( StateMod::dead ) ) {
+	if( p == NULL ) {
+		glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getNamedTexture( "nobody" ) );
+	} else if( p->getStateMod( StateMod::dead ) ) {
     glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getDeathPortraitTexture() );
   } else {
     glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() ) );
@@ -2456,120 +2464,125 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
   glEnd();
   glDisable( GL_TEXTURE_2D );
 
-  bool shade = false;
-  bool darker = false;
-  if( inTurnBasedCombat() ) {
-    bool found = false;
-    for( int i = battleTurn; i < (int)battleRound.size(); i++ ) {
-      if( battleRound[i]->getCreature() == p ) {
-        found = true;
-        break;
-      }
-    }
-    // already had a turn in battle
-    if( !found ) {
-      glColor4f( 0, 0, 0, 0.75f );
-      shade = true;
-      darker = true;
-    }
-  }
+	if( p ) {
 
-  if( p->getStateMod( StateMod::possessed ) ) {
-    glColor4f( ( darker ? 0.5f : 1.0f ), 0, 0, 0.5f );
-    shade = true;
-  } else if( p->getStateMod( StateMod::invisible ) ) {
-    glColor4f( 0, ( darker ? 0.375f : 0.75f ), ( darker ? 0.5f : 1.0f ), 0.5f );
-    shade = true;
-  } else if( p->getStateMod( StateMod::poisoned ) ) {
-    glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.375f : 0.75f ), 0, 0.5f );
-    shade = true;
-  } else if( p->getStateMod( StateMod::blinded ) ) {
-    glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.5f : 1.0f ), ( darker ? 0.5f : 1.0f ), 0.5f );
-    shade = true;
-  } else if( p->getStateMod( StateMod::cursed ) ) {
-    glColor4f( ( darker ? 0.375f : 0.75f ), 0, ( darker ? 0.375f : 0.75f ), 0.5f );
-    shade = true;
-  }
-  if( shade ) {
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glBegin( GL_QUADS );
-    glVertex2i( 0, 0 );
-    glVertex2i( width, 0 );
-    glVertex2i( width, height );
-    glVertex2i( 0, height );
-    glEnd();
-    glDisable( GL_BLEND );
-  }
+		bool shade = false;
+		bool darker = false;
+		if( inTurnBasedCombat() ) {
+			bool found = false;
+			for( int i = battleTurn; i < (int)battleRound.size(); i++ ) {
+				if( battleRound[i]->getCreature() == p ) {
+					found = true;
+					break;
+				}
+			}
+			// already had a turn in battle
+			if( !found ) {
+				glColor4f( 0, 0, 0, 0.75f );
+				shade = true;
+				darker = true;
+			}
+		}
+	
+		if( p->getStateMod( StateMod::possessed ) ) {
+			glColor4f( ( darker ? 0.5f : 1.0f ), 0, 0, 0.5f );
+			shade = true;
+		} else if( p->getStateMod( StateMod::invisible ) ) {
+			glColor4f( 0, ( darker ? 0.375f : 0.75f ), ( darker ? 0.5f : 1.0f ), 0.5f );
+			shade = true;
+		} else if( p->getStateMod( StateMod::poisoned ) ) {
+			glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.375f : 0.75f ), 0, 0.5f );
+			shade = true;
+		} else if( p->getStateMod( StateMod::blinded ) ) {
+			glColor4f( ( darker ? 0.5f : 1.0f ), ( darker ? 0.5f : 1.0f ), ( darker ? 0.5f : 1.0f ), 0.5f );
+			shade = true;
+		} else if( p->getStateMod( StateMod::cursed ) ) {
+			glColor4f( ( darker ? 0.375f : 0.75f ), 0, ( darker ? 0.375f : 0.75f ), 0.5f );
+			shade = true;
+		}
+		if( shade ) {
+			glEnable( GL_BLEND );
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+			glBegin( GL_QUADS );
+			glVertex2i( 0, 0 );
+			glVertex2i( width, 0 );
+			glVertex2i( width, height );
+			glVertex2i( 0, height );
+			glEnd();
+			glDisable( GL_BLEND );
+		}
+	}
 
   glPopMatrix();
 
-  glColor3f( 1, 1, 1 );
-  getSDLHandler()->texPrint( 5, 12, "%s", p->getName() );
+	if( p ) {
+		glColor3f( 1, 1, 1 );
+		getSDLHandler()->texPrint( 5, 12, "%s", p->getName() );
 
-	char *message = NULL;
-
-	// can train?
-	if( p->getCharacter()->getChildCount() > 0 &&
-			p->getCharacter()->getChild( 0 )->getMinLevelReq() <= p->getLevel() ) {
-		message = Constants::getMessage( Constants::TRAINING_AVAILABLE );
-	} else if( p->getAvailableSkillMod() > 0 ) {
-		message = Constants::getMessage( Constants::SKILL_POINTS_AVAILABLE );
-	}
-
-	if( message ) {
-		glColor4f( 0, 0, 0, 0.4f );
-		glPushMatrix();
-		glTranslatef( 3, 14, 0 );
-		glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glBegin( GL_QUADS );
-		glVertex2i( 0, 0 );
-    glVertex2i( 40, 0 );
-    glVertex2i( 40, 13 );
-    glVertex2i( 0, 13 );
-		glEnd();
-		glDisable( GL_BLEND );
-		glPopMatrix();
-		glColor3f( 1, 0.75f, 0 );
-		getSDLHandler()->texPrint( 5, 24, message );
-	}
-
-  // show stat mods
-  glEnable(GL_TEXTURE_2D);
-  glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
-  int xp = 0;
-  int yp = 1;
-  int n = 12;
-  int row = ( width / (int)( n + 1 ) );
-	GLuint icon;
-	char name[255];
-	Color color;
-  for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
-		if( getStateModIcon( &icon, name, &color, p, i ) ) {
-			glBindTexture( GL_TEXTURE_2D, icon );
-			glColor4f( color.r, color.g, color.b, color.a );
+		char *message = NULL;
+	
+		// can train?
+		if( p->getCharacter()->getChildCount() > 0 &&
+				p->getCharacter()->getChild( 0 )->getMinLevelReq() <= p->getLevel() ) {
+			message = Constants::getMessage( Constants::TRAINING_AVAILABLE );
+		} else if( p->getAvailableSkillMod() > 0 ) {
+			message = Constants::getMessage( Constants::SKILL_POINTS_AVAILABLE );
+		}
+	
+		if( message ) {
+			glColor4f( 0, 0, 0, 0.4f );
 			glPushMatrix();
-			glTranslatef( 5 + xp * (n + 1), height - (yp * (n + 1)) - n, 0 );
+			glTranslatef( 3, 14, 0 );
+			glEnable( GL_BLEND );
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			glBegin( GL_QUADS );
-			glNormal3f( 0, 0, 1 );
-			glTexCoord2f( 0, 0 );
-			glVertex3f( 0, 0, 0 );
-			glTexCoord2f( 0, 1 );
-			glVertex3f( 0, n, 0 );
-			glTexCoord2f( 1, 1 );
-			glVertex3f( n, n, 0 );
-			glTexCoord2f( 1, 0 );
-			glVertex3f( n, 0, 0 );
+			glVertex2i( 0, 0 );
+			glVertex2i( 40, 0 );
+			glVertex2i( 40, 13 );
+			glVertex2i( 0, 13 );
 			glEnd();
+			glDisable( GL_BLEND );
 			glPopMatrix();
-      xp++;
-      if(xp >= row) {
-        xp = 0;
-        yp++;
-      }
-    }
-  }
+			glColor3f( 1, 0.75f, 0 );
+			getSDLHandler()->texPrint( 5, 24, message );
+		}
+	
+		// show stat mods
+		glEnable(GL_TEXTURE_2D);
+		glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+		int xp = 0;
+		int yp = 1;
+		int n = 12;
+		int row = ( width / (int)( n + 1 ) );
+		GLuint icon;
+		char name[255];
+		Color color;
+		for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
+			if( getStateModIcon( &icon, name, &color, p, i ) ) {
+				glBindTexture( GL_TEXTURE_2D, icon );
+				glColor4f( color.r, color.g, color.b, color.a );
+				glPushMatrix();
+				glTranslatef( 5 + xp * (n + 1), height - (yp * (n + 1)) - n, 0 );
+				glBegin( GL_QUADS );
+				glNormal3f( 0, 0, 1 );
+				glTexCoord2f( 0, 0 );
+				glVertex3f( 0, 0, 0 );
+				glTexCoord2f( 0, 1 );
+				glVertex3f( 0, n, 0 );
+				glTexCoord2f( 1, 1 );
+				glVertex3f( n, n, 0 );
+				glTexCoord2f( 1, 0 );
+				glVertex3f( n, 0, 0 );
+				glEnd();
+				glPopMatrix();
+				xp++;
+				if(xp >= row) {
+					xp = 0;
+					yp++;
+				}
+			}
+		}
+	}
   glDisable(GL_TEXTURE_2D);
 }
 
