@@ -313,6 +313,8 @@ UserConfiguration::UserConfiguration(){
     outlineInteractiveItems = true;
     combatInfoDetail = 0;
     monsterToughness = 0;
+    hideInventoriesOnMove = true;
+
 
     // audio settings
     soundEnabled = true;
@@ -565,6 +567,7 @@ void UserConfiguration::saveConfiguration(){
     sprintf(textLine, "set ovalcutoutshown %s\n", ovalCutoutShown ? "true":"false");
     writeFile(configFile, textLine);
     sprintf(textLine, "set outlineinteractiveitems %s\n", outlineInteractiveItems ? "true":"false");
+    sprintf(textLine, "set hideinventoriesonmove %s\n", hideInventoriesOnMove ? "true":"false");
     writeFile(configFile, textLine);
     sprintf(textLine, "set combatinfodetail %d\n", combatInfoDetail );
     writeFile(configFile, textLine);
@@ -654,6 +657,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
        s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap" ||
        s1 == "keepmapsize" || s1 == "frameonfullscreen" || s1 == "turnbasedbattle" ||
        s1 == "ovalcutoutshown" || s1 == "outlineinteractiveitems" ||
+       s1 == "hideinventoriesonmove" ||
        s1 == "soundenabled" || s1 == "alwaysshowpath" || s1 == "tooltipenabled" || 
 			 s1 == "enablescreenshots" ){
         if(s2 == "true"){
@@ -750,6 +754,8 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
       ovalCutoutShown = paramValue;
     } else if( s1 == "outlineinteractiveitems" ) {
       outlineInteractiveItems = paramValue;
+    } else if(s1 == "hideinventoriesonmove" ) {
+      hideInventoriesOnMove = paramValue;
     } else if(s1 == "soundenabled") {
       soundEnabled = paramValue;
     }
@@ -1149,6 +1155,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set turnbasedbattle true" << endl;
   configFile << "set ovalcutoutshown true" << endl;
   configFile << "set outlineinteractiveitems true" << endl;
+  configFile << "set hideinventoriesonmove true" << endl;
   configFile << "set combatinfodetail 0" << endl;
   configFile << "set alwaysshowpath false" << endl;
   configFile << "set tooltipenabled true" << endl;
