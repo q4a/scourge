@@ -10,7 +10,9 @@ function enterMap( mapName ) {
   print( "You are on the " + mapName + " map.\n" );
 	print( "Chapter=" + scourgeGame.getMission().getChapter() + " Depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
 
-	if( scourgeGame.getMission().getChapter() == 7 && mapName == "library3" ) {
+	if( scourgeGame.getMission().getChapter() == 5 && mapName == "library" ) {
+		initChapter6();
+	} else if( scourgeGame.getMission().getChapter() == 7 && mapName == "library3" ) {
 		initChapter8();
 	} else if( scourgeGame.getMission().getChapter() == 8 && mapName == "temple" ) {
 		initChapter9();
@@ -362,10 +364,21 @@ function damageHandlerCloakSafePass( attacker, item ) {
   }
 }
 
+function initChapter6() {
+	// lock the door
+	if( scourgeGame.getMission().getDungeonDepth() == 3 ) {
+		scourgeGame.getMission().setDoorLocked( 292, 209, 0, true );
+	}
+}
+
 function initChapter8() {
 	// modify sabien's intro text
 	i <- 0;
 	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
+
+		// unlock the door
+		scourgeGame.getMission().setDoorLocked( 292, 209, 0, false );
+
 		for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
 			if( scourgeGame.getMission().getCreature( i ).getName() == "Sabien Gartu" ) {
 				scourgeGame.getMission().getCreature( i ).setIntro( "_chapter8_" );
