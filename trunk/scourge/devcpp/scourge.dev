@@ -1,7 +1,7 @@
 [Project]
 FileName=scourge.dev
 Name=scourge
-UnitCount=314
+UnitCount=316
 Type=0
 Ver=1
 ObjFiles=
@@ -10,9 +10,9 @@ Libs=
 PrivateResource=scourge_private.rc
 ResourceIncludes=
 MakeIncludes=
-Compiler=-g -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@__@@__@@_
-CppCompiler=-g -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@_
-Linker=-g -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -lfreetype -lSDL_mixer -lSDL_net -lz -lSDL_ttf -lintl -liconv_@@_
+Compiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@__@@__@@_
+CppCompiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@_
+Linker=-O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -lfreetype -lSDL_mixer -lSDL_net -lz -lSDL_ttf -lintl -liconv_@@_
 IsCpp=1
 Icon=scourge.ico
 ExeOutput=..
@@ -3179,6 +3179,26 @@ BuildCmd=
 
 [Unit314]
 FileName=..\src\portrait.cpp
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit315]
+FileName=..\src\textscroller.cpp
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit316]
+FileName=..\src\textscroller.h
 CompileCpp=1
 Folder=scourge
 Compile=1
