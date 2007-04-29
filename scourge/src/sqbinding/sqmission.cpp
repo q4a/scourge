@@ -47,6 +47,8 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "ascendDungeon", SqMission::_ascendDungeon, 0, 0, "Travel one dungeon level higher." },
 	{ "bool", "areQuakesEnabled", SqMission::_areQuakesEnabled, 0, 0, "Are earthquakes enabled on this level?" },
 	{ "void", "setQuakesEnabled", SqMission::_setQuakesEnabled, 0, 0, "Set to true if quakes are enabled on this level. (False by default.)" },
+	{ "void", "setDoorLocked", SqMission::_setDoorLocked, 0, 0, "Set the door located at x,y,z to locked value (true=locked, false=unlocked)" },
+	{ "bool", "isDoorLocked", SqMission::_isDoorLocked, 0, 0, "Is the door at location x,y,z locked?" },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -191,6 +193,36 @@ int SqMission::_setQuakesEnabled( HSQUIRRELVM vm ) {
 
 int SqMission::_areQuakesEnabled( HSQUIRRELVM vm ) {
 	SQBool b = SqBinding::sessionRef->getMap()->areQuakesEnabled();
+	sq_pushbool( vm, b );
+	return 1;
+}
+
+int SqMission::_setDoorLocked( HSQUIRRELVM vm ) {
+	GET_BOOL( locked )
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	/*
+	cerr << "isDoor=" << SqBinding::sessionRef->getMap()->isDoor( x, y ) << endl;
+	Location *pos = SqBinding::sessionRef->getMap()->getLocation( x, y, z );
+	if( pos ) {
+		cerr << "\tpos=" << pos->shape->getName() << " at: " << pos->x << "," << pos->y << "," << pos->z << endl;
+	} else {
+		cerr << "\tpos=NULL" << endl;
+	}
+	cerr << "BEFORE locked=" << SqBinding::sessionRef->getMap()->isLocked( x, y, z ) << endl;
+	cerr << "Setting door at " << x << "," << y << "," << z << " to locked: " << locked << endl;
+	*/
+	SqBinding::sessionRef->getMap()->setLocked( x, y, z, locked );
+	//cerr << "AFTER locked=" << SqBinding::sessionRef->getMap()->isLocked( x, y, z ) << endl;
+	return 0;
+}
+
+int SqMission::_isDoorLocked( HSQUIRRELVM vm ) {
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	SQBool b = SqBinding::sessionRef->getMap()->isLocked( x, y, z );
 	sq_pushbool( vm, b );
 	return 1;
 }
