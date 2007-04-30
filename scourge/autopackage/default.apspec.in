@@ -71,6 +71,7 @@ require @libsdl.org/sdl 1.2
 require @libsdl.org/sdl_net 1.2
 require @libsdl.org/sdl_mixer 1.2
 require @freetype.org/freetype2 2.0
+require @libsdl.org/sdl_ttf 2.0
 
 # The user may have already installed the program from an RPM.
 # Let's try and uninstall it first. We only need one call if 3rd party

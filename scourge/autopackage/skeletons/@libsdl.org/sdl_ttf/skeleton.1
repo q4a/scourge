@@ -1,0 +1,16 @@
+[Meta]
+RootName: @libsdl.org/sdl_ttf
+DisplayName: SDL_ttf
+ShortName: sdl_ttf
+Skeleton-Author: Gabor Torok <gabortorok@users.sourceforge.net>
+Skeleton-Version: 1
+
+[Notes]
+The interface version follows the software version in this library.
+This skeleton can detect 1.2 and 1.0
+
+[Test]
+testForLib libSDL_ttf-2.0.so.0 && {
+	INTERFACE_VERSIONS="2.0"
+	SOFTWARE_VERSIONS="2.0"
+}
