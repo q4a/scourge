@@ -77,10 +77,17 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 #   include <sys/stat.h>
 #endif
 
+// Couldn't figure out gettext for the macos x. :-(
+#ifdef NO_GETTEXT
+#define _(String) String
+#define gettext_noop(String) String
+#define N_(String) gettext_noop (String)
+#else
 #include <libintl.h>
 #define _(String) gettext (String)
 #define gettext_noop(String) String
 #define N_(String) gettext_noop (String)
+#endif
 
 #ifdef WIN32
 #define SEPARATOR '\\'
