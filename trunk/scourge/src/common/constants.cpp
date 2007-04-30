@@ -532,6 +532,7 @@ void Constants::checkTexture(char *message, int w, int h) {
 
 #define TEST_FILE "scourge.mo"
 int Constants::findLocaleDir() {
+#ifndef NO_GETTEXT  
 	// Set the working locale. 
 	// To change it, change the env var LANGUAGE or LANG (order of precedence.)
 	setlocale( LC_ALL, "C" );
@@ -543,7 +544,7 @@ int Constants::findLocaleDir() {
 	bind_textdomain_codeset( "scourge", "UTF8" );
 
 	textdomain( "scourge" ); 
-
+#endif
 	return 1;
 }
 
