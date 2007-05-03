@@ -234,6 +234,14 @@ src/session.h
 src/containergui.h
 src/board.h
 src/configlang.h
+src/pcui.h
+src/pcui.cpp
+src/equip.h
+src/equip.cpp
+src/portrait.h
+src/portrait.cpp
+src/inven.h
+src/inven.cpp
 ../scourge_data/config/scourge.cfg
 ../scourge_data/config/map.cfg
 ../scourge_data/config/item.cfg
