@@ -286,7 +286,6 @@ bool Equip::startDrag( Widget *widget, int x, int y ) {
 				pcUi->getScourge()->showMessageDialog( _( "Can't remove cursed item!" ) );
 				return false;
 			} else {
-	
 				creature->removeInventory( creature->findInInventory( item ) );
 				pcUi->getScourge()->startItemDragFromGui( item );
 				char message[120];

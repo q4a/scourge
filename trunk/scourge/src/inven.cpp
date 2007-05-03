@@ -186,11 +186,12 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
 		// what's equiped at this inventory slot?
 		Item *item = getItemAtPos( x, y );
 		if( item ) {
+			/*
 			if( item->isCursed() ) {
 				pcUi->getScourge()->showMessageDialog( _( "Can't remove cursed item!" ) );
 				return false;
 			} else {
-	
+				*/
 				creature->removeInventory( creature->findInInventory( item ) );
 				pcUi->getScourge()->startItemDragFromGui( item );
 				char message[120];
@@ -200,7 +201,7 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
 				pcUi->getScourge()->addDescription( message );
 	
 				return true;
-			}
+			//}
 		}
 	}
   return false;
