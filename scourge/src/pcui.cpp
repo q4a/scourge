@@ -42,7 +42,7 @@ using namespace std;
 #define PORTRAIT_HEIGHT 300
 #define WIN_WIDTH EQUIP_WIDTH + 320 + 40 + 35
 #define WIN_HEIGHT EQUIP_HEIGHT + 240
-#define DEFAULT_STATUS "Right click for info, double-click to open."
+#define DEFAULT_STATUS N_( "Right click for info, double-click to open." )
 
 #define EQUIP_CARD 0
 #define MISSION_CARD 0
