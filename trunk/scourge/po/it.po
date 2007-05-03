@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-05-02 20:53-0700\n"
+"POT-Creation-Date: 2007-05-03 17:20+0200\n"
 "PO-Revision-Date: 2007-02-27 19:01+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian\n"
@@ -118,8 +118,8 @@ msgstr "Inizializzazione mappa"
 msgid "Finishing map"
 msgstr "Finitura mappa"
 
-#: src/render/map.cpp:3399
-msgid "Loading creatures"
+#: src/render/map.cpp:3399 src/rpg/monster.cpp:26 src/session.cpp:112
+msgid "Loading Creatures"
 msgstr "Caricamento creature"
 
 #: src/render/map.cpp:3417
@@ -156,6 +156,10 @@ msgstr "No"
 #: src/rpg/specialskill.cpp:41
 msgid "Loading Abilities"
 msgstr "Caricamento talenti"
+
+#: src/rpg/spell.cpp:91 src/session.cpp:103
+msgid "Loading Spells"
+msgstr "Caricamento incantesimi"
 
 #: src/rpg/rpgitem.cpp:39
 msgid "Slashing"
@@ -493,11 +497,11 @@ msgstr "Donazione al Tempio"
 
 #: src/common/constants.cpp:146
 msgid "You don't meet the prerequisites for this capability."
-msgstr "Non possiedi i prerequisiti per questa capacità."
+msgstr "Non possiedi i prerequisiti per questo talento."
 
 #: src/common/constants.cpp:147
 msgid "You cannot activate an automatic capability."
-msgstr "Non puoi attivare una capacità automatica"
+msgstr "Non puoi attivare un talento automatico"
 
 #: src/common/constants.cpp:148
 msgid "A two handed item requires two free hands."
@@ -687,7 +691,7 @@ msgstr "%1$s lancerà %2$s."
 #: src/creature.cpp:1250
 #, c-format
 msgid "%1$s will use capability %2$s."
-msgstr "%1$s userà la capacità %2$s."
+msgstr "%1$s userà il talento %2$s."
 
 #: src/creature.cpp:1635
 #, c-format
@@ -752,9 +756,9 @@ msgstr ""
 msgid "max"
 msgstr "max"
 
-#: src/shapepalette.cpp:356 src/shapepalette.cpp:382 src/shapepalette.cpp:405
-#: src/shapepalette.cpp:440 src/shapepalette.cpp:569 src/shapepalette.cpp:595
-#: src/shapepalette.cpp:622 src/session.cpp:91
+#: src/shapepalette.cpp:26 src/shapepalette.cpp:356 src/shapepalette.cpp:382
+#: src/shapepalette.cpp:405 src/shapepalette.cpp:440 src/shapepalette.cpp:569
+#: src/shapepalette.cpp:595 src/shapepalette.cpp:622 src/session.cpp:91
 msgid "Loading Shapes"
 msgstr "Caricamento forme"
 
@@ -766,23 +770,15 @@ msgstr "Caricamento luoghi"
 msgid "Loading Items"
 msgstr "Caricamento oggetti"
 
-#: src/session.cpp:103
-msgid "Loading Spells"
-msgstr "Caricamento incantesimi"
-
 #: src/session.cpp:107
 msgid "Loading Characters"
 msgstr "Caricamento personaggi"
-
-#: src/session.cpp:112
-msgid "Loading Creatures"
-msgstr "Caricamento creature"
 
 #: src/session.cpp:115
 msgid "Loading Portraits"
 msgstr "Caricamento ritratti"
 
-#: src/session.cpp:120
+#: src/session.cpp:120 src/board.cpp:60 src/board.cpp:77
 msgid "Loading Missions"
 msgstr "Caricamento missioni"
 
@@ -835,8 +831,8 @@ msgid "(CAVE)"
 msgstr "(GROTTA)"
 
 #: src/board.cpp:305 src/inventory.cpp:999 src/inventory.cpp:1016
-#: src/inventory.cpp:1036 src/equip.cpp:676 src/equip.cpp:693
-#: src/equip.cpp:713
+#: src/inventory.cpp:1036 src/equip.cpp:675 src/equip.cpp:692
+#: src/equip.cpp:712
 msgid "(completed)"
 msgstr "(completato)"
 
@@ -966,8 +962,8 @@ msgid "MP"
 msgstr "PM"
 
 #: src/characterinfo.cpp:54
-msgid "Unarmed Attack:"
-msgstr "Attacco disarmato:"
+msgid "Attack:"
+msgstr "Attacco:"
 
 #: src/characterinfo.cpp:58
 msgid "Unarmed Defense:"
@@ -976,7 +972,7 @@ msgstr "Difesa disarmato:"
 #: src/battle.cpp:677
 #, c-format
 msgid "%1$s uses capability %2$s!"
-msgstr "%1$s usa la capacità '%2$s'!"
+msgstr "%1$s usa il talento '%2$s'!"
 
 #: src/battle.cpp:712
 #, c-format
@@ -1407,7 +1403,7 @@ msgstr "Incantesimi"
 
 #: src/inventory.cpp:116
 msgid "Capabilities"
-msgstr "Capacità"
+msgstr "Talenti"
 
 #: src/inventory.cpp:118
 msgid "Mission"
@@ -1513,17 +1509,17 @@ msgstr "Note all'incantesimo"
 msgid "Cast"
 msgstr "Lancia"
 
-#: src/inventory.cpp:252 src/equip.cpp:489
+#: src/inventory.cpp:252 src/equip.cpp:488
 msgid "Special Capabilities"
-msgstr "Capacità speciali"
+msgstr "Talenti speciali"
 
 #: src/inventory.cpp:253
 msgid "(If grayed-out, you don't have the capability.)"
-msgstr "(La capacità in grigio non le possiedi.)"
+msgstr "(I talenti in grigio non li possiedi.)"
 
 #: src/inventory.cpp:256
 msgid "Capability Description"
-msgstr "Descrizione capacità"
+msgstr "Descrizione talento"
 
 #: src/inventory.cpp:262
 msgid "Use"
@@ -1533,7 +1529,7 @@ msgstr "Usa"
 msgid "Current Mission"
 msgstr "Missione attuale"
 
-#: src/inventory.cpp:273 src/equip.cpp:645
+#: src/inventory.cpp:273 src/equip.cpp:644
 msgid "Mission Objectives"
 msgstr "Obbiettivi della missione"
 
@@ -1586,7 +1582,7 @@ msgstr "Mostra console"
 msgid "Party members give all their money to %s."
 msgstr "I membri del gruppo danno tutte le monete a %s."
 
-#: src/inventory.cpp:562 src/scourge.cpp:2674 src/equip.cpp:584
+#: src/inventory.cpp:562 src/scourge.cpp:2674 src/equip.cpp:583
 msgid "Not enough Magic Points to cast this spell!"
 msgstr "Non hai abbastanza Punti Magia per questo incantesimo!"
 
@@ -1630,31 +1626,31 @@ msgstr "Kg"
 msgid "Coins"
 msgstr "Monete"
 
-#: src/inventory.cpp:984 src/equip.cpp:661
+#: src/inventory.cpp:984 src/equip.cpp:660
 #, c-format
 msgid "Depth: %d out of %d."
 msgstr "Profondità: %d di %d."
 
-#: src/inventory.cpp:995 src/equip.cpp:672
+#: src/inventory.cpp:995 src/equip.cpp:671
 #, c-format
 msgid "Find %s"
 msgstr "Trovare %s"
 
-#: src/inventory.cpp:999 src/equip.cpp:676
+#: src/inventory.cpp:999 src/equip.cpp:675
 msgid "(not yet found)"
 msgstr "(non ancora trovato)"
 
-#: src/inventory.cpp:1012 src/equip.cpp:689
+#: src/inventory.cpp:1012 src/equip.cpp:688
 #, c-format
 msgid "Vanquish %s."
 msgstr "Debellare %s."
 
-#: src/inventory.cpp:1016 src/inventory.cpp:1036 src/equip.cpp:693
-#: src/equip.cpp:713
+#: src/inventory.cpp:1016 src/inventory.cpp:1036 src/equip.cpp:692
+#: src/equip.cpp:712
 msgid "(not yet done)"
 msgstr "(non ancora completato)"
 
-#: src/inventory.cpp:1034 src/equip.cpp:711
+#: src/inventory.cpp:1034 src/equip.cpp:710
 msgid "Special"
 msgstr "Speciale"
 
@@ -1663,7 +1659,6 @@ msgid "Can't change inventory while trading."
 msgstr "Non puoi modificare l'inventario mentre stai commerciando."
 
 #: src/inventory.cpp:1098 src/inventory.cpp:1109 src/equip.cpp:286
-#: src/inven.cpp:190
 msgid "Can't remove cursed item!"
 msgstr "Non puoi rimuovere un oggetto maledetto!"
 
@@ -1676,7 +1671,7 @@ msgstr "%s raccoglie %s."
 msgid "You can't fit the item!"
 msgstr ""
 
-#: src/inventory.cpp:1185 src/equip.cpp:293 src/inven.cpp:197
+#: src/inventory.cpp:1185 src/equip.cpp:292 src/inven.cpp:198
 #, c-format
 msgid "%s drops %s."
 msgstr "%s abbandona %s."
@@ -1800,7 +1795,7 @@ msgstr "Abbandonare il livello?"
 
 #: src/scourge.cpp:1539
 msgid "Squirrel Console"
-msgstr ""
+msgstr "Squirrel Console"
 
 #: src/scourge.cpp:1547
 msgid "Run"
@@ -1814,6 +1809,10 @@ msgstr "Pulisci"
 #, c-format
 msgid "Speed set to %d\n"
 msgstr "Velocità impostata su %d\n"
+
+#: src/scourge.cpp:2073
+msgid "Congratulations, mission accomplished!"
+msgstr "Congratulazioni: missione compiuta!"
 
 #: src/scourge.cpp:2084
 msgid "For completing the mission"
@@ -1870,7 +1869,7 @@ msgstr "Informazioni sull'inventario e il gruppo"
 
 #: src/scourge.cpp:2260
 msgid "Click to assign a spell, capability or magic item."
-msgstr "Clicca per assegnare un incantesimo, una capacità o un oggetto magico."
+msgstr "Clicca per assegnare un incantesimo, un talento o un oggetto magico."
 
 #: src/scourge.cpp:2319
 msgid "Current Weapon: Bare Hands"
@@ -2070,6 +2069,22 @@ msgstr "Apri una partita salvata"
 msgid "No savegames have been created yet."
 msgstr "Non sono ancora state salvate delle partite."
 
+#: src/savegamedialog.cpp:266
+msgid "st"
+msgstr "°"
+
+#: src/savegamedialog.cpp:267
+msgid "nd"
+msgstr "°"
+
+#: src/savegamedialog.cpp:268
+msgid "rd"
+msgstr "°"
+
+#: src/savegamedialog.cpp:269
+msgid "th"
+msgstr "°"
+
 #: src/savegamedialog.cpp:282
 #, c-format
 msgid "In a cave on level %d."
@@ -2080,10 +2095,14 @@ msgstr "In grotta al livello %d"
 msgid "Dungeon level %d at %s."
 msgstr "Nel livello %d del dungeon di %s"
 
+#: src/savegamedialog.cpp:290
+msgid "Resting at HQ."
+msgstr "A riposo nel Quartier Generale."
+
 #: src/savegamedialog.cpp:293
 #, c-format
 msgid "Party of %s the %s level %s."
-msgstr "Gruppo di %1$s il %3$s di livello %2$s."
+msgstr "Gruppo di %1$s il %3$s di %2$s livello."
 
 #: src/terraingenerator.cpp:135
 msgid "Compressing free space"
@@ -2788,167 +2807,151 @@ msgstr "Applica"
 
 #: src/rpg/specialskill.h:85
 msgid "Only 'manual' capabilities can be stored."
-msgstr "Solo le capacità non automatiche possono essere memorizzate."
+msgstr "Solo i talenti non automatici possono essere memorizzati."
 
 #: src/pcui.cpp:45
 msgid "Right click for info, double-click to open."
-msgstr ""
+msgstr "Tasto destro per informazioni, doppio click per aprire."
 
 #: src/pcui.cpp:57
-#, fuzzy
 msgid "Character Information"
-msgstr "Informazione"
+msgstr "Informazioni sul personaggio"
 
 #: src/pcui.cpp:63
 msgid "Show paperdoll inventory"
-msgstr ""
+msgstr "Mostra l'inventario"
 
 #: src/pcui.cpp:67
 msgid "Show spellbook"
-msgstr ""
+msgstr "Mostra il libro degli incantesimi"
 
 #: src/pcui.cpp:71
-#, fuzzy
 msgid "Show special capabilities"
-msgstr "Capacità speciali"
+msgstr "Mostra i talenti speciali"
 
 #: src/pcui.cpp:75
 msgid "Show info about the current mission"
-msgstr ""
+msgstr "Mostra informazioni sulla missione attuale"
 
 #: src/pcui.cpp:93
 msgid "Use item"
-msgstr ""
+msgstr "Usa oggetto"
 
 #: src/pcui.cpp:96
 msgid "Transcribe scroll into the spellbook"
-msgstr ""
+msgstr "Trascrivi la pergamena nel libro degli incantesimi"
 
 #: src/pcui.cpp:99
-#, fuzzy
 msgid "Enchant item"
 msgstr "Incantare oggetti"
 
 #: src/pcui.cpp:102
-#, fuzzy
 msgid "Show item information"
-msgstr "Informazione"
+msgstr "Mostra informazioni sull'oggetto"
 
 #: src/pcui.cpp:105
 msgid "Store item in quick-spell slot"
-msgstr ""
+msgstr "Memorizza incantesimo per un lancio veloce"
 
 #: src/pcui.cpp:112
 msgid "Switch to previous party member"
-msgstr ""
+msgstr "Passa al personaggio precedente"
 
 #: src/pcui.cpp:115
 msgid "Switch to next party member"
-msgstr ""
+msgstr "Passa al personaggio seguente"
 
 #: src/pcui.cpp:120
-#, fuzzy
 msgid "Show character stats"
-msgstr "Caratteristiche personaggio"
+msgstr "Mostra le statistiche del personaggio"
 
 #: src/pcui.cpp:124
-#, fuzzy
 msgid "Show character skills"
-msgstr "Dettagli del personaggio"
+msgstr "Mostra le abilità del personaggio"
 
 #: src/pcui.cpp:127
 msgid "Show additional info about the character"
-msgstr ""
+msgstr "Mostra informazioni aggiuntive sul personaggio"
 
 #: src/pcui.cpp:131
 msgid "Give all of the party's coins to this character"
-msgstr ""
+msgstr "Raccogli tutti i soldi del gruppo"
 
 #: src/pcui.cpp:134
 msgid "Page skills up"
-msgstr ""
+msgstr "Pagina su"
 
 #: src/pcui.cpp:137
 msgid "Page skills down"
-msgstr ""
+msgstr "Pagina giù"
 
 #: src/pcui.cpp:139
-#, fuzzy
 msgid "Cast spell or use capability"
-msgstr "%1$s userà la capacità %2$s."
+msgstr "Lancia incantesimo o usa un talento"
 
 #: src/pcui.cpp:142
 msgid "Apply Skill Modifications"
-msgstr ""
+msgstr "Applica le modifiche alle abilità"
 
 #: src/pcui.cpp:144
 msgid "Store spell or capability in a quickspell slot"
-msgstr ""
+msgstr "Memorizza un incantesimo o un talento per un lancio veloce"
 
 #: src/pcui.cpp:227
 msgid "All available skill points have been applied."
-msgstr ""
+msgstr "Tutti i punti abilità sono stati assegnati."
 
 #: src/pcui.cpp:276
 msgid "Click on an item to select it..."
-msgstr ""
+msgstr "Clicca su un oggetto per selezionarlo"
 
 #: src/pcui.cpp:324
-#, fuzzy
 msgid "Click on a spell or capability to select it..."
-msgstr "Clicca per assegnare un incantesimo, una capacità o un oggetto magico."
+msgstr "Clicca su un incantesimo o un talento per selezionarlo..."
 
 #: src/equip.cpp:178
-#, fuzzy
 msgid "MP Cost"
-msgstr "Costo"
+msgstr "Costo PM"
+
+#: src/equip.cpp:513
+msgid "Manual Capability"
+msgstr "Talento manuale"
 
 #: src/equip.cpp:514
-#, fuzzy
-msgid "Manual Capability"
-msgstr "Capacità speciali"
-
-#: src/equip.cpp:515
 msgid "Automatic Capability"
-msgstr ""
+msgstr "Talento automatico"
 
-#: src/equip.cpp:564
-#, fuzzy
+#: src/equip.cpp:563
 msgid "Only manual type capabilities can be used this way."
-msgstr "Solo le capacità non automatiche possono essere memorizzate."
+msgstr "Solo i talenti non automatici possono essere usati in questo modo."
 
-#: src/equip.cpp:613
-#, fuzzy
+#: src/equip.cpp:612
 msgid "Only manual type capabilities can be stored."
-msgstr "Solo le capacità non automatiche possono essere memorizzate."
+msgstr "Solo i talenti non automatici possono essere memorizzati."
 
-#: src/equip.cpp:627
-#, fuzzy
+#: src/equip.cpp:626
 msgid "Click a quickspell slot to store this spell."
-msgstr "Seleziona un luogo per questo incantesimo."
+msgstr ""
+"Clicca su uno spazio vuoto nella barra di lancio veloce per memorizzare "
+"l'incantesimo."
 
-#: src/equip.cpp:648
-#, fuzzy
+#: src/equip.cpp:647
 msgid "Show Squirrel Console"
-msgstr "Mostra console"
+msgstr "Mostra Squirrel console"
 
-#: src/equip.cpp:726
-#, fuzzy
+#: src/equip.cpp:725
 msgid "No current mission."
-msgstr "Missione attuale"
+msgstr "Nessuna missione al momento."
 
 #: src/portrait.cpp:172
-#, fuzzy
 msgid "Current attack"
-msgstr "Stato attuale"
+msgstr "Attacco attuale"
 
 #: src/portrait.cpp:173
-#, fuzzy
 msgid "Left Hand"
 msgstr "Mano sinistra"
 
 #: src/portrait.cpp:174
-#, fuzzy
 msgid "Right Hand"
 msgstr "Mano destra"
 
@@ -2958,38 +2961,37 @@ msgstr "Armi a distanza"
 
 #: src/portrait.cpp:177
 msgid "Click to change"
-msgstr ""
+msgstr "Clicca per cambiare"
 
 #: src/portrait.cpp:222
 msgid "XP"
-msgstr ""
+msgstr "PX"
 
 #: src/portrait.cpp:283
-#, fuzzy
 msgid "Resistances"
-msgstr "Resistenza a 'Consapevolezza'"
+msgstr "Resistenze"
 
 #: src/portrait.cpp:339
-#, fuzzy
 msgid "Available Skill Points"
-msgstr "Monete disponibili:"
+msgstr "Punti abilità disponibili"
 
 #: src/portrait.cpp:437
 msgid "Carrying (kg)"
-msgstr ""
+msgstr "Trasporto (kg)"
 
 #: src/portrait.cpp:444
-#, fuzzy
 msgid "Character Conditions:"
-msgstr "Dettagli del personaggio"
+msgstr "Condizioni del personaggio:"
 
 #: src/portrait.cpp:476
 msgid "Immune to Conditions:"
-msgstr ""
+msgstr "Immune a:"
 
-#: src/inven.cpp:406
+#: src/inven.cpp:407
 msgid "Click a quickspell slot to store this item."
 msgstr ""
+"Clicca su uno spazio vuoto nella barra di lancio veloce per memorizzare "
+"questo oggetto."
 
 #: ../scourge_data/config/scourge.cfg:12
 msgid "Welcome to the world of S.c.o.u.r.g.e."
@@ -6903,6 +6905,12 @@ msgid ""
 "again! He vows to "
 msgstr ""
 
+#: ../scourge_data/config/mission.cfg:65
+msgid ""
+" for us in the near future. Actually, this worries me far more than most "
+"missions we accept..."
+msgstr ""
+
 #: ../scourge_data/config/mission.cfg:66
 msgid ""
 "Remember to find the wand for $Sabien! He is an important client and he's in "
@@ -7007,6 +7015,15 @@ msgstr ""
 msgid ""
 "Our agents have located Mycotharsius in the cellars of a peaceful monastery "
 "called "
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:116
+msgid ""
+", near the city of Orn. You must journey here and confront him. Before "
+"ridding the world of him for good, find out as much as you can about why he "
+"hired the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid "
+"however, that his failures made Mycotharsius quite Mad. Therefore if all he "
+"can offer is gibberish, try to look around his lair for clues."
 msgstr ""
 
 #: ../scourge_data/config/mission.cfg:117
@@ -8421,7 +8438,7 @@ msgstr "Brando"
 
 #: ../scourge_data/config/rpg.cfg:342
 msgid "Enchant Item"
-msgstr "Incantare oggetti"
+msgstr "Incanta un oggetto"
 
 #: ../scourge_data/config/rpg.cfg:343
 msgid ""
@@ -9198,7 +9215,7 @@ msgstr "%s si sente improvvisamente molto malato."
 
 #: ../scourge_data/script/skills.nut:47
 msgid "Dodging missiles"
-msgstr ""
+msgstr "Schivare proiettili"
 
 #: ../scourge_data/script/skills.nut:82
 msgid "War rage"
@@ -9210,7 +9227,7 @@ msgstr ""
 
 #: ../scourge_data/script/skills.nut:109
 msgid "...but already used this capability twice today."
-msgstr "...ma ha già usato questa capacità due volte oggi."
+msgstr "...ma ha già usato questo talento due volte oggi."
 
 #: ../scourge_data/script/skills.nut:121
 msgid "...and heals 1 hit point."
@@ -9241,11 +9258,11 @@ msgstr "..in punto di morte %s dona %d PM (Energia Terminale)"
 
 #: ../scourge_data/script/skills.nut:226
 msgid "Chanelling mystic energies"
-msgstr ""
+msgstr "Richiamo di energie mistiche"
 
 #: ../scourge_data/script/skills.nut:247
 msgid "Small Arms Mastery"
-msgstr ""
+msgstr "Maestria in armi piccole"
 
 #: ../scourge_data/script/skills.nut:263
 msgid "This character is not currently poisoned."

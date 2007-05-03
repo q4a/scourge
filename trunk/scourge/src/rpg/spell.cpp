@@ -88,7 +88,7 @@ MagicSchool::~MagicSchool() {
   shortName = NULL;
 }
 
-#define UPDATE_MESSAGE "Loading Spells"
+#define UPDATE_MESSAGE N_("Loading Spells")
 
 void MagicSchool::initMagic() {
 	ConfigLang *config = ConfigLang::load( "config/spell.cfg" );
@@ -102,7 +102,7 @@ void MagicSchool::initMagic() {
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
-		config->setUpdate( UPDATE_MESSAGE, i, v->size() );
+		config->setUpdate( _(UPDATE_MESSAGE), i, v->size() );
 
 		strcpy( name, node->getValueAsString( "name" ) );
     strcpy( displayName, node->getValueAsString( "display_name" ) );

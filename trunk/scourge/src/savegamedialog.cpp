@@ -263,10 +263,10 @@ bool SavegameDialog::readFileDetails( char *dirname ) {
 void getPosition( int n, char *buff ) {
 	sprintf( buff, "%d", n );
 	switch( buff[ strlen( buff ) - 1 ] ) {
-	case '1': strcat( buff, "st" ); break;
-	case '2': strcat( buff, "nd" ); break;
-	case '3': strcat( buff, "rd" ); break;
-	default: strcat( buff, "th" );
+	case '1': strcat( buff, _("st") ); break;
+	case '2': strcat( buff, _("nd") ); break;
+	case '3': strcat( buff, _("rd") ); break;
+	default: strcat( buff, _("th") );
 	}
 }
 
@@ -287,7 +287,7 @@ void SavegameDialog::setSavegameInfoTitle( SavegameInfo *info ) {
 								 scourge->getSession()->getCurrentMission()->getMapName() );
 			}
 		} else {
-			strcpy( place, "Resting at HQ." );
+			strcpy( place, _("Resting at HQ.") );
 		}
 		char tmp2[300];
 		sprintf( tmp2, _( "Party of %s the %s level %s." ), player->getName(), tmp, player->getCharacter()->getDisplayName() );
