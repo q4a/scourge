@@ -3396,7 +3396,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
   Persist::deleteMapInfo( info );
 
-  if( report ) report->updateStatus( 5, 7, _( "Loading creatures" ) );
+  if( report ) report->updateStatus( 5, 7, _( "Loading Creatures" ) );
 
   // load map-related data from text file
   char txtfileName[300];

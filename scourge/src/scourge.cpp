@@ -2070,7 +2070,7 @@ Window *Scourge::createWindow(int x, int y, int w, int h, char *title) {
 }
 
 void Scourge::missionCompleted() {
-  showMessageDialog("Congratulations, mission accomplished!");
+  showMessageDialog(_("Congratulations, mission accomplished!"));
 
   // Award exp. points for completing the mission
   if(getSession()->getCurrentMission() && missionWillAwardExpPoints &&

@@ -57,7 +57,7 @@ Board::Board(Session *session) {
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
-		config->setUpdate( "Loading missions", i, v->size() );
+		config->setUpdate( _("Loading Missions"), i, v->size() );
 
     type = node->getValueAsString( "type" )[0] + ( 'A' - 'a' );
     strcpy( name, node->getValueAsString( "name" ) );
@@ -74,7 +74,7 @@ Board::Board(Session *session) {
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
-		config->setUpdate( "Loading missions", i, v->size() );
+		config->setUpdate( _("Loading Missions"), i, v->size() );
 
     // read the level and depth
 		strcpy( name, node->getValueAsString( "name" ) );

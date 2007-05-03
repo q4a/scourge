@@ -23,7 +23,7 @@
 
 using namespace std;
 
-#define UPDATE_MESSAGE "Loading Shapes"
+#define UPDATE_MESSAGE N_("Loading Shapes")
 
 ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter()->isHeadless() ) {
   this->session = session;

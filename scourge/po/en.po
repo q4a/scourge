@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-05-02 20:53-0700\n"
+"POT-Creation-Date: 2007-05-03 17:20+0200\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -117,8 +117,8 @@ msgstr ""
 msgid "Finishing map"
 msgstr ""
 
-#: src/render/map.cpp:3399
-msgid "Loading creatures"
+#: src/render/map.cpp:3399 src/rpg/monster.cpp:26 src/session.cpp:112
+msgid "Loading Creatures"
 msgstr ""
 
 #: src/render/map.cpp:3417
@@ -156,6 +156,10 @@ msgstr ""
 #, fuzzy
 msgid "Loading Abilities"
 msgstr "Options"
+
+#: src/rpg/spell.cpp:91 src/session.cpp:103
+msgid "Loading Spells"
+msgstr ""
 
 #: src/rpg/rpgitem.cpp:39
 msgid "Slashing"
@@ -754,9 +758,9 @@ msgstr ""
 msgid "max"
 msgstr ""
 
-#: src/shapepalette.cpp:356 src/shapepalette.cpp:382 src/shapepalette.cpp:405
-#: src/shapepalette.cpp:440 src/shapepalette.cpp:569 src/shapepalette.cpp:595
-#: src/shapepalette.cpp:622 src/session.cpp:91
+#: src/shapepalette.cpp:26 src/shapepalette.cpp:356 src/shapepalette.cpp:382
+#: src/shapepalette.cpp:405 src/shapepalette.cpp:440 src/shapepalette.cpp:569
+#: src/shapepalette.cpp:595 src/shapepalette.cpp:622 src/session.cpp:91
 msgid "Loading Shapes"
 msgstr ""
 
@@ -769,23 +773,15 @@ msgstr "Options"
 msgid "Loading Items"
 msgstr ""
 
-#: src/session.cpp:103
-msgid "Loading Spells"
-msgstr ""
-
 #: src/session.cpp:107
 msgid "Loading Characters"
-msgstr ""
-
-#: src/session.cpp:112
-msgid "Loading Creatures"
 msgstr ""
 
 #: src/session.cpp:115
 msgid "Loading Portraits"
 msgstr ""
 
-#: src/session.cpp:120
+#: src/session.cpp:120 src/board.cpp:60 src/board.cpp:77
 msgid "Loading Missions"
 msgstr ""
 
@@ -838,8 +834,8 @@ msgid "(CAVE)"
 msgstr ""
 
 #: src/board.cpp:305 src/inventory.cpp:999 src/inventory.cpp:1016
-#: src/inventory.cpp:1036 src/equip.cpp:676 src/equip.cpp:693
-#: src/equip.cpp:713
+#: src/inventory.cpp:1036 src/equip.cpp:675 src/equip.cpp:692
+#: src/equip.cpp:712
 msgid "(completed)"
 msgstr ""
 
@@ -970,7 +966,7 @@ msgid "MP"
 msgstr ""
 
 #: src/characterinfo.cpp:54
-msgid "Unarmed Attack:"
+msgid "Attack:"
 msgstr ""
 
 #: src/characterinfo.cpp:58
@@ -1517,7 +1513,7 @@ msgstr ""
 msgid "Cast"
 msgstr ""
 
-#: src/inventory.cpp:252 src/equip.cpp:489
+#: src/inventory.cpp:252 src/equip.cpp:488
 msgid "Special Capabilities"
 msgstr ""
 
@@ -1537,7 +1533,7 @@ msgstr ""
 msgid "Current Mission"
 msgstr ""
 
-#: src/inventory.cpp:273 src/equip.cpp:645
+#: src/inventory.cpp:273 src/equip.cpp:644
 msgid "Mission Objectives"
 msgstr ""
 
@@ -1590,7 +1586,7 @@ msgstr ""
 msgid "Party members give all their money to %s."
 msgstr ""
 
-#: src/inventory.cpp:562 src/scourge.cpp:2674 src/equip.cpp:584
+#: src/inventory.cpp:562 src/scourge.cpp:2674 src/equip.cpp:583
 msgid "Not enough Magic Points to cast this spell!"
 msgstr ""
 
@@ -1635,31 +1631,31 @@ msgstr ""
 msgid "Coins"
 msgstr "Options"
 
-#: src/inventory.cpp:984 src/equip.cpp:661
+#: src/inventory.cpp:984 src/equip.cpp:660
 #, c-format
 msgid "Depth: %d out of %d."
 msgstr ""
 
-#: src/inventory.cpp:995 src/equip.cpp:672
+#: src/inventory.cpp:995 src/equip.cpp:671
 #, c-format
 msgid "Find %s"
 msgstr ""
 
-#: src/inventory.cpp:999 src/equip.cpp:676
+#: src/inventory.cpp:999 src/equip.cpp:675
 msgid "(not yet found)"
 msgstr ""
 
-#: src/inventory.cpp:1012 src/equip.cpp:689
+#: src/inventory.cpp:1012 src/equip.cpp:688
 #, c-format
 msgid "Vanquish %s."
 msgstr ""
 
-#: src/inventory.cpp:1016 src/inventory.cpp:1036 src/equip.cpp:693
-#: src/equip.cpp:713
+#: src/inventory.cpp:1016 src/inventory.cpp:1036 src/equip.cpp:692
+#: src/equip.cpp:712
 msgid "(not yet done)"
 msgstr ""
 
-#: src/inventory.cpp:1034 src/equip.cpp:711
+#: src/inventory.cpp:1034 src/equip.cpp:710
 msgid "Special"
 msgstr ""
 
@@ -1668,7 +1664,6 @@ msgid "Can't change inventory while trading."
 msgstr ""
 
 #: src/inventory.cpp:1098 src/inventory.cpp:1109 src/equip.cpp:286
-#: src/inven.cpp:190
 msgid "Can't remove cursed item!"
 msgstr ""
 
@@ -1681,7 +1676,7 @@ msgstr "Options"
 msgid "You can't fit the item!"
 msgstr ""
 
-#: src/inventory.cpp:1185 src/equip.cpp:293 src/inven.cpp:197
+#: src/inventory.cpp:1185 src/equip.cpp:292 src/inven.cpp:198
 #, c-format
 msgid "%s drops %s."
 msgstr ""
@@ -1816,6 +1811,10 @@ msgstr ""
 #: src/scourge.cpp:1922
 #, c-format
 msgid "Speed set to %d\n"
+msgstr ""
+
+#: src/scourge.cpp:2073
+msgid "Congratulations, mission accomplished!"
 msgstr ""
 
 #: src/scourge.cpp:2084
@@ -2076,6 +2075,23 @@ msgstr ""
 msgid "No savegames have been created yet."
 msgstr ""
 
+#: src/savegamedialog.cpp:266
+#, fuzzy
+msgid "st"
+msgstr "Options"
+
+#: src/savegamedialog.cpp:267
+msgid "nd"
+msgstr ""
+
+#: src/savegamedialog.cpp:268
+msgid "rd"
+msgstr ""
+
+#: src/savegamedialog.cpp:269
+msgid "th"
+msgstr ""
+
 #: src/savegamedialog.cpp:282
 #, c-format
 msgid "In a cave on level %d."
@@ -2084,6 +2100,10 @@ msgstr ""
 #: src/savegamedialog.cpp:285
 #, c-format
 msgid "Dungeon level %d at %s."
+msgstr ""
+
+#: src/savegamedialog.cpp:290
+msgid "Resting at HQ."
 msgstr ""
 
 #: src/savegamedialog.cpp:293
@@ -2892,31 +2912,31 @@ msgstr ""
 msgid "MP Cost"
 msgstr "Options"
 
-#: src/equip.cpp:514
+#: src/equip.cpp:513
 msgid "Manual Capability"
 msgstr ""
 
-#: src/equip.cpp:515
+#: src/equip.cpp:514
 msgid "Automatic Capability"
 msgstr ""
 
-#: src/equip.cpp:564
+#: src/equip.cpp:563
 msgid "Only manual type capabilities can be used this way."
 msgstr ""
 
-#: src/equip.cpp:613
+#: src/equip.cpp:612
 msgid "Only manual type capabilities can be stored."
 msgstr ""
 
-#: src/equip.cpp:627
+#: src/equip.cpp:626
 msgid "Click a quickspell slot to store this spell."
 msgstr ""
 
-#: src/equip.cpp:648
+#: src/equip.cpp:647
 msgid "Show Squirrel Console"
 msgstr ""
 
-#: src/equip.cpp:726
+#: src/equip.cpp:725
 msgid "No current mission."
 msgstr ""
 
@@ -2964,7 +2984,7 @@ msgstr ""
 msgid "Immune to Conditions:"
 msgstr ""
 
-#: src/inven.cpp:406
+#: src/inven.cpp:407
 msgid "Click a quickspell slot to store this item."
 msgstr ""
 
@@ -6327,6 +6347,12 @@ msgid ""
 "again! He vows to "
 msgstr ""
 
+#: ../scourge_data/config/mission.cfg:65
+msgid ""
+" for us in the near future. Actually, this worries me far more than most "
+"missions we accept..."
+msgstr ""
+
 #: ../scourge_data/config/mission.cfg:66
 msgid ""
 "Remember to find the wand for $Sabien! He is an important client and he's in "
@@ -6431,6 +6457,15 @@ msgstr ""
 msgid ""
 "Our agents have located Mycotharsius in the cellars of a peaceful monastery "
 "called "
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:116
+msgid ""
+", near the city of Orn. You must journey here and confront him. Before "
+"ridding the world of him for good, find out as much as you can about why he "
+"hired the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid "
+"however, that his failures made Mycotharsius quite Mad. Therefore if all he "
+"can offer is gibberish, try to look around his lair for clues."
 msgstr ""
 
 #: ../scourge_data/config/mission.cfg:117
@@ -12035,6 +12070,10 @@ msgstr ""
 #: ../scourge_data/maps/emeril2.cfg:56
 msgid "Hmmm, it escapes me just now."
 msgstr ""
+
+#, fuzzy
+#~ msgid "Loading missions"
+#~ msgstr "Options"
 
 #, fuzzy
 #~ msgid "Multiplier"
