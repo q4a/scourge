@@ -191,6 +191,7 @@ public:
   int getMagicResistance();
   char *describeMagicDamage();
   inline bool isCursed() { return cursed; }
+	inline void setCursed( bool b ) { this->cursed = b; }
   inline bool isStateModSet(int mod) { return(stateMod[mod] == 1); }
   inline bool isStateModProtected(int mod) { return(stateMod[mod] == 2); }
 	int getRange();
