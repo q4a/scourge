@@ -51,7 +51,7 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
   scourge->getSDLHandler()->texPrint( 10, y + 60, "%s: %d", _( "AP" ), toint( p->getMaxAP() ) );
   
 	glColor4f( 1, 0.35f, 0, 1 );
-	scourge->getSDLHandler()->texPrint( 10, y + 75, _( "Unarmed Attack:" ) );
+	scourge->getSDLHandler()->texPrint( 10, y + 75, _( "Attack:" ) );
   scourge->describeAttacks( p, 10, y + 90, true );
 
 	glColor4f( 1, 0.35f, 0, 1 );
@@ -62,7 +62,6 @@ void CharacterInfoUI::drawWidgetContents( Widget *w ) {
 void CharacterInfoUI::setCreature( Window *win, 
 																	 Creature *creature ) { 
 	this->win = win;
-	this->creature = creature; 
-	creature->setPreferredWeapon( -1 );
+	this->creature = creature;
 }
 
