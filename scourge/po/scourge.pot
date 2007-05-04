@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-05-03 21:23-0700\n"
+"POT-Creation-Date: 2007-05-04 09:17-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2236,9 +2236,8 @@ msgstr ""
 msgid "Healer:"
 msgstr ""
 
-#: src/conversationgui.cpp:95 ../scourge_data/config/spell.cfg:45
-#: ../scourge_data/config/spell.cfg:228 ../scourge_data/config/spell.cfg:314
-msgid "Healing"
+#: src/conversationgui.cpp:95
+msgid "Heal"
 msgstr ""
 
 #: src/conversationgui.cpp:96
@@ -5490,6 +5489,11 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:44
 msgid "Lesser healing touch"
+msgstr ""
+
+#: ../scourge_data/config/spell.cfg:45 ../scourge_data/config/spell.cfg:228
+#: ../scourge_data/config/spell.cfg:314
+msgid "Healing"
 msgstr ""
 
 #: ../scourge_data/config/spell.cfg:60

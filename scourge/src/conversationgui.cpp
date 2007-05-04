@@ -92,7 +92,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 
   // healer
   cards->createLabel( x, y + 13, _( "Healer:" ), Constants::NPC_TYPE_HEALER );  
-  healButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Healing" ), Constants::NPC_TYPE_HEALER );
+  healButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Heal" ), Constants::NPC_TYPE_HEALER );
   donateButton = cards->createButton( x + 175, y, x + 275, y + 20, _( "Donate" ), Constants::NPC_TYPE_HEALER );
 
   // trainer
