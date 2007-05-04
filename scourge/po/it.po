@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-05-03 17:20+0200\n"
+"POT-Creation-Date: 2007-05-03 21:23-0700\n"
 "PO-Revision-Date: 2007-02-27 19:01+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian\n"
@@ -867,8 +867,8 @@ msgid " *Mission*"
 msgstr "*Missione*"
 
 #: src/item.cpp:802
-msgid ""
-"$spellsymbol $magiclevel $protective $slaying $itemname $bonus $of $school"
+#, fuzzy
+msgid "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $symbol"
 msgstr "$itemname $magiclevel $spellsymbol $protective $slaying $school $bonus"
 
 #: src/item.cpp:820
@@ -879,57 +879,53 @@ msgstr "protettivo"
 msgid "Slaying"
 msgstr "assassino"
 
-#: src/item.cpp:840
-msgid "of the"
-msgstr ""
-
-#: src/item.cpp:922
+#: src/item.cpp:917
 #, c-format
 msgid "Scroll of %s"
 msgstr "Pergamena '%s'"
 
-#: src/item.cpp:1043
+#: src/item.cpp:1037
 msgid "An item was fully identified!"
 msgstr "Hai identificato completamente un oggetto!"
 
-#: src/item.cpp:1107
+#: src/item.cpp:1101
 msgid "DAM"
 msgstr "DAN"
 
-#: src/item.cpp:1111 src/characterinfo.cpp:51 src/portrait.cpp:263
+#: src/item.cpp:1105 src/characterinfo.cpp:51 src/portrait.cpp:263
 msgid "AP"
 msgstr "CA"
 
-#: src/item.cpp:1115
+#: src/item.cpp:1109
 msgid "RANGE"
 msgstr "GITTATA"
 
-#: src/item.cpp:1120 src/scourge.cpp:3618
+#: src/item.cpp:1114 src/scourge.cpp:3618
 msgid "DEF"
 msgstr "DIF"
 
-#: src/item.cpp:1123
+#: src/item.cpp:1117
 #, c-format
 msgid " %d(%c)"
 msgstr " %d(%c)"
 
-#: src/item.cpp:1131 src/equip.cpp:177 src/portrait.cpp:220
+#: src/item.cpp:1125 src/equip.cpp:177 src/portrait.cpp:220
 msgid "Level"
 msgstr "Livello"
 
-#: src/item.cpp:1135 ../scourge_data/config/rpg.cfg:137
+#: src/item.cpp:1129 ../scourge_data/config/rpg.cfg:137
 msgid "Power"
 msgstr "Potenza"
 
-#: src/item.cpp:1140
+#: src/item.cpp:1134
 msgid "Charges"
 msgstr "Cariche"
 
-#: src/item.cpp:1143
+#: src/item.cpp:1137
 msgid "Spell"
 msgstr "Incantesimo"
 
-#: src/item.cpp:1148
+#: src/item.cpp:1142
 msgid "Duration"
 msgstr "Durata"
 
@@ -5857,8 +5853,8 @@ msgid "Nature"
 msgstr "Natura"
 
 #: ../scourge_data/config/spell.cfg:41
-msgid "Lake"
-msgstr "Lago"
+msgid "of the Lake"
+msgstr ""
 
 #: ../scourge_data/config/spell.cfg:44
 msgid "Lesser healing touch"
@@ -5994,8 +5990,9 @@ msgid "Divine Awareness"
 msgstr "Consapevolezza Divina"
 
 #: ../scourge_data/config/spell.cfg:166
-msgid "Spectral"
-msgstr "Spettrale"
+#, fuzzy
+msgid "of the Specter"
+msgstr "Vesti dello Stregone"
 
 #: ../scourge_data/config/spell.cfg:169
 msgid "Body of stone"
@@ -6126,7 +6123,8 @@ msgid "Life and Death"
 msgstr "Vita e Morte"
 
 #: ../scourge_data/config/spell.cfg:291
-msgid "Karma"
+#, fuzzy
+msgid "of Karma"
 msgstr "Karma"
 
 #: ../scourge_data/config/spell.cfg:294
@@ -6278,8 +6276,9 @@ msgstr ""
 msgid "History and Lore"
 msgstr "Storia e Conoscenza"
 
-#: ../scourge_data/config/spell.cfg:437 ../scourge_data/config/rpg.cfg:167
-msgid "Lore"
+#: ../scourge_data/config/spell.cfg:437
+#, fuzzy
+msgid "of Lore"
 msgstr "Conoscenza"
 
 #: ../scourge_data/config/spell.cfg:440
@@ -6414,7 +6413,8 @@ msgid "Ambush Trickery and Deceit"
 msgstr "Agguati astuzie e inganni"
 
 #: ../scourge_data/config/spell.cfg:543
-msgid "Chaos"
+#, fuzzy
+msgid "of Chaos"
 msgstr "Caos"
 
 #: ../scourge_data/config/spell.cfg:546
@@ -6503,10 +6503,9 @@ msgstr ""
 msgid "Confrontation"
 msgstr "Confronto"
 
-#: ../scourge_data/config/spell.cfg:628 ../scourge_data/maps/hq.cfg:156
-#: ../scourge_data/maps/library31.cfg:98 ../scourge_data/maps/tower1.cfg:16
-msgid "Abyss"
-msgstr "Abisso"
+#: ../scourge_data/config/spell.cfg:628
+msgid "of the Abyss"
+msgstr ""
 
 #: ../scourge_data/config/spell.cfg:631
 msgid "Stinging light"
@@ -6905,12 +6904,6 @@ msgid ""
 "again! He vows to "
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:65
-msgid ""
-" for us in the near future. Actually, this worries me far more than most "
-"missions we accept..."
-msgstr ""
-
 #: ../scourge_data/config/mission.cfg:66
 msgid ""
 "Remember to find the wand for $Sabien! He is an important client and he's in "
@@ -7015,15 +7008,6 @@ msgstr ""
 msgid ""
 "Our agents have located Mycotharsius in the cellars of a peaceful monastery "
 "called "
-msgstr ""
-
-#: ../scourge_data/config/mission.cfg:116
-msgid ""
-", near the city of Orn. You must journey here and confront him. Before "
-"ridding the world of him for good, find out as much as you can about why he "
-"hired the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid "
-"however, that his failures made Mycotharsius quite Mad. Therefore if all he "
-"can offer is gibberish, try to look around his lair for clues."
 msgstr ""
 
 #: ../scourge_data/config/mission.cfg:117
@@ -7555,7 +7539,6 @@ msgid "Cutpurse"
 msgstr "Tagliaborse"
 
 #: ../scourge_data/config/profession.cfg:1089
-#: ../scourge_data/config/rpg.cfg:403
 msgid "Thief"
 msgstr "Ladro"
 
@@ -7769,7 +7752,8 @@ msgid "%s is not blessed anymore"
 msgstr "%s non è più benedetto"
 
 #: ../scourge_data/config/rpg.cfg:8
-msgid "Air"
+#, fuzzy
+msgid "of Air"
 msgstr "Aria"
 
 #: ../scourge_data/config/rpg.cfg:12
@@ -7787,7 +7771,8 @@ msgid "%s is not empowered anymore"
 msgstr "%s non è più potenziato"
 
 #: ../scourge_data/config/rpg.cfg:16
-msgid "Earth"
+#, fuzzy
+msgid "of Earth"
 msgstr "Terra"
 
 #: ../scourge_data/config/rpg.cfg:20
@@ -7805,7 +7790,8 @@ msgid "%s is not enraged anymore"
 msgstr "%s non è più infuriato"
 
 #: ../scourge_data/config/rpg.cfg:24
-msgid "Fire"
+#, fuzzy
+msgid "of Fire"
 msgstr "Fuoco"
 
 #: ../scourge_data/config/rpg.cfg:28
@@ -7823,7 +7809,8 @@ msgid "%s is not protected anymore"
 msgstr "%s non è più protetto"
 
 #: ../scourge_data/config/rpg.cfg:32
-msgid "Stone"
+#, fuzzy
+msgid "of Stones"
 msgstr "Pietra"
 
 #: ../scourge_data/config/rpg.cfg:36
@@ -7841,7 +7828,8 @@ msgid "%s is not protected against magic anymore"
 msgstr "%s non è più protetto dalla magia"
 
 #: ../scourge_data/config/rpg.cfg:40
-msgid "Water"
+#, fuzzy
+msgid "of Water"
 msgstr "Acqua"
 
 #: ../scourge_data/config/rpg.cfg:44
@@ -7859,7 +7847,7 @@ msgid "%s is not drunk anymore"
 msgstr "%s non è più ubriaco"
 
 #: ../scourge_data/config/rpg.cfg:47
-msgid "Jelly"
+msgid "of Jelly"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:51
@@ -7877,7 +7865,8 @@ msgid "%s is not poisoned anymore"
 msgstr "%s non è più avvelenato"
 
 #: ../scourge_data/config/rpg.cfg:55
-msgid "Ice"
+#, fuzzy
+msgid "of Ice"
 msgstr "Ghiaccio"
 
 #: ../scourge_data/config/rpg.cfg:59
@@ -7895,8 +7884,9 @@ msgid "%s is not cursed anymore"
 msgstr "%s non è più maledetto"
 
 #: ../scourge_data/config/rpg.cfg:63
-msgid "Planar"
-msgstr ""
+#, fuzzy
+msgid "of the Planes"
+msgstr "Korga il curatore"
 
 #: ../scourge_data/config/rpg.cfg:67
 msgid "possessed"
@@ -7913,8 +7903,9 @@ msgid "%s is not possessed anymore"
 msgstr "%s non è più posseduto"
 
 #: ../scourge_data/config/rpg.cfg:71
-msgid "Astral"
-msgstr ""
+#, fuzzy
+msgid "of the Stars"
+msgstr "Verga dello Stregone"
 
 #: ../scourge_data/config/rpg.cfg:75
 msgid "blinded"
@@ -7931,7 +7922,7 @@ msgid "%s is not blinded anymore"
 msgstr "%s non è più accecato"
 
 #: ../scourge_data/config/rpg.cfg:79
-msgid "Dire"
+msgid "of Haze"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:83
@@ -7949,7 +7940,7 @@ msgid "%s is not paralysed anymore"
 msgstr "%s non è più paralizzato"
 
 #: ../scourge_data/config/rpg.cfg:87
-msgid "Cave"
+msgid "of the Cave"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:91
@@ -7967,7 +7958,8 @@ msgid "%s is not invisible anymore"
 msgstr "%s non è più invisibile"
 
 #: ../scourge_data/config/rpg.cfg:95
-msgid "Acid"
+#, fuzzy
+msgid "of Acid"
 msgstr "Acido"
 
 #: ../scourge_data/config/rpg.cfg:99
@@ -7985,7 +7977,8 @@ msgid "%s is not overloaded anymore"
 msgstr "%s non è più sovraccarico"
 
 #: ../scourge_data/config/rpg.cfg:102
-msgid "Spirit"
+#, fuzzy
+msgid "of the Spirit"
 msgstr "Spirito"
 
 #: ../scourge_data/config/rpg.cfg:106
@@ -8003,8 +7996,9 @@ msgid "%s is resurrected"
 msgstr "%s è stato resuscitato"
 
 #: ../scourge_data/config/rpg.cfg:109
-msgid "Mist"
-msgstr ""
+#, fuzzy
+msgid "of the Mists"
+msgstr "Morto di sete"
 
 #: ../scourge_data/config/rpg.cfg:113
 msgid "asleep"
@@ -8021,8 +8015,9 @@ msgid "%s is awake"
 msgstr "%s è sveglio"
 
 #: ../scourge_data/config/rpg.cfg:116
-msgid "Quiet"
-msgstr ""
+#, fuzzy
+msgid "of Quiet"
+msgstr "Esci"
 
 #: ../scourge_data/config/rpg.cfg:121
 msgid "Basic Group"
@@ -8045,7 +8040,8 @@ msgstr ""
 "impugnare una spada."
 
 #: ../scourge_data/config/rpg.cfg:127
-msgid "Dragon"
+#, fuzzy
+msgid "of the Dragon"
 msgstr "Dragone"
 
 #: ../scourge_data/config/rpg.cfg:131
@@ -8060,8 +8056,8 @@ msgstr ""
 "ammortizzare più danni usando l'armatura."
 
 #: ../scourge_data/config/rpg.cfg:133
-msgid "Wolf"
-msgstr "Lupo"
+msgid "of the Wolf"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:138
 msgid ""
@@ -8071,8 +8067,8 @@ msgstr ""
 "personaggio infliggerà ai nemici."
 
 #: ../scourge_data/config/rpg.cfg:139
-msgid "Troll"
-msgstr "Troll"
+msgid "of the Troll"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:143
 msgid "IQ"
@@ -8084,7 +8080,7 @@ msgstr ""
 "Il QI è l'intelligenza. Una caratteristica chiave per lanciare incantesimi."
 
 #: ../scourge_data/config/rpg.cfg:145
-msgid "Boar"
+msgid "of the Boar"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:149
@@ -8099,8 +8095,9 @@ msgstr ""
 "truppe in battaglia."
 
 #: ../scourge_data/config/rpg.cfg:151
-msgid "Bear"
-msgstr "Orso"
+#, fuzzy
+msgid "of the Bear"
+msgstr "Zorna il curatore"
 
 #: ../scourge_data/config/rpg.cfg:155
 msgid "Luck"
@@ -8115,7 +8112,7 @@ msgstr ""
 "incantesimi a scassinare una porta"
 
 #: ../scourge_data/config/rpg.cfg:157
-msgid "Fiend"
+msgid "of the Fiend"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:161
@@ -8127,8 +8124,13 @@ msgid "A pious character follows his/her deity's wishes more closely."
 msgstr "Un personaggio pio segue il volere della sua divinità con più zelo."
 
 #: ../scourge_data/config/rpg.cfg:163
-msgid "Tiger"
-msgstr "Tigre"
+#, fuzzy
+msgid "of the Tiger"
+msgstr "Korga il curatore"
+
+#: ../scourge_data/config/rpg.cfg:167
+msgid "Lore"
+msgstr "Conoscenza"
 
 #: ../scourge_data/config/rpg.cfg:168
 msgid ""
@@ -8139,8 +8141,8 @@ msgstr ""
 "con facilità."
 
 #: ../scourge_data/config/rpg.cfg:169
-msgid "Hydra"
-msgstr "Hydra"
+msgid "of the Hydra"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:174
 msgid "FIGHT_GROUP"
@@ -8163,8 +8165,9 @@ msgstr ""
 "armi di base ricadono in questa categoria."
 
 #: ../scourge_data/config/rpg.cfg:180
-msgid "Drake"
-msgstr ""
+#, fuzzy
+msgid "of the Drake"
+msgstr "Korga il curatore"
 
 #: ../scourge_data/config/rpg.cfg:187
 msgid "This skill is used when fighting using a bow-type weapon."
@@ -8172,7 +8175,7 @@ msgstr ""
 "Queste abilità servono per il combattimento con armi come archi e balestre."
 
 #: ../scourge_data/config/rpg.cfg:188
-msgid "Sparrow"
+msgid "of the Sparrow"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:194
@@ -8186,8 +8189,8 @@ msgstr ""
 "propria taglia."
 
 #: ../scourge_data/config/rpg.cfg:196
-msgid "King"
-msgstr "Re"
+msgid "of the King"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:202
 msgid "Hand to Hand Combat"
@@ -8198,7 +8201,8 @@ msgid "This skill is used when fighting with bare hands."
 msgstr "L'abilità di combattere a mani nude."
 
 #: ../scourge_data/config/rpg.cfg:204
-msgid "Priest"
+#, fuzzy
+msgid "of the Priest"
 msgstr "Prete"
 
 #: ../scourge_data/config/rpg.cfg:209
@@ -8218,7 +8222,7 @@ msgid "This skill is used when using a shield to deflect an attack."
 msgstr "Usate questa abilità per parare un attacco con lo scudo."
 
 #: ../scourge_data/config/rpg.cfg:215
-msgid "Giant"
+msgid "of the Giant"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:221
@@ -8230,7 +8234,8 @@ msgid "This skill is used when using armor to deflect an attack."
 msgstr "L'abilità di parare un attacco con l'armatura."
 
 #: ../scourge_data/config/rpg.cfg:223
-msgid "Centaur"
+#, fuzzy
+msgid "of the Centaur"
 msgstr "Centauro"
 
 #: ../scourge_data/config/rpg.cfg:229
@@ -8244,7 +8249,8 @@ msgstr ""
 "Questa abilità vi permette di schivare gli attacchi spostandovi agilmente."
 
 #: ../scourge_data/config/rpg.cfg:231
-msgid "Serpent"
+#, fuzzy
+msgid "of the Serpent"
 msgstr "Serpente"
 
 #: ../scourge_data/config/rpg.cfg:236
@@ -8266,8 +8272,9 @@ msgid ""
 msgstr "La vostra abilità nella scuola di magia 'Vita e Morte'"
 
 #: ../scourge_data/config/rpg.cfg:242
-msgid "Sand"
-msgstr "Sabbia"
+#, fuzzy
+msgid "of the Sand"
+msgstr "Uzudil la Mano"
 
 #: ../scourge_data/config/rpg.cfg:248
 msgid "Deceit Magic"
@@ -8279,8 +8286,9 @@ msgid ""
 msgstr "La vostra abilità nella scuola di magia 'Inganno'"
 
 #: ../scourge_data/config/rpg.cfg:250
-msgid "Joker"
-msgstr ""
+#, fuzzy
+msgid "of the Joker"
+msgstr "Vesti dello Stregone"
 
 #: ../scourge_data/config/rpg.cfg:256
 msgid "Confrontation Magic"
@@ -8293,8 +8301,8 @@ msgid ""
 msgstr "La vostra abilità nella scuola di magia 'Confronto'"
 
 #: ../scourge_data/config/rpg.cfg:258
-msgid "Demon"
-msgstr "Demone"
+msgid "of the Demon"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:264
 msgid "Resist Life and Death Magic"
@@ -8308,8 +8316,9 @@ msgstr ""
 "Morte'"
 
 #: ../scourge_data/config/rpg.cfg:266
-msgid "Gods"
-msgstr "Dei"
+#, fuzzy
+msgid "of the Gods"
+msgstr "Remor il Dorato"
 
 #: ../scourge_data/config/rpg.cfg:272
 msgid "Resist Deceit Magic"
@@ -8322,8 +8331,8 @@ msgstr ""
 "'Inganno'"
 
 #: ../scourge_data/config/rpg.cfg:274
-msgid "Night"
-msgstr "Notte"
+msgid "of the Night"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:280
 msgid "Resist Confrontation Magic"
@@ -8337,8 +8346,8 @@ msgstr ""
 "'Confronto'"
 
 #: ../scourge_data/config/rpg.cfg:282
-msgid "Angel"
-msgstr "Angelo"
+msgid "of the Angel"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:287
 msgid "SPIRIT_GROUP"
@@ -8358,7 +8367,7 @@ msgid ""
 msgstr "La vostra abilità nella scuola di magia 'Natura'"
 
 #: ../scourge_data/config/rpg.cfg:293
-msgid "Pixie"
+msgid "of the Pixie"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:299
@@ -8372,7 +8381,7 @@ msgid ""
 msgstr "La vostra abilità nella scuola di magia 'Consapevolezza'"
 
 #: ../scourge_data/config/rpg.cfg:301
-msgid "Void"
+msgid "of the Void"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:307
@@ -8385,8 +8394,8 @@ msgstr ""
 "La vostra abilità nel resistere ad incantesimi della scuola di magia 'Natura'"
 
 #: ../scourge_data/config/rpg.cfg:309
-msgid "Law"
-msgstr "Legge"
+msgid "of the Law"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:315
 msgid "Resist Awareness Magic"
@@ -8399,7 +8408,7 @@ msgstr ""
 "'Consapevolezza'"
 
 #: ../scourge_data/config/rpg.cfg:317
-msgid "Moth"
+msgid "of the Moth"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:322
@@ -8420,8 +8429,9 @@ msgid ""
 msgstr "La vostra abilità nella scuola di magia 'Storia'"
 
 #: ../scourge_data/config/rpg.cfg:328
-msgid "Helix"
-msgstr ""
+#, fuzzy
+msgid "of the Helix"
+msgstr "Zorna il curatore"
 
 #: ../scourge_data/config/rpg.cfg:334
 msgid "Resist History Magic"
@@ -8433,8 +8443,9 @@ msgstr ""
 "La vostra abilità nel resistere ad incantesimi della scuola di magia 'Storia'"
 
 #: ../scourge_data/config/rpg.cfg:336
-msgid "Brand"
-msgstr "Brando"
+#, fuzzy
+msgid "of the Brand"
+msgstr "Korga il curatore"
 
 #: ../scourge_data/config/rpg.cfg:342
 msgid "Enchant Item"
@@ -8447,8 +8458,9 @@ msgid ""
 msgstr "La vostra abilità nel creare oggetti magici."
 
 #: ../scourge_data/config/rpg.cfg:344
-msgid "Sorcerer"
-msgstr "Stregone"
+#, fuzzy
+msgid "of the Sorcerer"
+msgstr "Vesti dello Stregone"
 
 #: ../scourge_data/config/rpg.cfg:350
 msgid "Identify Item"
@@ -8459,8 +8471,9 @@ msgid "This skill measures your ability to identify new items."
 msgstr "La vostra abilità nell'identificare nuovi misteriosi oggetti."
 
 #: ../scourge_data/config/rpg.cfg:352
-msgid "Sage"
-msgstr "Saggio"
+#, fuzzy
+msgid "of the Sage"
+msgstr "Verga dello Stregone"
 
 #: ../scourge_data/config/rpg.cfg:358
 msgid "Identify Creature"
@@ -8471,7 +8484,8 @@ msgid "This skill measures your ability to identify new creatures."
 msgstr "L'abilità di identificare strane nuove creature."
 
 #: ../scourge_data/config/rpg.cfg:360
-msgid "Loremaster"
+#, fuzzy
+msgid "of the Loremaster"
 msgstr "Dotto"
 
 #: ../scourge_data/config/rpg.cfg:365
@@ -8493,8 +8507,9 @@ msgstr ""
 "serrature."
 
 #: ../scourge_data/config/rpg.cfg:371
-msgid "Shade"
-msgstr ""
+#, fuzzy
+msgid "of the Shade"
+msgstr "Verga Cornuta dell'Ombra"
 
 #: ../scourge_data/config/rpg.cfg:377
 msgid "Find Trap"
@@ -8505,8 +8520,8 @@ msgid "This skill helps you avoid falling into traps."
 msgstr "L'abilità di evitare le trappole."
 
 #: ../scourge_data/config/rpg.cfg:379
-msgid "Bard"
-msgstr "Bardo"
+msgid "of the Bard"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:385
 msgid "Find Secret Door"
@@ -8517,8 +8532,9 @@ msgid "This skill lets you find secret doors."
 msgstr "Un occhio attento può trovare facilmente strani passaggi segreti."
 
 #: ../scourge_data/config/rpg.cfg:387
-msgid "Scion"
-msgstr ""
+#, fuzzy
+msgid "of the Scion"
+msgstr "Arte della protezione"
 
 #: ../scourge_data/config/rpg.cfg:393
 msgid "Move Undetected"
@@ -8532,7 +8548,8 @@ msgstr ""
 "notino."
 
 #: ../scourge_data/config/rpg.cfg:395
-msgid "Silence"
+#, fuzzy
+msgid "of the Silence"
 msgstr "Silenzio"
 
 #: ../scourge_data/config/rpg.cfg:401
@@ -8546,6 +8563,11 @@ msgid ""
 msgstr ""
 "La sottile e antica arte di ottenere quello che si vuole... senza pagare "
 "ovviamente."
+
+#: ../scourge_data/config/rpg.cfg:403
+#, fuzzy
+msgid "of the Thief"
+msgstr "Korga il curatore"
 
 #: ../scourge_data/config/npc.cfg:5
 msgid "Male Vagrant"
@@ -9558,6 +9580,11 @@ msgid ""
 "I believe its name was Karzul, a lesser demon of disease. If you seek him, "
 "he can be found in the $Abyss."
 msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:156 ../scourge_data/maps/library31.cfg:98
+#: ../scourge_data/maps/tower1.cfg:16
+msgid "Abyss"
+msgstr "Abisso"
 
 #: ../scourge_data/maps/hq.cfg:157
 msgid ""
@@ -12663,3 +12690,57 @@ msgstr "Qui tu soffrirai..."
 #: ../scourge_data/maps/emeril2.cfg:56
 msgid "Hmmm, it escapes me just now."
 msgstr ""
+
+#~ msgid "Lake"
+#~ msgstr "Lago"
+
+#~ msgid "Spectral"
+#~ msgstr "Spettrale"
+
+#~ msgid "Wolf"
+#~ msgstr "Lupo"
+
+#~ msgid "Troll"
+#~ msgstr "Troll"
+
+#~ msgid "Bear"
+#~ msgstr "Orso"
+
+#~ msgid "Tiger"
+#~ msgstr "Tigre"
+
+#~ msgid "Hydra"
+#~ msgstr "Hydra"
+
+#~ msgid "King"
+#~ msgstr "Re"
+
+#~ msgid "Sand"
+#~ msgstr "Sabbia"
+
+#~ msgid "Demon"
+#~ msgstr "Demone"
+
+#~ msgid "Gods"
+#~ msgstr "Dei"
+
+#~ msgid "Night"
+#~ msgstr "Notte"
+
+#~ msgid "Angel"
+#~ msgstr "Angelo"
+
+#~ msgid "Law"
+#~ msgstr "Legge"
+
+#~ msgid "Brand"
+#~ msgstr "Brando"
+
+#~ msgid "Sorcerer"
+#~ msgstr "Stregone"
+
+#~ msgid "Sage"
+#~ msgstr "Saggio"
+
+#~ msgid "Bard"
+#~ msgstr "Bardo"

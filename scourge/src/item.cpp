@@ -794,12 +794,12 @@ void Item::describeMagic(char *s, char *itemName) {
 		if( DEBUG_ITEM_ID || isIdentified() ) {
 			char format[1000];
 			/* This represents the format of an identified item. Please do not translate the strings,
-			only rearrange them to work with your language. I expect the stuff after $bonus can
-			be dropped for most languages. An example of the final string created by the code after
-			parsing this message would be: 
-			"Ethereal Greater Protective Slaying Longsword (+4) of the Ice Dragon"
+			only rearrange them to work with your language. 
+			
+			An example of the final string created by the code after parsing this message would be: 
+			"Ethereal Greater Protective Slaying Longsword (+4) of the Dragon"
 			*/
-			strcpy( format, _( "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $of $school" ) );
+			strcpy( format, _( "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $symbol" ) );
 			char *p = strtok( format, " " );
 			strcpy( s, "" );
 			while( p ) {
@@ -834,34 +834,29 @@ void Item::describeMagic(char *s, char *itemName) {
 						sprintf(tmp, " (+%d)", bonus);
 						strcat(s, tmp);
 					}
-				} else if( !strcmp( p, "$of" ) ) {
+				} else if( !strcmp( p, "$symbol" ) ) {
 					if( skillBonus.size() > 0 ) {
-						if( strlen( s ) ) strcat( s, " " );
-						strcat( s, _( "of the" ) );
-					}
-				} else if( !strcmp( p, "$school" ) ) {
-					if( skillBonus.size() > 0 ) {
-						
-						// use state_mod or magic school as the adjective
-						// e.g.: of the [ice|dire|planar|etc] Boar
 						if( school ) {
 							if( strlen( s ) ) strcat( s, " " );
 							strcat( s, school->getSymbol() );
 						} else if( stateModSet ) {
+							bool stateModFound = false;
 							for( int i = 0; i < StateMod::STATE_MOD_COUNT; i++ ) {
 								if( stateMod[ i ] > 0 ) {
 									if( strlen( s ) ) strcat( s, " " );
 									strcat( s, StateMod::stateMods[ i ]->getSymbol() );
+									stateModFound = true;
 									break;
 								}
 							}
-						}
-						
-						// use the first skill as the noun
-						map<int,int>::iterator i = skillBonus.begin();
-						int skill = i->first;
-						if( strlen( s ) ) strcat( s, " " );
-						strcat( s, Skill::skills[ skill ]->getSymbol() );
+							if( !stateModFound ) {
+								// use the first skill as the noun
+								map<int,int>::iterator i = skillBonus.begin();
+								int skill = i->first;
+								if( strlen( s ) ) strcat( s, " " );
+								strcat( s, Skill::skills[ skill ]->getSymbol() );
+							}
+						}						
 					}
 				} else if( *p != '$' ) {
 					if( strlen( s ) ) strcat( s, " " );
@@ -974,7 +969,6 @@ void Item::trySetIDBit(int bit, float modifier, int infoDetailLevel) {
 	}
 }
 
-//#define DEBUG_IDENTIFY_ITEM 1
 void Item::identify( int infoDetailLevel ) {
 #ifdef DEBUG_IDENTIFY_ITEM
 	infoDetailLevel = 500;
