@@ -86,6 +86,7 @@ public:
   void initUI();
 
 protected:
+	void drawChapterIntro();
   void centerOnMonsterInTB();
   void drawTextEffect();
   void drawOutsideMap();

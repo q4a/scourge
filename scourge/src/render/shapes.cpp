@@ -496,7 +496,7 @@ bool isPowerOfTwo( GLuint n ) {
 
 // FIXME: this should be similar to loadTextureWithAlpha but adding alpha
 // screws up the stencils in caves. No time to debug now.
-GLuint Shapes::getBMPData( char *filename, GLubyte **buf ) {
+GLuint Shapes::getBMPData( char *filename, GLubyte **buf, int *imgwidth, int *imgheight  ) {
   char fn[300];
   strcpy(fn, rootDir);
   strcat(fn, filename);
@@ -523,6 +523,9 @@ GLuint Shapes::getBMPData( char *filename, GLubyte **buf ) {
 
     int width = TextureImage[0]->w;
     int height = TextureImage[0]->h;
+
+		if( imgwidth ) *imgwidth = width;
+		if( imgheight ) *imgheight = height;
 
     unsigned char * data = (unsigned char *)(TextureImage[0]->pixels);         // the pixel data
 

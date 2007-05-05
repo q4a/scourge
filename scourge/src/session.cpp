@@ -50,6 +50,9 @@ Session::Session(GameAdapter *adapter) {
 #endif
   multiplayerGame = false;
   currentMission = NULL;
+	chapterImage = NULL;
+	chapterImageWidth = chapterImageHeight = 0;
+	showChapterIntro = false;
   squirrel = NULL;
 	strcpy( savegame, "" );
 	strcpy( loadgame, "" );
@@ -606,7 +609,22 @@ Creature *Session::getCreatureByName( char *name ) {
 }
 
 void Session::setCurrentMission( Mission *mission ) { 
+	Mission *oldMission = currentMission;
 	currentMission = mission; 
 	getGameAdapter()->refreshInventoryUI();
+	if( oldMission != currentMission && currentMission->isStoryLine() ) {
+		if( chapterImage ) free( chapterImage ); 
+		char filename[300];
+		sprintf( filename, "/chapters/chapter%d.bmp", currentMission->getChapter() );
+		if( !shapePal->getBMPData( filename, &chapterImage, &chapterImageWidth, &chapterImageHeight ) ) {
+			cerr << "Error loading image for chapter " << currentMission->getChapter() << endl;
+			chapterImage = NULL;
+		} else {
+			cerr << "***********************************" << endl;
+			cerr << "Loaded chapter art: " << filename << 
+				" dimensions=" << chapterImageWidth << "," << chapterImageHeight << endl;
+			cerr << "***********************************" << endl;
+		}
+	}
 }
 

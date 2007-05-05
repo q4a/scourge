@@ -89,6 +89,7 @@ Board::Board(Session *session) {
 
     Mission *current_mission = new Mission( this, level, depth, name, displayName, description, music, success, failure, mapName );
     current_mission->setStoryLine( true );
+		current_mission->setChapter( 1 ); // FIXME
     storylineMissions.push_back( current_mission );
 
 
@@ -546,6 +547,7 @@ Mission::Mission( Board *board, int level, int depth,
   strcpy( this->mapName, ( mapName ? mapName : "" ) );
   this->completed = false;
   this->storyLine = false;
+	this->chapter = 0;
   this->mapX = this->mapY = 0;
   this->special[0] = '\0';
 	this->templateName[0] = '\0';

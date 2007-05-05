@@ -73,6 +73,7 @@ public:
 
 class Mission {
 private:
+	int chapter;
   Board *board;
   int level;
   int depth;
@@ -136,6 +137,8 @@ public:
            char *mapName, char mapType='C' );
   ~Mission();
 
+	inline int getChapter() { return chapter; }
+	inline void setChapter( int n ) { chapter = n; }
   inline int getMapX() { return mapX; }
   inline int getMapY() { return mapY; }
   inline void setMapXY( int x, int y ) { mapX = x; mapY = y; }

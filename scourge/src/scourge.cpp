@@ -305,6 +305,12 @@ void Scourge::startMission( bool startInHq ) {
     bool mapCreated = createLevelMap( lastMission, fromRandomMap );
 		//if( inHq ) lastMission = NULL;
     if( mapCreated ) {
+
+			// show the chapter art
+			if( session->getCurrentMission() && 
+					session->getCurrentMission()->isStoryLine() ) 
+				session->setShowChapterIntro( true );
+
       changingStory = false;
 
 			if( inHq ) addWanderingHeroes();
@@ -590,7 +596,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		inHq = false;
 
 		// Initialize the map with a random dungeon
-		getSession()->setCurrentMission(board->getMission(nextMission));
+		getSession()->setCurrentMission( board->getMission(nextMission) );
 		missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
 
 		// try to load a previously saved, random-generated map level

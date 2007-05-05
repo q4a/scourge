@@ -65,6 +65,11 @@ ScourgeView::~ScourgeView() {
 }
 
 void ScourgeView::drawView() {
+	if( scourge->getSession()->isShowingChapterIntro() ) {
+		drawChapterIntro();
+		return;
+	}
+
   // move inventory window with party window
   scourge->getInventory()->positionWindow();
 
@@ -105,6 +110,30 @@ void ScourgeView::drawView() {
   if(Window::windowWasClosed) {
     scourge->removeClosedContainerGuis();
   }
+}
+
+void ScourgeView::drawChapterIntro() {
+	glDisable(GL_TEXTURE_2D);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  glDisable( GL_DEPTH_TEST );
+	glDisable( GL_CULL_FACE );
+	glDisable( GL_SCISSOR_TEST );
+  //glEnable(GL_ALPHA_TEST);
+  //glAlphaFunc(GL_NOTEQUAL, 0);        
+  glPushMatrix();
+  glLoadIdentity( );                         
+  glPixelZoom( 1.0, -1.0 );
+
+	glRasterPos2f( ( scourge->getScreenWidth() - scourge->getSession()->getChapterImageWidth() ) / 2, 0 );
+	glDrawPixels( scourge->getSession()->getChapterImageWidth(),
+								scourge->getSession()->getChapterImageHeight(),
+								GL_RGB, GL_UNSIGNED_BYTE, 
+								scourge->getSession()->getChapterImage() );
+
+	scourge->getSDLHandler()->texPrint( 0, 10, "Press Escape to continue... (this screen is work in progress)" );
+
+  //glDisable(GL_ALPHA_TEST);
+  glPopMatrix();
 }
 
 void ScourgeView::centerOnMonsterInTB() {
