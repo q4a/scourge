@@ -612,8 +612,11 @@ void Session::setCurrentMission( Mission *mission ) {
 	Mission *oldMission = currentMission;
 	currentMission = mission; 
 	getGameAdapter()->refreshInventoryUI();
-	if( oldMission != currentMission && currentMission->isStoryLine() ) {
-		if( chapterImage ) free( chapterImage ); 
+	if( oldMission != currentMission && currentMission && currentMission->isStoryLine() ) {
+		if( chapterImage ) {
+			free( chapterImage ); 
+			chapterImage = NULL;
+		}
 		char filename[300];
 		sprintf( filename, "/chapters/chapter%d.bmp", currentMission->getChapter() );
 		if( !shapePal->getBMPData( filename, &chapterImage, &chapterImageWidth, &chapterImageHeight ) ) {

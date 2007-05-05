@@ -91,8 +91,6 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   // in HQ map
   inHq = true;
 
-  layoutMode = Constants::GUI_LAYOUT_BOTTOM;
-
   isInfoShowing = true; // what is this?
   info_dialog_showing = false;
 
@@ -302,15 +300,10 @@ void Scourge::startMission( bool startInHq ) {
 		resetGame( resetParty );
 		resetParty = false;
 
+		bool fromHq = inHq;
     bool mapCreated = createLevelMap( lastMission, fromRandomMap );
 		//if( inHq ) lastMission = NULL;
     if( mapCreated ) {
-
-			// show the chapter art
-			if( session->getCurrentMission() && 
-					session->getCurrentMission()->isStoryLine() ) 
-				session->setShowChapterIntro( true );
-
       changingStory = false;
 
 			if( inHq ) addWanderingHeroes();
@@ -326,11 +319,17 @@ void Scourge::startMission( bool startInHq ) {
       // hack to unfreeze animations, etc.
       party->forceStopRound();
 
-			// converse with Uzudil or show "welcome to level" message
-			showLevelInfo();
+			// show the chapter art
+			if( session->getCurrentMission() && 
+					session->getCurrentMission()->isStoryLine() &&
+					fromHq ) {
+				session->setShowChapterIntro( true );
+				hideGui();
+			} else {
+				// converse with Uzudil or show "welcome to level" message
+				showLevelInfo();
+			}
 
-      // set the map view
-      setUILayout();
       // start the haunting tunes
       getSDLHandler()->getSound()->selectMusic( getPreferences(), session->getCurrentMission());
       if(inHq) getSDLHandler()->getSound()->playMusicHQ();
@@ -439,9 +438,8 @@ bool Scourge::saveCurrentMap( char *dirName ) {
 void Scourge::resetGame( bool resetParty ) {
 	oldStory = currentStory;
 
-	// add gui
-	mainWin->setVisible(true);
-	if(session->isMultiPlayerGame()) netPlay->getWindow()->setVisible(true);
+	// add the game gui
+	showGui();
 
 	// create the map
 	//cerr << "Starting to reset map..." << endl;
@@ -737,7 +735,28 @@ void Scourge::cleanUpAfterMission() {
 	// clean up after the mission
 	resetInfos();
 
-	// remove gui
+	hideGui();
+
+	resetBattles();
+
+	// delete active projectiles
+	Projectile::resetProjectiles();
+
+	// delete the mission level's item and monster instances
+	// This will also delete mission items from inventory. The mission will
+	// still succeed.
+	if( session->getCurrentMission() )
+		session->getCurrentMission()->deleteItemMonsterInstances();
+
+	session->deleteCreaturesAndItems(true);
+}
+
+void Scourge::showGui() {
+	mainWin->setVisible( true );
+	if(session->isMultiPlayerGame()) netPlay->getWindow()->setVisible(true);
+}
+
+void Scourge::hideGui() {
 	dismissHeroDialog->setVisible( false );
 	confirmUpload->setVisible( false );
 	mainWin->setVisible(false);
@@ -764,19 +783,6 @@ void Scourge::cleanUpAfterMission() {
 	pcEditor->getWindow()->setVisible( false );
 	saveDialog->getWindow()->setVisible( false );
 	tbCombatWin->setVisible( false );
-
-	resetBattles();
-
-	// delete active projectiles
-	Projectile::resetProjectiles();
-
-	// delete the mission level's item and monster instances
-	// This will also delete mission items from inventory. The mission will
-	// still succeed.
-	if( session->getCurrentMission() )
-		session->getCurrentMission()->deleteItemMonsterInstances();
-
-	session->deleteCreaturesAndItems(true);
 }
 
 bool Scourge::changeLevel() {
@@ -1552,97 +1558,6 @@ void Scourge::createUI() {
   squirrelWin->addWidget( squirrelText );
   squirrelRun = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 110, 150, getSDLHandler()->getScreen()->w - 30, 170, _( "Run" ) );
   squirrelClear = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 200, 150, getSDLHandler()->getScreen()->w - 120, 170, _( "Clear" ) );
-}
-
-void Scourge::setUILayout(int mode) {
-  layoutMode = mode;
-  setUILayout();
-}
-
-void Scourge::setUILayout() {
-  /*
-  // reshape the levelMap
-  int mapX = 0;
-  int mapY = 0;
-  int mapWidth = getSDLHandler()->getScreen()->w;
-  int mapHeight = getSDLHandler()->getScreen()->h;
-
-  mainWin->setVisible( false );
-  switch(layoutMode) {
-  case Constants::GUI_LAYOUT_ORIGINAL:
-//  if(inventory->getWindow()->isLocked()) {
-    inventory->hide();
-    inventory->getWindow()->setLocked( false );
-		inventory->getWindow()->setAnimation( Window::DEFAULT_ANIMATION );
-//  }
-    netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER);
-    netPlay->getWindow()->setLocked(false);
-    break;
-
-  case Constants::GUI_LAYOUT_BOTTOM:
-    mainWin->setLocked(true);
-//  if(inventory->getWindow()->isLocked()) {
-    //inventory->getWindow()->setVisible(false);
-    inventory->hide();
-		inventory->getWindow()->setLocked(true);
-		inventory->getWindow()->setAnimation( Window::SLIDE_UP );
-//    inventory->getWindow()->setLocked(false);
-//  }
-    netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT * 2 - Window::SCREEN_GUTTER);
-    netPlay->getWindow()->setLocked(true);
-    break;
-
-  case Constants::GUI_LAYOUT_SIDE:
-    //mapX = 400;
-    mapX = 0;
-    mapWidth = getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH;
-    mapHeight = getSDLHandler()->getScreen()->h;
-    mainWin->setLocked(true);
-//  if(inventory->getWindow()->isLocked()) {
-    inventory->hide();
-		inventory->getWindow()->setLocked(true);
-		inventory->getWindow()->setAnimation( Window::SLIDE_UP );
-//    inventory->getWindow()->setLocked(false);
-//  }
-    netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
-    netPlay->getWindow()->setLocked(true);
-    break;
-
-  case Constants::GUI_LAYOUT_INVENTORY:
-    mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER;
-    mainWin->setLocked(true);
-    inventory->hide();
-    //inventory->getWindow()->move(getSDLHandler()->getScreen()->w - INVENTORY_WIDTH,
-                                 //getSDLHandler()->getScreen()->h - (PARTY_GUI_HEIGHT + INVENTORY_HEIGHT + Window::SCREEN_GUTTER));
-//  inventory->getWindow()->setLocked(true);
-//    inventory->show(false);
-		inventory->getWindow()->setLocked(true);
-		inventory->getWindow()->setAnimation( Window::SLIDE_UP );
-    //mapX = INVENTORY_WIDTH;
-    mapX = 0;
-    mapWidth = getSDLHandler()->getScreen()->w - INVENTORY_WIDTH;
-    mapHeight = getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT - Window::SCREEN_GUTTER;
-    netPlay->getWindow()->move(0, getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT * 2 - Window::SCREEN_GUTTER);
-    netPlay->getWindow()->setLocked(true);
-    break;
-  }
-
-  inventoryButton->setSelected( inventory->isVisible() );
-  optionsButton->setSelected( optionsMenu->isVisible() );
-
-  mainWin->move(getSDLHandler()->getScreen()->w - PARTY_GUI_WIDTH,
-                getSDLHandler()->getScreen()->h - PARTY_GUI_HEIGHT);
-  mainWin->setVisible( true, false );
-  //inventory->positionWindow();
-
-  // FIXME: resize levelMap drawing area to remainder of screen.
-  levelMap->setViewArea(mapX, mapY, mapWidth, mapHeight);
-  if(getParty()->getPlayer()) {
-    getMap()->center(toint(getParty()->getPlayer()->getX()),
-                     toint(getParty()->getPlayer()->getY()),
-                     true);
-  }
-  */
 }
 
 void Scourge::playRound() {

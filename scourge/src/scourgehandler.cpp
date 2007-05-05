@@ -58,6 +58,9 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
 			event->type == SDL_KEYUP && 
 			event->key.keysym.sym == SDLK_ESCAPE ) {
 		scourge->getSession()->setShowChapterIntro( false );
+		scourge->showGui();
+		scourge->showLevelInfo();
+		scourge->getSDLHandler()->fade( 1, 0, 20 );
 		return false;
 	}
 
@@ -280,13 +283,13 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
     } else if(ea == START_ROUND) {
       scourge->getParty()->toggleRound();
     } else if(ea == LAYOUT_1) {
-      scourge->setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
+      //scourge->setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
     } else if(ea == LAYOUT_2) {
-      scourge->setUILayout(Constants::GUI_LAYOUT_BOTTOM);
+      //scourge->setUILayout(Constants::GUI_LAYOUT_BOTTOM);
 //    } else if(ea == LAYOUT_3) {
 //      setUILayout(Constants::GUI_LAYOUT_SIDE);
     } else if(ea == LAYOUT_4) {
-      scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
+      //scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
     } else if( ea >= QUICK_SPELL_1 && ea <= QUICK_SPELL_12 ) {
       quickSpellAction( ea - QUICK_SPELL_1 );
     }
