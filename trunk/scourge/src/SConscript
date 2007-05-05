@@ -1,3 +1,10 @@
+# ==============================
+#
+# Scripts taken from the game 'Mars, land of no mercy'
+# http://www.marsnomercy.org/
+#
+# ==============================
+
 # import variables
 Import('env', 'opts', 'bin_dir')
 
