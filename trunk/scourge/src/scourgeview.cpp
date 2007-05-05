@@ -124,12 +124,16 @@ void ScourgeView::drawChapterIntro() {
   glLoadIdentity( );                         
   glPixelZoom( 1.0, -1.0 );
 
-	glRasterPos2f( ( scourge->getScreenWidth() - scourge->getSession()->getChapterImageWidth() ) / 2, 0 );
+	int textHeight = 250;
+	int px = ( scourge->getScreenWidth() - scourge->getSession()->getChapterImageWidth() ) / 2;
+	int py = scourge->getScreenHeight() - textHeight - scourge->getSession()->getChapterImageHeight();
+	glRasterPos2f( px, py );
 	glDrawPixels( scourge->getSession()->getChapterImageWidth(),
 								scourge->getSession()->getChapterImageHeight(),
 								GL_RGB, GL_UNSIGNED_BYTE, 
 								scourge->getSession()->getChapterImage() );
 
+	// temporary text, do not translate
 	scourge->getSDLHandler()->texPrint( 0, 10, "Press Escape to continue... (this screen is work in progress)" );
 
   //glDisable(GL_ALPHA_TEST);

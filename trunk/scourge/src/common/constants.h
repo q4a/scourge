@@ -527,16 +527,6 @@ public:
     ACTION_COUNT
   };
 
-  enum {
-    GUI_LAYOUT_ORIGINAL=0,
-    GUI_LAYOUT_BOTTOM,
-    GUI_LAYOUT_SIDE,
-    GUI_LAYOUT_INVENTORY,
-
-    // must be last one
-    GUI_LAYOUT_COUNT
-  };
-
   // sound types
   enum {
     SOUND_TYPE_COMMAND=0,

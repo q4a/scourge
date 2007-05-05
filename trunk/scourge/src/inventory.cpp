@@ -689,13 +689,13 @@ bool Inventory::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == formationList ) {
     scourge->getParty()->setFormation( formationList->getSelectedLine() );
   } else if(widget == layoutButton1) {
-    scourge->setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
+    //scourge->setUILayout(Constants::GUI_LAYOUT_ORIGINAL);
   } else if(widget == layoutButton2) {
-    scourge->setUILayout(Constants::GUI_LAYOUT_BOTTOM);
+    //scourge->setUILayout(Constants::GUI_LAYOUT_BOTTOM);
   //} else if(widget == layoutButton3) {
 //    setUILayout(Constants::GUI_LAYOUT_SIDE);
   } else if(widget == layoutButton4) {
-    scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
+    //scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
   } else if( widget == squirrelWindow ) {
     scourge->getSquirrelConsole()->setVisible( squirrelWindow->isSelected() );
 		/*
@@ -1055,11 +1055,13 @@ void Inventory::setSelectedPlayerAndMode(int player, int mode) {
                             (const char **)objectiveText,
                             missionColor);
     break;
+/*
   case PARTY:
     layoutButton1->setSelected( scourge->getLayoutMode() == Constants::GUI_LAYOUT_ORIGINAL );
     layoutButton2->setSelected( scourge->getLayoutMode() == Constants::GUI_LAYOUT_BOTTOM );
     layoutButton4->setSelected( scourge->getLayoutMode() == Constants::GUI_LAYOUT_INVENTORY );
     break;
+*/		
   }
 }
 

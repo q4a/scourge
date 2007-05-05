@@ -165,8 +165,6 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   int battleTurn, rtStartTurn;
 
   Creature *targetSelectionFor;
-
-  int layoutMode;
   NetPlay *netPlay;
 
 
@@ -243,8 +241,7 @@ protected:
 	// called from startMission
 	void resetGame( bool resetParty );
 	void createMissionInfoMessage( Mission *lastMission );
-	bool createLevelMap( Mission *lastMission, bool fromRandomMap );
-	void showLevelInfo();
+	bool createLevelMap( Mission *lastMission, bool fromRandomMap );	
 	void cleanUpAfterMission();
 	bool changeLevel();
 	void endGame();
@@ -577,24 +574,12 @@ public:
   */
   inline Creature *getTargetSelectionFor() { return targetSelectionFor; }
 
-  /**
-    Refresh (redraw) the current UI layout.
-  */
-  void setUILayout();
-  
-  /**  
-    Set the UI layout to one of the values specified in constants. A UI layout is either
-    free-floating (where windows can be dragged anywhere on the screen) or old-school where
-    some windows are "locked". These locked windows are always visible and cannot be moved.
-    The default screen layout is the free-floating mode.
-  */
-  void setUILayout(int mode);
-  
-  /**
-    @return the current UI layout mode.
-  */
-  int getLayoutMode() { return layoutMode; }
+	void hideGui();
 
+	void showGui();
+
+	void showLevelInfo();
+  
   // initialization events
   void initStart(int statusCount, char *message);
   void initUpdate(char *message);
