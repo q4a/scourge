@@ -1,3 +1,9 @@
+# ==============================
+#
+# Scripts taken from the game 'Mars, land of no mercy'
+# http://www.marsnomercy.org/
+#
+# ==============================
 import sys, os
 
 # create build environment and options
