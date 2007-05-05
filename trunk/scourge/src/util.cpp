@@ -638,7 +638,7 @@ char *Util::addLineBreaks( const char *in, char *out, int lineLength ) {
 	char *token = strtok( tmp, " \r\n\t" );
 	int count = 0;
 	while( token ) {
-		if( count + strlen( token ) >= lineLength ) {
+		if( count + (int)strlen( token ) >= lineLength ) {
 			strcat( out, "|" );
 			count = 0;
 		}

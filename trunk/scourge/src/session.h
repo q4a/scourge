@@ -66,6 +66,9 @@ private:
 #endif
   bool multiplayerGame;
   Mission *currentMission;
+	GLubyte *chapterImage; 
+	int chapterImageWidth, chapterImageHeight;
+	bool showChapterIntro;
   std::vector<Item*> newItems;
   std::vector<Creature*> creatures;
   SqBinding *squirrel;
@@ -168,6 +171,11 @@ public:
   inline Preferences *getPreferences() { return getGameAdapter()->getPreferences(); }
   inline Mission *getCurrentMission() { return currentMission; }
   void setCurrentMission(Mission *mission);
+	inline GLubyte *getChapterImage() { return chapterImage; }
+	inline int getChapterImageWidth() { return chapterImageWidth; }
+	inline int getChapterImageHeight() { return chapterImageHeight; }
+	inline void setShowChapterIntro( bool b ) { this->showChapterIntro = b; }
+	inline bool isShowingChapterIntro() { return showChapterIntro; }
 
   virtual Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
   virtual void creatureDeath( Creature *creature );

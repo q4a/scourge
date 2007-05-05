@@ -70,3 +70,7 @@ Part of the graphic tiles (for inventory) used in this program is the public
 domain roguelike tileset "RLTiles".
 You can find the original tileset at:
 http://rltiles.sf.net
+
+Scons makefile from 'Mars, land of no mercy'
+http://www.marsnomercy.org
+

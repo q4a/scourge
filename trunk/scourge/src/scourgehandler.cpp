@@ -54,6 +54,13 @@ ScourgeHandler::~ScourgeHandler() {
 bool ScourgeHandler::handleEvent(SDL_Event *event) {
   int ea;
 
+	if( scourge->getSession()->isShowingChapterIntro() && 
+			event->type == SDL_KEYUP && 
+			event->key.keysym.sym == SDLK_ESCAPE ) {
+		scourge->getSession()->setShowChapterIntro( false );
+		return false;
+	}
+
   if( scourge->getDescriptionScroller()->handleEvent( event ) ) return false;
 
   for( int i = 0; i < scourge->getContainerGuiCount(); i++ ) {

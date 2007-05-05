@@ -284,7 +284,7 @@ public:
 
   GLuint loadGLTextures(char *fileName);
 
-  GLuint getBMPData( char *filename, GLubyte **buf );
+  GLuint getBMPData( char *filename, GLubyte **buf, int *width=NULL, int *height=NULL );
 
   GLuint getCursorTexture( int cursorMode );
 
