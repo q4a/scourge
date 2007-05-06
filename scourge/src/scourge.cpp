@@ -318,21 +318,24 @@ void Scourge::startMission( bool startInHq ) {
       // hack to unfreeze animations, etc.
       party->forceStopRound();
 
+			// load musics
+			getSDLHandler()->getSound()->selectMusic( getPreferences(), session->getCurrentMission() );
+
 			// show the chapter art
 			if( session->getCurrentMission() && 
 					session->getCurrentMission()->isStoryLine() &&
 					fromHq ) {
 				session->setShowChapterIntro( true );
 				hideGui();
+				getSDLHandler()->getSound()->playMusicChapter();
 			} else {
 				// converse with Uzudil or show "welcome to level" message
 				showLevelInfo();
-			}
 
-      // start the haunting tunes
-      getSDLHandler()->getSound()->selectMusic( getPreferences(), session->getCurrentMission());
-      if(inHq) getSDLHandler()->getSound()->playMusicHQ();
-      else getSDLHandler()->getSound()->playMusicMission();
+				// start the haunting tunes
+				if(inHq) getSDLHandler()->getSound()->playMusicHQ();
+				else getSDLHandler()->getSound()->playMusicMission();
+			}
       getSDLHandler()->fade( 1, 0, 20 );
 
       // run mission

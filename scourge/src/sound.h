@@ -38,6 +38,8 @@ private:
   Mix_Music *fightMusic;
   Mix_Music *currentMusic;
   Mix_Music *currentLevelMusic;
+	Mix_Music *chapterMusic;
+	int lastChapter;
   Uint32 musicStartTime;
   double musicPosition;
   std::map<std::string, Mix_Chunk*> soundMap;  
@@ -68,6 +70,12 @@ public:
   inline void playMusicMission() {
 #ifdef HAVE_SDL_MIXER
     playMusic( missionMusic );
+#endif
+  }
+
+  inline void playMusicChapter() {
+#ifdef HAVE_SDL_MIXER
+    playMusic( chapterMusic );
 #endif
   }
 
