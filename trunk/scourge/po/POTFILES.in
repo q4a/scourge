@@ -95,7 +95,6 @@ src/optionsmenu.cpp
 src/sdlhandler.cpp
 src/sdleventhandler.cpp
 src/sound.cpp
-src/inventory.cpp
 src/dungeongenerator.cpp
 src/mondrian.cpp
 src/scourge.cpp
@@ -198,7 +197,6 @@ src/upload.h
 src/debug.h
 src/minimap.h
 src/itemlist.h
-src/inventory.h
 src/mondrian.h
 src/scourge.h
 src/creature.h

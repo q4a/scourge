@@ -33,6 +33,8 @@ class Session;
 class Battle;
 class Projectile;
 class ProjectileRenderer;
+class Spell;
+class SpecialSkill;
 
 class SpellCaster {
  private:

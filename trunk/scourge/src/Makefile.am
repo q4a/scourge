@@ -83,8 +83,6 @@ scourge_SOURCES = \
 	sdlscreenview.h\
 	sound.cpp\
 	sound.h\
-	inventory.cpp\
-	inventory.h\
 	pcui.cpp\
 	pcui.h\
 	textscroller.cpp\

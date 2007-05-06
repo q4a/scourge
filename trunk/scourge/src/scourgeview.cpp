@@ -70,9 +70,6 @@ void ScourgeView::drawView() {
 		return;
 	}
 
-  // move inventory window with party window
-  scourge->getInventory()->positionWindow();
-
   // make a move (player, monsters, etc.)
   scourge->playRound();
 

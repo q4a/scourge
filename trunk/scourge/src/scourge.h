@@ -27,7 +27,6 @@
 #include "minimap.h"
 #include "mainmenu.h"
 #include "optionsmenu.h"
-#include "inventory.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "userconfiguration.h"
@@ -60,7 +59,6 @@ class MainMenu;
 class MapEditor;
 class MapSettings;
 class OptionsMenu;
-class Inventory;
 class UserConfiguration;
 class Window;
 class ContainerGui;
@@ -97,6 +95,8 @@ class TextDialog;
 class SavegameDialog;
 class PcUi;
 class TextScroller;
+class Spell;
+class SpecialSkill;
 
 #define IMAGES_DIR "images/"
 #define RESOURCES_DIR "resources/"
@@ -130,7 +130,6 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   bool inHq;
   bool missionWillAwardExpPoints;
   char infoMessage[2000];
-  Inventory *inventory;
 	PcUi *pcui;
   ConfirmDialog *exitConfirmationDialog;
   TextDialog *textDialog;
@@ -432,8 +431,6 @@ public:
   /**
     @return the inventory
   */
-  inline Inventory *getInventory() { return inventory; }
-
 	inline PcUi *getPcUi() { return pcui; }
   
   /**
