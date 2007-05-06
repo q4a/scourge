@@ -31,6 +31,7 @@
 #include "gui/scrollinglabel.h"
 
 class Creature;
+class CardContainer;
 
 class ConversationGui : public WordClickedHandler, WidgetView {
 

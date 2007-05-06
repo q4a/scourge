@@ -16,7 +16,6 @@
  ***************************************************************************/
 #include "scourgehandler.h"
 #include "containergui.h"
-#include "inventory.h"
 #include "optionsmenu.h"
 #include "scourge.h"
 #include "render/renderlib.h"
@@ -70,11 +69,6 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
     if( scourge->getContainerGui( i )->handleEvent( event ) ) {
       scourge->closeContainerGui( i );
     }
-  }
-
-  if( scourge->getInventory()->isVisible() && 
-      scourge->getInventory()->handleEvent(event) ) {
-    return false;
   }
 
 	if( scourge->getPcUi()->getWindow()->isVisible() && 
@@ -271,7 +265,6 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
         // reset but don't pause again
         scourge->getParty()->getPlayer()->getBattle()->reset( true, true );
       }
-      if( scourge->getInventory()->isVisible() ) scourge->getInventory()->refresh();
     } else if(ea == TOGGLE_MAP_CENTER){
       bool mc;
       mc = scourge->getUserConfiguration()->getAlwaysCenterMap();
@@ -324,10 +317,6 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
     if( scourge->getContainerGui(i)->handleEvent( widget, event ) ) {
       scourge->closeContainerGui( i );
     }
-  }
-
-  if( scourge->getInventory()->isVisible() ) {
-    scourge->getInventory()->handleEvent( widget, event );
   }
 
 	if( scourge->getPcUi()->getWindow()->isVisible() ) {
@@ -601,7 +590,6 @@ bool ScourgeHandler::handlePartyEvent(Widget *widget, SDL_Event *event) {
         if( !scourge->inTurnBasedCombat() ||
             ( scourge->inTurnBasedCombat() &&
               scourge->getCurrentBattle()->getCreature() == scourge->getParty()->getParty( t ) ) ) {
-          scourge->getInventory()->showSkills();
           if( scourge->getParty()->getPlayer() != scourge->getParty()->getParty( t ) ) {
             scourge->getParty()->setPlayer( t );
             if( !scourge->getPcUi()->getWindow()->isVisible() ) scourge->toggleInventoryWindow();
@@ -620,7 +608,6 @@ bool ScourgeHandler::handlePartyEvent(Widget *widget, SDL_Event *event) {
             // reset but don't pause again
             scourge->getParty()->getPlayer()->getBattle()->reset( true, true );
           }
-          if( scourge->getInventory()->isVisible() ) scourge->getInventory()->refresh();
         }
       } else if( widget == scourge->getDismissButton( t ) ) {
 				scourge->handleDismiss( t );
@@ -669,7 +656,6 @@ void ScourgeHandler::quickSpellAction( int index, int button ) {
         cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;
       }
     } else {
-      scourge->getInventory()->showSpells();
       if( !scourge->getPcUi()->getWindow()->isVisible() ) scourge->toggleInventoryWindow();
     }
   }

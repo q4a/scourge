@@ -98,7 +98,6 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
   targetSelectionFor = NULL;
 
   battleCount = 0;
-  inventory = NULL;
 	pcui = NULL;
 	descriptionScroller = new TextScroller( this );
   containerGuiCount = 0;
@@ -491,8 +490,7 @@ void Scourge::resetGame( bool resetParty ) {
 		}
 	
 		// inventory needs the party
-		if(!inventory) {
-			inventory = new Inventory(this);
+		if(!pcui) {
 			pcui = new PcUi( this );
 		}
 
@@ -763,9 +761,6 @@ void Scourge::hideGui() {
 	closeAllContainerGuis();
 	if( pcui->getWindow()->isVisible() ) {
 		pcui->hide();
-	}
-	if(inventory->isVisible()) {
-		inventory->hide();
 		inventoryButton->setSelected( false );
 	}
 	if(optionsMenu->isVisible()) {
@@ -1176,8 +1171,6 @@ int Scourge::dropItem(int x, int y) {
                 c->getName(),
                 movingItem->getItemName());
         getDescriptionScroller()->addDescription(message);
-        // if the inventory is open, update it
-        if(inventory->isVisible()) inventory->refresh();
       } else {
         showMessageDialog( _( "The item won't fit in that container!" ) );
         replace = true;
@@ -1492,11 +1485,8 @@ void Scourge::startDoorEffect( int effect, Sint16 ox, Sint16 oy, Shape *shape ) 
 
 void Scourge::toggleInventoryWindow() {
   if( pcui->getWindow()->isVisible() ) {
-    //if(!inventory->getWindow()->isLocked()) inventory->hide();
-    //inventory->hide();
 		pcui->hide();
   } else {
-    //inventory->show();
 		pcui->show();
   }
   inventoryButton->setSelected( pcui->getWindow()->isVisible() );
@@ -2608,7 +2598,6 @@ void Scourge::executeQuickSpell( Spell *spell ) {
 void Scourge::refreshInventoryUI(int playerIndex) {
 	if( getPcUi() ) {
 		getPcUi()->setCreature( party->getParty( playerIndex ) );
-		getInventory()->refresh(playerIndex);
 		if( getTradeDialog()->getWindow()->isVisible() ) 
 			getTradeDialog()->updateUI();
 		refreshContainerGui();
@@ -2618,7 +2607,6 @@ void Scourge::refreshInventoryUI(int playerIndex) {
 void Scourge::refreshInventoryUI() {
 	if( getPcUi() ) {
 		getPcUi()->setCreature( party->getPlayer() );
-		getInventory()->refresh();
 		if( getTradeDialog()->getWindow()->isVisible() ) 
 			getTradeDialog()->updateUI();
 		refreshContainerGui();
@@ -3165,9 +3153,6 @@ bool Scourge::testLoadGame( Session *session ) {
     cerr << "Loaded party:" << endl;
     for( int i = 0; i < (int)n; i++ ) {
       cerr << "\t" << pc[i]->getName() << endl;
-      for( int t = 0; t < pc[i]->getInventoryCount(); t++ ) {
-        cerr << "\t\t" << pc[i]->getInventory(t)->getRpgItem()->getDisplayName() << endl;
-      }
     }
 
     delete file;

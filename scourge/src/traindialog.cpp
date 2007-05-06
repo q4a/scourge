@@ -183,7 +183,6 @@ void TrainDialog::train( Character *newProfession ) {
 	player->changeProfession( newProfession );
 
 	updateUI();
-	scourge->getInventory()->refresh();
 
 	char tmp[120];
 	sprintf( tmp, _( "Congratulation %1$s, you are now a %2$s." ),
