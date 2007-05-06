@@ -38,6 +38,7 @@
 #include "savegamedialog.h"
 #include "pcui.h"
 #include "textscroller.h"
+#include "sound.h"
 
 #define DRAG_START_TOLERANCE 5
 
@@ -57,8 +58,12 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
 			event->type == SDL_KEYUP && 
 			event->key.keysym.sym == SDLK_ESCAPE ) {
 		scourge->getSession()->setShowChapterIntro( false );
+		scourge->getSDLHandler()->getSound()->stopMusic();
 		scourge->showGui();
 		scourge->showLevelInfo();
+		// start the haunting tunes
+		if( scourge->isInHQ() ) scourge->getSDLHandler()->getSound()->playMusicHQ();
+		else scourge->getSDLHandler()->getSound()->playMusicMission();
 		scourge->getSDLHandler()->fade( 1, 0, 20 );
 		return false;
 	}

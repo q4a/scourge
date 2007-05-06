@@ -42,8 +42,9 @@ Sound::Sound(Preferences *preferences) {
       haveSound = true;
     }
 
+		lastChapter = -1;
     missionMusicIndex = -1;
-    currentMusic = currentLevelMusic = menuMusic = hqMusic = missionMusic = fightMusic = NULL;
+    currentMusic = currentLevelMusic = menuMusic = hqMusic = missionMusic = fightMusic = chapterMusic = NULL;
     musicStartTime = 0;
     musicPosition = 0;
     if(haveSound) {
@@ -73,6 +74,10 @@ Sound::~Sound() {
       Mix_FreeMusic( fightMusic );
       fightMusic = NULL;
     }
+		if( !chapterMusic ) {
+			Mix_FreeMusic( chapterMusic );
+			chapterMusic = NULL;
+		}
     // delete sounds
     for(map<string, Mix_Chunk*>::iterator i=soundMap.begin(); i != soundMap.end(); ++i) {
       Mix_Chunk *sample = i->second;
@@ -109,6 +114,22 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
       cerr << "\t" << Mix_GetError() << endl;
      }
    }
+	 if( mission && mission->isStoryLine() ) {
+		 if( lastChapter != mission->getChapter() ) {
+			 if( !chapterMusic ) {
+				 Mix_FreeMusic( chapterMusic );
+				 chapterMusic = NULL;
+			 }
+			 lastChapter = mission->getChapter();
+			 char fn[300];
+			 sprintf(fn, "%s/sound/music/chapters/chapter%d.ogg", rootDir, lastChapter );
+			 chapterMusic = Mix_LoadMUS( fn );
+			 if( !chapterMusic ) {
+				 cerr << "*** Error: couldn't load music: " << fn << endl;
+				 cerr << "\t" << Mix_GetError() << endl;
+			 }
+		 }
+	 }
 
 
   //select mission music
