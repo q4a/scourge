@@ -19,6 +19,7 @@ track04.ogg		L'excursion		Vincent Fiack
 track05.ogg		Dungeon shadows		Toofan Hosseinnezhad
 track06.ogg		Sur un theme de ...	Vincent Fiack
 fight01.ogg		Demo Mix		Joel Ross
+chapters/chapter1.ogg   Excruciating Nausea     Vincent Fiack
 
 ============================
 Sound files: (wav files)
