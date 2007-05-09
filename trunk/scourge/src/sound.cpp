@@ -185,7 +185,7 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 
 
 #ifdef HAVE_SDL_MIXER
-void Sound::playMusic( Mix_Music *music, int ms ) {
+void Sound::playMusic( Mix_Music *music, int ms, int loopCount ) {
   if( haveSound && music ) {
     currentMusic = music;
     if( currentMusic != fightMusic ) {
@@ -194,11 +194,11 @@ void Sound::playMusic( Mix_Music *music, int ms ) {
         musicStartTime = SDL_GetTicks();
         musicPosition = 0;
       }
-      if( Mix_FadeInMusicPos( music, -1, ms, musicPosition ) ) {
+      if( Mix_FadeInMusicPos( music, loopCount, ms, musicPosition ) ) {
         cerr << "*** Error playing music: " << Mix_GetError() << endl;
       }
     } else {
-      if( Mix_FadeInMusic( music, -1, ms ) ) {
+      if( Mix_FadeInMusic( music, loopCount, ms ) ) {
         cerr << "*** Error playing music: " << Mix_GetError() << endl;
       }
     }

@@ -75,7 +75,7 @@ public:
 
   inline void playMusicChapter() {
 #ifdef HAVE_SDL_MIXER
-    playMusic( chapterMusic );
+    playMusic( chapterMusic, 2000, 1 );
 #endif
   }
 
@@ -104,7 +104,7 @@ public:
 
 protected:
 #ifdef HAVE_SDL_MIXER
-  void playMusic( Mix_Music *music, int ms=2000 );
+  void playMusic( Mix_Music *music, int ms=2000, int loopCount=-1 );
   void storeCharacterSounds( std::map<int,std::vector<Mix_Chunk*>*> *charSoundMap, 
                              char *type, int soundType, char *filePrefix );
 #endif
