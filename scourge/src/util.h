@@ -130,6 +130,8 @@ public:
 
 	static char *addLineBreaks( const char *in, char *out, int lineLength=40 );
 
+	static void getLines( const char *in, std::vector<std::string> *out );
+
 protected:
   static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Sint16 dx, Sint16 dy,
 												 Creature *creature, Creature *player, Map *map, 

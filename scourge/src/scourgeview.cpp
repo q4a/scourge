@@ -109,6 +109,10 @@ void ScourgeView::drawView() {
   }
 }
 
+int chapterTextTimer = 0;
+#define CHAPTER_TEXT_SPEED 90
+#define CHAPTER_TEXT_DELTA 1
+
 void ScourgeView::drawChapterIntro() {
 	glDisable(GL_TEXTURE_2D);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -132,6 +136,55 @@ void ScourgeView::drawChapterIntro() {
 
 	// temporary text, do not translate
 	scourge->getSDLHandler()->texPrint( 0, 10, "Press Escape to continue... (this screen is work in progress)" );
+
+	glScissor( 0, 0, scourge->getScreenWidth(), 250 );
+  glEnable( GL_SCISSOR_TEST );
+	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
+	int offset = scourge->getChapterTextPos();
+	glTranslatef( ( scourge->getScreenWidth() - scourge->getChapterTextWidth() ) / 2, 
+								( scourge->getScreenHeight() - textHeight ), 0 );
+	glColor4f( 1, 0.9f, 0.8f, 1 );
+	for( unsigned int i = 0; i < scourge->getChapterText()->size(); i++ ) {
+		string s = (*scourge->getChapterText())[i];
+		int ypos = i * 28 + offset;
+		scourge->getSDLHandler()->texPrint( 0, ypos, s.c_str() );
+	}
+	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+
+	int size = 50;
+	glDisable( GL_TEXTURE_2D );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glBegin( GL_QUADS );
+	glColor4f( 0, 0, 0, 0 );
+	glVertex2d( 0, size );
+	glColor4f( 0, 0, 0, 1 );
+	glVertex2d( 0, 0 );
+	glColor4f( 0, 0, 0, 1 );
+	glVertex2d( scourge->getScreenWidth(), 0 );
+	glColor4f( 0, 0, 0, 0 );
+	glVertex2d( scourge->getScreenWidth(), size );
+
+	glColor4f( 0, 0, 0, 0 );
+	glVertex2d( 0, textHeight - size );
+	glColor4f( 0, 0, 0, 1 );
+	glVertex2d( 0, textHeight );
+	glColor4f( 0, 0, 0, 1 );
+	glVertex2d( scourge->getScreenWidth(), textHeight );
+	glColor4f( 0, 0, 0, 0 );
+	glVertex2d( scourge->getScreenWidth(), textHeight - size );
+	glEnd();
+	glDisable( GL_BLEND );
+	glEnable( GL_TEXTURE_2D );
+
+	glDisable( GL_SCISSOR_TEST );
+
+	Uint32 now = SDL_GetTicks();
+	if( now - chapterTextTimer > CHAPTER_TEXT_SPEED && 
+			offset > ( (int)( scourge->getChapterText()->size() ) * -28 ) ) {
+		scourge->setChapterTextPos( offset - CHAPTER_TEXT_DELTA );
+		chapterTextTimer = now;
+	}
 
   //glDisable(GL_ALPHA_TEST);
   glPopMatrix();

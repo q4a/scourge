@@ -649,3 +649,16 @@ char *Util::addLineBreaks( const char *in, char *out, int lineLength ) {
 	}
 	return out;
 }
+
+void Util::getLines( const char *in, vector<string> *out ) {
+	char tmp[3000];
+	strncpy( tmp, in, 2999 );
+	tmp[2999] = '\0';
+	char *p = strtok( tmp, "|" );
+	while( p ) {
+		string s = p;
+		out->push_back( s );
+		p = strtok( NULL, "|" );
+	}
+}
+
