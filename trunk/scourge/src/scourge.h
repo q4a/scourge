@@ -223,6 +223,10 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
 	SavegameDialog *saveDialog;
 	std::set<std::string> visitedMaps;
 
+	std::vector<std::string> chapterText;
+	int chapterTextPos;
+	int chapterTextWidth;
+
 protected:
   bool getItem(Location *pos);
   // returns new z coordinate
@@ -737,8 +741,14 @@ public:
 	bool enchantItem( Creature *creature, Item *item );
 	bool transcribeItem( Creature *creature, Item *item );
 	bool useItem( Creature *creature, Item *item );
+	inline std::vector<std::string> *getChapterText() { return &chapterText; }
+	inline int getChapterTextPos() { return chapterTextPos; }
+	inline void setChapterTextPos( int n ) { chapterTextPos = n; }
+	inline int getChapterTextWidth() { return chapterTextWidth; }
 
 protected:
+
+	void initChapterIntro();
 
 	bool describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull );
 

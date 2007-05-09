@@ -110,6 +110,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 
   view = new ScourgeView( this );
   handler = new ScourgeHandler( this );
+	chapterTextPos = 0;
 }
 
 void Scourge::initUI() {
@@ -325,9 +326,7 @@ void Scourge::startMission( bool startInHq ) {
 			if( session->getCurrentMission() && 
 					session->getCurrentMission()->isStoryLine() &&
 					fromHq ) {
-				session->setShowChapterIntro( true );
-				hideGui();
-				getSDLHandler()->getSound()->playMusicChapter();
+				initChapterIntro();
 			} else {
 				// converse with Uzudil or show "welcome to level" message
 				showLevelInfo();
@@ -3744,5 +3743,26 @@ bool Scourge::useItem( Creature *creature, Item *item ) {
 
 void Scourge::addDescription(char *description, float r, float g, float b) {
 	descriptionScroller->addDescription( description, r, g, b );
+}
+
+void Scourge::initChapterIntro() {
+	session->setShowChapterIntro( true );
+	hideGui();
+	getSDLHandler()->getSound()->playMusicChapter();
+
+	char tmp[3000], tmp2[3000];
+	Util::addLineBreaks( session->getCurrentMission()->getDescription(), tmp, 60 );
+	sprintf( tmp2, "%s||%s", session->getCurrentMission()->getDisplayName(), tmp );
+	chapterText.clear();
+	Util::getLines( tmp2, &chapterText );
+	chapterTextPos = 250;
+	chapterTextWidth = 0;
+	getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
+	for( unsigned int i = 0; i < getChapterText()->size(); i++ ) {
+		string s = (*getChapterText())[i];
+		int w = getSDLHandler()->textWidth( s.c_str() );
+		if( w > chapterTextWidth ) chapterTextWidth = w;
+	}
+	getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 }
 
