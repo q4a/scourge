@@ -110,7 +110,8 @@ class Window : public Widget {
    
    enum {
      BASIC_WINDOW=0,
-     SIMPLE_WINDOW
+     SIMPLE_WINDOW,
+		 INVISIBLE_WINDOW
    };
 
   static const int SCREEN_GUTTER = 0;

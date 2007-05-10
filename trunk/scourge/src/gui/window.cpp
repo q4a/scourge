@@ -455,69 +455,76 @@ void Window::drawWidget(Widget *parent) {
     opening = ( openHeight < h );
   }
 
+
+
+
+
   glPushMatrix();
   glLoadIdentity( );
-  glEnable( GL_TEXTURE_2D );
-  // tile the background
 
-//  if(isLocked()) {
-//    glColor3f(0.65f, 0.6f, 0.55f);
-//  } else 
-  if( theme->getWindowTop() ) {
-	glColor4f( theme->getWindowTop()->color.r, 
-			   theme->getWindowTop()->color.g, 
-			   theme->getWindowTop()->color.b, 
-			   theme->getWindowTop()->color.a );
-  } else {
-    glColor3f(1.0f, 0.6f, 0.3f);
-  }
 
-  glTranslated(x, y, z);
-  
-  // HACK: blend window if top color's a < 1.0f
-  if(!isModal()) {
-    if( theme->getWindowTop() && 
-        theme->getWindowTop()->color.a < 1.0f ) {
-      glEnable( GL_BLEND );
-      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    }
-  } 
-
-	drawBackground( topY, openHeight );
-
-  glDisable( GL_BLEND );
-  glDisable( GL_TEXTURE_2D );
-
-  // draw drop-shadow
-  if(!isLocked()) drawDropShadow( topY, openHeight );
-
-	// top bar
-	if( title || ( closeButton && !isLocked() ) ) {		
-		glColor4f( 0, 0, 0, 0.5f );
-		glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glBegin( GL_QUADS );
-		glVertex2f( 0, topY );
-		glVertex2f( getWidth(), topY );
-		glVertex2f( getWidth(), topY + TITLE_HEIGHT );
-		glVertex2f( 0, topY + TITLE_HEIGHT );
-		glEnd();
+	if( type != INVISIBLE_WINDOW ) {	
+		glEnable( GL_TEXTURE_2D );
+		// tile the background
+	
+	//  if(isLocked()) {
+	//    glColor3f(0.65f, 0.6f, 0.55f);
+	//  } else 
+		if( theme->getWindowTop() ) {
+		glColor4f( theme->getWindowTop()->color.r, 
+					 theme->getWindowTop()->color.g, 
+					 theme->getWindowTop()->color.b, 
+					 theme->getWindowTop()->color.a );
+		} else {
+			glColor3f(1.0f, 0.6f, 0.3f);
+		}
+	
+		glTranslated(x, y, z);
+		
+		// HACK: blend window if top color's a < 1.0f
+		if(!isModal()) {
+			if( theme->getWindowTop() && 
+					theme->getWindowTop()->color.a < 1.0f ) {
+				glEnable( GL_BLEND );
+				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+			}
+		} 
+	
+		drawBackground( topY, openHeight );
+	
 		glDisable( GL_BLEND );
+		glDisable( GL_TEXTURE_2D );
+	
+		// draw drop-shadow
+		if(!isLocked()) drawDropShadow( topY, openHeight );
+	
+		// top bar
+		if( title || ( closeButton && !isLocked() ) ) {		
+			glColor4f( 0, 0, 0, 0.5f );
+			glEnable( GL_BLEND );
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+			glBegin( GL_QUADS );
+			glVertex2f( 0, topY );
+			glVertex2f( getWidth(), topY );
+			glVertex2f( getWidth(), topY + TITLE_HEIGHT );
+			glVertex2f( 0, topY + TITLE_HEIGHT );
+			glEnd();
+			glDisable( GL_BLEND );
+		}
+	
+		if( type == BASIC_WINDOW &&
+				theme->getWindowBorderTexture() ) {
+			drawBorder( topY, openHeight );
+		} else {
+			drawLineBorder( topY, openHeight );
+		}
+	
+		// print title
+		if(title) drawTitle( topY, openHeight );
+		
+		// draw the close button
+		if(closeButton && !isLocked()) drawCloseButton( topY, openHeight );
 	}
-
-  if( type == BASIC_WINDOW &&
-			theme->getWindowBorderTexture() ) {
-    drawBorder( topY, openHeight );
-	} else {
-		drawLineBorder( topY, openHeight );
-  }
-
-	// print title
-	if(title) drawTitle( topY, openHeight );
-	
-	// draw the close button
-	if(closeButton && !isLocked()) drawCloseButton( topY, openHeight );
-	
 	glDisable( GL_SCISSOR_TEST );
 
 	// draw widgets

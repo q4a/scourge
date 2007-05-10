@@ -132,6 +132,13 @@ void Scourge::initUI() {
   netPlay = new NetPlay(this);
   createUI();
   createPartyUI();
+	chapterIntroWin = new Window( getSDLHandler(), 0, 0, 150, 100, "",
+																getSession()->getShapePalette()->getGuiTexture(),
+																false, Window::INVISIBLE_WINDOW,
+																getSession()->getShapePalette()->getGuiTexture2() );
+	beginChapter = chapterIntroWin->createButton( 10, 10, 140, 30, _( "Begin Chapter" ) );
+	replayIntro = chapterIntroWin->createButton( 10, 40, 140, 60, _( "Replay" ) );
+	chapterIntroWin->setVisible( false );
 
   // show the main menu
   //mainMenu = new MainMenu(this);
@@ -3748,14 +3755,14 @@ void Scourge::addDescription(char *description, float r, float g, float b) {
 void Scourge::initChapterIntro() {
 	session->setShowChapterIntro( true );
 	hideGui();
+	chapterIntroWin->setVisible( true );
 	getSDLHandler()->getSound()->playMusicChapter();
 
-	char tmp[3000], tmp2[3000];
+	char tmp[3000];
 	Util::addLineBreaks( session->getCurrentMission()->getDescription(), tmp, 60 );
-	sprintf( tmp2, "%s||%s", session->getCurrentMission()->getDisplayName(), tmp );
 	chapterText.clear();
-	Util::getLines( tmp2, &chapterText );
-	chapterTextPos = 250;
+	Util::getLines( tmp, &chapterText );
+	chapterTextPos = -2000;
 	chapterTextWidth = 0;
 	getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 	for( unsigned int i = 0; i < getChapterText()->size(); i++ ) {
@@ -3766,3 +3773,19 @@ void Scourge::initChapterIntro() {
 	getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 }
 
+void Scourge::replayChapterIntro() {
+	chapterTextPos = -2000;
+	getSDLHandler()->getSound()->playMusicChapter();
+}
+
+void Scourge::endChapterIntro() {
+	getSession()->setShowChapterIntro( false );
+	getSDLHandler()->getSound()->stopMusic();
+	getChapterIntroWin()->setVisible( false );
+	showGui();
+	showLevelInfo();
+	// start the haunting tunes
+	if( isInHQ() ) getSDLHandler()->getSound()->playMusicHQ();
+	else getSDLHandler()->getSound()->playMusicMission();
+	getSDLHandler()->fade( 1, 0, 20 );
+}

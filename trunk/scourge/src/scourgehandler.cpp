@@ -54,20 +54,6 @@ ScourgeHandler::~ScourgeHandler() {
 bool ScourgeHandler::handleEvent(SDL_Event *event) {
   int ea;
 
-	if( scourge->getSession()->isShowingChapterIntro() && 
-			event->type == SDL_KEYUP && 
-			event->key.keysym.sym == SDLK_ESCAPE ) {
-		scourge->getSession()->setShowChapterIntro( false );
-		scourge->getSDLHandler()->getSound()->stopMusic();
-		scourge->showGui();
-		scourge->showLevelInfo();
-		// start the haunting tunes
-		if( scourge->isInHQ() ) scourge->getSDLHandler()->getSound()->playMusicHQ();
-		else scourge->getSDLHandler()->getSound()->playMusicMission();
-		scourge->getSDLHandler()->fade( 1, 0, 20 );
-		return false;
-	}
-
   if( scourge->getDescriptionScroller()->handleEvent( event ) ) return false;
 
   for( int i = 0; i < scourge->getContainerGuiCount(); i++ ) {
@@ -299,7 +285,13 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
 }
   
 bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
-  if( widget == Window::message_button && 
+	if( widget == scourge->getBeginChapter() ) {
+		scourge->endChapterIntro();
+		return false;
+	} else if( widget == scourge->getReplayIntro() ) {
+		scourge->replayChapterIntro();
+		return false;
+	} else if( widget == Window::message_button && 
       scourge->isInfoDialogShowing() ) {
     scourge->getParty()->toggleRound( false );
     scourge->setInfoDialogShowing( false );
