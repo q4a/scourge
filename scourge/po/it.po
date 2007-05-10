@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-05-04 09:17-0700\n"
+"POT-Creation-Date: 2007-05-09 22:09-0700\n"
 "PO-Revision-Date: 2007-02-27 19:01+0100\n"
 "Last-Translator: cod <cod@fsfe.org>\n"
 "Language-Team: Italian\n"
@@ -118,7 +118,7 @@ msgstr "Inizializzazione mappa"
 msgid "Finishing map"
 msgstr "Finitura mappa"
 
-#: src/render/map.cpp:3399 src/rpg/monster.cpp:26 src/session.cpp:112
+#: src/render/map.cpp:3399 src/rpg/monster.cpp:26 src/session.cpp:115
 msgid "Loading Creatures"
 msgstr "Caricamento creature"
 
@@ -157,7 +157,7 @@ msgstr "No"
 msgid "Loading Abilities"
 msgstr "Caricamento talenti"
 
-#: src/rpg/spell.cpp:91 src/session.cpp:103
+#: src/rpg/spell.cpp:91 src/session.cpp:106
 msgid "Loading Spells"
 msgstr "Caricamento incantesimi"
 
@@ -173,7 +173,7 @@ msgstr "Perforante"
 msgid "Crushing"
 msgstr "Contundente"
 
-#: src/rpg/rpg.cpp:51 src/session.cpp:131
+#: src/rpg/rpg.cpp:51 src/session.cpp:134
 msgid "Loading Skills"
 msgstr "Caricamento abilità"
 
@@ -181,7 +181,7 @@ msgstr "Caricamento abilità"
 msgid "Loading StateMods"
 msgstr "Caricamento stati"
 
-#: src/rpg/character.cpp:42 src/session.cpp:95
+#: src/rpg/character.cpp:42 src/session.cpp:98
 msgid "Loading Professions"
 msgstr "Caricamento professioni"
 
@@ -748,7 +748,7 @@ msgstr "contro"
 msgid "bonus"
 msgstr "bonus"
 
-#: src/creature.cpp:2650 src/scourge.cpp:3669
+#: src/creature.cpp:2650 src/scourge.cpp:3584
 msgid "CTH"
 msgstr ""
 
@@ -758,7 +758,7 @@ msgstr "max"
 
 #: src/shapepalette.cpp:26 src/shapepalette.cpp:356 src/shapepalette.cpp:382
 #: src/shapepalette.cpp:405 src/shapepalette.cpp:440 src/shapepalette.cpp:569
-#: src/shapepalette.cpp:595 src/shapepalette.cpp:622 src/session.cpp:91
+#: src/shapepalette.cpp:595 src/shapepalette.cpp:622 src/session.cpp:94
 msgid "Loading Shapes"
 msgstr "Caricamento forme"
 
@@ -766,73 +766,70 @@ msgstr "Caricamento forme"
 msgid "Loading Locations"
 msgstr "Caricamento luoghi"
 
-#: src/session.cpp:99 src/item.cpp:305 src/item.cpp:341 src/item.cpp:512
+#: src/session.cpp:102 src/item.cpp:305 src/item.cpp:341 src/item.cpp:512
 msgid "Loading Items"
 msgstr "Caricamento oggetti"
 
-#: src/session.cpp:107
+#: src/session.cpp:110
 msgid "Loading Characters"
 msgstr "Caricamento personaggi"
 
-#: src/session.cpp:115
+#: src/session.cpp:118
 msgid "Loading Portraits"
 msgstr "Caricamento ritratti"
 
-#: src/session.cpp:120 src/board.cpp:60 src/board.cpp:77
+#: src/session.cpp:123 src/board.cpp:60 src/board.cpp:77
 msgid "Loading Missions"
 msgstr "Caricamento missioni"
 
-#: src/session.cpp:125
+#: src/session.cpp:128
 msgid "Initializing Party"
 msgstr "Inizializzazione gruppo"
 
-#: src/session.cpp:128
+#: src/session.cpp:131
 msgid "Initializing Scripting"
 msgstr "Inizializzazione scripting"
 
-#: src/session.cpp:134
+#: src/session.cpp:137
 msgid "Creating Map"
 msgstr "Creazione mappa"
 
-#: src/session.cpp:137
+#: src/session.cpp:140
 msgid "Initializing UI"
 msgstr "Inizializzazione interfaccia"
 
-#: src/session.cpp:280
+#: src/session.cpp:283
 #, c-format
 msgid "%s transforms into another shape in front of your very eyes!"
 msgstr "%s muta forma proprio davanti ai tuoi occhi!"
 
-#: src/session.cpp:434
+#: src/session.cpp:437
 #, c-format
 msgid "  %s dies!"
 msgstr " %s muore!"
 
 #: src/containergui.cpp:38 src/tradedialog.cpp:43 src/tradedialog.cpp:53
-#: src/inventory.cpp:160
 msgid "Info"
 msgstr "Info"
 
-#: src/containergui.cpp:149 src/scourge.cpp:1179
+#: src/containergui.cpp:149 src/scourge.cpp:1193
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr "%1$s è riposto in %2$s."
 
-#: src/containergui.cpp:159 src/scourge.cpp:1170 src/scourge.cpp:1176
+#: src/containergui.cpp:159 src/scourge.cpp:1184 src/scourge.cpp:1190
 msgid "The item won't fit in that container!"
 msgstr "L'oggetto non entrerà nel contenitore!"
 
-#: src/board.cpp:302
+#: src/board.cpp:303
 msgid "(STORY)"
 msgstr "(STORIA)"
 
-#: src/board.cpp:303
+#: src/board.cpp:304
 msgid "(CAVE)"
 msgstr "(GROTTA)"
 
-#: src/board.cpp:305 src/inventory.cpp:999 src/inventory.cpp:1016
-#: src/inventory.cpp:1036 src/equip.cpp:675 src/equip.cpp:692
-#: src/equip.cpp:712
+#: src/board.cpp:306 src/equip.cpp:675 src/equip.cpp:692 src/equip.cpp:712
 msgid "(completed)"
 msgstr "(completato)"
 
@@ -845,8 +842,8 @@ msgstr "Monete disponibili:"
 msgid "Buy"
 msgstr "Compra"
 
-#: src/healdialog.cpp:74 src/inventory.cpp:833 src/donatedialog.cpp:73
-#: src/traindialog.cpp:94 ../scourge_data/maps/library31.cfg:176
+#: src/healdialog.cpp:74 src/donatedialog.cpp:73 src/traindialog.cpp:94
+#: ../scourge_data/maps/library31.cfg:176
 msgid "level"
 msgstr "livello"
 
@@ -900,7 +897,7 @@ msgstr "CA"
 msgid "RANGE"
 msgstr "GITTATA"
 
-#: src/item.cpp:1114 src/scourge.cpp:3618
+#: src/item.cpp:1114 src/scourge.cpp:3533
 msgid "DEF"
 msgstr "DIF"
 
@@ -937,11 +934,11 @@ msgstr "Il proiettile non ha raggiunto il bersaglio (fuori portata)"
 msgid "Projectile did not reach the target (blocked)."
 msgstr "Il proiettile non ha raggiunto il bersaglio (bloccato)"
 
-#: src/scourgeview.cpp:646
+#: src/scourgeview.cpp:737
 msgid "Move"
 msgstr "Muovi"
 
-#: src/scourgeview.cpp:908
+#: src/scourgeview.cpp:999
 msgid "cost"
 msgstr "costo"
 
@@ -949,11 +946,11 @@ msgstr "costo"
 msgid "Basic Statistics:"
 msgstr "Caratteristiche di base:"
 
-#: src/characterinfo.cpp:49 src/scourge.cpp:2297 src/portrait.cpp:253
+#: src/characterinfo.cpp:49 src/scourge.cpp:2217 src/portrait.cpp:253
 msgid "HP"
 msgstr "PF"
 
-#: src/characterinfo.cpp:50 src/scourge.cpp:2299 src/portrait.cpp:258
+#: src/characterinfo.cpp:50 src/scourge.cpp:2219 src/portrait.cpp:258
 msgid "MP"
 msgstr "PM"
 
@@ -980,7 +977,7 @@ msgstr "%s non ha più cariche."
 msgid "Your %s feels lighter."
 msgstr "Il tuo %s sembra più leggero."
 
-#: src/battle.cpp:726 src/scourge.cpp:3775
+#: src/battle.cpp:726 src/scourge.cpp:3690
 #, c-format
 msgid "%s crumbles into dust."
 msgstr "%s si disintegra in una nuvola di polvere"
@@ -1385,293 +1382,6 @@ msgstr "Alcuni cambiamenti saranno attivi dopo un riavvio"
 msgid "Saved: some options require a restart to take effect."
 msgstr "Salvato: alcune opzioni potrebbero funzionare solo dopo un riavvio."
 
-#: src/inventory.cpp:110 src/inventory.cpp:132 src/inventory.cpp:299
-msgid "Inventory"
-msgstr "Inventario"
-
-#: src/inventory.cpp:112 src/inventory.cpp:211
-msgid "Skills"
-msgstr "Statistiche"
-
-#: src/inventory.cpp:114
-msgid "Spells"
-msgstr "Incantesimi"
-
-#: src/inventory.cpp:116
-msgid "Capabilities"
-msgstr "Talenti"
-
-#: src/inventory.cpp:118
-msgid "Mission"
-msgstr "Missione"
-
-#: src/inventory.cpp:120
-msgid "Party"
-msgstr "Gruppo"
-
-#: src/inventory.cpp:124
-msgid "Hide"
-msgstr "Nascondi"
-
-#: src/inventory.cpp:137
-msgid "Equipped Items"
-msgstr "Oggetti indossati"
-
-#: src/inventory.cpp:148
-msgid "Don/Doff"
-msgstr ""
-
-#: src/inventory.cpp:152
-msgid "Eat/Drink"
-msgstr "Mangia/Bevi"
-
-#: src/inventory.cpp:154
-msgid "Cast Spell"
-msgstr "Lancia Incantesimo"
-
-#: src/inventory.cpp:156
-msgid "Transcribe"
-msgstr "Trascrivi"
-
-#: src/inventory.cpp:158
-msgid "Enchant"
-msgstr "Incanta"
-
-#: src/inventory.cpp:162
-msgid "Pool Money"
-msgstr "Raccogli monete"
-
-#: src/inventory.cpp:164 src/inventory.cpp:246 src/inventory.cpp:264
-msgid "Store"
-msgstr "Memorizza"
-
-#: src/inventory.cpp:168
-msgid "Selected Weapon"
-msgstr "Arma selezionata"
-
-#: src/inventory.cpp:175
-msgid "Left hand"
-msgstr "Mano sinistra"
-
-#: src/inventory.cpp:180
-msgid "Right hand"
-msgstr "Mano destra"
-
-#: src/inventory.cpp:185
-msgid "Ranged"
-msgstr "A distanza"
-
-#: src/inventory.cpp:192
-msgid "Character stats"
-msgstr "Caratteristiche personaggio"
-
-#: src/inventory.cpp:200
-msgid "Current State"
-msgstr "Stato attuale"
-
-#: src/inventory.cpp:205
-msgid "Protected States"
-msgstr "Protetto da:"
-
-#: src/inventory.cpp:220 src/inventory.cpp:869
-msgid "Skill"
-msgstr "Abilità"
-
-#: src/inventory.cpp:223
-msgid "Add"
-msgstr "Aggiungi"
-
-#: src/inventory.cpp:224
-msgid "Del"
-msgstr "Elimina"
-
-#: src/inventory.cpp:226 src/pceditor.cpp:453
-msgid "Accept"
-msgstr "Accetta"
-
-#: src/inventory.cpp:231
-msgid "School of magic: (with provider deity)"
-msgstr "Scuola di magia: (e divinità relativa)"
-
-#: src/inventory.cpp:234
-msgid "Spells memorized"
-msgstr "Incantesimi memorizzati"
-
-#: src/inventory.cpp:238
-msgid "Spell notes"
-msgstr "Note all'incantesimo"
-
-#: src/inventory.cpp:244
-msgid "Cast"
-msgstr "Lancia"
-
-#: src/inventory.cpp:252 src/equip.cpp:488
-msgid "Special Capabilities"
-msgstr "Talenti speciali"
-
-#: src/inventory.cpp:253
-msgid "(If grayed-out, you don't have the capability.)"
-msgstr "(I talenti in grigio non li possiedi.)"
-
-#: src/inventory.cpp:256
-msgid "Capability Description"
-msgstr "Descrizione talento"
-
-#: src/inventory.cpp:262
-msgid "Use"
-msgstr "Usa"
-
-#: src/inventory.cpp:270
-msgid "Current Mission"
-msgstr "Missione attuale"
-
-#: src/inventory.cpp:273 src/equip.cpp:644
-msgid "Mission Objectives"
-msgstr "Obbiettivi della missione"
-
-#: src/inventory.cpp:281
-msgid "Group formation"
-msgstr "Informazioni gruppo"
-
-#: src/inventory.cpp:285
-msgid "Diamond"
-msgstr "Diamante"
-
-#: src/inventory.cpp:286
-msgid "Staggered"
-msgstr "Sparsa"
-
-#: src/inventory.cpp:287
-msgid "Square"
-msgstr "Quadrato"
-
-#: src/inventory.cpp:288
-msgid "Row"
-msgstr "Riga"
-
-#: src/inventory.cpp:289
-msgid "Scout"
-msgstr "Scout"
-
-#: src/inventory.cpp:290
-msgid "Cross"
-msgstr "Croce"
-
-#: src/inventory.cpp:293
-msgid "Interface Layout"
-msgstr "Layout interfaccia"
-
-#: src/inventory.cpp:295
-msgid "Floating"
-msgstr "Flottante"
-
-#: src/inventory.cpp:297
-msgid "Bottom"
-msgstr "In basso"
-
-#: src/inventory.cpp:302
-msgid "Show Console"
-msgstr "Mostra console"
-
-#: src/inventory.cpp:443 src/pcui.cpp:215
-#, c-format
-msgid "Party members give all their money to %s."
-msgstr "I membri del gruppo danno tutte le monete a %s."
-
-#: src/inventory.cpp:562 src/scourge.cpp:2674 src/equip.cpp:583
-msgid "Not enough Magic Points to cast this spell!"
-msgstr "Non hai abbastanza Punti Magia per questo incantesimo!"
-
-#: src/inventory.cpp:590 src/inventory.cpp:615 src/scourge.cpp:3816
-msgid "This item is out of charges."
-msgstr "Questo oggetto non ha più cariche"
-
-#: src/inventory.cpp:593
-msgid "You may only store items with spells."
-msgstr "Puoi memorizzare solo oggetti incantati."
-
-#: src/inventory.cpp:618
-msgid "You cannot cast a spell with this item."
-msgstr "Non puoi lanciare un incantesimo con questo oggetto."
-
-#: src/inventory.cpp:734
-msgid "Stats cannot be improved this way."
-msgstr "Le caratteristiche non possono essere cambiate in questo modo."
-
-#: src/inventory.cpp:758 src/pcui.cpp:224
-msgid "You still have skill points to distribute."
-msgstr "Hai ancora dei punti abilità da distribuire."
-
-#: src/inventory.cpp:762
-msgid "Are you sure you want to apply the selected skill points?"
-msgstr "Sei sicuro di voler applicare i punti abilità?"
-
-#: src/inventory.cpp:766
-msgid "This character has no skill points to apply."
-msgstr "Questo personaggio non ha punti abilità da spendere."
-
-#: src/inventory.cpp:875
-msgid "Total"
-msgstr "Totale"
-
-#: src/inventory.cpp:877 src/inventory.cpp:879
-msgid "kg"
-msgstr "Kg"
-
-#: src/inventory.cpp:881 src/portrait.cpp:224
-msgid "Coins"
-msgstr "Monete"
-
-#: src/inventory.cpp:984 src/equip.cpp:660
-#, c-format
-msgid "Depth: %d out of %d."
-msgstr "Profondità: %d di %d."
-
-#: src/inventory.cpp:995 src/equip.cpp:671
-#, c-format
-msgid "Find %s"
-msgstr "Trovare %s"
-
-#: src/inventory.cpp:999 src/equip.cpp:675
-msgid "(not yet found)"
-msgstr "(non ancora trovato)"
-
-#: src/inventory.cpp:1012 src/equip.cpp:688
-#, c-format
-msgid "Vanquish %s."
-msgstr "Debellare %s."
-
-#: src/inventory.cpp:1016 src/inventory.cpp:1036 src/equip.cpp:692
-#: src/equip.cpp:712
-msgid "(not yet done)"
-msgstr "(non ancora completato)"
-
-#: src/inventory.cpp:1034 src/equip.cpp:710
-msgid "Special"
-msgstr "Speciale"
-
-#: src/inventory.cpp:1088 src/equip.cpp:277 src/inven.cpp:182
-msgid "Can't change inventory while trading."
-msgstr "Non puoi modificare l'inventario mentre stai commerciando."
-
-#: src/inventory.cpp:1098 src/inventory.cpp:1109 src/equip.cpp:286
-msgid "Can't remove cursed item!"
-msgstr "Non puoi rimuovere un oggetto maledetto!"
-
-#: src/inventory.cpp:1134 src/equip.cpp:255 src/inven.cpp:163
-#, c-format
-msgid "%s picks up %s."
-msgstr "%s raccoglie %s."
-
-#: src/inventory.cpp:1147 src/equip.cpp:266
-msgid "You can't fit the item!"
-msgstr ""
-
-#: src/inventory.cpp:1185 src/equip.cpp:292 src/inven.cpp:198
-#, c-format
-msgid "%s drops %s."
-msgstr "%s abbandona %s."
-
 #: src/dungeongenerator.cpp:573 src/mondrian.cpp:429
 #: src/terraingenerator.cpp:119
 msgid "Assembling Dungeon Level"
@@ -1685,315 +1395,333 @@ msgstr "Disegno i muri"
 msgid "Fixing rooms"
 msgstr "Fissaggio stanze"
 
-#: src/scourge.cpp:144
+#: src/scourge.cpp:139
+#, fuzzy
+msgid "Begin Chapter"
+msgstr "Inizio turno"
+
+#: src/scourge.cpp:140
+#, fuzzy
+msgid "Replay"
+msgstr "Gioco"
+
+#: src/scourge.cpp:149
 msgid "Dismiss Party Member"
 msgstr "Licenzia un membro del gruppo"
 
-#: src/scourge.cpp:145
+#: src/scourge.cpp:150
 msgid "Need permission to upload score to web"
 msgstr "Ho bisogno di un permesso per caricare il punteggio sul web"
 
-#: src/scourge.cpp:146
+#: src/scourge.cpp:151
 msgid "Upload your score to the internet?"
 msgstr "Caricare il tuo punteggio su Internet?"
 
-#: src/scourge.cpp:342
+#: src/scourge.cpp:355
 msgid "Error saving current map."
 msgstr "Errore nel salvare la mappa attuale."
 
-#: src/scourge.cpp:353
+#: src/scourge.cpp:366
 msgid "Error #666: Failed to create map."
 msgstr "Errore 666: non riesco a creare la mappa."
 
-#: src/scourge.cpp:527
+#: src/scourge.cpp:538
 #, c-format
 msgid "For returning alive, the party receives %d experience points."
 msgstr ""
 "Per essere tornati vivi, i membri del gruppo ricevono %d punti esperienza "
 "ciascuno."
 
-#: src/scourge.cpp:538
+#: src/scourge.cpp:549
 #, c-format
 msgid " %s gains a level! "
 msgstr " %s guadagna un livello!"
 
-#: src/scourge.cpp:697
+#: src/scourge.cpp:708
 #, c-format
 msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
 msgstr "Benvenuti al quartier generale di S.C.O.U.R.G.E."
 
-#: src/scourge.cpp:700
+#: src/scourge.cpp:711
 #, c-format
 msgid "Teleport spell failed!! Entering level %d"
 msgstr "Incantesimo Teletrasporto fallito! State entrando nel livello %d"
 
-#: src/scourge.cpp:702
+#: src/scourge.cpp:713
 #, c-format
 msgid "Entering dungeon level %d"
 msgstr "State entrando nel livello %d"
 
-#: src/scourge.cpp:883
+#: src/scourge.cpp:899
 #, c-format
 msgid "%s cancelled a pending action."
 msgstr "%s ha cancellato un'azione in sospeso."
 
-#: src/scourge.cpp:888
+#: src/scourge.cpp:904
 msgid "Select a creature for this spell."
 msgstr "Seleziona una creatura per questo incantesimo."
 
-#: src/scourge.cpp:893
+#: src/scourge.cpp:909
 msgid "Select an item for this spell."
 msgstr "Seleziona un oggetto per questo incantesimo."
 
-#: src/scourge.cpp:898
+#: src/scourge.cpp:914
 msgid "Select a location for this spell."
 msgstr "Seleziona un luogo per questo incantesimo."
 
-#: src/scourge.cpp:903
+#: src/scourge.cpp:919
 msgid "Select a door for this spell."
 msgstr "Seleziona una porta per questo incantesimo."
 
-#: src/scourge.cpp:908
+#: src/scourge.cpp:924
 msgid "Select the party for this spell."
 msgstr "Seleziona il gruppo per questo incantesimo."
 
-#: src/scourge.cpp:929 src/scourge.cpp:951
+#: src/scourge.cpp:945 src/scourge.cpp:967
 #, c-format
 msgid "%s selected a target"
 msgstr "%s ha scelto un bersaglio"
 
-#: src/scourge.cpp:974
+#: src/scourge.cpp:990
 #, c-format
 msgid "%1$s will target %2$s"
 msgstr "%1$s userà %2$s come bersaglio"
 
-#: src/scourge.cpp:996
+#: src/scourge.cpp:1012
 #, c-format
 msgid "%1$s targeted %2$s."
 msgstr "%1$s ha scelto %2$s come bersaglio."
 
-#: src/scourge.cpp:1163
+#: src/scourge.cpp:1179
 #, c-format
 msgid "%1$s picks up %2$s."
 msgstr "%1$s raccoglie %2$s."
 
-#: src/scourge.cpp:1368
+#: src/scourge.cpp:1382
 msgid "Something is blocking the door from closing."
 msgstr "Qualcosa impedisce a questa porta di chiudersi."
 
-#: src/scourge.cpp:1466
+#: src/scourge.cpp:1480
 msgid "The door splinters into many, tiny pieces!"
 msgstr "La porta si frantuma in tanti, piccoli pezzi!"
 
-#: src/scourge.cpp:1515
+#: src/scourge.cpp:1526
 msgid "Leave level?"
 msgstr "Abbandonare il livello?"
 
-#: src/scourge.cpp:1539
+#: src/scourge.cpp:1550
 msgid "Squirrel Console"
 msgstr "Squirrel Console"
 
-#: src/scourge.cpp:1547
+#: src/scourge.cpp:1558
 msgid "Run"
 msgstr "Esegui"
 
-#: src/scourge.cpp:1548
+#: src/scourge.cpp:1559
 msgid "Clear"
 msgstr "Pulisci"
 
-#: src/scourge.cpp:1922
+#: src/scourge.cpp:1842
 #, c-format
 msgid "Speed set to %d\n"
 msgstr "Velocità impostata su %d\n"
 
-#: src/scourge.cpp:2073
+#: src/scourge.cpp:1993
 msgid "Congratulations, mission accomplished!"
 msgstr "Congratulazioni: missione compiuta!"
 
-#: src/scourge.cpp:2084
+#: src/scourge.cpp:2004
 msgid "For completing the mission"
 msgstr "Per aver completato la missione"
 
-#: src/scourge.cpp:2086
+#: src/scourge.cpp:2006
 #, c-format
 msgid "The party receives %d points."
 msgstr "Il gruppo riceve %d punti."
 
-#: src/scourge.cpp:2111
+#: src/scourge.cpp:2031
 msgid "Connecting to server"
 msgstr "Mi connetto al server"
 
-#: src/scourge.cpp:2118
+#: src/scourge.cpp:2038
 msgid "Connected!"
 msgstr "Connesso!"
 
-#: src/scourge.cpp:2140
+#: src/scourge.cpp:2060
 msgid "Combat"
 msgstr "Combattimento"
 
-#: src/scourge.cpp:2142
+#: src/scourge.cpp:2062
 msgid "End Turn"
 msgstr "Fine turno"
 
-#: src/scourge.cpp:2166
+#: src/scourge.cpp:2086
 msgid "Pause game"
 msgstr "Pausa"
 
-#: src/scourge.cpp:2169
+#: src/scourge.cpp:2089
 msgid "Load or Save Game"
 msgstr "Carica o salva una partita"
 
-#: src/scourge.cpp:2179
+#: src/scourge.cpp:2099
 msgid "Exit game"
 msgstr "Esci"
 
-#: src/scourge.cpp:2186
+#: src/scourge.cpp:2106
 msgid "Game options"
 msgstr "Opzioni del gioco"
 
-#: src/scourge.cpp:2193
+#: src/scourge.cpp:2113
 msgid "Move as a group"
 msgstr "Muoversi come gruppo"
 
-#: src/scourge.cpp:2233
+#: src/scourge.cpp:2153
 msgid "Dismiss this character"
 msgstr "Licenzia questo membro del gruppo"
 
-#: src/scourge.cpp:2252
+#: src/scourge.cpp:2172
 msgid "Inventory and party info"
 msgstr "Informazioni sull'inventario e il gruppo"
 
-#: src/scourge.cpp:2260
+#: src/scourge.cpp:2180
 msgid "Click to assign a spell, capability or magic item."
 msgstr "Clicca per assegnare un incantesimo, un talento o un oggetto magico."
 
-#: src/scourge.cpp:2319
+#: src/scourge.cpp:2239
 msgid "Current Weapon: Bare Hands"
 msgstr "Arma attuale: Mani nude"
 
-#: src/scourge.cpp:2324
+#: src/scourge.cpp:2244
 #, c-format
 msgid "Current Weapon: %s"
 msgstr "Arma attuale: %s"
 
-#: src/scourge.cpp:2593 src/portrait.cpp:427
+#: src/scourge.cpp:2513 src/portrait.cpp:427
 msgid "Thirst"
 msgstr "Sete"
 
-#: src/scourge.cpp:2607 src/portrait.cpp:432
+#: src/scourge.cpp:2527 src/portrait.cpp:432
 msgid "Hunger"
 msgstr "Fame"
 
-#: src/scourge.cpp:2753
+#: src/scourge.cpp:2594 src/equip.cpp:583
+msgid "Not enough Magic Points to cast this spell!"
+msgstr "Non hai abbastanza Punti Magia per questo incantesimo!"
+
+#: src/scourge.cpp:2671
 msgid "Begin Turn"
 msgstr "Inizio turno"
 
-#: src/scourge.cpp:2758
+#: src/scourge.cpp:2676
 msgid "...In Turn..."
 msgstr "...in turno..."
 
-#: src/scourge.cpp:2764
+#: src/scourge.cpp:2682
 msgid "Pause Game"
 msgstr "Pausa"
 
-#: src/scourge.cpp:2768
+#: src/scourge.cpp:2686
 msgid "Unpause game."
 msgstr "Togli pausa."
 
-#: src/scourge.cpp:2803
+#: src/scourge.cpp:2721
 msgid "Available Missions"
 msgstr "Missioni disponibili"
 
-#: src/scourge.cpp:2809
+#: src/scourge.cpp:2727
 msgid "Drag map to look around."
 msgstr "Trascina la mappa per guardare in giro."
 
-#: src/scourge.cpp:2877
+#: src/scourge.cpp:2795
 msgid "This spell has no effect here..."
 msgstr "Questo incantesimo non ha effetto qui..."
 
-#: src/scourge.cpp:3065
+#: src/scourge.cpp:2983
 msgid "Game loaded successfully."
 msgstr "Partita caricata con successo."
 
-#: src/scourge.cpp:3091
+#: src/scourge.cpp:3009
 msgid "Error: Saved game version is too old."
 msgstr "Errore: la partita salvata ha una versione troppo vecchia."
 
-#: src/scourge.cpp:3447
+#: src/scourge.cpp:3362
 msgid "You cannot hire more party members."
 msgstr "Non puoi assumere altri membri."
 
-#: src/scourge.cpp:3467
+#: src/scourge.cpp:3382
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr "Vuoi davvero licenziare %s il %s?"
 
-#: src/scourge.cpp:3614
+#: src/scourge.cpp:3529
 msgid "Initiative"
 msgstr "Iniziativa"
 
-#: src/scourge.cpp:3656 src/scourge.cpp:3663 src/infogui.cpp:348
+#: src/scourge.cpp:3571 src/scourge.cpp:3578 src/infogui.cpp:348
 #: src/infogui.cpp:353 src/infogui.cpp:358
 msgid "ATK"
 msgstr "ATT"
 
-#: src/scourge.cpp:3670 src/infogui.cpp:350 src/infogui.cpp:356
+#: src/scourge.cpp:3585 src/infogui.cpp:350 src/infogui.cpp:356
 msgid "APR"
 msgstr "A/R"
 
-#: src/scourge.cpp:3722
+#: src/scourge.cpp:3637
 #, c-format
 msgid "%.2f"
 msgstr ""
 
-#: src/scourge.cpp:3724
+#: src/scourge.cpp:3639
 #, c-format
 msgid "per %.2f R"
 msgstr "ogni %.2f R"
 
-#: src/scourge.cpp:3733
+#: src/scourge.cpp:3648
 msgid "This item is already enchanted."
 msgstr "Questo oggetto è già incantato."
 
-#: src/scourge.cpp:3735
+#: src/scourge.cpp:3650
 msgid "This item cannot be enchanted."
 msgstr "Questo oggetto non può essere incantato."
 
-#: src/scourge.cpp:3743
+#: src/scourge.cpp:3658
 msgid "You succesfully enchanted an item!"
 msgstr "Hai incantato un oggetto con successo."
 
-#: src/scourge.cpp:3747
+#: src/scourge.cpp:3662
 #, c-format
 msgid "You created: %s."
 msgstr "Hai creato: %s."
 
-#: src/scourge.cpp:3752
+#: src/scourge.cpp:3667
 msgid "You failed to enchant the item."
 msgstr "Non sei riuscito ad incantare questo oggetto."
 
-#: src/scourge.cpp:3756
+#: src/scourge.cpp:3671
 msgid "You can only enchant one item per day."
 msgstr "Puoi incantare un solo oggetto al giorno."
 
-#: src/scourge.cpp:3771
+#: src/scourge.cpp:3686
 msgid "Spell was entered into your spellbook."
 msgstr "L'incantesimo è stato trascritto nel tuo libro degli incantesimi."
 
-#: src/scourge.cpp:3779
+#: src/scourge.cpp:3694
 msgid "You already know this spell"
 msgstr "Conosci già questo incantesimo"
 
-#: src/scourge.cpp:3782
+#: src/scourge.cpp:3697
 msgid "You are not proficient enough to transcribe this scroll."
 msgstr "Ti serve più esperienza per trascrivere questo incantesimo."
 
-#: src/scourge.cpp:3785
+#: src/scourge.cpp:3700
 msgid "You can only transcribe scrolls!"
 msgstr "Puoi trascrivere solo le pergamene!"
 
-#: src/scourge.cpp:3829
+#: src/scourge.cpp:3731
+msgid "This item is out of charges."
+msgstr "Questo oggetto non ha più cariche"
+
+#: src/scourge.cpp:3744
 msgid "You cannot use this item."
 msgstr "Non puoi usare questo oggetto."
 
@@ -2341,7 +2069,7 @@ msgstr "livello minimo"
 msgid "You cannot afford the training!"
 msgstr "Non puoi permetterti l'addestramento!"
 
-#: src/traindialog.cpp:189
+#: src/traindialog.cpp:188
 #, c-format
 msgid "Congratulation %1$s, you are now a %2$s."
 msgstr "Congratulazioni %1$s, ora sei un %2$s"
@@ -2540,11 +2268,11 @@ msgid ""
 "glean..."
 msgstr "Hai la sensazione che questo non sia un oggetto comune."
 
-#: src/scourgehandler.cpp:224
+#: src/scourgehandler.cpp:219
 msgid "Combat is now Turn-based."
 msgstr "Il combattimento è ora in modalità a turni"
 
-#: src/scourgehandler.cpp:226
+#: src/scourgehandler.cpp:221
 msgid "Combat is now Real-time."
 msgstr "Il combattimento è ora in modalità tempo reale"
 
@@ -2575,6 +2303,10 @@ msgstr "Divinità"
 #: src/pceditor.cpp:447
 msgid "Image"
 msgstr "Immagine"
+
+#: src/pceditor.cpp:453
+msgid "Accept"
+msgstr "Accetta"
 
 #: src/pceditor.cpp:458
 msgid "Dismiss"
@@ -2893,6 +2625,15 @@ msgstr "Applica le modifiche alle abilità"
 msgid "Store spell or capability in a quickspell slot"
 msgstr "Memorizza un incantesimo o un talento per un lancio veloce"
 
+#: src/pcui.cpp:215
+#, c-format
+msgid "Party members give all their money to %s."
+msgstr "I membri del gruppo danno tutte le monete a %s."
+
+#: src/pcui.cpp:224
+msgid "You still have skill points to distribute."
+msgstr "Hai ancora dei punti abilità da distribuire."
+
 #: src/pcui.cpp:227
 msgid "All available skill points have been applied."
 msgstr "Tutti i punti abilità sono stati assegnati."
@@ -2908,6 +2649,32 @@ msgstr "Clicca su un incantesimo o un talento per selezionarlo..."
 #: src/equip.cpp:178
 msgid "MP Cost"
 msgstr "Costo PM"
+
+#: src/equip.cpp:255 src/inven.cpp:163
+#, c-format
+msgid "%s picks up %s."
+msgstr "%s raccoglie %s."
+
+#: src/equip.cpp:266
+msgid "You can't fit the item!"
+msgstr ""
+
+#: src/equip.cpp:277 src/inven.cpp:182
+msgid "Can't change inventory while trading."
+msgstr "Non puoi modificare l'inventario mentre stai commerciando."
+
+#: src/equip.cpp:286
+msgid "Can't remove cursed item!"
+msgstr "Non puoi rimuovere un oggetto maledetto!"
+
+#: src/equip.cpp:292 src/inven.cpp:198
+#, c-format
+msgid "%s drops %s."
+msgstr "%s abbandona %s."
+
+#: src/equip.cpp:488
+msgid "Special Capabilities"
+msgstr "Talenti speciali"
 
 #: src/equip.cpp:513
 msgid "Manual Capability"
@@ -2931,9 +2698,40 @@ msgstr ""
 "Clicca su uno spazio vuoto nella barra di lancio veloce per memorizzare "
 "l'incantesimo."
 
+#: src/equip.cpp:644
+msgid "Mission Objectives"
+msgstr "Obbiettivi della missione"
+
 #: src/equip.cpp:647
 msgid "Show Squirrel Console"
 msgstr "Mostra Squirrel console"
+
+#: src/equip.cpp:660
+#, c-format
+msgid "Depth: %d out of %d."
+msgstr "Profondità: %d di %d."
+
+#: src/equip.cpp:671
+#, c-format
+msgid "Find %s"
+msgstr "Trovare %s"
+
+#: src/equip.cpp:675
+msgid "(not yet found)"
+msgstr "(non ancora trovato)"
+
+#: src/equip.cpp:688
+#, c-format
+msgid "Vanquish %s."
+msgstr "Debellare %s."
+
+#: src/equip.cpp:692 src/equip.cpp:712
+msgid "(not yet done)"
+msgstr "(non ancora completato)"
+
+#: src/equip.cpp:710
+msgid "Special"
+msgstr "Speciale"
 
 #: src/equip.cpp:725
 msgid "No current mission."
@@ -2962,6 +2760,10 @@ msgstr "Clicca per cambiare"
 #: src/portrait.cpp:222
 msgid "XP"
 msgstr "PX"
+
+#: src/portrait.cpp:224
+msgid "Coins"
+msgstr "Monete"
 
 #: src/portrait.cpp:283
 msgid "Resistances"
@@ -12695,6 +12497,156 @@ msgstr "Qui tu soffrirai..."
 #: ../scourge_data/maps/emeril2.cfg:56
 msgid "Hmmm, it escapes me just now."
 msgstr ""
+
+#~ msgid "Inventory"
+#~ msgstr "Inventario"
+
+#~ msgid "Skills"
+#~ msgstr "Statistiche"
+
+#~ msgid "Spells"
+#~ msgstr "Incantesimi"
+
+#~ msgid "Capabilities"
+#~ msgstr "Talenti"
+
+#~ msgid "Mission"
+#~ msgstr "Missione"
+
+#~ msgid "Party"
+#~ msgstr "Gruppo"
+
+#~ msgid "Hide"
+#~ msgstr "Nascondi"
+
+#~ msgid "Equipped Items"
+#~ msgstr "Oggetti indossati"
+
+#~ msgid "Eat/Drink"
+#~ msgstr "Mangia/Bevi"
+
+#~ msgid "Cast Spell"
+#~ msgstr "Lancia Incantesimo"
+
+#~ msgid "Transcribe"
+#~ msgstr "Trascrivi"
+
+#~ msgid "Enchant"
+#~ msgstr "Incanta"
+
+#~ msgid "Pool Money"
+#~ msgstr "Raccogli monete"
+
+#~ msgid "Store"
+#~ msgstr "Memorizza"
+
+#~ msgid "Selected Weapon"
+#~ msgstr "Arma selezionata"
+
+#~ msgid "Left hand"
+#~ msgstr "Mano sinistra"
+
+#~ msgid "Right hand"
+#~ msgstr "Mano destra"
+
+#~ msgid "Ranged"
+#~ msgstr "A distanza"
+
+#~ msgid "Character stats"
+#~ msgstr "Caratteristiche personaggio"
+
+#~ msgid "Current State"
+#~ msgstr "Stato attuale"
+
+#~ msgid "Protected States"
+#~ msgstr "Protetto da:"
+
+#~ msgid "Skill"
+#~ msgstr "Abilità"
+
+#~ msgid "Add"
+#~ msgstr "Aggiungi"
+
+#~ msgid "Del"
+#~ msgstr "Elimina"
+
+#~ msgid "School of magic: (with provider deity)"
+#~ msgstr "Scuola di magia: (e divinità relativa)"
+
+#~ msgid "Spells memorized"
+#~ msgstr "Incantesimi memorizzati"
+
+#~ msgid "Spell notes"
+#~ msgstr "Note all'incantesimo"
+
+#~ msgid "Cast"
+#~ msgstr "Lancia"
+
+#~ msgid "(If grayed-out, you don't have the capability.)"
+#~ msgstr "(I talenti in grigio non li possiedi.)"
+
+#~ msgid "Capability Description"
+#~ msgstr "Descrizione talento"
+
+#~ msgid "Use"
+#~ msgstr "Usa"
+
+#~ msgid "Current Mission"
+#~ msgstr "Missione attuale"
+
+#~ msgid "Group formation"
+#~ msgstr "Informazioni gruppo"
+
+#~ msgid "Diamond"
+#~ msgstr "Diamante"
+
+#~ msgid "Staggered"
+#~ msgstr "Sparsa"
+
+#~ msgid "Square"
+#~ msgstr "Quadrato"
+
+#~ msgid "Row"
+#~ msgstr "Riga"
+
+#~ msgid "Scout"
+#~ msgstr "Scout"
+
+#~ msgid "Cross"
+#~ msgstr "Croce"
+
+#~ msgid "Interface Layout"
+#~ msgstr "Layout interfaccia"
+
+#~ msgid "Floating"
+#~ msgstr "Flottante"
+
+#~ msgid "Bottom"
+#~ msgstr "In basso"
+
+#~ msgid "Show Console"
+#~ msgstr "Mostra console"
+
+#~ msgid "You may only store items with spells."
+#~ msgstr "Puoi memorizzare solo oggetti incantati."
+
+#~ msgid "You cannot cast a spell with this item."
+#~ msgstr "Non puoi lanciare un incantesimo con questo oggetto."
+
+#~ msgid "Stats cannot be improved this way."
+#~ msgstr "Le caratteristiche non possono essere cambiate in questo modo."
+
+#~ msgid "Are you sure you want to apply the selected skill points?"
+#~ msgstr "Sei sicuro di voler applicare i punti abilità?"
+
+#~ msgid "This character has no skill points to apply."
+#~ msgstr "Questo personaggio non ha punti abilità da spendere."
+
+#~ msgid "Total"
+#~ msgstr "Totale"
+
+#~ msgid "kg"
+#~ msgstr "Kg"
 
 #~ msgid "Lake"
 #~ msgstr "Lago"

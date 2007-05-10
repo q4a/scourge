@@ -226,6 +226,8 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
 	std::vector<std::string> chapterText;
 	int chapterTextPos;
 	int chapterTextWidth;
+	Window *chapterIntroWin;
+	Button *beginChapter, *replayIntro;
 
 protected:
   bool getItem(Location *pos);
@@ -295,6 +297,9 @@ public:
   inline Canvas *getQuickSpell( int index ) { return quickSpell[ index ]; }
 	inline Button *getDismissButton( int index ) { return dismissButton[ index ]; }
 	inline SavegameDialog *getSaveDialog() { return saveDialog; }
+	inline Window *getChapterIntroWin() { return chapterIntroWin; }
+	inline Button *getBeginChapter() { return beginChapter; }
+	inline Button *getReplayIntro() { return replayIntro; }
 
 	virtual void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f);
 
@@ -746,10 +751,13 @@ public:
 	inline void setChapterTextPos( int n ) { chapterTextPos = n; }
 	inline int getChapterTextWidth() { return chapterTextWidth; }
 
+	void replayChapterIntro();
+	void endChapterIntro();
+
 protected:
 
 	void initChapterIntro();
-
+  
 	bool describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull );
 
   char *getAPRDescription( Creature *p, Item *item, char *buff );

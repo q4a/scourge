@@ -125,24 +125,32 @@ void ScourgeView::drawChapterIntro() {
   glLoadIdentity( );                         
   glPixelZoom( 1.0, -1.0 );
 
-	int textHeight = 250;
+	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
+	glColor4f( 1, 0.35f, 0, 1 );
+	scourge->getSDLHandler()->texPrint( 10, 28, scourge->getSession()->getCurrentMission()->getDisplayName() );
+	glColor4f( 1, 1, 1, 1 );
+	
 	int px = ( scourge->getScreenWidth() - scourge->getSession()->getChapterImageWidth() ) / 2;
-	int py = scourge->getScreenHeight() - textHeight - scourge->getSession()->getChapterImageHeight();
+	int py = 40;
+	int textHeight = scourge->getScreenHeight() - scourge->getSession()->getChapterImageHeight() - py;
+
+	// pos the text the first time
+	if( scourge->getChapterTextPos() == -2000 ) {
+		scourge->setChapterTextPos( textHeight );
+	}
+
 	glRasterPos2f( px, py );
 	glDrawPixels( scourge->getSession()->getChapterImageWidth(),
 								scourge->getSession()->getChapterImageHeight(),
 								GL_RGB, GL_UNSIGNED_BYTE, 
 								scourge->getSession()->getChapterImage() );
 
-	// temporary text, do not translate
-	scourge->getSDLHandler()->texPrint( 0, 10, "Press Escape to continue... (this screen is work in progress)" );
+	scourge->getChapterIntroWin()->move( 0, scourge->getSession()->getChapterImageHeight() + py + 10 - 20 );
 
-	glScissor( 0, 0, scourge->getScreenWidth(), 250 );
+	glScissor( 150, 0, scourge->getScreenWidth() - 150, textHeight );
   glEnable( GL_SCISSOR_TEST );
-	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 	int offset = scourge->getChapterTextPos();
-	glTranslatef( ( scourge->getScreenWidth() - scourge->getChapterTextWidth() ) / 2, 
-								( scourge->getScreenHeight() - textHeight ), 0 );
+	glTranslatef( 160, ( scourge->getScreenHeight() - textHeight ), 0 );
 	glColor4f( 1, 0.9f, 0.8f, 1 );
 	for( unsigned int i = 0; i < scourge->getChapterText()->size(); i++ ) {
 		string s = (*scourge->getChapterText())[i];
@@ -161,18 +169,18 @@ void ScourgeView::drawChapterIntro() {
 	glColor4f( 0, 0, 0, 1 );
 	glVertex2d( 0, 0 );
 	glColor4f( 0, 0, 0, 1 );
-	glVertex2d( scourge->getScreenWidth(), 0 );
+	glVertex2d( scourge->getScreenWidth() - 150, 0 );
 	glColor4f( 0, 0, 0, 0 );
-	glVertex2d( scourge->getScreenWidth(), size );
+	glVertex2d( scourge->getScreenWidth() - 150, size );
 
 	glColor4f( 0, 0, 0, 0 );
 	glVertex2d( 0, textHeight - size );
 	glColor4f( 0, 0, 0, 1 );
 	glVertex2d( 0, textHeight );
 	glColor4f( 0, 0, 0, 1 );
-	glVertex2d( scourge->getScreenWidth(), textHeight );
+	glVertex2d( scourge->getScreenWidth() - 150, textHeight );
 	glColor4f( 0, 0, 0, 0 );
-	glVertex2d( scourge->getScreenWidth(), textHeight - size );
+	glVertex2d( scourge->getScreenWidth() - 150, textHeight - size );
 	glEnd();
 	glDisable( GL_BLEND );
 	glEnable( GL_TEXTURE_2D );
