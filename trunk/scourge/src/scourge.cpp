@@ -3759,7 +3759,7 @@ void Scourge::initChapterIntro() {
 	getSDLHandler()->getSound()->playMusicChapter();
 
 	char tmp[3000];
-	Util::addLineBreaks( session->getCurrentMission()->getDescription(), tmp, 60 );
+	Util::addLineBreaks( session->getCurrentMission()->getIntroDescription(), tmp, 60 );
 	chapterText.clear();
 	Util::getLines( tmp, &chapterText );
 	chapterTextPos = -2000;

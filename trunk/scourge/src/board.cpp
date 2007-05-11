@@ -49,7 +49,7 @@ Board::Board(Session *session) {
   char type;
   char name[255], displayName[255], line[255], description[2000], 
     music[255],
-    success[2000], failure[2000], mapName[80];
+    success[2000], failure[2000], mapName[80], introDescription[2000];
 
   ConfigLang *config = ConfigLang::load( "config/mission.cfg" );
 	vector<ConfigNode*> *v = config->getDocument()->
@@ -83,13 +83,15 @@ Board::Board(Session *session) {
     int depth = node->getValueAsInt( "depth" );
     strcpy( mapName, node->getValueAsString( "map" ) );
     strcpy( description, node->getValueAsString( "description" ) );
+		strcpy( introDescription, node->getValueAsString( "intro" ) );
     strcpy( music, node->getValueAsString( "music" ) );
     strcpy( success, node->getValueAsString( "success" ) );
     strcpy( failure, node->getValueAsString( "failure" ) );
+		int chapter = node->getValueAsInt( "chapter" );
 
-    Mission *current_mission = new Mission( this, level, depth, name, displayName, description, music, success, failure, mapName );
+    Mission *current_mission = new Mission( this, level, depth, name, displayName, description, introDescription, music, success, failure, mapName );
     current_mission->setStoryLine( true );
-		current_mission->setChapter( 1 ); // FIXME
+		current_mission->setChapter( chapter );
     storylineMissions.push_back( current_mission );
 
 
@@ -402,7 +404,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
   
   Mission *mission = new Mission( board, 
                                   level, depth, parsedName, parsedName, 
-                                  parsedDescription, music, parsedSuccess, 
+                                  parsedDescription, "", music, parsedSuccess, 
                                   parsedFailure, NULL, mapType );
   for(map<string, RpgItem*>::iterator i=items.begin(); i!=items.end(); ++i) {
     RpgItem *item = i->second;
@@ -531,7 +533,7 @@ void MissionTemplate::parseText( Session *session, int level, int depth,
 
 
 Mission::Mission( Board *board, int level, int depth, 
-                  char *name, char *displayName, char *description, 
+                  char *name, char *displayName, char *description, char *introDescription,
                   char *music,
                   char *success, char *failure,
                   char *mapName, char mapType ) {
@@ -541,6 +543,7 @@ Mission::Mission( Board *board, int level, int depth,
   strcpy( this->name, name );
   strcpy( this->displayName, displayName );
   strcpy( this->description, description );
+	strcpy( this->introDescription, introDescription );
   strcpy( this->music, music );
   strcpy( this->success, success );
   strcpy( this->failure, failure );

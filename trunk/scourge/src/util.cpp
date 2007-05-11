@@ -638,13 +638,21 @@ char *Util::addLineBreaks( const char *in, char *out, int lineLength ) {
 	char *token = strtok( tmp, " \r\n\t" );
 	int count = 0;
 	while( token ) {
-		if( count + (int)strlen( token ) >= lineLength ) {
+		int len = (int)strlen( token );
+		for( int i = len - 1; i >= 0; i-- ) {
+			if( token[i] == '|' ) {
+				count = len - i;
+				len = count;
+				break;
+			}
+		}
+		if( count + len >= lineLength ) {
 			strcat( out, "|" );
 			count = 0;
 		}
 		strcat( out, token );
 		strcat( out, " " );
-		count += strlen( token ) + 1;
+		count += len + 1;
 		token = strtok( NULL, " \r\n\t" );
 	}
 	return out;
@@ -652,13 +660,26 @@ char *Util::addLineBreaks( const char *in, char *out, int lineLength ) {
 
 void Util::getLines( const char *in, vector<string> *out ) {
 	char tmp[3000];
+	char *q = tmp;
 	strncpy( tmp, in, 2999 );
 	tmp[2999] = '\0';
-	char *p = strtok( tmp, "|" );
+
+	char *p = strchr( q, '|' );
 	while( p ) {
-		string s = p;
+		*p = 0;
+		string s = q;
 		out->push_back( s );
-		p = strtok( NULL, "|" );
+		q = p + 1;
+		p = strchr( q, '|' );
 	}
+	string s = q;
+	out->push_back( s );
+	/*
+	cerr << "count=" << out->size() << endl;
+	cerr << in << endl;
+	for( unsigned int i = 0; i < out->size(); i++ ) {
+		cerr << "\t" << (*out)[i] << endl;		
+	}
+	*/
 }
 

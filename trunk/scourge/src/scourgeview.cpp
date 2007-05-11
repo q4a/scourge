@@ -146,7 +146,7 @@ void ScourgeView::drawChapterIntro() {
 								GL_RGB, GL_UNSIGNED_BYTE, 
 								scourge->getSession()->getChapterImage() );
 
-	scourge->getChapterIntroWin()->move( 0, scourge->getSession()->getChapterImageHeight() + py + 10 - 20 );
+	scourge->getChapterIntroWin()->move( 0, scourge->getSession()->getChapterImageHeight() + py + 10 - 30 );
 
 	glScissor( 150, 0, scourge->getScreenWidth() - 150, textHeight );
   glEnable( GL_SCISSOR_TEST );
