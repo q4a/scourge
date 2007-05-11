@@ -83,6 +83,7 @@ private:
   char name[80];
   char displayName[255];
   char music[255];
+	char introDescription[2000];
   char description[2000];
   char success[2000];
   char failure[2000];
@@ -131,12 +132,13 @@ public:
   static void saveMapData( GameAdapter *adapter, const char *fileName );
 
   Mission( Board *board, int level, int depth, 
-           char *name, char *displayName, char *description, 
+           char *name, char *displayName, char *description, char *introDescription,
            char *music,
            char *success, char *failure,
            char *mapName, char mapType='C' );
   ~Mission();
 
+	inline char *getIntroDescription() { return introDescription; }
 	inline int getChapter() { return chapter; }
 	inline void setChapter( int n ) { chapter = n; }
   inline int getMapX() { return mapX; }
