@@ -131,6 +131,7 @@ void ScourgeView::drawChapterIntro() {
 	glColor4f( 1, 1, 1, 1 );
 	
 	int px = ( scourge->getScreenWidth() - scourge->getSession()->getChapterImageWidth() ) / 2;
+	if( px < 0 ) px = 0; // needed to show image in low resolution
 	int py = 40;
 	int textHeight = scourge->getScreenHeight() - scourge->getSession()->getChapterImageHeight() - py;
 
