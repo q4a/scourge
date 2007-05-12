@@ -864,6 +864,8 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
     } else if( !strcmp(argv[i], "--run-tests") ) {
       // this is ok
       standAloneMode = TEST;
+		} else if( !strcmp( argv[ i ], "--debugtheme" ) ) {
+			debugTheme = true;
     } else {
       printusage = true;
     }
@@ -901,6 +903,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
     printf("\t--heightXX - use XX pixels for the screen height\n");
     printf("\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n");
 		printf("\t--themeXYZ - use gui theme XYZ to draw the ui.\n");
+		printf("\t--debugtheme - use the debug theme only to for wall textures.\n");
     printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
 #ifdef HAVE_SDL_NET
     printf("Multiplayer options:\n");

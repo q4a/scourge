@@ -100,6 +100,7 @@ private:
   char *host, *userName;
   int port;
   int monsterToughness;
+	bool debugTheme;
    
  public:
  
@@ -200,6 +201,7 @@ private:
   inline char *getHost() { return host; }
   inline char *getUserName() { return userName; }
   inline int getPort() { return port; }
+	inline bool isDebugTheme() { return debugTheme; }
 
   void createConfigDir();
 

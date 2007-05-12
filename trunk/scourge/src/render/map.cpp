@@ -3239,7 +3239,8 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 		// it's a room-type map
 		setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
 		// load the theme
-		shapes->loadTheme( (const char*)info->theme_name );
+		if( getPreferences()->isDebugTheme() ) shapes->loadDebugTheme();
+		else shapes->loadTheme( (const char*)info->theme_name );
 	} else if( info->map_type == MapRenderHelper::CAVE_HELPER ) {
 		// it's a room-type map
 		setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ] );

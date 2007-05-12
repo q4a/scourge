@@ -1,0 +1,34 @@
+Debug Theme for S.C.O.U.R.G.E.
+Claudio Canavese 2007 - cod@fsfe.org
+
+To install this theme:
+1) extract all the image files in a new folder called "debug" under your scrouge/scourge_data/themes directory
+2) backup your current scourge/scourge_data/config/map.cfg file
+3) open your map.cfg file and replace all non-cave theme (first should be Gurre1, last should be Infernum)with this:
+
+[theme]
+	name="debug"
+	wall="themes/debug/wall_f,themes/debug/wall_t,themes/debug/wall_s,themes/debug/wall_add"
+	corner="themes/debug/corner_f,themes/debug/corner_t,themes/debug/corner_s,themes/debug/corner_add"
+	door_ew="themes/debug/doorew_f,themes/debug/doorew_t,themes/debug/doorew_s,themes/debug/doorew_add"
+	door_ns="themes/debug/doorns_f,themes/debug/doorns_t,themes/debug/doorns_s,themes/debug/doorns_add"
+	passage_floor="themes/debug/pfloor_f,themes/debug/pfloor_t,themes/debug/pfloor_s,themes/debug/pfloor_add"
+	room_floor="themes/debug/rfloor_f,themes/debug/rfloor_t,themes/debug/rfloor_s,themes/debug/rfloor_add"
+	headboard="themes/debug/headboard_f,themes/debug/headboard_t,themes/debug/headboard_s,themes/debug/headboard_add"
+	medium_multitexture="0.7,0.55,0.9,0.7,1"
+	dark_multitexture="0.7,0.8,0.9,0.8,1"
+[/theme]
+
+
+This work is licensed under Creative Commons Attribution-ShareAlike 2.5 License.
+
+S.C.O.U.R.G.E. is a cross platform, open source rogue-like game 
+in the fine tradition of NetHack and Moria It sports a graphical 
+front-end, similar to glHack or the Falcon's eye.
+The design of the 3D UI is an attempt at the best of both worlds 
+from old to new: It lets you rotate the view, zoom in/out, view special 
+effects, etc with the feeling of the old-school isometric games like 
+Exult or Woodward.
+
+S.C.O.U.R.G.E. is Free Software and you can download it from the official website:
+http://scourgeweb.org
