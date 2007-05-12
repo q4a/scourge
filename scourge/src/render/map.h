@@ -260,6 +260,8 @@ class Map {
 
   inline MapAdapter *getAdapter() { return adapter; }
 
+	inline Preferences *getPreferences() { return preferences; }
+
   inline Shapes *getShapes() { return shapes; }
 
   inline MapSettings *getSettings() { return settings; }

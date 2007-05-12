@@ -358,6 +358,10 @@ void Shapes::loadCursors() {
 Shapes::~Shapes(){
 }
 
+void Shapes::loadDebugTheme() {
+	loadTheme( "debug" );
+}
+
 void Shapes::loadRandomCaveTheme() {
   loadTheme( caveThemes[ (int)( (float)caveThemeCount * rand()/RAND_MAX ) ] );
   GLCaveShape::initializeShapes( this );

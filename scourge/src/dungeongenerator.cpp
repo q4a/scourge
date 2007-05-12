@@ -591,7 +591,8 @@ bool DungeonGenerator::drawNodes(Map *map, ShapePalette *shapePal) {
                     0 == (int)(5.0f * rand()/RAND_MAX) );
 
   updateStatus( _( "Loading theme" ) );
-  shapePal->loadRandomTheme();
+  if( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
+	else shapePal->loadRandomTheme();
 
   updateStatus( _( "Drawing walls" ) );
   drawBasics(map, shapePal);

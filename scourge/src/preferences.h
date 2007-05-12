@@ -165,6 +165,8 @@ public:
   inline bool getStencilBufInitialized() { return stencilBufInitialized; }
 
   virtual void createConfigDir() = 0;
+
+	virtual bool isDebugTheme() = 0;
 };
 
 #endif
