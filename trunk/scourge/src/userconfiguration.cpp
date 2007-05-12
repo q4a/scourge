@@ -279,6 +279,7 @@ UserConfiguration::UserConfiguration(){
     string temp;
 
     standAloneMode = NONE;
+		debugTheme = false;
     
 		stencilBufInitialized = false;
     configurationChanged = false;
