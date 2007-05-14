@@ -49,6 +49,7 @@
 #include "upload.h"
 #include "pcui.h"
 #include "textscroller.h"
+#include "outdoorgenerator.h"
 
 using namespace std;
 
@@ -580,7 +581,8 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 
 
 #ifdef CAVE_TEST
-		dg = new CaveMaker( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
+		//dg = new CaveMaker( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
+		dg = new OutdoorGenerator( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
 		mapCreated = dg->toMap( levelMap, getSession()->getShapePalette() );
 #else
 		

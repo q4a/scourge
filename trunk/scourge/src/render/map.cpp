@@ -186,12 +186,19 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   }
   nbPosCache = -1;
 
-  // initialize the lightmap
-  for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
-	for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
-	  lightMap[x][y] = (LIGHTMAP_ENABLED ? 0 : 1);
+	for( int x = 0; x < MAP_WIDTH; x++ ) {
+		for( int y = 0; y < MAP_DEPTH; y++ ) {
+			ground[x][y] = 0;
+		}
 	}
-  }
+	heightMapEnabled = false;
+
+  // initialize the lightmap
+	for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
+		for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+			lightMap[x][y] = (LIGHTMAP_ENABLED ? 0 : 1);
+		}
+	}
 
   lightMapChanged = true;  
   colorAlreadySet = false;
@@ -335,6 +342,12 @@ void Map::reset() {
 	laterCount = stencilCount = otherCount = damageCount = 0;
 
 	quakesEnabled = false;
+	for( int x = 0; x < MAP_WIDTH; x++ ) {
+		for( int y = 0; y < MAP_DEPTH; y++ ) {
+			ground[x][y] = 0;
+		}
+	}
+	heightMapEnabled = false;
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -755,7 +768,11 @@ void Map::drawGroundPosition(int posX, int posY,
   
   glPushName( name );
   glColor4f(1, 1, 1, 0.9f);
-  shape->draw();
+	if( isHeightMapEnabled() ) {
+		shape->drawHeightMap( ground, posX, posY );
+	} else {
+		shape->draw();
+	}
   glPopName();
 
   glTranslatef( -xpos2, -ypos2, 0.0f);

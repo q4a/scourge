@@ -138,5 +138,7 @@ scourge_SOURCES = \
 	characterinfo.cpp\
 	characterinfo.h\
 	skillsview.cpp\
-	skillsview.h
+	skillsview.h\
+	outdoorgenerator.cpp\
+	outdoorgenerator.h
 

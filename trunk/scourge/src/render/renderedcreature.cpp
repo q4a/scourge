@@ -150,6 +150,12 @@ void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
  * location w/o going thru walls.
  */
 bool RenderedCreature::canReach( int startx, int starty, int firstx, int firsty, int xx, int yy, map<int,bool> *seen ) {
+	// make sure we're not recursing too much
+	if( ( ( startx - xx ) * ( startx - xx ) ) + ( ( starty - yy ) * ( starty - yy ) ) > ( 50 * 50 ) ) {
+		cerr << "warning: RenderedCreature::canReach recursion limit." << endl;
+		return true;
+	}
+
   if( startx == xx && starty == yy ) return true;
   if( startx < 0 || startx >= MAP_WIDTH || starty < 0 || starty >= MAP_DEPTH ) return false;
 

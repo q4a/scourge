@@ -141,11 +141,11 @@ typedef struct _Rug {
  *@author Gabor Torok
  */
 class Map {
- private:
-   MapAdapter *adapter;
-   Preferences *preferences;
-   Shapes *shapes;
-   static MapMemoryManager *mapMemoryManager;
+private:
+	MapAdapter *adapter;
+	Preferences *preferences;
+	Shapes *shapes;
+	static MapMemoryManager *mapMemoryManager;
   bool mapChanged;
   bool resortShapes;
   float zoom;
@@ -229,6 +229,9 @@ class Map {
   std::map<int,bool> secretDoors;
 
 	bool quakesEnabled;
+
+	bool heightMapEnabled;
+	float ground[MAP_WIDTH][MAP_DEPTH];
 
  public:
   bool useFrustum;
@@ -552,6 +555,11 @@ class Map {
   bool isPositionAccessible(int atX, int atY);
 
   void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
+
+	inline void setGroundHeight( int x, int y, float h ) { this->ground[x][y] = h; }
+	inline float getGroundHeight( int x, int y ) { return this->ground[x][y]; }
+	inline void setHeightMapEnabled( bool b ) { this->heightMapEnabled = b; }
+	inline bool isHeightMapEnabled() { return this->heightMapEnabled; }
 
 protected:
 
