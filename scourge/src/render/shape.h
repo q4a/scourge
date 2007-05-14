@@ -63,6 +63,7 @@ public:
   inline int getDescriptionGroup() { return descriptionGroup; }
 
   virtual void draw() = 0;
+	virtual inline void drawHeightMap( float ground[][MAP_DEPTH], int groundX, int groundY ) { draw(); }
   virtual void outline( const Color *color ) { outline( color->r, color->g, color->b ); };
   virtual void outline( float r, float g, float b ) {};
   virtual void setupToDraw() = 0;

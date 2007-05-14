@@ -396,6 +396,60 @@ void GLShape::drawShadow() {
   useShadow = false;
 }
 
+void GLShape::drawHeightMap( float ground[][MAP_DEPTH], int groundX, int groundY ) { 
+	bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
+  glEnable( GL_TEXTURE_2D );
+
+	// don't blend the top, but if in shadow mode, don't mess with blending
+  GLboolean blending = glIsEnabled( GL_BLEND );
+	if( blending ) {
+		glDisable( GL_BLEND );
+		glDepthMask( GL_TRUE );
+	}
+
+	// hack...
+  bool isFloorShape = ( height < 1 );
+
+  int textureIndex = (  isFloorShape && this->getVariationTextureIndex() > 0 ? this->getVariationTextureIndex() : GLShape::TOP_SIDE );
+
+  //cerr << "TOP: textureIndex=" << textureIndex << " variation index=" << getVariationTextureIndex() << endl;
+
+	float w, d, h;
+	glDisable( GL_CULL_FACE );
+  if( tex && tex[ textureIndex ]) glBindTexture( GL_TEXTURE_2D, tex[ textureIndex ] );
+	for( int yy = 0; yy < depth; yy++ ) {
+		glBegin( GL_TRIANGLE_STRIP );
+		//glBegin( GL_LINE_LOOP );
+		glNormal3f(0.0f, 0.0f, 1.0f);
+	
+		int gy = yy + 1;
+		int gx = 0;
+		int count = 0;
+		while( gx <= width ) {
+			w = (float)gx / DIV;
+			d = (float)gy / DIV;
+			h = ((float)( height == 0 ? 0.25 : height ) + ground[ groundX + gx ][ groundY + gy ] ) / DIV;
+			glTexCoord2f( ( gx / (float)width ), ( gy / (float)depth ) );
+			glVertex3f( w, d, h );
+
+			if( count % 2 == 0 ) {
+				gy--;
+			} else {
+				gx++;
+				gy++;
+			}
+			count++;
+		}
+
+		glEnd();
+	}
+	if( blending ) {
+    glEnable( GL_BLEND );
+    glDepthMask( GL_FALSE );
+  }
+	if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
+}
+
 void GLShape::draw() {
 
   if(!initialized) {
