@@ -127,6 +127,13 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 			 if( !chapterMusic ) {
 				 cerr << "*** Error: couldn't load music: " << fn << endl;
 				 cerr << "\t" << Mix_GetError() << endl;
+				 cerr << "\tfalling back to chapter 1 music." << endl;
+				 sprintf(fn, "%s/sound/music/chapters/chapter1.ogg", rootDir );
+				 chapterMusic = Mix_LoadMUS( fn );
+				 if( !chapterMusic ) {
+					 cerr << "*** Error: couldn't load music: " << fn << endl;
+					 cerr << "\t" << Mix_GetError() << endl;
+				 }
 			 }
 		 }
 	 }
