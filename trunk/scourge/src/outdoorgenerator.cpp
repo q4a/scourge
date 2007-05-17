@@ -53,7 +53,11 @@ void OutdoorGenerator::generate( Map *map, ShapePalette *shapePal ) {
 	for( int x = 0; x < MAP_WIDTH; x++ ) {
 		for( int y = 0; y < MAP_DEPTH; y++ ) {
 			// fixme: use a more sinoid function here
-			ground[x][y] = ( 1.0f * rand() / RAND_MAX );
+			// ground[x][y] = ( 1.0f * rand() / RAND_MAX );
+			ground[x][y] = 2.5f * 
+				sin( PI / ( 180.0f / (float)( x * 8.0f ) ) ) * 
+				cos( PI / ( 180.0f / (float)( y  * 8.0f )) );
+			if( ground[x][y] < 0 ) ground[x][y] = 0;
 		}
 	}
 }
@@ -90,6 +94,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
 MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
 	// we need fog
-	return MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ];
+	//return MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ];
+	return MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ];
 }
 

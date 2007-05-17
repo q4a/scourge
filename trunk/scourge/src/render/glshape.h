@@ -153,7 +153,8 @@ public:
     effectZ = z;
   }
   
- protected:
+protected:
+	float getLight( float *normal );
   bool locked;
   GLfloat xrot, yrot, zrot;
   GLfloat xpos, ypos, zpos, xpos2, ypos2, zpos2;
