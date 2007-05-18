@@ -190,7 +190,10 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
   case SDL_KEYUP:
 
     if(event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE){
-			if( scourge->getPcUi()->getStorable() ) {
+			if( scourge->getChapterIntroWin()->isVisible() ) {
+				scourge->endChapterIntro();
+				return false;
+			} else if( scourge->getPcUi()->getStorable() ) {
 				scourge->getPcUi()->clearStorable();
 				return false;
 			} else if( scourge->getTargetSelectionFor() ) {

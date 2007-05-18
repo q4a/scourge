@@ -22,6 +22,7 @@
 #include "../common/constants.h"
 #include "../persist.h"
 #include "../preferences.h"
+#include "../util.h"
 
 /** 
  *@author Gabor Torok

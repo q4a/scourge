@@ -26,6 +26,7 @@
 #include "events/thirsthungerevent.h"
 #include "sqbinding/sqbinding.h"
 #include "debug.h"
+#include "astar.h"
 
 using namespace std;
 
@@ -588,7 +589,7 @@ void Creature::moveAway( Creature *other ) {
 		for( int y = 0; !pathSelected && y < AWAY_DISTANCE; y++ ) {
 			int destX = toint( getX() ) - AWAY_DISTANCE / 2 + x;
 			int destY = toint( getY() ) - AWAY_DISTANCE / 2 - y;
-			Util::findPath( toint( getX() ), toint( getY() ), toint( getZ() ), 
+			AStar::findPath( toint( getX() ), toint( getY() ), toint( getZ() ), 
 											destX, destY, toint( getZ() ), 
 											&path, 
 											session->getMap(), 
@@ -598,7 +599,7 @@ void Creature::moveAway( Creature *other ) {
 											tryHard,
 											false ); // true );
 			if( !path.empty() && 
-					!Util::isOutOfTheWay( this, &path, 0, 
+					!AStar::isOutOfTheWay( this, &path, 0, 
 																player, 
 																player->getPath(), 
 																player->getPathIndex() + 1 ) ) {
@@ -607,7 +608,7 @@ void Creature::moveAway( Creature *other ) {
 					Creature *c = session->getCreature( i ); 
 					if( c != this && 
 							c->isNpc() && 
-							Util::isOutOfTheWay( this, &path, 0, 
+							AStar::isOutOfTheWay( this, &path, 0, 
 																	 c, 
 																	 c->getPath(), 
 																	 c->getPathIndex() + 1 ) ) {
@@ -619,7 +620,7 @@ void Creature::moveAway( Creature *other ) {
 					Creature *c = session->getParty()->getParty( i );
 					if( tryHard ) {
 						if( c != this && c != player && 
-							!Util::isOutOfTheWay( this, &path, 0, 
+							!AStar::isOutOfTheWay( this, &path, 0, 
 																		 c, 
 																		 c->getPath(), 
 																		 c->getPathIndex() + 1 ) ) {
@@ -628,7 +629,7 @@ void Creature::moveAway( Creature *other ) {
 						}
 					} else {
 						if( c != this && 
-								Util::isOutOfTheWay( this, &path, 0, 
+								AStar::isOutOfTheWay( this, &path, 0, 
 																		 c, 
 																		 c->getPath(), 
 																		 c->getPathIndex() + 1 ) ) {
@@ -710,7 +711,7 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
   ty = selY;
   bestPathPos = 1; // skip 0th position; it's the starting location
   //cerr << getName() << " findPath" << endl;
-  Util::findPath( toint(getX()), toint(getY()), toint(getZ()), 
+  AStar::findPath( toint(getX()), toint(getY()), toint(getZ()), 
                   selX, selY, 0, 
                   &bestPath, 
                   session->getMap(), 

@@ -30,32 +30,12 @@
 class Map;
 class Location;
 class Shape;
-class Creature;
 
 /**
   *@author Gabor Torok
   */
 
 #define PI 3.14159
-
-/**
-  A path class used by A* algorithm
-*/
-class CPathNode{
-public:
-  int f, gone, heuristic; // f = gone + heuristic
-  int x, y;               // Location of node
-  int px, py;             // Locaton of parent node
-
-  inline bool operator<(const CPathNode &b) {
-	return this->f < b.f;
-  }
-
-  inline bool operator>(const CPathNode &b) {
-	return this->f > b.f;
-  }
-  
-};
 
 class Util {
 public:
@@ -72,16 +52,6 @@ public:
     * Rotate the 2D point(x,y) by angle(in degrees). Return the result in px,py.
     */
   static void rotate(Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle);
-
-  static void findPath( Sint16 sx, Sint16 sy, Sint16 sz,
-												Sint16 dx, Sint16 dy, Sint16 dz,
-												std::vector<Location> *pVector,
-												Map *map,
-												Creature *creature,
-												Creature *player,
-												int maxNodes,
-												bool ignoreParty,
-												bool ignoreEndShape );
 
   // some math functions
   static float dot_product(float v1[3], float v2[3]);
@@ -125,17 +95,11 @@ public:
 	 */
 	static bool isInFOV( float x, float y, float angle, float px, float py );
 
-	static bool isOutOfTheWay( Creature *a, std::vector<Location> *aPath, int aStart,
-														 Creature *b, std::vector<Location> *bPath, int bStart );
-
 	static char *addLineBreaks( const char *in, char *out, int lineLength=40 );
 
 	static void getLines( const char *in, std::vector<std::string> *out );
 
-protected:
-  static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Sint16 dx, Sint16 dy,
-												 Creature *creature, Creature *player, Map *map, 
-												 bool ignoreCreatures=false, bool ignoreEndShape=false );
+	static float getLight( float *normal, float angle=135.0f );
 
 };
 

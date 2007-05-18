@@ -43,8 +43,6 @@ using namespace std;
 
 #define ZOOM_DELTA 1.2f
 
-#define PI 3.14159f
-
 #define KEEP_MAP_SIZE 0
 
 //#define MVW 100
@@ -1085,41 +1083,8 @@ void Map::draw() {
       glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
       
       // cave floor and map editor bottom (so cursor shows)
-      if( settings->isGridShowing() || floorTexWidth > 0 ) {
-
-        GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
-
-        //float xpos2 = (float)(getX() - mapViewWidth / 2) / DIV;
-        //float ypos2 = (float)(getY() - mapViewDepth / 2) / DIV;
-        float w = (float)( mapViewWidth ) / DIV;
-        float d = (float)( mapViewDepth ) / DIV;
-        if( settings->isGridShowing() ) {
-          glDisable( GL_TEXTURE_2D );
-          glColor4f( 0, 0, 0, 0.9f );
-        } else {
-          glEnable( GL_TEXTURE_2D );
-          glColor4f(1, 1, 1, 0.9f);
-          glBindTexture( GL_TEXTURE_2D, floorTex );
-        }
-        glPushMatrix();
-        //glTranslatef( xpos2, ypos2, 0.0f);        
-        glBegin( GL_QUADS );
-        glNormal3f( 0, 0, 1 );
-        glTexCoord2f( getX() * DIV * ratio, getY() * DIV * ratio );
-        glVertex3f( 0, 0, 0 );
-        glTexCoord2f( getX() * DIV * ratio, ( getY() + mapViewDepth ) * DIV * ratio );
-        glVertex3f( 0, d, 0 );
-        glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, ( getY() + mapViewDepth ) * DIV * ratio );
-        glVertex3f( w, d, 0 );
-        glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, getY() * DIV * ratio );
-        glVertex3f( w, 0, 0 );
-        glEnd();
-        glPopMatrix();
-
-        // show floor in map editor
-        if( settings->isGridShowing() ) {
-          setupShapes(true, false);
-        }
+      if( settings->isGridShowing() || floorTexWidth > 0 || isHeightMapEnabled() ) {
+				renderFloor();
       } else {
         setupShapes(true, false);
       }
@@ -3783,4 +3748,147 @@ void Map::setSecretDoorDetected( int x, int y ) {
     secretDoors[ index ] = true;
   }
 }
+
+void Map::renderFloor() {
+	//float xpos2 = (float)(getX() - mapViewWidth / 2) / DIV;
+	//float ypos2 = (float)(getY() - mapViewDepth / 2) / DIV;
+	if( settings->isGridShowing() ) {
+		glDisable( GL_TEXTURE_2D );
+		glColor4f( 0, 0, 0, 0.9f );
+	} else {
+		glEnable( GL_TEXTURE_2D );
+		glColor4f(1, 1, 1, 0.9f);
+		glBindTexture( GL_TEXTURE_2D, floorTex );
+	}
+	glPushMatrix();
+
+	if( isHeightMapEnabled() ) {
+		drawHeightMapFloor();
+	}	else {
+		drawFlatFloor();
+	}
+	glPopMatrix();
+
+	// show floor in map editor
+	if( settings->isGridShowing() ) {
+		setupShapes(true, false);
+	}
+}
+
+void Map::drawHeightMapFloor() {
+	vector<CVector5> triangles[500];
+	int triangleStripCount = 0;
+	float w, d, h;
+	for( int yy = 0; yy < mapViewDepth; yy++ ) {
+		int gy = yy + 1;
+		int gx = 0;
+		int count = 0;
+		while( gx <= mapViewWidth ) {
+
+			w = (float)gx / DIV;
+			d = (float)gy / DIV;
+			h = ( ground[ getX() + gx ][ getY() + gy ] ) / DIV;
+
+			CVector5 v;
+			v.x = w;
+			v.y = d;
+			v.z = h;
+			v.u = v.v = 1;
+			triangles[ triangleStripCount ].push_back( v );
+
+			if( count % 2 == 0 ) {
+				gy--;
+			} else {
+				gx++;
+				gy++;
+			}
+			count++;
+		}
+
+		// add light
+		CVector5 *a, *b, *pt;
+		float light;
+		float v[3], u[3], normal[3];
+		bool skip;
+		for( unsigned int t = 0; t < triangles[ triangleStripCount ].size(); t++ ) {
+
+			pt = &( triangles[ triangleStripCount ].at( t ) );
+
+			skip = false;
+			if( t % 2 == 0 ) {
+				if( t < triangles[ triangleStripCount ].size() - 2 ) {
+					a = &( triangles[ triangleStripCount ].at( t + 1 ) );
+					b = &( triangles[ triangleStripCount ].at( t + 2 ) );
+				} else {
+					skip = true;
+				}
+			} else {
+				if( t > 2 ) {
+					a = &( triangles[ triangleStripCount ].at( t - 1 ) );
+					b = &( triangles[ triangleStripCount ].at( t - 2 ) );
+				} else {
+					skip = true;
+				}
+			}
+
+			if( !skip ) {
+				v[0] = pt->x - a->x;
+				v[1] = pt->y - a->y;
+				v[2] = pt->z - a->z;
+				Util::normalize( v );
+				
+				u[0] = pt->x - b->x;
+				u[1] = pt->y - b->y;
+				u[2] = pt->z - b->z;
+				Util::normalize( u );
+				
+				Util::cross_product( u, v, normal );
+				light = Util::getLight( normal );
+			}
+
+			pt->u = pt->v = light;
+		}
+
+		triangles[ triangleStripCount ].at( 1 ).u = triangles[ triangleStripCount ].at( 1 ).v = triangles[ triangleStripCount ].at( 0 ).u;
+		//triangles[ triangleStripCount ].at( 1 ).u = triangles[ triangleStripCount ].at( 1 ).v = triangles[ triangleStripCount ].at( 0 ).u;
+
+
+		triangleStripCount++;
+	}
+
+	// draw it
+	glDisable( GL_CULL_FACE );
+//  if( tex && tex[ textureIndex ]) glBindTexture( GL_TEXTURE_2D, tex[ textureIndex ] );
+	for( int i = 0; i < triangleStripCount; i++ ) {
+		glBegin( GL_TRIANGLE_STRIP );
+		//glNormal3f(0.0f, 0.0f, 1.0f);
+		for( unsigned int t = 0; t < triangles[i].size(); t++ ) {
+			CVector5 v = triangles[i].at( t );
+			//glTexCoord2f( ( v.x * DIV / (float)width ), ( v.y * DIV / (float)depth ) );
+			glColor3f( v.u, v.u, v.u );
+			glVertex3f( v.x, v.y, v.z );
+		}
+		glEnd();
+	}
+}
+
+void Map::drawFlatFloor() {
+	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
+	float w = (float)( mapViewWidth ) / DIV;
+	float d = (float)( mapViewDepth ) / DIV;
+	//glTranslatef( xpos2, ypos2, 0.0f);
+	glBegin( GL_QUADS );
+	glNormal3f( 0, 0, 1 );
+	glTexCoord2f( getX() * DIV * ratio, getY() * DIV * ratio );
+	glVertex3f( 0, 0, 0 );
+	glTexCoord2f( getX() * DIV * ratio, ( getY() + mapViewDepth ) * DIV * ratio );
+	glVertex3f( 0, d, 0 );
+	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, ( getY() + mapViewDepth ) * DIV * ratio );
+	glVertex3f( w, d, 0 );
+	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, getY() * DIV * ratio );
+	glVertex3f( w, 0, 0 );
+	glEnd();
+}
+
+
 

@@ -54,9 +54,10 @@ void OutdoorGenerator::generate( Map *map, ShapePalette *shapePal ) {
 		for( int y = 0; y < MAP_DEPTH; y++ ) {
 			// fixme: use a more sinoid function here
 			// ground[x][y] = ( 1.0f * rand() / RAND_MAX );
-			ground[x][y] = 2.5f * 
-				sin( PI / ( 180.0f / (float)( x * 8.0f ) ) ) * 
-				cos( PI / ( 180.0f / (float)( y  * 8.0f )) );
+			ground[x][y] = 3 + 
+				( 3.0f * 
+					sin( PI / ( 180.0f / (float)( x * 8.0f ) ) ) * 
+					cos( PI / ( 180.0f / (float)( y  * 8.0f )) ) );
 			if( ground[x][y] < 0 ) ground[x][y] = 0;
 		}
 	}
@@ -75,6 +76,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	}
 
 	map->setHeightMapEnabled( true );
+	map->setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, shapePal->getNamedTexture( "grass" ) );
 
 	// set the floor, so random positioning works in terrain generator
 	for( int x = MAP_OFFSET; x < MAP_WIDTH - MAP_OFFSET; x += MAP_UNIT ) {
