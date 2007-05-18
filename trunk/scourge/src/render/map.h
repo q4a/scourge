@@ -563,6 +563,10 @@ private:
 
 protected:
 
+	void renderFloor();
+	void drawFlatFloor();
+	void drawHeightMapFloor();
+
 	 void willDrawGrid();
 
 	 void setPositionInner( Sint16 x, Sint16 y, Sint16 z, 

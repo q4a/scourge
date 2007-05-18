@@ -140,5 +140,7 @@ scourge_SOURCES = \
 	skillsview.cpp\
 	skillsview.h\
 	outdoorgenerator.cpp\
-	outdoorgenerator.h
+	outdoorgenerator.h\
+	astar.cpp\
+	astar.h
 
