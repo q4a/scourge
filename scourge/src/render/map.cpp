@@ -511,6 +511,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
       // special cave edge code
       if( !( ground || water ) && 
           floorTexWidth > 0 && 
+					!isHeightMapEnabled() &&
           ( chunkX < 0 || chunkY < 0 ) ) {
         for( int yp = CAVE_CHUNK_SIZE; yp < MAP_UNIT + CAVE_CHUNK_SIZE; yp += CAVE_CHUNK_SIZE ) {
           for( int xp = 0; xp < MAP_UNIT; xp += CAVE_CHUNK_SIZE ) {
@@ -895,6 +896,8 @@ void Map::setupPosition( int posX, int posY, int posZ,
     damage[damageCount].name = name;
     damage[damageCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
     damage[damageCount].inFront = false;
+		damage[damageCount].x = posX;
+		damage[damageCount].y = posY;
     damageCount++;
 
     // don't draw shape if it's an area effect
@@ -912,6 +915,8 @@ void Map::setupPosition( int posX, int posY, int posZ,
     stencil[stencilCount].name = name;
 		stencil[stencilCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
     stencil[stencilCount].inFront = false;
+		stencil[stencilCount].x = posX;
+		stencil[stencilCount].y = posY;
     stencilCount++;
   } else if(!shape->isStencil()) {
     bool invisible = (creature && creature->getStateMod(StateMod::invisible));
@@ -926,6 +931,8 @@ void Map::setupPosition( int posX, int posY, int posZ,
       other[otherCount].name = name;
       other[otherCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
       other[otherCount].inFront = false;
+			other[otherCount].x = posX;
+			other[otherCount].y = posY;
       otherCount++;
     }
     if(shape->drawLater() || invisible) {
@@ -939,6 +946,8 @@ void Map::setupPosition( int posX, int posY, int posZ,
       later[laterCount].name = name;
       later[laterCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
       later[laterCount].inFront = false;
+			later[laterCount].x = posX;
+			later[laterCount].y = posY;
       laterCount++;
     }
   }
@@ -1061,6 +1070,8 @@ void Map::draw() {
     later2.pos = NULL;
     later2.effect = NULL;
     later2.inFront = false;
+		later2.x = cursorFlatMapX - getX();
+		later2.y = cursorFlatMapY - getY();
     doDrawShape(&later2);
 
     //later2.shape = shapes->findShapeByName("LAMP_BASE");
@@ -1547,7 +1558,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   glPushMatrix();
   if(useShadow) {
       // put shadow above the floor a little
-      glTranslatef( xpos2, ypos2, 0.26f / DIV);
+      glTranslatef( xpos2, ypos2, ( 0.26f + ground[ later->x ][ later->y ] ) / DIV);
       glMultMatrixf(shadowTransformMatrix);
 
     // gray shadows
@@ -1562,7 +1573,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
     if(shape) shape->setupToDraw();
 
-    glTranslatef( xpos2, ypos2, zpos2);
+    glTranslatef( xpos2, ypos2, zpos2 + ground[ later->x ][ later->y ] / DIV );
 
 #ifdef DEBUG_SECRET_DOORS    
     if( later && later->pos ) {
@@ -3776,38 +3787,42 @@ void Map::renderFloor() {
 }
 
 void Map::drawHeightMapFloor() {
-	vector<CVector5> triangles[500];
+	vector<CVector9> triangles[500];
 	int triangleStripCount = 0;
 	float w, d, h;
-	for( int yy = 0; yy < mapViewDepth; yy++ ) {
-		int gy = yy + 1;
-		int gx = 0;
+	int step = 4;
+	int offsX = ( getX() % step );
+	int offsY = ( getY() % step );
+	for( int yy = -offsY; yy < mapViewDepth - step; yy+=step ) {
+		int gy = yy + step;
+		int gx = -offsX;
 		int count = 0;
-		while( gx <= mapViewWidth ) {
+		while( gx <= mapViewWidth - step ) {
 
 			w = (float)gx / DIV;
 			d = (float)gy / DIV;
 			h = ( ground[ getX() + gx ][ getY() + gy ] ) / DIV;
 
-			CVector5 v;
+			CVector9 v;
 			v.x = w;
 			v.y = d;
 			v.z = h;
-			v.u = v.v = 1;
+			v.u = ( ( getX() + gx ) * 32 ) / (float)MAP_WIDTH;
+			v.v = ( ( getY() + gy ) * 32 ) / (float)MAP_DEPTH;
+			v.r = v.g = v.b = v.a = 1;
 			triangles[ triangleStripCount ].push_back( v );
 
 			if( count % 2 == 0 ) {
-				gy--;
+				gy -= step;
 			} else {
-				gx++;
-				gy++;
+				gx += step;
+				gy += step;
 			}
 			count++;
 		}
 
 		// add light
-		CVector5 *a, *b, *pt;
-		float light;
+		CVector9 *a, *b, *pt;
 		float v[3], u[3], normal[3];
 		bool skip;
 		for( unsigned int t = 0; t < triangles[ triangleStripCount ].size(); t++ ) {
@@ -3843,29 +3858,26 @@ void Map::drawHeightMapFloor() {
 				Util::normalize( u );
 				
 				Util::cross_product( u, v, normal );
-				light = Util::getLight( normal );
+				pt->r = pt->g = pt->b = Util::getLight( normal );
 			}
-
-			pt->u = pt->v = light;
 		}
 
-		triangles[ triangleStripCount ].at( 1 ).u = triangles[ triangleStripCount ].at( 1 ).v = triangles[ triangleStripCount ].at( 0 ).u;
-		//triangles[ triangleStripCount ].at( 1 ).u = triangles[ triangleStripCount ].at( 1 ).v = triangles[ triangleStripCount ].at( 0 ).u;
-
+		triangles[ triangleStripCount ].at( 1 ).r = triangles[ triangleStripCount ].at( 0 ).r;
+		triangles[ triangleStripCount ].at( 1 ).g = triangles[ triangleStripCount ].at( 0 ).g;
+		triangles[ triangleStripCount ].at( 1 ).b = triangles[ triangleStripCount ].at( 0 ).b;
+		triangles[ triangleStripCount ].at( 1 ).a = triangles[ triangleStripCount ].at( 0 ).a;
 
 		triangleStripCount++;
 	}
 
 	// draw it
 	glDisable( GL_CULL_FACE );
-//  if( tex && tex[ textureIndex ]) glBindTexture( GL_TEXTURE_2D, tex[ textureIndex ] );
 	for( int i = 0; i < triangleStripCount; i++ ) {
 		glBegin( GL_TRIANGLE_STRIP );
-		//glNormal3f(0.0f, 0.0f, 1.0f);
 		for( unsigned int t = 0; t < triangles[i].size(); t++ ) {
-			CVector5 v = triangles[i].at( t );
-			//glTexCoord2f( ( v.x * DIV / (float)width ), ( v.y * DIV / (float)depth ) );
-			glColor3f( v.u, v.u, v.u );
+			CVector9 v = triangles[i].at( t );
+			glTexCoord2f( v.u, v.v );
+			glColor4f( v.r, v.g, v.b, v.a );
 			glVertex3f( v.x, v.y, v.z );
 		}
 		glEnd();
