@@ -101,6 +101,9 @@ public:
 
 	static float getLight( float *normal, float angle=135.0f );
 
+protected:
+	static float getLightComp( float x, float y, float lightAngle );
+
 };
 
 #endif

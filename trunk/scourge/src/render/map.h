@@ -95,6 +95,7 @@ typedef struct _DrawLater {
   GLuint name;  
   Location *pos;
   bool inFront;
+	int x, y;
 } DrawLater;
 
 #define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }

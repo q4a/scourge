@@ -372,7 +372,15 @@ float Util::getLight( float *normal, float lightAngle ) {
 	// need the normal as mapped on the xy plane
 	// it's degree is the intensity of light it gets
 	float x = ( normal[0] == 0 ? 0.01f : normal[0] );
-	float y = normal[1];
+	float y = ( normal[1] == 0 ? 0.01f : normal[1] );
+	float z = ( normal[2] == 0 ? 0.01f : normal[2] );
+
+	return ( getLightComp( x, y, lightAngle ) + 
+					 getLightComp( z, y, lightAngle ) +
+					 getLightComp( z, z, lightAngle ) ) / 3.0f;
+}
+
+float Util::getLightComp( float x, float y, float lightAngle ) {
 	float rad = atan( y / x );
 	float angle = ( 180.0f * rad ) / 3.14159;
 
@@ -415,9 +423,8 @@ float Util::getLight( float *normal, float lightAngle ) {
 	}
 
 	// reverse and convert to value between 0 and 1
-	delta = 1 - ( 0.4f * ( delta / 180.0f ) );
+	delta = 1 - ( 0.9f * ( delta / 180.0f ) );
 
 	// store the value
 	return delta;
 }
-
