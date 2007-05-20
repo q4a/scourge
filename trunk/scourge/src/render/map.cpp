@@ -1552,14 +1552,16 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
 
+	bool heightMapApplies = ( shape && !((GLShape*)shape)->isWallShape() );
+
   // slow on mac os X:
   // glPushAttrib(GL_ENABLE_BIT);
 
   glPushMatrix();
   if(useShadow) {
-      // put shadow above the floor a little
-      glTranslatef( xpos2, ypos2, ( 0.26f + ground[ later->x ][ later->y ] ) / DIV);
-      glMultMatrixf(shadowTransformMatrix);
+		// put shadow above the floor a little
+		glTranslatef( xpos2, ypos2, ( 0.26f + ( heightMapApplies ? ground[ later->x ][ later->y ] / DIV : 0 ) ) );
+		glMultMatrixf(shadowTransformMatrix);
 
     // gray shadows
     //glColor4f( 0, 0, 0, 0.5f );
@@ -1573,7 +1575,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
     if(shape) shape->setupToDraw();
 
-    glTranslatef( xpos2, ypos2, zpos2 + ground[ later->x ][ later->y ] / DIV );
+    glTranslatef( xpos2, ypos2, zpos2 + ( heightMapApplies ? ground[ later->x ][ later->y ] / DIV : 0 ) );
 
 #ifdef DEBUG_SECRET_DOORS    
     if( later && later->pos ) {

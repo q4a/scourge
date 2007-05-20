@@ -20,6 +20,10 @@
 #include "scourge.h"
 #include "board.h"
 #include "render/maprenderhelper.h"
+#include "render/glshape.h"
+#include <vector>
+
+using namespace std;
 
 OutdoorGenerator::OutdoorGenerator( Scourge *scourge, int level, int depth, int maxDepth,
 																		bool stairsDown, bool stairsUp, 
@@ -82,16 +86,43 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	for( int x = MAP_OFFSET; x < MAP_WIDTH - MAP_OFFSET; x += MAP_UNIT ) {
 		for( int y = MAP_OFFSET; y < MAP_DEPTH - MAP_OFFSET; y += MAP_UNIT ) {
 			map->setFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT, (Shape*)shapePal->findShapeByName( "FLOOR_TILE", true ) );
-			if( y == MAP_OFFSET ) {
-				map->setPosition( (Sint16)x, (Sint16)( y + MAP_UNIT_OFFSET ), (Sint16)0, (Shape*)shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
-			} else if( x == MAP_OFFSET || x == MAP_WIDTH + MAP_OFFSET - MAP_UNIT ) {
-				map->setPosition( (Sint16)x, (Sint16)( y + MAP_UNIT ), (Sint16)0, (Shape*)shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
-			} else if( y == MAP_DEPTH - MAP_OFFSET - MAP_UNIT ) {
-				map->setPosition( (Sint16)x, (Sint16)( y + MAP_UNIT ), (Sint16)0, (Shape*)shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+		}
+	}
+
+	// add some groups of trees
+	for( int i = 0; i < 20; i++ ) {
+		int w = (int)( 40.0f * rand() / RAND_MAX ) + 20;
+		int h = (int)( 40.0f * rand() / RAND_MAX ) + 20;
+		int x = MAP_OFFSET + (int)( (float)( MAP_WIDTH - w - MAP_OFFSET * 2 ) * rand() / RAND_MAX );
+		int y = MAP_OFFSET + (int)( (float)( MAP_DEPTH - h - MAP_OFFSET * 2 ) * rand() / RAND_MAX );
+		int count = 0;
+		while( count < 10 ) {
+			GLShape *shape = getRandomTreeShape( shapePal );
+			int xx = x + (int)( (float)( w - shape->getWidth() ) * rand() / RAND_MAX );
+			int yy = y + (int)( (float)( h - shape->getDepth() ) * rand() / RAND_MAX );
+			if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
+				map->setPosition( xx, yy, 0, shape );
+			} else {
+				count++;
 			}
 		}
 	}
+
 	return true;
+}
+
+vector<GLShape*> trees;
+GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {
+	if( trees.size() == 0 ) {
+		// this should be in config file
+		trees.push_back( shapePal->findShapeByName( "PINE_TREE" ) );
+		trees.push_back( shapePal->findShapeByName( "WILLOW_TREE" ) );
+		trees.push_back( shapePal->findShapeByName( "OAK_TREE" ) );
+		trees.push_back( shapePal->findShapeByName( "OAK2_TREE" ) );
+		trees.push_back( shapePal->findShapeByName( "BUSH" ) );
+		trees.push_back( shapePal->findShapeByName( "BUSH2" ) );
+	}
+	return trees[ (int)( (float)( trees.size() ) * rand() / RAND_MAX ) ];
 }
 
 MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {

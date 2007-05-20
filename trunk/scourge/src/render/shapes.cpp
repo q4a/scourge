@@ -283,6 +283,8 @@ void Shapes::initialize() {
     shapes[(i + 1)]->setLightBlocking(sv->blocksLight == 1);
     shapes[(i + 1)]->setIconRotation(sv->xrot, sv->yrot, sv->zrot);
 
+		if( sv->wallShape ) shapes[(i + 1)]->setIsWallShape( true );
+
     // Call this when all other intializations are done.
     if(themeBasedShape) {
       themeShapes.push_back( shapes[(i + 1)] );

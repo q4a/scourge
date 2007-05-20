@@ -27,6 +27,7 @@ class Map;
 class ShapePalette;
 class Scourge;
 class Mission;
+class GLShape;
 
 class OutdoorGenerator : public TerrainGenerator {
 private:
@@ -42,6 +43,7 @@ protected:
 	virtual void generate( Map *map, ShapePalette *shapePal );
 	virtual bool drawNodes( Map *map, ShapePalette *shapePal );
 	virtual MapRenderHelper* getMapRenderHelper();
+	GLShape *getRandomTreeShape( ShapePalette *shapePal );
 };
 
 #endif 

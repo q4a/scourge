@@ -36,6 +36,7 @@ class Shapes;
 typedef struct _ShapeValues {
   // char textureGroupIndex[100]; // index or theme ref.
 	char theme[40];
+	bool wallShape;
 	char textures[255];
   int width, height, depth;
   char name[100];
