@@ -494,6 +494,7 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	ShapeValues *sv = new ShapeValues();
 	sv->theme[0] = 0;
+	sv->wallShape = false;
 	sv->textures[0] = 0;
 	sv->width = sv->height = sv->depth = 0;
 	sv->name[0] = 0;
@@ -632,6 +633,7 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 
 		strcpy( sv->theme, node->getValueAsString( "theme" ) );
 		strcpy( sv->textures, node->getValueAsString( "textures" ) );
+		sv->wallShape = ( !strcmp( node->getValueAsString( "wall_shape" ), "true" ) ? true : false );
 
     // extra for torches:
 		sv->torch = toint( node->getValueAsFloat( "torch" ) ) - 1;

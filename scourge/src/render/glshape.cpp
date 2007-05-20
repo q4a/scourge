@@ -49,6 +49,7 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
   this->initialized = false;
   this->variationTextureIndex = 0;
   this->effectType = -1;
+	this->wallShape = false;
 
   surfaces[LEFT_SURFACE] = NULL;
   surfaces[BOTTOM_SURFACE] = NULL;

@@ -52,6 +52,7 @@ protected:
   bool initialized;
   std::vector<GLShape*> variationShape;
   int variationTextureIndex;
+	bool wallShape;
 
   struct surface *surfaces[5];
   enum { 
@@ -80,6 +81,9 @@ protected:
   inline bool getUseTexture() { return useTexture; }
   
   bool useShadow;
+
+	inline bool isWallShape() { return wallShape; }
+	inline void setIsWallShape( bool b ) { wallShape = b; }
 
 public:
 
