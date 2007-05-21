@@ -57,6 +57,7 @@ class Location {
 public:
   // shapes
   Uint16 x, y, z;
+	float heightPos;
   Shape *shape;
   RenderedItem *item;
   RenderedCreature *creature;

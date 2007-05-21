@@ -155,6 +155,7 @@ private:
   Sint16 y;
   int viewX, viewY, viewWidth, viewHeight;
   float mapx, mapy;
+	CVector9 groundPos[MAP_WIDTH][MAP_DEPTH];
   Location *pos[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
 	Location *itemPos[MAP_WIDTH][MAP_DEPTH];
   EffectLocation *effect[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
@@ -233,6 +234,7 @@ private:
 
 	bool heightMapEnabled;
 	float ground[MAP_WIDTH][MAP_DEPTH];
+	bool refreshGroundPos;
 
  public:
   bool useFrustum;
@@ -561,6 +563,9 @@ private:
 	inline float getGroundHeight( int x, int y ) { return this->ground[x][y]; }
 	inline void setHeightMapEnabled( bool b ) { this->heightMapEnabled = b; }
 	inline bool isHeightMapEnabled() { return this->heightMapEnabled; }
+	inline void setRefreshGroundPos( bool b ) { this->refreshGroundPos = b; }
+	inline bool isRefreshGroundPos() { return this->refreshGroundPos; }
+	void createGroundMap();
 
 protected:
 
@@ -569,6 +574,8 @@ protected:
 	void drawHeightMapFloor();
 
 	 void willDrawGrid();
+
+	 float findMaxHeightPos( Sint16 x, Sint16 y, Sint16 z, Shape *shape );
 
 	 void setPositionInner( Sint16 x, Sint16 y, Sint16 z, 
 													Shape *shape, 
