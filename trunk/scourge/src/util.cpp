@@ -423,7 +423,7 @@ float Util::getLightComp( float x, float y, float lightAngle ) {
 	}
 
 	// reverse and convert to value between 0 and 1
-	delta = 1 - ( 0.9f * ( delta / 180.0f ) );
+	delta = 1 - ( 0.4f * ( delta / 180.0f ) );
 
 	// store the value
 	return delta;

@@ -3946,8 +3946,8 @@ void Map::drawHeightMapFloor() {
 				for( int i = 0; i < 3; i++ ) {
 					glTexCoord2f( p[i]->u, p[i]->v );
 					n = ( p[i]->z / ( 6.0f / DIV ) ) * 0.65f + 0.35f;
-					//glColor3f( p[i]->r, p[i]->g, p[i]->b );
-					glColor3f( n, n, n );
+					glColor3f( n * p[i]->r, n * p[i]->g, n * p[i]->b );
+					//glColor3f( n, n, n );
 					gx = p[i]->x - getX() / DIV;
 					gy = p[i]->y - getY() / DIV;
 					glVertex3f( gx, gy, p[i]->z );
@@ -3979,66 +3979,49 @@ void Map::createGroundMap() {
 		}
 	}
 	cerr << "Created " << n << " values." << endl;
-
-	/*
+	
 	// add light
-	CVector9 *a, *b, *pt;
-	float v[3], u[3], normal[3];
-	bool skip;
-	for( int xx = 0; xx < MAP_WIDTH - 1; xx += step ) {
-		for( int yy = 0; yy < MAP_DEPTH - 1; yy += step ) {
-
-			pt = &( groundPos[ xx ][ yy ] );
-
-			if( t % 2 == 0 ) {
-				a = &( groundPos( t + 1 ) );
-				b = &( triangles[ triangleStripCount ].at( t + 2 ) );
-			}
-
-			skip = false;
-			if( t % 2 == 0 ) {
-				if( t < triangles[ triangleStripCount ].size() - 2 ) {
-					a = &( triangles[ triangleStripCount ].at( t + 1 ) );
-					b = &( triangles[ triangleStripCount ].at( t + 2 ) );
+	CVector9 *p[3];
+	for( int xx = 0; xx < MAP_WIDTH; xx++ ) {
+		for( int yy = 0; yy < MAP_DEPTH; yy++ ) {
+			//for( int t = 0; t < 2; t++ ) {
+				//if( t == 0 ) {
+					p[0] = &( groundPos[ xx ][ yy ] );
+					p[1] = &( groundPos[ xx + OUTDOORS_STEP ][ yy ] );
+					p[2] = &( groundPos[ xx ][ yy + OUTDOORS_STEP ] );
+					/*
 				} else {
-					skip = true;
+					p[0] = &( groundPos[ xx + OUTDOORS_STEP ][ yy ] );
+					p[1] = &( groundPos[ xx + OUTDOORS_STEP ][ yy + OUTDOORS_STEP ] );
+					p[2] = &( groundPos[ xx ][ yy + OUTDOORS_STEP ] );
 				}
-			} else {
-				if( t > 2 ) {
-					a = &( triangles[ triangleStripCount ].at( t - 1 ) );
-					b = &( triangles[ triangleStripCount ].at( t - 2 ) );
-				} else {
-					skip = true;
-				}
-			}
-
-			if( !skip ) {
-				v[0] = pt->x - a->x;
-				v[1] = pt->y - a->y;
-				v[2] = pt->z - a->z;
-				Util::normalize( v );
-				
-				u[0] = pt->x - b->x;
-				u[1] = pt->y - b->y;
-				u[2] = pt->z - b->z;
-				Util::normalize( u );
-				
-				Util::cross_product( u, v, normal );
-				float light = Util::getLight( normal );
-				pt->r *= light;
-				pt->g *= light;
-				pt->b *= light;
-			}
+				*/
+			//}
+			addLight( p[0], p[1], p[2] );
+			addLight( p[1], p[0], p[2] );
+			addLight( p[2], p[0], p[1] );
 		}
-
-		triangles[ triangleStripCount ].at( 1 ).r = triangles[ triangleStripCount ].at( 0 ).r;
-		triangles[ triangleStripCount ].at( 1 ).g = triangles[ triangleStripCount ].at( 0 ).g;
-		triangles[ triangleStripCount ].at( 1 ).b = triangles[ triangleStripCount ].at( 0 ).b;
-		triangles[ triangleStripCount ].at( 1 ).a = triangles[ triangleStripCount ].at( 0 ).a;
-
-		triangleStripCount++;
 	}
-	*/
+}
+
+void Map::addLight( CVector9 *pt, CVector9 *a, CVector9 *b ) {
+	float v[3], u[3], normal[3];
+
+	v[0] = pt->x - a->x;
+	v[1] = pt->y - a->y;
+	v[2] = pt->z - a->z;
+	Util::normalize( v );
+
+	u[0] = pt->x - b->x;
+	u[1] = pt->y - b->y;
+	u[2] = pt->z - b->z;
+	Util::normalize( u );
+
+	Util::cross_product( u, v, normal );
+	float light = Util::getLight( normal );
+	pt->r *= light;
+	pt->g *= light;
+	pt->b *= light;
 }
 
 void Map::drawFlatFloor() {
