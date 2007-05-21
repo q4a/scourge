@@ -71,8 +71,10 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
   updateStatus( _( "Loading theme" ) );
   if( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
-	else shapePal->loadTheme( "outdoor" );
+	else shapePal->loadRandomTheme();
 
+	// do this first, before adding shapes
+	// FIXME: elevate shapes if needed, in Map::setGroundHeight, so this method can be called anytime
 	for( int x = 0; x < MAP_WIDTH; x++ ) {
 		for( int y = 0; y < MAP_DEPTH; y++ ) {
 			map->setGroundHeight( x, y, ground[x][y] );
@@ -121,6 +123,7 @@ GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {
 		trees.push_back( shapePal->findShapeByName( "OAK2_TREE" ) );
 		trees.push_back( shapePal->findShapeByName( "BUSH" ) );
 		trees.push_back( shapePal->findShapeByName( "BUSH2" ) );
+		trees.push_back( shapePal->findShapeByName( "DEMO_TREE" ) );
 	}
 	return trees[ (int)( (float)( trees.size() ) * rand() / RAND_MAX ) ];
 }

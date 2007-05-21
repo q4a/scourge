@@ -35,6 +35,8 @@
 
 using namespace std;
 
+#define OUTDOORS_STEP 4
+
 //#define DEBUG_MOUSE_POS 1
 
 #define USE_LIGHTING 1
@@ -208,6 +210,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	quakesEnabled = false;
 
+	refreshGroundPos = true;
+
   adapter->addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
   adapter->addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
 }
@@ -346,6 +350,8 @@ void Map::reset() {
 		}
 	}
 	heightMapEnabled = false;
+	
+	refreshGroundPos = true;
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -954,6 +960,12 @@ void Map::setupPosition( int posX, int posY, int posZ,
 }
 
 void Map::preDraw() {
+
+	if( refreshGroundPos ) {
+		createGroundMap();
+		refreshGroundPos = false;
+	}
+
   // must move map before calling getMapXY(Z)AtScreenXY!
   if( move && !selectMode ) moveMap( move );
 
@@ -1552,15 +1564,13 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
 
-	bool heightMapApplies = ( shape && !((GLShape*)shape)->isWallShape() );
-
   // slow on mac os X:
   // glPushAttrib(GL_ENABLE_BIT);
 
   glPushMatrix();
   if(useShadow) {
 		// put shadow above the floor a little
-		glTranslatef( xpos2, ypos2, ( 0.26f + ( heightMapApplies ? ground[ later->x ][ later->y ] / DIV : 0 ) ) );
+		glTranslatef( xpos2, ypos2, ( 0.26f + ( later && later->pos ? later->pos->heightPos / DIV : 0 ) ) );
 		glMultMatrixf(shadowTransformMatrix);
 
     // gray shadows
@@ -1575,7 +1585,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
     if(shape) shape->setupToDraw();
 
-    glTranslatef( xpos2, ypos2, zpos2 + ( heightMapApplies ? ground[ later->x ][ later->y ] / DIV : 0 ) );
+    glTranslatef( xpos2, ypos2, zpos2 + ( later && later->pos ? later->pos->heightPos / DIV : 0 ) );
 
 #ifdef DEBUG_SECRET_DOORS    
     if( later && later->pos ) {
@@ -1828,6 +1838,11 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
   // move position
   moveCreaturePos(nx, ny, nz, x, y, z, newCreature);
 
+	// update its heightPos
+	Location *pos = getLocation( nx, ny, nz );
+	if( pos ) pos->heightPos = findMaxHeightPos( nx, ny, nz, newCreature->getShape() );
+
+
   return NULL;
 }
 
@@ -2008,6 +2023,21 @@ void Map::removeAllEffects() {
   currentEffectsMap.clear();
 }
 
+float Map::findMaxHeightPos( Sint16 x, Sint16 y, Sint16 z, Shape *shape ) {
+	float maxGroundHeightPos = 0;
+	if( shape ) {
+		for( int xx = x; xx < x + shape->getWidth(); xx++ ) {
+			for( int yy = y + shape->getDepth(); yy >= y; yy-- ) {
+				float groundHeight = ground[ xx ][ yy ];
+				if( z < groundHeight && maxGroundHeightPos < groundHeight ) {
+					maxGroundHeightPos = groundHeight;
+				}
+			}
+		}
+	}
+	return maxGroundHeightPos;
+}
+
 void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z, 
 														Shape *shape, 
 														RenderedItem *item, 
@@ -2022,6 +2052,7 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	p->shape = shape;
 	p->item = item;
 	p->creature = creature;
+	p->heightPos = findMaxHeightPos( x, y, z, shape );
 	p->x = x;
 	p->y = y;
 	p->z = z;
@@ -3654,6 +3685,7 @@ Location *MapMemoryManager::newLocation() {
     
   // reset it
   pos->x = pos->y = pos->z = 0;
+	pos->heightPos = 0;
   pos->shape = NULL;
   pos->item = NULL;
   pos->creature = NULL;
@@ -3789,6 +3821,7 @@ void Map::renderFloor() {
 }
 
 void Map::drawHeightMapFloor() {
+	/*
 	vector<CVector9> triangles[500];
 	int triangleStripCount = 0;
 	float w, d, h;
@@ -3811,7 +3844,7 @@ void Map::drawHeightMapFloor() {
 			v.z = h;
 			v.u = ( ( getX() + gx ) * 32 ) / (float)MAP_WIDTH;
 			v.v = ( ( getY() + gy ) * 32 ) / (float)MAP_DEPTH;
-			v.r = v.g = v.b = v.a = 1;
+			v.r = v.g = v.b = v.a = 1; //0.5f + ground[ getX() + gx ][ getY() + gy ] / 1.5f;
 			triangles[ triangleStripCount ].push_back( v );
 
 			if( count % 2 == 0 ) {
@@ -3860,7 +3893,10 @@ void Map::drawHeightMapFloor() {
 				Util::normalize( u );
 				
 				Util::cross_product( u, v, normal );
-				pt->r = pt->g = pt->b = Util::getLight( normal );
+				float light = Util::getLight( normal );
+				pt->r *= light;
+				pt->g *= light;
+				pt->b *= light;
 			}
 		}
 
@@ -3884,6 +3920,125 @@ void Map::drawHeightMapFloor() {
 		}
 		glEnd();
 	}
+	*/
+
+	glDisable( GL_CULL_FACE );
+	glColor4f( 1, 1, 1, 1 );
+	int offsX = ( getX() % OUTDOORS_STEP );
+	int offsY = ( getY() % OUTDOORS_STEP );
+	CVector9 *p[3];
+	float gx, gy;
+	glBegin( GL_TRIANGLES );
+
+	float n;
+	for( int yy = getY() - offsY; yy < getY() + mapViewDepth - OUTDOORS_STEP; yy += OUTDOORS_STEP ) {
+		for( int xx = getX() - offsX; xx < getX() + mapViewWidth - OUTDOORS_STEP; xx += OUTDOORS_STEP ) {
+			for( int t = 0; t < 2; t++ ) {
+				if( t == 0 ) {
+					p[0] = &( groundPos[ xx ][ yy ] );
+					p[1] = &( groundPos[ xx + OUTDOORS_STEP ][ yy ] );
+					p[2] = &( groundPos[ xx ][ yy + OUTDOORS_STEP ] );
+				} else {
+					p[0] = &( groundPos[ xx + OUTDOORS_STEP ][ yy ] );
+					p[1] = &( groundPos[ xx + OUTDOORS_STEP ][ yy + OUTDOORS_STEP ] );
+					p[2] = &( groundPos[ xx ][ yy + OUTDOORS_STEP ] );
+				}
+				for( int i = 0; i < 3; i++ ) {
+					glTexCoord2f( p[i]->u, p[i]->v );
+					n = ( p[i]->z / ( 6.0f / DIV ) ) * 0.65f + 0.35f;
+					//glColor3f( p[i]->r, p[i]->g, p[i]->b );
+					glColor3f( n, n, n );
+					gx = p[i]->x - getX() / DIV;
+					gy = p[i]->y - getY() / DIV;
+					glVertex3f( gx, gy, p[i]->z );
+				}
+			}
+		}
+	}
+	glEnd();
+}
+
+void Map::createGroundMap() {
+	cerr << "*** in Map::createGroundMap()" << endl;
+	int n = 0;
+	float w, d, h;
+	for( int xx = 0; xx < MAP_WIDTH; xx++ ) {
+		for( int yy = 0; yy < MAP_DEPTH; yy++ ) {
+			w = (float)xx / DIV;
+			d = (float)yy / DIV;
+			h = ( ground[ xx ][ yy ] ) / DIV;
+
+			groundPos[ xx ][ yy ].x = w;
+			groundPos[ xx ][ yy ].y = d;
+			groundPos[ xx ][ yy ].z = h;
+			groundPos[ xx ][ yy ].u = ( xx * 32 ) / (float)MAP_WIDTH;
+			groundPos[ xx ][ yy ].v = ( yy * 32 ) / (float)MAP_DEPTH;
+			groundPos[ xx ][ yy ].r = groundPos[ xx ][ yy ].g = groundPos[ xx ][ yy ].b = groundPos[ xx ][ yy ].a = 1; // 0.5f + ground[ getX() + gx ][ getY() + gy ] / 1.5f;
+
+			n++;
+		}
+	}
+	cerr << "Created " << n << " values." << endl;
+
+	/*
+	// add light
+	CVector9 *a, *b, *pt;
+	float v[3], u[3], normal[3];
+	bool skip;
+	for( int xx = 0; xx < MAP_WIDTH - 1; xx += step ) {
+		for( int yy = 0; yy < MAP_DEPTH - 1; yy += step ) {
+
+			pt = &( groundPos[ xx ][ yy ] );
+
+			if( t % 2 == 0 ) {
+				a = &( groundPos( t + 1 ) );
+				b = &( triangles[ triangleStripCount ].at( t + 2 ) );
+			}
+
+			skip = false;
+			if( t % 2 == 0 ) {
+				if( t < triangles[ triangleStripCount ].size() - 2 ) {
+					a = &( triangles[ triangleStripCount ].at( t + 1 ) );
+					b = &( triangles[ triangleStripCount ].at( t + 2 ) );
+				} else {
+					skip = true;
+				}
+			} else {
+				if( t > 2 ) {
+					a = &( triangles[ triangleStripCount ].at( t - 1 ) );
+					b = &( triangles[ triangleStripCount ].at( t - 2 ) );
+				} else {
+					skip = true;
+				}
+			}
+
+			if( !skip ) {
+				v[0] = pt->x - a->x;
+				v[1] = pt->y - a->y;
+				v[2] = pt->z - a->z;
+				Util::normalize( v );
+				
+				u[0] = pt->x - b->x;
+				u[1] = pt->y - b->y;
+				u[2] = pt->z - b->z;
+				Util::normalize( u );
+				
+				Util::cross_product( u, v, normal );
+				float light = Util::getLight( normal );
+				pt->r *= light;
+				pt->g *= light;
+				pt->b *= light;
+			}
+		}
+
+		triangles[ triangleStripCount ].at( 1 ).r = triangles[ triangleStripCount ].at( 0 ).r;
+		triangles[ triangleStripCount ].at( 1 ).g = triangles[ triangleStripCount ].at( 0 ).g;
+		triangles[ triangleStripCount ].at( 1 ).b = triangles[ triangleStripCount ].at( 0 ).b;
+		triangles[ triangleStripCount ].at( 1 ).a = triangles[ triangleStripCount ].at( 0 ).a;
+
+		triangleStripCount++;
+	}
+	*/
 }
 
 void Map::drawFlatFloor() {
@@ -3903,6 +4058,4 @@ void Map::drawFlatFloor() {
 	glVertex3f( w, 0, 0 );
 	glEnd();
 }
-
-
 

@@ -116,7 +116,6 @@ public:
   bool isLightBlocking();
   void setLightBlocking(bool b);
   void draw();   
-	virtual void drawHeightMap( float ground[][MAP_DEPTH], int groundX, int groundY );
   void outline( float r, float g, float b );
   inline void setupToDraw() {};
   
