@@ -565,9 +565,12 @@ private:
 	inline bool isHeightMapEnabled() { return this->heightMapEnabled; }
 	inline void setRefreshGroundPos( bool b ) { this->refreshGroundPos = b; }
 	inline bool isRefreshGroundPos() { return this->refreshGroundPos; }
-	void createGroundMap();
+	
 
 protected:
+
+	void createGroundMap();
+	void addLight( CVector9 *pt, CVector9 *a, CVector9 *b );
 
 	void renderFloor();
 	void drawFlatFloor();
