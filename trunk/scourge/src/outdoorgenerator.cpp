@@ -123,7 +123,6 @@ GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {
 		trees.push_back( shapePal->findShapeByName( "OAK2_TREE" ) );
 		trees.push_back( shapePal->findShapeByName( "BUSH" ) );
 		trees.push_back( shapePal->findShapeByName( "BUSH2" ) );
-		trees.push_back( shapePal->findShapeByName( "DEMO_TREE" ) );
 	}
 	return trees[ (int)( (float)( trees.size() ) * rand() / RAND_MAX ) ];
 }
