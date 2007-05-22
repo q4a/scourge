@@ -3821,107 +3821,6 @@ void Map::renderFloor() {
 }
 
 void Map::drawHeightMapFloor() {
-	/*
-	vector<CVector9> triangles[500];
-	int triangleStripCount = 0;
-	float w, d, h;
-	int step = 4;
-	int offsX = ( getX() % step );
-	int offsY = ( getY() % step );
-	for( int yy = -offsY; yy < mapViewDepth - step; yy+=step ) {
-		int gy = yy + step;
-		int gx = -offsX;
-		int count = 0;
-		while( gx <= mapViewWidth - step ) {
-
-			w = (float)gx / DIV;
-			d = (float)gy / DIV;
-			h = ( ground[ getX() + gx ][ getY() + gy ] ) / DIV;
-
-			CVector9 v;
-			v.x = w;
-			v.y = d;
-			v.z = h;
-			v.u = ( ( getX() + gx ) * 32 ) / (float)MAP_WIDTH;
-			v.v = ( ( getY() + gy ) * 32 ) / (float)MAP_DEPTH;
-			v.r = v.g = v.b = v.a = 1; //0.5f + ground[ getX() + gx ][ getY() + gy ] / 1.5f;
-			triangles[ triangleStripCount ].push_back( v );
-
-			if( count % 2 == 0 ) {
-				gy -= step;
-			} else {
-				gx += step;
-				gy += step;
-			}
-			count++;
-		}
-
-		// add light
-		CVector9 *a, *b, *pt;
-		float v[3], u[3], normal[3];
-		bool skip;
-		for( unsigned int t = 0; t < triangles[ triangleStripCount ].size(); t++ ) {
-
-			pt = &( triangles[ triangleStripCount ].at( t ) );
-
-			skip = false;
-			if( t % 2 == 0 ) {
-				if( t < triangles[ triangleStripCount ].size() - 2 ) {
-					a = &( triangles[ triangleStripCount ].at( t + 1 ) );
-					b = &( triangles[ triangleStripCount ].at( t + 2 ) );
-				} else {
-					skip = true;
-				}
-			} else {
-				if( t > 2 ) {
-					a = &( triangles[ triangleStripCount ].at( t - 1 ) );
-					b = &( triangles[ triangleStripCount ].at( t - 2 ) );
-				} else {
-					skip = true;
-				}
-			}
-
-			if( !skip ) {
-				v[0] = pt->x - a->x;
-				v[1] = pt->y - a->y;
-				v[2] = pt->z - a->z;
-				Util::normalize( v );
-				
-				u[0] = pt->x - b->x;
-				u[1] = pt->y - b->y;
-				u[2] = pt->z - b->z;
-				Util::normalize( u );
-				
-				Util::cross_product( u, v, normal );
-				float light = Util::getLight( normal );
-				pt->r *= light;
-				pt->g *= light;
-				pt->b *= light;
-			}
-		}
-
-		triangles[ triangleStripCount ].at( 1 ).r = triangles[ triangleStripCount ].at( 0 ).r;
-		triangles[ triangleStripCount ].at( 1 ).g = triangles[ triangleStripCount ].at( 0 ).g;
-		triangles[ triangleStripCount ].at( 1 ).b = triangles[ triangleStripCount ].at( 0 ).b;
-		triangles[ triangleStripCount ].at( 1 ).a = triangles[ triangleStripCount ].at( 0 ).a;
-
-		triangleStripCount++;
-	}
-
-	// draw it
-	glDisable( GL_CULL_FACE );
-	for( int i = 0; i < triangleStripCount; i++ ) {
-		glBegin( GL_TRIANGLE_STRIP );
-		for( unsigned int t = 0; t < triangles[i].size(); t++ ) {
-			CVector9 v = triangles[i].at( t );
-			glTexCoord2f( v.u, v.v );
-			glColor4f( v.r, v.g, v.b, v.a );
-			glVertex3f( v.x, v.y, v.z );
-		}
-		glEnd();
-	}
-	*/
-
 	glDisable( GL_CULL_FACE );
 	glColor4f( 1, 1, 1, 1 );
 	int offsX = ( getX() % OUTDOORS_STEP );
@@ -3930,7 +3829,6 @@ void Map::drawHeightMapFloor() {
 	float gx, gy;
 	glBegin( GL_TRIANGLES );
 
-	float n;
 	for( int yy = getY() - offsY; yy < getY() + mapViewDepth - OUTDOORS_STEP; yy += OUTDOORS_STEP ) {
 		for( int xx = getX() - offsX; xx < getX() + mapViewWidth - OUTDOORS_STEP; xx += OUTDOORS_STEP ) {
 			for( int t = 0; t < 2; t++ ) {
@@ -3945,9 +3843,7 @@ void Map::drawHeightMapFloor() {
 				}
 				for( int i = 0; i < 3; i++ ) {
 					glTexCoord2f( p[i]->u, p[i]->v );
-					n = ( p[i]->z / ( 6.0f / DIV ) ) * 0.65f + 0.35f;
-					glColor3f( n * p[i]->r, n * p[i]->g, n * p[i]->b );
-					//glColor3f( n, n, n );
+					glColor4f( p[i]->r, p[i]->g, p[i]->b, p[i]->a );
 					gx = p[i]->x - getX() / DIV;
 					gy = p[i]->y - getY() / DIV;
 					glVertex3f( gx, gy, p[i]->z );
@@ -3960,9 +3856,19 @@ void Map::drawHeightMapFloor() {
 
 void Map::createGroundMap() {
 	cerr << "*** in Map::createGroundMap()" << endl;
+
+	// can't call this, it recurses...
+	//int total = MAP_WIDTH / 10 ;
+	//adapter->setUpdate( _( "Creating outdoors" ), 0, total );
+
 	int n = 0;
 	float w, d, h;
 	for( int xx = 0; xx < MAP_WIDTH; xx++ ) {
+		
+		//if( xx % 10 == 0 ) {
+			//adapter->setUpdate( _( "Creating outdoors" ), xx / 10, total );
+		//}
+		
 		for( int yy = 0; yy < MAP_DEPTH; yy++ ) {
 			w = (float)xx / DIV;
 			d = (float)yy / DIV;
@@ -3973,8 +3879,13 @@ void Map::createGroundMap() {
 			groundPos[ xx ][ yy ].z = h;
 			groundPos[ xx ][ yy ].u = ( xx * 32 ) / (float)MAP_WIDTH;
 			groundPos[ xx ][ yy ].v = ( yy * 32 ) / (float)MAP_DEPTH;
-			groundPos[ xx ][ yy ].r = groundPos[ xx ][ yy ].g = groundPos[ xx ][ yy ].b = groundPos[ xx ][ yy ].a = 1; // 0.5f + ground[ getX() + gx ][ getY() + gy ] / 1.5f;
 
+			// height-based light
+			float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;                          
+			groundPos[ xx ][ yy ].r = n * 1.5f;
+			groundPos[ xx ][ yy ].g = n * 1.15f;
+			groundPos[ xx ][ yy ].b = n;
+			groundPos[ xx ][ yy ].a = 1;
 			n++;
 		}
 	}
@@ -3984,19 +3895,9 @@ void Map::createGroundMap() {
 	CVector9 *p[3];
 	for( int xx = 0; xx < MAP_WIDTH; xx++ ) {
 		for( int yy = 0; yy < MAP_DEPTH; yy++ ) {
-			//for( int t = 0; t < 2; t++ ) {
-				//if( t == 0 ) {
-					p[0] = &( groundPos[ xx ][ yy ] );
-					p[1] = &( groundPos[ xx + OUTDOORS_STEP ][ yy ] );
-					p[2] = &( groundPos[ xx ][ yy + OUTDOORS_STEP ] );
-					/*
-				} else {
-					p[0] = &( groundPos[ xx + OUTDOORS_STEP ][ yy ] );
-					p[1] = &( groundPos[ xx + OUTDOORS_STEP ][ yy + OUTDOORS_STEP ] );
-					p[2] = &( groundPos[ xx ][ yy + OUTDOORS_STEP ] );
-				}
-				*/
-			//}
+			p[0] = &( groundPos[ xx ][ yy ] );
+			p[1] = &( groundPos[ xx + OUTDOORS_STEP ][ yy ] );
+			p[2] = &( groundPos[ xx ][ yy + OUTDOORS_STEP ] );
 			addLight( p[0], p[1], p[2] );
 			addLight( p[1], p[0], p[2] );
 			addLight( p[2], p[0], p[1] );
