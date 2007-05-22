@@ -30,6 +30,7 @@ public:
   MapAdapter();
   virtual ~MapAdapter();
 
+	virtual void setUpdate( char *message, int n, int total ) = 0;
 	virtual void setCursorVisible( bool b ) = 0;
   virtual int getScreenWidth() = 0;
   virtual int getScreenHeight() = 0;
