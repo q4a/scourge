@@ -35,8 +35,6 @@
 
 using namespace std;
 
-#define OUTDOORS_STEP 4
-
 //#define DEBUG_MOUSE_POS 1
 
 #define USE_LIGHTING 1
@@ -2024,18 +2022,18 @@ void Map::removeAllEffects() {
 }
 
 float Map::findMaxHeightPos( Sint16 x, Sint16 y, Sint16 z, Shape *shape ) {
-	float maxGroundHeightPos = 0;
+	float pos = 0;
 	if( shape ) {
 		for( int xx = x; xx < x + shape->getWidth(); xx++ ) {
 			for( int yy = y + shape->getDepth(); yy >= y; yy-- ) {
-				float groundHeight = ground[ xx ][ yy ];
-				if( z < groundHeight && maxGroundHeightPos < groundHeight ) {
-					maxGroundHeightPos = groundHeight;
+				float groundHeight = ground[ xx / OUTDOORS_STEP ][ yy / OUTDOORS_STEP ];
+				if( z < groundHeight && pos < groundHeight ) {
+					pos = groundHeight;
 				}
 			}
 		}
 	}
-	return maxGroundHeightPos;
+	return pos;
 }
 
 void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z, 
@@ -3829,17 +3827,17 @@ void Map::drawHeightMapFloor() {
 	float gx, gy;
 	glBegin( GL_TRIANGLES );
 
-	for( int yy = getY() - offsY; yy < getY() + mapViewDepth - OUTDOORS_STEP; yy += OUTDOORS_STEP ) {
-		for( int xx = getX() - offsX; xx < getX() + mapViewWidth - OUTDOORS_STEP; xx += OUTDOORS_STEP ) {
+	for( int yy = ( getY() / OUTDOORS_STEP ) - offsY; yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
+		for( int xx = ( getX() / OUTDOORS_STEP ) - offsX; xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
 			for( int t = 0; t < 2; t++ ) {
 				if( t == 0 ) {
 					p[0] = &( groundPos[ xx ][ yy ] );
-					p[1] = &( groundPos[ xx + OUTDOORS_STEP ][ yy ] );
-					p[2] = &( groundPos[ xx ][ yy + OUTDOORS_STEP ] );
+					p[1] = &( groundPos[ xx + 1 ][ yy ] );
+					p[2] = &( groundPos[ xx ][ yy + 1 ] );
 				} else {
-					p[0] = &( groundPos[ xx + OUTDOORS_STEP ][ yy ] );
-					p[1] = &( groundPos[ xx + OUTDOORS_STEP ][ yy + OUTDOORS_STEP ] );
-					p[2] = &( groundPos[ xx ][ yy + OUTDOORS_STEP ] );
+					p[0] = &( groundPos[ xx + 1 ][ yy ] );
+					p[1] = &( groundPos[ xx + 1 ][ yy + 1 ] );
+					p[2] = &( groundPos[ xx ][ yy + 1 ] );
 				}
 				for( int i = 0; i < 3; i++ ) {
 					glTexCoord2f( p[i]->u, p[i]->v );
@@ -3857,28 +3855,19 @@ void Map::drawHeightMapFloor() {
 void Map::createGroundMap() {
 	cerr << "*** in Map::createGroundMap()" << endl;
 
-	// can't call this, it recurses...
-	//int total = MAP_WIDTH / 10 ;
-	//adapter->setUpdate( _( "Creating outdoors" ), 0, total );
-
 	int n = 0;
 	float w, d, h;
-	for( int xx = 0; xx < MAP_WIDTH; xx++ ) {
-		
-		//if( xx % 10 == 0 ) {
-			//adapter->setUpdate( _( "Creating outdoors" ), xx / 10, total );
-		//}
-		
-		for( int yy = 0; yy < MAP_DEPTH; yy++ ) {
-			w = (float)xx / DIV;
-			d = (float)yy / DIV;
+	for( int xx = 0; xx < MAP_WIDTH / OUTDOORS_STEP; xx++ ) {		
+		for( int yy = 0; yy < MAP_DEPTH /  OUTDOORS_STEP; yy++ ) {
+			w = (float)( xx * OUTDOORS_STEP ) / DIV;
+			d = (float)( yy * OUTDOORS_STEP ) / DIV;
 			h = ( ground[ xx ][ yy ] ) / DIV;
 
 			groundPos[ xx ][ yy ].x = w;
 			groundPos[ xx ][ yy ].y = d;
 			groundPos[ xx ][ yy ].z = h;
-			groundPos[ xx ][ yy ].u = ( xx * 32 ) / (float)MAP_WIDTH;
-			groundPos[ xx ][ yy ].v = ( yy * 32 ) / (float)MAP_DEPTH;
+			groundPos[ xx ][ yy ].u = ( xx * OUTDOORS_STEP * 32 ) / (float)MAP_WIDTH;
+			groundPos[ xx ][ yy ].v = ( yy * OUTDOORS_STEP * 32 ) / (float)MAP_DEPTH;
 
 			// height-based light
 			float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;                          
@@ -3893,11 +3882,11 @@ void Map::createGroundMap() {
 	
 	// add light
 	CVector9 *p[3];
-	for( int xx = 0; xx < MAP_WIDTH; xx++ ) {
-		for( int yy = 0; yy < MAP_DEPTH; yy++ ) {
+	for( int xx = 0; xx < MAP_WIDTH / OUTDOORS_STEP; xx++ ) {
+		for( int yy = 0; yy < MAP_DEPTH / OUTDOORS_STEP; yy++ ) {
 			p[0] = &( groundPos[ xx ][ yy ] );
-			p[1] = &( groundPos[ xx + OUTDOORS_STEP ][ yy ] );
-			p[2] = &( groundPos[ xx ][ yy + OUTDOORS_STEP ] );
+			p[1] = &( groundPos[ xx + 1 ][ yy ] );
+			p[2] = &( groundPos[ xx ][ yy + 1 ] );
 			addLight( p[0], p[1], p[2] );
 			addLight( p[1], p[0], p[2] );
 			addLight( p[2], p[0], p[1] );

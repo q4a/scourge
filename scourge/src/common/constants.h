@@ -353,6 +353,9 @@ public:
 // cave chunk size
 #define CAVE_CHUNK_SIZE 8
 
+// outdoor floor tile
+#define OUTDOORS_STEP 4
+
 // The max value of a skill under normal circumstances.
 #define MAX_SKILL 100
 
