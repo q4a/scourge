@@ -29,8 +29,8 @@ OutdoorGenerator::OutdoorGenerator( Scourge *scourge, int level, int depth, int 
 																		bool stairsDown, bool stairsUp, 
 																		Mission *mission) : 
 TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission, 12 ) {
-	for( int x = 0; x < MAP_WIDTH; x++ ) {
-		for( int y = 0; y < MAP_DEPTH; y++ ) {
+	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
+		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
 			ground[x][y] = 0;
 		}
 	}
@@ -54,14 +54,14 @@ OutdoorGenerator::~OutdoorGenerator() {
 
 void OutdoorGenerator::generate( Map *map, ShapePalette *shapePal ) {
 	// create the undulating ground
-	for( int x = 0; x < MAP_WIDTH; x++ ) {
-		for( int y = 0; y < MAP_DEPTH; y++ ) {
+	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
+		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
 			// fixme: use a more sinoid function here
 			// ground[x][y] = ( 1.0f * rand() / RAND_MAX );
 			ground[x][y] = 3 + 
 				( 3.0f * 
-					sin( PI / ( 180.0f / (float)( x * 8.0f ) ) ) * 
-					cos( PI / ( 180.0f / (float)( y  * 8.0f )) ) );
+					sin( PI / ( 180.0f / (float)( x * OUTDOORS_STEP * 8.0f ) ) ) * 
+					cos( PI / ( 180.0f / (float)( y * OUTDOORS_STEP  * 8.0f )) ) );
 			if( ground[x][y] < 0 ) ground[x][y] = 0;
 		}
 	}
@@ -75,8 +75,8 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
 	// do this first, before adding shapes
 	// FIXME: elevate shapes if needed, in Map::setGroundHeight, so this method can be called anytime
-	for( int x = 0; x < MAP_WIDTH; x++ ) {
-		for( int y = 0; y < MAP_DEPTH; y++ ) {
+	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
+		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
 			map->setGroundHeight( x, y, ground[x][y] );
 		}
 	}
