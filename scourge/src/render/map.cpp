@@ -190,6 +190,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 		}
 	}
 	heightMapEnabled = false;
+	for( int i = 0; i < 4; i++ )
+		debugHeightPosXX[i] = debugHeightPosYY[i] = 0;
 
   // initialize the lightmap
 	for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
@@ -348,6 +350,8 @@ void Map::reset() {
 		}
 	}
 	heightMapEnabled = false;
+	for( int i = 0; i < 4; i++ )
+		debugHeightPosXX[i] = debugHeightPosYY[i] = 0;
 	
 	refreshGroundPos = true;
 }
@@ -687,6 +691,12 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                                     shape->getDepth() + 
                                     yp + chunkOffsetY + 
                                     ydiff ) / DIV;
+
+										pos[posX][posY][zp]->heightPos = findMaxHeightPos( pos[posX][posY][zp]->creature->getX(), 
+																																			 pos[posX][posY][zp]->creature->getY(), 
+																																			 pos[posX][posY][zp]->creature->getZ(), 
+																																			 pos[posX][posY][zp]->creature->getShape() );
+
 
                   } else {
                     xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
@@ -1568,6 +1578,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   glPushMatrix();
   if(useShadow) {
 		// put shadow above the floor a little
+		
 		glTranslatef( xpos2, ypos2, ( 0.26f + ( later && later->pos ? later->pos->heightPos / DIV : 0 ) ) );
 		glMultMatrixf(shadowTransformMatrix);
 
@@ -1836,11 +1847,6 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z,
   // move position
   moveCreaturePos(nx, ny, nz, x, y, z, newCreature);
 
-	// update its heightPos
-	Location *pos = getLocation( nx, ny, nz );
-	if( pos ) pos->heightPos = findMaxHeightPos( nx, ny, nz, newCreature->getShape() );
-
-
   return NULL;
 }
 
@@ -2021,17 +2027,47 @@ void Map::removeAllEffects() {
   currentEffectsMap.clear();
 }
 
-float Map::findMaxHeightPos( Sint16 x, Sint16 y, Sint16 z, Shape *shape ) {
+float Map::findMaxHeightPos( float x, float y, float z, Shape *shape, bool findMax ) {
 	float pos = 0;
 	if( shape ) {
-		for( int xx = x; xx < x + shape->getWidth(); xx++ ) {
-			for( int yy = y + shape->getDepth(); yy >= y; yy-- ) {
-				float groundHeight = ground[ xx / OUTDOORS_STEP ][ yy / OUTDOORS_STEP ];
-				if( z < groundHeight && pos < groundHeight ) {
-					pos = groundHeight;
+
+		float xp = ( x ) / OUTDOORS_STEP;
+		float yp = ( y ) / OUTDOORS_STEP;
+		
+		int xx = toint( xp );
+		int yy = toint( yp );
+
+		debugHeightPosXX[0] = xx;
+		debugHeightPosYY[0] = yy;
+
+		debugHeightPosXX[1] = xx;
+		debugHeightPosYY[1] = yy - 1;
+
+		debugHeightPosXX[2] = xx + 1;
+		debugHeightPosYY[2] = yy - 1;
+
+		debugHeightPosXX[3] = xx + 1;
+		debugHeightPosYY[3] = yy;
+
+		float zz;
+		if( findMax ) {
+			// find the max
+			zz = 0;
+			for( int i = 0; i < 4; i++ ) {
+				if( zz < ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ] ) {
+					zz = ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ];
 				}
 			}
+		} else {
+			// find the average
+			zz = 0;
+			for( int i = 0; i < 4; i++ ) {
+				zz += ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ];
+			}
+			zz /= 4.0f;
 		}
+		if( z < zz ) pos = zz;
+
 	}
 	return pos;
 }
@@ -3823,39 +3859,54 @@ void Map::drawHeightMapFloor() {
 	glColor4f( 1, 1, 1, 1 );
 	int offsX = ( getX() % OUTDOORS_STEP );
 	int offsY = ( getY() % OUTDOORS_STEP );
-	CVector9 *p[3];
+	CVector9 *p[4];
 	float gx, gy;
-	glBegin( GL_TRIANGLES );
-
+	glBegin( GL_QUADS );
 	for( int yy = ( getY() / OUTDOORS_STEP ) - offsY; yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
 		for( int xx = ( getX() / OUTDOORS_STEP ) - offsX; xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
-			for( int t = 0; t < 2; t++ ) {
-				if( t == 0 ) {
-					p[0] = &( groundPos[ xx ][ yy ] );
-					p[1] = &( groundPos[ xx + 1 ][ yy ] );
-					p[2] = &( groundPos[ xx ][ yy + 1 ] );
-				} else {
-					p[0] = &( groundPos[ xx + 1 ][ yy ] );
-					p[1] = &( groundPos[ xx + 1 ][ yy + 1 ] );
-					p[2] = &( groundPos[ xx ][ yy + 1 ] );
-				}
-				for( int i = 0; i < 3; i++ ) {
-					glTexCoord2f( p[i]->u, p[i]->v );
-					glColor4f( p[i]->r, p[i]->g, p[i]->b, p[i]->a );
-					gx = p[i]->x - getX() / DIV;
-					gy = p[i]->y - getY() / DIV;
-					glVertex3f( gx, gy, p[i]->z );
-				}
+			p[0] = &( groundPos[ xx ][ yy + 1 ] );
+			p[1] = &( groundPos[ xx ][ yy ] );
+			p[2] = &( groundPos[ xx + 1 ][ yy ] );
+			p[3] = &( groundPos[ xx + 1 ][ yy + 1 ] );
+			for( int i = 0; i < 4; i++ ) {
+				glTexCoord2f( p[i]->u, p[i]->v );
+				glColor4f( p[i]->r, p[i]->g, p[i]->b, p[i]->a );
+				gx = p[i]->x - getX() / DIV;
+				gy = p[i]->y - getY() / DIV;
+				glVertex3f( gx, gy, p[i]->z );
 			}
 		}
 	}
 	glEnd();
+
+	// debug
+	glDisable( GL_TEXTURE_2D );
+	glColor4f( 1, 0, 0, 1 );
+	glDepthMask( GL_FALSE );
+	glDisable( GL_DEPTH_TEST );
+	for( int yy = ( getY() / OUTDOORS_STEP ) - offsY; yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
+		for( int xx = ( getX() / OUTDOORS_STEP ) - offsX; xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
+			if( xx == debugHeightPosXX[0] && yy == debugHeightPosYY[0] ) {
+				
+				glBegin( GL_LINE_LOOP );
+				for( int i = 0; i < 4; i++ ) {
+					if( i == 0 ) glColor4f( 1, 0, 0, 1 );
+					else glColor4f( 1, 1, 1, 1 );
+					gx = groundPos[ debugHeightPosXX[i] ][ debugHeightPosYY[i] ].x - getX() / DIV;
+					gy = groundPos[ debugHeightPosXX[i] ][ debugHeightPosYY[i] ].y - getY() / DIV;
+					glVertex3f( gx, gy, groundPos[ debugHeightPosXX[i] ][ debugHeightPosYY[i] ].z + 0.26f * DIV );
+				}
+				glEnd();
+			}
+		}
+	}
+	glColor4f( 1, 1, 1, 1 );
+	glDepthMask( GL_TRUE );
+	glEnable( GL_DEPTH_TEST );
+	glEnable( GL_TEXTURE_2D );
 }
 
 void Map::createGroundMap() {
-	cerr << "*** in Map::createGroundMap()" << endl;
-
-	int n = 0;
 	float w, d, h;
 	for( int xx = 0; xx < MAP_WIDTH / OUTDOORS_STEP; xx++ ) {		
 		for( int yy = 0; yy < MAP_DEPTH /  OUTDOORS_STEP; yy++ ) {
@@ -3878,7 +3929,6 @@ void Map::createGroundMap() {
 			n++;
 		}
 	}
-	cerr << "Created " << n << " values." << endl;
 	
 	// add light
 	CVector9 *p[3];

@@ -54,14 +54,16 @@ OutdoorGenerator::~OutdoorGenerator() {
 
 void OutdoorGenerator::generate( Map *map, ShapePalette *shapePal ) {
 	// create the undulating ground
+	float amp = 3.0f;
+	float freq = 10.0f;
 	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
 		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
 			// fixme: use a more sinoid function here
 			// ground[x][y] = ( 1.0f * rand() / RAND_MAX );
-			ground[x][y] = 3 + 
-				( 3.0f * 
-					sin( PI / ( 180.0f / (float)( x * OUTDOORS_STEP * 8.0f ) ) ) * 
-					cos( PI / ( 180.0f / (float)( y * OUTDOORS_STEP  * 8.0f )) ) );
+			ground[x][y] = amp + 
+				( amp * 
+					sin( PI / ( 180.0f / (float)( x * OUTDOORS_STEP * freq ) ) ) * 
+					cos( PI / ( 180.0f / (float)( y * OUTDOORS_STEP  * freq )) ) );
 			if( ground[x][y] < 0 ) ground[x][y] = 0;
 		}
 	}

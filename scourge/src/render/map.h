@@ -235,6 +235,7 @@ private:
 	bool heightMapEnabled;
 	float ground[MAP_WIDTH][MAP_DEPTH];
 	bool refreshGroundPos;
+	int debugHeightPosXX[4], debugHeightPosYY[4];
 
  public:
   bool useFrustum;
@@ -566,6 +567,7 @@ private:
 	inline void setRefreshGroundPos( bool b ) { this->refreshGroundPos = b; }
 	inline bool isRefreshGroundPos() { return this->refreshGroundPos; }
 	
+	float findMaxHeightPos( float x, float y, float z, Shape *shape, bool findMax = false );
 
 protected:
 
@@ -577,8 +579,6 @@ protected:
 	void drawHeightMapFloor();
 
 	 void willDrawGrid();
-
-	 float findMaxHeightPos( Sint16 x, Sint16 y, Sint16 z, Shape *shape );
 
 	 void setPositionInner( Sint16 x, Sint16 y, Sint16 z, 
 													Shape *shape, 

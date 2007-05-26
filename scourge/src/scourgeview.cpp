@@ -723,7 +723,13 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
     xpos2 = ((float)(creature->getSelX() - scourge->getMap()->getX()) / DIV);
     ypos2 = ((float)(creature->getSelY() - scourge->getMap()->getY()) / DIV);
-    zpos2 = 0.0f / DIV;
+		float groundHeight = scourge->getMap()->findMaxHeightPos( creature->getSelX(), 
+																															creature->getSelY(), 
+																															0,
+																															creature->getShape(), 
+																															true );
+		zpos2 = groundHeight / DIV;
+    //zpos2 = 0.0f / DIV;
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
     //glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
@@ -757,7 +763,13 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
     xpos2 = ((float)(creature->getTargetCreature()->getX() - scourge->getMap()->getX()) / DIV);
     ypos2 = ((float)(creature->getTargetCreature()->getY() - scourge->getMap()->getY()) / DIV);
-    zpos2 = 0.0f / DIV;
+		float groundHeight = scourge->getMap()->findMaxHeightPos( creature->getX(), 
+																															creature->getY(), 
+																															creature->getZ(),
+																															creature->getShape(),
+																															true );
+		zpos2 = groundHeight / DIV;
+    //zpos2 = 0.0f / DIV;
     glPushMatrix();
     //glTranslatef( xpos2 + tw, ypos2 - tw * 2, zpos2 + 5);
     //glTranslatef( xpos2 + tw, ypos2 - td, zpos2 + 5);
@@ -770,7 +782,13 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
   xpos2 = (creature->getX() - (float)(scourge->getMap()->getX())) / DIV;
   ypos2 = (creature->getY() - (float)(scourge->getMap()->getY())) / DIV;
-  zpos2 = creature->getZ() / DIV;
+	float groundHeight = scourge->getMap()->findMaxHeightPos( creature->getX(), 
+																														creature->getY(), 
+																														creature->getZ(),
+																														creature->getShape(),
+																														true );
+	zpos2 = groundHeight / DIV;
+	//zpos2 = creature->getZ() / DIV;
 
   if(creature->getAction() != Constants::ACTION_NO_ACTION) {
     glColor4f(0, 0.7, 1, 0.5f);
