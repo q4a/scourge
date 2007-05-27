@@ -155,7 +155,6 @@ private:
   Sint16 y;
   int viewX, viewY, viewWidth, viewHeight;
   float mapx, mapy;
-	CVector9 groundPos[MAP_WIDTH][MAP_DEPTH];
   Location *pos[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
 	Location *itemPos[MAP_WIDTH][MAP_DEPTH];
   EffectLocation *effect[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
@@ -234,8 +233,10 @@ private:
 
 	bool heightMapEnabled;
 	float ground[MAP_WIDTH][MAP_DEPTH];
+	GLuint groundTex[MAP_WIDTH][MAP_DEPTH];
 	bool refreshGroundPos;
 	int debugHeightPosXX[4], debugHeightPosYY[4];
+	CVectorTex groundPos[MAP_WIDTH][MAP_DEPTH];
 
  public:
   bool useFrustum;
@@ -566,13 +567,15 @@ private:
 	inline bool isHeightMapEnabled() { return this->heightMapEnabled; }
 	inline void setRefreshGroundPos( bool b ) { this->refreshGroundPos = b; }
 	inline bool isRefreshGroundPos() { return this->refreshGroundPos; }
+	inline void setGroundTex( int x, int y, GLuint tex ) { this->groundTex[x][y] = tex; }
+	inline GLuint getGroundTex( int x, int y ) { return this->groundTex[x][y]; }
 	
 	float findMaxHeightPos( float x, float y, float z, Shape *shape, bool findMax = false );
 
 protected:
 
 	void createGroundMap();
-	void addLight( CVector9 *pt, CVector9 *a, CVector9 *b );
+	void addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b );
 
 	void renderFloor();
 	void drawFlatFloor();

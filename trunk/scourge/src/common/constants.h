@@ -353,6 +353,8 @@ public:
 // cave chunk size
 #define CAVE_CHUNK_SIZE 8
 
+#define OUTDOOR_FLOOR_TEX_SIZE 4
+
 // outdoor floor tile
 #define OUTDOORS_STEP 4
 
@@ -596,16 +598,17 @@ private:
 
 char* GetDataPath(char *file);
 
+class CVectorTex
+{
+public:
+    float x, y, z, u, v, r, g, b, a;
+		GLuint tex;
+};
+
 class CVector5
 {
 public:
     float x, y, z, u, v;
-};
-
-class CVector9
-{
-public:
-    float x, y, z, u, v, r, g, b, a;
 };
 
 // This is our 3D point class.  This will be used to store the vertices of our model.
