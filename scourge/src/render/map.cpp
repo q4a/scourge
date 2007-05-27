@@ -187,6 +187,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	for( int x = 0; x < MAP_WIDTH; x++ ) {
 		for( int y = 0; y < MAP_DEPTH; y++ ) {
 			ground[x][y] = 0;
+			groundTex[x][y] = 0;
 		}
 	}
 	heightMapEnabled = false;
@@ -347,6 +348,7 @@ void Map::reset() {
 	for( int x = 0; x < MAP_WIDTH; x++ ) {
 		for( int y = 0; y < MAP_DEPTH; y++ ) {
 			ground[x][y] = 0;
+			groundTex[x][y] = 0;
 		}
 	}
 	heightMapEnabled = false;
@@ -3857,17 +3859,18 @@ void Map::renderFloor() {
 void Map::drawHeightMapFloor() {
 	glDisable( GL_CULL_FACE );
 	glColor4f( 1, 1, 1, 1 );
-	int offsX = ( getX() % OUTDOORS_STEP );
-	int offsY = ( getY() % OUTDOORS_STEP );
-	CVector9 *p[4];
+	CVectorTex *p[4];
 	float gx, gy;
-	glBegin( GL_QUADS );
-	for( int yy = ( getY() / OUTDOORS_STEP ) - offsY; yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
-		for( int xx = ( getX() / OUTDOORS_STEP ) - offsX; xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
+	
+	for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
+		for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
+			glBindTexture( GL_TEXTURE_2D, groundPos[ xx ][ yy ].tex );
+
 			p[0] = &( groundPos[ xx ][ yy + 1 ] );
 			p[1] = &( groundPos[ xx ][ yy ] );
 			p[2] = &( groundPos[ xx + 1 ][ yy ] );
 			p[3] = &( groundPos[ xx + 1 ][ yy + 1 ] );
+			glBegin( GL_QUADS );
 			for( int i = 0; i < 4; i++ ) {
 				glTexCoord2f( p[i]->u, p[i]->v );
 				glColor4f( p[i]->r, p[i]->g, p[i]->b, p[i]->a );
@@ -3875,17 +3878,18 @@ void Map::drawHeightMapFloor() {
 				gy = p[i]->y - getY() / DIV;
 				glVertex3f( gx, gy, p[i]->z );
 			}
+			glEnd();
 		}
 	}
-	glEnd();
+	
 
 	// debug
 	glDisable( GL_TEXTURE_2D );
 	glColor4f( 1, 0, 0, 1 );
 	glDepthMask( GL_FALSE );
 	glDisable( GL_DEPTH_TEST );
-	for( int yy = ( getY() / OUTDOORS_STEP ) - offsY; yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
-		for( int xx = ( getX() / OUTDOORS_STEP ) - offsX; xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
+	for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
+		for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
 			if( xx == debugHeightPosXX[0] && yy == debugHeightPosYY[0] ) {
 				
 				glBegin( GL_LINE_LOOP );
@@ -3917,8 +3921,13 @@ void Map::createGroundMap() {
 			groundPos[ xx ][ yy ].x = w;
 			groundPos[ xx ][ yy ].y = d;
 			groundPos[ xx ][ yy ].z = h;
-			groundPos[ xx ][ yy ].u = ( xx * OUTDOORS_STEP * 32 ) / (float)MAP_WIDTH;
-			groundPos[ xx ][ yy ].v = ( yy * OUTDOORS_STEP * 32 ) / (float)MAP_DEPTH;
+			//groundPos[ xx ][ yy ].u = ( xx * OUTDOORS_STEP * 32 ) / (float)MAP_WIDTH;
+			//groundPos[ xx ][ yy ].v = ( yy * OUTDOORS_STEP * 32 ) / (float)MAP_DEPTH;
+
+			groundPos[ xx ][ yy ].u = ( ( xx % OUTDOOR_FLOOR_TEX_SIZE ) / (float)OUTDOOR_FLOOR_TEX_SIZE ) + ( xx / OUTDOOR_FLOOR_TEX_SIZE );
+			groundPos[ xx ][ yy ].v = ( ( yy % OUTDOOR_FLOOR_TEX_SIZE ) / (float)OUTDOOR_FLOOR_TEX_SIZE ) + ( yy / OUTDOOR_FLOOR_TEX_SIZE );
+
+			groundPos[ xx ][ yy ].tex = groundTex[ xx ][ yy ];
 
 			// height-based light
 			float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;                          
@@ -3931,7 +3940,7 @@ void Map::createGroundMap() {
 	}
 	
 	// add light
-	CVector9 *p[3];
+	CVectorTex *p[3];
 	for( int xx = 0; xx < MAP_WIDTH / OUTDOORS_STEP; xx++ ) {
 		for( int yy = 0; yy < MAP_DEPTH / OUTDOORS_STEP; yy++ ) {
 			p[0] = &( groundPos[ xx ][ yy ] );
@@ -3944,7 +3953,7 @@ void Map::createGroundMap() {
 	}
 }
 
-void Map::addLight( CVector9 *pt, CVector9 *a, CVector9 *b ) {
+void Map::addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b ) {
 	float v[3], u[3], normal[3];
 
 	v[0] = pt->x - a->x;
