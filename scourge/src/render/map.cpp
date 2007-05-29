@@ -3904,65 +3904,67 @@ void Map::drawHeightMapFloor() {
 		// xpos2 + w, ypos2 - w - 1 / DIV
 		//float w = adapter->getPlayer()->getShape()->getWidth() / 2.0f;
 
-		int sx = toint( ( adapter->getPlayer()->getX() ) / OUTDOORS_STEP ) - 1;
-		int sy = toint( ( adapter->getPlayer()->getY() - adapter->getPlayer()->getShape()->getDepth() - 1 ) / OUTDOORS_STEP ) - 1;
-		float f = ( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() ) / OUTDOORS_STEP;
-		int ex = toint( f ) + 1;
-		f = ( adapter->getPlayer()->getY() - 1 ) / OUTDOORS_STEP;
-		int ey = toint( f ) + 1;
+		float pw = adapter->getPlayer()->getShape()->getWidth();
 
-		adapter->getPlayer()->getShape()->setDebugGroundPos( sx, sy, ex, ey );
-		//cerr << "dim: (" << sx << "," << sy << ")-(" << ex << "," << ey << ")" << endl;
+		// which ground pos?
+		int sx = (int)( adapter->getPlayer()->getX() / OUTDOORS_STEP );
+		int sy = (int)( ( adapter->getPlayer()->getY() - pw - 1 ) / OUTDOORS_STEP );
+		int ex = (int)( ( adapter->getPlayer()->getX() + pw ) / OUTDOORS_STEP );
+		if( ex - sx < 1 ) ex++;
+		int ey = (int)( ( adapter->getPlayer()->getY() - 1 ) / OUTDOORS_STEP );
+		if( ey - sy < 1 ) ey++;
+		cerr << "s=" << sx << "," << sy << " e=" << ex << "," << ey << endl;
+		
+		// offset to our texture inside the ground pos
+		float offSX = adapter->getPlayer()->getX() - (float)( sx * OUTDOORS_STEP );
+		float offSY = ( adapter->getPlayer()->getY() - pw - 1 ) - (float)( sy * OUTDOORS_STEP );
+		float offEX = offSX + pw;
+		float offEY = offSY + pw;
+		cerr << "tex size=" << ( ( ex - sx ) * OUTDOORS_STEP ) << "," << ( ( ey - sy ) * OUTDOORS_STEP ) <<
+			" player size=" << pw << endl;
+		cerr << "tex=" << ( sx * OUTDOORS_STEP ) << "," << ( sy * OUTDOORS_STEP ) << 
+			" player=" << adapter->getPlayer()->getX() << "," << adapter->getPlayer()->getY() << endl;
+		cerr << "offs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
+
+		// converted to texture coordinates ( 0-1 )
+		offSX = -offSX / (float)( ( ex - sx ) * OUTDOORS_STEP );
+		offSY = -offSY / (float)( ( ey - sy ) * OUTDOORS_STEP );
+		offEX = 1 - ( offEX / (float)( ( ex - sx ) * OUTDOORS_STEP ) ) + 1;
+		offEY = 1 - ( offEY / (float)( ( ey - sy ) * OUTDOORS_STEP ) ) + 1;
+		cerr << "\toffs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
 
 
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-		Shape *shape = adapter->getPlayer()->getShape();
-
-		float offSX = adapter->getPlayer()->getX() - (float)( sx * OUTDOORS_STEP );
-		float offSY = ( adapter->getPlayer()->getY() - shape->getDepth() - 1 ) - (float)( sy * OUTDOORS_STEP );
-		float offEX = offSX + shape->getWidth();
-		float offEY = offSY + shape->getDepth();
-		cerr << "tex size=" << ( ( ex - sx ) * OUTDOORS_STEP ) << "," << ( ( ey - sy ) * OUTDOORS_STEP ) <<
-			" player size=" << shape->getWidth() << "," << shape->getDepth() << endl;
-		cerr << "offs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
-
-		offSX = -offSX / (float)( ( ex - sx ) * OUTDOORS_STEP );
-		offSY = -offSY / (float)( ( ey - sy ) * OUTDOORS_STEP );
-		offEX = 1 + 1 - ( offEX / (float)( ( ex - sx ) * OUTDOORS_STEP ) );
-		offEY = 1 + 1 - ( offEY / (float)( ( ey - sy ) * OUTDOORS_STEP ) );
-		cerr << "\toffs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
-
-
-		for( int xx = sx; xx < ex; xx++ ) {
-			for( int yy = sy; yy < ey; yy++ ) {
+		for( int xx = sx; xx <= ex; xx++ ) {
+			for( int yy = sy; yy <= ey; yy++ ) {
 				//glBegin( GL_LINE_LOOP );
 				glBegin( GL_QUADS );
 				
-				glTexCoord2f( ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) - offSX,
-											( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) - offSY );
+				glTexCoord2f( ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
+											( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
 				glColor4f( 1, 1, 1, 1 );
 				gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
 				gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
 				glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + 0.26f * DIV );
 
 
-				glTexCoord2f( ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) - offSX,
-											( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) - offSY );
+				glTexCoord2f( ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
+											( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
 				glColor4f( 1, 0, 0, 1 );
 				gx = groundPos[ xx ][ yy ].x - getX() / DIV;
 				gy = groundPos[ xx ][ yy ].y - getY() / DIV;
 				glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + 0.26f * DIV );
 
-				glTexCoord2f( ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) - offSX,
-											( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) - offSY );
+				glTexCoord2f( ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
+											( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
 				glColor4f( 1, 1, 1, 1 );
 				gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
 				gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
 				glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + 0.26f * DIV );
 
-				glTexCoord2f( ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) - offSX,
-											( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) - offSY );
+				glTexCoord2f( ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
+											( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
 				glColor4f( 1, 1, 1, 1 );
 				gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
 				gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
