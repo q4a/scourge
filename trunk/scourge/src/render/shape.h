@@ -32,6 +32,7 @@ private:
   bool stencil;
   Color *outlineColor;
   bool interactive;
+	int groundSX, groundEX, groundSY, groundEY;
 
 protected:
   int width, height, depth;
@@ -40,6 +41,18 @@ public:
 	Shape(int width, int depth, int height, char *name, int descriptionGroup);
 	Shape(Shape *shape);
 	virtual ~Shape();
+
+	inline void setDebugGroundPos( int sx, int sy, int ex, int ey ) { 
+		this->groundSX = sx;
+		this->groundSY = sy;
+		this->groundEX = ex;
+		this->groundEY = ey;
+	}
+
+	inline int getGroundSX() { return groundSX; }
+	inline int getGroundSY() { return groundSY; }
+	inline int getGroundEX() { return groundEX; }
+	inline int getGroundEY() { return groundEY; }
 
   /**
     Call this once before the shape is to be displayed.
