@@ -572,6 +572,12 @@ private:
 	
 	float findMaxHeightPos( float x, float y, float z, Shape *shape, bool findMax = false );
 
+	/**
+	 * Draw a texture on top of the ground map. This is useful for drawing shadows or 
+	 * selection circles on top of un-even terrain.
+	 */
+	void drawGroundTex( GLuint tex, float tx, float ty, float tw, float th );
+
 protected:
 
 	void createGroundMap();
