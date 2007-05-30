@@ -3886,116 +3886,97 @@ void Map::drawHeightMapFloor() {
 
 	// debug
 	if( adapter->getPlayer() ) {
-		//glDisable( GL_TEXTURE_2D );
-
-		//glEnable( GL_DEPTH_TEST );
-		//glDepthMask(GL_FALSE);
-		glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glDisable( GL_CULL_FACE );
-		glEnable( GL_TEXTURE_2D );
-		glBindTexture( GL_TEXTURE_2D, shapes->getSelection() );
-
-		glColor4f( 1, 0, 0, 1 );
-		glDepthMask( GL_FALSE );
-		glDisable( GL_DEPTH_TEST );
-
-		// the bounding ground quads
-		// xpos2 + w, ypos2 - w - 1 / DIV
-		//float w = adapter->getPlayer()->getShape()->getWidth() / 2.0f;
-
-		float pw = adapter->getPlayer()->getShape()->getWidth();
-
-		// which ground pos?
-		int sx = (int)( adapter->getPlayer()->getX() / OUTDOORS_STEP );
-		int sy = (int)( ( adapter->getPlayer()->getY() - pw - 1 ) / OUTDOORS_STEP );
-		int ex = (int)( ( adapter->getPlayer()->getX() + pw ) / OUTDOORS_STEP );
-		if( ex - sx < 1 ) ex++;
-		int ey = (int)( ( adapter->getPlayer()->getY() - 1 ) / OUTDOORS_STEP );
-		if( ey - sy < 1 ) ey++;
-		cerr << "s=" << sx << "," << sy << " e=" << ex << "," << ey << endl;
-		
-		// offset to our texture inside the ground pos
-		float offSX = adapter->getPlayer()->getX() - (float)( sx * OUTDOORS_STEP );
-		float offSY = ( adapter->getPlayer()->getY() - pw - 1 ) - (float)( sy * OUTDOORS_STEP );
-		float offEX = offSX + pw;
-		float offEY = offSY + pw;
-		cerr << "tex size=" << ( ( ex - sx ) * OUTDOORS_STEP ) << "," << ( ( ey - sy ) * OUTDOORS_STEP ) <<
-			" player size=" << pw << endl;
-		cerr << "tex=" << ( sx * OUTDOORS_STEP ) << "," << ( sy * OUTDOORS_STEP ) << 
-			" player=" << adapter->getPlayer()->getX() << "," << adapter->getPlayer()->getY() << endl;
-		cerr << "offs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
-
-		// converted to texture coordinates ( 0-1 )
-		offSX = -offSX / (float)( ( ex - sx ) * OUTDOORS_STEP );
-		offSY = -offSY / (float)( ( ey - sy ) * OUTDOORS_STEP );
-		offEX = 1 - ( offEX / (float)( ( ex - sx ) * OUTDOORS_STEP ) ) + 1;
-		offEY = 1 - ( offEY / (float)( ( ey - sy ) * OUTDOORS_STEP ) ) + 1;
-		cerr << "\toffs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
-
-
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-		for( int xx = sx; xx <= ex; xx++ ) {
-			for( int yy = sy; yy <= ey; yy++ ) {
-				//glBegin( GL_LINE_LOOP );
-				glBegin( GL_QUADS );
-				
-				glTexCoord2f( ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
-											( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
-				glColor4f( 1, 1, 1, 1 );
-				gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
-				gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
-				glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + 0.26f * DIV );
-
-
-				glTexCoord2f( ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
-											( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
-				glColor4f( 1, 0, 0, 1 );
-				gx = groundPos[ xx ][ yy ].x - getX() / DIV;
-				gy = groundPos[ xx ][ yy ].y - getY() / DIV;
-				glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + 0.26f * DIV );
-
-				glTexCoord2f( ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
-											( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
-				glColor4f( 1, 1, 1, 1 );
-				gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
-				gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
-				glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + 0.26f * DIV );
-
-				glTexCoord2f( ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
-											( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
-				glColor4f( 1, 1, 1, 1 );
-				gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
-				gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
-				glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + 0.26f * DIV );
-
-				glEnd();
-			}
-		}
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+		drawGroundTex( shapes->getSelection(), 
+									 adapter->getPlayer()->getX(), 
+									 adapter->getPlayer()->getY(), 
+									 adapter->getPlayer()->getShape()->getWidth(),
+									 adapter->getPlayer()->getShape()->getWidth() );
 	}
+}
+
+void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th ) {
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glDisable( GL_CULL_FACE );
+	glEnable( GL_TEXTURE_2D );
+	glBindTexture( GL_TEXTURE_2D, tex );
+
+	glColor4f( 1, 0, 0, 1 );
+	glDepthMask( GL_FALSE );
+	glDisable( GL_DEPTH_TEST );
+
+	// which ground pos?
+	int sx = (int)( tx / OUTDOORS_STEP );
+	int sy = (int)( ( ty - th - 1 ) / OUTDOORS_STEP );
+	int ex = (int)( ( tx + tw ) / OUTDOORS_STEP );
+	if( ex - sx < 1 ) ex++;
+	int ey = (int)( ( ty - 1 ) / OUTDOORS_STEP );
+	if( ey - sy < 1 ) ey++;
+	//cerr << "s=" << sx << "," << sy << " e=" << ex << "," << ey << endl;
+
+	// offset to our texture inside the ground pos
+	float offSX = tx - (float)( sx * OUTDOORS_STEP );
+	float offSY = ( ty - th - 1 ) - (float)( sy * OUTDOORS_STEP );
+	float offEX = offSX + tw;
+	float offEY = offSY + th;
+	//cerr << "tex size=" << ( ( ex - sx ) * OUTDOORS_STEP ) << "," << ( ( ey - sy ) * OUTDOORS_STEP ) << " player size=" << pw << endl;
+	//cerr << "tex=" << ( sx * OUTDOORS_STEP ) << "," << ( sy * OUTDOORS_STEP ) << " player=" << adapter->getPlayer()->getX() << "," << adapter->getPlayer()->getY() << endl;
+	//cerr << "offs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
+
+	// converted to texture coordinates ( 0-1 )
+	offSX = -offSX / (float)( ( ex - sx ) * OUTDOORS_STEP );
+	offSY = -offSY / (float)( ( ey - sy ) * OUTDOORS_STEP );
+	offEX = 1 - ( offEX / (float)( ( ex - sx ) * OUTDOORS_STEP ) ) + 1;
+	offEY = 1 - ( offEY / (float)( ( ey - sy ) * OUTDOORS_STEP ) ) + 1;
+	//cerr << "\toffs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
+
+	// don't repeat the texture
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+
+	float gx, gy;
+	for( int xx = sx; xx <= ex; xx++ ) {
+		for( int yy = sy; yy <= ey; yy++ ) {
+			//glBegin( GL_LINE_LOOP );
+			glBegin( GL_QUADS );
+
+			glTexCoord2f( ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
+										( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
+			glColor4f( 1, 1, 1, 1 );
+			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
+			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + 0.26f * DIV );
 
 
-	/*
-	for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
-		for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
-			if( xx == debugHeightPosXX[0] && yy == debugHeightPosYY[0] ) {
-				
-				glBegin( GL_LINE_LOOP );
-				for( int i = 0; i < 4; i++ ) {
-					if( i == 0 ) glColor4f( 1, 0, 0, 1 );
-					else glColor4f( 1, 1, 1, 1 );
-					gx = groundPos[ debugHeightPosXX[i] ][ debugHeightPosYY[i] ].x - getX() / DIV;
-					gy = groundPos[ debugHeightPosXX[i] ][ debugHeightPosYY[i] ].y - getY() / DIV;
-					glVertex3f( gx, gy, groundPos[ debugHeightPosXX[i] ][ debugHeightPosYY[i] ].z + 0.26f * DIV );
-				}
-				glEnd();
-			}
+			glTexCoord2f( ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
+										( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
+			glColor4f( 1, 0, 0, 1 );
+			gx = groundPos[ xx ][ yy ].x - getX() / DIV;
+			gy = groundPos[ xx ][ yy ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + 0.26f * DIV );
+
+			glTexCoord2f( ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
+										( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
+			glColor4f( 1, 1, 1, 1 );
+			gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
+			gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + 0.26f * DIV );
+
+			glTexCoord2f( ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
+										( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
+			glColor4f( 1, 1, 1, 1 );
+			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
+			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + 0.26f * DIV );
+
+			glEnd();
 		}
 	}
-	*/
+
+	// switch back to repeating the texture
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
 	glColor4f( 1, 1, 1, 1 );
 	glDisable( GL_BLEND );
 	glDepthMask( GL_TRUE );
