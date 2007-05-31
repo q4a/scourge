@@ -576,7 +576,7 @@ private:
 	 * Draw a texture on top of the ground map. This is useful for drawing shadows or 
 	 * selection circles on top of un-even terrain.
 	 */
-	void drawGroundTex( GLuint tex, float tx, float ty, float tw, float th );
+	void drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, bool debug=false );
 
 protected:
 
