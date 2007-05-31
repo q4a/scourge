@@ -721,6 +721,13 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
         creature->getSelY() == toint(creature->getY())) ) {
     // draw target
     glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
+
+		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
+																			creature->getSelX(),
+																			creature->getSelY(),
+																			creature->getShape()->getWidth(),
+																			creature->getShape()->getDepth() );
+
     xpos2 = ((float)(creature->getSelX() - scourge->getMap()->getX()) / DIV);
     ypos2 = ((float)(creature->getSelY() - scourge->getMap()->getY()) / DIV);
 		float groundHeight = scourge->getMap()->findMaxHeightPos( creature->getSelX(), 
@@ -734,8 +741,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
     //glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
 		glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 + 5);
-    //gluDisk(quadric, w - targetWidth, w, 12, 1);
-		drawDisk( w, targetWidth );
+		//drawDisk( w, targetWidth );
 		
 
     // in TB mode and paused?
@@ -757,10 +763,16 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
       player &&
       creature->getTargetCreature() &&
       !creature->getTargetCreature()->getStateMod( StateMod::dead ) ) {
-    double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / 2.0f) / DIV;
-    //double td = (((double)(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
-    //double td = ((double)(creature->getTargetCreature()->getShape()->getDepth())) / DIV;
+    //double tw = ((double)creature->getTargetCreature()->getShape()->getWidth() / 2.0f) / DIV;
     glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
+
+		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
+																			creature->getX(),
+																			creature->getY(),
+																			creature->getShape()->getWidth(),
+																			creature->getShape()->getDepth() );
+
+		/*
     xpos2 = ((float)(creature->getTargetCreature()->getX() - scourge->getMap()->getX()) / DIV);
     ypos2 = ((float)(creature->getTargetCreature()->getY() - scourge->getMap()->getY()) / DIV);
 		float groundHeight = scourge->getMap()->findMaxHeightPos( creature->getX(), 
@@ -778,6 +790,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		drawDisk( tw, targetWidth );
 
     glPopMatrix();
+		*/
   }
 
   xpos2 = (creature->getX() - (float)(scourge->getMap()->getX())) / DIV;
@@ -866,13 +879,21 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     glPopMatrix();
 #endif
 
+		if( groupMode || player || creature->isMonster() || wanderingHero ) {
+			scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
+																				creature->getX(),
+																				creature->getY(),
+																				creature->getShape()->getWidth(),
+																				creature->getShape()->getDepth() );
+		}
+
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
     //glTranslatef( xpos2 + w, ypos2 - d, zpos2 + 5);
 		glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 + 5);
     if( groupMode || player || creature->isMonster() || wanderingHero ) {
       //gluDisk(quadric, w - s, w, 12, 1);
-			drawDisk( w, 0 );
+			//drawDisk( w, 0 );
 
       // in TB mode, player's turn and paused?
       if( scourge->inTurnBasedCombatPlayerTurn() && !( scourge->getParty()->isRealTimeMode() ) ) {
