@@ -3794,3 +3794,8 @@ void Scourge::endChapterIntro() {
 	else getSDLHandler()->getSound()->playMusicMission();
 	getSDLHandler()->fade( 1, 0, 20 );
 }
+
+GLuint Scourge::getNamedTexture( char *name ) { 
+	return getShapePalette()->getNamedTexture( name );
+}
+

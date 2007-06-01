@@ -270,6 +270,8 @@ private:
 
 	inline Preferences *getPreferences() { return preferences; }
 
+	inline MapRenderHelper *getHelper() { return helper; }
+
   inline Shapes *getShapes() { return shapes; }
 
   inline MapSettings *getSettings() { return settings; }

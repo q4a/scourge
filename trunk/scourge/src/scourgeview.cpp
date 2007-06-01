@@ -803,6 +803,19 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 	zpos2 = groundHeight / DIV;
 	//zpos2 = creature->getZ() / DIV;
 
+	// ideally this would be in map::doDrawShape() but weird clipping occurs when shadows are next to each other.
+	// FIXME: clean this up (see map::doDrawShape()
+	if( !creature->getStateMod( StateMod::dead ) && 
+			( groupMode || player || creature->isMonster() || wanderingHero ) &&
+			!scourge->getMap()->getHelper()->drawShadow() ) {
+		glColor4f( 0.04f, 0, 0.07f, 0.4f );
+		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getNamedTexture( "outdoors_shadow" ),
+									 creature->getX() + 0.25f,
+									 creature->getY() + 0.25f,
+									 ( creature->getShape()->getWidth() + 2 ) * 0.7f,
+									 creature->getShape()->getDepth() * 0.7f );
+	}
+
   if(creature->getAction() != Constants::ACTION_NO_ACTION) {
     glColor4f(0, 0.7, 1, 0.5f);
   } else if(selected) {
@@ -816,6 +829,15 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   } else {
     glColor4f(0.7f, 0.7f, 0.7f, 0.25f);
   }
+
+	if( !creature->getStateMod( StateMod::dead ) && 
+			( groupMode || player || creature->isMonster() || wanderingHero ) ) {
+			scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
+																				creature->getX(),
+																				creature->getY(),
+																				creature->getShape()->getWidth(),
+																				creature->getShape()->getDepth() );
+		}
 
   // draw state mods
   if( !creature->getStateMod( StateMod::dead ) && 
@@ -878,14 +900,6 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     scourge->getSDLHandler()->texPrint( 0, 0, debugMessage );
     glPopMatrix();
 #endif
-
-		if( groupMode || player || creature->isMonster() || wanderingHero ) {
-			scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
-																				creature->getX(),
-																				creature->getY(),
-																				creature->getShape()->getWidth(),
-																				creature->getShape()->getDepth() );
-		}
 
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);

@@ -1571,6 +1571,25 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
                           later->creature->getShape() ) ) {
     return;
   }
+
+	// draw simple shadow in outdoors
+	if( useShadow && !helper->drawShadow() ) {
+		/*
+		// fixme: weird clipping occurs when drawn here, see scourgeview::drawCreatureInfo()
+		if( later && later->creature ) {
+			glDisable( GL_DEPTH_TEST );
+			glColor4f( 0.04f, 0, 0.07f, 0.4f );
+			drawGroundTex( adapter->getNamedTexture( "outdoors_shadow" ),
+										 later->creature->getX() + 0.25f,
+										 later->creature->getY() + 0.25f,
+										 ( later->creature->getShape()->getWidth() + 2 ) * 0.7f,
+										 later->creature->getShape()->getDepth() * 0.7f );
+			glEnable( GL_DEPTH_TEST );										 
+		}
+		*/
+		return;
+	}
+
     
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
 
@@ -3896,9 +3915,8 @@ void Map::drawHeightMapFloor() {
 
 void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, bool debug ) {
 
-	glEnable( GL_DEPTH_TEST );
-  glDepthMask(GL_FALSE);
-
+	//glEnable( GL_DEPTH_TEST );
+	glDepthMask( GL_FALSE );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glDisable( GL_CULL_FACE );
@@ -3983,11 +4001,9 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, boo
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
-	//glColor4f( 1, 1, 1, 1 );
+	//glDisable( GL_DEPTH_TEST );
+	glDepthMask( GL_TRUE );
 	glDisable( GL_BLEND );
-	//glDepthMask( GL_TRUE );
-	//glEnable( GL_DEPTH_TEST );
-	//glEnable( GL_TEXTURE_2D );
 }
 
 void Map::createGroundMap() {
