@@ -158,7 +158,6 @@ GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {
 
 MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
 	// we need fog
-	//return MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ];
-	return MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ];
+	return MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ];
 }
 

@@ -290,8 +290,8 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 		ConfigNode *node = (*v)[i];
 		string name = node->getValueAsString( "name" );
 		char *value = (char*)node->getValueAsString( "value" );
-
-		namedTextures[ name ] = loadTextureWithAlpha( value );
+		bool grayscale = node->getValueAsBool( "grayscale" );
+		namedTextures[ name ] = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
 	}
 //	Shapes::debugFileLoad = false;
 }

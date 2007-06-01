@@ -563,6 +563,8 @@ public:
     @param title the window's title
   */
   Window *createWindow(int x, int y, int w, int h, char *title);
+
+	virtual GLuint getNamedTexture( char *name );
   
   /**
     Called when the mission was completed (monster killed, item bagged, etc.). This

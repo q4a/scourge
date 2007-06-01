@@ -75,6 +75,8 @@ public:
                            int x2, int y2, int w2, int h2 ) = 0;
 
   virtual void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f) = 0;
+
+	virtual GLuint getNamedTexture( char *name ) = 0;
 };
 
 #endif

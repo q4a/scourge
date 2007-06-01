@@ -26,7 +26,8 @@ using namespace std;
 
 MapRenderHelper *MapRenderHelper::helpers[] = {
   new CaveRenderHelper(),
-  new RoomRenderHelper()
+  new RoomRenderHelper(),
+	new OutdoorRenderHelper()
 };
 
 MapRenderHelper::MapRenderHelper() {
@@ -77,6 +78,12 @@ void CaveRenderHelper::saveHelper( FogInfo *fogInfo ) {
 	fog->save( fogInfo );
 }
 
+
+OutdoorRenderHelper::OutdoorRenderHelper() : CaveRenderHelper() {
+}
+
+OutdoorRenderHelper::~OutdoorRenderHelper() {
+}
 
 
 RoomRenderHelper::RoomRenderHelper() {

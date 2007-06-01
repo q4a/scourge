@@ -37,6 +37,7 @@ public:
   enum {
     CAVE_HELPER=0,
     ROOM_HELPER,
+		OUTDOOR_HELPER,
 
     HELPER_COUNT
   };
@@ -57,6 +58,7 @@ public:
   inline virtual bool isLightMapEnabled() { return true; }
 	inline virtual void loadHelper( FogInfo *fogInfo ) {}
 	inline virtual void saveHelper( FogInfo *fogInfo ) {}
+	inline virtual bool drawShadow() { return true; }
 };
 
 class CaveRenderHelper : public MapRenderHelper {
@@ -75,6 +77,13 @@ public:
   inline virtual bool isLightMapEnabled() { return false; }
 	virtual void loadHelper( FogInfo *fogInfo );
 	virtual void saveHelper( FogInfo *fogInfo );
+};
+
+class OutdoorRenderHelper : public CaveRenderHelper {
+public:
+  OutdoorRenderHelper();
+  virtual ~OutdoorRenderHelper();
+	inline virtual bool drawShadow() { return false; }
 };
 
 #define OVERLAY_SIZE 16
