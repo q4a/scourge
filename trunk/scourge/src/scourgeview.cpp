@@ -91,11 +91,11 @@ void ScourgeView::drawView() {
   
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_TEXTURE_2D );
-  
   drawMapInfos();
-
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_TEXTURE_2D );
+	glDisable( GL_CULL_FACE );
+  glDisable( GL_SCISSOR_TEST );
 
   drawBorder();
 
@@ -381,9 +381,7 @@ void ScourgeView::drawMapInfos() {
   // draw stuff on top of the map
   scourge->getMap()->initMapView();
   drawCreatureInfos();
-  drawInfos();
-  glDisable( GL_CULL_FACE );
-  glDisable( GL_SCISSOR_TEST );
+  drawInfos();  
 }
 
 void ScourgeView::drawCreatureInfos() {
@@ -803,6 +801,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 	zpos2 = groundHeight / DIV;
 	//zpos2 = creature->getZ() / DIV;
 
+	/*
 	// ideally this would be in map::doDrawShape() but weird clipping occurs when shadows are next to each other.
 	// FIXME: clean this up (see map::doDrawShape()
 	if( !creature->getStateMod( StateMod::dead ) && 
@@ -815,6 +814,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 									 ( creature->getShape()->getWidth() + 2 ) * 0.7f,
 									 creature->getShape()->getDepth() * 0.7f );
 	}
+	*/
 
   if(creature->getAction() != Constants::ACTION_NO_ACTION) {
     glColor4f(0, 0.7, 1, 0.5f);

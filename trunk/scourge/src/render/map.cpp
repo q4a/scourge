@@ -1202,6 +1202,16 @@ void Map::draw() {
         glColor4f(0, 1, 1, 1);
       }
       doDrawShape(&other[i]);
+
+			// draw simple shadow in outdoors
+			if( other[i].creature && !helper->drawShadow() ) {
+				glColor4f( 0.04f, 0, 0.07f, 0.4f );
+				drawGroundTex( adapter->getNamedTexture( "outdoors_shadow" ),
+											 other[i].creature->getX() + 0.25f,
+											 other[i].creature->getY() + 0.25f,
+											 ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f,
+											 other[i].creature->getShape()->getDepth() * 0.7f );
+			}
     }
 
     // draw the walls: walls in front of the player will be transparent
@@ -1572,23 +1582,8 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     return;
   }
 
-	// draw simple shadow in outdoors
-	if( useShadow && !helper->drawShadow() ) {
-		/*
-		// fixme: weird clipping occurs when drawn here, see scourgeview::drawCreatureInfo()
-		if( later && later->creature ) {
-			glDisable( GL_DEPTH_TEST );
-			glColor4f( 0.04f, 0, 0.07f, 0.4f );
-			drawGroundTex( adapter->getNamedTexture( "outdoors_shadow" ),
-										 later->creature->getX() + 0.25f,
-										 later->creature->getY() + 0.25f,
-										 ( later->creature->getShape()->getWidth() + 2 ) * 0.7f,
-										 later->creature->getShape()->getDepth() * 0.7f );
-			glEnable( GL_DEPTH_TEST );										 
-		}
-		*/
-		return;
-	}
+	// no shadows when outdoors
+	if( useShadow && !helper->drawShadow() ) return;
 
     
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
@@ -3900,17 +3895,7 @@ void Map::drawHeightMapFloor() {
 			}
 			glEnd();
 		}
-	}
-	
-
-	// debug
-	if( adapter->getPlayer() ) {
-		drawGroundTex( shapes->getSelection(), 
-									 adapter->getPlayer()->getX(), 
-									 adapter->getPlayer()->getY(), 
-									 adapter->getPlayer()->getShape()->getWidth(),
-									 adapter->getPlayer()->getShape()->getWidth() );
-	}
+	}	
 }
 
 void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, bool debug ) {
