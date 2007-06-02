@@ -213,6 +213,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	refreshGroundPos = true;
 
+	outdoorShadow = adapter->getNamedTexture( "outdoors_shadow" );
+
   adapter->addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
   adapter->addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
 }
@@ -1123,7 +1125,8 @@ void Map::draw() {
       }
 
       // shadows
-      if( preferences->getShadows() >= Constants::OBJECT_SHADOWS ) {
+			if( preferences->getShadows() >= Constants::OBJECT_SHADOWS &&
+					helper->drawShadow() ) {
         glStencilFunc(GL_EQUAL, 1, 0xffffffff);
         glStencilOp(GL_KEEP, GL_KEEP, GL_INCR); 
         glDisable(GL_TEXTURE_2D);
@@ -1206,7 +1209,7 @@ void Map::draw() {
 			// draw simple shadow in outdoors
 			if( other[i].creature && !helper->drawShadow() ) {
 				glColor4f( 0.04f, 0, 0.07f, 0.4f );
-				drawGroundTex( adapter->getNamedTexture( "outdoors_shadow" ),
+				drawGroundTex( outdoorShadow,
 											 other[i].creature->getX() + 0.25f,
 											 other[i].creature->getY() + 0.25f,
 											 ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f,
@@ -1582,10 +1585,6 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     return;
   }
 
-	// no shadows when outdoors
-	if( useShadow && !helper->drawShadow() ) return;
-
-    
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
 
   // slow on mac os X:
@@ -1595,7 +1594,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   if(useShadow) {
 		// put shadow above the floor a little
 		
-		glTranslatef( xpos2, ypos2, ( 0.26f + ( later && later->pos ? later->pos->heightPos / DIV : 0 ) ) );
+		glTranslatef( xpos2, ypos2, ( 0.26f / DIV + ( later && later->pos ? later->pos->heightPos / DIV : 0 ) ) );
 		glMultMatrixf(shadowTransformMatrix);
 
     // gray shadows
