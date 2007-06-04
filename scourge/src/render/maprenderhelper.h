@@ -38,6 +38,7 @@ public:
     CAVE_HELPER=0,
     ROOM_HELPER,
 		OUTDOOR_HELPER,
+		DEBUG_OUTDOOR_HELPER,
 
     HELPER_COUNT
   };
@@ -83,6 +84,13 @@ class OutdoorRenderHelper : public CaveRenderHelper {
 public:
   OutdoorRenderHelper();
   virtual ~OutdoorRenderHelper();
+	inline virtual bool drawShadow() { return false; }
+};
+
+class DebugOutdoorRenderHelper : public MapRenderHelper {
+public:
+  DebugOutdoorRenderHelper();
+  virtual ~DebugOutdoorRenderHelper();
 	inline virtual bool drawShadow() { return false; }
 };
 

@@ -27,7 +27,8 @@ using namespace std;
 MapRenderHelper *MapRenderHelper::helpers[] = {
   new CaveRenderHelper(),
   new RoomRenderHelper(),
-	new OutdoorRenderHelper()
+	new OutdoorRenderHelper(),
+	new DebugOutdoorRenderHelper()
 };
 
 MapRenderHelper::MapRenderHelper() {
@@ -83,6 +84,12 @@ OutdoorRenderHelper::OutdoorRenderHelper() : CaveRenderHelper() {
 }
 
 OutdoorRenderHelper::~OutdoorRenderHelper() {
+}
+
+DebugOutdoorRenderHelper::DebugOutdoorRenderHelper() : MapRenderHelper() {
+}
+
+DebugOutdoorRenderHelper::~DebugOutdoorRenderHelper() {
 }
 
 
