@@ -559,7 +559,6 @@ void Scourge::createMissionInfoMessage( Mission *lastMission ) {
 bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	bool mapCreated = true;
 	TerrainGenerator *dg = NULL;
-	char result[300];
 	if(nextMission == -1) {
 		// IN HQ
 		missionWillAwardExpPoints = false;
@@ -595,7 +594,8 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		//getCurrentMapName( path );
 		//bool loaded = loadMap( path, fromRandomMap );
 		//if( !loaded ) 
-			levelMap->loadMap( HQ_MAP_NAME, result, this, 1, currentStory, changingStory );
+    char result[300];
+    levelMap->loadMap( HQ_MAP_NAME, result, this, 1, currentStory, changingStory );
 #endif
 
 	} else {
