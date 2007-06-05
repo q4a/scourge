@@ -68,7 +68,11 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	// FIXME: elevate shapes if needed, in Map::setGroundHeight, so this method can be called anytime
 	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
 		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
-			map->setGroundHeight( x, y, ground[x][y] );
+      if( x < 50 && y < 50 && cellular->getNode( x, y )->wall ) {
+        map->setGroundHeight( x, y, 10.0f + ( 4.0f * rand() / RAND_MAX ) );
+      } else {
+        map->setGroundHeight( x, y, ground[x][y] );
+      }
 		}
 	}
 
@@ -107,25 +111,6 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 		}
 	}
 
-
-	for( int x = 0; x < WIDTH_IN_NODES; x++ ) {
-    for( int y = 0; y < DEPTH_IN_NODES; y++ ) {
-			if( cellular->getNode( x, y )->wall ) {
-				GLShape *shape = getRandomTreeShape( shapePal );
-				int mapx = MAP_OFFSET + x * OUTDOOR_NODE_SIZE;
-				int mapy = MAP_OFFSET + y * OUTDOOR_NODE_SIZE + shape->getDepth();
-				if( !map->isBlocked( mapx, mapy, 0, 0, 0, 0, shape ) ) {
-					map->setPosition( mapx, mapy, 0, shape );
-				} else {
-					// should not happen here
-					//cerr << "shape blocked at: " << mapx << "," << mapy << endl;
-					cerr << ".";
-				}
-			}
-    }
-  }
-
-	/*
 	// add some groups of trees
 	for( int i = 0; i < 20; i++ ) {
 		int w = (int)( 40.0f * rand() / RAND_MAX ) + 20;
@@ -137,14 +122,14 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			GLShape *shape = getRandomTreeShape( shapePal );
 			int xx = x + (int)( (float)( w - shape->getWidth() ) * rand() / RAND_MAX );
 			int yy = y + (int)( (float)( h - shape->getDepth() ) * rand() / RAND_MAX );
-			if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
+			if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) && 
+          map->findMaxHeightPos( xx, yy, 0, shape, true ) < 10.0f ) {
 				map->setPosition( xx, yy, 0, shape );
 			} else {
 				count++;
 			}
 		}
 	}
-	*/
 
 	return true;
 }
@@ -158,9 +143,8 @@ GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {
 		trees.push_back( shapePal->findShapeByName( "WILLOW_TREE" ) );
 		trees.push_back( shapePal->findShapeByName( "OAK_TREE" ) );
 		trees.push_back( shapePal->findShapeByName( "OAK2_TREE" ) );
-
-		//trees.push_back( shapePal->findShapeByName( "BUSH" ) );
-		//trees.push_back( shapePal->findShapeByName( "BUSH2" ) );
+		trees.push_back( shapePal->findShapeByName( "BUSH" ) );
+		trees.push_back( shapePal->findShapeByName( "BUSH2" ) );
 	}
 	return trees[ (int)( (float)( trees.size() ) * rand() / RAND_MAX ) ];
 }
@@ -175,7 +159,7 @@ MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
 // generation
 //
 void OutdoorGenerator::generate( Map *map, ShapePalette *shapePal ) {
-  cellular->generate();
+  cellular->generate( false, true );
 	createGround();
 }
 
