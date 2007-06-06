@@ -39,7 +39,7 @@ class CellularAutomaton;
 class OutdoorGenerator : public TerrainGenerator {
 private:
 	float ground[MAP_WIDTH][MAP_DEPTH];
-  CellularAutomaton *cellular;
+  CellularAutomaton *cellular[2][2];
 
 public:
 	OutdoorGenerator( Scourge *scourge, int level, int depth, int maxDepth,
