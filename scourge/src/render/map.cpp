@@ -4010,12 +4010,27 @@ void Map::createGroundMap() {
 			groundPos[ xx ][ yy ].tex = groundTex[ xx ][ yy ];
 
 			// height-based light
-			float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;                          
-			groundPos[ xx ][ yy ].r = n * 1.5f;
-			groundPos[ xx ][ yy ].g = n * 1.15f;
-			groundPos[ xx ][ yy ].b = n;
-			groundPos[ xx ][ yy ].a = 1;
-			n++;
+			if( ground[ xx ][ yy ] >= 10 ) {
+				float n = ( h / ( 13.0f / DIV ) );
+				groundPos[ xx ][ yy ].r = n * 0.9f;
+				groundPos[ xx ][ yy ].g = n * 0.6f;
+				groundPos[ xx ][ yy ].b = n * 0.05f;
+				groundPos[ xx ][ yy ].a = 1;
+			} else {
+				float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;
+				groundPos[ xx ][ yy ].r = n * 0.55f;
+				groundPos[ xx ][ yy ].g = n;
+				groundPos[ xx ][ yy ].b = n * 0.45f;
+				groundPos[ xx ][ yy ].a = 1;
+				/*
+				float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;                          
+				groundPos[ xx ][ yy ].r = n * 1.5f;
+				groundPos[ xx ][ yy ].g = n * 1.15f;
+				groundPos[ xx ][ yy ].b = n;
+				groundPos[ xx ][ yy ].a = 1;
+				*/
+			}
+			//n++;
 		}
 	}
 	

@@ -36,7 +36,10 @@ TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission
 			ground[x][y] = 0;
 		}
 	}
-  this->cellular = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
+  this->cellular[0][0] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
+	this->cellular[1][0] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
+	this->cellular[0][1] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
+	this->cellular[1][1] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
 
   // reasonable defaults
   TerrainGenerator::doorCount = 0;
@@ -53,7 +56,10 @@ TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission
 }
 
 OutdoorGenerator::~OutdoorGenerator() {
-  delete cellular;
+  delete cellular[0][0];
+	delete cellular[0][1];
+	delete cellular[1][0];
+	delete cellular[1][1];
 }
 
 bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
@@ -66,30 +72,49 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
 	// do this first, before adding shapes
 	// FIXME: elevate shapes if needed, in Map::setGroundHeight, so this method can be called anytime
+	int offs = MAP_OFFSET / OUTDOORS_STEP;
 	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
 		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
-      if( x < 50 && y < 50 && cellular->getNode( x, y )->wall ) {
-        map->setGroundHeight( x, y, 10.0f + ( 4.0f * rand() / RAND_MAX ) );
-      } else {
-        map->setGroundHeight( x, y, ground[x][y] );
-      }
+			map->setGroundHeight( x, y, ground[x][y] );
+			if( x >= offs && x < 2 * WIDTH_IN_NODES + offs &&
+					y >= offs && y < 2 * DEPTH_IN_NODES + offs ) {
+				int cx = ( x - offs ) / WIDTH_IN_NODES;
+				int cy = ( y - offs ) / DEPTH_IN_NODES;
+				int mx = ( x - offs ) % WIDTH_IN_NODES;
+				int my = ( y - offs ) % DEPTH_IN_NODES;
+				if( cellular[ cx ][ cy ]->getNode( mx, my )->wall ) {
+					map->setGroundHeight( x, y, 10.0f + ( 6.0f * rand() / RAND_MAX ) );
+				}
+			} else {
+				map->setGroundHeight( x, y, 10.0f + ( 6.0f * rand() / RAND_MAX ) );
+			}
 		}
 	}
-
 	
-	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x += OUTDOOR_FLOOR_TEX_SIZE ) {
-		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y += OUTDOOR_FLOOR_TEX_SIZE ) {
+	int ex = MAP_WIDTH / OUTDOORS_STEP;
+	int ey = MAP_DEPTH / OUTDOORS_STEP;
+	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
+		for( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
 			GLuint tex = 0;
-			int n = (int)( 5.0f * rand() / RAND_MAX );
+
+			/*
+			bool mountain = false;
+			for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ){
+				for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
+					if( map->getGroundHeight( x + xx, y + yy ) >= 10 ) {
+						mountain = true;
+						break;
+					}
+				}
+			}
+			*/
+
+			int n = (int)( 3.0f * rand() / RAND_MAX );
 			switch( n ) {
 			case 0:
 				tex = shapePal->getNamedTexture( "grass1" ); break;
 			case 1:
 				tex = shapePal->getNamedTexture( "grass2" ); break;
-			case 2:
-				tex = shapePal->getNamedTexture( "grass3" ); break;
-			case 3:
-				tex = shapePal->getNamedTexture( "grass4" ); break;
 			default:
 				tex = shapePal->getNamedTexture( "grass" );
 			}
@@ -159,7 +184,10 @@ MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
 // generation
 //
 void OutdoorGenerator::generate( Map *map, ShapePalette *shapePal ) {
-  cellular->generate( false, true );
+  cellular[0][0]->generate( false, true );
+	cellular[1][0]->generate( false, true );
+	cellular[0][1]->generate( false, true );
+	cellular[1][1]->generate( false, true );
 	createGround();
 }
 
