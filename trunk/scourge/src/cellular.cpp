@@ -358,6 +358,40 @@ void CellularAutomaton::connectRooms() {
   }
 }
 
+
+void CellularAutomaton::makeAccessible( int x, int y ) {
+	node[x][y].wall = false;
+	int cx = w / 2;
+	int cy = h / 2;
+	connectPoints( x, y, cx, cy, false );
+}
+
+void CellularAutomaton::makeMinSpace( int width ) {
+	// fix horizontal spaces
+	for( int x = 0; x < w - 2; x++ ) {
+		for( int y = 0; y < h; y++ ) {
+			if( ( x == 0 || node[x - 1][y].wall ) &&
+					!node[x][y].wall &&
+					( x + 1 == w - 1 || node[x + 1][y].wall ) ) {
+				node[x + 1][y].wall = false;
+			}
+		}
+	}
+
+	// fix vertical spaces
+	for( int y = 0; y < h - 2; y++ ) {
+		for( int x = 0; x < w; x++ ) {
+			if( ( y == 0 || node[x][y - 1].wall ) &&
+					!node[x][y].wall &&
+					( y + 1 == h - 1 || node[x][y + 1].wall ) ) {
+				node[x][y + 1].wall = false;
+			}
+		}
+	}
+
+	removeSingles();
+}
+
 // Remove sharp edges because these don't render well. 
 // Another option is to draw stalagmites instead of wall.
 void CellularAutomaton::removeSingles() {

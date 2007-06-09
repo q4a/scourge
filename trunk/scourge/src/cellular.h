@@ -62,6 +62,10 @@ public:
   inline int getBiggestRoom() { return biggestRoom; }
   inline Room* getRoom( int n ) { return &room[ n ]; }
 
+	void print();
+	void makeAccessible( int x, int y );
+	void makeMinSpace( int width );
+
 protected:
   void randomize();
   void growCells();
@@ -71,7 +75,6 @@ protected:
   void connectPoints( int sx, int sy, int ex, int ey, bool isBiggestRoom );
   void connectRooms();
   void removeSingles();
-  void print();
   void addIslands();
   void growCellsIsland();
   void addIslandLand();

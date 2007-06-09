@@ -185,9 +185,28 @@ MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
 //
 void OutdoorGenerator::generate( Map *map, ShapePalette *shapePal ) {
   cellular[0][0]->generate( false, true );
+	cellular[0][0]->makeAccessible( WIDTH_IN_NODES - 1, DEPTH_IN_NODES / 2 );
+	cellular[0][0]->makeAccessible( WIDTH_IN_NODES / 2, DEPTH_IN_NODES - 1 );
+	cellular[0][0]->makeMinSpace( 2 );
+	cellular[0][0]->print();
+	
 	cellular[1][0]->generate( false, true );
+	cellular[1][0]->makeAccessible( 0, DEPTH_IN_NODES / 2 );
+	cellular[1][0]->makeAccessible( WIDTH_IN_NODES / 2, DEPTH_IN_NODES - 1 );
+	cellular[1][0]->makeMinSpace( 2 );
+	cellular[1][0]->print();
+
 	cellular[0][1]->generate( false, true );
+	cellular[0][1]->makeAccessible( WIDTH_IN_NODES - 1, DEPTH_IN_NODES / 2 );
+	cellular[0][1]->makeAccessible( WIDTH_IN_NODES / 2, 0 );
+	cellular[0][1]->makeMinSpace( 2 );
+	cellular[0][1]->print();
+
 	cellular[1][1]->generate( false, true );
+	cellular[1][1]->makeAccessible( 0, DEPTH_IN_NODES / 2 );
+	cellular[1][1]->makeAccessible( WIDTH_IN_NODES / 2, 0 );
+	cellular[1][1]->makeMinSpace( 2 );
+	cellular[1][1]->print();
 	createGround();
 }
 
