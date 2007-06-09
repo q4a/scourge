@@ -366,25 +366,39 @@ void CellularAutomaton::makeAccessible( int x, int y ) {
 	connectPoints( x, y, cx, cy, false );
 }
 
-void CellularAutomaton::makeMinSpace( int width ) {
+void CellularAutomaton::makeMinSpace( int size ) {
 	// fix horizontal spaces
-	for( int x = 0; x < w - 2; x++ ) {
-		for( int y = 0; y < h; y++ ) {
+	for( int y = 0; y < h; y++ ) {
+		for( int x = 0; x < w - size; x++ ) {		
 			if( ( x == 0 || node[x - 1][y].wall ) &&
-					!node[x][y].wall &&
-					( x + 1 == w - 1 || node[x + 1][y].wall ) ) {
-				node[x + 1][y].wall = false;
+					!node[x][y].wall ) {
+				for( int i = 0; i < size - 1; i++ ) {
+					if( x + 1 < w - 1 ) {
+						node[x + i][y].wall = false;
+						for( int t = 0; t < size - 1; t++ ) {
+							if( y + t < h && !node[x][y + t].wall ) node[x + i][y + t].wall = false;
+						}
+					}
+				}
+				x += size;
 			}
-		}
+		}		
 	}
 
 	// fix vertical spaces
-	for( int y = 0; y < h - 2; y++ ) {
-		for( int x = 0; x < w; x++ ) {
+	for( int x = 0; x < w; x++ ) {
+		for( int y = 0; y < h - 2; y++ ) {
 			if( ( y == 0 || node[x][y - 1].wall ) &&
-					!node[x][y].wall &&
-					( y + 1 == h - 1 || node[x][y + 1].wall ) ) {
-				node[x][y + 1].wall = false;
+					!node[x][y].wall ) {
+				for( int i = 0; i < size - 1; i++ ) {
+					if( y + 1 < h - 1 ) {
+						node[x][y + i].wall = false;
+						for( int t = 0; t < size - 1; t++ ) {
+							if( x + t < w && !node[x + t][y].wall ) node[x + t][y + i].wall = false;
+						}
+					}
+				}
+				y += size;
 			}
 		}
 	}

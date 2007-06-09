@@ -84,6 +84,14 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 				int my = ( y - offs ) % DEPTH_IN_NODES;
 				if( cellular[ cx ][ cy ]->getNode( mx, my )->wall ) {
 					map->setGroundHeight( x, y, 10.0f + ( 6.0f * rand() / RAND_MAX ) );
+				} else if( cellular[ cx ][ cy ]->getNode( mx, my )->island ) {
+					GLShape *shape = getRandomTreeShape( shapePal );
+					int xx = x * OUTDOORS_STEP;
+					int yy = y * OUTDOORS_STEP + shape->getHeight();
+					if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
+						int zz = (int)map->findMaxHeightPos( xx + shape->getWidth() / 2.0f, yy - shape->getDepth() / 2.0f, 0, shape );
+						map->setPosition( xx, yy, zz, shape );
+					}
 				}
 			} else {
 				map->setGroundHeight( x, y, 10.0f + ( 6.0f * rand() / RAND_MAX ) );
@@ -136,6 +144,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 		}
 	}
 
+	/*
 	// add some groups of trees
 	for( int i = 0; i < 20; i++ ) {
 		int w = (int)( 40.0f * rand() / RAND_MAX ) + 20;
@@ -155,6 +164,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			}
 		}
 	}
+	*/
 
 	return true;
 }
@@ -184,28 +194,28 @@ MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
 // generation
 //
 void OutdoorGenerator::generate( Map *map, ShapePalette *shapePal ) {
-  cellular[0][0]->generate( false, true );
+  cellular[0][0]->generate( true, true );
 	cellular[0][0]->makeAccessible( WIDTH_IN_NODES - 1, DEPTH_IN_NODES / 2 );
 	cellular[0][0]->makeAccessible( WIDTH_IN_NODES / 2, DEPTH_IN_NODES - 1 );
-	cellular[0][0]->makeMinSpace( 2 );
+	cellular[0][0]->makeMinSpace( 4 );
 	cellular[0][0]->print();
 	
-	cellular[1][0]->generate( false, true );
+	cellular[1][0]->generate( true, true );
 	cellular[1][0]->makeAccessible( 0, DEPTH_IN_NODES / 2 );
 	cellular[1][0]->makeAccessible( WIDTH_IN_NODES / 2, DEPTH_IN_NODES - 1 );
-	cellular[1][0]->makeMinSpace( 2 );
+	cellular[1][0]->makeMinSpace( 4 );
 	cellular[1][0]->print();
 
-	cellular[0][1]->generate( false, true );
+	cellular[0][1]->generate( true, true );
 	cellular[0][1]->makeAccessible( WIDTH_IN_NODES - 1, DEPTH_IN_NODES / 2 );
 	cellular[0][1]->makeAccessible( WIDTH_IN_NODES / 2, 0 );
-	cellular[0][1]->makeMinSpace( 2 );
+	cellular[0][1]->makeMinSpace( 4 );
 	cellular[0][1]->print();
 
-	cellular[1][1]->generate( false, true );
+	cellular[1][1]->generate( true, true );
 	cellular[1][1]->makeAccessible( 0, DEPTH_IN_NODES / 2 );
 	cellular[1][1]->makeAccessible( WIDTH_IN_NODES / 2, 0 );
-	cellular[1][1]->makeMinSpace( 2 );
+	cellular[1][1]->makeMinSpace( 4 );
 	cellular[1][1]->print();
 	createGround();
 }
