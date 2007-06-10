@@ -613,7 +613,9 @@ void TerrainGenerator::createFreeSpaceMap(Map *map, ShapePalette *shapePal) {
       if(map->getFloorPosition(fx, fy + unitSide)) {
         for(int ffx = 0; ffx < unitSide; ffx++) {
           for(int ffy = unitSide; ffy > 0; ffy--) {
-            if(!map->getLocation(fx + ffx, fy + ffy, 0)) {
+						int gx = ( fx + ffx ) / OUTDOORS_STEP;
+						int gy = ( fy + ffy ) / OUTDOORS_STEP;
+            if( !map->getLocation(fx + ffx, fy + ffy, 0) && map->getGroundHeight( gx, gy ) < 10 ) {
               *(ff + ffCount * 2) = fx + ffx;
               *(ff + ffCount * 2 + 1) = fy + ffy;
               ffCount++;
