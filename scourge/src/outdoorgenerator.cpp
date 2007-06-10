@@ -70,8 +70,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
 	map->setHeightMapEnabled( true );
 
-	// do this first, before adding shapes
-	// FIXME: elevate shapes if needed, in Map::setGroundHeight, so this method can be called anytime
+	// add mountains
 	int offs = MAP_OFFSET / OUTDOORS_STEP;
 	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
 		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
@@ -84,39 +83,40 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 				int my = ( y - offs ) % DEPTH_IN_NODES;
 				if( cellular[ cx ][ cy ]->getNode( mx, my )->wall ) {
 					map->setGroundHeight( x, y, 10.0f + ( 6.0f * rand() / RAND_MAX ) );
-				} else if( cellular[ cx ][ cy ]->getNode( mx, my )->island ) {
-					GLShape *shape = getRandomTreeShape( shapePal );
-					int xx = x * OUTDOORS_STEP;
-					int yy = y * OUTDOORS_STEP + shape->getHeight();
-					if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
-						int zz = (int)map->findMaxHeightPos( xx + shape->getWidth() / 2.0f, yy - shape->getDepth() / 2.0f, 0, shape );
-						map->setPosition( xx, yy, zz, shape );
-					}
 				}
 			} else {
 				map->setGroundHeight( x, y, 10.0f + ( 6.0f * rand() / RAND_MAX ) );
 			}
 		}
 	}
+
+	// add trees
+	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
+		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
+			if( x >= offs && x < 2 * WIDTH_IN_NODES + offs &&
+					y >= offs && y < 2 * DEPTH_IN_NODES + offs ) {
+				int cx = ( x - offs ) / WIDTH_IN_NODES;
+				int cy = ( y - offs ) / DEPTH_IN_NODES;
+				int mx = ( x - offs ) % WIDTH_IN_NODES;
+				int my = ( y - offs ) % DEPTH_IN_NODES;
+				if( cellular[ cx ][ cy ]->getNode( mx, my )->island ) {
+					GLShape *shape = getRandomTreeShape( shapePal );
+					int xx = x * OUTDOORS_STEP;
+					int yy = y * OUTDOORS_STEP + shape->getHeight();
+					if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
+						map->setPosition( xx, yy, 0, shape );
+					}
+				}
+			}
+		}
+	}
 	
+	// set ground texture
 	int ex = MAP_WIDTH / OUTDOORS_STEP;
 	int ey = MAP_DEPTH / OUTDOORS_STEP;
 	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
 			GLuint tex = 0;
-
-			/*
-			bool mountain = false;
-			for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ){
-				for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
-					if( map->getGroundHeight( x + xx, y + yy ) >= 10 ) {
-						mountain = true;
-						break;
-					}
-				}
-			}
-			*/
-
 			int n = (int)( 3.0f * rand() / RAND_MAX );
 			switch( n ) {
 			case 0:
@@ -143,28 +143,6 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			map->setFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT, (Shape*)shapePal->findShapeByName( "FLOOR_TILE", true ) );
 		}
 	}
-
-	/*
-	// add some groups of trees
-	for( int i = 0; i < 20; i++ ) {
-		int w = (int)( 40.0f * rand() / RAND_MAX ) + 20;
-		int h = (int)( 40.0f * rand() / RAND_MAX ) + 20;
-		int x = MAP_OFFSET + (int)( (float)( MAP_WIDTH - w - MAP_OFFSET * 2 ) * rand() / RAND_MAX );
-		int y = MAP_OFFSET + (int)( (float)( MAP_DEPTH - h - MAP_OFFSET * 2 ) * rand() / RAND_MAX );
-		int count = 0;
-		while( count < 10 ) {
-			GLShape *shape = getRandomTreeShape( shapePal );
-			int xx = x + (int)( (float)( w - shape->getWidth() ) * rand() / RAND_MAX );
-			int yy = y + (int)( (float)( h - shape->getDepth() ) * rand() / RAND_MAX );
-			if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) && 
-          map->findMaxHeightPos( xx, yy, 0, shape, true ) < 10.0f ) {
-				map->setPosition( xx, yy, 0, shape );
-			} else {
-				count++;
-			}
-		}
-	}
-	*/
 
 	return true;
 }
