@@ -40,19 +40,6 @@ TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission
 	this->cellular[1][0] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
 	this->cellular[0][1] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
 	this->cellular[1][1] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
-
-  // reasonable defaults
-  TerrainGenerator::doorCount = 0;
-  TerrainGenerator::roomCount = 1;
-  TerrainGenerator::room[0].x = room[0].y = 0;
-  TerrainGenerator::room[0].w = ( MAP_WIDTH - 2 * MAP_OFFSET ) / MAP_UNIT;
-  TerrainGenerator::room[0].h = ( MAP_DEPTH - 2 * MAP_OFFSET ) / MAP_UNIT;
-  TerrainGenerator::room[0].valueBonus = 0;
-  TerrainGenerator::roomMaxWidth = 0;
-  TerrainGenerator::roomMaxHeight = 0;
-  TerrainGenerator::objectCount = 7 + ( level / 8 ) * 5;
-  TerrainGenerator::monsters = true;
-
 }
 
 OutdoorGenerator::~OutdoorGenerator() {
@@ -69,6 +56,27 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	else shapePal->loadRandomTheme();
 
 	map->setHeightMapEnabled( true );
+
+  // set rooms
+  doorCount = 0;
+	roomCount = 0;
+	for( int cx = 0; cx < 2; cx++ ) {
+		for( int cy = 0; cy < 2; cy++ ) {
+			//CellularAutomaton *c = cellular[cx][cy];
+			room[ roomCount ].x = ( cx * WIDTH_IN_NODES * OUTDOORS_STEP ) / MAP_UNIT;
+			room[ roomCount ].y = ( cy * DEPTH_IN_NODES * OUTDOORS_STEP ) / MAP_UNIT;
+			room[ roomCount ].w = WIDTH_IN_NODES * OUTDOORS_STEP / MAP_UNIT;
+			room[ roomCount ].h = DEPTH_IN_NODES * OUTDOORS_STEP / MAP_UNIT;
+			room[ roomCount ].valueBonus = 0;
+			cerr << "room " << roomCount << " dim:" << room[ roomCount ].x << "," << room[ roomCount ].y << "," << room[ roomCount ].w << "," << room[ roomCount ].h << endl;
+			roomCount++;
+		}
+	}
+  roomMaxWidth = 0;
+  roomMaxHeight = 0;
+  objectCount = 7 + ( level / 8 ) * 5;
+  monsters = true;
+
 
 	// add mountains
 	int offs = MAP_OFFSET / OUTDOORS_STEP;
