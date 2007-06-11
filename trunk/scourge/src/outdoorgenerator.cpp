@@ -68,7 +68,6 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			room[ roomCount ].w = WIDTH_IN_NODES * OUTDOORS_STEP / MAP_UNIT;
 			room[ roomCount ].h = DEPTH_IN_NODES * OUTDOORS_STEP / MAP_UNIT;
 			room[ roomCount ].valueBonus = 0;
-			cerr << "room " << roomCount << " dim:" << room[ roomCount ].x << "," << room[ roomCount ].y << "," << room[ roomCount ].w << "," << room[ roomCount ].h << endl;
 			roomCount++;
 		}
 	}

@@ -130,7 +130,10 @@ bool TerrainGenerator::toMap( Map *map, ShapePalette *shapePal ) {
 
 bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   bool ret = drawNodes( map, shapePal );
-  if( !ret ) goto cleanup;
+  if( !ret ) {
+		cerr << "*** Error: failed in drawNodes!" << endl;
+		goto cleanup;
+	}
 
   updateStatus( _( "Compressing free space" ) );
   createFreeSpaceMap(map, shapePal);
@@ -141,12 +144,14 @@ bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   updateStatus( _( "Adding gates" ) );
   if( !addStairs(map, shapePal) ) {
     ret = false;
+		cerr << "*** Error: failed in addStairs!" << endl;
     goto cleanup;
   }
 
   updateStatus( _( "Adding party" ) );
   if( !addParty( map, shapePal ) ) {
     ret = false;
+		cerr << "*** Error: failed in addParty!" << endl;
     goto cleanup;
   }
   
@@ -154,6 +159,7 @@ bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   updateStatus( _( "Adding teleporters" ) );
   if( !addTeleporters(map, shapePal) ) {
     ret = false;
+		cerr << "*** Error: failed in addTeleporters!" << endl;
     goto cleanup;
   }
   
