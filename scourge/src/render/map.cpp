@@ -215,12 +215,21 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	outdoorShadow = adapter->getNamedTexture( "outdoors_shadow" );
 
+	hackBlockingPos = new Location();
+	hackBlockingPos->creature = NULL;
+	hackBlockingPos->heightPos = 15;
+	hackBlockingPos->item = NULL;
+	hackBlockingPos->outlineColor = NULL;
+	hackBlockingPos->shape = NULL;
+	hackBlockingPos->x = hackBlockingPos->y = hackBlockingPos->z = 0;
+
   adapter->addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
   adapter->addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
 }
 
 Map::~Map(){
   reset();
+	delete hackBlockingPos;
   delete frustum;
   if( helper ) delete helper;
 }
@@ -1909,6 +1918,11 @@ Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z,
   int zz = z;
   for(int sx = 0; sx < s->getWidth(); sx++) {
     for(int sy = 0; sy < s->getDepth(); sy++) {
+
+			if( getGroundHeight( ( x + sx ) / OUTDOORS_STEP, ( y - sy ) / OUTDOORS_STEP ) > 10.0f ) {
+				return hackBlockingPos;
+			}
+
       // find the lowest location where this item fits
       int sz = z;
       while(sz < zz + s->getHeight()) {

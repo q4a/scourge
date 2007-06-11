@@ -283,6 +283,11 @@ bool AStar::isBlocked( Sint16 x, Sint16 y,
 											bool ignoreEndShape ) {
   for( int sx = 0; sx < creature->getShape()->getWidth(); sx++ ) {
     for( int sy = 0; sy < creature->getShape()->getDepth(); sy++ ) {
+
+			if( map->getGroundHeight( ( x + sx ) / OUTDOORS_STEP, ( y - sy ) / OUTDOORS_STEP ) > 10.0f ) {
+				return true;
+			}
+
       Location *loc = map->getLocation( x + sx, y - sy, 0 );
 			if( loc ) {
 				if( ignoreEndShape && 

@@ -238,6 +238,7 @@ private:
 	int debugHeightPosXX[4], debugHeightPosYY[4];
 	CVectorTex groundPos[MAP_WIDTH][MAP_DEPTH];
 	GLuint outdoorShadow;
+	Location *hackBlockingPos;
 
  public:
   bool useFrustum;
