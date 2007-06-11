@@ -4025,24 +4025,35 @@ void Map::createGroundMap() {
 
 			// height-based light
 			if( ground[ xx ][ yy ] >= 10 ) {
-				float n = ( h / ( 13.0f / DIV ) );
-				groundPos[ xx ][ yy ].r = n * 0.9f;
-				groundPos[ xx ][ yy ].g = n * 0.6f;
-				groundPos[ xx ][ yy ].b = n * 0.05f;
-				groundPos[ xx ][ yy ].a = 1;
+				if( 0 == (int)( 5.0f * rand() / RAND_MAX ) &&
+						ground[ xx + 1 ][ yy ] >= 10 && ground[ xx ][ yy + 1 ] >= 10 && 
+						ground[ xx - 1 ][ yy ] >= 10 && ground[ xx ][ yy - 1 ] >= 10 ) {
+					// snow
+					groundPos[ xx ][ yy ].r = 1;
+					groundPos[ xx ][ yy ].g = 1;
+					groundPos[ xx ][ yy ].b = 1;
+					groundPos[ xx ][ yy ].a = 1;
+				} else {
+					// ground (rock)
+					float n = ( h / ( 13.0f / DIV ) );
+					groundPos[ xx ][ yy ].r = n * 0.9f;
+					groundPos[ xx ][ yy ].g = n * 0.6f;
+					groundPos[ xx ][ yy ].b = n * 0.05f;
+					groundPos[ xx ][ yy ].a = 1;
+				}
 			} else {
 				float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;
-				groundPos[ xx ][ yy ].r = n * 0.55f;
-				groundPos[ xx ][ yy ].g = n;
-				groundPos[ xx ][ yy ].b = n * 0.45f;
-				groundPos[ xx ][ yy ].a = 1;
-				/*
-				float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;                          
-				groundPos[ xx ][ yy ].r = n * 1.5f;
-				groundPos[ xx ][ yy ].g = n * 1.15f;
-				groundPos[ xx ][ yy ].b = n;
-				groundPos[ xx ][ yy ].a = 1;
-				*/
+				if( (int)( 6.0f * rand() / RAND_MAX ) ) {
+					groundPos[ xx ][ yy ].r = n * 0.55f;
+					groundPos[ xx ][ yy ].g = n;
+					groundPos[ xx ][ yy ].b = n * 0.45f;
+					groundPos[ xx ][ yy ].a = 1;
+				} else {
+					groundPos[ xx ][ yy ].r = n;
+					groundPos[ xx ][ yy ].g = n;
+					groundPos[ xx ][ yy ].b = n * 0.25f;
+					groundPos[ xx ][ yy ].a = 1;
+				}
 			}
 			//n++;
 		}

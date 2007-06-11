@@ -27,6 +27,7 @@ Shape::Shape(int width, int depth, int height, char *name, int descriptionGroup)
   this->outlineColor = NULL;
 	groundSX = groundEX = groundSY = groundEY = 0;
   interactive = false;
+	outdoorWeight = 0;
 }
 
 Shape::Shape(Shape *shape) {
@@ -38,6 +39,7 @@ Shape::Shape(Shape *shape) {
   this->outlineColor = NULL;
 	groundSX = groundEX = groundSY = groundEY = 0;
   interactive = false;
+	outdoorWeight = 0;
 }
 
 Shape::~Shape(){
