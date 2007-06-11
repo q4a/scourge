@@ -511,6 +511,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->effectWidth = sv->effectDepth = sv->effectHeight = 0;
 	sv->effectX = sv->effectY = sv->effectZ = 0;
 	sv->interactive = false;
+	sv->outdoorsWeight = 0;
 
 
 	// load some common values
@@ -555,6 +556,8 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 			sv->effectZ = atoi( strtok( NULL, "," ) );
 		}
 	}
+
+	sv->outdoorsWeight = node->getValueAsFloat( "outdoors_weight" );	
 
 	return sv;
 }

@@ -33,6 +33,7 @@ private:
   Color *outlineColor;
   bool interactive;
 	int groundSX, groundEX, groundSY, groundEY;
+	float outdoorWeight;
 
 protected:
   int width, height, depth;
@@ -103,6 +104,9 @@ public:
 
   virtual inline void setInteractive( bool b ) { interactive = b; }
   virtual inline bool isInteractive() { return interactive; }
+
+	virtual inline void setOutdoorWeight( float f ) { outdoorWeight = f; }
+  virtual inline float getOutdoorWeight() { return outdoorWeight; }
 
   virtual inline bool isFlatCaveshape() { return false; }
 };
