@@ -30,9 +30,6 @@ class Mission;
 class GLShape;
 class CellularAutomaton;
 
-//#define OUTDOOR_NODE_SIZE 6
-//#define WIDTH_IN_NODES ( MAP_WIDTH - ( MAP_OFFSET * 2 ) / OUTDOOR_NODE_SIZE )
-//#define DEPTH_IN_NODES ( MAP_DEPTH - ( MAP_OFFSET * 2 ) / OUTDOOR_NODE_SIZE )
 #define WIDTH_IN_NODES 50
 #define DEPTH_IN_NODES 50
 
@@ -53,6 +50,7 @@ protected:
 	virtual MapRenderHelper* getMapRenderHelper();
 	GLShape *getRandomTreeShape( ShapePalette *shapePal );
 	void createGround();
+	virtual void addFurniture( Map *map, ShapePalette *shapePal );
 
 };
 

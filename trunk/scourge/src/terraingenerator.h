@@ -138,6 +138,7 @@ protected:
   virtual void addMissionObjectives(Map *map, ShapePalette *shapePal);
   virtual void addMonsters(Map *map, ShapePalette *shapePal);
   virtual void addFurniture(Map *map, ShapePalette *shapePal);
+	virtual void addMagicPools( Map *map, ShapePalette *shapePal );
   virtual bool addTeleporters(Map *map, ShapePalette *shapePal);
   virtual bool addParty(Map *map, ShapePalette *shapePal);
   virtual void lockDoors(Map *map, ShapePalette *shapePal);
