@@ -303,6 +303,9 @@ void Shapes::initialize() {
     shapes[ ( i + 1 ) ]->setInteractive( sv->interactive );
 
 		shapes[ ( i + 1 ) ]->setOutdoorWeight( sv->outdoorsWeight );
+		shapes[ ( i + 1 ) ]->setOutdoorShadow( sv->outdoorShadow );
+		shapes[ ( i + 1 ) ]->setWind( sv->wind );
+
 
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];

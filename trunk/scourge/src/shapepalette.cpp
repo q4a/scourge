@@ -512,6 +512,8 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->effectX = sv->effectY = sv->effectZ = 0;
 	sv->interactive = false;
 	sv->outdoorsWeight = 0;
+	sv->outdoorShadow = false;
+	sv->wind = false;
 
 
 	// load some common values
@@ -558,6 +560,8 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	}
 
 	sv->outdoorsWeight = node->getValueAsFloat( "outdoors_weight" );	
+	sv->outdoorShadow = node->getValueAsBool( "outdoor_shadow" );
+	sv->wind = node->getValueAsBool( "wind" );
 
 	return sv;
 }
