@@ -34,6 +34,8 @@ private:
   bool interactive;
 	int groundSX, groundEX, groundSY, groundEY;
 	float outdoorWeight;
+	bool outdoorShadow;
+	bool wind;
 
 protected:
   int width, height, depth;
@@ -107,6 +109,12 @@ public:
 
 	virtual inline void setOutdoorWeight( float f ) { outdoorWeight = f; }
   virtual inline float getOutdoorWeight() { return outdoorWeight; }
+
+	virtual inline void setOutdoorShadow( bool b ) { outdoorShadow = b; }
+	virtual inline bool isOutdoorShadow() { return outdoorShadow; }
+
+	virtual inline void setWind( bool b ) { wind = b; }
+	virtual inline bool isWind() { return wind; }
 
   virtual inline bool isFlatCaveshape() { return false; }
 };

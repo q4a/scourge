@@ -54,6 +54,8 @@ typedef struct _ShapeValues {
   int effectX, effectY, effectZ;
   bool interactive;
 	float outdoorsWeight;
+	bool outdoorShadow;
+	bool wind;
 } ShapeValues;
 
 typedef struct _CharacterModelInfo {

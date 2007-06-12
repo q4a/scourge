@@ -35,6 +35,8 @@ C3DSShape::C3DSShape(char *file_name, float div, Shapes *shapePal,
   debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, shapePalIndex);
   debugShape->initialize();
 #endif
+	windAngle = lastWindStep = 0;
+	windSpeed = 0.1f * rand() / RAND_MAX + 0.005f;
 }
 
 C3DSShape::~C3DSShape() {
@@ -280,8 +282,22 @@ void C3DSShape::initialize() {
 }
 
 void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
-
   glNewList( listName, GL_COMPILE );
+	drawShape( isShadow );
+  glEndList();
+}
+
+void C3DSShape::drawShape( bool isShadow ) {
+
+	// adjust for the wind
+	if( isWind() ) {
+		Uint32 now = SDL_GetTicks();
+		if( now - lastWindStep > 50 ) {
+			lastWindStep = now;
+			windAngle += windSpeed;
+			if( windAngle >= 360.0f ) windAngle -= 360.0f;
+		}		
+	}
 
   // Since we know how many objects our model has, go through each of them.
   for (int i = 0; i < g_3DModel.numOfObjects; i++) {
@@ -365,16 +381,21 @@ void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
         }
 
         // Pass in the current vertex of the object (Corner of current face)
-        glVertex3f(pObject->pVerts[ index ].x * divx, 
-                   pObject->pVerts[ index ].y * divy, 
-                   pObject->pVerts[ index ].z * divz);
-      }
-    }
+				if( isWind() ) {
+					float n = sin( windAngle ) * 0.5f * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
+					glVertex3f(pObject->pVerts[ index ].x * divx + n, 
+										 pObject->pVerts[ index ].y * divy, 
+										 pObject->pVerts[ index ].z * divz);
+				} else {
+					glVertex3f(pObject->pVerts[ index ].x * divx, 
+										 pObject->pVerts[ index ].y * divy, 
+										 pObject->pVerts[ index ].z * divz);
+				}
+			}
+		}
 
     glEnd();                                // End the drawing
   }
-
-  glEndList();
 }
 
 void C3DSShape::draw() {
@@ -401,7 +422,11 @@ void C3DSShape::draw() {
   glTranslatef(0.0f, (getDepth() / DIV) - (movey * divy), 0.0f);
   glTranslatef(0.0f, 0.0f, movez);
 
-  glCallList( displayListStart + (useShadow ? 1 : 0) );
+	if( isWind() ) {
+		drawShape( useShadow );
+	} else {
+		glCallList( displayListStart + (useShadow ? 1 : 0) );
+	}
 
   glPopMatrix();
 

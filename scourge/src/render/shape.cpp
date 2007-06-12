@@ -28,6 +28,8 @@ Shape::Shape(int width, int depth, int height, char *name, int descriptionGroup)
 	groundSX = groundEX = groundSY = groundEY = 0;
   interactive = false;
 	outdoorWeight = 0;
+	outdoorShadow = false;
+	wind = false;
 }
 
 Shape::Shape(Shape *shape) {
@@ -40,6 +42,8 @@ Shape::Shape(Shape *shape) {
 	groundSX = groundEX = groundSY = groundEY = 0;
   interactive = false;
 	outdoorWeight = 0;
+	outdoorShadow = false;
+	wind = false;
 }
 
 Shape::~Shape(){
