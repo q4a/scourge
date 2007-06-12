@@ -25,6 +25,8 @@
  * Do not include this file in a .h file.
  * This way it will only recompile the affected .cpp files.
  */
+
+#define SHOW_FPS true
  
 // battle.cpp
 #define DEBUG_BATTLE false
