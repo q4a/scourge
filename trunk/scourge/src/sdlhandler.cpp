@@ -41,7 +41,7 @@ vector<SDLHandler::FontInfo*> SDLHandler::fontInfos;
 //#define DEBUG_MOUSE_FOCUS 1
 
 bool SDLHandler::stencilBufferUsed = false;
-bool SDLHandler::showDebugInfo = false;
+bool SDLHandler::showDebugInfo = SHOW_FPS;
 
 // milllis
 #define DOUBLE_CLICK_INTERVAL 500
@@ -776,6 +776,7 @@ void SDLHandler::calculateFps() {
 void SDLHandler::drawDebugInfo() {
   glPushMatrix();
   glDisable( GL_DEPTH_TEST );
+  glDepthMask( GL_FALSE );
   glLoadIdentity();
   glColor3f( 0, 0, 0 );
   glBegin( GL_QUADS );
@@ -787,6 +788,7 @@ void SDLHandler::drawDebugInfo() {
   glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
   texPrint(400, 10, "FPS: %g %s", getFPS(), (debugStr ? debugStr : ""));
   glEnable( GL_DEPTH_TEST );
+  glDepthMask( GL_TRUE );
   glPopMatrix();
 }
 

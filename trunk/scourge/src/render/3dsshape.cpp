@@ -373,7 +373,8 @@ void C3DSShape::drawShape( bool isShadow ) {
 				if( isWind() && getWindInfo() ) {
 					//float n = sin( windAngle ) * 0.5f * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
 					float nx = getWindInfo()->getValue() * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
-					float ny = getWindInfo()->getValue() * getWindInfo()->getYMod() * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
+					//float ny = getWindInfo()->getValue() * getWindInfo()->getYMod() * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
+          float ny = 0;
 					glVertex3f(pObject->pVerts[ index ].x * divx + nx, 
 										 pObject->pVerts[ index ].y * divy + ny, 
 										 pObject->pVerts[ index ].z * divz);
