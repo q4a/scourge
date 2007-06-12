@@ -261,4 +261,7 @@ void OutdoorGenerator::createGround() {
 	}
 }
 
+void OutdoorGenerator::addFurniture( Map *map, ShapePalette *shapePal ) {
+  addMagicPools( map, shapePal );
+}
 

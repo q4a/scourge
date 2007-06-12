@@ -487,12 +487,8 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
   }
 }
 
-void TerrainGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
-  // add tables, chairs, etc.
-  addItemsInEveryRoom(RpgItem::getItemByName("Table"), 1);
-  addItemsInEveryRoom(RpgItem::getItemByName("Chair"), 2);  
-
-  // add some magic pools
+void TerrainGenerator::addMagicPools( Map *map, ShapePalette *shapePal ) {
+	// add some magic pools
   DisplayInfo di;
   for( int i = 0; i < roomCount; i++ ) {
     if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
@@ -507,6 +503,13 @@ void TerrainGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
       }
     }
   }
+}
+
+void TerrainGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
+  // add tables, chairs, etc.
+  addItemsInEveryRoom(RpgItem::getItemByName("Table"), 1);
+  addItemsInEveryRoom(RpgItem::getItemByName("Chair"), 2);  
+  addMagicPools( map, shapePal );
 }
 
 bool TerrainGenerator::addTeleporters(Map *map, ShapePalette *shapePal) {
