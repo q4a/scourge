@@ -36,7 +36,7 @@ C3DSShape::C3DSShape(char *file_name, float div, Shapes *shapePal,
   debugShape->initialize();
 #endif
 	windAngle = lastWindStep = 0;
-	windSpeed = 0.1f * rand() / RAND_MAX + 0.005f;
+	windSpeed = 0.10f * rand() / RAND_MAX + 0.01f;
 }
 
 C3DSShape::~C3DSShape() {
