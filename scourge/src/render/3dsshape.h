@@ -59,9 +59,6 @@ private:
   GLShape *debugShape;
   GLuint displayListStart;
   bool initialized;
-	float windSpeed;
-	float windAngle;
-	Uint32 lastWindStep;
 
 public:   
   C3DSShape(char *file_name, float div, Shapes *shapePal,

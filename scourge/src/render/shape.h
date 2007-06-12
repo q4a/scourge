@@ -23,6 +23,8 @@
 #include <string.h>
 #include "render.h"
 
+class WindInfo;
+
 class Shape {
   
 private:
@@ -36,6 +38,7 @@ private:
 	float outdoorWeight;
 	bool outdoorShadow;
 	bool wind;
+	WindInfo *windInfo;
 
 protected:
   int width, height, depth;
@@ -115,6 +118,8 @@ public:
 
 	virtual inline void setWind( bool b ) { wind = b; }
 	virtual inline bool isWind() { return wind; }
+	virtual inline void setWindInfo( WindInfo *windInfo ) { this->windInfo = windInfo; }
+	virtual inline WindInfo *getWindInfo() { return windInfo; }
 
   virtual inline bool isFlatCaveshape() { return false; }
 };

@@ -53,6 +53,38 @@ public:
   }
 };
 
+class WindInfo {
+private:
+	float windAmp;
+	float windSpeed;
+	float windAngle;
+	Uint32 lastWindStep;
+	float ymod;
+
+public:
+	WindInfo() {
+		windAngle = lastWindStep = 0;
+		windSpeed = 0.10f * rand() / RAND_MAX + 0.01f;
+		windAmp = 0.5f;
+		ymod = 1.2f * rand() / RAND_MAX;
+	}
+
+	~WindInfo() {
+	}
+
+	inline void update() {
+		Uint32 now = SDL_GetTicks();
+		if( now - lastWindStep > 50 ) {
+			lastWindStep = now;
+			windAngle += windSpeed;
+			if( windAngle >= 360.0f ) windAngle -= 360.0f;
+		}
+	}
+
+	inline float getValue() { return sin( windAngle ) * windAmp; }
+	inline float getYMod() { return ymod; }
+};
+
 class Location {
 public:
   // shapes
@@ -62,6 +94,7 @@ public:
   RenderedItem *item;
   RenderedCreature *creature;
   Color *outlineColor;
+	WindInfo wind;
 };
 
 class EffectLocation {

@@ -1596,6 +1596,12 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
 
+	// update the wind
+	if( later->pos && shape ) {
+		later->pos->wind.update();		
+		shape->setWindInfo( &later->pos->wind );
+	}
+
   // slow on mac os X:
   // glPushAttrib(GL_ENABLE_BIT);
 
