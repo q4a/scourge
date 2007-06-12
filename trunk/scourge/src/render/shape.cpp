@@ -30,6 +30,7 @@ Shape::Shape(int width, int depth, int height, char *name, int descriptionGroup)
 	outdoorWeight = 0;
 	outdoorShadow = false;
 	wind = false;
+	windInfo = NULL;
 }
 
 Shape::Shape(Shape *shape) {
@@ -44,6 +45,7 @@ Shape::Shape(Shape *shape) {
 	outdoorWeight = 0;
 	outdoorShadow = false;
 	wind = false;
+	windInfo = NULL;
 }
 
 Shape::~Shape(){

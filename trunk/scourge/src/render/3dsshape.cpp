@@ -21,6 +21,7 @@
   
 #include "3dsshape.h"
 #include "shapes.h"
+#include "location.h"
 
 using namespace std;
 
@@ -35,8 +36,6 @@ C3DSShape::C3DSShape(char *file_name, float div, Shapes *shapePal,
   debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, shapePalIndex);
   debugShape->initialize();
 #endif
-	windAngle = lastWindStep = 0;
-	windSpeed = 0.10f * rand() / RAND_MAX + 0.01f;
 }
 
 C3DSShape::~C3DSShape() {
@@ -289,16 +288,6 @@ void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
 
 void C3DSShape::drawShape( bool isShadow ) {
 
-	// adjust for the wind
-	if( isWind() ) {
-		Uint32 now = SDL_GetTicks();
-		if( now - lastWindStep > 50 ) {
-			lastWindStep = now;
-			windAngle += windSpeed;
-			if( windAngle >= 360.0f ) windAngle -= 360.0f;
-		}		
-	}
-
   // Since we know how many objects our model has, go through each of them.
   for (int i = 0; i < g_3DModel.numOfObjects; i++) {
     // Make sure we have valid objects just in case. (size() is in the vector class)
@@ -381,10 +370,12 @@ void C3DSShape::drawShape( bool isShadow ) {
         }
 
         // Pass in the current vertex of the object (Corner of current face)
-				if( isWind() ) {
-					float n = sin( windAngle ) * 0.5f * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
-					glVertex3f(pObject->pVerts[ index ].x * divx + n, 
-										 pObject->pVerts[ index ].y * divy, 
+				if( isWind() && getWindInfo() ) {
+					//float n = sin( windAngle ) * 0.5f * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
+					float nx = getWindInfo()->getValue() * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
+					float ny = getWindInfo()->getValue() * getWindInfo()->getYMod() * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
+					glVertex3f(pObject->pVerts[ index ].x * divx + nx, 
+										 pObject->pVerts[ index ].y * divy + ny, 
 										 pObject->pVerts[ index ].z * divz);
 				} else {
 					glVertex3f(pObject->pVerts[ index ].x * divx, 
