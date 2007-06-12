@@ -154,8 +154,46 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	return true;
 }
 
-vector<GLShape*> trees;
+typedef struct _ShapeLimit {
+  GLShape *shape;
+  float start, end;
+} ShapeLimit;
+vector<ShapeLimit> trees;
+
 GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {
+  if( trees.empty() ) {
+    float offs = 0;
+    for( int i = 1; i < shapePal->getShapeCount(); i++ ) {
+      Shape *shape = shapePal->getShape( i );
+      if( shape->getOutdoorWeight() > 0 ) {
+        ShapeLimit limit;
+        limit.start = offs;
+        offs += shape->getOutdoorWeight();
+        limit.end = offs;
+        limit.shape = (GLShape*)shape;
+        trees.push_back( limit );
+      }
+    }
+  }
+  assert( !trees.empty() );
+  
+  float roll = trees[ trees.size() - 1 ].end * rand() / RAND_MAX;
+
+  // FIXME: implement binary search here
+  for( unsigned int i = 0; i < trees.size(); i++ ) {
+    if( trees[i].start <= roll && roll < trees[i].end ) {
+      return trees[i].shape;
+    }
+  }
+  cerr << "Unable to find tree shape! roll=" << roll << " max=" << trees[ trees.size() - 1 ].end << endl;
+  cerr << "--------------------" << endl;
+  for( unsigned int i = 0; i < trees.size(); i++ ) {
+    cerr << "\t" << trees[i].shape->getName() << " " << trees[i].start << "-" << trees[i].end << endl;
+  }
+  cerr << "--------------------" << endl;
+  return NULL;
+  
+  /*
 	//return shapePal->findShapeByName( "DEBUG_TREE" );
 	if( trees.size() == 0 ) {
 		// this should be in config file
@@ -167,6 +205,7 @@ GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {
 		trees.push_back( shapePal->findShapeByName( "BUSH2" ) );
 	}
 	return trees[ (int)( (float)( trees.size() ) * rand() / RAND_MAX ) ];
+  */
 }
 
 MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
@@ -221,4 +260,5 @@ void OutdoorGenerator::createGround() {
 		}
 	}
 }
+
 
