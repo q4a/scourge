@@ -777,6 +777,7 @@ void SDLHandler::drawDebugInfo() {
   glPushMatrix();
   glDisable( GL_DEPTH_TEST );
   glDepthMask( GL_FALSE );
+	glDisable( GL_CULL_FACE );
   glLoadIdentity();
   glColor3f( 0, 0, 0 );
   glBegin( GL_QUADS );
@@ -785,6 +786,7 @@ void SDLHandler::drawDebugInfo() {
   glVertex2f( screen->w, 12 );
   glVertex2f( screen->w, 0 );
   glEnd();
+	glEnable( GL_TEXTURE_2D );
   glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
   texPrint(400, 10, "FPS: %g %s", getFPS(), (debugStr ? debugStr : ""));
   glEnable( GL_DEPTH_TEST );
