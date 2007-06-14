@@ -41,6 +41,42 @@ class Shapes;
 
 typedef unsigned char BYTE;
 
+
+class WindInfo {
+private:
+	float windAmp;
+	float windSpeed;
+	float windAngle;
+	Uint32 lastWindStep;
+	float ymod;
+
+public:
+	WindInfo() {
+		windAngle = lastWindStep = 0;
+		windSpeed = 0.10f * rand() / RAND_MAX + 0.01f;
+		windAmp = 0.5f;
+		ymod = 1.2f * rand() / RAND_MAX;
+	}
+
+	~WindInfo() {
+	}
+
+	inline bool update() {
+		bool ret = false;
+		Uint32 now = SDL_GetTicks();
+		if( now - lastWindStep > 50 ) {
+			lastWindStep = now;
+			windAngle += windSpeed;
+			if( windAngle >= 360.0f ) windAngle -= 360.0f;
+			ret = true;
+		}
+		return ret;
+	}
+
+	inline float getValue() { return sin( windAngle ) * windAmp; }
+	inline float getYMod() { return ymod; }
+};
+
 class C3DSShape : public GLShape  {
 
 private:
@@ -59,6 +95,7 @@ private:
   GLShape *debugShape;
   GLuint displayListStart;
   bool initialized;
+	WindInfo windInfo;
 
 public:   
   C3DSShape(char *file_name, float div, Shapes *shapePal,

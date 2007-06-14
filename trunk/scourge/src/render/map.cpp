@@ -1620,6 +1620,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
     glTranslatef( xpos2, ypos2, zpos2 + ( later && later->pos ? later->pos->heightPos / DIV : 0 ) );
 
+
 #ifdef DEBUG_SECRET_DOORS    
     if( later && later->pos ) {
       int xp = later->pos->x;
@@ -1703,18 +1704,11 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     
 
   } else {
-
-    // update the wind
-    if( !useShadow && later->pos && shape ) {
-      later->pos->wind.update();		
-      shape->setWindInfo( &later->pos->wind );
-    }
-
-    if( later && later->pos && 
-        later->pos->outlineColor &&
-        !useShadow ) 
-      shape->outline( later->pos->outlineColor );
-    shape->draw();
+		if( later && later->pos && 
+				later->pos->outlineColor &&
+				!useShadow ) 
+			shape->outline( later->pos->outlineColor );
+		shape->draw();
   }
   glPopName();
   glPopMatrix();
@@ -2128,6 +2122,7 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	p->y = y;
 	p->z = z;
 	p->outlineColor = NULL;
+	
 
 	for(int xp = 0; xp < shape->getWidth(); xp++) {
 		for(int yp = 0; yp < shape->getDepth(); yp++) {
