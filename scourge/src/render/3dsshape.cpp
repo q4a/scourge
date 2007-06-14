@@ -370,9 +370,9 @@ void C3DSShape::drawShape( bool isShadow ) {
         }
 
         // Pass in the current vertex of the object (Corner of current face)
-				if( isWind() && getWindInfo() ) {
+				if( isWind() ) {
 					//float n = sin( windAngle ) * 0.5f * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
-					float nx = getWindInfo()->getValue() * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
+					float nx = windInfo.getValue() * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
 					//float ny = getWindInfo()->getValue() * getWindInfo()->getYMod() * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
           float ny = 0;
 					glVertex3f(pObject->pVerts[ index ].x * divx + nx, 
@@ -414,11 +414,12 @@ void C3DSShape::draw() {
   glTranslatef(0.0f, (getDepth() / DIV) - (movey * divy), 0.0f);
   glTranslatef(0.0f, 0.0f, movez);
 
-	if( isWind() ) {
-		drawShape( useShadow );
-	} else {
-		glCallList( displayListStart + (useShadow ? 1 : 0) );
+	// update the wind
+	if( isWind() && !useShadow ) {
+		if( windInfo.update() ) createDisplayList( displayListStart, false );
 	}
+
+	glCallList( displayListStart + (useShadow ? 1 : 0) );
 
   glPopMatrix();
 
