@@ -145,7 +145,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   mapCenterCreature = NULL;
     
   this->xrot = 0.0f;
-  this->yrot = 30.0f;
+	this->yrot = 30.0f;
   this->zrot = 45.0f;
   this->xRotating = this->yRotating = this->zRotating = 0.0f;
 
@@ -214,6 +214,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	refreshGroundPos = true;
 
 	outdoorShadow = adapter->getNamedTexture( "outdoors_shadow" );
+	outdoorShadowTree = adapter->getNamedTexture( "outdoors_shadow_tree" );
 
 	hackBlockingPos = new Location();
 	hackBlockingPos->creature = NULL;
@@ -1215,14 +1216,24 @@ void Map::draw() {
       }
       doDrawShape(&other[i]);
 
+			// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
 			// draw simple shadow in outdoors
-			if( other[i].creature && !helper->drawShadow() ) {
-				glColor4f( 0.04f, 0, 0.07f, 0.4f );
-				drawGroundTex( outdoorShadow,
-											 other[i].creature->getX() + 0.25f,
-											 other[i].creature->getY() + 0.25f,
-											 ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f,
-											 other[i].creature->getShape()->getDepth() * 0.7f );
+			if( !helper->drawShadow() ) {
+				if( other[i].creature ) {
+					glColor4f( 0.04f, 0, 0.07f, 0.4f );
+					drawGroundTex( outdoorShadow,
+												 other[i].creature->getX() + 0.25f,
+												 other[i].creature->getY() + 0.25f,
+												 ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f,
+												 other[i].creature->getShape()->getDepth() * 0.7f );
+				} else if( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
+					glColor4f( 0.04f, 0, 0.07f, 0.4f );
+					drawGroundTex( outdoorShadowTree,
+												 (float)other[i].pos->x - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ),
+												 (float)other[i].pos->y + ( other[i].shape->getDepth() / 2.0f ),
+												 other[i].shape->getWidth() * 1.7f,
+												 other[i].shape->getDepth() * 1.7f );
+				}
 			}
     }
 
@@ -3820,6 +3831,8 @@ void Map::setMapRenderHelper( MapRenderHelper *helper ) {
   this->helper = helper;
   this->helper->setMap( this );
   LIGHTMAP_ENABLED = this->helper->isLightMapEnabled();
+	// diff. default angle in outdoors
+	if( !helper->drawShadow() ) this->yrot = settings->getMaxYRot() - 1;
   //lightMapChanged = true;
 }
 
