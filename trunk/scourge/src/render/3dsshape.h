@@ -113,6 +113,7 @@ public:
   bool drawLater();
   void setupBlending();
   void endBlending();
+	inline float getWindValue() { return windInfo.getValue(); }
 
 protected:
   void commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z);

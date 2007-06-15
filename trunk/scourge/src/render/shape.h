@@ -118,6 +118,7 @@ public:
 
 	virtual inline void setWind( bool b ) { wind = b; }
 	virtual inline bool isWind() { return wind; }
+	virtual inline float getWindValue() { return 0; }
 
   virtual inline bool isFlatCaveshape() { return false; }
 };

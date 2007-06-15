@@ -237,7 +237,7 @@ private:
 	bool refreshGroundPos;
 	int debugHeightPosXX[4], debugHeightPosYY[4];
 	CVectorTex groundPos[MAP_WIDTH][MAP_DEPTH];
-	GLuint outdoorShadow;
+	GLuint outdoorShadow, outdoorShadowTree;
 	Location *hackBlockingPos;
 
  public:
