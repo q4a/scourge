@@ -3353,6 +3353,9 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
 		// load the fog
 		getMapRenderHelper()->loadHelper( &(info->fog_info) );
+	} else if( info->map_type == MapRenderHelper::OUTDOOR_HELPER ) {
+		// it's an outdoors type map
+		setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
 	} else {
 		cerr << "*** error unknown map type: " << info->map_type << endl;
 		return false;

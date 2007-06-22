@@ -303,7 +303,8 @@ void Board::initMissions() {
               availableMissions[i]->getLevel(), 
               availableMissions[i]->getDepth(), 
               ( availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : 
-                ( strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : "" ) ),
+                ( strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : 
+									( strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : "" ) ) ),
               availableMissions[i]->getDisplayName(),
               (availableMissions[i]->isCompleted() ? _( "(completed)" ) : ""));
       missionColor[i].r = 1.0f;
