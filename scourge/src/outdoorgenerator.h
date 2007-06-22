@@ -51,6 +51,7 @@ protected:
 	GLShape *getRandomTreeShape( ShapePalette *shapePal );
 	void createGround();
 	virtual void addFurniture( Map *map, ShapePalette *shapePal );
+	virtual void lockDoors( Map *map, ShapePalette *shapePal );
 
 };
 

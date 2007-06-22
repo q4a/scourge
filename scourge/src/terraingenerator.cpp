@@ -26,6 +26,7 @@
 #include "cavemaker.h"
 #include "dungeongenerator.h"
 #include "mondrian.h"
+#include "outdoorgenerator.h"
 
 using namespace std;
 
@@ -33,7 +34,15 @@ using namespace std;
 TerrainGenerator *TerrainGenerator::getGenerator( Scourge *scourge, int depth ) {
 	Mission *mission = scourge->getSession()->getCurrentMission();
 	TerrainGenerator *dg;
-	if( strstr( mission->getMapName(), "caves" ) ) {
+	if( strstr( mission->getMapName(), "outdoors" ) ) {
+		dg = new OutdoorGenerator( scourge, 
+															 mission->getLevel(), 
+															 depth,
+															 mission->getDepth(),
+															 ( depth < mission->getDepth() - 1 ),
+															 ( depth > 0 ),
+															 mission );
+	} else if( strstr( mission->getMapName(), "caves" ) ) {
 		dg = new CaveMaker( scourge, 
 												mission->getLevel(), 
 												depth,
