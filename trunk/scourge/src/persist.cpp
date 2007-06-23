@@ -162,6 +162,12 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 			//}
 		}
 	}
+	file->write( &( info->heightMapEnabled ) );
+	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
+		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
+			file->write( &( info->ground[ x ][ y ] ) );
+		}
+	}
 }
 
 // FIXME: reuse this in loadmap
@@ -343,7 +349,15 @@ MapInfo *Persist::loadMap( File *file ) {
 			}
 		}
 	}
-  return info;
+	if( info->version >= 34 ) {
+		file->read( &( info->heightMapEnabled ) );
+		for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
+			for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
+				file->read( &( info->ground[ x ][ y ] ) );
+			}
+		}
+	}
+	return info;
 }
 
 void Persist::deleteMapInfo( MapInfo *info ) {

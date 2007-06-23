@@ -582,6 +582,8 @@ private:
 	 */
 	void drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, bool debug=false );
 
+	void initOutdoorsGroundTexture();
+
 protected:
 
 	void createGroundMap();
