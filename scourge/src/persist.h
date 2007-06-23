@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 33
+#define PERSIST_VERSION 34
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -148,6 +148,8 @@ typedef struct _MapInfo {
 	LockedInfo *secret[ MAP_WIDTH * MAP_DEPTH ];
 	FogInfo fog_info;
 	Uint8 edited;
+	Uint8 heightMapEnabled;
+	Uint32 ground[ MAP_WIDTH / OUTDOORS_STEP ][ MAP_DEPTH / OUTDOORS_STEP ];
 } MapInfo;
 
 typedef struct _MissionInfo {

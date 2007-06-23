@@ -123,28 +123,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 		}
 	}
 	
-	// set ground texture
-	int ex = MAP_WIDTH / OUTDOORS_STEP;
-	int ey = MAP_DEPTH / OUTDOORS_STEP;
-	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
-		for( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
-			GLuint tex = 0;
-			int n = (int)( 3.0f * rand() / RAND_MAX );
-			switch( n ) {
-			case 0:
-				tex = shapePal->getNamedTexture( "grass1" ); break;
-			case 1:
-				tex = shapePal->getNamedTexture( "grass2" ); break;
-			default:
-				tex = shapePal->getNamedTexture( "grass" );
-			}
-			for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ){
-				for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
-					map->setGroundTex( x + xx, y + yy, tex );				
-				}
-			}
-		}
-	}
+	map->initOutdoorsGroundTexture();
 	
 	// is this needed?
 	//map->setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, shapePal->getNamedTexture( "grass" ) );
@@ -202,6 +181,7 @@ GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {
 MapRenderHelper* OutdoorGenerator::getMapRenderHelper() {
 	// we need fog
 	return MapRenderHelper::helpers[ MapRenderHelper::DEBUG_OUTDOOR_HELPER ];
+	//return MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ];
 }
 
 // =====================================================

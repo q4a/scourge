@@ -3140,7 +3140,9 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 
 	info->map_type = ( helper == MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ] ?
 										 MapRenderHelper::CAVE_HELPER :
-										 MapRenderHelper::ROOM_HELPER );
+										 ( helper == MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] ?
+											 MapRenderHelper::OUTDOOR_HELPER :
+											 MapRenderHelper::ROOM_HELPER ) );
 
   strncpy( (char*)info->theme_name, shapes->getCurrentThemeName(), 254 );
   info->theme_name[254] = 0;
@@ -3262,6 +3264,13 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 		 
 	info->edited = edited;
 
+	info->heightMapEnabled = (Uint8)( heightMapEnabled ? 1 : 0 );
+	for( int gx = 0; gx < MAP_WIDTH / OUTDOORS_STEP; gx++ ) {
+		for( int gy = 0; gy < MAP_DEPTH / OUTDOORS_STEP; gy++ ) {
+			info->ground[ gx ][ gy ] = (Uint32)( ground[ gx ][ gy ] * 1000 );
+		}
+	}
+
   char fileName[300];
 	if( absolutePath ) {
 		strcpy( fileName, name );
@@ -3362,6 +3371,16 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 	}
 
 	edited = info->edited;
+
+	heightMapEnabled = ( info->heightMapEnabled == 1 );
+	for( int gx = 0; gx < MAP_WIDTH / OUTDOORS_STEP; gx++ ) {
+		for( int gy = 0; gy < MAP_DEPTH / OUTDOORS_STEP; gy++ ) {
+			ground[ gx ][ gy ] = info->ground[ gx ][ gy ] / 1000.0f;
+		}
+	}
+	if( heightMapEnabled ) {
+		initOutdoorsGroundTexture();
+	}
 
 
 
@@ -4129,3 +4148,27 @@ void Map::drawFlatFloor() {
 	glEnd();
 }
 
+void Map::initOutdoorsGroundTexture() {
+	// set ground texture
+	int ex = MAP_WIDTH / OUTDOORS_STEP;
+	int ey = MAP_DEPTH / OUTDOORS_STEP;
+	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
+		for( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
+			GLuint tex = 0;
+			int n = (int)( 3.0f * rand() / RAND_MAX );
+			switch( n ) {
+			case 0:
+				tex = adapter->getNamedTexture( "grass1" ); break;
+			case 1:
+				tex = adapter->getNamedTexture( "grass2" ); break;
+			default:
+				tex = adapter->getNamedTexture( "grass" );
+			}
+			for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ){
+				for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
+					setGroundTex( x + xx, y + yy, tex );				
+				}
+			}
+		}
+	}
+}
