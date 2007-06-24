@@ -3140,9 +3140,9 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 
 	info->map_type = ( helper == MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ] ?
 										 MapRenderHelper::CAVE_HELPER :
-										 ( helper == MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] ?
-											 MapRenderHelper::OUTDOOR_HELPER :
-											 MapRenderHelper::ROOM_HELPER ) );
+										 ( helper == MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] ?
+											 MapRenderHelper::ROOM_HELPER :
+											 MapRenderHelper::OUTDOOR_HELPER ) );
 
   strncpy( (char*)info->theme_name, shapes->getCurrentThemeName(), 254 );
   info->theme_name[254] = 0;
@@ -3345,7 +3345,6 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
   // reset the map
   reset();
-
 
 	if( info->map_type == MapRenderHelper::ROOM_HELPER ) {
 		// it's a room-type map
