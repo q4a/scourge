@@ -31,10 +31,11 @@ map<string, map<int, vector<string>*>*> Monster::soundMap;
 map<int, vector<string>*>* Monster::currentSoundMap;
 vector<string> Monster::monsterTypes;
 vector<Monster*> Monster::npcs;
+vector<Monster*> Monster::harmlessCreatures;
 map<string, Monster*> Monster::npcPos;
 map<string, string> Monster::modelToDescriptiveType;
 
-Monster::Monster(char *type, char *displayName, char* descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait) {
+Monster::Monster( char *type, char *displayName, char* descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait, bool harmless ) {
   this->type = type;
 	this->displayName = displayName;
   if( descriptiveType ) {
@@ -55,6 +56,7 @@ Monster::Monster(char *type, char *displayName, char* descriptiveType, int level
   this->portrait = portrait;
   this->portraitTexture = 0;
 	this->statemod = 0;
+	this->harmless = harmless;
 
   // approximate the base attack bonus: magic users get less than warriors
   baseAttackBonus = ( !mp ? 1.0f : 0.75f );
@@ -144,6 +146,7 @@ void Monster::initCreatures( ConfigLang *config ) {
 		int speed = node->getValueAsInt( "speed" );
 		float scale = node->getValueAsFloat( "scale" );
 		bool npc = node->getValueAsBool( "npc" );
+		bool harmless = node->getValueAsBool( "harmless" );
 		bool special = node->getValueAsBool( "special" );		
 		GLuint statemod = node->getValueAsInt( "statemod" );
 
@@ -153,10 +156,13 @@ void Monster::initCreatures( ConfigLang *config ) {
 									 level, hp, mp, 
 									 strdup(model_name), strdup(skin_name), 
 									 rareness, speed, armor, 
-									 scale, npc, ( strlen( portrait ) ? strdup( portrait ) : NULL ) );
+									 scale, npc, ( strlen( portrait ) ? strdup( portrait ) : NULL ),
+									 harmless );
 		if( npc ) {
 			npcs.push_back( m );
 			m->setStartingStateMod( statemod );
+		} else if( harmless ) {
+			harmlessCreatures.push_back( m );
 		} else if( special ) {
 			// don't add to random monsters list
 			// these are placed monsters like Mycotharsius.
@@ -183,7 +189,7 @@ void Monster::initCreatures( ConfigLang *config ) {
 			}
 		}
 		if(!found) {
-			if( !npc ) monsterTypes.push_back(typeStr);
+			if( !( npc || harmless ) ) monsterTypes.push_back(typeStr);
 
 			if( soundMap.find( typeStr ) == soundMap.end() ) {
 				currentSoundMap = new map<int, vector<string>*>();      
@@ -353,3 +359,11 @@ const Monster *Monster::getRandomNpc() {
   return npcs[n];
 }
 
+const Monster *Monster::getRandomHarmless() {
+	if( harmlessCreatures.size() ) {
+		int n = (int)((float)harmlessCreatures.size()*rand()/RAND_MAX);
+		return harmlessCreatures[n];
+	} else {
+		return NULL;
+	}
+}

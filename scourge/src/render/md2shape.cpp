@@ -141,6 +141,9 @@ void MD2Shape::outline( float r, float g, float b ) {
 }
 
 void MD2Shape::setModelAnimation() {
+	if( currentAnim >= g_3DModel->pAnimations.size() ) {
+		currentAnim = g_3DModel->pAnimations.size() - 1;
+	}
 	currentFrame = g_3DModel->pAnimations[ currentAnim ].startFrame; 
 }
 

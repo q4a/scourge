@@ -494,7 +494,25 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
       }
     }
   }
-}
+	// add a few harmless creatures
+	for(int i = 0; i < objectCount * 2; i++) {
+		Monster *monster = (Monster*)Monster::getRandomHarmless();
+		if( !monster ) {
+			cerr << "Warning: no harmless creatures defined." << endl;
+			break;
+		}
+		GLShape *shape = 
+			scourge->getShapePalette()->getCreatureShape(monster->getModelName(), 
+																									 monster->getSkinName(), 
+																									 monster->getScale(),
+																									 monster);
+		Creature *creature = scourge->getSession()->newCreature(monster, shape);
+		int x, y;                           
+		getRandomLocation(levelMap, creature->getShape(), &x, &y);
+		addItem(levelMap, creature, NULL, NULL, x, y);
+		creature->moveTo(x, y, 0);
+	}
+}																															 	
 
 void TerrainGenerator::addMagicPools( Map *map, ShapePalette *shapePal ) {
 	// add some magic pools

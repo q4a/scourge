@@ -882,6 +882,31 @@ void Scourge::addWanderingHeroes() {
 		RenderedCreature *creature = createWanderingHero( level );
 		creature->findPlace( cx, cy );
 	}
+
+	// add a few harmless creatures
+	for(int i = 0; i < count; i++) {
+		// find a place for it near another creature
+		// note: this must be done before creating the new creature...
+		int n = (int)( (float)getSession()->getCreatureCount() * rand() / RAND_MAX );
+		int cx = toint( getSession()->getCreature( n )->getX() );
+		int cy = toint( getSession()->getCreature( n )->getY() );	
+		if( cx == 0 || cy == 0 ) {
+			cerr << "*** Error 0,0 coordinates for " << getSession()->getCreature( n )->getName() << endl;
+		}
+		assert( cx && cy );
+		Monster *monster = (Monster*)Monster::getRandomHarmless();
+		if( !monster ) {
+			cerr << "Warning: no harmless creatures defined." << endl;
+			break;
+		}
+		GLShape *shape = 
+			getShapePalette()->getCreatureShape( monster->getModelName(), 
+																					 monster->getSkinName(), 
+																					 monster->getScale(),
+																					 monster );
+		Creature *creature = getSession()->newCreature( monster, shape );
+		creature->findPlace( cx, cy );
+	}
 }
 
 void Scourge::endMission() {
