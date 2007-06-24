@@ -278,7 +278,9 @@ void SavegameDialog::setSavegameInfoTitle( SavegameInfo *info ) {
 		char place[255];
 
 		if( scourge->getSession()->getCurrentMission() ) {
-			if( strstr( scourge->getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
+			if( strstr( scourge->getSession()->getCurrentMission()->getMapName(), "outdoors" ) ) {
+				strcpy( place, _( "Somewhere in the wilderness." ) );
+			} else if( strstr( scourge->getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
 				sprintf( place, _( "In a cave on level %d." ), 
 								 ( scourge->getCurrentDepth() + 1 ) );
 			} else {
