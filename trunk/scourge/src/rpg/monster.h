@@ -53,6 +53,7 @@ class Monster  {
   GLuint portraitTexture;
   float baseAttackBonus;
 	GLuint statemod;
+	bool harmless;
   std::vector<RpgItem*> items;
   std::vector<Spell*> spells;
   std::map<std::string,int> skills;
@@ -61,16 +62,18 @@ class Monster  {
   static std::map<int, std::vector<std::string>*>* currentSoundMap;
   static std::vector<std::string> monsterTypes;
   static std::vector<Monster*> npcs;
+	static std::vector<Monster*> harmlessCreatures;
   static std::map<std::string, std::string> modelToDescriptiveType;
 
 public:
-  Monster(char *type, char *displayName, char *descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait);
+  Monster( char *type, char *displayName, char *descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait, bool harmless );
   ~Monster();
 
   static std::map<std::string, std::map<int, std::vector<std::string>*>*> soundMap;
   static std::map<std::string, Monster*> npcPos;
   static std::map<std::string, Monster*> monstersByName;  
 
+	inline bool isHarmless() { return harmless; }
   inline float getScale() { return scale; }
   inline int getBaseArmor() { return baseArmor; }
   inline int getRareness() { return rareness; }
@@ -121,6 +124,7 @@ public:
   static const char *getRandomMonsterType( int level );
   static const char *getMonsterType(char *type);
   static const Monster *getRandomNpc();
+	static const Monster *getRandomHarmless();
 
 protected:
   static void addMd2Sounds( char *model_name, std::map<int, std::vector<std::string>*>* currentSoundMap );
