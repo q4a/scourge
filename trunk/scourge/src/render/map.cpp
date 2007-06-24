@@ -3364,6 +3364,9 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 	} else if( info->map_type == MapRenderHelper::OUTDOOR_HELPER ) {
 		// it's an outdoors type map
 		setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
+		// FIXME: needed but not used
+		if( getPreferences()->isDebugTheme() ) shapes->loadDebugTheme();
+		else shapes->loadRandomTheme();
 	} else {
 		cerr << "*** error unknown map type: " << info->map_type << endl;
 		return false;
