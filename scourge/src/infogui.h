@@ -59,6 +59,7 @@ class InfoGui : public WidgetView {
 
 protected:
   void describe();
+  void appendMagicItemInfo( char *description, Item *item );
   void describeRequirements( char *description, int influenceTypeCount );
 };
 

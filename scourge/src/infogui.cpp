@@ -238,6 +238,8 @@ void InfoGui::describe() {
   strcpy(description, item->getRpgItem()->getLongDesc());
   strcat(description, "||");
 
+  appendMagicItemInfo( description, item );
+
   // basic info
   sprintf(tmp, _( "Level: %d" ), item->getLevel());
   strcat( description, tmp );
@@ -365,6 +367,11 @@ void InfoGui::describe() {
 		describeRequirements( description, 1 );
 	}
 
+  label->setText(description);
+}
+
+void InfoGui::appendMagicItemInfo( char *description, Item *item ) {
+  char tmp[1000];
 
   // DEBUG
   //infoDetailLevel = 100;
@@ -373,34 +380,34 @@ void InfoGui::describe() {
   if(item->isMagicItem()) {
     if( item->getIdentifiedBit( Item::ID_BONUS ) ) {
 
-			if( item->getRpgItem()->isWeapon() ) {
-				sprintf(tmp, _( "%d bonus to attack and damage." ), item->getBonus() );
-			} else {
-				sprintf(tmp, _( "%d bonus to armor points." ), item->getBonus() );
-			}
-			strcat( description, "|" );
+      if( item->getRpgItem()->isWeapon() ) {
+        sprintf(tmp, _( "%d bonus to attack and damage." ), item->getBonus() );
+      } else {
+        sprintf(tmp, _( "%d bonus to armor points." ), item->getBonus() );
+      }
       strcat(description, tmp);
+      strcat( description, "|" );
     } else {
-			missedSomething = true;
-		}
+      missedSomething = true;
+    }
     if( item->getDamageMultiplier() > 1 ) {
       if( item->getIdentifiedBit( Item::ID_DAMAGE_MUL ) ) {
         if( item->getDamageMultiplier() == 2 ) {
           sprintf( tmp, _( "Double damage" ) );
-					strcat( description, "|" );
           strcat( description, tmp );
+          strcat( description, "|" );
         } else if( item->getDamageMultiplier() == 3 ) {
           sprintf( tmp, _( "Triple damage" ) );
-					strcat( description, "|" );
           strcat( description, tmp );
+          strcat( description, "|" );
         } else if( item->getDamageMultiplier() == 4 ) {
-          sprintf( tmp, _( "Quad damage" ) );
-					strcat( description, "|" );
+          sprintf( tmp, _( "Quad damage" ) );          
           strcat( description, tmp );
+          strcat( description, "|" );
         } else if( item->getDamageMultiplier() > 4 ) {
           sprintf( tmp, _( "%dX damage" ), item->getDamageMultiplier());
-					strcat( description, "|" );
           strcat( description, tmp );
+          strcat( description, "|" );
         }
         if( item->getMonsterType() ) {
           char *p = Monster::getDescriptiveType( item->getMonsterType() );
@@ -410,8 +417,8 @@ void InfoGui::describe() {
           strcat( description, _( " vs. any creature." ) );
         }
       } else {
-				missedSomething = true;
-			}
+        missedSomething = true;
+      }
     }
     if(item->getSchool() ) {
       if( item->getIdentifiedBit( Item::ID_MAGIC_DAMAGE ) ) {
@@ -424,11 +431,11 @@ void InfoGui::describe() {
                   item->getMagicResistance(),
                   item->getSchool()->getName());
         }
-				strcat( description, "|" );
         strcat(description, tmp);
+        strcat( description, "|" );
       } else {
-				missedSomething = true;
-			}
+        missedSomething = true;
+      }
     }
     if( item->getIdentifiedBit( Item::ID_STATE_MOD ) ) {
       strcpy(tmp, _( "Sets state mods:" ) );
@@ -441,12 +448,12 @@ void InfoGui::describe() {
         }
       }
       if(found) {
-				strcat( description, "|" );
-				strcat(description, tmp);
-			}
+        strcat(description, tmp);
+        strcat( description, "|" );
+      }
     } else {
-			missedSomething = true;
-		}
+      missedSomething = true;
+    }
     if( item->getIdentifiedBit( Item::ID_PROT_STATE_MOD ) ) {
       strcpy(tmp, _( "Protects from state mods:" ) );
       bool found = false;
@@ -458,39 +465,39 @@ void InfoGui::describe() {
         }
       }
       if(found) {
-				strcat( description, "|" );
-				strcat(description, tmp);
-			}
+        strcat(description, tmp);
+        strcat( description, "|" );
+      }
     } else {
-			missedSomething = true;
-		}
+      missedSomething = true;
+    }
     if( item->getIdentifiedBit( Item::ID_SKILL_BONUS ) ) {
       bool found = false;
-			char tmp2[80];
-			strcpy( tmp, "" );
+      char tmp2[80];
+      strcpy( tmp, "" );
       map<int,int> *skillBonusMap = item->getSkillBonusMap();
       for(map<int, int>::iterator i=skillBonusMap->begin(); i!=skillBonusMap->end(); ++i) {
         int skill = i->first;
         int bonus = i->second;
         sprintf(tmp2, " %s+%d", Skill::skills[skill]->getDisplayName(), bonus);
-				strcat( tmp, tmp2 );
+        strcat( tmp, tmp2 );
         found = true;
       }
       if(found) {
         strcat(description, _( "Bonuses to skills:" ) );
-				strcat( description, "|" );
         strcat(description, tmp);
+        strcat( description, "|" );
       }
     } else {
-			missedSomething = true;
-		}
+      missedSomething = true;
+    }
     // cursed is hard to detect
     if( item->isCursed() ) {
       if( item->getShowCursed() || 
           item->getIdentifiedBit( Item::ID_CURSED ) ) {
-				strcat( description, "|" );
         strcat(description, _( "This item is cursed!" ) );
-			}
+        strcat( description, "|" );
+      }
     }
   } else if(item->getRpgItem()->getType() == RpgItem::SCROLL) {
     strcat(description, "|");
@@ -501,10 +508,10 @@ void InfoGui::describe() {
   }
 
   if( missedSomething ) {
-		strcat( description, "|" );
     strcat( description, _( "You have a feeling there is more to this item than what you've been able to glean..." ) );
+    strcat( description, "|" );
   }
 
-  label->setText(description);
+  strcat( description, "|" );
 }
 
