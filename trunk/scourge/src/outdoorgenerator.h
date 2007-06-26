@@ -46,6 +46,7 @@ public:
 
 protected:
 	virtual void generate( Map *map, ShapePalette *shapePal );
+	int getMountainSize( int x, int y, Map *map, std::vector<int> *lake );
 	virtual bool drawNodes( Map *map, ShapePalette *shapePal );
 	virtual MapRenderHelper* getMapRenderHelper();
 	GLShape *getRandomTreeShape( ShapePalette *shapePal );
