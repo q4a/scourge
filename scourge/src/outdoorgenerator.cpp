@@ -54,6 +54,24 @@ OutdoorGenerator::~OutdoorGenerator() {
 	delete cellular[1][1];
 }
 
+#define SMALL_MOUNTAIN 120
+set<Uint32> seen;
+int OutdoorGenerator::getMountainSize( int x, int y, Map *map, vector<int> *lake ) {
+	//if( lake->size() >= SMALL_MOUNTAIN * 2 ) return 0;
+	if( x < 0 || x >= MAP_WIDTH / OUTDOORS_STEP ||
+			y < 0 || y >= MAP_DEPTH / OUTDOORS_STEP ) return 0;
+	if( map->getGroundHeight( x, y ) < 10 ) return 0;
+	Uint32 index = (Uint32)( y * ( MAP_WIDTH / OUTDOORS_STEP ) ) + (Uint32)x;
+	if( seen.find( index ) != seen.end() ) return 0;
+	seen.insert( index );
+	lake->push_back( x );
+	lake->push_back( y );
+	return 1 + getMountainSize( x + 1, y, map, lake ) + getMountainSize( x, y + 1, map, lake ) + 
+		getMountainSize( x - 1, y, map, lake ) + getMountainSize( x, y - 1, map, lake ) +
+		getMountainSize( x + 1, y - 1, map, lake ) + getMountainSize( x + 1, y + 1, map, lake ) +
+		getMountainSize( x - 1, y - 1, map, lake ) + getMountainSize( x - 1, y + 1, map, lake );
+}
+
 bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
   updateStatus( _( "Loading theme" ) );
@@ -99,6 +117,24 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			} else {
 				map->setGroundHeight( x, y, 10.0f + ( 6.0f * rand() / RAND_MAX ) );
 			}
+		}
+	}
+
+	// turn some mountains into lakes
+	seen.clear();
+	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
+		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
+			vector<int> lake;
+			int size = getMountainSize( x, y, map, &lake );
+			if( size > 0 && size < SMALL_MOUNTAIN ) {
+				if( 0 == (int)( 2.0f * rand() / RAND_MAX ) ) {
+					for( unsigned int i = 0; i < lake.size(); i += 2 ) {
+						int posX = lake[ i ];
+						int posY = lake[ i + 1 ];
+						map->setGroundHeight( posX, posY, -( map->getGroundHeight( posX, posY ) ) );
+					}
+				}
+			}			
 		}
 	}
 

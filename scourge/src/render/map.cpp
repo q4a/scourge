@@ -215,6 +215,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	outdoorShadow = adapter->getNamedTexture( "outdoors_shadow" );
 	outdoorShadowTree = adapter->getNamedTexture( "outdoors_shadow_tree" );
+	waterTexture = adapter->getNamedTexture( "water" );
 
 	hackBlockingPos = new Location();
 	hackBlockingPos->creature = NULL;
@@ -1931,7 +1932,7 @@ Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z,
   for(int sx = 0; sx < s->getWidth(); sx++) {
     for(int sy = 0; sy < s->getDepth(); sy++) {
 
-			if( getGroundHeight( ( x + sx ) / OUTDOORS_STEP, ( y - sy ) / OUTDOORS_STEP ) > 10.0f ) {
+			if( fabs( getGroundHeight( ( x + sx ) / OUTDOORS_STEP, ( y - sy ) / OUTDOORS_STEP ) ) > 10.0f ) {
 				return hackBlockingPos;
 			}
 
@@ -3912,6 +3913,7 @@ void Map::renderFloor() {
 
 	if( isHeightMapEnabled() ) {
 		drawHeightMapFloor();
+		drawWaterLevel();
 	}	else {
 		drawFlatFloor();
 	}
@@ -4080,6 +4082,12 @@ void Map::createGroundMap() {
 					groundPos[ xx ][ yy ].b = n * 0.05f;
 					groundPos[ xx ][ yy ].a = 1;
 				}
+			} else if( ground[ xx ][ yy ] <= -10 ) {
+				float n = ( -h / ( 13.0f / DIV ) );
+				groundPos[ xx ][ yy ].r = n * 0.05f;
+				groundPos[ xx ][ yy ].g = n * 0.4f;
+				groundPos[ xx ][ yy ].b = n * 1;
+				groundPos[ xx ][ yy ].a = 1;
 			} else {
 				float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;
 				if( (int)( 6.0f * rand() / RAND_MAX ) ) {
@@ -4130,6 +4138,46 @@ void Map::addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b ) {
 	pt->r *= light;
 	pt->g *= light;
 	pt->b *= light;
+}
+
+#define WATER_MOVE_SPEED 80
+Uint32 waterMoveTick = 0;
+#define WATER_MOVE_DELTA 0.005f
+GLfloat waterTexX = 0;
+GLfloat waterTexY = 0;
+
+void Map::drawWaterLevel() {
+  Uint32 t = SDL_GetTicks();
+  if( t - waterMoveTick > WATER_MOVE_SPEED ) {
+    waterMoveTick = t;
+    waterTexX += WATER_MOVE_DELTA;
+    if( waterTexX >= 1.0f ) waterTexX -= 1.0f;
+    waterTexY += WATER_MOVE_DELTA;
+    if( waterTexY >= 1.0f ) waterTexY -= 1.0f;
+  }
+
+	glEnable( GL_TEXTURE_2D );
+	glBindTexture( GL_TEXTURE_2D, waterTexture );
+	glColor4f( 1, 1, 1, 0.45f );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
+	float w = (float)( mapViewWidth ) / DIV;
+	float d = (float)( mapViewDepth ) / DIV;
+	//float z = -4 / DIV;
+	//glTranslatef( xpos2, ypos2, 0.0f);
+	glBegin( GL_QUADS );
+	glNormal3f( 0, 0, 1 );
+	glTexCoord2f( getX() * DIV * ratio + waterTexX, getY() * DIV * ratio + waterTexY );
+	glVertex3f( 0, 0, 0 );
+	glTexCoord2f( getX() * DIV * ratio + waterTexX, ( getY() + mapViewDepth ) * DIV * ratio + waterTexY );
+	glVertex3f( 0, d, 0 );
+	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio + waterTexX, ( getY() + mapViewDepth ) * DIV * ratio + waterTexY );
+	glVertex3f( w, d, 0 );
+	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio + waterTexX, getY() * DIV * ratio + waterTexY );
+	glVertex3f( w, 0, 0 );
+	glEnd();
+	glDisable( GL_BLEND );
 }
 
 void Map::drawFlatFloor() {

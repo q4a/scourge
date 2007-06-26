@@ -237,7 +237,7 @@ private:
 	bool refreshGroundPos;
 	int debugHeightPosXX[4], debugHeightPosYY[4];
 	CVectorTex groundPos[MAP_WIDTH][MAP_DEPTH];
-	GLuint outdoorShadow, outdoorShadowTree;
+	GLuint outdoorShadow, outdoorShadowTree, waterTexture;
 	Location *hackBlockingPos;
 
  public:
@@ -592,6 +592,7 @@ protected:
 	void renderFloor();
 	void drawFlatFloor();
 	void drawHeightMapFloor();
+	void drawWaterLevel();
 
 	 void willDrawGrid();
 
