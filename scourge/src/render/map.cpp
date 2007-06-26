@@ -2104,10 +2104,15 @@ float Map::findMaxHeightPos( float x, float y, float z, Shape *shape, bool findM
 		} else {
 			// find the average
 			zz = 0;
+			int count = 0;
 			for( int i = 0; i < 4; i++ ) {
-				zz += ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ];
+				// skip 'lake' heights
+				if( ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ] > 0 ) {
+					zz += ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ];
+					count++;
+				}
 			}
-			zz /= 4.0f;
+			zz /= (float)count;
 		}
 		if( z < zz ) pos = zz;
 
