@@ -49,6 +49,8 @@ private:
 	float windAngle;
 	Uint32 lastWindStep;
 	float ymod;
+	float value;
+
 
 public:
 	WindInfo() {
@@ -56,6 +58,7 @@ public:
 		windSpeed = 0.10f * rand() / RAND_MAX + 0.01f;
 		windAmp = 0.5f;
 		ymod = 1.2f * rand() / RAND_MAX;
+		value = 0;
 	}
 
 	~WindInfo() {
@@ -68,12 +71,13 @@ public:
 			lastWindStep = now;
 			windAngle += windSpeed;
 			if( windAngle >= 360.0f ) windAngle -= 360.0f;
+			value = sin( windAngle ) * windAmp;
 			ret = true;
 		}
 		return ret;
 	}
 
-	inline float getValue() { return sin( windAngle ) * windAmp; }
+	inline float getValue() { return value; }
 	inline float getYMod() { return ymod; }
 };
 
