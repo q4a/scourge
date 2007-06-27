@@ -3124,6 +3124,7 @@ float EditorMapSettings::getMaxYRot() {
   return 90.0f;
 }
 
+#define NEG_GROUND_HEIGHT 0x00100000
 void Map::saveMap( char *name, char *result, bool absolutePath, int referenceType ) {
 
   if( !strlen( name ) ) {
@@ -3270,10 +3271,12 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 		 
 	info->edited = edited;
 
+	// save ground height for outdoors maps
 	info->heightMapEnabled = (Uint8)( heightMapEnabled ? 1 : 0 );
 	for( int gx = 0; gx < MAP_WIDTH / OUTDOORS_STEP; gx++ ) {
 		for( int gy = 0; gy < MAP_DEPTH / OUTDOORS_STEP; gy++ ) {
-			info->ground[ gx ][ gy ] = (Uint32)( ground[ gx ][ gy ] * 1000 );
+			Uint32 base = ( ground[ gx ][ gy ] < 0 ? NEG_GROUND_HEIGHT : 0x00000000 );
+			info->ground[ gx ][ gy ] = (Uint32)( fabs( ground[ gx ][ gy ] ) * 100 ) + base;
 		}
 	}
 
@@ -3380,10 +3383,16 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
 	edited = info->edited;
 
+	// load ground heights for outdoors maps
 	heightMapEnabled = ( info->heightMapEnabled == 1 );
 	for( int gx = 0; gx < MAP_WIDTH / OUTDOORS_STEP; gx++ ) {
 		for( int gy = 0; gy < MAP_DEPTH / OUTDOORS_STEP; gy++ ) {
-			ground[ gx ][ gy ] = info->ground[ gx ][ gy ] / 1000.0f;
+			if( info->ground[ gx ][ gy ] > NEG_GROUND_HEIGHT ) {
+				ground[ gx ][ gy ] = ( info->ground[ gx ][ gy ] - NEG_GROUND_HEIGHT ) / -100.0f;
+			} else {
+				ground[ gx ][ gy ] = info->ground[ gx ][ gy ] / 100.0f;
+			}
+			
 		}
 	}
 	if( heightMapEnabled ) {
