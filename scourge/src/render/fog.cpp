@@ -58,9 +58,11 @@ using namespace std;
 #define SG (int)( 255.0f * DARK_G )
 #define SB (int)( 255.0f * DARK_B )
 
-#define LAMP_RADIUS_SQUARED 36.0f
+//#define LAMP_RADIUS_SQUARED 36.0f
+//#define LAMP_RADIUS_SQUARED 64.0f
 
-Fog::Fog( Map *map ) {
+Fog::Fog( Map *map, float lampRadiusSquared ) {
+	this->lampRadiusSquared = lampRadiusSquared;
   players = new std::set<RenderedCreature *> [MAP_WIDTH * MAP_DEPTH];        
   this->map = map;
   createOverlayTexture();
@@ -97,7 +99,7 @@ void Fog::visit( RenderedCreature *player ) {
 
       double d = (double)( ( fx - x ) * ( fx - x) ) + 
         (double)( ( fy - y ) * ( fy - y ) );
-      if( d <= LAMP_RADIUS_SQUARED ) {
+      if( d <= lampRadiusSquared ) {
         fog[x][y] = FOG_CLEAR;
         players[x + (y * MAP_WIDTH)].insert( player );
       } else if( fog[x][y] == FOG_CLEAR ) {

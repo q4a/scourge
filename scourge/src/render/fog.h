@@ -28,6 +28,7 @@ class RenderedCreature;
 
 class Fog {
 private:
+	float lampRadiusSquared;
   int fog[MAP_WIDTH][MAP_DEPTH];
   std::set<RenderedCreature *> *players;
   Map *map;
@@ -47,7 +48,7 @@ public:
     FOG_CLEAR
   };
 
-  Fog( Map *map );
+  Fog( Map *map, float lampRadiusSquared = 36.0f );
   ~Fog();
 
   int getValue( int mapx, int mapy );

@@ -50,7 +50,7 @@ public:
 
   virtual inline void setMap( Map *map ) { this->map = map; }
   inline Map *getMap() { return map; }
-
+	virtual inline float getLampRadiusSquared() { return 36.0f; }
   inline virtual void reset() {}
   inline virtual void draw( int x, int y, int w, int h ) {}
   inline virtual bool isVisible( int x, int y, Shape *shape ) { return true; }
@@ -69,6 +69,7 @@ private:
 public:
   CaveRenderHelper();
   virtual ~CaveRenderHelper();
+	virtual inline float getLampRadiusSquared() { return 36.0f; }
   virtual void setMap( Map *map );
   virtual void reset();
   virtual void draw( int x, int y, int w, int h );
@@ -85,6 +86,7 @@ public:
   OutdoorRenderHelper();
   virtual ~OutdoorRenderHelper();
 	inline virtual bool drawShadow() { return false; }
+	virtual inline float getLampRadiusSquared() { return 100.0f; }
 };
 
 class DebugOutdoorRenderHelper : public MapRenderHelper {
