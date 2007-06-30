@@ -142,5 +142,7 @@ scourge_SOURCES = \
 	outdoorgenerator.cpp\
 	outdoorgenerator.h\
 	astar.cpp\
-	astar.h
+	astar.h\
+	cellular.cpp\
+	cellular.h
 
