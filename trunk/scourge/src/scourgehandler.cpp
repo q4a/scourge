@@ -182,7 +182,7 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
       return false;
     } else if(event->key.keysym.sym == SDLK_s) {
       scourge->getSquirrelConsole()->setVisible( scourge->getSquirrelConsole()->isVisible() ? false : true );
-    }
+		}
 #endif
 
     // END OF DEBUG ------------------------------------
