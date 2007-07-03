@@ -94,7 +94,6 @@ const float Map::shadowTransformMatrix[16] = {
 MapMemoryManager *Map::mapMemoryManager = new MapMemoryManager();
 
 Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
-  
   hasWater = false;
 
   startx = starty = 128;
@@ -3966,7 +3965,7 @@ void Map::drawHeightMapFloor() {
 	}	
 }
 
-void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, bool debug ) {
+void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, bool debug, float angle ) {
 
 	//glEnable( GL_DEPTH_TEST );
 	glDepthMask( GL_FALSE );
@@ -4011,36 +4010,50 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, boo
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 
+	glMatrixMode( GL_TEXTURE );
+	glPushMatrix();
+	glLoadIdentity();
+	
+	glTranslatef( 0.5f, 0.5f, 0 );
+	glRotatef( angle, 0, 0, 1 );
+	glTranslatef( -0.5f, -0.5f, 0 );
+
+	glTranslatef( offSX, offSY, 0 );
+	glMatrixMode( GL_MODELVIEW );
+
+								 
 	float gx, gy;
 	for( int xx = sx; xx <= ex; xx++ ) {
 		for( int yy = sy; yy <= ey; yy++ ) {
+
+			float texSx = ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx );
+			float texEx = ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx );
+			float texSy = ( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy );
+			float texEy = ( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy );
+
 			//glBegin( GL_LINE_LOOP );
 			glBegin( GL_QUADS );
 
-			glTexCoord2f( ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
-										( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
+			glTexCoord2f( texSx, texEy );
 			//glColor4f( 1, 1, 1, 1 );
 			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
 			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
 			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + 0.26f / DIV );
 
 
-			glTexCoord2f( ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
-										( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
+			glTexCoord2f( texSx, texSy );
 			//glColor4f( 1, 0, 0, 1 );
 			gx = groundPos[ xx ][ yy ].x - getX() / DIV;
 			gy = groundPos[ xx ][ yy ].y - getY() / DIV;
 			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + 0.26f / DIV );
 
-			glTexCoord2f( ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
-										( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
+			glTexCoord2f( texEx, texSy );
 			//glColor4f( 1, 1, 1, 1 );
 			gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
 			gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
 			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + 0.26f / DIV );
 
-			glTexCoord2f( ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx ) + offSX,
-										( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy ) + offSY );
+			glTexCoord2f( texEx, texEy );
 			//glColor4f( 1, 1, 1, 1 );
 			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
 			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
@@ -4050,6 +4063,11 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, boo
 		}
 	}
 
+	glMatrixMode( GL_TEXTURE );
+	glPopMatrix();
+	glMatrixMode( GL_MODELVIEW );
+	
+
 	// switch back to repeating the texture
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
@@ -4057,6 +4075,34 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, boo
 	//glDisable( GL_DEPTH_TEST );
 	glDepthMask( GL_TRUE );
 	glDisable( GL_BLEND );
+
+	/*
+	glDisable( GL_TEXTURE_2D );
+	glColor4f( 0, 1, 0, 1 );
+	for( int xx = sx; xx <= ex; xx++ ) {
+		for( int yy = sy; yy <= ey; yy++ ) {
+			glBegin( GL_LINE_LOOP );
+			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
+			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + 0.26f / DIV );
+
+			gx = groundPos[ xx ][ yy ].x - getX() / DIV;
+			gy = groundPos[ xx ][ yy ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + 0.26f / DIV );
+
+			gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
+			gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + 0.26f / DIV );
+
+			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
+			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + 0.26f / DIV );
+
+			glEnd();
+		}
+	}
+	glEnable( GL_TEXTURE_2D );
+	*/
 }
 
 void Map::createGroundMap() {

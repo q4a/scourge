@@ -255,6 +255,7 @@ protected:
 	bool loadMap( char *mapName, bool fromRandomMap, bool absolutePath, char *templateMapName=NULL );	
 
 public:
+
 #define TOP_GUI_WIDTH 400
 #define TOP_GUI_HEIGHT 100
 #define GUI_PLAYER_INFO_W 250
