@@ -691,6 +691,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   if( !creature->getStateMod( StateMod::dead ) &&
 			( ( PATH_DEBUG && !creature->isMonster() ) ||
 				( player && scourge->inTurnBasedCombat() ) ) ) {
+		glDisable( GL_DEPTH_TEST );
     for( int i = creature->getPathIndex();
          i < (int)creature->getPath()->size(); i++) {
       Location pos = (*(creature->getPath()))[i];
@@ -702,14 +703,16 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 			}
       xpos2 = ((float)(pos.x - scourge->getMap()->getX()) / DIV);
       ypos2 = ((float)(pos.y - scourge->getMap()->getY()) / DIV);
-      zpos2 = scourge->getMap()->getGroundHeight( ( pos.x - scourge->getMap()->getX() ) / OUTDOORS_STEP, 
-																									( pos.y - scourge->getMap()->getY() ) / OUTDOORS_STEP ) / DIV;
+      zpos2 = scourge->getMap()->getGroundHeight( pos.x / OUTDOORS_STEP, 
+																									pos.y / OUTDOORS_STEP ) / DIV;
+
       glPushMatrix();
       //glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
 			glTranslatef( xpos2 + w, ypos2 - w - 1 / DIV, zpos2 + 5);
       gluDisk(quadric, 0, 4, 12, 1);
       glPopMatrix();
     }
+		glEnable( GL_DEPTH_TEST );
   }
 
   // Yellow for move creature target
@@ -735,13 +738,15 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 																															creature->getShape(), 
 																															true );
 		zpos2 = groundHeight / DIV;
-    //zpos2 = 0.0f / DIV;
     glPushMatrix();
-    //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
-    //glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
-		glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 + 5);
-		//drawDisk( w, targetWidth );
-		
+		glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 );
+
+		glDisable( GL_TEXTURE_2D );
+		glDisable( GL_DEPTH_TEST );
+		glDepthMask(GL_FALSE);
+		glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glDisable( GL_CULL_FACE );
 
     // in TB mode and paused?
     if( scourge->inTurnBasedCombat() && !( scourge->getParty()->isRealTimeMode() ) ) {
@@ -755,6 +760,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 																						 1.0f / scourge->getMap()->getZoom() );
     }
     glPopMatrix();
+		glEnable( GL_DEPTH_TEST );
   }
 
   // red for attack target
@@ -889,7 +895,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
           }
 
           float range = scourge->getParty()->getPlayer()->getBattle()->getRange();
-          float n = ( ( MIN_DISTANCE + range + creature->getShape()->getWidth() ) * 2.0f ) / DIV;
+          //float n = ( ( MIN_DISTANCE + range + creature->getShape()->getWidth() ) * 2.0f ) / DIV;
 					float nn = ( ( MIN_DISTANCE + range + creature->getShape()->getWidth() ) * 2.0f );
 
 					glColor4f( 0.85f, 0.25f, 0.15f, 0.4f );
@@ -897,7 +903,6 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 																						creature->getX() - ( nn - creature->getShape()->getWidth() ) / 2.0f,
 																						creature->getY() + ( nn - creature->getShape()->getWidth() ) / 2.0f,
 																						nn, nn, false, areaRot );
-
 					/*
           glPushMatrix();
 
@@ -934,6 +939,23 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 					*/
         }
 
+				glDisable( GL_TEXTURE_2D );
+				glEnable( GL_DEPTH_TEST );
+				glDepthMask(GL_FALSE);
+				glEnable( GL_BLEND );
+				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+				glDisable( GL_CULL_FACE );
+
+				xpos2 = ((float)(creature->getX() - scourge->getMap()->getX()) / DIV);
+				ypos2 = ((float)(creature->getY() - scourge->getMap()->getY()) / DIV);
+				zpos2 = scourge->getMap()->findMaxHeightPos( creature->getX(), 
+																										 creature->getY(), 
+																										 0,
+																										 creature->getShape(), 
+																										 true ) / DIV;
+				glPushMatrix();
+				glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 );
+				
         char cost[40];
         Color color;
         if( scourge->getParty()->getPlayer()->getBattle()->describeAttack( creature, cost, &color, player ) ) {
@@ -946,11 +968,10 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 																								 1.0f / scourge->getMap()->getZoom() );
           glEnable( GL_DEPTH_TEST );
         }
+				
+				glPopMatrix();
       }
     }
-		/*
-    glPopMatrix();
-		*/
   }
 
   // draw recent damages
