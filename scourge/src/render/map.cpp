@@ -3980,17 +3980,15 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, boo
 	//glDisable( GL_DEPTH_TEST );
 
 	// which ground pos?
-	int sx = (int)( tx / OUTDOORS_STEP );
-	int sy = (int)( ( ty - th - 1 ) / OUTDOORS_STEP );
-	int ex = (int)( ( tx + tw ) / OUTDOORS_STEP );
-	if( ex - sx < 1 ) ex++;
-	int ey = (int)( ( ty - 1 ) / OUTDOORS_STEP );
-	if( ey - sy < 1 ) ey++;
+	float sx = ( tx / (float)OUTDOORS_STEP );
+	float sy = ( ( ty - th - 1 ) / (float)OUTDOORS_STEP );
+	float ex = ( ( tx + tw ) / (float)OUTDOORS_STEP );
+	float ey = ( ( ty - 1 ) / (float)OUTDOORS_STEP );
 	if( debug ) cerr << "s=" << sx << "," << sy << " e=" << ex << "," << ey << endl;
 
 	// offset to our texture inside the ground pos
-	float offSX = tx - (float)( sx * OUTDOORS_STEP );
-	float offSY = ( ty - th - 1 ) - (float)( sy * OUTDOORS_STEP );
+	float offSX = tx - ( sx * OUTDOORS_STEP );
+	float offSY = ( ty - th - 1 ) - ( sy * OUTDOORS_STEP );
 	float offEX = offSX + tw;
 	float offEY = offSY + th;
 	if( debug ) {
@@ -4000,10 +3998,10 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, boo
 	}
 
 	// converted to texture coordinates ( 0-1 )
-	offSX = -offSX / (float)( ( ex - sx ) * OUTDOORS_STEP );
-	offSY = -offSY / (float)( ( ey - sy ) * OUTDOORS_STEP );
-	offEX = 1 - ( offEX / (float)( ( ex - sx ) * OUTDOORS_STEP ) ) + 1;
-	offEY = 1 - ( offEY / (float)( ( ey - sy ) * OUTDOORS_STEP ) ) + 1;
+	offSX = -offSX / ( ( ex - sx ) * OUTDOORS_STEP );
+	offSY = -offSY / ( ( ey - sy ) * OUTDOORS_STEP );
+	offEX = 1 - ( offEX / ( ( ex - sx ) * OUTDOORS_STEP ) ) + 1;
+	offEY = 1 - ( offEY / ( ( ey - sy ) * OUTDOORS_STEP ) ) + 1;
 	if( debug ) cerr << "\toffs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
 
 	// don't repeat the texture
@@ -4023,13 +4021,13 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, boo
 
 								 
 	float gx, gy;
-	for( int xx = sx; xx <= ex; xx++ ) {
-		for( int yy = sy; yy <= ey; yy++ ) {
+	for( int xx = (int)sx; xx <= (int)ex; xx++ ) {
+		for( int yy = (int)sy; yy <= (int)ey; yy++ ) {
 
-			float texSx = ( ( xx - sx ) * ( offEX - offSX ) ) / (float)( ex - sx );
-			float texEx = ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / (float)( ex - sx );
-			float texSy = ( ( yy - sy ) * ( offEY - offSY ) ) / (float)( ey - sy );
-			float texEy = ( ( yy + 1 - sy ) * ( offEY - offSY ) ) / (float)( ey - sy );
+			float texSx = ( ( xx - sx ) * ( offEX - offSX ) ) / ( ex - sx );
+			float texEx = ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / ( ex - sx );
+			float texSy = ( ( yy - sy ) * ( offEY - offSY ) ) / ( ey - sy );
+			float texEy = ( ( yy + 1 - sy ) * ( offEY - offSY ) ) / ( ey - sy );
 
 			//glBegin( GL_LINE_LOOP );
 			glBegin( GL_QUADS );
