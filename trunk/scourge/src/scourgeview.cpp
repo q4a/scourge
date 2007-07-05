@@ -48,7 +48,7 @@ ScourgeView::ScourgeView( Scourge *scourge ) {
   textEffectTimer = 0;
   needToCheckDropLocation = true;
   targetWidth = 0.0f;
-  targetWidthDelta = 0.05f / DIV;
+  targetWidthDelta = 0.05f;
   lastTargetTick = SDL_GetTicks();
 }
 
@@ -667,7 +667,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   // draw circle
   double w = ((double)(creature->getShape()->getWidth()) / 2.0f) / DIV;
   //double w = (((double)(creature->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
-  double s = 0.15f / DIV;
+  double s = 0.45f;
 
   float xpos2, ypos2, zpos2;
 
@@ -691,7 +691,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   if( !creature->getStateMod( StateMod::dead ) &&
 			( ( PATH_DEBUG && !creature->isMonster() ) ||
 				( player && scourge->inTurnBasedCombat() ) ) ) {
-		glDisable( GL_DEPTH_TEST );
+		//glDisable( GL_DEPTH_TEST );
     for( int i = creature->getPathIndex();
          i < (int)creature->getPath()->size(); i++) {
       Location pos = (*(creature->getPath()))[i];
@@ -706,13 +706,20 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
       zpos2 = scourge->getMap()->getGroundHeight( pos.x / OUTDOORS_STEP, 
 																									pos.y / OUTDOORS_STEP ) / DIV;
 
+
+			scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getNamedTexture( "path" ),
+																				pos.x + creature->getShape()->getWidth() / 2, pos.y - creature->getShape()->getWidth() / 2 - 1, 
+																				0.4f, 0.4f );
+
+			/*
       glPushMatrix();
       //glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
 			glTranslatef( xpos2 + w, ypos2 - w - 1 / DIV, zpos2 + 5);
       gluDisk(quadric, 0, 4, 12, 1);
       glPopMatrix();
+			*/
     }
-		glEnable( GL_DEPTH_TEST );
+		//glEnable( GL_DEPTH_TEST );
   }
 
   // Yellow for move creature target
@@ -725,10 +732,10 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     glColor4f(1.0f, 0.75f, 0.0f, 0.5f);
 
 		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
-																			creature->getSelX(),
-																			creature->getSelY(),
-																			creature->getShape()->getWidth(),
-																			creature->getShape()->getDepth() );
+																			creature->getSelX() - targetWidth / 2,
+																			creature->getSelY() + targetWidth / 2,
+																			creature->getShape()->getWidth() + targetWidth,
+																			creature->getShape()->getDepth() + targetWidth );
 
     xpos2 = ((float)(creature->getSelX() - scourge->getMap()->getX()) / DIV);
     ypos2 = ((float)(creature->getSelY() - scourge->getMap()->getY()) / DIV);
