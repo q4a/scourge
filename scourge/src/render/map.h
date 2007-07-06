@@ -574,7 +574,7 @@ private:
 	inline void setGroundTex( int x, int y, GLuint tex ) { this->groundTex[x][y] = tex; }
 	inline GLuint getGroundTex( int x, int y ) { return this->groundTex[x][y]; }
 	
-	float findMaxHeightPos( float x, float y, float z, Shape *shape, bool findMax = false );
+	float findMaxHeightPos( float x, float y, float z, bool findMax = false );
 
 	/**
 	 * Draw a texture on top of the ground map. This is useful for drawing shadows or 

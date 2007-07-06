@@ -73,6 +73,7 @@ public:
   int effectType;
   GLuint effectDelay;
   bool forever;
+	float heightPos;
 
   // effects
   inline void setEffectType(int n) { this->effectType = n; }
