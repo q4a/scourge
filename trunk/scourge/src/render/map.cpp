@@ -653,7 +653,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                                 yp + chunkOffsetY) / DIV;
                 zpos2 = (float)(zp) / DIV;
 
-                setupPosition(posX, posY, zp,
+                setupPosition(posX, posY, zp - effect[posX][posY][zp]->z,
                               xpos2, ypos2, zpos2,
                               effect[posX][posY][zp]->effect->getShape(), NULL, NULL,
                               effect[posX][posY][zp]);
@@ -708,8 +708,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
 
 										pos[posX][posY][zp]->heightPos = findMaxHeightPos( pos[posX][posY][zp]->creature->getX(), 
 																																			 pos[posX][posY][zp]->creature->getY(), 
-																																			 pos[posX][posY][zp]->creature->getZ(), 
-																																			 pos[posX][posY][zp]->creature->getShape() );
+																																			 pos[posX][posY][zp]->creature->getZ() );
 
 
                   } else {
@@ -922,7 +921,7 @@ void Map::setupPosition( int posX, int posY, int posZ,
     damage[damageCount].creature = creature;
     damage[damageCount].effect = effect;
     damage[damageCount].name = name;
-    damage[damageCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
+		damage[damageCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
     damage[damageCount].inFront = false;
 		damage[damageCount].x = posX;
 		damage[damageCount].y = posY;
@@ -1611,10 +1610,11 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   // glPushAttrib(GL_ENABLE_BIT);
 
   glPushMatrix();
+	float heightPos = ( later && later->pos ? later->pos->heightPos / DIV : ( later->effect ? later->effect->heightPos : 0 ) );
   if(useShadow) {
 		// put shadow above the floor a little
 		
-		glTranslatef( xpos2, ypos2, ( 0.26f / DIV + ( later && later->pos ? later->pos->heightPos / DIV : 0 ) ) );
+		glTranslatef( xpos2, ypos2, ( 0.26f / DIV + heightPos ) );
 		glMultMatrixf(shadowTransformMatrix);
 
     // gray shadows
@@ -1628,8 +1628,8 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   } else {
 
     if(shape) shape->setupToDraw();
-
-    glTranslatef( xpos2, ypos2, zpos2 + ( later && later->pos ? later->pos->heightPos / DIV : 0 ) );
+		
+    glTranslatef( xpos2, ypos2, zpos2 + heightPos );
 
 
 #ifdef DEBUG_SECRET_DOORS    
@@ -1993,7 +1993,7 @@ Location *Map::getPosition(Sint16 x, Sint16 y, Sint16 z) {
 void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, 
                       int effect_type, GLuint duration, 
                       int width, int height, GLuint delay, 
-                      bool forever, DisplayInfo *di) {
+                      bool forever, DisplayInfo *di ) {
 
   if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
     cerr << "*** STARTEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
@@ -2019,6 +2019,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
   effect[x][y][z]->y = y;
   effect[x][y][z]->z = z;
   effect[x][y][z]->effect->setSize( width, height );
+	effect[x][y][z]->heightPos = findMaxHeightPos( x, y, z );
   currentEffectsMap[ createTripletKey( x, y, z ) ] = effect[x][y][z];
 
   if( di ) effect[x][y][z]->effect->setDisplayInfo( di );
@@ -2068,54 +2069,49 @@ void Map::removeAllEffects() {
   currentEffectsMap.clear();
 }
 
-float Map::findMaxHeightPos( float x, float y, float z, Shape *shape, bool findMax ) {
+float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 	float pos = 0;
-	if( shape ) {
+	float xp = ( x ) / OUTDOORS_STEP;
+	float yp = ( y ) / OUTDOORS_STEP;
 	
+	int xx = toint( xp );
+	int yy = toint( yp );
 
-		float xp = ( x ) / OUTDOORS_STEP;
-		float yp = ( y ) / OUTDOORS_STEP;
-		
-		int xx = toint( xp );
-		int yy = toint( yp );
+	debugHeightPosXX[0] = xx;
+	debugHeightPosYY[0] = yy;
 
-		debugHeightPosXX[0] = xx;
-		debugHeightPosYY[0] = yy;
+	debugHeightPosXX[1] = xx;
+	debugHeightPosYY[1] = yy - 1;
 
-		debugHeightPosXX[1] = xx;
-		debugHeightPosYY[1] = yy - 1;
+	debugHeightPosXX[2] = xx + 1;
+	debugHeightPosYY[2] = yy - 1;
 
-		debugHeightPosXX[2] = xx + 1;
-		debugHeightPosYY[2] = yy - 1;
+	debugHeightPosXX[3] = xx + 1;
+	debugHeightPosYY[3] = yy;
 
-		debugHeightPosXX[3] = xx + 1;
-		debugHeightPosYY[3] = yy;
-
-		float zz;
-		if( findMax ) {
-			// find the max
-			zz = 0;
-			for( int i = 0; i < 4; i++ ) {
-				if( zz < ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ] ) {
-					zz = ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ];
-				}
+	float zz;
+	if( findMax ) {
+		// find the max
+		zz = 0;
+		for( int i = 0; i < 4; i++ ) {
+			if( zz < ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ] ) {
+				zz = ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ];
 			}
-		} else {
-			// find the average
-			zz = 0;
-			int count = 0;
-			for( int i = 0; i < 4; i++ ) {
-				// skip 'lake' heights
-				if( ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ] > 0 ) {
-					zz += ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ];
-					count++;
-				}
-			}
-			zz /= (float)count;
 		}
-		if( z < zz ) pos = zz;
-
+	} else {
+		// find the average
+		zz = 0;
+		int count = 0;
+		for( int i = 0; i < 4; i++ ) {
+			// skip 'lake' heights
+			if( ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ] > 0 ) {
+				zz += ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ];
+				count++;
+			}
+		}
+		zz /= (float)count;
 	}
+	if( z < zz ) pos = zz;
 	return pos;
 }
 
@@ -2133,7 +2129,7 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	p->shape = shape;
 	p->item = item;
 	p->creature = creature;
-	p->heightPos = findMaxHeightPos( x, y, z, shape );
+	p->heightPos = findMaxHeightPos( x, y, z );
 	p->x = x;
 	p->y = y;
 	p->z = z;
@@ -3831,6 +3827,7 @@ EffectLocation *MapMemoryManager::newEffectLocation( Map *theMap, Preferences *p
   pos->damageEffectCounter = 0;
   pos->effectType = 0;
   pos->effectDelay = 0;
+	pos->heightPos = 0;
   
   return pos;
 }

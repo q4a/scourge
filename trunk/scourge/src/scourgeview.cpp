@@ -741,8 +741,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     ypos2 = ((float)(creature->getSelY() - scourge->getMap()->getY()) / DIV);
 		float groundHeight = scourge->getMap()->findMaxHeightPos( creature->getSelX(), 
 																															creature->getSelY(), 
-																															0,
-																															creature->getShape(), 
+																															0, 
 																															true );
 		zpos2 = groundHeight / DIV;
     glPushMatrix();
@@ -790,7 +789,6 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 	float groundHeight = scourge->getMap()->findMaxHeightPos( creature->getX(), 
 																														creature->getY(), 
 																														creature->getZ(),
-																														creature->getShape(),
 																														true );
 	zpos2 = groundHeight / DIV;
 	//zpos2 = creature->getZ() / DIV;
@@ -957,8 +955,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 				ypos2 = ((float)(creature->getY() - scourge->getMap()->getY()) / DIV);
 				zpos2 = scourge->getMap()->findMaxHeightPos( creature->getX(), 
 																										 creature->getY(), 
-																										 0,
-																										 creature->getShape(), 
+																										 0, 
 																										 true ) / DIV;
 				glPushMatrix();
 				glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 );
