@@ -34,7 +34,7 @@ using namespace std;
 OutdoorGenerator::OutdoorGenerator( Scourge *scourge, int level, int depth, int maxDepth,
 																		bool stairsDown, bool stairsUp, 
 																		Mission *mission) : 
-TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission, 12 ) {
+TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission, 13 ) {
   // init the ground
 	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
 		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {

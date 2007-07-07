@@ -368,6 +368,8 @@ void Map::reset() {
 		debugHeightPosXX[i] = debugHeightPosYY[i] = 0;
 	
 	refreshGroundPos = true;
+
+  clearTraps();
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -482,6 +484,7 @@ void Map::removeCurrentEffects() {
 void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int *cey) {
   if(!ground && !water) {
     laterCount = stencilCount = otherCount = damageCount = 0;
+    trapSet.clear();
     mapChanged = false;
   }
 
@@ -599,6 +602,9 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
            */
           posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
           posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
+
+          int trapIndex = getTrapAtLoc( posX, posY );
+          if( trapIndex > -1 ) trapSet.insert( (Uint8)trapIndex );
 
           if(ground || water) {
             shape = floorPositions[posX][posY];
@@ -1066,6 +1072,8 @@ void Map::preDraw() {
 }
 
 void Map::postDraw() {
+  drawTraps();
+
   glDisable( GL_SCISSOR_TEST );
 
   // cancel mouse-based map movement (middle button)
@@ -4277,3 +4285,61 @@ void Map::initOutdoorsGroundTexture() {
 		}
 	}
 }
+
+int Map::addTrap( int x, int y, int w, int h ) {
+  SDL_Rect r;
+  r.x = x;
+  r.y = y;
+  r.w = w;
+  r.h = h;
+  Uint8 trapIndex = (Uint8)trapList.size();
+  trapList.push_back( r );
+  for( int xx = x; xx < x + w; xx++ ) {
+    for( int yy = y; yy < y + h; yy++ ) {
+      trapPos[ ( xx * (Uint32)MAP_WIDTH ) + yy ] = trapIndex;
+    }
+  }
+  return trapIndex;
+}
+
+void Map::clearTraps() {
+  trapPos.clear();
+  trapList.clear();
+  trapSet.clear();
+}
+
+void Map::removeTrap( int trapIndex ) {
+  if( (int)trapList.size() > trapIndex ) {
+    SDL_Rect r = trapList[ trapIndex ];
+    for( int xx = r.x; xx < r.x + r.w; xx++ ) {
+      for( int yy = r.y; yy < r.y + r.h; yy++ ) {
+        trapPos.erase( ( xx * (Uint32)MAP_WIDTH ) + yy );
+      }
+    }
+    trapList.erase( trapList.begin() + trapIndex );
+  }
+}
+
+int Map::getTrapAtLoc( int x, int y ) {
+  Uint32 key = ( x * (Uint32)MAP_WIDTH ) + y;
+  if( trapPos.find( key ) == trapPos.end() ) return -1;
+  else return trapPos[ key ];
+}
+
+SDL_Rect *Map::getTrapLoc( int trapIndex ) {
+  if( (int)trapList.size() <= trapIndex ) return NULL;
+  else return &( trapList[ trapIndex ] );
+}
+
+void Map::drawTraps() {
+  for( set<Uint8>::iterator i = trapSet.begin(); i != trapSet.end(); i++ ) {
+    SDL_Rect *r = getTrapLoc( (int)( *i ) );
+    for( int xx = r->x; xx < r->x + r->w; xx++ ) {
+      for( int yy = r->y; yy < r->y + r->h; yy++ ) {
+        glColor4f( 0, 1, 1, 1 );
+        drawGroundTex( adapter->getNamedTexture( "path" ), xx, yy, 1, 1 );
+      }
+    }
+  }  
+}
+
