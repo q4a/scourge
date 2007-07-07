@@ -44,7 +44,7 @@
 // scourge.cpp                     
 //#define CAVE_TEST 1
 #define CAVE_TEST_LEVEL 4
-#define BATTLES_ENABLED 1
+#define BATTLES_ENABLED 0
 
 // comment out to unset
 #define DEBUG_KEYS 1
@@ -63,6 +63,8 @@
 #define PATH_DEBUG 0
 
 // #define DEBUG_SCREENSHOT 1
+
+#define DEBUG_TRAPS 1
 
 #endif
 

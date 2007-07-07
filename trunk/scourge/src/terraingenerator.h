@@ -147,9 +147,18 @@ protected:
   virtual void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal);
   virtual void calculateRoomValues(Map *map, ShapePalette *shapePal);
 	virtual void addRugs( Map *map, ShapePalette *shapePal );
+  virtual void addTraps( Map *map, ShapePalette *shapePal );
 
   // ===========================================
   // Utilities
+  /**
+   * Find a random location on the map. This method doesn't remove the found location from the pool of possible locations.
+   */
+  void getRandomLocationSimple( Map *map, Shape *shape, int *xpos, int *ypos );
+
+  /**
+   * Find a random location on the map. This method removes the found location from the pool of possible locations.
+   */
   void getRandomLocation(Map *map, Shape *shape, int *x, int *y, bool accessible=false, int fromX=0, int fromY=0);
 
   bool getLocationInRoom(Map *map, int roomIndex, Shape *shape, 

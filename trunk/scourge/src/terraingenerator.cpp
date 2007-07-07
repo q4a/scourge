@@ -146,6 +146,9 @@ bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
 
   updateStatus( _( "Compressing free space" ) );
   createFreeSpaceMap(map, shapePal);
+
+  updateStatus( _( "Adding traps" ) );
+  addTraps( map, shapePal );
   
   updateStatus( _( "Adding containers" ) );
   addContainers(map, shapePal);  
@@ -724,6 +727,28 @@ void TerrainGenerator::getRandomLocation(Map *map, Shape *shape,
   } 
 }
 
+void TerrainGenerator::getRandomLocationSimple( Map *map, Shape *shape, 
+                                                int *xpos, int *ypos ) {
+  int x, y;
+  for( int i = 0; i < 500; i++ ) {
+    // get a random location
+    int n = (int)((float)ffCount * rand()/RAND_MAX);
+    x = ff[ n * 2 ];
+    y = ff[ n * 2 + 1 ];
+
+    // can it fit?
+    bool fits = map->shapeFits( shape, x, y, 0 );
+    // doesn't fit? try again (could be inf. loop)
+    if( fits ) {
+      // return result
+      *xpos = x;
+      *ypos = y;
+      return;
+    }
+  }
+  *xpos = *ypos = -1;
+}
+
 void TerrainGenerator::addItemsInEveryRoom( RpgItem *rpgItem, int n ) {
   for(int i = 0; i < roomCount; i++) {
     addItemsInRoom(rpgItem, n, i );
@@ -945,5 +970,20 @@ void TerrainGenerator::addRugs( Map *map, ShapePalette *shapePal ) {
 			}
 		}
 	}
+}
+
+void TerrainGenerator::addTraps( Map *map, ShapePalette *shapePal ) {
+  GLShape *dummy = new GLShape( 0, 1, 1, 1, "dummy", 0, 0, 0 );
+  int trapCount = (int)( 5.0f * rand() / RAND_MAX ) + 3;
+  for( int n = 0; n < trapCount; n++ ) {
+    int x, y;
+    getRandomLocationSimple( map, dummy, &x, &y );
+    cerr << "Adding trap: " << x << "," << y << endl;
+
+    int w = (int)( 6.0f * rand() / RAND_MAX ) + 4;
+    int h = (int)( 6.0f * rand() / RAND_MAX ) + 4;
+    map->addTrap( x, y, w, h );
+  }
+  delete dummy;
 }
 

@@ -68,7 +68,7 @@ const int MondrianGenerator::levels[][9] = {
 
 MondrianGenerator::MondrianGenerator(Scourge *scourge, int level, int depth, int maxDepth,
                                    bool stairsDown, bool stairsUp, Mission *mission) : 
-TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission, 17 ) {
+TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission, 18 ) {
 
 
   initByLevel();  

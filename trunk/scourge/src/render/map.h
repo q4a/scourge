@@ -240,6 +240,10 @@ private:
 	GLuint outdoorShadow, outdoorShadowTree, waterTexture;
 	Location *hackBlockingPos;
 
+  std::map<Uint32, Uint8> trapPos;
+  std::vector<SDL_Rect> trapList;
+  std::set<Uint8> trapSet;
+
  public:
   bool useFrustum;
   static bool debugMd2Shapes;
@@ -584,7 +588,16 @@ private:
 
 	void initOutdoorsGroundTexture();
 
+  // Traps
+  int addTrap( int x, int y, int w, int h );
+  void removeTrap( int trap );
+  int getTrapAtLoc( int x, int y );
+  SDL_Rect *getTrapLoc( int trap );
+
 protected:
+
+  void clearTraps();
+  void drawTraps();
 
 	void createGroundMap();
 	void addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b );
