@@ -32,6 +32,7 @@
 #include "maprenderhelper.h"
 #include "../debug.h"
 #include "projectilerenderer.h"
+#include "../quickhull.h"
 
 using namespace std;
 
@@ -4287,22 +4288,37 @@ void Map::initOutdoorsGroundTexture() {
 }
 
 int Map::addTrap( int x, int y, int w, int h ) {
-  SDL_Rect r;
-  r.x = x;
-  r.y = y;
-  r.w = w;
-  r.h = h;
+	Trap trap;
+  trap.r.x = x;
+  trap.r.y = y;
+  trap.r.w = w;
+  trap.r.h = h;
+	trap.type = 0;
   Uint8 trapIndex = (Uint8)trapList.size();
-  trapList.push_back( r );
+	vector<CVector2*> points;
   for( int xx = x; xx < x + w; xx++ ) {
     for( int yy = y; yy < y + h; yy++ ) {
+			CVector2 *p = new CVector2();
+			p->x = xx;
+			p->y = yy - 1;
+			if( isWall( (int)( p->x ), (int)( p->y ), 0 ) ) continue;
+
+			points.push_back( p );
       trapPos[ ( xx * (Uint32)MAP_WIDTH ) + yy ] = trapIndex;
     }
   }
+	QuickHull::findConvexHull( &points, &( trap.hull ) );
+	trapList.push_back( trap );
   return trapIndex;
 }
 
 void Map::clearTraps() {
+	for( unsigned int i = 0; i < trapList.size(); i++ ) {
+		Trap trap = trapList[ i ];
+		for( unsigned int t = 0; t < trap.hull.size(); t++ ) {
+			free( trap.hull[ t ] );
+		}
+	}
   trapPos.clear();
   trapList.clear();
   trapSet.clear();
@@ -4310,9 +4326,9 @@ void Map::clearTraps() {
 
 void Map::removeTrap( int trapIndex ) {
   if( (int)trapList.size() > trapIndex ) {
-    SDL_Rect r = trapList[ trapIndex ];
-    for( int xx = r.x; xx < r.x + r.w; xx++ ) {
-      for( int yy = r.y; yy < r.y + r.h; yy++ ) {
+    Trap trap = trapList[ trapIndex ];
+    for( int xx = trap.r.x; xx < trap.r.x + trap.r.w; xx++ ) {
+      for( int yy = trap.r.y; yy < trap.r.y + trap.r.h; yy++ ) {
         trapPos.erase( ( xx * (Uint32)MAP_WIDTH ) + yy );
       }
     }
@@ -4326,20 +4342,34 @@ int Map::getTrapAtLoc( int x, int y ) {
   else return trapPos[ key ];
 }
 
-SDL_Rect *Map::getTrapLoc( int trapIndex ) {
+Trap *Map::getTrapLoc( int trapIndex ) {
   if( (int)trapList.size() <= trapIndex ) return NULL;
   else return &( trapList[ trapIndex ] );
 }
 
 void Map::drawTraps() {
   for( set<Uint8>::iterator i = trapSet.begin(); i != trapSet.end(); i++ ) {
-    SDL_Rect *r = getTrapLoc( (int)( *i ) );
-    for( int xx = r->x; xx < r->x + r->w; xx++ ) {
-      for( int yy = r->y; yy < r->y + r->h; yy++ ) {
-        glColor4f( 0, 1, 1, 1 );
+    Trap *trap = getTrapLoc( (int)( *i ) );
+		
+		glColor4f( 0, 1, 1, 1 );
+    for( int xx = trap->r.x; xx < trap->r.x + trap->r.w; xx++ ) {
+      for( int yy = trap->r.y; yy < trap->r.y + trap->r.h; yy++ ) {
         drawGroundTex( adapter->getNamedTexture( "path" ), xx, yy, 1, 1 );
       }
     }
+
+		glDisable( GL_CULL_FACE );
+		glDisable( GL_TEXTURE_2D );
+		glColor4f( 1, 0, 0, 1 );
+		glBegin( GL_POLYGON );
+		//cerr << "Trap w. " << trap->hull.size() << " points:" << endl;
+		for( unsigned int i = 0; i < trap->hull.size(); i++ ) {
+			CVector2 *p = trap->hull[ i ];
+			//cerr << "\tp=" << p->x << "," << p->y << endl;
+			glVertex3f( ( p->x - getX() ) / DIV, ( p->y - getY() ) / DIV, 0.5f / DIV );
+		}
+		glEnd();
+		glEnable( GL_TEXTURE_2D );
   }  
 }
 

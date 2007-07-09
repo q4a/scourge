@@ -757,6 +757,8 @@ public:
 	void replayChapterIntro();
 	void endChapterIntro();
 
+	void camp();
+
 protected:
 
 	void initChapterIntro();
