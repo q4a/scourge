@@ -144,5 +144,7 @@ scourge_SOURCES = \
 	astar.cpp\
 	astar.h\
 	cellular.cpp\
-	cellular.h
+	cellular.h\
+	quickhull.cpp\
+	quickhull.h
 

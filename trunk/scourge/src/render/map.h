@@ -38,6 +38,12 @@ class Effect;
 class DisplayInfo;
 class MapRenderHelper;
 
+typedef struct _Trap {
+	SDL_Rect r;
+	int type;
+	std::vector<CVector2*> hull;
+} Trap;
+
 class MapSettings {
 
 public:
@@ -241,7 +247,7 @@ private:
 	Location *hackBlockingPos;
 
   std::map<Uint32, Uint8> trapPos;
-  std::vector<SDL_Rect> trapList;
+  std::vector<Trap> trapList;
   std::set<Uint8> trapSet;
 
  public:
@@ -592,7 +598,7 @@ private:
   int addTrap( int x, int y, int w, int h );
   void removeTrap( int trap );
   int getTrapAtLoc( int x, int y );
-  SDL_Rect *getTrapLoc( int trap );
+  Trap *getTrapLoc( int trap );
 
 protected:
 

@@ -3824,3 +3824,13 @@ GLuint Scourge::getNamedTexture( char *name ) {
 	return getShapePalette()->getNamedTexture( name );
 }
 
+void Scourge::camp() {
+	cerr << "Starting camp..." << endl;
+	// arrange players in cirlce around center
+
+	// put campfire shape in center
+
+	// tell player models to 'crouch'
+
+	// start the healing...
+}
