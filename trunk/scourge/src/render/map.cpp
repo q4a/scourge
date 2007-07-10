@@ -4298,16 +4298,23 @@ int Map::addTrap( int x, int y, int w, int h ) {
 	vector<CVector2*> points;
   for( int xx = x; xx < x + w; xx++ ) {
     for( int yy = y; yy < y + h; yy++ ) {
-			CVector2 *p = new CVector2();
-			p->x = xx;
-			p->y = yy - 1;
-			if( isWall( (int)( p->x ), (int)( p->y ), 0 ) ) continue;
-
-			points.push_back( p );
       trapPos[ ( xx * (Uint32)MAP_WIDTH ) + yy ] = trapIndex;
     }
   }
+
+  // find the convex hull
+  for( int xx = x; xx <= x + w; xx++ ) {
+    for( int yy = y - 2; yy <= y + h - 2; yy++ ) {
+      if( !isWall( (int)( xx ), (int)( yy ), 0 ) ) {
+        CVector2 *p = new CVector2();
+        p->x = xx;
+        p->y = yy;
+        points.push_back( p );
+      }
+    }
+  }
 	QuickHull::findConvexHull( &points, &( trap.hull ) );
+
 	trapList.push_back( trap );
   return trapIndex;
 }
@@ -4358,18 +4365,22 @@ void Map::drawTraps() {
       }
     }
 
+
+    // Create a texture with the convex hull of this trap. 
+    glEnable( GL_BLEND );
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable( GL_CULL_FACE );
 		glDisable( GL_TEXTURE_2D );
-		glColor4f( 1, 0, 0, 1 );
+		glColor4f( 1, 0, 0, 0.5f );
 		glBegin( GL_POLYGON );
-		//cerr << "Trap w. " << trap->hull.size() << " points:" << endl;
+    //glBegin( GL_LINE_LOOP );
 		for( unsigned int i = 0; i < trap->hull.size(); i++ ) {
 			CVector2 *p = trap->hull[ i ];
-			//cerr << "\tp=" << p->x << "," << p->y << endl;
 			glVertex3f( ( p->x - getX() ) / DIV, ( p->y - getY() ) / DIV, 0.5f / DIV );
 		}
 		glEnd();
 		glEnable( GL_TEXTURE_2D );
+    glDisable( GL_BLEND );
   }  
 }
 

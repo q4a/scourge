@@ -50,7 +50,7 @@ void findHull( set<CVector2*> *sk, CVector2 *p, CVector2 *q, vector<CVector2*> *
 	for( set<CVector2*>::iterator e = sk->begin(); e != sk->end(); ++e ) {
 		CVector2 *point = *e;
 		float dist = distance( p, q, point );
-		if( d == -1 || dist < d ) {
+		if( d == -1 || dist > d ) {
 			d = dist;
 			c = point;
 		}
@@ -69,8 +69,8 @@ void findHull( set<CVector2*> *sk, CVector2 *p, CVector2 *q, vector<CVector2*> *
 	for( set<CVector2*>::iterator e = sk->begin(); e != sk->end(); ++e ) {
 		CVector2 *point = *e;
 		if( point != c ) {
-			if( pointLocation( p, c, point ) > 0 ) s1.insert( point );
-			else if( pointLocation( c, q, point ) > 0 ) s2.insert( point );
+			if( pointLocation( p, c, point ) < 0 ) s1.insert( point );
+			else if( pointLocation( c, q, point ) < 0 ) s2.insert( point );
 		}
 	}
 
@@ -86,8 +86,9 @@ void QuickHull::findConvexHull( vector<CVector2*> *in, vector<CVector2*> *out ) 
 	CVector2 *a, *b;
 	a = b = in->at( 0 );
 	for( unsigned i = 0; i < in->size(); i++ ) {
-		if( in->at( i )->x < a->x ) a = in->at( i );
-		if( in->at( i )->x > b->x ) b = in->at( i );
+    CVector2 *p = in->at( i );
+		if( p->x < a->x ) a = p;
+		else if( p->x > b->x ) b = p;
 	}
 	cerr << "Quickhull: min=" << a->x << "," << a->y << " max=" << b->x << "," << b->y << endl;
 
@@ -99,8 +100,8 @@ void QuickHull::findConvexHull( vector<CVector2*> *in, vector<CVector2*> *out ) 
 	for( unsigned i = 0; i < in->size(); i++ ) {
 		CVector2 *p = in->at( i );
 		if( p != a && p != b ) {
-			if( pointLocation( a, b, p ) > 0 ) s1.insert( p );
-			else if( pointLocation( b, a, p ) > 0 ) s2.insert( p );
+			if( pointLocation( a, b, p ) < 0 ) s1.insert( p );
+			else if( pointLocation( b, a, p ) < 0 ) s2.insert( p );
 		}
 	}
 
