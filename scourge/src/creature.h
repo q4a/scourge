@@ -46,6 +46,7 @@ class Event;
 class RenderedItem;
 class NpcInfo;
 class RenderedProjectile;
+class Trap;
 
 /**
   *@author Gabor Torok
@@ -145,6 +146,7 @@ class Creature : public RenderedCreature {
   bool mapChanged;
 
   std::map<Location*, Uint32> secretDoorAttempts;
+  std::map<Trap*, Uint32> trapFindAttempts;
 	bool moving;
 
 	char causeOfDeath[255], pendingCauseOfDeath[255];
@@ -491,12 +493,18 @@ class Creature : public RenderedCreature {
   bool rollSkill( int skill, float luckDiv=0.0f );
   bool rollSecretDoor( Location *pos );
   void resetSecretDoorAttempts();
+  bool rollTrapFind( Trap *trap );
+  void resetTrapFindAttempts();
+  void rollPerception();
+  void disableTrap( int x, int y );
 	char *getType();
 
 	inline bool isInventoryArranged() { return inventoryArranged; }
 	inline void setInventoryArranged( bool b ) { inventoryArranged = b; }
 
  protected:
+
+   void evalTrap();
 
 	/**
 	 * Recalculate skills when stats change.

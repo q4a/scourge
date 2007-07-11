@@ -762,6 +762,9 @@ Location *Creature::moveToLocator() {
     // take a step
     pos = takeAStepOnPath();
 
+    // did we step on a trap?
+    evalTrap();
+
     // if we've no more steps
     if( (int)bestPath.size() <= bestPathPos ) {
 			stopMoving();
@@ -2983,5 +2986,88 @@ bool Creature::rollSecretDoor( Location *pos ) {
 
 void Creature::resetSecretDoorAttempts() {
   secretDoorAttempts.clear();
+}
+
+#define TRAP_FIND_ATTEMPT_INTERVAL 5000
+bool Creature::rollTrapFind( Trap *trap ) {
+  if( trapFindAttempts.find( trap ) != trapFindAttempts.end() ) {
+    Uint32 lastTime = trapFindAttempts[ trap ];
+    if( SDL_GetTicks() - lastTime < TRAP_FIND_ATTEMPT_INTERVAL ) return false;
+  }
+  bool ret = rollSkill( Skill::FIND_TRAP, 4.0f );
+  if( !ret ) {
+    trapFindAttempts[ trap ] = SDL_GetTicks();
+  }
+  return ret;
+}
+
+void Creature::resetTrapFindAttempts() {
+  trapFindAttempts.clear();
+}
+
+void Creature::rollPerception() {
+  set<Uint8> *trapsShown = session->getMap()->getTrapsShown();
+  for( set<Uint8>::iterator e = trapsShown->begin(); e != trapsShown->end(); ++e ) {
+    Uint8 trapIndex = *e;
+    Trap *trap = session->getMap()->getTrapLoc( trapIndex );
+    if( trap->discovered == false ) {
+      float dist = Constants::distance( getX(), getY(), getShape()->getWidth(), getShape()->getDepth(), 
+                                        trap->r.x, trap->r.y, trap->r.w, trap->r.h );
+      if( dist < 10 && !session->getMap()->isWallBetween( toint( getX() ), toint( getY() ), 0, trap->r.x, trap->r.y, 0 ) ) {
+        trap->discovered = rollTrapFind( trap );
+        if( trap->discovered ) {
+          char message[ 120 ];
+          sprintf( message, _( "%1$s notices a trap!" ), getName() );
+          session->getGameAdapter()->addDescription( message );
+          addExperienceWithMessage( 50 );
+        }
+      }
+    }
+  }
+}
+
+void Creature::evalTrap() {
+  int trapIndex = session->getMap()->getTrapAtLoc( toint( getX() ), toint( getY() ) );
+  if( trapIndex != -1 ) {
+    Trap *trap = session->getMap()->getTrapLoc( trapIndex );
+    if( trap->enabled ) {
+      trap->discovered = true;
+      trap->enabled = false;
+      int damage = (int)Util::getRandomSum( 10, session->getCurrentMission()->getLevel() );
+      char message[ 120 ];
+      sprintf( message, _( "%1$s blunders into a trap and takes %2$d points of damage!" ), getName(), damage );
+      session->getGameAdapter()->addDescription( message );
+      takeDamage( damage );
+    }
+  }
+}
+
+void Creature::disableTrap( int x, int y ) {
+  bool ret = false;
+  int trapIndex = session->getMap()->getTrapAtLoc( toint( getX() ), toint( getY() ) );
+  if( trapIndex != -1 ) {
+    Trap *trap = session->getMap()->getTrapLoc( trapIndex );
+    if( trap->enabled ) {
+      trap->discovered = true;
+      trap->enabled = false;
+      char message[ 120 ];
+      sprintf( message, _( "%1$s attempts to disable the trap:" ), getName() );
+      session->getGameAdapter()->addDescription( message );
+      bool ret = rollSkill( Skill::FIND_TRAP, 5.0f );
+      if( ret ) {
+        session->getGameAdapter()->addDescription( "   and succeeds!" );
+        int exp = (int)Util::getRandomSum( 50, session->getCurrentMission()->getLevel() );
+        addExperienceWithMessage( exp );
+      } else {
+        int damage = (int)Util::getRandomSum( 10, session->getCurrentMission()->getLevel() );
+        char message[ 120 ];
+        sprintf( message, _( "    and fails! %1$s takes %2$d points of damage!" ), getName(), damage );
+        session->getGameAdapter()->addDescription( message );
+        takeDamage( damage );
+      }
+    } else {
+      session->getGameAdapter()->addDescription( "This trap is already disabled." );
+    }
+  }
 }
 

@@ -44,6 +44,9 @@ ScourgeView::ScourgeView( Scourge *scourge ) {
   this->scourge = scourge;
   needToCheckInfo = false;
   outlineColor = new Color( 0.3f, 0.3f, 0.5f, 0.5f );
+  disabledTrapColor = new Color( 0.5, 0.5, 0.5, 0.5f );
+  enabledTrapColor = new Color( 1, 1, 0, 0.5f );
+  debugTrapColor = new Color( 0, 1, 1, 0.5f );
   textEffect = NULL;
   textEffectTimer = 0;
   needToCheckDropLocation = true;
@@ -614,7 +617,7 @@ void ScourgeView::drawTextEffect() {
 // check for interactive items.
 Color *ScourgeView::getOutlineColor( Location *pos ) {
   Color *ret = NULL;
-  if( pos->item || pos->creature || pos->shape->isInteractive() ) {
+  if( pos->item || pos->creature || ( pos->shape && pos->shape->isInteractive() ) ) {
     ret = outlineColor;
   } else if( scourge->getMap()->isSecretDoor( pos ) ) {
     // try to detect the secret door
@@ -623,6 +626,20 @@ Color *ScourgeView::getOutlineColor( Location *pos ) {
     } else if( scourge->getParty()->getPlayer()->rollSecretDoor( pos ) ) {
       scourge->getMap()->setSecretDoorDetected( pos );
       ret = outlineColor;
+    }
+  } else {
+    int trapIndex = scourge->getMap()->getTrapAtLoc( pos->x, pos->y );
+    if( trapIndex > -1 ) {
+      Trap *trap = scourge->getMap()->getTrapLoc( trapIndex );
+      if( !trap->enabled ) 
+          ret = disabledTrapColor;
+        else if( trap->discovered )
+          if( trapIndex == scourge->getMap()->getSelectedTrapIndex() )
+            ret = outlineColor;
+          else
+            ret = enabledTrapColor;
+        else
+          ret = debugTrapColor;
     }
   }
   return ret;

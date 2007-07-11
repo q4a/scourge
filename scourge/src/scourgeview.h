@@ -53,7 +53,7 @@ private:
   Scourge *scourge;
   bool needToCheckInfo;
   std::map<InfoMessage *, Uint32> infos;
-  Color *outlineColor;
+  Color *outlineColor, *disabledTrapColor, *enabledTrapColor, *debugTrapColor;
   TextEffect *textEffect;
   GLint textEffectTimer;
   bool needToCheckDropLocation;
