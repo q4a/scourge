@@ -38,11 +38,14 @@ class Effect;
 class DisplayInfo;
 class MapRenderHelper;
 
-typedef struct _Trap {
+class Trap {
+public:
 	SDL_Rect r;
 	int type;
+  bool discovered;
+  bool enabled;
 	std::vector<CVector2*> hull;
-} Trap;
+};
 
 class MapSettings {
 
@@ -249,6 +252,7 @@ private:
   std::map<Uint32, Uint8> trapPos;
   std::vector<Trap> trapList;
   std::set<Uint8> trapSet;
+  int selectedTrapIndex;
 
  public:
   bool useFrustum;
@@ -599,6 +603,8 @@ private:
   void removeTrap( int trap );
   int getTrapAtLoc( int x, int y );
   Trap *getTrapLoc( int trap );
+  inline std::set<Uint8> *getTrapsShown() { return &trapSet; }
+  inline int getSelectedTrapIndex() { return selectedTrapIndex; }
 
 protected:
 

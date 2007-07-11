@@ -1592,6 +1592,9 @@ void Scourge::playRound() {
   // is the game not paused?
   if(party->isRealTimeMode()) {
 
+    // party notices new traps, etc.
+    party->rollPerception();
+
     Projectile::moveProjectiles(getSession());
 
     // fight battle turns    

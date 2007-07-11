@@ -225,6 +225,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	hackBlockingPos->shape = NULL;
 	hackBlockingPos->x = hackBlockingPos->y = hackBlockingPos->z = 0;
 
+  selectedTrapIndex = -1;
+
   adapter->addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
   adapter->addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
 }
@@ -604,8 +606,10 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
           posX = chunkX * MAP_UNIT + xp + MAP_OFFSET;
           posY = chunkY * MAP_UNIT + yp + MAP_OFFSET + 1;
 
+          // show traps
           int trapIndex = getTrapAtLoc( posX, posY );
-          if( trapIndex > -1 ) trapSet.insert( (Uint8)trapIndex );
+          if( trapIndex > -1 && lightMap[ chunkX ][ chunkY ] ) 
+            trapSet.insert( (Uint8)trapIndex );
 
           if(ground || water) {
             shape = floorPositions[posX][posY];
@@ -2974,6 +2978,9 @@ void Map::handleEvent( SDL_Event *event ) {
             lastOutlinedZ = pos->z;
           }
         }
+
+        // highlight traps too
+        selectedTrapIndex = getTrapAtLoc( getCursorMapX(), getCursorMapY() );
       }
     }
     break;
@@ -4294,6 +4301,8 @@ int Map::addTrap( int x, int y, int w, int h ) {
   trap.r.w = w;
   trap.r.h = h;
 	trap.type = 0;
+  trap.discovered = false;
+  trap.enabled = true;
   Uint8 trapIndex = (Uint8)trapList.size();
 	vector<CVector2*> points;
   for( int xx = x; xx < x + w; xx++ ) {
@@ -4329,6 +4338,7 @@ void Map::clearTraps() {
   trapPos.clear();
   trapList.clear();
   trapSet.clear();
+  selectedTrapIndex = -1;
 }
 
 void Map::removeTrap( int trapIndex ) {
@@ -4357,30 +4367,42 @@ Trap *Map::getTrapLoc( int trapIndex ) {
 void Map::drawTraps() {
   for( set<Uint8>::iterator i = trapSet.begin(); i != trapSet.end(); i++ ) {
     Trap *trap = getTrapLoc( (int)( *i ) );
-		
-		glColor4f( 0, 1, 1, 1 );
-    for( int xx = trap->r.x; xx < trap->r.x + trap->r.w; xx++ ) {
-      for( int yy = trap->r.y; yy < trap->r.y + trap->r.h; yy++ ) {
-        drawGroundTex( adapter->getNamedTexture( "path" ), xx, yy, 1, 1 );
+
+    if( trap->discovered || DEBUG_TRAPS ) {
+
+      /*
+  		glColor4f( 0, 1, 1, 1 );
+      for( int xx = trap->r.x; xx < trap->r.x + trap->r.w; xx++ ) {
+        for( int yy = trap->r.y; yy < trap->r.y + trap->r.h; yy++ ) {
+          drawGroundTex( adapter->getNamedTexture( "path" ), xx, yy, 1, 1 );
+        }
       }
+      */
+  
+      glEnable( GL_BLEND );
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  		glDisable( GL_CULL_FACE );
+  		glDisable( GL_TEXTURE_2D );
+
+      // get the color
+      Location pos;
+      pos.x = trap->r.x;
+      pos.y = trap->r.y;
+      Color *color = adapter->getOutlineColor( &pos );
+      glColor4f( color->r, color->g, color->b, color->a );
+
+      glLineWidth( 3 );
+  		//glBegin( GL_POLYGON );
+      glBegin( GL_LINE_LOOP );
+  		for( unsigned int i = 0; i < trap->hull.size(); i++ ) {
+  			CVector2 *p = trap->hull[ i ];
+  			glVertex3f( ( p->x - getX() ) / DIV, ( p->y - getY() ) / DIV, 0.5f / DIV );
+  		}
+  		glEnd();
+      glLineWidth( 1 );
+  		glEnable( GL_TEXTURE_2D );
+      //glDisable( GL_BLEND );
     }
-
-
-    // Create a texture with the convex hull of this trap. 
-    glEnable( GL_BLEND );
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable( GL_CULL_FACE );
-		glDisable( GL_TEXTURE_2D );
-		glColor4f( 1, 0, 0, 0.5f );
-		glBegin( GL_POLYGON );
-    //glBegin( GL_LINE_LOOP );
-		for( unsigned int i = 0; i < trap->hull.size(); i++ ) {
-			CVector2 *p = trap->hull[ i ];
-			glVertex3f( ( p->x - getX() ) / DIV, ( p->y - getY() ) / DIV, 0.5f / DIV );
-		}
-		glEnd();
-		glEnable( GL_TEXTURE_2D );
-    glDisable( GL_BLEND );
   }  
 }
 

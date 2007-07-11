@@ -441,10 +441,9 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, boo
 
 
     // clicking on a creature
-    if( handleCreatureClick( mapx, mapy, mapz ) )
-{
-	 return;
-}
+    if( handleCreatureClick( mapx, mapy, mapz ) ) {
+      return;
+    }
 
     // click on an item
     if( mapx > MAP_WIDTH ) {
@@ -458,19 +457,19 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, boo
 
 
       Location *pos = scourge->getMap()->getLocation(mapx, mapy, mapz);
-			Location *itemPos = scourge->getMap()->getItemLocation( mapx, mapy );
+      Location *itemPos = scourge->getMap()->getItemLocation( mapx, mapy );
       if( mapx < MAP_WIDTH && pos && pos->item ) {
         scourge->handleTargetSelectionOfItem( ((Item*)(pos->item)), pos->x, pos->y, pos->z );
-	shouldCloseAllContainers = false;
+        shouldCloseAllContainers = false;
       } else if( mapx < MAP_WIDTH && itemPos && itemPos->item ) {
         scourge->handleTargetSelectionOfItem( ((Item*)(itemPos->item)), itemPos->x, itemPos->y, itemPos->z );
-	shouldCloseAllContainers = false;
-			} else if( mapx < MAP_WIDTH && scourge->getSession()->getMap()->isDoor( mapx, mapy ) ) {
-				scourge->handleTargetSelectionOfDoor( mapx, mapy, mapz );
-	shouldCloseAllContainers = false;
+        shouldCloseAllContainers = false;
+      } else if( mapx < MAP_WIDTH && scourge->getSession()->getMap()->isDoor( mapx, mapy ) ) {
+        scourge->handleTargetSelectionOfDoor( mapx, mapy, mapz );
+        shouldCloseAllContainers = false;
       } else {
-	shouldCloseAllContainers = false;
-				// make sure the selected action can target a location
+        shouldCloseAllContainers = false;
+        // make sure the selected action can target a location
 				scourge->handleTargetSelectionOfLocation( mapx, mapy, mapz );
 			}
 
@@ -480,28 +479,33 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, boo
 
 
 
-    if( scourge->useItem( mapx, mapy, mapz ) ) 
-{
-return;
-}
+    if( scourge->useItem( mapx, mapy, mapz ) ) {
+      return;
+    }
 
-    if(shouldCloseAllContainers && !scourge->inTurnBasedCombatPlayerTurn() && scourge->getUserConfiguration()->isHideInventoriesOnMove())
-    {
-	scourge->closeAllContainerGuis();
+    if(shouldCloseAllContainers && !scourge->inTurnBasedCombatPlayerTurn() && scourge->getUserConfiguration()->isHideInventoriesOnMove()) {
+      scourge->closeAllContainerGuis();
     }	
 
     // click on the scourge->getMap()
     mapx = scourge->getMap()->getCursorFlatMapX();
     mapy = scourge->getMap()->getCursorFlatMapY();
 
+    // was it a discovered trap?
+    int trapIndex = scourge->getMap()->getTrapAtLoc( mapx, mapy );
+    if( trapIndex > -1 ) {
+      Trap *trap = scourge->getMap()->getTrapLoc( trapIndex );
+      if( trap->discovered && trap->enabled ) {
+        scourge->getSession()->getParty()->getPlayer()->disableTrap( mapx, mapy );
+        return;
+      }
+    }
+
     // Make party move to new location
     int xx = mapx - ( scourge->getParty()->getPlayer()->getShape()->getWidth() / 2);
     int yy = mapy + 1 + ( scourge->getParty()->getPlayer()->getShape()->getHeight() / 2);
     if( !scourge->getParty()->setSelXY( xx, yy ) ) {
       scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN, true );
-
-
-	
     }
 
     // start round

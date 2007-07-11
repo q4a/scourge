@@ -62,6 +62,15 @@ public:
   RenderedItem *item;
   RenderedCreature *creature;
   Color *outlineColor;
+
+  Location() {
+    this->creature = NULL;
+    this->heightPos = 0;
+    this->item = NULL;
+    this->outlineColor = NULL;
+    this->shape = NULL;
+    this->x = this->y = this->z = 0;
+  }
 };
 
 class EffectLocation {

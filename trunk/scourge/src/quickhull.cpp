@@ -90,7 +90,7 @@ void QuickHull::findConvexHull( vector<CVector2*> *in, vector<CVector2*> *out ) 
 		if( p->x < a->x ) a = p;
 		else if( p->x > b->x ) b = p;
 	}
-	cerr << "Quickhull: min=" << a->x << "," << a->y << " max=" << b->x << "," << b->y << endl;
+	//cerr << "Quickhull: min=" << a->x << "," << a->y << " max=" << b->x << "," << b->y << endl;
 
 	out->push_back( a );
 	out->push_back( b );
@@ -107,6 +107,6 @@ void QuickHull::findConvexHull( vector<CVector2*> *in, vector<CVector2*> *out ) 
 
 	findHull( &s1, a, b, out );
 	findHull( &s2, b, a, out );
-	cerr << "\tpoint count, in=" << in->size() << " out=" << out->size() << endl;
+	//cerr << "\tpoint count, in=" << in->size() << " out=" << out->size() << endl;
 }
 

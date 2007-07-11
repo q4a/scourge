@@ -149,6 +149,7 @@ void Party::startPartyOnMission() {
     getParty(i)->setNext(getPlayer(), i);
     getParty(i)->cancelTarget();
     getParty(i)->resetSecretDoorAttempts();
+    getParty( i )->resetTrapFindAttempts();
   }
 }
 
@@ -684,3 +685,8 @@ void Party::dismiss( int index ) {
 	session->getSquirrel()->partyChanged();
 }
 
+void Party::rollPerception() {
+  for( int i = 0; i < getPartySize(); i++ ) {
+    getParty( i )->rollPerception();
+  }
+}

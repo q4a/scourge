@@ -148,6 +148,8 @@ class Party : public CreatureGroupInfo {
 
 	void hire( Creature *creature );
 	void dismiss( int index );
+
+  void rollPerception();
 protected:
   void resetPartyUI();  
 	bool isPartyInRange();

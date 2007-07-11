@@ -978,7 +978,6 @@ void TerrainGenerator::addTraps( Map *map, ShapePalette *shapePal ) {
   for( int n = 0; n < trapCount; n++ ) {
     int x, y;
     getRandomLocationSimple( map, dummy, &x, &y );
-    cerr << "Adding trap: " << x << "," << y << endl;
 
     int w = (int)( 6.0f * rand() / RAND_MAX ) + 4;
     int h = (int)( 6.0f * rand() / RAND_MAX ) + 4;
