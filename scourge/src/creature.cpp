@@ -2994,7 +2994,7 @@ bool Creature::rollTrapFind( Trap *trap ) {
     Uint32 lastTime = trapFindAttempts[ trap ];
     if( SDL_GetTicks() - lastTime < TRAP_FIND_ATTEMPT_INTERVAL ) return false;
   }
-  bool ret = rollSkill( Skill::FIND_TRAP, 4.0f );
+  bool ret = rollSkill( Skill::FIND_TRAP, 0.5f ); // traps are easy to notice
   if( !ret ) {
     trapFindAttempts[ trap ] = SDL_GetTicks();
   }
@@ -3042,32 +3042,27 @@ void Creature::evalTrap() {
   }
 }
 
-void Creature::disableTrap( int x, int y ) {
-  bool ret = false;
-  int trapIndex = session->getMap()->getTrapAtLoc( toint( getX() ), toint( getY() ) );
-  if( trapIndex != -1 ) {
-    Trap *trap = session->getMap()->getTrapLoc( trapIndex );
-    if( trap->enabled ) {
-      trap->discovered = true;
-      trap->enabled = false;
-      char message[ 120 ];
-      sprintf( message, _( "%1$s attempts to disable the trap:" ), getName() );
-      session->getGameAdapter()->addDescription( message );
-      bool ret = rollSkill( Skill::FIND_TRAP, 5.0f );
-      if( ret ) {
-        session->getGameAdapter()->addDescription( "   and succeeds!" );
-        int exp = (int)Util::getRandomSum( 50, session->getCurrentMission()->getLevel() );
-        addExperienceWithMessage( exp );
-      } else {
-        int damage = (int)Util::getRandomSum( 10, session->getCurrentMission()->getLevel() );
-        char message[ 120 ];
-        sprintf( message, _( "    and fails! %1$s takes %2$d points of damage!" ), getName(), damage );
-        session->getGameAdapter()->addDescription( message );
-        takeDamage( damage );
-      }
-    } else {
-      session->getGameAdapter()->addDescription( "This trap is already disabled." );
-    }
-  }
+void Creature::disableTrap( Trap *trap ) {
+	if( trap->enabled ) {
+		trap->discovered = true;
+		trap->enabled = false;
+		char message[ 120 ];
+		sprintf( message, _( "%1$s attempts to disable the trap:" ), getName() );
+		session->getGameAdapter()->addDescription( message );
+		bool ret = rollSkill( Skill::FIND_TRAP, 5.0f );
+		if( ret ) {
+			session->getGameAdapter()->addDescription( "   and succeeds!" );
+			int exp = (int)Util::getRandomSum( 50, session->getCurrentMission()->getLevel() );
+			addExperienceWithMessage( exp );
+		} else {
+			int damage = (int)Util::getRandomSum( 10, session->getCurrentMission()->getLevel() );
+			char message[ 120 ];
+			sprintf( message, _( "    and fails! %1$s takes %2$d points of damage!" ), getName(), damage );
+			session->getGameAdapter()->addDescription( message );
+			takeDamage( damage );
+		}
+	} else {
+		session->getGameAdapter()->addDescription( "This trap is already disabled." );
+	}
 }
 
