@@ -296,6 +296,18 @@ void ScourgeView::checkForInfo() {
           }
         }
       }
+
+			mapx = scourge->getMap()->getCursorFlatMapX();
+      mapy = scourge->getMap()->getCursorFlatMapY();
+			int trapIndex = scourge->getMap()->getTrapAtLoc( mapx, mapy + 1 );
+			if( trapIndex > -1 ) {
+				Trap *trap = scourge->getMap()->getTrapLoc( trapIndex );
+				if( trap->discovered && trap->enabled ) {
+					scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_USE );
+					handled = true;
+				}
+			}
+
       if( !handled ) scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_NORMAL );
     }
   }

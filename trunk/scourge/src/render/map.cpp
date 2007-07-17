@@ -1057,13 +1057,13 @@ void Map::preDraw() {
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
     if( settings->isPlayerEnabled() ) {
-      sprintf(mapDebugStr, "E=%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
+      sprintf(mapDebugStr, "E=%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d", 
               (int)currentEffectsMap.size(),
               ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
               ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
               (useFrustum ? "*" : ""),
               chunkCount, ((cex - csx)*(cey - csy)),
-              csx, cex, csy, cey, shapeCount);
+              csx, cex, csy, cey, shapeCount, selectedTrapIndex );
       //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
     } else {
       sprintf(mapDebugStr, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
@@ -2963,6 +2963,7 @@ void Map::handleEvent( SDL_Event *event ) {
       }
       
       // highlight the item under the mouse if it's useable
+			//cerr << "pos=" << getCursorMapX() << "," << getCursorMapY() << endl;
       if( getCursorMapX() < MAP_WIDTH ) {
         Location *pos = getLocation( getCursorMapX(),
                                      getCursorMapY(),
@@ -2977,11 +2978,13 @@ void Map::handleEvent( SDL_Event *event ) {
             lastOutlinedY = pos->y;
             lastOutlinedZ = pos->z;
           }
-        }
-
-        // highlight traps too
-        selectedTrapIndex = getTrapAtLoc( getCursorMapX(), getCursorMapY() );
+        }        
       }
+
+			if( getCursorFlatMapX() < MAP_WIDTH ) {
+				// highlight traps too
+        selectedTrapIndex = getTrapAtLoc( getCursorFlatMapX(), getCursorFlatMapY() + 1 );
+			}
     }
     break;
   case SDL_MOUSEBUTTONDOWN:

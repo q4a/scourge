@@ -496,7 +496,7 @@ class Creature : public RenderedCreature {
   bool rollTrapFind( Trap *trap );
   void resetTrapFindAttempts();
   void rollPerception();
-  void disableTrap( int x, int y );
+  void disableTrap( Trap *trap );
 	char *getType();
 
 	inline bool isInventoryArranged() { return inventoryArranged; }

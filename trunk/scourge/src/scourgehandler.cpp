@@ -492,11 +492,12 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, boo
     mapy = scourge->getMap()->getCursorFlatMapY();
 
     // was it a discovered trap?
-    int trapIndex = scourge->getMap()->getTrapAtLoc( mapx, mapy );
-    if( trapIndex > -1 ) {
-      Trap *trap = scourge->getMap()->getTrapLoc( trapIndex );
+    //int trapIndex = scourge->getMap()->getTrapAtLoc( mapx, mapy );
+    //if( trapIndex > -1 ) {
+		if( scourge->getMap()->getSelectedTrapIndex() > -1 ) {
+      Trap *trap = scourge->getMap()->getTrapLoc( scourge->getMap()->getSelectedTrapIndex() );
       if( trap->discovered && trap->enabled ) {
-        scourge->getSession()->getParty()->getPlayer()->disableTrap( mapx, mapy );
+        scourge->getSession()->getParty()->getPlayer()->disableTrap( trap );
         return;
       }
     }
