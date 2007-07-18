@@ -299,7 +299,7 @@ void ScourgeView::checkForInfo() {
 
 			mapx = scourge->getMap()->getCursorFlatMapX();
       mapy = scourge->getMap()->getCursorFlatMapY();
-			int trapIndex = scourge->getMap()->getTrapAtLoc( mapx, mapy + 1 );
+			int trapIndex = scourge->getMap()->getTrapAtLoc( mapx, mapy + 2 );
 			if( trapIndex > -1 ) {
 				Trap *trap = scourge->getMap()->getTrapLoc( trapIndex );
 				if( trap->discovered && trap->enabled ) {
@@ -638,20 +638,6 @@ Color *ScourgeView::getOutlineColor( Location *pos ) {
     } else if( scourge->getParty()->getPlayer()->rollSecretDoor( pos ) ) {
       scourge->getMap()->setSecretDoorDetected( pos );
       ret = outlineColor;
-    }
-  } else {
-    int trapIndex = scourge->getMap()->getTrapAtLoc( pos->x, pos->y );
-    if( trapIndex > -1 ) {
-      Trap *trap = scourge->getMap()->getTrapLoc( trapIndex );
-      if( !trap->enabled ) 
-          ret = disabledTrapColor;
-        else if( trap->discovered )
-          if( trapIndex == scourge->getMap()->getSelectedTrapIndex() )
-            ret = outlineColor;
-          else
-            ret = enabledTrapColor;
-        else
-          ret = debugTrapColor;
     }
   }
   return ret;

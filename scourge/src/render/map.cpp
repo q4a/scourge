@@ -2983,7 +2983,7 @@ void Map::handleEvent( SDL_Event *event ) {
 
 			if( getCursorFlatMapX() < MAP_WIDTH ) {
 				// highlight traps too
-        selectedTrapIndex = getTrapAtLoc( getCursorFlatMapX(), getCursorFlatMapY() + 1 );
+        selectedTrapIndex = getTrapAtLoc( getCursorFlatMapX(), getCursorFlatMapY() + 2 );
 			}
     }
     break;
@@ -4388,11 +4388,22 @@ void Map::drawTraps() {
   		glDisable( GL_TEXTURE_2D );
 
       // get the color
-      Location pos;
-      pos.x = trap->r.x;
-      pos.y = trap->r.y;
-      Color *color = adapter->getOutlineColor( &pos );
-      glColor4f( color->r, color->g, color->b, color->a );
+      // FIXME: colors should be ref-d from scourgeview.cpp colors
+      if( !trap->enabled ) {
+        //ret = disabledTrapColor;
+        glColor4f( 0.5, 0.5, 0.5, 0.5f );
+      } else if( trap->discovered ) {
+        if( trap == getTrapLoc( getSelectedTrapIndex() ) ) {
+          //ret = outlineColor;
+          glColor4f( 0.3f, 0.3f, 0.5f, 0.5f );
+        } else {
+          // ret = enabledTrapColor;
+          glColor4f( 1, 1, 0, 0.5f );
+        }
+      } else {
+        // ret = debugTrapColor;
+        glColor4f( 0, 1, 1, 0.5f );
+      }
 
       glLineWidth( 3 );
   		//glBegin( GL_POLYGON );
