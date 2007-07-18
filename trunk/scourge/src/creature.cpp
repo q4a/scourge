@@ -2988,7 +2988,7 @@ void Creature::resetSecretDoorAttempts() {
   secretDoorAttempts.clear();
 }
 
-#define TRAP_FIND_ATTEMPT_INTERVAL 5000
+#define TRAP_FIND_ATTEMPT_INTERVAL 500
 bool Creature::rollTrapFind( Trap *trap ) {
   if( trapFindAttempts.find( trap ) != trapFindAttempts.end() ) {
     Uint32 lastTime = trapFindAttempts[ trap ];
