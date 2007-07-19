@@ -206,7 +206,50 @@ void SpellCaster::viewInfo() {
                                                               creature->getSkill(Skill::IDENTIFY_ITEM) +
                                                               creature->getSkill(spell->getSchool()->getSkill()) );
   } else {
-    cerr << "*** Warning: implement ole' taffy for non-item targets!" << endl;
+    int sx, sy, sz;
+    creature->getTargetLocation( &sx, &sy, &sz );
+    if( sx > 0 && sy > 0 ) {
+
+      // move spell focus to selected area
+      int spellEffectSize = 4;
+      int radius = spell->getDistance();
+
+      // show radius effect
+      battle->getSession()->getMap()->startEffect( sx, sy, 1, 
+                                                   Constants::EFFECT_RING, (Constants::DAMAGE_DURATION * 4),
+                                                   radius, radius );
+
+      // walk around the circle
+      DisplayInfo di;
+      di.red = 0.1f;
+      di.green = 0.1f;
+      di.blue = 0.2f;
+      for( int r = spellEffectSize; r; r += spellEffectSize ) {
+        if( r > radius ) r = radius;
+        for( int angle = 0; angle < 360; angle += 10 ) {
+          int x = toint( sx + ( (float)r * cos( Util::degreesToRadians( (float)angle ) ) ) );
+          int y = toint( sy - ( (float)r * sin( Util::degreesToRadians( (float)angle ) ) ) );
+          if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
+      //      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
+            battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_GREEN, 
+                                                         (Constants::DAMAGE_DURATION * 4), 
+                                                         spellEffectSize, spellEffectSize, 
+                                                         (GLuint)( r * 25 ), false, &di );
+
+            // check for secret doors
+            Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
+            if( pos ) {
+              
+            }
+            // check for traps
+          }
+        }
+
+        if( r >= radius ) break;
+      }
+    } else {
+      cerr << "*** Warning: implement ole' taffy for creature targets!" << endl;
+    }
   }
 }
 
