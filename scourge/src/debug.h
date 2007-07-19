@@ -44,14 +44,14 @@
 // scourge.cpp                     
 //#define CAVE_TEST 1
 #define CAVE_TEST_LEVEL 4
-#define BATTLES_ENABLED 0
+#define BATTLES_ENABLED 1
 
 // comment out to unset
 #define DEBUG_KEYS 1
 //#define BASE_DEBUG 1
 
 // comment out to unset														 
-#define DEBUG_IDENTIFY_ITEM 1
+//#define DEBUG_IDENTIFY_ITEM 1
 
 // sqbinding.cpp                        
 #define DEBUG_SQUIRREL 0
@@ -64,7 +64,7 @@
 
 // #define DEBUG_SCREENSHOT 1
 
-#define DEBUG_TRAPS 1
+#define DEBUG_TRAPS 0
 
 #endif
 
