@@ -220,6 +220,7 @@ void SpellCaster::viewInfo() {
                                                    radius, radius );
 
       // walk around the circle
+      char msg[200];
       DisplayInfo di;
       di.red = 0.1f;
       di.green = 0.1f;
@@ -230,7 +231,6 @@ void SpellCaster::viewInfo() {
           int x = toint( sx + ( (float)r * cos( Util::degreesToRadians( (float)angle ) ) ) );
           int y = toint( sy - ( (float)r * sin( Util::degreesToRadians( (float)angle ) ) ) );
           if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
-      //      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
             battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_GREEN, 
                                                          (Constants::DAMAGE_DURATION * 4), 
                                                          spellEffectSize, spellEffectSize, 
@@ -239,9 +239,25 @@ void SpellCaster::viewInfo() {
             // check for secret doors
             Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
             if( pos ) {
-              
+              if( battle->getSession()->getMap()->isSecretDoor( pos ) ) {
+                if( !battle->getSession()->getMap()->isSecretDoorDetected( pos ) ) {
+                  battle->getSession()->getMap()->setSecretDoorDetected( pos );
+                  sprintf( msg, _( "%s discovers a secret door!" ), creature->getTargetCreature()->getName() );
+                  battle->getSession()->getGameAdapter()->addDescription( msg, 1, 0.2f, 1 );
+                }
+              }
             }
+
             // check for traps
+            int trapIndex = battle->getSession()->getMap()->getTrapAtLoc( x, y );
+            if( trapIndex > -1 ) {
+              Trap *trap = battle->getSession()->getMap()->getTrapLoc( trapIndex );
+              if( !trap->discovered ) {
+                trap->discovered = true;
+                sprintf( msg, _( "%s discovers a trap!" ), creature->getTargetCreature()->getName() );
+                battle->getSession()->getGameAdapter()->addDescription( msg, 1, 0.2f, 1 );
+              }
+            }
           }
         }
 
