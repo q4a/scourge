@@ -436,6 +436,10 @@ void GLShape::draw() {
 }
 
 void GLShape::outline( float r, float g, float b ) {
+
+	float colors[4];
+	glGetFloatv( GL_CURRENT_COLOR, colors );
+
   useShadow = true;
   GLboolean blend;
   glGetBooleanv( GL_BLEND, &blend );
@@ -461,7 +465,9 @@ void GLShape::outline( float r, float g, float b ) {
   if( !blend ) glDisable( GL_BLEND );
   if( texture ) glEnable( GL_TEXTURE_2D );
   useShadow = false;
-  glColor4f(1, 1, 1, 0.9f);
+  //glColor4f(1, 1, 1, 0.9f);
+
+	glColor4fv( colors );
 }
 
 void GLShape::setupBlending() { 

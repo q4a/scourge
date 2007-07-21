@@ -152,6 +152,7 @@ class Creature : public RenderedCreature {
 	char causeOfDeath[255], pendingCauseOfDeath[255];
 	bool inventoryArranged;
 	std::map<Item*, InventoryInfo*> invInfos;
+	Uint32 lastPerceptionCheck;
   
  public:
   static const int DIAMOND_FORMATION = 0;

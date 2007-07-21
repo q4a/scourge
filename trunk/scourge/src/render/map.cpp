@@ -1656,6 +1656,15 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       }
     }
 #endif
+
+		// show detected secret doors
+		if( later && later->pos ) {
+			if( isSecretDoor( later->pos ) && isSecretDoorDetected( later->pos ) ) {
+				glColor4f( 0.3f, 0.7f, 0.3f, 1.0f );
+				colorAlreadySet = true;
+			}
+		}
+
     if( colorAlreadySet   ) {
       colorAlreadySet = false;
     } else {

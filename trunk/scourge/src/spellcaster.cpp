@@ -242,7 +242,7 @@ void SpellCaster::viewInfo() {
               if( battle->getSession()->getMap()->isSecretDoor( pos ) ) {
                 if( !battle->getSession()->getMap()->isSecretDoorDetected( pos ) ) {
                   battle->getSession()->getMap()->setSecretDoorDetected( pos );
-                  sprintf( msg, _( "%s discovers a secret door!" ), creature->getTargetCreature()->getName() );
+                  sprintf( msg, _( "%s discovers a secret door!" ), creature->getName() );
                   battle->getSession()->getGameAdapter()->addDescription( msg, 1, 0.2f, 1 );
                 }
               }
@@ -254,7 +254,7 @@ void SpellCaster::viewInfo() {
               Trap *trap = battle->getSession()->getMap()->getTrapLoc( trapIndex );
               if( !trap->discovered ) {
                 trap->discovered = true;
-                sprintf( msg, _( "%s discovers a trap!" ), creature->getTargetCreature()->getName() );
+                sprintf( msg, _( "%s discovers a trap!" ), creature->getName() );
                 battle->getSession()->getGameAdapter()->addDescription( msg, 1, 0.2f, 1 );
               }
             }
