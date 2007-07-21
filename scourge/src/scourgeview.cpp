@@ -635,9 +635,11 @@ Color *ScourgeView::getOutlineColor( Location *pos ) {
     // try to detect the secret door
     if( pos->z > 0 || scourge->getMap()->isSecretDoorDetected( pos ) ) {
       ret = outlineColor;
+			/*
     } else if( scourge->getParty()->getPlayer()->rollSecretDoor( pos ) ) {
       scourge->getMap()->setSecretDoorDetected( pos );
       ret = outlineColor;
+			*/
     }
   }
   return ret;

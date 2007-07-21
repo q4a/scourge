@@ -30,6 +30,8 @@
 
 using namespace std;
 
+#define PERCEPTION_DELTA 2000
+
 bool loading = false;
 
 //#define DEBUG_CAPABILITIES
@@ -119,6 +121,8 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool init
 }
 
 void Creature::commonInit() {
+
+	this->lastPerceptionCheck = 0;
 
 	this->inventoryArranged = false;
 
@@ -3006,6 +3010,12 @@ void Creature::resetTrapFindAttempts() {
 }
 
 void Creature::rollPerception() {
+
+	Uint32 now = SDL_GetTicks();
+	if( now - lastPerceptionCheck < PERCEPTION_DELTA ) return;	
+	lastPerceptionCheck = now;
+
+	// find traps
   set<Uint8> *trapsShown = session->getMap()->getTrapsShown();
   for( set<Uint8>::iterator e = trapsShown->begin(); e != trapsShown->end(); ++e ) {
     Uint8 trapIndex = *e;
@@ -3014,7 +3024,7 @@ void Creature::rollPerception() {
       float dist = Constants::distance( getX(), getY(), getShape()->getWidth(), getShape()->getDepth(), 
                                         trap->r.x, trap->r.y, trap->r.w, trap->r.h );
       if( dist < 10 && !session->getMap()->isWallBetween( toint( getX() ), toint( getY() ), 0, trap->r.x, trap->r.y, 0 ) ) {
-        trap->discovered = rollTrapFind( trap );
+        trap->discovered = rollSkill( Skill::FIND_TRAP, 0.5f ); // traps are easy to notice
         if( trap->discovered ) {
           char message[ 120 ];
           sprintf( message, _( "%1$s notices a trap!" ), getName() );
@@ -3024,6 +3034,22 @@ void Creature::rollPerception() {
       }
     }
   }
+
+	// find secret doors
+	for( int xx = toint( getX() ) - 10; xx < toint( getX() ) + 10; xx++ ) {
+		for( int yy = toint( getY() ) - 10; yy < toint( getY() ) + 10; yy++ ) {
+			Location *pos = session->getMap()->getLocation( xx, yy, 0 );
+			if( pos && session->getMap()->isSecretDoor( pos ) && !session->getMap()->isSecretDoorDetected( pos ) ) {
+				if( rollSkill( Skill::FIND_SECRET_DOOR, 4.0f ) ) {
+					session->getMap()->setSecretDoorDetected( pos );
+					char message[ 120 ];
+          sprintf( message, _( "%1$s notices a secret door!" ), getName() );
+          session->getGameAdapter()->addDescription( message );
+          addExperienceWithMessage( 50 );
+				}
+			}
+		}
+	}
 }
 
 void Creature::evalTrap() {
