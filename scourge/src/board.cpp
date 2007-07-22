@@ -382,7 +382,7 @@ MissionTemplate::~MissionTemplate() {
 
 Mission *MissionTemplate::createMission( Session *session, int level, int depth, MissionInfo *info ) {
 
-//  cerr << "*** Creating level " << level << " mission, using template: " << this->name << endl;
+  cerr << "*** Creating level " << level << " mission, using template: " << this->name << " type=" << mapType << endl;
 
   map<string, RpgItem*> items;
   map<string, Monster*> creatures;
@@ -446,6 +446,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
 	mission->setTemplateName( this->name );
 	if( info ) {
 		mission->setSavedMapName( (char*)info->mapName );
+		cerr << "\tmap name=" << (char*)info->mapName << endl;
 		mission->setCompleted( info->completed == 1 ? true : false );
 	}
 
@@ -510,7 +511,7 @@ void MissionTemplate::parseText( Session *session, int level, int depth,
 							monster = Monster::getRandomMonster( monsterLevel );
 						}
             if(!monster) {
-              cerr << "Warning: no monsters defined for level: " << level << endl;
+              cerr << "+ Warning: no monsters defined for level: " << level << endl;
               monsterLevel--;
             }
           }
@@ -565,14 +566,14 @@ Mission::Mission( Board *board, int level, int depth,
   } else {
     edited = false;
     char *s;
-    board->getSession()->getShapePalette()->getRandomMapLocation( mapType, &s, &mapX, &mapY );
+    assert( board->getSession()->getShapePalette()->getRandomMapLocation( mapType, &s, &mapX, &mapY ) );
     strcpy( this->mapName, s );
   }
   
-//  cerr << "*** Created mission: " << getName() << endl;
-//  cerr << "\tmap name=" << ( strlen( this->mapName ) ? mapName : "<random>" ) << endl;
-//  cerr << getDescription() << endl;
-//  cerr << "-----------------------" << endl;
+//   cerr << "*** Created mission: " << getName() << endl;
+//   cerr << "\tmap name=" << ( strlen( this->mapName ) ? mapName : "<random>" ) << endl;
+//   cerr << getDescription() << endl;
+//   cerr << "-----------------------" << endl;
 }
 
 Mission::~Mission() {
