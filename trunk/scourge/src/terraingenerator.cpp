@@ -386,7 +386,7 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
         Monster *monster = Monster::getRandomMonster(monsterLevel);
         //fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
         if(!monster) {
-          cerr << "Warning: no monsters defined for level: " << level << endl;
+          cerr << "* Warning: no monsters defined for level: " << level << endl;
           break;
         }
         GLShape *shape = 
