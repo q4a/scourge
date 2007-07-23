@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 34
+#define PERSIST_VERSION 35
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -88,6 +88,8 @@ typedef struct _CreatureInfo {
   Uint32 spell_count;
   Uint8 spell_name[100][255];
   Uint8 quick_spell[12][255];
+
+	Uint8 boss;
 } CreatureInfo;
 
 typedef struct _LocationInfo {

@@ -1290,7 +1290,6 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
       // add exp. points and money
       if( !IS_AUTO_CONTROL( creature ) ) {
 
-
         // FIXME: try to move to party.cpp
         for(int i = 0; i < session->getParty()->getPartySize(); i++) {
 					// Add the exp for the killed creature
@@ -1305,6 +1304,12 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
           }
         }
         // end of FIXME
+
+				if( tc->isBoss() ) {
+					session->getGameAdapter()->addDescription( _( "You have defeated the dungeon boss!" ), 0.5f, 1, 0.5f );
+					session->getGameAdapter()->addDescription( _( "...the news spreads quickly and his minions cower before you." ), 0.5f, 1, 0.5f );
+					// fixme: actually do something
+				}
 
         // see if this is a mission objective
         if(session->getCurrentMission() && 
