@@ -123,6 +123,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool init
 void Creature::commonInit() {
 
 	this->lastPerceptionCheck = 0;
+	this->boss = false;
 
 	this->inventoryArranged = false;
 
@@ -325,6 +326,8 @@ CreatureInfo *Creature::save() {
             ( getQuickSpell( i ) ? getQuickSpell( i )->getName() : "" ) );
   }
 
+	info->boss = (Uint8)boss;
+
   return info;
 }
 
@@ -441,6 +444,8 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
       }
     }
   }
+
+	creature->setBoss( info->boss );
 
   creature->calculateExpOfNextLevel();
 
@@ -2172,11 +2177,12 @@ GLfloat Creature::getStep() {
 }
 
 void Creature::getDetailedDescription(char *s) {
-  sprintf(s, "%s %s", 
+  sprintf(s, "%s %s %s", 
           getName(), 
 					( session->getCurrentMission() && 
 						session->getCurrentMission()->isMissionCreature( this ) ? 
-						_( "*Mission*" ) : "" ) );
+						_( "*Mission*" ) : "" ),
+					( boss ? _( "*Boss*" ) : "" ) );
 }
 
 void Creature::setHp() { 

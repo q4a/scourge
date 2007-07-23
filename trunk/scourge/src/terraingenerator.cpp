@@ -362,6 +362,7 @@ void TerrainGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal) {
 }
 
 void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
+	bool dungeonBoss = false;
   // add monsters in every room
   if(monsters) {
     int totalLevel = (int)( (float)scourge->getParty()->getTotalLevel() * getMonsterLevelMod() );
@@ -380,9 +381,17 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
       while( areaCovered < roomAreaUsed && 
 						 ( badAssMonsters || 
 							 monsterLevelTotal < totalLevelUsed ) ) {
+				bool boss = false;
         int monsterLevel = level;
-        if(badAssMonsters && 0 == (int)(5.0f * rand()/RAND_MAX))
-          monsterLevel++;
+        if( badAssMonsters ) {
+					if( 0 == (int)( 5.0f * rand() / RAND_MAX ) ) {
+						monsterLevel++;
+					}          
+					if( !stairsDown && !dungeonBoss ) {
+						monsterLevel += 2;
+						boss = true;
+					}
+				}
         Monster *monster = Monster::getRandomMonster(monsterLevel);
         //fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
         if(!monster) {
@@ -400,6 +409,11 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
         if(fits) {
           //fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
           Creature *creature = scourge->getSession()->newCreature(monster, shape);
+					if( boss ) {
+						cerr << "+++ Adding boss monster! " << creature->getName() << endl;
+						creature->setBoss( true );
+						dungeonBoss = true;
+					}
           addItem(levelMap, creature, NULL, NULL, x, y);
           creature->moveTo(x, y, 0);
           areaCovered += (creature->getShape()->getWidth() * 

@@ -446,6 +446,7 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
   for(int i = 0; i < 12; i++ ) {
     file->write( info->quick_spell[i], 255 );
   }
+	file->write( &( info->boss ) );
 }
 
 CreatureInfo *Persist::loadCreature( File *file ) {
@@ -495,6 +496,11 @@ CreatureInfo *Persist::loadCreature( File *file ) {
   for(int i = 0; i < 12; i++ ) {
     file->read( info->quick_spell[i], 255 );
   }
+	if( info->version >= 35 ) {
+		file->read( &(info->boss) );
+	} else {
+		info->boss = 0;
+	}
   return info;
 }
 
