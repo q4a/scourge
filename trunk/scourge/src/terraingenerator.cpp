@@ -387,9 +387,9 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
 					if( 0 == (int)( 5.0f * rand() / RAND_MAX ) ) {
 						monsterLevel++;
 					}          
-					if( !stairsDown && !dungeonBoss ) {
-						monsterLevel += 2;
+					if( !dungeonBoss ) {
 						boss = true;
+						monsterLevel += depth;
 					}
 				}
         Monster *monster = Monster::getRandomMonster(monsterLevel);
@@ -410,7 +410,7 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
           //fprintf(stderr, "\tmonster fits at %d,%d.\n", x, y);
           Creature *creature = scourge->getSession()->newCreature(monster, shape);
 					if( boss ) {
-						cerr << "+++ Adding boss monster! " << creature->getName() << endl;
+						cerr << "+++ Adding boss monster! " << creature->getName() << " level=" << monsterLevel << " for depth=" << depth << endl;
 						creature->setBoss( true );
 						dungeonBoss = true;
 					}

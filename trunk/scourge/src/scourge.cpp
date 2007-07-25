@@ -1202,6 +1202,9 @@ int Scourge::dropItem(int x, int y) {
     char message[120];
     Creature *c = ((Creature*)(levelMap->getSelectedDropTarget()->creature));
     if(c) {
+			pcui->receiveInventory();
+			return z;
+			/*
       if(c->addInventory(movingItem)) {
         sprintf(message, _( "%1$s picks up %2$s." ),
                 c->getName(),
@@ -1211,6 +1214,7 @@ int Scourge::dropItem(int x, int y) {
         showMessageDialog( _( "The item won't fit in that container!" ) );
         replace = true;
       }
+			*/
     } else if(levelMap->getSelectedDropTarget()->item &&
               ((Item*)(levelMap->getSelectedDropTarget()->item))->getRpgItem()->getType() == RpgItem::CONTAINER) {
       if(!((Item*)(levelMap->getSelectedDropTarget()->item))->addContainedItem(movingItem)) {
