@@ -41,16 +41,16 @@ class Creature;
 */
 class CPathNode{
 public:
-  int f, gone, heuristic; // f = gone + heuristic
+  double f, gone, heuristic; // f = gone + heuristic
   int x, y;               // Location of node
   int px, py;             // Locaton of parent node
 
   inline bool operator<(const CPathNode &b) {
-		return this->f < b.f;
+		return this->f > b.f;
   }
 
   inline bool operator>(const CPathNode &b) {
-		return this->f > b.f;
+		return this->f < b.f;
   }
   
 };
