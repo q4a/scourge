@@ -23,8 +23,8 @@
 
 using namespace std;
 
-#define MAX_CLOSED_NODES 120
-#define FAST_MAX_CLOSED_NODES 50
+#define MAX_CLOSED_NODES 160
+#define FAST_MAX_CLOSED_NODES 80
 
 AStar::AStar(){
 }
@@ -33,38 +33,44 @@ AStar::~AStar(){
 }
 
 // A Sample by D.S.Reynolds
+// Fixed by Jonathan Teutenberg
 //
-// How It Works:
+// How It Works (original):
 //
 // The basic formula for the A* algorithm is f = g + h.  g represents the cost of
 // distance travelled (or gone).  h represents the estimate (or heuristic) of distance
-// from current node to the destination.  Some sort of contianers are needed.  Some
-// chose stacks, I chose STL vectors and a heap.  I believe the most critical part
-// of the formula is the calculation for the heuristic.  Also, Breadth-First and Depth-First
-// algorithms are simplified subsets of the A*.
+// from current node to the destination.  
 //
+// Data-structures:
+// The heap used for the OPEN list is fairly standard.
+// The vector for the CLOSED list is a poor choice. Membership checks are linear, but we 
+// would prefer constant, as in a hashtable. 
+// The vector for PATH is fine.
+//
+// Algorithm:
 //  1.  Create OPEN, CLOSED and PATH containers.
 //  2.  Start with the OPEN container containing only the starting node.
-//      Set that nodes g value to 0, it's h value to the euclidian difference
-//      ((dx - sx)*(dx - sx)) + ((dy - sy)*(dy - sy)), calc the f value and
-//      set the parent node to NULL.
+//      Set that nodes g value to 0, h value to the maximum of the x and y distance.
 //  3.  Until the goal node is found, repeat the following:
 //        If no nodes found exit with failure.
 //        Select Node on OPEN with the lowest f value.  This is the BestNode.
+//        If BestNode is the destination, exit.
+//	  Check CLOSED to see whether we've processed BestNode before.
 //        Push BestNode to Closed (This is the only place CLOSED is populated).
-//        If BestNode is the destination, exit.  Otherwise, determine the
-//        child nodes (adjacents) of BestNode.
+//        Determine the child nodes (adjacents) of BestNode.
 //           For each child node do the following:
 //           Set each child nodes Parent to BestNode (We'll use this later to
 //             get the path.)
 //           Calc the cost of g:  Child.g = BestNode.g + 1  (Use other than 1
 //             for various terrain)
-//           See if child node is already on OPEN.  If so, determine which has
-//             the lower g value and use it's other corresponding values.
-//           See if child node is already on CLOSED.  If so, determine which
-//             has the lower g value and use it's other corresponding values.
-//           If the child node was NOT on OPEN or CLOSED, add it to OPEN.
+//           Calculate the h value using max(dx,dy). 
+//           If this is a diagonal move, add 0.5 to the h value to avoid unnecessary zig-zagging
+//           Add the child to the OPEN queue.
 //
+// TODO:
+// Add a goal function, so we can find a path to a location "within range" of a point.
+// Add a cost function to allow path planning over varying terrain (use the Map for this?)
+// Fix up the parent references of nodes so we can use a hash table for CLOSED
 ///////////////////////////////////////////////////////////
 void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
                      Sint16 dx, Sint16 dy, Sint16 dz,
@@ -92,7 +98,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
   Node.x = sx;                            // Create the start node
   Node.y = sy;
   Node.gone = 0;
-  Node.heuristic = ((dx - sx)*(dx - sx)) + ((dy - sy)*(dy - sy));
+  Node.heuristic = max(abs(dx-sx),abs(dy-sy));
   Node.f = Node.gone + Node.heuristic;    // The classic formula f = g + h
   Node.px = 0;                            // No parent for start location
   Node.py = 0;                            // No parent for start location
@@ -101,24 +107,39 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
 
 
   while (!OPEN.empty()) {
-    sort_heap(OPEN.begin(), OPEN.end());// Ascending sort based on overloaded operators below
+
     BestNode = OPEN.front();            // Set the Node with lowest f value to BESTNODE
     pop_heap(OPEN.begin(), OPEN.end()); // Pop off the heap.  Actually this moves the
                                         // far left value to the far right.  The node
                                         // is not actually removed since the pop is to
                                         // the heap and not the container.
     OPEN.pop_back();                    // Remove node from right (the value we pop_heap'd)
-    CLOSED.push_back(BestNode);         // Push the BestNode onto CLOSED
-
+    
     // If at destination, break and create path below
     if ((BestNode.x == dx) && (BestNode.y == dy)) {
-      //bPathFound = true; // arrived at destination...
+	CLOSED.push_back(BestNode);//add the goal to our path
       break;
     }
 
+    // Check to see if already on CLOSED
+    bNodeFound = false;
+    for (int t=0; t<(int)CLOSED.size(); t++) {
+            if ((BestNode.x == CLOSED[t].x) &&
+                (BestNode.y == CLOSED[t].y)) {
+              bNodeFound = true;
+              break;
+            }
+     }
+    if(bNodeFound){
+	continue;
+    }
+
+    CLOSED.push_back(BestNode);         // Push the BestNode onto CLOSED
+
     // Set limit to break if looking too long
-    if ( (int)CLOSED.size() > maxNodes )
-      break;
+    if ( (int)CLOSED.size() > maxNodes ){
+	break;
+    }
 
     // Check adjacent locations (This is done in a clockwise order to lessen jaggies)
     for (int i=1; i<9; i++) {
@@ -167,59 +188,23 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
           Node.gone = BestNode.gone + 1;
         }
         
-        // Determine the Heuristic.  Probably the most crucial aspect
-        // Heuristic by Simple Euclidian method
-        // Node.heuristic = ((dx - Node.x)*(dx - Node.x)) + ((dy - Node.y)*(dy - Node.y));
-        // Heuristic by my own Orthogonal/Diagonal + Euclidian modifier
+        //heuristic calculation
         int DX = abs(dx - Node.x);
         int DY = abs(dy - Node.y);
-        int Orthogonal = abs(DX - DY);
-        int Diagonal = abs(((DX + DY) - Orthogonal)/2);
-        Node.heuristic = Diagonal + Orthogonal + DX + DY;
-        //Node.heuristic = (int)( sqrt( DX * DX + DY * DY ) );
+
+	if(i % 2 == 0) //a non-diagonal move
+		Node.heuristic = max(DX,DY)+0.5; //we discourage diagonals to remove zig-zagging
+	else
+		Node.heuristic = max(DX,DY);
+	//Node.heuristic = max(DX,DY)*2 + min(DX,DY); // the old heuristic
 
         // The A* formula
         Node.f = Node.gone + Node.heuristic;
         Node.px = BestNode.x; // Point parent to last BestNode (pushed onto CLOSED)
         Node.py = BestNode.y; // Point parent to last BestNode (pushed onto CLOSED)
 
-
-        bNodeFound = false;
-
-        // Check to see if already on OPEN
-        for (int t=0; t<(int)OPEN.size(); t++) {
-          if ((Node.x == OPEN[t].x) &&
-              (Node.y == OPEN[t].y)) {   // If already on OPEN
-            if (Node.gone < OPEN[t].gone) {
-              OPEN[t].gone = Node.gone;
-              OPEN[t].f = Node.gone + OPEN[t].heuristic;
-              OPEN[t].px = Node.px;
-              OPEN[t].py = Node.py;
-            }
-            bNodeFound = true;
-            break;
-          }
-        }
-        if (!bNodeFound ) { // If Node NOT found on OPEN
-          // Check to see if already on CLOSED
-          for (int t=0; t<(int)CLOSED.size(); t++) {
-            if ((Node.x == CLOSED[t].x) &&
-                (Node.y == CLOSED[t].y)) {   // If on CLOSED, Which has lower gone?
-              if (Node.gone < CLOSED[t].gone) {
-                CLOSED[t].gone = Node.gone;
-                CLOSED[t].f = Node.gone + CLOSED[t].heuristic;
-                CLOSED[t].px = Node.px;
-                CLOSED[t].py = Node.py;
-              }
-              bNodeFound = true;
-              break;
-            }
-          }
-        }
-        if (!bNodeFound ) { // If Node NOT found on OPEN or CLOSED
           OPEN.push_back(Node);                  // Push NewNode onto OPEN
           push_heap( OPEN.begin(), OPEN.end() ); // Push NewNode onto heap
-          make_heap( OPEN.begin(), OPEN.end() ); // Re-Assert heap, or will be short by one
 
                    /*
                    // Display OPEN and CLOSED containers (For Debugging)
@@ -240,17 +225,17 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
                    cout << endl << endl;
                    int ch = _getch();
                    //*/
-        }
+        
       }
     }
   }
 
   if (CLOSED.size() > 0) {
+	//cout << "got path after " << CLOSED.size() << "closed nodes.\n";
     // Create the path from elements of the CLOSED container
     if(PATH.size()) PATH.erase(PATH.begin(), PATH.end());
     PATH.push_back(CLOSED.back());
-    CLOSED.pop_back();
-
+	CLOSED.pop_back();
     while (!CLOSED.empty()) {
       if ((CLOSED.back().x == PATH.back().px) &&
           (CLOSED.back().y == PATH.back().py))
@@ -259,6 +244,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
       CLOSED.pop_back();
     }
 
+	
     // Populate the vector that was passed in by reference
     Location Fix;
     if(pVector->size()) pVector->erase(pVector->begin(), pVector->end());
@@ -271,6 +257,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
     }
   }
 }
+
 
 // a simpler/quicker 2D version of Map::isBlocked()
 bool AStar::isBlocked( Sint16 x, Sint16 y,
