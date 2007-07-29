@@ -22,6 +22,7 @@
 #include "item.h"
 #include "creature.h"
 #include "shapepalette.h"
+#include "pcui.h"
 
 using namespace std;
 
@@ -31,16 +32,18 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
 
   //win = scourge->createWoodWindow( x, y, 320, 300, container->getItemName() );
   win = new Window( scourge->getSDLHandler(),
-                    x, y, 320, 300, container->getItemName(), true, 
+                    x, y, 345, 300, container->getItemName(), true, 
                     Window::SIMPLE_WINDOW, "wood" );
-  openButton = new Button( 5, 5, 105, 25, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
+  openButton = new Button( 5, 5, 85, 25, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage(Constants::OPEN_CONTAINER_LABEL) );
   win->addWidget((Widget*)openButton);
-  infoButton = new Button( 110, 5, 210, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Info" ) );
+  infoButton = new Button( 90, 5, 170, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Info" ) );
   win->addWidget((Widget*)infoButton);
-  closeButton = new Button( 215, 5, 315, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Close" ) );
+	getAllButton = new Button( 175, 5, 255, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Get All" ) );
+  win->addWidget((Widget*)getAllButton);
+  closeButton = new Button( 260, 5, 340, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Close" ) );
   win->addWidget((Widget*)closeButton);
 
-  list = new ScrollingList( 10, 35, 300, 245 - 30, 
+  list = new ScrollingList( 10, 35, 320, 245 - 30, 
                             scourge->getShapePalette()->getHighlightTexture(), this, 30 );
   win->addWidget((Widget*)list);
   label = new Label(5, 270, Constants::getMessage(Constants::EXPLAIN_DRAG_AND_DROP));
@@ -136,6 +139,18 @@ bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
 			 container->getContainedItem(n)->getRpgItem()->getType() == RpgItem::CONTAINER) { 
 			scourge->openContainerGui(container->getContainedItem(n));
 		}
+	} else if( widget == getAllButton ) {
+		while( container->getContainedItemCount() > 0 ) {
+			Item *item = container->getContainedItem( 0 );
+			// try to add it
+			if( scourge->getPcUi()->receiveInventory( item ) ) {
+				container->removeContainedItem( 0 );
+			} else {
+				scourge->showMessageDialog( _( "There is not enough room in your backpack for everything." ) );
+				break;
+			}
+		}
+		showContents();
 	}
 	return false;
 }
