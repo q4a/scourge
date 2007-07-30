@@ -60,6 +60,8 @@ MapEditor::MapEditor( Scourge *scourge ) {
 
   mapSettings = new EditorMapSettings();
 
+	scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
+
 	createNewMapDialog();
 
   int w = 200;
