@@ -169,7 +169,7 @@ class Creature : public RenderedCreature {
   ~Creature();
 
 	inline void setBoss( bool b ) { this->boss = b; }
-	inline bool isBoss() { return this->boss; }
+	virtual inline bool isBoss() { return this->boss; }
 
 	inline void setCauseOfDeath( char *s ) { strncpy( this->causeOfDeath, s, 254 ); this->causeOfDeath[254] = 0; }
 	inline char *getCauseOfDeath() { return this->causeOfDeath; }
