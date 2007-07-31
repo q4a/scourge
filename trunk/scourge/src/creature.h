@@ -153,7 +153,7 @@ class Creature : public RenderedCreature {
 	bool inventoryArranged;
 	std::map<Item*, InventoryInfo*> invInfos;
 	Uint32 lastPerceptionCheck;
-	bool boss;
+	bool boss, savedMissionObjective;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -170,6 +170,8 @@ class Creature : public RenderedCreature {
 
 	inline void setBoss( bool b ) { this->boss = b; }
 	virtual inline bool isBoss() { return this->boss; }
+  inline bool isSavedMissionObjective() { return savedMissionObjective; }
+  inline void setSavedMissionObjective( bool b ) { savedMissionObjective = b; }
 
 	inline void setCauseOfDeath( char *s ) { strncpy( this->causeOfDeath, s, 254 ); this->causeOfDeath[254] = 0; }
 	inline char *getCauseOfDeath() { return this->causeOfDeath; }

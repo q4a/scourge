@@ -83,8 +83,8 @@ class Item : public RenderedItem, Storable {
   std::map<int, int> skillBonus;
   Session *session;	
 	Uint32 identifiedBits;
-
 	int inventoryX, inventoryY;
+  bool savedMissionObjective;
 
 public:
 
@@ -102,6 +102,9 @@ public:
 
   Item(Session *session, RpgItem *rpgItem, int level=1, bool loading=false );
   ~Item();
+
+  inline bool isSavedMissionObjective() { return savedMissionObjective; }
+  inline void setSavedMissionObjective( bool b ) { savedMissionObjective = b; }
 
 	void renderIcon( Scourge *scourge, int x, int y, int w, int h );
 	void getTooltip( char *tooltip );

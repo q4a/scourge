@@ -253,6 +253,7 @@ protected:
 	void getCurrentMapName( char *path, char *dirName=NULL, int depth=-1, char *mapFileName=NULL );
 	void getSavedMapName( char *mapName );
 	bool loadMap( char *mapName, bool fromRandomMap, bool absolutePath, char *templateMapName=NULL );	
+  void linkMissionObjectives( std::vector< RenderedItem* > *items, std::vector< RenderedCreature* > *creatures );
 
 public:
 

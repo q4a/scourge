@@ -93,6 +93,7 @@ ItemInfo *Item::save() {
     info->skillBonus[i] = this->getSkillBonus(i);
   }
 
+  info->mission = (Uint8)( session->getCurrentMission() && session->getCurrentMission()->isMissionItem( this ) ? 1 : 0 );
   return info;
 }
 
@@ -169,6 +170,8 @@ Item *Item::load(Session *session, ItemInfo *info) {
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     if(info->skillBonus[i]) item->skillBonus[i] = info->skillBonus[i];
   }
+
+  item->savedMissionObjective = info->mission;
 
 	// re-describe the item. describeMagic is called from commonInit at
 	// which point magicLevel can be 0, so it's important to re-describe
@@ -608,6 +611,8 @@ bool Item::decrementCharges(){
 void Item::commonInit( bool loading ) {
 
 	identifiedBits = 0;
+
+  savedMissionObjective = false;
 
   // --------------
   // regular attribs

@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 35
+#define PERSIST_VERSION 36
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -51,6 +51,7 @@ typedef struct _ItemInfo {
   DiceInfo *magicDamage;
   Uint8 stateMod[StateMod::STATE_MOD_COUNT];
   Uint8 skillBonus[Skill::SKILL_COUNT];
+  Uint8 mission;
 
 } ItemInfo;
 /*
@@ -90,6 +91,7 @@ typedef struct _CreatureInfo {
   Uint8 quick_spell[12][255];
 
 	Uint8 boss;
+  Uint8 mission;
 } CreatureInfo;
 
 typedef struct _LocationInfo {
