@@ -640,7 +640,6 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 bool Scourge::loadMap( char *mapName, bool fromRandomMap, bool absolutePath, char *templateMapName ) {
 	bool loaded = false;
 	char result[300];
-	bool lastLevel = ( currentStory == getSession()->getCurrentMission()->getDepth() - 1 );
 	//cerr << "lastLevel=" << lastLevel << " currentStory=" << currentStory << " depth=" << getSession()->getCurrentMission()->getDepth() << endl;
 	vector< RenderedItem* > items;
 	vector< RenderedCreature* > creatures;
@@ -656,51 +655,45 @@ bool Scourge::loadMap( char *mapName, bool fromRandomMap, bool absolutePath, cha
 															absolutePath,
 															templateMapName );
 	cerr << "LOAD MAP result=" << result << endl;
-	if( lastLevel ) {
 
-		/**
-		 * If it's the last edited level, add mission items and monsters.
-		 * 
-		 * FIXME: this is very easy to break code. Relying on the last level
-		 * is bad because:
-		 * 1. the algorithm might change (it has for random-levels)
-		 * 2. if edited level 2 contains the mission monster, but missions.txt claims
-		 *    there are 5 levels, the creature won't be marked as such. (e.g. Myco.)
-		 */
+  linkMissionObjectives( &items, &creatures );
 
-		// add item/creature instances if last level (this is special handling for edited levels)
-		set<int> used;
-		for( int i = 0; i < (int)items.size(); i++ ) {
-			Item *item = (Item*)( items[i] );
-			for( int t = 0; t < (int)getSession()->getCurrentMission()->getItemCount(); t++ ) {
-				//cerr << "\tLooking for item: " << getSession()->getCurrentMission()->getItem( t )->getName() << endl;
-				if( getSession()->getCurrentMission()->getItem( t ) == item->getRpgItem() &&
+  return loaded;
+}
+
+void Scourge::linkMissionObjectives( vector< RenderedItem* > *items, vector< RenderedCreature* > *creatures ) {
+  cerr << "***********************" << endl << "Linking mission objectives:" << endl;
+  set<int> used;
+  for( int i = 0; i < (int)items->size(); i++ ) {
+    Item *item = (Item*)( (*items)[i] );
+    if( item->isSavedMissionObjective() ) {
+      for( int t = 0; t < (int)getSession()->getCurrentMission()->getItemCount(); t++ ) {
+        if( getSession()->getCurrentMission()->getItem( t ) == item->getRpgItem() &&
 						used.find( t ) == used.end() ) {
-					//cerr << "\t\tAdding item " << item->getName() << endl;
-					getSession()->getCurrentMission()->
-						addItemInstance( item, item->getRpgItem() );
-					used.insert( t );
-				}
-			}
-		}
-		used.clear();
-		for( int i = 0; i < (int)creatures.size(); i++ ) {
-			Creature *creature = (Creature*)( creatures[i] );
-			if( creature->getMonster() ) {
-				for( int t = 0; t < (int)getSession()->getCurrentMission()->getCreatureCount(); t++ ) {
-					//cerr << "\tLooking for creature: " << getSession()->getCurrentMission()->getCreature( t )->getType() << endl;
-					if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() &&
-							used.find( t ) == used.end() ) {
-						//cerr << "\t\tAdding creature " << creature->getName() << endl;
-						getSession()->getCurrentMission()->
-							addCreatureInstanceMap( creature, creature->getMonster() );
-						used.insert( t );
-					}
-				}
-			}
-		}
-	}
-	return loaded;
+          cerr << "\t\tLinking mission item " << item->getName() << endl;
+          getSession()->getCurrentMission()->
+            addItemInstance( item, item->getRpgItem() );
+          used.insert( t );
+        }
+      }
+    }
+  }
+  used.clear();
+  for( int i = 0; i < (int)creatures->size(); i++ ) {
+    Creature *creature = (Creature*)( (*creatures)[i] );
+    if( creature->isSavedMissionObjective() ) {
+      for( int t = 0; t < (int)getSession()->getCurrentMission()->getCreatureCount(); t++ ) {
+        if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() &&
+            used.find( t ) == used.end() ) {
+          cerr << "\t\tLinking mission creature " << creature->getName() << endl;
+          getSession()->getCurrentMission()->
+            addCreatureInstanceMap( creature, creature->getMonster() );
+          used.insert( t );
+        }
+      }
+    }
+  }
+  cerr << "***********************" << endl;
 }
 
 void Scourge::showLevelInfo() {

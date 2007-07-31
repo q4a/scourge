@@ -124,6 +124,7 @@ void Creature::commonInit() {
 
 	this->lastPerceptionCheck = 0;
 	this->boss = false;
+  this->savedMissionObjective = false;
 
 	this->inventoryArranged = false;
 
@@ -327,6 +328,7 @@ CreatureInfo *Creature::save() {
   }
 
 	info->boss = (Uint8)boss;
+  info->mission = (Uint8)( session->getCurrentMission() && session->getCurrentMission()->isMissionCreature( this ) ? 1 : 0 );
 
   return info;
 }
@@ -446,6 +448,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   }
 
 	creature->setBoss( info->boss );
+  creature->setSavedMissionObjective( info->mission );
 
   creature->calculateExpOfNextLevel();
 

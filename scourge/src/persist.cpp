@@ -447,6 +447,7 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
     file->write( info->quick_spell[i], 255 );
   }
 	file->write( &( info->boss ) );
+  file->write( &(info->mission) );
 }
 
 CreatureInfo *Persist::loadCreature( File *file ) {
@@ -501,6 +502,11 @@ CreatureInfo *Persist::loadCreature( File *file ) {
 	} else {
 		info->boss = 0;
 	}
+  if( info->version >= 36 ) {
+    file->read( &(info->mission) );
+  } else {
+    info->mission = 0;
+  }
   return info;
 }
 
@@ -534,6 +540,7 @@ void Persist::saveItem( File *file, ItemInfo *info ) {
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     file->write( &(info->skillBonus[i]) );
   }
+  file->write( &(info->mission) );
 }
 
 ItemInfo *Persist::loadItem( File *file ) {
@@ -568,6 +575,11 @@ ItemInfo *Persist::loadItem( File *file ) {
 	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 		file->read( &(info->skillBonus[i]) );
 	}
+  if( info->version >= 36 ) {
+    file->read( &(info->mission) );
+  } else {
+    info->mission = 0;
+  }
   return info;
 }
 

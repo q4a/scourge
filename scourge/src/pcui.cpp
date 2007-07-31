@@ -363,10 +363,13 @@ void PcUi::setCreature( Creature *creature ) {
 
 void PcUi::receiveInventory() {
   inven->receive( inven->getWidget() );
+  missionInfo->refresh();
 }
 
 bool PcUi::receiveInventory(Item *item) {
-  return inven->receive(item, false);
+  bool b = inven->receive(item, false);
+  missionInfo->refresh();
+  return b;
 }
 
 
