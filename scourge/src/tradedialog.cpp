@@ -281,20 +281,26 @@ void TradeDialog::steal() {
                   maxA + maxB );
     price += prices[ listB->getSelectedItem( i ) ];
   }
-  
+
   char *p;
   if( success ) {
+    p = _( "You succesfully burgled the items!" );
+
     // move items
     for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {
       Item *item = listB->getSelectedItem( i );
-      creature->removeInventory( creature->findInInventory( item ) );
-      scourge->getParty()->getPlayer()->addInventory( item, true );
+      //scourge->getParty()->getPlayer()->addInventory( item, true );
+      if( scourge->getPcUi()->receiveInventory( item ) ) {
+        creature->removeInventory( creature->findInInventory( item ) );
+      } else {
+        p = _( "You succesfully burgled the items but some did not fit in your backpack!" );
+      }
     }
 
     // add experience (gain level, etc.)
     scourge->getParty()->getPlayer()->addExperienceWithMessage( exp );
 
-    p = _( "You succesfully burgled the items!" );
+    
   } else {
     // remove experience
     scourge->getParty()->getPlayer()->addExperienceWithMessage( -exp );
