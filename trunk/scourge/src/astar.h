@@ -22,7 +22,8 @@
 #include <stdlib.h>
 #include <iostream>
 #include <vector>    // STL for Vector
-#include <algorithm> // STL for Heap
+#include <queue> // STL for Priority Queue
+#include <set> //STL for Set, Hash Set
 #include <string>
 #include "common/constants.h"
 #include "gui/guitheme.h"
@@ -43,16 +44,26 @@ class CPathNode{
 public:
   double f, gone, heuristic; // f = gone + heuristic
   int x, y;               // Location of node
-  int px, py;             // Locaton of parent node
+  CPathNode * parent;   //a pointer to the parent of this node  
 
-  inline bool operator<(const CPathNode &b) {
-		return this->f > b.f;
-  }
+};
 
-  inline bool operator>(const CPathNode &b) {
-		return this->f < b.f;
+struct XYNodeComparitor
+{
+  bool operator()(const CPathNode* a, const CPathNode* b) const
+  {
+    int ax = (*a).x;
+    int bx = (*b).x;
+    return ax < bx || (ax == bx && (*a).y < (*b).y);
   }
-  
+};
+
+struct FValueNodeComparitor
+{
+ bool operator()(const CPathNode* a, const CPathNode* b) const
+  {
+      return (*a).f > (*b).f;
+  }
 };
 
 class AStar {

@@ -708,10 +708,10 @@ bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) 
 }
 
 bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty ) { 
-  int oldSelX = selX;
-  int oldSelY = selY;
-  int oldtx = tx;
-  int oldty = ty;
+ // int oldSelX = selX;
+ // int oldSelY = selY;
+ // int oldtx = tx;
+ // int oldty = ty;
 
   selX = x; 
   selY = y; 
@@ -742,7 +742,7 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
 
     /**
      * For pc-s cancel the move.
-     */
+     
     if( !ret && character && cancelIfNotPossible ) {
       bestPathPos = 1;
       bestPath.clear();
@@ -751,7 +751,7 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
       selY = oldSelY;
       tx = oldtx;
       ty = oldty;
-    }
+    }*/
   }
 
   // FIXME: when to play sound?
