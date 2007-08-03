@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 36
+#define PERSIST_VERSION 37
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -132,6 +132,12 @@ typedef struct _FogInfo {
 #define REF_TYPE_NAME 0
 #define REF_TYPE_OBJECT 1
 
+typedef struct _TrapInfo {
+	Uint32 version;
+	Uint16 x, y, w, h;
+	Uint8 type, discovered, enabled;
+} TrapInfo;
+
 typedef struct _MapInfo {
   Uint32 version;
 	Uint8 map_type;
@@ -154,6 +160,8 @@ typedef struct _MapInfo {
 	Uint8 edited;
 	Uint8 heightMapEnabled;
 	Uint32 ground[ MAP_WIDTH / OUTDOORS_STEP ][ MAP_DEPTH / OUTDOORS_STEP ];
+	Uint8 trapCount;
+	TrapInfo *trap[ 255 ];
 } MapInfo;
 
 typedef struct _MissionInfo {
@@ -175,6 +183,7 @@ class Persist {
 public:
   static LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
 	static RugInfo *createRugInfo( Uint16 cx, Uint16 cy );
+	static TrapInfo *createTrapInfo( int x, int y, int w, int h, int type, bool discovered, bool enabled );
 	static LockedInfo *createLockedInfo( Uint32 key, Uint8 value );
 	static DoorInfo *createDoorInfo( Uint32 key, Uint32 value );
 	static void saveMap( File *file, MapInfo *info );
@@ -198,6 +207,10 @@ protected:
   static void saveDice( File *file, DiceInfo *info );
   static DiceInfo *loadDice( File *file );
   static void deleteDiceInfo( DiceInfo *info );
+
+	static void saveTrap( File *file, TrapInfo *trap );
+	static TrapInfo *loadTrap( File *file );
+	static void deleteTrapInfo( TrapInfo *trap );
 };
 
 #endif

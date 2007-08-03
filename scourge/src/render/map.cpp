@@ -3305,6 +3305,19 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 		}
 	}
 
+	// save traps
+	info->trapCount = (Uint8)trapList.size();
+	for( unsigned int i = 0; i < trapList.size(); i++ ) {
+		Trap trap = trapList[ i ];
+		info->trap[i] = Persist::createTrapInfo( trap.r.x, 
+																						 trap.r.y, 
+																						 trap.r.w, 
+																						 trap.r.h, 
+																						 trap.type, 
+																						 trap.discovered, 
+																						 trap.enabled );
+	}
+
   char fileName[300];
 	if( absolutePath ) {
 		strcpy( fileName, name );
@@ -3542,6 +3555,16 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 		setRugPosition( info->rugPos[i]->cx,
 										info->rugPos[i]->cy,
 										&rug );
+	}
+
+	// load traps
+	for( int i = 0; i < info->trapCount; i++ ) {
+		TrapInfo *trapInfo = info->trap[ i ];
+		int index = addTrap( trapInfo->x, trapInfo->y, trapInfo->w, trapInfo->h );
+		Trap *trap = getTrapLoc( index );
+		trap->discovered = (bool)trapInfo->discovered;
+		trap->enabled = (bool)trapInfo->enabled;
+		trap->type = (int)trapInfo->type;
 	}
 
 	// load doors

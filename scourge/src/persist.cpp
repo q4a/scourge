@@ -52,6 +52,19 @@ RugInfo *Persist::createRugInfo( Uint16 cx, Uint16 cy ) {
 	return info;
 }
 
+TrapInfo *Persist::createTrapInfo( int x, int y, int w, int h, int type, bool discovered, bool enabled ) {
+	TrapInfo *info = (TrapInfo*)malloc( sizeof( TrapInfo ) );
+	info->version = PERSIST_VERSION;
+	info->x = (Uint16)x;
+	info->y = (Uint16)y;
+	info->w = (Uint16)w;
+	info->h = (Uint16)h;
+	info->type = (Uint8)type;
+	info->discovered = (Uint8)discovered;
+	info->enabled = (Uint8)enabled;
+	return info;
+}
+
 LockedInfo *Persist::createLockedInfo( Uint32 key, Uint8 value ) {
 	LockedInfo *info = (LockedInfo*)malloc( sizeof( LockedInfo ) );
 	info->key = key;
@@ -167,6 +180,10 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
 			file->write( &( info->ground[ x ][ y ] ) );
 		}
+	}
+	file->write( &( info->trapCount ) );
+	for( int i = 0; i < info->trapCount; i++ ) {
+		saveTrap( file, info->trap[ i ] );
 	}
 }
 
@@ -357,6 +374,14 @@ MapInfo *Persist::loadMap( File *file ) {
 			}
 		}
 	}
+	if( info->version >= 37 ) {
+		file->read( &( info->trapCount ) );
+		for( int i = 0; i < info->trapCount; i++ ) {
+			info->trap[ i ] = loadTrap( file );
+		}
+	} else {
+		info->trapCount = 0;
+	}
 	return info;
 }
 
@@ -378,6 +403,9 @@ void Persist::deleteMapInfo( MapInfo *info ) {
   }
 	for( int i = 0; i < (int)info->secret_count; i++ ) {
     free( info->secret[i] );
+  }
+	for( int i = 0; i < (int)info->trapCount; i++ ) {
+    deleteTrapInfo( info->trap[i] );
   }
   free( info );
 }
@@ -402,6 +430,10 @@ void Persist::deleteDiceInfo( DiceInfo *info ) {
 
 void Persist::deleteMissionInfo( MissionInfo *info ) {
   free( info );
+}
+
+void Persist::deleteTrapInfo( TrapInfo *info ) {
+	free( info );
 }
 
 void Persist::saveCreature( File *file, CreatureInfo *info ) {
@@ -597,6 +629,30 @@ DiceInfo *Persist::loadDice( File *file ) {
   file->read( &(info->sides) );
   file->read( &(info->mod) );
   return info;
+}
+
+TrapInfo *Persist::loadTrap( File *file ) {
+  TrapInfo *info = (TrapInfo*)malloc(sizeof(TrapInfo));
+  file->read( &(info->version) );
+  file->read( &(info->x) );
+	file->read( &(info->y) );
+	file->read( &(info->w) );
+	file->read( &(info->h) );
+	file->read( &(info->type) );
+  file->read( &(info->discovered) );
+  file->read( &(info->enabled) );
+  return info;
+}
+
+void Persist::saveTrap( File *file, TrapInfo *info ) {
+  file->write( &(info->version) );
+  file->write( &(info->x) );
+	file->write( &(info->y) );
+	file->write( &(info->w) );
+	file->write( &(info->h) );
+	file->write( &(info->type) );
+  file->write( &(info->discovered) );
+  file->write( &(info->enabled) );
 }
 
 void Persist::saveMission( File *file, MissionInfo *info ) {

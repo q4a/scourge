@@ -329,6 +329,11 @@ CreatureInfo *Creature::save() {
 
 	info->boss = (Uint8)boss;
   info->mission = (Uint8)( session->getCurrentMission() && session->getCurrentMission()->isMissionCreature( this ) ? 1 : 0 );
+	if( info->mission ) {
+		cerr << "*********************************" << endl;
+		cerr << "Saving mission creature:" << getName() << endl;
+		cerr << "*********************************" << endl;
+	}
 
   return info;
 }
@@ -449,6 +454,11 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
 
 	creature->setBoss( info->boss );
   creature->setSavedMissionObjective( info->mission );
+	if( creature->isSavedMissionObjective() ) {
+		cerr << "*********************************" << endl;
+		cerr << "Loaded mission creature:" << creature->getName() << endl;
+		cerr << "*********************************" << endl;
+	}
 
   creature->calculateExpOfNextLevel();
 
