@@ -48,24 +48,81 @@ public:
 
 };
 
+//////////////////////////////////////////////////////
+//    Comparison functions for sorting CPathNodes
+//////////////////////////////////////////////////////
+
+/**
+ * Used to sort nodes by x and y location. Good for searching for equivalence.
+ **/
 struct XYNodeComparitor
 {
   bool operator()(const CPathNode* a, const CPathNode* b) const
   {
-    int ax = (*a).x;
-    int bx = (*b).x;
-    return ax < bx || (ax == bx && (*a).y < (*b).y);
+    int ax = a->x;
+    int bx = b->x;
+    return ax < bx || (ax == bx && a->y < b->y);
   }
 };
 
+/**
+ * Used to sort nodes by f value.
+ **/
 struct FValueNodeComparitor
 {
  bool operator()(const CPathNode* a, const CPathNode* b) const
   {
-      return (*a).f > (*b).f;
+      return a->f > b->f;
   }
 };
 
+//////////////////////////////////////////////////////
+//    Standard goal functions for search
+//////////////////////////////////////////////////////
+
+/**
+ * A class used to wrap goal functions to be checked in a search.
+ * Goal functions must implement the fulfills goal method.
+ **/
+class GoalFunction {
+  public:
+    GoalFunction();
+    virtual ~GoalFunction();
+    virtual bool fulfilledBy( CPathNode* node) = 0;
+};
+
+/**
+ * The basic "get to this node" goal.
+ **/
+class SingleNodeGoal : public GoalFunction {
+  private:
+    int x,y;
+  public:
+    SingleNodeGoal(int x, int y);
+    virtual ~SingleNodeGoal();
+
+    virtual bool fulfilledBy( CPathNode * node);
+};
+
+/**
+ * Get within a given range of the target creature.
+ **/
+class GetCloseGoal : public GoalFunction {
+  private:
+    Creature* searcher; //the one who is looking for a path. We want their width and depth.
+    Creature* target;   //the creature they want to get close to
+
+    float distance;
+  public:
+    GetCloseGoal(Creature* searcher, Creature* target);
+    virtual ~GetCloseGoal();
+
+    virtual bool fulfilledBy( CPathNode * node);
+};
+
+//////////////////////////////////////////////////////
+//              The search method(s)
+//////////////////////////////////////////////////////
 class AStar {
   
 public: 
@@ -73,22 +130,33 @@ public:
 	~AStar();
 
   static void findPath( Sint16 sx, Sint16 sy, Sint16 sz,
-												Sint16 dx, Sint16 dy, Sint16 dz,
-												std::vector<Location> *pVector,
-												Map *map,
-												Creature *creature,
-												Creature *player,
-												int maxNodes,
-												bool ignoreParty,
-												bool ignoreEndShape );
+                        Sint16 dx, Sint16 dy, Sint16 dz,
+                        std::vector<Location> *pVector,
+                        Map *map,
+                        Creature *creature,
+                        Creature *player,
+                        int maxNodes,
+                        bool ignoreParty,
+                        bool ignoreEndShape );
 
-	static bool isOutOfTheWay( Creature *a, std::vector<Location> *aPath, int aStart,
-														 Creature *b, std::vector<Location> *bPath, int bStart );
+  static void findPath( Sint16 sx, Sint16 sy, Sint16 sz,
+                        Sint16 dx, Sint16 dy, Sint16 dz,
+                        std::vector<Location> *pVector,
+                        Map *map,
+                        Creature *creature,
+                        Creature *player,
+                        int maxNodes,
+                        bool ignoreParty,
+                        bool ignoreEndShape,
+                        GoalFunction * goal );
+
+  static bool isOutOfTheWay( Creature *a, std::vector<Location> *aPath, int aStart,
+                             Creature *b, std::vector<Location> *bPath, int bStart );
 
 protected:
   static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Sint16 dx, Sint16 dy,
-												 Creature *creature, Creature *player, Map *map, 
-												 bool ignoreCreatures=false, bool ignoreEndShape=false );
+                         Creature *creature, Creature *player, Map *map, 
+                         bool ignoreCreatures=false, bool ignoreEndShape=false );
 
 };
 

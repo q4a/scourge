@@ -294,7 +294,7 @@ class Creature : public RenderedCreature {
    * Set where to move the creature. 
    * Returns true if the move is possible, false otherwise.
    */
-  bool setSelXY( int x, int y, bool cancelIfNotPossible=true, int maxNodes=100 );  
+  bool setSelXY( int x, int y, bool cancelIfNotPossible=false, int maxNodes=100 );  
   inline int getSelX() { return selX; }
   inline int getSelY() { return selY; }
   inline void setMapChanged() { mapChanged = true; }
