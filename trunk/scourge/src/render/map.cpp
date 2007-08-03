@@ -4339,6 +4339,7 @@ int Map::addTrap( int x, int y, int w, int h ) {
 	QuickHull::findConvexHull( &points, &( trap.hull ) );
 
 	trapList.push_back( trap );
+  mapChanged = true;
   return trapIndex;
 }
 
@@ -4364,6 +4365,7 @@ void Map::removeTrap( int trapIndex ) {
       }
     }
     trapList.erase( trapList.begin() + trapIndex );
+    mapChanged = true;
   }
 }
 
@@ -4382,7 +4384,7 @@ void Map::drawTraps() {
   for( set<Uint8>::iterator i = trapSet.begin(); i != trapSet.end(); i++ ) {
     Trap *trap = getTrapLoc( (int)( *i ) );
 
-    if( trap->discovered || DEBUG_TRAPS ) {
+    if( trap->discovered || settings->isGridShowing() || DEBUG_TRAPS ) {
 
       /*
   		glColor4f( 0, 1, 1, 1 );

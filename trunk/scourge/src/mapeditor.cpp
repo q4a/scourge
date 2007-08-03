@@ -212,6 +212,16 @@ MapEditor::MapEditor( Scourge *scourge ) {
     }
   }
   shapeList->setLines( count, (const char**)shapeNames );
+  
+  rugButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Rug" ), true );
+  toggleButtonList.push_back( rugButton );
+  secretButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, _( "Secret" ), true );
+  toggleButtonList.push_back( secretButton );
+  yy += ystep;
+  trapButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Trap" ), true );
+  toggleButtonList.push_back( trapButton );
+  
+  
 
   miniMap = new MiniMap( scourge, true ); 
 }                                                                         
@@ -659,13 +669,62 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
         }
       }
     } else {
-      if( button == SDL_BUTTON_RIGHT ) {
-        removeFloor( mapx, mapy );
+      int chunkX = ( mapx - MAP_OFFSET ) / MAP_UNIT;
+      int chunkY = ( mapy - MAP_OFFSET ) / MAP_UNIT;    
+      if( rugButton->isSelected() ) {
+        if( button == SDL_BUTTON_RIGHT ) {
+          scourge->getMap()->removeRugPosition( chunkX, chunkY );
+        } else {
+          addRug( chunkX, chunkY );
+        }
+      } else if( secretButton->isSelected() ) {
+        if( button == SDL_BUTTON_RIGHT ) {      
+        } else {      
+          addSecret( xx, yy );
+        }
+      } else if( trapButton->isSelected() ) {
+        if( button == SDL_BUTTON_RIGHT ) {
+          removeTrap( xx, yy );
+        } else {
+          addTrap( xx, yy );
+        }
       } else {
-        addFloor( mapx, mapy );
+        if( button == SDL_BUTTON_RIGHT ) {
+          removeFloor( mapx, mapy );
+        } else {
+          addFloor( mapx, mapy );
+        }
       }
     }    
   }
+}
+
+void MapEditor::addRug( Sint16 mapx, Sint16 mapy ) {
+  // pick an orientation
+  bool isHorizontal = ( (int)( 10.0f * rand() / RAND_MAX ) % 2 == 0 ? true : false );
+
+  // save it
+  Rug rug;
+  rug.isHorizontal = isHorizontal;
+  rug.texture = scourge->getSession()->getShapePalette()->getRandomRug();
+  rug.angle = ( 30.0f * rand() / RAND_MAX ) - 15.0f;
+
+  scourge->getMap()->setRugPosition( mapx, mapy, &rug );
+}
+
+void MapEditor::addSecret( Sint16 mapx, Sint16 mapy ) {
+}
+
+void MapEditor::addTrap( Sint16 mapx, Sint16 mapy ) {
+  int w = (int)( 6.0f * rand() / RAND_MAX ) + 4;
+  int h = (int)( 6.0f * rand() / RAND_MAX ) + 4;  
+  cerr << "Adding trap: " << mapx << "," << mapy << " size=" << w << "," << h << endl;
+  scourge->getMap()->addTrap( mapx, mapy, w, h );
+}
+
+void MapEditor::removeTrap( Sint16 mapx, Sint16 mapy ) {
+  int trapIndex = scourge->getMap()->getTrapAtLoc( mapx, mapy );
+  if( trapIndex > -1 ) scourge->getMap()->removeTrap( trapIndex );
 }
 
 void MapEditor::addWall( Sint16 mapx, Sint16 mapy, int dir ) {
