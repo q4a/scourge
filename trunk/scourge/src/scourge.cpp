@@ -681,8 +681,11 @@ void Scourge::linkMissionObjectives( vector< RenderedItem* > *items, vector< Ren
   used.clear();
   for( int i = 0; i < (int)creatures->size(); i++ ) {
     Creature *creature = (Creature*)( (*creatures)[i] );
+		cerr << "\ttesting:" << creature->getName() << endl;
     if( creature->isSavedMissionObjective() ) {
+			cerr << "\t\tmission creature... linking..." << endl;
       for( int t = 0; t < (int)getSession()->getCurrentMission()->getCreatureCount(); t++ ) {
+				cerr << "\t\t\ttesting vs. " << getSession()->getCurrentMission()->getCreature( t )->getType() << endl;
         if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() &&
             used.find( t ) == used.end() ) {
           cerr << "\t\tLinking mission creature " << creature->getName() << endl;
