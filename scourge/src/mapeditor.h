@@ -60,10 +60,11 @@ private:
   Button *eraseButton;
   Button *shapeButton;
   Button *itemButton;
-	Button *furnitureButton;
+  Button *furnitureButton;
   Button *creatureButton;
   Button *startPosButton;
   Button *floorType;
+  Button *rugButton, *secretButton, *trapButton;
   std::vector<Button *> toggleButtonList;
                                                                                              
   TextField *nameText;
@@ -117,6 +118,11 @@ protected:
   void addWall( Sint16 mapx, Sint16 mapy, int dir );
   void addDoor( Sint16 mapx, Sint16 mapy, int dir );
   void removeWall( Sint16 mapx, Sint16 mapy, int dir );
+  
+  void addRug( Sint16 mapx, Sint16 mapy );
+  void addSecret( Sint16 mapx, Sint16 mapy );
+  void addTrap( Sint16 mapx, Sint16 mapy );
+  void removeTrap( Sint16 mapx, Sint16 mapy );  
 
   void addEWDoor( Sint16 mapx, Sint16 mapy, int dir );
   void addNSDoor( Sint16 mapx, Sint16 mapy, int dir );
