@@ -26,50 +26,98 @@ using namespace std;
 #define MAX_CLOSED_NODES 180
 #define FAST_MAX_CLOSED_NODES 80
 
+GoalFunction::GoalFunction(){}
+GoalFunction::~GoalFunction(){}
+
+SingleNodeGoal::SingleNodeGoal(int x, int y){
+  this->x = x;
+  this->y = y;
+}
+SingleNodeGoal::~SingleNodeGoal(){}
+
+bool SingleNodeGoal::fulfilledBy( CPathNode * node){
+  return (node->x == x) && ((*node).y == y);
+}
+
+GetCloseGoal::GetCloseGoal(Creature* searcher, Creature* target){
+  this->searcher = searcher; 
+  this->target = target;
+}
+GetCloseGoal::~GetCloseGoal(){}
+
+bool GetCloseGoal::fulfilledBy( CPathNode * node){
+  return Constants::distance((float)node->x,(float)node->y,
+                             searcher->getShape()->getWidth(),searcher->getShape()->getDepth(),
+                             target->getX(),target->getY(),
+                             target->getShape()->getWidth(),target->getShape()->getDepth())  < distance;
+}
+
+
 AStar::AStar(){
 }
 
 AStar::~AStar(){
 }
 
-// An A* implementation by Jonathan Teutenberg
-//
-// An A* search is a form of best-first search, where the "goodness" of a node is determined
-// by f = g + h.  
-// Where g is the length of the path taken so far, and h, the heuristic, is an
-// estimate of the length of the rest of the path to the goal.
-// For A* to guarantee a shortest path to the goal and to remain n.log(n) complexity
-// the heuristic must never overestimate the remaining distance to the goal. 
-//
-// Data-structures:
-// The priority queue for the open nodes (yet to be checked).
-// The set for the closed list - nodes we have already checked and so don't need to see again.
-// Membership checks are logarithmic for the set, but we would prefer constant, as in a hashtable. 
-//
-// Also included is a (non-standard for A*) set for checking whether nodes are already on the open list.
-// Because we have to pop all the nodes off open at the end when we need to delete them, we expect
-// 2.n.log(n) operations (pushing and popping every child node we come across). 
-// The set now gets checked at every child insert at log(n) cost, and worst case (where no nodes are ever
-// checked twice) we can now expect 4.n.log(n) operations. 
-// However, in most cases there are 3+ children already in the open list, in which case the extra membership
-// checks cost no more. Also, since open list is smaller, we are dealing with a smaller "n" and overall it 
-// makes a speed up. Phew.
-//
-// Because these STL containers copy on insert, we cannot store CPathNodes directly,
-// otherwise the parent pointer links between nodes would become invalid.
-//
-///////////////////////////////////////////////////////////
+/**
+ * An A* search with no goal function.
+ * Created for backward compatabiltiy. Assumes single goal node of dx,dy
+ **/
 void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
-                     Sint16 dx, Sint16 dy, Sint16 dz,
-                     vector<Location> *pVector,
-                     Map *map,
-                     Creature *creature,
-										 Creature *player,
-                     int maxNodes,
-                     bool ignoreParty,
-										 bool ignoreEndShape ) {
+                      Sint16 dx, Sint16 dy, Sint16 dz,
+                      vector<Location> *pVector,
+                      Map *map,
+                      Creature *creature,
+                      Creature *player,
+                      int maxNodes,
+                      bool ignoreParty,
+                      bool ignoreEndShape) {
+  GoalFunction * goal = new SingleNodeGoal(dx,dy);
+  AStar::findPath(sx,sy,sz,dx,dy,dz,pVector,map,creature,player,maxNodes,ignoreParty,ignoreEndShape,goal);
+  delete goal;
+}
 
-	if( PATH_DEBUG ) 
+/**
+ * An A* implementation by Jonathan Teutenberg
+ *
+ * An A* search is a form of best-first search, where the "goodness" of a node is determined
+ * by f = g + h.  
+ * Here g is the length of the path taken so far, and h, the heuristic, is an
+ * estimate of the length of the rest of the path to the goal.
+ * For A* to guarantee a shortest path to the goal and to remain n.log(n) complexity
+ * the heuristic must never overestimate the remaining distance to the goal. 
+ *
+ * Data-structures:
+ * The priority queue for the open nodes (yet to be checked).
+ * The set for the closed list - nodes we have already checked and so don't need to see again.
+ * Membership checks are logarithmic for the set, but we would prefer constant, as in a hashtable. 
+ *
+ * Also included is a (non-standard for A*) set for checking whether nodes are already on the open list.
+ * Because we have to pop all the nodes off open at the end when we need to delete them, we expect
+ * 2.n.log(n) operations (pushing and popping every child node we come across). 
+ * The set now gets checked at every child insert at log(n) cost, and worst case (where no child node ever
+ * appears twice) we can now expect 4.n.log(n) operations. 
+ * However, in most cases there are 3+ children that are already in the open list, in which case the extra 
+ * membership checks pay for themselves. Also, since open list is smaller, we are dealing with a smaller "n" and overall it 
+ * should make a speed up. Whew.
+ *
+ * The goal function:
+ * Currently the heuristic plans a path toward dx,dy. The goal function is used to specify when the result is good
+ * enough and should be returned. The standard goal is to reach the target location, but other possibilities are 
+ * to get within a certain distance of the location or to find a place that has a clear shot to the target.
+ **/
+void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
+                      Sint16 dx, Sint16 dy, Sint16 dz,
+                      vector<Location> *pVector,
+                      Map *map,
+                      Creature *creature,
+                      Creature *player,
+                      int maxNodes,
+                      bool ignoreParty,
+                      bool ignoreEndShape,
+                      GoalFunction * goal ) {
+
+  if( PATH_DEBUG ) 
 		cerr << "Util::findPath for " << creature->getName() << 
 		" maxNodes=" << maxNodes << " ignoreParty=" << ignoreParty << 
 		" ignoreEndShape=" << ignoreEndShape <<
@@ -88,113 +136,62 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
   int closedSize = 0; //STL Set can take O(n) to determine size, so we keep a record ourselves
   
   CPathNode * start = new CPathNode();     // Has to be persistent, so we put it on the heap.
-  (*start).x = sx;                         // Create the start node
-  (*start).y = sy;
-  (*start).gone = 0;
-  (*start).heuristic = max(abs(dx-sx),abs(dy-sy));
-  (*start).f = (*start).gone + (*start).heuristic;    // The classic formula f = g + h
-  (*start).parent = NULL;  // no parent for the start location
+  start->x = sx;                         // Create the start node
+  start->y = sy;
+  start->gone = 0;
+  start->heuristic = max(abs(dx-sx),abs(dy-sy));
+  start->f = (*start).gone + (*start).heuristic;    // The classic formula f = g + h
+  start->parent = NULL;  // no parent for the start location
   open.push(start);            // Populate the OPEN container with the first location.
   openContents.insert(start);
 
   CPathNode* bestNode;             //best node = lowest f-value
   CPathNode* closestNode = start;  //closest node = lowest heuristic value
 
-  //cout << "starting search from " << sx << "," << sy << " to " << dx << "," << dy << "\n";
+ //cout << "starting search from " << sx << "," << sy << " to " << dx << "," << dy << "\n";
 
   while (!open.empty()) {
     bestNode = open.top();     // Set the Node with lowest f value to BESTNODE
     open.pop();    
-
-    // If at destination, break and create path below
-    if (((*bestNode).x == dx) && ((*bestNode).y == dy)) {
-      closestNode = bestNode; 
-      closed.insert(bestNode); //add the goal to closed to ensure it gets deleted later
-      break;//build the path from closestNode back to the start
-    }
 
     // Check to see if already in the closed set
     if((setItr = closed.find(bestNode)) != closed.end()){
       continue;
     }
 
-    if((*bestNode).heuristic < (*closestNode).heuristic)
+    // If at destination, break and create path below
+    if (goal->fulfilledBy(bestNode)) {
+      //cout << "finished by finding goal\n";
+      closestNode = bestNode; 
+      closed.insert(bestNode); //add the goal to closed to ensure it gets deleted later
+      break;//build the path from closestNode back to the start
+    }
+
+    if(bestNode->heuristic < closestNode->heuristic)
       closestNode = bestNode;
     closed.insert(bestNode);         // Push the BestNode onto CLOSED
     closedSize++;
     // Set limit to break if looking too long
     if ( closedSize > maxNodes ){
-	break;
+      //cout << "maxed out on nodes by going past " << maxNodes << "\n";
+      break;
     }
+    
     int x = -1;
     int y = -1;
-    double f,g,h;
     
-    for (int i=1; i<9; i++) {
-      switch(i) {
-      case 1:
-        x = (*bestNode).x;
-        y = (*bestNode).y - 1;
-        break;
-      case 2:
-        x = (*bestNode).x + 1;
-        y = (*bestNode).y - 1;
-        break;
-      case 3:
-        x = (*bestNode).x + 1;
-        y = (*bestNode).y;
-        break;
-      case 4:
-        x = (*bestNode).x + 1;
-        y = (*bestNode).y + 1;
-        break;
-      case 5:
-        x = (*bestNode).x;
-        y = (*bestNode).y + 1;
-        break;
-      case 6:
-        x = (*bestNode).x - 1;
-        y = (*bestNode).y + 1;
-        break;
-      case 7:
-        x = (*bestNode).x - 1;
-        y = (*bestNode).y;
-        break;
-      case 8:
-        x = (*bestNode).x - 1;
-        y = (*bestNode).y - 1;
-        break;
-      }
+    for (int i=-1; i < 2; i++){
+      for(int j = -1; j < 2; j++){
+        if(i == 0 && j == 0) continue;
 
-      if ((x >= 0) && (x < MAP_WIDTH) &&
-          (y >= 0) && (y < MAP_DEPTH)) {
-        
-        // Determine cost of distance travelled
-        if( isBlocked( x, y, sx, sy, dx, dy, creature, player, map, ignoreParty, ignoreEndShape ) )
-          g = 1000;
-        else 
-          g = (*bestNode).gone + 1;
-        
-        
-        //heuristic calculation
-        int DX = abs(dx - x);
-        int DY = abs(dy - y);
+        x = bestNode->x + i;
+        y = bestNode->y + j;
 
-	if(i % 2 == 0) //a non-diagonal move
-		h = max(DX,DY)+0.5; //we discourage diagonals to remove zig-zagging
-	else
-		h = max(DX,DY);
-
-        // The A* formula
-        f = g+h;
+        if ((x < 0) || (x >= MAP_WIDTH) || (y < 0) || (y >= MAP_DEPTH)) continue;
         
-	CPathNode * next = new CPathNode();
-	(*next).x = x;
-	(*next).y = y;
-  	(*next).heuristic = h;
-	(*next).gone = g;
-	(*next).f = f;
-	(*next).parent = bestNode;
+        CPathNode * next = new CPathNode();
+        next->x = x;
+        next->y = y;
 
         // Check to see if already in the open queue by checking openContents
         if((setItr = openContents.find(next)) != openContents.end()){
@@ -202,6 +199,24 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
           continue;
         }
 
+        // Determine cost of distance travelled
+        if( isBlocked( x, y, sx, sy, dx, dy, creature, player, map, ignoreParty, ignoreEndShape ) )
+          next->gone = 1000;
+        else 
+          next->gone = bestNode->gone + 1;
+        
+        
+        //heuristic calculation
+        int DX = abs(dx - x);
+        int DY = abs(dy - y);
+
+        if(abs(i+j) == 1) //a non-diagonal move
+          next->heuristic = max(DX,DY);
+        else
+          next->heuristic = max(DX,DY)+0.5; //we discourage diagonals to remove zig-zagging
+
+        next->f = next->gone + next->heuristic;
+        next->parent = bestNode;
         open.push(next);           // Insert into the open queue
         openContents.insert(next);
         
@@ -241,7 +256,6 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
     Location Fix;
     if(pVector->size()) pVector->erase(pVector->begin(), pVector->end());
     for (int i=(path.size()-1); i>=0; i--) {
-      //for (container::iterator i=PATH.begin(); i!= PATH.end(); ++i)
       Fix.x = path[i].x;
       Fix.y = path[i].y;
       Fix.z = 0;
