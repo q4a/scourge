@@ -505,6 +505,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->m3ds_name[0] = 0;
 	sv->m3ds_scale = 0;
 	sv->m3ds_x = sv->m3ds_y = sv->m3ds_z = 0;
+	sv->o3ds_x = sv->o3ds_y = sv->o3ds_z = 0;  
 	sv->teleporter = 0;
 	sv->xrot = sv->yrot = sv->zrot = 0;
 	sv->effectType = -1;
@@ -612,7 +613,14 @@ void ShapePalette::init3dsShapes( ConfigLang *config ) {
 		sv->m3ds_x = atof( strtok( tmp, "," ) );
 		sv->m3ds_y = atof( strtok( NULL, "," ) );
 		sv->m3ds_z = atof( strtok( NULL, "," ) );
-
+    
+		strcpy( tmp, node->getValueAsString( "offset" ) );
+    if( strlen( tmp ) ) {
+      sv->o3ds_x = atof( strtok( tmp, "," ) );
+      sv->o3ds_y = atof( strtok( NULL, "," ) );
+      sv->o3ds_z = atof( strtok( NULL, "," ) );
+    }
+    
     // store it for now
     shapeValueVector.push_back(sv);
 	}

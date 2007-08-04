@@ -96,6 +96,7 @@ private:
   float movex, movey, movez;
   Shapes *shapePal;
 	float size_x, size_y, size_z;
+  float offs_x, offs_y, offs_z;
   GLShape *debugShape;
   GLuint displayListStart;
   bool initialized;
@@ -105,7 +106,8 @@ public:
   C3DSShape(char *file_name, float div, Shapes *shapePal,
 			GLuint texture[], char *name, int descriptionGroup,
 			Uint32 color, Uint8 shapePalIndex=0, 
-			float size_x=0, float size_y=0, float size_z=0);
+			float size_x=0, float size_y=0, float size_z=0,
+      float offs_x=0, float offs_y=0, float offs_z=0);
   ~C3DSShape();
 
   void initialize();
@@ -120,7 +122,7 @@ public:
 	inline float getWindValue() { return windInfo.getValue(); }
 
 protected:
-  void commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z);
+  void commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z );
   void preRenderLight();
   void resolveTextures();
   void normalizeModel();

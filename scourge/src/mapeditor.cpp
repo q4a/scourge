@@ -653,7 +653,13 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
     }
     
     if( dir != -1 ) {
-      if( button == SDL_BUTTON_RIGHT ) {
+      if( secretButton->isSelected() ) {
+        if( button == SDL_BUTTON_RIGHT ) {
+          removeSecret( mapx, mapy );
+        } else {      
+          addSecret( mapx, mapy );
+        }
+      } else if( button == SDL_BUTTON_RIGHT ) {
         removeWall( mx, my, dir ); 
       } else if( wallButton->isSelected() ) {
         addWall( mx, my, dir ); 
@@ -676,11 +682,6 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
           scourge->getMap()->removeRugPosition( chunkX, chunkY );
         } else {
           addRug( chunkX, chunkY );
-        }
-      } else if( secretButton->isSelected() ) {
-        if( button == SDL_BUTTON_RIGHT ) {      
-        } else {      
-          addSecret( xx, yy );
         }
       } else if( trapButton->isSelected() ) {
         if( button == SDL_BUTTON_RIGHT ) {
@@ -713,6 +714,18 @@ void MapEditor::addRug( Sint16 mapx, Sint16 mapy ) {
 }
 
 void MapEditor::addSecret( Sint16 mapx, Sint16 mapy ) {
+  cerr << "adding secret door: " << mapx << "," << mapy << endl;
+  Location *pos = scourge->getMap()->getLocation( mapx, mapy, 0 );
+  if( pos ) {
+    cerr << "\tpos=" << pos->shape->getName() << endl;
+  } else {
+    cerr << "\tnull pos" << endl;
+  }
+  scourge->getMap()->addSecretDoor( mapx, mapy );
+}
+
+void MapEditor::removeSecret( Sint16 mapx, Sint16 mapy ) {
+  scourge->getMap()->removeSecretDoor( mapx, mapy );
 }
 
 void MapEditor::addTrap( Sint16 mapx, Sint16 mapy ) {
