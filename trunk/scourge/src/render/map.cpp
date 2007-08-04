@@ -1659,7 +1659,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 
 		// show detected secret doors
 		if( later && later->pos ) {
-			if( isSecretDoor( later->pos ) && isSecretDoorDetected( later->pos ) ) {
+			if( isSecretDoor( later->pos ) && ( isSecretDoorDetected( later->pos ) || settings->isGridShowing() ) ) {
 				glColor4f( 0.3f, 0.7f, 0.3f, 1.0f );
 				colorAlreadySet = true;
 			}
@@ -3927,6 +3927,13 @@ void Map::setMapRenderHelper( MapRenderHelper *helper ) {
 void Map::addSecretDoor( int x, int y ) {
   int index = y * MAP_WIDTH + x;
   secretDoors[ index ] = false;
+}
+
+void Map::removeSecretDoor( int x, int y ) {
+  int index = y * MAP_WIDTH + x;
+  if( secretDoors.find( index ) != secretDoors.end() ) {
+    secretDoors.erase( index );
+  }
 }
 
 bool Map::isSecretDoor( Location *pos ) {

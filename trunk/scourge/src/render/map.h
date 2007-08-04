@@ -269,6 +269,7 @@ private:
 	inline bool areQuakesEnabled() { return quakesEnabled; }
 
   void addSecretDoor( int x, int y );
+  void removeSecretDoor( int x, int y );
   bool isSecretDoor( Location *pos );
   bool isSecretDoor( int x, int y );
   bool isSecretDoorDetected( Location *pos );

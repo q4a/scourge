@@ -121,6 +121,7 @@ protected:
   
   void addRug( Sint16 mapx, Sint16 mapy );
   void addSecret( Sint16 mapx, Sint16 mapy );
+  void removeSecret( Sint16 mapx, Sint16 mapy );  
   void addTrap( Sint16 mapx, Sint16 mapy );
   void removeTrap( Sint16 mapx, Sint16 mapy );  
 

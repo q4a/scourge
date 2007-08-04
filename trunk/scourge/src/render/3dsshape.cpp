@@ -29,9 +29,10 @@ C3DSShape::C3DSShape(char *file_name, float div, Shapes *shapePal,
 					 GLuint texture[],
 					 char *name, int descriptionGroup,
 					 Uint32 color, Uint8 shapePalIndex,
-					 float size_x, float size_y, float size_z) :
+					 float size_x, float size_y, float size_z,
+           float offs_x, float offs_y, float offs_z ) :
 	GLShape(0, 1, 1, 1, name, descriptionGroup, color, shapePalIndex) {
-	commonInit(file_name, div, shapePal, size_x, size_y, size_z);
+	commonInit(file_name, div, shapePal, size_x, size_y, size_z, offs_x, offs_y, offs_z );
 #ifdef DEBUG_3DS
   debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, shapePalIndex);
   debugShape->initialize();
@@ -54,7 +55,7 @@ C3DSShape::~C3DSShape() {
   glDeleteLists( displayListStart, 2 );
 }
 
-void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z) {
+void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z ) {
   g_Texture[0] = 0;
   g_ViewMode = GL_TRIANGLES;
   this->divx = this->divy = this->divz = div;
@@ -62,6 +63,9 @@ void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, float s
   this->size_x = size_x;
   this->size_y = size_y;
   this->size_z = size_z;  
+  this->offs_x = offs_x; 
+  this->offs_y = offs_y;
+  this->offs_z = offs_z;
 
   // First we need to actually load the .3DS file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("face.3ds").
@@ -287,7 +291,6 @@ void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
 }
 
 void C3DSShape::drawShape( bool isShadow ) {
-
   // Since we know how many objects our model has, go through each of them.
   for (int i = 0; i < g_3DModel.numOfObjects; i++) {
     // Make sure we have valid objects just in case. (size() is in the vector class)
@@ -409,10 +412,11 @@ void C3DSShape::draw() {
   glGetFloatv( GL_CURRENT_COLOR, currentColor );
 
   glPushMatrix();
-
+  glTranslatef( offs_x / DIV, offs_y / DIV, offs_z / DIV );
   glTranslatef(-movex * divx, 0.0f, 0.0f);
   glTranslatef(0.0f, (getDepth() / DIV) - (movey * divy), 0.0f);
   glTranslatef(0.0f, 0.0f, movez);
+
 
 	// update the wind
 	if( isWind() && !useShadow ) {
@@ -459,7 +463,7 @@ void C3DSShape::outline( float r, float g, float b ) {
   glColor4f(1, 1, 1, 0.9f);
 }
 
-void C3DSShape::setupBlending() { 
+void C3DSShape::setupBlending() {
   glBlendFunc(GL_ONE, GL_ONE); 
 }
 
