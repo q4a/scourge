@@ -555,26 +555,28 @@ bool Creature::move(Uint16 dir) {
 void Creature::setTargetCreature( Creature *c, bool findPath ) { 
   targetCreature = c; 
   if( findPath ) {
+    GoalFunction* goal = new SingleCreatureGoal(c);
     if( !setSelXY( toint( c->getX() + ( (float)c->getShape()->getWidth() / 2.0f ) ), 
                    toint( c->getY() - ( (float)c->getShape()->getDepth() / 2.0f ) ),
-                   false ) ) {
+                   goal, false ) ) {
       // FIXME: should mark target somehow. Path alg. cannot reach it; blocked by something.
       // Keep the target creature anyway.
       if( session->getPreferences()->isBattleTurnBased() ) {
         //cerr << "Can't find path to target creature, checking bounds." << endl;
-        for( int xx = 0; xx < targetCreature->getShape()->getWidth(); xx++ ) {
+        /*for( int xx = 0; xx < targetCreature->getShape()->getWidth(); xx++ ) {
           for( int yy = 0; yy < targetCreature->getShape()->getDepth(); yy++ ) {
             if( setSelXY( toint( c->getX() + xx ), toint( c->getY() - yy ) ) ) {
               //cerr << "...found a way!" << endl;
               return;
             }
           }
-        }
+        }*/
         //cerr << "...no path was found." << endl;
         session->getGameAdapter()->addDescription( _( "Can't find path to target. Sorry!" ) );
 				session->getGameAdapter()->setCursorMode( Constants::CURSOR_FORBIDDEN );
       }
     }
+    delete goal;
   }
 }
 
@@ -583,112 +585,108 @@ bool Creature::isNpc() {
 }
 
 void Creature::moveAway( Creature *other ) {
-	bool tryHard = false;
-	// already moving away
-	if( getMotion() == Constants::MOTION_MOVE_AWAY ) {
-		if( cantMoveCounter > 5 ) {
-			cantMoveCounter = 0;
-			// pick a diff. path
-			tryHard = true;
-//			cerr << "*** DIFF PATH " << getName() << " when moving away from " << other->getName() << "." << endl;			
-		} else {
-//			cerr << "*** " << getName() << " is not moving away from " << other->getName() << "." << endl;
-			return;
-		}
-	}
+  bool tryHard = false;
+  // already moving away
+  if( getMotion() == Constants::MOTION_MOVE_AWAY ) {
+    if( cantMoveCounter > 5 ) {
+      cantMoveCounter = 0;
+      // pick a diff. path
+      tryHard = true;
+      //cerr << "*** DIFF PATH " << getName() << " when moving away from " << other->getName() << "." << endl;			
+    } else {
+      //cerr << "*** " << getName() << " is not moving away from " << other->getName() << "." << endl;
+      return;
+    }
+  }
 
-	setMotion( Constants::MOTION_MOVE_AWAY );
+  setMotion( Constants::MOTION_MOVE_AWAY );
 	
-	// find the farthest possible location and move there.
-	bestPathPos = 1;
-	vector<Location> path;
-	bool pathSelected = false;
-	bool pathFound = false;
-	int minIntersect = 0;
-	Creature *player = session->getParty()->getPlayer();
-	//cerr << "+++ " << getName() << " trying to move away: " << endl;
-	for( int x = 0; !pathSelected && x < AWAY_DISTANCE; x++ ) {
-		for( int y = 0; !pathSelected && y < AWAY_DISTANCE; y++ ) {
-			int destX = toint( getX() ) - AWAY_DISTANCE / 2 + x;
-			int destY = toint( getY() ) - AWAY_DISTANCE / 2 - y;
-			AStar::findPath( toint( getX() ), toint( getY() ), toint( getZ() ), 
-											destX, destY, toint( getZ() ), 
-											&path, 
-											session->getMap(), 
-											this, 
-											player,
-											AWAY_DISTANCE * 2,
-											tryHard,
-											false ); // true );
-			if( !path.empty() && 
-					!AStar::isOutOfTheWay( this, &path, 0, 
-																player, 
-																player->getPath(), 
-																player->getPathIndex() + 1 ) ) {
-				int intersectCount = 0;
-				for( int i = 0; i < session->getCreatureCount(); i++ ) {
-					Creature *c = session->getCreature( i ); 
-					if( c != this && 
-							c->isNpc() && 
-							AStar::isOutOfTheWay( this, &path, 0, 
-																	 c, 
-																	 c->getPath(), 
-																	 c->getPathIndex() + 1 ) ) {
-						intersectCount++;
-					}
-				}
+  // find the farthest possible location and move there.
+  bestPathPos = 1;
+  vector<Location> path;
+  bool pathSelected = false;
+  bool pathFound = false;
+  int minIntersect = 0;
+  Creature *player = session->getParty()->getPlayer();
+  //cerr << "+++ " << getName() << " trying to move away: " << endl;
+
+        /*for( int x = 0; !pathSelected && x < AWAY_DISTANCE; x++ ) {
+          for( int y = 0; !pathSelected && y < AWAY_DISTANCE; y++ ) {
+            int destX = toint( getX() ) - AWAY_DISTANCE / 2 + x;
+            int destY = toint( getY() ) - AWAY_DISTANCE / 2 - y;
+            AStar::findPath( toint( getX() ), toint( getY() ), toint( getZ() ), 
+                             destX, destY, toint( getZ() ), 
+                             &path, session->getMap(), 
+			     this, player,
+                             AWAY_DISTANCE * 2,
+                             tryHard, false ); // true );*/
+  //nodes required: 8 adj nodes => 8*(n^2)/2. For distance 8 this is 250, which is quick.
+  int nodesRequired = AWAY_DISTANCE*AWAY_DISTANCE*4; 
+  GoalFunction* goal = new GetAwayGoal(toint(getX()),toint(getY()),AWAY_DISTANCE);
+  AStar::findPathToNearest( toint( getX() ), toint( getY() ), toint( getZ() ), 
+                            &path, session->getMap(),
+                            this, player,
+                            nodesRequired, tryHard, goal);
+  delete goal;        
+  if( !path.empty() && 
+      !AStar::isOutOfTheWay( this, &path, 0, player, 
+                             player->getPath(), player->getPathIndex() + 1 ) ) {
+    int intersectCount = 0;
+    for( int i = 0; i < session->getCreatureCount(); i++ ) {
+         Creature *c = session->getCreature( i ); 
+      if( c != this && c->isNpc() && 
+          AStar::isOutOfTheWay( this, &path, 0, 
+                                c, c->getPath(), c->getPathIndex() + 1 ) ) {
+        intersectCount++;
+      }
+    }
 								
-				for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-					Creature *c = session->getParty()->getParty( i );
-					if( tryHard ) {
-						if( c != this && c != player && 
-							!AStar::isOutOfTheWay( this, &path, 0, 
-																		 c, 
-																		 c->getPath(), 
-																		 c->getPathIndex() + 1 ) ) {
-							// c->moveAway( this );
-							c->moveAway( other );
-						}
-					} else {
-						if( c != this && 
-								AStar::isOutOfTheWay( this, &path, 0, 
-																		 c, 
-																		 c->getPath(), 
-																		 c->getPathIndex() + 1 ) ) {
-							intersectCount++;
-						}
-					}
-				}
-				
-				// if this puts a pc out of range; that's bad
-				if( !this->isMonster() ) {
-					float dist = getDistance( session->getParty()->getPlayer() );
-					if( dist >= CLOSE_DISTANCE ) {
-						intersectCount += 2;
-					}
-				}
+    for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+         Creature *c = session->getParty()->getParty( i );
+      if( tryHard ) {
+        if( c != this && c != player && 
+            !AStar::isOutOfTheWay( this, &path, 0, 
+                                   c, c->getPath(), c->getPathIndex() + 1 ) ) {
+          c->moveAway( other );
+        }
+      }
+      else {
+        if( c != this && 
+            AStar::isOutOfTheWay( this, &path, 0, 
+                                  c, c->getPath(), c->getPathIndex() + 1 ) ) {
+          intersectCount++;
+        }
+      }
+    }		
+    // if this puts a pc out of range; that's bad
+    if( !this->isMonster() ) {
+      float dist = getDistance( session->getParty()->getPlayer() );
+      if( dist >= CLOSE_DISTANCE ) {
+          intersectCount += 2;
+      }
+    }
 
-				if( minIntersect == 0 || intersectCount < minIntersect ) {
-					speed = FAST_SPEED;
-					selX = path[ path.size() - 1 ].x;
-					selY = path[ path.size() - 1 ].y;
-					bestPath.clear();
-					for( int i = 0; i < (int)path.size(); i++ ) bestPath.push_back( path[ i ] );
-					//pathSelected = true;
-					minIntersect = intersectCount;
-					if( minIntersect == 0 ) pathSelected = true;
-					pathFound = true;
-				}
-			}
-		}
-	}
+    if( minIntersect == 0 || intersectCount < minIntersect ) {
+      speed = FAST_SPEED;
+      selX = path[ path.size() - 1 ].x;
+      selY = path[ path.size() - 1 ].y;
+      bestPath.clear();
+      for( int i = 0; i < (int)path.size(); i++ ) bestPath.push_back( path[ i ] );
+      //pathSelected = true;
+      minIntersect = intersectCount;
+      if( minIntersect == 0 ) pathSelected = true;
+      pathFound = true;
 
-	if( !pathFound ) {
-		stopMoving();
-		setMotion( Constants::MOTION_MOVE_TOWARDS );
-		other->stopMoving();
-		other->setMotion( Constants::MOTION_MOVE_TOWARDS );
-	}
+    }
+  }
+
+
+  if( !pathFound ) {
+    stopMoving();
+    setMotion( Constants::MOTION_MOVE_TOWARDS );
+    other->stopMoving();
+    other->setMotion( Constants::MOTION_MOVE_TOWARDS );
+  }
 }
 
 void Creature::cancelMoveAway() {
@@ -708,16 +706,29 @@ bool Creature::follow( Creature *leader ) {
 		}
 	}
 	speed = FAST_SPEED;
-	return findPath( toint( leader->getX() ), toint( leader->getY() ), false, 50, true );
+        GoalFunction* goal = new SingleNodeGoal(toint( leader->getX() ), toint( leader->getY() ));
+	bool found = findPath( toint( leader->getX() ), toint( leader->getY() ), false, 50, true, goal);
+        delete goal;
+        return found;
 }
 
 bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) { 
-  return findPath( x, y, cancelIfNotPossible, maxNodes,
-									 ( session->getParty()->getPlayer() == this &&
-										 !session->getGameAdapter()->inTurnBasedCombat() ) );
+  GoalFunction* goal = new SingleNodeGoal(x,y);
+  bool found = findPath( x, y, cancelIfNotPossible, maxNodes,
+                 ( session->getParty()->getPlayer() == this &&
+                  !session->getGameAdapter()->inTurnBasedCombat() ),
+                  goal );
+  delete goal;
+  return found;
 }
 
-bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty ) { 
+bool Creature::setSelXY( int x, int y, GoalFunction* goal, bool cancelIfNotPossible, int maxNodes ) { 
+  return findPath( x, y, cancelIfNotPossible, maxNodes,
+                 ( session->getParty()->getPlayer() == this &&
+                  !session->getGameAdapter()->inTurnBasedCombat() ), goal );
+}
+
+bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty, GoalFunction* goal ) { 
   int oldSelX = selX;
   int oldSelY = selY;
   int oldtx = tx;
@@ -741,7 +752,8 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
                   session->getParty()->getPlayer(),
                   maxNodes,
                   ignoreParty,
-                  !cancelIfNotPossible );
+                  false, //!cancelIfNotPossible,
+                  goal );
 
   // Does the path lead to the destination?
   bool ret = false;

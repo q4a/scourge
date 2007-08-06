@@ -67,12 +67,14 @@ struct XYNodeComparitor
 
 /**
  * Used to sort nodes by f value.
+ * If f values are equal, then sort by h value (so we'll expand good looking
+ * paths that rely on less of a guess first).
  **/
 struct FValueNodeComparitor
 {
  bool operator()(const CPathNode* a, const CPathNode* b) const
   {
-      return a->f > b->f;
+      return a->f > b->f || (a->f == b->f && a->heuristic > b->heuristic);
   }
 };
 
@@ -120,6 +122,34 @@ class GetCloseGoal : public GoalFunction {
     virtual bool fulfilledBy( CPathNode * node);
 };
 
+/**
+ * Get a certain distance from a location.
+ **/
+class GetAwayGoal : public GoalFunction {
+  private:
+    int x,y;
+    float distance;
+  public:
+    GetAwayGoal(int x, int y, float distance);
+    virtual ~GetAwayGoal();
+
+    virtual bool fulfilledBy( CPathNode * node);
+};
+
+/**
+ * Aim for the x,y coordinates of the creature, but any
+ * node that it occupies can be the goal.
+ **/
+class SingleCreatureGoal : public GoalFunction {
+  private:
+    Creature* target;
+  public:
+    SingleCreatureGoal(Creature* target);
+    virtual ~SingleCreatureGoal();
+
+    virtual bool fulfilledBy( CPathNode * node);
+};
+
 //////////////////////////////////////////////////////
 //              The search method(s)
 //////////////////////////////////////////////////////
@@ -148,6 +178,15 @@ public:
                         int maxNodes,
                         bool ignoreParty,
                         bool ignoreEndShape,
+                        GoalFunction * goal );
+
+  static void findPathToNearest( Sint16 sx, Sint16 sy, Sint16 sz,
+                        std::vector<Location> *pVector,
+                        Map *map,
+                        Creature *creature,
+                        Creature *player,
+                        int maxNodes,
+                        bool ignoreParty,
                         GoalFunction * goal );
 
   static bool isOutOfTheWay( Creature *a, std::vector<Location> *aPath, int aStart,

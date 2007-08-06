@@ -52,6 +52,34 @@ bool GetCloseGoal::fulfilledBy( CPathNode * node){
                              target->getShape()->getWidth(),target->getShape()->getDepth())  < distance;
 }
 
+GetAwayGoal::GetAwayGoal(int x, int y, float distance){
+  this->x = x; 
+  this->y = y;
+  this->distance = distance;
+}
+GetAwayGoal::~GetAwayGoal(){}
+
+bool GetAwayGoal::fulfilledBy( CPathNode * node){
+  int dx = node->x - x;
+  int dy = node->y - y;
+  return distance < sqrt(dx*dx + dy*dy);
+}
+
+SingleCreatureGoal::SingleCreatureGoal(Creature* target){
+  this->target = target;
+}
+SingleCreatureGoal::~SingleCreatureGoal(){}
+
+bool SingleCreatureGoal::fulfilledBy( CPathNode * node){
+  for( int xx = 0; xx < target->getShape()->getWidth(); xx++ ) {
+    for( int yy = 0; yy < target->getShape()->getDepth(); yy++ ) {
+      if( (toint(target->getX() + xx) == node->x) && (toint(target->getY() + yy) == node->y))
+        return true;
+    }
+  }
+  return false;
+}
+
 
 AStar::AStar(){
 }
@@ -98,8 +126,8 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
  * The set now gets checked at every child insert at log(n) cost, and worst case (where no child node ever
  * appears twice) we can now expect 4.n.log(n) operations. 
  * However, in most cases there are 3+ children that are already in the open list, in which case the extra 
- * membership checks pay for themselves. Also, since open list is smaller, we are dealing with a smaller "n" and overall it 
- * should make a speed up. Whew.
+ * membership checks pay for themselves. Also, since open list is smaller, we are dealing with a smaller "n"  
+ * and overall it should make a speed up. Whew.
  *
  * The goal function:
  * Currently the heuristic plans a path toward dx,dy. The goal function is used to specify when the result is good
@@ -140,7 +168,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
   start->y = sy;
   start->gone = 0;
   start->heuristic = max(abs(dx-sx),abs(dy-sy));
-  start->f = (*start).gone + (*start).heuristic;    // The classic formula f = g + h
+  start->f = start->gone + start->heuristic;    // The classic formula f = g + h
   start->parent = NULL;  // no parent for the start location
   open.push(start);            // Populate the OPEN container with the first location.
   openContents.insert(start);
@@ -264,16 +292,154 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
   }
 }
 
+/**
+ * Dijkstra's search to find the shortest path to the goal.
+ * This is applicable when there are multiple goals that cannot be
+ * assumed to lie near a single target location.
+ *
+ * For example: moving away from a creature, getting off another path,
+ *  moving to the nearest opponent etc.
+ *
+ * Dijkstra's algorithm is essentially a breadth-first search for weighted
+ * graphs. In this case we use this because blocked nodes cost more than 
+ * unblocked nodes. It will also allow terrain costs to be added in the
+ * future.
+ **/
+void AStar::findPathToNearest( Sint16 sx, Sint16 sy, Sint16 sz,
+                      vector<Location> *pVector,
+                      Map *map,
+                      Creature *creature,
+                      Creature *player,
+                      int maxNodes,
+                      bool ignoreParty,
+                      GoalFunction * goal ) {
+
+  priority_queue<CPathNode*, vector<CPathNode*>, FValueNodeComparitor> open;
+  set<CPathNode*,XYNodeComparitor> closed;   
+  vector<CPathNode> path;
+
+  set<CPathNode*,XYNodeComparitor> openContents; //to check for membership of the open queue
+  set<CPathNode*>::iterator setItr; //iterator to be used with closed when we want to delete nodes from memory
+  int closedSize = 0; //STL Set can take O(n) to determine size, so we keep a record ourselves
+  
+  CPathNode * start = new CPathNode();     // Has to be persistent, so we put it on the heap.
+  start->x = sx;                         // Create the start node
+  start->y = sy;
+  start->f = 0;          // we use the f to store the distance so far. No heuristic or gone.
+  start->parent = NULL;  // no parent for the start location
+  open.push(start);            // Populate the OPEN container with the first location.
+  openContents.insert(start);
+
+  CPathNode* bestNode;
+
+  while (!open.empty()) {
+    bestNode = open.top();
+    open.pop();    
+
+    // Check to see if already in the closed set
+    if((setItr = closed.find(bestNode)) != closed.end()){
+      continue;
+    }
+
+    // If at destination, break and create path below
+    if (goal->fulfilledBy(bestNode)) {
+      closed.insert(bestNode); //add the goal to closed to ensure it gets deleted later
+      break;//build the path from closestNode back to the start
+    }
+
+    closed.insert(bestNode);         // Push the bestNode onto CLOSED
+    closedSize++;
+    // Set limit to break if looking too long
+    if ( closedSize > maxNodes ){
+      //cout << "maxed out on nodes by going past " << maxNodes << "\n";
+      break;
+    }
+    
+    int x = -1;
+    int y = -1;
+    
+    for (int i=-1; i < 2; i++){
+      for(int j = -1; j < 2; j++){
+        if(i == 0 && j == 0) continue;
+
+        x = bestNode->x + i;
+        y = bestNode->y + j;
+
+        if ((x < 0) || (x >= MAP_WIDTH) || (y < 0) || (y >= MAP_DEPTH)) continue;
+        
+        CPathNode * next = new CPathNode();
+        next->x = x;
+        next->y = y;
+
+        // Check to see if already in the open queue by checking openContents
+        if((setItr = openContents.find(next)) != openContents.end()){
+          delete next;
+          continue;
+        }
+
+        // Determine cost of distance travelled
+        if( isBlocked( x, y, sx, sy, 0, 0, creature, player, map, ignoreParty, false ) )
+          next->f = 1000;
+        else 
+          next->f = bestNode->f + 1;
+        
+        next->parent = bestNode;
+        open.push(next);           // Insert into the open queue
+        openContents.insert(next);
+        
+      }
+    }
+  }
+
+  if (!closed.empty() && closedSize <= maxNodes) {
+    // Create the path from elements of the CLOSED container
+    if(path.size()) path.erase(path.begin(), path.end());
+
+    CPathNode nextNode = *bestNode;
+    path.push_back(nextNode);
+    CPathNode * parent = nextNode.parent;
+    while(parent != NULL){
+      nextNode = *parent;
+      parent = nextNode.parent;
+      path.push_back(nextNode);
+    }
+
+    for (setItr = closed.begin(); setItr != closed.end(); ++setItr){
+      bestNode = *setItr;
+      delete bestNode;
+    }
+    closed.erase(closed.begin(), closed.end());
+    
+    //and delete any left over nodes in OPEN
+    while(!open.empty()){
+        CPathNode* next = open.top();
+	open.pop();         
+        delete next;
+    }
+    //I'm unsure whether this is required to free up the memory. Better safe than sorry though.
+    openContents.erase(openContents.begin(), openContents.end()); 
+	
+    // Populate the vector that was passed in by reference
+    Location Fix;
+    if(pVector->size()) pVector->erase(pVector->begin(), pVector->end());
+    for (int i=(path.size()-1); i>=0; i--) {
+      Fix.x = path[i].x;
+      Fix.y = path[i].y;
+      Fix.z = 0;
+      pVector->push_back(Fix);
+    }
+  }
+}
 
 // a simpler/quicker 2D version of Map::isBlocked()
 bool AStar::isBlocked( Sint16 x, Sint16 y,
                       Sint16 shapeX, Sint16 shapeY, 
-											Sint16 dx, Sint16 dy,
+                      Sint16 dx, Sint16 dy,
                       Creature *creature, 
-											Creature *player,
-											Map *map,
+                      Creature *player,
+                      Map *map,
                       bool ignoreParty,
-											bool ignoreEndShape ) {
+                      bool ignoreEndShape ) {
   for( int sx = 0; sx < creature->getShape()->getWidth(); sx++ ) {
     for( int sy = 0; sy < creature->getShape()->getDepth(); sy++ ) {
 
@@ -286,7 +452,7 @@ bool AStar::isBlocked( Sint16 x, Sint16 y,
 				if( ignoreEndShape && 
 						loc->shape &&
 						loc->x <= dx && loc->x + loc->shape->getWidth() >= dx &&
-						loc->y >= dy && loc->y - loc->shape->getDepth() <= dy ) {
+				 	loc->y >= dy && loc->y - loc->shape->getDepth() <= dy ) {
 					if( PATH_DEBUG ) {
 						cerr << "*** ignoreEndShape allowed." << endl;
 					}
@@ -312,19 +478,19 @@ bool AStar::isBlocked( Sint16 x, Sint16 y,
 
 // is the a's final position out of the way of b's current location?
 bool AStar::isOutOfTheWay( Creature *a, vector<Location> *aPath, int aStart,
-														 Creature *b, vector<Location> *bPath, int bStart ) {
+                           Creature *b, vector<Location> *bPath, int bStart ) {
 	if( !( aPath && aStart < (int)aPath->size() ) ||
 			!( bPath && bStart < (int)bPath->size() ) ) return false;
 	Location aLast = (*aPath)[ aPath->size() - 1 ];
 	Location bCurrent = (*bPath)[ bStart ];
 	return 
 		SDLHandler::intersects( aLast.x - a->getShape()->getWidth() / 2, 
-														aLast.y - a->getShape()->getDepth() / 2, 
-														a->getShape()->getWidth(), 
-														a->getShape()->getDepth(),
-														bCurrent.x - b->getShape()->getWidth() / 2, 
-														bCurrent.y - b->getShape()->getDepth() / 2, 
-														b->getShape()->getWidth(), 
-														b->getShape()->getDepth() );
+                                        aLast.y - a->getShape()->getDepth() / 2, 
+                                        a->getShape()->getWidth(), 
+                                        a->getShape()->getDepth(),
+                                        bCurrent.x - b->getShape()->getWidth() / 2, 
+                                        bCurrent.y - b->getShape()->getDepth() / 2, 
+                                        b->getShape()->getWidth(), 
+                                        b->getShape()->getDepth() );
 }
 
