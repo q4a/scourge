@@ -655,9 +655,9 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
     if( dir != -1 ) {
       if( secretButton->isSelected() ) {
         if( button == SDL_BUTTON_RIGHT ) {
-          removeSecret( mapx, mapy );
+          removeSecret( xx, yy );
         } else {      
-          addSecret( mapx, mapy );
+          addSecret( xx, yy );
         }
       } else if( button == SDL_BUTTON_RIGHT ) {
         removeWall( mx, my, dir ); 
