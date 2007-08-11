@@ -3927,12 +3927,14 @@ void Map::setMapRenderHelper( MapRenderHelper *helper ) {
 void Map::addSecretDoor( int x, int y ) {
   int index = y * MAP_WIDTH + x;
   secretDoors[ index ] = false;
+  resortShapes = mapChanged = true;
 }
 
 void Map::removeSecretDoor( int x, int y ) {
   int index = y * MAP_WIDTH + x;
   if( secretDoors.find( index ) != secretDoors.end() ) {
     secretDoors.erase( index );
+    resortShapes = mapChanged = true;
   }
 }
 
