@@ -171,21 +171,33 @@ MapEditor::MapEditor( Scourge *scourge ) {
         i != creatureMap->end(); ++i ) {
     string name = i->first;
 		Monster *monster = i->second;
-    /*
-    Monster *monster = (Monster*)( i->second );
-    GLShape *shape = scourge->getSession()->getShapePalette()->
-      getCreatureShape(monster->getModelName(), 
-                       monster->getSkinName(), 
-                       monster->getScale(),
-                       monster);
-    seen.push_back( shape );
-    */
-    creatureNames[ count ] = (char*)malloc( 120 * sizeof(char) );
-    //strcpy( creatureNames[ count ], p );
-		sprintf( creatureNames[ count ], "%d - %s", monster->getLevel(), name.c_str() );
-		string s = creatureNames[ count ];
+
+		// find its place by level
+		int index = count;
+		for( int t = 0; t < count; t++ ) {
+			string s = creatureNames[ t ];
+			Monster *m = creatures[ s ];
+			if( m->getLevel() > monster->getLevel() ) {
+				index = t;
+				break;
+			}
+		}
+
+		// make room
+		for( int t = count - 1; t >= index; t-- ) {
+			creatureNames[ t + 1 ] = creatureNames[ t ];
+		}
+		count++;
+
+		// add new creature
+    creatureNames[ index ] = (char*)malloc( 120 * sizeof(char) );
+		if( monster->isNpc() ) {
+			sprintf( creatureNames[ index ], "NPC %d - %s", monster->getLevel(), name.c_str() );
+		} else {
+			sprintf( creatureNames[ index ], "%d - %s", monster->getLevel(), name.c_str() );
+		}
+		string s = creatureNames[ index ];
 		creatures[ s ] = monster;
-    count++;
   }
   creatureList->setLines( creatureMap->size(), (const char**)creatureNames );
 
