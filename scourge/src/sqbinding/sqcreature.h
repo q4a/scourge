@@ -69,6 +69,7 @@ public:
 	static int _isCharacter( HSQUIRRELVM vm );
 	static int _isMonster( HSQUIRRELVM vm );
 	static int _isNpc( HSQUIRRELVM vm );
+	static int _getMonsterType( HSQUIRRELVM vm );
 
   // other
   static int _isOfClass( HSQUIRRELVM vm );

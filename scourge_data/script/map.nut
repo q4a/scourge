@@ -29,7 +29,7 @@ function exitMap( mapName ) {
 function testMyco() {
   i <- 0;
   for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
-    if( scourgeGame.getMission().getCreature(i).getName() == "Mycotharsius the Mad" ) {
+    if( scourgeGame.getMission().getCreature(i).getMonsterType() == "Mycotharsius the Mad" ) {
       scourgeGame.getMission().getCreature(i).startConversation();
       break;
     }
@@ -38,13 +38,13 @@ function testMyco() {
 
 // Called when a creature dies (before it turns into a "corpse" container.)
 function creatureDeath( creature ) {
-  if( creature.getName() == "Mycotharsius the Mad" ) {
+  if( creature.getMonsterType() == "Mycotharsius the Mad" ) {
     // Myco. starts a conversation before he dies, revealing much...
 		scourgeGame.getMission().setCompleted( true );
     creature.startConversation( creature );
-  } else if( creature.getName() == "Mothrazu Pain Incarnate" ) {
+  } else if( creature.getMonsterType() == "Mothrazu Pain Incarnate" ) {
 		scourgeGame.getMission().setCompleted( true );
-		scourgeGame.showTextMessage( _( "The creature once known as Mothrazu sinks to one knee... Her breath comes in sharp gasps, as she growls:||\"I curse you humans...You may have defeated me but by Amod's grace, I still have one task left...\"||She reaches into a pouch and throws something small and silvery into the grove trees at the center of the room.||\"You will never find it... Karzul's gift will mature and continue where I failed. May the plants be merciful to your malevolent souls... Amod! I am close...\"||With that Mothrazu passes from this world." ) );
+		scourgeGame.showTextMessage( _( "The creature once known as Mothrazu sinks to one knee... Her breath comes in sharp gasps, as she growls:||\"I curse you humans...You may have defeated me but by Amod's grace, I still have one task left...\"||She reaches into a pouch and throws something small and silvery into the grove of trees at the center of the room.||\"You will never find it... Karzul's gift will mature and continue where I failed. May the plants be merciful to your malevolent souls... Amod! I am close...\"||With that Mothrazu passes from this world." ) );
 	}
   return true;
 }

@@ -29,6 +29,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "void", "constructor", SqCreature::_constructor, 0, 0, "" },
   
   { "string", "getName", SqCreature::_getName, 0, 0, "" },
+	{ "string", "getMonsterType", SqCreature::_getMonsterType, 0, 0, "Return the creature's monster type or empty string if it's not a monster." },
   { "int", "getLevel", SqCreature::_getLevel, 0, 0, "" },
   { "int", "getExpOfNextLevel", SqCreature::_getExpOfNextLevel, 0, 0, "How many experience points are needed for the character to gain the next level." },
   { "int", "getExp", SqCreature::_getExp, 0, 0, "" },
@@ -107,6 +108,16 @@ int SqCreature::_constructor( HSQUIRRELVM vm ) {
 int SqCreature::_getName( HSQUIRRELVM vm ) {
   GET_OBJECT(Creature*)
   sq_pushstring( vm, _SC( object->getName() ), -1 );
+  return 1;
+}
+
+int SqCreature::_getMonsterType( HSQUIRRELVM vm ) {
+  GET_OBJECT(Creature*)
+	if( object->isMonster() ) {
+		sq_pushstring( vm, _SC( object->getMonster()->getType() ), -1 );
+	} else {
+		sq_pushstring( vm, _SC( "" ), -1 );
+	}
   return 1;
 }
 
