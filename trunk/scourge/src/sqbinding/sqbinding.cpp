@@ -918,6 +918,7 @@ void SqBinding::documentSOM( char *path ) {
   objects.insert( new SqMission() );
   objects.insert( new SqCreature() );
   objects.insert( new SqItem() );
+	objects.insert( new SqSpell() );
 
   set<string> names;
   for( set<SqObject*>::iterator e = objects.begin();
