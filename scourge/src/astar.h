@@ -255,6 +255,7 @@ public:
                         int maxNodes,
                         bool ignoreParty,
                         float distance);
+
   static void findPathToCreature( Sint16 sx, Sint16 sy, Sint16 sz,
                         Creature* target,
                         std::vector<Location> *pVector,
