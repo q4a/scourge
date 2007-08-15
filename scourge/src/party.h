@@ -98,7 +98,7 @@ class Party : public CreatureGroupInfo {
   inline Creature *getParty(int i) { return party[i]; } 
 
   // move the party
-  bool setSelXY( Uint16 mapx, Uint16 mapy, bool cancelIfNotPossible=true );
+  bool setSelXY( Uint16 mapx, Uint16 mapy, bool cancelIfNotPossible=false );
   void movePlayers();
 
   // returns false if the switch could not be made,
