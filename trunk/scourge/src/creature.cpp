@@ -555,28 +555,16 @@ bool Creature::move(Uint16 dir) {
 void Creature::setTargetCreature( Creature *c, bool findPath ) { 
   targetCreature = c; 
   if( findPath ) {
-    GoalFunction* goal = new SingleCreatureGoal(c);
-    if( !setSelXY( toint( c->getX() + ( (float)c->getShape()->getWidth() / 2.0f ) ), 
-                   toint( c->getY() - ( (float)c->getShape()->getDepth() / 2.0f ) ),
-                   goal, false ) ) {
+    
+    if( !setSelCreature( c ) ) {
       // FIXME: should mark target somehow. Path alg. cannot reach it; blocked by something.
       // Keep the target creature anyway.
       if( session->getPreferences()->isBattleTurnBased() ) {
-        //cerr << "Can't find path to target creature, checking bounds." << endl;
-        /*for( int xx = 0; xx < targetCreature->getShape()->getWidth(); xx++ ) {
-          for( int yy = 0; yy < targetCreature->getShape()->getDepth(); yy++ ) {
-            if( setSelXY( toint( c->getX() + xx ), toint( c->getY() - yy ) ) ) {
-              //cerr << "...found a way!" << endl;
-              return;
-            }
-          }
-        }*/
-        //cerr << "...no path was found." << endl;
+
         session->getGameAdapter()->addDescription( _( "Can't find path to target. Sorry!" ) );
 				session->getGameAdapter()->setCursorMode( Constants::CURSOR_FORBIDDEN );
       }
     }
-    delete goal;
   }
 }
 
@@ -620,14 +608,15 @@ void Creature::moveAway( Creature *other ) {
 			     this, player,
                              AWAY_DISTANCE * 2,
                              tryHard, false ); // true );*/
-  //nodes required: 8 adj nodes => 8*(n^2)/2. For distance 8 this is 250, which is quick.
-  int nodesRequired = AWAY_DISTANCE*AWAY_DISTANCE*4; 
-  GoalFunction* goal = new GetAwayGoal(toint(getX()),toint(getY()),AWAY_DISTANCE);
-  AStar::findPathToNearest( toint( getX() ), toint( getY() ), toint( getZ() ), 
-                            &path, session->getMap(),
-                            this, player,
-                            nodesRequired, tryHard, goal);
-  delete goal;        
+  //this should be enough nodes, and will be very quick anyway
+  int nodesRequired = AWAY_DISTANCE*5; 
+
+  AStar::findPathAway( toint( getX() ), toint( getY() ), toint( getZ() ), 
+                       toint(getX()),toint(getY()),
+                       &path, session->getMap(),
+                       this, player,
+                       nodesRequired, false, AWAY_DISTANCE);
+       
   if( !path.empty() && 
       !AStar::isOutOfTheWay( this, &path, 0, player, 
                              player->getPath(), player->getPathIndex() + 1 ) ) {
@@ -706,29 +695,27 @@ bool Creature::follow( Creature *leader ) {
 		}
 	}
 	speed = FAST_SPEED;
-        GoalFunction* goal = new SingleNodeGoal(toint( leader->getX() ), toint( leader->getY() ));
-	bool found = findPath( toint( leader->getX() ), toint( leader->getY() ), false, 50, true, goal);
-        delete goal;
+	bool found = findPathToCreature( leader, false, 50, true);
         return found;
 }
 
 bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) { 
-  GoalFunction* goal = new SingleNodeGoal(x,y);
-  bool found = findPath( x, y, cancelIfNotPossible, maxNodes,
-                 ( session->getParty()->getPlayer() == this &&
-                  !session->getGameAdapter()->inTurnBasedCombat() ),
-                  goal );
-  delete goal;
-  return found;
-}
-
-bool Creature::setSelXY( int x, int y, GoalFunction* goal, bool cancelIfNotPossible, int maxNodes ) { 
   return findPath( x, y, cancelIfNotPossible, maxNodes,
                  ( session->getParty()->getPlayer() == this &&
-                  !session->getGameAdapter()->inTurnBasedCombat() ), goal );
+                  !session->getGameAdapter()->inTurnBasedCombat() ));
 }
 
-bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty, GoalFunction* goal ) { 
+/**
+ * Use this instead of setSelXY when targetting creatures so that it will check all locations
+ * occupied by large creatures.
+ **/
+bool Creature::setSelCreature( Creature* creature, bool cancelIfNotPossible, int maxNodes ) { 
+  return findPathToCreature( creature, cancelIfNotPossible, maxNodes,
+                 ( session->getParty()->getPlayer() == this &&
+                  !session->getGameAdapter()->inTurnBasedCombat() ));
+}
+
+bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty) { 
   int oldSelX = selX;
   int oldSelY = selY;
   int oldtx = tx;
@@ -751,9 +738,7 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
                   this, 
                   session->getParty()->getPlayer(),
                   maxNodes,
-                  ignoreParty,
-                  false, //!cancelIfNotPossible,
-                  goal );
+                  ignoreParty);
 
   // Does the path lead to the destination?
   bool ret = false;
@@ -780,6 +765,66 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
   if( ret && session->getParty()->getPlayer() == this ) {
     // play command sound
     if(x > -1 && 
+       0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
+       !getStateMod(StateMod::dead)) {
+      //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
+      playCharacterSound( GameAdapter::COMMAND_SOUND );
+    }
+  }
+  
+  return ret;
+}
+
+bool Creature::findPathToCreature( Creature* creature, bool cancelIfNotPossible, int maxNodes, bool ignoreParty) { 
+  int oldSelX = selX;
+  int oldSelY = selY;
+  int oldtx = tx;
+  int oldty = ty;
+
+  selX = toint(creature->getX()); 
+  selY = toint(creature->getY()); 
+  setMotion(Constants::MOTION_MOVE_TOWARDS);   
+  tx = ty = -1;
+
+  // find the path
+  tx = selX;
+  ty = selY;
+  bestPathPos = 1; // skip 0th position; it's the starting location
+  //cerr << getName() << " findPath" << endl;
+  AStar::findPathToCreature( toint(getX()), toint(getY()), toint(getZ()), 
+                  creature, 
+                  &bestPath, 
+                  session->getMap(), 
+                  this, 
+                  session->getParty()->getPlayer(),
+                  maxNodes,
+                  ignoreParty);
+
+  // Does the path lead to the destination?
+  bool ret = false;
+  if( bestPath.size() > 1 ) {
+    Location last = bestPath[ bestPath.size() - 1 ];
+    ret = ( last.x == selX &&
+            last.y == selY );
+
+    /**
+     * For pc-s cancel the move.
+     */
+    if( !ret && character && cancelIfNotPossible ) {
+      bestPathPos = 1;
+      bestPath.clear();
+
+      selX = oldSelX;
+      selY = oldSelY;
+      tx = oldtx;
+      ty = oldty;
+    }
+  }
+
+  // FIXME: when to play sound?
+  if( ret && session->getParty()->getPlayer() == this ) {
+    // play command sound
+    if(creature->getX() > -1 && 
        0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
        !getStateMod(StateMod::dead)) {
       //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));

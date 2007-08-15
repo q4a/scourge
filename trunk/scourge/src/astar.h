@@ -79,6 +79,65 @@ struct FValueNodeComparitor
 };
 
 //////////////////////////////////////////////////////
+//         Heuristics for guiding the search
+//////////////////////////////////////////////////////
+
+/**
+ * A class to represent the heuristic used in a search.
+ **/
+class Heuristic {
+  public:
+    Heuristic();
+    virtual ~Heuristic();
+    virtual double heuristic( CPathNode* node) = 0;
+};
+
+/**
+ * Standard "moving toward a single location" heuristic.
+ * This one assumes that diagonal moves are allowed.
+ **/
+struct DiagonalDistanceHeuristic : public Heuristic
+{
+  private:
+    int x,y;
+  public:
+    DiagonalDistanceHeuristic(int x, int y);
+    virtual ~DiagonalDistanceHeuristic();
+
+    virtual double heuristic( CPathNode * node);
+};
+
+/**
+ * Negative distance from the location, so that it expects the goal to be anywhere 
+ * *away* from there.
+ * This is still a valid heuristic as it always underestimates the distance left and
+ * is consistent.
+ **/
+struct DistanceAwayHeuristic : public Heuristic
+{
+  private:
+    int x,y;
+  public:
+    DistanceAwayHeuristic(int x, int y);
+    virtual ~DistanceAwayHeuristic();
+
+    virtual double heuristic( CPathNode * node);
+};
+
+/**
+ * A "no distance left to goal" heuristic.
+ * This results in a Dijkstra (for us, essentially breadth-first) search.
+ **/
+struct NoHeuristic : public Heuristic
+{
+  public:
+    NoHeuristic();
+    virtual ~NoHeuristic();
+
+    virtual double heuristic( CPathNode * node);
+};
+
+//////////////////////////////////////////////////////
 //    Standard goal functions for search
 //////////////////////////////////////////////////////
 
@@ -166,19 +225,17 @@ public:
                         Creature *creature,
                         Creature *player,
                         int maxNodes,
-                        bool ignoreParty,
-                        bool ignoreEndShape );
+                        bool ignoreParty);
 
   static void findPath( Sint16 sx, Sint16 sy, Sint16 sz,
-                        Sint16 dx, Sint16 dy, Sint16 dz,
                         std::vector<Location> *pVector,
                         Map *map,
                         Creature *creature,
                         Creature *player,
                         int maxNodes,
                         bool ignoreParty,
-                        bool ignoreEndShape,
-                        GoalFunction * goal );
+                        GoalFunction * goal,
+                        Heuristic * heuristic );
 
   static void findPathToNearest( Sint16 sx, Sint16 sy, Sint16 sz,
                         std::vector<Location> *pVector,
@@ -187,15 +244,33 @@ public:
                         Creature *player,
                         int maxNodes,
                         bool ignoreParty,
-                        GoalFunction * goal );
+                        GoalFunction * goal ); //TODO: pass in a set of targets, not a goal
+
+  static void findPathAway( Sint16 sx, Sint16 sy, Sint16 sz,
+                        Sint16 awayX, Sint16 awayY,
+                        std::vector<Location> *pVector,
+                        Map *map,
+                        Creature *creature,
+                        Creature *player,
+                        int maxNodes,
+                        bool ignoreParty,
+                        float distance);
+  static void findPathToCreature( Sint16 sx, Sint16 sy, Sint16 sz,
+                        Creature* target,
+                        std::vector<Location> *pVector,
+                        Map *map,
+                        Creature *creature,
+                        Creature *player,
+                        int maxNodes,
+                        bool ignoreParty);
 
   static bool isOutOfTheWay( Creature *a, std::vector<Location> *aPath, int aStart,
                              Creature *b, std::vector<Location> *bPath, int bStart );
 
 protected:
-  static bool isBlocked( Sint16 x, Sint16 y, Sint16 shapeX, Sint16 shapeY, Sint16 dx, Sint16 dy,
+  static bool isBlocked( Sint16 x, Sint16 y,
                          Creature *creature, Creature *player, Map *map, 
-                         bool ignoreCreatures=false, bool ignoreEndShape=false );
+                         bool ignoreCreatures=false);
 
 };
 
