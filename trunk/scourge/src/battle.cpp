@@ -440,8 +440,7 @@ void Battle::stepCloserToTarget() {
 
       // Try to move to the target creature.
       // For monsters, if this is not possible, select a new target.
-      if( !creature->setSelXY( toint( tx + (float)tw / 2.0f ), 
-                               toint( ty - (float)th / 2.0f ), false ) &&
+      if( !creature->setSelCreature( creature->getTargetCreature(), false ) &&
           IS_AUTO_CONTROL( creature ) ) {
         creature->cancelTarget();
         creature->decideMonsterAction();
@@ -456,7 +455,7 @@ void Battle::stepCloserToTarget() {
               creature->getSelY() == creature->getTargetY())) {
     if(debugBattle) cerr << "\t\t\tto target location: " << creature->getTargetX() <<
       creature->getTargetY() << endl;
-    creature->setSelXY(creature->getTargetX(), creature->getTargetY(), false );
+    creature->setSelCreature(creature->getTargetCreature(), false );
   }
 
   // wait for animation to end

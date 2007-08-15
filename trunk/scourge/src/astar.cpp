@@ -87,13 +87,11 @@ SingleCreatureGoal::SingleCreatureGoal(Creature* target){
 SingleCreatureGoal::~SingleCreatureGoal(){}
 
 bool SingleCreatureGoal::fulfilledBy( CPathNode * node){
-  for( int xx = 0; xx < target->getShape()->getWidth(); xx++ ) {
-    for( int yy = 0; yy < target->getShape()->getDepth(); yy++ ) {
-      if( (toint(target->getX() + xx) == node->x) && (toint(target->getY() + yy) == node->y))
-        return true;
-    }
-  }
-  return false;
+  int cx = toint(target->getX());
+  int cy = toint(target->getY());
+  return node->x >= cx && node->y >= cy &&
+         node->x < cx + target->getShape()->getWidth() &&
+         node->y < cy + target->getShape()->getDepth();
 }
 
 ///////////////////
@@ -176,7 +174,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
 }
 
 /**
- * A quick method to move to adjacent to a target creature
+ * A quick method to move to any node occupied by the target creature
  **/
 void AStar::findPathToCreature( Sint16 sx, Sint16 sy, Sint16 sz,
                       Creature* target,
@@ -438,17 +436,6 @@ bool AStar::isBlocked( Sint16 x, Sint16 y,
 
       Location *loc = map->getLocation( x + sx, y - sy, 0 );
       if( loc ) {
-        //ignoreEndShape should be moved into the goal functions
-        /*if( ignoreEndShape && 
-              loc->shape &&
-              loc->x <= dx && loc->x + loc->shape->getWidth() >= dx &&
-              loc->y >= dy && loc->y - loc->shape->getDepth() <= dy ) {
-              if( PATH_DEBUG ) {
-                cerr << "*** ignoreEndShape allowed." << endl;
-              }
-              //continue;
-              return false;
-        }*/
         //if we are ignoring our party and there is a party member there, no problem.
         if( ignoreParty && 
           loc->creature && 

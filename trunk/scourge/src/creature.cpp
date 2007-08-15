@@ -695,7 +695,7 @@ bool Creature::follow( Creature *leader ) {
 		}
 	}
 	speed = FAST_SPEED;
-	bool found = findPathToCreature( leader, false, 50, true);
+	bool found = findPathToCreature( leader, false, 100, true);
         return found;
 }
 
@@ -723,6 +723,8 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
 
   selX = x; 
   selY = y; 
+  if(x < 0 || y < 0) return true; //this is often used to deselect
+
   setMotion(Constants::MOTION_MOVE_TOWARDS);   
   tx = ty = -1;
 
@@ -759,6 +761,11 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
       tx = oldtx;
       ty = oldty;
     }
+    else{
+      //make the selected location equal the end of our path
+      selX = last.x;
+      selY = last.y;
+    }
   }
 
   // FIXME: when to play sound?
@@ -781,8 +788,12 @@ bool Creature::findPathToCreature( Creature* creature, bool cancelIfNotPossible,
   int oldtx = tx;
   int oldty = ty;
 
-  selX = toint(creature->getX()); 
-  selY = toint(creature->getY()); 
+  selX = toint(creature->getX() + creature->getShape()->getWidth()/2.0f); 
+  selY = toint(creature->getY() + creature->getShape()->getDepth()/2.0f); 
+  Creature * oldTarget = targetCreature;
+
+  targetCreature = creature;
+
   setMotion(Constants::MOTION_MOVE_TOWARDS);   
   tx = ty = -1;
 
@@ -804,9 +815,13 @@ bool Creature::findPathToCreature( Creature* creature, bool cancelIfNotPossible,
   bool ret = false;
   if( bestPath.size() > 1 ) {
     Location last = bestPath[ bestPath.size() - 1 ];
-    ret = ( last.x == selX &&
-            last.y == selY );
+    int cx = toint(creature->getX());
+    int cy = toint(creature->getY());
+    ret = last.x >= cx && last.y >= cy &&
+          last.x < cx + creature->getShape()->getWidth() &&
+          last.y < cy + creature->getShape()->getDepth();
 
+    //if(!creature->isNpc()) cout << "Targetting an enemy and failed = " << ret << " because " << toint(creature->getX()) << "," << toint(creature->getY()) << " is not near to " << last.x << "," << last.y  << "\n" << "w/d : " << creature->getShape()->getWidth() << " / " << creature->getShape()->getDepth() << "\n";
     /**
      * For pc-s cancel the move.
      */
@@ -818,9 +833,11 @@ bool Creature::findPathToCreature( Creature* creature, bool cancelIfNotPossible,
       selY = oldSelY;
       tx = oldtx;
       ty = oldty;
+      targetCreature = oldTarget;
     }
-  }
 
+  }
+  
   // FIXME: when to play sound?
   if( ret && session->getParty()->getPlayer() == this ) {
     // play command sound
