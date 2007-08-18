@@ -526,3 +526,6 @@ function noop( s ) {
 	return s;
 }
 
+function outdoorMapCompleted( mapName ) {
+	print( "Customizing map: " + mapName );
+}
