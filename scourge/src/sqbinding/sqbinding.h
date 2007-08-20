@@ -212,7 +212,8 @@ public:
 	// called when adding/removing party members
 	void partyChanged();
 
-  bool startLevel();
+	void initLevelObjects();
+  bool startLevel();	
   bool endLevel();
 
 	void registerCreature( Creature *ptr );

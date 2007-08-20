@@ -629,5 +629,8 @@ void Session::setCurrentMission( Mission *mission ) {
 			cerr << "***********************************" << endl;
 		}
 	}
+
+	// initialize script objects
+	getSquirrel()->initLevelObjects();
 }
 

@@ -23,7 +23,9 @@
 // is this ok? maybe we want to go thru the GameAdapter.
 #include "../render/map.h"
 #include "../render/shape.h"
+#include "../render/glshape.h"
 #include "../render/location.h"
+#include "../shapepalette.h"
 
 using namespace std;
 
@@ -41,6 +43,9 @@ ScriptClassMemberDecl SqMission::members[] = {
   { "Item", "getCurrentWeapon", SqMission::_getCurrentWeapon, 0, 0, "Get the item currently used to attack the player. (or null if by hands or spell.)" },
 	{ "int", "getChapter", SqMission::_getChapter, 0, 0, "Get the current storyline chapter." },
 	{ "void", "removeMapPosition", SqMission::_removeMapPosition, 0, 0, "Remove the shape at this map position." },
+	{ "void", "setMapPosition", SqMission::_setMapPosition, 0, 0, "Set a shape at this map position. Shape is given by its name." },
+	{ "float", "getHeightMap", SqMission::_getHeightMap, 0, 0, "Get the ground height (outdoors only) at this map position." },
+	{ "void", "setHeightMap", SqMission::_setHeightMap, 0, 0, "Set the ground height (outdoors only) at this map position." },
 	{ "String", "getShape", SqMission::_getShape, 0, 0, "Get the name of a shape at this position." },
 	{ "int", "getDungeonDepth", SqMission::_getDungeonDepth, 0, 0, "Get the current depth." },
 	{ "void", "descendDungeon", SqMission::_descendDungeon, 0, 0, "Travel one dungeon level lower." },
@@ -49,6 +54,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "setQuakesEnabled", SqMission::_setQuakesEnabled, 0, 0, "Set to true if quakes are enabled on this level. (False by default.)" },
 	{ "void", "setDoorLocked", SqMission::_setDoorLocked, 0, 0, "Set the door located at x,y,z to locked value (true=locked, false=unlocked)" },
 	{ "bool", "isDoorLocked", SqMission::_isDoorLocked, 0, 0, "Is the door at location x,y,z locked?" },
+	{ "bool", "isStoryLineMission", SqMission::_isStoryLineMission, 0, 0, "Is the current mission a storyline mission?" },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -149,6 +155,37 @@ int SqMission::_removeMapPosition( HSQUIRRELVM vm ) {
 	return 0;
 }
 
+int SqMission::_setMapPosition( HSQUIRRELVM vm ) {
+	GET_STRING( shapeName, 255 )
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
+	SqBinding::sessionRef->getMap()->setPosition( x, y, z, shape );
+	return 0;
+}
+
+int SqMission::_getHeightMap( HSQUIRRELVM vm ) {
+	GET_INT( y )
+	GET_INT( x )
+	if( SqBinding::sessionRef->getMap()->isHeightMapEnabled() ) {
+		sq_pushfloat( vm, SqBinding::sessionRef->getMap()->getGroundHeight( x / OUTDOORS_STEP, y / OUTDOORS_STEP ) );
+	} else {
+		sq_pushfloat( vm, 0 );
+	}
+	return 1;
+}
+
+int SqMission::_setHeightMap( HSQUIRRELVM vm ) {
+	GET_FLOAT( h )
+	GET_INT( y )
+	GET_INT( x )
+	if( SqBinding::sessionRef->getMap()->isHeightMapEnabled() ) {
+		SqBinding::sessionRef->getMap()->setGroundHeight( x / OUTDOORS_STEP, y / OUTDOORS_STEP, h );
+	}
+	return 0;
+}
+
 int SqMission::_getShape( HSQUIRRELVM vm ) {
 	GET_INT( z )
 	GET_INT( y )
@@ -223,6 +260,13 @@ int SqMission::_isDoorLocked( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
 	SQBool b = SqBinding::sessionRef->getMap()->isLocked( x, y, z );
+	sq_pushbool( vm, b );
+	return 1;
+}
+
+int SqMission::_isStoryLineMission( HSQUIRRELVM vm ) {
+	Mission *m = SqBinding::sessionRef->getCurrentMission();
+	SQBool b = ( m && m->isStoryLine() );
 	sq_pushbool( vm, b );
 	return 1;
 }
