@@ -300,6 +300,7 @@ private:
   inline bool isEdited() { return edited; }
   inline char *getName() { return name; }
 
+
   void saveMap( char *name, char *result, bool absolutePath=false, int referenceType=REF_TYPE_NAME );
   bool loadMap( char *name, char *result, StatusReport *report=NULL, 
 								int level=1, int depth=0, 
@@ -580,7 +581,7 @@ private:
 
   void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
 
-	inline void setGroundHeight( int x, int y, float h ) { this->ground[x][y] = h; }
+	inline void setGroundHeight( int x, int y, float h ) { this->ground[x][y] = h; refreshGroundPos = true; }
 	inline float getGroundHeight( int x, int y ) { return this->ground[x][y]; }
 	inline void setHeightMapEnabled( bool b ) { this->heightMapEnabled = b; }
 	inline bool isHeightMapEnabled() { return this->heightMapEnabled; }

@@ -22,6 +22,7 @@
 #include "render/maprenderhelper.h"
 #include "render/glshape.h"
 #include "cellular.h"
+#include "sqbinding/sqbinding.h"
 #include <vector>
 
 using namespace std;
@@ -170,6 +171,9 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			map->setFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT, (Shape*)shapePal->findShapeByName( "FLOOR_TILE", true ) );
 		}
 	}
+
+	// event handler for custom map processing
+	scourge->getSession()->getSquirrel()->callMapMethod( "outdoorMapCompleted", map->getName() );
 
 	return true;
 }

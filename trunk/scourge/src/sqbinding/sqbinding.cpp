@@ -292,8 +292,8 @@ void SqBinding::registerItem( Item *ptr ) {
 	}
 }
 
-bool SqBinding::startLevel() {
-  // create the Mission
+void SqBinding::initLevelObjects() {
+	// create the Mission
   if( DEBUG_SQUIRREL ) cerr << "Creating mission:" << endl;
   if( SQ_FAILED( instantiateClass( _SC( mission->getClassName() ), &refMission ) ) ) {
     cerr << "Failed to instantiate mission object." << endl;
@@ -310,7 +310,9 @@ bool SqBinding::startLevel() {
   for( int i = 0; i < session->getItemCount(); i++ ) {
 		registerItem( session->getItem( i ) );
   }
+}
 
+bool SqBinding::startLevel() {
   bool ret = callMapMethod( "enterMap", session->getMap()->getName() );
   return ret;
 }     

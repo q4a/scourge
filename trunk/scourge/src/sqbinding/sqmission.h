@@ -62,8 +62,12 @@ public:
 
 	static int _getChapter( HSQUIRRELVM vm );
 
-	static int _removeMapPosition( HSQUIRRELVM vm );
+	static int _setMapPosition( HSQUIRRELVM vm );
+	static int _removeMapPosition( HSQUIRRELVM vm );	
 	static int _getShape( HSQUIRRELVM vm );
+
+	static int _getHeightMap( HSQUIRRELVM vm );
+	static int _setHeightMap( HSQUIRRELVM vm );	
 
 	static int _getDungeonDepth( HSQUIRRELVM vm );
 	static int _descendDungeon( HSQUIRRELVM vm );
@@ -74,6 +78,8 @@ public:
 
 	static int _setDoorLocked( HSQUIRRELVM vm );
 	static int _isDoorLocked( HSQUIRRELVM vm );
+
+	static int _isStoryLineMission( HSQUIRRELVM vm );
 };
 
 #endif

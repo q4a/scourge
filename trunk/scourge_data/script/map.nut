@@ -10,14 +10,14 @@ function enterMap( mapName ) {
   print( "You are on the " + mapName + " map.\n" );
 	print( "Chapter=" + scourgeGame.getMission().getChapter() + " Depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
 
-	if( scourgeGame.getMission().getChapter() == 5 && mapName == "library" ) {
-		initChapter6();
-	} else if( scourgeGame.getMission().getChapter() == 7 && mapName == "library3" ) {
-		initChapter8();
-	} else if( scourgeGame.getMission().getChapter() == 8 && mapName == "temple" ) {
-		initChapter9();
-	} else if( scourgeGame.getMission().getChapter() == 9 && mapName == "emeril" ) {
-		initChapter10();
+	if( scourgeGame.getMission().isStoryLineMission() ) {
+		switch( scourgeGame.getMission().getChapter() ) {
+		case 5: initChapter6(); break;
+		case 7: initChapter8(); break;
+		case 8: initChapter9(); break;
+		case 9: initChapter10(); break;
+		case 10: initChapter11(); break;
+		}
 	}
 }
 
@@ -526,6 +526,31 @@ function noop( s ) {
 	return s;
 }
 
+function initChapter11() {
+	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
+		scourgeGame.showTextMessage( _( "A baleful wind blows bringing the scent of slow vegetative decay. Off in the distance you glance a mighty tree, standing in the center of a barren plane of ashen stone.||No other plants dare intrude upon its territory and no animal life stirs near its accursed branches.||Above, even the sky seems to darken as if the plant stood like a tombstone, marking the arrival of a pending doom." ) );
+	}
+}
+
 function outdoorMapCompleted( mapName ) {
-	print( "Customizing map: " + mapName );
+	print( "Customizing map: " + mapName + "\n" );
+	if( scourgeGame.getMission().getChapter() == 10 && scourgeGame.getMission().isStoryLineMission() ) {
+	
+		// level the area in the center
+		x <- 0;
+		y <- 0;
+		for( x = 250; x < 350; x++ ) {
+			for( y = 250; y < 350; y++ ) {
+				scourgeGame.getMission().setHeightMap( x, y, 3.0 );
+				scourgeGame.getMission().removeMapPosition( x, y, 0 );
+				// color the ground
+			}
+		}
+	
+		// add the tree of emeril
+		scourgeGame.getMission().setMapPosition( 312, 288, 0, "TREE-EMERIL-TRUNK" );
+		scourgeGame.getMission().setMapPosition( 300, 300, 12, "TREE-EMERIL-TOP" );
+	
+		// add decoration around tree
+	}
 }
