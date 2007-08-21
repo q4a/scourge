@@ -618,6 +618,11 @@ bool Mission::creatureSlain(Creature *creature) {
 }
 
 void Mission::checkMissionCompleted() {
+  // special missions aren't completed when an item is found.
+  if( isSpecial() ) {
+    completed = false;
+    return;
+  }
   completed = true;
   for(map<RpgItem*, bool >::iterator i=items.begin(); i!=items.end(); ++i) {
     bool b = i->second;
