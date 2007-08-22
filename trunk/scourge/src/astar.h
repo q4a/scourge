@@ -175,7 +175,7 @@ class GetCloseGoal : public GoalFunction {
 
     float distance;
   public:
-    GetCloseGoal(Creature* searcher, Creature* target);
+    GetCloseGoal(Creature* searcher, Creature* target, float distance);
     virtual ~GetCloseGoal();
 
     virtual bool fulfilledBy( CPathNode * node);
@@ -262,6 +262,15 @@ public:
                         Map *map,
                         Creature *creature,
                         Creature *player,
+                        int maxNodes,
+                        bool ignoreParty);
+  static void findPathCloseToCreature( Sint16 sx, Sint16 sy, Sint16 sz,
+                        Creature* target,
+                        std::vector<Location> *pVector,
+                        Map *map,
+                        Creature *creature,
+                        Creature *player,
+                        float distance,
                         int maxNodes,
                         bool ignoreParty);
 

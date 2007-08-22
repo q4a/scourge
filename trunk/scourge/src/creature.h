@@ -186,6 +186,7 @@ class Creature : public RenderedCreature {
 
 	bool isNpc();
   bool isPathToTargetCreature();
+  bool isPathTowardTargetCreature(float range);
 
   inline GLfloat getAngle() { return angle; }
 
@@ -243,7 +244,7 @@ class Creature : public RenderedCreature {
   inline int getTargetX() { if(targetCreature) return toint(targetCreature->getX()); else return targetX; }
   inline int getTargetY() { if(targetCreature) return toint(targetCreature->getY()); else return targetY; }
   inline int getTargetZ() { if(targetCreature) return toint(targetCreature->getZ()); else return targetZ; }
-  void setTargetCreature( Creature *c, bool findPath=false );
+  void setTargetCreature( Creature *c, bool findPath=false , float range=0);
   inline Creature *getTargetCreature() { return targetCreature; }
   inline void setTargetLocation(int x, int y, int z) { targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z; }
   inline void getTargetLocation(int *x, int *y, int *z) { *x = targetX; *y = targetY; *z = targetZ; }
@@ -295,7 +296,8 @@ class Creature : public RenderedCreature {
    * Returns true if the move is possible, false otherwise.
    */
   bool setSelXY( int x, int y, bool cancelIfNotPossible=false, int maxNodes=100 );  
-  bool setSelCreature( Creature* creature, bool cancelIfNotPossible=false, int maxNodes=100); 
+  bool setSelCreature( Creature* creature, bool cancelIfNotPossible=false, float range=0, int maxNodes=100); 
+
   inline int getSelX() { return selX; }
   inline int getSelY() { return selY; }
   inline void setMapChanged() { mapChanged = true; }
@@ -527,7 +529,7 @@ class Creature : public RenderedCreature {
 
    bool findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty);
 
-  bool findPathToCreature( Creature* creature, bool cancelIfNotPossible, int maxNodes, bool ignoreParty);
+  bool findPathToCreature( Creature* creature, bool cancelIfNotPossible, int maxNodes, bool ignoreParty, float distance=0);
   /**
    * Get the position of this creature in the formation.
    * returns -1,-1 if the position cannot be set (if the person followed is not moving)

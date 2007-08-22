@@ -552,11 +552,11 @@ bool Creature::move(Uint16 dir) {
   }
 }
 
-void Creature::setTargetCreature( Creature *c, bool findPath ) { 
+void Creature::setTargetCreature( Creature *c, bool findPath, float range) { 
   targetCreature = c; 
   if( findPath ) {
     
-    if( !setSelCreature( c ) ) {
+    if( !setSelCreature( c , range) ) {
       // FIXME: should mark target somehow. Path alg. cannot reach it; blocked by something.
       // Keep the target creature anyway.
       if( session->getPreferences()->isBattleTurnBased() ) {
@@ -709,10 +709,10 @@ bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) 
  * Use this instead of setSelXY when targetting creatures so that it will check all locations
  * occupied by large creatures.
  **/
-bool Creature::setSelCreature( Creature* creature, bool cancelIfNotPossible, int maxNodes ) { 
+bool Creature::setSelCreature( Creature* creature, bool cancelIfNotPossible, float range, int maxNodes ) { 
   return findPathToCreature( creature, cancelIfNotPossible, maxNodes,
                  ( session->getParty()->getPlayer() == this &&
-                  !session->getGameAdapter()->inTurnBasedCombat() ));
+                  !session->getGameAdapter()->inTurnBasedCombat() ), range);
 }
 
 bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty) { 
@@ -782,7 +782,7 @@ bool Creature::findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, b
   return ret;
 }
 
-bool Creature::findPathToCreature( Creature* creature, bool cancelIfNotPossible, int maxNodes, bool ignoreParty) { 
+bool Creature::findPathToCreature( Creature* creature, bool cancelIfNotPossible, int maxNodes, bool ignoreParty, float distance) { 
   int oldSelX = selX;
   int oldSelY = selY;
   int oldtx = tx;
@@ -802,24 +802,25 @@ bool Creature::findPathToCreature( Creature* creature, bool cancelIfNotPossible,
   ty = selY;
   bestPathPos = 1; // skip 0th position; it's the starting location
   //cerr << getName() << " findPath" << endl;
-  AStar::findPathToCreature( toint(getX()), toint(getY()), toint(getZ()), 
+  AStar::findPathCloseToCreature( toint(getX()), toint(getY()), toint(getZ()), 
                   creature, 
                   &bestPath, 
                   session->getMap(), 
                   this, 
                   session->getParty()->getPlayer(),
+                  distance,
                   maxNodes,
                   ignoreParty);
 
-  // Does the path lead to the destination?
-  bool ret = false;
-  if( bestPath.size() > 1 ) {
+  // Does the path lead close enough to the destination?
+  bool ret = isPathTowardTargetCreature(distance);
+ /* if( bestPath.size() > 1 ) {
     Location last = bestPath[ bestPath.size() - 1 ];
     int cx = toint(creature->getX());
     int cy = toint(creature->getY());
     ret = last.x >= cx && last.y >= cy &&
           last.x < cx + creature->getShape()->getWidth() &&
-          last.y < cy + creature->getShape()->getDepth();
+          last.y < cy + creature->getShape()->getDepth();*/
 
     //if(!creature->isNpc()) cout << "Targetting an enemy and failed = " << ret << " because " << toint(creature->getX()) << "," << toint(creature->getY()) << " is not near to " << last.x << "," << last.y  << "\n" << "w/d : " << creature->getShape()->getWidth() << " / " << creature->getShape()->getDepth() << "\n";
     /**
@@ -835,8 +836,6 @@ bool Creature::findPathToCreature( Creature* creature, bool cancelIfNotPossible,
       ty = oldty;
       targetCreature = oldTarget;
     }
-
-  }
   
   // FIXME: when to play sound?
   if( ret && session->getParty()->getPlayer() == this ) {
@@ -2209,11 +2208,11 @@ float Creature::getDistanceToSel() {
 
 float Creature::getDistance( RenderedCreature *other ) {
 	return Constants::distance( getX(),  getY(), 
-															getShape()->getWidth(), getShape()->getDepth(),
-															other->getX(), 
-															other->getY(),
-															other->getShape()->getWidth(), 
-															other->getShape()->getDepth());
+               getShape()->getWidth(), getShape()->getDepth(),
+               other->getX(), 
+               other->getY(),
+               other->getShape()->getWidth(), 
+               other->getShape()->getDepth());
 }
 
 float Creature::getDistanceToTarget( RenderedCreature *creature ) {
@@ -3056,6 +3055,20 @@ bool Creature::isPathToTargetCreature() {
   Location pos = bestPath[ bestPath.size() - 1 ];
   Location *mapPos = session->getMap()->getLocation( pos.x, pos.y, 0 );
   return( mapPos && mapPos->creature == getTargetCreature() );
+}
+
+// does the path get close enough to the target creature
+bool Creature::isPathTowardTargetCreature(float range) {
+  if(!getTargetCreature() ){ 
+    return false;
+  }
+  if(bestPath.size() == 0){
+    return getDistance(getTargetCreature()) < range;
+  }
+  Location pos = bestPath[ bestPath.size() - 1 ];
+   return Constants::distance((float)pos.x, (float)pos.y, getShape()->getWidth(),getShape()->getDepth(),
+                             getTargetCreature()->getX(),getTargetCreature()->getY(),
+                             getTargetCreature()->getShape()->getWidth(),getTargetCreature()->getShape()->getDepth()) < range;
 }
 
 void Creature::playCharacterSound( int soundType ) {
