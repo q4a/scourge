@@ -48,9 +48,10 @@ bool SingleNodeGoal::fulfilledBy( CPathNode * node){
 /**
  * Get within a given range of the target creature.
  **/
-GetCloseGoal::GetCloseGoal(Creature* searcher, Creature* target){
+GetCloseGoal::GetCloseGoal(Creature* searcher, Creature* target, float distance){
   this->searcher = searcher; 
   this->target = target;
+  this->distance = distance;
 }
 GetCloseGoal::~GetCloseGoal(){}
 
@@ -185,6 +186,25 @@ void AStar::findPathToCreature( Sint16 sx, Sint16 sy, Sint16 sz,
                       int maxNodes,
                       bool ignoreParty) {
   GoalFunction * goal = new SingleCreatureGoal(target);
+  Heuristic * heuristic = new DiagonalDistanceHeuristic(toint(target->getX()),toint(target->getY()));
+  AStar::findPath(sx,sy,sz,pVector,map,creature,player,maxNodes,ignoreParty,goal,heuristic);
+  delete heuristic;
+  delete goal;
+}
+
+/**
+ * A quick method to move within a certain distance of the target creature
+ **/
+void AStar::findPathCloseToCreature( Sint16 sx, Sint16 sy, Sint16 sz,
+                      Creature* target,
+                      vector<Location> *pVector,
+                      Map *map,
+                      Creature *creature,
+                      Creature *player,
+                      float distance,
+                      int maxNodes,
+                      bool ignoreParty) {
+  GoalFunction * goal = new GetCloseGoal(creature,target,distance);
   Heuristic * heuristic = new DiagonalDistanceHeuristic(toint(target->getX()),toint(target->getY()));
   AStar::findPath(sx,sy,sz,pVector,map,creature,player,maxNodes,ignoreParty,goal,heuristic);
   delete heuristic;

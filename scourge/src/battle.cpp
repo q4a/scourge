@@ -440,7 +440,7 @@ void Battle::stepCloserToTarget() {
 
       // Try to move to the target creature.
       // For monsters, if this is not possible, select a new target.
-      if( !creature->setSelCreature( creature->getTargetCreature(), false ) &&
+      if( !creature->setSelCreature( creature->getTargetCreature(), false, range) &&
           IS_AUTO_CONTROL( creature ) ) {
         creature->cancelTarget();
         creature->decideMonsterAction();
@@ -455,7 +455,7 @@ void Battle::stepCloserToTarget() {
               creature->getSelY() == creature->getTargetY())) {
     if(debugBattle) cerr << "\t\t\tto target location: " << creature->getTargetX() <<
       creature->getTargetY() << endl;
-    creature->setSelCreature(creature->getTargetCreature(), false );
+    creature->setSelCreature(creature->getTargetCreature(), false, range);
   }
 
   // wait for animation to end
@@ -493,7 +493,10 @@ void Battle::stepCloserToTarget() {
       
     // guess a new path (once in a while)
     if( 1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
-      creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
+      if(creature->getTargetCreature()) //new path to the creature, if we have one targetted
+        creature->setSelCreature( creature->getTargetCreature(), false, range);
+      else //new path to our selected location
+        creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
     }
 
     if( IS_AUTO_CONTROL( creature ) ) {      
@@ -582,7 +585,10 @@ bool Battle::moveCreature() {
 
 	        // guess a new path
 	        if( 1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
-	          creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
+	          if(creature->getTargetCreature()) //new path to the creature, if we have one targetted
+                    creature->setSelCreature( creature->getTargetCreature(), false, range);
+                  else //new path to our selected location
+                    creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
 	        }
 	        if( session->getPreferences()->isBattleTurnBased() ) {          
 	          if( getAvailablePartyTarget() ) session->getParty()->toggleRound(true);
@@ -657,7 +663,7 @@ bool Battle::selectNewTarget() {
     Creature *target = getAvailableTarget();
     if (target) {
       if(debugBattle) cerr << "\tSelected new target: " << target->getName() << endl;
-      creature->setTargetCreature(target, true);
+      creature->setTargetCreature(target, true, range);
     } else {
       creature->setTargetCreature(NULL);
       if(debugBattle) cerr << "\t\tCan't find new target." << endl;
@@ -1432,7 +1438,8 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
       color->r = 0.5f;
       color->g = 0.2f;
       color->b = 0;
-      if( creature->isPathToTargetCreature() ) {
+      //does the path get us in range?
+      if( (!item && creature->isPathToTargetCreature()) || (item && creature->isPathTowardTargetCreature(item->getRange())) ) {
         sprintf( buff, _( "Out of Range. Move: %d" ), (int)( creature->getPath()->size() ) );
       } else {
         sprintf( buff, _( "Out of Range" ) );
