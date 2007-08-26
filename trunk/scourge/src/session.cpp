@@ -244,17 +244,10 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
   return item;
 }
 
-Creature *Session::replaceCreature( Creature *creature, char *newCreatureType ) {
-	int cx = toint( creature->getX() );
-	int cy = toint( creature->getY() );
-	int cz = toint( creature->getZ() );
-	getMap()->removeCreature( cx, cy, cz );
-	creature->moveTo( -1, -1, 0 ); // remove its marker
-	creature->setStateMod( StateMod::dead, true ); // make sure it doesn't move
-
-	Monster *monster = Monster::getMonsterByName( newCreatureType );
+Creature *Session::addCreatureFromScript( char *creatureType ) {
+	Monster *monster = Monster::getMonsterByName( creatureType );
 	if( !monster ) {
-		cerr << "*** Error: no monster named " << newCreatureType << endl;
+		cerr << "*** Error: no monster named " << creatureType << endl;
 		return NULL;
 	}
 	GLShape *shape = getShapePalette()->
@@ -269,23 +262,35 @@ Creature *Session::replaceCreature( Creature *creature, char *newCreatureType ) 
 	for( int i = 0; i < replacement->getInventoryCount(); i++ ) {
 		getSquirrel()->registerItem( replacement->getInventory( i ) );
 	}
-		
-	int fx, fy;
-	replacement->findPlace( cx, cy, &fx, &fy );
-	replacement->cancelTarget();
+	return replacement;
+}
 
-	getMap()->startEffect( fx, fy, 1, 
-												 Constants::EFFECT_DUST, 
-												 (Constants::DAMAGE_DURATION * 4), 
-												 replacement->getShape()->getWidth(), 
-												 replacement->getShape()->getDepth() );
-	char msg[120];
-	sprintf( msg, _( "%s transforms into another shape in front of your very eyes!" ), 
-					 creature->getName() );
-	getGameAdapter()->addDescription( msg );
+Creature *Session::replaceCreature( Creature *creature, char *newCreatureType ) {
+	int cx = toint( creature->getX() );
+	int cy = toint( creature->getY() );
+	int cz = toint( creature->getZ() );
+	getMap()->removeCreature( cx, cy, cz );
+	creature->moveTo( -1, -1, 0 ); // remove its marker
+	creature->setStateMod( StateMod::dead, true ); // make sure it doesn't move
 
-	cerr << "is npc? " << replacement->isNpc() << endl;
-
+	Creature *replacement = addCreatureFromScript( newCreatureType );
+	if( replacement ) {
+		int fx, fy;
+		replacement->findPlace( cx, cy, &fx, &fy );
+		replacement->cancelTarget();
+	
+		getMap()->startEffect( fx, fy, 1, 
+													 Constants::EFFECT_DUST, 
+													 (Constants::DAMAGE_DURATION * 4), 
+													 replacement->getShape()->getWidth(), 
+													 replacement->getShape()->getDepth() );
+		char msg[120];
+		sprintf( msg, _( "%s transforms into another shape in front of your very eyes!" ), 
+						 creature->getName() );
+		getGameAdapter()->addDescription( msg );
+	
+		cerr << "is npc? " << replacement->isNpc() << endl;
+	}
 	return replacement;
 }
 

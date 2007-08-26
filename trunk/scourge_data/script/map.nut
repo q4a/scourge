@@ -51,7 +51,8 @@ function creatureDeath( creature ) {
 
 // return true if the click was handled from squirrel
 function useShape( x, y, z ) {
-	print( "Shape used: " + scourgeGame.getMission().getShape( x, y, z ) + "\n" );
+	shape <- scourgeGame.getMission().getShape( x, y, z );
+	print( "Shape used: " + shape + "\n" );
 	print( "Depth: " + scourgeGame.getMission().getDungeonDepth() + "\n" );
 	if( scourgeGame.getMission().getShape( x, y, 6 ) == "RED_TELEPORTER" ) {
 		if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
@@ -61,6 +62,8 @@ function useShape( x, y, z ) {
 			print( "...going up..." );
 			scourgeGame.getMission().ascendDungeon( x, y, z );
 		}
+	} else if( shape == "TREE-EMERIL-TRUNK" || shape == "TREE-EMERIL-TOP" ) {
+		handleTreeOfEmeril();
 	}
 	return true;
 }
@@ -546,11 +549,41 @@ function outdoorMapCompleted( mapName ) {
 				// color the ground
 			}
 		}
-	
+		
 		// add the tree of emeril
 		scourgeGame.getMission().setMapPosition( 312, 288, 0, "TREE-EMERIL-TRUNK" );
 		scourgeGame.getMission().setMapPosition( 300, 300, 12, "TREE-EMERIL-TOP" );
-	
+
+		// add creature for spawn of arcanex (need in order to converse w. tree)
+		scourgeGame.getMission().addCreature( 5, 5, 0, "Spawn of Arcanex" )
+		
 		// add decoration around tree
+	}
+}
+
+function handleTreeOfEmeril() {
+	hasCronostar <- false;
+	i <- 0;
+	t <- 0;
+	item <- null;
+	print( "Looking for cronostar...\n" );
+	for( i = 0; hasCronostar == false && i < scourgeGame.getPartySize(); i++ ) {
+		print( "\tparty member=" + i + "...\n" );
+		for( t = 0; t < scourgeGame.getPartyMember( i ).getInventoryCount(); t++ ) {
+			item = scourgeGame.getPartyMember( i ).getInventoryItem( t );
+			if( item.getName() == "Cronostar" ) {
+				hasCronostar = true;
+				break;	
+			}
+		}
+	}
+	print( "found it? " + ( hasCronostar ? "true" : "false" ) + "\n" );
+	if( hasCronostar ) {
+		for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+			if( scourgeGame.getMission().getCreature(i).getMonsterType() == "Spawn of Arcanex" ) {
+				scourgeGame.getMission().getCreature(i).startConversation();
+				break;
+			}
+		}
 	}
 }

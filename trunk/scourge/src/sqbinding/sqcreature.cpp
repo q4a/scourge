@@ -70,6 +70,8 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "string", "getDeity", SqCreature::_getDeity, 0, 0, "Return the character's chosen deity's name." },
   { "Creature", "getTargetCreature", SqCreature::_getTargetCreature, 0, 0, "Return the creature's target creature of NULL if there isn't one." },
   { "Item", "getItemAtLocation", SqCreature::_getItemAtLocation, SQ_MATCHTYPEMASKSTRING, "xn", "Return the item currently equipped at the specified location. (location is left-hand, right-hand, etc.)" },
+	{ "int", "getInventoryCount", SqCreature::_getInventoryCount, 0, 0, "Return the number of inventory items in this character's backpack." },
+	{ "Item", "getInventoryItem", SqCreature::_getInventoryItem, SQ_MATCHTYPEMASKSTRING, "xn", "Return the inventory item at this index in this character's backpack." },
 
   { "void", "startConversation", SqCreature::_startConversation, 0, 0, "Start a conversation with this creature." },
 	{ "void", "startConversationAbout", SqCreature::_startConversationAbout, 0, 0, "Start a conversation with this creature about a specific topic." },
@@ -497,6 +499,24 @@ int SqCreature::_getItemAtLocation( HSQUIRRELVM vm ) {
   } else {
     sq_pushnull( vm );
   }
+  return 1;
+}
+
+int SqCreature::_getInventoryItem( HSQUIRRELVM vm ) {
+	GET_INT( index )
+	GET_OBJECT(Creature*)
+	Item *item = object->getInventory( index );
+  if( item ) {
+    sq_pushobject( vm, *(SqBinding::binding->itemMap[ item ]) );
+  } else {
+    sq_pushnull( vm );
+  }
+  return 1;
+}
+
+int SqCreature::_getInventoryCount( HSQUIRRELVM vm ) {
+	GET_OBJECT(Creature*)
+	sq_pushinteger( vm, object->getInventoryCount() );
   return 1;
 }
 

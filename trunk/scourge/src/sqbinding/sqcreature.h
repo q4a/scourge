@@ -79,6 +79,8 @@ public:
 	static int _startConversationAbout( HSQUIRRELVM vm );
   static int _getTargetCreature( HSQUIRRELVM vm );
   static int _getItemAtLocation( HSQUIRRELVM vm );
+	static int _getInventoryItem( HSQUIRRELVM vm );
+	static int _getInventoryCount( HSQUIRRELVM vm );
 
   // setters
   static int _setLevel( HSQUIRRELVM vm );
