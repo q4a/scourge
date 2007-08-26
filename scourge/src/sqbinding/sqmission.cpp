@@ -38,6 +38,7 @@ ScriptClassMemberDecl SqMission::members[] = {
   { "int", "getCreatureCount", SqMission::_getCreatureCount, 0, 0, "Get the number of monsters and npc-s on this level." },
   { "Creature", "getCreature", SqMission::_getCreature, 0, 0, "Return a reference to a monster or npc on this level. These references are only valid while on this map." },
 	{ "void", "replaceCreature", SqMission::_replaceCreature, 0, 0, "Replace the given creature with a new one of the given type on the map." },
+	{ "Creature", "addCreature", SqMission::_addCreature, 0, 0, "Create a new creature from the given template. Return a reference to the monster or npc created. It is valid while on this map." },
   { "int", "getItemCount", SqMission::_getItemCount, 0, 0, "Get the number of items on this level." },
   { "Item", "getItem", SqMission::_getItem, 0, 0, "Returns a reference to an item on this level. These references are only valid while on this map." },
   { "Item", "getCurrentWeapon", SqMission::_getCurrentWeapon, 0, 0, "Get the item currently used to attack the player. (or null if by hands or spell.)" },
@@ -100,6 +101,13 @@ int SqMission::_replaceCreature( HSQUIRRELVM vm ) {
 	GET_OBJECT( Creature* )
 	Creature *replacement = SqBinding::sessionRef->replaceCreature( object, newCreatureType );
 	sq_pushobject( vm, *(SqBinding::binding->creatureMap[ replacement ]) );
+	return 1;
+}
+
+int SqMission::_addCreature( HSQUIRRELVM vm ) {
+	GET_STRING( creatureType, 200 )
+	Creature *c = SqBinding::sessionRef->addCreatureFromScript( creatureType );
+	sq_pushobject( vm, *(SqBinding::binding->creatureMap[ c ]) );
 	return 1;
 }
 
