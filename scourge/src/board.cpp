@@ -653,27 +653,29 @@ void Mission::reset() {
     Monster *monster = i->first;
     creatures[ monster ] = false;
   }
-  deleteItemMonsterInstances();
+  deleteItemMonsterInstances( true );
 }
 
-void Mission::deleteItemMonsterInstances() {
+void Mission::deleteItemMonsterInstances( bool removeMissionItems ) {
   // also remove mission objects from party's inventory
-  for(map<Item*, RpgItem*>::iterator i=itemInstanceMap.begin(); i!=itemInstanceMap.end(); ++i) {
-    Item *item = i->first;
-    bool itemRemoved = false;
-    for(int i = 0; i < board->getSession()->getParty()->getPartySize(); i++) {
-      Creature *c = board->getSession()->getParty()->getParty(i);
-      for( int t = 0; t < c->getInventoryCount(); t++ ) {
-        if( c->getInventory( t ) == item ) {
-          //cerr << "Removing mission item: " << item->getRpgItem()->getName() << " from " << c->getName() << endl;
-          c->removeInventory( t );
-          itemRemoved = true;
-          break;
-        }
-      }
-      if( itemRemoved ) break;
-    }
-  }
+	if( removeMissionItems ) {
+		for(map<Item*, RpgItem*>::iterator i=itemInstanceMap.begin(); i!=itemInstanceMap.end(); ++i) {
+			Item *item = i->first;
+			bool itemRemoved = false;
+			for(int i = 0; i < board->getSession()->getParty()->getPartySize(); i++) {
+				Creature *c = board->getSession()->getParty()->getParty(i);
+				for( int t = 0; t < c->getInventoryCount(); t++ ) {
+					if( c->getInventory( t ) == item ) {
+						//cerr << "Removing mission item: " << item->getRpgItem()->getName() << " from " << c->getName() << endl;
+						c->removeInventory( t );
+						itemRemoved = true;
+						break;
+					}
+				}
+				if( itemRemoved ) break;
+			}
+		}
+	}
   itemInstanceMap.clear();
   monsterInstanceMap.clear();
 }

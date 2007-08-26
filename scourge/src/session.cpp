@@ -244,7 +244,7 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
   return item;
 }
 
-Creature *Session::addCreatureFromScript( char *creatureType ) {
+Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, int *fx, int *fy ) {
 	Monster *monster = Monster::getMonsterByName( creatureType );
 	if( !monster ) {
 		cerr << "*** Error: no monster named " << creatureType << endl;
@@ -262,6 +262,10 @@ Creature *Session::addCreatureFromScript( char *creatureType ) {
 	for( int i = 0; i < replacement->getInventoryCount(); i++ ) {
 		getSquirrel()->registerItem( replacement->getInventory( i ) );
 	}
+
+	replacement->findPlace( cx, cy, fx, fy );
+	replacement->cancelTarget();
+
 	return replacement;
 }
 
@@ -273,12 +277,9 @@ Creature *Session::replaceCreature( Creature *creature, char *newCreatureType ) 
 	creature->moveTo( -1, -1, 0 ); // remove its marker
 	creature->setStateMod( StateMod::dead, true ); // make sure it doesn't move
 
-	Creature *replacement = addCreatureFromScript( newCreatureType );
+	int fx, fy;
+	Creature *replacement = addCreatureFromScript( newCreatureType, cx, cy, &fx, &fy );
 	if( replacement ) {
-		int fx, fy;
-		replacement->findPlace( cx, cy, &fx, &fy );
-		replacement->cancelTarget();
-	
 		getMap()->startEffect( fx, fy, 1, 
 													 Constants::EFFECT_DUST, 
 													 (Constants::DAMAGE_DURATION * 4), 
