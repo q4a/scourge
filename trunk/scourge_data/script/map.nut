@@ -555,7 +555,7 @@ function outdoorMapCompleted( mapName ) {
 		scourgeGame.getMission().setMapPosition( 300, 300, 12, "TREE-EMERIL-TOP" );
 
 		// add creature for spawn of arcanex (need in order to converse w. tree)
-		scourgeGame.getMission().addCreature( 5, 5, 0, "Spawn of Arcanex" )
+		scourgeGame.getMission().addCreature( 5, 5, 0, "Spawn of Arcanex" );
 		
 		// add decoration around tree
 	}
@@ -580,7 +580,9 @@ function handleTreeOfEmeril() {
 	print( "found it? " + ( hasCronostar ? "true" : "false" ) + "\n" );
 	if( hasCronostar ) {
 		for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+			print( "\tcreature=" + scourgeGame.getMission().getCreature(i).getMonsterType() + "\n" );
 			if( scourgeGame.getMission().getCreature(i).getMonsterType() == "Spawn of Arcanex" ) {
+				print( "\t\tstarting conversation!\n" );
 				scourgeGame.getMission().getCreature(i).startConversation();
 				break;
 			}

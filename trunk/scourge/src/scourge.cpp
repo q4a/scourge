@@ -748,10 +748,10 @@ void Scourge::cleanUpAfterMission() {
 	Projectile::resetProjectiles();
 
 	// delete the mission level's item and monster instances
-	// This will also delete mission items from inventory. The mission will
-	// still succeed.
+	// This will also delete mission items from inventory when going to HQ. 
+	// The mission will still succeed.
 	if( session->getCurrentMission() )
-		session->getCurrentMission()->deleteItemMonsterInstances();
+		session->getCurrentMission()->deleteItemMonsterInstances( nextMission == -1 ? true : false );
 
 	session->deleteCreaturesAndItems(true);
 }

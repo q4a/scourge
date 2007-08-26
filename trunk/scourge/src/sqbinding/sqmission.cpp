@@ -106,7 +106,11 @@ int SqMission::_replaceCreature( HSQUIRRELVM vm ) {
 
 int SqMission::_addCreature( HSQUIRRELVM vm ) {
 	GET_STRING( creatureType, 200 )
-	Creature *c = SqBinding::sessionRef->addCreatureFromScript( creatureType );
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	int fx, fy;
+	Creature *c = SqBinding::sessionRef->addCreatureFromScript( creatureType, x, y, &fx, &fy );
 	sq_pushobject( vm, *(SqBinding::binding->creatureMap[ c ]) );
 	return 1;
 }

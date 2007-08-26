@@ -177,7 +177,7 @@ public:
     return ( monsterInstanceMap.find( (Creature*)creature ) != monsterInstanceMap.end() );
   }
 
-  void deleteItemMonsterInstances();
+  void deleteItemMonsterInstances( bool removeMissionItems );
 
   inline bool isCompleted() { return completed; }
   inline void setCompleted( bool b ) { completed = b; }
