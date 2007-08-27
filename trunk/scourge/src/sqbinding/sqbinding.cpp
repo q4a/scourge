@@ -298,6 +298,9 @@ void SqBinding::initLevelObjects() {
   if( SQ_FAILED( instantiateClass( _SC( mission->getClassName() ), &refMission ) ) ) {
     cerr << "Failed to instantiate mission object." << endl;
   }
+}
+
+bool SqBinding::startLevel() {
 
   // create the creatures of the level
   if( DEBUG_SQUIRREL ) cerr << "Creating level's creatures:" << endl;  
@@ -310,9 +313,7 @@ void SqBinding::initLevelObjects() {
   for( int i = 0; i < session->getItemCount(); i++ ) {
 		registerItem( session->getItem( i ) );
   }
-}
 
-bool SqBinding::startLevel() {
   bool ret = callMapMethod( "enterMap", session->getMap()->getName() );
   return ret;
 }     
