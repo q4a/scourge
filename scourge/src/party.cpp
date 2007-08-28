@@ -268,12 +268,22 @@ void Party::toggleRound() {
     session->getGameAdapter()->toggleRoundUI(startRound);  
 }
 
+/**
+ * Sets the target creature for the party.
+ * As far as finding a path toward the target is concerned, this assumes that each party member is
+ * using their preferred weapon. This path will be recomputed during battle anyway if this is not true.
+ **/
 void Party::setTargetCreature(Creature *creature) { 
+  float range;
   if(player_only) {
-    player->setTargetCreature(creature, true);
+    range = MIN_DISTANCE;
+    if(player->getPreferredWeapon() > -1) range = player->getItemAtLocation( player->getPreferredWeapon() )->getRange();
+    player->setTargetCreature(creature, true, range);
   } else {
     for(int i = 0; i < getPartySize(); i++) {
-      party[i]->setTargetCreature(creature, true); 
+      range = MIN_DISTANCE;
+      if(party[i]->getPreferredWeapon() > -1) range = party[i]->getItemAtLocation( party[i]->getPreferredWeapon() )->getRange();
+      party[i]->setTargetCreature(creature, true, range); 
     }
   }
 }

@@ -358,6 +358,7 @@ void Battle::initTurnStep( bool callScript ) {
     if(nextTurn > 0) weaponWait = nextTurn;
     nextTurn = 0;
     if(debugBattle) cerr << "\tname=" << creature->getName() << " Distance=" << dist << " range=" << range << " wait=" << weaponWait << endl;
+  
   }
 }
 
@@ -440,7 +441,7 @@ void Battle::stepCloserToTarget() {
 
       // Try to move to the target creature.
       // For monsters, if this is not possible, select a new target.
-      if( !creature->setSelCreature( creature->getTargetCreature(), false, range) &&
+      if( !creature->setSelCreature( creature->getTargetCreature(), range, false) &&
           IS_AUTO_CONTROL( creature ) ) {
         creature->cancelTarget();
         creature->decideMonsterAction();
@@ -455,7 +456,7 @@ void Battle::stepCloserToTarget() {
               creature->getSelY() == creature->getTargetY())) {
     if(debugBattle) cerr << "\t\t\tto target location: " << creature->getTargetX() <<
       creature->getTargetY() << endl;
-    creature->setSelCreature(creature->getTargetCreature(), false, range);
+    creature->setSelCreature(creature->getTargetCreature(), range, false);
   }
 
   // wait for animation to end
@@ -494,7 +495,7 @@ void Battle::stepCloserToTarget() {
     // guess a new path (once in a while)
     if( 1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
       if(creature->getTargetCreature()) //new path to the creature, if we have one targetted
-        creature->setSelCreature( creature->getTargetCreature(), false, range);
+        creature->setSelCreature( creature->getTargetCreature(), range,  false);
       else //new path to our selected location
         creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
     }
@@ -586,7 +587,7 @@ bool Battle::moveCreature() {
 	        // guess a new path
 	        if( 1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
 	          if(creature->getTargetCreature()) //new path to the creature, if we have one targetted
-                    creature->setSelCreature( creature->getTargetCreature(), false, range);
+                    creature->setSelCreature( creature->getTargetCreature(), range, false);
                   else //new path to our selected location
                     creature->setSelXY( creature->getSelX(), creature->getSelY(), false );
 	        }
@@ -662,7 +663,7 @@ bool Battle::selectNewTarget() {
     // select a new target
     Creature *target = getAvailableTarget();
     if (target) {
-      if(debugBattle) cerr << "\tSelected new target: " << target->getName() << endl;
+      if(debugBattle) cerr << "\tSelected new target: " << target->getName() << ", with range " << range << endl;
       creature->setTargetCreature(target, true, range);
     } else {
       creature->setTargetCreature(NULL);
@@ -1433,7 +1434,7 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
   if( !sameTarget ) creature->setTargetCreature( tmp );
   
   // out of range
-  if( ( !item || item->getRange() < dist ) && dist > MIN_DISTANCE ) {
+  if( ( !item || item->getRange() <= dist ) && dist > MIN_DISTANCE ) {
     if( sameTarget ) {
       color->r = 0.5f;
       color->g = 0.2f;

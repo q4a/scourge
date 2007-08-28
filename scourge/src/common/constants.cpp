@@ -496,7 +496,29 @@ void swap(unsigned char & a, unsigned char & b) {
 
 float Constants::distance(float x1, float y1, float w1, float h1,
 					 float x2, float y2, float w2, float h2) {
-  // the distance between their centers
+  //distance between rectangles with x,y and dimensions set to integers
+  int xa = toint(x1);
+  int ya = toint(y1);
+  int wa = toint(w1);
+  int ha = toint(h1);
+
+  int xb = toint(x2);
+  int yb = toint(y2);
+  int wb = toint(w2);
+  int hb = toint(h2);
+  
+  float dy = 0;
+  //do the rectangles *not* overlap on the y axis?
+  if(ya+ha <= yb || yb+hb <= ya)
+    dy = min(abs(ya+ha-yb), abs(yb+hb-ya));
+  
+  //same for the x axis
+  float dx = 0;
+  //do the rectangles *not* overlap on the x axis?
+  if(xa+wa <= xb || xb+wb <= xa)
+    dx = min(abs(xa+wa-xb), abs(xb+wb-xa));
+  return sqrt(dx*dx + dy*dy);
+ /* // the distance between their centers
   float rx1 = x1 + (w1 / 2.0f);
   float rx2 = x2 + (w2 / 2.0f);
   float ry1 = y1 - (h1 / 2.0f);
@@ -511,8 +533,8 @@ float Constants::distance(float x1, float y1, float w1, float h1,
   float d2 = sqrt(((w2 / 2.0f) * (w2 / 2.0f)) +
 				  ((h2 / 2.0f) * (h2 / 2.0f)));
 
-  float ret = d - (d1 + d2);
-  return (ret < 0 ? 0 : ret);
+  float ret = d - (d1 + d2);*/
+ // return (ret < 0 ? 0 : ret);
 }
 
 void Constants::checkTexture(char *message, int w, int h) {
