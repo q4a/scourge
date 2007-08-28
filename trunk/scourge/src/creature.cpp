@@ -555,7 +555,6 @@ bool Creature::move(Uint16 dir) {
 void Creature::setTargetCreature( Creature *c, bool findPath, float range) { 
   targetCreature = c; 
   if( findPath ) {
-    
     if( !setSelCreature( c , range) ) {
       // FIXME: should mark target somehow. Path alg. cannot reach it; blocked by something.
       // Keep the target creature anyway.
@@ -709,7 +708,7 @@ bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) 
  * Use this instead of setSelXY when targetting creatures so that it will check all locations
  * occupied by large creatures.
  **/
-bool Creature::setSelCreature( Creature* creature, bool cancelIfNotPossible, float range, int maxNodes ) { 
+bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNotPossible,  int maxNodes ) { 
   return findPathToCreature( creature, cancelIfNotPossible, maxNodes,
                  ( session->getParty()->getPlayer() == this &&
                   !session->getGameAdapter()->inTurnBasedCombat() ), range);
@@ -814,15 +813,7 @@ bool Creature::findPathToCreature( Creature* creature, bool cancelIfNotPossible,
 
   // Does the path lead close enough to the destination?
   bool ret = isPathTowardTargetCreature(distance);
- /* if( bestPath.size() > 1 ) {
-    Location last = bestPath[ bestPath.size() - 1 ];
-    int cx = toint(creature->getX());
-    int cy = toint(creature->getY());
-    ret = last.x >= cx && last.y >= cy &&
-          last.x < cx + creature->getShape()->getWidth() &&
-          last.y < cy + creature->getShape()->getDepth();*/
 
-    //if(!creature->isNpc()) cout << "Targetting an enemy and failed = " << ret << " because " << toint(creature->getX()) << "," << toint(creature->getY()) << " is not near to " << last.x << "," << last.y  << "\n" << "w/d : " << creature->getShape()->getWidth() << " / " << creature->getShape()->getDepth() << "\n";
     /**
      * For pc-s cancel the move.
      */
@@ -847,7 +838,6 @@ bool Creature::findPathToCreature( Creature* creature, bool cancelIfNotPossible,
       playCharacterSound( GameAdapter::COMMAND_SOUND );
     }
   }
-  
   return ret;
 }
 
@@ -2197,10 +2187,8 @@ bool Creature::useOffensiveSpell( Spell *spell, float dist, Creature *possibleTa
 
 float Creature::getDistanceToSel() {
 	if( selX > -1 && selY > -1 ) {
-		return Constants::distance( getX(),  getY(), 
-																getShape()->getWidth(), getShape()->getDepth(),
-																selX, selY,
-																getShape()->getWidth(), getShape()->getDepth());
+		return Constants::distance( getX(),  getY(), getShape()->getWidth(), getShape()->getDepth(),
+                                            selX, selY,1,1);
 	} else {
 		return 0;
 	}
@@ -3066,7 +3054,7 @@ bool Creature::isPathTowardTargetCreature(float range) {
     return getDistance(getTargetCreature()) < range;
   }
   Location pos = bestPath[ bestPath.size() - 1 ];
-   return Constants::distance((float)pos.x, (float)pos.y, getShape()->getWidth(),getShape()->getDepth(),
+   return Constants::distance(pos.x, pos.y, getShape()->getWidth(),getShape()->getDepth(),
                              getTargetCreature()->getX(),getTargetCreature()->getY(),
                              getTargetCreature()->getShape()->getWidth(),getTargetCreature()->getShape()->getDepth()) < range;
 }

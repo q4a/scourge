@@ -244,7 +244,8 @@ class Creature : public RenderedCreature {
   inline int getTargetX() { if(targetCreature) return toint(targetCreature->getX()); else return targetX; }
   inline int getTargetY() { if(targetCreature) return toint(targetCreature->getY()); else return targetY; }
   inline int getTargetZ() { if(targetCreature) return toint(targetCreature->getZ()); else return targetZ; }
-  void setTargetCreature( Creature *c, bool findPath=false , float range=0);
+
+  void setTargetCreature( Creature *c, bool findPath=false , float range=MIN_DISTANCE); 
   inline Creature *getTargetCreature() { return targetCreature; }
   inline void setTargetLocation(int x, int y, int z) { targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z; }
   inline void getTargetLocation(int *x, int *y, int *z) { *x = targetX; *y = targetY; *z = targetZ; }
@@ -296,7 +297,7 @@ class Creature : public RenderedCreature {
    * Returns true if the move is possible, false otherwise.
    */
   bool setSelXY( int x, int y, bool cancelIfNotPossible=false, int maxNodes=100 );  
-  bool setSelCreature( Creature* creature, bool cancelIfNotPossible=false, float range=0, int maxNodes=100); 
+  bool setSelCreature( Creature* creature, float range, bool cancelIfNotPossible=false, int maxNodes=100); 
 
   inline int getSelX() { return selX; }
   inline int getSelY() { return selY; }

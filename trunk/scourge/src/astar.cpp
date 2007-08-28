@@ -42,7 +42,7 @@ SingleNodeGoal::SingleNodeGoal(int x, int y){
 SingleNodeGoal::~SingleNodeGoal(){}
 
 bool SingleNodeGoal::fulfilledBy( CPathNode * node){
-  return (node->x == x) && ((*node).y == y);
+  return (node->x == x) && (node->y == y);
 }
 
 /**
@@ -56,7 +56,7 @@ GetCloseGoal::GetCloseGoal(Creature* searcher, Creature* target, float distance)
 GetCloseGoal::~GetCloseGoal(){}
 
 bool GetCloseGoal::fulfilledBy( CPathNode * node){
-  return Constants::distance((float)node->x,(float)node->y,
+  return Constants::distance(node->x,node->y,
                              searcher->getShape()->getWidth(),searcher->getShape()->getDepth(),
                              target->getX(),target->getY(),
                              target->getShape()->getWidth(),target->getShape()->getDepth())  < distance;
