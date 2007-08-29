@@ -284,7 +284,11 @@ public:
 };
 
 class Constants {
+private:
+	static int maxMissionId;
 public:
+
+	static inline int getNextMissionId() { return maxMissionId++; }
 
   // inventory locations
   static const int INVENTORY_HEAD = 1;

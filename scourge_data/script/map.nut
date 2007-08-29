@@ -531,7 +531,14 @@ function noop( s ) {
 
 function initChapter11() {
 	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
-		scourgeGame.showTextMessage( _( "A baleful wind blows bringing the scent of slow vegetative decay. Off in the distance you glance a mighty tree, standing in the center of a barren plane of ashen stone.||No other plants dare intrude upon its territory and no animal life stirs near its accursed branches.||Above, even the sky seems to darken as if the plant stood like a tombstone, marking the arrival of a pending doom." ) );
+		scourgeGame.showTextMessage( _( "A baleful wind blows bringing the scent of slow vegetative decay. Off in the distance you glance a mighty tree, standing in the center of a barren plane of ashen stone.||No other plants dare intrude upon its territory and no animal life stirs near its accursed branches.||Above, the clouds darken the sky as if to signal the long awaited fulfillment of a pending doom." ) );
+		
+		// Add creature for spawn of arcanex (need in order to converse w. tree)
+		// This has to be done each time the map is entered b/c npc-s aren't saved with the map.
+		print( "Adding creature: count=" + scourgeGame.getMission().getCreatureCount() );
+		scourgeGame.getMission().addCreature( 5, 5, 0, "Spawn of Arcanex" );
+		print( "\tafter: count=" + scourgeGame.getMission().getCreatureCount() );
+
 	}
 }
 
@@ -553,9 +560,6 @@ function outdoorMapCompleted( mapName ) {
 		// add the tree of emeril
 		scourgeGame.getMission().setMapPosition( 312, 288, 0, "TREE-EMERIL-TRUNK" );
 		scourgeGame.getMission().setMapPosition( 300, 300, 12, "TREE-EMERIL-TOP" );
-
-		// add creature for spawn of arcanex (need in order to converse w. tree)
-		scourgeGame.getMission().addCreature( 5, 5, 0, "Spawn of Arcanex" );
 		
 		// add decoration around tree
 	}

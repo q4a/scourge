@@ -263,7 +263,11 @@ Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, in
 		getSquirrel()->registerItem( replacement->getInventory( i ) );
 	}
 
-	replacement->findPlace( cx, cy, fx, fy );
+	if( fx && fy ) {
+		replacement->findPlace( cx, cy, fx, fy );
+	} else {
+		replacement->moveTo( cx, cy, 0 );
+	}
 	replacement->cancelTarget();
 
 	return replacement;

@@ -109,8 +109,7 @@ int SqMission::_addCreature( HSQUIRRELVM vm ) {
 	GET_INT( z )
 	GET_INT( y )
 	GET_INT( x )
-	int fx, fy;
-	Creature *c = SqBinding::sessionRef->addCreatureFromScript( creatureType, x, y, &fx, &fy );
+	Creature *c = SqBinding::sessionRef->addCreatureFromScript( creatureType, x, y );
 	sq_pushobject( vm, *(SqBinding::binding->creatureMap[ c ]) );
 	return 1;
 }

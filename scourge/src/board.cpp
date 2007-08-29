@@ -539,6 +539,7 @@ Mission::Mission( Board *board, int level, int depth,
                   char *music,
                   char *success, char *failure,
                   char *mapName, char mapType ) {
+	this->missionId = Constants::getNextMissionId();
   this->board = board;
   this->level = level;
   this->depth = depth;
@@ -581,25 +582,18 @@ Mission::~Mission() {
   itemList.clear();
   creatures.clear();
   creatureList.clear();
-  itemInstanceMap.clear();
   monsterInstanceMap.clear();
 }
 
 bool Mission::itemFound(Item *item) {
-//  cerr << "completed=" << completed << endl;
   if( !completed ) {
-    //cerr << "\titemInstanceMap.size()=" << itemInstanceMap.size() << endl;
-    if( itemInstanceMap.find( item ) != itemInstanceMap.end() ) {
-      //cerr << "\t111" << endl;
-      RpgItem *rpgItem = itemInstanceMap[ item ];
-      if( items.find( rpgItem ) != items.end() ) {
-        //cerr << "\t222" << endl;
-        items[ rpgItem ] = true;
-        checkMissionCompleted();
-      }
-      return isCompleted();
-    }
-  }
+		if( item->getMissionId() == getMissionId() ) {
+			RpgItem *rpgItem = itemList[ item->getMissionObjectiveIndex() ];
+			items[ rpgItem ] = true;
+			checkMissionCompleted();
+			return isCompleted();
+		}
+	}
   return false;
 }
 
@@ -657,26 +651,17 @@ void Mission::reset() {
 }
 
 void Mission::deleteItemMonsterInstances( bool removeMissionItems ) {
-  // also remove mission objects from party's inventory
+  // also remove mission objects from party's inventory (is this needed?)
 	if( removeMissionItems ) {
-		for(map<Item*, RpgItem*>::iterator i=itemInstanceMap.begin(); i!=itemInstanceMap.end(); ++i) {
-			Item *item = i->first;
-			bool itemRemoved = false;
-			for(int i = 0; i < board->getSession()->getParty()->getPartySize(); i++) {
-				Creature *c = board->getSession()->getParty()->getParty(i);
-				for( int t = 0; t < c->getInventoryCount(); t++ ) {
-					if( c->getInventory( t ) == item ) {
-						//cerr << "Removing mission item: " << item->getRpgItem()->getName() << " from " << c->getName() << endl;
-						c->removeInventory( t );
-						itemRemoved = true;
-						break;
-					}
+		for(int i = 0; i < board->getSession()->getParty()->getPartySize(); i++) {
+			Creature *c = board->getSession()->getParty()->getParty(i);
+			for( int t = 0; t < c->getInventoryCount(); t++ ) {
+				if( c->getInventory( t )->getMissionId() == getMissionId() ) {
+					c->removeInventory( t );
 				}
-				if( itemRemoved ) break;
 			}
 		}
 	}
-  itemInstanceMap.clear();
   monsterInstanceMap.clear();
 }
 
@@ -1179,7 +1164,7 @@ void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
 MissionInfo *Mission::save() {
 	MissionInfo *info = (MissionInfo*)malloc(sizeof(MissionInfo));
   info->version = PERSIST_VERSION;
-  strncpy( (char*)info->templateName, getTemplateName(), 79);
+  strncpy( (char*)info->templateName, ( isStoryLine() ? "storyline" : getTemplateName() ), 79);
   info->templateName[79] = 0;
 	strcpy( (char*)info->mapName, savedMapName );
 	info->level = getLevel();
@@ -1197,19 +1182,53 @@ MissionInfo *Mission::save() {
 		info->monsterName[i][254] = '\0';
 		info->monsterDone[i] = ( creatures[ creatureList[i] ] ? 1 : 0 );
 	}
+	info->missionId = getMissionId();
 	return info;
 }
 
 Mission *Mission::load( Session *session, MissionInfo *info ) {
 	// find the template
-	MissionTemplate *missionTemplate = session->getBoard()->
-		findTemplateByName( (char*)info->templateName );
-	if( !missionTemplate ) {
-		cerr << "Can't find template for name: " << info->templateName << endl;
-		return NULL;
+	Mission *mission;
+	if( !strcmp( (char*)info->templateName, "storyline" ) ) {
+		mission = session->getBoard()->getCurrentStorylineMission();
+		cerr << "Loading storyling mission. chapter index=" << session->getBoard()->getStorylineIndex() << " - " << session->getBoard()->getStorylineTitle() << endl;
+		mission->loadStorylineMission( info );
+	} else {
+		MissionTemplate *missionTemplate = session->getBoard()->
+			findTemplateByName( (char*)info->templateName );
+		if( !missionTemplate ) {
+			cerr << "Can't find template for name: " << info->templateName << endl;
+			return NULL;
+		}
+		cerr << "Loading mission with template: " << (char*)(info->templateName) << " map: " << info->mapName << endl;
+		mission = missionTemplate->createMission( session, info->level, info->depth, info );
 	}
-	cerr << "Loading mission with template: " << (char*)(info->templateName) << " map: " << info->mapName << endl;
-	return missionTemplate->createMission( session, info->level, info->depth, info );
+	mission->setMissionId( info->missionId );
+	return mission;
+}
+
+void Mission::loadStorylineMission( MissionInfo *info ) {
+	for( int i = 0; i < (int)info->itemCount; i++ ) {
+		char *p = (char*)info->itemName[i];
+		for( unsigned int t = 0; t < itemList.size(); t++ ) {
+			RpgItem *rpgItem = itemList[t];
+			if( !strcmp( rpgItem->getName(), p ) ) {
+				items[rpgItem] = ( info->itemDone[i] ? true : false );
+				break;
+			}
+		}
+	}
+	for( int i = 0; i < (int)info->monsterCount; i++ ) {
+		char *p = (char*)info->monsterName[i];
+		for( unsigned int t = 0; t < creatureList.size(); t++ ) {
+			Monster *monster = creatureList[t];
+			if( !strcmp( monster->getType(), p ) ) {
+				creatures[monster] = ( info->monsterDone[i] ? true : false );
+				break;
+			}
+		}
+	}
+	setCompleted( info->completed ? true : false );
 }
 
 NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype ) {

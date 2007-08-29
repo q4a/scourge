@@ -318,7 +318,8 @@ void TerrainGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal) {
 			for(int i = startIndex; i < endIndex; i++) {
 				RpgItem *rpgItem = mission->getItem( i );
 				Item *item = scourge->getSession()->newItem( rpgItem, mission->getLevel() );
-				mission->addItemInstance( item, rpgItem );
+				//mission->addItemInstance( item, rpgItem );
+				item->setMissionObjectInfo( mission->getMissionId(), i );
 				item->setBlocking(true); // don't let monsters pick this up
 				Item *pedestal = scourge->getSession()->newItem(RpgItem::getItemByName("Pedestal"));
 				int x, y;

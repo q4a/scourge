@@ -91,7 +91,6 @@ private:
   std::vector<RpgItem*> itemList;
   std::map<Monster*, bool> creatures;
   std::vector<Monster*> creatureList;
-  std::map<Item*,RpgItem*> itemInstanceMap;
   std::map<Creature*,Monster*> monsterInstanceMap;
   bool completed;
   bool storyLine;
@@ -99,6 +98,7 @@ private:
   int mapX, mapY;
   char special[80];
 	char templateName[80];
+	int missionId;
 public:
 
 #define INTRO_PHRASE "_INTRO_"
@@ -137,7 +137,9 @@ public:
            char *success, char *failure,
            char *mapName, char mapType='C' );
   ~Mission();
-
+	
+	inline int getMissionId() { return missionId; }
+	inline void setMissionId( int n ) { this->missionId = n; }
 	inline char *getIntroDescription() { return introDescription; }
 	inline int getChapter() { return chapter; }
 	inline void setChapter( int n ) { chapter = n; }
@@ -161,16 +163,8 @@ public:
     itemList.push_back( item );
   }
 
-  inline void addItemInstance( Item *item, RpgItem *rpgItem ) {
-    itemInstanceMap[ item ] = rpgItem;
-  }
-
   inline void addCreatureInstanceMap( Creature *creature, Monster *monster ) {
     monsterInstanceMap[ creature ] = monster;
-  }
-
-  inline bool isMissionItem( Item *item ) {
-    return ( itemInstanceMap.find( item ) != itemInstanceMap.end() );
   }
 
   inline bool isMissionCreature( RenderedCreature *creature ) {
@@ -212,6 +206,7 @@ public:
 
 	MissionInfo *save();
 	static Mission *load( Session *session, MissionInfo *info );
+	void loadStorylineMission( MissionInfo *info );
 
 private:
 	//static void addWanderingHeroes( GameAdapter *adapter );
@@ -293,6 +288,7 @@ public:
   void initMissions();
   void reset();
 
+	inline Mission *getCurrentStorylineMission() { return storylineMissions[storylineIndex]; }
 	inline char *getStorylineTitle() { return storylineMissions[storylineIndex]->getDisplayName(); }
   inline int getStorylineIndex() { return storylineIndex; }
   void setStorylineIndex( int n );

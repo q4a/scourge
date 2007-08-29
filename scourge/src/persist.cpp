@@ -572,7 +572,8 @@ void Persist::saveItem( File *file, ItemInfo *info ) {
   for(int i = 0; i < Skill::SKILL_COUNT; i++) {
     file->write( &(info->skillBonus[i]) );
   }
-  file->write( &(info->mission) );
+  file->write( &(info->missionId) );
+	file->write( &(info->missionObjectiveIndex) );
 }
 
 ItemInfo *Persist::loadItem( File *file ) {
@@ -607,11 +608,17 @@ ItemInfo *Persist::loadItem( File *file ) {
 	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 		file->read( &(info->skillBonus[i]) );
 	}
-  if( info->version >= 36 ) {
-    file->read( &(info->mission) );
-  } else {
-    info->mission = 0;
+  if( info->version == 36 || info->version == 37 ) {
+		// just read and forget. this field is not used anymore.
+		Uint8 mission;
+    file->read( &(mission) );
   }
+	if( info->version >= 38 ) {
+		file->read( &(info->missionId) );
+		file->read( &(info->missionObjectiveIndex) );
+	} else {
+		info->missionId = info->missionObjectiveIndex = 0;
+	}
   return info;
 }
 
@@ -672,6 +679,7 @@ void Persist::saveMission( File *file, MissionInfo *info ) {
 		file->write( info->monsterName[ i ], 255 );
 		file->write( &(info->monsterDone[ i ]) );
 	}
+	file->write( &(info->missionId) );
 }
 
 MissionInfo *Persist::loadMission( File *file ) {
@@ -695,6 +703,14 @@ MissionInfo *Persist::loadMission( File *file ) {
 	for( int i = 0; i < (int)info->monsterCount; i++ ) {
 		file->read( info->monsterName[ i ], 255 );
 		file->read( &(info->monsterDone[ i ]) );
+	}
+	if( info->version >= 38 ) {
+		file->read( &(info->missionId) );
+	} else {
+		info->missionId = Constants::getNextMissionId();
+		cerr << "*** warning: mission file has no id. \
+			Likely mission objects will not be found. \
+			You should redo this mission." << endl;
 	}
   return info;
 }
