@@ -21,6 +21,7 @@ using namespace std;
 
 const char *Constants::localhost = "localhost";
 const char *Constants::adminUserName = "admin";
+int Constants::maxMissionId = 1;
 
 // assign the data dir
 //char rootDir[300] = DATA_DIR;

@@ -93,7 +93,8 @@ ItemInfo *Item::save() {
     info->skillBonus[i] = this->getSkillBonus(i);
   }
 
-  info->mission = (Uint8)( session->getCurrentMission() && session->getCurrentMission()->isMissionItem( this ) ? 1 : 0 );
+	info->missionId = getMissionId();
+	info->missionObjectiveIndex = getMissionObjectiveIndex();
   return info;
 }
 
@@ -171,7 +172,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
     if(info->skillBonus[i]) item->skillBonus[i] = info->skillBonus[i];
   }
 
-  item->savedMissionObjective = info->mission;
+	item->setMissionObjectInfo( (int)info->missionId, (int)info->missionObjectiveIndex );
 
 	// re-describe the item. describeMagic is called from commonInit at
 	// which point magicLevel can be 0, so it's important to re-describe
@@ -264,25 +265,19 @@ void Item::getDetailedDescription(char *s, bool precise){
             getLevel(), 
             ( isCursed() && getShowCursed() ? _( "*Cursed* " ) : "" ),
             (precise ? itemName : rpgItem->getShortDesc()),
-            (session->getCurrentMission() && 
-             session->getCurrentMission()->isMissionItem( this ) ? 
-             _( " *Mission*" ) : ""));
+            ( missionId > 0 ? _( " *Mission*" ) : ""));
   } else if(type == RpgItem::SCROLL) {
     sprintf(s, "(L:%d) %s%s%s", 
             getLevel(), 
             ( isCursed() && getShowCursed() ? _( "*Cursed* " ) : "" ),
             itemName,
-            (session->getCurrentMission() && 
-             session->getCurrentMission()->isMissionItem( this ) ? 
-             _( " *Mission*" ) : ""));
+            ( missionId > 0 ? _( " *Mission*" ) : ""));
   } else {
     sprintf(s, "(L:%d) %s%s%s", 
             getLevel(), 
             ( isCursed() && getShowCursed() ? _( "*Cursed* " ) : "" ),
             (precise ? itemName : rpgItem->getShortDesc()),
-            (session->getCurrentMission() && 
-             session->getCurrentMission()->isMissionItem( this ) ? 
-             _( " *Mission*" ) : ""));
+            ( missionId > 0 ? _( " *Mission*" ) : ""));
   }
 }
 
@@ -609,10 +604,8 @@ bool Item::decrementCharges(){
 
 
 void Item::commonInit( bool loading ) {
-
 	identifiedBits = 0;
-
-  savedMissionObjective = false;
+  missionId = missionObjectiveIndex = 0;
 
   // --------------
   // regular attribs

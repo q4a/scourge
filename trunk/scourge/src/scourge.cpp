@@ -664,21 +664,7 @@ bool Scourge::loadMap( char *mapName, bool fromRandomMap, bool absolutePath, cha
 void Scourge::linkMissionObjectives( vector< RenderedItem* > *items, vector< RenderedCreature* > *creatures ) {
   cerr << "***********************" << endl << "Linking mission objectives:" << endl;
   set<int> used;
-  for( int i = 0; i < (int)items->size(); i++ ) {
-    Item *item = (Item*)( (*items)[i] );
-    if( item->isSavedMissionObjective() ) {
-      for( int t = 0; t < (int)getSession()->getCurrentMission()->getItemCount(); t++ ) {
-        if( getSession()->getCurrentMission()->getItem( t ) == item->getRpgItem() &&
-						used.find( t ) == used.end() ) {
-          cerr << "\t\tLinking mission item " << item->getName() << endl;
-          getSession()->getCurrentMission()->
-            addItemInstance( item, item->getRpgItem() );
-          used.insert( t );
-        }
-      }
-    }
-  }
-  used.clear();
+
   for( int i = 0; i < (int)creatures->size(); i++ ) {
     Creature *creature = (Creature*)( (*creatures)[i] );
 		cerr << "\ttesting:" << creature->getName() << endl;
@@ -2952,19 +2938,14 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
       Persist::deleteCreatureInfo( info );
     }
 		// save the current missions
-    n = 0;
-		for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
-			if( !session->getBoard()->getMission(i)->isStoryLine() ) {
-        n++;
-      }
-    }
+		n = session->getBoard()->getMissionCount();
 		file->write( &n );
 		for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
-			if( !session->getBoard()->getMission(i)->isStoryLine() ) {
+			//if( !session->getBoard()->getMission(i)->isStoryLine() ) {
 				MissionInfo *info = session->getBoard()->getMission(i)->save();
 				Persist::saveMission( file, info );
 				Persist::deleteMissionInfo( info );
-			}
+			//}
 		}
 
 		// Remember the current map. This little hack is needed because the current
@@ -3082,19 +3063,23 @@ bool Scourge::doLoadGame( Session *session, char *dirName, char *error ) {
 
 		// load the current missions
 		session->getBoard()->reset();
+		
+		// add current storyline mission
+		session->getBoard()->setStorylineIndex( storylineIndex );
 		if( version >= 18 ) {
 			file->read( &n );
 			cerr << "Loading " << n << " missions." << endl;
 			for( int i = 0; i < (int)n; i++ ) {
 				MissionInfo *info = Persist::loadMission( file );
-				session->getBoard()->addMission( Mission::load( session, info ) );
+				Mission *mission = Mission::load( session, info );
+				if( !mission->isStoryLine() ) {					
+					session->getBoard()->addMission( mission );
+				}
 				Persist::deleteMissionInfo( info );
 			}
-			cerr << "mission count=" << session->getBoard()->getMissionCount() << endl;
 		}
-		// add current storyline mission (which is not saved)
-		session->getBoard()->setStorylineIndex( storylineIndex );
 		session->getBoard()->initMissions();
+		cerr << "mission count=" << session->getBoard()->getMissionCount() << endl;
 
 		// load the list of visited maps
 		if( version >= 33 ) {

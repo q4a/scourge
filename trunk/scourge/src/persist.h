@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 37
+#define PERSIST_VERSION 38
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -51,16 +51,10 @@ typedef struct _ItemInfo {
   DiceInfo *magicDamage;
   Uint8 stateMod[StateMod::STATE_MOD_COUNT];
   Uint8 skillBonus[Skill::SKILL_COUNT];
-  Uint8 mission;
+  Uint32 missionId;
+	Uint32 missionObjectiveIndex;
 
 } ItemInfo;
-/*
-typedef struct _ContainedItemInfo {
-  Uint32 version;
-  Uint32 containedItemCount;
-  ItemInfo containedItems[MAX_CONTAINED_ITEMS];
-} ContainedItemInfo;
-*/
 
 typedef struct _CreatureInfo {
   Uint32 version;
@@ -177,6 +171,7 @@ typedef struct _MissionInfo {
 	Uint8 monsterCount;
 	Uint8 monsterName[100][255];
 	Uint8 monsterDone[100];
+	Uint32 missionId;
 } MissionInfo;
 
 class Persist {
