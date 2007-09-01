@@ -171,7 +171,8 @@ public:
     return ( monsterInstanceMap.find( (Creature*)creature ) != monsterInstanceMap.end() );
   }
 
-  void deleteItemMonsterInstances( bool removeMissionItems );
+  void deleteMonsterInstances();
+	void removeMissionItems();
 
   inline bool isCompleted() { return completed; }
   inline void setCompleted( bool b ) { completed = b; }
@@ -287,6 +288,8 @@ public:
 
   void initMissions();
   void reset();
+
+	void removeCompletedMissionsAndItems();
 
 	inline Mission *getCurrentStorylineMission() { return storylineMissions[storylineIndex]; }
 	inline char *getStorylineTitle() { return storylineMissions[storylineIndex]->getDisplayName(); }
