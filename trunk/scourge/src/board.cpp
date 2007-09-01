@@ -201,20 +201,28 @@ void Board::reset() {
   availableMissions.clear();
 }
 
-void Board::initMissions() {
-  // free ui
-  freeListText();
-  
+void Board::removeCompletedMissionsAndItems() {
   // remove completed missions
   for (vector<Mission*>::iterator e=availableMissions.begin(); e!=availableMissions.end(); ++e) {
     Mission *mission = *e;
-    if( !mission->isStoryLine() && mission->isCompleted() ) {
-      delete mission;
-      availableMissions.erase(e);
-      e = availableMissions.begin();
-    }
-  }
+		if( mission->isCompleted() ) {
+			
+			// remove mission items from the party's inventory
+			mission->removeMissionItems();
 
+			// delete mission if not storyline
+			if( !mission->isStoryLine() ) {
+				delete mission;
+				availableMissions.erase(e);
+				e = availableMissions.begin();
+			}
+		}
+  }
+}
+
+void Board::initMissions() {
+  // free ui
+  freeListText();
 
   // find the highest and lowest levels in the party
   int highest = 0;
@@ -230,7 +238,7 @@ void Board::initMissions() {
     }
     sum += n;
   }
-  float ave = ((float)sum / (float)session->getParty()->getPartySize() / 1.0f);
+  float ave = ( sum == 0 ? 1 : ((float)sum / (float)session->getParty()->getPartySize() / 1.0f) );
 
   // remove the storyline missions
   // remove missions whose level is too low
@@ -647,22 +655,22 @@ void Mission::reset() {
     Monster *monster = i->first;
     creatures[ monster ] = false;
   }
-  deleteItemMonsterInstances( true );
+  deleteMonsterInstances();
 }
 
-void Mission::deleteItemMonsterInstances( bool removeMissionItems ) {
-  // also remove mission objects from party's inventory (is this needed?)
-	if( removeMissionItems ) {
-		for(int i = 0; i < board->getSession()->getParty()->getPartySize(); i++) {
-			Creature *c = board->getSession()->getParty()->getParty(i);
-			for( int t = 0; t < c->getInventoryCount(); t++ ) {
-				if( c->getInventory( t )->getMissionId() == getMissionId() ) {
-					c->removeInventory( t );
-				}
+void Mission::deleteMonsterInstances() {
+	monsterInstanceMap.clear();
+}
+
+void Mission::removeMissionItems() {
+	for(int i = 0; i < board->getSession()->getParty()->getPartySize(); i++) {
+		Creature *c = board->getSession()->getParty()->getParty(i);
+		for( int t = 0; t < c->getInventoryCount(); t++ ) {
+			if( c->getInventory( t )->getMissionId() == getMissionId() ) {
+				c->removeInventory( t );
 			}
 		}
 	}
-  monsterInstanceMap.clear();
 }
 
 char *Mission::getIntro() {

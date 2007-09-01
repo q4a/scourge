@@ -569,9 +569,14 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		// store mission's outcome (mission may be deleted below)
 		if( lastMission ) {
 			createMissionInfoMessage( lastMission );
+
+			// if we just finished a mission delete it and remove mission items from party inventory
+			if( lastMission->isCompleted() ) {
+				board->removeCompletedMissionsAndItems();
+			}
 		}
 
-		// init the missions board (this deletes completed missions)
+		// init the missions board (fill with new missions as needed)
 		board->initMissions();
 
 		// display the HQ map
@@ -667,11 +672,11 @@ void Scourge::linkMissionObjectives( vector< RenderedItem* > *items, vector< Ren
 
   for( int i = 0; i < (int)creatures->size(); i++ ) {
     Creature *creature = (Creature*)( (*creatures)[i] );
-		cerr << "\ttesting:" << creature->getName() << endl;
+//		cerr << "\ttesting:" << creature->getName() << endl;
     if( creature->isSavedMissionObjective() ) {
-			cerr << "\t\tmission creature... linking..." << endl;
+//			cerr << "\t\tmission creature... linking..." << endl;
       for( int t = 0; t < (int)getSession()->getCurrentMission()->getCreatureCount(); t++ ) {
-				cerr << "\t\t\ttesting vs. " << getSession()->getCurrentMission()->getCreature( t )->getType() << endl;
+//				cerr << "\t\t\ttesting vs. " << getSession()->getCurrentMission()->getCreature( t )->getType() << endl;
         if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() &&
             used.find( t ) == used.end() ) {
           cerr << "\t\tLinking mission creature " << creature->getName() << endl;
@@ -733,11 +738,10 @@ void Scourge::cleanUpAfterMission() {
 	// delete active projectiles
 	Projectile::resetProjectiles();
 
-	// delete the mission level's item and monster instances
-	// This will also delete mission items from inventory when going to HQ. 
+	// delete the mission level's monster instances
 	// The mission will still succeed.
 	if( session->getCurrentMission() )
-		session->getCurrentMission()->deleteItemMonsterInstances( nextMission == -1 ? true : false );
+		session->getCurrentMission()->deleteMonsterInstances();
 
 	session->deleteCreaturesAndItems(true);
 }
