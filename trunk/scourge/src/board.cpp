@@ -738,8 +738,7 @@ char *Mission::getAnswer( char *s, char *keyphrase ) {
   }
 }
 
-void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
-
+void Mission::clearConversations() {
   // clean up
   for( map<string,NpcInfo*>::iterator i=npcInfos.begin(); i!=npcInfos.end(); ++i) {
     NpcInfo *npcInfo = i->second;
@@ -755,6 +754,10 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
     delete npcConversation;
   }
   npcConversations.clear();
+}
+
+void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
+	clearConversations();
 
   // read general conversation from level 0.
   char dup[300];
@@ -785,32 +788,19 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
 
   // read the level's data
   loadMapDataFile( adapter, filename );
-
-	// if there are npc-s add some wondering heroes
-	//if( !npcInfos.empty() ) {
-		//addWanderingHeroes( adapter );
-	//}
 }
 
-/*
-void Mission::addWanderingHeroes( GameAdapter *adapter ) {
-
-	if( !adapter->hasParty() ) return;
-
-	int level = adapter->getSession()->getParty()->getAverageLevel();
-	int count = (int)( 5.0f * rand() / RAND_MAX ) + 5;
-	for( int i = 0; i < count; i++ ) {
-		RenderedCreature *creature = adapter->createWanderingHero( level );
-
-		// find a place for the here
-		RenderedCreature *c = 
-			adapter->getSession()->
-			getCreature( (int)( (float)(adapter->getSession()->getCreatureCount()) * 
-													rand() / RAND_MAX ) );
-		creature->findPlace( toint( c->getX() ), toint( c->getY() ) );
-	}
+/**
+ * Called by squirrel code to assign a different cfg file to be used with the
+ * (possibly generated) map.
+ */
+void Mission::loadMapConfig( GameAdapter *adapter, const char *filename ) {
+	clearConversations();
+	char path[300];
+  strcpy( path, rootDir );
+  strcat( path, filename );
+  loadMapDataFile( adapter, path );
 }
-*/
 
 string getKeyValue( string key ) {
 	string::size_type n = key.find( "." );

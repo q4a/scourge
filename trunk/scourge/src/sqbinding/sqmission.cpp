@@ -56,6 +56,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "setDoorLocked", SqMission::_setDoorLocked, 0, 0, "Set the door located at x,y,z to locked value (true=locked, false=unlocked)" },
 	{ "bool", "isDoorLocked", SqMission::_isDoorLocked, 0, 0, "Is the door at location x,y,z locked?" },
 	{ "bool", "isStoryLineMission", SqMission::_isStoryLineMission, 0, 0, "Is the current mission a storyline mission?" },
+	{ "void", "setMapConfig", SqMission::_setMapConfig, 0, 0, "Load conversation and npc info from this file and apply it to the current map." },	
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -280,5 +281,11 @@ int SqMission::_isStoryLineMission( HSQUIRRELVM vm ) {
 	SQBool b = ( m && m->isStoryLine() );
 	sq_pushbool( vm, b );
 	return 1;
+}
+
+int SqMission::_setMapConfig( HSQUIRRELVM vm ) {
+	GET_STRING( mapName, 255 )
+	Mission::loadMapConfig( SqBinding::sessionRef->getGameAdapter(), mapName );
+	return 0;
 }
 
