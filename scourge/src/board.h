@@ -122,6 +122,7 @@ public:
    * that was loaded.
    */
   static void loadMapData( GameAdapter *adapter, const char *fileName );
+	static void loadMapConfig( GameAdapter *adapter, const char *filename );
 
   /**
    * Append extra data (npc info, etc.) to a text file alongside an edited map.
@@ -211,6 +212,7 @@ public:
 
 private:
 	//static void addWanderingHeroes( GameAdapter *adapter );
+	static void clearConversations();
   static void loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly=false );
 	static void getMapConfigFile( const char *filename, const char *out );
 	static void initConversations( ConfigLang *config, GameAdapter *adapter, bool generalOnly );

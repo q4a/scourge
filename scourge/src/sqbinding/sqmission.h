@@ -81,6 +81,8 @@ public:
 	static int _isDoorLocked( HSQUIRRELVM vm );
 
 	static int _isStoryLineMission( HSQUIRRELVM vm );
+
+	static int _setMapConfig( HSQUIRRELVM vm );
 };
 
 #endif
