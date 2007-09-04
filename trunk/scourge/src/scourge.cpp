@@ -954,6 +954,7 @@ bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 
 
     // assign this creature
     c->setTargetLocation(mapx, mapy, 0);
+    c->setSelXY(mapx,mapy); // and get a path there. Probably should make this get in range for the spell.
     char msg[80];
     sprintf(msg, _( "%s selected a target" ), c->getName());
     getDescriptionScroller()->addDescription(msg);
@@ -973,9 +974,9 @@ bool Scourge::handleTargetSelectionOfDoor( Uint16 mapx, Uint16 mapy, Uint16 mapz
   if(c->getAction() == Constants::ACTION_CAST_SPELL &&
      c->getActionSpell() &&
      c->getActionSpell()->isDoorTargetAllowed() ) {
-
     // assign this door
     c->setTargetLocation(mapx, mapy, 0);
+    c->setSelXY(mapx,mapy); // and need to get a path there, otherwise we'll run on the spot
     char msg[80];
     sprintf(msg, _( "%s selected a target" ), c->getName());
     getDescriptionScroller()->addDescription(msg);
@@ -999,6 +1000,7 @@ bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
 
     // assign this creature
     c->setTargetCreature( potentialTarget );
+    //no need to get paths to the target creature, the battle should handle this
     char msg[80];
     sprintf(msg, _( "%1$s will target %2$s" ), c->getName(), c->getTargetCreature()->getName());
     getDescriptionScroller()->addDescription(msg);
