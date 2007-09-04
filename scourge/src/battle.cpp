@@ -456,7 +456,12 @@ void Battle::stepCloserToTarget() {
               creature->getSelY() == creature->getTargetY())) {
     if(debugBattle) cerr << "\t\t\tto target location: " << creature->getTargetX() <<
       creature->getTargetY() << endl;
-    creature->setSelCreature(creature->getTargetCreature(), range, false);
+     // if we are here, it means:
+     //  a) we have no target creature
+     //  b) we are going somewhere
+     //  c) the place we are going is not showing a "Selected" symbol
+
+     // this can happen when casting Dori's Tumblers in a battle with no creatures
   }
 
   // wait for animation to end
