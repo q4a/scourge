@@ -156,81 +156,6 @@ AStar::~AStar(){
 }
 
 /**
- * An A* search with no goal function.
- * Created for backward compatabiltiy. Assumes single goal node of dx,dy
- **/
-void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
-                      Sint16 dx, Sint16 dy, Sint16 dz,
-                      vector<Location> *pVector,
-                      Map *map,
-                      Creature *creature,
-                      Creature *player,
-                      int maxNodes,
-                      bool ignoreParty) {
-  GoalFunction * goal = new SingleNodeGoal(dx,dy);
-  Heuristic * heuristic = new DiagonalDistanceHeuristic(dx,dy);
-  AStar::findPath(sx,sy,sz,pVector,map,creature,player,maxNodes,ignoreParty,goal,heuristic);
-  delete heuristic;
-  delete goal;
-}
-
-/**
- * A quick method to move to any node occupied by the target creature
- **/
-void AStar::findPathToCreature( Sint16 sx, Sint16 sy, Sint16 sz,
-                      Creature* target,
-                      vector<Location> *pVector,
-                      Map *map,
-                      Creature *creature,
-                      Creature *player,
-                      int maxNodes,
-                      bool ignoreParty) {
-  GoalFunction * goal = new SingleCreatureGoal(target);
-  Heuristic * heuristic = new DiagonalDistanceHeuristic(toint(target->getX()),toint(target->getY()));
-  AStar::findPath(sx,sy,sz,pVector,map,creature,player,maxNodes,ignoreParty,goal,heuristic);
-  delete heuristic;
-  delete goal;
-}
-
-/**
- * A quick method to move within a certain distance of the target creature
- **/
-void AStar::findPathCloseToCreature( Sint16 sx, Sint16 sy, Sint16 sz,
-                      Creature* target,
-                      vector<Location> *pVector,
-                      Map *map,
-                      Creature *creature,
-                      Creature *player,
-                      float distance,
-                      int maxNodes,
-                      bool ignoreParty) {
-  GoalFunction * goal = new GetCloseGoal(creature,target,distance);
-  Heuristic * heuristic = new DiagonalDistanceHeuristic(toint(target->getX()),toint(target->getY()));
-  AStar::findPath(sx,sy,sz,pVector,map,creature,player,maxNodes,ignoreParty,goal,heuristic);
-  delete heuristic;
-  delete goal;
-}
-
-/**
- * A quick method to get a path away from a given location.
- **/
-void AStar::findPathAway( Sint16 sx, Sint16 sy, Sint16 sz,
-                      Sint16 awayX, Sint16 awayY,
-                      vector<Location> *pVector,
-                      Map *map,
-                      Creature *creature,
-                      Creature *player,
-                      int maxNodes,
-                      bool ignoreParty,
-                      float distance) {
-  GoalFunction * goal = new GetAwayGoal(awayX,awayY,distance);
-  Heuristic * heuristic = new DistanceAwayHeuristic(awayX,awayY);
-  AStar::findPath(sx,sy,sz,pVector,map,creature,player,maxNodes,ignoreParty,goal,heuristic);
-  delete heuristic;
-  delete goal;
-}
-
-/**
  * Dijkstra's search to find the shortest path to the goal.
  * This is applicable when there are multiple goals that cannot be
  * assumed to lie near a single target location.
@@ -243,7 +168,7 @@ void AStar::findPathAway( Sint16 sx, Sint16 sy, Sint16 sz,
  * unblocked nodes. It will also allow terrain costs to be added in the
  * future.
  **/
-void AStar::findPathToNearest( Sint16 sx, Sint16 sy, Sint16 sz,
+void AStar::findPathToNearest( Sint16 sx, Sint16 sy, 
                       vector<Location> *pVector,
                       Map *map,
                       Creature *creature,
@@ -252,7 +177,7 @@ void AStar::findPathToNearest( Sint16 sx, Sint16 sy, Sint16 sz,
                       bool ignoreParty,
                       GoalFunction * goal ) {
   Heuristic * heuristic = new NoHeuristic();
-  AStar::findPath(sx,sy,sz,pVector,map,creature,player,maxNodes,ignoreParty,goal,heuristic);
+  AStar::findPath(sx,sy,pVector,map,creature,player,maxNodes,ignoreParty,goal,heuristic);
   delete heuristic;
   
 }
@@ -286,7 +211,7 @@ void AStar::findPathToNearest( Sint16 sx, Sint16 sy, Sint16 sz,
  * goal is to reach the target location, but other possibilities are to get within a certain distance of
  * the location or to find a place that has a clear shot to the target.
  **/
-void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
+void AStar::findPath( Sint16 sx, Sint16 sy,
                       vector<Location> *pVector,
                       Map *map,
                       Creature *creature,
@@ -351,7 +276,8 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
     closedSize++;
     // Set limit to break if looking too long
     if ( closedSize > maxNodes ){
-      //cout << "maxed out on nodes by going past " << maxNodes << "\n";
+      if( PATH_DEBUG ) 
+        cout << "maxed out on nodes by going past " << maxNodes << "\n";
       break;
     }
     
@@ -404,7 +330,8 @@ void AStar::findPath( Sint16 sx, Sint16 sy, Sint16 sz,
   if (!closed.empty()) {
     // Create the path from elements of the CLOSED container
     if(path.size()) path.erase(path.begin(), path.end());
-
+    if( PATH_DEBUG ) 
+      cout << "Final node " << closestNode->x << "," << closestNode->y << " fulfils goal? " << goal->fulfilledBy(closestNode) <<"\n";
     CPathNode nextNode = *closestNode;
     path.push_back(nextNode);
     CPathNode * parent = nextNode.parent;

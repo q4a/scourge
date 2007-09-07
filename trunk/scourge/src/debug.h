@@ -54,13 +54,13 @@
 //#define DEBUG_IDENTIFY_ITEM 1
 
 // sqbinding.cpp                        
-#define DEBUG_SQUIRREL 1
+#define DEBUG_SQUIRREL 0
 
 // show secret doors
 //#define DEBUG_SECRET_DOORS 1
 
 // show every PC's path
-#define PATH_DEBUG 0
+#define PATH_DEBUG 1
 
 // #define DEBUG_SCREENSHOT 1
 

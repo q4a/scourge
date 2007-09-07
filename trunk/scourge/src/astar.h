@@ -218,16 +218,7 @@ public:
 	AStar();
 	~AStar();
 
-  static void findPath( Sint16 sx, Sint16 sy, Sint16 sz,
-                        Sint16 dx, Sint16 dy, Sint16 dz,
-                        std::vector<Location> *pVector,
-                        Map *map,
-                        Creature *creature,
-                        Creature *player,
-                        int maxNodes,
-                        bool ignoreParty);
-
-  static void findPath( Sint16 sx, Sint16 sy, Sint16 sz,
+  static void findPath( Sint16 sx, Sint16 sy,
                         std::vector<Location> *pVector,
                         Map *map,
                         Creature *creature,
@@ -237,7 +228,7 @@ public:
                         GoalFunction * goal,
                         Heuristic * heuristic );
 
-  static void findPathToNearest( Sint16 sx, Sint16 sy, Sint16 sz,
+  static void findPathToNearest( Sint16 sx, Sint16 sy,
                         std::vector<Location> *pVector,
                         Map *map,
                         Creature *creature,
@@ -246,33 +237,6 @@ public:
                         bool ignoreParty,
                         GoalFunction * goal ); //TODO: pass in a set of targets, not a goal
 
-  static void findPathAway( Sint16 sx, Sint16 sy, Sint16 sz,
-                        Sint16 awayX, Sint16 awayY,
-                        std::vector<Location> *pVector,
-                        Map *map,
-                        Creature *creature,
-                        Creature *player,
-                        int maxNodes,
-                        bool ignoreParty,
-                        float distance);
-
-  static void findPathToCreature( Sint16 sx, Sint16 sy, Sint16 sz,
-                        Creature* target,
-                        std::vector<Location> *pVector,
-                        Map *map,
-                        Creature *creature,
-                        Creature *player,
-                        int maxNodes,
-                        bool ignoreParty);
-  static void findPathCloseToCreature( Sint16 sx, Sint16 sy, Sint16 sz,
-                        Creature* target,
-                        std::vector<Location> *pVector,
-                        Map *map,
-                        Creature *creature,
-                        Creature *player,
-                        float distance,
-                        int maxNodes,
-                        bool ignoreParty);
 
   static bool isOutOfTheWay( Creature *a, std::vector<Location> *aPath, int aStart,
                              Creature *b, std::vector<Location> *bPath, int bStart );
