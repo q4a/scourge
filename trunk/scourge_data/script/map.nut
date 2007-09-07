@@ -297,6 +297,11 @@ function converse( creature, question ) {
 	} else if( creature.getName() == "Mothrazu" &&
 						 question.tolower() == _( "doom" ) ) {
 		mothrazuTransforms( creature );
+	} else if( creature.getName() == "Spawn of Arcanex" ) {
+		if( !( scourgeGame.getMission().isCompleted() ) && 
+				question == _( "karzul" ) ) {
+			scourgeGame.getMission().setCompleted();
+		}
 	}
   return null;
 }
@@ -537,9 +542,7 @@ function initChapter11() {
 		// This has to be done each time the map is entered b/c npc-s aren't saved with the map.
 		//print( "Adding creature: count=" + scourgeGame.getMission().getCreatureCount() );
 		scourgeGame.getMission().addCreature( 5, 5, 0, "Spawn of Arcanex" );
-		print( "\tafter: count=" + scourgeGame.getMission().getCreatureCount() );
 		scourgeGame.getMission().setMapConfig( "/maps/tree" );
-		print( "\tafter: count=" + scourgeGame.getMission().getCreatureCount() );
 	}
 }
 
