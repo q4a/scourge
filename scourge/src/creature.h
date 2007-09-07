@@ -40,6 +40,7 @@ class Session;
 class Effect;
 class Location;
 class Battle;
+class PathManager;
 class GLShape;
 class Item;
 class Event;
@@ -69,7 +70,6 @@ class Creature : public RenderedCreature {
   
  private:
   // gui information
-  Creature *next;
   GLShape *shape;
   char *model_name, *skin_name;
   Uint16 dir;
@@ -81,9 +81,8 @@ class Creature : public RenderedCreature {
   int index;
   int tx, ty;
   int selX, selY;
-  int bestPathPos;
-	int cantMoveCounter;
-  std::vector<Location> bestPath;
+  int cantMoveCounter;
+  PathManager* pathManager;
   Creature *targetCreature;
   int targetX, targetY, targetZ;
   Item *targetItem;
@@ -185,8 +184,6 @@ class Creature : public RenderedCreature {
 	inline void setMoving( bool b ) { moving = b; }
 
 	bool isNpc();
-  bool isPathToTargetCreature();
-  bool isPathTowardTargetCreature(float range);
 
   inline GLfloat getAngle() { return angle; }
 
@@ -221,8 +218,8 @@ class Creature : public RenderedCreature {
   inline void setPortraitTextureIndex( int n ) { this->portraitTextureIndex = n; }
   inline int getPortraitTextureIndex() { return portraitTextureIndex; }
 
-  inline std::vector<Location> *getPath() { return &bestPath; }
-  inline int getPathIndex() { return bestPathPos; }
+ // inline std::vector<Location> *getPath() { return &bestPath; }
+ // inline int getPathIndex() { return bestPathPos; }
 
   inline int getCharacterModelInfoIndex() { return character_model_info_index; }
 
@@ -230,6 +227,8 @@ class Creature : public RenderedCreature {
   inline Date getLastEnchantDate() { return lastEnchantDate; }
 
   inline Battle *getBattle() { return battle; }
+  inline PathManager* getPathManager(){ return pathManager;}
+  inline Session* getSession(){ return session;}
 
 	void changeProfession( Character *character );
 
@@ -284,9 +283,6 @@ class Creature : public RenderedCreature {
   inline GLShape *getShape() { return shape; }
   inline void setFormation(int formation) { this->formation = formation; }
   inline int getFormation() { return formation; }
-  void setNext(Creature *next, int index);
-  void setNextDontMove(Creature *next, int index);
-  Creature *getNext() { return next; }
   inline Uint16 getDir() { return dir; }
   inline void setDir(Uint16 dir) { this->dir = dir; }
   
@@ -528,14 +524,10 @@ class Creature : public RenderedCreature {
                   float *dodgePenalty,
                   bool callScript=false );
 
-   bool findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty);
+  // bool findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty);
 
-  bool findPathToCreature( Creature* creature, bool cancelIfNotPossible, int maxNodes, bool ignoreParty, float distance=0);
-  /**
-   * Get the position of this creature in the formation.
-   * returns -1,-1 if the position cannot be set (if the person followed is not moving)
-   */
-  void getFormationPosition( Sint16 *px, Sint16 *py, Sint16 *pz, int x=-1, int y=-1 );
+ // bool findPathToCreature( Creature* creature, bool cancelIfNotPossible, int maxNodes, bool ignoreParty, float distance=MIN_DISTANCE);
+
 
   void commonInit();
   void calculateExpOfNextLevel();

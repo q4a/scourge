@@ -146,7 +146,8 @@ void Party::startPartyOnMission() {
   
   // init the rest of the party
   for(int i = 1; i < getPartySize(); i++) {
-    getParty(i)->setNext(getPlayer(), i);
+    //TODO: this is a formation thing. Replace with FormationPathManagers for the party
+    //getParty(i)->setNext(getPlayer(), i);
     getParty(i)->cancelTarget();
     getParty(i)->resetSecretDoorAttempts();
     getParty( i )->resetTrapFindAttempts();
@@ -207,12 +208,12 @@ int Party::getPlayerIndex() {
 void Party::setPlayer(int n, bool updateui) {
 	if( n >= getPartySize() ) return;
   player = party[n];
-  player->setNextDontMove(NULL, 0);
+  //player->setNextDontMove(NULL, 0);
   // init the rest of the party
-  int count = 1;
-  for(int i = 0; i < getPartySize(); i++) {
-    if(i != n) party[i]->setNextDontMove(player, count++);
-  }
+ // int count = 1;
+  //for(int i = 0; i < getPartySize(); i++) {
+    //if(i != n) party[i]->setNextDontMove(player, count++);
+ // }
 
   if( updateui ) {
     //  move = 0;
@@ -304,7 +305,7 @@ bool Party::setSelXY( Uint16 mapx, Uint16 mapy, bool cancelIfNotPossible ) {
     }
   }
   // Try to move the current player
-	return getPlayer()->setSelXY( mapx, mapy, cancelIfNotPossible, 500 );  
+  return getPlayer()->setSelXY( mapx, mapy, cancelIfNotPossible, 500 );  
 }
 
 bool Party::isPartyInRange() {

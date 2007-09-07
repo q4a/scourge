@@ -17,6 +17,7 @@
 #include "scourgeview.h"
 #include "battle.h"
 #include "creature.h"
+#include "pathmanager.h"
 #include "item.h"
 #include "party.h"
 #include "minimap.h"
@@ -709,9 +710,9 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 			( ( PATH_DEBUG && !creature->isMonster() ) ||
 				( player && scourge->inTurnBasedCombat() ) ) ) {
 		//glDisable( GL_DEPTH_TEST );
-    for( int i = creature->getPathIndex();
-         i < (int)creature->getPath()->size(); i++) {
-      Location pos = (*(creature->getPath()))[i];
+    for( int i = creature->getPathManager()->getPositionOnPath();
+         i < (int)creature->getPathManager()->getPath()->size(); i++) {
+      Location pos = (*(creature->getPathManager()->getPath()))[i];
 
 			if( player ) {
 				glColor4f(1, 0.4f, 0.0f, 0.5f);
@@ -774,7 +775,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     // in TB mode and paused?
     if( scourge->inTurnBasedCombat() && !( scourge->getParty()->isRealTimeMode() ) ) {
       char cost[40];
-      sprintf( cost, "%s: %d", _( "Move" ), (int)(creature->getPath()->size()) );
+      sprintf( cost, "%s: %d", _( "Move" ), (int)(creature->getPathManager()->getPathRemainingSize()) );
       scourge->getSDLHandler()->drawTooltip( 0, 0, 0,
                                              -( scourge->getMap()->getZRot() ),
                                              -( scourge->getMap()->getYRot() ),
@@ -1070,13 +1071,13 @@ void ScourgeView::drawAfter() {
     glTranslatef( 20, 20, 0 );
     Creature *c = scourge->getCurrentBattle()->getCreature();
     char msg[80];
-    if( c->getPath()->size() > 0 && !c->getBattle()->isInRangeOfTarget() ) {
+    if( !c->getPathManager()->atEndOfPath() && !c->getBattle()->isInRangeOfTarget() ) {
       sprintf( msg, "%s %d/%d (%s %d)",
                c->getName(),
                c->getBattle()->getAP(),
                c->getBattle()->getStartingAP(),
 							 _( "cost" ),
-               (int)( c->getPath()->size() ) );
+               (int)( c->getPathManager()->getPathRemainingSize() ) );
     } else {
       sprintf( msg, "%s %d/%d",
                c->getName(),
@@ -1086,7 +1087,7 @@ void ScourgeView::drawAfter() {
     turnProgress->updateStatus( msg, false,
                                 c->getBattle()->getAP(),
                                 c->getBattle()->getStartingAP(),
-                                c->getPath()->size() );
+                                c->getPathManager()->getPathRemainingSize() );
     glPopMatrix();
     //glPushAttrib(GL_ENABLE_BIT);
   }

@@ -24,6 +24,7 @@
 #include "shapepalette.h"
 #include "debug.h"
 #include "sqbinding/sqbinding.h"
+#include "pathmanager.h"
 
 using namespace std;
 
@@ -1445,8 +1446,8 @@ bool Battle::describeAttack( Creature *target, char *buff, Color *color, bool in
       color->g = 0.2f;
       color->b = 0;
       //does the path get us in range?
-      if( (!item && creature->isPathToTargetCreature()) || (item && creature->isPathTowardTargetCreature(item->getRange())) ) {
-        sprintf( buff, _( "Out of Range. Move: %d" ), (int)( creature->getPath()->size() ) );
+      if( (!item && creature->getPathManager()->isPathToTargetCreature()) || (item && creature->getPathManager()->isPathTowardTargetCreature(item->getRange())) ) {
+        sprintf( buff, _( "Out of Range. Move: %d" ), (int)( creature->getPathManager()->getPathRemainingSize() ) );
       } else {
         sprintf( buff, _( "Out of Range" ) );
       }

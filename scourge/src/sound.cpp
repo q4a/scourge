@@ -223,7 +223,7 @@ void Sound::stopMusic( int ms ) {
     }
 
     if( !Mix_FadeOutMusic( ms ) ) {
-      cerr << "*** Error stopping music: " << Mix_GetError() << endl;
+    //  cerr << "*** Error stopping music: " << Mix_GetError() << endl;
       // force stop music
       Mix_HaltMusic();
     }
