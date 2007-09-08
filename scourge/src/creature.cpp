@@ -584,7 +584,7 @@ void Creature::moveAway( Creature *other ) {
  
   //this should be enough nodes, and will be very quick anyway
   int nodesRequired = AWAY_DISTANCE*5; 
-  cout << getName() << " is moving away from " << other->getName() << "\n";
+  if( PATH_DEBUG ) cout << getName() << " is moving away from " << other->getName() << "\n";
   bool pathFound = pathManager->findPathAway(other,
                        player,
                        session->getMap(),
