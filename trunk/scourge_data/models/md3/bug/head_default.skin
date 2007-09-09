@@ -1,0 +1,6 @@
+h_HeadSml,models/players/bug/head-default.bmp
+h_AntennaSml,models/players/bug/pivot-default.bmp
+h_BackAntennaSml,models/players/bug/limb-default.bmp
+h_eyeSml,models/players/bug/eye.bmp
+h_TeethSml,models/players/bug/alpha-default.bmp
+tag_head,
