@@ -278,12 +278,18 @@ void Party::setTargetCreature(Creature *creature) {
   float range;
   if(player_only) {
     range = MIN_DISTANCE;
-    if(player->getPreferredWeapon() > -1) range = player->getItemAtLocation( player->getPreferredWeapon() )->getRange();
+    if( player->getPreferredWeapon() > -1 && 
+				player->getItemAtLocation( player->getPreferredWeapon() ) ) {
+			range = player->getItemAtLocation( player->getPreferredWeapon() )->getRange();
+		}
     player->setTargetCreature(creature, true, range);
   } else {
     for(int i = 0; i < getPartySize(); i++) {
       range = MIN_DISTANCE;
-      if(party[i]->getPreferredWeapon() > -1) range = party[i]->getItemAtLocation( party[i]->getPreferredWeapon() )->getRange();
+      if( party[i]->getPreferredWeapon() > -1 &&
+					party[i]->getItemAtLocation( party[i]->getPreferredWeapon() ) ) {
+				range = party[i]->getItemAtLocation( party[i]->getPreferredWeapon() )->getRange();
+			}
       party[i]->setTargetCreature(creature, true, range); 
     }
   }
