@@ -54,6 +54,17 @@ protected:
 	virtual void addFurniture( Map *map, ShapePalette *shapePal );
 	virtual void lockDoors( Map *map, ShapePalette *shapePal );
 
+	/**
+	 * Outdoors have low level monsters only.	
+	 * FIXME: this should really be "outdoor type monsters".
+	 * Bears, lions, etc.
+	 */
+	virtual inline int getBaseMonsterLevel() { return 1; }
+
+	virtual bool getUseBadassMonsters() { return false; }
+
+	virtual void addMonsters(Map *map, ShapePalette *shapePal);
+
 };
 
 #endif 

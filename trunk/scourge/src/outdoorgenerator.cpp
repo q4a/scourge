@@ -23,6 +23,8 @@
 #include "render/glshape.h"
 #include "cellular.h"
 #include "sqbinding/sqbinding.h"
+#include "rpg/rpglib.h"
+#include "creature.h"
 #include <vector>
 
 using namespace std;
@@ -279,3 +281,25 @@ void OutdoorGenerator::addFurniture( Map *map, ShapePalette *shapePal ) {
 void OutdoorGenerator::lockDoors( Map *map, ShapePalette *shapePal ) {
 	// don't lock anything
 }
+
+void OutdoorGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
+	// add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
+	for(int i = 0; i < objectCount; i++) {
+		Monster *monster = Monster::getRandomMonster(getBaseMonsterLevel());
+		if(!monster) {
+			cerr << "Warning: no monsters defined for level: " << level << endl;
+			break;
+		}
+		GLShape *shape = 
+			scourge->getShapePalette()->getCreatureShape(monster->getModelName(), 
+																									 monster->getSkinName(), 
+																									 monster->getScale(),
+												 monster);
+		Creature *creature = scourge->getSession()->newCreature(monster, shape);
+		int x, y;                           
+		getRandomLocation(levelMap, creature->getShape(), &x, &y);
+		addItem(levelMap, creature, NULL, NULL, x, y);
+		creature->moveTo(x, y, 0);
+	}
+}																															 	
+
