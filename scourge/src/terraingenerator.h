@@ -137,6 +137,7 @@ protected:
   virtual void addItems(Map *map, ShapePalette *shapePal);
   virtual void addMissionObjectives(Map *map, ShapePalette *shapePal);
   virtual void addMonsters(Map *map, ShapePalette *shapePal);
+	virtual void addHarmlessCreatures(Map *map, ShapePalette *shapePal);
   virtual void addFurniture(Map *map, ShapePalette *shapePal);
 	virtual void addMagicPools( Map *map, ShapePalette *shapePal );
   virtual bool addTeleporters(Map *map, ShapePalette *shapePal);
@@ -195,7 +196,13 @@ protected:
 	 * Return a bool indicating whether or not extra-tough monsters should be
 	 * used. Harder rooms increase the chance of finding better treasure.
 	 */
-	virtual bool getUseBadassMonsters() { return true; }
+	virtual inline bool getUseBadassMonsters() { return true; }
+
+	/**
+	 * Get the base level of the monsters used on this map. This value will
+	 * be adjusted by depth, and some other random settings.
+	 */
+	virtual inline int getBaseMonsterLevel() { return level; }
   
 };
 

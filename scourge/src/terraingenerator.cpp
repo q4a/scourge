@@ -186,6 +186,7 @@ bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   
   updateStatus( _( "Adding monsters" ) );
   addMonsters(map, shapePal);
+	addHarmlessCreatures( map, shapePal );
   
   updateStatus( _( "Adding items" ) );
   addItems(map, shapePal);
@@ -383,7 +384,7 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
 						 ( badAssMonsters || 
 							 monsterLevelTotal < totalLevelUsed ) ) {
 				bool boss = false;
-        int monsterLevel = level;
+        int monsterLevel = getBaseMonsterLevel();
         if( badAssMonsters ) {
 					if( 0 == (int)( 5.0f * rand() / RAND_MAX ) ) {
 						monsterLevel++;
@@ -436,7 +437,7 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
 
     // add a few misc. monsters in the corridors (use objectCount to approx. number of wandering monsters)
     for(int i = 0; i < objectCount * 2; i++) {
-      Monster *monster = Monster::getRandomMonster(level);
+      Monster *monster = Monster::getRandomMonster(getBaseMonsterLevel());
       if(!monster) {
         cerr << "Warning: no monsters defined for level: " << level << endl;
         break;
@@ -512,6 +513,9 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
       }
     }
   }
+}
+
+void TerrainGenerator::addHarmlessCreatures(Map *levelMap, ShapePalette *shapePal) {
 	// add a few harmless creatures
 	for(int i = 0; i < objectCount * 2; i++) {
 		Monster *monster = (Monster*)Monster::getRandomHarmless();
