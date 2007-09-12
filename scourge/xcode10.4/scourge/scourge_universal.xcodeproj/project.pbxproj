@@ -37,6 +37,8 @@
 		1400494E0C5BDB4000DA1D9C /* binreloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 1400494C0C5BDB4000DA1D9C /* binreloc.h */; };
 		140049510C5BDB9D00DA1D9C /* fontmgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1400494F0C5BDB9D00DA1D9C /* fontmgr.cpp */; };
 		140049520C5BDB9D00DA1D9C /* fontmgr.h in Headers */ = {isa = PBXBuildFile; fileRef = 140049500C5BDB9D00DA1D9C /* fontmgr.h */; };
+		147CFEF10C924F1700B725E9 /* pathmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147CFEEF0C924F1700B725E9 /* pathmanager.cpp */; };
+		147CFEF20C924F1700B725E9 /* pathmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 147CFEF00C924F1700B725E9 /* pathmanager.h */; };
 		76081D620A558ADC00281DB9 /* constants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76081D5E0A558ADC00281DB9 /* constants.cpp */; };
 		76081D630A558ADC00281DB9 /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 76081D5F0A558ADC00281DB9 /* constants.h */; };
 		76081D700A55907900281DB9 /* mondrian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76081D6E0A55907900281DB9 /* mondrian.cpp */; };
@@ -426,6 +428,8 @@
 		1400494C0C5BDB4000DA1D9C /* binreloc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = binreloc.h; path = ../../src/common/binreloc.h; sourceTree = SOURCE_ROOT; };
 		1400494F0C5BDB9D00DA1D9C /* fontmgr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = fontmgr.cpp; path = ../../src/freetype/fontmgr.cpp; sourceTree = SOURCE_ROOT; };
 		140049500C5BDB9D00DA1D9C /* fontmgr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = fontmgr.h; path = ../../src/freetype/fontmgr.h; sourceTree = SOURCE_ROOT; };
+		147CFEEF0C924F1700B725E9 /* pathmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = pathmanager.cpp; path = ../../src/pathmanager.cpp; sourceTree = SOURCE_ROOT; };
+		147CFEF00C924F1700B725E9 /* pathmanager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pathmanager.h; path = ../../src/pathmanager.h; sourceTree = SOURCE_ROOT; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* scourge_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scourge_Prefix.pch; sourceTree = "<group>"; };
@@ -862,6 +866,8 @@
 		29B97314FDCFA39411CA2CEA /* scourge */ = {
 			isa = PBXGroup;
 			children = (
+				147CFEEF0C924F1700B725E9 /* pathmanager.cpp */,
+				147CFEF00C924F1700B725E9 /* pathmanager.h */,
 				90566B020B14FBA200DE08E5 /* etc */,
 				76081D5A0A558A7E00281DB9 /* common */,
 				768B7B6C095012C90077FD12 /* test */,
@@ -1648,6 +1654,7 @@
 				1400494A0C5BDB1700DA1D9C /* upload.h in Headers */,
 				1400494E0C5BDB4000DA1D9C /* binreloc.h in Headers */,
 				140049520C5BDB9D00DA1D9C /* fontmgr.h in Headers */,
+				147CFEF20C924F1700B725E9 /* pathmanager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1863,6 +1870,7 @@
 				140049490C5BDB1700DA1D9C /* upload.cpp in Sources */,
 				1400494D0C5BDB4000DA1D9C /* binreloc.c in Sources */,
 				140049510C5BDB9D00DA1D9C /* fontmgr.cpp in Sources */,
+				147CFEF10C924F1700B725E9 /* pathmanager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

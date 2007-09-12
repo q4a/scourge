@@ -163,7 +163,7 @@ void SDLHandler::setOrthoView() {
 }
 
 /* general OpenGL initialization function */
-int SDLHandler::initGL( GLvoid ) {
+int SDLHandler::initGL() {
   /* Enable Texture Mapping */
     glEnable( GL_TEXTURE_2D );
       

@@ -231,7 +231,7 @@ public:
 protected:	
 	bool popHandlers();
 	int resizeWindow( int width, int height );
-	int initGL( GLvoid );  
+	int initGL();  
 	void drawCursor();
 
 	void drawScreenInternal();
