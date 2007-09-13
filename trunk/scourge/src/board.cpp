@@ -47,9 +47,9 @@ Board::Board(Session *session) {
 	missionListCount = 0;
 
   char type;
-  char name[255], displayName[255], line[255], description[2000], 
-    music[255],
-    success[2000], failure[2000], mapName[80], introDescription[2000];
+	char name[255], displayName[255], line[255], description[2000], 
+		music[255], success[2000], failure[2000], mapName[80], 
+		introDescription[2000], location[20];
 
   ConfigLang *config = ConfigLang::load( "config/mission.cfg" );
 	vector<ConfigNode*> *v = config->getDocument()->
@@ -88,10 +88,16 @@ Board::Board(Session *session) {
     strcpy( success, node->getValueAsString( "success" ) );
     strcpy( failure, node->getValueAsString( "failure" ) );
 		int chapter = node->getValueAsInt( "chapter" );
+		strcpy( location, node->getValueAsString( "position" ) );
 
     Mission *current_mission = new Mission( this, level, depth, name, displayName, description, introDescription, music, success, failure, mapName );
     current_mission->setStoryLine( true );
 		current_mission->setChapter( chapter );
+		if( strlen( location ) ) {
+			int x, y;
+			sscanf( location, "%d,%d", &x, &y );
+			current_mission->setLocation( x, y );
+		}
     storylineMissions.push_back( current_mission );
 
 
@@ -551,6 +557,7 @@ Mission::Mission( Board *board, int level, int depth,
   this->board = board;
   this->level = level;
   this->depth = depth;
+	this->locationX = this->locationY = -1;
   strcpy( this->name, name );
   strcpy( this->displayName, displayName );
   strcpy( this->description, description );

@@ -99,6 +99,7 @@ private:
   char special[80];
 	char templateName[80];
 	int missionId;
+	int locationX, locationY;
 public:
 
 #define INTRO_PHRASE "_INTRO_"
@@ -139,13 +140,15 @@ public:
            char *mapName, char mapType='C' );
   ~Mission();
 	
+	inline int getLocationX() { return locationX; }
+	inline int getLocationY() { return locationY; }
 	inline int getMissionId() { return missionId; }
 	inline void setMissionId( int n ) { this->missionId = n; }
 	inline char *getIntroDescription() { return introDescription; }
 	inline int getChapter() { return chapter; }
 	inline void setChapter( int n ) { chapter = n; }
-  inline int getMapX() { return mapX; }
-  inline int getMapY() { return mapY; }
+  inline int getMapX() { return( locationX > -1 ? locationX : mapX ); }
+  inline int getMapY() { return( locationY > -1 ? locationY : mapY ); }
   inline void setMapXY( int x, int y ) { mapX = x; mapY = y; }
   inline bool isSpecial() { return ( strlen( special ) ? true : false ); }
   inline char *getSpecial() { return special; }
@@ -153,6 +156,8 @@ public:
 
   inline void setStoryLine( bool b ) { storyLine = b; }
   inline bool isStoryLine() { return storyLine; }
+	
+	inline void setLocation( int x, int y ) { this->locationX = x; this->locationY = y; }
 
   inline void addCreature( Monster *monster, bool value=false ) {
     creatures[monster] = value;
