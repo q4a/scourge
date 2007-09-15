@@ -528,7 +528,7 @@ weaknesses of each profession." ),
 		Skill *skill = Skill::skills[i];
 		if( skill->getGroup()->isStat() ) {
 			y = 60 + n * buttonHeight;
-			cards->createLabel( secondColStart, y, skill->getName(), STAT_TAB );
+			cards->createLabel( secondColStart, y, skill->getDisplayName(), STAT_TAB );
 			skillValue[n] = cards->createLabel( secondColStart + 105, y, 
 																					"", 
 																					STAT_TAB );
