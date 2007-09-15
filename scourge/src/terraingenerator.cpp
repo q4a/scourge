@@ -225,7 +225,7 @@ bool TerrainGenerator::addStairs(Map *map, ShapePalette *shapePal) {
   // add stairs for multi-level missions
   if(stairsUp) {
     bool done = false;
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < roomCount; i++) {
       Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_UP");
       int x, y;
       bool fits = getLocationInRoom(map, i, shape, &x, &y);
@@ -242,7 +242,7 @@ bool TerrainGenerator::addStairs(Map *map, ShapePalette *shapePal) {
   }
   if(stairsDown) {
     bool done = false;
-    for(int i = 0; i < 10; i++) {
+    for(int i = roomCount - 1; i >= 0; i--) {
       Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_DOWN");
       int x, y;
       bool fits = getLocationInRoom(map, i, shape, &x, &y);
