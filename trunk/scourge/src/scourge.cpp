@@ -348,10 +348,9 @@ void Scourge::startMission( bool startInHq ) {
       // run mission
       getSDLHandler()->mainLoop();
 
-			// Save the current map (except HQ and completed missions)
+			// Save the current map (except HQ)
 			if( !session->isMultiPlayerGame() && 
-					session->getCurrentMission() &&
-					!session->getCurrentMission()->isCompleted() ) {
+					session->getCurrentMission() ) {
 				if( !saveCurrentMap() ) {
 					showMessageDialog( _( "Error saving current map." ) );
 				}
@@ -615,15 +614,15 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		char path[300];
 		getCurrentMapName( path );
 		bool loaded = loadMap( path, fromRandomMap, true, 
-													 ( getSession()->getCurrentMission()->isEdited() ? 
-														 getSession()->getCurrentMission()->getMapName() : 
-														 NULL ) );
-
+							   ( getSession()->getCurrentMission()->isEdited() ? 
+								 getSession()->getCurrentMission()->getMapName() : 
+								 NULL ) );
+		
 		if( !loaded && getSession()->getCurrentMission()->isEdited() ) {
 			// try to load the edited map
 			loaded = loadMap( getSession()->getCurrentMission()->getMapName(),
-												fromRandomMap,
-												false );
+							  fromRandomMap,
+							  false );
 		}
 
 		// if no edited map is found, make a random map
@@ -649,16 +648,18 @@ bool Scourge::loadMap( char *mapName, bool fromRandomMap, bool absolutePath, cha
 	vector< RenderedItem* > items;
 	vector< RenderedCreature* > creatures;
 	loaded = levelMap->loadMap( mapName,
-															result,
-															this,
-															getSession()->getCurrentMission()->getLevel(),
-															currentStory,
-															changingStory,
-															fromRandomMap,
-															&items,
-															&creatures,
-															absolutePath,
-															templateMapName );
+								result,
+								this,
+								getSession()->getCurrentMission()->getLevel(),
+								currentStory,
+								changingStory,
+								fromRandomMap,
+								( oldStory > currentStory ? true : false ),
+								( oldStory < currentStory ? true : false ),
+								&items,
+								&creatures,
+								absolutePath,
+								templateMapName );
 	cerr << "LOAD MAP result=" << result << endl;
 
   linkMissionObjectives( &items, &creatures );

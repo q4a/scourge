@@ -3355,12 +3355,13 @@ void Map::initForCave( char *themeName ) {
 }
 
 bool Map::loadMap( char *name, char *result, StatusReport *report, 
-									 int level, int depth, 
-									 bool changingStory, bool fromRandom, 
-									 vector< RenderedItem* > *items, 
-									 vector< RenderedCreature* > *creatures, 
-									 bool absolutePath,
-									 char *templateMapName ) {
+				   int level, int depth, 
+				   bool changingStory, bool fromRandom,
+				   bool goingUp, bool goingDown, 
+				   vector< RenderedItem* > *items, 
+				   vector< RenderedCreature* > *creatures, 
+				   bool absolutePath,
+				   char *templateMapName ) {
   if( !strlen( name ) ) {
     strcpy( result, _( "Enter a name of a map to load." ) );
     return false;
@@ -3443,6 +3444,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 
   if( report ) report->updateStatus( 2, 7, _( "Starting map" ) );
 
+  /*
   // Start at the saved start pos. or where the party
   // was on the last level if changing stories.
 	// When using an absolutePath (ie. saved generated maps) also start at the last
@@ -3454,6 +3456,9 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
     startx = toint( adapter->getPlayer()->getX() );
     starty = toint( adapter->getPlayer()->getY() );
   }
+  */
+  startx = info->start_x;
+  starty = info->start_y;
 
   mapGridX = info->grid_x;
   mapGridY = info->grid_y;
@@ -3527,8 +3532,16 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
     } else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
       shape = shapes->
         findShapeByName( (char*)(info->pos[i]->shape_name), true );
-      if( shape ) setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
-      else cerr << "Map::load failed to find shape: " << info->pos[i]->shape_name <<
+      if( shape ) {
+		setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
+		if( settings->isPlayerEnabled() ) {
+		  if( ( goingUp && !strcmp( (char*)info->pos[i]->shape_name, "GATE_DOWN" ) ) ||
+			  ( goingDown && !strcmp( (char*)info->pos[i]->shape_name, "GATE_UP" ) ) ) {
+			startx = info->pos[i]->x;
+			starty = info->pos[i]->y;
+		  }
+		}
+	  } else cerr << "Map::load failed to find shape: " << info->pos[i]->shape_name <<
         " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
     }
 

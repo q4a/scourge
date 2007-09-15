@@ -303,12 +303,13 @@ private:
 
   void saveMap( char *name, char *result, bool absolutePath=false, int referenceType=REF_TYPE_NAME );
   bool loadMap( char *name, char *result, StatusReport *report=NULL, 
-								int level=1, int depth=0, 
+				int level=1, int depth=0, 
                 bool changingStory=false, bool fromRandom=false, 
+				bool goingUp=false, bool goingDown=false,
                 std::vector< RenderedItem* > *items=NULL, 
                 std::vector< RenderedCreature* > *creatures=NULL, 
-								bool absolutePath=false,
-								char *templateMapName=NULL );
+				bool absolutePath=false,
+				char *templateMapName=NULL );
   void loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth=0 );
 	void initForCave( char *themeName=NULL );
 
