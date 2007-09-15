@@ -27,6 +27,7 @@
 #include <string>
 #include "common/constants.h"
 #include "gui/guitheme.h"
+#include "render/location.h"
 
 class Map;
 class Location;
@@ -78,6 +79,19 @@ struct FValueNodeComparitor
   }
 };
 
+/**
+ * Used to sort locations by x and y.
+ **/
+struct LocationComparitor
+{
+  bool operator()(const Location a, const Location b) const
+  {
+    int ax = a.x;
+    int bx = b.x;
+    return ax < bx || (ax == bx && a.y < b.y);
+  }
+};
+
 //////////////////////////////////////////////////////
 //         Heuristics for guiding the search
 //////////////////////////////////////////////////////
@@ -96,7 +110,7 @@ class Heuristic {
  * Standard "moving toward a single location" heuristic.
  * This one assumes that diagonal moves are allowed.
  **/
-struct DiagonalDistanceHeuristic : public Heuristic
+class DiagonalDistanceHeuristic : public Heuristic
 {
   private:
     int x,y;
@@ -113,7 +127,7 @@ struct DiagonalDistanceHeuristic : public Heuristic
  * This is still a valid heuristic as it always underestimates the distance left and
  * is consistent.
  **/
-struct DistanceAwayHeuristic : public Heuristic
+class DistanceAwayHeuristic : public Heuristic
 {
   private:
     int x,y;
@@ -128,7 +142,7 @@ struct DistanceAwayHeuristic : public Heuristic
  * A "no distance left to goal" heuristic.
  * This results in a Dijkstra (for us, essentially breadth-first) search.
  **/
-struct NoHeuristic : public Heuristic
+class NoHeuristic : public Heuristic
 {
   public:
     NoHeuristic();
@@ -191,6 +205,20 @@ class GetAwayGoal : public GoalFunction {
   public:
     GetAwayGoal(int x, int y, float distance);
     virtual ~GetAwayGoal();
+
+    virtual bool fulfilledBy( CPathNode * node);
+};
+
+/**
+ * Ensures that the goal leaves every provided location clear.
+ **/
+class ClearLocationsGoal : public GoalFunction {
+  private:
+    Creature* searcher; //the creature that is finding a path
+    std::set<Location,LocationComparitor>* locations; //the locations to get away from
+  public:
+    ClearLocationsGoal(Creature* searcher, std::set<Location,LocationComparitor>* locations);
+    virtual ~ClearLocationsGoal();
 
     virtual bool fulfilledBy( CPathNode * node);
 };

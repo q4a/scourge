@@ -21,6 +21,7 @@
 #include "session.h"
 #include "common/constants.h"
 #include "render/location.h"
+#include "render/map.h"
 #include "render/glshape.h"
 
 using namespace std;
@@ -29,6 +30,8 @@ using namespace std;
 // how close to stay to the player
 #define CLOSE_DISTANCE 8
 
+#define MOVE_STATE_NORMAL 0
+#define MOVE_STATE_CLEARING_PATH 1
 /**
  * Formations are defined by 4 set of coordinates in 2d space.
  * These starting positions assume dir=Constants::MOVE_UP
@@ -44,7 +47,8 @@ static const Sint16 layout[][4][2] = {
 
 PathManager::PathManager(Creature* owner){
   this->owner = owner;
-  this->positionOnPath = 0;
+  positionOnPath = 0;
+  moveState = MOVE_STATE_NORMAL;
 }
 PathManager::~PathManager(){
 
@@ -58,7 +62,10 @@ bool PathManager::findPath(int x, int y, Creature* player, Map* map, bool ignore
   delete goal;
   
   positionOnPath = 0;
-  
+  moveState = MOVE_STATE_NORMAL;
+
+  calculateAllPathLocations();
+  moveNPCsOffPath(player,map);
   if(path.size() == 0) return x == toint(owner->getX()) && y == toint(owner->getY());
   Location last = path[path.size()-1];
   return last.x == x && last.y == y;
@@ -75,6 +82,10 @@ bool PathManager::findPathToCreature(Creature* target, Creature* player, Map* ma
   delete goal;
 
   positionOnPath = 0;
+  moveState = MOVE_STATE_NORMAL;
+
+  calculateAllPathLocations();
+  moveNPCsOffPath(player,map);
 
   return isPathTowardTargetCreature(distance);
 }
@@ -90,70 +101,105 @@ void PathManager::findPathAway(int awayX, int awayY, Creature* player, Map* map,
   delete goal;
  
   positionOnPath = 0;
+  moveState = MOVE_STATE_NORMAL;
+  
+  calculateAllPathLocations();
 }
+
 /**
- * Get a path away from a creature.
+ * Get a path away from given locations.
+ * This assumes some external force has taken over the creature. So their path will be overwritten and the selected
+ * x and y location will be changed.
  **/
-bool PathManager::findPathAway(Creature* other, Creature* player, Map* map, bool tryHard, float distance, bool ignoreParty, int maxNodes){
-  findPathAway(toint(other->getX() + other->getShape()->getWidth()/2.0f),toint(other->getY() + other->getShape()->getDepth()/2.0f),
-               player,map,distance,ignoreParty,maxNodes);
+void PathManager::findPathOffLocations(set<Location,LocationComparitor>* locations, Creature* player, Map* map, int maxNodes){
+  GoalFunction * goal = new ClearLocationsGoal(owner,locations);
+  Heuristic * heuristic = new NoHeuristic();
+  AStar::findPath(toint(owner->getX()),toint(owner->getY()),&path,map,owner,player,maxNodes,false,goal,heuristic);
+  delete heuristic;
+  delete goal;
  
-  bool pathFound = false;
-  int minIntersect = 0;
+  positionOnPath = 0;
+  moveState = MOVE_STATE_CLEARING_PATH;
+  if(path.size() > 0) owner->setSelXYNoPath(path[path.size()-1].x,path[path.size()-1].y);
+  calculateAllPathLocations();
+  //cout << owner->getName() << " moving out of the way. Path length " << path.size() << "\n";
+  //now merge our path with the locations provided and get NPCs off both? Beware infinite loops
+}
 
-  if( !path.empty() && 
-      !AStar::isOutOfTheWay( owner, &path, 0, player, 
-                             player->getPathManager()->getPath(), player->getPathManager()->getPositionOnPath() + 1 ) ) {
-    int intersectCount = 0;
-    for( int i = 0; i < owner->getSession()->getCreatureCount(); i++ ) {
-         Creature *c = owner->getSession()->getCreature( i ); 
-      if( c != owner && c->isNpc() && 
-          AStar::isOutOfTheWay( owner, &path, 0, 
-                                c, c->getPathManager()->getPath(), c->getPathManager()->getPositionOnPath() + 1 ) ) {
-        intersectCount++;
-      }
-    }
-								
-    for( int i = 0; i < owner->getSession()->getParty()->getPartySize(); i++ ) {
-         Creature *c = owner->getSession()->getParty()->getParty( i );
-      if( tryHard ) {
-        if( c != owner && c != player && 
-            !AStar::isOutOfTheWay( owner, &path, 0, 
-                                   c, c->getPathManager()->getPath(), c->getPathManager()->getPositionOnPath() + 1 ) ) {
-          c->moveAway( other );
-        }
-      }
-      else {
-        if( c != owner && 
-            AStar::isOutOfTheWay( owner, &path, 0, 
-                                  c, c->getPathManager()->getPath(), c->getPathManager()->getPositionOnPath() + 1 ) ) {
-          intersectCount++;
-        }
-      }
-    }		
-    // if this puts a pc out of range; that's bad
-    if( !owner->isMonster() ) {
-      float dist = owner->getDistance( owner->getSession()->getParty()->getPlayer() );
-      if( dist >= CLOSE_DISTANCE ) {
-          intersectCount += 2;
-      }
+void PathManager::calculateAllPathLocations(){
+  allPathLocations.clear();
+  //first add our current location. We need this incase of 0 length path.
+  int x = toint(owner->getX());
+  int y = toint(owner->getY());
+  Location loc;
+  loc.z = 0;
+  for(int k = 0; k < owner->getShape()->getWidth(); k++)
+    for(int m = 0; m < owner->getShape()->getDepth(); m++){
+      loc.x = x+k;
+      loc.y = y+m;
+      allPathLocations.insert(loc);
     }
 
-    if( minIntersect == 0 || intersectCount < minIntersect ) {
-      //owner->setSpeed(FAST_SPEED);
-     // owner->selX = path[ path.size() - 1 ].x;
-     // owner->selY = path[ path.size() - 1 ].y;
-     owner->setSelXY( path[ path.size() - 1 ].x, path[ path.size() - 1 ].y); //TODO: this plans another path which is unnecessary
-     //clearPath();
-     // for( int i = 0; i < (int)path.size(); i++ ) path.push_back( path[ i ] );
-      //pathSelected = true;
-      minIntersect = intersectCount;
-    //  if( minIntersect == 0 ) pathSelected = true;
-      pathFound = true;
-
-    }
+  //now do the rest of the path. Duplicates are thrown out by the set
+  for(unsigned int j = positionOnPath; j < path.size(); j++){
+    x = path[j].x;
+    y = path[j].y;
+    //add every location our body would fill
+    for(int k = 0; k < owner->getShape()->getWidth(); k++)
+      for(int m = 0; m < owner->getShape()->getDepth(); m++){
+          loc.x = x+k;
+          loc.y = y+m;
+          allPathLocations.insert(loc);
+      }
   }
-  return pathFound;
+}
+
+void PathManager::moveNPCsOffPath(Creature* player, Map* map){
+  //check every location we will occupy
+  set<Location>::iterator setItr = allPathLocations.begin();
+  while(setItr != allPathLocations.end()){
+    Location loc = *setItr;
+    Location* mapLoc = map->getLocation(loc.x,loc.y,0);
+    if(mapLoc && mapLoc->creature && mapLoc->creature != owner && 
+       (!mapLoc->creature->isMonster() || mapLoc->creature->isNpc())){
+      Creature* blocker = (Creature*)mapLoc->creature;
+     // cout << blocker->getName() << " is in the way.\n";
+      blocker->setMotion(Constants::MOTION_MOVE_AWAY); //make sure monsters do the move too
+
+      bool inTheWay = blocker->getPathManager()->atEndOfPath();
+      if(!inTheWay){
+        //now check to make sure that their path does actually get out of the way
+        Location end = blocker->getPathManager()->getEndOfPath();
+        inTheWay = isBlockingPath(blocker,end.x,end.y);
+      }
+      //it's some other NPC who isn't moving! Get OUT of the WAY!
+      if(inTheWay)
+        blocker->getPathManager()->findPathOffLocations(&allPathLocations,player,map,100);
+      else{
+      //  cout << "blocker is getting out of the way, current: " << toint(blocker->getX()) << "," << toint(blocker->getY()) << " target: " << blocker->getPathManager()->getEndOfPath().x << "," << blocker->getPathManager()->getEndOfPath().y << "\n";  
+      }
+    }
+    setItr++;
+  }
+}
+
+bool PathManager::isBlockingPath(Creature* blocker){
+  return isBlockingPath(blocker,toint(blocker->getX()),toint(blocker->getY()));
+}
+
+bool PathManager::isBlockingPath(Creature* blocker, int x, int y){
+  set<Location>::iterator containsItr;
+  Location loc;
+  loc.z = 0;
+  for(int i = 0; i < blocker->getShape()->getWidth(); i++)
+    for(int j = 0; j < blocker->getShape()->getDepth(); j++){
+      loc.x = x+i;
+      loc.y = y+j;
+      if((containsItr = allPathLocations.find(loc)) != allPathLocations.end()){
+        return true;
+      }
+    }
+  return false;
 }
 
 // does the path end in the target creature
@@ -183,14 +229,17 @@ bool PathManager::isPathTowardTargetCreature(float range) {
 }
 
 int PathManager::getSpeed(){
+  if(this->moveState == MOVE_STATE_CLEARING_PATH)
+    return FAST_SPEED;
   return owner->getSpeed(); //the creature should walk as fast as it is walking.
 }
 
 void PathManager::incrementPositionOnPath(){
   positionOnPath++;
+  if(atEndOfPath()) moveState = MOVE_STATE_NORMAL;
 }
 bool PathManager::atEndOfPath(){
-  return positionOnPath >= path.size()-1;
+  return path.size() == 0 || positionOnPath >= path.size()-1;
 }
 bool PathManager::atStartOfPath(){
   return positionOnPath == 0;

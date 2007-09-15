@@ -21,7 +21,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <vector> 
+#include <set> 
 #include "render/renderedcreature.h"
+#include "render/location.h"
+#include "astar.h"
 
 class Map;
 class Location;
@@ -38,7 +41,12 @@ class PathManager{
   private:
     Creature* owner;
     std::vector<Location> path;
+    std::set<Location,LocationComparitor> allPathLocations;
+
     unsigned int positionOnPath; //how far down the path this creature is
+    int moveState;
+
+    void calculateAllPathLocations();
   public:
     PathManager(Creature* owner);
     virtual ~PathManager();
@@ -49,7 +57,9 @@ class PathManager{
     virtual bool findPath(int x, int y, Creature* player, Map* map, bool ignoreParty=false, int maxNodes=100);
     virtual bool findPathToCreature(Creature* target, Creature* player, Map* map, float distance=MIN_DISTANCE, bool ignoreParty=false, int maxNodes=100);
     virtual void findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty=false, int maxNodes=100);
-    virtual bool findPathAway(Creature* other, Creature* player, Map* map, bool tryHard, float distance, bool ignoreParty=false, int maxNodes=100);
+    void findPathOffLocations(std::set<Location,LocationComparitor>* locations, Creature* player, Map* map, int maxNodes);
+    
+    void moveNPCsOffPath(Creature* player, Map* map); //runs up the path, asking any stationary NPCs to clear off
     virtual int getSpeed();
 
     void incrementPositionOnPath();
@@ -61,8 +71,12 @@ class PathManager{
 
     Location getEndOfPath();
 
+    bool isBlockingPath(Creature* blocker);
+    bool isBlockingPath(Creature* blocker, int x, int y);
     bool isPathToTargetCreature();
     bool isPathTowardTargetCreature(float range);
+   
+    
 
 };
 

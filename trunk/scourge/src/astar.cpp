@@ -79,6 +79,35 @@ bool GetAwayGoal::fulfilledBy( CPathNode * node){
 }
 
 /**
+ * Get within a given range of the target creature.
+ **/
+ClearLocationsGoal::ClearLocationsGoal(Creature* searcher, set<Location,LocationComparitor>* locations){
+  this->searcher = searcher; 
+  this->locations = locations;
+}
+ClearLocationsGoal::~ClearLocationsGoal(){}
+
+bool ClearLocationsGoal::fulfilledBy( CPathNode * node){
+  int x = node->x;
+  int y = node->y;
+  int w = toint(searcher->getShape()->getWidth());
+  int d = toint(searcher->getShape()->getDepth());
+  Location loc;
+  loc.z = 0;
+  set<Location>::iterator setItr;
+  //check every occupied location against the set of locations
+  for(int i = 0; i < w; i++)
+    for(int j = 0; j < d; j++){
+      loc.x = x+i;
+      loc.y = y+j;
+      if((setItr = locations->find(loc)) != locations->end())
+        return false;
+    }
+  return true;
+}
+
+
+/**
  * Aim for the x,y coordinates of the creature, but any
  * node that it occupies can be the goal.
  **/
