@@ -1893,7 +1893,7 @@ void Scourge::moveMonster(Creature *monster) {
       monster->decideMonsterAction();
     } else {
       // random (non-attack) monster movement
-			monster->move(monster->getDir());
+	monster->move(monster->getDir());
     }
   } else if(monster->getMotion() == Constants::MOTION_STAND) {
     if( (int)(40.0f * rand()/RAND_MAX) == 0) {

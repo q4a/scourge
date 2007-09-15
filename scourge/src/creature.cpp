@@ -558,7 +558,7 @@ bool Creature::isNpc() {
 	return( monster ? monster->isNpc() : false );
 }
 
-void Creature::moveAway( Creature *other ) {
+/*void Creature::moveAway( Creature *other ) {
   bool tryHard = false;
   // already moving away
   if( getMotion() == Constants::MOTION_MOVE_AWAY ) {
@@ -597,14 +597,14 @@ void Creature::moveAway( Creature *other ) {
     other->stopMoving();
     other->setMotion( Constants::MOTION_MOVE_TOWARDS );
   }
-}
+}*/
 
-void Creature::cancelMoveAway() {
+/*void Creature::cancelMoveAway() {
 	if( getMotion() == Constants::MOTION_MOVE_AWAY ) {
 		stopMoving();
 		setMotion( Constants::MOTION_MOVE_TOWARDS );
 	}
-}
+}*/
 
 bool Creature::follow( Creature *leader ) {
 	float dist = getDistance( leader );
@@ -632,7 +632,7 @@ bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) 
   selY = y; 
   if(x < 0 || y < 0) return true; //this is often used to deselect
 
-  setMotion(Constants::MOTION_MOVE_TOWARDS);   
+  setMotion(Constants::MOTION_MOVE_TOWARDS);
 
   // find the path
   tx = selX;
@@ -743,7 +743,7 @@ Location *Creature::moveToLocator() {
       setMotion( Constants::MOTION_MOVE_TOWARDS );			
 			
       // stop move-away-s
-      if( this == session->getParty()->getPlayer() ) {
+     /* if( this == session->getParty()->getPlayer() ) {
         for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
           session->getParty()->getParty( i )->cancelMoveAway();
         }
@@ -752,15 +752,16 @@ Location *Creature::moveToLocator() {
             session->getCreature( i )->cancelMoveAway();
           }
         }
-      }
+      }*/
     } 
     else if( pos ) {
       // if blocked by a creature (non-monster), tell them to move out of the way
-      if( pos && pos->creature &&
+      /*if( pos && pos->creature &&
         pos->creature != session->getParty()->getPlayer() &&
         ( !pos->creature->isMonster() || pos->creature->isNpc() ) ) {				
         ((Creature*)pos->creature)->moveAway( this );
-      }
+      }*/
+      pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());
       cantMoveCounter++;
     } 
     else if( !pos ) {
@@ -799,7 +800,7 @@ Location *Creature::takeAStepOnPath() {
     else if( my < -tolerance ) newY -= step;
     if( mx > tolerance ) newX += step;
     else if( mx < -tolerance ) newX -= step;
-
+    
     //if( !strcmp(getName(), "Alamont") ) 
 //      cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
 
@@ -830,6 +831,7 @@ Location *Creature::takeAStepOnPath() {
         moveCreature(toint(getX()), toint(getY()), toint(getZ()),
                      toint(getX()), toint(newY), toint(getZ()),
                      this);
+      
       if( !position ) {
         newX = getX();
       } else {
@@ -837,6 +839,7 @@ Location *Creature::takeAStepOnPath() {
           moveCreature(toint(getX()), toint(getY()), toint(getZ()),
                        toint(newX), toint(getY()), toint(getZ()),
                        this);
+          
         if( !position ) {
           newY = getY();
         }
@@ -850,6 +853,8 @@ Location *Creature::takeAStepOnPath() {
       moveTo( newX, newY, getZ() );
       if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
         pathManager->incrementPositionOnPath();
+        //we'll clear the path every so often - each time we move a step is ok
+        pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap()); //this clears the path infront, and unfortunately the path behind
       }
     } else {
       // if we can't get to the destination, stop trying
@@ -2084,12 +2089,12 @@ GLfloat Creature::getStep() {
   GLfloat div = FPS_ONE + (float)( ( 4 - session->getPreferences()->getGameSpeedLevel() ) * 3.0f);
   if( fps < div ) return 0.8f;
   GLfloat step = 1.0f / ( fps / div  ); 
-  if( getSpeed() <= 0 ) {
+  if( pathManager->getSpeed() <= 0 ) {
     step *= 1.0f - ( 1.0f / 10.0f );
-  } else if( getSpeed() >= 10 ) {
+  } else if( pathManager->getSpeed() >= 10 ) {
     step *= 1.0f - ( 9.9f / 10.0f );
   } else {
-    step *= ( 1.0f - ((GLfloat)(getSpeed()) / 10.0f ));
+    step *= ( 1.0f - ((GLfloat)(pathManager->getSpeed()) / 10.0f ));
   }
   return step;
 }
