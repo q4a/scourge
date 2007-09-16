@@ -51,7 +51,7 @@ TerrainGenerator *TerrainGenerator::getGenerator( Scourge *scourge, int depth ) 
 												( depth > 0 ),
 												mission );
 	} else {
-		if( ( 1.0f * rand() / RAND_MAX ) >= 0.5f ) {
+		if( (int)( 5.0f * rand() / RAND_MAX ) == 0 ) {
 			dg = new MondrianGenerator( scourge, 
 																	mission->getLevel(), 
 																	depth,

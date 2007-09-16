@@ -350,6 +350,15 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		room[r].y = roomA.y;
 		room[r].w = roomA.w;		
 		room[r].h = roomA.h;
+
+		// alternate floor tile style
+		if( roomCount % 2 == 0 ) {
+			for(int x = 0; x < room[r].w; x++){
+				for(int y = 0; y < room[r].h; y++){
+					nodes[x + room[r].x][y + room[r].y] -= ROOM;
+				}
+			}
+		}
 	
 		//printf("N: %d x/y %d/%d w/h %d/%d\n", r, roomA.x, roomA.y, roomA.w, roomA.h);
 	
@@ -365,6 +374,15 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		room[r].y = roomB.y;
 		room[r].w = roomB.w;	
 		room[r].h = roomB.h;
+
+		// alternate floor tile style
+		if( roomCount % 2 == 0 ) {
+			for(int x = 0; x < room[r].w; x++){
+				for(int y = 0; y < room[r].h; y++){
+					nodes[x + room[r].x][y + room[r].y] -= ROOM;
+				}
+			}
+		}
 		
 		//printf("N: %d x/y %d/%d w/h %d/%d\n", r, roomB.x, roomB.y, roomB.w, roomB.h);		
 				
