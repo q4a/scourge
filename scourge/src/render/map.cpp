@@ -4478,3 +4478,24 @@ void Map::drawTraps() {
   }  
 }
 
+bool Map::canFit( int x, int y, Shape *shape ) {
+	if( x < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET ||
+			y < MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+		return false;
+	}
+	int fx = ( ( x - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+	int fy = ( ( y - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+	Shape *floor = floorPositions[fx][fy];
+	if( floor ) {
+		return( !isBlocked( x, y, 0, 0, 0, 0, shape, NULL ) ? true : false );
+	}
+	return false;
+}	
+
+bool Map::isEmpty( int x, int y ) {
+	if( x < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET ||
+			y < MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+		return false;
+	}
+	return( getLocation( x, y, 0 ) == NULL ? true : false );
+}

@@ -609,6 +609,12 @@ private:
   inline std::set<Uint8> *getTrapsShown() { return &trapSet; }
   inline int getSelectedTrapIndex() { return selectedTrapIndex; }
 
+	/**
+	 * Is it safe to put a create here? (ie. has floor, etc.)
+	 */
+	bool canFit( int x, int y, Shape *shape );
+	bool isEmpty( int x, int y );
+
 protected:
 
   void clearTraps();
