@@ -19,6 +19,7 @@
 #define RENDERED_CREATURE_H
 
 #include "render.h"
+#include <set>
 
 class RenderedItem;
 class Effect;
@@ -92,9 +93,12 @@ public:
   virtual inline bool isEffectOn() { return (SDL_GetTicks() - damageEffectCounter < effectDuration ? true : false); }
 
   virtual void findPlace( int x, int y, int *finalX=NULL, int *finalY=NULL );
+	virtual void findPlace_old( int x, int y, int *finalX=NULL, int *finalY=NULL );
 
 
 protected:
+	bool doFindStart( int *startx, int *starty );
+	bool doFindPlace( int startx, int starty, int *finalX, int *finalY, std::set<int> *seen );
   bool canReach( int startx, int starty, int firstx, int firsty, int xx, int yy, std::map<int,bool> *seen );
 
 };

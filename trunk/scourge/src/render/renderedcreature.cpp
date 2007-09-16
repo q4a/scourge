@@ -83,12 +83,86 @@ void RenderedCreature::removeRecentDamage( int i ) {
   recentDamagesCount--;
 }
 
+
+void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *finalY ) {
+	int fx = 0;
+	int fy = 0;
+	int sx = startx;
+	int sy = starty;
+	set<int> seen;
+	if( doFindStart( &sx, &sy ) ) {
+		if( !doFindPlace( sx, sy, &fx, &fy, &seen ) ) {
+			cerr << "Warning: can't find place for creature." << endl;
+		} else {
+			moveTo( fx, fy, 0 );
+			setSelXY( fx, fy );
+			levelMap->setCreature( fx, fy, 0, this );
+			if( finalX ) *finalX = fx;
+			if( finalY ) *finalY = fy;
+		}
+	} else {
+		cerr << "Warning: can't find starting place." << endl;
+	}
+}
+
+// Find a free starting location (for the recursion) to the left and above the given start.
+bool RenderedCreature::doFindStart( int *startx, int *starty ) {
+	int xx;
+	int yy = *starty;
+	while( yy >= MAP_OFFSET ) {
+		xx = *startx;
+		while( xx >= MAP_OFFSET ) {
+			Location *pos = levelMap->getLocation( xx, yy, 0 );
+			if( !pos ) {
+				*startx = xx;
+				*starty = yy;
+				return true;
+			} else {
+				xx = pos->x - 1;
+			}
+		}
+		yy--;
+	}
+	return false;
+}
+
+#define EMPTY_POS(x,y) !(*finalX) && levelMap->isEmpty( (x), (y) ) && seen->find( (x) + (y) * MAP_WIDTH ) == seen->end()
+
+bool RenderedCreature::doFindPlace( int startx, int starty, int *finalX, int *finalY, set<int> *seen ) {
+	if( *finalX ) return true;
+
+	if( levelMap->canFit( startx, starty, getShape() ) ) {
+		*finalX = startx;
+		*finalY = starty;
+		return true;
+	}
+
+	seen->insert( startx + starty * MAP_WIDTH );
+
+	if( EMPTY_POS( startx + 1, starty ) ) {
+		if( doFindPlace( startx + 1, starty, finalX, finalY, seen ) ) return true;
+	}
+	if( EMPTY_POS( startx, starty + 1 ) ) {
+		if( doFindPlace( startx, starty + 1, finalX, finalY, seen ) ) return true;
+	}
+	if( EMPTY_POS( startx - 1, starty ) ) {
+		if( doFindPlace( startx - 1, starty, finalX, finalY, seen ) ) return true;
+	}
+	if( EMPTY_POS( startx, starty - 1 ) ) {
+		if( doFindPlace( startx, starty - 1, finalX, finalY, seen ) ) return true;
+	}
+	
+	return false;
+}
+
+
+
 /**
  * This can be a pretty slow method...
  */
 #define FIND_PLACE_LIMIT 100
 
-void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *finalY ) {
+void RenderedCreature::findPlace_old( int startx, int starty, int *finalX, int *finalY ) {
   int dir = Constants::MOVE_UP;
   int ox = startx;
   int oy = starty;
@@ -105,7 +179,7 @@ void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
     seen.clear();
 
     // can player fit here?
-    if( !levelMap->isBlocked( xx, yy, 0, 0, 0, 0, getShape(), NULL ) && 
+    if( levelMap->canFit( xx, yy, getShape() ) && 
         canReach( startx, starty, startx, starty, xx, yy, &seen ) ) {
       //cerr << "Placed party member: " << t << " at: " << xx << "," << yy << endl;
       moveTo( xx, yy, 0 );

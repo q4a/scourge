@@ -396,7 +396,7 @@ MissionTemplate::~MissionTemplate() {
 
 Mission *MissionTemplate::createMission( Session *session, int level, int depth, MissionInfo *info ) {
 
-  cerr << "*** Creating level " << level << " mission, using template: " << this->name << " type=" << mapType << endl;
+//  cerr << "*** Creating level " << level << " mission, using template: " << this->name << " type=" << mapType << endl;
 
   map<string, RpgItem*> items;
   map<string, Monster*> creatures;
@@ -460,7 +460,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
 	mission->setTemplateName( this->name );
 	if( info ) {
 		mission->setSavedMapName( (char*)info->mapName );
-		cerr << "\tmap name=" << (char*)info->mapName << endl;
+		//cerr << "\tmap name=" << (char*)info->mapName << endl;
 		mission->setCompleted( info->completed == 1 ? true : false );
 	}
 
@@ -1196,7 +1196,7 @@ Mission *Mission::load( Session *session, MissionInfo *info ) {
 	Mission *mission;
 	if( !strcmp( (char*)info->templateName, "storyline" ) ) {
 		mission = session->getBoard()->getCurrentStorylineMission();
-		cerr << "Loading storyling mission. chapter index=" << session->getBoard()->getStorylineIndex() << " - " << session->getBoard()->getStorylineTitle() << endl;
+		//cerr << "Loading storyling mission. chapter index=" << session->getBoard()->getStorylineIndex() << " - " << session->getBoard()->getStorylineTitle() << endl;
 		mission->loadStorylineMission( info );
 	} else {
 		MissionTemplate *missionTemplate = session->getBoard()->
@@ -1205,7 +1205,7 @@ Mission *Mission::load( Session *session, MissionInfo *info ) {
 			cerr << "Can't find template for name: " << info->templateName << endl;
 			return NULL;
 		}
-		cerr << "Loading mission with template: " << (char*)(info->templateName) << " map: " << info->mapName << endl;
+		//cerr << "Loading mission with template: " << (char*)(info->templateName) << " map: " << info->mapName << endl;
 		mission = missionTemplate->createMission( session, info->level, info->depth, info );
 	}
 	mission->setMissionId( info->missionId );
