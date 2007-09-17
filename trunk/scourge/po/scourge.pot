@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-05-09 22:09-0700\n"
+"POT-Creation-Date: 2007-09-17 07:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,53 +89,53 @@ msgstr ""
 msgid "%s feels a loss of contentment."
 msgstr ""
 
-#: src/render/map.cpp:3021
+#: src/render/map.cpp:3156
 msgid "You need to name the map first."
 msgstr ""
 
-#: src/render/map.cpp:3206 src/render/map.cpp:3444
+#: src/render/map.cpp:3366 src/render/map.cpp:3648
 msgid "Enter a name of a map to load."
 msgstr ""
 
-#: src/render/map.cpp:3227
+#: src/render/map.cpp:3387
 msgid "Loading map"
 msgstr ""
 
-#: src/render/map.cpp:3232 src/dungeongenerator.cpp:593 src/mondrian.cpp:467
+#: src/render/map.cpp:3392 src/dungeongenerator.cpp:593 src/mondrian.cpp:485
 msgid "Loading theme"
 msgstr ""
 
-#: src/render/map.cpp:3263
+#: src/render/map.cpp:3445
 msgid "Starting map"
 msgstr ""
 
-#: src/render/map.cpp:3280
+#: src/render/map.cpp:3466
 msgid "Initializing map"
 msgstr ""
 
-#: src/render/map.cpp:3393
+#: src/render/map.cpp:3597
 msgid "Finishing map"
 msgstr ""
 
-#: src/render/map.cpp:3399 src/rpg/monster.cpp:26 src/session.cpp:115
+#: src/render/map.cpp:3603 src/rpg/monster.cpp:26 src/session.cpp:115
 msgid "Loading Creatures"
 msgstr ""
 
-#: src/render/map.cpp:3417
+#: src/render/map.cpp:3621
 msgid "Starting party"
 msgstr ""
 
-#: src/render/map.cpp:3437
+#: src/render/map.cpp:3641
 #, c-format
 msgid "Map loaded: %s"
 msgstr ""
 
-#: src/render/map.cpp:3458
+#: src/render/map.cpp:3662
 #, c-format
 msgid "Can't find map: %s"
 msgstr ""
 
-#: src/render/map.cpp:3468
+#: src/render/map.cpp:3672
 #, c-format
 msgid "Map header loaded: %s"
 msgstr ""
@@ -148,7 +148,7 @@ msgstr ""
 msgid "Ok"
 msgstr ""
 
-#: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:106
+#: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:107
 msgid "No"
 msgstr ""
 
@@ -236,327 +236,327 @@ msgstr ""
 msgid "Not allowed to use armor:"
 msgstr ""
 
-#: src/common/constants.cpp:82
+#: src/common/constants.cpp:83
 msgid "Infamy awaits in the dungeons of Scourge!"
 msgstr ""
 
-#: src/common/constants.cpp:83
+#: src/common/constants.cpp:84
 msgid "Another day, another sewer! Welcome to Scourge!"
 msgstr ""
 
-#: src/common/constants.cpp:84
+#: src/common/constants.cpp:85
 msgid "Happy hunting; welcome to Scourge!"
 msgstr ""
 
-#: src/common/constants.cpp:85
+#: src/common/constants.cpp:86
 msgid "That item is out of your reach"
 msgstr ""
 
-#: src/common/constants.cpp:86
+#: src/common/constants.cpp:87
 msgid "You can't touch that"
 msgstr ""
 
-#: src/common/constants.cpp:87
+#: src/common/constants.cpp:88
 msgid "You have to be closer to get that"
 msgstr ""
 
-#: src/common/constants.cpp:88
+#: src/common/constants.cpp:89
 msgid "You are too far to reach it"
 msgstr ""
 
-#: src/common/constants.cpp:89
+#: src/common/constants.cpp:90
 msgid "The door is blocked"
 msgstr ""
 
-#: src/common/constants.cpp:90
+#: src/common/constants.cpp:91
 msgid "Something is blocking that door"
 msgstr ""
 
-#: src/common/constants.cpp:91
+#: src/common/constants.cpp:92
 msgid "You can't use that door; something is in the way"
 msgstr ""
 
-#: src/common/constants.cpp:92
+#: src/common/constants.cpp:93
 msgid "You are now in single-step mode"
 msgstr ""
 
-#: src/common/constants.cpp:93
+#: src/common/constants.cpp:94
 msgid "You are now in group mode"
 msgstr ""
 
-#: src/common/constants.cpp:94
+#: src/common/constants.cpp:95
 msgid "Paused: you have entered turn-based mode"
 msgstr ""
 
-#: src/common/constants.cpp:95
+#: src/common/constants.cpp:96
 msgid "Un-paused: you are in real-time mode"
 msgstr ""
 
-#: src/common/constants.cpp:96 src/containergui.cpp:40 src/healdialog.cpp:49
+#: src/common/constants.cpp:97 src/containergui.cpp:43 src/healdialog.cpp:49
 #: src/tradedialog.cpp:55 src/optionsmenu.cpp:62 src/conversationgui.cpp:79
 #: src/donatedialog.cpp:50 src/traindialog.cpp:60
 msgid "Close"
 msgstr ""
 
-#: src/common/constants.cpp:97
+#: src/common/constants.cpp:98
 msgid "Drop Item"
 msgstr ""
 
-#: src/common/constants.cpp:98
+#: src/common/constants.cpp:99
 msgid "Open Item"
 msgstr ""
 
-#: src/common/constants.cpp:99
+#: src/common/constants.cpp:100
 msgid "Drag items to/from the list, Right click for info"
 msgstr ""
 
-#: src/common/constants.cpp:100
+#: src/common/constants.cpp:101
 msgid "Play Mission"
 msgstr ""
 
-#: src/common/constants.cpp:101
+#: src/common/constants.cpp:102
 msgid "Do you really want to exit this mission?"
 msgstr ""
 
-#: src/common/constants.cpp:102
+#: src/common/constants.cpp:103
 msgid "Teleport back to base?"
 msgstr ""
 
-#: src/common/constants.cpp:103
+#: src/common/constants.cpp:104
 msgid "OK"
 msgstr ""
 
-#: src/common/constants.cpp:104 src/savegamedialog.cpp:55
-#: src/mapeditor.cpp:263
+#: src/common/constants.cpp:105 src/savegamedialog.cpp:55
+#: src/mapeditor.cpp:287
 msgid "Cancel"
 msgstr ""
 
-#: src/common/constants.cpp:105
+#: src/common/constants.cpp:106
 msgid "Yes"
 msgstr ""
 
-#: src/common/constants.cpp:107
+#: src/common/constants.cpp:108
 msgid "Select a character who is alive and has leveled up."
 msgstr ""
 
-#: src/common/constants.cpp:108
+#: src/common/constants.cpp:109
 msgid "No skill points available."
 msgstr ""
 
-#: src/common/constants.cpp:109
+#: src/common/constants.cpp:110
 msgid "Select a skill first."
 msgstr ""
 
-#: src/common/constants.cpp:110
+#: src/common/constants.cpp:111
 msgid "S.C.O.U.R.G.E. dialog"
 msgstr ""
 
-#: src/common/constants.cpp:111
+#: src/common/constants.cpp:112
 msgid "Use gate to descend a level?"
 msgstr ""
 
-#: src/common/constants.cpp:112
+#: src/common/constants.cpp:113
 msgid "Use gate to ascend a level?"
 msgstr ""
 
-#: src/common/constants.cpp:113
+#: src/common/constants.cpp:114
 msgid "A dead character cannot perform this action."
 msgstr ""
 
-#: src/common/constants.cpp:114
+#: src/common/constants.cpp:115
 msgid "hp:"
 msgstr ""
 
-#: src/common/constants.cpp:115
+#: src/common/constants.cpp:116
 msgid "ac:"
 msgstr ""
 
-#: src/common/constants.cpp:116
+#: src/common/constants.cpp:117
 msgid "Your magic fizzles and dies."
 msgstr ""
 
-#: src/common/constants.cpp:117
+#: src/common/constants.cpp:118
 msgid "Only the roaches are impressed by your mumbled words."
 msgstr ""
 
-#: src/common/constants.cpp:118
+#: src/common/constants.cpp:119
 msgid "The silence is broken only by some crickets nearby."
 msgstr ""
 
-#: src/common/constants.cpp:119
+#: src/common/constants.cpp:120
 msgid "Bazzoomm! A small cloud of smoke rises to the ceiling."
 msgstr ""
 
-#: src/common/constants.cpp:120
+#: src/common/constants.cpp:121
 msgid "Your character cannot equip that item."
 msgstr ""
 
-#: src/common/constants.cpp:121
+#: src/common/constants.cpp:122
 msgid "Fill out the server details, first."
 msgstr ""
 
-#: src/common/constants.cpp:122
+#: src/common/constants.cpp:123
 msgid "Unable to connect to server."
 msgstr ""
 
-#: src/common/constants.cpp:123
+#: src/common/constants.cpp:124
 msgid "You hear a very loud, metallic sound nearby."
 msgstr ""
 
-#: src/common/constants.cpp:124
+#: src/common/constants.cpp:125
 msgid "Something clicks."
 msgstr ""
 
-#: src/common/constants.cpp:125
+#: src/common/constants.cpp:126
 msgid "The loud twang doesn't help; this is freaky enough already."
 msgstr ""
 
-#: src/common/constants.cpp:126
+#: src/common/constants.cpp:127
 msgid "A muffled, metalic, grating noise echoes from the dark."
 msgstr ""
 
-#: src/common/constants.cpp:127
+#: src/common/constants.cpp:128
 msgid ""
 "You've done something... you're not sure what but you hope it's had dinner."
 msgstr ""
 
-#: src/common/constants.cpp:128
+#: src/common/constants.cpp:129
 msgid "You feel the resonance of an almost sub-tonal bass note."
 msgstr ""
 
-#: src/common/constants.cpp:129
+#: src/common/constants.cpp:130
 msgid "An omnious sound floats from a distant corner."
 msgstr ""
 
-#: src/common/constants.cpp:130
+#: src/common/constants.cpp:131
 msgid "Suck! It is locked shut!"
 msgstr ""
 
-#: src/common/constants.cpp:131
+#: src/common/constants.cpp:132
 msgid "Try as you might, you can't open it."
 msgstr ""
 
-#: src/common/constants.cpp:132
+#: src/common/constants.cpp:133
 msgid "Perhaps it's locked."
 msgstr ""
 
-#: src/common/constants.cpp:133
+#: src/common/constants.cpp:134
 msgid "This teleporter is off-line."
 msgstr ""
 
-#: src/common/constants.cpp:134
+#: src/common/constants.cpp:135
 msgid "Nothing happens."
 msgstr ""
 
-#: src/common/constants.cpp:135
+#: src/common/constants.cpp:136
 msgid "The teleporter blinks unimpressively."
 msgstr ""
 
-#: src/common/constants.cpp:136
+#: src/common/constants.cpp:137
 msgid "Information"
 msgstr ""
 
-#: src/common/constants.cpp:137
+#: src/common/constants.cpp:138
 msgid "Delete old saved game?"
 msgstr ""
 
-#: src/common/constants.cpp:138
+#: src/common/constants.cpp:139
 msgid "You're not experienced enough to equip it yet."
 msgstr ""
 
-#: src/common/constants.cpp:139
+#: src/common/constants.cpp:140
 msgid "Change key"
 msgstr ""
 
-#: src/common/constants.cpp:140
+#: src/common/constants.cpp:141
 msgid "Waiting for new key (Esc to cancel)"
 msgstr ""
 
-#: src/common/constants.cpp:141
+#: src/common/constants.cpp:142
 msgid "Conversation"
 msgstr ""
 
-#: src/common/constants.cpp:142 src/conversationgui.cpp:104
+#: src/common/constants.cpp:143 src/conversationgui.cpp:104
 msgid "Trade"
 msgstr ""
 
-#: src/common/constants.cpp:143 src/conversationgui.cpp:100
+#: src/common/constants.cpp:144 src/conversationgui.cpp:100
 msgid "Train"
 msgstr ""
 
-#: src/common/constants.cpp:144
+#: src/common/constants.cpp:145
 msgid "Healing Services"
 msgstr ""
 
-#: src/common/constants.cpp:145
+#: src/common/constants.cpp:146
 msgid "Donate to Temple"
 msgstr ""
 
-#: src/common/constants.cpp:146
+#: src/common/constants.cpp:147
 msgid "You don't meet the prerequisites for this capability."
 msgstr ""
 
-#: src/common/constants.cpp:147
+#: src/common/constants.cpp:148
 msgid "You cannot activate an automatic capability."
 msgstr ""
 
-#: src/common/constants.cpp:148
+#: src/common/constants.cpp:149
 msgid "A two handed item requires two free hands."
 msgstr ""
 
-#: src/common/constants.cpp:149
+#: src/common/constants.cpp:150
 msgid "TRAIN"
 msgstr ""
 
-#: src/common/constants.cpp:150
+#: src/common/constants.cpp:151
 msgid "SKILL"
 msgstr ""
 
-#: src/common/constants.cpp:151
+#: src/common/constants.cpp:152
 msgid "A magical force turns the lock's tumbles to open."
 msgstr ""
 
-#: src/common/constants.cpp:152
+#: src/common/constants.cpp:153
 msgid "Some kind of summoned energy opens the lock."
 msgstr ""
 
-#: src/common/constants.cpp:180
+#: src/common/constants.cpp:181
 msgid "Lesser"
 msgstr ""
 
-#: src/common/constants.cpp:181
+#: src/common/constants.cpp:182
 msgid "Greater"
 msgstr ""
 
-#: src/common/constants.cpp:182
+#: src/common/constants.cpp:183
 msgid "Champion"
 msgstr ""
 
-#: src/common/constants.cpp:183
+#: src/common/constants.cpp:184
 msgid "Divine"
 msgstr ""
 
-#: src/common/constants.cpp:220
+#: src/common/constants.cpp:221
 msgid "commoner"
 msgstr ""
 
-#: src/common/constants.cpp:221
+#: src/common/constants.cpp:222
 msgid "merchant"
 msgstr ""
 
-#: src/common/constants.cpp:222
+#: src/common/constants.cpp:223
 msgid "healer"
 msgstr ""
 
-#: src/common/constants.cpp:223
+#: src/common/constants.cpp:224
 msgid "sage"
 msgstr ""
 
-#: src/common/constants.cpp:224
+#: src/common/constants.cpp:225
 msgid "trainer"
 msgstr ""
 
-#: src/sqbinding/sqcreature.cpp:374 src/spellcaster.cpp:430
+#: src/sqbinding/sqcreature.cpp:387 src/spellcaster.cpp:489
 #, c-format
 msgid "%s resists the spell with magic item!"
 msgstr ""
@@ -597,173 +597,202 @@ msgstr ""
 msgid "Select a character"
 msgstr ""
 
-#: src/creature.cpp:227
+#: src/creature.cpp:221
 #, c-format
 msgid "%1$s's skill in %2$s has increased."
 msgstr ""
 
-#: src/creature.cpp:238
+#: src/creature.cpp:232
 #, c-format
 msgid "%1$s is not allowed to equip %2$s."
 msgstr ""
 
-#: src/creature.cpp:551
+#: src/creature.cpp:550
 msgid "Can't find path to target. Sorry!"
 msgstr ""
 
-#: src/creature.cpp:1005
+#: src/creature.cpp:943
 #, c-format
 msgid "%s is overloaded."
 msgstr ""
 
-#: src/creature.cpp:1066
+#: src/creature.cpp:1004
 #, c-format
 msgid "%s is not overloaded anymore."
 msgstr ""
 
-#: src/creature.cpp:1102
+#: src/creature.cpp:1040
 #, c-format
 msgid "%s is not hungry at the moment."
 msgstr ""
 
-#: src/creature.cpp:1113
+#: src/creature.cpp:1051
 #, c-format
 msgid "%1$s eats %2$s."
 msgstr ""
 
-#: src/creature.cpp:1117 src/creature.cpp:1135 src/creature.cpp:1150
+#: src/creature.cpp:1055 src/creature.cpp:1073 src/creature.cpp:1088
 #, c-format
 msgid "%s is used up."
 msgstr ""
 
-#: src/creature.cpp:1123
+#: src/creature.cpp:1061
 #, c-format
 msgid "%s is not thirsty at the moment."
 msgstr ""
 
-#: src/creature.cpp:1130
+#: src/creature.cpp:1068
 #, c-format
 msgid "%1$s drinks %2$s."
 msgstr ""
 
-#: src/creature.cpp:1145
+#: src/creature.cpp:1083
 #, c-format
 msgid "%1$s drinks from %2$s."
 msgstr ""
 
-#: src/creature.cpp:1155
+#: src/creature.cpp:1093
 msgid "You cannot eat or drink that!"
 msgstr ""
 
-#: src/creature.cpp:1175 src/spellcaster.cpp:223
+#: src/creature.cpp:1113 src/spellcaster.cpp:282
 #, c-format
 msgid "%s heals %d points."
 msgstr ""
 
-#: src/creature.cpp:1184
+#: src/creature.cpp:1122
 #, c-format
 msgid "%s receives %d magic points."
 msgstr ""
 
-#: src/creature.cpp:1192 src/spellcaster.cpp:239
+#: src/creature.cpp:1130 src/spellcaster.cpp:298
 #, c-format
 msgid "%s feels impervious to damage!"
 msgstr ""
 
-#: src/creature.cpp:1212
+#: src/creature.cpp:1150
 #, c-format
 msgid "%s feels at peace."
 msgstr ""
 
-#: src/creature.cpp:1242
+#: src/creature.cpp:1180
 #, c-format
 msgid "%1$s will consume %2$s."
 msgstr ""
 
-#: src/creature.cpp:1246
+#: src/creature.cpp:1184
 #, c-format
 msgid "%1$s will cast %2$s."
 msgstr ""
 
-#: src/creature.cpp:1250
+#: src/creature.cpp:1188
 #, c-format
 msgid "%1$s will use capability %2$s."
 msgstr ""
 
-#: src/creature.cpp:1635
+#: src/creature.cpp:1573
 #, c-format
 msgid "%s is raised from the dead!"
 msgstr ""
 
-#: src/creature.cpp:1669
+#: src/creature.cpp:1607
 #, c-format
 msgid "  %s levels up!"
 msgstr ""
 
-#: src/creature.cpp:1686
+#: src/creature.cpp:1624
 #, c-format
 msgid "%s gains %d experience points."
 msgstr ""
 
-#: src/creature.cpp:1689
+#: src/creature.cpp:1627
 #, c-format
 msgid "%s gains a level!"
 msgstr ""
 
-#: src/creature.cpp:1693
+#: src/creature.cpp:1631
 #, c-format
 msgid "%s looses %d experience points!"
 msgstr ""
 
-#: src/creature.cpp:2171
+#: src/creature.cpp:2107
 msgid "*Mission*"
 msgstr ""
 
-#: src/creature.cpp:2261
+#: src/creature.cpp:2108
+msgid "*Boss*"
+msgstr ""
+
+#: src/creature.cpp:2198
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2273
+#: src/creature.cpp:2210
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2470
+#: src/creature.cpp:2407
 msgid "...Attack from blind-spot!"
 msgstr ""
 
-#: src/creature.cpp:2606 src/creature.cpp:2655
+#: src/creature.cpp:2543 src/creature.cpp:2592
 msgid "skill"
 msgstr ""
 
-#: src/creature.cpp:2610 src/creature.cpp:2654 src/infogui.cpp:407
+#: src/creature.cpp:2547 src/creature.cpp:2591 src/infogui.cpp:414
 msgid "vs."
 msgstr ""
 
-#: src/creature.cpp:2612
+#: src/creature.cpp:2549
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2650 src/scourge.cpp:3584
+#: src/creature.cpp:2587 src/scourge.cpp:3606
 msgid "CTH"
 msgstr ""
 
-#: src/creature.cpp:2652
+#: src/creature.cpp:2589
 msgid "max"
 msgstr ""
 
+#: src/creature.cpp:2951
+#, c-format
+msgid "%1$s notices a trap!"
+msgstr ""
+
+#: src/creature.cpp:2967
+#, c-format
+msgid "%1$s notices a secret door!"
+msgstr ""
+
+#: src/creature.cpp:2985
+#, c-format
+msgid "%1$s blunders into a trap and takes %2$d points of damage!"
+msgstr ""
+
+#: src/creature.cpp:2997
+#, c-format
+msgid "%1$s attempts to disable the trap:"
+msgstr ""
+
+#: src/creature.cpp:3007
+#, c-format
+msgid "    and fails! %1$s takes %2$d points of damage!"
+msgstr ""
+
 #: src/shapepalette.cpp:26 src/shapepalette.cpp:356 src/shapepalette.cpp:382
-#: src/shapepalette.cpp:405 src/shapepalette.cpp:440 src/shapepalette.cpp:569
-#: src/shapepalette.cpp:595 src/shapepalette.cpp:622 src/session.cpp:94
+#: src/shapepalette.cpp:405 src/shapepalette.cpp:440 src/shapepalette.cpp:578
+#: src/shapepalette.cpp:604 src/shapepalette.cpp:638 src/session.cpp:94
 msgid "Loading Shapes"
 msgstr ""
 
-#: src/shapepalette.cpp:719
+#: src/shapepalette.cpp:736
 msgid "Loading Locations"
 msgstr ""
 
-#: src/session.cpp:102 src/item.cpp:305 src/item.cpp:341 src/item.cpp:512
+#: src/session.cpp:102 src/item.cpp:303 src/item.cpp:339 src/item.cpp:510
 msgid "Loading Items"
 msgstr ""
 
@@ -795,38 +824,50 @@ msgstr ""
 msgid "Initializing UI"
 msgstr ""
 
-#: src/session.cpp:283
+#: src/session.cpp:293
 #, c-format
 msgid "%s transforms into another shape in front of your very eyes!"
 msgstr ""
 
-#: src/session.cpp:437
+#: src/session.cpp:447
 #, c-format
 msgid "  %s dies!"
 msgstr ""
 
-#: src/containergui.cpp:38 src/tradedialog.cpp:43 src/tradedialog.cpp:53
+#: src/containergui.cpp:39 src/tradedialog.cpp:43 src/tradedialog.cpp:53
 msgid "Info"
 msgstr ""
 
-#: src/containergui.cpp:149 src/scourge.cpp:1193
+#: src/containergui.cpp:41
+msgid "Get All"
+msgstr ""
+
+#: src/containergui.cpp:149
+msgid "There is not enough room in your backpack for everything."
+msgstr ""
+
+#: src/containergui.cpp:164 src/scourge.cpp:1213
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr ""
 
-#: src/containergui.cpp:159 src/scourge.cpp:1184 src/scourge.cpp:1190
+#: src/containergui.cpp:174 src/scourge.cpp:1210
 msgid "The item won't fit in that container!"
 msgstr ""
 
-#: src/board.cpp:303
+#: src/board.cpp:319
 msgid "(STORY)"
 msgstr ""
 
-#: src/board.cpp:304
+#: src/board.cpp:320
 msgid "(CAVE)"
 msgstr ""
 
-#: src/board.cpp:306 src/equip.cpp:675 src/equip.cpp:692 src/equip.cpp:712
+#: src/board.cpp:321
+msgid "(OUTDOORS)"
+msgstr ""
+
+#: src/board.cpp:323 src/equip.cpp:675 src/equip.cpp:692 src/equip.cpp:712
 msgid "(completed)"
 msgstr ""
 
@@ -852,73 +893,73 @@ msgstr ""
 msgid "The healing spell was cast."
 msgstr ""
 
-#: src/item.cpp:262 src/item.cpp:270 src/item.cpp:278
+#: src/item.cpp:266 src/item.cpp:272 src/item.cpp:278
 msgid "*Cursed* "
 msgstr ""
 
-#: src/item.cpp:266 src/item.cpp:274 src/item.cpp:282
+#: src/item.cpp:268 src/item.cpp:274 src/item.cpp:280
 msgid " *Mission*"
 msgstr ""
 
-#: src/item.cpp:802
+#: src/item.cpp:800
 msgid "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $symbol"
 msgstr ""
 
-#: src/item.cpp:820
+#: src/item.cpp:818
 msgid "Protective"
 msgstr ""
 
-#: src/item.cpp:825
+#: src/item.cpp:823
 msgid "Slaying"
 msgstr ""
 
-#: src/item.cpp:917
+#: src/item.cpp:915
 #, c-format
 msgid "Scroll of %s"
 msgstr ""
 
-#: src/item.cpp:1037
+#: src/item.cpp:1035
 msgid "An item was fully identified!"
 msgstr ""
 
-#: src/item.cpp:1101
+#: src/item.cpp:1099
 msgid "DAM"
 msgstr ""
 
-#: src/item.cpp:1105 src/characterinfo.cpp:51 src/portrait.cpp:263
+#: src/item.cpp:1103 src/characterinfo.cpp:51 src/portrait.cpp:263
 msgid "AP"
 msgstr ""
 
-#: src/item.cpp:1109
+#: src/item.cpp:1107
 msgid "RANGE"
 msgstr ""
 
-#: src/item.cpp:1114 src/scourge.cpp:3533
+#: src/item.cpp:1112 src/scourge.cpp:3555
 msgid "DEF"
 msgstr ""
 
-#: src/item.cpp:1117
+#: src/item.cpp:1115
 #, c-format
 msgid " %d(%c)"
 msgstr ""
 
-#: src/item.cpp:1125 src/equip.cpp:177 src/portrait.cpp:220
+#: src/item.cpp:1123 src/equip.cpp:177 src/portrait.cpp:220
 msgid "Level"
 msgstr ""
 
-#: src/item.cpp:1129 ../scourge_data/config/rpg.cfg:137
+#: src/item.cpp:1127 ../scourge_data/config/rpg.cfg:137
 msgid "Power"
 msgstr ""
 
-#: src/item.cpp:1134
+#: src/item.cpp:1132
 msgid "Charges"
 msgstr ""
 
-#: src/item.cpp:1137
+#: src/item.cpp:1135
 msgid "Spell"
 msgstr ""
 
-#: src/item.cpp:1142
+#: src/item.cpp:1140
 msgid "Duration"
 msgstr ""
 
@@ -930,11 +971,11 @@ msgstr ""
 msgid "Projectile did not reach the target (blocked)."
 msgstr ""
 
-#: src/scourgeview.cpp:737
+#: src/scourgeview.cpp:778
 msgid "Move"
 msgstr ""
 
-#: src/scourgeview.cpp:999
+#: src/scourgeview.cpp:1079
 msgid "cost"
 msgstr ""
 
@@ -942,11 +983,11 @@ msgstr ""
 msgid "Basic Statistics:"
 msgstr ""
 
-#: src/characterinfo.cpp:49 src/scourge.cpp:2217 src/portrait.cpp:253
+#: src/characterinfo.cpp:49 src/scourge.cpp:2240 src/portrait.cpp:253
 msgid "HP"
 msgstr ""
 
-#: src/characterinfo.cpp:50 src/scourge.cpp:2219 src/portrait.cpp:258
+#: src/characterinfo.cpp:50 src/scourge.cpp:2242 src/portrait.cpp:258
 msgid "MP"
 msgstr ""
 
@@ -958,178 +999,186 @@ msgstr ""
 msgid "Unarmed Defense:"
 msgstr ""
 
-#: src/battle.cpp:677
+#: src/battle.cpp:689
 #, c-format
 msgid "%1$s uses capability %2$s!"
 msgstr ""
 
-#: src/battle.cpp:712
+#: src/battle.cpp:724
 #, c-format
 msgid "Your %s is out of charges."
 msgstr ""
 
-#: src/battle.cpp:721
+#: src/battle.cpp:733
 #, c-format
 msgid "Your %s feels lighter."
 msgstr ""
 
-#: src/battle.cpp:726 src/scourge.cpp:3690
+#: src/battle.cpp:738 src/scourge.cpp:3712
 #, c-format
 msgid "%s crumbles into dust."
 msgstr ""
 
-#: src/battle.cpp:733
+#: src/battle.cpp:745
 #, c-format
 msgid "Couldn't find scroll, cancelled spell."
 msgstr ""
 
-#: src/battle.cpp:742
+#: src/battle.cpp:754
 #, c-format
 msgid "%1$s casts %2$s!"
 msgstr ""
 
-#: src/battle.cpp:805
+#: src/battle.cpp:817
 #, c-format
 msgid "...%s needs more practice."
 msgstr ""
 
-#: src/battle.cpp:809
+#: src/battle.cpp:821
 msgid "...the magic fails inexplicably!"
 msgstr ""
 
-#: src/battle.cpp:835
+#: src/battle.cpp:847
 #, c-format
 msgid "...%s shoots a projectile"
 msgstr ""
 
-#: src/battle.cpp:919 src/battle.cpp:924
+#: src/battle.cpp:931 src/battle.cpp:936
 #, c-format
 msgid "%1$s attacks %2$s with %3$s!"
 msgstr ""
 
-#: src/battle.cpp:940
+#: src/battle.cpp:952
 #, c-format
 msgid "%1$s attacks %2$s with bare hands!"
 msgstr ""
 
-#: src/battle.cpp:977 src/spellcaster.cpp:86
+#: src/battle.cpp:989 src/spellcaster.cpp:86
 #, c-format
 msgid "...fumble: hits %s instead!"
 msgstr ""
 
-#: src/battle.cpp:1007
+#: src/battle.cpp:1019
 msgid "...precise hit: double damage!"
 msgstr ""
 
-#: src/battle.cpp:1013
+#: src/battle.cpp:1025
 msgid "...precise hit: triple damage!"
 msgstr ""
 
-#: src/battle.cpp:1019
+#: src/battle.cpp:1031
 msgid "...precise hit: quad damage!"
 msgstr ""
 
-#: src/battle.cpp:1026
+#: src/battle.cpp:1038
 msgid "...precise hit: instant kill!"
 msgstr ""
 
-#: src/battle.cpp:1051
+#: src/battle.cpp:1063
 msgid "...double damage!"
 msgstr ""
 
-#: src/battle.cpp:1054
+#: src/battle.cpp:1066
 msgid "...triple damage!"
 msgstr ""
 
-#: src/battle.cpp:1057
+#: src/battle.cpp:1069
 msgid "...quad damage!"
 msgstr ""
 
-#: src/battle.cpp:1060
+#: src/battle.cpp:1072
 #, c-format
 msgid "...%d-times damage!"
 msgstr ""
 
-#: src/battle.cpp:1088
+#: src/battle.cpp:1100
 #, c-format
 msgid "...%1$s attacks %2$s with %3$s magic."
 msgstr ""
 
-#: src/battle.cpp:1094
+#: src/battle.cpp:1106
 #, c-format
 msgid "%s resists the magic with %d."
 msgstr ""
 
-#: src/battle.cpp:1120
+#: src/battle.cpp:1132
 #, c-format
 msgid "...%1$s blocks attack with %2$s!"
 msgstr ""
 
-#: src/battle.cpp:1136
+#: src/battle.cpp:1148
 msgid "...Using cursed item!"
 msgstr ""
 
-#: src/battle.cpp:1140
+#: src/battle.cpp:1152
 #, c-format
 msgid "...%s attacks for %d points."
 msgstr ""
 
-#: src/battle.cpp:1159
+#: src/battle.cpp:1171
 #, c-format
 msgid "...%s's armor blocks %d points"
 msgstr ""
 
-#: src/battle.cpp:1226
+#: src/battle.cpp:1238
 #, c-format
 msgid "...%s dodges the attack."
 msgstr ""
 
-#: src/battle.cpp:1232
+#: src/battle.cpp:1244
 #, c-format
 msgid "...%s misses the target."
 msgstr ""
 
-#: src/battle.cpp:1256
+#: src/battle.cpp:1268
 #, c-format
 msgid "...%s hits for %d points of damage"
 msgstr ""
 
-#: src/battle.cpp:1285
+#: src/battle.cpp:1297
 #, c-format
 msgid "...%s is killed!"
 msgstr ""
 
-#: src/battle.cpp:1302
+#: src/battle.cpp:1313
 #, c-format
 msgid "%s finds %d coins!"
 msgstr ""
 
-#: src/battle.cpp:1318
+#: src/battle.cpp:1321
+msgid "You have defeated the dungeon boss!"
+msgstr ""
+
+#: src/battle.cpp:1322
+msgid "...the news spreads quickly and his minions cower before you."
+msgstr ""
+
+#: src/battle.cpp:1335
 #, c-format
 msgid "...no damaged caused."
 msgstr ""
 
-#: src/battle.cpp:1402 src/battle.cpp:1408
+#: src/battle.cpp:1419 src/battle.cpp:1425
 #, c-format
 msgid "Targeted"
 msgstr ""
 
-#: src/battle.cpp:1432
+#: src/battle.cpp:1450
 #, c-format
 msgid "Out of Range. Move: %d"
 msgstr ""
 
-#: src/battle.cpp:1434 src/battle.cpp:1441
+#: src/battle.cpp:1452 src/battle.cpp:1459
 #, c-format
 msgid "Out of Range"
 msgstr ""
 
-#: src/battle.cpp:1441
+#: src/battle.cpp:1459
 #, c-format
 msgid "In Range"
 msgstr ""
 
-#: src/battle.cpp:1453 src/portrait.cpp:176
+#: src/battle.cpp:1471 src/portrait.cpp:176
 msgid "Bare Hands"
 msgstr ""
 
@@ -1202,21 +1251,26 @@ msgstr ""
 msgid "Select items to steal."
 msgstr ""
 
-#: src/tradedialog.cpp:297
+#: src/tradedialog.cpp:287
 msgid "You succesfully burgled the items!"
 msgstr ""
 
-#: src/tradedialog.cpp:310
+#: src/tradedialog.cpp:296
+msgid ""
+"You succesfully burgled the items but some did not fit in your backpack!"
+msgstr ""
+
+#: src/tradedialog.cpp:316
 #, c-format
 msgid "%s looses %d coins!"
 msgstr ""
 
-#: src/tradedialog.cpp:320
+#: src/tradedialog.cpp:326
 #, c-format
 msgid "Item confiscated: %s"
 msgstr ""
 
-#: src/tradedialog.cpp:325
+#: src/tradedialog.cpp:331
 msgid "Your burgling attempt failed. Items and ex. were confiscated."
 msgstr ""
 
@@ -1240,7 +1294,7 @@ msgstr ""
 msgid "Controls"
 msgstr ""
 
-#: src/optionsmenu.cpp:60 src/savegamedialog.cpp:52 src/mapeditor.cpp:85
+#: src/optionsmenu.cpp:60 src/savegamedialog.cpp:52 src/mapeditor.cpp:87
 msgid "Save"
 msgstr ""
 
@@ -1376,36 +1430,36 @@ msgstr ""
 msgid "Saved: some options require a restart to take effect."
 msgstr ""
 
-#: src/dungeongenerator.cpp:573 src/mondrian.cpp:429
-#: src/terraingenerator.cpp:119
+#: src/dungeongenerator.cpp:573 src/mondrian.cpp:447
+#: src/terraingenerator.cpp:128
 msgid "Assembling Dungeon Level"
 msgstr ""
 
-#: src/dungeongenerator.cpp:596 src/mondrian.cpp:470
+#: src/dungeongenerator.cpp:597 src/mondrian.cpp:489
 msgid "Drawing walls"
 msgstr ""
 
-#: src/dungeongenerator.cpp:599 src/mondrian.cpp:473
+#: src/dungeongenerator.cpp:600 src/mondrian.cpp:492
 msgid "Fixing rooms"
 msgstr ""
 
-#: src/scourge.cpp:139
+#: src/scourge.cpp:140
 msgid "Begin Chapter"
 msgstr ""
 
-#: src/scourge.cpp:140
+#: src/scourge.cpp:141
 msgid "Replay"
 msgstr ""
 
-#: src/scourge.cpp:149
+#: src/scourge.cpp:150
 msgid "Dismiss Party Member"
 msgstr ""
 
-#: src/scourge.cpp:150
+#: src/scourge.cpp:151
 msgid "Need permission to upload score to web"
 msgstr ""
 
-#: src/scourge.cpp:151
+#: src/scourge.cpp:152
 msgid "Upload your score to the internet?"
 msgstr ""
 
@@ -1427,291 +1481,286 @@ msgstr ""
 msgid " %s gains a level! "
 msgstr ""
 
-#: src/scourge.cpp:708
+#: src/scourge.cpp:698
 #, c-format
 msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
 msgstr ""
 
-#: src/scourge.cpp:711
+#: src/scourge.cpp:701
 #, c-format
 msgid "Teleport spell failed!! Entering level %d"
 msgstr ""
 
-#: src/scourge.cpp:713
+#: src/scourge.cpp:703
 #, c-format
 msgid "Entering dungeon level %d"
 msgstr ""
 
-#: src/scourge.cpp:899
+#: src/scourge.cpp:913
 #, c-format
 msgid "%s cancelled a pending action."
 msgstr ""
 
-#: src/scourge.cpp:904
+#: src/scourge.cpp:918
 msgid "Select a creature for this spell."
 msgstr ""
 
-#: src/scourge.cpp:909
+#: src/scourge.cpp:923
 msgid "Select an item for this spell."
 msgstr ""
 
-#: src/scourge.cpp:914
+#: src/scourge.cpp:928
 msgid "Select a location for this spell."
 msgstr ""
 
-#: src/scourge.cpp:919
+#: src/scourge.cpp:933
 msgid "Select a door for this spell."
 msgstr ""
 
-#: src/scourge.cpp:924
+#: src/scourge.cpp:938
 msgid "Select the party for this spell."
 msgstr ""
 
-#: src/scourge.cpp:945 src/scourge.cpp:967
+#: src/scourge.cpp:960 src/scourge.cpp:982
 #, c-format
 msgid "%s selected a target"
 msgstr ""
 
-#: src/scourge.cpp:990
+#: src/scourge.cpp:1006
 #, c-format
 msgid "%1$s will target %2$s"
 msgstr ""
 
-#: src/scourge.cpp:1012
+#: src/scourge.cpp:1028
 #, c-format
 msgid "%1$s targeted %2$s."
 msgstr ""
 
-#: src/scourge.cpp:1179
-#, c-format
-msgid "%1$s picks up %2$s."
-msgstr ""
-
-#: src/scourge.cpp:1382
+#: src/scourge.cpp:1402
 msgid "Something is blocking the door from closing."
 msgstr ""
 
-#: src/scourge.cpp:1480
+#: src/scourge.cpp:1500
 msgid "The door splinters into many, tiny pieces!"
 msgstr ""
 
-#: src/scourge.cpp:1526
+#: src/scourge.cpp:1546
 msgid "Leave level?"
 msgstr ""
 
-#: src/scourge.cpp:1550
+#: src/scourge.cpp:1570
 msgid "Squirrel Console"
 msgstr ""
 
-#: src/scourge.cpp:1558
+#: src/scourge.cpp:1578
 msgid "Run"
 msgstr ""
 
-#: src/scourge.cpp:1559
+#: src/scourge.cpp:1579
 msgid "Clear"
 msgstr ""
 
-#: src/scourge.cpp:1842
+#: src/scourge.cpp:1865
 #, c-format
 msgid "Speed set to %d\n"
 msgstr ""
 
-#: src/scourge.cpp:1993
+#: src/scourge.cpp:2016
 msgid "Congratulations, mission accomplished!"
 msgstr ""
 
-#: src/scourge.cpp:2004
+#: src/scourge.cpp:2027
 msgid "For completing the mission"
 msgstr ""
 
-#: src/scourge.cpp:2006
+#: src/scourge.cpp:2029
 #, c-format
 msgid "The party receives %d points."
 msgstr ""
 
-#: src/scourge.cpp:2031
+#: src/scourge.cpp:2054
 msgid "Connecting to server"
 msgstr ""
 
-#: src/scourge.cpp:2038
+#: src/scourge.cpp:2061
 msgid "Connected!"
 msgstr ""
 
-#: src/scourge.cpp:2060
+#: src/scourge.cpp:2083
 msgid "Combat"
 msgstr ""
 
-#: src/scourge.cpp:2062
+#: src/scourge.cpp:2085
 msgid "End Turn"
 msgstr ""
 
-#: src/scourge.cpp:2086
+#: src/scourge.cpp:2109
 msgid "Pause game"
 msgstr ""
 
-#: src/scourge.cpp:2089
+#: src/scourge.cpp:2112
 msgid "Load or Save Game"
 msgstr ""
 
-#: src/scourge.cpp:2099
+#: src/scourge.cpp:2122
 msgid "Exit game"
 msgstr ""
 
-#: src/scourge.cpp:2106
+#: src/scourge.cpp:2129
 msgid "Game options"
 msgstr ""
 
-#: src/scourge.cpp:2113
+#: src/scourge.cpp:2136
 msgid "Move as a group"
 msgstr ""
 
-#: src/scourge.cpp:2153
+#: src/scourge.cpp:2176
 msgid "Dismiss this character"
 msgstr ""
 
-#: src/scourge.cpp:2172
+#: src/scourge.cpp:2195
 msgid "Inventory and party info"
 msgstr ""
 
-#: src/scourge.cpp:2180
+#: src/scourge.cpp:2203
 msgid "Click to assign a spell, capability or magic item."
 msgstr ""
 
-#: src/scourge.cpp:2239
+#: src/scourge.cpp:2262
 msgid "Current Weapon: Bare Hands"
 msgstr ""
 
-#: src/scourge.cpp:2244
+#: src/scourge.cpp:2267
 #, c-format
 msgid "Current Weapon: %s"
 msgstr ""
 
-#: src/scourge.cpp:2513 src/portrait.cpp:427
+#: src/scourge.cpp:2536 src/portrait.cpp:427
 msgid "Thirst"
 msgstr ""
 
-#: src/scourge.cpp:2527 src/portrait.cpp:432
+#: src/scourge.cpp:2550 src/portrait.cpp:432
 msgid "Hunger"
 msgstr ""
 
-#: src/scourge.cpp:2594 src/equip.cpp:583
+#: src/scourge.cpp:2617 src/equip.cpp:583
 msgid "Not enough Magic Points to cast this spell!"
 msgstr ""
 
-#: src/scourge.cpp:2671
+#: src/scourge.cpp:2694
 msgid "Begin Turn"
 msgstr ""
 
-#: src/scourge.cpp:2676
+#: src/scourge.cpp:2699
 msgid "...In Turn..."
 msgstr ""
 
-#: src/scourge.cpp:2682
+#: src/scourge.cpp:2705
 msgid "Pause Game"
 msgstr ""
 
-#: src/scourge.cpp:2686
+#: src/scourge.cpp:2709
 msgid "Unpause game."
 msgstr ""
 
-#: src/scourge.cpp:2721
+#: src/scourge.cpp:2744
 msgid "Available Missions"
 msgstr ""
 
-#: src/scourge.cpp:2727
+#: src/scourge.cpp:2750
 msgid "Drag map to look around."
 msgstr ""
 
-#: src/scourge.cpp:2795
+#: src/scourge.cpp:2818
 msgid "This spell has no effect here..."
 msgstr ""
 
-#: src/scourge.cpp:2983
+#: src/scourge.cpp:3001
 msgid "Game loaded successfully."
 msgstr ""
 
-#: src/scourge.cpp:3009
+#: src/scourge.cpp:3027
 msgid "Error: Saved game version is too old."
 msgstr ""
 
-#: src/scourge.cpp:3362
+#: src/scourge.cpp:3384
 msgid "You cannot hire more party members."
 msgstr ""
 
-#: src/scourge.cpp:3382
+#: src/scourge.cpp:3404
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr ""
 
-#: src/scourge.cpp:3529
+#: src/scourge.cpp:3551
 msgid "Initiative"
 msgstr ""
 
-#: src/scourge.cpp:3571 src/scourge.cpp:3578 src/infogui.cpp:348
-#: src/infogui.cpp:353 src/infogui.cpp:358
+#: src/scourge.cpp:3593 src/scourge.cpp:3600 src/infogui.cpp:350
+#: src/infogui.cpp:355 src/infogui.cpp:360
 msgid "ATK"
 msgstr ""
 
-#: src/scourge.cpp:3585 src/infogui.cpp:350 src/infogui.cpp:356
+#: src/scourge.cpp:3607 src/infogui.cpp:352 src/infogui.cpp:358
 msgid "APR"
 msgstr ""
 
-#: src/scourge.cpp:3637
+#: src/scourge.cpp:3659
 #, c-format
 msgid "%.2f"
 msgstr ""
 
-#: src/scourge.cpp:3639
+#: src/scourge.cpp:3661
 #, c-format
 msgid "per %.2f R"
 msgstr ""
 
-#: src/scourge.cpp:3648
+#: src/scourge.cpp:3670
 msgid "This item is already enchanted."
 msgstr ""
 
-#: src/scourge.cpp:3650
+#: src/scourge.cpp:3672
 msgid "This item cannot be enchanted."
 msgstr ""
 
-#: src/scourge.cpp:3658
+#: src/scourge.cpp:3680
 msgid "You succesfully enchanted an item!"
 msgstr ""
 
-#: src/scourge.cpp:3662
+#: src/scourge.cpp:3684
 #, c-format
 msgid "You created: %s."
 msgstr ""
 
-#: src/scourge.cpp:3667
+#: src/scourge.cpp:3689
 msgid "You failed to enchant the item."
 msgstr ""
 
-#: src/scourge.cpp:3671
+#: src/scourge.cpp:3693
 msgid "You can only enchant one item per day."
 msgstr ""
 
-#: src/scourge.cpp:3686
+#: src/scourge.cpp:3708
 msgid "Spell was entered into your spellbook."
 msgstr ""
 
-#: src/scourge.cpp:3694
+#: src/scourge.cpp:3716
 msgid "You already know this spell"
 msgstr ""
 
-#: src/scourge.cpp:3697
+#: src/scourge.cpp:3719
 msgid "You are not proficient enough to transcribe this scroll."
 msgstr ""
 
-#: src/scourge.cpp:3700
+#: src/scourge.cpp:3722
 msgid "You can only transcribe scrolls!"
 msgstr ""
 
-#: src/scourge.cpp:3731
+#: src/scourge.cpp:3753
 msgid "This item is out of charges."
 msgstr ""
 
-#: src/scourge.cpp:3744
+#: src/scourge.cpp:3766
 msgid "You cannot use this item."
 msgstr ""
 
@@ -1727,7 +1776,7 @@ msgstr ""
 msgid "New Save"
 msgstr ""
 
-#: src/savegamedialog.cpp:53 src/mapeditor.cpp:84
+#: src/savegamedialog.cpp:53 src/mapeditor.cpp:86
 msgid "Load"
 msgstr ""
 
@@ -1800,69 +1849,77 @@ msgid "th"
 msgstr ""
 
 #: src/savegamedialog.cpp:282
+msgid "Somewhere in the wilderness."
+msgstr ""
+
+#: src/savegamedialog.cpp:284
 #, c-format
 msgid "In a cave on level %d."
 msgstr ""
 
-#: src/savegamedialog.cpp:285
+#: src/savegamedialog.cpp:287
 #, c-format
 msgid "Dungeon level %d at %s."
 msgstr ""
 
-#: src/savegamedialog.cpp:290
+#: src/savegamedialog.cpp:292
 msgid "Resting at HQ."
 msgstr ""
 
-#: src/savegamedialog.cpp:293
+#: src/savegamedialog.cpp:295
 #, c-format
 msgid "Party of %s the %s level %s."
 msgstr ""
 
-#: src/terraingenerator.cpp:135
+#: src/terraingenerator.cpp:147
 msgid "Compressing free space"
 msgstr ""
 
-#: src/terraingenerator.cpp:138
+#: src/terraingenerator.cpp:150
+msgid "Adding traps"
+msgstr ""
+
+#: src/terraingenerator.cpp:153
 msgid "Adding containers"
 msgstr ""
 
-#: src/terraingenerator.cpp:141
+#: src/terraingenerator.cpp:156
 msgid "Adding gates"
 msgstr ""
 
-#: src/terraingenerator.cpp:147
+#: src/terraingenerator.cpp:163
 msgid "Adding party"
 msgstr ""
 
-#: src/terraingenerator.cpp:154
+#: src/terraingenerator.cpp:171
 msgid "Adding teleporters"
 msgstr ""
 
-#: src/terraingenerator.cpp:160
+#: src/terraingenerator.cpp:178
 msgid "Locking doors and chests"
 msgstr ""
 
-#: src/terraingenerator.cpp:163
+#: src/terraingenerator.cpp:181
 msgid "Calculating room values"
 msgstr ""
 
-#: src/terraingenerator.cpp:166
+#: src/terraingenerator.cpp:184
 msgid "Adding mission objectives"
 msgstr ""
 
-#: src/terraingenerator.cpp:169
+#: src/terraingenerator.cpp:187
 msgid "Adding monsters"
 msgstr ""
 
-#: src/terraingenerator.cpp:172
+#: src/terraingenerator.cpp:191
 msgid "Adding items"
 msgstr ""
 
-#: src/terraingenerator.cpp:175
+#: src/terraingenerator.cpp:194
 msgid "Adding furniture"
 msgstr ""
 
-#: src/terraingenerator.cpp:179
+#: src/terraingenerator.cpp:198
 msgid "Cleaning up"
 msgstr ""
 
@@ -2067,7 +2124,7 @@ msgstr ""
 msgid "Identify"
 msgstr ""
 
-#: src/infogui.cpp:70 src/pceditor.cpp:465 src/mapeditor.cpp:80
+#: src/infogui.cpp:70 src/pceditor.cpp:465 src/mapeditor.cpp:82
 msgid "Name:"
 msgstr ""
 
@@ -2097,175 +2154,175 @@ msgstr ""
 msgid "All requirements met."
 msgstr ""
 
-#: src/infogui.cpp:242
+#: src/infogui.cpp:244
 #, c-format
 msgid "Level: %d"
 msgstr ""
 
-#: src/infogui.cpp:245
+#: src/infogui.cpp:247
 #, c-format
 msgid "Weight: %.2f"
 msgstr ""
 
-#: src/infogui.cpp:248
+#: src/infogui.cpp:250
 #, c-format
 msgid "Price: %d"
 msgstr ""
 
-#: src/infogui.cpp:252
+#: src/infogui.cpp:254
 #, c-format
 msgid "Damage: %d percent"
 msgstr ""
 
-#: src/infogui.cpp:255
+#: src/infogui.cpp:257
 #, c-format
 msgid "Damage Type: %s"
 msgstr ""
 
-#: src/infogui.cpp:258 src/infogui.cpp:286
+#: src/infogui.cpp:260 src/infogui.cpp:288
 #, c-format
 msgid "Skill: %s"
 msgstr ""
 
-#: src/infogui.cpp:262
+#: src/infogui.cpp:264
 #, c-format
 msgid "Parry: %d percent of %s skill"
 msgstr ""
 
-#: src/infogui.cpp:268
+#: src/infogui.cpp:270
 #, c-format
 msgid "AP cost: %d"
 msgstr ""
 
-#: src/infogui.cpp:273
+#: src/infogui.cpp:275
 #, c-format
 msgid "Range: %d"
 msgstr ""
 
-#: src/infogui.cpp:280
+#: src/infogui.cpp:282
 #, c-format
 msgid "Defense vs. %s damage: %d"
 msgstr ""
 
-#: src/infogui.cpp:289
+#: src/infogui.cpp:291
 #, c-format
 msgid "Dodge penalty: %d"
 msgstr ""
 
-#: src/infogui.cpp:294
+#: src/infogui.cpp:296
 #, c-format
 msgid "Power: %d"
 msgstr ""
 
-#: src/infogui.cpp:300
+#: src/infogui.cpp:302
 #, c-format
 msgid "Charges: %d(%d)"
 msgstr ""
 
-#: src/infogui.cpp:304
+#: src/infogui.cpp:306
 #, c-format
 msgid "Spell: %s"
 msgstr ""
 
-#: src/infogui.cpp:312
+#: src/infogui.cpp:314
 #, c-format
 msgid "Duration: %d"
 msgstr ""
 
-#: src/infogui.cpp:318
+#: src/infogui.cpp:320
 #, c-format
 msgid "Two handed weapon."
 msgstr ""
 
-#: src/infogui.cpp:323
+#: src/infogui.cpp:325
 #, c-format
 msgid "Optionally handed weapon."
 msgstr ""
 
-#: src/infogui.cpp:332
+#: src/infogui.cpp:334
 #, c-format
 msgid "Attack Info for each player:"
 msgstr ""
 
-#: src/infogui.cpp:377
+#: src/infogui.cpp:384
 #, c-format
 msgid "%d bonus to attack and damage."
 msgstr ""
 
-#: src/infogui.cpp:379
+#: src/infogui.cpp:386
 #, c-format
 msgid "%d bonus to armor points."
 msgstr ""
 
-#: src/infogui.cpp:389
+#: src/infogui.cpp:396
 #, c-format
 msgid "Double damage"
 msgstr ""
 
-#: src/infogui.cpp:393
+#: src/infogui.cpp:400
 #, c-format
 msgid "Triple damage"
 msgstr ""
 
-#: src/infogui.cpp:397
+#: src/infogui.cpp:404
 #, c-format
 msgid "Quad damage"
 msgstr ""
 
-#: src/infogui.cpp:401
+#: src/infogui.cpp:408
 #, c-format
 msgid "%dX damage"
 msgstr ""
 
-#: src/infogui.cpp:410
+#: src/infogui.cpp:417
 msgid " vs. any creature."
 msgstr ""
 
-#: src/infogui.cpp:419
+#: src/infogui.cpp:426
 #, c-format
 msgid "Extra damage of %1$s %2$s magic."
 msgstr ""
 
-#: src/infogui.cpp:423
+#: src/infogui.cpp:430
 #, c-format
 msgid "Extra %d pts of %s magic resistance."
 msgstr ""
 
-#: src/infogui.cpp:434
+#: src/infogui.cpp:441
 msgid "Sets state mods:"
 msgstr ""
 
-#: src/infogui.cpp:451
+#: src/infogui.cpp:458
 msgid "Protects from state mods:"
 msgstr ""
 
-#: src/infogui.cpp:480
+#: src/infogui.cpp:487
 msgid "Bonuses to skills:"
 msgstr ""
 
-#: src/infogui.cpp:492
+#: src/infogui.cpp:498
 msgid "This item is cursed!"
 msgstr ""
 
-#: src/infogui.cpp:497
+#: src/infogui.cpp:504
 msgid "School: "
 msgstr ""
 
-#: src/infogui.cpp:505
+#: src/infogui.cpp:511
 msgid ""
 "You have a feeling there is more to this item than what you've been able to "
 "glean..."
 msgstr ""
 
-#: src/scourgehandler.cpp:219
+#: src/scourgehandler.cpp:223
 msgid "Combat is now Turn-based."
 msgstr ""
 
-#: src/scourgehandler.cpp:221
+#: src/scourgehandler.cpp:225
 msgid "Combat is now Real-time."
 msgstr ""
 
-#: src/scourgehandler.cpp:308
+#: src/scourgehandler.cpp:312
 msgid "Error saving game!"
 msgstr ""
 
@@ -2413,27 +2470,37 @@ msgstr ""
 msgid "[Sound]"
 msgstr ""
 
-#: src/spellcaster.cpp:318
+#: src/spellcaster.cpp:245
+#, c-format
+msgid "%s discovers a secret door!"
+msgstr ""
+
+#: src/spellcaster.cpp:257
+#, c-format
+msgid "%s discovers a trap!"
+msgstr ""
+
+#: src/spellcaster.cpp:377
 #, c-format
 msgid "%s dodges some of the damage."
 msgstr ""
 
-#: src/spellcaster.cpp:329
+#: src/spellcaster.cpp:388
 #, c-format
 msgid "%1$s attacks %2$s with %3$s."
 msgstr ""
 
-#: src/spellcaster.cpp:335
+#: src/spellcaster.cpp:394
 #, c-format
 msgid "%s resists the spell with %d."
 msgstr ""
 
-#: src/spellcaster.cpp:420
+#: src/spellcaster.cpp:479
 #, c-format
 msgid "%s resists the spell! [%d]"
 msgstr ""
 
-#: src/spellcaster.cpp:440
+#: src/spellcaster.cpp:499
 msgid "Cursed items have been doffed."
 msgstr ""
 
@@ -2445,67 +2512,79 @@ msgstr ""
 msgid "Tile: Room"
 msgstr ""
 
-#: src/mapeditor.cpp:69
+#: src/mapeditor.cpp:71
 msgid "Map Editor"
 msgstr ""
 
-#: src/mapeditor.cpp:88
+#: src/mapeditor.cpp:90
 msgid "Wall"
 msgstr ""
 
-#: src/mapeditor.cpp:91
+#: src/mapeditor.cpp:93
 msgid "Door"
 msgstr ""
 
-#: src/mapeditor.cpp:97
+#: src/mapeditor.cpp:99
 msgid "Properties"
 msgstr ""
 
-#: src/mapeditor.cpp:101
+#: src/mapeditor.cpp:103
 msgid "Start Pos"
 msgstr ""
 
-#: src/mapeditor.cpp:109 src/mapeditor.cpp:308
+#: src/mapeditor.cpp:111 src/mapeditor.cpp:332
 msgid "Item"
 msgstr ""
 
-#: src/mapeditor.cpp:118
+#: src/mapeditor.cpp:120
 msgid "Furniture"
 msgstr ""
 
-#: src/mapeditor.cpp:158 src/mapeditor.cpp:310
+#: src/mapeditor.cpp:160 src/mapeditor.cpp:334
 msgid "Creature"
 msgstr ""
 
-#: src/mapeditor.cpp:191 src/mapeditor.cpp:306
+#: src/mapeditor.cpp:205 src/mapeditor.cpp:330
 msgid "Shape"
 msgstr ""
 
-#: src/mapeditor.cpp:223
+#: src/mapeditor.cpp:228
+msgid "Rug"
+msgstr ""
+
+#: src/mapeditor.cpp:230
+msgid "Secret"
+msgstr ""
+
+#: src/mapeditor.cpp:233
+msgid "Trap"
+msgstr ""
+
+#: src/mapeditor.cpp:247
 msgid "Map Properties"
 msgstr ""
 
-#: src/mapeditor.cpp:231
+#: src/mapeditor.cpp:255
 msgid "Map level"
 msgstr ""
 
-#: src/mapeditor.cpp:234
+#: src/mapeditor.cpp:258
 msgid "Map depth"
 msgstr ""
 
-#: src/mapeditor.cpp:237
+#: src/mapeditor.cpp:261
 msgid "Map theme:"
 msgstr ""
 
-#: src/mapeditor.cpp:256
+#: src/mapeditor.cpp:280
 msgid "Select map location: (click on map, drag to move)"
 msgstr ""
 
-#: src/mapeditor.cpp:261
+#: src/mapeditor.cpp:285
 msgid "New Map"
 msgstr ""
 
-#: src/mapeditor.cpp:262
+#: src/mapeditor.cpp:286
 msgid "Apply"
 msgstr ""
 
@@ -2805,148 +2884,169 @@ msgid ""
 "interruptions in bugfixing by Abe & Asha|"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:187
+#: ../scourge_data/config/map.cfg:215
 msgid "Pale weeds grow over these ancient walls"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:190
+#: ../scourge_data/config/map.cfg:218
 msgid "The walls crumble with age, yet appear sturdy"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:193
+#: ../scourge_data/config/map.cfg:221
 msgid "Dark limestone walls mark these corridors"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:199
+#: ../scourge_data/config/map.cfg:227
 msgid "It appears to be a thick wooden door"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:202
+#: ../scourge_data/config/map.cfg:230
 msgid "A dungeon door made of wood"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:205
+#: ../scourge_data/config/map.cfg:233
 msgid "The aged oak door is scarred by knife points and torch flame"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:211
+#: ../scourge_data/config/map.cfg:239
 msgid "The door frames seem to be made of some hard wood"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:214
+#: ../scourge_data/config/map.cfg:242
 msgid "The wood around the doors is reinforced by metal nails"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:220
+#: ../scourge_data/config/map.cfg:248
 msgid "A torch blazes nearby"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:223
+#: ../scourge_data/config/map.cfg:251
 msgid "The light is firmly attached to the wall, you cannot get it"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:226
+#: ../scourge_data/config/map.cfg:254
 msgid "It is a burning torch"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:232
+#: ../scourge_data/config/map.cfg:260
 msgid "A large wooden board that describes available missions"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:235
+#: ../scourge_data/config/map.cfg:263
 msgid "Click on the board to learn about your missions"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:238
+#: ../scourge_data/config/map.cfg:266
 msgid "The corporate 'brains' of S.C.O.U.R.G.E. inc."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:244
+#: ../scourge_data/config/map.cfg:272
 msgid "A burning brazier"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:247
+#: ../scourge_data/config/map.cfg:275
 msgid "A brazier radiates heat nearby"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:253
+#: ../scourge_data/config/map.cfg:281
 msgid "You see a shiny marble column"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:256
+#: ../scourge_data/config/map.cfg:284
 msgid "The column supports the ceiling"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:262
+#: ../scourge_data/config/map.cfg:290
 msgid "This teleporter is here courtesy of the management"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:265
+#: ../scourge_data/config/map.cfg:293
 msgid "This teleporter can take you back to headquarters"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:268
+#: ../scourge_data/config/map.cfg:296
 msgid "It is a teleporter"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:274
+#: ../scourge_data/config/map.cfg:302
 msgid "These stairs lead to another level"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:277
+#: ../scourge_data/config/map.cfg:305
 msgid "Stairs leading into darkness"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:280
+#: ../scourge_data/config/map.cfg:308
 msgid "You see a flight of stairs"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:286
+#: ../scourge_data/config/map.cfg:314
 msgid "It's a rusty lever."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:289
+#: ../scourge_data/config/map.cfg:317
 msgid "It is best to leave that alone."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:292
+#: ../scourge_data/config/map.cfg:320
 msgid "Touch it: it may add new germs to your collection."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:298
+#: ../scourge_data/config/map.cfg:326
 msgid "It's a calm pool of liquid radiating energy."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:301
+#: ../scourge_data/config/map.cfg:329
 msgid "It appears to be a shallow pool of liquid."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:307
+#: ../scourge_data/config/map.cfg:335
 msgid "This teleporter smells faintly of sulphur."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:310
+#: ../scourge_data/config/map.cfg:338
 msgid "It is the fabled red teleporter!"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:313
+#: ../scourge_data/config/map.cfg:341
 msgid "Where does this teleporter lead?"
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:319
+#: ../scourge_data/config/map.cfg:347
 msgid "A sturdy wooden column."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:325
+#: ../scourge_data/config/map.cfg:353
 msgid "A rack for our less fortunate guests."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:331
+#: ../scourge_data/config/map.cfg:359
 msgid "You see dense vegetation."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:334
+#: ../scourge_data/config/map.cfg:362
 msgid "Some plants grow here."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:368
+msgid "Old ruins of forgotten kingdoms litter the grounds."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:371
+msgid "Moss and lichens grow on these crumbling stones."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:377
+msgid "The wisdom of ages is scrawled upon the immense trunk of this tree."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:380
+msgid "You hear a gentle humming coming from the branches of this giant tree."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:383
+msgid ""
+"The images upon the gnarled bark of this unusual tree seems to tell stories."
 msgstr ""
 
 #: ../scourge_data/config/item.cfg:97
@@ -5279,6 +5379,21 @@ msgstr ""
 msgid "The piece of metal displays a feel of electricity."
 msgstr ""
 
+#: ../scourge_data/config/otheritem.cfg:701
+msgid ""
+"Quen-go-Nul or the Cronostar is a powerful elven artifact. Crafted eons ago "
+"by the deep elves, it is thought to possess the ability to slow down time, "
+"while keeping its user safe in a temorarily created pocket dimension."
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:702 ../scourge_data/maps/hq.cfg:194
+msgid "Cronostar"
+msgstr ""
+
+#: ../scourge_data/config/otheritem.cfg:708
+msgid "A faint smell of decayed flowers hangs in the air."
+msgstr ""
+
 #: ../scourge_data/config/spell.cfg:36
 msgid "Nature"
 msgstr ""
@@ -6051,7 +6166,7 @@ msgstr ""
 msgid ""
 "The time draws near when our vampiric client must return to his domain. "
 "Trust me you won't want to be around him, so get on with killing "
-"{$creature1}."
+"${creature1}."
 msgstr ""
 
 #: ../scourge_data/config/mission.cfg:41
@@ -6103,40 +6218,114 @@ msgid ""
 "heirloom object. Any luck in finding it? Don't give up!"
 msgstr ""
 
+#: ../scourge_data/config/mission.cfg:59
+msgid "Bring back the missed ${item1}"
+msgstr ""
+
 #: ../scourge_data/config/mission.cfg:61
-msgid "Chapter 1: Greasy pork chops with turned milk "
+msgid ""
+"A charity case really... I don't know why we bother with the like... Anyway, "
+"one must give back at times, and that is why we took the case of the local "
+"dung collectors' guild. I'm afraid they did loose their ${item1} while "
+"depositing the day's load at a nearby meadow. Please hurry and retrieve the "
+"object!"
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:63
+msgid ""
+"Excellent job! The dung collectors' guild is finally off our backs... "
+"They're most grateful that we returned their lost object and I must say - as "
+"a token of their appreciation - my chamberpot has never been cleaner!"
 msgstr ""
 
 #: ../scourge_data/config/mission.cfg:64
 msgid ""
-"Early this morning a tall and obviously non-human creature stood waiting for "
-"me at headquarters. It's gaze shifted nervously from side to side as it "
-"recounted the tale of his master's lost wand. It seems, his master working "
-"late one night conjured up a creature he could not control. While  wrestling "
-"with the demon, he managed to entrap himself and the creature in the "
-"dimension of Excruciating Nausea. Between fits of gurgling  regurgitation he "
-"asks that we retrieve and bring him his Wand of Nausiation. He believes its "
-"power can be reversed and used to extricate himself from this situation. I "
-"believe we can make a powerful friend here if your mission succeeds!"
+"Remember we're still not finished with the dung collectors' guild. They may "
+"not have lots of money, but I'd rather not upset the guild for... obvious "
+"reasons."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:65
+#: ../scourge_data/config/mission.cfg:68
+msgid "Dispatch the ${creature1}"
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:70
+msgid ""
+"A ${creature1} terrorizes a nearby glade under the druidic protection of the "
+"Circle of the Caressing Wind. The druids offer us cash on the spot for the "
+"timely removal of this creature. Please go immediately and see that its "
+"reign of terror is silenced once and for all."
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:72
+msgid ""
+"The druids were overjoyed at the news! They can finally worship in peace "
+"without the annoying interuptions of one their group being eaten during "
+"service. They thank us profusely."
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:73
+msgid ""
+"The druids press upon us the importance of removing the ${creature1}. It "
+"seems the crunching of bones and snapping of sinew (while the beast feasts "
+"upon one of the congregation) interferes with most holy delivery of the "
+"sermon. So do be quick!"
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:78
+msgid "Chapter 1: Greasy pork chops with turned milk "
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:82
+msgid ""
+"The usual plot: A helpless wizard named Sabien summoned and consequently "
+"lost control of a minor Fiend. While grappling with the demon he managed to "
+"trap himself in the dimension of Excrutiating Nausia.||While it may seem "
+"that the practicer of magics in this case is way over his head in trouble, "
+"it's generally agreed that one must do what one can to appease magicians. "
+"You just never know, even the most untalented can turn out to be helpful in "
+"the future!||Therefore it is imperative that your mission succeeds: go forth "
+"and retrieve the fabled Wand of Nausiation that Sabien keeps in his lair. "
+"Bring it back to headquarters so Sabien's helper can transport it to his "
+"trapped master."
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:83
+msgid ""
+"Early this morning a tall and obviously non-human creature stood waiting for "
+"me at headquarters. It's gaze shifted nervously from side to side as it "
+"recounted the tale of its master's lost wand. It seems, working late one "
+"night he conjured up a creature he could not control. While  wrestling with "
+"the demon, he managed to entrap himself and the creature in the dimension of "
+"Excruciating Nausea. Between fits of gurgling  regurgitation he asks that we "
+"retrieve and bring him his Wand of Nausiation. He believes its power can be "
+"reversed and used to extricate himself from this situation. I believe we can "
+"make a powerful friend here if your mission succeeds!"
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:84
 msgid ""
 "Thanks to your heroic efforts $Sabien (the hapless wizard) is safely at home "
 "again! He vows to "
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:66
+#: ../scourge_data/config/mission.cfg:84
+msgid ""
+" for us in the near future. Actually, this worries me far more than most "
+"missions we accept..."
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:85
 msgid ""
 "Remember to find the wand for $Sabien! He is an important client and he's in "
 "deep trouble at the moment."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:73
+#: ../scourge_data/config/mission.cfg:92
 msgid "Chapter 2: Maw of the Grizzled Beast!"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:76
+#: ../scourge_data/config/mission.cfg:97
 msgid ""
 "Perhaps you remember Sabien the wizard whom we rescued from the dimension of "
 "Excruciating Nausea. It seems he is in trouble again, this time he has been "
@@ -6148,25 +6337,25 @@ msgid ""
 "is guarded by hordes of monsters. Good luck!"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:77
+#: ../scourge_data/config/mission.cfg:98
 msgid ""
 "The mysterious $Order (which it turns out is composed entirely of dwarven  "
 "poets) has accepted the payment and let $Sabien go. I have a feeling  this "
 "won't be our last dealing with the $Order!"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:78
+#: ../scourge_data/config/mission.cfg:99
 msgid ""
 "Please hurry and rescue $Sabien! The $Order of the Grizzled Pony is a a "
 "group of dwarven poets... they keep sending me threats... their letters "
 "rhyme and the poetry is $awful!"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:85
+#: ../scourge_data/config/mission.cfg:106
 msgid "Chapter 3: The Mysterious Benefactor"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:88
+#: ../scourge_data/config/mission.cfg:111
 msgid ""
 "Sabien the wizard sent word that while he was being held by the Order of the "
 "Grizzled Pony, he overheard a conversation. He asked us to enter the Order's "
@@ -6178,7 +6367,7 @@ msgid ""
 "maps or other clues that might shed light on who the Order works for."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:89
+#: ../scourge_data/config/mission.cfg:112
 msgid ""
 "Boots of $Mycotharsius and a map of the $Abyss?! This does not sound good... "
 "Ask $Melathor about  information on $Mycotharsius. As far as I know he's "
@@ -6187,17 +6376,17 @@ msgid ""
 "forces again with an Abyssal being. $Melathor should know more about this."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:90
+#: ../scourge_data/config/mission.cfg:113
 msgid ""
 "$Sabien is still waiting for any info you can dig up about the $Order. He "
 "needs to know who the dwarves are working for."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:100
+#: ../scourge_data/config/mission.cfg:123
 msgid "Chapter 4: Among the Groez-Duil"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:103
+#: ../scourge_data/config/mission.cfg:128
 msgid ""
 "You must travel to Thuzgol the city of the mountain dwarves, or the Groez-"
 "Duil as they call themselves. Once there, look up my old mentor Orhithales "
@@ -6210,7 +6399,7 @@ msgid ""
 "to shed light on their connection to Mycotharsius."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:104
+#: ../scourge_data/config/mission.cfg:129
 msgid ""
 "Dragonscale armor?! I have not see one of these since the $end of the "
 "$Guardians of the Realm. I'll have to think about what to make of this... "
@@ -6218,21 +6407,30 @@ msgid ""
 "quite close for a long time, perhaps he told you."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:105
+#: ../scourge_data/config/mission.cfg:130
 msgid "Remember to journey to $Thuzgol and talk to $Orhithales."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:113
+#: ../scourge_data/config/mission.cfg:138
 msgid "Chapter 5: A brief visit with Mycotharsius"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:116
+#: ../scourge_data/config/mission.cfg:143
 msgid ""
 "Our agents have located Mycotharsius in the cellars of a peaceful monastery "
 "called "
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:117
+#: ../scourge_data/config/mission.cfg:143
+msgid ""
+", near the city of Orn. You must journey here and confront him. Before "
+"ridding the world of him for good, find out as much as you can about why he "
+"hired the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid "
+"however, that his failures made Mycotharsius quite Mad. Therefore if all he "
+"can offer is gibberish, try to look around his lair for clues."
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:144
 msgid ""
 "Good job, defeating $Mycotharsius! Now we know why $Sabien was kidnapped by "
 "the $Order! I sent Sabien the map of the $Abyss you found earlier and next "
@@ -6241,21 +6439,21 @@ msgid ""
 "posted on the mission board."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:118
+#: ../scourge_data/config/mission.cfg:145
 msgid ""
 "You still have to journey to the monastery of the Tower and defeat "
 "$Mycotharsius."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:120
+#: ../scourge_data/config/mission.cfg:147
 msgid "Kill Mycotharsius the Mad"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:124
+#: ../scourge_data/config/mission.cfg:151
 msgid "Chapter 6: Sabien's Revelations"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:127
+#: ../scourge_data/config/mission.cfg:156
 msgid ""
 "You must call upon our old friend Sabien. He already knows the purpose of "
 "your visit, because I sent him the map fragment of the Abyss you found "
@@ -6265,27 +6463,27 @@ msgid ""
 "so he is a key figure in solving this mystery whether he knows it or not."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:128
+#: ../scourge_data/config/mission.cfg:157
 msgid ""
 "Interesting... so $Sabien claims $Mothrazu is trying to enter the $Abyss? I "
 "have read the notes he sent me and marked the location of the $tokens on the "
 "$board."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:129
+#: ../scourge_data/config/mission.cfg:158
 msgid ""
 "Have you traveled to see $Sabien yet? I marked his library on the $board."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:131
+#: ../scourge_data/config/mission.cfg:160
 msgid "Talk to Sabien"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:135
+#: ../scourge_data/config/mission.cfg:164
 msgid "Chapter 7: Tokens of the Gods"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:138
+#: ../scourge_data/config/mission.cfg:169
 msgid ""
 "Browsing through Sabien's notes about the four tokens, it seems they are to "
 "be found quite close to here in an underground complex. The building is "
@@ -6297,24 +6495,24 @@ msgid ""
 "world type situation in earnest..."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:139
+#: ../scourge_data/config/mission.cfg:170
 msgid ""
 "You must now take these $tokens to $Sabien in his library. Hurry, for only "
 "he knows how to employ them to unlock the wards that protect the door to the "
 "planar $device."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:140
+#: ../scourge_data/config/mission.cfg:171
 msgid ""
 "By the gods! While you amble about, the fate of the world hangs by a thread! "
 "Hurry and find the $tokens $Sabien needs!"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:153
+#: ../scourge_data/config/mission.cfg:184
 msgid "Chapter 8: The Descent"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:156
+#: ../scourge_data/config/mission.cfg:189
 msgid ""
 "You must now return to Sabien's library and with the help of the tokens "
 "unlock the warded door. What lies beyond this portal is surely one of the "
@@ -6325,7 +6523,7 @@ msgid ""
 "in town."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:157
+#: ../scourge_data/config/mission.cfg:190
 msgid ""
 "I must really sit down for this... So, you traveled through an ancient "
 "planar device to... to... the Abyss?! And met a demon lord named $Karzul who "
@@ -6335,22 +6533,22 @@ msgid ""
 "may be. When I know more, I will post it on the board."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:158
+#: ../scourge_data/config/mission.cfg:191
 msgid ""
 "Have you been able to unlock the door in Sabien's library and learn what "
 "lies beyond?  Remember to bring back anything important that is connected to "
 "the $Guardians of the Realm or the creature called $Mothrazu."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:160
+#: ../scourge_data/config/mission.cfg:193
 msgid "Investigate the warded door in Sabien's library"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:164
+#: ../scourge_data/config/mission.cfg:197
 msgid "Chapter 9: A Thorny Argument for Divine Favor"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:167
+#: ../scourge_data/config/mission.cfg:202
 msgid ""
 "Our agents returned from abroad with exciting news! The lair of the rogue "
 "druid  Mothrazu has been found in an abandoned complex on the Isle of "
@@ -6366,7 +6564,7 @@ msgid ""
 "convince this goddess of Arguments  to give you what you seek."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:168
+#: ../scourge_data/config/mission.cfg:203
 msgid ""
 "Welcome back! I regret to say we cannot waste more time! Remember to wear "
 "the gifts of the goddess and armed with antimagic binding objects enter the "
@@ -6374,7 +6572,7 @@ msgid ""
 "stake! I will post her location on the board."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:169
+#: ../scourge_data/config/mission.cfg:204
 msgid ""
 "Have you visited Hornaxx the goddess of Arguments yet? Be sure to remind her "
 "of the  debt she owes us, and hope that in her divine wisdom, she rewards "
@@ -6382,17 +6580,17 @@ msgid ""
 "defeat $Mothrazu."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:171
+#: ../scourge_data/config/mission.cfg:206
 msgid ""
 "Ask Hornaxx goddess of Arguments to equip each pc with an antimagic binding "
 "ite"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:175
+#: ../scourge_data/config/mission.cfg:210
 msgid "Chapter 10: Where Wild Weeds Grow"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:178
+#: ../scourge_data/config/mission.cfg:215
 msgid ""
 "Mothrazu's lair is finally ready for our assault. Peril beyond description "
 "awaits within its crumbling halls, but luckily the land finally has heroes "
@@ -6406,7 +6604,7 @@ msgid ""
 "protected by a poisonous miasma."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:179
+#: ../scourge_data/config/mission.cfg:216
 msgid ""
 "Excellent job eradicating the $druid. She truly was a menace of global "
 "proportions.|| Now... about another thing... I'm afraid the powers that be "
@@ -6419,15 +6617,59 @@ msgid ""
 "to him before going to your next mission. Ask him about the Tree of Emeril."
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:180
+#: ../scourge_data/config/mission.cfg:217
 msgid ""
 "Our time is limited. Be careful not to take too long, or $Mothrazu may well "
 "accomplish her vile deed. Now that our agents have finally located her lair, "
 "you should eliminate her once and for all!"
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:182
+#: ../scourge_data/config/mission.cfg:219
 msgid "Neutralize one hideous druidic menace"
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:223
+msgid "Chapter 11: Damage Control"
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:229
+msgid ""
+"Our 'public relations' suffered a setback when we inadverdently unleashed "
+"the Tree of Emeril, the spawn of Arcanex, tunneler of planes upon the world. "
+"Therefore we need to clean up the mess.||Your mission is to go forth to "
+"Emeril once more and find out all that you can about the massive intruder. "
+"Be sure to ask Melathor about the 'Tree of Emeril' before attempting to "
+"communicate with the tree being. He may have some useful insight into how "
+"such a conversation can be initiated."
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:230
+msgid ""
+"I see... so the taint of evil being reported from the Isle of Emeril is "
+"actually the demon lord $Karzul entering our world? That sounds much "
+"better... I am sure our $clients will be happy to hear that...||Well, at "
+"least our path is now clear. It's do or die...||Rest quickly and then you "
+"will travel to abandoned monastery of Minirmuir, unlock the tombs of the "
+"$Guardians of the Realm and - hopefully - with their aid, defeat $Karzul.||"
+"Sounds... er... easy..."
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:231
+msgid ""
+"Nothing to report?! I'm handling a public relations nightmare of "
+"catastrophic proportions here! This may just be the last job we at S.c.o.u.r."
+"g.e ever get to do unless you find a way to clean up this mess and find out "
+"what that tree wants.||Our $owners are talking about pulling our funding... "
+"If we're not quick, we'll soon have to find an alternate means of "
+"employment.||Oh, if the corruptive energies emanating from the Tree of "
+"Emeril don't destory the world first. Hurry!||Be sure to ask Melathor about "
+"the 'Tree of Emeril'. He may have more info."
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:232
+msgid ""
+"Speak with the intelligent tree being on the isle of Emeril. Bring back all "
+"info you find out."
 msgstr ""
 
 #: ../scourge_data/config/profession.cfg:7
@@ -6435,6 +6677,16 @@ msgid "Man-at-arms"
 msgstr ""
 
 #: ../scourge_data/config/profession.cfg:12
+msgid ""
+"Born to fight, strong and fearless, you are always in the front line, "
+"equipped with the most powerful weapons and armors.||When the voice of the "
+"battle (weapon clangs, blood and screams) calls, the Man-at-arms answers."
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:32
+msgid "Warrior"
+msgstr ""
+
 #: ../scourge_data/config/profession.cfg:38
 #: ../scourge_data/config/profession.cfg:52
 #: ../scourge_data/config/profession.cfg:67
@@ -6474,7 +6726,6 @@ msgstr ""
 #: ../scourge_data/config/profession.cfg:598
 #: ../scourge_data/config/profession.cfg:615
 #: ../scourge_data/config/profession.cfg:630
-#: ../scourge_data/config/profession.cfg:648
 #: ../scourge_data/config/profession.cfg:677
 #: ../scourge_data/config/profession.cfg:692
 #: ../scourge_data/config/profession.cfg:707
@@ -6484,21 +6735,18 @@ msgstr ""
 #: ../scourge_data/config/profession.cfg:767
 #: ../scourge_data/config/profession.cfg:783
 #: ../scourge_data/config/profession.cfg:799
-#: ../scourge_data/config/profession.cfg:818
 #: ../scourge_data/config/profession.cfg:846
 #: ../scourge_data/config/profession.cfg:861
 #: ../scourge_data/config/profession.cfg:876
 #: ../scourge_data/config/profession.cfg:891
 #: ../scourge_data/config/profession.cfg:907
 #: ../scourge_data/config/profession.cfg:923
-#: ../scourge_data/config/profession.cfg:941
 #: ../scourge_data/config/profession.cfg:970
 #: ../scourge_data/config/profession.cfg:985
 #: ../scourge_data/config/profession.cfg:1000
 #: ../scourge_data/config/profession.cfg:1015
 #: ../scourge_data/config/profession.cfg:1031
 #: ../scourge_data/config/profession.cfg:1047
-#: ../scourge_data/config/profession.cfg:1066
 #: ../scourge_data/config/profession.cfg:1095
 #: ../scourge_data/config/profession.cfg:1110
 #: ../scourge_data/config/profession.cfg:1125
@@ -6506,10 +6754,6 @@ msgstr ""
 #: ../scourge_data/config/profession.cfg:1156
 #: ../scourge_data/config/profession.cfg:1172
 msgid "description goes here"
-msgstr ""
-
-#: ../scourge_data/config/profession.cfg:32
-msgid "Warrior"
 msgstr ""
 
 #: ../scourge_data/config/profession.cfg:46
@@ -6664,6 +6908,13 @@ msgstr ""
 msgid "Magician"
 msgstr ""
 
+#: ../scourge_data/config/profession.cfg:648
+msgid ""
+"Though dressed with robes and carrying only small or ranged weapons, you "
+"become a dangerous opponent when you call upon the power of sorcery and "
+"mysterious energies start flowing around you."
+msgstr ""
+
 #: ../scourge_data/config/profession.cfg:671
 msgid "Apprentice Sorceror"
 msgstr ""
@@ -6704,6 +6955,14 @@ msgstr ""
 msgid "Healer"
 msgstr ""
 
+#: ../scourge_data/config/profession.cfg:818
+msgid ""
+"Healers can be found everywhere: from the dark peace of the forests to the "
+"roaring desperation of the battlefields.||Bringing the power of the spirit "
+"group to the world, you are the actual connection between the desolation of "
+"the earth and the harmony of the heaven."
+msgstr ""
+
 #: ../scourge_data/config/profession.cfg:840
 msgid "Clerical Aide"
 msgstr ""
@@ -6732,6 +6991,14 @@ msgstr ""
 msgid "Scholar"
 msgstr ""
 
+#: ../scourge_data/config/profession.cfg:941
+msgid ""
+"Spending most of your youth studying lore and arcane secrets, you became one "
+"of the keepers of the absolute knowledge. Reading ancient scrolls, "
+"identifying strange creatures and dealing with mystery is what you can do "
+"best."
+msgstr ""
+
 #: ../scourge_data/config/profession.cfg:964
 msgid "Adjunct"
 msgstr ""
@@ -6758,6 +7025,13 @@ msgstr ""
 
 #: ../scourge_data/config/profession.cfg:1061
 msgid "Cutpurse"
+msgstr ""
+
+#: ../scourge_data/config/profession.cfg:1066
+msgid ""
+"Born in shadows and dressed with darkness you sneak through dungeons "
+"corridors like a doubt in the mind.||Even the smallest blade in your hands "
+"becomes a perfect tool to force locks and cut bags and... throats if needed."
 msgstr ""
 
 #: ../scourge_data/config/profession.cfg:1089
@@ -7917,6 +8191,10 @@ msgstr ""
 msgid "Mothrazu Pain Incarnate"
 msgstr ""
 
+#: ../scourge_data/config/npc.cfg:844
+msgid "Spawn of Arcanex"
+msgstr ""
+
 #: ../scourge_data/config/monster.cfg:25
 msgid "Imp"
 msgstr ""
@@ -7937,309 +8215,354 @@ msgstr ""
 msgid "Giant Cobra"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:104
+#: ../scourge_data/config/monster.cfg:105
 msgid "Rabbid Rodent"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:121
+#: ../scourge_data/config/monster.cfg:122
 msgid "Gray Slimy Waddler"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:138
+#: ../scourge_data/config/monster.cfg:139
 msgid "Fleshworm"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:156
+#: ../scourge_data/config/monster.cfg:157
 msgid "Kobold"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:175
+#: ../scourge_data/config/monster.cfg:176
 msgid "Blue Bauul"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:194
+#: ../scourge_data/config/monster.cfg:195
 msgid "False Cobra"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:212
+#: ../scourge_data/config/monster.cfg:214
 msgid "Dire Stench-Waddler"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:232
+#: ../scourge_data/config/monster.cfg:234
 msgid "Minor Spectre"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:253
+#: ../scourge_data/config/monster.cfg:255
 msgid "Brawn"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:271
+#: ../scourge_data/config/monster.cfg:273
 msgid "Blue Brawn"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:289
+#: ../scourge_data/config/monster.cfg:291
 msgid "Storm Cobra"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:308
+#: ../scourge_data/config/monster.cfg:311
 msgid "Hydralisk"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:327
+#: ../scourge_data/config/monster.cfg:330
 msgid "Red Brawn"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:345
+#: ../scourge_data/config/monster.cfg:348
 msgid "Lesser Phantom"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:368
+#: ../scourge_data/config/monster.cfg:371
 msgid "flesh raptor"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:382
+#: ../scourge_data/config/monster.cfg:385
 msgid "Rare Cobra"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:401
+#: ../scourge_data/config/monster.cfg:405
 msgid "Megalisk"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:420
+#: ../scourge_data/config/monster.cfg:424
 msgid "Stone raptor"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:438
+#: ../scourge_data/config/monster.cfg:442
 msgid "Vile Phantom"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:461
+#: ../scourge_data/config/monster.cfg:465
 msgid "Pain Fairy"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:484
+#: ../scourge_data/config/monster.cfg:488
 msgid "Neural Cobra"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:503
+#: ../scourge_data/config/monster.cfg:508
 msgid "Hydralisk Deathlord"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:522
+#: ../scourge_data/config/monster.cfg:527
 msgid "Spirit Phantom"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:545
+#: ../scourge_data/config/monster.cfg:550
 msgid "spirit raptor"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:565
+#: ../scourge_data/config/monster.cfg:570
 msgid "Reek Fairy"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:588
+#: ../scourge_data/config/monster.cfg:594
 msgid "Mordoraptor"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:608
+#: ../scourge_data/config/monster.cfg:614
 msgid "Marduk Fairy"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:631
+#: ../scourge_data/config/monster.cfg:638
 msgid "Mernobus"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:654
+#: ../scourge_data/config/monster.cfg:661
 msgid "Poison Blade Frog"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:677
+#: ../scourge_data/config/monster.cfg:684
 msgid "Lesser Soulstealer"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:700
+#: ../scourge_data/config/monster.cfg:707
 msgid "Necromancer"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:724
+#: ../scourge_data/config/monster.cfg:732
 msgid "Restless Spirit Frog"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:747
+#: ../scourge_data/config/monster.cfg:755
 msgid "Greater Soulstealer"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:770
+#: ../scourge_data/config/monster.cfg:778
 msgid "Raving Necromancer"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:794
+#: ../scourge_data/config/monster.cfg:802
 msgid "Skeleton Warrior"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:818
+#: ../scourge_data/config/monster.cfg:827
 msgid "Shadow Frog"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:841
+#: ../scourge_data/config/monster.cfg:850
 msgid "Diabolic Soulstealer"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:864
+#: ../scourge_data/config/monster.cfg:873
 msgid "Unhinged Necromancer"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:888
+#: ../scourge_data/config/monster.cfg:897
 msgid "Skeleton Summoner"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:912
+#: ../scourge_data/config/monster.cfg:922
 msgid "Host Mindslaught"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:935
+#: ../scourge_data/config/monster.cfg:945
 msgid "Nihilistic Necromancer"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:959
+#: ../scourge_data/config/monster.cfg:969
 msgid "Greater Skeleton Warrior"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:983
+#: ../scourge_data/config/monster.cfg:994
 msgid "Lesser Guargloo"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1005
+#: ../scourge_data/config/monster.cfg:1016
 msgid "Fiendish Raptor"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1027
+#: ../scourge_data/config/monster.cfg:1038
 msgid "Minor Undead Gatekeeper"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1051
+#: ../scourge_data/config/monster.cfg:1062
 msgid "Ogre Cleric of Unamoin"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1074
+#: ../scourge_data/config/monster.cfg:1086
 msgid "Lesser Aspect of Thazmord"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1097
+#: ../scourge_data/config/monster.cfg:1109
 msgid "Guargloo Skirmisher"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1120
+#: ../scourge_data/config/monster.cfg:1132
 msgid "Fiendish Raptor Avenger"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1143
+#: ../scourge_data/config/monster.cfg:1155
 msgid "Undead Gatekeeper Warrior"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1167
+#: ../scourge_data/config/monster.cfg:1179
 msgid "Ogre Priest of Unamoin"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1190
+#: ../scourge_data/config/monster.cfg:1203
 msgid "Aspect of Thazmord"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1213
+#: ../scourge_data/config/monster.cfg:1226
 msgid "Greater Guargloo Chieften"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1236
+#: ../scourge_data/config/monster.cfg:1249
 msgid "Fiendish Raptor Master"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1259
+#: ../scourge_data/config/monster.cfg:1272
 msgid "Gatekeeper Wraith"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1283
+#: ../scourge_data/config/monster.cfg:1296
 msgid "Warogre Fanatic of Unamoin"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1306
+#: ../scourge_data/config/monster.cfg:1320
 msgid "Greater Aspect of Thazmord"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1329
+#: ../scourge_data/config/monster.cfg:1343
 msgid "Warogre Beserker of Unamoin"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1352
+#: ../scourge_data/config/monster.cfg:1366
 msgid "Lesser Agmordemon"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1375
+#: ../scourge_data/config/monster.cfg:1389
 msgid "Slaying Mantis Mutanoid"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1399
+#: ../scourge_data/config/monster.cfg:1414
 msgid "Agmordemon Warrior"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1422
+#: ../scourge_data/config/monster.cfg:1437
 msgid "Slaying Mantis"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1446
+#: ../scourge_data/config/monster.cfg:1461
 msgid "Bloodforged Soldier"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1468
+#: ../scourge_data/config/monster.cfg:1484
 msgid "Agmordemon Lord"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1491
+#: ../scourge_data/config/monster.cfg:1507
 msgid "Slaying Mantis Savant"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1515
+#: ../scourge_data/config/monster.cfg:1531
 msgid "Bloodforged Commander"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1537
+#: ../scourge_data/config/monster.cfg:1554
 msgid "Bloodforged Spiker"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1560
+#: ../scourge_data/config/monster.cfg:1577
 msgid "Lesser Mithral Fiend"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1582
-#: ../scourge_data/config/monster.cfg:1693
+#: ../scourge_data/config/monster.cfg:1599
+#: ../scourge_data/config/monster.cfg:1711
 msgid "Undead Soulhorder"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1604
+#: ../scourge_data/config/monster.cfg:1621
 msgid "Abyss-spawned Archer"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1626
+#: ../scourge_data/config/monster.cfg:1643
 msgid "Abyss-spawned Mauler"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1648
+#: ../scourge_data/config/monster.cfg:1666
 msgid "Elite Bloodforged Ranger"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1671
+#: ../scourge_data/config/monster.cfg:1689
 msgid "Mithral Fiend Captain"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1715
+#: ../scourge_data/config/monster.cfg:1733
 msgid "Soulhord Endlord"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1738
+#: ../scourge_data/config/monster.cfg:1757
 msgid "Abyss-spawned Warmage"
 msgstr ""
 
-#: ../scourge_data/config/monster.cfg:1761
+#: ../scourge_data/config/monster.cfg:1780
 msgid "Mithral Shade"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1802
+msgid "Champion of Chaos"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1824
+msgid "Lesser Cerxezu Demon"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1848
+msgid "Brainrot Demon"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1871
+msgid "Unholy Chaos Liege"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1893
+msgid "Cerxezu Demon"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1917
+#: ../scourge_data/config/monster.cfg:1986
+msgid "Elite Brain-Hunter Demon"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1940
+msgid "Shadow Knight of Chaos"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:1962
+msgid "Cerxezu Demon Mage"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:2009
+msgid "Elite Chaos-formed Warrior"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:2031
+msgid "Charger Cerxezu Demon"
+msgstr ""
+
+#: ../scourge_data/config/monster.cfg:2055
+msgid "Cerxezu Demon Lord"
 msgstr ""
 
 #: ../scourge_data/script/map.nut:47
@@ -8247,120 +8570,124 @@ msgid ""
 "The creature once known as Mothrazu sinks to one knee... Her breath comes in "
 "sharp gasps, as she growls:||\"I curse you humans...You may have defeated me "
 "but by Amod's grace, I still have one task left...\"||She reaches into a "
-"pouch and throws something small and silvery into the grove trees at the "
+"pouch and throws something small and silvery into the grove of trees at the "
 "center of the room.||\"You will never find it... Karzul's gift will mature "
 "and continue where I failed. May the plants be merciful to your malevolent "
 "souls... Amod! I am close...\"||With that Mothrazu passes from this world."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:112
+#: ../scourge_data/script/map.nut:115
 #, c-format
 msgid "The mighty lord %s reaches towards you,"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:114
+#: ../scourge_data/script/map.nut:117
 msgid "...alas, the deity can aid you no more today."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:121
+#: ../scourge_data/script/map.nut:124
 msgid "...and fills your spirit with energy."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:124
+#: ../scourge_data/script/map.nut:127
 #, c-format
 msgid "Your presence angers the mighty lord %s!"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:128
+#: ../scourge_data/script/map.nut:131
 msgid "...the deity's wrath scours your flesh!"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:130
+#: ../scourge_data/script/map.nut:133
 #, c-format
 msgid "The mighty lord %s ignores you."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:245
+#: ../scourge_data/script/map.nut:248
 #, c-format
 msgid "%s conjures up magic with blinding speed!"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:266
+#: ../scourge_data/script/map.nut:269
 msgid "dragonscale"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:267
+#: ../scourge_data/script/map.nut:270
 msgid "armor"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:268
+#: ../scourge_data/script/map.nut:271
 msgid "Yes, yes... quite so... carry on!"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:272
+#: ../scourge_data/script/map.nut:275
 msgid "door"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:273
+#: ../scourge_data/script/map.nut:276
 msgid "seal"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:274
+#: ../scourge_data/script/map.nut:277
 msgid "sealed"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:275
+#: ../scourge_data/script/map.nut:278
 msgid "lock"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:276 ../scourge_data/maps/library.cfg:52
+#: ../scourge_data/script/map.nut:279 ../scourge_data/maps/library.cfg:52
 msgid "locked"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:279
+#: ../scourge_data/script/map.nut:282
 msgid "after"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:279
+#: ../scourge_data/script/map.nut:282
 msgid "stop"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:286
+#: ../scourge_data/script/map.nut:289
 msgid "serves"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:286
+#: ../scourge_data/script/map.nut:289
 msgid "gift"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:291 ../scourge_data/maps/temple.cfg:173
+#: ../scourge_data/script/map.nut:294 ../scourge_data/maps/temple.cfg:173
 msgid "tokens"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:295 ../scourge_data/maps/hq.cfg:144
+#: ../scourge_data/script/map.nut:298 ../scourge_data/maps/hq.cfg:144
 msgid "doom"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:320
+#: ../scourge_data/script/map.nut:302
+msgid "karzul"
+msgstr ""
+
+#: ../scourge_data/script/map.nut:328
 msgid "...Brand of Iconoclast growls in a low tone..."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:324
+#: ../scourge_data/script/map.nut:332
 #, c-format
 msgid "...damage is increased by %d pts!"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:336
+#: ../scourge_data/script/map.nut:344
 #, c-format
 msgid "...damage is reduced by %d pts! (Cloak of Hateful Vengeance)"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:362
+#: ../scourge_data/script/map.nut:370
 #, c-format
 msgid "...damage is reduced by %d pts! (Cloak of Safe Passage)"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:401
+#: ../scourge_data/script/map.nut:409
 msgid ""
 "You find yourself on a barren plain. The air is thick with moisture and very "
 "still. The bleak ground appears to emit a cancerous odor like the smell of "
@@ -8371,7 +8698,7 @@ msgid ""
 "extra effort."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:451
+#: ../scourge_data/script/map.nut:459
 msgid ""
 "The ancient walls appear to cave inward as if pushed on by the very roots of "
 "the forest from above. A metallic smell cuts the air and the noises echoing "
@@ -8381,9 +8708,18 @@ msgid ""
 "enough, frequent quakes shake the dungeon..."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:471
+#: ../scourge_data/script/map.nut:479
 #, c-format
 msgid "%s feels very ill suddenly."
+msgstr ""
+
+#: ../scourge_data/script/map.nut:539
+msgid ""
+"A baleful wind blows bringing the scent of slow vegetative decay. Off in the "
+"distance you glance a mighty tree, standing in the center of a barren plane "
+"of ashen stone.||No other plants dare intrude upon its territory and no "
+"animal life stirs near its accursed branches.||Above, clouds darken the sky "
+"as if to signal the long awaited fulfillment of a pending doom."
 msgstr ""
 
 #: ../scourge_data/script/skills.nut:47
@@ -8596,7 +8932,7 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:132
-msgid "potions"
+msgid "potions,drunk,drink"
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:133
@@ -8611,7 +8947,7 @@ msgstr ""
 msgid "trade"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:135 ../scourge_data/maps/hq.cfg:251
+#: ../scourge_data/maps/hq.cfg:135 ../scourge_data/maps/hq.cfg:267
 msgid ""
 "When trading, you can sell items, buy items or trade items of equivalent "
 "value. You will find that some merchants only sell a certain type of item. "
@@ -8622,7 +8958,7 @@ msgstr ""
 msgid "train"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:137 ../scourge_data/maps/hq.cfg:252
+#: ../scourge_data/maps/hq.cfg:137 ../scourge_data/maps/hq.cfg:268
 msgid ""
 "You can assign the skill bonus points yourself when gaining a level. "
 "However, paying for assisted training is the only way to really achieve high "
@@ -8798,7 +9134,7 @@ msgstr ""
 msgid "Orhithales"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:167 ../scourge_data/maps/hq.cfg:219
+#: ../scourge_data/maps/hq.cfg:167 ../scourge_data/maps/hq.cfg:235
 msgid "The ancient sage Orhithales lives in $Thuzgol."
 msgstr ""
 
@@ -8806,7 +9142,7 @@ msgstr ""
 msgid "Thuzgol"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:169 ../scourge_data/maps/hq.cfg:220
+#: ../scourge_data/maps/hq.cfg:169 ../scourge_data/maps/hq.cfg:236
 msgid ""
 "The great dwarven city of Thuzgol is home to the Groez-Duil: the mountain "
 "dwarves."
@@ -8838,7 +9174,7 @@ msgstr ""
 #: ../scourge_data/maps/hq.cfg:175
 msgid ""
 "So he is real! I always thought the whole $Mycotharsius story was just "
-"tavern-gossip due to too much Troll Stout... Hmmm, so this changes "
+"tavern-gossip due to too much Troll Stout... ||Hmmm, so this changes "
 "everything! You say, he plans to enter our world and destroy it? Well he "
 "certainly can via the red teleporter. However, he should be relatively weak "
 "here without a permanent $link to his home plane."
@@ -8846,7 +9182,7 @@ msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:177
 msgid ""
-"I think what Karzul hinted at is such a thing. I am not sure how this is "
+"I think what $Karzul hinted at is such a thing. I am not sure how this is "
 "possible but it must that the device $Mothrazu is carrying will provide "
 "(when activated) a conduit to the powers of the Abyss. Using such a system "
 "would indeed allow $Karzul to exercise all his diabolic powers."
@@ -8857,10 +9193,142 @@ msgid "Tree of Emeril"
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:179
-msgid "[FIXME: chapter 11]"
+msgid ""
+"Yes, I have heard... creatures, friendly to our cause - few as they are - "
+"reported of a ring of ashen-black stone on the Isle of Emeril. In its center "
+"stands a massive tree, bursting out of the ground to the height of many "
+"stories.|| I've long studied of this being... this tree... spending many "
+"nights here in the library, unearthing dusty tomes from before the time of "
+"the $Guardians. I still don't know whether to believe all that I've come to "
+"understand... Such evil... such cunning!||You see, I have much to $explain "
+"so pull up a chair and listen."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:180
+msgid "explain"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:181
+msgid ""
+"Yes, let us begin. First of all the tree... Little did the druid $Mothrazu "
+"suspect that she was but a pawn in a much larger plan. But then again, I "
+"suppose one must always keep such things in mind, when dealing with "
+"$fiendish powers..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:182
+msgid "fiendish"
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:183
+msgid ""
+"The demon $Karzul has given the seed to our friend Mothrazu, the crazed "
+"guardian of Nature. She claimed that visions of $Amod - the god of Nature - "
+"tormented her dreams and drove her on the quest to cover the material realm "
+"in an antediluvian forest.||However, I believe it to be far more concievable "
+"that the source of these nightmares was $Karzul himself, as he tried to not-"
+"so-subtly nudge our druid closer to the chasms of madness. ||The only "
+"$question which remains is why he would bother with such a thing."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:184
+msgid "question"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:185
+msgid ""
+"In order to answer this question, I turned my energies to researching the "
+"'tree'. After all, why would a powerful abyssal being take such keen "
+"interest in arboreal studies? Rest assured, his motives do not include "
+"whishing to make the world greener.||In fact, when I finally stumbled upon "
+"the connection ( haha, good one) the blood froze in my veins... I rememeber "
+"even still... the wind howling outside my chambers when by the light of the "
+"last of my tallow candles nearly guttering, I found what I was $looking for."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:186
+msgid "looking"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:187
+msgid ""
+"The ancient text nearly crumbled as I read its worn pages...||In archaic "
+"prose, it told the account of Licidus Arcun, the master scholar of Eruon - "
+"the ancient name of the very city of Horghh - who while collecting and "
+"categorizing species of nature, accidentally stumbled upon a being named "
+"$Arcanex.||Thought to be extinct for centuries, $Arcanex was the last of a "
+"race of sentient trees. One interesting quality of these beings is that "
+"their roots transcend physical limitations and can reach across multiple "
+"planes of existance."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:188
+msgid "Arcanex"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:189
+msgid ""
+"Yes, it is pure genius, don't you see? $Karzul must have somehow got a hold "
+"of a seed of Arcanex - or another member of his tree race. ||Since $Karzul "
+"cannot exist in our reality without an extraplanar link to his home plane - "
+"the $Abyss - he sent $Mothrazu to prepare for his coming. I am sure of it! "
+"He plans to dominate this world, but he needed a mechanism to ensure all his "
+"powers would be available to him while in the material realm. A plane-"
+"tunneling conduit like the roots of the Tree of Emeril is perfect. ||Now "
+"$nothing can stop him as he invades and enslaves all of humankind."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:190 ../scourge_data/maps/hq.cfg:258
+msgid "nothing"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:191
+msgid ""
+"I marvel at the genious of his plan even while quaking with terror... You "
+"must travel and $speak with the tree. ||Remember it is a sentient, though "
+"conversing with it is likely to be challenging even if it notices humans at "
+"all... Find out all that you can about its plans and details about how and "
+"when $Karzul is likely to enter our world. Based on the information you "
+"reconnoiter perhaps we can formulate a plan...|| For if with this last "
+"mission we don't find some way to stop $Karzul, we may as well say farewell "
+"to all that we hold dear.||Now go!"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:192 ../scourge_data/maps/temple.cfg:227
+msgid "speak"
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:193
+msgid ""
+"Oh yes, I almost forgot. I did read a bit on how to communicate with a spawn "
+"of $Arcanex. As you can I'm sure imagine a relationship between a mere "
+"mortal and a towering, arboreal plane-dweller is at the least a frustrating "
+"exercise in inter-species protocol. A more likely situation is that the "
+"plant will ignore you completely. In order for succesful contact, you must "
+"present the tree with a subject of interest.||It is just our luck that this "
+"particular spawn of $Arcanex decided to lair not far from the entrance of an "
+"abandoned underground deep-elven stronghold. Why the elves left the place is "
+"not known to me, however I do know that they left behind a powerful "
+"artifact, known as the 'Quen-go-Nul', or the $Cronostar. ||Simply put, the "
+"$Cronostar when activated can slow time in a given radius by creating a "
+"pocket dimension around its handler. I'm convinced, that the proximity of "
+"such an ancient device will spur any sentient plane traveler to endless "
+"chatter."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:195
+msgid ""
+"The Cronostar was created by elven mages in the ancient times - before "
+"humans, hrmph! Its initial use was to safely harvest deep growing mushrooms "
+"- an elven delicacy - from the safety of its pocket dimension. ||Judging "
+"from the fact that this elven stronghold now stands empty, perhaps the "
+"Chronostar's powers were outmatched by whatever force dwells there in the "
+"depths of the earth... ||Yet I am confident it will be no match for you. ||"
+"After retrieving it from the lowest level of the stronghold, proceed "
+"directly to the spawn of $Arcanex and attempt to make contact..."
+msgstr ""
+
+#: ../scourge_data/maps/hq.cfg:199
 msgid ""
 "Welcome brave adventurers in the mighty halls of the $S.C.O.U.R.G.E. Dungeon "
 "Extermination Services Company! My $name is Uzudil the $Hand. Should you "
@@ -8868,20 +9336,20 @@ msgid ""
 "quarters without worry: there are no $monsters here."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:184 ../scourge_data/maps/thuzgol.cfg:145
+#: ../scourge_data/maps/hq.cfg:200 ../scourge_data/maps/thuzgol.cfg:145
 msgid "That is beyond my knowledge..."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:185 ../scourge_data/maps/library3.cfg:63
+#: ../scourge_data/maps/hq.cfg:201 ../scourge_data/maps/library3.cfg:63
 #: ../scourge_data/maps/thuzgol.cfg:146
 msgid "I can't help you with that."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:186
+#: ../scourge_data/maps/hq.cfg:202
 msgid "SCOURGE"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:187
+#: ../scourge_data/maps/hq.cfg:203
 msgid ""
 "Think of these halls as your new home, for the time to come. The S.C.O.U.R.G."
 "E. corporation was established to help out-of-luck adventurers stay out of "
@@ -8892,62 +9360,62 @@ msgid ""
 "$missions... 'challenging'."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:188
+#: ../scourge_data/maps/hq.cfg:204
 msgid "name"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:189
+#: ../scourge_data/maps/hq.cfg:205
 msgid ""
 "Although Uzudil is my proper name, most folks call me 'the $Hand' because my "
 "$job is to handle the company's daily affairs for the $owners. Check back "
 "with me between $missions for $news about our $clients."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:190
+#: ../scourge_data/maps/hq.cfg:206
 msgid "Hand"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:191
+#: ../scourge_data/maps/hq.cfg:207
 msgid ""
 "Besides talking to $clients, I specialize in... uh... 'handling the peace' "
 "here at head-quarters. As you can see we have many different types of people "
 "traveling through here so we have a strict set of $rules."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:192
+#: ../scourge_data/maps/hq.cfg:208
 msgid "rules"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:193
+#: ../scourge_data/maps/hq.cfg:209
 msgid ""
 "The house rules are simple: HQ is neutral grounds. As such there is no "
 "tolerance for fighting here. Save your energy for the $monsters... you'll "
 "need it!"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:194
+#: ../scourge_data/maps/hq.cfg:210
 msgid "job"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:195
+#: ../scourge_data/maps/hq.cfg:211
 msgid ""
 "Mostly I am the mediator between our $clients and the $owners and you, the "
 "adventurers."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:196
+#: ../scourge_data/maps/hq.cfg:212
 msgid "owners"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:197
+#: ../scourge_data/maps/hq.cfg:213
 msgid "I sense that you're not yet ready to learn about them."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:198
+#: ../scourge_data/maps/hq.cfg:214
 msgid "clients"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:199
+#: ../scourge_data/maps/hq.cfg:215
 msgid ""
 "Trust me you would not want to meet them... Madmen, evil sorcerers, crazed "
 "clerics and (occasionally) aberrations seek our help. In order to establish "
@@ -8957,22 +9425,22 @@ msgid ""
 "do it..."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:200
+#: ../scourge_data/maps/hq.cfg:216
 msgid "board"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:201
+#: ../scourge_data/maps/hq.cfg:217
 msgid ""
 "Yes, check the board frequently for new missions. It's located in the room "
 "with the purple flames. This is where I post new $missions as they arrive "
 "from our $clients."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:202
+#: ../scourge_data/maps/hq.cfg:218
 msgid "missions"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:203
+#: ../scourge_data/maps/hq.cfg:219
 msgid ""
 "Our $clients requests come in the form of missions which I nail up on the "
 "$board in the room with purple flames. If you see missions printed in "
@@ -8980,7 +9448,7 @@ msgid ""
 "time pressure and thus will pay more for the mission's timely completion!"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:204
+#: ../scourge_data/maps/hq.cfg:220
 msgid ""
 "Currently I have only vague rumors to tell you. However, check back again "
 "soon as I have a feeling that more important information will be arriving "
@@ -8991,24 +9459,24 @@ msgid ""
 "are concerned, ask $Melathor about nature spelling doom for humanity."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:205
+#: ../scourge_data/maps/hq.cfg:221
 msgid ""
 "He is the 'wise' elven wizard in the room to the south. Let me know if he "
 "causes any trouble... he is... 'dependent' on his concoctions and sometimes "
 "he forgets the $rules."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:206
+#: ../scourge_data/maps/hq.cfg:222
 msgid ""
 "Not much to worry about I say... the only piece of nature we see here are "
 "the roots and rocks under the earth."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:207 ../scourge_data/maps/library3.cfg:94
+#: ../scourge_data/maps/hq.cfg:223 ../scourge_data/maps/library3.cfg:94
 msgid "monsters"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:208
+#: ../scourge_data/maps/hq.cfg:224
 msgid ""
 "Many a fearsome vermin ye will encounter on your travels! Some use their "
 "strength and some their magic to try to annihilate you. It's best to be "
@@ -9016,20 +9484,20 @@ msgid ""
 "you can always return here to HQ to catch some rest."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:209
+#: ../scourge_data/maps/hq.cfg:225
 msgid ""
 "An astute student of magic he was. Unfortunately he lacked the strength to "
 "stay far away from the powers of darkness."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:210
+#: ../scourge_data/maps/hq.cfg:226
 msgid ""
 "Nooo... don't talk about them! They torment me with their $awful poetry. "
 "It's a group of dwarven terrorist poets that has been causing trouble in the "
 "underworld."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:211
+#: ../scourge_data/maps/hq.cfg:227
 msgid ""
 "Although I've never met him in person, he appears to be of decent sorts. I "
 "usually only interact with (what I assume is) his familiar. A harmless "
@@ -9037,17 +9505,17 @@ msgid ""
 "to remain anonymous... if that is his name at all..."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:212
+#: ../scourge_data/maps/hq.cfg:228
 msgid ""
 "The plane of absolute evil... never been there myself, but I've heard it "
 "said that those who visit simply cannot leave! Must be a mad party!"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:213
+#: ../scourge_data/maps/hq.cfg:229
 msgid "awful"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:214
+#: ../scourge_data/maps/hq.cfg:230
 msgid ""
 "Yes it's quite bad even for dwarven poetry. Here is an example I received. "
 "It's a sort of a threatening letter they sent, in order to stop us from "
@@ -9056,23 +9524,23 @@ msgid ""
 "same pen.' Aaagh! I don't think I can take much more of this!"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:215 ../scourge_data/maps/library.cfg:44
+#: ../scourge_data/maps/hq.cfg:231 ../scourge_data/maps/library.cfg:44
 #: ../scourge_data/maps/emeril2.cfg:36
 msgid "Guardians,Realm"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:216
+#: ../scourge_data/maps/hq.cfg:232
 msgid ""
 "The Guardians of the Realm was the peace-keeping force of the land a long "
 "time ago. Unfortunately, they no longer exist: they were all $killed in the "
 "final battle against the forces of darkness eons ago."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:217
+#: ../scourge_data/maps/hq.cfg:233
 msgid "end,killed"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:218
+#: ../scourge_data/maps/hq.cfg:234
 msgid ""
 "The $Guardians of the Realm fought and died valiantly at the fords of the "
 "great river Manar in a cataclysmic final battle against the forces of "
@@ -9080,14 +9548,14 @@ msgid ""
 "$Guardians survived."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:221
+#: ../scourge_data/maps/hq.cfg:237
 msgid ""
 "Sorry, I haven't a clue... Ask $Melathor, she sounds to be his kind... or "
 "better yet, ask $Sabien about her. After all, he was directly involved in "
 "her plans. I marked his location on map on the $board."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:222
+#: ../scourge_data/maps/hq.cfg:238
 msgid ""
 "According to $Sabien, four such token items are what $Mothrazu seeks in "
 "order to activate a gate to the $Abyss. Be sure to find them before she "
@@ -9095,143 +9563,139 @@ msgid ""
 "suspect the item can be found."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:223
+#: ../scourge_data/maps/hq.cfg:239
 msgid ""
 "I don't know much about this fiend... Ask Melathor though, the gods know how "
 "but he always seems up to date about news from the Abysss."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:227 ../scourge_data/maps/library.cfg:40
+#: ../scourge_data/maps/hq.cfg:243 ../scourge_data/maps/library.cfg:40
 #: ../scourge_data/maps/library31.cfg:167 ../scourge_data/maps/thuzgol.cfg:197
 msgid "Uh, I don't know anything about that..."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:228
+#: ../scourge_data/maps/hq.cfg:244
 msgid ""
 "Perhaps someone else can tell you that. But I'll tell you about this $place "
 "and the $missions we work on if you want..."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:229
+#: ../scourge_data/maps/hq.cfg:245
 msgid "That's interesting but let me tell you about $times of old..."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:230
+#: ../scourge_data/maps/hq.cfg:246
 msgid "You sure have a funny way of talking..."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:231
+#: ../scourge_data/maps/hq.cfg:247
 msgid "Those were them $times!"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:232
+#: ../scourge_data/maps/hq.cfg:248
 msgid "Mmm-mmm, that was some fine $gruel!"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:233
+#: ../scourge_data/maps/hq.cfg:249
 msgid "You look like an out-of-work $adventurer!"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:234
+#: ../scourge_data/maps/hq.cfg:250
 msgid "times"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:235
+#: ../scourge_data/maps/hq.cfg:251
 msgid ""
 "I reckon it must've been during the reign of $Haladil the grim when I was "
 "just a young lad. I would roam the country slay monsters, right wrongs and "
 "the like."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:236
+#: ../scourge_data/maps/hq.cfg:252
 msgid "Haladil"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:237
+#: ../scourge_data/maps/hq.cfg:253
 msgid ""
 "He sure was $grim for a king! In fact, he never smiled until his dying day."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:238
+#: ../scourge_data/maps/hq.cfg:254
 msgid "grim"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:239
+#: ../scourge_data/maps/hq.cfg:255
 msgid "They say he lost his ability to smile when our lives became so $easy."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:240
+#: ../scourge_data/maps/hq.cfg:256
 msgid "easy"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:241
+#: ../scourge_data/maps/hq.cfg:257
 msgid ""
 "$Haladil had $nothing more to do, you see? There is virtually no crime, the "
 "streets are safe and there are no more wars to be fought."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:242
-msgid "nothing"
-msgstr ""
-
-#: ../scourge_data/maps/hq.cfg:243
+#: ../scourge_data/maps/hq.cfg:259
 msgid "Well, that's why we're all working for $S.C.O.U.R.G.E. Inc, right?"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:244
+#: ../scourge_data/maps/hq.cfg:260
 msgid ""
 "It's not a bad $place to work... the $gruel is always warm, they pay in real "
 "gold and at least your $sword isn't rusting on a peg by the fire."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:245
+#: ../scourge_data/maps/hq.cfg:261
 msgid "gruel"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:246
+#: ../scourge_data/maps/hq.cfg:262
 msgid ""
 "Go look in the kitchen if you want some. It's the best part of this $place!"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:247
+#: ../scourge_data/maps/hq.cfg:263
 msgid "place"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:248
+#: ../scourge_data/maps/hq.cfg:264
 msgid ""
 "Behold the mighty halls of the $S.C.O.U.R.G.E. headquarters. Here you can "
 "$train your skills, $trade items, rest and select your next $mission."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:249
+#: ../scourge_data/maps/hq.cfg:265
 msgid "sword"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:250
+#: ../scourge_data/maps/hq.cfg:266
 msgid ""
 "Any items you find lying around are yours to take. You can even $trade them "
 "for coin."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:253
+#: ../scourge_data/maps/hq.cfg:269
 msgid "mission"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:254
+#: ../scourge_data/maps/hq.cfg:270
 msgid ""
 "Go to the room with the purple flames. There you will find the $board which "
 "lists the available missions. $Uzudil handles our $clients mostly on account "
 "of them wishing to remain anonymous. "
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:255
+#: ../scourge_data/maps/hq.cfg:271
 msgid ""
 "It is a great wooden structure in the room with the purple flames. Every "
 "$mission we get here at the $S.C.O.U.R.G.E. headquarters is posted on it. "
 "You can also talk to $Uzudil for more information."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:256
+#: ../scourge_data/maps/hq.cfg:272
 msgid ""
 "Each client's $mission is posted on the $board. This way you can pick and "
 "choose which type of jobs you want to work on. I've never met any of our "
@@ -9239,25 +9703,25 @@ msgid ""
 "turn you into an ant if they wish."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:257
+#: ../scourge_data/maps/hq.cfg:273
 msgid "adventurer"
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:258
+#: ../scourge_data/maps/hq.cfg:274
 msgid ""
 "Why that's nothing to be ashamed of! I myself used to thwart evil back in "
 "the old $times. But now that our lives are so $easy, I make my living "
 "exterminating critters for our $clients."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:259
+#: ../scourge_data/maps/hq.cfg:275
 msgid ""
 "He is the large red fellow in the room with the $board. He handles our "
 "$clients, keeps the head-quarters stocked and organizes our missions. Talk "
 "to him if you want to know more about the work."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:260
+#: ../scourge_data/maps/hq.cfg:276
 msgid "Whatever you do... don't drink his potions!"
 msgstr ""
 
@@ -11507,10 +11971,6 @@ msgid ""
 "be seen and interacted with here within our walls. Follow the temple rooms "
 "due north to meet her. We also offer our healing services for a nominal "
 "charge, most of which goes to repair our $halls."
-msgstr ""
-
-#: ../scourge_data/maps/temple.cfg:227
-msgid "speak"
 msgstr ""
 
 #: ../scourge_data/maps/temple.cfg:228
