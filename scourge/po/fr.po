@@ -1,21 +1,21 @@
-# English translations for scourge package.
-# Copyright (C) 2007 Free Software Foundation, Inc.
+# French translation for scourge
+# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
 # This file is distributed under the same license as the scourge package.
-# Gabor Torok <cctorok@yahoo.com>, 2007.
-# 
-# 
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
 "POT-Creation-Date: 2007-09-18 08:41-0700\n"
-"PO-Revision-Date: 2007-05-08 20:56+0200\n"
-"Last-Translator: Vincent Fiack <vfiack@mail15.com>\n"
-"Language-Team: French <en@translate.freefriends.org>\n"
+"PO-Revision-Date: 2007-09-02 07:09+0000\n"
+"Last-Translator: LeSanglier <lesanglierdesardennes@gmail.com>\n"
+"Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Rosetta-Export-Date: 2007-09-18 15:38:15+0000\n"
 
 #: src/events/statemodexpirationevent.cpp:44
 #, c-format
@@ -30,7 +30,7 @@ msgstr "%s a soif."
 #: src/events/thirsthungerevent.cpp:56
 #, c-format
 msgid "%s is really thirsty."
-msgstr "%s a vraiment soif."
+msgstr "%s vraiment très soif."
 
 #: src/events/thirsthungerevent.cpp:61
 #, c-format
@@ -92,11 +92,11 @@ msgstr "%s ne se sent pas très bien."
 
 #: src/render/map.cpp:3156
 msgid "You need to name the map first."
-msgstr "Vous devez d'abord donner un nom à la carte."
+msgstr "Vous avez besoin de nommer la carte d'abord."
 
 #: src/render/map.cpp:3366 src/render/map.cpp:3656
 msgid "Enter a name of a map to load."
-msgstr "Entrez le nom de la carte a charger."
+msgstr "Entrer le nom d'une carte à charger."
 
 #: src/render/map.cpp:3387
 msgid "Loading map"
@@ -120,11 +120,11 @@ msgstr "Finition de la carte"
 
 #: src/render/map.cpp:3611 src/rpg/monster.cpp:26 src/session.cpp:115
 msgid "Loading Creatures"
-msgstr "Chargement des créatures"
+msgstr "Chargements des créatures"
 
 #: src/render/map.cpp:3629
 msgid "Starting party"
-msgstr "Démarrage du groupe"
+msgstr "Démarrage de l'escouade"
 
 #: src/render/map.cpp:3649
 #, c-format
@@ -134,7 +134,7 @@ msgstr "Carte chargée : %s"
 #: src/render/map.cpp:3670
 #, c-format
 msgid "Can't find map: %s"
-msgstr "Impossible de trouver la carte : %s"
+msgstr "Ne trouve pas la carte : %s"
 
 #: src/render/map.cpp:3680
 #, c-format
@@ -147,11 +147,11 @@ msgstr "Confirmation"
 
 #: src/gui/confirmdialog.cpp:36
 msgid "Ok"
-msgstr "Oui"
+msgstr "D'accord"
 
 #: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:107
 msgid "No"
-msgstr "Non"
+msgstr "non"
 
 #: src/rpg/specialskill.cpp:41
 msgid "Loading Abilities"
@@ -162,17 +162,14 @@ msgid "Loading Spells"
 msgstr "Chargement des sorts"
 
 #: src/rpg/rpgitem.cpp:39
-#, fuzzy
 msgid "Slashing"
 msgstr "Frappe"
 
 #: src/rpg/rpgitem.cpp:40
-#, fuzzy
 msgid "Piercing"
 msgstr "Perforation"
 
 #: src/rpg/rpgitem.cpp:41
-#, fuzzy
 msgid "Crushing"
 msgstr "Ecrasement"
 
@@ -181,17 +178,16 @@ msgid "Loading Skills"
 msgstr "Chargement des compétences"
 
 #: src/rpg/rpg.cpp:128
-#, fuzzy
 msgid "Loading StateMods"
 msgstr "Chargement des StateMods"
 
 #: src/rpg/character.cpp:42 src/session.cpp:98
 msgid "Loading Professions"
-msgstr "Chargement des professions"
+msgstr "Chargements des professions"
 
 #: src/rpg/character.cpp:179
 msgid "Skill bonuses to:"
-msgstr "Bonus de compétences :"
+msgstr "Chargement des compétences :"
 
 #: src/rpg/character.cpp:229
 msgid "Can use any weapons, except:"
@@ -215,15 +211,15 @@ msgstr "N'a le droit d'utiliser aucune arme, sauf :"
 
 #: src/rpg/character.cpp:257
 msgid "Not allowed to use any armor, except:"
-msgstr "N'a le droit d'utiliser aucune armure, sauf :"
+msgstr "N'a le droit d'utiliser aucune arme, sauf :"
 
 #: src/rpg/character.cpp:269
 msgid "Not allowed to use any weapons."
-msgstr "N'a le droit d'utiliser aucune arme."
+msgstr "N'a le droit d'utiliser aucune arme, sauf :"
 
 #: src/rpg/character.cpp:272
 msgid "Not allowed to use any armor."
-msgstr "N'a le droit d'utiliser aucune armure."
+msgstr "N'a le droit d'utiliser aucune arme, sauf :"
 
 #: src/rpg/character.cpp:281
 msgid "Can use weapons:"
@@ -235,11 +231,11 @@ msgstr "Peut utiliser ces armures :"
 
 #: src/rpg/character.cpp:293
 msgid "Not allowed to use weapons:"
-msgstr "N'a pas le droit d'utiliser ces armes :"
+msgstr "Peut utiliser ces armes :"
 
 #: src/rpg/character.cpp:295
 msgid "Not allowed to use armor:"
-msgstr "N'a pas le droit d'utiliser ces armures :"
+msgstr "N'a pas le droit d'utiliser ces armes :"
 
 #: src/common/constants.cpp:83
 msgid "Infamy awaits in the dungeons of Scourge!"
@@ -251,7 +247,7 @@ msgstr "A chaque jour ses égouts ! Bienvenue dans Scourge !"
 
 #: src/common/constants.cpp:85
 msgid "Happy hunting; welcome to Scourge!"
-msgstr "Bonne chasse ; bienvenue dans Scourge !"
+msgstr "Bonne chasse; bienvenue à Scourge"
 
 #: src/common/constants.cpp:86
 msgid "That item is out of your reach"
@@ -267,7 +263,7 @@ msgstr "Vous devez vous rapprocher pour prendre ça"
 
 #: src/common/constants.cpp:89
 msgid "You are too far to reach it"
-msgstr "Vous être trop loin pour l'atteindre"
+msgstr "Vous êtes trop loin pour l'atteindre"
 
 #: src/common/constants.cpp:90
 msgid "The door is blocked"
@@ -283,9 +279,8 @@ msgstr ""
 "Vous ne pouvez pas utiliser cette porte, quelque chose est sur le trajet"
 
 #: src/common/constants.cpp:93
-#, fuzzy
 msgid "You are now in single-step mode"
-msgstr "Vous êtes désormais en mode 'single-step'"
+msgstr "Vous êtes désormais en mode 'pas-à-pas'"
 
 #: src/common/constants.cpp:94
 msgid "You are now in group mode"
@@ -307,7 +302,7 @@ msgstr "Fermer"
 
 #: src/common/constants.cpp:98
 msgid "Drop Item"
-msgstr "Jeter l'objet"
+msgstr "Déposer l'objet"
 
 #: src/common/constants.cpp:99
 msgid "Open Item"
@@ -315,11 +310,12 @@ msgstr "Ouvrir l'objet"
 
 #: src/common/constants.cpp:100
 msgid "Drag items to/from the list, Right click for info"
-msgstr "Glisser/Déposer les objets, Click droit pour info"
+msgstr ""
+"Glisser les objets vers/depuis la liste. Clique de droite pour information"
 
 #: src/common/constants.cpp:101
 msgid "Play Mission"
-msgstr "Accepter la mission"
+msgstr "Jouer la mission"
 
 #: src/common/constants.cpp:102
 msgid "Do you really want to exit this mission?"
@@ -327,11 +323,11 @@ msgstr "Voulez-vous vraiment quitter cette mission ?"
 
 #: src/common/constants.cpp:103
 msgid "Teleport back to base?"
-msgstr "Retourner dans les Quartiers Généraux ?"
+msgstr "Téléportation vers le Quartier Général"
 
 #: src/common/constants.cpp:104
 msgid "OK"
-msgstr "Ok"
+msgstr "D'accord"
 
 #: src/common/constants.cpp:105 src/savegamedialog.cpp:55
 #: src/mapeditor.cpp:287
@@ -340,7 +336,7 @@ msgstr "Annuler"
 
 #: src/common/constants.cpp:106
 msgid "Yes"
-msgstr "Oui"
+msgstr "oui"
 
 #: src/common/constants.cpp:108
 msgid "Select a character who is alive and has leveled up."
@@ -356,33 +352,31 @@ msgstr "Sélectionnez d'abord une compétence."
 
 #: src/common/constants.cpp:111
 msgid "S.C.O.U.R.G.E. dialog"
-msgstr "Fenêtre S.C.O.U.R.G.E"
+msgstr "Dialogue S.C.O.U.R.G.E."
 
 #: src/common/constants.cpp:112
 msgid "Use gate to descend a level?"
-msgstr "Utiliser le portail pour descendre d'un étage ?"
+msgstr "Utiliser le portail pour descendre d'un niveau ?"
 
 #: src/common/constants.cpp:113
 msgid "Use gate to ascend a level?"
-msgstr "Utiliser le portail pour remonter d'un étage ?"
+msgstr "Utiliser le portail pour monter d'un niveau ?"
 
 #: src/common/constants.cpp:114
 msgid "A dead character cannot perform this action."
 msgstr "Un personnage mort ne peut effectuer cette action."
 
 #: src/common/constants.cpp:115
-#, fuzzy
 msgid "hp:"
-msgstr "points de vie: "
+msgstr "pf:"
 
 #: src/common/constants.cpp:116
-#, fuzzy
 msgid "ac:"
-msgstr "ac:"
+msgstr "pa:"
 
 #: src/common/constants.cpp:117
 msgid "Your magic fizzles and dies."
-msgstr "Votre magie s'envole."
+msgstr "Votre magie tremble et s'éteind."
 
 #: src/common/constants.cpp:118
 msgid "Only the roaches are impressed by your mumbled words."
@@ -403,7 +397,7 @@ msgstr "Votre personnage ne peut s'équiper de cet objet."
 
 #: src/common/constants.cpp:122
 msgid "Fill out the server details, first."
-msgstr "Remplissez d'abord les détails du serveur."
+msgstr "Remplissez d'abord les informations sur le serveur."
 
 #: src/common/constants.cpp:123
 msgid "Unable to connect to server."
@@ -414,7 +408,6 @@ msgid "You hear a very loud, metallic sound nearby."
 msgstr "Vous entendez un bruit fort et métallique à proximité."
 
 #: src/common/constants.cpp:125
-#, fuzzy
 msgid "Something clicks."
 msgstr "Quelque chose tique."
 
@@ -424,14 +417,14 @@ msgstr "Ce bruit n'aide pas vraiment ; c'est déjà bien assez inquiétant."
 
 #: src/common/constants.cpp:127
 msgid "A muffled, metalic, grating noise echoes from the dark."
-msgstr "Un bruit de grattements métallique mais étouffé sort de l'ombre."
+msgstr "Ce bruit n'aide pas vraiment ; c'est déjà bien assez inquiétant."
 
 #: src/common/constants.cpp:128
 msgid ""
 "You've done something... you're not sure what but you hope it's had dinner."
 msgstr ""
-"Vous avez fait quelquechose... Vous ne savez pas trop quoi, mais esperez "
-"qu'il à déjà eu son dinner."
+"Vous avez fait quelquechose... Vous ne savez pas trop quoi, mais espérez \r\n"
+"qu'il a déjà eu son dîner."
 
 #: src/common/constants.cpp:129
 msgid "You feel the resonance of an almost sub-tonal bass note."
@@ -443,7 +436,7 @@ msgstr "Un son inquietant flotte dans un coin éloigné."
 
 #: src/common/constants.cpp:131
 msgid "Suck! It is locked shut!"
-msgstr "Flûte! C'est fermé !"
+msgstr "Zut ! C'est fermé !"
 
 #: src/common/constants.cpp:132
 msgid "Try as you might, you can't open it."
@@ -451,11 +444,11 @@ msgstr "Essayez tant que vous voulez, vous ne pouvez pas l'ouvrir."
 
 #: src/common/constants.cpp:133
 msgid "Perhaps it's locked."
-msgstr "Peut-être que c'est vérrouillé."
+msgstr "Peut-être que c'est verrouillé."
 
 #: src/common/constants.cpp:134
 msgid "This teleporter is off-line."
-msgstr "Ce téléporteur est déconnecté."
+msgstr "Ce téléporteur est en panne."
 
 #: src/common/constants.cpp:135
 msgid "Nothing happens."
@@ -463,7 +456,7 @@ msgstr "Rien ne se passe."
 
 #: src/common/constants.cpp:136
 msgid "The teleporter blinks unimpressively."
-msgstr "Ce téléporteur clignote nonchalament."
+msgstr "Le téléporteur clignotre d'un air impassible."
 
 #: src/common/constants.cpp:137
 msgid "Information"
@@ -471,7 +464,7 @@ msgstr "Information"
 
 #: src/common/constants.cpp:138
 msgid "Delete old saved game?"
-msgstr "Supprimer l'ancienne sauvegarde ?"
+msgstr "Effacer l'ancienne sauvegarde ?"
 
 #: src/common/constants.cpp:139
 msgid "You're not experienced enough to equip it yet."
@@ -483,7 +476,7 @@ msgstr "Changer la touche"
 
 #: src/common/constants.cpp:141
 msgid "Waiting for new key (Esc to cancel)"
-msgstr "En attente de la nouvelle touch (Echap pour annuler)"
+msgstr "En attente de la nouvelle touche (Echap pour annuler)"
 
 #: src/common/constants.cpp:142
 msgid "Conversation"
@@ -491,7 +484,7 @@ msgstr "Conversation"
 
 #: src/common/constants.cpp:143 src/conversationgui.cpp:104
 msgid "Trade"
-msgstr "Commercer"
+msgstr "Commerce"
 
 #: src/common/constants.cpp:144 src/conversationgui.cpp:100
 msgid "Train"
@@ -515,7 +508,7 @@ msgstr "Vous ne pouvez pas activer une capacité automatique."
 
 #: src/common/constants.cpp:149
 msgid "A two handed item requires two free hands."
-msgstr "Un équipement à deux mais nécéssite deux mains libres."
+msgstr "Un objet à deux mains nécessite deux mains libres."
 
 #: src/common/constants.cpp:150
 msgid "TRAIN"
@@ -523,7 +516,7 @@ msgstr "ENTRAINEMENT"
 
 #: src/common/constants.cpp:151
 msgid "SKILL"
-msgstr "COMPETENCE"
+msgstr "ENTRAINEMENT"
 
 #: src/common/constants.cpp:152
 msgid "A magical force turns the lock's tumbles to open."
@@ -531,28 +524,27 @@ msgstr "Une force magique ouvre le verrou."
 
 #: src/common/constants.cpp:153
 msgid "Some kind of summoned energy opens the lock."
-msgstr "Une espece d'énergie canalisée ouvre la porte."
+msgstr "Une espèce d'énergie invocatoire ouvre la serrure."
 
 #: src/common/constants.cpp:181
-#, fuzzy
 msgid "Lesser"
 msgstr "Inférieur"
 
 #: src/common/constants.cpp:182
 msgid "Greater"
-msgstr "Meilleur"
+msgstr "Supérieur"
 
 #: src/common/constants.cpp:183
 msgid "Champion"
-msgstr "Champion"
+msgstr "Meilleur"
 
 #: src/common/constants.cpp:184
 msgid "Divine"
-msgstr "Divin"
+msgstr "Meilleur"
 
 #: src/common/constants.cpp:221
 msgid "commoner"
-msgstr "commun"
+msgstr "gens"
 
 #: src/common/constants.cpp:222
 msgid "merchant"
@@ -560,7 +552,7 @@ msgstr "marchant"
 
 #: src/common/constants.cpp:223
 msgid "healer"
-msgstr "soignant"
+msgstr "soigneur"
 
 #: src/common/constants.cpp:224
 msgid "sage"
@@ -577,7 +569,7 @@ msgstr "%s résiste au sort avec un objet magique !"
 
 #: src/multiplayer.cpp:33
 msgid "Multiplayer Setup"
-msgstr "Configuration multijoueur"
+msgstr "Configuration muti-joueur"
 
 #: src/multiplayer.cpp:38
 msgid "Host a game"
@@ -597,7 +589,7 @@ msgstr "Port du serveur"
 
 #: src/multiplayer.cpp:50
 msgid "Username"
-msgstr "Nom d'utilisateur"
+msgstr "Nom d'utilisateur :"
 
 #: src/multiplayer.cpp:54
 msgid "Join a game"
@@ -643,7 +635,7 @@ msgstr "%s n'a pas faim pour le moment."
 #: src/creature.cpp:1051
 #, c-format
 msgid "%1$s eats %2$s."
-msgstr "%1$s mange %2$s."
+msgstr "%1$s mange %2$s"
 
 #: src/creature.cpp:1055 src/creature.cpp:1073 src/creature.cpp:1088
 #, c-format
@@ -653,7 +645,7 @@ msgstr "%s est trop usé."
 #: src/creature.cpp:1061
 #, c-format
 msgid "%s is not thirsty at the moment."
-msgstr "%s n'a pas soif pour le moment."
+msgstr "%s n'a pas faim pour le moment."
 
 #: src/creature.cpp:1068
 #, c-format
@@ -663,7 +655,7 @@ msgstr "%1$s boit %2$s."
 #: src/creature.cpp:1083
 #, c-format
 msgid "%1$s drinks from %2$s."
-msgstr "%1$s boit le contenu de %2$s."
+msgstr "%1$s boit le contenu de %2$s"
 
 #: src/creature.cpp:1093
 msgid "You cannot eat or drink that!"
@@ -677,12 +669,12 @@ msgstr "%s récupère %d points de vie."
 #: src/creature.cpp:1122
 #, c-format
 msgid "%s receives %d magic points."
-msgstr "%s récupère %d points de mana."
+msgstr "%s récupère %d points de magie."
 
 #: src/creature.cpp:1130 src/spellcaster.cpp:298
-#, fuzzy, c-format
+#, c-format
 msgid "%s feels impervious to damage!"
-msgstr "%s se sent invincible !"
+msgstr "%s se sent invincible au dommage !"
 
 #: src/creature.cpp:1150
 #, c-format
@@ -690,7 +682,7 @@ msgid "%s feels at peace."
 msgstr "%s se sent en paix."
 
 #: src/creature.cpp:1180
-#, fuzzy, c-format
+#, c-format
 msgid "%1$s will consume %2$s."
 msgstr "%1$s va consommer %2$s."
 
@@ -712,7 +704,7 @@ msgstr "%s est revenu d'entre les morts !"
 #: src/creature.cpp:1607
 #, c-format
 msgid "  %s levels up!"
-msgstr "%s gagne un niveau !"
+msgstr "  %s gagne un niveau !"
 
 #: src/creature.cpp:1624
 #, c-format
@@ -731,7 +723,7 @@ msgstr "%s perds %d points d'expérience !"
 
 #: src/creature.cpp:2107
 msgid "*Mission*"
-msgstr "Mission"
+msgstr "*Mission*"
 
 #: src/creature.cpp:2108
 msgid "*Boss*"
@@ -757,16 +749,15 @@ msgstr "compétence"
 
 #: src/creature.cpp:2547 src/creature.cpp:2591 src/infogui.cpp:414
 msgid "vs."
-msgstr "vs."
+msgstr "contre"
 
 #: src/creature.cpp:2549
 msgid "bonus"
 msgstr "bonus"
 
 #: src/creature.cpp:2587 src/scourge.cpp:3613
-#, fuzzy
 msgid "CTH"
-msgstr "CTH"
+msgstr "CDF"
 
 #: src/creature.cpp:2589
 msgid "max"
@@ -793,9 +784,9 @@ msgid "%1$s attempts to disable the trap:"
 msgstr ""
 
 #: src/creature.cpp:3007
-#, c-format
+#, fuzzy, c-format
 msgid "    and fails! %1$s takes %2$d points of damage!"
-msgstr ""
+msgstr "...%s frappe pour %d points de dommage"
 
 #: src/shapepalette.cpp:26 src/shapepalette.cpp:356 src/shapepalette.cpp:382
 #: src/shapepalette.cpp:405 src/shapepalette.cpp:440 src/shapepalette.cpp:578
@@ -817,7 +808,7 @@ msgstr "Chargement des personnages"
 
 #: src/session.cpp:118
 msgid "Loading Portraits"
-msgstr "Chargement des portraits"
+msgstr "Chargements des portraits"
 
 #: src/session.cpp:123 src/board.cpp:60 src/board.cpp:77
 msgid "Loading Missions"
@@ -825,7 +816,7 @@ msgstr "Chargement des missions"
 
 #: src/session.cpp:128
 msgid "Initializing Party"
-msgstr "Initialisation des joueurs"
+msgstr "Initialisation de la partie"
 
 #: src/session.cpp:131
 msgid "Initializing Scripting"
@@ -833,11 +824,11 @@ msgstr "Initialisation des scripts"
 
 #: src/session.cpp:137
 msgid "Creating Map"
-msgstr "Création de la carte"
+msgstr "Initialisation des scripts"
 
 #: src/session.cpp:140
 msgid "Initializing UI"
-msgstr "Initialisation de l'interface"
+msgstr "Initialisation de l'IHM"
 
 #: src/session.cpp:293
 #, c-format
@@ -847,15 +838,16 @@ msgstr "%s change de forme devant vos propres yeux !"
 #: src/session.cpp:447
 #, c-format
 msgid "  %s dies!"
-msgstr ".. %s est mort !"
+msgstr "  %s est mort !"
 
 #: src/containergui.cpp:39 src/tradedialog.cpp:43 src/tradedialog.cpp:53
 msgid "Info"
 msgstr "Info"
 
 #: src/containergui.cpp:41
+#, fuzzy
 msgid "Get All"
-msgstr ""
+msgstr "Tout"
 
 #: src/containergui.cpp:149
 msgid "There is not enough room in your backpack for everything."
@@ -872,11 +864,11 @@ msgstr "Cet objet ne rentrera pas dans ce conteneur !"
 
 #: src/board.cpp:319
 msgid "(STORY)"
-msgstr "(SCENARIO)"
+msgstr "(HISTOIRE)"
 
 #: src/board.cpp:320
 msgid "(CAVE)"
-msgstr "(GROTTE)"
+msgstr "(CAVE)"
 
 #: src/board.cpp:321
 msgid "(OUTDOORS)"
@@ -884,12 +876,12 @@ msgstr ""
 
 #: src/board.cpp:323 src/equip.cpp:675 src/equip.cpp:692 src/equip.cpp:712
 msgid "(completed)"
-msgstr "(terminée)"
+msgstr "(complétée)"
 
 #: src/healdialog.cpp:38 src/healdialog.cpp:77 src/healdialog.cpp:153
 #: src/donatedialog.cpp:39 src/donatedialog.cpp:78 src/donatedialog.cpp:105
 msgid "Coins Available:"
-msgstr "Pièces disponibles :"
+msgstr "Argents disponibles :"
 
 #: src/healdialog.cpp:48 src/tradedialog.cpp:51
 msgid "Buy"
@@ -910,19 +902,20 @@ msgstr "Le sort de soin a été jeté."
 
 #: src/item.cpp:266 src/item.cpp:272 src/item.cpp:278
 msgid "*Cursed* "
-msgstr "*Maudit*"
+msgstr "*Maudit* "
 
 #: src/item.cpp:268 src/item.cpp:274 src/item.cpp:280
 msgid " *Mission*"
 msgstr " *Mission*"
 
 #: src/item.cpp:800
+#, fuzzy
 msgid "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $symbol"
 msgstr "$spellsymbol·$magiclevel·$protective·$slaying·$itemname·$bonus·$symbol"
 
 #: src/item.cpp:818
 msgid "Protective"
-msgstr "de Protection"
+msgstr "Protecteur"
 
 #: src/item.cpp:823
 msgid "Slaying"
@@ -931,35 +924,32 @@ msgstr "Tueur"
 #: src/item.cpp:915
 #, c-format
 msgid "Scroll of %s"
-msgstr "Manuscrit de %s"
+msgstr "Rouleau de %s"
 
 #: src/item.cpp:1035
 msgid "An item was fully identified!"
 msgstr "Un objet a été completement identifié !"
 
 #: src/item.cpp:1099
-#, fuzzy
 msgid "DAM"
 msgstr "DEGATS"
 
 #: src/item.cpp:1103 src/characterinfo.cpp:51 src/portrait.cpp:263
-#, fuzzy
 msgid "AP"
-msgstr "AP"
+msgstr "PA"
 
 #: src/item.cpp:1107
 msgid "RANGE"
-msgstr "DISTANCE"
+msgstr "PORTEE"
 
 #: src/item.cpp:1112 src/scourge.cpp:3562
-#, fuzzy
 msgid "DEF"
-msgstr "DAF"
+msgstr "DEF"
 
 #: src/item.cpp:1115
 #, c-format
 msgid " %d(%c)"
-msgstr "·%d(%c)"
+msgstr " %d(%c)"
 
 #: src/item.cpp:1123 src/equip.cpp:177 src/portrait.cpp:220
 msgid "Level"
@@ -983,7 +973,7 @@ msgstr "Durée"
 
 #: src/projectile.cpp:318
 msgid "Projectile did not reach the target (max steps)."
-msgstr "Le projectile n'a pas atteint sa cible (trop d'étapes)."
+msgstr "Le projectile n'a pas atteint sa cible (trop éloigné)."
 
 #: src/projectile.cpp:389
 msgid "Projectile did not reach the target (blocked)."
@@ -999,28 +989,29 @@ msgstr "coût"
 
 #: src/characterinfo.cpp:46
 msgid "Basic Statistics:"
-msgstr "Statistiques basiques :"
+msgstr "Statistiques de base :"
 
 #: src/characterinfo.cpp:49 src/scourge.cpp:2242 src/portrait.cpp:253
 msgid "HP"
-msgstr "Points de vie"
+msgstr "PV"
 
 #: src/characterinfo.cpp:50 src/scourge.cpp:2244 src/portrait.cpp:258
 msgid "MP"
-msgstr "Mana"
+msgstr "PM"
 
 #: src/characterinfo.cpp:54
+#, fuzzy
 msgid "Attack:"
-msgstr "Attaque :"
+msgstr "Attaque"
 
 #: src/characterinfo.cpp:58
 msgid "Unarmed Defense:"
-msgstr "Défense désarmée :"
+msgstr "Défense à main nu :"
 
 #: src/battle.cpp:689
 #, c-format
 msgid "%1$s uses capability %2$s!"
-msgstr "%1$s utilise la capacité %2$s !"
+msgstr "%1$s utilise la capacité %2$s !c"
 
 #: src/battle.cpp:724
 #, c-format
@@ -1035,17 +1026,17 @@ msgstr "Votre %s semble plus léger."
 #: src/battle.cpp:738 src/scourge.cpp:3719
 #, c-format
 msgid "%s crumbles into dust."
-msgstr "%s s'éfondre en poussière."
+msgstr "%s s'effondre en poussière."
 
 #: src/battle.cpp:745
 #, c-format
 msgid "Couldn't find scroll, cancelled spell."
-msgstr "Impossible de trouver le manuscript, le sort est annulé."
+msgstr "Ne peut pas trouver le rouleau, sort annulé."
 
 #: src/battle.cpp:754
 #, c-format
 msgid "%1$s casts %2$s!"
-msgstr "%1$s jete le sort %2$s !"
+msgstr "%1$s lance %2$s !"
 
 #: src/battle.cpp:817
 #, c-format
@@ -1074,23 +1065,23 @@ msgstr "%1$s attaque %2$s à main nue !"
 #: src/battle.cpp:989 src/spellcaster.cpp:86
 #, c-format
 msgid "...fumble: hits %s instead!"
-msgstr "...echec critique : touche %s à la place !"
+msgstr "...maladresse : touche %s à la place !"
 
 #: src/battle.cpp:1019
 msgid "...precise hit: double damage!"
-msgstr "...réussite critique : dégats doublés !"
+msgstr "...touché précis : dégats doublés !"
 
 #: src/battle.cpp:1025
 msgid "...precise hit: triple damage!"
-msgstr "...réussite critique : dégats triplés !"
+msgstr "...frappe précise : dégats triplés !"
 
 #: src/battle.cpp:1031
 msgid "...precise hit: quad damage!"
-msgstr "...réussite critique : dégats quadruplés !"
+msgstr "...frappe précise : dégats quadruplés !"
 
 #: src/battle.cpp:1038
 msgid "...precise hit: instant kill!"
-msgstr "...réussite critique : mort instantanée !"
+msgstr "...frappe précise : mort instantanée !"
 
 #: src/battle.cpp:1063
 msgid "...double damage!"
@@ -1098,7 +1089,7 @@ msgstr "... dégats doublés !"
 
 #: src/battle.cpp:1066
 msgid "...triple damage!"
-msgstr "... dégats triplés !"
+msgstr "... dégats doublés !"
 
 #: src/battle.cpp:1069
 msgid "...quad damage!"
@@ -1107,7 +1098,7 @@ msgstr "... dégats quadruplés !"
 #: src/battle.cpp:1072
 #, c-format
 msgid "...%d-times damage!"
-msgstr "...dégats x%d !"
+msgstr "...dégats multiplié par %d !"
 
 #: src/battle.cpp:1100
 #, c-format
@@ -1117,41 +1108,41 @@ msgstr "... %1$s attaque %2$s avec la magie de %3$s"
 #: src/battle.cpp:1106
 #, c-format
 msgid "%s resists the magic with %d."
-msgstr ""
+msgstr "%s résiste à la magie avec %d."
 
 #: src/battle.cpp:1132
 #, c-format
 msgid "...%1$s blocks attack with %2$s!"
-msgstr ""
+msgstr "..%1$s bloque l'attaque avec %2$s !"
 
 #: src/battle.cpp:1148
 msgid "...Using cursed item!"
-msgstr ""
+msgstr "... Utilisation d'un objet maudit !"
 
 #: src/battle.cpp:1152
 #, c-format
 msgid "...%s attacks for %d points."
-msgstr ""
+msgstr "...%s attaque pour %d points."
 
 #: src/battle.cpp:1171
 #, c-format
 msgid "...%s's armor blocks %d points"
-msgstr ""
+msgstr "l'armure de %s bloque %d points"
 
 #: src/battle.cpp:1238
 #, c-format
 msgid "...%s dodges the attack."
-msgstr ""
+msgstr "...%s évite l'attaque."
 
 #: src/battle.cpp:1244
 #, c-format
 msgid "...%s misses the target."
-msgstr ""
+msgstr "... %s manque la cible."
 
 #: src/battle.cpp:1268
 #, c-format
 msgid "...%s hits for %d points of damage"
-msgstr ""
+msgstr "...%s frappe pour %d points de dommage"
 
 #: src/battle.cpp:1297
 #, c-format
@@ -1161,7 +1152,7 @@ msgstr "...%s a été tué !"
 #: src/battle.cpp:1313
 #, c-format
 msgid "%s finds %d coins!"
-msgstr ""
+msgstr "%s trouve %d pièce(s) d'argent !"
 
 #: src/battle.cpp:1321
 msgid "You have defeated the dungeon boss!"
@@ -1174,7 +1165,7 @@ msgstr ""
 #: src/battle.cpp:1335
 #, c-format
 msgid "...no damaged caused."
-msgstr ""
+msgstr "... aucun dommage causée"
 
 #: src/battle.cpp:1419 src/battle.cpp:1425
 #, c-format
@@ -1184,25 +1175,25 @@ msgstr "Visé"
 #: src/battle.cpp:1450
 #, c-format
 msgid "Out of Range. Move: %d"
-msgstr ""
+msgstr "En dehors de portée. Déplacement : %d"
 
 #: src/battle.cpp:1452 src/battle.cpp:1459
 #, c-format
 msgid "Out of Range"
-msgstr ""
+msgstr "En dehors de portée."
 
 #: src/battle.cpp:1459
 #, c-format
 msgid "In Range"
-msgstr ""
+msgstr "A portée"
 
 #: src/battle.cpp:1471 src/portrait.cpp:176
 msgid "Bare Hands"
-msgstr ""
+msgstr "Mains nues"
 
 #: src/netplay.cpp:39
 msgid "Chat"
-msgstr "Papoter"
+msgstr "Discuter"
 
 #: src/tradedialog.cpp:38 src/tradedialog.cpp:47 src/tradedialog.cpp:93
 #: src/tradedialog.cpp:95
@@ -1219,81 +1210,83 @@ msgstr "Voler"
 
 #: src/tradedialog.cpp:57 src/tradedialog.cpp:89
 msgid "Available Coins:"
-msgstr "Pièces disponibles :"
+msgstr "Argents disponibles :"
 
 #: src/tradedialog.cpp:59
-#, fuzzy
 msgid "Clr"
 msgstr "Clr"
 
 #: src/tradedialog.cpp:62
 msgid "Diff"
-msgstr "Différence"
+msgstr "Diff"
 
 #: src/tradedialog.cpp:64
 msgid "Shift+click to select multiple items, right click to get info."
 msgstr ""
-"Maj+Clic pour sélectionner plusieurs objets, click droit pour obtenir des "
-"informations."
+"Maj+Clique pour sélectionner plusieurs objets, clique de  droite pour "
+"obtenir des informations."
 
 #: src/tradedialog.cpp:91
 msgid "Selected Coins:"
-msgstr "Pièces sélectionnées :"
+msgstr "Piéces de monnaie sélectionnées :"
 
 #: src/tradedialog.cpp:163 src/tradedialog.cpp:208 src/tradedialog.cpp:251
 msgid "Inventories changed."
-msgstr "Mise à jour des inventaires."
+msgstr "Mise-à-jour des inventaires."
 
 #: src/tradedialog.cpp:170
 msgid "Select items to buy."
-msgstr "Selection des objets à acheter."
+msgstr "Selectionner les objets à acheter."
 
 #: src/tradedialog.cpp:173
 msgid "You are not offering enough to trade."
-msgstr "Vous ne proposez pas assez en échange."
+msgstr "Vous ne proposez pas assez de choses en échange."
 
 #: src/tradedialog.cpp:189 src/inven.cpp:135
 msgid "Can't fit item in inventory."
-msgstr ""
+msgstr "Ne peut pas porter l'objet dans l'inventaire"
 
 #: src/tradedialog.cpp:203
 msgid "Selected items traded."
-msgstr ""
+msgstr "Sélectionner des objets à échanger."
 
 #: src/tradedialog.cpp:214
 msgid "Select items to sell."
-msgstr ""
+msgstr "Sélectionner des objets à vendre."
 
 #: src/tradedialog.cpp:230
 msgid "Selected items sold."
-msgstr ""
+msgstr "Objets selectionnés vendus."
 
 #: src/tradedialog.cpp:257
 msgid "Select items to steal."
-msgstr ""
+msgstr "Sélectionner des objets à voler."
 
 #: src/tradedialog.cpp:287
 msgid "You succesfully burgled the items!"
-msgstr ""
+msgstr "Vous avez réussi a dérober les objets !"
 
 #: src/tradedialog.cpp:296
+#, fuzzy
 msgid ""
 "You succesfully burgled the items but some did not fit in your backpack!"
-msgstr ""
+msgstr "Vous avez réussi a dérober les objets !"
 
 #: src/tradedialog.cpp:316
 #, c-format
 msgid "%s looses %d coins!"
-msgstr ""
+msgstr "%s perd %d pièces de monnaie !"
 
 #: src/tradedialog.cpp:326
 #, c-format
 msgid "Item confiscated: %s"
-msgstr ""
+msgstr "Objet confisqué : %s"
 
 #: src/tradedialog.cpp:331
 msgid "Your burgling attempt failed. Items and ex. were confiscated."
 msgstr ""
+"Votre tentative de vol à échoué. Des objets et des points d'expérience ont "
+"été confisqués."
 
 #: src/optionsmenu.cpp:45 src/mainmenu.cpp:58
 msgid "Options"
@@ -1321,153 +1314,155 @@ msgstr "Enregistrer"
 
 #: src/optionsmenu.cpp:68
 msgid "Key bindings"
-msgstr ""
+msgstr "Raccourcis clavier"
 
 #: src/optionsmenu.cpp:81
 msgid "Game speed"
-msgstr ""
+msgstr "Vitesse de jeu"
 
 #: src/optionsmenu.cpp:82
 msgid "Very slow"
-msgstr ""
+msgstr "Très lent"
 
 #: src/optionsmenu.cpp:83
 msgid "Slow"
-msgstr ""
+msgstr "Lent"
 
 #: src/optionsmenu.cpp:84
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: src/optionsmenu.cpp:85
 msgid "Fast"
-msgstr ""
+msgstr "Rapide"
 
 #: src/optionsmenu.cpp:86
 msgid "Fastest"
-msgstr ""
+msgstr "Très rapide"
 
 #: src/optionsmenu.cpp:89
 msgid "Always center map"
-msgstr ""
+msgstr "Toujours centré la carte"
 
 #: src/optionsmenu.cpp:91
 msgid "Keep zoom when switching layouts"
-msgstr ""
+msgstr "Conserver le zoom lors du changement de disposition."
 
 #: src/optionsmenu.cpp:93
 msgid "Frame map in fullscreen mode"
-msgstr ""
+msgstr "Frame map en mode pleine-écran"
 
 #: src/optionsmenu.cpp:95
 msgid "Is battle turn-based?"
-msgstr ""
+msgstr "Combat en tour-par-tour ?"
 
 #: src/optionsmenu.cpp:97
 msgid "Shadow overlay?"
-msgstr ""
+msgstr "Ombrage en overlay"
 
 #: src/optionsmenu.cpp:99
 msgid "Outline items?"
-msgstr ""
+msgstr "Contour des objets ?"
 
 #: src/optionsmenu.cpp:103
 msgid "Show tooltips"
-msgstr ""
+msgstr "Afficher les bulles d'aide"
 
 #: src/optionsmenu.cpp:105
 msgid "Tooltip Delay:"
-msgstr ""
+msgstr "Temps d'affichage des bulles d'aide :"
 
 #: src/optionsmenu.cpp:110
 msgid "Screen resolution"
-msgstr ""
+msgstr "Résolution de l'écran"
 
 #: src/optionsmenu.cpp:120
 msgid "Fullscreen"
-msgstr ""
+msgstr "Plein-Ecran"
 
 #: src/optionsmenu.cpp:122
 msgid "Window resizeable"
-msgstr ""
+msgstr "Fenêtre redimensionnable"
 
 #: src/optionsmenu.cpp:124
 msgid "Use double buffering"
-msgstr ""
+msgstr "Utilisation du double-tampon"
 
 #: src/optionsmenu.cpp:126
 msgid "Use stencil buffer"
-msgstr ""
+msgstr "Utilisation du stencil buffer"
 
 #: src/optionsmenu.cpp:128
 msgid "Force hardware surfaces"
-msgstr ""
+msgstr "Force les surfaces matérielles"
 
 #: src/optionsmenu.cpp:130
 msgid "Force software surfaces"
-msgstr ""
+msgstr "Force les surfaces logicieles"
 
 #: src/optionsmenu.cpp:132
 msgid "Use multitexturing"
-msgstr ""
+msgstr "Utilise le multi-texturage"
 
 #: src/optionsmenu.cpp:134
 msgid "Use hardware palette"
-msgstr ""
+msgstr "Utilisation de la palette matérielle"
 
 #: src/optionsmenu.cpp:136
 msgid "Use hardware acceleration"
-msgstr ""
+msgstr "Utilisation de l'accélération matérielle"
 
 #: src/optionsmenu.cpp:138
 msgid "Shadows"
-msgstr ""
+msgstr "Ombrages"
 
 #: src/optionsmenu.cpp:139
 msgid "None"
-msgstr ""
+msgstr "Aucun"
 
 #: src/optionsmenu.cpp:140
 msgid "Some"
-msgstr ""
+msgstr "Quelques"
 
 #: src/optionsmenu.cpp:141
 msgid "All"
-msgstr ""
+msgstr "Tout"
 
 #: src/optionsmenu.cpp:148
 msgid "Music Volume:"
-msgstr ""
+msgstr "Volume de la musique :"
 
 #: src/optionsmenu.cpp:151
 msgid "Effects Volume:"
-msgstr ""
+msgstr "Volume des effets :"
 
 #: src/optionsmenu.cpp:397
 msgid "Some changes will only take effect upon restart"
-msgstr ""
+msgstr "Une partie des changements prendront effet lors du redémarrage"
 
 #: src/optionsmenu.cpp:400
 msgid "Saved: some options require a restart to take effect."
 msgstr ""
+"Sauvegarder : une partie des options requière un redémarrage pour qu'ils "
+"prennent effet."
 
 #: src/dungeongenerator.cpp:573 src/mondrian.cpp:447
 #: src/terraingenerator.cpp:129
 msgid "Assembling Dungeon Level"
-msgstr ""
+msgstr "Assemblage du niveau du dongon"
 
 #: src/dungeongenerator.cpp:597 src/mondrian.cpp:489
 msgid "Drawing walls"
-msgstr ""
+msgstr "Affichage des murs"
 
 #: src/dungeongenerator.cpp:600 src/mondrian.cpp:492
 msgid "Fixing rooms"
-msgstr ""
+msgstr "Fixation des salles"
 
 #: src/scourge.cpp:140
 #, fuzzy
 msgid "Begin Chapter"
-msgstr "Commencer le tour"
+msgstr "Débuter le tour"
 
 #: src/scourge.cpp:141
 #, fuzzy
@@ -1476,101 +1471,100 @@ msgstr "Jouabilité"
 
 #: src/scourge.cpp:150
 msgid "Dismiss Party Member"
-msgstr ""
+msgstr "Renvoyer un membre de l'escouade"
 
 #: src/scourge.cpp:151
 msgid "Need permission to upload score to web"
-msgstr ""
+msgstr "Permission obligatoire pour transférer les scores sur le web"
 
 #: src/scourge.cpp:152
 msgid "Upload your score to the internet?"
-msgstr ""
+msgstr "Transférer votre score pas Internet ?"
 
 #: src/scourge.cpp:355
 msgid "Error saving current map."
-msgstr ""
+msgstr "Erreur de sauvegarde de la carte actuelle"
 
 #: src/scourge.cpp:366
 msgid "Error #666: Failed to create map."
-msgstr ""
+msgstr "Erreur #666 : Echec de création de la carte"
 
 #: src/scourge.cpp:538
 #, c-format
 msgid "For returning alive, the party receives %d experience points."
-msgstr ""
+msgstr "Pour revenir vivant, l'escoude reçoit %d points d'expérience."
 
 #: src/scourge.cpp:549
 #, c-format
 msgid " %s gains a level! "
-msgstr ""
+msgstr " %s gagne un niveau ! "
 
 #: src/scourge.cpp:699
 #, c-format
 msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
-msgstr "Bienvenue aux quartiers généraux de S.C.O.U.R.G.E !"
+msgstr "Bienvenue aux Quartiers Générals de S.C.O.U.R.G.E."
 
 #: src/scourge.cpp:702
 #, c-format
 msgid "Teleport spell failed!! Entering level %d"
-msgstr ""
+msgstr "Le sort de téléportation a échoué ! Entrée dans le niveau %d"
 
 #: src/scourge.cpp:704
 #, c-format
 msgid "Entering dungeon level %d"
-msgstr ""
+msgstr "Entrée dans le niveau %d du dongon"
 
 #: src/scourge.cpp:915
 #, c-format
 msgid "%s cancelled a pending action."
-msgstr ""
+msgstr "%s a annulé une action en attente."
 
 #: src/scourge.cpp:920
 msgid "Select a creature for this spell."
-msgstr ""
+msgstr "Sélectionner une créature pour ce sort."
 
 #: src/scourge.cpp:925
 msgid "Select an item for this spell."
-msgstr ""
+msgstr "Sélectionner un objet pour ce sort."
 
 #: src/scourge.cpp:930
 msgid "Select a location for this spell."
-msgstr ""
+msgstr "Sélectionner un endroit pour ce sort."
 
 #: src/scourge.cpp:935
 msgid "Select a door for this spell."
-msgstr ""
+msgstr "Sélectionner une porte pour ce sort."
 
 #: src/scourge.cpp:940
 msgid "Select the party for this spell."
-msgstr ""
+msgstr "Sélectionnez l'escouade pour ce sort."
 
 #: src/scourge.cpp:962 src/scourge.cpp:984
 #, c-format
 msgid "%s selected a target"
-msgstr ""
+msgstr "%s a sélectionner une cible"
 
 #: src/scourge.cpp:1008
 #, c-format
 msgid "%1$s will target %2$s"
-msgstr ""
+msgstr "%1$s ciblera %2$s"
 
 #: src/scourge.cpp:1030
 #, c-format
 msgid "%1$s targeted %2$s."
-msgstr ""
+msgstr "%1$s à visé %2$s"
 
 #: src/scourge.cpp:1404
 msgid "Something is blocking the door from closing."
-msgstr ""
+msgstr "Quelque chose empêche la porte de se fermer."
 
 #: src/scourge.cpp:1502
 msgid "The door splinters into many, tiny pieces!"
-msgstr ""
+msgstr "La porte explose en petits morceaux."
 
 #: src/scourge.cpp:1548
-#, fuzzy
 msgid "Leave level?"
-msgstr "Quitter la mission ?"
+msgstr "Quitter le niveau ?"
 
 #: src/scourge.cpp:1572
 msgid "Squirrel Console"
@@ -1578,16 +1572,16 @@ msgstr "Console Squirrel"
 
 #: src/scourge.cpp:1580
 msgid "Run"
-msgstr "Exécuter"
+msgstr "Exécution"
 
 #: src/scourge.cpp:1581
 msgid "Clear"
-msgstr "Vider"
+msgstr "Effacer"
 
 #: src/scourge.cpp:1867
 #, c-format
 msgid "Speed set to %d\n"
-msgstr ""
+msgstr "Vitesse réglé à %d\n"
 
 #: src/scourge.cpp:2018
 msgid "Congratulations, mission accomplished!"
@@ -1595,20 +1589,20 @@ msgstr ""
 
 #: src/scourge.cpp:2029
 msgid "For completing the mission"
-msgstr ""
+msgstr "Pour compléter la mission"
 
 #: src/scourge.cpp:2031
 #, c-format
 msgid "The party receives %d points."
-msgstr ""
+msgstr "L'escouade reçois %d points."
 
 #: src/scourge.cpp:2056
 msgid "Connecting to server"
-msgstr ""
+msgstr "Connexion au serveur"
 
 #: src/scourge.cpp:2063
 msgid "Connected!"
-msgstr ""
+msgstr "Connecté !"
 
 #: src/scourge.cpp:2085
 msgid "Combat"
@@ -1616,105 +1610,105 @@ msgstr "Combat"
 
 #: src/scourge.cpp:2087
 msgid "End Turn"
-msgstr "Fin de tour"
+msgstr "Fin du tour"
 
 #: src/scourge.cpp:2111
 msgid "Pause game"
-msgstr "Pause"
+msgstr "Mettre le jeu en pause"
 
 #: src/scourge.cpp:2114
 msgid "Load or Save Game"
-msgstr "Charger / Sauver la partie"
+msgstr "Charger ou sauvegarder une partie"
 
 #: src/scourge.cpp:2124
 msgid "Exit game"
-msgstr "Quitter le jeu"
+msgstr "Quitter la partie"
 
 #: src/scourge.cpp:2131
 msgid "Game options"
-msgstr "Options"
+msgstr "Options du jeu"
 
 #: src/scourge.cpp:2138
 msgid "Move as a group"
-msgstr ""
+msgstr "Se déplacer comme un groupe"
 
 #: src/scourge.cpp:2178
 msgid "Dismiss this character"
-msgstr ""
+msgstr "Renvoyer ce personnage"
 
 #: src/scourge.cpp:2197
 msgid "Inventory and party info"
-msgstr ""
+msgstr "Information sur l'inventaire et sur l'escouade"
 
 #: src/scourge.cpp:2205
 msgid "Click to assign a spell, capability or magic item."
-msgstr ""
+msgstr "Cliquez pour assigner un sort, une capacité, ou un objet magique."
 
 #: src/scourge.cpp:2264
 msgid "Current Weapon: Bare Hands"
-msgstr ""
+msgstr "Arme courante: main nues"
 
 #: src/scourge.cpp:2269
 #, c-format
 msgid "Current Weapon: %s"
-msgstr ""
+msgstr "Arme actuelle : %s"
 
 #: src/scourge.cpp:2538 src/portrait.cpp:427
 msgid "Thirst"
-msgstr "Soif"
+msgstr "Assoiffé"
 
 #: src/scourge.cpp:2552 src/portrait.cpp:432
 msgid "Hunger"
-msgstr "Faim"
+msgstr "Affamé"
 
 #: src/scourge.cpp:2619 src/equip.cpp:583
 msgid "Not enough Magic Points to cast this spell!"
-msgstr "Pas assez de mana pour jeter ce sort !"
+msgstr "Pas assez de Point de Magie pour lancer ce sort !"
 
 #: src/scourge.cpp:2696
 msgid "Begin Turn"
-msgstr "Commencer le tour"
+msgstr "Débuter le tour"
 
 #: src/scourge.cpp:2701
 msgid "...In Turn..."
-msgstr "...Tour en cours..."
+msgstr "...Tour en-cours ..."
 
 #: src/scourge.cpp:2707
 msgid "Pause Game"
-msgstr "Pause"
+msgstr "Suspendre le jeu"
 
 #: src/scourge.cpp:2711
 msgid "Unpause game."
-msgstr "Enlever la pause."
+msgstr "Reprendre le jeu"
 
 #: src/scourge.cpp:2746
 msgid "Available Missions"
-msgstr "Missions disponibles."
+msgstr "Missions disponibles"
 
 #: src/scourge.cpp:2752
 msgid "Drag map to look around."
-msgstr "Glissez la carte pour voir les alentours."
+msgstr "Déplacer la carte pour regarder tout autour."
 
 #: src/scourge.cpp:2820
 msgid "This spell has no effect here..."
-msgstr ""
+msgstr "Ce sort n'a aucun effet ici..."
 
 #: src/scourge.cpp:3004
 msgid "Game loaded successfully."
-msgstr ""
+msgstr "Jeu chargé avec succés."
 
 #: src/scourge.cpp:3030
 msgid "Error: Saved game version is too old."
-msgstr ""
+msgstr "Erreur : La version de sauvegarde du jeu est trop ancienne."
 
 #: src/scourge.cpp:3387
 msgid "You cannot hire more party members."
-msgstr ""
+msgstr "Vous ne pouvez pas louez plus de membre de l'escouade."
 
 #: src/scourge.cpp:3407
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
-msgstr ""
+msgstr "Voulez-vous renvoyer %s le %s ?"
 
 #: src/scourge.cpp:3558
 msgid "Initiative"
@@ -1723,7 +1717,7 @@ msgstr "Initiative"
 #: src/scourge.cpp:3600 src/scourge.cpp:3607 src/infogui.cpp:350
 #: src/infogui.cpp:355 src/infogui.cpp:360
 msgid "ATK"
-msgstr ""
+msgstr "ATQ"
 
 #: src/scourge.cpp:3614 src/infogui.cpp:352 src/infogui.cpp:358
 msgid "APR"
@@ -1732,142 +1726,144 @@ msgstr ""
 #: src/scourge.cpp:3666
 #, c-format
 msgid "%.2f"
-msgstr ""
+msgstr "%.2f"
 
 #: src/scourge.cpp:3668
 #, c-format
 msgid "per %.2f R"
-msgstr ""
+msgstr "par %.2f tour"
 
 #: src/scourge.cpp:3677
 msgid "This item is already enchanted."
-msgstr ""
+msgstr "Cette objet est déjà enchanté."
 
 #: src/scourge.cpp:3679
 msgid "This item cannot be enchanted."
-msgstr ""
+msgstr "Cette objet ne peut être enchanté."
 
 #: src/scourge.cpp:3687
 msgid "You succesfully enchanted an item!"
-msgstr ""
+msgstr "Vous avez enchanté un objet avec succés !"
 
 #: src/scourge.cpp:3691
 #, c-format
 msgid "You created: %s."
-msgstr ""
+msgstr "Vous avez créer : %s"
 
 #: src/scourge.cpp:3696
 msgid "You failed to enchant the item."
-msgstr ""
+msgstr "Vous avez échoué dans l'enchantement de l'objet."
 
 #: src/scourge.cpp:3700
 msgid "You can only enchant one item per day."
-msgstr ""
+msgstr "Vous ne pouvez enchanter un objet par jour."
 
 #: src/scourge.cpp:3715
 msgid "Spell was entered into your spellbook."
-msgstr ""
+msgstr "Le sort a été écrit dans votre livre de sort."
 
 #: src/scourge.cpp:3723
 msgid "You already know this spell"
-msgstr ""
+msgstr "Vous connaissez déjà ce sort"
 
 #: src/scourge.cpp:3726
 msgid "You are not proficient enough to transcribe this scroll."
-msgstr ""
+msgstr "Vous n'êtes pas assez avancé pour transcrire ce parchemin."
 
 #: src/scourge.cpp:3729
 msgid "You can only transcribe scrolls!"
-msgstr ""
+msgstr "Vous ne pouvez que transcrire des parchemins !"
 
 #: src/scourge.cpp:3760
 msgid "This item is out of charges."
-msgstr ""
+msgstr "Cet objet n'a plus de munitions."
 
 #: src/scourge.cpp:3773
 msgid "You cannot use this item."
-msgstr ""
+msgstr "Vous ne pouvez pas utilisez cet objet."
 
 #: src/savegamedialog.cpp:43
 msgid "Saved games"
-msgstr "Sauvegardes"
+msgstr "Jeux sauvegardés"
 
 #: src/savegamedialog.cpp:44
 msgid "Current saved games:"
-msgstr "Sauvegardes :"
+msgstr "Jeux sauvegardés actuels :"
 
 #: src/savegamedialog.cpp:51
 msgid "New Save"
-msgstr "Nouvelle"
+msgstr "Nouvelle sauvegarde"
 
 #: src/savegamedialog.cpp:53 src/mapeditor.cpp:86
 msgid "Load"
-msgstr "Charger"
+msgstr "Chargement"
 
 #: src/savegamedialog.cpp:54
 msgid "Delete"
-msgstr "Supprimer"
+msgstr "Effacer"
 
 #: src/savegamedialog.cpp:65
 msgid "Overwrite existing file?"
-msgstr ""
+msgstr "Ré-écrire le fichier déjà existant ?"
 
 #: src/savegamedialog.cpp:82 src/savegamedialog.cpp:113
 msgid "Game saved successfully."
-msgstr ""
+msgstr "Jeu sauvegardé avec succés"
 
 #: src/savegamedialog.cpp:84 src/savegamedialog.cpp:115
 msgid "Error saving game."
-msgstr "Erreur à la sauvegarde."
+msgstr "Erreur dans la sauvegarde du fichier."
 
 #: src/savegamedialog.cpp:92
 msgid "Game was successfully removed."
-msgstr ""
+msgstr "Le jeu a été effacer avec succés."
 
 #: src/savegamedialog.cpp:94
 msgid "Could not delete saved game."
-msgstr ""
+msgstr "Ne peut pas effacer la sauvegarde du jeu."
 
 #: src/savegamedialog.cpp:107
 msgid "Are you sure you want to overwrite this file?"
-msgstr ""
+msgstr "Etez-vous sûr de vouloir ré-écrire ce fichier ?"
 
 #: src/savegamedialog.cpp:122
 msgid "Are you sure you want to load this file?"
-msgstr ""
+msgstr "Etez-vous sûr de vouloir charger ce fichier ?"
 
 #: src/savegamedialog.cpp:133
 msgid "You can't delete the current game."
-msgstr ""
+msgstr "Vous ne pouvez pas effacer le jeu actuel."
 
 #: src/savegamedialog.cpp:136
 msgid "Are you sure you want to delete this file?"
-msgstr ""
+msgstr "Etez-vous sûr de vouloir supprimer ce fichier ?"
 
 #: src/savegamedialog.cpp:154
 msgid "Create a new saved game or load an existing one"
-msgstr ""
+msgstr "Créer une nouvelle sauvegarde de jeu ou charger une existante ?"
 
 #: src/savegamedialog.cpp:159
 msgid "Open an existing saved game file"
-msgstr ""
+msgstr "Ouvrir un fichier de sauvegarde de jeu existante"
 
 #: src/savegamedialog.cpp:163
 msgid "No savegames have been created yet."
-msgstr ""
+msgstr "Aucune sauvegarde de jeu n'a été créer auparavant."
 
 #: src/savegamedialog.cpp:266
 #, fuzzy
 msgid "st"
-msgstr "Options"
+msgstr "coût"
 
 #: src/savegamedialog.cpp:267
+#, fuzzy
 msgid "nd"
-msgstr ""
+msgstr "Sable"
 
 #: src/savegamedialog.cpp:268
+#, fuzzy
 msgid "rd"
-msgstr ""
+msgstr "Barde"
 
 #: src/savegamedialog.cpp:269
 msgid "th"
@@ -1878,23 +1874,23 @@ msgid "Somewhere in the wilderness."
 msgstr ""
 
 #: src/savegamedialog.cpp:284
-#, fuzzy, c-format
+#, c-format
 msgid "In a cave on level %d."
-msgstr "Dans une grotte à l'étage %d."
+msgstr "Dans la cave au niveau %d."
 
 #: src/savegamedialog.cpp:287
 #, c-format
 msgid "Dungeon level %d at %s."
-msgstr "Sous-sol, étage %d à %s."
+msgstr "Niveau du donjon: %d à %s."
 
 #: src/savegamedialog.cpp:292
 msgid "Resting at HQ."
-msgstr "Repos au QG."
+msgstr ""
 
 #: src/savegamedialog.cpp:295
 #, c-format
 msgid "Party of %s the %s level %s."
-msgstr "Groupe de %s le %s, niveau %s."
+msgstr "Coterie de %s le %s niveau %s"
 
 #: src/terraingenerator.cpp:148
 msgid "Compressing free space"
@@ -1903,19 +1899,19 @@ msgstr "Compression de l'espace libre"
 #: src/terraingenerator.cpp:151
 #, fuzzy
 msgid "Adding traps"
-msgstr "Ajout des portails"
+msgstr "Ajouter portails"
 
 #: src/terraingenerator.cpp:154
 msgid "Adding containers"
-msgstr "Ajout des conteneurs"
+msgstr "Ajouter des conteneurs"
 
 #: src/terraingenerator.cpp:157
 msgid "Adding gates"
-msgstr "Ajout des portails"
+msgstr "Ajouter portails"
 
 #: src/terraingenerator.cpp:164
 msgid "Adding party"
-msgstr "Ajout du groupe"
+msgstr "Ajouter l'escouade"
 
 #: src/terraingenerator.cpp:172
 msgid "Adding teleporters"
@@ -1927,11 +1923,11 @@ msgstr "Fermeture des portes et des coffres"
 
 #: src/terraingenerator.cpp:182
 msgid "Calculating room values"
-msgstr "Calcul des pièces"
+msgstr "Calcul des valeurs des salles"
 
 #: src/terraingenerator.cpp:185
 msgid "Adding mission objectives"
-msgstr "Ajout des objectifs de mission"
+msgstr "Ajout des objectifs de la mission"
 
 #: src/terraingenerator.cpp:188
 msgid "Adding monsters"
@@ -1943,11 +1939,11 @@ msgstr "Ajout des objets"
 
 #: src/terraingenerator.cpp:195
 msgid "Adding furniture"
-msgstr "Ajout des fournitures"
+msgstr "Ajout de l'ameublement."
 
 #: src/terraingenerator.cpp:199
 msgid "Cleaning up"
-msgstr "Nettoyage"
+msgstr "Nettoyage en cours"
 
 #: src/date.cpp:28
 msgid "January"
@@ -1963,7 +1959,7 @@ msgstr "Mars"
 
 #: src/date.cpp:31
 msgid "April"
-msgstr "Avri"
+msgstr "Avril"
 
 #: src/date.cpp:32
 msgid "May"
@@ -1979,7 +1975,7 @@ msgstr "Juillet"
 
 #: src/date.cpp:35
 msgid "August"
-msgstr "Août"
+msgstr "Aôut"
 
 #: src/date.cpp:36
 msgid "September"
@@ -2027,16 +2023,15 @@ msgstr "Dimanche"
 
 #: src/conversationgui.cpp:48
 msgid "Talking to "
-msgstr "Conversation avec "
+msgstr "Parler avec "
 
 #: src/conversationgui.cpp:73
 msgid "Talk about:"
 msgstr "Parler de :"
 
 #: src/conversationgui.cpp:85
-#, fuzzy
 msgid "Commoner: No services"
-msgstr "Commun: aucun service"
+msgstr "Des gens : Aucun services"
 
 #: src/conversationgui.cpp:88
 msgid "Sage:"
@@ -2044,19 +2039,20 @@ msgstr "Sage :"
 
 #: src/conversationgui.cpp:94
 msgid "Healer:"
-msgstr "Soignant :"
+msgstr "Soigneur :"
 
 #: src/conversationgui.cpp:95
+#, fuzzy
 msgid "Heal"
-msgstr "Soins"
+msgstr "Soigneur"
 
 #: src/conversationgui.cpp:96
 msgid "Donate"
-msgstr "Donner"
+msgstr "Faire un don"
 
 #: src/conversationgui.cpp:99
 msgid "Trainer:"
-msgstr "Entraineur"
+msgstr "Entraineur :"
 
 #: src/conversationgui.cpp:103
 msgid "Merchant:"
@@ -2065,7 +2061,7 @@ msgstr "Marchand :"
 #: src/conversationgui.cpp:166
 #, c-format
 msgid "Talking to %s"
-msgstr "Conversation avec %s"
+msgstr "Parler à %s"
 
 #: src/donatedialog.cpp:40
 msgid "Amount:"
@@ -2073,7 +2069,7 @@ msgstr "Quantité :"
 
 #: src/donatedialog.cpp:43
 msgid "Donate!"
-msgstr "Donner !"
+msgstr "A fait une donation !"
 
 #: src/donatedialog.cpp:69
 #, c-format
@@ -2082,65 +2078,65 @@ msgstr "Temple de %s"
 
 #: src/donatedialog.cpp:95
 msgid "Enter the amount you want to donate."
-msgstr "Entrez la quantité que vous voulez donner."
+msgstr "Entrer le montant que vous voulez donner."
 
 #: src/traindialog.cpp:61
 msgid "Train!"
-msgstr "S'entrainer !"
+msgstr "Entraînement !"
 
 #: src/traindialog.cpp:96
 msgid "Cost"
-msgstr "Prix"
+msgstr "Coûts"
 
 #: src/traindialog.cpp:114
 #, c-format
 msgid "%s, I cannot teach you. "
-msgstr "%s, Je ne rien vous enseigner."
+msgstr "%s, je ne peux rien vous enseigner. "
 
 #: src/traindialog.cpp:116
 #, c-format
 msgid "You must seek out one who can train a %s."
-msgstr "Vous devriez chercher quelqu'un capable d'entrainer un %s."
+msgstr "Vous devez chercher quelqu'un capable d'entrainer un %s."
 
 #: src/traindialog.cpp:121 src/traindialog.cpp:127
 #, c-format
 msgid "%s, I can teach you no more. "
-msgstr "%s, Je n'ai plus rien à vous apprendre."
+msgstr "%s, je n'ai plus rien à vous apprendre. "
 
 #: src/traindialog.cpp:123
 msgid "You must seek a higher level trainer."
-msgstr "Vous devez trouver un entraineur plus avancé."
+msgstr "Vous devez chercher un entraineur de plus haut niveau."
 
 #: src/traindialog.cpp:129
 msgid "You must learn by yourself from now on."
-msgstr "Vous devriez apprendre par vous-même désormais."
+msgstr "Vous devez vous former tout seul à partir de maintenant."
 
 #: src/traindialog.cpp:134
 #, c-format
 msgid "%s, you are not yet ready."
-msgstr "%s, vous n'êtes pas encore prêt."
+msgstr "%s, vous n'êtez pas encore prêt."
 
 #: src/traindialog.cpp:136
 #, c-format
 msgid "Come back when you've reached level %d."
-msgstr "Revenez quand vous aurez atteint le niveau %d."
+msgstr "Revenez ici quand vous aurez atteint le niveau %d."
 
 #: src/traindialog.cpp:142
 #, c-format
 msgid "%s, you are ready to learn."
-msgstr "%s, vous êtes prêt à apprendre."
+msgstr "%s, vous êtes prêt à étudier."
 
 #: src/traindialog.cpp:144
 msgid "Select your next profession from the list below."
-msgstr "Sélectionnez votre profession suivante dans la liste ci-dessous."
+msgstr "Sélectionner votre prochain profession depuis liste ci-dessous."
 
 #: src/traindialog.cpp:149
 msgid "min level"
-msgstr "niveau min"
+msgstr "Niveau minimum"
 
 #: src/traindialog.cpp:178
 msgid "You cannot afford the training!"
-msgstr "Vous ne pouvez pas financer la formation !"
+msgstr "Vous ne pouvez pas vous payer l'entrainement !"
 
 #: src/traindialog.cpp:188
 #, c-format
@@ -2149,7 +2145,7 @@ msgstr "Félicitations %1$s, vous êtes désormais un %2$s."
 
 #: src/infogui.cpp:63
 msgid "Identify"
-msgstr ""
+msgstr "Identifier"
 
 #: src/infogui.cpp:70 src/pceditor.cpp:465 src/mapeditor.cpp:82
 msgid "Name:"
@@ -2157,163 +2153,165 @@ msgstr "Nom :"
 
 #: src/infogui.cpp:75
 msgid "Detailed Description:"
-msgstr ""
+msgstr "Description détaillée :"
 
 #: src/infogui.cpp:150
 msgid "You must rest a while before identifying items again."
 msgstr ""
+"Vous devez vous reposer un peu avant de pouvoir identifier de nouveaux "
+"objets."
 
 #: src/infogui.cpp:191
 msgid "Requirements"
-msgstr ""
+msgstr "Pré-requis"
 
 #: src/infogui.cpp:204
 #, c-format
 msgid "%s is too low."
-msgstr "%s est trop bas."
+msgstr "%s est trop faible."
 
 #: src/infogui.cpp:211
 #, c-format
 msgid "Bonus for %s!"
-msgstr ""
+msgstr "Bonus pour %s !"
 
 #: src/infogui.cpp:222
 msgid "All requirements met."
-msgstr ""
+msgstr "Tous les prérequis sont remplis."
 
 #: src/infogui.cpp:244
 #, c-format
 msgid "Level: %d"
-msgstr ""
+msgstr "Niveau : %d"
 
 #: src/infogui.cpp:247
 #, c-format
 msgid "Weight: %.2f"
-msgstr ""
+msgstr "Poids : %.2f"
 
 #: src/infogui.cpp:250
 #, c-format
 msgid "Price: %d"
-msgstr ""
+msgstr "Prix : %d"
 
 #: src/infogui.cpp:254
 #, c-format
 msgid "Damage: %d percent"
-msgstr ""
+msgstr "Dommage : %d pourcents"
 
 #: src/infogui.cpp:257
 #, c-format
 msgid "Damage Type: %s"
-msgstr ""
+msgstr "Type de dommange : %s"
 
 #: src/infogui.cpp:260 src/infogui.cpp:288
 #, c-format
 msgid "Skill: %s"
-msgstr ""
+msgstr "Compétence : %s"
 
 #: src/infogui.cpp:264
 #, c-format
 msgid "Parry: %d percent of %s skill"
-msgstr ""
+msgstr "Parer : %d pourcent de la compétence %s"
 
 #: src/infogui.cpp:270
 #, c-format
 msgid "AP cost: %d"
-msgstr ""
+msgstr "PA coûte : %d"
 
 #: src/infogui.cpp:275
 #, c-format
 msgid "Range: %d"
-msgstr ""
+msgstr "Portée : %d"
 
 #: src/infogui.cpp:282
 #, c-format
 msgid "Defense vs. %s damage: %d"
-msgstr ""
+msgstr "Défense contre les dégats de %s: %d"
 
 #: src/infogui.cpp:291
 #, c-format
 msgid "Dodge penalty: %d"
-msgstr ""
+msgstr "Pénalité d'esquive : %d"
 
 #: src/infogui.cpp:296
 #, c-format
 msgid "Power: %d"
-msgstr ""
+msgstr "Puissance : %d"
 
 #: src/infogui.cpp:302
 #, c-format
 msgid "Charges: %d(%d)"
-msgstr ""
+msgstr "Munitions: %d(%d)"
 
 #: src/infogui.cpp:306
 #, c-format
 msgid "Spell: %s"
-msgstr ""
+msgstr "Sort : %s"
 
 #: src/infogui.cpp:314
 #, c-format
 msgid "Duration: %d"
-msgstr ""
+msgstr "Durée : %d"
 
 #: src/infogui.cpp:320
 #, c-format
 msgid "Two handed weapon."
-msgstr ""
+msgstr "Arme à 2 mains."
 
 #: src/infogui.cpp:325
 #, c-format
 msgid "Optionally handed weapon."
-msgstr ""
+msgstr "Armes à 2 mains optionnelle."
 
 #: src/infogui.cpp:334
 #, c-format
 msgid "Attack Info for each player:"
-msgstr ""
+msgstr "Information de l'attaque pour chaque joueur"
 
 #: src/infogui.cpp:384
 #, c-format
 msgid "%d bonus to attack and damage."
-msgstr ""
+msgstr "Bonus %d pour attaquer et endommanger"
 
 #: src/infogui.cpp:386
 #, c-format
 msgid "%d bonus to armor points."
-msgstr ""
+msgstr "Bonus %d de points d'armure"
 
 #: src/infogui.cpp:396
 #, c-format
 msgid "Double damage"
-msgstr ""
+msgstr "Dommage doublé"
 
 #: src/infogui.cpp:400
 #, c-format
 msgid "Triple damage"
-msgstr ""
+msgstr "Dommage triplé"
 
 #: src/infogui.cpp:404
 #, c-format
 msgid "Quad damage"
-msgstr ""
+msgstr "Dommage quadruplé"
 
 #: src/infogui.cpp:408
 #, c-format
 msgid "%dX damage"
-msgstr ""
+msgstr "Dommage multiplié par %d"
 
 #: src/infogui.cpp:417
 msgid " vs. any creature."
-msgstr ""
+msgstr " contre n'importe quelle créature."
 
 #: src/infogui.cpp:426
 #, c-format
 msgid "Extra damage of %1$s %2$s magic."
-msgstr ""
+msgstr "Dégats supplémentaire de la magie de %1$s %2$s."
 
 #: src/infogui.cpp:430
 #, c-format
 msgid "Extra %d pts of %s magic resistance."
-msgstr ""
+msgstr "%d pts supplémentaire de résistance magique %s"
 
 #: src/infogui.cpp:441
 msgid "Sets state mods:"
@@ -2325,33 +2323,35 @@ msgstr ""
 
 #: src/infogui.cpp:487
 msgid "Bonuses to skills:"
-msgstr ""
+msgstr "Bonus de compétences:"
 
 #: src/infogui.cpp:498
 msgid "This item is cursed!"
-msgstr ""
+msgstr "Cette objet est maudit !"
 
 #: src/infogui.cpp:504
 msgid "School: "
-msgstr "Ecole :"
+msgstr "Ecole : "
 
 #: src/infogui.cpp:511
 msgid ""
 "You have a feeling there is more to this item than what you've been able to "
 "glean..."
 msgstr ""
+"Vous avez l'impression qu'il a plus a apprendre sur cet objet que ce que "
+"vous avez pu trouver..."
 
 #: src/scourgehandler.cpp:223
 msgid "Combat is now Turn-based."
-msgstr ""
+msgstr "Le combat est maintenant en tour-par-tour."
 
 #: src/scourgehandler.cpp:225
 msgid "Combat is now Real-time."
-msgstr ""
+msgstr "Le combat est maintenant en temp-réel."
 
 #: src/scourgehandler.cpp:312
 msgid "Error saving game!"
-msgstr ""
+msgstr "Erreur de sauvegarde de jeu"
 
 #: src/pceditor.cpp:424
 msgid "Character Details"
@@ -2367,15 +2367,15 @@ msgstr "Profession"
 
 #: src/pceditor.cpp:443
 msgid "Stats"
-msgstr "Stats"
+msgstr "Statistiques"
 
 #: src/pceditor.cpp:445
 msgid "Deity"
-msgstr "Religion"
+msgstr "Divinité"
 
 #: src/pceditor.cpp:447
 msgid "Image"
-msgstr "Avatar"
+msgstr "Image"
 
 #: src/pceditor.cpp:453
 msgid "Accept"
@@ -2387,15 +2387,15 @@ msgstr "Refuser"
 
 #: src/pceditor.cpp:468
 msgid "Change"
-msgstr "Modifier"
+msgstr "Changer"
 
 #: src/pceditor.cpp:474
 msgid ""
 "What is your name, great hero? Enter it here, but choose wisely! You will "
 "not be able to change it again."
 msgstr ""
-"Quel est votre nom, grand héros ? Entrez le ici, mais choisissez sagement !"
-"Vous ne pourrez plus le changer."
+"Quel est votre nom, grand héro ? entrer-le ici,  mais choisissez sagement ! "
+"Vous ne pourrez plus le changer aprés."
 
 #: src/pceditor.cpp:479 src/portrait.cpp:228
 msgid "Male"
@@ -2410,12 +2410,12 @@ msgid ""
 "Select the sex of your hero. Besides some visual effects, it has no other "
 "impact on game mechanics."
 msgstr ""
-"Sélectionnez le sexe de votre héros. En dehors que quelques effets visuels,"
-"cela n'a aucun impact sur le jeu."
+"Sélectionnez le sexe de votre héros. En dehors que quelques effets visuels, "
+"cela n'a pas de conséquence sur le mécanisme du jeu."
 
 #: src/pceditor.cpp:491
 msgid "Profession:"
-msgstr "Profession:"
+msgstr "Profession :"
 
 #: src/pceditor.cpp:495
 msgid ""
@@ -2424,10 +2424,9 @@ msgid ""
 "Below is a brief description of the strengths and weaknesses of each "
 "profession."
 msgstr ""
-"Quelle profession correspond le mieux à votre héros ? Votre "
-"personnageévoluera dans un praticien plus puissant et rafiné de l'art choisi."
-"En dessous ce situe une courte description des forces et faiblessesde "
-"chacune des professions."
+"A quelle profession ressemble le plus votre héros ? Votre personnage "
+"évoluera en puissance et rafinement dans l'art choisi. En dessous se situe "
+"une brève description des forces et faiblesses de chaque profession."
 
 #: src/pceditor.cpp:523
 msgid "Statistics:"
@@ -2443,7 +2442,7 @@ msgstr "Relancer les dés"
 
 #: src/pceditor.cpp:564
 msgid "Patron Deity:"
-msgstr "Divinité :"
+msgstr "Divinité"
 
 #: src/pceditor.cpp:568
 msgid ""
@@ -2452,10 +2451,10 @@ msgid ""
 "directed. Given below is a list of known deities of the land with a brief "
 "description for each."
 msgstr ""
-"Il y aura des moments dans votre aventure ou vous serez peut-êtreréduit à "
-"rien d'autre qu'une prière. C'est pourquoi il est importantde se souvenir à "
-"qui ces prières sont adressées. En dessous ce situeune liste des divinités "
-"et leur description."
+"Il y aura des moments dans votre aventure ou vous serez peut-être réduit à "
+"rien d'autre qu'une prière. C'est pourquoi il est important de se souvenir à "
+"qui ces prières sont adressées. En dessous ce situe une liste des divinités "
+"de ce monde avec une brêve description."
 
 #: src/pceditor.cpp:596
 msgid "Appearance:"
@@ -2467,41 +2466,42 @@ msgid ""
 "Your appearance is only a matter of personal choice, it will not affect the "
 "game in any way."
 msgstr ""
-"Vous pouvez choisir un portrait et un modèle pour représenter votre héros.Ca "
-"n'est qu'une question de goût, et n'affecte pas le jeu."
+"Vous pouvez choisir un portrait et un modèle de personnage pour représenter "
+"votre héros. Ca n'est qu'une question de goût et cela  n'affecte pas le jeu "
+"de tout façon."
 
 #: src/mainmenu.cpp:55
 msgid "New Game"
-msgstr "Nouvelle partie"
+msgstr "Nouveau Jeu"
 
 #: src/mainmenu.cpp:56
 msgid "Continue Game"
-msgstr "Continuer une partie"
+msgstr "Continuer le jeu"
 
 #: src/mainmenu.cpp:57
 msgid "Multiplayer Game"
-msgstr "Partie multijoueur"
+msgstr "Jeu multi-joueur"
 
 #: src/mainmenu.cpp:59 src/mainmenu.cpp:124
 msgid "About S.c.o.u.r.g.e."
-msgstr "A propos de S.c.o.u.r.g.e."
+msgstr "Au sujet de S.c.o.u.r.g.e."
 
 #: src/mainmenu.cpp:60
 msgid "Quit"
-msgstr "Quitter le jeu"
+msgstr "Quitter"
 
 #: src/mainmenu.cpp:107
 msgid "New Game Confirmation"
-msgstr "Confirmation"
+msgstr "Confirmation du nouveau jeu"
 
 #: src/mainmenu.cpp:262
 #, c-format
 msgid "Scourge version %s"
-msgstr "Scourge·version·%s"
+msgstr "Version %s de Scourge"
 
 #: src/mainmenu.cpp:266
 msgid "Optionally compiled modules:"
-msgstr "Modules optionnels :"
+msgstr "Modules optionnels compilés :"
 
 #: src/mainmenu.cpp:269
 msgid "[Network]"
@@ -2524,104 +2524,107 @@ msgstr ""
 #: src/spellcaster.cpp:377
 #, c-format
 msgid "%s dodges some of the damage."
-msgstr ""
+msgstr "%s évite une partie des dégats."
 
 #: src/spellcaster.cpp:388
 #, c-format
 msgid "%1$s attacks %2$s with %3$s."
-msgstr ""
+msgstr "%1$s attaque %2$s avec %3$s."
 
 #: src/spellcaster.cpp:394
 #, c-format
 msgid "%s resists the spell with %d."
-msgstr ""
+msgstr "%s résiste au sort avec %d."
 
 #: src/spellcaster.cpp:479
 #, c-format
 msgid "%s resists the spell! [%d]"
-msgstr ""
+msgstr "%s résiste au sort ! [%d]"
 
 #: src/spellcaster.cpp:499
 msgid "Cursed items have been doffed."
-msgstr ""
+msgstr "Les articles maudits ont été ôtés."
 
 #: src/mapeditor.cpp:32
 msgid "Tile: Passage"
-msgstr ""
+msgstr "Pavé : Passage"
 
 #: src/mapeditor.cpp:33
 msgid "Tile: Room"
-msgstr ""
+msgstr "Pavé : Salle"
 
 #: src/mapeditor.cpp:71
 msgid "Map Editor"
-msgstr ""
+msgstr "Editeur de carte"
 
 #: src/mapeditor.cpp:90
 msgid "Wall"
-msgstr ""
+msgstr "Mur"
 
 #: src/mapeditor.cpp:93
 msgid "Door"
-msgstr ""
+msgstr "Porte"
 
 #: src/mapeditor.cpp:99
 msgid "Properties"
-msgstr ""
+msgstr "Propriètés"
 
 #: src/mapeditor.cpp:103
 msgid "Start Pos"
-msgstr ""
+msgstr "Départ"
 
 #: src/mapeditor.cpp:111 src/mapeditor.cpp:332
 msgid "Item"
-msgstr ""
+msgstr "Objet"
 
 #: src/mapeditor.cpp:120
 msgid "Furniture"
-msgstr ""
+msgstr "Mobilier"
 
 #: src/mapeditor.cpp:160 src/mapeditor.cpp:334
 msgid "Creature"
-msgstr ""
+msgstr "Créature"
 
 #: src/mapeditor.cpp:205 src/mapeditor.cpp:330
 msgid "Shape"
-msgstr ""
+msgstr "Forme"
 
 #: src/mapeditor.cpp:228
 #, fuzzy
 msgid "Rug"
-msgstr "Exécuter"
+msgstr "Exécution"
 
 #: src/mapeditor.cpp:230
+#, fuzzy
 msgid "Secret"
-msgstr ""
+msgstr "secrets"
 
 #: src/mapeditor.cpp:233
 #, fuzzy
 msgid "Trap"
-msgstr "Entrainement"
+msgstr "Commerce"
 
 #: src/mapeditor.cpp:247
 msgid "Map Properties"
-msgstr ""
+msgstr "Propriétées"
 
 #: src/mapeditor.cpp:255
 msgid "Map level"
-msgstr ""
+msgstr "Niveau"
 
 #: src/mapeditor.cpp:258
 msgid "Map depth"
-msgstr ""
+msgstr "Profondeur"
 
 #: src/mapeditor.cpp:261
 msgid "Map theme:"
-msgstr ""
+msgstr "Thème"
 
 #: src/mapeditor.cpp:280
 msgid "Select map location: (click on map, drag to move)"
 msgstr ""
+"Sélectionner l'endroit de la carte : (Cliquez sur la carte et glissez pour "
+"se déplacer)"
 
 #: src/mapeditor.cpp:285
 msgid "New Map"
@@ -2629,19 +2632,20 @@ msgstr "Nouvelle carte"
 
 #: src/mapeditor.cpp:286
 msgid "Apply"
-msgstr ""
+msgstr "Appliquer"
 
 #: src/rpg/specialskill.h:85
 msgid "Only 'manual' capabilities can be stored."
-msgstr ""
+msgstr "Seules les capacités manuelles peuvent être stockées."
 
 #: src/pcui.cpp:45
 msgid "Right click for info, double-click to open."
 msgstr ""
 
 #: src/pcui.cpp:57
+#, fuzzy
 msgid "Character Information"
-msgstr ""
+msgstr "Information"
 
 #: src/pcui.cpp:63
 msgid "Show paperdoll inventory"
@@ -2652,8 +2656,9 @@ msgid "Show spellbook"
 msgstr ""
 
 #: src/pcui.cpp:71
+#, fuzzy
 msgid "Show special capabilities"
-msgstr ""
+msgstr "Capacités spéciales"
 
 #: src/pcui.cpp:75
 msgid "Show info about the current mission"
@@ -2668,12 +2673,14 @@ msgid "Transcribe scroll into the spellbook"
 msgstr ""
 
 #: src/pcui.cpp:99
+#, fuzzy
 msgid "Enchant item"
-msgstr ""
+msgstr "Enchanter un objet"
 
 #: src/pcui.cpp:102
+#, fuzzy
 msgid "Show item information"
-msgstr ""
+msgstr "Information"
 
 #: src/pcui.cpp:105
 msgid "Store item in quick-spell slot"
@@ -2688,12 +2695,14 @@ msgid "Switch to next party member"
 msgstr ""
 
 #: src/pcui.cpp:120
+#, fuzzy
 msgid "Show character stats"
-msgstr ""
+msgstr "Statistique du personnage"
 
 #: src/pcui.cpp:124
+#, fuzzy
 msgid "Show character skills"
-msgstr ""
+msgstr "Détails du personnage"
 
 #: src/pcui.cpp:127
 msgid "Show additional info about the character"
@@ -2712,8 +2721,9 @@ msgid "Page skills down"
 msgstr ""
 
 #: src/pcui.cpp:139
+#, fuzzy
 msgid "Cast spell or use capability"
-msgstr ""
+msgstr "%1$s va utilisé la capacité %2$s."
 
 #: src/pcui.cpp:142
 msgid "Apply Skill Modifications"
@@ -2726,11 +2736,11 @@ msgstr ""
 #: src/pcui.cpp:215
 #, c-format
 msgid "Party members give all their money to %s."
-msgstr ""
+msgstr "Les membres de l'escouade donnent tout leur argent à %s."
 
 #: src/pcui.cpp:224
 msgid "You still have skill points to distribute."
-msgstr ""
+msgstr "Vous avez encore des points de compétences à distribuer."
 
 #: src/pcui.cpp:227
 msgid "All available skill points have been applied."
@@ -2741,109 +2751,120 @@ msgid "Click on an item to select it..."
 msgstr ""
 
 #: src/pcui.cpp:324
+#, fuzzy
 msgid "Click on a spell or capability to select it..."
-msgstr ""
+msgstr "Cliquez pour assigner un sort, une capacité, ou un objet magique."
 
 #: src/equip.cpp:178
+#, fuzzy
 msgid "MP Cost"
-msgstr "Coût MP"
+msgstr "Coûts"
 
 #: src/equip.cpp:255 src/inven.cpp:163
 #, c-format
 msgid "%s picks up %s."
-msgstr "%s prends %s."
+msgstr "%s ramasse %s."
 
 #: src/equip.cpp:266
 msgid "You can't fit the item!"
-msgstr ""
+msgstr "Vous ne pouvez pas porter l'objet !"
 
 #: src/equip.cpp:277 src/inven.cpp:182
 msgid "Can't change inventory while trading."
-msgstr ""
+msgstr "Ne peut pas changer l'inventaire pendant le marchandage"
 
 #: src/equip.cpp:286
 msgid "Can't remove cursed item!"
-msgstr ""
+msgstr "Vous ne pouvez pas enlever un objet maudit !"
 
 #: src/equip.cpp:292 src/inven.cpp:198
 #, c-format
 msgid "%s drops %s."
-msgstr ""
+msgstr "%s dépose %s."
 
 #: src/equip.cpp:488
 msgid "Special Capabilities"
-msgstr ""
+msgstr "Capacités spéciales"
 
 #: src/equip.cpp:513
+#, fuzzy
 msgid "Manual Capability"
-msgstr ""
+msgstr "Capacités spéciales"
 
 #: src/equip.cpp:514
 msgid "Automatic Capability"
 msgstr ""
 
 #: src/equip.cpp:563
+#, fuzzy
 msgid "Only manual type capabilities can be used this way."
-msgstr ""
+msgstr "Seules les capacités manuelles peuvent être stockées."
 
 #: src/equip.cpp:612
+#, fuzzy
 msgid "Only manual type capabilities can be stored."
-msgstr ""
+msgstr "Seules les capacités manuelles peuvent être stockées."
 
 #: src/equip.cpp:626
+#, fuzzy
 msgid "Click a quickspell slot to store this spell."
-msgstr ""
+msgstr "Sélectionner un endroit pour ce sort."
 
 #: src/equip.cpp:644
 msgid "Mission Objectives"
-msgstr ""
+msgstr "Objectifs de la mission"
 
 #: src/equip.cpp:647
+#, fuzzy
 msgid "Show Squirrel Console"
-msgstr ""
+msgstr "Console Squirrel"
 
 #: src/equip.cpp:660
 #, c-format
 msgid "Depth: %d out of %d."
-msgstr ""
+msgstr "Profondeur : %d sur %d."
 
 #: src/equip.cpp:671
 #, c-format
 msgid "Find %s"
-msgstr ""
+msgstr "Chercher %s"
 
 #: src/equip.cpp:675
 msgid "(not yet found)"
-msgstr ""
+msgstr "(pas encore trouver)"
 
 #: src/equip.cpp:688
 #, c-format
 msgid "Vanquish %s."
-msgstr ""
+msgstr "Vaincre %s."
 
 #: src/equip.cpp:692 src/equip.cpp:712
 msgid "(not yet done)"
-msgstr ""
+msgstr "(pas encore fais)"
 
 #: src/equip.cpp:710
 msgid "Special"
-msgstr ""
+msgstr "Spécial"
 
 #: src/equip.cpp:725
+#, fuzzy
 msgid "No current mission."
-msgstr ""
+msgstr "Mission actuelle"
 
 #: src/portrait.cpp:172
+#, fuzzy
 msgid "Current attack"
-msgstr ""
+msgstr "Statistique actuelle"
 
 #: src/portrait.cpp:173
+#, fuzzy
 msgid "Left Hand"
-msgstr ""
+msgstr "Main gauche"
 
 #: src/portrait.cpp:174
+#, fuzzy
 msgid "Right Hand"
-msgstr ""
+msgstr "Main droite"
 
 #: src/portrait.cpp:175 ../scourge_data/config/rpg.cfg:186
 msgid "Ranged Weapon"
@@ -2859,23 +2880,25 @@ msgstr ""
 
 #: src/portrait.cpp:224
 msgid "Coins"
-msgstr "Pièces"
+msgstr "Pièces de monnaies"
 
 #: src/portrait.cpp:283
 msgid "Resistances"
 msgstr ""
 
 #: src/portrait.cpp:339
+#, fuzzy
 msgid "Available Skill Points"
-msgstr ""
+msgstr "Argents disponibles :"
 
 #: src/portrait.cpp:437
 msgid "Carrying (kg)"
 msgstr ""
 
 #: src/portrait.cpp:444
+#, fuzzy
 msgid "Character Conditions:"
-msgstr ""
+msgstr "Détails du personnage"
 
 #: src/portrait.cpp:476
 msgid "Immune to Conditions:"
@@ -2902,6 +2925,20 @@ msgid ""
 "dispatch a large number of npc-s and monsters. Blood-curdling combat will "
 "unfold in either frantic real-time or thoughtful turn-based presentation.||"
 msgstr ""
+"||S.c.o.u.r.g.e. est un jdr du style \"Porte-Monstre-Trésor\" qui vous "
+"permet de contrôler un groupe de quatre braves héros.\r\n"
+"En même temps qu'ils travaillent pour une entreprise de service de "
+"gardiennage de dongon, ils deviendront les participants contraints et forcée "
+"a arréter une force mystérieuse qui veut anéantir l'humanité. Fatiguant vous "
+"dites ? Mais attendez, il y a bien plus ! Votre séjour aux quartiers "
+"générals de S.c.o.u.r.g.e. a un graphisme extrémement  détaillé en 3d ! Vous "
+"voyagerez vers des lieux souterrains étranges et exotiques ! Les cartes "
+"générer aléatoirement vous assurons une jouabilité de jeu infini. Il y a de "
+"la musique, des effets, et ... et un scénario ! Vous rencontrerez, vous "
+"parlerez, vous commerçerez quelque fois avec pnj et des monstres. Les "
+"combats qui vous feront glacer le sang dévoilerons comme l'un ou l'autre un "
+"sentiment frénétique en temps-réel ou bien quelque chose de plus réfléchis "
+"en mode tour-par-tour.||"
 
 #: ../scourge_data/config/scourge.cfg:26
 msgid ""
@@ -2909,6 +2946,9 @@ msgid ""
 "noxious fumes and A:psychedelic molds from the very walls of the crypts "
 "below the city of Horghh await.||"
 msgstr ""
+"Alors restez un peu... partez à l'aventure vers les vrais enfers. Les "
+"vapeurs nocives et les formes psychédéliques des murs mêmes des cryptes "
+"situées sous la vile de Horghh vous attendent.||"
 
 #: ../scourge_data/config/scourge.cfg:30
 msgid ""
@@ -2926,118 +2966,135 @@ msgid ""
 "hazing from the very helpful members of rpgcodex.com|Many happy "
 "interruptions in bugfixing by Abe & Asha|"
 msgstr ""
+"Credits et autres:|-----------------------|Code et mauvais graphismes par "
+"Uzudil|Excellents portraits par Ben|Portraits additionnels par Omnisicent "
+"Colossus|Musique par Toofan et Vincent|Expertise en JDR par Michi, Elscouta, "
+"Nolendil|SCOURGEweb.org est maintenu et hébergé par Omniscient Colossus|"
+"Forums originels et administration web par Charlie|Programmation "
+"supplémentaire par daroth-u et Callahan|Web/cvs/svn et autres services par "
+"sourceforge.net|Objets 3d supplémentaires par Omniscient Colossus|"
+"Application de la loi par Mormuth le Poillu|Poésie de nains par l'ordre du "
+"Grizzled Pony|Modèles Quake de polycount|Peaufinage de textures par "
+"Omniscient Colossus|(lire le fichierREADME pour les contributions "
+"détaillées.)|Tests et encouragements par plein de monde chez happypenguin."
+"org|\t\r\n"
+"Tests additionnel et bizutage général par les membres très sympatiques de "
+"rpgcodex.com Beaucoup de joyeuses interruptions par Abe & Asha|"
 
 #: ../scourge_data/config/map.cfg:215
 msgid "Pale weeds grow over these ancient walls"
-msgstr ""
+msgstr "Des herbes pâles ont poussé sur ces anciens murs."
 
 #: ../scourge_data/config/map.cfg:218
 msgid "The walls crumble with age, yet appear sturdy"
-msgstr ""
+msgstr "Les murs accusent leur âge, mais semble tout de même solides."
 
 #: ../scourge_data/config/map.cfg:221
 msgid "Dark limestone walls mark these corridors"
-msgstr ""
+msgstr "Les murs aux calcaires foncées marque ces couloirs"
 
 #: ../scourge_data/config/map.cfg:227
 msgid "It appears to be a thick wooden door"
-msgstr ""
+msgstr "C'est une épaisse porte en bois."
 
 #: ../scourge_data/config/map.cfg:230
 msgid "A dungeon door made of wood"
-msgstr ""
+msgstr "Une porte de dongon en bois"
 
 #: ../scourge_data/config/map.cfg:233
 msgid "The aged oak door is scarred by knife points and torch flame"
 msgstr ""
+"La porte de chêne centenaire est entaillé par les pointes de couteau et "
+"noircie par les flammes des torches"
 
 #: ../scourge_data/config/map.cfg:239
 msgid "The door frames seem to be made of some hard wood"
-msgstr ""
+msgstr "Le cadre de la porte semble être fait en bois dur"
 
 #: ../scourge_data/config/map.cfg:242
 msgid "The wood around the doors is reinforced by metal nails"
-msgstr ""
+msgstr "Le bois autour de la porte est renforcé par des clous de métal"
 
 #: ../scourge_data/config/map.cfg:248
 msgid "A torch blazes nearby"
-msgstr ""
+msgstr "Une torche flambe tout prés"
 
 #: ../scourge_data/config/map.cfg:251
 msgid "The light is firmly attached to the wall, you cannot get it"
-msgstr ""
+msgstr "La bougie est fermement attaché au mur, vous ne pouvez pas la prendre"
 
 #: ../scourge_data/config/map.cfg:254
 msgid "It is a burning torch"
-msgstr ""
+msgstr "C'est une torche qui brûle"
 
 #: ../scourge_data/config/map.cfg:260
 msgid "A large wooden board that describes available missions"
-msgstr ""
+msgstr "Un grand panneau de bois qui décrit les missions disponibles"
 
 #: ../scourge_data/config/map.cfg:263
 msgid "Click on the board to learn about your missions"
-msgstr ""
+msgstr "Cliquer sur le tableau pour en apprendre un peu plus sur vos missions"
 
 #: ../scourge_data/config/map.cfg:266
+#, fuzzy
 msgid "The corporate 'brains' of S.C.O.U.R.G.E. inc."
-msgstr ""
+msgstr "La direction de S.C.O.U.R.G.E. inc."
 
 #: ../scourge_data/config/map.cfg:272
 msgid "A burning brazier"
-msgstr ""
+msgstr "Un brasero brûlant"
 
 #: ../scourge_data/config/map.cfg:275
 msgid "A brazier radiates heat nearby"
-msgstr ""
+msgstr "La chaleur d'un brasero rayonne dans le coin."
 
 #: ../scourge_data/config/map.cfg:281
 msgid "You see a shiny marble column"
-msgstr ""
+msgstr "Vous voyez une brillante colonne de marbre"
 
 #: ../scourge_data/config/map.cfg:284
 msgid "The column supports the ceiling"
-msgstr ""
+msgstr "La colonne supporte le plafond"
 
 #: ../scourge_data/config/map.cfg:290
 msgid "This teleporter is here courtesy of the management"
-msgstr ""
+msgstr "Ce téléporteur est sponsorisé par le management."
 
 #: ../scourge_data/config/map.cfg:293
 msgid "This teleporter can take you back to headquarters"
-msgstr ""
+msgstr "Ce téléportateur peut vous amener au quartier-général"
 
 #: ../scourge_data/config/map.cfg:296
 msgid "It is a teleporter"
-msgstr ""
+msgstr "C'est un téléporteur"
 
 #: ../scourge_data/config/map.cfg:302
 msgid "These stairs lead to another level"
-msgstr ""
+msgstr "Ces escaliers mène vers un autre niveau"
 
 #: ../scourge_data/config/map.cfg:305
 msgid "Stairs leading into darkness"
-msgstr ""
+msgstr "Les escaliers mènent vers les ténébres"
 
 #: ../scourge_data/config/map.cfg:308
 msgid "You see a flight of stairs"
-msgstr ""
+msgstr "Vous voyez des étoiles voler."
 
 #: ../scourge_data/config/map.cfg:314
 msgid "It's a rusty lever."
-msgstr ""
+msgstr "C'est un levier rouillé."
 
 #: ../scourge_data/config/map.cfg:317
 msgid "It is best to leave that alone."
-msgstr ""
+msgstr "Il est bien de laisser ça tranquille"
 
 #: ../scourge_data/config/map.cfg:320
 msgid "Touch it: it may add new germs to your collection."
-msgstr ""
+msgstr "Touchez le: ça pourrait ajouter de nouveaux germes à votre collection."
 
 #: ../scourge_data/config/map.cfg:326
 msgid "It's a calm pool of liquid radiating energy."
-msgstr ""
+msgstr "C'est un bassin calme, rempli de radiations liquides."
 
 #: ../scourge_data/config/map.cfg:329
 msgid "It appears to be a shallow pool of liquid."
@@ -3045,31 +3102,31 @@ msgstr ""
 
 #: ../scourge_data/config/map.cfg:335
 msgid "This teleporter smells faintly of sulphur."
-msgstr ""
+msgstr "Ce téléporteur empeste le sulfure."
 
 #: ../scourge_data/config/map.cfg:338
 msgid "It is the fabled red teleporter!"
-msgstr ""
+msgstr "C'est le fabuleux téléporteur rouge !"
 
 #: ../scourge_data/config/map.cfg:341
 msgid "Where does this teleporter lead?"
-msgstr ""
+msgstr "Où est-ce que ce téléporteur peut mener ?"
 
 #: ../scourge_data/config/map.cfg:347
 msgid "A sturdy wooden column."
-msgstr ""
+msgstr "Une colonne en bois robuste."
 
 #: ../scourge_data/config/map.cfg:353
 msgid "A rack for our less fortunate guests."
-msgstr ""
+msgstr "Un râtelier pour nos infortunés invités."
 
 #: ../scourge_data/config/map.cfg:359
 msgid "You see dense vegetation."
-msgstr ""
+msgstr "Vous voyez une dense végétation"
 
 #: ../scourge_data/config/map.cfg:362
 msgid "Some plants grow here."
-msgstr ""
+msgstr "Quelques plantes poussent ici."
 
 #: ../scourge_data/config/map.cfg:368
 msgid "Old ruins of forgotten kingdoms litter the grounds."
@@ -3094,75 +3151,81 @@ msgstr ""
 
 #: ../scourge_data/config/item.cfg:97
 msgid "Two-handed"
-msgstr ""
+msgstr "A deux-mains"
 
 #: ../scourge_data/config/item.cfg:98
 msgid "Large"
-msgstr ""
+msgstr "grande"
 
 #: ../scourge_data/config/item.cfg:99
 msgid "Made of Metal"
-msgstr ""
+msgstr "Fabriqué en métal"
 
 #: ../scourge_data/config/item.cfg:100
 msgid "Bludgeoning"
-msgstr ""
+msgstr "Matraqué"
 
 #: ../scourge_data/config/item.cfg:101
 msgid "Small"
-msgstr ""
+msgstr "Petit"
 
 #: ../scourge_data/config/item.cfg:102
 msgid "Robes"
-msgstr ""
+msgstr "Robes"
 
 #: ../scourge_data/config/item.cfg:103
 msgid "Plate-mail"
-msgstr ""
+msgstr "Armure de plaque"
 
 #: ../scourge_data/config/item.cfg:104
 msgid "Ranged Weapons"
-msgstr ""
+msgstr "Armes de jet"
 
 #: ../scourge_data/config/weapon.cfg:3
 msgid ""
 "It's an old carving knife. The long dulled blade sports a surprising number "
 "of dents."
 msgstr ""
+"C'est un vieux couteau de sculpteur. La longue lame contient un nombre "
+"surprenant de dents."
 
 #: ../scourge_data/config/weapon.cfg:4
 msgid "Kitchen Knife"
-msgstr ""
+msgstr "Couteau de cuisine"
 
 #: ../scourge_data/config/weapon.cfg:11
 msgid "A rusty carving knife"
-msgstr ""
+msgstr "Une couteau de sculpteur rouillé"
 
 #: ../scourge_data/config/weapon.cfg:22
 msgid "A lightweight weapon that is built for speed. A favorite of assassins!"
 msgstr ""
+"Une arme légère qui a été fabriqué pour sa vitesse de lancer. L'arme préféré "
+"des assassins !"
 
 #: ../scourge_data/config/weapon.cfg:23
 msgid "Dirk"
-msgstr ""
+msgstr "Dague"
 
 #: ../scourge_data/config/weapon.cfg:30
 msgid "A small dirk"
-msgstr ""
+msgstr "Une petite dague"
 
 #: ../scourge_data/config/weapon.cfg:74
 msgid ""
 "This dirk sports a menacing extra notch at its end. Monsters are sure to run "
 "screaming from this horror!"
 msgstr ""
+"Cette dague arbore au bot de la lame un cran menaçant. Les montres courront "
+"en hurlant en voyant cette horreur !"
 
 #: ../scourge_data/config/weapon.cfg:75
 msgid "Curved Dirk"
-msgstr ""
+msgstr "Une dague incurvé"
 
 #: ../scourge_data/config/weapon.cfg:82
 msgid "A dirk with a spike"
-msgstr ""
+msgstr "Un poinard avec une pointe"
 
 #: ../scourge_data/config/weapon.cfg:126
 msgid ""
@@ -3172,11 +3235,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:127
 msgid "Throwing Dagger"
-msgstr ""
+msgstr "Poignard de lancer"
 
 #: ../scourge_data/config/weapon.cfg:134
 msgid "A well-balanced throwing dagger."
-msgstr ""
+msgstr "Une dague de lancé bien équilibré"
 
 #: ../scourge_data/config/weapon.cfg:172
 msgid "Many-a-throats were silenced by this here black iron"
@@ -3184,11 +3247,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:173
 msgid "Dagger"
-msgstr ""
+msgstr "Poignard"
 
 #: ../scourge_data/config/weapon.cfg:180
 msgid "A curiously shaped dagger"
-msgstr ""
+msgstr "Un poignard aux formes curieuses"
 
 #: ../scourge_data/config/weapon.cfg:225
 msgid ""
@@ -3198,11 +3261,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:226
 msgid "Hunting Knife"
-msgstr ""
+msgstr "Un couteau de chasse"
 
 #: ../scourge_data/config/weapon.cfg:233
 msgid "A hunting knife with a serrated edge."
-msgstr ""
+msgstr "Un couteau de chasse avec un tranchant en dent de scie"
 
 #: ../scourge_data/config/weapon.cfg:271
 msgid ""
@@ -3210,26 +3273,30 @@ msgid ""
 "flame, before him stand a long line of souls, to be sacrificed for the "
 "divine feast."
 msgstr ""
+"Ce couteau porte le symbole d'Unamoin. Le dieu est assis sur un trône de "
+"feu, une longue ligne d'âmes attend devant lui pour être sacrifié pour "
+"festin divin."
 
 #: ../scourge_data/config/weapon.cfg:272
 msgid "Ceremonial Dagger"
-msgstr ""
+msgstr "Poignard de cérémonie"
 
 #: ../scourge_data/config/weapon.cfg:279
 msgid "A wide-bladed ceremonial dagger."
-msgstr ""
+msgstr "Une dague de cérémonie à large lame."
 
 #: ../scourge_data/config/weapon.cfg:324
 msgid "A dwarven shortsword of average workmanship"
-msgstr ""
+msgstr "Une épée courte de nains de fabrication moyenne."
 
 #: ../scourge_data/config/weapon.cfg:325
 msgid "Short sword"
-msgstr ""
+msgstr "Epée courte"
 
 #: ../scourge_data/config/weapon.cfg:332
+#, fuzzy
 msgid "A stubby short sword"
-msgstr ""
+msgstr "Une épée courte tronquée"
 
 #: ../scourge_data/config/weapon.cfg:376
 msgid ""
@@ -3237,14 +3304,17 @@ msgid ""
 "held with two hands. It is designed for close-quarter underground melee "
 "fighting."
 msgstr ""
+"Plus lonque et plus large qu'une épée courte, la marque militaire naine est "
+"parfois utilisée à deux mains. Elle est conçue pour le combat rapproché dans "
+"les mélées souterraines."
 
 #: ../scourge_data/config/weapon.cfg:377
 msgid "Dwarven sword"
-msgstr ""
+msgstr "Epée naine"
 
 #: ../scourge_data/config/weapon.cfg:385
 msgid "A sword of dwarven make."
-msgstr ""
+msgstr "Une épée fabriquée par des nains."
 
 #: ../scourge_data/config/weapon.cfg:430
 msgid ""
@@ -3252,36 +3322,41 @@ msgid ""
 "They're usually not used in actual combat but are only carried during a "
 "ceremony."
 msgstr ""
+"Les officiers de la garde royale portent cette épée pointue comme signe de "
+"leur rang. Elles ne sont généralement pas utilisées en combat, mais "
+"uniquement portées lors de cérémonies."
 
 #: ../scourge_data/config/weapon.cfg:431
 msgid "Ornamental officer sword"
-msgstr ""
+msgstr "Epée ornementale d'officier"
 
 #: ../scourge_data/config/weapon.cfg:439
 msgid "A strange pointed sword."
-msgstr ""
+msgstr "Une étrange épée pointue."
 
 #: ../scourge_data/config/weapon.cfg:488
 msgid ""
 "A bastard sword can be wielded either by one or both hands... (If you still "
 "have both hands)"
 msgstr ""
+"Une épée batarde peut être portée à une ou deux mains... (Si vous avez "
+"encore vos deux mains)"
 
 #: ../scourge_data/config/weapon.cfg:489
 msgid "Bastard sword"
-msgstr ""
+msgstr "Epée bâtarde"
 
 #: ../scourge_data/config/weapon.cfg:497
 msgid "The rusty bastard sword has seen plenty of use"
-msgstr ""
+msgstr "Cette épée batarde rouillée a déjà beaucoup servie"
 
 #: ../scourge_data/config/weapon.cfg:546
 msgid "The longsword is the noble weapon of the knights"
-msgstr ""
+msgstr "L'épée longue est l'arme noble des chevaliers"
 
 #: ../scourge_data/config/weapon.cfg:547
 msgid "Long sword"
-msgstr ""
+msgstr "Epée longue"
 
 #: ../scourge_data/config/weapon.cfg:555
 msgid "A well-balanced, shiny longsword"
@@ -3296,11 +3371,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:604
 msgid "Twisted sword"
-msgstr ""
+msgstr "Epée tordu"
 
 #: ../scourge_data/config/weapon.cfg:612
 msgid "A blade with a snake-like form"
-msgstr ""
+msgstr "Une lame en forme de serpent"
 
 #: ../scourge_data/config/weapon.cfg:660
 msgid ""
@@ -3310,23 +3385,24 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:661
 msgid "Royal Cutlass"
-msgstr ""
+msgstr "Coutelas royal"
 
 #: ../scourge_data/config/weapon.cfg:669
 msgid "A cutlass with a curved, heavy blade"
-msgstr ""
+msgstr "Une coutelas avec une lame lourde et courbé"
 
 #: ../scourge_data/config/weapon.cfg:718
 msgid "A smaller version of the royal cutlass that can be held in one hand."
 msgstr ""
+"Une petite version d'un coutelas royal qui peut être tenu dans une main"
 
 #: ../scourge_data/config/weapon.cfg:719
 msgid "Nederianese Cutlass"
-msgstr ""
+msgstr "Coutelas Nederianese"
 
 #: ../scourge_data/config/weapon.cfg:727
 msgid "A small cutlass"
-msgstr ""
+msgstr "Un petit coutelas"
 
 #: ../scourge_data/config/weapon.cfg:775
 msgid ""
@@ -3336,11 +3412,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:776
 msgid "Cavalry Sabre"
-msgstr ""
+msgstr "Un sabre de cavalerie"
 
 #: ../scourge_data/config/weapon.cfg:784
 msgid "A strangely-balanced utilitarian sword"
-msgstr ""
+msgstr "Une épée utilitaire drôlement équilibrée"
 
 #: ../scourge_data/config/weapon.cfg:832
 msgid ""
@@ -3348,34 +3424,42 @@ msgid ""
 "armor rather to strike with the edge. They require extreme finesse when used "
 "and are more likely to break."
 msgstr ""
+"La plupart du temps utilisé par l'aristocratie, ces armes ont été conçues "
+"pour perforer l'armure plutôt que pour frapper avec le tranchant. Elles "
+"exigent une finesse extrême lors de l'utilisation, et risquent de se casser "
+"rapidement."
 
 #: ../scourge_data/config/weapon.cfg:833
 msgid "Rapier"
-msgstr ""
+msgstr "Une rapière"
 
 #: ../scourge_data/config/weapon.cfg:841
 msgid "A long pointed sword with not much of an edge."
-msgstr ""
+msgstr "Une longue épée pointue avec peu de tranchant."
 
 #: ../scourge_data/config/weapon.cfg:890
 msgid ""
 "Only persons of exceeding strength can cleave their enemies to bits with "
 "this greatsword"
 msgstr ""
+"Seules les personnes d'une force excessive peuvent fendre leurs ennemis avec "
+"cette épée géante"
 
 #: ../scourge_data/config/weapon.cfg:891
 msgid "Great sword"
-msgstr ""
+msgstr "Epée géante"
 
 #: ../scourge_data/config/weapon.cfg:899
 msgid "A two-handed greatsword"
-msgstr ""
+msgstr "Une épée géante à deux mains"
 
 #: ../scourge_data/config/weapon.cfg:948
 msgid ""
 "Wrought by the elvish metal smiths of Allovium, this blade is specially "
 "prepared to slay dragons."
 msgstr ""
+"Travaillée par les forgerons elfiques d'Allovium, cette lame est "
+"particulièrement préparée pour massacrer des dragons."
 
 #: ../scourge_data/config/weapon.cfg:949
 msgid "Purple Worm Slayer"
@@ -3383,15 +3467,17 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:957
 msgid "A purple curved sword"
-msgstr ""
+msgstr "Une épée coubé pourpre"
 
 #: ../scourge_data/config/weapon.cfg:1005
 msgid "This graceful, single-edged sword cannot be left out of any rpg!"
 msgstr ""
+"Cette gracieuse épée à simple tranchant ne peut pas n'être oubliée dans un "
+"JDR !"
 
 #: ../scourge_data/config/weapon.cfg:1006
 msgid "Katana"
-msgstr ""
+msgstr "Un katana"
 
 #: ../scourge_data/config/weapon.cfg:1014
 msgid "A single-edge sword of mythic proportions!"
@@ -3430,10 +3516,11 @@ msgstr ""
 #: ../scourge_data/config/weapon.cfg:1190
 msgid "A battleaxe forged under the mountain in darkness and silence"
 msgstr ""
+"Une hache de bataille forgée sous la montagne dans les ténébres et le silence"
 
 #: ../scourge_data/config/weapon.cfg:1191
 msgid "Battleaxe"
-msgstr ""
+msgstr "Une hache de bataille"
 
 #: ../scourge_data/config/weapon.cfg:1198
 msgid "The sturdy battleaxe also serves as a walking stick"
@@ -3447,11 +3534,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1247
 msgid "Throwing axe"
-msgstr ""
+msgstr "Une hache de lancée"
 
 #: ../scourge_data/config/weapon.cfg:1254
 msgid "A short-handled throwing axe"
-msgstr ""
+msgstr "Une hache de lancer courte à une main"
 
 #: ../scourge_data/config/weapon.cfg:1303
 msgid ""
@@ -3462,11 +3549,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1304
 msgid "Gorlish Axe"
-msgstr ""
+msgstr "Hache Gorlish"
 
 #: ../scourge_data/config/weapon.cfg:1312
 msgid "A hooked medium axe"
-msgstr ""
+msgstr "Une hache moyenne à crocheter"
 
 #: ../scourge_data/config/weapon.cfg:1360
 msgid ""
@@ -3475,11 +3562,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1361
 msgid "Greataxe"
-msgstr ""
+msgstr "Enorme hache"
 
 #: ../scourge_data/config/weapon.cfg:1369
 msgid "A crudely-made two-handed axe"
-msgstr ""
+msgstr "Une hache à deux mains fabriqué grossiérement"
 
 #: ../scourge_data/config/weapon.cfg:1418
 msgid ""
@@ -3489,7 +3576,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1419
 msgid "Chomper"
-msgstr ""
+msgstr "Mâcher"
 
 #: ../scourge_data/config/weapon.cfg:1427
 msgid "A large axe with a serrated blade"
@@ -3517,7 +3604,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1534
 msgid "Golden Axe"
-msgstr ""
+msgstr "Une hâche dorée"
 
 #: ../scourge_data/config/weapon.cfg:1542
 msgid "A small axe of pale gold color"
@@ -3529,11 +3616,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1592
 msgid "Smallbow"
-msgstr ""
+msgstr "Un petit arc"
 
 #: ../scourge_data/config/weapon.cfg:1599
 msgid "A small bow"
-msgstr ""
+msgstr "Un petit arc"
 
 #: ../scourge_data/config/weapon.cfg:1648
 msgid "This bow is made of a strong wood with artistic carvings on its handles"
@@ -3541,7 +3628,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1649
 msgid "Ornatebow"
-msgstr ""
+msgstr "Un arc d'ornement"
 
 #: ../scourge_data/config/weapon.cfg:1657
 msgid "A nicely crafted, strong bow"
@@ -3555,11 +3642,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1707
 msgid "Crossbow"
-msgstr ""
+msgstr "Arbalète"
 
 #: ../scourge_data/config/weapon.cfg:1715
 msgid "A large crossbow"
-msgstr ""
+msgstr "Une grande arbalète"
 
 #: ../scourge_data/config/weapon.cfg:1764
 msgid ""
@@ -3569,7 +3656,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1765
 msgid "Light crossbow"
-msgstr ""
+msgstr "Une arbalète légére"
 
 #: ../scourge_data/config/weapon.cfg:1773
 msgid "A crossbow with an orange wood handle"
@@ -3581,7 +3668,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1823
 msgid "Longbow"
-msgstr ""
+msgstr "Un arc long"
 
 #: ../scourge_data/config/weapon.cfg:1831
 msgid "A long bow adorned with a leaf symbol"
@@ -3608,7 +3695,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1939
 msgid "Bolinfupur"
-msgstr ""
+msgstr "Bolinfupur"
 
 #: ../scourge_data/config/weapon.cfg:1947
 msgid "This bow is made from a dull grayish-red substance that resembles stone"
@@ -3622,7 +3709,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:1997
 msgid "Wooden club"
-msgstr ""
+msgstr "Une matraque en bois"
 
 #: ../scourge_data/config/weapon.cfg:2004
 msgid "Your basic, non-enchanted, non-spiked wooden club."
@@ -3651,11 +3738,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:2111
 msgid "Morning Star"
-msgstr ""
+msgstr "Etoile du matin"
 
 #: ../scourge_data/config/weapon.cfg:2119
 msgid "A metal ball on a chain"
-msgstr ""
+msgstr "Une chaîne avec une boule de métal"
 
 #: ../scourge_data/config/weapon.cfg:2168
 msgid ""
@@ -3684,7 +3771,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:2235
 msgid "An enormous two-handed mace."
-msgstr ""
+msgstr "Une énorme masse à deux mains"
 
 #: ../scourge_data/config/weapon.cfg:2285
 msgid ""
@@ -3698,7 +3785,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:2294
 msgid "The black flail emits a humming noise."
-msgstr ""
+msgstr "Un fléau noir qui émet des fredonnements"
 
 #: ../scourge_data/config/weapon.cfg:2343
 msgid ""
@@ -3709,7 +3796,7 @@ msgstr ""
 #: ../scourge_data/config/weapon.cfg:2344
 #: ../scourge_data/config/profession.cfg:76
 msgid "Warmaster"
-msgstr ""
+msgstr "Maître de guerre"
 
 #: ../scourge_data/config/weapon.cfg:2352
 msgid "This mace is surrounded by a near-visible aura of blood-lust."
@@ -3726,7 +3813,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:2409
 msgid "A long wood pole."
-msgstr ""
+msgstr "Un long bâton de bois"
 
 #: ../scourge_data/config/weapon.cfg:2460
 msgid ""
@@ -3736,11 +3823,11 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:2461
 msgid "Javelin"
-msgstr ""
+msgstr "Javelot"
 
 #: ../scourge_data/config/weapon.cfg:2468
 msgid "A finely crafted, lightweight lance."
-msgstr ""
+msgstr "Une lance légere finnement travaillé"
 
 #: ../scourge_data/config/weapon.cfg:2519
 msgid ""
@@ -3750,7 +3837,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:2520
 msgid "Longspear"
-msgstr ""
+msgstr "Longue lance"
 
 #: ../scourge_data/config/weapon.cfg:2528
 msgid "A rough iron pole with a sharpened tip."
@@ -3764,7 +3851,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:2580
 msgid "Trident"
-msgstr ""
+msgstr "Trident"
 
 #: ../scourge_data/config/weapon.cfg:2588
 msgid "A long metal pole with three barbed prongs."
@@ -3776,7 +3863,7 @@ msgstr ""
 
 #: ../scourge_data/config/weapon.cfg:2640
 msgid "Halberd"
-msgstr ""
+msgstr "Hallebarde"
 
 #: ../scourge_data/config/weapon.cfg:2648
 msgid "A long pole with an axe blade at its top."
@@ -3888,7 +3975,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:94
 msgid "Horned helmet"
-msgstr ""
+msgstr "Casque avec des cornes"
 
 #: ../scourge_data/config/armor.cfg:101
 msgid "A stylish helmet adorned with the horns of a slain foe"
@@ -3916,7 +4003,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:140
 msgid "Helmet with visor"
-msgstr ""
+msgstr "Casque avec une visière"
 
 #: ../scourge_data/config/armor.cfg:148
 msgid "A dented metal helmet with a removable visor."
@@ -3960,11 +4047,11 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:213
 msgid "Adventuring Hat"
-msgstr ""
+msgstr "Chapeau d'aventurier"
 
 #: ../scourge_data/config/armor.cfg:220
 msgid "A brown leather hat with a feather."
-msgstr ""
+msgstr "Un chapeau brun en cuir avec une plume"
 
 #: ../scourge_data/config/armor.cfg:229
 msgid ""
@@ -3975,11 +4062,11 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:230
 msgid "Buckler"
-msgstr ""
+msgstr "Ecu"
 
 #: ../scourge_data/config/armor.cfg:237
 msgid "A small home-made wooden shield."
-msgstr ""
+msgstr "Une petit bouclier en bois artisanal"
 
 #: ../scourge_data/config/armor.cfg:248
 msgid ""
@@ -3989,7 +4076,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:249
 msgid "Wooden Shield"
-msgstr ""
+msgstr "Bouclier en bois"
 
 #: ../scourge_data/config/armor.cfg:256
 msgid "A well-made, sturdy wooden shield."
@@ -4003,11 +4090,11 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:269
 msgid "Steel Shield"
-msgstr ""
+msgstr "Bouclier en acier"
 
 #: ../scourge_data/config/armor.cfg:277
 msgid "A triangular metal shield."
-msgstr ""
+msgstr "Un bouclier triangulaire en métal"
 
 #: ../scourge_data/config/armor.cfg:304
 msgid ""
@@ -4033,11 +4120,11 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:341
 msgid "Cavalry Shield"
-msgstr ""
+msgstr "Bouclier de cavalier"
 
 #: ../scourge_data/config/armor.cfg:349
 msgid "A heavy metal shield."
-msgstr ""
+msgstr "Un bouclier en métal lourd."
 
 #: ../scourge_data/config/armor.cfg:376
 msgid ""
@@ -4063,7 +4150,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:413
 msgid "Shield of the Golden Lotus"
-msgstr ""
+msgstr "Bouclier du Lotus d'Or"
 
 #: ../scourge_data/config/armor.cfg:421
 msgid "A shield exhibiting golden harmony and unperturbable peace."
@@ -4091,7 +4178,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:467
 msgid "Traveling cloak"
-msgstr ""
+msgstr "Cape de voyage"
 
 #: ../scourge_data/config/armor.cfg:474
 msgid "A worn brownish cloak."
@@ -4109,7 +4196,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:492
 msgid "A heavy-weight traveling cloak."
-msgstr ""
+msgstr "Une cape de voyage trés lourde."
 
 #: ../scourge_data/config/armor.cfg:502
 msgid ""
@@ -4119,11 +4206,12 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:503
 msgid "Robes of the Sorcerer"
-msgstr ""
+msgstr "Robes de sorciers"
 
 #: ../scourge_data/config/armor.cfg:511
 msgid "These robes have magic symbols on their sleeves and hood."
 msgstr ""
+"Ces robes ont dse symboles magiques sur leurs manches et leurs capuches."
 
 #: ../scourge_data/config/armor.cfg:523
 msgid ""
@@ -4133,7 +4221,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:524
 msgid "Padded Robes"
-msgstr ""
+msgstr "."
 
 #: ../scourge_data/config/armor.cfg:532
 msgid "These robes seem to be padded on the inside."
@@ -4148,7 +4236,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:545
 msgid "Leather Armor"
-msgstr ""
+msgstr "Armur en cuir"
 
 #: ../scourge_data/config/armor.cfg:552
 msgid "Looks to be an old piece of leather armor"
@@ -4178,7 +4266,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:599
 msgid "Rusty Chainmail"
-msgstr ""
+msgstr "Cotte de mailles rouillé"
 
 #: ../scourge_data/config/armor.cfg:606
 msgid "The rust is the only thing that holds this chainmail's links together"
@@ -4193,11 +4281,11 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:634
 msgid "Guard's Chainmail"
-msgstr ""
+msgstr "Cotte de mailles de garde"
 
 #: ../scourge_data/config/armor.cfg:642
 msgid "It appears to be an official city guard chainmail."
-msgstr ""
+msgstr "Il semble être la cotte de mailles officielle des guardes de la cité"
 
 #: ../scourge_data/config/armor.cfg:669
 msgid ""
@@ -4208,13 +4296,15 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:670
 msgid "Mythril Mail"
-msgstr ""
+msgstr "Maille en Mythril"
 
 #: ../scourge_data/config/armor.cfg:678
 msgid ""
 "You feel that in spite of its light weight this armor is well designed to "
 "deflect damage."
 msgstr ""
+"En dépit de la légéreté du poids de l'armure, il apparaît qu'elle est faites "
+"pour dévier les coups."
 
 #: ../scourge_data/config/armor.cfg:705
 msgid ""
@@ -4256,7 +4346,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:778
 msgid "Elven platemail"
-msgstr ""
+msgstr "Cotte en lamelle elfe"
 
 #: ../scourge_data/config/armor.cfg:786
 msgid "A well-fitted set of lightweight platemail armor."
@@ -4326,7 +4416,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:965
 msgid "Workboots"
-msgstr ""
+msgstr "Bottes de travaille"
 
 #: ../scourge_data/config/armor.cfg:972
 msgid "Comfortable looking workboots."
@@ -4354,11 +4444,11 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:999
 msgid "Leather boots"
-msgstr ""
+msgstr "Bottes en cuir"
 
 #: ../scourge_data/config/armor.cfg:1007
 msgid "A nice pair of leather boots"
-msgstr ""
+msgstr "Une jolie paire de bottes en cuir"
 
 #: ../scourge_data/config/armor.cfg:1017
 msgid ""
@@ -4368,7 +4458,7 @@ msgstr ""
 
 #: ../scourge_data/config/armor.cfg:1018
 msgid "Warboots"
-msgstr ""
+msgstr "Botte de guerre"
 
 #: ../scourge_data/config/armor.cfg:1026
 msgid "Combat boots with a bad attitude."
@@ -4560,7 +4650,7 @@ msgstr ""
 
 #: ../scourge_data/config/magicitem.cfg:128
 msgid "Orc war-ring"
-msgstr ""
+msgstr "Anneau de guerre Orc"
 
 #: ../scourge_data/config/magicitem.cfg:137
 msgid "A red ring that looks like it was used in place of a knife."
@@ -4574,11 +4664,11 @@ msgstr ""
 
 #: ../scourge_data/config/magicitem.cfg:144
 msgid "Ceremonial ring of Count Uluf"
-msgstr ""
+msgstr "Anneau de cérémonie du Comte Uluf"
 
 #: ../scourge_data/config/magicitem.cfg:153
 msgid "A small gold ring with a green gem."
-msgstr ""
+msgstr "Un petit anneau d'or avec un joyau vert."
 
 #: ../scourge_data/config/magicitem.cfg:159
 msgid ""
@@ -4588,7 +4678,7 @@ msgstr ""
 
 #: ../scourge_data/config/magicitem.cfg:160
 msgid "Zarnan's Sealer"
-msgstr ""
+msgstr "Le sceau de Zarnan"
 
 #: ../scourge_data/config/magicitem.cfg:169
 msgid "This ring is clearly a seal of some sort."
@@ -4614,7 +4704,7 @@ msgstr ""
 
 #: ../scourge_data/config/magicitem.cfg:192
 msgid "Crystal amulet"
-msgstr ""
+msgstr "Amulette de crystal"
 
 #: ../scourge_data/config/magicitem.cfg:200
 msgid "A clear stone adorns this necklace."
@@ -4626,7 +4716,7 @@ msgstr ""
 
 #: ../scourge_data/config/magicitem.cfg:207
 msgid "Talizman of the Sun"
-msgstr ""
+msgstr "Talisman du Soleil"
 
 #: ../scourge_data/config/magicitem.cfg:215
 msgid "A golden necklace with a carving of the sun."
@@ -4704,11 +4794,11 @@ msgstr ""
 
 #: ../scourge_data/config/magicitem.cfg:301
 msgid "Wooden Staff"
-msgstr ""
+msgstr "Bâton de bois"
 
 #: ../scourge_data/config/magicitem.cfg:309
 msgid "A simple wooden staff."
-msgstr ""
+msgstr "Un simple bâton de bois"
 
 #: ../scourge_data/config/magicitem.cfg:361
 msgid "The snake worshipping halfling mages of Orn crafted this steel staff."
@@ -4762,7 +4852,7 @@ msgstr ""
 
 #: ../scourge_data/config/magicitem.cfg:556
 msgid "A black staff with golden runes."
-msgstr ""
+msgstr "Un bâton noir avec des runes dorées"
 
 #: ../scourge_data/config/magicitem.cfg:608
 msgid ""
@@ -4785,12 +4875,12 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:4
 msgid "Chest"
-msgstr ""
+msgstr "Coffre"
 
 #: ../scourge_data/config/otheritem.cfg:9
 #: ../scourge_data/config/otheritem.cfg:31
 msgid "An ancient chest"
-msgstr ""
+msgstr "Un ancien coffre"
 
 #: ../scourge_data/config/otheritem.cfg:14
 #: ../scourge_data/config/otheritem.cfg:36
@@ -4799,11 +4889,11 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:15
 msgid "Bookshelf"
-msgstr ""
+msgstr "Etagère de livres"
 
 #: ../scourge_data/config/otheritem.cfg:20
 msgid "A large bookshelf"
-msgstr ""
+msgstr "Une énorme étagère de livre"
 
 #: ../scourge_data/config/otheritem.cfg:26
 msgid "Chest2"
@@ -4823,7 +4913,7 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:48
 msgid "Corpse"
-msgstr ""
+msgstr "Un coprs"
 
 #: ../scourge_data/config/otheritem.cfg:53
 msgid "A decomposing corpse"
@@ -4859,7 +4949,7 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:81
 msgid "Vase"
-msgstr ""
+msgstr "Vase"
 
 #: ../scourge_data/config/otheritem.cfg:86
 msgid "A large painted vase"
@@ -4895,23 +4985,23 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:114
 msgid "Table"
-msgstr ""
+msgstr "Table"
 
 #: ../scourge_data/config/otheritem.cfg:119
 msgid "A large table"
-msgstr ""
+msgstr "Une grande table"
 
 #: ../scourge_data/config/otheritem.cfg:124
 msgid "A simple wooden chair"
-msgstr ""
+msgstr "Une simple chaise en bois"
 
 #: ../scourge_data/config/otheritem.cfg:125
 msgid "Chair"
-msgstr ""
+msgstr "Chaise"
 
 #: ../scourge_data/config/otheritem.cfg:130
 msgid "A simple chair"
-msgstr ""
+msgstr "Une simple chaise"
 
 #: ../scourge_data/config/otheritem.cfg:135
 msgid "It seems to be a pedestal of some sort"
@@ -4975,15 +5065,15 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:190
 msgid "A bench for sitting"
-msgstr ""
+msgstr "Un banc pour s'assoire"
 
 #: ../scourge_data/config/otheritem.cfg:191
 msgid "Bench"
-msgstr ""
+msgstr "Banc"
 
 #: ../scourge_data/config/otheritem.cfg:196
 msgid "A bench"
-msgstr ""
+msgstr "Un banc"
 
 #: ../scourge_data/config/otheritem.cfg:201
 msgid "You think this scroll has magical symbols on it"
@@ -5003,20 +5093,20 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:214
 msgid "Apple"
-msgstr ""
+msgstr "Pomme"
 
 #: ../scourge_data/config/otheritem.cfg:221
 msgid "An apple"
-msgstr ""
+msgstr "Une pomme"
 
 #: ../scourge_data/config/otheritem.cfg:226
 #: ../scourge_data/config/otheritem.cfg:234
 msgid "A large apple"
-msgstr ""
+msgstr "Une énorme pomme"
 
 #: ../scourge_data/config/otheritem.cfg:227
 msgid "Big Apple"
-msgstr ""
+msgstr "Grosse pomme"
 
 #: ../scourge_data/config/otheritem.cfg:239
 msgid ""
@@ -5026,7 +5116,7 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:240
 msgid "Bread"
-msgstr ""
+msgstr "Pan"
 
 #: ../scourge_data/config/otheritem.cfg:247
 msgid "A loaf of bread"
@@ -5038,11 +5128,11 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:253
 msgid "Chocolate"
-msgstr ""
+msgstr "Chocolat"
 
 #: ../scourge_data/config/otheritem.cfg:260
 msgid "A chocolate bar"
-msgstr ""
+msgstr "Une barre de chocolat"
 
 #: ../scourge_data/config/otheritem.cfg:265
 msgid "A giant, orange mushroom with purple dots"
@@ -5074,11 +5164,11 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:292
 msgid "Big egg"
-msgstr ""
+msgstr "Gros oeuf"
 
 #: ../scourge_data/config/otheritem.cfg:299
 msgid "A large egg"
-msgstr ""
+msgstr "Un énorme oeuf"
 
 #: ../scourge_data/config/otheritem.cfg:304
 msgid "Your basic adventurer's fare, mutton-rump-roast, slightly turned..."
@@ -5110,7 +5200,7 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:331
 msgid "Water bottle"
-msgstr ""
+msgstr "Bouteille d'eau"
 
 #: ../scourge_data/config/otheritem.cfg:338
 msgid "A bottle of odorless fluid"
@@ -5126,7 +5216,7 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:351
 msgid "Some milk"
-msgstr ""
+msgstr "Du lait"
 
 #: ../scourge_data/config/otheritem.cfg:356
 msgid ""
@@ -5136,11 +5226,11 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:357
 msgid "Wine bottle"
-msgstr ""
+msgstr "Bouteille de vin"
 
 #: ../scourge_data/config/otheritem.cfg:364
 msgid "A bottle of dark fluid"
-msgstr ""
+msgstr "Une bouteille de fluide noir"
 
 #: ../scourge_data/config/otheritem.cfg:369
 msgid ""
@@ -5162,11 +5252,11 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:383
 msgid "Water barrel"
-msgstr ""
+msgstr "Tonneau d'eau"
 
 #: ../scourge_data/config/otheritem.cfg:390
 msgid "A barrel filled with some liquid"
-msgstr ""
+msgstr "Un tonneau remplie de liquide quelconque"
 
 #: ../scourge_data/config/otheritem.cfg:395
 msgid "A large barrel filled with wine from Korim."
@@ -5199,11 +5289,11 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:422
 msgid "Health potion"
-msgstr ""
+msgstr "Poition de santé"
 
 #: ../scourge_data/config/otheritem.cfg:429
 msgid "A medicine bottle"
-msgstr ""
+msgstr "Une bouteille de soin"
 
 #: ../scourge_data/config/otheritem.cfg:438
 msgid "This bottle contains a gray oozing liquid."
@@ -5223,7 +5313,7 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:457
 msgid "Potion of Speed"
-msgstr ""
+msgstr "Potion de vitesse"
 
 #: ../scourge_data/config/otheritem.cfg:464
 msgid "A small vial of green oil"
@@ -5247,7 +5337,7 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:493
 msgid "Potion of Power"
-msgstr ""
+msgstr "Potion de Puissance"
 
 #: ../scourge_data/config/otheritem.cfg:500
 msgid "A small vial of blue oil"
@@ -5259,7 +5349,7 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:511
 msgid "Potion of IQ"
-msgstr ""
+msgstr "Potio d'Intelligence"
 
 #: ../scourge_data/config/otheritem.cfg:518
 msgid "A small vial of brown oil"
@@ -5271,7 +5361,7 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:529
 msgid "Potion of Leadership"
-msgstr ""
+msgstr "Potion de Commandement"
 
 #: ../scourge_data/config/otheritem.cfg:536
 msgid "A small vial of purple oil"
@@ -5295,7 +5385,7 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:565
 msgid "Potion of Piety"
-msgstr ""
+msgstr "Potion de Piété"
 
 #: ../scourge_data/config/otheritem.cfg:572
 msgid "A small vial of golden oil"
@@ -5319,11 +5409,11 @@ msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:601
 msgid "Magic potion"
-msgstr ""
+msgstr "Potion magique"
 
 #: ../scourge_data/config/otheritem.cfg:608
 msgid "A bottle of blue liquid"
-msgstr ""
+msgstr "Une bouteille de liquide bleu"
 
 #: ../scourge_data/config/otheritem.cfg:617
 msgid ""
@@ -5432,7 +5522,7 @@ msgstr ""
 #: ../scourge_data/config/otheritem.cfg:702 ../scourge_data/maps/hq.cfg:194
 #, fuzzy
 msgid "Cronostar"
-msgstr "Prix"
+msgstr "Coûts"
 
 #: ../scourge_data/config/otheritem.cfg:708
 msgid "A faint smell of decayed flowers hangs in the air."
@@ -5440,11 +5530,12 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:36
 msgid "Nature"
-msgstr ""
+msgstr "Nature"
 
 #: ../scourge_data/config/spell.cfg:41
+#, fuzzy
 msgid "of the Lake"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/spell.cfg:44
 msgid "Lesser healing touch"
@@ -5453,7 +5544,7 @@ msgstr ""
 #: ../scourge_data/config/spell.cfg:45 ../scourge_data/config/spell.cfg:228
 #: ../scourge_data/config/spell.cfg:314
 msgid "Healing"
-msgstr ""
+msgstr "Soigner"
 
 #: ../scourge_data/config/spell.cfg:60
 msgid ""
@@ -5561,8 +5652,9 @@ msgid "Divine Awareness"
 msgstr ""
 
 #: ../scourge_data/config/spell.cfg:166
+#, fuzzy
 msgid "of the Specter"
-msgstr ""
+msgstr "Robes de sorciers"
 
 #: ../scourge_data/config/spell.cfg:169
 msgid "Body of stone"
@@ -5668,15 +5760,16 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:286
 msgid "Life and Death"
-msgstr ""
+msgstr "Vie et Mort"
 
 #: ../scourge_data/config/spell.cfg:291
+#, fuzzy
 msgid "of Karma"
-msgstr ""
+msgstr "Karma"
 
 #: ../scourge_data/config/spell.cfg:294
 msgid "Flame of Azun"
-msgstr ""
+msgstr "Flamme d'Azun"
 
 #: ../scourge_data/config/spell.cfg:295
 msgid "Flaming"
@@ -5698,7 +5791,7 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:333
 msgid "Protective clay"
-msgstr ""
+msgstr "Argile de protection"
 
 #: ../scourge_data/config/spell.cfg:349
 msgid ""
@@ -5742,11 +5835,11 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:392
 msgid "Recall to life"
-msgstr ""
+msgstr "Rappel à la vie"
 
 #: ../scourge_data/config/spell.cfg:393
 msgid "Resurrecting"
-msgstr ""
+msgstr "Résurrection"
 
 #: ../scourge_data/config/spell.cfg:408
 msgid ""
@@ -5795,8 +5888,9 @@ msgid "History and Lore"
 msgstr ""
 
 #: ../scourge_data/config/spell.cfg:437
+#, fuzzy
 msgid "of Lore"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/spell.cfg:440
 msgid "Ole Taffy's purty colors"
@@ -5816,7 +5910,7 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:459
 msgid "Art of protection"
-msgstr ""
+msgstr "Art de la protection"
 
 #: ../scourge_data/config/spell.cfg:475
 msgid ""
@@ -5826,11 +5920,11 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:479
 msgid "Invisibility"
-msgstr ""
+msgstr "Invisibilité"
 
 #: ../scourge_data/config/spell.cfg:480
 msgid "Invisible"
-msgstr ""
+msgstr "Invisible"
 
 #: ../scourge_data/config/spell.cfg:495
 msgid ""
@@ -5842,7 +5936,7 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:499
 msgid "Teleportation"
-msgstr ""
+msgstr "Téléportation"
 
 #: ../scourge_data/config/spell.cfg:500
 msgid "Teleporting"
@@ -5900,16 +5994,17 @@ msgid "Ambush Trickery and Deceit"
 msgstr ""
 
 #: ../scourge_data/config/spell.cfg:543
+#, fuzzy
 msgid "of Chaos"
-msgstr ""
+msgstr "Chaos"
 
 #: ../scourge_data/config/spell.cfg:546
 msgid "Silent knives"
-msgstr ""
+msgstr "Couteaux silencieux"
 
 #: ../scourge_data/config/spell.cfg:547
 msgid "Attacking"
-msgstr ""
+msgstr "Attaque"
 
 #: ../scourge_data/config/spell.cfg:560
 msgid ""
@@ -5937,7 +6032,7 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:584
 msgid "Poison Neutralizing"
-msgstr ""
+msgstr "Neutralisateur de poison"
 
 #: ../scourge_data/config/spell.cfg:599
 msgid ""
@@ -5971,11 +6066,12 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:623
 msgid "Confrontation"
-msgstr ""
+msgstr "Confrontation"
 
 #: ../scourge_data/config/spell.cfg:628
+#, fuzzy
 msgid "of the Abyss"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/spell.cfg:631
 msgid "Stinging light"
@@ -5998,7 +6094,7 @@ msgstr ""
 
 #: ../scourge_data/config/spell.cfg:650
 msgid "Aggressive"
-msgstr ""
+msgstr "Agressif"
 
 #: ../scourge_data/config/spell.cfg:665
 msgid ""
@@ -6783,7 +6879,7 @@ msgstr "Guerrier"
 #: ../scourge_data/config/profession.cfg:1156
 #: ../scourge_data/config/profession.cfg:1172
 msgid "description goes here"
-msgstr ""
+msgstr "description comme ici"
 
 #: ../scourge_data/config/profession.cfg:46
 msgid "Barbarian"
@@ -6791,23 +6887,23 @@ msgstr "Barbare"
 
 #: ../scourge_data/config/profession.cfg:61
 msgid "Elite Berserker"
-msgstr "Berserker d'élite"
+msgstr "Elite des Berserkers"
 
 #: ../scourge_data/config/profession.cfg:91
 msgid "Spirit Commander"
-msgstr "Commandant des esprits"
+msgstr ""
 
 #: ../scourge_data/config/profession.cfg:106
 msgid "Veteran Warrior"
-msgstr "Guerrier vétéran"
+msgstr "Vétéran de guerre"
 
 #: ../scourge_data/config/profession.cfg:121
 msgid "Elite Battle-beast"
-msgstr "Foudre de guerre"
+msgstr ""
 
 #: ../scourge_data/config/profession.cfg:136
 msgid "Prime Dominator"
-msgstr "Dominateur"
+msgstr ""
 
 #: ../scourge_data/config/profession.cfg:151
 msgid "Champion of Justice"
@@ -6847,7 +6943,7 @@ msgstr "Mercenaire"
 
 #: ../scourge_data/config/profession.cfg:295
 msgid "Veteran Soldier of Fortune"
-msgstr ""
+msgstr "Soldat de fortune vétéran"
 
 #: ../scourge_data/config/profession.cfg:310
 msgid "Elite Old Hand"
@@ -6863,7 +6959,7 @@ msgstr "Assassin"
 
 #: ../scourge_data/config/profession.cfg:357
 msgid "Master Assassin"
-msgstr "Maitre assassin"
+msgstr "Maître-assassin"
 
 #: ../scourge_data/config/profession.cfg:372
 msgid "Spy Mastermind"
@@ -6946,11 +7042,11 @@ msgstr ""
 
 #: ../scourge_data/config/profession.cfg:671
 msgid "Apprentice Sorceror"
-msgstr "Apprenti sorcier"
+msgstr ""
 
 #: ../scourge_data/config/profession.cfg:686
 msgid "Necromantic Sorceror"
-msgstr "Nécromancien"
+msgstr "Sorcier nécromantien"
 
 #: ../scourge_data/config/profession.cfg:701
 msgid "Sorceror of the Planes"
@@ -6958,7 +7054,7 @@ msgstr ""
 
 #: ../scourge_data/config/profession.cfg:716
 msgid "Wild One"
-msgstr "Sauvage"
+msgstr ""
 
 #: ../scourge_data/config/profession.cfg:731
 msgid "Loreweilder"
@@ -6966,7 +7062,7 @@ msgstr ""
 
 #: ../scourge_data/config/profession.cfg:746
 msgid "Iron Mage"
-msgstr ""
+msgstr "Mage d'acier"
 
 #: ../scourge_data/config/profession.cfg:761
 msgid "Soulshard"
@@ -6982,7 +7078,7 @@ msgstr ""
 
 #: ../scourge_data/config/profession.cfg:813
 msgid "Healer"
-msgstr "Soignant"
+msgstr "Soigneur"
 
 #: ../scourge_data/config/profession.cfg:818
 msgid ""
@@ -7018,7 +7114,7 @@ msgstr ""
 
 #: ../scourge_data/config/profession.cfg:936
 msgid "Scholar"
-msgstr ""
+msgstr "Collégien"
 
 #: ../scourge_data/config/profession.cfg:941
 msgid ""
@@ -7065,15 +7161,15 @@ msgstr ""
 
 #: ../scourge_data/config/profession.cfg:1089
 msgid "Thief"
-msgstr "Voleur"
+msgstr ""
 
 #: ../scourge_data/config/profession.cfg:1104
 msgid "Master Thief"
-msgstr "Maitre voleur"
+msgstr "Maître-Voleur"
 
 #: ../scourge_data/config/profession.cfg:1119
 msgid "Assassin in Training"
-msgstr "Assassin en formatation"
+msgstr "Assassin en entraînement"
 
 #: ../scourge_data/config/profession.cfg:1134
 msgid "Gutter-sage"
@@ -7198,7 +7294,7 @@ msgstr ""
 
 #: ../scourge_data/config/ability.cfg:131
 msgid "Natural Healing"
-msgstr ""
+msgstr "Soigner naturellement"
 
 #: ../scourge_data/config/ability.cfg:132
 msgid ""
@@ -7210,7 +7306,7 @@ msgstr ""
 
 #: ../scourge_data/config/ability.cfg:140
 msgid "Vitality Transfer"
-msgstr ""
+msgstr "Transfert de vitalité"
 
 #: ../scourge_data/config/ability.cfg:141
 msgid ""
@@ -7223,7 +7319,7 @@ msgstr ""
 
 #: ../scourge_data/config/ability.cfg:149
 msgid "Healing Aura"
-msgstr ""
+msgstr "Aura de soin"
 
 #: ../scourge_data/config/ability.cfg:150
 msgid ""
@@ -7247,7 +7343,7 @@ msgstr ""
 
 #: ../scourge_data/config/ability.cfg:168
 msgid "Bow Mastery"
-msgstr ""
+msgstr "Maîtrise de l'arc"
 
 #: ../scourge_data/config/ability.cfg:169
 msgid ""
@@ -7272,8 +7368,9 @@ msgid "%s is not blessed anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:8
+#, fuzzy
 msgid "of Air"
-msgstr ""
+msgstr "Air"
 
 #: ../scourge_data/config/rpg.cfg:12
 msgid "empowered"
@@ -7290,8 +7387,9 @@ msgid "%s is not empowered anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:16
+#, fuzzy
 msgid "of Earth"
-msgstr ""
+msgstr "Terre"
 
 #: ../scourge_data/config/rpg.cfg:20
 msgid "enraged"
@@ -7308,8 +7406,9 @@ msgid "%s is not enraged anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:24
+#, fuzzy
 msgid "of Fire"
-msgstr ""
+msgstr "Feu"
 
 #: ../scourge_data/config/rpg.cfg:28
 msgid "ac_protected"
@@ -7326,8 +7425,9 @@ msgid "%s is not protected anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:32
+#, fuzzy
 msgid "of Stones"
-msgstr "de Pierres."
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:36
 msgid "magic_protected"
@@ -7344,12 +7444,13 @@ msgid "%s is not protected against magic anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:40
+#, fuzzy
 msgid "of Water"
-msgstr ""
+msgstr "Eau"
 
 #: ../scourge_data/config/rpg.cfg:44
 msgid "drunk"
-msgstr ""
+msgstr "Ivre"
 
 #: ../scourge_data/config/rpg.cfg:45
 #, c-format
@@ -7367,12 +7468,12 @@ msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:51
 msgid "poisoned"
-msgstr "empoisonné"
+msgstr "empoisonné(e)"
 
 #: ../scourge_data/config/rpg.cfg:53
 #, c-format
 msgid "%s is poisoned"
-msgstr "%s est empoisonné"
+msgstr "%s est empoisonné(e)"
 
 #: ../scourge_data/config/rpg.cfg:54
 #, c-format
@@ -7380,8 +7481,9 @@ msgid "%s is not poisoned anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:55
+#, fuzzy
 msgid "of Ice"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:59
 msgid "cursed"
@@ -7398,44 +7500,47 @@ msgid "%s is not cursed anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:63
+#, fuzzy
 msgid "of the Planes"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:67
 msgid "possessed"
-msgstr ""
+msgstr "possédé"
 
 #: ../scourge_data/config/rpg.cfg:69
 #, c-format
 msgid "%s is possessed"
-msgstr ""
+msgstr "%s est possédé(e)"
 
 #: ../scourge_data/config/rpg.cfg:70
 #, c-format
 msgid "%s is not possessed anymore"
-msgstr ""
+msgstr "%s n'est pas possédé(e) du tout"
 
 #: ../scourge_data/config/rpg.cfg:71
+#, fuzzy
 msgid "of the Stars"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:75
 msgid "blinded"
-msgstr ""
+msgstr "aveugle"
 
 #: ../scourge_data/config/rpg.cfg:77
 #, c-format
 msgid "%s is blinded"
-msgstr ""
+msgstr "%s est aveuglé"
 
 #: ../scourge_data/config/rpg.cfg:78
 #, c-format
 msgid "%s is not blinded anymore"
-msgstr ""
+msgstr "%s n'est pas aveuglé(e) du tout"
 
 #: ../scourge_data/config/rpg.cfg:79
+#, fuzzy
 msgid "of Haze"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:83
 msgid "paralysed"
@@ -7452,8 +7557,9 @@ msgid "%s is not paralysed anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:87
+#, fuzzy
 msgid "of the Cave"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:91
 msgid "invisible"
@@ -7470,12 +7576,13 @@ msgid "%s is not invisible anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:95
+#, fuzzy
 msgid "of Acid"
-msgstr ""
+msgstr "Acide"
 
 #: ../scourge_data/config/rpg.cfg:99
 msgid "overloaded"
-msgstr ""
+msgstr "surchargé"
 
 #: ../scourge_data/config/rpg.cfg:100
 #, c-format
@@ -7488,26 +7595,28 @@ msgid "%s is not overloaded anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:102
+#, fuzzy
 msgid "of the Spirit"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:106
 msgid "dead"
-msgstr ""
+msgstr "mort"
 
 #: ../scourge_data/config/rpg.cfg:107
 #, c-format
 msgid "%s is dead"
-msgstr ""
+msgstr "%s est mort"
 
 #: ../scourge_data/config/rpg.cfg:108
 #, c-format
 msgid "%s is resurrected"
-msgstr ""
+msgstr "%s est ressucité"
 
 #: ../scourge_data/config/rpg.cfg:109
+#, fuzzy
 msgid "of the Mists"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:113
 msgid "asleep"
@@ -7524,8 +7633,9 @@ msgid "%s is awake"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:116
+#, fuzzy
 msgid "of Quiet"
-msgstr "du Calme"
+msgstr "Quitter"
 
 #: ../scourge_data/config/rpg.cfg:121
 msgid "Basic Group"
@@ -7546,8 +7656,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:127
+#, fuzzy
 msgid "of the Dragon"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:131
 msgid "Coordination"
@@ -7559,8 +7670,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:133
+#, fuzzy
 msgid "of the Wolf"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:138
 msgid ""
@@ -7568,8 +7680,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:139
+#, fuzzy
 msgid "of the Troll"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:143
 msgid "IQ"
@@ -7580,8 +7693,9 @@ msgid "A character with higher IQ is better suited to spellcasting."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:145
+#, fuzzy
 msgid "of the Boar"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:149
 msgid "Leadership"
@@ -7593,8 +7707,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:151
+#, fuzzy
 msgid "of the Bear"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:155
 msgid "Luck"
@@ -7607,8 +7722,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:157
+#, fuzzy
 msgid "of the Fiend"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:161
 msgid "Piety"
@@ -7619,8 +7735,9 @@ msgid "A pious character follows his/her deity's wishes more closely."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:163
+#, fuzzy
 msgid "of the Tiger"
-msgstr ""
+msgstr "Korga l'entraîneur"
 
 #: ../scourge_data/config/rpg.cfg:167
 msgid "Lore"
@@ -7633,8 +7750,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:169
+#, fuzzy
 msgid "of the Hydra"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:174
 msgid "FIGHT_GROUP"
@@ -7642,11 +7760,11 @@ msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:175
 msgid "Fight Group"
-msgstr ""
+msgstr "Combat de groupe"
 
 #: ../scourge_data/config/rpg.cfg:178
 msgid "Melee Weapon"
-msgstr ""
+msgstr "Arme de mélée"
 
 #: ../scourge_data/config/rpg.cfg:179
 msgid ""
@@ -7655,16 +7773,18 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:180
+#, fuzzy
 msgid "of the Drake"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:187
 msgid "This skill is used when fighting using a bow-type weapon."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:188
+#, fuzzy
 msgid "of the Sparrow"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:194
 msgid "Large Weapon"
@@ -7675,20 +7795,22 @@ msgid "This skill is used when fighting using over-sized weapons."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:196
+#, fuzzy
 msgid "of the King"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:202
 msgid "Hand to Hand Combat"
-msgstr ""
+msgstr "Combat au corps-à-corps"
 
 #: ../scourge_data/config/rpg.cfg:203
 msgid "This skill is used when fighting with bare hands."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:204
+#, fuzzy
 msgid "of the Priest"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:209
 msgid "DEFEND_GROUP"
@@ -7696,19 +7818,20 @@ msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:210
 msgid "Defend Group"
-msgstr ""
+msgstr "Défense de groupe"
 
 #: ../scourge_data/config/rpg.cfg:213
 msgid "Shield Defend"
-msgstr ""
+msgstr "Bouclier de défense"
 
 #: ../scourge_data/config/rpg.cfg:214
 msgid "This skill is used when using a shield to deflect an attack."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:215
+#, fuzzy
 msgid "of the Giant"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:221
 msgid "Armor Defend"
@@ -7719,8 +7842,9 @@ msgid "This skill is used when using armor to deflect an attack."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:223
+#, fuzzy
 msgid "of the Centaur"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:229
 msgid "Dodge Attack"
@@ -7732,8 +7856,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:231
+#, fuzzy
 msgid "of the Serpent"
-msgstr ""
+msgstr "Robes de sorciers"
 
 #: ../scourge_data/config/rpg.cfg:236
 msgid "Sorcery Group"
@@ -7745,7 +7870,7 @@ msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:240
 msgid "Life and Death Magic"
-msgstr ""
+msgstr "Magie de Vie et de Mort"
 
 #: ../scourge_data/config/rpg.cfg:241
 msgid ""
@@ -7754,8 +7879,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:242
+#, fuzzy
 msgid "of the Sand"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:248
 msgid "Deceit Magic"
@@ -7767,8 +7893,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:250
+#, fuzzy
 msgid "of the Joker"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:256
 msgid "Confrontation Magic"
@@ -7781,8 +7908,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:258
+#, fuzzy
 msgid "of the Demon"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:264
 msgid "Resist Life and Death Magic"
@@ -7794,8 +7922,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:266
+#, fuzzy
 msgid "of the Gods"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:272
 msgid "Resist Deceit Magic"
@@ -7806,8 +7935,9 @@ msgid "Having this skill helps you resist spells from the school of deceit."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:274
+#, fuzzy
 msgid "of the Night"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:280
 msgid "Resist Confrontation Magic"
@@ -7819,8 +7949,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:282
+#, fuzzy
 msgid "of the Angel"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:287
 msgid "SPIRIT_GROUP"
@@ -7828,11 +7959,11 @@ msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:288
 msgid "Spirit Group"
-msgstr ""
+msgstr "Esprit de groupe"
 
 #: ../scourge_data/config/rpg.cfg:291
 msgid "Nature Magic"
-msgstr ""
+msgstr "Magie de la nature"
 
 #: ../scourge_data/config/rpg.cfg:292
 msgid ""
@@ -7840,8 +7971,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:293
+#, fuzzy
 msgid "of the Pixie"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:299
 msgid "Awareness Magic"
@@ -7854,8 +7986,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:301
+#, fuzzy
 msgid "of the Void"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:307
 msgid "Resist Nature Magic"
@@ -7866,8 +7999,9 @@ msgid "Having this skill helps you resist spells from the school of nature."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:309
+#, fuzzy
 msgid "of the Law"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:315
 msgid "Resist Awareness Magic"
@@ -7878,8 +8012,9 @@ msgid "Having this skill helps you resist spells from the school of awareness."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:317
+#, fuzzy
 msgid "of the Moth"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:322
 msgid "LORE_GROUP"
@@ -7899,8 +8034,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:328
+#, fuzzy
 msgid "of the Helix"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:334
 msgid "Resist History Magic"
@@ -7911,12 +8047,13 @@ msgid "Having this skill helps you resist spells from the school of history."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:336
+#, fuzzy
 msgid "of the Brand"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:342
 msgid "Enchant Item"
-msgstr ""
+msgstr "Enchanter un objet"
 
 #: ../scourge_data/config/rpg.cfg:343
 msgid ""
@@ -7925,32 +8062,35 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:344
+#, fuzzy
 msgid "of the Sorcerer"
-msgstr ""
+msgstr "Robes de sorciers"
 
 #: ../scourge_data/config/rpg.cfg:350
 msgid "Identify Item"
-msgstr ""
+msgstr "Identifier un objet"
 
 #: ../scourge_data/config/rpg.cfg:351
 msgid "This skill measures your ability to identify new items."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:352
+#, fuzzy
 msgid "of the Sage"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:358
 msgid "Identify Creature"
-msgstr ""
+msgstr "Identifier créature"
 
 #: ../scourge_data/config/rpg.cfg:359
 msgid "This skill measures your ability to identify new creatures."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:360
+#, fuzzy
 msgid "of the Loremaster"
-msgstr ""
+msgstr "Aggorod le Maître de Guerre"
 
 #: ../scourge_data/config/rpg.cfg:365
 msgid "STEALTH_GROUP"
@@ -7969,36 +8109,39 @@ msgid "A character with this skill can open locked doors better."
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:371
+#, fuzzy
 msgid "of the Shade"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:377
 msgid "Find Trap"
-msgstr ""
+msgstr "Trouver des pièges"
 
 #: ../scourge_data/config/rpg.cfg:378
 msgid "This skill helps you avoid falling into traps."
-msgstr ""
+msgstr "Ce talent vous aide à éviter de tomber dans des pièges"
 
 #: ../scourge_data/config/rpg.cfg:379
+#, fuzzy
 msgid "of the Bard"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:385
 msgid "Find Secret Door"
-msgstr ""
+msgstr "Trouver des portes secrétes"
 
 #: ../scourge_data/config/rpg.cfg:386
 msgid "This skill lets you find secret doors."
-msgstr ""
+msgstr "Ce talent vous permet de trouver des portes secrétes"
 
 #: ../scourge_data/config/rpg.cfg:387
+#, fuzzy
 msgid "of the Scion"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/rpg.cfg:393
 msgid "Move Undetected"
-msgstr ""
+msgstr "Mouvement indétectable"
 
 #: ../scourge_data/config/rpg.cfg:394
 msgid ""
@@ -8006,12 +8149,13 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:395
+#, fuzzy
 msgid "of the Silence"
-msgstr ""
+msgstr "Silence"
 
 #: ../scourge_data/config/rpg.cfg:401
 msgid "Stealing"
-msgstr ""
+msgstr "Voler"
 
 #: ../scourge_data/config/rpg.cfg:402
 msgid ""
@@ -8020,8 +8164,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:403
+#, fuzzy
 msgid "of the Thief"
-msgstr ""
+msgstr "du"
 
 #: ../scourge_data/config/npc.cfg:5
 msgid "Male Vagrant"
@@ -8053,7 +8198,7 @@ msgstr ""
 
 #: ../scourge_data/config/npc.cfg:149
 msgid "Female Priestess"
-msgstr ""
+msgstr "Prêtresse"
 
 #: ../scourge_data/config/npc.cfg:168
 msgid "hellogirl-002"
@@ -8081,7 +8226,7 @@ msgstr ""
 
 #: ../scourge_data/config/npc.cfg:252 ../scourge_data/maps/hq.cfg:176
 msgid "link"
-msgstr ""
+msgstr "attacher"
 
 #: ../scourge_data/config/npc.cfg:266
 msgid "twigletman-blue"
@@ -8580,8 +8725,9 @@ msgid "Shadow Knight of Chaos"
 msgstr ""
 
 #: ../scourge_data/config/monster.cfg:1962
+#, fuzzy
 msgid "Cerxezu Demon Mage"
-msgstr ""
+msgstr "Poignard de cérémonie"
 
 #: ../scourge_data/config/monster.cfg:2009
 msgid "Elite Chaos-formed Warrior"
@@ -8688,15 +8834,16 @@ msgstr ""
 
 #: ../scourge_data/script/map.nut:294 ../scourge_data/maps/temple.cfg:173
 msgid "tokens"
-msgstr "éléments"
+msgstr ""
 
 #: ../scourge_data/script/map.nut:298 ../scourge_data/maps/hq.cfg:144
 msgid "doom"
 msgstr ""
 
 #: ../scourge_data/script/map.nut:302
+#, fuzzy
 msgid "karzul"
-msgstr ""
+msgstr "Karzuul"
 
 #: ../scourge_data/script/map.nut:328
 msgid "...Brand of Iconoclast growls in a low tone..."
@@ -9102,7 +9249,7 @@ msgstr ""
 #: ../scourge_data/maps/hq.cfg:156 ../scourge_data/maps/library31.cfg:98
 #: ../scourge_data/maps/tower1.cfg:16 ../scourge_data/maps/tree.cfg:32
 msgid "Abyss"
-msgstr ""
+msgstr "Abysse"
 
 #: ../scourge_data/maps/hq.cfg:157
 msgid ""
@@ -9236,9 +9383,8 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:180
-#, fuzzy
 msgid "explain"
-msgstr "Jouabilité"
+msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:181
 msgid ""
@@ -9249,8 +9395,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:182
+#, fuzzy
 msgid "fiendish"
-msgstr ""
+msgstr "Ami"
 
 #: ../scourge_data/maps/hq.cfg:183
 msgid ""
@@ -9280,8 +9427,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:186
+#, fuzzy
 msgid "looking"
-msgstr ""
+msgstr "Flottant"
 
 #: ../scourge_data/maps/hq.cfg:187
 msgid ""
@@ -9812,7 +9960,7 @@ msgstr ""
 
 #: ../scourge_data/maps/library.cfg:38
 msgid "Welcome to $Gormoril!"
-msgstr ""
+msgstr "Bienvenue à $Gormoril !"
 
 #: ../scourge_data/maps/library.cfg:41
 msgid "You should ask Sabien the Mage... perhaps he knows of what you speak..."
@@ -9864,7 +10012,7 @@ msgstr ""
 #: ../scourge_data/maps/library.cfg:50 ../scourge_data/maps/library3.cfg:74
 #: ../scourge_data/maps/thuzgol.cfg:147
 msgid "research"
-msgstr ""
+msgstr "rechercher"
 
 #: ../scourge_data/maps/library.cfg:51
 msgid ""
@@ -9881,7 +10029,7 @@ msgstr ""
 
 #: ../scourge_data/maps/library.cfg:54
 msgid "allowed"
-msgstr ""
+msgstr "autoriser"
 
 #: ../scourge_data/maps/library.cfg:55
 msgid ""
@@ -9892,19 +10040,19 @@ msgstr ""
 
 #: ../scourge_data/maps/library1.cfg:4
 msgid "Zelta the Healer"
-msgstr ""
+msgstr "Zelta le soigneur"
 
 #: ../scourge_data/maps/library1.cfg:12
 msgid "Korga the Trainer"
-msgstr ""
+msgstr "Korga l'entraîneur"
 
 #: ../scourge_data/maps/library1.cfg:20
 msgid "Mirtha the Merchant"
-msgstr ""
+msgstr "Mirtha le marchand"
 
 #: ../scourge_data/maps/library3.cfg:11
 msgid "Kerra the Healer"
-msgstr ""
+msgstr "Kerra le soigneur"
 
 #: ../scourge_data/maps/library3.cfg:19
 msgid "Birna the Rogue Trainer"
@@ -9956,7 +10104,7 @@ msgstr ""
 
 #: ../scourge_data/maps/library3.cfg:68
 msgid "map"
-msgstr ""
+msgstr "carte"
 
 #: ../scourge_data/maps/library3.cfg:69
 msgid ""
@@ -9977,7 +10125,7 @@ msgstr ""
 #: ../scourge_data/maps/library3.cfg:72 ../scourge_data/maps/thuzgol.cfg:175
 #: ../scourge_data/maps/tower1.cfg:18
 msgid "Karzuul"
-msgstr ""
+msgstr "Karzuul"
 
 #: ../scourge_data/maps/library3.cfg:73
 msgid ""
@@ -10021,7 +10169,7 @@ msgstr ""
 
 #: ../scourge_data/maps/library3.cfg:78
 msgid "ready"
-msgstr ""
+msgstr "prêt"
 
 #: ../scourge_data/maps/library3.cfg:79
 msgid ""
@@ -10068,7 +10216,7 @@ msgstr ""
 
 #: ../scourge_data/maps/library3.cfg:86
 msgid "druid"
-msgstr ""
+msgstr "druide"
 
 #: ../scourge_data/maps/library3.cfg:87
 msgid ""
@@ -10108,7 +10256,7 @@ msgstr ""
 
 #: ../scourge_data/maps/library3.cfg:92
 msgid "servants"
-msgstr ""
+msgstr "servants"
 
 #: ../scourge_data/maps/library3.cfg:93
 msgid ""
@@ -10124,7 +10272,7 @@ msgstr ""
 
 #: ../scourge_data/maps/library3.cfg:96 ../scourge_data/maps/tower1.cfg:12
 msgid "secrets"
-msgstr ""
+msgstr "secrets"
 
 #: ../scourge_data/maps/library3.cfg:97
 msgid ""
@@ -10252,27 +10400,27 @@ msgstr ""
 
 #: ../scourge_data/maps/library31.cfg:4
 msgid "Karak"
-msgstr ""
+msgstr "Karak"
 
 #: ../scourge_data/maps/library31.cfg:11
 msgid "Gorak"
-msgstr ""
+msgstr "Gorak"
 
 #: ../scourge_data/maps/library31.cfg:18
 msgid "Fald"
-msgstr ""
+msgstr "Fald"
 
 #: ../scourge_data/maps/library31.cfg:25
 msgid "Zorak"
-msgstr ""
+msgstr "Zorak"
 
 #: ../scourge_data/maps/library31.cfg:32
 msgid "Mergil"
-msgstr ""
+msgstr "Mergil"
 
 #: ../scourge_data/maps/library31.cfg:39
 msgid "Manni"
-msgstr ""
+msgstr "Manni"
 
 #: ../scourge_data/maps/library31.cfg:46
 msgid "Lemy"
@@ -10303,6 +10451,8 @@ msgstr ""
 #: ../scourge_data/maps/library31.cfg:95
 msgid "Ah the screams of the tortured! A lovely music, don't you agree?"
 msgstr ""
+"Ah, les hurlements de la torture ! Une agréable musique, n'est-vous pas "
+"d'accord ?"
 
 #: ../scourge_data/maps/library31.cfg:96
 msgid "wish,suspect"
@@ -10424,7 +10574,7 @@ msgstr ""
 
 #: ../scourge_data/maps/library31.cfg:116
 msgid "Quegazu"
-msgstr ""
+msgstr "Quegazu"
 
 #: ../scourge_data/maps/library31.cfg:117
 msgid ""
@@ -10448,7 +10598,7 @@ msgstr ""
 
 #: ../scourge_data/maps/library31.cfg:120
 msgid "Narzegg"
-msgstr ""
+msgstr "Narzegg"
 
 #: ../scourge_data/maps/library31.cfg:121
 msgid "One day vanity will be his downfall. Until then he serves me well."
@@ -10537,7 +10687,7 @@ msgstr ""
 
 #: ../scourge_data/maps/library31.cfg:144
 msgid "good"
-msgstr ""
+msgstr "bon"
 
 #: ../scourge_data/maps/library31.cfg:145
 msgid ""
@@ -10732,7 +10882,7 @@ msgstr ""
 
 #: ../scourge_data/maps/thuzgol.cfg:44
 msgid "Blackheart the Constructor"
-msgstr ""
+msgstr "Coeur Noir le Constructeur"
 
 #: ../scourge_data/maps/thuzgol.cfg:52
 msgid "Flintforge the Grafter"
@@ -10740,15 +10890,15 @@ msgstr ""
 
 #: ../scourge_data/maps/thuzgol.cfg:60
 msgid "Thazmagul Firebeard"
-msgstr ""
+msgstr "Thazmagul Barbe de Feu"
 
 #: ../scourge_data/maps/thuzgol.cfg:68
 msgid "Sygil the Wizard"
-msgstr ""
+msgstr "Sygil le Magicien"
 
 #: ../scourge_data/maps/thuzgol.cfg:76
 msgid "Aggorod the Warmaster"
-msgstr ""
+msgstr "Aggorod le Maître de Guerre"
 
 #: ../scourge_data/maps/thuzgol.cfg:84
 msgid "Flint a Teacher of Scoundrels"
@@ -10756,19 +10906,19 @@ msgstr ""
 
 #: ../scourge_data/maps/thuzgol.cfg:92
 msgid "Idmaril the Folklorist"
-msgstr ""
+msgstr "Idmaril le Folkoriste"
 
 #: ../scourge_data/maps/thuzgol.cfg:107
 msgid "Ydromor"
-msgstr ""
+msgstr "Ydromor"
 
 #: ../scourge_data/maps/thuzgol.cfg:114
 msgid "Razmit"
-msgstr ""
+msgstr "Razmit"
 
 #: ../scourge_data/maps/thuzgol.cfg:121
 msgid "Scenegar"
-msgstr ""
+msgstr "Scenegar"
 
 #: ../scourge_data/maps/thuzgol.cfg:128
 msgid "Almaril"
@@ -10846,7 +10996,7 @@ msgstr ""
 
 #: ../scourge_data/maps/thuzgol.cfg:159
 msgid "Grimvil"
-msgstr ""
+msgstr "Grimvil"
 
 #: ../scourge_data/maps/thuzgol.cfg:160
 msgid ""
@@ -10857,7 +11007,7 @@ msgstr ""
 
 #: ../scourge_data/maps/thuzgol.cfg:161
 msgid "fjords"
-msgstr ""
+msgstr "fjords"
 
 #: ../scourge_data/maps/thuzgol.cfg:162
 msgid "A funny word that is. Most peculiar!"
@@ -11179,23 +11329,23 @@ msgstr ""
 
 #: ../scourge_data/maps/tower.cfg:3
 msgid "Samoan the Healer"
-msgstr ""
+msgstr "Samoan le soigneur"
 
 #: ../scourge_data/maps/tower.cfg:11
 msgid "Uxuril the Healer"
-msgstr ""
+msgstr "Uxuril le soigneur"
 
 #: ../scourge_data/maps/tower.cfg:19
 msgid "Farona the Healer"
-msgstr ""
+msgstr "Farona le soigneur"
 
 #: ../scourge_data/maps/tower.cfg:27
 msgid "Yxaliz the Healer"
-msgstr ""
+msgstr "Yxaliz le soigneur"
 
 #: ../scourge_data/maps/tower.cfg:35
 msgid "Seremor the Healer"
-msgstr ""
+msgstr "Seremor le soigneur"
 
 #: ../scourge_data/maps/tower.cfg:43
 msgid "Be welcome in our humble $monastery wanderer."
@@ -11343,7 +11493,7 @@ msgstr ""
 
 #: ../scourge_data/maps/tower1.cfg:23
 msgid "Rum-rum-lala-lee!"
-msgstr ""
+msgstr "Rum-rum-lala-li !"
 
 #: ../scourge_data/maps/tower1.cfg:25
 msgid ""
@@ -11367,7 +11517,7 @@ msgstr ""
 
 #: ../scourge_data/maps/tower1.cfg:28 ../scourge_data/maps/emeril2.cfg:24
 msgid "trees"
-msgstr ""
+msgstr "arbres"
 
 #: ../scourge_data/maps/tower1.cfg:29
 msgid ""
@@ -11380,11 +11530,11 @@ msgstr ""
 
 #: ../scourge_data/maps/temple.cfg:4
 msgid "Rajna the Professor"
-msgstr ""
+msgstr "Rajna le Professeur"
 
 #: ../scourge_data/maps/temple.cfg:12
 msgid "Master Healer Annu"
-msgstr ""
+msgstr "Maître soigneur Annu"
 
 #: ../scourge_data/maps/temple.cfg:20
 msgid "Sermel the trainer of wizards"
@@ -11497,7 +11647,7 @@ msgstr ""
 
 #: ../scourge_data/maps/temple.cfg:119
 msgid "Harrguddh!"
-msgstr ""
+msgstr "Harrguddh !"
 
 #: ../scourge_data/maps/temple.cfg:120
 msgid "favored,favor"
@@ -11558,7 +11708,7 @@ msgstr ""
 
 #: ../scourge_data/maps/temple.cfg:130
 msgid "protection"
-msgstr ""
+msgstr "protection"
 
 #: ../scourge_data/maps/temple.cfg:131
 msgid ""
@@ -11697,7 +11847,7 @@ msgstr ""
 
 #: ../scourge_data/maps/temple.cfg:159
 msgid "none"
-msgstr ""
+msgstr "aucun(e)"
 
 #: ../scourge_data/maps/temple.cfg:160
 msgid ""
@@ -11816,7 +11966,7 @@ msgstr ""
 
 #: ../scourge_data/maps/temple.cfg:185
 msgid "Lena"
-msgstr ""
+msgstr "Lena"
 
 #: ../scourge_data/maps/temple.cfg:186
 msgid ""
@@ -11826,7 +11976,7 @@ msgstr ""
 
 #: ../scourge_data/maps/temple.cfg:187
 msgid "Sorma"
-msgstr ""
+msgstr "Sorma"
 
 #: ../scourge_data/maps/temple.cfg:188
 msgid ""
@@ -12287,20 +12437,34 @@ msgid ""
 "is as it should be. The land belongs to the wild things of nature. And with "
 "this $gift from $Karzul I intend to make it so again."
 msgstr ""
+"C'est un arbre comme aucun autre. Sa surface palpite avec de l'énergie "
+"extraplanétaire. Ses branches atteignent vers le ciel avec une détermination "
+"incroyable.. Aucune pierre, métal ou terre ne peuvent se tenir de sa "
+"manière. L'arbre né de cette graine de l'abîme est intelligent au delà de "
+"n'importe quelle plante terrestre ! Cet arbre peut voir et entendre. Il peut "
+"se défendre du péril, produire une progéniture capable de se déplacer : il "
+"est comme une ancre, une serrure dimensionnelle dans le monde matérie.||Et "
+"il ne recherche qu'une seule chose :: la domination de notre terre. Et ce, "
+"mes amis, est tel qu'il devrait être. La terre appartient aux choses "
+"sauvages de la nature. Et avec ce $gift de $Karzul j'ai l'intention de "
+"remettre les choses à leur place."
 
 #: ../scourge_data/maps/emeril2.cfg:46
 msgid "ritual"
-msgstr ""
+msgstr "rituel"
 
 #: ../scourge_data/maps/emeril2.cfg:47
 msgid ""
 "Ritual? Ha-ha how little you understand of nature's true power... All this "
 "seed needs is water... and I intend to give it plenty!"
 msgstr ""
+"Rituel ? Haha vous ne comprenez pas la vrai puissance de la nature... Toute "
+"ce dont cette graine a besoin est d'eau… et j'ai l'intention de lui en "
+"donner en abondance !"
 
 #: ../scourge_data/maps/emeril2.cfg:48
 msgid "nothing,stop"
-msgstr ""
+msgstr "rien, stop"
 
 #: ../scourge_data/maps/emeril2.cfg:49
 msgid ""
@@ -12310,10 +12474,16 @@ msgid ""
 "so be it... many more will follow.||Witness the shapeshifting transformation "
 "granted by the divine light of $Amod! Prepare for $doom humans!!!"
 msgstr ""
+"Vos théories de $Karzul ne sont qu'un bavardage inutile. Je fais ceci de ma "
+"propre volonté, et non pas en raison d'une quelquonque influence abyssale. "
+"Vos esprits sont affectés par votre malaise…  ||Si vos vies doivent être "
+"défaites afin d'activer le $device, qu'il en soit ainsi… beaucoup plus "
+"suivront.|| Voyez la transformation accordé par la lumière divine d'$Amod ! "
+"Préparez vous à $domm, pauvres mortels ! ! !"
 
 #: ../scourge_data/maps/emeril2.cfg:50
 msgid "Amod,Amod-Rheinur"
-msgstr ""
+msgstr "Amod,Amod-Rheinur"
 
 #: ../scourge_data/maps/emeril2.cfg:51
 msgid ""
@@ -12326,14 +12496,24 @@ msgid ""
 "is a fitting finish to a decadent civilization lost in its transgressions. I "
 "am but a humble $druid my wrath however channels a deity!"
 msgstr ""
+"Ne prononcez son nom qu'avec le plus grand respect ! Amod-Rheinur est le "
+"protecteur de la nature, le producteur de l'or, la main verte céleste ! Ces "
+"$trees ne survivent que par par sa seule grâce. Aucun soleil ne brille ici "
+"sous la terre et aucun quels puits ne suffirait pour soutenir une plantation "
+"cette taille. Je sens son rayonnement tout près… Mes actions… aussi "
+"déplorables qu'elles puissent sembler… sont conduites par sa vision sainte. "
+"Je suis une navette, rien plus. La fin que j'apporte est une finition "
+"convenable à une civilisation décadente perdue dans ses transgressions. Je "
+"suis un humble $druid mais ma colère canalise celle de n'importe quelle "
+"divinité !"
 
 #: ../scourge_data/maps/emeril2.cfg:55
 msgid "You will suffer here..."
-msgstr ""
+msgstr "Vous allez souffrir ici..."
 
 #: ../scourge_data/maps/emeril2.cfg:56
 msgid "Hmmm, it escapes me just now."
-msgstr ""
+msgstr "Hmmm, ca m'échappe à l'instant."
 
 #: ../scourge_data/maps/tree.cfg:12
 msgid ""
@@ -12365,9 +12545,8 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/maps/tree.cfg:18
-#, fuzzy
 msgid "what,Cronostar"
-msgstr "Prix"
+msgstr ""
 
 #: ../scourge_data/maps/tree.cfg:19
 msgid ""
@@ -12378,8 +12557,9 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/maps/tree.cfg:20
+#, fuzzy
 msgid "Karzul,demon"
-msgstr ""
+msgstr "Karzuul"
 
 #: ../scourge_data/maps/tree.cfg:21
 msgid ""
@@ -12624,24 +12804,207 @@ msgstr ""
 msgid "You should never see this message."
 msgstr ""
 
-#~ msgid "%1$s picks up %2$s."
-#~ msgstr "%1$s prends %2$s."
+#~ msgid "Loading creatures"
+#~ msgstr "Chargement des créatures"
 
-#~ msgid "potions"
-#~ msgstr "potions"
+#~ msgid "Unarmed Attack:"
+#~ msgstr "Attaque à main nu :"
 
-#, fuzzy
+#~ msgid "Inventory"
+#~ msgstr "Inventaire"
+
+#~ msgid "Skills"
+#~ msgstr "Compétences"
+
+#~ msgid "Spells"
+#~ msgstr "Sorts"
+
+#~ msgid "Capabilities"
+#~ msgstr "Capacités"
+
 #~ msgid "Mission"
-#~ msgstr "Options"
+#~ msgstr "Mission"
 
-#, fuzzy
-#~ msgid "Loading missions"
-#~ msgstr "Options"
+#~ msgid "Party"
+#~ msgstr "Escouade"
 
-#, fuzzy
-#~ msgid "Multiplier"
-#~ msgstr "Multiplayer Game"
+#~ msgid "Hide"
+#~ msgstr "Cacher"
 
-#, fuzzy
-#~ msgid "Action"
-#~ msgstr "Options"
+#~ msgid "Equipped Items"
+#~ msgstr "Elements équipés"
+
+#~ msgid "Eat/Drink"
+#~ msgstr "Manger/Boire"
+
+#~ msgid "Cast Spell"
+#~ msgstr "Lancer un sort"
+
+#~ msgid "Transcribe"
+#~ msgstr "Transcrire"
+
+#~ msgid "Enchant"
+#~ msgstr "Enchanter"
+
+#~ msgid "Pool Money"
+#~ msgstr "Bourse d'argent"
+
+#~ msgid "Store"
+#~ msgstr "Stocker"
+
+#~ msgid "Selected Weapon"
+#~ msgstr "Arme sélectionné"
+
+#~ msgid "Ranged"
+#~ msgstr "Portée"
+
+#~ msgid "Protected States"
+#~ msgstr "Etats protégés"
+
+#~ msgid "Skill"
+#~ msgstr "Compétence"
+
+#~ msgid "Add"
+#~ msgstr "Ajouter"
+
+#~ msgid "Del"
+#~ msgstr "Suppr"
+
+#~ msgid "School of magic: (with provider deity)"
+#~ msgstr "Ecole de magie (avec la divinité incluse) :"
+
+#~ msgid "Spells memorized"
+#~ msgstr "Sorts mémorisés"
+
+#~ msgid "Spell notes"
+#~ msgstr "Notes sur le sort"
+
+#~ msgid "Cast"
+#~ msgstr "Jeter"
+
+#~ msgid "(If grayed-out, you don't have the capability.)"
+#~ msgstr "(Si grisé, vous n'avez pas la capacité)"
+
+#~ msgid "Capability Description"
+#~ msgstr "Description de la capacité"
+
+#~ msgid "Use"
+#~ msgstr "Utiliser"
+
+#~ msgid "Group formation"
+#~ msgstr "Formation en groupe"
+
+#~ msgid "Diamond"
+#~ msgstr "En diamant"
+
+#~ msgid "Staggered"
+#~ msgstr "Stupéfait"
+
+#~ msgid "Square"
+#~ msgstr "Au carré"
+
+#~ msgid "Row"
+#~ msgstr "En rang"
+
+#~ msgid "Scout"
+#~ msgstr "Eclaireur"
+
+#~ msgid "Cross"
+#~ msgstr "En croix"
+
+#~ msgid "Interface Layout"
+#~ msgstr "Disposition de l'interface"
+
+#~ msgid "Bottom"
+#~ msgstr "En bas"
+
+#~ msgid "Show Console"
+#~ msgstr "Afficher la console"
+
+#~ msgid "You may only store items with spells."
+#~ msgstr "Vous ne pouvez que stocker des objets avec des sorts."
+
+#~ msgid "You cannot cast a spell with this item."
+#~ msgstr "Vous ne pouvez pas lancer un sort avec cette objet"
+
+#~ msgid "Stats cannot be improved this way."
+#~ msgstr "Les stats ne peuvent pas être améliorées de cette manière"
+
+#~ msgid "Are you sure you want to apply the selected skill points?"
+#~ msgstr ""
+#~ "Etes-vous sûr de vouloir appliquer les points de compétence séléctionnés ?"
+
+#~ msgid "This character has no skill points to apply."
+#~ msgstr "Ce personnage n'a aucun point de compétence à appliquer."
+
+#~ msgid "Total"
+#~ msgstr "Total"
+
+#~ msgid "kg"
+#~ msgstr "kg"
+
+#~ msgid "%1$s picks up %2$s."
+#~ msgstr "%1$s ramasse %2$s"
+
+#~ msgid "Lake"
+#~ msgstr "Lac"
+
+#~ msgid "Astral"
+#~ msgstr "Astrale"
+
+#~ msgid "Spirit"
+#~ msgstr "Esprit"
+
+#~ msgid "Mist"
+#~ msgstr "Brume"
+
+#~ msgid "Dragon"
+#~ msgstr "Dragon"
+
+#~ msgid "Wolf"
+#~ msgstr "Loup"
+
+#~ msgid "Troll"
+#~ msgstr "Troll"
+
+#~ msgid "Boar"
+#~ msgstr "Ours"
+
+#~ msgid "Tiger"
+#~ msgstr "Tigre"
+
+#~ msgid "Hydra"
+#~ msgstr "Hydre"
+
+#~ msgid "King"
+#~ msgstr "Roi"
+
+#~ msgid "Priest"
+#~ msgstr "Prêtre"
+
+#~ msgid "Giant"
+#~ msgstr "Géant"
+
+#~ msgid "Joker"
+#~ msgstr "Joker"
+
+#~ msgid "Demon"
+#~ msgstr "Démon"
+
+#~ msgid "Night"
+#~ msgstr "Nuit"
+
+#~ msgid "Angel"
+#~ msgstr "Ange"
+
+#~ msgid "Pixie"
+#~ msgstr "Pixie"
+
+#~ msgid "Law"
+#~ msgstr "Loi"
+
+#~ msgid "Helix"
+#~ msgstr "Hélix"
+
+#~ msgid "Sage"
+#~ msgstr "Sage"
