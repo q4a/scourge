@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-09-17 07:59+0200\n"
+"POT-Creation-Date: 2007-09-18 08:41-0700\n"
 "PO-Revision-Date: 2007-01-20 21:55-0800\n"
 "Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
 "Language-Team: English <en@translate.freefriends.org>\n"
@@ -93,7 +93,7 @@ msgstr ""
 msgid "You need to name the map first."
 msgstr ""
 
-#: src/render/map.cpp:3366 src/render/map.cpp:3648
+#: src/render/map.cpp:3366 src/render/map.cpp:3656
 msgid "Enter a name of a map to load."
 msgstr ""
 
@@ -109,33 +109,33 @@ msgstr ""
 msgid "Starting map"
 msgstr ""
 
-#: src/render/map.cpp:3466
+#: src/render/map.cpp:3468
 msgid "Initializing map"
 msgstr ""
 
-#: src/render/map.cpp:3597
+#: src/render/map.cpp:3605
 msgid "Finishing map"
 msgstr ""
 
-#: src/render/map.cpp:3603 src/rpg/monster.cpp:26 src/session.cpp:115
+#: src/render/map.cpp:3611 src/rpg/monster.cpp:26 src/session.cpp:115
 msgid "Loading Creatures"
 msgstr ""
 
-#: src/render/map.cpp:3621
+#: src/render/map.cpp:3629
 msgid "Starting party"
 msgstr ""
 
-#: src/render/map.cpp:3641
+#: src/render/map.cpp:3649
 #, c-format
 msgid "Map loaded: %s"
 msgstr ""
 
-#: src/render/map.cpp:3662
+#: src/render/map.cpp:3670
 #, c-format
 msgid "Can't find map: %s"
 msgstr ""
 
-#: src/render/map.cpp:3672
+#: src/render/map.cpp:3680
 #, c-format
 msgid "Map header loaded: %s"
 msgstr ""
@@ -754,7 +754,7 @@ msgstr ""
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2587 src/scourge.cpp:3606
+#: src/creature.cpp:2587 src/scourge.cpp:3613
 msgid "CTH"
 msgstr ""
 
@@ -852,12 +852,12 @@ msgstr ""
 msgid "There is not enough room in your backpack for everything."
 msgstr ""
 
-#: src/containergui.cpp:164 src/scourge.cpp:1213
+#: src/containergui.cpp:164 src/scourge.cpp:1215
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr ""
 
-#: src/containergui.cpp:174 src/scourge.cpp:1210
+#: src/containergui.cpp:174 src/scourge.cpp:1212
 msgid "The item won't fit in that container!"
 msgstr ""
 
@@ -941,7 +941,7 @@ msgstr ""
 msgid "RANGE"
 msgstr ""
 
-#: src/item.cpp:1112 src/scourge.cpp:3555
+#: src/item.cpp:1112 src/scourge.cpp:3562
 msgid "DEF"
 msgstr ""
 
@@ -990,11 +990,11 @@ msgstr ""
 msgid "Basic Statistics:"
 msgstr ""
 
-#: src/characterinfo.cpp:49 src/scourge.cpp:2240 src/portrait.cpp:253
+#: src/characterinfo.cpp:49 src/scourge.cpp:2242 src/portrait.cpp:253
 msgid "HP"
 msgstr ""
 
-#: src/characterinfo.cpp:50 src/scourge.cpp:2242 src/portrait.cpp:258
+#: src/characterinfo.cpp:50 src/scourge.cpp:2244 src/portrait.cpp:258
 msgid "MP"
 msgstr ""
 
@@ -1021,7 +1021,7 @@ msgstr ""
 msgid "Your %s feels lighter."
 msgstr ""
 
-#: src/battle.cpp:738 src/scourge.cpp:3712
+#: src/battle.cpp:738 src/scourge.cpp:3719
 #, c-format
 msgid "%s crumbles into dust."
 msgstr ""
@@ -1439,7 +1439,7 @@ msgid "Saved: some options require a restart to take effect."
 msgstr ""
 
 #: src/dungeongenerator.cpp:573 src/mondrian.cpp:447
-#: src/terraingenerator.cpp:128
+#: src/terraingenerator.cpp:129
 msgid "Assembling Dungeon Level"
 msgstr ""
 
@@ -1489,288 +1489,288 @@ msgstr ""
 msgid " %s gains a level! "
 msgstr ""
 
-#: src/scourge.cpp:698
+#: src/scourge.cpp:699
 #, c-format
 msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
 msgstr ""
 
-#: src/scourge.cpp:701
+#: src/scourge.cpp:702
 #, c-format
 msgid "Teleport spell failed!! Entering level %d"
 msgstr ""
 
-#: src/scourge.cpp:703
+#: src/scourge.cpp:704
 #, c-format
 msgid "Entering dungeon level %d"
 msgstr ""
 
-#: src/scourge.cpp:913
+#: src/scourge.cpp:915
 #, c-format
 msgid "%s cancelled a pending action."
 msgstr ""
 
-#: src/scourge.cpp:918
+#: src/scourge.cpp:920
 msgid "Select a creature for this spell."
 msgstr ""
 
-#: src/scourge.cpp:923
+#: src/scourge.cpp:925
 msgid "Select an item for this spell."
 msgstr ""
 
-#: src/scourge.cpp:928
+#: src/scourge.cpp:930
 msgid "Select a location for this spell."
 msgstr ""
 
-#: src/scourge.cpp:933
+#: src/scourge.cpp:935
 msgid "Select a door for this spell."
 msgstr ""
 
-#: src/scourge.cpp:938
+#: src/scourge.cpp:940
 msgid "Select the party for this spell."
 msgstr ""
 
-#: src/scourge.cpp:960 src/scourge.cpp:982
+#: src/scourge.cpp:962 src/scourge.cpp:984
 #, c-format
 msgid "%s selected a target"
 msgstr ""
 
-#: src/scourge.cpp:1006
+#: src/scourge.cpp:1008
 #, c-format
 msgid "%1$s will target %2$s"
 msgstr ""
 
-#: src/scourge.cpp:1028
+#: src/scourge.cpp:1030
 #, c-format
 msgid "%1$s targeted %2$s."
 msgstr ""
 
-#: src/scourge.cpp:1402
+#: src/scourge.cpp:1404
 msgid "Something is blocking the door from closing."
 msgstr ""
 
-#: src/scourge.cpp:1500
+#: src/scourge.cpp:1502
 msgid "The door splinters into many, tiny pieces!"
 msgstr ""
 
-#: src/scourge.cpp:1546
+#: src/scourge.cpp:1548
 msgid "Leave level?"
 msgstr ""
 
-#: src/scourge.cpp:1570
+#: src/scourge.cpp:1572
 msgid "Squirrel Console"
 msgstr ""
 
-#: src/scourge.cpp:1578
+#: src/scourge.cpp:1580
 msgid "Run"
 msgstr ""
 
-#: src/scourge.cpp:1579
+#: src/scourge.cpp:1581
 msgid "Clear"
 msgstr ""
 
-#: src/scourge.cpp:1865
+#: src/scourge.cpp:1867
 #, c-format
 msgid "Speed set to %d\n"
 msgstr ""
 
-#: src/scourge.cpp:2016
+#: src/scourge.cpp:2018
 msgid "Congratulations, mission accomplished!"
 msgstr ""
 
-#: src/scourge.cpp:2027
+#: src/scourge.cpp:2029
 msgid "For completing the mission"
 msgstr ""
 
-#: src/scourge.cpp:2029
+#: src/scourge.cpp:2031
 #, c-format
 msgid "The party receives %d points."
 msgstr ""
 
-#: src/scourge.cpp:2054
+#: src/scourge.cpp:2056
 msgid "Connecting to server"
 msgstr ""
 
-#: src/scourge.cpp:2061
+#: src/scourge.cpp:2063
 msgid "Connected!"
 msgstr ""
 
-#: src/scourge.cpp:2083
+#: src/scourge.cpp:2085
 msgid "Combat"
 msgstr ""
 
-#: src/scourge.cpp:2085
+#: src/scourge.cpp:2087
 msgid "End Turn"
 msgstr ""
 
-#: src/scourge.cpp:2109
+#: src/scourge.cpp:2111
 msgid "Pause game"
 msgstr ""
 
-#: src/scourge.cpp:2112
+#: src/scourge.cpp:2114
 msgid "Load or Save Game"
 msgstr ""
 
-#: src/scourge.cpp:2122
+#: src/scourge.cpp:2124
 msgid "Exit game"
 msgstr ""
 
-#: src/scourge.cpp:2129
+#: src/scourge.cpp:2131
 #, fuzzy
 msgid "Game options"
 msgstr "Options"
 
-#: src/scourge.cpp:2136
+#: src/scourge.cpp:2138
 msgid "Move as a group"
 msgstr ""
 
-#: src/scourge.cpp:2176
+#: src/scourge.cpp:2178
 msgid "Dismiss this character"
 msgstr ""
 
-#: src/scourge.cpp:2195
+#: src/scourge.cpp:2197
 msgid "Inventory and party info"
 msgstr ""
 
-#: src/scourge.cpp:2203
+#: src/scourge.cpp:2205
 msgid "Click to assign a spell, capability or magic item."
 msgstr ""
 
-#: src/scourge.cpp:2262
+#: src/scourge.cpp:2264
 msgid "Current Weapon: Bare Hands"
 msgstr ""
 
-#: src/scourge.cpp:2267
+#: src/scourge.cpp:2269
 #, c-format
 msgid "Current Weapon: %s"
 msgstr ""
 
-#: src/scourge.cpp:2536 src/portrait.cpp:427
+#: src/scourge.cpp:2538 src/portrait.cpp:427
 msgid "Thirst"
 msgstr ""
 
-#: src/scourge.cpp:2550 src/portrait.cpp:432
+#: src/scourge.cpp:2552 src/portrait.cpp:432
 msgid "Hunger"
 msgstr ""
 
-#: src/scourge.cpp:2617 src/equip.cpp:583
+#: src/scourge.cpp:2619 src/equip.cpp:583
 msgid "Not enough Magic Points to cast this spell!"
 msgstr ""
 
-#: src/scourge.cpp:2694
+#: src/scourge.cpp:2696
 msgid "Begin Turn"
 msgstr ""
 
-#: src/scourge.cpp:2699
+#: src/scourge.cpp:2701
 msgid "...In Turn..."
 msgstr ""
 
-#: src/scourge.cpp:2705
+#: src/scourge.cpp:2707
 #, fuzzy
 msgid "Pause Game"
 msgstr "New Game"
 
-#: src/scourge.cpp:2709
+#: src/scourge.cpp:2711
 msgid "Unpause game."
 msgstr ""
 
-#: src/scourge.cpp:2744
+#: src/scourge.cpp:2746
 msgid "Available Missions"
 msgstr ""
 
-#: src/scourge.cpp:2750
+#: src/scourge.cpp:2752
 msgid "Drag map to look around."
 msgstr ""
 
-#: src/scourge.cpp:2818
+#: src/scourge.cpp:2820
 msgid "This spell has no effect here..."
 msgstr ""
 
-#: src/scourge.cpp:3001
+#: src/scourge.cpp:3004
 msgid "Game loaded successfully."
 msgstr ""
 
-#: src/scourge.cpp:3027
+#: src/scourge.cpp:3030
 msgid "Error: Saved game version is too old."
 msgstr ""
 
-#: src/scourge.cpp:3384
+#: src/scourge.cpp:3387
 msgid "You cannot hire more party members."
 msgstr ""
 
-#: src/scourge.cpp:3404
+#: src/scourge.cpp:3407
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr ""
 
-#: src/scourge.cpp:3551
+#: src/scourge.cpp:3558
 msgid "Initiative"
 msgstr ""
 
-#: src/scourge.cpp:3593 src/scourge.cpp:3600 src/infogui.cpp:350
+#: src/scourge.cpp:3600 src/scourge.cpp:3607 src/infogui.cpp:350
 #: src/infogui.cpp:355 src/infogui.cpp:360
 msgid "ATK"
 msgstr ""
 
-#: src/scourge.cpp:3607 src/infogui.cpp:352 src/infogui.cpp:358
+#: src/scourge.cpp:3614 src/infogui.cpp:352 src/infogui.cpp:358
 msgid "APR"
 msgstr ""
 
-#: src/scourge.cpp:3659
+#: src/scourge.cpp:3666
 #, c-format
 msgid "%.2f"
 msgstr ""
 
-#: src/scourge.cpp:3661
+#: src/scourge.cpp:3668
 #, c-format
 msgid "per %.2f R"
 msgstr ""
 
-#: src/scourge.cpp:3670
+#: src/scourge.cpp:3677
 msgid "This item is already enchanted."
 msgstr ""
 
-#: src/scourge.cpp:3672
+#: src/scourge.cpp:3679
 msgid "This item cannot be enchanted."
 msgstr ""
 
-#: src/scourge.cpp:3680
+#: src/scourge.cpp:3687
 msgid "You succesfully enchanted an item!"
 msgstr ""
 
-#: src/scourge.cpp:3684
+#: src/scourge.cpp:3691
 #, c-format
 msgid "You created: %s."
 msgstr ""
 
-#: src/scourge.cpp:3689
+#: src/scourge.cpp:3696
 msgid "You failed to enchant the item."
 msgstr ""
 
-#: src/scourge.cpp:3693
+#: src/scourge.cpp:3700
 msgid "You can only enchant one item per day."
 msgstr ""
 
-#: src/scourge.cpp:3708
+#: src/scourge.cpp:3715
 msgid "Spell was entered into your spellbook."
 msgstr ""
 
-#: src/scourge.cpp:3716
+#: src/scourge.cpp:3723
 msgid "You already know this spell"
 msgstr ""
 
-#: src/scourge.cpp:3719
+#: src/scourge.cpp:3726
 msgid "You are not proficient enough to transcribe this scroll."
 msgstr ""
 
-#: src/scourge.cpp:3722
+#: src/scourge.cpp:3729
 msgid "You can only transcribe scrolls!"
 msgstr ""
 
-#: src/scourge.cpp:3753
+#: src/scourge.cpp:3760
 msgid "This item is out of charges."
 msgstr ""
 
-#: src/scourge.cpp:3766
+#: src/scourge.cpp:3773
 msgid "You cannot use this item."
 msgstr ""
 
@@ -1883,55 +1883,55 @@ msgstr ""
 msgid "Party of %s the %s level %s."
 msgstr ""
 
-#: src/terraingenerator.cpp:147
+#: src/terraingenerator.cpp:148
 msgid "Compressing free space"
 msgstr ""
 
-#: src/terraingenerator.cpp:150
+#: src/terraingenerator.cpp:151
 msgid "Adding traps"
 msgstr ""
 
-#: src/terraingenerator.cpp:153
+#: src/terraingenerator.cpp:154
 msgid "Adding containers"
 msgstr ""
 
-#: src/terraingenerator.cpp:156
+#: src/terraingenerator.cpp:157
 msgid "Adding gates"
 msgstr ""
 
-#: src/terraingenerator.cpp:163
+#: src/terraingenerator.cpp:164
 msgid "Adding party"
 msgstr ""
 
-#: src/terraingenerator.cpp:171
+#: src/terraingenerator.cpp:172
 msgid "Adding teleporters"
 msgstr ""
 
-#: src/terraingenerator.cpp:178
+#: src/terraingenerator.cpp:179
 msgid "Locking doors and chests"
 msgstr ""
 
-#: src/terraingenerator.cpp:181
+#: src/terraingenerator.cpp:182
 msgid "Calculating room values"
 msgstr ""
 
-#: src/terraingenerator.cpp:184
+#: src/terraingenerator.cpp:185
 msgid "Adding mission objectives"
 msgstr ""
 
-#: src/terraingenerator.cpp:187
+#: src/terraingenerator.cpp:188
 msgid "Adding monsters"
 msgstr ""
 
-#: src/terraingenerator.cpp:191
+#: src/terraingenerator.cpp:192
 msgid "Adding items"
 msgstr ""
 
-#: src/terraingenerator.cpp:194
+#: src/terraingenerator.cpp:195
 msgid "Adding furniture"
 msgstr ""
 
-#: src/terraingenerator.cpp:198
+#: src/terraingenerator.cpp:199
 msgid "Cleaning up"
 msgstr ""
 
@@ -6328,12 +6328,6 @@ msgid ""
 "again! He vows to "
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:84
-msgid ""
-" for us in the near future. Actually, this worries me far more than most "
-"missions we accept..."
-msgstr ""
-
 #: ../scourge_data/config/mission.cfg:85
 msgid ""
 "Remember to find the wand for $Sabien! He is an important client and he's in "
@@ -6438,15 +6432,6 @@ msgstr ""
 msgid ""
 "Our agents have located Mycotharsius in the cellars of a peaceful monastery "
 "called "
-msgstr ""
-
-#: ../scourge_data/config/mission.cfg:143
-msgid ""
-", near the city of Orn. You must journey here and confront him. Before "
-"ridding the world of him for good, find out as much as you can about why he "
-"hired the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid "
-"however, that his failures made Mycotharsius quite Mad. Therefore if all he "
-"can offer is gibberish, try to look around his lair for clues."
 msgstr ""
 
 #: ../scourge_data/config/mission.cfg:144
@@ -8206,7 +8191,7 @@ msgid "Negative Energy of Hornaxx"
 msgstr ""
 
 #: ../scourge_data/config/npc.cfg:796 ../scourge_data/maps/hq.cfg:170
-#: ../scourge_data/maps/emeril2.cfg:4
+#: ../scourge_data/maps/emeril2.cfg:4 ../scourge_data/maps/tree.cfg:22
 msgid "Mothrazu"
 msgstr ""
 
@@ -8214,7 +8199,7 @@ msgstr ""
 msgid "Mothrazu Pain Incarnate"
 msgstr ""
 
-#: ../scourge_data/config/npc.cfg:844
+#: ../scourge_data/config/npc.cfg:844 ../scourge_data/maps/tree.cfg:4
 msgid "Spawn of Arcanex"
 msgstr ""
 
@@ -8887,6 +8872,7 @@ msgid "My time is too short to speak of that."
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:120 ../scourge_data/maps/thuzgol.cfg:177
+#: ../scourge_data/maps/tree.cfg:44
 msgid "Melathor"
 msgstr ""
 
@@ -9093,7 +9079,7 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:156 ../scourge_data/maps/library31.cfg:98
-#: ../scourge_data/maps/tower1.cfg:16
+#: ../scourge_data/maps/tower1.cfg:16 ../scourge_data/maps/tree.cfg:32
 msgid "Abyss"
 msgstr ""
 
@@ -9286,7 +9272,7 @@ msgid ""
 "planes of existance."
 msgstr ""
 
-#: ../scourge_data/maps/hq.cfg:188
+#: ../scourge_data/maps/hq.cfg:188 ../scourge_data/maps/tree.cfg:28
 msgid "Arcanex"
 msgstr ""
 
@@ -9990,7 +9976,7 @@ msgid ""
 "is located very close nearby... in fact, it's right behind this locked $door."
 msgstr ""
 
-#: ../scourge_data/maps/library3.cfg:76
+#: ../scourge_data/maps/library3.cfg:76 ../scourge_data/maps/tree.cfg:24
 msgid "Guardians,Guardian,Guards,Guard,Realm"
 msgstr ""
 
@@ -10381,7 +10367,7 @@ msgid ""
 "ot them? No? Perhaps some other $time then."
 msgstr ""
 
-#: ../scourge_data/maps/library31.cfg:110
+#: ../scourge_data/maps/library31.cfg:110 ../scourge_data/maps/tree.cfg:30
 msgid "time"
 msgstr ""
 
@@ -12324,6 +12310,295 @@ msgstr ""
 
 #: ../scourge_data/maps/emeril2.cfg:56
 msgid "Hmmm, it escapes me just now."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:12
+msgid ""
+"I have not felt that scent for nearly a thousand years... ||How did you come "
+"to hold a deep-elven artifact $human? ||Its ancient presence holds the "
+"breath of centuries..."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:14
+msgid ""
+"Long are the eons of growth... My roots stretch across galaxies the size of "
+"a hair's width."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:15
+msgid "Untold secrets unfold. My vista evolves with the sigh of the cosmos."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:16
+msgid "human"
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:17
+msgid ""
+"I see, you learned of its location from $Melathor of Allovium... Hmmm... "
+"Another name I have not pondered upon for a while. When you see him again, "
+"please tell him 'the bet is still on.'|| Now about the artifact: do you know "
+"$what it is you hold in your hands?"
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:18
+#, fuzzy
+msgid "what,Cronostar"
+msgstr "Options"
+
+#: ../scourge_data/maps/tree.cfg:19
+msgid ""
+"Yes, it is called the Cronostar. Created by the deep elves many centuries "
+"ago, but not as $Melathor suggests, an aide to gather delicacies for the "
+"dinner table.|| The Cronostar does have the ability to pause $time. More "
+"importantly however, it is a $key."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:20
+msgid "Karzul,demon"
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:21
+msgid ""
+"Karzul is a power-hungry minor demon lord of the Abyss. During my "
+"$imprisonment in the $Abyss I learned much of this fiend.||For many "
+"centuries Karzul was just another demon lord, happy to amuse himself by "
+"participating in the endless turf-wars with other demons. These minor "
+"confrontations are sort of a day-to-day exercise; a manifestation of the "
+"chaos of the evil realm they call their home. Wanton violence, sensless "
+"brutality and general ruthlesness are considered virtues there.||However, "
+"about two decades while on a reconissance mission against one of his foes, "
+"Karzul discovered a dying Effrinu. These creatures were thought to be "
+"completely extinct, as they were the living aspects of an Elder God. No "
+"longer worshipped, Elder gods were the evil incarnate in divine forms. In "
+"fact, their realm was of such violence that even Abyss rejected their rule.||"
+"Nevertheless as Karzul slowly nursed the dying Effrinu back to health, in "
+"return he gained some of the wisdom of Erhedru the Elder. With this divine "
+"evil power in his arsenal, he was able to produce enough magical energy to "
+"create the Necropod, the prison-seed in which he $entrapped me.||I believe "
+"his plan has always been to somehow enter the Material Realm and - once "
+"again using the gifts of Erhedru the Elder - enthrall humankind to fuel his "
+"need for souls, thereby making him into some kind of uber-demon.||If you "
+"want to avoid spending an eternity slaving to his every wish while being "
+"tormented by his minions, I'd say: look for help! You cannot defeat him "
+"alone. Although he will be relatively weak for a while in the Material "
+"plane, once here, he will quickly establish a way to supply himself with "
+"diabolic energy. You must defeat him before that occurs with help from the "
+"$Guardians of the Realm. Only they have the experience needed to better this "
+"foe."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:23
+msgid ""
+"Ah the crazed druid... Now don't get me wrong, I appreciate what she was "
+"trying to do! You humans take nature for granted all to often. It would do "
+"you well to be afraid of those you oppress once in a while...||It is a pity "
+"though that she herself was also the victim of a larger plot. The demon "
+"$Karzul used her for his nefarious purposes by giving her the Necropod: the "
+"seed of my $imprisonment.||Whatever happened to her anyway? Not that it "
+"matters, she wouldn't have gone far anyhow. We must now turn our attentions "
+"to stopping $Karzul instead."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:25
+msgid ""
+"Yes, the $Cronostar is the key to re-awaken the Guardians.|| As you probably "
+"know, the Guardians of the Realm were the a scholar-knight order who "
+"dedicated themselves to the preservation of all worldly knowledge. They "
+"created a series of libraries throught the land wherein they enshirened a "
+"vast number of codecies that described all that transpired and were known to "
+"humankind. Even more, these sacred texts contained predictions for the "
+"future. Many half-described profecies since have come to pass. Many others "
+"still await their fulfillment.||The Guardians also defended this enlightened "
+"way of life from those that would oppose it. Historically this meant "
+"battling the fiendish inhabitants of the $Abyss. The confrontations with "
+"that realm intensified over the centuries, when at last the head of the "
+"Guardians foresaw the defeat and destruction of his order.||Few there are "
+"now who remember what happened next. To popular knowledge the knights passed "
+"from the material realm, following their last disasterous battle at the "
+"fords of the river Manar. And while it is true, that this final battle "
+"between the Guardians the hordes of demons was a singular event that changed "
+"history forever, the Guardians were not defeated. Knowing that the day would "
+"not be theirs, the knights instead willingly entered hibernation in the "
+"tombs of a nearby monastery of Minirmuir. Thus entombed they were resolved "
+"to wait and lie asleep for eons, until such time as they foresaw, when new "
+"heroes entered the land, capable to once again vanquish the forces of evil "
+"and throw off the tyranny of darkness.||What an immense gamble this was! For "
+"as you surely comprehend, were they wrong, and these heroes never arrived, "
+"or came too late, the material realm would surely have fallen to shadow "
+"forever.||I sense that time is now. The finding of the Cronostar signals to "
+"me that the world has reached a moment of crisis. A darkness ascends from "
+"below, and the fate of the realms is balanced on a cruel edge. ||In fact, "
+"have I told you of my $imprisonment in the $Abyss? I believe it to also be "
+"such a sign. Never, in my extraplanar travels has any being managed to "
+"ensnare me against my will."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:26
+msgid "scourge,Uzudil,clients"
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:27
+msgid ""
+"Uzudil - your boss - is the leader of S.c.o.u.r.g.e. Inc. A fine company!||"
+"He has a long list of mysterious clients; you should ask him to tell you "
+"about them sometime."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:29
+msgid ""
+"As you probably guessed, I am a descendent of Arcanex, the original plane "
+"dweller, spawned from the waters of the thought of Amod-Rheinur. ||We are "
+"the tendrils that connect the $planes. It is seldom that mortals see, much "
+"less converse with one of my kind. I hope you understand that... It is by "
+"choice I decide to notice you, and the choice moves my mind with purpose to "
+"speak.|| Over the centuries I traveled far. I've seen the frozen ice planes "
+"of Varmal, the timeless wastes of Kal, even the despairing souls doomed to "
+"exist in the $Abyss."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:31
+msgid ""
+"We don't so much travel through time, as time flows past us. Us tree-beings, "
+"children of the mighty $Arcanex don't view the passage of time as you "
+"mortals do.||What passes for a century for humanity has no more weight to us "
+"than the sigh of the wind in my branches. I must take special care - for "
+"example when talking to you - to demarkate my thoughts within consequetive "
+"temporal sections. Otherwise, all that I have to say would appear to sound "
+"randomly jumbled together to your ears.||This is why the fact that you "
+"managed to find the $Cronostar is of such interest to me. That device is "
+"capabale of rising above the constrains of time, like me."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:33
+msgid ""
+"I suppose the place must feel dreadful to those in possession of a soul... ||"
+"For me, it was a waypoint, a stopover on my journey. As I stood stretching "
+"my roots for a while, a most awful thing happend: I was $imprisoned!"
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:34
+msgid "key"
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:35
+msgid ""
+"Few know the true purpose of the $Cronostar. Only the innermost sanctums of "
+"the deep elven temples keep the sacred writings that describe how to $unlock "
+"the tombs of the $Guardians of the Realm using this artifact.|| It is a "
+"wonder the object survived... the agents of $Abyss were thorough in the "
+"destruction of all related evidence."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:36
+msgid "imprisoned,imprisonment,entrapped"
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:37
+msgid ""
+"While stopping over in the $Abyss, I fell into a baleful vortex of a magical "
+"storm. Normally such events shake off but a few dying leaves, in this case "
+"however, the demon lord $Karzul took advantage of my situation and "
+"imprisoned me in a metallic seed he prepared for just such an occasion.||Why "
+"he would do such a thing, I don't know. In fact, little do I understand of "
+"the struggling ways of mortals or demons, though I have witnessed much "
+"strife throughout the years. ||Infuriated I was for the severe curbing of my "
+"freedoms to roam! What is a planetraveler who is subject to remain in one "
+"place? $Karzul promised me that the situation was temporary. In fact he "
+"said, very soon, a druid named $Mothrazu would release me... That she did "
+"and that is how you and I now stand here conversing."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:38
+msgid "unlock"
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:39
+msgid ""
+"Riding on the metaphysical waves of the lore of Xelphate, human history "
+"repeats itself endlessly. Some say, such thoughts are negative, or even "
+"evil. That the human condition is bound to find new ways to break out of its "
+"mortal boundaries and roam the multiverse in unexpected new ways.||If I may "
+"season this theory with a near-infinite lifetime of observing history and "
+"traveling the planes, I'd say, that is not so. Humanity does indeed tend to "
+"repeat its mistakes.||However, the multiverse, nay even the material realm "
+"is more than just humankind. There are places your kind has never heard of. "
+"The world still holds many wonders and sustains life-forms you could not "
+"even imagine. Few indeed are the beings who can comprehend the vast "
+"multitude of the cosmos. Unfortunately for you, the powers of the $Abyss "
+"can. However, so can the $Guardians of the Realm. After all, it was their "
+"business to preserve the order of the world, and all knowledge of it.||"
+"Therefore, though things may look bleak, I do believe, it is time to "
+"resurrect the knights of old; to call upon the $Guardians once again and "
+"with their help, move the material plane away from the brink of slavery and "
+"darkness.|| Use the Cronostar. Travel to the monastery of Minirmuir, unlock "
+"the tombs and call upon the defenders of life!||You see to me, it matters "
+"not who rules the multiverse, be it good or evil. My kind is far above such "
+"trivialities. We see the cosmos as an endless maze of pathways, logic and "
+"knowledge intertwined create a complex network of possibilities. The current "
+"fragment of this web, is what your kind calls 'reality.'||Having said that, "
+"I'm glad to help. I do feel that too much power, centered in the hands of "
+"one like $Karzul would steer this fragile web towards its destruction, "
+"eventually shutting down all alternates until all that remains is similar to "
+"endless wastes of the $Abyss itself."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:40
+msgid "travels,travel,trip"
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:41
+msgid ""
+"You humans call us the spawn of $Arcanex... We are planar travelers. We "
+"exist outside of time, really as an experiement by the god Minirmuir, walker "
+"of the golden path. Our aim is to serve as computational engines to crack "
+"the lifecode of reality.||You see, reality as you mortals experience it is "
+"an altogether different thing from what we see. Imagine, if you were able to "
+"side-step the limitation of time, and view the web of all possible futures "
+"from the outside.||The problem we try to solve by crawling the planes is the "
+"grand mystery: what is the discrete embodiment, the god-like consciousness "
+"that produces these variations. Is there a way to focus the potentials "
+"stored in this multifaceted matrix and comprehend all that is, was or shall "
+"be?||Needless to say, not one of us has ever managed to solve the riddle. "
+"Some, disintegrated under the burden of the challenge. Some slowly faded "
+"into a meta-dimension, never to emerge as a distinct entity ever again...||"
+"Well, I'm still here, by the grace of Minirmuir, toiling ever on. Although, "
+"I must say, my last reappearance had more to do with the druid $Mothrazu "
+"than my divine benefactor."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:42
+msgid "Lucedil"
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:43
+msgid ""
+"Ah the Lucedil stones... You really have not lived until you have "
+"experienced holding one of these beauties in your hand! The light of eons "
+"sparkle in their shiny facets. It is said, the gems are Minirmuir's tears, "
+"when she watched the destruction of humanity during the first demon wars.||"
+"At any rate, the stones are very valuable and very rare. If in your mortal "
+"life-span you find but one, you are considered a Phatu, or, blessed one by "
+"the priests of Minirmuir.||I have found ten of them so far... $Melathor I "
+"believe has 9."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:45
+msgid ""
+"The elven wizard and I crossed paths during many of my $travels. Though he "
+"may appear as a witless drunkard at times, there is more to that elf than "
+"meets the eye!||In fact, he and I have a running bet for... well, over a "
+"century now to see which one of us collects the most gemstones of $Lucedil. "
+"I think with my last $trip to the Reefs of Rhungar, I may just have secured "
+"the lead."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:50
+msgid "You should never see this greeting."
+msgstr ""
+
+#: ../scourge_data/maps/tree.cfg:52
+msgid "You should never see this message."
 msgstr ""
 
 #, fuzzy
