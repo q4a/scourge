@@ -107,23 +107,60 @@ void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
 
 // Find a free starting location (for the recursion) to the left and above the given start.
 bool RenderedCreature::doFindStart( int *startx, int *starty ) {
-	int xx;
-	int yy = *starty;
-	while( yy >= MAP_OFFSET ) {
-		xx = *startx;
-		while( xx >= MAP_OFFSET ) {
-			Location *pos = levelMap->getLocation( xx, yy, 0 );
-			if( !pos ) {
-				*startx = xx;
-				*starty = yy;
-				return true;
-			} else {
-				xx = pos->x - 1;
-			}
-		}
-		yy--;
+  int xx;
+  int yy = *starty;
+  while( yy >= MAP_OFFSET ) {
+	xx = *startx;
+	while( xx >= MAP_OFFSET ) {
+	  Location *pos = levelMap->getLocation( xx, yy, 0 );
+	  if( !pos ) {
+		*startx = xx;
+		*starty = yy;
+		return true;
+	  } else {
+		xx = pos->x - 1;
+	  }
 	}
-	return false;
+	xx = *startx;
+	while( xx < MAP_WIDTH - MAP_OFFSET ) {
+	  Location *pos = levelMap->getLocation( xx, yy, 0 );
+	  if( !pos ) {
+		*startx = xx;
+		*starty = yy;
+		return true;
+	  } else {
+		xx = pos->x + pos->shape->getWidth();
+	  }
+	}
+	yy--;
+  }
+  yy = *starty;
+  while( yy < MAP_DEPTH - MAP_OFFSET ) {
+	xx = *startx;
+	while( xx >= MAP_OFFSET ) {
+	  Location *pos = levelMap->getLocation( xx, yy, 0 );
+	  if( !pos ) {
+		*startx = xx;
+		*starty = yy;
+		return true;
+	  } else {
+		xx = pos->x - 1;
+	  }
+	}
+	xx = *startx;
+	while( xx < MAP_WIDTH - MAP_OFFSET ) {
+	  Location *pos = levelMap->getLocation( xx, yy, 0 );
+	  if( !pos ) {
+		*startx = xx;
+		*starty = yy;
+		return true;
+	  } else {
+		xx = pos->x + pos->shape->getWidth();
+	  }
+	}
+	yy++;
+  }
+  return false;
 }
 
 #define EMPTY_POS(x,y) !(*finalX) && levelMap->isEmpty( (x), (y) ) && seen->find( (x) + (y) * MAP_WIDTH ) == seen->end()

@@ -102,7 +102,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 	pcui = NULL;
 	descriptionScroller = new TextScroller( this );
   containerGuiCount = 0;
-  changingStory = false;
+  changingStory = goingDown = goingUp = false;
 
   lastEffectOn = false;
   resetBattles();
@@ -312,7 +312,7 @@ void Scourge::startMission( bool startInHq ) {
     bool mapCreated = createLevelMap( lastMission, fromRandomMap );
 		//if( inHq ) lastMission = NULL;
     if( mapCreated ) {
-      changingStory = false;
+      changingStory = goingDown = goingUp = false;
 
 			if( inHq ) addWanderingHeroes();
 
@@ -586,7 +586,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 #ifdef CAVE_TEST
 		//dsg = new CaveMaker( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
 		dg = new OutdoorGenerator( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
-		mapCreated = dg->toMap( levelMap, getSession()->getShapePalette() );
+		mapCreated = dg->toMap( levelMap, getSession()->getShapePalette(), false, false );
 #else
 		
 		// FIXME: HQ is not loaded b/c there's no currentMission() (fails in loadMap)
@@ -599,7 +599,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		//bool loaded = loadMap( path, fromRandomMap );
 		//if( !loaded ) 
     char result[300];
-    levelMap->loadMap( HQ_MAP_NAME, result, this, 1, currentStory, changingStory );
+    levelMap->loadMap( HQ_MAP_NAME, result, this, 1, currentStory, changingStory, false, goingUp, goingDown );
 #endif
 
 	} else {
@@ -628,7 +628,8 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		// if no edited map is found, make a random map
 		if( !loaded ) {
 			dg = TerrainGenerator::getGenerator( this, currentStory );
-			mapCreated = dg->toMap(levelMap, getSession()->getShapePalette());
+			mapCreated = dg->toMap( levelMap, getSession()->getShapePalette(),
+									goingUp, goingDown );
 		}
 	}
 
@@ -654,8 +655,8 @@ bool Scourge::loadMap( char *mapName, bool fromRandomMap, bool absolutePath, cha
 								currentStory,
 								changingStory,
 								fromRandomMap,
-								( oldStory > currentStory ? true : false ),
-								( oldStory < currentStory ? true : false ),
+								goingUp,
+								goingDown,
 								&items,
 								&creatures,
 								absolutePath,
@@ -801,6 +802,7 @@ bool Scourge::changeLevel() {
 					oldStory = currentStory;
 					currentStory = 0;
 					changingStory = true;
+					goingUp = goingDown = false;
 		//      gatepos = pos;
 				} else {
 					// to HQ
@@ -2829,6 +2831,7 @@ void Scourge::teleport( bool toHQ ) {
 		oldStory = currentStory;
 		currentStory = (int)( (float)( session->getCurrentMission()->getDepth() ) * rand() / RAND_MAX );
 		changingStory = true;
+		goingUp = goingDown = false;
 
     exitConfirmationDialog->setText(Constants::getMessage(Constants::TELEPORT_TO_BASE_LABEL));
     party->toggleRound(true);
@@ -3315,7 +3318,7 @@ void Scourge::showExitConfirmationDialog() {
 void Scourge::closeExitConfirmationDialog() {
   gatepos = NULL;
   teleporting = false;
-  changingStory = false;
+  changingStory = goingDown = goingUp = false;
   currentStory = oldStory;
   exitConfirmationDialog->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->setVisible(false);
@@ -3413,6 +3416,8 @@ void Scourge::descendDungeon( Location *pos ) {
 	oldStory = currentStory;
 	currentStory++;
 	changingStory = true;
+	goingDown = true;
+	goingUp = false;
 	gatepos = pos;
 }
 
@@ -3420,6 +3425,8 @@ void Scourge::ascendDungeon( Location *pos ) {
 	oldStory = currentStory;
 	currentStory--;
 	changingStory = true;
+	goingDown = false;
+	goingUp = true;
 	gatepos = pos;
 }
 

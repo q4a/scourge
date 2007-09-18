@@ -83,10 +83,11 @@ TerrainGenerator::TerrainGenerator( Scourge *scourge,
   this->scourge = scourge;
   this->level = level;
   this->depth = depth;
-	this->maxDepth = maxDepth;
+  this->maxDepth = maxDepth;
   this->stairsUp = stairsUp;
   this->stairsDown = stairsDown;
   this->mission = mission;
+  this->stairsUpX = this->stairsUpY = this->stairsDownX = this->stairsDownY = 0;
 
   progress = new Progress(scourge->getSDLHandler(), 
                           scourge->getSession()->getShapePalette()->getProgressTexture(),
@@ -117,7 +118,7 @@ void TerrainGenerator::updateStatus(const char *statusMessage) {
   start = now;
 }
 
-bool TerrainGenerator::toMap( Map *map, ShapePalette *shapePal ) {	 
+bool TerrainGenerator::toMap( Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown ) {	 
 
   // set the renderer helper for this type of map
   map->setMapRenderHelper( getMapRenderHelper() );
@@ -130,14 +131,14 @@ bool TerrainGenerator::toMap( Map *map, ShapePalette *shapePal ) {
   // loop until successfully drawn nodes onto map
   int status = progress->getStatus();
   for( int i = 0; i < 5; i++ ) {
-    if( drawNodesOnMap(map, shapePal) ) return true;
+    if( drawNodesOnMap( map, shapePal, goingUp, goingDown ) ) return true;
     // reset the progress
     progress->setStatus( status );
   }
   return false;
 }
 
-bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
+bool TerrainGenerator::drawNodesOnMap( Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown ) {
   bool ret = drawNodes( map, shapePal );
   if( !ret ) {
 		cerr << "*** Error: failed in drawNodes!" << endl;
@@ -161,7 +162,7 @@ bool TerrainGenerator::drawNodesOnMap(Map *map, ShapePalette *shapePal) {
   }
 
   updateStatus( _( "Adding party" ) );
-  if( !addParty( map, shapePal ) ) {
+  if( !addParty( map, shapePal, goingUp, goingDown ) ) {
     ret = false;
 		cerr << "*** Error: failed in addParty!" << endl;
     goto cleanup;
@@ -231,6 +232,8 @@ bool TerrainGenerator::addStairs(Map *map, ShapePalette *shapePal) {
       bool fits = getLocationInRoom(map, i, shape, &x, &y);
       if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
         addItem(map, NULL, NULL, shape, x, y);
+		stairsUpX = x;
+		stairsUpY = y;
         done = true;
         break;
       }
@@ -248,6 +251,8 @@ bool TerrainGenerator::addStairs(Map *map, ShapePalette *shapePal) {
       bool fits = getLocationInRoom(map, i, shape, &x, &y);
       if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
         addItem(map, NULL, NULL, shape, x, y);
+		stairsDownX = x;
+		stairsDownY = y;
         done = true;
         break;
       }
@@ -587,9 +592,21 @@ bool TerrainGenerator::addTeleporters(Map *map, ShapePalette *shapePal) {
  * See warning notes on this approach in findPlace() and loadMap() 
  * descriptions.
  */
-bool TerrainGenerator::addParty(Map *map, ShapePalette *shapePal) {
-  int xx = MAP_OFFSET + ( room[0].x + room[0].w / 2 ) * MAP_UNIT;
-  int yy = MAP_OFFSET + ( room[0].y + room[0].h / 2 ) * MAP_UNIT;
+bool TerrainGenerator::addParty( Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown ) {
+  int xx, yy;
+  if( goingDown && stairsUpX > 0 ) {
+	cerr << "TERRAINGEN. Starting at up-stairs." << endl;
+	xx = stairsUpX;
+	yy = stairsUpY;
+  } else if( goingUp && stairsDownX > 0 ) {
+	cerr << "TERRAINGEN. Starting at down-stairs." << endl;
+	xx = stairsDownX;
+	yy = stairsDownY;
+  } else {
+	cerr << "TERRAINGEN. Starting in middle of room 0." << endl;
+	xx = MAP_OFFSET + ( room[0].x + room[0].w / 2 ) * MAP_UNIT;
+	yy = MAP_OFFSET + ( room[0].y + room[0].h / 2 ) * MAP_UNIT;
+  }
   int nx, ny;
   for( int r = 0; r < scourge->getParty()->getPartySize(); r++ ) {
     if( !scourge->getParty()->getParty(r)->getStateMod( StateMod::dead ) ) {

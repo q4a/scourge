@@ -3457,8 +3457,10 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
     starty = toint( adapter->getPlayer()->getY() );
   }
   */
+  cerr << "LOADMAP: using saved starting position. goingUp=" << goingUp << " goingDown=" << goingDown << endl;
   startx = info->start_x;
   starty = info->start_y;
+  float start_dist = -1;
 
   mapGridX = info->grid_x;
   mapGridY = info->grid_y;
@@ -3537,8 +3539,14 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 		if( settings->isPlayerEnabled() ) {
 		  if( ( goingUp && !strcmp( (char*)info->pos[i]->shape_name, "GATE_DOWN" ) ) ||
 			  ( goingDown && !strcmp( (char*)info->pos[i]->shape_name, "GATE_UP" ) ) ) {
-			startx = info->pos[i]->x;
-			starty = info->pos[i]->y;
+			float d = ( info->pos[i]->x - adapter->getPlayer()->getX() ) * ( info->pos[i]->x - adapter->getPlayer()->getX() ) +
+			  ( info->pos[i]->y - adapter->getPlayer()->getY() ) * ( info->pos[i]->y - adapter->getPlayer()->getY() );
+			if( start_dist == -1 || d < start_dist ) {
+			  startx = info->pos[i]->x;
+			  starty = info->pos[i]->y;
+			  start_dist = d;
+			  cerr << "LOADMAP: using stairs as starting position. Dist=" << start_dist << endl;
+			}
 		  }
 		}
 	  } else cerr << "Map::load failed to find shape: " << info->pos[i]->shape_name <<

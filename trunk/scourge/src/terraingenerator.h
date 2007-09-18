@@ -76,11 +76,12 @@ protected:
   Scourge *scourge;
   int level;
   int depth;
-	int maxDepth;
+  int maxDepth;
   bool stairsDown, stairsUp;
   Mission *mission;
   Progress *progress;
   Uint32 start;
+  int stairsUpX, stairsUpY, stairsDownX, stairsDownY;
 
   const static int MAX_DOOR_COUNT = 500;
   int doorCount;
@@ -111,7 +112,7 @@ public:
                     int progressSteps );
   virtual ~TerrainGenerator();
 
-  bool toMap( Map *map, ShapePalette *shapePal );
+  bool toMap( Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown );
 
   
 
@@ -121,7 +122,7 @@ protected:
 
   void updateStatus(const char *statusMessage);
 
-  bool drawNodesOnMap(Map *map, ShapePalette *shapePal);
+  bool drawNodesOnMap(Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown);
 
   // generate the map in memory
   virtual void generate( Map *map, ShapePalette *shapePal ) = 0;
@@ -141,7 +142,7 @@ protected:
   virtual void addFurniture(Map *map, ShapePalette *shapePal);
 	virtual void addMagicPools( Map *map, ShapePalette *shapePal );
   virtual bool addTeleporters(Map *map, ShapePalette *shapePal);
-  virtual bool addParty(Map *map, ShapePalette *shapePal);
+  virtual bool addParty(Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown );
   virtual void lockDoors(Map *map, ShapePalette *shapePal);
   virtual void lockLocation(Map *map, int mapx, int mapy);
   virtual void createFreeSpaceMap(Map *map, ShapePalette *shapePal);

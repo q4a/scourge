@@ -145,7 +145,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
 
   // multi-story levels
   int currentStory, oldStory;
-  bool changingStory;
+  bool changingStory, goingDown, goingUp;
 
   static const int MAX_CONTAINER_GUI = 100;
   int containerGuiCount;
