@@ -146,5 +146,7 @@ scourge_SOURCES = \
 	cellular.cpp\
 	cellular.h\
 	quickhull.cpp\
-	quickhull.h
+	quickhull.h\
+	pathmanager.cpp\
+	pathmanager.h
 

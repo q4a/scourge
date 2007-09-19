@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-09-18 08:41-0700\n"
+"POT-Creation-Date: 2007-09-19 08:25-0700\n"
 "PO-Revision-Date: 2007-02-27 19:01+0100\n"
 "Last-Translator: Claudio Canavese (CoD) <cod@fsfe.org>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -973,11 +973,11 @@ msgstr "Il proiettile non ha raggiunto il bersaglio (fuori portata)"
 msgid "Projectile did not reach the target (blocked)."
 msgstr "Il proiettile non ha raggiunto il bersaglio (bloccato)"
 
-#: src/scourgeview.cpp:778
+#: src/scourgeview.cpp:781
 msgid "Move"
 msgstr "Muovi"
 
-#: src/scourgeview.cpp:1079
+#: src/scourgeview.cpp:1082
 msgid "cost"
 msgstr "costo"
 
