@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-09-18 08:41-0700\n"
+"POT-Creation-Date: 2007-09-19 08:25-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -971,11 +971,11 @@ msgstr ""
 msgid "Projectile did not reach the target (blocked)."
 msgstr ""
 
-#: src/scourgeview.cpp:778
+#: src/scourgeview.cpp:781
 msgid "Move"
 msgstr ""
 
-#: src/scourgeview.cpp:1079
+#: src/scourgeview.cpp:1082
 msgid "cost"
 msgstr ""
 
