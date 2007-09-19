@@ -509,66 +509,68 @@ bool isPowerOfTwo( GLuint n ) {
 // FIXME: this should be similar to loadTextureWithAlpha but adding alpha
 // screws up the stencils in caves. No time to debug now.
 GLuint Shapes::getBMPData( char *filename, GLubyte **buf, int *imgwidth, int *imgheight  ) {
-  char fn[300];
-  strcpy(fn, rootDir);
-  strcat(fn, filename);
+	GLuint ret = 0;
+	char fn[300];
+	strcpy(fn, rootDir);
+	strcat(fn, filename);
 
 //  cerr << "loading lava data: " << fn << endl;
 
-  // Create storage space for the texture
-  SDL_Surface *TextureImage[1];
+	// Create storage space for the texture
+	SDL_Surface *TextureImage[1];
 
-  // Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
-  if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
+	// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
+	if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
 
-    if( TextureImage[0]->w != TextureImage[0]->h && 
-        ( !isPowerOfTwo( TextureImage[0]->w ) ||
-          !isPowerOfTwo( TextureImage[0]->h ) ) ) {
-      fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: name=%s pitch=%d width=%d height=%d\n", 
-              fn, (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
-    }
+		if( TextureImage[0]->w != TextureImage[0]->h && 
+				( !isPowerOfTwo( TextureImage[0]->w ) ||
+					!isPowerOfTwo( TextureImage[0]->h ) ) ) {
+			fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: name=%s pitch=%d width=%d height=%d\n", 
+							fn, (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
+		}
 
-    Constants::checkTexture("Shapes::loadGLTextures", 
-                            TextureImage[0]->w, TextureImage[0]->h);
+		Constants::checkTexture("Shapes::loadGLTextures", 
+														TextureImage[0]->w, TextureImage[0]->h);
 
 //    cerr << "\tdim=" << TextureImage[0]->w << "," << TextureImage[0]->h << endl;
 
-    int width = TextureImage[0]->w;
-    int height = TextureImage[0]->h;
+		int width = TextureImage[0]->w;
+		int height = TextureImage[0]->h;
 
 		if( imgwidth ) *imgwidth = width;
-		if( imgheight ) *imgheight = height;
+		if( imgheight )	*imgheight = height;
 
-    unsigned char * data = (unsigned char *)(TextureImage[0]->pixels);         // the pixel data
+		unsigned char * data = (unsigned char *)(TextureImage[0]->pixels);				 // the pixel data
 
-    //if( *buf ) free( *buf );
-    if( !( *buf ) )
-      *buf = (GLubyte*)malloc( 3 * width * height * sizeof( GLubyte ));
-    int count = 0;
-    int c = 0;
-    unsigned char r,g,b;
-    // the following lines extract R,G and B values from any bitmap
-    for(int i = 0; i < width * height; ++i) {
-      if(i > 0 && i % width == 0)
-        c += (  TextureImage[0]->pitch - ( width * TextureImage[0]->format->BytesPerPixel ) );
-      r = data[c++];
-      g = data[c++];
-      b = data[c++];
+		//if( *buf ) free( *buf );
+		if( !( *buf ) )
+			*buf = (GLubyte*)malloc( 3 * width * height * sizeof( GLubyte ));
+		int count = 0;
+		int c = 0;
+		unsigned char r,g,b;
+		// the following lines extract R,G and B values from any bitmap
+		for( int i = 0; i < width * height; ++i ) {
+			if( i > 0 && i % width == 0 )
+				c += (  TextureImage[0]->pitch - ( width * TextureImage[0]->format->BytesPerPixel ) );
+			r = data[c++];
+			g = data[c++];
+			b = data[c++];
 
-      (*buf)[count++] = b;
-      (*buf)[count++] = g;
-      (*buf)[count++] = r;
-    }
+			(*buf)[count++] = b;
+			(*buf)[count++] = g;
+			(*buf)[count++] = r;
+		}
 
-  } else {
-    cerr << "Unable to load " << fn << endl;
-  }
+		ret = 1;
+	} else {
+		cerr << "Unable to load " << fn << endl;
+	}
 
-  // Free up any memory we may have used
-  if( TextureImage[0] )
-    SDL_FreeSurface( TextureImage[0] );
+	// Free up any memory we may have used
+	if( TextureImage[0] )
+		SDL_FreeSurface( TextureImage[0] );
 
-  return 1;
+	return ret;
 }
 
 

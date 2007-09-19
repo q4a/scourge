@@ -632,6 +632,7 @@ void Session::setCurrentMission( Mission *mission ) {
 		if( !shapePal->getBMPData( filename, &chapterImage, &chapterImageWidth, &chapterImageHeight ) ) {
 			cerr << "Error loading image for chapter " << currentMission->getChapter() << endl;
 			chapterImage = NULL;
+			chapterImageWidth = chapterImageHeight = 0;
 		} else {
 			cerr << "***********************************" << endl;
 			cerr << "Loaded chapter art: " << filename << 
