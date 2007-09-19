@@ -145,10 +145,13 @@ void ScourgeView::drawChapterIntro() {
 	}
 
 	glRasterPos2f( px, py );
-	glDrawPixels( scourge->getSession()->getChapterImageWidth(),
-								scourge->getSession()->getChapterImageHeight(),
-								GL_RGB, GL_UNSIGNED_BYTE, 
-								scourge->getSession()->getChapterImage() );
+	GLubyte *image = scourge->getSession()->getChapterImage();
+	if( image ) {
+		glDrawPixels( scourge->getSession()->getChapterImageWidth(),
+									scourge->getSession()->getChapterImageHeight(),
+									GL_RGB, GL_UNSIGNED_BYTE, 
+									image );
+	}
 
 	scourge->getChapterIntroWin()->move( 0, scourge->getSession()->getChapterImageHeight() + py + 10 - 30 );
 
