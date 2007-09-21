@@ -114,7 +114,7 @@ void PathManager::findPathAway(int awayX, int awayY, Creature* player, Map* map,
 void PathManager::findPathOffLocations(set<Location,LocationComparitor>* locations, Creature* player, Map* map, int maxNodes){
   GoalFunction * goal = new ClearLocationsGoal(owner,locations);
   Heuristic * heuristic = new NoHeuristic();
-  AStar::findPath(toint(owner->getX()),toint(owner->getY()),&path,map,owner,player,maxNodes,false,goal,heuristic);
+  AStar::findPath(toint(owner->getX()),toint(owner->getY()),&path,map,owner,player,maxNodes,true,goal,heuristic);
   delete heuristic;
   delete goal;
  
@@ -128,18 +128,11 @@ void PathManager::findPathOffLocations(set<Location,LocationComparitor>* locatio
 
 void PathManager::calculateAllPathLocations(){
   allPathLocations.clear();
-  //first add our current location. We need this incase of 0 length path.
-  int x = toint(owner->getX());
-  int y = toint(owner->getY());
+
+  int x;
+  int y;
   Location loc;
   loc.z = 0;
-  for(int k = 0; k < owner->getShape()->getWidth(); k++)
-    for(int m = 0; m < owner->getShape()->getDepth(); m++){
-      loc.x = x+k;
-      loc.y = y+m;
-      allPathLocations.insert(loc);
-    }
-
   //now do the rest of the path. Duplicates are thrown out by the set
   for(unsigned int j = positionOnPath; j < path.size(); j++){
     x = path[j].x;
@@ -155,12 +148,14 @@ void PathManager::calculateAllPathLocations(){
 }
 
 void PathManager::moveNPCsOffPath(Creature* player, Map* map){
+  calculateAllPathLocations();
   //check every location we will occupy
   set<Location>::iterator setItr = allPathLocations.begin();
   while(setItr != allPathLocations.end()){
     Location loc = *setItr;
     Location* mapLoc = map->getLocation(loc.x,loc.y,0);
     if(mapLoc && mapLoc->creature && mapLoc->creature != owner && 
+       mapLoc->creature != player &&
        (!mapLoc->creature->isMonster() || mapLoc->creature->isNpc())){
       Creature* blocker = (Creature*)mapLoc->creature;
      // cout << blocker->getName() << " is in the way.\n";
@@ -229,14 +224,17 @@ bool PathManager::isPathTowardTargetCreature(float range) {
 }
 
 int PathManager::getSpeed(){
-  if(this->moveState == MOVE_STATE_CLEARING_PATH)
+  if(this->moveState == MOVE_STATE_CLEARING_PATH){
     return FAST_SPEED;
+  }
   return owner->getSpeed(); //the creature should walk as fast as it is walking.
 }
 
 void PathManager::incrementPositionOnPath(){
   positionOnPath++;
-  if(atEndOfPath()) moveState = MOVE_STATE_NORMAL;
+  if(atEndOfPath()){
+    moveState = MOVE_STATE_NORMAL;
+  }
 }
 bool PathManager::atEndOfPath(){
   return path.size() == 0 || positionOnPath >= path.size()-1;
@@ -252,22 +250,45 @@ Location PathManager::getEndOfPath(){
 }
 void PathManager::clearPath(){
   path.clear();
+  allPathLocations.clear();
   positionOnPath = 0;
 }
 int PathManager::getPathRemainingSize(){
   return path.size() - positionOnPath -1;
 }
 
-/*
-void FormationLeaderPathManager::getFormationPosition( Sint16 *px, Sint16 *py, Sint16 *pz, int x, int y ) {
-  Sint16 dx = layout[formation][index][0];
-  Sint16 dy = -layout[formation][index][1];
+///////////////////////////////////////////////////
+// PathManager subclasses for handling formations
+///////////////////////////////////////////////////
 
-  // get the angle
-  float angle = 0;
-  if(next->getDir() == Constants::MOVE_RIGHT) angle = 270.0;
-  else if(next->getDir() == Constants::MOVE_DOWN) angle = 180.0;
-  else if(next->getDir() == Constants::MOVE_LEFT) angle = 90.0;
+FormationLeaderPathManager::FormationLeaderPathManager(Creature* owner, FormationFollowerPathManager* followers, int followersSize) : PathManager(owner){;
+  this->followers = followers;
+  this->followersSize = followersSize;
+}
+FormationLeaderPathManager::~FormationLeaderPathManager(){}
+
+void FormationLeaderPathManager::calculateDirections(){
+  directions.clear();
+  float angle;
+  for(unsigned int i = 0; i < path.size()-1; i++){
+    int dx = path[i+1].x - path[i].x;
+    int dy = path[i+1].y - path[i].y;
+    
+    if(dx < 0) angle = (2-dy)*45; //45, 90, 135
+    else if(dx > 0) angle = 360 - (2-dy)*45; //315, 270, 225
+    else angle = 90 + dy*90; //0 or 180
+    directions.push_back(angle);
+  }
+  if(path.size() > 0) 
+    directions.push_back(angle); //the last direction is the same as the second to last one
+}
+
+/**
+* Get the position of this creature in the formation, given the leaders location and facing.
+*/
+void FormationLeaderPathManager::getFormationPosition( Sint16 *px, Sint16 *py, int formation, int formationIndex, int x, int y, float angle ) {
+  Sint16 dx = layout[formation][formationIndex][0];
+  Sint16 dy = -layout[formation][formationIndex][1];
 
   // rotate points
   if(angle != 0) { 
@@ -278,15 +299,28 @@ void FormationLeaderPathManager::getFormationPosition( Sint16 *px, Sint16 *py, S
   }
 
   // translate
-  if( x > -1 ) {
-    *px = (*(px) * getShape()->getWidth()) + x;
-    *py = (-(*(py)) * getShape()->getDepth()) + y;
-  } else if(next->getSelX() > -1) {
-    *px = (*(px) * getShape()->getWidth()) + next->getSelX();
-    *py = (-(*(py)) * getShape()->getDepth()) + next->getSelY();
-  } else {
-    *px = (*(px) * getShape()->getWidth()) + toint(next->getX());
-    *py = (-(*(py)) * getShape()->getDepth()) + toint(next->getY());
-  }
-  *pz = toint(next->getZ());
-}*/
+  *px = (*(px) * owner->getShape()->getWidth()) + x;
+  *py = (-(*(py)) * owner->getShape()->getDepth()) + y;
+  
+}
+
+bool FormationLeaderPathManager::findPath(int x, int y, Creature* player, Map* map, bool ignoreParty, int maxNodes){
+  return PathManager::findPath(x,y,player,map,ignoreParty,maxNodes);
+}
+
+bool FormationLeaderPathManager::findPathToCreature(Creature* target, Creature* player, Map* map, float distance, bool ignoreParty, int maxNodes){
+  return PathManager::findPathToCreature(target,player,map,distance,ignoreParty,maxNodes);
+}
+
+void FormationLeaderPathManager::findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty, int maxNodes){
+  return PathManager::findPathAway(awayX,awayY,player,map,distance,ignoreParty,maxNodes);
+}
+
+FormationFollowerPathManager::FormationFollowerPathManager(Creature* owner,FormationLeaderPathManager* leader) : PathManager(owner){
+  this->leader = leader;
+}
+
+FormationFollowerPathManager::~FormationFollowerPathManager(){}
+
+int FormationFollowerPathManager::getSpeed(){ return PathManager::getSpeed();}
+

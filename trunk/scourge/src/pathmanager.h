@@ -30,6 +30,7 @@ class Map;
 class Location;
 class Creature;
 class GLShape;
+class FormationFollowerPathManager;
 
 /**
  * A PathManager keeps a path, the current location on the path and the speed
@@ -38,7 +39,7 @@ class GLShape;
  * get out of the way and formations, so they are abstracted away from creatures and parties.
  **/
 class PathManager{
-  private:
+  protected:
     Creature* owner;
     std::vector<Location> path;
     std::set<Location,LocationComparitor> allPathLocations;
@@ -83,37 +84,43 @@ class PathManager{
 /**
  * This PathManager includes a direction faced at each path location. This can be used
  * to calculate where followers should stand so as to be in formation with this leader.
- **
+ **/
 class FormationLeaderPathManager : PathManager{
-  private:
-    std::vector<int> directions; //the direction faced at each location on the path
+  protected:
+    std::vector<float> directions; //the direction faced at each location on the path (in degrees)
     FormationFollowerPathManager* followers; //so we can update our followers when we make a new path
     int followersSize; //number of followers we have
     int formation;
+
+    void calculateDirections();
   public:
     FormationLeaderPathManager(Creature* owner, FormationFollowerPathManager* followers, int followersSize);
-    ~FormationLeaderPathManager();
+    virtual ~FormationLeaderPathManager();
 
-    virtual bool findPath(int x, int y, Creature* player, Map map, bool ignoreParty=false, int maxNodes=100);
-    virtual bool findPathToCreature(Creature* target, Creature* player, Map map, float distance=MIN_DISTANCE, bool ignoreParty=false, int maxNodes=100);
+    virtual bool findPath(int x, int y, Creature* player, Map* map, bool ignoreParty=false, int maxNodes=100);
+    virtual bool findPathToCreature(Creature* target, Creature* player, Map* map, float distance=MIN_DISTANCE, bool ignoreParty=false, int maxNodes=100);
+    virtual void findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty=false, int maxNodes=100);
 
-    **
-     * Get the position of this creature in the formation.
-     * returns -1,-1 if the position cannot be set (if the person followed is not moving)
-     *
-    void getFormationPosition( Sint16 *px, Sint16 *py, Sint16 *pz, int x=-1, int y=-1 );
+    /**
+     * Get the position of this creature in the formation, given the leaders location and facing.
+     */
+    void getFormationPosition( Sint16 *px, Sint16 *py, int formation, int formationIndex, int x, int y, float angle );
 
-    void setOwner(Creature* owner); // so that formations can change the leader
+    inline void setOwner(Creature* owner){this->owner = owner;} // so that formations can change the leader
+    inline void setFollowersSize(int size){followersSize = size;}
 };
-**
+
+/**
  *
- *
+ */
 class FormationFollowerPathManager : PathManager{
-  private:
+  protected:
     FormationLeaderPathManager* leader;
   public:
-    FormationFollowerPathManager(FormationLeaderPathManager* leader);
+    FormationFollowerPathManager(Creature* owner,FormationLeaderPathManager* leader);
     ~FormationFollowerPathManager();
     virtual int getSpeed(); //speed changes depending on how far behind or ahead of the leader we are
-};*/
+  
+    inline void setOwner(Creature* owner){this->owner = owner;}
+};
 #endif
