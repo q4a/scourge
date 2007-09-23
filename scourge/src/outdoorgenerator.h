@@ -44,6 +44,9 @@ public:
 										Mission *mission);
 	virtual ~OutdoorGenerator();
 
+	void printMaze();
+	inline void getName(char *s) { strcpy( s, "outdoor" ); }
+
 protected:
 	virtual void generate( Map *map, ShapePalette *shapePal );
 	int getMountainSize( int x, int y, Map *map, std::vector<int> *lake );

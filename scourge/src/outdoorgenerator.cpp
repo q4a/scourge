@@ -235,7 +235,7 @@ void OutdoorGenerator::generate( Map *map, ShapePalette *shapePal ) {
 	cellular[0][0]->makeAccessible( WIDTH_IN_NODES - 1, DEPTH_IN_NODES / 2 );
 	cellular[0][0]->makeAccessible( WIDTH_IN_NODES / 2, DEPTH_IN_NODES - 1 );
 	cellular[0][0]->makeMinSpace( 4 );
-	//cellular[0][0]->print();
+	cellular[0][0]->print();
 	
 	cellular[1][0]->generate( true, true );
 	cellular[1][0]->makeAccessible( 0, DEPTH_IN_NODES / 2 );
@@ -303,3 +303,11 @@ void OutdoorGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
 	}
 }																															 	
 
+void OutdoorGenerator::printMaze() {
+	for( int x = 0; x < 2; x++ ) {
+		for( int y = 0; y < 2; y++ ) {
+			cerr << "x=" << x << " y=" << y << endl;
+			cellular[x][y]->print();
+		}
+	}
+}

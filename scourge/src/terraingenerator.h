@@ -114,7 +114,9 @@ public:
 
   bool toMap( Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown );
 
-  
+	// for debugging
+  virtual void printMaze()=0;
+	virtual void getName(char *s)=0;
 
   
 
