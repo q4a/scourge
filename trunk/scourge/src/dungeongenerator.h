@@ -103,6 +103,9 @@ public:
 
   virtual void generate( Map *map, ShapePalette *shapePal );
 
+	void printMaze();
+	inline void getName(char *s) { strcpy( s, "dungeon" ); }
+
 protected:
 
   // used by toMap
@@ -131,9 +134,7 @@ protected:
 
   int initDirections();
 
-  int nextDirection();
-
-  void printMaze();
+  int nextDirection();  
 
   void generatePassage(const int x, const int y, const bool stopAtVisited);
 

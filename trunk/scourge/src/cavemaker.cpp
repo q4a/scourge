@@ -246,3 +246,6 @@ MapRenderHelper *CaveMaker::getMapRenderHelper() {
   return MapRenderHelper::helpers[ MapRenderHelper::CAVE_HELPER ];
 }
 
+void CaveMaker::printMaze() {
+	cellular->print();
+}

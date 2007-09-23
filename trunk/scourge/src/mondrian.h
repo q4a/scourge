@@ -103,6 +103,8 @@ public:
   virtual void generate( Map *map, ShapePalette *shapePal );
   
 
+	void printMaze();
+	inline void getName(char *s) { strcpy( s, "mondrian" ); }
 
 protected:
 
@@ -114,8 +116,6 @@ protected:
 
   bool drawNodes(Map *map, ShapePalette *shapePal);
 
-  void printMaze();
-  
   void printMazeUC();
 
   void drawDoor(Map *map, ShapePalette *shapePal, 

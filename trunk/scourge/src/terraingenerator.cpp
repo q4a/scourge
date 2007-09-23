@@ -148,43 +148,48 @@ bool TerrainGenerator::drawNodesOnMap( Map *map, ShapePalette *shapePal, bool go
   updateStatus( _( "Compressing free space" ) );
   createFreeSpaceMap(map, shapePal);
 
-  updateStatus( _( "Adding traps" ) );
-  addTraps( map, shapePal );
-  
-  updateStatus( _( "Adding containers" ) );
-  addContainers(map, shapePal);  
-  
-  updateStatus( _( "Adding gates" ) );
+	// add stairs first so party can be placed nearby
+	updateStatus( _( "Adding gates" ) );
   if( !addStairs(map, shapePal) ) {
     ret = false;
 		cerr << "*** Error: failed in addStairs!" << endl;
     goto cleanup;
   }
 
-  updateStatus( _( "Adding party" ) );
+	// add stuff in order of importance
+	updateStatus( _( "Adding party" ) );
   if( !addParty( map, shapePal, goingUp, goingDown ) ) {
     ret = false;
 		cerr << "*** Error: failed in addParty!" << endl;
     goto cleanup;
   }
-  
-  // add a teleporters
+
+	// add a teleporters
   updateStatus( _( "Adding teleporters" ) );
   if( !addTeleporters(map, shapePal) ) {
     ret = false;
 		cerr << "*** Error: failed in addTeleporters!" << endl;
     goto cleanup;
   }
+
+	updateStatus( _( "Adding mission objectives" ) );
+	addMissionObjectives(map, shapePal);
+
+
+
+
+  updateStatus( _( "Adding traps" ) );
+  addTraps( map, shapePal );
+  
+  updateStatus( _( "Adding containers" ) );
+  addContainers(map, shapePal);  
   
   updateStatus( _( "Locking doors and chests" ) );
   lockDoors(map, shapePal);
   
   updateStatus( _( "Calculating room values" ) );
   calculateRoomValues(map, shapePal);
-  
-  updateStatus( _( "Adding mission objectives" ) );
-  addMissionObjectives(map, shapePal);
-  
+    
   updateStatus( _( "Adding monsters" ) );
   addMonsters(map, shapePal);
 	addHarmlessCreatures( map, shapePal );
@@ -230,17 +235,20 @@ bool TerrainGenerator::addStairs(Map *map, ShapePalette *shapePal) {
       Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_UP");
       int x, y;
       bool fits = getLocationInRoom(map, i, shape, &x, &y);
-      if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
+			if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
         addItem(map, NULL, NULL, shape, x, y);
-		stairsUpX = x;
-		stairsUpY = y;
+				stairsUpX = x;
+				stairsUpY = y;
         done = true;
         break;
       }
     }
     if(!done) {
-      cerr << "Error: couldn't add up stairs." << endl;
-      return false;
+			char name[255];
+			getName( name );
+			cerr << "Error: couldn't add up stairs." << name << endl;
+			printMaze();
+			return false;
     }
   }
   if(stairsDown) {
@@ -251,15 +259,18 @@ bool TerrainGenerator::addStairs(Map *map, ShapePalette *shapePal) {
       bool fits = getLocationInRoom(map, i, shape, &x, &y);
       if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
         addItem(map, NULL, NULL, shape, x, y);
-		stairsDownX = x;
-		stairsDownY = y;
-        done = true;
+				stairsDownX = x;
+				stairsDownY = y;
+				done = true;
         break;
       }
     }
     if(!done) {
-      cerr << "Error: couldn't add down stairs." << endl;
-      return false;
+      char name[255];
+			getName( name );
+			cerr << "Error: couldn't add down stairs." << name << endl;
+			printMaze();
+			return false;
     }
   }
 
@@ -584,7 +595,14 @@ bool TerrainGenerator::addTeleporters(Map *map, ShapePalette *shapePal) {
       cerr << "ERROR: couldn't add teleporter!!! #" << teleporterCount << endl;
     }
   }
-  return (teleportersAdded > 0);
+  bool b = (teleportersAdded > 0);
+	if( !b ) {
+		char name[255];
+		getName( name );
+		cerr << "Error: couldn't add a teleporter." << name << endl;
+		printMaze();
+	}
+	return b;
 }
 
 /**
@@ -611,7 +629,13 @@ bool TerrainGenerator::addParty( Map *map, ShapePalette *shapePal, bool goingUp,
   for( int r = 0; r < scourge->getParty()->getPartySize(); r++ ) {
     if( !scourge->getParty()->getParty(r)->getStateMod( StateMod::dead ) ) {
       scourge->getParty()->getParty(r)->findPlace( xx, yy, &nx, &ny );
-      if( nx == -1 && ny == -1 ) return false;
+      if( nx == -1 && ny == -1 ) {
+				char name[255];
+				getName( name );
+				cerr << "Error placing party. Type=" << name << endl;
+				printMaze();
+				return false;
+			}
       xx = nx;
       yy = ny;
     }

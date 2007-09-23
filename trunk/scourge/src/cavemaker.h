@@ -52,6 +52,9 @@ public:
              Mission *mission);
   virtual ~CaveMaker();
 
+	void printMaze();
+	inline void getName(char *s) { strcpy( s, "cave" ); }
+
 protected:
   virtual bool drawNodes( Map *map, ShapePalette *shapePal );
   virtual void generate( Map *map, ShapePalette *shapePal );
