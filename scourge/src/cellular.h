@@ -53,7 +53,8 @@ public:
   virtual ~CellularAutomaton();
 
   void generate( bool islandsEnabled = false, 
-                 bool removeSinglesEnabled = false );
+                 bool removeSinglesEnabled = false,
+								 int pathWidth = 1 );
 
   inline int getWidth() { return this->w; }
   inline int getHeight() { return this->h; }
@@ -73,7 +74,7 @@ protected:
   bool canReach( int sx, int sy, int ex, int ey );
   void findRooms();
   void connectPoints( int sx, int sy, int ex, int ey, bool isBiggestRoom );
-  void connectRooms();
+  void connectRooms( int pathWidth = 1 );
   void removeSingles();
   void addIslands();
   void growCellsIsland();

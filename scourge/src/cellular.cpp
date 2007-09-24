@@ -38,7 +38,8 @@ CellularAutomaton::~CellularAutomaton() {
 }
 
 void CellularAutomaton::generate( bool islandsEnabled, 
-                                  bool removeSinglesEnabled ) {
+                                  bool removeSinglesEnabled,
+																	int pathWidth ) {
   randomize();
 
   for( int i = 0; i < CELL_GROWTH_CYCLES; i++ ) {
@@ -71,13 +72,10 @@ void CellularAutomaton::generate( bool islandsEnabled,
   
     addIslandLand();
   
-    findRooms();
+		findRooms();
+		connectRooms( pathWidth );
   
-    //print();
-  
-    connectRooms();
-  
-    if( removeSinglesEnabled ) removeSingles();
+    //if( removeSinglesEnabled ) removeSingles();
   
     //print();
   }
@@ -348,14 +346,60 @@ void CellularAutomaton::connectPoints( int sx, int sy, int ex, int ey, bool isBi
   }
 }
 
-void CellularAutomaton::connectRooms() {
-  // connect each room to the center of the map (except the room at the center)
-  int cx = w / 2;
-  int cy = h / 2;
-  for( int i = 0; i < roomCounter; i++ ) {
-    connectPoints( room[i].x, room[i].y, cx, cy, 
-                   ( i == biggestRoom ? true : false ) );
-  }
+void CellularAutomaton::connectRooms( int pathWidth ) {
+	if( pathWidth <= 1 ) {
+		// connect each room to the center of the map (except the room at the center)
+		int cx = w / 2;
+		int cy = h / 2;
+		for( int i = 0; i < roomCounter; i++ ) {
+			connectPoints( room[i].x, room[i].y, cx, cy, 
+										 ( i == biggestRoom ? true : false ) );
+		}
+	} else {
+		// create a wide path off the island's inner land
+		for( int i = 0; i < roomCounter; i++ ) {
+			bool success = false;
+			for( int dir = 0; dir < 4; dir++ ) {
+				int rx = room[i].x;
+				int ry = room[i].y;
+				
+				success = false;
+				while( rx >= 1 && rx < w - pathWidth &&
+							 ry >= 1 && ry < h - pathWidth ) {
+
+					// stomp
+					for( int n = 0; n < pathWidth; n++ ) {
+						for( int m = 0; m < pathWidth; m++ ) {
+							if( node[rx + n][ry + m].island ) {
+								node[rx + n][ry + m].island = false;
+								node[rx + n][ry + m].room = i;
+							}
+						}
+					}
+
+					// success?
+					if( node[rx][ry].island == false && node[rx][ry].wall == false && node[rx][ry].room != i ) {
+						success = true;
+						break;
+					}
+
+					// move
+					switch( dir ) {
+					case 0: rx -= pathWidth; break;
+					case 1: ry -= pathWidth; break;
+					case 2: rx += pathWidth; break;
+					case 3: ry += pathWidth; break;
+					}
+				}
+
+				if( success ) break;
+			}
+
+			if( !success ) {
+				cerr << "*** Warning: unable to create exit from this room: " << room[i].x << "," << room[i].y << endl;
+			}
+		}
+	}
 }
 
 
