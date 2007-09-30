@@ -1623,7 +1623,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   // glPushAttrib(GL_ENABLE_BIT);
 
   glPushMatrix();
-	float heightPos = ( later && later->pos ? later->pos->heightPos / DIV : ( later->effect ? later->effect->heightPos : 0 ) );
+  float heightPos = ( later && later->pos ? later->pos->heightPos / DIV : ( later->effect ? later->effect->heightPos : 0 ) );
   if(useShadow) {
 		// put shadow above the floor a little
 		
@@ -2113,10 +2113,9 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 	debugHeightPosXX[3] = xx + 1;
 	debugHeightPosYY[3] = yy;
 
-	float zz;
+	float zz = 0;
 	if( findMax ) {
 		// find the max
-		zz = 0;
 		for( int i = 0; i < 4; i++ ) {
 			if( zz < ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ] ) {
 				zz = ground[ debugHeightPosXX[ i ] ][ debugHeightPosYY[ i ] ];
@@ -2124,7 +2123,6 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 		}
 	} else {
 		// find the average
-		zz = 0;
 		int count = 0;
 		for( int i = 0; i < 4; i++ ) {
 			// skip 'lake' heights
@@ -2133,7 +2131,7 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 				count++;
 			}
 		}
-		zz /= (float)count;
+		if( zz > 0 && count > 0 ) zz /= (float)count;
 	}
 	if( z < zz ) pos = zz;
 	return pos;
