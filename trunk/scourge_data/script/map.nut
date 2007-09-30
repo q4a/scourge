@@ -52,18 +52,20 @@ function creatureDeath( creature ) {
 // return true if the click was handled from squirrel
 function useShape( x, y, z ) {
 	shape <- scourgeGame.getMission().getShape( x, y, z );
-	print( "Shape used: " + shape + "\n" );
-	print( "Depth: " + scourgeGame.getMission().getDungeonDepth() + "\n" );
-	if( scourgeGame.getMission().getShape( x, y, 6 ) == "RED_TELEPORTER" ) {
-		if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
-			print( "...going down..." );
-			scourgeGame.getMission().descendDungeon( x, y, z );
-		} else {
-			print( "...going up..." );
-			scourgeGame.getMission().ascendDungeon( x, y, z );
+	if( shape != null ) {
+		print( "Shape used: " + shape + "\n" );
+		print( "Depth: " + scourgeGame.getMission().getDungeonDepth() + "\n" );
+		if( scourgeGame.getMission().getShape( x, y, 6 ) == "RED_TELEPORTER" ) {
+			if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
+				print( "...going down..." );
+				scourgeGame.getMission().descendDungeon( x, y, z );
+			} else {
+				print( "...going up..." );
+				scourgeGame.getMission().ascendDungeon( x, y, z );
+			}
+		} else if( shape == "TREE-EMERIL-TRUNK" || shape == "TREE-EMERIL-TOP" ) {
+			handleTreeOfEmeril();
 		}
-	} else if( shape == "TREE-EMERIL-TRUNK" || shape == "TREE-EMERIL-TOP" ) {
-		handleTreeOfEmeril();
 	}
 	return true;
 }
