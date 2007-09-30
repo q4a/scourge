@@ -1,20 +1,21 @@
-# English translations for scourge package.
-# Copyright (C) 2007 Free Software Foundation, Inc.
+# Russian translation for scourge
+# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
 # This file is distributed under the same license as the scourge package.
-# Gabor Torok <cctorok@yahoo.com>, 2007.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
 "POT-Creation-Date: 2007-09-30 14:15-0700\n"
-"PO-Revision-Date: 2007-01-20 21:55-0800\n"
-"Last-Translator: Gabor Torok <cctorok@yahoo.com>\n"
-"Language-Team: English <en@translate.freefriends.org>\n"
+"PO-Revision-Date: 2007-09-14 19:23+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Launchpad-Export-Date: 2007-09-29 21:30+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: src/events/statemodexpirationevent.cpp:44
 #, c-format
@@ -53,12 +54,12 @@ msgstr ""
 #: src/events/thirsthungerevent.cpp:85
 #, c-format
 msgid "%s is hungry."
-msgstr ""
+msgstr "%s голоден."
 
 #: src/events/thirsthungerevent.cpp:89
 #, c-format
 msgid "%s is really hungry."
-msgstr ""
+msgstr "%s очентголоден."
 
 #: src/events/thirsthungerevent.cpp:94
 #, c-format
@@ -99,7 +100,7 @@ msgstr ""
 
 #: src/render/map.cpp:3385
 msgid "Loading map"
-msgstr ""
+msgstr "Загрузка карты"
 
 #: src/render/map.cpp:3390 src/dungeongenerator.cpp:593 src/mondrian.cpp:485
 msgid "Loading theme"
@@ -111,7 +112,7 @@ msgstr ""
 
 #: src/render/map.cpp:3466
 msgid "Initializing map"
-msgstr ""
+msgstr "Инициализация карты"
 
 #: src/render/map.cpp:3603
 msgid "Finishing map"
@@ -128,12 +129,12 @@ msgstr ""
 #: src/render/map.cpp:3647
 #, c-format
 msgid "Map loaded: %s"
-msgstr ""
+msgstr "Загружена карта: %s"
 
 #: src/render/map.cpp:3668
 #, c-format
 msgid "Can't find map: %s"
-msgstr ""
+msgstr "Невозможно найти карту: %s"
 
 #: src/render/map.cpp:3678
 #, c-format
@@ -142,7 +143,7 @@ msgstr ""
 
 #: src/gui/confirmdialog.cpp:31
 msgid "Confirmation"
-msgstr ""
+msgstr "Подтверждение"
 
 #: src/gui/confirmdialog.cpp:36
 msgid "Ok"
@@ -153,9 +154,8 @@ msgid "No"
 msgstr ""
 
 #: src/rpg/specialskill.cpp:41
-#, fuzzy
 msgid "Loading Abilities"
-msgstr "Options"
+msgstr "Загрузка способностей"
 
 #: src/rpg/spell.cpp:91 src/session.cpp:106
 msgid "Loading Spells"
@@ -163,11 +163,11 @@ msgstr ""
 
 #: src/rpg/rpgitem.cpp:39
 msgid "Slashing"
-msgstr ""
+msgstr "Рубящее"
 
 #: src/rpg/rpgitem.cpp:40
 msgid "Piercing"
-msgstr ""
+msgstr "Колющее"
 
 #: src/rpg/rpgitem.cpp:41
 msgid "Crushing"
@@ -175,16 +175,15 @@ msgstr ""
 
 #: src/rpg/rpg.cpp:51 src/session.cpp:134
 msgid "Loading Skills"
-msgstr ""
+msgstr "Загрузка навыков"
 
 #: src/rpg/rpg.cpp:128
-#, fuzzy
 msgid "Loading StateMods"
-msgstr "Options"
+msgstr ""
 
 #: src/rpg/character.cpp:42 src/session.cpp:98
 msgid "Loading Professions"
-msgstr ""
+msgstr "Загрузка профессий"
 
 #: src/rpg/character.cpp:179
 msgid "Skill bonuses to:"
@@ -252,7 +251,7 @@ msgstr ""
 
 #: src/common/constants.cpp:86
 msgid "That item is out of your reach"
-msgstr ""
+msgstr "Тот предмет вне досягаемости."
 
 #: src/common/constants.cpp:87
 msgid "You can't touch that"
@@ -268,11 +267,11 @@ msgstr ""
 
 #: src/common/constants.cpp:90
 msgid "The door is blocked"
-msgstr ""
+msgstr "Дверь блокирована"
 
 #: src/common/constants.cpp:91
 msgid "Something is blocking that door"
-msgstr ""
+msgstr "Что-то блокирует дверь"
 
 #: src/common/constants.cpp:92
 msgid "You can't use that door; something is in the way"
@@ -347,7 +346,7 @@ msgstr ""
 
 #: src/common/constants.cpp:110
 msgid "Select a skill first."
-msgstr ""
+msgstr "Сначала выберите навык."
 
 #: src/common/constants.cpp:111
 msgid "S.C.O.U.R.G.E. dialog"
@@ -564,9 +563,8 @@ msgid "%s resists the spell with magic item!"
 msgstr ""
 
 #: src/multiplayer.cpp:33
-#, fuzzy
 msgid "Multiplayer Setup"
-msgstr "Multiplayer Game"
+msgstr ""
 
 #: src/multiplayer.cpp:38
 msgid "Host a game"
@@ -593,9 +591,8 @@ msgid "Join a game"
 msgstr ""
 
 #: src/multiplayer.cpp:55
-#, fuzzy
 msgid "Start Game"
-msgstr "Multiplayer Game"
+msgstr ""
 
 #: src/multiplayer.cpp:58
 msgid "Select a character"
@@ -616,9 +613,9 @@ msgid "Can't find path to target. Sorry!"
 msgstr ""
 
 #: src/creature.cpp:942
-#, fuzzy, c-format
+#, c-format
 msgid "%s is overloaded."
-msgstr "Options"
+msgstr ""
 
 #: src/creature.cpp:1003
 #, c-format
@@ -636,9 +633,9 @@ msgid "%1$s eats %2$s."
 msgstr ""
 
 #: src/creature.cpp:1054 src/creature.cpp:1072 src/creature.cpp:1087
-#, fuzzy, c-format
+#, c-format
 msgid "%s is used up."
-msgstr "Options"
+msgstr ""
 
 #: src/creature.cpp:1060
 #, c-format
@@ -720,9 +717,8 @@ msgid "%s looses %d experience points!"
 msgstr ""
 
 #: src/creature.cpp:2106
-#, fuzzy
 msgid "*Mission*"
-msgstr "Options"
+msgstr ""
 
 #: src/creature.cpp:2107
 msgid "*Boss*"
@@ -794,9 +790,8 @@ msgid "Loading Shapes"
 msgstr ""
 
 #: src/shapepalette.cpp:736
-#, fuzzy
 msgid "Loading Locations"
-msgstr "Options"
+msgstr ""
 
 #: src/session.cpp:102 src/item.cpp:303 src/item.cpp:339 src/item.cpp:510
 msgid "Loading Items"
@@ -904,9 +899,8 @@ msgid "*Cursed* "
 msgstr ""
 
 #: src/item.cpp:268 src/item.cpp:274 src/item.cpp:280
-#, fuzzy
 msgid " *Mission*"
-msgstr "Options"
+msgstr ""
 
 #: src/item.cpp:800
 msgid "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $symbol"
@@ -1143,9 +1137,9 @@ msgid "...%s hits for %d points of damage"
 msgstr ""
 
 #: src/battle.cpp:1297
-#, fuzzy, c-format
+#, c-format
 msgid "...%s is killed!"
-msgstr "Options"
+msgstr ""
 
 #: src/battle.cpp:1313
 #, c-format
@@ -1283,7 +1277,7 @@ msgstr ""
 
 #: src/optionsmenu.cpp:45 src/mainmenu.cpp:58
 msgid "Options"
-msgstr "Options"
+msgstr ""
 
 #: src/optionsmenu.cpp:51
 msgid "Gameplay"
@@ -1298,9 +1292,8 @@ msgid "Audio"
 msgstr ""
 
 #: src/optionsmenu.cpp:57
-#, fuzzy
 msgid "Controls"
-msgstr "Options"
+msgstr ""
 
 #: src/optionsmenu.cpp:60 src/savegamedialog.cpp:52 src/mapeditor.cpp:87
 msgid "Save"
@@ -1615,9 +1608,8 @@ msgid "Exit game"
 msgstr ""
 
 #: src/scourge.cpp:2131
-#, fuzzy
 msgid "Game options"
-msgstr "Options"
+msgstr ""
 
 #: src/scourge.cpp:2138
 msgid "Move as a group"
@@ -1665,9 +1657,8 @@ msgid "...In Turn..."
 msgstr ""
 
 #: src/scourge.cpp:2707
-#, fuzzy
 msgid "Pause Game"
-msgstr "New Game"
+msgstr ""
 
 #: src/scourge.cpp:2711
 msgid "Unpause game."
@@ -1783,9 +1774,8 @@ msgid "Current saved games:"
 msgstr ""
 
 #: src/savegamedialog.cpp:51
-#, fuzzy
 msgid "New Save"
-msgstr "New Game"
+msgstr ""
 
 #: src/savegamedialog.cpp:53 src/mapeditor.cpp:86
 msgid "Load"
@@ -1844,9 +1834,8 @@ msgid "No savegames have been created yet."
 msgstr ""
 
 #: src/savegamedialog.cpp:266
-#, fuzzy
 msgid "st"
-msgstr "Options"
+msgstr ""
 
 #: src/savegamedialog.cpp:267
 msgid "nd"
@@ -2074,9 +2063,8 @@ msgid "Train!"
 msgstr ""
 
 #: src/traindialog.cpp:96
-#, fuzzy
 msgid "Cost"
-msgstr "Options"
+msgstr ""
 
 #: src/traindialog.cpp:114
 #, c-format
@@ -2138,9 +2126,8 @@ msgid "Identify"
 msgstr ""
 
 #: src/infogui.cpp:70 src/pceditor.cpp:465 src/mapeditor.cpp:82
-#, fuzzy
 msgid "Name:"
-msgstr "New Game"
+msgstr ""
 
 #: src/infogui.cpp:75
 msgid "Detailed Description:"
@@ -2155,9 +2142,9 @@ msgid "Requirements"
 msgstr ""
 
 #: src/infogui.cpp:204
-#, fuzzy, c-format
+#, c-format
 msgid "%s is too low."
-msgstr "Options"
+msgstr ""
 
 #: src/infogui.cpp:211
 #, c-format
@@ -2345,9 +2332,8 @@ msgid "Character Details"
 msgstr ""
 
 #: src/pceditor.cpp:439
-#, fuzzy
 msgid "Name"
-msgstr "New Game"
+msgstr ""
 
 #: src/pceditor.cpp:441
 msgid "Profession"
@@ -2446,23 +2432,23 @@ msgstr ""
 
 #: src/mainmenu.cpp:55
 msgid "New Game"
-msgstr "New Game"
+msgstr ""
 
 #: src/mainmenu.cpp:56
 msgid "Continue Game"
-msgstr "Continue Game"
+msgstr ""
 
 #: src/mainmenu.cpp:57
 msgid "Multiplayer Game"
-msgstr "Multiplayer Game"
+msgstr ""
 
 #: src/mainmenu.cpp:59 src/mainmenu.cpp:124
 msgid "About S.c.o.u.r.g.e."
-msgstr "About S.c.o.u.r.g.e."
+msgstr ""
 
 #: src/mainmenu.cpp:60
 msgid "Quit"
-msgstr "Quit"
+msgstr ""
 
 #: src/mainmenu.cpp:107
 msgid "New Game Confirmation"
@@ -2596,9 +2582,8 @@ msgid "Select map location: (click on map, drag to move)"
 msgstr ""
 
 #: src/mapeditor.cpp:285
-#, fuzzy
 msgid "New Map"
-msgstr "New Game"
+msgstr ""
 
 #: src/mapeditor.cpp:286
 msgid "Apply"
@@ -2718,14 +2703,13 @@ msgid "Click on a spell or capability to select it..."
 msgstr ""
 
 #: src/equip.cpp:178
-#, fuzzy
 msgid "MP Cost"
-msgstr "Options"
+msgstr ""
 
 #: src/equip.cpp:255 src/inven.cpp:163
-#, fuzzy, c-format
+#, c-format
 msgid "%s picks up %s."
-msgstr "Options"
+msgstr ""
 
 #: src/equip.cpp:266
 msgid "You can't fit the item!"
@@ -2832,9 +2816,8 @@ msgid "XP"
 msgstr ""
 
 #: src/portrait.cpp:224
-#, fuzzy
 msgid "Coins"
-msgstr "Options"
+msgstr ""
 
 #: src/portrait.cpp:283
 msgid "Resistances"
@@ -5405,9 +5388,8 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:702 ../scourge_data/maps/hq.cfg:194
-#, fuzzy
 msgid "Cronostar"
-msgstr "Options"
+msgstr ""
 
 #: ../scourge_data/config/otheritem.cfg:708
 msgid "A faint smell of decayed flowers hangs in the air."
@@ -7301,9 +7283,8 @@ msgid "%s is not protected anymore"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:32
-#, fuzzy
 msgid "of Stones"
-msgstr "Options"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:36
 msgid "magic_protected"
@@ -7342,14 +7323,13 @@ msgid "of Jelly"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:51
-#, fuzzy
 msgid "poisoned"
-msgstr "Options"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:53
-#, fuzzy, c-format
+#, c-format
 msgid "%s is poisoned"
-msgstr "Options"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:54
 #, c-format
@@ -7501,9 +7481,8 @@ msgid "%s is awake"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:116
-#, fuzzy
 msgid "of Quiet"
-msgstr "Quit"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:121
 msgid "Basic Group"
@@ -7589,9 +7568,8 @@ msgid "of the Fiend"
 msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:161
-#, fuzzy
 msgid "Piety"
-msgstr "Quit"
+msgstr ""
 
 #: ../scourge_data/config/rpg.cfg:162
 msgid "A pious character follows his/her deity's wishes more closely."
@@ -8665,9 +8643,8 @@ msgid "gift"
 msgstr ""
 
 #: ../scourge_data/script/map.nut:296 ../scourge_data/maps/temple.cfg:173
-#, fuzzy
 msgid "tokens"
-msgstr "Options"
+msgstr ""
 
 #: ../scourge_data/script/map.nut:300 ../scourge_data/maps/hq.cfg:144
 msgid "doom"
@@ -12342,9 +12319,8 @@ msgid ""
 msgstr ""
 
 #: ../scourge_data/maps/tree.cfg:18
-#, fuzzy
 msgid "what,Cronostar"
-msgstr "Options"
+msgstr ""
 
 #: ../scourge_data/maps/tree.cfg:19
 msgid ""
@@ -12600,27 +12576,3 @@ msgstr ""
 #: ../scourge_data/maps/tree.cfg:52
 msgid "You should never see this message."
 msgstr ""
-
-#, fuzzy
-#~ msgid "%1$s picks up %2$s."
-#~ msgstr "Options"
-
-#, fuzzy
-#~ msgid "potions"
-#~ msgstr "Options"
-
-#, fuzzy
-#~ msgid "Mission"
-#~ msgstr "Options"
-
-#, fuzzy
-#~ msgid "Loading missions"
-#~ msgstr "Options"
-
-#, fuzzy
-#~ msgid "Multiplier"
-#~ msgstr "Multiplayer Game"
-
-#, fuzzy
-#~ msgid "Action"
-#~ msgstr "Options"

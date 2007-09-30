@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-09-19 08:25-0700\n"
+"POT-Creation-Date: 2007-09-30 14:15-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,53 +89,53 @@ msgstr ""
 msgid "%s feels a loss of contentment."
 msgstr ""
 
-#: src/render/map.cpp:3156
+#: src/render/map.cpp:3154
 msgid "You need to name the map first."
 msgstr ""
 
-#: src/render/map.cpp:3366 src/render/map.cpp:3656
+#: src/render/map.cpp:3364 src/render/map.cpp:3654
 msgid "Enter a name of a map to load."
 msgstr ""
 
-#: src/render/map.cpp:3387
+#: src/render/map.cpp:3385
 msgid "Loading map"
 msgstr ""
 
-#: src/render/map.cpp:3392 src/dungeongenerator.cpp:593 src/mondrian.cpp:485
+#: src/render/map.cpp:3390 src/dungeongenerator.cpp:593 src/mondrian.cpp:485
 msgid "Loading theme"
 msgstr ""
 
-#: src/render/map.cpp:3445
+#: src/render/map.cpp:3443
 msgid "Starting map"
 msgstr ""
 
-#: src/render/map.cpp:3468
+#: src/render/map.cpp:3466
 msgid "Initializing map"
 msgstr ""
 
-#: src/render/map.cpp:3605
+#: src/render/map.cpp:3603
 msgid "Finishing map"
 msgstr ""
 
-#: src/render/map.cpp:3611 src/rpg/monster.cpp:26 src/session.cpp:115
+#: src/render/map.cpp:3609 src/rpg/monster.cpp:26 src/session.cpp:115
 msgid "Loading Creatures"
 msgstr ""
 
-#: src/render/map.cpp:3629
+#: src/render/map.cpp:3627
 msgid "Starting party"
 msgstr ""
 
-#: src/render/map.cpp:3649
+#: src/render/map.cpp:3647
 #, c-format
 msgid "Map loaded: %s"
 msgstr ""
 
-#: src/render/map.cpp:3670
+#: src/render/map.cpp:3668
 #, c-format
 msgid "Can't find map: %s"
 msgstr ""
 
-#: src/render/map.cpp:3680
+#: src/render/map.cpp:3678
 #, c-format
 msgid "Map header loaded: %s"
 msgstr ""
@@ -611,173 +611,173 @@ msgstr ""
 msgid "Can't find path to target. Sorry!"
 msgstr ""
 
-#: src/creature.cpp:943
+#: src/creature.cpp:942
 #, c-format
 msgid "%s is overloaded."
 msgstr ""
 
-#: src/creature.cpp:1004
+#: src/creature.cpp:1003
 #, c-format
 msgid "%s is not overloaded anymore."
 msgstr ""
 
-#: src/creature.cpp:1040
+#: src/creature.cpp:1039
 #, c-format
 msgid "%s is not hungry at the moment."
 msgstr ""
 
-#: src/creature.cpp:1051
+#: src/creature.cpp:1050
 #, c-format
 msgid "%1$s eats %2$s."
 msgstr ""
 
-#: src/creature.cpp:1055 src/creature.cpp:1073 src/creature.cpp:1088
+#: src/creature.cpp:1054 src/creature.cpp:1072 src/creature.cpp:1087
 #, c-format
 msgid "%s is used up."
 msgstr ""
 
-#: src/creature.cpp:1061
+#: src/creature.cpp:1060
 #, c-format
 msgid "%s is not thirsty at the moment."
 msgstr ""
 
-#: src/creature.cpp:1068
+#: src/creature.cpp:1067
 #, c-format
 msgid "%1$s drinks %2$s."
 msgstr ""
 
-#: src/creature.cpp:1083
+#: src/creature.cpp:1082
 #, c-format
 msgid "%1$s drinks from %2$s."
 msgstr ""
 
-#: src/creature.cpp:1093
+#: src/creature.cpp:1092
 msgid "You cannot eat or drink that!"
 msgstr ""
 
-#: src/creature.cpp:1113 src/spellcaster.cpp:282
+#: src/creature.cpp:1112 src/spellcaster.cpp:282
 #, c-format
 msgid "%s heals %d points."
 msgstr ""
 
-#: src/creature.cpp:1122
+#: src/creature.cpp:1121
 #, c-format
 msgid "%s receives %d magic points."
 msgstr ""
 
-#: src/creature.cpp:1130 src/spellcaster.cpp:298
+#: src/creature.cpp:1129 src/spellcaster.cpp:298
 #, c-format
 msgid "%s feels impervious to damage!"
 msgstr ""
 
-#: src/creature.cpp:1150
+#: src/creature.cpp:1149
 #, c-format
 msgid "%s feels at peace."
 msgstr ""
 
-#: src/creature.cpp:1180
+#: src/creature.cpp:1179
 #, c-format
 msgid "%1$s will consume %2$s."
 msgstr ""
 
-#: src/creature.cpp:1184
+#: src/creature.cpp:1183
 #, c-format
 msgid "%1$s will cast %2$s."
 msgstr ""
 
-#: src/creature.cpp:1188
+#: src/creature.cpp:1187
 #, c-format
 msgid "%1$s will use capability %2$s."
 msgstr ""
 
-#: src/creature.cpp:1573
+#: src/creature.cpp:1572
 #, c-format
 msgid "%s is raised from the dead!"
 msgstr ""
 
-#: src/creature.cpp:1607
+#: src/creature.cpp:1606
 #, c-format
 msgid "  %s levels up!"
 msgstr ""
 
-#: src/creature.cpp:1624
+#: src/creature.cpp:1623
 #, c-format
 msgid "%s gains %d experience points."
 msgstr ""
 
-#: src/creature.cpp:1627
+#: src/creature.cpp:1626
 #, c-format
 msgid "%s gains a level!"
 msgstr ""
 
-#: src/creature.cpp:1631
+#: src/creature.cpp:1630
 #, c-format
 msgid "%s looses %d experience points!"
 msgstr ""
 
-#: src/creature.cpp:2107
+#: src/creature.cpp:2106
 msgid "*Mission*"
 msgstr ""
 
-#: src/creature.cpp:2108
+#: src/creature.cpp:2107
 msgid "*Boss*"
 msgstr ""
 
-#: src/creature.cpp:2198
+#: src/creature.cpp:2197
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2210
+#: src/creature.cpp:2209
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2407
+#: src/creature.cpp:2406
 msgid "...Attack from blind-spot!"
 msgstr ""
 
-#: src/creature.cpp:2543 src/creature.cpp:2592
+#: src/creature.cpp:2542 src/creature.cpp:2591
 msgid "skill"
 msgstr ""
 
-#: src/creature.cpp:2547 src/creature.cpp:2591 src/infogui.cpp:414
+#: src/creature.cpp:2546 src/creature.cpp:2590 src/infogui.cpp:414
 msgid "vs."
 msgstr ""
 
-#: src/creature.cpp:2549
+#: src/creature.cpp:2548
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2587 src/scourge.cpp:3613
+#: src/creature.cpp:2586 src/scourge.cpp:3613
 msgid "CTH"
 msgstr ""
 
-#: src/creature.cpp:2589
+#: src/creature.cpp:2588
 msgid "max"
 msgstr ""
 
-#: src/creature.cpp:2951
+#: src/creature.cpp:2950
 #, c-format
 msgid "%1$s notices a trap!"
 msgstr ""
 
-#: src/creature.cpp:2967
+#: src/creature.cpp:2966
 #, c-format
 msgid "%1$s notices a secret door!"
 msgstr ""
 
-#: src/creature.cpp:2985
+#: src/creature.cpp:2984
 #, c-format
 msgid "%1$s blunders into a trap and takes %2$d points of damage!"
 msgstr ""
 
-#: src/creature.cpp:2997
+#: src/creature.cpp:2996
 #, c-format
 msgid "%1$s attempts to disable the trap:"
 msgstr ""
 
-#: src/creature.cpp:3007
+#: src/creature.cpp:3006
 #, c-format
 msgid "    and fails! %1$s takes %2$d points of damage!"
 msgstr ""
@@ -1875,51 +1875,51 @@ msgstr ""
 msgid "Compressing free space"
 msgstr ""
 
-#: src/terraingenerator.cpp:151
-msgid "Adding traps"
-msgstr ""
-
-#: src/terraingenerator.cpp:154
-msgid "Adding containers"
-msgstr ""
-
-#: src/terraingenerator.cpp:157
+#: src/terraingenerator.cpp:152
 msgid "Adding gates"
 msgstr ""
 
-#: src/terraingenerator.cpp:164
+#: src/terraingenerator.cpp:160
 msgid "Adding party"
 msgstr ""
 
-#: src/terraingenerator.cpp:172
+#: src/terraingenerator.cpp:168
 msgid "Adding teleporters"
 msgstr ""
 
-#: src/terraingenerator.cpp:179
-msgid "Locking doors and chests"
-msgstr ""
-
-#: src/terraingenerator.cpp:182
-msgid "Calculating room values"
-msgstr ""
-
-#: src/terraingenerator.cpp:185
+#: src/terraingenerator.cpp:175
 msgid "Adding mission objectives"
 msgstr ""
 
-#: src/terraingenerator.cpp:188
+#: src/terraingenerator.cpp:181
+msgid "Adding traps"
+msgstr ""
+
+#: src/terraingenerator.cpp:184
+msgid "Adding containers"
+msgstr ""
+
+#: src/terraingenerator.cpp:187
+msgid "Locking doors and chests"
+msgstr ""
+
+#: src/terraingenerator.cpp:190
+msgid "Calculating room values"
+msgstr ""
+
+#: src/terraingenerator.cpp:193
 msgid "Adding monsters"
 msgstr ""
 
-#: src/terraingenerator.cpp:192
+#: src/terraingenerator.cpp:197
 msgid "Adding items"
 msgstr ""
 
-#: src/terraingenerator.cpp:195
+#: src/terraingenerator.cpp:200
 msgid "Adding furniture"
 msgstr ""
 
-#: src/terraingenerator.cpp:199
+#: src/terraingenerator.cpp:204
 msgid "Cleaning up"
 msgstr ""
 
@@ -2873,15 +2873,15 @@ msgid ""
 "Uzudil|Amazing portraits by Ben|Additional portraits by Omnisicent Colossus|"
 "Music by Toofan and Vincent|Rpg expertese by Michi, Elscouta, Nolendil|"
 "SCOURGEweb.org maintained and hosted by Omniscient Colossus|Original Forums "
-"and web administration by Charlie|More coding by daroth-u and Callahan|Web/"
-"cvs/svn and other services by sourceforge.net|Additional 3d objects by "
-"Omniscient Colossus|Enforcement of the law by Mormuth the Hairy|Dwarven "
-"poetry by the Order of the Grizzled Pony|Quake models from polycount|"
-"Textures by the wadfather|Texture Tweaking by Omniscient Colossus|(see "
-"README file for details on contributions.)|Playtesting and mostly civil "
-"encouragement by many at happypenguin.org|Additional testing and general "
-"hazing from the very helpful members of rpgcodex.com|Many happy "
-"interruptions in bugfixing by Abe & Asha|"
+"and web administration by Charlie|More coding by daroth-u and Callahan|Paths "
+"were found by Jono|Web/cvs/svn and other services by sourceforge.net|"
+"Additional 3d objects by Omniscient Colossus|Enforcement of the law by "
+"Mormuth the Hairy|Dwarven poetry by the Order of the Grizzled Pony|Quake "
+"models from polycount|Textures by the wadfather|Texture Tweaking by "
+"Omniscient Colossus|(see README file for details on contributions.)|"
+"Playtesting and mostly civil encouragement by many at happypenguin.org|"
+"Additional testing and general hazing from the very helpful members of "
+"rpgcodex.com|Many happy interruptions in bugfixing by Abe & Asha|"
 msgstr ""
 
 #: ../scourge_data/config/map.cfg:215
@@ -8561,118 +8561,118 @@ msgid ""
 "souls... Amod! I am close...\"||With that Mothrazu passes from this world."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:115
+#: ../scourge_data/script/map.nut:117
 #, c-format
 msgid "The mighty lord %s reaches towards you,"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:117
+#: ../scourge_data/script/map.nut:119
 msgid "...alas, the deity can aid you no more today."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:124
+#: ../scourge_data/script/map.nut:126
 msgid "...and fills your spirit with energy."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:127
+#: ../scourge_data/script/map.nut:129
 #, c-format
 msgid "Your presence angers the mighty lord %s!"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:131
+#: ../scourge_data/script/map.nut:133
 msgid "...the deity's wrath scours your flesh!"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:133
+#: ../scourge_data/script/map.nut:135
 #, c-format
 msgid "The mighty lord %s ignores you."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:248
+#: ../scourge_data/script/map.nut:250
 #, c-format
 msgid "%s conjures up magic with blinding speed!"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:269
+#: ../scourge_data/script/map.nut:271
 msgid "dragonscale"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:270
+#: ../scourge_data/script/map.nut:272
 msgid "armor"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:271
+#: ../scourge_data/script/map.nut:273
 msgid "Yes, yes... quite so... carry on!"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:275
+#: ../scourge_data/script/map.nut:277
 msgid "door"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:276
+#: ../scourge_data/script/map.nut:278
 msgid "seal"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:277
+#: ../scourge_data/script/map.nut:279
 msgid "sealed"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:278
+#: ../scourge_data/script/map.nut:280
 msgid "lock"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:279 ../scourge_data/maps/library.cfg:52
+#: ../scourge_data/script/map.nut:281 ../scourge_data/maps/library.cfg:52
 msgid "locked"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:282
+#: ../scourge_data/script/map.nut:284
 msgid "after"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:282
+#: ../scourge_data/script/map.nut:284
 msgid "stop"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:289
+#: ../scourge_data/script/map.nut:291
 msgid "serves"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:289
+#: ../scourge_data/script/map.nut:291
 msgid "gift"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:294 ../scourge_data/maps/temple.cfg:173
+#: ../scourge_data/script/map.nut:296 ../scourge_data/maps/temple.cfg:173
 msgid "tokens"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:298 ../scourge_data/maps/hq.cfg:144
+#: ../scourge_data/script/map.nut:300 ../scourge_data/maps/hq.cfg:144
 msgid "doom"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:302
+#: ../scourge_data/script/map.nut:304
 msgid "karzul"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:328
+#: ../scourge_data/script/map.nut:330
 msgid "...Brand of Iconoclast growls in a low tone..."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:332
+#: ../scourge_data/script/map.nut:334
 #, c-format
 msgid "...damage is increased by %d pts!"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:344
+#: ../scourge_data/script/map.nut:346
 #, c-format
 msgid "...damage is reduced by %d pts! (Cloak of Hateful Vengeance)"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:370
+#: ../scourge_data/script/map.nut:372
 #, c-format
 msgid "...damage is reduced by %d pts! (Cloak of Safe Passage)"
 msgstr ""
 
-#: ../scourge_data/script/map.nut:409
+#: ../scourge_data/script/map.nut:411
 msgid ""
 "You find yourself on a barren plain. The air is thick with moisture and very "
 "still. The bleak ground appears to emit a cancerous odor like the smell of "
@@ -8683,7 +8683,7 @@ msgid ""
 "extra effort."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:459
+#: ../scourge_data/script/map.nut:461
 msgid ""
 "The ancient walls appear to cave inward as if pushed on by the very roots of "
 "the forest from above. A metallic smell cuts the air and the noises echoing "
@@ -8693,12 +8693,12 @@ msgid ""
 "enough, frequent quakes shake the dungeon..."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:479
+#: ../scourge_data/script/map.nut:481
 #, c-format
 msgid "%s feels very ill suddenly."
 msgstr ""
 
-#: ../scourge_data/script/map.nut:539
+#: ../scourge_data/script/map.nut:541
 msgid ""
 "A baleful wind blows bringing the scent of slow vegetative decay. Off in the "
 "distance you glance a mighty tree, standing in the center of a barren plane "
