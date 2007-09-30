@@ -34,8 +34,6 @@ using namespace std;
 
 bool loading = false;
 
-Uint32 lastCommandSound = 0;
-
 //#define DEBUG_CAPABILITIES
 
 #define MOVE_DELAY 7
@@ -664,14 +662,11 @@ bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) 
 
   // FIXME: when to play sound?
   if( ret && session->getParty()->getPlayer() == this ) {
-      Uint32 now = SDL_GetTicks();
     // play command sound
-    if( now - lastCommandSound > 3000 && x > -1 && 
-       0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
+    if(0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
        !getStateMod(StateMod::dead)) {
       //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
       playCharacterSound( GameAdapter::COMMAND_SOUND );
-      lastCommandSound = now;
     }
   }
   
@@ -722,14 +717,11 @@ bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNot
   // FIXME: when to play sound?
   if( ret && session->getParty()->getPlayer() == this ) {
     // play command sound
-    Uint32 now = SDL_GetTicks();
-    // play command sound
-    if( now - lastCommandSound > 3000 && creature->getX() > -1 && 
+    if(creature->getX() > -1 && 
        0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
        !getStateMod(StateMod::dead)) {
       //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
       playCharacterSound( GameAdapter::COMMAND_SOUND );
-      lastCommandSound = now;
     }
   }
   return ret;

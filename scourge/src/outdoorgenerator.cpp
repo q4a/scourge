@@ -311,3 +311,12 @@ void OutdoorGenerator::printMaze() {
 		}
 	}
 }
+
+void OutdoorGenerator::addRugs( Map *map, ShapePalette *shapePal ) {
+     // no rugs
+}
+
+void OutdoorGenerator::addTraps( Map *map, ShapePalette *shapePal ) {
+     // no traps
+}
+     
