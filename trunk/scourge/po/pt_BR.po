@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-09-30 14:15-0700\n"
+"POT-Creation-Date: 2007-10-08 23:05+0200\n"
 "PO-Revision-Date: 2007-09-24 13:10+0000\n"
 "Last-Translator: farrer <farrer@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
@@ -6658,6 +6658,12 @@ msgid ""
 "again! He vows to "
 msgstr ""
 
+#: ../scourge_data/config/mission.cfg:84
+msgid ""
+" for us in the near future. Actually, this worries me far more than most "
+"missions we accept..."
+msgstr ""
+
 #: ../scourge_data/config/mission.cfg:85
 msgid ""
 "Remember to find the wand for $Sabien! He is an important client and he's in "
@@ -6764,6 +6770,15 @@ msgstr "Capítulo 5: Uma rápida visita com Mycotharsius"
 msgid ""
 "Our agents have located Mycotharsius in the cellars of a peaceful monastery "
 "called "
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:143
+msgid ""
+", near the city of Orn. You must journey here and confront him. Before "
+"ridding the world of him for good, find out as much as you can about why he "
+"hired the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid "
+"however, that his failures made Mycotharsius quite Mad. Therefore if all he "
+"can offer is gibberish, try to look around his lair for clues."
 msgstr ""
 
 #: ../scourge_data/config/mission.cfg:144
