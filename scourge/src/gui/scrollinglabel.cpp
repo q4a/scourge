@@ -316,15 +316,11 @@ bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y)
 	case SDL_MOUSEBUTTONDOWN:
 		if( event->button.button == SDL_BUTTON_WHEELUP ) {
 			if( isInside(x, y) && getHeight() > scrollerHeight ) {
-				scrollerY -= 15;
-				if( scrollerY < 0 ) scrollerY = 0;
-				value = (int)( scrollerY / ((float)(getHeight() - scrollerHeight) / 100.0f) );
+				moveSelectionUp();
 			}
 		} if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
 			if( isInside(x, y) && getHeight() > scrollerHeight ) {
-				scrollerY += 15;
-				if( scrollerY > getHeight() - scrollerHeight - 1 ) scrollerY = getHeight() - scrollerHeight - 1;
-				value = (int)( scrollerY / ((float)(getHeight() - scrollerHeight) / 100.0f) );
+				moveSelectionDown();
 			}
 		} else if( event->button.button == SDL_BUTTON_LEFT ) {
 			if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
@@ -332,6 +328,12 @@ bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y)
 				dragging = inside;
 				dragX = x - getX();
 				dragY = y - (scrollerY + getY());
+				if((y - getY()) < scrollerY) { // we clicked above the scroller
+					moveSelectionUp();
+				}
+				else if((y -getY()) > (scrollerY + scrollerHeight)) { // we clicked below the scroller
+					moveSelectionDown();
+				}
 			} else if(isInside(x, y)) {
 				dragging = false;
 				innerDrag = (selectedLine != -1);
@@ -354,6 +356,18 @@ bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y)
     scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
   }
   return false;
+}
+
+void ScrollingLabel::moveSelectionUp() {
+	scrollerY -= 15;
+	if( scrollerY < 0 ) scrollerY = 0;
+	value = (int)( scrollerY / ((float)(getHeight() - scrollerHeight) / 100.0f) );
+}
+
+void ScrollingLabel::moveSelectionDown() {
+	scrollerY += 15;
+	if( scrollerY > getHeight() - scrollerHeight - 1 ) scrollerY = getHeight() - scrollerHeight - 1;
+	value = (int)( scrollerY / ((float)(getHeight() - scrollerHeight) / 100.0f) );	
 }
 
 int ScrollingLabel::getWordPos( int x, int y ) {
