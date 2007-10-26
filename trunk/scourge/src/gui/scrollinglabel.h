@@ -133,6 +133,8 @@ class ScrollingLabel : public Widget {
    int getWordPos( int x, int y );
   //  void selectLine(int x, int y);
   //  void drawIcon( int x, int y, GLuint icon );
+	 void moveSelectionUp();
+	 void moveSelectionDown();
 };
 
 #endif

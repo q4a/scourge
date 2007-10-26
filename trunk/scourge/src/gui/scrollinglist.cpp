@@ -475,6 +475,13 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 					dragX = x - getX();
 					dragY = y - (scrollerY + getY());
 					//((Window*)parent)->getScourgeGui()->lockMouse( this );
+
+					if((y - getY()) < scrollerY) { // we clicked above the scroller
+						moveSelectionUp();
+					}
+					else if((y -getY()) > (scrollerY + scrollerHeight)) { // we clicked below the scroller
+						moveSelectionDown();
+					} 
 				} else if(isInside(x, y)) {
 					dragging = false;
 					selectLine( x, y, 
