@@ -54,7 +54,7 @@ private:
   std::string getNextWord(const std::string theInput, int fromPos, int &endWord);
   
   // replace " " by "_" in a string
-  std::string replaceSpaces(std::string s);
+  void replaceSpaces(std::string& s);
   
   void writeFile(std::ofstream *fileOut, char *text);  
   

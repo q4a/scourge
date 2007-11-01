@@ -447,7 +447,7 @@ void ComputeNormals(t3DModel *pModel)
 
         //////////////// Now Get The Vertex Normals /////////////////
 
-        CVector3 vSum = {0.0, 0.0, 0.0};
+        CVector3 vSum(0.0, 0.0, 0.0);
         CVector3 vZero = vSum;
         int shared=0;
 
@@ -698,6 +698,13 @@ void Constants::findLocalResources(const char *appPath, char *dir) {
     *(p) = 0;
   }
   dir[0] = '\0';
+}
+
+CVector3::CVector3() {
+}
+
+CVector3::CVector3(float xn, float yn, float zn)
+ : x(xn),y(yn),z(zn) {
 }
 
 char* GetDataPath(char *file)

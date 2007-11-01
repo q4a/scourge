@@ -515,11 +515,6 @@ void GLCaveShape::dividePolys() {
 
 GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
 
-#define _point(_x,_y,_z) ( {\
-  CVector3 *v = new CVector3();\
-  v->x=_x; v->y=_y; v->z=_z;\
-  points.push_back( v );\
-} )
 #define _poly(_index,_p1,_p2,_p3,_u1,_v1,_u2,_v2,_u3,_v3,_tt) ( {\
   polys[_index]->push_back(new CaveFace(_p1,_p2,_p3,_u1,_v1,_u2,_v2,_u3,_v3,_tt));\
 } )
@@ -541,129 +536,129 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
 
   // store the points: note, that the order matters! (when calc. normals)
   // DIR_S flat
-  _point( w, 0, h );
-  _point( w, d, 0 );
-  _point( 0, d, 0 );
-  _point( 0, 0, h );  
+  points.push_back(new CVector3( w, 0, h ));
+  points.push_back(new CVector3( w, d, 0 ));
+  points.push_back(new CVector3( 0, d, 0 ));
+  points.push_back(new CVector3( 0, 0, h ));
   _poly( CAVE_INDEX_S, 0, 2, 1, 0, 1, 1, 0, 1, 1, CaveFace::WALL );  
   _poly( CAVE_INDEX_S, 0, 3, 2, 0, 1, 0, 0, 1, 0, CaveFace::WALL );
 
   // DIR_N flat
-  _point( w, d, h );
-  _point( w, 0, 0 );
-  _point( 0, 0, 0 );
-  _point( 0, d, h );
+  points.push_back(new CVector3( w, d, h ));
+  points.push_back(new CVector3( w, 0, 0 ));
+  points.push_back(new CVector3( 0, 0, 0 ));
+  points.push_back(new CVector3( 0, d, h ));
   _poly( CAVE_INDEX_N, 4, 5, 6, 0, 1, 1, 1, 1, 0, CaveFace::WALL );
   _poly( CAVE_INDEX_N, 4, 6, 7, 0, 1, 1, 0, 0, 0, CaveFace::WALL );
 
   // DIR_E flat
-  _point( 0, d, h );
-  _point( w, d, 0 );
-  _point( w, 0, 0 );
-  _point( 0, 0, h );
+  points.push_back(new CVector3( 0, d, h ));
+  points.push_back(new CVector3( w, d, 0 ));
+  points.push_back(new CVector3( w, 0, 0 ));
+  points.push_back(new CVector3( 0, 0, h ));
   _poly( CAVE_INDEX_E, 8, 9, 10, 0, 1, 1, 1, 1, 0, CaveFace::WALL );
   _poly( CAVE_INDEX_E, 8, 10, 11, 0, 1, 1, 0, 0, 0, CaveFace::WALL );
 
   // DIR_W flat  
-  _point( 0, 0, 0 );
-  _point( 0, d, 0 );
-  _point( w, d, h );
-  _point( w, 0, h );
+  points.push_back(new CVector3( 0, 0, 0 ));
+  points.push_back(new CVector3( 0, d, 0 ));
+  points.push_back(new CVector3( w, d, h ));
+  points.push_back(new CVector3( w, 0, h ));
   _poly( CAVE_INDEX_W, 12, 13, 14, 0, 1, 1, 1, 1, 0, CaveFace::WALL );
   _poly( CAVE_INDEX_W, 12, 14, 15, 0, 1, 1, 0, 0, 0, CaveFace::WALL );
 
   // DIR_NE corner
-  _point( 0, d, h );
-  _point( w, d, 0 );
-  _point( 0, 0, 0 );
+  points.push_back(new CVector3( 0, d, h ));
+  points.push_back(new CVector3( w, d, 0 ));
+  points.push_back(new CVector3( 0, 0, 0 ));
   _poly( CAVE_INDEX_NE, 16, 17, 18, 1, 1, 0, 1, 0.5f, 0, CaveFace::WALL );
 
   // DIR_SE corner
-  _point( 0, 0, h );
-  _point( 0, d, 0 );
-  _point( w, 0, 0 );
+  points.push_back(new CVector3( 0, 0, h ));
+  points.push_back(new CVector3( 0, d, 0 ));
+  points.push_back(new CVector3( w, 0, 0 ));
   _poly( CAVE_INDEX_SE, 19, 20, 21, 0, 1, 1, 1, 0.5f, 0, CaveFace::WALL );
   
   // DIR_SW corner
-  _point( 0, 0, 0 );
-  _point( w, d, 0 );
-  _point( w, 0, h );
+  points.push_back(new CVector3( 0, 0, 0 ));
+  points.push_back(new CVector3( w, d, 0 ));
+  points.push_back(new CVector3( w, 0, h ));
   _poly( CAVE_INDEX_SW, 22, 23, 24, 0, 1, 1, 1, 0.5f, 0, CaveFace::WALL );
   
   // DIR_NW corner
-  _point( w, 0, 0 );
-  _point( 0, d, 0 );
-  _point( w, d, h );
+  points.push_back(new CVector3( w, 0, 0 ));
+  points.push_back(new CVector3( 0, d, 0 ));
+  points.push_back(new CVector3( w, d, h ));
   _poly( CAVE_INDEX_NW, 25, 26, 27, 0, 1, 1, 1, 0.5f, 0, CaveFace::WALL );
 
   // DIR_NE inverse top
-  _point( 0, 0, h );
-  _point( w, d, h );
-  _point( 0, d, h );
+  points.push_back(new CVector3( 0, 0, h ));
+  points.push_back(new CVector3( w, d, h ));
+  points.push_back(new CVector3( 0, d, h ));
   _poly( CAVE_INDEX_INV_NE, 30, 29, 28, 0, 1, 1, 1, 0, 0, CaveFace::TOP );
 
   // DIR_SE inverse top
-  _point( w, 0, h );
-  _point( 0, d, h );
-  _point( 0, 0, h );
+  points.push_back(new CVector3( w, 0, h ));
+  points.push_back(new CVector3( 0, d, h ));
+  points.push_back(new CVector3( 0, 0, h ));
   _poly( CAVE_INDEX_INV_SE, 33, 32, 31, 0, 0, 0, 1, 1, 0, CaveFace::TOP );
     
   // DIR_SW  inverse top
-  _point( 0, 0, h );
-  _point( w, d, h );
-  _point( w, 0, h );
+  points.push_back(new CVector3( 0, 0, h ));
+  points.push_back(new CVector3( w, d, h ));
+  points.push_back(new CVector3( w, 0, h ));
   _poly( CAVE_INDEX_INV_SW, 34, 35, 36, 0, 0, 1, 1, 1, 0, CaveFace::TOP );
     
   // DIR_NW  inverse top
-  _point( w, 0, h );
-  _point( 0, d, h );
-  _point( w, d, h );
+  points.push_back(new CVector3( w, 0, h ));
+  points.push_back(new CVector3( 0, d, h ));
+  points.push_back(new CVector3( w, d, h ));
   _poly( CAVE_INDEX_INV_NW, 37, 38, 39, 1, 0, 0, 1, 1, 1, CaveFace::TOP );
 
   // DIR_NE inverse side
-  _point( 0, 0, h );
-  _point( w, d, h );
-  _point( w, 0, 0 );
+  points.push_back(new CVector3( 0, 0, h ));
+  points.push_back(new CVector3( w, d, h ));
+  points.push_back(new CVector3( w, 0, 0 ));
   _poly( CAVE_INDEX_INV_NE, 40, 41, 42, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
   
   // DIR_SE inverse side
-  _point( w, 0, h );
-  _point( 0, d, h );
-  _point( w, d, 0 );  
+  points.push_back(new CVector3( w, 0, h ));
+  points.push_back(new CVector3( 0, d, h ));
+  points.push_back(new CVector3( w, d, 0 ));
   _poly( CAVE_INDEX_INV_SE, 43, 44, 45, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
   
   // DIR_SW inverse side
-  _point( 0, d, 0 );
-  _point( w, d, h );
-  _point( 0, 0, h );
+  points.push_back(new CVector3( 0, d, 0 ));
+  points.push_back(new CVector3( w, d, h ));
+  points.push_back(new CVector3( 0, 0, h ));
   _poly( CAVE_INDEX_INV_SW, 46, 47, 48, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
   
   // DIR_NW inverse side
-  _point( 0, 0, 0 );
-  _point( 0, d, h );
-  _point( w, 0, h );
+  points.push_back(new CVector3( 0, 0, 0 ));
+  points.push_back(new CVector3( 0, d, h ));
+  points.push_back(new CVector3( w, 0, h ));
   _poly( CAVE_INDEX_INV_NW, 49, 50, 51, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
   
   // DIR_CROSS_NW inverse side
-  _point( w, 0, h );
-  _point( 0, d, h );
-  _point( 0, 0, 0 );
+  points.push_back(new CVector3( w, 0, h ));
+  points.push_back(new CVector3( 0, d, h ));
+  points.push_back(new CVector3( 0, 0, 0 ));
   _poly( CAVE_INDEX_CROSS_NW, 52, 53, 54, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
 
-  _point( w, 0, h );
-  _point( 0, d, h );
-  _point( w, d, 0 );
+  points.push_back(new CVector3( w, 0, h ));
+  points.push_back(new CVector3( 0, d, h ));
+  points.push_back(new CVector3( w, d, 0 ));
   _poly( CAVE_INDEX_CROSS_NW, 55, 56, 57, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
   
   // DIR_CROSS_NE inverse side
-  _point( 0, 0, h );
-  _point( w, d, h );
-  _point( w, 0, 0 );
+  points.push_back(new CVector3( 0, 0, h ));
+  points.push_back(new CVector3( w, d, h ));
+  points.push_back(new CVector3( w, 0, 0 ));
   _poly( CAVE_INDEX_CROSS_NE, 58, 59, 60, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
 
-  _point( 0, 0, h );
-  _point( w, d, h );
-  _point( 0, d, 0 );
+  points.push_back(new CVector3( 0, 0, h ));
+  points.push_back(new CVector3( w, d, h ));
+  points.push_back(new CVector3( 0, d, 0 ));
   _poly( CAVE_INDEX_CROSS_NE, 61, 62, 63, 1, 0, 0, 0, 0.5f, 1, CaveFace::WALL );
 
   // Remove dup. points: this creates a triangle mesh
