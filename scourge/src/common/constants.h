@@ -619,7 +619,10 @@ public:
 class CVector3
 {
 public:
-    float x, y, z;
+	float x, y, z;
+
+	CVector3();
+	CVector3(float x, float y, float z);
 };
 
 // This is our 2D point class.  This will be used to store the UV coordinates.

@@ -935,14 +935,14 @@ int UserConfiguration::getEngineAction(SDL_Event *event){
     res = -1;
     if(event->type == SDL_KEYDOWN){                
         s = SDL_GetKeyName(event->key.keysym.sym);        
-        s = replaceSpaces(s);         
+        replaceSpaces(s);
         if(keyDownBindings.find(s) != keyDownBindings.end()){             
             res = keyDownBindings[s];               
 				}
     }
     else if(event->type == SDL_KEYUP){
         s = SDL_GetKeyName(event->key.keysym.sym);
-        s = replaceSpaces(s);   
+        replaceSpaces(s);
         if(keyUpBindings.find(s) != keyUpBindings.end()){ 
             res = keyUpBindings[s]; 
 				}
@@ -1038,16 +1038,9 @@ string UserConfiguration::getNextWord(const string theInput, int fromPos, int &e
 
 }
 
-string UserConfiguration::replaceSpaces(string s){
-    unsigned int i;
-    for (i = 0; i < s.length(); i++){
-        if(s[i] == ' '){
-            s[i] = '_';
-        }            
-    }
-    return s;
-} 
-
+void UserConfiguration::replaceSpaces(string& s) {
+	replace(s.begin(), s.end(), ' ', '_');
+}
 
 UserConfiguration::~UserConfiguration(){
 
