@@ -101,13 +101,15 @@ private:
   GLuint displayListStart;
   bool initialized;
 	WindInfo windInfo;
+	float xrot3d, yrot3d, zrot3d;
 
 public:   
   C3DSShape(char *file_name, float div, Shapes *shapePal,
-			GLuint texture[], char *name, int descriptionGroup,
-			Uint32 color, Uint8 shapePalIndex=0, 
-			float size_x=0, float size_y=0, float size_z=0,
-      float offs_x=0, float offs_y=0, float offs_z=0);
+						GLuint texture[], char *name, int descriptionGroup,
+						Uint32 color, Uint8 shapePalIndex=0, 
+						float size_x=0, float size_y=0, float size_z=0,
+						float offs_x=0, float offs_y=0, float offs_z=0,
+						float xrot3d=0, float yrot3d=0, float zrot3d=0);
   ~C3DSShape();
 
   void initialize();
@@ -122,12 +124,20 @@ public:
 	inline float getWindValue() { return windInfo.getValue(); }
 
 protected:
-  void commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z );
+  void commonInit( char *file_name, float div, Shapes *shapePal, 
+									 float size_x, float size_y, float size_z, 
+									 float offs_x, float offs_y, float offs_z,
+									 float xrot3d, float yrot3d, float zrot3d );
   void preRenderLight();
   void resolveTextures();
   void normalizeModel();
   void createDisplayList( GLuint listName, bool isShadow );
 	void drawShape( bool isShadow );
+
+	inline GLfloat getXRot3d() { return xrot3d; }
+	inline GLfloat getYRot3d() { return yrot3d; }
+	inline GLfloat getZRot3d() { return zrot3d; }
+
 };
 
 #endif

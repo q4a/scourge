@@ -508,6 +508,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->o3ds_x = sv->o3ds_y = sv->o3ds_z = 0;  
 	sv->teleporter = 0;
 	sv->xrot = sv->yrot = sv->zrot = 0;
+	sv->xrot3d = sv->yrot3d = sv->zrot3d = 0;
 	sv->effectType = -1;
 	sv->effectWidth = sv->effectDepth = sv->effectHeight = 0;
 	sv->effectX = sv->effectY = sv->effectZ = 0;
@@ -620,6 +621,15 @@ void ShapePalette::init3dsShapes( ConfigLang *config ) {
       sv->o3ds_y = atof( strtok( NULL, "," ) );
       sv->o3ds_z = atof( strtok( NULL, "," ) );
     }
+
+		if( node->hasValue( "rotate_3d" ) ) {
+			strcpy( tmp, node->getValueAsString( "rotate_3d" ) );
+			if( strlen( tmp ) ) {
+				sv->xrot3d = atof( strtok( tmp, "," ) );
+				sv->yrot3d = atof( strtok( NULL, "," ) );
+				sv->zrot3d = atof( strtok( NULL, "," ) );
+			}
+		}
     
     // store it for now
     shapeValueVector.push_back(sv);
