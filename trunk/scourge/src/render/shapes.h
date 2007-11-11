@@ -48,6 +48,7 @@ typedef struct _ShapeValues {
   float m3ds_scale;
   float m3ds_x, m3ds_y, m3ds_z;
   float o3ds_x, o3ds_y, o3ds_z;  
+	float xrot3d, yrot3d, zrot3d;
   int teleporter;
   float xrot, yrot, zrot;
   int effectType;

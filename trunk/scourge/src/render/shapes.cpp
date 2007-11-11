@@ -248,7 +248,8 @@ void Shapes::initialize() {
                     sv->color,
                     (i + 1),
                     sv->m3ds_x, sv->m3ds_y, sv->m3ds_z,
-                    sv->o3ds_x, sv->o3ds_y, sv->o3ds_z );
+                    sv->o3ds_x, sv->o3ds_y, sv->o3ds_z,
+										sv->xrot3d, sv->yrot3d, sv->zrot3d );
     } else if(sv->torch > -1) {
       if(sv->torch == 5) {
         shapes[(i + 1)] =

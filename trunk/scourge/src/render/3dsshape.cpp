@@ -26,13 +26,14 @@
 using namespace std;
 
 C3DSShape::C3DSShape(char *file_name, float div, Shapes *shapePal, 
-					 GLuint texture[],
-					 char *name, int descriptionGroup,
-					 Uint32 color, Uint8 shapePalIndex,
-					 float size_x, float size_y, float size_z,
-           float offs_x, float offs_y, float offs_z ) :
+										 GLuint texture[],
+										 char *name, int descriptionGroup,
+										 Uint32 color, Uint8 shapePalIndex,
+										 float size_x, float size_y, float size_z,
+										 float offs_x, float offs_y, float offs_z,
+										 float xrot3d, float yrot3d, float zrot3d ) :
 	GLShape(0, 1, 1, 1, name, descriptionGroup, color, shapePalIndex) {
-	commonInit(file_name, div, shapePal, size_x, size_y, size_z, offs_x, offs_y, offs_z );
+	commonInit(file_name, div, shapePal, size_x, size_y, size_z, offs_x, offs_y, offs_z, xrot3d, yrot3d, zrot3d );
 #ifdef DEBUG_3DS
   debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, shapePalIndex);
   debugShape->initialize();
@@ -55,7 +56,7 @@ C3DSShape::~C3DSShape() {
   glDeleteLists( displayListStart, 2 );
 }
 
-void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z ) {
+void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z, float xrot3d, float yrot3d, float zrot3d ) {
   g_Texture[0] = 0;
   g_ViewMode = GL_TRIANGLES;
   this->divx = this->divy = this->divz = div;
@@ -66,6 +67,9 @@ void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, float s
   this->offs_x = offs_x; 
   this->offs_y = offs_y;
   this->offs_z = offs_z;
+	this->xrot3d = xrot3d;
+	this->yrot3d = yrot3d;
+	this->zrot3d = zrot3d;
 
   // First we need to actually load the .3DS file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("face.3ds").
@@ -87,6 +91,38 @@ void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, float s
 void C3DSShape::normalizeModel() {
 
   if (g_3DModel.pObject.size() <= 0) return;
+
+	// "rotate" the model
+	float n;
+	char tmp[80];
+	map<string, int> seenIndexes;
+	if( getZRot3d() != 0 || getXRot3d() != 0 || getYRot3d() != 0 ) {
+		for (int i = 0; i < g_3DModel.numOfObjects; i++) {
+			for (int j = 0; j < g_3DModel.pObject[i].numOfFaces; j++) {
+				for (int whichVertex = 0; whichVertex < 3; whichVertex++) {
+					int index = g_3DModel.pObject[i].pFaces[j].vertIndex[whichVertex];
+					sprintf(tmp, "%d,%d", i, index);
+					string key = tmp;
+					if(seenIndexes.find(key) == seenIndexes.end()) {
+						if( getZRot3d() != 0 ) {
+							n = g_3DModel.pObject[i].pVerts[ index ].x;
+							g_3DModel.pObject[i].pVerts[ index ].x = g_3DModel.pObject[i].pVerts[ index ].y;
+							g_3DModel.pObject[i].pVerts[ index ].y = n;
+						} else if( getYRot3d() != 0 ) {
+							n = g_3DModel.pObject[i].pVerts[ index ].x;
+							g_3DModel.pObject[i].pVerts[ index ].x = g_3DModel.pObject[i].pVerts[ index ].z;
+							g_3DModel.pObject[i].pVerts[ index ].z = n;
+						} else if( getXRot3d() != 0 ) {
+							n = g_3DModel.pObject[i].pVerts[ index ].y;
+							g_3DModel.pObject[i].pVerts[ index ].y = g_3DModel.pObject[i].pVerts[ index ].z;
+							g_3DModel.pObject[i].pVerts[ index ].z = n;
+						}
+						seenIndexes[key] = 1;
+					}
+				}
+			}
+		}
+	}
 
   // Find the lowest point
   float minx, miny, minz;  
@@ -115,8 +151,7 @@ void C3DSShape::normalizeModel() {
   //cerr << "min=(" << minx << "," << miny << "," << minz << ") max=(" << maxx << "," << maxy << "," << maxz << ")" << endl;
 
   // normalize vertecies
-  char tmp[80];
-  map<string, int> seenIndexes;
+  seenIndexes.clear();
   for (int i = 0; i < g_3DModel.numOfObjects; i++) {
     for (int j = 0; j < g_3DModel.pObject[i].numOfFaces; j++) {
       for (int whichVertex = 0; whichVertex < 3; whichVertex++) {
@@ -138,7 +173,7 @@ void C3DSShape::normalizeModel() {
   
   movex = 0;
   movey = maxy;
-  float n = 0.25 / DIV;
+  n = 0.25 / DIV;
   movez = n;
 
 	if( divx > 0 ) {
