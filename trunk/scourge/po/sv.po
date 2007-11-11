@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
 "POT-Creation-Date: 2007-11-11 18:34+0100\n"
-"PO-Revision-Date: 2007-11-11 16:59+0100\n"
+"PO-Revision-Date: 2007-11-11 22:16+0100\n"
 "Last-Translator: Alexander Kjäll <alex@alatest.com>\n"
 "Language-Team: alex <alex@alatest.com>\n"
 "MIME-Version: 1.0\n"
@@ -465,11 +465,11 @@ msgstr "Du har inte erfarenhet nog för att använda det ännu."
 
 #: src/common/constants.cpp:125
 msgid "Change key"
-msgstr "Byt nyckel"
+msgstr "Byt tagentbindning"
 
 #: src/common/constants.cpp:126
 msgid "Waiting for new key (Esc to cancel)"
-msgstr "Väntar på ny nyckel (Esc för att avbryta)"
+msgstr "Väntar på ny tanget (Esc för att avbryta)"
 
 #: src/common/constants.cpp:127
 msgid "Conversation"
@@ -1277,11 +1277,11 @@ msgstr "Ditt stöldförsök har misslyckats. Föremål och ex. konfiskerades."
 
 #: src/optionsmenu.cpp:45 src/mainmenu.cpp:58
 msgid "Options"
-msgstr "Valmöjligheter"
+msgstr "Inställningar"
 
 #: src/optionsmenu.cpp:51
 msgid "Gameplay"
-msgstr "Spelupplevelse"
+msgstr "Gränssnitt"
 
 #: src/optionsmenu.cpp:53
 msgid "Video"
@@ -2453,11 +2453,11 @@ msgstr "Nytt Spel"
 
 #: src/mainmenu.cpp:56
 msgid "Continue Game"
-msgstr "Fortsätt Påbörjat Spel"
+msgstr "Ladda Spel"
 
 #: src/mainmenu.cpp:57
 msgid "Multiplayer Game"
-msgstr "Multispelar Spel"
+msgstr "Flerspelar Spel"
 
 #: src/mainmenu.cpp:59 src/mainmenu.cpp:124
 msgid "About S.c.o.u.r.g.e."
