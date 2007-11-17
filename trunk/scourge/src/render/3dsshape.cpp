@@ -108,14 +108,26 @@ void C3DSShape::normalizeModel() {
 							n = g_3DModel.pObject[i].pVerts[ index ].x;
 							g_3DModel.pObject[i].pVerts[ index ].x = g_3DModel.pObject[i].pVerts[ index ].y;
 							g_3DModel.pObject[i].pVerts[ index ].y = n;
+
+							n = g_3DModel.pObject[i].pNormals[ index ].x;
+							g_3DModel.pObject[i].pNormals[ index ].x = g_3DModel.pObject[i].pNormals[ index ].y;
+							g_3DModel.pObject[i].pNormals[ index ].y = n;
 						} else if( getYRot3d() != 0 ) {
 							n = g_3DModel.pObject[i].pVerts[ index ].x;
 							g_3DModel.pObject[i].pVerts[ index ].x = g_3DModel.pObject[i].pVerts[ index ].z;
 							g_3DModel.pObject[i].pVerts[ index ].z = n;
+
+							n = g_3DModel.pObject[i].pNormals[ index ].x;
+							g_3DModel.pObject[i].pNormals[ index ].x = g_3DModel.pObject[i].pNormals[ index ].z;
+							g_3DModel.pObject[i].pNormals[ index ].z = n;
 						} else if( getXRot3d() != 0 ) {
 							n = g_3DModel.pObject[i].pVerts[ index ].y;
 							g_3DModel.pObject[i].pVerts[ index ].y = g_3DModel.pObject[i].pVerts[ index ].z;
 							g_3DModel.pObject[i].pVerts[ index ].z = n;
+
+							n = g_3DModel.pObject[i].pNormals[ index ].y;
+							g_3DModel.pObject[i].pNormals[ index ].y = g_3DModel.pObject[i].pNormals[ index ].z;
+							g_3DModel.pObject[i].pNormals[ index ].z = n;
 						}
 						seenIndexes[key] = 1;
 					}
