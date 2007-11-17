@@ -32,6 +32,14 @@ class GLShape;
 class GLTorch;
 class Shapes;
 
+typedef struct Occurs {
+	bool rooms_only;
+	int max_count;
+	char placement[100];
+	char use_function[255];
+	char theme[255];
+} Occurs;
+
 // temporary information when constructing shapes from a file
 typedef struct _ShapeValues {
   // char textureGroupIndex[100]; // index or theme ref.
@@ -58,6 +66,7 @@ typedef struct _ShapeValues {
 	float outdoorsWeight;
 	bool outdoorShadow;
 	bool wind;
+	Occurs occurs;
 } ShapeValues;
 
 typedef struct _CharacterModelInfo {

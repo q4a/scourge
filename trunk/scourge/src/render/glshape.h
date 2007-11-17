@@ -21,6 +21,7 @@
 #include "render.h"
 #include "shape.h"
 #include <vector>
+#include "shapes.h"
 
 #define DIV 0.06f
 
@@ -69,6 +70,8 @@ protected:
   int effectWidth, effectDepth, effectHeight;
   int effectX, effectY, effectZ;
 
+	Occurs occurs;
+
  protected:
   Uint32 color;
   
@@ -84,6 +87,9 @@ protected:
 
 	inline bool isWallShape() { return wallShape; }
 	inline void setIsWallShape( bool b ) { wallShape = b; }
+
+	inline void setOccurs( Occurs *o ) { memcpy( &occurs, o, sizeof( Occurs ) ); }
+	inline Occurs *getOccurs() { return &occurs; }
 
 public:
 

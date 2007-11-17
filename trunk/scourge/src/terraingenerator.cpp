@@ -180,6 +180,9 @@ bool TerrainGenerator::drawNodesOnMap( Map *map, ShapePalette *shapePal, bool go
 
   updateStatus( _( "Adding traps" ) );
   addTraps( map, shapePal );
+
+	updateStatus( _( "Adding shapes" ) );
+  addShapes(map, shapePal);
   
   updateStatus( _( "Adding containers" ) );
   addContainers(map, shapePal);  
@@ -206,6 +209,29 @@ cleanup:
   
   return ret;
 
+}
+
+void TerrainGenerator::addShapes(Map *map, ShapePalette *shapePal) {
+	cerr << "**** Current theme: " << shapePal->getCurrentThemeName() << endl;
+	for( int i = 1; i < shapePal->getShapeCount(); i++ ) {
+		GLShape *shape = shapePal->getShape( i );
+		if( !strlen( shape->getOccurs()->theme ) || 
+				!strcmp( shape->getOccurs()->theme, shapePal->getCurrentThemeName() ) ) {
+			for( int t = 0; t < shape->getOccurs()->max_count; t++ ) {
+				if( shape->getOccurs()->rooms_only ) {
+					for( int r = 0; r < roomCount; r++ ) {
+						addShapeInRoom( shape, r );
+					}
+				} else {
+					int xpos, ypos;
+					getRandomLocationSimple( map, shape, &xpos, &ypos );
+					if( xpos > -1 && ypos > -1 ) {
+						addItem( map, NULL, NULL, shape, xpos, ypos );
+					}
+				}
+			}
+		}
+	}
 }
 
 void TerrainGenerator::addContainers(Map *map, ShapePalette *shapePal) {

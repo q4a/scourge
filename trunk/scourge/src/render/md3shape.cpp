@@ -60,7 +60,7 @@ void MD3Shape::cleanup() {
 
 void MD3Shape::unloadSkinTextures( int count, vector<tMaterialInfo> *materials ) {
   // can't use the md3 to get loader as it's been deleted by now.   
-	for( int i = 0; i < count && i < materials->size(); i++) {
+	for( unsigned int i = 0; i < count && i < materials->size(); i++) {
 		tMaterialInfo info = materials->at( i );
 		if( strlen( info.strFile ) > 0 ) {
 			loader->unloadSkinTexture( info.strFile );
