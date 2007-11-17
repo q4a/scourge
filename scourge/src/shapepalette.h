@@ -185,6 +185,7 @@ protected:
   void initSystemTextures( ConfigLang *config );
 	void initNativeShapes( ConfigLang *config );
 	void init3dsShapes( ConfigLang *config );
+	void initOccurance( ConfigNode *node, ShapeValues *sv );
 	void initThemes( ConfigLang *config );
 	void initDescriptions( ConfigLang *config );
 	void initNamedTextures( ConfigLang *config );

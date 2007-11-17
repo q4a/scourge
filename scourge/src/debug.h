@@ -47,7 +47,7 @@
 #define BATTLES_ENABLED 1
 
 // comment out to unset
-//#define DEBUG_KEYS 1
+#define DEBUG_KEYS 1
 //#define BASE_DEBUG 1
 
 // comment out to unset														 

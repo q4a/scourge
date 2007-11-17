@@ -565,6 +565,12 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->outdoorShadow = node->getValueAsBool( "outdoor_shadow" );
 	sv->wind = node->getValueAsBool( "wind" );
 
+	sv->occurs.rooms_only = false;
+	sv->occurs.max_count = 0;
+	strcpy( sv->occurs.placement, "center" );
+	strcpy( sv->occurs.use_function, "" );
+	strcpy( sv->occurs.theme, "" );
+
 	return sv;
 }
 
@@ -630,6 +636,8 @@ void ShapePalette::init3dsShapes( ConfigLang *config ) {
 				sv->zrot3d = atof( strtok( NULL, "," ) );
 			}
 		}
+
+		initOccurance( node, sv );
     
     // store it for now
     shapeValueVector.push_back(sv);
@@ -669,8 +677,22 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
     sv->stencil = toint( node->getValueAsFloat( "stencil" ) );
     sv->blocksLight = toint( node->getValueAsFloat( "light_blocking" ) );
 
+		initOccurance( node, sv );
+
     // store it for now
     shapeValueVector.push_back(sv);
+	}
+}
+
+void ShapePalette::initOccurance( ConfigNode *parent_node, ShapeValues *sv ) {
+	vector<ConfigNode*> *v = parent_node->getChildrenByName( "occurs" );
+	for( unsigned int i = 0; v && i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+		sv->occurs.rooms_only = node->getValueAsBool( "rooms_only" );
+		sv->occurs.max_count = node->getValueAsInt( "max_count" );
+		strcpy( sv->occurs.placement, node->getValueAsString( "placement" ) );
+		strcpy( sv->occurs.use_function, node->getValueAsString( "use_function" ) );
+		strcpy( sv->occurs.theme, node->getValueAsString( "theme" ) );
 	}
 }
 

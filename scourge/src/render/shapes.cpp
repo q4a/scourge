@@ -308,6 +308,7 @@ void Shapes::initialize() {
 		shapes[ ( i + 1 ) ]->setOutdoorShadow( sv->outdoorShadow );
 		shapes[ ( i + 1 ) ]->setWind( sv->wind );
 
+		shapes[ ( i + 1 ) ]->setOccurs( &(sv->occurs) );
 
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];

@@ -135,6 +135,7 @@ protected:
   virtual MapRenderHelper *getMapRenderHelper() = 0;
 
   
+	virtual void addShapes(Map *map, ShapePalette *shapePal);
   virtual void addContainers(Map *map, ShapePalette *shapePal);
   virtual bool addStairs(Map *map, ShapePalette *shapePal);
   virtual void addItems(Map *map, ShapePalette *shapePal);
