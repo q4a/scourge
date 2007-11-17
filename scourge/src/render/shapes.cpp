@@ -493,18 +493,8 @@ int Shapes::findShapeIndexByName(const char *name) {
   return shapeMap[s]->getShapePalIndex();
 }
 
-bool isPowerOfTwo( GLuint n ) {
-  //cerr << "n=" << n << endl;
-  if( !n ) return false;
-  if( n == 1 ) return true;
-  int count = 0;
-  for( int i = 0; i < 8; i++ ) {
-    GLuint shifted = (GLuint)( n >> i );
-    count += ( shifted & 1 );
-    //cerr << "\tshifted=" << shifted << " &=" << ( shifted & 1 ) << " count=" << count << endl;
-    if( count > 1 ) return false;
-  }
-  return true;
+bool inline isPowerOfTwo( const GLuint n ) {
+	return (n != 0 && ((n & (n - 1)) == 0));
 }
 
 // FIXME: this should be similar to loadTextureWithAlpha but adding alpha
