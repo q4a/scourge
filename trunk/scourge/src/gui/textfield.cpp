@@ -55,25 +55,27 @@ bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     if(event->key.keysym.sym == SDLK_RETURN) {
       eventType = EVENT_ACTION;
     } else {
-      ((Window*)parent)->getScourgeGui()->blockEvent();
-      if((event->key.keysym.sym == SDLK_BACKSPACE && pos > 0) ||
-         (event->key.keysym.sym == SDLK_DELETE && pos < maxPos)) {
-        for(int i = (event->key.keysym.sym == SDLK_BACKSPACE ? pos - 1 : pos); i < maxPos - 1; i++) {
-          text[i] = text[i + 1];
-        }
-        if(event->key.keysym.sym == SDLK_BACKSPACE) pos--;
-        maxPos--;
-      } else if(event->key.keysym.sym == SDLK_LEFT && pos > 0) {
-        pos--;
-      } else if(event->key.keysym.sym == SDLK_RIGHT && pos < maxPos) {
-        pos++;
-      } else if(event->key.keysym.sym == SDLK_HOME) {
-        pos = 0;
-      } else if(event->key.keysym.sym == SDLK_END) {
-        pos = maxPos;
-      } else if( maxPos < numChars && 
-                 event->key.keysym.sym > SDLK_ESCAPE &&
-                 event->key.keysym.sym < SDLK_UP ) {
+			((Window*)parent)->getScourgeGui()->blockEvent();
+			if((event->key.keysym.sym == SDLK_BACKSPACE && pos > 0) || 
+				(event->key.keysym.sym == SDLK_DELETE && pos < maxPos)) {
+				for(int i = (event->key.keysym.sym == SDLK_BACKSPACE ? pos - 1 : pos); i < maxPos - 1; i++) {
+					text[i] = text[i + 1];
+				}
+				if(event->key.keysym.sym == SDLK_BACKSPACE)
+					pos--;
+				maxPos--;
+			} else if(event->key.keysym.sym == SDLK_LEFT && pos > 0) {
+				pos--;
+			} else if(event->key.keysym.sym == SDLK_RIGHT && pos < maxPos) {
+				pos++;
+			} else if(event->key.keysym.sym == SDLK_HOME) {
+				pos = 0;
+			} else if(event->key.keysym.sym == SDLK_END) {
+				pos = maxPos;
+			} else if( maxPos < numChars && 
+								 event->key.keysym.sym > SDLK_ESCAPE &&
+								 event->key.keysym.sym < SDLK_UP &&
+								 event->key.keysym.sym != SDLK_DELETE) {
         for(int i = maxPos; i > pos; i--) {
           text[i] = text[i - 1];
         }
