@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
 "POT-Creation-Date: 2007-11-11 18:34+0100\n"
-"PO-Revision-Date: 2007-11-19 13:02+0100\n"
+"PO-Revision-Date: 2007-11-19 20:42+0100\n"
 "Last-Translator: Alexander Kjäll <alex@alatest.com>\n"
 "Language-Team: alex <alex@alatest.com>\n"
 "MIME-Version: 1.0\n"
@@ -8238,7 +8238,7 @@ msgstr "Du kan dela ut bonuspoängen till färdigheter när du får en ny nivå.
 
 #: ../scourge_data/maps/hq.cfg:138
 msgid "news"
-msgstr "nyheter"
+msgstr "nyheter,nyheterna"
 
 #: ../scourge_data/maps/hq.cfg:139
 msgid "You will get what you deserve! I've been saying this for years... Humans have got to learn their place in the world! You can't just build cities willy-nilly everywhere! Nature will retake its own. Surely, you have heard the latest news from Hanath? Creatures made from the very woods descended upon centers of civilization! The rocks behind which you hide will offer no resistance from the might of $Amod!"
@@ -8254,7 +8254,7 @@ msgstr "Amod-Rheinur är beskyddarguden för naturen. Många besvärjelser med k
 
 #: ../scourge_data/maps/hq.cfg:142
 msgid "nature"
-msgstr "natur"
+msgstr "natur,naturen"
 
 #: ../scourge_data/maps/hq.cfg:143
 msgid "So you spoke to $Uzudil, did you? Did he say the $doom of mankind was nothing to worry about? Methinks it may not be the case! Beware of upsetting the balance of nature! Beware of awakening the wrath of $Amod! Fell $news as this is, it was high time mankind has learned to fear the awesome might of the god of nature..."
@@ -8475,7 +8475,7 @@ msgstr "Kronostjärnan skapades av alvmagiker i förhistoriska tider - innan mä
 
 #: ../scourge_data/maps/hq.cfg:199
 msgid "Welcome brave adventurers in the mighty halls of the $S.C.O.U.R.G.E. Dungeon Extermination Services Company! My $name is Uzudil the $Hand. Should you need an update on the current $news, just ask. Feel free to explore the head-quarters without worry: there are no $monsters here."
-msgstr "Välkomna, modiga äventyrare, till $S.C.O.U.R.G.E. katakombrensningstjänsts mäktiga lokaler! Mitt $namn är Uzudil $Tjuven. Skulle ni behöva få reda på de senaste $nyheterna, så är det bara att fråga. Var inte rädda att utforska huvudkvarteret, det finns inte några $monster här."
+msgstr "Välkomna äventyrare, till $S.C.O.U.R.G.E. katakombrensningstjänsts lokaler! Mitt $namn är Uzudil $hjälparen. Skulle ni behöva få reda på de senaste $nyheterna, så är det bara att fråga. Var inte rädda att utforska huvudkvarteret, det finns inte några $monster här."
 
 #: ../scourge_data/maps/hq.cfg:200
 #: ../scourge_data/maps/thuzgol.cfg:145
@@ -8494,7 +8494,7 @@ msgstr "SCOURGE"
 
 #: ../scourge_data/maps/hq.cfg:203
 msgid "Think of these halls as your new home, for the time to come. The S.C.O.U.R.G.E. corporation was established to help out-of-luck adventurers stay out of trouble and keep their skills sharp at the same time. This is strictly a business proposition. The $owners ask no questions of you. Your past (however tainted it may be) is your secret to keep. The only thing that matters here is to keep our $clients happy. I am sure, you will find the $missions... 'challenging'."
-msgstr "Tänk på dessa salar som ert nya hem för närvarande. Företaget S.C.O.U.R.G.E. ser det som sin uppgift att hjälpa arbetslösa äventyrare att hålla sig borta från problem och hålla sina färdigheter i topptrim samtidigt. Det här är enbart en affärsrelation, ägarna frågar inte dig några obekväma frågor, din bakgrund (vad än som kan finnas i den) är din egen hemlighet. Det som är viktigt för oss är att hålla våra $kunder nöjda. Jag är säker på att du kommer att uppleva $uppdragen, utmanande."
+msgstr "Tänk på dessa salar som ert nya hem för närvarande. Företaget S.C.O.U.R.G.E. ser det som sin uppgift att hjälpa arbetslösa äventyrare att hålla sig borta från problem samt hålla sina färdigheter i topptrim. Det här kommer enbart vara en affärsrelation, ägarna frågar inte dig några obekväma frågor, din bakgrund (vad än som kan finnas i den) är din egen. Det som är viktigt för oss är att hålla våra $kunder nöjda. Jag är säker på att du kommer att uppleva $uppdragen, 'utmanande'."
 
 #: ../scourge_data/maps/hq.cfg:204
 msgid "name"
@@ -8514,7 +8514,7 @@ msgstr "Förutom att tala med $kunder, så specialiserar jag på att, hmm, 'hant
 
 #: ../scourge_data/maps/hq.cfg:208
 msgid "rules"
-msgstr "regler"
+msgstr "regler,reglerna"
 
 #: ../scourge_data/maps/hq.cfg:209
 msgid "The house rules are simple: HQ is neutral grounds. As such there is no tolerance for fighting here. Save your energy for the $monsters... you'll need it!"
@@ -8538,7 +8538,7 @@ msgstr "Jag tror inte att du är redo att lära dig något om dem."
 
 #: ../scourge_data/maps/hq.cfg:214
 msgid "clients"
-msgstr "kunderna"
+msgstr "kunderna,kunder,klienter"
 
 #: ../scourge_data/maps/hq.cfg:215
 msgid "Trust me you would not want to meet them... Madmen, evil sorcerers, crazed clerics and (occasionally) aberrations seek our help. In order to establish their strongholds in this dimension, they cannot waste their magical energies cleaning their future homes themselves. So they pay us to do it and as a bonus they remain anonymous. Sure it's dirty work, but someone's gotta do it..."
@@ -8554,7 +8554,7 @@ msgstr "Ja, kolla på anslagstavlan för nya uppdrag. Den är uppsatt i rummet m
 
 #: ../scourge_data/maps/hq.cfg:218
 msgid "missions"
-msgstr "uppdrag"
+msgstr "uppdrag,uppdragen"
 
 #: ../scourge_data/maps/hq.cfg:219
 msgid "Our $clients requests come in the form of missions which I nail up on the $board in the room with purple flames. If you see missions printed in purple, remember that those are more important. The client is usually under time pressure and thus will pay more for the mission's timely completion!"
@@ -8575,7 +8575,7 @@ msgstr "Inte allt för mycket att oroa sig för tror jag. Den enda naturen vi se
 #: ../scourge_data/maps/hq.cfg:223
 #: ../scourge_data/maps/library3.cfg:94
 msgid "monsters"
-msgstr "monstrena"
+msgstr "monstrena,monster"
 
 #: ../scourge_data/maps/hq.cfg:224
 msgid "Many a fearsome vermin ye will encounter on your travels! Some use their strength and some their magic to try to annihilate you. It's best to be prepared with high level weapons, magic and lots of healing potions! Also, you can always return here to HQ to catch some rest."
@@ -8680,7 +8680,7 @@ msgstr "Haladil"
 
 #: ../scourge_data/maps/hq.cfg:253
 msgid "He sure was $grim for a king! In fact, he never smiled until his dying day."
-msgstr "Han var verkligen $grim för att vara kung! Han log inte en enda gång tills han dog, faktiskt."
+msgstr "Han var verkligen $barsk för att vara kung! Han log inte en enda gång tills han dog, faktiskt."
 
 #: ../scourge_data/maps/hq.cfg:254
 msgid "grim"
@@ -8688,11 +8688,11 @@ msgstr "barsk"
 
 #: ../scourge_data/maps/hq.cfg:255
 msgid "They say he lost his ability to smile when our lives became so $easy."
-msgstr "De påstår att han förlorade sin förmåga att le när våra liv blev för $easy"
+msgstr "De påstår att han förlorade sin förmåga att le när våra liv blev för $lätta"
 
 #: ../scourge_data/maps/hq.cfg:256
 msgid "easy"
-msgstr "lätt"
+msgstr "lätta"
 
 #: ../scourge_data/maps/hq.cfg:257
 msgid "$Haladil had $nothing more to do, you see? There is virtually no crime, the streets are safe and there are no more wars to be fought."
@@ -8712,11 +8712,11 @@ msgstr "gröt,gröten"
 
 #: ../scourge_data/maps/hq.cfg:262
 msgid "Go look in the kitchen if you want some. It's the best part of this $place!"
-msgstr "Gå och titta i köket om du vill ha lite. Det är den bästa delen av den här $place!"
+msgstr "Gå och titta i köket om du vill ha lite. Det är den bästa delen av det här $stället!"
 
 #: ../scourge_data/maps/hq.cfg:263
 msgid "place"
-msgstr "plats"
+msgstr "plats,stället"
 
 #: ../scourge_data/maps/hq.cfg:264
 msgid "Behold the mighty halls of the $S.C.O.U.R.G.E. headquarters. Here you can $train your skills, $trade items, rest and select your next $mission."
@@ -10669,7 +10669,7 @@ msgstr "Ahh, Lucedilstenarna, du har verkligen inte levt förrän du har upplevt
 
 #: ../scourge_data/maps/tree.cfg:45
 msgid "The elven wizard and I crossed paths during many of my $travels. Though he may appear as a witless drunkard at times, there is more to that elf than meets the eye!||In fact, he and I have a running bet for... well, over a century now to see which one of us collects the most gemstones of $Lucedil. I think with my last $trip to the Reefs of Rhungar, I may just have secured the lead."
-msgstr "Den alviska trollkarlen och jag träffade på varandra under många av mina $travels. Fastän han verkar vara en sanslöst fyllo ibland, så finns det mer än vad man först märker!||I sanning så har han och jag haft en löpande vadslagning i snart... ja, över ett århundrande för att se vem av oss som samlar mest ädelstenar från $lucedil. Jag tror att jag med min senaste $trip till Rhungars rev så kan jag ha säkrat ledningen."
+msgstr "Den alviska trollkarlen och jag träffade på varandra under många av mina $resor. Fastän han verkar vara en sanslöst fyllo ibland, så finns det mer än vad man först märker!||I sanning så har han och jag haft en löpande vadslagning i snart... ja, över ett århundrande för att se vem av oss som samlar mest ädelstenar från $lucedil. Jag tror att jag med min senaste $resa till Rhungars rev så kan jag ha säkrat ledningen."
 
 #: ../scourge_data/maps/tree.cfg:50
 msgid "You should never see this greeting."
