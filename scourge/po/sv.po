@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
 "POT-Creation-Date: 2007-11-11 18:34+0100\n"
-"PO-Revision-Date: 2007-11-19 20:42+0100\n"
+"PO-Revision-Date: 2007-11-21 22:41+0100\n"
 "Last-Translator: Alexander Kjäll <alex@alatest.com>\n"
 "Language-Team: alex <alex@alatest.com>\n"
 "MIME-Version: 1.0\n"
@@ -315,7 +315,7 @@ msgstr "Släpp föremål"
 
 #: src/common/constants.cpp:84
 msgid "Open Item"
-msgstr "Öppna föremål"
+msgstr "Öppna"
 
 #: src/common/constants.cpp:85
 msgid "Drag items to/from the list, Right click for info"
@@ -8212,7 +8212,7 @@ msgstr "Ja, ja. jag kan lära dig grunderna, det är ganska simpelt faktiskt. F�
 
 #: ../scourge_data/maps/hq.cfg:132
 msgid "potions,drunk,drink"
-msgstr "elexir,dricka,drick"
+msgstr "elixir,dricka,drick"
 
 #: ../scourge_data/maps/hq.cfg:133
 msgid "Ah yes, now you're talking! I don't understand why some people won't indulge more... they're lovely, you see? Different colors, shapes and smells in these vials. The happiest stuff on this side of $Allovium. Let me know if you want to $trade some!"
@@ -9700,7 +9700,7 @@ msgstr "skägg,skäggen"
 
 #: ../scourge_data/maps/thuzgol.cfg:203
 msgid "Yes they're lovely. Outsiders find it hard to tell dwarven women apart from men, due to the fact that both sexes sport luxurious, flowing beards. With practice however you can sort out the confusion. Women's beards are smooth and silky. Men have coarse facial hair that is quite unpleasant to touch. No doubt you will make mistakes while visiting a local house of pleasure..."
-msgstr "Ja, de är underbara! Turister upplever det ofta som svårt att skilja på männen och kvinnorna, för att båda könen har lyxiga, flödande skägg. Med lite övning så borde du kunna tygla förvirringen. Kvinnornas skägg är mjuka och silkeslena. Männen har grovt ansiktshår som är ganska otrevligt att röra vid. Men säkerligen så kommer du göra något misstag om du besöker en lokalt horhus."
+msgstr "Ja, de är underbara! Turister upplever det ofta som svårt att skilja på männen och kvinnorna, för att båda könen har lyxiga, flödande skägg. Men med lite övning så borde du kunna tygla förvirringen. Kvinnornas skägg är mjuka och silkeslena. Männen har grovt ansiktshår som är ganska otrevligt att röra vid. Men säkerligen så kommer du göra något misstag om du besöker en lokalt horhus."
 
 #: ../scourge_data/maps/thuzgol.cfg:205
 msgid "He is the wisest of us all. He arrived in the city before the $Goblin wars and worked to repel that enemy. Now he works mostly on his research about the $history of $Thuzgol. He lives in the house with the purple flames on the outside. He is a quiet fellow, but be sure not to $anger him!"
