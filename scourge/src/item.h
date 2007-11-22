@@ -60,7 +60,8 @@ class Item : public RenderedItem, Storable {
   bool containsMagicItem;
   bool showCursed;
   void trySetIDBit(int bit, float modifier, int infoDetailLevel);
-
+	Uint32 iconEffectTimer;
+	float iconEffectYPos;
 
 
 
@@ -229,6 +230,10 @@ public:
 																		int skill, 
 																		std::vector<ConfigNode*> *nodes, 
 																		int influenceType );	
+
+	void renderItemIcon( Scourge *scourge, int x, int y, int w, int h );
+	void renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h );
+	void renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h );
 };
 
 #endif
