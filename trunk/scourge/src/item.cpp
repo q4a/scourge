@@ -604,6 +604,8 @@ bool Item::decrementCharges(){
 
 
 void Item::commonInit( bool loading ) {
+	iconEffectTimer = 0;
+	iconEffectYPos = 0;
 	identifiedBits = 0;
   missionId = missionObjectiveIndex = 0;
 
@@ -1052,6 +1054,32 @@ int Item::getInventoryHeight() {
 }
 
 void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h ) {
+	if( scourge->getSession()->getPreferences()->getStencilbuf() &&
+			scourge->getSession()->getPreferences()->getStencilBufInitialized() ) {
+		glEnable(GL_STENCIL_TEST);
+		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+		glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
+	}
+
+	renderItemIcon( scourge, x, y, w, h );
+
+	if( isMagicItem() ) {
+
+		if( scourge->getSession()->getPreferences()->getStencilbuf() &&
+				scourge->getSession()->getPreferences()->getStencilBufInitialized() ) {
+			glStencilFunc(GL_EQUAL, 1, 0xffffffff);
+			glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+
+			renderItemIconEffect( scourge, x, y, w, h );
+
+			glDisable(GL_STENCIL_TEST);
+		}
+
+		renderItemIconIdentificationEffect( scourge, x, y, w, h );
+	}
+}
+
+void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h ) {
 	glColor4f( 1, 1, 1, 1 );
 	GLuint tex = session->getShapePalette()->
 		tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ];
@@ -1069,27 +1097,63 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h ) {
 	glVertex2d( x + w, y + h );
 	glEnd();
 	glDisable( GL_ALPHA_TEST );
+}
 
-	if( isMagicItem() ) {
-		if( isIdentified() ) {
-			glDisable( GL_TEXTURE_2D );
-			glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r,
-								 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g,
-								 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b,
-								 1 );
-			glBegin( GL_LINE_LOOP );
-			glVertex2d( x + 1, y + h - 1 );
-			glVertex2d( x + 1, y + 1 );
-			glVertex2d( x + w - 1, y + 1 );
-			glVertex2d( x + w - 1, y + h - 1 );
-			glEnd();
-			glEnable( GL_TEXTURE_2D );
-			glColor4f( 1, 1, 1, 1 );
-		} else {
-			scourge->getSDLHandler()->texPrint( x + 2, y + 12, "?" );
+void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h ) {
+	// draw an effect
+	Uint32 t = SDL_GetTicks();
+	if( t - iconEffectTimer > 5 ) {
+		iconEffectTimer = t;
+		iconEffectYPos += 2.0f;
+		if( iconEffectYPos > 1.5f * h ) {
+			iconEffectYPos = 0;
 		}
 	}
+	int effectHeight = 16;
+	if( iconEffectYPos >= 0 && iconEffectYPos < h - effectHeight) {
+		glEnable( GL_TEXTURE_2D );
+		glBindTexture( GL_TEXTURE_2D, 
+									 scourge->getSession()->getShapePalette()->getNamedTexture( "iconeffect" ) );
+		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r,
+							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g,
+							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b,
+							 1 );
+		glEnable( GL_BLEND );
+		glBlendFunc(GL_ONE, GL_ONE);
+		glBegin( GL_QUADS );
+		glTexCoord2d( 0, 1 );
+		glVertex2d( x + 1, y + iconEffectYPos + effectHeight - 1 );
+		glTexCoord2d( 0, 0 );
+		glVertex2d( x + 1, y + iconEffectYPos + 1 );
+		glTexCoord2d( 1, 0 );
+		glVertex2d( x + w - 1, y + iconEffectYPos + 1 );
+		glTexCoord2d( 1, 1 );
+		glVertex2d( x + w - 1, y + iconEffectYPos + effectHeight - 1 );
+		glEnd();
+		glColor4f( 1, 1, 1, 1 );
+		glDisable( GL_BLEND );
+	}
 }
+
+void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h ) {
+	if( isIdentified() ) {
+		glDisable( GL_TEXTURE_2D );
+		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r,
+							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g,
+							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b,
+							 1 );
+		glBegin( GL_LINE_LOOP );
+		glVertex2d( x + 1, y + h - 1 );
+		glVertex2d( x + 1, y + 1 );
+		glVertex2d( x + w - 1, y + 1 );
+		glVertex2d( x + w - 1, y + h - 1 );
+		glEnd();
+		glEnable( GL_TEXTURE_2D );
+		glColor4f( 1, 1, 1, 1 );
+	} else {
+		scourge->getSDLHandler()->texPrint( x + 2, y + 12, "?" );
+	}
+}		
 
 void Item::getTooltip( char *tooltip ) {
 	char tmp[500];
