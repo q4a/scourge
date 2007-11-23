@@ -32,7 +32,7 @@ class GLShape;
 class GLTorch;
 class Shapes;
 
-typedef struct Occurs {
+typedef struct _Occurs {
 	bool rooms_only;
 	int max_count;
 	char placement[100];

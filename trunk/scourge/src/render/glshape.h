@@ -88,7 +88,7 @@ protected:
 	inline bool isWallShape() { return wallShape; }
 	inline void setIsWallShape( bool b ) { wallShape = b; }
 
-	inline void setOccurs( Occurs *o ) { memcpy( &occurs, o, sizeof( Occurs ) ); }
+	void setOccurs( Occurs *o );
 	inline Occurs *getOccurs() { return &occurs; }
 
 public:

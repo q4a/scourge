@@ -51,6 +51,12 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
   this->effectType = -1;
 	this->wallShape = false;
 
+	this->occurs.rooms_only = false;
+	this->occurs.max_count = 0;
+	strcpy( this->occurs.placement, "center" );
+	strcpy( this->occurs.use_function, "" );
+	strcpy( this->occurs.theme, "" );
+
   surfaces[LEFT_SURFACE] = NULL;
   surfaces[BOTTOM_SURFACE] = NULL;
   surfaces[RIGHT_SURFACE] = NULL;
@@ -691,5 +697,10 @@ void GLShape::createVariationShape( int textureIndex, GLuint *textureGroup ) {
   dup->setVariationTextureIndex( textureIndex );
   dup->setTexture( textureGroup );
   variationShape.push_back( dup );
+}
+
+void GLShape::setOccurs( Occurs *o ) {
+	memcpy( &occurs, o, sizeof( Occurs ) ); 
+	cerr << "&&& max count=" << occurs.max_count << " name=" << getName() << endl;
 }
 

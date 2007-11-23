@@ -56,6 +56,8 @@ Item::~Item(){
 	for( int i = 0; i < PARTICLE_COUNT; i++ ) {
 		delete iconUnderEffectParticle[i];
 		iconUnderEffectParticle[i] = NULL;
+		delete iconEffectParticle[i];
+		iconEffectParticle[i] = NULL;
 	}
 }
 
@@ -609,10 +611,12 @@ bool Item::decrementCharges(){
 
 void Item::commonInit( bool loading ) {
 	iconEffectTimer = 0;
-	iconEffectYPos = 0;
+	iconUnderEffectTimer = 0;
 	for( int i = 0; i < PARTICLE_COUNT; i++ ) {
 		iconUnderEffectParticle[i] = new ParticleStruct();
 		iconUnderEffectParticle[i]->life = -1;
+		iconEffectParticle[i] = new ParticleStruct();
+		iconEffectParticle[i]->life = -1;
 	}
 	identifiedBits = 0;
   missionId = missionObjectiveIndex = 0;
@@ -1066,27 +1070,27 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h ) {
 		renderUnderItemIconEffect( scourge, x, y, w, h );
 	}
 
-	if( scourge->getSession()->getPreferences()->getStencilbuf() &&
-			scourge->getSession()->getPreferences()->getStencilBufInitialized() ) {
-		glClear( GL_STENCIL_BUFFER_BIT );
-		glEnable( GL_STENCIL_TEST );
-		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
-		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
-	}
+//	if( scourge->getSession()->getPreferences()->getStencilbuf() &&
+//			scourge->getSession()->getPreferences()->getStencilBufInitialized() ) {
+//		glClear( GL_STENCIL_BUFFER_BIT );
+//		glEnable( GL_STENCIL_TEST );
+//		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+//		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
+//	}
 
 	renderItemIcon( scourge, x, y, w, h );
 
 	if( isMagicItem() ) {
 
-		if( scourge->getSession()->getPreferences()->getStencilbuf() &&
-				scourge->getSession()->getPreferences()->getStencilBufInitialized() ) {
-			glStencilFunc( GL_EQUAL, 1, 0xffffffff );
-			glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
+//		if( scourge->getSession()->getPreferences()->getStencilbuf() &&
+//				scourge->getSession()->getPreferences()->getStencilBufInitialized() ) {
+//			glStencilFunc( GL_EQUAL, 1, 0xffffffff );
+//			glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
 
 			renderItemIconEffect( scourge, x, y, w, h );
 
-			glDisable( GL_STENCIL_TEST );
-		}
+//			glDisable( GL_STENCIL_TEST );
+//		}
 
 		renderItemIconIdentificationEffect( scourge, x, y, w, h );
 	}
@@ -1133,7 +1137,7 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 	}
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, 
-								 scourge->getSession()->getShapePalette()->findTextureByName( "flame.bmp", true ) );
+								 scourge->getSession()->getShapePalette()->getNamedTexture( "flame" ) );
 	glEnable( GL_BLEND );
 	//glBlendFunc( GL_ONE, GL_ONE );
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -1162,7 +1166,7 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 		glPopMatrix();
 	}
 	glDisable( GL_BLEND );
-
+	glColor4f( 1, 1, 1, 1 );
 }
 
 void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h ) {
@@ -1170,36 +1174,55 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h ) 
 	Uint32 t = SDL_GetTicks();
 	if( t - iconEffectTimer > 5 ) {
 		iconEffectTimer = t;
-		iconEffectYPos += 4.0f;
-		if( iconEffectYPos > 2.5f * h ) {
-			iconEffectYPos = 0;
+		for( int i = 0; i < PARTICLE_COUNT / 5; i++ ) {
+			if( iconEffectParticle[i]->life < 0 || 
+					iconEffectParticle[i]->life >= iconEffectParticle[i]->maxLife ) {
+				iconEffectParticle[i]->life = 0;
+				iconEffectParticle[i]->maxLife = (int)( 30.0f * rand() / RAND_MAX ) + 30;
+				iconEffectParticle[i]->zoom = 0.5f;
+				iconEffectParticle[i]->x = (float)w * rand() / RAND_MAX;
+				iconEffectParticle[i]->y = (float)h * rand() / RAND_MAX;
+				iconEffectParticle[i]->z = 0;
+			}
+			iconEffectParticle[i]->zoom += ( iconEffectParticle[i]->life >= iconEffectParticle[i]->maxLife / 2.0f ? -1 : 1 ) * 0.5f;
+			//iconEffectParticle[i]->y += 0.25f;
+			iconEffectParticle[i]->life++;
 		}
 	}
-	int effectHeight = 16;
-	if( iconEffectYPos >= 0 && iconEffectYPos < h - effectHeight) {
-		glEnable( GL_TEXTURE_2D );
-		glBindTexture( GL_TEXTURE_2D, 
-									 scourge->getSession()->getShapePalette()->getNamedTexture( "iconeffect" ) );
-		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r / 8.0f,
-							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g / 8.0f,
-							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b / 8.0f,
+	glEnable( GL_TEXTURE_2D );
+	glBindTexture( GL_TEXTURE_2D, 
+								 scourge->getSession()->getShapePalette()->getNamedTexture( "bling" ) );
+	glEnable( GL_BLEND );
+	//glBlendFunc( GL_ONE, GL_ONE );
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+	for( int i = 0; i < PARTICLE_COUNT / 5; i++ ) {
+		float a = ( iconEffectParticle[i]->life / (float)(iconEffectParticle[i]->maxLife) );
+		if( a >= 0.5 ) a = 1 - a;
+		a = a * 2.0f;
+		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r * a,
+							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g * a,
+							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a,
 							 1 );
-		glEnable( GL_BLEND );
-		glBlendFunc(GL_ONE, GL_ONE);
-		//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+		glPushMatrix();
+		//glRotatef( 45, 0, 0, 1 );
+		glTranslatef( iconEffectParticle[i]->x - iconEffectParticle[i]->zoom / 2, 
+									iconEffectParticle[i]->y - iconEffectParticle[i]->zoom / 2, 0 );
 		glBegin( GL_QUADS );
 		glTexCoord2d( 0, 1 );
-		glVertex2d( x + 1, y + iconEffectYPos + effectHeight - 1 );
+		glVertex2d( x, y + iconEffectParticle[i]->zoom );
 		glTexCoord2d( 0, 0 );
-		glVertex2d( x + 1, y + iconEffectYPos + 1 );
+		glVertex2d( x, y );
 		glTexCoord2d( 1, 0 );
-		glVertex2d( x + w - 1, y + iconEffectYPos + 1 );
+		glVertex2d( x + iconEffectParticle[i]->zoom, y );
 		glTexCoord2d( 1, 1 );
-		glVertex2d( x + w - 1, y + iconEffectYPos + effectHeight - 1 );
+		glVertex2d( x + iconEffectParticle[i]->zoom, y + iconEffectParticle[i]->zoom );
 		glEnd();
-		glColor4f( 1, 1, 1, 1 );
-		glDisable( GL_BLEND );
+		glPopMatrix();
 	}
+	glDisable( GL_BLEND );
+	glColor4f( 1, 1, 1, 1 );
 }
 
 void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h ) {
