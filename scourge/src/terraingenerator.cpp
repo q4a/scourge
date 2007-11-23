@@ -215,8 +215,11 @@ void TerrainGenerator::addShapes(Map *map, ShapePalette *shapePal) {
 	cerr << "**** Current theme: " << shapePal->getCurrentThemeName() << endl;
 	for( int i = 1; i < shapePal->getShapeCount(); i++ ) {
 		GLShape *shape = shapePal->getShape( i );
-		if( !strlen( shape->getOccurs()->theme ) || 
-				!strcmp( shape->getOccurs()->theme, shapePal->getCurrentThemeName() ) ) {
+		if( ( !strlen( shape->getOccurs()->theme ) || 
+					!strcmp( shape->getOccurs()->theme, shapePal->getCurrentThemeName() ) ) &&
+				shape->getOccurs() && 
+				shape->getOccurs()->max_count > 0 ) {
+			cerr << "\t**** adding shape: " << shape->getName() << " max-count=" << shape->getOccurs()->max_count << endl;
 			for( int t = 0; t < shape->getOccurs()->max_count; t++ ) {
 				if( shape->getOccurs()->rooms_only ) {
 					for( int r = 0; r < roomCount; r++ ) {

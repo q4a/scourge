@@ -686,13 +686,21 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 
 void ShapePalette::initOccurance( ConfigNode *parent_node, ShapeValues *sv ) {
 	vector<ConfigNode*> *v = parent_node->getChildrenByName( "occurs" );
-	for( unsigned int i = 0; v && i < v->size(); i++ ) {
-		ConfigNode *node = (*v)[i];
+	if( v && v->size() ) {
+		ConfigNode *node = (*v)[0];
+		cerr << "*** initializing occurance for " << sv->name << endl;
 		sv->occurs.rooms_only = node->getValueAsBool( "rooms_only" );
 		sv->occurs.max_count = node->getValueAsInt( "max_count" );
 		strcpy( sv->occurs.placement, node->getValueAsString( "placement" ) );
 		strcpy( sv->occurs.use_function, node->getValueAsString( "use_function" ) );
 		strcpy( sv->occurs.theme, node->getValueAsString( "theme" ) );
+	} else {
+		cerr << "*** no occurance for " << sv->name << endl;
+		sv->occurs.rooms_only = false;
+		sv->occurs.max_count = 0;
+		strcpy( sv->occurs.placement, "" );
+		strcpy( sv->occurs.use_function, "" );
+		strcpy( sv->occurs.theme, "" );
 	}
 }
 

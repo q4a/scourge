@@ -60,10 +60,11 @@ class Item : public RenderedItem, Storable {
   bool containsMagicItem;
   bool showCursed;
   void trySetIDBit(int bit, float modifier, int infoDetailLevel);
-	Uint32 iconEffectTimer;
-	float iconEffectYPos;
-	Uint32 iconUnderEffectTimer;
+	
 	static const int PARTICLE_COUNT = 30;
+	Uint32 iconEffectTimer;
+	ParticleStruct *iconEffectParticle[PARTICLE_COUNT];
+	Uint32 iconUnderEffectTimer;	
   ParticleStruct *iconUnderEffectParticle[PARTICLE_COUNT];
 
 
