@@ -62,7 +62,9 @@ class Item : public RenderedItem, Storable {
   void trySetIDBit(int bit, float modifier, int infoDetailLevel);
 	Uint32 iconEffectTimer;
 	float iconEffectYPos;
-
+	Uint32 iconUnderEffectTimer;
+	static const int PARTICLE_COUNT = 30;
+  ParticleStruct *iconUnderEffectParticle[PARTICLE_COUNT];
 
 
   // Things that change with item level (override rpgitem values)
@@ -234,6 +236,7 @@ public:
 	void renderItemIcon( Scourge *scourge, int x, int y, int w, int h );
 	void renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h );
 	void renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h );
+	void renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h );
 };
 
 #endif
