@@ -59,6 +59,8 @@ class Item : public RenderedItem, Storable {
   char itemName[255];
   bool containsMagicItem;
   bool showCursed;
+	GLuint tex3d[1];
+	unsigned char * textureInMemory;
   void trySetIDBit(int bit, float modifier, int infoDetailLevel);
 	
 	static const int PARTICLE_COUNT = 30;
@@ -66,7 +68,6 @@ class Item : public RenderedItem, Storable {
 	ParticleStruct *iconEffectParticle[PARTICLE_COUNT];
 	Uint32 iconUnderEffectTimer;	
   ParticleStruct *iconUnderEffectParticle[PARTICLE_COUNT];
-
 
   // Things that change with item level (override rpgitem values)
   int level;
@@ -238,6 +239,7 @@ public:
 	void renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h );
 	void renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h );
 	void renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h );
+	void create3dTex( Scourge *scourge, float w, float h );
 };
 
 #endif

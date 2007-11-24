@@ -67,6 +67,9 @@ typedef struct _ShapeValues {
 	bool outdoorShadow;
 	bool wind;
 	Occurs occurs;
+	int iconRotX;
+	int iconRotY;
+	int iconRotZ;
 } ShapeValues;
 
 typedef struct _CharacterModelInfo {
