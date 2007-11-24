@@ -571,6 +571,8 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	strcpy( sv->occurs.use_function, "" );
 	strcpy( sv->occurs.theme, "" );
 
+	sv->iconRotX = sv->iconRotY = sv->iconRotZ = 0;
+
 	return sv;
 }
 
@@ -685,17 +687,25 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 }
 
 void ShapePalette::initOccurance( ConfigNode *parent_node, ShapeValues *sv ) {
+	char temp[100];
+	strcpy( temp, parent_node->getValueAsString( "icon_rotate" ) );
+	if( strlen( temp ) ) {
+		sv->iconRotX = atoi( strtok( temp, "," ) );
+		sv->iconRotY = atoi( strtok( NULL, "," ) );
+		sv->iconRotZ = atoi( strtok( NULL, "," ) );
+	} else {
+		sv->iconRotX = sv->iconRotY = sv->iconRotZ = 0;
+	}
+
 	vector<ConfigNode*> *v = parent_node->getChildrenByName( "occurs" );
 	if( v && v->size() ) {
 		ConfigNode *node = (*v)[0];
-		cerr << "*** initializing occurance for " << sv->name << endl;
 		sv->occurs.rooms_only = node->getValueAsBool( "rooms_only" );
 		sv->occurs.max_count = node->getValueAsInt( "max_count" );
 		strcpy( sv->occurs.placement, node->getValueAsString( "placement" ) );
 		strcpy( sv->occurs.use_function, node->getValueAsString( "use_function" ) );
 		strcpy( sv->occurs.theme, node->getValueAsString( "theme" ) );
 	} else {
-		cerr << "*** no occurance for " << sv->name << endl;
 		sv->occurs.rooms_only = false;
 		sv->occurs.max_count = 0;
 		strcpy( sv->occurs.placement, "" );

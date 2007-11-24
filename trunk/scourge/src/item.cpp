@@ -53,6 +53,12 @@ Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
 }
 
 Item::~Item(){
+	if( textureInMemory != NULL ){
+    free( textureInMemory );
+    textureInMemory = NULL;
+    glDeleteTextures( 1, tex3d );
+  }          
+
 	for( int i = 0; i < PARTICLE_COUNT; i++ ) {
 		delete iconUnderEffectParticle[i];
 		iconUnderEffectParticle[i] = NULL;
@@ -361,7 +367,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		strcpy( long_description, node->getValueAsString( "description" ) );
     strcpy( short_description, node->getValueAsString( "short_description" ) );
       
-			// I:tileX,tileY ( from data/tiles.bmp, count is 1-based )
+		// I:tileX,tileY ( from data/tiles.bmp, count is 1-based )
 		strcpy( temp, node->getValueAsString( "icon" ) );
 		int tileX = atoi( strtok( temp, "," ) );
 		int tileY = atoi( strtok( NULL, "," ) );
@@ -610,6 +616,8 @@ bool Item::decrementCharges(){
 
 
 void Item::commonInit( bool loading ) {
+	tex3d[0] = 0;
+	textureInMemory = NULL;
 	iconEffectTimer = 0;
 	iconUnderEffectTimer = 0;
 	for( int i = 0; i < PARTICLE_COUNT; i++ ) {
@@ -1097,12 +1105,15 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h ) {
 }
 
 void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h ) {
+
+	create3dTex( scourge, w, h );
+
 	glColor4f( 1, 1, 1, 1 );
-	GLuint tex = session->getShapePalette()->
-		tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ];
+	//GLuint tex = session->getShapePalette()->
+	//	tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ];
 	glEnable( GL_ALPHA_TEST );
 	glAlphaFunc( GL_NOTEQUAL, 0 );
-	glBindTexture( GL_TEXTURE_2D, tex );
+	glBindTexture( GL_TEXTURE_2D, tex3d[0] );
 	glBegin( GL_QUADS );
 	glTexCoord2d( 0, 1 );
 	glVertex2d( x, y + h );
@@ -1114,6 +1125,78 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h ) {
 	glVertex2d( x + w, y + h );
 	glEnd();
 	glDisable( GL_ALPHA_TEST );
+}
+
+void Item::create3dTex( Scourge *scourge, float w, float h ) {
+	if( textureInMemory ) return;
+
+	// clear the error flags
+	Util::getOpenGLError();
+
+  // Create texture and copy minimap date from backbuffer on it    
+	unsigned int textureSizeW = 32;
+	unsigned int textureSizeH = 32;
+  textureInMemory = (unsigned char *) malloc( textureSizeW * textureSizeH * 4);    
+
+	glPushAttrib( GL_ALL_ATTRIB_BITS );
+	glDisable( GL_CULL_FACE );
+  glEnable( GL_DEPTH_TEST );
+	glDepthMask( GL_TRUE );
+  glEnable( GL_TEXTURE_2D );
+  glDisable( GL_BLEND );
+	glDisable( GL_ALPHA_TEST );
+	glDisable( GL_SCISSOR_TEST );
+	glDisable( GL_STENCIL_TEST );
+  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+  glGenTextures(1, tex3d);    
+  glBindTexture(GL_TEXTURE_2D, tex3d[0]); 
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliqué a la texture
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
+  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0,
+                GL_RGBA, GL_UNSIGNED_BYTE, textureInMemory );                       
+	fprintf(stderr, "OpenGl result for item(%s) glTexImage2D : %s\n", getName(), Util::getOpenGLError());
+
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glClearColor( 0, 0, 0, 0 );
+	glClearDepth( 1 );
+ 
+	glScalef( ( this->getShape()->getWidth() ) / w,
+						( this->getShape()->getHeight() ) / h,
+						1 );
+  glPushMatrix();  
+  glLoadIdentity();
+	this->getShape()->rotateIcon();
+	glColor4f( 1, 1, 1, 1 );	
+	this->getShape()->draw();
+	glPopMatrix();
+	glScalef( 1, 1, 1 );
+	
+	//SDL_GL_SwapBuffers( );
+
+
+  // Copy to a texture
+	glPushMatrix();
+  glLoadIdentity();
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, tex3d[0]);
+  glCopyTexSubImage2D(
+                     GL_TEXTURE_2D,
+                     0,      // MIPMAP level
+                     0,      // x texture offset
+                     0,      // y texture offset
+                     0,              // x window coordinates
+                     scourge->getScreenHeight() - textureSizeH,   // y window coordinates
+                     textureSizeW,    // width
+                     textureSizeH     // height
+                     ); 
+	glPopMatrix();
+	fprintf(stderr, "OpenGl result for item(%s) glCopyTexSubImage2D: %s\n", getName(), Util::getOpenGLError());          
+  
+  glPopAttrib();
 }
 
 void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h ) {

@@ -309,6 +309,7 @@ void Shapes::initialize() {
 		shapes[ ( i + 1 ) ]->setWind( sv->wind );
 
 		shapes[ ( i + 1 ) ]->setOccurs( &(sv->occurs) );
+		shapes[ ( i + 1 ) ]->setIconRotation( sv->iconRotX, sv->iconRotY, sv->iconRotZ );
 
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];

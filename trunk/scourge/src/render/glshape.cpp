@@ -50,6 +50,7 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
   this->variationTextureIndex = 0;
   this->effectType = -1;
 	this->wallShape = false;
+	this->iconRotX, this->iconRotY, this->iconRotZ = 0;
 
 	this->occurs.rooms_only = false;
 	this->occurs.max_count = 0;
@@ -701,6 +702,5 @@ void GLShape::createVariationShape( int textureIndex, GLuint *textureGroup ) {
 
 void GLShape::setOccurs( Occurs *o ) {
 	memcpy( &occurs, o, sizeof( Occurs ) ); 
-	cerr << "&&& max count=" << occurs.max_count << " name=" << getName() << endl;
 }
 

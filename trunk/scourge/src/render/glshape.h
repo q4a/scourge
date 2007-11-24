@@ -54,6 +54,9 @@ protected:
   std::vector<GLShape*> variationShape;
   int variationTextureIndex;
 	bool wallShape;
+	int iconRotX;
+	int iconRotY;
+	int iconRotZ;
 
   struct surface *surfaces[5];
   enum { 
@@ -161,6 +164,16 @@ public:
     effectY = y;
     effectZ = z;
   }
+	inline void setIconRotation( int iconRotX, int iconRotY, int iconRotZ ) {
+		this->iconRotX = iconRotX;
+		this->iconRotY = iconRotY;
+		this->iconRotZ = iconRotZ;
+	}
+	inline void rotateIcon() {
+		glRotatef( iconRotX, 1, 0, 0 );
+		glRotatef( iconRotY, 0, 1, 0 );
+		glRotatef( iconRotZ, 0, 0, 1 );	
+	}
   
 protected:
 	float getLight( float *normal );
