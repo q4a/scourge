@@ -188,11 +188,11 @@ void GuiTheme::loadTextures( ScourgeGui *scourgeGui ) {
 //  cerr << "----------------------------------------" << endl;
 }
 
-ThemeElement *GuiTheme::parseElement( char *s ) {
+ThemeElement *GuiTheme::parseElement( const char *s ) {
 //  cerr << "parseElement: line=" << line << endl;
 
 	// need to copy incoming string so we don't modify shared string memory (std::string)
-	char line[1000];
+	char line[strlen(s)];
 	strcpy( line, s );
 
 
@@ -252,25 +252,25 @@ ThemeElement *GuiTheme::parseElement( char *s ) {
   }
 }
 
-Color *GuiTheme::parseColor( char *s ) {
+Color *GuiTheme::parseColor( const char *s ) {
 //  cerr << "parseColor: line=" << line << endl;
 
 	// need to copy incoming string so we don't modify shared string memory (std::string)
-	char line[3000];
+	char line[strlen(s)];
 	strcpy( line, s );
 
 
-  char *p = strtok( line, "," );
-  if( p ) {
-	Color *color = new Color();
-	color->r = atof( p );
-	color->g = atof( strtok( NULL, "," ) );
-	color->b = atof( strtok( NULL, "," ) );
-	color->a = atof( strtok( NULL, "," ) );
-	return color;
-  } else {
-	return NULL;
-  }
+	char *p = strtok( line, "," );
+	if( p ) {
+		Color *color = new Color();
+		color->r = atof( p );
+		color->g = atof( strtok( NULL, "," ) );
+		color->b = atof( strtok( NULL, "," ) );
+		color->a = atof( strtok( NULL, "," ) );
+		return color;
+	} else {
+		return NULL;
+	}
 }
 
 void ThemeElement::loadTextures( ScourgeGui *scourgeGui ) {

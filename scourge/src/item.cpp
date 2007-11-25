@@ -579,14 +579,15 @@ void Item::initItems( ShapePalette *shapePal ) {
 	delete config;
 }
 
-const char *Item::getRandomSound() {
+const string Item::getRandomSound() {
   vector<string> *sounds = NULL;
   if(Item::soundMap.find(this->getRpgItem()->getType()) != Item::soundMap.end()) {
     sounds = Item::soundMap[this->getRpgItem()->getType()];
   }
-  if(!sounds || !(sounds->size())) return NULL;
+  if(!sounds || !(sounds->size())) 
+		return string("");
   string s = (*sounds)[(int)((float)(sounds->size()) * rand()/RAND_MAX)];
-  return s.c_str();
+  return s;
 }
 
 // return true if the item is used up

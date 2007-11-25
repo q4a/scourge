@@ -51,7 +51,7 @@ Board::Board(Session *session) {
 		music[255], success[2000], failure[2000], mapName[80], 
 		introDescription[2000], location[20];
 
-  ConfigLang *config = ConfigLang::load( "config/mission.cfg" );
+  ConfigLang *config = ConfigLang::load( string("config/mission.cfg") );
 	vector<ConfigNode*> *v = config->getDocument()->
 		getChildrenByName( "template" );
 	for( unsigned int i = 0; i < v->size(); i++ ) {
@@ -572,7 +572,7 @@ Mission::Mission( Board *board, int level, int depth,
   this->mapX = this->mapY = 0;
   this->special[0] = '\0';
 	this->templateName[0] = '\0';
-	strcpy( this->savedMapName, "" );
+	this->savedMapName == "";
 
   // assign the map grid location
   if( mapName && strlen( mapName ) ) {
@@ -763,12 +763,13 @@ void Mission::clearConversations() {
   npcConversations.clear();
 }
 
-void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
+//TODO: this will segfault if filename starts with a .
+void Mission::loadMapData( GameAdapter *adapter, const string& filename ) {
 	clearConversations();
 
   // read general conversation from level 0.
   char dup[300];
-  strcpy( dup, filename );
+  strcpy( dup, filename.c_str() );
   char *p = strrchr( dup, '.' );
   if( p ) {
     char c = *( p - 1 );
@@ -788,7 +789,8 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
       if( q ) {
         *( q + 1 ) = 0;
         strcat( dup, ".map" );
-        loadMapDataFile( adapter, dup, true );
+				string dup2(dup);
+        loadMapDataFile( adapter, dup2, true );
       }
     }
   }
@@ -801,11 +803,9 @@ void Mission::loadMapData( GameAdapter *adapter, const char *filename ) {
  * Called by squirrel code to assign a different cfg file to be used with the
  * (possibly generated) map.
  */
-void Mission::loadMapConfig( GameAdapter *adapter, const char *filename ) {
+void Mission::loadMapConfig( GameAdapter *adapter, const string& filename ) {
 	clearConversations();
-	char path[300];
-  strcpy( path, rootDir );
-  strcat( path, filename );
+	string path = rootDir + filename;
   loadMapDataFile( adapter, path );
 }
 
@@ -1038,9 +1038,8 @@ void Mission::initNpcs( ConfigLang *config, GameAdapter *adapter ) {
 	}
 }
 
-void Mission::loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly ) {
-	char tmp[300];
-	getMapConfigFile( filename, tmp );
+void Mission::loadMapDataFile( GameAdapter *adapter, const string& filename, bool generalOnly ) {
+	string tmp = getMapConfigFile( filename );
 	ConfigLang *config = ConfigLang::load( tmp, true );
 	if( config ) {
 		initConversations( config, adapter, generalOnly );
@@ -1061,24 +1060,22 @@ string Mission::getNpcInfoKey( int x, int y ) {
   return key;
 }
 
-void Mission::getMapConfigFile( const char *filename, const char *out ) {
-  char s[200];
-	strncpy( s, filename, 200 );
-  char *p = strrchr( s, '.' );
-  if( p && 
-      strlen( p ) >= 4 && 
-      !strncmp( p, ".map", 4 ) ) {
-    strcpy( p, ".cfg" );
-  } else {
-    strcat( s, ".cfg" );
-  }
-	strcpy( (char*)out, s );
+//TODO original algorthm seems broken, it might exchange .map in the middle of a string
+string Mission::getMapConfigFile( const string& filename ) {
+  string s = filename;
+
+	if(".map" == s.substr(s.length() - 4, 4)) {
+		s = s.substr(0, s.length() - 4) + ".cfg";
+	} else {
+		s.append(".cfg");
+	}
+
+	return s;
 }
 
-void Mission::saveMapData( GameAdapter *adapter, const char *filename ) {
+void Mission::saveMapData( GameAdapter *adapter, const string& filename ) {
   // append to txt file the new npc info
-	char path[300];
-	getMapConfigFile( filename, path );
+	string path = getMapConfigFile( filename );
 	ConfigLang *config = ConfigLang::load( path, true );
 	if( !config ) {
 		config = ConfigLang::fromString( "[map]\n[/map]\n" );
@@ -1171,7 +1168,7 @@ MissionInfo *Mission::save() {
   info->version = PERSIST_VERSION;
   strncpy( (char*)info->templateName, ( isStoryLine() ? "storyline" : getTemplateName() ), 79);
   info->templateName[79] = 0;
-	strcpy( (char*)info->mapName, savedMapName );
+	strcpy( (char*)info->mapName, savedMapName.c_str() );
 	info->level = getLevel();
 	info->depth = getDepth();
 	info->completed = ( completed ? 1 : 0 );

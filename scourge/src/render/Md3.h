@@ -172,13 +172,13 @@ public:
 	CLoadMD3();
 
 	// This is the function that you call to load the MD3 model
-	bool ImportMD3(t3DModel *pModel, char *strFileName);
+	bool ImportMD3(t3DModel *pModel, std::string& strFileName);
 
 	// This loads a model's .skin file
-	bool LoadSkin( t3DModel *pModel, char *strSkin, MD3Shape *shape );
+	bool LoadSkin( t3DModel *pModel, const std::string& strSkin, MD3Shape *shape );
 
 	// This loads a weapon's .shader file
-	bool LoadShader(t3DModel *pModel, char *strShader, MD3Shape *shape );
+	bool LoadShader(t3DModel *pModel, const std::string& strShader, MD3Shape *shape );
 
 private:
 
@@ -221,12 +221,12 @@ public:
 	void findBounds( vect3d min, vect3d max );
 	void normalize( vect3d min, vect3d max );
 	
-	bool LoadModel(char *strPath );
+	bool LoadModel( const std::string& strPath );
 
-	bool loadSkins( char *strPath, char *strModel, MD3Shape *shape );
+	bool loadSkins( const std::string& strPath, const std::string& strModel, MD3Shape *shape );
 
 	// This loads the weapon and takes the same path and model name to be added to .md3
-	bool LoadWeapon(char *strPath, char *strModel, MD3Shape *shape  );
+	bool LoadWeapon( const std::string& strPath, const std::string& strModel, MD3Shape *shape  );
 
 	// This links a model to another model (pLink) so that it's the parent of that child.
 	// The strTagName is the tag, or joint, that they will be linked at (I.E. "tag_torso").
@@ -263,10 +263,10 @@ private:
 	void hashAnimations( t3DModel *pModel );
 
 	// This loads the models textures with a given path
-	void LoadModelTextures(t3DModel *pModel, char *strPath, MD3Shape *shape );
+	void LoadModelTextures(t3DModel *pModel, const std::string& strPath, MD3Shape *shape );
 
 	// This loads the animation config file (.cfg) for the character
-	bool LoadAnimations(char *strConfigFile);
+	bool LoadAnimations(const std::string& strConfigFile);
 
 	// This updates the models current frame of animation, and calls SetCurrentTime()
 	void UpdateModel( t3DModel *pModel, MD3Shape *shape );

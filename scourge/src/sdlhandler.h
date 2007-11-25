@@ -24,7 +24,7 @@
 #include "gui/gui.h"
 
 class Widget;
-class GameAdapter;                          
+class GameAdapter;
 class SDLEventHandler;
 class SDLScreenView;
 class Preferences;
@@ -106,7 +106,7 @@ private:
 public: 
 
   typedef struct _FontInfo {
-    char path[300];
+    std::string path;
     int size;
     int style;
     int yoffset;
@@ -154,7 +154,7 @@ public:
   // for ScourgeGui
   inline Uint16 getMouseX() { return mouseX; }
   inline Uint16 getMouseY() { return mouseY; }
-  void playSound( const char *name );
+  void playSound( const std::string& name );
   inline int getScreenWidth() { return getScreen()->w; }
   inline int getScreenHeight() { return getScreen()->h; }
   GLuint getHighlightTexture();
@@ -175,7 +175,7 @@ public:
    * Add a new set of handlers and push the old ones on the stack.
    * When the eventHandler returns true, the stack will be popped.
    * If the stack is empty the game will quit.
-   */                                                            
+   */
   void pushHandlers(SDLEventHandler *eventHandler, SDLScreenView *screenView);
 
   /**
@@ -187,7 +187,7 @@ public:
 	 Get the current event handler.
   */
   inline SDLEventHandler *getEventHandler() { return eventHandler; }
-   
+
   void setVideoMode(Preferences *uc);
   char ** getVideoModes(int &nbModes);
   void mainLoop();
@@ -223,8 +223,8 @@ public:
 
   inline double getFPS() { return fps; }
 
-	void saveScreen( char *path );
-	void saveScreenNow( char *path );
+	void saveScreen( std::string& path );
+	void saveScreenNow( std::string& path );
 
 	void setUpdate( char *message, int n=-1, int total=-1 );
 
@@ -235,7 +235,7 @@ protected:
 	void drawCursor();
 
 	void drawScreenInternal();
-	void saveScreenInternal( char *path );
+	void saveScreenInternal( std::string& path );
 	void calculateFps();
 	void drawDebugInfo();
 	void drawFadeout();

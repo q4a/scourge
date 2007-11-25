@@ -104,8 +104,8 @@ public:
   inline ThemeElement *getWindowBorderTexture() { return windowBorderTexture; }
 
  protected:
-  static ThemeElement *parseElement( char *line );
-  static Color *parseColor( char *line );
+  static ThemeElement *parseElement( const char *line );
+  static Color *parseColor( const char *line );
 
   void loadTextures( ScourgeGui *scourgeGui );
 

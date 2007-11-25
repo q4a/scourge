@@ -118,7 +118,7 @@ bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
         return true;
       }
     }
-    default:                                
+    default:
     break;
     }
   }

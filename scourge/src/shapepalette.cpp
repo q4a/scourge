@@ -211,18 +211,19 @@ void ShapePalette::initialize() {
 
   // FIXME: do something with these...
   formationTexIndex = texture_count;
-  strcpy(textures[texture_count++].filename, "textures/formation1.bmp");
-  strcpy(textures[texture_count++].filename, "textures/formation2.bmp");
-  strcpy(textures[texture_count++].filename, "textures/formation3.bmp");
-  strcpy(textures[texture_count++].filename, "textures/formation4.bmp");
-  strcpy(textures[texture_count++].filename, "textures/formation5.bmp");
-  strcpy(textures[texture_count++].filename, "textures/formation6.bmp");
+  textures[texture_count++].filename = "textures/formation1.bmp";
+  textures[texture_count++].filename = "textures/formation2.bmp";
+  textures[texture_count++].filename = "textures/formation3.bmp";
+  textures[texture_count++].filename = "textures/formation4.bmp";
+  textures[texture_count++].filename = "textures/formation5.bmp";
+  textures[texture_count++].filename = "textures/formation6.bmp";
 
   // load the status modifier icons
-  char path[ 255 ];
+  stringstream path;
   for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-    sprintf(path, "/icons/i%d.bmp", i);
-    GLuint icon = loadGLTextures(path);
+		path.clear();
+    path << "/icons/i" << i << ".bmp";
+    GLuint icon = loadGLTextures(path.str());
 //    cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
     if(icon) statModIcons[i] = icon;
   }
@@ -269,7 +270,7 @@ void ShapePalette::initFonts( ConfigLang *config ) {
       ConfigNode *node = (*faces)[0];
   
       SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
-      strcpy( info->path, node->getValueAsString( "path" ) );
+      info->path = node->getValueAsString( "path" );
       info->size = (int)node->getValueAsFloat( "size" );
       info->style = (int)node->getValueAsFloat( "style" );
       info->yoffset = (int)node->getValueAsFloat( "yoffset" );
@@ -289,7 +290,7 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 	for( unsigned int i = 0; v && i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 		string name = node->getValueAsString( "name" );
-		char *value = (char*)node->getValueAsString( "value" );
+		string value = node->getValueAsString( "value" );
 		bool grayscale = node->getValueAsBool( "grayscale" );
 		namedTextures[ name ] = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
 	}
@@ -358,14 +359,12 @@ void ShapePalette::initPcPortraits( ConfigLang *config ) {
 		string image = node->getValueAsString( "image" );
 		string sex = node->getValueAsString( "sex" );
 		if( strstr( image.c_str(), "death" ) ) {
-			deathPortraitTexture = 
-				loadGLTextures( (char*)image.c_str() );
+			deathPortraitTexture = loadGLTextures( image );
 		} else {
 			int sexNum = ( sex == "M" ? 
 										 Constants::SEX_MALE : 
 										 Constants::SEX_FEMALE );
-			portraitTextures[sexNum].push_back( 
-				loadGLTextures( (char*)image.c_str() ) );
+			portraitTextures[sexNum].push_back( loadGLTextures( image ) );
 		}
 	}
 }
@@ -418,7 +417,7 @@ void ShapePalette::initSystemTextures( ConfigLang *config ) {
     getChildrenByName( "system_textures" );
   ConfigNode *node = (*v)[0];
   
-  char tmp[3000];  
+  char tmp[3000];
   strcpy( tmp, node->getValueAsString( "path" ) );
 
   char *p = strtok( tmp, "," );
@@ -633,7 +632,7 @@ void ShapePalette::init3dsShapes( ConfigLang *config ) {
 
 		ShapeValues *sv = createShapeValues( node );
 
-		strcpy( sv->m3ds_name, node->getValueAsString( "path" ) );
+		sv->m3ds_name = node->getValueAsString( "path" );
 
 		// dimensions
 		char tmp[100];

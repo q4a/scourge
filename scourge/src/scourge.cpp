@@ -351,7 +351,7 @@ void Scourge::startMission( bool startInHq ) {
 			// Save the current map (except HQ)
 			if( !session->isMultiPlayerGame() && 
 					session->getCurrentMission() ) {
-				if( !saveCurrentMap() ) {
+				if( !saveCurrentMap("") ) {
 					showMessageDialog( _( "Error saving current map." ) );
 				}
 			}
@@ -377,14 +377,13 @@ void Scourge::startMission( bool startInHq ) {
 	endGame();
 }
 
-void Scourge::getCurrentMapName( char *path, char *dirName, int depth, char *mapFileName ) {
+string Scourge::getCurrentMapName( const string& dirName, int depth, string* mapFileName ) {
 	// save the current map:
 	// get and set the map's name
-	char mapName[300];
-	getSavedMapName( mapName );
+	string mapName = getSavedMapName();
 	if( session->getCurrentMission() ) {
-		if( strlen( session->getCurrentMission()->getSavedMapName() ) ) {
-			strcpy( mapName, session->getCurrentMission()->getSavedMapName() );
+		if( session->getCurrentMission()->getSavedMapName().length() ) {
+			mapName = session->getCurrentMission()->getSavedMapName();
 			cerr << "Reusing existing mission map name: " << mapName << endl;
 		} else {
 			session->getCurrentMission()->setSavedMapName( mapName );
@@ -393,46 +392,43 @@ void Scourge::getCurrentMapName( char *path, char *dirName, int depth, char *map
 	}
 
 	// add the depth
-	char tmp[300];
-	sprintf( tmp, "%s_%d.map", 
-					 mapName, 
-					 ( depth >= 0 ? depth : oldStory ) );
+	stringstream tmp;
+	tmp << mapName << "_" << ( depth >= 0 ? depth : oldStory ) << ".map";
 
-	if( mapFileName ) strcpy( mapFileName, tmp );
+	if( mapFileName )
+		(*mapFileName) = tmp.str();
 
 	// add the directory name
-	char tmp2[300];
-	sprintf( tmp2, "%s/%s", 
-					 ( dirName ? dirName : getSession()->getSavegameName() ), 
-					 tmp );
+	stringstream tmp2;
+	tmp2 << ( dirName.length() ? dirName : getSession()->getSavegameName() ) << "/" << tmp;
 	
 	// convert to a path	
-	get_file_name( path, 300, tmp2 );
+	return get_file_name( tmp2.str() );
 }
 
-void Scourge::getSavedMapName( char *mapName ) {
+string Scourge::getSavedMapName() {
 	// add a unique id or the mapname
-	char mapBaseName[80];
+	string mapBaseName;
 	if( !session->getCurrentMission() ) {
-		strcpy( mapBaseName, "hq" );
+		mapBaseName = "hq";
 	} else if( session->getCurrentMission()->isStoryLine() ) {
-		sprintf( mapBaseName, "sl%d", getBoard()->getStorylineIndex() );
+		mapBaseName = "sl" + getBoard()->getStorylineIndex();
 	} else {
-		sprintf( mapBaseName, "%x", SDL_GetTicks() );
+		stringstream temp;
+		temp << std::hex << SDL_GetTicks();
+		mapBaseName = temp.str();
 	}
 		
-	sprintf( mapName, "_%s", mapBaseName );	
+	return "_" + mapBaseName;	
 }
 
-bool Scourge::saveCurrentMap( char *dirName ) {
-	char path[300];
-	char mapFileName[40];
-	getCurrentMapName( path, dirName, -1, mapFileName );
+bool Scourge::saveCurrentMap( const string& dirName ) {
+	string mapFileName;
+	string path = getCurrentMapName( dirName, -1, &mapFileName );
 	cerr << "Saving current map: " << path << endl;
 
 	// remember that we have seen this map
-	string s = mapFileName;
-	visitedMaps.insert( s );
+	visitedMaps.insert( mapFileName );
 
 	levelMap->startx = toint( session->getParty()->getPlayer()->getX() );
 	levelMap->starty = toint( session->getParty()->getPlayer()->getY() );
@@ -599,7 +595,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		//bool loaded = loadMap( path, fromRandomMap );
 		//if( !loaded ) 
     char result[300];
-    levelMap->loadMap( HQ_MAP_NAME, result, this, 1, currentStory, changingStory, false, goingUp, goingDown );
+    levelMap->loadMap( string(HQ_MAP_NAME), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );
 #endif
 
 	} else {
@@ -611,8 +607,8 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		missionWillAwardExpPoints = (!getSession()->getCurrentMission()->isCompleted());
 
 		// try to load a previously saved, random-generated map level
-		char path[300];
-		getCurrentMapName( path );
+		string empty("");
+		string path = getCurrentMapName(empty);
 		bool loaded = loadMap( path, fromRandomMap, true, 
 							   ( getSession()->getCurrentMission()->isEdited() ? 
 								 getSession()->getCurrentMission()->getMapName() : 
@@ -642,7 +638,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	return mapCreated;
 }
 
-bool Scourge::loadMap( char *mapName, bool fromRandomMap, bool absolutePath, char *templateMapName ) {
+bool Scourge::loadMap( const string& mapName, bool fromRandomMap, bool absolutePath, char *templateMapName ) {
 	bool loaded = false;
 	char result[300];
 	//cerr << "lastLevel=" << lastLevel << " currentStory=" << currentStory << " depth=" << getSession()->getCurrentMission()->getDepth() << endl;
@@ -2898,14 +2894,11 @@ Color *Scourge::getOutlineColor( Location *pos ) {
 
 #define HQ_MISSION_SAVED_NAME "__HQ__"
 
-bool Scourge::saveGame( Session *session, char *dirName, char *title ) {  
-	char tmp[300];
-	char path[300];
+bool Scourge::saveGame( Session *session, string& dirName, char *title ) {  
   {
-		sprintf( tmp, "%s/savegame.dat", dirName );
-    get_file_name( path, 300, tmp );
+		string path = get_file_name( dirName + "/savegame.dat" );
 		cerr << "Saving: " << path << endl;
-    FILE *fp = fopen( path, "wb" );
+    FILE *fp = fopen( path.c_str(), "wb" );
     if(!fp) {
       cerr << "Error creating savegame file! path=" << path << endl;
       return false;
@@ -2960,11 +2953,9 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
 
 		// Remember the current map. This little hack is needed because the current
 		// map will be saved right after the savegame.
-		char tmpPath[300];
-		char mapFileName[40];
-		getCurrentMapName( tmpPath, dirName, -1, mapFileName );
-		string s = mapFileName;
-		visitedMaps.insert( s );
+		string mapFileName;
+		getCurrentMapName( dirName, -1, &mapFileName );
+		visitedMaps.insert( mapFileName );
 
 		// save the list of visited maps		
 		n = visitedMaps.size();
@@ -2979,10 +2970,9 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
   }
 
   {
-		sprintf( tmp, "%s/values.dat", dirName );
-    get_file_name( path, 300, tmp );
+    string path = get_file_name( dirName + "/values.dat" );
 		cerr << "Saving: " << path << endl;
-    FILE *fp = fopen( path, "wb" );
+    FILE *fp = fopen( path.c_str(), "wb" );
     if(!fp) {
       cerr << "Error creating values file! path=" << path << endl;
       return false;
@@ -2999,22 +2989,19 @@ bool Scourge::saveGame( Session *session, char *dirName, char *title ) {
   return true;
 }
 
-bool Scourge::loadGame( Session *session, char *dirName, char *error ) {
+bool Scourge::loadGame( Session *session, string& dirName, char *error ) {
 	bool b = doLoadGame( session, dirName, error );
 	addDescription( b ? (char*)_( "Game loaded successfully." ) : error );
 	return b;
 }
 
-bool Scourge::doLoadGame( Session *session, char *dirName, char *error ) {
-	char path[300];
+bool Scourge::doLoadGame( Session *session, string& dirName, char *error ) {
 	strcpy( error, "" );
 
-	char tmp[300];
-	sprintf( tmp, "%s/savegame.dat", dirName );
-	get_file_name( path, 300, tmp );
+	string path = get_file_name( dirName + "/savegame.dat" );
 
 	cerr << "Loading: " << path << endl;
-	FILE *fp = fopen( path, "rb" );
+	FILE *fp = fopen( path.c_str(), "rb" );
 	if(!fp) {
 		return false;
 	}
@@ -3129,11 +3116,9 @@ bool Scourge::doLoadGame( Session *session, char *dirName, char *error ) {
 	}
 
 	{
-		char path[300], tmp[300];
-		sprintf( tmp, "%s/values.dat", dirName );
-		get_file_name( path, 300, tmp );
+		string path = get_file_name( dirName + "/values.dat" );
 		cerr << "Loading: " << path << endl;
-		FILE *fp = fopen( path, "rb" );
+		FILE *fp = fopen( path.c_str(), "rb" );
 		if( fp ) {
 			File *file = new File( fp );
 			getSession()->getSquirrel()->loadValues( file );
@@ -3150,9 +3135,8 @@ bool Scourge::doLoadGame( Session *session, char *dirName, char *error ) {
 }
 
 bool Scourge::testLoadGame( Session *session ) {
-  char path[300];
-  get_file_name( path, 300, session->getSavegameName() );
-  FILE *fp = fopen( path, "rb" );
+  string path = get_file_name( session->getSavegameName() );
+  FILE *fp = fopen( path.c_str(), "rb" );
   if(!fp) {
     return false;
   }
@@ -3499,8 +3483,7 @@ void Scourge::uploadScore() {
 	if( !Upload::uploadScoreToWeb( score, result ) ) {
 		cerr << "Success: " << result << endl;
 		
-		if( strlen( session->getSavegameName() ) &&
-				strlen( result ) < 40 && 
+		if( session->getSavegameName().length() && strlen( result ) < 40 && 
 				!strlen( session->getScoreid() ) ) {
 			strcpy( session->getScoreid(), result );
 			saveScoreid( session->getSavegameName(), session->getScoreid() );
@@ -3515,13 +3498,10 @@ void Scourge::askToUploadScore() {
 	confirmUpload->setVisible( true );
 }
 
-bool Scourge::saveScoreid( char *dirName, char *p ) {
-	char path[300];
-	char tmp[300];
-	sprintf( tmp, "%s/scoreid.dat", dirName );
-	get_file_name( path, 300, tmp );
+bool Scourge::saveScoreid( string& dirName, char *p ) {
+	string path = get_file_name( dirName + "/scoreid.dat" );
 
-	FILE *fp = fopen( path, "w" );
+	FILE *fp = fopen( path.c_str(), "w" );
 	if( !fp ) {
 		cerr << "Error creating scoreid file! path=" << path << endl;
 		return false;
@@ -3531,13 +3511,10 @@ bool Scourge::saveScoreid( char *dirName, char *p ) {
 	return true;
 }
 
-bool Scourge::loadScoreid( char *dirName, char *p ) {
-	char path[300];
-	char tmp[300];
-	sprintf( tmp, "%s/scoreid.dat", dirName );
-	get_file_name( path, 300, tmp );
+bool Scourge::loadScoreid( string& dirName, char *p ) {
+	string path = get_file_name( dirName + "/scoreid.dat" );
 
-	FILE *fp = fopen( path, "r" );
+	FILE *fp = fopen( path.c_str(), "r" );
 	if( !fp ) {
 		cerr << "Error reading scoreid file! path=" << path << endl;
 		return false;

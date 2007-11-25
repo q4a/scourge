@@ -63,7 +63,7 @@ public:
 	virtual inline void setCursorVisible( bool b ) {}
   virtual inline int getScreenWidth() { return 0; }
   virtual inline int getScreenHeight() { return 0; }
-  virtual inline void playSound(const char *sound) {}
+  virtual inline void playSound(const std::string& sound) {}
   virtual inline bool isMouseIsMovingOverMap() { return false; }
   virtual inline Uint16 getMouseX() { return 0; }
   virtual inline Uint16 getMouseY() { return 0; }
@@ -126,8 +126,8 @@ public:
   virtual bool isMissionCreature( RenderedCreature *creature );
   virtual bool hasParty();
   virtual int getPartySize();
-  virtual void loadMapData( const char *name );
-  virtual void saveMapData( const char *name );
+  virtual void loadMapData( const std::string& name );
+  virtual void saveMapData( const std::string& name );
   virtual inline Color *getOutlineColor( Location *pos ) { return NULL; }
   virtual inline bool inTurnBasedCombat() { return false; }
 	virtual char *getMagicSchoolIndexForLocation( Location *pos ) { return NULL; }
@@ -195,7 +195,7 @@ public:
 	virtual void setCursorVisible( bool b ) { getSDLHandler()->setCursorVisible( b ); }
   virtual inline int getScreenWidth() { return getSDLHandler()->getScreen()->w; }
   virtual inline int getScreenHeight() { return getSDLHandler()->getScreen()->h; }
-  virtual void playSound(const char *sound);
+  virtual void playSound(const std::string& sound);
 
   virtual inline bool isMouseIsMovingOverMap() { return getSDLHandler()->mouseIsMovingOverMap; }
   virtual inline Uint16 getMouseX() { return getSDLHandler()->mouseX; }

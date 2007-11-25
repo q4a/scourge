@@ -38,19 +38,16 @@ void CLoadMD2::DeleteMD2( t3DModel *pModel ) {
 }
 
 //   Called by the client to open the .Md2 file, read it, then clean up
-bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName)
+bool CLoadMD2::ImportMD2(t3DModel *pModel, string& strFileName)
 {
-    char strMessage[255] = {0};
-
     // Open the MD2 file in binary
-    m_FilePointer = fopen(strFileName, "rb");    
+    m_FilePointer = fopen(strFileName.c_str(), "rb");
     if(!m_FilePointer) 
-    {        
-        sprintf(strMessage, "Unable to find the file: %s!", strFileName);
-        cerr << strMessage << endl;
+    {
+        cerr << "Unable to find the file: " << strFileName << "!" << endl;
         exit(1);
     }
-    
+
     // Read the header data
     fread(&m_Header, 1, sizeof(tMd2Header), m_FilePointer);
     if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
@@ -60,12 +57,11 @@ bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName)
         p++;
       }
     }
-    
+
     // Make sure version is '8'
     if(m_Header.version != 8)
-    {    
-        sprintf(strMessage, "Invalid file format (Version not 8): %s!", strFileName);
-        cerr << strMessage << endl;
+    {
+        cerr << "Invalid file format (Version not 8): " << strFileName << "!" << endl;
         exit(1);
     }
 
@@ -73,11 +69,11 @@ bool CLoadMD2::ImportMD2(t3DModel *pModel, char *strFileName)
     //memset(pModel, 0, sizeof(t3DModel));
     ModelLoader::clearModel( pModel );
     ReadMD2Data(pModel);
-    
-    // Stores animation info    
-    ParseAnimations(pModel);  
-    
-    // Computes min/max vertices values      
+
+    // Stores animation info
+    ParseAnimations(pModel);
+
+    // Computes min/max vertices values
     ComputeMinMaxValues(pModel);
     
     CleanUp();

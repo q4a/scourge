@@ -147,10 +147,10 @@ public:
 
 	void setUpdate( char *message, int n=-1, int total=-1 );
 
-	static ConfigLang *load( char *file, bool absolutePath=false );
+	static ConfigLang *load( const std::string& file, bool absolutePath=false );
 	static ConfigLang *fromString( char *str );
 	static ConfigLang *fromString( std::vector<std::string> *lines );
-	void save( char *file, bool absolutePath=false );
+	void save( std::string& file, bool absolutePath=false );
 };
 
 #endif

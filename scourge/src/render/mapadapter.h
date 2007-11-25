@@ -47,8 +47,8 @@ public:
   virtual RenderedCreature *createMonster( char *monster_name ) = 0;
   virtual RenderedItem *createItem( ItemInfo *info ) = 0;
   virtual RenderedCreature *createMonster( CreatureInfo *info ) = 0;
-  virtual void loadMapData( const char *name ) = 0;
-  virtual void saveMapData( const char *name ) = 0;
+  virtual void loadMapData( const std::string& name ) = 0;
+  virtual void saveMapData( const std::string& name ) = 0;
 	virtual char *getMagicSchoolIndexForLocation( Location *pos ) = 0;
 	virtual void setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolName ) = 0;
 

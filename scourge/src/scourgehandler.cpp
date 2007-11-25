@@ -307,7 +307,7 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 		// save the party the first time around
 		//cerr << "Saving party" << endl;
 		if( !scourge->getSession()->isMultiPlayerGame() && 
-				!strlen( scourge->getSession()->getSavegameName() ) ) {
+				!scourge->getSession()->getSavegameName().length() ) {
 			if( !scourge->getSaveDialog()->createNewSaveGame() ) {
 				scourge->showMessageDialog( _( "Error saving game!" ) );
 			}

@@ -96,7 +96,7 @@ private:
 
 char *lastError;
 int useLuminanceAlpha;
-char filename[300];
+std::string filename;
 TexFont *txf;
 
 public:
@@ -107,7 +107,7 @@ public:
     inline char *txfErrorString() { return lastError; }
 
 
-    TexFont *txfLoadFont(char *filename);
+    TexFont *txfLoadFont(std::string& filename);
 
     void txfUnloadFont();
 

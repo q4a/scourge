@@ -729,7 +729,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
 
 			scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getNamedTexture( "path" ),
-																				pos.x + creature->getShape()->getWidth() / 2, pos.y - creature->getShape()->getWidth() / 2 - 1, 
+																				pos.x + creature->getShape()->getWidth() / 2, 
+																				pos.y - creature->getShape()->getWidth() / 2 - 1, 
 																				0.4f, 0.4f );
 
 			/*
@@ -928,7 +929,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 					scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getAreaTexture(),
 																						creature->getX() - ( nn - creature->getShape()->getWidth() ) / 2.0f,
 																						creature->getY() + ( nn - creature->getShape()->getWidth() ) / 2.0f,
-																						nn, nn, false, areaRot );
+																						nn, nn, areaRot );
 					/*
           glPushMatrix();
 

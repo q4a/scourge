@@ -73,8 +73,8 @@ private:
   std::vector<Creature*> creatures;
   SqBinding *squirrel;
   std::map<RpgItem*, Item*> special;
-	char savegame[255];
-	char loadgame[255];
+	std::string savegame;
+	std::string loadgame;
 	char scoreid[40];
 
   // private constructor: call startGame instead.
@@ -119,7 +119,7 @@ public:
   inline bool isMultiPlayerGame() { return multiplayerGame; }
   inline void setMultiPlayerGame(bool b) { multiplayerGame = b; }
   inline GameAdapter *getGameAdapter() { return adapter; }
-  inline void playSound(const char *sound) { getGameAdapter()->playSound(sound); }
+  inline void playSound(const std::string& sound) { getGameAdapter()->playSound(sound); }
 
   /**
     Creat a new item for use on this story. Calling this method instead of new Item()
@@ -200,11 +200,11 @@ public:
 	 */
 	void setCountForDate( char *key, int value );
 
-	void setSavegameName( char *s );
-	inline char *getSavegameName() { return savegame; }
-	inline void setLoadgameName( char *s ) { strcpy( loadgame, s ); }
-	inline char *getLoadgameName() { return loadgame; }
-	inline bool willLoadGame() { return( strlen( loadgame ) ? true : false ); }
+	void setSavegameName( std::string& s );
+	inline std::string& getSavegameName() { return savegame; }
+	inline void setLoadgameName( const std::string& s ) { loadgame = s; }
+	inline std::string& getLoadgameName() { return loadgame; }
+	inline bool willLoadGame() { return( loadgame.length()  ? true : false ); }
 
 	inline char *getScoreid() { return scoreid; }
 

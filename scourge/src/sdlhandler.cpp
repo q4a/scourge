@@ -30,7 +30,7 @@
 
 using namespace std;
 
-char willSavePath[300] = "";
+string willSavePath = "";
 
 vector<SDLHandler::FontInfo*> SDLHandler::fontInfos;
 
@@ -440,24 +440,24 @@ void SDLHandler::applyMouseOffset(int x, int y, int *newX, int *newY) {
 } 
 
 void SDLHandler::mainLoop() {
-  bool isActive = true;
+	bool isActive = true;
 	running = true;
-  while( true ) {
-    if( processEvents( &isActive ) ) return;
+	while( true ) {
+		if( processEvents( &isActive ) ) return;
 		if( !running ) {
 			if( popHandlers() ) {
 				return;
 			}
 		}
-    if( isActive ) drawScreen();
-    getSound()->checkMusic( gameAdapter->inTurnBasedCombat() );
-  }
+		if( isActive ) drawScreen();
+		getSound()->checkMusic( gameAdapter->inTurnBasedCombat() );
+	}
 }
 
 bool SDLHandler::processEvents( bool *isActive ) {
   SDL_Event event;
   int mx, my;
-  
+
   int eventCount = 0;  
   Uint32 now = SDL_GetTicks();
   mouseIsMovingOverMap = false;
@@ -470,7 +470,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
       if(invertMouse) event.motion.y = screen->h - event.motion.y;
       applyMouseOffset(event.motion.x, event.motion.y, &mx, &my);
       mouseX = mx;
-      mouseY = my;          
+      mouseY = my;
       mouseButton = event.button.button;
       mouseEvent = SDL_MOUSEMOTION;
       // don't process events during a fade
@@ -656,16 +656,16 @@ void SDLHandler::drawScreen() {
 
 	drawScreenInternal();
 
-	if( strlen( willSavePath ) ) {
+	if( willSavePath.length() ) {
 		saveScreenInternal( willSavePath );
-		willSavePath[0] = '\0';
+		willSavePath = "";
 	}
   
   /* Gather our frames per second */
 	calculateFps();
 }
 
-void SDLHandler::saveScreenNow( char *path ) {
+void SDLHandler::saveScreenNow( string& path ) {
 	drawScreenInternal();
 	saveScreenInternal( path );
 }
@@ -700,7 +700,7 @@ void SDLHandler::drawScreenInternal() {
 #define SCREEN_SHOT_WIDTH 160
 #define SCREEN_SHOT_HEIGHT 120
 
-void SDLHandler::saveScreenInternal( char *path ) {
+void SDLHandler::saveScreenInternal( string& path ) {
 	if( !gameAdapter->getPreferences()->getEnableScreenshots() ) {
 		cerr << "*** Screenshots disabled in options. Not saving: " << path << endl;
 		return;
@@ -756,7 +756,7 @@ void SDLHandler::saveScreenInternal( char *path ) {
 #ifdef DEBUG_SCREENSHOT	
 	cerr << "*** Saving image." << endl;
 #endif
-	SDL_SaveBMP( scaled, path );
+	SDL_SaveBMP( scaled, path.c_str() );
 	SDL_FreeSurface( surface );
 	SDL_FreeSurface( scaled );
 }
@@ -907,16 +907,15 @@ void SDLHandler::texPrint(GLfloat x, GLfloat y,
 
 void SDLHandler::initFonts() {
   if( !font_initialized ) {
-    char s[200];
     //cerr << "Loading " << fontInfos.size() << " fonts: " << endl;
     for( unsigned int i = 0; i < fontInfos.size(); i++ ) {
       FontInfo *info = fontInfos[i];
       //cerr << "\t" << info->path << endl;
-      sprintf( s, "%s/%s", rootDir, info->path );
-      info->font = TTF_OpenFont( s, info->size );
+      string s = rootDir + "/" + info->path;
+      info->font = TTF_OpenFont( s.c_str(), info->size );
       TTF_SetFontStyle( info->font, info->style );
       if( !info->font ) {
-        fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", info->size, s, SDL_GetError());
+        fprintf( stderr, "Couldn't load %d pt font from %s: %s\n", info->size, s.c_str(), SDL_GetError());
         quit( 2 );
       } else {
         //cerr << "\t\tSuccess." << endl;
@@ -1188,7 +1187,7 @@ GLuint SDLHandler::loadSystemTexture( char *line ) {
   return gameAdapter->loadSystemTexture( line ); 
 }
 
-inline void SDLHandler::playSound( const char *name ) { 
+inline void SDLHandler::playSound( const string& name ) { 
   getSound()->playSound( name ); 
 }
 
@@ -1208,8 +1207,8 @@ void SDLHandler::setCursorMode(int n, bool useTimer) {
   }
 }
 
-void SDLHandler::saveScreen( char *path ) {
-	strcpy( willSavePath, path );
+void SDLHandler::saveScreen( string& path ) {
+	willSavePath = path;
 }
 
 void SDLHandler::setUpdate( char *message, int n, int total ) {

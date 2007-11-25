@@ -404,7 +404,7 @@ ConfigLang *ConfigLang::fromString( vector<string> *lines ) {
 
 #define LINE_PARSER 1
 
-ConfigLang *ConfigLang::load( char *file, bool absolutePath ) {
+ConfigLang *ConfigLang::load( const string& file, bool absolutePath ) {
 	string rootDirString;
 	if( absolutePath ) rootDirString = "";
 	else {
@@ -452,7 +452,7 @@ void ConfigLang::setUpdate( char *message, int n, int total ) {
 	Session::instance->getGameAdapter()->setUpdate( message, n, total );
 }
 
-void ConfigLang::save( char *file, bool absolutePath ) {
+void ConfigLang::save( string& file, bool absolutePath ) {
 	string rootDirString;
 	if( absolutePath ) rootDirString = "";
 	else {

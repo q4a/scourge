@@ -69,12 +69,9 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 		" skin=" << ( skin_name ? skin_name : "NULL" ) << endl;
 #endif
   
-	char skinPath[300];
   Md2ModelInfo *model_info;
   string model_name_str = model_name;
-
-	// construct skin name
-	sprintf( skinPath, "%s%s/%s", rootDir, model_name, skin_name );
+	string skinPath = rootDir + model_name_str + "/" + skin_name;
 
 	// load the model the new way
 	if( creature_models.find( model_name_str ) == creature_models.end() ) {
@@ -108,13 +105,12 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 	return shape;
 }
 
-GLuint ModelLoader::loadSkinTexture( char *skin_name ) {
-
+GLuint ModelLoader::loadSkinTexture( const string& skin_name ) {
 	// md3-s load their own
 #ifdef DEBUG_LOADING
 	cerr << "&&&&&&&&&& Trying texture: " << skin_name << endl;
 #endif
-	if( skin_name[ strlen( skin_name ) - 4 ] != '.' ) {
+	if( skin_name[skin_name.length() - 4] != '.' ) {
 #ifdef DEBUG_LOADING
 		cerr << "\t&&&&&&&&&& skipping it." << endl;
 #endif
@@ -131,7 +127,7 @@ GLuint ModelLoader::loadSkinTexture( char *skin_name ) {
 #endif
       //CreateTexture(&skin_texture, skin_name, 0);
 
-			skin_texture = Shapes::loadTextureWithAlpha( skin_name, 0, 0, 0, true, true );
+			skin_texture = Shapes::loadTextureWithAlpha( skin, 0, 0, 0, true, true );
 
 #ifdef DEBUG_LOADING
 			cerr << "\t&&&&&&&&&& Loaded texture: " << skin_texture << endl;
@@ -156,10 +152,10 @@ GLuint ModelLoader::loadSkinTexture( char *skin_name ) {
 	return skin_texture;
 }
 
-void ModelLoader::unloadSkinTexture( char *skin_name ) {
+void ModelLoader::unloadSkinTexture( const string& skin_name ) {
 
 	// md3-s unload their own
-	if( skin_name[ strlen( skin_name ) - 4 ] != '.' ) {
+	if( skin_name[ skin_name.length() - 4 ] != '.' ) {
 #ifdef DEBUG_LOADING
 		cerr << "\t&&&&&&&&&& skipping it." << endl;
 #endif
@@ -206,8 +202,7 @@ void ModelLoader::decrementSkinRefCount( char *model_name,
 		" skin=" << ( skin_name ? skin_name : "NULL" ) << endl;
 #endif
 
-	char skinPath[300];
-	sprintf( skinPath, "%s%s/%s", rootDir, model_name, skin_name );
+	string skinPath = rootDir + model_name + "/" + skin_name;
 	unloadSkinTexture( skinPath );
 
   string model = model_name;
@@ -269,13 +264,13 @@ void ModelLoader::debugModelLoader() {
 
 
 
-void ModelWrapper::loadModel( char *path, char *name, ModelLoader *loader ) {	
+void ModelWrapper::loadModel( const string& path, char *name, ModelLoader *loader ) {	
 	int load = -1;
-  char full[300];
-  sprintf( full, "%s%s", rootDir, path );
+  string full = rootDir + path;
 	// if name ends in .bmp (or other image extension) it's an md2
   if( !name || name[ strlen( name ) - 4 ] == '.' ) {
-		if( strcasecmp( path + strlen( path ) - 4, ".md2" ) ) strcat( full, "/tris.md2" );
+		if( path.substr(path.length() - 4).compare(".md2" ) != 0 )
+			full += "/tris.md2";
 		load = LOAD_MD2;
 	} else {
 		load = LOAD_MD3;
@@ -335,8 +330,7 @@ AnimatedShape *ModelWrapper::createShape( GLuint textureId, float div,
 		MD3Shape *shape = 
 			new MD3Shape( md3, loader, div, texture, width, depth, height,
 										name, descriptionGroup, color, shapePalIndex );
-		char full[300];
-		sprintf( full, "%s%s", rootDir, model_name );
+		string full = rootDir + model_name;
 		md3->loadSkins( full, skin_name, shape );
 		return shape;
 	} else {

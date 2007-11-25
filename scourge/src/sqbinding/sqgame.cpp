@@ -83,7 +83,7 @@ int SqGame::_getVersion( HSQUIRRELVM vm ) {
 }
 
 int SqGame::_getRootDir( HSQUIRRELVM vm ) {
-  sq_pushstring( vm, _SC( rootDir ), -1 );
+  sq_pushstring( vm, _SC( rootDir.c_str() ), -1 );
   return 1;
 }
 

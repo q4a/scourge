@@ -84,16 +84,16 @@ public:
   void loadSounds(Preferences *preferences);
 	void loadUISounds(Preferences *preferences);
   void loadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m,
-						  Preferences *preferences );
+													Preferences *preferences );
   void unloadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m );
-  
+
   void loadCharacterSounds( char *type );
   void unloadCharacterSounds( char *type );
   void playCharacterSound( char *type, int soundType );
 
-  void storeSound(int type, const char *file);
-  void unloadSound( int type, const char *file );
-  void playSound(const char *file);
+  void storeSound(int type, const std::string& file);
+  void unloadSound( int type, const std::string& file );
+  void playSound(const std::string& file);
 
   void setMusicVolume(int volume);
   void setEffectsVolume(int volume);

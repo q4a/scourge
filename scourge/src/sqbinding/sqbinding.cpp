@@ -102,15 +102,14 @@ SqBinding::SqBinding( Session *session ) {
 
   // compile some static scripts:
   // Special skills
-  char s[200];
-  sprintf(s, "%s/script/skills.nut", rootDir);
+  string s = rootDir + "/script/skills.nut";
   if( !compile( s ) ) {
     cerr << "Error: *** Unable to compile special skills code: " << s << endl;
   }
   registerScript( s );
 
   // map interaction
-  sprintf(s, "%s/script/map.nut", rootDir);
+  s =  rootDir + "/script/map.nut";
   if( !compile( s ) ) {
     cerr << "Error: *** Unable to compile map interaction code: " << s << endl;
   }
@@ -609,11 +608,11 @@ void SqBinding::compileBuffer( const char *s ) {
   }
   sq_settop( vm, top ); //restores the original stack size
 }
-                        
-bool SqBinding::compile( const char *filename ) {
+
+bool SqBinding::compile( const string& filename ) {
   // compile a module
   if( DEBUG_SQUIRREL ) cerr << "Compiling file:" << filename << endl;
-  if( SQ_SUCCEEDED( sqstd_dofile( vm, _SC( filename ), 0, 1 ) ) ) {
+  if( SQ_SUCCEEDED( sqstd_dofile( vm, _SC( filename.c_str() ), 0, 1 ) ) ) {
     if( DEBUG_SQUIRREL ) cerr << "\tSuccess." << endl;
     return true;
   } else {
@@ -799,15 +798,13 @@ void SqBinding::printArgs( HSQUIRRELVM v ) {
   printf("\n");
 }
 
-void SqBinding::registerScript( char *file ) { 
-  std::string fileString = file;    
-  loadedScripts[ fileString ] = getLastModTime( file );
+void SqBinding::registerScript( const string& file ) { 
+  loadedScripts[ file ] = getLastModTime( file );
 }
 
-void SqBinding::unregisterScript( char *file ) {
-  std::string fileString = file;    
-  if( loadedScripts.find( fileString ) != loadedScripts.end() ) {
-    loadedScripts.erase( fileString );
+void SqBinding::unregisterScript( const string& file ) {
+  if( loadedScripts.find( file ) != loadedScripts.end() ) {
+    loadedScripts.erase( file );
   }
 }
 
@@ -834,12 +831,12 @@ void SqBinding::reloadScripts() {
   if( DEBUG_SQUIRREL ) cerr << "----------------------" << endl;
 }
 
-time_t SqBinding::getLastModTime( char *file ) {
+time_t SqBinding::getLastModTime( const string& file ) {
 #ifdef WIN32
   return 0;
 #else  
   struct stat buf;
-  int err = stat( file, &buf );
+  int err = stat( file.c_str(), &buf );
   if( err ) {
     cerr << "Error while looking  at file " << file << ": " << strerror( errno ) << " (" << errno << ")" << endl;
     return 0;
