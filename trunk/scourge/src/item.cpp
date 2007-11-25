@@ -1066,54 +1066,41 @@ void Item::identify( int infoDetailLevel ) {
 }
 
 int Item::getInventoryWidth() { 
-	return rpgItem->getInventoryWidth(); 
+	return ( getShape()->getIcon() > 0 ? getShape()->getIconWidth() : rpgItem->getInventoryWidth() );
 }
 
 int Item::getInventoryHeight() { 
-	return rpgItem->getInventoryHeight(); 
+	return ( getShape()->getIcon() > 0 ? getShape()->getIconHeight() : rpgItem->getInventoryHeight() ); 
 }
 
 void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h ) {
 	if( isMagicItem() ) {
 		renderUnderItemIconEffect( scourge, x, y, w, h );
 	}
-
-//	if( scourge->getSession()->getPreferences()->getStencilbuf() &&
-//			scourge->getSession()->getPreferences()->getStencilBufInitialized() ) {
-//		glClear( GL_STENCIL_BUFFER_BIT );
-//		glEnable( GL_STENCIL_TEST );
-//		glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
-//		glStencilFunc( GL_ALWAYS, 1, 0xffffffff );
-//	}
-
 	renderItemIcon( scourge, x, y, w, h );
-
 	if( isMagicItem() ) {
-
-//		if( scourge->getSession()->getPreferences()->getStencilbuf() &&
-//				scourge->getSession()->getPreferences()->getStencilBufInitialized() ) {
-//			glStencilFunc( GL_EQUAL, 1, 0xffffffff );
-//			glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
-
-			renderItemIconEffect( scourge, x, y, w, h );
-
-//			glDisable( GL_STENCIL_TEST );
-//		}
-
+		renderItemIconEffect( scourge, x, y, w, h );
 		renderItemIconIdentificationEffect( scourge, x, y, w, h );
 	}
 }
 
 void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h ) {
 
-	create3dTex( scourge, w, h );
+	//create3dTex( scourge, w, h );
 
 	glColor4f( 1, 1, 1, 1 );
-	//GLuint tex = session->getShapePalette()->
-	//	tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ];
-	glEnable( GL_ALPHA_TEST );
-	glAlphaFunc( GL_NOTEQUAL, 0 );
-	glBindTexture( GL_TEXTURE_2D, tex3d[0] );
+	GLuint tex = ( getShape()->getIcon() > 0 ? 
+								 getShape()->getIcon() :
+								 session->getShapePalette()->
+								 tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] );
+
+	//glEnable( GL_ALPHA_TEST );
+	//glAlphaFunc( GL_NOTEQUAL, 0 );
+	glColor4f( 1, 1, 1, 1 );
+	glEnable( GL_BLEND );
+	//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glBindTexture( GL_TEXTURE_2D, tex );
 	glBegin( GL_QUADS );
 	glTexCoord2d( 0, 1 );
 	glVertex2d( x, y + h );
@@ -1124,7 +1111,8 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h ) {
 	glTexCoord2d( 1, 1 );
 	glVertex2d( x + w, y + h );
 	glEnd();
-	glDisable( GL_ALPHA_TEST );
+	glDisable( GL_BLEND );
+	//glDisable( GL_ALPHA_TEST );
 }
 
 void Item::create3dTex( Scourge *scourge, float w, float h ) {

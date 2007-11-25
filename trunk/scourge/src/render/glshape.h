@@ -57,6 +57,8 @@ protected:
 	int iconRotX;
 	int iconRotY;
 	int iconRotZ;
+	GLuint icon;
+	int iconWidth, iconHeight;
 
   struct surface *surfaces[5];
   enum { 
@@ -144,6 +146,10 @@ public:
   inline void endBlending() { }
   inline void setIconRotation(float x, float y, float z) { xIconRot = x; yIconRot = y; zIconRot = z; }
   inline void applyIconRotation() { glRotatef(xIconRot, 1, 0, 0); glRotatef(yIconRot, 0, 1, 0); glRotatef(zIconRot, 0, 0, 1); }
+	inline void setIcon( GLuint n, int w, int h ) { icon = n; iconWidth = w; iconHeight = h; }
+	inline GLuint getIcon() { return icon; }
+	inline int getIconWidth() { return iconWidth; }
+	inline int getIconHeight() { return iconHeight; }
 
   virtual void setCurrentAnimation (int numAnim, bool force=false);      
   virtual void setPauseAnimation(bool pause);
