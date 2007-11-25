@@ -70,6 +70,8 @@ typedef struct _ShapeValues {
 	int iconRotX;
 	int iconRotY;
 	int iconRotZ;
+	GLuint icon;
+	int iconWidth, iconHeight;
 } ShapeValues;
 
 typedef struct _CharacterModelInfo {
@@ -308,6 +310,7 @@ public:
   GLuint getCursorTexture( int cursorMode );
 
 	static GLuint loadTextureWithAlpha( char *fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false, bool grayscale=false );
+	static GLuint loadAlphaTexture( char *filename, int *width, int *height );
 
 	inline int getCursorWidth() { return cursorWidth; }
 	inline int getCursorHeight() { return cursorHeight; }
@@ -324,6 +327,7 @@ protected:
   void loadStencil( char *filename, int index );
 	void loadCursors();
 	GLuint *findOrMakeTextureGroup( char *s );
+	void setupPNG( char *filename, SDL_Surface **surface, GLubyte **image, bool isAbsPath=false );
 };
 
 #endif

@@ -571,7 +571,26 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	strcpy( sv->occurs.use_function, "" );
 	strcpy( sv->occurs.theme, "" );
 
-	sv->iconRotX = sv->iconRotY = sv->iconRotZ = 0;
+	char temp[100];
+	strcpy( temp, node->getValueAsString( "icon_rotate" ) );
+	if( strlen( temp ) ) {
+		sv->iconRotX = atoi( strtok( temp, "," ) );
+		sv->iconRotY = atoi( strtok( NULL, "," ) );
+		sv->iconRotZ = atoi( strtok( NULL, "," ) );
+	} else {
+		sv->iconRotX = sv->iconRotY = sv->iconRotZ = 0;
+	}
+
+	sv->iconWidth = sv->iconHeight = 0;
+	strcpy( temp, node->getValueAsString( "icon" ) );
+	if( strlen( temp ) ) {
+		debugFileLoad = true;
+		int w, h;
+		sv->icon = loadAlphaTexture( temp, &w, &h );
+		sv->iconWidth = w / 32;
+		sv->iconHeight = h / 32;
+		debugFileLoad = false;
+	}
 
 	return sv;
 }
@@ -687,16 +706,6 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 }
 
 void ShapePalette::initOccurance( ConfigNode *parent_node, ShapeValues *sv ) {
-	char temp[100];
-	strcpy( temp, parent_node->getValueAsString( "icon_rotate" ) );
-	if( strlen( temp ) ) {
-		sv->iconRotX = atoi( strtok( temp, "," ) );
-		sv->iconRotY = atoi( strtok( NULL, "," ) );
-		sv->iconRotZ = atoi( strtok( NULL, "," ) );
-	} else {
-		sv->iconRotX = sv->iconRotY = sv->iconRotZ = 0;
-	}
-
 	vector<ConfigNode*> *v = parent_node->getChildrenByName( "occurs" );
 	if( v && v->size() ) {
 		ConfigNode *node = (*v)[0];

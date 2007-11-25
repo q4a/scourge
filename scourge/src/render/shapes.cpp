@@ -310,6 +310,7 @@ void Shapes::initialize() {
 
 		shapes[ ( i + 1 ) ]->setOccurs( &(sv->occurs) );
 		shapes[ ( i + 1 ) ]->setIconRotation( sv->iconRotX, sv->iconRotY, sv->iconRotZ );
+		shapes[ ( i + 1 ) ]->setIcon( sv->icon, sv->iconWidth, sv->iconHeight );
 
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];
@@ -733,7 +734,15 @@ if( debugFileLoad ) {
 		cerr << "file: " << fn << " red=" << red << " green=" << green << " blue=" << blue << endl;
 }
 
-  if(((*surface) = SDL_LoadBMP( fn ))) {
+	if( !strcmp( filename + strlen( filename ) - 4, ".bmp" ) ) {
+		(*surface) = SDL_LoadBMP( fn );
+	} else {
+		*surface = IMG_Load( fn );
+		if( !(*surface) ) {
+			fprintf( stderr, "Problem loading image(%s): %s\n", fn, IMG_GetError() );
+		}
+	}
+  if( *surface ) {
 
 if( debugFileLoad ) {
 			cerr << "...loaded! Bytes per pixel=" << (int)((*surface)->format->BytesPerPixel) << endl;
@@ -958,5 +967,88 @@ GLuint Shapes::loadTextureWithAlpha( char *filename, int r, int g, int b, bool i
 	if( tmpImage ) free( tmpImage );
 	if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 	return texId;
+}
+
+GLuint Shapes::loadAlphaTexture( char *filename, int *width, int *height ) {
+	SDL_Surface *tmpSurface = NULL;
+	GLubyte *tmpImage = NULL;
+	instance->setupPNG( filename, &tmpSurface, &tmpImage );
+	GLuint texId = 0;
+	*width = tmpSurface->w;
+	*height = tmpSurface->h;
+	if( tmpImage ) texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+	if( tmpImage ) free( tmpImage );
+	if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+	return texId;
+}
+
+void Shapes::setupPNG( char *filename, SDL_Surface **surface, GLubyte **image, bool isAbsPath ) {
+
+  if( headless ) return;
+
+  GLubyte *p = NULL;
+  char fn[300];
+	if( isAbsPath ) {
+		strcpy( fn, filename );
+	} else {
+		strcpy( fn, rootDir );
+		strcat( fn, filename );
+	}
+
+if( debugFileLoad ) {
+		cerr << "file: " << fn << endl;
+}
+
+	*surface = IMG_Load( fn );
+	if( !(*surface) ) {
+		fprintf( stderr, "Problem loading image(%s): %s\n", fn, IMG_GetError() );
+	}
+  if( *surface ) {
+
+if( debugFileLoad ) {
+			cerr << "...loaded! Bytes per pixel=" << (int)((*surface)->format->BytesPerPixel) << endl;
+}
+
+    // Rearrange the pixelData
+    int width  = (*surface) -> w;
+    int height = (*surface) -> h;
+
+    if( width != height && 
+        ( !isPowerOfTwo( width ) ||
+          !isPowerOfTwo( height ) ) ) {
+      fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
+              fn, width, height, (*surface)->format->BitsPerPixel,
+              (*surface)->format->BytesPerPixel, (*surface)->pitch);
+    }
+
+    unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
+
+    p = (GLubyte*)malloc(width * height * 4 * sizeof( GLubyte ));
+    int count = 0;
+    int c = 0;
+    unsigned char r,g,b,a;
+    // the following lines extract R,G and B values from any bitmap
+    for(int i = 0; i < width * height; ++i) {
+      if(i > 0 && i % width == 0) {
+        c += (  (*surface)->pitch - (width * (*surface)->format->BytesPerPixel) );
+			}
+
+			r = data[c++];
+			g = data[c++];
+			b = data[c++];
+			a = data[c++];
+			
+			p[count++] = b;
+			p[count++] = g;
+			p[count++] = r;
+			p[count++] = a;
+		}
+  } else {
+		if( debugFileLoad ) {
+			cerr << "...not found:" << filename << endl;
+		}
+	}
+
+  (*image) = p;
 }
 
