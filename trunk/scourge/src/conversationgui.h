@@ -54,7 +54,7 @@ class ConversationGui : public WordClickedHandler, WidgetView {
   Button *identifyButton, *uncurseItemButton, *rechargeButton;
   Button *healButton, *donateButton;
   CardContainer *cards;
-  
+
  public:
   ConversationGui(Scourge *scourge);
   ~ConversationGui();

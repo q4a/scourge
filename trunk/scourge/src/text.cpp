@@ -30,14 +30,13 @@
 using namespace std;
 
 TexturedText::TexturedText() {
-    useLuminanceAlpha = 0;
-    strcpy(filename, rootDir);
-	strcat(filename, "/fonts/default.txf");
-    txf = txfLoadFont(filename);
-    if(txf == NULL) {
-        fprintf(stderr, "Problem loading %s\n", filename);
-        exit(1);
-    }    
+	useLuminanceAlpha = 0;
+	filename = rootDir + "/fonts/default.txf";
+	txf = txfLoadFont(filename);
+	if(txf == NULL) {
+		fprintf(stderr, "Problem loading %s\n", filename);
+		exit(1);
+	}
 }
 
 TexturedText::~TexturedText() {
@@ -48,7 +47,7 @@ TexturedText::~TexturedText() {
 
 
 
-TexFont *TexturedText::txfLoadFont(char *filename) {
+TexFont *TexturedText::txfLoadFont(string& filename) {
   TexFont *txf;
   FILE *file;
   GLfloat w, h, xstep, ystep;
@@ -59,7 +58,7 @@ TexFont *TexturedText::txfLoadFont(char *filename) {
   int i, j, got;
 
   txf = NULL;
-  file = fopen(filename, "rb");
+  file = fopen(filename.c_str(), "rb");
   if (file == NULL) {
     lastError = "file open failed.";
     goto error;

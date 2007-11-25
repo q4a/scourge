@@ -225,7 +225,7 @@ public:
 
   static void printArgs( HSQUIRRELVM v );
 
-  bool compile( const char *filename );
+  bool compile( const std::string& filename );
 
   bool callBoolMethod( const char *name, HSQOBJECT *param, bool *result );
   bool callNoArgMethod( const char *name, HSQOBJECT *param=NULL );
@@ -252,9 +252,9 @@ public:
   inline static Item *getCurrentWeapon() { return currentWeapon; }
 
 protected:
-  void registerScript( char *file );
-  void unregisterScript( char *file );
-  time_t getLastModTime( char *file );
+  void registerScript( const std::string& file );
+  void unregisterScript( const std::string& file );
+  time_t getLastModTime( const std::string& file );
 
   bool createClass( SquirrelClassDecl *cd, const char *key = NULL );
   bool instantiateClass( const SQChar *classname, 

@@ -52,7 +52,7 @@ typedef struct _ShapeValues {
   long color;
   int skipSide, stencil, blocksLight;
   int torch;
-  char m3ds_name[100];
+  std::string m3ds_name;
   float m3ds_scale;
   float m3ds_x, m3ds_y, m3ds_z;
   float o3ds_x, o3ds_y, o3ds_z;  
@@ -190,7 +190,7 @@ protected:
   
   typedef struct _Texture {
     GLuint id;
-    char filename[80];
+    std::string filename;
   } Texture;
 
   Texture textures[ MAX_SYSTEM_TEXTURE_COUNT ]; // store textures
@@ -270,7 +270,7 @@ public:
   inline WallTheme* getCurrentTheme() { return currentTheme; }
 
   virtual void initialize();
-  GLuint loadSystemTexture( char *line );
+  GLuint loadSystemTexture( const std::string& line );
 
   inline int getCharacterModelInfoCount( int sex ) { return character_models[sex].size(); }
   inline CharacterModelInfo *getCharacterModelInfo(  int sex, int index ) { return character_models[sex][ index ]; }
@@ -297,19 +297,19 @@ public:
   inline GLuint getRippleTexture() { return ripple_texture; }
   inline GLuint getAreaTexture() { return areaTex; }
 
-  GLuint findTextureByName(const char *filename, bool loadIfMissing=false );
+  GLuint findTextureByName(const std::string& filename, bool loadIfMissing=false );
   GLShape *findShapeByName(const char *name, bool variation=false);
   int findShapeIndexByName(const char *name);
   
   char *getRandomDescription(int descriptionGroup);
 
-  GLuint loadGLTextures(char *fileName);
+  GLuint loadGLTextures(const std::string& fileName);
 
-  GLuint getBMPData( char *filename, GLubyte **buf, int *width=NULL, int *height=NULL );
+  GLuint getBMPData( const std::string& filename, GLubyte **buf, int *width=NULL, int *height=NULL );
 
   GLuint getCursorTexture( int cursorMode );
 
-	static GLuint loadTextureWithAlpha( char *fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false, bool grayscale=false );
+	static GLuint loadTextureWithAlpha( std::string& fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false, bool grayscale=false );
 	static GLuint loadAlphaTexture( char *filename, int *width, int *height );
 
 	inline int getCursorWidth() { return cursorWidth; }
@@ -321,13 +321,13 @@ protected:
 	static Shapes *instance;
   GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int gl_scale=GL_NEAREST);
   GLuint loadGLTextureBGRA(int w, int h, GLubyte *image, int gl_scale=GL_NEAREST);
-  void setupAlphaBlendedBMP(char *filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0, bool isAbsFile=false, bool swapImage=false, bool grayscale=false );
-  void setupAlphaBlendedBMPGrid(char *filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight, int red=0, int green=0, int blue=0, int nred=-1, int ngreen=-1, int nblue=-1);
+  void setupAlphaBlendedBMP(const std::string& filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0, bool isAbsFile=false, bool swapImage=false, bool grayscale=false );
+  void setupAlphaBlendedBMPGrid(const std::string& filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight, int red=0, int green=0, int blue=0, int nred=-1, int ngreen=-1, int nblue=-1);
   void swap(unsigned char & a, unsigned char & b);
-  void loadStencil( char *filename, int index );
+  void loadStencil( const std::string& filename, int index );
 	void loadCursors();
 	GLuint *findOrMakeTextureGroup( char *s );
-	void setupPNG( char *filename, SDL_Surface **surface, GLubyte **image, bool isAbsPath=false );
+	void setupPNG( const std::string& filename, SDL_Surface **surface, GLubyte **image, bool isAbsPath=false );
 };
 
 #endif

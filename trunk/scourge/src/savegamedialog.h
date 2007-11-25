@@ -22,6 +22,7 @@
 #include <map>
 #include <vector>
 #include <set>
+#include <sstream>
 
 class Scourge;
 class Window;
@@ -38,7 +39,7 @@ using namespace std;
 #define MAX_SAVEGAME_COUNT 100
 
 typedef struct _SavegameInfo {
-	char path[300];
+	string path;
 	char title[3000];
 } SavegameInfo;
 
@@ -63,24 +64,24 @@ public:
 
 	bool createNewSaveGame();
 
-	void deleteUnvisitedMaps( char *dirName, std::set<std::string> *visitedMaps );
+	void deleteUnvisitedMaps( const string& dirName, std::set<std::string> *visitedMaps );
 
 protected:
 	bool findFiles();
-	bool readFileDetails( char *path );
-	void makeDirectory( char *path );
-	void findFilesInDir( char *path, vector<string> *fileNameList );
-	bool checkIfFileExists( char *filename );
-	void saveScreenshot( char *dirName );
-	bool copyMaps( char *fromDirName, char *toDirName );
-	bool copyFile( char *fromDirName, char *toDirName, char *fileName );
-	GLuint loadScreenshot( char *path );
+	bool readFileDetails( const string& path );
+	void makeDirectory( const string& path );
+	void findFilesInDir( const string& path, vector<string> *fileNameList );
+	bool checkIfFileExists( const string& filename );
+	void saveScreenshot( const string& dirName );
+	bool copyMaps( const string& fromDirName, const string& toDirName );
+	bool copyFile( const string& fromDirName, const string& toDirName, const string& fileName );
+	GLuint loadScreenshot( const string& path );
 	bool saveGameInternal( SavegameInfo *info );
 	bool createSaveGame( SavegameInfo *info );
 	void loadGame( int n );
 	void setSavegameInfoTitle( SavegameInfo *info );
-	bool deleteDirectory( char *path );
-	void deleteUnreferencedMaps( char *dirName );
+	bool deleteDirectory( const string& path );
+	void deleteUnreferencedMaps( const string& dirName );
 };
 
 #endif

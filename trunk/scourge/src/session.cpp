@@ -54,8 +54,8 @@ Session::Session(GameAdapter *adapter) {
 	chapterImageWidth = chapterImageHeight = 0;
 	showChapterIntro = false;
   squirrel = NULL;
-	strcpy( savegame, "" );
-	strcpy( loadgame, "" );
+	savegame = "";
+	loadgame = "";
 	strcpy( scoreid, "" );
 	dataInitialized = NOT_INITIALIZED;
 	Session::instance = this;
@@ -607,8 +607,8 @@ void Session::setCountForDate( char *key, int value ) {
 	getSquirrel()->setValue( key, s );
 }
 
-void Session::setSavegameName( char *s ) {
-	strcpy( savegame, s );
+void Session::setSavegameName( string& s ) {
+	savegame = s;
 }
 
 Creature *Session::getCreatureByName( char *name ) {

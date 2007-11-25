@@ -434,21 +434,24 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
 
   char result[1000];
   if( widget == saveButton ) {
-    scourge->getMap()->saveMap( nameText->getText(), result );
+		string tmp(nameText->getText());
+    scourge->getMap()->saveMap( tmp, result );
     scourge->showMessageDialog( result );
 //    scourge->getParty()->toggleRound( false );
   } else if( widget == loadButton ) {
-    scourge->getMap()->loadMap( nameText->getText(), result );
+		string tmp(nameText->getText());
+    scourge->getMap()->loadMap( tmp, result );
     scourge->showMessageDialog( result );
     miniMap->reset();
 //    scourge->getParty()->toggleRound( false );
   } else if( widget == newButton ) {
     newMapWin->setVisible( true );
-    char tmp[1000];
-    sprintf( tmp, "%d", this->level );
-    levelText->setText( (const char*)tmp );
-    sprintf( tmp, "%d", this->depth );
-    depthText->setText( (const char*)tmp );
+    stringstream tmp;
+    tmp << this->level;
+    levelText->setText( tmp.str().c_str() );
+		tmp.clear();
+    tmp << this->depth;
+    depthText->setText( tmp.str().c_str() );
     // FIXME: select theme!
     cerr << "FIXME: select theme!" << endl;
     mapWidget->setSelection( scourge->getMap()->mapGridX, scourge->getMap()->mapGridY );

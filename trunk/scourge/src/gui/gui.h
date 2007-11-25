@@ -38,7 +38,7 @@ public:
   }
 
   virtual void processEventsAndRepaint() = 0;
-  virtual void playSound( const char *file ) = 0;
+  virtual void playSound( const std::string& file ) = 0;
   virtual void texPrint(GLfloat x, GLfloat y, const char *fmt, ...) = 0;
   virtual int textWidth( const char *fmt, ... ) = 0;
   virtual int getScreenWidth() = 0;

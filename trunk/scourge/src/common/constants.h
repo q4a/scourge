@@ -129,12 +129,12 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
 
 #define toint(x) (int)(x<0 ? (x - 0.5f) : (x + 0.5f))
 
-extern char rootDir[300];
-extern char localeDir[300];
-extern char configDir[300];
-extern int get_config_dir_name( char *buff, int len );
-extern int get_config_file_name( char *buff, int len );
-extern int get_file_name( char *buff, int len, char *fileName );
+extern std::string rootDir;
+extern std::string localeDir;
+extern std::string configDir;
+extern std::string get_config_dir_name();
+extern std::string get_config_file_name();
+extern std::string get_file_name(const std::string fileName );
 
 // opengl extension function ptrs for SDL (set in sdlhandler.cpp)
 extern PFNGLACTIVETEXTUREARBPROC glSDLActiveTextureARB;
@@ -596,12 +596,12 @@ public:
 	static int findLocaleDir();
 
 private:
-  static bool checkFile(const char *dir, const char *file);
+  static bool checkFile(const std::string& dir, const std::string& file);
   // used to run scourge with local resources
-  static void findLocalResources(const char *appPath, char *dir);
+  static std::string findLocalResources(const std::string& appPath);
 };
 
-char* GetDataPath(char *file);
+std::string GetDataPath(const std::string& file);
 
 class CVectorTex
 {
@@ -671,7 +671,7 @@ struct tFace
 struct tMaterialInfo
 {
 	char  strName[255];			// The texture name
-	char  strFile[255];			// The texture file name (If this is set it's a texture map)
+	std::string strFile;			// The texture file name (If this is set it's a texture map)
 	BYTE  color[3];				// The color of the object (R, G, B)
 	int   texureId;				// the texture ID
 	float uTile;				// u tiling of texture  (Currently not used)
@@ -752,5 +752,15 @@ extern void ComputeNormals(t3DModel *pModel);
 extern void CreateTexture(GLuint textureArray[],char *strFileName,int textureID);
 extern void swap(unsigned char & a, unsigned char & b);
 extern void findNormal( CVector3 *p1, CVector3 *p2, CVector3 *p3, CVector3 *normal );
+
+
+template <class T> struct equal_ignore_case : public std::binary_function<T, T, bool> {
+	bool operator()(const T& first_argument_type, const T& second_argument_type) const
+	{
+		return std::toupper(first_argument_type) == std::toupper(second_argument_type);
+	}
+};
+ 
+bool StringCaseCompare(const std::string sStr1, const std::string sStr2);
 
 #endif

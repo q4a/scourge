@@ -78,7 +78,7 @@ private:
   int level;
   int depth;
   char mapName[80];
-	char savedMapName[300];
+	std::string savedMapName;
   bool edited;
   char name[80];
   char displayName[255];
@@ -122,8 +122,8 @@ public:
    * "fileName" in this case is the name of the .map binary file 
    * that was loaded.
    */
-  static void loadMapData( GameAdapter *adapter, const char *fileName );
-	static void loadMapConfig( GameAdapter *adapter, const char *filename );
+  static void loadMapData( GameAdapter *adapter, const std::string& fileName );
+	static void loadMapConfig( GameAdapter *adapter, const std::string& filename );
 
   /**
    * Append extra data (npc info, etc.) to a text file alongside an edited map.
@@ -131,7 +131,7 @@ public:
    * that was loaded. A file will only be created if one doesn't already
    * exist.
    */
-  static void saveMapData( GameAdapter *adapter, const char *fileName );
+  static void saveMapData( GameAdapter *adapter, const std::string& fileName );
 
   Mission( Board *board, int level, int depth, 
            char *name, char *displayName, char *description, char *introDescription,
@@ -208,8 +208,8 @@ public:
 	inline char *getTemplateName() { return templateName; }
 	inline void setTemplateName( char *s ) { strcpy( templateName, s ); }
 
-	inline void setSavedMapName( char *s ) { strcpy( savedMapName, s ); }
-	inline char *getSavedMapName() { return savedMapName; }
+	inline void setSavedMapName( const std::string s ) { savedMapName = s; }
+	inline std::string getSavedMapName() { return savedMapName; }
 
 	MissionInfo *save();
 	static Mission *load( Session *session, MissionInfo *info );
@@ -218,8 +218,8 @@ public:
 private:
 	//static void addWanderingHeroes( GameAdapter *adapter );
 	static void clearConversations();
-  static void loadMapDataFile( GameAdapter *adapter, const char *filename, bool generalOnly=false );
-	static void getMapConfigFile( const char *filename, const char *out );
+  static void loadMapDataFile( GameAdapter *adapter, const std::string& filename, bool generalOnly=false );
+	static std::string getMapConfigFile( const std::string& filename );
 	static void initConversations( ConfigLang *config, GameAdapter *adapter, bool generalOnly );
 	static void initNpcs( ConfigLang *config, GameAdapter *adapter );
 	static void setGeneralConversationLine( std::string keyphrase, std::string answer );

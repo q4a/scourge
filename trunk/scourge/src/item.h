@@ -176,7 +176,7 @@ public:
   // this method also adjusts weight
   bool decrementCharges();
 
-  const char *getRandomSound();
+  const std::string getRandomSound();
   
   static void initItems(ShapePalette *shapePal);
 

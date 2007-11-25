@@ -75,15 +75,15 @@ void WallTheme::load() {
 }
 
 void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
-  char path[300], bmp[300];  
+  string path, bmp;  
   if ( texture && strcmp( texture, "null" ) ) {
     string s = texture;
     GLuint id;
     if ( loadedTextures.find(s) == loadedTextures.end() ) {
 
       // see if it's a system texture (no need to double load it)
-      sprintf( bmp, "%s.bmp", texture );
-      sprintf( path, "/%s", bmp );
+      bmp = texture + string(".bmp");
+      path = "/" + bmp;
 
       // keep lava texture data
       if( isCave() && 
@@ -112,14 +112,14 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
 }
 
 void WallTheme::unload() {
-  char bmp[300];
+  string bmp;
 //  cerr << "*** Dumping theme: " << getName() << endl;
   for (map<string,GLuint>::iterator i=loadedTextures.begin(); i!=loadedTextures.end(); ++i) {
     string s = i->first;
     GLuint id = i->second;
 
     // don't delete system textures!
-    sprintf( bmp, "%s.bmp", s.c_str() );
+    bmp = s + ".bmp";
     id = shapePal->findTextureByName( bmp );
     if ( id == 0 ) {
       glDeleteTextures( 1, &id );
@@ -200,12 +200,14 @@ void Shapes::initialize() {
   
   SDL_Surface *area;
   GLubyte *areaImage;
-  setupAlphaBlendedBMP("/textures/area.bmp", &area, &areaImage);
+	string areabmp("/textures/area.bmp");
+  setupAlphaBlendedBMP(areabmp, &area, &areaImage);
   areaTex = loadGLTextureBGRA(area, areaImage, GL_LINEAR);
   //areaTex = loadGLTextures("/area.bmp");
 
 	// load as a grayscale (use gray value as alpha)
-	selection = Shapes::loadTextureWithAlpha( "/textures/sel.bmp", 0, 0, 0, false, false, true );
+	string sel("/textures/sel.bmp");
+	selection = Shapes::loadTextureWithAlpha( sel, 0, 0, 0, false, false, true );
 
 	// default to textures
 	strcpy( cursorDir, "/textures" );
@@ -239,7 +241,7 @@ void Shapes::initialize() {
 													sv->color,
 													(i + 1),
 													sv->teleporter );
-    } else if(strlen(sv->m3ds_name)) {
+    } else if(sv->m3ds_name.length()) {
       shapes[(i + 1)] =
       new C3DSShape(sv->m3ds_name, sv->m3ds_scale, this,
                     texture,                     
@@ -360,9 +362,8 @@ void Shapes::initialize() {
 }
 
 void Shapes::loadCursors() {
-	char path[300];
 	for( int i = 0; i < Constants::CURSOR_COUNT; i++ ) {
-		sprintf( path, "%s/%s", cursorDir, Constants::cursorTextureName[ i ] );
+		string path = string(cursorDir) + "/" + string(Constants::cursorTextureName[ i ]);
 		cursorTexture[i] = loadTextureWithAlpha( path );
 	}
 }
@@ -458,12 +459,13 @@ char *Shapes::getRandomDescription(int descriptionGroup) {
 }
 
 // the next two methods are slow, only use during initialization
-GLuint Shapes::findTextureByName( const char *filename, bool loadIfMissing ) {
-  for(int i = 0; i < texture_count; i++) {
-    if(!strcasecmp(textures[i].filename, filename)) return textures[i].id;
-  }
+GLuint Shapes::findTextureByName( const string& filename, bool loadIfMissing ) {
+	for(int i = 0; i < texture_count; i++) {
+		if(StringCaseCompare(textures[i].filename, filename))
+			return textures[i].id;
+	}
 	if( loadIfMissing ) {
-		return loadSystemTexture( (char*)filename );
+		return loadSystemTexture( filename );
 	}
   return 0;
 }
@@ -502,11 +504,9 @@ bool inline isPowerOfTwo( const GLuint n ) {
 
 // FIXME: this should be similar to loadTextureWithAlpha but adding alpha
 // screws up the stencils in caves. No time to debug now.
-GLuint Shapes::getBMPData( char *filename, GLubyte **buf, int *imgwidth, int *imgheight  ) {
+GLuint Shapes::getBMPData( const string& filename, GLubyte **buf, int *imgwidth, int *imgheight  ) {
 	GLuint ret = 0;
-	char fn[300];
-	strcpy(fn, rootDir);
-	strcat(fn, filename);
+	string fn = rootDir + filename;
 
 //  cerr << "loading lava data: " << fn << endl;
 
@@ -514,13 +514,13 @@ GLuint Shapes::getBMPData( char *filename, GLubyte **buf, int *imgwidth, int *im
 	SDL_Surface *TextureImage[1];
 
 	// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
-	if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
+	if( ( TextureImage[0] = SDL_LoadBMP( fn.c_str() ) ) ) {
 
 		if( TextureImage[0]->w != TextureImage[0]->h && 
 				( !isPowerOfTwo( TextureImage[0]->w ) ||
 					!isPowerOfTwo( TextureImage[0]->h ) ) ) {
 			fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: name=%s pitch=%d width=%d height=%d\n", 
-							fn, (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
+							fn.c_str(), (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
 		}
 
 		Constants::checkTexture("Shapes::loadGLTextures", 
@@ -569,13 +569,12 @@ GLuint Shapes::getBMPData( char *filename, GLubyte **buf, int *imgwidth, int *im
 
 
 /* function to load in bitmap as a GL texture */
-GLuint Shapes::loadGLTextures(char *filename) {
+GLuint Shapes::loadGLTextures(const string& filename) {
 
-  if( headless ) return 0;
+	if( headless ) 
+		return 0;
 
-  char fn[300];
-  strcpy(fn, rootDir);
-  strcat(fn, filename);
+  string fn = rootDir + filename;
 
   GLuint texture[1];
 
@@ -583,13 +582,13 @@ GLuint Shapes::loadGLTextures(char *filename) {
   SDL_Surface *TextureImage[1];
 
   /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
-  if( ( TextureImage[0] = SDL_LoadBMP( fn ) ) ) {
+  if( ( TextureImage[0] = SDL_LoadBMP( fn.c_str() ) ) ) {
 
     if( TextureImage[0]->w != TextureImage[0]->h && 
         ( !isPowerOfTwo( TextureImage[0]->w ) ||
           !isPowerOfTwo( TextureImage[0]->h ) ) ) {
       fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: name=%s pitch=%d width=%d height=%d\n", 
-              fn, (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
+              fn.c_str(), (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
     }
 
     Constants::checkTexture("Shapes::loadGLTextures", 
@@ -666,15 +665,13 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
   return;
 }
 
-void Shapes::loadStencil( char *filename, int index ) {
+void Shapes::loadStencil( const string& filename, int index ) {
   if( headless ) return;
 
   GLubyte *p = NULL;
-  char fn[300];
+  string fn = rootDir + filename;
 //  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
-  strcpy(fn, rootDir);
-  strcat(fn, filename);
-  if( ( stencil[ index ] = SDL_LoadBMP( fn ) ) != NULL ) {
+  if( ( stencil[ index ] = SDL_LoadBMP( fn.c_str() ) ) != NULL ) {
 
     // Rearrange the pixelData
     int width  = stencil[ index ]->w;
@@ -684,7 +681,7 @@ void Shapes::loadStencil( char *filename, int index ) {
         ( !isPowerOfTwo( width ) ||
           !isPowerOfTwo( height ) ) ) {
       fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
-              fn, width, height, 
+              fn.c_str(), width, height, 
               stencil[ index ]->format->BitsPerPixel,
               stencil[ index ]->format->BytesPerPixel, 
               stencil[ index ]->pitch);
@@ -711,7 +708,7 @@ void Shapes::loadStencil( char *filename, int index ) {
   stencilImage[ index ] = p;
 }
 
-void Shapes::setupAlphaBlendedBMP( char *filename, 
+void Shapes::setupAlphaBlendedBMP( const string& filename, 
 																	 SDL_Surface **surface, 
 																	 GLubyte **image, 
 																	 int red, int green, int blue,
@@ -719,34 +716,33 @@ void Shapes::setupAlphaBlendedBMP( char *filename,
 																	 bool swapImage,
 																	 bool grayscale ) {
 
-  if( headless ) return;
+	if( headless ) return;
 
-  GLubyte *p = NULL;
-  char fn[300];
+	GLubyte *p = NULL;
+	string fn;
 	if( isAbsPath ) {
-		strcpy( fn, filename );
+		fn = filename;
 	} else {
-		strcpy( fn, rootDir );
-		strcat( fn, filename );
+		fn = rootDir;
+		fn.append( filename );
 	}
 
-if( debugFileLoad ) {
+	if( debugFileLoad ) {
 		cerr << "file: " << fn << " red=" << red << " green=" << green << " blue=" << blue << endl;
-}
+	}
 
-	if( !strcmp( filename + strlen( filename ) - 4, ".bmp" ) ) {
-		(*surface) = SDL_LoadBMP( fn );
+	if(StringCaseCompare(fn.substr(fn.length() - 4, 4), ".bmp")) {
+		(*surface) = SDL_LoadBMP( fn.c_str() );
 	} else {
-		*surface = IMG_Load( fn );
+		*surface = IMG_Load( fn.c_str() );
 		if( !(*surface) ) {
-			fprintf( stderr, "Problem loading image(%s): %s\n", fn, IMG_GetError() );
+			cerr << "Problem loading image(" << fn << "): " << IMG_GetError() << endl;
 		}
 	}
   if( *surface ) {
-
-if( debugFileLoad ) {
+		if( debugFileLoad ) {
 			cerr << "...loaded! Bytes per pixel=" << (int)((*surface)->format->BytesPerPixel) << endl;
-}
+		}
 
     // Rearrange the pixelData
     int width  = (*surface) -> w;
@@ -755,9 +751,12 @@ if( debugFileLoad ) {
     if( width != height && 
         ( !isPowerOfTwo( width ) ||
           !isPowerOfTwo( height ) ) ) {
-      fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
-              fn, width, height, (*surface)->format->BitsPerPixel,
-              (*surface)->format->BytesPerPixel, (*surface)->pitch);
+      cerr << "*** Possible error: Width or Heigth not a power of 2: file=" << fn 
+					 << " w=" << width 
+					 << " h=" << height 
+					 << " bpp=" << (*surface)->format->BitsPerPixel 
+					 << " byte/pix=" << (*surface)->format->BytesPerPixel 
+					 << " pitch=" << (*surface)->pitch << endl;
     }
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
@@ -816,7 +815,7 @@ if( debugFileLoad ) {
   (*image) = p;
 }
 
-void Shapes::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surface, 
+void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **surface, 
                                              GLubyte *image[20][20], int imageWidth, int imageHeight,
                                              int tileWidth, int tileHeight, 
                                              int red, int green, int blue,
@@ -826,10 +825,8 @@ void Shapes::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surface,
 //  cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
 
   //  *image = NULL;
-  char fn[300];
-  strcpy(fn, rootDir);
-  strcat(fn, filename);
-  if(((*surface) = SDL_LoadBMP( fn ))) {
+  string fn = rootDir + filename;
+  if(((*surface) = SDL_LoadBMP( fn.c_str() ))) {
 
     // Rearrange the pixelData
     int width  = (*surface) -> w;
@@ -898,8 +895,7 @@ void Shapes::setupAlphaBlendedBMPGrid( char *filename, SDL_Surface **surface,
   }
 }
 
-GLuint Shapes::loadSystemTexture( char *line ) {
-
+GLuint Shapes::loadSystemTexture( const string& line ) {
   if( headless ) return 0;
 
   if( texture_count >= MAX_SYSTEM_TEXTURE_COUNT ) {
@@ -909,9 +905,8 @@ GLuint Shapes::loadSystemTexture( char *line ) {
 
   GLuint id = findTextureByName( line );
   if( !id ) {
-    char path[300];
-    strcpy( textures[texture_count].filename, line );
-    sprintf( path, "/textures/%s", textures[texture_count].filename );
+    textures[texture_count].filename = line;
+    string path = "/textures/" + textures[texture_count].filename;
     // load the texture
 		/*
     id = textures[ texture_count ].id = loadGLTextures( path );
@@ -958,7 +953,7 @@ GLuint Shapes::getCursorTexture( int cursorMode ) {
 	*/
 }
 
-GLuint Shapes::loadTextureWithAlpha( char *filename, int r, int g, int b, bool isAbsPath, bool swapImage, bool grayscale ) {
+GLuint Shapes::loadTextureWithAlpha( string& filename, int r, int g, int b, bool isAbsPath, bool swapImage, bool grayscale ) {
 	SDL_Surface *tmpSurface = NULL;
 	GLubyte *tmpImage = NULL;
 	instance->setupAlphaBlendedBMP( filename, &tmpSurface, &tmpImage, r, g, b, isAbsPath, swapImage, grayscale );
@@ -982,43 +977,43 @@ GLuint Shapes::loadAlphaTexture( char *filename, int *width, int *height ) {
 	return texId;
 }
 
-void Shapes::setupPNG( char *filename, SDL_Surface **surface, GLubyte **image, bool isAbsPath ) {
+void Shapes::setupPNG( const string& filename, SDL_Surface **surface, GLubyte **image, bool isAbsPath ) {
 
   if( headless ) return;
 
   GLubyte *p = NULL;
-  char fn[300];
+  string fn;
 	if( isAbsPath ) {
-		strcpy( fn, filename );
+		fn = filename;
 	} else {
-		strcpy( fn, rootDir );
-		strcat( fn, filename );
+		fn = rootDir + filename;
 	}
 
-if( debugFileLoad ) {
-		cerr << "file: " << fn << endl;
-}
+	if( debugFileLoad ) {
+			cerr << "file: " << fn << endl;
+	}
 
-	*surface = IMG_Load( fn );
+	*surface = IMG_Load( fn.c_str() );
 	if( !(*surface) ) {
-		fprintf( stderr, "Problem loading image(%s): %s\n", fn, IMG_GetError() );
+		cerr << "Problem loading image( " << fn << " ): " <<  IMG_GetError() << endl;
 	}
   if( *surface ) {
 
-if( debugFileLoad ) {
-			cerr << "...loaded! Bytes per pixel=" << (int)((*surface)->format->BytesPerPixel) << endl;
-}
+	if( debugFileLoad ) {
+		cerr << "...loaded! Bytes per pixel=" << (int)((*surface)->format->BytesPerPixel) << endl;
+	}
 
     // Rearrange the pixelData
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-    if( width != height && 
-        ( !isPowerOfTwo( width ) ||
-          !isPowerOfTwo( height ) ) ) {
-      fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
-              fn, width, height, (*surface)->format->BitsPerPixel,
-              (*surface)->format->BytesPerPixel, (*surface)->pitch);
+    if( width != height && ( !isPowerOfTwo( width ) || !isPowerOfTwo( height ) ) ) {
+      cerr  << "*** Possible error: Width or Heigth not a power of 2: file=" << fn 
+						<< "w=" << width 
+						<< " h=" << height 
+						<< " bpp=" << (*surface)->format->BitsPerPixel 
+						<< " byte/pix=" << (*surface)->format->BytesPerPixel 
+						<< " pitch=" <<  (*surface)->pitch << endl;
     }
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data

@@ -46,13 +46,13 @@ const char UserConfiguration::default_key[][20] = {
   "right",
   "up",
   "left",
-           
+
 /*    SET_PLAYER_0,
     SET_PLAYER_1,
     SET_PLAYER_2,
     SET_PLAYER_3,
-    SET_PLAYER_ONLY,      
-*/    
+    SET_PLAYER_ONLY,
+*/
 
   "1",
   "2",
@@ -63,7 +63,7 @@ const char UserConfiguration::default_key[][20] = {
 /*    SHOW_INVENTORY, 
     SHOW_OPTIONS_MENU,
     SET_NEXT_FORMATION,
-*/    
+*/
 
   "i",
   "o",
@@ -71,28 +71,28 @@ const char UserConfiguration::default_key[][20] = {
 
 /*
     TOGGLE_MINIMAP,
-*/    
+*/
 
   "[+]",
 
-/*    
-    SET_ZOOM_IN,     
+/*
+    SET_ZOOM_IN,
     SET_ZOOM_OUT,
-*/    
+*/
 
   "8",
   "9",
-   
+
 /*
     TOGGLE_MAP_CENTER, 
     INCREASE_GAME_SPEED, 
     DECREASE_GAME_SPEED, 
-*/    
+*/
 
   "m",
   "k",
   "l",
-    
+
 //    START_ROUND, 
 
   "space",
@@ -101,7 +101,7 @@ const char UserConfiguration::default_key[][20] = {
     LAYOUT_1,
     LAYOUT_2,
     LAYOUT_4,
-*/    
+*/
 
   "g",
   "h",
@@ -109,7 +109,7 @@ const char UserConfiguration::default_key[][20] = {
 
 /*
     SWITCH_COMBAT,
-*/    
+*/
 
   "c",
 
@@ -121,17 +121,17 @@ const char UserConfiguration::default_key[][20] = {
 /*
     QUICK_SPELL_1,
     QUICK_SPELL_2,
-    QUICK_SPELL_3,      
-    QUICK_SPELL_4,      
-    QUICK_SPELL_5,      
-    QUICK_SPELL_6,      
-    QUICK_SPELL_7,      
-    QUICK_SPELL_8,      
-    QUICK_SPELL_9,      
-    QUICK_SPELL_10,      
-    QUICK_SPELL_11,      
+    QUICK_SPELL_3,
+    QUICK_SPELL_4,
+    QUICK_SPELL_5,
+    QUICK_SPELL_6,
+    QUICK_SPELL_7,
+    QUICK_SPELL_8,
+    QUICK_SPELL_9,
+    QUICK_SPELL_10,
+    QUICK_SPELL_11,
     QUICK_SPELL_12
-*/    
+*/
 
   "f1",
   "f2",
@@ -152,52 +152,52 @@ const char UserConfiguration::default_key[][20] = {
 // Must be exact copy of enums defined in userconfiguration.h
 // (except for ENGINE_ACTION_COUNT)
 const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
-    
+
   "SET_MOVE_DOWN",
   "SET_MOVE_RIGHT",
   "SET_MOVE_UP",
   "SET_MOVE_LEFT",
-  
+
   "SET_PLAYER_0",
   "SET_PLAYER_1",
   "SET_PLAYER_2",
   "SET_PLAYER_3",
   "SET_PLAYER_ONLY",
-  
+
   "SHOW_INVENTORY", 
   "SHOW_OPTIONS_MENU",
   "SET_NEXT_FORMATION",
-  
+
   "TOGGLE_MINIMAP",
-  
-  "SET_ZOOM_IN",     
+
+  "SET_ZOOM_IN",
   "SET_ZOOM_OUT",
-  
-  "TOGGLE_MAP_CENTER",    
+
+  "TOGGLE_MAP_CENTER",
   "INCREASE_GAME_SPEED", 
   "DECREASE_GAME_SPEED", 
-    
+
   "START_ROUND",
-  
+
   "LAYOUT_1",
   "LAYOUT_2",
   "LAYOUT_4",
-  
+
   "SWITCH_COMBAT",
-  
+
   "NEXT_WEAPON",
-  
+
   "QUICK_SPELL_1",
   "QUICK_SPELL_2",
-  "QUICK_SPELL_3",      
-  "QUICK_SPELL_4",      
-  "QUICK_SPELL_5",      
-  "QUICK_SPELL_6",      
-  "QUICK_SPELL_7",      
-  "QUICK_SPELL_8",      
-  "QUICK_SPELL_9",      
-  "QUICK_SPELL_10",      
-  "QUICK_SPELL_11",      
+  "QUICK_SPELL_3",
+  "QUICK_SPELL_4",
+  "QUICK_SPELL_5",
+  "QUICK_SPELL_6",
+  "QUICK_SPELL_7",
+  "QUICK_SPELL_8",
+  "QUICK_SPELL_9",
+  "QUICK_SPELL_10",
+  "QUICK_SPELL_11",
   "QUICK_SPELL_12"
 };
 
@@ -206,15 +206,15 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
 // (without the "_STOP" and except for ENGINE_ACTION_UP_COUNT)
 const char * UserConfiguration :: ENGINE_ACTION_UP_NAMES[]={
 
-  "SET_MOVE_DOWN",     
+  "SET_MOVE_DOWN",
   "SET_MOVE_RIGHT",
   "SET_MOVE_UP",
   "SET_MOVE_LEFT",
   "SET_Y_ROT_PLUS",
-  "SET_Y_ROT_MINUS",    
-  "SET_Z_ROT_PLUS",        
+  "SET_Y_ROT_MINUS",
+  "SET_Z_ROT_PLUS",
   "SET_Z_ROT_MINUS",
-  "SET_ZOOM_IN",     
+  "SET_ZOOM_IN",
   "SET_ZOOM_OUT",
   "SET_NEXT_FORMATION"
   
@@ -223,67 +223,67 @@ const char * UserConfiguration :: ENGINE_ACTION_UP_NAMES[]={
 
 
 const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
-    
+
   "Scroll map south",
   "Scroll map north",
   "Scroll map east",
   "Scroll map west",
-  
+
   "Select player 0",
   "Select player 1",
   "Select player 2",
   "Select player 3",
-  "Toggle group mode",    
-  
-  "Show inventory", 
+  "Toggle group mode",
+
+  "Show inventory",
   "Show options",
   "Choose next formation",
-  
+
   "Toggle minimap",
-  
-  "Zoom in map",     
+
+  "Zoom in map",
   "Zoom out map",
-  
+
   "Always center map",
   "Increase game speed", 
   "Decrease game speed",
-  
+
   "Start next round",
-  
+
   "Floating UI layout",
   "Bottom UI layout",
   "Inventory UI layout",
-  
+
   "Switch combat mode",
-  
+
   "Switch to next weapon",
-  
+
   "Quick Spell 1",
   "Quick Spell 2",
-  "Quick Spell 3",      
-  "Quick Spell 4",      
-  "Quick Spell 5",      
-  "Quick Spell 6",      
-  "Quick Spell 7",      
-  "Quick Spell 8",      
-  "Quick Spell 9",      
-  "Quick Spell 10",      
-  "Quick Spell 11",      
+  "Quick Spell 3",
+  "Quick Spell 4",
+  "Quick Spell 5",
+  "Quick Spell 6",
+  "Quick Spell 7",
+  "Quick Spell 8",
+  "Quick Spell 9",
+  "Quick Spell 10",
+  "Quick Spell 11",
   "Quick Spell 12"
 
 };
 
 
-UserConfiguration::UserConfiguration(){    
+UserConfiguration::UserConfiguration(){
     unsigned int i, j;
     string temp;
 
     standAloneMode = NONE;
 		debugTheme = false;
-    
+
 		stencilBufInitialized = false;
     configurationChanged = false;
-    
+
     // default settings for video mode (are overridden by command line)
     fullscreen = true;
     doublebuf = true;
@@ -303,7 +303,7 @@ UserConfiguration::UserConfiguration(){
     tooltipEnabled = true;
 		enableScreenshots = true;
     tooltipInterval = 50;
-    
+
     // game settings
     gamespeed = 1;  // fast speed
     centermap = true;
@@ -322,46 +322,45 @@ UserConfiguration::UserConfiguration(){
     soundFreq = 5;
     musicVolume = 64;
     effectsVolume = 128;
-    
+
     // Build (string engineAction -> int engineAction ) lookup table
     // and   (int ea -> string ea) lookup table    
     for (i = 0; i < ENGINE_ACTION_COUNT ; i++){
         temp = ENGINE_ACTION_NAMES[i];
         for(j = 0; j < temp.length(); j++){
-            temp[j] = tolower(temp[j]);                                 
+            temp[j] = tolower(temp[j]);
         } 
         engineActionNumber[temp] = i;
-        engineActionName[i] = temp;        
+        engineActionName[i] = temp;
     }
-    
+
     // Build (string engineActionUp -> int engineActionUp ) lookup table
     for (i = SET_MOVE_DOWN_STOP; i < ENGINE_ACTION_UP_COUNT ; i++){
         temp = ENGINE_ACTION_UP_NAMES[i - SET_MOVE_DOWN_STOP];
         for(j = 0; j < temp.length(); j++){
-            temp[j] = tolower(temp[j]);                                 
+            temp[j] = tolower(temp[j]);
         } 
         engineActionUpNumber[temp] = i;
-    }        
-                                 
+    }
+
     if(DEBUG_USER_CONFIG){
         map<string, int>::iterator p;
-                
+
         p = engineActionUpNumber.begin();
         cout << "Engine Action Up list : " << endl;
         while(p != engineActionUpNumber.end()){
             cout << " '" << p->first << "' associated to  '" << p->second << "'" << endl;
-            p++;     
+            p++;
         }
-        
+
         cout << endl << endl;
         p = engineActionNumber.begin();
         cout << "Engine Action list : " << endl;
         while(p != engineActionNumber.end()){
             cout << " '" << p->first << "' associated to  '" << p->second << "'" << endl;
-            p++;     
+            p++;
         }
     }
-
 }
 
 void UserConfiguration::loadConfiguration(){
@@ -374,11 +373,10 @@ void UserConfiguration::loadConfiguration(){
   unsigned int i;
   bool isCurrentVersion = false;
 
-  char path[300];
   //    strcpy(path, rootDir);
   //    strcat(path, CONFIG_FILE_NAME);
-  get_config_file_name(path, 300);
-  configFile = new ifstream(path);
+  string path = get_config_file_name();
+  configFile = new ifstream(path.c_str());
   if (!configFile->is_open()) {
     cerr << "Can't open configuration file: " << path << endl;
     cerr << "Will create a default config file at the above location." << endl; 
@@ -386,7 +384,7 @@ void UserConfiguration::loadConfiguration(){
 
     // try to open it again
     delete configFile;
-    configFile = new ifstream(path);
+    configFile = new ifstream(path.c_str());
     if (!configFile->is_open()) {
       cout << "Error: Can't open configuration file: " << path << endl;   
       exit(1);
@@ -403,14 +401,14 @@ void UserConfiguration::loadConfiguration(){
     if (sSecondParam.size()) sSecondParam.erase(sSecondParam.begin(), sSecondParam.end());
 
     for (i = 0; i < sLine.length(); i++) {
-      sLine[i] = tolower(sLine[i]);                                 
-    }         
+      sLine[i] = tolower(sLine[i]);
+    }
 
     // search for keywords, ignore lines not begining with keyword or spaces
     endWord = -1;
     foo = -1;
     firstChar = sLine.find_first_not_of(' ', 0);
-    pos = sLine.find("bind", 0);       
+    pos = sLine.find("bind", 0);
     if (pos < 0) {
       pos = sLine.find("set", 0);
       if ( pos < 0 ) {
@@ -422,21 +420,21 @@ void UserConfiguration::loadConfiguration(){
           foo = 2;
         }
       } else if ( pos <= firstChar ) {
-        sInstruction = "set";                
+        sInstruction = "set";
         sFirstParam = getNextWord(sLine, pos + 3, endWord);
-        sSecondParam = getNextWord(sLine, endWord, foo);                             
+        sSecondParam = getNextWord(sLine, endWord, foo);
       }
     } else if (pos <= firstChar) {
-      sInstruction = "bind";                                 
+      sInstruction = "bind";
       sFirstParam = getNextWord(sLine, pos + 4, endWord);
-      sSecondParam = getNextWord(sLine, endWord, foo);                        
+      sSecondParam = getNextWord(sLine, endWord, foo);
     }
 
     if (sFirstParam.empty() || (sInstruction != "version" && sSecondParam.empty()) || foo == endWord) {
       if ( pos >= 0 && sInstruction.length()!=0) {
         cerr  << "Warning : in file " << path 
           << " missing parameter at line " << lineNumber 
-          << ", ignoring line." << endl;                
+          << ", ignoring line." << endl;
       }
     } else {
       if (sInstruction == "bind") {
@@ -452,7 +450,7 @@ void UserConfiguration::loadConfiguration(){
   }
   configurationChanged = true;
 
-  delete configFile;    
+  delete configFile;
 
   // set default bindings for unbound actions
   if( !isCurrentVersion ) {
@@ -464,7 +462,7 @@ void UserConfiguration::loadConfiguration(){
     // if no bindings
     if( keyForEngineAction.find( i ) == keyForEngineAction.end() ) {
       string keyName = default_key[ i ];
-      bind( keyName, engineActionName[ i ], 1 );      
+      bind( keyName, engineActionName[ i ], 1 );
     }
   }
 
@@ -477,19 +475,16 @@ void UserConfiguration::loadConfiguration(){
 void UserConfiguration::saveConfiguration(){
     ofstream *configFile;  
     string sLine;    
-    char textLine[255];    
+    char textLine[255];
     int i;
-    
-    char path[300];
-	//    strcpy(path, rootDir);
-	//    strcat(path, CONFIG_FILE_NAME);
-	get_config_file_name(path, 300);
-    configFile = new ofstream(path);
+
+	string path = get_config_file_name();
+    configFile = new ofstream(path.c_str());
     if(!configFile->is_open()){
-        cout << "Error while saving " << path << endl;        
+        cout << "Error while saving " << path << endl;
         return;
-    }    
-    
+    }
+
     sprintf(textLine, "Generated by Scourge version %s\n", SCOURGE_VERSION);
     writeFile(configFile, textLine);
     writeFile(configFile, "Modify at your own risks.\n");
@@ -513,18 +508,18 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
 
     writeFile(configFile, "// Bindings\n");
-    
+
     // save bindings
-    for (i = 0; i < ENGINE_ACTION_COUNT ; i++){        
-        if(keyForEngineAction.find(i)!=keyForEngineAction.end()){            
+    for (i = 0; i < ENGINE_ACTION_COUNT ; i++){
+        if(keyForEngineAction.find(i)!=keyForEngineAction.end()){
             sLine = "bind " + keyForEngineAction[i];
             if(engineActionName.find(i)!=engineActionName.end()){
                 sLine = sLine + " " + engineActionName[i] + "\n";
                 writeFile(configFile, (char *) sLine.c_str());
             }
         }
-    }       
-    
+    }
+
     // save video variables
     writeFile(configFile, "\n// Video settings\n");
     sprintf(textLine, "set fullscreen %s\n", fullscreen ? "true":"false");
@@ -592,7 +587,7 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
     sprintf(textLine, "set effectsvolume %d\n", effectsVolume);
     writeFile(configFile, textLine);
-        
+
     delete configFile;
 }
 
@@ -600,19 +595,19 @@ void UserConfiguration::setKeyForEngineAction(string keyName, int ea){
 
     string oldKeyName;
     string eas; 
-    
+
     if(keyForEngineAction.find(ea)!=keyForEngineAction.end()){
         oldKeyName = keyForEngineAction[ea];
         if(keyDownBindings.find(oldKeyName)!=keyDownBindings.end()){
             keyDownBindings.erase(oldKeyName);
             if(keyUpBindings.find(oldKeyName)!=keyUpBindings.end()){
                 keyUpBindings.erase(oldKeyName);
-            }            
+            }
         }
         keyForEngineAction[ea] = keyName;
         keyDownBindings[keyName] = ea;
-        
-        if(engineActionName.find(ea) != engineActionName.end()){              
+
+        if(engineActionName.find(ea) != engineActionName.end()){
             eas = engineActionName[ea];
             if(engineActionUpNumber.find(eas) != engineActionUpNumber.end()){
                 keyUpBindings[eas] = engineActionUpNumber[eas];
@@ -623,36 +618,36 @@ void UserConfiguration::setKeyForEngineAction(string keyName, int ea){
  
 //    Bind   sdl_name_of_key    engineAction
 // OR Bind   sdl_mouse_button   engineAction
-void UserConfiguration::bind(string s1, string s2, int lineNumber){        
-    //int i;  
-    
+void UserConfiguration::bind(string s1, string s2, int lineNumber){
+    //int i;
+
     if(DEBUG_USER_CONFIG){
-        cout << "line : " << lineNumber << " ";        
-        cout << "bind '" << s1 << "' '" << s2 << "'" << endl;   
+        cout << "line : " << lineNumber << " ";
+        cout << "bind '" << s1 << "' '" << s2 << "'" << endl;
     }
-          
-    // for now, we trust what is written in configuration file        
-    if(engineActionNumber.find(s2) != engineActionNumber.end()){                   
+
+    // for now, we trust what is written in configuration file
+    if(engineActionNumber.find(s2) != engineActionNumber.end()){
         // Ignore debug ea 
       keyDownBindings[s1] = engineActionNumber[s2];
       keyForEngineAction[engineActionNumber[s2]] = s1;
-      if(engineActionUpNumber.find(s2) != engineActionUpNumber.end()){                                      
+      if(engineActionUpNumber.find(s2) != engineActionUpNumber.end()){
         keyUpBindings[s1] = engineActionUpNumber[s2];
-      }    
-    }        
-}  
-  
+      }
+    }
+}
+
 void UserConfiguration::set(string s1, string s2, int lineNumber){
     bool paramValue = false;
-    
+
     if(DEBUG_USER_CONFIG){
-        cout << "line : " << lineNumber << " ";              
+        cout << "line : " << lineNumber << " ";
         cout << "set '" << s1 << "' '" << s2 << "'" << endl; 
     }
-    
+
     // Check if s1 is a valid variable to set (engineVariable?)
     // Check if s2 is a valid value
-    
+
     if(s1 == "fullscreen"||s1 == "doublebuf" || s1 == "hwpal" || s1 == "resizeable" ||
        s1 == "force_hwsurf" || s1 == "force_swsurf" || s1 == "hwaccel" || 
        s1 == "multitexturing" || s1 == "stencilbuf" || s1 == "centermap" ||
@@ -671,12 +666,12 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
 		  cerr << "Warning : in file " << CONFIG_FILE // _NAME 
              << " invalid parameter at line " << lineNumber 
              << ", valid parameter are 'true' or 'false'. Ignoring line" << endl; 
-             return;                  
+             return;
         }
     }
-    
+
     if(s1 == "fullscreen"){
-        fullscreen = paramValue;        
+        fullscreen = paramValue;
     }
     else if(s1 == "doublebuf"){
         doublebuf = paramValue;
@@ -695,19 +690,19 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     }
     else if(s1 == "hwaccel"){
         hwaccel = paramValue;
-    }     
+    }
     else if(s1 == "test"){
         test = paramValue;
-    }  
-    
-    else if(s1 == "bpp"){        
+    }
+
+    else if(s1 == "bpp"){
         bpp = atoi(s2.c_str());
         if(!(bpp ==8 || bpp == 15 || bpp == 16 || bpp == 24 || bpp == 32)) {
 		  cerr << "Warning : in file " << CONFIG_FILE //_NAME 
              << " invalid bpp value at line " << lineNumber 
              << ", valid values are 8, 15, 16, 24 or 32 . Ignoring line" << endl;    
              bpp = -1; // To autodetect best bpp value
-        }                               
+        }
     } else if(s1 == "soundfreq") {
       soundFreq = atoi(s2.c_str());
     } else if(s1 == "musicvolume") {
@@ -721,18 +716,18 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
     }
     else if(s1 == "h"){
         h = atoi(s2.c_str());
-    } else if(s1 == "combatinfodetail"){        
+    } else if(s1 == "combatinfodetail"){
       combatInfoDetail = atoi(s2.c_str());
-    } else if(s1 == "shadows"){        
+    } else if(s1 == "shadows"){
         shadows = atoi(s2.c_str());
         if(!(shadows == 0 || 
            shadows == 1 || 
            shadows == 2)) {
 		  cerr << "Warning : in file " << CONFIG_FILE //_NAME 
              << " invalid shadow mode at line " << lineNumber 
-             << ", valid modes 0, 1, 2 . Ignoring line" << endl;    
+             << ", valid modes 0, 1, 2 . Ignoring line" << endl;
              shadows = 2; // Default value
-        }                
+        }
     }
     else if(s1 == "stencilbuf"){
         stencilbuf = paramValue;
@@ -773,15 +768,15 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
       if( monsterToughness < 0 ) monsterToughness = 0;
       if( monsterToughness > 2 ) monsterToughness = 2;
     }
-    else if(s1 == "gamespeed"){        
+    else if(s1 == "gamespeed"){
         gamespeed = atoi(s2.c_str());
-        if(gamespeed < 0 || gamespeed > 4){           
+        if(gamespeed < 0 || gamespeed > 4){
 		  cerr << "Warning : in file " << CONFIG_FILE //_NAME 
              << " invalid gamespeed level at line " << lineNumber 
-             << ", valid values are 0, 1, 2, 3 and 4 . Ignoring line" << endl;    
+             << ", valid values are 0, 1, 2, 3 and 4 . Ignoring line" << endl;
              gamespeed = 1; // Default value
-        }                
-    }    
+        }
+    }
 }
 
 
@@ -927,17 +922,17 @@ void UserConfiguration::writeFile(ofstream *fileOut, char *text){
 }
 
 // returns the action to do for this event
-int UserConfiguration::getEngineAction(SDL_Event *event){    
-    string s;         
-    int res;         
-    
+int UserConfiguration::getEngineAction(SDL_Event *event){
+    string s;
+    int res;
+
 	if(s.size()) s.erase(s.begin(), s.end());
     res = -1;
-    if(event->type == SDL_KEYDOWN){                
-        s = SDL_GetKeyName(event->key.keysym.sym);        
+    if(event->type == SDL_KEYDOWN){
+        s = SDL_GetKeyName(event->key.keysym.sym);
         replaceSpaces(s);
-        if(keyDownBindings.find(s) != keyDownBindings.end()){             
-            res = keyDownBindings[s];               
+        if(keyDownBindings.find(s) != keyDownBindings.end()){
+            res = keyDownBindings[s];
 				}
     }
     else if(event->type == SDL_KEYUP){
@@ -949,21 +944,21 @@ int UserConfiguration::getEngineAction(SDL_Event *event){
     }
     else if(event->type == SDL_MOUSEBUTTONDOWN){
         if(mouseDownBindings.find(event->button.button) != mouseDownBindings.end()){
-            res = mouseDownBindings[event->button.button];            
-        }        
+            res = mouseDownBindings[event->button.button];
+        }
     }
     else if(event->type == SDL_MOUSEBUTTONUP){
         if(mouseUpBindings.find(event->button.button) != mouseUpBindings.end()){
-            res = mouseUpBindings[event->button.button];            
-        }        
+            res = mouseUpBindings[event->button.button];
+        }
     }
-    
+
     if(DEBUG_USER_CONFIG){
         cout << "engine action returned : " << res << endl;
-    }        
+    }
     return res;
-    
-    
+
+
  /* case SDL_MOUSEBUTTONUP:
     if(event->button.button) {
         int region = gui->testActiveRegions(event->button.x, event->button.y);
@@ -999,8 +994,8 @@ const char * UserConfiguration::getEngineActionDescription(int i){
 
 
 const char * UserConfiguration::getEngineActionKeyName(int i){ 
-    if(keyForEngineAction.find(i) != keyForEngineAction.end()){        
-        return (keyForEngineAction[i].c_str());               
+    if(keyForEngineAction.find(i) != keyForEngineAction.end()){
+        return (keyForEngineAction[i].c_str());
     }
     else{
         return "";
@@ -1013,25 +1008,25 @@ string UserConfiguration::getNextWord(const string theInput, int fromPos, int &e
     int firstChar, lastStringChar;
     string sub;
 	if(sub.size()) sub.erase(sub.begin(), sub.end());
-       
+
     if (theInput.empty() || fromPos==-1) {return sub;}
 
-    lastStringChar = theInput.find_last_not_of(' ');    
+    lastStringChar = theInput.find_last_not_of(' ');
     if(theInput[fromPos] == ' '){
         firstChar = theInput.find_first_not_of(' ', fromPos);
     }
     else{
         firstChar = fromPos;
-    }    
+    }
     endWord = theInput.find_first_of(' ', firstChar);
    // cout << "line :" << theInput << endl;
    // cout << "\t\tpos = " << fromPos << " firstChar = " << firstChar << " endWord = " << endWord << " lastStringChar =" << lastStringChar << endl; 
     if(endWord == -1){
         if( (lastStringChar >= firstChar)&&(firstChar!=-1)){
             sub = theInput.substr(firstChar, lastStringChar - firstChar + 1);
-        }                    
+        }
     } 
-    else{        
+    else{
         sub = theInput.substr(firstChar, endWord - firstChar);
     }
     return sub;
@@ -1048,13 +1043,12 @@ UserConfiguration::~UserConfiguration(){
 
 void UserConfiguration::createConfigDir() {
 #ifndef WIN32     
-  char path[300]; 
   // first create the directory
   // no need on windows, this file is saved in the current dir
-  get_config_dir_name(path, 300);
-  FILE *fp = fopen( path, "r" );
+  string path = get_config_dir_name();
+  FILE *fp = fopen( path.c_str(), "r" );
   if( !fp ) {
-    int err = mkdir( path, S_IRWXU|S_IRGRP|S_IXGRP );
+    int err = mkdir( path.c_str(), S_IRWXU|S_IRGRP|S_IXGRP );
     if(err) {
       cerr << "Error creating config directory: " << path << endl;
       cerr << "Error: " << err << endl;
@@ -1064,17 +1058,15 @@ void UserConfiguration::createConfigDir() {
   } else {
     fclose( fp );
   }
-#endif      
+#endif
 }
 
 void UserConfiguration::createDefaultConfigFile() {
   createConfigDir();
 
-  char path[300];
-
   // now create the file
-  get_config_file_name(path, 300);
-  ofstream configFile (path);
+  string path = get_config_file_name();
+  ofstream configFile (path.c_str());
   if(!configFile.is_open()){
 	cerr << "Can't open configuration file: " << path << endl;
 	exit(1);

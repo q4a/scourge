@@ -89,10 +89,9 @@ Portrait::~Portrait() {
 }
 
 string getBoxKey( Skill *skill, int mode ) {
-  char tmp[ 300 ];
-  sprintf( tmp, "%s,%d", skill->getName(), mode );
-  string s = tmp;
-  return s;
+  stringstream tmp;
+  tmp << skill->getName() << "," << mode;
+  return tmp.str();
 }
 
 bool Portrait::findCurrentSkill( int px, int py ) {

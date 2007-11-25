@@ -430,10 +430,10 @@ void Map::removeCurrentEffects() {
       resortShapes = mapChanged = true;
     } else {
       ++i;
-    }       
+    }
   }
 
-  
+
 
   /*
   int chunkOffsetX = 0;
@@ -527,7 +527,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                                 chunkOffsetX) / DIV;
       float chunkPosY = (float)((chunkY - chunkStartY) * MAP_UNIT + 
                                 chunkOffsetY) / DIV;
-      
+
       // frustum testing
       //frustum->CalculateFrustum();
       if(useFrustum && 
@@ -594,7 +594,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
 				ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
 				drawRug( &rugPos[ chunkX ][ chunkY ], xpos2, ypos2, chunkX, chunkY );
 			}
-      
+
       for(int yp = 0; yp < MAP_UNIT; yp++) {
         for(int xp = 0; xp < MAP_UNIT; xp++) {
           /**
@@ -820,17 +820,17 @@ void Map::drawWaterPosition(int posX, int posY,
                             Shape *shape) {
   GLuint name;
   // encode this shape's map location in its name
-  name = posX + (MAP_WIDTH * posY);     
+  name = posX + (MAP_WIDTH * posY);
   glTranslatef( xpos2, ypos2, 0.0f);
-  
+
   // draw water
   Uint32 key = createPairKey( posX, posY );
   if( water.find( key ) != water.end() ) {
     glDisable( GL_CULL_FACE );
-    
+
     float sx = ( (float)MAP_UNIT / (float)WATER_TILE_X ) / DIV;
     float sy = ( (float)MAP_UNIT / (float)WATER_TILE_Y ) / DIV;
-    
+
     int xp = 0;
     int yp = 0;
     while( true ) {
@@ -863,11 +863,11 @@ void Map::drawWaterPosition(int posX, int posY,
           Uint32 time = SDL_GetTicks();   
           Uint32 elapsedTime = time - w->lastTime[xx][yy];
           if(elapsedTime >= (Uint32)(1000.0f / WATER_ANIM_SPEED) ) {
-            
+
             w->z[xx][yy] += w->step[xx][yy];
             if( w->z[xx][yy] > WATER_AMP ||
                 w->z[xx][yy] < -WATER_AMP ) w->step[xx][yy] *= -1.0f;
-            
+
             w->lastTime[xx][yy] = time;
           }
         }
@@ -901,8 +901,8 @@ void Map::drawWaterPosition(int posX, int posY,
         if( yp >= WATER_TILE_Y ) break;
       }      
     }
-    
-    
+
+
     //glDepthMask( GL_TRUE );
     //glDisable( GL_BLEND );
   }
@@ -3148,9 +3148,9 @@ float EditorMapSettings::getMaxYRot() {
 }
 
 #define NEG_GROUND_HEIGHT 0x00100000
-void Map::saveMap( char *name, char *result, bool absolutePath, int referenceType ) {
+void Map::saveMap( const string& name, char *result, bool absolutePath, int referenceType ) {
 
-  if( !strlen( name ) ) {
+  if( name.length() == 0) {
     strcpy( result, _( "You need to name the map first." ) );
     return;
   }
@@ -3183,52 +3183,37 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 
       if( floorPositions[x][y] ) {
         info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, 0 );
-        strncpy( (char*)(info->pos[ info->pos_count ]->floor_shape_name), 
-                 floorPositions[x][y]->getName(),
-                 254 );
+        strncpy( (char*)info->pos[ info->pos_count ]->floor_shape_name, floorPositions[x][y]->getName(), 254 );
         info->pos[ info->pos_count ]->floor_shape_name[254] = 0;
         info->pos_count++;
       }
 
-			if( itemPos[x][y] &&
-					itemPos[x][y]->x == x &&
-					itemPos[x][y]->y == y &&
-					itemPos[x][y]->item ) {
-        info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, 0 );
+			if( itemPos[x][y] && itemPos[x][y]->x == x && itemPos[x][y]->y == y && itemPos[x][y]->item ) {
+				info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, 0 );
 				if( referenceType == REF_TYPE_NAME ) {
-					strncpy( (char*)(info->pos[ info->pos_count ]->item_pos_name), 
-									 itemPos[x][y]->item->getType(),
-									 254 );
+					strncpy( (char*)info->pos[ info->pos_count ]->item_pos_name, itemPos[x][y]->item->getType(), 254 );
 					info->pos[ info->pos_count ]->item_pos_name[254] = 0;
 				} else {
 					info->pos[ info->pos_count ]->item_pos = itemPos[x][y]->item->save();
 				}
-        info->pos_count++;
+				info->pos_count++;
       }
 
       for( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
-        if( pos[x][y][z] &&
-            pos[x][y][z]->x == x &&
-            pos[x][y][z]->y == y &&
-            pos[x][y][z]->z == z && 
-            !( pos[x][y][z]->creature && 
-               !(pos[x][y][z]->creature->isMonster() ) ) ) {
+        if( pos[x][y][z] && pos[x][y][z]->x == x && pos[x][y][z]->y == y && pos[x][y][z]->z == z && 
+            !( pos[x][y][z]->creature && !(pos[x][y][z]->creature->isMonster() ) ) ) {
 
           info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, z );
 
           if( pos[x][y][z]->item ) {
 						if( referenceType == REF_TYPE_NAME ) {
-							strncpy( (char*)( info->pos[ info->pos_count ]->item_name ), 
-											 pos[x][y][z]->item->getType(), 
-											 254 );
+							strncpy( (char*)info->pos[ info->pos_count ]->item_name, pos[x][y][z]->item->getType(), 254 );
 						} else {
 							info->pos[ info->pos_count ]->item = pos[x][y][z]->item->save();
 						}
           } else if( pos[x][y][z]->creature ) {
 						if( referenceType == REF_TYPE_NAME ) {
-							strncpy( (char*)( info->pos[ info->pos_count ]->monster_name ), 
-											 pos[x][y][z]->creature->getType(), 
-											 254 );
+							strncpy( (char*)info->pos[ info->pos_count ]->monster_name, pos[x][y][z]->creature->getType(), 254 );
 							info->pos[ info->pos_count ]->monster_name[254] = 0;
 						} else {
 							info->pos[ info->pos_count ]->creature = pos[x][y][z]->creature->save();
@@ -3316,16 +3301,16 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 																						 trap.enabled );
 	}
 
-  char fileName[300];
+  string fileName;
 	if( absolutePath ) {
-		strcpy( fileName, name );
+		fileName = name;
 	} else {
-		sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+		fileName = rootDir + ("/maps/" + name + ".map");
 	}
 
   cerr << "saving map: " << fileName << endl;
 
-  FILE *fp = fopen( fileName, "wb" );
+  FILE *fp = fopen( fileName.c_str(), "wb" );
   File *file = new ZipFile( fp, ZipFile::ZIP_WRITE );
   Persist::saveMap( file, info );
   delete file;
@@ -3334,10 +3319,10 @@ void Map::saveMap( char *name, char *result, bool absolutePath, int referenceTyp
 
 	// save npc info when saving from map editor (ie. map templates)
 	if( referenceType == REF_TYPE_NAME ) {
-		adapter->saveMapData( (const char*)fileName );
+		adapter->saveMapData( fileName );
 	}
 
-  sprintf( result, "Map saved: %s", name );
+  sprintf( result, "Map saved: %s", name.c_str() );
 }
 
 void Map::initForCave( char *themeName ) {
@@ -3352,7 +3337,7 @@ void Map::initForCave( char *themeName ) {
   setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, floorTextureGroup[ GLShape::TOP_SIDE ] );
 }
 
-bool Map::loadMap( char *name, char *result, StatusReport *report, 
+bool Map::loadMap( const string& name, char *result, StatusReport *report, 
 				   int level, int depth, 
 				   bool changingStory, bool fromRandom,
 				   bool goingUp, bool goingDown, 
@@ -3360,26 +3345,27 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
 				   vector< RenderedCreature* > *creatures, 
 				   bool absolutePath,
 				   char *templateMapName ) {
-  if( !strlen( name ) ) {
+  if( !name.length() ) {
     strcpy( result, _( "Enter a name of a map to load." ) );
     return false;
   }
 
-  char fileName[300];
+  stringstream tmpFileName;
 	if( absolutePath ) {
-		strcpy( fileName, name );
+		tmpFileName << name;
 	} else {
 		if( depth > 0 ) {
-			sprintf( fileName, "%s/maps/%s%d.map", rootDir, name, depth );
+			tmpFileName << rootDir << "/maps/" << name << depth << ".map";
 		} else {
-			sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+			tmpFileName << rootDir << "/maps/" << name << ".map";
 		}
 	}
+	string fileName = tmpFileName.str();
   cerr << "Looking for map: " << fileName << endl;
 
-  FILE *fp = fopen( fileName, "rb" );
+  FILE *fp = fopen( fileName.c_str(), "rb" );
   if( !fp ) {
-    sprintf( result, "Can't find map: %s", name );
+    sprintf( result, "Can't find map: %s", fileName.c_str() );
     return false;
   }
   if( report ) report->updateStatus( 0, 7, _( "Loading map" ) );
@@ -3464,7 +3450,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
   mapGridY = info->grid_y;
 
   if( report ) report->updateStatus( 3, 7, _( "Initializing map" ) );
-  
+
   GLShape *shape;
 	DisplayInfo di;
   for( int i = 0; i < (int)info->pos_count; i++ ) {
@@ -3506,6 +3492,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
       di.blue = ms->getDeityBlue();
 		}
 
+		// load the items
     if( strlen( (char*)( info->pos[i]->item_name ) ) || info->pos[i]->item ) {
 			RenderedItem *item;
 			if( info->reference_type == REF_TYPE_NAME ) {
@@ -3609,20 +3596,20 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
   if( report ) report->updateStatus( 5, 7, _( "Loading Creatures" ) );
 
   // load map-related data from text file
-  char txtfileName[300];
+  stringstream txtfileName;
 	if( templateMapName ) {
 		if( depth > 0 ) {
-			sprintf( txtfileName, "%s/maps/%s%d.map", rootDir, templateMapName, depth );
+			txtfileName << rootDir << "/maps/" << templateMapName << depth << ".map";
 		} else {
-			sprintf( txtfileName, "%s/maps/%s.map", rootDir, templateMapName );
+			txtfileName << rootDir << "/maps/" << templateMapName << ".map";
 		}
 	} else {
-		strcpy( txtfileName, fileName );
+		txtfileName << fileName;
 	}
-  cerr << "Looking for txt file: " << txtfileName << endl;
-  adapter->loadMapData( (const char*)txtfileName );
+  cerr << "Looking for txt file: " << txtfileName.str() << endl;
+  adapter->loadMapData( txtfileName.str() );
   
-  strcpy( this->name, ( templateMapName ? templateMapName : name ) );
+  strcpy( this->name, ( templateMapName ? templateMapName : name.c_str() ) );
 
   if( report ) report->updateStatus( 6, 7, _( "Starting party" ) );
 
@@ -3644,7 +3631,7 @@ bool Map::loadMap( char *name, char *result, StatusReport *report,
       }
     }
   }
-  sprintf( result, _( "Map loaded: %s" ), name );
+  sprintf( result, _( "Map loaded: %s" ), name.c_str() );
   return true;
 }
 
@@ -3655,15 +3642,15 @@ void Map::loadMapLocation( char *name, char *result, int *gridX, int *gridY, int
     return;
   }
 
-  char fileName[300];
+  stringstream fileName;
   if( depth > 0 ) {
-    sprintf( fileName, "%s/maps/%s%d.map", rootDir, name, depth );
+    fileName << rootDir << "/maps/" << name << depth << ".map";
   } else {
-    sprintf( fileName, "%s/maps/%s.map", rootDir, name );
+    fileName << rootDir << "/maps/" << name << ".map";
   }
-  cerr << "loading map header: " << fileName << endl;
+  cerr << "loading map header: " << fileName.str() << endl;
 
-  FILE *fp = fopen( fileName, "rb" );
+  FILE *fp = fopen( fileName.str().c_str(), "rb" );
   if( !fp ) {
     sprintf( result, _( "Can't find map: %s" ), name );
     return;
@@ -3713,14 +3700,14 @@ void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y,
   if(res) {
     *mapx = getX() + (Uint16)( obj_x * DIV );
     *mapy = getY() + (Uint16)( obj_y * DIV );
-    
+
     debugX = getX() + (int)( obj_x * DIV );
     debugY = getY() + (int)( obj_y * DIV );
     debugZ = (int)( obj_z * DIV );
   } else {
     *mapx = *mapy = MAP_WIDTH + 1;
   }
-}   
+}
 
 void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   // only do this if the mouse has moved some (optimization)
@@ -3753,7 +3740,7 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   draw();
   //levelMap->selectMode = false;
 
-  glFlush();    
+  glFlush();
   hits = glRenderMode(GL_RENDER);
   //cerr << "hits=" << hits << endl;
   if(hits > 0) {           // If There Were More Than 0 Hits
@@ -3853,7 +3840,7 @@ MapMemoryManager::~MapMemoryManager() {
   }
   unusedEffect.clear();  
 }
-  
+
 Location *MapMemoryManager::newLocation() {
   Location *pos;
   if( unused.size() ) {
@@ -3861,11 +3848,11 @@ Location *MapMemoryManager::newLocation() {
     unused.pop_back();
   } else {
     pos = new Location();
-  }    
+  }
   usedCount++;
 
   printStatus();
-    
+
   // reset it
   pos->x = pos->y = pos->z = 0;
 	pos->heightPos = 0;
@@ -3873,7 +3860,7 @@ Location *MapMemoryManager::newLocation() {
   pos->item = NULL;
   pos->creature = NULL;
   pos->outlineColor = NULL;
-  
+
   return pos;
 }
 
@@ -3888,11 +3875,11 @@ EffectLocation *MapMemoryManager::newEffectLocation( Map *theMap, Preferences *p
     //pos->effect = new Effect( theMap, preferences, shapes, 4, 4 );
     pos->effect = new Effect( theMap, preferences, shapes, width, height );
     pos->effect->deleteParticles();    
-  }    
+  }
   usedEffectCount++;
 
   printStatus();
-    
+
   // reset it
   pos->x = pos->y = pos->z = 0;
   pos->effectDuration = 0;
@@ -4043,7 +4030,7 @@ void Map::drawHeightMapFloor() {
 	}	
 }
 
-void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, bool debug, float angle ) {
+void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, float angle ) {
 
 	//glEnable( GL_DEPTH_TEST );
 	glDepthMask( GL_FALSE );
@@ -4062,25 +4049,30 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, boo
 	float sy = ( ( ty - th - 1 ) / (float)OUTDOORS_STEP );
 	float ex = ( ( tx + tw ) / (float)OUTDOORS_STEP );
 	float ey = ( ( ty - 1 ) / (float)OUTDOORS_STEP );
-	if( debug ) cerr << "s=" << sx << "," << sy << " e=" << ex << "," << ey << endl;
+#ifdef DEBUG_RENDER
+	cerr << "s=" << sx << "," << sy << " e=" << ex << "," << ey << endl;
+#endif
 
 	// offset to our texture inside the ground pos
 	float offSX = tx - ( sx * OUTDOORS_STEP );
 	float offSY = ( ty - th - 1 ) - ( sy * OUTDOORS_STEP );
 	float offEX = offSX + tw;
 	float offEY = offSY + th;
-	if( debug ) {
+
+#ifdef DEBUG_RENDER
 		cerr << "tex size=" << ( ( ex - sx ) * OUTDOORS_STEP ) << "," << ( ( ey - sy ) * OUTDOORS_STEP ) << " player size=" << tw << endl;
 		cerr << "tex=" << ( sx * OUTDOORS_STEP ) << "," << ( sy * OUTDOORS_STEP ) << " player=" << adapter->getPlayer()->getX() << "," << adapter->getPlayer()->getY() << endl;
 		cerr << "offs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
-	}
+#endif
 
 	// converted to texture coordinates ( 0-1 )
 	offSX = -offSX / ( ( ex - sx ) * OUTDOORS_STEP );
 	offSY = -offSY / ( ( ey - sy ) * OUTDOORS_STEP );
 	offEX = 1 - ( offEX / ( ( ex - sx ) * OUTDOORS_STEP ) ) + 1;
 	offEY = 1 - ( offEY / ( ( ey - sy ) * OUTDOORS_STEP ) ) + 1;
-	if( debug ) cerr << "\toffs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
+#ifdef DEBUG_RENDER
+	cerr << "\toffs: " << offSX << "," << offSY << " " << offEX << "," << offEY << endl;
+#endif
 
 	// don't repeat the texture
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );

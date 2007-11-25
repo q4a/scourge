@@ -21,6 +21,7 @@
 #include "render.h"
 #include <vector>
 #include <set>
+#include <sstream>
 
 class CFrustum;
 class RenderedProjectile;
@@ -301,8 +302,8 @@ private:
   inline char *getName() { return name; }
 
 
-  void saveMap( char *name, char *result, bool absolutePath=false, int referenceType=REF_TYPE_NAME );
-  bool loadMap( char *name, char *result, StatusReport *report=NULL, 
+  void saveMap( const std::string& name, char *result, bool absolutePath=false, int referenceType=REF_TYPE_NAME );
+  bool loadMap( const std::string& name, char *result, StatusReport *report=NULL, 
 				int level=1, int depth=0, 
                 bool changingStory=false, bool fromRandom=false, 
 				bool goingUp=false, bool goingDown=false,
@@ -597,7 +598,7 @@ private:
 	 * Draw a texture on top of the ground map. This is useful for drawing shadows or 
 	 * selection circles on top of un-even terrain.
 	 */
-	void drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, bool debug=false, float angle=0 );
+	void drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, float angle=0 );
 
 	void initOutdoorsGroundTexture();
 

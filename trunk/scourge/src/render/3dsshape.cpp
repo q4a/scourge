@@ -25,7 +25,7 @@
 
 using namespace std;
 
-C3DSShape::C3DSShape(char *file_name, float div, Shapes *shapePal, 
+C3DSShape::C3DSShape(const string& file_name, float div, Shapes *shapePal, 
 										 GLuint texture[],
 										 char *name, int descriptionGroup,
 										 Uint32 color, Uint8 shapePalIndex,
@@ -56,7 +56,8 @@ C3DSShape::~C3DSShape() {
   glDeleteLists( displayListStart, 2 );
 }
 
-void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z, float xrot3d, float yrot3d, float zrot3d ) {
+void C3DSShape::commonInit(const string& file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z, float xrot3d, float yrot3d, float zrot3d ) {
+
   g_Texture[0] = 0;
   g_ViewMode = GL_TRIANGLES;
   this->divx = this->divy = this->divz = div;
@@ -73,9 +74,7 @@ void C3DSShape::commonInit(char *file_name, float div, Shapes *shapePal, float s
 
   // First we need to actually load the .3DS file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("face.3ds").
-  char path[300];
-  strcpy(path, rootDir);
-  strcat(path, file_name);
+  string path = rootDir + file_name;
 //  fprintf(stderr, "Loading 3ds file: %s\n", path);
 	if( !shapePal->isHeadless() ) {
 	  g_Load3ds.Import3DS(&g_3DModel, path);         // Load our .3DS file into our model structure
@@ -234,7 +233,7 @@ void C3DSShape::resolveTextures() {
   //cerr << "3ds model: " << this->getName() << endl;
   for (int i = 0; i < g_3DModel.numOfMaterials; i++) {
     // Check to see if there is a file name to load in this material
-    if (strlen(g_3DModel.pMaterials[i].strFile) > 0) {
+    if (g_3DModel.pMaterials[i].strFile.length() > 0) {
 
 
       // Use the name of the texture file to load the bitmap, with a texture ID (i).

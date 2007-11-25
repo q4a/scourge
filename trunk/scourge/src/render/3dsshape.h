@@ -104,7 +104,7 @@ private:
 	float xrot3d, yrot3d, zrot3d;
 
 public:   
-  C3DSShape(char *file_name, float div, Shapes *shapePal,
+  C3DSShape(const std::string& file_name, float div, Shapes *shapePal,
 						GLuint texture[], char *name, int descriptionGroup,
 						Uint32 color, Uint8 shapePalIndex=0, 
 						float size_x=0, float size_y=0, float size_z=0,
@@ -124,10 +124,7 @@ public:
 	inline float getWindValue() { return windInfo.getValue(); }
 
 protected:
-  void commonInit( char *file_name, float div, Shapes *shapePal, 
-									 float size_x, float size_y, float size_z, 
-									 float offs_x, float offs_y, float offs_z,
-									 float xrot3d, float yrot3d, float zrot3d );
+  void commonInit(const std::string& file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z, float xrot3d, float yrot3d, float zrot3d );
   void preRenderLight();
   void resolveTextures();
   void normalizeModel();

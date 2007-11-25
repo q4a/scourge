@@ -43,20 +43,17 @@ CLoad3DS::CLoad3DS()
 /////
 ///////////////////////////////// IMPORT 3DS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CLoad3DS::Import3DS(t3DModel *pModel, char *strFileName)
+bool CLoad3DS::Import3DS(t3DModel *pModel, string& strFileName)
 {
-    char strMessage[255] = {0};
-
 	pModel->numOfMaterials = pModel->numOfObjects = 0;
 
     // Open the 3DS file
-    m_FilePointer = fopen(strFileName, "rb");
+    m_FilePointer = fopen(strFileName.c_str(), "rb");
 
     // Make sure we have a valid file pointer (we found the file)
     if(!m_FilePointer) 
     {
-        sprintf(strMessage, "Unable to find the file: %s!", strFileName);
-        cout << strMessage << endl;
+        cerr << "Unable to find the file: " << strFileName << "!" << endl;
         exit(1);
     }
 
@@ -70,8 +67,7 @@ bool CLoad3DS::Import3DS(t3DModel *pModel, char *strFileName)
     // Make sure this is a 3DS file
     if (m_CurrentChunk->ID != PRIMARY)
     {
-        sprintf(strMessage, "Unable to load PRIMARY chuck from file: %s!", strFileName);
-        cout << strMessage << endl;
+        cerr << "Unable to load PRIMARY chuck from file: " << strFileName << "!" << endl;
         exit(1);
     }
 
@@ -113,23 +109,23 @@ void CLoad3DS::CleanUp()
 void CLoad3DS::ProcessNextChunk(t3DModel *pModel, tChunk *pPreviousChunk)
 {
     t3DObject newObject = {0};                  // This is used to add to our object list
-    tMaterialInfo newTexture = {0};             // This is used to add to our material list
+    tMaterialInfo newTexture;                   // This is used to add to our material list
     unsigned int version = 0;                   // This will hold the file version
     int buffer[50000] = {0};                    // This is used to read past unwanted data
 
-    m_CurrentChunk = new tChunk;                // Allocate a new chunk             
+    m_CurrentChunk = new tChunk;                // Allocate a new chunk
 
-    // Below we check our chunk ID each time we read a new chunk.  Then, if
-    // we want to extract the information from that chunk, we do so.
-    // If we don't want a chunk, we just read past it.  
+	// Below we check our chunk ID each time we read a new chunk.  Then, if
+	// we want to extract the information from that chunk, we do so.
+	// If we don't want a chunk, we just read past it.  
 
-    // Continue to read the sub chunks until we have reached the length.
-    // After we read ANYTHING we add the bytes read to the chunk and then check
-    // check against the length.
+	// Continue to read the sub chunks until we have reached the length.
+	// After we read ANYTHING we add the bytes read to the chunk and then check
+	// check against the length.
 	//int count = 0;
     while (pPreviousChunk->bytesRead < pPreviousChunk->length)
     {
-	  //	  if(count++ > 20) exit(1);
+			//	  if(count++ > 20) exit(1);
         // Read next Chunk
         ReadChunk(m_CurrentChunk);
 
@@ -339,17 +335,20 @@ void CLoad3DS::ProcessNextMaterialChunk(t3DModel *pModel, tChunk *pPreviousChunk
             break;
         
         case MATMAP:                            // This is the header for the texture info
-            
+
             // Proceed to read in the material information
             ProcessNextMaterialChunk(pModel, m_CurrentChunk);
             break;
 
-        case MATMAPFILE:                        // This stores the file name of the material
+        case MATMAPFILE: {                       // This stores the file name of the material
 
-            // Here we read in the material's file name
-            m_CurrentChunk->bytesRead += fread(pModel->pMaterials[pModel->numOfMaterials - 1].strFile, 1, m_CurrentChunk->length - m_CurrentChunk->bytesRead, m_FilePointer);
-            break;
-        
+						// Here we read in the material's file name and store it in a string
+						size_t length = m_CurrentChunk->length - m_CurrentChunk->bytesRead;
+						char buf[length];
+						m_CurrentChunk->bytesRead += fread(buf, 1, length, m_FilePointer);
+						pModel->pMaterials[pModel->numOfMaterials - 1].strFile = buf;
+						break;
+				}
         default:  
 
             // Read past the ignored or unknown chunks
@@ -623,7 +622,7 @@ void CLoad3DS::ReadObjectMaterial(t3DModel *pModel, t3DObject *pObject, tChunk *
 
             // Now that we found the material, check if it's a texture map.
             // If the strFile has a string length of 1 and over it's a texture
-            if(strlen(pModel->pMaterials[i].strFile) > 0) {
+            if(pModel->pMaterials[i].strFile.length() > 0) {
 
                 // Set the object's flag to say it has a texture map to bind.
                 pObject->bHasTexture = true;

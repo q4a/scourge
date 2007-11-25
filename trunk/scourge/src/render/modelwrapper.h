@@ -36,7 +36,7 @@ public:
 	inline t3DModel *getMd2() { return md2; }
 	inline CModelMD3 *getMd3() { return md3; }
 
-	void loadModel( char *path, char *name, ModelLoader *loader );
+	void loadModel( const std::string& path, char *name, ModelLoader *loader );
 	void unloadModel();
 	AnimatedShape *createShape( GLuint textureId, float div,
 															GLuint texture[], char *name, int descriptionGroup,
@@ -76,8 +76,8 @@ public:
 																		 float scale=0.0f );
 	virtual void decrementSkinRefCount( char *model_name, 
 																			char *skin_name );
-	GLuint loadSkinTexture( char *skin_name );
-	void unloadSkinTexture( char *skin_name );
+	GLuint loadSkinTexture( const std::string& skin_name );
+	void unloadSkinTexture( const std::string& skin_name );
 	void debugModelLoader();
 };
 

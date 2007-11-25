@@ -86,8 +86,7 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 		} else if( confirm->getMode() == DELETE_MODE ) {
 			getWindow()->setVisible( false );
 			savegamesChanged = true;
-			char tmp[300];
-			get_file_name( tmp, 300, fileInfos[ selectedFile ]->path );
+			string tmp = get_file_name( fileInfos[ selectedFile ]->path );
 			if( deleteDirectory( tmp ) ) {
 				scourge->showMessageDialog( _( "Game was successfully removed." ) );
 			} else {
@@ -129,7 +128,7 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	} else if( widget == deleteSave ) {
 		int n = files->getSelectedLine();
 		if( n > -1 ) {
-			if( !strcmp( fileInfos[ n ]->path, scourge->getSession()->getSavegameName() ) ) {
+			if( fileInfos[ n ]->path == scourge->getSession()->getSavegameName() ) {
 				scourge->showMessageDialog( _( "You can't delete the current game." ) );
 			} else {
 				selectedFile = n;
@@ -170,7 +169,7 @@ void SavegameDialog::show( bool inSaveMode ) {
 
 bool SavegameDialog::findFiles() {
 	for( unsigned int i = 0; i < fileInfos.size(); i++ ) {
-		free( fileInfos[i] );
+		delete fileInfos[i];
 	}
 	fileInfos.clear();
 
@@ -178,8 +177,7 @@ bool SavegameDialog::findFiles() {
 		if( screens[ i ] ) glDeleteTextures( 1, &(screens[ i ]) );
 	}
 
-	char path[300];
-	get_file_name( path, 300, "" );
+	string path = get_file_name( "" );
 	vector<string> fileNameList;
 	findFilesInDir( path, &fileNameList );
 
@@ -187,7 +185,7 @@ bool SavegameDialog::findFiles() {
 	filenameCount = 0;
 	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
 		string s = fileNameList[ i ];
-		if( s.substr( 0, 5 ) == "save_" && readFileDetails( (char*)s.c_str() ) ) {
+		if( s.substr( 0, 5 ) == "save_" && readFileDetails( s ) ) {
 			// add in reverse order
 			if( filenameCount > 0 ) {
 				for( int i = filenameCount; i > 0; i-- ) {
@@ -197,7 +195,7 @@ bool SavegameDialog::findFiles() {
 			}
 			filenameCount++;
 			strcpy( filenames[ 0 ], fileInfos[ 0 ]->title );
-			screens[ 0 ] = loadScreenshot( fileInfos[ 0 ]->path );						
+			screens[ 0 ] = loadScreenshot( fileInfos[ 0 ]->path );
 			int n = (int)strtol( s.c_str() + 5, (char**)NULL, 16 );
 			if( n > maxFileSuffix ) maxFileSuffix = n;
 		}
@@ -207,24 +205,20 @@ bool SavegameDialog::findFiles() {
 	return( filenameCount > 0 );
 }
 
-GLuint SavegameDialog::loadScreenshot( char *dirName ) {
-	char tmp[300];
-	sprintf( tmp, "%s/screen.bmp", dirName );
-	char path[300];
-	get_file_name( path, 300, tmp );
+GLuint SavegameDialog::loadScreenshot( const string& dirName ) {
+	string tmp(dirName);
+	tmp.append("/screen.bmp");
+	string path = get_file_name( tmp );
 	//cerr << "Loading: " << path << endl;
 	GLuint n = Shapes::loadTextureWithAlpha( path, -1, -1, -1, true, false ); // -1 no alpha
 	//cerr << "\tid=" << n << endl;
 	return n;
 }
 
-bool SavegameDialog::readFileDetails( char *dirname ) {
-	char tmp[300];
-	sprintf( tmp, "%s/savegame.dat", dirname );
-	char path[300];
-	get_file_name( path, 300, tmp );
+bool SavegameDialog::readFileDetails( const string& dirname ) {
+	string path = get_file_name( dirname + "/savegame.dat" );
 	cerr << "Loading: " << path << endl;
-	FILE *fp = fopen( path, "rb" );
+	FILE *fp = fopen( path.c_str(), "rb" );
 	if(!fp) {
 		cerr << "*** error: Can't find file." << endl;
 		return false;
@@ -249,11 +243,11 @@ bool SavegameDialog::readFileDetails( char *dirname ) {
 	
 	Uint8 title[3000];
 	file->read( title, 3000 );
-  
+
 	delete file;
 
-	SavegameInfo *info = (SavegameInfo*)malloc( sizeof( SavegameInfo ) );
-	strcpy( info->path, dirname );
+	SavegameInfo *info = new SavegameInfo();
+	info->path = dirname;
 	strcpy( info->title, (char*)title );
 	fileInfos.insert( fileInfos.begin(), info );
 
@@ -312,12 +306,13 @@ bool SavegameDialog::createNewSaveGame() {
 
 	// create a new save game
 	SavegameInfo info;
-	sprintf( (char*)info.path, "save_%x", ++maxFileSuffix ); // incr. maxFileSuffix in case we crash and the file is created
+	stringstream tmp;
+	tmp << "save_" << std::hex << ++maxFileSuffix; // incr. maxFileSuffix in case we crash and the file is created
+	info.path = tmp.str();
 	setSavegameInfoTitle( &info );
 
 	// make its directory
-	char path[300];
-	get_file_name( path, 300, info.path );
+	string path = get_file_name( info.path );
 	makeDirectory( path );
 
 	return saveGameInternal( &info );
@@ -326,10 +321,6 @@ bool SavegameDialog::createNewSaveGame() {
 bool SavegameDialog::createSaveGame( SavegameInfo *info ) {
 	// create a new save game title
 	setSavegameInfoTitle( info );
-
-	// its directory
-	char path[300];
-	get_file_name( path, 300, info->path );
 
 	return saveGameInternal( info );
 }
@@ -340,9 +331,9 @@ bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
 	if( b ) {
 
 		// if there is a current game and it's diff. than the one we're saving, copy the maps over
-		if( strcmp( scourge->getSession()->getSavegameName(), info->path ) && 
-				strlen( scourge->getSession()->getSavegameName() ) ) {
-			b = copyMaps( scourge->getSession()->getSavegameName(), info->path );
+		string s(scourge->getSession()->getSavegameName());
+		if( s == info->path && s != "" ) {
+			b = copyMaps( s, info->path );
 		}
 
 		// pre-emptively save the current map (just in case it hasn't been done yet and we crash later
@@ -371,7 +362,7 @@ bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
 	return b;
 }
 
-void SavegameDialog::deleteUnvisitedMaps( char *dirName, set<string> *visitedMaps ) {
+void SavegameDialog::deleteUnvisitedMaps( const string& dirName, set<string> *visitedMaps ) {
 
 	/*
 	cerr << "*** deleteUnvisitedMaps, visited maps:" << endl;
@@ -382,26 +373,24 @@ void SavegameDialog::deleteUnvisitedMaps( char *dirName, set<string> *visitedMap
 	cerr << "****************************" << endl;
 	*/
 
-	char path[300];
-	get_file_name( path, 300, dirName );
+	string path = get_file_name( dirName );
 	vector<string> fileNameList;
 	findFilesInDir( path, &fileNameList );
-	char tmp[300];
 	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
 		string s = fileNameList[i];
 		//cerr << "\tconsidering: " << s << endl;
 		if( s.substr( 0, 1 ) == "_" ) {
 			if( visitedMaps->find( s ) == visitedMaps->end() ) {
-				sprintf( tmp, "%s/%s", path, s.c_str() );
+				string tmp = path + "/" + s;
 				cerr << "\tDeleting un-visited map file: " << tmp << endl;
-				int n = remove( tmp );
+				int n = remove( tmp.c_str() );
 				cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
 			}
 		}
 	}
 }
 
-void SavegameDialog::deleteUnreferencedMaps( char *dirName ) {
+void SavegameDialog::deleteUnreferencedMaps( const string& dirName ) {
 	//cerr << "Deleting unreferenced maps:" << endl;
 	vector<string> referencedMaps;
 	for( int i = 0; i < scourge->getSession()->getBoard()->getMissionCount(); i++ ) {
@@ -410,11 +399,9 @@ void SavegameDialog::deleteUnreferencedMaps( char *dirName ) {
 	}
 	//cerr << "\tstarting" << endl;
 
-	char path[300];
-	get_file_name( path, 300, dirName );
+	string path = get_file_name( dirName );
 	vector<string> fileNameList;
 	findFilesInDir( path, &fileNameList );
-	char tmp[300];
 	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
 		string s = fileNameList[i];
 		//cerr << "\tconsidering: " << s << endl;
@@ -431,9 +418,9 @@ void SavegameDialog::deleteUnreferencedMaps( char *dirName ) {
 			//cerr << "\tfound: " << found << endl;
 			
 			if( !found ) {
-				sprintf( tmp, "%s/%s", path, s.c_str() );
+				string tmp = path + "/" + s;
 				cerr << "\tDeleting un-referenced map file: " << tmp << endl;
-				int n = remove( tmp );
+				int n = remove( tmp.c_str() );
 				cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
 			}
 		}
@@ -441,37 +428,29 @@ void SavegameDialog::deleteUnreferencedMaps( char *dirName ) {
 	//cerr << "\tDone." << endl;
 }
 
-bool SavegameDialog::copyMaps( char *fromDirName, char *toDirName ) {
-	char path[300];
-	get_file_name( path, 300, fromDirName );
+bool SavegameDialog::copyMaps( const string& fromDirName, const string& toDirName ) {
+	string path = get_file_name( fromDirName );
 	vector<string> fileNameList;
 	findFilesInDir( path, &fileNameList );
 	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
 		string s = fileNameList[i];
 		if( s.substr( 0, 1 ) == "_" ) {
-			if( !copyFile( fromDirName, toDirName, (char*)s.c_str() ) ) return false;
+			if( !copyFile( fromDirName, toDirName, s ) ) return false;
 		}
 	}
 	return true;
 }
 
 #define BUFFER_SIZE 4096
-bool SavegameDialog::copyFile( char *fromDirName, char *toDirName, char *fileName ) {
-	char tmp[300];
-	
-	sprintf( tmp, "%s/%s", fromDirName, fileName );
-	char fromPath[300];
-	get_file_name( fromPath, 300, tmp );
-	
-	sprintf( tmp, "%s/%s", toDirName, fileName );
-	char toPath[300];
-	get_file_name( toPath, 300, tmp );
+bool SavegameDialog::copyFile( const string& fromDirName, const string& toDirName, const string& fileName ) {
+	string fromPath = get_file_name( fromDirName + "/" + fileName );
+	string toPath = get_file_name( toDirName + "/" + fileName );
 
 	cerr << "+++ copying file: " << fromPath << " to " << toPath << endl;
 
-	FILE *from = fopen( fromPath, "rb" );
+	FILE *from = fopen( fromPath.c_str(), "rb" );
 	if( from ) {
-		FILE *to = fopen( toPath, "wb" );
+		FILE *to = fopen( toPath.c_str(), "wb" );
 		if( to ) {
 			unsigned char buff[ BUFFER_SIZE ];
 			size_t count;
@@ -485,21 +464,18 @@ bool SavegameDialog::copyFile( char *fromDirName, char *toDirName, char *fileNam
 	return false;
 }
 
-void SavegameDialog::saveScreenshot( char *dirName ) {
-	char tmp[300];
-	sprintf( tmp, "%s/screen.bmp", dirName );
-	char path[300];
-	get_file_name( path, 300, tmp );
+void SavegameDialog::saveScreenshot( const string& dirName ) {
+	string path = get_file_name( dirName + "/screen.bmp");
 	cerr << "Saving: " << path << endl;
 
 	scourge->getSDLHandler()->saveScreenNow( path );
 }
 
-void SavegameDialog::makeDirectory( char *path ) {
+void SavegameDialog::makeDirectory( const string& path ) {
 #ifdef WIN32
     CreateDirectory(path, NULL);
 #else
-	int err = mkdir( path, S_IRWXU|S_IRGRP|S_IXGRP );
+	int err = mkdir( path.c_str(), S_IRWXU|S_IRGRP|S_IXGRP );
 	if(err) {
 		cerr << "Error creating config directory: " << path << endl;
 		cerr << "Error: " << err << endl;
@@ -509,7 +485,7 @@ void SavegameDialog::makeDirectory( char *path ) {
 #endif
 }
 
-void SavegameDialog::findFilesInDir( char *path, vector<string> *fileNameList ) {
+void SavegameDialog::findFilesInDir( const string& path, vector<string> *fileNameList ) {
 #ifdef WIN32
     std:string winpath = path;
     winpath += "/*.*";
@@ -520,14 +496,14 @@ void SavegameDialog::findFilesInDir( char *path, vector<string> *fileNameList ) 
         cerr << "*** Error: can't open path: " << path << " error: " << GetLastError() << endl;
 		return;
     }
-    
+
     fileNameList->push_back( FindData.cFileName );
     while (FindNextFile (hFind, &FindData)) {
         fileNameList->push_back( FindData.cFileName );
     }
     FindClose (hFind);    
 #else
-	DIR *dir = opendir( path );
+	DIR *dir = opendir( path.c_str() );
 	if( !dir ) {
 		cerr << "*** Error: can't open path: " << path << " error: " << errno << endl;
 		return;
@@ -541,39 +517,36 @@ void SavegameDialog::findFilesInDir( char *path, vector<string> *fileNameList ) 
 #endif
 }
 
-bool SavegameDialog::deleteDirectory( char *path ) {
+bool SavegameDialog::deleteDirectory( const string& path ) {
 	vector<string> fileNameList;
 	findFilesInDir( path, &fileNameList );
-	char tmp[300];
 	for( unsigned int i = 0; i < fileNameList.size(); i++ ) {
-		sprintf( tmp, "%s/%s", path, fileNameList[i].c_str() );
-		cerr << "\tDeleting file: " << tmp << endl;
+		string toDelete = path + "/" + fileNameList[i];
+		cerr << "\tDeleting file: " << toDelete << endl;
 #ifdef WIN32
-          int n = !DeleteFile(tmp);
+		int n = !DeleteFile(toDelete);
 #else
-		  int n = remove( tmp );
+		int n = remove( toDelete.c_str() );
 #endif
 		cerr << "\t\t" << ( !n ? "success" : "can't delete file" ) << endl;
 	}
 	cerr << "\tDeleting directory: " << path << endl;
 #ifdef WIN32
-    int n = !RemoveDirectory(path);
+	int n = !RemoveDirectory(path);
 #else
-	int n = remove( path );
+	int n = remove( path.c_str() );
 #endif
 	cerr << "\t\t" << ( !n ? "success" : "can't delete directory" ) << endl;
 	return( !n ? true : false );
-}																																 	
+}
 
-bool SavegameDialog::checkIfFileExists( char *filename ) {
-	char path[300];
-	get_file_name( path, 300, filename );
-	FILE *fp = fopen( path, "r" );
-	if( fp ) {
-		fclose( fp );
-		return true;
-	} else {
+bool SavegameDialog::checkIfFileExists( const string& filename ) {
+	ifstream fin;
+	fin.open(get_file_name( filename ).c_str());
+
+	if( !fin ) 
 		return false;
-	}
+
+	return true;
 }
 

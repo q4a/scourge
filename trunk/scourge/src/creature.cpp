@@ -38,10 +38,10 @@ bool loading = false;
 
 #define MOVE_DELAY 7
 
-// at this fps, the players step 1 square                     
+// at this fps, the players step 1 square
 #define FPS_ONE 10.0f
 
-// how fast to turn                        
+// how fast to turn
 #define TURN_STEP_COUNT 5
 
 // how far to move away when in the player's way

@@ -250,9 +250,9 @@ protected:
 	void cleanUpAfterMission();
 	bool changeLevel();
 	void endGame();
-	void getCurrentMapName( char *path, char *dirName=NULL, int depth=-1, char *mapFileName=NULL );
-	void getSavedMapName( char *mapName );
-	bool loadMap( char *mapName, bool fromRandomMap, bool absolutePath, char *templateMapName=NULL );	
+	std::string getCurrentMapName( const std::string& dirName, int depth=-1, std::string *mapFileName=NULL );
+	std::string getSavedMapName();
+	bool loadMap( const std::string& mapName, bool fromRandomMap, bool absolutePath, char *templateMapName=NULL );	
   void linkMissionObjectives( std::vector< RenderedItem* > *items, std::vector< RenderedCreature* > *creatures );
 
 public:
@@ -719,8 +719,8 @@ public:
 
   void mouseClickWhileExiting();
 
-  bool saveGame( Session *session, char *dirName, char *title );  
-  bool loadGame( Session *session, char *dirName, char *error );	
+  bool saveGame( Session *session, std::string& dirName, char *title );  
+  bool loadGame( Session *session, std::string& dirName, char *error );	
 
 	RenderedCreature *createWanderingHero( int level );
 
@@ -736,7 +736,7 @@ public:
 	void showTextMessage( char *message );
 	void askToUploadScore();
 
-	bool saveCurrentMap( char *dirName=NULL );
+	bool saveCurrentMap( const std::string& dirName );
 
 	bool useDoor( Location *pos, bool openLocked=false );
 
@@ -768,7 +768,7 @@ protected:
 
   char *getAPRDescription( Creature *p, Item *item, char *buff );
 
-	bool doLoadGame( Session *session, char *dirName, char *error );
+	bool doLoadGame( Session *session, std::string& dirName, char *error );
 
 	void drawPortrait( Widget *w, Creature *p=NULL );
 
@@ -791,8 +791,8 @@ protected:
 
 	void addWanderingHeroes();
 
-	bool saveScoreid( char *dirName, char *p );
-	bool loadScoreid( char *dirName, char *p );
+	bool saveScoreid( std::string& dirName, char *p );
+	bool loadScoreid( std::string& dirName, char *p );
 };
 
 #endif

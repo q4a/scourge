@@ -535,11 +535,18 @@ t3DModel *CModelMD3::GetModel(int whichPart)
 /////
 ///////////////////////////////// LOAD MODEL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CModelMD3::LoadModel(char *strPath )
+bool CModelMD3::LoadModel(const string& strPath )
 {
-	char strLowerModel[255] = {0};	// This stores the file name for the lower.md3 model
-	char strUpperModel[255] = {0};	// This stores the file name for the upper.md3 model
-	char strHeadModel[255]  = {0};	// This stores the file name for the head.md3 model
+	// Make sure valid path and model names were passed in
+	if( strPath.length() == 0 )
+		return false;
+
+	// Store the correct files names for the .md3 and .skin file for each body part.
+	// We concatinate this on top of the path name to be loaded from.
+	string strLowerModel = strPath + "/lower.md3";	// This stores the file name for the lower.md3 model
+	string strUpperModel = strPath + "/upper.md3";	// This stores the file name for the upper.md3 model
+	string strHeadModel = strPath + "/head.md3";	// This stores the file name for the head.md3 model
+
 	CLoadMD3 loadMd3;				// This object allows us to load each .md3 and .skin file
 
 	// This function is where all the character loading is taken care of.  We use
@@ -547,20 +554,6 @@ bool CModelMD3::LoadModel(char *strPath )
 	// just have 1 name for the model, we add that to _lower.md3, _upper.md3 and _head.md3
 	// to load the correct mesh files.
 
-	// Make sure valid path and model names were passed in
-	if( !strPath ) return false;
-
-	// Store the correct files names for the .md3 and .skin file for each body part.
-	// We concatinate this on top of the path name to be loaded from.
-//	if( strlen( strModel ) ) {
-//		sprintf(strLowerModel, "%s/lower_%s.md3", strPath, strModel);
-//		sprintf(strUpperModel, "%s/upper_%s.md3", strPath, strModel);
-//		sprintf(strHeadModel,  "%s/head_%s.md3",  strPath, strModel);
-//	} else {
-		sprintf(strLowerModel, "%s/lower.md3", strPath );
-		sprintf(strUpperModel, "%s/upper.md3", strPath );
-		sprintf(strHeadModel,  "%s/head.md3",  strPath );
-//	}
 	
 	// Next we want to load the character meshes.  The CModelMD3 class has member
 	// variables for the head, upper and lower body parts.  These are of type t3DModel.
@@ -580,7 +573,7 @@ bool CModelMD3::LoadModel(char *strPath )
 	if(!loadMd3.ImportMD3(&m_Upper, strUpperModel))		
 	{
 		// Display an error message telling us the file could not be found
-		cerr <<"Unable to load the UPPER model!" << endl;
+		cerr << "Unable to load the UPPER model!" << endl;
 		return false;
 	}
 
@@ -588,7 +581,7 @@ bool CModelMD3::LoadModel(char *strPath )
 	if(!loadMd3.ImportMD3(&m_Lower, strLowerModel))
 	{
 		// Display an error message telling us the file could not be found
-		cerr <<"Unable to load the LOWER model!" << endl;
+		cerr << "Unable to load the LOWER model!" << endl;
 		return false;
 	}
 
@@ -597,8 +590,7 @@ bool CModelMD3::LoadModel(char *strPath )
 	// We added to this function the code that loads the animation config file
 
 	// This stores the file name for the .cfg animation file
-	char strConfigFile[255] = {0};	
-	sprintf(strConfigFile,  "%s/animation.cfg",  strPath );
+	string strConfigFile = strPath + "/animation.cfg";
 
 	// Load the animation config file (*_animation.config) and make sure it loaded properly
 	if(!LoadAnimations(strConfigFile))
@@ -634,28 +626,28 @@ bool CModelMD3::LoadModel(char *strPath )
 	return true;
 }
 
-bool CModelMD3::loadSkins( char *strPath, char *strModel, MD3Shape *shape ) {
-	char strLowerSkin[255]  = {0};	// This stores the file name for the lower.md3 skin
-	char strUpperSkin[255]  = {0};	// This stores the file name for the upper.md3 skin
-	char strHeadSkin[255]   = {0};	// This stores the file name for the head.md3 skin
+bool CModelMD3::loadSkins( const string& strPath, const string& strModel, MD3Shape *shape ) {
+	string strLowerSkin;	// This stores the file name for the lower.md3 skin
+	string strUpperSkin;	// This stores the file name for the upper.md3 skin
+	string strHeadSkin;		// This stores the file name for the head.md3 skin
 	CLoadMD3 loadMd3;
 
 	// Get the skin file names with their path
-	if( strlen( strModel ) ) {
-		sprintf(strLowerSkin, "%s/lower_%s.skin", strPath, strModel);
-		sprintf(strUpperSkin, "%s/upper_%s.skin", strPath, strModel);
-		sprintf(strHeadSkin,  "%s/head_%s.skin",  strPath, strModel);
+	if( strModel.length() ) {
+		strLowerSkin = strPath + "/lower_" + strModel + ".skin";
+		strUpperSkin = strPath + "/upper_" + strModel + ".skin";
+		strHeadSkin = strPath + "/head_" + strModel + ".skin";
 	} else {
-		sprintf(strLowerSkin, "%s/lower.skin", strPath);
-		sprintf(strUpperSkin, "%s/upper.skin", strPath);
-		sprintf(strHeadSkin,  "%s/head.skin",  strPath);
+		strLowerSkin = strPath + "/lower.skin";
+		strUpperSkin = strPath + "/upper.skin";
+		strHeadSkin = strPath + "/head.skin";
 	}
 
 	// Load the lower skin (*_upper.skin) and make sure it loaded properly
 	if(!loadMd3.LoadSkin( &m_Lower, strLowerSkin, shape ))
 	{
 		// Display an error message telling us the file could not be found
-		cerr <<"Unable to load the LOWER skin!" << endl;
+		cerr << "Unable to load the LOWER skin!" << endl;
 		return false;
 	}
 
@@ -663,7 +655,7 @@ bool CModelMD3::loadSkins( char *strPath, char *strModel, MD3Shape *shape ) {
 	if(!loadMd3.LoadSkin( &m_Upper, strUpperSkin, shape))
 	{
 		// Display an error message telling us the file could not be found
-		cerr <<"Unable to load the UPPER skin!" << endl;
+		cerr << "Unable to load the UPPER skin!" << endl;
 		return false;
 	}
 
@@ -671,7 +663,7 @@ bool CModelMD3::loadSkins( char *strPath, char *strModel, MD3Shape *shape ) {
 	if(!loadMd3.LoadSkin( &m_Head,  strHeadSkin, shape ))
 	{
 		// Display an error message telling us the file could not be found
-		cerr <<"Unable to load the HEAD skin!" << endl;
+		cerr << "Unable to load the HEAD skin!" << endl;
 		return false;
 	}
 
@@ -698,17 +690,15 @@ bool CModelMD3::loadSkins( char *strPath, char *strModel, MD3Shape *shape ) {
 /////
 ///////////////////////////////// LOAD WEAPON \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CModelMD3::LoadWeapon( char *strPath, char *strModel, MD3Shape *shape )
+bool CModelMD3::LoadWeapon( const string& strPath, const string& strModel, MD3Shape *shape )
 {
-	char strWeaponModel[255]  = {0};	// This stores the file name for the weapon model
-	char strWeaponShader[255] = {0};	// This stores the file name for the weapon shader.
-	CLoadMD3 loadMd3;					// This object allows us to load the.md3 and .shader file
-
 	// Make sure the path and model were valid, otherwise return false
-	if(!strPath || !strModel) return false;
+	if(strPath.length() == 0 || strModel.length() == 0) 
+		return false;
 
-	// Concatenate the path and model name together
-	sprintf(strWeaponModel, "%s/%s.md3", strPath, strModel);
+	string strWeaponModel = strPath + "/" + strModel + ".md3";	// Stores the file name for the weapon model
+	string strWeaponShader = strPath + "/" + strModel + ".shader";	// Stores the file name for the weapon shader.
+	CLoadMD3 loadMd3;					// This object allows us to load the.md3 and .shader file
 	
 	// Next we want to load the weapon mesh.  The CModelMD3 class has member
 	// variables for the weapon model and all it's sub-objects.  This is of type t3DModel.
@@ -717,10 +707,10 @@ bool CModelMD3::LoadWeapon( char *strPath, char *strModel, MD3Shape *shape )
 	// appropriate file name to load is passed in for the last parameter.
 
 	// Load the weapon mesh (*.md3) and make sure it loaded properly
-	if(!loadMd3.ImportMD3(&m_Weapon,  strWeaponModel))
+	if(!loadMd3.ImportMD3(&m_Weapon, strWeaponModel))
 	{
 		// Display the error message that we couldn't find the weapon MD3 file and return false
-		cerr <<"Unable to load the WEAPON model!" << endl;
+		cerr << "Unable to load the WEAPON model!" << endl;
 		return false;
 	}
 
@@ -735,14 +725,11 @@ bool CModelMD3::LoadWeapon( char *strPath, char *strModel, MD3Shape *shape )
 	// .shader loader because there is a TON of things to keep track of.  It's a whole
 	// scripting language for goodness sakes! :)  Keep this in mind when downloading new guns.
 
-	// Add the path, file name and .shader extension together to get the file name and path
-	sprintf(strWeaponShader, "%s/%s.shader", strPath, strModel);
-
 	// Load our textures associated with the gun from the weapon shader file
 	if(!loadMd3.LoadShader(&m_Weapon, strWeaponShader, shape ))
 	{
 		// Display the error message that we couldn't find the shader file and return false
-		cerr <<"Unable to load the SHADER file!" << endl;
+		cerr << "Unable to load the SHADER file!" << endl;
 		return false;
 	}
 
@@ -768,22 +755,25 @@ bool CModelMD3::LoadWeapon( char *strPath, char *strModel, MD3Shape *shape )
 /////
 ///////////////////////////////// LOAD WEAPON \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CModelMD3::LoadModelTextures(t3DModel *pModel, char *strPath, MD3Shape *shape ) {
+void CModelMD3::LoadModelTextures(t3DModel *pModel, const string& strPath, MD3Shape *shape ) {
 	// fix the texture file names
 	for(int i = 0; i < shape->getNumOfMaterials( pModel ); i++) {
-		if(strlen( shape->getMaterialInfos( pModel )->at( i ).strFile) > 0) {
-			char strFullPath[255] = {0};
-			char *p = strchr( shape->getMaterialInfos( pModel )->at( i ).strFile, '\r' );
-			if( p ) *p = 0;
-			sprintf( strFullPath, "%s/%s", strPath, shape->getMaterialInfos( pModel )->at( i ).strFile );
-			strcpy( shape->getMaterialInfos( pModel )->at( i ).strFile, strFullPath );
+		string& filename = shape->getMaterialInfos( pModel )->at( i ).strFile;
+
+		if(filename.length() > 0) {
+			size_t p = filename.find( '\r' );
+			if( p != std::string::npos ) 
+				filename = filename.substr(0, p);
+
+			filename = strPath + "/" + filename;
 		}
 	}
 
 	// Go through all the materials that are assigned to this model
 	for(int i = 0; i < shape->getNumOfMaterials( pModel ); i++) {
-		if(strlen( shape->getMaterialInfos( pModel )->at( i ).strFile) > 0) {
-			shape->getTextures()->push_back( loader->loadSkinTexture( shape->getMaterialInfos( pModel )->at( i ).strFile ) );
+		string& filename = shape->getMaterialInfos( pModel )->at( i ).strFile;
+		if(filename.length() > 0) {
+			shape->getTextures()->push_back( loader->loadSkinTexture( filename ) );
 			shape->getMaterialInfos( pModel )->at( i ).texureId = shape->getTextures()->size() - 1;
 		}
 	}
@@ -796,7 +786,7 @@ void CModelMD3::LoadModelTextures(t3DModel *pModel, char *strPath, MD3Shape *sha
 /////
 ///////////////////////////////// LOAD ANIMATIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CModelMD3::LoadAnimations(char *strConfigFile)
+bool CModelMD3::LoadAnimations(const string& strConfigFile)
 {
 	// This function is given a path and name to an animation config file to load.
 	// The implementation of this function is arbitrary, so if you have a better way
@@ -816,10 +806,10 @@ bool CModelMD3::LoadAnimations(char *strConfigFile)
 	// and the torso animation list, hence the name "BOTH" :)
 
 	// Create an animation object for every valid animation in the Quake3 Character
-	tAnimationInfo animations[MAX_ANIMATIONS] = {0};
+	tAnimationInfo animations[MAX_ANIMATIONS];
 
 	// Open the config file
-	ifstream fin(strConfigFile);
+	ifstream fin(strConfigFile.c_str());
 
 	// Here we make sure that the file was found and could be opened
 	if( fin.fail() )
@@ -1548,23 +1538,20 @@ CLoadMD3::CLoadMD3()
 /////
 ///////////////////////////////// IMPORT MD3 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CLoadMD3::ImportMD3(t3DModel *pModel, char *strFileName)
+bool CLoadMD3::ImportMD3(t3DModel *pModel, string& strFileName)
 {
-	char strMessage[255] = {0};
-
 	// This function handles the entire model loading for the .md3 models.
 	// What happens is we load the file header, make sure it's a valid MD3 model,
 	// then load the rest of the data, then call our CleanUp() function.
 
 	// Open the MD3 file in binary
-	m_FilePointer = fopen(strFileName, "rb");
+	m_FilePointer = fopen(strFileName.c_str(), "rb");
 
 	// Make sure we have a valid file pointer (we found the file)
 	if(!m_FilePointer) 
 	{
 		// Display an error message and don't load anything if no file was found
-		sprintf(strMessage, "Unable to find the file: %s!", strFileName);
-		cerr << strMessage << endl;
+		cerr << "Unable to find the file: " << strFileName << "!" << endl;
 		return false;
 	}
 	
@@ -1597,8 +1584,7 @@ bool CLoadMD3::ImportMD3(t3DModel *pModel, char *strFileName)
 	if((ID[0] != 'I' || ID[1] != 'D' || ID[2] != 'P' || ID[3] != '3') || m_Header.version != 15)
 	{
 		// Display an error message for bad file format, then stop loading
-		sprintf(strMessage, "Invalid file format (Version not 15): %s!", strFileName);
-		cerr << strMessage << endl;
+		cerr << "Invalid file format (Version not 15): " << strFileName << "!" << endl;
 		return false;
 	}
 	
@@ -1876,10 +1862,11 @@ void CLoadMD3::ConvertDataStructures(t3DModel *pModel, tMd3MeshInfo meshHeader)
 /////
 ///////////////////////////////// LOAD SKIN \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CLoadMD3::LoadSkin(t3DModel *pModel, char *strSkin, MD3Shape *shape)
+bool CLoadMD3::LoadSkin(t3DModel *pModel, const std::string& strSkin, MD3Shape *shape)
 {
 	// Make sure valid data was passed in
-	if(!pModel || !strSkin) return false;
+	if(!pModel || strSkin.length() == 0)
+		return false;
 
 	// This function is used to load a .skin file for the .md3 model associated
 	// with it.  The .skin file stores the textures that need to go with each
@@ -1911,7 +1898,7 @@ bool CLoadMD3::LoadSkin(t3DModel *pModel, char *strSkin, MD3Shape *shape)
 	// get your own if you really want to use the .tga format.
 
 	// Open the skin file
-	ifstream fin(strSkin);
+	ifstream fin(strSkin.c_str());
 
 	// Make sure the file was opened
 	if(fin.fail())
@@ -1952,10 +1939,7 @@ bool CLoadMD3::LoadSkin(t3DModel *pModel, char *strSkin, MD3Shape *shape)
 				tMaterialInfo texture;
 
 				// Copy the name of the file into our texture file name variable.
-				// Notice that with string we can pass in the address of an index
-				// and it will only pass in the characters from that point on. Cool huh?
-				// So now the strFile name should hold something like ("bitmap_name.bmp")
-				strcpy(texture.strFile, &strLine[textureNameStart]);
+				texture.strFile = strLine.substr(textureNameStart);
 				
 				// The tile or scale for the UV's is 1 to 1 
 				texture.uTile = texture.vTile = 1;
@@ -1985,10 +1969,11 @@ bool CLoadMD3::LoadSkin(t3DModel *pModel, char *strSkin, MD3Shape *shape)
 /////
 ///////////////////////////////// LOAD SHADER \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-bool CLoadMD3::LoadShader( t3DModel *pModel, char *strShader, MD3Shape *shape )
+bool CLoadMD3::LoadShader( t3DModel *pModel, const string& strShader, MD3Shape *shape )
 {
 	// Make sure valid data was passed in
-	if(!pModel || !strShader) return false;
+	if(!pModel || strShader.length() == 0)
+		return false;
 
 	// This function is used to load the .shader file that is associated with
 	// the weapon model.  Instead of having a .skin file, weapons use a .shader file
@@ -2008,7 +1993,7 @@ bool CLoadMD3::LoadShader( t3DModel *pModel, char *strShader, MD3Shape *shape )
 	// not a normal .shader file that we are loading.  I only kept the relevant parts.
 
 	// Open the shader file
-	ifstream fin(strShader);
+	ifstream fin(strShader.c_str());
 
 	// Make sure the file was opened
 	if(fin.fail())
@@ -2031,7 +2016,7 @@ bool CLoadMD3::LoadShader( t3DModel *pModel, char *strShader, MD3Shape *shape )
 		tMaterialInfo texture;
 
 		// Copy the name of the file into our texture file name variable
-		strcpy(texture.strFile, strLine.c_str());
+		texture.strFile = strLine;
 				
 		// The tile or scale for the UV's is 1 to 1 
 		texture.uTile = texture.uTile = 1;

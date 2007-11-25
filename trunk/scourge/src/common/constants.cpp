@@ -25,56 +25,41 @@ int Constants::maxMissionId = 1;
 
 // assign the data dir
 //char rootDir[300] = DATA_DIR;
-char rootDir[300];
-char localeDir[300];
-char configDir[300] = CONFIG_DIR;
+string rootDir;
+string localeDir;
+string configDir = CONFIG_DIR;
 
-int get_config_dir_name( char *buff, int len )
+std::string get_config_dir_name()
 {
 #if defined( WIN32 )
-    if ( (int)strlen( CONFIG_DIR ) +1 > len ) {
-        return 1;
-    }
-    strcpy( buff, CONFIG_DIR );
-    return 0;
+	return CONFIG_DIR;
 #else
-    struct passwd *pwent;
+	struct passwd *pwent;
 
-    pwent = getpwuid( getuid() );
-    if ( pwent == NULL ) {
-        perror( "getpwuid" );
-        return 1;
-    }
+	pwent = getpwuid( getuid() );
+	if ( pwent == NULL ) {
+		perror( "getpwuid" );
+	}
 
-    if ( (int)(strlen( pwent->pw_dir ) + strlen( CONFIG_DIR) + 2) > len ) {
-        return 1;
-    }
-
-    sprintf( buff, "%s/%s", pwent->pw_dir, CONFIG_DIR );
-    return 0;
+	return std::string(pwent->pw_dir) + "/" + std::string(CONFIG_DIR);
 #endif /* defined( WIN32 ) */
 }
 
-int get_config_file_name( char *buff, int len ) {
-  return get_file_name( buff, len, CONFIG_FILE );
+std::string get_config_file_name() {
+  return get_file_name( CONFIG_FILE );
 }
 
-int get_file_name( char *buff, int len, char *fileName ) {
-  if (get_config_dir_name( buff, len ) != 0) {
-    return 1;
-  }
-  if ( (int)(strlen( buff ) + strlen( fileName ) +2) > len ) {
-    return 1;
-  }
+std::string get_file_name(const std::string fileName ) {
+	std::string config = get_config_dir_name();
 
 #if defined( WIN32 )
-  strcat( buff, "\\" );
+  config.append("\\");
 #else
-  strcat( buff, "/" );
+  config.append("/");
 #endif /* defined( WIN32 ) */
 
-  strcat( buff, fileName );
-  return 0;
+  config.append(fileName);
+	return config;
 }
 
 //sprintf(s, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
@@ -562,8 +547,8 @@ int Constants::findLocaleDir() {
 	setlocale( LC_MESSAGES, "" );
 	
 	// assume translations dir in rootDir
-	sprintf( localeDir, "%s/translations", rootDir );
-	cerr << "Looking for localized resources in: " << bindtextdomain( "scourge", localeDir ) << endl;
+	localeDir = rootDir + "/translations";
+	cerr << "Looking for localized resources in: " << bindtextdomain( "scourge", localeDir.c_str() ) << endl;
 	bind_textdomain_codeset( "scourge", "UTF8" );
 
 	textdomain( "scourge" ); 
@@ -578,18 +563,17 @@ int Constants::initRootDir( int argc, char *argv[] ) {
 #ifdef WIN32
   cerr << "\tWindows detected..." << endl;
   // for windows (binreloc doesn't compile in windows)
-  strcpy( rootDir, DATA_DIR_NAME );
+  rootDir = DATA_DIR_NAME;
 #else
 #ifdef ENABLE_BINRELOC
   cerr << "\tusing binreloc..." << endl;
   char *p = br_find_data_dir( DATA_DIR_NAME );
-  char tmp[255];
-  sprintf( tmp, "%s/%s", br_find_data_dir( "" ), DATA_DIR_NAME );
-  strcpy( rootDir, tmp );
+  string tmp = br_find_data_dir( "" ) + "/" + DATA_DIR_NAME;
+  rootDir = tmp;
   free( p );
 #else
   cerr << "\tnot using binreloc..." << endl;
-  strcpy( rootDir, DATA_DIR );
+  rootDir = DATA_DIR;
 #endif
 #endif
 
@@ -600,39 +584,47 @@ int Constants::initRootDir( int argc, char *argv[] ) {
 
   // Check to see if there's a local version of the data dir
   // (ie. we're running in the build folder and not in a distribution)
-  char dir[300];
-  dir[0] = '\0';
+  std::string dir;
 
 #ifdef WIN32
-  findLocalResources(argv[0], dir);
+  dir = findLocalResources(argv[0]);
 #else
-  char cwd[300];
-  if( !getcwd( cwd, 300 ) ) {
-    cerr << "Can't determine current working directory." << endl;
-    exit( 1 );
-  }
-  findLocalResources( cwd, dir );
+	bool working = false;
+	char *cwd;
+	int pathLength = 300;
+	while(!working) {
+		cwd = new char[pathLength];
+		if( !getcwd( cwd, pathLength ) ) {
+			delete[] cwd;
+			pathLength *= 2;
+			cerr << "Can't determine current working directory." << endl;
+			if(pathLength > 5000)
+				exit(1);
+		}
+		else
+			working = true;
+	}
+  dir = findLocalResources( cwd );
+	delete[] cwd;
 #endif
 
-  if(strlen(dir)) {
+  if(dir.length()) {
     cerr << "*** Using local data dir. Not running a distribution. dir=" << dir << endl;
-    sprintf( rootDir, "%s%s", dir, DATA_DIR_NAME );
+    rootDir = dir + DATA_DIR_NAME;
     cerr << "\trootDir=" << rootDir << endl;
   }
 
   // config check
   if(argc >= 2 && !strcmp(argv[1], "--test-config")) {
     cerr << "Configuration:" << endl;
-    char dir[300];
-    char file[500];
-    int dir_res = get_config_dir_name( dir, 300 );
-    int file_res = get_config_file_name( file, 500 );
+    std::string dir = get_config_dir_name();
+    std::string file = get_config_file_name();
     cerr << "starting app: " << argv[0] << endl;
     cerr << "rootDir=" << rootDir <<
       "\nconfigDir=" << configDir <<
       "\nconfigFile=" << CONFIG_FILE <<
-      "\ndir=" << dir << " dir_res=" << dir_res <<
-      "\nfile=" << file << " file_res=" << file_res <<	endl;
+      "\ndir=" << dir <<
+      "\nfile=" << file <<	endl;
     return 0;
   }
 
@@ -650,54 +642,54 @@ int Constants::initRootDir( int argc, char *argv[] ) {
 	return 0;
 }
 
-bool Constants::checkFile(const char *dir, const char *file) {
-  char path[300];
-  strcpy(path, dir);
-  strcat(path, file);
+bool Constants::checkFile(const string& dir, const string& file) {
+  string path = dir + file;
   //fprintf(stderr, "\tchecking path: %s\n", path);
   bool ret = true;
-  FILE *fp = fopen(path, "rb");
+  FILE *fp = fopen(path.c_str(), "rb");
   if(!fp || ferror(fp)) ret = false;
   if(fp) fclose(fp);
   return ret;
 }
 
 // this function is used to be able to run scourge while developing
-void Constants::findLocalResources(const char *appPath, char *dir) {
+string Constants::findLocalResources(const string& appPath) {
 
   //cerr << "&^&^&^&^ appPath=" << appPath << endl;
 
-  char testFile[80];
-  sprintf( testFile, "%s/textures/test.txt", DATA_DIR_NAME );
+  string testFile = DATA_DIR_NAME;
+	testFile.append("/textures/test.txt");
   // Where are we running from?
-  strcpy(dir, appPath);
-
+  string dir = appPath;
 	// append an ending / so the current dir is also considered
-	int n = strlen( dir );
-	if( !( dir[ n - 1 ] == '/' || dir[ n - 1 ] == SEPARATOR ) ) {
-		strcat( dir, "/" );
-	}
+	if( !( dir[ dir.length() - 1 ] == '/' || dir[ dir.length() - 1 ] == SEPARATOR ) )
+		dir.append( "/" );
 
   // Look in this and the parent dir for a 'data' folder
   // ('i' has to count to at least 4 for OS X)
   for(int i = 0; i < 10; i++) {
-    char *pp = strrchr(dir, '/');
-    char *p = strrchr(dir, SEPARATOR);
-    if(!p && !pp) {
-      dir[0] = '\0';
+    size_t pp = dir.find_last_of( '/' );
+    size_t p = dir.find_last_of( SEPARATOR );
+    if(p == string::npos && pp == string::npos) {
       cerr << "*** Can't find local version of data dir. You're running a distribution." << endl;
-      return;
+      dir = "";
+      return dir;
     }
     // Take whichever comes first. This is to solve a problem when running in
     // mingw or cygwin. It may cause problems if the actual path has a \ or / in it.
-    if(pp > p) p = pp;
-    *(p + 1) = 0;
+		if(pp > p) 
+			p = pp;
+
+		dir = dir.substr(0, p + 1);
     //cerr << "*** Looking at: dir=" << dir << endl;
-    if( checkFile( dir, testFile ) ) return;
+		if( checkFile( dir, testFile ) ) 
+			return dir;
+
     // remove the last separator
-    *(p) = 0;
+		dir = dir.substr(0, p);
   }
-  dir[0] = '\0';
+  dir = "";
+	return dir;
 }
 
 CVector3::CVector3() {
@@ -707,11 +699,9 @@ CVector3::CVector3(float xn, float yn, float zn)
  : x(xn),y(yn),z(zn) {
 }
 
-char* GetDataPath(char *file)
+string GetDataPath(const string& file)
 {
-	static char path[300];
-	sprintf(path, file, rootDir);
-	return path;
+	return rootDir + file;
 }
 
 void Constants::getQuadrantAndAngle( float nx, float ny, int *q, float *angle ) {
@@ -730,4 +720,11 @@ void Constants::getQuadrantAndAngle( float nx, float ny, int *q, float *angle ) 
     (*angle) += 360;
   }
 	//cerr << "\tfinal angle=" << (*angle) << " quadrant=" << (*q) << endl;
+}
+
+bool StringCaseCompare(const std::string sStr1, const std::string sStr2) {
+	if (sStr1.length() == sStr2.length())
+		return std::equal(sStr1.begin(), sStr1.end(), sStr2.begin(), equal_ignore_case<std::string::value_type>());
+	else
+		return false;
 }

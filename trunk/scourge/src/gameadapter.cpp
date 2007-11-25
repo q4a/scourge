@@ -50,11 +50,11 @@ int GameAdapter::getPartySize() {
           getSession()->getParty()->getPartySize() );
 }
 
-void GameAdapter::loadMapData( const char *name ) {
+void GameAdapter::loadMapData( const string& name ) {
   Mission::loadMapData( this, name );
 }
 
-void GameAdapter::saveMapData( const char *name ) {
+void GameAdapter::saveMapData( const string& name ) {
   Mission::saveMapData( this, name );
 }
 
@@ -221,7 +221,7 @@ void SDLOpenGLAdapter::initVideo() {
   sdlHandler->setVideoMode( preferences ); 
 }
 
-void SDLOpenGLAdapter::playSound(const char *sound) { 
+void SDLOpenGLAdapter::playSound(const string& sound) { 
   getSDLHandler()->getSound()->playSound(sound); 
 }
 

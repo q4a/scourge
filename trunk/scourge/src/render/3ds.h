@@ -38,7 +38,7 @@
 
 
 // Here is our structure for our 3DS indicies (since .3DS stores 4 unsigned shorts)
-struct tIndices {                           
+struct tIndices {
 
     unsigned short a, b, c, bVisible;       // This will hold point1, 2, and 3 index's into the vertex array plus a visible flag
 };
@@ -58,7 +58,7 @@ public:
     CLoad3DS();                             // This inits the data members
 
     // This is the function that you call to load the 3DS
-    bool Import3DS(t3DModel *pModel, char *strFileName);
+    bool Import3DS(t3DModel *pModel, std::string& strFileName);
 
 private:
     // This reads in a string and saves it in the char array passed in

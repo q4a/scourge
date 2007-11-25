@@ -102,23 +102,23 @@ class CLoadMD2
 {
  
 public:
-	CLoadMD2();                                
-	bool ImportMD2(t3DModel *pModel, char *strFileName);    
+	CLoadMD2();
+	bool ImportMD2(t3DModel *pModel, std::string& strFileName);
 	void DeleteMD2( t3DModel *pModel );
 	static void findBounds( t3DModel *pModel, vect3d min, vect3d max );
 	static void normalize( t3DModel *pModel, vect3d min, vect3d max );
 
-private:        
-        
-    void ReadMD2Data(t3DModel *pModel);        
-    void ParseAnimations(t3DModel *pModel);    
+private:
+
+    void ReadMD2Data(t3DModel *pModel);
+    void ParseAnimations(t3DModel *pModel);
     void ComputeMinMaxValues(t3DModel *pModel);
     void CleanUp();
-        
-    FILE *m_FilePointer;   
+
+    FILE *m_FilePointer;
 
     tMd2Header              m_Header;           // The header data
-    tMd2String              *m_pSkins;          // The skin data        
+    tMd2String              *m_pSkins;          // The skin data
     tMd2String              *m_pFrames;         // The name of the frames
 };
 

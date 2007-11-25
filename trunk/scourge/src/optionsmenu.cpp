@@ -39,14 +39,14 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   nbControlLines = 0;
   waitingForNewKey = false;
   ignoreKeyUp = false;
-  
+
   mainWin = new Window( scourge->getSDLHandler(),
                         100, 170, WIN_WIDTH, 320, 
                         _( "Options" ), 
                         scourge->getShapePalette()->getGuiTexture(),
                         true, Window::BASIC_WINDOW,
                         scourge->getShapePalette()->getGuiTexture2());
-    
+
   int x = 8;
   gameSettingsButton = mainWin->createButton(x, 0, x + BUTTON_WIDTH, SPACING, _( "Gameplay" ), true);
   x += BUTTON_WIDTH;
@@ -54,13 +54,13 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   x += BUTTON_WIDTH;
   audioButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, _( "Audio" ), true);
   x += BUTTON_WIDTH;
-  controlsButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, _( "Controls" ), true);           
+  controlsButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, _( "Controls" ), true);
 
   x = 10;
-  saveButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, _( "Save" ), false);      
+  saveButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, _( "Save" ), false);
   x += BUTTON_WIDTH + MINOR_SPACING;
-  closeButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, _( "Close" ), false);      
-  
+  closeButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, _( "Close" ), false);
+
   cards = new CardContainer(mainWin);
   
   // Controls tab
@@ -74,7 +74,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
 											Constants::getMessage( Constants::CHANGE_KEY ), 
 											CONTROLS, false);
   y += SPACING + MINOR_SPACING;
-  waitingLabel = cards->createLabel(35, 80, " ", CONTROLS, Constants::BLUE_COLOR);         
+  waitingLabel = cards->createLabel(35, 80, " ", CONTROLS, Constants::BLUE_COLOR);
 
   // Game settings tab
   y = YPOS;
@@ -112,10 +112,10 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   char **modes;    
   modes = scourge->getSDLHandler()->getVideoModes(nbModes);    
   for(i = 0; i < nbModes; i++) {
-    videoResolutionML -> addText(modes[i]);        
-  }    
-  cards->addWidget(videoResolutionML, VIDEO);    
-  
+    videoResolutionML -> addText(modes[i]);
+  }
+  cards->addWidget(videoResolutionML, VIDEO);
+
   y += SPACING + MINOR_SPACING;
   fullscreenCheckbox = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Fullscreen" ), VIDEO);    
   y += SPACING + MINOR_SPACING;
@@ -138,11 +138,11 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   shadowsML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Shadows" ), 100);
   shadowsML -> addText(_( "None" ));  
   shadowsML -> addText(_( "Some" ));
-  shadowsML -> addText(_( "All" ));       
-  cards->addWidget(shadowsML, VIDEO);       
+  shadowsML -> addText(_( "All" ));
+  cards->addWidget(shadowsML, VIDEO);
   y += SPACING + MINOR_SPACING;
   changeTakeEffectLabel = cards->createLabel(XPOS, y, " ", VIDEO, Constants::BLUE_COLOR);
-  
+
   // audio
   y = YPOS;
   musicVolume = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 128, _( "Music Volume:" ));
@@ -156,7 +156,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
 }   
 
 void OptionsMenu::loadGameSettings(){
-        
+
     gameSpeedML->setText(gameSpeedML->getNbText() - uc->getGameSpeedLevel() - 1);
     alwaysCenterMapCheckbox->setCheck(uc->getAlwaysCenterMap());
     keepMapSize->setCheck(uc->getKeepMapSize());
@@ -173,8 +173,8 @@ void OptionsMenu::loadGameSettings(){
 
 // line i must correspond to engine action i if we want this scrolling list to work
 void OptionsMenu::loadControls(){
-    int i;    
-    if(controlLines) {  
+    int i;
+    if(controlLines) {
         for(int i = 0; i < ENGINE_ACTION_COUNT ; i++){
             if( controlLines[i] ){
                 free(controlLines[i]);
@@ -184,53 +184,53 @@ void OptionsMenu::loadControls(){
         free(controlLines);
         controlLines = NULL;
     }
-    
+
     nbControlLines = ENGINE_ACTION_COUNT;
-    controlLines = (char **) malloc (nbControlLines *sizeof(char *));    
+    controlLines = (char **) malloc (nbControlLines *sizeof(char *));
     for (i = 0; i < nbControlLines; i++){
-        controlLines[i] = (char *)malloc(MAX_CONTROLS_LINE_SIZE * sizeof(char));        
+        controlLines[i] = (char *)malloc(MAX_CONTROLS_LINE_SIZE * sizeof(char));
         sprintf( controlLines[i], "%s           %s", 
                  uc->getEngineActionDescription(i),
                  uc->getEngineActionKeyName(i) );
-    }                
-    controlBindingsList->setLines(nbControlLines, (const char**) controlLines);       
+    }
+    controlBindingsList->setLines(nbControlLines, (const char**) controlLines);
 }
 
-void OptionsMenu::loadVideo(){    
+void OptionsMenu::loadVideo(){
     char temp[50];
     string line;
     string s, s1, s2, s3, s4;
     int i;
     int end;
-    
-    sprintf(temp, "%d x %d", uc -> getW(), uc-> getH());          
+
+    sprintf(temp, "%d x %d", uc -> getW(), uc-> getH());
     s = temp;
     s1 = Util::getNextWord(s, 0, end);
     s2 = Util::getNextWord(s, end, end);  // ignores the ' x '  
-    s2 = Util::getNextWord(s, end, end);       
+    s2 = Util::getNextWord(s, end, end);
     i = 0;  
-    
+
     // don't know why the string::find() function does not work, so...
     while (i < videoResolutionML -> getNbText()){
         line = videoResolutionML -> getText(i);
-        s3 = Util::getNextWord(line, 0, end);               
-        if(s1 == s3){                           
+        s3 = Util::getNextWord(line, 0, end);
+        if(s1 == s3){
             s4 = Util::getNextWord(line, end, end);   // ignores the ' x ' 
-            s4 = Util::getNextWord(line, end, end);              
-            if(s2 == s4){                
-                break;            
-            }            
+            s4 = Util::getNextWord(line, end, end);
+            if(s2 == s4){
+                break;
+            }
         }
-        i++;        
+        i++;
     }
     if(i < videoResolutionML -> getNbText()){
         videoResolutionML -> setText(i);
     }
     else{
         videoResolutionML -> setText(0);
-    }    
+    }
     shadowsML->setText(uc->getShadows());
-    
+
     // Checkboxes
     fullscreenCheckbox->setCheck(uc -> getFullscreen());
     doublebufCheckbox->setCheck(uc->getDoublebuf());
@@ -240,9 +240,7 @@ void OptionsMenu::loadVideo(){
     forceHwsurfCheckbox->setCheck(uc->getForce_hwsurf());
     forceSwsurfCheckbox->setCheck(uc->getForce_swsurf());
     multitexturingCheckbox->setCheck(uc->getMultitexturing());
-    hwaccelCheckbox->setCheck(uc->getHwaccel());    
-    
-    
+    hwaccelCheckbox->setCheck(uc->getHwaccel());
 }
 
 void OptionsMenu::setSelectedMode(){
@@ -250,22 +248,22 @@ void OptionsMenu::setSelectedMode(){
     videoButton->setSelected(selectedMode == VIDEO);
     audioButton->setSelected(selectedMode == AUDIO);
     controlsButton->setSelected(selectedMode == CONTROLS);
-    gameSettingsButton->setSelected(selectedMode == GAME_SETTINGS);        
-    
+    gameSettingsButton->setSelected(selectedMode == GAME_SETTINGS);
+
     switch(selectedMode){
         case VIDEO :
             if(!videoLoaded){
                 loadVideo();
-                videoLoaded = true;                
+                videoLoaded = true;
             } 
             break;
         case AUDIO :
             break;
         case CONTROLS :
-            if(!controlsLoaded){                
+            if(!controlsLoaded){
                 loadControls();
-                controlsLoaded = true;                
-            }            
+                controlsLoaded = true;
+            }
             break;
         case GAME_SETTINGS :
             if(!gameSettingsLoaded){
@@ -274,10 +272,10 @@ void OptionsMenu::setSelectedMode(){
             }
             break;
         default : 
-            break;       
+            break;
     }
-    
-    cards->setActiveCard(selectedMode);  
+
+    cards->setActiveCard(selectedMode);
 }
 
 
@@ -286,21 +284,21 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
       scourge->toggleOptionsWindow();
       return true;
     } else if(widget == gameSettingsButton) {
-        selectedMode = GAME_SETTINGS;        
-    }  
+        selectedMode = GAME_SETTINGS;
+    }
     else if(widget == videoButton) {
         selectedMode = VIDEO;
-    }   
+    }
     else if(widget == audioButton) {
         selectedMode = AUDIO;
     }
     else if(widget == controlsButton) {
-        selectedMode = CONTROLS;        
-    }       
-    else if(widget == changeControlButton) { // && selectedMode== Controls?       
-	  //	  waitingLabel->setText("Waiting for new key ... Press ESCAPE to cancel");        
+        selectedMode = CONTROLS;
+    }
+    else if(widget == changeControlButton) { // && selectedMode== Controls?
+	  //	  waitingLabel->setText("Waiting for new key ... Press ESCAPE to cancel");
 	  changeControlButton->setLabel( Constants::getMessage( Constants::WAITING_FOR_KEY ) );
-	  waitingForNewKey = true;               
+	  waitingForNewKey = true;
     }
     else if(widget == gameSpeedML){
         uc -> setGameSpeedLevel(gameSpeedML->getNbText() - gameSpeedML->getCurrentTextInd() - 1);
@@ -340,15 +338,15 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         s2 = Util::getNextWord(line, end, end);
         s2 = Util::getNextWord(line, end, end);
         uc-> setW(atoi(s1.c_str()));
-        uc-> setH(atoi(s2.c_str()));        
+        uc-> setH(atoi(s2.c_str()));
     }
     else if(widget == fullscreenCheckbox){
         // if fullscreen checked -> not resizeable
         if(fullscreenCheckbox->isChecked()){
             resizeableCheckbox->setCheck(false);
-            uc->setResizeable(false);                
+            uc->setResizeable(false);
         }
-        uc->setFullscreen(fullscreenCheckbox->isChecked());        
+        uc->setFullscreen(fullscreenCheckbox->isChecked());
     } 
     else if(widget == resizeableCheckbox){
         uc->setResizeable(resizeableCheckbox->isChecked());
@@ -407,84 +405,84 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
       uc->setEffectsVolume(effectsVolume->getValue());
     }
     setSelectedMode(); 
-      
+
     return false;
 }
 
 bool OptionsMenu::handleEvent(SDL_Event *event) {
-  switch(event->type) {
-  case SDL_MOUSEBUTTONUP:
-    break;
-  case SDL_KEYUP:
+	switch(event->type) {
+	case SDL_MOUSEBUTTONUP:
+		break;
+	case SDL_KEYUP:
 	switch(event->key.keysym.sym) {
 	case SDLK_ESCAPE:
-	  if(!ignoreKeyUp){
-		scourge->toggleOptionsWindow();
-		return true;
+		if(!ignoreKeyUp){
+			scourge->toggleOptionsWindow();
+			return true;
 	  } else ignoreKeyUp = false;
 	default:
 	  break;
 	}
 	break;
-  case SDL_KEYDOWN:    
-    if(waitingForNewKey){
-	  if(event->key.keysym.sym != SDLK_ESCAPE){
-		int ind;
-		ind = controlBindingsList->getSelectedLine();                     
-		string s1 = uc->getEngineActionDescription(ind);                      
-		string s2 = SDL_GetKeyName(event->key.keysym.sym);  
-		for (unsigned int i = 0; i < s2.length(); i++){
-		  if(s2[i] == ' '){
-			s2[i] = '_';
-		  }            
-		}
-		uc->setKeyForEngineAction(s2, ind); // update userConfig too
-		s1 = s1 + "           " + s2;            
-		strcpy(controlLines[ind], s1.c_str());
-		controlBindingsList->setLines(nbControlLines, (const char**) controlLines);
-		controlBindingsList->setSelectedLine(ind);                                                          
-	  } else ignoreKeyUp = true;
-	  //waitingLabel->setText(" ");
-	  changeControlButton->setLabel( Constants::getMessage( Constants::CHANGE_KEY ) );
-	  waitingForNewKey = false;
-    } else{
-	  switch(event->key.keysym.sym) {
-	  case SDLK_RETURN:
-		if(selectedMode == CONTROLS){
-		  //waitingLabel->setText("Waiting for new key ... Press ESCAPE to cancel");        
-		  changeControlButton->setLabel( Constants::getMessage( Constants::WAITING_FOR_KEY) );
-		  waitingForNewKey = true;  
-		}
+	case SDL_KEYDOWN:
+		if(waitingForNewKey){
+			if(event->key.keysym.sym != SDLK_ESCAPE){
+				int ind;
+				ind = controlBindingsList->getSelectedLine();
+				string s1 = uc->getEngineActionDescription(ind);
+				string s2 = SDL_GetKeyName(event->key.keysym.sym);
+				for (unsigned int i = 0; i < s2.length(); i++){
+					if(s2[i] == ' '){
+						s2[i] = '_';
+					}
+				}
+				uc->setKeyForEngineAction(s2, ind); // update userConfig too
+				s1 = s1 + "           " + s2;
+				strcpy(controlLines[ind], s1.c_str());
+				controlBindingsList->setLines(nbControlLines, (const char**) controlLines);
+				controlBindingsList->setSelectedLine(ind);
+			} else ignoreKeyUp = true;
+			//waitingLabel->setText(" ");
+			changeControlButton->setLabel( Constants::getMessage( Constants::CHANGE_KEY ) );
+			waitingForNewKey = false;
+		} else{
+			switch(event->key.keysym.sym) {
+			case SDLK_RETURN:
+				if(selectedMode == CONTROLS){
+					//waitingLabel->setText("Waiting for new key ... Press ESCAPE to cancel");        
+					changeControlButton->setLabel( Constants::getMessage( Constants::WAITING_FOR_KEY) );
+					waitingForNewKey = true;  
+				}
         /*case SDLK_DOWN:
 		  if(selectedMode == CONTROLS){
 		  int ind = controlBindingsList->getSelectedLine();
 		  ind ++;
-		  controlBindingsList->setSelectedLine(ind);                
+		  controlBindingsList->setSelectedLine(ind);
 		  }*/
 		
-		return true;
-	  default: break;
-	  }  
+				return true;
+				default: break;
+			}
+		}
+	default: break;
 	}
-  default: break;  
-  }  
-  return false;
+	return false;
 }
 
 OptionsMenu::~OptionsMenu(){
-       
+
     // Only delete ML, scrollingLists and cardContainers. 
-    // Other widgets are deleted by window.cpp       
+    // Other widgets are deleted by window.cpp
     if(gameSpeedML) delete gameSpeedML;
     if(videoResolutionML) delete videoResolutionML;
     if(controlBindingsList) delete controlBindingsList;
     if(cards) delete cards;
-    
+
 }
 
 void OptionsMenu::show() {
   mainWin->setVisible(true);
-}  
+}
 
 void OptionsMenu::hide() {
   mainWin->setVisible(false);
