@@ -1075,33 +1075,67 @@ int Item::getInventoryHeight() {
 }
 
 void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h ) {
+	GLuint tex;
+	int rw, rh, ox, oy, iw, ih;
+	getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h );
+
+	glPushMatrix();
+	glTranslatef( x + ox, y + oy, 0 );
+	if( w > 0 && h > 0 ) glScalef( rw / (float)w, rh / (float)h, 1 );
 	if( isMagicItem() ) {
-		renderUnderItemIconEffect( scourge, x, y, w, h );
+		renderUnderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
 	}
-	renderItemIcon( scourge, x, y, w, h );
+	renderItemIcon( scourge, 0, 0, rw, rh );
 	if( isMagicItem() ) {
-		renderItemIconEffect( scourge, x, y, w, h );
-		renderItemIconIdentificationEffect( scourge, x, y, w, h );
+		renderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
+		renderItemIconIdentificationEffect( scourge, 0, 0, rw, rh );
 	}
+	glScalef( 1, 1, 1 );
+	glPopMatrix();
+}
+
+void Item::getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h ) {
+	GLuint tex;
+	int rw, rh, ox, oy;
+	if( getShape()->getIcon() > 0 ) {
+		tex = getShape()->getIcon();
+		*iw = getShape()->getIconWidth() * 32;
+		*ih = getShape()->getIconHeight() * 32;
+		if( getShape()->getIconWidth() > getShape()->getIconHeight() ) {
+			rw = w;
+			rh = (int)( getShape()->getIconHeight() * rw / (float)getShape()->getIconWidth() );
+			ox = 0;
+			oy = ( h - rh ) / 2;
+		} else {
+			rh = h;
+			rw = (int)( getShape()->getIconWidth() * rh / (float)getShape()->getIconHeight() );
+			oy = 0;
+			ox = ( w - rw ) / 2;
+		}
+	} else {
+		tex = session->getShapePalette()->
+			tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ];
+		*iw = w;
+		*ih = h;
+		rw = w;
+		rh = h;
+		ox = oy = 0;
+	}
+	*texp = tex;
+	*rwp = rw;
+	*rhp = rh;
+	*oxp = ox;
+	*oyp = oy;
 }
 
 void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h ) {
-
-	//create3dTex( scourge, w, h );
-
-	glColor4f( 1, 1, 1, 1 );
-	GLuint tex = ( getShape()->getIcon() > 0 ? 
-								 getShape()->getIcon() :
-								 session->getShapePalette()->
-								 tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] );
-
-	//glEnable( GL_ALPHA_TEST );
-	//glAlphaFunc( GL_NOTEQUAL, 0 );
 	glColor4f( 1, 1, 1, 1 );
 	glEnable( GL_BLEND );
-	//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glBindTexture( GL_TEXTURE_2D, tex );
+	glBindTexture( GL_TEXTURE_2D, 
+								 ( getShape()->getIcon() > 0 ? 
+									 getShape()->getIcon() : 
+									 session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] ) );
 	glBegin( GL_QUADS );
 	glTexCoord2d( 0, 1 );
 	glVertex2d( x, y + h );
@@ -1113,7 +1147,6 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h ) {
 	glVertex2d( x + w, y + h );
 	glEnd();
 	glDisable( GL_BLEND );
-	//glDisable( GL_ALPHA_TEST );
 }
 
 void Item::create3dTex( Scourge *scourge, float w, float h ) {
@@ -1188,7 +1221,7 @@ void Item::create3dTex( Scourge *scourge, float w, float h ) {
   glPopAttrib();
 }
 
-void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h ) {
+void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih ) {
 	Uint32 t = SDL_GetTicks();
 	if( t - iconUnderEffectTimer > 5 ) {
 		iconUnderEffectTimer = t;
@@ -1222,18 +1255,19 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a,
 							 0.5f );
 		glPushMatrix();
+		glTranslatef( x, y, 0 );
 		glTranslatef( iconUnderEffectParticle[i]->x - iconUnderEffectParticle[i]->zoom / 2, 
 									iconUnderEffectParticle[i]->y - iconUnderEffectParticle[i]->zoom / 2, 0 );
 		//glRotatef( iconUnderEffectParticle[i]->life, 0, 0, 1 );
 		glBegin( GL_QUADS );
 		glTexCoord2d( 0, 1 );
-		glVertex2d( x, y + iconUnderEffectParticle[i]->zoom );
+		glVertex2d( 0, iconUnderEffectParticle[i]->zoom );
 		glTexCoord2d( 0, 0 );
-		glVertex2d( x, y );
+		glVertex2d( 0, 0 );
 		glTexCoord2d( 1, 0 );
-		glVertex2d( x + iconUnderEffectParticle[i]->zoom, y );
+		glVertex2d( iconUnderEffectParticle[i]->zoom, 0 );
 		glTexCoord2d( 1, 1 );
-		glVertex2d( x + iconUnderEffectParticle[i]->zoom, y + iconUnderEffectParticle[i]->zoom );
+		glVertex2d( iconUnderEffectParticle[i]->zoom, iconUnderEffectParticle[i]->zoom );
 		glEnd();
 		glPopMatrix();
 	}
@@ -1241,7 +1275,7 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 	glColor4f( 1, 1, 1, 1 );
 }
 
-void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h ) {
+void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih ) {
 	// draw an effect
 	Uint32 t = SDL_GetTicks();
 	if( t - iconEffectTimer > 5 ) {
