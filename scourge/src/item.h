@@ -236,10 +236,11 @@ public:
 																		int influenceType );	
 
 	void renderItemIcon( Scourge *scourge, int x, int y, int w, int h );
-	void renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h );
+	void renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih );
 	void renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h );
-	void renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h );
+	void renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih );
 	void create3dTex( Scourge *scourge, float w, float h );
+	void getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h );
 };
 
 #endif
