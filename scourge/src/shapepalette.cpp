@@ -580,7 +580,6 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 		sv->iconRotX = sv->iconRotY = sv->iconRotZ = 0;
 	}
 
-	sv->iconWidth = sv->iconHeight = 0;
 	strcpy( temp, node->getValueAsString( "icon" ) );
 	if( strlen( temp ) ) {
 		debugFileLoad = true;
@@ -589,6 +588,8 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 		sv->iconWidth = w / 32;
 		sv->iconHeight = h / 32;
 		debugFileLoad = false;
+	} else {
+		sv->icon = sv->iconWidth = sv->iconHeight = 0;
 	}
 
 	return sv;
