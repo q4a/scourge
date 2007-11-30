@@ -1066,7 +1066,7 @@ void Item::identify( int infoDetailLevel ) {
 	// fprintf( stderr, "skill=%d id=%x\n", infoDetailLevel, identifiedBits );
 }
 
-int Item::getInventoryWidth() { 
+int Item::getInventoryWidth() {
 	return ( getShape()->getIcon() > 0 ? getShape()->getIconWidth() : rpgItem->getInventoryWidth() );
 }
 
@@ -1132,6 +1132,7 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h ) {
 	glColor4f( 1, 1, 1, 1 );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, 
 								 ( getShape()->getIcon() > 0 ? 
 									 getShape()->getIcon() : 
