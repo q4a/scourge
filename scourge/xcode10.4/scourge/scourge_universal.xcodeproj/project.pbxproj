@@ -39,6 +39,8 @@
 		140049520C5BDB9D00DA1D9C /* fontmgr.h in Headers */ = {isa = PBXBuildFile; fileRef = 140049500C5BDB9D00DA1D9C /* fontmgr.h */; };
 		147CFEF10C924F1700B725E9 /* pathmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147CFEEF0C924F1700B725E9 /* pathmanager.cpp */; };
 		147CFEF20C924F1700B725E9 /* pathmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 147CFEF00C924F1700B725E9 /* pathmanager.h */; };
+		14B023280D01D07600C144E6 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B023270D01D07600C144E6 /* SDL_image.framework */; };
+		14B0237A0D01D0B700C144E6 /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 14B023270D01D07600C144E6 /* SDL_image.framework */; };
 		76081D620A558ADC00281DB9 /* constants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76081D5E0A558ADC00281DB9 /* constants.cpp */; };
 		76081D630A558ADC00281DB9 /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 76081D5F0A558ADC00281DB9 /* constants.h */; };
 		76081D700A55907900281DB9 /* mondrian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76081D6E0A55907900281DB9 /* mondrian.cpp */; };
@@ -388,6 +390,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				14B0237A0D01D0B700C144E6 /* SDL_image.framework in CopyFiles */,
 				140049180C5BDAAF00DA1D9C /* SDL_ttf.framework in CopyFiles */,
 				90566A4E0B14DAF800DE08E5 /* SDL.framework in CopyFiles */,
 				90566A4F0B14DAF800DE08E5 /* SDL_mixer.framework in CopyFiles */,
@@ -430,6 +433,7 @@
 		140049500C5BDB9D00DA1D9C /* fontmgr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = fontmgr.h; path = ../../src/freetype/fontmgr.h; sourceTree = SOURCE_ROOT; };
 		147CFEEF0C924F1700B725E9 /* pathmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = pathmanager.cpp; path = ../../src/pathmanager.cpp; sourceTree = SOURCE_ROOT; };
 		147CFEF00C924F1700B725E9 /* pathmanager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pathmanager.h; path = ../../src/pathmanager.h; sourceTree = SOURCE_ROOT; };
+		14B023270D01D07600C144E6 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = ../Frameworks/SDL_image.framework; sourceTree = SOURCE_ROOT; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* scourge_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scourge_Prefix.pch; sourceTree = "<group>"; };
@@ -820,6 +824,7 @@
 				905668C70B14D20600DE08E5 /* SDL_net.framework in Frameworks */,
 				905668C80B14D20600DE08E5 /* SDL.framework in Frameworks */,
 				140049080C5BDA6900DA1D9C /* SDL_ttf.framework in Frameworks */,
+				14B023280D01D07600C144E6 /* SDL_image.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -836,6 +841,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				14B023270D01D07600C144E6 /* SDL_image.framework */,
 				140049070C5BDA6900DA1D9C /* SDL_ttf.framework */,
 				7674A65905D5F9EB00A583B9 /* OpenGL.framework */,
 				905668C20B14D20600DE08E5 /* SDL_mixer.framework */,
@@ -1887,9 +1893,11 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_3)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(HOME)/Library/Frameworks\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../Frameworks\"";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_TRIGRAPHS = NO;
@@ -1906,6 +1914,7 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_ttf.framework/Headers",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_mixer.framework/Headers",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_net.framework/Headers",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_image.framework/Headers",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL.framework/Headers",
 				);
 				INFOPLIST_FILE = Info.plist;
@@ -1938,6 +1947,8 @@
 					OpenGL,
 					"-framework",
 					SDL_ttf,
+					"-framework",
+					SDL_image,
 					"-lz",
 				);
 				PRODUCT_NAME = scourge;
@@ -1961,9 +1972,11 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_3)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(HOME)/Library/Frameworks\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../Frameworks\"";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_TRIGRAPHS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -1978,6 +1991,7 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_ttf.framework/Headers",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_mixer.framework/Headers",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_net.framework/Headers",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_image.framework/Headers",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL.framework/Headers",
 				);
 				INFOPLIST_FILE = Info.plist;
@@ -2009,6 +2023,8 @@
 					OpenGL,
 					"-framework",
 					SDL_ttf,
+					"-framework",
+					SDL_image,
 					"-lz",
 				);
 				PRODUCT_NAME = scourge;
@@ -2031,9 +2047,11 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_3)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(HOME)/Library/Frameworks\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../Frameworks\"";
 				GCC_ENABLE_TRIGRAPHS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = "";
@@ -2047,6 +2065,7 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_ttf.framework/Headers",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_mixer.framework/Headers",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_net.framework/Headers",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL_image.framework/Headers",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)/SDL.framework/Headers",
 				);
 				INFOPLIST_FILE = Info.plist;
@@ -2078,6 +2097,8 @@
 					OpenGL,
 					"-framework",
 					SDL_ttf,
+					"-framework",
+					SDL_image,
 					"-lz",
 				);
 				PRODUCT_NAME = scourge;
