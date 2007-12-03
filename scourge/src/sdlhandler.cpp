@@ -596,8 +596,10 @@ bool SDLHandler::processEvents( bool *isActive ) {
 
 void SDLHandler::drawCursor() {
   // for cursor: do alpha bit testing
-  glEnable( GL_ALPHA_TEST );
-  glAlphaFunc( GL_NOTEQUAL, 0 ); // this works better for people with the reverse alpha problem (see forums)
+  //  glEnable( GL_ALPHA_TEST );
+  //  glAlphaFunc( GL_NOTEQUAL, 0 ); // this works better for people with the reverse alpha problem (see forums)
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glEnable(GL_TEXTURE_2D);
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_CULL_FACE);
@@ -620,8 +622,9 @@ void SDLHandler::drawCursor() {
   glEnd();
   glPopMatrix();
 
-  glDisable( GL_ALPHA_TEST );
+  //  glDisable( GL_ALPHA_TEST );
   glDisable(GL_TEXTURE_2D);
+  glDisable( GL_BLEND );
 
 #ifdef DEBUG_MOUSE_FOCUS
   // cursor focus

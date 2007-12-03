@@ -309,8 +309,8 @@ public:
 
   GLuint getCursorTexture( int cursorMode );
 
-	static GLuint loadTextureWithAlpha( std::string& fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false, bool grayscale=false );
-	static GLuint loadAlphaTexture( char *filename, int *width, int *height );
+  static GLuint loadTextureWithAlpha( std::string& fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false, bool grayscale=false );
+  static GLuint loadAlphaTexture( std::string& filename, int *width=NULL, int *height=NULL );
 
 	inline int getCursorWidth() { return cursorWidth; }
 	inline int getCursorHeight() { return cursorHeight; }
