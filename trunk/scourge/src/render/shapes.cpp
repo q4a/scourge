@@ -23,6 +23,8 @@
 #include "md2shape.h"
 #include "Md2.h"
 #include "glcaveshape.h"
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 
@@ -358,14 +360,13 @@ void Shapes::initialize() {
   loadStencil( "/cave/stencil-turn.bmp", STENCIL_OUTSIDE_TURN );
   loadStencil( "/cave/stencil-sides.bmp", STENCIL_SIDES );
 
-	//loadCursors();
 }
 
 void Shapes::loadCursors() {
-	for( int i = 0; i < Constants::CURSOR_COUNT; i++ ) {
-		string path = string(cursorDir) + "/" + string(Constants::cursorTextureName[ i ]);
-		cursorTexture[i] = loadTextureWithAlpha( path );
-	}
+  for( int i = 0; i < Constants::CURSOR_COUNT; i++ ) {
+	string path = string(cursorDir) + "/" + string(Constants::cursorTextureName[ i ]);
+	cursorTexture[i] = loadAlphaTexture( path );
+  }
 }
 
 Shapes::~Shapes(){
@@ -954,27 +955,35 @@ GLuint Shapes::getCursorTexture( int cursorMode ) {
 }
 
 GLuint Shapes::loadTextureWithAlpha( string& filename, int r, int g, int b, bool isAbsPath, bool swapImage, bool grayscale ) {
-	SDL_Surface *tmpSurface = NULL;
-	GLubyte *tmpImage = NULL;
-	instance->setupAlphaBlendedBMP( filename, &tmpSurface, &tmpImage, r, g, b, isAbsPath, swapImage, grayscale );
-	GLuint texId = 0;
-	if( tmpImage ) texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-	if( tmpImage ) free( tmpImage );
-	if( tmpSurface ) SDL_FreeSurface( tmpSurface );
-	return texId;
+  SDL_Surface *tmpSurface = NULL;
+  GLubyte *tmpImage = NULL;
+  instance->setupAlphaBlendedBMP( filename, &tmpSurface, &tmpImage, r, g, b, isAbsPath, swapImage, grayscale );
+  GLuint texId = 0;
+  if( tmpImage ) texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+  return texId;
 }
 
-GLuint Shapes::loadAlphaTexture( char *filename, int *width, int *height ) {
-	SDL_Surface *tmpSurface = NULL;
-	GLubyte *tmpImage = NULL;
+GLuint Shapes::loadAlphaTexture( string& filename, int *width, int *height ) {
+  SDL_Surface *tmpSurface = NULL;
+  GLubyte *tmpImage = NULL;
+
+  if( filename.substr( filename.size() - 4 ) == ".png" ) {
 	instance->setupPNG( filename, &tmpSurface, &tmpImage );
-	GLuint texId = 0;
+  } else {
+	instance->setupAlphaBlendedBMP( filename, &tmpSurface, &tmpImage );
+  }
+
+  GLuint texId = 0;
+  if( width && height ) {
 	*width = tmpSurface->w;
 	*height = tmpSurface->h;
-	if( tmpImage ) texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-	if( tmpImage ) free( tmpImage );
-	if( tmpSurface ) SDL_FreeSurface( tmpSurface );
-	return texId;
+  }
+  if( tmpImage ) texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) free( tmpImage );
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+  return texId;
 }
 
 void Shapes::setupPNG( const string& filename, SDL_Surface **surface, GLubyte **image, bool isAbsPath ) {
