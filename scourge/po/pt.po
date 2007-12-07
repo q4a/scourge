@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2007-10-08 23:05+0200\n"
+"POT-Creation-Date: 2007-12-06 21:26-0800\n"
 "PO-Revision-Date: 2007-09-11 21:47+0000\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -94,49 +94,49 @@ msgstr "%s está a entristecer."
 msgid "You need to name the map first."
 msgstr "Primeiro tens de dar um nome ao mapa."
 
-#: src/render/map.cpp:3364 src/render/map.cpp:3654
+#: src/render/map.cpp:3349 src/render/map.cpp:3641
 msgid "Enter a name of a map to load."
 msgstr "Indica o nome do mapa para carregar."
 
-#: src/render/map.cpp:3385
+#: src/render/map.cpp:3371
 msgid "Loading map"
 msgstr "Carregando o mapa"
 
-#: src/render/map.cpp:3390 src/dungeongenerator.cpp:593 src/mondrian.cpp:485
+#: src/render/map.cpp:3376 src/dungeongenerator.cpp:593 src/mondrian.cpp:485
 msgid "Loading theme"
 msgstr "Carregando tema"
 
-#: src/render/map.cpp:3443
+#: src/render/map.cpp:3429
 msgid "Starting map"
 msgstr "Iniciando o mapa"
 
-#: src/render/map.cpp:3466
+#: src/render/map.cpp:3452
 msgid "Initializing map"
 msgstr "Iniciando mapa"
 
-#: src/render/map.cpp:3603
+#: src/render/map.cpp:3590
 msgid "Finishing map"
 msgstr "Finalisando mapa"
 
-#: src/render/map.cpp:3609 src/rpg/monster.cpp:26 src/session.cpp:115
+#: src/render/map.cpp:3596 src/rpg/monster.cpp:26 src/session.cpp:115
 msgid "Loading Creatures"
 msgstr "Carregando Criaturas"
 
-#: src/render/map.cpp:3627
+#: src/render/map.cpp:3614
 msgid "Starting party"
 msgstr "Começando a festa"
 
-#: src/render/map.cpp:3647
+#: src/render/map.cpp:3634
 #, c-format
 msgid "Map loaded: %s"
 msgstr "Mapa carregado: %s"
 
-#: src/render/map.cpp:3668
+#: src/render/map.cpp:3655
 #, c-format
 msgid "Can't find map: %s"
 msgstr "Não encontro mapa: %s"
 
-#: src/render/map.cpp:3678
+#: src/render/map.cpp:3665
 #, c-format
 msgid "Map header loaded: %s"
 msgstr "Cabeçalho carregado mapa: %s"
@@ -149,7 +149,7 @@ msgstr "Confirmação"
 msgid "Ok"
 msgstr "Ok"
 
-#: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:107
+#: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:92
 msgid "No"
 msgstr "Não"
 
@@ -238,330 +238,329 @@ msgstr "Não pode usar as armas:"
 msgid "Not allowed to use armor:"
 msgstr "Não pode usar as armaduras:"
 
-#: src/common/constants.cpp:83
+#: src/common/constants.cpp:68
 msgid "Infamy awaits in the dungeons of Scourge!"
 msgstr "A Infâmia aguarda nos calabouços de Scourge!"
 
-#: src/common/constants.cpp:84
+#: src/common/constants.cpp:69
 msgid "Another day, another sewer! Welcome to Scourge!"
 msgstr "Outro Dia, outra fossa! Bem Vindo ao Scourge!"
 
-#: src/common/constants.cpp:85
+#: src/common/constants.cpp:70
 msgid "Happy hunting; welcome to Scourge!"
 msgstr "Boa caçada, bem vindo ao Scourge!"
 
-#: src/common/constants.cpp:86
+#: src/common/constants.cpp:71
 msgid "That item is out of your reach"
 msgstr "Aquele artigo está fora do teu alcance."
 
-#: src/common/constants.cpp:87
+#: src/common/constants.cpp:72
 msgid "You can't touch that"
 msgstr "Não podes tocar nisso."
 
-#: src/common/constants.cpp:88
+#: src/common/constants.cpp:73
 #, fuzzy
 msgid "You have to be closer to get that"
 msgstr "Tens de estar mais perto para agarrares isso."
 
-#: src/common/constants.cpp:89
+#: src/common/constants.cpp:74
 #, fuzzy
 msgid "You are too far to reach it"
 msgstr "Estás muito longe para alcançar isso."
 
-#: src/common/constants.cpp:90
+#: src/common/constants.cpp:75
 msgid "The door is blocked"
 msgstr "A porta está bloqueada."
 
-#: src/common/constants.cpp:91
+#: src/common/constants.cpp:76
 msgid "Something is blocking that door"
 msgstr "Alguma coisa bloqueia a porta."
 
-#: src/common/constants.cpp:92
+#: src/common/constants.cpp:77
 msgid "You can't use that door; something is in the way"
 msgstr "Não podes usar essa porta: está alguma coisa no caminho."
 
-#: src/common/constants.cpp:93
+#: src/common/constants.cpp:78
 msgid "You are now in single-step mode"
 msgstr "Encontraste em modo individual"
 
-#: src/common/constants.cpp:94
+#: src/common/constants.cpp:79
 msgid "You are now in group mode"
 msgstr "Encontraste em modo grupo"
 
-#: src/common/constants.cpp:95
+#: src/common/constants.cpp:80
 msgid "Paused: you have entered turn-based mode"
 msgstr "Pausado: Entraste em modo por turno"
 
-#: src/common/constants.cpp:96
+#: src/common/constants.cpp:81
 msgid "Un-paused: you are in real-time mode"
 msgstr "Continuando: Encontraste em modo de tempo real"
 
-#: src/common/constants.cpp:97 src/containergui.cpp:43 src/healdialog.cpp:49
+#: src/common/constants.cpp:82 src/containergui.cpp:43 src/healdialog.cpp:49
 #: src/tradedialog.cpp:55 src/optionsmenu.cpp:62 src/conversationgui.cpp:79
 #: src/donatedialog.cpp:50 src/traindialog.cpp:60
 msgid "Close"
 msgstr "Fechar"
 
-#: src/common/constants.cpp:98
+#: src/common/constants.cpp:83
 msgid "Drop Item"
 msgstr "Largar artigo"
 
-#: src/common/constants.cpp:99
+#: src/common/constants.cpp:84
 msgid "Open Item"
 msgstr "Abrir artigo"
 
-#: src/common/constants.cpp:100
+#: src/common/constants.cpp:85
 msgid "Drag items to/from the list, Right click for info"
 msgstr "Arrasta os artigos da/para a lista. Botão direito para informação."
 
-#: src/common/constants.cpp:101
+#: src/common/constants.cpp:86
 msgid "Play Mission"
 msgstr "Jogar a Missão"
 
-#: src/common/constants.cpp:102
+#: src/common/constants.cpp:87
 msgid "Do you really want to exit this mission?"
 msgstr "Queres mesmo sair da missão?"
 
-#: src/common/constants.cpp:103
+#: src/common/constants.cpp:88
 msgid "Teleport back to base?"
 msgstr "Tele-transportar de volta para a base?"
 
-#: src/common/constants.cpp:104
+#: src/common/constants.cpp:89
 msgid "OK"
 msgstr "Confirmar"
 
-#: src/common/constants.cpp:105 src/savegamedialog.cpp:55
-#: src/mapeditor.cpp:287
+#: src/common/constants.cpp:90 src/savegamedialog.cpp:55 src/mapeditor.cpp:287
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/common/constants.cpp:106
+#: src/common/constants.cpp:91
 msgid "Yes"
 msgstr "Sim"
 
-#: src/common/constants.cpp:108
+#: src/common/constants.cpp:93
 #, fuzzy
 msgid "Select a character who is alive and has leveled up."
 msgstr "Selecciona o personagem vivo que subirá de nível"
 
-#: src/common/constants.cpp:109
+#: src/common/constants.cpp:94
 #, fuzzy
 msgid "No skill points available."
 msgstr "Sem pontos de habilidade disponíveis"
 
-#: src/common/constants.cpp:110
+#: src/common/constants.cpp:95
 msgid "Select a skill first."
 msgstr "Primeiro escolhe uma habilidade"
 
-#: src/common/constants.cpp:111
+#: src/common/constants.cpp:96
 msgid "S.C.O.U.R.G.E. dialog"
 msgstr "diálogo S.C.O.U.R.G.E."
 
-#: src/common/constants.cpp:112
+#: src/common/constants.cpp:97
 msgid "Use gate to descend a level?"
 msgstr "Usar o portão para descer um piso?"
 
-#: src/common/constants.cpp:113
+#: src/common/constants.cpp:98
 msgid "Use gate to ascend a level?"
 msgstr "Usar o portão para subir um piso?"
 
-#: src/common/constants.cpp:114
+#: src/common/constants.cpp:99
 msgid "A dead character cannot perform this action."
 msgstr "Um personagem morto não pode fazer isso."
 
-#: src/common/constants.cpp:115
+#: src/common/constants.cpp:100
 msgid "hp:"
 msgstr ""
 
-#: src/common/constants.cpp:116
+#: src/common/constants.cpp:101
 msgid "ac:"
 msgstr ""
 
-#: src/common/constants.cpp:117
+#: src/common/constants.cpp:102
 msgid "Your magic fizzles and dies."
 msgstr "O teu mágico dá um suspiro e morre."
 
-#: src/common/constants.cpp:118
+#: src/common/constants.cpp:103
 msgid "Only the roaches are impressed by your mumbled words."
 msgstr "Só as baratas se impressionam com os teus murmurios."
 
-#: src/common/constants.cpp:119
+#: src/common/constants.cpp:104
 msgid "The silence is broken only by some crickets nearby."
 msgstr "O silêncio só é quebrado por alguns grilos."
 
-#: src/common/constants.cpp:120
+#: src/common/constants.cpp:105
 msgid "Bazzoomm! A small cloud of smoke rises to the ceiling."
 msgstr "Bazzoomm! Uma pequena nuvem de fumo sobe até ao tecto."
 
-#: src/common/constants.cpp:121
+#: src/common/constants.cpp:106
 #, fuzzy
 msgid "Your character cannot equip that item."
 msgstr "O teu personagem não pode equipar aquele artigo"
 
-#: src/common/constants.cpp:122
+#: src/common/constants.cpp:107
 msgid "Fill out the server details, first."
 msgstr "Preenche primeiro os dados do servidor"
 
-#: src/common/constants.cpp:123
+#: src/common/constants.cpp:108
 msgid "Unable to connect to server."
 msgstr "Impossível ligar ao servidor."
 
-#: src/common/constants.cpp:124
+#: src/common/constants.cpp:109
 #, fuzzy
 msgid "You hear a very loud, metallic sound nearby."
 msgstr "Tu ouves um fortíssimo e próximo som metálico ."
 
-#: src/common/constants.cpp:125
+#: src/common/constants.cpp:110
 msgid "Something clicks."
 msgstr "Algo dá um estalido."
 
-#: src/common/constants.cpp:126
+#: src/common/constants.cpp:111
 msgid "The loud twang doesn't help; this is freaky enough already."
 msgstr "A alta vibração não ajuda. Isto já é bastantes assustador assim."
 
-#: src/common/constants.cpp:127
+#: src/common/constants.cpp:112
 msgid "A muffled, metalic, grating noise echoes from the dark."
 msgstr "Um ranger abafado e metálico ecoa pela escuridão."
 
-#: src/common/constants.cpp:128
+#: src/common/constants.cpp:113
 msgid ""
 "You've done something... you're not sure what but you hope it's had dinner."
 msgstr ""
 "Fizestes alguma coisa... não sabes o quê mas esperas, que já tenha jantado"
 
-#: src/common/constants.cpp:129
+#: src/common/constants.cpp:114
 msgid "You feel the resonance of an almost sub-tonal bass note."
 msgstr "Sentes a ressonância de um infra som"
 
-#: src/common/constants.cpp:130
+#: src/common/constants.cpp:115
 msgid "An omnious sound floats from a distant corner."
 msgstr "Um enervante som flutua de um canto distante."
 
-#: src/common/constants.cpp:131
+#: src/common/constants.cpp:116
 msgid "Suck! It is locked shut!"
 msgstr "Merda! Está trancado!"
 
-#: src/common/constants.cpp:132
+#: src/common/constants.cpp:117
 msgid "Try as you might, you can't open it."
 msgstr "Mesmo que uses toda a tua força não cosegues abrir."
 
-#: src/common/constants.cpp:133
+#: src/common/constants.cpp:118
 msgid "Perhaps it's locked."
 msgstr "Talvez esteja trancada."
 
-#: src/common/constants.cpp:134
+#: src/common/constants.cpp:119
 msgid "This teleporter is off-line."
 msgstr "O Tele-transportador está desligado."
 
-#: src/common/constants.cpp:135
+#: src/common/constants.cpp:120
 msgid "Nothing happens."
 msgstr "Não acontece nada-"
 
-#: src/common/constants.cpp:136
+#: src/common/constants.cpp:121
 msgid "The teleporter blinks unimpressively."
 msgstr "O tele-ytansporte pisca impotente."
 
-#: src/common/constants.cpp:137
+#: src/common/constants.cpp:122
 msgid "Information"
 msgstr "Informação"
 
-#: src/common/constants.cpp:138
+#: src/common/constants.cpp:123
 msgid "Delete old saved game?"
 msgstr "Apagar jogos antigos?"
 
-#: src/common/constants.cpp:139
+#: src/common/constants.cpp:124
 msgid "You're not experienced enough to equip it yet."
 msgstr "Ainda não tens expriência para usar isso-"
 
-#: src/common/constants.cpp:140
+#: src/common/constants.cpp:125
 msgid "Change key"
 msgstr "Trocar chave"
 
-#: src/common/constants.cpp:141
+#: src/common/constants.cpp:126
 msgid "Waiting for new key (Esc to cancel)"
 msgstr "Aguardar por nova chave (Esc para cancelar)"
 
-#: src/common/constants.cpp:142
+#: src/common/constants.cpp:127
 msgid "Conversation"
 msgstr "Conversação"
 
-#: src/common/constants.cpp:143 src/conversationgui.cpp:104
+#: src/common/constants.cpp:128 src/conversationgui.cpp:104
 msgid "Trade"
 msgstr "Negociar"
 
-#: src/common/constants.cpp:144 src/conversationgui.cpp:100
+#: src/common/constants.cpp:129 src/conversationgui.cpp:100
 msgid "Train"
 msgstr "Treinar"
 
-#: src/common/constants.cpp:145
+#: src/common/constants.cpp:130
 msgid "Healing Services"
 msgstr "Curativos"
 
-#: src/common/constants.cpp:146
+#: src/common/constants.cpp:131
 msgid "Donate to Temple"
 msgstr "Doar ao Templo"
 
-#: src/common/constants.cpp:147
+#: src/common/constants.cpp:132
 msgid "You don't meet the prerequisites for this capability."
 msgstr "Não tens os requisitos para essa capacidade."
 
-#: src/common/constants.cpp:148
+#: src/common/constants.cpp:133
 msgid "You cannot activate an automatic capability."
 msgstr "Não podes activar capacidades automáticas."
 
-#: src/common/constants.cpp:149
+#: src/common/constants.cpp:134
 msgid "A two handed item requires two free hands."
 msgstr "Um objecto para duas mãos requer duas mãos livres."
 
-#: src/common/constants.cpp:150
+#: src/common/constants.cpp:135
 msgid "TRAIN"
 msgstr "TREINAR"
 
-#: src/common/constants.cpp:151
+#: src/common/constants.cpp:136
 msgid "SKILL"
 msgstr "HABILIDADE"
 
-#: src/common/constants.cpp:152
+#: src/common/constants.cpp:137
 msgid "A magical force turns the lock's tumbles to open."
 msgstr "Uma força mágica abre a fechadura."
 
-#: src/common/constants.cpp:153
+#: src/common/constants.cpp:138
 msgid "Some kind of summoned energy opens the lock."
 msgstr "Uma espécie de encantamento abre a fechadura-"
 
-#: src/common/constants.cpp:181
+#: src/common/constants.cpp:166
 msgid "Lesser"
 msgstr "Menos"
 
-#: src/common/constants.cpp:182
+#: src/common/constants.cpp:167
 msgid "Greater"
 msgstr "Maior"
 
-#: src/common/constants.cpp:183
+#: src/common/constants.cpp:168
 msgid "Champion"
 msgstr "Campeão"
 
-#: src/common/constants.cpp:184
+#: src/common/constants.cpp:169
 msgid "Divine"
 msgstr "Divino"
 
-#: src/common/constants.cpp:221
+#: src/common/constants.cpp:206
 msgid "commoner"
 msgstr "comum"
 
-#: src/common/constants.cpp:222
+#: src/common/constants.cpp:207
 msgid "merchant"
 msgstr "mercador"
 
-#: src/common/constants.cpp:223
+#: src/common/constants.cpp:208
 msgid "healer"
 msgstr "curandeiro"
 
-#: src/common/constants.cpp:224
+#: src/common/constants.cpp:209
 msgid "sage"
 msgstr "sábio"
 
-#: src/common/constants.cpp:225
+#: src/common/constants.cpp:210
 msgid "trainer"
 msgstr "treinador"
 
@@ -758,7 +757,7 @@ msgstr "vs."
 msgid "bonus"
 msgstr "bónus"
 
-#: src/creature.cpp:2586 src/scourge.cpp:3613
+#: src/creature.cpp:2586 src/scourge.cpp:3590
 msgid "CTH"
 msgstr ""
 
@@ -791,17 +790,17 @@ msgstr ""
 msgid "    and fails! %1$s takes %2$d points of damage!"
 msgstr ""
 
-#: src/shapepalette.cpp:26 src/shapepalette.cpp:356 src/shapepalette.cpp:382
-#: src/shapepalette.cpp:405 src/shapepalette.cpp:440 src/shapepalette.cpp:578
-#: src/shapepalette.cpp:604 src/shapepalette.cpp:638 src/session.cpp:94
+#: src/shapepalette.cpp:26 src/shapepalette.cpp:357 src/shapepalette.cpp:381
+#: src/shapepalette.cpp:404 src/shapepalette.cpp:439 src/shapepalette.cpp:607
+#: src/shapepalette.cpp:633 src/shapepalette.cpp:678 src/session.cpp:94
 msgid "Loading Shapes"
 msgstr "Carregando Formas"
 
-#: src/shapepalette.cpp:736
+#: src/shapepalette.cpp:796
 msgid "Loading Locations"
 msgstr "Carregando Posições"
 
-#: src/session.cpp:102 src/item.cpp:303 src/item.cpp:339 src/item.cpp:510
+#: src/session.cpp:102 src/item.cpp:315 src/item.cpp:351 src/item.cpp:522
 msgid "Loading Items"
 msgstr "Carregando Artigos"
 
@@ -855,12 +854,12 @@ msgstr ""
 msgid "There is not enough room in your backpack for everything."
 msgstr ""
 
-#: src/containergui.cpp:164 src/scourge.cpp:1215
+#: src/containergui.cpp:164 src/scourge.cpp:1211
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr "%1$s é colocado em %2$s."
 
-#: src/containergui.cpp:174 src/scourge.cpp:1212
+#: src/containergui.cpp:174 src/scourge.cpp:1208
 msgid "The item won't fit in that container!"
 msgstr "O artigo não se ajusta a esse recipiente!"
 
@@ -902,73 +901,73 @@ msgstr "Não podes pagar o tratamento."
 msgid "The healing spell was cast."
 msgstr "Foi lançado o feitiço curativo"
 
-#: src/item.cpp:266 src/item.cpp:272 src/item.cpp:278
+#: src/item.cpp:278 src/item.cpp:284 src/item.cpp:290
 msgid "*Cursed* "
 msgstr "*Amaldiçoado* "
 
-#: src/item.cpp:268 src/item.cpp:274 src/item.cpp:280
+#: src/item.cpp:280 src/item.cpp:286 src/item.cpp:292
 msgid " *Mission*"
 msgstr " *Missão*"
 
-#: src/item.cpp:800
+#: src/item.cpp:823
 msgid "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $symbol"
 msgstr ""
 
-#: src/item.cpp:818
+#: src/item.cpp:841
 msgid "Protective"
 msgstr "Protector"
 
-#: src/item.cpp:823
+#: src/item.cpp:846
 msgid "Slaying"
 msgstr "Matança"
 
-#: src/item.cpp:915
+#: src/item.cpp:938
 #, c-format
 msgid "Scroll of %s"
 msgstr "Pergaminho de %s"
 
-#: src/item.cpp:1035
+#: src/item.cpp:1058
 msgid "An item was fully identified!"
 msgstr "Um artigos completamente identificados!"
 
-#: src/item.cpp:1099
+#: src/item.cpp:1360
 msgid "DAM"
 msgstr ""
 
-#: src/item.cpp:1103 src/characterinfo.cpp:51 src/portrait.cpp:263
+#: src/item.cpp:1364 src/characterinfo.cpp:51 src/portrait.cpp:262
 msgid "AP"
 msgstr ""
 
-#: src/item.cpp:1107
+#: src/item.cpp:1368
 msgid "RANGE"
 msgstr "ALCANCE"
 
-#: src/item.cpp:1112 src/scourge.cpp:3562
+#: src/item.cpp:1373 src/scourge.cpp:3539
 msgid "DEF"
 msgstr ""
 
-#: src/item.cpp:1115
+#: src/item.cpp:1376
 #, c-format
 msgid " %d(%c)"
 msgstr " %d(%c)"
 
-#: src/item.cpp:1123 src/equip.cpp:177 src/portrait.cpp:220
+#: src/item.cpp:1384 src/equip.cpp:177 src/portrait.cpp:219
 msgid "Level"
 msgstr "Nível"
 
-#: src/item.cpp:1127 ../scourge_data/config/rpg.cfg:137
+#: src/item.cpp:1388 ../scourge_data/config/rpg.cfg:137
 msgid "Power"
 msgstr "Energia"
 
-#: src/item.cpp:1132
+#: src/item.cpp:1393
 msgid "Charges"
 msgstr "Cargas"
 
-#: src/item.cpp:1135
+#: src/item.cpp:1396
 msgid "Spell"
 msgstr "Feitiço"
 
-#: src/item.cpp:1140
+#: src/item.cpp:1401
 msgid "Duration"
 msgstr "Duração"
 
@@ -980,11 +979,11 @@ msgstr "Projéctil não atingiu o alvo (medida max)."
 msgid "Projectile did not reach the target (blocked)."
 msgstr "Projéctil não atingiu o alvo (bloqueado)."
 
-#: src/scourgeview.cpp:781
+#: src/scourgeview.cpp:782
 msgid "Move"
 msgstr "Mover"
 
-#: src/scourgeview.cpp:1082
+#: src/scourgeview.cpp:1083
 msgid "cost"
 msgstr "custo"
 
@@ -992,11 +991,11 @@ msgstr "custo"
 msgid "Basic Statistics:"
 msgstr "Estatísticas Básicas:"
 
-#: src/characterinfo.cpp:49 src/scourge.cpp:2242 src/portrait.cpp:253
+#: src/characterinfo.cpp:49 src/scourge.cpp:2238 src/portrait.cpp:252
 msgid "HP"
 msgstr ""
 
-#: src/characterinfo.cpp:50 src/scourge.cpp:2244 src/portrait.cpp:258
+#: src/characterinfo.cpp:50 src/scourge.cpp:2240 src/portrait.cpp:257
 msgid "MP"
 msgstr ""
 
@@ -1023,7 +1022,7 @@ msgstr "O teu %s está descarregado."
 msgid "Your %s feels lighter."
 msgstr "O teu %s parece mais leve.."
 
-#: src/battle.cpp:738 src/scourge.cpp:3719
+#: src/battle.cpp:738 src/scourge.cpp:3696
 #, c-format
 msgid "%s crumbles into dust."
 msgstr "%s esfumasse."
@@ -1187,7 +1186,7 @@ msgstr "Fora de Alcance"
 msgid "In Range"
 msgstr "Ao Alcance"
 
-#: src/battle.cpp:1471 src/portrait.cpp:176
+#: src/battle.cpp:1471 src/portrait.cpp:175
 msgid "Bare Hands"
 msgstr "Desarmado"
 
@@ -1433,11 +1432,11 @@ msgstr "Volume da Musica"
 msgid "Effects Volume:"
 msgstr "Volume dos Efeitos"
 
-#: src/optionsmenu.cpp:397
+#: src/optionsmenu.cpp:395
 msgid "Some changes will only take effect upon restart"
 msgstr "Algumas alterações só têm efeito depois de reiniciar"
 
-#: src/optionsmenu.cpp:400
+#: src/optionsmenu.cpp:398
 msgid "Saved: some options require a restart to take effect."
 msgstr "Guardado: algumas opções necessitam que se reinicie o programa."
 
@@ -1482,296 +1481,296 @@ msgstr ""
 msgid "Error #666: Failed to create map."
 msgstr ""
 
-#: src/scourge.cpp:538
+#: src/scourge.cpp:534
 #, c-format
 msgid "For returning alive, the party receives %d experience points."
 msgstr ""
 
-#: src/scourge.cpp:549
+#: src/scourge.cpp:545
 #, c-format
 msgid " %s gains a level! "
 msgstr ""
 
-#: src/scourge.cpp:699
+#: src/scourge.cpp:695
 #, c-format
 msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
 msgstr ""
 
-#: src/scourge.cpp:702
+#: src/scourge.cpp:698
 #, c-format
 msgid "Teleport spell failed!! Entering level %d"
 msgstr ""
 
-#: src/scourge.cpp:704
+#: src/scourge.cpp:700
 #, c-format
 msgid "Entering dungeon level %d"
 msgstr ""
 
-#: src/scourge.cpp:915
+#: src/scourge.cpp:911
 #, c-format
 msgid "%s cancelled a pending action."
 msgstr ""
 
-#: src/scourge.cpp:920
+#: src/scourge.cpp:916
 msgid "Select a creature for this spell."
 msgstr ""
 
-#: src/scourge.cpp:925
+#: src/scourge.cpp:921
 msgid "Select an item for this spell."
 msgstr ""
 
-#: src/scourge.cpp:930
+#: src/scourge.cpp:926
 msgid "Select a location for this spell."
 msgstr ""
 
-#: src/scourge.cpp:935
+#: src/scourge.cpp:931
 msgid "Select a door for this spell."
 msgstr ""
 
-#: src/scourge.cpp:940
+#: src/scourge.cpp:936
 msgid "Select the party for this spell."
 msgstr ""
 
-#: src/scourge.cpp:962 src/scourge.cpp:984
+#: src/scourge.cpp:958 src/scourge.cpp:980
 #, c-format
 msgid "%s selected a target"
 msgstr ""
 
-#: src/scourge.cpp:1008
+#: src/scourge.cpp:1004
 #, c-format
 msgid "%1$s will target %2$s"
 msgstr ""
 
-#: src/scourge.cpp:1030
+#: src/scourge.cpp:1026
 #, c-format
 msgid "%1$s targeted %2$s."
 msgstr ""
 
-#: src/scourge.cpp:1404
+#: src/scourge.cpp:1400
 msgid "Something is blocking the door from closing."
 msgstr ""
 
-#: src/scourge.cpp:1502
+#: src/scourge.cpp:1498
 msgid "The door splinters into many, tiny pieces!"
 msgstr ""
 
-#: src/scourge.cpp:1548
+#: src/scourge.cpp:1544
 msgid "Leave level?"
 msgstr ""
 
-#: src/scourge.cpp:1572
+#: src/scourge.cpp:1568
 msgid "Squirrel Console"
 msgstr ""
 
-#: src/scourge.cpp:1580
+#: src/scourge.cpp:1576
 msgid "Run"
 msgstr ""
 
-#: src/scourge.cpp:1581
+#: src/scourge.cpp:1577
 msgid "Clear"
 msgstr ""
 
-#: src/scourge.cpp:1867
+#: src/scourge.cpp:1863
 #, c-format
 msgid "Speed set to %d\n"
 msgstr ""
 
-#: src/scourge.cpp:2018
+#: src/scourge.cpp:2014
 msgid "Congratulations, mission accomplished!"
 msgstr ""
 
-#: src/scourge.cpp:2029
+#: src/scourge.cpp:2025
 msgid "For completing the mission"
 msgstr ""
 
-#: src/scourge.cpp:2031
+#: src/scourge.cpp:2027
 #, c-format
 msgid "The party receives %d points."
 msgstr ""
 
-#: src/scourge.cpp:2056
+#: src/scourge.cpp:2052
 msgid "Connecting to server"
 msgstr ""
 
-#: src/scourge.cpp:2063
+#: src/scourge.cpp:2059
 msgid "Connected!"
 msgstr ""
 
-#: src/scourge.cpp:2085
+#: src/scourge.cpp:2081
 msgid "Combat"
 msgstr ""
 
-#: src/scourge.cpp:2087
+#: src/scourge.cpp:2083
 msgid "End Turn"
 msgstr ""
 
-#: src/scourge.cpp:2111
+#: src/scourge.cpp:2107
 msgid "Pause game"
 msgstr ""
 
-#: src/scourge.cpp:2114
+#: src/scourge.cpp:2110
 msgid "Load or Save Game"
 msgstr ""
 
-#: src/scourge.cpp:2124
+#: src/scourge.cpp:2120
 msgid "Exit game"
 msgstr ""
 
-#: src/scourge.cpp:2131
+#: src/scourge.cpp:2127
 msgid "Game options"
 msgstr ""
 
-#: src/scourge.cpp:2138
+#: src/scourge.cpp:2134
 msgid "Move as a group"
 msgstr ""
 
-#: src/scourge.cpp:2178
+#: src/scourge.cpp:2174
 msgid "Dismiss this character"
 msgstr ""
 
-#: src/scourge.cpp:2197
+#: src/scourge.cpp:2193
 msgid "Inventory and party info"
 msgstr ""
 
-#: src/scourge.cpp:2205
+#: src/scourge.cpp:2201
 msgid "Click to assign a spell, capability or magic item."
 msgstr ""
 
-#: src/scourge.cpp:2264
+#: src/scourge.cpp:2260
 msgid "Current Weapon: Bare Hands"
 msgstr ""
 
-#: src/scourge.cpp:2269
+#: src/scourge.cpp:2265
 #, c-format
 msgid "Current Weapon: %s"
 msgstr ""
 
-#: src/scourge.cpp:2538 src/portrait.cpp:427
+#: src/scourge.cpp:2534 src/portrait.cpp:426
 msgid "Thirst"
 msgstr ""
 
-#: src/scourge.cpp:2552 src/portrait.cpp:432
+#: src/scourge.cpp:2548 src/portrait.cpp:431
 msgid "Hunger"
 msgstr ""
 
-#: src/scourge.cpp:2619 src/equip.cpp:583
+#: src/scourge.cpp:2615 src/equip.cpp:583
 msgid "Not enough Magic Points to cast this spell!"
 msgstr ""
 
-#: src/scourge.cpp:2696
+#: src/scourge.cpp:2692
 msgid "Begin Turn"
 msgstr ""
 
-#: src/scourge.cpp:2701
+#: src/scourge.cpp:2697
 msgid "...In Turn..."
 msgstr ""
 
-#: src/scourge.cpp:2707
+#: src/scourge.cpp:2703
 msgid "Pause Game"
 msgstr ""
 
-#: src/scourge.cpp:2711
+#: src/scourge.cpp:2707
 msgid "Unpause game."
 msgstr ""
 
-#: src/scourge.cpp:2746
+#: src/scourge.cpp:2742
 msgid "Available Missions"
 msgstr ""
 
-#: src/scourge.cpp:2752
+#: src/scourge.cpp:2748
 msgid "Drag map to look around."
 msgstr ""
 
-#: src/scourge.cpp:2820
+#: src/scourge.cpp:2816
 msgid "This spell has no effect here..."
 msgstr ""
 
-#: src/scourge.cpp:3004
+#: src/scourge.cpp:2994
 msgid "Game loaded successfully."
 msgstr ""
 
-#: src/scourge.cpp:3030
+#: src/scourge.cpp:3017
 msgid "Error: Saved game version is too old."
 msgstr ""
 
-#: src/scourge.cpp:3387
+#: src/scourge.cpp:3371
 msgid "You cannot hire more party members."
 msgstr ""
 
-#: src/scourge.cpp:3407
+#: src/scourge.cpp:3391
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr ""
 
-#: src/scourge.cpp:3558
+#: src/scourge.cpp:3535
 msgid "Initiative"
 msgstr ""
 
-#: src/scourge.cpp:3600 src/scourge.cpp:3607 src/infogui.cpp:350
+#: src/scourge.cpp:3577 src/scourge.cpp:3584 src/infogui.cpp:350
 #: src/infogui.cpp:355 src/infogui.cpp:360
 msgid "ATK"
 msgstr ""
 
-#: src/scourge.cpp:3614 src/infogui.cpp:352 src/infogui.cpp:358
+#: src/scourge.cpp:3591 src/infogui.cpp:352 src/infogui.cpp:358
 msgid "APR"
 msgstr ""
 
-#: src/scourge.cpp:3666
+#: src/scourge.cpp:3643
 #, c-format
 msgid "%.2f"
 msgstr ""
 
-#: src/scourge.cpp:3668
+#: src/scourge.cpp:3645
 #, c-format
 msgid "per %.2f R"
 msgstr ""
 
-#: src/scourge.cpp:3677
+#: src/scourge.cpp:3654
 msgid "This item is already enchanted."
 msgstr ""
 
-#: src/scourge.cpp:3679
+#: src/scourge.cpp:3656
 msgid "This item cannot be enchanted."
 msgstr ""
 
-#: src/scourge.cpp:3687
+#: src/scourge.cpp:3664
 msgid "You succesfully enchanted an item!"
 msgstr ""
 
-#: src/scourge.cpp:3691
+#: src/scourge.cpp:3668
 #, c-format
 msgid "You created: %s."
 msgstr ""
 
-#: src/scourge.cpp:3696
+#: src/scourge.cpp:3673
 msgid "You failed to enchant the item."
 msgstr ""
 
-#: src/scourge.cpp:3700
+#: src/scourge.cpp:3677
 msgid "You can only enchant one item per day."
 msgstr ""
 
-#: src/scourge.cpp:3715
+#: src/scourge.cpp:3692
 msgid "Spell was entered into your spellbook."
 msgstr ""
 
-#: src/scourge.cpp:3723
+#: src/scourge.cpp:3700
 msgid "You already know this spell"
 msgstr ""
 
-#: src/scourge.cpp:3726
+#: src/scourge.cpp:3703
 msgid "You are not proficient enough to transcribe this scroll."
 msgstr ""
 
-#: src/scourge.cpp:3729
+#: src/scourge.cpp:3706
 msgid "You can only transcribe scrolls!"
 msgstr ""
 
-#: src/scourge.cpp:3760
+#: src/scourge.cpp:3737
 msgid "This item is out of charges."
 msgstr ""
 
-#: src/scourge.cpp:3773
+#: src/scourge.cpp:3750
 msgid "You cannot use this item."
 msgstr ""
 
@@ -1799,85 +1798,85 @@ msgstr ""
 msgid "Overwrite existing file?"
 msgstr ""
 
-#: src/savegamedialog.cpp:82 src/savegamedialog.cpp:113
+#: src/savegamedialog.cpp:82 src/savegamedialog.cpp:112
 msgid "Game saved successfully."
 msgstr ""
 
-#: src/savegamedialog.cpp:84 src/savegamedialog.cpp:115
+#: src/savegamedialog.cpp:84 src/savegamedialog.cpp:114
 msgid "Error saving game."
 msgstr ""
 
-#: src/savegamedialog.cpp:92
+#: src/savegamedialog.cpp:91
 msgid "Game was successfully removed."
 msgstr ""
 
-#: src/savegamedialog.cpp:94
+#: src/savegamedialog.cpp:93
 msgid "Could not delete saved game."
 msgstr ""
 
-#: src/savegamedialog.cpp:107
+#: src/savegamedialog.cpp:106
 msgid "Are you sure you want to overwrite this file?"
 msgstr ""
 
-#: src/savegamedialog.cpp:122
+#: src/savegamedialog.cpp:121
 msgid "Are you sure you want to load this file?"
 msgstr ""
 
-#: src/savegamedialog.cpp:133
+#: src/savegamedialog.cpp:132
 msgid "You can't delete the current game."
 msgstr ""
 
-#: src/savegamedialog.cpp:136
+#: src/savegamedialog.cpp:135
 msgid "Are you sure you want to delete this file?"
 msgstr ""
 
-#: src/savegamedialog.cpp:154
+#: src/savegamedialog.cpp:153
 msgid "Create a new saved game or load an existing one"
 msgstr ""
 
-#: src/savegamedialog.cpp:159
+#: src/savegamedialog.cpp:158
 msgid "Open an existing saved game file"
 msgstr ""
 
-#: src/savegamedialog.cpp:163
+#: src/savegamedialog.cpp:162
 msgid "No savegames have been created yet."
 msgstr ""
 
-#: src/savegamedialog.cpp:266
+#: src/savegamedialog.cpp:260
 msgid "st"
 msgstr ""
 
-#: src/savegamedialog.cpp:267
+#: src/savegamedialog.cpp:261
 msgid "nd"
 msgstr ""
 
-#: src/savegamedialog.cpp:268
+#: src/savegamedialog.cpp:262
 msgid "rd"
 msgstr ""
 
-#: src/savegamedialog.cpp:269
+#: src/savegamedialog.cpp:263
 msgid "th"
 msgstr ""
 
-#: src/savegamedialog.cpp:282
+#: src/savegamedialog.cpp:276
 msgid "Somewhere in the wilderness."
 msgstr ""
 
-#: src/savegamedialog.cpp:284
+#: src/savegamedialog.cpp:278
 #, c-format
 msgid "In a cave on level %d."
 msgstr ""
 
-#: src/savegamedialog.cpp:287
+#: src/savegamedialog.cpp:281
 #, c-format
 msgid "Dungeon level %d at %s."
 msgstr ""
 
-#: src/savegamedialog.cpp:292
+#: src/savegamedialog.cpp:286
 msgid "Resting at HQ."
 msgstr ""
 
-#: src/savegamedialog.cpp:295
+#: src/savegamedialog.cpp:289
 #, c-format
 msgid "Party of %s the %s level %s."
 msgstr ""
@@ -1907,30 +1906,35 @@ msgid "Adding traps"
 msgstr ""
 
 #: src/terraingenerator.cpp:184
+#, fuzzy
+msgid "Adding shapes"
+msgstr "Carregando Formas"
+
+#: src/terraingenerator.cpp:187
 msgid "Adding containers"
 msgstr ""
 
-#: src/terraingenerator.cpp:187
+#: src/terraingenerator.cpp:190
 msgid "Locking doors and chests"
 msgstr ""
 
-#: src/terraingenerator.cpp:190
+#: src/terraingenerator.cpp:193
 msgid "Calculating room values"
 msgstr ""
 
-#: src/terraingenerator.cpp:193
+#: src/terraingenerator.cpp:196
 msgid "Adding monsters"
 msgstr ""
 
-#: src/terraingenerator.cpp:197
+#: src/terraingenerator.cpp:200
 msgid "Adding items"
 msgstr ""
 
-#: src/terraingenerator.cpp:200
+#: src/terraingenerator.cpp:203
 msgid "Adding furniture"
 msgstr ""
 
-#: src/terraingenerator.cpp:204
+#: src/terraingenerator.cpp:207
 msgid "Cleaning up"
 msgstr ""
 
@@ -2379,11 +2383,11 @@ msgid ""
 "not be able to change it again."
 msgstr ""
 
-#: src/pceditor.cpp:479 src/portrait.cpp:228
+#: src/pceditor.cpp:479 src/portrait.cpp:227
 msgid "Male"
 msgstr ""
 
-#: src/pceditor.cpp:480 src/portrait.cpp:228
+#: src/pceditor.cpp:480 src/portrait.cpp:227
 msgid "Female"
 msgstr ""
 
@@ -2801,51 +2805,51 @@ msgstr ""
 msgid "No current mission."
 msgstr ""
 
-#: src/portrait.cpp:172
+#: src/portrait.cpp:171
 msgid "Current attack"
 msgstr ""
 
-#: src/portrait.cpp:173
+#: src/portrait.cpp:172
 msgid "Left Hand"
 msgstr ""
 
-#: src/portrait.cpp:174
+#: src/portrait.cpp:173
 msgid "Right Hand"
 msgstr ""
 
-#: src/portrait.cpp:175 ../scourge_data/config/rpg.cfg:186
+#: src/portrait.cpp:174 ../scourge_data/config/rpg.cfg:186
 msgid "Ranged Weapon"
 msgstr ""
 
-#: src/portrait.cpp:177
+#: src/portrait.cpp:176
 msgid "Click to change"
 msgstr ""
 
-#: src/portrait.cpp:222
+#: src/portrait.cpp:221
 msgid "XP"
 msgstr ""
 
-#: src/portrait.cpp:224
+#: src/portrait.cpp:223
 msgid "Coins"
 msgstr ""
 
-#: src/portrait.cpp:283
+#: src/portrait.cpp:282
 msgid "Resistances"
 msgstr ""
 
-#: src/portrait.cpp:339
+#: src/portrait.cpp:338
 msgid "Available Skill Points"
 msgstr ""
 
-#: src/portrait.cpp:437
+#: src/portrait.cpp:436
 msgid "Carrying (kg)"
 msgstr ""
 
-#: src/portrait.cpp:444
+#: src/portrait.cpp:443
 msgid "Character Conditions:"
 msgstr ""
 
-#: src/portrait.cpp:476
+#: src/portrait.cpp:475
 msgid "Immune to Conditions:"
 msgstr ""
 
@@ -6320,12 +6324,6 @@ msgid ""
 "again! He vows to "
 msgstr ""
 
-#: ../scourge_data/config/mission.cfg:84
-msgid ""
-" for us in the near future. Actually, this worries me far more than most "
-"missions we accept..."
-msgstr ""
-
 #: ../scourge_data/config/mission.cfg:85
 msgid ""
 "Remember to find the wand for $Sabien! He is an important client and he's in "
@@ -6430,15 +6428,6 @@ msgstr ""
 msgid ""
 "Our agents have located Mycotharsius in the cellars of a peaceful monastery "
 "called "
-msgstr ""
-
-#: ../scourge_data/config/mission.cfg:143
-msgid ""
-", near the city of Orn. You must journey here and confront him. Before "
-"ridding the world of him for good, find out as much as you can about why he "
-"hired the Order of the Grizzled Pony to kidnap our friend Sabien. I'm afraid "
-"however, that his failures made Mycotharsius quite Mad. Therefore if all he "
-"can offer is gibberish, try to look around his lair for clues."
 msgstr ""
 
 #: ../scourge_data/config/mission.cfg:144

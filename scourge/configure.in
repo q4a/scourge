@@ -214,6 +214,17 @@ if test "x$enable_sdl" != "xno" ; then
 	else
 	   AC_MSG_ERROR([Cannot find SDL_ttf library])
 	fi
+
+	dnl Check for SDL_image
+        AC_CHECK_LIB( SDL_image, IMG_Load,
+              have_SDL_image=yes, have_SDL_image=no )
+
+        if test "x$have_SDL_image" = "xyes" ; then
+           TR_LIBS="$TR_LIBS -lSDL_image"
+        else
+           AC_MSG_ERROR([Cannot find SDL_image library])
+        fi
+
 	LIBS="$saved_LIBS"
     else
 	echo "*** SDL not found.  Configuring without audio or joystick support."
