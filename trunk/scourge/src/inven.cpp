@@ -39,7 +39,7 @@
 
 using namespace std;
 
-#define GRID_SIZE 30
+#define GRID_SIZE 32
 #define OFFSET_X 5
 #define OFFSET_Y 5
 

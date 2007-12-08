@@ -583,12 +583,12 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	strcpy( temp, node->getValueAsString( "icon" ) );
 	if( strlen( temp ) ) {
 	  string s = temp;
-	  debugFileLoad = true;
+//	  debugFileLoad = true;
 	  int w, h;
 	  sv->icon = loadAlphaTexture( s, &w, &h );
 	  sv->iconWidth = w / 32;
 	  sv->iconHeight = h / 32;
-	  debugFileLoad = false;
+//	  debugFileLoad = false;
 	} else {
 	  sv->icon = sv->iconWidth = sv->iconHeight = 0;
 	}
