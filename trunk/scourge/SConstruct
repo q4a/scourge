@@ -101,6 +101,7 @@ Help(opts.GenerateHelpText(env))
 # build for debug
 if int(env['debug']):
 	env.Append(CXXFLAGS = ['-g'])
+	env.Append(LINKFLAGS = ['-g'])
 	# of course no stripping if debug
 	env['strip'] = 0
 
