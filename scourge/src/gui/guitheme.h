@@ -34,6 +34,7 @@ class ThemeElement {
   GLuint tex_nw, tex_ne, tex_sw, tex_se;
   Color color;
   int width;
+  int rep_h, rep_v;
 
   ThemeElement() {}
   ~ThemeElement() {}
