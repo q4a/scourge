@@ -205,7 +205,16 @@ ThemeElement *GuiTheme::parseElement( const char *s ) {
     element->color.g = atof( strtok( NULL, "," ) );
     element->color.b = atof( strtok( NULL, "," ) );
     element->color.a = atof( strtok( NULL, "," ) );
-    element->width = atoi( strtok( NULL, "," ) );
+    element->width = atoi( strtok( NULL, "," ) );	
+
+	p = strtok( NULL, "," );
+    if( p && strcmp(p,"none") ) {
+	  element->rep_h = atoi( p );
+    } else element->rep_h = 1;
+	p = strtok( NULL, "," );
+    if( p && strcmp(p,"none") ) {
+	  element->rep_v = atoi( p );
+    } else element->rep_v = 1;
     p = strtok( NULL, "," );
     if( p && strcmp(p,"none") ) {
       strcpy( element->north, p );

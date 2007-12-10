@@ -564,7 +564,19 @@ void Window::drawWidget(Widget *parent) {
 }
 
 void Window::drawBackground( int topY, int openHeight ) {
-  if(type == SIMPLE_WINDOW) {
+  if( theme->getWindowBackground() && !theme->getWindowBackground()->rep_h ) {
+	glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
+    glBegin (GL_QUADS);
+    glTexCoord2f (0.0f, 0.0f);
+    glVertex2i (0, topY);
+    glTexCoord2f (0, 1);
+    glVertex2i (0, topY + openHeight);
+    glTexCoord2f (1, 1);
+    glVertex2i (w, topY + openHeight);
+    glTexCoord2f (1, 0);      
+    glVertex2i (w, topY);
+    glEnd ();
+  } else if(type == SIMPLE_WINDOW) {
     if( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
       glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
     }
