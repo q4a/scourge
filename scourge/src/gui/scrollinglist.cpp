@@ -18,6 +18,8 @@
 
 using namespace std;
 
+#define LIST_TEXT_Y_OFFSET 4
+
 /**
   *@author Gabor Torok
   */
@@ -112,6 +114,10 @@ void ScrollingList::drawWidget(Widget *parent) {
     //if(selectedLine > -1) {
     if( selectedLine ) {
       if( theme->getSelectionBackground() ) {
+		if( theme->getSelectionBackground()->color.a < 1 ) {
+		  glEnable( GL_BLEND );
+		  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		}
         glColor4f( theme->getSelectionBackground()->color.r,
                    theme->getSelectionBackground()->color.g,
                    theme->getSelectionBackground()->color.b,
@@ -127,6 +133,7 @@ void ScrollingList::drawWidget(Widget *parent) {
         glVertex2d(w, textPos + (selectedLine[i] * lineHeight) + 5);
         glEnd();
       }
+	  glDisable( GL_BLEND );
     }
 
     // draw the contents
@@ -173,7 +180,7 @@ void ScrollingList::drawWidget(Widget *parent) {
 						startYPos += 15;
 					}
 				} else {
-					((Window*)parent)->getScourgeGui()->texPrint( startXPos, startYPos, p );
+				  ((Window*)parent)->getScourgeGui()->texPrint( startXPos, startYPos + LIST_TEXT_Y_OFFSET, p );
 				}
       }
     }
@@ -289,7 +296,7 @@ char *ScrollingList::printLine( Widget *parent, int x, int y, char *s ) {
       if( tmp ) *wordEnd = tmp;
       return p;
     }
-    ((Window*)parent)->getScourgeGui()->texPrint( xp, y, word );
+    ((Window*)parent)->getScourgeGui()->texPrint( xp, y + LIST_TEXT_Y_OFFSET, word );
 
     // move caret
     xp += wordWidth;
