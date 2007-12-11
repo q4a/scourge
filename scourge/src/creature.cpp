@@ -1951,6 +1951,7 @@ bool Creature::castHealingSpell() {
 void Creature::decideMonsterAction() {
   //if( !( isMonster() || getStateMod( Constants::possessed ) ) ) return;
 
+  //CASE 1: A possessed non-aggressive creature
   if( !isMonster() && getStateMod( StateMod::possessed ) ) {
     Creature *p = 
       session->getParty()->getClosestPlayer( toint(getX()), toint(getY()), 
@@ -1960,18 +1961,33 @@ void Creature::decideMonsterAction() {
     // attack with item
     setMotion(Constants::MOTION_MOVE_TOWARDS);
     setTargetCreature(p);
-  } else if( !monster || monster->isNpc() ) {
-		if( getMotion() == Constants::MOTION_MOVE_AWAY ) return;
+    return;
+  } 
+
+  //anyone loitering or wandering has only 1/20 chance of breaking the cycle
+  if((getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND) &&
+      (int)(20.0f * rand()/RAND_MAX) != 0){
+      //there is now a 1/40 chance of flipping between wandering and standing.
+      if((int)(40.0f * rand()/RAND_MAX) == 0){
+        setMotion(getMotion() == Constants::MOTION_LOITER? Constants::MOTION_STAND:Constants::MOTION_LOITER);
+      }
+    return;
+  }
+
+  //CASE 2: A non-aggressive
+  else if( !monster || monster->isNpc() ) {
+    if( getMotion() == Constants::MOTION_MOVE_AWAY ) return;
     int n = (int)( 10.0f * rand()/RAND_MAX );
     switch( n ) {
-    case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;
-    case 1 : getShape()->setCurrentAnimation(MD2_POINT); break;
-    case 2 : getShape()->setCurrentAnimation(MD2_SALUTE); break;
-    default : getShape()->setCurrentAnimation(MD2_STAND); break;
+    case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;//10%
+    case 1 : getShape()->setCurrentAnimation(MD2_POINT); break;//10%
+    case 2 : getShape()->setCurrentAnimation(MD2_SALUTE); break;//10%
+    default : getShape()->setCurrentAnimation(MD2_STAND); break;//70%
     }
-    setMotion(Constants::MOTION_STAND);
-  } else {
-
+    setMotion(Constants::MOTION_STAND); //they will be back wandering/standing next decision cycle
+  } 
+  //CASE 3: Other monsters (aggressive)
+  else {   
     if( castHealingSpell() ) return;
     
     // try to attack someone

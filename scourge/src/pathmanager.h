@@ -58,6 +58,7 @@ class PathManager{
     virtual bool findPath(int x, int y, Creature* player, Map* map, bool ignoreParty=false, int maxNodes=100);
     virtual bool findPathToCreature(Creature* target, Creature* player, Map* map, float distance=MIN_DISTANCE, bool ignoreParty=false, int maxNodes=100);
     virtual void findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty=false, int maxNodes=100);
+    void findWanderingPath(int maxPathLength, Creature* player, Map* map);
     void findPathOffLocations(std::set<Location,LocationComparitor>* locations, Creature* player, Map* map, int maxNodes);
     
     void moveNPCsOffPath(Creature* player, Map* map); //runs up the path, asking any stationary NPCs to clear off
