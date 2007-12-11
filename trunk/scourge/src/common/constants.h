@@ -753,6 +753,31 @@ extern void CreateTexture(GLuint textureArray[],char *strFileName,int textureID)
 extern void swap(unsigned char & a, unsigned char & b);
 extern void findNormal( CVector3 *p1, CVector3 *p2, CVector3 *p3, CVector3 *normal );
 
+template<class T> T Tokenize( const std::string &s, const std::string &strDelim ) {
+	T tokens;
+	std::string::size_type nFirstPos, nLastPos;
+
+	/**
+	* Skip delimiters at beginning
+	*/
+	nLastPos = s.find_first_not_of( strDelim, 0 );
+
+	/**
+	* Find first non delimiter
+	*/
+	nFirstPos = s.find_first_of( strDelim, nLastPos );
+
+	while ( std::string::npos != nFirstPos || std::string::npos != nLastPos ) {
+		/**
+		* Found token!
+		*/
+		tokens.push_back( s.substr( nLastPos, nFirstPos-nLastPos ) );
+		nLastPos = s.find_first_not_of( strDelim, nFirstPos );
+		nFirstPos = s.find_first_of( strDelim, nLastPos );
+	}
+	return tokens;
+}
+
 
 template <class T> struct equal_ignore_case : public std::binary_function<T, T, bool> {
 	bool operator()(const T& first_argument_type, const T& second_argument_type) const
