@@ -1874,33 +1874,20 @@ void Scourge::moveMonster(Creature *monster) {
     //((AnimatedShape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
     // don't move when attacking
     return;
-  } else {
-    monster->getShape()->setCurrentAnimation( monster->getMotion() == Constants::MOTION_LOITER ||
-																							monster->getMotion() == Constants::MOTION_MOVE_TOWARDS ?
+  } 
+  else {
+    monster->getShape()->setCurrentAnimation( monster->getMotion() == Constants::MOTION_LOITER
+                                           || monster->getMotion() == Constants::MOTION_MOVE_TOWARDS 
+                                           || monster->getMotion() == Constants::MOTION_MOVE_AWAY?
                                               (int)MD2_RUN :
                                               (int)MD2_STAND );
   }
-
-	if( monster->getMotion() == Constants::MOTION_MOVE_AWAY ) {
-		monster->moveToLocator();
-	} else if( monster->getCharacter() || 
-						 ( monster->isNpc() && monster->getMotion() == Constants::MOTION_MOVE_TOWARDS ) ||
-						 monster->getMotion() == Constants::MOTION_LOITER ) {
-    // attack the closest player
-    if( BATTLES_ENABLED &&
-        (int)(20.0f * rand()/RAND_MAX) == 0) {
-      monster->decideMonsterAction();
-    } else {
-      // random (non-attack) monster movement
-	monster->move(monster->getDir());
-    }
-  } else if(monster->getMotion() == Constants::MOTION_STAND) {
-    if( (int)(40.0f * rand()/RAND_MAX) == 0) {
-      monster->setMotion(Constants::MOTION_LOITER);
-    } else {
-      monster->decideMonsterAction();
-    }
-  } else if(monster->hasTarget()) {
+  //CASE 1: Fleeing or clearing a path
+  if( monster->getMotion() == Constants::MOTION_MOVE_AWAY ) {
+    monster->moveToLocator(); //don't think, just move
+  }
+  //CASE 2: Monsters with targets
+  else if(monster->hasTarget()) {
 #ifdef MONSTER_FLEE_IF_LOW_HP
     // monster gives up when low on hp or bored
     // FIXME: when low on hp, it should run away not loiter
@@ -1908,17 +1895,44 @@ void Scourge::moveMonster(Creature *monster) {
        monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f)) {
       monster->setMotion(Constants::MOTION_LOITER);
       monster->cancelTarget();
-    } else {
-      monster->moveToLocator(levelMap);
-    }
+      return;
+    } //else {
+      //monster->moveToLocator(levelMap);
+    //}
 #endif
     // see if there's another target that's closer
     if(monster->getAction() == Constants::ACTION_NO_ACTION) {
       monster->decideMonsterAction();
     }
-  } else {
-		cerr << "monster not moving: " << monster->getType() << " motion=" << monster->getMotion() << endl;
-	}
+  } 
+  //CASE 3: any other characters, NPCs or monsters
+  else{/* if( monster->getCharacter() || 
+         ( monster->isNpc() && monster->getMotion() == Constants::MOTION_MOVE_TOWARDS ) ||
+           monster->getMotion() == Constants::MOTION_LOITER ) { */
+    // attack the closest player
+   // if( BATTLES_ENABLED &&
+   //     (int)(20.0f * rand()/RAND_MAX) == 0) { // 1/20 chance of joining battle
+      monster->decideMonsterAction();
+   // } 
+    //else {
+    if(monster->getMotion() == Constants::MOTION_LOITER){ //even after deciding an action they are loitering..
+      // random (non-attack) monster movement
+	monster->move(monster->getDir());
+    }
+  }/*
+  //CASE 4: Motionless monsters
+  else if(monster->getMotion() == Constants::MOTION_STAND) {
+    if( (int)(40.0f * rand()/RAND_MAX) == 0) { // 1/40 chance of wandering
+      monster->setMotion(Constants::MOTION_LOITER);
+    } else {
+      monster->decideMonsterAction();
+    }
+  } 
+  
+  //CASE 5: Error.
+  else {
+    cerr << "monster not moving: " << monster->getType() << " motion=" << monster->getMotion() << endl;
+  }*/
 }
 
 void Scourge::openContainerGui(Item *container) {

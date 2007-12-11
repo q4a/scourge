@@ -107,6 +107,13 @@ void PathManager::findPathAway(int awayX, int awayY, Creature* player, Map* map,
 }
 
 /**
+ * Picks a random direction and heads towards it. Will occasionally deviate (fixed to 10% chance for now), and turns when blocked.
+**/
+void PathManager::findWanderingPath(int maxPathLength, Creature* player, Map* map){
+
+}
+
+/**
  * Get a path away from given locations.
  * This assumes some external force has taken over the creature. So their path will be overwritten and the selected
  * x and y location will be changed.
