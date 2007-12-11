@@ -960,123 +960,117 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 	setFontType( Constants::SCOURGE_MONO_FONT );
 
 	int w = 0;
-	vector<string> lines;
 	vector<int> widths;
-	char tmp[3000];
-	strncpy( tmp, message, 2999 );
-	tmp[2999] = '\0';
-	char *p = strtok( tmp, "|" );
-	while( p ) {
-		string s = p;
-		lines.push_back( s );
-		int ww = textWidth( p ) + 10;
+	vector<string> lines = Tokenize<vector<string> >(message, "|");
+	for(vector<string>::iterator i = lines.begin(); i != lines.end(); i++ ) {
+		int ww = textWidth( i->c_str() ) + 10;
 		widths.push_back( ww );
-		if( w < ww ) w = ww;
-		p = strtok( NULL, "|" );
+		if( w < ww )
+			w = ww;
 	}
 
 	//int w = textWidth( message ) + 10;
-  //int w = strlen( message ) * 8 + 4;
-  int h = 12 * lines.size() + 5;
-  int x = -2;
-  int y = -14;
+	//int w = strlen( message ) * 8 + 4;
+	int h = 12 * lines.size() + 5;
+	int x = -2;
+	int y = -14;
 
-  // only for widget tooltips: see if it hangs off the screen
-  bool right = false;
-  if( zrot == 0 && yrot == 0 ) {
-    // do gluProject b/c parent window coordinates aren't part of xpos2.
-    GLdouble screenx, screeny, screenz;
-    double projection[16];
-    double modelview[16];
-    GLint viewport[4];
-    glGetDoublev(GL_PROJECTION_MATRIX, projection);
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    int res = gluProject(xpos2 + w + x, 0, 0,
-                         modelview,
-                         projection,
-                         viewport,
-                         &screenx, &screeny, &screenz);
-    if( res && screenx > getScreenWidth() ) {
-      xpos2 -= ( w + x );
-      right = true;
-    }
-  }
-
-  // for widget tooltips only (hence the check for zrot/yrot)
-  if( zrot == 0 && yrot == 0 && xpos2 + w + x > screen->w ) {
-    
-  }
-
-  glPushMatrix();
-  glTranslatef( xpos2, ypos2 - ( y + h - 20 ), zpos2 );
-  glRotatef( zrot, 0.0f, 0.0f, 1.0f );
-  glRotatef( yrot, 1.0f, 0.0f, 0.0f );
-
+	// only for widget tooltips: see if it hangs off the screen
+	bool right = false;
+	if( zrot == 0 && yrot == 0 ) {
+		// do gluProject b/c parent window coordinates aren't part of xpos2.
+		GLdouble screenx, screeny, screenz;
+		double projection[16];
+		double modelview[16];
+		GLint viewport[4];
+		glGetDoublev(GL_PROJECTION_MATRIX, projection);
+		glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		int res = gluProject(xpos2 + w + x, 0, 0,
+													modelview,
+													projection,
+													viewport,
+													&screenx, &screeny, &screenz);
+		if( res && screenx > getScreenWidth() ) {
+			xpos2 -= ( w + x );
+			right = true;
+		}
+	}
+	
+	// for widget tooltips only (hence the check for zrot/yrot)
+	if( zrot == 0 && yrot == 0 && xpos2 + w + x > screen->w ) {
+		
+	}
+	
+	glPushMatrix();
+	glTranslatef( xpos2, ypos2 - ( y + h - 20 ), zpos2 );
+	glRotatef( zrot, 0.0f, 0.0f, 1.0f );
+	glRotatef( yrot, 1.0f, 0.0f, 0.0f );
+	
 	glScalef( zoom, zoom, zoom );
-  
-  glDisable( GL_CULL_FACE );
-  glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );  
-  
-  //glColor4f( 0, 0.15f, 0.05f, 0.5 );
-  glColor4f( r, g, b, 0.8f );
-  glBegin( GL_QUADS );
-  glVertex2f( x + w, y );
-  glVertex2f( x, y  );
-  glVertex2f( x, y + h );
-  glVertex2f( x + w, y + h );
-  glEnd();
-  glBegin( GL_TRIANGLES );
-  if( right ) {
-    glVertex2f( x + w, y + h - 5 );
-    glVertex2f( x + w + 5, y + h + 5 );
-    glVertex2f( x + w - 5, y + h );
-  } else {
-    glVertex2f( x, y + h - 5 );
-    glVertex2f( x - 5, y + h + 5 );
-    glVertex2f( x + 5, y + h );
-  }
-  glEnd();
-  glDisable( GL_BLEND );
-
-  //glColor4f( 0, 0.4f, 0.15f, 0.5 );
-  for( int i = 0; i < 2; i++ ) {
-    if( !i ) {
-      glLineWidth( 3.0f );
-      glColor4f( 0, 0, 0, 0 );
-    } else {
-      glLineWidth( 1.0f );
-      glColor4f( r + 0.35f, g + 0.35f, b + 0.35f, 0.8f );
-    }
-    glBegin( GL_LINE_LOOP );
-    if( right ) {
-      glVertex2f( x + w, y );
-      glVertex2f( x, y  );
-      glVertex2f( x, y + h  );
-      glVertex2f( x + w - 5, y + h  );
-      glVertex2f( x + w + 5, y + h + 5  );
-      glVertex2f( x + w, y + h - 5  );
-    } else {
-      glVertex2f( x + w, y );
-      glVertex2f( x, y  );
-      glVertex2f( x, y + h - 5 );
-      glVertex2f( x - 5, y + h + 5 );
-      glVertex2f( x + 5, y + h );  
-      glVertex2f( x + w, y + h );
-    }
-    glEnd();
-  }
-  
-  glColor4f( 1, 1, 1, 1 );
+	
+	glDisable( GL_CULL_FACE );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );  
+	
+	//glColor4f( 0, 0.15f, 0.05f, 0.5 );
+	glColor4f( r, g, b, 0.8f );
+	glBegin( GL_QUADS );
+	glVertex2f( x + w, y );
+	glVertex2f( x, y  );
+	glVertex2f( x, y + h );
+	glVertex2f( x + w, y + h );
+	glEnd();
+	glBegin( GL_TRIANGLES );
+	if( right ) {
+		glVertex2f( x + w, y + h - 5 );
+		glVertex2f( x + w + 5, y + h + 5 );
+		glVertex2f( x + w - 5, y + h );
+	} else {
+		glVertex2f( x, y + h - 5 );
+		glVertex2f( x - 5, y + h + 5 );
+		glVertex2f( x + 5, y + h );
+	}
+	glEnd();
+	glDisable( GL_BLEND );
+	
+	//glColor4f( 0, 0.4f, 0.15f, 0.5 );
+	for( int i = 0; i < 2; i++ ) {
+		if( !i ) {
+			glLineWidth( 3.0f );
+			glColor4f( 0, 0, 0, 0 );
+		} else {
+			glLineWidth( 1.0f );
+			glColor4f( r + 0.35f, g + 0.35f, b + 0.35f, 0.8f );
+		}
+		glBegin( GL_LINE_LOOP );
+		if( right ) {
+			glVertex2f( x + w, y );
+			glVertex2f( x, y  );
+			glVertex2f( x, y + h  );
+			glVertex2f( x + w - 5, y + h  );
+			glVertex2f( x + w + 5, y + h + 5  );
+			glVertex2f( x + w, y + h - 5  );
+		} else {
+			glVertex2f( x + w, y );
+			glVertex2f( x, y  );
+			glVertex2f( x, y + h - 5 );
+			glVertex2f( x - 5, y + h + 5 );
+			glVertex2f( x + 5, y + h );  
+			glVertex2f( x + w, y + h );
+		}
+		glEnd();
+	}
+	
+	glColor4f( 1, 1, 1, 1 );
 	for( unsigned int i = 0; i < lines.size(); i++ ) {
 		int ww = widths[ i ];
 		int x = (int)( ( w - ww ) / 2.0f ) + 5;
 		texPrint( x, i * 12, "%s", lines[i].c_str() );
 	}
-  //texPrint( 0, 0, "%s", message );
-  setFontType( Constants::SCOURGE_DEFAULT_FONT );
-  glPopMatrix();
+	//texPrint( 0, 0, "%s", message );
+	setFontType( Constants::SCOURGE_DEFAULT_FONT );
+	glPopMatrix();
 }
 
 void SDLHandler::testDrawView() {
