@@ -34,12 +34,12 @@ using namespace std;
   *@author Gabor Torok
   */
 
-#define EQUIP_WIDTH 246
-#define EQUIP_HEIGHT 300
-#define INVEN_WIDTH 621
+#define EQUIP_WIDTH 300
+#define EQUIP_HEIGHT 315
+#define INVEN_WIDTH 675
 #define INVEN_HEIGHT 170
 #define PORTRAIT_WIDTH 290
-#define PORTRAIT_HEIGHT 300
+#define PORTRAIT_HEIGHT 315
 #define WIN_WIDTH EQUIP_WIDTH + 320 + 40 + 35
 #define WIN_HEIGHT EQUIP_HEIGHT + 250
 #define DEFAULT_STATUS N_( "Right click for info, double-click to open." )

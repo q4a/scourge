@@ -24,7 +24,7 @@ using namespace std;
   */
 
 map<string, GuiTheme*> GuiTheme::themes;
-char GuiTheme::DEFAULT_THEME[255] = "default";
+char GuiTheme::DEFAULT_THEME[255] = "default_theme";
 
 GuiTheme::GuiTheme( char *name ) {
   this->name = name;

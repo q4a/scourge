@@ -292,7 +292,12 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 		string name = node->getValueAsString( "name" );
 		string value = node->getValueAsString( "value" );
 		bool grayscale = node->getValueAsBool( "grayscale" );
-		namedTextures[ name ] = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
+		if( value.substr( value.size() - 4 ) == ".png" ) {
+		  int w, h;
+		  namedTextures[ name ] = loadAlphaTexture( value, &w, &h );
+		} else {
+		  namedTextures[ name ] = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
+		}
 	}
 //	Shapes::debugFileLoad = false;
 }
