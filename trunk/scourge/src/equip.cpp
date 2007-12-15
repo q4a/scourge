@@ -43,6 +43,7 @@ using namespace std;
 
 #define SPELL_SIZE 30
 #define DEBUG_SPECIAL_SKILL 0
+#define GRID_SIZE 32
 
 // fixme: this should be a property of the magicschool and should come from the .cfg file.
 char *schoolIcons[] = {
@@ -347,7 +348,15 @@ void Equip::drawEquipment() {
 		if( item ) {
 			if( rect && rect->w && rect->h ) {
 				glEnable( GL_TEXTURE_2D );
-				item->renderIcon( pcUi->getScourge(), rect->x, rect->y, rect->w, rect->h );
+				//int ix = item->getInventoryX() * GRID_SIZE;
+				//int iy = item->getInventoryY() * GRID_SIZE;
+				int iw = item->getInventoryWidth() * GRID_SIZE;
+				int ih = item->getInventoryHeight() * GRID_SIZE;
+
+				int iy = rect->y;
+				if(rect->h - ih > GRID_SIZE) iy += rect->h - ih - GRID_SIZE;
+				item->renderIcon( pcUi->getScourge(), rect->x + (rect->w - iw) / 2, iy, iw, ih );
+				//				item->renderIcon( pcUi->getScourge(), rect->x, rect->y, rect->w, rect->h );
 			}
 		}
 		/*
