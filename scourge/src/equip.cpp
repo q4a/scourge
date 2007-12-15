@@ -54,7 +54,7 @@ Equip::Equip( PcUi *pcUi, int x, int y, int w, int h ) {
 	this->creature = NULL;
 	this->backgroundTexture = pcUi->getScourge()->getShapePalette()->getNamedTexture( "equip" );
 	this->scrollTexture = pcUi->getScourge()->getShapePalette()->getNamedTexture( "scroll" );
-  this->currentHole = -1;
+	this->currentHole = -1;
 	this->x = x;
 	this->y = y;
 	this->w = w;
@@ -307,8 +307,10 @@ void Equip::setCreature( Creature *creature ) {
 
 void Equip::drawWidgetContents( Widget *widget ) {
 	glEnable( GL_TEXTURE_2D );
-	glEnable( GL_ALPHA_TEST );
-	glAlphaFunc( GL_NOTEQUAL, 0 );
+	//	glEnable( GL_ALPHA_TEST );
+	//	glAlphaFunc( GL_NOTEQUAL, 0 );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	if( mode == EQUIP_MODE ) {
 		glBindTexture( GL_TEXTURE_2D, backgroundTexture );
 	} else {
@@ -325,7 +327,8 @@ void Equip::drawWidgetContents( Widget *widget ) {
 	glTexCoord2d( 1, 1 );
 	glVertex2d( w, h );
 	glEnd();
-	glDisable( GL_ALPHA_TEST );
+	glDisable( GL_BLEND );
+	// glDisable( GL_ALPHA_TEST );
 	if( creature ) {
 		if( mode == EQUIP_MODE ) {
 			drawEquipment();
@@ -347,6 +350,7 @@ void Equip::drawEquipment() {
 				item->renderIcon( pcUi->getScourge(), rect->x, rect->y, rect->w, rect->h );
 			}
 		}
+		/*
 		if( ( 1 << i ) == creature->getPreferredWeapon() ) {
 			glDisable( GL_TEXTURE_2D );
 			glColor4f( 1, 0.35f, 0, 1 );
@@ -357,18 +361,19 @@ void Equip::drawEquipment() {
 			glVertex2d( rect->x + rect->w, rect->y + rect->h );
 			glEnd();
 		}
+		*/
 	}
 	if( currentHole > -1 ) {
-    SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( currentHole );
-    glDisable( GL_TEXTURE_2D );
-    pcUi->getWindow()->setTopWindowBorderColor();
-    glBegin( GL_LINE_LOOP );
-    glVertex2d( rect->x, rect->y + rect->h );
-    glVertex2d( rect->x, rect->y );
-    glVertex2d( rect->x + rect->w, rect->y );
-    glVertex2d( rect->x + rect->w, rect->y + rect->h );
-    glEnd();
-  }
+	  SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( currentHole );
+	  glDisable( GL_TEXTURE_2D );
+	  pcUi->getWindow()->setTopWindowBorderColor();
+	  glBegin( GL_LINE_LOOP );
+	  glVertex2d( rect->x, rect->y + rect->h );
+	  glVertex2d( rect->x, rect->y );
+	  glVertex2d( rect->x + rect->w, rect->y );
+	  glVertex2d( rect->x + rect->w, rect->y + rect->h );
+	  glEnd();
+	}
 }
 
 void Equip::drawSpells() {
