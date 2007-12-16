@@ -298,6 +298,8 @@ bool Inven::checkInventoryLocation( Item *item, bool useExistingLocationForSameI
 
 void Inven::drawWidgetContents( Widget *widget ) {
 	glEnable( GL_TEXTURE_2D );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glBindTexture( GL_TEXTURE_2D, backgroundTexture );
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_QUADS );
@@ -310,6 +312,7 @@ void Inven::drawWidgetContents( Widget *widget ) {
 	glTexCoord2d( 1, 1 );
 	glVertex2d( w, h );
 	glEnd();
+	glDisable( GL_BLEND );
 
 	glPushMatrix();
 	glTranslatef( OFFSET_X, OFFSET_Y, 0 );
