@@ -116,7 +116,7 @@ public:
 	inline int getMissionId() { return missionId; }
 	inline int getMissionObjectiveIndex() { return missionObjectiveIndex; }
 
-	void renderIcon( Scourge *scourge, int x, int y, int w, int h );
+	void renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon=false );
 	void getTooltip( char *tooltip );
 
 	inline void setInventoryLocation( int x, int y ) {
@@ -235,12 +235,12 @@ public:
 																		std::vector<ConfigNode*> *nodes, 
 																		int influenceType );	
 
-	void renderItemIcon( Scourge *scourge, int x, int y, int w, int h );
+	void renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon=false );
 	void renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih );
 	void renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h );
 	void renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih );
 	void create3dTex( Scourge *scourge, float w, float h );
-	void getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h );
+	void getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon=false );
 };
 
 #endif

@@ -226,8 +226,8 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 
 	y = 25 + 17;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s", 
-																								 ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
-																								 creature->getCharacter()->getDisplayName() );	
+												   ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
+												   creature->getCharacter()->getDisplayName() );	
 	y += 25;
 
 	pcUi->getScourge()->describeAttacks( creature, 80, y, true );
