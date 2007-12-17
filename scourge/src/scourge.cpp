@@ -3571,7 +3571,7 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
   if( ( item && item->getRpgItem()->isWeapon() ) || ( !item && handleNull ) ) {
 		if( item ) {
 			glEnable( GL_TEXTURE_2D );
-			item->renderIcon( this, x, y - 10, 32, 32 );
+			item->renderIcon( this, x, y - 10, 32, 32, true );
 		} else {
 			glDisable( GL_TEXTURE_2D );
 			glColor4f( 1, 0.8f, 0.6f, 1 );

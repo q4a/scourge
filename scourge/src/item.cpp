@@ -1074,30 +1074,35 @@ int Item::getInventoryHeight() {
 	return ( getShape()->getIcon() > 0 ? getShape()->getIconHeight() : rpgItem->getInventoryHeight() ); 
 }
 
-void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h ) {
-	GLuint tex;
-	int rw, rh, ox, oy, iw, ih;
-	getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h );
-
-	glPushMatrix();
-	glTranslatef( x + ox, y + oy, 0 );
+void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
+  GLuint tex;
+  int rw, rh, ox, oy, iw, ih;
+  //  cerr << "name=" << getName() << endl;
+  getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, smallIcon );  
+  //  cerr << "\tdim=" << rw << "," << rh << " offset=" << ox << "," << oy << " smallIcon=" << smallIcon << endl;
+  glPushMatrix();
+  glTranslatef( x + ox, y + oy, 0 );
+  if( !smallIcon ) {
 	if( w > 0 && h > 0 ) glScalef( rw / (float)w, rh / (float)h, 1 );
 	if( isMagicItem() ) {
-		renderUnderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
+	  renderUnderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
 	}
-	renderItemIcon( scourge, 0, 0, rw, rh );
+  }
+  renderItemIcon( scourge, 0, 0, rw, rh, smallIcon );
+  if( !smallIcon ) {
 	if( isMagicItem() ) {
-		renderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
-		renderItemIconIdentificationEffect( scourge, 0, 0, rw, rh );
+	  renderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
+	  renderItemIconIdentificationEffect( scourge, 0, 0, rw, rh );
 	}
 	glScalef( 1, 1, 1 );
-	glPopMatrix();
+  }
+  glPopMatrix();
 }
 
-void Item::getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h ) {
+void Item::getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon ) {
 	GLuint tex;
 	int rw, rh, ox, oy;
-	if( getShape()->getIcon() > 0 ) {
+	if( !smallIcon && getShape()->getIcon() > 0 ) {
 		tex = getShape()->getIcon();
 		*iw = getShape()->getIconWidth() * 32;
 		*ih = getShape()->getIconHeight() * 32;
@@ -1128,13 +1133,13 @@ void Item::getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp
 	*oyp = oy;
 }
 
-void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h ) {
+void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
 	glColor4f( 1, 1, 1, 1 );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, 
-								 ( getShape()->getIcon() > 0 ? 
+								 ( !smallIcon && getShape()->getIcon() > 0 ? 
 									 getShape()->getIcon() : 
 									 session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] ) );
 	glBegin( GL_QUADS );
