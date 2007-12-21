@@ -27,11 +27,10 @@
 using namespace std;
 
 #define FAST_SPEED 1
+#define LOITER_SPEED 9.0f
 // how close to stay to the player
 #define CLOSE_DISTANCE 8
 
-#define MOVE_STATE_NORMAL 0
-#define MOVE_STATE_CLEARING_PATH 1
 /**
  * Formations are defined by 4 set of coordinates in 2d space.
  * These starting positions assume dir=Constants::MOVE_UP
@@ -48,7 +47,7 @@ static const Sint16 layout[][4][2] = {
 PathManager::PathManager(Creature* owner){
   this->owner = owner;
   positionOnPath = 0;
-  moveState = MOVE_STATE_NORMAL;
+  loiterSpeed = LOITER_SPEED;
 }
 PathManager::~PathManager(){
 
@@ -62,7 +61,6 @@ bool PathManager::findPath(int x, int y, Creature* player, Map* map, bool ignore
   delete goal;
   
   positionOnPath = 0;
-  moveState = MOVE_STATE_NORMAL;
 
   calculateAllPathLocations();
   moveNPCsOffPath(player,map);
@@ -82,7 +80,6 @@ bool PathManager::findPathToCreature(Creature* target, Creature* player, Map* ma
   delete goal;
 
   positionOnPath = 0;
-  moveState = MOVE_STATE_NORMAL;
 
   calculateAllPathLocations();
   moveNPCsOffPath(player,map);
@@ -101,22 +98,152 @@ void PathManager::findPathAway(int awayX, int awayY, Creature* player, Map* map,
   delete goal;
  
   positionOnPath = 0;
-  moveState = MOVE_STATE_NORMAL;
   
   calculateAllPathLocations();
 }
 
 /**
- * Picks a random direction and heads towards it. Will occasionally deviate (fixed to 10% chance for now), and turns when blocked.
+ * Generates a somewhat random path using a series of getNextLocation()
+* It will try to make a path that is maxPathLength long, but will stop if it gets stuck.
 **/
-void PathManager::findWanderingPath(int maxPathLength, Creature* player, Map* map){
+void PathManager::findWanderingPath(unsigned int maxPathLength, Creature* player, Map* map){
+  clearPath();
+  //start with our facing direction
+  Uint16 direction = owner->getFacingDirection();
+  int x = toint(owner->getX());
+  int y = toint(owner->getY());
+  while(path.size() < maxPathLength){
+    direction = addNextLocation(x,y,direction,player,map);
+    if(direction == 0)
+      break;
+    x = path[path.size()-1].x;
+    y = path[path.size()-1].y;
+  }
+  //we are wandering, so set the loitering speed to between 8.5 and 9.5
+  loiterSpeed = LOITER_SPEED + 1.0f * rand()/RAND_MAX - 0.5f;
+}
 
+/**
+ * Adds a location to path.
+ * To be used for building random walks. Tries turning in all directions if blocked.
+ * Returns the new facing direction if a location was added, otherwise returns 0
+ * Walking diagonally into a corner will trap a wandering creature, but that's just too bad.
+ **/
+Uint16 PathManager::addNextLocation(int cx, int cy, Uint16 direction, Creature* player, Map* map){
+  //first decide to whether deviate slightly. 1/8 chance each of left and right
+  int random = (int)(8.0f * rand()/RAND_MAX);
+  if(random == 0) direction = getClockwiseDirection(direction);
+  else if(random == 1) direction = getAntiClockwiseDirection(direction);
+
+  //we have up to 5 attempts to make. Just hard-code them for now.
+  //some sort of iterator over directions would be a nicer solution.
+  //Even better: we should have a probability distribution over all directions, favouring
+  //those with least deviation. TODO.
+  Location next;
+  next.x = nextX(cx,direction);
+  next.y = nextY(cy,direction);
+  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
+    path.push_back(next);
+    return direction;
+  }
+  //we are blocked. Try diagonal left and right moves.
+  Uint16 rightDirection = getClockwiseDirection(direction);
+  next.x = nextX(cx,rightDirection);
+  next.y = nextY(cy,rightDirection);
+  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
+    path.push_back(next);
+    return rightDirection;
+  }
+  direction = getAntiClockwiseDirection(direction);
+  next.x = nextX(cx,direction);
+  next.y = nextY(cy,direction);
+  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
+    path.push_back(next);
+    return direction;
+  }
+  //those both failed too. Now try 90 degree turns
+  rightDirection = getClockwiseDirection(rightDirection);
+  next.x = nextX(cx,rightDirection);
+  next.y = nextY(cy,rightDirection);
+  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
+    path.push_back(next);
+    return rightDirection;
+  }
+  direction = getAntiClockwiseDirection(direction);
+  next.x = nextX(cx,direction);
+  next.y = nextY(cy,direction);
+  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
+    path.push_back(next);
+    return direction;
+  }
+  //now try the 135 degree turns
+  rightDirection = getClockwiseDirection(rightDirection);
+  next.x = nextX(cx,rightDirection);
+  next.y = nextY(cy,rightDirection);
+  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
+    path.push_back(next);
+    return rightDirection;
+  }
+  direction = getAntiClockwiseDirection(direction);
+  next.x = nextX(cx,direction);
+  next.y = nextY(cy,direction);
+  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
+    path.push_back(next);
+    return direction;
+  }
+  //and finally 180 degrees
+  direction = getAntiClockwiseDirection(direction);
+  next.x = nextX(cx,direction);
+  next.y = nextY(cy,direction);
+  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
+    path.push_back(next);
+    return direction;
+  }
+  //we are blocked in
+  return 0;
+}
+
+int PathManager::nextX(int x, Uint16 direction){
+  if((direction & Constants::MOVE_RIGHT) > 0) return x+1;
+  if((direction & Constants::MOVE_LEFT) > 0) return x-1;
+  return x;
+}
+
+int PathManager::nextY(int y, Uint16 direction){
+  if((direction & Constants::MOVE_UP) > 0) return y-1; //hopefully this is the right direction
+  if((direction & Constants::MOVE_DOWN) > 0) return y+1;
+  return y;
+}
+
+Uint16 PathManager::getClockwiseDirection(Uint16 direction){
+  //for reference: the eight directions clockwise from north are 1,9,8,10,2,6,4,5
+  if(direction == Constants::MOVE_UP) return Constants::MOVE_UP_RIGHT;
+  if(direction == (Constants::MOVE_UP_RIGHT)) return Constants::MOVE_RIGHT;
+  if(direction == Constants::MOVE_RIGHT) return Constants::MOVE_DOWN_RIGHT;
+  if(direction == (Constants::MOVE_DOWN_RIGHT)) return Constants::MOVE_DOWN;
+  if(direction == Constants::MOVE_DOWN) return Constants::MOVE_DOWN_LEFT;
+  if(direction == Constants::MOVE_DOWN_LEFT) return Constants::MOVE_LEFT;
+  if(direction == Constants::MOVE_LEFT) return Constants::MOVE_UP_LEFT;
+  if(direction == Constants::MOVE_UP_LEFT) return Constants::MOVE_UP;
+  return 0;
+}
+Uint16 PathManager::getAntiClockwiseDirection(Uint16 direction){
+  if(direction == Constants::MOVE_UP) return Constants::MOVE_UP_LEFT;
+  if(direction == (Constants::MOVE_UP_RIGHT)) return Constants::MOVE_UP;
+  if(direction == Constants::MOVE_RIGHT) return Constants::MOVE_UP_RIGHT;
+  if(direction == (Constants::MOVE_DOWN_RIGHT)) return Constants::MOVE_RIGHT;
+  if(direction == Constants::MOVE_DOWN) return Constants::MOVE_DOWN_RIGHT;
+  if(direction == Constants::MOVE_DOWN_LEFT) return Constants::MOVE_DOWN;
+  if(direction == Constants::MOVE_LEFT) return Constants::MOVE_DOWN_LEFT;
+  if(direction == Constants::MOVE_UP_LEFT) return Constants::MOVE_LEFT;
+  return 0;
 }
 
 /**
  * Get a path away from given locations.
  * This assumes some external force has taken over the creature. So their path will be overwritten and the selected
  * x and y location will be changed.
+ * This will also tell the creature to set its motion to MOTION_CLEAR_PATH, which will in turn make it move fast.
  **/
 void PathManager::findPathOffLocations(set<Location,LocationComparitor>* locations, Creature* player, Map* map, int maxNodes){
   GoalFunction * goal = new ClearLocationsGoal(owner,locations);
@@ -126,7 +253,8 @@ void PathManager::findPathOffLocations(set<Location,LocationComparitor>* locatio
   delete goal;
  
   positionOnPath = 0;
-  moveState = MOVE_STATE_CLEARING_PATH;
+  owner->setMotion(Constants::MOTION_CLEAR_PATH);
+
   if(path.size() > 0) owner->setSelXYNoPath(path[path.size()-1].x,path[path.size()-1].y);
   calculateAllPathLocations();
   //cout << owner->getName() << " moving out of the way. Path length " << path.size() << "\n";
@@ -166,7 +294,7 @@ void PathManager::moveNPCsOffPath(Creature* player, Map* map){
        (!mapLoc->creature->isMonster() || mapLoc->creature->isNpc())){
       Creature* blocker = (Creature*)mapLoc->creature;
      // cout << blocker->getName() << " is in the way.\n";
-      blocker->setMotion(Constants::MOTION_MOVE_AWAY); //make sure monsters do the move too
+      blocker->setMotion(Constants::MOTION_CLEAR_PATH); //make sure monsters do the move too
 
       bool inTheWay = blocker->getPathManager()->atEndOfPath();
       if(!inTheWay){
@@ -189,6 +317,9 @@ bool PathManager::isBlockingPath(Creature* blocker){
   return isBlockingPath(blocker,toint(blocker->getX()),toint(blocker->getY()));
 }
 
+/**
+ * Needs to be updated to include an estimated time range that the potential blocker will be at x and y.
+ **/
 bool PathManager::isBlockingPath(Creature* blocker, int x, int y){
   set<Location>::iterator containsItr;
   Location loc;
@@ -230,19 +361,20 @@ bool PathManager::isPathTowardTargetCreature(float range) {
                              owner->getTargetCreature()->getShape()->getWidth(),owner->getTargetCreature()->getShape()->getDepth()) < range;
 }
 
-int PathManager::getSpeed(){
-  if(this->moveState == MOVE_STATE_CLEARING_PATH){
+float PathManager::getSpeed(){
+  if(owner->getMotion() == Constants::MOTION_CLEAR_PATH){
     return FAST_SPEED;
   }
-  return owner->getSpeed(); //the creature should walk as fast as it is walking.
+  if(owner->getMotion() == Constants::MOTION_LOITER){
+    return loiterSpeed;
+  }
+  return (float)owner->getSpeed(); //the creature should walk as fast as it is walking.
 }
 
 void PathManager::incrementPositionOnPath(){
   positionOnPath++;
-  if(atEndOfPath()){
-    moveState = MOVE_STATE_NORMAL;
-  }
 }
+
 bool PathManager::atEndOfPath(){
   return path.size() == 0 || positionOnPath >= path.size()-1;
 }
@@ -262,6 +394,35 @@ void PathManager::clearPath(){
 }
 int PathManager::getPathRemainingSize(){
   return path.size() - positionOnPath -1;
+}
+/**
+ * Estimates the time this creature will block the given location according to
+ * its current path and speed.
+ * Since creature speed is directly related to (1 - speed/10), we can just use this
+ * factor as "time". 
+ **/
+float PathManager::getEstimatedTimeAt(Location* location){
+  int w = owner->getShape()->getWidth();
+  int d = owner->getShape()->getHeight();
+  float step = (1.0f-((float)getSpeed())/10.0f);
+
+  int lx = location->x;
+  int ly = location->y;
+
+  float time = 0;
+  for(unsigned int j = positionOnPath; j < path.size(); j++){
+    time += step;
+    int x = path[j].x;
+    int y = path[j].y;
+    if(lx >= x && lx < x+w && ly >= y && ly < y+d)
+      return time;
+  }
+  return -1; //-1 means we're never going to be at that location
+}
+
+void PathManager::writePath(){
+  for(unsigned int i = 0; i < path.size(); i++)
+    cout << path[i].x << "," << path[i].y << "\n";
 }
 
 ///////////////////////////////////////////////////
@@ -329,5 +490,5 @@ FormationFollowerPathManager::FormationFollowerPathManager(Creature* owner,Forma
 
 FormationFollowerPathManager::~FormationFollowerPathManager(){}
 
-int FormationFollowerPathManager::getSpeed(){ return PathManager::getSpeed();}
+float FormationFollowerPathManager::getSpeed(){ return PathManager::getSpeed();}
 

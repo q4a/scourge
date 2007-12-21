@@ -256,7 +256,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
 		endl;
 
   if(sx < 0 || sy < 0 || sx > MAP_WIDTH || sy > MAP_DEPTH){ //we'll waste heaps of time trying to find these
-    if(pVector->size()) pVector->erase(pVector->begin(), pVector->end()); // just clear the old path
+    if(pVector->size()) pVector->clear(); // just clear the old path
     return; 
   }
   priority_queue<CPathNode*, vector<CPathNode*>, FValueNodeComparitor> open;

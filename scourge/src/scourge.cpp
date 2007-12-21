@@ -1878,12 +1878,13 @@ void Scourge::moveMonster(Creature *monster) {
   else {
     monster->getShape()->setCurrentAnimation( monster->getMotion() == Constants::MOTION_LOITER
                                            || monster->getMotion() == Constants::MOTION_MOVE_TOWARDS 
-                                           || monster->getMotion() == Constants::MOTION_MOVE_AWAY?
+                                           || monster->getMotion() == Constants::MOTION_MOVE_AWAY
+                                           || monster->getMotion() == Constants::MOTION_CLEAR_PATH?
                                               (int)MD2_RUN :
                                               (int)MD2_STAND );
   }
   //CASE 1: Fleeing or clearing a path
-  if( monster->getMotion() == Constants::MOTION_MOVE_AWAY ) {
+  if( monster->getMotion() == Constants::MOTION_MOVE_AWAY || monster->getMotion() == Constants::MOTION_CLEAR_PATH) {
     monster->moveToLocator(); //don't think, just move
   }
   //CASE 2: Monsters with targets
@@ -1893,7 +1894,7 @@ void Scourge::moveMonster(Creature *monster) {
     // FIXME: when low on hp, it should run away not loiter
     if(monster->getAction() == Constants::ACTION_NO_ACTION &&
        monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f)) {
-      monster->setMotion(Constants::MOTION_LOITER);
+      monster->setMotion(Constants::MOTION_LOITER);//the monster will plan a path to wander on next decision cycle
       monster->cancelTarget();
       return;
     } //else {
@@ -1917,7 +1918,8 @@ void Scourge::moveMonster(Creature *monster) {
     //else {
     if(monster->getMotion() == Constants::MOTION_LOITER){ //even after deciding an action they are loitering..
       // random (non-attack) monster movement
-	monster->move(monster->getDir());
+	//monster->move(monster->getDir());
+      monster->moveToLocator(); //this now handles wandering as well
     }
   }/*
   //CASE 4: Motionless monsters

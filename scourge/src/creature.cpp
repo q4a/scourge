@@ -729,7 +729,15 @@ bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNot
 
 Location *Creature::moveToLocator() {
   Location *pos = NULL;
-  if(selX > -1) {
+  //need to see if we have ended our wandering. This is incase we aren't using decideMonsterAction(), like at HQ
+  //it would be better if this wasn't done here, since this will get called a lot if we are stuck.
+  if(getMotion() == Constants::MOTION_LOITER && pathManager->atEndOfPath())
+    pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
+  
+  
+
+  //we either have a target we want to reach, or we are wandering around
+  if(selX > -1 || getMotion() == Constants::MOTION_LOITER) { 
     // take a step
     pos = takeAStepOnPath();
 
@@ -738,9 +746,13 @@ Location *Creature::moveToLocator() {
 
     // if we've no more steps
     if( pathManager->atEndOfPath() ) {
-      stopMoving();
-      setMotion( Constants::MOTION_MOVE_TOWARDS );			
-			
+      if(!session->getParty()->isPartyMember(this)){
+        setMotion( Constants::MOTION_LOITER); //All NPCs and monsters should loiter.
+      }
+      else{
+        stopMoving();
+        setMotion( Constants::MOTION_STAND);	
+      }	
       // stop move-away-s
      /* if( this == session->getParty()->getPlayer() ) {
         for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
@@ -760,8 +772,20 @@ Location *Creature::moveToLocator() {
         ( !pos->creature->isMonster() || pos->creature->isNpc() ) ) {				
         ((Creature*)pos->creature)->moveAway( this );
       }*/
-      pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());
+      if(getMotion() != Constants::MOTION_LOITER)
+        pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());        
+        //else cout << getName() << " has been unable to move while wandering.\n Path length is " << pathManager->getPathRemainingSize() << "\n Next step is from " << toint(getX()) << "," << toint(getY()) << " to " << pathManager->getNextStepOnPath().x << "," << pathManager->getNextStepOnPath().y <<"\n";
       cantMoveCounter++;
+      //loiterers can just wander off
+      if(getMotion() == Constants::MOTION_LOITER){
+        if(cantMoveCounter > 15){
+          stopMoving();
+          setMotion(Constants::MOTION_STAND);
+          cantMoveCounter = 0;
+        }
+        else if(cantMoveCounter > 5)
+          pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
+      }
     } 
     else if( !pos ) {
       cantMoveCounter = 0;
@@ -777,6 +801,7 @@ Location *Creature::moveToLocator() {
 Location *Creature::takeAStepOnPath() {
 	Location *position = NULL;
   int a = ((AnimatedShape*)getShape())->getCurrentAnimation();
+
   if(!pathManager->atEndOfPath() && a != MD2_TAUNT ) {
 
     // take a step on the bestPath
@@ -788,17 +813,17 @@ Location *Creature::takeAStepOnPath() {
     GLfloat step = getStep();
     float lx = (float)(location.x);
     float ly = (float)(location.y);
-    float mx = lx - getX();
-    float my = ly - getY();
+    float mx = lx - newX; //distance between creature's (continuous) location and the target (discrete) location
+    float my = ly - newY;
     //if( !strcmp(getName(),"Alamont") ) 
 //      cerr << "taking step! step=" << step << " mx=" << mx << " my=" << my << endl;
 
     // Tolerance is 0.5 because toint will round to nearest int on map from there.
     GLfloat tolerance = 0.5f;
-    if( my > tolerance ) newY += step;
-    else if( my < -tolerance ) newY -= step;
+    if( my > tolerance ) newY += step; 
+    else if( my <= -tolerance ) newY -= step; //I think <= not <. E.g, lx = 4.0, getX() = 4.5, then we still need to step
     if( mx > tolerance ) newX += step;
-    else if( mx < -tolerance ) newX -= step;
+    else if( mx <= -tolerance ) newX -= step;
     
     //if( !strcmp(getName(), "Alamont") ) 
 //      cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
@@ -853,7 +878,8 @@ Location *Creature::takeAStepOnPath() {
       if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
         pathManager->incrementPositionOnPath();
         //we'll clear the path every so often - each time we move a step is ok
-        pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap()); //this clears the path infront, and unfortunately the path behind
+        if(getMotion() != Constants::MOTION_LOITER)
+          pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap()); //this clears the path infront, and unfortunately the path behind
       }
     } else {
       // if we can't get to the destination, stop trying
@@ -1832,7 +1858,10 @@ void Creature::cancelTarget() {
   if(preActionTargetCreature) setTargetCreature(preActionTargetCreature);
   preActionTargetCreature = NULL;
   setAction(Constants::ACTION_NO_ACTION);
-  if(isMonster()) setMotion(Constants::MOTION_LOITER);
+  if(isMonster()){
+    setMotion(Constants::MOTION_LOITER);
+    pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
+  }
 }
 
 /**
@@ -1969,7 +1998,19 @@ void Creature::decideMonsterAction() {
       (int)(20.0f * rand()/RAND_MAX) != 0){
       //there is now a 1/40 chance of flipping between wandering and standing.
       if((int)(40.0f * rand()/RAND_MAX) == 0){
-        setMotion(getMotion() == Constants::MOTION_LOITER? Constants::MOTION_STAND:Constants::MOTION_LOITER);
+        if(getMotion() == Constants::MOTION_STAND){ 
+          //need to make a path to wander on
+          pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
+          setMotion(Constants::MOTION_LOITER);
+        }
+        else{
+          setMotion(Constants::MOTION_STAND);
+          stopMoving(); //kill the animations?
+        }
+      }
+      else if(getMotion() == Constants::MOTION_LOITER && pathManager->atEndOfPath()){
+        //we are loitering, going to stay loitering, and have no path to walk on
+        pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
       }
     return;
   }
