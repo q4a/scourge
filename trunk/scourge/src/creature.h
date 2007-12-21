@@ -525,10 +525,6 @@ class Creature : public RenderedCreature {
                   float *dodgePenalty,
                   bool callScript=false );
 
-  // bool findPath( int x, int y, bool cancelIfNotPossible, int maxNodes, bool ignoreParty);
-
- // bool findPathToCreature( Creature* creature, bool cancelIfNotPossible, int maxNodes, bool ignoreParty, float distance=MIN_DISTANCE);
-
 
   void commonInit();
   void calculateExpOfNextLevel();

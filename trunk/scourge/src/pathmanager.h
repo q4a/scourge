@@ -45,9 +45,12 @@ class PathManager{
     std::set<Location,LocationComparitor> allPathLocations;
 
     unsigned int positionOnPath; //how far down the path this creature is
-    int moveState;
+    float loiterSpeed; //loiterers have some variation in speed
 
     void calculateAllPathLocations();
+
+    Uint16 addNextLocation(int cx, int cy, Uint16 direction, Creature* player, Map* map);
+
   public:
     PathManager(Creature* owner);
     virtual ~PathManager();
@@ -58,11 +61,11 @@ class PathManager{
     virtual bool findPath(int x, int y, Creature* player, Map* map, bool ignoreParty=false, int maxNodes=100);
     virtual bool findPathToCreature(Creature* target, Creature* player, Map* map, float distance=MIN_DISTANCE, bool ignoreParty=false, int maxNodes=100);
     virtual void findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty=false, int maxNodes=100);
-    void findWanderingPath(int maxPathLength, Creature* player, Map* map);
+    void findWanderingPath(unsigned int maxPathLength, Creature* player, Map* map);
     void findPathOffLocations(std::set<Location,LocationComparitor>* locations, Creature* player, Map* map, int maxNodes);
     
     void moveNPCsOffPath(Creature* player, Map* map); //runs up the path, asking any stationary NPCs to clear off
-    virtual int getSpeed();
+    virtual float getSpeed();
 
     void incrementPositionOnPath();
     Location getNextStepOnPath();
@@ -70,6 +73,7 @@ class PathManager{
     bool atStartOfPath();
     void clearPath();
     int getPathRemainingSize();
+    float getEstimatedTimeAt(Location* location);
 
     Location getEndOfPath();
 
@@ -78,7 +82,13 @@ class PathManager{
     bool isPathToTargetCreature();
     bool isPathTowardTargetCreature(float range);
    
-    
+    //utility functions for directions. These could probably go in Constants
+    static int nextX(int x, Uint16 direction);
+    static int nextY(int y, Uint16 direction);
+    static Uint16 getClockwiseDirection(Uint16 direction);
+    static Uint16 getAntiClockwiseDirection(Uint16 direction);
+
+    void writePath();
 
 };
 
@@ -120,7 +130,7 @@ class FormationFollowerPathManager : PathManager{
   public:
     FormationFollowerPathManager(Creature* owner,FormationLeaderPathManager* leader);
     ~FormationFollowerPathManager();
-    virtual int getSpeed(); //speed changes depending on how far behind or ahead of the leader we are
+    virtual float getSpeed(); //speed changes depending on how far behind or ahead of the leader we are
   
     inline void setOwner(Creature* owner){this->owner = owner;}
 };

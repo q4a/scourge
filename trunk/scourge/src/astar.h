@@ -269,7 +269,6 @@ public:
   static bool isOutOfTheWay( Creature *a, std::vector<Location> *aPath, int aStart,
                              Creature *b, std::vector<Location> *bPath, int bStart );
 
-protected:
   static bool isBlocked( Sint16 x, Sint16 y,
                          Creature *creature, Creature *player, Map *map, 
                          bool ignoreCreatures=false);

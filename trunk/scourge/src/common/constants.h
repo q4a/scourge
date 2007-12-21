@@ -320,8 +320,9 @@ public:
   enum motion {
     MOTION_MOVE_TOWARDS=0,
     MOTION_MOVE_AWAY, // flee
-    MOTION_LOITER,
-    MOTION_STAND
+    MOTION_CLEAR_PATH, //rapidly make way
+    MOTION_LOITER, //wander slowly
+    MOTION_STAND //FREEZE!
   };
   
   enum {
@@ -371,6 +372,11 @@ public:
   static const Uint16 MOVE_DOWN = 2;
   static const Uint16 MOVE_LEFT = 4;
   static const Uint16 MOVE_RIGHT = 8;
+  // Short cuts - useful when working in 8 directions
+  static const Uint16 MOVE_UP_RIGHT = MOVE_UP | MOVE_RIGHT;
+  static const Uint16 MOVE_UP_LEFT = MOVE_UP | MOVE_LEFT;
+  static const Uint16 MOVE_DOWN_RIGHT = MOVE_DOWN | MOVE_RIGHT;
+  static const Uint16 MOVE_DOWN_LEFT = MOVE_DOWN | MOVE_LEFT;
 
   enum { NORTH=0, EAST, SOUTH, WEST };
 
