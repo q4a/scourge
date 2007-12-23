@@ -30,6 +30,7 @@ using namespace std;
 vector<string> Mission::intros;
 vector<string> Mission::unknownPhrases;
 map<string, int> Mission::conversations;
+map<string, string> Mission::firstKeyPhrase;
 vector<string> Mission::answers;
 
 map<string, NpcConversation*> Mission::npcConversations;
@@ -122,60 +123,6 @@ Board::Board(Session *session) {
         current_mission->setSpecial( (char*)node->getValueAsString( "special" ) );
   }
   delete( config );
-}
-
-int Mission::readConversationLine( FILE *fp, char *line, int n,
-                                   vector<string> *intros,
-                                   vector<string> *unknownPhrases,
-                                   map<string, int> *conversations,
-                                   vector<string> *answers ) {
-
-  // find the first comma
-  char keyphrase[80], answer[4000];
-  char last = line[ strlen( line ) - 1 ];
-  char *p = strchr( line, ';' );
-	/*
-	This happens if the line has bad syntax or in 'general-only' mode when skipping
-	other lines.
-	*/
-	if( !p ) return last;
-  strcpy( answer, p + 1 );
-  strcpy( keyphrase, strtok( line, ";" ) );   
-  //cerr << "1: keyphrase=" << keyphrase << endl;
-
-  // Read lines that end with a \.
-  int r;
-  while( last == '\\' ) {
-    r = strlen( answer ) - 1;
-    answer[ r ] = ' ';
-    answer[ r + 1 ] = n;
-    answer[ r + 2 ] = '\0';
-    n = Constants::readLine(line, fp);
-    strcat( answer, line );
-    last = line[ strlen( line ) - 1 ];
-  }
-
-  string ks = keyphrase;
-  string as = answer;
-
-  if( !strcmp( keyphrase, INTRO_PHRASE ) ) {
-    intros->push_back( as );
-  } else if( !strcmp( keyphrase, UNKNOWN_PHRASE ) ) {
-    unknownPhrases->push_back( as );
-  } else {
-    char tmp[80];
-    p = strtok( keyphrase, "," );
-    while( p ) {
-      //cerr << "\t2: p=" << p << endl;
-      strcpy( tmp, p );
-      string lower = Util::toLowerCase( tmp );
-      (*conversations)[ lower ] = answers->size();
-      p = strtok( NULL, "," );
-    }
-    answers->push_back( as );
-  }
-
-  return n;
 }
 
 Board::~Board() {
@@ -694,6 +641,16 @@ char *Mission::getAnswer( char *keyphrase ) {
   }
 }
 
+char *Mission::getFirstKeyPhrase( char *keyphrase ) {
+  string ks = keyphrase;
+  if( firstKeyPhrase.find( ks ) != firstKeyPhrase.end() ) {
+    return (char*)(firstKeyPhrase[ ks ].c_str());
+  } else {
+    cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
+    return NULL;
+  }
+}
+
 char *Mission::getIntro( char *s ) {
 	string npc = s;
   if( npcConversations.find( s ) == npcConversations.end() ) {
@@ -745,6 +702,23 @@ char *Mission::getAnswer( char *s, char *keyphrase ) {
   }
 }
 
+char *Mission::getFirstKeyPhrase( char *s, char *keyphrase ) {
+  string npc = s;
+  if( npcConversations.find( npc ) == npcConversations.end() ) {
+    //cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
+    return NULL;
+  }
+  NpcConversation *nc = npcConversations[ npc ];
+
+  string ks = keyphrase;
+  if( nc->npc_firstKeyPhrase.find( ks ) != nc->npc_firstKeyPhrase.end() ) {
+    return (char*)( nc->npc_firstKeyPhrase[ ks ].c_str());
+  } else {
+    cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
+    return NULL;
+  }
+}
+
 void Mission::clearConversations() {
   // clean up
   for( map<string,NpcInfo*>::iterator i=npcInfos.begin(); i!=npcInfos.end(); ++i) {
@@ -755,6 +729,7 @@ void Mission::clearConversations() {
   intros.clear();
   unknownPhrases.clear();
   conversations.clear();
+  firstKeyPhrase.clear();
   answers.clear();
   for (map<string,NpcConversation*>::iterator i=npcConversations.begin(); i!=npcConversations.end(); ++i) {
     NpcConversation *npcConversation = i->second;
@@ -929,11 +904,12 @@ void Mission::initConversations( ConfigLang *config, GameAdapter *adapter, bool 
 
 void Mission::setGeneralConversationLine( string keyphrase, string answer ) {
 	storeConversationLine( keyphrase, 
-												 answer,
-												 &Mission::intros, 
-												 &Mission::unknownPhrases,
-												 &Mission::conversations,
-												 &Mission::answers );
+						   answer,
+						   &Mission::intros, 
+						   &Mission::unknownPhrases,
+						   &Mission::conversations,
+						   &Mission::firstKeyPhrase,
+						   &Mission::answers );
 }
 
 void Mission::setConversationLine( string npc, string keyphrase, string answer ) {
@@ -946,32 +922,36 @@ void Mission::setConversationLine( string npc, string keyphrase, string answer )
 	}
 	
 	storeConversationLine( keyphrase, 
-												 answer, 
-												 &npcConv->npc_intros, 
-												 &npcConv->npc_unknownPhrases,
-												 &npcConv->npc_conversations,
-												 &npcConv->npc_answers );
+						   answer, 
+						   &npcConv->npc_intros, 
+						   &npcConv->npc_unknownPhrases,
+						   &npcConv->npc_conversations,
+						   &npcConv->npc_firstKeyPhrase,
+						   &npcConv->npc_answers );
 }												 	
 
 void Mission::storeConversationLine( string keyphrase, 
-																		 string answer,
-																		 vector<string> *intros,
-																		 vector<string> *unknownPhrases,
-																		 map<string, int> *conversations,
-																		 vector<string> *answers ) {
-	if( keyphrase == INTRO_PHRASE ) {
+									 string answer,
+									 vector<string> *intros,
+									 vector<string> *unknownPhrases,
+									 map<string, int> *conversations,
+									 map<string, string> *firstKeyPhrase,
+									 vector<string> *answers ) {
+  if( keyphrase == INTRO_PHRASE ) {
     intros->push_back( answer );
   } else if( keyphrase == UNKNOWN_PHRASE ) {
     unknownPhrases->push_back( answer );
   } else {
-		char line[300];
-		strcpy( line, keyphrase.c_str() );
-
+	char line[300];
+	strcpy( line, keyphrase.c_str() );
+	
     char tmp[80];
     char *p = strtok( line, "," );
+	string first = p;
     while( p ) {
       strcpy( tmp, p );
       string lower = Util::toLowerCase( tmp );
+	  (*firstKeyPhrase)[ lower ] = first;
       (*conversations)[ lower ] = answers->size();
       p = strtok( NULL, "," );
     }

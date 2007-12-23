@@ -268,40 +268,35 @@ function converse( creature, question ) {
   // Orhithales will not give you information until the armor has been recovered
   if( creature.getName() == "Orhithales Grimwise" &&
       !( scourgeGame.getMission().isCompleted() ) &&
-      ( question == _( "dragonscale" ) ||
-        question == _( "armor" ) ) ) {
+      question == "SQ_DRAGONSCALE_ARMOR" ) {
     return _( "Yes, yes... quite so... carry on!" );
   } else if( creature.getName() == "Sabien Gartu" ) {
 		if( !( scourgeGame.getMission().isCompleted() ) &&
-				scourgeGame.getMission().getChapter() != 7 &&
-				( question == _( "door" ) ||
-					question == _( "seal" ) ||
-					question == _( "sealed" ) ||
-					question == _( "lock" ) ||
-					question == _( "locked" ) ) ) {
+			scourgeGame.getMission().getChapter() != 7 &&
+			question == "SQ_LOCKED_DOOR" ) {	
 			scourgeGame.getMission().setCompleted();
 		} else if( scourgeGame.getMission().getChapter() == 7 ) {
-      if( question == _( "after" ) || question == _( "stop" ) ) {
+		  if( question == "SQ_AFTER" ) {
         // remove map block at 294,223 to make door accessible
         scourgeGame.getMission().removeMapPosition( 294, 223, 0 );
       }
     }
   } else if( creature.getName() == "Karzul Agmordexu" &&
              !( scourgeGame.getMission().isCompleted() ) &&
-             ( question == _( "serves" ) || question == _( "gift" ) ) ) {
+             question == "SQ_SERVES" ) {
     scourgeGame.getMission().setCompleted();
   }	else if( creature.getName() == "Positive Energy of Hornaxx" ) {
-		if( question.tolower() == "unamoin" ) {
+		if( question == "SQ_UNAMOIN" ) {
 			storePartyLevel();
-		} else if( question.tolower() == _( "tokens" ) ) {
+		} else if( question == "SQ_TOKENS" ) {
 			assignAntimagicItems();
 		}
 	} else if( creature.getName() == "Mothrazu" &&
-						 question.tolower() == _( "doom" ) ) {
+						 question == "SQ_DOOM" ) {
 		mothrazuTransforms( creature );
 	} else if( creature.getName() == "Spawn of Arcanex" ) {
 		if( !( scourgeGame.getMission().isCompleted() ) && 
-				question == _( "karzul" ) ) {
+				question == "SQ_KARZUL" ) {
 			scourgeGame.getMission().setCompleted();
 		}
 	}
