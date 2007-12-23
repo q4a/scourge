@@ -50,7 +50,8 @@ class NpcConversation {
 
     std::vector<std::string> npc_intros;
     std::vector<std::string> npc_unknownPhrases;
-    std::map<std::string, int> npc_conversations;    
+    std::map<std::string, int> npc_conversations;
+	std::map<std::string, std::string> npc_firstKeyPhrase;
     std::vector<std::string> npc_answers;    
 };
 
@@ -108,15 +109,18 @@ public:
   static std::vector<std::string> intros;
   static std::vector<std::string> unknownPhrases;
   static std::map<std::string, int> conversations;
+  static std::map<std::string, std::string> firstKeyPhrase;
   static std::vector<std::string> answers;
   static std::map<std::string,NpcConversation*> npcConversations;
   static std::map<std::string, NpcInfo*> npcInfos;
 
   static char *getIntro();
   static char *getAnswer( char *keyphrase );
+  static char *getFirstKeyPhrase( char *keyphrase );
   static char *getIntro( char *npc );
-	static bool setIntro( Creature *creature, char *keyphrase );
+  static bool setIntro( Creature *creature, char *keyphrase );
   static char *getAnswer( char *npc, char *keyphrase );
+  static char *getFirstKeyPhrase( char *npc, char *keyphrase );
   /**
    * Load extra data from text file alongside an edited map.
    * "fileName" in this case is the name of the .map binary file 
@@ -225,21 +229,16 @@ private:
 	static void setGeneralConversationLine( std::string keyphrase, std::string answer );
 	static void setConversationLine( std::string npc, std::string keyphrase, std::string answer );
 	static void storeConversationLine( std::string keyphrase, 
-																		 std::string answer,
-																		 std::vector<std::string> *intros,
-																		 std::vector<std::string> *unknownPhrases,
-																		 std::map<std::string, int> *conversations,
-																		 std::vector<std::string> *answers );
+									   std::string answer,
+									   std::vector<std::string> *intros,
+									   std::vector<std::string> *unknownPhrases,
+									   std::map<std::string, int> *conversations,
+									   std::map<std::string, std::string> *firstKeyPhrase,
+									   std::vector<std::string> *answers );
   static NpcInfo *getNpcInfo( int x, int y );
   static std::string getNpcInfoKey( int x, int y );
   
   void checkMissionCompleted();
-  static int readConversationLine( FILE *fp, char *line, int n,
-                                   std::vector<std::string> *intros,
-                                   std::vector<std::string> *unknownPhrases,
-                                   std::map<std::string, int> *conversations,
-                                   std::vector<std::string> *answers );
-  
 };                                  
 
 

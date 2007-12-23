@@ -181,9 +181,18 @@ void ConversationGui::wordClicked( char *word ) {
   //cerr << "Clicked: " << word << endl;
 
   // try to get the answer from script
+  char first[255];
+  if( useCreature ) {
+	char *s = Mission::getFirstKeyPhrase( creature->getMonster()->getType(), word );
+	if( !s ) s = Mission::getFirstKeyPhrase( creature->getName(), word );
+	strcpy( first, s );
+  } else {
+	strcpy( first, Mission::getFirstKeyPhrase( word ) );
+  }
+
   char answerStr[255];
   scourge->getSession()->getSquirrel()->
-    callConversationMethod( "converse", creature, (const char*)word, answerStr );
+    callConversationMethod( "converse", creature, first, answerStr );
   if( !strlen( answerStr ) ) {
     // Get the answer the usual way
     if( creature ) {
@@ -202,9 +211,9 @@ void ConversationGui::wordClicked( char *word ) {
     }
   
     if( useCreature ) {
-			char *s = Mission::getAnswer( creature->getMonster()->getType(), word );
-			if( !s ) s = Mission::getAnswer( creature->getName(), word );
-			answer->setText( s );
+	  char *s = Mission::getAnswer( creature->getMonster()->getType(), word );
+	  if( !s ) s = Mission::getAnswer( creature->getName(), word );
+	  answer->setText( s );
     } else {
       answer->setText( Mission::getAnswer( word ) );
     }
