@@ -1897,44 +1897,21 @@ void Scourge::moveMonster(Creature *monster) {
       monster->setMotion(Constants::MOTION_LOITER);//the monster will plan a path to wander on next decision cycle
       monster->cancelTarget();
       return;
-    } //else {
-      //monster->moveToLocator(levelMap);
-    //}
+    }
 #endif
     // see if there's another target that's closer
     if(monster->getAction() == Constants::ACTION_NO_ACTION) {
       monster->decideMonsterAction();
     }
+    monster->moveToLocator(); //required here to make them move?
   } 
   //CASE 3: any other characters, NPCs or monsters
-  else{/* if( monster->getCharacter() || 
-         ( monster->isNpc() && monster->getMotion() == Constants::MOTION_MOVE_TOWARDS ) ||
-           monster->getMotion() == Constants::MOTION_LOITER ) { */
-    // attack the closest player
-   // if( BATTLES_ENABLED &&
-   //     (int)(20.0f * rand()/RAND_MAX) == 0) { // 1/20 chance of joining battle
-      monster->decideMonsterAction();
-   // } 
-    //else {
-    if(monster->getMotion() == Constants::MOTION_LOITER){ //even after deciding an action they are loitering..
-      // random (non-attack) monster movement
-	//monster->move(monster->getDir());
+  else{
+    monster->decideMonsterAction();
+   // if(monster->getMotion() == Constants::MOTION_LOITER){ //even after deciding an action they are loitering..
       monster->moveToLocator(); //this now handles wandering as well
-    }
-  }/*
-  //CASE 4: Motionless monsters
-  else if(monster->getMotion() == Constants::MOTION_STAND) {
-    if( (int)(40.0f * rand()/RAND_MAX) == 0) { // 1/40 chance of wandering
-      monster->setMotion(Constants::MOTION_LOITER);
-    } else {
-      monster->decideMonsterAction();
-    }
-  } 
-  
-  //CASE 5: Error.
-  else {
-    cerr << "monster not moving: " << monster->getType() << " motion=" << monster->getMotion() << endl;
-  }*/
+   // }
+  }
 }
 
 void Scourge::openContainerGui(Item *container) {

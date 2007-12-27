@@ -99,7 +99,7 @@ bool ClearLocationsGoal::fulfilledBy( CPathNode * node){
   for(int i = 0; i < w; i++)
     for(int j = 0; j < d; j++){
       loc.x = x+i;
-      loc.y = y+j;
+      loc.y = y-j;
       if((setItr = locations->find(loc)) != locations->end())
         return false;
     }
@@ -119,9 +119,9 @@ SingleCreatureGoal::~SingleCreatureGoal(){}
 bool SingleCreatureGoal::fulfilledBy( CPathNode * node){
   int cx = toint(target->getX());
   int cy = toint(target->getY());
-  return node->x >= cx && node->y >= cy &&
+  return node->x >= cx && node->y <= cy &&
          node->x < cx + target->getShape()->getWidth() &&
-         node->y < cy + target->getShape()->getDepth();
+         node->y > cy - target->getShape()->getDepth();
 }
 
 ///////////////////
@@ -250,10 +250,10 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
                       GoalFunction * goal,
                       Heuristic * heuristic ) {
 
-  if( PATH_DEBUG ) 
-		cerr << "Util::findPath for " << creature->getName() << 
-		" maxNodes=" << maxNodes << " ignoreParty=" << ignoreParty << 
-		endl;
+  //if( PATH_DEBUG ) 
+//		cerr << "Util::findPath for " << creature->getName() << 
+//		" maxNodes=" << maxNodes << " ignoreParty=" << ignoreParty << 
+//		endl;
 
   if(sx < 0 || sy < 0 || sx > MAP_WIDTH || sy > MAP_DEPTH){ //we'll waste heaps of time trying to find these
     if(pVector->size()) pVector->clear(); // just clear the old path
@@ -359,8 +359,8 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
   if (!closed.empty()) {
     // Create the path from elements of the CLOSED container
     if(path.size()) path.erase(path.begin(), path.end());
-    if( PATH_DEBUG ) 
-      cout << "Final node " << closestNode->x << "," << closestNode->y << " fulfils goal? " << goal->fulfilledBy(closestNode) <<"\n";
+    //if( PATH_DEBUG ) 
+     // cout << "Final node " << closestNode->x << "," << closestNode->y << " fulfils goal? " << goal->fulfilledBy(closestNode) <<"\n";
     CPathNode nextNode = *closestNode;
     path.push_back(nextNode);
     CPathNode * parent = nextNode.parent;

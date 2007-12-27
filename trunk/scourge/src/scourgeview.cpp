@@ -710,7 +710,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
   // show path
   if( !creature->getStateMod( StateMod::dead ) &&
-			( ( PATH_DEBUG && !creature->isMonster() ) ||
+			( ( PATH_DEBUG  ) ||
 				( player && scourge->inTurnBasedCombat() ) ) ) {
 		//glDisable( GL_DEPTH_TEST );
     for( int i = creature->getPathManager()->getPositionOnPath();

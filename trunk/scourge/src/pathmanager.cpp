@@ -44,6 +44,12 @@ static const Sint16 layout[][4][2] = {
   { {0, 0}, {-1, 1}, {1, 1}, {0, 3}}   // CROSS_FORMATION
 };
 
+/**
+ * The probabilities of turning in each direction when making a
+ * wandering path. Defined clockwise from current direction.
+ **/
+static const float turnProbabilities[8] = {0.7f,0.1f,0.03f,0.015f,0.01f,0.015f,0.03f,0.1f};
+
 PathManager::PathManager(Creature* owner){
   this->owner = owner;
   positionOnPath = 0;
@@ -74,7 +80,7 @@ bool PathManager::findPath(int x, int y, Creature* player, Map* map, bool ignore
  **/
 bool PathManager::findPathToCreature(Creature* target, Creature* player, Map* map, float distance, bool ignoreParty, int maxNodes){
   GoalFunction * goal = new GetCloseGoal(owner,target,distance);
-  Heuristic * heuristic = new DiagonalDistanceHeuristic(toint(target->getX() + target->getShape()->getWidth()/2.0f),toint(target->getY()+ target->getShape()->getDepth()/2.0f));
+  Heuristic * heuristic = new DiagonalDistanceHeuristic(toint(target->getX() + target->getShape()->getWidth()/2.0f),toint(target->getY() - target->getShape()->getDepth()/2.0f));
   AStar::findPath(toint(owner->getX()),toint(owner->getY()),&path,map,owner,player,maxNodes,ignoreParty,goal,heuristic);
   delete heuristic;
   delete goal;
@@ -127,9 +133,57 @@ void PathManager::findWanderingPath(unsigned int maxPathLength, Creature* player
  * Adds a location to path.
  * To be used for building random walks. Tries turning in all directions if blocked.
  * Returns the new facing direction if a location was added, otherwise returns 0
- * Walking diagonally into a corner will trap a wandering creature, but that's just too bad.
  **/
 Uint16 PathManager::addNextLocation(int cx, int cy, Uint16 direction, Creature* player, Map* map){
+  
+  //first run through each direction seeing which are possible
+  Uint16 canTurn = 0;
+  Uint16 dir = direction;
+  Uint16 mask = 1;
+  float totalProbability = 0;
+  int x,y;
+  for(Uint16 i = 0; i < 8; i++){
+    x = nextX(cx,dir);
+    y = nextY(cy,dir);
+    if(!AStar::isBlocked(x,y,owner,player,map,false)){
+      canTurn = canTurn | mask;
+      totalProbability += turnProbabilities[i];
+    }
+    dir = getClockwiseDirection(dir);
+    mask *= 2;
+  }
+
+  //do we have any to chose from?
+  if(canTurn == 0)
+    return 0; // we are blocked in
+
+  //now we randomly choose one
+  float random = (totalProbability * rand()/RAND_MAX);
+  mask = 1;
+  for(Uint16 i = 0; i < 8; i++){
+    if((canTurn & mask) != 0){ //can use this direction, check if we chose it
+      random -= turnProbabilities[i];
+      if(random <= 0){ //our choice!
+        //turn to the direction
+        for(int j = 0; j < i; j++)
+          direction = getClockwiseDirection(direction);
+        //create the new location
+        Location next;
+        next.x = nextX(cx,direction);
+        next.y = nextY(cy,direction);
+        //add it to the path and return
+        path.push_back(next);
+        return direction;
+      }
+    }
+    //either can't turn, or have chosen not to. Continue
+    mask *= 2;
+  }
+
+  //we shouldn't get here, but assume we are blocked
+  //cerr << "Overflowed random direction generation.\n";
+  return 0;
+/*
   //first decide to whether deviate slightly. 1/8 chance each of left and right
   int random = (int)(8.0f * rand()/RAND_MAX);
   if(random == 0) direction = getClockwiseDirection(direction);
@@ -198,7 +252,7 @@ Uint16 PathManager::addNextLocation(int cx, int cy, Uint16 direction, Creature* 
   if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
     path.push_back(next);
     return direction;
-  }
+  }*/
   //we are blocked in
   return 0;
 }
@@ -276,7 +330,7 @@ void PathManager::calculateAllPathLocations(){
     for(int k = 0; k < owner->getShape()->getWidth(); k++)
       for(int m = 0; m < owner->getShape()->getDepth(); m++){
           loc.x = x+k;
-          loc.y = y+m;
+          loc.y = y-m;
           allPathLocations.insert(loc);
       }
   }
@@ -327,7 +381,7 @@ bool PathManager::isBlockingPath(Creature* blocker, int x, int y){
   for(int i = 0; i < blocker->getShape()->getWidth(); i++)
     for(int j = 0; j < blocker->getShape()->getDepth(); j++){
       loc.x = x+i;
-      loc.y = y+j;
+      loc.y = y-j;
       if((containsItr = allPathLocations.find(loc)) != allPathLocations.end()){
         return true;
       }
@@ -342,9 +396,9 @@ bool PathManager::isPathToTargetCreature() {
   Creature* target = owner->getTargetCreature();
   int tx = toint(target->getX());
   int ty = toint(target->getY());
-  return pos.x >= tx && pos.y >= ty && 
+  return pos.x >= tx && pos.y > ty - toint(target->getShape()->getDepth()) && 
          pos.x < tx + toint(target->getShape()->getWidth()) &&
-         pos.y < ty + toint(target->getShape()->getDepth());
+         pos.y <= ty;
 }
 
 // does the path get close enough to the target creature
