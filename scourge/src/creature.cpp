@@ -728,13 +728,7 @@ bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNot
 }
 
 Location *Creature::moveToLocator() {
-  Location *pos = NULL;
-  //need to see if we have ended our wandering. This is incase we aren't using decideMonsterAction(), like at HQ
-  //it would be better if this wasn't done here, since this will get called a lot if we are stuck.
-  if(getMotion() == Constants::MOTION_LOITER && pathManager->atEndOfPath())
-    pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
-  
-  
+  Location *pos = NULL; 
 
   //we either have a target we want to reach, or we are wandering around
   if(selX > -1 || getMotion() == Constants::MOTION_LOITER) { 
@@ -751,7 +745,7 @@ Location *Creature::moveToLocator() {
       }
       else{
         stopMoving();
-        setMotion( Constants::MOTION_STAND);	
+        setMotion( Constants::MOTION_STAND);
       }	
       // stop move-away-s
      /* if( this == session->getParty()->getPlayer() ) {
@@ -766,15 +760,9 @@ Location *Creature::moveToLocator() {
       }*/
     } 
     else if( pos ) {
-      // if blocked by a creature (non-monster), tell them to move out of the way
-      /*if( pos && pos->creature &&
-        pos->creature != session->getParty()->getPlayer() &&
-        ( !pos->creature->isMonster() || pos->creature->isNpc() ) ) {				
-        ((Creature*)pos->creature)->moveAway( this );
-      }*/
       if(getMotion() != Constants::MOTION_LOITER)
-        pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());        
-        //else cout << getName() << " has been unable to move while wandering.\n Path length is " << pathManager->getPathRemainingSize() << "\n Next step is from " << toint(getX()) << "," << toint(getY()) << " to " << pathManager->getNextStepOnPath().x << "," << pathManager->getNextStepOnPath().y <<"\n";
+        pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());
+
       cantMoveCounter++;
       //loiterers can just wander off
       if(getMotion() == Constants::MOTION_LOITER){
@@ -783,8 +771,9 @@ Location *Creature::moveToLocator() {
           setMotion(Constants::MOTION_STAND);
           cantMoveCounter = 0;
         }
-        else if(cantMoveCounter > 5)
+        else if(cantMoveCounter > 5){
           pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
+        }
       }
     } 
     else if( !pos ) {
@@ -792,6 +781,9 @@ Location *Creature::moveToLocator() {
       setMoving( true );
     }
   }
+ // else{
+ //   cout << getName() << " has no target and is not loitering. motion is " << getMotion() << "\n";
+ // }
   return pos;
 }
 
@@ -802,7 +794,7 @@ Location *Creature::takeAStepOnPath() {
 	Location *position = NULL;
   int a = ((AnimatedShape*)getShape())->getCurrentAnimation();
 
-  if(!pathManager->atEndOfPath() && a != MD2_TAUNT ) {
+  if(!pathManager->atEndOfPath() && a == MD2_RUN ){ //a != MD2_TAUNT ) {
 
     // take a step on the bestPath
     Location location = pathManager->getNextStepOnPath();
@@ -821,7 +813,7 @@ Location *Creature::takeAStepOnPath() {
     // Tolerance is 0.5 because toint will round to nearest int on map from there.
     GLfloat tolerance = 0.5f;
     if( my > tolerance ) newY += step; 
-    else if( my <= -tolerance ) newY -= step; //I think <= not <. E.g, lx = 4.0, getX() = 4.5, then we still need to step
+    else if( my <= -tolerance ) newY -= step; //I think "<=" not "<". E.g, lx = 4.0, getX() = 4.5, then we still need to step
     if( mx > tolerance ) newX += step;
     else if( mx <= -tolerance ) newX -= step;
     
@@ -879,7 +871,7 @@ Location *Creature::takeAStepOnPath() {
         pathManager->incrementPositionOnPath();
         //we'll clear the path every so often - each time we move a step is ok
         if(getMotion() != Constants::MOTION_LOITER)
-          pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap()); //this clears the path infront, and unfortunately the path behind
+          pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap()); //this clears the path infront
       }
     } else {
       // if we can't get to the destination, stop trying
@@ -1993,39 +1985,39 @@ void Creature::decideMonsterAction() {
     return;
   } 
 
-  //anyone loitering or wandering has only 1/20 chance of breaking the cycle
+  //CASE 2: Loiterers and standers
+  //aggressives loitering have only 1/20 chance of breaking the cycle
   if((getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND) &&
-      (int)(20.0f * rand()/RAND_MAX) != 0){
-      //there is now a 1/40 chance of flipping between wandering and standing.
-      if((int)(40.0f * rand()/RAND_MAX) == 0){
-        if(getMotion() == Constants::MOTION_STAND){ 
+      (!isMonster() || isNpc() || (int)(20.0f * rand()/RAND_MAX) != 0)){
+      if(getMotion() == Constants::MOTION_STAND){
+        //if standing, there is a 1/500 chance to start loitering. Has to be a slim chance because
+        //this gets checked so often..
+        if((int)(500.0f * rand()/RAND_MAX) == 0){ 
           //need to make a path to wander on
           pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
           setMotion(Constants::MOTION_LOITER);
         }
-        else{
-          setMotion(Constants::MOTION_STAND);
-          stopMoving(); //kill the animations?
+        else if(!isMonster() || isNpc()){
+          //friendlies also have a chance to wave etc.
+          int n = (int)( 100.0f * rand()/RAND_MAX );
+          switch( n ) {
+            case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;//1%
+            case 1 : getShape()->setCurrentAnimation(MD2_POINT); break;//1%
+            case 2 : getShape()->setCurrentAnimation(MD2_SALUTE); break;//1%
+            default : getShape()->setCurrentAnimation(MD2_STAND); break;//97%
+          }
         }
       }
       else if(getMotion() == Constants::MOTION_LOITER && pathManager->atEndOfPath()){
-        //we are loitering, going to stay loitering, and have no path to walk on
-        pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
+        //a 1/3 chance of stopping walking at the end of a wandering path
+        if((int)(3.0f * rand()/RAND_MAX) == 0){
+          setMotion(Constants::MOTION_STAND);
+          stopMoving();
+        }
+        else
+          pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
       }
     return;
-  }
-
-  //CASE 2: A non-aggressive
-  else if( !monster || monster->isNpc() ) {
-    if( getMotion() == Constants::MOTION_MOVE_AWAY ) return;
-    int n = (int)( 10.0f * rand()/RAND_MAX );
-    switch( n ) {
-    case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;//10%
-    case 1 : getShape()->setCurrentAnimation(MD2_POINT); break;//10%
-    case 2 : getShape()->setCurrentAnimation(MD2_SALUTE); break;//10%
-    default : getShape()->setCurrentAnimation(MD2_STAND); break;//70%
-    }
-    setMotion(Constants::MOTION_STAND); //they will be back wandering/standing next decision cycle
   } 
   //CASE 3: Other monsters (aggressive)
   else {   

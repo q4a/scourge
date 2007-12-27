@@ -59,7 +59,7 @@
 // show secret doors
 //#define DEBUG_SECRET_DOORS 1
 
-// show every PC's path
+// show every creature's path
 #define PATH_DEBUG 0
 
 // #define DEBUG_SCREENSHOT 1

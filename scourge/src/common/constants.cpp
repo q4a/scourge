@@ -480,6 +480,9 @@ void swap(unsigned char & a, unsigned char & b) {
     return;
 }
 
+/**
+ * Finds the shortest distance from (x1,y1,x1+w1,y1-h1) to the x2,y2 equivalent.
+ **/
 float Constants::distance(float x1, float y1, float w1, float h1,
 					 float x2, float y2, float w2, float h2) {
   //distance between rectangles with x,y and dimensions set to integers
@@ -495,8 +498,8 @@ float Constants::distance(float x1, float y1, float w1, float h1,
   
   float dy = 0;
   //do the rectangles *not* overlap on the y axis?
-  if(ya+ha <= yb || yb+hb <= ya)
-    dy = min(abs(ya+ha-yb), abs(yb+hb-ya));
+  if(ya-ha >= yb || yb-hb >= ya)
+    dy = min(abs(ya-ha-yb), abs(yb-hb-ya));
   
   //same for the x axis
   float dx = 0;
