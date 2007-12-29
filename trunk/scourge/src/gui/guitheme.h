@@ -84,6 +84,7 @@ public:
 	}
   }
 
+  inline char *getName() { return name; }
   inline ThemeElement *getWindowBackground() { return windowBack; }
   inline ThemeElement *getWindowTop() { return windowTop; }
   inline ThemeElement *getWindowBorder() { return windowBorder; }
