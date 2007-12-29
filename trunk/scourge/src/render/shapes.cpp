@@ -462,7 +462,7 @@ char *Shapes::getRandomDescription(int descriptionGroup) {
 // the next two methods are slow, only use during initialization
 GLuint Shapes::findTextureByName( const string& filename, bool loadIfMissing ) {
 	for(int i = 0; i < texture_count; i++) {
-		if(StringCaseCompare(textures[i].filename, filename))
+		if(Util::StringCaseCompare(textures[i].filename, filename))
 			return textures[i].id;
 	}
 	if( loadIfMissing ) {
@@ -732,7 +732,7 @@ void Shapes::setupAlphaBlendedBMP( const string& filename,
 		cerr << "file: " << fn << " red=" << red << " green=" << green << " blue=" << blue << endl;
 	}
 
-	if(StringCaseCompare(fn.substr(fn.length() - 4, 4), ".bmp")) {
+	if(Util::StringCaseCompare(fn.substr(fn.length() - 4, 4), ".bmp")) {
 		(*surface) = SDL_LoadBMP( fn.c_str() );
 	} else {
 		*surface = IMG_Load( fn.c_str() );

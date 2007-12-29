@@ -725,9 +725,3 @@ void Constants::getQuadrantAndAngle( float nx, float ny, int *q, float *angle ) 
 	//cerr << "\tfinal angle=" << (*angle) << " quadrant=" << (*q) << endl;
 }
 
-bool StringCaseCompare(const std::string sStr1, const std::string sStr2) {
-	if (sStr1.length() == sStr2.length())
-		return std::equal(sStr1.begin(), sStr1.end(), sStr2.begin(), equal_ignore_case<std::string::value_type>());
-	else
-		return false;
-}

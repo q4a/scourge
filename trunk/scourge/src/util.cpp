@@ -362,3 +362,10 @@ float Util::getLightComp( float x, float y, float lightAngle ) {
 	// store the value
 	return delta;
 }
+
+bool Util::StringCaseCompare(const std::string sStr1, const std::string sStr2) {
+	if (sStr1.length() == sStr2.length())
+		return std::equal(sStr1.begin(), sStr1.end(), sStr2.begin(), equal_ignore_case<std::string::value_type>());
+	else
+		return false;
+}
