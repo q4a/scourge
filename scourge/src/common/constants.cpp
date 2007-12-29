@@ -253,33 +253,33 @@ int Constants::getPotionSkillByName(char *p) {
   Return first char after EOL.
  */
 int Constants::readLine(char *line, FILE *fp) {
-  bool reachedEOL = false;
-  int lc = 0;
-  int n;
-  int ret = EOF;
-  // read until the end of line
-  while((n = fgetc(fp)) != EOF) {
-    bool isEOLchar = (n == '\n' || n == '\r');
-    if(reachedEOL) {
-      if(!isEOLchar) {
-        //line[lc++] = '\0';
-        ret = n;
-        break;
-      }
-    } else {
-      if(!isEOLchar) line[lc++] = n;
-      else reachedEOL = true;
-    }
-  }
-  line[lc++] = '\0';
-  // exclude same-line comment
-  for( int i = 0; i < lc; i++ ) {
-    if( line[i] == '#' || line[i] == '%' ) {
-	  line[i] = '\0';
-	  break;
+	bool reachedEOL = false;
+	int lc = 0;
+	int n;
+	int ret = EOF;
+	// read until the end of line
+	while((n = fgetc(fp)) != EOF) {
+		bool isEOLchar = (n == '\n' || n == '\r');
+		if(reachedEOL) {
+			if(!isEOLchar) {
+				//line[lc++] = '\0';
+				ret = n;
+				break;
+			}
+		} else {
+			if(!isEOLchar) line[lc++] = n;
+			else reachedEOL = true;
+		}
 	}
-  }
-  return ret;
+	line[lc++] = '\0';
+	// exclude same-line comment
+	for( int i = 0; i < lc; i++ ) {
+		if( line[i] == '#' || line[i] == '%' ) {
+			line[i] = '\0';
+			break;
+		}
+	}
+	return ret;
 }
 
 // *Note*
@@ -291,72 +291,92 @@ int Constants::readLine(char *line, FILE *fp) {
 
 //////////////////////////////  Math Functions  ////////////////////////////////*
 
-// This computes the magnitude of a normal.   (magnitude = sqrt(x^2 + y^2 + z^2)
-#define Mag(Normal) (sqrt(Normal.x*Normal.x + Normal.y*Normal.y + Normal.z*Normal.z))
-
-// This calculates a vector between 2 points and returns the result
-CVector3 Vector(CVector3 vPoint1, CVector3 vPoint2)
-{
-    CVector3 vVector;                           // The variable to hold the resultant vector
-
-    vVector.x = vPoint1.x - vPoint2.x;          // Subtract point1 and point2 x's
-    vVector.y = vPoint1.y - vPoint2.y;          // Subtract point1 and point2 y's
-    vVector.z = vPoint1.z - vPoint2.z;          // Subtract point1 and point2 z's
-
-    return vVector;                             // Return the resultant vector
+double CVector3::magnitude() const {
+	return sqrt(x*x + y*y + z*z);
 }
 
-// This adds 2 vectors together and returns the result
-CVector3 AddVector(CVector3 vVector1, CVector3 vVector2)
-{
-    CVector3 vResult;                           // The variable to hold the resultant vector
+CVector3 CVector3::operator+(const CVector3& vVector1) const {
+	CVector3 vResult;                  // The variable to hold the resultant vector
 
-    vResult.x = vVector2.x + vVector1.x;        // Add Vector1 and Vector2 x's
-    vResult.y = vVector2.y + vVector1.y;        // Add Vector1 and Vector2 y's
-    vResult.z = vVector2.z + vVector1.z;        // Add Vector1 and Vector2 z's
+	vResult.x = x + vVector1.x;        // Add Vector1 and Vector2 x's
+	vResult.y = y + vVector1.y;        // Add Vector1 and Vector2 y's
+	vResult.z = z + vVector1.z;        // Add Vector1 and Vector2 z's
 
-    return vResult;                             // Return the resultant vector
+	return vResult;                    // Return the resultant vector
 }
 
-// This divides a vector by a single number (scalar) and returns the result
-CVector3 DivideVectorByScaler(CVector3 vVector1, float Scaler)
-{
-    CVector3 vResult;                           // The variable to hold the resultant vector
-
-    vResult.x = vVector1.x / Scaler;            // Divide Vector1's x value by the scaler
-    vResult.y = vVector1.y / Scaler;            // Divide Vector1's y value by the scaler
-    vResult.z = vVector1.z / Scaler;            // Divide Vector1's z value by the scaler
-
-    return vResult;                             // Return the resultant vector
+void CVector3::operator+=(const CVector3& vVector1) {
+	x = x + vVector1.x;
+	y = y + vVector1.y;
+	z = z + vVector1.z;
 }
 
-// This returns the cross product between 2 vectors
-CVector3 Cross(CVector3 vVector1, CVector3 vVector2)
-{
-    CVector3 vCross;                                // The vector to hold the cross product
-                                                // Get the X value
-    vCross.x = ((vVector1.y * vVector2.z) - (vVector1.z * vVector2.y));
-                                                // Get the Y value
-    vCross.y = ((vVector1.z * vVector2.x) - (vVector1.x * vVector2.z));
-                                                // Get the Z value
-    vCross.z = ((vVector1.x * vVector2.y) - (vVector1.y * vVector2.x));
+CVector3 CVector3::operator-(const CVector3& vPoint1) const {
+	CVector3 vVector;                   // The variable to hold the resultant vector
 
-    return vCross;                              // Return the cross product
+	vVector.x = x - vPoint1.x;          // Subtract point1 and point2 x's
+	vVector.y = y - vPoint1.y;          // Subtract point1 and point2 y's
+	vVector.z = z - vPoint1.z;          // Subtract point1 and point2 z's
+
+	return vVector;                     // Return the resultant vector
+}
+
+CVector3 CVector3::operator/(const float scalar) const {
+	CVector3 vResult;                           // The variable to hold the resultant vector
+
+	vResult.x = x / scalar;            // Divide Vector1's x value by the scaler
+	vResult.y = y / scalar;            // Divide Vector1's y value by the scaler
+	vResult.z = z / scalar;            // Divide Vector1's z value by the scaler
+
+	return vResult;                             // Return the resultant vector
+}
+
+void CVector3::operator/=(const float scalar) {
+	x /= scalar;
+	y /= scalar;
+	z /= scalar;
+}
+
+bool CVector3::operator==(const CVector3& compare) const {
+	return x == compare.x && y == compare.y && z == compare.z;
+}
+
+void CVector3::operator=(const CVector3& copy) {
+	x = copy.x;
+	y = copy.y;
+	z = copy.z;
 }
 
 // This returns the normal of a vector
-CVector3 Normalize(CVector3 vNormal)
-{
-    double Magnitude;                           // This holds the magitude
-
-    Magnitude = Mag(vNormal);                   // Get the magnitude
-
-    vNormal.x /= (float)Magnitude;              // Divide the vector's X by the magnitude
-    vNormal.y /= (float)Magnitude;              // Divide the vector's Y by the magnitude
-    vNormal.z /= (float)Magnitude;              // Divide the vector's Z by the magnitude
-
-    return vNormal;                             // Return the normal
+void CVector3::normalize() {
+	double mag = magnitude();
+	x /= mag;
+	y /= mag;
+	z /= mag;
 }
+
+// This returns the cross product between 2 vectors
+CVector3 CVector3::cross(const CVector3& vVector1) {
+	CVector3 vCross;                                  // The vector to hold the cross product
+
+	vCross.x = ((y * vVector1.z) - (z * vVector1.y)); // Get the X value
+	vCross.y = ((z * vVector1.x) - (x * vVector1.z)); // Get the Y value
+	vCross.z = ((x * vVector1.y) - (y * vVector1.x)); // Get the Z value
+
+	return vCross;                                    // Return the cross product
+}
+
+CVector3::CVector3() {
+}
+
+CVector3::CVector3(float xn, float yn, float zn)
+ : x(xn),y(yn),z(zn) {
+}
+
+CVector3::CVector3(const CVector3& copy)
+ : x(copy.x),y(copy.y),z(copy.z) {
+}
+
 
 ///////////////////////////////// COMPUTER NORMALS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
@@ -365,180 +385,142 @@ CVector3 Normalize(CVector3 vNormal)
 ///////////////////////////////// COMPUTER NORMALS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
 void findNormal( CVector3 *p1, CVector3 *p2, CVector3 *p3, CVector3 *normal ) {
-  CVector3 vVector1, vVector2, vNormal;
+	CVector3 vNormal;
 
-  // Now let's calculate the face normals (Get 2 vectors and find the cross product of those 2)
+	// Now let's calculate the face normals (Get 2 vectors and find the cross product of those 2)
+	// assign the cross product of the 2 normals to vNormal (normalize vector, but not a unit vector)
+	vNormal  = (*p1 - *p3).cross( *p3 - *p2 );
+	vNormal.normalize();              // Normalize the cross product to give us the polygons normal
 
-  vVector1 = Vector( *p1, *p3 );      // Get the vector of the polygon (we just need 2 sides for the normal)
-  vVector2 = Vector( *p3, *p2 );      // Get a second vector of the polygon
-
-  vNormal  = Cross( vVector1, vVector2 );       // Return the cross product of the 2 vectors (normalize vector, but not a unit vector)
-  //pTempNormals[i] = vNormal;                  // Save the un-normalized normal for the vertex normals
-  vNormal  = Normalize(vNormal);              // Normalize the cross product to give us the polygons normal
-
-  normal->x = vNormal.x;
-  normal->y = vNormal.y;
-  normal->z = vNormal.z;
+	*normal = vNormal;
 }
 
 void ComputeNormals(t3DModel *pModel)
 {
-    CVector3 vVector1, vVector2, vNormal, vPoly[3];
+	CVector3 vVector1, vVector2, vNormal, vPoly[3];
 
-    // If there are no objects, we can skip this part
-    if(pModel->numOfObjects <= 0)
-        return;
+	// If there are no objects, we can skip this part
+	if(pModel->numOfObjects <= 0)
+		return;
 
-    // What are vertex normals?  And how are they different from other normals?
-    // Well, if you find the normal to a triangle, you are finding a "Face Normal".
-    // If you give OpenGL a face normal for lighting, it will make your object look
-    // really flat and not very round.  If we find the normal for each vertex, it makes
-    // the smooth lighting look.  This also covers up blocky looking objects and they appear
-    // to have more polygons than they do.    Basically, what you do is first
-    // calculate the face normals, then you take the average of all the normals around each
-    // vertex.  It's just averaging.  That way you get a better approximation for that vertex.
+	// What are vertex normals?  And how are they different from other normals?
+	// Well, if you find the normal to a triangle, you are finding a "Face Normal".
+	// If you give OpenGL a face normal for lighting, it will make your object look
+	// really flat and not very round.  If we find the normal for each vertex, it makes
+	// the smooth lighting look.  This also covers up blocky looking objects and they appear
+	// to have more polygons than they do.    Basically, what you do is first
+	// calculate the face normals, then you take the average of all the normals around each
+	// vertex.  It's just averaging.  That way you get a better approximation for that vertex.
 
-    // Go through each of the objects to calculate their normals
-    for(int index = 0; index < pModel->numOfObjects; index++)
-    {
-        // Get the current object
-        t3DObject *pObject = &(pModel->pObject[index]);
+	// Go through each of the objects to calculate their normals
+	for(int index = 0; index < pModel->numOfObjects; index++)
+	{
+		// Get the current object
+		t3DObject *pObject = &(pModel->pObject[index]);
 
-        // Here we allocate all the memory we need to calculate the normals
-        CVector3 *pNormals      = new CVector3 [pObject->numOfFaces];
-        CVector3 *pTempNormals  = new CVector3 [pObject->numOfFaces];
-        pObject->pNormals       = new CVector3 [pObject->numOfVerts];
+		// Here we allocate all the memory we need to calculate the normals
+		CVector3 *pNormals      = new CVector3 [pObject->numOfFaces];
+		CVector3 *pTempNormals  = new CVector3 [pObject->numOfFaces];
+		pObject->pNormals       = new CVector3 [pObject->numOfVerts];
 		pObject->shadingColorDelta = new float [pObject->numOfVerts];
 
-        // Go though all of the faces of this object
-        for(int i=0; i < pObject->numOfFaces; i++)
-        {
-            // To cut down LARGE code, we extract the 3 points of this face
-            vPoly[0] = pObject->pVerts[pObject->pFaces[i].vertIndex[0]];
-            vPoly[1] = pObject->pVerts[pObject->pFaces[i].vertIndex[1]];
-            vPoly[2] = pObject->pVerts[pObject->pFaces[i].vertIndex[2]];
+		// Go though all of the faces of this object
+		for(int i=0; i < pObject->numOfFaces; i++)
+		{
+			// To cut down LARGE code, we extract the 3 points of this face
+			vPoly[0] = pObject->pVerts[pObject->pFaces[i].vertIndex[0]];
+			vPoly[1] = pObject->pVerts[pObject->pFaces[i].vertIndex[1]];
+			vPoly[2] = pObject->pVerts[pObject->pFaces[i].vertIndex[2]];
 
-            // Now let's calculate the face normals (Get 2 vectors and find the cross product of those 2)
+			// Now let's calculate the face normals (Get 2 vectors and find the cross product of those 2)
 
-            vVector1 = Vector(vPoly[0], vPoly[2]);      // Get the vector of the polygon (we just need 2 sides for the normal)
-            vVector2 = Vector(vPoly[2], vPoly[1]);      // Get a second vector of the polygon
+			vVector1 = vPoly[0] - vPoly[2];      // Get the vector of the polygon (we just need 2 sides for the normal)
+			vVector2 = vPoly[2] - vPoly[1];      // Get a second vector of the polygon
 
-            vNormal  = Cross(vVector1, vVector2);       // Return the cross product of the 2 vectors (normalize vector, but not a unit vector)
-            pTempNormals[i] = vNormal;                  // Save the un-normalized normal for the vertex normals
-            vNormal  = Normalize(vNormal);              // Normalize the cross product to give us the polygons normal
+			vNormal  = vVector1.cross( vVector2 );       // Return the cross product of the 2 vectors (normalize vector, but not a unit vector)
+			pTempNormals[i] = vNormal;                  // Save the un-normalized normal for the vertex normals
+			vNormal.normalize();              // Normalize the cross product to give us the polygons normal
 
-            pNormals[i] = vNormal;                      // Assign the normal to the list of normals
-        }
+			pNormals[i] = vNormal;                      // Assign the normal to the list of normals
+		}
 
-        //////////////// Now Get The Vertex Normals /////////////////
+		//////////////// Now Get The Vertex Normals /////////////////
 
-        CVector3 vSum(0.0, 0.0, 0.0);
-        CVector3 vZero = vSum;
-        int shared=0;
+		CVector3 vSum(0.0, 0.0, 0.0);
+		CVector3 vZero = vSum;
+		int shared=0;
 
-        for (int i = 0; i < pObject->numOfVerts; i++)           // Go through all of the vertices
-        {
-            for (int j = 0; j < pObject->numOfFaces; j++)   // Go through all of the triangles
-            {                                               // Check if the vertex is shared by another face
-                if (pObject->pFaces[j].vertIndex[0] == i ||
-                    pObject->pFaces[j].vertIndex[1] == i ||
-                    pObject->pFaces[j].vertIndex[2] == i)
-                {
-                    vSum = AddVector(vSum, pTempNormals[j]);// Add the un-normalized normal of the shared face
-                    shared++;                               // Increase the number of shared triangles
-                }
-            }
+		for (int i = 0; i < pObject->numOfVerts; i++)           // Go through all of the vertices
+		{
+			for (int j = 0; j < pObject->numOfFaces; j++)   // Go through all of the triangles
+			{                                               // Check if the vertex is shared by another face
+				if (pObject->pFaces[j].vertIndex[0] == i ||
+						pObject->pFaces[j].vertIndex[1] == i ||
+						pObject->pFaces[j].vertIndex[2] == i)
+				{
+					vSum += pTempNormals[j];// Add the un-normalized normal of the shared face
+					shared++;                               // Increase the number of shared triangles
+				}
+			}
 
-            // Get the normal by dividing the sum by the shared.  We negate the shared so it has the normals pointing out.
-            pObject->pNormals[i] = DivideVectorByScaler(vSum, float(-shared));
+			// Get the normal by dividing the sum by the shared.  We negate the shared so it has the normals pointing out.
+			pObject->pNormals[i] = vSum / float(-shared);
 
-            // Normalize the normal for the final vertex normal
-            pObject->pNormals[i] = Normalize(pObject->pNormals[i]);
+			// Normalize the normal for the final vertex normal
+			pObject->pNormals[i].normalize();
 
-            vSum = vZero;                                   // Reset the sum
-            shared = 0;                                     // Reset the shared
-        }
+			vSum = vZero;                                   // Reset the sum
+			shared = 0;                                     // Reset the shared
+		}
 
-        // Free our memory and start over on the next object
-        delete [] pTempNormals;
-        delete [] pNormals;
-    }
+		// Free our memory and start over on the next object
+		delete [] pTempNormals;
+		delete [] pNormals;
+	}
 }
 
-///////////////////////////////////////      SWAP      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////  This swaps 2 elements we pass to it (swaps bytes)
-/////
-//////////////////////////////////////       SWAP      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-void swap(unsigned char & a, unsigned char & b) {
-    unsigned char temp;
-
-    temp = a;
-    a    = b;
-    b    = temp;
-
-    return;
-}
 
 /**
  * Finds the shortest distance from (x1,y1,x1+w1,y1-h1) to the x2,y2 equivalent.
  **/
-float Constants::distance(float x1, float y1, float w1, float h1,
-					 float x2, float y2, float w2, float h2) {
-  //distance between rectangles with x,y and dimensions set to integers
-  int xa = toint(x1);
-  int ya = toint(y1);
-  int wa = toint(w1);
-  int ha = toint(h1);
+float Constants::distance(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
+	//distance between rectangles with x,y and dimensions set to integers
+	int xa = toint(x1);
+	int ya = toint(y1);
+	int wa = toint(w1);
+	int ha = toint(h1);
 
-  int xb = toint(x2);
-  int yb = toint(y2);
-  int wb = toint(w2);
-  int hb = toint(h2);
-  
-  float dy = 0;
-  //do the rectangles *not* overlap on the y axis?
-  if(ya-ha >= yb || yb-hb >= ya)
-    dy = min(abs(ya-ha-yb), abs(yb-hb-ya));
-  
-  //same for the x axis
-  float dx = 0;
-  //do the rectangles *not* overlap on the x axis?
-  if(xa+wa <= xb || xb+wb <= xa)
-    dx = min(abs(xa+wa-xb), abs(xb+wb-xa));
-  return sqrt(dx*dx + dy*dy);
- /* // the distance between their centers
-  float rx1 = x1 + (w1 / 2.0f);
-  float rx2 = x2 + (w2 / 2.0f);
-  float ry1 = y1 - (h1 / 2.0f);
-  float ry2 = y2 - (h2 / 2.0f);
-
-  float d = sqrt(((rx2 - rx1) * (rx2 - rx1)) +
-				 ((ry2 - ry1) * (ry2 - ry1)));
-
-  // remove the shapes' radius from the distance
-  float d1 = sqrt(((w1 / 2.0f) * (w1 / 2.0f)) +
-				  ((h1 / 2.0f) * (h1 / 2.0f)));
-  float d2 = sqrt(((w2 / 2.0f) * (w2 / 2.0f)) +
-				  ((h2 / 2.0f) * (h2 / 2.0f)));
-
-  float ret = d - (d1 + d2);*/
- // return (ret < 0 ? 0 : ret);
+	int xb = toint(x2);
+	int yb = toint(y2);
+	int wb = toint(w2);
+	int hb = toint(h2);
+	
+	float dy = 0;
+	//do the rectangles *not* overlap on the y axis?
+	if(ya-ha >= yb || yb-hb >= ya)
+		dy = min(abs(ya-ha-yb), abs(yb-hb-ya));
+	
+	//same for the x axis
+	float dx = 0;
+	//do the rectangles *not* overlap on the x axis?
+	if(xa+wa <= xb || xb+wb <= xa)
+		dx = min(abs(xa+wa-xb), abs(xb+wb-xa));
+	return sqrt(dx*dx + dy*dy);
 }
 
 void Constants::checkTexture(char *message, int w, int h) {
-  GLint maxTextureSize;
-  glGetIntegerv( GL_MAX_TEXTURE_SIZE, &maxTextureSize );
-  if( w > maxTextureSize || h > maxTextureSize) {
-    cerr << "*****************************" << endl;
-    cerr << "*****************************" << endl;
-    cerr << "***&&&*** " << message <<
-          " size=" << w << "x" << h <<
-          " max texture size=" << maxTextureSize << endl;
-    cerr << "Error: texture too big." << endl;
-    cerr << "*****************************" << endl;
-    cerr << "*****************************" << endl;
-  }
+	GLint maxTextureSize;
+	glGetIntegerv( GL_MAX_TEXTURE_SIZE, &maxTextureSize );
+	if( w > maxTextureSize || h > maxTextureSize) {
+		cerr << "*****************************" << endl;
+		cerr << "*****************************" << endl;
+		cerr << "***&&&*** " << message <<
+					" size=" << w << "x" << h <<
+					" max texture size=" << maxTextureSize << endl;
+		cerr << "Error: texture too big." << endl;
+		cerr << "*****************************" << endl;
+		cerr << "*****************************" << endl;
+	}
 }
 
 #define TEST_FILE "scourge.mo"
@@ -548,7 +530,7 @@ int Constants::findLocaleDir() {
 	// To change it, change the env var LANGUAGE or LANG (order of precedence.)
 	setlocale( LC_ALL, "C" );
 	setlocale( LC_MESSAGES, "" );
-	
+
 	// assume translations dir in rootDir
 	localeDir = rootDir + "/translations";
 	cerr << "Looking for localized resources in: " << bindtextdomain( "scourge", localeDir.c_str() ) << endl;
@@ -561,36 +543,36 @@ int Constants::findLocaleDir() {
 
 int Constants::initRootDir( int argc, char *argv[] ) {
 
-  // init the rootdir via binreloc
-  cerr << "Constructing root path:" << endl;
+	// init the rootdir via binreloc
+	cerr << "Constructing root path:" << endl;
 #ifdef WIN32
-  cerr << "\tWindows detected..." << endl;
-  // for windows (binreloc doesn't compile in windows)
-  rootDir = DATA_DIR_NAME;
+	cerr << "\tWindows detected..." << endl;
+	// for windows (binreloc doesn't compile in windows)
+	rootDir = DATA_DIR_NAME;
 #else
 #ifdef ENABLE_BINRELOC
-  cerr << "\tusing binreloc..." << endl;
-  char *p = br_find_data_dir( DATA_DIR_NAME );
-  string tmp = br_find_data_dir( "" ) + "/" + DATA_DIR_NAME;
-  rootDir = tmp;
-  free( p );
+	cerr << "\tusing binreloc..." << endl;
+	char *p = br_find_data_dir( DATA_DIR_NAME );
+	string tmp = br_find_data_dir( "" ) + "/" + DATA_DIR_NAME;
+	rootDir = tmp;
+	free( p );
 #else
-  cerr << "\tnot using binreloc..." << endl;
-  rootDir = DATA_DIR;
+	cerr << "\tnot using binreloc..." << endl;
+	rootDir = DATA_DIR;
 #endif
 #endif
 
-  cerr << "\ttemp rootDir=" << rootDir << endl;
+	cerr << "\ttemp rootDir=" << rootDir << endl;
 
-  // FIXME: for windows, if this doesn't work, try using DATA_DIR
-  // which is made by autoconf
+	// FIXME: for windows, if this doesn't work, try using DATA_DIR
+	// which is made by autoconf
 
-  // Check to see if there's a local version of the data dir
-  // (ie. we're running in the build folder and not in a distribution)
-  std::string dir;
+	// Check to see if there's a local version of the data dir
+	// (ie. we're running in the build folder and not in a distribution)
+	std::string dir;
 
 #ifdef WIN32
-  dir = findLocalResources(argv[0]);
+	dir = findLocalResources(argv[0]);
 #else
 	bool working = false;
 	char *cwd;
@@ -607,99 +589,90 @@ int Constants::initRootDir( int argc, char *argv[] ) {
 		else
 			working = true;
 	}
-  dir = findLocalResources( cwd );
+	dir = findLocalResources( cwd );
 	delete[] cwd;
 #endif
 
-  if(dir.length()) {
-    cerr << "*** Using local data dir. Not running a distribution. dir=" << dir << endl;
-    rootDir = dir + DATA_DIR_NAME;
-    cerr << "\trootDir=" << rootDir << endl;
-  }
+	if(dir.length()) {
+		cerr << "*** Using local data dir. Not running a distribution. dir=" << dir << endl;
+		rootDir = dir + DATA_DIR_NAME;
+		cerr << "\trootDir=" << rootDir << endl;
+	}
 
-  // config check
-  if(argc >= 2 && !strcmp(argv[1], "--test-config")) {
-    cerr << "Configuration:" << endl;
-    std::string dir = get_config_dir_name();
-    std::string file = get_config_file_name();
-    cerr << "starting app: " << argv[0] << endl;
-    cerr << "rootDir=" << rootDir <<
-      "\nconfigDir=" << configDir <<
-      "\nconfigFile=" << CONFIG_FILE <<
-      "\ndir=" << dir <<
-      "\nfile=" << file <<	endl;
-    return 0;
-  }
+	// config check
+	if(argc >= 2 && !strcmp(argv[1], "--test-config")) {
+		cerr << "Configuration:" << endl;
+		std::string dir = get_config_dir_name();
+		std::string file = get_config_file_name();
+		cerr << "starting app: " << argv[0] << endl;
+		cerr << "rootDir=" << rootDir <<
+			"\nconfigDir=" << configDir <<
+			"\nconfigFile=" << CONFIG_FILE <<
+			"\ndir=" << dir <<
+			"\nfile=" << file <<	endl;
+		return 0;
+	}
 
-  // do a final sanity check before running the game
-  if( !checkFile( rootDir, "/textures/test.txt" ) ) {
-    cerr << "ERROR: check for files failed in data dir: " << rootDir << endl;
-    cerr << "Either install the data files at the above location, or rebuild with ./configure --with-data-dir=<new location> or run the game from the source distribution's main directory (the one that contains src,data,etc.)" << endl;
-    return 1;
-  }
+	// do a final sanity check before running the game
+	if( !checkFile( rootDir, "/textures/test.txt" ) ) {
+		cerr << "ERROR: check for files failed in data dir: " << rootDir << endl;
+		cerr << "Either install the data files at the above location, or rebuild with ./configure --with-data-dir=<new location> or run the game from the source distribution's main directory (the one that contains src,data,etc.)" << endl;
+		return 1;
+	}
 
 	findLocaleDir();
 
-  cerr << "Starting session. Final rootDir=" << rootDir << endl;
+	cerr << "Starting session. Final rootDir=" << rootDir << endl;
 
 	return 0;
 }
 
 bool Constants::checkFile(const string& dir, const string& file) {
-  string path = dir + file;
-  //fprintf(stderr, "\tchecking path: %s\n", path);
-  bool ret = true;
-  FILE *fp = fopen(path.c_str(), "rb");
-  if(!fp || ferror(fp)) ret = false;
-  if(fp) fclose(fp);
-  return ret;
+	string path = dir + file;
+	//fprintf(stderr, "\tchecking path: %s\n", path);
+	bool ret = true;
+	FILE *fp = fopen(path.c_str(), "rb");
+	if(!fp || ferror(fp)) ret = false;
+	if(fp) fclose(fp);
+	return ret;
 }
 
 // this function is used to be able to run scourge while developing
 string Constants::findLocalResources(const string& appPath) {
 
-  //cerr << "&^&^&^&^ appPath=" << appPath << endl;
-
-  string testFile = DATA_DIR_NAME;
+	string testFile = DATA_DIR_NAME;
 	testFile.append("/textures/test.txt");
-  // Where are we running from?
-  string dir = appPath;
+	// Where are we running from?
+	string dir = appPath;
 	// append an ending / so the current dir is also considered
 	if( !( dir[ dir.length() - 1 ] == '/' || dir[ dir.length() - 1 ] == SEPARATOR ) )
 		dir.append( "/" );
 
-  // Look in this and the parent dir for a 'data' folder
-  // ('i' has to count to at least 4 for OS X)
-  for(int i = 0; i < 10; i++) {
-    size_t pp = dir.find_last_of( '/' );
-    size_t p = dir.find_last_of( SEPARATOR );
-    if(p == string::npos && pp == string::npos) {
-      cerr << "*** Can't find local version of data dir. You're running a distribution." << endl;
-      dir = "";
-      return dir;
-    }
-    // Take whichever comes first. This is to solve a problem when running in
-    // mingw or cygwin. It may cause problems if the actual path has a \ or / in it.
+	// Look in this and the parent dir for a 'data' folder
+	// ('i' has to count to at least 4 for OS X)
+	for(int i = 0; i < 10; i++) {
+		size_t pp = dir.find_last_of( '/' );
+		size_t p = dir.find_last_of( SEPARATOR );
+		if(p == string::npos && pp == string::npos) {
+			cerr << "*** Can't find local version of data dir. You're running a distribution." << endl;
+			dir = "";
+			return dir;
+		}
+		// Take whichever comes first. This is to solve a problem when running in
+		// mingw or cygwin. It may cause problems if the actual path has a \ or / in it.
 		if(pp > p) 
 			p = pp;
 
 		dir = dir.substr(0, p + 1);
-    //cerr << "*** Looking at: dir=" << dir << endl;
+		//cerr << "*** Looking at: dir=" << dir << endl;
 		if( checkFile( dir, testFile ) ) 
 			return dir;
 
-    // remove the last separator
+		// remove the last separator
 		dir = dir.substr(0, p);
-  }
-  dir = "";
+	}
+	dir = "";
 	return dir;
-}
-
-CVector3::CVector3() {
-}
-
-CVector3::CVector3(float xn, float yn, float zn)
- : x(xn),y(yn),z(zn) {
 }
 
 string GetDataPath(const string& file)
@@ -708,20 +681,19 @@ string GetDataPath(const string& file)
 }
 
 void Constants::getQuadrantAndAngle( float nx, float ny, int *q, float *angle ) {
-  if( nx == 0 ) *angle = ( ny <= 0 ? ( 90.0f + 180.0f ) : 90.0f );
-  else *angle = Constants::toAngle( atan( ny / nx ) );
-  //cerr << "x=" << nx << " y=" << ny << " angle=" << (*angle) << endl;
+	if( nx == 0 ) *angle = ( ny <= 0 ? ( 90.0f + 180.0f ) : 90.0f );
+	else *angle = Constants::toAngle( atan( ny / nx ) );
+	//cerr << "x=" << nx << " y=" << ny << " angle=" << (*angle) << endl;
 
-  // read about the arctan problem: 
-  // http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
-  *q = 1;
-  if( nx < 0 ) {     // Quadrant 2 & 3
-    *q = ( ny >= 0 ? 2 : 3 );
-    (*angle) += 180;
-  } else if( ny < 0 ) { // Quadrant 4
-    *q = 4;
-    (*angle) += 360;
-  }
-	//cerr << "\tfinal angle=" << (*angle) << " quadrant=" << (*q) << endl;
+	// read about the arctan problem: 
+	// http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
+	*q = 1;
+	if( nx < 0 ) {     // Quadrant 2 & 3
+		*q = ( ny >= 0 ? 2 : 3 );
+		(*angle) += 180;
+	} else if( ny < 0 ) { // Quadrant 4
+		*q = 4;
+		(*angle) += 360;
+	}
 }
 
