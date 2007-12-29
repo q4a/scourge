@@ -961,7 +961,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 
 	int w = 0;
 	vector<int> widths;
-	vector<string> lines = Tokenize<vector<string> >(message, "|");
+	vector<string> lines = Util::Tokenize<vector<string> >(message, "|");
 	for(vector<string>::iterator i = lines.begin(); i != lines.end(); i++ ) {
 		int ww = textWidth( i->c_str() ) + 10;
 		widths.push_back( ww );
