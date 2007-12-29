@@ -33,7 +33,6 @@
 // forward decl.
 class Shape;
 class Scourge;
-class Util;
 class Location;
 class Canvas;
 
