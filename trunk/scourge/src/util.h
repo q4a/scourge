@@ -103,20 +103,23 @@ namespace Util {
 
 	float getLightComp( float x, float y, float lightAngle );
 
+	/**
+	* Splits a string on strDelim and returns in any form of container
+	*/
 	template<class T> T Tokenize( const std::string &s, const std::string &strDelim ) {
 		T tokens;
 		std::string::size_type nFirstPos, nLastPos;
-	
+
 		/**
 		* Skip delimiters at beginning
 		*/
 		nLastPos = s.find_first_not_of( strDelim, 0 );
-	
+
 		/**
 		* Find first non delimiter
 		*/
 		nFirstPos = s.find_first_of( strDelim, nLastPos );
-	
+
 		while ( std::string::npos != nFirstPos || std::string::npos != nLastPos ) {
 			/**
 			* Found token!
