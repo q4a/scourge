@@ -212,11 +212,11 @@ const char *Constants::npcTypeDisplayName[] = {
 
 const char *Constants::cursorTextureName[] = {
 	"cursor.png",
-	"crosshair.bmp", 
+	"crosshair.png", 
 	"attack.png", 
-	"talk.bmp", 
+	"talk.png", 
 	"use.bmp", 
-	"forbidden.bmp", 
+	"forbidden.png", 
 	"ranged.bmp", 
 	"move.bmp"
 };
