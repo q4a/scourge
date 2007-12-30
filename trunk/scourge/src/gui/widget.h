@@ -130,7 +130,7 @@ class Widget {
 
   virtual inline bool hasSound() { return true; }
 
-  inline void setTooltip( char *s ) { strncpy( tooltip, ( s ? s : "" ), 2999); tooltip[2999] = '\0'; }
+  inline void setTooltip( const char *s ) { strncpy( tooltip, ( s ? s : "" ), 2999); tooltip[2999] = '\0'; }
   inline char *getTooltip() { return tooltip; }
 
   void drawTooltip( Widget *parent );
