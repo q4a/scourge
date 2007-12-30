@@ -260,8 +260,12 @@ function waitHandlerItem( attacker, item ) {
 // Conversation methods
 //
 
-// called when conversing with someone
-// return the answer string or null for no special handling
+/** 
+ * Called when conversing with someone.
+ * @param creature creature the name or type of the creature (npc) you are talking to
+ * @param question the first keyphrase in the list that was clicked (Look at the maps/*.cfg files for examples)
+ * @return the answer string or null for no special handling
+ */
 function converse( creature, question ) {
   print( "Creature=" + creature.getName() + " question:" + question + "\n" );
 
