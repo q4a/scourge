@@ -218,7 +218,7 @@ const char *Constants::cursorTextureName[] = {
 	"use.png", 
 	"forbidden.png", 
 	"ranged.bmp", 
-	"move.bmp"
+	"move.png"
 };
 
 const char *Constants::inventoryTags[] = {
