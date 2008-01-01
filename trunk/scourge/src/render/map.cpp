@@ -1644,6 +1644,11 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 		
     glTranslatef( xpos2, ypos2, zpos2 + heightPos );
 
+	if( later && later->pos ) {
+	  glRotatef( later->pos->angleX, 1, 0, 0 );
+	  glRotatef( later->pos->angleY, 0, 1, 0 );
+	  glRotatef( later->pos->angleZ, 0, 0, 1 );
+	}
 
 #ifdef DEBUG_SECRET_DOORS    
     if( later && later->pos ) {

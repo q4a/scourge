@@ -66,5 +66,7 @@
 
 #define DEBUG_TRAPS 0
 
+#define SMOOTH_DOORS 1
+
 #endif
 

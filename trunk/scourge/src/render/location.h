@@ -57,11 +57,12 @@ class Location {
 public:
   // shapes
   Uint16 x, y, z;
-	float heightPos;
+  float heightPos;
   Shape *shape;
   RenderedItem *item;
   RenderedCreature *creature;
   Color *outlineColor;
+  float angleX, angleY, angleZ;
 
   Location() {
     this->creature = NULL;
@@ -70,6 +71,7 @@ public:
     this->outlineColor = NULL;
     this->shape = NULL;
     this->x = this->y = this->z = 0;
+	this->angleX = this->angleY = this->angleZ = 0;
   }
 };
 
