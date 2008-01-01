@@ -34,11 +34,11 @@ private:
   bool stencil;
   Color *outlineColor;
   bool interactive;
-	int groundSX, groundEX, groundSY, groundEY;
-	float outdoorWeight;
-	bool outdoorShadow;
-	bool wind;
-	WindInfo *windInfo;
+  int groundSX, groundEX, groundSY, groundEY;
+  float outdoorWeight;
+  bool outdoorShadow;
+  bool wind;
+  WindInfo *windInfo;
 
 protected:
   int width, height, depth;

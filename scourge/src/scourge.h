@@ -104,6 +104,13 @@ class SpecialSkill;
 #define CREATURES_DIR "creatures/"
 #define MAX_BATTLE_COUNT 200
 
+typedef struct _MovingDoor {
+  float x, y, startAngle, endAngle, angleDelta;
+  Shape *oldDoorShape, *newDoorShape;
+  bool openLocked;
+  Uint32 endTime;
+} MovingDoor;
+
 /** 
   This is the main class of the game. It is a central place to put
   references to other objects, like the party, minimap, etc.
@@ -112,7 +119,7 @@ class SpecialSkill;
 */ 
 class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusReport {
  private:
-	TextScroller *descriptionScroller;
+  TextScroller *descriptionScroller;
   Party *party;
   Map *levelMap;
   MapSettings *mapSettings;
@@ -130,7 +137,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   bool inHq;
   bool missionWillAwardExpPoints;
   char infoMessage[2000];
-	PcUi *pcui;
+  PcUi *pcui;
   ConfirmDialog *exitConfirmationDialog;
   TextDialog *textDialog;
   InfoGui *infoGui;
@@ -229,6 +236,8 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
 	Window *chapterIntroWin;
 	Button *beginChapter, *replayIntro;
 
+	std::vector<MovingDoor> movingDoors;
+  
 protected:
   bool getItem(Location *pos);
   // returns new z coordinate
@@ -759,6 +768,12 @@ public:
 	void endChapterIntro();
 
 	void camp();
+
+	// opening doors
+	void moveDoors();
+	bool isDoorBlocked();
+	void openDoor( MovingDoor *movingDoor );
+	inline std::vector<MovingDoor> *getMovingDoors() { return &movingDoors; }
 
 protected:
 
