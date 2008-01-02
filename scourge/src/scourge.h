@@ -105,7 +105,7 @@ class SpecialSkill;
 #define MAX_BATTLE_COUNT 200
 
 typedef struct _MovingDoor {
-  float x, y, startAngle, endAngle, angleDelta;
+  float x, y, startAngle, endAngle, angleDelta, startX, startY, endX, endY;
   Shape *oldDoorShape, *newDoorShape;
   bool openLocked;
   Uint32 endTime;

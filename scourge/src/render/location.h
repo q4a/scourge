@@ -63,6 +63,7 @@ public:
   RenderedCreature *creature;
   Color *outlineColor;
   float angleX, angleY, angleZ;
+  float moveX, moveY, moveZ;
 
   Location() {
     this->creature = NULL;
@@ -72,6 +73,7 @@ public:
     this->shape = NULL;
     this->x = this->y = this->z = 0;
 	this->angleX = this->angleY = this->angleZ = 0;
+	this->moveX = this->moveY = this->moveZ = 0;
   }
 };
 
