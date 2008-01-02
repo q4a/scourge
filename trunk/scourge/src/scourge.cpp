@@ -3713,11 +3713,15 @@ void Scourge::camp() {
 	// start the healing...
 }
 
+#define DOOR_UPDATE_MILLIS 25
+#define DOOR_ANGLE_DELTA 10
+#define DOOR_MOVE_DELTA 0.1f
+
 Uint32 lastMovingDoorUpdate = 0;
 
 void Scourge::moveDoors() {
   Uint32 now = SDL_GetTicks();
-  if( now - lastMovingDoorUpdate > 25 ) {
+  if( now - lastMovingDoorUpdate > DOOR_UPDATE_MILLIS ) {
 	lastMovingDoorUpdate = now;
 	for( unsigned int n = 0; n < movingDoors.size(); n++ ) {
 	  Location *pos = getMap()->getLocation( toint( movingDoors[n].x ), toint( movingDoors[n].y ), 0 );
@@ -3728,15 +3732,20 @@ void Scourge::moveDoors() {
 	  } else if( ( movingDoors[n].angleDelta < 0 && movingDoors[n].startAngle <= movingDoors[n].endAngle ) || 
 				 ( movingDoors[n].angleDelta > 0 && movingDoors[n].startAngle >= movingDoors[n].endAngle ) ) { 
 		pos->angleZ = 0;
+		pos->moveX = pos->moveY = 0;
 		// replace shapes
 		openDoor( &(movingDoors[n]) );
 		movingDoors.erase( movingDoors.begin() + n );
 		n--;
 		continue;
 	  }
-	  movingDoors[n].startAngle += movingDoors[n].angleDelta * 10;
+	  movingDoors[n].startAngle += movingDoors[n].angleDelta * DOOR_ANGLE_DELTA;
+	  if( movingDoors[n].startX < movingDoors[n].endX ) movingDoors[n].startX += DOOR_MOVE_DELTA;
+	  if( movingDoors[n].startY < movingDoors[n].endY ) movingDoors[n].startY += DOOR_MOVE_DELTA;
 	  if( pos ) {
 		pos->angleZ = movingDoors[n].startAngle;
+		pos->moveX = movingDoors[n].startX / DIV;
+		pos->moveY = movingDoors[n].startY / DIV;
 	  }
 	}
   }
@@ -3794,7 +3803,6 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
 bool Scourge::useDoor( Location *pos, bool openLocked ) {
   Shape *newDoorShape = NULL;
   Shape *oldDoorShape = pos->shape;
-  float startAngle, endAngle;
   if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR")) {
     newDoorShape = getSession()->getShapePalette()->findShapeByName("NS_DOOR");
   } else if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR")) {
@@ -3840,16 +3848,18 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 
 	  //	  cerr << "old shape=" << ( oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR") ? "EW" : "NS" ) << " " << ( closed ? "closed" : "open" ) << endl;
 	  if( oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR") ) {
-		startAngle = 0;
-		endAngle = 90;
+		movingDoor.startAngle = 0;
+		movingDoor.endAngle = 90;
+		movingDoor.endX = 1;
+		movingDoor.endY = 0;
 	  } else {
-		startAngle = 0;
-		endAngle = -90;
+		movingDoor.startAngle = 0;
+		movingDoor.endAngle = -90;
+		movingDoor.endX = 0;
+		movingDoor.endY = 1;
 	  }
-
-	  movingDoor.startAngle = startAngle;
-	  movingDoor.endAngle = endAngle;
-	  movingDoor.angleDelta = ( startAngle < endAngle ? 1 : -1 );
+	  movingDoor.startX = movingDoor.startY = 0;
+	  movingDoor.angleDelta = ( movingDoor.startAngle < movingDoor.endAngle ? 1 : -1 );
 	  movingDoor.oldDoorShape = oldDoorShape;
 	  movingDoor.newDoorShape = newDoorShape;
 	  movingDoor.openLocked = openLocked;
