@@ -3753,18 +3753,20 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
   Sint16 nx = movingDoor->x;
   Sint16 ny = (movingDoor->y - movingDoor->oldDoorShape->getDepth()) + movingDoor->newDoorShape->getDepth();
   
-  Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
+  //  Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
+  levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
   Location *blocker = levelMap->isBlocked(nx, ny, toint(party->getPlayer()->getZ()),
 										  ox, oy, toint(party->getPlayer()->getZ()),
 										  movingDoor->newDoorShape);
   if ( !blocker ) {
 	
 	// there is a chance that the door will be destroyed
-	if( !movingDoor->openLocked && 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
+	if( !movingDoor->openLocked && getSession()->getCurrentMission() && 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
+	  getSDLHandler()->getSound()->playSound( Sound::TELEPORT );
 	  destroyDoor( ox, oy, movingDoor->oldDoorShape );
 	  levelMap->updateLightMap();
 	} else {
-	  getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
+	  //getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
 	  levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), movingDoor->newDoorShape);
 	  levelMap->updateLightMap();
 	  levelMap->updateDoorLocation(ox, oy, toint(party->getPlayer()->getZ()),
@@ -3775,12 +3777,14 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
 	}
 	return;
   } else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
+	getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
 	// rollback if blocked by a player			
 	levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), movingDoor->oldDoorShape);
 	getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
 	return;
   } else {
 	// Deeestroy!
+	getSDLHandler()->getSound()->playSound( Sound::TELEPORT );
 	destroyDoor( ox, oy, movingDoor->oldDoorShape );
 	levelMap->updateLightMap();
 	return;
@@ -3793,12 +3797,8 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
   float startAngle, endAngle;
   if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR")) {
     newDoorShape = getSession()->getShapePalette()->findShapeByName("NS_DOOR");
-	startAngle = 0;
-	endAngle = -90;
   } else if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR")) {
     newDoorShape = getSession()->getShapePalette()->findShapeByName("EW_DOOR");
-	startAngle = 0;
-	endAngle = -90;
   }
   if (newDoorShape) {
     int doorX = pos->x;
@@ -3837,6 +3837,16 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 	  MovingDoor movingDoor;
 	  movingDoor.x = pos->x;
 	  movingDoor.y = pos->y;
+
+	  //	  cerr << "old shape=" << ( oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR") ? "EW" : "NS" ) << " " << ( closed ? "closed" : "open" ) << endl;
+	  if( oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR") ) {
+		startAngle = 0;
+		endAngle = 90;
+	  } else {
+		startAngle = 0;
+		endAngle = -90;
+	  }
+
 	  movingDoor.startAngle = startAngle;
 	  movingDoor.endAngle = endAngle;
 	  movingDoor.angleDelta = ( startAngle < endAngle ? 1 : -1 );
@@ -3845,6 +3855,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 	  movingDoor.openLocked = openLocked;
 	  movingDoor.endTime = SDL_GetTicks() + 5000;
 	  movingDoors.push_back(movingDoor);
+	  getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
 	} else {
 	  // switch door
 	  Sint16 ox = pos->x;
@@ -3859,7 +3870,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 	  if ( !blocker ) {
 		
 		// there is a chance that the door will be destroyed
-		if( !openLocked && 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
+		if( !openLocked && getSession()->getCurrentMission() && 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
 		  destroyDoor( ox, oy, oldDoorShape );
 		  levelMap->updateLightMap();
 		} else {
