@@ -378,14 +378,14 @@ bool Util::StringCaseCompare(const std::string sStr1, const std::string sStr2) {
 // makes noise otherwise ;-)
 // size is exclusive
 int Util::dice( int size ) { 
-	if ( 0 >= size || size > RAND_MAX )
+	if ( 0 >= size || size - 1 > RAND_MAX )
 	{
 	  std::cerr << "ERROR: Util::dice with size = " << size << " RAND_MAX=" << RAND_MAX << " +1=" << (RAND_MAX + 1) << endl;
 		return (int)roll( 0, size );
 	}
 	do {
-		int r = rand();
-		if ( r >= (RAND_MAX + 1) % size ) { //remove some rand values that make the result unfair
+		unsigned r = rand();
+		if ( r >= ((unsigned)RAND_MAX + 1) % (unsigned)size ) { //remove some rand values that make the result unfair
 			return r % size;
 		}
 	} while ( true ); 
