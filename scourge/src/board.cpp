@@ -628,7 +628,12 @@ void Mission::removeMissionItems() {
 }
 
 char *Mission::getIntro() {
+	if (intros.size() > 0) {
   return (char*)(intros[ Util::dice( intros.size() ) ].c_str());
+	} else {
+		cerr << "Error: Mission has 0 intros" << endl;
+		return "";
+	}
 }
 
 char *Mission::getAnswer( char *keyphrase ) {

@@ -378,9 +378,9 @@ bool Util::StringCaseCompare(const std::string sStr1, const std::string sStr2) {
 // makes noise otherwise ;-)
 // size is exclusive
 int Util::dice( int size ) { 
-	if ( 0 >= size || size > RAND_MAX + 1 )
+	if ( 0 >= size || size > RAND_MAX )
 	{
-	  //		std::cerr << "Util::dice with size = " << size << endl;
+	  std::cerr << "ERROR: Util::dice with size = " << size << " RAND_MAX=" << RAND_MAX << " +1=" << (RAND_MAX + 1) << endl;
 		return (int)roll( 0, size );
 	}
 	do {
@@ -399,7 +399,7 @@ int Util::pickOne( int min, int max ) {
 	return dice( max + 1 - min ) + min;
 }
 
-// random float from min to max (max is exclusive)
+// random float from min to max (both inclusive)
 float Util::roll( float min, float max ) { 
 	return (max - min) * rand() / RAND_MAX + min;
 }

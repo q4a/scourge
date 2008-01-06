@@ -3095,14 +3095,16 @@ bool Scourge::isLevelShaded() {
 
 void Scourge::printToConsole( const char *s ) {
   if( squirrelLabel ) {
+	char *q = strdup( s );
     // replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
-    char *p = strpbrk( s, "\n\r" );
+    char *p = strpbrk( q, "\n\r" );
     while( p ) {
       *p = '|';
       if( !*(p + 1) ) break;
       p = strpbrk( p + 1, "\n\r" );
     }
-    squirrelLabel->appendText( s );
+    squirrelLabel->appendText( q );
+	free( q );
   } else {
     cerr << s << endl;
   }
@@ -3772,7 +3774,7 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
   if ( !blocker ) {
 	
 	// there is a chance that the door will be destroyed
-	if( !movingDoor->openLocked && getSession()->getCurrentMission() && 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
+	if( !movingDoor->openLocked && getSession()->getCurrentMission() && 0 == Util::dice( 20 ) ) {
 	  getSDLHandler()->getSound()->playSound( Sound::TELEPORT );
 	  destroyDoor( ox, oy, movingDoor->oldDoorShape );
 	  levelMap->updateLightMap();
@@ -3882,7 +3884,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 	  if ( !blocker ) {
 		
 		// there is a chance that the door will be destroyed
-		if( !openLocked && getSession()->getCurrentMission() && 0 == (int)( 20.0f * rand()/RAND_MAX ) ) {
+		if( !openLocked && getSession()->getCurrentMission() && 0 == Util::dice( 20 ) ) {
 		  destroyDoor( ox, oy, oldDoorShape );
 		  levelMap->updateLightMap();
 		} else {
