@@ -153,7 +153,7 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 		}
 		else {
 			//selects random one
-			missionMusicIndex = (int)( (float)MISSION_MUSIC_COUNT * rand() / RAND_MAX)+1;
+			missionMusicIndex = Util::pickOne( 1, MISSION_MUSIC_COUNT );
 			filename << rootDir << "/sound/music/track" << setw(2) << setfill('0') << missionMusicIndex << ".ogg";
 		}
 		string fn = filename.str();
@@ -166,7 +166,7 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 		}
 
 		// selects fight music
-		int n = (int)( (float)FIGHT_MUSIC_COUNT * rand() / RAND_MAX)+1;
+		int n = Util::pickOne( 1, FIGHT_MUSIC_COUNT );
 		if( fightMusicIndex != n ) {
 			fightMusicIndex = n;
 
@@ -374,7 +374,7 @@ void Sound::playCharacterSound( char *type, int soundType ) {
 			if( charSoundMap->find( soundType ) != charSoundMap->end() ) {
 				vector<Mix_Chunk*> *v = (*charSoundMap)[ soundType ];
 				if( v->size() > 0 ) {
-					int index = (int)( (float)( v->size() ) * rand() / RAND_MAX );
+					int index = Util::dice( v->size() );
 					if( Mix_PlayChannel( -1, (*v)[ index ], 0 ) == -1 ) {
 						// commented out; happens too often
 						//cerr << "*** Error playing WAV file: " << fileStr << endl;

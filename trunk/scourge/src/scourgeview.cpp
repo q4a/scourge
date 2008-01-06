@@ -816,7 +816,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 	//zpos2 = creature->getZ() / DIV;
 
 	if(creature->getAction() != Constants::ACTION_NO_ACTION) {
-    glColor4f(0, 0.7, 1, 0.5f);
+    glColor4f(0, 0.7f, 1, 0.5f);
   } else if(selected) {
     glColor4f(0, 1, 1, 0.5f);
   } else if(player) {

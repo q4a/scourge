@@ -55,9 +55,9 @@ private:
 public:
 	WindInfo() {
 		windAngle = lastWindStep = 0;
-		windSpeed = 0.10f * rand() / RAND_MAX + 0.01f;
+		windSpeed = Util::roll( 0.01f, 0.11f );
 		windAmp = 0.5f;
-		ymod = 1.2f * rand() / RAND_MAX;
+		ymod = Util::roll( 0.0f, 1.2f );
 		value = 0;
 	}
 

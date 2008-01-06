@@ -172,7 +172,7 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
       cerr << "EFFECT!" << endl;
 //      scourge->getParty()->startEffect( Constants::EFFECT_CAST_SPELL, (Constants::DAMAGE_DURATION * 4));
 
-      scourge->getParty()->getPlayer()->startEffect( (int)( (float)Constants::EFFECT_COUNT * rand() / RAND_MAX ),
+      scourge->getParty()->getPlayer()->startEffect( Util::dice( Constants::EFFECT_COUNT ),
                                                      (Constants::DAMAGE_DURATION * 4) );
 
 //    } else if(event->key.keysym.sym == SDLK_m) {

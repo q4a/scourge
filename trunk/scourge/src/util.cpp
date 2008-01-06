@@ -245,7 +245,7 @@ float Util::getRandomSum( float base, int count, float div ) {
 	float sum = 0;
 	float third = base / div;
 	for( int i = 0; i < ( count < 1 ? 1 : count ); i++ ) {
-		sum += ( ( third * rand()/RAND_MAX ) + ( base - third ) );
+		sum += Util::roll( 0.0f, third ) + base - third;
 	}
 	return sum;
 }
@@ -368,4 +368,38 @@ bool Util::StringCaseCompare(const std::string sStr1, const std::string sStr2) {
 		return std::equal(sStr1.begin(), sStr1.end(), sStr2.begin(), equal_ignore_case<std::string::value_type>());
 	else
 		return false;
+}
+
+// *** algorithms based on rand() ***
+// it may be worth to switch to Mersenne Twister one day  
+
+// random integer from 0 to size-1
+// size must be bigger than 0 and not bigger than RAND_MAX + 1
+// makes noise otherwise ;-)
+// size is exclusive
+int Util::dice( int size ) { 
+	if ( 0 >= size || size > RAND_MAX + 1 )
+	{
+	  //		std::cerr << "Util::dice with size = " << size << endl;
+		return (int)roll( 0, size );
+	}
+	do {
+		int r = rand();
+		if ( r >= (RAND_MAX + 1) % size ) { //remove some rand values that make the result unfair
+			return r % size;
+		}
+	} while ( true ); 
+}
+
+// random integer  from min to max
+// min must be <= max
+// this method is inclusive on both min and max
+int Util::pickOne( int min, int max ) {
+	// dice checks params
+	return dice( max + 1 - min ) + min;
+}
+
+// random float from min to max (max is exclusive)
+float Util::roll( float min, float max ) { 
+	return (max - min) * rand() / RAND_MAX + min;
 }

@@ -211,15 +211,15 @@ void Board::initMissions() {
 		int level;
 		if( counter % 2 == 0 ) {
 			// allow for low level mission
-			level = (int)( (float)( ave + 2 ) * rand()/RAND_MAX );
+			level = (int)Util::roll( 0.0f, ave + 2 );
 		} else {
 			// allow for current level missions
-			level = (int)( ave + ( 4.0f * rand()/RAND_MAX ) ) - 2;
+			level = (int)Util::roll( ave, ave + 4.0f ) - 2;
 		}
     if( level < 1 ) level = 1;
-    int depth =  (int)((float)level / (float)(MAX_MISSION_DEPTH - 3) ) + 1 + (int)( 3.0f * rand()/RAND_MAX );
+    int depth =  (int)((float)level / (float)(MAX_MISSION_DEPTH - 3) ) + 1 + Util::dice( 3 );
     if( depth > MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH;
-    int templateIndex = (int)( (float)( templates.size() ) * rand()/RAND_MAX );
+    int templateIndex = Util::dice( templates.size() );
 		// Create a new mission but only keep it if there isn't another mission with this name already.
 		// This is because missions are 'found' on load via name, so names have to be unique.
 		Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
@@ -247,7 +247,7 @@ void Board::initMissions() {
 #ifdef DEBUG_MODE
   // debug missions
   for( int i = 1; i <= highest; i++ ) {
-    int templateIndex = (int)( (float)( templates.size() ) * rand()/RAND_MAX );
+    int templateIndex = Util::dice(  templates.size() );
     Mission *mission = templates[ templateIndex ]->createMission( session, i, 1 );
     availableMissions.push_back( mission );
   }
@@ -628,7 +628,7 @@ void Mission::removeMissionItems() {
 }
 
 char *Mission::getIntro() {
-  return (char*)(intros[ (int)( (float)( intros.size() ) * rand()/RAND_MAX ) ].c_str());
+  return (char*)(intros[ Util::dice( intros.size() ) ].c_str());
 }
 
 char *Mission::getAnswer( char *keyphrase ) {
@@ -637,7 +637,7 @@ char *Mission::getAnswer( char *keyphrase ) {
     return (char*)( answers[ conversations[ ks ] ].c_str());
   } else {
     cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
-    return (char*)(unknownPhrases[ (int)( (float)( unknownPhrases.size() ) * rand()/RAND_MAX ) ].c_str());
+    return (char*)(unknownPhrases[ Util::dice( unknownPhrases.size() ) ].c_str());
   }
 }
 
@@ -658,7 +658,7 @@ char *Mission::getIntro( char *s ) {
     return NULL;
   }
   NpcConversation *nc = npcConversations[ s ];
-  return (char*)(nc->npc_intros[ (int)( (float)( nc->npc_intros.size() ) * rand()/RAND_MAX ) ].c_str());
+  return (char*)(nc->npc_intros[ Util::dice( nc->npc_intros.size() ) ].c_str());
 }
 
 bool Mission::setIntro( Creature *s, char *keyphrase ) {
@@ -698,7 +698,7 @@ char *Mission::getAnswer( char *s, char *keyphrase ) {
     return (char*)( nc->npc_answers[ nc->npc_conversations[ ks ] ].c_str());
   } else {
     cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
-    return (char*)(nc->npc_unknownPhrases[ (int)( (float)( nc->npc_unknownPhrases.size() ) * rand()/RAND_MAX ) ].c_str());
+    return (char*)(nc->npc_unknownPhrases[ Util::dice( nc->npc_unknownPhrases.size() ) ].c_str());
   }
 }
 

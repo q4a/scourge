@@ -174,7 +174,7 @@ RpgItem *RpgItem::getRandomItemFromTypes(int depth, int types[], int typeCount) 
   if( depth < 0 ) depth = 0;
   if( depth >= MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH - 1;
 
-  int typeIndex = (int)((float)typeCount * rand()/RAND_MAX);
+  int typeIndex = Util::dice( typeCount );
   map<int, vector<const RpgItem*>*> *depthMap = typesMap[types[typeIndex]];  
   if(depthMap && depthMap->size()) {
 
@@ -194,7 +194,7 @@ RpgItem *RpgItem::getRandomItemFromTypes(int depth, int types[], int typeCount) 
         }
       }
 
-      int n = (int)((float)(rareList.size()) * rand()/RAND_MAX);
+      int n = Util::dice( rareList.size() );
       RpgItem *rpgItem = (RpgItem*)rareList[n];
       return rpgItem;
     }
@@ -203,13 +203,13 @@ RpgItem *RpgItem::getRandomItemFromTypes(int depth, int types[], int typeCount) 
 }
 
 RpgItem *RpgItem::getRandomContainer() {
-  int n = (int)(( CONTAINER_CHANCE * (float)containers.size()) * rand()/RAND_MAX);
+  int n = (int)Util::roll( 0.0f, CONTAINER_CHANCE * containers.size() );
   if(n >= (int)containers.size()) return NULL;
   return containers[n];
 }
 
 RpgItem *RpgItem::getRandomContainerNS() {
-  int n = (int)(( CONTAINER_CHANCE * (float)containersNS.size()) * rand()/RAND_MAX);
+  int n = (int)Util::roll( 0.0f, CONTAINER_CHANCE * containersNS.size() );
   if(n >= (int)containersNS.size()) return NULL;
   return containersNS[n];
 }

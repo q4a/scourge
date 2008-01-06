@@ -441,7 +441,7 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
   // compute starting skill levels
   for(int i = 0; i < pcCount; i++) {
     for(int skill = 0; skill < Skill::SKILL_COUNT; skill++) {
-      int n = level * (int)(10.0 * rand()/RAND_MAX);
+      int n = level * Util::dice( 10 );
       if(n > 99) n = 99;
       int maxSkill = pc[i]->getCharacter()->getSkill( skill );
       if( maxSkill >= 0 && n > maxSkill ) n = maxSkill;
@@ -539,7 +539,7 @@ void Party::createHardCodedParty(Session *session, Creature **pc, int *partySize
 
   // assign random portraits
   for( int i = 0; i < pcCount; i++ ) {
-    pc[i]->setPortraitTextureIndex( (int)( (float)(session->getShapePalette()->getPortraitCount( pc[i]->getSex() )) * rand()/RAND_MAX ) );
+    pc[i]->setPortraitTextureIndex( Util::dice( session->getShapePalette()->getPortraitCount( pc[i]->getSex() ) ) );
   }
 
   *partySize = pcCount;  

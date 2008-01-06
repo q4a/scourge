@@ -98,7 +98,7 @@ void MagicSchool::initMagic() {
 	MagicSchool *current = NULL;
   Spell *currentSpell = NULL;
   char name[255], displayName[255], notes[255], dice[255];
-  char line[2000], symbol[255], targetTypeStr[255], prereqName[255];
+  char line[2000], symbol[255], targetTypeStr[255] /*, prereqName[255]*/;
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
@@ -218,7 +218,7 @@ void MagicSchool::initMagic() {
 }
 
 const char *MagicSchool::getRandomString( vector<string> *v ) {
-  return (*v)[ (int)( (float)( v->size() ) * rand()/RAND_MAX ) ].c_str();
+  return (*v)[ Util::dice( v->size() ) ].c_str();
 }
 
 const char *MagicSchool::getLowDonateMessage() {
@@ -234,10 +234,10 @@ const char *MagicSchool::getHighDonateMessage() {
 }
 
 Spell *MagicSchool::getRandomSpell(int level) {
-  int n = (int)((float)getMagicSchoolCount() * rand()/RAND_MAX);
+  int n = Util::dice( getMagicSchoolCount() );
   int c = getMagicSchool(n)->getSpellCount();
   if(c > 0) {
-    return getMagicSchool(n)->getSpell((int)((float)c * rand()/RAND_MAX));
+    return getMagicSchool(n)->getSpell( Util::dice( c ) );
   } else {
     return NULL;
   }

@@ -113,7 +113,7 @@ void GLCaveShape::draw() {
   float w = (float)width / DIV;
   float d = (float)depth / DIV;
   float h = (float)height / DIV;
-  if (h == 0) h = 0.25 / DIV;
+  if (h == 0) h = 0.25f / DIV;
 
   bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   if( !useShadow ) {
@@ -239,7 +239,7 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
     if( lavaTexY >= 1.0f ) lavaTexY -= 1.0f;
   }
 
-  GLfloat n = 0.25 / DIV;
+  GLfloat n = 0.25f / DIV;
 
   glDisable(GL_DEPTH_TEST);
 
@@ -515,9 +515,9 @@ void GLCaveShape::dividePolys() {
 
 GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
 
-#define _poly(_index,_p1,_p2,_p3,_u1,_v1,_u2,_v2,_u3,_v3,_tt) ( {\
+#define _poly(_index,_p1,_p2,_p3,_u1,_v1,_u2,_v2,_u3,_v3,_tt) do {\
   polys[_index]->push_back(new CaveFace(_p1,_p2,_p3,_u1,_v1,_u2,_v2,_u3,_v3,_tt));\
-} )
+} while(false)
 
 void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes ) {
   for( int i = 0; i < Shapes::STENCIL_COUNT; i++ ) {
@@ -528,7 +528,7 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
   float w = (float)CAVE_CHUNK_SIZE / DIV;
   float d = (float)CAVE_CHUNK_SIZE / DIV;
   float h = (float)MAP_WALL_HEIGHT / DIV; // fixme: for floor it should be 0
-  if (h == 0) h = 0.25 / DIV;
+  if (h == 0) h = 0.25f / DIV;
 
   for( int i = 0; i < CAVE_INDEX_COUNT; i++ ) {
     polys.push_back( new vector<CaveFace*>() );

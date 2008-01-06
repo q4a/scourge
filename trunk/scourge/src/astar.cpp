@@ -75,7 +75,7 @@ GetAwayGoal::~GetAwayGoal(){}
 bool GetAwayGoal::fulfilledBy( CPathNode * node){
   int dx = node->x - x;
   int dy = node->y - y;
-  return distance < sqrt(dx*dx + dy*dy);
+  return distance < sqrt((float)(dx*dx + dy*dy));
 }
 
 /**
@@ -94,7 +94,7 @@ bool ClearLocationsGoal::fulfilledBy( CPathNode * node){
   int d = toint(searcher->getShape()->getDepth());
   Location loc;
   loc.z = 0;
-  set<Location>::iterator setItr;
+  set<Location,LocationComparitor>::iterator setItr;
   //check every occupied location against the set of locations
   for(int i = 0; i < w; i++)
     for(int j = 0; j < d; j++){
@@ -159,7 +159,7 @@ DistanceAwayHeuristic::~DistanceAwayHeuristic(){}
 double DistanceAwayHeuristic::heuristic( CPathNode * node){
   int dx = node->x - x;
   int dy = node->y - y;
-  return -sqrt(dx*dx + dy*dy)*1.001;  //the extra 0.001 is a tweak to make farther away paths get checked first
+  return -sqrt((float)(dx*dx + dy*dy))*1.001;  //the extra 0.001 is a tweak to make farther away paths get checked first
 }
 
 
@@ -264,7 +264,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
   vector<CPathNode> path;
 
   set<CPathNode*,XYNodeComparitor> openContents; //to check for membership of the open queue
-  set<CPathNode*>::iterator setItr; //iterator to be used with closed when we want to delete nodes from memory
+  set<CPathNode*,XYNodeComparitor>::iterator setItr; //iterator to be used with closed when we want to delete nodes from memory
   int closedSize = 0; //STL Set can take O(n) to determine size, so we keep a record ourselves
   
   CPathNode * start = new CPathNode();     // Has to be persistent, so we put it on the heap.

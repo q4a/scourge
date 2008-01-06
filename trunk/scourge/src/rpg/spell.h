@@ -22,6 +22,7 @@
 #include <vector>
 #include "../common/constants.h"
 #include "../storable.h"
+#include "../util.h"
 
 class Dice {
 private:
@@ -37,10 +38,11 @@ public:
   ~Dice();
   inline char *toString() { return s;}
   inline int roll() { 
-    float n = (float)sides * rand()/RAND_MAX;
-    n *= count;
-    n += mod;
-    return(int)n;
+    int n = 0;
+    for ( int i = 0; i < count; i++ ) {
+      n += Util::pickOne( 1, sides );
+	}
+    return n + mod;
   }
   inline int getMax() { return count * sides + mod; }
   inline int getMin() { return count + mod; }
@@ -171,8 +173,8 @@ class MagicSchool {
   inline static MagicSchool *getMagicSchool( int index ) { return schools[index]; }
   static Spell *getRandomSpell(int level);
   static MagicSchool *getMagicSchoolByName( char *s ) { std::string name = s; return (schoolMap.find(name) == schoolMap.end() ? NULL : schoolMap[name]); }
-  static MagicSchool *getRandomSchool() { return getMagicSchool( (int)( (float)schoolCount * rand() / RAND_MAX ) ); }
-	static int getRandomSchoolIndex() { return (int)( (float)schoolCount * rand() / RAND_MAX ); }
+  static MagicSchool *getRandomSchool() { return getMagicSchool( getRandomSchoolIndex() ); }
+	static int getRandomSchoolIndex() { return Util::dice( schoolCount ); }
 
   const char *getLowDonateMessage();
   const char *getNeutralDonateMessage();

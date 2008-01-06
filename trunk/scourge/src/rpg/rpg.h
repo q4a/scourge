@@ -20,6 +20,7 @@
 
 #include "../common/constants.h"
 #include "../configlang.h"
+#include "../util.h"
 #include <vector>
 #include <map>
 
@@ -158,7 +159,7 @@ public:
 	inline int getSkillCount() { return skills.size(); }
 	inline Skill *getSkill( int index ) { return skills[ index ]; }
 	inline void addSkill( Skill *skill ) { skills.push_back( skill ); }
-	inline Skill *getRandomSkill() { return skills[(int)( (float)skills.size() * rand() / RAND_MAX ) ]; }
+	inline Skill *getRandomSkill() { return skills[ Util::dice( skills.size() ) ]; }
 	
 	static SkillGroup *stats;
 	static std::map<std::string, SkillGroup *> groupsByName;

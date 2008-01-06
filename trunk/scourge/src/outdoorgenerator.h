@@ -33,6 +33,11 @@ class CellularAutomaton;
 #define WIDTH_IN_NODES 50
 #define DEPTH_IN_NODES 50
 
+//some other (hopefully) explanatory constants  
+#define MAP_STEP_WIDTH (MAP_WIDTH / OUTDOORS_STEP)
+#define MAP_STEP_DEPTH (MAP_DEPTH / OUTDOORS_STEP)
+#define MAP_STEP_SIZE (MAP_STEP_WIDTH*MAP_STEP_DEPTH) 
+
 class OutdoorGenerator : public TerrainGenerator {
 private:
 	float ground[MAP_WIDTH][MAP_DEPTH];
@@ -47,9 +52,29 @@ public:
 	void printMaze();
 	inline void getName(char *s) { strcpy( s, "outdoor" ); }
 
+	// -=K=-: just a wrapper class of static-sized-bool-array;
+	// far quicker than large dynamic sets with their inner trees and stuff
+	class AroundMapLooker {  
+	public:
+		AroundMapLooker() {clear();}
+		//compiler-genned destructor and operator = are OK 
+		void clear() { 
+			for (int x = 0; x < MAP_STEP_WIDTH; ++x ) {
+				for (int y = 0; y < MAP_STEP_DEPTH; ++y ) {
+					seen[x][y] = false;
+				}
+			}
+		}
+		bool& at(int x, int y) {
+			assert( 0 <= x && x < MAP_STEP_WIDTH &&  0 <= y && y < MAP_STEP_DEPTH);
+			return seen[x][y];
+		}
+	private: 
+		bool seen[MAP_STEP_WIDTH][MAP_STEP_DEPTH];
+	};
 protected:
 	virtual void generate( Map *map, ShapePalette *shapePal );
-	int getMountainSize( int x, int y, Map *map, std::vector<int> *lake );
+	int getMountainSize( int x, int y, Map *map, AroundMapLooker& lake );
 	virtual bool drawNodes( Map *map, ShapePalette *shapePal );
 	virtual MapRenderHelper* getMapRenderHelper();
 	GLShape *getRandomTreeShape( ShapePalette *shapePal );

@@ -750,7 +750,7 @@ void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) 
 	glTranslatef( xpos2, ypos2, 0.255f / DIV );
 	glRotatef( rug->angle, 0, 0, 1 );
 	float f = MAP_UNIT / DIV;
-	float offset = 2.5 / DIV;
+	float offset = 2.5f / DIV;
 
 	float sx, sy, ex, ey;
 	// starting section
@@ -1381,7 +1381,7 @@ void Map::willDrawGrid() {
 				glColor4f( 1, 0, 0, 0.5f );
 				glBegin( GL_TRIANGLES );
 			} else {
-				glColor4f( 1, 0.7, 0, 0.5f );
+				glColor4f( 1, 0.7f, 0, 0.5f );
 				glBegin( GL_LINE_LOOP );
 			}
 
@@ -1709,7 +1709,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     }
   } else if( later && later->creature && !useShadow ) {
     if(later->creature->getStateMod(StateMod::invisible)) {
-      glColor4f(0.3, 0.8f, 1.0f, 1.0f);    
+      glColor4f(0.3f, 0.8f, 1.0f, 1.0f);    
     } else if(later->creature->getStateMod(StateMod::possessed)) {
       glColor4f(1.0, 0.3f, 0.8f, 1.0f);    
     }
@@ -1862,7 +1862,7 @@ void Map::initMapView( bool ignoreRot ) {
 			nextQuakeStartTime = 
 				now +
 				QUAKE_DELAY + 
-				(int)( ( QUAKE_DELAY / 2.0f ) * rand() / RAND_MAX );
+				Util::dice( QUAKE_DELAY / 2 );
 			// start a quake unless this is the very first time
 			quakeStartTime = ( quakeStartTime == 0 ? nextQuakeStartTime : now );
 			if( quakeStartTime == now ) adapter->addDescription( "A tremor shakes the earth..." );
@@ -1871,8 +1871,8 @@ void Map::initMapView( bool ignoreRot ) {
 		// is it quaking now?
 		if( now - quakeStartTime < QUAKE_DURATION ) {
 			if( now - lastQuakeTick >= QUAKE_TICK_FREQ ) {
-				quakeOffsX = (3.0f * rand() / RAND_MAX ) / DIV;
-				quakeOffsY = (3.0f * rand() / RAND_MAX ) / DIV;
+				quakeOffsX = Util::roll( 0.0f, 3.0f / DIV );
+				quakeOffsY = Util::roll( 0.0f, 3.0f / DIV );
 				lastQuakeTick = now;				
 			}
 		} else {
@@ -1925,8 +1925,8 @@ void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
   WaterTile *w = (WaterTile*)malloc(sizeof(WaterTile));
   for( int xp = 0; xp < WATER_TILE_X; xp++ ) {
     for( int yp = 0; yp < WATER_TILE_Y; yp++ ) {
-      w->z[xp][yp] = ( (2.0f * WATER_AMP) * rand()/RAND_MAX ) - WATER_AMP;
-      w->step[xp][yp] = WATER_STEP * ((int)(2.0f * rand()/RAND_MAX) == 0 ? 1 : -1);
+      w->z[xp][yp] = Util::roll( -WATER_AMP, WATER_AMP );
+      w->step[xp][yp] = WATER_STEP * (Util::dice( 2 ) ? 1 : -1);
       w->lastTime[xp][yp] = 0;
     }
   }
@@ -3561,7 +3561,7 @@ bool Map::loadMap( const string& name, char *result, StatusReport *report,
 	Rug rug;
 	for( int i = 0; i < (int)info->rug_count; i++ ) {
 		//rug.angle = info->rugPos[i]->angle / 100.0f;
-		rug.angle = ( 30.0f * rand() / RAND_MAX ) - 15.0f; // fixme?
+		rug.angle = Util::roll( -15.0f, 15.0f ); // fixme?
 		rug.isHorizontal = ( info->rugPos[i]->isHorizontal == 1 );
 		rug.texture = shapes->getRandomRug(); // fixme?
 		setRugPosition( info->rugPos[i]->cx,
@@ -4200,7 +4200,7 @@ void Map::createGroundMap() {
 
 			// height-based light
 			if( ground[ xx ][ yy ] >= 10 ) {
-				if( 0 == (int)( 5.0f * rand() / RAND_MAX ) &&
+				if( 0 == Util::dice( 5 ) &&
 						ground[ xx + 1 ][ yy ] >= 10 && ground[ xx ][ yy + 1 ] >= 10 && 
 						ground[ xx - 1 ][ yy ] >= 10 && ground[ xx ][ yy - 1 ] >= 10 ) {
 					// snow
@@ -4224,7 +4224,7 @@ void Map::createGroundMap() {
 				groundPos[ xx ][ yy ].a = 1;
 			} else {
 				float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;
-				if( (int)( 6.0f * rand() / RAND_MAX ) ) {
+				if( Util::dice( 6 ) ) {
 					groundPos[ xx ][ yy ].r = n * 0.55f;
 					groundPos[ xx ][ yy ].g = n;
 					groundPos[ xx ][ yy ].b = n * 0.45f;
@@ -4339,7 +4339,7 @@ void Map::initOutdoorsGroundTexture() {
 	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
 			GLuint tex = 0;
-			int n = (int)( 3.0f * rand() / RAND_MAX );
+			int n = Util::dice( 3 );
 			switch( n ) {
 			case 0:
 				tex = adapter->getNamedTexture( "grass1" ); break;

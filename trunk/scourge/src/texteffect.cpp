@@ -127,14 +127,14 @@ void TextEffect::drawEffect( float divisor, int count ) {
   if( active ) {
     for( int i = 0; i < count; i++ ) {
       if( !( particle[i].life ) ) {
-        particle[i].life = (int)( (float)MAX_PARTICLE_LIFE * rand() / RAND_MAX );
+        particle[i].life = Util::dice( MAX_PARTICLE_LIFE );
         particle[i].x = particle[i].y = 0;
-        particle[i].r = 200 + (int)( 40.0f * rand() / RAND_MAX );
-        particle[i].g = 170 + (int)( 40.0f * rand() / RAND_MAX );
-        particle[i].b = 80 + (int)( 40.0f * rand() / RAND_MAX );
-        particle[i].dir = 10.0f * rand() / RAND_MAX;
-        particle[i].zoom = 2.0f + ( 2.0f * rand() / RAND_MAX );
-        switch( (int)( 4.0f * rand() / RAND_MAX ) ) {
+        particle[i].r = Util::pickOne( 200, 239 );
+        particle[i].g = Util::pickOne( 170, 209 );
+        particle[i].b = Util::pickOne( 80, 119 );
+        particle[i].dir = Util::roll( 0.0f, 10.0f );
+        particle[i].zoom = Util::roll( 2.0f, 4.0f );
+        switch( Util::dice( 4 ) ) {
         case 0: particle[i].dir = 360.0f - particle[i].dir; break;
         case 1: particle[i].dir = 180.0f - particle[i].dir; break;
         case 2: particle[i].dir = 180.0f + particle[i].dir; break;

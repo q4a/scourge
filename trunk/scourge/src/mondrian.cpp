@@ -297,7 +297,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 	// make two rooms alongside 
 	if(horizontal){
 		while (( div < roomMinWidth ) || (width - div < roomMinWidth)){
-			div = (int)( (float)rand()/RAND_MAX * width );
+			div = Util::dice( width );
 		}
 
 //		printf("horizontal, div %d, w2 %d, h %d\n", div, width - div, height  );
@@ -321,7 +321,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 	} else {
 		// make two rooms, on on top of the other
 		while ((div < roomMinHeight) || (height - div < roomMinHeight)){
-			div = (int)( (float)rand() / RAND_MAX * height );
+			div = Util::dice( height );
 		}
 		
 		
@@ -480,7 +480,7 @@ void MondrianGenerator::generate( Map *map, ShapePalette *shapePal ) {
 bool MondrianGenerator::drawNodes(Map *map, ShapePalette *shapePal) {
   // flooded map?
   map->setHasWater( FORCE_WATER || 
-                    0 == (int)(5.0f * rand()/RAND_MAX) );
+                    0 == Util::dice( 5 ) );
 
   updateStatus( _( "Loading theme" ) );
 	if( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
@@ -519,7 +519,7 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
         // init the free space
         int secretDoor = 0;
         if(nodes[x][y] & E_DOOR) {
-          if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
             nodes[x][y] -= E_DOOR;
             secretDoor = E_DOOR;
             nodes[x][y] -= E_PASS;
@@ -527,7 +527,7 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             drawDoor(map, shapePal, mapx, mapy, E_DOOR);
           }
         } else if(nodes[x][y] & W_DOOR) {
-          if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
             nodes[x][y] -= W_DOOR;
             secretDoor = W_DOOR;
             nodes[x][y] -= W_PASS;
@@ -535,7 +535,7 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             drawDoor(map, shapePal, mapx, mapy, W_DOOR);
           }
         } else if(nodes[x][y] & N_DOOR) {
-          if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
             nodes[x][y] -= N_DOOR;
             secretDoor = N_DOOR;
             nodes[x][y] -= N_PASS;
@@ -543,7 +543,7 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             drawDoor(map, shapePal, mapx, mapy, N_DOOR);
           }
         } else if(nodes[x][y] & S_DOOR) {
-          if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
             nodes[x][y] -= S_DOOR;
             secretDoor = S_DOOR;
             nodes[x][y] -= S_PASS;
@@ -557,8 +557,8 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if((nodes[x][y] & W_PASS) &&
              !(nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & S_PASS)) {
-            if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+            if( Util::dice( 100 ) <= randomDoors) {
+              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
                 nodes[x][y] -= W_DOOR;
                 secretDoor = W_DOOR;
                 nodes[x][y] -= W_PASS;
@@ -570,8 +570,8 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if((nodes[x][y] & E_PASS) &&
              !(nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & S_PASS)) {
-            if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+            if( Util::dice( 100 ) <= randomDoors) {
+              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
                 nodes[x][y] -= E_DOOR;
                 secretDoor = E_DOOR;
                 nodes[x][y] -= E_PASS;
@@ -583,8 +583,8 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if((nodes[x][y] & S_PASS) &&
              !(nodes[x][y] & W_PASS) &&
              !(nodes[x][y] & E_PASS)) {
-            if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+            if( Util::dice( 100 ) <= randomDoors) {
+              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
                 nodes[x][y] -= S_DOOR;
                 secretDoor = S_DOOR;
                 nodes[x][y] -= S_PASS;
@@ -596,8 +596,8 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if((nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & W_PASS) &&
              !(nodes[x][y] & E_PASS)) {
-            if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+            if( Util::dice( 100 ) <= randomDoors) {
+              if( 0 == Util::dice( SECRET_DOOR_CHANCE ) ) {
                 nodes[x][y] -= N_DOOR;
                 secretDoor = N_DOOR;
                 nodes[x][y] -= N_PASS;
@@ -633,7 +633,7 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             if( secretDoor == W_DOOR ) {
               map->addSecretDoor( wallX, wallY );
             } else {
-              if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+              if( Util::dice( 100 ) <= torches ) {
                 map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
                                  6, shapePal->findShapeByName("LAMP_WEST", true));
                 map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
@@ -665,7 +665,7 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             if( secretDoor == E_DOOR ) {
               map->addSecretDoor( wallX, wallY );
             } else {
-              if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+              if( Util::dice( 100 ) <= torches) {
                 map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
                                  6, shapePal->findShapeByName("LAMP_EAST", true));
                 map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
@@ -697,7 +697,7 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             if( secretDoor == N_DOOR ) {
               map->addSecretDoor( wallX, wallY );
             } else {
-              if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+              if( Util::dice( 100 ) <= torches ) {
                 map->setPosition(mapx + 4, mapy + unitOffset + 1, 6, 
                                  shapePal->findShapeByName("LAMP_NORTH", true));
                 map->setPosition(mapx + 4, mapy + unitOffset + 1, 4, 
@@ -898,7 +898,7 @@ void MondrianGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
   // add some magic pools
   DisplayInfo di;
   for( int i = 0; i < roomCount; i++ ) {
-    if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
+    //???: if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
       MagicSchool *ms = MagicSchool::getRandomSchool();
       di.red = ms->getDeityRed();
       di.green = ms->getDeityGreen();
@@ -908,7 +908,7 @@ void MondrianGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
         // store pos->deity in scourge
         scourge->addDeityLocation( pos, ms );
       }
-    }
+    //}
   }
 }
 

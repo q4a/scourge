@@ -344,9 +344,9 @@ void CLoad3DS::ProcessNextMaterialChunk(t3DModel *pModel, tChunk *pPreviousChunk
 
 						// Here we read in the material's file name and store it in a string
 						size_t length = m_CurrentChunk->length - m_CurrentChunk->bytesRead;
-						char buf[length];
-						m_CurrentChunk->bytesRead += fread(buf, 1, length, m_FilePointer);
-						pModel->pMaterials[pModel->numOfMaterials - 1].strFile = buf;
+						std::vector<char> buf(length+1);
+						m_CurrentChunk->bytesRead += fread(&buf[0], 1, length, m_FilePointer);
+						pModel->pMaterials[pModel->numOfMaterials - 1].strFile = &buf[0];
 						break;
 				}
         default:  

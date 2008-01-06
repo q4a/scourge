@@ -24,7 +24,7 @@
 #include "shapepalette.h"
 #include <iostream>
 #include <stdlib.h>
-#include <strings.h>
+//#include <strings.h>
 
 #include "creature.h"
 #include "persist.h"
@@ -234,7 +234,7 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
   if( rpgItem->isSpecial() ) loading = true;
   int itemLevel = level;
   if( !loading ) {
-    itemLevel = level + (int)( 6.0f * rand() / RAND_MAX ) - 3;
+    itemLevel += level + Util::dice( 6 ) - 3;
   }
   if( itemLevel < 1 ) itemLevel = 1;
   Item *item = new Item(this, rpgItem, itemLevel);
@@ -354,8 +354,8 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
           special.erase( newItems[i]->getRpgItem() );
         }
         delete newItems[i];
-        for(int t = i; t < (int)newItems.size(); t++) {
-          newItems[t] = newItems[t + 1];
+        for(int t = i + 1; t < (int)newItems.size(); t++) {
+          newItems[t - 1] = newItems[t];
         }
         newItems.pop_back();
         i--;

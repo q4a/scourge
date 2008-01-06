@@ -828,7 +828,7 @@ bool ShapePalette::getRandomMapLocation( char type, char **name, int *x, int *y 
     return false;
   } else {
     vector<MapGridLocation*> *positions = mapGridLocationByType[ type ];
-    MapGridLocation *pos = (*positions)[ (int)( (float)(positions->size()) * rand() / RAND_MAX ) ];
+    MapGridLocation *pos = (*positions)[ Util::dice( positions->size() ) ];
     if( name ) {
       *name = pos->name;
     }

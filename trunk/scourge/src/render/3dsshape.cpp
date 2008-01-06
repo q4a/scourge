@@ -184,7 +184,7 @@ void C3DSShape::normalizeModel() {
   
   movex = 0;
   movey = maxy;
-  n = 0.25 / DIV;
+  n = 0.25f / DIV;
   movez = n;
 
 	if( divx > 0 ) {

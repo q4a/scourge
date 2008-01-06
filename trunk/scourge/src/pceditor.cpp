@@ -180,7 +180,7 @@ void PcEditor::loadUI() {
 		sprintf( message, "%d", availableSkillMod );
 		remainingLabel->setText( message );
 
-		int deityIndex = (int)( (float)( MagicSchool::getMagicSchoolCount() * rand()/RAND_MAX ) );
+		int deityIndex = Util::dice( MagicSchool::getMagicSchoolCount() );
 		deityType->setSelectedLine( deityIndex );
 		deityTypeDescription->setText( MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
 
@@ -221,7 +221,7 @@ void PcEditor::rollSkillsForCreature( Creature *c ) {
 	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 		int n;
 		if( Skill::skills[i]->getGroup()->isStat() ) {
-			n = c->getCharacter()->getSkill( i ) + (int)( 14.0f * rand() / RAND_MAX ) + 1;
+			n = c->getCharacter()->getSkill( i ) + Util::pickOne( 1, 14 );
 		} else {
 			
 			// create the starting value as a function of the stats
@@ -248,8 +248,8 @@ Creature *PcEditor::createPartyMember() {
 	c->setExp(0);
 	c->setHp();
 	c->setMp();
-	c->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
-	c->setThirst((int)(5.0f * rand()/RAND_MAX) + 5); 
+	c->setHunger( Util::pickOne( 5, 9 ) );
+	c->setThirst( Util::pickOne( 5, 9 ) ); 
 
   // stats
   if( creature ) {
@@ -510,7 +510,7 @@ weaknesses of each profession." ),
     strcpy( charTypeStr[i], Character::rootCharacters[i]->getDisplayName() );
   }
   charType->setLines( (int)Character::rootCharacters.size(), (const char**)charTypeStr );
-  int charIndex = (int)( (float)( Character::rootCharacters.size() ) * rand()/RAND_MAX );
+  int charIndex = Util::dice( Character::rootCharacters.size() );
   charType->setSelectedLine( charIndex );
   charTypeDescription = new ScrollingLabel( secondColStart, 230, 
 																						secondColWidth, 130, 
@@ -582,7 +582,7 @@ of known deities of the land with a brief description for each." ),
     strcpy( deityTypeStr[i], MagicSchool::getMagicSchool( i )->getDeity() );
   }
   deityType->setLines( MagicSchool::getMagicSchoolCount(), (const char**)deityTypeStr );
-  int deityIndex = (int)( (float)( MagicSchool::getMagicSchoolCount() * rand()/RAND_MAX ) );
+  int deityIndex = Util::dice( MagicSchool::getMagicSchoolCount() );
   deityType->setSelectedLine( deityIndex );
 
   deityTypeDescription = new ScrollingLabel( secondColStart, 130 + 10 + deityHeight, 
@@ -636,10 +636,10 @@ not affect the game in any way." ),
 void PcEditor::rollApperance() {
 	int maleCount = scourge->getShapePalette()->getPortraitCount( Constants::SEX_MALE );
 	int femaleCount = scourge->getShapePalette()->getPortraitCount( Constants::SEX_FEMALE );
-  portraitIndex = (int)( (float)( maleCount <= femaleCount ? maleCount : femaleCount ) * rand()/RAND_MAX );
+	portraitIndex = Util::dice( maleCount <= femaleCount ? maleCount : femaleCount );
 	maleCount = scourge->getShapePalette()->getCharacterModelInfoCount( Constants::SEX_MALE );
 	femaleCount = scourge->getShapePalette()->getCharacterModelInfoCount( Constants::SEX_FEMALE );
-  modelIndex = (int)( (float)( maleCount <= femaleCount ? maleCount : femaleCount ) * rand()/RAND_MAX );
+	modelIndex = Util::dice( maleCount <= femaleCount ? maleCount : femaleCount );
 }
 
 void PcEditor::drawWidgetContents( Widget *w ) {

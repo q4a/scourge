@@ -71,11 +71,11 @@ MainMenu::MainMenu(Scourge *scourge){
 	this->lastMenuTick = 0;
 	this->savegameDialog = new SavegameDialog( scourge );
   for(int i = 0; i < cloudCount; i++) {
-	cloud[i].x = (int)((float)scourge->getSDLHandler()->getScreen()->w * rand()/RAND_MAX);
-	cloud[i].y = (int)(50.0 * rand()/RAND_MAX);
-	cloud[i].w = (int)(55.0 * rand()/RAND_MAX) + 200;
-	cloud[i].h = (int)(28.0 * rand()/RAND_MAX) + 100;
-	cloud[i].speed = (int)(2.0 * rand()/RAND_MAX) + 1;
+	cloud[i].x = Util::dice( scourge->getSDLHandler()->getScreen()->w );
+	cloud[i].y = Util::dice( 50 );
+	cloud[i].w = Util::pickOne( 200, 254 );
+	cloud[i].h = Util::pickOne( 100, 127 );
+	cloud[i].speed = Util::pickOne( 1, 2 );
   }
 
   logoRot = -scourge->getShapePalette()->logo->h;
@@ -94,8 +94,8 @@ MainMenu::MainMenu(Scourge *scourge){
 
   starCount = 200;
   for(int i = 0; i < starCount; i++) {
-    star[i].x = (int)( (float)scourge->getSDLHandler()->getScreen()->w * rand()/RAND_MAX );
-    star[i].y = top + (int)( ((float)scourge->getSDLHandler()->getScreen()->h - (top * 2 + WATER_HEIGHT)) * rand()/RAND_MAX );
+    star[i].x = Util::dice( scourge->getSDLHandler()->getScreen()->w );
+    star[i].y = Util::pickOne( top, top + 599 - WATER_HEIGHT );
   }
   // The new style gui  
   int w = 250;
@@ -430,20 +430,20 @@ void MainMenu::drawActiveMenuItem( float divisor, int count ) {
     if( mi->active ) {
       for( int i = 0; i < count; i++ ) {
         if( !( mi->particle[i].life ) ) {
-          mi->particle[i].life = (int)( (float)MAX_PARTICLE_LIFE * rand() / RAND_MAX );
+          mi->particle[i].life = Util::dice( MAX_PARTICLE_LIFE );
           mi->particle[i].x = mi->particle[i].y = 0;
-          mi->particle[i].r = 200 + (int)( 40.0f * rand() / RAND_MAX );
-          mi->particle[i].g = 170 + (int)( 40.0f * rand() / RAND_MAX );
-          mi->particle[i].b = 80 + (int)( 40.0f * rand() / RAND_MAX );
-          mi->particle[i].dir = 10.0f * rand() / RAND_MAX;
-          mi->particle[i].zoom = 2.0f + ( 2.0f * rand() / RAND_MAX );
-          switch( (int)( 4.0f * rand() / RAND_MAX ) ) {
+          mi->particle[i].r = Util::pickOne( 200, 239 );
+          mi->particle[i].g = Util::pickOne( 170, 209 );
+          mi->particle[i].b = Util::pickOne( 80, 119 );
+          mi->particle[i].dir = Util::roll( 0.0f, 10.0f );
+          mi->particle[i].zoom = Util::roll( 2.0f, 4.0f );
+          switch( Util::dice( 4 ) ) {
           case 0: mi->particle[i].dir = 360.0f - mi->particle[i].dir; break;
           case 1: mi->particle[i].dir = 180.0f - mi->particle[i].dir; break;
           case 2: mi->particle[i].dir = 180.0f + mi->particle[i].dir; break;
           //default: // do nothing
           }
-          mi->particle[i].step = 4.0f * rand() / RAND_MAX;
+          mi->particle[i].step = Util::roll( 0.0f, 4.0f );
         }
         
         glPushMatrix();
@@ -604,8 +604,8 @@ void MainMenu::drawLogo() {
       logoTicks = t;
       logoRot += 8;
 		}
-    candleFlameX = scourge->getSDLHandler()->getScreen()->w - 215 + (int)(4.0 * rand()/RAND_MAX) - 4;
-    candleFlameY = top + 385 + (int)(4.0 * rand()/RAND_MAX) - 4;
+    candleFlameX = scourge->getSDLHandler()->getScreen()->w - 215 + Util::dice( 4 ) - 4;
+    candleFlameY = top + 385 + Util::dice( 4 ) - 4;
   }
 
   // draw candle flame
@@ -642,9 +642,9 @@ void MainMenu::drawStars() {
     glPushMatrix();
     glLoadIdentity();
     glTranslatef( star[i].x, star[i].y, 0 );
-    glColor3f( 0.2 + (0.79f * rand()/RAND_MAX), 
-               0.2 + (0.79f * rand()/RAND_MAX), 
-               0.2 + (0.79f * rand()/RAND_MAX) );
+    glColor3f( Util::roll( 0.2f, 0.99f ), 
+               Util::roll( 0.2f, 0.99f ), 
+               Util::roll( 0.2f, 0.99f ) );
     //int n = (int)(2.0f * rand()/RAND_MAX) + 1;
     int n = 1;
     glBegin( GL_QUADS );

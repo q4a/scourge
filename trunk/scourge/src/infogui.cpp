@@ -141,7 +141,7 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
 					setItem( item ); // re-draw buttons
 					float n = (float)( item->getLevel() * 5 );
 					scourge->getParty()->getPlayer()->
-						addExperienceWithMessage( (int)( n + ( n * rand() / RAND_MAX ) ) );
+						addExperienceWithMessage( (int)Util::roll( n, 2 * n ) );
 				} else {
 					// there can only be 10 failures per hour
 					scourge->getSession()->setCountForDate( key, n + 1 );

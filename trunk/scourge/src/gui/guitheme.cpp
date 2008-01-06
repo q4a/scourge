@@ -192,11 +192,11 @@ ThemeElement *GuiTheme::parseElement( const char *s ) {
 //  cerr << "parseElement: line=" << line << endl;
 
 	// need to copy incoming string so we don't modify shared string memory (std::string)
-	char line[strlen(s)];
-	strcpy( line, s );
+	std::vector<char> line(strlen(s)+1);
+	strcpy( &line[0], s );
 
 
-  char *p = strtok( line, "," );
+  char *p = strtok( &line[0], "," );
   if( p ) {
     ThemeElement *element = new ThemeElement();
     strcpy( element->textureFileName, p );
@@ -265,11 +265,11 @@ Color *GuiTheme::parseColor( const char *s ) {
 //  cerr << "parseColor: line=" << line << endl;
 
 	// need to copy incoming string so we don't modify shared string memory (std::string)
-	char line[strlen(s)];
-	strcpy( line, s );
+	std::vector<char> line(strlen(s)+1);
+	strcpy( &line[0], s );
 
 
-	char *p = strtok( line, "," );
+	char *p = strtok( &line[0], "," );
 	if( p ) {
 		Color *color = new Color();
 		color->r = atof( p );

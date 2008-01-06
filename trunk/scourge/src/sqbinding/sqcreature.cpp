@@ -383,7 +383,7 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
   //if( !Constants::isStateModTransitionWanted( mod, setting ) ) {
     // check for magic item state mod protections
     protectiveItem = object->getProtectedStateMod(mod);
-    if(protectiveItem && 0 == (int)(2.0f * rand()/RAND_MAX)) {
+    if(protectiveItem && 0 == Util::dice( 2 )) {
       sprintf(msg, _( "%s resists the spell with magic item!" ), 
               object->getName());
       SqBinding::sessionRef->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    

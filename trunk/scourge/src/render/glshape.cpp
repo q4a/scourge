@@ -521,7 +521,7 @@ void GLShape::createDarkTexture( WallTheme *theme ) {
     for(j = 0; j < LIGHTMAP_SIZE; j++) {
 
       float d = 255.0f;
-      if(!theme || !theme->getMultiTexSmooth( 0 )) d = (128.0f * rand()/RAND_MAX) + 127.0f;
+      if(!theme || !theme->getMultiTexSmooth( 0 )) d = Util::roll( 127.0f, 255.0f );
 
       // purple
       data[i * LIGHTMAP_SIZE * 3 + j * 3 + 0] = 
@@ -532,7 +532,7 @@ void GLShape::createDarkTexture( WallTheme *theme ) {
         (unsigned char)(d * tmp * (theme ? theme->getMultiTexBlue(0) : 1.0f));
 
       d = 255.0f;
-      if(!theme || !theme->getMultiTexSmooth( 1 )) d = (128.0f * rand()/RAND_MAX) + 127.0f;
+      if(!theme || !theme->getMultiTexSmooth( 1 )) d = Util::roll( 127.0f, 255.0f );
 
       // dark
       data2[i * LIGHTMAP_SIZE * 3 + j * 3 + 0] = 
@@ -633,7 +633,7 @@ void GLShape::initSurfaces() {
   float w = (float)width / DIV;
   float d = (float)depth / DIV;
   float h = (float)height / DIV;
-  if (h == 0) h = 0.25 / DIV;
+  if (h == 0) h = 0.25f / DIV;
 
   float v[4][3];
 

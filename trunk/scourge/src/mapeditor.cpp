@@ -555,7 +555,7 @@ void MapEditor::addNewItem( char *name,
 		// fill the container with random items
 		if( rpgItem->isContainer() ) {
 			// some items
-			int n = (int)(3.0f * rand() / RAND_MAX);
+			int n = Util::dice( 3 );
 			for(int i = 0; i < n; i++) {
 				RpgItem *containedItem = RpgItem::getRandomItem( depth );
 				if(containedItem) 
@@ -564,8 +564,8 @@ void MapEditor::addNewItem( char *name,
 																		true);
 			}
 			// some spells
-			if(!((int)(25.0f * rand() / RAND_MAX))) {
-				int n = (int)(2.0f * rand() / RAND_MAX) + 1;
+			if( 0 == Util::dice( 25 ) ) {
+				int n = Util::pickOne( 1, 2 );
 				int spellLevel = level / 5;
 				for(int i = 0; i < n; i++) {
 					Spell *spell = MagicSchool::getRandomSpell( spellLevel );
@@ -717,13 +717,13 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
 
 void MapEditor::addRug( Sint16 mapx, Sint16 mapy ) {
   // pick an orientation
-  bool isHorizontal = ( (int)( 10.0f * rand() / RAND_MAX ) % 2 == 0 ? true : false );
+  bool isHorizontal = ( Util::dice( 2 ) == 0 ? true : false );
 
   // save it
   Rug rug;
   rug.isHorizontal = isHorizontal;
   rug.texture = scourge->getSession()->getShapePalette()->getRandomRug();
-  rug.angle = ( 30.0f * rand() / RAND_MAX ) - 15.0f;
+  rug.angle = Util::roll( -15.0f, 15.0f );
 
   scourge->getMap()->setRugPosition( mapx, mapy, &rug );
 }
@@ -743,8 +743,8 @@ void MapEditor::removeSecret( Sint16 mapx, Sint16 mapy ) {
 }
 
 void MapEditor::addTrap( Sint16 mapx, Sint16 mapy ) {
-  int w = (int)( 6.0f * rand() / RAND_MAX ) + 4;
-  int h = (int)( 6.0f * rand() / RAND_MAX ) + 4;  
+  int w = Util::pickOne( 4, 9 );
+  int h = Util::pickOne( 4, 9 );  
   scourge->getMap()->addTrap( mapx, mapy, w, h );
 }
 
@@ -896,7 +896,7 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
     }
 
     // add a light
-    if((int) (100.0 * rand()/RAND_MAX) <= 25) {
+    if( Util::dice( 100 ) <= 25 ) {
       if( dir == 1 ) {
         scourge->getMap()->
           setPosition( mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT - 4, 
@@ -1029,7 +1029,7 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
     }
 
     // Add a light
-    if((int) (100.0 * rand()/RAND_MAX) <= 25) {
+    if( Util::dice( 100 ) <= 25) {
       if( dir == 1 ) {
         scourge->getMap()->
           setPosition(mapx + 4, mapy + MAP_UNIT_OFFSET + 1, 6, 

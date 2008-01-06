@@ -119,7 +119,7 @@ typedef struct _MovingDoor {
 */ 
 class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusReport {
  private:
-  TextScroller *descriptionScroller;
+	TextScroller *descriptionScroller;
   Party *party;
   Map *levelMap;
   MapSettings *mapSettings;
@@ -137,7 +137,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   bool inHq;
   bool missionWillAwardExpPoints;
   char infoMessage[2000];
-  PcUi *pcui;
+	PcUi *pcui;
   ConfirmDialog *exitConfirmationDialog;
   TextDialog *textDialog;
   InfoGui *infoGui;

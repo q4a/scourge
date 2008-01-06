@@ -270,9 +270,9 @@ void TradeDialog::steal() {
   bool success = true;
   for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {
     float maxA = steal + ( luck / 4.0f );
-    float valueA = maxA - ( ( maxA / 4.0f ) * rand() / RAND_MAX );
+    float valueA = Util::roll( 0.75f * maxA, maxA );
     float maxB = ( stealB / 2.0f ) + ( coordinationB / 2.0f ) + ( luckB / 4.0f );
-    float valueB = maxB - ( ( maxB / 4.0f ) * rand() / RAND_MAX );
+    float valueB = Util::roll( 0.75f * maxB, maxB );
     if( success ) {
       success = ( valueA > valueB ? true : false );
     }

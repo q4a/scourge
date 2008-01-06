@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "constants.h"
+#include "../util.h"
 
 using namespace std;
 
@@ -234,7 +235,7 @@ Constants::~Constants(){
 }
 
 char *Constants::getMessage(int index) {
-  int n = (int)((float)messageCount[index] * rand() / RAND_MAX);
+  int n = Util::dice( messageCount[index] );
   return _( messages[index][n] );
 }
 

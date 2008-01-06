@@ -26,7 +26,7 @@ Effect::Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, int w
   this->levelMap = levelMap;
   this->preferences = preferences;
   this->shapePal = shapePal;
-  this->shape = new GLShape(0, width, height, width, NULL,0, 0, 2000);
+  this->shape = new GLShape(0, width, height, width, NULL,0, 0, 2000); //-=K=-: 2000 goes into Uint8?
   this->shape->initialize();
   this->deleteShape = true;
   commonInit();
@@ -82,7 +82,7 @@ Effect::~Effect() {
 void Effect::setSize( int width, int height ) {
   if( !deleteShape ) return;
   delete shape;
-  shape = new GLShape(0, width, height, width, NULL,0, 0, 2000);
+  shape = new GLShape(0, width, height, width, NULL,0, 0, 2000); //-=K=-: 2000 goes into Uint8?
 }
 
 void Effect::deleteParticles() {
@@ -173,8 +173,8 @@ void Effect::drawTeleport(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-      particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 7.0f;
-      particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+      particle[i]->z = Util::pickOne( 7, 8 );
+      particle[i]->moveDelta = Util::roll( 0.15f, 0.3f );
       if(particle[i]->z < 8) particle[i]->moveDelta *= -1.0f;
       particle[i]->maxLife = 10000;
       particle[i]->trail = 4;
@@ -208,15 +208,15 @@ void Effect::drawGreen(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-      particle[i]->z = (int)(1.0f * rand()/RAND_MAX);
+      particle[i]->z = Util::roll( 0.0f, 1.0f );
       //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
       particle[i]->moveDelta = 0.15f;
-      particle[i]->rotate = (180.0f * rand()/RAND_MAX);
-      particle[i]->maxLife = toint( 30.0f * rand() / RAND_MAX ) + 20;
+      particle[i]->rotate = Util::roll( 0.0f, 180.0f );
+	  particle[i]->maxLife = Util::pickOne( 20, 50 );
       particle[i]->trail = 2;
-      particle[i]->zoom = ( 2.0f * rand() / RAND_MAX ) + 1.0f;
+      particle[i]->zoom = Util::roll( 1.0f, 3.0f );
     } else if(proceed) {
-      particle[i]->rotate += (3.0f * rand()/RAND_MAX) - 6.0f;
+      particle[i]->rotate -= Util::roll( 3.0f, 6.0f );
 
       // this causes an explosion!
       //particle[i]->zoom += 0.3f;
@@ -250,14 +250,14 @@ void Effect::drawExplosion(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
+	  particle[i]->z = Util::pickOne( 3, 4 );
 	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0;
-	  particle[i]->rotate = (180.0f * rand()/RAND_MAX);
+	  particle[i]->rotate = Util::roll( 0.0f, 180.0f );
 	  particle[i]->maxLife = 5000;
 	  particle[i]->trail = 4;
     } else if(proceed) {
-	  particle[i]->rotate = (360.0f * rand()/RAND_MAX);
+	  particle[i]->rotate = Util::roll( 0.0f, 360.0f );
 
 	  // this causes an explosion!
 	  if(particle[i]->zoom < 4.0f) particle[i]->zoom += 0.5f;
@@ -283,9 +283,9 @@ void Effect::drawBlast(bool proceed, float percent ) {
   for(int i = 0; i < 15; i++) {
     if(!particle[i]) {
       createParticle(&(particle[i]));
-      particle[i]->z = (int)( ( (2.0 * rand()/RAND_MAX) + 0.5f ) * percent );
-      particle[i]->moveDelta = 0.05f + (0.05f * rand()/RAND_MAX);
-      particle[i]->maxLife = (int)( ( ( 10.0f * rand() / RAND_MAX ) + 5.0f ) * percent );
+      particle[i]->z = (int)Util::roll( 0.5f * percent, 2.5f * percent );
+      particle[i]->moveDelta = Util::roll( 0.05f, 0.1f );
+      particle[i]->maxLife = (int)Util::roll( 5.0f * percent, 15.0f * percent );
       particle[i]->zoom = 3;
       particle[i]->tail = true;
       particle[i]->trail = 2;
@@ -298,7 +298,7 @@ void Effect::drawBlast(bool proceed, float percent ) {
       
       float p = particle[i]->life / ( particle[i]->maxLife / 100.0f );
       float a = ( 0.5f / 100.0f ) * ( 100.0f - p );
-      float gg = ( 0.2f * rand() / RAND_MAX ) + 0.8f;
+      float gg = Util::roll( 0.8f, 1.0f );
 
       particle[i]->tailColor.r = gg / ( particle[i]->life );
       particle[i]->tailColor.g = gg / ( particle[i]->life / 10.0f );
@@ -321,14 +321,14 @@ void Effect::drawDust(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX);
+	  particle[i]->z = (int)Util::dice( 2 );
 	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0;
-	  particle[i]->rotate = (180.0f * rand()/RAND_MAX);
+	  particle[i]->rotate = Util::roll( 0.0f, 180.0f );
 	  particle[i]->maxLife = 5000;
 	  particle[i]->trail = 4;
     } else if(proceed) {
-	  particle[i]->rotate = (360.0f * rand()/RAND_MAX);
+	  particle[i]->rotate = Util::roll( 0.0f, 360.0f );
 
 	  // this causes an explosion!
 	  if(particle[i]->zoom < 4.0f) particle[i]->zoom += 0.5f;
@@ -341,7 +341,7 @@ void Effect::drawDust(bool proceed) {
 	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
 	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1.0f) c = 1.0f;
-      glColor4f(c / 4.0f, c / 4.0f, c / 4.0f, 0.35);
+      glColor4f(c / 4.0f, c / 4.0f, c / 4.0f, 0.35f);
 
 	  drawParticle(particle[i]);
     }
@@ -354,8 +354,8 @@ void Effect::drawHail(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-      particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 5.0f;
-      particle[i]->moveDelta = 0.5f + (0.3f * rand()/RAND_MAX);
+      particle[i]->z = Util::pickOne( 5, 6 );
+      particle[i]->moveDelta = Util::roll( 0.5f, 0.8f );
       particle[i]->moveDelta *= -1.0f;
       particle[i]->maxLife = 40000;
       particle[i]->trail = 2;
@@ -391,16 +391,16 @@ void Effect::drawTower(bool proceed) {
       // create a new particle
       createParticle(&(particle[i]));
       if( (i % 3) ) {
-        particle[i]->z = (int)(1.0f * rand()/RAND_MAX);
+        particle[i]->z = Util::roll( 0.0f, 1.0f );
         //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
         particle[i]->moveDelta = 0.15f;
-        particle[i]->rotate = (180.0f * rand()/RAND_MAX);
+        particle[i]->rotate = Util::roll( 0.0f, 180.0f );
         particle[i]->maxLife = 5000;
         particle[i]->trail = 2;
         particle[i]->zoom = 1.5f;
       } else {
-        particle[i]->z = (int)(2.0f * rand()/RAND_MAX);
-        particle[i]->moveDelta = 0.5f + (0.3f * rand()/RAND_MAX);
+        particle[i]->z = Util::dice( 2 );
+        particle[i]->moveDelta = Util::roll( 0.5f, 0.8f );
         particle[i]->maxLife = 40000;
         particle[i]->trail = 8;
         particle[i]->zoom = 4.0f;
@@ -408,7 +408,7 @@ void Effect::drawTower(bool proceed) {
       }
     } else if(proceed) {
       if( ( i % 3 ) ) {
-        particle[i]->rotate += (3.0f * rand()/RAND_MAX) - 6.0f;
+        particle[i]->rotate -= Util::roll( 3.0f, 6.0f );
       }
       moveParticle(&(particle[i]));
     }
@@ -476,7 +476,7 @@ void Effect::drawCastSpell(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-	  particle[i]->z = (int)(2.0f * rand()/RAND_MAX) + 3.0f;
+	  particle[i]->z = Util::pickOne( 3, 4 );
 	  //	  particle[i]->moveDelta = 0.15f + (0.2f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0;
 	  particle[i]->maxLife = 10000;
@@ -506,13 +506,12 @@ void Effect::drawRing(bool proceed) {
 
   float r = ringRadius / DIV;
 
-  float n = (0.05f * rand()/RAND_MAX) + 1.0f;
+  float n = Util::roll( 1.0f, 1.05f );
   for(int i = 0; i < 2; i++) {
     glPushMatrix();
     glRotatef((i == 0 ? ringRotate : -ringRotate), 0, 0, 1);
-    float c = 0.15f;
-    glColor4f(0.85f + (c * rand()/RAND_MAX), 
-              1.0f - (c * rand()/RAND_MAX), 
+    glColor4f( Util::roll( 0.85f, 1.0f ), 
+              Util::roll( 0.85f, 1.0f ), 
               1.0f, 0.7f);
     if(ringTex) glBindTexture( GL_TEXTURE_2D, ringTex );
     glScalef( n, n, n );
@@ -572,14 +571,14 @@ void Effect::drawRipple(bool proceed) {
 void Effect::createParticle(ParticleStruct **particle) {
   // create a new particle
   *particle = new ParticleStruct();
-  (*particle)->x = ((float)(shape->getWidth() / DIV) * rand()/RAND_MAX);
-  (*particle)->y = ((float)(shape->getDepth() / DIV) * rand()/RAND_MAX);
+  (*particle)->x = Util::roll( 0.0f, shape->getWidth() / DIV );
+  (*particle)->y = Util::roll( 0.0f, shape->getDepth() / DIV );
   //  (*particle)->z = (int)(6.0 * rand()/RAND_MAX) + 10;
-  (*particle)->z = (int)(0.8 * rand()/RAND_MAX);
+  (*particle)->z = Util::roll( 0.0f, 0.8f );
   (*particle)->startZ = (*particle)->z;
-  (*particle)->height = (int)(15.0 * rand()/RAND_MAX) + 10;
+  (*particle)->height = Util::pickOne( 10, 24 );
   (*particle)->life = 0;
-  (*particle)->moveDelta = (0.3f * rand()/RAND_MAX) + 0.2f;
+  (*particle)->moveDelta = Util::roll( 0.2f, 0.5f );
   (*particle)->maxLife = 10;
   (*particle)->trail = 1;
   (*particle)->rotate = 0.0f;
@@ -605,9 +604,9 @@ void Effect::drawParticle(ParticleStruct *particle) {
   w = (float)(shape->getWidth() / DIV) / 4.0f;
   //float d = (float)(shape->getDepth() / DIV) / 2.0;
   h = (float)(shape->getHeight() / DIV) / 3.0f;
-  if(h == 0) h = 0.25 / DIV;
+  if(h == 0) h = 0.25f / DIV;
   sh = ( fabs( particle->z - particle->startZ ) / DIV) / 3.0f;
-  if(h == 0) h = 0.25 / DIV;
+  if(h == 0) h = 0.25f / DIV;
 
   glDisable( GL_CULL_FACE );
   glEnable( GL_TEXTURE_2D );
