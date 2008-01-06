@@ -4425,7 +4425,7 @@ int Map::getTrapAtLoc( int x, int y ) {
 }
 
 Trap *Map::getTrapLoc( int trapIndex ) {
-  if( (int)trapList.size() <= trapIndex ) return NULL;
+  if( (int)trapList.size() <= trapIndex || trapIndex < 0) return NULL;
   else return &( trapList[ trapIndex ] );
 }
 

@@ -233,7 +233,7 @@ GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {
   }
   assert( !trees.empty() );
   
-  float roll = Util::roll( 0.0f, trees[ trees.size() - 1 ].end );
+  float roll = Util::roll( 0.0f, trees[ trees.size() - 1 ].end - 0.001f);
 
   // FIXME: implement binary search here
   for( unsigned int i = 0; i < trees.size(); i++ ) {

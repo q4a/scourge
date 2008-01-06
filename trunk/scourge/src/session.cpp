@@ -234,7 +234,7 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
   if( rpgItem->isSpecial() ) loading = true;
   int itemLevel = level;
   if( !loading ) {
-    itemLevel += level + Util::dice( 6 ) - 3;
+    itemLevel += Util::dice( 6 ) - 3;
   }
   if( itemLevel < 1 ) itemLevel = 1;
   Item *item = new Item(this, rpgItem, itemLevel);

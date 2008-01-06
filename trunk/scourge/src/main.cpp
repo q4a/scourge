@@ -96,6 +96,5 @@ int main(int argc, char *argv[]) {
   userConfiguration->parseCommandLine(argc, argv); 
   RedirectIOToConsole();
   return Session::runGame( createGameAdapter( userConfiguration ), argc, argv );
-  return 0;
 }
 
