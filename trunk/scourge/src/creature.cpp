@@ -787,7 +787,7 @@ Location *Creature::moveToLocator() {
  * Returns the blocking shape or NULL if move is possible.
  */
 Location *Creature::takeAStepOnPath() {
-	Location *position = NULL;
+  Location *position = NULL;
   int a = ((AnimatedShape*)getShape())->getCurrentAnimation();
 
   if(!pathManager->atEndOfPath() && a == MD2_RUN ){ //a != MD2_TAUNT ) {
@@ -797,73 +797,58 @@ Location *Creature::takeAStepOnPath() {
 
     GLfloat newX = getX();
     GLfloat newY = getY();
-    
+
+    int cx = toint(newX);
+    int cy = toint(newY); //current x,y    
+
     GLfloat step = getStep();
-    float lx = (float)(location.x);
-    float ly = (float)(location.y);
-    float mx = lx - newX; //distance between creature's (continuous) location and the target (discrete) location
-    float my = ly - newY;
-    //if( !strcmp(getName(),"Alamont") ) 
-//      cerr << "taking step! step=" << step << " mx=" << mx << " my=" << my << endl;
+    float targetX = (float)(location.x);
+    float targetY = (float)(location.y); 
 
-    // Tolerance is 0.5 because toint will round to nearest int on map from there.
-    GLfloat tolerance = 0.5f;
-    if( my > tolerance ) newY += step; 
-    else if( my <= -tolerance ) newY -= step; //I think "<=" not "<". E.g, lx = 4.0, getX() = 4.5, then we still need to step
-    if( mx > tolerance ) newX += step;
-    else if( mx <= -tolerance ) newX -= step;
-    
-    //if( !strcmp(getName(), "Alamont") ) 
-//      cerr << "x=" << x << "," << y << " bestPathPos=" << bestPathPos << " location=" << location.x << "," << location.y << endl;
+    //get the direction to the target location
+    float diffX = targetX - newX; //distance between creature's (continuous) location and the target (discrete) location
+    float diffY = targetY - newY;
+    //get the x and y values for a step-length vector in the direction of diffX,diffY
+    float dist = sqrt(diffX*diffX + diffY*diffY); //distance to location
+    //if(dist < step) step = dist; //if the step is too great, we slow ourselves to avoid overstepping
+    float stepX = (diffX * step)/dist;
+    float stepY = (diffY * step)/dist;
 
+    newY += stepY; 
+    newX += stepX;
+
+    int nx = toint(newX);
+    int ny = toint(newY);
     position = session->getMap()->
-      moveCreature(toint(getX()), toint(getY()), toint(getZ()),
-                   toint(newX), toint(newY), toint(getZ()),
+      moveCreature(cx, cy, toint(getZ()),
+                   nx, ny, toint(getZ()),
                    this);
 
-
-    /**
-     * Sending newX,newY as new coordinates could be a wall.
-     * location.x,location.y are the only known non-wall coordinates.
-     * This is what's causing the creatures to "hang" not
-     * want to move around obsticles.
-     * To fix this, we need to test for walls and undo one of the
-     * directional steps (newX change or newY change) and try again.
-     * 
-     * Situation:
-     * (X-wall, s-start, e-end
-     * 
-     * XXXXXXXs
-     *       e
-     * 
-     * The path using toint(float-s) would go through the wall.
-     */
-    if(position && ( newX != getX() && newY != getY() )) {
+    if(position && cx != location.x && cy != location.y
+       && ((cx != nx && cy == ny) || (cx == nx && cy != ny)) ){
+      //we are blocked at our next step, are moving diagonally, and did not complete the diagonal move
+      newX = targetX;
+      newY = targetY; //we just "pop" to the target location
+      nx = toint(newX);
+      ny = toint(newY);
       position = session->getMap()->
-        moveCreature(toint(getX()), toint(getY()), toint(getZ()),
-                     toint(getX()), toint(newY), toint(getZ()),
-                     this);
-      
-      if( !position ) {
-        newX = getX();
-      } else {
-        position = session->getMap()->
-          moveCreature(toint(getX()), toint(getY()), toint(getZ()),
-                       toint(newX), toint(getY()), toint(getZ()),
-                       this);
-          
-        if( !position ) {
-          newY = getY();
-        }
-      }
+        moveCreature(cx, cy, toint(getZ()),
+                   nx, ny, toint(getZ()),
+                   this);
     }
+                         
+   /* cout << getName() << " stepping (" << getX() << "," << getY() << ") to (" << newX << "," << newY << ")  towards (" << location.x << "," << location.y << ")\n";
+    if(position){ 
+      cout << "but is blocked.\n";
+      if(position->creature) cout << "blocked by " << position->creature->getName() << "\n"; 
+    }*/
 
 
     if( !position ) {
       computeAngle( newX, newY );
       showWaterEffect( newX, newY );
       moveTo( newX, newY, getZ() );
-      if( toint(newX) == toint(lx) && toint(newY) == toint(ly) ) {
+      if( toint(newX) == location.x && toint(newY) == location.y ) {
         pathManager->incrementPositionOnPath();
         //we'll clear the path every so often - each time we move a step is ok
         if(getMotion() != Constants::MOTION_LOITER)
@@ -873,6 +858,10 @@ Location *Creature::takeAStepOnPath() {
       // if we can't get to the destination, stop trying
       // do this so the animation switches to "stand"
       //stopMoving();
+
+      //clear the path infront incase an NPC is what is blocking us
+      if(getMotion() != Constants::MOTION_LOITER)
+          pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());
     }
   }
   return position;
