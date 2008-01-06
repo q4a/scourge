@@ -396,15 +396,13 @@ string Scourge::getCurrentMapName( const string& dirName, int depth, string* map
 	// add the depth
 	stringstream tmp;
 	tmp << mapName << "_" << ( depth >= 0 ? depth : oldStory ) << ".map";
-	cerr << "tmp=" << tmp << endl;
 
 	if( mapFileName )
 		(*mapFileName) = tmp.str();
 
 	// add the directory name
 	stringstream tmp2;
-	tmp2 << ( dirName.length() ? dirName : getSession()->getSavegameName() ) << "/" << tmp;
-	cerr << "tmp=" << tmp2.str() << endl;
+	tmp2 << ( dirName.length() ? dirName : getSession()->getSavegameName() ) << "/" << tmp.str();
 	
 	// convert to a path
 	string s = get_file_name( tmp2.str() );
@@ -418,9 +416,7 @@ string Scourge::getSavedMapName() {
 	if( !session->getCurrentMission() ) {
 		mapBaseName = "hq";
 	} else if( session->getCurrentMission()->isStoryLine() ) {
-	  cerr << "getBoard()->getStorylineIndex()=" << getBoard()->getStorylineIndex() << endl;
 	  mapBaseName = "sl" + getBoard()->getStorylineIndex();
-	  cerr << "mapBaseName=" << mapBaseName << endl;
 	} else {
 		stringstream temp;
 		temp << std::hex << SDL_GetTicks();
