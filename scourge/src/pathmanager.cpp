@@ -110,8 +110,8 @@ void PathManager::findPathAway(int awayX, int awayY, Creature* player, Map* map,
 
 /**
  * Generates a somewhat random path using a series of getNextLocation()
-* It will try to make a path that is maxPathLength long, but will stop if it gets stuck.
-**/
+ * It will try to make a path that is maxPathLength long, but will stop if it gets stuck.
+ **/
 void PathManager::findWanderingPath(unsigned int maxPathLength, Creature* player, Map* map){
   clearPath();
   //start with our facing direction
@@ -183,78 +183,6 @@ Uint16 PathManager::addNextLocation(int cx, int cy, Uint16 direction, Creature* 
   //we shouldn't get here, but assume we are blocked
   //cerr << "Overflowed random direction generation.\n";
   return 0;
-/*
-  //first decide to whether deviate slightly. 1/8 chance each of left and right
-  int random = (int)(8.0f * rand()/RAND_MAX);
-  if(random == 0) direction = getClockwiseDirection(direction);
-  else if(random == 1) direction = getAntiClockwiseDirection(direction);
-
-  //we have up to 5 attempts to make. Just hard-code them for now.
-  //some sort of iterator over directions would be a nicer solution.
-  //Even better: we should have a probability distribution over all directions, favouring
-  //those with least deviation. TODO.
-  Location next;
-  next.x = nextX(cx,direction);
-  next.y = nextY(cy,direction);
-  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
-    path.push_back(next);
-    return direction;
-  }
-  //we are blocked. Try diagonal left and right moves.
-  Uint16 rightDirection = getClockwiseDirection(direction);
-  next.x = nextX(cx,rightDirection);
-  next.y = nextY(cy,rightDirection);
-  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
-    path.push_back(next);
-    return rightDirection;
-  }
-  direction = getAntiClockwiseDirection(direction);
-  next.x = nextX(cx,direction);
-  next.y = nextY(cy,direction);
-  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
-    path.push_back(next);
-    return direction;
-  }
-  //those both failed too. Now try 90 degree turns
-  rightDirection = getClockwiseDirection(rightDirection);
-  next.x = nextX(cx,rightDirection);
-  next.y = nextY(cy,rightDirection);
-  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
-    path.push_back(next);
-    return rightDirection;
-  }
-  direction = getAntiClockwiseDirection(direction);
-  next.x = nextX(cx,direction);
-  next.y = nextY(cy,direction);
-  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
-    path.push_back(next);
-    return direction;
-  }
-  //now try the 135 degree turns
-  rightDirection = getClockwiseDirection(rightDirection);
-  next.x = nextX(cx,rightDirection);
-  next.y = nextY(cy,rightDirection);
-  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
-    path.push_back(next);
-    return rightDirection;
-  }
-  direction = getAntiClockwiseDirection(direction);
-  next.x = nextX(cx,direction);
-  next.y = nextY(cy,direction);
-  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
-    path.push_back(next);
-    return direction;
-  }
-  //and finally 180 degrees
-  direction = getAntiClockwiseDirection(direction);
-  next.x = nextX(cx,direction);
-  next.y = nextY(cy,direction);
-  if(!AStar::isBlocked(next.x,next.y,owner,player,map,false)){
-    path.push_back(next);
-    return direction;
-  }*/
-  //we are blocked in
-  return 0;
 }
 
 int PathManager::nextX(int x, Uint16 direction){
@@ -302,7 +230,7 @@ Uint16 PathManager::getAntiClockwiseDirection(Uint16 direction){
 void PathManager::findPathOffLocations(set<Location,LocationComparitor>* locations, Creature* player, Map* map, int maxNodes){
   GoalFunction * goal = new ClearLocationsGoal(owner,locations);
   Heuristic * heuristic = new NoHeuristic();
-  AStar::findPath(toint(owner->getX()),toint(owner->getY()),&path,map,owner,player,maxNodes,true,goal,heuristic);
+  AStar::findPath(toint(owner->getX()),toint(owner->getY()),&path,map,owner,player,maxNodes,false,goal,heuristic);
   delete heuristic;
   delete goal;
  

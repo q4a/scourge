@@ -557,54 +557,6 @@ bool Creature::isNpc() {
 	return( monster ? monster->isNpc() : false );
 }
 
-/*void Creature::moveAway( Creature *other ) {
-  bool tryHard = false;
-  // already moving away
-  if( getMotion() == Constants::MOTION_MOVE_AWAY ) {
-    if( cantMoveCounter > 5 ) {
-      cantMoveCounter = 0;
-      // pick a diff. path
-      tryHard = true;
-      //cerr << "*** DIFF PATH " << getName() << " when moving away from " << other->getName() << "." << endl;			
-    } else {
-      //cerr << "*** " << getName() << " is not moving away from " << other->getName() << "." << endl;
-      return;
-    }
-  }
-
-  setMotion( Constants::MOTION_MOVE_AWAY );
-	
-  // find the farthest possible location and move there.
-
-  //bool pathSelected = false;
-  //bool pathFound = false;
- // int minIntersect = 0;
-  Creature *player = session->getParty()->getPlayer();
- 
-  //this should be enough nodes, and will be very quick anyway
-  int nodesRequired = AWAY_DISTANCE*5; 
-  if( PATH_DEBUG ) cout << getName() << " is moving away from " << other->getName() << "\n";
-  bool pathFound = pathManager->findPathAway(other,
-                       player,
-                       session->getMap(),
-                       tryHard,AWAY_DISTANCE,false,nodesRequired);
-
-  if( !pathFound ) {
-    cout << "No path away, so all movement is frozen.\n";
-    stopMoving();
-    setMotion( Constants::MOTION_MOVE_TOWARDS );
-    other->stopMoving();
-    other->setMotion( Constants::MOTION_MOVE_TOWARDS );
-  }
-}*/
-
-/*void Creature::cancelMoveAway() {
-	if( getMotion() == Constants::MOTION_MOVE_AWAY ) {
-		stopMoving();
-		setMotion( Constants::MOTION_MOVE_TOWARDS );
-	}
-}*/
-
 bool Creature::follow( Creature *leader ) {
 	float dist = getDistance( leader );
 	if( dist < CLOSE_DISTANCE ) {
@@ -728,7 +680,7 @@ bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNot
 
 Location *Creature::moveToLocator() {
   Location *pos = NULL;
-
+  
   //we either have a target we want to reach, or we are wandering around
   if(selX > -1 || getMotion() == Constants::MOTION_LOITER) { 
     // take a step
@@ -741,6 +693,16 @@ Location *Creature::moveToLocator() {
     if( pathManager->atEndOfPath() ) {
       if(!session->getParty()->isPartyMember(this)){
         setMotion( Constants::MOTION_LOITER); //All NPCs and monsters should loiter.
+        //some wandering heroes won't get their paths made elsewhere - HACK: put their logic here
+        if(getCharacter()){
+          if(Util::dice(4) == 0) //wandering heroes don't wander that much
+            pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
+          else{
+            stopMoving(); 
+            setMotion( Constants::MOTION_STAND);
+          }
+        }
+        
       }
       else{
         stopMoving();
@@ -1956,8 +1918,6 @@ bool Creature::castHealingSpell() {
 }
 
 void Creature::decideMonsterAction() {
-  //if( !( isMonster() || getStateMod( Constants::possessed ) ) ) return;
-
   //CASE 1: A possessed non-aggressive creature
   if( !isMonster() && getStateMod( StateMod::possessed ) ) {
     Creature *p = 
@@ -1972,7 +1932,7 @@ void Creature::decideMonsterAction() {
   } 
 
   //CASE 2: Loiterers and standers
-  //aggressives loitering have only 1/20 chance of breaking the cycle
+  //aggressives loitering have only 1/20 chance of breaking the cycle. That's a slight pause.
   if((getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND) &&
       (!isMonster() || isNpc() || Util::dice( 20 ) != 0)){
         if(getMotion() == Constants::MOTION_STAND){ 
@@ -1985,23 +1945,23 @@ void Creature::decideMonsterAction() {
         }
         else if(!isMonster() || isNpc()){
           //friendlies also have a chance to wave etc.
-          int n = Util::dice( 100 );
+          int n = Util::dice( 600 );
           switch( n ) {
-            case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;//1%
-            case 1 : getShape()->setCurrentAnimation(MD2_POINT); break;//1%
-            case 2 : getShape()->setCurrentAnimation(MD2_SALUTE); break;//1%
-            default : getShape()->setCurrentAnimation(MD2_STAND); break;//97%
+            case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;
+            case 1 : getShape()->setCurrentAnimation(MD2_POINT); break;
+            case 2 : getShape()->setCurrentAnimation(MD2_SALUTE); break;
+            default : getShape()->setCurrentAnimation(MD2_STAND); break;
           }
         }
       }
       else if(getMotion() == Constants::MOTION_LOITER && pathManager->atEndOfPath()){
-        //a 1/3 chance of stopping walking at the end of a wandering path
-        if( Util::dice( 3 ) == 0){
+        //a 2/3 chance of stopping walking at the end of a wandering path
+        if( Util::dice( 3 ) > 0){
           setMotion(Constants::MOTION_STAND);
           stopMoving();
         }
         else
-        pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
+          pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
       }
     return;
   }
