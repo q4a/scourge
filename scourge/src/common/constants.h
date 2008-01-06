@@ -29,6 +29,28 @@
 #   define COMPILER_IS_UNIX_COMPATIBLE 1
 #endif
 
+// -=K=- since it was most popular header i made most porting here
+#ifdef _MSC_VER // i only checked for MSVC 8 portability  
+	// turn numeric types conversion warnings OFF; like size_t <-> int; 
+#	pragma warning(disable : 4267 4244 4800) 
+	// to be sure that it's included *before* following defines
+#	include <string.h>
+	// some common string ops have different names under MSVC 8
+#	define strcasecmp _stricmp
+#	define snprintf _snprintf
+#	define strdup _strdup
+	// somewhere was error: unknown identifier "time"
+#	include <time.h>
+	// MSVC 8 has no rint so i improvise one
+	template<class T>
+	T rint(T v)
+	{
+		T f = floor(v); // v >= f
+		T c = ceil(v);  // c >= v
+		return (v-f > c-v)? c : f; //what's closer is rint(v)
+	}
+#endif // MSVC 8 portability 
+
 // include sdl, opengl and glut
 #include <SDL.h>
 #include <SDL_opengl.h>
@@ -147,9 +169,9 @@ extern PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB;
 
 
 /*
-	Float swapping code by:
-	Ramin Firoozye' -- rp&A Inc.
-	1995/06/30 found on Google groups
+  Float swapping code by:
+  Ramin Firoozye' -- rp&A Inc.
+  1995/06/30 found on Google groups
  */
 
 /*
@@ -160,23 +182,23 @@ extern PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB;
  */
 union NetValue
 {
-	short s;  /* Straight 2-byte short */
-	unsigned short sU; /* unsigned short */
-	unsigned char sC[2]; /* short as bytes */
+  short s;  /* Straight 2-byte short */
+  unsigned short sU; /* unsigned short */
+  unsigned char sC[2]; /* short as bytes */
 
-	long l;  /* Straight 4-byte long */
-	unsigned long lU; /* unsigned long */
-	unsigned char lC[4]; /* long as bytes */
-	unsigned short lS[2]; /* long as short */
+  long l;  /* Straight 4-byte long */
+  unsigned long lU; /* unsigned long */
+  unsigned char lC[4]; /* long as bytes */
+  unsigned short lS[2]; /* long as short */
 
-	float f;  /* Straight (presumed) 4-byte single */
-	unsigned char fC[4]; /* single as bytes */
-	unsigned short fS[2]; /* single as short */
+  float f;  /* Straight (presumed) 4-byte single */
+  unsigned char fC[4]; /* single as bytes */
+  unsigned short fS[2]; /* single as short */
 
-	double g;  /* Straight (presumed) 8-byte double */
-	unsigned char gC[8]; /* double as bytes */
-	unsigned short gS[4]; /* double as short */
-	unsigned long gL[2]; /* double as long */
+  double g;  /* Straight (presumed) 8-byte double */
+  unsigned char gC[8]; /* double as bytes */
+  unsigned short gS[4]; /* double as short */
+  unsigned long gL[2]; /* double as long */
 };
 typedef union NetValue NetValue;
 
@@ -226,22 +248,22 @@ typedef union NetValue NetValue;
 // GL color in float
 class Color {
  public:
-	float r, g, b, a;
+  float r, g, b, a;
 
-	Color(): r(0), g(0), b(0), a(0) {}
+  Color(): r(0), g(0), b(0), a(0) {}
 
-	Color( float r, float g, float b, float a=1.0f ) {
-		this->set( r, g, b, a );
-	}
+  Color( float r, float g, float b, float a=1.0f ) {
+	this->set( r, g, b, a );
+  }
 
-	~Color() {
-	}
+  ~Color() {
+  }
 
-	inline void set( float r, float g, float b, float a=1.0f ) {
-		this->r = r;
-		this->g = g;
-		this->b = b;
-		this->a = a;
+  inline void set( float r, float g, float b, float a=1.0f ) {
+	this->r = r;
+	this->g = g;
+	this->b = b;
+	this->a = a;
   }
 
 	void Clear() { *this = Color(); }
@@ -252,17 +274,17 @@ class Color {
   */
 
 typedef struct _ParticleStruct {
-	GLfloat x, y, z, startZ;
-	GLint height;
-	int life;
-	GLfloat moveDelta;
-	int maxLife;
-	int trail;
-	float rotate;
-	float zoom;
-	bool tail;
-	bool untilGround;
-	Color tailColor;
+  GLfloat x, y, z, startZ;
+  GLint height;
+  int life;
+  GLfloat moveDelta;
+  int maxLife;
+  int trail;
+  float rotate;
+  float zoom;
+  bool tail;
+  bool untilGround;
+  Color tailColor;
 } ParticleStruct;
 
 #define SINGLE_TARGET 0
@@ -277,11 +299,11 @@ typedef struct _ParticleStruct {
 
 class StatusReport {
 public:
-	StatusReport() {
-	}
-	virtual ~StatusReport() {
-	}
-	virtual void updateStatus( int status, int maxStatus, const char *message=NULL ) = 0;
+  StatusReport() {
+  }
+  virtual ~StatusReport() {
+  }
+  virtual void updateStatus( int status, int maxStatus, const char *message=NULL ) = 0;
 };
 
 class Constants {
@@ -291,44 +313,44 @@ public:
 
 	static inline int getNextMissionId() { return maxMissionId++; }
 
-	// inventory locations
-	static const int INVENTORY_HEAD = 1;
-	static const int INVENTORY_NECK = 2;
-	static const int INVENTORY_BACK = 4;
-	static const int INVENTORY_CHEST = 8;
-	static const int INVENTORY_LEFT_HAND = 16;
-	static const int INVENTORY_RIGHT_HAND = 32;
-	static const int INVENTORY_BELT = 64;
-	static const int INVENTORY_LEGS = 128;
-	static const int INVENTORY_FEET = 256;
-	static const int INVENTORY_RING1 = 512;
-	static const int INVENTORY_RING2 = 1024;
-	static const int INVENTORY_RING3 = 2048;
-	static const int INVENTORY_RING4 = 4096;
-	static const int INVENTORY_WEAPON_RANGED = 8192;
-	static const int INVENTORY_GLOVE = 16382;
-	static const int INVENTORY_COUNT = 15;
+  // inventory locations
+  static const int INVENTORY_HEAD = 1;
+  static const int INVENTORY_NECK = 2;
+  static const int INVENTORY_BACK = 4;
+  static const int INVENTORY_CHEST = 8;
+  static const int INVENTORY_LEFT_HAND = 16;
+  static const int INVENTORY_RIGHT_HAND = 32;
+  static const int INVENTORY_BELT = 64;
+  static const int INVENTORY_LEGS = 128;
+  static const int INVENTORY_FEET = 256;
+  static const int INVENTORY_RING1 = 512;
+  static const int INVENTORY_RING2 = 1024;
+  static const int INVENTORY_RING3 = 2048;
+  static const int INVENTORY_RING4 = 4096;
+  static const int INVENTORY_WEAPON_RANGED = 8192;
+  static const int INVENTORY_GLOVE = 16382;
+  static const int INVENTORY_COUNT = 15;
 
 	static const char *inventoryTags[];
 
-	static const int MAP_GRID_TILE_WIDTH = 6;
-	static const int MAP_GRID_TILE_HEIGHT = 5;
-	static const int MAP_GRID_TILE_PIXEL_WIDTH = 256;
-	static const int MAP_GRID_TILE_PIXEL_HEIGHT = 256;
+  static const int MAP_GRID_TILE_WIDTH = 6;
+  static const int MAP_GRID_TILE_HEIGHT = 5;
+  static const int MAP_GRID_TILE_PIXEL_WIDTH = 256;
+  static const int MAP_GRID_TILE_PIXEL_HEIGHT = 256;
 
-	// creature movement
-	enum motion {
-		MOTION_MOVE_TOWARDS=0,
-		MOTION_MOVE_AWAY, // flee
-		MOTION_CLEAR_PATH, //rapidly make way
-		MOTION_LOITER, //wander slowly
-		MOTION_STAND //FREEZE!
-	};
-
-	enum {
-		SEX_MALE=0,
-		SEX_FEMALE
-	};
+  // creature movement
+  enum motion {
+    MOTION_MOVE_TOWARDS=0,
+    MOTION_MOVE_AWAY, // flee
+    MOTION_CLEAR_PATH, //rapidly make way
+    MOTION_LOITER, //wander slowly
+    MOTION_STAND //FREEZE!
+  };
+  
+  enum {
+  	SEX_MALE=0,
+  	SEX_FEMALE
+  };
 
 // This stores the speed of the animation between each key frame for md2 models
 // A higher value means a *faster* animation and NOT a *smoother* animation.
@@ -367,233 +389,233 @@ public:
 // The max value of a skill under normal circumstances.
 #define MAX_SKILL 100
 
-	// Directions (a bitfield so they can be combined)
-	static const Uint16 MOVE_UP = 1;
-	static const Uint16 MOVE_DOWN = 2;
-	static const Uint16 MOVE_LEFT = 4;
-	static const Uint16 MOVE_RIGHT = 8;
-	// Short cuts - useful when working in 8 directions
-	static const Uint16 MOVE_UP_RIGHT = MOVE_UP | MOVE_RIGHT;
-	static const Uint16 MOVE_UP_LEFT = MOVE_UP | MOVE_LEFT;
-	static const Uint16 MOVE_DOWN_RIGHT = MOVE_DOWN | MOVE_RIGHT;
-	static const Uint16 MOVE_DOWN_LEFT = MOVE_DOWN | MOVE_LEFT;
+  // Directions (a bitfield so they can be combined)
+  static const Uint16 MOVE_UP = 1;
+  static const Uint16 MOVE_DOWN = 2;
+  static const Uint16 MOVE_LEFT = 4;
+  static const Uint16 MOVE_RIGHT = 8;
+  // Short cuts - useful when working in 8 directions
+  static const Uint16 MOVE_UP_RIGHT = MOVE_UP | MOVE_RIGHT;
+  static const Uint16 MOVE_UP_LEFT = MOVE_UP | MOVE_LEFT;
+  static const Uint16 MOVE_DOWN_RIGHT = MOVE_DOWN | MOVE_RIGHT;
+  static const Uint16 MOVE_DOWN_LEFT = MOVE_DOWN | MOVE_LEFT;
 
-	enum { NORTH=0, EAST, SOUTH, WEST };
+  enum { NORTH=0, EAST, SOUTH, WEST };
 
-	// messages
-	enum {
-		WELCOME=0,
-		ITEM_OUT_OF_REACH,
-		DOOR_BLOCKED,
-		SINGLE_MODE,
-		GROUP_MODE,
-		TURN_MODE,
-		REAL_TIME_MODE,
-		CLOSE_LABEL,
-		DROP_ITEM_LABEL,
-		OPEN_CONTAINER_LABEL,
-		EXPLAIN_DRAG_AND_DROP,
-		PLAY_MISSION_LABEL,
-		EXIT_MISSION_LABEL,
-		TELEPORT_TO_BASE_LABEL,
-		OK_LABEL,
-		CANCEL_LABEL,
-		YES_LABEL,
-		NO_LABEL,
-		LEVEL_UP_ERROR,
-		OUT_OF_POINTS_ERROR,
-		NO_SKILL_ERROR,
-		SCOURGE_DIALOG,
-		USE_GATE_LABEL,
-		DEAD_CHARACTER_ERROR,
-		HP_LABEL,
-		AC_LABEL,
-		SPELL_FAILED_MESSAGE,
-		ITEM_ACL_VIOLATION,
-		JOIN_SERVER_ERROR,
-		CLIENT_CANT_CONNECT_ERROR,
-		DOOR_OPENED_CLOSE,
-		DOOR_OPENED,
-		DOOR_OPENED_FAR,
-		DOOR_LOCKED,
-		TELEPORTER_OFFLINE,
-		INFO_GUI_TITLE,
-		DELETE_OLD_SAVED_GAME,
-		ITEM_LEVEL_VIOLATION,
-		CHANGE_KEY,
-		WAITING_FOR_KEY,
-		CONVERSATION_GUI_TITLE,
-		TRADE_DIALOG_TITLE,
-		TRAIN_DIALOG_TITLE,
-		HEAL_DIALOG_TITLE,
-		DONATE_DIALOG_TITLE,
-		UNMET_CAPABILITY_PREREQ_ERROR,
-		CANNOT_USE_AUTO_CAPABILITY_ERROR,
-		ITEM_TWO_HANDED_VIOLATION,
+  // messages
+  enum {
+    WELCOME=0,
+    ITEM_OUT_OF_REACH,
+    DOOR_BLOCKED,
+    SINGLE_MODE,
+    GROUP_MODE,
+    TURN_MODE,
+    REAL_TIME_MODE,
+    CLOSE_LABEL,
+    DROP_ITEM_LABEL,
+    OPEN_CONTAINER_LABEL,
+    EXPLAIN_DRAG_AND_DROP,
+    PLAY_MISSION_LABEL,
+    EXIT_MISSION_LABEL,
+    TELEPORT_TO_BASE_LABEL,
+    OK_LABEL,
+    CANCEL_LABEL,
+    YES_LABEL,
+    NO_LABEL,
+    LEVEL_UP_ERROR,
+    OUT_OF_POINTS_ERROR,
+    NO_SKILL_ERROR,
+    SCOURGE_DIALOG,
+    USE_GATE_LABEL,
+    DEAD_CHARACTER_ERROR,
+    HP_LABEL,
+    AC_LABEL,
+    SPELL_FAILED_MESSAGE,
+    ITEM_ACL_VIOLATION,
+    JOIN_SERVER_ERROR,
+    CLIENT_CANT_CONNECT_ERROR,
+    DOOR_OPENED_CLOSE,
+    DOOR_OPENED,
+    DOOR_OPENED_FAR,
+    DOOR_LOCKED,
+    TELEPORTER_OFFLINE,
+    INFO_GUI_TITLE,
+    DELETE_OLD_SAVED_GAME,
+    ITEM_LEVEL_VIOLATION,
+    CHANGE_KEY,
+    WAITING_FOR_KEY,
+    CONVERSATION_GUI_TITLE,
+    TRADE_DIALOG_TITLE,
+    TRAIN_DIALOG_TITLE,
+    HEAL_DIALOG_TITLE,
+    DONATE_DIALOG_TITLE,
+    UNMET_CAPABILITY_PREREQ_ERROR,
+    CANNOT_USE_AUTO_CAPABILITY_ERROR,
+    ITEM_TWO_HANDED_VIOLATION,
 		TRAINING_AVAILABLE,
 		SKILL_POINTS_AVAILABLE,
 		LOCKED_DOOR_OPENS_MAGICALLY,
 		CAUSE_OF_DEATH,
 
-		// last one
-		MESSAGE_COUNT
-	};
-	static char *messages[][80];
-	static int messageCount[];
+	// last one
+	MESSAGE_COUNT
+  };
+  static char *messages[][80];
+  static int messageCount[];
 
-	static const char *localhost;
-	static const char *adminUserName;
+  static const char *localhost;
+  static const char *adminUserName;
 
-	// other things potions can act on:
-	enum {
-		HP=0,
-		MP,
-		AC,
+  // other things potions can act on:
+  enum {
+	HP=0,
+	MP,
+	AC,
 
-		POTION_SKILL_COUNT
-	};
-	static const char *POTION_SKILL_NAMES[];
-	// return -1 on failure, or (-2 - i) on success
-	static int getPotionSkillByName(char *p);
+	POTION_SKILL_COUNT
+  };
+  static const char *POTION_SKILL_NAMES[];
+  // return -1 on failure, or (-2 - i) on success
+  static int getPotionSkillByName(char *p);
 
-	enum {
-		LESSER_MAGIC_ITEM=0,
-		GREATER_MAGIC_ITEM,
-		CHAMPION_MAGIC_ITEM,
-		DIVINE_MAGIC_ITEM
-	};
-	static const char *MAGIC_ITEM_NAMES[];
-	static const Color *MAGIC_ITEM_COLOR[];
-	static const Color *SPECIAL_ITEM_COLOR;
+  enum {
+    LESSER_MAGIC_ITEM=0,
+    GREATER_MAGIC_ITEM,
+    CHAMPION_MAGIC_ITEM,
+    DIVINE_MAGIC_ITEM
+  };
+  static const char *MAGIC_ITEM_NAMES[];
+  static const Color *MAGIC_ITEM_COLOR[];
+  static const Color *SPECIAL_ITEM_COLOR;
 
-	// special effect names
-	enum {
-		EFFECT_FLAMES=0,
-		EFFECT_GLOW,
-		EFFECT_TELEPORT,
-		EFFECT_GREEN,
-		EFFECT_EXPLOSION,
-		EFFECT_SWIRL,
-		EFFECT_CAST_SPELL,
-		EFFECT_RING,
-		EFFECT_RIPPLE,
-		EFFECT_DUST,
-		EFFECT_HAIL,
-		EFFECT_TOWER,
-		EFFECT_BLAST,
+  // special effect names
+  enum {
+    EFFECT_FLAMES=0,
+    EFFECT_GLOW,
+    EFFECT_TELEPORT,
+    EFFECT_GREEN,
+    EFFECT_EXPLOSION,
+    EFFECT_SWIRL,
+    EFFECT_CAST_SPELL,
+    EFFECT_RING,
+    EFFECT_RIPPLE,
+    EFFECT_DUST,
+    EFFECT_HAIL,
+    EFFECT_TOWER,
+    EFFECT_BLAST,
 
-		// must be last
-		EFFECT_COUNT
-	};
-	static const int DAMAGE_DURATION = 500;
+    // must be last
+    EFFECT_COUNT
+  };
+  static const int DAMAGE_DURATION = 500;
 
-	static const char *EFFECT_NAMES[];
-	inline static int getEffectByName(char *s) {
-		for(int i = 0; i < EFFECT_COUNT; i++)
+  static const char *EFFECT_NAMES[];
+  inline static int getEffectByName(char *s) {
+	for(int i = 0; i < EFFECT_COUNT; i++)
 			if(!strcmp(s, EFFECT_NAMES[i]))
 				return i;
-		return EFFECT_FLAMES;
-	}
+	return EFFECT_FLAMES;
+  }
 
-	// glColor for texts
-	enum {
-		RED_COLOR=0,
-		BLUE_COLOR,
-		YELLOW_COLOR,
-		DEFAULT_COLOR // must be last for textColor[][]
-	};
-	//static float textColor[][4];
+  // glColor for texts
+  enum {
+    RED_COLOR=0,
+    BLUE_COLOR,
+    YELLOW_COLOR,
+    DEFAULT_COLOR // must be last for textColor[][]
+  };
+  //static float textColor[][4];
 
-	static bool multitexture;
+  static bool multitexture;
 
-	enum {
-		CURSOR_NORMAL=0,
-		CURSOR_CROSSHAIR,
-		CURSOR_ATTACK,
-		CURSOR_TALK,
-		CURSOR_USE,
-		CURSOR_FORBIDDEN,
-		CURSOR_RANGED,
-		CURSOR_MOVE,
+  enum {
+    CURSOR_NORMAL=0,
+    CURSOR_CROSSHAIR,
+    CURSOR_ATTACK,
+    CURSOR_TALK,
+    CURSOR_USE,
+    CURSOR_FORBIDDEN,
+    CURSOR_RANGED,
+    CURSOR_MOVE,
 
 		CURSOR_COUNT // must be the last one
-	};
+  };
 
 	static const char *cursorTextureName[];
 
-	enum {
-		SCOURGE_DEFAULT_FONT=0,
-		SCOURGE_UI_FONT,
-		SCOURGE_MONO_FONT,
-		SCOURGE_LARGE_FONT
-	};
+  enum {
+    SCOURGE_DEFAULT_FONT=0,
+    SCOURGE_UI_FONT,
+    SCOURGE_MONO_FONT,
+    SCOURGE_LARGE_FONT
+  };
 
-	enum {
-		NO_SHADOWS=0,
-		OBJECT_SHADOWS,
-		ALL_SHADOWS
-	};
+  enum {
+    NO_SHADOWS=0,
+    OBJECT_SHADOWS,
+    ALL_SHADOWS
+  };
 
-	enum {
-		ACTION_NO_ACTION=-1,
-		ACTION_EAT_DRINK=0,
-		ACTION_CAST_SPELL,
-		ACTION_SPECIAL,
+  enum {
+    ACTION_NO_ACTION=-1,
+    ACTION_EAT_DRINK=0,
+    ACTION_CAST_SPELL,
+    ACTION_SPECIAL,
 
-		// this must be the last one
-		ACTION_COUNT
-	};
+    // this must be the last one
+    ACTION_COUNT
+  };
 
-	// sound types
-	enum {
-		SOUND_TYPE_COMMAND=0,
-		SOUND_TYPE_HIT,
-		SOUND_TYPE_SELECT,
-		SOUND_TYPE_ATTACK,
+  // sound types
+  enum {
+    SOUND_TYPE_COMMAND=0,
+    SOUND_TYPE_HIT,
+    SOUND_TYPE_SELECT,
+    SOUND_TYPE_ATTACK,
 
-		// must be the last one
-		SOUND_TYPE_COUNT
-	};
+    // must be the last one
+    SOUND_TYPE_COUNT
+  };
 
-	// npc types
-	enum {
-		NPC_TYPE_COMMONER=0,
-		NPC_TYPE_MERCHANT,
-		NPC_TYPE_HEALER,
-		NPC_TYPE_SAGE,
-		NPC_TYPE_TRAINER,
+  // npc types
+  enum {
+    NPC_TYPE_COMMONER=0,
+    NPC_TYPE_MERCHANT,
+    NPC_TYPE_HEALER,
+    NPC_TYPE_SAGE,
+    NPC_TYPE_TRAINER,
 
-		// must be the last one
-		NPC_TYPE_COUNT
-	};
+    // must be the last one
+    NPC_TYPE_COUNT
+  };
 
-	static const char *npcTypeName[];
+  static const char *npcTypeName[];
 	static const char *npcTypeDisplayName[];
 
   // the speed when hand fighting is used instead of a weapon
-	static const int HAND_WEAPON_SPEED = 5;
+  static const int HAND_WEAPON_SPEED = 5;
 
-	Constants();
-	~Constants();
+  Constants();
+  ~Constants();
 
-	static char *getMessage(int index);
+  static char *getMessage(int index);
 
-	// shortest distance between two rectangles
+  // shortest distance between two rectangles
 	static float distance(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2);
 
-	static void checkTexture(char *message, int w, int h);
+  static void checkTexture(char *message, int w, int h);
 
-	// read until EOL into line. Exclude EOL from LINE.
-	// returns the next char after the EOL.
-	static int readLine(char *line, FILE *fp);
+  // read until EOL into line. Exclude EOL from LINE.
+  // returns the next char after the EOL.
+  static int readLine(char *line, FILE *fp);
 
-	inline static float toRadians(float angle) {
+  inline static float toRadians(float angle) {
 		return 3.14159 * (angle / 180.0f);
-	}
+  }
 
-	inline static float toAngle(float rad) {
+  inline static float toAngle(float rad) {
 		return (180.0f * rad) / 3.14159;
-	}
+  }
 
 	static void getQuadrantAndAngle( float nx, float ny, int *q, float *angle );
 
@@ -601,31 +623,31 @@ public:
 
 	static int findLocaleDir();
 
- private:
-	static bool checkFile(const std::string& dir, const std::string& file);
-	// used to run scourge with local resources
-	static std::string findLocalResources(const std::string& appPath);
+private:
+  static bool checkFile(const std::string& dir, const std::string& file);
+  // used to run scourge with local resources
+  static std::string findLocalResources(const std::string& appPath);
 };
 
 std::string GetDataPath(const std::string& file);
 
 class CVectorTex
 {
- public:
-	float x, y, z, u, v, r, g, b, a;
-	GLuint tex;
+public:
+    float x, y, z, u, v, r, g, b, a;
+		GLuint tex;
 };
 
 class CVector5
 {
- public:
-	float x, y, z, u, v;
+public:
+    float x, y, z, u, v;
 };
 
 // This is our 3D point class.  This will be used to store the vertices of our model.
 class CVector3
 {
- public:
+public:
 	float x, y, z;
 
 	/**
@@ -659,8 +681,8 @@ class CVector3
 // This is our 2D point class.  This will be used to store the UV coordinates.
 class CVector2
 {
- public:
-	float x, y;
+public:
+    float x, y;
 };
 
 
@@ -711,10 +733,10 @@ struct t3DObject
 	int  materialID;			// The texture ID to use, which is the index into our texture array
 	bool bHasTexture;			// This is TRUE if there is a texture map for this object
 	char strName[255];			// The name of the object
-	CVector3 *pVerts;			// The object's vertices
-	CVector3 *pNormals;		// The object's normals
-	float *shadingColorDelta;     // 1 per normal
-	CVector2 *pTexVerts;		// The texture's UV coordinates
+	CVector3  *pVerts;			// The object's vertices
+	CVector3  *pNormals;		// The object's normals
+  float *shadingColorDelta;     // 1 per normal
+	CVector2  *pTexVerts;		// The texture's UV coordinates
 	tFace *pFaces;				// The faces information of the object
 };
 
@@ -723,11 +745,11 @@ struct t3DObject
 // A STL vector list of this structure is created in our t3DModel structure below.
 struct tAnimationInfo
 {
-	char strName[255];          // This stores the name of the animation (Jump, Pain, etc..)
-	int startFrame;             // This stores the first frame number for this animation
-	int endFrame;               // This stores the last frame number for this animation
-	int loopingFrames;			// This stores the looping frames for this animation (not used)
-	int framesPerSecond;		// This stores the frames per second that this animation runs    
+    char strName[255];          // This stores the name of the animation (Jump, Pain, etc..)
+    int startFrame;             // This stores the first frame number for this animation
+    int endFrame;               // This stores the last frame number for this animation
+		int loopingFrames;			// This stores the looping frames for this animation (not used)
+		int framesPerSecond;		// This stores the frames per second that this animation runs    
 };
 
 typedef float vect3d[3];
@@ -737,28 +759,28 @@ typedef float vect3d[3];
 // from it's start from to it's end frame until we right click and change animations.
 struct t3DModel
 {
-	int numOfObjects;                   // The number of objects in the model
-	int numOfMaterials;                 // The number of materials for the model
-	int numOfAnimations;                // The number of animations in this model
-	//int currentAnim;					// The current index into pAnimations list 
-	//int currentFrame;					// The current frame of the current animation 
-	//int nextFrame;						// The next frame of animation to interpolate too
-	//float t;							// The ratio of 0.0f to 1.0f between each key frame
-	//float lastTime;						// This stores the last time that was stored
-	
-	int numOfTags;						// This stores the number of tags in the model
-	t3DModel	**pLinks;				// This stores a list of pointers that are linked to this model
-	struct tMd3Tag		*pTags;			// This stores all the tags for the model animations
-	float movex;                        // Needed to draw the model
-	float movey;
-	float movez;
-	std::vector<tAnimationInfo> pAnimations; // The list of animations
-	std::map<std::string, int> pAnimationMap; // name->index into pAnimations.
-	std::vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)
-	std::vector<t3DObject> pObject;          // The object list for our model (frames)
-	vect3d *vertices;                   // All vertices for every frame of the model
-	int numVertices;                    // The number of vertices (constant for each frame)
-	int *pGlCommands;                   // The glCommands used to draw the model faster
+    int numOfObjects;                   // The number of objects in the model
+    int numOfMaterials;                 // The number of materials for the model
+    int numOfAnimations;                // The number of animations in this model
+		//int currentAnim;					// The current index into pAnimations list 
+		//int currentFrame;					// The current frame of the current animation 
+		//int nextFrame;						// The next frame of animation to interpolate too
+		//float t;							// The ratio of 0.0f to 1.0f between each key frame
+		//float lastTime;						// This stores the last time that was stored
+		
+		int numOfTags;						// This stores the number of tags in the model
+		t3DModel	**pLinks;				// This stores a list of pointers that are linked to this model
+		struct tMd3Tag		*pTags;			// This stores all the tags for the model animations
+    float movex;                        // Needed to draw the model
+    float movey;
+    float movez;
+    std::vector<tAnimationInfo> pAnimations; // The list of animations
+		std::map<std::string, int> pAnimationMap; // name->index into pAnimations.
+    std::vector<tMaterialInfo> pMaterials;   // The list of material information (Textures and colors)
+    std::vector<t3DObject> pObject;          // The object list for our model (frames)
+    vect3d *vertices;                   // All vertices for every frame of the model
+    int numVertices;                    // The number of vertices (constant for each frame)
+    int *pGlCommands;                   // The glCommands used to draw the model faster
 };
 
 // FIXME: only works in english, use only for upload text (cause of death) which is not internationalized.

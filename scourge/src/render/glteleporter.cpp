@@ -50,8 +50,8 @@ void GLTeleporter::draw() {
   for(int i = 0; i < MAX_STARS; i++) {
     // reposition
     if(star[i][0] == -1) {
-      starAngle[i] = (360.0f * rand()/RAND_MAX);
-      starSpeed[i] = (8.0f * rand()/RAND_MAX) + 2.0f;
+      starAngle[i] = Util::roll( 0.0f, 360.0f );
+      starSpeed[i] = Util::roll( 2.0f, 10.0f );
     }
     star[i][0] = r + (r * cos(3.14159 / (180.0f / starAngle[i])));
     star[i][1] = r + (r * sin(3.14159 / (180.0f / starAngle[i])));
@@ -100,8 +100,8 @@ void GLTeleporter::draw() {
     if(ring[i] <= (1.0f / DIV) || ring[i] >= ((float)height / DIV)) {
       //	  ring[i] = (((float)(height - 1) / DIV) * rand()/RAND_MAX) + (1.0f / DIV);
       //	  delta[i] = (ring[i] >= ((float)(height - 1) / DIV) / 2.0f ? 0.5f : -0.5f);
-      ring[i] = ((float)(height - 1) / DIV) / 2.0f + ((20.0f * rand()/RAND_MAX) - 10.0f);
-      delta[i] = ((int)(2.0f * rand()/RAND_MAX) == 0 ? 3.0f : -3.0f);
+      ring[i] = ((float)(height - 1) / DIV) / 2.0f + Util::roll( -10.0f, 10.0f );
+      delta[i] = Util::dice( 2 ) ? 3.0f : -3.0f;
     }
 
     // draw 

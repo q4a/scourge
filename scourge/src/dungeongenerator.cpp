@@ -131,8 +131,8 @@ void DungeonGenerator::makeRooms() {
 
   for(int i = 0; i < roomCount; i++) {
     // create a room
-    rw = (int) ((double)(roomMaxWidth / 2) * rand()/RAND_MAX) + (roomMaxWidth / 2);
-    rh = (int) ((double)(roomMaxHeight / 2) * rand()/RAND_MAX) + (roomMaxHeight / 2);
+    rw = Util::pickOne( roomMaxWidth / 2, roomMaxWidth );
+    rh = Util::pickOne( roomMaxHeight / 2, roomMaxHeight );
     best = -1;
     px = py = -1;
     // find best place for this room
@@ -272,8 +272,9 @@ void DungeonGenerator::makeLoops() {
           case S_PASS:
           case E_PASS:
           case W_PASS:
-            if((int) (100.0 * rand()/RAND_MAX) <= loopyness)
-            generatePassage(x, y, false);
+			  if( Util::dice( 100 ) <= loopyness ) {
+              generatePassage(x, y, false);
+		  }
             break;
           default:
             break;
@@ -368,7 +369,7 @@ void DungeonGenerator::generatePassage(const int sx, const int sy, const bool st
        nodes[nx][ny] != UNVISITED ||
        stepCount++ >= width / 2 ||
        (curvyness > 1 && curvyness < 100 &&
-       (int) ((double)curvyness * rand()/RAND_MAX) == 0)) {
+       Util::dice( curvyness ) == 0)) {
 
       if(!stopAtVisited && inMap && nodes[nx][ny] != UNVISITED) {
         reachedVisited = true;
@@ -469,7 +470,7 @@ void DungeonGenerator::nextNotVisited(int *x, int *y) {
     return;
   }
   // get a random location
-  int index = (int) ((double)notVisitedCount * rand()/RAND_MAX);
+  int index = Util::dice( notVisitedCount );
   int n = notVisited[index];
   // remove from visited areas
   notVisitedCount--;
@@ -490,7 +491,7 @@ void DungeonGenerator::nextVisited(int *x, int *y) {
     return;
   }
   // get a random location
-  int index = (int) ((double)visitedCount * rand()/RAND_MAX);
+  int index = Util::dice( visitedCount );
   int n = visited[index];
   // break up into x,y coordinates
   *y = n / width;
@@ -503,12 +504,12 @@ int DungeonGenerator::initDirections() {
   for(int i = 0; i < dirCount; i++) {
     dirs[i] = i;
   }
-  return dirs[(int) ((double)dirCount * rand()/RAND_MAX)];
+  return dirs[ Util::dice( dirCount ) ];
 }
 
 int DungeonGenerator::nextDirection() {
   if(dirCount <= 0) return -1;
-  int index = (int) ((double)dirCount * rand()/RAND_MAX);
+  int index = Util::dice( dirCount );
   int dir = dirs[index];
   dirCount--;
   for(int i = index; i < dirCount; i++) {
@@ -588,7 +589,7 @@ void DungeonGenerator::generate( Map *map, ShapePalette *shapePal ) {
 bool DungeonGenerator::drawNodes(Map *map, ShapePalette *shapePal) {
   // flooded map?
   map->setHasWater( FORCE_WATER || 
-                    0 == (int)(5.0f * rand()/RAND_MAX) );
+                    0 == Util::dice( 5 ) );
 
   updateStatus( _( "Loading theme" ) );
   if( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
@@ -625,7 +626,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
         // init the free space
         int secretDoor = 0;
         if(nodes[x][y] & E_DOOR) {
-          if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
             nodes[x][y] -= E_DOOR;
             secretDoor = E_DOOR;
             nodes[x][y] -= E_PASS;
@@ -633,7 +634,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             drawDoor(map, shapePal, mapx, mapy, E_DOOR);
           }
         } else if(nodes[x][y] & W_DOOR) {
-          if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
             nodes[x][y] -= W_DOOR;
             secretDoor = W_DOOR;
             nodes[x][y] -= W_PASS;
@@ -641,7 +642,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             drawDoor(map, shapePal, mapx, mapy, W_DOOR);
           }
         } else if(nodes[x][y] & N_DOOR) {
-          if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
             nodes[x][y] -= N_DOOR;
             secretDoor = N_DOOR;
             nodes[x][y] -= N_PASS;
@@ -649,7 +650,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             drawDoor(map, shapePal, mapx, mapy, N_DOOR);
           }
         } else if(nodes[x][y] & S_DOOR) {
-          if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
             nodes[x][y] -= S_DOOR;
             secretDoor = S_DOOR;
             nodes[x][y] -= S_PASS;
@@ -663,8 +664,8 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if((nodes[x][y] & W_PASS) &&
              !(nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & S_PASS)) {
-            if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+            if( Util::dice( 100 ) <= randomDoors) {
+              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
                 nodes[x][y] -= W_DOOR;
                 secretDoor = W_DOOR;
                 nodes[x][y] -= W_PASS;
@@ -676,8 +677,8 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if((nodes[x][y] & E_PASS) &&
              !(nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & S_PASS)) {
-            if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+            if( Util::dice( 100 ) <= randomDoors) {
+              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
                 nodes[x][y] -= E_DOOR;
                 secretDoor = E_DOOR;
                 nodes[x][y] -= E_PASS;
@@ -689,8 +690,8 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if((nodes[x][y] & S_PASS) &&
              !(nodes[x][y] & W_PASS) &&
              !(nodes[x][y] & E_PASS)) {
-            if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+            if( Util::dice( 100 ) <= randomDoors ) {
+              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
                 nodes[x][y] -= S_DOOR;
                 secretDoor = S_DOOR;
                 nodes[x][y] -= S_PASS;
@@ -702,8 +703,8 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if((nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & W_PASS) &&
              !(nodes[x][y] & E_PASS)) {
-            if((int)(100.0 * rand()/RAND_MAX) <= randomDoors) {
-              if( 0 == (int)( SECRET_DOOR_CHANCE * rand() / RAND_MAX ) ) {
+            if( Util::dice( 100 ) <= randomDoors) {
+              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
                 nodes[x][y] -= N_DOOR;
                 secretDoor = N_DOOR;
                 nodes[x][y] -= N_PASS;
@@ -739,7 +740,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             if( secretDoor == W_DOOR ) {
               map->addSecretDoor( wallX, wallY );
             } else {
-              if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+              if( Util::dice( 100 ) <= torches ) {
                 map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
                                  6, shapePal->findShapeByName("LAMP_WEST", true));
                 map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
@@ -771,7 +772,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             if( secretDoor == E_DOOR ) {
               map->addSecretDoor( wallX, wallY );
             } else {
-              if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+              if( Util::dice( 100 ) <= torches) {
                 map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
                                  6, shapePal->findShapeByName("LAMP_EAST", true));
                 map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
@@ -803,7 +804,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             if( secretDoor == N_DOOR ) {
               map->addSecretDoor( wallX, wallY );
             } else {
-              if((int) (100.0 * rand()/RAND_MAX) <= torches) {
+              if( Util::dice( 100 ) <= torches ) {
                 map->setPosition(mapx + 4, mapy + unitOffset + 1, 6, 
                                  shapePal->findShapeByName("LAMP_NORTH", true));
                 map->setPosition(mapx + 4, mapy + unitOffset + 1, 4, 
@@ -1001,7 +1002,7 @@ void DungeonGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
   // add some magic pools
   DisplayInfo di;
   for( int i = 0; i < roomCount; i++ ) {
-    if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
+    //??? if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
       MagicSchool *ms = MagicSchool::getRandomSchool();
       di.red = ms->getDeityRed();
       di.green = ms->getDeityGreen();
@@ -1011,7 +1012,7 @@ void DungeonGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
         // store pos->deity in scourge
         scourge->addDeityLocation( pos, ms );
       }
-    }
+    //}
   }
 }
 

@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "cellular.h"
+#include "util.h"
 
 using namespace std;
   
@@ -113,7 +114,7 @@ void CellularAutomaton::addIslands() {
   }
   for( int x = 0; x < w; x++ ) {
     for( int y = 0; y < h; y++ ) {
-      if( node[x][y].island && 0 == (int)( 5.0f * rand() / RAND_MAX ) ) {
+      if( node[x][y].island && 0 == Util::dice( 5 ) ) {
         node[x][y].island = false;
       }
     }
@@ -201,7 +202,7 @@ void CellularAutomaton::randomize() {
 
   for( int x = 1; x < w - 1; x++ ) {
     for( int y = 1; y < h - 1; y++ ) {
-      if( ( 1.0f * rand() / RAND_MAX ) < CLEAR_WALL_RATIO ) {
+      if( Util::roll( 0.0f, 1.0f ) < CLEAR_WALL_RATIO ) {
         node[ x ][ y ].wall = false;
       }
     }
@@ -318,13 +319,13 @@ void CellularAutomaton::connectPoints( int sx, int sy, int ex, int ey, bool isBi
   while( !( canReach( sx, sy, ex, ey ) ||
             ( !isBiggestRoom && node[sx][sy].room == biggestRoom ) ) ) {
     bool toTarget = true;
-    if( phase == 1 && 1.0f * rand() / RAND_MAX < 0.3f ) {
+    if( phase == 1 && Util::roll( 0.0f, 1.0f ) < 0.3f ) {
       // meander
       int ox = sx;
       int oy = sy;
-      if( 1.0f * rand() / RAND_MAX < 0.5f ) sx++;
+      if( Util::roll( 0.0f, 1.0f ) < 0.5f ) sx++;
       else sx--;
-      if( 1.0f * rand() / RAND_MAX < 0.5f ) sy++;
+      if( Util::roll( 0.0f, 1.0f ) < 0.5f ) sy++;
       else sy--;
 
       if( sx > 0 && sy > 0 && sx < w - 1 && sy < h - 1 ) {

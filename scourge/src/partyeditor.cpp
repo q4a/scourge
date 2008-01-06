@@ -90,24 +90,24 @@ void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInve
 }
 
 RenderedCreature *PartyEditor::createWanderingHero( int level ) {
-	int sex = 4.0f * rand() / RAND_MAX >= 2.0f ? Constants::SEX_MALE : Constants::SEX_FEMALE;
+	int sex = Util::dice( 2 ) ? Constants::SEX_MALE : Constants::SEX_FEMALE;
 	Creature *pc = scourge->getSession()->
 		newCreature( Character::getRandomCharacter( level ),
 								 Rpg::createName(), 
 								 sex,
-								 (int)( (float)(scourge->getShapePalette()->getCharacterModelInfoCount( sex )) * rand() / RAND_MAX ) );
+								 Util::dice( scourge->getShapePalette()->getCharacterModelInfoCount( sex ) ) );
 	pc->setLevel( LEVEL ); 
 	pc->setExp(0);
 	pc->setHp();
 	pc->setMp();
-	pc->setHunger((int)(5.0f * rand()/RAND_MAX) + 5);
-	pc->setThirst((int)(5.0f * rand()/RAND_MAX) + 5);
+	pc->setHunger( Util::pickOne( 5, 9 ) );
+	pc->setThirst( Util::pickOne( 5, 9 ) );
 
 	// deity
 	pc->setDeityIndex( MagicSchool::getRandomSchoolIndex() );
 	
 	// assign portraits
-	pc->setPortraitTextureIndex( (int)( (float)(scourge->getShapePalette()->getPortraitCount( sex )) * rand() / RAND_MAX ) );
+	pc->setPortraitTextureIndex( Util::dice( scourge->getShapePalette()->getPortraitCount( sex ) ) );
 	
 	// compute starting skill levels
 	pcEditor->rollSkillsForCreature( pc );
@@ -141,7 +141,7 @@ void PartyEditor::addStartingInventory( Creature **pc, int partySize ) {
 
 void PartyEditor::addStartingInventory( Creature *pc ) {
 	// add a weapon anyone can wield
-	int n = (int)(5.0f * rand()/RAND_MAX);
+	int n = Util::dice( 5 );
 	switch(n) {
 	case 0: pc->addInventory(scourge->getSession()->newItem( RpgItem::getItemByName("Smallbow"), LEVEL, NULL, true ), true); break;
 	case 1: pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword"), LEVEL, NULL, true ), true); break;
@@ -153,34 +153,34 @@ void PartyEditor::addStartingInventory( Creature *pc ) {
 	pc->equipInventory( invIndex++ );
 
 	// add some armor
-	if(0 == (int)(4.0f * rand()/RAND_MAX)) {
+	if( 0 == Util::dice( 4 ) ) {
 		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet"), LEVEL, NULL, true ), true);
 		pc->equipInventory( invIndex++ );
 	}
-	if(0 == (int)(3.0f * rand()/RAND_MAX)) {
+	if( 0 == Util::dice( 3 ) ) {
 		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Buckler"), LEVEL, NULL, true ), true);
 		pc->equipInventory( invIndex++ );
 	}
 
 	// some potions
-	if(0 == (int)(4.0f * rand()/RAND_MAX))
+	if( 0 == Util::dice( 4 ) )
 		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Health potion"), LEVEL ), true);  
-	if(0 == (int)(4.0f * rand()/RAND_MAX))
+	if( 0 == Util::dice( 4 ) )
 		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Magic potion"), LEVEL ), true);  
-	if(0 == (int)(4.0f * rand()/RAND_MAX))
+	if( 0 == Util::dice( 4 ) )
 		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Liquid armor"), LEVEL ), true);  
 
 	// some food
-	for(int t = 0; t < (int)(6.0f * rand()/RAND_MAX); t++) {
-		if(0 == (int)(4.0f * rand()/RAND_MAX))
+	for( int t = 0; t < Util::dice( 6 ); t++ ) {
+		if( 0 == Util::dice( 4 ) )
 			pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Apple")), true);
-		if(0 == (int)(4.0f * rand()/RAND_MAX))
+		if( 0 == Util::dice( 4 ) )
 			pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Bread")), true);
-		if(0 == (int)(4.0f * rand()/RAND_MAX))
+		if( 0 == Util::dice( 4 ) )
 		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mushroom")), true);
-		if(0 == (int)(4.0f * rand()/RAND_MAX))
+		if( 0 == Util::dice( 4 ) )
 			pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Big egg")), true);
-		if(0 == (int)(4.0f * rand()/RAND_MAX))
+		if( 0 == Util::dice( 4 ) )
 			pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mutton meat")), true);
 	}
 
@@ -190,12 +190,12 @@ void PartyEditor::addStartingInventory( Creature *pc ) {
 		pc->addSpell(Spell::getSpellByName("Flame of Azun"));
 		pc->addSpell(Spell::getSpellByName("Ole Taffy's purty colors"));
 		// attack spell
-		if(0 == (int)(2.0f * rand()/RAND_MAX))
+		if( 0 == Util::dice( 2 ) )
 			pc->addSpell(Spell::getSpellByName("Silent knives"));
 		else
 			pc->addSpell(Spell::getSpellByName("Stinging light"));
 		// defensive spell
-		if(0 == (int)(2.0f * rand()/RAND_MAX))
+		if( 0 == Util::dice( 2 ) )
 			pc->addSpell(Spell::getSpellByName("Lesser healing touch"));
 		else
 			pc->addSpell(Spell::getSpellByName("Body of stone"));

@@ -586,7 +586,7 @@ const string Item::getRandomSound() {
   }
   if(!sounds || !(sounds->size())) 
 		return string("");
-  string s = (*sounds)[(int)((float)(sounds->size()) * rand()/RAND_MAX)];
+  string s = (*sounds)[ Util::dice( sounds->size() ) ];
   return s;
 }
 
@@ -634,7 +634,7 @@ void Item::commonInit( bool loading ) {
   // regular attribs
 
   weight = rpgItem->getWeight();
-  quality = (int)( 50.0f * rand() / RAND_MAX ) + 50; // starts out mostly healthy
+  quality = Util::pickOne( 50, 100 ); // starts out mostly healthy
 
   int basePrice = ( this->spell ? this->spell->getExp() : rpgItem->getPrice() );
   price = basePrice + 
@@ -643,7 +643,7 @@ void Item::commonInit( bool loading ) {
   // assign a spell to the item
   // the deeper you go, the more likely that items contain spells
   if( rpgItem->hasSpell() &&
-			0 == (int)( (float)( MAX_MISSION_DEPTH - ( session->getCurrentMission() ? session->getCurrentMission()->getDepth() : 0 ) ) * rand() / RAND_MAX ) ) {
+			0 == Util::dice( MAX_MISSION_DEPTH - ( session->getCurrentMission() ? session->getCurrentMission()->getDepth() : 0 ) ) ) {
     this->spell = MagicSchool::getRandomSpell( 1 );
     price += (int)Util::getRandomSum( (float)(basePrice / 2), this->spell->getLevel() );
   }
@@ -664,7 +664,7 @@ void Item::commonInit( bool loading ) {
 
   if( rpgItem->isEnchantable() && !loading ) {
     // roll for magic
-    int n = (int)( ( 200.0f - ( level * 1.5f ) ) * rand()/RAND_MAX );
+    int n = Util::dice( (int)( 200.0f - ( level * 1.5f ) ) );
     if( n < 5 ) enchant( Constants::DIVINE_MAGIC_ITEM );
     else if( n < 15 ) enchant( Constants::CHAMPION_MAGIC_ITEM );
     else if( n < 30 ) enchant( Constants::GREATER_MAGIC_ITEM );
@@ -691,7 +691,7 @@ void Item::enchant( int newMagicLevel ) {
   int maxMagicLevel = level / 10;
   if( magicLevel > maxMagicLevel ) magicLevel = maxMagicLevel;
 
-  cursed = ( !((int)( 20.0f * rand() / RAND_MAX )) );
+  cursed = ( 0 == Util::dice( 20 ) );
 
   // adjust the price
   price *= ( magicLevel + 2 );
@@ -700,88 +700,88 @@ void Item::enchant( int newMagicLevel ) {
   Spell *spell;
   switch(magicLevel) {
   case Constants::LESSER_MAGIC_ITEM:
-    bonus = (int)(2.0f * rand()/RAND_MAX) + 1;
+    bonus = Util::pickOne( 1, 2 );
     if(rpgItem->isWeapon()) {
-      damageMultiplier = (int)(2.0f * rand()/RAND_MAX) + 2;
+      damageMultiplier = Util::pickOne( 2, 3 );
       monsterType = (char*)Monster::getRandomMonsterType( level );
     }
-    n = (int)(3.0f * rand()/RAND_MAX) + 2;
+    n = Util::pickOne( 2, 4 );
     for(int i = 0; i < n; i++) {
       int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(2.0f * rand()/RAND_MAX) + 1;
+        skillBonus[skill] = Util::pickOne( 1, 2 );
       }
     }    
     break;
   case Constants::GREATER_MAGIC_ITEM:
-    bonus = (int)(3.0f * rand()/RAND_MAX) + 1;
+    bonus = Util::pickOne( 1, 3 );
     if(rpgItem->isWeapon()) {
-      damageMultiplier = (int)(3.0f * rand()/RAND_MAX) + 2;
+      damageMultiplier = Util::pickOne( 2, 4 );
       monsterType = (char*)Monster::getRandomMonsterType( level );
     }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
       school = spell->getSchool();
-      magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 1, (int)(3.0f * rand()/RAND_MAX));
+      magicDamage = new Dice( 1, Util::pickOne( 1, 3 ), Util::dice( 3 ) );
     }
-    n = (int)(3.0f * rand()/RAND_MAX) + 2;
+    n = Util::pickOne( 2, 4 );
     for(int i = 0; i < n; i++) {
       int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(3.0f * rand()/RAND_MAX) + 1;
+        skillBonus[skill] = Util::pickOne( 1, 3 );
       }
     }
     break;
   case Constants::CHAMPION_MAGIC_ITEM:
-    bonus = (int)(4.0f * rand()/RAND_MAX) + 1;
+    bonus = Util::pickOne( 1, 4 );
     if(rpgItem->isWeapon()) {
-      damageMultiplier = (int)(3.0f * rand()/RAND_MAX) + 2;
+      damageMultiplier = Util::pickOne( 2, 4 );
       monsterType = (char*)Monster::getRandomMonsterType( level );
     }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
       school = spell->getSchool();
-      magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 2, (int)(3.0f * rand()/RAND_MAX));
+      magicDamage = new Dice( 1, Util::pickOne( 2, 4 ), Util::dice( 3 ) );
     }
-    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    n = Util::pickOne( 1, 3 );
     if(n > 0) stateModSet = true;
     for(int i = 0; i < n; i++) {
       stateMod[ StateMod::getRandomGood()->getIndex() ] = 1;
     }
-    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    n = Util::pickOne( 1, 3 );
     for(int i = 0; i < n; i++) {
       int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(4.0f * rand()/RAND_MAX) + 1;
+        skillBonus[skill] = Util::pickOne( 1, 4 );
       }
     }
     break;
   case Constants::DIVINE_MAGIC_ITEM:
-    bonus = (int)(5.0f * rand()/RAND_MAX) + 1;
+    bonus = Util::pickOne( 1, 5 );
     if(rpgItem->isWeapon()) {
-      damageMultiplier = (int)(4.0f * rand()/RAND_MAX) + 2;
+      damageMultiplier = Util::pickOne( 2, 5 );
       monsterType = (char*)Monster::getRandomMonsterType( level );
     }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
       school = spell->getSchool();
-      magicDamage = new Dice(1, (int)(3.0f * rand()/RAND_MAX) + 3, (int)(3.0f * rand()/RAND_MAX));
+      magicDamage = new Dice(1, Util::pickOne( 3, 5 ), Util::dice( 3 ) );
     }
-    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    n = Util::pickOne( 1, 3 );
     if(n > 0) stateModSet = true;
     for(int i = 0; i < n; i++) {
       stateMod[ StateMod::getRandomGood()->getIndex() ] = 1;
     }
-    n = (int)(3.0f * rand()/RAND_MAX) + 1;
+    n = Util::pickOne( 1, 3 );
     if(n > 0) stateModSet = true;
     for(int i = 0; i < n; i++) {
       stateMod[ StateMod::getRandomBad()->getIndex() ] = 2;
     }
-    n = (int)(3.0f * rand()/RAND_MAX) + 2;
+    n = Util::pickOne( 2, 4 );
     for(int i = 0; i < n; i++) {
       int skill = SkillGroup::stats->getRandomSkill()->getIndex();
       if(skillBonus.find(skill) == skillBonus.end()) {
-        skillBonus[skill] = (int)(5.0f * rand()/RAND_MAX) + 1;
+        skillBonus[skill] = Util::pickOne( 1, 5 );
       }
     }
     break;
@@ -982,7 +982,7 @@ void Item::trySetIDBit(int bit, float modifier, int infoDetailLevel) {
 	//If not yet set
 	if(!getIdentifiedBit( bit ))
 	{
-		if(infoDetailLevel > (int)(modifier * rand()/RAND_MAX)) {
+		if( infoDetailLevel > (int)Util::roll( 0.0f, modifier ) ) {
 			setIdentifiedBit( bit, true );
 		} else {
 			setIdentifiedBit( bit, false );
@@ -1235,10 +1235,10 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 			if( iconUnderEffectParticle[i]->life < 0 || 
 					iconUnderEffectParticle[i]->life >= iconUnderEffectParticle[i]->maxLife ) {
 				iconUnderEffectParticle[i]->life = 0;
-				iconUnderEffectParticle[i]->maxLife = (int)( 30.0f * rand() / RAND_MAX ) + 30;
-				iconUnderEffectParticle[i]->zoom = 5.0f * rand() / RAND_MAX + 10.0f;
-				iconUnderEffectParticle[i]->x = (w / 4.0f) * rand() / RAND_MAX + (w * 0.375f);
-				iconUnderEffectParticle[i]->y = (h / 4.0f) * rand() / RAND_MAX + (h * 0.375f);
+				iconUnderEffectParticle[i]->maxLife = Util::pickOne( 30, 59 );
+				iconUnderEffectParticle[i]->zoom = Util::roll( 10.0f, 15.0f );
+				iconUnderEffectParticle[i]->x = Util::roll( 0.0f, w / 4.0f ) + (w * 0.375f);
+				iconUnderEffectParticle[i]->y = Util::roll( 0.0f, h / 4.0f ) + (h * 0.375f);
 				iconUnderEffectParticle[i]->z = 0;
 			}
 			iconUnderEffectParticle[i]->zoom += 1.0f;
@@ -1290,7 +1290,7 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 			if( iconEffectParticle[i]->life < 0 || 
 					iconEffectParticle[i]->life >= iconEffectParticle[i]->maxLife ) {
 				iconEffectParticle[i]->life = 0;
-				iconEffectParticle[i]->maxLife = (int)( 30.0f * rand() / RAND_MAX ) + 30;
+				iconEffectParticle[i]->maxLife = Util::pickOne( 30, 59 );
 				iconEffectParticle[i]->zoom = 0.5f;
 				iconEffectParticle[i]->x = (float)w * rand() / RAND_MAX;
 				iconEffectParticle[i]->y = (float)h * rand() / RAND_MAX;

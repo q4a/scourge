@@ -59,14 +59,14 @@ void GLTorch::draw() {
       // create a new particle
       particle[i] = new ParticleStruct();
       if(isSpell) {
-        particle[i]->x = ((float)(width / 5.0f / DIV) * rand()/RAND_MAX);
-        particle[i]->y = ((float)(depth / 5.0f / DIV) * rand()/RAND_MAX);
+        particle[i]->x = Util::roll( 0.0f, width / 5.0f / DIV );
+        particle[i]->y = Util::roll( 0.0f, depth / 5.0f / DIV );
       } else {
-        particle[i]->x = ((float)(width / DIV) * rand()/RAND_MAX);
-        particle[i]->y = ((float)(depth / DIV) * rand()/RAND_MAX);
+		particle[i]->x = Util::roll( 0.0f, width / DIV );
+        particle[i]->y = Util::roll( 0.0f, depth / DIV );
       }
       particle[i]->z = 0.0f;
-      particle[i]->height = (int)(25.0 * rand()/RAND_MAX) + 10;
+      particle[i]->height = Util::roll( 10.0f, 35.0f );
     } else {
       // move this particle
       particle[i]->z+=0.5f;
@@ -85,13 +85,13 @@ void GLTorch::draw() {
       w = (float)(width / DIV) / 2.0;
       //float d = (float)(depth / DIV) / 2.0;
       h = (float)(height / DIV) / 2.5;
-      if(h == 0) h = 0.25 / DIV;
+      if(h == 0) h = 0.25f / DIV;
       
       // position the particle
       GLfloat z = (float)(particle[i]->z * h) / 10.0;
       if(isSpell) {
         glTranslatef( particle[i]->x, z, particle[i]->y );
-        w = h = 0.75 / DIV;
+        w = h = 0.75f / DIV;
       } else {
         glTranslatef( particle[i]->x, particle[i]->y, z );
       }
@@ -104,17 +104,17 @@ void GLTorch::draw() {
       
       if(color == 0xffffffff) {
         float color = 1.0f / ((GLfloat)particle[i]->height / (GLfloat)particle[i]->z);
-        float red = (((1.0f - color) / 4.0) * rand()/RAND_MAX);
-        float green = (((1.0f - color) / 8.0) * rand()/RAND_MAX);
-        float blue = (((1.0f - color) / 10.0) * rand()/RAND_MAX);      
+        float red = Util::roll( 0.0f, (1.0f - color) / 4.0 );
+        float green = Util::roll( 0.0f, (1.0f - color) / 8.0 );
+        float blue = Util::roll( 0.0f, (1.0f - color) / 10.0 );      
         glColor4f(color + red, color + green, color + blue, 1.0f);      
       } else {
         float red = ((float)((this->color & 0xff000000) >> (3 * 8)) + 
-                     (64.0f * rand()/RAND_MAX) - 32.0f) / (float)(0xff);
+					 Util::roll( -32.0f, 32.0f )) / (float)0xff;
         float green = ((float)((this->color & 0x00ff0000) >> (2 * 8)) + 
-                       (64.0f * rand()/RAND_MAX) - 32.0f) / (float)(0xff);
+					   Util::roll( -32.0f, 32.0f )) / (float)0xff;
         float blue = ((float)((this->color & 0x0000ff00) >> (1 * 8)) + 
-                      (64.0f * rand()/RAND_MAX) - 32.0f) / (float)(0xff);
+					  Util::roll( -32.0f, 32.0f )) / (float)0xff;
         float height = ((GLfloat)particle[i]->z / (GLfloat)particle[i]->height );
         glColor4f(height * red, height * green, height * blue, 1.0f);       
       }
@@ -142,11 +142,10 @@ void GLTorch::draw() {
   // add the flickering reflection on the wall behind
   // max. amount of movement
   float mm = 0.4f / DIV;
-  // max. amount of color component variation
-  float mc = 0.25f;
-  float red = 1.0f + (mc * rand()/RAND_MAX) - (mc * 2.0f);
+
+  float red = Util::roll( 1.0f, 1.25f ) - 0.5f;
   if(red > 1.0f) red = 1.0f;
-  float green = 1.0f + (mc * rand()/RAND_MAX) - (mc * 2.0f);
+  float green = Util::roll( 1.0f, 1.25f ) - 0.5f;
   if(green > 1.0f) red = 1.0f;
   
   float size = 5.0f/DIV;
@@ -155,17 +154,17 @@ void GLTorch::draw() {
   // a little away from the wall
   float offset = 0.1f;
   if(torch_dir == Constants::NORTH) {
-    glTranslatef( -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
+    glTranslatef( -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ), 
                   0.0f + offset, 
-                  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f) );
+                  -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ) );
   } else if(torch_dir == Constants::WEST) {
     glTranslatef( 0.0f + offset,
-                  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
-                  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f) );
+                  -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ), 
+                  -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ) );
   } else if(torch_dir == Constants::EAST) {
     glTranslatef( 1.0f/DIV - offset,
-                  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
-                  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f) );
+                  -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ), 
+                  -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ) );
   } else if(isSpell) {
     
     // rotate each particle to face viewer
@@ -184,7 +183,7 @@ void GLTorch::draw() {
     
   }
   //  glBindTexture( GL_TEXTURE_2D, torchback );
-  glColor4f( red, green, 0.3f, 0.4 );
+  glColor4f( red, green, 0.3f, 0.4f );
   glBegin( GL_QUADS );
   if(torch_dir == Constants::NORTH) {
     w = size;

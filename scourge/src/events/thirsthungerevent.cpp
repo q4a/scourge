@@ -70,7 +70,7 @@ void ThirstHungerEvent::execute(){
         // creature->setModState(nearly_dead);
     }
     else if( thirst == 0 ){
-			n = (int)( 8.0f * rand() / RAND_MAX );
+			n = Util::dice( 8 );
 			sprintf(buff, _( "%1$s looses %2$d hit points from dehydration!" ), creature->getName(), n );     
 			scourge->addDescription(buff, 1.0f, 0.5f, 0.5f); 
 			creature->setHp( creature->getHp() - n );
@@ -103,7 +103,7 @@ void ThirstHungerEvent::execute(){
         // creature->setModState(nearly_dead);
     } 
     else if( hunger == 0 ){
-			n = (int)( 8.0f * rand() / RAND_MAX );
+			n = Util::dice( 8 );
 			sprintf(buff, _( "%1$s looses %2$d hit points from hunger!" ), creature->getName(), n );     
 			scourge->addDescription(buff, 1.0f, 0.5f, 0.5f); 
 			creature->setHp( creature->getHp() - n );

@@ -31,14 +31,14 @@ GLLocator::~GLLocator() {
 void GLLocator::draw() {
     float w = (float)width / DIV;
     float d = (float)depth / DIV;
-    float h = 0.26 / DIV;
+    float h = 0.26f / DIV;
 
     glDisable( GL_TEXTURE_2D );
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glEnable(GL_BLEND);
     glBegin( GL_QUADS );
       //glNormal3f(0.0f, 0.0f, 1.0f);
-      glColor4f(0.2, 0.5, 0.1, 0.7);
+      glColor4f(0.2f, 0.5f, 0.1f, 0.7f);
       glVertex3f(w, d, h);
       glVertex3f(w, 0, h);
       glVertex3f(0, 0, h);

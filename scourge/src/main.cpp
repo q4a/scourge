@@ -16,7 +16,10 @@
  ***************************************************************************/
 
 #include <stdlib.h>
-
+#ifdef _MSC_VER
+#	include <io.h>
+#	include <fcntl.h>
+#endif
 #include "userconfiguration.h"
 #include "gameadapter.h"
 #include "session.h"
@@ -39,6 +42,48 @@ GameAdapter *createGameAdapter(UserConfiguration *config) {
   return adapter;
 }
 
+// -=K=-: MSVC does lose all console i/o to void; i noticed scourge 
+// uses console i/o; so lets create a console and redirect i/o there 
+// RedirectIOToConsole should be called once/app so inline is OK 
+inline void RedirectIOToConsole(void)
+{
+//define WANT_CONSOLE if you want it to work 
+#if defined(_MSC_VER) && defined(WANT_CONSOLE) 
+	int const MAX_CONSOLE_LINES(500);
+	int hConHandle;
+
+	CONSOLE_SCREEN_BUFFER_INFO coninfo;
+	FILE *fp;
+
+	// allocate a console for this app
+	AllocConsole();
+
+	// set the screen buffer to be big enough to let us scroll text
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	GetConsoleScreenBufferInfo(hOut, &coninfo);
+	coninfo.dwSize.Y = MAX_CONSOLE_LINES;
+	SetConsoleScreenBufferSize(hOut, coninfo.dwSize);
+
+	// redirect unbuffered STDOUT to the console
+	hConHandle = _open_osfhandle((intptr_t)hOut, _O_TEXT);
+	fp = _fdopen( hConHandle, "w" );
+	*stdout = *fp;
+	setvbuf( stdout, NULL, _IONBF, 0 );
+
+	// redirect unbuffered STDIN to the console
+	hConHandle = _open_osfhandle((intptr_t)GetStdHandle(STD_INPUT_HANDLE), _O_TEXT);
+	fp = _fdopen( hConHandle, "r" );
+	*stdin = *fp;
+	setvbuf( stdin, NULL, _IONBF, 0 );
+
+	// redirect unbuffered STDERR to the console
+	hConHandle = _open_osfhandle((intptr_t)GetStdHandle(STD_ERROR_HANDLE), _O_TEXT);
+	fp = _fdopen( hConHandle, "w" );
+	*stderr = *fp;
+	setvbuf( stderr, NULL, _IONBF, 0 );
+#endif //defined(_MSC_VER) && defined(WANT_CONSOLE) 
+}
+
 int main(int argc, char *argv[]) {
   BrInitError error; 
   if( br_init( &error ) == 0 && error != BR_INIT_ERROR_DISABLED ) { 
@@ -49,7 +94,8 @@ int main(int argc, char *argv[]) {
   UserConfiguration *userConfiguration = new UserConfiguration();  
   userConfiguration->loadConfiguration();    
   userConfiguration->parseCommandLine(argc, argv); 
-
+  RedirectIOToConsole();
   return Session::runGame( createGameAdapter( userConfiguration ), argc, argv );
+  return 0;
 }
 

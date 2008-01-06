@@ -499,7 +499,7 @@ void Battle::stepCloserToTarget() {
     }
       
     // guess a new path (once in a while)
-    if( 1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
+    if( 1 == Util::dice( 4 ) ) {
       if(creature->getTargetCreature()) //new path to the creature, if we have one targetted
         creature->setSelCreature( creature->getTargetCreature(), range,  false);
       else //new path to our selected location
@@ -591,7 +591,7 @@ bool Battle::moveCreature() {
 	        }
 
 	        // guess a new path
-	        if( 1 == (int)( 4.0f * rand() / RAND_MAX ) ) {
+	        if( 1 == Util::dice( 4 ) ) {
 	          if(creature->getTargetCreature()) //new path to the creature, if we have one targetted
                     creature->setSelCreature( creature->getTargetCreature(), range, false);
                   else //new path to our selected location
@@ -781,28 +781,28 @@ void Battle::castSpell( bool alwaysSucceeds ) {
   */
   float delta = 0.0f;
   if(creature->getStateMod(StateMod::blessed)) {
-    delta += (10.0f * rand()/RAND_MAX);
+    delta += Util::roll( 0.0f, 10.0f );
   }
   if(creature->getStateMod(StateMod::empowered)) {
-    delta += (10.0f * rand()/RAND_MAX) + 5;
+    delta += Util::roll( 5.0f, 15.0f );
   }
   if(creature->getStateMod(StateMod::enraged)) {
-    delta -= (10.0f * rand()/RAND_MAX);
+    delta -= Util::roll( 0.0f, 10.0f );
   }
   if(creature->getStateMod(StateMod::drunk)) {
-    delta += (14.0f * rand()/RAND_MAX) - 7;
+    delta += Util::roll( -7.0f, 7.0f );
   }
   if(creature->getStateMod(StateMod::cursed)) {
-    delta += ((8.0f * rand()/RAND_MAX) + 7);
+    delta += Util::roll( 7.0f, 15.0f );
   }
   if(creature->getStateMod(StateMod::blinded)) {
-    delta -= (10.0f * rand()/RAND_MAX);
+    delta -= Util::roll( 0.0f, 10.0f );
   }
   if(creature->getStateMod(StateMod::overloaded)) {
-    delta -= (8.0f * rand()/RAND_MAX);
+    delta -= Util::roll( 0.0f, 8.0f );
   }
   if(creature->getStateMod(StateMod::invisible)) {
-    delta += (5.0f * rand()/RAND_MAX) + 5;
+    delta += Util::roll( 5.0f, 10.0f );
   }
 
 	// Like with max cth, max skill is closer to the skill to avoid a lot of misses
@@ -812,35 +812,35 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 	if( maxSkill < 40 ) maxSkill = 40;
 
 	bool failed = false;
-  if( !alwaysSucceeds && !projectileHit ) {
-		if( (int)( maxSkill * rand() / RAND_MAX ) > skill + delta ) {
-			sprintf( message, _( "...%s needs more practice." ), creature->getName() );
-			session->getGameAdapter()->addDescription( message, 1, 0.15f, 1 );
-			failed = true;
-		} else if( (int)((100.0f * rand() / RAND_MAX) + delta) < creature->getActionSpell()->getFailureRate() ) {
-			session->getGameAdapter()->addDescription( _( "...the magic fails inexplicably!" ), 1, 0.15f, 1 );
-			failed = true;
-		}
+	if( !alwaysSucceeds && !projectileHit ) {
+	  if( Util::dice( maxSkill ) > skill + delta ) {
+		sprintf( message, _( "...%s needs more practice." ), creature->getName() );
+		session->getGameAdapter()->addDescription( message, 1, 0.15f, 1 );
+		failed = true;
+	  } else if( Util::dice( 100 ) + delta < creature->getActionSpell()->getFailureRate() ) {
+		session->getGameAdapter()->addDescription( _( "...the magic fails inexplicably!" ), 1, 0.15f, 1 );
+		failed = true;
+	  }
 	}
-
+	
 	if( failed ) {
-    sc->spellFailed();
-  } else {
-
-    // get exp for casting the spell
-    if( !IS_AUTO_CONTROL( creature ) ) {
-			creature->addExperienceWithMessage( creature->getActionSpell()->getExp() );
-		}
-
-    sc->spellSucceeded();
-  }
-  delete sc;
-
-  // cancel action
-  creature->cancelTarget();
-  // also cancel path
-  if( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
-
+	  sc->spellFailed();
+	} else {
+	  
+	  // get exp for casting the spell
+	  if( !IS_AUTO_CONTROL( creature ) ) {
+		creature->addExperienceWithMessage( creature->getActionSpell()->getExp() );
+	  }
+	  
+	  sc->spellSucceeded();
+	}
+	delete sc;
+	
+	// cancel action
+	creature->cancelTarget();
+	// also cancel path
+	if( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
+	
 }
 
 void Battle::launchProjectile() {
@@ -853,8 +853,8 @@ void Battle::launchProjectile() {
     // FIXME: do something... 
     // (like print message: can't launch projectile due to use of fixed-sized array in code?)
   }
-  if(creature->isMonster() && 
-     0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX)) {
+  if( creature->isMonster() && 
+     0 == Util::dice( session->getPreferences()->getSoundFreq() ) ) {
     session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK));
   }
   session->playSound( getRandomSound(bowSwishSoundStart, bowSwishSoundCount) );
@@ -942,8 +942,8 @@ void Battle::prepareToHitMessage() {
     ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
 
     // play item sound
-    if(creature->isMonster() && 
-       0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX)) {
+    if( creature->isMonster() && 
+       0 == Util::dice( session->getPreferences()->getSoundFreq() ) ) {
       session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK));
     }
     session->playSound( getRandomSound(handheldSwishSoundStart, handheldSwishSoundCount) );
@@ -966,7 +966,7 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
   if( max - min >= MIN_FUMBLE_RANGE && 
       creature->getTargetCreature() &&
       attack - min < ( ( ( max - min ) / 100.0f ) * 5.0f ) ) {
-    if( 0 == (int)( 3.0f * rand() / RAND_MAX ) ) {
+    if( 0 == Util::dice( 3 ) ) {
       Creature *tmpTarget;
       if( IS_AUTO_CONTROL( creature ) ) {
         tmpTarget = session->
@@ -998,8 +998,7 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
 								 ( creature->getSex() == Constants::SEX_MALE ? "his" : "her" ) );
 				creature->setPendingCauseOfDeath( tmp );
 
-        dealDamage( ( MIN_FUMBLE_RANGE * rand() / RAND_MAX ) + 
-                    ( MIN_FUMBLE_RANGE / 2.0f ) );
+        dealDamage( Util::roll( 0.5f * MIN_FUMBLE_RANGE, 1.5f * MIN_FUMBLE_RANGE ) );
         creature->setTargetCreature( oldTarget );
         return true;
       }
@@ -1013,7 +1012,7 @@ void Battle::applyHighAttackRoll( float *damage, float attack, float min, float 
   // special actions for very high tohits
   if( max - min >= MIN_FUMBLE_RANGE && 
       percent > 95 ) {
-    int mul = (int)( 8.0f * rand()/RAND_MAX );
+    int mul = Util::dice( 8 );
     switch( mul ) {
     case 2:
     strcpy(message, _( "...precise hit: double damage!" ) );
@@ -1373,7 +1372,7 @@ void Battle::invalidate() {
 
 char *Battle::getRandomSound(int start, int count) {
   if(count)
-    return sound[start + (int)((float)(count) * rand()/RAND_MAX)];
+    return sound[ start + Util::dice( count ) ];
   else return NULL;
 }
 

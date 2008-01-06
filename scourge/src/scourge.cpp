@@ -396,6 +396,7 @@ string Scourge::getCurrentMapName( const string& dirName, int depth, string* map
 	// add the depth
 	stringstream tmp;
 	tmp << mapName << "_" << ( depth >= 0 ? depth : oldStory ) << ".map";
+	cerr << "tmp=" << tmp << endl;
 
 	if( mapFileName )
 		(*mapFileName) = tmp.str();
@@ -403,9 +404,12 @@ string Scourge::getCurrentMapName( const string& dirName, int depth, string* map
 	// add the directory name
 	stringstream tmp2;
 	tmp2 << ( dirName.length() ? dirName : getSession()->getSavegameName() ) << "/" << tmp;
+	cerr << "tmp=" << tmp2.str() << endl;
 	
-	// convert to a path	
-	return get_file_name( tmp2.str() );
+	// convert to a path
+	string s = get_file_name( tmp2.str() );
+	cerr << "final file name=" << s << endl;
+	return s;
 }
 
 string Scourge::getSavedMapName() {
@@ -414,7 +418,9 @@ string Scourge::getSavedMapName() {
 	if( !session->getCurrentMission() ) {
 		mapBaseName = "hq";
 	} else if( session->getCurrentMission()->isStoryLine() ) {
-		mapBaseName = "sl" + getBoard()->getStorylineIndex();
+	  cerr << "getBoard()->getStorylineIndex()=" << getBoard()->getStorylineIndex() << endl;
+	  mapBaseName = "sl" + getBoard()->getStorylineIndex();
+	  cerr << "mapBaseName=" << mapBaseName << endl;
 	} else {
 		stringstream temp;
 		temp << std::hex << SDL_GetTicks();
@@ -774,7 +780,7 @@ void Scourge::hideGui() {
 	trainDialog->getWindow()->setVisible( false );
 	pcEditor->getWindow()->setVisible( false );
 	saveDialog->getWindow()->setVisible( false );
-	tbCombatWin->setVisible( false );	
+	tbCombatWin->setVisible( false );
 }
 
 bool Scourge::changeLevel() {
@@ -855,11 +861,11 @@ void Scourge::addWanderingHeroes() {
 	if( !hasParty() ) return;
 	
 	int level = getSession()->getParty()->getAverageLevel();
-	int count = (int)( 5.0f * rand() / RAND_MAX ) + 5;
+	int count = Util::pickOne( 5, 9 );
 	for( int i = 0; i < count; i++ ) {
 		// find a place for it near another creature
 		// note: this must be done before creating the new creature...
-		int n = (int)( (float)getSession()->getCreatureCount() * rand() / RAND_MAX );
+		int n = Util::dice( getSession()->getCreatureCount() );
 		int cx = toint( getSession()->getCreature( n )->getX() );
 		int cy = toint( getSession()->getCreature( n )->getY() );	
 		if( cx == 0 || cy == 0 ) {
@@ -874,7 +880,7 @@ void Scourge::addWanderingHeroes() {
 	for(int i = 0; i < count; i++) {
 		// find a place for it near another creature
 		// note: this must be done before creating the new creature...
-		int n = (int)( (float)getSession()->getCreatureCount() * rand() / RAND_MAX );
+		int n = Util::dice( getSession()->getCreatureCount() );
 		int cx = toint( getSession()->getCreature( n )->getX() );
 		int cy = toint( getSession()->getCreature( n )->getY() );	
 		if( cx == 0 || cy == 0 ) {
@@ -1813,11 +1819,11 @@ void Scourge::moveMonster(Creature *monster) {
   } 
   //CASE 3: any other characters, NPCs or monsters
   else{
-    monster->decideMonsterAction();
+      monster->decideMonsterAction();
    // if(monster->getMotion() == Constants::MOTION_LOITER){ //even after deciding an action they are loitering..
       monster->moveToLocator(); //this now handles wandering as well
    // }
-  }
+    }
 }
 
 void Scourge::openContainerGui(Item *container) {
@@ -1895,7 +1901,7 @@ Window *Scourge::createWoodWindow(int x, int y, int w, int h, char *title) {
   win->setBorderColor( 0.5f, 0.2f, 0.1f );
   //win->setBorderColor( 0.0f, 1.0f, 0.1f );
   win->setColor( 0.8f, 0.8f, 0.7f, 1 );
-  win->setBackground( 0.65, 0.30f, 0.20f, 0.15f );
+  win->setBackground( 0.65f, 0.30f, 0.20f, 0.15f );
   win->setSelectionColor(  0.25f, 0.35f, 0.6f );
 //  win->setSelectionColor(  1.0f, 0.0f, 0.0f );
   return win;
@@ -2724,7 +2730,7 @@ void Scourge::teleport( bool toHQ ) {
     teleportFailure = true;
 
 		oldStory = currentStory;
-		currentStory = (int)( (float)( session->getCurrentMission()->getDepth() ) * rand() / RAND_MAX );
+		currentStory = Util::dice( session->getCurrentMission()->getDepth() );
 		changingStory = true;
 		goingUp = goingDown = false;
 
@@ -3556,7 +3562,7 @@ bool Scourge::enchantItem( Creature *creature, Item *item ) {
 		} else {
 			Date now = getParty()->getCalendar()->getCurrentDate();
 			if( now.isADayLater( creature->getLastEnchantDate() ) ) {
-				int level = (int)((float)creature->getSkill( Skill::ENCHANT_ITEM ) * rand()/RAND_MAX);					
+				int level = Util::dice( creature->getSkill( Skill::ENCHANT_ITEM ) );					
 				if(level > 20) {
 					int level = creature->getSkill( Skill::ENCHANT_ITEM );
 					item->enchant( (level - 20) / 20 );

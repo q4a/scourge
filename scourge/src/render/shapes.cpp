@@ -377,7 +377,7 @@ void Shapes::loadDebugTheme() {
 }
 
 void Shapes::loadRandomCaveTheme() {
-  loadTheme( caveThemes[ (int)( (float)caveThemeCount * rand()/RAND_MAX ) ] );
+  loadTheme( caveThemes[ Util::dice( caveThemeCount ) ] );
   GLCaveShape::initializeShapes( this );
 }
 
@@ -395,7 +395,7 @@ void Shapes::loadCaveTheme( char *name ) {
 
 void Shapes::loadRandomTheme() {
   //loadTheme( themes[ (int)( (float)(themeCount - 1) * rand()/RAND_MAX ) + 1 ] );
-  loadTheme( themes[ (int)( (float)themeCount * rand()/RAND_MAX ) ] );
+  loadTheme( themes[ Util::dice( themeCount ) ] );
 }
 
 void Shapes::loadTheme(const char *themeName) {
@@ -453,7 +453,7 @@ void Shapes::loadTheme( WallTheme *theme ) {
 char *Shapes::getRandomDescription(int descriptionGroup) {
   if(descriptionGroup >= 0 && descriptionGroup < (int)descriptions.size()) {
     vector<string> *list = descriptions[descriptionGroup];
-    int n = (int)((float)list->size() * rand()/RAND_MAX);
+    int n = Util::dice( list->size() ); 
     return(char*)((*list)[n].c_str());
   }
   return NULL;
@@ -480,7 +480,8 @@ GLShape *Shapes::findShapeByName(const char *name, bool variation) {
   }
   GLShape *shape = shapeMap[s];
   if( !variation || shape->getVariationShapesCount() == 0 ) return shape;
-  int n = (int)( ( VARIATION_BASE + (float)( shape->getVariationShapesCount() )) * rand()/RAND_MAX );
+
+  int n = Util::dice( VARIATION_BASE + shape->getVariationShapesCount() );
   if( n >= (int)(VARIATION_BASE) ) {
     return shape->getVariationShape( n - (int)(VARIATION_BASE) );
   }

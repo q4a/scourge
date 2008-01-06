@@ -46,7 +46,7 @@ SpellCaster::SpellCaster( Battle *battle, Spell *spell, bool projectileHit, int 
 	// Used only for HP/AC restore spells
   power = level + 
 		creature->getSkill( Skill::LUCK ) + 
-		( 30.0f * rand() / RAND_MAX );
+		Util::roll( 0.0f, 30.0f );
 }
 
 SpellCaster::~SpellCaster() {
@@ -273,7 +273,7 @@ void SpellCaster::increaseHP() {
   Creature *creature = battle->getCreature();
 
   int n = spell->getAction();
-  n += (int)((((float)n / 100.0f) * power) * rand()/RAND_MAX);
+  n += Util::dice( n * power / 100 );
 
   if(n + creature->getTargetCreature()->getHp() > creature->getTargetCreature()->getMaxHp())
     n = creature->getTargetCreature()->getMaxHp() - creature->getTargetCreature()->getHp();
@@ -287,7 +287,7 @@ void SpellCaster::increaseHP() {
 void SpellCaster::increaseAC() {
   Creature *creature = battle->getCreature();
   int n = spell->getAction();
-  n += (int)((((float)n / 100.0f) * power) * rand()/RAND_MAX);
+  n += Util::dice( n * power / 100 );
 
   int timeInMin = 15 + ( level / 2 );
 
@@ -370,8 +370,8 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 
 	// dodge saves for half damage
 	char msg[200];
-	float skill = ( (float)(creature->getSkill( spell->getSchool()->getSkill() )) * rand() / RAND_MAX );
-	float dodge = ( creature->getTargetCreature()->getDodge( creature ) * rand() / RAND_MAX );
+	float skill = Util::roll( 0.0f, creature->getSkill( spell->getSchool()->getSkill() ) );
+	float dodge = Util::roll( 0.0f, creature->getTargetCreature()->getDodge( creature ) );
 	if( skill < dodge ) {
 		damage /= 2.0f;
 		sprintf( msg, _( "%s dodges some of the damage." ), 
@@ -475,7 +475,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
 
       // roll for resistance
       char msg[200];
-      if((int)(100.0f * rand()/RAND_MAX) < creature->getSkill(spell->getSchool()->getResistSkill())) {    
+      if( Util::dice( 100 ) < creature->getSkill(spell->getSchool()->getResistSkill())) {    
         sprintf(msg, _( "%s resists the spell! [%d]" ), 
                 creature->getName(), 
                 creature->getSkill(spell->getSchool()->getResistSkill()));
@@ -485,7 +485,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
 
       // check for magic item state mod protections
       protectiveItem = creature->getProtectedStateMod(mod);
-      if(protectiveItem && 0 == (int)(2.0f * rand()/RAND_MAX)) {
+      if( protectiveItem && 0 == Util::dice( 2 ) ) {
         sprintf(msg, _( "%s resists the spell with magic item!" ), 
                 creature->getName());
         battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    
@@ -650,8 +650,8 @@ void SpellCaster::hailAttack() {
 
   // pick random locations in the circle
   for( int i = 0; i < radius * 2 + 2; i++ ) {
-    int x = (int)( sx + (( (float)radius * 2.0f * rand()/RAND_MAX ) - radius) );
-    int y = (int)( sy - (( (float)radius * 2.0f * rand()/RAND_MAX ) - radius) );
+    int x = (int)Util::roll( sx - radius, sx + radius );
+    int y = (int)Util::roll( sy - radius, sy + radius );
 
     if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
       //      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );

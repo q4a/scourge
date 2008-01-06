@@ -24,6 +24,9 @@
 #include <vector>    // STL for Vector
 #include <algorithm> // STL for Heap
 #include <string>
+#ifdef _MSC_VER
+#include <locale> //MSVC 8 needs it for toupper
+#endif
 #include "common/constants.h"
 #include "gui/guitheme.h"
 
@@ -109,17 +112,17 @@ namespace Util {
 	template<class T> T Tokenize( const std::string &s, const std::string &strDelim ) {
 		T tokens;
 		std::string::size_type nFirstPos, nLastPos;
-
+	
 		/**
 		* Skip delimiters at beginning
 		*/
 		nLastPos = s.find_first_not_of( strDelim, 0 );
-
+	
 		/**
 		* Find first non delimiter
 		*/
 		nFirstPos = s.find_first_of( strDelim, nLastPos );
-
+	
 		while ( std::string::npos != nFirstPos || std::string::npos != nLastPos ) {
 			/**
 			* Found token!
@@ -134,11 +137,18 @@ namespace Util {
 	template <class T> struct equal_ignore_case : public std::binary_function<T, T, bool> {
 		bool operator()(const T& first_argument_type, const T& second_argument_type) const
 		{
-			return std::toupper(first_argument_type) == std::toupper(second_argument_type);
+			return std::toupper(first_argument_type, std::locale()) == std::toupper(second_argument_type, std::locale());
 		}
 	};
 
 	bool StringCaseCompare(const std::string sStr1, const std::string sStr2);
+
+	int dice( int size );  // random integer from 0 to size-1
+
+	int pickOne( int min, int max ); // random integer from min to max
+
+	float roll( float min, float max );  // random float from min to max
+
 }
 
 #endif

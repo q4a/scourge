@@ -49,7 +49,7 @@ void StateModExpirationEvent::execute() {
 							 Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
 			creature->getTargetCreature()->setPendingCauseOfDeath( tmp2 );
 
-      creature->getBattle()->dealDamage(4.0f*rand()/RAND_MAX, 
+      creature->getBattle()->dealDamage( Util::roll( 0.0f, 4.0f ), 
                                         //4, 
                                         Constants::EFFECT_GREEN, true);
       creature->setTargetCreature(tmp);

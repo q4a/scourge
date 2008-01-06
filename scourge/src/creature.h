@@ -238,7 +238,7 @@ class Creature : public RenderedCreature {
   inline void setLastTurn(int n) { lastTurn = n; }
   inline int getLastTurn() { return lastTurn; }
 
-  inline bool isMonster() { return (monster ? true : false); }
+  inline bool isMonster() { return (monster != NULL); }
   
   inline int getTargetX() { if(targetCreature) return toint(targetCreature->getX()); else return targetX; }
   inline int getTargetY() { if(targetCreature) return toint(targetCreature->getY()); else return targetY; }

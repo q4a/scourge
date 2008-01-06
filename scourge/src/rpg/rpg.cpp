@@ -157,13 +157,13 @@ void Rpg::initRpg() {
 // Create a random, cheeseball, fantasy name
 char *Rpg::createName() {
 	char tmp[200];
-	strcpy( tmp, firstSyl[ (int)( (float)(firstSyl.size()) * rand() / RAND_MAX ) ] );
-	int sylCount = (int)( 3.0f * rand() / RAND_MAX );
+	strcpy( tmp, firstSyl[ Util::dice( firstSyl.size() ) ] );
+	int sylCount = Util::dice( 3 );
 	for( int i = 0; i < sylCount; i++ ) {
-		strcat( tmp, midSyl[ (int)( (float)(midSyl.size()) * rand() / RAND_MAX ) ] );
+		strcat( tmp, midSyl[ Util::dice( midSyl.size() ) ] );
 	}
-	if( 0 == (int)( 2.0f * rand() / RAND_MAX ) ) {
-		strcat( tmp, endSyl[ (int)( (float)(endSyl.size()) * rand() / RAND_MAX ) ] );
+	if( 0 == Util::dice( 2 ) ) {
+		strcat( tmp, endSyl[ Util::dice( endSyl.size() ) ] );
 	}
 	return strdup( tmp );
 }
@@ -219,11 +219,11 @@ StateMod::~StateMod() {
 }
 
 StateMod *StateMod::getRandomGood() {
-  return goodStateMods[ (int)( (float)goodStateMods.size() * rand() / RAND_MAX ) ];
+  return goodStateMods[ Util::dice( goodStateMods.size() ) ];
 }
 
 StateMod *StateMod::getRandomBad() {
-  return badStateMods[ (int)( (float)goodStateMods.size() * rand() / RAND_MAX ) ];
+  return badStateMods[ Util::dice( goodStateMods.size() ) ];
 }
   
 bool StateMod::isStateModTransitionWanted( bool setting ) {

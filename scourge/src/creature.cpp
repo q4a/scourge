@@ -64,7 +64,6 @@ MonsterToughness monsterToughness[] = {
   {  .8f,     1,    .75f,  1.25f,   .5f }
 };
 
-#define roll(min, max) ( ( ( max - min ) * rand() / RAND_MAX ) + min )
 
 Creature::Creature(Session *session, Character *character, char *name, int sex, int character_model_info_index) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
   this->session = session;
@@ -173,7 +172,7 @@ void Creature::commonInit() {
   for(int i = 0; i < inventory_count; i++) {
     inventoryWeight += inventory[i]->getWeight();
   }  
-  this->money = this->level * (int)(10.0f * rand()/RAND_MAX);
+  this->money = this->level * Util::dice( 10 );
   calculateExpOfNextLevel();
   this->battle = new Battle(session, this);
 
@@ -402,7 +401,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
   }
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
     if(info->equipped[i] < MAX_INVENTORY_SIZE) { 
-      creature->equipInventory(info->equipped[i]);
+      creature->equipInventory(info->equipped[i], i);
     } else {
       creature->equipped[i] = info->equipped[i];
     }
@@ -470,9 +469,9 @@ void Creature::calculateExpOfNextLevel() {
 }
 
 void Creature::switchDirection(bool force) {
-  int n = (int)(10.0f * rand()/RAND_MAX);
+  int n = Util::dice( 10 );
   if(n == 0 || force) {
-    int dir = (int)(4.0f * rand()/RAND_MAX);
+    int dir = Util::dice( 4 );
     switch(dir) {
     case 0: setDir(Constants::MOVE_UP); break;
     case 1: setDir(Constants::MOVE_DOWN); break;
@@ -663,7 +662,7 @@ bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) 
   // FIXME: when to play sound?
   if( ret && session->getParty()->getPlayer() == this ) {
     // play command sound
-    if(0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
+    if(0 == Util::dice(  session->getPreferences()->getSoundFreq() ) &&
        !getStateMod(StateMod::dead)) {
       //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
       playCharacterSound( GameAdapter::COMMAND_SOUND );
@@ -718,7 +717,7 @@ bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNot
   if( ret && session->getParty()->getPlayer() == this ) {
     // play command sound
     if(creature->getX() > -1 && 
-       0 == (int)((float)(session->getPreferences()->getSoundFreq()) * rand()/RAND_MAX) &&
+       0 == Util::dice(  session->getPreferences()->getSoundFreq() ) &&
        !getStateMod(StateMod::dead)) {
       //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
       playCharacterSound( GameAdapter::COMMAND_SOUND );
@@ -728,7 +727,7 @@ bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNot
 }
 
 Location *Creature::moveToLocator() {
-  Location *pos = NULL; 
+  Location *pos = NULL;
 
   //we either have a target we want to reach, or we are wandering around
   if(selX > -1 || getMotion() == Constants::MOTION_LOITER) { 
@@ -745,7 +744,7 @@ Location *Creature::moveToLocator() {
       }
       else{
         stopMoving();
-        setMotion( Constants::MOTION_STAND);
+        setMotion( Constants::MOTION_STAND);	
       }	
       // stop move-away-s
      /* if( this == session->getParty()->getPlayer() ) {
@@ -761,7 +760,7 @@ Location *Creature::moveToLocator() {
     } 
     else if( pos ) {
       if(getMotion() != Constants::MOTION_LOITER)
-        pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());
+        pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());        
 
       cantMoveCounter++;
       //loiterers can just wander off
@@ -773,17 +772,14 @@ Location *Creature::moveToLocator() {
         }
         else if(cantMoveCounter > 5){
           pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
-        }
       }
+    } 
     } 
     else if( !pos ) {
       cantMoveCounter = 0;
       setMoving( true );
     }
   }
- // else{
- //   cout << getName() << " has no target and is not loitering. motion is " << getMotion() << "\n";
- // }
   return pos;
 }
 
@@ -1238,7 +1234,7 @@ void Creature::equipInventory( int index, int locationHint ) {
 		}
 	}
 	if( place == -1 && places.size() ) {
-		place = places[ (int)( (float)( places.size() ) * rand() / RAND_MAX ) ];
+		place = places[ Util::dice(  places.size() ) ];
 	}
 	if( place > -1 ) {
 		
@@ -1417,8 +1413,9 @@ int Creature::getEquippedIndex( int index ) {
 }
 
 bool Creature::isItemInInventory(Item *item) {
-	return( getInventoryInfo( item ) ? true : false );
-	/*
+	// -=K=-: reverting that back; carried container contents get deleted in Session::cleanUpAfterMission otherwise
+	// return( getInventoryInfo( item ) ? true : false );
+	
   for(int i = 0; i < inventory_count; i++) {
     if(inventory[i] == item || 
        (inventory[i]->getRpgItem()->getType() == RpgItem::CONTAINER &&
@@ -1426,7 +1423,7 @@ bool Creature::isItemInInventory(Item *item) {
       return true;
   }
   return false;
-	*/
+	
 }
 
 Item *Creature::getItemAtLocation(int location) {
@@ -1519,7 +1516,7 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
 int Creature::getInitiative( int *max ) {
 	float n = ( getSkill( Skill::SPEED ) + ( getSkill( Skill::LUCK ) / 5.0f ) );
 	if( max ) *max = toint( n );
-  return toint( n * rand() / RAND_MAX );
+  return toint( Util::roll( 0.0f, n ) );
 }
 
 // return number of projectiles that can be launched simultaniously
@@ -1553,7 +1550,7 @@ bool Creature::takeDamage( float damage,
   // if creature dies start effect at its location
   if(hp > 0) {
     startEffect(effect_type);
-    int pain = (int)(3.0f * rand()/RAND_MAX);
+    int pain = Util::dice(  3 );
     getShape()->setCurrentAnimation(pain == 0 ? (int)MD2_PAIN1 : (pain == 1 ? (int)MD2_PAIN2 : (int)MD2_PAIN3));
   } else if(effect_type != Constants::EFFECT_GLOW) {
     session->getMap()->startEffect( toint(getX()), toint(getY() - this->getShape()->getDepth() + 1), toint(getZ()), 
@@ -1580,7 +1577,7 @@ void Creature::resurrect( int rx, int ry ) {
 	if( getThirst() < 5 ) setThirst( 5 );
 	if( getHunger() < 5 ) setHunger( 5 );
 
-  setHp( (int)( 3.0f * rand() / RAND_MAX ) + 1 );
+	setHp( Util::pickOne(  1, 3 ) );
   
   findPlace( rx, ry );
 
@@ -1657,7 +1654,7 @@ int Creature::addMoney(Creature *creature_killed) {
   int n = creature_killed->level - getLevel();
   if( n < 1 ) n = 1;
   // fixme: use creature_killed->getMonster()->getMoney() instead of 100.0f
-  long delta = (long)n * (int)(50.0f * rand()/RAND_MAX);
+  long delta = (long)n * Util::dice( 50 );
   money += delta;
   return money;
 }
@@ -1675,7 +1672,7 @@ void Creature::monsterInit() {
 		if( Skill::skills[i]->getGroup()->isStat() ) {
 			//n = (int)( 19.0f * rand() / RAND_MAX ) + 1;
 			MonsterToughness *mt = &(monsterToughness[ session->getPreferences()->getMonsterToughness() ]);
-			n = (int)( 20.0f * roll( mt->minSkillBase, mt->maxSkillBase ) );
+			n = (int)( 20.0f * Util::roll( mt->minSkillBase, mt->maxSkillBase ) );
 		} else {
 
 			// create the starting value as a function of the stats
@@ -1710,7 +1707,7 @@ void Creature::monsterInit() {
 
   // equip starting inventory
   for(int i = 0; i < getMonster()->getStartingItemCount(); i++) {  
-    int itemLevel = getMonster()->getLevel() - (int)( ( 2.0f * rand() / RAND_MAX ) );
+    int itemLevel = getMonster()->getLevel() - Util::dice(  2 );
     if( itemLevel < 1 ) itemLevel = 1;
     Item *item = session->newItem( getMonster()->getStartingItem(i), itemLevel );
     addInventory( item, true );
@@ -1718,11 +1715,11 @@ void Creature::monsterInit() {
   }
 
   // add some loot
-  int nn = (int)( 5.0f * rand()/RAND_MAX ) + 3;
+  int nn = Util::pickOne( 3, 7 );
   //cerr << "Adding loot:" << nn << endl;
   for( int i = 0; i < nn; i++ ) {
     Item *loot;
-    if( 0 == (int)( 10.0f * rand()/RAND_MAX ) ) {
+    if( 0 == Util::dice(  10 ) ) {
       Spell *spell = MagicSchool::getRandomSpell( getLevel() );
       loot = session->newItem( RpgItem::getItemByName("Scroll"), 
                                getLevel(), 
@@ -1744,12 +1741,12 @@ void Creature::monsterInit() {
   // add some hp and mp
   float n = (float)( monster->getHp() * ( level + 2 ) );
   //startingHp = hp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
-  startingHp = hp = (int)( n * roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
+  startingHp = hp = (int)( n * Util::roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
                                      monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxHpMpBase ) );
 
   n = (float)( monster->getMp() * ( level + 2 ) );
   //startingMp = mp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
-  startingMp = mp = (int)( n * roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
+  startingMp = mp = (int)( n * Util::roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
                                      monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxHpMpBase ) );
 }
 
@@ -1881,9 +1878,9 @@ bool Creature::isWithPrereq( Spell *spell ) {
 			*/
 			float armor, dodgePenalty;
 		getArmor( &armor, &dodgePenalty, 0 );
-		return( armor < 10 ? 
-						( (int)( 4.0f * rand() / RAND_MAX ) == 0 ? true : false ) : 
-						false ); 
+		return( armor >= 10 ? false 
+				: ( Util::dice( 4 ) == 0 ? true 
+				: false ) ); 
 		default: return false;
     }
   } else {
@@ -1988,18 +1985,18 @@ void Creature::decideMonsterAction() {
   //CASE 2: Loiterers and standers
   //aggressives loitering have only 1/20 chance of breaking the cycle
   if((getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND) &&
-      (!isMonster() || isNpc() || (int)(20.0f * rand()/RAND_MAX) != 0)){
-      if(getMotion() == Constants::MOTION_STAND){
+      (!isMonster() || isNpc() || Util::dice( 20 ) != 0)){
+        if(getMotion() == Constants::MOTION_STAND){ 
         //if standing, there is a 1/500 chance to start loitering. Has to be a slim chance because
         //this gets checked so often..
-        if((int)(500.0f * rand()/RAND_MAX) == 0){ 
+        if( Util::dice( 500 ) == 0){ 
           //need to make a path to wander on
           pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
           setMotion(Constants::MOTION_LOITER);
         }
         else if(!isMonster() || isNpc()){
           //friendlies also have a chance to wave etc.
-          int n = (int)( 100.0f * rand()/RAND_MAX );
+          int n = Util::dice( 100 );
           switch( n ) {
             case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;//1%
             case 1 : getShape()->setCurrentAnimation(MD2_POINT); break;//1%
@@ -2010,15 +2007,15 @@ void Creature::decideMonsterAction() {
       }
       else if(getMotion() == Constants::MOTION_LOITER && pathManager->atEndOfPath()){
         //a 1/3 chance of stopping walking at the end of a wandering path
-        if((int)(3.0f * rand()/RAND_MAX) == 0){
+        if( Util::dice( 3 ) == 0){
           setMotion(Constants::MOTION_STAND);
           stopMoving();
         }
         else
-          pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
+        pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
       }
     return;
-  } 
+  }
   //CASE 3: Other monsters (aggressive)
   else {   
     if( castHealingSpell() ) return;
@@ -2179,7 +2176,7 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
       this->removeInventory( getMonster()->getStartingItemCount() );
     }
     
-    int types[ npcInfo->getSubtype()->size() ];
+	std::vector<int> types(npcInfo->getSubtype()->size()+1);
     int typeCount = 0;
     for( set<int>::iterator e = npcInfo->getSubtype()->begin(); e != npcInfo->getSubtype()->end(); ++e ) {
       types[ typeCount++ ] = *e;
@@ -2192,7 +2189,7 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
     if( level < 0 ) level = 1;
 
     // add some loot
-    int nn = (int)( 5.0f * rand()/RAND_MAX ) + 3;
+	int nn = Util::pickOne( 3, 7 );
     //cerr << "Adding loot:" << nn << endl;
     for( int i = 0; i < nn; i++ ) {
       Item *loot;
@@ -2206,7 +2203,7 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
           session->newItem( 
             RpgItem::getRandomItemFromTypes( session->getGameAdapter()->
                                              getCurrentDepth(), 
-                                             types, typeCount ), 
+                                             &types[0], typeCount ), 
             level );
       }
       //cerr << "\t" << loot->getRpgItem()->getName() << endl;
@@ -2462,12 +2459,13 @@ float Creature::getArmor( float *armorP, float *dodgePenaltyP,
 	calcArmor( damageType, &armor, dodgePenaltyP, ( vsWeapon ? true : false ) );
 
   // negative feedback: for monsters only, allow hits now and then
+  // -=K=-: the sentence in if seems screwed up
   if( monster && 
       ( rand() / RAND_MAX < 
 				monsterToughness[ session->getPreferences()->getMonsterToughness() ].
 				armorMisfuction ) ) {
       // 3.0f * rand() / RAND_MAX < 1.0f ) {
-    armor = ( armor / 2.0f * rand() / RAND_MAX );
+    armor = Util::roll( 0.0f, armor / 2.0f );
   } else {
 		// apply any armor enhancing capabilities
 		if( vsWeapon ) {
@@ -2617,7 +2615,7 @@ void Creature::getCth( Item *weapon, float *cth, float *skill, bool showDebug ) 
 	if( maxCth < 40 ) maxCth = 40;
 
 	// roll chance to hit (CTH)
-	*cth = maxCth * rand() / RAND_MAX;
+	*cth = Util::roll( 0.0f, maxCth );
 
 	// item's level has a small influence
 	if( weapon ) *skill += weapon->getLevel() / 2;
@@ -2692,7 +2690,7 @@ float Creature::getAttack( Item *weapon,
 	}
 
 	// roll the power
-	float roll = minPower + ( ( maxPower - minPower ) * rand() / RAND_MAX );
+	float roll = Util::roll( minPower, maxPower );
 
 	// take the weapon's skill % of the max power
 	roll = ( roll / 100.0f ) * damagePercent;	
@@ -2741,7 +2739,7 @@ float Creature::getParry( Item **parryItem ) {
 			continue;
 		}
 		// roll to parry
-		float parry = maxParry * rand() / RAND_MAX;
+		float parry = Util::roll( 0.0f, maxParry );
 		// select the highest value
 		if( ret == 0 || ret < parry ) {
 			ret = parry;
@@ -2777,43 +2775,43 @@ float Creature::getDefenderStateModPercent( bool magical ) {
     */
     float delta = 0.0f;
     if(getStateMod(StateMod::blessed)) {
-      delta += (10.0f * rand()/RAND_MAX);
+      delta += Util::roll( 0.0f, 10.0f );
     }
     if(getStateMod(StateMod::empowered)) {
-      delta += (10.0f * rand()/RAND_MAX) + 5;
+      delta += Util::roll( 5.0f, 15.0f );
     }
     if(getStateMod(StateMod::enraged)) {
-      delta += (10.0f * rand()/RAND_MAX) + 8;
+      delta += Util::roll( 8.0f, 18.0f );
     }
     if(getStateMod(StateMod::drunk)) {
-      delta += (14.0f * rand()/RAND_MAX) - 7;
+      delta += Util::roll( -7.0f, 7.0f );
     }
     if(getStateMod(StateMod::cursed)) {
-      delta -= ((10.0f * rand()/RAND_MAX) + 5);
+      delta -= Util::roll( 5.0f, 15.0f );
     }
     if(getStateMod(StateMod::blinded)) {
-      delta -= (10.0f * rand()/RAND_MAX);
+      delta -= Util::roll( 0.0f, 10.0f );
     }
     if(!magical && getTargetCreature()->getStateMod(StateMod::ac_protected)) {
-      delta -= (7.0f * rand()/RAND_MAX);
+      delta -= Util::roll( 0.0f, 7.0f );
     }
     if(magical && getTargetCreature()->getStateMod(StateMod::magic_protected)) {
       delta -= (7.0f * rand()/RAND_MAX);
     }
     if(getTargetCreature()->getStateMod(StateMod::blessed)) {
-      delta -= (5.0f * rand()/RAND_MAX);
+      delta -= Util::roll( 0.0f, 5.0f );
     }
     if(getTargetCreature()->getStateMod(StateMod::cursed)) {
-      delta += (5.0f * rand()/RAND_MAX);
+      delta += Util::roll( 0.0f, 5.0f );
     }
     if(getTargetCreature()->getStateMod(StateMod::overloaded)) {
-      delta += (2.0f * rand()/RAND_MAX);
+      delta += Util::roll( 0.0f, 2.0f );
     }
     if(getTargetCreature()->getStateMod(StateMod::blinded)) {
-      delta += (2.0f * rand()/RAND_MAX);
+      delta += Util::roll( 0.0f, 2.0f );
     }
     if(getTargetCreature()->getStateMod(StateMod::invisible)) {
-      delta -= (10.0f * rand()/RAND_MAX);
+      delta -= Util::roll( 0.0f, 10.0f );
     }
     return delta;
 }
@@ -2842,28 +2840,28 @@ float Creature::getAttackerStateModPercent() {
   */
   float delta = 0.0f;
   if(getStateMod(StateMod::blessed)) {
-    delta += (15.0f * rand()/RAND_MAX);
+    delta += Util::roll( 0.0f, 15.0f );
   }
   if(getStateMod(StateMod::empowered)) {
-    delta += (15.0f * rand()/RAND_MAX) + 10;
+    delta += Util::roll( 10.0f, 25.0f );
   }
   if(getStateMod(StateMod::enraged)) {
-    delta -= (10.0f * rand()/RAND_MAX);
+    delta -= Util::roll( 0.0f, 10.0f );
   }
   if(getStateMod(StateMod::drunk)) {
-    delta += (30.0f * rand()/RAND_MAX) - 15;
+    delta += Util::roll( -15.0f, 15.0f );
   }
   if(getStateMod(StateMod::cursed)) {
-    delta -= ((15.0f * rand()/RAND_MAX) + 10);
+    delta -= Util::roll( 10.0f, 25.0f );
   }
   if(getStateMod(StateMod::blinded)) {
-    delta -= (15.0f * rand()/RAND_MAX);
+    delta -= Util::roll( 0.0f, 15.0f );
   }
   if(getStateMod(StateMod::overloaded)) {
-    delta -= (10.0f * rand()/RAND_MAX);
+    delta -= Util::roll( 0.0f, 10.0f );
   }
   if(getStateMod(StateMod::invisible)) {
-    delta += (5.0f * rand()/RAND_MAX) + 5;
+    delta += Util::roll( 5.0f, 10.0f );
   }
   return delta;
 }
@@ -2941,7 +2939,7 @@ void Creature::playCharacterSound( int soundType ) {
 bool Creature::rollSkill( int skill, float luckDiv ) {
   float f = (float)( getSkill( skill ) );
   if( luckDiv > 0 ) f += (float)( getSkill( Skill::LUCK ) ) / luckDiv;
-  return( 100.0f * rand() / RAND_MAX <= f ? true : false );
+  return( Util::roll( 0.0f, 100.0f ) <= f );
 }             
 
 #define SECRET_DOOR_ATTEMPT_INTERVAL 5000
@@ -2996,7 +2994,7 @@ void Creature::rollPerception() {
         trap->discovered = rollSkill( Skill::FIND_TRAP, 0.5f ); // traps are easy to notice
         if( trap->discovered ) {
           char message[ 120 ];
-          sprintf( message, _( "%1$s notices a trap!" ), getName() );
+          sprintf( message, _( "%s notices a trap!" ), getName() );
           session->getGameAdapter()->addDescription( message );
           addExperienceWithMessage( 50 );
         }
@@ -3012,7 +3010,7 @@ void Creature::rollPerception() {
 				if( rollSkill( Skill::FIND_SECRET_DOOR, 4.0f ) ) {
 					session->getMap()->setSecretDoorDetected( pos );
 					char message[ 120 ];
-          sprintf( message, _( "%1$s notices a secret door!" ), getName() );
+          sprintf( message, _( "%s notices a secret door!" ), getName() );
           session->getGameAdapter()->addDescription( message );
           addExperienceWithMessage( 50 );
 				}
@@ -3042,7 +3040,7 @@ void Creature::disableTrap( Trap *trap ) {
 		trap->discovered = true;
 		trap->enabled = false;
 		char message[ 120 ];
-		sprintf( message, _( "%1$s attempts to disable the trap:" ), getName() );
+		sprintf( message, _( "%s attempts to disable the trap:" ), getName() );
 		session->getGameAdapter()->addDescription( message );
 		bool ret = rollSkill( Skill::FIND_TRAP, 5.0f );
 		if( ret ) {

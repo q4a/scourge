@@ -51,7 +51,7 @@ TerrainGenerator *TerrainGenerator::getGenerator( Scourge *scourge, int depth ) 
 												( depth > 0 ),
 												mission );
 	} else {
-		if( (int)( 5.0f * rand() / RAND_MAX ) == 0 ) {
+		if( Util::dice( 5 ) == 0 ) {
 			dg = new MondrianGenerator( scourge, 
 																	mission->getLevel(), 
 																	depth,
@@ -243,7 +243,7 @@ void TerrainGenerator::addContainers(Map *map, ShapePalette *shapePal) {
   
   for( int i = 0; i < objectCount; i++ ) {
     RpgItem *rpgItem;
-    if( 0 == (int)( 1.0f * rand() / RAND_MAX ) ) {
+	if ( Util::dice( 2 ) ) {
       rpgItem = RpgItem::getRandomContainer();
     } else {
       rpgItem = RpgItem::getRandomContainerNS();
@@ -424,14 +424,14 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
       bool badAssMonsters = 
 				( i > 0 && 
 					getUseBadassMonsters() && 
-					( (int)((float)( 10 - depth ) * rand() / RAND_MAX ) == 0 ) );
+					( Util::dice( 10 - depth ) == 0 ) );
       while( areaCovered < roomAreaUsed && 
 						 ( badAssMonsters || 
 							 monsterLevelTotal < totalLevelUsed ) ) {
 				bool boss = false;
         int monsterLevel = getBaseMonsterLevel();
         if( badAssMonsters ) {
-					if( 0 == (int)( 5.0f * rand() / RAND_MAX ) ) {
+					if( 0 == Util::dice( 5 ) ) {
 						monsterLevel++;
 					}          
 					if( !dungeonBoss ) {
@@ -585,7 +585,7 @@ void TerrainGenerator::addMagicPools( Map *map, ShapePalette *shapePal ) {
 	// add some magic pools
   DisplayInfo di;
   for( int i = 0; i < roomCount; i++ ) {
-    if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
+    //???: if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
       MagicSchool *ms = MagicSchool::getRandomSchool();
       di.red = ms->getDeityRed();
       di.green = ms->getDeityGreen();
@@ -595,7 +595,7 @@ void TerrainGenerator::addMagicPools( Map *map, ShapePalette *shapePal ) {
         // store pos->deity in scourge
         scourge->addDeityLocation( pos, ms );
       }
-    }
+    //}
   }
 }
 
@@ -687,7 +687,7 @@ void TerrainGenerator::lockDoors(Map *map, ShapePalette *shapePal) {
 }
 
 void TerrainGenerator::lockLocation(Map *map, int mapx, int mapy) {
-  if((int)(LOCKED_DOOR_RAND * rand() / RAND_MAX) == 0) {
+  if( Util::dice( LOCKED_DOOR_RAND ) == 0 ) {
     //cerr << "\t*** Locking door: " << mapx << "," << mapy << " roomIndex=" << getRoomIndex(mapx, mapy) << endl;
     // lock the door
     map->setLocked(mapx, mapy, 0, true);
@@ -777,7 +777,8 @@ void TerrainGenerator::getRandomLocation(Map *map, Shape *shape,
   int x, y;
   while(1) {
     // get a random location
-    int n = (int)((float)ffCount * rand()/RAND_MAX);
+    // FIXME: rand() is too teethless random generator for it  
+    int n = (int)Util::roll( 0, ffCount-1 );
     x = ff[n * 2];
     y = ff[n * 2 + 1];
 
@@ -821,7 +822,8 @@ void TerrainGenerator::getRandomLocationSimple( Map *map, Shape *shape,
   int x, y;
   for( int i = 0; i < 500; i++ ) {
     // get a random location
-    int n = (int)((float)ffCount * rand()/RAND_MAX);
+    // FIXME: rand() is too teethless to deal with 100 000+ locations 
+    int n = (int)Util::roll( 0, ffCount-1 );
     x = ff[ n * 2 ];
     y = ff[ n * 2 + 1 ];
 
@@ -861,7 +863,7 @@ void TerrainGenerator::addItemsInRoom( RpgItem *rpgItem, int n, int room ) {
 
 bool TerrainGenerator::addShapeInARoom( Shape *shape ) {
 	for(int tt = 0; tt < 5; tt++) { // 5 room tries
-		int room = (int)(roomCount * rand() / RAND_MAX);	
+		int room = Util::dice( roomCount );	
     if( addShapeInRoom( shape, room ) ) return true;
 	}
 	return false;
@@ -903,7 +905,7 @@ bool TerrainGenerator::getLocationInRoom(Map *map, int roomIndex, Shape *shape,
 
   bool fits = false;
   while(count > 0) {
-	int pos = (int)((float)count * rand() / RAND_MAX);
+	int pos = Util::dice( count );
 	int x = fff[pos * 2];
 	int y = fff[pos * 2 + 1];
 	fits = map->shapeFits(shape, x, y, 0);
@@ -1033,21 +1035,21 @@ void TerrainGenerator::addRugs( Map *map, ShapePalette *shapePal ) {
     int starty = room[roomIndex].y;
     //int endy = room[roomIndex].y + room[roomIndex].h - 1;
 
-		int n = (int)( 5.0f * rand() / RAND_MAX );
+		int n = Util::dice( 5 );
 		for( int i = 0; i < n; i++ ) {
 			// pick a random location in the room
-			int px = (int)( (float)( room[roomIndex].w ) * rand() / RAND_MAX ) + startx;
-			int py = (int)( (float)( room[roomIndex].h ) * rand() / RAND_MAX ) + starty;
+			int px = startx + Util::dice( room[roomIndex].w );
+			int py = starty + Util::dice( room[roomIndex].h );
 			if( !map->hasRugAtPosition( px, py ) ) {
 			
 				// pick an orientation
-				bool isHorizontal = ( (int)( 10.0f * rand() / RAND_MAX ) % 2 == 0 ? true : false );
+				bool isHorizontal = ( Util::dice( 2 ) == 0 );
 	
 				// save it
 				Rug rug;
 				rug.isHorizontal = isHorizontal;
 				rug.texture = shapePal->getRandomRug();
-				rug.angle = ( 30.0f * rand() / RAND_MAX ) - 15.0f;
+				rug.angle = Util::roll( -15.0f, 15.0f );
 	
 				/*
 				cerr << "*** Adding rug (tex: " << rug.texture << ") at " << px << "," << py << 
@@ -1063,13 +1065,13 @@ void TerrainGenerator::addRugs( Map *map, ShapePalette *shapePal ) {
 
 void TerrainGenerator::addTraps( Map *map, ShapePalette *shapePal ) {
   GLShape *dummy = new GLShape( 0, 1, 1, 1, "dummy", 0, 0, 0 );
-  int trapCount = (int)( 5.0f * rand() / RAND_MAX ) + 3;
+  int trapCount = Util::pickOne( 3, 7 );
   for( int n = 0; n < trapCount; n++ ) {
     int x, y;
     getRandomLocationSimple( map, dummy, &x, &y );
 
-    int w = (int)( 6.0f * rand() / RAND_MAX ) + 4;
-    int h = (int)( 6.0f * rand() / RAND_MAX ) + 4;
+    int w = Util::pickOne( 4, 9 );
+    int h = Util::pickOne( 4, 9 );
     map->addTrap( x, y, w, h );
   }
   delete dummy;

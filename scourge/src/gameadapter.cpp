@@ -87,7 +87,7 @@ RenderedCreature *GameAdapter::createMonster( CreatureInfo *info ) {
 
 void GameAdapter::fillContainer( Item *container, int level, int depth ) {
 	// some items
-	int n = (int)(3.0f * rand() / RAND_MAX);
+	int n = Util::dice( 3 );
 	for(int i = 0; i < n; i++) {
 		Item *containedItem = createRandomItem( level, depth );
 		if( containedItem ) {
@@ -95,8 +95,8 @@ void GameAdapter::fillContainer( Item *container, int level, int depth ) {
 		}
 	}
 	// some spells
-	if(!((int)(25.0f * rand() / RAND_MAX))) {
-		int n = (int)(2.0f * rand() / RAND_MAX) + 1;
+	if( Util::dice( 25 ) == 0 ) {
+		int n = Util::pickOne( 1, 2 );
 		for(int i = 0; i < n; i++) {
 			Spell *spell = MagicSchool::getRandomSpell(level);
 			if(spell) {
@@ -113,8 +113,8 @@ Item *GameAdapter::createRandomItem( int level, int depth ) {
     RpgItem *rpgItem = RpgItem::getSpecial( i );
     if( rpgItem->getMinLevel() <= level &&
         rpgItem->getMinDepth() <= depth &&
-        !( session->getSpecialItem( rpgItem ) ) &&
-        0 == (int)( (float)rpgItem->getRareness() * rand() / RAND_MAX ) ) {
+        ! session->getSpecialItem( rpgItem ) &&
+        0 == Util::dice( rpgItem->getRareness() ) ) {
       // set loading to true so the level is exact and the item is not enchanted
       Item *item = session->newItem( rpgItem, level, NULL );
       return item;

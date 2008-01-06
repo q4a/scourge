@@ -101,8 +101,8 @@ bool CombatTest::executeTests( Session *session, char *path ) {
   // Test random skill values
   for( int i = 0; i < 20; i++ ) {
     for( int t = 0; t < 8; t++ ) {
-      attacker->setSkill( t, (int)( (float)MAX_SKILL * rand() / RAND_MAX ) );
-      defender->setSkill( t, (int)( (float)MAX_SKILL * rand() / RAND_MAX ) );
+      attacker->setSkill( t, Util::dice( MAX_SKILL ) );
+      defender->setSkill( t, Util::dice( MAX_SKILL ) );
     }
     sprintf( filename, "rand_ability_%d.html", i );
     if( !fight( path, filename, session, attacker, weapon, defender ) ) break;

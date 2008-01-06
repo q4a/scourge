@@ -126,7 +126,7 @@ void PathManager::findWanderingPath(unsigned int maxPathLength, Creature* player
     y = path[path.size()-1].y;
   }
   //we are wandering, so set the loitering speed to between 8.5 and 9.5
-  loiterSpeed = LOITER_SPEED + 1.0f * rand()/RAND_MAX - 0.5f;
+  loiterSpeed = LOITER_SPEED + Util::roll( -0.5f, 0.5f );
 }
 
 /**
@@ -158,7 +158,7 @@ Uint16 PathManager::addNextLocation(int cx, int cy, Uint16 direction, Creature* 
     return 0; // we are blocked in
 
   //now we randomly choose one
-  float random = (totalProbability * rand()/RAND_MAX);
+  float random = Util::roll( 0.0f, totalProbability );
   mask = 1;
   for(Uint16 i = 0; i < 8; i++){
     if((canTurn & mask) != 0){ //can use this direction, check if we chose it
@@ -339,7 +339,7 @@ void PathManager::calculateAllPathLocations(){
 void PathManager::moveNPCsOffPath(Creature* player, Map* map){
   calculateAllPathLocations();
   //check every location we will occupy
-  set<Location>::iterator setItr = allPathLocations.begin();
+  set<Location,LocationComparitor>::iterator setItr = allPathLocations.begin();
   while(setItr != allPathLocations.end()){
     Location loc = *setItr;
     Location* mapLoc = map->getLocation(loc.x,loc.y,0);
@@ -375,7 +375,7 @@ bool PathManager::isBlockingPath(Creature* blocker){
  * Needs to be updated to include an estimated time range that the potential blocker will be at x and y.
  **/
 bool PathManager::isBlockingPath(Creature* blocker, int x, int y){
-  set<Location>::iterator containsItr;
+  set<Location,LocationComparitor>::iterator containsItr;
   Location loc;
   loc.z = 0;
   for(int i = 0; i < blocker->getShape()->getWidth(); i++)

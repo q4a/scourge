@@ -473,7 +473,7 @@ void SavegameDialog::saveScreenshot( const string& dirName ) {
 
 void SavegameDialog::makeDirectory( const string& path ) {
 #ifdef WIN32
-    CreateDirectory(path, NULL);
+    CreateDirectory(path.c_str(), NULL);
 #else
 	int err = mkdir( path.c_str(), S_IRWXU|S_IRGRP|S_IXGRP );
 	if(err) {
@@ -487,7 +487,7 @@ void SavegameDialog::makeDirectory( const string& path ) {
 
 void SavegameDialog::findFilesInDir( const string& path, vector<string> *fileNameList ) {
 #ifdef WIN32
-    std:string winpath = path;
+    string winpath = path;
     winpath += "/*.*";
 
     WIN32_FIND_DATA FindData;
@@ -524,7 +524,7 @@ bool SavegameDialog::deleteDirectory( const string& path ) {
 		string toDelete = path + "/" + fileNameList[i];
 		cerr << "\tDeleting file: " << toDelete << endl;
 #ifdef WIN32
-		int n = !DeleteFile(toDelete);
+		int n = !DeleteFile(toDelete.c_str());
 #else
 		int n = remove( toDelete.c_str() );
 #endif
@@ -532,7 +532,7 @@ bool SavegameDialog::deleteDirectory( const string& path ) {
 	}
 	cerr << "\tDeleting directory: " << path << endl;
 #ifdef WIN32
-	int n = !RemoveDirectory(path);
+	int n = !RemoveDirectory(path.c_str());
 #else
 	int n = remove( path.c_str() );
 #endif

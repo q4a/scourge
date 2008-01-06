@@ -290,7 +290,7 @@ Monster *Monster::getRandomMonster(int level) {
   }
 
   // select a random entry from the rare list
-  int index = (int) ((float)(rareList.size()) * rand()/RAND_MAX);
+  int index = Util::dice( rareList.size() );
   return rareList[index];
 }
 
@@ -321,7 +321,7 @@ const char *Monster::getRandomSound(int type) {
       sounds = (*innerMap)[type];
     }
     if(!sounds || !(sounds->size())) return NULL;
-    string s = (*sounds)[(int)((float)(sounds->size()) * rand()/RAND_MAX)];
+    string s = (*sounds)[ Util::dice( sounds->size() ) ];
     return s.c_str();
   } else {
     return NULL;
@@ -337,7 +337,7 @@ int Monster::getSkillLevel(const char *skillName) {
 const char *Monster::getRandomMonsterType( int level ) {
   Monster *m = getRandomMonster( level );
   if( !m ) {
-    int n = (int)((float)monsterTypes.size()*rand()/RAND_MAX);
+    int n = Util::dice( monsterTypes.size() );
     return monsterTypes[n].c_str();
   } else {
     return m->getType();
@@ -355,13 +355,13 @@ const char *Monster::getMonsterType(char *type) {
 }
 
 const Monster *Monster::getRandomNpc() {
-  int n = (int)((float)npcs.size()*rand()/RAND_MAX);
+  int n = Util::dice( npcs.size() );
   return npcs[n];
 }
 
 const Monster *Monster::getRandomHarmless() {
 	if( harmlessCreatures.size() ) {
-		int n = (int)((float)harmlessCreatures.size()*rand()/RAND_MAX);
+		int n = Util::dice( harmlessCreatures.size() );
 		return harmlessCreatures[n];
 	} else {
 		return NULL;

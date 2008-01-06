@@ -340,7 +340,7 @@ Character *Character::getRandomCharacter( int level ) {
 	Character *c = getRandomCharacter();
 	while( c && c->getChildCount() && 
 				 c->getChild( 0 )->getMinLevelReq() <= level ) {
-		int index = (int)( (float)(c->getChildCount()) * rand() / RAND_MAX );
+		int index = Util::dice( c->getChildCount() );
 		c = c->getChild( index );
 	}
 	return c;
