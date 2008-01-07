@@ -773,31 +773,33 @@ Location *Creature::takeAStepOnPath() {
     //get the x and y values for a step-length vector in the direction of diffX,diffY
     float dist = sqrt(diffX*diffX + diffY*diffY); //distance to location
     //if(dist < step) step = dist; //if the step is too great, we slow ourselves to avoid overstepping
-    float stepX = (diffX * step)/dist;
-    float stepY = (diffY * step)/dist;
+	if ( dist != 0.0f ) { // thee shall not divide with zero
+      float stepX = (diffX * step)/dist;
+      float stepY = (diffY * step)/dist;
 
-    newY += stepY; 
-    newX += stepX;
+      newY += stepY; 
+      newX += stepX;
 
-    int nx = toint(newX);
-    int ny = toint(newY);
-    position = session->getMap()->
-      moveCreature(cx, cy, toint(getZ()),
-                   nx, ny, toint(getZ()),
-                   this);
-
-    if(position && cx != location.x && cy != location.y
-       && ((cx != nx && cy == ny) || (cx == nx && cy != ny)) ){
-      //we are blocked at our next step, are moving diagonally, and did not complete the diagonal move
-      newX = targetX;
-      newY = targetY; //we just "pop" to the target location
-      nx = toint(newX);
-      ny = toint(newY);
+      int nx = toint(newX);
+      int ny = toint(newY);
       position = session->getMap()->
-        moveCreature(cx, cy, toint(getZ()),
-                   nx, ny, toint(getZ()),
-                   this);
-    }
+            moveCreature(cx, cy, toint(getZ()),
+                         nx, ny, toint(getZ()),
+                         this);
+
+      if(position && cx != location.x && cy != location.y
+         && ((cx != nx && cy == ny) || (cx == nx && cy != ny)) ){
+      //we are blocked at our next step, are moving diagonally, and did not complete the diagonal move
+        newX = targetX;
+        newY = targetY; //we just "pop" to the target location
+        nx = toint(newX);
+        ny = toint(newY);
+        position = session->getMap()->
+          moveCreature(cx, cy, toint(getZ()),
+                       nx, ny, toint(getZ()),
+                       this);
+      }
+	}
                          
    /* cout << getName() << " stepping (" << getX() << "," << getY() << ") to (" << newX << "," << newY << ")  towards (" << location.x << "," << location.y << ")\n";
     if(position){ 
