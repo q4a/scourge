@@ -97,7 +97,7 @@ void Rpg::initNames( ConfigLang *config ) {
 		char *p = strtok( line, "," );
 		while( p != NULL ) {
 			firstSyl.push_back( strdup( p ) );
-      //cerr << "first: " << firstSyl[ firstSyl.size() - 1 ] << endl;
+			//cerr << "first: " << firstSyl[ firstSyl.size() - 1 ] << endl;
 			p = strtok( NULL, "," );
 		}
 		strcpy( line, node ->getValueAsString( "middle" ) );
@@ -115,7 +115,7 @@ void Rpg::initNames( ConfigLang *config ) {
 			p = strtok( NULL, "," );
 		}
 	}
-  //cerr << "first: " << firstSyl.size() << " mid: " << midSyl.size() << " end: " << endSyl.size() << endl;
+	//cerr << "first: " << firstSyl.size() << " mid: " << midSyl.size() << " end: " << endSyl.size() << endl;
 }
 
 void Rpg::initStateMods( ConfigLang *config ) {

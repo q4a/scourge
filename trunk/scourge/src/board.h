@@ -98,9 +98,9 @@ private:
   // the mission's location on the map-grid
   int mapX, mapY;
   char special[80];
-	char templateName[80];
-	int missionId;
-	int locationX, locationY;
+  char templateName[80];
+  int missionId;
+  int locationX, locationY;
 public:
 
 #define INTRO_PHRASE "_INTRO_"
@@ -144,13 +144,13 @@ public:
            char *mapName, char mapType='C' );
   ~Mission();
 	
-	inline int getLocationX() { return locationX; }
-	inline int getLocationY() { return locationY; }
-	inline int getMissionId() { return missionId; }
-	inline void setMissionId( int n ) { this->missionId = n; }
-	inline char *getIntroDescription() { return introDescription; }
-	inline int getChapter() { return chapter; }
-	inline void setChapter( int n ) { chapter = n; }
+  inline int getLocationX() { return locationX; }
+  inline int getLocationY() { return locationY; }
+  inline int getMissionId() { return missionId; }
+  inline void setMissionId( int n ) { this->missionId = n; }
+  inline char *getIntroDescription() { return introDescription; }
+  inline int getChapter() { return chapter; }
+  inline void setChapter( int n ) { chapter = n; }
   inline int getMapX() { return( locationX > -1 ? locationX : mapX ); }
   inline int getMapY() { return( locationY > -1 ? locationY : mapY ); }
   inline void setMapXY( int x, int y ) { mapX = x; mapY = y; }
@@ -161,7 +161,7 @@ public:
   inline void setStoryLine( bool b ) { storyLine = b; }
   inline bool isStoryLine() { return storyLine; }
 	
-	inline void setLocation( int x, int y ) { this->locationX = x; this->locationY = y; }
+  inline void setLocation( int x, int y ) { this->locationX = x; this->locationY = y; }
 
   inline void addCreature( Monster *monster, bool value=false ) {
     creatures[monster] = value;
@@ -182,7 +182,7 @@ public:
   }
 
   void deleteMonsterInstances();
-	void removeMissionItems();
+  void removeMissionItems();
 
   inline bool isCompleted() { return completed; }
   inline void setCompleted( bool b ) { completed = b; }

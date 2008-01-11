@@ -135,6 +135,7 @@ class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusRepo
   int nextMission;
   bool teleportFailure;
   bool inHq;
+  bool outdoors;
   bool missionWillAwardExpPoints;
   char infoMessage[2000];
 	PcUi *pcui;
@@ -319,6 +320,7 @@ public:
   inline NetPlay *getNetPlay() { return netPlay; }
 
   inline bool isInHQ() { return inHq; }
+  virtual inline bool isOutdoor() { return outdoors; }
 
   inline Window *getSquirrelConsole() { return squirrelWin; }
   void runSquirrelConsole();

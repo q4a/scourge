@@ -30,6 +30,8 @@ using namespace std;
 char *Sound::TELEPORT = "sound/equip/teleport.wav";
 char *Sound::OPEN_DOOR = "sound/equip/push-heavy-door.wav";
 char *Sound::OPEN_BOX = "sound/equip/open-box.wav";
+char *Sound::FOOTSTEP_INDOORS = "sound/footsteps/footsteps-indoors.wav";
+char *Sound::FOOTSTEP_OUTDOORS = "sound/footsteps/footsteps-outdoors.wav";
 
 Sound::Sound(Preferences *preferences) {
 	haveSound = false;
@@ -41,6 +43,14 @@ Sound::Sound(Preferences *preferences) {
 			cerr << "\tDisabling sound." << endl;
 		} else {
 			haveSound = true;
+		}
+
+		int reserved_count;
+		reserved_count=Mix_ReserveChannels(8);
+		if(reserved_count!=8) {
+		  cerr << "reserved " << reserved_count << " channels from default mixing." << endl;
+		  cerr << "8 channels were not reserved!" << endl;
+		  // this might be a critical error...
 		}
 
 		lastChapter = -1;
@@ -259,6 +269,8 @@ void Sound::loadUISounds(Preferences *preferences) {
 	storeSound( 0, TELEPORT );
 	storeSound( 0, OPEN_DOOR );
 	storeSound( 0, OPEN_BOX );
+	storeSound( 0, FOOTSTEP_INDOORS );
+	storeSound( 0, FOOTSTEP_OUTDOORS );
 
 	setEffectsVolume(preferences->getEffectsVolume());
 
@@ -422,7 +434,7 @@ void Sound::storeSound(int type, const string& file) {
 			Mix_Chunk *sample = Mix_LoadWAV(fn.c_str());
 			if(!sample) {
         // commented out; happens too often to be meaningful
-        // cerr << "*** Error loading WAV file: " << Mix_GetError() << endl;
+			  // cerr << "*** Error loading WAV file (" << file << "): " << Mix_GetError() << endl;
 			} else {
 				soundMap[fileStr] = sample;
 			}
@@ -446,16 +458,32 @@ void Sound::unloadSound( int type, const string& file ) {
 
 void Sound::playSound(const string& file) {
 #ifdef HAVE_SDL_MIXER
-	if(haveSound) {
-		//cerr << "*** Playing WAV: " << file << endl;
-		if(soundMap.find(file) != soundMap.end()) {
-			if(Mix_PlayChannel(-1, soundMap[file], 0) == -1) {
-				// commented out; happens too often
-				//cerr << "*** Error playing WAV file: " << fileStr << endl;
-				//cerr << "\t" << Mix_GetError() << endl;
-			}
+  if(haveSound) {
+	//cerr << "*** Playing WAV: " << file << endl;
+	if(soundMap.find(file) != soundMap.end()) {
+	  for( int i = 0; i < 6; i++ ) {
+		if(Mix_PlayChannel(i, soundMap[file], 0) == i) {
+		  break;
 		}
+	  }
 	}
+  }
+#endif
+}
+
+void Sound::startFootsteps( bool indoors ) {
+#ifdef HAVE_SDL_MIXER
+  for( int i = 0; i < 5; i++ ) {
+	if(Mix_PlayChannel(7, soundMap[( indoors ? FOOTSTEP_INDOORS : FOOTSTEP_OUTDOORS )], 0) != -1) {
+	  break;
+	}
+  }
+#endif
+}
+
+void Sound::stopFootsteps() {
+#ifdef HAVE_SDL_MIXER
+  Mix_HaltChannel(7);
 #endif
 }
 

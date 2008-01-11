@@ -661,28 +661,28 @@ bool SqBinding::createClass( SquirrelClassDecl *cd, const char *key ) {
   return true;
 }
 
-bool SqBinding::instantiateClass( const SQChar *classname, 
-                                  HSQOBJECT *obj 
-                                  //,SQRELEASEHOOK hook 
-                                  ) {
+int SqBinding::instantiateClass( const SQChar *classname, 
+								 HSQOBJECT *obj 
+								 //,SQRELEASEHOOK hook 
+								 ) {
   SQUserPointer ud = NULL;
   int oldtop = sq_gettop( vm );
   sq_pushroottable( vm );
   sq_pushstring( vm, classname, -1 );
   if( SQ_FAILED( sq_rawget( vm, -2 ) ) ) {
     sq_settop( vm, oldtop );
-    return false;
+    return -1;
   }
   //sq_pushroottable(v);
   if( SQ_FAILED( sq_createinstance( vm, -1 ) ) ) {
     sq_settop( vm, oldtop );
-    return false;
+    return -1;
   }
   sq_remove( vm, -3 ); //removes the root table
   sq_remove( vm, -2 ); //removes the the class
   if( SQ_FAILED( sq_setinstanceup( vm, -1, ud ) ) ) {
     sq_settop( vm, oldtop );
-    return false;
+    return -1;
   }
   //      sq_setreleasehook(v,-1,hook);
   //sq_settop(v,oldtop);
@@ -699,7 +699,7 @@ bool SqBinding::instantiateClass( const SQChar *classname,
   //              sq_pop( v, 1 );
   sq_settop( vm, oldtop );
   
-  return true;
+  return 1;
 }   
 
 bool SqBinding::createClassMember( const char *classname, const char *key, int value ) {  

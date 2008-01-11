@@ -875,6 +875,16 @@ void Creature::stopMoving() {
   selX = selY = -1;
 	speed = originalSpeed;
 	getShape()->setCurrentAnimation( MD2_STAND );
+	if( session->getParty()->getPlayer() == this ) session->getGameAdapter()->stopFootsteps();
+}
+
+Uint32 lastFootstepTime = 0;
+void Creature::playFootstep() {
+  Uint32 now = SDL_GetTicks();
+  if( now - lastFootstepTime > session->getPreferences()->getGameSpeedTicks() * 4 ) {
+	session->getGameAdapter()->startFootsteps( !( session->getGameAdapter()->isOutdoor() ) );
+	lastFootstepTime = now;
+  }
 }
 
 bool Creature::anyMovesLeft() {

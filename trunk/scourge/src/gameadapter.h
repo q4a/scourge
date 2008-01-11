@@ -64,6 +64,9 @@ public:
   virtual inline int getScreenWidth() { return 0; }
   virtual inline int getScreenHeight() { return 0; }
   virtual inline void playSound(const std::string& sound) {}
+  virtual inline void startFootsteps( bool indoors = true ) {}
+  virtual inline void stopFootsteps() {}
+
   virtual inline bool isMouseIsMovingOverMap() { return false; }
   virtual inline Uint16 getMouseX() { return 0; }
   virtual inline Uint16 getMouseY() { return 0; }
@@ -171,6 +174,8 @@ public:
 	virtual inline void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f) {}
 
 	virtual GLuint getNamedTexture( char *name ) { return 0; }
+
+	virtual bool isOutdoor() { return false; }
 	
 };
 
@@ -196,6 +201,8 @@ public:
   virtual inline int getScreenWidth() { return getSDLHandler()->getScreen()->w; }
   virtual inline int getScreenHeight() { return getSDLHandler()->getScreen()->h; }
   virtual void playSound(const std::string& sound);
+  virtual void startFootsteps( bool indoors = true );
+  virtual void stopFootsteps();
 
   virtual inline bool isMouseIsMovingOverMap() { return getSDLHandler()->mouseIsMovingOverMap; }
   virtual inline Uint16 getMouseX() { return getSDLHandler()->mouseX; }

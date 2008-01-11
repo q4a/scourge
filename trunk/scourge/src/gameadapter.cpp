@@ -225,6 +225,15 @@ void SDLOpenGLAdapter::playSound(const string& sound) {
   getSDLHandler()->getSound()->playSound(sound); 
 }
 
+void SDLOpenGLAdapter::startFootsteps( bool indoors ) {
+  getSDLHandler()->getSound()->startFootsteps( indoors );
+}
+
+void SDLOpenGLAdapter::stopFootsteps() {
+  getSDLHandler()->getSound()->stopFootsteps();
+}
+
+
 bool SDLOpenGLAdapter::intersects( int x, int y, int w, int h,
                                    int x2, int y2, int w2, int h2 ) {
   return getSDLHandler()->intersects( x, y, w, h,

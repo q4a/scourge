@@ -257,7 +257,7 @@ protected:
   time_t getLastModTime( const std::string& file );
 
   bool createClass( SquirrelClassDecl *cd, const char *key = NULL );
-  bool instantiateClass( const SQChar *classname, 
+  int instantiateClass( const SQChar *classname, 
                          HSQOBJECT *obj 
                          //,SQRELEASEHOOK hook 
                          );
