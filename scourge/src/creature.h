@@ -167,6 +167,8 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Monster *monster, GLShape *shape, bool initMonster=true);
   ~Creature();
 
+  void playFootstep();
+
 	inline void setBoss( bool b ) { this->boss = b; }
 	virtual inline bool isBoss() { return this->boss; }
   inline bool isSavedMissionObjective() { return savedMissionObjective; }

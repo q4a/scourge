@@ -91,6 +91,7 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 
   // in HQ map
   inHq = true;
+  outdoors = false;
 
   isInfoShowing = true; // what is this?
   info_dialog_showing = false;
@@ -256,7 +257,7 @@ void Scourge::start() {
         if( !failed ) {
           // do this to fix slowness in mainmenu the second time around
           glPushAttrib(GL_ENABLE_BIT);
-					startMission( !loaded );
+		  startMission( !loaded );
           glPopAttrib();
         }
       }
@@ -291,6 +292,7 @@ Scourge::~Scourge(){
 
 void Scourge::startMission( bool startInHq ) {
 	bool resetParty = true;
+	outdoors = false;
 
 #if DEBUG_SQUIRREL
   squirrelWin->setVisible( true );
@@ -638,7 +640,12 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		delete dg;
 		dg = NULL;
 	}
-	
+
+	outdoors = ( session->getCurrentMission() && 
+				 strstr( session->getCurrentMission()->getMapName(), "outdoors" ) && 
+				 currentStory == 0 );
+	cerr << "*** outdoors=" << outdoors << endl;
+
 	return mapCreated;
 }
 
@@ -1712,6 +1719,7 @@ void Scourge::resetUIAfterBattle() {
     ((AnimatedShape*)party->getParty(i)->getShape())->setPauseAnimation( false );
     if(party->getParty(i)->anyMovesLeft()) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+	  if( party->getParty(i) == party->getPlayer() ) party->getPlayer()->playFootstep();
     } else {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND, true);
     }
@@ -1739,7 +1747,8 @@ void Scourge::moveCreatures( bool allCreatures ) {
       ((AnimatedShape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
     } else if( party->getParty(i)->isMoving() ) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
-			party->getParty(i)->setMoving( false );
+	  if( party->getParty(i) == party->getPlayer() ) party->getPlayer()->playFootstep();
+	  party->getParty(i)->setMoving( false );
     } else {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
     }

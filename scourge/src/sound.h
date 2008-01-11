@@ -51,6 +51,8 @@ public:
 	static char *TELEPORT;
 	static char *OPEN_DOOR;
 	static char *OPEN_BOX;
+	static char *FOOTSTEP_INDOORS;
+	static char *FOOTSTEP_OUTDOORS;
 
   Sound(Preferences *preferences);
   virtual ~Sound();
@@ -101,6 +103,9 @@ public:
   void selectMusic( Preferences *preferences, Mission *mission=NULL );
 
   void checkMusic( bool inCombat );
+
+  void startFootsteps( bool indoors = true );
+  void stopFootsteps();
 
 protected:
 #ifdef HAVE_SDL_MIXER
