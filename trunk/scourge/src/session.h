@@ -120,6 +120,7 @@ public:
   inline void setMultiPlayerGame(bool b) { multiplayerGame = b; }
   inline GameAdapter *getGameAdapter() { return adapter; }
   inline void playSound(const std::string& sound) { getGameAdapter()->playSound(sound); }
+	std::string& getAmbientSoundName();
 
   /**
     Creat a new item for use on this story. Calling this method instead of new Item()

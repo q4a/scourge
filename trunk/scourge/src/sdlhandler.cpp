@@ -439,6 +439,7 @@ void SDLHandler::applyMouseOffset(int x, int y, int *newX, int *newY) {
   *newY = y + mouseFocusY;
 } 
 
+Uint32 lastAmbientTime = 0;
 void SDLHandler::mainLoop() {
 	bool isActive = true;
 	running = true;
@@ -451,6 +452,14 @@ void SDLHandler::mainLoop() {
 		}
 		if( isActive ) drawScreen();
 		getSound()->checkMusic( gameAdapter->inTurnBasedCombat() );
+		Uint32 now = SDL_GetTicks();
+		if( !gameAdapter->getAmbientPaused() &&
+				0 == Util::dice( AMBIENT_ROLL ) &&  
+				now - lastAmbientTime > AMBIENT_PAUSE_MIN ) {
+			lastAmbientTime = now;
+			getSound()->startAmbientSound( gameAdapter->getSession()->getAmbientSoundName(), 
+																		 gameAdapter->getCurrentDepth() );
+		}
 	}
 }
 

@@ -29,6 +29,7 @@ using namespace std;
 
 GameAdapter::GameAdapter( Preferences *config ) {
   this->preferences = config;
+	ambientPaused = true;
 }
 
 GameAdapter::~GameAdapter() {
@@ -225,14 +226,25 @@ void SDLOpenGLAdapter::playSound(const string& sound) {
   getSDLHandler()->getSound()->playSound(sound); 
 }
 
-void SDLOpenGLAdapter::startFootsteps( bool indoors ) {
-  getSDLHandler()->getSound()->startFootsteps( indoors );
+void SDLOpenGLAdapter::startFootsteps( std::string& name, int depth ) {
+  getSDLHandler()->getSound()->startFootsteps( name, depth );
 }
 
 void SDLOpenGLAdapter::stopFootsteps() {
   getSDLHandler()->getSound()->stopFootsteps();
 }
 
+void SDLOpenGLAdapter::addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel ) {
+  getSDLHandler()->getSound()->addAmbientSound( name, ambient, footsteps, afterFirstLevel );
+}
+
+void SDLOpenGLAdapter::startAmbientSound( std::string& name, int depth ) {
+  getSDLHandler()->getSound()->startAmbientSound( name, depth );
+}
+
+void SDLOpenGLAdapter::stopAmbientSound() {
+  getSDLHandler()->getSound()->stopAmbientSound();
+}
 
 bool SDLOpenGLAdapter::intersects( int x, int y, int w, int h,
                                    int x2, int y2, int w2, int h2 ) {
