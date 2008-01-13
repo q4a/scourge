@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
 "POT-Creation-Date: 2008-01-11 17:16+0100\n"
-"PO-Revision-Date: 2008-01-12 00:25+0100\n"
+"PO-Revision-Date: 2008-01-13 20:14+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -760,14 +760,14 @@ msgid "max"
 msgstr "max."
 
 #: src/creature.cpp:2958
-#, fuzzy, c-format
+#, c-format
 msgid "%s notices a trap!"
-msgstr "%1$s bemerkt eine Falle!"
+msgstr "%s bemerkt eine Falle!"
 
 #: src/creature.cpp:2974
-#, fuzzy, c-format
+#, c-format
 msgid "%s notices a secret door!"
-msgstr "%1$s bemerkt eine Geheimtür!"
+msgstr "%s bemerkt eine Geheimtür!"
 
 #: src/creature.cpp:2992
 #, c-format
@@ -775,9 +775,9 @@ msgid "%1$s blunders into a trap and takes %2$d points of damage!"
 msgstr "%1$s stolpert in eine Falle und nimmt %2$d Punkte Schaden!"
 
 #: src/creature.cpp:3004
-#, fuzzy, c-format
+#, c-format
 msgid "%s attempts to disable the trap:"
-msgstr "%1$s versucht die Falle zu entschärfen:"
+msgstr "%s versucht die Falle zu entschärfen:"
 
 #: src/creature.cpp:3014
 #, c-format
@@ -1911,9 +1911,8 @@ msgid "Adding traps"
 msgstr "Erstelle Fallen"
 
 #: src/terraingenerator.cpp:184
-#, fuzzy
 msgid "Adding shapes"
-msgstr "Erstelle Fallen"
+msgstr "Erstelle Formen"
 
 #: src/terraingenerator.cpp:187
 msgid "Adding containers"
@@ -2924,7 +2923,6 @@ msgstr ""
 "Wänden der Gewölbe unter der Stadt Horghh erwarten Euch."
 
 #: ../scourge_data/config/scourge.cfg:30
-#, fuzzy
 msgid ""
 "Credits and miscellany:|-----------------------|Code and bad artwork by "
 "Uzudil|Amazing portraits by Ben|Additional portraits by Omnisicent Colossus|"
