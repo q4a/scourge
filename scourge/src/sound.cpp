@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <iomanip>
+#include <string>
 #include "sound.h"
 #include "battle.h"
 #include "render/renderlib.h"
@@ -24,14 +25,12 @@
 
 using namespace std;
 
-#define MISSION_MUSIC_COUNT 6.0f
-#define FIGHT_MUSIC_COUNT 1.0f
+#define MISSION_MUSIC_COUNT 6
+#define FIGHT_MUSIC_COUNT 1
 
 char *Sound::TELEPORT = "sound/equip/teleport.wav";
 char *Sound::OPEN_DOOR = "sound/equip/push-heavy-door.wav";
 char *Sound::OPEN_BOX = "sound/equip/open-box.wav";
-char *Sound::FOOTSTEP_INDOORS = "sound/footsteps/footsteps-indoors.wav";
-char *Sound::FOOTSTEP_OUTDOORS = "sound/footsteps/footsteps-outdoors.wav";
 
 Sound::Sound(Preferences *preferences) {
 	haveSound = false;
@@ -269,8 +268,6 @@ void Sound::loadUISounds(Preferences *preferences) {
 	storeSound( 0, TELEPORT );
 	storeSound( 0, OPEN_DOOR );
 	storeSound( 0, OPEN_BOX );
-	storeSound( 0, FOOTSTEP_INDOORS );
-	storeSound( 0, FOOTSTEP_OUTDOORS );
 
 	setEffectsVolume(preferences->getEffectsVolume());
 
@@ -456,36 +453,139 @@ void Sound::unloadSound( int type, const string& file ) {
 #endif
 }
 
+// ######################################
 void Sound::playSound(const string& file) {
 #ifdef HAVE_SDL_MIXER
-  if(haveSound) {
-	//cerr << "*** Playing WAV: " << file << endl;
-	if(soundMap.find(file) != soundMap.end()) {
-	  for( int i = 0; i < 6; i++ ) {
-		if(Mix_PlayChannel(i, soundMap[file], 0) == i) {
-		  break;
+	if(haveSound) {
+		//cerr << "*** Playing WAV: " << file << endl;
+		if(soundMap.find(file) != soundMap.end()) {
+			for( int t = 0; t < 5; t++ ) {
+				for( int i = 0; i < 3; i++ ) {
+					if(Mix_PlayChannel(i, soundMap[file], 0) == i) return;
+				}
+			}
 		}
-	  }
-	}
   }
 #endif
 }
 
-void Sound::startFootsteps( bool indoors ) {
+void Sound::startFootsteps( std::string& name, int depth ) {
 #ifdef HAVE_SDL_MIXER
-  for( int i = 0; i < 5; i++ ) {
-	if(Mix_PlayChannel(7, soundMap[( indoors ? FOOTSTEP_INDOORS : FOOTSTEP_OUTDOORS )], 0) != -1) {
-	  break;
-	}
-  }
+	AmbientSound *as = getAmbientSound( name, depth );
+	if( as ) as->playFootsteps();
 #endif
 }
 
 void Sound::stopFootsteps() {
 #ifdef HAVE_SDL_MIXER
-  Mix_HaltChannel(7);
+  Mix_HaltChannel( 7 );
 #endif
 }
+
+void Sound::addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel ) {
+	#ifdef HAVE_SDL_MIXER
+	ambients[name] = new AmbientSound( name, ambient, footsteps, afterFirstLevel );
+	#endif
+}
+void Sound::startAmbientSound( std::string& name, int depth ) {
+	#ifdef HAVE_SDL_MIXER
+		AmbientSound *as = getAmbientSound( name, depth );
+		if( as ) as->playRandomAmbientSample();
+	#endif
+}
+
+void Sound::stopAmbientSound() {
+#ifdef HAVE_SDL_MIXER
+	Mix_HaltChannel( 6 );
+#endif
+}
+
+AmbientSound *Sound::getAmbientSound( std::string& name, int depth ) {
+	AmbientSound *as = NULL;
+	if( ambients.find( name ) != ambients.end() ) {
+		as = ambients[ name ];
+		if( depth > 0 ) {
+			if( ambients.find( as->getAfterFirstLevel() ) != ambients.end() ) {
+				as = ambients[ as->getAfterFirstLevel() ];
+			} else {
+				cerr << "2 Ambient not found: " << as->getAfterFirstLevel() << endl;
+				as = NULL;
+			}
+		}
+	} else {
+		cerr << "1 Ambient not found: " << name << endl;
+	}
+	return as;
+}
+
+// ######################################
+
+AmbientSound::AmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel ) {
+	this->name = name;
+	this->afterFirstLevel = afterFirstLevel;
+#ifdef HAVE_SDL_MIXER
+	size_t start = 0;
+	size_t found = ambient.find( "," );
+
+	//cerr << "Loading ambients: " << name << endl;
+	//cerr << "ambients=" << ambient << endl;
+	while( found != string::npos ) {
+		string s = ambient.substr( start, found - start );
+		//cerr << "\tstart=" << start << " found=" << found << " s=" << s << endl;
+		start = found + 1;
+		found = ambient.find( ",", start );
+
+		stringstream filename;
+		filename << rootDir <<"/sound/ambient/" << s;
+		//cerr << "\t" << filename.str() << endl;
+		Mix_Chunk *sample = Mix_LoadWAV( filename.str().c_str() );
+		if( !sample ) {
+			cerr << "*** Error cannot load sound sample: " << filename.str() << " reason=" << Mix_GetError() << endl;
+		} else {
+			ambients.push_back( sample );
+		}
+	}
+	stringstream filename;
+	filename << rootDir <<"/sound/footsteps/" << footsteps;
+	//cerr << "\t" << filename.str() << endl;
+	this->footsteps = Mix_LoadWAV( filename.str().c_str() );
+	if( !this->footsteps ) {
+		cerr << "*** Error cannot load sound sample: " << filename.str() << " reason=" << Mix_GetError() << endl;
+	}
+#endif
+}
+
+AmbientSound::~AmbientSound() {
+#ifdef HAVE_SDL_MIXER
+	// halt playback on all channels
+	Mix_HaltChannel( -1 );
+	Mix_FreeChunk( this->footsteps );
+	for( unsigned n = 0; n < ambients.size(); n++ ) {
+		Mix_FreeChunk( this->ambients[ n ] );
+	}
+#endif
+}
+
+int AmbientSound::playRandomAmbientSample() {
+#ifdef HAVE_SDL_MIXER
+	int n = Util::dice( ambients.size() );
+	for( int t = 0; t < 5; t++ ) {
+		if( Mix_PlayChannel( 6, ambients[ n ], 0 ) ) return 1;
+	}
+#endif
+	return -1;
+}
+
+int AmbientSound::playFootsteps() {
+#ifdef HAVE_SDL_MIXER
+	for( int i = 0; i < 5; i++ ) {
+		if(Mix_PlayChannel(7, footsteps, 0) != -1) return 1;
+  }
+#endif
+	return -1;
+}
+
+// ######################################
 
 void Sound::setMusicVolume(int volume) {
 #ifdef HAVE_SDL_MIXER

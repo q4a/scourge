@@ -51,10 +51,25 @@ Board::Board(Session *session) {
 	char name[255], displayName[255], line[255], description[2000], 
 		music[255], success[2000], failure[2000], mapName[80], 
 		introDescription[2000], location[20];
+	string ambientSoundName;
 
   ConfigLang *config = ConfigLang::load( string("config/mission.cfg") );
+
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "template" );
+		getChildrenByName( "sound" );
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
+
+		config->setUpdate( _("Loading Sounds"), i, v->size() );
+
+		string ambientName = node->getValueAsString( "name" );
+		string ambientAmbient = node->getValueAsString( "ambient" );
+		string ambientFootsteps = node->getValueAsString( "footsteps" );
+		string afterFirstLevel = node->getValueAsString( "after_first_level" );
+		session->getGameAdapter()->addAmbientSound( ambientName, ambientAmbient, ambientFootsteps, afterFirstLevel );
+	}
+
+	v = config->getDocument()->getChildrenByName( "template" );
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
@@ -67,11 +82,11 @@ Board::Board(Session *session) {
     strcpy( music, node->getValueAsString( "music" ) );
     strcpy( success, node->getValueAsString( "success" ) );
     strcpy( failure, node->getValueAsString( "failure" ) );
-    templates.push_back( new MissionTemplate( this, name, displayName, type, description, music, success, failure ) );
+		ambientSoundName = node->getValueAsString( "sound" );
+    templates.push_back( new MissionTemplate( this, name, displayName, type, description, music, success, failure, ambientSoundName ) );
   }
 
-  v = config->getDocument()->
-		getChildrenByName( "mission" );
+  v = config->getDocument()->getChildrenByName( "mission" );
 	for( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
@@ -90,10 +105,12 @@ Board::Board(Session *session) {
     strcpy( failure, node->getValueAsString( "failure" ) );
 		int chapter = node->getValueAsInt( "chapter" );
 		strcpy( location, node->getValueAsString( "position" ) );
+		ambientSoundName = node->getValueAsString( "sound" );
 
     Mission *current_mission = new Mission( this, level, depth, name, displayName, description, introDescription, music, success, failure, mapName );
     current_mission->setStoryLine( true );
 		current_mission->setChapter( chapter );
+		current_mission->setAmbientSoundName( ambientSoundName );
 		if( strlen( location ) ) {
 			int x, y;
 			sscanf( location, "%d,%d", &x, &y );
@@ -327,7 +344,7 @@ void Board::storylineMissionCompleted( Mission *mission ) {
 
 
 
-MissionTemplate::MissionTemplate( Board *board, char *name, char *displayName, char type, char *description, char *music, char *success, char *failure ) {
+MissionTemplate::MissionTemplate( Board *board, char *name, char *displayName, char type, char *description, char *music, char *success, char *failure, string& ambientSoundName ) {
   this->board = board;
   strcpy( this->name, name );
   strcpy( this->displayName, displayName );
@@ -336,6 +353,7 @@ MissionTemplate::MissionTemplate( Board *board, char *name, char *displayName, c
   strcpy( this->music, music);
   strcpy( this->success, success );
   strcpy( this->failure, failure );
+	this->ambientSoundName = ambientSoundName;
 }
 
 MissionTemplate::~MissionTemplate() {
@@ -405,6 +423,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
     mission->addCreature( monster, value );
   }
 	mission->setTemplateName( this->name );
+	mission->setAmbientSoundName( this->ambientSoundName );
 	if( info ) {
 		mission->setSavedMapName( (char*)info->mapName );
 		//cerr << "\tmap name=" << (char*)info->mapName << endl;

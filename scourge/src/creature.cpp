@@ -881,9 +881,9 @@ void Creature::stopMoving() {
 Uint32 lastFootstepTime = 0;
 void Creature::playFootstep() {
   Uint32 now = SDL_GetTicks();
-  if( now - lastFootstepTime > session->getPreferences()->getGameSpeedTicks() * 4 ) {
-	session->getGameAdapter()->startFootsteps( !( session->getGameAdapter()->isOutdoor() ) );
-	lastFootstepTime = now;
+  if( now - lastFootstepTime > (Uint32)(session->getPreferences()->getGameSpeedTicks() * 4) ) {
+		session->getGameAdapter()->startFootsteps( session->getAmbientSoundName(), session->getGameAdapter()->getCurrentDepth() );
+		lastFootstepTime = now;
   }
 }
 

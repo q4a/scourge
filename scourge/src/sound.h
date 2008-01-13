@@ -26,11 +26,27 @@
 #include "userconfiguration.h"
 #include "board.h"
 
+class AmbientSound {
+	std::string name;
+#ifdef HAVE_SDL_MIXER
+  Mix_Chunk *footsteps;
+	std::vector<Mix_Chunk*> ambients;
+#endif
+	std::string afterFirstLevel;
+public:
+	AmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel );
+	~AmbientSound();
+	int playRandomAmbientSample();
+	int playFootsteps();
+	inline std::string &getAfterFirstLevel() { return afterFirstLevel; }
+};
+
 class Sound {
 private:
   int missionMusicIndex;
   int fightMusicIndex;
   bool haveSound;  
+	std::map<std::string, AmbientSound*> ambients;
 #ifdef HAVE_SDL_MIXER
   Mix_Music *menuMusic;
   Mix_Music *hqMusic;
@@ -104,10 +120,15 @@ public:
 
   void checkMusic( bool inCombat );
 
-  void startFootsteps( bool indoors = true );
+  void startFootsteps( std::string& name, int depth );
   void stopFootsteps();
 
+	void addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel );
+	void startAmbientSound( std::string& name, int depth );
+	void stopAmbientSound();
+
 protected:
+	AmbientSound *getAmbientSound( std::string& name, int depth );
 #ifdef HAVE_SDL_MIXER
   void playMusic( Mix_Music *music, int ms=2000, int loopCount=-1 );
   void storeCharacterSounds( std::map<int,std::vector<Mix_Chunk*>*> *charSoundMap, 

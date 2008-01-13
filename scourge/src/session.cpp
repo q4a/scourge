@@ -645,3 +645,7 @@ void Session::setCurrentMission( Mission *mission ) {
 	getSquirrel()->initLevelObjects();
 }
 
+std::string HQ_AMBIENT_SOUND = "hq";
+std::string& Session::getAmbientSoundName() {
+	return getCurrentMission() ? getCurrentMission()->getAmbientSoundName() : HQ_AMBIENT_SOUND;
+}

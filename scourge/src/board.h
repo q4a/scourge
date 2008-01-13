@@ -101,6 +101,7 @@ private:
   char templateName[80];
   int missionId;
   int locationX, locationY;
+	std::string ambientSoundName;
 public:
 
 #define INTRO_PHRASE "_INTRO_"
@@ -157,6 +158,8 @@ public:
   inline bool isSpecial() { return ( strlen( special ) ? true : false ); }
   inline char *getSpecial() { return special; }
   inline void setSpecial( char *s ) { strncpy( special, s, 79 ); special[79]='\0'; }
+	inline void setAmbientSoundName( std::string& s ) { this->ambientSoundName = s; }
+	inline std::string& getAmbientSoundName() { return this->ambientSoundName; }
 
   inline void setStoryLine( bool b ) { storyLine = b; }
   inline bool isStoryLine() { return storyLine; }
@@ -252,12 +255,14 @@ private:
   char music[255];
   char success[2000];
   char failure[2000];
+	std::string ambientSoundName;
 public:
-  MissionTemplate( Board *board, char *name, char *displayName, char mapType, char *description, char *music, char *success, char *failure );
+  MissionTemplate( Board *board, char *name, char *displayName, char mapType, char *description, char *music, char *success, char *failure, std::string& ambientSoundName );
   ~MissionTemplate();
   Mission *createMission( Session *session, int level, int depth, MissionInfo *info=NULL );
 	inline char *getName() { return name; }
   inline char *getDisplayName() { return displayName; }
+	inline std::string& getAmbientSoundName() { return ambientSoundName; }
 private:
   void parseText( Session *session, int level, int depth,
                   char *text, char *parsedText,

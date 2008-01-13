@@ -91,7 +91,6 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 
   // in HQ map
   inHq = true;
-  outdoors = false;
 
   isInfoShowing = true; // what is this?
   info_dialog_showing = false;
@@ -292,7 +291,6 @@ Scourge::~Scourge(){
 
 void Scourge::startMission( bool startInHq ) {
 	bool resetParty = true;
-	outdoors = false;
 
 #if DEBUG_SQUIRREL
   squirrelWin->setVisible( true );
@@ -346,11 +344,14 @@ void Scourge::startMission( bool startInHq ) {
 				// start the haunting tunes
 				if(inHq) getSDLHandler()->getSound()->playMusicHQ();
 				else getSDLHandler()->getSound()->playMusicMission();
+				setAmbientPaused( false );
 			}
       getSDLHandler()->fade( 1, 0, 20 );
 
       // run mission
       getSDLHandler()->mainLoop();
+
+			setAmbientPaused( true );
 
 			// Save the current map (except HQ)
 			if( !session->isMultiPlayerGame() && 
@@ -640,11 +641,6 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		delete dg;
 		dg = NULL;
 	}
-
-	outdoors = ( session->getCurrentMission() && 
-				 strstr( session->getCurrentMission()->getMapName(), "outdoors" ) && 
-				 currentStory == 0 );
-	cerr << "*** outdoors=" << outdoors << endl;
 
 	return mapCreated;
 }
@@ -3770,10 +3766,10 @@ bool Scourge::isDoorBlocked() {
 
 void Scourge::openDoor( MovingDoor *movingDoor ) {
   // switch door
-  Sint16 ox = movingDoor->x;
-  Sint16 oy = movingDoor->y;
-  Sint16 nx = movingDoor->x;
-  Sint16 ny = (movingDoor->y - movingDoor->oldDoorShape->getDepth()) + movingDoor->newDoorShape->getDepth();
+  Sint16 ox = (Sint16)movingDoor->x;
+  Sint16 oy = (Sint16)movingDoor->y;
+  Sint16 nx = (Sint16)movingDoor->x;
+  Sint16 ny = (Sint16)(movingDoor->y - movingDoor->oldDoorShape->getDepth()) + movingDoor->newDoorShape->getDepth();
   
   //  Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
   levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
