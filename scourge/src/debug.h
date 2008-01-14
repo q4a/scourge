@@ -68,7 +68,7 @@
 
 #define SMOOTH_DOORS 1
 
-#define AMBIENT_PAUSE_MIN 2000
+#define AMBIENT_PAUSE_MIN 7000
 #define AMBIENT_ROLL 100
 
 #endif
