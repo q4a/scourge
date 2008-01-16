@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-01-11 17:16+0100\n"
-"PO-Revision-Date: 2008-01-13 20:14+0100\n"
+"POT-Creation-Date: 2008-01-14 18:28+0100\n"
+"PO-Revision-Date: 2008-01-17 00:10+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -751,7 +751,7 @@ msgstr "gegen"
 msgid "bonus"
 msgstr "Bonus"
 
-#: src/creature.cpp:2594 src/scourge.cpp:3502
+#: src/creature.cpp:2594 src/scourge.cpp:3498
 msgid "CTH"
 msgstr "TRC"
 
@@ -806,7 +806,7 @@ msgstr "Lade Charaktere"
 msgid "Loading Portraits"
 msgstr "Lade Portraits"
 
-#: src/session.cpp:123 src/board.cpp:61 src/board.cpp:78
+#: src/session.cpp:123 src/board.cpp:76 src/board.cpp:93
 msgid "Loading Missions"
 msgstr "Lade Missionen"
 
@@ -848,28 +848,32 @@ msgstr "Alles nehm."
 msgid "There is not enough room in your backpack for everything."
 msgstr "Es ist nicht genug Platz in Eurem Rucksack für das alles."
 
-#: src/containergui.cpp:164 src/scourge.cpp:1222
+#: src/containergui.cpp:164 src/scourge.cpp:1218
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr "%1$s wurde in %2$s gelegt."
 
-#: src/containergui.cpp:174 src/scourge.cpp:1219
+#: src/containergui.cpp:174 src/scourge.cpp:1215
 msgid "The item won't fit in that container!"
 msgstr "Dieser Gegenstand passt nicht in den Behälter!"
 
-#: src/board.cpp:266
+#: src/board.cpp:63
+msgid "Loading Sounds"
+msgstr "Lade Soundeffekte"
+
+#: src/board.cpp:283
 msgid "(STORY)"
 msgstr "(HANDLUNG)"
 
-#: src/board.cpp:267
+#: src/board.cpp:284
 msgid "(CAVE)"
 msgstr "(HÖHLE)"
 
-#: src/board.cpp:268
+#: src/board.cpp:285
 msgid "(OUTDOORS)"
 msgstr "(DRAUSSEN)"
 
-#: src/board.cpp:270 src/equip.cpp:689 src/equip.cpp:706 src/equip.cpp:726
+#: src/board.cpp:287 src/equip.cpp:689 src/equip.cpp:706 src/equip.cpp:726
 msgid "(completed)"
 msgstr "(abgeschlossen)"
 
@@ -936,7 +940,7 @@ msgstr "AP"
 msgid "RANGE"
 msgstr "REICHWEITE"
 
-#: src/item.cpp:1378 src/scourge.cpp:3451
+#: src/item.cpp:1378 src/scourge.cpp:3447
 msgid "DEF"
 msgstr "VRT"
 
@@ -985,11 +989,11 @@ msgstr "Kosten"
 msgid "Basic Statistics:"
 msgstr "Grundwerte:"
 
-#: src/characterinfo.cpp:49 src/scourge.cpp:2148 src/portrait.cpp:254
+#: src/characterinfo.cpp:49 src/scourge.cpp:2144 src/portrait.cpp:254
 msgid "HP"
 msgstr "LP"
 
-#: src/characterinfo.cpp:50 src/scourge.cpp:2150 src/portrait.cpp:259
+#: src/characterinfo.cpp:50 src/scourge.cpp:2146 src/portrait.cpp:259
 msgid "MP"
 msgstr "MP"
 
@@ -1016,7 +1020,7 @@ msgstr "Euer %s hat keine verbleibenden Anwendungen mehr."
 msgid "Your %s feels lighter."
 msgstr "Euer %s fühlt sich leichter an."
 
-#: src/battle.cpp:738 src/scourge.cpp:3608
+#: src/battle.cpp:738 src/scourge.cpp:3604
 #, c-format
 msgid "%s crumbles into dust."
 msgstr "%s zerfällt zu Staub."
@@ -1122,67 +1126,67 @@ msgstr "...%s greift mit %d Punkten an."
 msgid "...%s's armor blocks %d points"
 msgstr "...%ss Rüstung wehrt %d Punkte ab"
 
-#: src/battle.cpp:1237
+#: src/battle.cpp:1241
 #, c-format
 msgid "...%s dodges the attack."
 msgstr "...%s weicht dem Angriff aus."
 
-#: src/battle.cpp:1243
+#: src/battle.cpp:1247
 #, c-format
 msgid "...%s misses the target."
 msgstr "...%s verfehlt das Ziel."
 
-#: src/battle.cpp:1267
+#: src/battle.cpp:1271
 #, c-format
 msgid "...%s hits for %d points of damage"
 msgstr "...%s trifft mit %d Schaden"
 
-#: src/battle.cpp:1297
+#: src/battle.cpp:1301
 #, c-format
 msgid "...%s is killed!"
 msgstr "...%s wird getötet!"
 
-#: src/battle.cpp:1313
+#: src/battle.cpp:1317
 #, c-format
 msgid "%s finds %d coins!"
 msgstr "%s findet %d Münzen!"
 
-#: src/battle.cpp:1321
+#: src/battle.cpp:1325
 msgid "You have defeated the dungeon boss!"
 msgstr "Ihr habt den Endgegner des Dungeons besiegt!"
 
-#: src/battle.cpp:1322
+#: src/battle.cpp:1326
 msgid "...the news spreads quickly and his minions cower before you."
 msgstr ""
 "...die Nachricht macht rasch die Runde und seine Lakaien knien vor Euch "
 "nieder."
 
-#: src/battle.cpp:1335
+#: src/battle.cpp:1339
 #, c-format
 msgid "...no damaged caused."
 msgstr "...kein Schaden erzielt."
 
-#: src/battle.cpp:1419 src/battle.cpp:1425
+#: src/battle.cpp:1423 src/battle.cpp:1429
 #, c-format
 msgid "Targeted"
 msgstr "Als Ziel gewählt"
 
-#: src/battle.cpp:1450
+#: src/battle.cpp:1454
 #, c-format
 msgid "Out of Range. Move: %d"
 msgstr "Außer Reichweite. Bewegen: %d"
 
-#: src/battle.cpp:1452 src/battle.cpp:1459
+#: src/battle.cpp:1456 src/battle.cpp:1463
 #, c-format
 msgid "Out of Range"
 msgstr "Außer Reichweite"
 
-#: src/battle.cpp:1459
+#: src/battle.cpp:1463
 #, c-format
 msgid "In Range"
 msgstr "In Reichweite"
 
-#: src/battle.cpp:1471 src/portrait.cpp:175
+#: src/battle.cpp:1475 src/portrait.cpp:175
 msgid "Bare Hands"
 msgstr "Bloße Hände"
 
@@ -1454,328 +1458,328 @@ msgstr "Zeichne Wände"
 msgid "Fixing rooms"
 msgstr "Passe Räume ein"
 
-#: src/scourge.cpp:143
+#: src/scourge.cpp:142
 msgid "Begin Chapter"
 msgstr "Kapitel beginnen"
 
-#: src/scourge.cpp:144
+#: src/scourge.cpp:143
 msgid "Replay"
 msgstr "Wiederholen"
 
-#: src/scourge.cpp:153
+#: src/scourge.cpp:152
 msgid "Dismiss Party Member"
 msgstr "Gruppenmitglied entlassen"
 
-#: src/scourge.cpp:154
+#: src/scourge.cpp:153
 msgid "Need permission to upload score to web"
 msgstr "Benötige Erlaubnis zum Hochladen der Punktzahl"
 
-#: src/scourge.cpp:155
+#: src/scourge.cpp:154
 msgid "Upload your score to the internet?"
 msgstr "Eure Punktzahl ins Internet hochladen?"
 
-#: src/scourge.cpp:359
+#: src/scourge.cpp:360
 msgid "Error saving current map."
 msgstr "Fehler beim Speichern der aktuellen Karte."
 
-#: src/scourge.cpp:370
+#: src/scourge.cpp:371
 msgid "Error #666: Failed to create map."
 msgstr "Fehler #666: Karte konnte nicht erstellt werden."
 
-#: src/scourge.cpp:540
+#: src/scourge.cpp:541
 #, c-format
 msgid "For returning alive, the party receives %d experience points."
 msgstr ""
 "Dafür dass die Gruppe lebend zurückgekehrt ist, erhält sie %d "
 "Erfahrungspunkte."
 
-#: src/scourge.cpp:551
+#: src/scourge.cpp:552
 #, c-format
 msgid " %s gains a level! "
 msgstr " %s steigt eine Stufe auf! "
 
-#: src/scourge.cpp:706
+#: src/scourge.cpp:702
 #, c-format
 msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
 msgstr "Willkommen im S.C.O.U.R.G.E. -Hauptquartier"
 
-#: src/scourge.cpp:709
+#: src/scourge.cpp:705
 #, c-format
 msgid "Teleport spell failed!! Entering level %d"
 msgstr "Der Teleportzauber versagte!! Betrete Ebene %d"
 
-#: src/scourge.cpp:711
+#: src/scourge.cpp:707
 #, c-format
 msgid "Entering dungeon level %d"
 msgstr "Betrete Dungeon-Ebene %d"
 
-#: src/scourge.cpp:922
+#: src/scourge.cpp:918
 #, c-format
 msgid "%s cancelled a pending action."
 msgstr "%s hat eine anstehende Aktion abgebrochen."
 
-#: src/scourge.cpp:927
+#: src/scourge.cpp:923
 msgid "Select a creature for this spell."
 msgstr "Wählt eine Kreatur für den Zauber aus."
 
-#: src/scourge.cpp:932
+#: src/scourge.cpp:928
 msgid "Select an item for this spell."
 msgstr "Wählt einen Gegenstand für den Zauber aus."
 
-#: src/scourge.cpp:937
+#: src/scourge.cpp:933
 msgid "Select a location for this spell."
 msgstr "Wählt einen Ort für den Zauber aus."
 
-#: src/scourge.cpp:942
+#: src/scourge.cpp:938
 msgid "Select a door for this spell."
 msgstr "Wählt eine Tür für den Zauber aus."
 
-#: src/scourge.cpp:947
+#: src/scourge.cpp:943
 msgid "Select the party for this spell."
 msgstr "Wählt eine Gruppe für den Zauber aus."
 
-#: src/scourge.cpp:969 src/scourge.cpp:991
+#: src/scourge.cpp:965 src/scourge.cpp:987
 #, c-format
 msgid "%s selected a target"
 msgstr "%s hat ein Ziel gewählt"
 
-#: src/scourge.cpp:1015
+#: src/scourge.cpp:1011
 #, c-format
 msgid "%1$s will target %2$s"
 msgstr "%1$s wird %2$s als Ziel wählen"
 
-#: src/scourge.cpp:1037
+#: src/scourge.cpp:1033
 #, c-format
 msgid "%1$s targeted %2$s."
 msgstr "%1$s hat %2$s als Ziel gewählt."
 
-#: src/scourge.cpp:1411
+#: src/scourge.cpp:1407
 msgid "Something is blocking the door from closing."
 msgstr "Etwas blockiert die Tür, so dass sie nicht schließen kann."
 
-#: src/scourge.cpp:1456
+#: src/scourge.cpp:1452
 msgid "Leave level?"
 msgstr "Ebene verlassen?"
 
-#: src/scourge.cpp:1480
+#: src/scourge.cpp:1476
 msgid "Squirrel Console"
 msgstr "Squirrel-Konsole"
 
-#: src/scourge.cpp:1488
+#: src/scourge.cpp:1484
 msgid "Run"
 msgstr "Ausführen"
 
-#: src/scourge.cpp:1489
+#: src/scourge.cpp:1485
 msgid "Clear"
 msgstr "Löschen"
 
-#: src/scourge.cpp:1780
+#: src/scourge.cpp:1776
 #, c-format
 msgid "Speed set to %d\n"
 msgstr "Geschwindigkeit auf %d gesetzt\n"
 
-#: src/scourge.cpp:1924
+#: src/scourge.cpp:1920
 msgid "Congratulations, mission accomplished!"
 msgstr "Glückwunsch, Mission abgeschlossen!"
 
-#: src/scourge.cpp:1935
+#: src/scourge.cpp:1931
 msgid "For completing the mission"
 msgstr "Für das Abschließen der Mission"
 
-#: src/scourge.cpp:1937
+#: src/scourge.cpp:1933
 #, c-format
 msgid "The party receives %d points."
 msgstr "Die Gruppe erhält %d Punkte."
 
-#: src/scourge.cpp:1962
+#: src/scourge.cpp:1958
 msgid "Connecting to server"
 msgstr "Verbinde zum Server"
 
-#: src/scourge.cpp:1969
+#: src/scourge.cpp:1965
 msgid "Connected!"
 msgstr "Verbunden!"
 
-#: src/scourge.cpp:1991
+#: src/scourge.cpp:1987
 msgid "Combat"
 msgstr "Kampf"
 
-#: src/scourge.cpp:1993
+#: src/scourge.cpp:1989
 msgid "End Turn"
 msgstr "Runde beenden"
 
-#: src/scourge.cpp:2017
+#: src/scourge.cpp:2013
 msgid "Pause game"
 msgstr "Spielpause"
 
-#: src/scourge.cpp:2020
+#: src/scourge.cpp:2016
 msgid "Load or Save Game"
 msgstr "Spiel laden oder speichern"
 
-#: src/scourge.cpp:2030
+#: src/scourge.cpp:2026
 msgid "Exit game"
 msgstr "Spiel verlassen"
 
-#: src/scourge.cpp:2037
+#: src/scourge.cpp:2033
 msgid "Game options"
 msgstr "Spieleinstellungen"
 
-#: src/scourge.cpp:2044
+#: src/scourge.cpp:2040
 msgid "Move as a group"
 msgstr "Als Gruppe bewegen"
 
-#: src/scourge.cpp:2084
+#: src/scourge.cpp:2080
 msgid "Dismiss this character"
 msgstr "Diesen Chrarakter entlassen"
 
-#: src/scourge.cpp:2103
+#: src/scourge.cpp:2099
 msgid "Inventory and party info"
 msgstr "Inventar und Gruppeninformation"
 
-#: src/scourge.cpp:2111
+#: src/scourge.cpp:2107
 msgid "Click to assign a spell, capability or magic item."
 msgstr ""
 "Klicken, um einen Zauber, eine Fähigkeit oder einen magischen Gegenstand "
 "zuzuweisen."
 
-#: src/scourge.cpp:2170
+#: src/scourge.cpp:2166
 msgid "Current Weapon: Bare Hands"
 msgstr "Aktuelle Waffe: Bloße Hände"
 
-#: src/scourge.cpp:2175
+#: src/scourge.cpp:2171
 #, c-format
 msgid "Current Weapon: %s"
 msgstr "Aktuelle Waffe: %s"
 
-#: src/scourge.cpp:2444 src/portrait.cpp:428
+#: src/scourge.cpp:2440 src/portrait.cpp:428
 msgid "Thirst"
 msgstr "Durst"
 
-#: src/scourge.cpp:2458 src/portrait.cpp:433
+#: src/scourge.cpp:2454 src/portrait.cpp:433
 msgid "Hunger"
 msgstr "Hunger"
 
-#: src/scourge.cpp:2525 src/equip.cpp:597
+#: src/scourge.cpp:2521 src/equip.cpp:597
 msgid "Not enough Magic Points to cast this spell!"
 msgstr "Nicht genug Magiepunkte, um diesen Zauber zu sprechen!"
 
-#: src/scourge.cpp:2602
+#: src/scourge.cpp:2598
 msgid "Begin Turn"
 msgstr "Runde beginnen"
 
-#: src/scourge.cpp:2607
+#: src/scourge.cpp:2603
 msgid "...In Turn..."
 msgstr "...Zug läuft..."
 
-#: src/scourge.cpp:2613
+#: src/scourge.cpp:2609
 msgid "Pause Game"
 msgstr "Spiel anhalten"
 
-#: src/scourge.cpp:2617
+#: src/scourge.cpp:2613
 msgid "Unpause game."
 msgstr "Spiel fortsetzen"
 
-#: src/scourge.cpp:2652
+#: src/scourge.cpp:2648
 msgid "Available Missions"
 msgstr "Verfügbare Missionen"
 
-#: src/scourge.cpp:2658
+#: src/scourge.cpp:2654
 msgid "Drag map to look around."
 msgstr "Zieht die Karte mit der Maus, um Euch umzusehen"
 
-#: src/scourge.cpp:2726
+#: src/scourge.cpp:2722
 msgid "This spell has no effect here..."
 msgstr "Dieser Zauberspruch ist hier unwirksam..."
 
-#: src/scourge.cpp:2904
+#: src/scourge.cpp:2900
 msgid "Game loaded successfully."
 msgstr "Spiel erfolgreich geladen."
 
-#: src/scourge.cpp:2927
+#: src/scourge.cpp:2923
 msgid "Error: Saved game version is too old."
 msgstr "Fehler: Der Spielstand wurde mit einer zu alten Spielversion erstellt."
 
-#: src/scourge.cpp:3283
+#: src/scourge.cpp:3279
 msgid "You cannot hire more party members."
 msgstr "Ihr könnt keine weiteren Gruppenmitglieder anwerben."
 
-#: src/scourge.cpp:3303
+#: src/scourge.cpp:3299
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr "Möchtet Ihr %s, den %s, entlassen?"
 
-#: src/scourge.cpp:3447
+#: src/scourge.cpp:3443
 msgid "Initiative"
 msgstr "Initiative"
 
-#: src/scourge.cpp:3489 src/scourge.cpp:3496 src/infogui.cpp:350
+#: src/scourge.cpp:3485 src/scourge.cpp:3492 src/infogui.cpp:350
 #: src/infogui.cpp:355 src/infogui.cpp:360
 msgid "ATK"
 msgstr "ANG"
 
-#: src/scourge.cpp:3503 src/infogui.cpp:352 src/infogui.cpp:358
+#: src/scourge.cpp:3499 src/infogui.cpp:352 src/infogui.cpp:358
 msgid "APR"
 msgstr "APR"
 
-#: src/scourge.cpp:3555
+#: src/scourge.cpp:3551
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: src/scourge.cpp:3557
+#: src/scourge.cpp:3553
 #, c-format
 msgid "per %.2f R"
 msgstr "alle %.2f R"
 
-#: src/scourge.cpp:3566
+#: src/scourge.cpp:3562
 msgid "This item is already enchanted."
 msgstr "Dieser Gegenstand ist bereits verzaubert."
 
-#: src/scourge.cpp:3568
+#: src/scourge.cpp:3564
 msgid "This item cannot be enchanted."
 msgstr "Dieser Gegenstand kann nicht verzaubert werden."
 
-#: src/scourge.cpp:3576
+#: src/scourge.cpp:3572
 msgid "You succesfully enchanted an item!"
 msgstr "Ihr habt erfolgreich einen Gegenstand verzaubert!"
 
-#: src/scourge.cpp:3580
+#: src/scourge.cpp:3576
 #, c-format
 msgid "You created: %s."
 msgstr "Ihr erschuft: %s."
 
-#: src/scourge.cpp:3585
+#: src/scourge.cpp:3581
 msgid "You failed to enchant the item."
 msgstr "Ihr habt es nicht geschafft, den Gegenstand zu verzaubern."
 
-#: src/scourge.cpp:3589
+#: src/scourge.cpp:3585
 msgid "You can only enchant one item per day."
 msgstr "Ihr könnt nur einen Gegenstand pro Tag verzaubern."
 
-#: src/scourge.cpp:3604
+#: src/scourge.cpp:3600
 msgid "Spell was entered into your spellbook."
 msgstr "Der Zauber wurde in Euer Zauberbuch aufgenommen."
 
-#: src/scourge.cpp:3612
+#: src/scourge.cpp:3608
 msgid "You already know this spell"
 msgstr "Ihr kennt diesen Zauber bereits"
 
-#: src/scourge.cpp:3615
+#: src/scourge.cpp:3611
 msgid "You are not proficient enough to transcribe this scroll."
 msgstr "Ihr seid nicht erfahren genug, um diese Spruchrolle abzuschreiben."
 
-#: src/scourge.cpp:3618
+#: src/scourge.cpp:3614
 msgid "You can only transcribe scrolls!"
 msgstr "Ihr könnt nur Spruchrollen abschreiben!"
 
-#: src/scourge.cpp:3649
+#: src/scourge.cpp:3645
 msgid "This item is out of charges."
 msgstr "Dieser Gegenstand ist aufgebraucht."
 
-#: src/scourge.cpp:3662
+#: src/scourge.cpp:3658
 msgid "You cannot use this item."
 msgstr "Ihr könnt diesen Gegenstand nicht benutzen."
 
-#: src/scourge.cpp:3927
+#: src/scourge.cpp:3923
 msgid "The door splinters into many, tiny pieces!"
 msgstr "Die Tür zerspringt in unzählige kleine Teile!"
 
@@ -6630,11 +6634,11 @@ msgstr "Ein Führer durch die Dimension der Entsetzlichen Übelkeit"
 msgid "Be sure to bring a paper bag."
 msgstr "Stellt sicher, dass Ihr eine Brechtüte zur Hand habt."
 
-#: ../scourge_data/config/mission.cfg:5
+#: ../scourge_data/config/mission.cfg:29
 msgid "Quest for the lost ${item1}"
 msgstr "Suche nach dem verlorenen ${item1}"
 
-#: ../scourge_data/config/mission.cfg:7
+#: ../scourge_data/config/mission.cfg:31
 msgid ""
 "One of our returning clients, has managed to loose his ${item1}, somewhere "
 "in the bowels of his now abandoned lair. Your job is to fetch this object "
@@ -6651,7 +6655,7 @@ msgstr ""
 "daher unter dem Schutz einer Entität steht, die Ihr besser nicht enttäuschen "
 "solltet..."
 
-#: ../scourge_data/config/mission.cfg:9
+#: ../scourge_data/config/mission.cfg:33
 msgid ""
 "Excellent job! Our client told me to pass on his warm thanks to you for "
 "recovering his lost ${item1}."
@@ -6659,15 +6663,15 @@ msgstr ""
 "Hervorragende Arbeit! Unser Klient lässt Euch seinen besten Dank für die "
 "Wiederbeschaffung seines ${item1} ausrichten."
 
-#: ../scourge_data/config/mission.cfg:10
+#: ../scourge_data/config/mission.cfg:34
 msgid "Remember, you still haven't found the ${item1}!"
 msgstr "Denkt daran, Ihr habt noch nicht den ${item1} gefunden!"
 
-#: ../scourge_data/config/mission.cfg:14
+#: ../scourge_data/config/mission.cfg:39
 msgid "Seek out the ${item1}"
 msgstr "Findet den ${item1}"
 
-#: ../scourge_data/config/mission.cfg:16
+#: ../scourge_data/config/mission.cfg:41
 msgid ""
 "A new client with an unhealthy look in his eyes requested that we retrieve "
 "his lost ${item1}. Apparently, the object is quite valuable. What makes his "
@@ -6682,7 +6686,7 @@ msgstr ""
 "Ihr auf Eurer Mission einige dieser unglücklichen Seelen antreffen, erledigt "
 "sie schnell."
 
-#: ../scourge_data/config/mission.cfg:18
+#: ../scourge_data/config/mission.cfg:43
 msgid ""
 "Many thanks for completing this mission. One more unsavory client is off our "
 "backs for now, happy with his recovered ${item1}."
@@ -6691,7 +6695,7 @@ msgstr ""
 "einen widerwärtigen Klienten weniger im Nacken, denn dieser freut sich über "
 "seinen wiederbeschafften ${item1}."
 
-#: ../scourge_data/config/mission.cfg:19
+#: ../scourge_data/config/mission.cfg:44
 msgid ""
 "Please complete this mission quickly! Remember, you're looking for the "
 "${item1}."
@@ -6699,11 +6703,11 @@ msgstr ""
 "Schließt diese Mission bitte schnell ab! Denkt daran, Ihr sucht nach dem "
 "${item1}."
 
-#: ../scourge_data/config/mission.cfg:23
+#: ../scourge_data/config/mission.cfg:49
 msgid "Haunted monastery: kill ${creature1}"
 msgstr "Verwunschenes Kloster: Tötet ${creature1}"
 
-#: ../scourge_data/config/mission.cfg:25
+#: ../scourge_data/config/mission.cfg:51
 msgid ""
 "Should you accept this mission, you would be asked to teleport into a "
 "haunted monastery nearby and neutralize some monsters. In particular, our "
@@ -6722,7 +6726,7 @@ msgstr ""
 "fort seid.) Viel Glück, und diesmal müsst Ihr auch nicht Eure Stechkarten "
 "abzeichnen lassen!"
 
-#: ../scourge_data/config/mission.cfg:27
+#: ../scourge_data/config/mission.cfg:53
 msgid ""
 "I can't believe you managed to complete this mission... er... I mean I never "
 "had any doubts at all! ${creature1} is a tough opponent."
@@ -6730,7 +6734,7 @@ msgstr ""
 "Ich kann nicht glauben, dass Ihr diese Mission geschafft habt... äh... ich "
 "meine, ich habe nie daran gezweifelt! ${creature1} ist ein starker Gegner."
 
-#: ../scourge_data/config/mission.cfg:28
+#: ../scourge_data/config/mission.cfg:54
 msgid ""
 "Ah, so you're still alive and at it... Good! Remember you're out to slay "
 "${creature1}."
@@ -6738,11 +6742,11 @@ msgstr ""
 "Aha, Ihr seid also immer noch am Leben und an der Sache dran... gut! Denkt "
 "daran, dass Ihr ${creature1} töten müsst."
 
-#: ../scourge_data/config/mission.cfg:32
+#: ../scourge_data/config/mission.cfg:59
 msgid "A vampire's quest: eliminate ${creature1}"
 msgstr "Eine Vampirmission: Eliminiert ${creature1}"
 
-#: ../scourge_data/config/mission.cfg:34
+#: ../scourge_data/config/mission.cfg:61
 msgid ""
 "A vampiric client delivered and urgent request to exterminate the  pests in "
 "the underground structures of her forest castle. She is  most interested in "
@@ -6757,14 +6761,14 @@ msgstr ""
 "versprochen, während der Auftragsausführung nicht auf dem Gelände zu spuken, "
 "sofern Ihr bis Sonnenuntergang fertig seid."
 
-#: ../scourge_data/config/mission.cfg:36
+#: ../scourge_data/config/mission.cfg:63
 msgid ""
 "Finished just in time! Good job! ${creature1} must have been hard to defeat."
 msgstr ""
 "Gerade rechtzeitig erledigt! Gute Arbeit! ${creature1} war sicherlich schwer "
 "zu bezwingen."
 
-#: ../scourge_data/config/mission.cfg:37
+#: ../scourge_data/config/mission.cfg:64
 msgid ""
 "The time draws near when our vampiric client must return to his domain. "
 "Trust me you won't want to be around him, so get on with killing "
@@ -6774,11 +6778,11 @@ msgstr ""
 "zurückkehren muss. Glaubt mir, Ihr möchtet nicht in ihrer Nähe sein, also "
 "beeilt Euch mit dem Töten von ${creature1}."
 
-#: ../scourge_data/config/mission.cfg:41
+#: ../scourge_data/config/mission.cfg:69
 msgid "Removing a heretical ${creature1}"
 msgstr "Entfernung eines ketzerischen ${creature1}"
 
-#: ../scourge_data/config/mission.cfg:43
+#: ../scourge_data/config/mission.cfg:71
 msgid ""
 "The local holy order of Soroughoz requested that we send a cleanup crew to "
 "the ruins of one of its abandoned temples. They view it as a stain on their "
@@ -6792,7 +6796,7 @@ msgstr ""
 "(ehemaligen) Ehre von Monstern überlaufen werden. Ganz besonders möchten sie "
 "einen ${creature1} und einen ${creature2} neutralisiert sehen."
 
-#: ../scourge_data/config/mission.cfg:45
+#: ../scourge_data/config/mission.cfg:73
 msgid ""
 "Very good, the local order of Soroughoz will be pleased. And in turn, it's "
 "always good for us to keep them happy."
@@ -6800,17 +6804,17 @@ msgstr ""
 "Sehr gut, der Orden von Soroughoz wird erfreut sein. Und andersherum ist es "
 "immer gut für uns, sie bei Laune zu halten."
 
-#: ../scourge_data/config/mission.cfg:46
+#: ../scourge_data/config/mission.cfg:74
 msgid "Just a reminder to finish cleaning the abandoned temple of Soroughoz."
 msgstr ""
 "Ich möchte Euch nur daran erinnern, den verlassenen Tempel von Soroughoz zu "
 "säubern."
 
-#: ../scourge_data/config/mission.cfg:50
+#: ../scourge_data/config/mission.cfg:79
 msgid "Retrieving a lost ${item1}"
 msgstr "Wiederbeschaffung eines verschollenen ${item1}"
 
-#: ../scourge_data/config/mission.cfg:52
+#: ../scourge_data/config/mission.cfg:81
 msgid ""
 "A lesser noble family's steward contacted us this morning regarding the "
 "recovery of a coveted family heirloom. The ${item1} was lost stolen by a "
@@ -6827,7 +6831,7 @@ msgstr ""
 "Waldweg überfallen. Die Trolle betrachteten den Gegenstand als nutzlos und "
 "ließen ihn während ihres Aufenthalts in einer verlassenen Ruine dort liegen."
 
-#: ../scourge_data/config/mission.cfg:54
+#: ../scourge_data/config/mission.cfg:83
 msgid ""
 "Excellent work as always! The noble family will be eternally thankful to us "
 "for recovering their heirloom object."
@@ -6835,7 +6839,7 @@ msgstr ""
 "Wie immer großartige Arbeit! Die Adelsfamilie wird uns ewig dafür dankbar "
 "sein, dass wir das Erbstück wiederbeschafft haben."
 
-#: ../scourge_data/config/mission.cfg:55
+#: ../scourge_data/config/mission.cfg:84
 msgid ""
 "The noble family's steward contacted us again last night asking about the "
 "heirloom object. Any luck in finding it? Don't give up!"
@@ -6843,11 +6847,11 @@ msgstr ""
 "Der Verwalter der Adelsfamilie hat uns gestern Abend erneut kontaktiert und "
 "nach dem Erbstück gefragt. Habt Ihr Erfolg mit der Suche? Gebt nicht auf!"
 
-#: ../scourge_data/config/mission.cfg:59
+#: ../scourge_data/config/mission.cfg:89
 msgid "Bring back the missed ${item1}"
 msgstr "Holt den verschollenen ${item1} zurück"
 
-#: ../scourge_data/config/mission.cfg:61
+#: ../scourge_data/config/mission.cfg:92
 msgid ""
 "A charity case really... I don't know why we bother with the like... Anyway, "
 "one must give back at times, and that is why we took the case of the local "
@@ -6862,7 +6866,7 @@ msgstr ""
 "während sie ihre Tagesausbeute auf einer nahegelegenen Wiese abluden. Beeilt "
 "Euch bitte und holt das Objekt zurück!"
 
-#: ../scourge_data/config/mission.cfg:63
+#: ../scourge_data/config/mission.cfg:93
 msgid ""
 "Excellent job! The dung collectors' guild is finally off our backs... "
 "They're most grateful that we returned their lost object and I must say - as "
@@ -6873,7 +6877,7 @@ msgstr ""
 "ich muss als Zeichen ihrer Anerkennung sagen - nie war mein Nachttopf "
 "sauberer!"
 
-#: ../scourge_data/config/mission.cfg:64
+#: ../scourge_data/config/mission.cfg:94
 msgid ""
 "Remember we're still not finished with the dung collectors' guild. They may "
 "not have lots of money, but I'd rather not upset the guild for... obvious "
@@ -6883,11 +6887,11 @@ msgstr ""
 "abgeschlossen haben. Sie mögen nicht viel Geld haben, aber ich möchte es mir "
 "aus... offensichtlichen Gründen... nicht mit ihnen verderben."
 
-#: ../scourge_data/config/mission.cfg:68
+#: ../scourge_data/config/mission.cfg:99
 msgid "Dispatch the ${creature1}"
 msgstr "Lasst den ${creature1} frei"
 
-#: ../scourge_data/config/mission.cfg:70
+#: ../scourge_data/config/mission.cfg:101
 msgid ""
 "A ${creature1} terrorizes a nearby glade under the druidic protection of the "
 "Circle of the Caressing Wind. The druids offer us cash on the spot for the "
@@ -6900,7 +6904,7 @@ msgstr ""
 "Euch sofort auf den Weg und stellt sicher, dass seine Schreckensherrschaft "
 "ein für alle Mal ein Ende nimmt."
 
-#: ../scourge_data/config/mission.cfg:72
+#: ../scourge_data/config/mission.cfg:103
 msgid ""
 "The druids were overjoyed at the news! They can finally worship in peace "
 "without the annoying interuptions of one their group being eaten during "
@@ -6911,7 +6915,7 @@ msgstr ""
 "eines Mitglieds zu störenden Unterbrechungen kommt. Sie danken uns wirklich "
 "vielmals."
 
-#: ../scourge_data/config/mission.cfg:73
+#: ../scourge_data/config/mission.cfg:104
 msgid ""
 "The druids press upon us the importance of removing the ${creature1}. It "
 "seems the crunching of bones and snapping of sinew (while the beast feasts "
@@ -6924,11 +6928,11 @@ msgstr ""
 "gütlich tut), die heilige Predigt empfindlich beeinträchtig. Also beeilt "
 "Euch!"
 
-#: ../scourge_data/config/mission.cfg:78
+#: ../scourge_data/config/mission.cfg:110
 msgid "Chapter 1: Greasy pork chops with turned milk "
 msgstr "Kapitel 1: Fettige Koteletts mit saurer Milch "
 
-#: ../scourge_data/config/mission.cfg:82
+#: ../scourge_data/config/mission.cfg:114
 msgid ""
 "The usual plot: A helpless wizard named Sabien summoned and consequently "
 "lost control of a minor Fiend. While grappling with the demon he managed to "
@@ -6954,7 +6958,7 @@ msgstr ""
 "ins Hauptquartier, so dass Sabiens Assistent ihn zu seinem gefangenen "
 "Meister transportieren kann."
 
-#: ../scourge_data/config/mission.cfg:83
+#: ../scourge_data/config/mission.cfg:115
 msgid ""
 "Early this morning a tall and obviously non-human creature stood waiting for "
 "me at headquarters. It's gaze shifted nervously from side to side as it "
@@ -6979,7 +6983,7 @@ msgstr ""
 "dass wir einen mächtigen Freund gewinnen können, wenn Ihr diese Mission "
 "meistert!"
 
-#: ../scourge_data/config/mission.cfg:84
+#: ../scourge_data/config/mission.cfg:116
 msgid ""
 "Thanks to your heroic efforts $Sabien (the hapless wizard) is safely at home "
 "again! He vows to "
@@ -6987,7 +6991,7 @@ msgstr ""
 "Dank Eures heldenhaften Einsatzes ist $Sabien (der unglückselige Zauberer) "
 "wieder sicher zu Hause angekommen! Er gelobt, "
 
-#: ../scourge_data/config/mission.cfg:85
+#: ../scourge_data/config/mission.cfg:117
 msgid ""
 "Remember to find the wand for $Sabien! He is an important client and he's in "
 "deep trouble at the moment."
@@ -6995,11 +6999,11 @@ msgstr ""
 "Denkt daran, den Stab von $Sabien zu finden! Er ist ein wichtiger Klient und "
 "steckt zur Zeit in ernsten Schwierigkeiten."
 
-#: ../scourge_data/config/mission.cfg:92
+#: ../scourge_data/config/mission.cfg:125
 msgid "Chapter 2: Maw of the Grizzled Beast!"
 msgstr "Kapitel 2: Der Schlund der Ergrauten Bestie!"
 
-#: ../scourge_data/config/mission.cfg:97
+#: ../scourge_data/config/mission.cfg:130
 msgid ""
 "Perhaps you remember Sabien the wizard whom we rescued from the dimension of "
 "Excruciating Nausea. It seems he is in trouble again, this time he has been "
@@ -7021,7 +7025,7 @@ msgstr ""
 "Sabiens anderem Arbeitshaus und dieses ist von Horden von Monstern "
 "bevölkert. Viel Glück!"
 
-#: ../scourge_data/config/mission.cfg:98
+#: ../scourge_data/config/mission.cfg:131
 msgid ""
 "The mysterious $Order (which it turns out is composed entirely of dwarven  "
 "poets) has accepted the payment and let $Sabien go. I have a feeling  this "
@@ -7032,7 +7036,7 @@ msgstr ""
 "freigelassen. Ich habe das Gefühl, dass wir es noch öfters mit diesem $Orden "
 "zu tun bekommen werden!"
 
-#: ../scourge_data/config/mission.cfg:99
+#: ../scourge_data/config/mission.cfg:132
 msgid ""
 "Please hurry and rescue $Sabien! The $Order of the Grizzled Pony is a a "
 "group of dwarven poets... they keep sending me threats... their letters "
@@ -7042,11 +7046,11 @@ msgstr ""
 "eine Gruppe von Zwergendichtern... sie schicken mir ständig Drohungen... "
 "ihre Briefe reimen sich und die Poesie ist $furchtbar!"
 
-#: ../scourge_data/config/mission.cfg:106
+#: ../scourge_data/config/mission.cfg:140
 msgid "Chapter 3: The Mysterious Benefactor"
 msgstr "Kapitel 3: Der mysteriöse Wohltäter"
 
-#: ../scourge_data/config/mission.cfg:111
+#: ../scourge_data/config/mission.cfg:145
 msgid ""
 "Sabien the wizard sent word that while he was being held by the Order of the "
 "Grizzled Pony, he overheard a conversation. He asked us to enter the Order's "
@@ -7069,7 +7073,7 @@ msgstr ""
 "sonstige Anhaltspunkte zu finden, die eventuell ein Licht darauf werfen, für "
 "wen der Orden arbeitet."
 
-#: ../scourge_data/config/mission.cfg:112
+#: ../scourge_data/config/mission.cfg:146
 msgid ""
 "Boots of $Mycotharsius and a map of the $Abyss?! This does not sound good... "
 "Ask $Melathor about  information on $Mycotharsius. As far as I know he's "
@@ -7084,7 +7088,7 @@ msgstr ""
 "stehen... außer... außer, er hat sich wieder mit einem höllischen Wesen "
 "verbündet. $Melathor sollte mehr darüber wissen."
 
-#: ../scourge_data/config/mission.cfg:113
+#: ../scourge_data/config/mission.cfg:147
 msgid ""
 "$Sabien is still waiting for any info you can dig up about the $Order. He "
 "needs to know who the dwarves are working for."
@@ -7092,11 +7096,11 @@ msgstr ""
 "$Sabien wartet immer noch darauf, dass Ihr Informationen über den $Orden "
 "beschafft. Er muss unbedingt wissen, für wen die Zwerge arbeiten."
 
-#: ../scourge_data/config/mission.cfg:123
+#: ../scourge_data/config/mission.cfg:158
 msgid "Chapter 4: Among the Groez-Duil"
 msgstr "Kapitel 4: Unter den Groez-Duil"
 
-#: ../scourge_data/config/mission.cfg:128
+#: ../scourge_data/config/mission.cfg:163
 msgid ""
 "You must travel to Thuzgol the city of the mountain dwarves, or the Groez-"
 "Duil as they call themselves. Once there, look up my old mentor Orhithales "
@@ -7119,7 +7123,7 @@ msgstr ""
 "jedoch trauen. Er versteht die wahre Natur des Ordens und könnte etwas Licht "
 "auf seine Verbindung zu Mycotharsius werfen."
 
-#: ../scourge_data/config/mission.cfg:129
+#: ../scourge_data/config/mission.cfg:164
 msgid ""
 "Dragonscale armor?! I have not see one of these since the $end of the "
 "$Guardians of the Realm. I'll have to think about what to make of this... "
@@ -7132,15 +7136,15 @@ msgstr ""
 "hören! Wir standen uns für eine lange Zeit ziemlich nahe, vielleicht hat er "
 "Euch davon erzählt."
 
-#: ../scourge_data/config/mission.cfg:130
+#: ../scourge_data/config/mission.cfg:165
 msgid "Remember to journey to $Thuzgol and talk to $Orhithales."
 msgstr "Denkt daran, nach $Thuzgol zu reisen und mit $Orhithales zu sprechen."
 
-#: ../scourge_data/config/mission.cfg:138
+#: ../scourge_data/config/mission.cfg:174
 msgid "Chapter 5: A brief visit with Mycotharsius"
 msgstr "Kapitel 5: Ein kurzer Besuch bei Mycotharsius"
 
-#: ../scourge_data/config/mission.cfg:143
+#: ../scourge_data/config/mission.cfg:179
 msgid ""
 "Our agents have located Mycotharsius in the cellars of a peaceful monastery "
 "called "
@@ -7148,7 +7152,7 @@ msgstr ""
 "Unsere Agenten haben Mycotharsius ausfindig gemacht. Er befindet sich in den "
 "Kellern eines friedlichen Klosters namens "
 
-#: ../scourge_data/config/mission.cfg:144
+#: ../scourge_data/config/mission.cfg:180
 msgid ""
 "Good job, defeating $Mycotharsius! Now we know why $Sabien was kidnapped by "
 "the $Order! I sent Sabien the map of the $Abyss you found earlier and next "
@@ -7163,22 +7167,22 @@ msgstr ""
 "sich das Ende aller Zivilisation geschäftsschädigend auswirken könnte... Ich "
 "habe Sabiens Unterschlupf auf der Karte an der Missionstafel eingezeichnet."
 
-#: ../scourge_data/config/mission.cfg:145
+#: ../scourge_data/config/mission.cfg:181
 msgid ""
 "You still have to journey to the monastery of the Tower and defeat "
 "$Mycotharsius."
 msgstr ""
 "Ihr müsst noch immer zum Kloster des Turms reisen und $Mycotharsius besiegen."
 
-#: ../scourge_data/config/mission.cfg:147
+#: ../scourge_data/config/mission.cfg:183
 msgid "Kill Mycotharsius the Mad"
 msgstr "Tötet Mycotharsius den Verrückten"
 
-#: ../scourge_data/config/mission.cfg:151
+#: ../scourge_data/config/mission.cfg:188
 msgid "Chapter 6: Sabien's Revelations"
 msgstr "Kapitel 6: Sabiens Offenbarung"
 
-#: ../scourge_data/config/mission.cfg:156
+#: ../scourge_data/config/mission.cfg:193
 msgid ""
 "You must call upon our old friend Sabien. He already knows the purpose of "
 "your visit, because I sent him the map fragment of the Abyss you found "
@@ -7195,7 +7199,7 @@ msgstr ""
 "entführt wurde, und deshalb ist er, ob er es weiß oder nicht, eine "
 "Schlüsselfigur bei der Auflösung dieses Rätsels."
 
-#: ../scourge_data/config/mission.cfg:157
+#: ../scourge_data/config/mission.cfg:194
 msgid ""
 "Interesting... so $Sabien claims $Mothrazu is trying to enter the $Abyss? I "
 "have read the notes he sent me and marked the location of the $tokens on the "
@@ -7205,22 +7209,22 @@ msgstr ""
 "$Hölle zu gelangen? Ich habe die Notizen gelesen, die er mir zugeschickt hat "
 "und habe die Positionen der $Zeichen auf der $Tafel eingezeichnet."
 
-#: ../scourge_data/config/mission.cfg:158
+#: ../scourge_data/config/mission.cfg:195
 msgid ""
 "Have you traveled to see $Sabien yet? I marked his library on the $board."
 msgstr ""
 "Seid Ihr schon zu $Sabien gereist? Ich habe seine Bibliothek auf der $Tafel "
 "eingezeichnet."
 
-#: ../scourge_data/config/mission.cfg:160
+#: ../scourge_data/config/mission.cfg:197
 msgid "Talk to Sabien"
 msgstr "Mit Sabien sprechen"
 
-#: ../scourge_data/config/mission.cfg:164
+#: ../scourge_data/config/mission.cfg:202
 msgid "Chapter 7: Tokens of the Gods"
 msgstr "Kapitel 7: Zeichen der Götter"
 
-#: ../scourge_data/config/mission.cfg:169
+#: ../scourge_data/config/mission.cfg:207
 msgid ""
 "Browsing through Sabien's notes about the four tokens, it seems they are to "
 "be found quite close to here in an underground complex. The building is "
@@ -7241,7 +7245,7 @@ msgstr ""
 "ernsthaft, dass wir neben dem Geldverdienen jetzt auch noch die Welt retten "
 "müssen..."
 
-#: ../scourge_data/config/mission.cfg:170
+#: ../scourge_data/config/mission.cfg:208
 msgid ""
 "You must now take these $tokens to $Sabien in his library. Hurry, for only "
 "he knows how to employ them to unlock the wards that protect the door to the "
@@ -7251,7 +7255,7 @@ msgstr ""
 "Beeilt Euch, denn nur er weiß, wie man sie benutzt, um die Tür zum planaren "
 "$Apparat zu öffnen."
 
-#: ../scourge_data/config/mission.cfg:171
+#: ../scourge_data/config/mission.cfg:209
 msgid ""
 "By the gods! While you amble about, the fate of the world hangs by a thread! "
 "Hurry and find the $tokens $Sabien needs!"
@@ -7260,11 +7264,11 @@ msgstr ""
 "Welt am seidenen Faden! Beeilt Euch und findet die $Zeichen, die $Sabien "
 "braucht!"
 
-#: ../scourge_data/config/mission.cfg:184
+#: ../scourge_data/config/mission.cfg:223
 msgid "Chapter 8: The Descent"
 msgstr "Kapitel 8: Der Abstieg"
 
-#: ../scourge_data/config/mission.cfg:189
+#: ../scourge_data/config/mission.cfg:228
 msgid ""
 "You must now return to Sabien's library and with the help of the tokens "
 "unlock the warded door. What lies beyond this portal is surely one of the "
@@ -7282,7 +7286,7 @@ msgstr ""
 "vorsichtig und benehmt Euch anständig, Ihr repräsentiert den besten (und "
 "einzigen) Dungeon-Wartungsdienst der Stadt."
 
-#: ../scourge_data/config/mission.cfg:190
+#: ../scourge_data/config/mission.cfg:229
 msgid ""
 "I must really sit down for this... So, you traveled through an ancient "
 "planar device to... to... the Abyss?! And met a demon lord named $Karzul who "
@@ -7300,7 +7304,7 @@ msgstr ""
 "aktivieren. Ich werde herausfinden, wo ihr Unterschlupf liegen könnte. "
 "Sobald ich mehr weiß, schlage ich es an der Tafel an."
 
-#: ../scourge_data/config/mission.cfg:191
+#: ../scourge_data/config/mission.cfg:230
 msgid ""
 "Have you been able to unlock the door in Sabien's library and learn what "
 "lies beyond?  Remember to bring back anything important that is connected to "
@@ -7311,15 +7315,15 @@ msgstr ""
 "Hinsicht auf die $Wächter des Reiches oder die Kreatur namens $Mothrazu "
 "bedeutsam sein könnte."
 
-#: ../scourge_data/config/mission.cfg:193
+#: ../scourge_data/config/mission.cfg:232
 msgid "Investigate the warded door in Sabien's library"
 msgstr "Untersucht die verschlossene Tür in Sabiens Bibliothek"
 
-#: ../scourge_data/config/mission.cfg:197
+#: ../scourge_data/config/mission.cfg:237
 msgid "Chapter 9: A Thorny Argument for Divine Favor"
 msgstr "Ein dorniges Argument für einen Göttlichen Gefallen"
 
-#: ../scourge_data/config/mission.cfg:202
+#: ../scourge_data/config/mission.cfg:242
 msgid ""
 "Our agents returned from abroad with exciting news! The lair of the rogue "
 "druid  Mothrazu has been found in an abandoned complex on the Isle of "
@@ -7351,7 +7355,7 @@ msgstr ""
 "es liegt ganz an Euch, wie Ihr diese Göttin des Streits davon überzeugt, "
 "Euch die Gegenstände auszuhändigen."
 
-#: ../scourge_data/config/mission.cfg:203
+#: ../scourge_data/config/mission.cfg:243
 msgid ""
 "Welcome back! I regret to say we cannot waste more time! Remember to wear "
 "the gifts of the goddess and armed with antimagic binding objects enter the "
@@ -7365,7 +7369,7 @@ msgstr ""
 "Welt auf dem Spiel! Ich werde ihren Aufenthaltsort auf der Missionstafel "
 "einzeichnen."
 
-#: ../scourge_data/config/mission.cfg:204
+#: ../scourge_data/config/mission.cfg:244
 msgid ""
 "Have you visited Hornaxx the goddess of Arguments yet? Be sure to remind her "
 "of the  debt she owes us, and hope that in her divine wisdom, she rewards "
@@ -7378,7 +7382,7 @@ msgstr ""
 "belohnt. Mit solchem Beistand können wir endlich versuchen, $Mothrazu zu "
 "vernichten."
 
-#: ../scourge_data/config/mission.cfg:206
+#: ../scourge_data/config/mission.cfg:246
 msgid ""
 "Ask Hornaxx goddess of Arguments to equip each pc with an antimagic binding "
 "ite"
@@ -7386,11 +7390,11 @@ msgstr ""
 "Bittet Hornaxx, Göttin der Argumente, jedes Gruppenmitglied mit einem "
 "Gegenstand der Antimagischen Bindung auszurüsten"
 
-#: ../scourge_data/config/mission.cfg:210
+#: ../scourge_data/config/mission.cfg:251
 msgid "Chapter 10: Where Wild Weeds Grow"
 msgstr "Kapitel 10: Wo das wilde Gras wächst"
 
-#: ../scourge_data/config/mission.cfg:215
+#: ../scourge_data/config/mission.cfg:256
 msgid ""
 "Mothrazu's lair is finally ready for our assault. Peril beyond description "
 "awaits within its crumbling halls, but luckily the land finally has heroes "
@@ -7415,7 +7419,7 @@ msgstr ""
 "Denkt daran, Eure Rüstungen der Antimagischen Bindung zu tragen, denn "
 "Mothrazus Reich wird durch einen giftigen Pestgestank geschützt."
 
-#: ../scourge_data/config/mission.cfg:216
+#: ../scourge_data/config/mission.cfg:257
 msgid ""
 "Excellent job eradicating the $druid. She truly was a menace of global "
 "proportions.|| Now... about another thing... I'm afraid the powers that be "
@@ -7439,7 +7443,7 @@ msgstr ""
 "$Melathor gebeten, nach einer Lösung zu forschen. Sprecht mit ihm, bevor Ihr "
 "Eure nächste Mission antretet. Fragt ihn nach dem Baum von Emeril."
 
-#: ../scourge_data/config/mission.cfg:217
+#: ../scourge_data/config/mission.cfg:258
 msgid ""
 "Our time is limited. Be careful not to take too long, or $Mothrazu may well "
 "accomplish her vile deed. Now that our agents have finally located her lair, "
@@ -7450,15 +7454,15 @@ msgstr ""
 "ihren Unterschlupf gefunden haben, solltet Ihr sie ein für alle Mal "
 "vernichten!"
 
-#: ../scourge_data/config/mission.cfg:219
+#: ../scourge_data/config/mission.cfg:260
 msgid "Neutralize one hideous druidic menace"
 msgstr "Beseitigt eine scheußliche druidische Gefahr"
 
-#: ../scourge_data/config/mission.cfg:223
+#: ../scourge_data/config/mission.cfg:265
 msgid "Chapter 11: Damage Control"
 msgstr "Kapitel 11: Schadensbegrenzung"
 
-#: ../scourge_data/config/mission.cfg:229
+#: ../scourge_data/config/mission.cfg:271
 msgid ""
 "Our 'public relations' suffered a setback when we inadverdently unleashed "
 "the Tree of Emeril, the spawn of Arcanex, tunneler of planes upon the world. "
@@ -7477,7 +7481,7 @@ msgstr ""
 "dem Baumwesen zu kommunizieren. Er könnte nützlichen Einblick darin haben, "
 "wie man eine solche Kommunikation herstellen könnte."
 
-#: ../scourge_data/config/mission.cfg:230
+#: ../scourge_data/config/mission.cfg:272
 msgid ""
 "I see... so the taint of evil being reported from the Isle of Emeril is "
 "actually the demon lord $Karzul entering our world? That sounds much "
@@ -7496,7 +7500,7 @@ msgstr ""
 "der $Hüter des Reiches öffnen und - hoffentlich - mit ihrer Hilfe $Karzul "
 "bezwingen.||Hört sich... nun... einfach an..."
 
-#: ../scourge_data/config/mission.cfg:231
+#: ../scourge_data/config/mission.cfg:273
 msgid ""
 "Nothing to report?! I'm handling a public relations nightmare of "
 "catastrophic proportions here! This may just be the last job we at S.c.o.u.r."
@@ -7517,7 +7521,7 @@ msgstr ""
 "die Welt zunächst nicht zerstören. Beeilung!||Fragt auf jeden Fall Melathor "
 "nach dem 'Baum von Emeril'. Er könnte mehr darüber wissen."
 
-#: ../scourge_data/config/mission.cfg:232
+#: ../scourge_data/config/mission.cfg:274
 msgid ""
 "Speak with the intelligent tree being on the isle of Emeril. Bring back all "
 "info you find out."
