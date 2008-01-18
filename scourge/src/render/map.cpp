@@ -1049,7 +1049,7 @@ void Map::preDraw() {
   
   if( !selectMode ) frustum->CalculateFrustum();
   if( lightMapChanged ) configureLightMap();
-  if( currentEffectsMap.size() ) removeCurrentEffects();
+  if( !currentEffectsMap.empty() ) removeCurrentEffects();
   // populate the shape arrays
   if( mapChanged ) {
     if( settings->isPlayerEnabled() && adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
@@ -3849,7 +3849,7 @@ MapMemoryManager::~MapMemoryManager() {
 
 Location *MapMemoryManager::newLocation() {
   Location *pos;
-  if( unused.size() ) {
+  if( !unused.empty() ) {
     pos = unused[ unused.size() - 1 ];
     unused.pop_back();
   } else {
@@ -3872,7 +3872,7 @@ Location *MapMemoryManager::newLocation() {
 
 EffectLocation *MapMemoryManager::newEffectLocation( Map *theMap, Preferences *preferences, Shapes *shapes, int width, int height ) {
   EffectLocation *pos;
-  if( unusedEffect.size() ) {
+  if( !unusedEffect.empty() ) {
     pos = unusedEffect[ unusedEffect.size() - 1 ];
     unusedEffect.pop_back();
     pos->effect->reset();

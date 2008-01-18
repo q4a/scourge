@@ -396,7 +396,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		}
 
 		vector<ConfigNode*> *weapons = node->getChildrenByName( "weapon" );
-		if( weapons != NULL && weapons->size() > 0 ) {
+		if( weapons != NULL && !weapons->empty() ) {
 			ConfigNode *weapon = (*weapons)[0];
 
 			int baseDamage = toint( weapon->getValueAsFloat( "damage" ) );
@@ -413,7 +413,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		}
 
 		vector<ConfigNode*> *armors = node->getChildrenByName( "armor" );
-		if( armors != NULL && armors->size() > 0 ) {
+		if( armors != NULL && !armors->empty() ) {
 			ConfigNode *armor = (*armors)[0];
 
 			// A:defense_vs_slashing,defense_vs_piercing,defense_vs_crushing,skill,dodge_penalty
@@ -430,7 +430,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		}
 
 		vector<ConfigNode*> *potions = node->getChildrenByName( "potion" );
-		if( potions != NULL && potions->size() > 0 ) {
+		if( potions != NULL && !potions->empty() ) {
 			ConfigNode *potion = (*potions)[0];
 
 			// power,potionSkill,[potionTimeInMinutes]
@@ -584,7 +584,7 @@ const string Item::getRandomSound() {
   if(Item::soundMap.find(this->getRpgItem()->getType()) != Item::soundMap.end()) {
     sounds = Item::soundMap[this->getRpgItem()->getType()];
   }
-  if(!sounds || !(sounds->size())) 
+  if( !sounds || sounds->empty() ) 
 		return string("");
   string s = (*sounds)[ Util::dice( sounds->size() ) ];
   return s;

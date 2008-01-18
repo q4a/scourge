@@ -17,27 +17,22 @@
 
 #include "file.h"
 
-#define MAX_BUFF_SIZE 1024
         
 File::File( FILE *fp ) {
   this->fp = fp;
   this->rwops = SDL_RWFromFP( fp, 1 );
-  tmp32 = (Uint32*)malloc( MAX_BUFF_SIZE * sizeof( Uint32 ) );
-  tmp16 = (Uint16*)malloc( MAX_BUFF_SIZE * sizeof( Uint16 ) );
 }
 
 File::~File() {
   //cerr << "in ~File()" << endl;
   close();
-  free( tmp32 );
-  free( tmp16 );
 }
 
 int File::write( Uint32 *n, int count ) {
   // always save as big endian
   if( SDL_BYTEORDER	!= SCOURGE_BYTE_ORDER ) {
     for( int i = 0; i < count; i++ ) {
-      *( tmp32 + i ) = SDL_Swap32( *( n + i ) );
+      tmp32[ i ] = SDL_Swap32( *( n + i ) );
     }
     return write( tmp32, sizeof( Uint32 ), count );
   } else {
@@ -49,7 +44,7 @@ int File::write( Uint16 *n, int count ) {
   // always save as big endian
   if( SDL_BYTEORDER	!= SCOURGE_BYTE_ORDER ) {
     for( int i = 0; i < count; i++ ) {
-      *( tmp16 + i ) = SDL_Swap16( *( n + i ) );
+      tmp16 [ i ] = SDL_Swap16( *( n + i ) );
     }
     return write( tmp16, sizeof( Uint16 ), count );
   } else {

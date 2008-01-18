@@ -286,7 +286,7 @@ void Projectile::moveProjectiles(Session *session) {
 			t - lastProjectileTick > (Uint32)( session->getPreferences()->getGameSpeedTicks() / 50 ) ) {
 		lastProjectileTick = t;
 
-    if( getProjectileMap()->size() == 0 ) return;
+    if( getProjectileMap()->empty() ) return;
 
     map<Projectile*, Creature*> battleProjectiles;
 

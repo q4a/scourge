@@ -1196,7 +1196,7 @@ void Creature::equipInventory( int index, int locationHint ) {
 			places.push_back( i );
 		}
 	}
-	if( place == -1 && places.size() ) {
+	if( place == -1 && !places.empty() ) {
 		place = places[ Util::dice(  places.size() ) ];
 	}
 	if( place > -1 ) {

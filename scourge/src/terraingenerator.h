@@ -39,7 +39,7 @@ class DisplayInfo;
 class Location;
 class MapRenderHelper;
 
-#define LOCKED_DOOR_RAND 8
+#define LOCKED_DOOR_RAND 8.0f
 
 // raise the magic item level by 1 for every 3 levels (magic item level [0,1,2,3])
 #define MAGIC_ITEM_MUL 3

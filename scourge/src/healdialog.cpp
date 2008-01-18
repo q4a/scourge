@@ -99,7 +99,7 @@ void HealDialog::updateUI() {
 
         spell->describe( s );
         sprintf( spellText[ spells.size() ], "$%d %s", prices[ spell ], s );
-        if( spells.size() == 0 ) {
+        if( spells.empty() ) {
           showSpellDescription(spell);
         }
         spellIcons[ spells.size() ] = 
@@ -111,7 +111,7 @@ void HealDialog::updateUI() {
       }
     }
   }
-  if( spells.size() == 0 ) spellDescription->setText( "" );
+  if( spells.empty() ) spellDescription->setText( "" );
   spellList->setLines( spells.size(), 
                        (const char**)spellText, 
                        NULL, 

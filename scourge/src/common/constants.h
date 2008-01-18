@@ -49,6 +49,8 @@
 		T c = ceil(v);  // c >= v
 		return (v-f > c-v)? c : f; //what's closer is rint(v)
 	}
+	// To ease debugging 
+#	include <assert.h>
 #endif // MSVC 8 portability 
 
 // include sdl, opengl and glut

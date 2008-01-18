@@ -28,14 +28,14 @@ TextField::TextField(int x, int y, int numChars):
   Widget( x, y, x + numChars * AVG_CHAR_WIDTH, 16 ) {
   this->inside = false;
   this->numChars = numChars;
-  this->text = (char*)malloc((numChars + 1) * sizeof(char));
+  this->text = new char [numChars + 1];
   this->pos = 0;
   this->maxPos = 0;
   this->eventType = EVENT_KEYPRESS;
 } 
 
 TextField::~TextField() {
-  free(text);
+  delete[] text;
 }
   
 bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {

@@ -1501,12 +1501,12 @@ void Scourge::playRound() {
 
     // fight battle turns    
     bool fromBattle = false;
-    if(battleRound.size() > 0) {
+    if( !battleRound.empty() ) {
       fromBattle = fightCurrentBattleTurn();
     }
 
     // create a new battle round
-    if( battleRound.size() == 0 && !createBattleTurns() ) {
+    if( battleRound.empty() && !createBattleTurns() ) {
       // not in battle
       if( fromBattle ) {
         // go back to real-time, group-mode
@@ -1523,7 +1523,7 @@ void Scourge::playRound() {
 
 // fight a turn of the battle
 bool Scourge::fightCurrentBattleTurn() {
-  if(battleRound.size() > 0) {
+  if( !battleRound.empty() ) {
 
     // end of battle if party has no-one to attack
     bool roundOver = false;
@@ -1571,7 +1571,7 @@ bool Scourge::fightCurrentBattleTurn() {
 
     if( roundOver ) {
       rtStartTurn = battleTurn = 0;
-      if(battleRound.size()) battleRound.erase(battleRound.begin(), battleRound.end());
+      if( !battleRound.empty() ) battleRound.clear();
 
       getMap()->getMapRenderHelper()->hideDeadParty();
 
@@ -2694,11 +2694,11 @@ void Scourge::removeBattle(Battle *b) {
 
 void Scourge::resetBattles() {
   // delete battle references
-  if(battleRound.size()) {
+  if( !battleRound.empty() ) {
     for( int i = 0; i < (int)battleRound.size(); i++ ) {
       battleRound[i]->reset();
     }
-    battleRound.erase(battleRound.begin(), battleRound.end());
+    battleRound.clear();
   }
   for(int i = 0; i < MAX_BATTLE_COUNT; i++) {
     battle[i] = NULL;
@@ -3766,10 +3766,10 @@ bool Scourge::isDoorBlocked() {
 
 void Scourge::openDoor( MovingDoor *movingDoor ) {
   // switch door
-  Sint16 ox = (Sint16)movingDoor->x;
-  Sint16 oy = (Sint16)movingDoor->y;
-  Sint16 nx = (Sint16)movingDoor->x;
-  Sint16 ny = (Sint16)(movingDoor->y - movingDoor->oldDoorShape->getDepth()) + movingDoor->newDoorShape->getDepth();
+  Sint16 ox = movingDoor->x;
+  Sint16 oy = movingDoor->y;
+  Sint16 nx = movingDoor->x;
+  Sint16 ny = (movingDoor->y - movingDoor->oldDoorShape->getDepth()) + movingDoor->newDoorShape->getDepth();
   
   //  Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
   levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));

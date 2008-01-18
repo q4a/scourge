@@ -26,12 +26,15 @@
 #define SCOURGE_BYTE_ORDER SDL_BIG_ENDIAN
 //#define SCOURGE_BYTE_ORDER SDL_LIL_ENDIAN
 
+#define MAX_BUFF_SIZE 1024
+
+
 class File {
 private:
   FILE *fp;
   SDL_RWops *rwops;
-  Uint32 *tmp32;
-  Uint16 *tmp16;
+  Uint32 tmp32[MAX_BUFF_SIZE];
+  Uint16 tmp16[MAX_BUFF_SIZE];
 
 public:
   File( FILE *fp );

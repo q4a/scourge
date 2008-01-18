@@ -32,9 +32,9 @@ using namespace std;
 
 // 1 out of SECRET_DOOR_CHANCE doors are secret doors
 #ifdef DEBUG_SECRET_DOORS
-#define SECRET_DOOR_CHANCE 2
+#define SECRET_DOOR_CHANCE 2.0f
 #else
-#define SECRET_DOOR_CHANCE 10
+#define SECRET_DOOR_CHANCE 10.0f
 #endif
 
 int totalWidth, totalHeight;
@@ -248,7 +248,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 	/* Try some sane defaults */
 	int roomMinWidth = 2;// this->roomMinWidth;
 	int roomMinHeight = 2; //this->roomMinHeight;
-	float roomMulFac = 2.15;
+	float roomMulFac = 2.15f;
 	
 	// NOTE:
 	//   Horizontal subdivision: divide width 

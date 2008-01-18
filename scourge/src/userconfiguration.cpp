@@ -396,9 +396,9 @@ void UserConfiguration::loadConfiguration(){
   while (!configFile->eof()) {
     configFile -> getline(textLine, 255);
     sLine = textLine;  
-    if (sInstruction.size()) sInstruction.erase(sInstruction.begin(), sInstruction.end());
-    if (sFirstParam.size()) sFirstParam.erase(sFirstParam.begin(), sFirstParam.end());
-    if (sSecondParam.size()) sSecondParam.erase(sSecondParam.begin(), sSecondParam.end());
+	if ( !sInstruction.empty() ) sInstruction.clear();
+    if ( !sFirstParam.empty() ) sFirstParam.clear();
+    if ( !sSecondParam.empty() ) sSecondParam.clear();
 
     for (i = 0; i < sLine.length(); i++) {
       sLine[i] = tolower(sLine[i]);
@@ -926,7 +926,7 @@ int UserConfiguration::getEngineAction(SDL_Event *event){
     string s;
     int res;
 
-	if(s.size()) s.erase(s.begin(), s.end());
+	if( !s.empty() ) s.clear();
     res = -1;
     if(event->type == SDL_KEYDOWN){
         s = SDL_GetKeyName(event->key.keysym.sym);
@@ -1007,7 +1007,7 @@ const char * UserConfiguration::getEngineActionKeyName(int i){
 string UserConfiguration::getNextWord(const string theInput, int fromPos, int &endWord){
     int firstChar, lastStringChar;
     string sub;
-	if(sub.size()) sub.erase(sub.begin(), sub.end());
+	if( !sub.empty() ) sub.clear();
 
     if (theInput.empty() || fromPos==-1) {return sub;}
 

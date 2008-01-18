@@ -126,7 +126,7 @@ bool SQGenerator::Resume(SQVM *v,SQInteger target)
 		v->_stack[v->_stackbase+n] = _stack._vals[n];
 		_stack._vals[0] = _null_;
 	}
-	while(_vargsstack.size()) {
+	while( !_vargsstack.empty() ) {
 		v->_vargsstack.push_back(_vargsstack.back());
 		_vargsstack.pop_back();
 	}

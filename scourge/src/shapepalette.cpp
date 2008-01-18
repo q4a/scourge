@@ -713,7 +713,7 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 
 void ShapePalette::initOccurance( ConfigNode *parent_node, ShapeValues *sv ) {
 	vector<ConfigNode*> *v = parent_node->getChildrenByName( "occurs" );
-	if( v && v->size() ) {
+	if( v && !v->empty() ) {
 		ConfigNode *node = (*v)[0];
 		sv->occurs.rooms_only = node->getValueAsBool( "rooms_only" );
 		sv->occurs.max_count = node->getValueAsInt( "max_count" );

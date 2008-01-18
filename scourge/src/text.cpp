@@ -591,5 +591,6 @@ TexGlyphVertexInfo *TexturedText::getTCVI(int c) {
           isprint(c) ? c : ' ', c);
   abort();
   /* NOTREACHED */
+  return NULL; // to silence warning
 }
 

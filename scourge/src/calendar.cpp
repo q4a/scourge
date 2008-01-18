@@ -44,8 +44,8 @@ void Calendar::reset(bool resetTime){
   if(resetTime) {
     currentDate.reset( nextResetDate );
 		strcpy( nextResetDate, "" );
-    if(scheduledEvents.size()) 
-      scheduledEvents.erase(scheduledEvents.begin(), scheduledEvents.end());
+    if( !scheduledEvents.empty() ) 
+      scheduledEvents.clear();
   }
   timeFrozen = false; 
 }

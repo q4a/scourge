@@ -76,7 +76,7 @@ void ItemList::commonInit() {
     Item *item = getItem( t );
 
     // if there is a non-empty filter, it should contain this type of item
-    if( filter && filter->size() && 
+    if( filter && !filter->empty() && 
         filter->find( item->getRpgItem()->getType() ) == filter->end() ) {
       continue;
     }

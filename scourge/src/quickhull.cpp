@@ -42,7 +42,7 @@ float distance( CVector2 *A, CVector2 *B, CVector2 *C ) {
 // Find points on convex hull from the set Sk of points
 // that are on the right side of the oriented line from P to Q
 void findHull( set<CVector2*> *sk, CVector2 *p, CVector2 *q, vector<CVector2*> *out ) {
-	if( sk == NULL || sk->size() == 0 ) return;
+	if( sk == NULL || sk->empty() ) return;
 
 	// find the point C which is the farthest from the segment pq
 	float d = -1;

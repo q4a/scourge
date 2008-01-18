@@ -24,7 +24,8 @@ using namespace std;
 /**
   *@author Gabor Torok
   */
-ScrollingList::ScrollingList(int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler, int lineHeight ) : Widget(x, y, w, h) {
+ScrollingList::ScrollingList(int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler, int lineHeight ) 
+        : Widget(x, y, w, h) {
 	value = 0;
 	scrollerWidth = 15;
 	listHeight = 0;
@@ -54,7 +55,7 @@ ScrollingList::ScrollingList(int x, int y, int w, int h, GLuint highlight, DragA
 }
 
 ScrollingList::~ScrollingList() {
-	if( selectedLine ) free( selectedLine );
+  delete[] selectedLine;
 }
 
 void ScrollingList::setLines(int count, const char *s[], const Color *colors, const GLuint *icons) { 
@@ -73,12 +74,11 @@ void ScrollingList::setLines(int count, const char *s[], const Color *colors, co
 	// reset the scroller
 	value = scrollerY = 0;
 	selectedLineCount = 0;
-	if( selectedLine ) {
-		free( selectedLine );
+  delete[] selectedLine;
 		selectedLine = NULL;
-	}
-	if( list.size() > 0 ) {
-		selectedLine = (int*)malloc( list.size() * sizeof( int ) );
+
+  if( !list.empty() ) {
+    selectedLine = new int[ list.size() ];
 		selectedLine[ 0 ] = 0;
 // ***********************
 		selectedLineCount = 1;
@@ -108,7 +108,7 @@ void ScrollingList::drawWidget(Widget *parent) {
 
 		// highlight the selected line
 		//if(selectedLine > -1) {
-		if( selectedLine ) {
+    if( selectedLine != NULL ) {
 			if( theme->getSelectionBackground() ) {
 				if( theme->getSelectionBackground()->color.a < 1 ) {
 					glEnable( GL_BLEND );
@@ -145,7 +145,7 @@ void ScrollingList::drawWidget(Widget *parent) {
 			}
 		}
 		int ypos;
-		for(int i = 0; i < list.size(); i++) {
+    for(int i = 0; i < (int)list.size(); i++) {
 			ypos = textPos + (i + 1) * lineHeight;
 			// writing text is expensive, only print what's visible
 			if( ypos >= 0 && ypos < getHeight() + lineHeight ) {
@@ -173,7 +173,7 @@ void ScrollingList::drawWidget(Widget *parent) {
 			}
 		}
 
-		if( selectedLine ) {
+    if( selectedLine != NULL ) {
 			if( theme->getButtonBorder() ) {
 				glColor4f( theme->getButtonBorder()->color.r,
 									theme->getButtonBorder()->color.g,
@@ -326,7 +326,7 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
 int ScrollingList::getLineAtPoint( int x, int y ) {
 	int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
 	int n = (int)((float)(y - (getY() + textPos)) / (float)lineHeight);
-	if( list.size() && n >= 0 && n < list.size() ) {
+	if( !list.empty() && n >= 0 && n < (int)list.size() ) {
 		return n;
 	} else {
 		return -1;
@@ -470,8 +470,8 @@ void ScrollingList::removeEffects(Widget *parent) {
 }
 
 void ScrollingList::setSelectedLine(int line) {
-	if( !selectedLine ) return;
-	selectedLine[ 0 ] = (line < list.size() ? line : list.size() - 1);
+  if( selectedLine == NULL ) return;
+	selectedLine[ 0 ] = (line < (int)list.size() ? line : list.size() - 1);
 	selectedLineCount = 1;
 
 	// fixme: should check if line is already visible
@@ -488,15 +488,15 @@ void ScrollingList::setSelectedLine(int line) {
 }
 
 void ScrollingList::moveSelectionUp() {
-	if( !selectedLine )
+	if( selectedLine == NULL )
 		setSelectedLine( 0 );
 	else if( selectedLine[0] > 0 )
 		setSelectedLine( selectedLine[0] - 1 );
 }
 
 void ScrollingList::moveSelectionDown() {
-	if( !selectedLine )
+	if( selectedLine == NULL )
 		setSelectedLine( 0 );
-	else if( selectedLine[0] < list.size() - 1 )
+	else if( selectedLine[0] < (int)list.size() - 1 )
 		setSelectedLine( selectedLine[0] + 1 );
 }

@@ -303,7 +303,7 @@ void Widget::drawButton( Widget *parent, int x, int y, int x2, int y2,
       glBindTexture( GL_TEXTURE_2D, theme->getButtonHighlight()->texture );
     }
     // FIXME: use theme
-    glColor4f( 1, 0.15, 0.15, alpha );    
+    glColor4f( 1, 0.15f, 0.15f, alpha );    
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
     glBegin( GL_QUADS );
@@ -375,7 +375,7 @@ void Widget::drawButton( Widget *parent, int x, int y, int x2, int y2,
 }
 
 void Widget::breakText( char *text, int lineWidth, vector<string> *lines ) {
-  char *p = (char*)malloc((lineWidth + 3) * sizeof(char));
+  char *p =  new char[ lineWidth + 3 ];
   int len = strlen(text);
   int start = 0;
   //cerr << "len=" << len << endl;
@@ -411,7 +411,7 @@ void Widget::breakText( char *text, int lineWidth, vector<string> *lines ) {
     lines->push_back( s );
     start = end;
   }
-  free(p);
+  delete[] p;
 }
 
 void Widget::drawTooltip( Widget *parent ) {

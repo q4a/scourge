@@ -159,7 +159,7 @@ public:
 	inline int getSkillCount() { return skills.size(); }
 	inline Skill *getSkill( int index ) { return skills[ index ]; }
 	inline void addSkill( Skill *skill ) { skills.push_back( skill ); }
-	inline Skill *getRandomSkill() { return skills[ Util::dice( skills.size() ) ]; }
+	inline Skill *getRandomSkill() { return getSkill( Util::dice( getSkillCount() ) ); }
 	
 	static SkillGroup *stats;
 	static std::map<std::string, SkillGroup *> groupsByName;

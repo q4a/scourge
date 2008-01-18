@@ -1226,7 +1226,7 @@ void CModelMD3::SetCurrentTime( t3DModel *pModel, MD3Shape *shape )
 	// stored in the model's structure.
 	
 	// Return if there is no animations in this model
-	if(!pModel->pAnimations.size()) return;
+	if( pModel->pAnimations.empty() ) return;
 
 	// Get the current time in milliseconds
 	float time = (float)SDL_GetTicks();
@@ -1273,12 +1273,12 @@ void CModelMD3::RenderModel( t3DModel *pModel, MD3Shape *shape )
 {
 
 		// Make sure we have valid objects just in case. (size() is in the STL vector class)
-	if(pModel->pObject.size() <= 0) return;
+	if( pModel->pObject.empty() ) return;
 
 	AnimInfo *ai = shape->getAnimInfo( pModel );
 
 	// Make sure we have valid objects just in case. (size() is in the STL vector class)
-	if(pModel->pObject.size() <= 0) return;
+	if( pModel->pObject.empty() ) return;
 
 	// Go through all of the objects stored in this model
 	for(int i = 0; i < pModel->numOfObjects; i++)
@@ -1400,7 +1400,7 @@ void CModelMD3::findBounds( vect3d min, vect3d max ) {
 
 void CModelMD3::findModelBounds( t3DModel *pModel, vect3d min, vect3d max ) {
 
-	if( pModel->pAnimations.size() == 0 ) return;
+	if( pModel->pAnimations.empty() ) return;
 
 	int animationIndex = 0;
 	if( pModel == &m_Upper ) {
