@@ -70,7 +70,7 @@ bool PathManager::findPath(int x, int y, Creature* player, Map* map, bool ignore
 
   calculateAllPathLocations();
   moveNPCsOffPath(player,map);
-  if(path.size() == 0) return x == toint(owner->getX()) && y == toint(owner->getY());
+  if( path.empty() ) return x == toint(owner->getX()) && y == toint(owner->getY());
   Location last = path[path.size()-1];
   return last.x == x && last.y == y;
 }
@@ -237,7 +237,7 @@ void PathManager::findPathOffLocations(set<Location,LocationComparitor>* locatio
   positionOnPath = 0;
   owner->setMotion(Constants::MOTION_CLEAR_PATH);
 
-  if(path.size() > 0) owner->setSelXYNoPath(path[path.size()-1].x,path[path.size()-1].y);
+  if( !path.empty() ) owner->setSelXYNoPath(path[path.size()-1].x,path[path.size()-1].y);
   calculateAllPathLocations();
   //cout << owner->getName() << " moving out of the way. Path length " << path.size() << "\n";
   //now merge our path with the locations provided and get NPCs off both? Beware infinite loops
@@ -358,7 +358,7 @@ void PathManager::incrementPositionOnPath(){
 }
 
 bool PathManager::atEndOfPath(){
-  return path.size() == 0 || positionOnPath >= path.size()-1;
+  return path.empty() || positionOnPath >= path.size()-1;
 }
 bool PathManager::atStartOfPath(){
   return positionOnPath == 0;
@@ -429,7 +429,7 @@ void FormationLeaderPathManager::calculateDirections(){
     else angle = 90 + dy*90; //0 or 180
     directions.push_back(angle);
   }
-  if(path.size() > 0) 
+  if( !path.empty() ) 
     directions.push_back(angle); //the last direction is the same as the second to last one
 }
 

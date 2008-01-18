@@ -89,7 +89,7 @@ void C3DSShape::commonInit(const string& file_name, float div, Shapes *shapePal,
 
 void C3DSShape::normalizeModel() {
 
-  if (g_3DModel.pObject.size() <= 0) return;
+	if ( g_3DModel.pObject.empty() ) return;
 
 	// "rotate" the model
 	float n;
@@ -255,7 +255,7 @@ void C3DSShape::resolveTextures() {
 void C3DSShape::preRenderLight() {
   // pre-render the light
   for (int i = 0; i < g_3DModel.numOfObjects; i++) {
-    if (g_3DModel.pObject.size() <= 0) break;
+    if ( g_3DModel.pObject.empty() ) break;
     t3DObject *pObject = &g_3DModel.pObject[i]; 
     for (int j = 0; j < pObject->numOfFaces; j++) {
       for (int whichVertex = 0; whichVertex < 3; whichVertex++) {
@@ -340,7 +340,7 @@ void C3DSShape::drawShape( bool isShadow ) {
   // Since we know how many objects our model has, go through each of them.
   for (int i = 0; i < g_3DModel.numOfObjects; i++) {
     // Make sure we have valid objects just in case. (size() is in the vector class)
-    if (g_3DModel.pObject.size() <= 0) break;
+    if ( g_3DModel.pObject.empty() ) break;
 
     // Get the current object that we are displaying
     t3DObject *pObject = &g_3DModel.pObject[i];
@@ -391,7 +391,7 @@ void C3DSShape::drawShape( bool isShadow ) {
             // but just in case we want to check the size of the material list.
             // if the size is at least one, and the material ID != -1,
             // then we have a valid material.
-            if (g_3DModel.pMaterials.size() && pObject->materialID >= 0) {
+            if ( !g_3DModel.pMaterials.empty() && pObject->materialID >= 0) {
               // Get and set the color that the object is, since it must not have a texture
               BYTE *pColor = g_3DModel.pMaterials[pObject->materialID].color;
 

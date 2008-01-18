@@ -256,7 +256,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
 //		endl;
 
   if(sx < 0 || sy < 0 || sx > MAP_WIDTH || sy > MAP_DEPTH){ //we'll waste heaps of time trying to find these
-    if(pVector->size()) pVector->clear(); // just clear the old path
+    if( !pVector->empty() ) pVector->clear(); // just clear the old path
     return; 
   }
   priority_queue<CPathNode*, vector<CPathNode*>, FValueNodeComparitor> open;
@@ -358,7 +358,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
 
   if (!closed.empty()) {
     // Create the path from elements of the CLOSED container
-    if(path.size()) path.erase(path.begin(), path.end());
+    if( !path.empty() ) path.clear();
     //if( PATH_DEBUG ) 
      // cout << "Final node " << closestNode->x << "," << closestNode->y << " fulfils goal? " << goal->fulfilledBy(closestNode) <<"\n";
     CPathNode nextNode = *closestNode;
@@ -374,7 +374,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
       bestNode = *setItr;
       delete bestNode;
     }
-    closed.erase(closed.begin(), closed.end());
+    closed.clear();
     
     //and delete any left over nodes in OPEN
     while(!open.empty()){
@@ -383,11 +383,11 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
         delete next;
     }
     //I'm unsure whether this is required to free up the memory. Better safe than sorry though.
-    openContents.erase(openContents.begin(), openContents.end()); 
+    openContents.clear(); 
 	
     // Populate the vector that was passed in by reference
     Location Fix;
-    if(pVector->size()) pVector->erase(pVector->begin(), pVector->end());
+    if( !pVector->empty()) pVector->clear();
     for (int i=(path.size()-1); i>=0; i--) {
       Fix.x = path[i].x;
       Fix.y = path[i].y;

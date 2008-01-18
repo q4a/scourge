@@ -261,7 +261,7 @@ void MainMenu::drawView() {
     char version[100];
     sprintf(version, _( "Scourge version %s" ), SCOURGE_VERSION);
     scourge->getSDLHandler()->texPrint( 0, 0, version );
-    glColor3f( 0.8, 0.75, 0.65 );
+    glColor3f( 0.8f, 0.75f, 0.65f );
     int y = 14;
     scourge->getSDLHandler()->texPrint( 0, y, _( "Optionally compiled modules:" ) );
     y += 14;
@@ -323,7 +323,7 @@ void MainMenu::drawAfter() {
 		int y = 70;
 		int x = 100;
 		float maxStatus = ( scourge->getScreenWidth() - 200 ) / 20.0f;
-		glColor3f( 0.8, 0.75, 0.65 );
+		glColor3f( 0.8f, 0.75f, 0.65f );
 		if( getUpdateTotal() > -1 ) {
 			scourge->getSDLHandler()->
 				texPrint( x, y - 3, "%s: %d%%", 
@@ -614,7 +614,7 @@ void MainMenu::drawLogo() {
   glBlendFunc(GL_SRC_COLOR, GL_ONE);
   //setBlendFunc();
   glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->candle );
-  glColor4f( 0.7, 0.7, 0.3, 0.5 );
+  glColor4f( 0.7f, 0.7f, 0.3f, 0.5f );
   glPushMatrix();
   glLoadIdentity();
   glTranslatef( candleFlameX, candleFlameY, 0 ); 
@@ -669,7 +669,7 @@ void MainMenu::drawClouds(bool moveClouds, bool flipped) {
   //  setBlendFunc();
   glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->cloud );
   if(flipped) 
-	glColor4f( 0.1, 0.1, 0.3, 0.5 );
+	glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );
   else
 	glColor4f( 1, 1, 1, 1 );
   for(int i = 0; i < cloudCount; i++) {
@@ -719,13 +719,13 @@ void MainMenu::drawWater() {
   //glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
   glBegin( GL_QUADS );
   glNormal3f(0.0f, 0.0f, 1.0f);
-  glColor4f(0, 0, 0.1, 1);
+  glColor4f(0, 0, 0.1f, 1);
   glVertex3f(w, h, 0);
-  glColor4f(0, 0.1, 0.4, 1);
+  glColor4f(0, 0.1f, 0.4f, 1);
   glVertex3f(w, 0, 0);
-  glColor4f(0, 0.1, 0.4, 1);
+  glColor4f(0, 0.1f, 0.4f, 1);
   glVertex3f(0, 0, 0);
-  glColor4f(0, 0, 0.1, 1);
+  glColor4f(0, 0, 0.1f, 1);
   glVertex3f(0, h, 0);  
   glEnd();
   //glDisable( GL_BLEND );

@@ -254,7 +254,7 @@ public:
 
 	inline int getRugCount() { return rugs.size(); }
 	inline GLuint getRug( int index ) { return rugs[ index ]; }
-	inline GLuint getRandomRug() { return rugs[ Util::dice( rugs.size() ) ]; }
+	inline GLuint getRandomRug() { if ( rugs.empty() ) return ~0; return getRug( Util::dice( getRugCount() ) ); }
 
   inline SDL_Surface *getStencilSurface( int index ) { return stencil[ index ]; }
   inline GLubyte *getStencilImage( int index ) { return stencilImage[ index ]; }

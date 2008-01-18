@@ -33,7 +33,7 @@ ScrollingLabel::ScrollingLabel(int x, int y, int w, int h, char *text) : Widget(
   scrollerY = 0;
   this->dragging = false;
   this->dragX = this->dragY = 0;
-  //selectedLine = -1;
+  // selectedLine = -1;
   scrollerHeight = h;
   //  this->dragAndDropHandler = dragAndDropHandler;
   this->innerDrag = false;
@@ -336,7 +336,7 @@ bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y)
 				}
 			} else if(isInside(x, y)) {
 				dragging = false;
-				innerDrag = (selectedLine != -1);
+				innerDrag = true; // selectedLine has no value:  (selectedLine != -1);
 				innerDragX = x;
 				innerDragY = y;
 	

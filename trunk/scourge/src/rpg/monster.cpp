@@ -219,7 +219,7 @@ void Monster::initCreatures( ConfigLang *config ) {
 		// skills
 		vector<ConfigNode*> *vv = config->getDocument()->
 			getChildrenByName( "skills" );
-		if( vv && vv->size() ) {
+		if( vv && !vv->empty() ) {
 			ConfigNode *n = (*vv)[0];
 			set<string> names;
 			n->getKeys( &names );
@@ -313,19 +313,15 @@ map<int, vector<string>*>* Monster::getSoundMap( char *monsterType ) {
 }
 
 const char *Monster::getRandomSound(int type) {
-  string type_str = this->getModelName();
-  if(soundMap.find(type_str) != soundMap.end()) {
-    map<int, vector<string>*> *innerMap = soundMap[type_str];
-    vector<string> *sounds = NULL;
-    if(innerMap->find(type) != innerMap->end()) {
-      sounds = (*innerMap)[type];
-    }
-    if(!sounds || !(sounds->size())) return NULL;
-    string s = (*sounds)[ Util::dice( sounds->size() ) ];
-    return s.c_str();
-  } else {
-    return NULL;
-  }
+
+  if ( soundMap.find( getModelName() ) == soundMap.end() ) return NULL;
+  map<int, vector<string>*> *innerMap = soundMap[ getModelName() ];
+
+  if(innerMap->find(type) == innerMap->end()) return NULL;
+  vector<string> *sounds = (*innerMap)[type];
+
+  if( sounds->empty() ) return NULL;
+  return (*sounds)[ Util::dice( sounds->size() ) ].c_str();
 }
 
 int Monster::getSkillLevel(const char *skillName) {
@@ -360,10 +356,8 @@ const Monster *Monster::getRandomNpc() {
 }
 
 const Monster *Monster::getRandomHarmless() {
-	if( harmlessCreatures.size() ) {
+	if( harmlessCreatures.empty() ) return NULL;
+
 		int n = Util::dice( harmlessCreatures.size() );
 		return harmlessCreatures[n];
-	} else {
-		return NULL;
-	}
 }

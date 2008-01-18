@@ -271,7 +271,7 @@ void Board::initMissions() {
 #endif
 
   // init ui
-  if(availableMissions.size()) {
+  if( !availableMissions.empty() ) {
 		missionListCount = availableMissions.size();
     missionText = (char**)malloc(availableMissions.size() * sizeof(char*));
     missionColor = (Color*)malloc(availableMissions.size() * sizeof(Color));
@@ -647,7 +647,7 @@ void Mission::removeMissionItems() {
 }
 
 char *Mission::getIntro() {
-	if (intros.size() > 0) {
+	if ( !intros.empty() ) {
   return (char*)(intros[ Util::dice( intros.size() ) ].c_str());
 	} else {
 		cerr << "Error: Mission has 0 intros" << endl;

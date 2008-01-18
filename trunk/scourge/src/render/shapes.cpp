@@ -324,8 +324,7 @@ void Shapes::initialize() {
 
   // clean up temp. shape objects 
   // FIXME: do we need to free the vector's elements?
-  if(shapeValueVector.size()) shapeValueVector.erase(shapeValueVector.begin(), 
-                                                     shapeValueVector.end());
+  if ( !shapeValueVector.empty() ) shapeValueVector.clear();
 
   // add some special, "internal" shapes
 	shapes[shapeCount] =

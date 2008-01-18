@@ -176,14 +176,14 @@ RpgItem *RpgItem::getRandomItemFromTypes(int depth, int types[], int typeCount) 
 
   int typeIndex = Util::dice( typeCount );
   map<int, vector<const RpgItem*>*> *depthMap = typesMap[types[typeIndex]];  
-  if(depthMap && depthMap->size()) {
+  if( depthMap && !depthMap->empty() ) {
 
     // Select this depth's list of items. Since an item is on every list
     // greater than equal to its min. depth, we don't have to roll for
     // a depth value. (Eg.: a item w. minDepth=2 will be on lists 2-10.
     vector<const RpgItem*> *list = (*depthMap)[depth];
 
-    if(list && list->size()) {
+    if( list && !list->empty() ) {
 
       // create a new list where each item occurs item->rareness times
       vector<RpgItem*> rareList;

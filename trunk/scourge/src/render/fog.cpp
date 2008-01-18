@@ -104,7 +104,7 @@ void Fog::visit( RenderedCreature *player ) {
         players[x + (y * MAP_WIDTH)].insert( player );
       } else if( fog[x][y] == FOG_CLEAR ) {
         players[x + (y * MAP_WIDTH)].erase( player );
-        if( !( players[x + (y * MAP_WIDTH)].size() ) ) {
+        if( players[x + (y * MAP_WIDTH)].empty() ) {
           fog[x][y] = FOG_VISITED;
         }
       }
@@ -119,7 +119,7 @@ void Fog::hideDeadParty() {
         for( int y = 0; y < FOG_DEPTH; y++ ) {
           if( fog[x][y] == FOG_CLEAR ) {
             players[x + (y * MAP_WIDTH)].erase( map->getAdapter()->getParty(i) );
-            if( !( players[x + (y * MAP_WIDTH)].size() ) ) {
+			if( players[x + (y * MAP_WIDTH)].empty() ) {
               fog[x][y] = FOG_VISITED;
             }
           }

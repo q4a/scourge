@@ -600,12 +600,12 @@ void Portrait::drawHorizontalLine( int y ) {
 	glEnable( GL_BLEND );
   glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
   glBegin( GL_LINES );
-  glColor4f( 0.45, 0.25f, 0, 0.75f );
+  glColor4f( 0.45f, 0.25f, 0, 0.75f );
   glVertex2d( 20, y );
   glColor4f( 1, 0.75f, 0, 0.75f );
   glVertex2d( ( canvas->getWidth() - 20 ) / 2, y );
   glVertex2d( ( canvas->getWidth() - 20 ) / 2, y );
-  glColor4f( 0.45, 0.25f, 0, 0.75f );
+  glColor4f( 0.45f, 0.25f, 0, 0.75f );
   glVertex2d( canvas->getWidth() - 20, y );
   glEnd();
   glDisable( GL_BLEND );

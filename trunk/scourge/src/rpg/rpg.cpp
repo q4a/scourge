@@ -192,7 +192,7 @@ SkillGroup::SkillGroup( char *name, char *displayName, char *description ) {
   strcpy( this->displayName, displayName );
 	strcpy( this->description, description );
 	// hack: first group is the stats
-	this->isStatSkill = ( groups.size() == 0 );
+	this->isStatSkill = groups.empty();
 	if( isStatSkill ) stats = this;
 	
 	// store the group

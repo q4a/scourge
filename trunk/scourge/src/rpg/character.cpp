@@ -224,7 +224,7 @@ void Character::describeProfession() {
 void Character::describeAcl( char *s, set<string> *allowed, set<string> *forbidden, int itemType ) {
 	string all = "*";
 	if( allowed->find( all ) != allowed->end() ) {
-		if( forbidden->size() > 0 ) {
+		if( !forbidden->empty() ) {
       if( itemType == ITEM_TYPE_WEAPON ) {
         strcat( s, _( "Can use any weapons, except:" ) );
 				strcat( s, "|" );
@@ -249,7 +249,7 @@ void Character::describeAcl( char *s, set<string> *allowed, set<string> *forbidd
       }
 		}
 	} else if( forbidden->find( all ) != forbidden->end() ) {
-		if( allowed->size() > 0 ) {
+		if( !allowed->empty() ) {
       if( itemType == ITEM_TYPE_WEAPON ) {
         strcat( s, _( "Not allowed to use any weapons, except:" ) );
 				strcat( s, "|" );

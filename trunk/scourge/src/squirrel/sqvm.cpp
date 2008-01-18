@@ -960,7 +960,7 @@ exception_trap:
 					PopVarArgs(ci->_vargs);
 					POP_CALLINFO(this);
 					n++;
-				}while(_callsstack.size());
+				}while( !_callsstack.empty() );
 			}
 			//call the hook
 			CallErrorHandler(currerror);
@@ -973,7 +973,7 @@ exception_trap:
 				PopVarArgs(ci->_vargs);
 				POP_CALLINFO(this);
 				if( (ci && type(ci->_closure) != OT_CLOSURE) || exitafterthisone) break;
-			}while(_callsstack.size());
+			}while( !_callsstack.empty() );
 
 			while(last_top >= _top) _stack[last_top--].Null();
 		}

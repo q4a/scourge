@@ -74,14 +74,14 @@ class ScrollingList : public Widget {
 
 	inline void setAllowMultipleSelection( bool b ) { allowMultipleSelection = b; }
 	inline bool getAllowMultipleSelection() { return allowMultipleSelection; }
-	inline int getLineCount() { return list.size(); }
+	//unused: inline int getLineCount() { return list.size(); }
 	void setLines(int count, const char *s[], const Color *colors=NULL, const GLuint *icon=NULL);
 	inline const char *getLine(int index) { return list[index].c_str(); }
 
-	inline int getSelectedLine() { return ( selectedLine ? selectedLine[ 0 ] : -1 ); }
+  inline int getSelectedLine() { return ( selectedLine!=NULL ? selectedLine[ 0 ] : -1 ); }
 	void setSelectedLine( int n );
 	inline bool isSelected( int line ) { 
-		if( !selectedLine ) {
+    if( selectedLine == NULL ) {
 			return false; 
 		} else {
 			for( int i = 0; i < selectedLineCount; i++ ) {

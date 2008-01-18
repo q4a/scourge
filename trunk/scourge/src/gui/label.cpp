@@ -44,7 +44,7 @@ void Label::drawWidget(Widget *parent) {
     } else {
       applyColor();
     }
-    if( lines.size() == 0 ) {
+	if( lines.empty() ) {
       // draw a single-line label
       ((Window*)parent)->getScourgeGui()->texPrint(0, 0, text);
     } else {

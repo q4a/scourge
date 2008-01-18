@@ -25,8 +25,8 @@
 
 using namespace std;
 
-#define MISSION_MUSIC_COUNT 6
-#define FIGHT_MUSIC_COUNT 1
+#define MISSION_MUSIC_COUNT 6.0f
+#define FIGHT_MUSIC_COUNT 1.0f
 
 char *Sound::TELEPORT = "sound/equip/teleport.wav";
 char *Sound::OPEN_DOOR = "sound/equip/push-heavy-door.wav";
@@ -94,7 +94,7 @@ Sound::~Sound() {
 			Mix_FreeChunk(sample);
 			sample = NULL;
 		}
-		if(soundMap.size()) soundMap.erase(soundMap.begin(), soundMap.end());
+		if( !soundMap.empty() ) soundMap.clear();
 		// stop audio system
 		Mix_CloseAudio();
 	}

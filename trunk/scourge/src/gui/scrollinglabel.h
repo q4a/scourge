@@ -63,7 +63,7 @@ class ScrollingLabel : public Widget {
   int scrollerY;
   bool dragging;
   int dragX, dragY;
-  int selectedLine;
+  // never assigned a value: int selectedLine;
   //  DragAndDropHandler *dragAndDropHandler;
   bool innerDrag;
   int innerDragX, innerDragY;

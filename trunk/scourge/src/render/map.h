@@ -513,9 +513,9 @@ private:
   }
 
   inline void clearLocked() {
-    if(locked.size()) locked.erase(locked.begin(), locked.end());
-    if(doorToKey.size()) doorToKey.erase(doorToKey.begin(), doorToKey.end());
-    if(keyToDoor.size()) keyToDoor.erase(keyToDoor.begin(), keyToDoor.end());
+    if(!locked.empty()) locked.clear();
+	if(!doorToKey.empty()) doorToKey.clear();
+	if(!keyToDoor.empty()) keyToDoor.clear();
   }
 
   inline bool isLocked(int doorX, int doorY, int doorZ) {

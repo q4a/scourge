@@ -61,7 +61,7 @@ void RenderedProjectile::removeProjectile( RenderedProjectile *p ) {
       RenderedProjectile *proj = *e;  
       if( proj == p ) {
         v->erase( e );
-        if( v->size() == 0 ) {
+		if( v->empty() ) {
           projectiles.erase( p->getCreature() );
         }
         return;

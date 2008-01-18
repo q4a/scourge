@@ -84,7 +84,7 @@ SQInteger sq_getvmstate(HSQUIRRELVM v)
 	if(v->_suspended)
 		return SQ_VMSTATE_SUSPENDED;
 	else { 
-		if(v->_callsstack.size() != 0) return SQ_VMSTATE_RUNNING;
+		if( !v->_callsstack.empty() ) return SQ_VMSTATE_RUNNING;
 		else return SQ_VMSTATE_IDLE;
 	}
 }
