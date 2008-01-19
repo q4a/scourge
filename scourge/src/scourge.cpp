@@ -3846,6 +3846,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 		getDescriptionScroller()->addDescription( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ) );
 	  } else {
 		getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
+		getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
 		return true;
 	  }
     }

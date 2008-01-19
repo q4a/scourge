@@ -156,7 +156,7 @@ private:
 		DAMAGE_TYPE_COUNT
 	};
 	static char *DAMAGE_TYPE_NAME[];
-	// static char DAMAGE_TYPE_LETTER[];
+	static char DAMAGE_TYPE_LETTER[];
 	static int getDamageTypeForLetter( char c );
 	static char getDamageTypeLetter( int type );
 
