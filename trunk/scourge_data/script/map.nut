@@ -390,7 +390,7 @@ function initChapter8() {
 
 		for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
 			if( scourgeGame.getMission().getCreature( i ).getName() == "Sabien Gartu" ) {
-				scourgeGame.getMission().getCreature( i ).setIntro( "_chapter8_" );
+				scourgeGame.getMission().getCreature( i ).setIntro( "SQ_CHAPTER_8" );
 				break;
 			}
 		}
@@ -421,7 +421,7 @@ function initChapter9() {
 				if( scourgeGame.getMission().getCreature( i ).getName() == "Positive Energy of Hornaxx" ) {
 					scourgeGame.getMission().getCreature( i ).setIntro( s );
 				} else if( scourgeGame.getMission().getCreature( i ).getName() == "Negative Energy of Hornaxx" ) {
-					scourgeGame.getMission().getCreature( i ).setIntro( "_return_" );
+					scourgeGame.getMission().getCreature( i ).setIntro( "SQ_RETURN" );
 				}
 			}
 		}	
@@ -436,9 +436,9 @@ function getChapter9Intro() {
 		if( value != null ) {
 			numValue <- value.tointeger();
 			if( scourgeGame.getPartyMember( i ).getLevel() > numValue ) {
-				return "_return_true_";
+				return "SQ_RETURN_TRUE";
 			} else {
-				return "_return_false_";
+				return "SQ_RETURN_FALSE";
 			}
 		}
 	}

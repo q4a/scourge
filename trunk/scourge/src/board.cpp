@@ -697,12 +697,21 @@ bool Mission::setIntro( Creature *s, char *keyphrase ) {
 			nc = npcConversations[ npc ];
 		}
 	}
-	if( !nc ) return false;
-	string ks = keyphrase;
+	if( !nc ) {
+		cerr << "*** Error: can't find conversation with: " << s << endl;
+		return false;
+	}
+
+	string ks = Util::toLowerCase(keyphrase);
 	if( nc->npc_conversations.find( ks ) != nc->npc_conversations.end() ) {
 		nc->npc_intros.clear();
     nc->npc_intros.push_back( nc->npc_answers[ nc->npc_conversations[ ks ] ] );
 	} else {
+		cerr << "------------------------------------" << endl;
+		for( map<string,int>::iterator i=nc->npc_conversations.begin(); i!=nc->npc_conversations.end(); ++i) {
+			cerr << i->first << "=" << i->second << endl;
+		}
+		cerr << "------------------------------------" << endl;
 		cerr << "Can't find " << keyphrase << " in npc conversation for creature: " << s->getName() << endl;
 		return false;
 	}
@@ -729,7 +738,7 @@ char *Mission::getAnswer( char *s, char *keyphrase ) {
 char *Mission::getFirstKeyPhrase( char *s, char *keyphrase ) {
   string npc = s;
   if( npcConversations.find( npc ) == npcConversations.end() ) {
-    //cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
+    cerr << "Can't find npc conversation for creature: " << npc << endl;
     return NULL;
   }
   NpcConversation *nc = npcConversations[ npc ];
