@@ -471,14 +471,18 @@ void Sound::playSound(const string& file) {
 
 void Sound::startFootsteps( std::string& name, int depth ) {
 #ifdef HAVE_SDL_MIXER
-	AmbientSound *as = getAmbientSound( name, depth );
-	if( as ) as->playFootsteps();
+	if(haveSound) {
+		AmbientSound *as = getAmbientSound( name, depth );
+		if( as ) as->playFootsteps();
+	}
 #endif
 }
 
 void Sound::stopFootsteps() {
 #ifdef HAVE_SDL_MIXER
-  Mix_HaltChannel( 7 );
+	if(haveSound) {
+		Mix_HaltChannel( 7 );
+	}
 #endif
 }
 
@@ -488,15 +492,19 @@ void Sound::addAmbientSound( std::string& name, std::string& ambient, std::strin
 	#endif
 }
 void Sound::startAmbientSound( std::string& name, int depth ) {
-	#ifdef HAVE_SDL_MIXER
+#ifdef HAVE_SDL_MIXER
+	if(haveSound) {
 		AmbientSound *as = getAmbientSound( name, depth );
 		if( as ) as->playRandomAmbientSample();
-	#endif
+	}
+#endif
 }
 
 void Sound::stopAmbientSound() {
 #ifdef HAVE_SDL_MIXER
-	Mix_HaltChannel( 6 );
+	if(haveSound) {
+		Mix_HaltChannel( 6 );
+	}
 #endif
 }
 

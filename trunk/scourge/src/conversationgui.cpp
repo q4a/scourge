@@ -177,18 +177,18 @@ void ConversationGui::start( Creature *creature, char *message, bool useCreature
 void ConversationGui::wordClicked( char *word ) {
 
   // convert to lower case
+//	cerr << "Clicked: " << word << endl;
   Util::toLowerCase( word );
-  //cerr << "Clicked: " << word << endl;
+//  cerr << "LOWER Clicked: " << word << endl;
 
   // try to get the answer from script
   char first[255];
-  if( useCreature ) {
-	char *s = Mission::getFirstKeyPhrase( creature->getMonster()->getType(), word );
-	if( !s ) s = Mission::getFirstKeyPhrase( creature->getName(), word );
+	char *s = ( useCreature ? Mission::getFirstKeyPhrase( creature->getMonster()->getType(), word ) : Mission::getFirstKeyPhrase( word ) );
+	if(!s) {
+		cerr << "Can't find keyphrase: " << word << endl;
+		return;
+	}
 	strcpy( first, s );
-  } else {
-	strcpy( first, Mission::getFirstKeyPhrase( word ) );
-  }
 
   char answerStr[255];
   scourge->getSession()->getSquirrel()->

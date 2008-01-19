@@ -235,10 +235,9 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       // copy only valid characters
       int c = 0;
       for( int i = 0; i < (int)strlen( p ); i++ ) {
-        if( ( p[i] >= 'a' && p[i] <= 'z' ) ||
-            ( p[i] >= 'A' && p[i] <= 'Z' ) ||
-            ( p[i] >= '0' && p[i] <= '9' ) ||
-            p[i] == '-' || p[i] == '\'' ) wordPos[ wordPosCount ].word[ c++ ] = p[ i ];
+				if( !( p[i] == ',' || p[i] == '.' || p[i] == ';' || p[i] == '!' || p[i] == '?' || p[i] == '$' ) ) {
+					wordPos[ wordPosCount ].word[ c++ ] = p[ i ];
+				}
       }
       wordPos[ wordPosCount ].word[ c++ ] = 0;
 

@@ -40,7 +40,7 @@ char *RpgItem::DAMAGE_TYPE_NAME[] = {
   N_( "Piercing" ), 
   N_( "Crushing" )
 };
-// char RpgItem::DAMAGE_TYPE_LETTER[] = { 'S', 'P', 'C' };
+char RpgItem::DAMAGE_TYPE_LETTER[] = { 'S', 'P', 'C' };
 //char *RpgItem::influenceTypeName[] = { "AP", "CTH", "DAM" };
 
 RpgItem::RpgItem( char *name, char *displayName, 
@@ -241,8 +241,8 @@ WeaponInfluence *RpgItem::getWeaponInfluence( int skill, int type, int limit ) {
 
 int RpgItem::getDamageTypeForLetter( char c ) {
   for( int i = 0; i < DAMAGE_TYPE_COUNT; i++ ) {
-    if( _( DAMAGE_TYPE_NAME[ i ] )[0] == c ) return i;
-    //if( DAMAGE_TYPE_LETTER[ i ] == c ) return i;
+    //if( _( DAMAGE_TYPE_NAME[ i ] )[0] == c ) return i;
+    if( DAMAGE_TYPE_LETTER[ i ] == c ) return i;
   }
   std::cerr << "*** Error can't find damage type for letter: " << c << std::endl;
   return DAMAGE_TYPE_SLASHING;
