@@ -34,7 +34,7 @@ TexturedText::TexturedText() {
 	filename = rootDir + "/fonts/default.txf";
 	txf = txfLoadFont(filename);
 	if(txf == NULL) {
-		fprintf(stderr, "Problem loading %s\n", filename);
+		fprintf(stderr, "Problem loading %s\n", filename.c_str());
 		exit(1);
 	}
 }

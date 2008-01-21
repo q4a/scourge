@@ -260,7 +260,7 @@ char *Util::toLowerCase( char *s ) {
 }
 
 string& Util::toLowerCase( string& s ) {
-	for ( int i = 0; i < s.size(); i++ ) {
+	for ( unsigned int i = 0; i < s.size(); i++ ) {
 		if( 'A' <= s[i] && s[i] <= 'Z' ) s[i] -= 'A' - 'a';
 	}
 	return s;

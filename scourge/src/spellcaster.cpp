@@ -274,7 +274,7 @@ void SpellCaster::increaseHP() {
   Creature *creature = battle->getCreature();
 
   int n = spell->getAction();
-  n += Util::dice( n * power / 100 );
+  n += Util::dice( (int)(n * power / 100) );
 
   if(n + creature->getTargetCreature()->getHp() > creature->getTargetCreature()->getMaxHp())
     n = creature->getTargetCreature()->getMaxHp() - creature->getTargetCreature()->getHp();
@@ -288,7 +288,7 @@ void SpellCaster::increaseHP() {
 void SpellCaster::increaseAC() {
   Creature *creature = battle->getCreature();
   int n = spell->getAction();
-  n += Util::dice( n * power / 100 );
+  n += Util::dice( (int)(n * power / 100) );
 
   int timeInMin = 15 + ( level / 2 );
 

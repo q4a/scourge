@@ -32,9 +32,9 @@ using namespace std;
 
 // 1 out of SECRET_DOOR_CHANCE doors are secret doors
 #ifdef DEBUG_SECRET_DOORS
-#define SECRET_DOOR_CHANCE 2.0f
+#define SECRET_DOOR_CHANCE 2
 #else
-#define SECRET_DOOR_CHANCE 10.0f
+#define SECRET_DOOR_CHANCE 10
 #endif
 
 int totalWidth, totalHeight;
