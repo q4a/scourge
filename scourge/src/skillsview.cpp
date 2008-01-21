@@ -20,7 +20,6 @@
 #include "shapepalette.h"
 #include "creature.h"
 #include "party.h"
-#include "rpg/rpg.h"
 
 /**
   *@author Gabor Torok
@@ -30,28 +29,17 @@ SkillsView::SkillsView( Scourge *scourge, int x, int y, int w, int h ) {
   this->scourge = scourge;
   this->creature = NULL;
 
-  this->skillLine = (char**)malloc(Skill::SKILL_COUNT * sizeof(char*));
-  this->skillColor = (Color*)malloc( Skill::SKILL_COUNT * sizeof( Color ) );
-  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
-    this->skillLine[i] = (char*)malloc(120 * sizeof(char));
-  }
   skillList = new ScrollingList( x, y, w, h, 
                                  scourge->getShapePalette()->getHighlightTexture() );
 }
 
 SkillsView::~SkillsView() {
-  for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
-    free( skillLine[i] );
-  }
-  free( skillLine );
-  free( skillColor );
   delete skillList;
 }
 
 void SkillsView::setCreature( Creature *creature, CreatureGroupInfo *info ) { 
   this->creature = creature;
   int lineCounter = 0;
-	char mod[10];
   for( int t = 0; t < Skill::SKILL_COUNT; t++ ) {
 			if( creature->getSkill( t ) == 0 ) continue;
 
@@ -74,16 +62,16 @@ void SkillsView::setCreature( Creature *creature, CreatureGroupInfo *info ) {
       //int maxSkill = selectedP->getCharacter()->getSkill( t );
       //bool maxFound = ( maxSkill >= 0 );
 			bool maxFound = ( info && creature == info->getHighestSkillPC( t ) );
-
+            char str[20];
+			snprintf( str, 20, "%d", creature->getSkill( t, false ) ); 
+			skillLine[ lineCounter ] = str;
 			if( creature->getSkillMod( t ) > 0 ) {
-				sprintf( mod, "(%d)", creature->getSkillMod( t ) );
-			} else {
-				strcpy( mod, "" );
+				snprintf( str, 20, "(%d)", creature->getSkillMod( t ) );
+				skillLine[ lineCounter ] += str;
 			}			
-      sprintf( skillLine[ lineCounter ], "%d%s - %s", 
-               creature->getSkill( t, false ), 
-							 mod,
-               Skill::skills[ t ]->getDisplayName() );
+			skillLine[ lineCounter ] += " - ";
+			skillLine[ lineCounter ] += Skill::skills[ t ]->getDisplayName();
+
 			if( creature->getSkillMod( t ) > 0 ) {
 				skillColor[ lineCounter ].r = 0;
 				skillColor[ lineCounter ].g = 1;
@@ -99,7 +87,7 @@ void SkillsView::setCreature( Creature *creature, CreatureGroupInfo *info ) {
     int line = skillList->getSelectedLine();
     if( line < 0 ) line = 0;
     skillList->setLines( lineCounter, 
-                         (const char**)skillLine, 
+                         skillLine, 
                          (const Color*)skillColor );
     skillList->setSelectedLine( line );
 }

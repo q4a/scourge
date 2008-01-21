@@ -62,8 +62,8 @@ private:
   Canvas *model;
   Button *prevModel, *nextModel;
   Button *reroll;
-	char **charTypeStr;
-  char **deityTypeStr;
+  std::string* charTypeStr;
+  std::string* deityTypeStr;
   int portraitIndex;
   int modelIndex;
 	int availableSkillMod;

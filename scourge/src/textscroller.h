@@ -40,7 +40,7 @@ public:
 	TextScroller( Scourge *scourge );
 	~TextScroller();
 
-	void addDescription( char *description, float r=1.0f, float g=1.0f, float b=0.4f );
+	void addDescription( char const* description, float r=1.0f, float g=1.0f, float b=0.4f );
 	void draw();
 	void scrollUp();
 	void scrollDown();

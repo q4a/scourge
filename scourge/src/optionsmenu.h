@@ -46,7 +46,7 @@ class UserConfiguration;
 class OptionsMenu {
 private:
 
-  char ** controlLines; // move it to function loadControls() ?
+	std::string controlLines[ENGINE_ACTION_COUNT]; // move it to function loadControls() ?
   Scourge *scourge;
   UserConfiguration * uc;
   bool showDebug;

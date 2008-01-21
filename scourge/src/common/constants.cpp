@@ -63,7 +63,7 @@ std::string get_file_name(const std::string fileName ) {
 	return config;
 }
 
-//sprintf(s, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
+//snprintf(s, sSize, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
 char *Constants::messages[][80] = {
 	{
 		N_("Infamy awaits in the dungeons of Scourge!"),

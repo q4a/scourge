@@ -38,10 +38,10 @@ class Date {
   int month;    // 1 to 12
   int year;     // -32000 to +32000      
 
-  char dateString[100];  
+  enum { SHORT_SIZE = 30, DATE_SIZE = 100 };
+  char dateString[ DATE_SIZE ];  
   void buildDateString();    
-
-  char shortString[30];
+  char shortString[ SHORT_SIZE ];
   
  public:
  

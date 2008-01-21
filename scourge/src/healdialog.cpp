@@ -48,11 +48,7 @@ HealDialog::HealDialog( Scourge *scourge ) {
   applyButton = win->createButton( w - 160, y, w - 90, y + h, _( "Buy" ) );
   closeButton = win->createButton( w - 80, y, w - 10, y + h, _( "Close" ) );
 
-  this->spellText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
   this->spellIcons = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
-  for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
-    this->spellText[i] = (char*)malloc(120 * sizeof(char));
-  }
 }
 
 HealDialog::~HealDialog() {
@@ -69,11 +65,11 @@ void HealDialog::updateUI() {
 
   spells.clear();
   prices.clear();
-
-  char s[255];
-  sprintf( s, "%s (%s %d)", creature->getName(), _( "level" ), creature->getNpcInfo()->level );
+  enum { TXT_SIZE = 255 };
+  char s[ TXT_SIZE ];
+  snprintf( s, TXT_SIZE, "%s (%s %d)", creature->getName(), _( "level" ), creature->getNpcInfo()->level );
   creatureLabel->setText( s );
-  sprintf( s, "%s %d", 
+  snprintf( s, TXT_SIZE, "%s %d", 
            _( "Coins Available:" ), 
            scourge->getParty()->getPlayer()->getMoney() );
   coinLabel->setText( s );
@@ -95,10 +91,11 @@ void HealDialog::updateUI() {
         float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
         int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
         prices[ spell ] = price + percentage;
-
-
-        spell->describe( s );
-        sprintf( spellText[ spells.size() ], "$%d %s", prices[ spell ], s );
+        char priceStr[20];
+		snprintf( priceStr, 20, _("$%d "), prices[ spell ] );
+		spellText[ spells.size() ] = priceStr;
+        spell->describe( s, TXT_SIZE );
+		spellText[ spells.size() ] += s;
         if( spells.empty() ) {
           showSpellDescription(spell);
         }
@@ -113,7 +110,7 @@ void HealDialog::updateUI() {
   }
   if( spells.empty() ) spellDescription->setText( "" );
   spellList->setLines( spells.size(), 
-                       (const char**)spellText, 
+                       spellText, 
                        NULL, 
                        spellIcons );
 
@@ -149,7 +146,7 @@ void HealDialog::heal( Spell *spell, int price ) {
     price );
   // update the coin label
   char s[255];
-  sprintf( s, "%s %d", 
+  snprintf( s, 255, "%s %d", 
            _( "Coins Available:" ), 
            scourge->getParty()->getPlayer()->getMoney() );
   coinLabel->setText( s );

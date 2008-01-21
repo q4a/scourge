@@ -290,7 +290,7 @@ Creature *Session::replaceCreature( Creature *creature, char *newCreatureType ) 
 													 replacement->getShape()->getWidth(), 
 													 replacement->getShape()->getDepth() );
 		char msg[120];
-		sprintf( msg, _( "%s transforms into another shape in front of your very eyes!" ), 
+		snprintf( msg, 120, _( "%s transforms into another shape in front of your very eyes!" ), 
 						 creature->getName() );
 		getGameAdapter()->addDescription( msg );
 	
@@ -444,7 +444,7 @@ void Session::creatureDeath( Creature *creature ) {
 
 	if( !( creature->isMonster() ) ) {
     char message[255];
-    sprintf( message, _( "  %s dies!" ), creature->getName() );
+    snprintf( message, 255, _( "  %s dies!" ), creature->getName() );
     getGameAdapter()->startTextEffect( message );
   }
 
@@ -601,7 +601,7 @@ int Session::getCountForDate( char *key, bool withinLastHour ) {
 
 void Session::setCountForDate( char *key, int value ) {
 	char s[255];
-	sprintf( s, "%s+%d", 
+	snprintf( s, 255, "%s+%d", 
 					 getParty()->getCalendar()->getCurrentDate().getShortString(), 
 					 value );
 	getSquirrel()->setValue( key, s );
@@ -628,7 +628,7 @@ void Session::setCurrentMission( Mission *mission ) {
 			chapterImage = NULL;
 		}
 		char filename[300];
-		sprintf( filename, "/chapters/chapter%d.bmp", currentMission->getChapter() );
+		snprintf( filename, 300, "/chapters/chapter%d.bmp", currentMission->getChapter() );
 		if( !shapePal->getBMPData( filename, &chapterImage, &chapterImageWidth, &chapterImageHeight ) ) {
 			cerr << "Error loading image for chapter " << currentMission->getChapter() << endl;
 			chapterImage = NULL;

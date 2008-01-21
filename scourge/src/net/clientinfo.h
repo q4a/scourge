@@ -25,7 +25,8 @@ class ClientInfo : public CommandInterpreter {
  public:
   enum {
     RECEIVE=0,
-    SEND
+    SEND,
+	DESC_SIZE = 80
   };
 
   Server *server;
@@ -33,7 +34,7 @@ class ClientInfo : public CommandInterpreter {
   TCPsocket socket;
   int id;
   char *username;
-  char desc[80];
+  char desc[ DESC_SIZE ];
   bool threadRunning;
   SDL_Thread *thread;
   SDL_mutex *mutex;

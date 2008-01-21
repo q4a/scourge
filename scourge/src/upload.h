@@ -20,7 +20,9 @@
 
 class Upload {
 public:
-	static int uploadScoreToWeb( char *score, char *result );
+	enum { RESULT_SIZE = 300 }; 
+	typedef char RESULT[ RESULT_SIZE ];
+	static int uploadScoreToWeb( char *score, RESULT& result );
 };
 
 #endif

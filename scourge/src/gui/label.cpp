@@ -21,7 +21,7 @@
   *@author Gabor Torok
   */
 
-Label::Label(int x, int y, char *text, int lineWidth, int fontType, int lineHeight) : Widget(x, y, 0, 0) {
+Label::Label(int x, int y, char const* text, int lineWidth, int fontType, int lineHeight) : Widget(x, y, 0, 0) {
   this->lineWidth = lineWidth;
   this->fontType = fontType;
   this->lineHeight = lineHeight;
@@ -58,7 +58,7 @@ void Label::drawWidget(Widget *parent) {
   }
 }
 
-void Label::setText( char *s ) {
+void Label::setText( char const* s ) {
   strncpy(text, ( s ? s : "" ), 3000); 
   text[2999] = '\0';
   lines.clear();

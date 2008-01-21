@@ -33,12 +33,15 @@
 #ifdef _MSC_VER // i only checked for MSVC 8 portability  
 	// turn numeric types conversion warnings OFF; like size_t <-> int; 
 #	pragma warning(disable : 4267 4244 4800) 
-	// to be sure that it's included *before* following defines
+	// to be sure that these are included *before* following defines
 #	include <string.h>
+#	include <cstdio>
 	// some common string ops have different names under MSVC 8
 #	define strcasecmp _stricmp
-#	define snprintf _snprintf
+#	define snprintf _sprintf_p
 #	define strdup _strdup
+	// just to avoid using sprintf
+#	define sprintf please_use_snprintf
 	// somewhere was error: unknown identifier "time"
 #	include <time.h>
 	// MSVC 8 has no rint so i improvise one

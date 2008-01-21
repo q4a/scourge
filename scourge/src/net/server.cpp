@@ -148,7 +148,7 @@ void Server::sendGameState() {
 #endif
 
   char message[1024];
-  Commands::buildGameState(message, currentFrame, gsh->getGameState());
+  Commands::buildGameState(message, 1024, currentFrame, gsh->getGameState());
   sendToAllTCP(message);
   currentFrame++;
 }

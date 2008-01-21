@@ -112,8 +112,8 @@ private:
 	ScrollingList *objectiveList;
 	Label *objectivesLabel;
 	Button *consoleButton;
-	char **objectiveText;
-	Color *missionColor;
+	std::string objectiveText[ MAX_INVENTORY_SIZE ];
+	Color missionColor[ MAX_INVENTORY_SIZE ];
 
 public:
 	MissionInfoUI( PcUi *pcUi, int x, int y, int w, int h );

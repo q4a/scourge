@@ -167,7 +167,7 @@ bool Portrait::handleEvent( Widget *widget, SDL_Event *event ) {
 void Portrait::setCurrentWeaponTooltip() {
 	if( creature ) {
 		char tmp[ 1000 ];
-		sprintf( tmp, "%s:%s (%s)", 
+		snprintf( tmp, 1000, "%s:%s (%s)", 
 						 _( "Current attack" ), 
 						 ( Constants::INVENTORY_LEFT_HAND == creature->getPreferredWeapon() ? _( "Left Hand" ) :
 							 ( Constants::INVENTORY_RIGHT_HAND == creature->getPreferredWeapon() ? _( "Right Hand" ) :

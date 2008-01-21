@@ -61,7 +61,7 @@ Monster::Monster( char *type, char *displayName, char* descriptiveType, int leve
   // approximate the base attack bonus: magic users get less than warriors
   baseAttackBonus = ( !mp ? 1.0f : 0.75f );
 
-  sprintf(description, "FIXME: need a description");
+  snprintf(description, DESCR_SIZE, "FIXME: need a description");
 }
 
 Monster::~Monster() {
@@ -246,13 +246,14 @@ void Monster::initMonsters() {
 }
 
 void Monster::addMd2Sounds( char *model_name, map<int, vector<string>*>* currentSoundMap ) {
-  char soundFile[5000];
+	enum { TXT_SIZE = 1000 };
+  char soundFile[ TXT_SIZE ];
 
-  sprintf( soundFile, "%s/gurp1.wav,%s/gurp2.wav,%s/jump1.wav,%s/land1.wav,%s/fall1.wav,%s/gasp.wav,%s/taunt.wav", 
+  snprintf( soundFile, TXT_SIZE, "%s/gurp1.wav,%s/gurp2.wav,%s/jump1.wav,%s/land1.wav,%s/fall1.wav,%s/gasp.wav,%s/taunt.wav", 
 		  model_name, model_name, model_name, model_name, model_name, model_name, model_name );
   addSound( Constants::SOUND_TYPE_ATTACK, soundFile, currentSoundMap );
   
-  sprintf( soundFile, "%s/pain25_1.wav,%s/pain25_2.wav,%s/pain50_1.wav,%s/pain50_2.wav,%s/pain75_1.wav,%s/pain75_2.wav,%s/pain100_1.wav,%s/pain100_2.wav", 
+  snprintf( soundFile, TXT_SIZE, "%s/pain25_1.wav,%s/pain25_2.wav,%s/pain50_1.wav,%s/pain50_2.wav,%s/pain75_1.wav,%s/pain75_2.wav,%s/pain100_1.wav,%s/pain100_2.wav", 
 		  model_name, model_name, model_name, model_name, model_name, model_name, model_name, model_name );
   addSound( Constants::SOUND_TYPE_HIT, soundFile, currentSoundMap );
 }

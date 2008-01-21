@@ -46,52 +46,6 @@ class Scourge;
   */
 
 class Item : public RenderedItem, Storable {
- private:
-  RpgItem *rpgItem;
-  int shapeIndex;
-  Color *color;
-  GLShape *shape;
-  bool blocking;
-  Item *containedItems[MAX_CONTAINED_ITEMS];
-  int containedItemCount;
-  int currentCharges;
-  Spell *spell;
-  char itemName[255];
-  bool containsMagicItem;
-  bool showCursed;
-	GLuint tex3d[1];
-	unsigned char * textureInMemory;
-  void trySetIDBit(int bit, float modifier, int infoDetailLevel);
-	
-	static const int PARTICLE_COUNT = 30;
-	Uint32 iconEffectTimer;
-	ParticleStruct *iconEffectParticle[PARTICLE_COUNT];
-	Uint32 iconUnderEffectTimer;	
-  ParticleStruct *iconUnderEffectParticle[PARTICLE_COUNT];
-
-  // Things that change with item level (override rpgitem values)
-  int level;
-  float weight; 
-  int price;
-  int quality;
-
-  // former magic attrib stuff
-  int magicLevel;
-  int bonus; // e.g.: sword +2
-  int damageMultiplier; // 2=double damage, 3=triple, etc.
-  char *monsterType; // if not NULL, damageMultiplier only for this type of monster.
-  MagicSchool *school; // magic damage by a school (or NULL if N/A)
-  Dice *magicDamage; 
-  bool cursed;
-  int stateMod[StateMod::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
-  bool stateModSet;
-  std::map<int, int> skillBonus;
-  Session *session;	
-	Uint32 identifiedBits;
-	int inventoryX, inventoryY;
-  int missionId;
-	int missionObjectiveIndex;
-
 public:
 
 	enum {
@@ -103,7 +57,8 @@ public:
 		ID_SKILL_BONUS,
 		ID_CURSED,
 		//number of bits that represents item identification
-		ID_COUNT
+		ID_COUNT,
+		ITEM_NAME_SIZE = 255
 	};
 
   Item(Session *session, RpgItem *rpgItem, int level=1, bool loading=false );
@@ -160,7 +115,7 @@ public:
   inline void setShowCursed( bool b ) { showCursed = b; }
   inline bool getShowCursed() { return showCursed; }
 
-  void getDetailedDescription(char *s, bool precise=true);
+  void getDetailedDescription( std::string& s, bool precise=true );
   inline char *getItemName() { return itemName; }
 
   inline int getContainedItemCount() { return containedItemCount; }
@@ -218,9 +173,55 @@ public:
   int getStorableType();
   const char *isStorable();
 
+ private:
+  RpgItem *rpgItem;
+  int shapeIndex;
+  Color *color;
+  GLShape *shape;
+  bool blocking;
+  Item *containedItems[MAX_CONTAINED_ITEMS];
+  int containedItemCount;
+  int currentCharges;
+  Spell *spell;
+  char itemName[ ITEM_NAME_SIZE ];
+  bool containsMagicItem;
+  bool showCursed;
+	GLuint tex3d[1];
+	unsigned char * textureInMemory;
+  void trySetIDBit(int bit, float modifier, int infoDetailLevel);
+	
+	static const int PARTICLE_COUNT = 30;
+	Uint32 iconEffectTimer;
+	ParticleStruct *iconEffectParticle[PARTICLE_COUNT];
+	Uint32 iconUnderEffectTimer;	
+  ParticleStruct *iconUnderEffectParticle[PARTICLE_COUNT];
+
+  // Things that change with item level (override rpgitem values)
+  int level;
+  float weight; 
+  int price;
+  int quality;
+
+  // former magic attrib stuff
+  int magicLevel;
+  int bonus; // e.g.: sword +2
+  int damageMultiplier; // 2=double damage, 3=triple, etc.
+  char *monsterType; // if not NULL, damageMultiplier only for this type of monster.
+  MagicSchool *school; // magic damage by a school (or NULL if N/A)
+  Dice *magicDamage; 
+  bool cursed;
+  int stateMod[StateMod::STATE_MOD_COUNT]; // 0=nothing, 1=sets, 2=clears/protects against state mod when worn
+  bool stateModSet;
+  std::map<int, int> skillBonus;
+  Session *session;	
+	Uint32 identifiedBits;
+	int inventoryX, inventoryY;
+  int missionId;
+	int missionObjectiveIndex;
+
  protected:
   void commonInit( bool loading );
-  void describeMagic(char *s, char *itemName);
+  void describeMagic( char const* displayName );
   
   DiceInfo *saveDice( Dice *dice );
   static DiceInfo *saveEmptyDice();

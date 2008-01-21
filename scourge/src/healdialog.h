@@ -45,8 +45,7 @@ private:
   ScrollingList *spellList;
   ScrollingLabel *spellDescription;
   Button *closeButton, *applyButton;
-
-	char **spellText;
+	std::string spellText[ MAX_INVENTORY_SIZE ];
 	GLuint *spellIcons;
 
 public:

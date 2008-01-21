@@ -78,12 +78,17 @@ private:
   Button *applyButton;
   TextField *levelText, *depthText;
   ScrollingList *themeList;
-  char **themeNames;
+  std::string* themeNames;
   MapWidget *mapWidget;
   
   // lists
   ScrollingList *shapeList, *itemList, *creatureList, *furnitureList;
-  char **shapeNames, **itemNames, **creatureNames, **furnitureNames;
+	enum { NAME_SIZE = 120 };
+	typedef char NAME[NAME_SIZE];
+	std::string* shapeNames; 
+	std::string* itemNames; 
+	std::string* creatureNames; 
+	std::string* furnitureNames;
 	std::map<std::string, Monster*> creatures;
 
   std::map<Monster*,GLShape*> creatureOutlines;
@@ -110,7 +115,7 @@ protected:
   bool getShape( GLShape **shape,
                  Item **item = NULL,
                  Creature **creature = NULL );
-	void addNewItem( char *name,
+	void addNewItem( char const* name,
 									 GLShape **shape, 
 									 Item **item, 
 									 Creature **creature );

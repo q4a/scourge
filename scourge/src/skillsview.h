@@ -23,6 +23,7 @@
 #include <vector>
 #include "common/constants.h"
 #include "session.h"
+#include "rpg/rpg.h"
 
 /**
   *@author Gabor Torok
@@ -37,16 +38,9 @@ class CreatureGroupInfo;
 class SkillGroup;
 
 class SkillsView {
-private:
-  Scourge *scourge;
-  Creature *creature;
-  Window *win;
-  ScrollingList *skillList;
-  char **skillLine;
-  Color *skillColor;
-  std::set<SkillGroup*> filter;
 
 public:
+	enum { SKILL_SIZE = 120 };
   SkillsView( Scourge *scourge, int x, int y, int w, int h );
   ~SkillsView();
 
@@ -61,6 +55,14 @@ public:
 
   inline Widget *getWidget() { return skillList; }
 
+private:
+  Scourge *scourge;
+  Creature *creature;
+  Window *win;
+  ScrollingList *skillList;
+  std::string skillLine[ Skill::SKILL_COUNT ];
+  Color skillColor[ Skill::SKILL_COUNT ];
+  std::set<SkillGroup*> filter;
 };
 
 #endif

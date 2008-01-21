@@ -36,7 +36,7 @@ public:
   void *obj;
   int x, y, z;
 
-  InfoMessage( char *s, void *obj, int x, int y, int z ) {
+  InfoMessage( char const* s, void *obj, int x, int y, int z ) {
     strcpy( this->message, s );
     this->obj = obj;
     this->x = x;

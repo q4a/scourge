@@ -37,18 +37,12 @@ ScrollingList( x, y, width, height, scourge->getShapePalette()->getHighlightText
 	this->allowCursed = true;
 
   color = (Color*)malloc( MAX_INVENTORY_SIZE * sizeof( Color ) );
-  name = (char**)malloc( MAX_INVENTORY_SIZE * sizeof( char* ) );
   icon = (GLuint*)malloc( MAX_INVENTORY_SIZE * sizeof( GLuint ) );
-  for( int i = 0; i < MAX_INVENTORY_SIZE; i++ ) {
-    name[i] = (char*)malloc( 120 * sizeof( char ) );
-  }
   
   setAllowMultipleSelection( true );
 }
 
 ItemList::~ItemList() {
-  for( int i = 0; i < MAX_INVENTORY_SIZE; i++ ) free( name[i] );
-  free( name );
   free( color );
   free( icon );
 }
@@ -70,7 +64,6 @@ void ItemList::setContainer( Item *container, set<int> *filter ) {
 }
 
 void ItemList::commonInit() {
-  char s[120];
   int count = 0;
   for(int t = 0; t < getItemCount(); t++) {
     Item *item = getItem( t );
@@ -87,11 +80,9 @@ void ItemList::commonInit() {
     items.push_back( item );
 
     if( itemRenderer ) {
-      itemRenderer->render( this, item, 120, (const char *)name[ count ] );
+      itemRenderer->render( this, item, name[ count ] );
     } else {
-      item->getDetailedDescription( s );
-      //sprintf( itemA[t], "%s %s", ( creature->getEquippedIndex(t) > -1 ? "(E)" : "" ), s );
-      sprintf( name[ count ], "%s", s );
+      item->getDetailedDescription( name[ count ] );
     }
     if( !item->isMagicItem() ) {
       if( win->getTheme()->getWindowText() ) {
@@ -113,9 +104,9 @@ void ItemList::commonInit() {
     count++;
   }    
   for(int t = count; t < MAX_INVENTORY_SIZE; t++) {
-    strcpy( name[t], "" );
+    name[t].clear();
   }  
-  setLines( count, (const char **)name, color, icon );
+  setLines( count, name, color, icon );
   //setSelectedLine( 0 );
 }
 

@@ -28,7 +28,6 @@
 
 using namespace std;
 
-#define MAX_TEXT_COUNT 100
 
 TrainDialog::TrainDialog( Scourge *scourge ) {
   this->scourge = scourge;
@@ -45,10 +44,6 @@ TrainDialog::TrainDialog( Scourge *scourge ) {
 	errorLabel2 = win->createLabel( 10, 60, "" );
 	errorLabel2->setSpecialColor();
 
-	text = (char**)malloc( MAX_TEXT_COUNT * sizeof(char*) );
-  for(int i = 0; i < MAX_TEXT_COUNT; i++) {
-    text[i] = (char*)malloc( 120 * sizeof( char ) );
-  }
 	list = new ScrollingList( 10, 75, w - 30, 120, scourge->getShapePalette()->getHighlightTexture() );
   win->addWidget( list );
 
@@ -64,10 +59,6 @@ TrainDialog::TrainDialog( Scourge *scourge ) {
 
 TrainDialog::~TrainDialog() {
   delete win;	
-  for(int i = 0; i < MAX_TEXT_COUNT; i++) {
-    free( text[i] );
-  }
-	free( text );
 }
 
 void TrainDialog::setCreature( Creature *creature ) {
@@ -77,7 +68,8 @@ void TrainDialog::setCreature( Creature *creature ) {
 }
 
 void TrainDialog::updateUI() {
-  char s[255];
+	enum { S_SIZE = 255 };
+	char s[ S_SIZE ];
   
   // level-based mark-up
 	Creature *player = scourge->getParty()->getPlayer();
@@ -89,7 +81,7 @@ void TrainDialog::updateUI() {
   int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
   cost = price + percentage;
 
-  sprintf( s, "%s (%s %d) %s: %d", 
+  snprintf( s, S_SIZE, "%s (%s %d) %s: %d", 
            creature->getName(), 
 					 _( "level" ),
            creature->getNpcInfo()->level,
@@ -98,7 +90,7 @@ void TrainDialog::updateUI() {
   creatureLabel->setText( s );
 
 	// is the trainer high enough level?	
-	list->setLines( 0, (const char**)text );
+	list->setLines( 0, text );
 	description->setText( "" );
 	
 	// does this trainer teach your profession?
@@ -111,45 +103,47 @@ void TrainDialog::updateUI() {
 			creature->getNpcInfo()->getSubtype()->end() ) {
 		errorLabel->setColor( 1, 0, 0 );
 		errorLabel2->setColor( 1, 0, 0 );
-		sprintf( s, _( "%s, I cannot teach you. " ), player->getName() );
+		snprintf( s, S_SIZE, _( "%s, I cannot teach you. " ), player->getName() );
 		errorLabel->setText( s );
-		sprintf( s, _( "You must seek out one who can train a %s." ), rc->getDisplayName() );
+		snprintf( s, S_SIZE, _( "You must seek out one who can train a %s." ), rc->getDisplayName() );
 		errorLabel2->setText( s );
 	} else if( creature->getNpcInfo()->level < player->getLevel() ) {
 		errorLabel->setColor( 0, 1, 1 );
 		errorLabel2->setColor( 0, 1, 1 );
-		sprintf( s, _( "%s, I can teach you no more. " ), player->getName() );
+		snprintf( s, S_SIZE, _( "%s, I can teach you no more. " ), player->getName() );
 		errorLabel->setText( s );
 		errorLabel2->setText( _( "You must seek a higher level trainer." ) );
 	} else if( player->getCharacter()->getChildCount() == 0 ) {
 		errorLabel->setColor( 1, 0, 1 );
 		errorLabel2->setColor( 1, 0, 1 );
-		sprintf( s, _( "%s, I can teach you no more. " ), player->getName() );
+		snprintf( s, S_SIZE, _( "%s, I can teach you no more. " ), player->getName() );
 		errorLabel->setText( s );
 		errorLabel2->setText( _( "You must learn by yourself from now on." ) );
 	} else if( player->getCharacter()->getChild( 0 )->getMinLevelReq() > 
 						 player->getLevel() ) {
 		errorLabel->setColor( 1, 1, 0 );
 		errorLabel2->setColor( 1, 1, 0 );
-		sprintf( s, _( "%s, you are not yet ready." ), player->getName() );
+		snprintf( s, S_SIZE, _( "%s, you are not yet ready." ), player->getName() );
 		errorLabel->setText( s );
-		sprintf( s, _( "Come back when you've reached level %d." ), 
+		snprintf( s, S_SIZE, _( "Come back when you've reached level %d." ), 
 						 player->getCharacter()->getChild( 0 )->getMinLevelReq() );
 		errorLabel2->setText( s );
 	} else {
 		errorLabel->setColor( 0, 1, 0 );
 		errorLabel2->setColor( 0, 1, 0 );
-		sprintf( s, _( "%s, you are ready to learn." ), player->getName() );
+		snprintf( s, S_SIZE, _( "%s, you are ready to learn." ), player->getName() );
 		errorLabel->setText( s );
 		errorLabel2->setText( _( "Select your next profession from the list below." ) );
 
 		for( int i = 0; i < player->getCharacter()->getChildCount(); i++ ) {
-			sprintf( text[i], "%s (%s %d)", 
-							 player->getCharacter()->getChild(i)->getDisplayName(),
-							 _( "min level" ),
-							 player->getCharacter()->getChild(i)->getMinLevelReq() );
+			text[i] = player->getCharacter()->getChild(i)->getDisplayName();
+			text[i] += " (";
+			text[i] += _( "min level" );
+			char str[20];
+			snprintf( str, 20, " %d)", player->getCharacter()->getChild(i)->getMinLevelReq() );  
+			text[i] += str;
 		}
-		list->setLines( player->getCharacter()->getChildCount(), (const char**)text );
+		list->setLines( player->getCharacter()->getChildCount(), text );
 		description->setText( player->getCharacter()->getChildCount() > 0 ?
 													player->getCharacter()->getChild( 0 )->getDescription() :
 													(char*)"" );
@@ -185,7 +179,7 @@ void TrainDialog::train( Character *newProfession ) {
 	updateUI();
 
 	char tmp[120];
-	sprintf( tmp, _( "Congratulation %1$s, you are now a %2$s." ),
+	snprintf( tmp, 120, _( "Congratulation %1$s, you are now a %2$s." ),
 					 player->getName(),
 					 player->getCharacter()->getDisplayName() );
 	scourge->showMessageDialog( tmp );

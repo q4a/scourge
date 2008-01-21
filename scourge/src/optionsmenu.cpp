@@ -35,7 +35,6 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   controlsLoaded = false;
   videoLoaded = false;
   gameSettingsLoaded = false;
-  controlLines = NULL;
   nbControlLines = 0;
   waitingForNewKey = false;
   ignoreKeyUp = false;
@@ -173,37 +172,22 @@ void OptionsMenu::loadGameSettings(){
 
 // line i must correspond to engine action i if we want this scrolling list to work
 void OptionsMenu::loadControls(){
-    int i;
-    if(controlLines) {
-        for(int i = 0; i < ENGINE_ACTION_COUNT ; i++){
-            if( controlLines[i] ){
-                free(controlLines[i]);
-                controlLines[i] = NULL;
-            }
-        }
-        free(controlLines);
-        controlLines = NULL;
+    for (int i = 0; i < ENGINE_ACTION_COUNT; i++){
+		controlLines[i] = uc->getEngineActionDescription(i);
+		controlLines[i] += "           ";
+		controlLines[i] += uc->getEngineActionKeyName(i);
     }
-
-    nbControlLines = ENGINE_ACTION_COUNT;
-    controlLines = (char **) malloc (nbControlLines *sizeof(char *));
-    for (i = 0; i < nbControlLines; i++){
-        controlLines[i] = (char *)malloc(MAX_CONTROLS_LINE_SIZE * sizeof(char));
-        sprintf( controlLines[i], "%s           %s", 
-                 uc->getEngineActionDescription(i),
-                 uc->getEngineActionKeyName(i) );
-    }
-    controlBindingsList->setLines(nbControlLines, (const char**) controlLines);
+    controlBindingsList->setLines(ENGINE_ACTION_COUNT, controlLines);
 }
 
 void OptionsMenu::loadVideo(){
-    char temp[50];
     string line;
     string s, s1, s2, s3, s4;
     int i;
     int end;
 
-    sprintf(temp, "%d x %d", uc -> getW(), uc-> getH());
+    char temp[50];
+    snprintf(temp, 50, "%d x %d", uc -> getW(), uc-> getH());
     s = temp;
     s1 = Util::getNextWord(s, 0, end);
     s2 = Util::getNextWord(s, end, end);  // ignores the ' x '  
@@ -438,8 +422,8 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
 				}
 				uc->setKeyForEngineAction(s2, ind); // update userConfig too
 				s1 = s1 + "           " + s2;
-				strcpy(controlLines[ind], s1.c_str());
-				controlBindingsList->setLines(nbControlLines, (const char**) controlLines);
+				controlLines[ind] = s1;
+				controlBindingsList->setLines(nbControlLines, controlLines);
 				controlBindingsList->setSelectedLine(ind);
 			} else ignoreKeyUp = true;
 			//waitingLabel->setText(" ");

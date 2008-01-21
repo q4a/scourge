@@ -217,7 +217,8 @@ private:
   void debugGrid(SDL_Surface *surface);
 
   int mapViewWidth, mapViewDepth;
-  char mapDebugStr[200];
+  enum { DEBUG_SIZE = 200 };
+  char mapDebugStr[ DEBUG_SIZE ];
 
   char name[80];
   bool edited; // is this a non-random (edited) map?
@@ -302,8 +303,8 @@ private:
   inline char *getName() { return name; }
 
 
-  void saveMap( const std::string& name, char *result, bool absolutePath=false, int referenceType=REF_TYPE_NAME );
-  bool loadMap( const std::string& name, char *result, StatusReport *report=NULL, 
+  void saveMap( const std::string& name, std::string& result, bool absolutePath=false, int referenceType=REF_TYPE_NAME );
+  bool loadMap( const std::string& name, std::string& result, StatusReport *report=NULL, 
 				int level=1, int depth=0, 
                 bool changingStory=false, bool fromRandom=false, 
 				bool goingUp=false, bool goingDown=false,
@@ -311,7 +312,7 @@ private:
                 std::vector< RenderedCreature* > *creatures=NULL, 
 				bool absolutePath=false,
 				char *templateMapName=NULL );
-  void loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth=0 );
+  void loadMapLocation( const std::string& name, std::string& result, int *gridX, int *gridY, int depth=0 );
 	void initForCave( char *themeName=NULL );
 
   inline Uint16 getCursorMapX() { return cursorMapX; }

@@ -62,7 +62,7 @@ static void send_string(TCPsocket sock, const std::string &str) {
 }
 #endif
 
-int Upload::uploadScoreToWeb( char *score, char *result ) {
+int Upload::uploadScoreToWeb( char *score, RESULT& result ) {
 	int errNum = 0;
 	strcpy( result, "" );
 
@@ -127,11 +127,11 @@ int Upload::uploadScoreToWeb( char *score, char *result ) {
 						*q = 0;
 						strcpy( result, p + strlen( SUCCESS_STR ) );
 					} else {
-						sprintf( result, "Can't parse result: %s", res );
+						snprintf( result, RESULT_SIZE, "Can't parse result: %s", res );
 						errNum = 1;
 					}
 				} else {
-					sprintf( result, "Bad result: %s", res );
+					snprintf( result, RESULT_SIZE,  "Bad result: %s", res );
 					errNum = 1;
 				}
 			}

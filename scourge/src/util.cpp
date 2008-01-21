@@ -259,6 +259,13 @@ char *Util::toLowerCase( char *s ) {
 	return s;
 }
 
+string& Util::toLowerCase( string& s ) {
+	for ( int i = 0; i < s.size(); i++ ) {
+		if( 'A' <= s[i] && s[i] <= 'Z' ) s[i] -= 'A' - 'a';
+	}
+	return s;
+}
+
 // FIXME: take into account, existing |-s in text
 char *Util::addLineBreaks( const char *in, char *out, int lineLength ) {
 	strcpy( out, "" );

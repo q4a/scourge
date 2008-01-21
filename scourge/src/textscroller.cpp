@@ -43,7 +43,7 @@ TextScroller::TextScroller( Scourge *scourge ) {
 TextScroller::~TextScroller() {
 }
 
-void TextScroller::addDescription( char *description, float r, float g, float b ) {
+void TextScroller::addDescription( char const* description, float r, float g, float b ) {
 	string s = description;
 	color.insert( color.begin(), new Color( r, g, b, 1 ) );
 	text.insert( text.begin(), s );

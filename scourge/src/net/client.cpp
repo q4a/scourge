@@ -215,19 +215,19 @@ int Client::initTCPSocket() {
 
 int Client::login() {
   char msg[80];
-  Commands::buildLogin(msg, username);
+  Commands::buildLogin(msg, 80, username);
   return sendRawTCP(msg);
 }
 
 int Client::sendChatTCP(char *message) {
   char msg[80];
-  Commands::buildChat(msg, username, message);
+  Commands::buildChat(msg, 80, username, message);
   return sendRawTCP(msg);
 }
 
 int Client::sendPing() {
   char message[80];
-  commands->buildPing(message);
+  commands->buildPing(message, 80);
   return sendRawTCP(message);
 }
 

@@ -42,7 +42,8 @@ map<string, NpcInfo*> Mission::npcInfos;
   *@author Gabor Torok
   */
 
-Board::Board(Session *session) {
+Board::Board(Session *session) 
+		:missionText(NULL) {
   this->session = session;
   this->storylineIndex = 0;
 	missionListCount = 0;
@@ -148,10 +149,7 @@ Board::~Board() {
 
 void Board::freeListText() {
   if( missionListCount ) {
-    for( int i = 0; i < missionListCount; i++ ) {
-      free( missionText[i] );
-    }
-    free( missionText );
+    delete[] missionText;
     free( missionColor );
   }
 }
@@ -273,18 +271,22 @@ void Board::initMissions() {
   // init ui
   if( !availableMissions.empty() ) {
 		missionListCount = availableMissions.size();
-    missionText = (char**)malloc(availableMissions.size() * sizeof(char*));
+    missionText = new string[availableMissions.size()];
     missionColor = (Color*)malloc(availableMissions.size() * sizeof(Color));
     for(int i = 0; i < (int)availableMissions.size(); i++) {
-      missionText[i] = (char*)malloc(120 * sizeof(char));
-      sprintf(missionText[i], "L:%d, S:%d, %s %s%s", 
-              availableMissions[i]->getLevel(), 
-              availableMissions[i]->getDepth(), 
-              ( availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : 
-                ( strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : 
-									( strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : "" ) ) ),
-              availableMissions[i]->getDisplayName(),
-              (availableMissions[i]->isCompleted() ? _( "(completed)" ) : ""));
+		char str[20];
+		snprintf( str, 20, _("L:%d, "), availableMissions[i]->getLevel() );
+		missionText[i] = str;
+		snprintf( str, 20, _("S:%d, "), availableMissions[i]->getDepth() );
+		missionText[i] += str;
+		missionText[i] += availableMissions[i]->isStoryLine() ? _( "(STORY)" ) 
+		                : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) 
+			            : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) 
+			            : ""; 
+		missionText[i] += " ";
+		missionText[i] += availableMissions[i]->getDisplayName();
+		if ( availableMissions[i]->isCompleted() ) missionText[i] += _( "(completed)" );
+
       missionColor[i].r = 1.0f;
       missionColor[i].g = 1.0f;
       missionColor[i].b = 0.0f;
@@ -315,7 +317,7 @@ void Board::initMissions() {
 
     if(!session->getGameAdapter()->isHeadless()) 
       session->getGameAdapter()->updateBoardUI(availableMissions.size(), 
-                                               (const char**)missionText, 
+                                               missionText, 
                                                missionColor);
   }
 }
@@ -543,8 +545,8 @@ Mission::Mission( Board *board, int level, int depth,
   // assign the map grid location
   if( mapName && strlen( mapName ) ) {
     edited = true;
-    char result[255];
-    board->getSession()->getMap()->loadMapLocation( mapName, result, &mapX, &mapY );
+    string result;
+    board->getSession()->getMap()->loadMapLocation( string(mapName), result, &mapX, &mapY );
   } else {
     edited = false;
     char *s;
@@ -655,7 +657,7 @@ char *Mission::getIntro() {
 	}
 }
 
-char *Mission::getAnswer( char *keyphrase ) {
+char *Mission::getAnswer( char const* keyphrase ) {
   string ks = keyphrase;
   if( conversations.find( ks ) != conversations.end() ) {
     return (char*)( answers[ conversations[ ks ] ].c_str());
@@ -665,7 +667,7 @@ char *Mission::getAnswer( char *keyphrase ) {
   }
 }
 
-char *Mission::getFirstKeyPhrase( char *keyphrase ) {
+char *Mission::getFirstKeyPhrase( char const* keyphrase ) {
   string ks = keyphrase;
   if( firstKeyPhrase.find( ks ) != firstKeyPhrase.end() ) {
     return (char*)(firstKeyPhrase[ ks ].c_str());
@@ -675,17 +677,17 @@ char *Mission::getFirstKeyPhrase( char *keyphrase ) {
   }
 }
 
-char *Mission::getIntro( char *s ) {
+char *Mission::getIntro( char const* s ) {
 	string npc = s;
-  if( npcConversations.find( s ) == npcConversations.end() ) {
+  if( npcConversations.find( npc ) == npcConversations.end() ) {
     //cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
     return NULL;
   }
-  NpcConversation *nc = npcConversations[ s ];
+  NpcConversation *nc = npcConversations[ npc ];
   return (char*)(nc->npc_intros[ Util::dice( nc->npc_intros.size() ) ].c_str());
 }
 
-bool Mission::setIntro( Creature *s, char *keyphrase ) {
+bool Mission::setIntro( Creature *s, char const* keyphrase ) {
 	NpcConversation *nc = NULL;
 	string npc = s->getMonster()->getType();
 	if( npcConversations.find( npc ) != npcConversations.end() ) {
@@ -702,7 +704,8 @@ bool Mission::setIntro( Creature *s, char *keyphrase ) {
 		return false;
 	}
 
-	string ks = Util::toLowerCase(keyphrase);
+	string ks = keyphrase;
+	Util::toLowerCase( ks );
 	if( nc->npc_conversations.find( ks ) != nc->npc_conversations.end() ) {
 		nc->npc_intros.clear();
     nc->npc_intros.push_back( nc->npc_answers[ nc->npc_conversations[ ks ] ] );
@@ -718,7 +721,7 @@ bool Mission::setIntro( Creature *s, char *keyphrase ) {
 	return true;
 }
 
-char *Mission::getAnswer( char *s, char *keyphrase ) {
+char *Mission::getAnswer( char const* s, char const* keyphrase ) {
 	string npc = s;
   if( npcConversations.find( npc ) == npcConversations.end() ) {
     //cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
@@ -735,7 +738,7 @@ char *Mission::getAnswer( char *s, char *keyphrase ) {
   }
 }
 
-char *Mission::getFirstKeyPhrase( char *s, char *keyphrase ) {
+char *Mission::getFirstKeyPhrase( char const* s, char const* keyphrase ) {
   string npc = s;
   if( npcConversations.find( npc ) == npcConversations.end() ) {
     cerr << "Can't find npc conversation for creature: " << npc << endl;
@@ -1068,7 +1071,7 @@ NpcInfo *Mission::getNpcInfo( int x, int y ) {
 
 string Mission::getNpcInfoKey( int x, int y ) {
   char line[255];
-  sprintf( line, "%d,%d", x, y );
+  snprintf( line, 255, "%d,%d", x, y );
   string key = line;
   return key;
 }
@@ -1117,20 +1120,20 @@ void Mission::saveMapData( GameAdapter *adapter, const string& filename ) {
 			}
 		}
 	}
-
-	char tmp[300];
+	enum { TMP_SIZE = 300 };
+	char tmp[ TMP_SIZE ];
 	if( !general ) {
 		general = new ConfigNode( config, "conversation" );
 		general->addValue( "name", new ConfigValue( "\"general\"" ) );
 		maxKey++;
-		sprintf( tmp, "keyphrase.%d", ( maxKey ) );
+		snprintf( tmp, TMP_SIZE, "keyphrase.%d", ( maxKey ) );
 		general->addValue( tmp, new ConfigValue( "\"_INTRO_\"" ) );
-		sprintf( tmp, "answer.%d", ( maxKey ) );
+		snprintf( tmp, TMP_SIZE, "answer.%d", ( maxKey ) );
 		general->addValue( tmp, new ConfigValue( "_( \"Welcome weary adventurer!\" )" ) );
 		maxKey++;
-		sprintf( tmp, "keyphrase.%d", ( maxKey ) );
+		snprintf( tmp, TMP_SIZE, "keyphrase.%d", ( maxKey ) );
 		general->addValue( tmp, new ConfigValue( "\"_UNKNOWN_\"" ) );
-		sprintf( tmp, "answer.%d", ( maxKey ) );
+		snprintf( tmp, TMP_SIZE, "answer.%d", ( maxKey ) );
 		general->addValue( tmp, new ConfigValue( "_( \"Uh, I don't know anything about that...\" )" ) );
 		config->getDocument()->addChild( general );
 	}
@@ -1140,7 +1143,7 @@ void Mission::saveMapData( GameAdapter *adapter, const string& filename ) {
     Creature *creature = adapter->getSession()->getCreature( i );
     if( creature->getMonster() && 
 				creature->getMonster()->isNpc() ) {
-			sprintf( tmp, "%d,%d", toint( creature->getX() ),  toint( creature->getY() ) );
+			snprintf( tmp, TMP_SIZE, "%d,%d", toint( creature->getX() ),  toint( creature->getY() ) );
 			string position = tmp;
 			bool foundNpc = false;
 			vector<ConfigNode*> *v = config->getDocument()->
@@ -1154,11 +1157,11 @@ void Mission::saveMapData( GameAdapter *adapter, const string& filename ) {
 			}
 			if( !foundNpc ) {
 				ConfigNode *node = new ConfigNode( config, "npc" );
-				sprintf( tmp, "\"%s\"", creature->getMonster()->getType() );
+				snprintf( tmp, TMP_SIZE, "\"%s\"", creature->getMonster()->getType() );
 				node->addValue( "name", new ConfigValue( tmp ) );
-				sprintf( tmp, "_( \"%s\" )", creature->getMonster()->getType() );
+				snprintf( tmp, TMP_SIZE, "_( \"%s\" )", creature->getMonster()->getType() );
 				node->addValue( "display_name", new ConfigValue( tmp ) );
-				sprintf( tmp, "\"%d,%d\"", toint( creature->getX() ),  toint( creature->getY() ) );
+				snprintf( tmp, TMP_SIZE, "\"%d,%d\"", toint( creature->getX() ),  toint( creature->getY() ) );
 				node->addValue( "position", new ConfigValue( tmp ) );
 				node->addValue( "type", new ConfigValue( "\"commoner\"" ) );
 				node->addValue( "level", new ConfigValue( "1" ) );

@@ -278,7 +278,7 @@ private:
 
   static int getTypeByName(char *name);
   static void addItem( RpgItem *item, int width, int depth, int height );
-  static RpgItem *getItemByName(char *name);
+  static RpgItem *getItemByName(char const* name);
   inline static std::map<std::string, const RpgItem *> *getItemMap() { return &itemsByName; }
   inline static int getSpecialCount() { return special.size(); }
   inline static RpgItem *getSpecial( int index ) { return special[index]; }  

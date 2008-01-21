@@ -26,11 +26,11 @@
 
 class Dice {
 private:
-  char *s;
+	enum { S_SIZE = 80 };
+	char s[ S_SIZE ];
   int count;
   int sides;
   int mod;
-  bool frees;
 
 public:
   Dice(char *s);
@@ -114,7 +114,7 @@ class Spell : public Storable {
   inline int getEffect() { return effect; }
   inline MagicSchool *getSchool() { return school; }
   inline bool isRangedSpell() { return distance > 1; }  
-  inline void describe(char *s) { sprintf(s, "%s (L:%d)(M:%d)", name, level, mp); }
+  inline void describe(char *s, size_t count) { snprintf(s, count, "%s (L:%d)(M:%d)", name, level, mp); }
   inline void addNotes(char *s) { strcat(notes, s); }
   inline void setSound(char *s) { sound = s; }
   inline char *getSound() { return sound; }

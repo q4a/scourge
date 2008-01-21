@@ -55,10 +55,7 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
 	cancel = win->createButton( w - 105, 210, w - 15, 230, _( "Cancel" ) );
 
 	filenameCount = 0;
-  filenames = (char**)malloc( MAX_SAVEGAME_COUNT * sizeof(char*) );
-  for( int i = 0; i < MAX_SAVEGAME_COUNT; i++ ) {
-    filenames[i] = (char*)malloc( 3000 * sizeof(char) );
-  }
+
 	this->screens = (GLuint*)malloc( MAX_SAVEGAME_COUNT * sizeof( GLuint ) );
 
 	confirm = new ConfirmDialog( scourge->getSDLHandler(), 
@@ -189,18 +186,18 @@ bool SavegameDialog::findFiles() {
 			// add in reverse order
 			if( filenameCount > 0 ) {
 				for( int i = filenameCount; i > 0; i-- ) {
-					strcpy( filenames[ i ], filenames[ i - 1 ] );
+					filenames[ i ] = filenames[ i - 1 ];
 					screens[ i ] = screens[ i - 1 ];
 				}
 			}
 			filenameCount++;
-			strcpy( filenames[ 0 ], fileInfos[ 0 ]->title );
+			filenames[ 0 ] = fileInfos[ 0 ]->title;
 			screens[ 0 ] = loadScreenshot( fileInfos[ 0 ]->path );
 			int n = (int)strtol( s.c_str() + 5, (char**)NULL, 16 );
 			if( n > maxFileSuffix ) maxFileSuffix = n;
 		}
 	}
-	files->setLines( filenameCount, (const char**)filenames, NULL, screens );
+	files->setLines( filenameCount, filenames, NULL, screens );
 	savegamesChanged = false;
 	return( filenameCount > 0 );
 }
@@ -253,9 +250,12 @@ bool SavegameDialog::readFileDetails( const string& dirname ) {
 
 	return true;
 }
+namespace { // anonymous local force 
 
-void getPosition( int n, char *buff ) {
-	sprintf( buff, "%d", n );
+typedef char POS_TXT[10];
+
+void getPosition( int n, POS_TXT& buff ) {
+	snprintf( buff, 10, "%d", n );
 	switch( buff[ strlen( buff ) - 1 ] ) {
 	case '1': strcat( buff, _("st") ); break;
 	case '2': strcat( buff, _("nd") ); break;
@@ -264,21 +264,24 @@ void getPosition( int n, char *buff ) {
 	}
 }
 
+} // anonymous namespace
+
 void SavegameDialog::setSavegameInfoTitle( SavegameInfo *info ) {
 	Creature *player = scourge->getParty()->getParty( 0 );
 	if( player ) {
 		char tmp[10];
 		getPosition( player->getLevel(), tmp );
-		char place[255];
+		enum {PLACE_SIZE = 255};
+		char place[PLACE_SIZE];
 
 		if( scourge->getSession()->getCurrentMission() ) {
 			if( strstr( scourge->getSession()->getCurrentMission()->getMapName(), "outdoors" ) ) {
 				strcpy( place, _( "Somewhere in the wilderness." ) );
 			} else if( strstr( scourge->getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
-				sprintf( place, _( "In a cave on level %d." ), 
+				snprintf( place, PLACE_SIZE, _( "In a cave on level %d." ), 
 								 ( scourge->getCurrentDepth() + 1 ) );
 			} else {
-				sprintf( place, _( "Dungeon level %d at %s." ), 
+				snprintf( place, PLACE_SIZE, _( "Dungeon level %d at %s." ), 
 								 ( scourge->getCurrentDepth() + 1 ),
 								 scourge->getSession()->getCurrentMission()->getMapName() );
 			}
@@ -286,14 +289,14 @@ void SavegameDialog::setSavegameInfoTitle( SavegameInfo *info ) {
 			strcpy( place, _("Resting at HQ.") );
 		}
 		char tmp2[300];
-		sprintf( tmp2, _( "Party of %s the %s level %s." ), player->getName(), tmp, player->getCharacter()->getDisplayName() );
-		sprintf( (char*)info->title, "%s %s, %s %s", 
+		snprintf( tmp2, 300, _( "Party of %s the %s level %s." ), player->getName(), tmp, player->getCharacter()->getDisplayName() );
+		snprintf( info->title, SavegameInfo::TITLE_SIZE, "%s %s, %s %s", 
 						 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
 						 scourge->getSession()->getBoard()->getStorylineTitle(),
 						 tmp2,
 						 place );
 	} else {
-		sprintf( (char*)info->title, "%s %s", 
+		snprintf( info->title, SavegameInfo::TITLE_SIZE, "%s %s", 
 						 scourge->getSession()->getParty()->getCalendar()->getCurrentDate().getDateString(),
 						 scourge->getSession()->getBoard()->getStorylineTitle() );
 	}

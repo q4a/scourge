@@ -75,13 +75,14 @@ bool CombatTest::executeTests( Session *session, char *path ) {
 
   // Test all weapons vs. leather armor
   bool ret = true;
-  char filename[80];
+  enum { FILE_NAME_SIZE = 80 };
+  char filename[ FILE_NAME_SIZE ];
   for( int i = 0; i < RpgItem::itemCount; i++ ) {
     if( !RpgItem::getItem( i )->isWeapon() ) continue;
     attacker->removeInventory( 0 );
     weapon = equipItem( session, attacker, RpgItem::getItem( i )->getName(), 1 );
     items.push_back( weapon );
-    sprintf( filename, "weapon_%s.html", RpgItem::getItem( i )->getName() );
+    snprintf( filename, FILE_NAME_SIZE, "weapon_%s.html", RpgItem::getItem( i )->getName() );
     if( !fight( path, filename, session, attacker, weapon, defender ) ) break;
   }
 
@@ -94,7 +95,7 @@ bool CombatTest::executeTests( Session *session, char *path ) {
     creatures.push_back( c );
     items.push_back( equipItem( session, c, "Horned helmet", 1 ) );
     items.push_back( equipItem( session, c, "Leather Armor", 1 ) );
-    sprintf( filename, "character_%s.html", Character::character_list[i]->getName() );
+    snprintf( filename, FILE_NAME_SIZE, "character_%s.html", Character::character_list[i]->getName() );
     if( !fight( path, filename, session, attacker, weapon, c ) ) break;
   }
 
@@ -104,7 +105,7 @@ bool CombatTest::executeTests( Session *session, char *path ) {
       attacker->setSkill( t, Util::dice( MAX_SKILL ) );
       defender->setSkill( t, Util::dice( MAX_SKILL ) );
     }
-    sprintf( filename, "rand_ability_%d.html", i );
+    snprintf( filename, FILE_NAME_SIZE, "rand_ability_%d.html", i );
     if( !fight( path, filename, session, attacker, weapon, defender ) ) break;
   }
 
@@ -135,7 +136,7 @@ bool CombatTest::fight( char *path,
                         int count ) {
 
   char file[300];
-  sprintf( file, "%s/%s", path, filename );
+  snprintf( file, 300, "%s/%s", path, filename );
   FILE *fp = fopen( file, "w" );
   if( !fp ) {
     cerr << "Unable to open file: " << file << endl;

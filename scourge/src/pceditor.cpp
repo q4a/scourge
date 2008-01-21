@@ -58,14 +58,8 @@ PcEditor::PcEditor( Scourge *scourge ) {
 PcEditor::~PcEditor() {
 	delete win;
 	if( deleteCreature ) delete creature;
-  for(int i = 0; i < (int)Character::rootCharacters.size(); i++) {
-		free( charTypeStr[i] );
-	}
-	free( charTypeStr );
-  for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
-		free( deityTypeStr[i] );
-	}
-	free( deityTypeStr );
+	delete[] charTypeStr;
+	delete[] deityTypeStr;
 	deleteLoadedShapes();
 }
 
@@ -167,17 +161,17 @@ void PcEditor::loadUI() {
 
 		if( charType->getSelectedLine() > -1 ) 
 			charTypeDescription->setText( Character::rootCharacters[charType->getSelectedLine()]->getDescription() );
-
-		char message[300];
+		enum { MSG_SIZE = 300 };
+		char message[ MSG_SIZE ];
 		int n = 0;
 		for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
 			Skill *sk = Skill::skills[i];
 			if( sk->getGroup()->isStat() ) {
-				sprintf( message, "%d (%d)", creature->getSkill( i ), creature->getSkillMod( i ) );
+				snprintf( message, MSG_SIZE, "%d (%d)", creature->getSkill( i ), creature->getSkillMod( i ) );
 				skillValue[n++]->setText( message );
 			}
 		}
-		sprintf( message, "%d", availableSkillMod );
+		snprintf( message, MSG_SIZE, "%d", availableSkillMod );
 		remainingLabel->setText( message );
 
 		int deityIndex = Util::dice( MagicSchool::getMagicSchoolCount() );
@@ -504,12 +498,11 @@ weaknesses of each profession." ),
 																secondColWidth, 80, 
 																scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( charType, CLASS_TAB );
-  charTypeStr = (char**)malloc( Character::rootCharacters.size() * sizeof(char*));
+	charTypeStr = new string[ Character::rootCharacters.size() ];
   for(int i = 0; i < (int)Character::rootCharacters.size(); i++) {
-    charTypeStr[i] = (char*)malloc( 120 * sizeof(char) );
-    strcpy( charTypeStr[i], Character::rootCharacters[i]->getDisplayName() );
+		charTypeStr[i] = Character::rootCharacters[i]->getDisplayName();
   }
-  charType->setLines( (int)Character::rootCharacters.size(), (const char**)charTypeStr );
+  charType->setLines( (int)Character::rootCharacters.size(), charTypeStr );
   int charIndex = Util::dice( Character::rootCharacters.size() );
   charType->setSelectedLine( charIndex );
   charTypeDescription = new ScrollingLabel( secondColStart, 230, 
@@ -576,12 +569,11 @@ of known deities of the land with a brief description for each." ),
                                  secondColWidth, deityHeight, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( deityType, DEITY_TAB );
-  deityTypeStr = (char**)malloc( MagicSchool::getMagicSchoolCount() * sizeof(char*) );
+  deityTypeStr = new string[ MagicSchool::getMagicSchoolCount()];
   for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
-    deityTypeStr[i] = (char*)malloc( 120 * sizeof( char ) );
-    strcpy( deityTypeStr[i], MagicSchool::getMagicSchool( i )->getDeity() );
+    deityTypeStr[i] = MagicSchool::getMagicSchool( i )->getDeity();
   }
-  deityType->setLines( MagicSchool::getMagicSchoolCount(), (const char**)deityTypeStr );
+  deityType->setLines( MagicSchool::getMagicSchoolCount(), deityTypeStr );
   int deityIndex = Util::dice( MagicSchool::getMagicSchoolCount() );
   deityType->setSelectedLine( deityIndex );
 

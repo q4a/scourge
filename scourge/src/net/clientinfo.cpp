@@ -63,13 +63,13 @@ ClientInfo::~ClientInfo() {
 }
 
 char *ClientInfo::describe() {
-  sprintf(desc, "id=%d name=%s", id, username);
+  snprintf(desc, DESC_SIZE, "id=%d name=%s", id, username);
   return desc;
 }
 
 void ClientInfo::chat(char *message) {
   char s[1024];
-  Commands::buildChat(s, username, message);
+  Commands::buildChat(s, 1024, username, message);
   server->sendToAllTCP(s);
 }
 

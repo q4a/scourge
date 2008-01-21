@@ -118,166 +118,23 @@ typedef struct _MovingDoor {
   @author Gabor Torok
 */ 
 class Scourge : public SDLOpenGLAdapter,WidgetView,DragAndDropHandler,StatusReport {
- private:
-	TextScroller *descriptionScroller;
-  Party *party;
-  Map *levelMap;
-  MapSettings *mapSettings;
-  MiniMap * miniMap;
-  int level;
-  MapEditor *mapEditor;
-  MainMenu *mainMenu;
-  OptionsMenu *optionsMenu;
-  MultiplayerDialog *multiplayer;
-  bool isInfoShowing;
-  bool info_dialog_showing;
-  Board *board;
-  int nextMission;
-  bool teleportFailure;
-  bool inHq;
-  bool missionWillAwardExpPoints;
-  char infoMessage[2000];
-	PcUi *pcui;
-  ConfirmDialog *exitConfirmationDialog;
-  TextDialog *textDialog;
-  InfoGui *infoGui;
-  ConversationGui *conversationGui;
-  //Label *exitLabel;
-  //Button *yesExitConfirm, *noExitConfirm;
-  int movingX, movingY, movingZ;
-  Item *movingItem;  
-  GLint lastTick;
-  int battleCount;
-  Battle *battle[MAX_BATTLE_COUNT];  
-
-  // multi-story levels
-  int currentStory, oldStory;
-  bool changingStory, goingDown, goingUp;
-
-  static const int MAX_CONTAINER_GUI = 100;
-  int containerGuiCount;
-  ContainerGui *containerGui[MAX_CONTAINER_GUI];
-
-  GLint dragStartTime;
-  static const int ACTION_CLICK_TIME = 200;
-
-  // how many pixels to wait between sampling 3d coordinates 
-  // when dragging items (the more the faster)
-  static const int POSITION_SAMPLE_DELTA = 10; 
-
-  bool teleporting;
-  
-  std::vector<Battle *> battleRound;
-  int battleTurn, rtStartTurn;
-
-  Creature *targetSelectionFor;
-  NetPlay *netPlay;
-
-
-  // party ui
-  bool lastEffectOn;
-  int oldX;
-  char version[100], min_version[20];
-  Window *mainWin, *tbCombatWin;
-  Button *inventoryButton;
-  Button *endTurnButton;
-  Button *optionsButton;
-  Button *quitButton;
-  Button *roundButton;
-	Button *ioButton;
-  Button *player1Button;
-  Button *player2Button;
-  Button *player3Button;
-  Button *player4Button;
-  Button *groupButton;
-  CardContainer *cards;
-  Canvas *minPartyInfo;
-  Canvas *playerInfo[MAX_PARTY_SIZE], *playerHpMp[MAX_PARTY_SIZE], *playerWeapon[MAX_PARTY_SIZE];
-  Canvas *quickSpell[12];
-	Button *dismissButton[MAX_PARTY_SIZE];
-
-  // board gui
-  ScrollingList *missionList;
-  ScrollingLabel *missionDescriptionLabel;
-  Button *playMission, *closeBoard;
-  Window *boardWin;
-  MapWidget *mapWidget;
-
-  Progress *progress;
-  bool inBattle;  
-  
-  TradeDialog *tradeDialog;
-  HealDialog *healDialog;
-  DonateDialog *donateDialog;
-  TrainDialog *trainDialog;
-
-  Location *gatepos;
-
-  Window *squirrelWin;
-  ScrollingLabel *squirrelLabel;
-  TextField *squirrelText;
-  Button *squirrelRun, *squirrelClear;
-
-  std::map<Location*, MagicSchool*> deityLocation;
-
-  ScourgeView *view;
-  ScourgeHandler *handler;
-
-	ConfirmDialog *dismissHeroDialog;
-	ConfirmDialog *confirmUpload;
-
-  PcEditor *pcEditor;
-	SavegameDialog *saveDialog;
-	std::set<std::string> visitedMaps;
-
-	std::vector<std::string> chapterText;
-	int chapterTextPos;
-	int chapterTextWidth;
-	Window *chapterIntroWin;
-	Button *beginChapter, *replayIntro;
-
-	std::vector<MovingDoor> movingDoors;
-  
-protected:
-  bool getItem(Location *pos);
-  // returns new z coordinate
-  int dropItem(int x, int y);
-  bool useLever( Location *pos, bool showMessage=true );
-  bool useSecretDoor(Location *pos);
-
-  void destroyDoor( Sint16 ox, Sint16 oy, Shape *shape );
-	void startDoorEffect( int effect, Sint16 ox, Sint16 oy, Shape *shape );
-  bool useBoard(Location *pos);
-  bool useTeleporter(Location *pos);
-  bool useGate(Location *pos);
-  bool usePool( Location *pos );
-	
-	// called from startMission
-	void resetGame( bool resetParty );
-	void createMissionInfoMessage( Mission *lastMission );
-	bool createLevelMap( Mission *lastMission, bool fromRandomMap );	
-	void cleanUpAfterMission();
-	bool changeLevel();
-	void endGame();
-	std::string getCurrentMapName( const std::string& dirName, int depth=-1, std::string *mapFileName=NULL );
-	std::string getSavedMapName();
-	bool loadMap( const std::string& mapName, bool fromRandomMap, bool absolutePath, char *templateMapName=NULL );	
-  void linkMissionObjectives( std::vector< RenderedItem* > *items, std::vector< RenderedCreature* > *creatures );
-
 public:
-
-#define TOP_GUI_WIDTH 400
-#define TOP_GUI_HEIGHT 100
-#define GUI_PLAYER_INFO_W 250
-#define GUI_PLAYER_INFO_H 350
-#define MINIMAP_WINDOW_WIDTH 200
-#define MINIMAP_WINDOW_HEIGHT 150
-
-  static const int PARTY_GUI_WIDTH=486;
-  static const int PARTY_GUI_HEIGHT=150;
-  static const int PARTY_MIN_GUI_WIDTH=100;
-  static const int INVENTORY_WIDTH = 420;
-  static const int INVENTORY_HEIGHT = 460;
+	enum {
+		TOP_GUI_WIDTH = 400,
+		TOP_GUI_HEIGHT = 100,
+		GUI_PLAYER_INFO_W = 250,
+		GUI_PLAYER_INFO_H = 350,
+		MINIMAP_WINDOW_WIDTH = 200,
+		MINIMAP_WINDOW_HEIGHT = 150,
+		PARTY_GUI_WIDTH = 486,
+		PARTY_GUI_HEIGHT = 150,
+		PARTY_MIN_GUI_WIDTH = 100,
+		INVENTORY_WIDTH = 420,
+		INVENTORY_HEIGHT = 460,
+		INFO_SIZE = 2000,
+		VER_SIZE = 100,
+		MINVER_SIZE = 20
+	};
   
   static int blendA, blendB;
   static int blend[];
@@ -538,7 +395,7 @@ public:
   /**
     A helper method to show a message in a modal dialog.
   */
-  void showMessageDialog(char *message);
+  void showMessageDialog(char const* message);
 
   void togglePlayerOnly();
   
@@ -643,7 +500,7 @@ public:
 
   void createBoardUI();
 
-  void updateBoardUI(int count, const char **missionText, Color *missionColor);
+  virtual void updateBoardUI(int count, std::string const missionText[], Color *missionColor);
 
   void setMissionDescriptionUI(char *s, int mapx, int mapy);
 
@@ -776,12 +633,38 @@ public:
 	inline std::vector<MovingDoor> *getMovingDoors() { return &movingDoors; }
 
 protected:
+  bool getItem(Location *pos);
+  // returns new z coordinate
+  int dropItem(int x, int y);
+  bool useLever( Location *pos, bool showMessage=true );
+  bool useSecretDoor(Location *pos);
+
+  void destroyDoor( Sint16 ox, Sint16 oy, Shape *shape );
+	void startDoorEffect( int effect, Sint16 ox, Sint16 oy, Shape *shape );
+  bool useBoard(Location *pos);
+  bool useTeleporter(Location *pos);
+  bool useGate(Location *pos);
+  bool usePool( Location *pos );
+	
+	// called from startMission
+	void resetGame( bool resetParty );
+	void createMissionInfoMessage( Mission *lastMission );
+	bool createLevelMap( Mission *lastMission, bool fromRandomMap );	
+	void cleanUpAfterMission();
+	bool changeLevel();
+	void endGame();
+	std::string getCurrentMapName( const std::string& dirName, int depth=-1, std::string *mapFileName=NULL );
+	std::string getSavedMapName();
+	bool loadMap( const std::string& mapName, bool fromRandomMap, bool absolutePath, char *templateMapName=NULL );	
+  void linkMissionObjectives( std::vector< RenderedItem* > *items, std::vector< RenderedCreature* > *creatures );
+
+protected:
 
 	void initChapterIntro();
   
 	bool describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull );
 
-  char *getAPRDescription( Creature *p, Item *item, char *buff );
+  char *getAPRDescription( Creature *p, Item *item, char *buff, size_t buffSize );
 
 	bool doLoadGame( Session *session, std::string& dirName, char *error );
 
@@ -808,6 +691,127 @@ protected:
 
 	bool saveScoreid( std::string& dirName, char *p );
 	bool loadScoreid( std::string& dirName, char *p );
+
+ private:
+	TextScroller *descriptionScroller;
+  Party *party;
+  Map *levelMap;
+  MapSettings *mapSettings;
+  MiniMap * miniMap;
+  int level;
+  MapEditor *mapEditor;
+  MainMenu *mainMenu;
+  OptionsMenu *optionsMenu;
+  MultiplayerDialog *multiplayer;
+  bool isInfoShowing;
+  bool info_dialog_showing;
+  Board *board;
+  int nextMission;
+  bool teleportFailure;
+  bool inHq;
+  bool missionWillAwardExpPoints;
+  char infoMessage[ INFO_SIZE ];
+	PcUi *pcui;
+  ConfirmDialog *exitConfirmationDialog;
+  TextDialog *textDialog;
+  InfoGui *infoGui;
+  ConversationGui *conversationGui;
+  //Label *exitLabel;
+  //Button *yesExitConfirm, *noExitConfirm;
+  int movingX, movingY, movingZ;
+  Item *movingItem;  
+  GLint lastTick;
+  int battleCount;
+  Battle *battle[MAX_BATTLE_COUNT];  
+
+  // multi-story levels
+  int currentStory, oldStory;
+  bool changingStory, goingDown, goingUp;
+
+  static const int MAX_CONTAINER_GUI = 100;
+  int containerGuiCount;
+  ContainerGui *containerGui[MAX_CONTAINER_GUI];
+
+  GLint dragStartTime;
+  static const int ACTION_CLICK_TIME = 200;
+
+  // how many pixels to wait between sampling 3d coordinates 
+  // when dragging items (the more the faster)
+  static const int POSITION_SAMPLE_DELTA = 10; 
+
+  bool teleporting;
+  
+  std::vector<Battle *> battleRound;
+  int battleTurn, rtStartTurn;
+
+  Creature *targetSelectionFor;
+  NetPlay *netPlay;
+
+
+  // party ui
+  bool lastEffectOn;
+  int oldX;
+  char version[ VER_SIZE ], min_version[ MINVER_SIZE ];
+  Window *mainWin, *tbCombatWin;
+  Button *inventoryButton;
+  Button *endTurnButton;
+  Button *optionsButton;
+  Button *quitButton;
+  Button *roundButton;
+	Button *ioButton;
+  Button *player1Button;
+  Button *player2Button;
+  Button *player3Button;
+  Button *player4Button;
+  Button *groupButton;
+  CardContainer *cards;
+  Canvas *minPartyInfo;
+  Canvas *playerInfo[MAX_PARTY_SIZE], *playerHpMp[MAX_PARTY_SIZE], *playerWeapon[MAX_PARTY_SIZE];
+  Canvas *quickSpell[12];
+	Button *dismissButton[MAX_PARTY_SIZE];
+
+  // board gui
+  ScrollingList *missionList;
+  ScrollingLabel *missionDescriptionLabel;
+  Button *playMission, *closeBoard;
+  Window *boardWin;
+  MapWidget *mapWidget;
+
+  Progress *progress;
+  bool inBattle;  
+  
+  TradeDialog *tradeDialog;
+  HealDialog *healDialog;
+  DonateDialog *donateDialog;
+  TrainDialog *trainDialog;
+
+  Location *gatepos;
+
+  Window *squirrelWin;
+  ScrollingLabel *squirrelLabel;
+  TextField *squirrelText;
+  Button *squirrelRun, *squirrelClear;
+
+  std::map<Location*, MagicSchool*> deityLocation;
+
+  ScourgeView *view;
+  ScourgeHandler *handler;
+
+	ConfirmDialog *dismissHeroDialog;
+	ConfirmDialog *confirmUpload;
+
+  PcEditor *pcEditor;
+	SavegameDialog *saveDialog;
+	std::set<std::string> visitedMaps;
+
+	std::vector<std::string> chapterText;
+	int chapterTextPos;
+	int chapterTextWidth;
+	Window *chapterIntroWin;
+	Button *beginChapter, *replayIntro;
+
+	std::vector<MovingDoor> movingDoors;
+  
 };
 
 #endif

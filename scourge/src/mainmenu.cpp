@@ -259,7 +259,7 @@ void MainMenu::drawView() {
     glLoadIdentity();
     glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
     char version[100];
-    sprintf(version, _( "Scourge version %s" ), SCOURGE_VERSION);
+    snprintf(version, 100, _( "Scourge version %s" ), SCOURGE_VERSION);
     scourge->getSDLHandler()->texPrint( 0, 0, version );
     glColor3f( 0.8f, 0.75f, 0.65f );
     int y = 14;

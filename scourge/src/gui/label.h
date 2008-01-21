@@ -38,14 +38,14 @@ class Label : public Widget {
      bool specialColor;
 
  public: 
-     Label(int x, int y, char *text=NULL, int lineWidth=0, int fontType=0, int lineHeight=15);
+     Label(int x, int y, char const* text=NULL, int lineWidth=0, int fontType=0, int lineHeight=15);
      ~Label();
      inline int getFontType() { return fontType; }
      inline void setFontType( int n ) { fontType = n; }
      inline int getLineHeight() { return lineHeight; }
      inline void setLineHeight( int n ) { lineHeight = n; }
      inline char *getText() { return text; }
-     void setText(char *s);
+     void setText(char const* s);
      void drawWidget(Widget *parent);
      inline bool canGetFocus() { return false; }
 		 inline void setSpecialColor() { specialColor = true; }

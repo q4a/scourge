@@ -26,7 +26,7 @@ SqObject::~SqObject() {
 
 void SqObject::documentSOM( char *path, set<string> *names ) {
   char filename[3000];
-  sprintf( filename, "%s%s%s.html", 
+  snprintf( filename, 3000, "%s%s%s.html", 
            path, 
            ( path[ strlen( path ) - 1 ] == '/' || path[ strlen( path ) - 1 ] == '\\' ? "" : "/" ),
            this->getClassName() );
@@ -59,7 +59,7 @@ void SqObject::documentSOM( char *path, set<string> *names ) {
       continue;
 
     fprintf( fp, "<div class=code>%s %s(%s)</div>\n%s<p>\n",
-             describeReturnType( member->returnType, names, buffer2 ),
+		describeReturnType( member->returnType, names, buffer2, 255 ),
              member->name,
              describeTypeMask( member->typemask, buffer ),
              member->description );
@@ -86,7 +86,7 @@ char *SqObject::describeTypeMask( const SQChar *typemask, char *buffer ) {
       case 's' : strcpy( tmp, "string" ); break;
       default : strcpy( tmp, "unknown_type" );
       }
-      sprintf( tmp2, "%s p%d", tmp, ( ( i - start ) + 1 ) );
+      snprintf( tmp2, 80, "%s p%d", tmp, ( ( i - start ) + 1 ) );
       strcat( buffer, tmp2 );
     }
   }
@@ -96,12 +96,12 @@ char *SqObject::describeTypeMask( const SQChar *typemask, char *buffer ) {
 
 char *SqObject::describeReturnType( const char *returnType, 
                                     set<string> *names, 
-                                    char *buffer ) {
+                                    char *buffer, size_t bufferSize ) {
   string s = (char*)returnType;
   if( names->find( s ) == names->end() ) {
     strcpy( buffer, (char*)returnType );
   } else {
-    sprintf( buffer, "<a href=\"%s.html\">%s</a>", 
+    snprintf( buffer, bufferSize, "<a href=\"%s.html\">%s</a>", 
              (char*)returnType, 
              (char*)returnType );
   }

@@ -908,7 +908,7 @@ Button *Window::createButton(int x1, int y1, int x2, int y2, char *label, bool t
   }
 } 
 
-Label * Window::createLabel(int x1, int x2, char * label, int color){
+Label * Window::createLabel(int x1, int x2, char const* label, int color){
   if(widgetCount < MAX_WIDGET){
     Label * theLabel;
     theLabel = new Label(x1, x2, label);  
@@ -1109,7 +1109,7 @@ void Window::prevWindowToTop() {
 void Window::showMessageDialog(ScourgeGui *scourgeGui, 
                                int x, int y, int w, int h, 
                                char *title, GLuint texture,
-                               char *message, 
+                               char const* message, 
                                char *buttonLabel) {
   if(message_dialog && message_dialog->isVisible()) {
     cerr << "*** Warning: Unable to display second message dialog: " << message << endl;
