@@ -165,7 +165,8 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 			missionMusicIndex = Util::pickOne( 1, MISSION_MUSIC_COUNT );
 			filename << rootDir << "/sound/music/track" << setw(2) << setfill('0') << missionMusicIndex << ".ogg";
 		}
-		string fn = filename.str();
+		string fn;
+		filename >> fn;
 
   // load the new one
 		missionMusic = Mix_LoadMUS( fn.c_str() );
@@ -188,7 +189,8 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 			// load the new one
 			filename.clear();
 			filename << rootDir << "/sound/music/fight" << setw(2) << setfill('0') << fightMusicIndex << ".ogg";
-			string fn = filename.str();
+			string fn;
+			filename >> fn;
 			fightMusic = Mix_LoadMUS( fn.c_str() );
 			if( !fightMusic ) {
 				cerr << "*** Error: couldn't load music: " << fn << endl;
