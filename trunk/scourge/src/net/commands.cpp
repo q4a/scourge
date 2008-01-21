@@ -43,20 +43,20 @@ void Commands::interpret(char *rawMessage, int length) {
   }
 }
 
-void Commands::buildGameState(char *buff, int frame, char *state) {
-  sprintf(buff, "STATE,%d,%s", frame, state);
+void Commands::buildGameState(char *buff, size_t buffSize, int frame, char *state) {
+  snprintf(buff, buffSize, "STATE,%d,%s", frame, state);
 }
 
-void Commands::buildChat(char *buff, char *username, char *message) {
-  sprintf(buff, "CHAT,%s> %s", username, message);
+void Commands::buildChat(char *buff, size_t buffSize, char *username, char *message) {
+  snprintf(buff, buffSize, "CHAT,%s> %s", username, message);
 }
 
-void Commands::buildLogin(char *buff, char *username) {
-  sprintf(buff, "LOGIN,%s", username);
+void Commands::buildLogin(char *buff, size_t buffSize, char *username) {
+  snprintf(buff, buffSize, "LOGIN,%s", username);
 }
 
-void Commands::buildPing(char *buff) {
-  sprintf(buff, "PING,%d", getLastGameFrameReceived());
+void Commands::buildPing(char *buff, size_t buffSize) {
+  snprintf(buff, buffSize, "PING,%d", getLastGameFrameReceived());
 }
 
 void Commands::buildBytesCharacter(char *buff, int size, char *info, int *messageSize) {

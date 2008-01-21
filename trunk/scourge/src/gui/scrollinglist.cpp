@@ -58,7 +58,7 @@ ScrollingList::~ScrollingList() {
   delete[] selectedLine;
 }
 
-void ScrollingList::setLines(int count, const char *s[], const Color *colors, const GLuint *icons) { 
+void ScrollingList::setLines(int count, string const s[], const Color *colors, const GLuint *icons) { 
 	textWidthCache.clear();
 	list.clear();
 	for(int i = 0; i < count; i++)

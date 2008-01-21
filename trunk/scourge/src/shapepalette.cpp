@@ -781,10 +781,10 @@ void ShapePalette::loadNpcPortraits() {
 
 void ShapePalette::initMapGrid() {
   // load the textures
-  char textureName[80];
   for( int x = 0; x < Constants::MAP_GRID_TILE_WIDTH; x++ ) {
     for( int y = 0; y < Constants::MAP_GRID_TILE_HEIGHT; y++ ) {
-      sprintf( textureName, "/mapgrid/map%d-%d.bmp", x, y );
+      char textureName[80];
+      snprintf( textureName, 80, "/mapgrid/map%d-%d.bmp", x, y );
       //cerr << "loading: " << textureName << endl;
       mapGrid[ x ][ y ] = loadGLTextures( textureName );
     }

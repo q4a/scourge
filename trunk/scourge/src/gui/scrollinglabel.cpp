@@ -341,7 +341,7 @@ bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y)
 	
 				if( handler ) {
 					int index = getWordPos( x, y );
-					if( index > -1 ) handler->wordClicked( wordPos[ index ].word );
+					if( index > -1 ) handler->wordClicked( string(wordPos[ index ].word) );
 				}
 			}
 		}

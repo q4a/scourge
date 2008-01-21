@@ -83,7 +83,7 @@ void SpellCaster::spellFailed() {
     }
     if( tmpTarget ) {
       char message[200];
-      sprintf( message, _( "...fumble: hits %s instead!" ), tmpTarget->getName() );
+      snprintf( message, 200, _( "...fumble: hits %s instead!" ), tmpTarget->getName() );
       battle->getSession()->getGameAdapter()->addDescription( message, 1, 0.15f, 1 );
       Creature *oldTarget = battle->getCreature()->getTargetCreature();
       battle->getCreature()->setTargetCreature( tmpTarget );
@@ -220,7 +220,8 @@ void SpellCaster::viewInfo() {
                                                    radius, radius );
 
       // walk around the circle
-      char msg[200];
+	  enum { MSG_SIZE = 200 };
+      char msg[ MSG_SIZE ];
       DisplayInfo di;
       di.red = 0.1f;
       di.green = 0.1f;
@@ -242,7 +243,7 @@ void SpellCaster::viewInfo() {
               if( battle->getSession()->getMap()->isSecretDoor( pos ) ) {
                 if( !battle->getSession()->getMap()->isSecretDoorDetected( pos ) ) {
                   battle->getSession()->getMap()->setSecretDoorDetected( pos );
-                  sprintf( msg, _( "%s discovers a secret door!" ), creature->getName() );
+                  snprintf( msg, MSG_SIZE, _( "%s discovers a secret door!" ), creature->getName() );
                   battle->getSession()->getGameAdapter()->addDescription( msg, 1, 0.2f, 1 );
                 }
               }
@@ -254,7 +255,7 @@ void SpellCaster::viewInfo() {
               Trap *trap = battle->getSession()->getMap()->getTrapLoc( trapIndex );
               if( !trap->discovered ) {
                 trap->discovered = true;
-                sprintf( msg, _( "%s discovers a trap!" ), creature->getName() );
+                snprintf( msg, MSG_SIZE, _( "%s discovers a trap!" ), creature->getName() );
                 battle->getSession()->getGameAdapter()->addDescription( msg, 1, 0.2f, 1 );
               }
             }
@@ -279,7 +280,7 @@ void SpellCaster::increaseHP() {
     n = creature->getTargetCreature()->getMaxHp() - creature->getTargetCreature()->getHp();
   creature->getTargetCreature()->setHp((int)(creature->getTargetCreature()->getHp() + n));
   char msg[200];
-  sprintf(msg, _( "%s heals %d points." ), creature->getTargetCreature()->getName(), n);
+  snprintf(msg, 200, _( "%s heals %d points." ), creature->getTargetCreature()->getName(), n);
   battle->getSession()->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 }
@@ -295,7 +296,7 @@ void SpellCaster::increaseAC() {
 
   creature->getTargetCreature()->setBonusArmor(creature->getTargetCreature()->getBonusArmor() + n);
   char msg[200];
-  sprintf(msg, _( "%s feels impervious to damage!" ), creature->getTargetCreature()->getName());
+  snprintf(msg, 200, _( "%s feels impervious to damage!" ), creature->getTargetCreature()->getName());
   battle->getSession()->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 
@@ -369,12 +370,13 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 	bool lowDamage = damage < 5;
 
 	// dodge saves for half damage
-	char msg[200];
+	enum { MSG_SIZE = 200 };
+	char msg[ MSG_SIZE ];
 	float skill = Util::roll( 0.0f, creature->getSkill( spell->getSchool()->getSkill() ) );
 	float dodge = Util::roll( 0.0f, creature->getTargetCreature()->getDodge( creature ) );
 	if( skill < dodge ) {
 		damage /= 2.0f;
-		sprintf( msg, _( "%s dodges some of the damage." ), 
+		snprintf( msg, MSG_SIZE, _( "%s dodges some of the damage." ), 
 						 creature->getTargetCreature()->getName() );
 		battle->getSession()->getGameAdapter()->addDescription( msg, 1, 0.15f, 1 );
 	}
@@ -385,13 +387,13 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 		damage -= (((float)damage / 150.0f) * resistance);
 	}
 
-  sprintf(msg, _( "%1$s attacks %2$s with %3$s." ), 
+  snprintf(msg, MSG_SIZE, _( "%1$s attacks %2$s with %3$s." ), 
           creature->getName(), 
           creature->getTargetCreature()->getName(),
           spell->getDisplayName());
   battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);
   if( resistance > 0 && !lowDamage ) {
-    sprintf(msg, _( "%s resists the spell with %d." ), 
+    snprintf(msg, MSG_SIZE, _( "%s resists the spell with %d." ), 
             creature->getTargetCreature()->getName(),
             resistance);
     battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    
@@ -404,7 +406,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 
 	// not internationalized
 	char tmp[255];
-	sprintf( tmp, "%s the %s spell", 
+	snprintf( tmp, 255, "%s the %s spell", 
 					 Constants::getMessage( Constants::CAUSE_OF_DEATH ),
 					 spell->getDisplayName() );
 	creature->getTargetCreature()->setPendingCauseOfDeath( tmp );
@@ -474,9 +476,10 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       if(!battle->getCreature()->canAttack( creature )) continue;
 
       // roll for resistance
-      char msg[200];
+	  enum { MSG_SIZE = 200 };
+      char msg[ MSG_SIZE ];
       if( Util::dice( 100 ) < creature->getSkill(spell->getSchool()->getResistSkill())) {    
-        sprintf(msg, _( "%s resists the spell! [%d]" ), 
+        snprintf(msg, MSG_SIZE, _( "%s resists the spell! [%d]" ), 
                 creature->getName(), 
                 creature->getSkill(spell->getSchool()->getResistSkill()));
         battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    
@@ -486,7 +489,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       // check for magic item state mod protections
       protectiveItem = creature->getProtectedStateMod(mod);
       if( protectiveItem && 0 == Util::dice( 2 ) ) {
-        sprintf(msg, _( "%s resists the spell with magic item!" ), 
+        snprintf(msg, MSG_SIZE, _( "%s resists the spell with magic item!" ), 
                 creature->getName());
         battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    
         continue;
@@ -514,12 +517,12 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       continue;    
     }
     creature->setStateMod(mod, setting);
-    
-    char msg[200];
+    enum { MSG_SIZE = 200 };
+    char msg[ MSG_SIZE ];
     if(setting) {
-			sprintf( msg, StateMod::stateMods[mod]->getSetState(), creature->getName() );
+			snprintf( msg, MSG_SIZE, StateMod::stateMods[mod]->getSetState(), creature->getName() );
     } else {
-			sprintf( msg, StateMod::stateMods[mod]->getUnsetState(), creature->getName() );
+			snprintf( msg, MSG_SIZE, StateMod::stateMods[mod]->getUnsetState(), creature->getName() );
     }
     battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);
     

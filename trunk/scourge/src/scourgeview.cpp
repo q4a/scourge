@@ -330,17 +330,17 @@ void ScourgeView::checkForInfo() {
         Location *pos = scourge->getMap()->getLocation(mapx, mapy, mapz);
 				if( !pos ) pos = scourge->getMap()->getItemLocation( mapx, mapy );
         if( pos ) {
-          char s[300];
+			std::string s;
           void *obj = NULL;
           if( pos->creature ) {
             obj = pos->creature;
-            ((Creature*)(pos->creature))->getDetailedDescription(s);
+            ((Creature*)(pos->creature))->getDetailedDescription( s );
           } else if( pos->item ) {
             obj = pos->item;
-            ((Item*)(pos->item))->getDetailedDescription(s);
+            ((Item*)(pos->item))->getDetailedDescription( s );
           } else if( pos->shape ) {
             obj = pos->shape;
-            strcpy( s, scourge->getSession()->getShapePalette()->getRandomDescription( pos->shape->getDescriptionGroup() ) );
+            s = scourge->getSession()->getShapePalette()->getRandomDescription( pos->shape->getDescriptionGroup() );
           }
           if( obj ) {
             bool found = false;
@@ -358,7 +358,7 @@ void ScourgeView::checkForInfo() {
             }
             if( !found ) {
               InfoMessage *message =
-                new InfoMessage( s, obj,
+				  new InfoMessage( s.c_str(), obj,
                                  pos->x + pos->shape->getWidth() / 2,
                                  pos->y - 1 - pos->shape->getDepth() / 2,
                                  pos->z + pos->shape->getHeight() / 2 );
@@ -779,7 +779,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     // in TB mode and paused?
     if( scourge->inTurnBasedCombat() && !( scourge->getParty()->isRealTimeMode() ) ) {
       char cost[40];
-      sprintf( cost, "%s: %d", _( "Move" ), (int)(creature->getPathManager()->getPathRemainingSize()) );
+      snprintf( cost, 40, "%s: %d", _( "Move" ), (int)(creature->getPathManager()->getPathRemainingSize()) );
       scourge->getSDLHandler()->drawTooltip( 0, 0, 0,
                                              -( scourge->getMap()->getZRot() ),
                                              -( scourge->getMap()->getYRot() ),
@@ -984,7 +984,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 				
         char cost[40];
         Color color;
-        if( scourge->getParty()->getPlayer()->getBattle()->describeAttack( creature, cost, &color, player ) ) {
+        if( scourge->getParty()->getPlayer()->getBattle()->describeAttack( creature, cost, 40, &color, player ) ) {
           glDisable( GL_DEPTH_TEST );
           scourge->getSDLHandler()->drawTooltip( 0, 0, 0,
                                                  -( scourge->getMap()->getZRot() ),
@@ -1074,16 +1074,17 @@ void ScourgeView::drawAfter() {
     glLoadIdentity();
     glTranslatef( 20, 20, 0 );
     Creature *c = scourge->getCurrentBattle()->getCreature();
-    char msg[80];
+	enum { MSG_SIZE = 80 };
+    char msg[ MSG_SIZE ];
     if( !c->getPathManager()->atEndOfPath() && !c->getBattle()->isInRangeOfTarget() ) {
-      sprintf( msg, "%s %d/%d (%s %d)",
+      snprintf( msg, MSG_SIZE, "%s %d/%d (%s %d)",
                c->getName(),
                c->getBattle()->getAP(),
                c->getBattle()->getStartingAP(),
 							 _( "cost" ),
                (int)( c->getPathManager()->getPathRemainingSize() ) );
     } else {
-      sprintf( msg, "%s %d/%d",
+      snprintf( msg, MSG_SIZE, "%s %d/%d",
                c->getName(),
                c->getBattle()->getAP(),
                c->getBattle()->getStartingAP() );

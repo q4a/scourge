@@ -39,11 +39,14 @@ class Spell;
    This class represents a single battle turn.
  */
 class Battle {
+	enum { 
+		MESSAGE_SIZE = 200
+	};
  private:
   Session *session;
   Creature *creature;
   Item* item;
-  char message[200];
+  char message[MESSAGE_SIZE];
   int creatureInitiative;
   bool initiativeCheck;
   int speed;
@@ -122,7 +125,7 @@ class Battle {
 
   int calculateRange( Item *item=NULL );
 
-  bool describeAttack( Creature *target, char *buff, Color *color, bool includeActions );
+  bool describeAttack( Creature *target, char *buff, size_t buffSize, Color *color, bool includeActions );
 
   inline float getRange() { return range; }
 

@@ -119,7 +119,7 @@ public:
   virtual inline void setFormationUI(int formation, bool playerOnly) {}
   virtual inline void togglePlayerOnlyUI(bool playerOnly) {}
   virtual inline void setPlayerUI(int index) {}
-  virtual inline void updateBoardUI(int count, const char **missionText, Color *missionColor) {}
+  virtual inline void updateBoardUI(int count, std::string const missionText[], Color *missionColor) {}
   virtual inline void setMissionDescriptionUI(char *s, int mapx, int mapy) {}
   virtual inline void showItemInfoUI(Item *item, int level) {}
   virtual inline GLuint getCursorTexture( int cursorMode ) { return 0; }

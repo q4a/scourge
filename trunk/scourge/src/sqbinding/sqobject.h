@@ -40,7 +40,7 @@ private:
                           char *buffer );
   char *describeReturnType( const char *returnType, 
                             std::set<std::string> *names, 
-                            char *buffer );
+                            char *buffer, size_t bufferSize );
 
 };
 

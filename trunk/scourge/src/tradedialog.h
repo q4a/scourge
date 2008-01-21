@@ -54,7 +54,7 @@ public:
   inline Window *getWindow() { return win; }
   void handleEvent( Widget *widget, SDL_Event *event );
   
-  void render( const Widget *widget, const Item *item, int bufferSize, const char *buffer );
+  void render( const Widget *widget, const Item *item, std::string& buffer );
   
 protected:
     void updateLabels();

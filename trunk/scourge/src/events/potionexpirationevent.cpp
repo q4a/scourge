@@ -58,8 +58,8 @@ void PotionExpirationEvent::execute() {
   scheduleDeleteEvent();        
 
   if(creature->getStateMod(StateMod::dead)) return;
-
-  char msg[255];
+  enum { MSG_SIZE = 255 };
+  char msg[ MSG_SIZE ];
   if(potionSkill < 0) {
 	switch(-potionSkill - 2) {
 	case Constants::HP:
@@ -68,7 +68,7 @@ void PotionExpirationEvent::execute() {
 	  return;
 	case Constants::AC:
 	  creature->setBonusArmor(creature->getBonusArmor() - amount);
-	  sprintf(msg, _( "%s feels vulnerable..." ), creature->getName());
+	  snprintf(msg, MSG_SIZE, _( "%s feels vulnerable..." ), creature->getName());
 	  session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
 	  creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 	  return;
@@ -81,7 +81,7 @@ void PotionExpirationEvent::execute() {
 							creature->getSkillBonus(potionSkill) - 
 							amount);
 	//	recalcAggregateValues();
-	sprintf(msg, _( "%s feels a loss of contentment." ), creature->getName());
+	snprintf(msg, MSG_SIZE,  _( "%s feels a loss of contentment." ), creature->getName());
 	session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
 	creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
   }

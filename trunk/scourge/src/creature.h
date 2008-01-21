@@ -428,7 +428,7 @@ class Creature : public RenderedCreature {
   // returns coins gained
   int addMoney(Creature *creature_killed);
 
-  void getDetailedDescription(char *s);
+  void getDetailedDescription( std::string& s );
   
   int getMaxProjectileCount(Item *item);
 

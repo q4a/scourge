@@ -142,19 +142,17 @@ MapEditor::MapEditor( Scourge *scourge ) {
 		}
   }
 
-	itemNames = (char**)malloc( itemVector.size() * sizeof(char*) );
+	itemNames = new string[ itemVector.size() ];
 	for( unsigned int i = 0; i < itemVector.size(); i++ ) {
-		itemNames[ i ] = (char*)malloc( 120 * sizeof(char) );
-		strcpy( itemNames[ i ], itemVector[ i ]->getDisplayName() );
+		itemNames[ i ] = itemVector[ i ]->getDisplayName();
 	}
-	itemList->setLines( itemVector.size(), (const char**)itemNames );
+	itemList->setLines( itemVector.size(), itemNames );
 
-	furnitureNames = (char**)malloc( furnitureVector.size() * sizeof(char*) );
+	furnitureNames = new string[ furnitureVector.size() ];
 	for( unsigned int i = 0; i < furnitureVector.size(); i++ ) {
-		furnitureNames[ i ] = (char*)malloc( 120 * sizeof(char) );
-		strcpy( furnitureNames[ i ], furnitureVector[ i ]->getDisplayName() );
+		furnitureNames[ i ] = furnitureVector[ i ]->getDisplayName();
 	}
-  furnitureList->setLines( furnitureVector.size(), (const char**)furnitureNames );
+  furnitureList->setLines( furnitureVector.size(), furnitureNames );
   
   // creatures
   creatureButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Creature" ), true );
@@ -165,18 +163,17 @@ MapEditor::MapEditor( Scourge *scourge ) {
   mainWin->addWidget( creatureList );
 	yy += 104;
   map<string, Monster*> *creatureMap = &(Monster::monstersByName);
-  creatureNames = (char**)malloc( creatureMap->size() * sizeof(char*) );
+  creatureNames = new string[ creatureMap->size() ];
   int count = 0;
-  for (map<string, Monster*>::iterator i = creatureMap->begin(); 
-        i != creatureMap->end(); ++i ) {
+	for ( map<string, Monster*>::iterator i = creatureMap->begin()
+	     ; i != creatureMap->end(); ++i ) {
     string name = i->first;
 		Monster *monster = i->second;
 
 		// find its place by level
 		int index = count;
 		for( int t = 0; t < count; t++ ) {
-			string s = creatureNames[ t ];
-			Monster *m = creatures[ s ];
+			Monster *m = creatures[ creatureNames[ t ] ];
 			if( m->getLevel() > monster->getLevel() ) {
 				index = t;
 				break;
@@ -190,16 +187,13 @@ MapEditor::MapEditor( Scourge *scourge ) {
 		count++;
 
 		// add new creature
-    creatureNames[ index ] = (char*)malloc( 120 * sizeof(char) );
-		if( monster->isNpc() ) {
-			sprintf( creatureNames[ index ], "NPC %d - %s", monster->getLevel(), name.c_str() );
-		} else {
-			sprintf( creatureNames[ index ], "%d - %s", monster->getLevel(), name.c_str() );
-		}
-		string s = creatureNames[ index ];
-		creatures[ s ] = monster;
+		creatureNames[ index ] = monster->isNpc() ? "NPC " : "";
+		char levelStr[ 20 ];
+		snprintf( levelStr, 20, "%d - ", monster->getLevel() );
+		creatureNames[ index ] += levelStr + name;
+		creatures[ creatureNames[ index ] ] = monster;
   }
-  creatureList->setLines( creatureMap->size(), (const char**)creatureNames );
+	creatureList->setLines( creatureMap->size(), creatureNames );
 
   // shapes
   shapeButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Shape" ), true );
@@ -211,19 +205,15 @@ MapEditor::MapEditor( Scourge *scourge ) {
 	yy += 104;
 
   map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
-  shapeNames = (char**)malloc( shapeMap->size() * sizeof(char*) );
+  shapeNames = new string[ shapeMap->size() ];
   count = 0;
   for (map<string, GLShape*>::iterator i = shapeMap->begin(); i != shapeMap->end(); ++i ) {
-    string name = i->first;
-    GLShape *shape = i->second;
-    if( !contains( &seen, shape ) ) {
-      char *p = (char*)name.c_str();
-      shapeNames[ count ] = (char*)malloc( 120 * sizeof(char) );
-      strcpy( shapeNames[ count ], p );
+    if( !contains( &seen, i->second ) ) {
+      shapeNames[ count ] = i->first;
       count++;
     }
   }
-  shapeList->setLines( count, (const char**)shapeNames );
+  shapeList->setLines( count, shapeNames );
   
   rugButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Rug" ), true );
   toggleButtonList.push_back( rugButton );
@@ -251,11 +241,12 @@ void MapEditor::createNewMapDialog() {
   newMapWin->setVisible( false );
   newMapWin->setModal( true );
 	int startx = 8;
-	char tmp[300];
-	sprintf( tmp, "%s (0-50):", _( "Map level" ) );
+	enum { TMP_SIZE = 300 };
+	char tmp[ TMP_SIZE ];
+	snprintf( tmp, TMP_SIZE, "%s (0-50):", _( "Map level" ) );
   newMapWin->createLabel( startx, 20, tmp );
   levelText = newMapWin->createTextField( 150, 10, 20 );
-	sprintf( tmp, "%s (0-10):", _( "Map depth" ) );
+	snprintf( tmp, TMP_SIZE, "%s (0-10):", _( "Map depth" ) );
   newMapWin->createLabel( startx, 40, tmp );
   depthText = newMapWin->createTextField( 150, 30, 20 );
   newMapWin->createLabel( startx, 60, _( "Map theme:" ) );
@@ -265,17 +256,14 @@ void MapEditor::createNewMapDialog() {
   themeList = new ScrollingList( 150, 50, 220, 60, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   newMapWin->addWidget( themeList );
-  themeNames = (char**)malloc( scourge->getShapePalette()->getAllThemeCount() * 
-                               sizeof(char*) );
+  themeNames = new string[ scourge->getShapePalette()->getAllThemeCount() ];
+
   for( int i = 0; i < scourge->getShapePalette()->getAllThemeCount(); i++ ) {
-    themeNames[ i ] = (char*)malloc( 120 * sizeof(char) );
-    strcpy( themeNames[ i ], 
-            scourge->getShapePalette()->getAllThemeName( i ) );
+    themeNames[ i ] = scourge->getShapePalette()->getAllThemeName( i );
     if( scourge->getShapePalette()->isThemeSpecial( i ) )
-      strcat( themeNames[i], "(S)" );
+      themeNames[i] += "(S)";
   }
-  themeList->setLines( scourge->getShapePalette()->getAllThemeCount(), 
-                       (const char**)themeNames );
+  themeList->setLines( scourge->getShapePalette()->getAllThemeCount(), themeNames );
 
   newMapWin->createLabel( startx, 130, _( "Select map location: (click on map, drag to move)" ) );
   mapWidget = new MapWidget( scourge, newMapWin, startx, 140, nw - startx, 335 );
@@ -289,10 +277,8 @@ void MapEditor::createNewMapDialog() {
 
 MapEditor::~MapEditor() {
   map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
-  for(int i = 0; i < (int)shapeMap->size(); i++) {
-    free( shapeNames[ i ] );
-  }
-  free( shapeNames );
+  delete[] shapeNames;
+  delete[] itemNames;
   delete mainWin;
   delete miniMap;
 }
@@ -432,16 +418,16 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
     }
   }
 
-  char result[1000];
+  string result;
   if( widget == saveButton ) {
 		string tmp(nameText->getText());
     scourge->getMap()->saveMap( tmp, result );
-    scourge->showMessageDialog( result );
+	scourge->showMessageDialog( result.c_str() );
 //    scourge->getParty()->toggleRound( false );
   } else if( widget == loadButton ) {
 		string tmp(nameText->getText());
     scourge->getMap()->loadMap( tmp, result );
-    scourge->showMessageDialog( result );
+	scourge->showMessageDialog( result.c_str() );
     miniMap->reset();
 //    scourge->getParty()->toggleRound( false );
   } else if( widget == newButton ) {
@@ -462,7 +448,7 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
       scourge->getMap()->reset();
       int line = themeList->getSelectedLine();
       if( line > -1 ) {
-        char *p = strdup( themeNames[ line ] );
+		  char *p = strdup( themeNames[ line ].c_str() );
         if( !strcmp( p + strlen( p ) - 3, "(S)" ) ) *( p + strlen( p ) - 3 ) = 0;
         scourge->getShapePalette()->loadTheme( p );
         free( p );
@@ -527,23 +513,23 @@ bool MapEditor::getShape( GLShape **shape,
     return true;
   } else if( itemButton->isSelected() &&
              itemList->getSelectedLine() > -1 ) {
-		addNewItem( itemNames[ itemList->getSelectedLine() ], shape, item, creature );
+		addNewItem( itemNames[ itemList->getSelectedLine() ].c_str(), shape, item, creature );
     return true;
   } else if( furnitureButton->isSelected() &&
              furnitureList->getSelectedLine() > -1 ) {
-		addNewItem( furnitureNames[ furnitureList->getSelectedLine() ], shape, item, creature );
+		addNewItem( furnitureNames[ furnitureList->getSelectedLine() ].c_str(), shape, item, creature );
     return true;
   } else if( shapeButton->isSelected() && 
              shapeList->getSelectedLine() > -1 ) {
     *shape = scourge->getShapePalette()->
-      findShapeByName( shapeNames[ shapeList->getSelectedLine() ] );
+		findShapeByName( shapeNames[ shapeList->getSelectedLine() ].c_str() );
     return true;
   } else {
     return false;
   }
 }
 
-void MapEditor::addNewItem( char *name,
+void MapEditor::addNewItem( char const* name,
 														GLShape **shape, 
 														Item **item, 
 														Creature **creature ) {

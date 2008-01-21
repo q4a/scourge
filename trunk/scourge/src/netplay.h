@@ -35,7 +35,7 @@ private:
   ScrollingList *messageList;
   TextField *chatText;
   int chatStrCount;
-  char **chatStr;
+  std::string* chatStr;
   static const int MAX_CHAT_SIZE = 100;
   static const int CHAT_STR_LENGTH = 120;
 

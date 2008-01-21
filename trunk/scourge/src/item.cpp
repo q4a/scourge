@@ -43,7 +43,7 @@ Item::Item(Session *session, RpgItem *rpgItem, int level, bool loading) {
   this->spell = NULL;
   this->containsMagicItem = false;
   this->showCursed = false;
-  sprintf( this->itemName, "%s", rpgItem->getDisplayName() );
+	snprintf( this->itemName, ITEM_NAME_SIZE, "%s", rpgItem->getDisplayName() );
 	inventoryX = inventoryY = 0;
 
   commonInit( loading );
@@ -189,7 +189,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
 	// re-describe the item. describeMagic is called from commonInit at
 	// which point magicLevel can be 0, so it's important to re-describe
 	// the item. (since later magicLevel can be -1)
-	item->describeMagic(item->itemName, item->rpgItem->getDisplayName());
+	item->describeMagic( item->rpgItem->getDisplayName() );
 
   return item;
 }
@@ -235,62 +235,21 @@ bool Item::isContainedItem(Item *item) {
   return false;
 }
 
-void Item::getDetailedDescription(char *s, bool precise){
-  int type;
-  RpgItem * rpgItem;
+void Item::getDetailedDescription( std::string& s, bool precise ){
+	RpgItem * rpgItem  = getRpgItem();
+	int type = rpgItem->getType();
+	char str[20];
+	snprintf( str, 20, _("(L:%d) "),getLevel() );
+	s = str;
+	if ( isCursed() && getShowCursed() ) s += _( "*Cursed* " );
 
-  rpgItem  = getRpgItem();
-  type = rpgItem->getType();
-  /*
-  if(type == RpgItem::DRINK || type == RpgItem::POTION || type == RpgItem::FOOD){
-    sprintf(s, "(L:%d,Q:%d,W:%2.2f, N:%d/%d) %s%s", 
-            getLevel(), 
-            getQuality(), 
-            getWeight(),
-            getCurrentCharges(),
-            getMaxCharges(),
-            (precise ? itemName : rpgItem->getShortDesc()),
-            (session->getCurrentMission() && 
-             session->getCurrentMission()->isMissionItem( this ) ? 
-             " *Mission*" : ""));
-  } else if(type == RpgItem::SCROLL) {
-    sprintf(s, "(L:%d) %s%s", getLevel(), itemName,
-            (session->getCurrentMission() && 
-             session->getCurrentMission()->isMissionItem( this ) ? 
-             " *Mission*" : ""));
+	if(type == RpgItem::SCROLL) {
+		s += itemName;
   } else {
-    sprintf(s, "(L:%d,A:%d,S:%d,Q:%d,W:%2.2f) %s%s", 
-            getLevel(), 
-            getAction(), 
-            getSpeed(), 
-            getQuality(), 
-            getWeight(),
-            (precise ? itemName : rpgItem->getShortDesc()),
-            (session->getCurrentMission() && 
-             session->getCurrentMission()->isMissionItem( this ) ? 
-             " *Mission*" : ""));
+		s += precise ? itemName : rpgItem->getShortDesc();
   }
-  */
 	
-  if(type == RpgItem::DRINK || type == RpgItem::POTION || type == RpgItem::FOOD){
-    sprintf(s, "(L:%d) %s%s%s", 
-            getLevel(), 
-            ( isCursed() && getShowCursed() ? _( "*Cursed* " ) : "" ),
-            (precise ? itemName : rpgItem->getShortDesc()),
-            ( missionId > 0 ? _( " *Mission*" ) : ""));
-  } else if(type == RpgItem::SCROLL) {
-    sprintf(s, "(L:%d) %s%s%s", 
-            getLevel(), 
-            ( isCursed() && getShowCursed() ? _( "*Cursed* " ) : "" ),
-            itemName,
-            ( missionId > 0 ? _( " *Mission*" ) : ""));
-  } else {
-    sprintf(s, "(L:%d) %s%s%s", 
-            getLevel(), 
-            ( isCursed() && getShowCursed() ? _( "*Cursed* " ) : "" ),
-            (precise ? itemName : rpgItem->getShortDesc()),
-            ( missionId > 0 ? _( " *Mission*" ) : ""));
-  }
+	if ( missionId > 0 ) s += _( " *Mission*" );
 }
 
 char *trim( char *s ) {
@@ -673,7 +632,7 @@ void Item::commonInit( bool loading ) {
 
   // describe spell-holding items also
   if( magicLevel < 0 && RpgItem::itemTypes[ rpgItem->getType() ].hasSpell ) {
-    describeMagic( itemName, rpgItem->getDisplayName() );
+    describeMagic( rpgItem->getDisplayName() );
   }
 }
 
@@ -792,7 +751,7 @@ void Item::enchant( int newMagicLevel ) {
   // turn off "vs. any creature"
   if( !monsterType ) damageMultiplier = 1;
 
-  describeMagic(itemName, rpgItem->getDisplayName());
+  describeMagic( rpgItem->getDisplayName() );
 }
 
 // max about 30 points (must be deterministic)
@@ -802,13 +761,14 @@ int Item::getMagicResistance() {
 
 #define DEBUG_ITEM_ID 0
 
-void Item::describeMagic(char *s, char *itemName) {
+void Item::describeMagic( char const* displayName ) {
 
 	// not for scrolls :-(
 	if( rpgItem->getType() == RpgItem::SCROLL ) return;
 
   // e.g.: Lesser broadsword + 3 of nature magic
-  char tmp[80];
+	enum { TMP_SIZE = 80 };
+  char tmp[TMP_SIZE];
 
 
 	if( magicLevel > -1 ) {
@@ -822,50 +782,50 @@ void Item::describeMagic(char *s, char *itemName) {
 			*/
 			strcpy( format, _( "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $symbol" ) );
 			char *p = strtok( format, " " );
-			strcpy( s, "" );
+			strcpy( itemName, "" );
 			while( p ) {
 	
 				if( !strcmp( p, "$spellsymbol" ) ) {
 					if( RpgItem::itemTypes[ rpgItem->getType() ].hasSpell && spell ) {
-						if( strlen( s ) ) strcat( s, " " );
-						strcat( s, spell->getSymbol() );
+						if( strlen( itemName ) ) strcat( itemName, " " );
+						strcat( itemName, spell->getSymbol() );
 					}
 				} else if( !strcmp( p, "$magiclevel" ) ) {
 					if( magicLevel > -1 ) {
-						if( strlen( s ) ) strcat( s, " " );
-						strcat( s, _( Constants::MAGIC_ITEM_NAMES[ magicLevel ] ) );
+						if( strlen( itemName ) ) strcat( itemName, " " );
+						strcat( itemName, _( Constants::MAGIC_ITEM_NAMES[ magicLevel ] ) );
 					}
 				}	else if( !strcmp( p, "$protective" ) ) {
 					if( stateModSet ) {
-						if( strlen( s ) ) strcat( s, " " );
-						strcat( s, _( "Protective" ) );
+						if( strlen( itemName ) ) strcat( itemName, " " );
+						strcat( itemName, _( "Protective" ) );
 					}
 				} else if( !strcmp( p, "$slaying" ) ) {
 					if( damageMultiplier > 1 ) {
-						if( strlen( s ) ) strcat( s, " " );
-						strcat( s, _( "Slaying" ) );
+						if( strlen( itemName ) ) strcat( itemName, " " );
+						strcat( itemName, _( "Slaying" ) );
 					}
-					if( strlen( s ) ) strcat( s, " " );
+					if( strlen( itemName ) ) strcat( itemName, " " );
 				} else if( !strcmp( p, "$itemname" ) ) {
-					if( strlen( s ) ) strcat( s, " " );
-					strcat( s, itemName );
+					if( strlen( itemName ) ) strcat( itemName, " " );
+					strcat( itemName, displayName );
 				} else if( !strcmp( p, "$bonus" ) ) {
 					if(bonus > 0) {
-						if( strlen( s ) ) strcat( s, " " );
-						sprintf(tmp, " (+%d)", bonus);
-						strcat(s, tmp);
+						if( strlen( itemName ) ) strcat( itemName, " " );
+						snprintf(tmp, TMP_SIZE, " (+%d)", bonus);
+						strcat( itemName, tmp );
 					}
 				} else if( !strcmp( p, "$symbol" ) ) {
 					if( skillBonus.size() > 0 ) {
 						if( school ) {
-							if( strlen( s ) ) strcat( s, " " );
-							strcat( s, school->getSymbol() );
+							if( strlen( itemName ) ) strcat( itemName, " " );
+							strcat( itemName, school->getSymbol() );
 						} else if( stateModSet ) {
 							bool stateModFound = false;
 							for( int i = 0; i < StateMod::STATE_MOD_COUNT; i++ ) {
 								if( stateMod[ i ] > 0 ) {
-									if( strlen( s ) ) strcat( s, " " );
-									strcat( s, StateMod::stateMods[ i ]->getSymbol() );
+									if( strlen( itemName ) ) strcat( itemName, " " );
+									strcat( itemName, StateMod::stateMods[ i ]->getSymbol() );
 									stateModFound = true;
 									break;
 								}
@@ -874,22 +834,22 @@ void Item::describeMagic(char *s, char *itemName) {
 								// use the first skill as the noun
 								map<int,int>::iterator i = skillBonus.begin();
 								int skill = i->first;
-								if( strlen( s ) ) strcat( s, " " );
-								strcat( s, Skill::skills[ skill ]->getSymbol() );
+								if( strlen( itemName ) ) strcat( itemName, " " );
+								strcat( itemName, Skill::skills[ skill ]->getSymbol() );
 							}
 						}						
 					}
 				} else if( *p != '$' ) {
-					if( strlen( s ) ) strcat( s, " " );
-					strcat( s, p );
+					if( strlen( itemName ) ) strcat( itemName, " " );
+					strcat( itemName, p );
 				}
 				p = strtok( NULL, " " );
 			}
 		} else {
-			sprintf( s, "??? %s ???", itemName );
+			snprintf( itemName, ITEM_NAME_SIZE, "??? %s ???", displayName );
 		}
 	} else {
-		strcpy( s, itemName );
+		strcpy( itemName, displayName );
 	}
 }
 
@@ -935,9 +895,9 @@ void Item::setCurrentCharges( int n ) {
 void Item::setSpell( Spell *spell ) { 
   this->spell = spell; 
   if( getRpgItem()->getType() == RpgItem::SCROLL ) {
-    sprintf( this->itemName, _( "Scroll of %s" ), spell->getDisplayName() ); 
+    snprintf( itemName, ITEM_NAME_SIZE, _( "Scroll of %s" ), spell->getDisplayName() ); 
   } else {
-    describeMagic( itemName, rpgItem->getDisplayName() );
+    describeMagic( rpgItem->getDisplayName() );
   }
 }
 
@@ -1054,7 +1014,7 @@ void Item::identify( int infoDetailLevel ) {
 		}
 
 		if( isIdentified() ) {
-			describeMagic( itemName, rpgItem->getDisplayName() );
+			describeMagic( rpgItem->getDisplayName() );
 			session->getGameAdapter()->addDescription( _( "An item was fully identified!" ) );
 			// update ui
 			session->getGameAdapter()->refreshInventoryUI();
@@ -1358,19 +1318,20 @@ void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, i
 }		
 
 void Item::getTooltip( char *tooltip ) {
-	char tmp[500];
+	enum { TMP_SIZE = 500 };
+	char tmp[ TMP_SIZE ];
 	strcpy( tooltip, getName() );
 	if( getRpgItem()->isWeapon() ) {
-		sprintf( tmp, "|%s:%d%%(%c)", 
+		snprintf( tmp, TMP_SIZE, "|%s:%d%%(%c)", 
 						 _( "DAM" ), getRpgItem()->getDamage(),
 						 RpgItem::getDamageTypeLetter( getRpgItem()->getDamageType() ) );
 		strcat( tooltip, tmp );
 		if( getRpgItem()->getAP() > 0 ) {
-			sprintf( tmp, " %s:%d", _( "AP" ), getRpgItem()->getAP() );
+			snprintf( tmp, TMP_SIZE, " %s:%d", _( "AP" ), getRpgItem()->getAP() );
 			strcat( tooltip, tmp );
 		}
 		if( getRange() > MIN_DISTANCE ) {
-			sprintf( tmp, " %s:%d", _( "RANGE" ), getRange() );
+			snprintf( tmp, TMP_SIZE, " %s:%d", _( "RANGE" ), getRange() );
 			strcat( tooltip, tmp );
 		}
 	} else if( getRpgItem()->isArmor() ) {
@@ -1378,32 +1339,32 @@ void Item::getTooltip( char *tooltip ) {
 		strcat( tooltip, _( "DEF" ) );
 		strcat( tooltip, ":" );
 		for( int i = 0; i < RpgItem::DAMAGE_TYPE_COUNT; i++ ) {
-			sprintf(tmp, _( " %d(%c)" ), 
+			snprintf(tmp, TMP_SIZE, _( " %d(%c)" ), 
 							getRpgItem()->getDefense( i ),
 							RpgItem::getDamageTypeLetter( i ) );
 			strcat( tooltip, tmp );
 		}
 	}
 	if( getLevel() > 1 ) {
-		sprintf( tmp, "|%s:%d", 
+		snprintf( tmp, TMP_SIZE, "|%s:%d", 
 						 _( "Level" ), getLevel() );
 		strcat( tooltip, tmp );
 	}
 	if( getRpgItem()->getPotionPower() ) {
-		sprintf( tmp, "|%s:%d", _( "Power" ), getRpgItem()->getPotionPower() );
+		snprintf( tmp, TMP_SIZE, "|%s:%d", _( "Power" ), getRpgItem()->getPotionPower() );
 		strcat( tooltip, tmp );
 	}
 	if( getRpgItem()->getMaxCharges() > 0 &&
 			( !getRpgItem()->hasSpell() || getSpell() ) ) {
-		sprintf( tmp, "|%s:%d(%d)", _( "Charges" ), getCurrentCharges(), getRpgItem()->getMaxCharges() );
+		snprintf( tmp, TMP_SIZE, "|%s:%d(%d)", _( "Charges" ), getCurrentCharges(), getRpgItem()->getMaxCharges() );
 		strcat( tooltip, tmp );
 		if( getSpell() ) {
-			sprintf( tmp, "|%s:%s", _( "Spell" ), getSpell()->getDisplayName() );
+			snprintf( tmp, TMP_SIZE, "|%s:%s", _( "Spell" ), getSpell()->getDisplayName() );
 			strcat( tooltip, tmp );
 		}
 	}
 	if( getRpgItem()->getPotionTime() > 0 ) {
-		sprintf( tmp, "|%s:%d", _( "Duration" ), getRpgItem()->getPotionTime());
+		snprintf( tmp, TMP_SIZE, "|%s:%d", _( "Duration" ), getRpgItem()->getPotionTime());
 		strcat( tooltip, tmp );
 	}
 }

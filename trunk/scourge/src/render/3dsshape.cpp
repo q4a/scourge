@@ -93,14 +93,14 @@ void C3DSShape::normalizeModel() {
 
 	// "rotate" the model
 	float n;
-	char tmp[80];
 	map<string, int> seenIndexes;
 	if( getZRot3d() != 0 || getXRot3d() != 0 || getYRot3d() != 0 ) {
 		for (int i = 0; i < g_3DModel.numOfObjects; i++) {
 			for (int j = 0; j < g_3DModel.pObject[i].numOfFaces; j++) {
 				for (int whichVertex = 0; whichVertex < 3; whichVertex++) {
 					int index = g_3DModel.pObject[i].pFaces[j].vertIndex[whichVertex];
-					sprintf(tmp, "%d,%d", i, index);
+					char tmp[80];
+					snprintf(tmp, 80, "%d,%d", i, index);
 					string key = tmp;
 					if(seenIndexes.find(key) == seenIndexes.end()) {
 						if( getZRot3d() != 0 ) {
@@ -167,7 +167,8 @@ void C3DSShape::normalizeModel() {
     for (int j = 0; j < g_3DModel.pObject[i].numOfFaces; j++) {
       for (int whichVertex = 0; whichVertex < 3; whichVertex++) {
         int index = g_3DModel.pObject[i].pFaces[j].vertIndex[whichVertex];
-        sprintf(tmp, "%d,%d", i, index);
+        char tmp[80];
+		snprintf(tmp, 80, "%d,%d", i, index);
         string key = tmp;
         if(seenIndexes.find(key) == seenIndexes.end()) {
           g_3DModel.pObject[i].pVerts[ index ].x -= minx;

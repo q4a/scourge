@@ -40,7 +40,7 @@ public:
   virtual ~ItemRenderer() {
   }
   
-  virtual void render( const Widget *widget, const Item *item, int bufferSize, const char *buffer ) = 0;
+  virtual void render( const Widget *widget, const Item *item, std::string& buffer ) = 0;
 };
 
 /**
@@ -58,8 +58,7 @@ private:
   std::set<int> *filter;
   std::vector<Item*> items;
 	bool allowCursed;
-  
-	char **name;
+	std::string name[MAX_INVENTORY_SIZE];
 	Color *color;
   GLuint *icon;
   

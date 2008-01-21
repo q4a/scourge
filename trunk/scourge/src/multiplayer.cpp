@@ -39,15 +39,15 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
   startServer->setSelected(true);
 
   mainWin->createLabel( 90, 55, _( "--- OR ---" ) );
-
-	char tmp[300];
-	sprintf( tmp, "%s:", _( "Server address" ) );
+  enum { TMP_SIZE = 300 };
+	char tmp[ TMP_SIZE ];
+	snprintf( tmp, TMP_SIZE, "%s:", _( "Server address" ) );
   mainWin->createLabel( 10, 80, tmp );
   serverName = mainWin->createTextField( 10, 85, 30);
-	sprintf( tmp, "%s:", _( "Server port" ) );
+	snprintf( tmp, TMP_SIZE, "%s:", _( "Server port" ) );
   mainWin->createLabel( 10, 120, tmp );
   serverPort = mainWin->createTextField( 10, 125, 10 );
-	sprintf( tmp, "%s:", _( "Username" ) );
+	snprintf( tmp, TMP_SIZE, "%s:", _( "Username" ) );
   mainWin->createLabel( 10, 160, tmp );
   userName = mainWin->createTextField( 10, 165, 30 );
   
@@ -55,7 +55,7 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
   okButton = mainWin->createButton( 330, 180, 430, 210, _( "Start Game" ) );
   
   
-	sprintf( tmp, "%s:", _( "Select a character" ) );
+	snprintf( tmp, TMP_SIZE, "%s:", _( "Select a character" ) );
   mainWin->createLabel( 230, 20, tmp );
   characterList = new ScrollingList( 230, 30, 200, 130, 
                                      scourge->getShapePalette()->getHighlightTexture() );
@@ -68,7 +68,7 @@ MultiplayerDialog::MultiplayerDialog(Scourge *scourge) {
   charStr = (char**)malloc(pcCount * sizeof(char*));
   for(int i = 0; i < pcCount; i++) {
     charStr[i] = (char*)malloc(255 * sizeof(char));
-    sprintf(charStr[i], "%s, %s level: %d", pc[i]->getName(),
+    snprintf(charStr[i], 255, "%s, %s level: %d", pc[i]->getName(),
             pc[i]->getCharacter()->getName(),
             pc[i]->getLevel());
   }

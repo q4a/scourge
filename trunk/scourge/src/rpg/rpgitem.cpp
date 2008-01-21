@@ -214,7 +214,7 @@ RpgItem *RpgItem::getRandomContainerNS() {
   return containersNS[n];
 }
 
-RpgItem *RpgItem::getItemByName(char *name) {
+RpgItem *RpgItem::getItemByName(char const* name) {
   string s = name;
   RpgItem *item = (RpgItem *)itemsByName[s];
   //  cerr << "*** Looking for >" << s << "< found=" << item << endl;

@@ -251,7 +251,6 @@ int testModes(Uint32 flags, bool findMaxBpp=false) {
 char **SDLHandler::getVideoModes(int &nbModes){
     SDL_Rect **modes;
     char ** modesDescription;
-    char temp [50];
     Uint32 flags;  
     int i;    
         
@@ -296,7 +295,8 @@ char **SDLHandler::getVideoModes(int &nbModes){
             if(nbModes) {
               modesDescription = (char **)malloc(nbModes * sizeof(char *));
               for(i=0; i < nbModes; i++){
-                sprintf(temp, "%d x %d", modes[i]->w, modes[i]->h);                
+                char temp[ 50 ];
+                snprintf(temp, 50, "%d x %d", modes[i]->w, modes[i]->h);                
                 modesDescription[i] = strdup(temp);
               }
            } else {

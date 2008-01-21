@@ -38,7 +38,7 @@ public:
 	virtual ~WordClickedHandler() {
   }
 
-  virtual void wordClicked( char *word ) = 0;
+	virtual void wordClicked( std::string& word ) = 0;
   virtual void showingWord( char *word ) = 0;
 };
 

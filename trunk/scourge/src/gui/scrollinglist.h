@@ -75,7 +75,7 @@ class ScrollingList : public Widget {
 	inline void setAllowMultipleSelection( bool b ) { allowMultipleSelection = b; }
 	inline bool getAllowMultipleSelection() { return allowMultipleSelection; }
 	//unused: inline int getLineCount() { return list.size(); }
-	void setLines(int count, const char *s[], const Color *colors=NULL, const GLuint *icon=NULL);
+  void setLines(int count, std::string const s[], const Color *colors=NULL, const GLuint *icon=NULL);
 	inline const char *getLine(int index) { return list[index].c_str(); }
 
   inline int getSelectedLine() { return ( selectedLine!=NULL ? selectedLine[ 0 ] : -1 ); }

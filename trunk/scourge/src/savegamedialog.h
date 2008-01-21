@@ -38,9 +38,10 @@ using namespace std;
 
 #define MAX_SAVEGAME_COUNT 100
 
-typedef struct _SavegameInfo {
+typedef struct SavegameInfo {
 	string path;
-	char title[3000];
+	enum { TITLE_SIZE = 3000 }; 
+	char title[TITLE_SIZE];
 } SavegameInfo;
 
 class SavegameDialog {
@@ -51,7 +52,7 @@ private:
   Button *cancel, *save, *load, *newSave, *deleteSave;
 	std::vector<SavegameInfo*> fileInfos;
 	int filenameCount;
-	char **filenames;
+	std::string filenames[ MAX_SAVEGAME_COUNT ];
 	GLuint *screens;
 	ConfirmDialog *confirm;
 

@@ -142,7 +142,8 @@ bool Equip::handleEvent(SDL_Event *event) {
 	int si, spi, mx, my;
 	Item *item;
 	Spell *spell;
-	char tooltip[ 3000 ], tmp[3000];
+	enum { TEXT_SIZE = 3000 };
+	char tooltip[ TEXT_SIZE ], tmp[ TEXT_SIZE ];
   switch(event->type) {
 	case SDL_MOUSEMOTION:
 		mx = event->motion.x - pcUi->getWindow()->getX() - x;
@@ -172,7 +173,7 @@ bool Equip::handleEvent(SDL_Event *event) {
 									NULL );
 				if( spell && creature && creature->isSpellMemorized( spell ) ) {
 					Util::addLineBreaks( spell->getNotes(), tmp );
-					sprintf( tooltip, "%s:|%s|%s:%d %s:%d", 
+					snprintf( tooltip, TEXT_SIZE, "%s:|%s|%s:%d %s:%d", 
 									 spell->getDisplayName(), 
 									 tmp,
 									 _( "Level" ), spell->getLevel(),
@@ -518,9 +519,10 @@ void Equip::drawCapabilities() {
 					yy >= yy && my < yy + SPELL_SIZE ) {
 				if( specialSkill != ss ) {
 					specialSkill = ss;
-					char tmp[3000], tooltip[3000];
+					enum { TEXT_SIZE = 3000 };
+					char tmp[ TEXT_SIZE ], tooltip[ TEXT_SIZE ];
 					Util::addLineBreaks( ss->getDescription(), tmp );
-					sprintf( tooltip, "%s:|%s|%s", 
+					snprintf( tooltip, TEXT_SIZE, "%s:|%s|%s", 
 									 ss->getDisplayName(), 
 									 tmp,
 									 ss->getType() == SpecialSkill::SKILL_TYPE_MANUAL ? 
@@ -650,11 +652,7 @@ MissionInfoUI::MissionInfoUI( PcUi *pcUi, int x, int y, int w, int h ) {
 
 	description = new ScrollingLabel( x, y, w, h - 95, "" );
 	pcUi->getWindow()->addWidget( description );
-	this->objectiveText = (char**)malloc(MAX_INVENTORY_SIZE * sizeof(char*));
-  this->missionColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
-  for(int i = 0; i < MAX_INVENTORY_SIZE; i++) {
-    this->objectiveText[i] = (char*)malloc(120 * sizeof(char));
-  }
+
 	objectivesLabel = pcUi->getWindow()->createLabel( x, y + h - 80, _( "Mission Objectives" ) );
 	objectiveList = new ScrollingList( x, y + h - 75, w, 45, pcUi->getScourge()->getShapePalette()->getHighlightTexture() );
 	pcUi->getWindow()->addWidget( objectiveList );
@@ -662,19 +660,20 @@ MissionInfoUI::MissionInfoUI( PcUi *pcUi, int x, int y, int w, int h ) {
 }
 
 MissionInfoUI::~MissionInfoUI() {
-	// should free objectiveText
+	// objectiveText has static size now
 }
 
 void MissionInfoUI::refresh() {
-	char missionText[3000];
+	enum { TMP_SIZE = 80, MISSNTXT_SIZE = 3000 }; 
+	char missionText[ MISSNTXT_SIZE ];
+	char tmp[ TMP_SIZE ];
 	int objectiveCount;
-	char tmp[80];
 	Scourge *scourge = pcUi->getScourge();
 	if( scourge->getSession()->getCurrentMission() ) {
-		sprintf( tmp, _( "Depth: %d out of %d." ), 
+		snprintf( tmp, TMP_SIZE, _( "Depth: %d out of %d." ), 
 						 ( scourge->getCurrentDepth() + 1 ),
 						 scourge->getSession()->getCurrentMission()->getDepth() );
-		sprintf( missionText, "%s:|%s|%s", 
+		snprintf( missionText, MISSNTXT_SIZE, "%s:|%s|%s", 
 						 scourge->getSession()->getCurrentMission()->getDisplayName(),
 						 tmp,
 						 scourge->getSession()->getCurrentMission()->getDescription() );
@@ -682,11 +681,11 @@ void MissionInfoUI::refresh() {
 			scourge->getSession()->getCurrentMission()->getItemCount() +
 			scourge->getSession()->getCurrentMission()->getCreatureCount();   
 		for(int t = 0; t < scourge->getSession()->getCurrentMission()->getItemCount(); t++) {
-			sprintf( tmp, _( "Find %s" ), scourge->getSession()->getCurrentMission()->getItem(t)->getDisplayName() );
-			sprintf(objectiveText[t], "%s. %s", 
-							tmp,
-							(scourge->getSession()->getCurrentMission()->getItemHandled(t) ? 
-							 _( "(completed)" ) : _( "(not yet found)" ) ) );
+			snprintf( tmp, TMP_SIZE, _( "Find %s" ), scourge->getSession()->getCurrentMission()->getItem(t)->getDisplayName() );
+			objectiveText[t] = tmp;
+			objectiveText[t] += ". ";
+			objectiveText[t] += scourge->getSession()->getCurrentMission()->getItemHandled(t) 
+								? _( "(completed)" ) : _( "(not yet found)" );
 			if(scourge->getSession()->getCurrentMission()->getItemHandled(t)) {
 				missionColor[t].r = 0.2f;
 				missionColor[t].g = 0.7f;
@@ -699,11 +698,11 @@ void MissionInfoUI::refresh() {
 		}
 		int start = scourge->getSession()->getCurrentMission()->getItemCount();
 		for(int t = 0; t < scourge->getSession()->getCurrentMission()->getCreatureCount(); t++) {
-			sprintf( tmp, _( "Vanquish %s." ), scourge->getSession()->getCurrentMission()->getCreature(t)->getDisplayName() );
-			sprintf(objectiveText[start + t], "%s. %s", 
-							tmp,
-							(scourge->getSession()->getCurrentMission()->getCreatureHandled(t) ? 
-							 _( "(completed)" ) : _( "(not yet done)" ) ) );
+			snprintf( tmp, TMP_SIZE, _( "Vanquish %s." ), scourge->getSession()->getCurrentMission()->getCreature(t)->getDisplayName() );
+			objectiveText[t] = tmp;
+			objectiveText[t] += ". ";
+			objectiveText[t] += scourge->getSession()->getCurrentMission()->getCreatureHandled(t) 
+								? _( "(completed)" ) : _( "(not yet done)" );
 			if(scourge->getSession()->getCurrentMission()->getCreatureHandled(t)) {
 				missionColor[start + t].r = 0.2f;
 				missionColor[start + t].g = 0.7f;
@@ -716,14 +715,14 @@ void MissionInfoUI::refresh() {
 		}
 		start += scourge->getSession()->getCurrentMission()->getCreatureCount();
 		for(int t = objectiveCount; t < MAX_INVENTORY_SIZE; t++) {
-			strcpy(objectiveText[t], "");
+			objectiveText[t].clear();
 		}
-		if( !objectiveCount ) {
+		if( objectiveCount == 0 ) {
 			objectiveCount = 1;
-			sprintf( objectiveText[0], "%s. %s", 
-							 _( "Special" ),
-							 ( scourge->getSession()->getCurrentMission()->isCompleted() ?
-								 _( "(completed)" ) : _( "(not yet done)" ) ) );
+			objectiveText[0] = _( "Special" );
+			objectiveText[0] += ". ";
+			objectiveText[0] += scourge->getSession()->getCurrentMission()->isCompleted() 
+								? _( "(completed)" ) : _( "(not yet done)" );
 			if( scourge->getSession()->getCurrentMission()->isCompleted() ) {
 				missionColor[0].r = 0.2f;
 				missionColor[0].g = 0.7f;
@@ -738,13 +737,11 @@ void MissionInfoUI::refresh() {
 		objectiveCount = 0;
 		strcpy(missionText, _( "No current mission." ) );
 		for(int t = 0; t < MAX_INVENTORY_SIZE; t++) {
-			strcpy( objectiveText[t], "" );
+			objectiveText[t] = "";
 		}
 	}
 	description->setText( missionText );
-	objectiveList->setLines( objectiveCount, 
-													 (const char **)objectiveText,
-													 missionColor );
+	objectiveList->setLines( objectiveCount, objectiveText, missionColor );
 }
 
 void MissionInfoUI::show() {

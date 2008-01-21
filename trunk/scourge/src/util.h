@@ -92,6 +92,7 @@ namespace Util {
 	float getRandomSum( float base, int count, float div=3.0f );
 
 	char *toLowerCase( char *s );
+	std::string& toLowerCase( std::string& s );
 
 	/**
 	* Is px,py in the field of vision defined by x,y,angle?

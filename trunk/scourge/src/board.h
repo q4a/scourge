@@ -116,12 +116,12 @@ public:
   static std::map<std::string, NpcInfo*> npcInfos;
 
   static char *getIntro();
-  static char *getAnswer( char *keyphrase );
-  static char *getFirstKeyPhrase( char *keyphrase );
-  static char *getIntro( char *npc );
-  static bool setIntro( Creature *creature, char *keyphrase );
-  static char *getAnswer( char *npc, char *keyphrase );
-  static char *getFirstKeyPhrase( char *npc, char *keyphrase );
+  static char *getAnswer( char const* keyphrase );
+  static char *getFirstKeyPhrase( char const* keyphrase );
+  static char *getIntro( char const* npc );
+  static bool setIntro( Creature *creature, char const* keyphrase );
+  static char *getAnswer( char const* npc, char const* keyphrase );
+  static char *getFirstKeyPhrase( char const* npc, char const* keyphrase );
   /**
    * Load extra data from text file alongside an edited map.
    * "fileName" in this case is the name of the .map binary file 
@@ -284,13 +284,16 @@ class Board	{
   std::vector<Mission*> availableMissions;
 
 	int missionListCount;
-  char **missionText;
+	std::string* missionText;
   Color *missionColor;
 
 public:
 
-  static const int EVENT_HANDLED = 0;
-  static const int EVENT_PLAY_MISSION = 1;
+	enum { 
+		EVENT_HANDLED = 0,
+		EVENT_PLAY_MISSION = 1,
+		MSNTXT_SIZE = 120
+	};
 
   Board(Session *session);
   virtual ~Board();

@@ -212,7 +212,7 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 				}
 			}
 			char msg[120];
-			sprintf( msg, _( "Party members give all their money to %s." ), creature->getName() );
+			snprintf( msg, 120, _( "Party members give all their money to %s." ), creature->getName() );
 			scourge->showMessageDialog( msg );
 		}
 	} else if( widget == up ) {

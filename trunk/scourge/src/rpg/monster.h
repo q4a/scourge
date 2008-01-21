@@ -34,6 +34,7 @@ class ConfigLang;
 class Monster  {
 
  private:
+	 enum { DESCR_SIZE = 300 };
   char *type;
 	char *displayName;
   char *descriptiveType;
@@ -42,7 +43,7 @@ class Monster  {
   int level;
   char *model_name;
   char *skin_name;
-  char description[300];
+  char description[ DESCR_SIZE ];
   int money;
   int speed;
   int baseArmor;

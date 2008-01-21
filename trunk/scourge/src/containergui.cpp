@@ -50,12 +50,8 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
   win->addWidget(label);
 
   // allocate memory for the contained item descriptions
-  this->containedItemNames = (char**)malloc(MAX_CONTAINED_ITEMS * sizeof(char*));
   this->itemColor = (Color*)malloc(MAX_INVENTORY_SIZE * sizeof(Color));
   this->itemIcon = (GLuint*)malloc(MAX_INVENTORY_SIZE * sizeof(GLuint));
-  for(int i = 0; i < MAX_CONTAINED_ITEMS; i++) {
-    this->containedItemNames[i] = (char*)malloc(120 * sizeof(char));
-  }
 
   showContents();
 
@@ -63,10 +59,6 @@ ContainerGui::ContainerGui(Scourge *scourge, Item *container, int x, int y) {
 }
 
 ContainerGui::~ContainerGui() {
-  for(int i = 0; i < MAX_CONTAINED_ITEMS; i++) {
-    free(containedItemNames[i]);
-  }
-  free(containedItemNames);
   free(itemColor);
   free(itemIcon);
 
@@ -78,7 +70,7 @@ ContainerGui::~ContainerGui() {
 
 void ContainerGui::showContents() {
   for(int i = 0; i < container->getContainedItemCount(); i++) {
-    container->getContainedItem(i)->getDetailedDescription(containedItemNames[i]);
+    container->getContainedItem(i)->getDetailedDescription( containedItemNames[i] );
     if( !container->getContainedItem(i)->isMagicItem() ) {
       itemColor[i].r = 1;
       itemColor[i].g = 1;
@@ -92,7 +84,7 @@ void ContainerGui::showContents() {
     itemIcon[i] = scourge->getShapePalette()->tilesTex[ container->getContainedItem(i)->getRpgItem()->getIconTileX() ][ container->getContainedItem(i)->getRpgItem()->getIconTileY() ];
   }
   list->setLines( container->getContainedItemCount(), 
-                  (const char **)containedItemNames,
+                  containedItemNames,
                   itemColor,
                   itemIcon );
 }
@@ -156,12 +148,13 @@ bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 void ContainerGui::receive(Widget *widget) {
-  char message[120];
+	enum { MSG_SIZE = 120 };
+  char message[ MSG_SIZE ];
   if(scourge->getMovingItem() && 
 	 scourge->getMovingItem() != container) {
 	if(container->addContainedItem(scourge->getMovingItem())) {
 	  // message: the container accepted the item
-	  sprintf(message, _( "%1$s is placed in %2$s." ), 
+	  snprintf(message, MSG_SIZE, _( "%1$s is placed in %2$s." ), 
 			  scourge->getMovingItem()->getItemName(), 
 			  container->getItemName());
 	  scourge->addDescription(message);	  

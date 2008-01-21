@@ -63,11 +63,11 @@ class Commands {
   void interpret(char *rawMessage, int length);
   inline int getLastCommand() { return lastCommand; }
 
-  static void buildGameState(char *buff, int frame, char *state);
-  static void buildChat(char *buff, char *username, char *message);
-  static void buildLogin(char *buff, char *username);
+  static void buildGameState(char *buff, size_t buffSize, int frame, char *state);
+  static void buildChat(char *buff, size_t buffSize, char *username, char *message);
+  static void buildLogin(char *buff, size_t buffSize, char *username);
   // not static!
-  void buildPing(char *buff);
+  void buildPing(char *buff, size_t buffSize);
   static void buildBytesCharacter(char *buff, int size, char *info, int *messageSize);
   static void buildBytesAddPlayer(char *buff, int size, char *info, int id, int *messageSize);
 };

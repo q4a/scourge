@@ -44,9 +44,9 @@ class ConversationGui : public WordClickedHandler, WidgetView {
   ScrollingLabel *answer;
   
   ScrollingList *list;
-  char **words;
+  enum { MAX_WORDS = 1000 };
+  std::string words[ MAX_WORDS ];
   int wordCount;
-  static const int MAX_WORDS = 1000;
   TextField *entry;
   Canvas *canvas;
 
@@ -67,7 +67,7 @@ class ConversationGui : public WordClickedHandler, WidgetView {
   inline Window *getWindow() { return win; }
   void hide();
 
-  void wordClicked( char *word );
+  void wordClicked( std::string& word );
   void showingWord( char *word );
 
   void drawWidgetContents(Widget *w);

@@ -28,7 +28,8 @@ Event(currentDate, timeOut, nbExecutionsToDo)
 
 void ThirstHungerEvent::execute(){
     int thirst, hunger;
-    char buff[255];  
+	enum { BUFF_SIZE = 255 };
+    char buff[ BUFF_SIZE ];  
     
     if(creature -> getStateMod(StateMod::dead)){
       // FIXME: needs testing. I commented it out in case the player is resurrected.
@@ -49,29 +50,29 @@ void ThirstHungerEvent::execute(){
                  
 		int n;
     if(thirst == 5){
-        sprintf(buff, _( "%s is thirsty." ), creature->getName());     
+        snprintf(buff, BUFF_SIZE, _( "%s is thirsty." ), creature->getName());     
         scourge->addDescription(buff, 1.0f, 0.5f, 0.5f);            
     }
     else if(thirst == 3){
-        sprintf(buff, _( "%s is really thirsty." ), creature->getName());     
+        snprintf(buff, BUFF_SIZE, _( "%s is really thirsty." ), creature->getName());     
         scourge->addDescription(buff, 1.0f, 0.5f, 0.5f);   
     }
     else if(thirst == 2){
     
-        sprintf(buff, _( "%s is beginning to dehydrate!" ), creature->getName());     
+        snprintf(buff, BUFF_SIZE, _( "%s is beginning to dehydrate!" ), creature->getName());     
         scourge->addDescription(buff, 1.0f, 0.5f, 0.5f); 
         // FIXME add state dehydrated or weak?
         // creature->setModState(dehydrated);    
     }
     else if(thirst == 1){        
-        sprintf(buff, _( "%s is totally dehydrated!" ), creature->getName());     
+        snprintf(buff, BUFF_SIZE, _( "%s is totally dehydrated!" ), creature->getName());     
         scourge->addDescription(buff, 1.0f, 0.5f, 0.5f); 
         // FIXME add state nearlyDead -> can't walk fast ...?
         // creature->setModState(nearly_dead);
     }
     else if( thirst == 0 ){
 			n = Util::dice( 8 );
-			sprintf(buff, _( "%1$s looses %2$d hit points from dehydration!" ), creature->getName(), n );     
+			snprintf(buff, BUFF_SIZE, _( "%1$s looses %2$d hit points from dehydration!" ), creature->getName(), n );     
 			scourge->addDescription(buff, 1.0f, 0.5f, 0.5f); 
 			creature->setHp( creature->getHp() - n );
 			if( creature->getHp() <= 0 ) {
@@ -82,29 +83,29 @@ void ThirstHungerEvent::execute(){
     }        
     
     if(hunger == 5){
-        sprintf(buff, _( "%s is hungry." ), creature->getName());     
+        snprintf(buff, BUFF_SIZE, _( "%s is hungry." ), creature->getName());     
         scourge->addDescription(buff, 1.0f, 0.5f, 0.5f);   
     }    
     else if(hunger == 3){
-        sprintf(buff, _( "%s is really hungry." ), creature->getName());     
+        snprintf(buff, BUFF_SIZE, _( "%s is really hungry." ), creature->getName());     
         scourge->addDescription(buff, 1.0f, 0.5f, 0.5f);   
     }
     else if(hunger == 2){
     
-        sprintf(buff, _( "%s is starving!" ), creature->getName());     
+        snprintf(buff, BUFF_SIZE, _( "%s is starving!" ), creature->getName());     
         scourge->addDescription(buff, 1.0f, 0.5f, 0.5f); 
         // FIXME add state starving ? or weak?
         // creature->setModState(starving);    
     }
     else if(hunger == 1){        
-        sprintf(buff, _( "%s feels really weak!" ), creature->getName());     
+        snprintf(buff, BUFF_SIZE, _( "%s feels really weak!" ), creature->getName());     
         scourge->addDescription(buff, 1.0f, 0.5f, 0.5f); 
         // FIXME add state nearlyDead -> can't walk fast ...?
         // creature->setModState(nearly_dead);
     } 
     else if( hunger == 0 ){
 			n = Util::dice( 8 );
-			sprintf(buff, _( "%1$s looses %2$d hit points from hunger!" ), creature->getName(), n );     
+			snprintf(buff, BUFF_SIZE, _( "%1$s looses %2$d hit points from hunger!" ), creature->getName(), n );     
 			scourge->addDescription(buff, 1.0f, 0.5f, 0.5f); 
 			creature->setHp( creature->getHp() - n );
 			if( creature->getHp() <= 0 ) {

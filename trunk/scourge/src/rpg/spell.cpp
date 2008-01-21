@@ -27,18 +27,20 @@ map<string, MagicSchool*> MagicSchool::schoolMap;
 
 // FIXME: move this to some other location if needed elsewhere (rpg/dice.cpp?)
 Dice::Dice(char *s) {
-  this->s = s;
-  frees = false;
+  strcpy( this->s, s );
 
-  char tmp[80];
-  strcpy(tmp, s);
-  if(strchr(tmp, 'd')) {
+  char tmp[ S_SIZE ];
+  strcpy( tmp, s );
+  if ( strchr(tmp, 'd') ) {
     count = atoi(strtok(tmp, "d"));
     sides = atoi(strtok(NULL, "+"));
     char *p = strtok(NULL, "+");
     if(p) mod = atoi(p);
     else mod = 0;
-  } else {
+  } 
+  else {
+		count = 0;
+		sides = 0; 
     mod = atoi(s);
   }
 
@@ -52,17 +54,15 @@ Dice::Dice(int count, int sides, int mod) {
   this->count = count;
   this->sides = sides;
   this->mod = mod;
-  s = (char*)malloc(80);
-  sprintf(s, "%dd%d", count, sides);
-  if(mod) {
-    // FIXME: handle negative numbers
-    sprintf(s, "+%d", mod);
+	if( mod ) {
+		snprintf( s, S_SIZE, "%dd%d+%d", count, sides, mod );
+	}
+	else {
+		snprintf( s, S_SIZE, "%dd%d", count, sides );
   }
-  frees = true;
 }
 
 Dice::~Dice() {
-  if(frees) free(s);
 }
 
 

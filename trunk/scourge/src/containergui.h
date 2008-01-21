@@ -39,7 +39,7 @@ class ContainerGui : public DragAndDropHandler {
   Button *openButton, *infoButton, *closeButton, *getAllButton;
   ScrollingList *list;
   Label *label;
-  char **containedItemNames;
+  std::string containedItemNames[MAX_CONTAINED_ITEMS];
   Color *itemColor;
   GLuint *itemIcon;
 

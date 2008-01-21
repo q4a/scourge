@@ -25,10 +25,7 @@ NetPlay::NetPlay(Scourge *scourge) {
 
   // allocate strings for list
   chatStrCount = 0;
-  chatStr = (char**)malloc(MAX_CHAT_SIZE * sizeof(char*));
-  for(int i = 0; i < MAX_CHAT_SIZE; i++) {
-    this->chatStr[i] = (char*)malloc(CHAT_STR_LENGTH * sizeof(char));
-  }
+  chatStr = new std::string[MAX_CHAT_SIZE];
 
   int width = 
     scourge->getSDLHandler()->getScreen()->w - 
@@ -58,7 +55,7 @@ NetPlay::NetPlay(Scourge *scourge) {
 NetPlay::~NetPlay() {
   // deleting the window deletes its controls (messageList, etc.)
   delete mainWin;
-  // fixme: free chatStr
+  delete[] chatStr;
 }
 
 bool NetPlay::handleEvent(Widget *widget, SDL_Event *event) {
@@ -80,15 +77,14 @@ void NetPlay::chat(char *message) {
   cerr << message << endl;
   if(chatStrCount == MAX_CHAT_SIZE) {
     for(int i = 1; i < chatStrCount - 1; i++)
-      strcpy(chatStr[i - 1], chatStr[i]);
+      chatStr[i - 1] = chatStr[i];
   } else {
     chatStrCount++;
   }
   cerr << "chatStrCount=" << chatStrCount << endl;
-  strncpy(chatStr[chatStrCount - 1], message, CHAT_STR_LENGTH - 2);
-  chatStr[chatStrCount - 1][CHAT_STR_LENGTH - 1] = '\0';
+  chatStr[chatStrCount - 1] = message;
   //messageList->debug = true;
-  messageList->setLines(chatStrCount, (const char **)chatStr);
+  messageList->setLines(chatStrCount, chatStr);
   messageList->setSelectedLine(chatStrCount - 1);
 }
 

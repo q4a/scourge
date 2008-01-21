@@ -43,7 +43,9 @@ private:
 	ScrollingList *list;
 	ScrollingLabel *description;
 	int cost;
-	char **text;
+	enum { MAX_TEXT_COUNT = 100, TEXT_SIZE = 120 };
+
+	std::string text[ MAX_TEXT_COUNT ];
 
 public:
   TrainDialog( Scourge *scourge );

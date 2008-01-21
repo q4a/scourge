@@ -64,17 +64,17 @@ void DonateDialog::updateUI() {
 
   MagicSchool *ms = 
     MagicSchool::getMagicSchoolByName( creature->getNpcInfo()->subtypeStr );
-  
-	char tmp[255];
-	sprintf( tmp, _( "Temple of %s" ), ms->getDeity() );
-  char s[255];
-  sprintf( s, "%s (%s %d), %s.", 
+  enum { TXT_SIZE = 255 };  
+	char tmp[TXT_SIZE];
+	snprintf( tmp, TXT_SIZE, _( "Temple of %s" ), ms->getDeity() );
+  char s[TXT_SIZE];
+	snprintf( s, TXT_SIZE, "%s (%s %d), %s.", 
            creature->getName(), 
 					 _( "level" ),
            creature->getNpcInfo()->level,
            tmp );
   creatureLabel->setText( s );
-  sprintf( s, "%s %d", 
+  snprintf( s, TXT_SIZE, "%s %d", 
            _( "Coins Available:" ), 
            scourge->getParty()->getPlayer()->getMoney() );
   coinLabel->setText( s );
@@ -101,7 +101,7 @@ void DonateDialog::donate( int amount ) {
     scourge->getParty()->getPlayer()->getMoney() - amount );
   // update the coin label
   char s[255];
-  sprintf( s, "%s %d", 
+  snprintf( s, 255, "%s %d", 
            _( "Coins Available:" ), 
            scourge->getParty()->getPlayer()->getMoney() );
   coinLabel->setText( s );

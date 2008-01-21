@@ -439,7 +439,7 @@ bool Scourge::saveCurrentMap( const string& dirName ) {
 
 	levelMap->startx = toint( session->getParty()->getPlayer()->getX() );
 	levelMap->starty = toint( session->getParty()->getPlayer()->getY() );
-	char result[300];
+	string result;
 	levelMap->saveMap( path, result, true, REF_TYPE_OBJECT );
 	cerr << "\tresult=" << result << endl;
 
@@ -529,16 +529,17 @@ void Scourge::resetGame( bool resetParty ) {
 }
 
 void Scourge::createMissionInfoMessage( Mission *lastMission ) {
-	sprintf( infoMessage,
+	snprintf( infoMessage, INFO_SIZE,
 					 ( lastMission->isCompleted() ?
 						 lastMission->getSuccess() :
 						 lastMission->getFailure() ) );
 
 	if( lastMission->isCompleted() ) {
 		// Add XP points for making it back alive
-		char message[1000];
+		enum { MSG_SIZE = 1000 };
+		char message[ MSG_SIZE ];
 		int exp = (lastMission->getLevel() + 1) * 100;
-		sprintf( message, _( "For returning alive, the party receives %d experience points." ), exp);
+		snprintf( message, MSG_SIZE, _( "For returning alive, the party receives %d experience points." ), exp);
 		strcat( infoMessage, "||" );
 		strcat( infoMessage, message );
 		strcat( infoMessage, " " );
@@ -549,7 +550,7 @@ void Scourge::createMissionInfoMessage( Mission *lastMission ) {
 				int n = getParty()->getParty(i)->addExperience(exp);
 				if(n > 0) {
 					if( level != getParty()->getParty(i)->getLevel() ) {
-						sprintf(message, _( " %s gains a level! " ), getParty()->getParty(i)->getName());
+						snprintf(message, MSG_SIZE,  _( " %s gains a level! " ), getParty()->getParty(i)->getName());
 						strcat( infoMessage, message );
 					}
 				}
@@ -601,7 +602,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		//getCurrentMapName( path );
 		//bool loaded = loadMap( path, fromRandomMap );
 		//if( !loaded ) 
-    char result[300];
+    string result;
     levelMap->loadMap( string(HQ_MAP_NAME), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );
 #endif
 
@@ -647,7 +648,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 
 bool Scourge::loadMap( const string& mapName, bool fromRandomMap, bool absolutePath, char *templateMapName ) {
 	bool loaded = false;
-	char result[300];
+	string result;
 	//cerr << "lastLevel=" << lastLevel << " currentStory=" << currentStory << " depth=" << getSession()->getCurrentMission()->getDepth() << endl;
 	vector< RenderedItem* > items;
 	vector< RenderedCreature* > creatures;
@@ -699,12 +700,12 @@ void Scourge::showLevelInfo() {
 	// show an info dialog if infoMessage not already set with outcome of last mission
 	if( !strlen( infoMessage ) ) {
 		if(nextMission == -1) {
-			sprintf(infoMessage, _( "Welcome to the S.C.O.U.R.G.E. Head Quarters" ) );
+			snprintf(infoMessage, INFO_SIZE, _( "Welcome to the S.C.O.U.R.G.E. Head Quarters" ) );
 		} else if( teleportFailure ) {
 			teleportFailure = false;
-			sprintf(infoMessage, _( "Teleport spell failed!! Entering level %d" ), ( currentStory + 1 ));
+			snprintf(infoMessage, INFO_SIZE, _( "Teleport spell failed!! Entering level %d" ), ( currentStory + 1 ));
 		} else {
-			sprintf(infoMessage, _( "Entering dungeon level %d" ), ( currentStory + 1 ));
+			snprintf(infoMessage, INFO_SIZE, _( "Entering dungeon level %d" ), ( currentStory + 1 ));
 		}
 
 		// show infoMessage text
@@ -914,8 +915,9 @@ bool Scourge::inTurnBasedCombatPlayerTurn() {
 }
 
 void Scourge::cancelTargetSelection() {
-	char msg[1000];
-	sprintf( msg, _( "%s cancelled a pending action." ), getTargetSelectionFor()->getName() );
+	enum { MSG_SIZE = 1000 };
+	char msg[ MSG_SIZE ];
+	snprintf( msg, MSG_SIZE, _( "%s cancelled a pending action." ), getTargetSelectionFor()->getName() );
 	strcat( msg, "||" );
 
 	bool b = false;
@@ -962,7 +964,7 @@ bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 
     c->setTargetLocation(mapx, mapy, 0);
     c->setSelXY(mapx,mapy); // and get a path there. Probably should make this get in range for the spell.
     char msg[80];
-    sprintf(msg, _( "%s selected a target" ), c->getName());
+    snprintf(msg, 80, _( "%s selected a target" ), c->getName());
     getDescriptionScroller()->addDescription(msg);
     ret = true;
     closeAllContainerGuis();
@@ -984,7 +986,7 @@ bool Scourge::handleTargetSelectionOfDoor( Uint16 mapx, Uint16 mapy, Uint16 mapz
     c->setTargetLocation(mapx, mapy, 0);
     c->setSelXY(mapx,mapy); // and need to get a path there, otherwise we'll run on the spot
     char msg[80];
-    sprintf(msg, _( "%s selected a target" ), c->getName());
+    snprintf(msg, 80, _( "%s selected a target" ), c->getName());
     getDescriptionScroller()->addDescription(msg);
     ret = true;
   } else {
@@ -1007,8 +1009,8 @@ bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
     // assign this creature
     c->setTargetCreature( potentialTarget );
     //no need to get paths to the target creature, the battle should handle this
-    char msg[80];
-    sprintf(msg, _( "%1$s will target %2$s" ), c->getName(), c->getTargetCreature()->getName());
+    char msg[ 80 ];
+    snprintf(msg, 80, _( "%1$s will target %2$s" ), c->getName(), c->getTargetCreature()->getName());
     getDescriptionScroller()->addDescription(msg);
     ret = true;
   } else {
@@ -1029,8 +1031,8 @@ bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
 
     // assign this creature
     c->setTargetItem( x, y, z, item );
-		char msg[80];
-    sprintf( msg, _( "%1$s targeted %2$s." ), c->getName(), item->getRpgItem()->getDisplayName() );
+		char msg[ 80 ];
+    snprintf( msg, 80, _( "%1$s targeted %2$s." ), c->getName(), item->getRpgItem()->getDisplayName() );
     getDescriptionScroller()->addDescription( msg );
     ret = true;
   } else {
@@ -1042,22 +1044,20 @@ bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
 }
 
 void Scourge::describeLocation(int mapx, int mapy, int mapz) {
-  char s[300];
+	std::string description;
   if(mapx < MAP_WIDTH) {
     //fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
     Location *loc = levelMap->getPosition(mapx, mapy, mapz);
-		if( !loc ) loc = levelMap->getItemLocation( mapx, mapy );
-    if(loc) {
-      char *description = NULL;
+		if ( !loc ) loc = levelMap->getItemLocation( mapx, mapy );
+		if ( loc ) {
       Creature *creature = ((Creature*)(loc->creature));
       //fprintf(stderr, "\tcreature?%s\n", (creature ? "yes" : "no"));
-      if(creature) {
-        creature->getDetailedDescription(s);
-        description = s;
+			if ( creature ) {
+				creature->getDetailedDescription( description );
       } else {
         Item *item = ((Item*)(loc->item));
         //fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
-        if( item ) {
+				if ( item ) {
           //item->getDetailedDescription(s, false);
           //description = s;
           infoGui->setItem( item );
@@ -1065,13 +1065,13 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
         } else {
           Shape *shape = loc->shape;
           //fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
-          if(shape) {
+					if ( shape ) {
             description = session->getShapePalette()->getRandomDescription(shape->getDescriptionGroup());
           }
         }
       }
-      if(description) {
-        getDescriptionScroller()->addDescription(description);
+			if ( !description.empty() ) {
+				getDescriptionScroller()->addDescription( description.c_str() );
       }
     }
   }
@@ -1200,7 +1200,7 @@ int Scourge::dropItem(int x, int y) {
 			return z;
 			/*
       if(c->addInventory(movingItem)) {
-        sprintf(message, _( "%1$s picks up %2$s." ),
+        snprintf(message, 120, _( "%1$s picks up %2$s." ),
                 c->getName(),
                 movingItem->getItemName());
         getDescriptionScroller()->addDescription(message);
@@ -1215,7 +1215,7 @@ int Scourge::dropItem(int x, int y) {
         showMessageDialog( _( "The item won't fit in that container!" ) );
         replace = true;
       } else {
-        sprintf(message, _( "%1$s is placed in %2$s." ),
+        snprintf(message, sizeof( message ), _( "%1$s is placed in %2$s." ),
                 movingItem->getItemName(),
                 levelMap->getSelectedDropTarget()->item->getItemName());
         getDescriptionScroller()->addDescription(message);
@@ -1771,9 +1771,9 @@ void Scourge::moveCreatures( bool allCreatures ) {
 }
 
 void Scourge::addGameSpeed(int speedFactor){
-  char msg[80];
   getUserConfiguration()->setGameSpeedLevel(getUserConfiguration()->getGameSpeedLevel() + speedFactor);
-  sprintf(msg, _( "Speed set to %d\n" ), getUserConfiguration()->getGameSpeedTicks());
+  char msg[80];
+  snprintf(msg, 80, _( "Speed set to %d\n" ), getUserConfiguration()->getGameSpeedTicks());
   getDescriptionScroller()->addDescription(msg);
 }
 
@@ -1884,7 +1884,7 @@ void Scourge::removeClosedContainerGuis() {
   }
 }
 
-void Scourge::showMessageDialog(char *message) {
+void Scourge::showMessageDialog(char const* message) {
   if( party && party->getPartySize() ) party->toggleRound(true);
   Window::showMessageDialog(getSDLHandler(),
 							getSDLHandler()->getScreen()->w / 2 - 200,
@@ -1930,7 +1930,7 @@ void Scourge::missionCompleted() {
     int exp = (getSession()->getCurrentMission()->getLevel() + 1) * 100;
     getDescriptionScroller()->addDescription( _( "For completing the mission" ), 0, 1, 1);
     char message[200];
-    sprintf(message, _( "The party receives %d points." ), exp);
+    snprintf(message, 200, _( "The party receives %d points." ), exp);
     getDescriptionScroller()->addDescription(message, 0, 1, 1);
 
     for(int i = 0; i < getParty()->getPartySize(); i++) {
@@ -1990,8 +1990,8 @@ void Scourge::createPartyUI() {
 	tbCombatWin->setVisible( false );
 	tbCombatWin->setLocked( true );
 
-  sprintf(version, "S.C.O.U.R.G.E. v%s", SCOURGE_VERSION);
-  sprintf(min_version, "S.C.O.U.R.G.E.");
+  snprintf(version, VER_SIZE, "S.C.O.U.R.G.E. v%s", SCOURGE_VERSION);
+  snprintf(min_version, MINVER_SIZE, "S.C.O.U.R.G.E.");
   mainWin = new Window( getSDLHandler(),
                         ( getSDLHandler()->getScreen()->w - Scourge::PARTY_GUI_WIDTH ) / 2,
                         getSDLHandler()->getScreen()->h - Scourge::PARTY_GUI_HEIGHT,
@@ -2140,7 +2140,7 @@ void Scourge::drawWidgetContents(Widget *w) {
     } else if( playerHpMp[i] == w ) {
       Creature *p = party->getParty( i );
       char msg[80];
-      sprintf( msg, "%s:%d(%d) %s:%d(%d)",
+      snprintf( msg, 80, "%s:%d(%d) %s:%d(%d)",
 							 _( "HP" ),
                p->getHp(), p->getMaxHp(),
 							 _( "MP" ),
@@ -2161,14 +2161,14 @@ void Scourge::drawWidgetContents(Widget *w) {
       return;
     } else if( playerWeapon[i] == w ) {
       // draw the current weapon
-      char msg[80];
       if( party->getParty( i )->getPreferredWeapon() == -1 ) {
         w->setTooltip( _( "Current Weapon: Bare Hands" ) );
       } else {
         Item *item = party->getParty( i )->getItemAtLocation( party->getParty( i )->getPreferredWeapon() );
         if(item &&
            item->getRpgItem()->isWeapon() ) {
-          sprintf( msg, _( "Current Weapon: %s" ), item->getRpgItem()->getDisplayName() );
+          char msg[80];
+          snprintf( msg, 80, _( "Current Weapon: %s" ), item->getRpgItem()->getDisplayName() );
           w->setTooltip( msg );
           drawItemIcon( item );
         }
@@ -2554,7 +2554,7 @@ void Scourge::updatePartyUI() {
   // FIXME: for now, just print the date.
   // Expect a spanky new date ui soon. (complete with moon phases, etc.)
   if( getParty()->getCalendar()->update( getUserConfiguration()->getGameSpeedLevel() ) ){
-    sprintf( version, "S.C.O.U.R.G.E. v%s %s", SCOURGE_VERSION,
+    snprintf( version, VER_SIZE, "S.C.O.U.R.G.E. v%s %s", SCOURGE_VERSION,
              getParty()->getCalendar()->getCurrentDate().getDateString() );
     mainWin->setTitle( version );
   }
@@ -2669,7 +2669,7 @@ void Scourge::createBoardUI() {
   boardWin->addWidget(closeBoard);
 }
 
-void Scourge::updateBoardUI(int count, const char **missionText, Color *missionColor) {
+void Scourge::updateBoardUI(int count, std::string const missionText[], Color *missionColor) {
   missionList->setLines(count, missionText, missionColor);
 }
 
@@ -3133,7 +3133,7 @@ void Scourge::setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolNa
 void Scourge::startConversation( RenderedCreature *creature, char *message ) {
 	conversationGui->start( (Creature*)creature );
 	if( message ) {
-		conversationGui->wordClicked( message );
+		conversationGui->wordClicked( string(message) );
 	}
 }
 
@@ -3284,7 +3284,7 @@ void Scourge::handleWanderingHeroClick( Creature *creature ) {
 
     /*
 		char msg[300];
-		sprintf( msg, "Would you like %s the %s to join your party?", 
+		snprintf( msg, 300, "Would you like %s the %s to join your party?", 
 						 creature->getName(),
 						 creature->getCharacter()->getName() );
 		hireHeroDialog->setText( msg );
@@ -3296,7 +3296,7 @@ void Scourge::handleWanderingHeroClick( Creature *creature ) {
 
 void Scourge::handleDismiss( int index ) {
 	char msg[300];
-	sprintf( msg, _( "Would you like to dismiss %s the %s?" ), 
+	snprintf( msg, 300, _( "Would you like to dismiss %s the %s?" ), 
 					 getParty()->getParty( index )->getName(),
 					 getParty()->getParty( index )->getCharacter()->getDisplayName() );
 	dismissHeroDialog->setText( msg );
@@ -3332,7 +3332,7 @@ void Scourge::uploadScore() {
 	// "mode=add&user=Tipsy McStagger&score=5000&desc=OMG, I can't believe this works."
 
 	char user[2000];
-	sprintf( user, "%s the level %d %s", 
+	snprintf( user, 2000, "%s the level %d %s", 
 					 getParty()->getParty(0)->getName(),
 					 getParty()->getParty(0)->getLevel(),
 					 getParty()->getParty(0)->getCharacter()->getDisplayName() );
@@ -3340,10 +3340,10 @@ void Scourge::uploadScore() {
 	char place[2000];
 	if( getSession()->getCurrentMission() ) {
 		if( strstr( getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
-			sprintf( place, "in a cave on level %d", 
+			snprintf( place, 2000, "in a cave on level %d", 
 							 ( getCurrentDepth() + 1 ) );
 		} else {
-			sprintf( place, "in dungeon level %d at %s", 
+			snprintf( place, 2000, "in dungeon level %d at %s", 
 							 ( getCurrentDepth() + 1 ),
 							 getSession()->getCurrentMission()->getMapName() );
 		}
@@ -3371,13 +3371,13 @@ void Scourge::uploadScore() {
 	}
 
 	char desc[2000];
-	sprintf( desc, "Expired %s. Cause of demise: %s. Reached chapter %d of the story.", 
+	snprintf( desc, 2000, "Expired %s. Cause of demise: %s. Reached chapter %d of the story.", 
 					 place, 
 					 getParty()->getParty(0)->getCauseOfDeath(),
 					 ( getSession()->getBoard()->getStorylineIndex() + 1 ) );
 
 	char score[5000];
-	sprintf( score, "mode=add&user=%s&score=%d&desc=%s",
+	snprintf( score, 5000, "mode=add&user=%s&score=%d&desc=%s",
 					 user,
 					 getParty()->getParty(0)->getExp(),
 					 desc );
@@ -3387,7 +3387,7 @@ void Scourge::uploadScore() {
 		strcat( score, session->getScoreid() );
 	}
 
-	char result[300];	
+	Upload::RESULT result;
 	if( !Upload::uploadScoreToWeb( score, result ) ) {
 		cerr << "Success: " << result << endl;
 		
@@ -3433,23 +3433,24 @@ bool Scourge::loadScoreid( string& dirName, char *p ) {
 }
 
 void Scourge::describeDefense( Creature *p, int x, int y ) {
-	char s[80];
+	enum { S_SIZE = 80 };
+	char s[ S_SIZE ];
 	
 	int initiative;
 	float armor, dodgePenalty;
 	p->getInitiative( &initiative );
 
 	glColor4f( 1, 0.35f, 0, 1 );
-	sprintf(s, "%s:%d", _( "Initiative" ), initiative );
+	snprintf(s, S_SIZE, "%s:%d", _( "Initiative" ), initiative );
 	getSDLHandler()->texPrint( x, y, s );
 
-	sprintf(s, "%s:%d(%c)", 
+	snprintf(s, S_SIZE, "%s:%d(%c)", 
 					_( "DEF" ),
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_SLASHING ) ),
 					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_SLASHING ) );
 	getSDLHandler()->texPrint( x, y + 12, s );
 
-	sprintf(s, "%d(%c),%d(%c)", 
+	snprintf(s, S_SIZE, "%d(%c),%d(%c)", 
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_PIERCING ) ),
 					RpgItem::getDamageTypeLetter( RpgItem::DAMAGE_TYPE_PIERCING ),
 					toint( p->getArmor( &armor, &dodgePenalty, RpgItem::DAMAGE_TYPE_CRUSHING ) ),
@@ -3458,8 +3459,9 @@ void Scourge::describeDefense( Creature *p, int x, int y ) {
 }
 
 bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull ) {
-	char buff[80];
-	char line1[80], line2[80], line3[80];																
+	enum { LINE_SIZE = 80 };
+	char buff[ LINE_SIZE ];
+	char line1[ LINE_SIZE ], line2[ LINE_SIZE ], line3[ LINE_SIZE ];																
 	glColor4f( 1, 0.35f, 0, 1 );
   float max, min, cth, skill;
   if( ( item && item->getRpgItem()->isWeapon() ) || ( !item && handleNull ) ) {
@@ -3481,22 +3483,22 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
     p->getAttack( item, &max, &min );
 		p->getCth( item, &cth, &skill, false );
     if( toint( max ) > toint( min ) ) {
-			sprintf( line1, "%s:%d-%d(%c)", 
+			snprintf( line1, LINE_SIZE, "%s:%d-%d(%c)", 
 							 _( "ATK" ),
 							 toint( min ), toint( max ), 
 							 RpgItem::getDamageTypeLetter( ( item ? 
 																							 item->getRpgItem()->getDamageType() : 
 																							 RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
     } else {
-      sprintf( line1, "%s:%d(%c)", 
+      snprintf( line1, LINE_SIZE, "%s:%d(%c)", 
 							 _( "ATK" ),
 							 toint( min ), 
 							 RpgItem::getDamageTypeLetter( ( item ? 
 																							 item->getRpgItem()->getDamageType() : 
 																							 RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
 		}
-		sprintf( line2, "%s:%d", _( "CTH" ), toint( skill ) );
-		sprintf( line3, "%s:%s", _( "APR" ), getAPRDescription( p, item, buff ) );
+		snprintf( line2, LINE_SIZE, "%s:%d", _( "CTH" ), toint( skill ) );
+		snprintf( line3, LINE_SIZE, "%s:%s", _( "APR" ), getAPRDescription( p, item, buff, LINE_SIZE ) );
 		glColor4f( 1, 0.35f, 0, 1 );
 		getSDLHandler()->texPrint( x + 34, y, line1 );
 		getSDLHandler()->texPrint( x + 34, y + 12, line2 );
@@ -3545,12 +3547,12 @@ void Scourge::describeAttacks( Creature *p, int x, int y, bool currentOnly ) {
 	}
 }
 
-char *Scourge::getAPRDescription( Creature *p, Item *item, char *buff ) {
+char *Scourge::getAPRDescription( Creature *p, Item *item, char *buff, size_t buffSize ) {
   float apr = p->getAttacksPerRound( item );
   if( apr >= 1.0f ) {
-    sprintf( buff, _( "%.2f" ), apr );
+    snprintf( buff, buffSize, _( "%.2f" ), apr );
   } else {
-    sprintf( buff, _( "per %.2f R" ), ( 100.0f / (apr * 100.0f) ) );
+    snprintf( buff, buffSize, _( "per %.2f R" ), ( 100.0f / (apr * 100.0f) ) );
   }
   return buff;
 }
@@ -3570,10 +3572,10 @@ bool Scourge::enchantItem( Creature *creature, Item *item ) {
 					int level = creature->getSkill( Skill::ENCHANT_ITEM );
 					item->enchant( (level - 20) / 20 );
 					showMessageDialog( _( "You succesfully enchanted an item!" ) );
-					char tmp[255];
-					item->getDetailedDescription(tmp);
+					std::string tmp;
+					item->getDetailedDescription( tmp );
 					char msg[255];
-					sprintf(msg, _( "You created: %s." ) , tmp);
+					snprintf( msg, 255, _( "You created: %s." ) , tmp.c_str() );
 					addDescription(msg);
 					creature->startEffect( Constants::EFFECT_SWIRL, Constants::DAMAGE_DURATION * 4 );
 					ret = true;
@@ -3601,7 +3603,7 @@ bool Scourge::transcribeItem( Creature *creature, Item *item ) {
 					// destroy the scroll
 					creature->removeInventory( creature->findInInventory( item ) );
 					char msg[120];
-					sprintf(msg, _( "%s crumbles into dust." ), item->getItemName());
+					snprintf( msg, 120, _( "%s crumbles into dust." ), item->getItemName());
 					addDescription(msg);
 					ret = true;
 				} else {
@@ -3846,7 +3848,6 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 		getDescriptionScroller()->addDescription( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ) );
 	  } else {
 		getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
-		getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
 		return true;
 	  }
     }

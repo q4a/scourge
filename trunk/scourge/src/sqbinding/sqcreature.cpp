@@ -377,15 +377,16 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
 
   cerr << "Setting: mod=" << StateMod::stateMods[ mod ]->getDisplayName() << " to " << setting << endl;
 
-  char msg[200];
+  enum { MSG_SIZE = 200 };
+	char msg[ MSG_SIZE ];
   bool protectiveItem = false;
   if( !StateMod::stateMods[ mod ]->isStateModTransitionWanted( setting ) ) {
   //if( !Constants::isStateModTransitionWanted( mod, setting ) ) {
     // check for magic item state mod protections
     protectiveItem = object->getProtectedStateMod(mod);
     if(protectiveItem && 0 == Util::dice( 2 )) {
-      sprintf(msg, _( "%s resists the spell with magic item!" ), 
-              object->getName());
+			snprintf( msg, MSG_SIZE, _( "%s resists the spell with magic item!" )
+			       , object->getName());
       SqBinding::sessionRef->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    
       return 0;
     }
@@ -407,9 +408,9 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
   object->setStateMod( mod, setting );
     
   if(setting) {
-    sprintf( msg, StateMod::stateMods[ mod ]->getSetState(), object->getName() );
+    snprintf( msg, MSG_SIZE, StateMod::stateMods[ mod ]->getSetState(), object->getName() );
   } else {
-    sprintf( msg, StateMod::stateMods[ mod ]->getUnsetState(), object->getName() );
+    snprintf( msg, MSG_SIZE, StateMod::stateMods[ mod ]->getUnsetState(), object->getName() );
   }
   SqBinding::sessionRef->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);
   

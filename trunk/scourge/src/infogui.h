@@ -43,7 +43,8 @@ class InfoGui : public WidgetView {
   ScrollingLabel *label;
   ScrollingLabel *nameLabel;
   Canvas *image;
-  char name[500], description[1000];
+  enum { NAME_SIZE = 500, DESCR_SIZE = 1000 }; 
+  char name[NAME_SIZE], description[DESCR_SIZE];
 
  public:
   InfoGui(Scourge *scourge);

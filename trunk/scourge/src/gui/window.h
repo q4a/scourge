@@ -162,7 +162,7 @@ class Window : public Widget {
   
   // widget managment functions
   Button    * createButton(int x1, int y1, int x2, int y2, char *label, bool toggle=false, GLuint texture=0);    
-  Label     * createLabel(int x1, int x2, char * label, int color=Constants::DEFAULT_COLOR); 
+  Label     * createLabel(int x1, int x2, char const* label, int color=Constants::DEFAULT_COLOR); 
   Checkbox  * createCheckbox(int x1, int y1, int x2, int y2, char *label);  
   TextField * createTextField(int x, int y, int numChars);
   void addWidget(Widget *widget);
@@ -194,7 +194,7 @@ class Window : public Widget {
   static void showMessageDialog(ScourgeGui *scourgeGui, 
                                 int x, int y, int w, int h, 
                                 char *title, GLuint texture,
-                                char *message, 
+                                char const* message, 
                                 char *buttonLabel = _( Constants::messages[Constants::OK_LABEL][0] ));
   
   void move(int x, int y);

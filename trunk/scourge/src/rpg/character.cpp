@@ -171,8 +171,8 @@ void Character::buildTree() {
 void Character::describeProfession() {
 	char s[1000];
 	strcpy( s, "||" );
-
-	char tmp[500];
+	enum { TMP_SIZE = 500 };
+	char tmp[ TMP_SIZE ];
 
 	// describe the top few skills
 	// first loop thru to see if skill-groups are supported
@@ -200,9 +200,9 @@ void Character::describeProfession() {
 			if( groupCount[skill->getGroup()] == -1 ) continue;
 			if( groupCount[skill->getGroup()] == skill->getGroup()->getSkillCount() ) {
 				groupCount[skill->getGroup()] = -1;
-				sprintf( tmp, "   %s|", skill->getGroup()->getDescription() );
+				snprintf( tmp, TMP_SIZE, "   %s|", skill->getGroup()->getDescription() );
 			} else {
-				sprintf( tmp, "   %s|", skill->getName() );
+				snprintf( tmp, TMP_SIZE, "   %s|", skill->getName() );
 			}
 			strcat( s, tmp );
 		}

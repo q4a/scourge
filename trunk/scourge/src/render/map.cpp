@@ -1057,7 +1057,7 @@ void Map::preDraw() {
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
     if( settings->isPlayerEnabled() ) {
-      sprintf(mapDebugStr, "E=%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d", 
+      snprintf(mapDebugStr, DEBUG_SIZE, "E=%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d", 
               (int)currentEffectsMap.size(),
               ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
               ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
@@ -1066,7 +1066,7 @@ void Map::preDraw() {
               csx, cex, csy, cey, shapeCount, selectedTrapIndex );
       //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
     } else {
-      sprintf(mapDebugStr, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
+      snprintf(mapDebugStr, DEBUG_SIZE, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
               (int)currentEffectsMap.size(),
               (useFrustum ? "*" : ""),
               chunkCount, ((cex - csx)*(cey - csy)),
@@ -1544,7 +1544,6 @@ void Map::sortShapes( DrawLater *playerDrawLater,
               mm, pm, vp,
               &playerWinX, &playerWinY, &playerWinZ );
 
-  char tmp[80];
   map< string, bool > cache;
   GLdouble objX, objY;
   GLdouble wallWinX, wallWinY, wallWinZ;
@@ -1564,7 +1563,8 @@ void Map::sortShapes( DrawLater *playerDrawLater,
       objY = playerDrawLater->ypos;
     }
     bool b;
-    sprintf( tmp, "%f,%f", objX, objY );
+	char tmp[80];
+    snprintf( tmp, 80, "%f,%f", objX, objY );
     string key = tmp;
     if( cache.find( key ) == cache.end() ) {
       gluProject( objX, objY, 0,
@@ -2371,7 +2371,6 @@ void Map::dropItemsAbove(int x, int y, int z, RenderedItem *item) {
 }
 
 void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) {
-	char message[120];  
 	if( creature && creature->getShape() ) {
 		if ( helper && !creature->isMonster() )	helper->visit( creature );
 
@@ -2388,7 +2387,8 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
 												pos[x + xp][y - yp][z + zp]->y,
 												pos[x + xp][y - yp][z + zp]->z );
 						creature->pickUpOnMap( item );
-						sprintf( message, "%s picks up %s.", 
+						char message[120];  
+						snprintf( message, 120, "%s picks up %s.", 
 										 creature->getName(), 
 										 item->getItemName() );
 						adapter->addDescription( message );        
@@ -2429,7 +2429,6 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
 		if( helper && !creature->isMonster() ) helper->visit( creature );
 
 		// pick up any items in the way
-		char message[120];
 		for (int xp = 0; xp < creature->getShape()->getWidth(); xp++) {
 			for (int yp = 0; yp < creature->getShape()->getDepth(); yp++) {
 				for (int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
@@ -2446,7 +2445,8 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
 												 pos[newX][newY][newZ]->y,
 												 pos[newX][newY][newZ]->z);
 							creature->pickUpOnMap(item);
-							sprintf(message, "%s picks up %s.", 
+							char message[120];
+							snprintf(message, 120, "%s picks up %s.", 
 											creature->getName(), 
 											item->getItemName());
 							adapter->addDescription(message);
@@ -3154,10 +3154,10 @@ float EditorMapSettings::getMaxYRot() {
 }
 
 #define NEG_GROUND_HEIGHT 0x00100000
-void Map::saveMap( const string& name, char *result, bool absolutePath, int referenceType ) {
+void Map::saveMap( const string& name, string& result, bool absolutePath, int referenceType ) {
 
   if( name.length() == 0) {
-    strcpy( result, _( "You need to name the map first." ) );
+    result = _( "You need to name the map first." );
     return;
   }
 
@@ -3328,7 +3328,8 @@ void Map::saveMap( const string& name, char *result, bool absolutePath, int refe
 		adapter->saveMapData( fileName );
 	}
 
-  sprintf( result, "Map saved: %s", name.c_str() );
+	result += "Map saved: ";
+	result += name;
 }
 
 void Map::initForCave( char *themeName ) {
@@ -3343,7 +3344,7 @@ void Map::initForCave( char *themeName ) {
   setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, floorTextureGroup[ GLShape::TOP_SIDE ] );
 }
 
-bool Map::loadMap( const string& name, char *result, StatusReport *report, 
+bool Map::loadMap( const string& name, std::string& result, StatusReport *report, 
 				   int level, int depth, 
 				   bool changingStory, bool fromRandom,
 				   bool goingUp, bool goingDown, 
@@ -3352,7 +3353,7 @@ bool Map::loadMap( const string& name, char *result, StatusReport *report,
 				   bool absolutePath,
 				   char *templateMapName ) {
   if( !name.length() ) {
-    strcpy( result, _( "Enter a name of a map to load." ) );
+    result = _( "Enter a name of a map to load." );
     return false;
   }
 
@@ -3371,7 +3372,7 @@ bool Map::loadMap( const string& name, char *result, StatusReport *report,
 
   FILE *fp = fopen( fileName.c_str(), "rb" );
   if( !fp ) {
-    sprintf( result, "Can't find map: %s", fileName.c_str() );
+    result = "Can't find map: " + fileName;
     return false;
   }
   if( report ) report->updateStatus( 0, 7, _( "Loading map" ) );
@@ -3637,14 +3638,14 @@ bool Map::loadMap( const string& name, char *result, StatusReport *report,
       }
     }
   }
-  sprintf( result, _( "Map loaded: %s" ), name.c_str() );
+  result = _( "Map loaded: " ) + name;
   return true;
 }
 
-void Map::loadMapLocation( char *name, char *result, int *gridX, int *gridY, int depth ) {
+void Map::loadMapLocation( const std::string& name, std::string& result, int *gridX, int *gridY, int depth ) {
   Uint16 tmpX, tmpY;
-  if( !strlen( name ) ) {
-    strcpy( result, _( "Enter a name of a map to load." ) );
+  if( name.empty() ) {
+    result = _( "Enter a name of a map to load." );
     return;
   }
 
@@ -3658,7 +3659,7 @@ void Map::loadMapLocation( char *name, char *result, int *gridX, int *gridY, int
 
   FILE *fp = fopen( fileName.str().c_str(), "rb" );
   if( !fp ) {
-    sprintf( result, _( "Can't find map: %s" ), name );
+    result = _( "Can't find map: " ) + name;
     return;
   }
   File *file = new ZipFile( fp, ZipFile::ZIP_READ );
@@ -3668,7 +3669,7 @@ void Map::loadMapLocation( char *name, char *result, int *gridX, int *gridY, int
   *gridX = (int)tmpX;
   *gridY = (int)tmpY;
 
-  sprintf( result, _( "Map header loaded: %s" ), name );
+	result = _( "Map header loaded: " ) + name;
 }
 
 
@@ -4394,9 +4395,10 @@ int Map::addTrap( int x, int y, int w, int h ) {
 
 void Map::clearTraps() {
 	for( unsigned int i = 0; i < trapList.size(); i++ ) {
-		Trap trap = trapList[ i ];
-		for( unsigned int t = 0; t < trap.hull.size(); t++ ) {
-			free( trap.hull[ t ] );
+		Trap& trap = trapList[ i ];
+		while (!trap.hull.empty()) {
+			delete trap.hull.back();
+			trap.hull.pop_back();
 		}
 	}
   trapPos.clear();

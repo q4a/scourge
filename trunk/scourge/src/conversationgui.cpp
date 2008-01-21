@@ -63,10 +63,6 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 
   list = new ScrollingList( width - 130, sy, 120, 110, scourge->getShapePalette()->getHighlightTexture() );
   win->addWidget( list );
-  words = (char**)malloc(MAX_WORDS * sizeof(char*));
-  for(int i = 0; i < MAX_WORDS; i++) {
-    words[i] = (char*)malloc(120 * sizeof(char));
-  }
   wordCount = 0;
 
   sy = 260;
@@ -108,10 +104,6 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 
 ConversationGui::~ConversationGui() {
   delete win;
-  for( int i = 0; i < MAX_WORDS; i++ ) {
-    free( words[i] );
-  }
-  free( words );
 }
 
 bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
@@ -126,7 +118,7 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
     }
   } else if( widget == entry && 
              entry->getEventType() == TextField::EVENT_ACTION ) {
-    wordClicked( entry->getText() );
+    wordClicked( string(entry->getText()) );
     entry->clearText();
   } else if( widget == tradeButton ) {
     scourge->getTradeDialog()->setCreature( creature );
@@ -163,18 +155,18 @@ void ConversationGui::start( Creature *creature, char *message, bool useCreature
   this->creature = creature;
   this->useCreature = useCreature;
   char tmp[ 80 ];
-  sprintf( tmp, _( "Talking to %s" ), creature->getName() );
+  snprintf( tmp, 80, _( "Talking to %s" ), creature->getName() );
   label->setText( tmp );
   answer->setText( message );
   win->setVisible( true );
   wordCount = 0;
-  list->setLines( wordCount, (const char**)words );
+  list->setLines( wordCount, words );
 
   // show the correct buttons
   cards->setActiveCard( creature->getNpcInfo() ? creature->getNpcInfo()->type : Constants::NPC_TYPE_COMMONER );
 }
 
-void ConversationGui::wordClicked( char *word ) {
+void ConversationGui::wordClicked( std::string& word ) {
 
   // convert to lower case
 	cerr << "Clicked: " << word << endl;
@@ -183,12 +175,13 @@ void ConversationGui::wordClicked( char *word ) {
 
   // try to get the answer from script
   char first[255];
-	char *s = ( useCreature ? Mission::getFirstKeyPhrase( creature->getMonster()->getType(), word ) : Mission::getFirstKeyPhrase( word ) );
-	if(!s) {
-		cerr << "Can't find keyphrase: " << word << endl;
-		return;
-	}
+  if( useCreature ) {
+	  char *s = Mission::getFirstKeyPhrase( creature->getMonster()->getType(), word.c_str() );
+	if( !s ) s = Mission::getFirstKeyPhrase( creature->getName(), word.c_str() );
 	strcpy( first, s );
+  } else {
+	strcpy( first, Mission::getFirstKeyPhrase( word.c_str() ) );
+	}
 
   char answerStr[255];
   scourge->getSession()->getSquirrel()->
@@ -196,39 +189,39 @@ void ConversationGui::wordClicked( char *word ) {
   if( !strlen( answerStr ) ) {
     // Get the answer the usual way
     if( creature ) {
-      if( !strcmp( word, TRADE_WORD ) &&
+      if( word == TRADE_WORD &&
           creature->getNpcInfo() &&
           creature->getNpcInfo()->type == Constants::NPC_TYPE_MERCHANT ) scourge->getTradeDialog()->setCreature( creature );
-      else if( !strcmp( word, HEAL_WORD ) &&
+      else if( word == HEAL_WORD &&
                creature->getNpcInfo() &&
                creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getHealDialog()->setCreature( creature );
-      else if( !strcmp( word, TRAIN_WORD ) &&
+      else if( word == TRAIN_WORD &&
                creature->getNpcInfo() &&
                creature->getNpcInfo()->type == Constants::NPC_TYPE_TRAINER ) scourge->getTrainDialog()->setCreature( creature );
-      else if( !strcmp( word, DONATE_WORD ) &&
+      else if( word == DONATE_WORD &&
                creature->getNpcInfo() &&
                creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getDonateDialog()->setCreature( creature );
     }
   
     if( useCreature ) {
-	  char *s = Mission::getAnswer( creature->getMonster()->getType(), word );
-	  if( !s ) s = Mission::getAnswer( creature->getName(), word );
+		char *s = Mission::getAnswer( creature->getMonster()->getType(), word.c_str() );
+		if( !s ) s = Mission::getAnswer( creature->getName(), word.c_str() );
 	  answer->setText( s );
     } else {
-      answer->setText( Mission::getAnswer( word ) );
+		answer->setText( Mission::getAnswer( word.c_str() ) );
     }
   } else {
     answer->setText( answerStr );
   }
 
   for( int i = 0; i < wordCount; i++ ) {
-    if( !strcmp( words[i], word ) ) {
+	  if( words[i] == word ) {
       // delete it
       for( int t = i; t < wordCount - 1; t++ ) {
-        strcpy( words[t], words[t + 1] );
+        words[t] = words[t + 1];
       }
       wordCount--;
-      list->setLines( wordCount, (const char**)words );
+      list->setLines( wordCount, words );
       return;
     }
   }
@@ -236,14 +229,14 @@ void ConversationGui::wordClicked( char *word ) {
 
 void ConversationGui::showingWord( char *word ) {
   for( int i = 0; i < wordCount; i++ ) {
-    if( !strcmp( words[i], word ) ) {
+	  if( words[i] == word ) {
       return;
     }
   }
   // add new word
   if( wordCount < MAX_WORDS ) {
-    strcpy( words[ wordCount++ ], word );
-    list->setLines( wordCount, (const char**)words );
+    words[ wordCount++ ] = word;
+    list->setLines( wordCount, words );
   }
 }
 

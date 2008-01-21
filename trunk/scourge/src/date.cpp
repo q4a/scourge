@@ -63,7 +63,7 @@ Date::Date( char *shortString ) {
 }
 
 char *Date::getShortString() {
-  sprintf( shortString, "%d/%d/%d/%d/%d/%d", year, month, day, hour, min, sec );
+  snprintf( shortString, SHORT_SIZE, "%d/%d/%d/%d/%d/%d", year, month, day, hour, min, sec );
   return shortString;
 }
 
@@ -224,7 +224,7 @@ void Date::buildDateString(){
     buff[3] = ' ';
     buff[4] = '\0';    
     
-    sprintf( dateString, "%s %.2d %.2d:%.2d", 
+    snprintf( dateString, DATE_SIZE, "%s %.2d %.2d:%.2d", 
 						 buff, (int)day, (int)hour, (int)min );
 }
 

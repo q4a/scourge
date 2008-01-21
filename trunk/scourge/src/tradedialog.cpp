@@ -85,14 +85,15 @@ void TradeDialog::updateUI() {
 }
 
 void TradeDialog::updateLabels() {
-  char tmp[120];
-  sprintf( tmp, "%s $%d", _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney() );
+	enum { TMP_SIZE = 120 };
+  char tmp[ TMP_SIZE ];
+  snprintf( tmp, TMP_SIZE, "%s $%d", _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney() );
   coinAvailA->setText( tmp );
-  sprintf( tmp, "%s $%d", _( "Selected Coins:" ), tradeA );
+  snprintf( tmp, TMP_SIZE, "%s $%d", _( "Selected Coins:" ), tradeA );
   coinTradeA->setText( tmp );
-  sprintf( tmp, "%s $%d", _( "Selected Total:" ), ( getSelectedTotal( listA ) + tradeA ) );
+  snprintf( tmp, TMP_SIZE, "%s $%d", _( "Selected Total:" ), ( getSelectedTotal( listA ) + tradeA ) );
   totalA->setText( tmp );
-  sprintf( tmp, "%s $%d", _( "Selected Total:" ), getSelectedTotal( listB ) );
+  snprintf( tmp, TMP_SIZE, "%s $%d", _( "Selected Total:" ), getSelectedTotal( listB ) );
   totalB->setText( tmp );
 }
 
@@ -145,8 +146,8 @@ void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
   }
 }
 
-void TradeDialog::render( const Widget *widget, const Item *item, int bufferSize, const char *buffer ) {
-  char s[ 120 ];
+void TradeDialog::render( const Widget *widget, const Item *item, std::string& buffer ) {
+	std::string s;
   ((Item*)item)->getDetailedDescription( s );
   float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
   // level-based mark-up is already included and price is randomized
@@ -155,7 +156,9 @@ void TradeDialog::render( const Widget *widget, const Item *item, int bufferSize
   int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
   int total = price + ( widget == listA ? ( -1 * percentage ) : percentage );
   prices[ (Item*)item ] = total;
-  sprintf( (char*)buffer, "$%d %s", total, s );
+  char priceStr[20];
+	snprintf( priceStr, 20, "$%d ", total );
+	buffer = priceStr + s;
 }
 
 void TradeDialog::trade() {
@@ -312,8 +315,9 @@ void TradeDialog::steal() {
         scourge->getParty()->getPlayer()->getMoney() );
     price -= money;
     scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() - money );
-    char s[ 255 ];
-    sprintf( s, _( "%s looses %d coins!" ), scourge->getParty()->getPlayer()->getName(), money );
+	enum { S_SIZE = 255 };
+    char s[ S_SIZE ];
+    snprintf( s, S_SIZE, _( "%s looses %d coins!" ), scourge->getParty()->getPlayer()->getName(), money );
     scourge->addDescription( s, 1, 0.05f, 0.05f );
 
     // remove some items
@@ -323,7 +327,7 @@ void TradeDialog::steal() {
         scourge->getParty()->getPlayer()->removeInventory( i );
         creature->addInventory( item, true );
         price -= prices[ item ];
-        sprintf( s, _( "Item confiscated: %s" ), item->getRpgItem()->getDisplayName() );
+        snprintf( s, S_SIZE, _( "Item confiscated: %s" ), item->getRpgItem()->getDisplayName() );
         scourge->addDescription( s, 1, 0.05f, 0.05f );
       }
     }
