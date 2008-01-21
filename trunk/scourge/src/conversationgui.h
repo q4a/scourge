@@ -67,7 +67,7 @@ class ConversationGui : public WordClickedHandler, WidgetView {
   inline Window *getWindow() { return win; }
   void hide();
 
-  void wordClicked( std::string& word );
+  void wordClicked( std::string const& word );
   void showingWord( char *word );
 
   void drawWidgetContents(Widget *w);

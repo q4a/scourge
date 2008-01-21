@@ -166,12 +166,13 @@ void ConversationGui::start( Creature *creature, char *message, bool useCreature
   cards->setActiveCard( creature->getNpcInfo() ? creature->getNpcInfo()->type : Constants::NPC_TYPE_COMMONER );
 }
 
-void ConversationGui::wordClicked( std::string& word ) {
+void ConversationGui::wordClicked( std::string const& pWord ) {
 
   // convert to lower case
-	cerr << "Clicked: " << word << endl;
+	string word = pWord;
+	//cerr << "Clicked: " << word << endl;
   Util::toLowerCase( word );
-  cerr << "LOWER Clicked: " << word << endl;
+  //cerr << "LOWER Clicked: " << word << endl;
 
   // try to get the answer from script
   char first[255];

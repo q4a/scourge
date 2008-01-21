@@ -110,7 +110,7 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 			string fn = rootDir + "/sound/music/menu.ogg";
 			menuMusic = Mix_LoadMUS(fn.c_str());
 			if( !menuMusic ) {
-				cerr << "*** Error: couldn't load music: " << fn << endl;
+				cerr << "*** 1 Error: couldn't load music: " << fn << endl;
 				cerr << "\t" << Mix_GetError() << endl;
 			}
 		}
@@ -118,7 +118,7 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 			string fn = rootDir + "/sound/music/headquarter.ogg";
 			hqMusic = Mix_LoadMUS(fn.c_str());
 			if( !hqMusic ) {
-				cerr << "*** Error: couldn't load music: " << fn << endl;
+				cerr << "*** 2 Error: couldn't load music: " << fn << endl;
 				cerr << "\t" << Mix_GetError() << endl;
 			}
 		}
@@ -134,13 +134,13 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 				string fn = filename.str();
 				chapterMusic = Mix_LoadMUS( fn.c_str() );
 				if( !chapterMusic ) {
-					cerr << "*** Error: couldn't load music: " << fn << endl;
+					cerr << "*** 3 Error: couldn't load music: " << fn << endl;
 					cerr << "\t" << Mix_GetError() << endl;
 					cerr << "\tfalling back to chapter 1 music." << endl;
 					fn = rootDir + "/sound/music/chapters/chapter1.ogg";
 					chapterMusic = Mix_LoadMUS( fn.c_str() );
 					if( !chapterMusic ) {
-						cerr << "*** Error: couldn't load music: " << fn << endl;
+						cerr << "*** 4 Error: couldn't load music: " << fn << endl;
 						cerr << "\t" << Mix_GetError() << endl;
 					}
 				}
@@ -171,7 +171,7 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
   // load the new one
 		missionMusic = Mix_LoadMUS( fn.c_str() );
 		if( !missionMusic ) {
-			cerr << "*** Error: couldn't load music: " << fn << endl;
+			cerr << "*** 5 Error: couldn't load music: " << fn << endl;
 			cerr << "\t" << Mix_GetError() << endl;
 		}
 
@@ -188,13 +188,14 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 
 			
 			// load the new one
-			filename.str("");
-			filename << rootDir << "/sound/music/fight" << setw(2) << setfill('0') << fightMusicIndex << ".ogg";
+			stringstream filename2;
+			//filename.str("");
+			filename2 << rootDir << "/sound/music/fight" << setw(2) << setfill('0') << fightMusicIndex << ".ogg";
 			string fn;
-			filename >> fn;
+			filename2 >> fn;
 			fightMusic = Mix_LoadMUS( fn.c_str() );
 			if( !fightMusic ) {
-				cerr << "*** Error: couldn't load music: " << fn << endl;
+				cerr << "*** 6 Error: couldn't load music: " << fn << endl;
 				cerr << "\t" << Mix_GetError() << endl;
 			}
 		}
@@ -580,7 +581,6 @@ AmbientSound::~AmbientSound() {
 int AmbientSound::playRandomAmbientSample() {
 #ifdef HAVE_SDL_MIXER
 	int n = Util::dice( ambients.size() );
-	cerr << "ambient: " << n << " out of " << ambients.size() << endl;
 	for( int t = 0; t < 5; t++ ) {
 		if( Mix_PlayChannel( 6, ambients[ n ], 0 ) ) return 1;
 	}

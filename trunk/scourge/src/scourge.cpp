@@ -3768,10 +3768,10 @@ bool Scourge::isDoorBlocked() {
 
 void Scourge::openDoor( MovingDoor *movingDoor ) {
   // switch door
-  Sint16 ox = movingDoor->x;
-  Sint16 oy = movingDoor->y;
-  Sint16 nx = movingDoor->x;
-  Sint16 ny = (movingDoor->y - movingDoor->oldDoorShape->getDepth()) + movingDoor->newDoorShape->getDepth();
+  Sint16 ox = (Sint16)movingDoor->x;
+  Sint16 oy = (Sint16)movingDoor->y;
+  Sint16 nx = (Sint16)movingDoor->x;
+  Sint16 ny = (Sint16)(movingDoor->y - movingDoor->oldDoorShape->getDepth()) + movingDoor->newDoorShape->getDepth();
   
   //  Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
   levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));

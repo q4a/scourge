@@ -276,7 +276,7 @@ void MapEditor::createNewMapDialog() {
 }
 
 MapEditor::~MapEditor() {
-  map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
+//  map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
   delete[] shapeNames;
   delete[] itemNames;
   delete mainWin;
