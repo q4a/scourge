@@ -25,8 +25,8 @@
 
 using namespace std;
 
-#define MISSION_MUSIC_COUNT 6.0f
-#define FIGHT_MUSIC_COUNT 1.0f
+#define MISSION_MUSIC_COUNT 6
+#define FIGHT_MUSIC_COUNT 1
 
 char *Sound::TELEPORT = "sound/equip/teleport.wav";
 char *Sound::OPEN_DOOR = "sound/equip/push-heavy-door.wav";
@@ -186,8 +186,9 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 				fightMusic = NULL;
 			}
 
+			
 			// load the new one
-			filename.clear();
+			filename.str("");
 			filename << rootDir << "/sound/music/fight" << setw(2) << setfill('0') << fightMusicIndex << ".ogg";
 			string fn;
 			filename >> fn;
@@ -579,6 +580,7 @@ AmbientSound::~AmbientSound() {
 int AmbientSound::playRandomAmbientSample() {
 #ifdef HAVE_SDL_MIXER
 	int n = Util::dice( ambients.size() );
+	cerr << "ambient: " << n << " out of " << ambients.size() << endl;
 	for( int t = 0; t < 5; t++ ) {
 		if( Mix_PlayChannel( 6, ambients[ n ], 0 ) ) return 1;
 	}
