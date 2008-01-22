@@ -506,7 +506,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->color = 0;
 	sv->skipSide = sv->stencil = sv->blocksLight = 0;
 	sv->torch = -1;
-	sv->m3ds_name[0] = 0;
+	sv->m3ds_name = "";
 	sv->m3ds_scale = 0;
 	sv->m3ds_x = sv->m3ds_y = sv->m3ds_z = 0;
 	sv->o3ds_x = sv->o3ds_y = sv->o3ds_z = 0;  
@@ -520,7 +520,10 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->outdoorsWeight = 0;
 	sv->outdoorShadow = false;
 	sv->wind = false;
-
+	sv->ambient = node->getValueAsString( "ambient" );
+	if( sv->ambient != "" ) {
+		session->getGameAdapter()->storeAmbientObjectSound( sv->ambient );
+	}
 
 	// load some common values
 	strcpy( sv->name, node->getValueAsString( "name" ) );

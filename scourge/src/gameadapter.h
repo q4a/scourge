@@ -73,6 +73,7 @@ public:
 	virtual inline void addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel ) {}
 	virtual inline void startAmbientSound( std::string& name, int depth ) {}
 	virtual inline void stopAmbientSound() {}
+	virtual inline void storeAmbientObjectSound( std::string const& sound ) {}
 
   virtual inline bool isMouseIsMovingOverMap() { return false; }
   virtual inline Uint16 getMouseX() { return 0; }
@@ -211,6 +212,7 @@ public:
 	virtual void addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel );
 	virtual void startAmbientSound( std::string& name, int depth );
 	virtual void stopAmbientSound();
+	virtual void storeAmbientObjectSound( std::string const& sound );
 
   virtual inline bool isMouseIsMovingOverMap() { return getSDLHandler()->mouseIsMovingOverMap; }
   virtual inline Uint16 getMouseX() { return getSDLHandler()->mouseX; }

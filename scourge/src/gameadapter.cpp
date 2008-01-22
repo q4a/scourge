@@ -246,6 +246,10 @@ void SDLOpenGLAdapter::stopAmbientSound() {
   getSDLHandler()->getSound()->stopAmbientSound();
 }
 
+void SDLOpenGLAdapter::storeAmbientObjectSound( std::string const& sound ) {
+	getSDLHandler()->getSound()->storeAmbientObjectSound( sound );
+}
+
 bool SDLOpenGLAdapter::intersects( int x, int y, int w, int h,
                                    int x2, int y2, int w2, int h2 ) {
   return getSDLHandler()->intersects( x, y, w, h,

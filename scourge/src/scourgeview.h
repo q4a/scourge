@@ -99,6 +99,7 @@ protected:
   void showCreatureInfo( Creature *creature, bool player, bool selected, bool groupMode, bool wanderingHero );
   void drawDraggedItem();
 	void drawDisk( float w, float diff );
+	void ambientObjectSounds();
 };
 
 #endif

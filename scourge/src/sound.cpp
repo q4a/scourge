@@ -95,6 +95,11 @@ Sound::~Sound() {
 			sample = NULL;
 		}
 		if( !soundMap.empty() ) soundMap.clear();
+		for(map<string, Mix_Chunk*>::iterator i=ambient_objects.begin(); i != ambient_objects.end(); ++i) {
+			Mix_Chunk *sample = i->second;
+			Mix_FreeChunk(sample);
+			sample = NULL;
+		}
 		// stop audio system
 		Mix_CloseAudio();
 	}
@@ -305,6 +310,33 @@ void Sound::loadSounds(Preferences *preferences) {
 	}
 	
 	setEffectsVolume(preferences->getEffectsVolume());
+}
+
+void Sound::storeAmbientObjectSound( std::string const& sound ) {
+	stringstream filename;
+	filename << rootDir << "/sound/objects/" << sound;
+	Mix_Chunk *sample = Mix_LoadWAV( filename.str().c_str() );
+	if( sample ) {
+		if( ambient_objects.find( sound ) == ambient_objects.end() ) {
+			cerr << "\tstoring " << sound << endl;
+			ambient_objects[sound] = sample;
+		}
+	} else {
+		cerr << "*** Error: unable to load ambient object sound: " << sound << endl;
+	}
+}
+
+void Sound::playObjectSound( std::string& name, int percent ) {
+#ifdef HAVE_SDL_MIXER
+	int volume = (int)( ( MIX_MAX_VOLUME / 100.0f ) * (float)percent );
+	//cerr << "vol=" << volume << endl;
+	Mix_Volume( 5, volume );
+	if( !Mix_Playing( 5 ) ) {
+		for( int i = 0; i < 5; i++ ) {
+			if(Mix_PlayChannel(5, ambient_objects[ name ], 0) != -1) break;
+		}
+	}
+#endif	
 }
 
 void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m,

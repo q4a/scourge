@@ -31,7 +31,7 @@ using namespace std;
 #define ALWAYS_RELOAD_THEME 1
 
 //#define VARIATION_BASE 10.0f
-#define VARIATION_BASE 4.0f
+#define VARIATION_BASE 4
 
 bool Shapes::debugFileLoad = false;
 
@@ -315,6 +315,7 @@ void Shapes::initialize() {
 		shapes[ ( i + 1 ) ]->setOccurs( &(sv->occurs) );
 		shapes[ ( i + 1 ) ]->setIconRotation( sv->iconRotX, sv->iconRotY, sv->iconRotZ );
 		shapes[ ( i + 1 ) ]->setIcon( sv->icon, sv->iconWidth, sv->iconHeight );
+		shapes[ ( i + 1 ) ]->setAmbientName( sv->ambient );
 
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];

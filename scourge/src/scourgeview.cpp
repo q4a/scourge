@@ -31,6 +31,7 @@
 #include "gui/scrollinglist.h"
 #include "debug.h"
 #include "textscroller.h"
+#include "sound.h"
 
 using namespace std;  
 
@@ -90,6 +91,8 @@ void ScourgeView::drawView() {
 	scourge->getMap()->postDraw();
   scourge->getMiniMap()->drawMap();
 
+	ambientObjectSounds();
+
   // the boards outside the map
   drawOutsideMap();
   
@@ -111,6 +114,28 @@ void ScourgeView::drawView() {
   if(Window::windowWasClosed) {
     scourge->removeClosedContainerGuis();
   }
+}
+
+#define MAX_AMBIENT_OBJECT_DISTANCE 8
+void ScourgeView::ambientObjectSounds() {
+	// look for ambient sounds
+	int xp = toint( scourge->getPlayer()->getX() + scourge->getPlayer()->getShape()->getWidth() / 2 );
+	int yp = toint( scourge->getPlayer()->getY() - scourge->getPlayer()->getShape()->getDepth() / 2 );
+	for( int xx = xp - MAX_AMBIENT_OBJECT_DISTANCE; xx < xp + MAX_AMBIENT_OBJECT_DISTANCE; xx++ ) {
+		for( int yy = yp - MAX_AMBIENT_OBJECT_DISTANCE; yy < yp + MAX_AMBIENT_OBJECT_DISTANCE; yy++ ) {
+			for( int zz = 0; zz < MAP_VIEW_HEIGHT; zz++ ) {
+				Location *pos = scourge->getMap()->getPosition( xx, yy, zz );
+				if( pos && pos->shape && ((GLShape*)pos->shape)->getAmbientName() != "" ) {
+					float dist = sqrt( Util::distance2D( fabs( xp - xx ), fabs( yp - yy ) ) );
+					if( dist <= MAX_AMBIENT_OBJECT_DISTANCE ) {
+						float percent = 100 - ( dist / (float)MAX_AMBIENT_OBJECT_DISTANCE ) * 100.0f + 20;
+						if( percent > 100 ) percent = 100;
+						scourge->getSDLHandler()->getSound()->playObjectSound( ((GLShape*)pos->shape)->getAmbientName(), toint( percent ) );
+					}
+				}
+			}
+		}
+	}
 }
 
 int chapterTextTimer = 0;
