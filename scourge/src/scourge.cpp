@@ -3706,6 +3706,7 @@ void Scourge::endChapterIntro() {
 	// start the haunting tunes
 	if( isInHQ() ) getSDLHandler()->getSound()->playMusicHQ();
 	else getSDLHandler()->getSound()->playMusicMission();
+	setAmbientPaused( false );
 	getSDLHandler()->fade( 1, 0, 20 );
 }
 
