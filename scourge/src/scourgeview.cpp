@@ -116,7 +116,7 @@ void ScourgeView::drawView() {
   }
 }
 
-#define MAX_AMBIENT_OBJECT_DISTANCE 8
+#define MAX_AMBIENT_OBJECT_DISTANCE 11
 void ScourgeView::ambientObjectSounds() {
 	// look for ambient sounds
 	int xp = toint( scourge->getPlayer()->getX() + scourge->getPlayer()->getShape()->getWidth() / 2 );
