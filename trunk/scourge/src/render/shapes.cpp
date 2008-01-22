@@ -517,12 +517,12 @@ GLuint Shapes::getBMPData( const string& filename, GLubyte **buf, int *imgwidth,
 	// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
 	if( ( TextureImage[0] = SDL_LoadBMP( fn.c_str() ) ) ) {
 
-		if( TextureImage[0]->w != TextureImage[0]->h && 
+/*		if( TextureImage[0]->w != TextureImage[0]->h && 
 				( !isPowerOfTwo( TextureImage[0]->w ) ||
 					!isPowerOfTwo( TextureImage[0]->h ) ) ) {
 			fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: name=%s pitch=%d width=%d height=%d\n", 
 							fn.c_str(), (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
-		}
+		}*/
 
 		Constants::checkTexture("Shapes::loadGLTextures", 
 														TextureImage[0]->w, TextureImage[0]->h);
@@ -585,12 +585,12 @@ GLuint Shapes::loadGLTextures(const string& filename) {
   /* Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit */
   if( ( TextureImage[0] = SDL_LoadBMP( fn.c_str() ) ) ) {
 
-    if( TextureImage[0]->w != TextureImage[0]->h && 
+/*    if( TextureImage[0]->w != TextureImage[0]->h && 
         ( !isPowerOfTwo( TextureImage[0]->w ) ||
           !isPowerOfTwo( TextureImage[0]->h ) ) ) {
       fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: name=%s pitch=%d width=%d height=%d\n", 
               fn.c_str(), (TextureImage[0]->pitch/3), TextureImage[0]->w, TextureImage[0]->h);
-    }
+    }*/
 
     Constants::checkTexture("Shapes::loadGLTextures", 
                             TextureImage[0]->w, TextureImage[0]->h);
@@ -678,7 +678,7 @@ void Shapes::loadStencil( const string& filename, int index ) {
     int width  = stencil[ index ]->w;
     int height = stencil[ index ]->h;
 
-    if( width != height && 
+/*    if( width != height && 
         ( !isPowerOfTwo( width ) ||
           !isPowerOfTwo( height ) ) ) {
       fprintf(stderr, "*** Possible error: Width or Heigth not a power of 2: file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
@@ -686,7 +686,7 @@ void Shapes::loadStencil( const string& filename, int index ) {
               stencil[ index ]->format->BitsPerPixel,
               stencil[ index ]->format->BytesPerPixel, 
               stencil[ index ]->pitch);
-    }
+    } */
 
     unsigned char * data = (unsigned char *)(stencil[ index ]->pixels);         // the pixel data
 
@@ -749,7 +749,7 @@ void Shapes::setupAlphaBlendedBMP( const string& filename,
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-    if( width != height && 
+/*    if( width != height && 
         ( !isPowerOfTwo( width ) ||
           !isPowerOfTwo( height ) ) ) {
       cerr << "*** Possible error: Width or Heigth not a power of 2: file=" << fn 
@@ -758,7 +758,7 @@ void Shapes::setupAlphaBlendedBMP( const string& filename,
 					 << " bpp=" << (*surface)->format->BitsPerPixel 
 					 << " byte/pix=" << (*surface)->format->BytesPerPixel 
 					 << " pitch=" << (*surface)->pitch << endl;
-    }
+    } */
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
 
@@ -1016,14 +1016,14 @@ void Shapes::setupPNG( const string& filename, SDL_Surface **surface, GLubyte **
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-    if( width != height && ( !isPowerOfTwo( width ) || !isPowerOfTwo( height ) ) ) {
+/*    if( width != height && ( !isPowerOfTwo( width ) || !isPowerOfTwo( height ) ) ) {
       cerr  << "*** Possible error: Width or Heigth not a power of 2: file=" << fn 
 						<< "w=" << width 
 						<< " h=" << height 
 						<< " bpp=" << (*surface)->format->BitsPerPixel 
 						<< " byte/pix=" << (*surface)->format->BytesPerPixel 
 						<< " pitch=" <<  (*surface)->pitch << endl;
-    }
+    } */
 
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
 

@@ -498,6 +498,7 @@ void Sound::addAmbientSound( std::string& name, std::string& ambient, std::strin
 void Sound::startAmbientSound( std::string& name, int depth ) {
 #ifdef HAVE_SDL_MIXER
 	if(haveSound) {
+		//cerr << "Playing " << name << " depth=" << depth << endl;
 		AmbientSound *as = getAmbientSound( name, depth );
 		if( as ) as->playRandomAmbientSample();
 	}
@@ -541,20 +542,32 @@ AmbientSound::AmbientSound( std::string& name, std::string& ambient, std::string
 
 	//cerr << "Loading ambients: " << name << endl;
 	//cerr << "ambients=" << ambient << endl;
-	while( found != string::npos ) {
-		string s = ambient.substr( start, found - start );
-		//cerr << "\tstart=" << start << " found=" << found << " s=" << s << endl;
-		start = found + 1;
-		found = ambient.find( ",", start );
+	bool first = true;
+	while( !( found == string::npos && first ) ) {
+		string s;
+		if( found != string::npos ) {
+			s = ambient.substr( start, found - start );
+		} else {
+			s = ambient.substr( start );
+		}
+//		cerr << "\tstart=" << start << " found=" << found << " s=" << s << " first=" << first << endl;
 
 		stringstream filename;
 		filename << rootDir <<"/sound/ambient/" << s;
-		//cerr << "\t" << filename.str() << endl;
+//		cerr << "\tLOADING " << filename.str() << endl;
 		Mix_Chunk *sample = Mix_LoadWAV( filename.str().c_str() );
 		if( !sample ) {
 			cerr << "*** Error cannot load sound sample: " << filename.str() << " reason=" << Mix_GetError() << endl;
 		} else {
 			ambients.push_back( sample );
+		}
+
+		if( found == string::npos ) {
+			break;
+		} else {
+			start = found + 1;
+			found = ambient.find( ",", start );
+			first = false;
 		}
 	}
 	stringstream filename;
@@ -581,6 +594,7 @@ AmbientSound::~AmbientSound() {
 int AmbientSound::playRandomAmbientSample() {
 #ifdef HAVE_SDL_MIXER
 	int n = Util::dice( ambients.size() );
+	cerr << "\t" << n << " out of " << ambients.size() << endl;
 	for( int t = 0; t < 5; t++ ) {
 		if( Mix_PlayChannel( 6, ambients[ n ], 0 ) ) return 1;
 	}
