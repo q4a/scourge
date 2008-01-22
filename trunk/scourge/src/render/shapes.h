@@ -302,7 +302,7 @@ public:
   GLShape *findShapeByName(const char *name, bool variation=false);
   int findShapeIndexByName(const char *name);
   
-  char *getRandomDescription(int descriptionGroup);
+  char const* getRandomDescription(int descriptionGroup);
 
   GLuint loadGLTextures(const std::string& fileName);
 

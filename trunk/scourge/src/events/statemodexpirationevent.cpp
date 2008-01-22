@@ -73,6 +73,6 @@ void StateModExpirationEvent::executeBeforeDelete() {
 }
 
 bool StateModExpirationEvent::doesReferenceCreature( Creature *creature ) {
-	return( this->creature == creature ? true : false );
+	return( this->creature == creature );
 }
 
