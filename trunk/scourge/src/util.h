@@ -89,6 +89,8 @@ namespace Util {
 
 	inline float distance2( float x, float y, float z ) { return ( x * x ) + ( y * y ) + ( z * z ); }
 
+	inline float distance2D( float x, float y ) { return ( x * x ) + ( y * y ); }
+
 	float getRandomSum( float base, int count, float div=3.0f );
 
 	char *toLowerCase( char *s );

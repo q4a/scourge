@@ -59,6 +59,7 @@ private:
   Uint32 musicStartTime;
   double musicPosition;
   std::map<std::string, Mix_Chunk*> soundMap;  
+	std::map<std::string, Mix_Chunk*> ambient_objects;
   std::map<std::string, std::map<int, std::vector<Mix_Chunk*>* >* > characterSounds;
 #endif
 
@@ -126,6 +127,9 @@ public:
 	void addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel );
 	void startAmbientSound( std::string& name, int depth );
 	void stopAmbientSound();
+
+	void playObjectSound( std::string& name, int percent );
+	void storeAmbientObjectSound( std::string const& sound );
 
 protected:
 	AmbientSound *getAmbientSound( std::string& name, int depth );
