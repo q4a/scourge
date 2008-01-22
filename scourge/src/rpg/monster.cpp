@@ -342,11 +342,11 @@ const char *Monster::getRandomMonsterType( int level ) {
 }
 
 // this weird function is used on loading to avoid memory leaks...
-const char *Monster::getMonsterType(char *type) {
+// -=K=- modified to somewhat less odd one
+const char *Monster::getMonsterType( char *type ) {
   if(!type || !strlen(type)) return NULL;
   for(int i = 0; i < (int)monsterTypes.size(); i++) {
-    string ss = monsterTypes[i];
-    if(!strcmp((char*)ss.c_str(), type)) return ss.c_str();
+    if ( monsterTypes[i] == type ) return monsterTypes[i].c_str();
   }
   return NULL;
 }

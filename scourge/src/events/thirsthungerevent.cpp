@@ -120,6 +120,6 @@ ThirstHungerEvent::~ThirstHungerEvent(){
 }
 
 bool ThirstHungerEvent::doesReferenceCreature( Creature *creature ) {
-	return( this->creature == creature ? true : false );
+	return( this->creature == creature );
 }
 

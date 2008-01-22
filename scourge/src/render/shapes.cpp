@@ -450,11 +450,11 @@ void Shapes::loadTheme( WallTheme *theme ) {
   }
 }
 
-char *Shapes::getRandomDescription(int descriptionGroup) {
+char const* Shapes::getRandomDescription(int descriptionGroup) {
   if(descriptionGroup >= 0 && descriptionGroup < (int)descriptions.size()) {
     vector<string> *list = descriptions[descriptionGroup];
     int n = Util::dice( list->size() ); 
-    return(char*)((*list)[n].c_str());
+    return (*list)[n].c_str();
   }
   return NULL;
 }
