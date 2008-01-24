@@ -126,7 +126,7 @@ void ScourgeView::ambientObjectSounds() {
 			for( int zz = 0; zz < MAP_VIEW_HEIGHT; zz++ ) {
 				Location *pos = scourge->getMap()->getPosition( xx, yy, zz );
 				if( pos && pos->shape && ((GLShape*)pos->shape)->getAmbientName() != "" ) {
-					float dist = sqrt( Util::distance2D( fabs( xp - xx ), fabs( yp - yy ) ) );
+					float dist = sqrt( Util::distance2D( fabs( (float)(xp - xx) ), fabs( (float)(yp - yy) ) ) );
 					if( dist <= MAX_AMBIENT_OBJECT_DISTANCE ) {
 						float percent = 100 - ( dist / (float)MAX_AMBIENT_OBJECT_DISTANCE ) * 100.0f + 20;
 						if( percent > 100 ) percent = 100;
