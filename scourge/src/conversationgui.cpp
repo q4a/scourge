@@ -177,11 +177,12 @@ void ConversationGui::wordClicked( std::string const& pWord ) {
   // try to get the answer from script
   char first[255];
   if( useCreature ) {
-	  char *s = Mission::getFirstKeyPhrase( creature->getMonster()->getType(), word.c_str() );
-	if( !s ) s = Mission::getFirstKeyPhrase( creature->getName(), word.c_str() );
-	strcpy( first, s );
-  } else {
-	strcpy( first, Mission::getFirstKeyPhrase( word.c_str() ) );
+		char *s = Mission::getFirstKeyPhrase( creature->getMonster()->getType(), word.c_str() );
+		if( !s ) s = Mission::getFirstKeyPhrase( creature->getName(), word.c_str() );
+		if( !s ) cerr << "*** warn no first keyphrase for: " << word << endl;
+		strcpy( first, ( s ? s : word.c_str() ) );
+	} else {
+		strcpy( first, Mission::getFirstKeyPhrase( word.c_str() ) );
 	}
 
   char answerStr[255];
