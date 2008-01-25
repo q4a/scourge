@@ -126,11 +126,18 @@ void ScourgeView::ambientObjectSounds() {
 			for( int zz = 0; zz < MAP_VIEW_HEIGHT; zz++ ) {
 				Location *pos = scourge->getMap()->getPosition( xx, yy, zz );
 				if( pos && pos->shape && ((GLShape*)pos->shape)->getAmbientName() != "" ) {
-					float dist = sqrt( Util::distance2D( fabs( (float)(xp - xx) ), fabs( (float)(yp - yy) ) ) );
+					float dist = Constants::distance(scourge->getPlayer()->getX(), 
+																					 scourge->getPlayer()->getY(), 
+																					 scourge->getPlayer()->getShape()->getWidth(), 
+																					 scourge->getPlayer()->getShape()->getDepth(), 
+																					 pos->x, pos->y, pos->shape->getWidth(), pos->shape->getDepth());
 					if( dist <= MAX_AMBIENT_OBJECT_DISTANCE ) {
 						float percent = 100 - ( dist / (float)MAX_AMBIENT_OBJECT_DISTANCE ) * 100.0f + 20;
 						if( percent > 100 ) percent = 100;
 						scourge->getSDLHandler()->getSound()->playObjectSound( ((GLShape*)pos->shape)->getAmbientName(), toint( percent ) );
+
+						// fixme: it should play every unique sound not just the first
+						return;
 					}
 				}
 			}
