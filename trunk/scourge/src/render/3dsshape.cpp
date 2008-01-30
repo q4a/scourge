@@ -459,11 +459,12 @@ void C3DSShape::draw() {
   glGetFloatv( GL_CURRENT_COLOR, currentColor );
 
   glPushMatrix();
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc( GL_NOTEQUAL, 0 );
   glTranslatef( offs_x / DIV, offs_y / DIV, offs_z / DIV );
   glTranslatef(-movex * divx, 0.0f, 0.0f);
   glTranslatef(0.0f, (getDepth() / DIV) - (movey * divy), 0.0f);
   glTranslatef(0.0f, 0.0f, movez);
-
 
 	// update the wind
 	if( isWind() && !useShadow ) {
@@ -472,6 +473,7 @@ void C3DSShape::draw() {
 
 	glCallList( displayListStart + (useShadow ? 1 : 0) );
 
+	glDisable(GL_ALPHA_TEST);
   glPopMatrix();
 
   //  if( !useShadow ) 

@@ -313,27 +313,33 @@ void Sound::loadSounds(Preferences *preferences) {
 }
 
 void Sound::storeAmbientObjectSound( std::string const& sound ) {
-	stringstream filename;
-	filename << rootDir << "/sound/objects/" << sound;
-	Mix_Chunk *sample = Mix_LoadWAV( filename.str().c_str() );
-	if( sample ) {
-		if( ambient_objects.find( sound ) == ambient_objects.end() ) {
-			cerr << "\tstoring " << sound << endl;
-			ambient_objects[sound] = sample;
+#ifdef HAVE_SDL_MIXER
+	if( haveSound ) {
+		stringstream filename;
+		filename << rootDir << "/sound/objects/" << sound;
+		Mix_Chunk *sample = Mix_LoadWAV( filename.str().c_str() );
+		if( sample ) {
+			if( ambient_objects.find( sound ) == ambient_objects.end() ) {
+				cerr << "\tstoring " << sound << endl;
+				ambient_objects[sound] = sample;
+			}
+		} else {
+			cerr << "*** Error: unable to load ambient object sound: " << sound << endl;
 		}
-	} else {
-		cerr << "*** Error: unable to load ambient object sound: " << sound << endl;
 	}
+#endif
 }
 
 void Sound::playObjectSound( std::string& name, int percent ) {
 #ifdef HAVE_SDL_MIXER
-	int volume = (int)( ( MIX_MAX_VOLUME / 100.0f ) * (float)percent );
-	//cerr << "vol=" << volume << endl;
-	Mix_Volume( 5, volume );
-	if( !Mix_Playing( 5 ) ) {
-		for( int i = 0; i < 5; i++ ) {
-			if(Mix_PlayChannel(5, ambient_objects[ name ], 0) != -1) break;
+	if( haveSound ) {
+		int volume = (int)( ( MIX_MAX_VOLUME / 100.0f ) * (float)percent );
+		//cerr << "vol=" << volume << endl;
+		Mix_Volume( 5, volume );
+		if( !Mix_Playing( 5 ) ) {
+			for( int i = 0; i < 5; i++ ) {
+				if(Mix_PlayChannel(5, ambient_objects[ name ], 0) != -1) break;
+			}
 		}
 	}
 #endif	
@@ -524,7 +530,9 @@ void Sound::stopFootsteps() {
 
 void Sound::addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel ) {
 	#ifdef HAVE_SDL_MIXER
-	ambients[name] = new AmbientSound( name, ambient, footsteps, afterFirstLevel );
+	if( haveSound ) {
+		ambients[name] = new AmbientSound( name, ambient, footsteps, afterFirstLevel );
+	}
 	#endif
 }
 void Sound::startAmbientSound( std::string& name, int depth ) {
@@ -626,7 +634,7 @@ AmbientSound::~AmbientSound() {
 int AmbientSound::playRandomAmbientSample() {
 #ifdef HAVE_SDL_MIXER
 	int n = Util::dice( ambients.size() );
-	cerr << "\t" << n << " out of " << ambients.size() << endl;
+	//cerr << "\t" << n << " out of " << ambients.size() << endl;
 	for( int t = 0; t < 5; t++ ) {
 		if( Mix_PlayChannel( 6, ambients[ n ], 0 ) ) return 1;
 	}
