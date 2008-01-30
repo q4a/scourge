@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-01-21 17:45+0100\n"
-"PO-Revision-Date: 2008-01-21 17:56+0100\n"
+"POT-Creation-Date: 2008-01-25 21:13+0100\n"
+"PO-Revision-Date: 2008-01-30 23:27+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -782,12 +782,12 @@ msgid "    and fails! %1$s takes %2$d points of damage!"
 msgstr "    und versagt! %1$s nimmt %2$d Punkte Schaden!"
 
 #: src/shapepalette.cpp:26 src/shapepalette.cpp:362 src/shapepalette.cpp:386
-#: src/shapepalette.cpp:409 src/shapepalette.cpp:444 src/shapepalette.cpp:612
-#: src/shapepalette.cpp:638 src/shapepalette.cpp:683 src/session.cpp:94
+#: src/shapepalette.cpp:409 src/shapepalette.cpp:444 src/shapepalette.cpp:615
+#: src/shapepalette.cpp:641 src/shapepalette.cpp:686 src/session.cpp:94
 msgid "Loading Shapes"
 msgstr "Lade Formen"
 
-#: src/shapepalette.cpp:801
+#: src/shapepalette.cpp:804
 msgid "Loading Locations"
 msgstr "Lade Orte"
 
@@ -994,11 +994,11 @@ msgstr "Geschoss hat das Ziel nicht erreicht (max. Schritte)."
 msgid "Projectile did not reach the target (blocked)."
 msgstr "Geschoss hat das Ziel nicht erreicht (blockiert)."
 
-#: src/scourgeview.cpp:782
+#: src/scourgeview.cpp:814
 msgid "Move"
 msgstr "Bewegen"
 
-#: src/scourgeview.cpp:1084
+#: src/scourgeview.cpp:1116
 msgid "cost"
 msgstr "Kosten"
 
@@ -1143,67 +1143,67 @@ msgstr "...%s greift mit %d Punkten an."
 msgid "...%s's armor blocks %d points"
 msgstr "...%ss Rüstung wehrt %d Punkte ab"
 
-#: src/battle.cpp:1241
+#: src/battle.cpp:1239
 #, c-format
 msgid "...%s dodges the attack."
 msgstr "...%s weicht dem Angriff aus."
 
-#: src/battle.cpp:1247
+#: src/battle.cpp:1245
 #, c-format
 msgid "...%s misses the target."
 msgstr "...%s verfehlt das Ziel."
 
-#: src/battle.cpp:1271
+#: src/battle.cpp:1269
 #, c-format
 msgid "...%s hits for %d points of damage"
 msgstr "...%s trifft mit %d Schaden"
 
-#: src/battle.cpp:1301
+#: src/battle.cpp:1299
 #, c-format
 msgid "...%s is killed!"
 msgstr "...%s wird getötet!"
 
-#: src/battle.cpp:1317
+#: src/battle.cpp:1315
 #, c-format
 msgid "%s finds %d coins!"
 msgstr "%s findet %d Münzen!"
 
-#: src/battle.cpp:1325
+#: src/battle.cpp:1323
 msgid "You have defeated the dungeon boss!"
 msgstr "Ihr habt den Endgegner des Dungeons besiegt!"
 
-#: src/battle.cpp:1326
+#: src/battle.cpp:1324
 msgid "...the news spreads quickly and his minions cower before you."
 msgstr ""
 "...die Nachricht macht rasch die Runde und seine Lakaien knien vor Euch "
 "nieder."
 
-#: src/battle.cpp:1339
+#: src/battle.cpp:1337
 #, c-format
 msgid "...no damaged caused."
 msgstr "...kein Schaden erzielt."
 
-#: src/battle.cpp:1423 src/battle.cpp:1429
+#: src/battle.cpp:1421 src/battle.cpp:1427
 #, c-format
 msgid "Targeted"
 msgstr "Als Ziel gewählt"
 
-#: src/battle.cpp:1454
+#: src/battle.cpp:1452
 #, c-format
 msgid "Out of Range. Move: %d"
 msgstr "Außer Reichweite. Bewegen: %d"
 
-#: src/battle.cpp:1456 src/battle.cpp:1463
+#: src/battle.cpp:1454 src/battle.cpp:1461
 #, c-format
 msgid "Out of Range"
 msgstr "Außer Reichweite"
 
-#: src/battle.cpp:1463
+#: src/battle.cpp:1461
 #, c-format
 msgid "In Range"
 msgstr "In Reichweite"
 
-#: src/battle.cpp:1475 src/portrait.cpp:175
+#: src/battle.cpp:1473 src/portrait.cpp:175
 msgid "Bare Hands"
 msgstr "Bloße Hände"
 
@@ -1796,7 +1796,7 @@ msgstr "Dieser Gegenstand ist aufgebraucht."
 msgid "You cannot use this item."
 msgstr "Ihr könnt diesen Gegenstand nicht benutzen."
 
-#: src/scourge.cpp:3925
+#: src/scourge.cpp:3926
 msgid "The door splinters into many, tiny pieces!"
 msgstr "Die Tür zerspringt in unzählige kleine Teile!"
 
@@ -2920,7 +2920,7 @@ msgid ""
 "unfold in either frantic real-time or thoughtful turn-based presentation.||"
 msgstr ""
 "||S.c.o.u.r.g.e. ist ein Rogue-ähnliches Rollenspiel, in dem Ihr eine Gruppe "
-"vierer tapferer Abenteurer steuert. Während ihrer Arbeit für eine auf die "
+"vierer tapferer Abenteurer steuert. Während ihrer Tätigkeit für eine auf die "
 "Instandhaltung von Dungeons spezialisierten Firma nehmen diese unfreiwillig "
 "an dem Versuch teil, eine mysteriöse Macht davon abzuhalten, die Menschheit "
 "auszulöschen. Langweilig, meint Ihr? Aber halt, es kommt besser! Euer "
@@ -2959,7 +2959,7 @@ msgid ""
 "Additional testing and general hazing from the very helpful members of "
 "rpgcodex.com|Many happy interruptions in bugfixing by Abe & Asha|"
 msgstr ""
-"Credits und Verschiedenes:|-----------------------|Programmierung und "
+"||Credits und Verschiedenes:|-----------------------|Programmierung und "
 "schlechtes Artwork von Uzudil|Tolle Porträts von Ben|Weitere Porträts von "
 "Omnisicent Colossus|Musik von Toofan and Vincent|Fachkundige "
 "Rollenspielberatung von Michi, Elscouta, Nolendil|SCOURGEweb.org gepflegt "
@@ -2968,12 +2968,12 @@ msgstr ""
 "CVS/SVN sowie weitere Dienste von sourceforge.net|Zusätzliche 3D-Modelle von "
 "Omniscient Colossus|Vollstreckung des Gesetzes durch Mormuth den Haarigen|"
 "Zwergenpoesie vom Orden des Ergrauten Ponys|Quake-Modelle von polycount|"
-"Texturen vom wadfather|Nachbearbeitung der Texturen durch Omniscient "
+"Texturen von wadfather|Nachbearbeitung der Texturen durch Omniscient "
 "Colossus|(README lesen für mehr Mitwirkungsdetails.)|Spieletest und "
 "moralische Unterstützung durch viele Leute auf happypenguin.org|Weiteres "
-"Testen und Schikanieren durch die dehr hilfreichen Mitglieder von rpgcodex."
-"com|Viele lautstarke Unterbrechungen des Debuggens durch Abe & Asha|Endlose "
-"Nächte der Übersetzung aus dem Englischen: Dennis Murczak|"
+"Testen und Schikanieren durch die sehr hilfreichen Mitglieder von rpgcodex."
+"com|Viele lautstarke Unterbrechungen des Debuggens durch Abe & Asha||Endlose "
+"Nächte der Übersetzung aus dem Englischen: Dennis \"lordtoran\" Murczak|"
 
 #: ../scourge_data/config/map.cfg:215
 msgid "Pale weeds grow over these ancient walls"
