@@ -3397,7 +3397,7 @@ void Scourge::uploadScore() {
 			strcpy( session->getScoreid(), result );
 			saveScoreid( session->getSavegameName(), session->getScoreid() );
 		}
-		showMessageDialog( "Score was successfully uploaded." );
+		showMessageDialog( _( "Score was successfully uploaded." ) );
 	} else {
 		showMessageDialog( result );
 	}

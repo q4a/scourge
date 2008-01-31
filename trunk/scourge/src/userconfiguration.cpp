@@ -869,47 +869,47 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
   }
 
   if (printusage) {
-    printf("S.C.O.U.R.G.E.: Heroes of Lesser Renown\n");
-    printf("A 3D, roguelike game of not quite epic proportions.\n\n");
-    printf("Usage:\n");
-    printf("scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n");
-    printf("version: %s\n", SCOURGE_VERSION);
+    printf( _( "S.C.O.U.R.G.E.: Heroes of Lesser Renown\n" ) );
+    printf( _( "A 3D, roguelike game of not quite epic proportions.\n\n" ) );
+    printf( _( "Usage:\n" ) );
+    printf( _( "scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n" ) );
+    printf( _( "version: %s\n" ), SCOURGE_VERSION);
 #ifdef HAVE_SDL_NET
-    printf("[Multiplayer support]\n");
+    printf( _( "[Multiplayer support]\n" ) );
 #endif
 #ifdef HAVE_SDL_MIXER
-    printf("[Sound support]\n");
+    printf( _( "[Sound support]\n" ) );
 #endif
-    printf("\nOptions:\n");
-    printf("\tf - disable fullscreen mode\n");
-    printf("\td - disable double buffering\n");
-    printf("\tp - disable hardware palette\n");
-    printf("\tr - disable resizable window\n");
-    printf("\tH - force hardware surface\n");
-    printf("\tS - force software surface\n");
-    printf("\ta - disable hardware acceleration\n");
-    printf("\th,?,--help - show this info\n");
-    printf("\ts - disable stencil buffer\n");
-    printf("\tm - disable multitexturing\n");
-    printf("\t--test - list card's supported video modes\n");
-    printf("\t--test-config - print out the file configuration and exit\n");
-    printf("\t--run-tests [path] - run internal tests of the rpg engine and save the result in html in the $path dir\n");
-    printf("\t--version - print the build version\n");
-    printf("\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n");
-    printf("\t--widthXX - use XX pixels for the screen width\n");
-    printf("\t--heightXX - use XX pixels for the screen height\n");
-    printf("\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n");
-		printf("\t--themeXYZ - use gui theme XYZ to draw the ui.\n");
-		printf("\t--debugtheme - use the debug theme only to for wall textures.\n");
-    printf("\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n");
+    printf( _( "\nOptions:\n" ) );
+    printf( _( "\tf - disable fullscreen mode\n" ) );
+    printf( _( "\td - disable double buffering\n" ) );
+    printf( _( "\tp - disable hardware palette\n" ) );
+    printf( _( "\tr - disable resizable window\n" ) );
+    printf( _( "\tH - force hardware surface\n" ) );
+    printf( _( "\tS - force software surface\n" ) );
+    printf( _( "\ta - disable hardware acceleration\n" ) );
+    printf( _( "\th,?,--help - show this info\n" ) );
+    printf( _( "\ts - disable stencil buffer\n" ) );
+    printf( _( "\tm - disable multitexturing\n" ) );
+    printf( _( "\t--test - list card's supported video modes\n" ) );
+    printf( _( "\t--test-config - print out the file configuration and exit\n" ) );
+    printf( _( "\t--run-tests [path] - run internal tests of the rpg engine and save the result in html in the $path dir\n" ) );
+    printf( _( "\t--version - print the build version\n" ) );
+    printf( _( "\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n" ) );
+    printf( _( "\t--widthXX - use XX pixels for the screen width\n" ) );
+    printf( _( "\t--heightXX - use XX pixels for the screen height\n" ) );
+    printf( _( "\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n" ) );
+		printf( _( "\t--themeXYZ - use gui theme XYZ to draw the ui.\n" ) );
+		printf( _( "\t--debugtheme - use the debug theme only to for wall textures.\n" ) );
+    printf( _( "\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n" ) );
 #ifdef HAVE_SDL_NET
-    printf("Multiplayer options:\n");
-    printf("\t--serverPORT - run a standalone server w/o a ui on PORT\n");
-    printf("\t--clientHOST:PORT,USERNAME - run a standalone admin client w/o a ui. Connect to server HOST:PORT as USERNAME.\n");
+    printf( _( "Multiplayer options:\n" ) );
+    printf( _( "\t--serverPORT - run a standalone server w/o a ui on PORT\n" ) );
+    printf( _( "\t--clientHOST:PORT,USERNAME - run a standalone admin client w/o a ui. Connect to server HOST:PORT as USERNAME.\n" ) );
 #endif
 #ifdef HAVE_SDL_MIXER
-    printf("Sound options:\n");
-    printf("\t--nosound - run without sound\n");
+    printf( _( "Sound options:\n" ) );
+    printf( _( "\t--nosound - run without sound\n" ) );
 #endif
     exit(0);
   }

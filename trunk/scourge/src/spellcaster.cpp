@@ -404,9 +404,8 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
   battle->getSession()->getSquirrel()->callSpellEvent( creature, spell, "spellDamageHandler" );
   damage = battle->getSession()->getSquirrel()->getGlobalVariable( "damage" );
 
-	// not internationalized
 	char tmp[255];
-	snprintf( tmp, 255, "%s the %s spell", 
+	snprintf( tmp, 255, _( "%s the %s spell" ), 
 					 Constants::getMessage( Constants::CAUSE_OF_DEATH ),
 					 spell->getDisplayName() );
 	creature->getTargetCreature()->setPendingCauseOfDeath( tmp );
