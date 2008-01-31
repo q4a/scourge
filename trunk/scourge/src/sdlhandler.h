@@ -28,7 +28,6 @@ class GameAdapter;
 class SDLEventHandler;
 class SDLScreenView;
 class Preferences;
-class Sound;
 class FontMgr;
 
 /**
@@ -54,7 +53,6 @@ private:
   GameAdapter *gameAdapter;
 
   /* These are to calculate our fps */
-  Sound *sound;
   GLint T0, Frames;
   double fps;
   SDL_Surface *screen;
@@ -124,6 +122,8 @@ public:
   SDLHandler( GameAdapter *gameAdapter );
   virtual ~SDLHandler();
 
+	virtual void playSound( const std::string& file );
+
 	inline void setCursorVisible( bool b ) { cursorVisible = b; }
 	inline void endMainLoop() { running = false; }
 
@@ -154,7 +154,6 @@ public:
   // for ScourgeGui
   inline Uint16 getMouseX() { return mouseX; }
   inline Uint16 getMouseY() { return mouseY; }
-  void playSound( const std::string& name );
   inline int getScreenWidth() { return getScreen()->w; }
   inline int getScreenHeight() { return getScreen()->h; }
   GLuint getHighlightTexture();
@@ -164,8 +163,6 @@ public:
   void allWindowsClosed();
 
   void setOrthoView();
-
-  inline Sound *getSound() { return sound; }
 
   void setCursorMode(int n, bool useTimer=false );
   int getCursorMode() { return cursorMode; }

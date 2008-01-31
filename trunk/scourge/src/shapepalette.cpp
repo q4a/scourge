@@ -20,6 +20,7 @@
 #include "rpg/rpglib.h"
 #include "render/renderlib.h"
 #include "configlang.h"
+#include "sound.h"
 
 using namespace std;
 
@@ -95,6 +96,7 @@ void ShapePalette::initialize() {
 	initThemes( config );
 	initNativeShapes( config );
 	init3dsShapes( config );
+	initSounds( config );
   delete config;
 
 
@@ -522,7 +524,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->wind = false;
 	sv->ambient = node->getValueAsString( "ambient" );
 	if( sv->ambient != "" ) {
-		session->getGameAdapter()->storeAmbientObjectSound( sv->ambient );
+		session->getSound()->storeAmbientObjectSound( sv->ambient );
 	}
 
 	// load some common values
@@ -626,6 +628,22 @@ void ShapePalette::initDescriptions( ConfigLang *config ) {
 			string s = node->getValueAsString( "text" );
 			list->push_back( s );
 		}
+	}
+}
+
+void ShapePalette::initSounds( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "sounds" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "sound" );
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+
+		session->getGameAdapter()->setUpdate( _( "Loading Sounds" ), i, vv->size() );
+		
+		string name = node->getValueAsString( "name" );
+		string sound = node->getValueAsString( "sound" );
+		getSession()->getSound()->storeSound( name, sound );
 	}
 }
 

@@ -48,6 +48,7 @@ class Monster;
 class GLShape;
 class SqBinding;
 class ShapePalette;
+class Sound;
 
 /**
  *@author Gabor Torok
@@ -55,6 +56,7 @@ class ShapePalette;
 
 class Session {
 private:
+	Sound *sound;
   ShapePalette *shapePal;
   GameAdapter *adapter;
   Party *party;
@@ -119,7 +121,7 @@ public:
   inline bool isMultiPlayerGame() { return multiplayerGame; }
   inline void setMultiPlayerGame(bool b) { multiplayerGame = b; }
   inline GameAdapter *getGameAdapter() { return adapter; }
-  inline void playSound(const std::string& sound) { getGameAdapter()->playSound(sound); }
+  void playSound(const std::string& sound);
 	std::string& getAmbientSoundName();
 
   /**
@@ -166,6 +168,7 @@ public:
   inline Item *getItem(int index) { return newItems[index]; }
   virtual void deleteCreaturesAndItems(bool missionItemsOnly=false);
 
+	inline Sound *getSound() { return sound; }
   inline ShapePalette *getShapePalette() { return shapePal; }
   inline Map *getMap() { return map; }
   inline Board *getBoard() { return board; }

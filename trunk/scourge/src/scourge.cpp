@@ -155,7 +155,7 @@ void Scourge::initUI() {
 	textDialog = new TextDialog( getSDLHandler() );
 
   // load character, item sounds
-  getSDLHandler()->getSound()->loadSounds( getUserConfiguration() );
+  getSession()->getSound()->loadSounds( getUserConfiguration() );
 
   view->initUI();
 
@@ -176,7 +176,7 @@ void Scourge::start() {
   multiplayer = new MultiplayerDialog(this);
 	saveDialog = new SavegameDialog( this );
 	session->getPreferences()->createConfigDir();
-	getSDLHandler()->getSound()->loadUISounds( getUserConfiguration() );
+	getSession()->getSound()->loadUISounds( getUserConfiguration() );
 	optionsButton = NULL;
 
 	// start a thread to load everything else
@@ -213,7 +213,7 @@ void Scourge::start() {
        value == EDITOR ) {
 
       // fade away
-      getSDLHandler()->getSound()->stopMusic();
+      getSession()->getSound()->stopMusic();
 			if( !session->willLoadGame() ) {
 				getSDLHandler()->fade( 0, 1, 20 );
 			}
@@ -330,7 +330,7 @@ void Scourge::startMission( bool startInHq ) {
       party->forceStopRound();
 
 			// load musics
-			getSDLHandler()->getSound()->selectMusic( getPreferences(), session->getCurrentMission() );
+			getSession()->getSound()->selectMusic( getPreferences(), session->getCurrentMission() );
 
 			// show the chapter art
 			if( session->getCurrentMission() && 
@@ -342,8 +342,8 @@ void Scourge::startMission( bool startInHq ) {
 				showLevelInfo();
 
 				// start the haunting tunes
-				if(inHq) getSDLHandler()->getSound()->playMusicHQ();
-				else getSDLHandler()->getSound()->playMusicMission();
+				if(inHq) getSession()->getSound()->playMusicHQ();
+				else getSession()->getSound()->playMusicMission();
 				setAmbientPaused( false );
 			}
       getSDLHandler()->fade( 1, 0, 20 );
@@ -364,7 +364,7 @@ void Scourge::startMission( bool startInHq ) {
       getSession()->getSquirrel()->endLevel();
 
       // stop the music
-      getSDLHandler()->getSound()->stopMusic();
+      getSession()->getSound()->stopMusic();
       getSDLHandler()->fade( 0, 1, 20 );
     } else {
 			// dungeon generation failed (usualy fails to find space for something like a gate)
@@ -1258,7 +1258,7 @@ int Scourge::dropItem(int x, int y) {
     }
   }
   endItemDrag();
-  getSDLHandler()->getSound()->playSound(Window::DROP_SUCCESS);
+  getSession()->getSound()->playSound(Window::DROP_SUCCESS);
   return z;
 }
 
@@ -1342,6 +1342,7 @@ bool Scourge::useLever( Location *pos, bool showMessage ) {
 			} else {
 				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_OPENED_FAR));
 			}
+			getSession()->getSound()->playSound( "switch" );
 		}
     return true;
   }
@@ -1379,10 +1380,10 @@ bool Scourge::useSecretDoor(Location *pos) {
       
       levelMap->setPosition( pos->x, pos->y, 0, post );
       if( wall->getWidth() > wall->getDepth() ) {
-				getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
+				getSession()->getSound()->playSound( Sound::OPEN_DOOR );
         levelMap->setPosition( pos->x + wall->getWidth() - post->getWidth(), pos->y, 0, post );
       } else {
-				getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
+				getSession()->getSound()->playSound( Sound::OPEN_DOOR );
         levelMap->setPosition( pos->x, pos->y - wall->getDepth() + post->getDepth(), 0, post );
       }
     } else {
@@ -1837,7 +1838,7 @@ void Scourge::openContainerGui(Item *container) {
   }
   // open new window
   if(containerGuiCount < MAX_CONTAINER_GUI) {
-		getSDLHandler()->getSound()->playSound( Sound::OPEN_BOX );
+		getSession()->getSound()->playSound( Sound::OPEN_BOX );
     containerGui[containerGuiCount++] = new ContainerGui(this, container,
                                                          10 + containerGuiCount * 15,
                                                          10 + containerGuiCount * 15);
@@ -2742,23 +2743,23 @@ void Scourge::teleport( bool toHQ ) {
 }
 
 void Scourge::loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
-  getSDLHandler()->getSound()->loadMonsterSounds( type, soundMap, getUserConfiguration() );
+  getSession()->getSound()->loadMonsterSounds( type, soundMap, getUserConfiguration() );
 }
 
 void Scourge::unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
-  getSDLHandler()->getSound()->unloadMonsterSounds( type, soundMap );
+  getSession()->getSound()->unloadMonsterSounds( type, soundMap );
 }
 
 void Scourge::loadCharacterSounds( char *type ) {
-  getSDLHandler()->getSound()->loadCharacterSounds( type );
+  getSession()->getSound()->loadCharacterSounds( type );
 }
 
 void Scourge::unloadCharacterSounds( char *type ) {
-  getSDLHandler()->getSound()->unloadCharacterSounds( type );
+  getSession()->getSound()->unloadCharacterSounds( type );
 }
 
 void Scourge::playCharacterSound( char *type, int soundType ) {
-  getSDLHandler()->getSound()->playCharacterSound( type, soundType );
+  getSession()->getSound()->playCharacterSound( type, soundType );
 }
 
 ShapePalette *Scourge::getShapePalette() {
@@ -3187,7 +3188,7 @@ bool Scourge::playSelectedMission() {
 }
 
 void Scourge::movePartyToGateAndEndMission() {
-	if( teleporting ) getSDLHandler()->getSound()->playSound( Sound::TELEPORT );
+	if( teleporting ) getSession()->getSound()->playSound( Sound::TELEPORT );
   exitConfirmationDialog->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->setVisible(false);
   endMission();
@@ -3672,7 +3673,7 @@ void Scourge::initChapterIntro() {
 	session->setShowChapterIntro( true );
 	hideGui();
 	chapterIntroWin->setVisible( true );
-	getSDLHandler()->getSound()->playMusicChapter();
+	getSession()->getSound()->playMusicChapter();
 
 	char tmp[3000];
 	Util::addLineBreaks( ( strlen( session->getCurrentMission()->getIntroDescription() ) ? 
@@ -3694,18 +3695,18 @@ void Scourge::initChapterIntro() {
 
 void Scourge::replayChapterIntro() {
 	chapterTextPos = -2000;
-	getSDLHandler()->getSound()->playMusicChapter();
+	getSession()->getSound()->playMusicChapter();
 }
 
 void Scourge::endChapterIntro() {
 	getSession()->setShowChapterIntro( false );
-	getSDLHandler()->getSound()->stopMusic();
+	getSession()->getSound()->stopMusic();
 	getChapterIntroWin()->setVisible( false );
 	showGui();
 	showLevelInfo();
 	// start the haunting tunes
-	if( isInHQ() ) getSDLHandler()->getSound()->playMusicHQ();
-	else getSDLHandler()->getSound()->playMusicMission();
+	if( isInHQ() ) getSession()->getSound()->playMusicHQ();
+	else getSession()->getSound()->playMusicMission();
 	setAmbientPaused( false );
 	getSDLHandler()->fade( 1, 0, 20 );
 }
@@ -3783,11 +3784,11 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
 	
 	// there is a chance that the door will be destroyed
 	if( !movingDoor->openLocked && getSession()->getCurrentMission() && 0 == Util::dice( 20 ) ) {
-	  getSDLHandler()->getSound()->playSound( Sound::TELEPORT );
+	  getSession()->getSound()->playSound( Sound::TELEPORT );
 	  destroyDoor( ox, oy, movingDoor->oldDoorShape );
 	  levelMap->updateLightMap();
 	} else {
-	  //getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
+	  //getSession()->getSound()->playSound( Sound::OPEN_DOOR );
 	  levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), movingDoor->newDoorShape);
 	  levelMap->updateLightMap();
 	  levelMap->updateDoorLocation(ox, oy, toint(party->getPlayer()->getZ()),
@@ -3798,14 +3799,14 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
 	}
 	return;
   } else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
-	getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
+	getSession()->getSound()->playSound( Window::DROP_FAILED );
 	// rollback if blocked by a player			
 	levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), movingDoor->oldDoorShape);
 	getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
 	return;
   } else {
 	// Deeestroy!
-	getSDLHandler()->getSound()->playSound( Sound::TELEPORT );
+	getSession()->getSound()->playSound( Sound::TELEPORT );
 	destroyDoor( ox, oy, movingDoor->oldDoorShape );
 	levelMap->updateLightMap();
 	return;
@@ -3849,6 +3850,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 		getDescriptionScroller()->addDescription( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ) );
 	  } else {
 		getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
+		getSession()->getSound()->playSound( "smash-door" );
 		return true;
 	  }
     }
@@ -3877,7 +3879,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 	  movingDoor.openLocked = openLocked;
 	  movingDoor.endTime = SDL_GetTicks() + 5000;
 	  movingDoors.push_back(movingDoor);
-	  getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
+	  getSession()->getSound()->playSound( Sound::OPEN_DOOR );
 	} else {
 	  // switch door
 	  Sint16 ox = pos->x;
@@ -3896,7 +3898,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 		  destroyDoor( ox, oy, oldDoorShape );
 		  levelMap->updateLightMap();
 		} else {
-		  getSDLHandler()->getSound()->playSound( Sound::OPEN_DOOR );
+		  getSession()->getSound()->playSound( Sound::OPEN_DOOR );
 		  levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
 		  levelMap->updateLightMap();
 		  levelMap->updateDoorLocation(doorX, doorY, doorZ,

@@ -27,6 +27,7 @@
 #include "events/thirsthungerevent.h"
 #include "sqbinding/sqbinding.h"
 #include "debug.h"
+#include "sound.h"
 
 using namespace std;
 
@@ -876,14 +877,14 @@ void Creature::stopMoving() {
   selX = selY = -1;
 	speed = originalSpeed;
 	getShape()->setCurrentAnimation( MD2_STAND );
-	if( session->getParty()->getPlayer() == this ) session->getGameAdapter()->stopFootsteps();
+	if( session->getParty()->getPlayer() == this ) session->getSound()->stopFootsteps();
 }
 
 Uint32 lastFootstepTime = 0;
 void Creature::playFootstep() {
   Uint32 now = SDL_GetTicks();
   if( now - lastFootstepTime > (Uint32)(session->getPreferences()->getGameSpeedTicks() * 4) ) {
-		session->getGameAdapter()->startFootsteps( session->getAmbientSoundName(), session->getGameAdapter()->getCurrentDepth() );
+		session->getSound()->startFootsteps( session->getAmbientSoundName(), session->getGameAdapter()->getCurrentDepth() );
 		lastFootstepTime = now;
   }
 }
@@ -2902,7 +2903,7 @@ void Creature::setCharacter( Character *c ) {
 }
 
 void Creature::playCharacterSound( int soundType ) {
-  if( !monster ) session->getGameAdapter()->playCharacterSound( model_name, soundType );
+  if( !monster ) session->getSound()->playCharacterSound( model_name, soundType );
 }
 
 bool Creature::rollSkill( int skill, float luckDiv ) {
@@ -2964,6 +2965,7 @@ void Creature::rollPerception() {
         if( trap->discovered ) {
           char message[ 120 ];
           snprintf( message, 120, _( "%s notices a trap!" ), getName() );
+					session->getSound()->playSound( "notice-trap" );
           session->getGameAdapter()->addDescription( message );
           addExperienceWithMessage( 50 );
         }
@@ -2980,6 +2982,7 @@ void Creature::rollPerception() {
 					session->getMap()->setSecretDoorDetected( pos );
 					char message[ 120 ];
 					snprintf( message, 120, _( "%s notices a secret door!" ), getName() );
+					session->getSound()->playSound( "notice-trap" );
           session->getGameAdapter()->addDescription( message );
           addExperienceWithMessage( 50 );
 				}
@@ -2998,6 +3001,7 @@ void Creature::evalTrap() {
       int damage = (int)Util::getRandomSum( 10, session->getCurrentMission()->getLevel() );
       char message[ 120 ];
       snprintf( message, 120, _( "%1$s blunders into a trap and takes %2$d points of damage!" ), getName(), damage );
+			session->getSound()->playSound( "trigger-trap" );
       session->getGameAdapter()->addDescription( message );
       takeDamage( damage );
     }
@@ -3015,12 +3019,14 @@ void Creature::disableTrap( Trap *trap ) {
 		bool ret = rollSkill( Skill::FIND_TRAP, 5.0f );
 		if( ret ) {
 			session->getGameAdapter()->addDescription( "   and succeeds!" );
+			session->getSound()->playSound( "disarm-trap" );
 			int exp = (int)Util::getRandomSum( 50, session->getCurrentMission()->getLevel() );
 			addExperienceWithMessage( exp );
 		} else {
 			int damage = (int)Util::getRandomSum( 10, session->getCurrentMission()->getLevel() );
 			char message[ MSG_SIZE ];
 			snprintf( message, MSG_SIZE, _( "    and fails! %1$s takes %2$d points of damage!" ), getName(), damage );
+			session->getSound()->playSound( "trigger-trap" );
 			session->getGameAdapter()->addDescription( message );
 			takeDamage( damage );
 		}
