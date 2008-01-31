@@ -3018,7 +3018,7 @@ void Creature::disableTrap( Trap *trap ) {
 		session->getGameAdapter()->addDescription( message );
 		bool ret = rollSkill( Skill::FIND_TRAP, 5.0f );
 		if( ret ) {
-			session->getGameAdapter()->addDescription( "   and succeeds!" );
+			session->getGameAdapter()->addDescription( _( "   and succeeds!" ) );
 			session->getSound()->playSound( "disarm-trap" );
 			int exp = (int)Util::getRandomSum( 50, session->getCurrentMission()->getLevel() );
 			addExperienceWithMessage( exp );
@@ -3031,7 +3031,7 @@ void Creature::disableTrap( Trap *trap ) {
 			takeDamage( damage );
 		}
 	} else {
-		session->getGameAdapter()->addDescription( "This trap is already disabled." );
+		session->getGameAdapter()->addDescription( _( "This trap is already disabled." ) );
 	}
 }
 

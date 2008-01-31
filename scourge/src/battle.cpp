@@ -991,11 +991,10 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
         Creature *oldTarget = creature->getTargetCreature();
         creature->setTargetCreature( tmpTarget );
 
-				// COD not translated
 				char tmp[255];
-				snprintf( tmp,255, "%s %s own fumbling hands",  
+				snprintf( tmp,255, _( "%s %s own fumbling hands" ),  
 								 Constants::getMessage( Constants::CAUSE_OF_DEATH ),
-								 ( creature->getSex() == Constants::SEX_MALE ? "his" : "her" ) );
+								 ( creature->getSex() == Constants::SEX_MALE ? _( "his" ) : _( "her" ) ) );
 				creature->setPendingCauseOfDeath( tmp );
 
         dealDamage( Util::roll( 0.5f * MIN_FUMBLE_RANGE, 1.5f * MIN_FUMBLE_RANGE ) );
@@ -1152,7 +1151,7 @@ void Battle::hitWithItem() {
 								 creature->getName(), toint( attack ) );
 				session->getGameAdapter()->addDescription( message );
 				if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
-					snprintf(message, MESSAGE_SIZE, "...DAM:%.2f-%.2f extra:%.2f",
+					snprintf(message, MESSAGE_SIZE, _( "...DAM:%.2f-%.2f extra:%.2f" ),
 									min, max, extra );
 					session->getGameAdapter()->addDescription( message );
 				}
@@ -1189,7 +1188,6 @@ void Battle::hitWithItem() {
 					damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
 				}
 
-				// COD not translated
 				char tmp[255];
 				strcpy( tmp, Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
 				strcat( tmp, " " );
@@ -1201,12 +1199,12 @@ void Battle::hitWithItem() {
 					strcat( tmp, creature->getName() );
 				}
 				if( item ) {
-					strcat( tmp, " weilding " );
+					strcat( tmp, _( " weilding " ) );
 					strcat( tmp, getAn( item->getName() ) );
 					strcat( tmp, " " );
 					strcat( tmp, item->getName() );
 				} else {
-					strcat( tmp, " in a flurry of blows" );
+					strcat( tmp, _( " in a flurry of blows" ) );
 				}
 				creature->getTargetCreature()->setPendingCauseOfDeath( tmp );
 		
@@ -1218,7 +1216,7 @@ void Battle::hitWithItem() {
 					if( spellDamage > -1 ) {
 
 						strcpy( tmp, Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
-						strcat( tmp, " magical damage by " );
+						strcat( tmp, _( " magical damage by " ) );
 						if( creature->isMonster() ) {
 							strcat( tmp, getAn( creature->getMonster()->getType() ) );
 							strcat( tmp, " " );

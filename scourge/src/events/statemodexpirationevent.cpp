@@ -45,7 +45,7 @@ void StateModExpirationEvent::execute() {
       session->getGameAdapter()->addDescription(message, 0.05f, 1.0f, 0.05f);
 
 			char tmp2[255];
-			snprintf( tmp2, 255, "%s poison.", 
+			snprintf( tmp2, 255, _( "%s poison." ), 
 							 Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
 			creature->getTargetCreature()->setPendingCauseOfDeath( tmp2 );
 

@@ -157,7 +157,7 @@ void TradeDialog::render( const Widget *widget, const Item *item, std::string& b
   int total = price + ( widget == listA ? ( -1 * percentage ) : percentage );
   prices[ (Item*)item ] = total;
   char priceStr[20];
-	snprintf( priceStr, 20, "$%d ", total );
+	snprintf( priceStr, 20, _( "$%d " ), total );
 	buffer = priceStr + s;
 }
 
