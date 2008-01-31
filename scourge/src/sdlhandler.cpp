@@ -20,13 +20,13 @@
 #include "gameadapter.h"
 #include "gui/window.h"
 #include "preferences.h"
-#include "sound.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
 #include "session.h"
 #include "party.h"
 #include "debug.h"
 #include "freetype/fontmgr.h"
+#include "sound.h"
 
 using namespace std;
 
@@ -116,8 +116,6 @@ void SDLHandler::quit( int returnCode ) {
   // shutdown SDL_net
   SDLNet_Quit();
 #endif
-
-  if(sound) delete sound;
 
   /* clean up the window */
   SDL_Quit( );
@@ -313,9 +311,7 @@ char **SDLHandler::getVideoModes(int &nbModes){
     return modesDescription;
 }
 
-void SDLHandler::setVideoMode( Preferences * uc ) {  
-  sound = NULL;
-  
+void SDLHandler::setVideoMode( Preferences * uc ) {    
   /* this holds some info about our display */
   const SDL_VideoInfo *videoInfo;
   
@@ -410,9 +406,6 @@ void SDLHandler::setVideoMode( Preferences * uc ) {
   SDL_ShowCursor(SDL_DISABLE);
   SDL_WM_SetCaption("Scourge", NULL);
   
-  // initialize sound support
-  sound = new Sound(uc);
-  
   /* initialize OpenGL */
   initGL( );
   
@@ -451,14 +444,15 @@ void SDLHandler::mainLoop() {
 			}
 		}
 		if( isActive ) drawScreen();
-		getSound()->checkMusic( gameAdapter->inTurnBasedCombat() );
+		gameAdapter->getSession()->getSound()->checkMusic( gameAdapter->inTurnBasedCombat() );
 		Uint32 now = SDL_GetTicks();
 		if( !gameAdapter->getAmbientPaused() &&
 				0 == Util::dice( AMBIENT_ROLL ) &&  
 				now - lastAmbientTime > AMBIENT_PAUSE_MIN ) {
 			lastAmbientTime = now;
-			getSound()->startAmbientSound( gameAdapter->getSession()->getAmbientSoundName(), 
-																		 gameAdapter->getCurrentDepth() );
+			gameAdapter->getSession()->getSound()->
+				startAmbientSound( gameAdapter->getSession()->getAmbientSoundName(), 
+													 gameAdapter->getCurrentDepth() );
 		}
 	}
 }
@@ -1193,10 +1187,6 @@ GLuint SDLHandler::loadSystemTexture( char *line ) {
   return gameAdapter->loadSystemTexture( line ); 
 }
 
-inline void SDLHandler::playSound( const string& name ) { 
-  getSound()->playSound( name ); 
-}
-
 void SDLHandler::allWindowsClosed() {
   /*
   if( gameAdapter->getSession()->getParty() &&
@@ -1222,3 +1212,8 @@ void SDLHandler::setUpdate( char *message, int n, int total ) {
 		processEventsAndRepaint();
 	}
 }
+
+void SDLHandler::playSound( const std::string& file ) {
+	gameAdapter->getSession()->getSound()->playSound( file );
+}
+

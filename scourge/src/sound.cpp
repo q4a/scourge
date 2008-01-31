@@ -28,9 +28,10 @@ using namespace std;
 #define MISSION_MUSIC_COUNT 6
 #define FIGHT_MUSIC_COUNT 1
 
-char *Sound::TELEPORT = "sound/equip/teleport.wav";
-char *Sound::OPEN_DOOR = "sound/equip/push-heavy-door.wav";
-char *Sound::OPEN_BOX = "sound/equip/open-box.wav";
+char *Sound::TELEPORT = "teleport";
+char *Sound::OPEN_DOOR = "open door";
+char *Sound::OPEN_BOX = "open box";
+
 
 Sound::Sound(Preferences *preferences) {
 	haveSound = false;
@@ -95,6 +96,7 @@ Sound::~Sound() {
 			sample = NULL;
 		}
 		if( !soundMap.empty() ) soundMap.clear();
+		if( !soundNameMap.empty() ) soundNameMap.clear();
 		for(map<string, Mix_Chunk*>::iterator i=ambient_objects.begin(); i != ambient_objects.end(); ++i) {
 			Mix_Chunk *sample = i->second;
 			Mix_FreeChunk(sample);
@@ -458,6 +460,17 @@ void Sound::unloadCharacterSounds( char *type ) {
 #endif
 }
 
+void Sound::storeSound(const string& name, const string& file) {
+#ifdef HAVE_SDL_MIXER
+	if(haveSound) {
+		if( soundNameMap.find( name ) == soundNameMap.end() ) {
+			soundNameMap[name] = file;
+			storeSound( 0, file );
+		}
+	}
+#endif
+}
+
 void Sound::storeSound(int type, const string& file) {
 #ifdef HAVE_SDL_MIXER
 	if(haveSound) {
@@ -500,10 +513,11 @@ void Sound::playSound(const string& file) {
 #ifdef HAVE_SDL_MIXER
 	if(haveSound) {
 		//cerr << "*** Playing WAV: " << file << endl;
-		if(soundMap.find(file) != soundMap.end()) {
+		string s = ( soundNameMap.find( file ) != soundNameMap.end() ? soundNameMap[file] : file );
+		if(soundMap.find(s) != soundMap.end()) {
 			for( int t = 0; t < 5; t++ ) {
 				for( int i = 0; i < 3; i++ ) {
-					if(Mix_PlayChannel(i, soundMap[file], 0) == i) return;
+					if(Mix_PlayChannel(i, soundMap[s], 0) == i) return;
 				}
 			}
 		}

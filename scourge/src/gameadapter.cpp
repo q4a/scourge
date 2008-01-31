@@ -20,7 +20,6 @@
 #include "preferences.h"
 #include "item.h"
 #include "creature.h"
-#include "sound.h"
 #include "render/renderlib.h"
 #include "shapepalette.h"
 #include "rpg/rpglib.h"
@@ -220,34 +219,6 @@ void SDLOpenGLAdapter::initVideo() {
   // Initialize the video mode
   sdlHandler = new SDLHandler( this ); 
   sdlHandler->setVideoMode( preferences ); 
-}
-
-void SDLOpenGLAdapter::playSound(const string& sound) { 
-  getSDLHandler()->getSound()->playSound(sound); 
-}
-
-void SDLOpenGLAdapter::startFootsteps( std::string& name, int depth ) {
-  getSDLHandler()->getSound()->startFootsteps( name, depth );
-}
-
-void SDLOpenGLAdapter::stopFootsteps() {
-  getSDLHandler()->getSound()->stopFootsteps();
-}
-
-void SDLOpenGLAdapter::addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel ) {
-  getSDLHandler()->getSound()->addAmbientSound( name, ambient, footsteps, afterFirstLevel );
-}
-
-void SDLOpenGLAdapter::startAmbientSound( std::string& name, int depth ) {
-  getSDLHandler()->getSound()->startAmbientSound( name, depth );
-}
-
-void SDLOpenGLAdapter::stopAmbientSound() {
-  getSDLHandler()->getSound()->stopAmbientSound();
-}
-
-void SDLOpenGLAdapter::storeAmbientObjectSound( std::string const& sound ) {
-	getSDLHandler()->getSound()->storeAmbientObjectSound( sound );
 }
 
 bool SDLOpenGLAdapter::intersects( int x, int y, int w, int h,

@@ -289,7 +289,7 @@ void MainMenu::drawView() {
 	if( openingTop <= top ) {
     drawLogo();
 		if( !musicStarted ) {
-			scourge->getSDLHandler()->getSound()->playMusicMenu();
+			scourge->getSession()->getSound()->playMusicMenu();
 			musicStarted = true;
 		}
   }

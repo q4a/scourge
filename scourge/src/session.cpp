@@ -30,6 +30,7 @@
 #include "persist.h"
 #include "io/file.h"
 #include "configlang.h"
+#include "sound.h"
 
 using namespace std;
 
@@ -40,6 +41,7 @@ Session *Session::instance = NULL;
  */
 Session::Session(GameAdapter *adapter) {
   this->adapter = adapter;
+	sound = NULL;
   shapePal = NULL;
   party = NULL;
   map = NULL;
@@ -65,6 +67,7 @@ Session::~Session() {
   if( squirrel ) delete squirrel;
   deleteCreaturesAndItems();
   if(shapePal) delete shapePal;
+	if(sound) delete sound;
   if(party) delete party;
   if(board) delete board;
   if(map) delete map;
@@ -76,6 +79,7 @@ Session::~Session() {
 }
 
 void Session::initialize() {
+	sound = new Sound(adapter->getPreferences());
   shapePal = new ShapePalette(this);
   adapter->setSession(this);
   adapter->initVideo();
@@ -648,4 +652,8 @@ void Session::setCurrentMission( Mission *mission ) {
 std::string HQ_AMBIENT_SOUND = "hq";
 std::string& Session::getAmbientSoundName() {
 	return getCurrentMission() ? getCurrentMission()->getAmbientSoundName() : HQ_AMBIENT_SOUND;
+}
+
+void Session::playSound(const std::string& sound) { 
+	getSound()->playSound(sound); 
 }

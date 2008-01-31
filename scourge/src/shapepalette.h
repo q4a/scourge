@@ -188,6 +188,7 @@ protected:
 	void initOccurance( ConfigNode *node, ShapeValues *sv );
 	void initThemes( ConfigLang *config );
 	void initDescriptions( ConfigLang *config );
+	void initSounds( ConfigLang *config );
 	void initNamedTextures( ConfigLang *config );
 	void initInventory( ConfigLang *config );
 

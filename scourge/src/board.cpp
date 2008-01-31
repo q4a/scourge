@@ -24,6 +24,7 @@
 #include "creature.h"
 #include "shapepalette.h"
 #include "configlang.h"
+#include "sound.h"
 
 using namespace std;
 
@@ -67,7 +68,7 @@ Board::Board(Session *session)
 		string ambientAmbient = node->getValueAsString( "ambient" );
 		string ambientFootsteps = node->getValueAsString( "footsteps" );
 		string afterFirstLevel = node->getValueAsString( "after_first_level" );
-		session->getGameAdapter()->addAmbientSound( ambientName, ambientAmbient, ambientFootsteps, afterFirstLevel );
+		session->getSound()->addAmbientSound( ambientName, ambientAmbient, ambientFootsteps, afterFirstLevel );
 	}
 
 	v = config->getDocument()->getChildrenByName( "template" );

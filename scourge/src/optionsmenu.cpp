@@ -382,10 +382,10 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
 				scourge->showMessageDialog( _( "Saved: some options require a restart to take effect." ) );
 				return true;
     } else if(widget == musicVolume) {
-      scourge->getSDLHandler()->getSound()->setMusicVolume(musicVolume->getValue());
+      scourge->getSession()->getSound()->setMusicVolume(musicVolume->getValue());
       uc->setMusicVolume(musicVolume->getValue());
     } else if(widget == effectsVolume) {
-      scourge->getSDLHandler()->getSound()->setEffectsVolume(effectsVolume->getValue());
+      scourge->getSession()->getSound()->setEffectsVolume(effectsVolume->getValue());
       uc->setEffectsVolume(effectsVolume->getValue());
     }
     setSelectedMode(); 

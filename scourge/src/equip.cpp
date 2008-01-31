@@ -249,7 +249,7 @@ void Equip::receive( Widget *widget ) {
 			char *err = creature->canEquipItem( item );
 			if( err ) {
 				pcUi->getScourge()->showMessageDialog( err );
-				pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
+				pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_FAILED );
 			} else {
 				if( creature->addInventory( item ) ) {
 					// message: the player accepted the item
@@ -261,10 +261,10 @@ void Equip::receive( Widget *widget ) {
 					pcUi->getScourge()->endItemDrag();
 					int index = creature->findInInventory( item );
 					creature->equipInventory( index, currentHole );
-					pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_SUCCESS );
+					pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_SUCCESS );
 				} else {
 					// message: the player's inventory is full
-					pcUi->getScourge()->getSDLHandler()->getSound()->playSound( Window::DROP_FAILED );
+					pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_FAILED );
 					pcUi->getScourge()->showMessageDialog( _( "You can't fit the item!" ) );
 				}
 			}

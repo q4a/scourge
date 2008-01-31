@@ -59,6 +59,7 @@ private:
   Uint32 musicStartTime;
   double musicPosition;
   std::map<std::string, Mix_Chunk*> soundMap;  
+	std::map<std::string, std::string> soundNameMap;  
 	std::map<std::string, Mix_Chunk*> ambient_objects;
   std::map<std::string, std::map<int, std::vector<Mix_Chunk*>* >* > characterSounds;
 #endif
@@ -110,6 +111,7 @@ public:
   void unloadCharacterSounds( char *type );
   void playCharacterSound( char *type, int soundType );
 
+	void storeSound(const std::string& name, const std::string& file);
   void storeSound(int type, const std::string& file);
   void unloadSound( int type, const std::string& file );
   void playSound(const std::string& file);

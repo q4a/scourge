@@ -67,13 +67,6 @@ public:
 	virtual inline void setCursorVisible( bool b ) {}
   virtual inline int getScreenWidth() { return 0; }
   virtual inline int getScreenHeight() { return 0; }
-  virtual inline void playSound(const std::string& sound) {}
-  virtual inline void startFootsteps( std::string& name, int depth ) {}
-  virtual inline void stopFootsteps() {}
-	virtual inline void addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel ) {}
-	virtual inline void startAmbientSound( std::string& name, int depth ) {}
-	virtual inline void stopAmbientSound() {}
-	virtual inline void storeAmbientObjectSound( std::string const& sound ) {}
 
   virtual inline bool isMouseIsMovingOverMap() { return false; }
   virtual inline Uint16 getMouseX() { return 0; }
@@ -206,13 +199,6 @@ public:
 	virtual void setCursorVisible( bool b ) { getSDLHandler()->setCursorVisible( b ); }
   virtual inline int getScreenWidth() { return getSDLHandler()->getScreen()->w; }
   virtual inline int getScreenHeight() { return getSDLHandler()->getScreen()->h; }
-  virtual void playSound(const std::string& sound);
-  virtual void startFootsteps( std::string& name, int depth );
-  virtual void stopFootsteps();
-	virtual void addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel );
-	virtual void startAmbientSound( std::string& name, int depth );
-	virtual void stopAmbientSound();
-	virtual void storeAmbientObjectSound( std::string const& sound );
 
   virtual inline bool isMouseIsMovingOverMap() { return getSDLHandler()->mouseIsMovingOverMap; }
   virtual inline Uint16 getMouseX() { return getSDLHandler()->mouseX; }
