@@ -3328,12 +3328,11 @@ void Scourge::showTextMessage( char *message ) {
 	textDialog->setVisible( true );
 }
 
-// not internationalized
 void Scourge::uploadScore() {
 	// "mode=add&user=Tipsy McStagger&score=5000&desc=OMG, I can't believe this works."
 
 	char user[2000];
-	snprintf( user, 2000, "%s the level %d %s", 
+	snprintf( user, 2000, _( "%s the level %d %s" ), 
 					 getParty()->getParty(0)->getName(),
 					 getParty()->getParty(0)->getLevel(),
 					 getParty()->getParty(0)->getCharacter()->getDisplayName() );
@@ -3341,25 +3340,25 @@ void Scourge::uploadScore() {
 	char place[2000];
 	if( getSession()->getCurrentMission() ) {
 		if( strstr( getSession()->getCurrentMission()->getMapName(), "caves" ) ) {
-			snprintf( place, 2000, "in a cave on level %d", 
+			snprintf( place, 2000, _( "in a cave on level %d" ), 
 							 ( getCurrentDepth() + 1 ) );
 		} else {
-			snprintf( place, 2000, "in dungeon level %d at %s", 
+			snprintf( place, 2000, _( "in dungeon level %d at %s" ), 
 							 ( getCurrentDepth() + 1 ),
 							 getSession()->getCurrentMission()->getMapName() );
 		}
 		char mission[200];
-		strcpy( mission, " while attempting to " );
+		strcpy( mission, _( " while attempting to " ) );
 		if( getSession()->getCurrentMission()->isSpecial() ) {
 			strcat( mission, getSession()->getCurrentMission()->getSpecial() );
 		} else if( getSession()->getCurrentMission()->getCreatureCount() > 0 ) {
-			strcat( mission, " kill " );
+			strcat( mission, _( " kill " ) );
 			char *p = getSession()->getCurrentMission()->getCreature( 0 )->getType();
 			strcat( mission, getAn( p ) );
 			strcat( mission, " " );
 			strcat( mission, p );
 		} else if( getSession()->getCurrentMission()->getItemCount() > 0 ) {
-			strcat( mission, " recover " );
+			strcat( mission, _( " recover " ) );
 			char *p = getSession()->getCurrentMission()->getItem( 0 )->getName();
 			strcat( mission, getAn( p ) );
 			strcat( mission, " " );
@@ -3368,11 +3367,11 @@ void Scourge::uploadScore() {
 
 		strcat( place, mission );
 	} else {
-		strcpy( place, "suddenly, while resting at HQ" );
+		strcpy( place, _( "suddenly, while resting at HQ" ) );
 	}
 
 	char desc[2000];
-	snprintf( desc, 2000, "Expired %s. Cause of demise: %s. Reached chapter %d of the story.", 
+	snprintf( desc, 2000, _( "Expired %s. Cause of demise: %s. Reached chapter %d of the story." ), 
 					 place, 
 					 getParty()->getParty(0)->getCauseOfDeath(),
 					 ( getSession()->getBoard()->getStorylineIndex() + 1 ) );
