@@ -21,6 +21,7 @@
 #include "../date.h"
 #include "../render/renderlib.h"
 #include "../test/combattest.h"
+#include "../sound.h"
 
 using namespace std;
 
@@ -50,6 +51,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "void", "reloadNuts", SqGame::_reloadNuts, 0, 0, "Reload all currently used squirrel (.nut) files. The game engine will also do this for you automatically every 5 game minutes." },
   { "void", "documentSOM", SqGame::_documentSOM, 2, "xs", "Produce this documentation. The first argument is the location where the html files will be placed." },
   { "void", "runTests", SqGame::_runTests, 2, "xs", "Run internal tests of the rpg combat engine. Results are saved in path given as param to runTests()." },
+	{ "void", "playSound", SqGame::_playSound, 2, "xs", "Play a sound by the given name." },
   { "void", "showTextMessage", SqGame::_showTextMessage, 2, "xs", "show a scrollable text message dialog." },
   { "string", "getDeityLocation", SqGame::_getDeityLocation, 4, "xnnn", "Get the deity whose presense is bound to this location (like an altar). Results the name of the deity." },    
 	{ "void", "endConversation", SqGame::_endConversation, 0, 0, "Close the conversation dialog." },
@@ -252,6 +254,13 @@ int SqGame::_runTests( HSQUIRRELVM vm ) {
   if( !strlen( path ) ) strcpy( path, "/home/gabor/sourceforge/scourge/api/tests" );
   CombatTest::executeTests( SqBinding::sessionRef, path );
   return 0;
+}
+
+int SqGame::_playSound( HSQUIRRELVM vm ) {
+	GET_STRING( path, 255 )
+	string s = path;
+	SqBinding::sessionRef->getSound()->playSound( s );
+	return 0;
 }
 
 int SqGame::_showTextMessage( HSQUIRRELVM vm ) {
