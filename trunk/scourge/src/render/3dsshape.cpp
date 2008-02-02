@@ -31,9 +31,10 @@ C3DSShape::C3DSShape(const string& file_name, float div, Shapes *shapePal,
 										 Uint32 color, Uint8 shapePalIndex,
 										 float size_x, float size_y, float size_z,
 										 float offs_x, float offs_y, float offs_z,
-										 float xrot3d, float yrot3d, float zrot3d ) :
+										 float xrot3d, float yrot3d, float zrot3d,
+										 int lighting, float base_w, float base_h ) :
 	GLShape(0, 1, 1, 1, name, descriptionGroup, color, shapePalIndex) {
-	commonInit(file_name, div, shapePal, size_x, size_y, size_z, offs_x, offs_y, offs_z, xrot3d, yrot3d, zrot3d );
+	commonInit(file_name, div, shapePal, size_x, size_y, size_z, offs_x, offs_y, offs_z, xrot3d, yrot3d, zrot3d, lighting, base_w, base_h );
 #ifdef DEBUG_3DS
   debugShape = new GLShape(0, this->width, this->depth, 1, name, descriptionGroup, color, shapePalIndex);
   debugShape->initialize();
@@ -56,7 +57,7 @@ C3DSShape::~C3DSShape() {
   glDeleteLists( displayListStart, 2 );
 }
 
-void C3DSShape::commonInit(const string& file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z, float xrot3d, float yrot3d, float zrot3d ) {
+void C3DSShape::commonInit(const string& file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z, float xrot3d, float yrot3d, float zrot3d, int lighting, float base_w, float base_h ) {
 
   g_Texture[0] = 0;
   g_ViewMode = GL_TRIANGLES;
@@ -71,19 +72,32 @@ void C3DSShape::commonInit(const string& file_name, float div, Shapes *shapePal,
 	this->xrot3d = xrot3d;
 	this->yrot3d = yrot3d;
 	this->zrot3d = zrot3d;
+	this->lighting = lighting;
+	this->base_w = base_w;
+	this->base_h = base_h;
 
   // First we need to actually load the .3DS file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("face.3ds").
   string path = rootDir + file_name;
-//  fprintf(stderr, "Loading 3ds file: %s\n", path);
 	if( !shapePal->isHeadless() ) {
+		
+		//cerr << "Loading: " << file_name << endl;
 	  g_Load3ds.Import3DS(&g_3DModel, path);         // Load our .3DS file into our model structure
+		//cerr << "\tLoaded." << endl;
+		//for (int i = 0; i < g_3DModel.numOfObjects; i++) {
+		//	if ( g_3DModel.pObject.empty() ) break;
+		//	t3DObject *pObject = &g_3DModel.pObject[i];
+		//	cerr << "\tfaces=" << pObject->numOfFaces << endl;
+		//}
 
 	  resolveTextures();
 
 	  normalizeModel();
 
-	  preRenderLight();
+		if( lighting == GLShape::NORMAL_LIGHTING ) {
+			//cerr << "\trendering light" << endl;
+			preRenderLight();
+		}
 	}
 }
 
@@ -205,9 +219,9 @@ void C3DSShape::normalizeModel() {
 		cerr << this->getName() << " size=" << fw << "," << fd << "," << fh << endl;
 	} else {
 		// calculate 'div' where dimensions are given
-	  this->width = toint( size_x );
+	  this->width = toint( base_w > 0 ? base_w : size_x );
 	  if(this->width < 1) this->width = 1;
-	  this->depth = toint( size_y );
+	  this->depth = toint( base_h > 0 ? base_h : size_y );
 	  if(this->depth < 1) this->depth = 1;
 	  this->height = toint( size_z );
 	  if(this->height < 1) this->height = 1;		
@@ -413,9 +427,11 @@ void C3DSShape::drawShape( bool isShadow ) {
           */
 
           // apply the precomputed shading to the current color
-          c[0] *= pObject->shadingColorDelta[ index ];
-          c[1] *= pObject->shadingColorDelta[ index ];
-          c[2] *= pObject->shadingColorDelta[ index ];
+					if( lighting == GLShape::NORMAL_LIGHTING ) {
+						c[0] *= pObject->shadingColorDelta[ index ];
+						c[1] *= pObject->shadingColorDelta[ index ];
+						c[2] *= pObject->shadingColorDelta[ index ];
+					}
           glColor3f(c[0], c[1], c[2]);
         }
 

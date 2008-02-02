@@ -85,6 +85,11 @@ protected:
   static const int FRONT_SIDE = 0;
   static const int TOP_SIDE = 1;
   static const int LEFT_RIGHT_SIDE = 2;  
+
+	enum {
+		NORMAL_LIGHTING=0,
+		OUTDOOR_LIGHTING
+	};
   
   inline void setUseTexture(bool b) { useTexture = b; }
   inline bool getUseTexture() { return useTexture; }

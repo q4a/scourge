@@ -73,6 +73,8 @@ typedef struct _ShapeValues {
 	GLuint icon;
 	int iconWidth, iconHeight;
 	std::string ambient;
+	int lighting;
+	float base_w, base_h;
 } ShapeValues;
 
 typedef struct _CharacterModelInfo {

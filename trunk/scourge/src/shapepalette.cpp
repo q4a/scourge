@@ -572,14 +572,16 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 
 	sv->outdoorsWeight = node->getValueAsFloat( "outdoors_weight" );	
 	sv->outdoorShadow = node->getValueAsBool( "outdoor_shadow" );
-	sv->wind = node->getValueAsBool( "wind" );
+	sv->wind = node->getValueAsBool( "wind" );	
+	sv->lighting = GLShape::NORMAL_LIGHTING;
+	sv->base_w = sv->base_h = 0;
 
 	sv->occurs.rooms_only = false;
 	sv->occurs.max_count = 0;
 	strcpy( sv->occurs.placement, "center" );
 	strcpy( sv->occurs.use_function, "" );
 	strcpy( sv->occurs.theme, "" );
-
+	
 	char temp[100];
 	strcpy( temp, node->getValueAsString( "icon_rotate" ) );
 	if( strlen( temp ) ) {
@@ -682,6 +684,22 @@ void ShapePalette::init3dsShapes( ConfigLang *config ) {
 				sv->xrot3d = atof( strtok( tmp, "," ) );
 				sv->yrot3d = atof( strtok( NULL, "," ) );
 				sv->zrot3d = atof( strtok( NULL, "," ) );
+			}
+		}
+
+		if( node->hasValue( "lighting" ) ) {
+			strcpy( tmp, node->getValueAsString( "lighting" ) );
+			if( strlen( tmp ) ) {
+				if( !strcmp( tmp, "outdoors" ) ) {
+					sv->lighting = GLShape::OUTDOOR_LIGHTING;
+				}
+			}
+		}
+		if( node->hasValue( "base" ) ) {
+			strcpy( tmp, node->getValueAsString( "base" ) );
+			if( strlen( tmp ) ) {
+				sv->base_w = atof( strtok( tmp, "," ) );
+				sv->base_h = atof( strtok( NULL, "," ) );
 			}
 		}
 
