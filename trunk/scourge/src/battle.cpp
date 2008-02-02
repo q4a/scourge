@@ -1209,7 +1209,10 @@ void Battle::hitWithItem() {
 				creature->getTargetCreature()->setPendingCauseOfDeath( tmp );
 		
 				dealDamage( damage );
-		
+				
+				//lordtoran's testing cheat
+				//if ( !creature->isMonster() ) dealDamage( 9999 );
+
 				if( damage > 0 ) {
 					// apply extra spell-like damage of magic items
 					float spellDamage = applyMagicItemSpellDamage();

@@ -137,14 +137,14 @@ char *Constants::messages[][80] = {
 	{ N_("SKILL")},
 	{ N_("A magical force turns the lock's tumbles to open."),
 		N_("Some kind of summoned energy opens the lock.")},
-	{ "Killed by",  // cause of death is not interantionalized
-		"Annihilated by", 
-		"Slain by", 
-		"Brought low by", 
-		"Dropped by", 
-		"Ruined by", 
-		"Extinguished by", 
-		"Laid low by"}
+	{ N_("Killed by"), 
+		N_("Annihilated by"), 
+		N_("Slain by"), 
+		N_("Brought low by"), 
+		N_("Dropped by"), 
+		N_("Ruined by"), 
+		N_("Extinguished by"), 
+		N_("Laid low by")}
 };
 
 int Constants::messageCount[] = {
