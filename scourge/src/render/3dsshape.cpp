@@ -94,10 +94,7 @@ void C3DSShape::commonInit(const string& file_name, float div, Shapes *shapePal,
 
 	  normalizeModel();
 
-		if( lighting == GLShape::NORMAL_LIGHTING ) {
-			//cerr << "\trendering light" << endl;
-			preRenderLight();
-		}
+	  preRenderLight();
 	}
 }
 
@@ -219,9 +216,19 @@ void C3DSShape::normalizeModel() {
 		cerr << this->getName() << " size=" << fw << "," << fd << "," << fh << endl;
 	} else {
 		// calculate 'div' where dimensions are given
-	  this->width = toint( base_w > 0 ? base_w : size_x );
+	  if( base_w > 0 ) {
+		this->width = toint( base_w );
+		this->offs_x -= size_x - base_w;
+	  } else {
+		this->width = toint( size_x );
+	  }
 	  if(this->width < 1) this->width = 1;
-	  this->depth = toint( base_h > 0 ? base_h : size_y );
+	  if( base_h > 0 ) {
+		this->depth = toint( base_h );
+		this->offs_y += size_y - base_h;
+	  } else {
+		this->depth = toint( size_y );
+	  }
 	  if(this->depth < 1) this->depth = 1;
 	  this->height = toint( size_z );
 	  if(this->height < 1) this->height = 1;		
@@ -431,6 +438,8 @@ void C3DSShape::drawShape( bool isShadow ) {
 						c[0] *= pObject->shadingColorDelta[ index ];
 						c[1] *= pObject->shadingColorDelta[ index ];
 						c[2] *= pObject->shadingColorDelta[ index ];
+					} else {
+					  // todo: implement outdoor shading
 					}
           glColor3f(c[0], c[1], c[2]);
         }
