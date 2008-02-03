@@ -116,6 +116,7 @@ function usePool( x, y, z ) {
   if( deity == playersDeity ) {
     scourgeGame.printMessage( format( _( "The mighty lord %s reaches towards you," ), deity ) );
     if( !incrementDailyCount( player, "deity.help.lastDateUsed", 3 ) ) {
+      scourgeGame.playSound("pool-canthelp");
       scourgeGame.printMessage( _( "...alas, the deity can aid you no more today." ) );
     } else {
       helped = true;
@@ -123,6 +124,7 @@ function usePool( x, y, z ) {
                     ( rand() * 
                       ( 2.0 * player.getLevel().tofloat() ) / 
                       RAND_MAX ).tointeger() + 1 );
+      scourgeGame.playSound("pool-helped");
       scourgeGame.printMessage( _( "...and fills your spirit with energy." ) );
     }
   } else if( oppositeDeity == playersDeity ) {
@@ -130,8 +132,10 @@ function usePool( x, y, z ) {
     player.takeDamage( ( rand() * 
                          ( 2.0 * player.getLevel().tofloat() ) / 
                          RAND_MAX ) + 1.0 );
+    scourgeGame.playSound("pool-punished");
     scourgeGame.printMessage( _( "...the deity's wrath scours your flesh!" ) );
   } else {
+    scourgeGame.playSound("pool-ignored");
     scourgeGame.printMessage( format( _( "The mighty lord %s ignores you." ), deity ) );
   }
 

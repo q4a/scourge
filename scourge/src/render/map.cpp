@@ -1865,7 +1865,7 @@ void Map::initMapView( bool ignoreRot ) {
 				Util::dice( QUAKE_DELAY / 2 );
 			// start a quake unless this is the very first time
 			quakeStartTime = ( quakeStartTime == 0 ? nextQuakeStartTime : now );
-			if( quakeStartTime == now ) adapter->addDescription( "A tremor shakes the earth..." );
+			if( quakeStartTime == now ) adapter->addDescription( _( "A tremor shakes the earth..." ) );
 		}
 
 		// is it quaking now?

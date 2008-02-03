@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-02-02 23:07+0100\n"
-"PO-Revision-Date: 2008-02-03 00:09+0100\n"
+"POT-Creation-Date: 2008-02-03 02:53+0100\n"
+"PO-Revision-Date: 2008-02-03 02:54+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <dmurczak@versanet.de>\n"
 "MIME-Version: 1.0\n"
@@ -96,6 +96,10 @@ msgstr "%s fühlt sich verwundbar ..."
 #, c-format
 msgid "%s feels a loss of contentment."
 msgstr "%s fühlt sich unzufrieden."
+
+#: src/render/map.cpp:1868
+msgid "A tremor shakes the earth..."
+msgstr "Ein Beben lässt die Erde erzittern..."
 
 #: src/render/map.cpp:3160
 msgid "You need to name the map first."
@@ -1045,16 +1049,16 @@ msgid "\t--nosound - run without sound\n"
 msgstr "\t--nosound - Ohne Sound starten\n"
 
 #: src/shapepalette.cpp:27 src/shapepalette.cpp:364 src/shapepalette.cpp:388
-#: src/shapepalette.cpp:411 src/shapepalette.cpp:446 src/shapepalette.cpp:617
-#: src/shapepalette.cpp:659 src/shapepalette.cpp:704 src/session.cpp:98
+#: src/shapepalette.cpp:411 src/shapepalette.cpp:446 src/shapepalette.cpp:619
+#: src/shapepalette.cpp:661 src/shapepalette.cpp:722 src/session.cpp:98
 msgid "Loading Shapes"
 msgstr "Lade Formen"
 
-#: src/shapepalette.cpp:642 src/board.cpp:65
+#: src/shapepalette.cpp:644 src/board.cpp:65
 msgid "Loading Sounds"
 msgstr "Lade Soundeffekte"
 
-#: src/shapepalette.cpp:822
+#: src/shapepalette.cpp:840
 msgid "Loading Locations"
 msgstr "Lade Orte"
 
@@ -9935,60 +9939,60 @@ msgstr ""
 msgid "The mighty lord %s reaches towards you,"
 msgstr "Der großmächtige Gott %s greift nach Euch."
 
-#: ../scourge_data/script/map.nut:119
+#: ../scourge_data/script/map.nut:120
 msgid "...alas, the deity can aid you no more today."
 msgstr "...leider kann die Gottheit Euch heute nicht mehr beistehen."
 
-#: ../scourge_data/script/map.nut:126
+#: ../scourge_data/script/map.nut:128
 msgid "...and fills your spirit with energy."
 msgstr "...und füllt Euren Geist mit neuer Energie."
 
-#: ../scourge_data/script/map.nut:129
+#: ../scourge_data/script/map.nut:131
 #, c-format
 msgid "Your presence angers the mighty lord %s!"
 msgstr "Eure Anwesenheit erzürnt den großmächtigen Gott %s!"
 
-#: ../scourge_data/script/map.nut:133
+#: ../scourge_data/script/map.nut:136
 msgid "...the deity's wrath scours your flesh!"
 msgstr "...der Zorn der Gottheit reibt an Eurem Fleisch!"
 
-#: ../scourge_data/script/map.nut:135
+#: ../scourge_data/script/map.nut:139
 #, c-format
 msgid "The mighty lord %s ignores you."
 msgstr "Der großmächtige Gott %s ignoriert Euch."
 
-#: ../scourge_data/script/map.nut:250
+#: ../scourge_data/script/map.nut:254
 #, c-format
 msgid "%s conjures up magic with blinding speed!"
 msgstr "%s beschwört die Magie mit atemberaubender Geschwindigkeit!"
 
-#: ../scourge_data/script/map.nut:276
+#: ../scourge_data/script/map.nut:280
 msgid "Yes, yes... quite so... carry on!"
 msgstr "Ja, ja... so ungefähr... fahrt fort!"
 
-#: ../scourge_data/script/map.nut:329
+#: ../scourge_data/script/map.nut:333
 msgid "...Brand of Iconoclast growls in a low tone..."
 msgstr "...Der Todesbringer von Iconoclast brummt in einer tiefen Tonlage..."
 
-#: ../scourge_data/script/map.nut:333
+#: ../scourge_data/script/map.nut:337
 #, c-format
 msgid "...damage is increased by %d pts!"
 msgstr "...Schaden wurde um %d Punkte erhöht!"
 
-#: ../scourge_data/script/map.nut:345
+#: ../scourge_data/script/map.nut:349
 #, c-format
 msgid "...damage is reduced by %d pts! (Cloak of Hateful Vengeance)"
 msgstr ""
 "...Schaden wurde um %d Punkte verringert! (Umhang der Hasserfüllten "
 "Vergeltung)"
 
-#: ../scourge_data/script/map.nut:371
+#: ../scourge_data/script/map.nut:375
 #, c-format
 msgid "...damage is reduced by %d pts! (Cloak of Safe Passage)"
 msgstr ""
 "...Schaden wurde um %d Punkte verringert! (Umhang des Sicheren Durchgangs)"
 
-#: ../scourge_data/script/map.nut:410
+#: ../scourge_data/script/map.nut:414
 msgid ""
 "You find yourself on a barren plain. The air is thick with moisture and very "
 "still. The bleak ground appears to emit a cancerous odor like the smell of "
@@ -10006,7 +10010,7 @@ msgstr ""
 "dieser geschmolzenen Landschaft voller Hoffnungslosigkeit und Grauen scheint "
 "sogar das Umhergehen mühsam zu sein."
 
-#: ../scourge_data/script/map.nut:460
+#: ../scourge_data/script/map.nut:464
 msgid ""
 "The ancient walls appear to cave inward as if pushed on by the very roots of "
 "the forest from above. A metallic smell cuts the air and the noises echoing "
@@ -10024,12 +10028,12 @@ msgstr ""
 "infernalischem Plan sein?||Und als wäre das nicht schon schlimm genug, "
 "erschüttern auch noch ständige Beben die Höhle..."
 
-#: ../scourge_data/script/map.nut:480
+#: ../scourge_data/script/map.nut:484
 #, c-format
 msgid "%s feels very ill suddenly."
 msgstr "%s fühlt sich plötzlich sehr krank."
 
-#: ../scourge_data/script/map.nut:540
+#: ../scourge_data/script/map.nut:544
 msgid ""
 "A baleful wind blows bringing the scent of slow vegetative decay. Off in the "
 "distance you glance a mighty tree, standing in the center of a barren plane "
