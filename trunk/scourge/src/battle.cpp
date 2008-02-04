@@ -844,19 +844,21 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 }
 
 void Battle::launchProjectile() {
-  snprintf(message,MESSAGE_SIZE, _( "...%s shoots a projectile" ), creature->getName());
-  session->getGameAdapter()->addDescription(message); 
   if(!Projectile::addProjectile(creature, creature->getTargetCreature(), item, 
                                 new ShapeProjectileRenderer( session->getShapePalette()->findShapeByName("ARROW") ),
                                 creature->getMaxProjectileCount(item))) {
-    // max number of projectiles in the air
-    // FIXME: do something... 
-    // (like print message: can't launch projectile due to use of fixed-sized array in code?)
+    snprintf(message,MESSAGE_SIZE, _( "...%s has finished firing a volley" ), creature->getName());
+    session->getGameAdapter()->addDescription(message);
+  } else {
+    snprintf(message,MESSAGE_SIZE, _( "...%s shoots a projectile" ), creature->getName());
+    session->getGameAdapter()->addDescription(message); 
   }
+
   if( creature->isMonster() && 
      0 == Util::dice( session->getPreferences()->getSoundFreq() ) ) {
     session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK));
   }
+
   session->playSound( getRandomSound(bowSwishSoundStart, bowSwishSoundCount) );
 }
 

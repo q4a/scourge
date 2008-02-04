@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-02-03 02:53+0100\n"
-"PO-Revision-Date: 2008-02-03 02:54+0100\n"
+"POT-Creation-Date: 2008-02-04 19:27+0100\n"
+"PO-Revision-Date: 2008-02-04 19:29+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <dmurczak@versanet.de>\n"
 "MIME-Version: 1.0\n"
@@ -1328,179 +1328,184 @@ msgstr "...%s benötigt mehr Übung."
 msgid "...the magic fails inexplicably!"
 msgstr "...unerklärlicherweise versagt die Magie!"
 
-#: src/battle.cpp:847
+#: src/battle.cpp:850
+#, c-format
+msgid "...%s has finished firing a volley"
+msgstr "...%s hat das Abfeuern einer Salve beendet"
+
+#: src/battle.cpp:853
 #, c-format
 msgid "...%s shoots a projectile"
 msgstr "...%s schießt ein Geschoss ab"
 
-#: src/battle.cpp:931 src/battle.cpp:936
+#: src/battle.cpp:933 src/battle.cpp:938
 #, c-format
 msgid "%1$s attacks %2$s with %3$s!"
 msgstr "%1$s greift %2$s mit %3$s an!"
 
-#: src/battle.cpp:952
+#: src/battle.cpp:954
 #, c-format
 msgid "%1$s attacks %2$s with bare hands!"
 msgstr "%1$s greift %2$s mit bloßen Händen an!"
 
-#: src/battle.cpp:989 src/spellcaster.cpp:86
+#: src/battle.cpp:991 src/spellcaster.cpp:86
 #, c-format
 msgid "...fumble: hits %s instead!"
 msgstr "...Missgeschick: trifft stattdessen %s!"
 
-#: src/battle.cpp:995
+#: src/battle.cpp:997
 #, c-format
 msgid "%s %s own fumbling hands"
 msgstr "%s %s eigenen ungeschickten Händen"
 
-#: src/battle.cpp:997
+#: src/battle.cpp:999
 msgid "his"
 msgstr "seinen"
 
-#: src/battle.cpp:997
+#: src/battle.cpp:999
 msgid "her"
 msgstr "ihren"
 
-#: src/battle.cpp:1017
+#: src/battle.cpp:1019
 msgid "...precise hit: double damage!"
 msgstr "...präziser Treffer: Doppelter Schaden!"
 
-#: src/battle.cpp:1023
+#: src/battle.cpp:1025
 msgid "...precise hit: triple damage!"
 msgstr "...präziser Treffer: Dreifacher Schaden!"
 
-#: src/battle.cpp:1029
+#: src/battle.cpp:1031
 msgid "...precise hit: quad damage!"
 msgstr "...präziser Treffer: Vierfacher Schaden!"
 
-#: src/battle.cpp:1036
+#: src/battle.cpp:1038
 msgid "...precise hit: instant kill!"
 msgstr "...präziser Treffer: Sofortiger Tod!"
 
-#: src/battle.cpp:1061
+#: src/battle.cpp:1063
 msgid "...double damage!"
 msgstr "...doppelter Schaden!"
 
-#: src/battle.cpp:1064
+#: src/battle.cpp:1066
 msgid "...triple damage!"
 msgstr "...dreifacher Schaden!"
 
-#: src/battle.cpp:1067
+#: src/battle.cpp:1069
 msgid "...quad damage!"
 msgstr "...vierfacher Schaden!"
 
-#: src/battle.cpp:1070
+#: src/battle.cpp:1072
 #, c-format
 msgid "...%d-times damage!"
 msgstr "...%d-facher Schaden!"
 
-#: src/battle.cpp:1098
+#: src/battle.cpp:1100
 #, c-format
 msgid "...%1$s attacks %2$s with %3$s magic."
 msgstr "...%1$s greift %2$s mit Magie %3$s an."
 
-#: src/battle.cpp:1104
+#: src/battle.cpp:1106
 #, c-format
 msgid "%s resists the magic with %d."
 msgstr "%s widersteht der Magie durch %d."
 
-#: src/battle.cpp:1130
+#: src/battle.cpp:1132
 #, c-format
 msgid "...%1$s blocks attack with %2$s!"
 msgstr "...%1$s wehrt Angriff mit %2$s ab!"
 
-#: src/battle.cpp:1146
+#: src/battle.cpp:1148
 msgid "...Using cursed item!"
 msgstr "...benutzt einen verfluchten Gegenstand!"
 
-#: src/battle.cpp:1150
+#: src/battle.cpp:1152
 #, c-format
 msgid "...%s attacks for %d points."
 msgstr "...%s greift mit %d Punkten an."
 
-#: src/battle.cpp:1154
+#: src/battle.cpp:1156
 #, c-format
 msgid "...DAM:%.2f-%.2f extra:%.2f"
 msgstr "...SCH:%.2f-%.2f zusätzl.:%.2f"
 
-#: src/battle.cpp:1169
+#: src/battle.cpp:1171
 #, c-format
 msgid "...%s's armor blocks %d points"
 msgstr "...%ss Rüstung wehrt %d Punkte ab"
 
-#: src/battle.cpp:1202
+#: src/battle.cpp:1204
 msgid " weilding "
 msgstr " mit einem "
 
-#: src/battle.cpp:1207
+#: src/battle.cpp:1209
 msgid " in a flurry of blows"
 msgstr " mit einer Welle von Schlägen"
 
-#: src/battle.cpp:1222
+#: src/battle.cpp:1224
 msgid " magical damage by "
 msgstr " einem magischen Angriff von "
 
-#: src/battle.cpp:1238
+#: src/battle.cpp:1240
 #, c-format
 msgid "...%s dodges the attack."
 msgstr "...%s weicht dem Angriff aus."
 
-#: src/battle.cpp:1244
+#: src/battle.cpp:1246
 #, c-format
 msgid "...%s misses the target."
 msgstr "...%s verfehlt das Ziel."
 
-#: src/battle.cpp:1268
+#: src/battle.cpp:1270
 #, c-format
 msgid "...%s hits for %d points of damage"
 msgstr "...%s trifft mit %d Schaden"
 
-#: src/battle.cpp:1298
+#: src/battle.cpp:1300
 #, c-format
 msgid "...%s is killed!"
 msgstr "...%s wird getötet!"
 
-#: src/battle.cpp:1314
+#: src/battle.cpp:1316
 #, c-format
 msgid "%s finds %d coins!"
 msgstr "%s findet %d Münzen!"
 
-#: src/battle.cpp:1322
+#: src/battle.cpp:1324
 msgid "You have defeated the dungeon boss!"
 msgstr "Ihr habt den Endgegner des Dungeons besiegt!"
 
-#: src/battle.cpp:1323
+#: src/battle.cpp:1325
 msgid "...the news spreads quickly and his minions cower before you."
 msgstr ""
 "...die Nachricht macht rasch die Runde und seine Lakaien knien vor Euch "
 "nieder."
 
-#: src/battle.cpp:1336
+#: src/battle.cpp:1338
 #, c-format
 msgid "...no damaged caused."
 msgstr "...kein Schaden erzielt."
 
-#: src/battle.cpp:1420 src/battle.cpp:1426
+#: src/battle.cpp:1422 src/battle.cpp:1428
 #, c-format
 msgid "Targeted"
 msgstr "Als Ziel gewählt"
 
-#: src/battle.cpp:1451
+#: src/battle.cpp:1453
 #, c-format
 msgid "Out of Range. Move: %d"
 msgstr "Außer Reichweite. Bewegen: %d"
 
-#: src/battle.cpp:1453 src/battle.cpp:1460
+#: src/battle.cpp:1455 src/battle.cpp:1462
 #, c-format
 msgid "Out of Range"
 msgstr "Außer Reichweite"
 
-#: src/battle.cpp:1460
+#: src/battle.cpp:1462
 #, c-format
 msgid "In Range"
 msgstr "In Reichweite"
 
-#: src/battle.cpp:1472 src/portrait.cpp:175
+#: src/battle.cpp:1474 src/portrait.cpp:175
 msgid "Bare Hands"
 msgstr "Bloße Hände"
 
