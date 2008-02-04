@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-02-04 19:27+0100\n"
-"PO-Revision-Date: 2008-02-04 19:29+0100\n"
+"POT-Creation-Date: 2008-02-04 23:03+0100\n"
+"PO-Revision-Date: 2008-02-04 23:18+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <dmurczak@versanet.de>\n"
 "MIME-Version: 1.0\n"
@@ -598,7 +598,7 @@ msgstr "Weiser"
 msgid "trainer"
 msgstr "Trainer"
 
-#: src/sqbinding/sqcreature.cpp:388 src/spellcaster.cpp:491
+#: src/sqbinding/sqcreature.cpp:388 src/spellcaster.cpp:492
 #, c-format
 msgid "%s resists the spell with magic item!"
 msgstr "%s widersteht dem Spruch mit einem magischen Gegenstand!"
@@ -1328,7 +1328,7 @@ msgstr "...%s benötigt mehr Übung."
 msgid "...the magic fails inexplicably!"
 msgstr "...unerklärlicherweise versagt die Magie!"
 
-#: src/battle.cpp:850
+#: src/battle.cpp:850 src/spellcaster.cpp:351
 #, c-format
 msgid "...%s has finished firing a volley"
 msgstr "...%s hat das Abfeuern einer Salve beendet"
@@ -1465,47 +1465,47 @@ msgstr "...%s trifft mit %d Schaden"
 msgid "...%s is killed!"
 msgstr "...%s wird getötet!"
 
-#: src/battle.cpp:1316
+#: src/battle.cpp:1319
 #, c-format
 msgid "%s finds %d coins!"
 msgstr "%s findet %d Münzen!"
 
-#: src/battle.cpp:1324
+#: src/battle.cpp:1327
 msgid "You have defeated the dungeon boss!"
 msgstr "Ihr habt den Endgegner des Dungeons besiegt!"
 
-#: src/battle.cpp:1325
+#: src/battle.cpp:1328
 msgid "...the news spreads quickly and his minions cower before you."
 msgstr ""
 "...die Nachricht macht rasch die Runde und seine Lakaien knien vor Euch "
 "nieder."
 
-#: src/battle.cpp:1338
+#: src/battle.cpp:1340
 #, c-format
 msgid "...no damaged caused."
 msgstr "...kein Schaden erzielt."
 
-#: src/battle.cpp:1422 src/battle.cpp:1428
+#: src/battle.cpp:1424 src/battle.cpp:1430
 #, c-format
 msgid "Targeted"
 msgstr "Als Ziel gewählt"
 
-#: src/battle.cpp:1453
+#: src/battle.cpp:1455
 #, c-format
 msgid "Out of Range. Move: %d"
 msgstr "Außer Reichweite. Bewegen: %d"
 
-#: src/battle.cpp:1455 src/battle.cpp:1462
+#: src/battle.cpp:1457 src/battle.cpp:1464
 #, c-format
 msgid "Out of Range"
 msgstr "Außer Reichweite"
 
-#: src/battle.cpp:1462
+#: src/battle.cpp:1464
 #, c-format
 msgid "In Range"
 msgstr "In Reichweite"
 
-#: src/battle.cpp:1474 src/portrait.cpp:175
+#: src/battle.cpp:1476 src/portrait.cpp:175
 msgid "Bare Hands"
 msgstr "Bloße Hände"
 
@@ -2881,32 +2881,32 @@ msgstr "%s entdeckt eine Geheimtür!"
 msgid "%s discovers a trap!"
 msgstr "%s entdeckt eine Falle!"
 
-#: src/spellcaster.cpp:379
+#: src/spellcaster.cpp:380
 #, c-format
 msgid "%s dodges some of the damage."
 msgstr "%s wehrt einen Teil des Schadens ab."
 
-#: src/spellcaster.cpp:390
+#: src/spellcaster.cpp:391
 #, c-format
 msgid "%1$s attacks %2$s with %3$s."
 msgstr "%1$s greift %2$s mit %3$s an."
 
-#: src/spellcaster.cpp:396
+#: src/spellcaster.cpp:397
 #, c-format
 msgid "%s resists the spell with %d."
 msgstr "%s widersteht dem Zauber durch %d."
 
-#: src/spellcaster.cpp:408
+#: src/spellcaster.cpp:409
 #, c-format
 msgid "%s the %s spell"
 msgstr "%s dem Zauberspruch %s"
 
-#: src/spellcaster.cpp:481
+#: src/spellcaster.cpp:482
 #, c-format
 msgid "%s resists the spell! [%d]"
 msgstr "%s widersteht dem Zauber! [%d]"
 
-#: src/spellcaster.cpp:501
+#: src/spellcaster.cpp:502
 msgid "Cursed items have been doffed."
 msgstr "Verfluchte Gegenstände wurden abgelegt."
 
@@ -3292,35 +3292,40 @@ msgstr ""
 
 #: ../scourge_data/config/scourge.cfg:30
 msgid ""
-"Credits and miscellany:|-----------------------|Code and bad artwork by "
-"Uzudil|Amazing portraits by Ben|Additional portraits by Omnisicent Colossus|"
-"Music by Toofan and Vincent|Rpg expertese by Michi, Elscouta, Nolendil|"
-"SCOURGEweb.org maintained and hosted by Omniscient Colossus|Original Forums "
-"and web administration by Charlie|More coding by daroth-u and Callahan|Paths "
-"were found by Jono|Web/cvs/svn and other services by sourceforge.net|"
-"Additional 3d objects by Omniscient Colossus|Enforcement of the law by "
-"Mormuth the Hairy|Dwarven poetry by the Order of the Grizzled Pony|Quake "
-"models from polycount|Textures by the wadfather|Texture Tweaking by "
-"Omniscient Colossus|(see README file for details on contributions.)|"
-"Playtesting and mostly civil encouragement by many at happypenguin.org|"
-"Additional testing and general hazing from the very helpful members of "
-"rpgcodex.com|Many happy interruptions in bugfixing by Abe & Asha|"
+"||Credits and miscellany:|-----------------------|CODING||Code and bad "
+"artwork by Uzudil|More coding by daroth-u and Callahan|Paths were found by "
+"Jono||VISUALS||Amazing portraits by Ben|Additional portraits by Omnisicent "
+"Colossus|Additional 3d objects by Omniscient Colossus|Quake models from "
+"polycount|Textures by the wadfather|Texture Tweaking by Omniscient Colossus||"
+"AUDIO||Music by Toofan and Vincent|Bloodcurdling sound effects by Dennis "
+"'lordtoran' Murczak||WEB PRESENCE||SCOURGEweb.org maintained and hosted by "
+"Omniscient Colossus|Original Forums and web administration by Charlie|Web/"
+"cvs/svn and other services by sourceforge.net||INTERNATIONALIZATION||Italian "
+"translation by cod|German translation by Dennis 'lordtoran' Murczak||"
+"PLAYTESTING||Playtesting and mostly civil encouragement by many at "
+"happypenguin.org|Additional testing and general hazing from the very helpful "
+"members of rpgcodex.com||THANKS GO TO||Rpg expertese by Michi, Elscouta, "
+"Nolendil|Enforcement of the law by Mormuth the Hairy|Dwarven poetry by the "
+"Order of the Grizzled Pony|Many happy interruptions in bugfixing by Abe & "
+"Asha||(see README file for details on contributions.)||"
 msgstr ""
-"||Credits und Verschiedenes:|-----------------------|Programmierung und "
-"schlechtes Artwork von Uzudil|Tolle Porträts von Ben|Weitere Porträts von "
-"Omnisicent Colossus|Musik von Toofan and Vincent|Fachkundige "
-"Rollenspielberatung von Michi, Elscouta, Nolendil|SCOURGEweb.org gepflegt "
-"und gehostet von Omniscient Colossus|Ursprüngliche Foren und Web-"
-"Administration von Charlie|Mehr Programmierung von daroth-u and Callahan|Web/"
-"CVS/SVN sowie weitere Dienste von sourceforge.net|Zusätzliche 3D-Modelle von "
-"Omniscient Colossus|Vollstreckung des Gesetzes durch Mormuth den Haarigen|"
-"Zwergenpoesie vom Orden des Ergrauten Ponys|Quake-Modelle von polycount|"
-"Texturen von wadfather|Nachbearbeitung der Texturen durch Omniscient "
-"Colossus|(README lesen für mehr Mitwirkungsdetails.)|Spieletest und "
-"moralische Unterstützung durch viele Leute auf happypenguin.org|Weiteres "
-"Testen und Schikanieren durch die sehr hilfreichen Mitglieder von rpgcodex."
-"com|Viele lautstarke Unterbrechungen des Debuggens durch Abe & Asha||Endlose "
-"Nächte der Übersetzung aus dem Englischen: Dennis \"lordtoran\" Murczak|"
+"||Credits und Verschiedenes:|-----------------------|PROGRAMMIERUNG||Code "
+"und schlechtes Artwork von Uzudil|Weiterer Code von daroth-u und Callahan|"
+"Pfade wurden von Jono gefunden||GRAFIK||Tolle Portäts von Ben|Mehr Porträts "
+"von Omnisicent Colossus|Weitere 3D-Objekte von Omniscient Colossus|Quake-"
+"Modelle von polycount|Texturen vom wadfather|Texturensäuberung von "
+"Omniscient Colossus||AUDIO||Musik von Toofan and Vincent|Markerschütternde "
+"Soundeffekte von Dennis 'lordtoran' Murczak||WEBAUFTRITT||SCOURGEweb.org "
+"administriert und gehostet von Omniscient Colossus|Ursprüngliche Foren und "
+"Web-Administration von Charlie|Web/CVS/SVN sowie weitere Dienstleistungen "
+"von sourceforge.net||ÜBERSETZUNG||Italienische Übersetzung von cod|Deutsche "
+"Übersetzung von Dennis 'lordtoran' Murczak||SPIELETEST||Spieletest und "
+"(größtenteils) nette Unterstützung von vielen Spielern auf happypenguin.org|"
+"Weiteres Testen und allgemeine Schikanierung durch die Mitglieder von "
+"rpgcodex.com||DANKSAGUNGEN||Rollenspiel-Fachwissen von Michi, Elscouta, "
+"Nolendil|Vollstreckung des Gesetzes durch Mormuth den Haarigen|Zwergenpoesie "
+"vom Orden des Ergrauten Ponys|Viele lautstarke Unterbrechungen des Debuggens "
+"von Abe & Asha||(siehe README-Datei für Mitwirkungsdetails.)||"
 
 #: ../scourge_data/config/map.cfg:215
 msgid "Pale weeds grow over these ancient walls"
@@ -15471,3 +15476,36 @@ msgstr "Diese Begrüßung solltet Ihr niemals zu sehen bekommen."
 #: ../scourge_data/maps/tree.cfg:52
 msgid "You should never see this message."
 msgstr "Diese Nachricht solltet Ihr niemals zu sehen bekommen."
+
+#~ msgid ""
+#~ "Credits and miscellany:|-----------------------|Code and bad artwork by "
+#~ "Uzudil|Amazing portraits by Ben|Additional portraits by Omnisicent "
+#~ "Colossus|Music by Toofan and Vincent|Rpg expertese by Michi, Elscouta, "
+#~ "Nolendil|SCOURGEweb.org maintained and hosted by Omniscient Colossus|"
+#~ "Original Forums and web administration by Charlie|More coding by daroth-u "
+#~ "and Callahan|Paths were found by Jono|Web/cvs/svn and other services by "
+#~ "sourceforge.net|Additional 3d objects by Omniscient Colossus|Enforcement "
+#~ "of the law by Mormuth the Hairy|Dwarven poetry by the Order of the "
+#~ "Grizzled Pony|Quake models from polycount|Textures by the wadfather|"
+#~ "Texture Tweaking by Omniscient Colossus|(see README file for details on "
+#~ "contributions.)|Playtesting and mostly civil encouragement by many at "
+#~ "happypenguin.org|Additional testing and general hazing from the very "
+#~ "helpful members of rpgcodex.com|Many happy interruptions in bugfixing by "
+#~ "Abe & Asha|"
+#~ msgstr ""
+#~ "||Credits und Verschiedenes:|-----------------------|Programmierung und "
+#~ "schlechtes Artwork von Uzudil|Tolle Porträts von Ben|Weitere Porträts von "
+#~ "Omnisicent Colossus|Musik von Toofan and Vincent|Fachkundige "
+#~ "Rollenspielberatung von Michi, Elscouta, Nolendil|SCOURGEweb.org gepflegt "
+#~ "und gehostet von Omniscient Colossus|Ursprüngliche Foren und Web-"
+#~ "Administration von Charlie|Mehr Programmierung von daroth-u and Callahan|"
+#~ "Web/CVS/SVN sowie weitere Dienste von sourceforge.net|Zusätzliche 3D-"
+#~ "Modelle von Omniscient Colossus|Vollstreckung des Gesetzes durch Mormuth "
+#~ "den Haarigen|Zwergenpoesie vom Orden des Ergrauten Ponys|Quake-Modelle "
+#~ "von polycount|Texturen von wadfather|Nachbearbeitung der Texturen durch "
+#~ "Omniscient Colossus|(README lesen für mehr Mitwirkungsdetails.)|"
+#~ "Spieletest und moralische Unterstützung durch viele Leute auf "
+#~ "happypenguin.org|Weiteres Testen und Schikanieren durch die sehr "
+#~ "hilfreichen Mitglieder von rpgcodex.com|Viele lautstarke Unterbrechungen "
+#~ "des Debuggens durch Abe & Asha||Endlose Nächte der Übersetzung aus dem "
+#~ "Englischen: Dennis \"lordtoran\" Murczak|"
