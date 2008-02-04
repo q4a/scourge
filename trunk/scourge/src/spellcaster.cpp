@@ -347,8 +347,9 @@ Projectile *SpellCaster::launchProjectile( int count, bool stopOnImpact, Project
                                    n, stopOnImpact );
   }
   if( !p ) {
-    // max number of projectiles in the air
-    // FIXME: do something... 
+    char msg[ 200 ];
+    snprintf(msg, 200, _( "...%s has finished firing a volley" ), creature->getName());
+    battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);
   } else {
     p->setCasterLevel( level );
   }

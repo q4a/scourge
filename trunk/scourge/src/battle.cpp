@@ -1309,7 +1309,10 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
         for(int i = 0; i < session->getParty()->getPartySize(); i++) {
 					// Add the exp for the killed creature
 					session->getParty()->getParty( i )->addExperience( tc );
-
+					  if( tc->isBoss() ) {
+					    // Bosses give double the experience
+					    session->getParty()->getParty( i )->addExperience( tc );
+					  }
 					if(!session->getParty()->getParty(i)->getStateMod(StateMod::dead)) {
             int n = session->getParty()->getParty(i)->addMoney( tc );
             if(n > 0) {
@@ -1323,7 +1326,6 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 				if( tc->isBoss() ) {
 					session->getGameAdapter()->addDescription( _( "You have defeated the dungeon boss!" ), 0.5f, 1, 0.5f );
 					session->getGameAdapter()->addDescription( _( "...the news spreads quickly and his minions cower before you." ), 0.5f, 1, 0.5f );
-					// fixme: actually do something
 				}
 
         // see if this is a mission objective
