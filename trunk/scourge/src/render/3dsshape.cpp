@@ -484,9 +484,16 @@ void C3DSShape::draw() {
   glGetFloatv( GL_CURRENT_COLOR, currentColor );
 
   glPushMatrix();
+// <<<<<<< .mine
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA); 
+  	glEnable(GL_BLEND);
+//	glEnable(GL_ALPHA_TEST);
+//	glAlphaFunc( GL_NOTEQUAL, 0 );
+// =======
   if( !useShadow ) {
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc( GL_NOTEQUAL, 0 );
+// >>>>>>> .r2184
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   }
@@ -504,7 +511,8 @@ void C3DSShape::draw() {
 	
   if( !useShadow ) {
 	glDisable( GL_BLEND );
-	glDisable(GL_ALPHA_TEST);
+//	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
   }
   glPopMatrix();
   
