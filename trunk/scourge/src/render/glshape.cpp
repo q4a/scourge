@@ -419,9 +419,6 @@ void GLShape::draw() {
     return;
   }
 
-  // don't blend the top, but if in shadow mode, don't mess with blending
-  GLboolean blending = glIsEnabled(GL_BLEND);
-
   // cull back faces
   glEnable( GL_CULL_FACE );
   glCullFace( GL_BACK );
@@ -429,19 +426,8 @@ void GLShape::draw() {
   glEnable( GL_TEXTURE_2D );
 
   glCallList( displayListStart + 1 );
-
-  // top
-  if(blending) {
-    glDisable(GL_BLEND);
-    glDepthMask(GL_TRUE);
-  }
-
   glCallList( displayListStart + 2 );
 
-  if(blending) {
-    glEnable(GL_BLEND);
-    glDepthMask(GL_FALSE);
-  }
   if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
 }
 
