@@ -1278,8 +1278,15 @@ void Map::draw() {
         // 6,2 6,4 work well
         // FIXME: blending walls have some artifacts that depth-sorting 
         // is supposed to get rid of but that didn't work for me.
-        glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
-        for( int i = 0; i < stencilCount; i++ ) if( stencil[i].inFront ) doDrawShape( &(stencil[i]) );
+        //glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        for( int i = 0; i < stencilCount; i++ ) {
+		  if( stencil[i].inFront ) {
+			glColor4f( 1, 1, 1, 0.45f );
+			colorAlreadySet = true;
+			doDrawShape( &(stencil[i]) );
+		  }
+		}
 
         // draw the water (except where the transp. walls are)
         glStencilFunc(GL_NOTEQUAL, 1, 0xffffffff);
@@ -1292,8 +1299,15 @@ void Map::draw() {
         glDisable(GL_STENCIL_TEST); 
       } else {
         // draw transp. walls and water w/o stencil buffer
-        glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
-        for( int i = 0; i < stencilCount; i++ ) if( stencil[i].inFront ) doDrawShape( &(stencil[i]) );
+		//        glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        for( int i = 0; i < stencilCount; i++ ) {
+		  if( stencil[i].inFront ) {
+			glColor4f( 1, 1, 1, 0.45f );
+			colorAlreadySet = true;
+			doDrawShape( &(stencil[i]) );
+		  }
+		}
         if( hasWater ) {
           glDisable(GL_TEXTURE_2D);
           glBlendFunc( GL_ONE, GL_SRC_COLOR );
