@@ -57,6 +57,8 @@ private:
   ItemRenderer *itemRenderer;
   std::set<int> *filter;
   std::vector<Item*> items;
+	bool unidentifiedOnly;
+	bool cursedOnly;
 	bool allowCursed;
 	std::string name[MAX_INVENTORY_SIZE];
 	Color *color;
@@ -71,6 +73,8 @@ public:
   void setContainer( Item *container, std::set<int> *filter = NULL );
   inline Item *getContainer() { return container; }
 
+	inline void setUnidentifiedOnly( bool b ) { unidentifiedOnly = b; cursedOnly = false; }
+	inline void setCursedOnly( bool b ) { cursedOnly = b; allowCursed = true; }
 	inline void setAllowCursed( bool b ) { allowCursed = b; }
   
   char *getName();

@@ -34,6 +34,8 @@ ScrollingList( x, y, width, height, scourge->getShapePalette()->getHighlightText
   this->creature = creature;
   this->container = NULL;
   this->filter = NULL;
+	this->unidentifiedOnly = false;
+	this->cursedOnly = false;
 	this->allowCursed = true;
 
   color = (Color*)malloc( MAX_INVENTORY_SIZE * sizeof( Color ) );
@@ -74,6 +76,10 @@ void ItemList::commonInit() {
       continue;
     }
 
+		// show only unidentified items?
+		if( unidentifiedOnly && item->isIdentified() ) continue;
+		// show only cursed items?
+		if( cursedOnly && !item->isCursed() ) continue;
 		// cursed items?
 		if( !allowCursed && item->isCursed() ) continue;
 
