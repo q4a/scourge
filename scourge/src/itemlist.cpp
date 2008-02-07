@@ -35,6 +35,7 @@ ScrollingList( x, y, width, height, scourge->getShapePalette()->getHighlightText
   this->container = NULL;
   this->filter = NULL;
 	this->unidentifiedOnly = false;
+	this->needsRechargeOnly = false;
 	this->cursedOnly = false;
 	this->allowCursed = true;
 
@@ -78,6 +79,8 @@ void ItemList::commonInit() {
 
 		// show only unidentified items?
 		if( unidentifiedOnly && item->isIdentified() ) continue;
+		// show only items that need recharge?
+		if( needsRechargeOnly && ( item->getCurrentCharges() >= item->getRpgItem()->getMaxCharges() ) ) continue;
 		// show only cursed items?
 		if( cursedOnly && !item->isCursed() ) continue;
 		// cursed items?
