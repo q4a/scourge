@@ -1140,7 +1140,7 @@ void Item::create3dTex( Scourge *scourge, float w, float h ) {
   glGenTextures(1, tex3d);    
   glBindTexture(GL_TEXTURE_2D, tex3d[0]); 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliqué a la texture
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliquï¿½ a la texture
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
@@ -1367,4 +1367,19 @@ void Item::getTooltip( char *tooltip ) {
 		snprintf( tmp, TMP_SIZE, "|%s:%d", _( "Duration" ), getRpgItem()->getPotionTime());
 		strcat( tooltip, tmp );
 	}
+}
+
+bool Item::isFullyIdentified() {
+
+bool id = true;
+
+if( magicLevel > -1 ) 
+  if ( DEBUG_ITEM_ID || isIdentified() ) {
+    id = true;
+  } else {
+    id = false;
+}
+
+return id;
+
 }

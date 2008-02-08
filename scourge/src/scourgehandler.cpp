@@ -29,6 +29,7 @@
 #include "donatedialog.h"
 #include "traindialog.h"
 #include "uncursedialog.h"
+#include "identifydialog.h"
 #include "sqbinding/sqbinding.h"
 #include "storable.h"
 #include "shapepalette.h"
@@ -364,6 +365,10 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 
   if( scourge->getUncurseDialog()->getWindow()->isVisible() ) {
     scourge->getUncurseDialog()->handleEvent( widget, event );
+  }
+
+  if( scourge->getIdentifyDialog()->getWindow()->isVisible() ) {
+    scourge->getIdentifyDialog()->handleEvent( widget, event );
   }
 
   if( scourge->getPcEditor()->getWindow()->isVisible() ) {

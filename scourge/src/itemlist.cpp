@@ -78,7 +78,7 @@ void ItemList::commonInit() {
     }
 
 		// show only unidentified items?
-		if( unidentifiedOnly && item->isIdentified() ) continue;
+		if( unidentifiedOnly && item->isFullyIdentified() ) continue;
 		// show only items that need recharge?
 		if( needsRechargeOnly && ( item->getCurrentCharges() >= item->getRpgItem()->getMaxCharges() ) ) continue;
 		// show only cursed items?

@@ -32,6 +32,7 @@
 #include "donatedialog.h"
 #include "traindialog.h"
 #include "uncursedialog.cpp" // not a typo, it will prevent "undefined reference" errors from g++
+#include "identifydialog.cpp" // not a typo, it will prevent "undefined reference" errors from g++
 #include "io/file.h"
 #include "sqbinding/sqbinding.h"
 #include "storable.h"
@@ -284,6 +285,7 @@ Scourge::~Scourge(){
   delete donateDialog;
   delete trainDialog;
   delete uncurseDialog;
+  delete identifyDialog;
   delete pcEditor;
 	delete saveDialog;
   delete view;
@@ -781,6 +783,7 @@ void Scourge::hideGui() {
 	donateDialog->getWindow()->setVisible( false );
 	trainDialog->getWindow()->setVisible( false );
 	uncurseDialog->getWindow()->setVisible( false );
+	identifyDialog->getWindow()->setVisible( false );
 	pcEditor->getWindow()->setVisible( false );
 	saveDialog->getWindow()->setVisible( false );
 	tbCombatWin->setVisible( false );
@@ -1452,6 +1455,7 @@ void Scourge::createUI() {
   donateDialog = new DonateDialog( this );
   trainDialog = new TrainDialog( this );
   uncurseDialog = new UncurseDialog( this );
+  identifyDialog = new IdentifyDialog( this );
   pcEditor = new PcEditor( this );	
 
 	exitConfirmationDialog = new ConfirmDialog( getSDLHandler(), _( "Leave level?" ) );
@@ -2543,6 +2547,8 @@ void Scourge::refreshInventoryUI(int playerIndex) {
 			getTradeDialog()->updateUI();
 		if( getUncurseDialog()->getWindow()->isVisible() ) 
 			getUncurseDialog()->updateUI();
+		if( getIdentifyDialog()->getWindow()->isVisible() ) 
+			getIdentifyDialog()->updateUI();
 		refreshContainerGui();
 	}
 }
@@ -2554,6 +2560,8 @@ void Scourge::refreshInventoryUI() {
 			getTradeDialog()->updateUI();
 		if( getUncurseDialog()->getWindow()->isVisible() ) 
 			getUncurseDialog()->updateUI();
+		if( getIdentifyDialog()->getWindow()->isVisible() ) 
+			getIdentifyDialog()->updateUI();
 		refreshContainerGui();
 	}
 }
@@ -2595,6 +2603,7 @@ void Scourge::setPlayerUI(int index) {
   if( donateDialog->getWindow()->isVisible() ) donateDialog->updateUI();
   if( trainDialog->getWindow()->isVisible() ) trainDialog->updateUI();
   if( uncurseDialog->getWindow()->isVisible() ) uncurseDialog->updateUI();
+  if( identifyDialog->getWindow()->isVisible() ) identifyDialog->updateUI();
 }
 
 void Scourge::toggleRoundUI(bool startRound) {

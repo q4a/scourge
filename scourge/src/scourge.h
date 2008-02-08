@@ -87,6 +87,7 @@ class DonateDialog;
 class TextEffect;
 class TrainDialog;
 class UncurseDialog;
+class IdentifyDialog;
 class MagicSchool;
 class ScourgeView;
 class ScourgeHandler;
@@ -553,6 +554,7 @@ public:
   inline DonateDialog *getDonateDialog() { return donateDialog; }
   inline TrainDialog *getTrainDialog() { return trainDialog; }
   inline UncurseDialog *getUncurseDialog() { return uncurseDialog; }
+  inline IdentifyDialog *getIdentifyDialog() { return identifyDialog; }
 
   bool startTextEffect( char *message );
 
@@ -787,6 +789,7 @@ protected:
   DonateDialog *donateDialog;
   TrainDialog *trainDialog;
   UncurseDialog *uncurseDialog;
+  IdentifyDialog *identifyDialog;
 
   Location *gatepos;
 
