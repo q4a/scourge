@@ -55,7 +55,7 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   closeButton = win->createButton( 530, 290, 595, 310, _( "Close" ) );
   
   coinAvailA = win->createLabel( xStart, 260, _( "Available Coins:" ) );
-  coinTradeA = win->createLabel( xStart, 280, "$0" );
+  coinTradeA = win->createLabel( xStart, 280, _( "$0" ) );
   coinReset = win->createButton( 180, 270, 220, 290, _( "Clr" ) );
   coinPlusA = win->createButton( 225, 270, 265, 290, "+1" );
   coinMinusA = win->createButton( 270, 270, 310, 290, "-1" );
@@ -87,13 +87,13 @@ void TradeDialog::updateUI() {
 void TradeDialog::updateLabels() {
 	enum { TMP_SIZE = 120 };
   char tmp[ TMP_SIZE ];
-  snprintf( tmp, TMP_SIZE, "%s $%d", _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney() );
+  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney() );
   coinAvailA->setText( tmp );
-  snprintf( tmp, TMP_SIZE, "%s $%d", _( "Selected Coins:" ), tradeA );
+  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Coins:" ), tradeA );
   coinTradeA->setText( tmp );
-  snprintf( tmp, TMP_SIZE, "%s $%d", _( "Selected Total:" ), ( getSelectedTotal( listA ) + tradeA ) );
+  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), ( getSelectedTotal( listA ) + tradeA ) );
   totalA->setText( tmp );
-  snprintf( tmp, TMP_SIZE, "%s $%d", _( "Selected Total:" ), getSelectedTotal( listB ) );
+  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), getSelectedTotal( listB ) );
   totalB->setText( tmp );
 }
 

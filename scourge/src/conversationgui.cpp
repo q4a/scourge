@@ -23,6 +23,7 @@
 #include "healdialog.h"
 #include "donatedialog.h"
 #include "traindialog.h"
+#include "uncursedialog.h"
 #include "board.h"
 #include "shapepalette.h"
 #include "sqbinding/sqbinding.h"
@@ -31,6 +32,7 @@ using namespace std;
 
 #define TRADE_WORD "trade"
 #define TRAIN_WORD "train"
+#define UNCURSE_WORD "uncurse"
 #define HEAL_WORD "heal"
 #define DONATE_WORD "donate"
 
@@ -82,8 +84,8 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 
   // sage
   cards->createLabel( x, y + 13, _( "Sage:" ), Constants::NPC_TYPE_SAGE );  
-  //identifyButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Id Item" ), Constants::NPC_TYPE_SAGE );
-  //uncurseItemButton = cards->createButton( x + 175, y, x + 275, y + 20, _( "UnCurse" ), Constants::NPC_TYPE_SAGE );
+  //identifyButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Id item" ), Constants::NPC_TYPE_SAGE );
+  uncurseItemButton = cards->createButton( x + 175, y, x + 275, y + 20, _( "Uncurse" ), Constants::NPC_TYPE_SAGE );
   //rechargeButton = cards->createButton( x + 280, y, x + 380, y + 20, _( "Recharge" ), Constants::NPC_TYPE_SAGE );
 
   // healer
@@ -127,7 +129,7 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == identifyButton ) {
     scourge->showMessageDialog( "FIXME: identify item-dialog" );
   } else if( widget == uncurseItemButton ) {
-    scourge->showMessageDialog( "FIXME: remove curse-dialog" );
+    scourge->getUncurseDialog()->setCreature( creature );
   } else if( widget == rechargeButton ) {
     scourge->showMessageDialog( "FIXME: recharge wand-dialog" );
   } else if( widget == healButton ) {
@@ -200,6 +202,9 @@ void ConversationGui::wordClicked( std::string const& pWord ) {
       else if( word == TRAIN_WORD &&
                creature->getNpcInfo() &&
                creature->getNpcInfo()->type == Constants::NPC_TYPE_TRAINER ) scourge->getTrainDialog()->setCreature( creature );
+      else if( word == UNCURSE_WORD &&
+          creature->getNpcInfo() &&
+          creature->getNpcInfo()->type == Constants::NPC_TYPE_SAGE ) scourge->getUncurseDialog()->setCreature( creature );
       else if( word == DONATE_WORD &&
                creature->getNpcInfo() &&
                creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getDonateDialog()->setCreature( creature );
