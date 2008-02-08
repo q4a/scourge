@@ -91,6 +91,7 @@ public:
 	void identify( int infoDetailLevel );
 	//Returns true if all bits in identifiedBits are set to true
 	inline bool isIdentified() { return( isMagicItem() && identifiedBits >= ( 1 << ID_COUNT ) - 1 ); }
+	bool isFullyIdentified();
 
 
   ItemInfo *save();
