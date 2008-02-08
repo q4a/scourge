@@ -64,7 +64,7 @@ std::string get_file_name(const std::string fileName ) {
 }
 
 //snprintf(s, sSize, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
-char *Constants::messages[][80] = {
+char *Constants::messages[][100] = {
 	{
 		N_("Infamy awaits in the dungeons of Scourge!"),
 		N_("Another day, another sewer! Welcome to Scourge!"),
@@ -144,12 +144,15 @@ char *Constants::messages[][80] = {
 		N_("Dropped by"), 
 		N_("Ruined by"), 
 		N_("Extinguished by"), 
-		N_("Laid low by")}
+		N_("Laid low by")},
+	{ N_("Uncurse items")},
+	{ N_("Recharge items")},
+	{ N_("Identify items")},
 };
 
 int Constants::messageCount[] = {
   3, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1,
-  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 8
+  3, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 8, 1, 1, 1
 };
 
 // opengl extension routines

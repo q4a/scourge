@@ -25,6 +25,7 @@
 #include "item.h"
 #include "creature.h"
 #include "tradedialog.h"
+#include "uncursedialog.h"
 #include "sqbinding/sqbinding.h"
 #include "characterinfo.h"
 #include "shapepalette.h"
@@ -180,6 +181,9 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
 	
 		if( pcUi->getScourge()->getTradeDialog()->getWindow()->isVisible() ) {
 			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while trading." ) );
+			return false;
+		} else if( pcUi->getScourge()->getUncurseDialog()->getWindow()->isVisible() ) {
+			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while employing a sage's services." ) );
 			return false;
 		}
 		

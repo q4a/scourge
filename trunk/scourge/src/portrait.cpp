@@ -25,6 +25,7 @@
 #include "item.h"
 #include "creature.h"
 #include "tradedialog.h"
+#include "uncursedialog.h"
 #include "sqbinding/sqbinding.h"
 #include "characterinfo.h"
 #include "shapepalette.h"

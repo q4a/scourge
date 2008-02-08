@@ -461,11 +461,13 @@ public:
 		SKILL_POINTS_AVAILABLE,
 		LOCKED_DOOR_OPENS_MAGICALLY,
 		CAUSE_OF_DEATH,
-
+    UNCURSE_DIALOG_TITLE,
+    RECHARGE_DIALOG_TITLE,
+    IDENTIFY_DIALOG_TITLE,
 	// last one
 	MESSAGE_COUNT
   };
-  static char *messages[][80];
+  static char *messages[][100];
   static int messageCount[];
 
   static const char *localhost;
