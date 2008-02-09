@@ -88,6 +88,7 @@ class TextEffect;
 class TrainDialog;
 class UncurseDialog;
 class IdentifyDialog;
+class RechargeDialog;
 class MagicSchool;
 class ScourgeView;
 class ScourgeHandler;
@@ -555,6 +556,7 @@ public:
   inline TrainDialog *getTrainDialog() { return trainDialog; }
   inline UncurseDialog *getUncurseDialog() { return uncurseDialog; }
   inline IdentifyDialog *getIdentifyDialog() { return identifyDialog; }
+  inline RechargeDialog *getRechargeDialog() { return rechargeDialog; }
 
   bool startTextEffect( char *message );
 
@@ -790,6 +792,7 @@ protected:
   TrainDialog *trainDialog;
   UncurseDialog *uncurseDialog;
   IdentifyDialog *identifyDialog;
+  RechargeDialog *rechargeDialog;
 
   Location *gatepos;
 

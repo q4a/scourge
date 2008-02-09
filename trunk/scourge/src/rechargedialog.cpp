@@ -14,7 +14,7 @@ tradedialog.cpp  -  description
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************/
-#include "identifydialog.h"
+#include "rechargedialog.h"
 #include "scourge.h"
 #include "creature.h"
 #include "item.h"
@@ -24,7 +24,7 @@ tradedialog.cpp  -  description
 
 using namespace std;
 
-IdentifyDialog::IdentifyDialog( Scourge *scourge ) {
+RechargeDialog::RechargeDialog( Scourge *scourge ) {
   this->scourge = scourge;
   this->creature = NULL;
 
@@ -34,16 +34,16 @@ IdentifyDialog::IdentifyDialog( Scourge *scourge ) {
   win = 
     scourge->createWindow( 50, 50, 
                            w, h, 
-                           Constants::getMessage( Constants::IDENTIFY_DIALOG_TITLE ) );
+                           Constants::getMessage( Constants::RECHARGE_DIALOG_TITLE ) );
 
   int xStart = 13;
   
   labelA = win->createLabel( xStart, 15, "" );
   totalA = win->createLabel( xStart, 28, _( "Selected Total:" ) );
   listA = new ItemList( scourge, win, xStart, 35, w - ( xStart * 2 ), 210, this );
-	listA->setUnidentifiedOnly( true );
+	listA->setNeedsRechargeOnly( true );
   win->addWidget( listA );
-  identifyButton = win->createButton( xStart, 274, 110, 294, _( "Identify" ) );
+  rechargeButton = win->createButton( xStart, 274, 110, 294, _( "Recharge" ) );
   infoButtonA = win->createButton( 115, 274, 187, 294, _( "Info" ) );
 
   closeButton = win->createButton( 315, 274, 387, 294, _( "Close" ) );
@@ -51,17 +51,17 @@ IdentifyDialog::IdentifyDialog( Scourge *scourge ) {
   coinAvailA = win->createLabel( xStart, 260, _( "Available Coins:" ) );
 }
 
-IdentifyDialog::~IdentifyDialog() {
+RechargeDialog::~RechargeDialog() {
   delete win;
 }
 
-void IdentifyDialog::setCreature( Creature *creature ) {
+void RechargeDialog::setCreature( Creature *creature ) {
   this->creature = creature;
   win->setVisible( true );
   updateUI();
 }
 
-void IdentifyDialog::updateUI() {
+void RechargeDialog::updateUI() {
   prices.clear();  
   labelA->setText( scourge->getParty()->getPlayer()->getName() );
   listA->setCreature( scourge->getParty()->getPlayer(), creature->getNpcInfo()->getSubtype() );
@@ -69,7 +69,7 @@ void IdentifyDialog::updateUI() {
   updateLabels();
 }
 
-void IdentifyDialog::updateLabels() {
+void RechargeDialog::updateLabels() {
 	enum { TMP_SIZE = 120 };
   char tmp[ TMP_SIZE ];
   snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney() );
@@ -78,7 +78,7 @@ void IdentifyDialog::updateLabels() {
   totalA->setText( tmp );
 }
 
-int IdentifyDialog::getSelectedTotal( ItemList *list ) {
+int RechargeDialog::getSelectedTotal( ItemList *list ) {
   int total = 0;
   for( int i = 0; i < list->getSelectedLineCount(); i++ ) {
     Item *item = list->getSelectedItem( i );
@@ -87,7 +87,7 @@ int IdentifyDialog::getSelectedTotal( ItemList *list ) {
   return total;
 }
 
-void IdentifyDialog::handleEvent( Widget *widget, SDL_Event *event ) {
+void RechargeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
   if( widget == win->closeButton || widget == closeButton ) {
     win->setVisible( false );
   } else if( widget == infoButtonA &&listA->getSelectedLineCount() ) {
@@ -97,17 +97,19 @@ void IdentifyDialog::handleEvent( Widget *widget, SDL_Event *event ) {
       scourge->getInfoGui()->getWindow()->setVisible( true );
   } else if( widget == listA ) {
     updateLabels();
-  } else if( widget == identifyButton ) {
-    identify();
+  } else if( widget == rechargeButton ) {
+    recharge();
   }
 }
 
-void IdentifyDialog::render( const Widget *widget, const Item *item, std::string& buffer ) {
+void RechargeDialog::render( const Widget *widget, const Item *item, std::string& buffer ) {
 	std::string s;
   ((Item*)item)->getDetailedDescription( s );
   float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
   // level-based mark-up is already included and price is randomized
-  int price = ( ((Item*)item)->getPrice() / 20) * ( 6 - ((Item*)item)->getRpgItem()->getRareness() );
+  int reqCharges = ((Item*)item)->getRpgItem()->getMaxCharges() - ((Item*)item)->getCurrentCharges();
+  int pricePerCharge = ((Item*)item)->getPrice() / ((Item*)item)->getRpgItem()->getMaxCharges() / 2;
+  int price = reqCharges * pricePerCharge;
   // 25% variance based on leadership skill.
   int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
   int total = price + percentage;
@@ -118,7 +120,7 @@ void IdentifyDialog::render( const Widget *widget, const Item *item, std::string
 	buffer = priceStr + s;
 }
 
-void IdentifyDialog::identify() {
+void RechargeDialog::recharge() {
   if( !validateInventory() ) {
     scourge->showMessageDialog( _( "Inventories changed." ) );
     return;
@@ -126,19 +128,17 @@ void IdentifyDialog::identify() {
   
   int totalA = getSelectedTotal( listA );
   if( !totalA ) {
-    scourge->showMessageDialog( _( "Select items to identify." ) );
+    scourge->showMessageDialog( _( "Select items to recharge." ) );
     return;
   } else if( scourge->getParty()->getPlayer()->getMoney() < totalA ) {
-    scourge->showMessageDialog( _( "You can't afford the identifying." ) );
+    scourge->showMessageDialog( _( "You can't afford the recharging." ) );
     return;
   }
   
-  // identify items
+  // recharge items
   for( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
     Item *item = listA->getSelectedItem( i );
-	for( int i = 0; i <= item->ID_COUNT; i++ ) {
-	item->setIdentifiedBit( i, true );
-	}
+    item->setCurrentCharges(item->getRpgItem()->getMaxCharges());
   }
   
   // move money
@@ -146,10 +146,10 @@ void IdentifyDialog::identify() {
   
   updateUI();
   scourge->refreshInventoryUI();
-  scourge->showMessageDialog( _( "Selected items identified." ) );
+  scourge->showMessageDialog( _( "Selected items recharged." ) );
 }
 
-bool IdentifyDialog::validateInventory() {
+bool RechargeDialog::validateInventory() {
   for( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
     Item *item = listA->getSelectedItem( i );
     cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInInventory( item ) << endl;

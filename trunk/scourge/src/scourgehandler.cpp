@@ -30,6 +30,7 @@
 #include "traindialog.h"
 #include "uncursedialog.h"
 #include "identifydialog.h"
+#include "rechargedialog.h"
 #include "sqbinding/sqbinding.h"
 #include "storable.h"
 #include "shapepalette.h"
@@ -371,6 +372,9 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->getIdentifyDialog()->handleEvent( widget, event );
   }
 
+  if( scourge->getRechargeDialog()->getWindow()->isVisible() ) {
+    scourge->getRechargeDialog()->handleEvent( widget, event );
+  }
   if( scourge->getPcEditor()->getWindow()->isVisible() ) {
     scourge->getPcEditor()->handleEvent( widget,event );
   }
