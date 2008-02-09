@@ -295,6 +295,10 @@ void InfoGui::describe() {
     strcat( description, tmp );
     strcat( description, "|" );
 
+    snprintf(tmp, TXT_SIZE, _( "Deity: %s" ), spell->getSchool()->getDeity());
+    strcat( description, tmp );
+    strcat( description, "||" );
+
     snprintf(tmp, TXT_SIZE, _( "Level: %d" ), spell->getLevel());
     strcat( description, tmp );
     strcat( description, "|" );

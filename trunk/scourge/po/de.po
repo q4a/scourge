@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-02-09 22:06+0100\n"
-"PO-Revision-Date: 2008-02-09 22:02+0100\n"
+"POT-Creation-Date: 2008-02-09 23:26+0100\n"
+"PO-Revision-Date: 2008-02-09 23:30+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <dmurczak@versanet.de>\n"
 "MIME-Version: 1.0\n"
@@ -796,7 +796,7 @@ msgstr "...Angriff aus dem toten Winkel!"
 msgid "skill"
 msgstr "Fertigkeit"
 
-#: src/creature.cpp:2563 src/creature.cpp:2607 src/infogui.cpp:529
+#: src/creature.cpp:2563 src/creature.cpp:2607 src/infogui.cpp:533
 msgid "vs."
 msgstr "gegen"
 
@@ -2105,12 +2105,12 @@ msgstr "Die Punktzahl wurde erfolgreich hochgeladen."
 msgid "Initiative"
 msgstr "Initiative"
 
-#: src/scourge.cpp:3514 src/scourge.cpp:3521 src/infogui.cpp:464
-#: src/infogui.cpp:469 src/infogui.cpp:474
+#: src/scourge.cpp:3514 src/scourge.cpp:3521 src/infogui.cpp:468
+#: src/infogui.cpp:473 src/infogui.cpp:478
 msgid "ATK"
 msgstr "ANG"
 
-#: src/scourge.cpp:3528 src/infogui.cpp:466 src/infogui.cpp:472
+#: src/scourge.cpp:3528 src/infogui.cpp:470 src/infogui.cpp:476
 msgid "APR"
 msgstr "APR"
 
@@ -2595,197 +2595,202 @@ msgstr "(S:%d) (M:%d) %s"
 msgid "School: %s"
 msgstr "Schule: %s"
 
-#: src/infogui.cpp:294 src/infogui.cpp:374 src/infogui.cpp:402
+#: src/infogui.cpp:294 src/infogui.cpp:378 src/infogui.cpp:406
 #, c-format
 msgid "Skill: %s"
 msgstr "Fertigkeit: %s"
 
-#: src/infogui.cpp:298 src/infogui.cpp:358
+#: src/infogui.cpp:298
+#, c-format
+msgid "Deity: %s"
+msgstr "Gottheit: %s"
+
+#: src/infogui.cpp:302 src/infogui.cpp:362
 #, c-format
 msgid "Level: %d"
 msgstr "Stufe: %d"
 
-#: src/infogui.cpp:302
+#: src/infogui.cpp:306
 #, c-format
 msgid "MP: %d"
 msgstr "MP: %d"
 
-#: src/infogui.cpp:306
+#: src/infogui.cpp:310
 #, c-format
 msgid "Failure rate: %d percent"
 msgstr "Versagenschance: %d Prozent"
 
-#: src/infogui.cpp:320
+#: src/infogui.cpp:324
 #, c-format
 msgid "(%s) %s"
 msgstr "(%s) %s"
 
-#: src/infogui.cpp:320
+#: src/infogui.cpp:324
 msgid "M"
 msgstr "M"
 
-#: src/infogui.cpp:320
+#: src/infogui.cpp:324
 msgid "A"
 msgstr "A"
 
-#: src/infogui.cpp:331
+#: src/infogui.cpp:335
 #, c-format
 msgid "Type: %s"
 msgstr "Typ: %s"
 
-#: src/infogui.cpp:331
+#: src/infogui.cpp:335
 msgid "Manual"
 msgstr "Manuell"
 
-#: src/infogui.cpp:331
+#: src/infogui.cpp:335
 msgid "Automatic"
 msgstr "Automatisch"
 
-#: src/infogui.cpp:361
+#: src/infogui.cpp:365
 #, c-format
 msgid "Weight: %.2f"
 msgstr "Gewicht: %.2f"
 
-#: src/infogui.cpp:364
+#: src/infogui.cpp:368
 #, c-format
 msgid "Price: %d"
 msgstr "Preis: %d"
 
-#: src/infogui.cpp:368
+#: src/infogui.cpp:372
 #, c-format
 msgid "Damage: %d percent"
 msgstr "Schaden: %d Prozent"
 
-#: src/infogui.cpp:371
+#: src/infogui.cpp:375
 #, c-format
 msgid "Damage Type: %s"
 msgstr "Schadensart: %s"
 
-#: src/infogui.cpp:378
+#: src/infogui.cpp:382
 #, c-format
 msgid "Parry: %d percent of %s skill"
 msgstr "Parade: %d Prozent der Fertigkeit %s"
 
-#: src/infogui.cpp:384
+#: src/infogui.cpp:388
 #, c-format
 msgid "AP cost: %d"
 msgstr "AP-Kosten: %d"
 
-#: src/infogui.cpp:389
+#: src/infogui.cpp:393
 #, c-format
 msgid "Range: %d"
 msgstr "Reichweite: %d"
 
-#: src/infogui.cpp:396
+#: src/infogui.cpp:400
 #, c-format
 msgid "Defense vs. %s damage: %d"
 msgstr "Schutz vor %s-Schaden: %d"
 
-#: src/infogui.cpp:405
+#: src/infogui.cpp:409
 #, c-format
 msgid "Dodge penalty: %d"
 msgstr "Malus auf Ausweichen: %d"
 
-#: src/infogui.cpp:410
+#: src/infogui.cpp:414
 #, c-format
 msgid "Power: %d"
 msgstr "Macht: %d"
 
-#: src/infogui.cpp:416
+#: src/infogui.cpp:420
 #, c-format
 msgid "Charges: %d(%d)"
 msgstr "Anwendungen: %d(%d)"
 
-#: src/infogui.cpp:420
+#: src/infogui.cpp:424
 #, c-format
 msgid "Spell: %s"
 msgstr "Zauber: %s"
 
-#: src/infogui.cpp:428
+#: src/infogui.cpp:432
 #, c-format
 msgid "Duration: %d"
 msgstr "Dauer: %d"
 
-#: src/infogui.cpp:434
+#: src/infogui.cpp:438
 #, c-format
 msgid "Two handed weapon."
 msgstr "Zweihändige Waffe."
 
-#: src/infogui.cpp:439
+#: src/infogui.cpp:443
 #, c-format
 msgid "Optionally handed weapon."
 msgstr "Eineinhalbhändige Waffe."
 
-#: src/infogui.cpp:448
+#: src/infogui.cpp:452
 #, c-format
 msgid "Attack Info for each player:"
 msgstr "Angriffswerte für alle Spieler:"
 
-#: src/infogui.cpp:499
+#: src/infogui.cpp:503
 #, c-format
 msgid "%d bonus to attack and damage."
 msgstr "%d-Bonus auf Angriff und Schaden."
 
-#: src/infogui.cpp:501
+#: src/infogui.cpp:505
 #, c-format
 msgid "%d bonus to armor points."
 msgstr "%d-Bonus auf Rüstungspunkte."
 
-#: src/infogui.cpp:511
+#: src/infogui.cpp:515
 #, c-format
 msgid "Double damage"
 msgstr "Doppelter Schaden"
 
-#: src/infogui.cpp:515
+#: src/infogui.cpp:519
 #, c-format
 msgid "Triple damage"
 msgstr "Dreifacher Schaden"
 
-#: src/infogui.cpp:519
+#: src/infogui.cpp:523
 #, c-format
 msgid "Quad damage"
 msgstr "Vierfacher Schaden"
 
-#: src/infogui.cpp:523
+#: src/infogui.cpp:527
 #, c-format
 msgid "%dX damage"
 msgstr "%dX Schaden"
 
-#: src/infogui.cpp:532
+#: src/infogui.cpp:536
 msgid " vs. any creature."
 msgstr " gegen alle Kreaturen."
 
-#: src/infogui.cpp:541
+#: src/infogui.cpp:545
 #, c-format
 msgid "Extra damage of %1$s %2$s magic."
 msgstr "Zusätzlicher Schaden: %1$s %2$s-Magie."
 
-#: src/infogui.cpp:545
+#: src/infogui.cpp:549
 #, c-format
 msgid "Extra %d pts of %s magic resistance."
 msgstr "Zusätzliche %d Punkte %s-Magieresistenz."
 
-#: src/infogui.cpp:556
+#: src/infogui.cpp:560
 msgid "Sets state mods:"
 msgstr "Statusänderungen:"
 
-#: src/infogui.cpp:573
+#: src/infogui.cpp:577
 msgid "Protects from state mods:"
 msgstr "Schützt vor Statusänderungen:"
 
-#: src/infogui.cpp:602
+#: src/infogui.cpp:606
 msgid "Bonuses to skills:"
 msgstr "Boni auf Fertigkeiten:"
 
-#: src/infogui.cpp:613
+#: src/infogui.cpp:617
 msgid "This item is cursed!"
 msgstr "Dieser Gegenstand ist verflucht!"
 
-#: src/infogui.cpp:619
+#: src/infogui.cpp:623
 msgid "School: "
 msgstr "Schule: "
 
-#: src/infogui.cpp:626
+#: src/infogui.cpp:630
 msgid ""
 "You have a feeling there is more to this item than what you've been able to "
 "glean..."
@@ -15616,36 +15621,3 @@ msgstr "Diese Begrüßung solltet Ihr niemals zu sehen bekommen."
 #: ../scourge_data/maps/tree.cfg:52
 msgid "You should never see this message."
 msgstr "Diese Nachricht solltet Ihr niemals zu sehen bekommen."
-
-#~ msgid ""
-#~ "Credits and miscellany:|-----------------------|Code and bad artwork by "
-#~ "Uzudil|Amazing portraits by Ben|Additional portraits by Omnisicent "
-#~ "Colossus|Music by Toofan and Vincent|Rpg expertese by Michi, Elscouta, "
-#~ "Nolendil|SCOURGEweb.org maintained and hosted by Omniscient Colossus|"
-#~ "Original Forums and web administration by Charlie|More coding by daroth-u "
-#~ "and Callahan|Paths were found by Jono|Web/cvs/svn and other services by "
-#~ "sourceforge.net|Additional 3d objects by Omniscient Colossus|Enforcement "
-#~ "of the law by Mormuth the Hairy|Dwarven poetry by the Order of the "
-#~ "Grizzled Pony|Quake models from polycount|Textures by the wadfather|"
-#~ "Texture Tweaking by Omniscient Colossus|(see README file for details on "
-#~ "contributions.)|Playtesting and mostly civil encouragement by many at "
-#~ "happypenguin.org|Additional testing and general hazing from the very "
-#~ "helpful members of rpgcodex.com|Many happy interruptions in bugfixing by "
-#~ "Abe & Asha|"
-#~ msgstr ""
-#~ "||Credits und Verschiedenes:|-----------------------|Programmierung und "
-#~ "schlechtes Artwork von Uzudil|Tolle Porträts von Ben|Weitere Porträts von "
-#~ "Omnisicent Colossus|Musik von Toofan and Vincent|Fachkundige "
-#~ "Rollenspielberatung von Michi, Elscouta, Nolendil|SCOURGEweb.org gepflegt "
-#~ "und gehostet von Omniscient Colossus|Ursprüngliche Foren und Web-"
-#~ "Administration von Charlie|Mehr Programmierung von daroth-u and Callahan|"
-#~ "Web/CVS/SVN sowie weitere Dienste von sourceforge.net|Zusätzliche 3D-"
-#~ "Modelle von Omniscient Colossus|Vollstreckung des Gesetzes durch Mormuth "
-#~ "den Haarigen|Zwergenpoesie vom Orden des Ergrauten Ponys|Quake-Modelle "
-#~ "von polycount|Texturen von wadfather|Nachbearbeitung der Texturen durch "
-#~ "Omniscient Colossus|(README lesen für mehr Mitwirkungsdetails.)|"
-#~ "Spieletest und moralische Unterstützung durch viele Leute auf "
-#~ "happypenguin.org|Weiteres Testen und Schikanieren durch die sehr "
-#~ "hilfreichen Mitglieder von rpgcodex.com|Viele lautstarke Unterbrechungen "
-#~ "des Debuggens durch Abe & Asha||Endlose Nächte der Übersetzung aus dem "
-#~ "Englischen: Dennis \"lordtoran\" Murczak|"
