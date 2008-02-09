@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-02-09 03:30+0100\n"
-"PO-Revision-Date: 2008-02-09 03:37+0100\n"
+"POT-Creation-Date: 2008-02-09 15:48+0100\n"
+"PO-Revision-Date: 2008-02-09 15:51+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <dmurczak@versanet.de>\n"
 "MIME-Version: 1.0\n"
@@ -303,7 +303,8 @@ msgstr "Pause beendet: Ihr seid jetzt im Echtzeitmodus"
 
 #: src/common/constants.cpp:83 src/containergui.cpp:43 src/healdialog.cpp:49
 #: src/tradedialog.cpp:55 src/optionsmenu.cpp:61 src/conversationgui.cpp:81
-#: src/donatedialog.cpp:50 src/traindialog.cpp:55
+#: src/donatedialog.cpp:50 src/traindialog.cpp:55 src/uncursedialog.cpp:49
+#: src/identifydialog.cpp:49 src/rechargedialog.cpp:49
 msgid "Close"
 msgstr "Schließen"
 
@@ -1117,6 +1118,8 @@ msgid "  %s dies!"
 msgstr "  %s stirbt!"
 
 #: src/containergui.cpp:39 src/tradedialog.cpp:43 src/tradedialog.cpp:53
+#: src/uncursedialog.cpp:47 src/identifydialog.cpp:47
+#: src/rechargedialog.cpp:47
 msgid "Info"
 msgstr "Info"
 
@@ -1177,7 +1180,8 @@ msgstr "Kaufen"
 msgid "level"
 msgstr "Stufe"
 
-#: src/healdialog.cpp:95 src/tradedialog.cpp:160
+#: src/healdialog.cpp:95 src/tradedialog.cpp:160 src/uncursedialog.cpp:117
+#: src/identifydialog.cpp:117 src/rechargedialog.cpp:119
 #, c-format
 msgid "$%d "
 msgstr "%d € "
@@ -1526,7 +1530,9 @@ msgid "Chat"
 msgstr "Chat"
 
 #: src/tradedialog.cpp:38 src/tradedialog.cpp:47 src/tradedialog.cpp:94
-#: src/tradedialog.cpp:96
+#: src/tradedialog.cpp:96 src/uncursedialog.cpp:42 src/uncursedialog.cpp:77
+#: src/identifydialog.cpp:42 src/identifydialog.cpp:77
+#: src/rechargedialog.cpp:42 src/rechargedialog.cpp:77
 msgid "Selected Total:"
 msgstr "Gewählte Summe:"
 
@@ -1538,7 +1544,10 @@ msgstr "Verkauf."
 msgid "Steal"
 msgstr "Stehlen"
 
-#: src/tradedialog.cpp:57 src/tradedialog.cpp:90
+#: src/tradedialog.cpp:57 src/tradedialog.cpp:90 src/uncursedialog.cpp:51
+#: src/uncursedialog.cpp:75 src/identifydialog.cpp:51
+#: src/identifydialog.cpp:75 src/rechargedialog.cpp:51
+#: src/rechargedialog.cpp:75
 msgid "Available Coins:"
 msgstr "Verfügbare Münzen:"
 
@@ -1561,7 +1570,9 @@ msgstr ""
 "Informationen."
 
 #: src/tradedialog.cpp:90 src/tradedialog.cpp:92 src/tradedialog.cpp:94
-#: src/tradedialog.cpp:96
+#: src/tradedialog.cpp:96 src/uncursedialog.cpp:75 src/uncursedialog.cpp:77
+#: src/identifydialog.cpp:75 src/identifydialog.cpp:77
+#: src/rechargedialog.cpp:75 src/rechargedialog.cpp:77
 #, c-format
 msgid "%s $%d"
 msgstr "%s %d €"
@@ -1571,6 +1582,8 @@ msgid "Selected Coins:"
 msgstr "Münzen ausgewählt:"
 
 #: src/tradedialog.cpp:166 src/tradedialog.cpp:211 src/tradedialog.cpp:254
+#: src/uncursedialog.cpp:123 src/identifydialog.cpp:123
+#: src/rechargedialog.cpp:125
 msgid "Inventories changed."
 msgstr "Inventar wurde verändert."
 
@@ -2423,11 +2436,11 @@ msgstr "Weiser:"
 msgid "Identify item"
 msgstr "Identifizieren"
 
-#: src/conversationgui.cpp:92
+#: src/conversationgui.cpp:92 src/uncursedialog.cpp:46
 msgid "Uncurse"
 msgstr "Entfluchen"
 
-#: src/conversationgui.cpp:93
+#: src/conversationgui.cpp:93 src/rechargedialog.cpp:46
 msgid "Recharge"
 msgstr "Aufladen"
 
@@ -2536,7 +2549,7 @@ msgstr "Ihr könnt Euch das Training nicht leisten!"
 msgid "Congratulation %1$s, you are now a %2$s."
 msgstr "Glückwunsch %1$s, Ihr seid jetzt ein %2$s."
 
-#: src/infogui.cpp:63
+#: src/infogui.cpp:63 src/identifydialog.cpp:46
 msgid "Identify"
 msgstr "Identifizieren"
 
@@ -3288,6 +3301,42 @@ msgstr "Immun gegen Verfassungen:"
 msgid "Click a quickspell slot to store this item."
 msgstr ""
 "Klickt auf einen Schnellauswahl-Slot, um den Gegenstand dort abzulegen."
+
+#: src/uncursedialog.cpp:129
+msgid "Select items to uncurse."
+msgstr "Wählt die zu entfluchenden Gegenstände."
+
+#: src/uncursedialog.cpp:132
+msgid "You can't afford the uncursing."
+msgstr "Ihr könnt Euch die Entfluchung nicht leisten."
+
+#: src/uncursedialog.cpp:147
+msgid "Selected items uncursed."
+msgstr "Gewählte Gegenstände entflucht."
+
+#: src/identifydialog.cpp:129
+msgid "Select items to identify."
+msgstr "Wählt die zu identifizierenden Gegenstände."
+
+#: src/identifydialog.cpp:132
+msgid "You can't afford the identifying."
+msgstr "Ihr könnt Euch die Identifizierung nicht leisten."
+
+#: src/identifydialog.cpp:149
+msgid "Selected items identified."
+msgstr "Gewählte Gegenstände identifiziert."
+
+#: src/rechargedialog.cpp:131
+msgid "Select items to recharge."
+msgstr "Wählt die aufzuladenden Gegenstände."
+
+#: src/rechargedialog.cpp:134
+msgid "You can't afford the recharging."
+msgstr "Ihr könnt Euch die Aufladung nicht leisten."
+
+#: src/rechargedialog.cpp:149
+msgid "Selected items recharged."
+msgstr "Gewählte Gegenstände aufgeladen."
 
 #: ../scourge_data/config/scourge.cfg:12
 msgid "Welcome to the world of S.c.o.u.r.g.e."

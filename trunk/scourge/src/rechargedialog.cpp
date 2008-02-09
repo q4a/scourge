@@ -28,7 +28,7 @@ RechargeDialog::RechargeDialog( Scourge *scourge ) {
   this->scourge = scourge;
   this->creature = NULL;
 
-  int w = 400;
+  int w = 460;
   int h = 328;
   
   win = 
@@ -46,7 +46,7 @@ RechargeDialog::RechargeDialog( Scourge *scourge ) {
   rechargeButton = win->createButton( xStart, 274, 110, 294, _( "Recharge" ) );
   infoButtonA = win->createButton( 115, 274, 187, 294, _( "Info" ) );
 
-  closeButton = win->createButton( 315, 274, 387, 294, _( "Close" ) );
+  closeButton = win->createButton( w - xStart - 72, 274, w - xStart, 294, _( "Close" ) );
   
   coinAvailA = win->createLabel( xStart, 260, _( "Available Coins:" ) );
 }
