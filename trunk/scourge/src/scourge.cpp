@@ -31,9 +31,9 @@
 #include "healdialog.h"
 #include "donatedialog.h"
 #include "traindialog.h"
-#include "uncursedialog.cpp" // not a typo, it will prevent "undefined reference" errors from g++
-#include "identifydialog.cpp" // not a typo, it will prevent "undefined reference" errors from g++
-#include "rechargedialog.cpp" // not a typo, it will prevent "undefined reference" errors from g++
+#include "uncursedialog.h"
+#include "identifydialog.h"
+#include "rechargedialog.h"
 #include "io/file.h"
 #include "sqbinding/sqbinding.h"
 #include "storable.h"

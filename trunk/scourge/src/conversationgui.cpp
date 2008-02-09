@@ -29,6 +29,9 @@
 #include "board.h"
 #include "shapepalette.h"
 #include "sqbinding/sqbinding.h"
+#include "uncursedialog.h"
+#include "identifydialog.h"
+#include "rechargedialog.h"
 
 using namespace std;
 

@@ -42,6 +42,9 @@
 #include "pcui.h"
 #include "textscroller.h"
 #include "sound.h"
+#include "uncursedialog.h"
+#include "identifydialog.h"
+#include "rechargedialog.h"
 
 #define DRAG_START_TOLERANCE 5
 
