@@ -27,6 +27,7 @@
 #include "tradedialog.h"
 #include "uncursedialog.h"
 #include "identifydialog.h"
+#include "rechargedialog.h"
 #include "sqbinding/sqbinding.h"
 #include "characterinfo.h"
 #include "shapepalette.h"

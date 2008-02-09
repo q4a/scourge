@@ -15,8 +15,8 @@ tradedialog.h  -  description
 *                                                                         *
 ***************************************************************************/
 
-#ifndef IDENTIFY_DIALOG_H
-#define IDENTIFY_DIALOG_H
+#ifndef RECHARGE_DIALOG_H
+#define RECHARGE_DIALOG_H
 
 #include "common/constants.h"
 #include "itemlist.h"
@@ -31,7 +31,7 @@ class Widget;
 class Item;
 class PcUi;
 
-class IdentifyDialog : public ItemRenderer {
+class RechargeDialog : public ItemRenderer {
 private:
   Scourge *scourge;
   Creature *creature;
@@ -42,12 +42,12 @@ private:
   Label *labelA;
   Label *totalA;
   ItemList *listA;
-  Button *closeButton, *infoButtonA, *identifyButton;
+  Button *closeButton, *infoButtonA, *rechargeButton;
   Label *coinAvailA;
   
 public:
-  IdentifyDialog( Scourge *scourge );
-  ~IdentifyDialog();
+  RechargeDialog( Scourge *scourge );
+  ~RechargeDialog();
   void setCreature( Creature *creature );
   void updateUI();
   inline Window *getWindow() { return win; }
@@ -57,7 +57,7 @@ public:
   
 protected:
   void updateLabels();
-  void identify();
+  void recharge();
   int getSelectedTotal( ItemList *list );
   bool validateInventory();
 };
