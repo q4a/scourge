@@ -240,6 +240,9 @@ src/portrait.h
 src/portrait.cpp
 src/inven.h
 src/inven.cpp
+src/uncursedialog.cpp
+src/identifydialog.cpp
+src/rechargedialog.cpp
 ../scourge_data/config/scourge.cfg
 ../scourge_data/config/map.cfg
 ../scourge_data/config/item.cfg

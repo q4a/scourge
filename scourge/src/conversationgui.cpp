@@ -77,8 +77,8 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   win->addWidget( entry );
 
   y = sy + 10;
-  x = width - 70;
-  closeButton = win->createButton( x, y, x + 60, y + 20, _( "Close" ) );
+  x = width - 82;
+  closeButton = win->createButton( x, y, x + 72, y + 20, _( "Close" ) );
 
   cards = new CardContainer( win );
   x = 10;
@@ -88,22 +88,22 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 
   // sage
   cards->createLabel( x, y + 13, _( "Sage:" ), Constants::NPC_TYPE_SAGE );  
-  identifyButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Identify item" ), Constants::NPC_TYPE_SAGE );
-  uncurseItemButton = cards->createButton( x + 175, y, x + 275, y + 20, _( "Uncurse" ), Constants::NPC_TYPE_SAGE );
-  rechargeButton = cards->createButton( x + 280, y, x + 380, y + 20, _( "Recharge" ), Constants::NPC_TYPE_SAGE );
+  identifyButton = cards->createButton( x + 70, y, x + 160, y + 20, _( "Identify item" ), Constants::NPC_TYPE_SAGE );
+  uncurseItemButton = cards->createButton( x + 165, y, x + 255, y + 20, _( "Uncurse" ), Constants::NPC_TYPE_SAGE );
+  rechargeButton = cards->createButton( x + 260, y, x + 350, y + 20, _( "Recharge" ), Constants::NPC_TYPE_SAGE );
 
   // healer
   cards->createLabel( x, y + 13, _( "Healer:" ), Constants::NPC_TYPE_HEALER );  
-  healButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Heal" ), Constants::NPC_TYPE_HEALER );
-  donateButton = cards->createButton( x + 175, y, x + 275, y + 20, _( "Donate" ), Constants::NPC_TYPE_HEALER );
+  healButton = cards->createButton( x + 70, y, x + 160, y + 20, _( "Heal" ), Constants::NPC_TYPE_HEALER );
+  donateButton = cards->createButton( x + 165, y, x + 255, y + 20, _( "Donate" ), Constants::NPC_TYPE_HEALER );
 
   // trainer
   cards->createLabel( x, y + 13, _( "Trainer:" ), Constants::NPC_TYPE_TRAINER );  
-  trainButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Train" ), Constants::NPC_TYPE_TRAINER );
+  trainButton = cards->createButton( x + 70, y, x + 160, y + 20, _( "Train" ), Constants::NPC_TYPE_TRAINER );
 
   // merchant
   cards->createLabel( x, y + 13, _( "Merchant:" ), Constants::NPC_TYPE_MERCHANT );  
-  tradeButton = cards->createButton( x + 70, y, x + 170, y + 20, _( "Trade" ), Constants::NPC_TYPE_MERCHANT );
+  tradeButton = cards->createButton( x + 70, y, x + 160, y + 20, _( "Trade" ), Constants::NPC_TYPE_MERCHANT );
   
   win->setVisible( false );
 }
