@@ -123,6 +123,12 @@ scourge_SOURCES = \
 	itemlist.h\
 	tradedialog.cpp\
 	tradedialog.h\
+	uncursedialog.cpp\
+	uncursedialog.h\
+	identifydialog.cpp\
+	identifydialog.h\
+	rechargedialog.cpp\
+	rechargedialog.h\
 	healdialog.cpp\
 	healdialog.h\
 	savegamedialog.cpp\
