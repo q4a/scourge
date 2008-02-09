@@ -32,12 +32,16 @@
 #include "gui/scrollinglabel.h"
 
 class Item;
+class Spell;
+class SpecialSkill;
 
 class InfoGui : public WidgetView {
 
  private:
   Scourge *scourge;
   Item *item;
+  Spell *spell;
+  SpecialSkill *skill;
   Window *win;
   Button *openButton, *idButton, *closeButton;
   ScrollingLabel *label;
@@ -53,7 +57,14 @@ class InfoGui : public WidgetView {
   bool handleEvent(Widget *widget, SDL_Event *event);
 
   inline Item *getItem() { return item; }
+  inline Spell *getSpell() { return spell; }
+  inline SpecialSkill *getSkill() { return skill; }
+  inline bool hasItem() { return item != NULL; }
+  inline bool hasSpell() { return spell != NULL; }
+  inline bool hasSkill() { return skill != NULL; }
   void setItem(Item *item);
+  void setSpell(Spell *spell);
+  void setSkill(SpecialSkill *skill);
   inline Window *getWindow() { return win; }
 
   void drawWidgetContents(Widget *w);

@@ -20,6 +20,8 @@
 #include "creature.h"
 #include "shapepalette.h"
 #include "rpg/rpglib.h"
+#include "rpg/spell.h"
+#include "rpg/specialskill.h"
 
 using namespace std;
 
@@ -87,6 +89,8 @@ InfoGui::~InfoGui() {
 }
 
 void InfoGui::setItem( Item *item ) { 
+  this->spell = NULL;
+  this->skill = NULL;
   this->item = item; 
   describe(); 
 
@@ -118,6 +122,38 @@ void InfoGui::setItem( Item *item ) {
 		openButton->move( 0, 0 );
 		idButton->move( 0, 0 );
 	}
+}
+
+void InfoGui::setSpell( Spell *spell ) { 
+  this->item = NULL;
+  this->skill = NULL; 
+  this->spell = spell; 
+  describe(); 
+
+  int bx = win->getWidth() / 2;
+  int by = win->getHeight() - 55;
+
+  openButton->setVisible( false );
+  idButton->setVisible( false );
+  closeButton->move( bx - 45, by );
+  openButton->move( 0, 0 );
+  idButton->move( 0, 0 );
+}
+
+void InfoGui::setSkill( SpecialSkill *skill ) { 
+  this->item = NULL;
+  this->spell = NULL;
+  this->skill = skill; 
+  describe(); 
+
+  int bx = win->getWidth() / 2;
+  int by = win->getHeight() - 55;
+
+  openButton->setVisible( false );
+  idButton->setVisible( false );
+  closeButton->move( bx - 45, by );
+  openButton->move( 0, 0 );
+  idButton->move( 0, 0 );
 }
 
 bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
@@ -157,14 +193,22 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 void InfoGui::drawWidgetContents(Widget *w) {
-  if( w == image && item ) {
+
+  if( w == image && ( item || spell || skill ) ) {
     glEnable( GL_ALPHA_TEST );
     //glAlphaFunc( GL_EQUAL, 0xff );
 		glAlphaFunc( GL_NOTEQUAL, 0 );
     glEnable(GL_TEXTURE_2D);
     glPushMatrix();
     //    glTranslatef( x, y, 0 );
-    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ] );
+	if ( hasItem() ) {
+	  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ] );
+	} else if ( hasSpell() ) {
+          glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
+	} else if ( hasSkill() ) {
+          glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->spellsTex[ skill->getIconTileX() ][ skill->getIconTileY() ] );
+	}
+
     glColor4f(1, 1, 1, 1);
     
     glBegin( GL_QUADS );
@@ -227,6 +271,73 @@ void InfoGui::describeRequirements( char *description, int influenceTypeCount ) 
 }
 
 void InfoGui::describe() {
+
+  if ( hasSpell() ) {
+    // describe spell
+    if(!spell) return;
+
+    snprintf( name, NAME_SIZE, _( "(L:%d) (M:%d) %s" ), spell->getLevel(), spell->getMp(), spell->getDisplayName() );
+    nameLabel->setText( name );
+
+    enum { TXT_SIZE = 1000 };  
+    char tmp[ TXT_SIZE ];
+
+    // detailed description
+    strcpy(description, spell->getNotes());
+    strcat(description, "||");
+
+    // basic info
+    snprintf(tmp, TXT_SIZE, _( "School: %s" ), spell->getSchool()->getDisplayName());
+    strcat( description, tmp );
+    strcat( description, "|" );
+
+    snprintf(tmp, TXT_SIZE, _( "Skill: %s" ), Skill::skills[ spell->getSchool()->getSkill() ]->getDisplayName() );
+    strcat( description, tmp );
+    strcat( description, "|" );
+
+    snprintf(tmp, TXT_SIZE, _( "Level: %d" ), spell->getLevel());
+    strcat( description, tmp );
+    strcat( description, "|" );
+
+    snprintf(tmp, TXT_SIZE, _( "MP: %d" ), spell->getMp());
+    strcat( description, tmp );
+    strcat( description, "|" );
+
+    snprintf(tmp, TXT_SIZE, _( "Failure rate: %d percent" ), spell->getFailureRate());
+    strcat( description, tmp );
+    strcat( description, "|" );
+
+    label->setText(description);
+
+    return;
+
+  }
+
+  if ( hasSkill() ) {
+    // describe special skill
+    if(!skill) return;
+
+    snprintf( name, NAME_SIZE, _( "(%s) %s" ), (skill->getType() == SpecialSkill::SKILL_TYPE_MANUAL) ? _( "M" ) : _( "A" ), skill->getDisplayName() );
+    nameLabel->setText( name );
+
+    enum { TXT_SIZE = 1000 };  
+    char tmp[ TXT_SIZE ];
+
+    // detailed description
+    strcpy(description, skill->getDescription());
+    strcat(description, "||");
+
+    // basic info
+    snprintf(tmp, TXT_SIZE, _( "Type: %s" ), (skill->getType() == SpecialSkill::SKILL_TYPE_MANUAL) ? _( "Manual" ) : _( "Automatic" ));
+    strcat( description, tmp );
+    strcat( description, "|" );
+
+    label->setText(description);
+
+    return;
+
+  }
+
   // describe item
   if(!item) return;
   std::string descr;
