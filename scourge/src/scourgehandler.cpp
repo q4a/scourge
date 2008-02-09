@@ -655,13 +655,15 @@ void ScourgeHandler::quickSpellAction( int index, int button ) {
     if( storable ) {
       if( storable->getStorableType() == Storable::SPELL_STORABLE ) {
         if( button == SDL_BUTTON_RIGHT ) {
-          cerr << "*** FIXME: describe spell." << endl;
+	  scourge->getInfoGui()->setSpell( (Spell*)storable );
+	  if( !scourge->getInfoGui()->getWindow()->isVisible() ) scourge->getInfoGui()->getWindow()->setVisible( true );
         } else {
           scourge->executeQuickSpell( (Spell*)storable );
         }
       } else if( storable->getStorableType() == Storable::SPECIAL_STORABLE ) {
         if( button == SDL_BUTTON_RIGHT ) {
-          cerr << "*** FIXME: describe capability." << endl;
+	  scourge->getInfoGui()->setSkill( (SpecialSkill*)storable );
+	  if( !scourge->getInfoGui()->getWindow()->isVisible() ) scourge->getInfoGui()->getWindow()->setVisible( true );
         } else {
           scourge->executeSpecialSkill( (SpecialSkill*)storable );
         }

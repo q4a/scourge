@@ -96,6 +96,23 @@ bool Equip::handleEvent(Widget *widget, SDL_Event *event) {
 					if( !pcUi->getScourge()->getInfoGui()->getWindow()->isVisible() ) 
 						pcUi->getScourge()->getInfoGui()->getWindow()->setVisible( true );
 				}
+			} else if( mode == SPELLS_MODE ) {
+				int mx = pcUi->getScourge()->getSDLHandler()->mouseX - pcUi->getWindow()->getX() - x;
+				int my = pcUi->getScourge()->getSDLHandler()->mouseY - pcUi->getWindow()->getY() - TITLE_HEIGHT;
+				int si = getSchoolIndex( mx, my );
+				int spi = getSpellIndex( mx, my, si );
+				Spell *spell = ( si > -1 && spi > -1 ? 
+													MagicSchool::getMagicSchool( si )->getSpell( spi ) :
+													NULL );
+				if( spell ) {
+					pcUi->getScourge()->getInfoGui()->setSpell( spell );
+					if( !pcUi->getScourge()->getInfoGui()->getWindow()->isVisible() ) pcUi->getScourge()->getInfoGui()->getWindow()->setVisible( true );
+				}
+			} else if( mode == CAPABILITIES_MODE ) {
+				if( specialSkill ) {
+				pcUi->getScourge()->getInfoGui()->setSkill( specialSkill );
+				if( !pcUi->getScourge()->getInfoGui()->getWindow()->isVisible() ) pcUi->getScourge()->getInfoGui()->getWindow()->setVisible( true );
+				}
 			}
 		} else if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT ) {
 			if( mode == SPELLS_MODE ) {
