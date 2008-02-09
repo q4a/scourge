@@ -43,8 +43,8 @@ UncurseDialog::UncurseDialog( Scourge *scourge ) {
   listA = new ItemList( scourge, win, xStart, 35, w - ( xStart * 2 ), 210, this );
 	listA->setCursedOnly( true );
   win->addWidget( listA );
-  uncurseButton = win->createButton( xStart, 274, 85, 294, _( "Uncurse" ) );
-  infoButtonA = win->createButton( 90, 274, 162, 294, _( "Info" ) );
+  uncurseButton = win->createButton( xStart, 274, 110, 294, _( "Uncurse" ) );
+  infoButtonA = win->createButton( 115, 274, 187, 294, _( "Info" ) );
 
   closeButton = win->createButton( 315, 274, 387, 294, _( "Close" ) );
   
