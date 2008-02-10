@@ -2202,7 +2202,11 @@ void Scourge::drawWidgetContents(Widget *w) {
         if( party->getParty( i ) == getParty()->getPlayer() ) {
           if( getParty()->getPlayer()->getQuickSpell( t ) ) {
             Storable *storable = getParty()->getPlayer()->getQuickSpell( t );
-            w->setTooltip( (char*)(storable->getName()) );
+              if ( storable ) {
+                w->setTooltip( (char*)(storable->getName()) );
+              } else if ( !(Item*)storable ) {
+                w->setTooltip( NULL );
+              }
             glEnable( GL_ALPHA_TEST );
             //glAlphaFunc( GL_EQUAL, 0xff );
 						glAlphaFunc( GL_NOTEQUAL, 0 );
@@ -2516,16 +2520,31 @@ void Scourge::executeSpecialSkill( SpecialSkill *skill ) {
 
 bool Scourge::executeItem( Item *item ) {
   Creature *creature = getParty()->getPlayer();
-  creature->setAction(Constants::ACTION_CAST_SPELL,
+
+  if ( ( item->getRpgItem()->getType() == RpgItem::FOOD ) || ( item->getRpgItem()->getType() == RpgItem::DRINK ) || ( item->getRpgItem()->getType() == RpgItem::POTION ) ) {
+    creature->setAction(Constants::ACTION_EAT_DRINK,
+                      item,
+                      NULL);
+    return( ( item->getCurrentCharges() < 2 ) ? true : false );
+  } else if ( item->getRpgItem()->getType() == RpgItem::SCROLL ) {
+
+    creature->setAction(Constants::ACTION_CAST_SPELL,
                       item,
                       item->getSpell());
-  if(!item->getSpell()->isPartyTargetAllowed()) {
-    setTargetSelectionFor(creature);
-  } else {
-    creature->setTargetCreature(creature);
+      if(!item->getSpell()->isPartyTargetAllowed()) {
+        setTargetSelectionFor(creature);
+      } else {
+        creature->setTargetCreature(creature);
+      }
+    // remove scroll from quick slot after use
+    return( item->getRpgItem()->isScroll() ? true : false );
+  } else if (item->getRpgItem()->hasSpell()) {
+      useItem( creature, item );
+      return( ( item->getCurrentCharges() < 1 ) ? true : false );
   }
-	// remove scroll from quick slot after use
-	return( item->getRpgItem()->isScroll() ? true : false );
+
+return false;
+
 }
 
 void Scourge::executeQuickSpell( Spell *spell ) {
