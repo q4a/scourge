@@ -119,6 +119,8 @@ public:
 
   SDL_Surface *scourge;
   GLubyte *scourgeImage;
+	SDL_Surface *scourgeBackdrop;
+  GLubyte *scourgeImageBackdrop;
 
   GLuint cloud, candle, highlight;
   GLuint border, border2, gargoyle;

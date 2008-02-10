@@ -70,6 +70,7 @@ void ShapePalette::preInitialize() {
 
   // set up the scourge
   setupAlphaBlendedBMP("/textures/scourge.bmp", &scourge, &scourgeImage);
+	setupAlphaBlendedBMP("/textures/scourge-backdrop.bmp", &scourgeBackdrop, &scourgeImageBackdrop);
 
   gui_texture = loadGLTextures("/textures/gui.bmp");
   gui_texture2 = loadGLTextures("/textures/gui2.bmp");
