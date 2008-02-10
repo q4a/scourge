@@ -975,6 +975,19 @@ Item *Creature::removeInventory(int index) {
 		delete( info );
 		
     item = inventory[ index ];
+
+    // remove it from quickspell slot
+    for( int i = 0; i < 12; i++ ) {
+      Storable *storable = session->getParty()->getPlayer()->getQuickSpell( i );
+        if( storable ) {
+          if( storable->getStorableType() == Storable::ITEM_STORABLE ) {
+            if ( (Item*)storable == item ) {
+              session->getParty()->getPlayer()->setQuickSpell( i, NULL );
+            }
+          }
+        }
+    }
+
     inventoryWeight -= item->getWeight();
     if(getStateMod(StateMod::overloaded) && inventoryWeight < getMaxInventoryWeight()) {
       if( !isMonster() ) {
