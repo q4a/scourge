@@ -30,6 +30,7 @@
 #include "savegamedialog.h"
 #include "freetype/fontmgr.h"
 #include "sound.h"
+#include "texteffect.h"
 
 using namespace std;
 
@@ -60,6 +61,8 @@ const char *MainMenu::menuText[] = {
 	N_( "Quit" ), 
 	""
 };
+
+int activeMenuItem = -1;
 
 const int MainMenu::values[] = {
   NEW_GAME, CONTINUE_GAME, MULTIPLAYER, OPTIONS, ABOUT, QUIT, 0
@@ -143,6 +146,11 @@ MainMenu::MainMenu(Scourge *scourge){
 }
 
 MainMenu::~MainMenu(){
+	for( unsigned int i = 0; i < textEffects.size(); i++ ) {
+		TextEffect *textEffect = textEffects[i];
+		delete textEffect;
+	}
+	textEffects.clear();
 }
 
 void MainMenu::drawView() {
@@ -151,48 +159,62 @@ void MainMenu::drawView() {
 		SDL_Delay( 15 - (tickNow - lastMenuTick) );
 	lastMenuTick = SDL_GetTicks(); 
 
-    drawMenu();
+	glDisable(GL_TEXTURE_2D);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  glEnable(GL_ALPHA_TEST);
+  glAlphaFunc(GL_NOTEQUAL, 0);        
+  glPushMatrix();
+  glLoadIdentity( );                         
+	glTranslatef( 0, 0, -100 );
+  glPixelZoom( 1.0, -1.0 );
+  glRasterPos2f( 0, top + (600 - WATER_HEIGHT - scourge->getShapePalette()->scourgeBackdrop->h) );
+  glDrawPixels(scourge->getShapePalette()->scourgeBackdrop->w, 
+							 scourge->getShapePalette()->scourgeBackdrop->h,
+							 GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->scourgeImageBackdrop);
+	glDisable(GL_ALPHA_TEST);
+  glPopMatrix();
+  glEnable( GL_TEXTURE_2D );	
 
-    // create a stencil for the water
-    glDisable(GL_DEPTH_TEST);
-    glColorMask(0,0,0,0);
-    if(scourge->getUserConfiguration()->getStencilbuf()
-       && scourge->getUserConfiguration()->getStencilBufInitialized()){
-      glEnable(GL_STENCIL_TEST);
-      glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-      glStencilFunc(GL_ALWAYS, 1, 1);
-    }
-    drawWater();
-    
-    // Use the stencil to draw
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-    glEnable(GL_DEPTH_TEST);
-    if(scourge->getUserConfiguration()->getStencilbuf()
-       && scourge->getUserConfiguration()->getStencilBufInitialized()){
-      glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-      glStencilFunc(GL_EQUAL, 1, 0xffffffff);  // draw if stencil==1
-    }
-    drawClouds(false, true);
-    glDisable(GL_STENCIL_TEST);
-      
-  // draw the blended water
-  glEnable(GL_BLEND);  
-  glDepthMask(GL_FALSE);
-  //glDisable(GL_LIGHTING);
-  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-  drawWater();
-  //glEnable(GL_LIGHTING);
-  glDepthMask(GL_TRUE);    
-  glDisable(GL_BLEND);
-
-  drawStars();
-
-  glDisable(GL_DEPTH_TEST);
-    drawClouds(true, false);
-
-  
-  glDisable(GL_TEXTURE_2D);
-  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	// create a stencil for the water
+	glDisable(GL_DEPTH_TEST);
+	glColorMask(0,0,0,0);
+	if(scourge->getUserConfiguration()->getStencilbuf()
+		 && scourge->getUserConfiguration()->getStencilBufInitialized()){
+		glEnable(GL_STENCIL_TEST);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilFunc(GL_ALWAYS, 1, 1);
+	}
+	drawWater();
+	
+	// Use the stencil to draw
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
+	if(scourge->getUserConfiguration()->getStencilbuf()
+		 && scourge->getUserConfiguration()->getStencilBufInitialized()){
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		glStencilFunc(GL_EQUAL, 1, 0xffffffff);  // draw if stencil==1
+	}
+	drawClouds(false, true);
+	glDisable(GL_STENCIL_TEST);
+	
+	// draw the blended water
+	glEnable(GL_BLEND);  
+	glDepthMask(GL_FALSE);
+	//glDisable(GL_LIGHTING);
+	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
+	drawWater();
+	//glEnable(GL_LIGHTING);
+	glDepthMask(GL_TRUE);    
+	glDisable(GL_BLEND);
+	
+	drawStars();
+	
+	glDisable(GL_DEPTH_TEST);
+	drawClouds(true, false);
+	
+	
+	glDisable(GL_TEXTURE_2D);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glDisable(GL_DEPTH_TEST);
   glEnable(GL_ALPHA_TEST);
   glAlphaFunc(GL_NOTEQUAL, 0);        
@@ -201,15 +223,15 @@ void MainMenu::drawView() {
   glPixelZoom( 1.0, -1.0 );
   glRasterPos2f( scourge->getSDLHandler()->getScreen()->w - scourge->getShapePalette()->scourge->w, top );
   glDrawPixels(scourge->getShapePalette()->scourge->w, 
-			   scourge->getShapePalette()->scourge->h,
-			   GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->scourgeImage);
-  glDisable(GL_ALPHA_TEST);
+							 scourge->getShapePalette()->scourge->h,
+							 GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->scourgeImage);
+	glDisable(GL_ALPHA_TEST);
   glPopMatrix();
-
-
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
 
+	drawMenu();
+						 
   // draw the boards
   if(openingTop > 0) {
     glPushMatrix();
@@ -255,7 +277,7 @@ void MainMenu::drawView() {
       glVertex2i( scourge->getSDLHandler()->getScreen()->w, 0 );
       glEnd();
     }
-
+	 
     glLoadIdentity();
     glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
     char version[100];
@@ -351,194 +373,33 @@ void MainMenu::show() {
 void MainMenu::hide() { 
   openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
 	musicStarted = false;
-	freeTextures(); // free up some texture space
 }
 
 void MainMenu::drawMenu() {
 
-  glDisable( GL_CULL_FACE );
-  if( !initTextures ) {
-    buildTextures();
-    initTextures = true;
-  }
-
-  float zoom = MENU_ITEM_ZOOM;
-  glEnable( GL_TEXTURE_2D );
-  for( int i = 0; i < (int)menuItemList.size(); i++ ) {
-    MenuItem *mi = menuItemList[i];
-    zoom = ( mi->active ? MENU_ITEM_ZOOM * 1.5f : MENU_ITEM_ZOOM );
-    glPushMatrix();
-    glLoadIdentity();
-    glTranslatef( 50, top + 230 - ( mi->active ? 10 : 0 ) + i * 50, 0 );
-    glBindTexture( GL_TEXTURE_2D, mi->texture[0] );
-    if( mi->active ) {
-      glColor4f( 0.7f, 0.3f, 0.2f, 1 );
-    } else {
-      glColor4f( 0.7f, 0.7f, 0.7f, 1 );
-    }
-    glBegin( GL_QUADS );
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 0, 1 );
-    glVertex2f( 0, 0 );
-    glTexCoord2f( 1, 1 );
-    glVertex2f( MENU_ITEM_WIDTH * zoom, 0 );
-    glTexCoord2f( 1, 0 );
-    glVertex2f( MENU_ITEM_WIDTH * zoom, MENU_ITEM_HEIGHT * zoom );
-    glTexCoord2f( 0, 0 );
-    glVertex2f( 0, MENU_ITEM_HEIGHT * zoom );
-    glEnd();
-    glPopMatrix();
-  }
-
-  glEnable( GL_BLEND );
-  //glDepthMask( GL_FALSE );
-
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  drawActiveMenuItem( 6.0f, 5 );
-
-  glBlendFunc( GL_DST_COLOR, GL_ONE );
-  //glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA );
-  //scourge->setBlendFunc();
-  drawActiveMenuItem( 1.0f, 20 );
-
-  glDisable( GL_BLEND );  
-  //glDepthMask( GL_TRUE );
-  glDisable( GL_TEXTURE_2D );
-  
-  // move menu
-  Uint32 tt = SDL_GetTicks();
-  if( tt - lastTickMenu > 40 ) {
-    lastTickMenu = tt;
-    for( int t = 0; t < (int)menuItemList.size(); t++ ) {
-      MenuItem *mi = menuItemList[t];
-      for( int i = 0; i < 20; i++ ) {
-            
-        mi->particle[i].x += cos( Constants::toRadians( mi->particle[i].dir ) ) * mi->particle[i].step;
-        mi->particle[i].y += sin( Constants::toRadians( mi->particle[i].dir ) ) * mi->particle[i].step;
-        mi->particle[i].life++;
-        if( mi->particle[i].life >= MAX_PARTICLE_LIFE ) {
-          mi->particle[i].life = 0;
-        }
-      }
-    }
-  }
-}
-
-void MainMenu::drawActiveMenuItem( float divisor, int count ) {
-  for( int t = 0; t < (int)menuItemList.size(); t++ ) {
-    MenuItem *mi = menuItemList[t];
-    if( mi->active ) {
-      for( int i = 0; i < count; i++ ) {
-        if( !( mi->particle[i].life ) ) {
-          mi->particle[i].life = Util::dice( MAX_PARTICLE_LIFE );
-          mi->particle[i].x = mi->particle[i].y = 0;
-          mi->particle[i].r = Util::pickOne( 200, 239 );
-          mi->particle[i].g = Util::pickOne( 170, 209 );
-          mi->particle[i].b = Util::pickOne( 80, 119 );
-          mi->particle[i].dir = Util::roll( 0.0f, 10.0f );
-          mi->particle[i].zoom = Util::roll( 2.0f, 4.0f );
-          switch( Util::dice( 4 ) ) {
-          case 0: mi->particle[i].dir = 360.0f - mi->particle[i].dir; break;
-          case 1: mi->particle[i].dir = 180.0f - mi->particle[i].dir; break;
-          case 2: mi->particle[i].dir = 180.0f + mi->particle[i].dir; break;
-          //default: // do nothing
-          }
-          mi->particle[i].step = Util::roll( 0.0f, 4.0f );
-        }
-        
-        glPushMatrix();
-        glLoadIdentity();
-        glTranslatef( 80 + mi->particle[i].x, 
-                      top + 200 + t * 50 + mi->particle[i].y, 0 );
-        glBindTexture( GL_TEXTURE_2D, mi->texture[0] );
-        
-        float a = (float)( MAX_PARTICLE_LIFE - mi->particle[i].life ) / (float)( MAX_PARTICLE_LIFE );
-        //if( i == 0 ) cerr << "life=" << mi->particle[i].life << " a=" << a << endl;
-        glColor4f( (float)( mi->particle[i].r ) / ( 256.0f * divisor ), 
-                   (float)( mi->particle[i].g ) / ( 256.0f * divisor ), 
-                   (float)( mi->particle[i].b ) / ( 256.0f * divisor ), 
-                   a / divisor );
-        
-        glBegin( GL_QUADS );
-        glNormal3f( 0, 0, 1 );
-        glTexCoord2f( 0, 1 );
-        glVertex2f( 0, 0 );
-        glTexCoord2f( 1, 1 );
-        glVertex2f( MENU_ITEM_WIDTH * mi->particle[i].zoom, 0 );
-        glTexCoord2f( 1, 0 );
-        glVertex2f( MENU_ITEM_WIDTH * mi->particle[i].zoom, MENU_ITEM_HEIGHT * mi->particle[i].zoom );
-        glTexCoord2f( 0, 0 );
-        glVertex2f( 0, MENU_ITEM_HEIGHT * mi->particle[i].zoom );
-        glEnd();
-        glPopMatrix();  
-      }
-    }
-  }
-}
-
-void MainMenu::freeTextures() {
-	for( unsigned int i = 0; i < menuItemList.size(); i++ ) {
-		MenuItem *mi = menuItemList[ i ];
-		glDeleteTextures( 1, mi->texture );
-		free( mi->textureInMemory );
-		delete mi;
+	if( textEffects.empty() && openingTop <= top ) {
+		int x = 50;
+		int y = top + 230;
+		for( int i = 0; strlen( menuText[i] ); i++ ) {
+			TextEffect *textEffect = new TextEffect( scourge, x - 40, y - 20, (char*)menuText[i] );
+			textEffects.push_back( textEffect );
+			y += 50;
+		}
 	}
-	menuItemList.clear();
-	initTextures = false;
-}
 
-void MainMenu::buildTextures() {
-  scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
-
-  int x = 50;
-  int y = top + 230;
-  //int width = scourge->getSDLHandler()->textWidth( mi->text );
-  int width = MENU_ITEM_WIDTH;
-  int height = MENU_ITEM_HEIGHT;
-
-  for( int i = 0; menuText[i][0]; i++ ) {
-
-// multiplayer is disabled for now
-//#ifndef HAVE_SDL_NET
-    if( i == 2 ) continue;
-//#endif
-
-    MenuItem *mi = new MenuItem();
-    mi->active = ( i == 0 ? true : false );
-    for( int t = 0; t < 20; t++ ) mi->particle[t].life = 0;
-    menuItemList.push_back( mi );
-    strcpy( mi->text, _( menuText[i] ) );
-    mi->value = values[i];
-    
-    // Create texture and copy minimap date from backbuffer on it    
-    mi->textureInMemory = (unsigned char *)malloc( width * height * 4 );
-    
-    glGenTextures(1, mi->texture);    
-    glBindTexture(GL_TEXTURE_2D, mi->texture[0]); 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliquÿ a la texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
-                  GL_RGBA, GL_UNSIGNED_BYTE, mi->textureInMemory );
-
-    // Draw image
-    mi->x = x;
-    mi->y = y;
-    glColor4f( 1, 1, 1, 1 );
-    scourge->getSDLHandler()->texPrint( x, y, _( menuText[i] ) );
-    y += height;
-
-    // Copy to a texture
-    glLoadIdentity();
-    glEnable( GL_TEXTURE_2D );
-    glBindTexture( GL_TEXTURE_2D, mi->texture[0] );
-    glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 
-                      x, scourge->getSDLHandler()->getScreen()->h - ( y - 20 ), 
-                      width, height, 0 );
-  }
-  scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+	glDisable(GL_STENCIL_TEST);
+	glDisable(GL_SCISSOR_TEST);
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glColor4f( 1, 1, 1, 1 );
+	for( int i = 0; i < (int)textEffects.size(); i++ ) {
+		TextEffect *textEffect = textEffects[i];
+		textEffect->setActive( i == activeMenuItem );
+		textEffect->draw();
+	}
 }
 
 void MainMenu::drawLogo() {
@@ -843,7 +704,6 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   }
   */
 
-  int line = -1;
   switch(event->type) {
   //case SDL_KEYDOWN:
 	case SDL_KEYUP:
@@ -871,21 +731,10 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   case SDL_MOUSEMOTION:
   case SDL_MOUSEBUTTONUP:
   if( event->motion.x >= 50 && event->motion.x < 400 ) {
-    line = ( event->motion.y - ( top + 240 ) ) / 50;
+    activeMenuItem = ( event->motion.y - ( top + 240 ) ) / 50;
   }
-    bool oldActive;
-  for( int i = 0; i < (int)menuItemList.size(); i++ ) {
-    MenuItem *mi = menuItemList[i];
-    oldActive = mi->active;
-    mi->active = ( i == line );
-    if( mi->active != oldActive ) {
-      for( int t = 0; t < 20; t++ ) {
-        mi->particle[t].life = 0;
-      }
-    }
-  }
-  if( event->type == SDL_MOUSEBUTTONUP && line > -1 && line < (int)menuItemList.size() ) {
-    value = menuItemList[ line ]->value;
+  if( event->type == SDL_MOUSEBUTTONUP && activeMenuItem > -1 && activeMenuItem < (int)textEffects.size() ) {
+    value = values[activeMenuItem];
     if( value == ABOUT ) {
       aboutDialog->setVisible( true );
       //value = ABOUT;

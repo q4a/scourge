@@ -37,6 +37,7 @@ class Button;
 class ScrollingLabel;
 class SavegameDialog;
 class Progress;
+class TextEffect;
 
 typedef struct _MenuItemParticle {
   int life;
@@ -105,6 +106,8 @@ private:
   std::vector< MenuItem* > menuItemList;
 
 	Progress *progress;
+
+	std::vector<TextEffect*> textEffects;
   
 public:
 #define NEW_GAME 1
@@ -139,9 +142,6 @@ public:
   void drawWater();
   void drawLogo();
   void drawMenu();
-  void drawActiveMenuItem( float divisor, int count );
-  void buildTextures();
-	void freeTextures();
   void drawStars();
 };
 

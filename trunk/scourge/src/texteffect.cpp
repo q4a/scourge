@@ -44,12 +44,10 @@ TextEffect::~TextEffect() {
 }
 
 void TextEffect::draw() {
-
-  //glDepthMask( GL_FALSE );
   glDisable(GL_DEPTH_TEST);
-
   glDisable( GL_CULL_FACE );
-  if( !textureInMemory ) {
+  
+	if( !textureInMemory ) {
     buildTextures();
   }
 
@@ -72,7 +70,7 @@ void TextEffect::draw() {
   //scourge->setBlendFunc();
 
   glBegin( GL_QUADS );
-  glNormal3f( 0, 0, 1 );
+//  glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 1 );
   glVertex2f( 0, 0 );
   glTexCoord2f( 1, 1 );
@@ -82,28 +80,12 @@ void TextEffect::draw() {
   glTexCoord2f( 0, 0 );
   glVertex2f( 0, MENU_ITEM_HEIGHT * zoom );
   glEnd();
-  glPopMatrix();
+	glPopMatrix();
 
-  glEnable( GL_BLEND );
-  //glDepthMask( GL_FALSE );
 
-  //glEnable( GL_ALPHA_TEST );
-  //glAlphaFunc( GL_NOTEQUAL, 0x00 );
-
-  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  //scourge->setBlendFunc();
-  //drawEffect( 6.0f, 5 );
-
-  //glDisable( GL_ALPHA_TEST );
-
-  glBlendFunc( GL_DST_COLOR, GL_ONE );
-  //glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA );
-  //scourge->setBlendFunc();
-  drawEffect( 4.0f, 20 );
-
-  glDisable( GL_BLEND );  
-  //glDepthMask( GL_TRUE );
-  glDisable( GL_TEXTURE_2D );
+	glBlendFunc( GL_DST_COLOR, GL_ONE );
+	drawEffect( 4.0f, 20 );
+	glDisable( GL_BLEND );  
   
   // move menu
   Uint32 tt = SDL_GetTicks();
@@ -124,52 +106,52 @@ void TextEffect::draw() {
 }
 
 void TextEffect::drawEffect( float divisor, int count ) {
-  if( active ) {
-    for( int i = 0; i < count; i++ ) {
-      if( !( particle[i].life ) ) {
-        particle[i].life = Util::dice( MAX_PARTICLE_LIFE );
-        particle[i].x = particle[i].y = 0;
-        particle[i].r = Util::pickOne( 200, 239 );
-        particle[i].g = Util::pickOne( 170, 209 );
-        particle[i].b = Util::pickOne( 80, 119 );
-        particle[i].dir = Util::roll( 0.0f, 10.0f );
-        particle[i].zoom = Util::roll( 2.0f, 4.0f );
-        switch( Util::dice( 4 ) ) {
-        case 0: particle[i].dir = 360.0f - particle[i].dir; break;
-        case 1: particle[i].dir = 180.0f - particle[i].dir; break;
-        case 2: particle[i].dir = 180.0f + particle[i].dir; break;
-        //default: // do nothing
-        }
-        particle[i].step = 4.0f * rand() / RAND_MAX;
-      }
-      
-      glPushMatrix();
-      glLoadIdentity();
-      glTranslatef( x + particle[i].x, 
-                    y + particle[i].y, 0 );
-      glBindTexture( GL_TEXTURE_2D, texture[0] );
-      
-      float a = (float)( MAX_PARTICLE_LIFE - particle[i].life ) / (float)( MAX_PARTICLE_LIFE );
-      //if( i == 0 ) cerr << "life=" << particle[i].life << " a=" << a << endl;
-      glColor4f( (float)( particle[i].r ) / ( 256.0f * divisor ), 
-                 (float)( particle[i].g ) / ( 256.0f * divisor ), 
-                 (float)( particle[i].b ) / ( 256.0f * divisor ), 
-                 a / divisor );
-      
-      glBegin( GL_QUADS );
-      glNormal3f( 0, 0, 1 );
-      glTexCoord2f( 0, 1 );
-      glVertex2f( 0, 0 );
-      glTexCoord2f( 1, 1 );
-      glVertex2f( MENU_ITEM_WIDTH * particle[i].zoom, 0 );
-      glTexCoord2f( 1, 0 );
-      glVertex2f( MENU_ITEM_WIDTH * particle[i].zoom, MENU_ITEM_HEIGHT * particle[i].zoom );
-      glTexCoord2f( 0, 0 );
-      glVertex2f( 0, MENU_ITEM_HEIGHT * particle[i].zoom );
-      glEnd();
-      glPopMatrix();  
-    }
-  }
+	for( int i = 0; i < count; i++ ) {
+		if( !( particle[i].life ) ) {
+			particle[i].life = Util::dice( MAX_PARTICLE_LIFE );
+			particle[i].x = particle[i].y = 0;
+			particle[i].r = Util::pickOne( 200, 239 );
+			particle[i].g = Util::pickOne( 170, 209 );
+			particle[i].b = Util::pickOne( 80, 119 );
+			particle[i].dir = Util::roll( 0.0f, 10.0f );
+			particle[i].zoom = Util::roll( 2.0f, 4.0f );
+			switch( Util::dice( 4 ) ) {
+			case 0: particle[i].dir = 360.0f - particle[i].dir; break;
+			case 1: particle[i].dir = 180.0f - particle[i].dir; break;
+			case 2: particle[i].dir = 180.0f + particle[i].dir; break;
+			//default: // do nothing
+			}
+			particle[i].step = 4.0f * rand() / RAND_MAX;
+		}
+		
+		if( active ) {
+			glPushMatrix();
+			glLoadIdentity();
+			glTranslatef( x + particle[i].x, 
+										y + particle[i].y, 0 );
+			glBindTexture( GL_TEXTURE_2D, texture[0] );
+			
+			float a = (float)( MAX_PARTICLE_LIFE - particle[i].life ) / (float)( MAX_PARTICLE_LIFE );
+			//if( i == 0 ) cerr << "life=" << particle[i].life << " a=" << a << endl;
+			glColor4f( (float)( particle[i].r ) / ( 256.0f * divisor ), 
+								 (float)( particle[i].g ) / ( 256.0f * divisor ), 
+								 (float)( particle[i].b ) / ( 256.0f * divisor ), 
+								 a / divisor );
+			
+			glBegin( GL_QUADS );
+			glNormal3f( 0, 0, 1 );
+			glTexCoord2f( 0, 1 );
+			glVertex2f( 0, 0 );
+			glTexCoord2f( 1, 1 );
+			glVertex2f( MENU_ITEM_WIDTH * particle[i].zoom, 0 );
+			glTexCoord2f( 1, 0 );
+			glVertex2f( MENU_ITEM_WIDTH * particle[i].zoom, MENU_ITEM_HEIGHT * particle[i].zoom );
+			glTexCoord2f( 0, 0 );
+			glVertex2f( 0, MENU_ITEM_HEIGHT * particle[i].zoom );
+			glEnd();
+			glPopMatrix();  
+		}
+	}
 }
 
 void TextEffect::buildTextures() {
