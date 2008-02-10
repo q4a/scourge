@@ -75,6 +75,7 @@ void C3DSShape::commonInit(const string& file_name, float div, Shapes *shapePal,
 	this->lighting = lighting;
 	this->base_w = base_w;
 	this->base_h = base_h;
+	this->hasAlphaValues = false;
 
   // First we need to actually load the .3DS file.  We just pass in an address to
   // our t3DModel structure and the file name string we want to load ("face.3ds").
@@ -265,7 +266,12 @@ void C3DSShape::resolveTextures() {
 
 
       // instead of loading the texture, get one of the already loaded textures
-      g_Texture[i] = shapePal->findTextureByName( g_3DModel.pMaterials[i].strFile, true );
+			string s = g_3DModel.pMaterials[i].strFile;
+			// a lame but effective attempt at determining if alpha blending is used
+			if( !hasAlphaValues && s.substr( s.length() - 4 ) != ".bmp" ) {
+				hasAlphaValues = true;
+			}
+      g_Texture[i] = shapePal->findTextureByName( s, true );
 			if( !g_Texture[i] ) cerr << "*** error: can't find 3ds texture reference: " << g_3DModel.pMaterials[i].strFile << endl;
       //cerr << "\tTexture: " << g_3DModel.pMaterials[i].strFile << " found? " << g_Texture[i] << endl;
     }
@@ -484,30 +490,32 @@ void C3DSShape::draw() {
   glGetFloatv( GL_CURRENT_COLOR, currentColor );
 
   glPushMatrix();
-  if( !useShadow ) {
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc( GL_NOTEQUAL, 0 );
-	glEnable( GL_BLEND );
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  if( !useShadow && hasAlphaValues ) {
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc( GL_NOTEQUAL, 0 );
+		glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   }
-  glTranslatef( offs_x / DIV, offs_y / DIV, offs_z / DIV );
+	glTranslatef( offs_x / DIV, offs_y / DIV, offs_z / DIV );
   glTranslatef(-movex * divx, 0.0f, 0.0f);
   glTranslatef(0.0f, (getDepth() / DIV) - (movey * divy), 0.0f);
   glTranslatef(0.0f, 0.0f, movez);
 
   // update the wind
   if( isWind() && !useShadow ) {
-	if( windInfo.update() ) createDisplayList( displayListStart, false );
-  }
+		if( windInfo.update() ) {
+			createDisplayList( displayListStart, false );
+		}
+	}
   
   glCallList( displayListStart + (useShadow ? 1 : 0) );
 	
-  if( !useShadow ) {
-	glDisable( GL_BLEND );
-	glDisable(GL_ALPHA_TEST);
-  }
-  glPopMatrix();
-  
+  if( !useShadow && hasAlphaValues ) {
+		glDisable( GL_BLEND );
+		glDisable(GL_ALPHA_TEST);
+	}
+	glPopMatrix();
+	
   //  if( !useShadow ) 
   //	glEnable(GL_TEXTURE_2D);
 

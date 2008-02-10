@@ -104,6 +104,7 @@ private:
 	float xrot3d, yrot3d, zrot3d;
 	int lighting;
 	float base_w, base_h;
+	bool hasAlphaValues;
 
 public:   
   C3DSShape(const std::string& file_name, float div, Shapes *shapePal,
