@@ -159,6 +159,8 @@ void MainMenu::drawView() {
 		SDL_Delay( 15 - (tickNow - lastMenuTick) );
 	lastMenuTick = SDL_GetTicks(); 
 
+	drawStars();
+
 	glDisable(GL_TEXTURE_2D);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glEnable(GL_ALPHA_TEST);
@@ -206,8 +208,6 @@ void MainMenu::drawView() {
 	//glEnable(GL_LIGHTING);
 	glDepthMask(GL_TRUE);    
 	glDisable(GL_BLEND);
-	
-	drawStars();
 	
 	glDisable(GL_DEPTH_TEST);
 	drawClouds(true, false);
@@ -502,7 +502,7 @@ void MainMenu::drawStars() {
   for(int i = 0; i < starCount; i++) {
     glPushMatrix();
     glLoadIdentity();
-    glTranslatef( star[i].x, star[i].y, 0 );
+    glTranslatef( star[i].x, star[i].y, -200 );
     glColor3f( Util::roll( 0.2f, 0.99f ), 
                Util::roll( 0.2f, 0.99f ), 
                Util::roll( 0.2f, 0.99f ) );
