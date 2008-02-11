@@ -164,7 +164,7 @@ void ConversationGui::start( Creature *creature, char *message, bool useCreature
   this->creature = creature;
   this->useCreature = useCreature;
   char tmp[ 80 ];
-  snprintf( tmp, 80, _( "Talking to %s" ), creature->getName() );
+  snprintf( tmp, 80, _( "Talking to %s" ), _( creature->getName() ) );
   label->setText( tmp );
   answer->setText( message );
   win->setVisible( true );

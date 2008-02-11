@@ -2125,7 +2125,7 @@ GLfloat Creature::getStep() {
 }
 
 void Creature::getDetailedDescription( std::string& s ) {
-	s = getName();
+	s = _(getName());
 	if ( session->getCurrentMission() 
 	     && session->getCurrentMission()->isMissionCreature( this ) ) {
 		s += _( "*Mission*" );
