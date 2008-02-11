@@ -60,11 +60,31 @@ InfoGui::InfoGui(Scourge *scourge) {
                            Constants::getMessage(Constants::OPEN_CONTAINER_LABEL ) );
   win->addWidget((Widget*)openButton);
 
+	useButton = new Button( bx - 50, by, bx + 50, by + 20, 
+                           scourge->getShapePalette()->getHighlightTexture(), 
+                           _( "Use" ) );
+  win->addWidget((Widget*)useButton);
+
+	castButton = new Button( bx - 50, by, bx + 50, by + 20, 
+                           scourge->getShapePalette()->getHighlightTexture(), 
+                           _( "Cast" ) );
+  win->addWidget((Widget*)castButton);
+
+	skillButton = new Button( bx - 50, by, bx + 50, by + 20, 
+                           scourge->getShapePalette()->getHighlightTexture(), 
+                           _( "Use" ) );
+  win->addWidget((Widget*)skillButton);
+
   idButton = new Button( bx + 55, by, bx + 150, by + 20, 
                            scourge->getShapePalette()->getHighlightTexture(), 
                            _( "Identify" ) );
   win->addWidget((Widget*)idButton);
   
+  transcribeButton = new Button( bx + 55, by, bx + 150, by + 20, 
+                           scourge->getShapePalette()->getHighlightTexture(), 
+                           _( "Transcribe" ) );
+  win->addWidget((Widget*)transcribeButton);
+
   int n = 48;
   image = new Canvas( width - n - 10, 15, width - 10, 15 + 50, this );
   win->addWidget( image );
@@ -99,10 +119,18 @@ void InfoGui::setItem( Item *item ) {
 	if( item->getRpgItem()->isContainer() ) {
 
 		idButton->setVisible( false );
+		useButton->setVisible( false );
+		transcribeButton->setVisible( false );
+		castButton->setVisible( false );
+		skillButton->setVisible( false );
 		openButton->setVisible( true );
 		closeButton->move( bx - 100, by );		
 		openButton->move( bx + 5, by );
 		idButton->move( 0, 0 );
+		useButton->move( 0, 0 );
+		transcribeButton->move( 0, 0 );
+		castButton->move( 0, 0 );
+		skillButton->move( 0, 0 );
 		/*
 		openButton->setVisible( true );		
 		closeButton->move( bx - 150, by );
@@ -111,16 +139,67 @@ void InfoGui::setItem( Item *item ) {
 		*/
 	} else if( !item->isIdentified() && item->isMagicItem() ) {
 		openButton->setVisible( false );
+		useButton->setVisible( false );
+		transcribeButton->setVisible( false );
+		castButton->setVisible( false );
+		skillButton->setVisible( false );
 		idButton->setVisible( true );
 		closeButton->move( bx - 100, by );
 		openButton->move( 0, 0 );
 		idButton->move( bx + 5, by );
+		useButton->move( 0, 0 );
+		transcribeButton->move( 0, 0 );
+		castButton->move( 0, 0 );
+		skillButton->move( 0, 0 );
+	} else if ( item->getRpgItem()->isScroll() && !( scourge->getParty()->getPlayer()->findInInventory(item) == -1 ) ) {
+		openButton->setVisible( false );
+		idButton->setVisible( false );
+		castButton->setVisible( false );
+		skillButton->setVisible( false );
+		useButton->setVisible( true );
+		openButton->move( 0, 0 );
+		idButton->move( 0, 0 );
+		castButton->move( 0, 0 );
+		skillButton->move( 0, 0 );
+		if ( scourge->getParty()->getPlayer()->isSpellMemorized( item->getSpell() ) ) {
+			transcribeButton->setVisible( false );
+			transcribeButton->move( 0, 0 );
+			closeButton->move( bx - 100, by );
+			useButton->move( bx + 5, by );
+		} else {
+			transcribeButton->setVisible( true );
+			closeButton->move( bx - 150, by );
+			useButton->move( bx - 50, by );
+			transcribeButton->move( bx + 55, by );
+		}
+	} else if ( ( item->getCurrentCharges() > 0 ) && !( scourge->getParty()->getPlayer()->findInInventory(item) == -1 ) )  {
+		idButton->setVisible( false );
+		transcribeButton->setVisible( false );
+		openButton->setVisible( false );
+		castButton->setVisible( false );
+		skillButton->setVisible( false );
+		useButton->setVisible( true );
+		closeButton->move( bx - 100, by );		
+		useButton->move( bx + 5, by );
+		idButton->move( 0, 0 );
+		openButton->move( 0, 0 );
+		transcribeButton->move( 0, 0 );
+		castButton->move( 0, 0 );
+		skillButton->move( 0, 0 );
 	} else {
 		openButton->setVisible( false );
 		idButton->setVisible( false );
+		useButton->setVisible( false );
+		transcribeButton->setVisible( false );
+		castButton->setVisible( false );
+		skillButton->setVisible( false );
 		closeButton->move( bx - 45, by );
 		openButton->move( 0, 0 );
 		idButton->move( 0, 0 );
+		useButton->move( 0, 0 );
+		transcribeButton->move( 0, 0 );
+		castButton->move( 0, 0 );
+		skillButton->move( 0, 0 );
 	}
 }
 
@@ -135,9 +214,24 @@ void InfoGui::setSpell( Spell *spell ) {
 
   openButton->setVisible( false );
   idButton->setVisible( false );
+  useButton->setVisible( false );
+  transcribeButton->setVisible( false );
+  skillButton->setVisible( false );
   closeButton->move( bx - 45, by );
   openButton->move( 0, 0 );
   idButton->move( 0, 0 );
+  useButton->move( 0, 0 );
+  transcribeButton->move( 0, 0 );
+  skillButton->move( 0, 0 );
+
+    if ( scourge->getParty()->getPlayer()->isSpellMemorized( spell ) ) {
+      castButton->setVisible( true );
+      closeButton->move( bx - 100, by );
+      castButton->move( bx + 5, by );
+    } else {
+      castButton->setVisible( true );
+      castButton->move( 0, 0 );
+    }
 }
 
 void InfoGui::setSkill( SpecialSkill *skill ) { 
@@ -151,12 +245,28 @@ void InfoGui::setSkill( SpecialSkill *skill ) {
 
   openButton->setVisible( false );
   idButton->setVisible( false );
+  useButton->setVisible( false );
+  transcribeButton->setVisible( false );
+  castButton->setVisible( false );
   closeButton->move( bx - 45, by );
   openButton->move( 0, 0 );
   idButton->move( 0, 0 );
+  useButton->move( 0, 0 );
+  transcribeButton->move( 0, 0 );
+  castButton->move( 0, 0 );
+
+    if ( ( scourge->getParty()->getPlayer()->hasSpecialSkill(skill) ) && ( skill->getType() == SpecialSkill::SKILL_TYPE_MANUAL ) ) {
+      skillButton->setVisible( true );
+      closeButton->move( bx - 100, by );
+      skillButton->move( bx + 5, by );
+    } else {
+      skillButton->setVisible( false );
+      skillButton->move( 0, 0 );
+    }
 }
 
 bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
+
   if(widget == win->closeButton) {
     win->setVisible(false);
     return true;
@@ -188,6 +298,22 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
 		}
 	} else if( widget == openButton ) {
 		scourge->openContainerGui( item );
+	} else if( widget == useButton ) {
+		if ( item->getRpgItem()->hasSpell() ) {
+			scourge->getPcUi()->hide();
+			this->getWindow()->setVisible(false);
+		}
+		scourge->executeItem(item);
+	} else if( widget == transcribeButton ) {
+		scourge->transcribeItem(scourge->getParty()->getPlayer(), item);
+	} else if( widget == castButton ) {
+		scourge->getPcUi()->hide();
+		this->getWindow()->setVisible(false);
+		scourge->executeQuickSpell(spell);
+	} else if( widget == skillButton ) {
+		scourge->getPcUi()->hide();
+		this->getWindow()->setVisible(false);
+		scourge->executeSpecialSkill(skill);
 	}
   return false;
 }

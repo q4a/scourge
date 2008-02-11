@@ -24,6 +24,7 @@
 #include <map>
 #include "common/constants.h"
 #include "scourge.h"
+#include "pcui.h"
 #include "gui/window.h"
 #include "gui/widget.h"
 #include "gui/button.h"
@@ -43,7 +44,7 @@ class InfoGui : public WidgetView {
   Spell *spell;
   SpecialSkill *skill;
   Window *win;
-  Button *openButton, *idButton, *closeButton;
+  Button *openButton, *idButton, *closeButton, *useButton, *transcribeButton, *castButton, *skillButton;
   ScrollingLabel *label;
   ScrollingLabel *nameLabel;
   Canvas *image;

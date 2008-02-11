@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-02-09 23:26+0100\n"
-"PO-Revision-Date: 2008-02-09 23:30+0100\n"
+"POT-Creation-Date: 2008-02-11 23:06+0100\n"
+"PO-Revision-Date: 2008-02-11 23:10+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <dmurczak@versanet.de>\n"
 "MIME-Version: 1.0\n"
@@ -671,177 +671,177 @@ msgstr "Kann den Weg zum Ziel nicht finden. Entschuldigung!"
 msgid "%s is overloaded."
 msgstr "%s ist überladen."
 
-#: src/creature.cpp:982
+#: src/creature.cpp:995
 #, c-format
 msgid "%s is not overloaded anymore."
 msgstr "%s ist nicht mehr überladen."
 
-#: src/creature.cpp:1019
+#: src/creature.cpp:1032
 #, c-format
 msgid "%s is not hungry at the moment."
 msgstr "%s hat gerade keinen Hunger."
 
-#: src/creature.cpp:1030
+#: src/creature.cpp:1043
 #, c-format
 msgid "%1$s eats %2$s."
 msgstr "%1$s isst %2$s."
 
-#: src/creature.cpp:1034 src/creature.cpp:1052 src/creature.cpp:1067
+#: src/creature.cpp:1047 src/creature.cpp:1065 src/creature.cpp:1080
 #, c-format
 msgid "%s is used up."
 msgstr "%s ist aufgebraucht."
 
-#: src/creature.cpp:1040
+#: src/creature.cpp:1053
 #, c-format
 msgid "%s is not thirsty at the moment."
 msgstr "%s hat gerade keinen Durst."
 
-#: src/creature.cpp:1047
+#: src/creature.cpp:1060
 #, c-format
 msgid "%1$s drinks %2$s."
 msgstr "%1$s trinkt %2$s."
 
-#: src/creature.cpp:1062
+#: src/creature.cpp:1075
 #, c-format
 msgid "%1$s drinks from %2$s."
 msgstr "%1$s trinkt aus %2$s."
 
-#: src/creature.cpp:1072
+#: src/creature.cpp:1085
 msgid "You cannot eat or drink that!"
 msgstr "Ihr könnt das nicht essen oder trinken!"
 
-#: src/creature.cpp:1093 src/spellcaster.cpp:283
+#: src/creature.cpp:1106 src/spellcaster.cpp:283
 #, c-format
 msgid "%s heals %d points."
 msgstr "%s heilt %d Punkte."
 
-#: src/creature.cpp:1102
+#: src/creature.cpp:1115
 #, c-format
 msgid "%s receives %d magic points."
 msgstr "%s erhält %d Magiepunkte."
 
-#: src/creature.cpp:1110 src/spellcaster.cpp:299
+#: src/creature.cpp:1123 src/spellcaster.cpp:299
 #, c-format
 msgid "%s feels impervious to damage!"
 msgstr "%s fühlt sich unverwundbar!"
 
-#: src/creature.cpp:1130
+#: src/creature.cpp:1143
 #, c-format
 msgid "%s feels at peace."
 msgstr "%s fühlt sich friedlich."
 
-#: src/creature.cpp:1161
+#: src/creature.cpp:1174
 #, c-format
 msgid "%1$s will consume %2$s."
 msgstr "%1$s wird %2$s zu sich nehmen."
 
-#: src/creature.cpp:1165
+#: src/creature.cpp:1178
 #, c-format
 msgid "%1$s will cast %2$s."
 msgstr "%1$s wird %2$s sprechen."
 
-#: src/creature.cpp:1169
+#: src/creature.cpp:1182
 #, c-format
 msgid "%1$s will use capability %2$s."
 msgstr "%1$s wird Fähigkeit %2$s benutzen."
 
-#: src/creature.cpp:1555
+#: src/creature.cpp:1568
 #, c-format
 msgid "%s is raised from the dead!"
 msgstr "%s ersteht von den Toten auf!"
 
-#: src/creature.cpp:1589
+#: src/creature.cpp:1602
 #, c-format
 msgid "  %s levels up!"
 msgstr "  %s steigt eine Stufe auf!"
 
-#: src/creature.cpp:1607
+#: src/creature.cpp:1620
 #, c-format
 msgid "%s gains %d experience points."
 msgstr "%s erhält %d Erfahrungspunkte."
 
-#: src/creature.cpp:1610
+#: src/creature.cpp:1623
 #, c-format
 msgid "%s gains a level!"
 msgstr "%s erreicht eine neue Stufe!"
 
-#: src/creature.cpp:1614
+#: src/creature.cpp:1627
 #, c-format
 msgid "%s looses %d experience points!"
 msgstr "%s verliert %d Erfahrungspunkte."
 
-#: src/creature.cpp:2118
+#: src/creature.cpp:2131
 msgid "*Mission*"
 msgstr "*Mission*"
 
-#: src/creature.cpp:2121
+#: src/creature.cpp:2134
 msgid "*Boss*"
 msgstr "*Endgegner*"
 
-#: src/creature.cpp:2213
+#: src/creature.cpp:2226
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr "%1$s erhält die Spezialfähigkeit %2$s!"
 
-#: src/creature.cpp:2225
+#: src/creature.cpp:2238
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr "%1$s verliert die Spezialfähigkeit %2$s!"
 
-#: src/creature.cpp:2422
+#: src/creature.cpp:2435
 msgid "...Attack from blind-spot!"
 msgstr "...Angriff aus dem toten Winkel!"
 
-#: src/creature.cpp:2559 src/creature.cpp:2608
+#: src/creature.cpp:2572 src/creature.cpp:2621
 msgid "skill"
 msgstr "Fertigkeit"
 
-#: src/creature.cpp:2563 src/creature.cpp:2607 src/infogui.cpp:533
+#: src/creature.cpp:2576 src/creature.cpp:2620 src/infogui.cpp:659
 msgid "vs."
 msgstr "gegen"
 
-#: src/creature.cpp:2565
+#: src/creature.cpp:2578
 msgid "bonus"
 msgstr "Bonus"
 
-#: src/creature.cpp:2603 src/scourge.cpp:3527
+#: src/creature.cpp:2616 src/scourge.cpp:3546
 msgid "CTH"
 msgstr "TRC"
 
-#: src/creature.cpp:2605
+#: src/creature.cpp:2618
 msgid "max"
 msgstr "max."
 
-#: src/creature.cpp:2967
+#: src/creature.cpp:2980
 #, c-format
 msgid "%s notices a trap!"
 msgstr "%s bemerkt eine Falle!"
 
-#: src/creature.cpp:2984
+#: src/creature.cpp:2997
 #, c-format
 msgid "%s notices a secret door!"
 msgstr "%s bemerkt eine Geheimtür!"
 
-#: src/creature.cpp:3003
+#: src/creature.cpp:3016
 #, c-format
 msgid "%1$s blunders into a trap and takes %2$d points of damage!"
 msgstr "%1$s stolpert in eine Falle und nimmt %2$d Punkte Schaden!"
 
-#: src/creature.cpp:3017
+#: src/creature.cpp:3030
 #, c-format
 msgid "%s attempts to disable the trap:"
 msgstr "%s versucht die Falle zu entschärfen:"
 
-#: src/creature.cpp:3021
+#: src/creature.cpp:3034
 msgid "   and succeeds!"
 msgstr "   und ist erfolgreich!"
 
-#: src/creature.cpp:3028
+#: src/creature.cpp:3041
 #, c-format
 msgid "    and fails! %1$s takes %2$d points of damage!"
 msgstr "    und versagt! %1$s nimmt %2$d Punkte Schaden!"
 
-#: src/creature.cpp:3034
+#: src/creature.cpp:3047
 msgid "This trap is already disabled."
 msgstr "Diese Falle wurde bereits entschärft."
 
@@ -1061,17 +1061,17 @@ msgstr "Sound-Optionen:\n"
 msgid "\t--nosound - run without sound\n"
 msgstr "\t--nosound - Ohne Sound starten\n"
 
-#: src/shapepalette.cpp:27 src/shapepalette.cpp:364 src/shapepalette.cpp:388
-#: src/shapepalette.cpp:411 src/shapepalette.cpp:446 src/shapepalette.cpp:619
-#: src/shapepalette.cpp:661 src/shapepalette.cpp:722 src/session.cpp:98
+#: src/shapepalette.cpp:27 src/shapepalette.cpp:365 src/shapepalette.cpp:389
+#: src/shapepalette.cpp:412 src/shapepalette.cpp:447 src/shapepalette.cpp:620
+#: src/shapepalette.cpp:662 src/shapepalette.cpp:723 src/session.cpp:98
 msgid "Loading Shapes"
 msgstr "Lade Formen"
 
-#: src/shapepalette.cpp:644 src/board.cpp:65
+#: src/shapepalette.cpp:645 src/board.cpp:65
 msgid "Loading Sounds"
 msgstr "Lade Soundeffekte"
 
-#: src/shapepalette.cpp:840
+#: src/shapepalette.cpp:841
 msgid "Loading Locations"
 msgstr "Lade Orte"
 
@@ -1240,7 +1240,7 @@ msgstr "AP"
 msgid "RANGE"
 msgstr "REICHWEITE"
 
-#: src/item.cpp:1339 src/scourge.cpp:3475
+#: src/item.cpp:1339 src/scourge.cpp:3494
 msgid "DEF"
 msgstr "VRT"
 
@@ -1320,7 +1320,7 @@ msgstr "Euer %s hat keine verbleibenden Anwendungen mehr."
 msgid "Your %s feels lighter."
 msgstr "Euer %s fühlt sich leichter an."
 
-#: src/battle.cpp:738 src/scourge.cpp:3633
+#: src/battle.cpp:738 src/scourge.cpp:3652
 #, c-format
 msgid "%s crumbles into dust."
 msgstr "%s zerfällt zu Staub."
@@ -1641,7 +1641,7 @@ msgid "Your burgling attempt failed. Items and ex. were confiscated."
 msgstr ""
 "Euer Diebstahlsversuch flog auf. Einige Gegenstände wurden konfisziert."
 
-#: src/optionsmenu.cpp:44 src/mainmenu.cpp:58
+#: src/optionsmenu.cpp:44 src/mainmenu.cpp:59
 msgid "Options"
 msgstr "Einstellungen"
 
@@ -2004,176 +2004,176 @@ msgstr "Aktuelle Waffe: Bloße Hände"
 msgid "Current Weapon: %s"
 msgstr "Aktuelle Waffe: %s"
 
-#: src/scourge.cpp:2453 src/portrait.cpp:431
+#: src/scourge.cpp:2457 src/portrait.cpp:431
 msgid "Thirst"
 msgstr "Durst"
 
-#: src/scourge.cpp:2467 src/portrait.cpp:436
+#: src/scourge.cpp:2471 src/portrait.cpp:436
 msgid "Hunger"
 msgstr "Hunger"
 
-#: src/scourge.cpp:2534 src/equip.cpp:628
+#: src/scourge.cpp:2553 src/equip.cpp:628
 msgid "Not enough Magic Points to cast this spell!"
 msgstr "Nicht genug Magiepunkte, um diesen Zauber zu sprechen!"
 
-#: src/scourge.cpp:2626
+#: src/scourge.cpp:2645
 msgid "Begin Turn"
 msgstr "Runde beginnen"
 
-#: src/scourge.cpp:2631
+#: src/scourge.cpp:2650
 msgid "...In Turn..."
 msgstr "...Zug läuft..."
 
-#: src/scourge.cpp:2637
+#: src/scourge.cpp:2656
 msgid "Pause Game"
 msgstr "Spiel anhalten"
 
-#: src/scourge.cpp:2641
+#: src/scourge.cpp:2660
 msgid "Unpause game."
 msgstr "Spiel fortsetzen"
 
-#: src/scourge.cpp:2676
+#: src/scourge.cpp:2695
 msgid "Available Missions"
 msgstr "Verfügbare Missionen"
 
-#: src/scourge.cpp:2682
+#: src/scourge.cpp:2701
 msgid "Drag map to look around."
 msgstr "Zieht die Karte mit der Maus, um Euch umzusehen"
 
-#: src/scourge.cpp:2750
+#: src/scourge.cpp:2769
 msgid "This spell has no effect here..."
 msgstr "Dieser Zauberspruch ist hier unwirksam..."
 
-#: src/scourge.cpp:2928
+#: src/scourge.cpp:2947
 msgid "Game loaded successfully."
 msgstr "Spiel erfolgreich geladen."
 
-#: src/scourge.cpp:2951
+#: src/scourge.cpp:2970
 msgid "Error: Saved game version is too old."
 msgstr "Fehler: Der Spielstand wurde mit einer zu alten Spielversion erstellt."
 
-#: src/scourge.cpp:3307
+#: src/scourge.cpp:3326
 msgid "You cannot hire more party members."
 msgstr "Ihr könnt keine weiteren Gruppenmitglieder anwerben."
 
-#: src/scourge.cpp:3327
+#: src/scourge.cpp:3346
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr "Möchtet Ihr %s, den %s, entlassen?"
 
-#: src/scourge.cpp:3362
+#: src/scourge.cpp:3381
 #, c-format
 msgid "%s the level %d %s"
 msgstr "%s, der Stufe %d %s"
 
-#: src/scourge.cpp:3370
+#: src/scourge.cpp:3389
 #, c-format
 msgid "in a cave on level %d"
 msgstr "in einer Höhle auf Ebene %d"
 
-#: src/scourge.cpp:3373
+#: src/scourge.cpp:3392
 #, c-format
 msgid "in dungeon level %d at %s"
 msgstr "auf der Dungeon-Ebene %d in %s"
 
-#: src/scourge.cpp:3378
+#: src/scourge.cpp:3397
 msgid " while attempting to "
 msgstr " bei "
 
-#: src/scourge.cpp:3382
+#: src/scourge.cpp:3401
 msgid " kill "
 msgstr " der Jagd auf "
 
-#: src/scourge.cpp:3388
+#: src/scourge.cpp:3407
 msgid " recover "
 msgstr " der Suche nach "
 
-#: src/scourge.cpp:3397
+#: src/scourge.cpp:3416
 msgid "suddenly, while resting at HQ"
 msgstr "unerwarted während des Aufenthalts im Hauptquartier"
 
-#: src/scourge.cpp:3401
+#: src/scourge.cpp:3420
 #, c-format
 msgid "Expired %s. Cause of demise: %s. Reached chapter %d of the story."
 msgstr "Verstarb %s. Todesursache: %s. Erreichte Kapitel %d der Handlung."
 
-#: src/scourge.cpp:3426
+#: src/scourge.cpp:3445
 msgid "Score was successfully uploaded."
 msgstr "Die Punktzahl wurde erfolgreich hochgeladen."
 
-#: src/scourge.cpp:3471
+#: src/scourge.cpp:3490
 msgid "Initiative"
 msgstr "Initiative"
 
-#: src/scourge.cpp:3514 src/scourge.cpp:3521 src/infogui.cpp:468
-#: src/infogui.cpp:473 src/infogui.cpp:478
+#: src/scourge.cpp:3533 src/scourge.cpp:3540 src/infogui.cpp:594
+#: src/infogui.cpp:599 src/infogui.cpp:604
 msgid "ATK"
 msgstr "ANG"
 
-#: src/scourge.cpp:3528 src/infogui.cpp:470 src/infogui.cpp:476
+#: src/scourge.cpp:3547 src/infogui.cpp:596 src/infogui.cpp:602
 msgid "APR"
 msgstr "APR"
 
-#: src/scourge.cpp:3580
+#: src/scourge.cpp:3599
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: src/scourge.cpp:3582
+#: src/scourge.cpp:3601
 #, c-format
 msgid "per %.2f R"
 msgstr "alle %.2f R"
 
-#: src/scourge.cpp:3591
+#: src/scourge.cpp:3610
 msgid "This item is already enchanted."
 msgstr "Dieser Gegenstand ist bereits verzaubert."
 
-#: src/scourge.cpp:3593
+#: src/scourge.cpp:3612
 msgid "This item cannot be enchanted."
 msgstr "Dieser Gegenstand kann nicht verzaubert werden."
 
-#: src/scourge.cpp:3601
+#: src/scourge.cpp:3620
 msgid "You succesfully enchanted an item!"
 msgstr "Ihr habt erfolgreich einen Gegenstand verzaubert!"
 
-#: src/scourge.cpp:3605
+#: src/scourge.cpp:3624
 #, c-format
 msgid "You created: %s."
 msgstr "Ihr erschuft: %s."
 
-#: src/scourge.cpp:3610
+#: src/scourge.cpp:3629
 msgid "You failed to enchant the item."
 msgstr "Ihr habt es nicht geschafft, den Gegenstand zu verzaubern."
 
-#: src/scourge.cpp:3614
+#: src/scourge.cpp:3633
 msgid "You can only enchant one item per day."
 msgstr "Ihr könnt nur einen Gegenstand pro Tag verzaubern."
 
-#: src/scourge.cpp:3629
+#: src/scourge.cpp:3648
 msgid "Spell was entered into your spellbook."
 msgstr "Der Zauber wurde in Euer Zauberbuch aufgenommen."
 
-#: src/scourge.cpp:3637
+#: src/scourge.cpp:3656
 msgid "You already know this spell"
 msgstr "Ihr kennt diesen Zauber bereits"
 
-#: src/scourge.cpp:3640
+#: src/scourge.cpp:3659
 msgid "You are not proficient enough to transcribe this scroll."
 msgstr "Ihr seid nicht erfahren genug, um diese Spruchrolle abzuschreiben."
 
-#: src/scourge.cpp:3643
+#: src/scourge.cpp:3662
 msgid "You can only transcribe scrolls!"
 msgstr "Ihr könnt nur Spruchrollen abschreiben!"
 
-#: src/scourge.cpp:3674
+#: src/scourge.cpp:3693
 msgid "This item is out of charges."
 msgstr "Dieser Gegenstand ist aufgebraucht."
 
-#: src/scourge.cpp:3687
+#: src/scourge.cpp:3706
 msgid "You cannot use this item."
 msgstr "Ihr könnt diesen Gegenstand nicht benutzen."
 
-#: src/scourge.cpp:3954
+#: src/scourge.cpp:3973
 msgid "The door splinters into many, tiny pieces!"
 msgstr "Die Tür zerspringt in unzählige kleine Teile!"
 
@@ -2549,248 +2549,260 @@ msgstr "Ihr könnt Euch das Training nicht leisten!"
 msgid "Congratulation %1$s, you are now a %2$s."
 msgstr "Glückwunsch %1$s, Ihr seid jetzt ein %2$s."
 
-#: src/infogui.cpp:65 src/identifydialog.cpp:46
+#: src/infogui.cpp:65 src/infogui.cpp:75
+msgid "Use"
+msgstr "Benutzen"
+
+#: src/infogui.cpp:70
+msgid "Cast"
+msgstr "Anwenden"
+
+#: src/infogui.cpp:80 src/identifydialog.cpp:46
 msgid "Identify"
 msgstr "Identifizieren"
 
-#: src/infogui.cpp:72 src/pceditor.cpp:459 src/mapeditor.cpp:82
+#: src/infogui.cpp:85
+msgid "Transcribe"
+msgstr "Abschreiben"
+
+#: src/infogui.cpp:92 src/pceditor.cpp:459 src/mapeditor.cpp:82
 msgid "Name:"
 msgstr "Name:"
 
-#: src/infogui.cpp:77
+#: src/infogui.cpp:97
 msgid "Detailed Description:"
 msgstr "Detailbeschreibung:"
 
-#: src/infogui.cpp:186
+#: src/infogui.cpp:296
 msgid "You must rest a while before identifying items again."
 msgstr ""
 "Ihr müsst Euch eine Weile ausruhen, bevor Ihr wieder Gegenstände "
 "identifizieren könnt."
 
-#: src/infogui.cpp:236
+#: src/infogui.cpp:362
 msgid "Requirements"
 msgstr "Voraussetzungen"
 
-#: src/infogui.cpp:249
+#: src/infogui.cpp:375
 #, c-format
 msgid "%s is too low."
 msgstr "%s ist zu niedrig."
 
-#: src/infogui.cpp:256
+#: src/infogui.cpp:382
 #, c-format
 msgid "Bonus for %s!"
 msgstr "Bonus auf %s!"
 
-#: src/infogui.cpp:267
+#: src/infogui.cpp:393
 msgid "All requirements met."
 msgstr "Alle Voraussetzungen erfüllt."
 
-#: src/infogui.cpp:279
+#: src/infogui.cpp:405
 #, c-format
 msgid "(L:%d) (M:%d) %s"
 msgstr "(S:%d) (M:%d) %s"
 
-#: src/infogui.cpp:290
+#: src/infogui.cpp:416
 #, c-format
 msgid "School: %s"
 msgstr "Schule: %s"
 
-#: src/infogui.cpp:294 src/infogui.cpp:378 src/infogui.cpp:406
+#: src/infogui.cpp:420 src/infogui.cpp:504 src/infogui.cpp:532
 #, c-format
 msgid "Skill: %s"
 msgstr "Fertigkeit: %s"
 
-#: src/infogui.cpp:298
+#: src/infogui.cpp:424
 #, c-format
 msgid "Deity: %s"
 msgstr "Gottheit: %s"
 
-#: src/infogui.cpp:302 src/infogui.cpp:362
+#: src/infogui.cpp:428 src/infogui.cpp:488
 #, c-format
 msgid "Level: %d"
 msgstr "Stufe: %d"
 
-#: src/infogui.cpp:306
+#: src/infogui.cpp:432
 #, c-format
 msgid "MP: %d"
 msgstr "MP: %d"
 
-#: src/infogui.cpp:310
+#: src/infogui.cpp:436
 #, c-format
 msgid "Failure rate: %d percent"
 msgstr "Versagenschance: %d Prozent"
 
-#: src/infogui.cpp:324
+#: src/infogui.cpp:450
 #, c-format
 msgid "(%s) %s"
 msgstr "(%s) %s"
 
-#: src/infogui.cpp:324
+#: src/infogui.cpp:450
 msgid "M"
 msgstr "M"
 
-#: src/infogui.cpp:324
+#: src/infogui.cpp:450
 msgid "A"
 msgstr "A"
 
-#: src/infogui.cpp:335
+#: src/infogui.cpp:461
 #, c-format
 msgid "Type: %s"
 msgstr "Typ: %s"
 
-#: src/infogui.cpp:335
+#: src/infogui.cpp:461
 msgid "Manual"
 msgstr "Manuell"
 
-#: src/infogui.cpp:335
+#: src/infogui.cpp:461
 msgid "Automatic"
 msgstr "Automatisch"
 
-#: src/infogui.cpp:365
+#: src/infogui.cpp:491
 #, c-format
 msgid "Weight: %.2f"
 msgstr "Gewicht: %.2f"
 
-#: src/infogui.cpp:368
+#: src/infogui.cpp:494
 #, c-format
 msgid "Price: %d"
 msgstr "Preis: %d"
 
-#: src/infogui.cpp:372
+#: src/infogui.cpp:498
 #, c-format
 msgid "Damage: %d percent"
 msgstr "Schaden: %d Prozent"
 
-#: src/infogui.cpp:375
+#: src/infogui.cpp:501
 #, c-format
 msgid "Damage Type: %s"
 msgstr "Schadensart: %s"
 
-#: src/infogui.cpp:382
+#: src/infogui.cpp:508
 #, c-format
 msgid "Parry: %d percent of %s skill"
 msgstr "Parade: %d Prozent der Fertigkeit %s"
 
-#: src/infogui.cpp:388
+#: src/infogui.cpp:514
 #, c-format
 msgid "AP cost: %d"
 msgstr "AP-Kosten: %d"
 
-#: src/infogui.cpp:393
+#: src/infogui.cpp:519
 #, c-format
 msgid "Range: %d"
 msgstr "Reichweite: %d"
 
-#: src/infogui.cpp:400
+#: src/infogui.cpp:526
 #, c-format
 msgid "Defense vs. %s damage: %d"
 msgstr "Schutz vor %s-Schaden: %d"
 
-#: src/infogui.cpp:409
+#: src/infogui.cpp:535
 #, c-format
 msgid "Dodge penalty: %d"
 msgstr "Malus auf Ausweichen: %d"
 
-#: src/infogui.cpp:414
+#: src/infogui.cpp:540
 #, c-format
 msgid "Power: %d"
 msgstr "Macht: %d"
 
-#: src/infogui.cpp:420
+#: src/infogui.cpp:546
 #, c-format
 msgid "Charges: %d(%d)"
 msgstr "Anwendungen: %d(%d)"
 
-#: src/infogui.cpp:424
+#: src/infogui.cpp:550
 #, c-format
 msgid "Spell: %s"
 msgstr "Zauber: %s"
 
-#: src/infogui.cpp:432
+#: src/infogui.cpp:558
 #, c-format
 msgid "Duration: %d"
 msgstr "Dauer: %d"
 
-#: src/infogui.cpp:438
+#: src/infogui.cpp:564
 #, c-format
 msgid "Two handed weapon."
 msgstr "Zweihändige Waffe."
 
-#: src/infogui.cpp:443
+#: src/infogui.cpp:569
 #, c-format
 msgid "Optionally handed weapon."
 msgstr "Eineinhalbhändige Waffe."
 
-#: src/infogui.cpp:452
+#: src/infogui.cpp:578
 #, c-format
 msgid "Attack Info for each player:"
 msgstr "Angriffswerte für alle Spieler:"
 
-#: src/infogui.cpp:503
+#: src/infogui.cpp:629
 #, c-format
 msgid "%d bonus to attack and damage."
 msgstr "%d-Bonus auf Angriff und Schaden."
 
-#: src/infogui.cpp:505
+#: src/infogui.cpp:631
 #, c-format
 msgid "%d bonus to armor points."
 msgstr "%d-Bonus auf Rüstungspunkte."
 
-#: src/infogui.cpp:515
+#: src/infogui.cpp:641
 #, c-format
 msgid "Double damage"
 msgstr "Doppelter Schaden"
 
-#: src/infogui.cpp:519
+#: src/infogui.cpp:645
 #, c-format
 msgid "Triple damage"
 msgstr "Dreifacher Schaden"
 
-#: src/infogui.cpp:523
+#: src/infogui.cpp:649
 #, c-format
 msgid "Quad damage"
 msgstr "Vierfacher Schaden"
 
-#: src/infogui.cpp:527
+#: src/infogui.cpp:653
 #, c-format
 msgid "%dX damage"
 msgstr "%dX Schaden"
 
-#: src/infogui.cpp:536
+#: src/infogui.cpp:662
 msgid " vs. any creature."
 msgstr " gegen alle Kreaturen."
 
-#: src/infogui.cpp:545
+#: src/infogui.cpp:671
 #, c-format
 msgid "Extra damage of %1$s %2$s magic."
 msgstr "Zusätzlicher Schaden: %1$s %2$s-Magie."
 
-#: src/infogui.cpp:549
+#: src/infogui.cpp:675
 #, c-format
 msgid "Extra %d pts of %s magic resistance."
 msgstr "Zusätzliche %d Punkte %s-Magieresistenz."
 
-#: src/infogui.cpp:560
+#: src/infogui.cpp:686
 msgid "Sets state mods:"
 msgstr "Statusänderungen:"
 
-#: src/infogui.cpp:577
+#: src/infogui.cpp:703
 msgid "Protects from state mods:"
 msgstr "Schützt vor Statusänderungen:"
 
-#: src/infogui.cpp:606
+#: src/infogui.cpp:732
 msgid "Bonuses to skills:"
 msgstr "Boni auf Fertigkeiten:"
 
-#: src/infogui.cpp:617
+#: src/infogui.cpp:743
 msgid "This item is cursed!"
 msgstr "Dieser Gegenstand ist verflucht!"
 
-#: src/infogui.cpp:623
+#: src/infogui.cpp:749
 msgid "School: "
 msgstr "Schule: "
 
-#: src/infogui.cpp:630
+#: src/infogui.cpp:756
 msgid ""
 "You have a feeling there is more to this item than what you've been able to "
 "glean..."
@@ -2928,44 +2940,44 @@ msgstr ""
 "repräsentiert. Euer Aussehen ist eine persönliche Geschmacksfrage, es wird "
 "das Spiel in keiner Weise beeinflussen."
 
-#: src/mainmenu.cpp:55
+#: src/mainmenu.cpp:56
 msgid "New Game"
 msgstr "Neues Spiel"
 
-#: src/mainmenu.cpp:56
+#: src/mainmenu.cpp:57
 msgid "Continue Game"
 msgstr "Spiel fortsetzen"
 
-#: src/mainmenu.cpp:57
+#: src/mainmenu.cpp:58
 msgid "Multiplayer Game"
 msgstr "Multiplayer-Spiel"
 
-#: src/mainmenu.cpp:59 src/mainmenu.cpp:124
+#: src/mainmenu.cpp:60 src/mainmenu.cpp:127
 msgid "About S.c.o.u.r.g.e."
 msgstr "Über S.c.o.u.r.g.e."
 
-#: src/mainmenu.cpp:60
+#: src/mainmenu.cpp:61
 msgid "Quit"
 msgstr "Beenden"
 
-#: src/mainmenu.cpp:107
+#: src/mainmenu.cpp:110
 msgid "New Game Confirmation"
 msgstr "Neues Spiel bestätigen"
 
-#: src/mainmenu.cpp:262
+#: src/mainmenu.cpp:284
 #, c-format
 msgid "Scourge version %s"
 msgstr "Scourge-Version %s"
 
-#: src/mainmenu.cpp:266
+#: src/mainmenu.cpp:288
 msgid "Optionally compiled modules:"
 msgstr "Optional kompilierte Module:"
 
-#: src/mainmenu.cpp:269
+#: src/mainmenu.cpp:291
 msgid "[Network]"
 msgstr "[Netzwerk]"
 
-#: src/mainmenu.cpp:273
+#: src/mainmenu.cpp:295
 msgid "[Sound]"
 msgstr "[Sound]"
 
