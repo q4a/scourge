@@ -381,7 +381,7 @@ void MainMenu::drawMenu() {
 		int x = 50;
 		int y = top + 230;
 		for( int i = 0; strlen( menuText[i] ); i++ ) {
-			TextEffect *textEffect = new TextEffect( scourge, x - 40, y - 20, (char*)menuText[i] );
+			TextEffect *textEffect = new TextEffect( scourge, x - 40, y - 20, (char*)_(menuText[i]) );
 			textEffects.push_back( textEffect );
 			y += 50;
 		}
