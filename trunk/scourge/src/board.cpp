@@ -374,7 +374,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
   char parsedSuccess[2000];
   char parsedFailure[2000];
   char s[2000];
-  strcpy( s, name );
+  strcpy( s, _( name ) );
   parseText( session, level, depth, s, parsedName, &items, &creatures, info );
   strcpy( s, description );
   parseText( session, level, depth, s, parsedDescription, &items, &creatures, info );

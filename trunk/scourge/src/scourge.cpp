@@ -2203,7 +2203,7 @@ void Scourge::drawWidgetContents(Widget *w) {
           if( getParty()->getPlayer()->getQuickSpell( t ) ) {
             Storable *storable = getParty()->getPlayer()->getQuickSpell( t );
               if ( storable ) {
-                w->setTooltip( (char*)(storable->getName()) );
+                w->setTooltip( (char*)( _( storable->getName() ) ) );
               } else if ( !(Item*)storable ) {
                 w->setTooltip( NULL );
               }
