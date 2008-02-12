@@ -78,7 +78,7 @@ void TradeDialog::updateUI() {
   prices.clear();  
   labelA->setText( scourge->getParty()->getPlayer()->getName() );
   listA->setCreature( scourge->getParty()->getPlayer(), creature->getNpcInfo()->getSubtype() );
-  labelB->setText( creature->getName() );
+  labelB->setText( _( creature->getName() ) );
   listB->setCreature( creature, creature->getNpcInfo()->getSubtype() );
   tradeA = 0;
   updateLabels();

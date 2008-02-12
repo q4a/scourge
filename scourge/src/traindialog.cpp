@@ -82,7 +82,7 @@ void TrainDialog::updateUI() {
   cost = price + percentage;
 
   snprintf( s, S_SIZE, "%s (%s %d) %s: %d", 
-           creature->getName(), 
+           _( creature->getName() ), 
 					 _( "level" ),
            creature->getNpcInfo()->level,
 					 _( "Cost" ),

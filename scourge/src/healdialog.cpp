@@ -67,7 +67,7 @@ void HealDialog::updateUI() {
   prices.clear();
   enum { TXT_SIZE = 255 };
   char s[ TXT_SIZE ];
-  snprintf( s, TXT_SIZE, "%s (%s %d)", creature->getName(), _( "level" ), creature->getNpcInfo()->level );
+  snprintf( s, TXT_SIZE, "%s (%s %d)", _( creature->getName() ), _( "level" ), creature->getNpcInfo()->level );
   creatureLabel->setText( s );
   snprintf( s, TXT_SIZE, "%s %d", 
            _( "Coins Available:" ), 
