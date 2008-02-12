@@ -69,7 +69,7 @@ void DonateDialog::updateUI() {
 	snprintf( tmp, TXT_SIZE, _( "Temple of %s" ), ms->getDeity() );
   char s[TXT_SIZE];
 	snprintf( s, TXT_SIZE, "%s (%s %d), %s.", 
-           creature->getName(), 
+           _( creature->getName() ), 
 					 _( "level" ),
            creature->getNpcInfo()->level,
            tmp );
