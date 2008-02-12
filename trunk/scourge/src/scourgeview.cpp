@@ -366,7 +366,8 @@ void ScourgeView::checkForInfo() {
           void *obj = NULL;
           if( pos->creature ) {
             obj = pos->creature;
-            ((Creature*)(pos->creature))->getDetailedDescription( s );
+            //((Creature*)(pos->creature))->getDetailedDescription( s );
+            s = _( ((Creature*)(pos->creature))->getName() );
           } else if( pos->item ) {
             obj = pos->item;
             ((Item*)(pos->item))->getDetailedDescription( s );

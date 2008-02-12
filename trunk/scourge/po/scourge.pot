@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-02-11 23:06+0100\n"
+"POT-Creation-Date: 2008-02-12 22:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -766,77 +766,82 @@ msgid "%s looses %d experience points!"
 msgstr ""
 
 #: src/creature.cpp:2131
+#, c-format
+msgid "%s (L:%d HP:%d/%d MP:%d/%d)"
+msgstr ""
+
+#: src/creature.cpp:2136
 msgid "*Mission*"
 msgstr ""
 
-#: src/creature.cpp:2134
+#: src/creature.cpp:2139
 msgid "*Boss*"
 msgstr ""
 
-#: src/creature.cpp:2226
+#: src/creature.cpp:2232
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2238
+#: src/creature.cpp:2244
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2435
+#: src/creature.cpp:2441
 msgid "...Attack from blind-spot!"
 msgstr ""
 
-#: src/creature.cpp:2572 src/creature.cpp:2621
+#: src/creature.cpp:2578 src/creature.cpp:2627
 msgid "skill"
 msgstr ""
 
-#: src/creature.cpp:2576 src/creature.cpp:2620 src/infogui.cpp:659
+#: src/creature.cpp:2582 src/creature.cpp:2626 src/infogui.cpp:659
 msgid "vs."
 msgstr ""
 
-#: src/creature.cpp:2578
+#: src/creature.cpp:2584
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2616 src/scourge.cpp:3546
+#: src/creature.cpp:2622 src/scourge.cpp:3546
 msgid "CTH"
 msgstr ""
 
-#: src/creature.cpp:2618
+#: src/creature.cpp:2624
 msgid "max"
 msgstr ""
 
-#: src/creature.cpp:2980
+#: src/creature.cpp:2986
 #, c-format
 msgid "%s notices a trap!"
 msgstr ""
 
-#: src/creature.cpp:2997
+#: src/creature.cpp:3003
 #, c-format
 msgid "%s notices a secret door!"
 msgstr ""
 
-#: src/creature.cpp:3016
+#: src/creature.cpp:3022
 #, c-format
 msgid "%1$s blunders into a trap and takes %2$d points of damage!"
 msgstr ""
 
-#: src/creature.cpp:3030
+#: src/creature.cpp:3036
 #, c-format
 msgid "%s attempts to disable the trap:"
 msgstr ""
 
-#: src/creature.cpp:3034
+#: src/creature.cpp:3040
 msgid "   and succeeds!"
 msgstr ""
 
-#: src/creature.cpp:3041
+#: src/creature.cpp:3047
 #, c-format
 msgid "    and fails! %1$s takes %2$d points of damage!"
 msgstr ""
 
-#: src/creature.cpp:3047
+#: src/creature.cpp:3053
 msgid "This trap is already disabled."
 msgstr ""
 
@@ -1250,11 +1255,11 @@ msgstr ""
 msgid "Projectile did not reach the target (blocked)."
 msgstr ""
 
-#: src/scourgeview.cpp:814
+#: src/scourgeview.cpp:815
 msgid "Move"
 msgstr ""
 
-#: src/scourgeview.cpp:1116
+#: src/scourgeview.cpp:1117
 msgid "cost"
 msgstr ""
 

@@ -2125,14 +2125,20 @@ GLfloat Creature::getStep() {
 }
 
 void Creature::getDetailedDescription( std::string& s ) {
-	s = _(getName());
-	if ( session->getCurrentMission() 
-	     && session->getCurrentMission()->isMissionCreature( this ) ) {
-		s += _( "*Mission*" );
-	}
-	if ( boss ) {
-		s += _( "*Boss*" );
-	}
+
+char *tempdesc;
+
+  snprintf( tempdesc, 255, _( "%s (L:%d HP:%d/%d MP:%d/%d)" ), _( getName() ), getLevel(), getHp(), getMaxHp(), getMp(), getMaxMp() );
+
+  s = tempdesc;
+
+  if ( session->getCurrentMission() && session->getCurrentMission()->isMissionCreature( this ) ) {
+    s += _( "*Mission*" );
+  }
+  if ( boss ) {
+    s += _( "*Boss*" );
+  }
+
 }
 
 void Creature::setHp() { 
