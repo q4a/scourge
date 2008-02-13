@@ -2,7 +2,7 @@
 <kdevelop>
   <general>
     <author>Gabor Torok</author>
-    <email></email>
+    <email/>
     <version>1</version>
     <projectmanagement>KDevCustomProject</projectmanagement>
     <primarylanguage>C</primarylanguage>
@@ -10,16 +10,16 @@
     <projectname>scourge</projectname>
     <projectdirectory>../..</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
     <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevcustomproject>
     <run>
       <directoryradio>executable</directoryradio>
       <mainprogram>scourge/scourge</mainprogram>
-      <programargs></programargs>
-      <globaldebugarguments></globaldebugarguments>
+      <programargs/>
+      <globaldebugarguments/>
       <globalcwd>scourge</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
@@ -53,7 +53,7 @@
     <other>
       <prio>0</prio>
       <otherbin>autoreconf -i &amp;&amp; ./configure &amp;&amp; scons</otherbin>
-      <defaulttarget></defaulttarget>
+      <defaulttarget/>
       <otheroptions>debug=true</otheroptions>
       <selectedenvironment>default</selectedenvironment>
       <environments>
@@ -65,9 +65,9 @@
       <numberofjobs>0</numberofjobs>
       <prio>0</prio>
       <dontact>false</dontact>
-      <makebin></makebin>
-      <defaulttarget></defaulttarget>
-      <makeoptions></makeoptions>
+      <makebin/>
+      <defaulttarget/>
+      <makeoptions/>
       <selectedenvironment>default</selectedenvironment>
       <environments>
         <default/>
@@ -76,11 +76,11 @@
   </kdevcustomproject>
   <kdevdebugger>
     <general>
-      <dbgshell></dbgshell>
+      <dbgshell/>
       <gdbpath>/usr/bin/gdb</gdbpath>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -146,6 +146,7 @@
       <type ext="cpp" />
       <type ext="c" />
       <type ext="h" />
+      <type ext="dox" />
     </useglobaltypes>
   </kdevfilecreate>
   <kdevcppsupport>
@@ -183,7 +184,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
