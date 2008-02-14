@@ -341,7 +341,7 @@ void Scourge::startMission( bool startInHq ) {
 			// show the chapter art
 			if( session->getCurrentMission() && 
 					session->getCurrentMission()->isStoryLine() &&
-					fromHq ) {
+					fromHq && !session->getCurrentMission()->isReplay() ) {
 				initChapterIntro();
 			} else {
 				// converse with Uzudil or show "welcome to level" message
@@ -535,6 +535,9 @@ void Scourge::resetGame( bool resetParty ) {
 }
 
 void Scourge::createMissionInfoMessage( Mission *lastMission ) {
+
+	if( lastMission->isReplay() ) { return; }
+
 	snprintf( infoMessage, INFO_SIZE,
 					 ( lastMission->isCompleted() ?
 						 lastMission->getSuccess() :
@@ -704,6 +707,7 @@ void Scourge::linkMissionObjectives( vector< RenderedItem* > *items, vector< Ren
 
 void Scourge::showLevelInfo() {
 	// show an info dialog if infoMessage not already set with outcome of last mission
+	
 	if( !strlen( infoMessage ) ) {
 		if(nextMission == -1) {
 			snprintf(infoMessage, INFO_SIZE, _( "Welcome to the S.C.O.U.R.G.E. Head Quarters" ) );
