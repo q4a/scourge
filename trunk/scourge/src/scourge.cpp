@@ -2688,7 +2688,7 @@ void Scourge::initEnd() {
 }
 
 #define BOARD_GUI_WIDTH 600
-#define BOARD_GUI_HEIGHT 300
+#define BOARD_GUI_HEIGHT 360
 
 void Scourge::createBoardUI() {
   // init gui
