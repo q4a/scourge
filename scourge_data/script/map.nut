@@ -10,7 +10,7 @@ function enterMap( mapName ) {
   print( "You are on the " + mapName + " map.\n" );
 	print( "Chapter=" + scourgeGame.getMission().getChapter() + " Depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
 
-	if( scourgeGame.getMission().isStoryLineMission() ) {
+	if( scourgeGame.getMission().isStoryLineMission() && !scourgeGame.getMission().isReplayMap() ) {
 		switch( scourgeGame.getMission().getChapter() ) {
 		case 5: initChapter6(); break;
 		case 7: initChapter8(); break;
