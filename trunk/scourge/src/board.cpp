@@ -50,9 +50,7 @@ Board::Board(Session *session)
 	missionListCount = 0;
 
   char type;
-	char name[255], displayName[255], line[255], description[2000], 
-		music[255], success[2000], failure[2000], mapName[80], 
-		introDescription[2000], location[20];
+	char name[255], displayName[255], line[255], description[2000], replayDisplayName[255], replayDescription[2000], music[255], success[2000], failure[2000], mapName[80], introDescription[2000], location[20];
 	string ambientSoundName;
 
   ConfigLang *config = ConfigLang::load( string("config/mission.cfg") );
@@ -97,11 +95,14 @@ Board::Board(Session *session)
     // read the level and depth
 		strcpy( name, node->getValueAsString( "name" ) );
     strcpy( displayName, node->getValueAsString( "display_name" ) );
+    strcpy( replayDisplayName, node->getValueAsString( "replay_display_name" ) );
     int level = node->getValueAsInt( "level" );
     int depth = node->getValueAsInt( "depth" );
     strcpy( mapName, node->getValueAsString( "map" ) );
     strcpy( description, node->getValueAsString( "description" ) );
-		strcpy( introDescription, node->getValueAsString( "intro" ) );
+    strcpy( replayDescription, node->getValueAsString( "replay_description" ) );
+    strcpy( introDescription, node->getValueAsString( "intro" ) );
+    bool replayable = !strcmp( node->getValueAsString( "replayable"), "true" );
     strcpy( music, node->getValueAsString( "music" ) );
     strcpy( success, node->getValueAsString( "success" ) );
     strcpy( failure, node->getValueAsString( "failure" ) );
@@ -109,7 +110,7 @@ Board::Board(Session *session)
 		strcpy( location, node->getValueAsString( "position" ) );
 		ambientSoundName = node->getValueAsString( "sound" );
 
-    Mission *current_mission = new Mission( this, level, depth, name, displayName, description, introDescription, music, success, failure, mapName );
+    Mission *current_mission = new Mission( this, level, depth, replayable, name, displayName, description, replayDisplayName, replayDescription, introDescription, music, success, failure, mapName);
     current_mission->setStoryLine( true );
 		current_mission->setChapter( chapter );
 		current_mission->setAmbientSoundName( ambientSoundName );
@@ -253,9 +254,17 @@ void Board::initMissions() {
   
 
   // add the current storyline mission at the top of the board
-  if( storylineIndex >= 0 && storylineIndex <  (int)storylineMissions.size() ) {
-    availableMissions.insert( availableMissions.begin(), 
-															storylineMissions[ storylineIndex ] );
+  if( storylineIndex >= 0 && storylineIndex < (int)storylineMissions.size() ) {
+    availableMissions.insert( availableMissions.begin(), storylineMissions[ storylineIndex ] );
+  }
+
+  // append replayable maps at the bottom of the board
+  for( int i = 0; i < storylineIndex; i++ ) {
+    if ( storylineMissions[ i ]->isReplayable() ) {
+      availableMissions.insert( availableMissions.end(), storylineMissions[ i ] );
+      availableMissions[ availableMissions.size() -1 ]->setDisplayName( storylineMissions[i]->getReplayDisplayName() ) ;
+      availableMissions[ availableMissions.size() -1 ]->setDescription( storylineMissions[i]->getReplayDescription() ) ;
+    }
   }
 
 
@@ -280,18 +289,20 @@ void Board::initMissions() {
 		missionText[i] = str;
 		snprintf( str, 20, _("S:%d, "), availableMissions[i]->getDepth() );
 		missionText[i] += str;
-		missionText[i] += availableMissions[i]->isStoryLine() ? _( "(STORY)" ) 
-		                : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) 
-			            : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) 
-			            : ""; 
+		missionText[i] += ( availableMissions[i]->isReplay() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : ""; 
+//		missionText[i] += ( availableMissions[i]->isStoryLine() && availableMissions[i]->isCompleted() && availableMissions[i]->isReplayable() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : ""; 
 		missionText[i] += " ";
 		missionText[i] += availableMissions[i]->getDisplayName();
-		if ( availableMissions[i]->isCompleted() ) missionText[i] += _( "(completed)" );
+		if ( availableMissions[i]->isCompleted() && !availableMissions[i]->isReplayable() ) missionText[i] += _( "(completed)" );
 
       missionColor[i].r = 1.0f;
       missionColor[i].g = 1.0f;
       missionColor[i].b = 0.0f;
-      if(availableMissions[i]->isCompleted()) {
+      if(availableMissions[i]->isStoryLine() && availableMissions[i]->isCompleted() && availableMissions[i]->isReplayable()) {
+        missionColor[i].r = 0.0f;
+        missionColor[i].g = 0.75f;
+        missionColor[i].b = 1.0f;
+      } else if(availableMissions[i]->isCompleted()) {
         missionColor[i].r = 0.5f;
         missionColor[i].g = 0.5f;
         missionColor[i].b = 0.5f;
@@ -342,11 +353,6 @@ void Board::storylineMissionCompleted( Mission *mission ) {
   }
 }
 
-
-
-
-
-
 MissionTemplate::MissionTemplate( Board *board, char *name, char *displayName, char type, char *description, char *music, char *success, char *failure, string& ambientSoundName ) {
   this->board = board;
   strcpy( this->name, name );
@@ -386,8 +392,8 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
   //TODO VF: select music from multi-tracks missions
   
   Mission *mission = new Mission( board, 
-                                  level, depth, parsedName, parsedName, 
-                                  parsedDescription, "", music, parsedSuccess, 
+                                  level, depth, false, parsedName, parsedName, 
+                                  parsedDescription, NULL, NULL, "", music, parsedSuccess, 
                                   parsedFailure, NULL, mapType );
   for(map<string, RpgItem*>::iterator i=items.begin(); i!=items.end(); ++i) {
     RpgItem *item = i->second;
@@ -517,8 +523,8 @@ void MissionTemplate::parseText( Session *session, int level, int depth,
 }
 
 
-Mission::Mission( Board *board, int level, int depth, 
-                  char *name, char *displayName, char *description, char *introDescription,
+Mission::Mission( Board *board, int level, int depth, bool replayable,
+                  char *name, char *displayName, char *description, char *replayDisplayName, char *replayDescription, char *introDescription,
                   char *music,
                   char *success, char *failure,
                   char *mapName, char mapType ) {
@@ -531,11 +537,14 @@ Mission::Mission( Board *board, int level, int depth,
   strcpy( this->displayName, displayName );
   strcpy( this->description, description );
 	strcpy( this->introDescription, introDescription );
+  strcpy( this->replayDisplayName, ( replayDisplayName ? replayDisplayName : "" ) );
+  strcpy( this->replayDescription, ( replayDescription ? replayDescription : "" ) );
   strcpy( this->music, music );
   strcpy( this->success, success );
   strcpy( this->failure, failure );
   strcpy( this->mapName, ( mapName ? mapName : "" ) );
   this->completed = false;
+  this->replayable = replayable;
   this->storyLine = false;
 	this->chapter = 0;
   this->mapX = this->mapY = 0;
@@ -598,6 +607,10 @@ bool Mission::creatureSlain(Creature *creature) {
 void Mission::checkMissionCompleted() {
   // special missions aren't completed when an item is found.
   if( isSpecial() ) {
+    completed = false;
+    return;
+  }
+  if( isReplay() ) {
     completed = false;
     return;
   }

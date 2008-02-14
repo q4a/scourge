@@ -88,12 +88,15 @@ private:
   char description[2000];
   char success[2000];
   char failure[2000];
+  char replayDisplayName[255];
+  char replayDescription[2000];
   std::map<RpgItem*, bool> items;
   std::vector<RpgItem*> itemList;
   std::map<Monster*, bool> creatures;
   std::vector<Monster*> creatureList;
   std::map<Creature*,Monster*> monsterInstanceMap;
   bool completed;
+  bool replayable;
   bool storyLine;
   // the mission's location on the map-grid
   int mapX, mapY;
@@ -138,8 +141,8 @@ public:
    */
   static void saveMapData( GameAdapter *adapter, const std::string& fileName );
 
-  Mission( Board *board, int level, int depth, 
-           char *name, char *displayName, char *description, char *introDescription,
+  Mission( Board *board, int level, int depth, bool replayable,
+           char *name, char *displayName, char *description, char *replayDisplayName, char *replayDescription, char *introDescription,
            char *music,
            char *success, char *failure,
            char *mapName, char mapType='C' );
@@ -192,6 +195,10 @@ public:
   inline char *getName() { return name; }
   inline char *getDisplayName() { return displayName; }
   inline char *getDescription() { return description; }
+  inline void setDisplayName( char *s ) { strcpy( displayName, s ); }
+  inline void setDescription( char *s ) { strcpy( description, s ); }
+  inline char *getReplayDisplayName() { return replayDisplayName; }
+  inline char *getReplayDescription() { return replayDescription; }
   inline char *getMusicTrack() { return (music && music[0]) ? music : NULL; }
   inline char *getSuccess() { return success; }
   inline char *getFailure() { return failure; }
@@ -199,6 +206,8 @@ public:
   inline int getDepth() { return depth; } 
   inline char *getMapName() { return mapName; } 
   inline bool isEdited() { return edited; }
+  inline bool isReplayable() { return replayable; }
+  inline bool isReplay() { return storyLine && completed && replayable; }
   void reset();
 
   // these return true if the mission has been completed
