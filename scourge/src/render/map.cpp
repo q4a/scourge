@@ -1099,7 +1099,7 @@ void Map::draw() {
     for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
     for(int i = 0; i < laterCount; i++) doDrawShape(&later[i]);
     for(int i = 0; i < stencilCount; i++) 
-      if( isSecretDoor( stencil[i].pos ) )
+      if( isSecretDoor( stencil[i].pos ) || isDoor( stencil[i].shape ) )
           doDrawShape(&stencil[i]);
   } else {  
 
@@ -1569,7 +1569,14 @@ void Map::sortShapes( DrawLater *playerDrawLater,
       This is so that even if the wall extends below the player the entire
       length has the same characteristics.
     */
-    if( shapes[i].shape->getWidth() > shapes[i].shape->getDepth() ) {
+
+	Shape *shape = shapes[i].shape;
+	// for square-base shapes, look around for a wall-piece
+	if( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
+	  shape = lookAround( &shapes[i] );
+	}
+	
+	if( shape->getWidth() > shape->getDepth() ) {
       objX = playerDrawLater->xpos;
       objY = shapes[i].ypos;
     } else {
@@ -1591,6 +1598,35 @@ void Map::sortShapes( DrawLater *playerDrawLater,
     }
     shapes[i].inFront = b;
   }
+}
+
+Shape *Map::lookAround( DrawLater *later ) {
+  int x, y;
+  for( int i = 0; i < 4; i++ ) {
+	x = later->x - 1 - ( later->shape->getWidth() * i );
+	y = later->y;
+	Location *pos = getLocation( x, y, 0 );
+	if( pos != NULL && pos->shape && pos->shape->getWidth() != pos->shape->getDepth() && isLocationInLight( x, y, pos->shape ) ) {
+	  return pos->shape;
+	}
+	x = later->x + ( later->shape->getWidth() * ( i + 1 ) );
+	pos = getLocation( x, y, 0 );
+	if( pos != NULL && pos->shape && pos->shape->getWidth() != pos->shape->getDepth() && isLocationInLight( x, y, pos->shape ) ) {
+	  return pos->shape;
+	}
+	x = later->x;
+	y = later->y - ( later->shape->getDepth() * ( i + 1 ) );
+	pos = getLocation( x, y, 0 );
+	if( pos != NULL && pos->shape && pos->shape->getWidth() != pos->shape->getDepth() && isLocationInLight( x, y, pos->shape ) ) {
+	  return pos->shape;
+	}
+	y = later->y + 1 + ( later->shape->getDepth() * i );
+	pos = getLocation( x, y, 0 );
+	if( pos != NULL && pos->shape && pos->shape->getWidth() != pos->shape->getDepth() && isLocationInLight( x, y, pos->shape ) ) {
+	  return pos->shape;
+	}
+  }
+  return later->shape;
 }
 
 void Map::drawProjectiles() {
@@ -1759,11 +1795,16 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     
 
   } else {
-		if( later && later->pos && 
-				later->pos->outlineColor &&
-				!useShadow ) 
-			shape->outline( later->pos->outlineColor );
-		shape->draw();
+	if(later) {
+	  bool sides[6];
+	  findOccludedSides( later, sides );
+	  shape->setOccludedSides( sides );
+	}
+	if( later && later->pos && 
+		later->pos->outlineColor &&
+		!useShadow ) 
+	  shape->outline( later->pos->outlineColor );
+	shape->draw();
   }
   glPopName();
   glPopMatrix();
@@ -1772,7 +1813,79 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   // glPopAttrib();
 
   if(shape) ((GLShape*)shape)->useShadow = false;
-}                                                                     
+}
+                                               
+void Map::findOccludedSides( DrawLater *later, bool *sides ) {
+  if( colorAlreadySet || !later || !later->shape || !later->shape->isStencil() ) {
+	sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = 
+	  sides[Shape::S_SIDE] = sides[Shape::E_SIDE] = 
+	  sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
+	return;
+  }
+
+  sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = 
+	sides[Shape::S_SIDE] = sides[Shape::E_SIDE] = 
+	sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = false;
+
+  int x, y, chunkX, chunkY;
+  Location *pos;
+  for( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth() - 1; x++ ) {
+	chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
+	
+	y = later->y - later->pos->shape->getDepth();
+	chunkY = ( y - MAP_OFFSET ) / MAP_UNIT;
+	pos = getLocation( x, y, later->pos->z );
+	if( !pos || !pos->shape->isStencil() || !lightMap[chunkX][chunkY] ) {
+	  sides[Shape::N_SIDE] = true;
+	}
+	
+	y = later->y + 1;
+	chunkY = ( y - MAP_OFFSET ) / MAP_UNIT;
+	pos = getLocation( x, y, later->pos->z );
+	if( !pos || !pos->shape->isStencil() || !lightMap[chunkX][chunkY] ) {
+	  	  sides[Shape::S_SIDE] = true;
+	}
+	
+	if( sides[Shape::N_SIDE] && sides[Shape::S_SIDE] ) {
+	  break;
+	}
+  }
+
+
+  for( int y = later->pos->y - later->pos->shape->getDepth() + 1; y < later->pos->y; y++ ) {
+	chunkY = ( y - MAP_OFFSET ) / MAP_UNIT;
+	
+	x = later->x - 1;
+	chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
+	pos = getLocation( x, y, later->pos->z );
+	if( !pos || !pos->shape->isStencil() || !lightMap[chunkX][chunkY] ) {
+	  sides[Shape::W_SIDE] = true;
+	}
+	
+	x = later->x + later->pos->shape->getWidth();
+	chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
+	pos = getLocation( x, y, later->pos->z );
+	if( !pos || !pos->shape->isStencil() || !lightMap[chunkX][chunkY] ) {
+	  sides[Shape::E_SIDE] = true;
+	}
+	
+	if( sides[Shape::W_SIDE] && sides[Shape::E_SIDE] ) {
+	  break;
+	}
+  }
+
+
+  for( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth() - 1; x++ ) {
+	for( int y = later->pos->y - later->pos->shape->getDepth() + 1; y < later->pos->y; y++ ) {
+	  chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
+	  chunkY = ( y - MAP_OFFSET ) / MAP_UNIT;
+	  pos = getLocation( x, y, later->pos->z + later->pos->shape->getHeight() );
+	  if( !pos || !pos->shape->isStencil() || !lightMap[chunkX][chunkY] ) {
+		sides[Shape::TOP_SIDE] = true;
+	  }
+	}
+  }
+}
 
 bool Map::isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
   glPushMatrix();

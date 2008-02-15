@@ -496,6 +496,7 @@ private:
   void doDrawShape(float xpos2, float ypos2, float zpos2, 
            Shape *shape, GLuint name, int effect=0,
            DrawLater *later=NULL);
+  void findOccludedSides( DrawLater *later, bool *sides );
 
   bool isDoor(int x, int y);
   bool isDoor(Shape *shape);
@@ -733,6 +734,8 @@ protected:
   void getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy );
   void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
+
+  Shape *lookAround( DrawLater *later );
 
 };
 
