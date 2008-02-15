@@ -626,7 +626,7 @@ void Session::setCurrentMission( Mission *mission ) {
 	Mission *oldMission = currentMission;
 	currentMission = mission; 
 	getGameAdapter()->refreshInventoryUI();
-	if( oldMission != currentMission && currentMission && currentMission->isStoryLine() ) {
+	if( oldMission != currentMission && currentMission && currentMission->isStoryLine() && !currentMission->isReplay() ) {
 		if( chapterImage ) {
 			free( chapterImage ); 
 			chapterImage = NULL;
