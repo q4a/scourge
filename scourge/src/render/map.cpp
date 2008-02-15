@@ -3446,6 +3446,15 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
   FILE *fp = fopen( fileName.c_str(), "wb" );
   File *file = new ZipFile( fp, ZipFile::ZIP_WRITE );
   Persist::saveMap( file, info );
+
+  // Hack: In case a zero byte file is saved, delete it
+  fseek( fp, 0, SEEK_END );
+    if ( !ftell( fp ) ) {
+      fclose( fp );
+      remove( fileName.c_str() );
+      return;
+    }
+
   delete file;
 
   Persist::deleteMapInfo( info );
