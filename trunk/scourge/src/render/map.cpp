@@ -1816,7 +1816,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 }
                                                
 void Map::findOccludedSides( DrawLater *later, bool *sides ) {
-  if( colorAlreadySet || !later || !later->shape || !later->shape->isStencil() ) {
+  if( colorAlreadySet || !later || !later->shape || !later->shape->isStencil() || ( later->shape && isDoor( later->shape ) ) ) {
 	sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = 
 	  sides[Shape::S_SIDE] = sides[Shape::E_SIDE] = 
 	  sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
