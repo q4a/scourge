@@ -320,7 +320,8 @@ void Scourge::startMission( bool startInHq ) {
     bool mapCreated = createLevelMap( lastMission, fromRandomMap );
 		//if( inHq ) lastMission = NULL;
     if( mapCreated ) {
-      changingStory = goingDown = goingUp = false;
+
+	changingStory = goingDown = goingUp = false;
 
 			if( inHq ) addWanderingHeroes();
 
@@ -418,20 +419,18 @@ string Scourge::getCurrentMapName( const string& dirName, int depth, string* map
 	cerr << "final file name=" << s << endl;
 	return s;
 }
-
 string Scourge::getSavedMapName() {
 	// add a unique id or the mapname
 	string mapBaseName;
 	if( !session->getCurrentMission() ) {
 		mapBaseName = "hq";
 	} else if( session->getCurrentMission()->isStoryLine() ) {
-	  mapBaseName = "sl" + getBoard()->getStorylineIndex();
+		mapBaseName = session->getCurrentMission()->getMapName();
 	} else {
 		stringstream temp;
 		temp << std::hex << SDL_GetTicks();
 		mapBaseName = temp.str();
 	}
-		
 	return "_" + mapBaseName;	
 }
 
@@ -675,6 +674,8 @@ bool Scourge::loadMap( const string& mapName, bool fromRandomMap, bool absoluteP
 								absolutePath,
 								templateMapName );
 	cerr << "LOAD MAP result=" << result << endl;
+
+  visitedMaps.insert( mapName );
 
   linkMissionObjectives( &items, &creatures );
 
