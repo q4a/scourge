@@ -77,14 +77,19 @@ void ItemList::commonInit() {
       continue;
     }
 
-		// show only unidentified items?
-		if( unidentifiedOnly && item->isFullyIdentified() ) continue;
-		// show only items that need recharge?
-		if( needsRechargeOnly && ( item->getCurrentCharges() >= item->getRpgItem()->getMaxCharges() ) || !item->isMagicItem() ) continue;
-		// show only cursed items?
-		if( cursedOnly && !item->isCursed() ) continue;
-		// cursed items?
-		if( !allowCursed && item->isCursed() ) continue;
+    // show only cursed items?
+    if ( cursedOnly && !item->isCursed() ) {
+      continue;
+    // show only unidentified items?
+    } else if ( unidentifiedOnly && item->isFullyIdentified() ) {
+      continue;
+    // show only items that need recharge?
+    } else if ( needsRechargeOnly && ( ( item->getCurrentCharges() >= item->getRpgItem()->getMaxCharges() ) || !item->isMagicItem() ) ) {
+      continue;
+    // cursed items?
+    } else if ( !allowCursed && item->isCursed() ) {
+      continue;
+    }
 
     items.push_back( item );
 
