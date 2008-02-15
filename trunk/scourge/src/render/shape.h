@@ -39,14 +39,27 @@ private:
   bool outdoorShadow;
   bool wind;
   WindInfo *windInfo;
+  bool occludedSides[6];
 
 protected:
   int width, height, depth;
   
 public: 
+  enum {
+	TOP_SIDE=0,
+	BOTTOM_SIDE,
+	E_SIDE,
+	S_SIDE,
+	W_SIDE,
+	N_SIDE
+  };
+
 	Shape(int width, int depth, int height, char *name, int descriptionGroup);
 	Shape(Shape *shape);
 	virtual ~Shape();
+
+	void setOccludedSides( bool *sides );
+	inline bool *getOccludedSides() { return occludedSides; }
 
 	inline void setDebugGroundPos( int sx, int sy, int ex, int ey ) { 
 		this->groundSX = sx;

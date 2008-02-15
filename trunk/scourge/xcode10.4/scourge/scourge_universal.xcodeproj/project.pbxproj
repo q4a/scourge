@@ -37,6 +37,12 @@
 		1400494E0C5BDB4000DA1D9C /* binreloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 1400494C0C5BDB4000DA1D9C /* binreloc.h */; };
 		140049510C5BDB9D00DA1D9C /* fontmgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1400494F0C5BDB9D00DA1D9C /* fontmgr.cpp */; };
 		140049520C5BDB9D00DA1D9C /* fontmgr.h in Headers */ = {isa = PBXBuildFile; fileRef = 140049500C5BDB9D00DA1D9C /* fontmgr.h */; };
+		146D11B80D6011360035537D /* identifydialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 146D11B20D6011360035537D /* identifydialog.cpp */; };
+		146D11B90D6011360035537D /* identifydialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 146D11B30D6011360035537D /* identifydialog.h */; };
+		146D11BA0D6011360035537D /* rechargedialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 146D11B40D6011360035537D /* rechargedialog.cpp */; };
+		146D11BB0D6011360035537D /* rechargedialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 146D11B50D6011360035537D /* rechargedialog.h */; };
+		146D11BC0D6011360035537D /* uncursedialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 146D11B60D6011360035537D /* uncursedialog.cpp */; };
+		146D11BD0D6011360035537D /* uncursedialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 146D11B70D6011360035537D /* uncursedialog.h */; };
 		147CFEF10C924F1700B725E9 /* pathmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147CFEEF0C924F1700B725E9 /* pathmanager.cpp */; };
 		147CFEF20C924F1700B725E9 /* pathmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 147CFEF00C924F1700B725E9 /* pathmanager.h */; };
 		14B023280D01D07600C144E6 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B023270D01D07600C144E6 /* SDL_image.framework */; };
@@ -431,6 +437,12 @@
 		1400494C0C5BDB4000DA1D9C /* binreloc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = binreloc.h; path = ../../src/common/binreloc.h; sourceTree = SOURCE_ROOT; };
 		1400494F0C5BDB9D00DA1D9C /* fontmgr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = fontmgr.cpp; path = ../../src/freetype/fontmgr.cpp; sourceTree = SOURCE_ROOT; };
 		140049500C5BDB9D00DA1D9C /* fontmgr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = fontmgr.h; path = ../../src/freetype/fontmgr.h; sourceTree = SOURCE_ROOT; };
+		146D11B20D6011360035537D /* identifydialog.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = identifydialog.cpp; path = ../../src/identifydialog.cpp; sourceTree = SOURCE_ROOT; };
+		146D11B30D6011360035537D /* identifydialog.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = identifydialog.h; path = ../../src/identifydialog.h; sourceTree = SOURCE_ROOT; };
+		146D11B40D6011360035537D /* rechargedialog.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = rechargedialog.cpp; path = ../../src/rechargedialog.cpp; sourceTree = SOURCE_ROOT; };
+		146D11B50D6011360035537D /* rechargedialog.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = rechargedialog.h; path = ../../src/rechargedialog.h; sourceTree = SOURCE_ROOT; };
+		146D11B60D6011360035537D /* uncursedialog.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = uncursedialog.cpp; path = ../../src/uncursedialog.cpp; sourceTree = SOURCE_ROOT; };
+		146D11B70D6011360035537D /* uncursedialog.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = uncursedialog.h; path = ../../src/uncursedialog.h; sourceTree = SOURCE_ROOT; };
 		147CFEEF0C924F1700B725E9 /* pathmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = pathmanager.cpp; path = ../../src/pathmanager.cpp; sourceTree = SOURCE_ROOT; };
 		147CFEF00C924F1700B725E9 /* pathmanager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pathmanager.h; path = ../../src/pathmanager.h; sourceTree = SOURCE_ROOT; };
 		14B023270D01D07600C144E6 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = ../Frameworks/SDL_image.framework; sourceTree = SOURCE_ROOT; };
@@ -872,6 +884,12 @@
 		29B97314FDCFA39411CA2CEA /* scourge */ = {
 			isa = PBXGroup;
 			children = (
+				146D11B20D6011360035537D /* identifydialog.cpp */,
+				146D11B30D6011360035537D /* identifydialog.h */,
+				146D11B40D6011360035537D /* rechargedialog.cpp */,
+				146D11B50D6011360035537D /* rechargedialog.h */,
+				146D11B60D6011360035537D /* uncursedialog.cpp */,
+				146D11B70D6011360035537D /* uncursedialog.h */,
 				147CFEEF0C924F1700B725E9 /* pathmanager.cpp */,
 				147CFEF00C924F1700B725E9 /* pathmanager.h */,
 				90566B020B14FBA200DE08E5 /* etc */,
@@ -1661,6 +1679,9 @@
 				1400494E0C5BDB4000DA1D9C /* binreloc.h in Headers */,
 				140049520C5BDB9D00DA1D9C /* fontmgr.h in Headers */,
 				147CFEF20C924F1700B725E9 /* pathmanager.h in Headers */,
+				146D11B90D6011360035537D /* identifydialog.h in Headers */,
+				146D11BB0D6011360035537D /* rechargedialog.h in Headers */,
+				146D11BD0D6011360035537D /* uncursedialog.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1877,6 +1898,9 @@
 				1400494D0C5BDB4000DA1D9C /* binreloc.c in Sources */,
 				140049510C5BDB9D00DA1D9C /* fontmgr.cpp in Sources */,
 				147CFEF10C924F1700B725E9 /* pathmanager.cpp in Sources */,
+				146D11B80D6011360035537D /* identifydialog.cpp in Sources */,
+				146D11BA0D6011360035537D /* rechargedialog.cpp in Sources */,
+				146D11BC0D6011360035537D /* uncursedialog.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

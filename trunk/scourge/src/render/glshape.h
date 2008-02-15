@@ -199,7 +199,7 @@ protected:
   void initSurfaces();
   void drawShadow();
   void createShadowList( GLuint listName );
-  void createBodyList( GLuint listName );
+  void createBodyList( int side, GLuint listName );
   void createTopList( GLuint listName );
 };
 

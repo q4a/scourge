@@ -31,6 +31,7 @@ Shape::Shape(int width, int depth, int height, char *name, int descriptionGroup)
   outdoorShadow = false;
   wind = false;
   windInfo = NULL;
+  for( int i = 0; i < 6; i++ ) occludedSides[i] = true;
 }
 
 Shape::Shape(Shape *shape) {
@@ -46,9 +47,12 @@ Shape::Shape(Shape *shape) {
   outdoorShadow = false;
   wind = false;
   windInfo = NULL;
+  for( int i = 0; i < 6; i++ ) occludedSides[i] = true;
 }
 
 Shape::~Shape(){
 }
 
-
+void Shape::setOccludedSides( bool *sides ) {
+  memcpy( this->occludedSides, sides, 6 * sizeof( bool ) );
+}
