@@ -2852,7 +2852,7 @@ Color *Scourge::getOutlineColor( Location *pos ) {
 
 #define HQ_MISSION_SAVED_NAME "__HQ__"
 
-bool Scourge::saveGame( Session *session, string& dirName, char *title ) {  
+bool Scourge::saveGame( Session *session, const string& dirName, const string& title ) {
   {
 		string path = get_file_name( dirName + "/savegame.dat" );
 		cerr << "Saving: " << path << endl;
@@ -2866,7 +2866,7 @@ bool Scourge::saveGame( Session *session, string& dirName, char *title ) {
     file->write( &n );
 
 		Uint8 savedTitle[3000];
-		strncpy( (char*)savedTitle, title, 2999 );
+		strncpy( (char*)savedTitle, title.c_str(), 2999 );
 		savedTitle[2999] = '\0';
 		file->write( savedTitle, 3000 );
 
@@ -3457,7 +3457,7 @@ void Scourge::askToUploadScore() {
 	confirmUpload->setVisible( true );
 }
 
-bool Scourge::saveScoreid( string& dirName, char *p ) {
+bool Scourge::saveScoreid( const string& dirName, char *p ) {
 	string path = get_file_name( dirName + "/scoreid.dat" );
 
 	FILE *fp = fopen( path.c_str(), "w" );
@@ -3470,7 +3470,7 @@ bool Scourge::saveScoreid( string& dirName, char *p ) {
 	return true;
 }
 
-bool Scourge::loadScoreid( string& dirName, char *p ) {
+bool Scourge::loadScoreid( const string& dirName, char *p ) {
 	string path = get_file_name( dirName + "/scoreid.dat" );
 
 	FILE *fp = fopen( path.c_str(), "r" );

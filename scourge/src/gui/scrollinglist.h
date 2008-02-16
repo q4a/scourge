@@ -76,10 +76,13 @@ class ScrollingList : public Widget {
 	inline bool getAllowMultipleSelection() { return allowMultipleSelection; }
 	//unused: inline int getLineCount() { return list.size(); }
   void setLines(int count, std::string const s[], const Color *colors=NULL, const GLuint *icon=NULL);
-	inline const char *getLine(int index) { return list[index].c_str(); }
+	void setLines(const std::vector<std::string>::iterator begin, const std::vector<std::string>::iterator end, const Color *colors=NULL, const GLuint *icon=NULL);
+	void setLine(const std::string& toPush);
+	void setLine(size_t pos, const std::string& toPush);
+	inline const std::string& getLine(int index) { return list[index]; }
 
   inline int getSelectedLine() { return ( selectedLine!=NULL ? selectedLine[ 0 ] : -1 ); }
-	void setSelectedLine( int n );
+	void setSelectedLine( size_t n );
 	inline bool isSelected( int line ) { 
     if( selectedLine == NULL ) {
 			return false; 
@@ -119,6 +122,11 @@ class ScrollingList : public Widget {
 	void drawIcon( int x, int y, GLuint icon, Widget *parent );  
 	void moveSelectionUp();
 	void moveSelectionDown();
+
+	/**
+	* a common function that sets up the internal state after altering the list
+	*/
+	void setupHeight();
 
 	/**
 	* Prints s

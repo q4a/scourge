@@ -65,10 +65,33 @@ void ScrollingList::setLines(int count, string const s[], const Color *colors, c
 		list.push_back(s[i]);
 	this->colors = colors;
 	this->icons = icons;
+	setupHeight();
+}
+
+void ScrollingList::setLines(const vector<string>::iterator begin, const vector<string>::iterator end, const Color *colors, const GLuint *icons) {
+	textWidthCache.clear();
+	list.clear();
+	list.insert(list.end(), begin, end);
+	this->colors = colors;
+	this->icons = icons;
+	setupHeight();
+}
+
+void ScrollingList::setLine(const string& toPush) {
+	list.push_back(toPush);
+	setupHeight();
+}
+
+void ScrollingList::setLine(size_t pos, const string& toPush) {
+	if( pos >= 0 && pos < list.size()) {
+		list[pos] = toPush;
+		setupHeight();
+	}
+}
+
+void ScrollingList::setupHeight() {
 	listHeight = list.size() * lineHeight + 5;
-	scrollerHeight = (listHeight <= getHeight() ? 
-					getHeight() : 
-					(getHeight() * getHeight()) / listHeight);
+	scrollerHeight = (listHeight <= getHeight() ? getHeight() : (getHeight() * getHeight()) / listHeight);
 	// set a min. height for scrollerHeight
 	if(scrollerHeight < 20) scrollerHeight = 20;
 	// reset the scroller
@@ -145,7 +168,7 @@ void ScrollingList::drawWidget(Widget *parent) {
 			}
 		}
 		int ypos;
-    for(int i = 0; i < (int)list.size(); i++) {
+		for(size_t i = 0; i < list.size(); i++) {
 			ypos = textPos + (i + 1) * lineHeight;
 			// writing text is expensive, only print what's visible
 			if( ypos >= 0 && ypos < getHeight() + lineHeight ) {
@@ -325,7 +348,7 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
 
 int ScrollingList::getLineAtPoint( int x, int y ) {
 	int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
-	int n = (int)((float)(y - (getY() + textPos)) / (float)lineHeight);
+	size_t n = (size_t)((float)(y - (getY() + textPos)) / (float)lineHeight);
 	if( !list.empty() && n >= 0 && n < (int)list.size() ) {
 		return n;
 	} else {
@@ -469,9 +492,10 @@ void ScrollingList::removeEffects(Widget *parent) {
 	inside = false;
 }
 
-void ScrollingList::setSelectedLine(int line) {
-  if( selectedLine == NULL ) return;
-	selectedLine[ 0 ] = (line < (int)list.size() ? line : list.size() - 1);
+void ScrollingList::setSelectedLine(size_t line) {
+	if( selectedLine == NULL )
+		return;
+	selectedLine[ 0 ] = (line < list.size() ? line : list.size() - 1);
 	selectedLineCount = 1;
 
 	// fixme: should check if line is already visible

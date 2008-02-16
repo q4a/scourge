@@ -35,7 +35,6 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   controlsLoaded = false;
   videoLoaded = false;
   gameSettingsLoaded = false;
-  nbControlLines = 0;
   waitingForNewKey = false;
   ignoreKeyUp = false;
 
@@ -173,11 +172,8 @@ void OptionsMenu::loadGameSettings(){
 // line i must correspond to engine action i if we want this scrolling list to work
 void OptionsMenu::loadControls(){
     for (int i = 0; i < ENGINE_ACTION_COUNT; i++){
-		controlLines[i] = uc->getEngineActionDescription(i);
-		controlLines[i] += "           ";
-		controlLines[i] += uc->getEngineActionKeyName(i);
+		controlBindingsList->setLine(uc->getEngineActionDescription(i) + string("           ") + uc->getEngineActionKeyName(i) );
     }
-    controlBindingsList->setLines(ENGINE_ACTION_COUNT, controlLines);
 }
 
 void OptionsMenu::loadVideo(){
@@ -411,19 +407,12 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
 	case SDL_KEYDOWN:
 		if(waitingForNewKey){
 			if(event->key.keysym.sym != SDLK_ESCAPE){
-				int ind;
-				ind = controlBindingsList->getSelectedLine();
+				int ind = controlBindingsList->getSelectedLine();
 				string s1 = uc->getEngineActionDescription(ind);
 				string s2 = SDL_GetKeyName(event->key.keysym.sym);
-				for (unsigned int i = 0; i < s2.length(); i++){
-					if(s2[i] == ' '){
-						s2[i] = '_';
-					}
-				}
+				replace(s2.begin(), s2.end(), ' ', '_');
 				uc->setKeyForEngineAction(s2, ind); // update userConfig too
-				s1 = s1 + "           " + s2;
-				controlLines[ind] = s1;
-				controlBindingsList->setLines(nbControlLines, controlLines);
+				controlBindingsList->setLine(ind, s1 + "           " + s2);
 				controlBindingsList->setSelectedLine(ind);
 			} else ignoreKeyUp = true;
 			//waitingLabel->setText(" ");
@@ -433,16 +422,9 @@ bool OptionsMenu::handleEvent(SDL_Event *event) {
 			switch(event->key.keysym.sym) {
 			case SDLK_RETURN:
 				if(selectedMode == CONTROLS){
-					//waitingLabel->setText("Waiting for new key ... Press ESCAPE to cancel");        
 					changeControlButton->setLabel( Constants::getMessage( Constants::WAITING_FOR_KEY) );
 					waitingForNewKey = true;  
 				}
-        /*case SDLK_DOWN:
-		  if(selectedMode == CONTROLS){
-		  int ind = controlBindingsList->getSelectedLine();
-		  ind ++;
-		  controlBindingsList->setSelectedLine(ind);
-		  }*/
 		
 				return true;
 				default: break;
@@ -461,7 +443,6 @@ OptionsMenu::~OptionsMenu(){
     if(videoResolutionML) delete videoResolutionML;
     if(controlBindingsList) delete controlBindingsList;
     if(cards) delete cards;
-
 }
 
 void OptionsMenu::show() {
