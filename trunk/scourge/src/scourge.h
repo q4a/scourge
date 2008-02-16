@@ -591,7 +591,7 @@ public:
 
   void mouseClickWhileExiting();
 
-  bool saveGame( Session *session, std::string& dirName, char *title );  
+  bool saveGame( Session *session, const std::string& dirName, const std::string& title );
   bool loadGame( Session *session, std::string& dirName, char *error );	
 
 	RenderedCreature *createWanderingHero( int level );
@@ -695,8 +695,8 @@ protected:
 
 	void addWanderingHeroes();
 
-	bool saveScoreid( std::string& dirName, char *p );
-	bool loadScoreid( std::string& dirName, char *p );
+	bool saveScoreid( const std::string& dirName, char *p );
+	bool loadScoreid( const std::string& dirName, char *p );
 
  private:
 	TextScroller *descriptionScroller;

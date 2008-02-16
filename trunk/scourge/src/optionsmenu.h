@@ -46,14 +46,12 @@ class UserConfiguration;
 class OptionsMenu {
 private:
 
-	std::string controlLines[ENGINE_ACTION_COUNT]; // move it to function loadControls() ?
   Scourge *scourge;
   UserConfiguration * uc;
   bool showDebug;
   bool controlsLoaded;
   bool videoLoaded; 
   bool gameSettingsLoaded;
-  int nbControlLines;
   bool waitingForNewKey;
   bool ignoreKeyUp;
     
@@ -113,8 +111,6 @@ public:
   void show();
   void hide();
   inline bool isVisible() { return mainWin->isVisible(); }    
-
- protected:
 };
 
 #endif

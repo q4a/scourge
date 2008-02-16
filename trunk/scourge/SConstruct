@@ -11,7 +11,7 @@ env = Environment()
 opts = Options()
 
 # OPTION debug
-opts.Add(BoolOption('debug', 'Set to yes (or 1) to build for debug', 'no'))
+opts.Add(BoolOption('debug', 'Set to yes (or 1) to build for debug', 'yes'))
 # OPTION strip
 opts.Add(BoolOption('strip', 'Set to no (or 0) to avoid stripping binaries', 'yes'))
 # OPTION warning
