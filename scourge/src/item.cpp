@@ -1299,6 +1299,7 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 
 void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h ) {
 	if( isIdentified() ) {
+		/*
 		glDisable( GL_TEXTURE_2D );
 		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r,
 							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g,
@@ -1312,6 +1313,7 @@ void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, i
 		glEnd();
 		glEnable( GL_TEXTURE_2D );
 		glColor4f( 1, 1, 1, 1 );
+		*/
 	} else {
 		scourge->getSDLHandler()->texPrint( x + 2, y + 12, "?" );
 	}
