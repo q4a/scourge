@@ -500,6 +500,7 @@ private:
 
   bool isDoor(int x, int y);
   bool isDoor(Shape *shape);
+  bool isDoorType( Shape *shape, bool includeCorner=true );
 
   // ====================================================================
   // Locked doors/chests code
@@ -735,7 +736,8 @@ protected:
   void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
 
-  Shape *lookAround( DrawLater *later );
+  // return true if shapes are placed to the E or W of this shape
+  bool lookAround( DrawLater *later );
 
 };
 

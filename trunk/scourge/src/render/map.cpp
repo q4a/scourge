@@ -1057,13 +1057,13 @@ void Map::preDraw() {
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
     if( settings->isPlayerEnabled() ) {
-      snprintf(mapDebugStr, DEBUG_SIZE, "E=%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d", 
-              (int)currentEffectsMap.size(),
-              ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
-              ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
-              (useFrustum ? "*" : ""),
-              chunkCount, ((cex - csx)*(cey - csy)),
-              csx, cex, csy, cey, shapeCount, selectedTrapIndex );
+      snprintf(mapDebugStr, DEBUG_SIZE, "c=%d,%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d", 
+			   cursorFlatMapX, cursorFlatMapY + 1,
+			   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
+			   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
+			   (useFrustum ? "*" : ""),
+			   chunkCount, ((cex - csx)*(cey - csy)),
+			   csx, cex, csy, cey, shapeCount, selectedTrapIndex );
       //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
     } else {
       snprintf(mapDebugStr, DEBUG_SIZE, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
@@ -1571,12 +1571,13 @@ void Map::sortShapes( DrawLater *playerDrawLater,
     */
 
 	Shape *shape = shapes[i].shape;
+	bool isHorizontal = shape->getWidth() > shape->getDepth();
 	// for square-base shapes, look around for a wall-piece
 	if( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
-	  shape = lookAround( &shapes[i] );
+	  isHorizontal = lookAround( &shapes[i] );
 	}
 	
-	if( shape->getWidth() > shape->getDepth() ) {
+	if( isHorizontal ) {
       objX = playerDrawLater->xpos;
       objY = shapes[i].ypos;
     } else {
@@ -1600,33 +1601,23 @@ void Map::sortShapes( DrawLater *playerDrawLater,
   }
 }
 
-Shape *Map::lookAround( DrawLater *later ) {
+// return true if horizontal
+bool Map::lookAround( DrawLater *later ) {
   int x, y;
-  for( int i = 0; i < 4; i++ ) {
-	x = later->x - 1 - ( later->shape->getWidth() * i );
+  //for( int i = 0; i < 4; i++ ) {
+	x = later->x - 1;
 	y = later->y;
 	Location *pos = getLocation( x, y, 0 );
-	if( pos != NULL && pos->shape && pos->shape->getWidth() != pos->shape->getDepth() && isLocationInLight( x, y, pos->shape ) ) {
-	  return pos->shape;
+	if( pos != NULL && ( isLocationInLight( x, y, pos->shape ) || isDoorType( pos->shape, false ) ) ) {
+	  return true;
 	}
-	x = later->x + ( later->shape->getWidth() * ( i + 1 ) );
+	x = later->x + later->shape->getWidth();
 	pos = getLocation( x, y, 0 );
-	if( pos != NULL && pos->shape && pos->shape->getWidth() != pos->shape->getDepth() && isLocationInLight( x, y, pos->shape ) ) {
-	  return pos->shape;
+	if( pos != NULL && ( isLocationInLight( x, y, pos->shape ) || isDoorType( pos->shape, false ) ) ) {
+	  return true;
 	}
-	x = later->x;
-	y = later->y - ( later->shape->getDepth() * ( i + 1 ) );
-	pos = getLocation( x, y, 0 );
-	if( pos != NULL && pos->shape && pos->shape->getWidth() != pos->shape->getDepth() && isLocationInLight( x, y, pos->shape ) ) {
-	  return pos->shape;
-	}
-	y = later->y + 1 + ( later->shape->getDepth() * i );
-	pos = getLocation( x, y, 0 );
-	if( pos != NULL && pos->shape && pos->shape->getWidth() != pos->shape->getDepth() && isLocationInLight( x, y, pos->shape ) ) {
-	  return pos->shape;
-	}
-  }
-  return later->shape;
+	//}
+  return false;
 }
 
 void Map::drawProjectiles() {
@@ -1816,7 +1807,9 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 }
                                                
 void Map::findOccludedSides( DrawLater *later, bool *sides ) {
-  if( colorAlreadySet || !later || !later->shape || !later->shape->isStencil() || ( later->shape && isDoor( later->shape ) ) ) {
+  if( colorAlreadySet || !later || !later->shape || 
+	  !later->shape->isStencil() || 
+	  ( later->shape && isDoor( later->shape ) ) ) {
 	sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = 
 	  sides[Shape::S_SIDE] = sides[Shape::E_SIDE] = 
 	  sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
@@ -1827,22 +1820,18 @@ void Map::findOccludedSides( DrawLater *later, bool *sides ) {
 	sides[Shape::S_SIDE] = sides[Shape::E_SIDE] = 
 	sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = false;
 
-  int x, y, chunkX, chunkY;
+  int x, y;
   Location *pos;
-  for( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth() - 1; x++ ) {
-	chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
-	
+  for( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
 	y = later->y - later->pos->shape->getDepth();
-	chunkY = ( y - MAP_OFFSET ) / MAP_UNIT;
 	pos = getLocation( x, y, later->pos->z );
-	if( !pos || !pos->shape->isStencil() || !lightMap[chunkX][chunkY] ) {
+	if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
 	  sides[Shape::N_SIDE] = true;
 	}
 	
 	y = later->y + 1;
-	chunkY = ( y - MAP_OFFSET ) / MAP_UNIT;
 	pos = getLocation( x, y, later->pos->z );
-	if( !pos || !pos->shape->isStencil() || !lightMap[chunkX][chunkY] ) {
+	if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
 	  	  sides[Shape::S_SIDE] = true;
 	}
 	
@@ -1852,20 +1841,16 @@ void Map::findOccludedSides( DrawLater *later, bool *sides ) {
   }
 
 
-  for( int y = later->pos->y - later->pos->shape->getDepth() + 1; y < later->pos->y; y++ ) {
-	chunkY = ( y - MAP_OFFSET ) / MAP_UNIT;
-	
+  for( int y = later->pos->y - later->pos->shape->getDepth() + 1; y <= later->pos->y; y++ ) {
 	x = later->x - 1;
-	chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
 	pos = getLocation( x, y, later->pos->z );
-	if( !pos || !pos->shape->isStencil() || !lightMap[chunkX][chunkY] ) {
+	if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
 	  sides[Shape::W_SIDE] = true;
 	}
 	
 	x = later->x + later->pos->shape->getWidth();
-	chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
 	pos = getLocation( x, y, later->pos->z );
-	if( !pos || !pos->shape->isStencil() || !lightMap[chunkX][chunkY] ) {
+	if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
 	  sides[Shape::E_SIDE] = true;
 	}
 	
@@ -1875,13 +1860,12 @@ void Map::findOccludedSides( DrawLater *later, bool *sides ) {
   }
 
 
-  for( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth() - 1; x++ ) {
-	for( int y = later->pos->y - later->pos->shape->getDepth() + 1; y < later->pos->y; y++ ) {
-	  chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
-	  chunkY = ( y - MAP_OFFSET ) / MAP_UNIT;
+  for( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
+	for( int y = later->pos->y - later->pos->shape->getDepth() + 1; !sides[Shape::TOP_SIDE] && y <= later->pos->y; y++ ) {
 	  pos = getLocation( x, y, later->pos->z + later->pos->shape->getHeight() );
-	  if( !pos || !pos->shape->isStencil() || !lightMap[chunkX][chunkY] ) {
+	  if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
 		sides[Shape::TOP_SIDE] = true;
+		break;
 	  }
 	}
   }
@@ -2941,6 +2925,15 @@ bool Map::isDoor(int tx, int ty) {
 bool Map::isDoor(Shape *shape) {
   return(shape == shapes->findShapeByName("EW_DOOR") ||
          shape == shapes->findShapeByName("NS_DOOR"));
+}
+
+bool Map::isDoorType( Shape *shape, bool includeCorner ) {
+  return(shape == shapes->findShapeByName("EW_DOOR") ||
+         shape == shapes->findShapeByName("NS_DOOR") ||
+		 shape == shapes->findShapeByName("EW_DOOR_TOP") || 
+		 shape == shapes->findShapeByName("NS_DOOR_TOP") || 
+		 shape == shapes->findShapeByName("DOOR_SIDE") || 
+		 ( includeCorner && shape == shapes->findShapeByName("CORNER") ) );
 }
 
 void Map::setLocked( int doorX, int doorY, int doorZ, bool value ) {
