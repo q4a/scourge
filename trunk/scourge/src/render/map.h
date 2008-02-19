@@ -736,8 +736,7 @@ protected:
   void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
 
-  // return true if shapes are placed to the E or W of this shape
-  bool lookAround( DrawLater *later );
+  bool isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, std::map< std::string, bool > *cache, GLdouble *mm, GLdouble *pm, GLint *vp );
 
 };
 
