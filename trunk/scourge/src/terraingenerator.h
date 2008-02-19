@@ -66,10 +66,10 @@ protected:
   Sint16 *ff;
   int ffCount;
 
-  typedef struct _Room {
+  struct Room {
     int x, y, w, h;
     int valueBonus;
-  } Room;
+  };
   Room room[200];
 
 

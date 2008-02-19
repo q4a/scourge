@@ -66,11 +66,9 @@ Server::~Server() {
   stopThread = true;
 
   // stop the client threads
-  for(int i = 0; i < clientCount; i++) {
-    if(clients[i]) {
-      delete clients[i];
-    }
-  }
+	for(int i = 0; i < clientCount; i++) {
+		delete clients[i];
+	}
 
   // stop the server thread
   cerr << "* Stopping server thread." << endl;

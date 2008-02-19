@@ -33,11 +33,11 @@ class CombatTest {
 public:
   CombatTest();
   ~CombatTest();
-  static bool executeTests( Session *session, char *path );
+  static bool executeTests( Session *session, char const* path );
 
 protected:
-  static bool fight( char *path,
-                     char *filename,
+  static bool fight( char const* path,
+                     char const* filename,
                      Session *session, 
                      Creature *attacker, 
                      Item *weapon,

@@ -49,13 +49,13 @@ using namespace std;
 #define STARTING_PARTY_SIZE 1
 #define LEVEL STARTING_PARTY_LEVEL
 
-typedef struct _Preset {
+struct Preset {
   char name[80];
   int deity;
   int charClass;
   int portrait;
   int model;
-} Preset;
+};
 
 Preset presets[] = {
   { "Lezidor",     4, 4, 7, 0 }, // rogue

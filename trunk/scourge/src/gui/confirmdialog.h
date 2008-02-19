@@ -45,7 +45,7 @@ public:
 	Button *okButton;
 	Button *cancelButton;
 
-	ConfirmDialog( ScourgeGui *scourgeGui, char *title=NULL );
+	ConfirmDialog( ScourgeGui *scourgeGui, char const* title=NULL );
 	~ConfirmDialog();
 	
 	void setText( char *text );

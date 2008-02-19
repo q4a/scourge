@@ -146,7 +146,7 @@ void TrainDialog::updateUI() {
 		list->setLines( player->getCharacter()->getChildCount(), text );
 		description->setText( player->getCharacter()->getChildCount() > 0 ?
 													player->getCharacter()->getChild( 0 )->getDescription() :
-													(char*)"" );
+													"" );
 	}
 }
 

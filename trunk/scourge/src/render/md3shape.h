@@ -32,13 +32,13 @@
 class ModelLoader;
 
 // this has to be unique per model instance (so we can reuse md3-s)
-typedef struct _AnimInfo {
+struct AnimInfo {
 	int currentAnim;					// The current index into pAnimations list 
 	int currentFrame;					// The current frame of the current animation 
 	int nextFrame;						// The next frame of animation to interpolate too
 	float t;							// The ratio of 0.0f to 1.0f between each key frame
 	float lastTime;						// This stores the last time that was stored
-} AnimInfo;
+};
 
 class MD3Shape : public AnimatedShape  {
 

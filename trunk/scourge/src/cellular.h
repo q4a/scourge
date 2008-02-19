@@ -28,16 +28,16 @@
 
 #define MAX_ROOM_COUNT 100
 
-typedef struct _NodePoint {
+struct NodePoint {
   bool wall, island;
   int room;
   bool seen;
-} NodePoint;
+};
 
-typedef struct _Room {
+struct Room {
   int size;
   int x,y;
-} Room;
+};
 
 
 class CellularAutomaton {

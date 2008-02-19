@@ -32,7 +32,7 @@
 // -=K=- since it was most popular header i made most porting here
 #ifdef _MSC_VER // i only checked for MSVC 8 portability  
 	// turn numeric types conversion warnings OFF; like size_t <-> int; 
-#	pragma warning(disable : 4267 4244 4800) 
+#	pragma warning(disable : 4267 4244) //4800) but not odd usage of bool  
 	// to be sure that these are included *before* following defines
 #	include <string.h>
 #	include <cstdio>
@@ -278,7 +278,7 @@ class Color {
   *@author Gabor Torok
   */
 
-typedef struct _ParticleStruct {
+struct ParticleStruct {
   GLfloat x, y, z, startZ;
   GLint height;
   int life;
@@ -290,7 +290,7 @@ typedef struct _ParticleStruct {
   bool tail;
   bool untilGround;
   Color tailColor;
-} ParticleStruct;
+};
 
 #define SINGLE_TARGET 0
 #define GROUP_TARGET 1
@@ -483,7 +483,7 @@ public:
   };
   static const char *POTION_SKILL_NAMES[];
   // return -1 on failure, or (-2 - i) on success
-  static int getPotionSkillByName(char *p);
+  static int getPotionSkillByName(char const* p);
 
   enum {
     LESSER_MAGIC_ITEM=0,
@@ -517,7 +517,7 @@ public:
   static const int DAMAGE_DURATION = 500;
 
   static const char *EFFECT_NAMES[];
-  inline static int getEffectByName(char *s) {
+  inline static int getEffectByName(char const* s) {
 	for(int i = 0; i < EFFECT_COUNT; i++)
 			if(!strcmp(s, EFFECT_NAMES[i]))
 				return i;
@@ -617,11 +617,13 @@ public:
   static int readLine(char *line, FILE *fp);
 
   inline static float toRadians(float angle) {
-		return 3.14159 * (angle / 180.0f);
+		// 2.13.3(1) The type of a floating literal is double unless explicitly specified by a suffix.
+		// explicit float conversion to silence warning
+		return (float)(3.14159 * (angle / 180.0f));
   }
 
   inline static float toAngle(float rad) {
-		return (180.0f * rad) / 3.14159;
+		return (float)((180.0f * rad) / 3.14159);
   }
 
 	static void getQuadrantAndAngle( float nx, float ny, int *q, float *angle );
@@ -703,6 +705,9 @@ public:
 typedef unsigned char BYTE;
 #define MAX_TEXTURES 100								// The maximum amount of textures to load
 
+// -=K=-: to avoid using mallocs lets keep Texture data in vectors
+typedef std::vector<GLubyte> TextureData;
+
 // This is our face structure.  This is is used for indexing into the vertex
 // and texture coordinate arrays.  From this information we know which vertices
 // from our vertex array go to which face, along with the correct texture coordinates.
@@ -776,7 +781,7 @@ struct t3DModel
 		//float lastTime;						// This stores the last time that was stored
 		
 		int numOfTags;						// This stores the number of tags in the model
-		t3DModel	**pLinks;				// This stores a list of pointers that are linked to this model
+	std::vector<t3DModel*> pLinks;				// This stores a list of pointers that are linked to this model
 		struct tMd3Tag		*pTags;			// This stores all the tags for the model animations
     float movex;                        // Needed to draw the model
     float movey;
@@ -799,5 +804,6 @@ extern void ComputeNormals(t3DModel *pModel);
 extern void CreateTexture(GLuint textureArray[],char *strFileName,int textureID);
 extern void swap(unsigned char & a, unsigned char & b);
 extern void findNormal( CVector3 *p1, CVector3 *p2, CVector3 *p3, CVector3 *normal );
+
 
 #endif

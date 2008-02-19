@@ -68,7 +68,7 @@ Button *CardContainer::createButton(int x1, int y1, int x2, int y2, char *label,
 	}
 } 
 
-Label * CardContainer::createLabel(int x1, int x2, char * label, int card, int color){
+Label * CardContainer::createLabel(int x1, int x2, char const* label, int card, int color){
     if(widgetCount[card] < MAX_WIDGETS){
         Label *l;
         l = window->createLabel(x1, x2, label, color);

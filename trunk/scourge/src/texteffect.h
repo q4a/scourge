@@ -29,13 +29,13 @@ class Scourge;
 
 using namespace std;
 
-typedef struct _TextItemParticle {
+struct TextItemParticle {
   int life;
   float x, y;
   int r, g, b;
   float dir, step;
   float zoom;
-} TextItemParticle;
+};
 
 class TextEffect {
 private:
@@ -50,7 +50,7 @@ private:
   Uint32 lastTickMenu;
 
 public:
-  TextEffect( Scourge *scourge, int x, int y, char *text );
+  TextEffect( Scourge *scourge, int x, int y, char const* text );
   ~TextEffect();
 
   inline void setActive( bool b ) { this->active = b; }

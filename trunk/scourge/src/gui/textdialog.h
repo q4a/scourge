@@ -44,7 +44,7 @@ public:
 	Window *win;
 	Button *okButton;
 
-	TextDialog( ScourgeGui *scourgeGui, char *title=NULL );
+	TextDialog( ScourgeGui *scourgeGui, char const* title=NULL );
 	~TextDialog();
 	
 	void setText( char *text );

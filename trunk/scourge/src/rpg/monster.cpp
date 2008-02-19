@@ -295,7 +295,7 @@ Monster *Monster::getRandomMonster(int level) {
   return rareList[index];
 }
 
-Monster *Monster::getMonsterByName(char *name) {
+Monster *Monster::getMonsterByName( char const* name ) {
   string s = name;
   if(monstersByName.find(s) == monstersByName.end()) {
     cerr << "Warning: can't find monster " << name << endl;

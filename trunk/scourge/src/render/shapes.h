@@ -32,16 +32,18 @@ class GLShape;
 class GLTorch;
 class Shapes;
 
-typedef struct _Occurs {
+struct Occurs {
 	bool rooms_only;
 	int max_count;
 	char placement[100];
 	char use_function[255];
 	char theme[255];
-} Occurs;
+};
 
 // temporary information when constructing shapes from a file
-typedef struct _ShapeValues {
+// -=K=-: turning that struct into class, (complex members, so its class, not PODS)  
+class ShapeValues {
+public:
   // char textureGroupIndex[100]; // index or theme ref.
 	char theme[40];
 	bool wallShape;
@@ -75,13 +77,13 @@ typedef struct _ShapeValues {
 	std::string ambient;
 	int lighting;
 	float base_w, base_h;
-} ShapeValues;
+};
 
-typedef struct _CharacterModelInfo {
+struct CharacterModelInfo {
   char model_name[100];
   char skin_name[300]; 
   float scale;
-} CharacterModelInfo;
+};
 
 #define MAX_TEXTURE_COUNT 10
 class WallTheme {
@@ -116,14 +118,14 @@ class WallTheme {
   Shapes *shapePal;
   bool special;
   bool cave;
-  GLubyte *lavaData, *floorData;
+  TextureData lavaData;
+  TextureData floorData;
 
  public:
-  WallTheme( char *name, Shapes *shapePal );
+  WallTheme( char const* name, Shapes *shapePal );
   ~WallTheme();
 
-  inline GLubyte *getLavaData() { return lavaData; }
-  inline GLubyte *getFloorData() { return floorData; }
+  inline TextureData& getFloorData() { return floorData; }
 
   inline void setSpecial( bool b ) { special = b; }
   inline bool isSpecial() { return special; }
@@ -191,10 +193,10 @@ protected:
   std::map<std::string, GLShape *> shapeMap;
   int shapeCount;
   
-  typedef struct _Texture {
+  struct Texture {
     GLuint id;
     std::string filename;
-  } Texture;
+  };
 
   Texture textures[ MAX_SYSTEM_TEXTURE_COUNT ]; // store textures
   int texture_count;
@@ -308,7 +310,7 @@ public:
 
   GLuint loadGLTextures(const std::string& fileName);
 
-  GLuint getBMPData( const std::string& filename, GLubyte **buf, int *width=NULL, int *height=NULL );
+  GLuint getBMPData( const std::string& filename, TextureData& data, int *width=NULL, int *height=NULL );
 
   GLuint getCursorTexture( int cursorMode );
 
@@ -324,13 +326,13 @@ protected:
 	static Shapes *instance;
   GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int gl_scale=GL_NEAREST);
   GLuint loadGLTextureBGRA(int w, int h, GLubyte *image, int gl_scale=GL_NEAREST);
-  void setupAlphaBlendedBMP(const std::string& filename, SDL_Surface **surface, GLubyte **image, int red=0, int green=0, int blue=0, bool isAbsFile=false, bool swapImage=false, bool grayscale=false );
+  void setupAlphaBlendedBMP(const std::string& filename, SDL_Surface*& surface, GLubyte*& image, int red=0, int green=0, int blue=0, bool isAbsFile=false, bool swapImage=false, bool grayscale=false );
   void setupAlphaBlendedBMPGrid(const std::string& filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight, int red=0, int green=0, int blue=0, int nred=-1, int ngreen=-1, int nblue=-1);
   void swap(unsigned char & a, unsigned char & b);
   void loadStencil( const std::string& filename, int index );
 	void loadCursors();
 	GLuint *findOrMakeTextureGroup( char *s );
-	void setupPNG( const std::string& filename, SDL_Surface **surface, GLubyte **image, bool isAbsPath=false );
+	void setupPNG( const std::string& filename, SDL_Surface*& surface, GLubyte*& image, bool isAbsPath=false );
 };
 
 #endif

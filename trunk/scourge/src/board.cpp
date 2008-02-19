@@ -54,7 +54,6 @@ Board::Board(Session *session)
 	string ambientSoundName;
 
   ConfigLang *config = ConfigLang::load( string("config/mission.cfg") );
-
 	vector<ConfigNode*> *v = config->getDocument()->
 		getChildrenByName( "sound" );
 	for( unsigned int i = 0; i < v->size(); i++ ) {
@@ -125,13 +124,13 @@ Board::Board(Session *session)
     vector<ConfigNode*> *vv = node->getChildrenByName( "item" );
     for( unsigned int i = 0; vv && i < vv->size(); i++ ) {
       ConfigNode *itemNode = (*vv)[i];
-      RpgItem *item = RpgItem::getItemByName( (char*)itemNode->getValueAsString( "name" ) );
+      RpgItem *item = RpgItem::getItemByName( itemNode->getValueAsString( "name" ) );
       current_mission->addItem( item );
     }
     vv = node->getChildrenByName( "creature" );
     for( unsigned int i = 0; vv && i < vv->size(); i++ ) {
       ConfigNode *monsterNode = (*vv)[i];
-      Monster *monster = Monster::getMonsterByName( (char*)monsterNode->getValueAsString( "name" ) );
+      Monster *monster = Monster::getMonsterByName( monsterNode->getValueAsString( "name" ) );
       if( !monster ) {
         cerr << "*** Error: can't find mission monster \"" << line << "\"." << endl;
         exit( 1 );
@@ -140,7 +139,7 @@ Board::Board(Session *session)
     }
     
     if( strlen( node->getValueAsString( "special" ) ) )
-        current_mission->setSpecial( (char*)node->getValueAsString( "special" ) );
+        current_mission->setSpecial( node->getValueAsString( "special" ) );
   }
   delete( config );
 }
@@ -321,7 +320,7 @@ void Board::initMissions() {
       }
       if(i == 0) {
         if(!session->getGameAdapter()->isHeadless()) 
-          session->getGameAdapter()->setMissionDescriptionUI((char*)availableMissions[i]->getDescription(),
+          session->getGameAdapter()->setMissionDescriptionUI( availableMissions[i]->getDescription(),
                                                              availableMissions[i]->getMapX(),
                                                              availableMissions[i]->getMapY());
       }
@@ -403,7 +402,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
 			for( int i = 0; i < info->itemCount; i++ ) {
 				if( !strcmp( (char*)info->itemName[ i ], item->getName() ) ) {
 					found = true;
-					value = info->itemDone[ i ];
+					value = (info->itemDone[ i ] != 0);
 					break;
 				}
 			}
@@ -421,7 +420,7 @@ Mission *MissionTemplate::createMission( Session *session, int level, int depth,
 			for( int i = 0; i < info->monsterCount; i++ ) {
 				if( !strcmp( (char*)info->monsterName[ i ], monster->getType() ) ) {
 					found = true;
-					value = info->monsterDone[ i ];
+					value = (info->monsterDone[ i ] != 0);
 					break;
 				}
 			}
@@ -662,43 +661,43 @@ void Mission::removeMissionItems() {
 	}
 }
 
-char *Mission::getIntro() {
+char const* Mission::getIntro() {
 	if ( !intros.empty() ) {
-  return (char*)(intros[ Util::dice( intros.size() ) ].c_str());
+		return intros[ Util::dice( intros.size() ) ].c_str();
 	} else {
 		cerr << "Error: Mission has 0 intros" << endl;
 		return "";
 	}
 }
 
-char *Mission::getAnswer( char const* keyphrase ) {
+char const* Mission::getAnswer( char const* keyphrase ) {
   string ks = keyphrase;
   if( conversations.find( ks ) != conversations.end() ) {
-    return (char*)( answers[ conversations[ ks ] ].c_str());
+    return  answers[ conversations[ ks ] ].c_str();
   } else {
     cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
-    return (char*)(unknownPhrases[ Util::dice( unknownPhrases.size() ) ].c_str());
+    return unknownPhrases[ Util::dice( unknownPhrases.size() ) ].c_str();
   }
 }
 
-char *Mission::getFirstKeyPhrase( char const* keyphrase ) {
+char const* Mission::getFirstKeyPhrase( char const* keyphrase ) {
   string ks = keyphrase;
   if( firstKeyPhrase.find( ks ) != firstKeyPhrase.end() ) {
-    return (char*)(firstKeyPhrase[ ks ].c_str());
+    return firstKeyPhrase[ ks ].c_str();
   } else {
     cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
     return NULL;
   }
 }
 
-char *Mission::getIntro( char const* s ) {
-	string npc = s;
-  if( npcConversations.find( npc ) == npcConversations.end() ) {
+char const* Mission::getIntro( char const* npc ) {
+	string s = npc;
+  if( npcConversations.find( s ) == npcConversations.end() ) {
     //cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
     return NULL;
   }
-  NpcConversation *nc = npcConversations[ npc ];
-  return (char*)(nc->npc_intros[ Util::dice( nc->npc_intros.size() ) ].c_str());
+  NpcConversation *nc = npcConversations[ s ];
+  return nc->npc_intros[ Util::dice( nc->npc_intros.size() ) ].c_str();
 }
 
 bool Mission::setIntro( Creature *s, char const* keyphrase ) {
@@ -735,34 +734,34 @@ bool Mission::setIntro( Creature *s, char const* keyphrase ) {
 	return true;
 }
 
-char *Mission::getAnswer( char const* s, char const* keyphrase ) {
-	string npc = s;
-  if( npcConversations.find( npc ) == npcConversations.end() ) {
+char const* Mission::getAnswer( char const* npc, char const* keyphrase ) {
+	string s( npc );
+  if( npcConversations.find( s ) == npcConversations.end() ) {
     //cerr << "Can't find npc conversation for creature: " << npc->getType() << endl;
     return NULL;
   }
-  NpcConversation *nc = npcConversations[ npc ];
+  NpcConversation *nc = npcConversations[ s ];
 
   string ks = keyphrase;
   if( nc->npc_conversations.find( ks ) != nc->npc_conversations.end() ) {
-    return (char*)( nc->npc_answers[ nc->npc_conversations[ ks ] ].c_str());
+    return  nc->npc_answers[ nc->npc_conversations[ ks ] ].c_str();
   } else {
     cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
-    return (char*)(nc->npc_unknownPhrases[ Util::dice( nc->npc_unknownPhrases.size() ) ].c_str());
+    return nc->npc_unknownPhrases[ Util::dice( nc->npc_unknownPhrases.size() ) ].c_str();
   }
 }
 
-char *Mission::getFirstKeyPhrase( char const* s, char const* keyphrase ) {
-  string npc = s;
-  if( npcConversations.find( npc ) == npcConversations.end() ) {
+char const* Mission::getFirstKeyPhrase( char const* npc, char const* keyphrase ) {
+  string s( npc );
+  if( npcConversations.find( s ) == npcConversations.end() ) {
     cerr << "Can't find npc conversation for creature: " << npc << endl;
     return NULL;
   }
-  NpcConversation *nc = npcConversations[ npc ];
+  NpcConversation *nc = npcConversations[ s ];
 
   string ks = keyphrase;
   if( nc->npc_firstKeyPhrase.find( ks ) != nc->npc_firstKeyPhrase.end() ) {
-    return (char*)( nc->npc_firstKeyPhrase[ ks ].c_str());
+    return nc->npc_firstKeyPhrase[ ks ].c_str();
   } else {
     cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
     return NULL;
@@ -856,7 +855,7 @@ void Mission::initConversations( ConfigLang *config, GameAdapter *adapter, bool 
 	for( unsigned int i = 0; v && i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
 
-		char *name = (char*)node->getValueAsString( "name" );
+		char const* name = node->getValueAsString( "name" );
 		
 		// if it's NOT general
 		currentNpc = NULL;
@@ -1245,7 +1244,7 @@ void Mission::loadStorylineMission( MissionInfo *info ) {
 		for( unsigned int t = 0; t < itemList.size(); t++ ) {
 			RpgItem *rpgItem = itemList[t];
 			if( !strcmp( rpgItem->getName(), p ) ) {
-				items[rpgItem] = ( info->itemDone[i] ? true : false );
+				items[rpgItem] = ( info->itemDone[i] != 0 );
 				break;
 			}
 		}
@@ -1304,6 +1303,6 @@ NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype
 }
 
 NpcInfo::~NpcInfo() {
-  delete name;
+  delete [] name;
 }
 

@@ -172,7 +172,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
   item->cursed = (info->cursed == 1);
   item->magicLevel = info->magicLevel;
   // get a reference to the real string... (yuck)
-  item->monsterType = (char*)Monster::getMonsterType( (char*)info->monster_type );
+  item->monsterType = Monster::getMonsterType( (char*)info->monster_type );
   // turn off "vs. any creature"
   if( !item->getMonsterType() ) item->damageMultiplier = 1;
   item->school = MagicSchool::getMagicSchoolByName( (char*)info->magic_school_name );
@@ -362,7 +362,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 			const char *p = weapon->getValueAsString( "damage_type" );
 			int damageType = 0;
 			if( strlen( p ) ) damageType = RpgItem::getDamageTypeForLetter( p[0] );
-			int skill = Skill::getSkillIndexByName( (char*)weapon->getValueAsString( "skill" ) );
+			int skill = Skill::getSkillIndexByName( weapon->getValueAsString( "skill" ) );
 			int parry = toint( weapon->getValueAsFloat( "parry" ) );
 			int ap = toint( weapon->getValueAsFloat( "ap" ) );
 			int range = toint( weapon->getValueAsFloat( "range" ) );
@@ -383,7 +383,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 				toint( armor->getValueAsFloat( "pierce_defense" ) );
 			defense[ RpgItem::DAMAGE_TYPE_CRUSHING ] = 
 				toint( armor->getValueAsFloat( "crush_defense" ) );
-			int skill = Skill::getSkillIndexByName( (char*)armor->getValueAsString( "skill" ) );
+			int skill = Skill::getSkillIndexByName( armor->getValueAsString( "skill" ) );
 			int dodgePenalty = toint( armor->getValueAsFloat( "dodge_penalty" ) );
 			last->setArmor( defense, skill, dodgePenalty );
 		}
@@ -396,7 +396,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 			int power = toint( potion->getValueAsFloat( "power" ) );
 			
 			
-			char *potionSkill = (char*)potion->getValueAsString( "skill" );
+			char const* potionSkill = potion->getValueAsString( "skill" );
 			int skill = -1;
       if( potionSkill != NULL && strlen( potionSkill ) ) {
         skill = Skill::getSkillIndexByName( potionSkill );
@@ -418,33 +418,32 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 			ConfigNode *adjustment = (*adjustments)[t];
 
 			int skill = Skill::
-				getSkillByName( (char*)adjustment->
-												getValueAsString( "skill" ) )->getIndex();
+				getSkillByName( adjustment-> getValueAsString( "skill" ) )->getIndex();
 
-			decodeInfluenceBlock( last, 
-														skill, 
-														adjustment->getChildrenByName( "ap" ), 
-														AP_INFLUENCE );
-			decodeInfluenceBlock( last, 
-														skill, 
-														adjustment->getChildrenByName( "armor" ), 
-														AP_INFLUENCE );
-			decodeInfluenceBlock( last, 
-														skill, 
-														adjustment->getChildrenByName( "cth" ), 
-														CTH_INFLUENCE );
-			decodeInfluenceBlock( last, 
-														skill, 
-														adjustment->getChildrenByName( "damage" ), 
-														DAM_INFLUENCE );
+			decodeInfluenceBlock( last
+			                    , skill
+			                    , adjustment->getChildrenByName( "ap" )
+			                    , AP_INFLUENCE );
+			decodeInfluenceBlock( last
+			                    , skill
+			                    , adjustment->getChildrenByName( "armor" )
+								, AP_INFLUENCE );
+			decodeInfluenceBlock( last
+			                    , skill
+			                    , adjustment->getChildrenByName( "cth" )
+			                    , CTH_INFLUENCE );
+			decodeInfluenceBlock( last
+			                    , skill
+			                    , adjustment->getChildrenByName( "damage" )
+			                    , DAM_INFLUENCE );
 		}
 	}
 }
 
-void Item::decodeInfluenceBlock( RpgItem *item, 
-																 int skill, 
-																 vector<ConfigNode*> *nodes, 
-																 int influenceType ) {
+void Item::decodeInfluenceBlock( RpgItem *item
+                               , int skill
+                               , vector<ConfigNode*> *nodes
+                               , int influenceType ) {
 	char tmp[300];
 	if( nodes ) {
 		ConfigNode *node = (*nodes)[0];
@@ -662,7 +661,7 @@ void Item::enchant( int newMagicLevel ) {
     bonus = Util::pickOne( 1, 2 );
     if(rpgItem->isWeapon()) {
       damageMultiplier = Util::pickOne( 2, 3 );
-      monsterType = (char*)Monster::getRandomMonsterType( level );
+      monsterType = Monster::getRandomMonsterType( level );
     }
     n = Util::pickOne( 2, 4 );
     for(int i = 0; i < n; i++) {
@@ -676,7 +675,7 @@ void Item::enchant( int newMagicLevel ) {
     bonus = Util::pickOne( 1, 3 );
     if(rpgItem->isWeapon()) {
       damageMultiplier = Util::pickOne( 2, 4 );
-      monsterType = (char*)Monster::getRandomMonsterType( level );
+      monsterType = Monster::getRandomMonsterType( level );
     }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
@@ -695,7 +694,7 @@ void Item::enchant( int newMagicLevel ) {
     bonus = Util::pickOne( 1, 4 );
     if(rpgItem->isWeapon()) {
       damageMultiplier = Util::pickOne( 2, 4 );
-      monsterType = (char*)Monster::getRandomMonsterType( level );
+      monsterType = Monster::getRandomMonsterType( level );
     }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {
@@ -719,7 +718,7 @@ void Item::enchant( int newMagicLevel ) {
     bonus = Util::pickOne( 1, 5 );
     if(rpgItem->isWeapon()) {
       damageMultiplier = Util::pickOne( 2, 5 );
-      monsterType = (char*)Monster::getRandomMonsterType( level );
+      monsterType = Monster::getRandomMonsterType( level );
     }
     spell = MagicSchool::getRandomSpell(1);
     if(spell) {

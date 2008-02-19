@@ -109,7 +109,7 @@ class Spell : public Storable {
   inline int getFailureRate() { return failureRate; }
   inline int getDistance() { return distance; }
   inline int getTargetType() { return targetType; }  
-  inline char *getNotes() { return notes; }
+  inline char const* getNotes() { return notes; }
   inline int getSpeed() { return speed; }
   inline int getEffect() { return effect; }
   inline MagicSchool *getSchool() { return school; }

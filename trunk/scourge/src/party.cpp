@@ -52,12 +52,10 @@ Party::~Party() {
 
 void Party::deleteParty() {
 	partySet.clear();
-  for(int i = 0; i < getPartySize(); i++) {
-    if(party[i]) {
-      delete party[i];
-      party[i] = NULL;
-    }
-  }
+	for(int i = 0; i < getPartySize(); i++) {
+		delete party[i];
+		party[i] = NULL;
+	}
   partySize = 0;
   lastPlayer = NULL;
 }

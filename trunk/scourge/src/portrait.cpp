@@ -133,7 +133,7 @@ bool Portrait::handleEvent( SDL_Event *event ) {
 				}
 				canvas->setTooltip( index > -1 && index < resistanceCount ? 
 														Skill::skills[ resistanceSkills[ index ] ]->getDisplayName() : 
-														(char*)"" );
+														"" );
 			}
 		}
 	}

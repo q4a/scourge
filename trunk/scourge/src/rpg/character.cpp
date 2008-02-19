@@ -69,7 +69,7 @@ void Character::initCharacters() {
 					 e != skillNode->getValues()->end(); ++e ) {
 				string name = e->first;
 				ConfigValue *value = e->second;
-				last->skills[ Skill::getSkillByName( (char*)name.c_str() )->getIndex() ] = (int)value->getAsFloat();
+				last->skills[ Skill::getSkillByName( name.c_str() )->getIndex() ] = (int)value->getAsFloat();
 			}
 		}
 		vv = node->getChildrenByName( "groups" );
@@ -79,7 +79,7 @@ void Character::initCharacters() {
 					 e != skillNode->getValues()->end(); ++e ) {
 				string name = e->first;
 				ConfigValue *value = e->second;
-				SkillGroup *group = SkillGroup::getGroupByName( (char*)name.c_str() );
+				SkillGroup *group = SkillGroup::getGroupByName( name.c_str() );
 				for( int i = 0; i < group->getSkillCount(); i++ ) {
 					last->skills[ group->getSkill( i )->getIndex() ] = (int)value->getAsFloat();
 				}
@@ -91,7 +91,7 @@ void Character::initCharacters() {
 		addItemTags( node->getValueAsString( "forbidden_armor" ), &(last->forbiddenArmorTags) );
 	}
 
-	delete( config );
+	delete config;
 
   buildTree();
 }

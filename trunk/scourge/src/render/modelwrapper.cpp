@@ -49,7 +49,7 @@ void ModelLoader::clearModel( t3DModel *pModel ) {
   pModel->numOfMaterials = 0;
   pModel->numOfAnimations = 0;
   pModel->numOfTags = 0;
-  pModel->pLinks = NULL;
+  pModel->pLinks.clear();
   pModel->pTags = NULL;
   pModel->movex = 0;
   pModel->movey = 0;
@@ -75,7 +75,7 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 
 	// load the model the new way
 	if( creature_models.find( model_name_str ) == creature_models.end() ) {
-		model_info = (Md2ModelInfo*)malloc( sizeof( Md2ModelInfo ) );
+		model_info = new Md2ModelInfo;
 
 		model_info->wrapper.loadModel( model_name, skin_name, this );
 		strcpy( model_info->name, model_name );
@@ -193,8 +193,7 @@ void ModelLoader::unloadSkinTexture( const string& skin_name ) {
 
 }
 
-void ModelLoader::decrementSkinRefCount( char *model_name, 
-																					char *skin_name ) {
+void ModelLoader::decrementSkinRefCount( char *model_name, char *skin_name ) {
 
 #ifdef DEBUG_LOADING
   cerr << "=====================================================" << endl << 
@@ -231,7 +230,7 @@ void ModelLoader::decrementSkinRefCount( char *model_name,
 
     model_info->wrapper.unloadModel();
 
-    free(model_info);
+    delete model_info;
   }
 }
 

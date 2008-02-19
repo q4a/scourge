@@ -27,12 +27,15 @@ class File;
 
 #define OLDEST_HANDLED_VERSION 15
 
-typedef struct _DiceInfo {
+// -=K=- since this header declares classes it is  C++ header
+// C++ does "typedef struct StructName StructName;" implicitly
+
+struct DiceInfo {
   Uint32 version;
   Uint32 count, sides, mod;
-} DiceInfo;
+};
 
-typedef struct _ItemInfo {
+struct ItemInfo {
   Uint32 version;
   Uint32 level;
   Uint8 rpgItem_name[255];
@@ -43,7 +46,7 @@ typedef struct _ItemInfo {
 	Uint32 identifiedBits;
   Uint8 spell_name[255];
   Uint32 containedItemCount;
-  struct _ItemInfo *containedItems[MAX_CONTAINED_ITEMS];
+  ItemInfo *containedItems[MAX_CONTAINED_ITEMS];
 
   Uint32 bonus, damageMultiplier, cursed, magicLevel;
   Uint8 monster_type[255];
@@ -54,9 +57,9 @@ typedef struct _ItemInfo {
   Uint32 missionId;
 	Uint32 missionObjectiveIndex;
 
-} ItemInfo;
+};
 
-typedef struct _CreatureInfo {
+struct CreatureInfo {
   Uint32 version;
   Uint8 name[255];
   Uint8 character_name[255];
@@ -86,9 +89,9 @@ typedef struct _CreatureInfo {
 
 	Uint8 boss;
   Uint8 mission;
-} CreatureInfo;
+};
 
-typedef struct _LocationInfo {
+struct LocationInfo {
   Uint16 x, y, z;
   Uint8 floor_shape_name[255];
   Uint8 shape_name[255];
@@ -99,40 +102,40 @@ typedef struct _LocationInfo {
 	Uint8 item_pos_name[255];
 	ItemInfo *item_pos;
 	Uint8 magic_school_name[255]; // the deity at this location
-} LocationInfo;
+};
 
-typedef struct _RugInfo {
+struct RugInfo {
 	Uint32 texture;
 	Uint8 isHorizontal;
 	Uint32 angle;
 	Uint16 cx, cy;
-} RugInfo;
+};
 
-typedef struct _LockedInfo {
+struct LockedInfo {
 	Uint32 key;
 	Uint8 value;
-} LockedInfo;
+};
 
-typedef struct _DoorInfo {
+struct DoorInfo {
 	Uint32 key;
 	Uint32 value;
-} DoorInfo;
+};
 
-typedef struct _FogInfo {
+struct FogInfo {
 	Uint8 fog[MAP_WIDTH][MAP_DEPTH];
 	Uint8 players[MAP_WIDTH * MAP_DEPTH][4];
-} FogInfo;
+};
 
 #define REF_TYPE_NAME 0
 #define REF_TYPE_OBJECT 1
 
-typedef struct _TrapInfo {
+struct TrapInfo {
 	Uint32 version;
 	Uint16 x, y, w, h;
 	Uint8 type, discovered, enabled;
-} TrapInfo;
+};
 
-typedef struct _MapInfo {
+struct MapInfo {
   Uint32 version;
 	Uint8 map_type;
   Uint16 start_x, start_y;
@@ -156,9 +159,9 @@ typedef struct _MapInfo {
 	Uint32 ground[ MAP_WIDTH / OUTDOORS_STEP ][ MAP_DEPTH / OUTDOORS_STEP ];
 	Uint8 trapCount;
 	TrapInfo *trap[ 255 ];
-} MapInfo;
+};
 
-typedef struct _MissionInfo {
+struct MissionInfo {
 	Uint32 version;
   Uint8 level;
   Uint8 depth;
@@ -172,40 +175,27 @@ typedef struct _MissionInfo {
 	Uint8 monsterName[100][255];
 	Uint8 monsterDone[100];
 	Uint32 missionId;
-} MissionInfo;
-
-class Persist {
-public:
-  static LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
-	static RugInfo *createRugInfo( Uint16 cx, Uint16 cy );
-	static TrapInfo *createTrapInfo( int x, int y, int w, int h, int type, bool discovered, bool enabled );
-	static LockedInfo *createLockedInfo( Uint32 key, Uint8 value );
-	static DoorInfo *createDoorInfo( Uint32 key, Uint32 value );
-	static void saveMap( File *file, MapInfo *info );
-  static MapInfo *loadMap( File *file );
-  static void loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY );
-  static void deleteMapInfo( MapInfo *info );
-
-  static void saveCreature( File *file, CreatureInfo *info );
-  static CreatureInfo *loadCreature( File *file );
-  static void deleteCreatureInfo( CreatureInfo *info );
-
-	static void saveMission( File *file, MissionInfo *info );
-  static MissionInfo *loadMission( File *file );
-  static void deleteMissionInfo( MissionInfo *info );
-
-protected:
-  static void saveItem( File *file, ItemInfo *item );
-  static ItemInfo *loadItem( File *file );
-  static void deleteItemInfo( ItemInfo *info );
-
-  static void saveDice( File *file, DiceInfo *info );
-  static DiceInfo *loadDice( File *file );
-  static void deleteDiceInfo( DiceInfo *info );
-
-	static void saveTrap( File *file, TrapInfo *trap );
-	static TrapInfo *loadTrap( File *file );
-	static void deleteTrapInfo( TrapInfo *trap );
 };
+
+namespace Persist {
+	LocationInfo *createLocationInfo( Uint16 x, Uint16 y, Uint16 z );
+	RugInfo *createRugInfo( Uint16 cx, Uint16 cy );
+	TrapInfo *createTrapInfo( int x, int y, int w, int h, int type, bool discovered, bool enabled );
+	LockedInfo *createLockedInfo( Uint32 key, Uint8 value );
+	DoorInfo *createDoorInfo( Uint32 key, Uint32 value );
+	void saveMap( File *file, MapInfo *info );
+	MapInfo *loadMap( File *file );
+	void loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY );
+	void deleteMapInfo( MapInfo *info );
+
+	void saveCreature( File *file, CreatureInfo *info );
+	CreatureInfo *loadCreature( File *file );
+	void deleteCreatureInfo( CreatureInfo *info );
+
+	void saveMission( File *file, MissionInfo *info );
+	MissionInfo *loadMission( File *file );
+	void deleteMissionInfo( MissionInfo *info );
+};
+
 
 #endif

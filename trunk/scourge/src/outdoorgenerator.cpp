@@ -210,10 +210,10 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	return true;
 }
 
-typedef struct _ShapeLimit {
+struct ShapeLimit {
   GLShape *shape;
   float start, end;
-} ShapeLimit;
+};
 vector<ShapeLimit> trees;
 
 GLShape *OutdoorGenerator::getRandomTreeShape( ShapePalette *shapePal ) {

@@ -58,7 +58,7 @@ ClientInfo::~ClientInfo() {
   // misc. other stuff
   free(username);
   delete commands;
-  if(characterInfo) free(characterInfo);
+  delete characterInfo;
   cerr << "* Client stopped: " << describe() << endl;
 }
 
@@ -102,7 +102,7 @@ void ClientInfo::character(char *bytes, int length) {
       length << " size=" << sizeof(CreatureInfo) << endl;
     return;
   }
-  characterInfo = (CreatureInfo*)malloc(sizeof(CreatureInfo));
+  characterInfo =  new CreatureInfo;
   memcpy(characterInfo, bytes, length);
 
   // FIXME: do some byte ordering for PPC, etc. here.
@@ -111,10 +111,10 @@ void ClientInfo::character(char *bytes, int length) {
 
   // send an addplayer to everyone but us
   int size = sizeof(CreatureInfo);
-  char *message = (char*)malloc(size + 20);
+  std::vector<char> message(size + 20);
   int messageSize;
-  Commands::buildBytesAddPlayer(message, size, bytes, getId(), &messageSize);
-  server->sendToAllTCP(message, messageSize, this);
+  Commands::buildBytesAddPlayer(&message[0], size, bytes, getId(), &messageSize);
+  server->sendToAllTCP(&message[0], messageSize, this);
 }
 
 void ClientInfo::addPlayer(Uint32 id, char *bytes, int length) {
@@ -136,7 +136,7 @@ void ClientInfo::sendMessageAsync(char *message, int length) {
     if(!length) {
       m = new Message(strdup(message), strlen(message) + 1);
     } else {
-      char *s = (char*)malloc(length);
+      char *s = new char[length];
       memcpy(s, message, length);
       m = new Message(s, length);
     }
@@ -223,7 +223,7 @@ int clientInfoLoop(void *data) {
       // do I need to copy the message?
       message = clientInfo->getMessageQueue()->front();
       messageLength = message->length;
-      messageStr = (char*)malloc(messageLength);
+      messageStr = new char[messageLength];
       memcpy(messageStr, message->message, messageLength);
 
       clientInfo->getMessageQueue()->pop();
@@ -240,7 +240,7 @@ int clientInfoLoop(void *data) {
     // send message if any
     if(messageStr) {
       clientInfo->sendTCP(messageStr, messageLength);
-      delete messageStr;
+      delete [] messageStr;
       messageStr = NULL;
     }
 
@@ -261,7 +261,7 @@ int clientInfoLoop(void *data) {
     }
   }
 
-  if(messageStr) delete messageStr;
+  delete messageStr;
 
   SDLNet_FreeSocketSet(set);
   return 0;

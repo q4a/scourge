@@ -117,8 +117,8 @@ void DonateDialog::donate( int amount ) {
   int low = ( level > 1 ? ( level - 1 ) * 100 : 0 );
   int high = ( level + 1 ) * 1000;
   //cerr << "low: " << low << " amount: " << amount << " high: " << high << endl;
-  result->setText( (char*)( amount < low ? ms->getLowDonateMessage() :
-                            ( amount > high ? ms->getHighDonateMessage() :
-                              ms->getNeutralDonateMessage() )) );
+  result->setText( amount < low ? ms->getLowDonateMessage() 
+                 : amount > high ? ms->getHighDonateMessage() 
+				 : ms->getNeutralDonateMessage() );
 }
 

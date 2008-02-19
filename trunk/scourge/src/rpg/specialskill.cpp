@@ -47,7 +47,7 @@ void SpecialSkill::initSkills() {
 
 		type = SpecialSkill::SKILL_TYPE_AUTOMATIC;
 		event = SpecialSkill::SKILL_EVENT_ARMOR;
-		char *p = (char*)node->getValueAsString( "type" );
+		char const* p = node->getValueAsString( "type" );
 		if( p ) {
 			switch(*p) {
 			case 'A': type = SpecialSkill::SKILL_TYPE_AUTOMATIC; break;
@@ -59,7 +59,7 @@ void SpecialSkill::initSkills() {
 		}
 		
 		if( type == SpecialSkill::SKILL_TYPE_AUTOMATIC ) {
-			p = (char*)node->getValueAsString( "event" );
+			p = node->getValueAsString( "event" );
 			if( p ) {
 				switch(*p) {
 				case 'A': event = SpecialSkill::SKILL_EVENT_ARMOR; break;
@@ -100,7 +100,7 @@ void SpecialSkill::initSkills() {
 		skillsByName[ nameStr ] = ss;
 	}
 	
-	delete( config );
+	delete config;
 }
 
 SpecialSkill::SpecialSkill( const char *name,

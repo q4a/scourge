@@ -113,7 +113,7 @@ Window::~Window() {
   // Delete all widgets, may cause problem if someday we use same widgets for 
   // multiple windows. For now, no problem.
   for(int i = 0; i < widgetCount ; i++){
-    if(this->widget[i]) delete this->widget[i];
+    delete this->widget[i];
   }
   removeWindow(this);
 }

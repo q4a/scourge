@@ -47,11 +47,11 @@ void Commands::buildGameState(char *buff, size_t buffSize, int frame, char *stat
   snprintf(buff, buffSize, "STATE,%d,%s", frame, state);
 }
 
-void Commands::buildChat(char *buff, size_t buffSize, char *username, char *message) {
+void Commands::buildChat(char *buff, size_t buffSize, char const* username, char *message) {
   snprintf(buff, buffSize, "CHAT,%s> %s", username, message);
 }
 
-void Commands::buildLogin(char *buff, size_t buffSize, char *username) {
+void Commands::buildLogin(char *buff, size_t buffSize, char const* username) {
   snprintf(buff, buffSize, "LOGIN,%s", username);
 }
 

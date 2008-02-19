@@ -39,7 +39,9 @@ Session *Session::instance = NULL;
 /**
  *@author Gabor Torok
  */
-Session::Session(GameAdapter *adapter) {
+Session::Session(GameAdapter *adapter) 
+		:chapterImage()
+{
   this->adapter = adapter;
 	sound = NULL;
   shapePal = NULL;
@@ -52,7 +54,6 @@ Session::Session(GameAdapter *adapter) {
 #endif
   multiplayerGame = false;
   currentMission = NULL;
-	chapterImage = NULL;
 	chapterImageWidth = chapterImageHeight = 0;
 	showChapterIntro = false;
   squirrel = NULL;
@@ -70,10 +71,9 @@ Session::~Session() {
 	if(sound) delete sound;
   if(party) delete party;
   if(board) delete board;
-  if(map) delete map;
 #ifdef HAVE_SDL_NET
-  if(server) delete server;
-  if(client) delete client;
+	delete server;
+	delete client;
 #endif
   delete adapter;
 }
@@ -177,7 +177,7 @@ void Session::runServer(int port) {
 void Session::runClient(char *host, int port, char *userName) {
   CommandInterpreter *ci = new TestCommandInterpreter();
   GameStateHandler *gsh = new TestGameStateHandler();
-  client = new Client((char*)host, port, (char*)userName, ci);
+  client = new Client( host, port, userName, ci);
   client->setGameStateHandler(gsh);
   if(!client->login()) {
     cerr << Constants::getMessage(Constants::CLIENT_CANT_CONNECT_ERROR) << endl;
@@ -213,7 +213,7 @@ void Session::startServer(GameStateHandler *gsh, int port) {
   multiplayerGame = true;
 }
 
-void Session::startClient(GameStateHandler *gsh, CommandInterpreter *ci, char *host, int port, char *username) {
+void Session::startClient(GameStateHandler *gsh, CommandInterpreter *ci, char const* host, int port, char const* username) {
   client = new Client(host, port, username, ci);
   client->setGameStateHandler(gsh);
   multiplayerGame = true;
@@ -555,9 +555,9 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
   Session *session = new Session( adapter );
   session->initialize();
   if(argc >= 2 && !strcmp(argv[1], "--run-tests")) {
-    char *path = ( argc >= 3 ? 
+    char const* path = ( argc >= 3 ? 
                    argv[2] : 
-                   (char*)"/home/gabor/sourceforge/scourge/api/tests" );
+                    "/home/gabor/sourceforge/scourge/api/tests" );
     if( CombatTest::executeTests( session, path ) ) {
       cout << "Tests were succesfully written to: " << path << endl;
       return 0;
@@ -578,7 +578,7 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 
 int Session::getCountForDate( char *key, bool withinLastHour ) {
 	int count = 0;
-	char *value = getSquirrel()->getValue( key );
+	char const* value = getSquirrel()->getValue( key );
 	if( value != NULL ) {
 		char s[255];
 		strcpy( s, value );
@@ -615,7 +615,7 @@ void Session::setSavegameName( string& s ) {
 	savegame = s;
 }
 
-Creature *Session::getCreatureByName( char *name ) {
+Creature *Session::getCreatureByName( char const* name ) {
 	for( unsigned int i = 0; i < creatures.size(); i++ ) {
 		if( !strcmp( creatures[i]->getName(), name ) ) return creatures[i];
 	}
@@ -627,15 +627,11 @@ void Session::setCurrentMission( Mission *mission ) {
 	currentMission = mission; 
 	getGameAdapter()->refreshInventoryUI();
 	if( oldMission != currentMission && currentMission && currentMission->isStoryLine() && !currentMission->isReplay() ) {
-		if( chapterImage ) {
-			free( chapterImage ); 
-			chapterImage = NULL;
-		}
 		char filename[300];
 		snprintf( filename, 300, "/chapters/chapter%d.bmp", currentMission->getChapter() );
-		if( !shapePal->getBMPData( filename, &chapterImage, &chapterImageWidth, &chapterImageHeight ) ) {
+		if( !shapePal->getBMPData( filename, chapterImage, &chapterImageWidth, &chapterImageHeight ) ) {
 			cerr << "Error loading image for chapter " << currentMission->getChapter() << endl;
-			chapterImage = NULL;
+			chapterImage.clear();
 			chapterImageWidth = chapterImageHeight = 0;
 		} else {
 			cerr << "***********************************" << endl;

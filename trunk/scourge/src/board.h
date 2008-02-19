@@ -118,13 +118,13 @@ public:
   static std::map<std::string,NpcConversation*> npcConversations;
   static std::map<std::string, NpcInfo*> npcInfos;
 
-  static char *getIntro();
-  static char *getAnswer( char const* keyphrase );
-  static char *getFirstKeyPhrase( char const* keyphrase );
-  static char *getIntro( char const* npc );
+  static char const* getIntro();
+  static char const* getAnswer( char const* keyphrase );
+  static char const* getFirstKeyPhrase( char const* keyphrase );
+  static char const* getIntro( char const* npc );
   static bool setIntro( Creature *creature, char const* keyphrase );
-  static char *getAnswer( char const* npc, char const* keyphrase );
-  static char *getFirstKeyPhrase( char const* npc, char const* keyphrase );
+  static char const* getAnswer( char const* npc, char const* keyphrase );
+  static char const* getFirstKeyPhrase( char const* npc, char const* keyphrase );
   /**
    * Load extra data from text file alongside an edited map.
    * "fileName" in this case is the name of the .map binary file 
@@ -160,7 +160,7 @@ public:
   inline void setMapXY( int x, int y ) { mapX = x; mapY = y; }
   inline bool isSpecial() { return ( strlen( special ) ? true : false ); }
   inline char *getSpecial() { return special; }
-  inline void setSpecial( char *s ) { strncpy( special, s, 79 ); special[79]='\0'; }
+  inline void setSpecial( char const* s ) { strncpy( special, s, 79 ); special[79]='\0'; }
 	inline void setAmbientSoundName( std::string& s ) { this->ambientSoundName = s; }
 	inline std::string& getAmbientSoundName() { return this->ambientSoundName; }
 

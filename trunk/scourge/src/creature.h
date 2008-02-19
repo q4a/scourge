@@ -246,7 +246,7 @@ class Creature : public RenderedCreature {
   inline int getTargetY() { if(targetCreature) return toint(targetCreature->getY()); else return targetY; }
   inline int getTargetZ() { if(targetCreature) return toint(targetCreature->getZ()); else return targetZ; }
 
-  void setTargetCreature( Creature *c, bool findPath=false , float range=MIN_DISTANCE); 
+  void setTargetCreature( Creature *c, bool findPath=false , float range=(float)MIN_DISTANCE); 
   inline Creature *getTargetCreature() { return targetCreature; }
   inline void setTargetLocation(int x, int y, int z) { targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z; }
   inline void getTargetLocation(int *x, int *y, int *z) { *x = targetX; *y = targetY; *z = targetZ; }
@@ -553,7 +553,7 @@ class Creature : public RenderedCreature {
 	 */
 	float getInfluenceBonus( Item *weapon, 
 													 int influenceType, 
-													 char *debugMessage );
+													 char const* debugMessage );
 };
 
 

@@ -54,7 +54,8 @@ private:
 
 public:
 	WindInfo() {
-		windAngle = lastWindStep = 0;
+		windAngle = 0.0f; 
+		lastWindStep = 0;
 		windSpeed = Util::roll( 0.01f, 0.11f );
 		windAmp = 0.5f;
 		ymod = Util::roll( 0.0f, 1.2f );

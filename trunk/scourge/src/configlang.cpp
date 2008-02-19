@@ -23,31 +23,30 @@
 
 using namespace std;
 
-ConfigValue::ConfigValue( ConfigValue *value ) {
-  this->translatable = value->translatable;
-  this->translateStr = value->translateStr;
-  this->valueStr = value->valueStr;
-  this->valueNum = value->valueNum;
-  this->type = value->type;
-}
+ConfigValue::ConfigValue( ConfigValue const& that ) 
+            : type( that.type )
+            , translatable( that.translatable )
+            , valueStr( that.valueStr )
+            , translateStr( that.translateStr )
+            , original( "" ) //-=K=-: original was left uninitialized?
+            , valueNum( that.valueNum )
+{ }
 
-ConfigValue::ConfigValue( char *pValue ) {
-	char *value = strdup( pValue );
+ConfigValue::ConfigValue( char const* value ) {
 	original = value;
 	translatable = false;
 	translateStr = "";
-	char *start = strchr( value, '\"' );
-	if( start ) {
-		char *end = strrchr( value, '\"' );
-		if( end ) *end = '\0';
-		valueStr = start + 1;
-		char *p = strchr( value, '_' );
-		if( p && p < start ) {
+	size_t start = original.find_first_of( '\"' );
+	size_t end = original.find_last_of( '\"' );
+	if( start != std::string::npos && start < end ) {
+		valueStr = original.substr( start + 1, end - start - 1 );
+		size_t p = original.find( '_' );
+		if( p != std::string::npos && p < start ) {
 			translatable = true;
-			translateStr = _( start + 1 );
+			translateStr = _( valueStr.c_str() );
 #ifdef DEBUG_CONFIG_FILE
 			if( translateStr == valueStr ) {
-				cerr << "No translation for: " << ( start + 1 ) << endl;
+				cerr << "No translation for: " << ( valueStr.c_str() ) << endl;
 			}
 #endif
 		}
@@ -58,7 +57,6 @@ ConfigValue::ConfigValue( char *pValue ) {
 		valueNum = atof( value );
 		type = NUMBER_TYPE;
 	}
-	free( value );
 }
 
 ConfigValue::~ConfigValue() {
@@ -125,8 +123,8 @@ void ConfigNode::copyFromNode( ConfigNode *node ) {
 			 i != node->getValues()->end(); ++i ) {
 		string name = i->first;
 		if( name != "id" ) {
-			ConfigValue *value = i->second;
-			addValue( name, new ConfigValue( value ) );
+			ConfigValue* value = i->second;
+			addValue( name, new ConfigValue( *value ) );
 		}
 	}
 
@@ -219,7 +217,7 @@ void ConfigLang::parse( vector<string> *lines ) {
 				value += s.substr( 0, index );
 			} else {
 				value += s.substr( 0, index + 1 );
-				node->addValue( name, new ConfigValue( (char*)(value.c_str()) ) );
+				node->addValue( name, new ConfigValue( value.c_str() ) );
 				inValue = false;
 			}
 		}	else {
@@ -272,7 +270,7 @@ void ConfigLang::parse( vector<string> *lines ) {
 							value = s.substr( valueStart, valueEnd - valueStart );
 							inValue = true;
 						} else {
-							node->addValue( name, new ConfigValue( (char*)(s.substr( valueStart, valueEnd - valueStart + 1 ).c_str()) ) ); 
+							node->addValue( name, new ConfigValue( s.substr( valueStart, valueEnd - valueStart + 1 ).c_str() ) ); 
 						}
 					}
 				}
@@ -339,7 +337,7 @@ void ConfigLang::parse( char *config ) {
 				pos = i + 1;
       } else if( inValue ) {
         string value = cleanText( config + pos, i - pos );
-        node->addValue( name, new ConfigValue( (char*)(value.c_str()) ) );
+        node->addValue( name, new ConfigValue( value.c_str() ) );
         inQuotes = false;
         pos = i + 1;
         inValue = false;
@@ -438,7 +436,7 @@ ConfigLang *ConfigLang::load( const string& file, bool absolutePath ) {
 	std::stringstream ss;
 	ss << in.rdbuf();
 
-	ConfigLang *config = fromString( (char*)( ss.str().c_str() ) );
+	ConfigLang *config = fromString( ss.str().c_str() );
 #endif
 
 	cerr << "Parsed " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;

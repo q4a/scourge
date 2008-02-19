@@ -20,6 +20,149 @@
 
 using namespace std;
 
+// since Persist is namespace now the former protected members of it
+// got degraded to non-global details of implementation
+namespace { //anonymous
+
+	void saveDice( File *file, DiceInfo *info ) {
+		file->write( &(info->version) );
+		file->write( &(info->count) );
+		file->write( &(info->sides) );
+		file->write( &(info->mod) );
+	}
+
+	void saveItem( File *file, ItemInfo *info ) {
+		file->write( &(info->version) );
+		file->write( &(info->level) );
+		file->write( info->rpgItem_name, 255 );
+		file->write( info->shape_name, 255 );
+		file->write( &(info->blocking) );
+		file->write( &(info->currentCharges) );
+		file->write( &(info->weight) );
+		file->write( &(info->quality) );
+		file->write( &(info->price) );
+		file->write( &(info->identifiedBits) );
+		file->write( info->spell_name, 255 );
+		file->write( &(info->containedItemCount) );
+		for(int i = 0; i < (int)info->containedItemCount; i++) {
+			saveItem( file, info->containedItems[i] );
+		}
+
+		file->write( &(info->bonus) );
+		file->write( &(info->damageMultiplier) );
+		file->write( &(info->cursed) );
+		file->write( &(info->magicLevel) );
+		file->write( info->monster_type, 255 );
+		file->write( info->magic_school_name, 255 );
+		saveDice( file, info->magicDamage );
+		for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
+			file->write( &(info->stateMod[i]) );
+		}
+		for(int i = 0; i < Skill::SKILL_COUNT; i++) {
+			file->write( &(info->skillBonus[i]) );
+		}
+		file->write( &(info->missionId) );
+		file->write( &(info->missionObjectiveIndex) );
+	}
+
+	DiceInfo* loadDice( File* file ) {
+		DiceInfo *info = (DiceInfo*)malloc(sizeof(DiceInfo));
+		file->read( &(info->version) );
+		file->read( &(info->count) );
+		file->read( &(info->sides) );
+		file->read( &(info->mod) );
+		return info;
+	}
+
+
+	ItemInfo* loadItem( File* file ) {
+		ItemInfo *info = (ItemInfo*)malloc(sizeof(ItemInfo));
+		file->read( &(info->version) );
+		file->read( &(info->level) );
+		file->read( info->rpgItem_name, 255 );
+		file->read( info->shape_name, 255 );
+		file->read( &(info->blocking) );
+		file->read( &(info->currentCharges) );
+		file->read( &(info->weight) );
+		file->read( &(info->quality) );
+		file->read( &(info->price) );
+		if( info->version >= 17 ) file->read( &( info->identifiedBits ) );
+		else info->identifiedBits = 0;
+
+		file->read( info->spell_name, 255 );
+		file->read( &(info->containedItemCount) );
+		for(int i = 0; i < (int)info->containedItemCount; i++) {
+			info->containedItems[i] = loadItem( file );
+		}
+
+		file->read( &(info->bonus) );
+		file->read( &(info->damageMultiplier) );
+		file->read( &(info->cursed) );
+		file->read( &(info->magicLevel) );
+		file->read( info->monster_type, 255 );
+		file->read( info->magic_school_name, 255 );
+		info->magicDamage = loadDice( file );
+		for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
+			file->read( &(info->stateMod[i]) );
+		}
+		for(int i = 0; i < Skill::SKILL_COUNT; i++) {
+			file->read( &(info->skillBonus[i]) );
+		}
+		if( info->version == 36 || info->version == 37 ) {
+			// just read and forget. this field is not used anymore.
+			Uint8 mission;
+			file->read( &(mission) );
+		}
+		if( info->version >= 38 ) {
+			file->read( &(info->missionId) );
+			file->read( &(info->missionObjectiveIndex) );
+		} else {
+			info->missionId = info->missionObjectiveIndex = 0;
+		}
+		return info;
+	}
+
+	void deleteItemInfo( ItemInfo *info ) {
+		for(int i = 0; i < (int)info->containedItemCount; i++) {
+			deleteItemInfo( info->containedItems[i] );
+		}
+		free( info );
+	}
+
+	void saveTrap( File *file, TrapInfo *info ) {
+		file->write( &(info->version) );
+		file->write( &(info->x) );
+		file->write( &(info->y) );
+		file->write( &(info->w) );
+		file->write( &(info->h) );
+		file->write( &(info->type) );
+		file->write( &(info->discovered) );
+		file->write( &(info->enabled) );
+	}
+
+	TrapInfo *loadTrap( File *file ) {
+		TrapInfo *info = (TrapInfo*)malloc(sizeof(TrapInfo));
+		file->read( &(info->version) );
+		file->read( &(info->x) );
+		file->read( &(info->y) );
+		file->read( &(info->w) );
+		file->read( &(info->h) );
+		file->read( &(info->type) );
+		file->read( &(info->discovered) );
+		file->read( &(info->enabled) );
+		return info;
+	}
+
+	void deleteTrapInfo( TrapInfo *info ) {
+		free( info );
+	}
+
+	void deleteDiceInfo( DiceInfo *info ) {
+		free( info );
+	}
+} // anonymous namespace
+
+
 LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
   LocationInfo *info = (LocationInfo*)malloc( sizeof( LocationInfo ) );
 
@@ -417,23 +560,10 @@ void Persist::deleteCreatureInfo( CreatureInfo *info ) {
   free( info );
 }
 
-void Persist::deleteItemInfo( ItemInfo *info ) {
-  for(int i = 0; i < (int)info->containedItemCount; i++) {
-    deleteItemInfo( info->containedItems[i] );
-  }
-  free( info );
-}
 
-void Persist::deleteDiceInfo( DiceInfo *info ) {
-  free( info );
-}
 
 void Persist::deleteMissionInfo( MissionInfo *info ) {
   free( info );
-}
-
-void Persist::deleteTrapInfo( TrapInfo *info ) {
-	free( info );
 }
 
 void Persist::saveCreature( File *file, CreatureInfo *info ) {
@@ -542,125 +672,7 @@ CreatureInfo *Persist::loadCreature( File *file ) {
   return info;
 }
 
-void Persist::saveItem( File *file, ItemInfo *info ) {
-  file->write( &(info->version) );
-  file->write( &(info->level) );
-  file->write( info->rpgItem_name, 255 );
-  file->write( info->shape_name, 255 );
-  file->write( &(info->blocking) );
-  file->write( &(info->currentCharges) );
-  file->write( &(info->weight) );
-  file->write( &(info->quality) );
-  file->write( &(info->price) );
-	file->write( &(info->identifiedBits) );
-  file->write( info->spell_name, 255 );
-  file->write( &(info->containedItemCount) );
-  for(int i = 0; i < (int)info->containedItemCount; i++) {
-    saveItem( file, info->containedItems[i] );
-  }
 
-  file->write( &(info->bonus) );
-  file->write( &(info->damageMultiplier) );
-  file->write( &(info->cursed) );
-  file->write( &(info->magicLevel) );
-  file->write( info->monster_type, 255 );
-  file->write( info->magic_school_name, 255 );
-  saveDice( file, info->magicDamage );
-  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-    file->write( &(info->stateMod[i]) );
-  }
-  for(int i = 0; i < Skill::SKILL_COUNT; i++) {
-    file->write( &(info->skillBonus[i]) );
-  }
-  file->write( &(info->missionId) );
-	file->write( &(info->missionObjectiveIndex) );
-}
-
-ItemInfo *Persist::loadItem( File *file ) {
-  ItemInfo *info = (ItemInfo*)malloc(sizeof(ItemInfo));
-  file->read( &(info->version) );
-  file->read( &(info->level) );
-  file->read( info->rpgItem_name, 255 );
-  file->read( info->shape_name, 255 );
-  file->read( &(info->blocking) );
-  file->read( &(info->currentCharges) );
-  file->read( &(info->weight) );
-  file->read( &(info->quality) );
-  file->read( &(info->price) );
-	if( info->version >= 17 ) file->read( &( info->identifiedBits ) );
-	else info->identifiedBits = 0;
-  file->read( info->spell_name, 255 );
-  file->read( &(info->containedItemCount) );
-  for(int i = 0; i < (int)info->containedItemCount; i++) {
-    info->containedItems[i] = loadItem( file );
-  }
-
-  file->read( &(info->bonus) );
-  file->read( &(info->damageMultiplier) );
-  file->read( &(info->cursed) );
-  file->read( &(info->magicLevel) );
-  file->read( info->monster_type, 255 );
-  file->read( info->magic_school_name, 255 );
-  info->magicDamage = loadDice( file );
-  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-    file->read( &(info->stateMod[i]) );
-  }
-	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
-		file->read( &(info->skillBonus[i]) );
-	}
-  if( info->version == 36 || info->version == 37 ) {
-		// just read and forget. this field is not used anymore.
-		Uint8 mission;
-    file->read( &(mission) );
-  }
-	if( info->version >= 38 ) {
-		file->read( &(info->missionId) );
-		file->read( &(info->missionObjectiveIndex) );
-	} else {
-		info->missionId = info->missionObjectiveIndex = 0;
-	}
-  return info;
-}
-
-void Persist::saveDice( File *file, DiceInfo *info ) {
-  file->write( &(info->version) );
-  file->write( &(info->count) );
-  file->write( &(info->sides) );
-  file->write( &(info->mod) );
-}
-
-DiceInfo *Persist::loadDice( File *file ) {
-  DiceInfo *info = (DiceInfo*)malloc(sizeof(DiceInfo));
-  file->read( &(info->version) );
-  file->read( &(info->count) );
-  file->read( &(info->sides) );
-  file->read( &(info->mod) );
-  return info;
-}
-
-TrapInfo *Persist::loadTrap( File *file ) {
-  TrapInfo *info = (TrapInfo*)malloc(sizeof(TrapInfo));
-  file->read( &(info->version) );
-  file->read( &(info->x) );
-	file->read( &(info->y) );
-	file->read( &(info->w) );
-	file->read( &(info->h) );
-	file->read( &(info->type) );
-  file->read( &(info->discovered) );
-  file->read( &(info->enabled) );
-  return info;
-}
-
-void Persist::saveTrap( File *file, TrapInfo *info ) {
-  file->write( &(info->version) );
-  file->write( &(info->x) );
-	file->write( &(info->y) );
-	file->write( &(info->w) );
-	file->write( &(info->h) );
-	file->write( &(info->type) );
-  file->write( &(info->discovered) );
-  file->write( &(info->enabled) );
-}
 
 void Persist::saveMission( File *file, MissionInfo *info ) {
   file->write( &(info->version) );

@@ -96,7 +96,7 @@ public:
   float getMaxYRot();
 };
 
-typedef struct _DrawLater {
+struct DrawLater {
   float xpos, ypos, zpos;
   Shape *shape;
   RenderedCreature *creature;
@@ -106,7 +106,7 @@ typedef struct _DrawLater {
   Location *pos;
   bool inFront;
 	int x, y;
-} DrawLater;
+};
 
 #define SWAP(src, dst) { int _t; _t = src; src = dst; dst = _t; }
 #define POS_CACHE_WIDTH    5
@@ -138,11 +138,11 @@ class MapMemoryManager {
 };  
 
 
-typedef struct _Rug {
+struct Rug {
 	GLuint texture;
 	bool isHorizontal;
 	float angle;
-} Rug;
+};
 
 // how many water points per 1 floor tile
 #define WATER_TILE_X 8
@@ -172,11 +172,11 @@ private:
   signed int nbPosCache;
 	Rug rugPos[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
   Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
-  typedef struct _WaterTile {
+  struct WaterTile {
     float z[WATER_TILE_X][WATER_TILE_Y];
     float step[WATER_TILE_X][WATER_TILE_Y];
     Uint32 lastTime[WATER_TILE_X][WATER_TILE_Y];
-  } WaterTile;
+  };
   std::map<Uint32, WaterTile*> water;  
   bool debugGridFlag;
   bool drawGridFlag;
@@ -681,10 +681,10 @@ protected:
    }
 
    CFrustum *frustum;
-   typedef struct _ChunkInfo {
+   struct ChunkInfo {
      float x, y;
      int cx, cy;
-   } ChunkInfo;
+   };
    ChunkInfo chunks[100];
    int chunkCount;
    DrawLater later[100], stencil[1000], other[1000], damage[1000];
@@ -695,7 +695,7 @@ protected:
 	 If 'ground' is true, it draws the ground layer.
 	 Otherwise the shape arrays (other, stencil, later) are populated.
    */
-  void setupShapes(bool ground, bool water, int *csx=NULL, int *cex=NULL, int *csy=NULL, int *cey=NULL);
+  void setupShapes(bool forGround, bool forWater, int *csx=NULL, int *cex=NULL, int *csy=NULL, int *cey=NULL);
   void setupPosition(int posX, int posY, int posZ,
                      float xpos2, float ypos2, float zpos2,
                      Shape *shape, RenderedItem *item, RenderedCreature *creature, 

@@ -26,7 +26,8 @@ Effect::Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, int w
   this->levelMap = levelMap;
   this->preferences = preferences;
   this->shapePal = shapePal;
-  this->shape = new GLShape(0, width, height, width, NULL,0, 0, 2000); //-=K=-: 2000 goes into Uint8?
+#pragma bug_probably("2000 does not fit into Uint8 (0..255)")
+  this->shape = new GLShape(0, width, height, width, NULL,0, 0, 2000); 
   this->shape->initialize();
   this->deleteShape = true;
   commonInit();
@@ -82,13 +83,14 @@ Effect::~Effect() {
 void Effect::setSize( int width, int height ) {
   if( !deleteShape ) return;
   delete shape;
-  shape = new GLShape(0, width, height, width, NULL,0, 0, 2000); //-=K=-: 2000 goes into Uint8?
+#pragma bug_probably("2000 does not fit into Uint8 (0..255)")
+  shape = new GLShape(0, width, height, width, NULL,0, 0, 2000);
 }
 
 void Effect::deleteParticles() {
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(particle[i]) {
-      delete(particle[i]);
+      delete particle[i];
       particle[i] = 0;
     }
   }
@@ -593,7 +595,7 @@ void Effect::moveParticle(ParticleStruct **particle) {
   (*particle)->z+=(*particle)->moveDelta;
   if((*particle)->z < 0 || (*particle)->z > MAP_VIEW_HEIGHT || 
      (!((*particle)->untilGround) && (*particle)->life >= (*particle)->maxLife)) {
-    delete((*particle));
+    delete *particle;
     (*particle) = 0;
   }
 }

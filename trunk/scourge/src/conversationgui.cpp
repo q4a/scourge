@@ -149,7 +149,7 @@ bool ConversationGui::handleEvent(Widget *widget, SDL_Event *event) {
 }
 
 void ConversationGui::start( Creature *creature ) {
-  char *s = Mission::getIntro( creature->getMonster()->getType() );
+  char const* s = Mission::getIntro( creature->getMonster()->getType() );
 	if( !s ) s = Mission::getIntro( creature->getName() );
   bool useCreature = ( s ? true : false );
   if( !s ) {
@@ -158,7 +158,7 @@ void ConversationGui::start( Creature *creature ) {
   start( creature, s, useCreature );
 }
 
-void ConversationGui::start( Creature *creature, char *message, bool useCreature ) {
+void ConversationGui::start( Creature *creature, char const* message, bool useCreature ) {
   // pause the game
   scourge->getParty()->toggleRound( true );
   this->creature = creature;
@@ -186,7 +186,7 @@ void ConversationGui::wordClicked( std::string const& pWord ) {
   // try to get the answer from script
   char first[255];
   if( useCreature ) {
-		char *s = Mission::getFirstKeyPhrase( creature->getMonster()->getType(), word.c_str() );
+		char const* s = Mission::getFirstKeyPhrase( creature->getMonster()->getType(), word.c_str() );
 		if( !s ) s = Mission::getFirstKeyPhrase( creature->getName(), word.c_str() );
 		if( !s ) cerr << "*** warn no first keyphrase for: " << word << endl;
 		strcpy( first, ( s ? s : word.c_str() ) );
@@ -224,7 +224,7 @@ void ConversationGui::wordClicked( std::string const& pWord ) {
     }
   
     if( useCreature ) {
-		char *s = Mission::getAnswer( creature->getMonster()->getType(), word.c_str() );
+		char const* s = Mission::getAnswer( creature->getMonster()->getType(), word.c_str() );
 		if( !s ) s = Mission::getAnswer( creature->getName(), word.c_str() );
 	  answer->setText( s );
     } else {

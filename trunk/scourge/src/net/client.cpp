@@ -9,7 +9,7 @@ using namespace std;
 
 #define DEBUG_CLIENT 0
 
-Client::Client(char *host, int port, char *username, CommandInterpreter *ci) {
+Client::Client(char const* host, int port, char const* username, CommandInterpreter *ci) {
   this->host = host;
   this->port = port;
   this->username = username;
@@ -233,10 +233,10 @@ int Client::sendPing() {
 
 int Client::sendCharacter(CreatureInfo *info) {
   int size = sizeof(CreatureInfo);
-  char *message = (char*)malloc(size + 20);
+  std::vector<char> message( size + 20 );
   int messageSize;
-  Commands::buildBytesCharacter(message, size, (char*)info, &messageSize);
-  return sendRawTCP(message, messageSize);
+  Commands::buildBytesCharacter(&message[0], size, (char*)info, &messageSize);
+  return sendRawTCP(&message[0], messageSize);
 }
 
 // if length==0, s is assumed to be a 0-terminated string

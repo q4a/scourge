@@ -235,7 +235,7 @@ Map::~Map(){
   reset();
 	delete hackBlockingPos;
   delete frustum;
-  if( helper ) delete helper;
+  delete helper;
 }
 
 void Map::reset() {
@@ -260,8 +260,8 @@ void Map::reset() {
       if( floorPositions[xp][yp] ) {
         Uint32 key = createPairKey(xp, yp);
         if( water.find(key) != water.end() ) {
-          WaterTile *w = water[key];
-          free(w);
+          delete water[ key ];
+		  water.erase( key );
         }
       }
 			if(itemPos[xp][yp]) {
@@ -484,8 +484,8 @@ void Map::removeCurrentEffects() {
    If 'ground' is true, it draws the ground layer.
    Otherwise the shape arrays (other, stencil, later) are populated.
 */
-void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int *cey) {
-  if(!ground && !water) {
+void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *csy, int *cey) {
+  if(!forGround && !forWater) {
     laterCount = stencilCount = otherCount = damageCount = 0;
     trapSet.clear();
     mapChanged = false;
@@ -537,7 +537,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
 
       // FIXME: works but slow. Use 1 polygon instead (like floor)
       // special cave edge code
-      if( !( ground || water ) && 
+      if( !( forGround || forWater ) && 
           floorTexWidth > 0 && 
 					!isHeightMapEnabled() &&
           ( chunkX < 0 || chunkY < 0 ) ) {
@@ -574,7 +574,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
       // keep track of which side of the chunk to draw.
       Uint16 drawSide = 0;
       if(!lightMap[chunkX][chunkY]) {
-        if(ground || water) continue;
+        if(forGround || forWater) continue;
         else {
           // look to the left
           if(chunkX >= 1 && lightMap[chunkX - 1][chunkY]) drawSide |= Constants::MOVE_LEFT;
@@ -589,7 +589,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
         }
       }
 
-			if( ( ground || water ) && rugPos[ chunkX ][ chunkY ].texture > 0 ) {
+			if( ( forGround || forWater ) && rugPos[ chunkX ][ chunkY ].texture > 0 ) {
 				xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) / DIV;
 				ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
 				drawRug( &rugPos[ chunkX ][ chunkY ], xpos2, ypos2, chunkX, chunkY );
@@ -611,7 +611,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
           if( trapIndex > -1 && lightMap[ chunkX ][ chunkY ] ) 
             trapSet.insert( (Uint8)trapIndex );
 
-          if(ground || water) {
+          if(forGround || forWater) {
             shape = floorPositions[posX][posY];
             if(shape) {
               xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
@@ -620,7 +620,7 @@ void Map::setupShapes(bool ground, bool water, int *csx, int *cex, int *csy, int
                               shape->getDepth() +
                               yp + chunkOffsetY) / DIV;
 
-              if( water ) {
+              if( forWater ) {
 								drawWaterPosition(posX, posY,
 																	xpos2, ypos2,
 																	shape);      
@@ -2033,7 +2033,7 @@ void Map::setRugPosition( Sint16 xchunk, Sint16 ychunk, Rug *rug ) {
 
 void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
   floorPositions[x][y] = shape;
-  WaterTile *w = (WaterTile*)malloc(sizeof(WaterTile));
+  WaterTile *w = new WaterTile;
   for( int xp = 0; xp < WATER_TILE_X; xp++ ) {
     for( int yp = 0; yp < WATER_TILE_Y; yp++ ) {
       w->z[xp][yp] = Util::roll( -WATER_AMP, WATER_AMP );
@@ -2056,8 +2056,7 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
   }
   Uint32 key = createPairKey(x, y);
   if( water.find(key) != water.end() ) {
-    WaterTile *w = water[key];
-    free(w);
+    delete water[key];
     water.erase( key );
   }
 	return shape;
@@ -2744,7 +2743,7 @@ bool Map::isPositionAccessible(int atX, int atY) {
   // interpret the results: see if the target is "in light"
   int chunkX = (atX - MAP_OFFSET) / MAP_UNIT;
   int chunkY = (atY - MAP_OFFSET) / MAP_UNIT;
-  return (accessMap[chunkX][chunkY]);
+  return (accessMap[chunkX][chunkY] != 0);
 }
 
 void Map::configureAccessMap(int fromX, int fromY) {
@@ -3281,7 +3280,7 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
     return;
   }
 
-  MapInfo *info = (MapInfo*)malloc(sizeof(MapInfo));
+  MapInfo *info = new MapInfo;
   info->version = PERSIST_VERSION;
 
 	info->reference_type = referenceType;
@@ -3540,7 +3539,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 		return false;
 	}
 
-	edited = info->edited;
+	edited = info->edited != 0;
 
 	// load ground heights for outdoors maps
 	heightMapEnabled = ( info->heightMapEnabled == 1 );
@@ -3704,8 +3703,8 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 		TrapInfo *trapInfo = info->trap[ i ];
 		int index = addTrap( trapInfo->x, trapInfo->y, trapInfo->w, trapInfo->h );
 		Trap *trap = getTrapLoc( index );
-		trap->discovered = (bool)trapInfo->discovered;
-		trap->enabled = (bool)trapInfo->enabled;
+		trap->discovered = (trapInfo->discovered != 0);
+		trap->enabled = (trapInfo->enabled != 0);
 		trap->type = (int)trapInfo->type;
 	}
 
@@ -4530,10 +4529,10 @@ void Map::clearTraps() {
 			trap.hull.pop_back();
 		}
 	}
-  trapPos.clear();
-  trapList.clear();
-  trapSet.clear();
-  selectedTrapIndex = -1;
+	trapPos.clear();
+	trapList.clear();
+	trapSet.clear();
+	selectedTrapIndex = -1;
 }
 
 void Map::removeTrap( int trapIndex ) {

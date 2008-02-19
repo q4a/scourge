@@ -107,12 +107,12 @@ class SpecialSkill;
 #define CREATURES_DIR "creatures/"
 #define MAX_BATTLE_COUNT 200
 
-typedef struct _MovingDoor {
+struct MovingDoor {
   float x, y, startAngle, endAngle, angleDelta, startX, startY, endX, endY;
   Shape *oldDoorShape, *newDoorShape;
   bool openLocked;
   Uint32 endTime;
-} MovingDoor;
+};
 
 /** 
   This is the main class of the game. It is a central place to put
@@ -172,7 +172,7 @@ public:
 	inline Button *getBeginChapter() { return beginChapter; }
 	inline Button *getReplayIntro() { return replayIntro; }
 
-	virtual void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f);
+	virtual void addDescription(char const* description, float r=1.0f, float g=1.0f, float b=0.4f);
 
   void movePartyToGateAndEndMission();
 
@@ -592,7 +592,7 @@ public:
   void mouseClickWhileExiting();
 
   bool saveGame( Session *session, const std::string& dirName, const std::string& title );
-  bool loadGame( Session *session, std::string& dirName, char *error );	
+  bool loadGame( Session *session, std::string& dirName, char* error );	
 
 	RenderedCreature *createWanderingHero( int level );
 
@@ -672,7 +672,7 @@ protected:
 
   char *getAPRDescription( Creature *p, Item *item, char *buff, size_t buffSize );
 
-	bool doLoadGame( Session *session, std::string& dirName, char *error );
+	bool doLoadGame( Session *session, std::string& dirName, char* error );
 
 	void drawPortrait( Widget *w, Creature *p=NULL );
 

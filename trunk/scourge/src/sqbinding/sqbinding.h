@@ -192,10 +192,10 @@ public:
     */
   }
 
-  inline char *getValue( char *key ) {
+  inline char const* getValue( char *key ) {
     std::string skey = key;
     if( values.find( skey ) == values.end() ) return NULL;
-    return (char*)( values[ skey ].c_str() );
+    return  values[ skey ].c_str();
   }
 
   inline void eraseValue( char *key ) {

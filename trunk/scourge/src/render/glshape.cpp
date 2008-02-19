@@ -420,11 +420,11 @@ void GLShape::createTopList( GLuint listName ) {
 }
 
 GLShape::~GLShape(){
-  free(surfaces[LEFT_SURFACE]);
-  free(surfaces[BOTTOM_SURFACE]);
-  free(surfaces[RIGHT_SURFACE]);
-  free(surfaces[FRONT_SURFACE]);
-  free(surfaces[TOP_SURFACE]);
+	delete surfaces[LEFT_SURFACE];
+	delete surfaces[BOTTOM_SURFACE];
+	delete surfaces[RIGHT_SURFACE];
+	delete surfaces[FRONT_SURFACE];
+	delete surfaces[TOP_SURFACE];
   if( initialized ) glDeleteLists( displayListStart, 3 );
   deleteVariationShapes();
 }
@@ -620,16 +620,16 @@ void GLShape::setPauseAnimation (bool pause){
     cout<<"GLShape::setPauseAnimation : Hey this should call MD2Shape function!"<<endl;
 }
 
-struct surface *GLShape::new_surface(float vertices[4][3]) {
-  int i, j;
-  struct surface *surf;
+Surface *GLShape::new_surface(float vertices[4][3]) {
 
-  surf = (struct surface *)malloc(sizeof(struct surface));
+	Surface *surf = new Surface;
+
   if(!surf) {
 	fprintf(stderr, "Error: Couldn't allocate memory for surface\n");
 	return NULL;
   }
 
+  int i, j;
   for(i = 0; i < 4; i++) {
 	for(j = 0; j < 3; j++)
 	  surf->vertices[i][j] = vertices[i][j];
@@ -678,35 +678,35 @@ void GLShape::initSurfaces() {
   v[1][0] = 0.0f; v[1][1] = d;    v[1][2] = h;
   v[2][0] = 0.0f; v[2][1] = 0.0f; v[2][2] = h;
   v[3][0] = 0.0f; v[3][1] = 0.0f; v[3][2] = 0.0f;
-  if(surfaces[LEFT_SURFACE]) free(surfaces[LEFT_SURFACE]);
+  delete surfaces[LEFT_SURFACE];
   surfaces[LEFT_SURFACE] = new_surface(v);
 
   v[0][0] = 0.0f; v[0][1] = 0.0f; v[0][2] = 0.0f;
   v[1][0] = 0.0f; v[1][1] = 0.0f; v[1][2] = h;
   v[2][0] = w;    v[2][1] = 0.0f; v[2][2] = h;
   v[3][0] = w;    v[3][1] = 0.0f; v[3][2] = 0.0f;
-  if(surfaces[BOTTOM_SURFACE]) free(surfaces[BOTTOM_SURFACE]);
+  delete surfaces[BOTTOM_SURFACE];
   surfaces[BOTTOM_SURFACE] = new_surface(v);
 
   v[0][0] = w;    v[0][1] = d;    v[0][2] = h;
   v[1][0] = w;    v[1][1] = d;    v[1][2] = 0.0f;
   v[2][0] = w;    v[2][1] = 0.0f; v[2][2] = 0.0f;
   v[3][0] = w;    v[3][1] = 0.0f; v[3][2] = h;
-  if(surfaces[RIGHT_SURFACE]) free(surfaces[RIGHT_SURFACE]);
+  delete surfaces[RIGHT_SURFACE];
   surfaces[RIGHT_SURFACE] = new_surface(v);
 
   v[0][0] = w;    v[0][1] = d;    v[0][2] = 0.0f;
   v[1][0] = w;    v[1][1] = d;    v[1][2] = h;
   v[2][0] = 0.0f; v[2][1] = d;    v[2][2] = h;
   v[3][0] = 0.0f; v[3][1] = d;    v[3][2] = 0.0f;
-  if(surfaces[FRONT_SURFACE]) free(surfaces[FRONT_SURFACE]);
+  delete surfaces[FRONT_SURFACE];
   surfaces[FRONT_SURFACE] = new_surface(v);
 
   v[0][0] = w;    v[0][1] = d;    v[0][2] = h;
   v[1][0] = w;    v[1][1] = 0.0f; v[1][2] = h;
   v[2][0] = 0.0f; v[2][1] = 0.0f; v[2][2] = h;
   v[3][0] = 0.0f; v[3][1] = d;    v[3][2] = h;
-  if(surfaces[TOP_SURFACE]) free(surfaces[TOP_SURFACE]);
+  delete surfaces[TOP_SURFACE];
   surfaces[TOP_SURFACE] = new_surface(v);
 }
 

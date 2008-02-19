@@ -39,15 +39,15 @@ class SavegameDialog;
 class Progress;
 class TextEffect;
 
-typedef struct _MenuItemParticle {
+struct MenuItemParticle {
   int life;
   float x, y;
   int r, g, b;
   float dir, step;
   float zoom;
-} MenuItemParticle;
+};
 
-typedef struct _MenuItem {
+struct MenuItem {
   char text[80];
   GLuint texture[1];
   unsigned char *textureInMemory;
@@ -56,7 +56,7 @@ typedef struct _MenuItem {
   bool active;
   int value;
   MenuItemParticle particle[100];
-} MenuItem;
+};
 
 class MainMenu : public SDLEventHandler,SDLScreenView {
 private:
@@ -77,23 +77,23 @@ private:
   int lastMenuTick; // this is when the program last drew the main menu (to make the sleep a bit more sensible) 
 
 #define MAX_LOGOS 100
-  typedef struct _LogoSprite {
+  struct LogoSprite {
 	float x, y, angle, rot;
 	int quadrant, steps;
-  } LogoSprite;
+  };
   int logoSpriteCount;
   LogoSprite logoSprite[MAX_LOGOS];
 
 
-  typedef struct _Cloud {
+  struct Cloud {
     int x, y, w, h, speed;
-  } Cloud;
+  };
   Cloud cloud[100];
   int cloudCount;
   int starCount;
-  typedef struct _Star {
+  struct Star {
     int x, y;
-  } Star;
+  };
   Star star[500];
 
 	SavegameDialog *savegameDialog;

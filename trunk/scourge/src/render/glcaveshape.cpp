@@ -78,7 +78,7 @@ GLfloat lavaTexX = 0;
 GLfloat lavaTexY = 0;
 
 GLuint GLCaveShape::floorTex[ Shapes::STENCIL_COUNT ];
-unsigned char *GLCaveShape::floorData[ Shapes::STENCIL_COUNT ];
+TextureData GLCaveShape::floorData[ Shapes::STENCIL_COUNT ];
 
 GLCaveShape::GLCaveShape( Shapes *shapes, GLuint texture[],
                           int width, int depth, int height, 
@@ -522,7 +522,7 @@ GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
 void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes ) {
   for( int i = 0; i < Shapes::STENCIL_COUNT; i++ ) {
     floorTex[i] = 0;
-    floorData[i] = (GLubyte*)malloc( 4 * 256 * 256 );
+	floorData[i].resize( 4 * 256 * 256 );
   }
 
   float w = (float)CAVE_CHUNK_SIZE / DIV;
@@ -799,21 +799,20 @@ void GLCaveShape::initializeShapes( Shapes *shapes ) {
 
 void GLCaveShape::createFloorTexture( Shapes *shapes, int stencilIndex ) {
   if( floorTex[ stencilIndex ] ) {
-    //free( lavaData[ index ] );
     glDeleteTextures( 1, &( floorTex[ stencilIndex ] ) );
   }
   glGenTextures(1, (GLuint*)&( floorTex[ stencilIndex ] ));
   GLubyte *stencil = shapes->getStencilImage( stencilIndex );
-  GLubyte *floorThemeData = shapes->getCurrentTheme()->getFloorData();
+  TextureData& floorThemeData = shapes->getCurrentTheme()->getFloorData();
 
   for( int x = 0; x < 256; x++ ) {
     for( int y = 0; y < 256; y++ ) {
       GLubyte sb = stencil[ x + y * 256 ];
   
       int p = ( ( 3 * x ) + ( y * 256 * 3 ) );
-      GLubyte r = ( floorThemeData ? floorThemeData[ p + 0 ] : (GLubyte)0x80 );
-      GLubyte g = ( floorThemeData ? floorThemeData[ p + 1 ] : (GLubyte)0x80 );
-      GLubyte b = ( floorThemeData ? floorThemeData[ p + 2 ] : (GLubyte)0x80 );
+	  GLubyte r = ( floorThemeData.empty() ? (GLubyte)0x80 : floorThemeData[ p + 0 ] );
+      GLubyte g = ( floorThemeData.empty() ? (GLubyte)0x80 : floorThemeData[ p + 1 ] );
+      GLubyte b = ( floorThemeData.empty() ? (GLubyte)0x80 : floorThemeData[ p + 2 ] );
   
       if( sb == 0 ) {
         floorData[ stencilIndex ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 0;
@@ -840,7 +839,7 @@ void GLCaveShape::createFloorTexture( Shapes *shapes, int stencilIndex ) {
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
   glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
   glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, 
-               GL_RGBA, GL_UNSIGNED_BYTE, floorData[ stencilIndex ] );
+               GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ] );
 }
 
 void GLCaveShape::createLavaTexture( int index, int stencilIndex, int rot ) {

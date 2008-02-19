@@ -259,7 +259,7 @@ void Scourge::start() {
         if( !failed ) {
           // do this to fix slowness in mainmenu the second time around
           glPushAttrib(GL_ENABLE_BIT);
-		  startMission( !loaded );
+					startMission( !loaded );
           glPopAttrib();
         }
       }
@@ -359,7 +359,6 @@ void Scourge::startMission( bool startInHq ) {
       getSDLHandler()->mainLoop();
 
 			setAmbientPaused( true );
-
 			// Save the current map (except HQ)
 			if( !session->isMultiPlayerGame() && 
 					session->getCurrentMission() ) {
@@ -414,7 +413,7 @@ string Scourge::getCurrentMapName( const string& dirName, int depth, string* map
 	stringstream tmp2;
 	tmp2 << ( dirName.length() ? dirName : getSession()->getSavegameName() ) << "/" << tmp.str();
 	
-	// convert to a path
+	// convert to a path	
 	string s = get_file_name( tmp2.str() );
 	cerr << "final file name=" << s << endl;
 	return s;
@@ -646,10 +645,9 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	}
 
 	// delete map
-	if( dg ) {
-		delete dg;
-		dg = NULL;
-	}
+	delete dg;
+	dg = NULL;
+	
 
 	return mapCreated;
 }
@@ -1059,36 +1057,36 @@ bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
 
 void Scourge::describeLocation(int mapx, int mapy, int mapz) {
 	std::string description;
-  if(mapx < MAP_WIDTH) {
-    //fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
-    Location *loc = levelMap->getPosition(mapx, mapy, mapz);
+	if(mapx < MAP_WIDTH) {
+		//fprintf(stderr, "\tclicked map coordinates: x=%u y=%u z=%u\n", mapx, mapy, mapz);
+		Location *loc = levelMap->getPosition(mapx, mapy, mapz);
 		if ( !loc ) loc = levelMap->getItemLocation( mapx, mapy );
 		if ( loc ) {
-      Creature *creature = ((Creature*)(loc->creature));
-      //fprintf(stderr, "\tcreature?%s\n", (creature ? "yes" : "no"));
+			Creature *creature = ((Creature*)(loc->creature));
+			//fprintf(stderr, "\tcreature?%s\n", (creature ? "yes" : "no"));
 			if ( creature ) {
 				creature->getDetailedDescription( description );
-      } else {
-        Item *item = ((Item*)(loc->item));
-        //fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
+			} else {
+				Item *item = ((Item*)(loc->item));
+				//fprintf(stderr, "\titem?%s\n", (item ? "yes" : "no"));
 				if ( item ) {
-          //item->getDetailedDescription(s, false);
-          //description = s;
-          infoGui->setItem( item );
-          if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );
-        } else {
-          Shape *shape = loc->shape;
-          //fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
+					//item->getDetailedDescription(s, false);
+					//description = s;
+					infoGui->setItem( item );
+					if(!infoGui->getWindow()->isVisible()) infoGui->getWindow()->setVisible( true );
+				} else {
+					Shape *shape = loc->shape;
+					//fprintf(stderr, "\tshape?%s\n", (shape ? "yes" : "no"));
 					if ( shape ) {
-            description = session->getShapePalette()->getRandomDescription(shape->getDescriptionGroup());
-          }
-        }
-      }
+						description = session->getShapePalette()->getRandomDescription(shape->getDescriptionGroup());
+					}
+				}
+			}
 			if ( !description.empty() ) {
 				getDescriptionScroller()->addDescription( description.c_str() );
-      }
-    }
-  }
+			}
+		}
+	}
 }
 
 void Scourge::startItemDragFromGui(Item *item) {
@@ -1762,7 +1760,7 @@ void Scourge::moveCreatures( bool allCreatures ) {
     } else if( party->getParty(i)->isMoving() ) {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
 	  if( party->getParty(i) == party->getPlayer() ) party->getPlayer()->playFootstep();
-	  party->getParty(i)->setMoving( false );
+			party->getParty(i)->setMoving( false );
     } else {
       party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
     }
@@ -1963,9 +1961,9 @@ int Scourge::initMultiplayer() {
   if(multiplayer->getValue() == MultiplayerDialog::START_SERVER) {
     session->startServer((GameStateHandler*)netPlay, serverPort);
     session->startClient((GameStateHandler*)netPlay, (CommandInterpreter*)netPlay,
-                         (char*)Constants::localhost,
+                         Constants::localhost,
                          serverPort,
-                         (char*)Constants::adminUserName);
+                         Constants::adminUserName);
   } else {
     session->startClient((GameStateHandler*)netPlay, (CommandInterpreter*)netPlay,
                          multiplayer->getServerName(),
@@ -2208,7 +2206,7 @@ void Scourge::drawWidgetContents(Widget *w) {
           if( getParty()->getPlayer()->getQuickSpell( t ) ) {
             Storable *storable = getParty()->getPlayer()->getQuickSpell( t );
               if ( storable ) {
-                w->setTooltip( (char*)( _( storable->getName() ) ) );
+                w->setTooltip( _( storable->getName() ) );
               } else if ( !(Item*)storable ) {
                 w->setTooltip( NULL );
               }
@@ -2947,13 +2945,13 @@ bool Scourge::saveGame( Session *session, const string& dirName, const string& t
   return true;
 }
 
-bool Scourge::loadGame( Session *session, string& dirName, char *error ) {
+bool Scourge::loadGame( Session *session, string& dirName, char* error ) {
 	bool b = doLoadGame( session, dirName, error );
-	addDescription( b ? (char*)_( "Game loaded successfully." ) : error );
+	addDescription( b ? _( "Game loaded successfully." ) : error );
 	return b;
 }
 
-bool Scourge::doLoadGame( Session *session, string& dirName, char *error ) {
+bool Scourge::doLoadGame( Session *session, string& dirName, char* error ) {
 	strcpy( error, "" );
 
 	string path = get_file_name( dirName + "/savegame.dat" );
@@ -3043,7 +3041,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char *error ) {
 			Uint8 tmp[300];
 			for( unsigned int i = 0; i < n; i++ ) {
 				file->read( tmp, 300 );
-				string s = (char*)tmp;
+				string s( (char*)tmp );
 				visitedMaps.insert( s );
 			}
 		}
@@ -3060,7 +3058,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char *error ) {
 				}
 			}
 			if( nextMission == -1 ) {
-				cerr << "*** Error: Can't find next mission: " << (char*)(mission) << endl;
+				cerr << "*** Error: Can't find next mission: " << (char*)mission << endl;
 				// default to hq
 				story = 0;
 				startInHq = 1;
@@ -3302,7 +3300,7 @@ void Scourge::updateBoard() {
   int selected = missionList->getSelectedLine();
   if( selected != -1 && selected < board->getMissionCount()) {
     Mission *mission = board->getMission(selected);
-    missionDescriptionLabel->setText((char*)(mission->getDescription()));
+    missionDescriptionLabel->setText( mission->getDescription() );
     mapWidget->setSelection( mission->getMapX(), mission->getMapY() );
   }
 }
@@ -3715,7 +3713,7 @@ bool Scourge::useItem( Creature *creature, Item *item ) {
 	return ret;
 }
 
-void Scourge::addDescription(char *description, float r, float g, float b) {
+void Scourge::addDescription(char const* description, float r, float g, float b) {
 	descriptionScroller->addDescription( description, r, g, b );
 }
 

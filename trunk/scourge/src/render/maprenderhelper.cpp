@@ -42,12 +42,12 @@ CaveRenderHelper::CaveRenderHelper() {
 }
 
 CaveRenderHelper::~CaveRenderHelper() {
-  if( fog ) delete fog;
+  delete fog;
 }
 
 void CaveRenderHelper::setMap( Map *map ) {
   MapRenderHelper::setMap( map );
-  if( fog ) delete fog;
+  delete fog;
   fog = new Fog( getMap(), getLampRadiusSquared() );
 }
 

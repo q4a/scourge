@@ -52,7 +52,7 @@ ScrollingLabel::~ScrollingLabel() {
   coloring.clear();
 }
 
-void ScrollingLabel::setText( char *s ) {
+void ScrollingLabel::setText( char const* s ) {
   textWidthCache.clear();
 
   wordPosCount = 0;

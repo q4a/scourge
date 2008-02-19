@@ -243,7 +243,7 @@ char *Constants::getMessage(int index) {
 }
 
 // return -1 on failure, or (-2 - i) on success
-int Constants::getPotionSkillByName(char *p) {
+int Constants::getPotionSkillByName(char const* p) {
   if(!p || !strlen(p)) return -1;
   for(int i = 0; i < POTION_SKILL_COUNT; i++) {
     if(!strcmp(p, POTION_SKILL_NAMES[i])) return (-2 - i);
@@ -584,7 +584,7 @@ int Constants::initRootDir( int argc, char *argv[] ) {
 	while(!working) {
 		cwd = new char[pathLength];
 		if( !getcwd( cwd, pathLength ) ) {
-			delete[] cwd;
+			delete [] cwd;
 			pathLength *= 2;
 			cerr << "Can't determine current working directory." << endl;
 			if(pathLength > 5000)
@@ -594,7 +594,7 @@ int Constants::initRootDir( int argc, char *argv[] ) {
 			working = true;
 	}
 	dir = findLocalResources( cwd );
-	delete[] cwd;
+	delete [] cwd;
 #endif
 
 	if(dir.length()) {

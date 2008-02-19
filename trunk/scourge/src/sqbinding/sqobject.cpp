@@ -77,7 +77,7 @@ char *SqObject::describeTypeMask( const SQChar *typemask, char *buffer ) {
     char tmp[ 20 ], tmp2[ 80 ];
     // skip the first 'x', it's an internal reference:
     int start = ( (char)(typemask[0]) == 'x' ? 1 : 0 );
-    for( int i = start; i < (int)strlen( (char*)typemask ); i++ ) {
+    for( int i = start; i < (int)strlen( (char const*)typemask ); i++ ) {
       if( strlen( buffer ) ) strcat( buffer, ", " );
       switch( (char)typemask[i] ) {
       case 'n' : strcpy( tmp, "int" ); break;
@@ -97,13 +97,13 @@ char *SqObject::describeTypeMask( const SQChar *typemask, char *buffer ) {
 char *SqObject::describeReturnType( const char *returnType, 
                                     set<string> *names, 
                                     char *buffer, size_t bufferSize ) {
-  string s = (char*)returnType;
+  string s(returnType);
   if( names->find( s ) == names->end() ) {
-    strcpy( buffer, (char*)returnType );
+    strcpy( buffer, returnType );
   } else {
     snprintf( buffer, bufferSize, "<a href=\"%s.html\">%s</a>", 
-             (char*)returnType, 
-             (char*)returnType );
+             returnType, 
+             returnType );
   }
   return buffer;
 }

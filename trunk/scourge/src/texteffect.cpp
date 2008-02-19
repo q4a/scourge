@@ -24,7 +24,7 @@
 #define MENU_ITEM_PARTICLE_ZOOM 1.1f
 #define MAX_PARTICLE_LIFE 50
 
-TextEffect::TextEffect( Scourge *scourge, int x, int y, char *text ) {
+TextEffect::TextEffect( Scourge *scourge, int x, int y, char const* text ) {
   this->scourge = scourge;
   strncpy( this->text, text, 254 );
   this->text[ 254 ] = '\0';
