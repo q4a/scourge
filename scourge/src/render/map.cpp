@@ -1541,6 +1541,13 @@ void Map::willDrawGrid() {
 	glDepthMask(GL_TRUE);
 }
 
+/*
+  Since rooms are rectangular, we can do this hack... a wall horizontal 
+  wall piece will use the player's x coord. and its y coord.
+  A vertical one will use its X and the player's Y.
+  This is so that even if the wall extends below the player the entire
+  length has the same characteristics.
+*/
 void Map::sortShapes( DrawLater *playerDrawLater,
                       DrawLater *shapes,
                       int shapeCount ) {
@@ -1558,66 +1565,60 @@ void Map::sortShapes( DrawLater *playerDrawLater,
               mm, pm, vp,
               &playerWinX, &playerWinY, &playerWinZ );
 
+  set< int > xset, yset;
   map< string, bool > cache;
   GLdouble objX, objY;
-  GLdouble wallWinX, wallWinY, wallWinZ;
   for(int i = 0; i < shapeCount; i++) {
-    /*
-      Since rooms are rectangular, we can do this hack... a wall horizontal 
-      wall piece will use the player's x coord. and its y coord.
-      A vertical one will use its X and the player's Y.
-      This is so that even if the wall extends below the player the entire
-      length has the same characteristics.
-    */
-
-	Shape *shape = shapes[i].shape;
-	bool isHorizontal = shape->getWidth() > shape->getDepth();
-	// for square-base shapes, look around for a wall-piece
+	// skip square shapes the first time around
 	if( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
-	  isHorizontal = lookAround( &shapes[i] );
-	}
-	
-	if( isHorizontal ) {
+	  shapes[i].inFront = false;
+	  continue;
+	} else if( shapes[i].shape->getWidth() > shapes[i].shape->getDepth() ) {
       objX = playerDrawLater->xpos;
       objY = shapes[i].ypos;
+	  yset.insert( shapes[i].ypos );
     } else {
       objX = shapes[i].xpos;
       objY = playerDrawLater->ypos;
+	  xset.insert( shapes[i].xpos );
     }
-    bool b;
-	char tmp[80];
-    snprintf( tmp, 80, "%f,%f", objX, objY );
-    string key = tmp;
-    if( cache.find( key ) == cache.end() ) {
-      gluProject( objX, objY, 0,
-                  mm, pm, vp,
-                  &wallWinX, &wallWinY, &wallWinZ );
-      b = ( wallWinY < playerWinY );
-      cache[ key ] = b;
-    } else {
-      b = cache[ key ];
-    }
-    shapes[i].inFront = b;
+	shapes[i].inFront = isShapeInFront( playerWinY, objX, objY, &cache, mm, pm, vp);
+  }
+  // now process square shapes: if their x or y lies on a wall-line, they're transparent
+  for(int i = 0; i < shapeCount; i++) {
+	if( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
+	  if( xset.find( shapes[i].xpos ) != xset.end() ) {
+		objX = shapes[i].xpos;
+		objY = playerDrawLater->ypos;
+	  } else if( yset.find( shapes[i].ypos ) != yset.end() ) {
+		objX = playerDrawLater->xpos;
+		objY = shapes[i].ypos;
+	  } else {
+		continue;
+	  }
+	  shapes[i].inFront = isShapeInFront( playerWinY, objX, objY, &cache, mm, pm, vp);
+	}
   }
 }
 
-// return true if horizontal
-bool Map::lookAround( DrawLater *later ) {
-  int x, y;
-  //for( int i = 0; i < 4; i++ ) {
-	x = later->x - 1;
-	y = later->y;
-	Location *pos = getLocation( x, y, 0 );
-	if( pos != NULL && ( isLocationInLight( x, y, pos->shape ) || isDoorType( pos->shape, false ) ) ) {
-	  return true;
-	}
-	x = later->x + later->shape->getWidth();
-	pos = getLocation( x, y, 0 );
-	if( pos != NULL && ( isLocationInLight( x, y, pos->shape ) || isDoorType( pos->shape, false ) ) ) {
-	  return true;
-	}
-	//}
-  return false;
+bool Map::isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, 
+						  map< string, bool > *cache, 
+						  GLdouble *mm, GLdouble *pm, GLint *vp ) {
+  GLdouble wallWinX, wallWinY, wallWinZ;
+  bool b;
+  char tmp[80];
+  snprintf( tmp, 80, "%f,%f", objX, objY );
+  string key = tmp;
+  if( cache->find( key ) == cache->end() ) {
+	gluProject( objX, objY, 0,
+				mm, pm, vp,
+				&wallWinX, &wallWinY, &wallWinZ );
+	b = ( wallWinY < playerWinY );
+	(*cache)[ key ] = b;
+  } else {
+	b = (*cache)[ key ];
+  }
+  return b;
 }
 
 void Map::drawProjectiles() {
