@@ -42,7 +42,7 @@ class Shape;
 
 namespace Util {
 
-	inline float degreesToRadians(float angle) { return PI / (180.0 / angle); }
+	inline float degreesToRadians(float angle) { return Constants::toRadians( angle ); }
 
 	/**
 	* Rotate the 2D point(x,y) by angle(in degrees). Return the result in px,py.

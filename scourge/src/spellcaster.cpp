@@ -676,6 +676,7 @@ void SpellCaster::hailAttack() {
   for( int i = 0; i < targetCount; i++ ) {
     if( battle->getCreature()->canAttack( targets[ i ] ) ) {
       battle->getCreature()->setTargetCreature( targets[ i ] );
+#pragma bug_probably("Spellcaster::causeDamage() has first parameter of type bool")
       causeDamage( (GLuint)( i * 50 ) );
     }
   }

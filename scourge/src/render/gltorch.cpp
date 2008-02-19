@@ -30,12 +30,9 @@ GLTorch::GLTorch(GLuint texture[], GLuint flameTex,
 }
 
 GLTorch::~GLTorch() {
-  for(int i = 0; i < PARTICLE_COUNT; i++) {
-    if(particle[i]) {
-      delete(particle[i]);
-      particle[i] = 0;
-    }
-  }
+	for(int i = 0; i < PARTICLE_COUNT; i++) {
+		delete particle[i];
+	}
 }
 
 void GLTorch::initParticles() {
@@ -62,7 +59,7 @@ void GLTorch::draw() {
         particle[i]->x = Util::roll( 0.0f, width / 5.0f / DIV );
         particle[i]->y = Util::roll( 0.0f, depth / 5.0f / DIV );
       } else {
-		particle[i]->x = Util::roll( 0.0f, width / DIV );
+        particle[i]->x = Util::roll( 0.0f, width / DIV );
         particle[i]->y = Util::roll( 0.0f, depth / DIV );
       }
       particle[i]->z = 0.0f;
@@ -71,8 +68,8 @@ void GLTorch::draw() {
       // move this particle
       particle[i]->z+=0.5f;
       if(particle[i]->z >= particle[i]->height) {
-        delete(particle[i]);
-        particle[i] = 0;
+        delete particle[i];
+        particle[i] = NULL;
       }
     }
     

@@ -50,24 +50,24 @@ GuiTheme::GuiTheme( char *name ) {
 
 GuiTheme::~GuiTheme() {
   free( name );
-  if( windowBack ) delete windowBack;
-  if( windowTop ) delete windowTop;
-  if( windowBorder ) delete windowBorder;
-  if( windowTitleText ) delete windowTitleText;
-  if( windowText ) delete windowText;
-  if( buttonBackground ) delete buttonBackground;
-  if( buttonSelectionBackground ) delete buttonSelectionBackground;
-  if( buttonHighlight ) delete buttonHighlight;
-  if( buttonBorder ) delete buttonBorder;
-  if( buttonText ) delete buttonText;
-  if( buttonSelectionText ) delete buttonSelectionText;
-  if( listBackground ) delete listBackground;
-  if( inputBackground ) delete inputBackground;
-  if( inputText ) delete inputText;
-  if( selectionBackground ) delete selectionBackground;
-  if( selectedBorder ) delete selectedBorder;
-  if( selectedCharacterBorder ) delete selectedCharacterBorder;
-  if( windowBorderTexture ) delete windowBorderTexture;
+  delete windowBack;
+  delete windowTop;
+  delete windowBorder;
+  delete windowTitleText;
+  delete windowText;
+  delete buttonBackground;
+  delete buttonSelectionBackground;
+  delete buttonHighlight;
+  delete buttonBorder;
+  delete buttonText;
+  delete buttonSelectionText;
+  delete listBackground;
+  delete inputBackground;
+  delete inputText;
+  delete selectionBackground;
+  delete selectedBorder;
+  delete selectedCharacterBorder;
+  delete windowBorderTexture;
 }
 
 void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
@@ -86,79 +86,79 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
 		const char *name = node->getValueAsString( "name" );
 		GuiTheme *theme = new GuiTheme( strdup( name ) );
 
-		ThemeElement *element = parseElement( (char*)node->getValueAsString( "window_background" ) );
+		ThemeElement *element = parseElement( node->getValueAsString( "window_background" ) );
 		if( element ) theme->setWindowBackground( element );
 		else cerr << "Gui theme: " << name << " skipping window background" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "window_top" ) );
+		element = parseElement( node->getValueAsString( "window_top" ) );
 		if( element ) theme->setWindowTop( element );
 		else cerr << "Gui theme: " << name << " skipping window top/bottom" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "window_border" ) );
+		element = parseElement( node->getValueAsString( "window_border" ) );
 		if( element ) theme->setWindowBorder( element );
 		else cerr << "Gui theme: " << name << " skipping window border" << endl;
 
-		Color *color = parseColor( (char*)node->getValueAsString( "window_title" ) );
+		Color *color = parseColor( node->getValueAsString( "window_title" ) );
 		if( color ) theme->setWindowTitleText( color );
 		else cerr << "Gui theme: " << name << " skipping window title text color" << endl;
 
-		color = parseColor( (char*)node->getValueAsString( "window_text" ) );
+		color = parseColor( node->getValueAsString( "window_text" ) );
 		if( color ) theme->setWindowText( color );
 		else cerr << "Gui theme: " << name << " skipping window text color" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "button_background" ) );
+		element = parseElement( node->getValueAsString( "button_background" ) );
 		if( element ) theme->setButtonBackground( element );
 		else cerr << "Gui theme: " << name << " skipping button background" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "button_selection" ) );
+		element = parseElement( node->getValueAsString( "button_selection" ) );
 		if( element ) theme->setButtonSelectionBackground( element );
 		else cerr << "Gui theme: " << name << " skipping button selection background" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "button_highlight" ) );
+		element = parseElement( node->getValueAsString( "button_highlight" ) );
 		if( element ) theme->setButtonHighlight( element );
 		else cerr << "Gui theme: " << name << " skipping button highlight" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "button_border" ) );
+		element = parseElement( node->getValueAsString( "button_border" ) );
 		if( element ) theme->setButtonBorder( element );
 		else cerr << "Gui theme: " << name << " skipping button border" << endl;
 
-		color = parseColor( (char*)node->getValueAsString( "button_text" ) );
+		color = parseColor( node->getValueAsString( "button_text" ) );
 		if( color ) theme->setButtonText( color );
 		else cerr << "Gui theme: " << name << " skipping button text" << endl;
 
-		color = parseColor( (char*)node->getValueAsString( "button_selection_text" ) );
+		color = parseColor( node->getValueAsString( "button_selection_text" ) );
 		if( color ) theme->setButtonSelectionText( color );
 		else cerr << "Gui theme: " << name << " skipping button selection text" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "list_background" ) );
+		element = parseElement( node->getValueAsString( "list_background" ) );
 		if( element ) theme->setListBackground( element );
 		else cerr << "Gui theme: " << name << " skipping list background" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "input_background" ) );
+		element = parseElement( node->getValueAsString( "input_background" ) );
 		if( element ) theme->setInputBackground( element );
 		else cerr << "Gui theme: " << name << " skipping input background" << endl;
 
-		color = parseColor( (char*)node->getValueAsString( "input_text" ) );
+		color = parseColor( node->getValueAsString( "input_text" ) );
 		if( color ) theme->setInputText( color );
 		else cerr << "Gui theme: " << name << " skipping input text" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "selection_background" ) );
+		element = parseElement( node->getValueAsString( "selection_background" ) );
 		if( element ) theme->setSelectionBackground( element );
 		else cerr << "Gui theme: " << name << " skipping selection background" << endl;
 
-		color = parseColor( (char*)node->getValueAsString( "selection_text" ) );
+		color = parseColor( node->getValueAsString( "selection_text" ) );
 		if( color ) theme->setSelectionText( color );
 		else cerr << "Gui theme: " << name << " skipping selection text" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "selected_border" ) );
+		element = parseElement( node->getValueAsString( "selected_border" ) );
 		if( element ) theme->setSelectedBorder( element );
 		else cerr << "Gui theme: " << name << " skipping selected border" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "selected_character_border" ) );
+		element = parseElement( node->getValueAsString( "selected_character_border" ) );
 		if( element ) theme->setSelectedCharacterBorder( element );
 		else cerr << "Gui theme: " << name << " skipping selected character border" << endl;
 
-		element = parseElement( (char*)node->getValueAsString( "textured_window_border" ) );
+		element = parseElement( node->getValueAsString( "textured_window_border" ) );
 		if( element ) theme->setWindowBorderTexture( element );
 		else cerr << "Gui theme: " << name << " skipping window border texture" << endl;
 		

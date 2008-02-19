@@ -73,10 +73,10 @@ class ScrollingLabel : public Widget {
 
   std::map<char, Color> coloring;
 
-  typedef struct _WordPos {
+  struct WordPos {
     int x, y, w, h;
     char word[255];
-  } WordPos;
+  };
   WordPos wordPos[1000];
   int wordPosCount;
   WordClickedHandler *handler;
@@ -97,7 +97,7 @@ class ScrollingLabel : public Widget {
    inline void addColoring( char c, Color color ) { coloring[c]=color; }
 
    inline char *getText() { return text; }
-   void setText(char *s);
+   void setText(char const* s);
 
    /**
     * Append text by scrolling off the top if it won't fit in the buffer.

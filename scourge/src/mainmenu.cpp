@@ -282,6 +282,7 @@ void MainMenu::drawView() {
     glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
     char version[100];
     snprintf(version, 100, _( "Scourge version %s" ), SCOURGE_VERSION);
+	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
     scourge->getSDLHandler()->texPrint( 0, 0, version );
     glColor3f( 0.8f, 0.75f, 0.65f );
     int y = 14;
@@ -381,7 +382,7 @@ void MainMenu::drawMenu() {
 		int x = 50;
 		int y = top + 230;
 		for( int i = 0; strlen( menuText[i] ); i++ ) {
-			TextEffect *textEffect = new TextEffect( scourge, x - 40, y - 20, (char*)_(menuText[i]) );
+			TextEffect *textEffect = new TextEffect( scourge, x - 40, y - 20, _(menuText[i]) );
 			textEffects.push_back( textEffect );
 			y += 50;
 		}

@@ -36,10 +36,10 @@ class Scourge;
 class Location;
 class Canvas;
 
-typedef struct _MiniMapPoint {
+struct MiniMapPoint {
     GLfloat r, g, b;
     bool visible;
-}MiniMapPoint;
+};
 
 /**
  *@author Daroth-U

@@ -228,8 +228,8 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		
 	//If this is the first iteration, randomize init. 
 	//   Later it's used to decide wether to divide the room 	horzontal or vertical 
-	if(init == 1)
-		init = rand()%2;
+	if( init ) 
+		init = (rand()%2 == 0);
 
 //	fprintf( stderr, "Iteration: %d %d : %d %d\n", x_start, y_start, width, height);
 
@@ -344,7 +344,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 	}
 		
 	int r = roomCount; //this->roomCount;
-	if(!subdivideMaze(roomA.x, roomA.y, roomA.w, roomA.h, 0)){
+	if(!subdivideMaze(roomA.x, roomA.y, roomA.w, roomA.h, false)){
 	// if we cannot divide the space once more, make a room
 		room[r].x = roomA.x;
 		room[r].y = roomA.y;
@@ -368,7 +368,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 
 	
 	r = roomCount;//this->roomCount;
-	if(!subdivideMaze(roomB.x, roomB.y, roomB.w, roomB.h, 0)){
+	if(!subdivideMaze(roomB.x, roomB.y, roomB.w, roomB.h, false)){
 	//if we cannot divice the space once more, make a room
 		room[r].x = roomB.x;
 		room[r].y = roomB.y;
@@ -468,7 +468,7 @@ void MondrianGenerator::generate( Map *map, ShapePalette *shapePal ) {
   
 	totalWidth = width;
 	totalHeight = height;
-  subdivideMaze(0, 0, width, height, 1);
+  subdivideMaze(0, 0, width, height, true);
 
   //printMaze();
 	//for( int i = 0; i < roomCount; i++ ) {

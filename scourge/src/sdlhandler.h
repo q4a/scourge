@@ -103,7 +103,7 @@ private:
 
 public: 
 
-  typedef struct _FontInfo {
+  struct FontInfo {
     std::string path;
     int size;
     int style;
@@ -112,7 +112,7 @@ public:
 
     TTF_Font *font;
     FontMgr *fontMgr;
-  } FontInfo;
+  };
   static std::vector<FontInfo*> fontInfos;
 
   static bool showDebugInfo;

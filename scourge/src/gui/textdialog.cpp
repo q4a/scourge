@@ -23,12 +23,12 @@
 #define TEXT_DIALOG_WIDTH 400
 #define TEXT_DIALOG_HEIGHT 270
 
-TextDialog::TextDialog( ScourgeGui *scourgeGui, char *title ) {
+TextDialog::TextDialog( ScourgeGui *scourgeGui, char const* title ) {
   win = new Window( scourgeGui,
 										( scourgeGui->getScreenWidth() / 2 ) - ( TEXT_DIALOG_WIDTH / 2 ),
 										( scourgeGui->getScreenHeight() / 2 ) - ( TEXT_DIALOG_HEIGHT / 2 ),
 										TEXT_DIALOG_WIDTH, TEXT_DIALOG_HEIGHT,
-										( title ? title : (char*)"Information" ),
+										( title ? title : _("Information") ),
 										scourgeGui->getGuiTexture(), true, 
 										Window::BASIC_WINDOW,
 										scourgeGui->getGuiTexture2() );

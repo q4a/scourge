@@ -52,11 +52,11 @@ bool loading = false;
 #define CLOSE_DISTANCE 8
 
 // Describes monster toughness in general
-typedef struct _MonsterToughness {
+struct MonsterToughness {
   float minSkillBase, maxSkillBase;
   float minHpMpBase, maxHpMpBase;
   float armorMisfuction;
-} MonsterToughness;
+};
 
 // goes from not very tough to tough 
 MonsterToughness monsterToughness[] = {
@@ -440,8 +440,8 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
     }
   }
 
-	creature->setBoss( info->boss );
-  creature->setSavedMissionObjective( info->mission );
+	creature->setBoss( info->boss != 0 );
+  creature->setSavedMissionObjective( info->mission != 0 );
 	if( creature->isSavedMissionObjective() ) {
 		cerr << "*********************************" << endl;
 		cerr << "Loaded mission creature:" << creature->getName() << endl;
@@ -682,7 +682,7 @@ bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNot
 
 Location *Creature::moveToLocator() {
   Location *pos = NULL;
-  
+
   //we either have a target we want to reach, or we are wandering around
   if(selX > -1 || getMotion() == Constants::MOTION_LOITER) { 
     // take a step
@@ -751,7 +751,7 @@ Location *Creature::moveToLocator() {
  * Returns the blocking shape or NULL if move is possible.
  */
 Location *Creature::takeAStepOnPath() {
-  Location *position = NULL;
+	Location *position = NULL;
   int a = ((AnimatedShape*)getShape())->getCurrentAnimation();
 
   if(!pathManager->atEndOfPath() && a == MD2_RUN ){ //a != MD2_TAUNT ) {
@@ -761,10 +761,10 @@ Location *Creature::takeAStepOnPath() {
 
     GLfloat newX = getX();
     GLfloat newY = getY();
-
+    
     int cx = toint(newX);
     int cy = toint(newY); //current x,y    
-
+    
     GLfloat step = getStep();
     float targetX = (float)(location.x);
     float targetY = (float)(location.y); 
@@ -802,7 +802,7 @@ Location *Creature::takeAStepOnPath() {
                        this);
       }
 	}
-                         
+
    /* cout << getName() << " stepping (" << getX() << "," << getY() << ") to (" << newX << "," << newY << ")  towards (" << location.x << "," << location.y << ")\n";
     if(position){ 
       cout << "but is blocked.\n";
@@ -824,7 +824,6 @@ Location *Creature::takeAStepOnPath() {
       // if we can't get to the destination, stop trying
       // do this so the animation switches to "stand"
       //stopMoving();
-
       //clear the path infront incase an NPC is what is blocking us
       if(getMotion() != Constants::MOTION_LOITER)
           pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());
@@ -972,7 +971,7 @@ Item *Creature::removeInventory(int index) {
 
 		InventoryInfo *info = getInventoryInfo( item );
 		invInfos.erase( item );
-		delete( info );
+		delete info;
 		
     item = inventory[ index ];
 
@@ -1165,7 +1164,7 @@ void Creature::setAction(int action,
   preActionTargetCreature = getTargetCreature();  
   // zero the clock
   setLastTurn(0);
-
+ 
   enum {MSG_SIZE = 80 };
   char msg[ MSG_SIZE ];
   switch(action) {
@@ -1949,6 +1948,7 @@ bool Creature::castHealingSpell() {
 }
 
 void Creature::decideMonsterAction() {
+
   //CASE 1: A possessed non-aggressive creature
   if( !isMonster() && getStateMod( StateMod::possessed ) ) {
     Creature *p = 
@@ -2126,7 +2126,7 @@ GLfloat Creature::getStep() {
 
 void Creature::getDetailedDescription( std::string& s ) {
 
-char *tempdesc;
+	char tempdesc[256] = {0};
 
   snprintf( tempdesc, 255, _( "%s (L:%d HP:%d/%d MP:%d/%d)" ), _( getName() ), getLevel(), getHp(), getMaxHp(), getMp(), getMaxMp() );
 
@@ -2503,7 +2503,7 @@ void Creature::calcArmor( int damageType,
             // influence slot (AP_INFLUENCE)
 						lastArmor[ t ] += 
               getInfluenceBonus( item, AP_INFLUENCE, 
-                                 ( callScript ? (char*)"CTH" : NULL ) );
+                                 ( callScript ? "CTH" : NULL ) );
 
 						armorCount++;
 					}
@@ -2531,7 +2531,7 @@ float power( float base, int e ) {
 
 float Creature::getInfluenceBonus( Item *weapon,
 																	 int influenceType, 
-																	 char *debugMessage ) {
+																	 char const* debugMessage ) {
 
 	if( !weapon ) return 0;
 
@@ -2613,7 +2613,7 @@ void Creature::getCth( Item *weapon, float *cth, float *skill, bool showDebug ) 
 	// (As opposed to subtracting it from cth. This is b/c 
 	// skill is shown in the characterInfo as the cth.)
 	*skill += getInfluenceBonus( weapon, CTH_INFLUENCE, 
-															 ( showDebug ? (char*)"CTH" : NULL ) );
+															 ( showDebug ? "CTH" : NULL ) );
 	if( *skill < 0 ) *skill = 0;
 
 	if( showDebug && session->getPreferences()->getCombatInfoDetail() > 0 ) {
@@ -2668,7 +2668,7 @@ float Creature::getAttack( Item *weapon,
 
 	// apply POWER influence
 	damagePercent += getInfluenceBonus( weapon, DAM_INFLUENCE, 
-																			( callScript ? (char*)"DAM" : NULL ) );
+																			( callScript ? "DAM" : NULL ) );
 	if( damagePercent < 0 ) damagePercent = 0;
 
 	if( minP ) {

@@ -63,7 +63,7 @@ class ConversationGui : public WordClickedHandler, WidgetView {
 
   inline Creature *getCreature() { return creature; }
   void start(Creature *creature);
-  void start(Creature *creature, char *message, bool useCreature);
+  void start(Creature *creature, char const* message, bool useCreature);
   inline Window *getWindow() { return win; }
   void hide();
 

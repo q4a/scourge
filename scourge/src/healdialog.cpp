@@ -168,5 +168,5 @@ void HealDialog::heal( Spell *spell, int price ) {
 }
 
 void HealDialog::showSpellDescription( Spell *spell ) {
-  spellDescription->setText( (char*)( spell->getNotes() ? spell->getNotes() : "" ) );
+  spellDescription->setText( spell->getNotes() ? spell->getNotes() : "" );
 }

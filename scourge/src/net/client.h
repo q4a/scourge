@@ -15,9 +15,9 @@ int clientLoop(void *data);
 
 class Client {
  private:
-  char *host;
+  char const* host;
   int port;
-  char *username;
+  char const* username;
   bool connected;
   bool readError;
   bool threadRunning;
@@ -33,7 +33,7 @@ class Client {
   static const Uint32 FIND_SERVER_TIMEOUT = 10000;
 
  public:
-  Client(char *host, int port, char *username, CommandInterpreter *ci);
+  Client(char const* host, int port, char const* username, CommandInterpreter *ci);
   virtual ~Client();
   int connect();
   bool findServer();

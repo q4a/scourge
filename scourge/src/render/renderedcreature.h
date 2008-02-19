@@ -33,11 +33,11 @@ class Map;
  * A creature rendered on the map.
  */
 
-typedef struct _DamagePos {
+struct DamagePos {
   int damage;
   float pos;
   Uint32 lastTime;
-} DamagePos;
+};
 
 #define MAX_RECENT_DAMAGE 100
 

@@ -10,7 +10,7 @@ char *TCPUtil::receive(TCPsocket sock, char **buf, int *length) {
   Uint32 len,result;
   
   // free the old buffer
-  if(*buf) free(*buf);
+  delete [] *buf;
   *buf=NULL;
 
   // receive the length of the string message
@@ -29,7 +29,7 @@ char *TCPUtil::receive(TCPsocket sock, char **buf, int *length) {
   if(!len) return(NULL);
 
   // allocate the buffer memory
-  *buf = (char*)malloc(len);
+  *buf = new char[len];
   if(!(*buf)) return(NULL);
 
   // get the string buffer over the socket
@@ -37,8 +37,8 @@ char *TCPUtil::receive(TCPsocket sock, char **buf, int *length) {
   if(result < len) {
     if(SDLNet_GetError() && strlen(SDLNet_GetError())) // sometimes blank!
       printf("SDLNet_TCP_Recv: %s\n", SDLNet_GetError());
-    free(*buf);
-    buf=NULL;
+    delete [] buf;
+    buf = NULL;
   }
   // return the new buffer
   return(*buf);

@@ -78,7 +78,7 @@ public:
 
 class EffectProjectileRenderer : public ProjectileRenderer {
 private:
-	Effect** effects;
+	std::vector<Effect*> effects;
   int effectType;
   int timeToLive;
 public:

@@ -416,7 +416,7 @@ void Inven::storeItem( Item *item ) {
 	Storable *s = (Storable*)item;
 	const char *p = s->isStorable();
 	if( p ) {
-		pcUi->getScourge()->showMessageDialog( (char*)p );
+		pcUi->getScourge()->showMessageDialog( p );
 	} else {
 		this->storable = s;
 		pcUi->getScourge()->addDescription( _( "Click a quickspell slot to store this item." ) );

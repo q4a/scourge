@@ -25,10 +25,10 @@
 
 using namespace std;
 
-typedef struct _ColorMark {
+struct ColorMark {
   char c;
   Color color;
-} ColorMark;
+};
 
 ColorMark colors[] = {
   { '%', Color( 1, 0, 0 ) },
@@ -655,7 +655,7 @@ void InfoGui::appendMagicItemInfo( char *description, Item *item ) {
           strcat( description, "|" );
         }
         if( item->getMonsterType() ) {
-          char *p = Monster::getDescriptiveType( item->getMonsterType() );
+          char const* p = Monster::getDescriptiveType( item->getMonsterType() );
           snprintf( tmp, TXT_SIZE, " %s %s.", _( "vs." ), ( p ? p : item->getMonsterType() ));
           strcat( description, tmp );
         } else {

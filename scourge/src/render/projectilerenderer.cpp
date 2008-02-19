@@ -76,7 +76,7 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 EffectProjectileRenderer::EffectProjectileRenderer( Map *map, Preferences *prefs, Shapes *shapes, int effectType, int timeToLive ) {
   this->effectType = effectType;
   this->timeToLive = timeToLive;
-	this->effects = (Effect**)malloc( MAX_EFFECT_COUNT * sizeof( Effect* ) );
+	effects.resize( MAX_EFFECT_COUNT );
 	for( int i = 0; i < MAX_EFFECT_COUNT; i++ ) {
 		effects[i] = new Effect( map, prefs, shapes, 2, 2 );
 	}
@@ -86,7 +86,6 @@ EffectProjectileRenderer::~EffectProjectileRenderer() {
 	for( int i = 0; i < MAX_EFFECT_COUNT; i++ ) {
 		delete effects[i];
 	}
-	free( effects );
 }
 
 void EffectProjectileRenderer::drawPath( Map *map, 

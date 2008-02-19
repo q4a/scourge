@@ -153,7 +153,7 @@ public:
   };
 
   static GLuint floorTex[];
-  static unsigned char *floorData[];
+  static TextureData floorData[];
 
   static void createShapes( GLuint texture[], int shapeCount, Shapes *shapes );
   static void initializeShapes( Shapes *shapes );

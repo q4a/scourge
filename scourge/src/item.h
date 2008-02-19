@@ -154,7 +154,7 @@ public:
   inline int getMagicLevel() { return magicLevel; }
   inline int getBonus() { return bonus; }
   inline int getDamageMultiplier() { return damageMultiplier; }
-  inline char *getMonsterType() { return monsterType; }
+  inline char const* getMonsterType() { return monsterType; }
   inline MagicSchool *getSchool() { return school; }
   int rollMagicDamage();
   int getMagicResistance();
@@ -207,7 +207,7 @@ public:
   int magicLevel;
   int bonus; // e.g.: sword +2
   int damageMultiplier; // 2=double damage, 3=triple, etc.
-  char *monsterType; // if not NULL, damageMultiplier only for this type of monster.
+  char const* monsterType; // if not NULL, damageMultiplier only for this type of monster.
   MagicSchool *school; // magic damage by a school (or NULL if N/A)
   Dice *magicDamage; 
   bool cursed;

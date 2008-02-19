@@ -412,7 +412,7 @@ bool SavegameDialog::copyFile( const string& fromDirName, const string& toDirNam
 			unsigned char buff[ BUFFER_SIZE ];
 			size_t count;
 			while( ( count = fread( buff, 1, BUFFER_SIZE, from ) ) ) fwrite( buff, 1, count, to );
-			bool result = feof( from );
+			bool result = ( feof( from ) != 0 );
 			fclose( to );
 			return result;
 		}

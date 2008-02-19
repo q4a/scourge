@@ -439,10 +439,10 @@ OptionsMenu::~OptionsMenu(){
 
     // Only delete ML, scrollingLists and cardContainers. 
     // Other widgets are deleted by window.cpp
-    if(gameSpeedML) delete gameSpeedML;
-    if(videoResolutionML) delete videoResolutionML;
-    if(controlBindingsList) delete controlBindingsList;
-    if(cards) delete cards;
+    delete gameSpeedML;
+    delete videoResolutionML;
+    delete controlBindingsList;
+    delete cards;
 }
 
 void OptionsMenu::show() {

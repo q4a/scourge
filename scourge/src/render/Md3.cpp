@@ -488,17 +488,17 @@ void CModelMD3::DestroyModel(t3DModel *pModel) {
 	for(int i = 0; i < pModel->numOfObjects; i++)
 	{
 		// Free the faces, normals, vertices, and texture coordinates.
-		if(pModel->pObject[i].pFaces)		delete [] pModel->pObject[i].pFaces;
-		if(pModel->pObject[i].pNormals)		delete [] pModel->pObject[i].pNormals;
-		if(pModel->pObject[i].pVerts)		delete [] pModel->pObject[i].pVerts;
-		if(pModel->pObject[i].pTexVerts)	delete [] pModel->pObject[i].pTexVerts;
+		delete [] pModel->pObject[i].pFaces;
+		delete [] pModel->pObject[i].pNormals;
+		delete [] pModel->pObject[i].pVerts;
+		delete [] pModel->pObject[i].pTexVerts;
 	}
 
 	// Free the tags associated with this model
-	if(pModel->pTags)		delete [] pModel->pTags;
+	delete [] pModel->pTags;
 
-	// Free the links associated with this model (We use free because we used malloc())
-	if(pModel->pLinks)		free(pModel->pLinks);
+	// Free the links associated with this model
+	pModel->pLinks.clear();
 
 	pModel->pAnimationMap.clear();
 	pModel->pAnimations.clear();
@@ -1669,7 +1669,7 @@ void CLoadMD3::ReadMD3Data(t3DModel *pModel)
 	// Now we want to initialize our links.  Links are not read in from the .MD3 file, so
 	// we need to create them all ourselves.  We use a double array so that we can have an
 	// array of pointers.  We don't want to store any information, just pointers to t3DModels.
-	pModel->pLinks = (t3DModel **) malloc(sizeof(t3DModel) * m_Header.numTags);
+	pModel->pLinks.resize( m_Header.numTags );
 	
 	// Initilialize our link pointers to NULL
 	for (i = 0; i < m_Header.numTags; i++)

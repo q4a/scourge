@@ -177,12 +177,12 @@ void ScourgeView::drawChapterIntro() {
 	}
 
 	glRasterPos2f( px, py );
-	GLubyte *image = scourge->getSession()->getChapterImage();
-	if( image ) {
+	TextureData const& image = scourge->getSession()->getChapterImage();
+	if( !image.empty() ) {
 		glDrawPixels( scourge->getSession()->getChapterImageWidth(),
 									scourge->getSession()->getChapterImageHeight(),
 									GL_RGB, GL_UNSIGNED_BYTE, 
-									image );
+									&image[0] );
 	}
 
 	scourge->getChapterIntroWin()->move( 0, scourge->getSession()->getChapterImageHeight() + py + 10 - 30 );

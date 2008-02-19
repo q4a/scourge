@@ -158,9 +158,9 @@ private:
   inline void setH(int t)           { h=t;          }
   inline void setShadows(int t)     { shadows=t; }
   inline void setGameSpeedLevel(int t)   { if(t >= 0 && t <= 4) gamespeed=t; } // [0, 1, 2, 3, 4]
-  inline void setAlwaysCenterMap(int t) { centermap=t; }
-  inline void setKeepMapSize(int t) { keepMapSize = t; }
-  inline void setFrameOnFullScreen(int t) { frameOnFullScreen = t; }
+  inline void setAlwaysCenterMap(bool t) { centermap=t; }
+  inline void setKeepMapSize(bool t) { keepMapSize = t; }
+  inline void setFrameOnFullScreen(bool t) { frameOnFullScreen = t; }
   inline void setBattleTurnBased(bool b) { turnBasedBattle = b; }
   inline void setOvalCutoutShown(bool b) { ovalCutoutShown = b; }
   inline void setOutlineInteractiveItems(bool b) { outlineInteractiveItems = b; }

@@ -35,7 +35,7 @@ TextField::TextField(int x, int y, int numChars):
 } 
 
 TextField::~TextField() {
-  delete[] text;
+  delete [] text;
 }
   
 bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {

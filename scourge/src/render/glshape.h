@@ -31,7 +31,7 @@ class Effect;
 /**
   *@author Gabor Torok
   */
-struct surface {
+struct Surface {
 	float vertices[4][3];
   //	float matrix[9];
   //	float s_dist, t_dist;
@@ -61,7 +61,7 @@ protected:
 	int iconWidth, iconHeight;
 	std::string ambient;
 
-  struct surface *surfaces[5];
+  Surface *surfaces[5];
   enum { 
     LEFT_SURFACE=0, 
     RIGHT_SURFACE, 
@@ -184,9 +184,9 @@ public:
 		this->iconRotZ = iconRotZ;
 	}
 	inline void rotateIcon() {
-		glRotatef( iconRotX, 1, 0, 0 );
-		glRotatef( iconRotY, 0, 1, 0 );
-		glRotatef( iconRotZ, 0, 0, 1 );	
+		glRotatef( iconRotX, 1.f, 0.f, 0.f );
+		glRotatef( iconRotY, 0.f, 1.f, 0.f );
+		glRotatef( iconRotZ, 0.f, 0.f, 1.f );	
 	}
   
 protected:
@@ -195,7 +195,7 @@ protected:
   GLfloat xrot, yrot, zrot;
   GLfloat xpos, ypos, zpos, xpos2, ypos2, zpos2;
   void commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex);
-  static struct surface *new_surface(float vertices[4][3]);
+  static Surface *new_surface(float vertices[4][3]);
   void initSurfaces();
   void drawShadow();
   void createShadowList( GLuint listName );

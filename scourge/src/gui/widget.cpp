@@ -411,7 +411,7 @@ void Widget::breakText( char *text, int lineWidth, vector<string> *lines ) {
     lines->push_back( s );
     start = end;
   }
-  delete[] p;
+  delete [] p;
 }
 
 void Widget::drawTooltip( Widget *parent ) {

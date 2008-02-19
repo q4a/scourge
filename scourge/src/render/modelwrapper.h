@@ -48,12 +48,12 @@ public:
 	
 };
 
-typedef struct _Md2ModelInfo {
+struct Md2ModelInfo {
 	ModelWrapper wrapper;
   char name[100];
   char filename[100];
   float scale;	
-} Md2ModelInfo;
+};
 
 class ModelLoader {
 private:

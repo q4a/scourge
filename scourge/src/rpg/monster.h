@@ -81,11 +81,11 @@ public:
   inline int getSpeed() { return speed; }
   inline char *getType() { return type; };
 	inline char *getDisplayName() { return displayName; };
-  inline static char *getDescriptiveType( char *modelName ) {
+  inline static char const* getDescriptiveType( char const* modelName ) {
     std::string modelStr = modelName;
     if( modelToDescriptiveType.find( modelStr ) == modelToDescriptiveType.end() ) 
       return NULL;
-    else return (char*)( modelToDescriptiveType[ modelStr ].c_str() );
+    else return modelToDescriptiveType[ modelStr ].c_str();
   }
   inline int getHp() { return hp; }  
   inline int getMp() { return mp; }  
@@ -111,7 +111,7 @@ public:
 
   static void initMonsters();
   static Monster *getRandomMonster(int level);
-  static Monster *getMonsterByName(char *name);  
+  static Monster *getMonsterByName( char const* name );  
   static std::map<int, std::vector<std::string>*>* getSoundMap( char *monsterType );
 
   /**

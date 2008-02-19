@@ -56,7 +56,7 @@ CombatTest::CombatTest() {
 CombatTest::~CombatTest() {
 }
 
-bool CombatTest::executeTests( Session *session, char *path ) {
+bool CombatTest::executeTests( Session *session, char const* path ) {
   vector<Creature*> creatures;
   vector<Item*> items;
   
@@ -127,8 +127,8 @@ bool CombatTest::executeTests( Session *session, char *path ) {
 
 
 
-bool CombatTest::fight( char *path,
-                        char *filename,
+bool CombatTest::fight( char const* path,
+                        char const* filename,
                         Session *session, 
                         Creature *attacker, 
                         Item *weapon,

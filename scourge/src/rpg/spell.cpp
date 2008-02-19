@@ -107,8 +107,8 @@ void MagicSchool::initMagic() {
 		strcpy( name, node->getValueAsString( "name" ) );
     strcpy( displayName, node->getValueAsString( "display_name" ) );
 		strcpy( notes, node->getValueAsString( "deity" ) );
-		int skill = Skill::getSkillIndexByName( (char*)node->getValueAsString( "skill" ) );
-		int resistSkill = Skill::getSkillIndexByName( (char*)node->getValueAsString( "resist_skill" ) );
+		int skill = Skill::getSkillIndexByName( node->getValueAsString( "skill" ) );
+		int resistSkill = Skill::getSkillIndexByName( node->getValueAsString( "resist_skill" ) );
 		strcpy( line, node->getValueAsString( "rgb" ) );
 		float red = (float)strtod( strtok( line, "," ), NULL );
 		float green = (float)strtod( strtok( NULL, "," ), NULL );
@@ -165,7 +165,7 @@ void MagicSchool::initMagic() {
 			int targetType = ( !strcmp( node2->getValueAsString( "targetType" ), "single") ? 
 												 SINGLE_TARGET : GROUP_TARGET);
 			int speed = node2->getValueAsInt( "speed" );
-			int effect = Constants::getEffectByName( (char*)node2->getValueAsString( "effect" ) );
+			int effect = Constants::getEffectByName( node2->getValueAsString( "effect" ) );
 			strcpy( targetTypeStr, node2->getValueAsString( "target" ) );
 			bool creatureTarget = ( strchr( targetTypeStr, 'C' ) != NULL );
 			bool locationTarget = ( strchr( targetTypeStr, 'L' ) != NULL );

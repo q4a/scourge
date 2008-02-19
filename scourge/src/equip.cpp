@@ -665,7 +665,7 @@ void Equip::storeStorable( Storable *storable ) {
 	this->storable = NULL;
 	const char *p = storable->isStorable();
 	if( p ) {
-		pcUi->getScourge()->showMessageDialog( (char*)p );
+		pcUi->getScourge()->showMessageDialog( p );
 	} else {
 		this->storable = storable;
 		pcUi->getScourge()->addDescription( _( "Click a quickspell slot to store this spell." ) );

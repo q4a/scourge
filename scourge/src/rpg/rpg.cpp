@@ -97,7 +97,7 @@ void Rpg::initNames( ConfigLang *config ) {
 		char *p = strtok( line, "," );
 		while( p != NULL ) {
 			firstSyl.push_back( strdup( p ) );
-			//cerr << "first: " << firstSyl[ firstSyl.size() - 1 ] << endl;
+      //cerr << "first: " << firstSyl[ firstSyl.size() - 1 ] << endl;
 			p = strtok( NULL, "," );
 		}
 		strcpy( line, node ->getValueAsString( "middle" ) );
@@ -115,7 +115,7 @@ void Rpg::initNames( ConfigLang *config ) {
 			p = strtok( NULL, "," );
 		}
 	}
-	//cerr << "first: " << firstSyl.size() << " mid: " << midSyl.size() << " end: " << endSyl.size() << endl;
+  //cerr << "first: " << firstSyl.size() << " mid: " << midSyl.size() << " end: " << endSyl.size() << endl;
 }
 
 void Rpg::initStateMods( ConfigLang *config ) {
@@ -131,11 +131,11 @@ void Rpg::initStateMods( ConfigLang *config ) {
     int type = ( !strcmp( node->getValueAsString( "type" ), "bad" ) ? 
                  StateMod::BAD : 
                  ( !strcmp( node->getValueAsString( "type" ), "good" ) ? StateMod::GOOD : StateMod::NEITHER ) );
-    StateMod *stateMod = new StateMod( (char*)name.c_str(),
-                                       (char*)node->getValueAsString( "display_name" ),
-                                       (char*)node->getValueAsString( "symbol" ),
-                                       (char*)node->getValueAsString( "setstate" ),
-                                       (char*)node->getValueAsString( "unsetstate" ),
+    StateMod *stateMod = new StateMod( name.c_str(),
+                                       node->getValueAsString( "display_name" ),
+                                       node->getValueAsString( "symbol" ),
+                                       node->getValueAsString( "setstate" ),
+                                       node->getValueAsString( "unsetstate" ),
                                        type, 
                                        (int)StateMod::stateMods.size() );
     StateMod::stateMods.push_back( stateMod );
@@ -151,7 +151,7 @@ void Rpg::initRpg() {
   initSkills( config );
   initStateMods( config );
   initNames( config );
-	delete( config );
+	delete config;
 }
 
 // Create a random, cheeseball, fantasy name
@@ -205,7 +205,9 @@ SkillGroup::SkillGroup( char *name, char *displayName, char *description ) {
 SkillGroup::~SkillGroup() {
 }
 
-StateMod::StateMod( char *name, char *displayName, char *symbol, char *setState, char *unsetState, int type, int index ) {
+StateMod::StateMod( char const* name, char const* displayName
+                  , char const* symbol, char const* setState
+                  , char const* unsetState, int type, int index ) {
   strcpy( this->name, name );
   strcpy( this->displayName, displayName );
   strcpy( this->symbol, symbol );

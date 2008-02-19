@@ -39,11 +39,11 @@ class Spell;
 class RpgItem;
 class GameAdapter;
 
-typedef struct _ItemType {
+struct ItemType {
   char name[40];
   bool isWeapon, isArmor, isRandom, isRanged, hasSpell, isEnchantable;
 	int inventoryWidth, inventoryHeight;
-} ItemType;
+};
 
 enum {
 	AP_INFLUENCE=0,
@@ -58,11 +58,11 @@ enum {
 	INFLUENCE_LIMIT_COUNT
 };
 
-typedef struct _WeaponInfluence {
+struct WeaponInfluence {
 	int limit;
 	char type;
 	float base;
-} WeaponInfluence;
+};
 
 class RpgItem {
 private:

@@ -427,7 +427,7 @@ bool SqBinding::callConversationMethod( const char *name,
     const SQChar *sqres = NULL;
     sq_getstring( vm, -1, &sqres );
     if( sqres ) {
-      strcpy( answer, (char*)sqres );
+      strcpy( answer, static_cast<char const*>(sqres) );
     }
     ret = true;    
   } else {
@@ -815,7 +815,7 @@ void SqBinding::reloadScripts() {
     string file = i->first;
     time_t lastMod = i->second;
     if( DEBUG_SQUIRREL ) cerr << "Checking file: " << file << endl;
-    time_t newLastMod = getLastModTime( (char*)file.c_str() );
+    time_t newLastMod = getLastModTime( file );
     if( lastMod != newLastMod ) {
       if( DEBUG_SQUIRREL ) cerr << "\tReloading!" << endl;
       // not sure why I need to push the root table here... 

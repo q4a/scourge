@@ -37,12 +37,12 @@ class ConfigLang;
 class ConfigNode;
 class SDLScreenView;
 
-typedef struct _MapGridLocation {
+struct MapGridLocation {
   char name[80];
   int x, y;
   bool random;
   char type;
-} MapGridLocation;
+};
 
 class ShapePalette : public Shapes {
 private:

@@ -68,7 +68,7 @@ private:
 #endif
   bool multiplayerGame;
   Mission *currentMission;
-	GLubyte *chapterImage; 
+	TextureData chapterImage; 
 	int chapterImageWidth, chapterImageHeight;
 	bool showChapterIntro;
   std::vector<Item*> newItems;
@@ -114,7 +114,7 @@ public:
   virtual inline Server *getServer() { return server; }
   virtual inline Client *getClient() { return client; }
   virtual void startServer(GameStateHandler *gsh, int port);
-  virtual void startClient(GameStateHandler *gsh, CommandInterpreter *ci, char *host, int port, char *username);
+  virtual void startClient(GameStateHandler *gsh, CommandInterpreter *ci, char const* host, int port, char const* username);
   virtual void stopClientServer();
 #endif
 
@@ -163,7 +163,7 @@ public:
 
   inline int getCreatureCount() { return creatures.size(); }
   inline Creature *getCreature(int index) { return creatures[index]; }
-	Creature *getCreatureByName( char *name );
+	Creature *getCreatureByName( char const* name );
   inline int getItemCount() { return newItems.size(); }
   inline Item *getItem(int index) { return newItems[index]; }
   virtual void deleteCreaturesAndItems(bool missionItemsOnly=false);
@@ -176,7 +176,7 @@ public:
   inline Preferences *getPreferences() { return getGameAdapter()->getPreferences(); }
   inline Mission *getCurrentMission() { return currentMission; }
   void setCurrentMission(Mission *mission);
-	inline GLubyte *getChapterImage() { return chapterImage; }
+	inline TextureData const& getChapterImage() { return chapterImage; }
 	inline int getChapterImageWidth() { return chapterImageWidth; }
 	inline int getChapterImageHeight() { return chapterImageHeight; }
 	inline void setShowChapterIntro( bool b ) { this->showChapterIntro = b; }

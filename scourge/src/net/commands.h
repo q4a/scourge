@@ -64,8 +64,8 @@ class Commands {
   inline int getLastCommand() { return lastCommand; }
 
   static void buildGameState(char *buff, size_t buffSize, int frame, char *state);
-  static void buildChat(char *buff, size_t buffSize, char *username, char *message);
-  static void buildLogin(char *buff, size_t buffSize, char *username);
+  static void buildChat(char *buff, size_t buffSize, char const* username, char *message);
+  static void buildLogin(char *buff, size_t buffSize, char const* username);
   // not static!
   void buildPing(char *buff, size_t buffSize);
   static void buildBytesCharacter(char *buff, int size, char *info, int *messageSize);

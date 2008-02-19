@@ -220,7 +220,7 @@ int SqCreature::_getSkillByName( HSQUIRRELVM vm ) {
   GET_STRING( name, 80 )
   GET_OBJECT( Creature* )
 
-	Skill *skill = Skill::getSkillByName( (char*)name );
+	Skill *skill = Skill::getSkillByName( name );
 	if( !skill ) {
 		return sq_throwerror( vm, "Skill by name could not be found." );
 	}
@@ -362,7 +362,7 @@ int SqCreature::_setSkillByName( HSQUIRRELVM vm ) {
   GET_STRING( name, 80 );
   GET_INT( n );
   GET_OBJECT( Creature* )
-	Skill *skill = Skill::getSkillByName( (char*)name );
+	Skill *skill = Skill::getSkillByName( name );
 	if( !skill ) {
 		return sq_throwerror( vm, "Skill by name could not be found." );
 	}

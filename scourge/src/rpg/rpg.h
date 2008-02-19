@@ -115,7 +115,7 @@ public:
 	inline Skill *getPreReqStat( int index ) { return preReqStats[ index ]; }
 
 	inline char *getName() { return name; }
-	inline char *getDisplayName() { return displayName; }
+	inline char const* getDisplayName() { return displayName; }
 	inline char *getDescription() { return description; }
 	inline char *getSymbol() { return symbol; }
 	inline SkillGroup *getGroup() { return group; }
@@ -123,12 +123,12 @@ public:
 
 	static std::map<std::string, Skill*> skillsByName;
 
-	static inline Skill *getSkillByName( char *name ) {
+	static inline Skill *getSkillByName( char const* name ) {
 		std::string s = name;
 		return( skillsByName.find( s ) == skillsByName.end() ? NULL : skillsByName[ s ] );
 	}
 
-	static inline int getSkillIndexByName( char *name ) {
+	static inline int getSkillIndexByName( char const* name ) {
 		Skill *skill = getSkillByName( name );
 		return( skill ? skill->getIndex() : -1 );
 	}
@@ -163,7 +163,7 @@ public:
 	
 	static SkillGroup *stats;
 	static std::map<std::string, SkillGroup *> groupsByName;
-	static inline SkillGroup *getGroupByName( char *name ) {
+	static inline SkillGroup *getGroupByName( char const* name ) {
 		std::string s = name;
 		return( groupsByName.find( s ) == groupsByName.end() ? NULL : groupsByName[ s ] );
 	}
@@ -210,7 +210,8 @@ public:
 		GOOD
 	};
 
-	StateMod( char *name, char *displayName, char *symbol, char *setState, char *unsetState, int type, int index );
+	StateMod( char const* name, char const* displayName, char const* symbol
+	        , char const* setState, char const* unsetState, int type, int index );
 	~StateMod();
 
 	static std::map<std::string, StateMod*> stateModsByName;

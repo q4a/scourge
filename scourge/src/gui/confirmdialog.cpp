@@ -23,12 +23,12 @@
 #define CONFIRM_WIDTH 400
 #define CONFIRM_HEIGHT 120
 
-ConfirmDialog::ConfirmDialog( ScourgeGui *scourgeGui, char *title ) {
+ConfirmDialog::ConfirmDialog( ScourgeGui *scourgeGui, char const* title ) {
   win = new Window( scourgeGui,
 										( scourgeGui->getScreenWidth() / 2 ) - ( CONFIRM_WIDTH / 2 ),
 										( scourgeGui->getScreenHeight() / 2 ) - ( CONFIRM_HEIGHT / 2 ),
 										CONFIRM_WIDTH, CONFIRM_HEIGHT,
-										( title ? title : (char*)_( "Confirmation" ) ),
+										( title ? title : _( "Confirmation" ) ),
 										scourgeGui->getGuiTexture(), true, 
 										Window::BASIC_WINDOW,
 										scourgeGui->getGuiTexture2() );

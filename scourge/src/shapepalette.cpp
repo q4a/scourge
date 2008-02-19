@@ -26,7 +26,17 @@ using namespace std;
 
 #define UPDATE_MESSAGE N_("Loading Shapes")
 
-ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter()->isHeadless() ) {
+ShapePalette::ShapePalette( Session *session ) 
+             : Shapes( session->getGameAdapter()->isHeadless() ) 
+             , paperDoll( NULL )
+             , paperDollImage( NULL )
+             , logo( NULL )
+             , logoImage( NULL )
+             , chain( NULL )
+             , chainImage( NULL )
+             , scourge( NULL )
+             , scourgeImage( NULL )
+{
   this->session = session;
 	this->loader = NULL;
   strcpy( aboutText, "" );
@@ -35,14 +45,14 @@ ShapePalette::ShapePalette( Session *session ) : Shapes( session->getGameAdapter
 void ShapePalette::preInitialize() {
   SDL_Surface *tmpSurface = NULL;
   GLubyte *tmpImage = NULL;
-  setupAlphaBlendedBMP("/textures/process.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/process.bmp", tmpSurface, tmpImage);
   progressTexture = loadGLTextureBGRA(tmpSurface, tmpImage, GL_NEAREST);
-  if(tmpImage) free(tmpImage);
+  delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
-  setupAlphaBlendedBMP("/textures/bar.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/bar.bmp", tmpSurface, tmpImage);
   progressHighlightTexture = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
-  if(tmpImage) free(tmpImage);
+  delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
 
@@ -63,14 +73,14 @@ void ShapePalette::preInitialize() {
 	delete config;
 
 	  // set up the logo
-  setupAlphaBlendedBMP("/textures/logo2.bmp", &logo, &logoImage);
+  setupAlphaBlendedBMP("/textures/logo2.bmp", logo, logoImage);
   logo_texture = loadGLTextureBGRA(logo, logoImage, GL_LINEAR);
-  setupAlphaBlendedBMP("/textures/chain.bmp", &chain, &chainImage);
+  setupAlphaBlendedBMP("/textures/chain.bmp", chain, chainImage);
   chain_texture = loadGLTextureBGRA(chain, chainImage, GL_LINEAR);
 
   // set up the scourge
-  setupAlphaBlendedBMP("/textures/scourge.bmp", &scourge, &scourgeImage);
-	setupAlphaBlendedBMP("/textures/scourge-backdrop.bmp", &scourgeBackdrop, &scourgeImageBackdrop);
+  setupAlphaBlendedBMP("/textures/scourge.bmp", scourge, scourgeImage);
+	setupAlphaBlendedBMP("/textures/scourge-backdrop.bmp", scourgeBackdrop, scourgeImageBackdrop);
 
   gui_texture = loadGLTextures("/textures/gui.bmp");
   gui_texture2 = loadGLTextures("/textures/gui2.bmp");
@@ -113,100 +123,100 @@ void ShapePalette::initialize() {
   SDL_Surface *tmpSurface = NULL;
   
   GLubyte *tmpImage = NULL;
-  setupAlphaBlendedBMP("/textures/dragon.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/dragon.bmp", tmpSurface, tmpImage);
   gargoyle = loadGLTextureBGRA(tmpSurface, tmpImage, GL_NEAREST);
-  if(tmpImage) free(tmpImage);
+  delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
   tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP("/textures/minimap.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/minimap.bmp", tmpSurface, tmpImage);
   minimap = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
-  if(tmpImage) free(tmpImage);
+  delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
   tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP("/textures/minimask.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/minimask.bmp", tmpSurface, tmpImage);
   minimapMask = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
-  if(tmpImage) free(tmpImage);
+  delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP("/textures/exit.bmp", &tmpSurface, &tmpImage);
+  setupAlphaBlendedBMP("/textures/exit.bmp", tmpSurface, tmpImage);
 	exitTexture = loadGLTextureBGRA(tmpSurface, tmpImage, GL_LINEAR);
-  if(tmpImage) free(tmpImage);
+  delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/dismiss.bmp", &tmpSurface, &tmpImage );
+  setupAlphaBlendedBMP( "/textures/dismiss.bmp", tmpSurface, tmpImage );
   dismiss = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  if( tmpImage ) free( tmpImage );
+  delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/options.bmp", &tmpSurface, &tmpImage );
+  setupAlphaBlendedBMP( "/textures/options.bmp", tmpSurface, tmpImage );
   options = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  if( tmpImage ) free( tmpImage );
+  delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/group.bmp", &tmpSurface, &tmpImage );
+  setupAlphaBlendedBMP( "/textures/group.bmp", tmpSurface, tmpImage );
   group = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  if( tmpImage ) free( tmpImage );
+  delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/inventory.bmp", &tmpSurface, &tmpImage );
+  setupAlphaBlendedBMP( "/textures/inventory.bmp", tmpSurface, tmpImage );
   inventory = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  if( tmpImage ) free( tmpImage );
+  delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
   tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/wait.bmp", &tmpSurface, &tmpImage );
+  setupAlphaBlendedBMP( "/textures/wait.bmp", tmpSurface, tmpImage );
   waitTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  if( tmpImage ) free( tmpImage );
+  delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
   tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/io.bmp", &tmpSurface, &tmpImage );
+  setupAlphaBlendedBMP( "/textures/io.bmp", tmpSurface, tmpImage );
   ioTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  if( tmpImage ) free( tmpImage );
+  delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 	
   tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/system.bmp", &tmpSurface, &tmpImage );
+  setupAlphaBlendedBMP( "/textures/system.bmp", tmpSurface, tmpImage );
 	systemTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  if( tmpImage ) free( tmpImage );
+  delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/start.bmp", &tmpSurface, &tmpImage );
+  setupAlphaBlendedBMP( "/textures/start.bmp", tmpSurface, tmpImage );
 	startTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  if( tmpImage ) free( tmpImage );
+  delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/paused.bmp", &tmpSurface, &tmpImage );
+  setupAlphaBlendedBMP( "/textures/paused.bmp", tmpSurface, tmpImage );
 	pausedTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  if( tmpImage ) free( tmpImage );
+  delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/realtime.bmp", &tmpSurface, &tmpImage );
+  setupAlphaBlendedBMP( "/textures/realtime.bmp", tmpSurface, tmpImage );
 	realTimeTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  if( tmpImage ) free( tmpImage );
+  delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
   // load map textures
@@ -252,11 +262,19 @@ void ShapePalette::initialize() {
     }
   }
   
-  setupAlphaBlendedBMP("/textures/paperdoll.bmp", &paperDoll, &paperDollImage);
+  setupAlphaBlendedBMP("/textures/paperdoll.bmp", paperDoll, paperDollImage);
 }
 
 ShapePalette::~ShapePalette() {
 	delete loader;
+	if( logo ) SDL_FreeSurface( logo );
+	delete [] logoImage;
+	if( chain ) SDL_FreeSurface( chain );
+	delete [] chainImage;
+	if( scourge ) SDL_FreeSurface( scourge );
+	delete [] scourgeImage;
+	if( paperDoll ) SDL_FreeSurface( paperDoll );
+	delete [] paperDollImage;
   //    for(int i =0; i < (int)creature_models.size(); i++){
   //        delete creature_models[i];    
   //    }
@@ -313,7 +331,7 @@ void ShapePalette::initInventory( ConfigLang *config ) {
 	if( v ) {
 		char tmp[255];
 		for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
-			char *s = (char*)(*v)[0]->getValueAsString( Constants::inventoryTags[ i ] );
+			char const* s = (*v)[0]->getValueAsString( Constants::inventoryTags[ i ] );
 			if( s ) {
 				strcpy( tmp, s );
 				char *p = strtok( tmp, "," );
@@ -413,9 +431,9 @@ void ShapePalette::initRugs( ConfigLang *config ) {
 
 		SDL_Surface *tmpSurface = NULL;
 		GLubyte *tmpImage = NULL;
-		setupAlphaBlendedBMP( (char*)node->getValueAsString( "path" ), &tmpSurface, &tmpImage );
+		setupAlphaBlendedBMP( node->getValueAsString( "path" ), tmpSurface, tmpImage );
 		rugs.push_back( loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR ) );
-		if( tmpImage ) free( tmpImage );
+		delete [] tmpImage;
 		if( tmpSurface ) SDL_FreeSurface( tmpSurface );
   }
 }
@@ -449,7 +467,7 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 		bool special = node->getValueAsBool( "special" );
 		bool cave = node->getValueAsBool( "cave" );
 
-		WallTheme *theme = new WallTheme( (char*)(node->getValueAsString( "name" )), this );
+		WallTheme *theme = new WallTheme( node->getValueAsString( "name" ), this );
 		theme->setSpecial( special );
 		theme->setCave( cave );
 		

@@ -40,8 +40,8 @@ private:
 	float valueNum;
 
 public:
-	ConfigValue( char *value );
-  ConfigValue( ConfigValue *value );
+	ConfigValue( char const* value );
+  ConfigValue( ConfigValue const& that );
 	~ConfigValue();
 
 	float getAsFloat();
