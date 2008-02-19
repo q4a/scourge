@@ -28,7 +28,7 @@ TextDialog::TextDialog( ScourgeGui *scourgeGui, char const* title ) {
 										( scourgeGui->getScreenWidth() / 2 ) - ( TEXT_DIALOG_WIDTH / 2 ),
 										( scourgeGui->getScreenHeight() / 2 ) - ( TEXT_DIALOG_HEIGHT / 2 ),
 										TEXT_DIALOG_WIDTH, TEXT_DIALOG_HEIGHT,
-										( title ? title : _("Information") ),
+					(char*)( title ? title : _("Information") ),
 										scourgeGui->getGuiTexture(), true, 
 										Window::BASIC_WINDOW,
 										scourgeGui->getGuiTexture2() );

@@ -28,7 +28,7 @@ ConfirmDialog::ConfirmDialog( ScourgeGui *scourgeGui, char const* title ) {
 										( scourgeGui->getScreenWidth() / 2 ) - ( CONFIRM_WIDTH / 2 ),
 										( scourgeGui->getScreenHeight() / 2 ) - ( CONFIRM_HEIGHT / 2 ),
 										CONFIRM_WIDTH, CONFIRM_HEIGHT,
-										( title ? title : _( "Confirmation" ) ),
+					(char*)( title ? title : _( "Confirmation" ) ),
 										scourgeGui->getGuiTexture(), true, 
 										Window::BASIC_WINDOW,
 										scourgeGui->getGuiTexture2() );
