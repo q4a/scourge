@@ -345,23 +345,32 @@ void TerrainGenerator::addItems(Map *map, ShapePalette *shapePal) {
   }
 }
 
-
+// put one mission object (or creature) starting from the deepest level. 
+// So for example, if you have 3 mission objects 
+// and the dungeon is 7 levels deep, 
+// there would be objects on levels 5,6,7.
+// if there are more objects (or creatures) than levels then put one
+// at all levels and rest at deepest level
 
 void TerrainGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal) {
   if( mission && !mission->isCompleted() ) {
 		int startIndex, endIndex;
-		if( maxDepth > mission->getItemCount() ) {
-			startIndex = depth - ( maxDepth - mission->getItemCount() );
-			endIndex = startIndex + 1;
-		} else {
-			startIndex = depth;
-			endIndex = ( depth < maxDepth - 1 ? startIndex + 1 : mission->getItemCount() );
-		}
-		if( startIndex >= 0 ) {
+		int items = mission->getItemCount();
+		if ( depth + items >= maxDepth && depth < maxDepth ) { // there are items 
+			if( depth == maxDepth - 1 && items > maxDepth ) { // there are multiple items
+				startIndex = 0;
+				endIndex = items - maxDepth + 1;
+			} else if ( items <= maxDepth ) { 
+				startIndex = maxDepth - depth - 1;
+				endIndex = startIndex + 1;
+			} else { 
+				startIndex = items - depth - 1;
+				endIndex = startIndex + 1;
+			}
 			//cerr << "*** Added mission items: from " << startIndex << " to " << endIndex << endl;
 			// mission objects are on a pedestal
 			// and they are blocking so creatures can't get them
-			for(int i = startIndex; i < endIndex; i++) {
+			for ( int i = startIndex; i < endIndex; i++ ) {
 				RpgItem *rpgItem = mission->getItem( i );
 				Item *item = scourge->getSession()->newItem( rpgItem, mission->getLevel() );
 				//mission->addItemInstance( item, rpgItem );
@@ -379,14 +388,18 @@ void TerrainGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal) {
 			}
 		}
 
-		if( maxDepth > mission->getCreatureCount() ) {
-			startIndex = depth - ( maxDepth - mission->getCreatureCount() );
-			endIndex = startIndex + 1;
-		} else {
-			startIndex = depth;
-			endIndex = ( depth < maxDepth - 1 ? startIndex + 1 : mission->getCreatureCount() );
-		}		
-		if( startIndex >= 0 ) {
+		int creatures = mission->getCreatureCount();
+		if ( depth + creatures > maxDepth && depth < maxDepth ) { // there are creatures
+			if( depth == maxDepth - 1 && creatures > maxDepth ) { // there are multiple creatures
+				startIndex = 0;
+				endIndex = creatures - maxDepth + 1;
+			} else if ( creatures <= maxDepth ) { 
+				startIndex = maxDepth - depth - 1;
+				endIndex = startIndex + 1;
+			} else { 
+				startIndex = creatures - depth - 1;
+				endIndex = startIndex + 1;
+			}
 			//cerr << "*** Added mission creatures: from " << startIndex << " to " << endIndex << endl;
 			// add mission creatures
 			for(int i = startIndex; i < endIndex; i++) {
