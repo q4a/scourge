@@ -346,9 +346,6 @@ void TerrainGenerator::addItems(Map *map, ShapePalette *shapePal) {
 }
 
 // put one mission object (or creature) starting from the deepest level. 
-// So for example, if you have 3 mission objects 
-// and the dungeon is 7 levels deep, 
-// there would be objects on levels 5,6,7.
 // if there are more objects (or creatures) than levels then put one
 // at all levels and rest at deepest level
 
@@ -389,7 +386,7 @@ void TerrainGenerator::addMissionObjectives(Map *map, ShapePalette *shapePal) {
 		}
 
 		int creatures = mission->getCreatureCount();
-		if ( depth + creatures > maxDepth && depth < maxDepth ) { // there are creatures
+		if ( depth + creatures >= maxDepth && depth < maxDepth ) { // there are creatures
 			if( depth == maxDepth - 1 && creatures > maxDepth ) { // there are multiple creatures
 				startIndex = 0;
 				endIndex = creatures - maxDepth + 1;
