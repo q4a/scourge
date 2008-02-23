@@ -95,13 +95,13 @@ Board::Board(Session *session)
 		strcpy( name, node->getValueAsString( "name" ) );
     strcpy( displayName, node->getValueAsString( "display_name" ) );
     strcpy( replayDisplayName, node->getValueAsString( "replay_display_name" ) );
+    strcpy( replayDescription, node->getValueAsString( "replay_description" ) );
+    bool replayable = ( strlen( replayDisplayName ) && strlen( replayDescription ) );
     int level = node->getValueAsInt( "level" );
     int depth = node->getValueAsInt( "depth" );
     strcpy( mapName, node->getValueAsString( "map" ) );
     strcpy( description, node->getValueAsString( "description" ) );
-    strcpy( replayDescription, node->getValueAsString( "replay_description" ) );
     strcpy( introDescription, node->getValueAsString( "intro" ) );
-    bool replayable = !strcmp( node->getValueAsString( "replayable"), "true" );
     strcpy( music, node->getValueAsString( "music" ) );
     strcpy( success, node->getValueAsString( "success" ) );
     strcpy( failure, node->getValueAsString( "failure" ) );
