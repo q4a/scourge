@@ -94,8 +94,9 @@ protected:
 	virtual void addMonsters(Map *map, ShapePalette *shapePal);
 	
 	virtual void addRugs( Map *map, ShapePalette *shapePal );
-    virtual void addTraps( Map *map, ShapePalette *shapePal );
-
+	virtual void addTraps( Map *map, ShapePalette *shapePal );
+	virtual void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal);
+		
 };
 
 #endif 

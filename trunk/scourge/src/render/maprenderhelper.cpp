@@ -56,11 +56,17 @@ void CaveRenderHelper::reset() {
 }
 
 void CaveRenderHelper::draw( int x, int y, int w, int h ) {
-  fog->draw( x, y, w, h, getMap()->getFrustum() );
+	if( !getMap()->getSettings()->isGridShowing() ) {
+		fog->draw( x, y, w, h, getMap()->getFrustum() );
+	}
 }
 
 bool CaveRenderHelper::isVisible( int x, int y, Shape *shape ) {
-  return( fog->getVisibility( x, y, shape ) == Fog::FOG_CLEAR );
+	if( !getMap()->getSettings()->isGridShowing() ) {
+		return( fog->getVisibility( x, y, shape ) == Fog::FOG_CLEAR );
+	} else {
+		return true;
+	}
 }
 
 void CaveRenderHelper::visit( RenderedCreature *creature ) {
@@ -72,11 +78,15 @@ void CaveRenderHelper::hideDeadParty() {
 }
   
 void CaveRenderHelper::loadHelper( FogInfo *fogInfo ) {
-	fog->load( fogInfo );
+	if( !getMap()->getSettings()->isGridShowing() ) {
+		fog->load( fogInfo );
+	}
 }
 
 void CaveRenderHelper::saveHelper( FogInfo *fogInfo ) {
-	fog->save( fogInfo );
+	if( !getMap()->getSettings()->isGridShowing() ) {
+		fog->save( fogInfo );
+	}
 }
 
 

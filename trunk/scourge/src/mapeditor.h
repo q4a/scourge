@@ -76,6 +76,7 @@ private:
   Button *cancelButton;
   Button *okButton;
   Button *applyButton;
+	Button *outdoorMapButton;
   TextField *levelText, *depthText;
   ScrollingList *themeList;
   std::string* themeNames;
