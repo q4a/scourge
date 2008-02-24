@@ -350,3 +350,13 @@ void OutdoorGenerator::addTraps( Map *map, ShapePalette *shapePal ) {
      // no traps
 }
      
+void OutdoorGenerator::deleteFreeSpaceMap( Map *map, ShapePalette *shapePal ) {
+	TerrainGenerator::deleteFreeSpaceMap( map, shapePal );
+	
+	// remove the floor
+	for( int x = MAP_OFFSET; x < MAP_WIDTH - MAP_OFFSET; x += MAP_UNIT ) {
+		for( int y = MAP_OFFSET; y < MAP_DEPTH - MAP_OFFSET; y += MAP_UNIT ) {
+			map->removeFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT );
+		}
+	}
+}

@@ -25,6 +25,7 @@
 #include "item.h"
 #include "creature.h"
 #include "shapepalette.h"
+#include "outdoorgenerator.h"
 
 using namespace std;
 
@@ -231,7 +232,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
 void MapEditor::createNewMapDialog() {
   // new map ui
   int nw = 450;
-  int nh = 400;
+  int nh = 430;
   newMapWin = new Window( scourge->getSDLHandler(),
                           40, 40, nw, nh,
                           _( "Map Properties" ), 
@@ -265,14 +266,17 @@ void MapEditor::createNewMapDialog() {
   }
   themeList->setLines( scourge->getShapePalette()->getAllThemeCount(), themeNames );
 
-  newMapWin->createLabel( startx, 130, _( "Select map location: (click on map, drag to move)" ) );
-  mapWidget = new MapWidget( scourge, newMapWin, startx, 140, nw - startx, 335 );
+	newMapWin->createLabel( startx, 130, _( "Create an outdoor map:" ) );
+	outdoorMapButton = newMapWin->createButton( startx + 200, 120, startx + 300, 140, "Outdoors Map", true );
+
+  newMapWin->createLabel( startx, 160, _( "Select map location: (click on map, drag to move)" ) );
+  mapWidget = new MapWidget( scourge, newMapWin, startx, 170, nw - startx, 335 );
   newMapWin->addWidget( mapWidget->getCanvas() );
 
   int bw = nw / 6;
-  okButton = newMapWin->createButton( nw - bw * 3 - 10, 345, nw - bw * 2 - 5, 365, _( "New Map" ) );
-  applyButton = newMapWin->createButton( nw - bw * 2 + 5, 345, nw - bw - 5, 365, _( "Apply" ) );
-  cancelButton = newMapWin->createButton( nw - bw, 345, nw - 5, 365, _( "Cancel" ) );
+  okButton = newMapWin->createButton( nw - bw * 3 - 10, 375, nw - bw * 2 - 5, 395, _( "New Map" ) );
+  applyButton = newMapWin->createButton( nw - bw * 2 + 5, 375, nw - bw - 5, 395, _( "Apply" ) );
+  cancelButton = newMapWin->createButton( nw - bw, 375, nw - 5, 395, _( "Cancel" ) );
 }
 
 MapEditor::~MapEditor() {
@@ -453,6 +457,16 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
         scourge->getShapePalette()->loadTheme( p );
         free( p );
       }
+
+			if( outdoorMapButton->isSelected() ) {
+				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
+				cerr << "*** Generating outdoor terrain ***" << endl;
+				OutdoorGenerator *og = new OutdoorGenerator( scourge,level,depth, 1, false, false, NULL );
+				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
+				delete og;				
+			} else {
+				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
+			}
     }
     this->level = atoi( levelText->getText() );
     this->depth = atoi( depthText->getText() );

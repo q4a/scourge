@@ -70,7 +70,7 @@ public:
   virtual bool addRecentDamage( int damage );
   virtual void removeRecentDamage( int i );
 
-	virtual inline bool isBoss() = 0;
+	virtual bool isBoss() = 0;
 	virtual bool isNpc() = 0;
   virtual bool getStateMod(int mod) = 0;
   virtual void pickUpOnMap( RenderedItem *item ) = 0;

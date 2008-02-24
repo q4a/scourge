@@ -190,13 +190,15 @@ bool TerrainGenerator::drawNodesOnMap( Map *map, ShapePalette *shapePal, bool go
   updateStatus( _( "Locking doors and chests" ) );
   lockDoors(map, shapePal);
   
-  updateStatus( _( "Calculating room values" ) );
-  calculateRoomValues(map, shapePal);
-    
-  updateStatus( _( "Adding monsters" ) );
-  addMonsters(map, shapePal);
-	addHarmlessCreatures( map, shapePal );
-  
+	if( scourge->getParty()->getPartySize() ) {
+		updateStatus( _( "Calculating room values" ) );
+		calculateRoomValues(map, shapePal);
+		
+		updateStatus( _( "Adding monsters" ) );
+		addMonsters(map, shapePal);
+		addHarmlessCreatures( map, shapePal );
+	}
+
   updateStatus( _( "Adding items" ) );
   addItems(map, shapePal);
   
@@ -725,17 +727,17 @@ void TerrainGenerator::lockLocation(Map *map, int mapx, int mapy) {
 }
 
 void TerrainGenerator::calculateRoomValues(Map *map, ShapePalette *shapePal) {
-  // see which rooms are locked
-  map->configureAccessMap(toint(scourge->getParty()->getPlayer()->getX()), 
-                          toint(scourge->getParty()->getPlayer()->getY()));
-  for(int i = 0; i < roomCount; i++) {
-    int x = offset + room[i].x * unitSide + room[i].w  * (unitSide / 2);
-    int y = offset + room[i].y * unitSide + room[i].h * ( unitSide / 2);
-    if(!map->isPositionAccessible(x, y)) {
-      room[i].valueBonus++;
-//      cerr << "\tRoom " << i << " is locked. valueBonus=" << room[i].valueBonus << endl;
-    } 
-  }
+	// see which rooms are locked
+	map->configureAccessMap(toint(scourge->getParty()->getPlayer()->getX()), 
+													toint(scourge->getParty()->getPlayer()->getY()));
+	for(int i = 0; i < roomCount; i++) {
+		int x = offset + room[i].x * unitSide + room[i].w  * (unitSide / 2);
+		int y = offset + room[i].y * unitSide + room[i].h * ( unitSide / 2);
+		if(!map->isPositionAccessible(x, y)) {
+			room[i].valueBonus++;
+			//      cerr << "\tRoom " << i << " is locked. valueBonus=" << room[i].valueBonus << endl;
+		} 
+	}
 }
 
 void TerrainGenerator::createFreeSpaceMap(Map *map, ShapePalette *shapePal) {

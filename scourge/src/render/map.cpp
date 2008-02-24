@@ -1439,6 +1439,8 @@ void Map::willDrawGrid() {
 		}
 	}
 
+  glDisable( GL_DEPTH_TEST );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
 	int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
 	float m = 0.5f / DIV;
@@ -1452,10 +1454,10 @@ void Map::willDrawGrid() {
 
 		if( chunks[i].cx == chunkX &&
 				chunks[i].cy == chunkY ) {
-			glColor4f( 0,1,0,1 );
+			glColor4f( 0,1,0,0.25f );
 			glLineWidth( 5 );
 		} else {
-			glColor4f( 1,1,1,1 );
+			glColor4f( 1,1,1,0.25f );
 			glLineWidth( 1 );
 		}
 		glBegin( GL_LINE_LOOP );
@@ -1497,7 +1499,7 @@ void Map::willDrawGrid() {
 		green = 0.15f;
 	}
 
-	glColor4f( red, green, blue, 0.5f );
+	glColor4f( red, green, blue, 0.25f );
 	glTranslatef( xp, yp, 0 );
 	glBegin( GL_QUADS );
 
@@ -1539,6 +1541,7 @@ void Map::willDrawGrid() {
 
 	glDisable(GL_BLEND);  
 	glDepthMask(GL_TRUE);
+	glEnable( GL_DEPTH_TEST );
 }
 
 /*
@@ -1576,21 +1579,21 @@ void Map::sortShapes( DrawLater *playerDrawLater,
 	} else if( shapes[i].shape->getWidth() > shapes[i].shape->getDepth() ) {
       objX = playerDrawLater->xpos;
       objY = shapes[i].ypos;
-	  yset.insert( shapes[i].ypos );
+			yset.insert( toint( shapes[i].ypos ) );
     } else {
       objX = shapes[i].xpos;
-      objY = playerDrawLater->ypos;
-	  xset.insert( shapes[i].xpos );
+			objY = playerDrawLater->ypos;
+			xset.insert( toint( shapes[i].xpos ) );
     }
 	shapes[i].inFront = isShapeInFront( playerWinY, objX, objY, &cache, mm, pm, vp);
   }
   // now process square shapes: if their x or y lies on a wall-line, they're transparent
   for(int i = 0; i < shapeCount; i++) {
 	if( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
-	  if( xset.find( shapes[i].xpos ) != xset.end() ) {
+	  if( xset.find( toint( shapes[i].xpos ) ) != xset.end() ) {
 		objX = shapes[i].xpos;
 		objY = playerDrawLater->ypos;
-	  } else if( yset.find( shapes[i].ypos ) != yset.end() ) {
+	  } else if( yset.find( toint( shapes[i].ypos ) ) != yset.end() ) {
 		objX = playerDrawLater->xpos;
 		objY = shapes[i].ypos;
 	  } else {
