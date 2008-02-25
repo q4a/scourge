@@ -4623,9 +4623,17 @@ bool Map::canFit( int x, int y, Shape *shape ) {
 	}
 	int fx = ( ( x - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
 	int fy = ( ( y - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-	Shape *floor = floorPositions[fx][fy];
-	if( floor ) {
-		return( !isBlocked( x, y, 0, 0, 0, 0, shape, NULL ) ? true : false );
+	if( isHeightMapEnabled() ) {
+		int gx = fx / OUTDOORS_STEP;
+		int gy = fy / OUTDOORS_STEP;
+		if( ground[ gx ][ gy ] < 10 && ground[ gx ][ gy ] > -10 ) {
+			return( !isBlocked( x, y, 0, 0, 0, 0, shape, NULL ) ? true : false );
+		}
+	} else {
+		Shape *floor = floorPositions[fx][fy];
+		if( floor ) {
+			return( !isBlocked( x, y, 0, 0, 0, 0, shape, NULL ) ? true : false );
+		}
 	}
 	return false;
 }	
