@@ -4436,13 +4436,13 @@ void Map::drawWaterLevel() {
 	glBegin( GL_QUADS );
 	glNormal3f( 0, 0, 1 );
 	glTexCoord2f( getX() * DIV * ratio + waterTexX, getY() * DIV * ratio + waterTexY );
-	glVertex3f( 0, 0, 0 );
+	glVertex3f( 0, 0, -0.3f );
 	glTexCoord2f( getX() * DIV * ratio + waterTexX, ( getY() + mapViewDepth ) * DIV * ratio + waterTexY );
-	glVertex3f( 0, d, 0 );
+	glVertex3f( 0, d, -0.3f );
 	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio + waterTexX, ( getY() + mapViewDepth ) * DIV * ratio + waterTexY );
-	glVertex3f( w, d, 0 );
+	glVertex3f( w, d, -0.3f );
 	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio + waterTexX, getY() * DIV * ratio + waterTexY );
-	glVertex3f( w, 0, 0 );
+	glVertex3f( w, 0, -0.3f );
 	glEnd();
 	glDisable( GL_BLEND );
 }
