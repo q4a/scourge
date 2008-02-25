@@ -111,6 +111,7 @@ public:
   inline bool isVisible() { return mainWin->isVisible(); }
 
 protected:
+	void flattenChunk( Sint16 mapx, Sint16 mapy );
 	void createNewMapDialog();
   void processMouseMotion( Uint8 button, int editorZ );
   bool getShape( GLShape **shape,
