@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-02-24 02:14+0100\n"
+"POT-Creation-Date: 2008-02-26 16:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,55 +94,55 @@ msgstr ""
 msgid "%s feels a loss of contentment."
 msgstr ""
 
-#: src/render/map.cpp:1980
+#: src/render/map.cpp:1983
 msgid "A tremor shakes the earth..."
 msgstr ""
 
-#: src/render/map.cpp:3280
+#: src/render/map.cpp:3283
 msgid "You need to name the map first."
 msgstr ""
 
-#: src/render/map.cpp:3485 src/render/map.cpp:3777
+#: src/render/map.cpp:3488 src/render/map.cpp:3780
 msgid "Enter a name of a map to load."
 msgstr ""
 
-#: src/render/map.cpp:3507
+#: src/render/map.cpp:3510
 msgid "Loading map"
 msgstr ""
 
-#: src/render/map.cpp:3512 src/dungeongenerator.cpp:594 src/mondrian.cpp:485
+#: src/render/map.cpp:3515 src/dungeongenerator.cpp:594 src/mondrian.cpp:485
 msgid "Loading theme"
 msgstr ""
 
-#: src/render/map.cpp:3565
+#: src/render/map.cpp:3568
 msgid "Starting map"
 msgstr ""
 
-#: src/render/map.cpp:3588
+#: src/render/map.cpp:3591
 msgid "Initializing map"
 msgstr ""
 
-#: src/render/map.cpp:3726
+#: src/render/map.cpp:3729
 msgid "Finishing map"
 msgstr ""
 
-#: src/render/map.cpp:3732 src/rpg/monster.cpp:26 src/session.cpp:119
+#: src/render/map.cpp:3735 src/rpg/monster.cpp:26 src/session.cpp:119
 msgid "Loading Creatures"
 msgstr ""
 
-#: src/render/map.cpp:3750
+#: src/render/map.cpp:3753
 msgid "Starting party"
 msgstr ""
 
-#: src/render/map.cpp:3770
+#: src/render/map.cpp:3773
 msgid "Map loaded: "
 msgstr ""
 
-#: src/render/map.cpp:3791
+#: src/render/map.cpp:3794
 msgid "Can't find map: "
 msgstr ""
 
-#: src/render/map.cpp:3801
+#: src/render/map.cpp:3804
 msgid "Map header loaded: "
 msgstr ""
 
@@ -337,7 +337,7 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: src/common/constants.cpp:91 src/savegamedialog.cpp:55 src/mapeditor.cpp:275
+#: src/common/constants.cpp:91 src/savegamedialog.cpp:55 src/mapeditor.cpp:279
 msgid "Cancel"
 msgstr ""
 
@@ -1636,7 +1636,7 @@ msgstr ""
 msgid "Controls"
 msgstr ""
 
-#: src/optionsmenu.cpp:58 src/savegamedialog.cpp:52 src/mapeditor.cpp:87
+#: src/optionsmenu.cpp:58 src/savegamedialog.cpp:52 src/mapeditor.cpp:88
 msgid "Save"
 msgstr ""
 
@@ -2158,7 +2158,7 @@ msgstr ""
 msgid "New Save"
 msgstr ""
 
-#: src/savegamedialog.cpp:53 src/mapeditor.cpp:86
+#: src/savegamedialog.cpp:53 src/mapeditor.cpp:87
 msgid "Load"
 msgstr ""
 
@@ -2289,23 +2289,23 @@ msgstr ""
 msgid "Locking doors and chests"
 msgstr ""
 
-#: src/terraingenerator.cpp:193
+#: src/terraingenerator.cpp:194
 msgid "Calculating room values"
 msgstr ""
 
-#: src/terraingenerator.cpp:196
+#: src/terraingenerator.cpp:197
 msgid "Adding monsters"
 msgstr ""
 
-#: src/terraingenerator.cpp:200
+#: src/terraingenerator.cpp:202
 msgid "Adding items"
 msgstr ""
 
-#: src/terraingenerator.cpp:203
+#: src/terraingenerator.cpp:205
 msgid "Adding furniture"
 msgstr ""
 
-#: src/terraingenerator.cpp:207
+#: src/terraingenerator.cpp:209
 msgid "Cleaning up"
 msgstr ""
 
@@ -2534,7 +2534,7 @@ msgstr ""
 msgid "Transcribe"
 msgstr ""
 
-#: src/infogui.cpp:92 src/pceditor.cpp:459 src/mapeditor.cpp:82
+#: src/infogui.cpp:92 src/pceditor.cpp:459 src/mapeditor.cpp:83
 msgid "Name:"
 msgstr ""
 
@@ -2970,87 +2970,91 @@ msgstr ""
 msgid "Cursed items have been doffed."
 msgstr ""
 
-#: src/mapeditor.cpp:32
+#: src/mapeditor.cpp:33
 msgid "Tile: Passage"
 msgstr ""
 
-#: src/mapeditor.cpp:33
+#: src/mapeditor.cpp:34
 msgid "Tile: Room"
 msgstr ""
 
-#: src/mapeditor.cpp:71
+#: src/mapeditor.cpp:72
 msgid "Map Editor"
 msgstr ""
 
-#: src/mapeditor.cpp:90
+#: src/mapeditor.cpp:91
 msgid "Wall"
 msgstr ""
 
-#: src/mapeditor.cpp:93
+#: src/mapeditor.cpp:94
 msgid "Door"
 msgstr ""
 
-#: src/mapeditor.cpp:99
+#: src/mapeditor.cpp:100
 msgid "Properties"
 msgstr ""
 
-#: src/mapeditor.cpp:103
+#: src/mapeditor.cpp:104
 msgid "Start Pos"
 msgstr ""
 
-#: src/mapeditor.cpp:111 src/mapeditor.cpp:318
+#: src/mapeditor.cpp:112 src/mapeditor.cpp:322
 msgid "Item"
 msgstr ""
 
-#: src/mapeditor.cpp:120
+#: src/mapeditor.cpp:121
 msgid "Furniture"
 msgstr ""
 
-#: src/mapeditor.cpp:158 src/mapeditor.cpp:320
+#: src/mapeditor.cpp:159 src/mapeditor.cpp:324
 msgid "Creature"
 msgstr ""
 
-#: src/mapeditor.cpp:199 src/mapeditor.cpp:316
+#: src/mapeditor.cpp:200 src/mapeditor.cpp:320
 msgid "Shape"
 msgstr ""
 
-#: src/mapeditor.cpp:218
+#: src/mapeditor.cpp:219
 msgid "Rug"
 msgstr ""
 
-#: src/mapeditor.cpp:220
+#: src/mapeditor.cpp:221
 msgid "Secret"
 msgstr ""
 
-#: src/mapeditor.cpp:223
+#: src/mapeditor.cpp:224
 msgid "Trap"
 msgstr ""
 
-#: src/mapeditor.cpp:237
+#: src/mapeditor.cpp:238
 msgid "Map Properties"
 msgstr ""
 
-#: src/mapeditor.cpp:246
+#: src/mapeditor.cpp:247
 msgid "Map level"
 msgstr ""
 
-#: src/mapeditor.cpp:249
+#: src/mapeditor.cpp:250
 msgid "Map depth"
 msgstr ""
 
-#: src/mapeditor.cpp:252
+#: src/mapeditor.cpp:253
 msgid "Map theme:"
 msgstr ""
 
-#: src/mapeditor.cpp:268
+#: src/mapeditor.cpp:269
+msgid "Create an outdoor map:"
+msgstr ""
+
+#: src/mapeditor.cpp:272
 msgid "Select map location: (click on map, drag to move)"
 msgstr ""
 
-#: src/mapeditor.cpp:273
+#: src/mapeditor.cpp:277
 msgid "New Map"
 msgstr ""
 
-#: src/mapeditor.cpp:274
+#: src/mapeditor.cpp:278
 msgid "Apply"
 msgstr ""
 
@@ -7199,6 +7203,32 @@ msgstr ""
 msgid ""
 "Speak with the intelligent tree being on the isle of Emeril. Bring back all "
 "info you find out."
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:290
+msgid "Chapter 12: Infernal Invaders"
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:296
+msgid ""
+"Armed with the Cronostar (you have not lost it, have you?!) your next task "
+"is to travel to the abandoned monastery on the Isle of Emeril and prevent "
+"the entrance of Karzul into the material realm.||Failing that... I will have "
+"to ask you to lay down your lives (or was that souls?) in defense of "
+"justice, freedom and sanity.||I'm very sorry that it has come to this, but "
+"the $owners want blood. Anyone's blood... and since if you don't defeat "
+"Karzul our world will most probably come to a rather sudden - and I'm afraid "
+"quite terminal - demise, you may as well fight his minions until the bitter "
+"end."
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:297
+#: ../scourge_data/config/mission.cfg:298
+msgid "fixme"
+msgstr ""
+
+#: ../scourge_data/config/mission.cfg:299
+msgid "Defeat Karzul"
 msgstr ""
 
 #: ../scourge_data/config/profession.cfg:7
