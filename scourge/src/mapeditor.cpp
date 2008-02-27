@@ -103,6 +103,10 @@ MapEditor::MapEditor( Scourge *scourge ) {
 
   startPosButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Start Pos" ), true );
   toggleButtonList.push_back( startPosButton );
+	pathButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, _( "Path" ), true );
+  toggleButtonList.push_back( startPosButton );
+	pathButton->setSelected( false );
+	pathButton->setEnabled( false );
 	yy += ystep;
 
   // Lists
@@ -431,6 +435,9 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == loadButton ) {
 		string tmp(nameText->getText());
     scourge->getMap()->loadMap( tmp, result );
+		if( scourge->getMap()->isHeightMapEnabled() ) {
+			pathButton->setEnabled( true );
+		}
 	scourge->showMessageDialog( result.c_str() );
     miniMap->reset();
 //    scourge->getParty()->toggleRound( false );
@@ -464,8 +471,10 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
 				OutdoorGenerator *og = new OutdoorGenerator( scourge,level,depth, 1, false, false, NULL );
 				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
 				delete og;				
+				pathButton->setEnabled( true );
 			} else {
 				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
+				pathButton->setEnabled( false );
 			}
     }
     this->level = atoi( levelText->getText() );
@@ -707,6 +716,8 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
       } else {
         if( button == SDL_BUTTON_RIGHT ) {
           removeFloor( mapx, mapy );
+				} else if( pathButton->isSelected() ) {
+					addPath( mapx, mapy );
         } else {
           addFloor( mapx, mapy );
         }
@@ -1110,14 +1121,64 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
   }
 }
 
-void MapEditor::addFloor( Sint16 mapx, Sint16 mapy ) {
+void MapEditor::addFloor( Sint16 mapx, Sint16 mapy, bool doFlattenChunk ) {
   if( scourge->getMap()->getFloorPosition( mapx, mapy + MAP_UNIT ) ) return;
-	flattenChunk( mapx, mapy );
+	if( doFlattenChunk ) flattenChunk( mapx, mapy );
   scourge->getMap()->
     setFloorPosition( mapx, mapy + MAP_UNIT, 
                       scourge->getShapePalette()->
                       findShapeByName( floorTypeName[ floorType->isSelected() ? 0 : 1 ][ 0 ], 
                                        true ) );
+}
+
+void MapEditor::addPath( Sint16 mapx, Sint16 mapy ) {
+	addFloor( mapx, mapy, false );
+	for( int cx = -1; cx < 2; cx++ ) {
+		for( int cy = -1; cy < 2; cy++ ) {
+			flattenPathChunk( mapx + ( cx * MAP_UNIT ), mapy + ( cy * MAP_UNIT ) );
+		}
+	}
+}
+
+void MapEditor::flattenPathChunk( Sint16 mapx, Sint16 mapy ) {
+	if( !scourge->getMap()->getFloorPosition( mapx, mapy + MAP_UNIT ) ) return;
+	int chunkX = ( mapx - MAP_OFFSET ) / MAP_UNIT;
+	int chunkY = ( mapy - MAP_OFFSET ) / MAP_UNIT;
+	for( int x = OUTDOORS_STEP; x <= MAP_UNIT - OUTDOORS_STEP; x++ ) {
+		for( int y = OUTDOORS_STEP; y <= MAP_UNIT - OUTDOORS_STEP; y++ ) {
+			int xx = ( MAP_OFFSET + ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
+			int yy = ( MAP_OFFSET + ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
+			scourge->getMap()->setGroundHeight( xx, yy, 0 );
+		}
+	}
+	for( int x = OUTDOORS_STEP; x <= MAP_UNIT - OUTDOORS_STEP; x++ ) {
+		if( scourge->getMap()->getFloorPosition( mapx, mapy ) ) {
+			int y = 0;
+			int xx = ( MAP_OFFSET + ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
+			int yy = ( MAP_OFFSET + ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
+			scourge->getMap()->setGroundHeight( xx, yy, 0 );
+		}
+		if( scourge->getMap()->getFloorPosition( mapx, mapy + MAP_UNIT + MAP_UNIT ) ) {
+			int y = MAP_UNIT - 1;
+			int xx = ( MAP_OFFSET + ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
+			int yy = ( MAP_OFFSET + ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
+			scourge->getMap()->setGroundHeight( xx, yy, 0 );
+		}
+	}
+	for( int y = OUTDOORS_STEP; y <= MAP_UNIT - OUTDOORS_STEP; y++ ) {
+		if( scourge->getMap()->getFloorPosition( mapx - MAP_UNIT, mapy + MAP_UNIT ) ) {
+			int x = 0;
+			int xx = ( MAP_OFFSET + ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
+			int yy = ( MAP_OFFSET + ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
+			scourge->getMap()->setGroundHeight( xx, yy, 0 );
+		}
+		if( scourge->getMap()->getFloorPosition( mapx + MAP_UNIT, mapy + MAP_UNIT ) ) {
+			int x = MAP_UNIT - 1;
+			int xx = ( MAP_OFFSET + ( chunkX * MAP_UNIT ) + x ) / OUTDOORS_STEP;
+			int yy = ( MAP_OFFSET + ( chunkY * MAP_UNIT ) + y ) / OUTDOORS_STEP;
+			scourge->getMap()->setGroundHeight( xx, yy, 0 );
+		}
+	}
 }
 
 void MapEditor::removeFloor( Sint16 mapx, Sint16 mapy ) {
