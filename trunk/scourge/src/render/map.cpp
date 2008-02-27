@@ -4131,6 +4131,7 @@ void Map::renderFloor() {
 	if( isHeightMapEnabled() ) {
 		drawHeightMapFloor();
 		drawWaterLevel();
+		setupShapes(true, false);
 	}	else {
 		drawFlatFloor();
 	}

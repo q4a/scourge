@@ -66,6 +66,7 @@ private:
   Button *floorType;
   Button *rugButton, *secretButton, *trapButton;
   std::vector<Button *> toggleButtonList;
+	Button *pathButton;
                                                                                              
   TextField *nameText;
   Button *loadButton, *saveButton;
@@ -80,7 +81,7 @@ private:
   TextField *levelText, *depthText;
   ScrollingList *themeList;
   std::string* themeNames;
-  MapWidget *mapWidget;
+  MapWidget *mapWidget;	
   
   // lists
   ScrollingList *shapeList, *itemList, *creatureList, *furnitureList;
@@ -112,6 +113,7 @@ public:
 
 protected:
 	void flattenChunk( Sint16 mapx, Sint16 mapy );
+	void flattenPathChunk( Sint16 mapx, Sint16 mapy );
 	void createNewMapDialog();
   void processMouseMotion( Uint8 button, int editorZ );
   bool getShape( GLShape **shape,
@@ -138,7 +140,8 @@ protected:
   void addNSWall( Sint16 mapx, Sint16 mapy, int dir );
   void removeEWWall( Sint16 mapx, Sint16 mapy, int dir );
   void removeNSWall( Sint16 mapx, Sint16 mapy, int dir );
-  void addFloor( Sint16 mapx, Sint16 mapy );
+  void addFloor( Sint16 mapx, Sint16 mapy, bool doFlattenChunk=true );
+	void addPath( Sint16 mapx, Sint16 mapy );
   void removeFloor( Sint16 mapx, Sint16 mapy );
   void blendCorners( Sint16 mapx, Sint16 mapy );
   bool isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name );
