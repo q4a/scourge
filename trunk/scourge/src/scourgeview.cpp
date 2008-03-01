@@ -163,7 +163,7 @@ void ScourgeView::drawChapterIntro() {
 
 	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 	glColor4f( 1, 0.35f, 0, 1 );
-	scourge->getSDLHandler()->texPrint( 10, 28, scourge->getSession()->getCurrentMission()->getDisplayName() );
+	scourge->getSDLHandler()->texPrint( 10, 36, scourge->getSession()->getCurrentMission()->getDisplayName() );
 	glColor4f( 1, 1, 1, 1 );
 	
 	int px = ( scourge->getScreenWidth() - scourge->getSession()->getChapterImageWidth() ) / 2;
@@ -194,7 +194,7 @@ void ScourgeView::drawChapterIntro() {
 	glColor4f( 1, 0.9f, 0.8f, 1 );
 	for( unsigned int i = 0; i < scourge->getChapterText()->size(); i++ ) {
 		string s = (*scourge->getChapterText())[i];
-		int ypos = i * 28 + offset;
+		int ypos = i * 36 + offset;
 		scourge->getSDLHandler()->texPrint( 0, ypos, s.c_str() );
 	}
 	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
@@ -229,7 +229,7 @@ void ScourgeView::drawChapterIntro() {
 
 	Uint32 now = SDL_GetTicks();
 	if( now - chapterTextTimer > CHAPTER_TEXT_SPEED && 
-			offset > ( (int)( scourge->getChapterText()->size() ) * -28 ) ) {
+			offset > ( (int)( scourge->getChapterText()->size() ) * -36 ) ) {
 		scourge->setChapterTextPos( offset - CHAPTER_TEXT_DELTA );
 		chapterTextTimer = now;
 	}

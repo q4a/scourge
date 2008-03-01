@@ -211,7 +211,7 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 		glDisable( GL_SCISSOR_TEST );
 	}
 
-	int y = 25;
+	int y = 35;
 	glColor4f( 1, 0.8f, 0, 1 );
 	pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, creature->getName() );
@@ -219,19 +219,13 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	//y += 17;
 
 	glColor4f( 1, 1, 1, 1 );
-	y = 15;
-	int x = 200;
-	pcUi->getScourge()->getSDLHandler()->texPrint( x, y, "%s:%d", _( "Level" ), creature->getLevel() );
-	y += 15;
-	pcUi->getScourge()->getSDLHandler()->texPrint( x, y, "%s:%d", _( "XP" ), creature->getExp() );
-	y += 15;
-	pcUi->getScourge()->getSDLHandler()->texPrint( x, y, "%s:%d", _( "Coins" ), creature->getMoney() );
-
-	y = 25 + 17;
+	y = 35 + 17;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s", 
 												   ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
 												   creature->getCharacter()->getDisplayName() );	
-	y += 25;
+	y += 12;
+	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s:%d (%s: %d)", _( "Level" ), creature->getLevel(), _( "XP" ), creature->getExp() );
+	y += 12;
 
 	pcUi->getScourge()->describeAttacks( creature, 80, y, true );
 	pcUi->getScourge()->describeDefense( creature, 200, y );
@@ -251,7 +245,7 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 
 void Portrait::showStats() {
 	// hp/mp
-  int y = 105;	
+  int y = 120;	
 //	y += 18;
 	glColor4f( 1, 1, 1, 1 );
   pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
@@ -334,7 +328,7 @@ void Portrait::scrollSkillsDown() {
 }
 
 void Portrait::showSkills() {
-	int y = 110;
+	int y = 120;
 	glColor4f( 1, 1, 1, 1 );
 	SkillGroup *sg = SkillGroup::groups[ skillOffset ];
 	if( creature->getHasAvailableSkillPoints() ) glColor3f( 1, 0, 0 );
@@ -426,8 +420,10 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 }
 
 void Portrait::showStateMods() {
-  int y = 110;
+  int y = 120;
 	glColor4f( 1, 1, 1, 1 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, "%s:%d", _( "Coins" ), creature->getMoney() );
+	y += 15;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Thirst" ) );
   drawBar( 100, y - 10, creature->getThirst(), 10 );
   pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%d/%d", creature->getThirst(), 10 );
