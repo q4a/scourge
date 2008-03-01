@@ -3727,7 +3727,7 @@ void Scourge::initChapterIntro() {
 	Util::addLineBreaks( ( strlen( session->getCurrentMission()->getIntroDescription() ) ? 
 												 session->getCurrentMission()->getIntroDescription() :
 												 session->getCurrentMission()->getDescription() ), 
-											 tmp, 84 );
+											 tmp, 62 );
 	chapterText.clear();
 	Util::getLines( tmp, &chapterText );
 	chapterTextPos = -2000;
