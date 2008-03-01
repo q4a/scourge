@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-02-26 16:05+0100\n"
-"PO-Revision-Date: 2008-02-26 16:26-0000\n"
+"POT-Creation-Date: 2008-03-01 19:47+0100\n"
+"PO-Revision-Date: 2008-03-01 19:49-0000\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <dmurczak@versanet.de>\n"
 "MIME-Version: 1.0\n"
@@ -340,7 +340,7 @@ msgstr "Zurück zur Basis teleportieren?"
 msgid "OK"
 msgstr "Ok"
 
-#: src/common/constants.cpp:91 src/savegamedialog.cpp:55 src/mapeditor.cpp:279
+#: src/common/constants.cpp:91 src/savegamedialog.cpp:55 src/mapeditor.cpp:283
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -3057,63 +3057,67 @@ msgstr "Eigenschaften"
 msgid "Start Pos"
 msgstr "Startpos."
 
-#: src/mapeditor.cpp:112 src/mapeditor.cpp:322
+#: src/mapeditor.cpp:106
+msgid "Path"
+msgstr "Pfad"
+
+#: src/mapeditor.cpp:116 src/mapeditor.cpp:326
 msgid "Item"
 msgstr "Gegenstand"
 
-#: src/mapeditor.cpp:121
+#: src/mapeditor.cpp:125
 msgid "Furniture"
 msgstr "Mobiliar"
 
-#: src/mapeditor.cpp:159 src/mapeditor.cpp:324
+#: src/mapeditor.cpp:163 src/mapeditor.cpp:328
 msgid "Creature"
 msgstr "Kreatur"
 
-#: src/mapeditor.cpp:200 src/mapeditor.cpp:320
+#: src/mapeditor.cpp:204 src/mapeditor.cpp:324
 msgid "Shape"
 msgstr "Form"
 
-#: src/mapeditor.cpp:219
+#: src/mapeditor.cpp:223
 msgid "Rug"
 msgstr "Teppich"
 
-#: src/mapeditor.cpp:221
+#: src/mapeditor.cpp:225
 msgid "Secret"
 msgstr "Geheimnis"
 
-#: src/mapeditor.cpp:224
+#: src/mapeditor.cpp:228
 msgid "Trap"
 msgstr "Falle"
 
-#: src/mapeditor.cpp:238
+#: src/mapeditor.cpp:242
 msgid "Map Properties"
 msgstr "Karteneigenschaften"
 
-#: src/mapeditor.cpp:247
+#: src/mapeditor.cpp:251
 msgid "Map level"
 msgstr "Kartenebene"
 
-#: src/mapeditor.cpp:250
+#: src/mapeditor.cpp:254
 msgid "Map depth"
 msgstr "Kartentiefe"
 
-#: src/mapeditor.cpp:253
+#: src/mapeditor.cpp:257
 msgid "Map theme:"
 msgstr "Kartenthema:"
 
-#: src/mapeditor.cpp:269
+#: src/mapeditor.cpp:273
 msgid "Create an outdoor map:"
 msgstr "Freilandkarte erstellen:"
 
-#: src/mapeditor.cpp:272
+#: src/mapeditor.cpp:276
 msgid "Select map location: (click on map, drag to move)"
 msgstr "Ort auf Karte wählen: (Klicken, zum Bewegen ziehen)"
 
-#: src/mapeditor.cpp:277
+#: src/mapeditor.cpp:281
 msgid "New Map"
 msgstr "Neue Karte"
 
-#: src/mapeditor.cpp:278
+#: src/mapeditor.cpp:282
 msgid "Apply"
 msgstr "Anwenden"
 
@@ -4807,7 +4811,7 @@ msgstr "Schild des Goldenen Lotus"
 msgid "A shield exhibiting golden harmony and unperturbable peace."
 msgstr "Der Schild strahlt goldene Harmonie und unbeirrbaren Frieden aus."
 
-#: ../scourge_data/config/armor.cfg:448
+#: ../scourge_data/config/armor.cfg:449
 msgid ""
 "The lightweight cloth keeps you warm (and ready to party) but does not "
 "protect you from weapon attacks."
@@ -4815,15 +4819,15 @@ msgstr ""
 "Das leichte Kleidungsstück hält Euch warm, bietet aber keinen Schutz vor "
 "Waffen."
 
-#: ../scourge_data/config/armor.cfg:449
+#: ../scourge_data/config/armor.cfg:450
 msgid "Toga"
 msgstr "Toga"
 
-#: ../scourge_data/config/armor.cfg:456
+#: ../scourge_data/config/armor.cfg:457
 msgid "A white bedsheet that's been made into robes."
 msgstr "Ein weißes Bettlaken, das nun eine Robe ist."
 
-#: ../scourge_data/config/armor.cfg:466
+#: ../scourge_data/config/armor.cfg:467
 msgid ""
 "A much worn and slept-in traveling garment which looks to also have served "
 "as an item of personal hygiene."
@@ -4831,15 +4835,15 @@ msgstr ""
 "Ein oft getragenes Kleidungsstück, das wohl auch als Waschlappen oder "
 "Handtuch benutzt wurde."
 
-#: ../scourge_data/config/armor.cfg:467
+#: ../scourge_data/config/armor.cfg:468
 msgid "Traveling cloak"
 msgstr "Reiseumhang"
 
-#: ../scourge_data/config/armor.cfg:474
+#: ../scourge_data/config/armor.cfg:475
 msgid "A worn brownish cloak."
 msgstr "Ein abgetragener bräunlicher Umhang"
 
-#: ../scourge_data/config/armor.cfg:484
+#: ../scourge_data/config/armor.cfg:485
 msgid ""
 "A travel cloak of quality workmanship. It looks to actually stave off the "
 "cold of the outdoors."
@@ -4847,15 +4851,15 @@ msgstr ""
 "Ein gut gearbeiteter Reiseumhang. Er sieht aus, als könnte er tatsächlich "
 "die Kälte des Freilands abhalten."
 
-#: ../scourge_data/config/armor.cfg:485
+#: ../scourge_data/config/armor.cfg:486
 msgid "Heavy woodland cloak"
 msgstr "Schwerer Waldumhang"
 
-#: ../scourge_data/config/armor.cfg:492
+#: ../scourge_data/config/armor.cfg:493
 msgid "A heavy-weight traveling cloak."
 msgstr "Ein schwerer Reiseumhang."
 
-#: ../scourge_data/config/armor.cfg:502
+#: ../scourge_data/config/armor.cfg:503
 msgid ""
 "The usual gamete of spellcasters lets the user perform much agitated hand "
 "waving as required by the casted spell."
@@ -4864,15 +4868,15 @@ msgstr ""
 "agitiertes Händeschwingen, wie es für das Wirken eines Zaubers üblicherweise "
 "nötig ist."
 
-#: ../scourge_data/config/armor.cfg:503
+#: ../scourge_data/config/armor.cfg:504
 msgid "Robes of the Sorcerer"
 msgstr "Robe des Hexenmeisters"
 
-#: ../scourge_data/config/armor.cfg:511
+#: ../scourge_data/config/armor.cfg:512
 msgid "These robes have magic symbols on their sleeves and hood."
 msgstr "Diese Robe hat magische Symbole auf den Ärmeln und der Kapuze."
 
-#: ../scourge_data/config/armor.cfg:523
+#: ../scourge_data/config/armor.cfg:524
 msgid ""
 "These robes are cleverly padded to protect its frail wearer a little longer "
 "in battle."
@@ -4880,15 +4884,15 @@ msgstr ""
 "Diese Robe ist gut gepolstert, um ihren gebrechlichen Träger im Kampf ein "
 "wenig länger zu schützen."
 
-#: ../scourge_data/config/armor.cfg:524
+#: ../scourge_data/config/armor.cfg:525
 msgid "Padded Robes"
 msgstr "Gepolsterte Robe"
 
-#: ../scourge_data/config/armor.cfg:532
+#: ../scourge_data/config/armor.cfg:533
 msgid "These robes seem to be padded on the inside."
 msgstr "Diese Robe scheint ein dickes Innenfutter zu haben."
 
-#: ../scourge_data/config/armor.cfg:544
+#: ../scourge_data/config/armor.cfg:545
 msgid ""
 "Ye olde leather armor is created from the cured and toughened skin of thy "
 "foe. On this particular model the leather pieces are clumsily held together "
@@ -4899,15 +4903,15 @@ msgstr ""
 "unpräzise von etwas zusammengehalten, bei dem es sich allem Anschein nach um "
 "die Eingeweide des Besiegten handelt."
 
-#: ../scourge_data/config/armor.cfg:545
+#: ../scourge_data/config/armor.cfg:546
 msgid "Leather Armor"
 msgstr "Lederrüstung"
 
-#: ../scourge_data/config/armor.cfg:552
+#: ../scourge_data/config/armor.cfg:553
 msgid "Looks to be an old piece of leather armor"
 msgstr "Es scheint eine alte Lederrüstung zu sein."
 
-#: ../scourge_data/config/armor.cfg:570
+#: ../scourge_data/config/armor.cfg:571
 msgid ""
 "As a small evolutionary step in leather armor technology, this model sports "
 "blunted metal studs, built more to intimidate rather than to cause actual "
@@ -4918,15 +4922,15 @@ msgstr ""
 "welche eher abschrecken als wirklichen Schaden verursachen sollen. Trotzdem "
 "sieht man darin einfach toll aus."
 
-#: ../scourge_data/config/armor.cfg:571
+#: ../scourge_data/config/armor.cfg:572
 msgid "Studded Leather Armor"
 msgstr "Beschlagene Lederrüstung"
 
-#: ../scourge_data/config/armor.cfg:579
+#: ../scourge_data/config/armor.cfg:580
 msgid "This leather armor piece has embedded metal studs."
 msgstr "Diese Lederrüstung hat eingearbeitete Metallbolzen."
 
-#: ../scourge_data/config/armor.cfg:598
+#: ../scourge_data/config/armor.cfg:599
 msgid ""
 "This indeed -is- your parents' armor. It is rusty, ill-fitting with a few "
 "links missing here and there. It's also quite heavy, makes a lot of noise "
@@ -4937,17 +4941,17 @@ msgstr ""
 "Außerdem ist sie schwer, macht jede Menge Krach und beherbergt die eine oder "
 "andere Nagetierfamilie."
 
-#: ../scourge_data/config/armor.cfg:599
+#: ../scourge_data/config/armor.cfg:600
 msgid "Rusty Chainmail"
 msgstr "Rostiges Kettenhemd"
 
-#: ../scourge_data/config/armor.cfg:606
+#: ../scourge_data/config/armor.cfg:607
 msgid "The rust is the only thing that holds this chainmail's links together"
 msgstr ""
 "Die Kettenglieder der Rüstung werden ausschließlich vom Rost "
 "zusammengehalten."
 
-#: ../scourge_data/config/armor.cfg:633
+#: ../scourge_data/config/armor.cfg:634
 msgid ""
 "One finds strange things in the deep places of the earth... This city "
 "guard's uniform is one such curiosity. What ill fate befell the wearer of "
@@ -4957,15 +4961,15 @@ msgstr ""
 "Stadtwache ist eine solche Merkwürdigkeit. Welches schlimme Schicksal hat "
 "den Träger dieses vorzüglich gearbeiteten Kettenhemds ereilt?"
 
-#: ../scourge_data/config/armor.cfg:634
+#: ../scourge_data/config/armor.cfg:635
 msgid "Guard's Chainmail"
 msgstr "Wächter-Kettenhemd"
 
-#: ../scourge_data/config/armor.cfg:642
+#: ../scourge_data/config/armor.cfg:643
 msgid "It appears to be an official city guard chainmail."
 msgstr "Es ist anscheinend ein offizielles Kettenhemd der Stadtwache."
 
-#: ../scourge_data/config/armor.cfg:669
+#: ../scourge_data/config/armor.cfg:670
 msgid ""
 "This is the fabled mythril mail of the elves of Alovium. The metal is "
 "lightweight, flexible, never rusts of deforms. It's light blue in color and "
@@ -4975,11 +4979,11 @@ msgstr ""
 "Metall ist leicht, flexibel und rostet oder verformt sich nie. Es ist von "
 "hellblauer Farbe und bekanntermaßen leicht zu verzaubern."
 
-#: ../scourge_data/config/armor.cfg:670
+#: ../scourge_data/config/armor.cfg:671
 msgid "Mythril Mail"
 msgstr "Mythrilrüstung"
 
-#: ../scourge_data/config/armor.cfg:678
+#: ../scourge_data/config/armor.cfg:679
 msgid ""
 "You feel that in spite of its light weight this armor is well designed to "
 "deflect damage."
@@ -4987,7 +4991,7 @@ msgstr ""
 "Ihr fühlt, dass diese Rüstung trotz ihres geringen Gewichts gut geeignet "
 "ist, Schaden abzuwehren."
 
-#: ../scourge_data/config/armor.cfg:705
+#: ../scourge_data/config/armor.cfg:706
 msgid ""
 "This type of armor is constructed by attaching strips of metal to chain or "
 "leather. This particular model was created by the dwarven smiths under the "
@@ -4999,15 +5003,15 @@ msgstr ""
 "den Bergen von Mozmoril angefertigt. Obwohl die Rüstung schwer und unbequem "
 "ist, schützt sie vor allen - bis auf die schärfsten - Waffen."
 
-#: ../scourge_data/config/armor.cfg:706
+#: ../scourge_data/config/armor.cfg:707
 msgid "Banded Mail"
 msgstr "Bänderrüstung"
 
-#: ../scourge_data/config/armor.cfg:714
+#: ../scourge_data/config/armor.cfg:715
 msgid "Banded strips of metal compose the main sections of this armor."
 msgstr "Bandförmige Metallstreifen machen den größten Teil dieser Rüstung aus."
 
-#: ../scourge_data/config/armor.cfg:741
+#: ../scourge_data/config/armor.cfg:742
 msgid ""
 "Congratulations. Wearing a set of heavy-gage, full plate mail officially "
 "qualifies you as a human tank. Though you're virtually untouchable by "
@@ -5018,15 +5022,15 @@ msgstr ""
 "konventionelle Waffen praktisch unerreichbar seid, hört man Euch schon auf "
 "Kilometer."
 
-#: ../scourge_data/config/armor.cfg:742
+#: ../scourge_data/config/armor.cfg:743
 msgid "Heavy field plate"
 msgstr "Schwerer Plattenpanzer"
 
-#: ../scourge_data/config/armor.cfg:750
+#: ../scourge_data/config/armor.cfg:751
 msgid "An incredibly heavy set of full plate mail armor."
 msgstr "Ein unglaublich schwere Ganzkörper-Plattenrüstung."
 
-#: ../scourge_data/config/armor.cfg:777
+#: ../scourge_data/config/armor.cfg:778
 msgid ""
 "Like other elven works, this platemail is a study in perfection. It is "
 "lightweight, resilient and quite comfortable to wear for long periods of "
@@ -5036,15 +5040,15 @@ msgstr ""
 "Perfektion. Er ist leicht, unverwüstlich und auch über längere Zeit relativ "
 "bequem zu tragen."
 
-#: ../scourge_data/config/armor.cfg:778
+#: ../scourge_data/config/armor.cfg:779
 msgid "Elven platemail"
 msgstr "Elfen-Plattenpanzer"
 
-#: ../scourge_data/config/armor.cfg:786
+#: ../scourge_data/config/armor.cfg:787
 msgid "A well-fitted set of lightweight platemail armor."
 msgstr "Ein gut anliegender Plattenpanzer."
 
-#: ../scourge_data/config/armor.cfg:813
+#: ../scourge_data/config/armor.cfg:814
 msgid ""
 "The half-ogre wizard, Enarol supposedly created this white armor from the "
 "skin of flayed relative."
@@ -5053,15 +5057,15 @@ msgstr ""
 "Haut eines Verwandten, dem im wahrsten Sinne \"das Fell über die Ohren "
 "gezogen wurde\"."
 
-#: ../scourge_data/config/armor.cfg:814
+#: ../scourge_data/config/armor.cfg:815
 msgid "Enarol's Ogre Skin"
 msgstr "Enarols Ogerhaut"
 
-#: ../scourge_data/config/armor.cfg:822
+#: ../scourge_data/config/armor.cfg:823
 msgid "Stinky white armor that seems rough to the touch."
 msgstr "Eine stinkende weiße Rüstung, die sich rauh anfühlt."
 
-#: ../scourge_data/config/armor.cfg:849
+#: ../scourge_data/config/armor.cfg:850
 msgid ""
 "This armor is made from the hide of a magical dragon. If that sounds hard to "
 "believe, wait until you see how well this armor protects its wearer in "
@@ -5071,15 +5075,15 @@ msgstr ""
 "bereits unglaublich anhören, dann seht erst einmal, wie gut sie ihren Träger "
 "im Kampf schützt."
 
-#: ../scourge_data/config/armor.cfg:850
+#: ../scourge_data/config/armor.cfg:851
 msgid "Dragonscale armor"
 msgstr "Drachenschuppenpanzer"
 
-#: ../scourge_data/config/armor.cfg:858
+#: ../scourge_data/config/armor.cfg:859
 msgid "Armor made from the scales of some beast."
 msgstr "Eine Rüstung, die aus den Schuppen irgendeines Monstrums besteht."
 
-#: ../scourge_data/config/armor.cfg:892
+#: ../scourge_data/config/armor.cfg:893
 msgid ""
 "This armor is made to protect mages. It's created from a transdimensional "
 "goo that protects the user while letting them cast spells."
@@ -5088,15 +5092,15 @@ msgstr ""
 "transdimensionalem Schleim und schützt den Träger, ohne das Anwenden von "
 "Zaubern zu beeinträchtigen."
 
-#: ../scourge_data/config/armor.cfg:893
+#: ../scourge_data/config/armor.cfg:894
 msgid "Smeth's Slimy Defender"
 msgstr "Smeths Schleimiger Beschützer"
 
-#: ../scourge_data/config/armor.cfg:901
+#: ../scourge_data/config/armor.cfg:902
 msgid "Armor made from space-goo."
 msgstr "Eine Rüstung aus Weltraumschleim."
 
-#: ../scourge_data/config/armor.cfg:928
+#: ../scourge_data/config/armor.cfg:929
 msgid ""
 "This gold colored armor offers the highest levels of protection. Imbued with "
 "the magic contained in its yellow strands of fleece it protects the wearer "
@@ -5105,28 +5109,28 @@ msgstr ""
 "Diese goldfarbene Rüstung bietet höchsten Schutz. Die mit Magie durchwirkten "
 "Fäden schützen den Träger durch eine mystische, abstoßende Aura."
 
-#: ../scourge_data/config/armor.cfg:929
+#: ../scourge_data/config/armor.cfg:930
 msgid "Merzul Goldenfleece"
 msgstr "Merzuls Goldenes Vlies"
 
-#: ../scourge_data/config/armor.cfg:937
+#: ../scourge_data/config/armor.cfg:938
 msgid "Lightweight gold colored armor, made from some kind of wool."
 msgstr "Eine leichte goldfarbene Rüstung aus einer Art Wolle."
 
-#: ../scourge_data/config/armor.cfg:964
+#: ../scourge_data/config/armor.cfg:965
 msgid "Slightly worn workboots. They smell about as good as they look."
 msgstr ""
 "Etwas abgetragene Arbeitsstiefel. Sie riechen so gut, wie sie aussehen."
 
-#: ../scourge_data/config/armor.cfg:965
+#: ../scourge_data/config/armor.cfg:966
 msgid "Workboots"
 msgstr "Arbeitsstiefel"
 
-#: ../scourge_data/config/armor.cfg:972
+#: ../scourge_data/config/armor.cfg:973
 msgid "Comfortable looking workboots."
 msgstr "Bequem aussehende Arbeitsstiefel."
 
-#: ../scourge_data/config/armor.cfg:981
+#: ../scourge_data/config/armor.cfg:983
 msgid ""
 "Workboots of a more complex construction. The toebox is encased in steel "
 "making your toes at least dry and safe."
@@ -5134,15 +5138,15 @@ msgstr ""
 "Etwas aufwändiger hergestellte Arbeitsstiefel. Die Spitze ist mit Stahl "
 "verstärkt, so dass zumindest Eure Zehen sicher und trocken bleiben."
 
-#: ../scourge_data/config/armor.cfg:982
+#: ../scourge_data/config/armor.cfg:984
 msgid "Steel-toed Workboots"
 msgstr "Arbeitsstiefel mit Stahlkappe"
 
-#: ../scourge_data/config/armor.cfg:989
+#: ../scourge_data/config/armor.cfg:991
 msgid "Workboots with a steel reinforced toebox."
 msgstr "Arbeitsstiefel mit stahlverstärkter Spitze"
 
-#: ../scourge_data/config/armor.cfg:998
+#: ../scourge_data/config/armor.cfg:1000
 msgid ""
 "These heavy duty boots are designed to last a lifetime. However long that "
 "may be..."
@@ -5150,15 +5154,15 @@ msgstr ""
 "Diese strapazierfähigen Stiefel sind dazu gemacht, ein Leben lang zu halten. "
 "Wie lange das auch immer sein mag..."
 
-#: ../scourge_data/config/armor.cfg:999
+#: ../scourge_data/config/armor.cfg:1001
 msgid "Leather boots"
 msgstr "Lederstiefel"
 
-#: ../scourge_data/config/armor.cfg:1007
+#: ../scourge_data/config/armor.cfg:1009
 msgid "A nice pair of leather boots"
 msgstr "Ein schönes Paar Lederstiefel"
 
-#: ../scourge_data/config/armor.cfg:1017
+#: ../scourge_data/config/armor.cfg:1019
 msgid ""
 "Boots made specifically for walking all over other folks. This pair in "
 "particular seems made for battle."
@@ -5166,15 +5170,15 @@ msgstr ""
 "Stiefel, die speziell für das problemlose Laufen auf Anderen konzipiert "
 "sind. Dieses Exemplar scheint für die Schlacht gemacht zu sein."
 
-#: ../scourge_data/config/armor.cfg:1018
+#: ../scourge_data/config/armor.cfg:1020
 msgid "Warboots"
 msgstr "Kampfstiefel"
 
-#: ../scourge_data/config/armor.cfg:1026
+#: ../scourge_data/config/armor.cfg:1028
 msgid "Combat boots with a bad attitude."
 msgstr "Qualitäts-Kampfstiefel"
 
-#: ../scourge_data/config/armor.cfg:1045
+#: ../scourge_data/config/armor.cfg:1047
 msgid ""
 "These blue robes blend its wearer into nearby shadows, granting an "
 "invisibility-like protection."
@@ -5182,15 +5186,15 @@ msgstr ""
 "Diese blaue Robe lässt den Träger in angrenzenden Schatten verschwinden, "
 "wodurch er unsichtbar und gut geschützt ist."
 
-#: ../scourge_data/config/armor.cfg:1046
+#: ../scourge_data/config/armor.cfg:1048
 msgid "Cloak of Safe Passage"
 msgstr "Umhang des Sicheren Durchgangs"
 
-#: ../scourge_data/config/armor.cfg:1055
+#: ../scourge_data/config/armor.cfg:1057
 msgid "You have to look carefully to notice this blue cloak."
 msgstr "Ihr müsst genau hinschauen, um diesen blauen Umhang zu erkennen."
 
-#: ../scourge_data/config/armor.cfg:1066
+#: ../scourge_data/config/armor.cfg:1068
 msgid ""
 "Infused with the hateful spirit of Unamoin, this cloak assists its wearer in "
 "combat, but at a price..."
@@ -5198,15 +5202,15 @@ msgstr ""
 "Durchdrungen vom hasserfüllten Geiste Unamoins, steht dieser Umhang seinem "
 "Träger im Kampf bei, jedoch um einen Preis..."
 
-#: ../scourge_data/config/armor.cfg:1067
+#: ../scourge_data/config/armor.cfg:1069
 msgid "Cloak of Hateful Vengeance"
 msgstr "Umhang der Hasserfüllten Vergeltung"
 
-#: ../scourge_data/config/armor.cfg:1076
+#: ../scourge_data/config/armor.cfg:1078
 msgid "These red robes radiate palpable dread."
 msgstr "Diese rote Robe strahlt eine fühlbare Furcht aus."
 
-#: ../scourge_data/config/armor.cfg:1087
+#: ../scourge_data/config/armor.cfg:1089
 msgid ""
 "This snazzy footwear positively sizzles with magic absorbtion as you tread "
 "the ground. "
@@ -5214,15 +5218,15 @@ msgstr ""
 "Dieses schicke Schuhwerk zischt bei jedem Auftreten förmlich vor "
 "Magieabsorbierung. "
 
-#: ../scourge_data/config/armor.cfg:1088
+#: ../scourge_data/config/armor.cfg:1090
 msgid "Boots of antimagic binding"
 msgstr "Stiefel der Antimagischen Bindung"
 
-#: ../scourge_data/config/armor.cfg:1095
+#: ../scourge_data/config/armor.cfg:1097
 msgid "These boots were made for walking through a magic field."
 msgstr "Diese Stiefel wurden dafür gemacht, magische Felder zu durchschreiten."
 
-#: ../scourge_data/config/armor.cfg:1106
+#: ../scourge_data/config/armor.cfg:1108
 msgid ""
 "This foil wraps tightly around your head and apparently deflects all kinds "
 "of, uh, rays..."
@@ -5230,15 +5234,15 @@ msgstr ""
 "Die Folie liegt eng an Eurem Kopf an und schützt anscheinend vor allen Arten "
 "von, äähm, Strahlen..."
 
-#: ../scourge_data/config/armor.cfg:1107
+#: ../scourge_data/config/armor.cfg:1109
 msgid "Antimagic foil hat"
 msgstr "Antimagischer Folienhut"
 
-#: ../scourge_data/config/armor.cfg:1114
+#: ../scourge_data/config/armor.cfg:1116
 msgid "A piece of metal foil you can wear as a hat."
 msgstr "Ein Stück Metallfolie, das sich als Hut tragen lässt."
 
-#: ../scourge_data/config/armor.cfg:1123
+#: ../scourge_data/config/armor.cfg:1125
 msgid ""
 "The armor is made to conform to the contours of the wearer. You can't help "
 "but admire the mold of its last owner."
@@ -5247,11 +5251,11 @@ msgstr ""
 "kommt nicht umhin, bewundernd die Statur des Vorbesitzers zur Kenntnis zu "
 "nehmen."
 
-#: ../scourge_data/config/armor.cfg:1124
+#: ../scourge_data/config/armor.cfg:1126
 msgid "Antimagic chestplate"
 msgstr "Antimagische Brustplatte"
 
-#: ../scourge_data/config/armor.cfg:1132
+#: ../scourge_data/config/armor.cfg:1134
 msgid "A shape-changing armor that fits creatures of all sizes."
 msgstr ""
 "Eine formveränderliche Rüstung, die sich Kreaturen jeder Größe anpasst."
@@ -7960,9 +7964,12 @@ msgid "Pilgrim to the Temple of Hornaxx"
 msgstr "Pilgert zum Tempel von Hornaxx"
 
 #: ../scourge_data/config/mission.cfg:252
-#, fuzzy
-msgid "Description goes here"
-msgstr "Beschreibung fehlt noch"
+msgid ""
+"The temple of the minor goddess Hornaxx is a popular venue for all kinds of "
+"travelling folks."
+msgstr ""
+"Der Tempel der niederen Gottheit Hornaxx ist ein populärer Treffpunkt aller "
+"Arten reisenden Volkes."
 
 #: ../scourge_data/config/mission.cfg:257
 msgid "Chapter 10: Where Wild Weeds Grow"
