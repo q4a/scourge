@@ -19,10 +19,11 @@
 #include "sdlhandler.h"
  
 #define MENU_ITEM_WIDTH 256
-#define MENU_ITEM_HEIGHT 32
-#define MENU_ITEM_ZOOM 1.5f
+#define MENU_ITEM_HEIGHT 50
+#define MENU_ITEM_ZOOM 1.0f
 #define MENU_ITEM_PARTICLE_ZOOM 1.1f
 #define MAX_PARTICLE_LIFE 50
+#define FONT_OFFSET ( abs( SDLHandler::fontInfos[ Constants::SCOURGE_LARGE_FONT ]->yoffset ) )
 
 TextEffect::TextEffect( Scourge *scourge, int x, int y, char const* text ) {
   this->scourge = scourge;
@@ -56,7 +57,7 @@ void TextEffect::draw() {
   zoom = ( active ? MENU_ITEM_ZOOM * 1.5f : MENU_ITEM_ZOOM );
   glPushMatrix();
   glLoadIdentity();
-  glTranslatef( x + 40, y + 20, 0 );
+  glTranslatef( x + 40, y + FONT_OFFSET, 0 );
   glBindTexture( GL_TEXTURE_2D, texture[0] );
   if( active ) {
     //glColor4f( 1, 0.6f, 0.5f, 1 );
@@ -165,10 +166,10 @@ void TextEffect::buildTextures() {
   glDisable( GL_TEXTURE_2D );
   glColor4f( 0, 0, 0, 0 );
   glBegin( GL_QUADS );
-  glVertex2f( x, y - 20 );
-  glVertex2f( x + width, y - 20 );
-  glVertex2f( x + width, y - 20 + height );
-  glVertex2f( x, y - 20 + height );
+  glVertex2f( x, y - FONT_OFFSET );
+  glVertex2f( x + width, y - FONT_OFFSET );
+  glVertex2f( x + width, y - FONT_OFFSET + height );
+  glVertex2f( x, y - FONT_OFFSET + height );
   glEnd();
   glEnable( GL_TEXTURE_2D );
 
@@ -183,7 +184,7 @@ void TextEffect::buildTextures() {
   glGenTextures(1, texture);    
   glBindTexture(GL_TEXTURE_2D, texture[0]); 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliquÿ a la texture
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // filtre appliquÿ a la texture
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
@@ -202,7 +203,7 @@ void TextEffect::buildTextures() {
   glEnable( GL_TEXTURE_2D );
   glBindTexture( GL_TEXTURE_2D, texture[0] );
   glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 
-                    x, scourge->getSDLHandler()->getScreen()->h - ( y - 20 + height ), 
+                    x, scourge->getSDLHandler()->getScreen()->h - ( y - FONT_OFFSET + height ), 
                     width, height, 0 );
   scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
   glPopMatrix();
