@@ -98,7 +98,7 @@ MainMenu::MainMenu(Scourge *scourge){
   starCount = 200;
   for(int i = 0; i < starCount; i++) {
     star[i].x = Util::dice( scourge->getSDLHandler()->getScreen()->w );
-    star[i].y = Util::pickOne( top, top + 599 - WATER_HEIGHT );
+    star[i].y = Util::pickOne( top, top + 599 - WATER_HEIGHT - 160 );
   }
   // The new style gui  
   int w = 250;
@@ -581,13 +581,13 @@ void MainMenu::drawWater() {
   //glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
   glBegin( GL_QUADS );
   glNormal3f(0.0f, 0.0f, 1.0f);
-  glColor4f(0, 0, 0.1f, 1);
+	glColor4f(0, 0.1f, 0.4f, 1);
   glVertex3f(w, h, 0);
-  glColor4f(0, 0.1f, 0.4f, 1);
-  glVertex3f(w, 0, 0);
-  glColor4f(0, 0.1f, 0.4f, 1);
-  glVertex3f(0, 0, 0);
   glColor4f(0, 0, 0.1f, 1);
+  glVertex3f(w, 0, 0);
+	glColor4f(0, 0, 0.1f, 1);
+  glVertex3f(0, 0, 0);
+  glColor4f(0, 0.1f, 0.4f, 1);
   glVertex3f(0, h, 0);  
   glEnd();
   //glDisable( GL_BLEND );
