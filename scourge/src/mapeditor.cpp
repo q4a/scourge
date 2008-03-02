@@ -116,7 +116,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   itemButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Item" ), true );
 	toggleButtonList.push_back( itemButton );
 	yy += ystep;
-  itemList = new ScrollingList( startx, yy, w - 16, 100, 
+  itemList = new ScrollingList( startx, yy, w - 16, 75, 
                                 scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( itemList );
 	yy += 104;
@@ -125,7 +125,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
 	furnitureButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Furniture" ), true );	
   toggleButtonList.push_back( furnitureButton );
 	yy += ystep;
-	furnitureList = new ScrollingList( startx, yy, w - 16, 100, 
+	furnitureList = new ScrollingList( startx, yy, w - 16, 75, 
 																		 scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( furnitureList );
 	yy += 104;
@@ -163,7 +163,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   creatureButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Creature" ), true );
   toggleButtonList.push_back( creatureButton );
 	yy += ystep;
-  creatureList = new ScrollingList( startx, yy, w - 16, 100, 
+  creatureList = new ScrollingList( startx, yy, w - 16, 75, 
                                     scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( creatureList );
 	yy += 104;
@@ -204,7 +204,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   shapeButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Shape" ), true );
   toggleButtonList.push_back( shapeButton );
 	yy += ystep;
-  shapeList = new ScrollingList( startx, yy, w - 16, 100, 
+  shapeList = new ScrollingList( startx, yy, w - 16, 75, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( shapeList );
 	yy += 104;

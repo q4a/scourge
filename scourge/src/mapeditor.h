@@ -84,7 +84,7 @@ private:
   MapWidget *mapWidget;	
   
   // lists
-  ScrollingList *shapeList, *itemList, *creatureList, *furnitureList;
+  ScrollingList *shapeList, *itemList, *creatureList, *furnitureList, *outdoorTextures;
 	enum { NAME_SIZE = 120 };
 	typedef char NAME[NAME_SIZE];
 	std::string* shapeNames; 
