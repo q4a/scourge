@@ -108,6 +108,16 @@ MapEditor::MapEditor( Scourge *scourge ) {
 	pathButton->setSelected( false );
 	pathButton->setEnabled( false );
 	yy += ystep;
+	
+  rugButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Rug" ), true );
+  toggleButtonList.push_back( rugButton );
+  secretButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, _( "Secret" ), true );
+  toggleButtonList.push_back( secretButton );
+  yy += ystep;
+  trapButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Trap" ), true );
+  toggleButtonList.push_back( trapButton );
+  yy += ystep;
+
 
   // Lists
   vector<Shape*> seen;  
@@ -119,7 +129,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   itemList = new ScrollingList( startx, yy, w - 16, 75, 
                                 scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( itemList );
-	yy += 104;
+	yy += 79;
 	
 
 	furnitureButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Furniture" ), true );	
@@ -128,7 +138,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
 	furnitureList = new ScrollingList( startx, yy, w - 16, 75, 
 																		 scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( furnitureList );
-	yy += 104;
+	yy += 79;
 
 	// separate items from furniture
 	map<string, const RpgItem *> *itemMap = RpgItem::getItemMap();
@@ -166,7 +176,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   creatureList = new ScrollingList( startx, yy, w - 16, 75, 
                                     scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( creatureList );
-	yy += 104;
+	yy += 79;
   map<string, Monster*> *creatureMap = &(Monster::monstersByName);
   creatureNames = new string[ creatureMap->size() ];
   int count = 0;
@@ -207,7 +217,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   shapeList = new ScrollingList( startx, yy, w - 16, 75, 
                                  scourge->getShapePalette()->getHighlightTexture() );
   mainWin->addWidget( shapeList );
-	yy += 104;
+	yy += 79;
 
   map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
   shapeNames = new string[ shapeMap->size() ];
@@ -219,16 +229,6 @@ MapEditor::MapEditor( Scourge *scourge ) {
     }
   }
   shapeList->setLines( count, shapeNames );
-  
-  rugButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Rug" ), true );
-  toggleButtonList.push_back( rugButton );
-  secretButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, _( "Secret" ), true );
-  toggleButtonList.push_back( secretButton );
-  yy += ystep;
-  trapButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Trap" ), true );
-  toggleButtonList.push_back( trapButton );
-  
-  
 
   miniMap = new MiniMap( scourge, true ); 
 }                                                                         
