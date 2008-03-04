@@ -694,83 +694,53 @@ MissionInfoUI::~MissionInfoUI() {
 
 void MissionInfoUI::refresh() {
 	enum { TMP_SIZE = 80, MISSNTXT_SIZE = 3000 }; 
-	char missionText[ MISSNTXT_SIZE ];
-	char tmp[ TMP_SIZE ];
-	int objectiveCount;
+	Color green(0.2f, 0.7f, 0.2f), red(0.7f, 0.2f, 0.2f);
+	char missionText[MISSNTXT_SIZE], tmp[TMP_SIZE];
 	Scourge *scourge = pcUi->getScourge();
-	if( scourge->getSession()->getCurrentMission() ) {
-		snprintf( tmp, TMP_SIZE, _( "Depth: %d out of %d." ), 
-						 ( scourge->getCurrentDepth() + 1 ),
-						 scourge->getSession()->getCurrentMission()->getDepth() );
-		snprintf( missionText, MISSNTXT_SIZE, "%s:|%s|%s", 
-						 scourge->getSession()->getCurrentMission()->getDisplayName(),
-						 tmp,
-						 scourge->getSession()->getCurrentMission()->getDescription() );
-		objectiveCount = 
-			scourge->getSession()->getCurrentMission()->getItemCount() +
-			scourge->getSession()->getCurrentMission()->getCreatureCount();   
-		for(int t = 0; t < scourge->getSession()->getCurrentMission()->getItemCount(); t++) {
-			snprintf( tmp, TMP_SIZE, _( "Find %s" ), scourge->getSession()->getCurrentMission()->getItem(t)->getDisplayName() );
-			objectiveText[t] = tmp;
-			objectiveText[t] += ". ";
-			objectiveText[t] += scourge->getSession()->getCurrentMission()->getItemHandled(t) 
-								? _( "(completed)" ) : _( "(not yet found)" );
-			if(scourge->getSession()->getCurrentMission()->getItemHandled(t)) {
-				missionColor[t].r = 0.2f;
-				missionColor[t].g = 0.7f;
-				missionColor[t].b = 0.2f;
-			} else {
-				missionColor[t].r = 0.7f;
-				missionColor[t].g = 0.2f;
-				missionColor[t].b = 0.2f;
+	Mission* curMission = scourge->getSession()->getCurrentMission();
+
+	if( curMission ) {
+		snprintf( tmp, TMP_SIZE, _("Depth: %d out of %d."), (scourge->getCurrentDepth() + 1), curMission->getDepth() );
+		snprintf( missionText, MISSNTXT_SIZE, "%s:|%s|%s", curMission->getDisplayName(), tmp, curMission->getDescription() );
+
+		for(int t = 0; t < curMission->getItemCount(); t++) {
+			snprintf( tmp, TMP_SIZE, _( "Find %s" ), curMission->getItem(t)->getDisplayName() );
+			if(curMission->getItemHandled(t)) {
+				objectiveText.push_back(tmp + string(". ") + _("(completed)"));
+				missionColor.push_back(green);
+			}
+			else {
+				objectiveText.push_back(tmp + string(". ") + _("(not yet found)"));
+				missionColor.push_back(red);
 			}
 		}
-		int start = scourge->getSession()->getCurrentMission()->getItemCount();
-		for(int t = 0; t < scourge->getSession()->getCurrentMission()->getCreatureCount(); t++) {
-			snprintf( tmp, TMP_SIZE, _( "Vanquish %s." ), scourge->getSession()->getCurrentMission()->getCreature(t)->getDisplayName() );
-			objectiveText[t] = tmp;
-			objectiveText[t] += ". ";
-			objectiveText[t] += scourge->getSession()->getCurrentMission()->getCreatureHandled(t) 
-								? _( "(completed)" ) : _( "(not yet done)" );
-			if(scourge->getSession()->getCurrentMission()->getCreatureHandled(t)) {
-				missionColor[start + t].r = 0.2f;
-				missionColor[start + t].g = 0.7f;
-				missionColor[start + t].b = 0.2f;
-			} else {
-				missionColor[start + t].r = 0.7f;
-				missionColor[start + t].g = 0.2f;
-				missionColor[start + t].b = 0.2f;
+
+		for(int t = 0; t < curMission->getCreatureCount(); t++) {
+			snprintf( tmp, TMP_SIZE, _( "Vanquish %s." ), curMission->getCreature(t)->getDisplayName() );
+			if(curMission->getCreatureHandled(t)) {
+				objectiveText.push_back(tmp + string(". ") + _("(completed)"));
+				missionColor.push_back(green);
+			}
+			else {
+				objectiveText.push_back(tmp + string(". ") + _("(not yet done)"));
+				missionColor.push_back(red);
 			}
 		}
-		start += scourge->getSession()->getCurrentMission()->getCreatureCount();
-		for(int t = objectiveCount; t < MAX_INVENTORY_SIZE; t++) {
-			objectiveText[t].clear();
+
+		if( objectiveText.size() == 0 && curMission->isCompleted()) {
+			objectiveText.push_back(_("Special") + string(". ") + _("(completed)"));
+			missionColor.push_back(green);
 		}
-		if( objectiveCount == 0 ) {
-			objectiveCount = 1;
-			objectiveText[0] = _( "Special" );
-			objectiveText[0] += ". ";
-			objectiveText[0] += scourge->getSession()->getCurrentMission()->isCompleted() 
-								? _( "(completed)" ) : _( "(not yet done)" );
-			if( scourge->getSession()->getCurrentMission()->isCompleted() ) {
-				missionColor[0].r = 0.2f;
-				missionColor[0].g = 0.7f;
-				missionColor[0].b = 0.2f;
-			} else {
-				missionColor[0].r = 0.7f;
-				missionColor[0].g = 0.2f;
-				missionColor[0].b = 0.2f;
-			}
+		else if( objectiveText.size() == 0 ) {
+			objectiveText.push_back(_("Special") + string(". ") + _("(not yet done)"));
+			missionColor.push_back(red);
 		}
 	} else {
-		objectiveCount = 0;
-		strcpy(missionText, _( "No current mission." ) );
-		for(int t = 0; t < MAX_INVENTORY_SIZE; t++) {
-			objectiveText[t] = "";
-		}
+		strncpy(missionText, _( "No current mission." ), MISSNTXT_SIZE );
+		objectiveText.clear();
 	}
 	description->setText( missionText );
-	objectiveList->setLines( objectiveCount, objectiveText, missionColor );
+	objectiveList->setLines( objectiveText.begin(), objectiveText.end(), &missionColor[0] );
 }
 
 void MissionInfoUI::show() {
