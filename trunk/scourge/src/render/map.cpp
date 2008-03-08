@@ -153,10 +153,10 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
               adapter->getScreenWidth(), 
               adapter->getScreenHeight());
 
-  float adjust = (float)viewWidth / 800.0f;
-  this->xpos = (float)(viewWidth) / 2.0f / adjust;
-  this->ypos = (float)(viewHeight) / 2.0f / adjust;
-  this->zpos = 0.0f;  
+  float adjust = static_cast<float>(viewWidth) / 800.0f;
+  this->xpos = static_cast<float>(viewWidth) / 2.0f / adjust;
+  this->ypos = static_cast<float>(viewHeight) / 2.0f / adjust;
+  this->zpos = 0.0f;
 
   this->debugGridFlag = false;
   this->drawGridFlag = false;
@@ -311,9 +311,9 @@ void Map::reset() {
               adapter->getScreenWidth(), 
               adapter->getScreenHeight());
 
-  float adjust = (float)viewWidth / 800.0f;
-  this->xpos = (float)(viewWidth) / 2.0f / adjust;
-  this->ypos = (float)(viewHeight) / 2.0f / adjust;
+  float adjust = static_cast<float>(viewWidth) / 800.0f;
+  this->xpos = static_cast<float>(viewWidth) / 2.0f / adjust;
+  this->ypos = static_cast<float>(viewHeight) / 2.0f / adjust;
   this->zpos = 0.0f;  
 
   this->debugGridFlag = false;
@@ -383,12 +383,12 @@ void Map::setViewArea(int x, int y, int w, int h) {
   viewWidth = w;
   viewHeight = h;
 
-  float adjust = (float)viewWidth / 800.0f;
+  float adjust = static_cast<float>(viewWidth) / 800.0f;
   if( preferences->getKeepMapSize() ) {
-    zoom = (float)adapter->getScreenWidth() / (float)w;
+    zoom = static_cast<float>(adapter->getScreenWidth()) / static_cast<float>(w);
   }
-  xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
-  ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
+  xpos = static_cast<int>(static_cast<float>(viewWidth) / zoom / 2.0f / adjust);
+  ypos = static_cast<int>(static_cast<float>(viewHeight) / zoom / 2.0f / adjust);
 
   refresh();
 }
@@ -396,19 +396,7 @@ void Map::setViewArea(int x, int y, int w, int h) {
 void Map::center(Sint16 x, Sint16 y, bool force) { 
   Sint16 nx = x - mapViewWidth / 2; 
   Sint16 ny = y - mapViewDepth / 2;
-  /*
-  Sint16 nx = x - (int)(((float)mapViewWidth * 
-                         ((float)viewWidth / 
-                          (float)scourge->getSDLHandler()->getScreen()->w)) / 2.0f); 
-  Sint16 ny = y - (int)(((float)mapViewDepth * 
-                         ((float)viewHeight / 
-                          (float)scourge->getSDLHandler()->getScreen()->h)) / 2.0f);
-  */
   if( preferences->getAlwaysCenterMap() || force ) {
-	//  if(scourge->getPreferences()->getAlwaysCenterMap() ||
-	//     abs(this->x - nx) > X_CENTER_TOLERANCE ||
-	//     abs(this->y - ny) > Y_CENTER_TOLERANCE) {
-
     // relocate
     this->x = nx;
     this->y = ny;
@@ -523,44 +511,29 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
     for(int chunkY = chunkStartY; chunkY < chunkEndY; chunkY++) {
 
       // remember the chunk's starting pos.
-      float chunkPosX = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                chunkOffsetX) / DIV;
-      float chunkPosY = (float)((chunkY - chunkStartY) * MAP_UNIT + 
-                                chunkOffsetY) / DIV;
+      float chunkPosX = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) / DIV;
+      float chunkPosY = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
 
       // frustum testing
       //frustum->CalculateFrustum();
-      if(useFrustum && 
-         !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, (float)MAP_UNIT / DIV)) 
+      if(useFrustum && !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, static_cast<float>(MAP_UNIT) / DIV)) 
         continue;
 
 
       // FIXME: works but slow. Use 1 polygon instead (like floor)
       // special cave edge code
-      if( !( forGround || forWater ) && 
-          floorTexWidth > 0 && 
-					!isHeightMapEnabled() &&
-          ( chunkX < 0 || chunkY < 0 ) ) {
+      if( !( forGround || forWater ) && floorTexWidth > 0 && !isHeightMapEnabled() && ( chunkX < 0 || chunkY < 0 ) ) {
         for( int yp = CAVE_CHUNK_SIZE; yp < MAP_UNIT + CAVE_CHUNK_SIZE; yp += CAVE_CHUNK_SIZE ) {
           for( int xp = 0; xp < MAP_UNIT; xp += CAVE_CHUNK_SIZE ) {
-            xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                            xp + chunkOffsetX) / DIV;
-            ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
-                            CAVE_CHUNK_SIZE + 
-                            yp + chunkOffsetY) / DIV;     
-            setupPosition( 0, CAVE_CHUNK_SIZE, 0,
-                           xpos2, ypos2, 0,
-                           pos[0][CAVE_CHUNK_SIZE][0]->shape, NULL, NULL, 
-                           NULL );
+            xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
+            ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - CAVE_CHUNK_SIZE + yp + chunkOffsetY) / DIV;
+            setupPosition( 0, CAVE_CHUNK_SIZE, 0, xpos2, ypos2, 0, pos[0][CAVE_CHUNK_SIZE][0]->shape, NULL, NULL, NULL );
           }
         }
       }
 
-      if( chunkX < 0 || chunkX > MAP_WIDTH / MAP_UNIT ||
-          chunkY < 0 || chunkY > MAP_DEPTH / MAP_UNIT ) continue;
-
-
-
+      if( chunkX < 0 || chunkX > MAP_WIDTH / MAP_UNIT || chunkY < 0 || chunkY > MAP_DEPTH / MAP_UNIT ) 
+        continue;
 
       // store this chunk
       chunks[chunkCount].x = chunkPosX;
@@ -590,8 +563,8 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
       }
 
 			if( ( forGround || forWater ) && rugPos[ chunkX ][ chunkY ].texture > 0 ) {
-				xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) / DIV;
-				ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
+				xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) / DIV;
+				ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
 				drawRug( &rugPos[ chunkX ][ chunkY ], xpos2, ypos2, chunkX, chunkY );
 			}
 
@@ -614,65 +587,40 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
           if(forGround || forWater) {
             shape = floorPositions[posX][posY];
             if(shape) {
-              xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                              xp + chunkOffsetX) / DIV;
-              ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
-                              shape->getDepth() +
-                              yp + chunkOffsetY) / DIV;
+              xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
+              ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) / DIV;
 
               if( forWater ) {
-								drawWaterPosition(posX, posY,
-																	xpos2, ypos2,
-																	shape);      
+								drawWaterPosition(posX, posY, xpos2, ypos2, shape);
               } else {
-                drawGroundPosition(posX, posY,
-																	 xpos2, ypos2,
-																	 shape);      
+                drawGroundPosition(posX, posY, xpos2, ypos2, shape);
               }
             }
           } else {
 
-						if( lightMap[chunkX][chunkY] &&
-								itemPos[posX][posY] && 
-								itemPos[posX][posY]->x == posX &&
-								itemPos[posX][posY]->y == posY ) {
-							
+						if(lightMap[chunkX][chunkY] && itemPos[posX][posY] && 
+								itemPos[posX][posY]->x == posX && itemPos[posX][posY]->y == posY ) {
+
 							shape = itemPos[posX][posY]->shape;
-							
-							xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-															xp + chunkOffsetX) / DIV;
-							ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
-															shape->getDepth() + 
-															yp + chunkOffsetY) / DIV;
-							
-							setupPosition( posX, posY, 0,
-														 xpos2, ypos2, 0,
-														 shape, 
-														 itemPos[posX][posY]->item, 
-														 NULL, NULL, true );
+
+							xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
+							ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) / DIV;
+
+							setupPosition( posX, posY, 0, xpos2, ypos2, 0, shape, itemPos[posX][posY]->item, NULL, NULL, true );
 						}
 
 
             for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-              if(lightMap[chunkX][chunkY] &&
-                 effect[posX][posY][zp] &&
-                 !effect[posX][posY][zp]->isInDelay() ) {
-                xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                xp + chunkOffsetX) / DIV;
-                ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
-                                1 + 
-                                yp + chunkOffsetY) / DIV;
-                zpos2 = (float)(zp) / DIV;
+              if(lightMap[chunkX][chunkY] && effect[posX][posY][zp] && !effect[posX][posY][zp]->isInDelay() ) {
+                xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
+                ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - 1 + yp + chunkOffsetY) / DIV;
+                zpos2 = static_cast<float>(zp) / DIV;
 
-                setupPosition(posX, posY, zp - effect[posX][posY][zp]->z,
-                              xpos2, ypos2, zpos2,
-                              effect[posX][posY][zp]->effect->getShape(), NULL, NULL,
-                              effect[posX][posY][zp]);
+                setupPosition(posX, posY, zp - effect[posX][posY][zp]->z, xpos2, ypos2, zpos2,
+                              effect[posX][posY][zp]->effect->getShape(), NULL, NULL, effect[posX][posY][zp]);
               }
 
-              if(pos[posX][posY][zp] && 
-                 pos[posX][posY][zp]->x == posX &&
-                 pos[posX][posY][zp]->y == posY &&
+              if(pos[posX][posY][zp] && pos[posX][posY][zp]->x == posX && pos[posX][posY][zp]->y == posY &&
                  pos[posX][posY][zp]->z == zp) {
                 shape = pos[posX][posY][zp]->shape;
 
@@ -690,16 +638,11 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 
                     if( debugMd2Shapes ) {
                       // debug
-                      xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                      xp + chunkOffsetX) / DIV;
-                      ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
-                                      shape->getDepth() + 
-                                      yp + chunkOffsetY) / DIV;
-                      zpos2 = (float)(zp) / DIV;
-                      setupPosition(posX, posY, zp,
-                                    xpos2, ypos2, zpos2,
-                                    ((AnimatedShape*)pos[posX][posY][zp]->shape)->getDebugShape(), 
-                                    NULL, NULL, NULL);
+                      xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
+                      ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) / DIV;
+                      zpos2 = static_cast<float>(zp) / DIV;
+                      setupPosition(posX, posY, zp, xpos2, ypos2, zpos2,
+                                    ((AnimatedShape*)pos[posX][posY][zp]->shape)->getDebugShape(), NULL, NULL, NULL);
                       // end debug
                     }
 
@@ -707,14 +650,10 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
                     //xpos2 = (pos[posX][posY][zp]->creature->getX() - (GLfloat)getX()) / DIV;
                     //ypos2 = (pos[posX][posY][zp]->creature->getY() - (GLfloat)getY() - (GLfloat)(shape->getDepth())) / DIV;
 
-                    float xdiff = ( pos[posX][posY][zp]->creature->getX() - (float)(toint(pos[posX][posY][zp]->creature->getX())));
-                    float ydiff = ( pos[posX][posY][zp]->creature->getY() - (float)(toint(pos[posX][posY][zp]->creature->getY())));
-                    xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                    xp + chunkOffsetX +
-                                    xdiff ) / DIV;
-                    ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
-                                    shape->getDepth() + 
-                                    yp + chunkOffsetY + 
+                    float xdiff = ( pos[posX][posY][zp]->creature->getX() - static_cast<float>(toint(pos[posX][posY][zp]->creature->getX())));
+                    float ydiff = ( pos[posX][posY][zp]->creature->getY() - static_cast<float>(toint(pos[posX][posY][zp]->creature->getY())));
+                    xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX + xdiff ) / DIV;
+                    ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY + 
                                     ydiff ) / DIV;
 
 										pos[posX][posY][zp]->heightPos = findMaxHeightPos( pos[posX][posY][zp]->creature->getX(), 
@@ -723,18 +662,13 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 
 
                   } else {
-                    xpos2 = (float)((chunkX - chunkStartX) * MAP_UNIT + 
-                                    xp + chunkOffsetX) / DIV;
-                    ypos2 = (float)((chunkY - chunkStartY) * MAP_UNIT - 
-                                    shape->getDepth() + 
-                                    yp + chunkOffsetY) / DIV;
+                    xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
+                    ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) / DIV;
                   }
-                  zpos2 = (float)(zp) / DIV;
+                  zpos2 = static_cast<float>(zp) / DIV;
 
-                  setupPosition(posX, posY, zp,
-                                xpos2, ypos2, zpos2,
-                                shape, pos[posX][posY][zp]->item, pos[posX][posY][zp]->creature, 
-                                NULL);
+                  setupPosition(posX, posY, zp, xpos2, ypos2, zpos2, shape, pos[posX][posY][zp]->item,
+                                pos[posX][posY][zp]->creature, NULL);
                 }
               }
             }
@@ -828,8 +762,8 @@ void Map::drawWaterPosition(int posX, int posY,
   if( water.find( key ) != water.end() ) {
     glDisable( GL_CULL_FACE );
 
-    float sx = ( (float)MAP_UNIT / (float)WATER_TILE_X ) / DIV;
-    float sy = ( (float)MAP_UNIT / (float)WATER_TILE_Y ) / DIV;
+    float sx = ( static_cast<float>(MAP_UNIT) / static_cast<float>(WATER_TILE_X) ) / DIV;
+    float sy = ( static_cast<float>(MAP_UNIT) / static_cast<float>(WATER_TILE_Y) ) / DIV;
 
     int xp = 0;
     int yp = 0;
@@ -880,7 +814,7 @@ void Map::drawWaterPosition(int posX, int posY,
                    0.5f );
 
 
-        glVertex3f( (float)xp * sx, (float)yp * sy, sz );
+        glVertex3f( static_cast<float>(xp) * sx, static_cast<float>(yp) * sy, sz );
 
         switch( i ) {
         case 0: xp++; break;
@@ -1016,9 +950,9 @@ void Map::preDraw() {
     }
   }
 
-  float adjust = (float)viewWidth / 800.0f;
-  xpos = (int)((float)viewWidth / zoom / 2.0f / adjust);
-  ypos = (int)((float)viewHeight / zoom / 2.0f / adjust);
+  float adjust = static_cast<float>(viewWidth) / 800.0f;
+  xpos = static_cast<int>(static_cast<float>(viewWidth) / zoom / 2.0f / adjust);
+  ypos = static_cast<int>(static_cast<float>(viewHeight) / zoom / 2.0f / adjust);
 
   float oldrot;
 
@@ -1067,9 +1001,7 @@ void Map::preDraw() {
       //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
     } else {
       snprintf(mapDebugStr, DEBUG_SIZE, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
-              (int)currentEffectsMap.size(),
-              (useFrustum ? "*" : ""),
-              chunkCount, ((cex - csx)*(cey - csy)),
+              static_cast<int>(currentEffectsMap.size()), (useFrustum ? "*" : ""), chunkCount, ((cex - csx)*(cey - csy)),
               csx, cex, csy, cey, shapeCount);
     }
     adapter->setDebugStr(mapDebugStr);
@@ -1107,9 +1039,9 @@ void Map::draw() {
   // debugging mouse position
     DrawLater later2;
     later2.shape = shapes->findShapeByName("LAMP_BASE");
-    later2.xpos = ((float)(cursorFlatMapX - getX()) / DIV);
-    later2.ypos = ((float)(cursorFlatMapY - getY()) / DIV);
-    later2.zpos = (float)(0) / DIV;
+    later2.xpos = (static_cast<float>(cursorFlatMapX - getX()) / DIV);
+    later2.ypos = (static_cast<float>(cursorFlatMapY - getY()) / DIV);
+    later2.zpos = static_cast<float>(0) / DIV;
     later2.item = NULL;
     later2.creature = NULL;
     later2.name = 0;
@@ -1121,9 +1053,9 @@ void Map::draw() {
     doDrawShape(&later2);
 
     //later2.shape = shapes->findShapeByName("LAMP_BASE");
-    //later2.xpos = ((float)(debugX - getX()) / DIV);
-    //later2.ypos = ((float)(debugY - getY()) / DIV);
-    //later2.zpos = (float)(debugZ) / DIV;
+    //later2.xpos = (static_cast<float>(debugX - getX()) / DIV);
+    //later2.ypos = (static_cast<float>(debugY - getY()) / DIV);
+    //later2.zpos = static_cast<float>(debugZ) / DIV;
     //doDrawShape(&later2);
 #endif
 
@@ -1138,7 +1070,7 @@ void Map::draw() {
       glEnable(GL_STENCIL_TEST);
       glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
       glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
-      
+
       // cave floor and map editor bottom (so cursor shows)
       if( settings->isGridShowing() || floorTexWidth > 0 || isHeightMapEnabled() ) {
 				renderFloor();
@@ -1174,7 +1106,7 @@ void Map::draw() {
       glDisable(GL_STENCIL_TEST); 
     } else {
       // draw the ground  
-      setupShapes(true, false);             
+      setupShapes(true, false);
 
       /*
       // -------------------------------------------
@@ -1220,8 +1152,7 @@ void Map::draw() {
         if( other[i].creature && other[i].creature == adapter->getPlayer() ) 
           playerDrawLater = &(other[i]);
       }
-      if(selectedDropTarget && 
-         ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
+      if(selectedDropTarget && ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
           (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
         colorAlreadySet = true;
         glColor4f(0, 1, 1, 1);
@@ -1233,16 +1164,14 @@ void Map::draw() {
 			if( !helper->drawShadow() ) {
 				if( other[i].creature ) {
 					glColor4f( 0.04f, 0, 0.07f, 0.4f );
-					drawGroundTex( outdoorShadow,
-												 other[i].creature->getX() + 0.25f,
-												 other[i].creature->getY() + 0.25f,
+					drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f,
 												 ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f,
 												 other[i].creature->getShape()->getDepth() * 0.7f );
 				} else if( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
 					glColor4f( 0.04f, 0, 0.07f, 0.4f );
 					drawGroundTex( outdoorShadowTree,
-												 (float)other[i].pos->x - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ),
-												 (float)other[i].pos->y + ( other[i].shape->getDepth() / 2.0f ),
+												 static_cast<float>(other[i].pos->x) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ),
+												 static_cast<float>(other[i].pos->y) + ( other[i].shape->getDepth() / 2.0f ),
 												 other[i].shape->getWidth() * 1.7f,
 												 other[i].shape->getDepth() * 1.7f );
 				}
@@ -1256,17 +1185,15 @@ void Map::draw() {
         sortShapes( playerDrawLater, stencil, stencilCount );
         resortShapes = false;
       }
-      
+
       // draw walls behind the player
       for( int i = 0; i < stencilCount; i++ ) if( !(stencil[i].inFront) ) doDrawShape( &(stencil[i]) );
 
       // draw walls in front of the player and water effects
       glEnable( GL_BLEND );
-      glDepthMask(GL_FALSE);        
-      if( hasWater && 
-          preferences->getStencilbuf() &&
-          preferences->getStencilBufInitialized() ) {
-        
+      glDepthMask(GL_FALSE);
+      if( hasWater && preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
+
         // stencil out the transparent walls (and draw them)
         //glDisable(GL_DEPTH_TEST);
         //glColorMask(0,0,0,0);
@@ -1294,8 +1221,8 @@ void Map::draw() {
         glDisable(GL_TEXTURE_2D);
         glBlendFunc( GL_ONE, GL_SRC_COLOR );
         setupShapes(false, true);
-        glEnable(GL_TEXTURE_2D);      
-                
+        glEnable(GL_TEXTURE_2D);
+
         glDisable(GL_STENCIL_TEST); 
       } else {
         // draw transp. walls and water w/o stencil buffer
@@ -1312,7 +1239,7 @@ void Map::draw() {
           glDisable(GL_TEXTURE_2D);
           glBlendFunc( GL_ONE, GL_SRC_COLOR );
           setupShapes(false, true);
-          glEnable(GL_TEXTURE_2D);      
+          glEnable(GL_TEXTURE_2D);
         }
       }
       glDisable( GL_BLEND );
@@ -1320,8 +1247,9 @@ void Map::draw() {
 
     } else {
       // no player; just draw the damn walls
-      for( int i = 0; i < stencilCount; i++ ) doDrawShape( &(stencil[i]) );
-      
+      for( int i = 0; i < stencilCount; i++ )
+        doDrawShape( &(stencil[i]) );
+
       // draw water (has to come after walls to look good)
       if( hasWater ) {
         glEnable(GL_BLEND);  
@@ -1330,7 +1258,7 @@ void Map::draw() {
         glBlendFunc( GL_ONE, GL_SRC_COLOR );
         setupShapes(false, true);
         glDisable(GL_BLEND);
-        glEnable(GL_TEXTURE_2D);      
+        glEnable(GL_TEXTURE_2D);
         glDepthMask(GL_TRUE);
       }
     }
@@ -1348,22 +1276,23 @@ void Map::draw() {
     for(int i = 0; i < damageCount; i++) {
       doDrawShape(&damage[i], 1);
     }
-    
+
     // draw the fog of war or shading
 #ifdef USE_LIGHTING
-    if( helper ) helper->draw( getX(), getY(), MVW, MVD );
+    if( helper )
+			helper->draw( getX(), getY(), MVW, MVD );
 #endif
 
     glDisable(GL_BLEND);
 
-    glDepthMask(GL_TRUE);    
+    glDepthMask(GL_TRUE);
 
     drawProjectiles();
   }
 
   // find the map floor coordinate (must be done after drawing is complete)
 	if( !selectMode ) {
-		getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );    
+		getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
 		cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
 		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
 	}
@@ -1381,13 +1310,12 @@ void Map::willDrawGrid() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
 	// draw the starting position
-	float xpos2 = (float)( this->startx - getX() ) / DIV;
-	float ypos2 = (float)( this->starty - getY() - 1 ) / DIV;
+	float xpos2 = static_cast<float>( this->startx - getX() ) / DIV;
+	float ypos2 = static_cast<float>( this->starty - getY() - 1 ) / DIV;
 	float zpos2 = 0.0f / DIV;
 	float w = 2.0f /  DIV;
 	float h = 4.0f /  DIV;
-	if( useFrustum && 
-			frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w / DIV ) ) {
+	if( useFrustum && frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w / DIV ) ) {
 		for( int i = 0; i < 2; i++ ) {
 			glPushMatrix();
 			glTranslatef( xpos2, ypos2, zpos2 );
@@ -1414,8 +1342,6 @@ void Map::willDrawGrid() {
 			glVertex3f( 0, 0, 0 );
 			glVertex3f( w, -w, h );
 			glVertex3f( w, w, h );
-
-
 
 
 			glVertex3f( 0, 0, h * 2 );
@@ -1447,13 +1373,12 @@ void Map::willDrawGrid() {
 
 	for(int i = 0; i < chunkCount; i++) {
 
-		float n = (float)MAP_UNIT / DIV;
+		float n = static_cast<float>(MAP_UNIT) / DIV;
 
 		glPushMatrix();
 		glTranslatef( chunks[i].x, chunks[i].y - ( 1.0f / DIV ), 0 );
 
-		if( chunks[i].cx == chunkX &&
-				chunks[i].cy == chunkY ) {
+		if( chunks[i].cx == chunkX && chunks[i].cy == chunkY ) {
 			glColor4f( 0,1,0,0.25f );
 			glLineWidth( 5 );
 		} else {
@@ -1472,12 +1397,12 @@ void Map::willDrawGrid() {
 
 	glPushMatrix();
 
-	float xp = (float)(cursorFlatMapX - getX()) / DIV;
-	float yp = ((float)(cursorFlatMapY - getY()) - 1.0f) / DIV;
-	float cw = (float)cursorWidth / DIV;
-	float cd = -(float)cursorDepth / DIV;
+	float xp = static_cast<float>(cursorFlatMapX - getX()) / DIV;
+	float yp = (static_cast<float>(cursorFlatMapY - getY()) - 1.0f) / DIV;
+	float cw = static_cast<float>(cursorWidth) / DIV;
+	float cd = -static_cast<float>(cursorDepth) / DIV;
 	m = ( cursorZ ? cursorZ : 0.5f ) / DIV;
-	float ch = (float)( cursorHeight + cursorZ ) / DIV;
+	float ch = static_cast<float>( cursorHeight + cursorZ ) / DIV;
 
 	float red = 1.0f;
 	float green = 0.9f;
@@ -1551,94 +1476,85 @@ void Map::willDrawGrid() {
   This is so that even if the wall extends below the player the entire
   length has the same characteristics.
 */
-void Map::sortShapes( DrawLater *playerDrawLater,
-                      DrawLater *shapes,
-                      int shapeCount ) {
-  GLdouble mm[16];
-  glGetDoublev( GL_MODELVIEW_MATRIX, mm );
-  GLdouble pm[16];
-  glGetDoublev( GL_PROJECTION_MATRIX, pm );
-  GLint vp[4];
-  glGetIntegerv( GL_VIEWPORT, vp );
+void Map::sortShapes( DrawLater *playerDrawLater, DrawLater *shapes, int shapeCount ) {
+	GLdouble mm[16];
+	glGetDoublev( GL_MODELVIEW_MATRIX, mm );
+	GLdouble pm[16];
+	glGetDoublev( GL_PROJECTION_MATRIX, pm );
+	GLint vp[4];
+	glGetIntegerv( GL_VIEWPORT, vp );
 
-  GLdouble playerWinX, playerWinY, playerWinZ;
-  gluProject( playerDrawLater->xpos,
-              playerDrawLater->ypos,
-              0,
-              mm, pm, vp,
-              &playerWinX, &playerWinY, &playerWinZ );
+	GLdouble playerWinX, playerWinY, playerWinZ;
+	gluProject( playerDrawLater->xpos, playerDrawLater->ypos, 0, mm, pm, vp, &playerWinX, &playerWinY, &playerWinZ );
 
-  set< int > xset, yset;
-  map< string, bool > cache;
-  GLdouble objX, objY;
-  for(int i = 0; i < shapeCount; i++) {
-	// skip square shapes the first time around
-	if( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
-	  shapes[i].inFront = false;
-	  continue;
-	} else if( shapes[i].shape->getWidth() > shapes[i].shape->getDepth() ) {
-      objX = playerDrawLater->xpos;
-      objY = shapes[i].ypos;
+	set< int > xset, yset;
+	map< string, bool > cache;
+	GLdouble objX, objY;
+	for(int i = 0; i < shapeCount; i++) {
+		// skip square shapes the first time around
+		if( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
+			shapes[i].inFront = false;
+			continue;
+		} else if( shapes[i].shape->getWidth() > shapes[i].shape->getDepth() ) {
+			objX = playerDrawLater->xpos;
+			objY = shapes[i].ypos;
 			yset.insert( toint( shapes[i].ypos ) );
-    } else {
-      objX = shapes[i].xpos;
+		} else {
+			objX = shapes[i].xpos;
 			objY = playerDrawLater->ypos;
 			xset.insert( toint( shapes[i].xpos ) );
-    }
-	shapes[i].inFront = isShapeInFront( playerWinY, objX, objY, &cache, mm, pm, vp);
-  }
-  // now process square shapes: if their x or y lies on a wall-line, they're transparent
-  for(int i = 0; i < shapeCount; i++) {
-	if( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
-	  if( xset.find( toint( shapes[i].xpos ) ) != xset.end() ) {
-		objX = shapes[i].xpos;
-		objY = playerDrawLater->ypos;
-	  } else if( yset.find( toint( shapes[i].ypos ) ) != yset.end() ) {
-		objX = playerDrawLater->xpos;
-		objY = shapes[i].ypos;
-	  } else {
-		continue;
-	  }
-	  shapes[i].inFront = isShapeInFront( playerWinY, objX, objY, &cache, mm, pm, vp);
+		}
+		shapes[i].inFront = isShapeInFront( playerWinY, objX, objY, &cache, mm, pm, vp);
 	}
-  }
+	// now process square shapes: if their x or y lies on a wall-line, they're transparent
+	for(int i = 0; i < shapeCount; i++) {
+		if( shapes[i].shape->getWidth() == shapes[i].shape->getDepth() ) {
+			if( xset.find( toint( shapes[i].xpos ) ) != xset.end() ) {
+				objX = shapes[i].xpos;
+				objY = playerDrawLater->ypos;
+			} else if( yset.find( toint( shapes[i].ypos ) ) != yset.end() ) {
+				objX = playerDrawLater->xpos;
+				objY = shapes[i].ypos;
+			} else {
+				continue;
+			}
+			shapes[i].inFront = isShapeInFront( playerWinY, objX, objY, &cache, mm, pm, vp);
+		}
+	}
 }
 
-bool Map::isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, 
-						  map< string, bool > *cache, 
-						  GLdouble *mm, GLdouble *pm, GLint *vp ) {
-  GLdouble wallWinX, wallWinY, wallWinZ;
-  bool b;
-  char tmp[80];
-  snprintf( tmp, 80, "%f,%f", objX, objY );
-  string key = tmp;
-  if( cache->find( key ) == cache->end() ) {
-	gluProject( objX, objY, 0,
-				mm, pm, vp,
-				&wallWinX, &wallWinY, &wallWinZ );
-	b = ( wallWinY < playerWinY );
-	(*cache)[ key ] = b;
-  } else {
-	b = (*cache)[ key ];
-  }
-  return b;
+bool Map::isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, map< string, bool > *cache, GLdouble *mm, GLdouble *pm, GLint *vp ) {
+
+	GLdouble wallWinX, wallWinY, wallWinZ;
+	bool b;
+	char tmp[80];
+
+	snprintf( tmp, 80, "%f,%f", objX, objY );
+	string key = tmp;
+	if( cache->find( key ) == cache->end() ) {
+		gluProject( objX, objY, 0, mm, pm, vp, &wallWinX, &wallWinY, &wallWinZ );
+		b = ( wallWinY < playerWinY );
+		(*cache)[ key ] = b;
+	} else {
+		b = (*cache)[ key ];
+	}
+	return b;
 }
 
 void Map::drawProjectiles() {
   for( map<RenderedCreature*, vector<RenderedProjectile*>*>::iterator i = RenderedProjectile::getProjectileMap()->begin(); 
-       i != RenderedProjectile::getProjectileMap()->end(); 
-       ++i ) {
+       i != RenderedProjectile::getProjectileMap()->end(); ++i ) {
     //RenderedCreature *creature = i->first;
     vector<RenderedProjectile*> *p = i->second;
-    for (vector<RenderedProjectile*>::iterator e=p->begin(); e!=p->end(); ++e) {
+    for (vector<RenderedProjectile*>::iterator e = p->begin(); e != p->end(); ++e) {
       RenderedProjectile *proj = *e;
-            
+
       // calculate the path
       vector<CVector3> path;
 			for( int i = 0; i < proj->getStepCount(); i++ ) {
 				CVector3 v;
-				v.x = ( ( proj->getX( i ) + proj->getRenderer()->getOffsetX() - (float)getX() ) / DIV );
-				v.y = ( ( proj->getY( i ) - proj->getRenderer()->getOffsetY() - (float)getY() - 1.0f ) / DIV );
+				v.x = ( ( proj->getX( i ) + proj->getRenderer()->getOffsetX() - static_cast<float>(getX()) ) / DIV );
+				v.y = ( ( proj->getY( i ) - proj->getRenderer()->getOffsetY() - static_cast<float>(getY()) - 1.0f ) / DIV );
 				v.z = ( proj->getZ( i ) + proj->getRenderer()->getOffsetZ() ) / DIV;
 				path.push_back( v );
 			}
@@ -1648,17 +1564,13 @@ void Map::drawProjectiles() {
 }
 
 void Map::doDrawShape(DrawLater *later, int effect) {
-    doDrawShape(later->xpos, later->ypos, later->zpos, later->shape, later->name, effect, later);
+	doDrawShape(later->xpos, later->ypos, later->zpos, later->shape, later->name, effect, later);
 }
 
-void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, 
-					  GLuint name, int effect, DrawLater *later) {
+void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuint name, int effect, DrawLater *later) {
 
   // fog test for creatures
-  if( helper && later && later->creature && 
-      !helper->isVisible( later->pos->x, 
-                          later->pos->y, 
-                          later->creature->getShape() ) ) {
+  if( helper && later && later->creature && !helper->isVisible( later->pos->x, later->pos->y, later->creature->getShape() ) ) {
     return;
   }
 
@@ -1671,7 +1583,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   float heightPos = ( later && later->pos ? later->pos->heightPos / DIV : ( later->effect ? later->effect->heightPos : 0 ) );
   if(useShadow) {
 		// put shadow above the floor a little
-		
+
 		glTranslatef( xpos2, ypos2, ( 0.26f / DIV + heightPos ) );
 		glMultMatrixf(shadowTransformMatrix);
 
@@ -1686,15 +1598,15 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
   } else {
 
     if(shape) shape->setupToDraw();
-		
+
     glTranslatef( xpos2, ypos2, zpos2 + heightPos );
 
-	if( later && later->pos ) {
-	  glTranslatef( later->pos->moveX, later->pos->moveY, later->pos->moveZ );
-	  glRotatef( later->pos->angleX, 1, 0, 0 );
-	  glRotatef( later->pos->angleY, 0, 1, 0 );
-	  glRotatef( later->pos->angleZ, 0, 0, 1 );
-	}
+		if( later && later->pos ) {
+			glTranslatef( later->pos->moveX, later->pos->moveY, later->pos->moveZ );
+			glRotatef( later->pos->angleX, 1, 0, 0 );
+			glRotatef( later->pos->angleY, 0, 1, 0 );
+			glRotatef( later->pos->angleZ, 0, 0, 1 );
+		}
 
 #ifdef DEBUG_SECRET_DOORS    
     if( later && later->pos ) {
@@ -1719,10 +1631,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     if( colorAlreadySet   ) {
       colorAlreadySet = false;
     } else {
-      if(later && later->pos && 
-         isLocked(later->pos->x, 
-                  later->pos->y, 
-                  later->pos->z)) {
+      if(later && later->pos && isLocked(later->pos->x, later->pos->y, later->pos->z)) {
         glColor4f(1, 0.3f, 0.3f, 1.0f);
       } else {
         //glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
@@ -1758,7 +1667,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
     } else if(later->creature->getStateMod(StateMod::possessed)) {
       glColor4f(1.0, 0.3f, 0.8f, 1.0f);    
     }
-    
+
 		// outline mission creatures
     if( adapter->isMissionCreature( later->creature ) ) {
     //if( session->getCurrentMission() &&
@@ -1772,7 +1681,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
 		}
 		shape->draw();
   } else if( later && later->item && !useShadow ) {
-    
+
     if( later->item->isSpecial() ) {
       shape->outline( Constants::SPECIAL_ITEM_COLOR );
     } else if( later->item->isMagicItem() ) {
@@ -1781,141 +1690,130 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape,
       shape->outline( 0.8f, 0.8f, 0.3f );
     }
 
-    if( later && later->pos && 
-        later->pos->outlineColor &&
-        !useShadow ) 
+    if( later && later->pos && later->pos->outlineColor && !useShadow ) 
       shape->outline( later->pos->outlineColor );
     shape->draw();
 
-    
+
 
   } else {
-	if(later) {
-	  bool sides[6];
-	  findOccludedSides( later, sides );
-	  shape->setOccludedSides( sides );
+		if(later) {
+			bool sides[6];
+			findOccludedSides( later, sides );
+			shape->setOccludedSides( sides );
+		}
+		if( later && later->pos && later->pos->outlineColor && !useShadow ) 
+			shape->outline( later->pos->outlineColor );
+		shape->draw();
 	}
-	if( later && later->pos && 
-		later->pos->outlineColor &&
-		!useShadow ) 
-	  shape->outline( later->pos->outlineColor );
-	shape->draw();
-  }
-  glPopName();
-  glPopMatrix();
-  
-  // slow on mac os X
-  // glPopAttrib();
+	glPopName();
+	glPopMatrix();
 
-  if(shape) ((GLShape*)shape)->useShadow = false;
+	// slow on mac os X
+	// glPopAttrib();
+
+	if(shape)
+		((GLShape*)shape)->useShadow = false;
 }
-                                               
-void Map::findOccludedSides( DrawLater *later, bool *sides ) {
-  if( colorAlreadySet || !later || !later->shape || 
-	  !later->shape->isStencil() || 
-	  ( later->shape && isDoor( later->shape ) ) ) {
-	sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = 
-	  sides[Shape::S_SIDE] = sides[Shape::E_SIDE] = 
-	  sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
-	return;
-  }
 
-  sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = 
+void Map::findOccludedSides( DrawLater *later, bool *sides ) {
+	if( colorAlreadySet || !later || !later->shape || !later->shape->isStencil() || ( later->shape && isDoor( later->shape ) ) ) {
+		sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = sides[Shape::S_SIDE] = 
+																sides[Shape::E_SIDE] = sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
+		return;
+	}
+
+	sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = 
 	sides[Shape::S_SIDE] = sides[Shape::E_SIDE] = 
 	sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = false;
 
-  int x, y;
-  Location *pos;
+	int x, y;
+	Location *pos;
+	for( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
+		y = later->y - later->pos->shape->getDepth();
+		pos = getLocation( x, y, later->pos->z );
+		if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
+			sides[Shape::N_SIDE] = true;
+		}
+		
+		y = later->y + 1;
+		pos = getLocation( x, y, later->pos->z );
+		if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
+			sides[Shape::S_SIDE] = true;
+		}
+		
+		if( sides[Shape::N_SIDE] && sides[Shape::S_SIDE] ) {
+			break;
+		}
+	}
+
+
+	for( int y = later->pos->y - later->pos->shape->getDepth() + 1; y <= later->pos->y; y++ ) {
+		x = later->x - 1;
+		pos = getLocation( x, y, later->pos->z );
+		if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
+			sides[Shape::W_SIDE] = true;
+		}
+		
+		x = later->x + later->pos->shape->getWidth();
+		pos = getLocation( x, y, later->pos->z );
+		if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
+			sides[Shape::E_SIDE] = true;
+		}
+		
+		if( sides[Shape::W_SIDE] && sides[Shape::E_SIDE] ) {
+			break;
+		}
+	}
+
+
   for( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
-	y = later->y - later->pos->shape->getDepth();
-	pos = getLocation( x, y, later->pos->z );
-	if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
-	  sides[Shape::N_SIDE] = true;
-	}
-	
-	y = later->y + 1;
-	pos = getLocation( x, y, later->pos->z );
-	if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
-	  	  sides[Shape::S_SIDE] = true;
-	}
-	
-	if( sides[Shape::N_SIDE] && sides[Shape::S_SIDE] ) {
-	  break;
-	}
-  }
-
-
-  for( int y = later->pos->y - later->pos->shape->getDepth() + 1; y <= later->pos->y; y++ ) {
-	x = later->x - 1;
-	pos = getLocation( x, y, later->pos->z );
-	if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
-	  sides[Shape::W_SIDE] = true;
-	}
-	
-	x = later->x + later->pos->shape->getWidth();
-	pos = getLocation( x, y, later->pos->z );
-	if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
-	  sides[Shape::E_SIDE] = true;
-	}
-	
-	if( sides[Shape::W_SIDE] && sides[Shape::E_SIDE] ) {
-	  break;
-	}
-  }
-
-
-  for( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
-	for( int y = later->pos->y - later->pos->shape->getDepth() + 1; !sides[Shape::TOP_SIDE] && y <= later->pos->y; y++ ) {
-	  pos = getLocation( x, y, later->pos->z + later->pos->shape->getHeight() );
-	  if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
-		sides[Shape::TOP_SIDE] = true;
-		break;
-	  }
-	}
+		for( int y = later->pos->y - later->pos->shape->getDepth() + 1; !sides[Shape::TOP_SIDE] && y <= later->pos->y; y++ ) {
+			pos = getLocation( x, y, later->pos->z + later->pos->shape->getHeight() );
+			if( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
+				sides[Shape::TOP_SIDE] = true;
+				break;
+			}
+		}
   }
 }
 
 bool Map::isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
   glPushMatrix();
-  
+
   // Initialize the scene w/o y rotation.
   initMapView(true);
-  
+
   double obj_x = (mapx - getX() + 1) / DIV;
   double obj_y = (mapy - getY() - 2) / DIV;
   double obj_z = 0.0f;
   //double obj_z = mapz / DIV;
   double win_x, win_y, win_z;
-  
+
   double projection[16];
   double modelview[16];
   GLint viewport[4];
-  
+
   glGetDoublev(GL_PROJECTION_MATRIX, projection);
   glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
   glGetIntegerv(GL_VIEWPORT, viewport);
-  
-  int res = gluProject(obj_x, obj_y, obj_z,
-                       modelview,
-                       projection,
-                       viewport,
-                       &win_x, &win_y, &win_z);
-  
+
+  int res = gluProject(obj_x, obj_y, obj_z, modelview, projection, viewport, &win_x, &win_y, &win_z);
+
   glDisable( GL_SCISSOR_TEST );
   glPopMatrix();
-  
+
   if(res) {
     win_y = adapter->getScreenHeight() - win_y;
-    return (win_x >= 0 && win_x < adapter->getScreenWidth() &&
-            win_y >= 0 && win_y < adapter->getScreenHeight());
+    return (win_x >= 0 && win_x < adapter->getScreenWidth() && win_y >= 0 && win_y < adapter->getScreenHeight());
   } return false;
 }
 
 /*
 void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message) {
-  float xpos2 = ((float)(mapx - getX()) / DIV);
-  float ypos2 = ((float)(mapy - getY()) / DIV);
-  float zpos2 = (float)(mapz) / DIV;
+  float xpos2 = (static_cast<float>(mapx - getX()) / DIV);
+  float ypos2 = (static_cast<float>(mapy - getY()) / DIV);
+  float zpos2 = static_cast<float>(mapz) / DIV;
   glTranslatef( xpos2, ypos2, zpos2 + 100);
 
   //glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -1933,12 +1831,10 @@ void Map::initMapView( bool ignoreRot ) {
   glLoadIdentity();
 
   glTranslatef(viewX, viewY, 0);
-  glScissor(viewX, 
-            adapter->getScreenHeight() - (viewY + viewHeight),
-            viewWidth, viewHeight);
+  glScissor(viewX, adapter->getScreenHeight() - (viewY + viewHeight), viewWidth, viewHeight);
   glEnable( GL_SCISSOR_TEST );
   // adjust for screen size
-  float adjust = (float)viewWidth / 800.0f;
+  float adjust = static_cast<float>(viewWidth) / 800.0f;
   glScalef(adjust, adjust, adjust);
 
   glScalef(zoom, zoom, zoom);
@@ -1959,12 +1855,12 @@ void Map::initMapView( bool ignoreRot ) {
   if( settings->isPlayerEnabled() && ( preferences->getAlwaysCenterMap() || mapCenterCreature ) ) {
     RenderedCreature *c = ( mapCenterCreature ? mapCenterCreature : adapter->getPlayer() );
     if( c ) {
-      xdiff = ( c->getX() - (float)( toint( c->getX() ) ) );
-      ydiff = ( c->getY() - (float)( toint( c->getY() ) ) );
+      xdiff = ( c->getX() - static_cast<float>( toint( c->getX() ) ) );
+      ydiff = ( c->getY() - static_cast<float>( toint( c->getY() ) ) );
 		}
   }
-  float startx = -( (float)mapViewWidth / 2.0 + ( mapx - (float)x + xdiff ) ) / DIV;
-  float starty = -( (float)mapViewDepth / 2.0 + ( mapy - (float)y + ydiff ) ) / DIV;
+  float startx = -( static_cast<float>(mapViewWidth) / 2.0 + ( mapx - static_cast<float>(x) + xdiff ) ) / DIV;
+  float starty = -( static_cast<float>(mapViewDepth) / 2.0 + ( mapy - static_cast<float>(y) + ydiff ) ) / DIV;
   float startz = 0.0;
 
   glTranslatef( startx, starty, startz );
@@ -2011,9 +1907,7 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,RenderedCre
 	return moveCreature(x, y, z, nx, ny, nz, newCreature);
 }
 
-Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, 
-                            Sint16 nx, Sint16 ny, Sint16 nz,
-                            RenderedCreature *newCreature) {
+Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Sint16 nx, Sint16 ny, Sint16 nz, RenderedCreature *newCreature) {
 
   // no need to actually move data
   if( x == nx && y == ny && z == nz ) {
@@ -2066,11 +1960,7 @@ Shape *Map::removeFloorPosition(Sint16 x, Sint16 y) {
 	return shape;
 }
 
-Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z, 
-													Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, 
-													Shape *s, 
-													int *newz,
-													bool useItemPos ) {
+Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z, Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, Shape *s, int *newz, bool useItemPos ) {
   int zz = z;
   for(int sx = 0; sx < s->getWidth(); sx++) {
     for(int sy = 0; sy < s->getDepth(); sy++) {
@@ -2121,23 +2011,18 @@ Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z,
 		}
 	}
 
-	if(newz) *newz = zz;
-  return NULL;
+	if(newz)
+		*newz = zz;
+	return NULL;
 }
 
 Location *Map::getPosition(Sint16 x, Sint16 y, Sint16 z) {
-  if(pos[x][y][z] &&
-     ((pos[x][y][z]->shape &&
-      pos[x][y][z]->x == x &&
-      pos[x][y][z]->y == y &&
-      pos[x][y][z]->z == z))) return pos[x][y][z];
+  if(pos[x][y][z] && ((pos[x][y][z]->shape && pos[x][y][z]->x == x && pos[x][y][z]->y == y && pos[x][y][z]->z == z)))
+		return pos[x][y][z];
   return NULL;
 }
 
-void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, 
-                      int effect_type, GLuint duration, 
-                      int width, int height, GLuint delay, 
-                      bool forever, DisplayInfo *di ) {
+void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, int effect_type, GLuint duration, int width, int height, GLuint delay, bool forever, DisplayInfo *di ) {
 
   if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
     cerr << "*** STARTEFFECT out of bounds: pos=" << x << "," << y << "," << z << endl;
@@ -2166,7 +2051,8 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z,
 	effect[x][y][z]->heightPos = findMaxHeightPos( x, y, z );
   currentEffectsMap[ createTripletKey( x, y, z ) ] = effect[x][y][z];
 
-  if( di ) effect[x][y][z]->effect->setDisplayInfo( di );
+  if( di )
+		effect[x][y][z]->effect->setDisplayInfo( di );
 
   // need to do this to make sure effect shows up
   resortShapes = mapChanged = true;
@@ -2180,13 +2066,6 @@ void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
   }
 
   if(effect[x][y][z]) {
-    /*
-    if(effect[x][y][z]->effect) {
-      delete effect[x][y][z]->effect;
-      effect[x][y][z]->effect = NULL;
-    }
-    delete effect[x][y][z];
-    */
     mapMemoryManager->deleteEffectLocation( effect[x][y][z] );
     effect[x][y][z] = NULL;
   }
@@ -2197,13 +2076,6 @@ void Map::removeAllEffects() {
     for( int y = 0; y < MAP_DEPTH; y++ ) {
       for( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
         if( effect[x][y][z] ) {
-          /*
-          if(effect[x][y][z]->effect) {
-            delete effect[x][y][z]->effect;
-            effect[x][y][z]->effect = NULL;
-          }
-          delete effect[x][y][z];
-          */
           mapMemoryManager->deleteEffectLocation( effect[x][y][z] );
           effect[x][y][z] = NULL;
         }
@@ -2251,23 +2123,22 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 				count++;
 			}
 		}
-		if( zz > 0 && count > 0 ) zz /= (float)count;
+		if( zz > 0 && count > 0 ) zz /= static_cast<float>(count);
 	}
 	if( z < zz ) pos = zz;
 	return pos;
 }
 
-void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z, 
-														Shape *shape, 
-														RenderedItem *item, 
-														RenderedCreature *creature ) {
+void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z, Shape *shape, RenderedItem *item, RenderedCreature *creature ) {
 	
 	resortShapes = mapChanged = true;
 	//cerr << "FIXME: Map::setPosition" << endl;
 
 	bool isNonBlockingItem = ( item && !item->isBlocking() && !z && settings->isItemPosEnabled() );
 	Location *p = ( isNonBlockingItem ? itemPos[ x ][ y ] : pos[ x ][ y ][ z ] );
-	if( !p ) p = mapMemoryManager->newLocation();
+	if( !p )
+		p = mapMemoryManager->newLocation();
+
 	p->shape = shape;
 	p->item = item;
 	p->creature = creature;
@@ -2281,27 +2152,18 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	for(int xp = 0; xp < shape->getWidth(); xp++) {
 		for(int yp = 0; yp < shape->getDepth(); yp++) {
 			for(int zp = 0; zp < shape->getHeight(); zp++) {
-				
+
 				// I _hate_ c++... moving secret doors up causes array roll-over problems.
-				if( x + xp < 0 || 
-						y - yp < 0 || 
-						z + zp < 0 ||
-						x + xp >= MAP_WIDTH || 
-						y - yp >= MAP_DEPTH || 
-						z + zp >= MAP_VIEW_HEIGHT ) break;
+				if( x + xp < 0 || y - yp < 0 || z + zp < 0 || x + xp >= MAP_WIDTH || y - yp >= MAP_DEPTH || z + zp >= MAP_VIEW_HEIGHT )
+					break;
 
 				// Either the same old pos reused or nothing there.
 				// If these are not true, we're leaking memory.
 				//assert( pos[x + xp][y - yp][z + zp] == p ||
 								//!( pos[x + xp][y - yp][z + zp] ) );
 
-				if( zp &&
-						pos[x + xp][y - yp][z + zp] && 
-						pos[x + xp][y - yp][z + zp] != p ) {
-					cerr << "error setting position:" << 
-						" x=" << ( x + xp ) <<
-						" y=" << ( y - yp ) <<
-						" z=" << ( z + zp ) <<
+				if( zp && pos[x + xp][y - yp][z + zp] && pos[x + xp][y - yp][z + zp] != p ) {
+					cerr << "error setting position:" << " x=" << ( x + xp ) << " y=" << ( y - yp ) << " z=" << ( z + zp ) <<
 						" shape=" << p->shape->getName() << endl;
 				} else {
 					if( isNonBlockingItem ) 
@@ -2315,35 +2177,27 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 }
 
 void Map::setPosition( Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *di ) {
-  if(shape) {
+	GLShape* gls = dynamic_cast<GLShape*>(shape);
+	if(gls) {
 		
 		setPositionInner( x, y, z, shape, NULL, NULL );
 
-    if( ((GLShape*)shape)->getEffectType() > -1 ) {
+		if( gls->getEffectType() > -1 ) {
 
-      int ex = x + ((GLShape*)shape)->getEffectX();
-      int ey = y - shape->getDepth() - ((GLShape*)shape)->getEffectY();
-      int ez = z + ((GLShape*)shape)->getEffectZ();
+			int ex = x + gls->getEffectX();
+			int ey = y - shape->getDepth() - gls->getEffectY();
+			int ez = z + gls->getEffectZ();
 
-      if( !effect[ex][ey][ez] ) {
-        startEffect( ex, ey, ez,
-                     ((GLShape*)shape)->getEffectType(),
-                     0, 
-                     ((GLShape*)shape)->getEffectWidth(), 
-                     ((GLShape*)shape)->getEffectDepth(), 
-                     0, true, di );
-      }
-    }
-  }
+			if( !effect[ex][ey][ez] ) {
+				startEffect( ex, ey, ez, gls->getEffectType(), 0, gls->getEffectWidth(), gls->getEffectDepth(), 0, true, di );
+			}
+		}
+	}
 }
 
 Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 	Shape *shape = NULL;
-	if(pos[x][y][z] &&
-		 pos[x][y][z]->shape &&
-		 pos[x][y][z]->x == x &&
-		 pos[x][y][z]->y == y &&
-		 pos[x][y][z]->z == z) {
+	if(pos[x][y][z] && pos[x][y][z]->shape && pos[x][y][z]->x == x && pos[x][y][z]->y == y && pos[x][y][z]->z == z) {
 		resortShapes = mapChanged = true;
 		shape = pos[x][y][z]->shape;
 		if( ((GLShape*)shape)->getEffectType() > -1 ) {
@@ -2355,27 +2209,20 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 
 		Location *p = pos[ x ][ y ][ z ];
 
-    for(int xp = 0; xp < shape->getWidth(); xp++) {
-      for(int yp = 0; yp < shape->getDepth(); yp++) {
-        for(int zp = 0; zp < shape->getHeight(); zp++) {
+		for(int xp = 0; xp < shape->getWidth(); xp++) {
+			for(int yp = 0; yp < shape->getDepth(); yp++) {
+				for(int zp = 0; zp < shape->getHeight(); zp++) {
 
-          // I _hate_ c++... moving secret doors up causes array roll-over problems.
-          if( x + xp < 0 || 
-							y - yp < 0 || 
-							z + zp < 0 ||
-              x + xp >= MAP_WIDTH || 
-							y - yp >= MAP_DEPTH || 
-							z + zp >= MAP_VIEW_HEIGHT ) break;
+					// I _hate_ c++... moving secret doors up causes array roll-over problems.
+					if( x + xp < 0 || y - yp < 0 || z + zp < 0 || x + xp >= MAP_WIDTH || y - yp >= MAP_DEPTH || z + zp >= MAP_VIEW_HEIGHT )
+						break;
 
 					// Assert we're dealing with the right shape
 					//assert( pos[ x + xp ][ y - yp ][ z + zp ] == p );
 					if( pos[ x + xp ][ y - yp ][ z + zp ] != p ) {
-						cerr << "Error removing position:" <<
-							" x=" << ( x + xp ) << 
-							" y=" << ( y - yp ) << 
-							" z=" << ( z + zp ) << endl;
+						cerr << "Error removing position:" << " x=" << ( x + xp ) << " y=" << ( y - yp ) << " z=" << ( z + zp ) << endl;
 					} else {
-						pos[ x + xp ][ y - yp ][ z + zp ] = NULL;          
+						pos[ x + xp ][ y - yp ][ z + zp ] = NULL;
 					}
         }
       }
@@ -2389,10 +2236,7 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 
 Shape *Map::removeItemPosition( Sint16 x, Sint16 y ) {
 	Shape *shape = NULL;
-	if( itemPos[x][y] &&
-			itemPos[x][y]->shape &&
-			itemPos[x][y]->x == x &&
-			itemPos[x][y]->y == y ) {
+	if( itemPos[x][y] && itemPos[x][y]->shape && itemPos[x][y]->x == x && itemPos[x][y]->y == y ) {
 		resortShapes = mapChanged = true;
 		shape = itemPos[x][y]->shape;
 		if( ((GLShape*)shape)->getEffectType() > -1 ) {
@@ -2404,23 +2248,19 @@ Shape *Map::removeItemPosition( Sint16 x, Sint16 y ) {
 
 		Location *p = itemPos[ x ][ y ];
 
-    for(int xp = 0; xp < shape->getWidth(); xp++) {
-      for(int yp = 0; yp < shape->getDepth(); yp++) {
+		for(int xp = 0; xp < shape->getWidth(); xp++) {
+			for(int yp = 0; yp < shape->getDepth(); yp++) {
 
 				// I _hate_ c++... moving secret doors up causes array roll-over problems.
-				if( x + xp < 0 || 
-						y - yp < 0 || 
-						x + xp >= MAP_WIDTH || 
-						y - yp >= MAP_DEPTH ) break;
+				if( x + xp < 0 || y - yp < 0 || x + xp >= MAP_WIDTH || y - yp >= MAP_DEPTH )
+					break;
 
 				// Assert we're dealing with the right shape
 				//assert( pos[ x + xp ][ y - yp ][ z + zp ] == p );
 				if( itemPos[ x + xp ][ y - yp ] != p ) {
-					cerr << "Error removing item position:" <<
-						" x=" << ( x + xp ) << 
-						" y=" << ( y - yp ) << endl;
+					cerr << "Error removing item position:" << " x=" << ( x + xp ) << " y=" << ( y - yp ) << endl;
 				} else {
-					itemPos[ x + xp ][ y - yp ] = NULL;          
+					itemPos[ x + xp ][ y - yp ] = NULL;
 				}
 			}
 		}
@@ -2434,12 +2274,10 @@ Shape *Map::removeItemPosition( Sint16 x, Sint16 y ) {
 // like getLocation, you can specify any position in the shape to remove it.
 Shape *Map::removeLocation(Sint16 x, Sint16 y, Sint16 z) {
   if( pos[x][y][z] && pos[x][y][z]->shape ) 
-    return removePosition( pos[x][y][z]->x,
-                           pos[x][y][z]->y,
-                           pos[x][y][z]->z );
+    return removePosition( pos[x][y][z]->x, pos[x][y][z]->y, pos[x][y][z]->z );
   else return NULL;
 }
-  
+
 void Map::setItem(Sint16 x, Sint16 y, Sint16 z, RenderedItem *item) {
   if( item && item->getShape() ) {
 		setPositionInner( x, y, z, item->getShape(), item, NULL );
@@ -2492,20 +2330,15 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
 		for( int xp = 0; xp < creature->getShape()->getWidth(); xp++ ) {
 			for( int yp = 0; yp < creature->getShape()->getDepth(); yp++ ) {
 				for( int zp = 0; zp < creature->getShape()->getHeight(); zp++ ) {
-					if( pos[x + xp][y - yp][z + zp] && 
-							pos[x + xp][y - yp][z + zp]->item ) {
+					if( pos[x + xp][y - yp][z + zp] && pos[x + xp][y - yp][z + zp]->item ) {
 						// creature picks up non-blocking item (this is the only way to handle 
 						// non-blocking items. It's also very 'roguelike'.
 						RenderedItem *item = pos[x + xp][y - yp][z + zp]->item;
-						removeItem( pos[x + xp][y - yp][z + zp]->x,
-												pos[x + xp][y - yp][z + zp]->y,
-												pos[x + xp][y - yp][z + zp]->z );
+						removeItem( pos[x + xp][y - yp][z + zp]->x, pos[x + xp][y - yp][z + zp]->y, pos[x + xp][y - yp][z + zp]->z );
 						creature->pickUpOnMap( item );
-						char message[120];  
-						snprintf( message, 120, "%s picks up %s.", 
-										 creature->getName(), 
-										 item->getItemName() );
-						adapter->addDescription( message );        
+						char message[120];
+						snprintf( message, 120, "%s picks up %s.", creature->getName(), item->getItemName() );
+						adapter->addDescription( message );
 					}
 				}
 			}
@@ -2515,13 +2348,9 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
 	}
 }
 
-void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
-													Sint16 ox, Sint16 oy, Sint16 oz,
-													RenderedCreature *creature) {
+void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy, Sint16 oz, RenderedCreature *creature) {
 	Location *p = pos[ox][oy][oz];
-	if( creature && creature->getShape() &&
-			p && p->creature &&
-			p->x == ox && p->y == oy && p->z == oz ) {
+	if( creature && creature->getShape() && p && p->creature && p->x == ox && p->y == oy && p->z == oz ) {
 		resortShapes = mapChanged = true;
 
 		// remove the old pos
@@ -2535,7 +2364,8 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
 					tmp[xp][yp][zp] = pos[oldX][oldY][oldZ];
 					tmp[xp][yp][zp]->outlineColor = NULL;
 					pos[oldX][oldY][oldZ] = NULL;
-					if (!(tmp[xp][yp][zp]))	cerr << "*** tmp is null!" << endl;
+					if (!(tmp[xp][yp][zp]))
+						cerr << "*** tmp is null!" << endl;
 				}
 			}
 		}
@@ -2548,27 +2378,23 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
 				for (int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
 					int newX = nx + xp;
 					int newY = ny - yp;
-					int newZ = nz + zp;            
+					int newZ = nz + zp;
 
 					if (pos[newX][newY][newZ]) {
 						if (pos[newX][newY][newZ]->item) {
 							// creature picks up non-blocking item (this is the only way to handle 
 							// non-blocking items. It's also very 'roguelike'.)
 							RenderedItem *item = pos[newX][newY][newZ]->item;
-							removeItem(pos[newX][newY][newZ]->x,
-												 pos[newX][newY][newZ]->y,
-												 pos[newX][newY][newZ]->z);
+							removeItem(pos[newX][newY][newZ]->x, pos[newX][newY][newZ]->y, pos[newX][newY][newZ]->z);
 							creature->pickUpOnMap(item);
 							char message[120];
-							snprintf(message, 120, "%s picks up %s.", 
-											creature->getName(), 
-											item->getItemName());
+							snprintf(message, 120, "%s picks up %s.", creature->getName(), item->getItemName());
 							adapter->addDescription(message);
 						} else {
 							cerr << "*** Error: when moving " << creature->getName() << " path contained a non-item position." << endl;
 						}
 					}
-				}    
+				}
 			}
 		}
 
@@ -2578,10 +2404,10 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
 				for (int zp = 0; zp < creature->getShape()->getHeight(); zp++) {
 					int newX = nx + xp;
 					int newY = ny - yp;
-					int newZ = nz + zp;            
+					int newZ = nz + zp;
 
 					// copy
-					pos[newX][newY][newZ] = tmp[xp][yp][zp];              
+					pos[newX][newY][newZ] = tmp[xp][yp][zp];
 					pos[newX][newY][newZ]->item = NULL;
 					pos[newX][newY][newZ]->shape = creature->getShape();
 					pos[newX][newY][newZ]->creature = creature;
@@ -2597,93 +2423,101 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
 }
 
 RenderedCreature *Map::removeCreature(Sint16 x, Sint16 y, Sint16 z) {
-  RenderedCreature *creature = ( pos[x][y][z] ? pos[x][y][z]->creature : NULL );
+	RenderedCreature *creature = ( pos[x][y][z] ? pos[x][y][z]->creature : NULL );
 	removePosition( x, y, z );
 	return creature;
 }
 
 // FIXME: only uses x,y for now
 // return false if there is any hole in the walls
-bool Map::isWallBetweenShapes(int x1, int y1, int z1,
-							  Shape *shape1,
-							  int x2, int y2, int z2,
-							  Shape *shape2) {
-  for(int x = x1; x < x1 + shape1->getWidth(); x++) {
-	for(int y = y1; y < y1 + shape1->getDepth(); y++) {
-	  for(int xx = x2; xx < x2 + shape2->getWidth(); xx++) {
-		for(int yy = y2; yy < y2 + shape2->getDepth(); yy++) {
-      Shape *shape = isWallBetween(x, y, z1, xx, yy, z2);
-      if( !shape || shape == shape2 ) return false;
+bool Map::isWallBetweenShapes(int x1, int y1, int z1, Shape *shape1, int x2, int y2, int z2, Shape *shape2) {
+	for(int x = x1; x < x1 + shape1->getWidth(); x++) {
+		for(int y = y1; y < y1 + shape1->getDepth(); y++) {
+			for(int xx = x2; xx < x2 + shape2->getWidth(); xx++) {
+				for(int yy = y2; yy < y2 + shape2->getDepth(); yy++) {
+					Shape *shape = isWallBetween(x, y, z1, xx, yy, z2);
+					if( !shape || shape == shape2 )
+						return false;
+				}
+			}
 		}
-	  }
 	}
-  }
-  return true;	  
+	return true;	  
 }
 
 // FIXME: only uses x,y for now
-Shape *Map::isWallBetween(int x1, int y1, int z1,
-                          int x2, int y2, int z2) {
+Shape *Map::isWallBetween(int x1, int y1, int z1, int x2, int y2, int z2) {
 
-  if(x1 == x2 && y1 == y2) return isWall(x1, y1, z1);
-  if(x1 == x2) {
-	if(y1 > y2) SWAP(y1, y2);
-	for(int y = y1; y <= y2; y++) {
-    Shape *shape = isWall(x1, y, z1);
-	  if( shape ) return shape;
+	if(x1 == x2 && y1 == y2)
+		return isWall(x1, y1, z1);
+	if(x1 == x2) {
+		if(y1 > y2)
+			SWAP(y1, y2);
+		for(int y = y1; y <= y2; y++) {
+			Shape *shape = isWall(x1, y, z1);
+			if( shape )
+				return shape;
+		}
+		return false;
 	}
-	return false;
-  }
-  if(y1 == y2) {
-	if(x1 > x2) SWAP(x1, x2);
-	for(int x = x1; x <= x2; x++) {
-    Shape *shape = isWall(x, y1, z1);
-	  if( shape ) return shape;
+	if(y1 == y2) {
+		if(x1 > x2) SWAP(x1, x2);
+		for(int x = x1; x <= x2; x++) {
+			Shape *shape = isWall(x, y1, z1);
+			if( shape )
+				return shape;
+		}
+		return false;
 	}
-	return false;
-  }
-  
 
-  //  fprintf(stderr, "Checking for wall: from: %d,%d to %d,%d\n", x1, y1, x2, y2);
-  Shape *shape = NULL;
-  bool yDiffBigger = (abs(y2 - y1) > abs(x2 - x1));
-  float m = (float)(y2 - y1) / (float)(x2 - x1);
-  int steps = (yDiffBigger ? abs(y2 - y1) : abs(x2 - x1));
-  float x = x1;
-  float y = y1;
-  for(int i = 0; i < steps; i++) {
-	//	fprintf(stderr, "\tat=%f,%f\n", x, y);
-    Shape *ss = isWall((int)x, (int)y, z1);
-	if( ss ) {
-	  //fprintf(stderr, "wall at %f, %f\n", x, y);
-	  shape = ss;
-	  break;
+
+	//  fprintf(stderr, "Checking for wall: from: %d,%d to %d,%d\n", x1, y1, x2, y2);
+	Shape *shape = NULL;
+	bool yDiffBigger = (abs(y2 - y1) > abs(x2 - x1));
+	float m = static_cast<float>(y2 - y1) / static_cast<float>(x2 - x1);
+	int steps = (yDiffBigger ? abs(y2 - y1) : abs(x2 - x1));
+	float x = x1;
+	float y = y1;
+	for(int i = 0; i < steps; i++) {
+		Shape *ss = isWall(static_cast<int>(x), static_cast<int>(y), z1);
+		if( ss ) {
+			shape = ss;
+			break;
+		}
+		if(yDiffBigger) {
+			if(y1 < y2)
+				y += 1.0f;
+			else
+				y -= 1.0f;
+
+			if(x1 < x2)
+				x += 1.0f / abs(static_cast<int>(m));
+			else
+				x += -1.0f / abs(static_cast<int>(m));
+		} else {
+			if(x1 < x2)
+				x += 1.0f;
+			else
+				x -= 1.0f;
+
+			if(y1 < y2)
+				y += abs(static_cast<int>(m));
+			else
+				y += -1.0 * abs(static_cast<int>(m));
+		}
 	}
-	if(yDiffBigger) {
-	  if(y1 < y2) y += 1.0f;
-	  else y -= 1.0f;
-	  if(x1 < x2) x += 1.0f / abs((int)m);
-	  else x += -1.0f / abs((int)m);
-	} else {
-	  if(x1 < x2) x += 1.0f;
-	  else x -= 1.0f;
-	  if(y1 < y2) y += abs((int)m);
-	  else y += -1.0 * abs((int)m);
-	}
-  }
-  //  fprintf(stderr, "wall in between? %s\n", (ret ? "TRUE": "FALSE"));
-  return shape;
+	//  fprintf(stderr, "wall in between? %s\n", (ret ? "TRUE": "FALSE"));
+	return shape;
 }
 
 Shape *Map::isWall(int x, int y, int z) {
-  Location *loc = getLocation((int)x, (int)y, z);
-  return( loc && 
-          (!loc->item || loc->item->getShape() != loc->shape) && 
-          (!loc->creature || loc->creature->getShape() != loc->shape) ? loc->shape : NULL );
-}                             
+	Location *loc = getLocation(static_cast<int>(x), static_cast<int>(y), z);
+	return( loc && (!loc->item || loc->item->getShape() != loc->shape) && 
+					(!loc->creature || loc->creature->getShape() != loc->shape) ? loc->shape : NULL );
+}
 
 bool Map::shapeFits(Shape *shape, int x, int y, int z) {
-  for( int tx = 0; tx < shape->getWidth(); tx++ ) {
+	for( int tx = 0; tx < shape->getWidth(); tx++ ) {
 		for( int ty = 0; ty < shape->getDepth(); ty++ ) {
 			for( int tz = 0; tz < shape->getHeight(); tz++ ) {
 				if( getLocation( x + tx, y - ty, z + tz ) ) {
@@ -2692,151 +2526,147 @@ bool Map::shapeFits(Shape *shape, int x, int y, int z) {
 			}
 		}
 	}
-  return true;
+	return true;
 }
 
 // FIXME: only uses x, y for now
 Location *Map::getBlockingLocation(Shape *shape, int x, int y, int z) {
-  for(int tx = 0; tx < shape->getWidth(); tx++) {
-	for(int ty = 0; ty < shape->getDepth(); ty++) {
-	  Location *loc = getLocation(x + tx, y - ty, 0);
-	  if(loc) return loc;
+	for(int tx = 0; tx < shape->getWidth(); tx++) {
+		for(int ty = 0; ty < shape->getDepth(); ty++) {
+			Location *loc = getLocation(x + tx, y - ty, 0);
+			if(loc)
+				return loc;
+		}
 	}
-  }
-  return NULL;
+	return NULL;
 }
 
 /**
-   Return the drop location, or NULL if none
+ * Return the drop location, or NULL if none
  */
 Location *Map::getDropLocation(Shape *shape, int x, int y, int z) {
-  for(int tx = 0; tx < shape->getWidth(); tx++) {
-	for(int ty = 0; ty < shape->getDepth(); ty++) {
-	  Location *loc = getLocation(x + tx, y - ty, z);
-	  if(loc) {
-		return loc;
-	  }
+	for(int tx = 0; tx < shape->getWidth(); tx++) {
+		for(int ty = 0; ty < shape->getDepth(); ty++) {
+			Location *loc = getLocation(x + tx, y - ty, z);
+			if(loc) {
+				return loc;
+			}
+		}
 	}
-  }
-  return NULL;
+	return NULL;
 }
 
 // the world has changed...
 void Map::configureLightMap() {
-  lightMapChanged = false;
+	lightMapChanged = false;
 
-  // draw nothing at first
-  for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
-    for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
-      lightMap[x][y] = ( LIGHTMAP_ENABLED && settings->isLightMapEnabled() ? 0 : 1 );
-    }
-  }
-  if( !( LIGHTMAP_ENABLED && settings->isLightMapEnabled() ) ) return;
+	// draw nothing at first
+	for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
+		for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+			lightMap[x][y] = ( LIGHTMAP_ENABLED && settings->isLightMapEnabled() ? 0 : 1 );
+		}
+	}
+	if( !( LIGHTMAP_ENABLED && settings->isLightMapEnabled() ) )
+		return;
 
-  int chunkX = (toint(adapter->getPlayer()->getX()) + 
-                (adapter->getPlayer()->getShape()->getWidth() / 2) - 
-                MAP_OFFSET) / MAP_UNIT;
-  int chunkY = (toint(adapter->getPlayer()->getY()) - 
-                (adapter->getPlayer()->getShape()->getDepth() / 2) - 
-                MAP_OFFSET) / MAP_UNIT;
+	int chunkX = (toint(adapter->getPlayer()->getX()) + (adapter->getPlayer()->getShape()->getWidth() / 2) - MAP_OFFSET) / MAP_UNIT;
+	int chunkY = (toint(adapter->getPlayer()->getY()) - (adapter->getPlayer()->getShape()->getDepth() / 2) - MAP_OFFSET) / MAP_UNIT;
 
-  traceLight(chunkX, chunkY, lightMap, false);
+	traceLight(chunkX, chunkY, lightMap, false);
 }
 
 bool Map::isPositionAccessible(int atX, int atY) {
-  // interpret the results: see if the target is "in light"
-  int chunkX = (atX - MAP_OFFSET) / MAP_UNIT;
-  int chunkY = (atY - MAP_OFFSET) / MAP_UNIT;
-  return (accessMap[chunkX][chunkY] != 0);
+	// interpret the results: see if the target is "in light"
+	int chunkX = (atX - MAP_OFFSET) / MAP_UNIT;
+	int chunkY = (atY - MAP_OFFSET) / MAP_UNIT;
+	return (accessMap[chunkX][chunkY] != 0);
 }
 
 void Map::configureAccessMap(int fromX, int fromY) {
-  // create the access map
-  for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
-    for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
-      accessMap[x][y] = 0;
-    }
-  }
-  int chunkX = (fromX - MAP_OFFSET) / MAP_UNIT;
-  int chunkY = (fromY - MAP_OFFSET) / MAP_UNIT;
-  traceLight(chunkX, chunkY, accessMap, true);
+	// create the access map
+	for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
+		for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+			accessMap[x][y] = 0;
+		}
+	}
+	int chunkX = (fromX - MAP_OFFSET) / MAP_UNIT;
+	int chunkY = (fromY - MAP_OFFSET) / MAP_UNIT;
+	traceLight(chunkX, chunkY, accessMap, true);
 }
 
 void Map::traceLight(int chunkX, int chunkY, int lm[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT], bool onlyLockedDoors) {
-  if(chunkX < 0 || chunkX >= MAP_WIDTH / MAP_UNIT ||
-	 chunkY < 0 || chunkY >= MAP_DEPTH / MAP_UNIT)
-	return;
+	if(chunkX < 0 || chunkX >= MAP_WIDTH / MAP_UNIT || chunkY < 0 || chunkY >= MAP_DEPTH / MAP_UNIT)
+		return;
 
-  // already visited?
-  if(lm[chunkX][chunkY]) return;
+	// already visited?
+	if(lm[chunkX][chunkY])
+		return;
 
-  // let there be light
-  lm[chunkX][chunkY] = 1;
-  
-  // can we go N?
-  int x, y;
-  bool blocked = false;
-  x = chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
-  for(y = chunkY * MAP_UNIT + MAP_OFFSET - (MAP_UNIT / 2);
-	  y < chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
-	  y++) {
-   	if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
-	  blocked = true;
-	  break;
+	// let there be light
+	lm[chunkX][chunkY] = 1;
+
+	// can we go N?
+	int x, y;
+	bool blocked = false;
+	x = chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+	for(y = chunkY * MAP_UNIT + MAP_OFFSET - (MAP_UNIT / 2); y < chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2); y++) {
+		if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
+			blocked = true;
+			break;
+		}
 	}
-  }
-  if(!blocked) traceLight(chunkX, chunkY - 1, lm, onlyLockedDoors);
-  
+	if(!blocked)
+		traceLight(chunkX, chunkY - 1, lm, onlyLockedDoors);
+
   // can we go E?
-  blocked = false;
-  y = chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
-  for(x = chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
-	  x < chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2) + MAP_UNIT;
-	  x++) {
-	if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
-	  blocked = true;
-	  break;
+	blocked = false;
+	y = chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+	for(x = chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2); x < chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2) + MAP_UNIT; x++) {
+		if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
+			blocked = true;
+			break;
+		}
 	}
-  }
-  if(!blocked) traceLight(chunkX + 1, chunkY, lm, onlyLockedDoors);
-  
-  // can we go S?
-  blocked = false;
-  x = chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
-  for(y = chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
-	  y < chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2) + MAP_UNIT;
-	  y++) {
-	if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
-	  blocked = true;
-	  break;
+	if(!blocked)
+		traceLight(chunkX + 1, chunkY, lm, onlyLockedDoors);
+
+	// can we go S?
+	blocked = false;
+	x = chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+	for(y = chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2); y < chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2) + MAP_UNIT; y++) {
+		if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
+			blocked = true;
+			break;
+		}
 	}
-  }
-  if(!blocked) traceLight(chunkX, chunkY + 1, lm, onlyLockedDoors);
+	if(!blocked)
+		traceLight(chunkX, chunkY + 1, lm, onlyLockedDoors);
 
   // can we go W?
-  blocked = false;
-  y = chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
-  for(x = chunkX * MAP_UNIT + MAP_OFFSET - (MAP_UNIT / 2);
-	  x < chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
-	  x++) {
-	if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
-	  blocked = true;
-	  break;
+	blocked = false;
+	y = chunkY * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2);
+	for(x = chunkX * MAP_UNIT + MAP_OFFSET - (MAP_UNIT / 2); x < chunkX * MAP_UNIT + MAP_OFFSET + (MAP_UNIT / 2); x++) {
+		if(isLocationBlocked(x, y, 0, onlyLockedDoors)) {
+			blocked = true;
+			break;
+		}
 	}
-  }
-  if(!blocked) traceLight(chunkX - 1, chunkY, lm, onlyLockedDoors);
+	if(!blocked)
+		traceLight(chunkX - 1, chunkY, lm, onlyLockedDoors);
 }
 
 bool Map::isLocationBlocked(int x, int y, int z, bool onlyLockedDoors) {
-  if(x >= 0 && x < MAP_WIDTH && 
-     y >= 0 && y < MAP_DEPTH && 
-		 z >= 0 && z < MAP_VIEW_HEIGHT) {
+	if(x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH && z >= 0 && z < MAP_VIEW_HEIGHT) {
 		Location *pos = getLocation(x, y, z);
-		if(pos == NULL || pos->item || pos->creature) return false;
-    if(onlyLockedDoors && isDoor(x, y)) 
-      return isLocked(pos->x, pos->y, pos->z);
-    if( pos && isSecretDoor( pos ) && pos->z > 0 ) return false;
-    if(!((GLShape*)(pos->shape))->isLightBlocking()) return false;
+
+		if(pos == NULL || pos->item || pos->creature)
+			return false;
+		else if(onlyLockedDoors && isDoor(x, y)) 
+			return isLocked(pos->x, pos->y, pos->z);
+		else if( pos && isSecretDoor( pos ) && pos->z > 0 )
+			return false;
+		else if(!((GLShape*)(pos->shape))->isLightBlocking())
+			return false;
 	}
 	return true;
 }
@@ -2849,44 +2679,44 @@ void Map::drawCube(float x, float y, float z, float r) {
   glVertex3f(r+x, -r+y, r+z);
   glVertex3f(r+x, r+y, r+z);
   glVertex3f(-r+x, r+y, r+z);
-  
+
   // back
   glNormal3f(0.0, 0.0, -1.0);
   glVertex3f(r+x, -r+y, -r+z);
   glVertex3f(-r+x, -r+y, -r+z);
   glVertex3f(-r+x, r+y, -r+z);
   glVertex3f(r+x, r+y, -r+z);
-  
+
   // top
   glNormal3f(0.0, 1.0, 0.0);
   glVertex3f(-r+x, r+y, r+z);
   glVertex3f(r+x, r+y, r+z);
   glVertex3f(r+x, r+y, -r+z);
   glVertex3f(-r+x, r+y, -r+z);
-  
+
   // bottom
   glNormal3f(0.0, -1.0, 0.0);
   glVertex3f(-r+x, -r+y, -r+z);
   glVertex3f(r+x, -r+y, -r+z);
   glVertex3f(r+x, -r+y, r+z);
   glVertex3f(-r+x, -r+y, r+z);
-  
+
   // left
   glNormal3f(-1.0, 0.0, 0.0);
   glVertex3f(-r+x, -r+y, -r+z);
   glVertex3f(-r+x, -r+y, r+z);
   glVertex3f(-r+x, r+y, r+z);
   glVertex3f(-r+x, r+y, -r+z);
-  
+
   // right
   glNormal3f(1.0, 0.0, 0.0);
   glVertex3f(r+x, -r+y, r+z);
   glVertex3f(r+x, -r+y, -r+z);
   glVertex3f(r+x, r+y, -r+z);
   glVertex3f(r+x, r+y, r+z);
-  
+
   glEnd();
-  
+
 }
 
 /**
@@ -2898,7 +2728,7 @@ int Map::getCreaturesInArea(int x, int y, int radius, RenderedCreature *targets[
   int count = 0;
   for(int xx = x - radius; xx < x + radius && xx < MAP_WIDTH; xx++) {
     for(int yy = y - radius; yy < y + radius && yy < MAP_DEPTH; yy++) {
-      Location *loc = pos[xx][yy][0];      
+      Location *loc = pos[xx][yy][0];
       if(loc && loc->creature) {
         bool alreadyFound = false;
         for(int i = 0; i < count; i++) {
@@ -2917,8 +2747,7 @@ int Map::getCreaturesInArea(int x, int y, int radius, RenderedCreature *targets[
 }
 
 bool Map::isDoor(int tx, int ty) {
-  if(tx >= 0 && tx < MAP_WIDTH && 
-     ty >= 0 && ty < MAP_DEPTH) {
+  if(tx >= 0 && tx < MAP_WIDTH && ty >= 0 && ty < MAP_DEPTH) {
     Location *loc = getLocation(tx, ty, 0);
     return(loc && isDoor(loc->shape));
   }
@@ -2926,17 +2755,13 @@ bool Map::isDoor(int tx, int ty) {
 }
 
 bool Map::isDoor(Shape *shape) {
-  return(shape == shapes->findShapeByName("EW_DOOR") ||
-         shape == shapes->findShapeByName("NS_DOOR"));
+  return(shape == shapes->findShapeByName("EW_DOOR") || shape == shapes->findShapeByName("NS_DOOR"));
 }
 
 bool Map::isDoorType( Shape *shape, bool includeCorner ) {
-  return(shape == shapes->findShapeByName("EW_DOOR") ||
-         shape == shapes->findShapeByName("NS_DOOR") ||
-		 shape == shapes->findShapeByName("EW_DOOR_TOP") || 
-		 shape == shapes->findShapeByName("NS_DOOR_TOP") || 
-		 shape == shapes->findShapeByName("DOOR_SIDE") || 
-		 ( includeCorner && shape == shapes->findShapeByName("CORNER") ) );
+  return(shape == shapes->findShapeByName("EW_DOOR") || shape == shapes->findShapeByName("NS_DOOR") ||
+		 shape == shapes->findShapeByName("EW_DOOR_TOP") || shape == shapes->findShapeByName("NS_DOOR_TOP") || 
+		 shape == shapes->findShapeByName("DOOR_SIDE") || ( includeCorner && shape == shapes->findShapeByName("CORNER") ) );
 }
 
 void Map::setLocked( int doorX, int doorY, int doorZ, bool value ) {
@@ -2951,8 +2776,7 @@ int Map::toggleLightMap() {
 } 
 
 bool Map::isLocationVisible(int x, int y) { 
-  return (x >= getX() && x < getX() + mapViewWidth &&
-          y >= getY() && y < getY() + mapViewDepth);
+  return (x >= getX() && x < getX() + mapViewWidth && y >= getY() && y < getY() + mapViewDepth);
 }
 
 bool Map::isLocationInLight( int x, int y, Shape *shape ) {
@@ -3038,8 +2862,8 @@ void Map::moveMap(int dir) {
     if (mapx < 0) mapx = 0;
     //	cerr << "mapx=" << mapx << " mapy=" << mapy << endl;
 
-    x = (int)rint(mapx);
-    y = (int)rint(mapy);
+    x = static_cast<int>(rint(mapx));
+    y = static_cast<int>(rint(mapy));
     //	cerr << "FINAL: x=" << x << " y=" << y << endl;
 
   }
@@ -3068,10 +2892,9 @@ void Map::handleEvent( SDL_Event *event ) {
 		} else if( mouseMove ) {
 			adapter->setCursorVisible( false );
 			int q;
-			moveDelta = sqrt( (float)( event->motion.xrel * event->motion.xrel ) + 
-												(float)( event->motion.yrel * event->motion.yrel ) ) / zoom;
-			Constants::getQuadrantAndAngle( event->motion.xrel, event->motion.yrel, 
-																			&q, &moveAngle );
+			moveDelta = sqrt( static_cast<float>( event->motion.xrel * event->motion.xrel ) + 
+												static_cast<float>( event->motion.yrel * event->motion.yrel ) ) / zoom;
+			Constants::getQuadrantAndAngle( event->motion.xrel, event->motion.yrel, &q, &moveAngle );
 			mouseMoveScreen = true;
 			setMove(Constants::MOVE_UP ); // so move != 0
     } else {
@@ -3099,15 +2922,12 @@ void Map::handleEvent( SDL_Event *event ) {
           setZRot(0.0f);
         }
       }
-      
+
       // highlight the item under the mouse if it's useable
 			//cerr << "pos=" << getCursorMapX() << "," << getCursorMapY() << endl;
       if( getCursorMapX() < MAP_WIDTH ) {
-        Location *pos = getLocation( getCursorMapX(),
-                                     getCursorMapY(),
-                                     getCursorMapZ() );
-				if( !pos ) pos = getItemLocation( getCursorMapX(),
-																					getCursorMapY() );
+        Location *pos = getLocation( getCursorMapX(), getCursorMapY(), getCursorMapZ() );
+				if( !pos ) pos = getItemLocation( getCursorMapX(), getCursorMapY() );
         if( pos && preferences->isOutlineInteractiveItems() ) {
           Color *color = adapter->getOutlineColor( pos );
           if( color ) {
@@ -3116,7 +2936,7 @@ void Map::handleEvent( SDL_Event *event ) {
             lastOutlinedY = pos->y;
             lastOutlinedZ = pos->z;
           }
-        }        
+        }
       }
 
 			if( getCursorFlatMapX() < MAP_WIDTH ) {
@@ -3148,8 +2968,7 @@ void Map::handleEvent( SDL_Event *event ) {
 	case SDL_MOUSEBUTTONUP:
 		adapter->setCursorVisible( true );
 		if( event->button.button ) {
-			if( event->button.button == SDL_BUTTON_MIDDLE ||
-					event->button.button == SDL_BUTTON_RIGHT ) {
+			if( event->button.button == SDL_BUTTON_MIDDLE || event->button.button == SDL_BUTTON_RIGHT ) {
 				mouseRot = false;
 				mouseMove = false;
 				moveDelta = 0;
@@ -3163,38 +2982,38 @@ void Map::handleEvent( SDL_Event *event ) {
   case SDL_KEYDOWN:
   case SDL_KEYUP:
     // xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
-    ea = preferences->getEngineAction(event);    
-    if(ea == SET_MOVE_DOWN){        
+    ea = preferences->getEngineAction(event);
+    if(ea == SET_MOVE_DOWN) {
       setMove(Constants::MOVE_DOWN);
-    } else if(ea == SET_MOVE_UP){
+    } else if(ea == SET_MOVE_UP) {
       setMove(Constants::MOVE_UP);
-    } else if(ea == SET_MOVE_RIGHT){
+    } else if(ea == SET_MOVE_RIGHT) {
       setMove(Constants::MOVE_RIGHT);
-    } else if(ea == SET_MOVE_LEFT){
+    } else if(ea == SET_MOVE_LEFT) {
       setMove(Constants::MOVE_LEFT);
-    } else if(ea == SET_MOVE_DOWN_STOP){        
+    } else if(ea == SET_MOVE_DOWN_STOP) {
       setYRot(0.0f);
       setYRot(0);
       removeMove(Constants::MOVE_DOWN);
-    } else if(ea == SET_MOVE_UP_STOP){
+    } else if(ea == SET_MOVE_UP_STOP) {
       setYRot(0.0f);
       setYRot(0);
       removeMove(Constants::MOVE_UP);
-    } else if(ea == SET_MOVE_RIGHT_STOP){
+    } else if(ea == SET_MOVE_RIGHT_STOP) {
       setYRot(0.0f);
       setZRot(0);
       removeMove(Constants::MOVE_RIGHT);
-    } else if(ea == SET_MOVE_LEFT_STOP){
+    } else if(ea == SET_MOVE_LEFT_STOP) {
       setYRot(0.0f);
       setZRot(0);
       removeMove(Constants::MOVE_LEFT);
-    } else if(ea == SET_ZOOM_IN){
+    } else if(ea == SET_ZOOM_IN) {
       setZoomIn(true);
-    } else if(ea == SET_ZOOM_OUT){
+    } else if(ea == SET_ZOOM_OUT) {
       setZoomOut(true);
-    } else if(ea == SET_ZOOM_IN_STOP){
+    } else if(ea == SET_ZOOM_IN_STOP) {
       setZoomIn(false);
-    } else if(ea == SET_ZOOM_OUT_STOP){
+    } else if(ea == SET_ZOOM_OUT_STOP) {
       setZoomOut(false);
     }
     break;
@@ -3348,9 +3167,7 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 							info->pos[ info->pos_count ]->creature = pos[x][y][z]->creature->save();
 						}
           } else {
-            strncpy( (char*)(info->pos[ info->pos_count ]->shape_name), 
-                     pos[x][y][z]->shape->getName(),
-                     254 );
+            strncpy( (char*)(info->pos[ info->pos_count ]->shape_name), pos[x][y][z]->shape->getName(), 254 );
             info->pos[ info->pos_count ]->shape_name[254] = 0;
           }
 
@@ -3421,13 +3238,7 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 	info->trapCount = (Uint8)trapList.size();
 	for( unsigned int i = 0; i < trapList.size(); i++ ) {
 		Trap trap = trapList[ i ];
-		info->trap[i] = Persist::createTrapInfo( trap.r.x, 
-																						 trap.r.y, 
-																						 trap.r.w, 
-																						 trap.r.h, 
-																						 trap.type, 
-																						 trap.discovered, 
-																						 trap.enabled );
+		info->trap[i] = Persist::createTrapInfo( trap.r.x, trap.r.y, trap.r.w, trap.r.h, trap.type, trap.discovered, trap.enabled );
 	}
 
   string fileName;
@@ -3554,14 +3365,11 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 			} else {
 				ground[ gx ][ gy ] = info->ground[ gx ][ gy ] / 100.0f;
 			}
-			
 		}
 	}
 	if( heightMapEnabled ) {
 		initOutdoorsGroundTexture();
 	}
-
-
 
 	setHasWater( info->hasWater == 1 ? true : false );
 
@@ -3592,21 +3400,20 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 
   GLShape *shape;
 	DisplayInfo di;
-  for( int i = 0; i < (int)info->pos_count; i++ ) {
+  for( int i = 0; i < static_cast<int>(info->pos_count); i++ ) {
 
-    if( info->pos[i]->x >= MAP_WIDTH ||
-        info->pos[i]->y >= MAP_DEPTH ||
-        info->pos[i]->z >= MAP_VIEW_HEIGHT ) {
-      cerr << "*** Skipping invalid map location: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
-      continue;
-    }
+		if( info->pos[i]->x >= MAP_WIDTH || info->pos[i]->y >= MAP_DEPTH || info->pos[i]->z >= MAP_VIEW_HEIGHT ) {
+			cerr << "*** Skipping invalid map location: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
+			continue;
+		}
 
-    if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
-      shape = shapes->
-        findShapeByName( (char*)(info->pos[i]->floor_shape_name), true );
-      if( shape ) setFloorPosition( info->pos[i]->x, info->pos[i]->y, shape );
-      else cerr << "Map::load failed to find floor shape: " << info->pos[i]->floor_shape_name <<
-        " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << endl;
+		if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
+			shape = shapes->findShapeByName( (char*)(info->pos[i]->floor_shape_name), true );
+			if( shape )
+				setFloorPosition( info->pos[i]->x, info->pos[i]->y, shape );
+			else 
+				cerr << "Map::load failed to find floor shape: " << info->pos[i]->floor_shape_name <<
+								" at pos: " << info->pos[i]->x << "," << info->pos[i]->y << endl;
     }
 
 		if( strlen( (char*)(info->pos[i]->item_pos_name) ) || info->pos[i]->item_pos ) {
@@ -3618,70 +3425,70 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 			}
 			if( item ) {
 				setItem( info->pos[i]->x, info->pos[i]->y, 0, item );
-				if( items ) items->push_back( item );
-			} else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << ",0" << endl;
+				if( items )
+					items->push_back( item );
+			} else
+				cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << ",0" << endl;
 		}
 
 		// load the deity locations
 		MagicSchool *ms = NULL;
 		if( strlen( (char*)info->pos[i]->magic_school_name ) ) {
 			ms = MagicSchool::getMagicSchoolByName( (char*)info->pos[i]->magic_school_name );
-      di.red = ms->getDeityRed();
-      di.green = ms->getDeityGreen();
-      di.blue = ms->getDeityBlue();
+			di.red = ms->getDeityRed();
+			di.green = ms->getDeityGreen();
+			di.blue = ms->getDeityBlue();
 		}
 
 		// load the items
-    if( strlen( (char*)( info->pos[i]->item_name ) ) || info->pos[i]->item ) {
+		if( strlen( (char*)( info->pos[i]->item_name ) ) || info->pos[i]->item ) {
 			RenderedItem *item;
 			if( info->reference_type == REF_TYPE_NAME ) {
 				item = adapter->createItem( (char*)( info->pos[i]->item_name ), level, depth );
 			} else {
 				item = adapter->createItem( info->pos[i]->item );
 			}
-      if( item ) {
-        setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
-        if( items ) items->push_back(  item );
-      } else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
-    } else if( strlen( (char*)( info->pos[i]->monster_name ) ) || info->pos[i]->creature ) {
+			if( item ) {
+				setItem( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, item );
+				if( items ) items->push_back(  item );
+			} else cerr << "Map::load failed to item at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
+		} else if( strlen( (char*)( info->pos[i]->monster_name ) ) || info->pos[i]->creature ) {
 			RenderedCreature *creature;
 			if( info->reference_type == REF_TYPE_NAME ) {
 				creature = adapter->createMonster( (char*)( info->pos[i]->monster_name ) );
 			} else {
 				creature = adapter->createMonster( info->pos[i]->creature );
 			}
-      if( creature ) {
-        setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
-        creature->moveTo( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );
-        if( creatures ) creatures->push_back(  creature );
-      } else cerr << "Map::load failed to creature at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
-    } else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
-      shape = shapes->
-        findShapeByName( (char*)(info->pos[i]->shape_name), true );
-      if( shape ) {
-		setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
-		if( settings->isPlayerEnabled() ) {
-		  if( ( goingUp && !strcmp( (char*)info->pos[i]->shape_name, "GATE_DOWN" ) ) ||
-			  ( goingDown && !strcmp( (char*)info->pos[i]->shape_name, "GATE_UP" ) ) ) {
-			float d = ( info->pos[i]->x - adapter->getPlayer()->getX() ) * ( info->pos[i]->x - adapter->getPlayer()->getX() ) +
-			  ( info->pos[i]->y - adapter->getPlayer()->getY() ) * ( info->pos[i]->y - adapter->getPlayer()->getY() );
-			if( start_dist == -1 || d < start_dist ) {
-			  startx = info->pos[i]->x;
-			  starty = info->pos[i]->y;
-			  start_dist = d;
-			  cerr << "LOADMAP: using stairs as starting position. Dist=" << start_dist << endl;
-			}
-		  }
+			if( creature ) {
+				setCreature( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, creature );
+				creature->moveTo( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );
+				if( creatures ) creatures->push_back(  creature );
+			} else cerr << "Map::load failed to creature at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
+		} else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
+			shape = shapes->findShapeByName( (char*)(info->pos[i]->shape_name), true );
+			if( shape ) {
+				setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
+				if( settings->isPlayerEnabled() ) {
+					if( ( goingUp && !strcmp( (char*)info->pos[i]->shape_name, "GATE_DOWN" ) ) ||
+							( goingDown && !strcmp( (char*)info->pos[i]->shape_name, "GATE_UP" ) ) ) {
+						float d = ( info->pos[i]->x - adapter->getPlayer()->getX() ) * ( info->pos[i]->x - adapter->getPlayer()->getX() ) +
+											( info->pos[i]->y - adapter->getPlayer()->getY() ) * ( info->pos[i]->y - adapter->getPlayer()->getY() );
+						if( start_dist == -1 || d < start_dist ) {
+							startx = info->pos[i]->x;
+							starty = info->pos[i]->y;
+							start_dist = d;
+							cerr << "LOADMAP: using stairs as starting position. Dist=" << start_dist << endl;
+						}
+					}
+				}
+			} else
+				cerr << "Map::load failed to find shape: " << info->pos[i]->shape_name <<
+								" at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
 		}
-	  } else cerr << "Map::load failed to find shape: " << info->pos[i]->shape_name <<
-        " at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
-    }
 
     // load the deity locations
 		if( ms ) {
-			Location *pos = getPosition( info->pos[i]->x, 
-																	 info->pos[i]->y, 
-																	 info->pos[i]->z );
+			Location *pos = getPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z );
 			if( !pos ) {
 				cerr << "*** error: Can't find position to place deity!" << endl;
 			} else {
@@ -3692,14 +3499,12 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 
 	// load rugs
 	Rug rug;
-	for( int i = 0; i < (int)info->rug_count; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->rug_count); i++ ) {
 		//rug.angle = info->rugPos[i]->angle / 100.0f;
 		rug.angle = Util::roll( -15.0f, 15.0f ); // fixme?
 		rug.isHorizontal = ( info->rugPos[i]->isHorizontal == 1 );
 		rug.texture = shapes->getRandomRug(); // fixme?
-		setRugPosition( info->rugPos[i]->cx,
-										info->rugPos[i]->cy,
-										&rug );
+		setRugPosition( info->rugPos[i]->cx, info->rugPos[i]->cy, &rug );
 	}
 
 	// load traps
@@ -3709,21 +3514,21 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 		Trap *trap = getTrapLoc( index );
 		trap->discovered = (trapInfo->discovered != 0);
 		trap->enabled = (trapInfo->enabled != 0);
-		trap->type = (int)trapInfo->type;
+		trap->type = static_cast<int>(trapInfo->type);
 	}
 
 	// load doors
-	for( int i = 0; i < (int)info->locked_count; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->locked_count); i++ ) {
 		locked[ info->locked[ i ]->key ] = ( info->locked[ i ]->value == 1 ? true : false );
 	}
-	for( int i = 0; i < (int)info->door_count; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->door_count); i++ ) {
 		doorToKey[ info->door[ i ]->key ] = info->door[ i ]->value;
 		keyToDoor[ info->door[ i ]->value ] = info->door[ i ]->key;
 	}
 
 	// secret doors
-	for( int i = 0; i < (int)info->secret_count; i++ ) {
-		secretDoors[ (int)(info->secret[ i ]->key) ] = ( info->secret[ i ]->value == 1 ? true : false );
+	for( int i = 0; i < static_cast<int>(info->secret_count); i++ ) {
+		secretDoors[ static_cast<int>(info->secret[ i ]->key) ] = ( info->secret[ i ]->value == 1 ? true : false );
 	}
 
   if( report ) report->updateStatus( 4, 7, _( "Finishing map" ) );
@@ -3747,7 +3552,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 	}
   cerr << "Looking for txt file: " << txtfileName.str() << endl;
   adapter->loadMapData( txtfileName.str() );
-  
+
   strcpy( this->name, ( templateMapName ? templateMapName : name.c_str() ) );
 
   if( report ) report->updateStatus( 6, 7, _( "Starting party" ) );
@@ -3798,29 +3603,25 @@ void Map::loadMapLocation( const std::string& name, std::string& result, int *gr
   Persist::loadMapHeader( file, &tmpX, &tmpY );
   delete file;
 
-  *gridX = (int)tmpX;
-  *gridY = (int)tmpY;
+  *gridX = static_cast<int>(tmpX);
+  *gridY = static_cast<int>(tmpY);
 
 	result = _( "Map header loaded: " ) + name;
 }
 
 
 void Map::getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy ) {
-  getMapXYAtScreenXY( adapter->getMouseX(), 
-                      adapter->getMouseY(), 
-                      mapx, 
-                      mapy );
+  getMapXYAtScreenXY( adapter->getMouseX(), adapter->getMouseY(), mapx, mapy );
 }
 
-void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y,
-                             Uint16 *mapx, Uint16 *mapy) {
+void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy) {
   double obj_x, obj_y, obj_z;
-  double win_x = (double)x;
-  double win_y = (double)( adapter->getScreenHeight() - y );
-  
+  double win_x = static_cast<double>(x);
+  double win_y = static_cast<double>( adapter->getScreenHeight() - y );
+
   // get the depth buffer value
   float win_z;
-  glReadPixels( (int)win_x, (int)win_y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &win_z );
+  glReadPixels( static_cast<int>(win_x), static_cast<int>(win_y), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &win_z );
 
   double projection[16];
   double modelview[16];
@@ -3829,20 +3630,16 @@ void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y,
   glGetDoublev(GL_PROJECTION_MATRIX, projection);
   glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
   glGetIntegerv(GL_VIEWPORT, viewport);
-  
-  int res = gluUnProject(win_x, win_y, win_z,
-                         modelview,
-                         projection,
-                         viewport,
-                         &obj_x, &obj_y, &obj_z);
-  
+
+  int res = gluUnProject(win_x, win_y, win_z, modelview, projection, viewport, &obj_x, &obj_y, &obj_z);
+
   if(res) {
     *mapx = getX() + (Uint16)( obj_x * DIV );
     *mapy = getY() + (Uint16)( obj_y * DIV );
 
-    debugX = getX() + (int)( obj_x * DIV );
-    debugY = getY() + (int)( obj_y * DIV );
-    debugZ = (int)( obj_z * DIV );
+    debugX = getX() + static_cast<int>( obj_x * DIV );
+    debugY = getY() + static_cast<int>( obj_y * DIV );
+    debugZ = static_cast<int>( obj_z * DIV );
   } else {
     *mapx = *mapy = MAP_WIDTH + 1;
   }
@@ -3970,14 +3767,14 @@ MapMemoryManager::MapMemoryManager( int maxSize ) {
 }
   
 MapMemoryManager::~MapMemoryManager() {
-  for( int i = 0; i < (int)unused.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(unused.size()); i++ ) {
     delete unused[i];
   }
   unused.clear();
-  for( int i = 0; i < (int)unusedEffect.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(unusedEffect.size()); i++ ) {
     delete unusedEffect[i];
   }
-  unusedEffect.clear();  
+  unusedEffect.clear();
 }
 
 Location *MapMemoryManager::newLocation() {
@@ -4031,7 +3828,7 @@ EffectLocation *MapMemoryManager::newEffectLocation( Map *theMap, Preferences *p
 }
   
 void MapMemoryManager::deleteLocation( Location *pos ) {
-  if( !maxSize || (int)unused.size() < maxSize ) {
+  if( !maxSize || static_cast<int>(unused.size()) < maxSize ) {
     unused.push_back( pos );
   } else {
     delete pos;
@@ -4041,7 +3838,7 @@ void MapMemoryManager::deleteLocation( Location *pos ) {
 }
 
 void MapMemoryManager::deleteEffectLocation( EffectLocation *pos ) {
-  if( !maxSize || (int)unusedEffect.size() < maxSize ) {
+  if( !maxSize || static_cast<int>(unusedEffect.size()) < maxSize ) {
     unusedEffect.push_back( pos );
   } else {
     delete pos;
@@ -4052,11 +3849,11 @@ void MapMemoryManager::deleteEffectLocation( EffectLocation *pos ) {
 
 void MapMemoryManager::printStatus() {
   if( ++accessCount > 5000 ) {
-      cerr << "Map size: " << usedCount << " Kb:" << ( (float)(sizeof(Location)*usedCount)/1024.0f ) <<
-      " Cache: " << unused.size() << " Kb:" << ( (float)(sizeof(Location)*unused.size())/1024.0f ) << endl;
-      cerr << "Effect size: " << usedEffectCount << " Kb:" << ( (float)(sizeof(EffectLocation)*usedEffectCount)/1024.0f ) <<
-      " Cache: " << unusedEffect.size() << " Kb:" << ( (float)(sizeof(EffectLocation)*unusedEffect.size())/1024.0f ) << endl;
-      accessCount = 0;
+		cerr << "Map size: " << usedCount << " Kb:" << (static_cast<float>(sizeof(Location)*usedCount)/1024.0f ) <<
+		" Cache: " << unused.size() << " Kb:" << (static_cast<float>(sizeof(Location)*unused.size())/1024.0f ) << endl;
+		cerr << "Effect size: " << usedEffectCount << " Kb:" << (static_cast<float>(sizeof(EffectLocation)*usedEffectCount)/1024.0f) <<
+		" Cache: " << unusedEffect.size() << " Kb:" << (static_cast<float>(sizeof(EffectLocation)*unusedEffect.size())/1024.0f) << endl;
+		accessCount = 0;
   }
 }
   
@@ -4116,8 +3913,8 @@ void Map::setSecretDoorDetected( int x, int y ) {
 }
 
 void Map::renderFloor() {
-	//float xpos2 = (float)(getX() - mapViewWidth / 2) / DIV;
-	//float ypos2 = (float)(getY() - mapViewDepth / 2) / DIV;
+	//float xpos2 = static_cast<float>(getX() - mapViewWidth / 2) / DIV;
+	//float ypos2 = static_cast<float>(getY() - mapViewDepth / 2) / DIV;
 	if( settings->isGridShowing() ) {
 		glDisable( GL_TEXTURE_2D );
 		glColor4f( 0, 0, 0, 0.9f );
@@ -4185,10 +3982,10 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 	//glDisable( GL_DEPTH_TEST );
 
 	// which ground pos?
-	float sx = ( tx / (float)OUTDOORS_STEP );
-	float sy = ( ( ty - th - 1 ) / (float)OUTDOORS_STEP );
-	float ex = ( ( tx + tw ) / (float)OUTDOORS_STEP );
-	float ey = ( ( ty - 1 ) / (float)OUTDOORS_STEP );
+	float sx = ( tx / static_cast<float>(OUTDOORS_STEP) );
+	float sy = ( ( ty - th - 1 ) / static_cast<float>(OUTDOORS_STEP) );
+	float ex = ( ( tx + tw ) / static_cast<float>(OUTDOORS_STEP) );
+	float ey = ( ( ty - 1 ) / static_cast<float>(OUTDOORS_STEP) );
 #ifdef DEBUG_RENDER
 	cerr << "s=" << sx << "," << sy << " e=" << ex << "," << ey << endl;
 #endif
@@ -4231,8 +4028,8 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 
 								 
 	float gx, gy;
-	for( int xx = (int)sx; xx <= (int)ex; xx++ ) {
-		for( int yy = (int)sy; yy <= (int)ey; yy++ ) {
+	for( int xx = static_cast<int>(sx); xx <= static_cast<int>(ex); xx++ ) {
+		for( int yy = static_cast<int>(sy); yy <= static_cast<int>(ey); yy++ ) {
 
 			float texSx = ( ( xx - sx ) * ( offEX - offSX ) ) / ( ex - sx );
 			float texEx = ( ( xx + 1 - sx ) * ( offEX - offSX ) ) / ( ex - sx );
@@ -4317,18 +4114,18 @@ void Map::createGroundMap() {
 	float w, d, h;
 	for( int xx = 0; xx < MAP_WIDTH / OUTDOORS_STEP; xx++ ) {		
 		for( int yy = 0; yy < MAP_DEPTH /  OUTDOORS_STEP; yy++ ) {
-			w = (float)( xx * OUTDOORS_STEP ) / DIV;
-			d = (float)( yy * OUTDOORS_STEP ) / DIV;
+			w = static_cast<float>( xx * OUTDOORS_STEP ) / DIV;
+			d = static_cast<float>( yy * OUTDOORS_STEP ) / DIV;
 			h = ( ground[ xx ][ yy ] ) / DIV;
 
 			groundPos[ xx ][ yy ].x = w;
 			groundPos[ xx ][ yy ].y = d;
 			groundPos[ xx ][ yy ].z = h;
-			//groundPos[ xx ][ yy ].u = ( xx * OUTDOORS_STEP * 32 ) / (float)MAP_WIDTH;
-			//groundPos[ xx ][ yy ].v = ( yy * OUTDOORS_STEP * 32 ) / (float)MAP_DEPTH;
+			//groundPos[ xx ][ yy ].u = ( xx * OUTDOORS_STEP * 32 ) / static_cast<float>(MAP_WIDTH);
+			//groundPos[ xx ][ yy ].v = ( yy * OUTDOORS_STEP * 32 ) / static_cast<float>(MAP_DEPTH);
 
-			groundPos[ xx ][ yy ].u = ( ( xx % OUTDOOR_FLOOR_TEX_SIZE ) / (float)OUTDOOR_FLOOR_TEX_SIZE ) + ( xx / OUTDOOR_FLOOR_TEX_SIZE );
-			groundPos[ xx ][ yy ].v = ( ( yy % OUTDOOR_FLOOR_TEX_SIZE ) / (float)OUTDOOR_FLOOR_TEX_SIZE ) + ( yy / OUTDOOR_FLOOR_TEX_SIZE );
+			groundPos[ xx ][ yy ].u = ( ( xx % OUTDOOR_FLOOR_TEX_SIZE ) / static_cast<float>(OUTDOOR_FLOOR_TEX_SIZE) ) + ( xx / OUTDOOR_FLOOR_TEX_SIZE );
+			groundPos[ xx ][ yy ].v = ( ( yy % OUTDOOR_FLOOR_TEX_SIZE ) / static_cast<float>(OUTDOOR_FLOOR_TEX_SIZE) ) + ( yy / OUTDOOR_FLOOR_TEX_SIZE );
 
 			groundPos[ xx ][ yy ].tex = groundTex[ xx ][ yy ];
 
@@ -4430,8 +4227,8 @@ void Map::drawWaterLevel() {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
-	float w = (float)( mapViewWidth ) / DIV;
-	float d = (float)( mapViewDepth ) / DIV;
+	float w = static_cast<float>( mapViewWidth ) / DIV;
+	float d = static_cast<float>( mapViewDepth ) / DIV;
 	//float z = -4 / DIV;
 	//glTranslatef( xpos2, ypos2, 0.0f);
 	glBegin( GL_QUADS );
@@ -4450,8 +4247,8 @@ void Map::drawWaterLevel() {
 
 void Map::drawFlatFloor() {
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
-	float w = (float)( mapViewWidth ) / DIV;
-	float d = (float)( mapViewDepth ) / DIV;
+	float w = static_cast<float>( mapViewWidth ) / DIV;
+	float d = static_cast<float>( mapViewDepth ) / DIV;
 	//glTranslatef( xpos2, ypos2, 0.0f);
 	glBegin( GL_QUADS );
 	glNormal3f( 0, 0, 1 );
@@ -4511,7 +4308,7 @@ int Map::addTrap( int x, int y, int w, int h ) {
   // find the convex hull
   for( int xx = x; xx <= x + w; xx++ ) {
     for( int yy = y - 2; yy <= y + h - 2; yy++ ) {
-      if( !isWall( (int)( xx ), (int)( yy ), 0 ) ) {
+      if( !isWall( static_cast<int>( xx ), static_cast<int>( yy ), 0 ) ) {
         CVector2 *p = new CVector2();
         p->x = xx;
         p->y = yy;
@@ -4541,7 +4338,7 @@ void Map::clearTraps() {
 }
 
 void Map::removeTrap( int trapIndex ) {
-  if( (int)trapList.size() > trapIndex ) {
+  if( static_cast<int>(trapList.size()) > trapIndex ) {
     Trap trap = trapList[ trapIndex ];
     for( int xx = trap.r.x; xx < trap.r.x + trap.r.w; xx++ ) {
       for( int yy = trap.r.y; yy < trap.r.y + trap.r.h; yy++ ) {
@@ -4560,25 +4357,16 @@ int Map::getTrapAtLoc( int x, int y ) {
 }
 
 Trap *Map::getTrapLoc( int trapIndex ) {
-  if( (int)trapList.size() <= trapIndex || trapIndex < 0) return NULL;
+  if( static_cast<int>(trapList.size()) <= trapIndex || trapIndex < 0) return NULL;
   else return &( trapList[ trapIndex ] );
 }
 
 void Map::drawTraps() {
   for( set<Uint8>::iterator i = trapSet.begin(); i != trapSet.end(); i++ ) {
-    Trap *trap = getTrapLoc( (int)( *i ) );
+    Trap *trap = getTrapLoc( static_cast<int>( *i ) );
 
     if( trap->discovered || settings->isGridShowing() || DEBUG_TRAPS ) {
 
-      /*
-  		glColor4f( 0, 1, 1, 1 );
-      for( int xx = trap->r.x; xx < trap->r.x + trap->r.w; xx++ ) {
-        for( int yy = trap->r.y; yy < trap->r.y + trap->r.h; yy++ ) {
-          drawGroundTex( adapter->getNamedTexture( "path" ), xx, yy, 1, 1 );
-        }
-      }
-      */
-  
       glEnable( GL_BLEND );
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   		glDisable( GL_CULL_FACE );

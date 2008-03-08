@@ -63,57 +63,51 @@ void HealDialog::setCreature( Creature *creature ) {
 
 void HealDialog::updateUI() {
 
-  spells.clear();
-  prices.clear();
-  enum { TXT_SIZE = 255 };
-  char s[ TXT_SIZE ];
-  snprintf( s, TXT_SIZE, "%s (%s %d)", _( creature->getName() ), _( "level" ), creature->getNpcInfo()->level );
-  creatureLabel->setText( s );
-  snprintf( s, TXT_SIZE, "%s %d", 
-           _( "Coins Available:" ), 
-           scourge->getParty()->getPlayer()->getMoney() );
-  coinLabel->setText( s );
+	spells.clear();
+	prices.clear();
+	enum { TXT_SIZE = 255 };
+	char s[ TXT_SIZE ];
+	snprintf( s, TXT_SIZE, "%s (%s %d)", _( creature->getName() ), _( "level" ), creature->getNpcInfo()->level );
+	creatureLabel->setText( s );
+	snprintf( s, TXT_SIZE, "%s %d", _( "Coins Available:" ), scourge->getParty()->getPlayer()->getMoney() );
+	coinLabel->setText( s );
 
-  for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
-    MagicSchool *school = MagicSchool::getMagicSchool( i );
-    for( int r = 0; r < school->getSpellCount(); r++ ) {
-      Spell *spell = school->getSpell( r );
-      if( spell->isFriendly() && 
-          spell->hasStateModPrereq() &&
-          spell->getLevel() <= creature->getNpcInfo()->level ) {
+	for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
+		MagicSchool *school = MagicSchool::getMagicSchool( i );
+		for( int r = 0; r < school->getSpellCount(); r++ ) {
+			Spell *spell = school->getSpell( r );
+			if( spell->isFriendly() && spell->hasStateModPrereq() && spell->getLevel() <= creature->getNpcInfo()->level ) {
 
-        // level-based mark-up
-        int price = spell->getExp() + 
-          (int)Util::getRandomSum( (float)(spell->getExp() / 2), spell->getLevel() );
-        // HQ is discounted (FIXME: shouldn't be hardcoded)
-        if( scourge->isInHQ() ) price = (int)( (float)price / 15.0f );
-        // 25% variance based on leadership skill.
-        float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
-        int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
-        prices[ spell ] = price + percentage;
-        char priceStr[20];
-		snprintf( priceStr, 20, _("$%d "), prices[ spell ] );
-		spellText[ spells.size() ] = priceStr;
-        spell->describe( s, TXT_SIZE );
-		spellText[ spells.size() ] += s;
-        if( spells.empty() ) {
-          showSpellDescription(spell);
-        }
-        spellIcons[ spells.size() ] = 
-          scourge->getShapePalette()->
-          spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ];
+				// level-based mark-up
+				int price = spell->getExp() + static_cast<int>(Util::getRandomSum( static_cast<float>(spell->getExp() / 2), spell->getLevel() ));
 
-        // must be last op.
-        spells.push_back( spell );
-      }
-    }
-  }
-  if( spells.empty() ) spellDescription->setText( "" );
-  spellList->setLines( spells.size(), 
-                       spellText, 
-                       NULL, 
-                       spellIcons );
+				// HQ is discounted (FIXME: shouldn't be hardcoded)
+				if( scourge->isInHQ() )
+					price = static_cast<int>( static_cast<float>(price) / 15.0f );
 
+				// 25% variance based on leadership skill.
+				float skill = static_cast<float>( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
+				int percentage = static_cast<int>( static_cast<float>(price) * ( 100.0f - skill ) / 100.0f * 0.25f );
+				prices[ spell ] = price + percentage;
+				char priceStr[20];
+				snprintf( priceStr, 20, _("$%d "), prices[ spell ] );
+				spellText[ spells.size() ] = priceStr;
+				spell->describe( s, TXT_SIZE );
+				spellText[ spells.size() ] += s;
+				if( spells.empty() ) {
+					showSpellDescription(spell);
+				}
+				spellIcons[ spells.size() ] = scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ];
+
+				// must be last op.
+				spells.push_back( spell );
+			}
+		}
+	}
+	if( spells.empty() )
+		spellDescription->setText( "" );
+
+	spellList->setLines( spells.size(), spellText, NULL, spellIcons );
 }
 
 void HealDialog::handleEvent( Widget *widget, SDL_Event *event ) {

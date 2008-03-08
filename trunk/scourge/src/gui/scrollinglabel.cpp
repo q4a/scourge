@@ -99,7 +99,7 @@ void ScrollingLabel::drawWidget(Widget *parent) {
   GuiTheme *theme = ((Window*)parent)->getTheme();
 
   // draw the text
-  int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
+  int textPos = -static_cast<int>(((listHeight - getHeight()) / 100.0f) * static_cast<float>(value));
   if(!((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
               ((Window*)parent)->getScourgeGui()->getScreenHeight() - 
@@ -144,7 +144,7 @@ void ScrollingLabel::drawWidget(Widget *parent) {
       if( willScrollToBottom ) {
         willScrollToBottom = false;
         value = 100;
-        scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+        scrollerY = static_cast<int>((static_cast<float>(getHeight() - scrollerHeight) / 100.0f) * static_cast<float>(value));
       }
     }
     //((Window*)parent)->getSDLHandler()->setFontType( SDLHandler::SCOURGE_DEFAULT_FONT );
@@ -234,7 +234,7 @@ char *ScrollingLabel::printLine( Widget *parent, int x, int y, char *s ) {
       //strcpy( wordPos[ wordPosCount ].word, p );
       // copy only valid characters
       int c = 0;
-      for( int i = 0; i < (int)strlen( p ); i++ ) {
+      for( int i = 0; i < static_cast<int>(strlen( p )); i++ ) {
 				if( !( p[i] == ',' || p[i] == '.' || p[i] == ';' || p[i] == '!' || p[i] == '?' || p[i] == '$' ) ) {
 					wordPos[ wordPosCount ].word[ c++ ] = p[ i ];
 				}
@@ -347,26 +347,27 @@ bool ScrollingLabel::handleEvent(Widget *parent, SDL_Event *event, int x, int y)
 		}
     break;
   }
-  if(dragging) {
-    value = (int)((float)((y - dragY) - getY()) / 
-                  ((float)(getHeight() - scrollerHeight) / 100.0f));
-    if(value < 0)	value = 0;
-    if(value > 100)	value = 100;
-    scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
-  }
+	if(dragging) {
+		value = static_cast<int>(static_cast<float>((y - dragY) - getY()) / (static_cast<float>(getHeight() - scrollerHeight) / 100.0f));
+		if(value < 0)
+			value = 0;
+		if(value > 100)
+			value = 100;
+		scrollerY = static_cast<int>((static_cast<float>(getHeight() - scrollerHeight) / 100.0f) * static_cast<float>(value));
+	}
   return false;
 }
 
 void ScrollingLabel::moveSelectionUp() {
 	scrollerY -= 15;
 	if( scrollerY < 0 ) scrollerY = 0;
-	value = (int)( scrollerY / ((float)(getHeight() - scrollerHeight) / 100.0f) );
+	value = static_cast<int>( scrollerY / (static_cast<float>(getHeight() - scrollerHeight) / 100.0f) );
 }
 
 void ScrollingLabel::moveSelectionDown() {
 	scrollerY += 15;
 	if( scrollerY > getHeight() - scrollerHeight - 1 ) scrollerY = getHeight() - scrollerHeight - 1;
-	value = (int)( scrollerY / ((float)(getHeight() - scrollerHeight) / 100.0f) );	
+	value = static_cast<int>( scrollerY / (static_cast<float>(getHeight() - scrollerHeight) / 100.0f) );	
 }
 
 int ScrollingLabel::getWordPos( int x, int y ) {

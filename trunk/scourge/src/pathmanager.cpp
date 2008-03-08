@@ -350,7 +350,7 @@ float PathManager::getSpeed(){
   if(owner->getMotion() == Constants::MOTION_LOITER){
     return loiterSpeed;
   }
-  return (float)owner->getSpeed(); //the creature should walk as fast as it is walking.
+  return static_cast<float>(owner->getSpeed()); //the creature should walk as fast as it is walking.
 }
 
 void PathManager::incrementPositionOnPath(){
@@ -386,7 +386,7 @@ int PathManager::getPathRemainingSize(){
 float PathManager::getEstimatedTimeAt(Location* location){
   int w = owner->getShape()->getWidth();
   int d = owner->getShape()->getHeight();
-  float step = (1.0f-((float)getSpeed())/10.0f);
+  float step = 1.0f - static_cast<float>(getSpeed()) / 10.0f;
 
   int lx = location->x;
   int ly = location->y;

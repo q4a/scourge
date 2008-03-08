@@ -137,7 +137,7 @@ void Rpg::initStateMods( ConfigLang *config ) {
                                        node->getValueAsString( "setstate" ),
                                        node->getValueAsString( "unsetstate" ),
                                        type, 
-                                       (int)StateMod::stateMods.size() );
+                                       static_cast<int>(StateMod::stateMods.size()) );
     StateMod::stateMods.push_back( stateMod );
     StateMod::stateModsByName[ name ] = stateMod;
     if( type == StateMod::GOOD ) StateMod::goodStateMods.push_back( stateMod );
@@ -177,7 +177,7 @@ Skill::Skill( char *name, char *displayName, char *description, char *symbol, Sk
 	this->group = group;
 	
 	// store the skill
-	this->index = (int)skills.size();
+	this->index = static_cast<int>(skills.size());
 	skills.push_back( this );
 	string s = name;
 	skillsByName[ s ] = this;
@@ -196,7 +196,7 @@ SkillGroup::SkillGroup( char *name, char *displayName, char *description ) {
 	if( isStatSkill ) stats = this;
 	
 	// store the group
-	this->index = (int)groups.size();
+	this->index = static_cast<int>(groups.size());
 	groups.push_back( this );
 	string s = name;
 	groupsByName[ s ] = this;
@@ -230,7 +230,7 @@ StateMod *StateMod::getRandomBad() {
   
 bool StateMod::isStateModTransitionWanted( bool setting ) {
   bool effectFound = false;
-  for(int i = 0; i < (int)goodStateMods.size(); i++) {
+  for(int i = 0; i < static_cast<int>(goodStateMods.size()); i++) {
     if(goodStateMods[i] == this) {
       effectFound = true;
       break;
@@ -239,7 +239,7 @@ bool StateMod::isStateModTransitionWanted( bool setting ) {
   if(effectFound && setting) return true;
 
   effectFound = false;
-  for(int i = 0; i < (int)badStateMods.size(); i++) {
+  for(int i = 0; i < static_cast<int>(badStateMods.size()); i++) {
     if(badStateMods[i] == this) {
       effectFound = true;
       break;

@@ -156,12 +156,12 @@ void Board::freeListText() {
 }
 
 void Board::reset() {
-  for( int i = 0; i < (int)storylineMissions.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(storylineMissions.size()); i++ ) {
     Mission *mission = storylineMissions[i];
     mission->reset();
   }
   storylineIndex = 0;
-  for( int i = 0; i < (int)availableMissions.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(availableMissions.size()); i++ ) {
     Mission *mission = availableMissions[i];
     if( !mission->isStoryLine() ) {
       delete mission;
@@ -207,11 +207,11 @@ void Board::initMissions() {
     }
     sum += n;
   }
-  float ave = ( sum == 0 ? 1 : ((float)sum / (float)session->getParty()->getPartySize() / 1.0f) );
+  float ave = ( sum == 0 ? 1 : (static_cast<float>(sum) / static_cast<float>(session->getParty()->getPartySize()) / 1.0f) );
 
   // remove the storyline missions
   // remove missions whose level is too low
-  for( int i = 0; i < (int)availableMissions.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(availableMissions.size()); i++ ) {
     Mission *mission = availableMissions[ i ];
     if( mission->isStoryLine() ) {
       // move the last element over the current storyline element
@@ -227,13 +227,13 @@ void Board::initMissions() {
 		int level;
 		if( counter % 2 == 0 ) {
 			// allow for low level mission
-			level = (int)Util::roll( 0.0f, ave + 2 );
+			level = static_cast<int>(Util::roll( 0.0f, ave + 2 ));
 		} else {
 			// allow for current level missions
-			level = (int)Util::roll( ave, ave + 4.0f ) - 2;
+			level = static_cast<int>(Util::roll( ave, ave + 4.0f )) - 2;
 		}
     if( level < 1 ) level = 1;
-    int depth =  (int)((float)level / (float)(MAX_MISSION_DEPTH - 3) ) + 1 + Util::dice( 3 );
+    int depth =  static_cast<int>(static_cast<float>(level) / static_cast<float>(MAX_MISSION_DEPTH - 3) ) + 1 + Util::dice( 3 );
     if( depth > MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH;
     int templateIndex = Util::dice( templates.size() );
 		// Create a new mission but only keep it if there isn't another mission with this name already.
@@ -253,7 +253,7 @@ void Board::initMissions() {
   
 
   // add the current storyline mission at the top of the board
-  if( storylineIndex >= 0 && storylineIndex < (int)storylineMissions.size() ) {
+  if( storylineIndex >= 0 && storylineIndex < static_cast<int>(storylineMissions.size()) ) {
     availableMissions.insert( availableMissions.begin(), storylineMissions[ storylineIndex ] );
   }
 
@@ -282,7 +282,7 @@ void Board::initMissions() {
 		missionListCount = availableMissions.size();
     missionText = new string[availableMissions.size()];
     missionColor = (Color*)malloc(availableMissions.size() * sizeof(Color));
-    for(int i = 0; i < (int)availableMissions.size(); i++) {
+    for(int i = 0; i < static_cast<int>(availableMissions.size()); i++) {
 		char str[20];
 		snprintf( str, 20, _("L:%d, "), availableMissions[i]->getLevel() );
 		missionText[i] = str;
@@ -334,22 +334,24 @@ void Board::initMissions() {
 }
 
 void Board::setStorylineIndex( int n ) {
-  if( n < 0 ) n = 0;
-  if( n > (int)storylineMissions.size() ) n = (int)storylineMissions.size();
-  storylineIndex = n;
-  for( int i = 0; i < (int)storylineMissions.size(); i++ ) {
-    storylineMissions[i]->setCompleted( i < storylineIndex ? true : false );
-  }
+	if( n < 0 )
+		n = 0;
+	if( n > static_cast<int>(storylineMissions.size()) )
+		n = static_cast<int>(storylineMissions.size());
+
+	storylineIndex = n;
+	for( int i = 0; i < static_cast<int>(storylineMissions.size()); i++ ) {
+		storylineMissions[i]->setCompleted( i < storylineIndex ? true : false );
+	}
 }
 
 void Board::storylineMissionCompleted( Mission *mission ) {
-  for( int i = 0; i < (int)storylineMissions.size(); i++ ) {
-    if( storylineMissions[i] == mission &&
-        storylineIndex < ( i + 1 )) {
-      storylineIndex = i + 1;
-      break;
-    }
-  }
+	for( int i = 0; i < static_cast<int>(storylineMissions.size()); i++ ) {
+		if( storylineMissions[i] == mission && storylineIndex < ( i + 1 )) {
+			storylineIndex = i + 1;
+			break;
+		}
+	}
 }
 
 MissionTemplate::MissionTemplate( Board *board, char *name, char *displayName, char type, char *description, char *music, char *success, char *failure, string& ambientSoundName ) {
@@ -1202,13 +1204,13 @@ MissionInfo *Mission::save() {
 	info->depth = getDepth();
 	info->completed = ( completed ? 1 : 0 );
 	info->itemCount = itemList.size();
-	for( int i = 0; i < (int)itemList.size(); i++ ) {
+	for( int i = 0; i < static_cast<int>(itemList.size()); i++ ) {
 		strncpy( (char*)info->itemName[i], itemList[i]->getName(), 254 );
 		info->itemName[i][254] = '\0';
 		info->itemDone[i] = ( items[ itemList[i] ] ? 1 : 0 );
 	}
 	info->monsterCount = creatureList.size();
-	for( int i = 0; i < (int)creatureList.size(); i++ ) {
+	for( int i = 0; i < static_cast<int>(creatureList.size()); i++ ) {
 		strncpy( (char*)info->monsterName[i], creatureList[i]->getType(), 254 );
 		info->monsterName[i][254] = '\0';
 		info->monsterDone[i] = ( creatures[ creatureList[i] ] ? 1 : 0 );
@@ -1239,7 +1241,7 @@ Mission *Mission::load( Session *session, MissionInfo *info ) {
 }
 
 void Mission::loadStorylineMission( MissionInfo *info ) {
-	for( int i = 0; i < (int)info->itemCount; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->itemCount); i++ ) {
 		char *p = (char*)info->itemName[i];
 		for( unsigned int t = 0; t < itemList.size(); t++ ) {
 			RpgItem *rpgItem = itemList[t];
@@ -1249,7 +1251,7 @@ void Mission::loadStorylineMission( MissionInfo *info ) {
 			}
 		}
 	}
-	for( int i = 0; i < (int)info->monsterCount; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->monsterCount); i++ ) {
 		char *p = (char*)info->monsterName[i];
 		for( unsigned int t = 0; t < creatureList.size(); t++ ) {
 			Monster *monster = creatureList[t];

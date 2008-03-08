@@ -335,7 +335,7 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
   // delete the items and creatures created for this mission
   // (except items in inventory) 
   if(!missionItemsOnly) {
-    for(int i = 0; i < (int)newItems.size(); i++) {
+    for(int i = 0; i < static_cast<int>(newItems.size()); i++) {
       if( newItems[i]->isSpecial() ) {
         // put special item back into play
         special.erase( newItems[i]->getRpgItem() );
@@ -344,7 +344,7 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
     }
     newItems.clear();
   } else {
-    for(int i = 0; i < (int)newItems.size(); i++) {
+    for(int i = 0; i < static_cast<int>(newItems.size()); i++) {
       bool inInventory = false;
       for(int t = 0; t < getParty()->getPartySize(); t++) {
         if(getParty()->getParty(t)->isItemInInventory(newItems[i])) {
@@ -358,7 +358,7 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
           special.erase( newItems[i]->getRpgItem() );
         }
         delete newItems[i];
-        for(int t = i + 1; t < (int)newItems.size(); t++) {
+        for(int t = i + 1; t < static_cast<int>(newItems.size()); t++) {
           newItems[t - 1] = newItems[t];
         }
         newItems.pop_back();
@@ -366,7 +366,7 @@ void Session::deleteCreaturesAndItems(bool missionItemsOnly) {
       }
     }
   }
-  for(int i = 0; i < (int)creatures.size(); i++) {
+  for(int i = 0; i < static_cast<int>(creatures.size()); i++) {
     delete creatures[i];
   }
   creatures.clear();
@@ -402,7 +402,7 @@ Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radi
                                        getCreature(i)->getY(),
                                        getCreature(i)->getShape()->getWidth(),
                                        getCreature(i)->getShape()->getDepth());
-      if(dist <= (float)radius && (!p || dist < minDist)) {
+      if(dist <= static_cast<float>(radius) && (!p || dist < minDist)) {
         p = getCreature(i);
         minDist = dist;
       }
@@ -488,7 +488,7 @@ void testSaveGame( Session *session ) {
 	file->read( &storylineIndex );
 	file->read( &partySize );
 	cerr << "LOADING: " << endl;
-	for(int i = 0; i < (int)partySize; i++) {
+	for(int i = 0; i < static_cast<int>(partySize); i++) {
 		CreatureInfo *info = Persist::loadCreature( file );
 		pc[i] = Creature::load( session, info );
 		if( i == 0 ) {
@@ -518,7 +518,7 @@ void testSaveGame( Session *session ) {
   file->write( &n );
   file->write( &storylineIndex );
   file->write( &partySize );
-  for(int i = 0; i < (int)partySize; i++) {
+  for(int i = 0; i < static_cast<int>(partySize); i++) {
     CreatureInfo *info = pc[i]->save();
     Persist::saveCreature( file, info );
     Persist::deleteCreatureInfo( info );

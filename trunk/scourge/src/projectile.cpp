@@ -199,10 +199,10 @@ void Projectile::calculateAngle( float sx, float sy ) {
   this->ex = tx + (tw / 2);
   this->ey = ty - (td / 2);
 
-  int x = (int)(ex - sx);
-  int y = (int)(ey - sy);
+  int x = static_cast<int>(ex - sx);
+  int y = static_cast<int>(ey - sy);
   if(!x) this->angle = (y <= 0 ? (90.0f + 180.0f) : 90.0f);
-  else this->angle = Constants::toAngle(atan((float)y / (float)x));
+  else this->angle = Constants::toAngle(atan(static_cast<float>(y) / static_cast<float>(x)));
   //cerr << "x=" << x << " y=" << y << " angle=" << angle << endl;
 
   // read about the arctan problem: 
@@ -329,7 +329,7 @@ void Projectile::moveProjectiles(Session *session) {
 #ifdef DEBUG_MOVEMENT 
               cerr << "PROJ: reached location target, from=" << proj->getCreature()->getName() << endl;                                
 #endif
-							session->getGameAdapter()->fightProjectileHitTurn(proj, (int)proj->getCurrentX(), (int)proj->getCurrentY());
+							session->getGameAdapter()->fightProjectileHitTurn(proj, static_cast<int>(proj->getCurrentX()), static_cast<int>(proj->getCurrentY()));
 							blocked = true;
             } else if( proj->target ) {
   
@@ -362,9 +362,8 @@ void Projectile::moveProjectiles(Session *session) {
   
           // proj stopped, due to something else
           if( !blocked ) {
-  
-            Location *loc = 
-              session->getMap()->getLocation( toint(proj->getCurrentX()), 
+
+            Location *loc = session->getMap()->getLocation( toint(proj->getCurrentX()), 
                                               toint(proj->getCurrentY()), 
                                               0);
             if(loc) {
@@ -376,14 +375,10 @@ void Projectile::moveProjectiles(Session *session) {
 #endif
                 battleProjectiles[ proj ] = (Creature*)(loc->creature);
                 blocked = true;
-              } else if( proj->doesStopOnImpact() &&
-                         ( ( loc->item && 
-                             loc->item->getShape()->getHeight() >= 6 ) ||
-                           ( !loc->creature && 
-                             !loc->item && loc->shape && 
-                             loc->shape->getHeight() >= 6 ) ) ) {
+              } else if( proj->doesStopOnImpact() && ( ( loc->item && loc->item->getShape()->getHeight() >= 6 ) ||
+                           ( !loc->creature && !loc->item && loc->shape && loc->shape->getHeight() >= 6 ) ) ) {
 #ifdef DEBUG_MOVEMENT 
-                cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;                     
+                cerr << "PROJ: blocked by item or shape, from=" << proj->getCreature()->getName() << endl;
 #endif
                 // hit something
                 session->getGameAdapter()->addDescription( _( "Projectile did not reach the target (blocked)." ) );
@@ -391,10 +386,10 @@ void Projectile::moveProjectiles(Session *session) {
               }
             }
           }
-          
+
           // remove finished projectiles
           if( blocked || proj->reachedTarget || proj->timeToLive > 0 ) {
-            
+
 #ifdef DEBUG_MOVEMENT 
             // DEBUG INFO
             if( !blocked ) {
@@ -403,14 +398,13 @@ void Projectile::moveProjectiles(Session *session) {
               proj->debug();
             }
 #endif
-            
+
             removedProjectiles.push_back( proj );
           }
-  
         }
       }
     }
-    
+
     // fight battles
     for (map<Projectile*, Creature*>::iterator i=battleProjectiles.begin(); i!=battleProjectiles.end(); ++i) {
       Projectile *proj = i->first;
@@ -424,8 +418,7 @@ void Projectile::moveProjectiles(Session *session) {
       Projectile *proj = *e;
       if( proj->timeToLive == 0 && proj->getRenderer()->getTimeToLiveAfterImpact() > 0 ) {
         proj->timeToLive = now;
-      } else if( proj->getRenderer()->getTimeToLiveAfterImpact() < 
-                 (int)( now - proj->timeToLive ) ) {
+      } else if( proj->getRenderer()->getTimeToLiveAfterImpact() < static_cast<int>( now - proj->timeToLive ) ) {
         Projectile::removeProjectile(proj);
         // Is it ok to destroy proj. here?
         delete proj;

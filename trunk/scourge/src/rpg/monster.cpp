@@ -70,10 +70,10 @@ Monster::~Monster() {
 // O(n)! Used only while saving
 bool Monster::getIndexOrFindByIndex(Monster **monster, int *index) {
   int current_index = 0;
-  for(int level = 0; level < (int)monsters.size(); level++) {
+  for(int level = 0; level < static_cast<int>(monsters.size()); level++) {
     if(monsters.find(level) != monsters.end()) {
       vector<Monster*> *list = monsters[level];
-      for(int i = 0; i < (int)list->size(); i++, current_index++) {
+      for(int i = 0; i < static_cast<int>(list->size()); i++, current_index++) {
         if(*monster && (*list)[i] == *monster) {
           *index = current_index;
           return true;
@@ -182,7 +182,7 @@ void Monster::initCreatures( ConfigLang *config ) {
 		// store type and add sounds
 		string typeStr = m->getModelName();
 		bool found = false;
-		for(int i = 0; i < (int)monsterTypes.size(); i++) {
+		for(int i = 0; i < static_cast<int>(monsterTypes.size()); i++) {
 			if(!strcmp(monsterTypes[i].c_str(), m->getModelName())) {
 				found = true;
 				break;
@@ -283,7 +283,7 @@ Monster *Monster::getRandomMonster(int level) {
 
   // create a new list where each monster occurs monster->rareness times
   vector<Monster*> rareList;
-  for(int i = 0; i < (int)list->size(); i++) {
+  for(int i = 0; i < static_cast<int>(list->size()); i++) {
     Monster *monster = (*list)[i];
     for(int t = 0; t < monster->getRareness(); t++) {
       rareList.push_back(monster);
@@ -344,11 +344,14 @@ const char *Monster::getRandomMonsterType( int level ) {
 // this weird function is used on loading to avoid memory leaks...
 // -=K=- modified to somewhat less odd one
 const char *Monster::getMonsterType( char *type ) {
-  if(!type || !strlen(type)) return NULL;
-  for(int i = 0; i < (int)monsterTypes.size(); i++) {
-    if ( monsterTypes[i] == type ) return monsterTypes[i].c_str();
-  }
-  return NULL;
+	if(!type || !strlen(type))
+		return NULL;
+
+	for(int i = 0; i < static_cast<int>(monsterTypes.size()); i++) {
+		if ( monsterTypes[i] == type )
+			return monsterTypes[i].c_str();
+	}
+	return NULL;
 }
 
 const Monster *Monster::getRandomNpc() {

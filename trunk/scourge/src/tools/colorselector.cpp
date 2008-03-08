@@ -51,10 +51,10 @@ Color ColorSelector::GetColor()
 
 void ColorSelector::SetColor(uchar r, uchar g, uchar b, uchar a)
 {
-	aSlider->SetValue( (int)(((float)a/255.0f)*1000.0f) );
+	aSlider->SetValue( static_cast<int>((static_cast<float>(a)/255.0f)*1000.0f) );
 
 	char buffer[64];
-	sprintf(buffer, "%.3f", (float)a);
+	sprintf(buffer, "%.3f", static_cast<float>(a));
 	aText->SetLabel( std2wx( buffer ) );
 
 	panel->SetBackgroundColour( wxColour(r,g,b) );
@@ -64,7 +64,7 @@ void ColorSelector::SetColor(Color *c)
 	color->r = c->r;
 	color->g = c->g;
 	color->b = c->b;
-	aSlider->SetValue( (int)((c->a)*1000.0f) );
+	aSlider->SetValue( static_cast<int>((c->a)*1000.0f) );
 
 	char buffer[64];
 	sprintf(buffer, "%.3f", c->a);
@@ -105,7 +105,7 @@ void ColorSelector::OnPanelClick()
 	wxColour c = colorDialog.GetColourData().GetColour();
 	panel->SetBackgroundColour( wxColour(c.Red(),c.Green(),c.Blue()) );
 
-	color->r = ((float)c.Red())/255.0f;
-	color->g = ((float)c.Green())/255.0f;
-	color->b = ((float)c.Blue())/255.0f;
+	color->r = static_cast<float>(c.Red())/255.0f;
+	color->g = static_cast<float>(c.Green())/255.0f;
+	color->b = static_cast<float>(c.Blue())/255.0f;
 }

@@ -74,11 +74,10 @@ void TrainDialog::updateUI() {
   // level-based mark-up
 	Creature *player = scourge->getParty()->getPlayer();
   int base = 150;
-  int price = base + 
-    (int)Util::getRandomSum( (float)(base / 2), creature->getNpcInfo()->level );
+  int price = base + static_cast<int>(Util::getRandomSum( static_cast<float>(base / 2), creature->getNpcInfo()->level ));
   // 25% variance based on leadership skill.
-  float skill = (float)( player->getSkill( Skill::LEADERSHIP ) );
-  int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
+  float skill = static_cast<float>( player->getSkill( Skill::LEADERSHIP ) );
+  int percentage = static_cast<int>( static_cast<float>(price) * ( 100.0f - skill ) / 100.0f * 0.25f );
   cost = price + percentage;
 
   snprintf( s, S_SIZE, "%s (%s %d) %s: %d", 

@@ -46,7 +46,7 @@ GLTeleporter::~GLTeleporter() {
 
 
 void GLTeleporter::draw() {
-  float r = ((float)width / DIV) / 2.0f;
+  float r = (static_cast<float>(width) / DIV) / 2.0f;
   for(int i = 0; i < MAX_STARS; i++) {
     // reposition
     if(star[i][0] == -1) {
@@ -61,17 +61,12 @@ void GLTeleporter::draw() {
     glPushMatrix();
 
 
-    float w = ((float)width / DIV) / 10.0f;
-    float d = ((float)depth / DIV) / 10.0f;
+    float w = (static_cast<float>(width) / DIV) / 10.0f;
+    float d = (static_cast<float>(depth) / DIV) / 10.0f;
     float h = 1.25f / DIV;
 
     if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
 
-    //	float red = (float)((this->color & 0xff000000) >> (3 * 8)) / (float)(0xff);
-    //	float green = (float)((this->color & 0x00ff0000) >> (2 * 8)) / (float)(0xff);
-    //	float blue = (float)((this->color & 0x0000ff00) >> (1 * 8)) / (float)(0xff);
-    //	float max = ((float)(height - 1) / DIV) / 2.0f;
-    //	float dist = 1.5f - abs(max - ring[i]) / max;
     glColor4f(1, 1, 1, 1);
 
     glBegin( GL_QUADS );
@@ -97,10 +92,8 @@ void GLTeleporter::draw() {
 
   for(int i = 0; !locked && i < MAX_RINGS; i++) {
     // reposisition
-    if(ring[i] <= (1.0f / DIV) || ring[i] >= ((float)height / DIV)) {
-      //	  ring[i] = (((float)(height - 1) / DIV) * rand()/RAND_MAX) + (1.0f / DIV);
-      //	  delta[i] = (ring[i] >= ((float)(height - 1) / DIV) / 2.0f ? 0.5f : -0.5f);
-      ring[i] = ((float)(height - 1) / DIV) / 2.0f + Util::roll( -10.0f, 10.0f );
+    if(ring[i] <= (1.0f / DIV) || ring[i] >= (static_cast<float>(height) / DIV)) {
+      ring[i] = (static_cast<float>(height - 1) / DIV) / 2.0f + Util::roll( -10.0f, 10.0f );
       delta[i] = Util::dice( 2 ) ? 3.0f : -3.0f;
     }
 
@@ -108,19 +101,19 @@ void GLTeleporter::draw() {
     glDisable( GL_CULL_FACE );
     glPushMatrix();
 
-    float w = ((float)width / DIV);
-    float d = ((float)depth / DIV);
+    float w = (static_cast<float>(width) / DIV);
+    float d = (static_cast<float>(depth) / DIV);
     float h = ring[i];
     //      if(h == 0) h = 0.25 / DIV;
 
     if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
 
-    float red = (float)((this->color & 0xff000000) >> (3 * 8)) / (float)(0xff);
-    float green = (float)((this->color & 0x00ff0000) >> (2 * 8)) / (float)(0xff);
-    float blue = (float)((this->color & 0x0000ff00) >> (1 * 8)) / (float)(0xff);
-    float max = ((float)(height - 1) / DIV) / 2.0f;
+    float red = static_cast<float>((this->color & 0xff000000) >> (3 * 8)) / static_cast<float>(0xff);
+    float green = static_cast<float>((this->color & 0x00ff0000) >> (2 * 8)) / static_cast<float>(0xff);
+    float blue = static_cast<float>((this->color & 0x0000ff00) >> (1 * 8)) / static_cast<float>(0xff);
+    float max = (static_cast<float>(height - 1) / DIV) / 2.0f;
     //	float dist = 1.5f - abs(max - ring[i]) / max;
-    float dist = 1.5f - abs((int)(max - ring[i])) / max;
+    float dist = 1.5f - abs(static_cast<int>(max - ring[i])) / max;
     glColor4f(red, green, blue, dist);
 
     glBegin( GL_QUADS );

@@ -749,12 +749,12 @@ void SDLHandler::saveScreenInternal( string& path ) {
 #endif
 	Uint8 *src = (Uint8*)surface->pixels;
 	Uint8 *dst = (Uint8*)scaled->pixels;
-	float dx = ( (float)surface->w / (float)scaled->w );
-	float dy = ( (float)surface->h / (float)scaled->h );
+	float dx = ( static_cast<float>(surface->w) / static_cast<float>(scaled->w) );
+	float dy = ( static_cast<float>(surface->h) / static_cast<float>(scaled->h) );
 	for( int x = 0; x < SCREEN_SHOT_WIDTH; x++ ) {
 		for( int y = 0; y < SCREEN_SHOT_HEIGHT; y++ ) {
 			memcpy( dst + ( scaled->pitch * y + x * scaled->format->BytesPerPixel ),
-							src + ( surface->pitch * ( surface->h - 1 - (int)(y * dy) ) + (int)(x * dx) * surface->format->BytesPerPixel ),
+							src + ( surface->pitch * ( surface->h - 1 - static_cast<int>(y * dy) ) + static_cast<int>(x * dx) * surface->format->BytesPerPixel ),
 							scaled->format->BytesPerPixel );
 		}
 	}
@@ -808,15 +808,11 @@ void SDLHandler::drawFadeout() {
 	glDisable( GL_DEPTH_TEST );
 	
 	if( fadeoutStartAlpha < fadeoutEndAlpha ) {
-		glColor4f( 0, 0, 0, 
-							 ( fadeoutStartAlpha + 
-								 ( ( ( fadeoutEndAlpha - fadeoutStartAlpha ) * 
-										 fadeoutCurrentStep ) / (float)fadeoutSteps ) ) );
+		glColor4f( 0, 0, 0, ( fadeoutStartAlpha + ( ( ( fadeoutEndAlpha - fadeoutStartAlpha ) * 
+										 fadeoutCurrentStep ) / static_cast<float>(fadeoutSteps) ) ) );
 	} else {
-		glColor4f( 0, 0, 0, 
-							 ( fadeoutStartAlpha -
-								 ( ( ( fadeoutStartAlpha - fadeoutEndAlpha ) * 
-										 fadeoutCurrentStep ) / (float)fadeoutSteps ) ) );
+		glColor4f( 0, 0, 0, ( fadeoutStartAlpha - ( ( ( fadeoutStartAlpha - fadeoutEndAlpha ) *
+										 fadeoutCurrentStep ) / static_cast<float>(fadeoutSteps) ) ) );
 	}
 	glLoadIdentity();
 	glBegin( GL_QUADS );
@@ -1068,7 +1064,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 	glColor4f( 1, 1, 1, 1 );
 	for( unsigned int i = 0; i < lines.size(); i++ ) {
 		int ww = widths[ i ];
-		int x = (int)( ( w - ww ) / 2.0f ) + 5;
+		int x = static_cast<int>( ( w - ww ) / 2.0f ) + 5;
 		texPrint( x, i * 12, "%s", lines[i].c_str() );
 	}
 	//texPrint( 0, 0, "%s", message );

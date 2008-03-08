@@ -156,11 +156,11 @@ cerr << "adding item: " << item->name <<
 }
 
 int RpgItem::getTypeByName(char *name) {
-  for( int i = 0; i < (int)itemTypes.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(itemTypes.size()); i++ ) {
     if( !strcmp( itemTypes[ i ].name, name ) ) return i;
   }
   cerr << "Can't find type >" << name << "< in " << itemTypes.size() << endl;
-  for( int i = 0; i < (int)itemTypes.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(itemTypes.size()); i++ ) {
     cerr << "\t" << itemTypes[ i ].name << endl;
   }
   exit(1);
@@ -187,7 +187,7 @@ RpgItem *RpgItem::getRandomItemFromTypes(int depth, int types[], int typeCount) 
 
       // create a new list where each item occurs item->rareness times
       vector<RpgItem*> rareList;
-      for(int i = 0; i < (int)list->size(); i++) {
+      for(int i = 0; i < static_cast<int>(list->size()); i++) {
         RpgItem *item = (RpgItem*)(*list)[i];
         for(int t = 0; t < item->getRareness(); t++) {
           rareList.push_back(item);
@@ -203,14 +203,15 @@ RpgItem *RpgItem::getRandomItemFromTypes(int depth, int types[], int typeCount) 
 }
 
 RpgItem *RpgItem::getRandomContainer() {
-  int n = (int)Util::roll( 0.0f, CONTAINER_CHANCE * containers.size() );
-  if(n >= (int)containers.size()) return NULL;
+  int n = static_cast<int>(Util::roll( 0.0f, CONTAINER_CHANCE * containers.size() ));
+  if(n >= static_cast<int>(containers.size()))
+		return NULL;
   return containers[n];
 }
 
 RpgItem *RpgItem::getRandomContainerNS() {
-  int n = (int)Util::roll( 0.0f, CONTAINER_CHANCE * containersNS.size() );
-  if(n >= (int)containersNS.size()) return NULL;
+  int n = static_cast<int>(Util::roll( 0.0f, CONTAINER_CHANCE * containersNS.size() ));
+  if(n >= static_cast<int>(containersNS.size())) return NULL;
   return containersNS[n];
 }
 

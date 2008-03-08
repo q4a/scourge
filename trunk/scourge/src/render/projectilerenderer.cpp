@@ -73,9 +73,9 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 	glPopMatrix();
 }
 
-EffectProjectileRenderer::EffectProjectileRenderer( Map *map, Preferences *prefs, Shapes *shapes, int effectType, int timeToLive ) {
-  this->effectType = effectType;
-  this->timeToLive = timeToLive;
+EffectProjectileRenderer::EffectProjectileRenderer(Map *map, Preferences *prefs, Shapes *shapes, int effectType, int timeToLive) {
+	this->effectType = effectType;
+	this->timeToLive = timeToLive;
 	effects.resize( MAX_EFFECT_COUNT );
 	for( int i = 0; i < MAX_EFFECT_COUNT; i++ ) {
 		effects[i] = new Effect( map, prefs, shapes, 2, 2 );
@@ -88,11 +88,11 @@ EffectProjectileRenderer::~EffectProjectileRenderer() {
 	}
 }
 
-void EffectProjectileRenderer::drawPath( Map *map, 
-																				 RenderedProjectile *proj, 
-																				 std::vector<CVector3> *path ) {
-	int maxSteps = (int)path->size();
-	if( maxSteps > MAX_EFFECT_COUNT ) maxSteps = MAX_EFFECT_COUNT;
+void EffectProjectileRenderer::drawPath( Map *map, RenderedProjectile *proj, std::vector<CVector3> *path ) {
+	int maxSteps = static_cast<int>(path->size());
+	if( maxSteps > MAX_EFFECT_COUNT )
+		maxSteps = MAX_EFFECT_COUNT;
+
 	for( int i = 0; i < maxSteps; i++ ) {
 		CVector3 v = (*path)[i];
 		glPushMatrix();
@@ -103,7 +103,7 @@ void EffectProjectileRenderer::drawPath( Map *map,
 		glDepthMask( GL_FALSE );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 
-		float percent = (float)i / (float)maxSteps;
+		float percent = static_cast<float>(i) / static_cast<float>(maxSteps);
 		if( percent > 0.5f ) {
 			percent += ( percent - 0.5f );
 		}

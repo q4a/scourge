@@ -138,12 +138,12 @@ public:
 		VER_SIZE = 100,
 		MINVER_SIZE = 20
 	};
-  
+
   static int blendA, blendB;
   static int blend[];
   void setBlendFunc();
   static void setBlendFuncStatic();
-  
+
   Scourge( UserConfiguration *config );
   ~Scourge();
 
@@ -275,7 +275,7 @@ public:
     When dropping an item from the inventory this method sets up the parameters so
     the cursor can drag it around the screen and eventually deposit it at a location
     or in a container.
-    
+
     @param item The item to drop
     @param x where to drop the item on the map
     @param y where to drop the item on the map
@@ -303,7 +303,7 @@ public:
   */
   inline OptionsMenu *getOptionsMenu() { return optionsMenu; }
 
-  /**                                                             
+  /**
     @return the multiplayer dialog window
   */
   inline MultiplayerDialog *getMultiplayerDialog() { return multiplayer; }
@@ -312,19 +312,19 @@ public:
     @return the inventory
   */
 	inline PcUi *getPcUi() { return pcui; }
-  
+
   /**
     Increase the game speed.
     @param speedFactor add this number to the current game speed.
   */
   void addGameSpeed(int speedFactor);
-  
+
   /**
     Start to drag an item from a container gui.
     @param item the item to drag.
   */
   void startItemDragFromGui(Item *item);
-  
+
   /**
     Start to drag an item from the map at a specific location.
     @param x the position of the item to drag.
@@ -332,17 +332,17 @@ public:
     @param z the position of the item to drag.
   */
   bool startItemDrag(int x, int y, int z);
-  
+
   /**
     Stop dragging an item.
   */
   void endItemDrag();
-  
+
   /**
     Use the item at the given location. This method also selects targets for pending spells.
     Depending on the type of the item, further methods are called. 
     (e.g.: useDoor, useTeleporter, etc.)
-    
+
     @param x the location of the item on the map
     @param y the location of the item on the map
     @param z the location of the item on the map
@@ -356,14 +356,14 @@ public:
     After the mission is over (when mainLoop returns) items and creatures created for this
     story are deleted, the UI is hidden, etc.
   */
-  void startMission( bool startInHq );  
+  void startMission( bool startInHq );
 
   /**
     Set up some variables so the mainLoop can quit and control can be transferred 
     back to startMission.
   */
   void endMission();
-  
+
   /**
     Open the container UI for the given container item.
     @param container the container item whose contents to show in the window.
@@ -385,7 +385,7 @@ public:
   void closeAllContainerGuis();
 
   void removeClosedContainerGuis();
-  
+
   /**
     A creature has died, mark it dead (via state_mod), and create a "skull and bones"
     container for it containing the items from the dead creature's inventory.
@@ -401,7 +401,7 @@ public:
   void showMessageDialog(char const* message);
 
   void togglePlayerOnly();
-  
+
   void toggleInventoryWindow();
 
   void toggleOptionsWindow();
@@ -436,7 +436,7 @@ public:
   Window *createWindow(int x, int y, int w, int h, char *title);
 
 	virtual GLuint getNamedTexture( char *name );
-  
+
   /**
     Called when the mission was completed (monster killed, item bagged, etc.). This
     method awards experience points.
@@ -447,7 +447,7 @@ public:
     Enable "target" mode for a given creature. The cursor changes to a cross-hair.
   */
   inline void setTargetSelectionFor(Creature *c) { targetSelectionFor = c; sdlHandler->setCursorMode(targetSelectionFor ? Constants::CURSOR_CROSSHAIR : Constants::CURSOR_NORMAL); }
-  
+
   /**
     @return who the current target mode is activated for. (ie. the spellcaster)
   */
@@ -458,7 +458,7 @@ public:
 	void showGui();
 
 	void showLevelInfo();
-  
+
   // initialization events
   void initStart(int statusCount, char *message);
   void initUpdate(char *message);
@@ -513,8 +513,7 @@ public:
   void removeBattle(Battle *battle);
 
   inline bool inTurnBasedCombat() {
-    return (battleTurn < (int)battleRound.size() && 
-            getUserConfiguration()->isBattleTurnBased());
+    return (battleTurn < static_cast<int>(battleRound.size()) && getUserConfiguration()->isBattleTurnBased());
   }
 
   inline UserConfiguration *getUserConfiguration() { return (UserConfiguration*)getPreferences(); }
@@ -667,7 +666,7 @@ protected:
 protected:
 
 	void initChapterIntro();
-  
+
 	bool describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull );
 
   char *getAPRDescription( Creature *p, Item *item, char *buff, size_t buffSize );
@@ -784,8 +783,8 @@ protected:
   MapWidget *mapWidget;
 
   Progress *progress;
-  bool inBattle;  
-  
+  bool inBattle;
+
   TradeDialog *tradeDialog;
   HealDialog *healDialog;
   DonateDialog *donateDialog;
@@ -820,7 +819,7 @@ protected:
 	Button *beginChapter, *replayIntro;
 
 	std::vector<MovingDoor> movingDoors;
-  
+
 };
 
 #endif

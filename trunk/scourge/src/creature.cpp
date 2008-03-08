@@ -397,7 +397,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
 
   // inventory
   //creature->inventory_count = info->inventory_count;
-  for(int i = 0; i < (int)info->inventory_count; i++) {
+  for(int i = 0; i < static_cast<int>(info->inventory_count); i++) {
     Item *item = Item::load( session, info->inventory[i] );
     if(item) creature->addInventory( item, true );
   }
@@ -414,7 +414,7 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
     creature->portraitTextureIndex = session->getShapePalette()->getPortraitCount( creature->getSex() ) - 1;
 
   // spells
-  for(int i = 0; i < (int)info->spell_count; i++) {
+  for(int i = 0; i < static_cast<int>(info->spell_count); i++) {
     Spell *spell = Spell::getSpellByName( (char*)info->spell_name[i] );
     creature->addSpell( spell );
   }
@@ -766,8 +766,8 @@ Location *Creature::takeAStepOnPath() {
     int cy = toint(newY); //current x,y    
     
     GLfloat step = getStep();
-    float targetX = (float)(location.x);
-    float targetY = (float)(location.y); 
+    float targetX = static_cast<float>(location.x);
+    float targetY = static_cast<float>(location.y); 
 
     //get the direction to the target location
     float diffX = targetX - newX; //distance between creature's (continuous) location and the target (discrete) location
@@ -839,7 +839,7 @@ void Creature::computeAngle( GLfloat newX, GLfloat newY ) {
   if( pathManager->atStartOfPath() || a != wantedAngle ) {
     wantedAngle = a;
     GLfloat diff = Util::diffAngle( a, angle );
-    angleStep = diff / (float)TURN_STEP_COUNT;
+    angleStep = diff / static_cast<float>(TURN_STEP_COUNT);
   }
   
   if( fabs(angle - wantedAngle) > 2.0f ) {
@@ -894,7 +894,7 @@ bool Creature::anyMovesLeft() {
 
 
 float Creature::getMaxInventoryWeight() { 
-  return (float) getSkill(Skill::POWER) * 2.5f;
+  return static_cast<float>(getSkill(Skill::POWER)) * 2.5f;
 }  
 
 void Creature::pickUpOnMap( RenderedItem *item ) {
@@ -1146,17 +1146,12 @@ void Creature::usePotion(Item *item) {
     // add calendar event to remove armor bonus
     // (format : sec, min, hours, days, months, years)
     Date d(0, item->getRpgItem()->getPotionTime() + item->getLevel(), 0, 0, 0, 0); 
-    Event *e = 
-    new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), 
-                              d, this, item, session, 1);
+    Event *e = new PotionExpirationEvent(session->getParty()->getCalendar()->getCurrentDate(), d, this, item, session, 1);
     session->getParty()->getCalendar()->scheduleEvent((Event*)e);   // It's important to cast!!
   }
 }
 
-void Creature::setAction(int action, 
-                         Item *item, 
-                         Spell *spell,
-                         SpecialSkill *skill) {
+void Creature::setAction(int action, Item *item, Spell *spell, SpecialSkill *skill) {
   this->action = action;
   this->actionItem = item;
   this->actionSpell = spell;
@@ -1251,8 +1246,7 @@ void Creature::equipInventory( int index, int locationHint ) {
 				setSkillBonus(skill, getSkillBonus(skill) + bonus);
 			}
 			// if armor, enhance magic resistance
-			if(!item->getRpgItem()->isWeapon() && 
-				 item->getSchool()) {
+			if(!item->getRpgItem()->isWeapon() && item->getSchool()) {
 				int skill = item->getSchool()->getResistSkill();
 				setSkillBonus(skill, getSkillBonus(skill) + item->getMagicResistance());
 			}
@@ -1303,8 +1297,7 @@ int Creature::doff(int index) {
           setSkillBonus(skill, getSkillBonus(skill) - bonus);
         }
         // if armor, enhance magic resistance
-        if(!item->getRpgItem()->isWeapon() && 
-           item->getSchool()) {
+        if(!item->getRpgItem()->isWeapon() && item->getSchool()) {
           int skill = item->getSchool()->getResistSkill();
           setSkillBonus(skill, getSkillBonus(skill) - item->getMagicResistance());
         }
@@ -1367,8 +1360,7 @@ bool Creature::isEquipped( int inventoryIndex ) {
 bool Creature::removeCursedItems() {
   bool found = false;
   for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
-    if( equipped[i] < MAX_INVENTORY_SIZE &&
-        inventory[ equipped[i] ]->isCursed() ) {
+    if( equipped[i] < MAX_INVENTORY_SIZE && inventory[ equipped[i] ]->isCursed() ) {
       found = true;
       // not the most efficient way to do this, but it works...
       doff( equipped[i] );
@@ -1397,8 +1389,7 @@ bool Creature::isItemInInventory(Item *item) {
 	// return( getInventoryInfo( item ) ? true : false );
 	
   for(int i = 0; i < inventory_count; i++) {
-    if(inventory[i] == item || 
-       (inventory[i]->getRpgItem()->getType() == RpgItem::CONTAINER &&
+    if(inventory[i] == item || (inventory[i]->getRpgItem()->getType() == RpgItem::CONTAINER &&
         inventory[i]->isContainedItem(item)))
       return true;
   }
@@ -1465,8 +1456,7 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
   Item *ret = NULL;
 
   // for TB combat for players, respect the current weapon
-  if( session->getPreferences()->isBattleTurnBased() &&
-      !isMonster() ) {
+  if( session->getPreferences()->isBattleTurnBased() && !isMonster() ) {
     ret = ( preferredWeapon > -1 ? getItemAtLocation( preferredWeapon ) : NULL );
   } else {
     int location[] = { 
@@ -1503,16 +1493,15 @@ int Creature::getInitiative( int *max ) {
 // it is a function of speed, level, and weapon skill
 // this method returns a number from 1-10
 int Creature::getMaxProjectileCount(Item *item) {
-  int n = (int)((double)(getSkill(Skill::SPEED) + 
-                         (getLevel() * 10) + 
-                         getSkill(item->getRpgItem()->getDamageSkill())) / 30.0f);
-  if(n <= 0) n = 1;
-  return n;
+	int n = static_cast<int>(static_cast<double>(getSkill(Skill::SPEED) + (getLevel() * 10) +
+					getSkill(item->getRpgItem()->getDamageSkill())) / 30.0f);
+	if(n <= 0)
+		n = 1;
+	return n;
 }
 
 vector<RenderedProjectile*> *Creature::getProjectiles() {
-	map<RenderedCreature*, vector<RenderedProjectile*>*> *m =
-		RenderedProjectile::getProjectileMap();
+	map<RenderedCreature*, vector<RenderedProjectile*>*> *m = RenderedProjectile::getProjectileMap();
 	return( m->find( this ) == m->end() ? NULL : (*m)[ (RenderedCreature*)this ] );
 }
 
@@ -1531,7 +1520,7 @@ bool Creature::takeDamage( float damage,
   if(hp > 0) {
     startEffect(effect_type);
     int pain = Util::dice(  3 );
-    getShape()->setCurrentAnimation(pain == 0 ? (int)MD2_PAIN1 : (pain == 1 ? (int)MD2_PAIN2 : (int)MD2_PAIN3));
+    getShape()->setCurrentAnimation(pain == 0 ? static_cast<int>(MD2_PAIN1) : (pain == 1 ? static_cast<int>(MD2_PAIN2) : static_cast<int>(MD2_PAIN3)));
   } else if(effect_type != Constants::EFFECT_GLOW) {
     session->getMap()->startEffect( toint(getX()), toint(getY() - this->getShape()->getDepth() + 1), toint(getZ()), 
                                     effect_type, (Constants::DAMAGE_DURATION * 4), 
@@ -1651,9 +1640,8 @@ void Creature::monsterInit() {
     //int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );
 		int n;
 		if( Skill::skills[i]->getGroup()->isStat() ) {
-			//n = (int)( 19.0f * rand() / RAND_MAX ) + 1;
 			MonsterToughness *mt = &(monsterToughness[ session->getPreferences()->getMonsterToughness() ]);
-			n = (int)( 20.0f * Util::roll( mt->minSkillBase, mt->maxSkillBase ) );
+			n = static_cast<int>( 20.0f * Util::roll( mt->minSkillBase, mt->maxSkillBase ) );
 		} else {
 
 			// create the starting value as a function of the stats
@@ -1662,8 +1650,8 @@ void Creature::monsterInit() {
 				int index = Skill::skills[i]->getPreReqStat( t )->getIndex();
 				n += getSkill( index );
 			}
-			n = (int)( ( n / (float)( Skill::skills[i]->getPreReqStatCount() ) ) * 
-								 (float)( Skill::skills[i]->getPreReqMultiplier() ) );
+			n = static_cast<int>( ( n / static_cast<float>( Skill::skills[i]->getPreReqStatCount() ) ) * 
+								 static_cast<float>( Skill::skills[i]->getPreReqMultiplier() ) );
 		}
 
 		// special: adjust magic resistance... makes game too hard otherwise
@@ -1720,14 +1708,12 @@ void Creature::monsterInit() {
   }
 
   // add some hp and mp
-  float n = (float)( monster->getHp() * ( level + 2 ) );
-  //startingHp = hp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
-  startingHp = hp = (int)( n * Util::roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
+  float n = static_cast<float>( monster->getHp() * ( level + 2 ) );
+  startingHp = hp = static_cast<int>( n * Util::roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
                                      monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxHpMpBase ) );
 
-  n = (float)( monster->getMp() * ( level + 2 ) );
-  //startingMp = mp = (int)( n * ( ( 0.3f * rand() / RAND_MAX ) + 0.7f ) );
-  startingMp = mp = (int)( n * Util::roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
+  n = static_cast<float>( monster->getMp() * ( level + 2 ) );
+  startingMp = mp = static_cast<int>( n * Util::roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
                                      monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxHpMpBase ) );
 }
 
@@ -1758,7 +1744,7 @@ float Creature::getTargetAngle() {
 
 // FIXME: O(n) but there aren't that many spells...
 bool Creature::isSpellMemorized(Spell *spell) {
-  for(int i = 0; i < (int)spells.size(); i++) {
+  for(int i = 0; i < static_cast<int>(spells.size()); i++) {
     if(spells[i] == spell) return true;
   }
   return false;
@@ -1842,13 +1828,9 @@ bool Creature::isWithPrereq( Spell *spell ) {
     switch( spell->getStateModPrereq() ) {
     case Constants::HP:
       //cerr << "\tisWithPrereq: " << getName() << " max hp=" << getMaxHp() << " hp=" << getHp() << endl;
-      return( getHp() <= (int)( (float)( getMaxHp() ) * 0.25f ) ? 
-              true : 
-              false );
+      return( getHp() <= static_cast<int>( static_cast<float>( getMaxHp() ) * 0.25f ));
     case Constants::MP:
-      return( getMp() <= (int)( (float)( getMaxMp() ) * 0.25f ) ? 
-              true : 
-              false );
+      return( getMp() <= static_cast<int>( static_cast<float>( getMaxMp() ) * 0.25f ));
     case Constants::AC:
       /*
       Even if needed only cast it 1 out of 4 times.
@@ -1895,7 +1877,7 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
   // find the closest one that is closer than 20 spaces away.
   Creature *closest = NULL;
   float closestDist = 0;
-  for( int i = 0; i < (int)possibleTargets.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(possibleTargets.size()); i++ ) {
     Creature *p = possibleTargets[ i ];
     float dist = 
       Constants::distance( getX(),  getY(), 
@@ -2111,7 +2093,7 @@ void Creature::setExp() {
 
 GLfloat Creature::getStep() {
   GLfloat fps = session->getGameAdapter()->getFps();
-  GLfloat div = FPS_ONE + (float)( ( 4 - session->getPreferences()->getGameSpeedLevel() ) * 3.0f);
+  GLfloat div = FPS_ONE + static_cast<float>( ( 4 - session->getPreferences()->getGameSpeedLevel() ) * 3.0f);
   if( fps < div ) return 0.8f;
   GLfloat step = 1.0f / ( fps / div  ); 
   if( pathManager->getSpeed() <= 0 ) {
@@ -2172,7 +2154,7 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
 
     // equip merchants at the party's level
     int level = ( session->getParty() ? 
-                  toint(((float)(session->getParty()->getTotalLevel())) / ((float)(session->getParty()->getPartySize()))) : 
+                  toint((static_cast<float>(session->getParty()->getTotalLevel())) / (static_cast<float>(session->getParty()->getPartySize()))) : 
                   getLevel() );
     if( level < 0 ) level = 1;
 
@@ -2291,10 +2273,10 @@ void Creature::skillChanged( int index, int oldValue, int newValue ) {
 					newPrereq += getSkill( statIndex );
 				}
 			}
-			oldPrereq = (int)( ( oldPrereq / (float)( Skill::skills[i]->getPreReqStatCount() ) ) * 
-												 (float)( Skill::skills[i]->getPreReqMultiplier() ) );
-			newPrereq = (int)( ( newPrereq / (float)( Skill::skills[i]->getPreReqStatCount() ) ) * 
-												 (float)( Skill::skills[i]->getPreReqMultiplier() ) );
+			oldPrereq = static_cast<int>( ( oldPrereq / static_cast<float>( Skill::skills[i]->getPreReqStatCount() ) ) * 
+												 static_cast<float>( Skill::skills[i]->getPreReqMultiplier() ) );
+			newPrereq = static_cast<int>( ( newPrereq / static_cast<float>( Skill::skills[i]->getPreReqStatCount() ) ) * 
+												 static_cast<float>( Skill::skills[i]->getPreReqMultiplier() ) );
 			if( oldPrereq != newPrereq ) {
 				setSkill( i, getSkill( i ) + ( newPrereq - oldPrereq ) );
 				armorChanged = true;
@@ -2861,8 +2843,7 @@ float Creature::rollMagicDamagePercent( Item *item ) {
 }
 
 float Creature::getMaxAP( ) { 
-	return( (float)( getSkill( Skill::COORDINATION ) ) +
-					(float)( getSkill( Skill::SPEED ) ) ) / 2.0f;
+	return( static_cast<float>( getSkill( Skill::COORDINATION ) ) + static_cast<float>( getSkill( Skill::SPEED ) ) ) / 2.0f;
 }
 
 float Creature::getAttacksPerRound( Item *item ) {
@@ -2917,31 +2898,33 @@ char *Creature::canEquipItem( Item *item, bool interactive ) {
 }
 
 void Creature::setCharacter( Character *c ) {
-  assert( !isMonster() );  
+	assert( !isMonster() );
 	character = c;
 }
 
 void Creature::playCharacterSound( int soundType ) {
-  if( !monster ) session->getSound()->playCharacterSound( model_name, soundType );
+	if( !monster )
+		session->getSound()->playCharacterSound( model_name, soundType );
 }
 
 bool Creature::rollSkill( int skill, float luckDiv ) {
-  float f = (float)( getSkill( skill ) );
-  if( luckDiv > 0 ) f += (float)( getSkill( Skill::LUCK ) ) / luckDiv;
-  return( Util::roll( 0.0f, 100.0f ) <= f );
-}             
+	float f = static_cast<float>( getSkill( skill ) );
+	if( luckDiv > 0 )
+		f += static_cast<float>( getSkill( Skill::LUCK ) ) / luckDiv;
+	return( Util::roll( 0.0f, 100.0f ) <= f );
+}
 
 #define SECRET_DOOR_ATTEMPT_INTERVAL 5000
 bool Creature::rollSecretDoor( Location *pos ) {
-  if( secretDoorAttempts.find( pos ) != secretDoorAttempts.end() ) {
-    Uint32 lastTime = secretDoorAttempts[ pos ];
-    if( SDL_GetTicks() - lastTime < SECRET_DOOR_ATTEMPT_INTERVAL ) return false;
-  }
-  bool ret = rollSkill( Skill::FIND_SECRET_DOOR, 4.0f );
-  if( !ret ) {
-    secretDoorAttempts[ pos ] = SDL_GetTicks();
-  }
-  return ret;
+	if( secretDoorAttempts.find( pos ) != secretDoorAttempts.end() ) {
+		Uint32 lastTime = secretDoorAttempts[ pos ];
+		if( SDL_GetTicks() - lastTime < SECRET_DOOR_ATTEMPT_INTERVAL ) return false;
+	}
+	bool ret = rollSkill( Skill::FIND_SECRET_DOOR, 4.0f );
+	if( !ret ) {
+		secretDoorAttempts[ pos ] = SDL_GetTicks();
+	}
+	return ret;
 }
 
 void Creature::resetSecretDoorAttempts() {
@@ -3017,7 +3000,7 @@ void Creature::evalTrap() {
     if( trap->enabled ) {
       trap->discovered = true;
       trap->enabled = false;
-      int damage = (int)Util::getRandomSum( 10, session->getCurrentMission()->getLevel() );
+      int damage = static_cast<int>(Util::getRandomSum( 10, session->getCurrentMission()->getLevel() ));
       char message[ 120 ];
       snprintf( message, 120, _( "%1$s blunders into a trap and takes %2$d points of damage!" ), getName(), damage );
 			session->getSound()->playSound( "trigger-trap" );
@@ -3039,10 +3022,10 @@ void Creature::disableTrap( Trap *trap ) {
 		if( ret ) {
 			session->getGameAdapter()->addDescription( _( "   and succeeds!" ) );
 			session->getSound()->playSound( "disarm-trap" );
-			int exp = (int)Util::getRandomSum( 50, session->getCurrentMission()->getLevel() );
+			int exp = static_cast<int>(Util::getRandomSum( 50, session->getCurrentMission()->getLevel() ));
 			addExperienceWithMessage( exp );
 		} else {
-			int damage = (int)Util::getRandomSum( 10, session->getCurrentMission()->getLevel() );
+			int damage = static_cast<int>(Util::getRandomSum( 10, session->getCurrentMission()->getLevel() ));
 			char message[ MSG_SIZE ];
 			snprintf( message, MSG_SIZE, _( "    and fails! %1$s takes %2$d points of damage!" ), getName(), damage );
 			session->getSound()->playSound( "trigger-trap" );

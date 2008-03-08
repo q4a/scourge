@@ -66,16 +66,16 @@ bool GetCloseGoal::fulfilledBy( CPathNode * node){
  * Get a certain distance from a location.
  **/
 GetAwayGoal::GetAwayGoal(int x, int y, float distance){
-  this->x = x; 
-  this->y = y;
-  this->distance = distance;
+	this->x = x; 
+	this->y = y;
+	this->distance = distance;
 }
 GetAwayGoal::~GetAwayGoal(){}
 
 bool GetAwayGoal::fulfilledBy( CPathNode * node){
-  int dx = node->x - x;
-  int dy = node->y - y;
-  return distance < sqrt((float)(dx*dx + dy*dy));
+	int dx = node->x - x;
+	int dy = node->y - y;
+	return distance < sqrt(dx*dx + dy*dy);
 }
 
 /**
@@ -159,7 +159,7 @@ DistanceAwayHeuristic::~DistanceAwayHeuristic(){}
 double DistanceAwayHeuristic::heuristic( CPathNode * node){
   int dx = node->x - x;
   int dy = node->y - y;
-  return -sqrt((float)(dx*dx + dy*dy))*1.001;  //the extra 0.001 is a tweak to make farther away paths get checked first
+  return -sqrt(dx*dx + dy*dy)*1.001;  //the extra 0.001 is a tweak to make farther away paths get checked first
 }
 
 
@@ -434,20 +434,20 @@ bool AStar::isBlocked( Sint16 x, Sint16 y,
 }
 
 // is the a's final position out of the way of b's current location?
-bool AStar::isOutOfTheWay( Creature *a, vector<Location> *aPath, int aStart,
-                           Creature *b, vector<Location> *bPath, int bStart ) {
-	if( !( aPath && aStart < (int)aPath->size() ) ||
-			!( bPath && bStart < (int)bPath->size() ) ) return false;
+bool AStar::isOutOfTheWay( Creature *a, vector<Location> *aPath, int aStart, Creature *b, vector<Location> *bPath, int bStart ) {
+
+	if( !( aPath && aStart < static_cast<int>(aPath->size()) ) || !( bPath && bStart < static_cast<int>(bPath->size()) ) )
+		return false;
+
 	Location aLast = (*aPath)[ aPath->size() - 1 ];
 	Location bCurrent = (*bPath)[ bStart ];
-	return 
-		SDLHandler::intersects( aLast.x - a->getShape()->getWidth() / 2, 
-                                        aLast.y - a->getShape()->getDepth() / 2, 
-                                        a->getShape()->getWidth(), 
-                                        a->getShape()->getDepth(),
-                                        bCurrent.x - b->getShape()->getWidth() / 2, 
-                                        bCurrent.y - b->getShape()->getDepth() / 2, 
-                                        b->getShape()->getWidth(), 
-                                        b->getShape()->getDepth() );
+	return SDLHandler::intersects( aLast.x - a->getShape()->getWidth() / 2, 
+                                 aLast.y - a->getShape()->getDepth() / 2, 
+                                 a->getShape()->getWidth(), 
+                                 a->getShape()->getDepth(),
+                                 bCurrent.x - b->getShape()->getWidth() / 2, 
+                                 bCurrent.y - b->getShape()->getDepth() / 2, 
+                                 b->getShape()->getWidth(), 
+                                 b->getShape()->getDepth() );
 }
 

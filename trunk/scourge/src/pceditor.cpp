@@ -152,7 +152,7 @@ void PcEditor::loadUI() {
 		male->setSelected( creature->getSex() == Constants::SEX_MALE ? true : false );
 		female->setSelected( male->isSelected() ? false : true );
 
-		for(int i = 0; i < (int)Character::rootCharacters.size(); i++) {
+		for(int i = 0; i < static_cast<int>(Character::rootCharacters.size()); i++) {
 			if( Character::rootCharacters[i] == creature->getCharacter() ) {
 				charType->setSelectedLine( i );
 				break;
@@ -164,7 +164,7 @@ void PcEditor::loadUI() {
 		enum { MSG_SIZE = 300 };
 		char message[ MSG_SIZE ];
 		int n = 0;
-		for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
+		for( int i = 0; n < 10 && i < static_cast<int>(Skill::skills.size()); i++ ) {
 			Skill *sk = Skill::skills[i];
 			if( sk->getGroup()->isStat() ) {
 				snprintf( message, MSG_SIZE, "%d (%d)", creature->getSkill( i ), creature->getSkillMod( i ) );
@@ -196,7 +196,7 @@ void PcEditor::loadUI() {
 	} else {
 		nameField->setText( "" );
 		int n = 0;
-		for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
+		for( int i = 0; n < 10 && i < static_cast<int>(Skill::skills.size()); i++ ) {
 			Skill *sk = Skill::skills[i];
 			if( sk->getGroup()->isStat() ) {
 				skillValue[n++]->setText( "" );
@@ -224,8 +224,8 @@ void PcEditor::rollSkillsForCreature( Creature *c ) {
 				int index = Skill::skills[i]->getPreReqStat( t )->getIndex();
 				n += c->getSkill( index );
 			}
-			n = (int)( ( n / (float)( Skill::skills[i]->getPreReqStatCount() ) ) * 
-								 (float)( Skill::skills[i]->getPreReqMultiplier() ) );
+			n = static_cast<int>( ( n / static_cast<float>( Skill::skills[i]->getPreReqStatCount() ) ) * 
+														static_cast<float>( Skill::skills[i]->getPreReqMultiplier() ) );
 		}
 		c->setSkill( i, n );
 		c->setSkillMod( i, 0 );
@@ -358,7 +358,7 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		free( s );
   } else {
     int n = 0;
-    for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
+    for( int i = 0; n < 10 && i < static_cast<int>(Skill::skills.size()); i++ ) {
       Skill *sk = Skill::skills[i];
       if( sk->getGroup()->isStat() ) {
         if( widget == skillMinus[n] ) {
@@ -499,10 +499,10 @@ weaknesses of each profession." ),
 																scourge->getShapePalette()->getHighlightTexture() );
   cards->addWidget( charType, CLASS_TAB );
 	charTypeStr = new string[ Character::rootCharacters.size() ];
-  for(int i = 0; i < (int)Character::rootCharacters.size(); i++) {
+  for(int i = 0; i < static_cast<int>(Character::rootCharacters.size()); i++) {
 		charTypeStr[i] = Character::rootCharacters[i]->getDisplayName();
   }
-  charType->setLines( (int)Character::rootCharacters.size(), charTypeStr );
+  charType->setLines( static_cast<int>(Character::rootCharacters.size()), charTypeStr );
   int charIndex = Util::dice( Character::rootCharacters.size() );
   charType->setSelectedLine( charIndex );
   charTypeDescription = new ScrollingLabel( secondColStart, 230, 
@@ -517,7 +517,7 @@ weaknesses of each profession." ),
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 	int n = 0;
-	for( int i = 0; n < 10 && i < (int)Skill::skills.size(); i++ ) {
+	for( int i = 0; n < 10 && i < static_cast<int>(Skill::skills.size()); i++ ) {
 		Skill *skill = Skill::skills[i];
 		if( skill->getGroup()->isStat() ) {
 			y = 60 + n * buttonHeight;

@@ -132,11 +132,11 @@ void TextEffect::drawEffect( float divisor, int count ) {
 										y + particle[i].y, 0 );
 			glBindTexture( GL_TEXTURE_2D, texture[0] );
 			
-			float a = (float)( MAX_PARTICLE_LIFE - particle[i].life ) / (float)( MAX_PARTICLE_LIFE );
+			float a = static_cast<float>( MAX_PARTICLE_LIFE - particle[i].life ) / static_cast<float>( MAX_PARTICLE_LIFE );
 			//if( i == 0 ) cerr << "life=" << particle[i].life << " a=" << a << endl;
-			glColor4f( (float)( particle[i].r ) / ( 256.0f * divisor ), 
-								 (float)( particle[i].g ) / ( 256.0f * divisor ), 
-								 (float)( particle[i].b ) / ( 256.0f * divisor ), 
+			glColor4f( static_cast<float>( particle[i].r ) / ( 256.0f * divisor ), 
+								 static_cast<float>( particle[i].g ) / ( 256.0f * divisor ), 
+								 static_cast<float>( particle[i].b ) / ( 256.0f * divisor ), 
 								 a / divisor );
 			
 			glBegin( GL_QUADS );
@@ -184,7 +184,7 @@ void TextEffect::buildTextures() {
   glGenTextures(1, texture);    
   glBindTexture(GL_TEXTURE_2D, texture[0]); 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // filtre appliquÿ a la texture
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // filtre appliquï¿½ a la texture
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 

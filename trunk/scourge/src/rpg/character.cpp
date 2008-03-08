@@ -69,7 +69,7 @@ void Character::initCharacters() {
 					 e != skillNode->getValues()->end(); ++e ) {
 				string name = e->first;
 				ConfigValue *value = e->second;
-				last->skills[ Skill::getSkillByName( name.c_str() )->getIndex() ] = (int)value->getAsFloat();
+				last->skills[ Skill::getSkillByName( name.c_str() )->getIndex() ] = static_cast<int>(value->getAsFloat());
 			}
 		}
 		vv = node->getChildrenByName( "groups" );
@@ -81,7 +81,7 @@ void Character::initCharacters() {
 				ConfigValue *value = e->second;
 				SkillGroup *group = SkillGroup::getGroupByName( name.c_str() );
 				for( int i = 0; i < group->getSkillCount(); i++ ) {
-					last->skills[ group->getSkill( i )->getIndex() ] = (int)value->getAsFloat();
+					last->skills[ group->getSkill( i )->getIndex() ] = static_cast<int>(value->getAsFloat());
 				}
 			}
 		}
@@ -131,19 +131,18 @@ Character::~Character(){
 
 #define MIN_STARTING_MP 2
 void Character::buildTree() {
-  for( int i = 0; i < (int)character_list.size(); i++ ) {
-    Character *c = character_list[i];
+	for( int i = 0; i < static_cast<int>(character_list.size()); i++ ) {
+		Character *c = character_list[i];
 		c->describeProfession();
-    if( c->getParentName() ) {
-      c->parent = getCharacterByName( c->getParentName() );
-      if( !c->parent ) {
-        cerr << "Error: Can't find parent: " << c->getParentName() << 
-          " for character " << c->getName() << endl;
-        exit( 1 );
-      }
+		if( c->getParentName() ) {
+			c->parent = getCharacterByName( c->getParentName() );
+			if( !c->parent ) {
+				cerr << "Error: Can't find parent: " << c->getParentName() << " for character " << c->getName() << endl;
+				exit( 1 );
+			}
 			// inherit some stats
 			c->startingHp = c->parent->startingHp;
-			c->startingMp = c->parent->startingMp;			
+			c->startingMp = c->parent->startingMp;
 			if( c->startingMp <= 0 ) {
 				// sanity check: if skills include a magic skill, add min. amount of MP
 				for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
@@ -158,11 +157,11 @@ void Character::buildTree() {
 				}
 			}
 			c->level_progression = c->parent->level_progression;
-      c->parent->children.push_back( c );
-    } else {
-      rootCharacters.push_back( c );
-    }
-  }
+			c->parent->children.push_back( c );
+		} else {
+			rootCharacters.push_back( c );
+		}
+	}
 }
 
 #define ITEM_TYPE_WEAPON 0

@@ -118,7 +118,7 @@ void TextScroller::draw() {
     glVertex2d( SCROLL_WIDTH + margin - 7, 10 );
     glVertex2d( SCROLL_WIDTH + margin - 7, height );
 		glEnd();
-		int ypos = (int)( ( lineOffset * ( height - 10 ) ) / (float)( text.size() - 1 ) );
+		int ypos = static_cast<int>( ( lineOffset * ( height - 10 ) ) / static_cast<float>( text.size() - 1 ) );
 		glBegin( GL_QUADS );
 		glVertex2d( SCROLL_WIDTH + margin - 10, height - ( ypos + 10 ) );
     glVertex2d( SCROLL_WIDTH + margin - 10, height - ypos );
@@ -137,12 +137,12 @@ void TextScroller::draw() {
 	int x = 0;
 	int y = height - currentOffset;
 	// cerr << "text.size=" << text.size() << endl;
-	for( unsigned int i = lineOffset; (int)i < lineOffset + LINES_SHOWN && i < text.size(); i++ ) {
+	for( unsigned int i = lineOffset; static_cast<int>(i) < lineOffset + LINES_SHOWN && i < text.size(); i++ ) {
 		if( text[ i ] != "" ) {
 			Color *c = color[ i ];
       float a;
       if( inside ) a = 1;
-      else a = c->a * ( ( LINES_SHOWN - ( ( i - lineOffset ) + ( currentOffset / (float)LINE_HEIGHT ) ) ) / (float)LINES_SHOWN );
+      else a = c->a * ( ( LINES_SHOWN - ( ( i - lineOffset ) + ( currentOffset / static_cast<float>(LINE_HEIGHT) ) ) ) / static_cast<float>(LINES_SHOWN) );
 			glColor4f( c->r, c->g, c->b, a  );
 			scourge->getSDLHandler()->texPrint( x, y, text[ i ].c_str() );
 		}
@@ -183,7 +183,7 @@ bool TextScroller::handleEvent( SDL_Event *event ) {
 		if( inside ) {
 			if( event->button.button == SDL_BUTTON_WHEELUP ) {
 				lineOffset++;
-				if( lineOffset + LINES_SHOWN >= (int)text.size() ) {
+				if( lineOffset + LINES_SHOWN >= static_cast<int>(text.size()) ) {
 					lineOffset = text.size() - LINES_SHOWN + 1;
 				}
 			} else if( event->button.button == SDL_BUTTON_WHEELDOWN ) {

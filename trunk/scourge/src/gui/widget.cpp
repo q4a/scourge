@@ -467,9 +467,9 @@ void Widget::drawBorderedTexture( GLuint texture, int x, int y, int width, int h
   glBegin( GL_QUADS );
   if( inverse ) {
     // quad A
-    glTexCoord2f( (float)left / (float)textureWidth, 1 );
+    glTexCoord2f( static_cast<float>(left) / static_cast<float>(textureWidth), 1 );
     glVertex3f( 0, 0, 0 );
-    glTexCoord2f( (float)left / (float)textureWidth, 0 );
+    glTexCoord2f( static_cast<float>(left) / static_cast<float>(textureWidth), 0 );
     glVertex3f( 0, height, 0);
     glTexCoord2f( 0, 0 );    
     glVertex3f( left, height, 0 );
@@ -477,13 +477,13 @@ void Widget::drawBorderedTexture( GLuint texture, int x, int y, int width, int h
     glVertex3f( left, 0, 0 );
   
     // quad B
-    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
+    glTexCoord2f( 1.0f - (static_cast<float>(right) / static_cast<float>(textureWidth)), 1 );
     glVertex3f( left, 0, 0 );
-    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
+    glTexCoord2f( 1.0f - (static_cast<float>(right) / static_cast<float>(textureWidth)), 0 );
     glVertex3f( left, height, 0);
-    glTexCoord2f( (float)left / (float)textureWidth, 0 );    
+    glTexCoord2f( static_cast<float>(left) / static_cast<float>(textureWidth), 0 );
     glVertex3f( width - right, height, 0 );
-    glTexCoord2f( (float)left / (float)textureWidth, 1 );    
+    glTexCoord2f( static_cast<float>(left) / static_cast<float>(textureWidth), 1 );
     glVertex3f( width - right, 0, 0 );
   
     // quad C
@@ -491,9 +491,9 @@ void Widget::drawBorderedTexture( GLuint texture, int x, int y, int width, int h
     glVertex3f( width - right, 0, 0 );
     glTexCoord2f( 1, 0 );
     glVertex3f( width - right, height, 0);
-    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
+    glTexCoord2f( 1.0f - (static_cast<float>(right) / static_cast<float>(textureWidth)), 0 );
     glVertex3f( width, height, 0 );
-    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
+    glTexCoord2f( 1.0f - (static_cast<float>(right) / static_cast<float>(textureWidth)), 1 );
     glVertex3f( width, 0, 0 );
   } else {
     // quad A
@@ -501,25 +501,25 @@ void Widget::drawBorderedTexture( GLuint texture, int x, int y, int width, int h
     glVertex3f( 0, 0, 0 );
     glTexCoord2f( 0, 1 );
     glVertex3f( 0, height, 0);
-    glTexCoord2f( (float)left / (float)textureWidth, 1 );
+    glTexCoord2f( static_cast<float>(left) / static_cast<float>(textureWidth), 1 );
     glVertex3f( left, height, 0 );
-    glTexCoord2f( (float)left / (float)textureWidth, 0 );
+    glTexCoord2f( static_cast<float>(left) / static_cast<float>(textureWidth), 0 );
     glVertex3f( left, 0, 0 );
   
     // quad B
-    glTexCoord2f( (float)left / (float)textureWidth, 0 );
+    glTexCoord2f( static_cast<float>(left) / static_cast<float>(textureWidth), 0 );
     glVertex3f( left, 0, 0 );
-    glTexCoord2f( (float)left / (float)textureWidth, 1 );
+    glTexCoord2f( static_cast<float>(left) / static_cast<float>(textureWidth), 1 );
     glVertex3f( left, height, 0);
-    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
+    glTexCoord2f( 1.0f - (static_cast<float>(right) / static_cast<float>(textureWidth)), 1 );
     glVertex3f( width - right, height, 0 );
-    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
+    glTexCoord2f( 1.0f - (static_cast<float>(right) / static_cast<float>(textureWidth)), 0 );
     glVertex3f( width - right, 0, 0 );
   
     // quad C
-    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 0 );
+    glTexCoord2f( 1.0f - (static_cast<float>(right) / static_cast<float>(textureWidth)), 0 );
     glVertex3f( width - right, 0, 0 );
-    glTexCoord2f( 1.0f - ((float)right / (float)textureWidth), 1 );
+    glTexCoord2f( 1.0f - (static_cast<float>(right) / static_cast<float>(textureWidth)), 1 );
     glVertex3f( width - right, height, 0);
     glTexCoord2f( 1, 1 );
     glVertex3f( width, height, 0 );

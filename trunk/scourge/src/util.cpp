@@ -25,8 +25,8 @@ void Util::rotate(Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle) {
 	// convert to radians
 	angle = degreesToRadians(angle);
 	// rotate
-	float oldx = (float)(x);
-	float oldy = (float)(y);
+	float oldx = static_cast<float>(x);
+	float oldy = static_cast<float>(y);
 	*px = (Sint16)rint((oldx * cos(angle)) - (oldy * sin(angle)));
 	*py = (Sint16)rint((oldx * sin(angle)) + (oldy * cos(angle)));
 }
@@ -169,8 +169,8 @@ bool Util::isInFOV( float x, float y, float angle, float px, float py ) {
 }
 
 float Util::diffAngle(float a, float b) {
-//  a -= (((int)a / 360) * 360);
-//  b -= (((int)b / 360) * 360);
+//  a -= (static_cast<int>(a) / 360) * 360;
+//  b -= (static_cast<int>(b) / 360) * 360;
 	float diff = a - b;
 	if( diff > 180.0f ) {
 		diff = -(360.0f - diff);
@@ -274,7 +274,7 @@ char *Util::addLineBreaks( const char *in, char *out, int lineLength ) {
 	char *token = strtok( tmp, " \r\n\t" );
 	int count = 0;
 	while( token ) {
-		int len = (int)strlen( token );
+		int len = static_cast<int>(strlen( token ));
 		for( int i = len - 1; i >= 0; i-- ) {
 			if( token[i] == '|' ) {
 				count = len - i;
@@ -388,7 +388,7 @@ int Util::dice( int size ) {
 	if ( 0 >= size || size - 1 > RAND_MAX )
 	{
 	  std::cerr << "ERROR: Util::dice with size = " << size << " RAND_MAX=" << RAND_MAX << " +1=" << (RAND_MAX + 1) << endl;
-		return (int)roll( 0, size );
+		return static_cast<int>(roll( 0, size ));
 	}
 	do {
 		unsigned r = rand();

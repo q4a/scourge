@@ -56,7 +56,7 @@ To lexical_cast(From a)
 #ifdef HAVE_SDL_NET
 static void send_string(TCPsocket sock, const std::string &str) {	
 	cerr << "SENDING: " << str << endl;
-	if( SDLNet_TCP_Send( sock, (void *)str.c_str(), str.length() ) != (int)str.length() ) {
+	if( SDLNet_TCP_Send( sock, (void *)str.c_str(), str.length() ) != static_cast<int>(str.length()) ) {
 		throw error( "Bad write." );
 	}	
 }

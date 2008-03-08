@@ -42,11 +42,9 @@ class ConversationGui : public WordClickedHandler, WidgetView {
   bool useCreature;
   Label *label;
   ScrollingLabel *answer;
-  
+
   ScrollingList *list;
-  enum { MAX_WORDS = 1000 };
-  std::string words[ MAX_WORDS ];
-  int wordCount;
+	std::vector<std::string> words;
   TextField *entry;
   Canvas *canvas;
 

@@ -94,7 +94,7 @@ void Battle::reset( bool keepPaused, bool keepAP ) {
   if( !keepPaused ) this->paused = false;
   this->weaponWait = 0;
   this->range = 0.0f;
-  creature->getShape()->setCurrentAnimation((int)MD2_STAND);
+  creature->getShape()->setCurrentAnimation(static_cast<int>(MD2_STAND));
   ((AnimatedShape*)(creature->getShape()))->setAttackEffect(false);
 }
 
@@ -294,7 +294,7 @@ int Battle::calculateRange( Item *item ) {
     //range = MIN_DISTANCE;
     range = creature->getActionSpell()->getDistance();
   } else {
-    range = (int)MIN_DISTANCE;
+    range = static_cast<int>(MIN_DISTANCE);
     if(item) range = item->getRange();
   }
   return range;
@@ -315,7 +315,7 @@ int Battle::getAdjustedWait( int originalWait ) {
 																								item, 
 																								"waitHandlerItem" );
 	}
-	int newWait = (int)getSession()->getSquirrel()->getGlobalVariable( "turnWait" );
+	int newWait = static_cast<int>(getSession()->getSquirrel()->getGlobalVariable( "turnWait" ));
 	//if( originalWait != newWait ) {
 		//cerr << "turnWait was " << originalWait << " and now is " << newWait << endl;
 	//}
@@ -395,7 +395,7 @@ void Battle::executeAction() {
   } else {
     hitWithItem();
   }
-  creature->getShape()->setCurrentAnimation( (int)MD2_ATTACK, true );	  
+  creature->getShape()->setCurrentAnimation( static_cast<int>(MD2_ATTACK), true );
   ((AnimatedShape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
 
 	// pause after each hit
@@ -419,7 +419,7 @@ void Battle::stepCloserToTarget() {
   weaponWait = nextTurn = 0;
 
   // Set the movement mode; otherwise character won't move
-  creature->getShape()->setCurrentAnimation((int)MD2_RUN);
+  creature->getShape()->setCurrentAnimation(static_cast<int>(MD2_RUN));
 
   if(debugBattle) cerr << "\t\tTaking a step." << endl;
   if(creature->getTargetCreature()) {
@@ -522,9 +522,9 @@ bool Battle::moveCreature() {
 
   // Set the movement mode; otherwise character won't move
   if(creature->anyMovesLeft()) {
-    creature->getShape()->setCurrentAnimation((int)MD2_RUN);
+    creature->getShape()->setCurrentAnimation(static_cast<int>(MD2_RUN));
   } else {
-    creature->getShape()->setCurrentAnimation((int)MD2_STAND);
+    creature->getShape()->setCurrentAnimation(static_cast<int>(MD2_STAND));
   }
 
   // take 1 step closer
@@ -1093,7 +1093,7 @@ float Battle::applyMagicItemSpellDamage() {
       getSkill( item->getSchool()->getResistSkill() );
 
     // reduce the magic attack by the resistance %.
-    damage -= (damage / 100.0f) * (float)resistance;
+    damage -= (damage / 100.0f) * static_cast<float>(resistance);
     if( damage < 0 ) damage = 0;
 
     char msg[ MESSAGE_SIZE ];
@@ -1243,8 +1243,7 @@ void Battle::hitWithItem() {
 		}
 	} else {
 		// a miss
-		snprintf(message, MESSAGE_SIZE, _( "...%s misses the target." ), 
-						creature->getName() );
+		snprintf(message, MESSAGE_SIZE, _( "...%s misses the target." ), creature->getName() );
 		session->getGameAdapter()->addDescription(message);
 	}
 }
@@ -1252,36 +1251,34 @@ void Battle::hitWithItem() {
 void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) {
 
 	// monsters fight back
-	if( creature->getTargetCreature() &&
-			IS_AUTO_CONTROL( creature->getTargetCreature() ) &&
+	if( creature->getTargetCreature() && IS_AUTO_CONTROL( creature->getTargetCreature() ) &&
 			!creature->getTargetCreature()->hasTarget() ) {
-		if(debugBattle) cerr << creature->getTargetCreature()->getName() << 
-			" fights back!" << endl;
+		if(debugBattle)
+			cerr << creature->getTargetCreature()->getName() << " fights back!" << endl;
 		creature->getTargetCreature()->setTargetCreature( creature );
 	}
 
-  if( toint( damage ) > 0 ) {
-
-    // also affects spell attacks
-    float delta = creature->getDefenderStateModPercent(magical);
-    float extra = ((float)damage / 100.0f) * delta;
+	if( toint( damage ) > 0 ) {
+		// also affects spell attacks
+		float delta = creature->getDefenderStateModPercent(magical);
+		float extra = (static_cast<float>(damage) / 100.0f) * delta;
 		damage += extra;
 
-    snprintf(message, MESSAGE_SIZE, _( "...%s hits for %d points of damage" ), 
-						creature->getName(), toint( damage ) );
-    session->getGameAdapter()->addDescription(message, 1.0f, 0.5f, 0.5f);
-    
+		snprintf(message, MESSAGE_SIZE, _( "...%s hits for %d points of damage" ), creature->getName(), toint( damage ) );
+		session->getGameAdapter()->addDescription(message, 1.0f, 0.5f, 0.5f);
 
-    // play hit sound
-    if(damage > 0) {
-      if(creature->getTargetCreature()->isMonster()) {
-        char const*soundname = creature->getTargetCreature()->getMonster()->getRandomSound(Constants::SOUND_TYPE_HIT);
-		if (soundname) session->playSound(soundname);
-      } else {
-        //session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
-        creature->getTargetCreature()->playCharacterSound( GameAdapter::HIT_SOUND );
-      }
-    }
+
+		// play hit sound
+		if(damage > 0) {
+			if(creature->getTargetCreature()->isMonster()) {
+				char const*soundname = creature->getTargetCreature()->getMonster()->getRandomSound(Constants::SOUND_TYPE_HIT);
+				if (soundname)
+					session->playSound(soundname);
+			} else {
+				//session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
+				creature->getTargetCreature()->playCharacterSound( GameAdapter::HIT_SOUND );
+			}
+		}
 
     /*
 			Note: in case of a creature hitting itself (like a spell fumble)
@@ -1291,55 +1288,52 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 		Creature *tc = creature->getTargetCreature(); 
 
 		// target creature death
-    if( tc->takeDamage( toint( damage ), effect, delay ) ) {
-
+		if( tc->takeDamage( toint( damage ), effect, delay ) ) {
       // only in RT mode... otherwise in TB mode character won't move
-      if( !session->getPreferences()->isBattleTurnBased() )
-        creature->getShape()->setCurrentAnimation((int)MD2_TAUNT); 
+			if( !session->getPreferences()->isBattleTurnBased() )
+				creature->getShape()->setCurrentAnimation(static_cast<int>(MD2_TAUNT)); 
 
-      snprintf(message, MESSAGE_SIZE, _( "...%s is killed!" ), tc->getName());
-      session->getGameAdapter()->addDescription(message, 1.0f, 0.5f, 0.5f);
+			snprintf(message, MESSAGE_SIZE, _( "...%s is killed!" ), tc->getName());
+			session->getGameAdapter()->addDescription(message, 1.0f, 0.5f, 0.5f);
 			if( session->getParty()->isPartyMember( tc ) ) 
 				session->getGameAdapter()->addDescription( tc->getCauseOfDeath(), 1.0f, 0.5f, 0.5f);
 
-      // add exp. points and money
-      if( !IS_AUTO_CONTROL( creature ) ) {
+			// add exp. points and money
+			if( !IS_AUTO_CONTROL( creature ) ) {
 
-        // FIXME: try to move to party.cpp
-        for(int i = 0; i < session->getParty()->getPartySize(); i++) {
+				// FIXME: try to move to party.cpp
+				for(int i = 0; i < session->getParty()->getPartySize(); i++) {
 					// Add the exp for the killed creature
 					session->getParty()->getParty( i )->addExperience( tc );
-					  if( tc->isBoss() ) {
-					    // Bosses give double the experience
-					    session->getParty()->getParty( i )->addExperience( tc );
-					  }
+					if( tc->isBoss() ) {
+						// Bosses give double the experience
+						session->getParty()->getParty( i )->addExperience( tc );
+					}
 					if(!session->getParty()->getParty(i)->getStateMod(StateMod::dead)) {
-            int n = session->getParty()->getParty(i)->addMoney( tc );
-            if(n > 0) {
-              snprintf(message, MESSAGE_SIZE, _( "%s finds %d coins!" ), session->getParty()->getParty(i)->getName(), n);
-              session->getGameAdapter()->addDescription(message);
-            }
-          }
-        }
-        // end of FIXME
+						int n = session->getParty()->getParty(i)->addMoney( tc );
+						if(n > 0) {
+							snprintf(message, MESSAGE_SIZE, _( "%s finds %d coins!" ), session->getParty()->getParty(i)->getName(), n);
+							session->getGameAdapter()->addDescription(message);
+						}
+					}
+				}
+				// end of FIXME
 
 				if( tc->isBoss() ) {
 					session->getGameAdapter()->addDescription( _( "You have defeated the dungeon boss!" ), 0.5f, 1, 0.5f );
 					session->getGameAdapter()->addDescription( _( "...the news spreads quickly and his minions cower before you." ), 0.5f, 1, 0.5f );
 				}
 
-        // see if this is a mission objective
-        if(session->getCurrentMission() && 
-           tc->getMonster() &&
-           session->getCurrentMission()->creatureSlain( tc )) {
-          session->getGameAdapter()->missionCompleted();
-        }
-      }
-    }
-  } else {
-    snprintf(message, MESSAGE_SIZE, _( "...no damaged caused." ) );
-    session->getGameAdapter()->addDescription(message);
-  }
+				// see if this is a mission objective
+				if(session->getCurrentMission() && tc->getMonster() && session->getCurrentMission()->creatureSlain( tc )) {
+					session->getGameAdapter()->missionCompleted();
+				}
+			}
+		}
+	} else {
+		snprintf(message, MESSAGE_SIZE, _( "...no damaged caused." ) );
+		session->getGameAdapter()->addDescription(message);
+	}
 }
 
 /*
@@ -1452,7 +1446,7 @@ bool Battle::describeAttack( Creature *target, char *buff, size_t buffSize, Colo
       color->b = 0;
       //does the path get us in range?
       if( (!item && creature->getPathManager()->isPathToTargetCreature()) || (item && creature->getPathManager()->isPathTowardTargetCreature(item->getRange())) ) {
-        snprintf( buff, buffSize, _( "Out of Range. Move: %d" ), (int)( creature->getPathManager()->getPathRemainingSize() ) );
+        snprintf( buff, buffSize, _( "Out of Range. Move: %d" ), static_cast<int>( creature->getPathManager()->getPathRemainingSize() ) );
       } else {
         snprintf( buff, buffSize, _( "Out of Range" ) );
       }

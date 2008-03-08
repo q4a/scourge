@@ -37,10 +37,7 @@ void Label::drawWidget(Widget *parent) {
     ((Window*)parent)->getScourgeGui()->setFontType( fontType );
     GuiTheme *theme = ((Window*)parent)->getTheme();
     if( !specialColor && theme->getWindowText() ) {
-      glColor4f( theme->getWindowText()->r,
-                 theme->getWindowText()->g,
-                 theme->getWindowText()->b,
-                 theme->getWindowText()->a );
+      glColor4f( theme->getWindowText()->r, theme->getWindowText()->g, theme->getWindowText()->b, theme->getWindowText()->a );
     } else {
       applyColor();
     }
@@ -49,7 +46,7 @@ void Label::drawWidget(Widget *parent) {
       ((Window*)parent)->getScourgeGui()->texPrint(0, 0, text);
     } else {
       int y = 0;
-      for( int i = 0; i < (int)lines.size(); i++ ) {
+      for( int i = 0; i < static_cast<int>(lines.size()); i++ ) {
         ((Window*)parent)->getScourgeGui()->texPrint( 0, y, lines[i].c_str() );
         y += lineHeight;
       }
@@ -62,7 +59,7 @@ void Label::setText( char const* s ) {
   strncpy(text, ( s ? s : "" ), 3000); 
   text[2999] = '\0';
   lines.clear();
-  if(lineWidth > 1 && (int)strlen(text) >= lineWidth) {
+  if(lineWidth > 1 && static_cast<int>(strlen(text)) >= lineWidth) {
     breakText( text, lineWidth, &lines );
   }
 }

@@ -30,7 +30,7 @@ SDLScreenView::~SDLScreenView(){
 // return true if the screen needs to be updated
 bool SDLScreenView::setUpdate( char *message, int n, int total ) {
 	int oldValue = updateValue;
-	int percent = (int)( n / ( total / 100.0f) );
+	int percent = static_cast<int>( n / ( total / 100.0f) );
 
 	strcpy( this->updateEvent, message );
 	this->updateValue = n;

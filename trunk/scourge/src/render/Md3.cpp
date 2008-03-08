@@ -274,7 +274,7 @@ void CQuaternion::CreateFromMatrix(float *pTheMatrix, int rowColumnCount)
 	if(diagonal > 0.00000001)
 	{
 		// Calculate the scale of the diagonal
-		scale = float(sqrt(diagonal ) * 2);
+		scale = sqrtf(diagonal ) * 2;
 
 		// Calculate the x, y, x and w of the quaternion through the respective equation
 		x = ( pMatrix[9] - pMatrix[6] ) / scale;
@@ -288,7 +288,7 @@ void CQuaternion::CreateFromMatrix(float *pTheMatrix, int rowColumnCount)
 		if ( pMatrix[0] > pMatrix[5] && pMatrix[0] > pMatrix[10] )  
 		{	
 			// Find the scale according to the first element, and double that value
-			scale  = (float)sqrt( 1.0f + pMatrix[0] - pMatrix[5] - pMatrix[10] ) * 2.0f;
+			scale  = sqrtf( 1.0f + pMatrix[0] - pMatrix[5] - pMatrix[10] ) * 2.0f;
 
 			// Calculate the x, y, x and w of the quaternion through the respective equation
 			x = 0.25f * scale;
@@ -300,7 +300,7 @@ void CQuaternion::CreateFromMatrix(float *pTheMatrix, int rowColumnCount)
 		else if ( pMatrix[5] > pMatrix[10] ) 
 		{
 			// Find the scale according to the second element, and double that value
-			scale  = (float)sqrt( 1.0f + pMatrix[5] - pMatrix[0] - pMatrix[10] ) * 2.0f;
+			scale  = sqrtf( 1.0f + pMatrix[5] - pMatrix[0] - pMatrix[10] ) * 2.0f;
 			
 			// Calculate the x, y, x and w of the quaternion through the respective equation
 			x = (pMatrix[4] + pMatrix[1] ) / scale;
@@ -312,7 +312,7 @@ void CQuaternion::CreateFromMatrix(float *pTheMatrix, int rowColumnCount)
 		else 
 		{	
 			// Find the scale according to the third element, and double that value
-			scale  = (float)sqrt( 1.0f + pMatrix[10] - pMatrix[0] - pMatrix[5] ) * 2.0f;
+			scale  = sqrtf( 1.0f + pMatrix[10] - pMatrix[0] - pMatrix[5] ) * 2.0f;
 
 			// Calculate the x, y, x and w of the quaternion through the respective equation
 			x = (pMatrix[2] + pMatrix[8] ) / scale;
@@ -387,12 +387,12 @@ CQuaternion CQuaternion::Slerp(CQuaternion &q1, CQuaternion &q2, float t)
 	if(1 - result > 0.1f)
 	{
 		// Get the angle between the 2 quaternions, and then store the sin() of that angle
-		float theta = (float)acos(result);
-		float sinTheta = (float)sin(theta);
+		float theta = acosf(result);
+		float sinTheta = sinf(theta);
 
 		// Calculate the scale for q1 and q2, according to the angle and it's sine value
-		scale0 = (float)sin( ( 1 - t ) * theta) / sinTheta;
-		scale1 = (float)sin( ( t * theta) ) / sinTheta;
+		scale0 = sinf( ( 1 - t ) * theta) / sinTheta;
+		scale1 = sinf( ( t * theta) ) / sinTheta;
 	}	
 
 	// Calculate the x, y, z and w values for the quaternion by using a special
@@ -918,7 +918,7 @@ void CModelMD3::hashAnimations( t3DModel *pModel ) {
 	pModel->pAnimationMap.clear();
 	for( unsigned int i = 0; i < pModel->pAnimations.size(); i++ ) {
 		string s = pModel->pAnimations[ i ].strName;
-		pModel->pAnimationMap[ s ] = (int)i;
+		pModel->pAnimationMap[ s ] = static_cast<int>(i);
 	}
 }
 
@@ -1229,7 +1229,7 @@ void CModelMD3::SetCurrentTime( t3DModel *pModel, MD3Shape *shape )
 	if( pModel->pAnimations.empty() ) return;
 
 	// Get the current time in milliseconds
-	float time = (float)SDL_GetTicks();
+	float time = static_cast<float>(SDL_GetTicks());
 
 	// Find the time that has elapsed since the last time that was stored
 	elapsedTime = time - ai->lastTime;
@@ -1380,11 +1380,7 @@ int CModelMD3::getAnimationIndex( char *name, t3DModel *pModel ) {
   if( pModel->pAnimationMap.find( s ) != pModel->pAnimationMap.end() ) {
     return pModel->pAnimationMap[ s ];
   }
-  /*
-  for( int i = 0; i < (int)pModel->pAnimations.size(); i++ ) {
-    if( !strcmp( pModel->pAnimations[i].strName, name ) ) return i;
-  }
-  */
+
   cerr << "*** WARN: can't find animation: " << name << endl;
   return -1;
 }

@@ -110,9 +110,9 @@ void MagicSchool::initMagic() {
 		int skill = Skill::getSkillIndexByName( node->getValueAsString( "skill" ) );
 		int resistSkill = Skill::getSkillIndexByName( node->getValueAsString( "resist_skill" ) );
 		strcpy( line, node->getValueAsString( "rgb" ) );
-		float red = (float)strtod( strtok( line, "," ), NULL );
-		float green = (float)strtod( strtok( NULL, "," ), NULL );
-		float blue = (float)strtod( strtok( NULL, "," ), NULL );
+		float red = static_cast<float>(strtod( strtok( line, "," ), NULL ));
+		float green = static_cast<float>(strtod( strtok( NULL, "," ), NULL ));
+		float blue = static_cast<float>(strtod( strtok( NULL, "," ), NULL ));
 		strcpy( symbol, node->getValueAsString( "symbol" ) );
 		current = new MagicSchool( strdup(name), 
                                strdup(displayName), 
@@ -161,9 +161,9 @@ void MagicSchool::initMagic() {
 			
 
 			int distance = node2->getValueAsInt( "distance" );
-			if( distance < (int)MIN_DISTANCE ) distance = (int)MIN_DISTANCE;
-			int targetType = ( !strcmp( node2->getValueAsString( "targetType" ), "single") ? 
-												 SINGLE_TARGET : GROUP_TARGET);
+			if( distance < static_cast<int>(MIN_DISTANCE) )
+				distance = static_cast<int>(MIN_DISTANCE);
+			int targetType = ( !strcmp( node2->getValueAsString( "targetType" ), "single") ? SINGLE_TARGET : GROUP_TARGET);
 			int speed = node2->getValueAsInt( "speed" );
 			int effect = Constants::getEffectByName( node2->getValueAsString( "effect" ) );
 			strcpy( targetTypeStr, node2->getValueAsString( "target" ) );

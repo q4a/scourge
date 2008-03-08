@@ -44,7 +44,7 @@ namespace { //anonymous
 		file->write( &(info->identifiedBits) );
 		file->write( info->spell_name, 255 );
 		file->write( &(info->containedItemCount) );
-		for(int i = 0; i < (int)info->containedItemCount; i++) {
+		for(int i = 0; i < static_cast<int>(info->containedItemCount); i++) {
 			saveItem( file, info->containedItems[i] );
 		}
 
@@ -91,7 +91,7 @@ namespace { //anonymous
 
 		file->read( info->spell_name, 255 );
 		file->read( &(info->containedItemCount) );
-		for(int i = 0; i < (int)info->containedItemCount; i++) {
+		for(int i = 0; i < static_cast<int>(info->containedItemCount); i++) {
 			info->containedItems[i] = loadItem( file );
 		}
 
@@ -123,7 +123,7 @@ namespace { //anonymous
 	}
 
 	void deleteItemInfo( ItemInfo *info ) {
-		for(int i = 0; i < (int)info->containedItemCount; i++) {
+		for(int i = 0; i < static_cast<int>(info->containedItemCount); i++) {
 			deleteItemInfo( info->containedItems[i] );
 		}
 		free( info );
@@ -234,7 +234,7 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 	file->write( &(info->reference_type) );
 	file->write( &(info->edited) );
   file->write( &(info->pos_count) );
-  for( int i = 0; i < (int)info->pos_count; i++ ) {
+  for( int i = 0; i < static_cast<int>(info->pos_count); i++ ) {
     file->write( &(info->pos[i]->x) );
     file->write( &(info->pos[i]->y) );
     file->write( &(info->pos[i]->z) );
@@ -288,7 +288,7 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 
   }
 	file->write( &(info->rug_count) );
-  for( int i = 0; i < (int)info->rug_count; i++ ) {
+  for( int i = 0; i < static_cast<int>(info->rug_count); i++ ) {
 		file->write( &(info->rugPos[i]->cx) );
 		file->write( &(info->rugPos[i]->cy) );
 		file->write( &(info->rugPos[i]->texture) );
@@ -296,17 +296,17 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 		file->write( &(info->rugPos[i]->angle) );
 	}
 	file->write( &(info->locked_count) );
-  for( int i = 0; i < (int)info->locked_count; i++ ) {
+  for( int i = 0; i < static_cast<int>(info->locked_count); i++ ) {
 		file->write( &(info->locked[i]->key) );
 		file->write( &(info->locked[i]->value) );
 	}
 	file->write( &(info->door_count) );
-  for( int i = 0; i < (int)info->door_count; i++ ) {
+  for( int i = 0; i < static_cast<int>(info->door_count); i++ ) {
 		file->write( &(info->door[i]->key) );
 		file->write( &(info->door[i]->value) );
 	}
 	file->write( &(info->secret_count) );
-  for( int i = 0; i < (int)info->secret_count; i++ ) {
+  for( int i = 0; i < static_cast<int>(info->secret_count); i++ ) {
 		file->write( &(info->secret[i]->key) );
 		file->write( &(info->secret[i]->value) );
 	}
@@ -378,7 +378,7 @@ MapInfo *Persist::loadMap( File *file ) {
 		info->edited = true;
 	}
   file->read( &(info->pos_count) );
-  for( int i = 0; i < (int)info->pos_count; i++ ) {
+  for( int i = 0; i < static_cast<int>(info->pos_count); i++ ) {
     info->pos[i] = (LocationInfo*)malloc(sizeof(LocationInfo));
     file->read( &(info->pos[i]->x) );
     file->read( &(info->pos[i]->y) );
@@ -453,7 +453,7 @@ MapInfo *Persist::loadMap( File *file ) {
   }
 	if( info->version >= 20 ) {
 		file->read( &(info->rug_count) );
-		for( int i = 0; i < (int)info->rug_count; i++ ) {
+		for( int i = 0; i < static_cast<int>(info->rug_count); i++ ) {
 			info->rugPos[i] = (RugInfo*)malloc(sizeof(RugInfo));
 			file->read( &(info->rugPos[i]->cx) );
 			file->read( &(info->rugPos[i]->cy) );
@@ -466,13 +466,13 @@ MapInfo *Persist::loadMap( File *file ) {
 	}
 	if( info->version >= 22 ) {
 		file->read( &(info->locked_count) );
-		for( int i = 0; i < (int)info->locked_count; i++ ) {
+		for( int i = 0; i < static_cast<int>(info->locked_count); i++ ) {
 			info->locked[i] = (LockedInfo*)malloc(sizeof(LockedInfo));
 			file->read( &(info->locked[i]->key) );
 			file->read( &(info->locked[i]->value) );
 		}
 		file->read( &(info->door_count) );
-		for( int i = 0; i < (int)info->door_count; i++ ) {
+		for( int i = 0; i < static_cast<int>(info->door_count); i++ ) {
 			info->door[i] = (DoorInfo*)malloc(sizeof(DoorInfo));
 			file->read( &(info->door[i]->key) );
 			file->read( &(info->door[i]->value) );
@@ -482,7 +482,7 @@ MapInfo *Persist::loadMap( File *file ) {
 	}
 	if( info->version >= 23 ) {
 		file->read( &(info->secret_count) );
-		for( int i = 0; i < (int)info->secret_count; i++ ) {
+		for( int i = 0; i < static_cast<int>(info->secret_count); i++ ) {
 			info->secret[i] = (LockedInfo*)malloc(sizeof(LockedInfo));
 			file->read( &(info->secret[i]->key) );
 			file->read( &(info->secret[i]->value) );
@@ -529,32 +529,32 @@ MapInfo *Persist::loadMap( File *file ) {
 }
 
 void Persist::deleteMapInfo( MapInfo *info ) {
-  for( int i = 0; i < (int)info->pos_count; i++ ) {
+  for( int i = 0; i < static_cast<int>(info->pos_count); i++ ) {
 		if( info->pos[i]->item_pos ) free( info->pos[i]->item_pos );
 		if( info->pos[i]->item ) free( info->pos[i]->item );
 		if( info->pos[i]->creature ) free( info->pos[i]->creature );
     free( info->pos[i] );
   }
-	for( int i = 0; i < (int)info->rug_count; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->rug_count); i++ ) {
     free( info->rugPos[i] );
   }
-	for( int i = 0; i < (int)info->locked_count; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->locked_count); i++ ) {
     free( info->locked[i] );
   }
-	for( int i = 0; i < (int)info->door_count; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->door_count); i++ ) {
     free( info->door[i] );
   }
-	for( int i = 0; i < (int)info->secret_count; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->secret_count); i++ ) {
     free( info->secret[i] );
   }
-	for( int i = 0; i < (int)info->trapCount; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->trapCount); i++ ) {
     deleteTrapInfo( info->trap[i] );
   }
   free( info );
 }
 
 void Persist::deleteCreatureInfo( CreatureInfo *info ) {
-  for(int i = 0; i < (int)info->inventory_count; i++) {
+  for(int i = 0; i < static_cast<int>(info->inventory_count); i++) {
     deleteItemInfo( info->inventory[i] );
   }
   free( info );
@@ -597,12 +597,12 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
 	file->write( info->skillBonus, Skill::SKILL_COUNT );
   file->write( &info->portraitTextureIndex );
   file->write( &(info->inventory_count) );
-  for(int i = 0; i < (int)info->inventory_count; i++) {
+  for(int i = 0; i < static_cast<int>(info->inventory_count); i++) {
     saveItem( file, info->inventory[i] );
   }
   file->write( info->equipped, Constants::INVENTORY_COUNT );
   file->write( &(info->spell_count) );
-  for(int i = 0; i < (int)info->spell_count; i++) {
+  for(int i = 0; i < static_cast<int>(info->spell_count); i++) {
     file->write( info->spell_name[i], 255 );
   }
   for(int i = 0; i < 12; i++ ) {
@@ -648,12 +648,12 @@ CreatureInfo *Persist::loadCreature( File *file ) {
 	file->read( info->skillBonus, Skill::SKILL_COUNT );
   file->read( &info->portraitTextureIndex );
   file->read( &(info->inventory_count) );
-  for(int i = 0; i < (int)info->inventory_count; i++) {
+  for(int i = 0; i < static_cast<int>(info->inventory_count); i++) {
     info->inventory[i] = loadItem( file );
   }
 	file->read( info->equipped, Constants::INVENTORY_COUNT );
   file->read( &(info->spell_count) );
-  for(int i = 0; i < (int)info->spell_count; i++) {
+  for(int i = 0; i < static_cast<int>(info->spell_count); i++) {
     file->read( info->spell_name[i], 255 );
   }
   for(int i = 0; i < 12; i++ ) {
@@ -682,12 +682,12 @@ void Persist::saveMission( File *file, MissionInfo *info ) {
 	file->write( info->mapName, 80 );
 	file->write( info->templateName, 80 );
 	file->write( &(info->itemCount) );
-	for( int i = 0; i < (int)info->itemCount; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->itemCount); i++ ) {
 		file->write( info->itemName[ i ], 255 );
 		file->write( &(info->itemDone[ i ]) );
 	}
 	file->write( &(info->monsterCount) );
-	for( int i = 0; i < (int)info->monsterCount; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->monsterCount); i++ ) {
 		file->write( info->monsterName[ i ], 255 );
 		file->write( &(info->monsterDone[ i ]) );
 	}
@@ -707,12 +707,12 @@ MissionInfo *Persist::loadMission( File *file ) {
 	file->read( info->mapName, 80 );
 	file->read( info->templateName, 80 );
 	file->read( &(info->itemCount) );
-	for( int i = 0; i < (int)info->itemCount; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->itemCount); i++ ) {
 		file->read( info->itemName[ i ], 255 );
 		file->read( &(info->itemDone[ i ]) );
 	}
 	file->read( &(info->monsterCount) );
-	for( int i = 0; i < (int)info->monsterCount; i++ ) {
+	for( int i = 0; i < static_cast<int>(info->monsterCount); i++ ) {
 		file->read( info->monsterName[ i ], 255 );
 		file->read( &(info->monsterDone[ i ]) );
 	}

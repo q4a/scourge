@@ -120,7 +120,7 @@ int ZipFile::writeZip( int flush ) {
     }
 
     have = CHUNK - strm.avail_out;
-    if( File::write( zipBuff, 1, have ) != (int)have ) {
+    if( File::write( zipBuff, 1, have ) != static_cast<int>(have) ) {
       (void)deflateEnd( &strm );
       return Z_ERRNO;
     }
@@ -128,7 +128,7 @@ int ZipFile::writeZip( int flush ) {
   if( strm.avail_in ) {
     cerr << "Error: not all input used!" << endl;
   }
-  return (int)have;
+  return static_cast<int>(have);
 }
 
 
@@ -140,7 +140,7 @@ int ZipFile::read( void *buff, size_t size, int count ) {
   while( bytesWanted > 0 ) {
 
     // inflate more data as needed
-    if( tmpBuffOffset >= (int)( CHUNK - strm.avail_out ) ) {
+    if( tmpBuffOffset >= static_cast<int>( CHUNK - strm.avail_out ) ) {
       tmpBuffOffset = 0;
       ret = inflateMore();
       if( !( ret == Z_STREAM_END || ret == Z_OK ) ) {

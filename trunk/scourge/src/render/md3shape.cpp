@@ -85,12 +85,10 @@ void MD3Shape::draw() {
   glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 
   // move to the middle of the space
-  //glTranslatef( ((float)width / DIV) / 2.0f, 
+  //glTranslatef( (static_cast<float>(width) / DIV) / 2.0f, 
                 //0.25f / DIV, 
-                //-((float)depth / DIV) / 2.0f );
-  glTranslatef( ((float)(width) / 2.0f) / DIV, 
-                0.25f / DIV, 
-                -(((float)(depth) / 2.0f) / DIV ) );
+                //-(static_cast<float>(depth) / DIV) / 2.0f );
+  glTranslatef( (static_cast<float>(width) / 2.0f) / DIV, 0.25f / DIV, -((static_cast<float>(depth) / 2.0f) / DIV ) );
 
   // rotate to movement angle
   glRotatef(getAngle() - 90, 0.0f, 1.0f, 0.0f);
@@ -108,7 +106,7 @@ void MD3Shape::draw() {
  
   if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
   glDisable(GL_CULL_FACE);
-  glPopMatrix();    
+  glPopMatrix();
 }
 
 void MD3Shape::outline( float r, float g, float b ) {
@@ -124,14 +122,12 @@ void MD3Shape::outline( float r, float g, float b ) {
   glLineWidth( 4 );
   glEnable( GL_CULL_FACE );
   glCullFace( GL_FRONT );
-  glColor3f( r, g, b );  
-  
+  glColor3f( r, g, b );
+
 	glPushMatrix();
   // rotate to upright
   glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-  glTranslatef( ((float)(width) / 2.0f) / DIV, 
-                0.25f / DIV, 
-                -(((float)(depth) / 2.0f) / DIV ) );
+  glTranslatef( (static_cast<float>(width) / 2.0f) / DIV, 0.25f / DIV, -((static_cast<float>(depth) / 2.0f) / DIV ) );
 
   // rotate to movement angle
   glRotatef(getAngle() - 90, 0.0f, 1.0f, 0.0f);
@@ -143,9 +139,8 @@ void MD3Shape::outline( float r, float g, float b ) {
 	md3->setAnimationPaused( isAnimationPaused() );
 	md3->DrawModel( this );
 
+  glPopMatrix();
 
-  glPopMatrix();    
-  
 	glLineWidth( 1 );
   glDisable( GL_CULL_FACE );
   glPolygonMode( GL_BACK, GL_FILL );

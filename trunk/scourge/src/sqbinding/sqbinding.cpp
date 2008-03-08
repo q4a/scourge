@@ -239,7 +239,7 @@ void SqBinding::endGame() {
 	partySize = 0;
 
   // destroy the spell references
-  for( int i = 0; i < (int)refSpell.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(refSpell.size()); i++ ) {
     sq_release( vm, refSpell[ i ] );
     free( refSpell[ i ] );
     refSpell[ i ] = NULL;
@@ -322,7 +322,7 @@ bool SqBinding::endLevel() {
   bool ret = callMapMethod( "exitMap", session->getMap()->getName() );
 
   // destroy the creatures of the level
-  for( int i = 0; i < (int)refCreature.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(refCreature.size()); i++ ) {
     sq_release( vm, refCreature[ i ] );
     free( refCreature[ i ] );
     refCreature[ i ] = NULL;
@@ -331,7 +331,7 @@ bool SqBinding::endLevel() {
   creatureMap.clear();
 
   // destroy the items of the level
-  for( int i = 0; i < (int)refItem.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(refItem.size()); i++ ) {
     sq_release( vm, refItem[ i ] );
     free( refItem[ i ] );
     refItem[ i ] = NULL;

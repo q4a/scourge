@@ -26,36 +26,34 @@ class Shapes;
 
 class CaveFace {
 public:
-  int p1, p2, p3; // point indexes
-  CVector3 normal;
-  GLfloat tex[3][2]; // texture coordinates per point
-  enum {
-    WALL=0,
-    TOP,
-    FLOOR
-  };
-  int textureType;
-  GLfloat shade;
+	int p1, p2, p3; // point indexes
+	CVector3 normal;
+	GLfloat tex[3][2]; // texture coordinates per point
+	enum {
+		WALL=0,
+		TOP,
+		FLOOR
+	};
+	int textureType;
+	GLfloat shade;
 
-  CaveFace( int p1, int p2, int p3, 
-            GLfloat u1, GLfloat v1, GLfloat u2, GLfloat v2, GLfloat u3, GLfloat v3,
-            int textureType ) {
-    this->p1 = p1;
-    this->p2 = p2;
-    this->p3 = p3;
-    tex[0][0] = u1;
-    tex[0][1] = v1;
-    tex[1][0] = u2;
-    tex[1][1] = v2;
-    tex[2][0] = u3;
-    tex[2][1] = v3;
-    this->textureType = textureType;
-    this->normal.x = this->normal.y = this->normal.z = 0;
-    this->shade = 1;
-  }
+	CaveFace( int p1, int p2, int p3, GLfloat u1, GLfloat v1, GLfloat u2, GLfloat v2, GLfloat u3, GLfloat v3, int textureType ) 
+		: normal(0, 0, 0) {
+		this->p1 = p1;
+		this->p2 = p2;
+		this->p3 = p3;
+		tex[0][0] = u1;
+		tex[0][1] = v1;
+		tex[1][0] = u2;
+		tex[1][1] = v2;
+		tex[2][0] = u3;
+		tex[2][1] = v3;
+		this->textureType = textureType;
+		this->shade = 1;
+	}
 
-  ~CaveFace() {
-  }
+	~CaveFace() {
+	}
 };
 
 class GLCaveShape : public GLShape {
@@ -101,11 +99,8 @@ private:
 
 public:
 
-  GLCaveShape( Shapes *shapes, GLuint texture[],
-               int width, int depth, int height, 
-               char *name, int index, 
-               int mode, int dir, int caveIndex, 
-               int stencilIndex=0, int stencilAngle=0 );
+  GLCaveShape( Shapes *shapes, GLuint texture[], int width, int depth, int height, char *name, int index, 
+               int mode, int dir, int caveIndex, int stencilIndex=0, int stencilAngle=0 );
   virtual ~GLCaveShape();
 
   virtual void initialize();

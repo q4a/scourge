@@ -77,7 +77,7 @@ char *SqObject::describeTypeMask( const SQChar *typemask, char *buffer ) {
     char tmp[ 20 ], tmp2[ 80 ];
     // skip the first 'x', it's an internal reference:
     int start = ( (char)(typemask[0]) == 'x' ? 1 : 0 );
-    for( int i = start; i < (int)strlen( (char const*)typemask ); i++ ) {
+    for( int i = start; i < static_cast<int>(strlen( (char const*)typemask )); i++ ) {
       if( strlen( buffer ) ) strcat( buffer, ", " );
       switch( (char)typemask[i] ) {
       case 'n' : strcpy( tmp, "int" ); break;

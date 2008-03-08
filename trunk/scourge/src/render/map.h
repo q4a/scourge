@@ -662,9 +662,9 @@ protected:
    }
 
    inline void decodeTripletKey(Uint32 key, int *x, int *y, int *z) {
-     *x = (int)(key / ((Uint32)MAP_WIDTH * (Uint32)MAP_WIDTH));
-     *y = (int)((key % ((Uint32)MAP_WIDTH * (Uint32)MAP_WIDTH)) / (Uint32)MAP_WIDTH);
-     *z = (int)((key % ((Uint32)MAP_WIDTH * (Uint32)MAP_WIDTH)) % (Uint32)MAP_WIDTH);
+     *x = static_cast<int>(key / ((Uint32)MAP_WIDTH * (Uint32)MAP_WIDTH));
+     *y = static_cast<int>((key % ((Uint32)MAP_WIDTH * (Uint32)MAP_WIDTH)) / (Uint32)MAP_WIDTH);
+     *z = static_cast<int>((key % ((Uint32)MAP_WIDTH * (Uint32)MAP_WIDTH)) % (Uint32)MAP_WIDTH);
      //cerr << "DEBUG: decodeTripletKey, key=" << key << " x=" << (*x) << " y=" << (*y) << " z=" << (*z) << endl;
    }
 
@@ -676,8 +676,8 @@ protected:
    }
 
    inline void decodePairKey(Uint32 key, int *x, int *y) {
-     *x = (int)(key / ((Uint32)MAP_WIDTH));
-     *y = (int)(key % ((Uint32)MAP_WIDTH));
+     *x = static_cast<int>(key / ((Uint32)MAP_WIDTH));
+     *y = static_cast<int>(key % ((Uint32)MAP_WIDTH));
    }
 
    CFrustum *frustum;

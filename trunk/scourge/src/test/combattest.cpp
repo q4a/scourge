@@ -90,7 +90,7 @@ bool CombatTest::executeTests( Session *session, char const* path ) {
   attacker->removeInventory( 0 );
   weapon = equipItem( session, attacker, "Long sword", 1 );
   items.push_back( weapon );
-  for( int i = 0; i < (int)Character::character_list.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(Character::character_list.size()); i++ ) {
     Creature *c = createCharacter( session, Character::character_list[i]->getName(), "Defender", 1 );
     creatures.push_back( c );
     items.push_back( equipItem( session, c, "Horned helmet", 1 ) );
@@ -110,11 +110,11 @@ bool CombatTest::executeTests( Session *session, char const* path ) {
   }
 
   // cleanup
-  for( int i = 0; i < (int)items.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(items.size()); i++ ) {
     Item *item = items[ i ];
     delete item;
   }
-  for( int i = 0; i < (int)creatures.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(creatures.size()); i++ ) {
     Creature *creature = creatures[ i ];
     delete creature;
   }
@@ -149,13 +149,9 @@ bool CombatTest::fight( char const* path,
   fprintf( fp, HTML_PREFIX, "Combat Test" );
 
   fprintf( fp, "<h1>Combat test with %d iterations</h1>", count );
-  fprintf( fp, "<b>%s</b> with %s vs. ",
-           attacker->getCharacter()->getName(),
-           weapon->getRpgItem()->getName() );
-  fprintf( fp, "<b>%s</b><br>\n",
-           defender->getCharacter()->getName() );
+  fprintf( fp, "<b>%s</b> with %s vs. ", attacker->getCharacter()->getName(), weapon->getRpgItem()->getName() );
+  fprintf( fp, "<b>%s</b><br>\n", defender->getCharacter()->getName() );
   fprintf( fp, "<a href=\"#details\">Character details...</a><br><br>");
-
   fprintf( fp, "<table><tr>\n" );
 
   int atkOriginalLevel = attacker->getLevel();
@@ -185,25 +181,21 @@ bool CombatTest::fight( char const* path,
       // Attack roll
       sum = low = high = 0;
       attacker->getAttack( weapon, &max, &min );
-      fprintf( fp, "ATK range:<b>%.2f - %.2f</b><br>\n", 
-               min, max );
+      fprintf( fp, "ATK range:<b>%.2f - %.2f</b><br>\n", min, max );
       for( int i = 0; i < count; i++ ) {
-        computeHighLow( attacker->getAttack( weapon ),
-                        &sum, &low, &high );
+        computeHighLow( attacker->getAttack( weapon ), &sum, &low, &high );
       }
-      ATKave = sum / ((double)count);
-      fprintf( fp, "ATK roll: <b>%.2f</b>(%.2f - %.2f)<br>\n", 
-               ATKave, low, high );
+      ATKave = sum / static_cast<double>(count);
+      fprintf( fp, "ATK roll: <b>%.2f</b>(%.2f - %.2f)<br>\n", ATKave, low, high );
       // -------------------------------------------------
-      
+
       // -------------------------------------------------
       // Armor class at level 1
 			float armor, dodgePenalty;
 			defender->getArmor( &armor, &dodgePenalty, 
 													weapon ? weapon->getRpgItem()->getDamageType() : 
 													RpgItem::DAMAGE_TYPE_CRUSHING );
-      fprintf( fp , "Armor: <span style='background: %s'><b>%.2f</b></span><br>\n",
-							 ( ATKave > armor ? "red" : "green" ), armor );
+      fprintf( fp , "Armor: <span style='background: %s'><b>%.2f</b></span><br>\n", ( ATKave > armor ? "red" : "green" ), armor );
 			/*
       fprintf( fp , "Armor: <span style='background: %s'><b>%.2f</b></span>\
                (%.2f %% %.2f)<br>\n",
