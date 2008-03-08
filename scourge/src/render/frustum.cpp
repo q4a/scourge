@@ -47,9 +47,8 @@ void NormalizePlane(float frustum[6][4], int side)
     // Here we calculate the magnitude of the normal to the plane (point A B C)
     // Remember that (A, B, C) is that same thing as the normal's (X, Y, Z).
     // To calculate magnitude you use the equation:  magnitude = sqrt( x^2 + y^2 + z^2)
-    float magnitude = (float)sqrt( frustum[side][A] * frustum[side][A] + 
-                                   frustum[side][B] * frustum[side][B] + 
-                                   frustum[side][C] * frustum[side][C] );
+    float magnitude = sqrtf( frustum[side][A] * frustum[side][A] + frustum[side][B] * frustum[side][B] + 
+                             frustum[side][C] * frustum[side][C] );
 
     // Then we divide the plane's values by it's magnitude.
     // This makes it easier to work with.
@@ -67,7 +66,7 @@ void NormalizePlane(float frustum[6][4], int side)
 ///////////////////////////////// CALCULATE FRUSTUM \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
 void CFrustum::CalculateFrustum()
-{    
+{
     float   proj[16];                               // This will hold our projection matrix
     float   modl[16];                               // This will hold our modelview matrix
     float   clip[16];                               // This will hold the clipping planes

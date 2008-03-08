@@ -413,7 +413,7 @@ void TexturedText::txfGetStringMetrics(char *string,
       }
     } else {
       tgvi = getTCVI(string[i]);
-      w += (int)tgvi->advance;
+      w += static_cast<int>(tgvi->advance);
     }
   }
   *width = w;

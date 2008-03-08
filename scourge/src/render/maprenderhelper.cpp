@@ -128,11 +128,11 @@ void RoomRenderHelper::createOverlayTexture() {
 //  float tmp = 0.7f;
   for(i = 0; i < OVERLAY_SIZE; i++) {
     for(j = 0; j < OVERLAY_SIZE; j++) {
-      float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
-      float id = (float)i - half;
-      float jd = (float)j - half;
+      float half = (static_cast<float>(OVERLAY_SIZE) - 0.5f) / 2.0f;
+      float id = static_cast<float>(i) - half;
+      float jd = static_cast<float>(j) - half;
       //float dd = 255.0f - ((255.0f / (half * half / 1.2f)) * (id * id + jd * jd));
-      
+
       float dd = 255.0f - ((255.0f / (half * half / SHADE_LEVEL)) * (id * id + jd * jd));
       if(dd < 0.0f) dd = 0.0f;
       if(dd > 255.0f) dd = 255.0f;

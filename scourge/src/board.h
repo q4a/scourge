@@ -1,3 +1,4 @@
+
 /***************************************************************************
                           board.h  -  description
                              -------------------
@@ -214,10 +215,10 @@ public:
   bool itemFound(Item *item);
   bool creatureSlain(Creature *creature);
 
-  inline int getItemCount() { return (int)itemList.size(); }
+  inline int getItemCount() { return static_cast<int>(itemList.size()); }
   inline RpgItem *getItem( int index ) { return itemList[ index ]; }
   inline bool getItemHandled( int index ) { return items[ itemList[ index ] ]; }
-  inline int getCreatureCount() { return (int)creatureList.size(); }
+  inline int getCreatureCount() { return static_cast<int>(creatureList.size()); }
   inline Monster *getCreature( int index ) { return creatureList[ index ]; }
   inline bool getCreatureHandled( int index ) { return creatures[ creatureList[ index ] ]; }
   
@@ -325,7 +326,7 @@ public:
 	inline void addMission( Mission *mission ) { availableMissions.push_back( mission ); }
 
 	inline MissionTemplate *findTemplateByName( char *name ) {
-		for( int i = 0; i < (int)templates.size(); i++ ) {
+		for( int i = 0; i < static_cast<int>(templates.size()); i++ ) {
 			if( !strcmp( templates[i]->getName(), name ) ) return templates[i];
 		}
 		std::cerr << "*** Error: can't find template: " << name << std::endl;

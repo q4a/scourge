@@ -205,20 +205,20 @@ void Shapes::initialize() {
 	// default to textures
 	strcpy( cursorDir, "/textures" );
 
-  // resolve texture groups
-  for(int i = 0; i < textureGroupCount; i++) {
-    for(int c = 0; c < 3; c++) {
-      textureGroup[i][c] = textures[textureGroup[i][c]].id;
-    }
-  }
+	// resolve texture groups
+	for(int i = 0; i < textureGroupCount; i++) {
+		for(int c = 0; c < 3; c++) {
+			textureGroup[i][c] = textures[textureGroup[i][c]].id;
+		}
+	}
 
-  // create shapes
-  for(int i = 0; i < (int)shapeValueVector.size(); i++) {
-    ShapeValues *sv = shapeValueVector[i];
-    // Resolve the texture group.
-    // For theme-based shapes, leave texture NULL, they will be resolved later.
-    bool themeBasedShape = false;
-    GLuint *texture = textureGroup[ 0 ];
+	// create shapes
+	for(int i = 0; i < static_cast<int>(shapeValueVector.size()); i++) {
+		ShapeValues *sv = shapeValueVector[i];
+		// Resolve the texture group.
+		// For theme-based shapes, leave texture NULL, they will be resolved later.
+		bool themeBasedShape = false;
+		GLuint *texture = textureGroup[ 0 ];
 		if( strlen( sv->theme ) ) {
 			themeBasedShape = true;
 		} else if( strlen( sv->textures ) ) {
@@ -313,7 +313,7 @@ void Shapes::initialize() {
     shapeMap[s] = shapes[(i + 1)];
   }
   // remember the number of shapes
-  shapeCount = (int)shapeValueVector.size() + 1;
+  shapeCount = static_cast<int>(shapeValueVector.size()) + 1;
 
   // clean up temp. shape objects 
   // FIXME: do we need to free the vector's elements?
@@ -386,7 +386,6 @@ void Shapes::loadCaveTheme( char *name ) {
 }
 
 void Shapes::loadRandomTheme() {
-  //loadTheme( themes[ (int)( (float)(themeCount - 1) * rand()/RAND_MAX ) + 1 ] );
   loadTheme( themes[ Util::dice( themeCount ) ] );
 }
 
@@ -423,7 +422,7 @@ void Shapes::loadTheme( WallTheme *theme ) {
       // apply theme to shapes
       //    cerr << "*** Applying theme to shapes: ***" << endl;
       GLShape::createDarkTexture( currentTheme );
-      for(int i = 0; i < (int)themeShapes.size(); i++) {
+      for(int i = 0; i < static_cast<int>(themeShapes.size()); i++) {
         GLShape *shape = themeShapes[i];
         string ref = themeShapeRef[i];
         GLuint *textureGroup = currentTheme->getTextureGroup( ref );
@@ -443,7 +442,7 @@ void Shapes::loadTheme( WallTheme *theme ) {
 }
 
 char const* Shapes::getRandomDescription(int descriptionGroup) {
-  if(descriptionGroup >= 0 && descriptionGroup < (int)descriptions.size()) {
+  if(descriptionGroup >= 0 && descriptionGroup < static_cast<int>(descriptions.size())) {
     vector<string> *list = descriptions[descriptionGroup];
     int n = Util::dice( list->size() ); 
     return (*list)[n].c_str();
@@ -474,8 +473,8 @@ GLShape *Shapes::findShapeByName(const char *name, bool variation) {
   if( !variation || shape->getVariationShapesCount() == 0 ) return shape;
 
   int n = Util::dice( VARIATION_BASE + shape->getVariationShapesCount() );
-  if( n >= (int)(VARIATION_BASE) ) {
-    return shape->getVariationShape( n - (int)(VARIATION_BASE) );
+  if( n >= static_cast<int>(VARIATION_BASE) ) {
+    return shape->getVariationShape( n - static_cast<int>(VARIATION_BASE) );
   }
   return shape;
 }
@@ -726,7 +725,7 @@ void Shapes::setupAlphaBlendedBMP( const string& filename,
 
 
 	if( debugFileLoad ) {
-		cerr << "...loaded! Bytes per pixel=" << (int) surface->format->BytesPerPixel << endl;
+		cerr << "...loaded! Bytes per pixel=" << static_cast<int>(surface->format->BytesPerPixel) << endl;
 	}
 
 	// Rearrange the pixelData
@@ -773,7 +772,7 @@ void Shapes::setupAlphaBlendedBMP( const string& filename,
 		if( surface->format->BytesPerPixel == 1 ) {
 			Uint32 pixel_value = (Uint32)data[c++];
 			SDL_GetRGB( pixel_value, surface->format, (Uint8*)&b, (Uint8*)&g, (Uint8*)&r);
-			a = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
+			a = (GLubyte)( (static_cast<int>(r) == blue && static_cast<int>(g) == green && static_cast<int>(b) == red ? 0x00 : 0xff) );
 		} else {
 			r = data[c++];
 			g = data[c++];
@@ -782,10 +781,14 @@ void Shapes::setupAlphaBlendedBMP( const string& filename,
 				a = data[c++];
 			} else {
 				if( grayscale ) {
-					a = (GLubyte)( (float)( r + b + g ) / 3.0f );
-					if( a <= 0.05f ) a = 0;
+					a = (GLubyte)( static_cast<float>( r + b + g ) / 3.0f );
+					if( a <= 0.05f )
+						a = 0;
 				} else {
-					a = (GLubyte)( ((int)r == blue && (int)g == green && (int)b == red ? 0x00 : 0xff) );
+					if(static_cast<int>(r) == blue && static_cast<int>(g) == green && static_cast<int>(b) == red)
+						a = static_cast<GLubyte>(0x00);
+					else
+						a = static_cast<GLubyte>(0xff);
 				}
 			}
 		}
@@ -802,11 +805,9 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
                                              int tileWidth, int tileHeight, 
                                              int red, int green, int blue,
                                              int nred, int ngreen, int nblue ) {
-  if( headless ) return;
-  
-//  cerr << "file: " << filename << " red=" << red << " green=" << green << " blue=" << blue << endl;
+  if( headless )
+		return;
 
-  //  *image = NULL;
   string fn = rootDir + filename;
   if(((*surface) = SDL_LoadBMP( fn.c_str() ))) {
 
@@ -814,15 +815,8 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-//    fprintf(stderr, "*** file=%s w=%d h=%d bpp=%d byte/pix=%d pitch=%d\n", 
-//            fn, width, height, (*surface)->format->BitsPerPixel,
-//            (*surface)->format->BytesPerPixel, (*surface)->pitch);
-
-//    fprintf( stderr, "*** w/tileWidth=%d h/tileHeight=%d\n",
-//             ( width/tileWidth ), ( height/tileHeight ) );
-
     unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
-    
+
     for( int x = 0; x < width / tileWidth; x++ ) {
       if( x >= imageWidth ) continue;
       for( int y = 0; y < height / tileHeight; y++ ) {
@@ -858,19 +852,14 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
             b = data[c++];
           }
 
-          //if( i == 0 ) cerr << "r=" << (int)(r) << " g=" << (int)(g) << " b=" << (int)(b) << endl;
-          
           image[ x ][ y ][count++] = ( r == red && nred > -1 ? nred : r );
           image[ x ][ y ][count++] = ( g == green && ngreen > -1 ? ngreen : g );
           image[ x ][ y ][count++] = ( b == blue && nblue > -1 ? nblue : b );
 
-          //(*image)[count++] = (GLubyte)( (float)(b + g + r) / 3.0f );
-          //(*image)[count++] = (GLubyte)( (b + g + r == 0 ? 0x00 : 0xff) );
-          image[ x ][ y ][count++] = (GLubyte)( ((int)r == blue && 
-                                          (int)g == green && 
-                                          (int)b == red ? 
-                                          0x00 : 
-                                          0xff) );
+					if(static_cast<int>(r) == blue && static_cast<int>(g) == green && static_cast<int>(b) == red)
+						image[ x ][ y ][count++] = static_cast<GLubyte>(0x00);
+					else
+						image[ x ][ y ][count++] = static_cast<GLubyte>(0xff);
         }
       }
     }
@@ -913,26 +902,6 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 
 GLuint Shapes::getCursorTexture( int cursorMode ) {
 	return cursorTexture[ cursorMode ];
-/*
-  switch( cursorMode ) {
-  case Constants::CURSOR_NORMAL: 
-    return cursor_texture;
-  case Constants::CURSOR_ATTACK:
-    return attack_texture;
-  case Constants::CURSOR_TALK:
-    return talk_texture;
-  case Constants::CURSOR_USE:
-    return use_texture;
-  case Constants::CURSOR_FORBIDDEN:
-    return forbidden_texture;
-  case Constants::CURSOR_RANGED:
-    return ranged_texture;
-  case Constants::CURSOR_MOVE:
-    return move_texture;
-  default:
-  return crosshair_texture;
-  }
-	*/
 }
 
 GLuint Shapes::loadTextureWithAlpha( string& filename, int r, int g, int b, bool isAbsPath, bool swapImage, bool grayscale ) {
@@ -969,7 +938,8 @@ GLuint Shapes::loadAlphaTexture( string& filename, int *width, int *height ) {
 
 void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& image, bool isAbsPath ) {
 
-	if( headless ) return;
+	if( headless )
+		return;
 
 	string fn( isAbsPath ? filename : rootDir + filename );
 
@@ -988,12 +958,12 @@ void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& 
 	}
 
 	if( debugFileLoad ) {
-		cerr << "...loaded! Bytes per pixel=" << (int)surface->format->BytesPerPixel << endl;
+		cerr << "...loaded! Bytes per pixel=" << static_cast<int>(surface->format->BytesPerPixel) << endl;
 	}
 
-    // Rearrange the pixelData
-    int width  = surface->w;
-    int height = surface->h;
+	// Rearrange the pixelData
+	int width  = surface->w;
+	int height = surface->h;
 
 /*    if( width != height && ( !isPowerOfTwo( width ) || !isPowerOfTwo( height ) ) ) {
       cerr  << "*** Possible error: Width or Heigth not a power of 2: file=" << fn 

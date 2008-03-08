@@ -26,33 +26,33 @@
 class WindInfo;
 
 class Shape {
-  
+
 private:
-  Uint8 index;
-  char *name;
-  int descriptionGroup;  
-  bool stencil;
-  Color *outlineColor;
-  bool interactive;
-  int groundSX, groundEX, groundSY, groundEY;
-  float outdoorWeight;
-  bool outdoorShadow;
-  bool wind;
-  WindInfo *windInfo;
-  bool occludedSides[6];
+	Uint8 index;
+	char *name;
+	int descriptionGroup;
+	bool stencil;
+	Color *outlineColor;
+	bool interactive;
+	int groundSX, groundEX, groundSY, groundEY;
+	float outdoorWeight;
+	bool outdoorShadow;
+	bool wind;
+	WindInfo *windInfo;
+	bool occludedSides[6];
 
 protected:
-  int width, height, depth;
-  
+	int width, height, depth;
+
 public: 
-  enum {
-	TOP_SIDE=0,
-	BOTTOM_SIDE,
-	E_SIDE,
-	S_SIDE,
-	W_SIDE,
-	N_SIDE
-  };
+	enum {
+		TOP_SIDE=0,
+		BOTTOM_SIDE,
+		E_SIDE,
+		S_SIDE,
+		W_SIDE,
+		N_SIDE
+	};
 
 	Shape(int width, int depth, int height, char *name, int descriptionGroup);
 	Shape(Shape *shape);
@@ -84,11 +84,11 @@ public:
   inline int getWidth() { return width; }
   /**
     The depth (y) of the shape-block's base
-  */  
+  */
   inline int getDepth() { return depth; }
   /**
     The height (z) of the shape-block
-  */    
+  */
   inline int getHeight() { return height; }
 
   inline char *getName() { return name; }
@@ -99,9 +99,9 @@ public:
   virtual void outline( const Color *color ) { outline( color->r, color->g, color->b ); };
   virtual void outline( float r, float g, float b ) {};
   virtual void setupToDraw() = 0;
-  
+
   inline void setIndex(Uint8 index) { this->index = index; }
-  
+
   inline Uint8 getIndex() { return index; }
 
   /**

@@ -29,8 +29,8 @@ GLLocator::~GLLocator() {
 }
 
 void GLLocator::draw() {
-    float w = (float)width / DIV;
-    float d = (float)depth / DIV;
+    float w = static_cast<float>(width) / DIV;
+    float d = static_cast<float>(depth) / DIV;
     float h = 0.26f / DIV;
 
     glDisable( GL_TEXTURE_2D );

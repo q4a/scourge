@@ -553,32 +553,27 @@ void Party::setParty(int count, Creature **creatures, int storylineIndex) {
 	Return the closest live player within the given radius or null if none can be found.
 */
 Creature *Party::getClosestPlayer(int x, int y, int w, int h, int radius) {
-  float minDist = 0;
-  Creature *p = NULL;
-  for(int i = 0; i < getPartySize(); i++) {
-	if(!party[i]->getStateMod(StateMod::dead) &&
-       !party[i]->getStateMod(StateMod::possessed)) {
-	  float dist = Constants::distance(x, y, w, h,
-                                     party[i]->getX(),
-                                     party[i]->getY(),
-                                     party[i]->getShape()->getWidth(),
-                                     party[i]->getShape()->getDepth());
-	  if(dist <= (float)radius &&
-		 (!p || dist < minDist)) {
-		p = party[i];
-		minDist = dist;
-	  }
+	float minDist = 0;
+	Creature *p = NULL;
+	for(int i = 0; i < getPartySize(); i++) {
+		if(!party[i]->getStateMod(StateMod::dead) && !party[i]->getStateMod(StateMod::possessed)) {
+			float dist = Constants::distance(x, y, w, h, party[i]->getX(), party[i]->getY(), party[i]->getShape()->getWidth(),
+																				party[i]->getShape()->getDepth());
+			if(dist <= static_cast<float>(radius) && (!p || dist < minDist)) {
+				p = party[i];
+				minDist = dist;
+			}
+		}
 	}
-  }
-  return p;
+	return p;
 }
 
 void Party::startEffect(int effect_type, int duration) {
-  for(int i = 0; i < getPartySize(); i++) {
-	if(!party[i]->getStateMod(StateMod::dead)) {
-	  party[i]->startEffect(effect_type, duration);
+	for(int i = 0; i < getPartySize(); i++) {
+		if(!party[i]->getStateMod(StateMod::dead)) {
+			party[i]->startEffect(effect_type, duration);
+		}
 	}
-  }
 }
 
 void Party::setFormation(int formation) {
@@ -673,7 +668,11 @@ int Party::getAverageLevel() {
 	for( int i = 0; i < getPartySize(); i++ ) {
 		sum += getParty( i )->getLevel();
 	}
-	return( sum ? (int)( sum / (float)getPartySize() ) : 0 );
+
+	if(sum)
+		return static_cast<int>( sum / static_cast<float>(getPartySize()));
+	else
+		return 0;
 }
 
 void Party::hire( Creature *creature ) {

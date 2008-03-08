@@ -35,20 +35,20 @@ class Event;
 class Date;
 
 class Calendar {
- private:  
-  
-  static Calendar *instance;   
-  
+ private:
+
+  static Calendar *instance;
+
   Date currentDate;
   int timeMultiplicator;
-  GLint lastTick; 
-  bool timeFrozen; 
+  GLint lastTick;
+  bool timeFrozen;
 	char nextResetDate[40];
-  
-  std::vector<Event*> scheduledEvents;  
-  
+
+  std::vector<Event*> scheduledEvents;
+
  public:
- 
+
   static Calendar * getInstance();
   bool update(int gameSpeed);
   void setPause(bool mustPause);
@@ -64,22 +64,14 @@ class Calendar {
   // return date by value to avoid modification by other classes
   inline Date getCurrentDate() { return currentDate; }
   inline void addADay() {
-    currentDate.setDate( currentDate.getSec(), 
-                         currentDate.getMin(), 
-                         currentDate.getHour(), 
-                         currentDate.getDay() + 1, 
-                         currentDate.getMonth(), 
-                         currentDate.getYear() );
+    currentDate.setDate( currentDate.getSec(), currentDate.getMin(), currentDate.getHour(), currentDate.getDay() + 1, 
+                         currentDate.getMonth(), currentDate.getYear() );
   }
-    
+
   Calendar();
   ~Calendar();
-  
 
  protected:
-  
-
-
 };
 
 #endif

@@ -201,18 +201,15 @@ void C3DSShape::normalizeModel() {
   movez = n;
 
 	if( divx > 0 ) {
-	  // calculate dimensions where 'div' is given
-	  float fw = maxx * divx * DIV;
-	  float fd = maxy * divy * DIV;
-	  float fh = maxz * divz * DIV;
+		// calculate dimensions where 'div' is given
+		float fw = maxx * divx * DIV;
+		float fd = maxy * divy * DIV;
+		float fh = maxz * divz * DIV;
 
-	  // set the shape's dimensions
-	  this->width = (int)(fw + 0.5f);
-	  if(this->width < 1) this->width = 1;
-	  this->depth = (int)(fd + 0.5f);
-	  if(this->depth < 1) this->depth = 1;
-	  this->height = (int)(fh + 0.5f);
-	  if(this->height < 1) this->height = 1;
+		// set the shape's dimensions
+		this->width = static_cast<int>(max(fw + 0.5f, 1.0f));
+		this->depth = static_cast<int>(max(fd + 0.5f, 1.0f));
+		this->height = static_cast<int>(max(fh + 0.5f, 1.0f));
 
 		cerr << this->getName() << " size=" << fw << "," << fd << "," << fh << endl;
 	} else {
@@ -425,9 +422,9 @@ void C3DSShape::drawShape( bool isShadow ) {
 
               // Assign the current color to this model
               //glColor3ub(pColor[0], pColor[1], pColor[2]);
-              c[0] = (float)pColor[0] / 255.0f;
-              c[1] = (float)pColor[1] / 255.0f;
-              c[2] = (float)pColor[2] / 255.0f;
+              c[0] = static_cast<float>(pColor[0]) / 255.0f;
+              c[1] = static_cast<float>(pColor[1]) / 255.0f;
+              c[2] = static_cast<float>(pColor[2]) / 255.0f;
             }
           //}
 
@@ -452,16 +449,12 @@ void C3DSShape::drawShape( bool isShadow ) {
 
         // Pass in the current vertex of the object (Corner of current face)
 				if( isWind() ) {
-					//float n = sin( windAngle ) * 0.5f * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
-					float nx = windInfo.getValue() * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
-					//float ny = getWindInfo()->getValue() * getWindInfo()->getYMod() * ( ( pObject->pVerts[ index ].z * divz ) / (float)getHeight() );
+					float nx = windInfo.getValue() * ( ( pObject->pVerts[ index ].z * divz ) / static_cast<float>(getHeight()) );
           float ny = 0;
-					glVertex3f(pObject->pVerts[ index ].x * divx + nx, 
-										 pObject->pVerts[ index ].y * divy + ny, 
+					glVertex3f(pObject->pVerts[ index ].x * divx + nx, pObject->pVerts[ index ].y * divy + ny, 
 										 pObject->pVerts[ index ].z * divz);
 				} else {
-					glVertex3f(pObject->pVerts[ index ].x * divx, 
-										 pObject->pVerts[ index ].y * divy, 
+					glVertex3f(pObject->pVerts[ index ].x * divx, pObject->pVerts[ index ].y * divy, 
 										 pObject->pVerts[ index ].z * divz);
 				}
 			}

@@ -268,7 +268,7 @@ int clientInfoLoop(void *data) {
 }
 
 void ClientInfo::setLagTimer(int frame, Uint32 n) {
-  if((int)lagMap.size() > MAX_SCHEDULED_LAG_MESSAGES) {
+  if(static_cast<int>(lagMap.size()) > MAX_SCHEDULED_LAG_MESSAGES) {
     dead = true;
   } else {
     lagMap[frame] = n;
@@ -276,32 +276,33 @@ void ClientInfo::setLagTimer(int frame, Uint32 n) {
 }
 
 Uint32 ClientInfo::updateLag(int frame) {
-  if(lagMap.find(frame) != lagMap.end()) {
-    Uint32 n = lagMap[frame];
-    
-    // FIXME: do this more efficiently
-    // remove older frames
-    for(map<int,Uint32>::iterator i=lagMap.begin(); i!=lagMap.end(); ) {
-      int f = i->first;
-      //      Uint32 t = i->second;
-      if(f <= frame) lagMap.erase(i++);
+	if(lagMap.find(frame) != lagMap.end()) {
+		Uint32 n = lagMap[frame];
+
+		// FIXME: do this more efficiently
+		// remove older frames
+		for(map<int,Uint32>::iterator i=lagMap.begin(); i!=lagMap.end(); ) {
+			int f = i->first;
+
+			if(f <= frame)
+				lagMap.erase(i++);
 			else ++i;
-    }
+		}
 
-    // compute the lag
-    Uint32 t = SDL_GetTicks();
-    Uint32 lag = t - n;
-    totalLag += lag;
-    if(t - lastLagCheck > 5000) {
-      aveLag = (float)totalLag / (float)(t - lastLagCheck);
-      totalLag = 0;
-      lastLagCheck = t;
-      cerr << "Avg lag for " << describe() << " is " << ((float)aveLag / 1000.0f) << " sec." << endl;
-    }
+		// compute the lag
+		Uint32 t = SDL_GetTicks();
+		Uint32 lag = t - n;
+		totalLag += lag;
+		if(t - lastLagCheck > 5000) {
+			aveLag = static_cast<float>(totalLag) / static_cast<float>(t - lastLagCheck);
+			totalLag = 0;
+			lastLagCheck = t;
+			cerr << "Avg lag for " << describe() << " is " << (static_cast<float>(aveLag) / 1000.0f) << " sec." << endl;
+		}
 
-    return n;
-  }
-  return (Uint32)0;
+		return n;
+	}
+	return (Uint32)0;
 }
 
 Message::Message(char *message, int length) {

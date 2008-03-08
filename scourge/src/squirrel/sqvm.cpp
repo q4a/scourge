@@ -56,12 +56,12 @@ bool SQVM::ARITH_OP(SQUnsignedInteger op,SQObjectPtr &trg,const SQObjectPtr &o1,
 				case '-': trg = tofloat(o1) - tofloat(o2); break;
 				case '/': trg = tofloat(o1) / tofloat(o2); break;
 				case '*': trg = tofloat(o1) * tofloat(o2); break;
-				case '%': trg = SQFloat(fmod((double)tofloat(o1),(double)tofloat(o2))); break;
+				case '%': trg = SQFloat(fmod(static_cast<double>(tofloat(o1)),static_cast<double>(tofloat(o2)))); break;
 				}
 			}	
 		} else {
 			if(op == '+' &&	(type(o1) == OT_STRING || type(o2) == OT_STRING)){
-					if(!StringCat(o1, o2, trg)) return false;
+				if(!StringCat(o1, o2, trg)) return false;
 			}
 			else if(!ArithMetaMethod(op,o1,o2,trg)) { 
 				Raise_Error(_SC("arith op %c on between '%s' and '%s'"),op,GetTypeName(o1),GetTypeName(o2)); return false; 

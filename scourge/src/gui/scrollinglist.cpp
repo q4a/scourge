@@ -121,7 +121,7 @@ void ScrollingList::drawWidget(Widget *parent) {
     }
     cerr << "**********************************************" << endl;
   }
-  int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
+  int textPos = -static_cast<int>(((listHeight - getHeight()) / 100.0f) * static_cast<float>(value));
   if(!((Window*)parent)->isOpening()) {
     glScissor(((Window*)parent)->getX() + x, 
               ((Window*)parent)->getScourgeGui()->getScreenHeight() - 
@@ -347,9 +347,9 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
 }
 
 int ScrollingList::getLineAtPoint( int x, int y ) {
-  int textPos = -(int)(((listHeight - getHeight()) / 100.0f) * (float)value);
-  int n = (int)((float)(y - (getY() + textPos)) / (float)lineHeight);
-	if( !list.empty() && n >= 0 && n < (int)list.size() ) {
+  int textPos = -static_cast<int>(((listHeight - getHeight()) / 100.0f) * static_cast<float>(value));
+  int n = static_cast<int>(static_cast<float>(y - (getY() + textPos)) / static_cast<float>(lineHeight));
+	if( !list.empty() && n >= 0 && n < static_cast<int>(list.size()) ) {
 		return n;
 	} else {
 		return -1;
@@ -478,11 +478,10 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 		break;
 	}
 	if(dragging) {
-		value = (int)((float)((y - dragY) - getY()) / 
-									((float)(getHeight() - scrollerHeight) / 100.0f));
+		value = static_cast<int>(static_cast<float>((y - dragY) - getY()) / (static_cast<float>(getHeight() - scrollerHeight) / 100.0f));
 		if(value < 0)	value = 0;
 		if(value > 100)	value = 100;
-		scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+		scrollerY = static_cast<int>((static_cast<float>(getHeight() - scrollerHeight) / 100.0f) * static_cast<float>(value));
 	}
 	return false;
 }
@@ -500,10 +499,10 @@ void ScrollingList::setSelectedLine(size_t line) {
 
   // fixme: should check if line is already visible
   if(listHeight > getHeight()) {
-		value = (int)(((float)(selectedLine[0] + 1) / (float)list.size()) * 100.0f);
+		value = static_cast<int>((static_cast<float>(selectedLine[0] + 1) / static_cast<float>(list.size())) * 100.0f);
     if(value < 0)	value = 0;
     if(value > 100)	value = 100;
-    scrollerY = (int)(((float)(getHeight() - scrollerHeight) / 100.0f) * (float)value);
+    scrollerY = static_cast<int>((static_cast<float>(getHeight() - scrollerHeight) / 100.0f) * static_cast<float>(value));
 		// on 0, align to the top of the control
 		if( selectedLine[ 0 ] == 0 ) {
 			scrollerY = value = 0;
@@ -521,6 +520,6 @@ void ScrollingList::moveSelectionUp() {
 void ScrollingList::moveSelectionDown() {
 	if( selectedLine == NULL )
 		setSelectedLine( 0 );
-	else if( selectedLine[0] < (int)list.size() - 1 )
+	else if( selectedLine[0] < static_cast<int>(list.size()) - 1 )
 		setSelectedLine( selectedLine[0] + 1 );
 }

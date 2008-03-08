@@ -227,7 +227,6 @@ void CaveMaker::addFurniture(Map *map, ShapePalette *shapePal) {
   // add some magic pools
   DisplayInfo di;
   for( int i = 0; i < 8; i++ ) {
-    //??? if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
       MagicSchool *ms = MagicSchool::getRandomSchool();
       di.red = ms->getDeityRed();
       di.green = ms->getDeityGreen();

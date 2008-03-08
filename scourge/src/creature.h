@@ -201,7 +201,7 @@ class Creature : public RenderedCreature {
   float applyAutomaticSpecialSkills( int event, 
                                      char *varName,
                                      float value );
-  
+
   inline void setQuickSpell( int index, Storable *storable ) { 
     for( int i = 0; storable && i < 12; i++ ) {
       if( quickSpell[ i ] == storable ) {
@@ -241,18 +241,18 @@ class Creature : public RenderedCreature {
   inline int getLastTurn() { return lastTurn; }
 
   inline bool isMonster() { return (monster != NULL); }
-  
+
   inline int getTargetX() { if(targetCreature) return toint(targetCreature->getX()); else return targetX; }
   inline int getTargetY() { if(targetCreature) return toint(targetCreature->getY()); else return targetY; }
   inline int getTargetZ() { if(targetCreature) return toint(targetCreature->getZ()); else return targetZ; }
 
-  void setTargetCreature( Creature *c, bool findPath=false , float range=(float)MIN_DISTANCE); 
+  void setTargetCreature( Creature *c, bool findPath=false , float range=static_cast<float>(MIN_DISTANCE)); 
   inline Creature *getTargetCreature() { return targetCreature; }
   inline void setTargetLocation(int x, int y, int z) { targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z; }
   inline void getTargetLocation(int *x, int *y, int *z) { *x = targetX; *y = targetY; *z = targetZ; }
   inline void setTargetItem(int x, int y, int z, Item *item) { setTargetLocation(x, y, z); targetItem = item; }
   inline Item *getTargetItem() { return targetItem; }
-  
+
   inline void setMotion(int motion) { this->motion = motion; }  
   inline int getMotion() { return this->motion; }
 
@@ -260,11 +260,11 @@ class Creature : public RenderedCreature {
 	 Return true only if a range is specified and we're within it.
   */
 //  bool Creature::isInRange();
-    
+
   inline void setFacingDirection(int direction) { this->facingDirection = direction;}
   inline int getFacingDirection() { return this->facingDirection; }
-  
-  
+
+
   inline void setLastTick(GLint n) { this->lastTick = n; }
   inline GLint getLastTick() { return lastTick; }
 
@@ -444,7 +444,7 @@ class Creature : public RenderedCreature {
   bool addSpell(Spell *spell);
   // FIXME: O(n) but there aren't that many spells...
   bool isSpellMemorized(Spell *spell);
-  inline int getSpellCount() { return (int)spells.size(); }
+  inline int getSpellCount() { return static_cast<int>(spells.size()); }
   inline Spell *getSpell(int index) { return spells[index]; }
 
   void setAction(int action, Item *item=NULL, Spell *spell=NULL, SpecialSkill *skill=NULL);

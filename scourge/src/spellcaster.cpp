@@ -229,8 +229,8 @@ void SpellCaster::viewInfo() {
       for( int r = spellEffectSize; r; r += spellEffectSize ) {
         if( r > radius ) r = radius;
         for( int angle = 0; angle < 360; angle += 10 ) {
-          int x = toint( sx + ( (float)r * cos( Util::degreesToRadians( (float)angle ) ) ) );
-          int y = toint( sy - ( (float)r * sin( Util::degreesToRadians( (float)angle ) ) ) );
+          int x = toint( sx + ( static_cast<float>(r) * cos( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
+          int y = toint( sy - ( static_cast<float>(r) * sin( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
           if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
             battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_GREEN, 
                                                          (Constants::DAMAGE_DURATION * 4), 
@@ -274,11 +274,11 @@ void SpellCaster::increaseHP() {
   Creature *creature = battle->getCreature();
 
   int n = spell->getAction();
-  n += Util::dice( (int)(n * power / 100) );
+  n += Util::dice( static_cast<int>(n * power / 100) );
 
   if(n + creature->getTargetCreature()->getHp() > creature->getTargetCreature()->getMaxHp())
     n = creature->getTargetCreature()->getMaxHp() - creature->getTargetCreature()->getHp();
-  creature->getTargetCreature()->setHp((int)(creature->getTargetCreature()->getHp() + n));
+  creature->getTargetCreature()->setHp(static_cast<int>(creature->getTargetCreature()->getHp() + n));
   char msg[200];
   snprintf(msg, 200, _( "%s heals %d points." ), creature->getTargetCreature()->getName(), n);
   battle->getSession()->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
@@ -288,7 +288,7 @@ void SpellCaster::increaseHP() {
 void SpellCaster::increaseAC() {
   Creature *creature = battle->getCreature();
   int n = spell->getAction();
-  n += Util::dice( (int)(n * power / 100) );
+  n += Util::dice( static_cast<int>(n * power / 100) );
 
   int timeInMin = 15 + ( level / 2 );
 
@@ -385,7 +385,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
   // check for resistance
   int resistance = creature->getTargetCreature()->getSkill( spell->getSchool()->getResistSkill() );
 	if( resistance > 0 && !lowDamage ) {
-		damage -= (((float)damage / 150.0f) * resistance);
+		damage -= ((static_cast<float>(damage) / 150.0f) * resistance);
 	}
 
   snprintf(msg, MSG_SIZE, _( "%1$s attacks %2$s with %3$s." ), 
@@ -573,12 +573,12 @@ void SpellCaster::windAttack() {
 		if( r > radius ) r = radius;
 
 		di.red = 0.1f;
-		di.green = 1 - (float)r / (float)radius;
-		di.blue = (float)r / (float)radius;
+		di.green = 1 - static_cast<float>(r) / static_cast<float>(radius);
+		di.blue = static_cast<float>(r) / static_cast<float>(radius);
 
 		for( int angle = 0; angle < 360; angle += 10 ) {
-			int x = toint( sx + ( (float)r * cos( Util::degreesToRadians( (float)angle ) ) ) );
-			int y = toint( sy - ( (float)r * sin( Util::degreesToRadians( (float)angle ) ) ) );
+			int x = toint( sx + ( static_cast<float>(r) * cos( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
+			int y = toint( sy - ( static_cast<float>(r) * sin( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
 			if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
 	//      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
 				battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_GREEN, 
@@ -595,8 +595,8 @@ void SpellCaster::windAttack() {
 						// knock the creature back
 						int cx = toint( targets[ i ]->getX() );
 						int cy = toint( targets[ i ]->getY() );
-						int px = toint( cx + ( 2.0f * cos( Util::degreesToRadians( (float)angle ) ) ) );
-						int py = toint( cy - ( 2.0f * sin( Util::degreesToRadians( (float)angle ) ) ) );
+						int px = toint( cx + ( 2.0f * cos( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
+						int py = toint( cy - ( 2.0f * sin( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
 						if( !( battle->getSession()->getMap()->
 									 moveCreature( cx, cy, 0, 
 																 px, py, 0, 
@@ -625,8 +625,8 @@ void SpellCaster::circleAttack() {
   int targetCount = 0;
   Creature *c = battle->getCreature()->getTargetCreature();
   for( int angle = 0; angle < 360; angle += 10 ) {
-    int x = toint( sx + ( (float)radius * cos( Util::degreesToRadians( (float)angle ) ) ) );
-    int y = toint( sy - ( (float)radius * sin( Util::degreesToRadians( (float)angle ) ) ) );
+    int x = toint( sx + ( static_cast<float>(radius) * cos( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
+    int y = toint( sy - ( static_cast<float>(radius) * sin( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
     if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
 //      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
       battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_DUST, 
@@ -653,8 +653,8 @@ void SpellCaster::hailAttack() {
 
   // pick random locations in the circle
   for( int i = 0; i < radius * 2 + 2; i++ ) {
-    int x = (int)Util::roll( sx - radius, sx + radius );
-    int y = (int)Util::roll( sy - radius, sy + radius );
+    int x = static_cast<int>(Util::roll( sx - radius, sx + radius ));
+    int y = static_cast<int>(Util::roll( sy - radius, sy + radius ));
 
     if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
       //      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
@@ -697,11 +697,11 @@ int SpellCaster::getRadius( int spellEffectSize, float *sx, float *sy ) {
     td = pos->shape->getDepth();
   }
 
-  int selectedRadius = (int)Constants::distance( battle->getCreature()->getX(), battle->getCreature()->getY(),
+  int selectedRadius = static_cast<int>(Constants::distance( battle->getCreature()->getX(), battle->getCreature()->getY(),
                                                  battle->getCreature()->getShape()->getWidth(), 
                                                  battle->getCreature()->getShape()->getDepth(), 
                                                  battle->getCreature()->getTargetX(), battle->getCreature()->getTargetY(),
-                                                 tw, td );
+                                                 tw, td ));
   selectedRadius += toint( battle->getCreature()->getShape()->getWidth() / 2.0f + tw / 2.0f + spellEffectSize );
 
   // cap the selected radius

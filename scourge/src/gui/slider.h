@@ -47,13 +47,13 @@ class Slider : public Widget {
   void drawWidget(Widget *parent);
 
   inline int getValue() {
-    return (int)((float)(pos * (maxValue - minValue)) / (float)getWidth());
+    return static_cast<int>(static_cast<float>(pos * (maxValue - minValue)) / static_cast<float>(getWidth()));
   }
 
   void setValue(int n);
 
   inline int getStep() {
-    return (int)((float)getWidth() / (float)(maxValue - minValue));
+    return static_cast<int>(static_cast<float>(getWidth()) / static_cast<float>(maxValue - minValue));
   }
 
   // don't play sound when the value changes

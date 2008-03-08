@@ -297,8 +297,8 @@ void OutdoorGenerator::createGround() {
 			// ground[x][y] = ( 1.0f * rand() / RAND_MAX );
 			ground[x][y] = amp + 
 				( amp * 
-					sin( PI / ( 180.0f / (float)( x * OUTDOORS_STEP * freq ) ) ) * 
-					cos( PI / ( 180.0f / (float)( y * OUTDOORS_STEP  * freq )) ) );
+					sin( PI / ( 180.0f / static_cast<float>( x * OUTDOORS_STEP * freq ) ) ) * 
+					cos( PI / ( 180.0f / static_cast<float>( y * OUTDOORS_STEP  * freq )) ) );
 			if( ground[x][y] < 0 ) ground[x][y] = 0;
 		}
 	}

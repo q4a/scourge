@@ -149,7 +149,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
                                  true);
   item->blocking = (info->blocking == 1);
   item->currentCharges = info->currentCharges;
-  item->weight = (float)(info->weight) / 100.0f;
+  item->weight = static_cast<float>(info->weight) / 100.0f;
   item->quality = info->quality;
   item->price = info->price;
 	item->identifiedBits = info->identifiedBits;
@@ -157,7 +157,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
 	// container
 	item->containedItemCount = info->containedItemCount;
   int realCount = 0;
-  for(int i = 0; i < (int)info->containedItemCount; i++) {
+  for(int i = 0; i < static_cast<int>(info->containedItemCount); i++) {
      Item *containedItem = Item::load( session, info->containedItems[i] );
      if( containedItem ) {
 			 item->containedItems[ realCount++ ] = containedItem;
@@ -184,7 +184,7 @@ Item *Item::load(Session *session, ItemInfo *info) {
     if(info->skillBonus[i]) item->skillBonus[i] = info->skillBonus[i];
   }
 
-	item->setMissionObjectInfo( (int)info->missionId, (int)info->missionObjectiveIndex );
+	item->setMissionObjectInfo( static_cast<int>(info->missionId), static_cast<int>(info->missionObjectiveIndex) );
 
 	// re-describe the item. describeMagic is called from commonInit at
 	// which point magicLevel can be 0, so it's important to re-describe
@@ -366,7 +366,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 			int parry = toint( weapon->getValueAsFloat( "parry" ) );
 			int ap = toint( weapon->getValueAsFloat( "ap" ) );
 			int range = toint( weapon->getValueAsFloat( "range" ) );
-			if( range < (int)MIN_DISTANCE ) range = (int)MIN_DISTANCE;
+			if( range < static_cast<int>(MIN_DISTANCE) ) range = static_cast<int>(MIN_DISTANCE);
 			int twoHanded = toint( weapon->getValueAsFloat( "two_handed" ) );
 			last->setWeapon( baseDamage, damageType, skill, parry, ap, range, twoHanded );
 		}
@@ -553,10 +553,10 @@ bool Item::decrementCharges(){
   float f1;
   int oldCharges;
 
-  oldCharges = getCurrentCharges();            
+  oldCharges = getCurrentCharges();
   if(oldCharges <= 1){
     // The object is totally consummed
-    return true;    
+    return true;
   }
   setCurrentCharges(oldCharges - 1);
 
@@ -564,11 +564,11 @@ bool Item::decrementCharges(){
   // (without increasing error each time)
 
   f1 = getWeight();
-  f1 *= (float) ( getRpgItem()->getMaxCharges());
-  f1 /= (float) oldCharges;
-  f1 *= (((float)oldCharges - 1.0f) / (float)(getRpgItem()->getMaxCharges()));            
+  f1 *= static_cast<float>( getRpgItem()->getMaxCharges());
+  f1 /= static_cast<float>(oldCharges);
+  f1 *= ((static_cast<float>(oldCharges) - 1.0f) / static_cast<float>(getRpgItem()->getMaxCharges()));
   setWeight(f1);
-  return false;      
+  return false;
 }
 
 
@@ -595,15 +595,14 @@ void Item::commonInit( bool loading ) {
   quality = Util::pickOne( 50, 100 ); // starts out mostly healthy
 
   int basePrice = ( this->spell ? this->spell->getExp() : rpgItem->getPrice() );
-  price = basePrice + 
-    (int)Util::getRandomSum( (float)(basePrice / 2), level );
+  price = basePrice + static_cast<int>(Util::getRandomSum( static_cast<float>(basePrice / 2), level ));
 
   // assign a spell to the item
   // the deeper you go, the more likely that items contain spells
   if( rpgItem->hasSpell() &&
 			0 == Util::dice( MAX_MISSION_DEPTH - ( session->getCurrentMission() ? session->getCurrentMission()->getDepth() : 0 ) ) ) {
     this->spell = MagicSchool::getRandomSpell( 1 );
-    price += (int)Util::getRandomSum( (float)(basePrice / 2), this->spell->getLevel() );
+    price += static_cast<int>(Util::getRandomSum( static_cast<float>(basePrice / 2), this->spell->getLevel() ));
   }
 
   // --------------
@@ -622,7 +621,7 @@ void Item::commonInit( bool loading ) {
 
   if( rpgItem->isEnchantable() && !loading ) {
     // roll for magic
-    int n = Util::dice( (int)( 200.0f - ( level * 1.5f ) ) );
+    int n = Util::dice( static_cast<int>( 200.0f - ( level * 1.5f ) ) );
     if( n < 5 ) enchant( Constants::DIVINE_MAGIC_ITEM );
     else if( n < 15 ) enchant( Constants::CHAMPION_MAGIC_ITEM );
     else if( n < 30 ) enchant( Constants::GREATER_MAGIC_ITEM );
@@ -941,7 +940,7 @@ void Item::trySetIDBit(int bit, float modifier, int infoDetailLevel) {
 	//If not yet set
 	if(!getIdentifiedBit( bit ))
 	{
-		if( infoDetailLevel > (int)Util::roll( 0.0f, modifier ) ) {
+		if( infoDetailLevel > static_cast<int>(Util::roll( 0.0f, modifier )) ) {
 			setIdentifiedBit( bit, true );
 		} else {
 			setIdentifiedBit( bit, false );
@@ -1042,7 +1041,7 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallI
   glPushMatrix();
   glTranslatef( x + ox, y + oy, 0 );
   if( !smallIcon ) {
-	if( w > 0 && h > 0 ) glScalef( rw / (float)w, rh / (float)h, 1 );
+	if( w > 0 && h > 0 ) glScalef( rw / static_cast<float>(w), rh / static_cast<float>(h), 1 );
 	if( isMagicItem() ) {
 	  renderUnderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
 	}
@@ -1067,12 +1066,12 @@ void Item::getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp
 		*ih = getShape()->getIconHeight() * 32;
 		if( getShape()->getIconWidth() > getShape()->getIconHeight() ) {
 			rw = w;
-			rh = (int)( getShape()->getIconHeight() * rw / (float)getShape()->getIconWidth() );
+			rh = static_cast<int>( getShape()->getIconHeight() * rw / static_cast<float>(getShape()->getIconWidth()) );
 			ox = 0;
 			oy = ( h - rh ) / 2;
 		} else {
 			rh = h;
-			rw = (int)( getShape()->getIconWidth() * rh / (float)getShape()->getIconHeight() );
+			rw = static_cast<int>( getShape()->getIconWidth() * rh / static_cast<float>(getShape()->getIconHeight()));
 			oy = 0;
 			ox = ( w - rw ) / 2;
 		}
@@ -1214,7 +1213,7 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 	//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
 	for( int i = 0; i < PARTICLE_COUNT; i++ ) {
-		float a = ( 1 - iconUnderEffectParticle[i]->life / (float)iconUnderEffectParticle[i]->maxLife ) / 8.0f;
+		float a = ( 1 - iconUnderEffectParticle[i]->life / static_cast<float>(iconUnderEffectParticle[i]->maxLife) ) / 8.0f;
 		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r * a,
 							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->g * a,
 							 Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a,
@@ -1251,8 +1250,8 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 				iconEffectParticle[i]->life = 0;
 				iconEffectParticle[i]->maxLife = Util::pickOne( 30, 59 );
 				iconEffectParticle[i]->zoom = 0.5f;
-				iconEffectParticle[i]->x = (float)w * rand() / RAND_MAX;
-				iconEffectParticle[i]->y = (float)h * rand() / RAND_MAX;
+				iconEffectParticle[i]->x = static_cast<float>(w) * rand() / RAND_MAX;
+				iconEffectParticle[i]->y = static_cast<float>(h) * rand() / RAND_MAX;
 				iconEffectParticle[i]->z = 0;
 			}
 			iconEffectParticle[i]->zoom += ( iconEffectParticle[i]->life >= iconEffectParticle[i]->maxLife / 2.0f ? -1 : 1 ) * 0.5f;
@@ -1269,7 +1268,7 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 	//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
 	for( int i = 0; i < PARTICLE_COUNT / 5; i++ ) {
-		float a = ( iconEffectParticle[i]->life / (float)(iconEffectParticle[i]->maxLife) );
+		float a = ( iconEffectParticle[i]->life / static_cast<float>(iconEffectParticle[i]->maxLife) );
 		if( a >= 0.5 ) a = 1 - a;
 		a = a * 2.0f;
 		glColor4f( Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->r * a,

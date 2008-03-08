@@ -38,13 +38,12 @@ MultipleLabel::~MultipleLabel() {
 }
 
 void MultipleLabel::drawWidget(Widget *parent) {  
-   
-  // Draw rectangle     
-  drawButton( parent, x2 - dynWidth, 0, x2, y2 - getY(),
-              false, false, false, false, inside );
-    
+
+  // Draw rectangle
+  drawButton( parent, x2 - dynWidth, 0, x2, y2 - getY(), false, false, false, false, inside );
+
   // Draw texts
-  glPushMatrix();      
+  glPushMatrix();
   glTranslated( 15, 15, 0);
   staticLabel->drawWidget(parent);
   glTranslated(x2 - dynWidth, 0, 0);
@@ -53,19 +52,19 @@ void MultipleLabel::drawWidget(Widget *parent) {
 }
 
 void MultipleLabel::addText(char * s){
-    vText.push_back(s);     
+    vText.push_back(s);
 }
 
 void MultipleLabel::setText(int i){
-    if(i >= 0 && i < (int)vText.size()){
+    if(i >= 0 && i < static_cast<int>(vText.size())) {
         dynamicLabel->setText(vText[i]);
         currentTextInd = i;
-    }   
+    }
 }
 
 void MultipleLabel::setNextText(){
     currentTextInd++;
-    if(currentTextInd >= (int)vText.size()){
+    if(currentTextInd >= static_cast<int>(vText.size())){
         currentTextInd = 0;
     }
     setText(currentTextInd);

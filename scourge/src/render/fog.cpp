@@ -54,16 +54,16 @@ using namespace std;
 #define DARK_B 0.0f
 
 // inverse color of dark shade
-#define SR (int)( 255.0f * DARK_R )
-#define SG (int)( 255.0f * DARK_G )
-#define SB (int)( 255.0f * DARK_B )
+#define SR static_cast<int>( 255.0f * DARK_R )
+#define SG static_cast<int>( 255.0f * DARK_G )
+#define SB static_cast<int>( 255.0f * DARK_B )
 
 //#define LAMP_RADIUS_SQUARED 36.0f
 //#define LAMP_RADIUS_SQUARED 64.0f
 
 Fog::Fog( Map *map, float lampRadiusSquared ) {
 	this->lampRadiusSquared = lampRadiusSquared;
-  players = new std::set<RenderedCreature *> [MAP_WIDTH * MAP_DEPTH];        
+  players = new std::set<RenderedCreature *> [MAP_WIDTH * MAP_DEPTH];
   this->map = map;
   createOverlayTexture();
   createShadeTexture();
@@ -92,12 +92,11 @@ int Fog::getValue( int mapx, int mapy ) {
 void Fog::visit( RenderedCreature *player ) {
   for( int x = 0; x < FOG_WIDTH; x++ ) {
     for( int y = 0; y < FOG_DEPTH; y++ ) {
-      
+
       int fx = toint( player->getX() / FOG_CHUNK_SIZE );
       int fy = toint( player->getY() / FOG_CHUNK_SIZE );
 
-      double d = (double)( ( fx - x ) * ( fx - x) ) + 
-        (double)( ( fy - y ) * ( fy - y ) );
+      double d = static_cast<double>( ( fx - x ) * ( fx - x) ) + static_cast<double>( ( fy - y ) * ( fy - y ) );
       if( d <= lampRadiusSquared ) {
         fog[x][y] = FOG_CLEAR;
         players[x + (y * MAP_WIDTH)].insert( player );
@@ -118,7 +117,7 @@ void Fog::hideDeadParty() {
         for( int y = 0; y < FOG_DEPTH; y++ ) {
           if( fog[x][y] == FOG_CLEAR ) {
             players[x + (y * MAP_WIDTH)].erase( map->getAdapter()->getParty(i) );
-			if( players[x + (y * MAP_WIDTH)].empty() ) {
+            if( players[x + (y * MAP_WIDTH)].empty() ) {
               fog[x][y] = FOG_VISITED;
             }
           }
@@ -161,16 +160,14 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
       int v = fog[ fx + x ][ fy + y ];
       if( v == FOG_VISITED ) continue;
 
-      float xp = (float)( x * FOG_CHUNK_SIZE - ox ) / DIV;
-      float yp = (float)( y * FOG_CHUNK_SIZE - oy ) / DIV;
-      int z = getHighestZ( ( fx + x ) * FOG_CHUNK_SIZE, 
-                           ( fy + y ) * FOG_CHUNK_SIZE, 
-                           FOG_CHUNK_SIZE,
-                           FOG_CHUNK_SIZE );
-      float zp = (float)( z ) / DIV;
+      float xp = static_cast<float>( x * FOG_CHUNK_SIZE - ox ) / DIV;
+      float yp = static_cast<float>( y * FOG_CHUNK_SIZE - oy ) / DIV;
+      int z = getHighestZ( ( fx + x ) * FOG_CHUNK_SIZE, ( fy + y ) * FOG_CHUNK_SIZE, FOG_CHUNK_SIZE, FOG_CHUNK_SIZE );
+      float zp = static_cast<float>( z ) / DIV;
 
       // FIXME: we should check 2d inclusion in screen rect instead
-      if( !frustum->CubeInFrustum( xp, yp, 0.0f, nn ) ) continue;
+      if( !frustum->CubeInFrustum( xp, yp, 0.0f, nn ) )
+        continue;
 
       // get all screen points of the bounding box; draw bounding rectangle on screen
       float obj[20][3] = {
@@ -206,8 +203,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
       minScX = minScY = 2000;
       for( int i = 0; i < 20; i++ ) {
         GLdouble scx, scy;
-        getScreenXY( (GLdouble)obj[i][0], (GLdouble)obj[i][1], (GLdouble)obj[i][2], 
-                     &scx, &scy );
+        getScreenXY( (GLdouble)obj[i][0], (GLdouble)obj[i][1], (GLdouble)obj[i][2], &scx, &scy );
 
         // only show light area for current player
         if( v == FOG_CLEAR &&
@@ -224,7 +220,8 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
         }
       }
 
-      if( v == FOG_CLEAR ) continue;
+      if( v == FOG_CLEAR )
+        continue;
 
       f[pCount] = v;
       p[pCount][0] = minScX;
@@ -233,10 +230,8 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
       p[pCount][3] = maxScY - minScY;
 
       e[pCount] = false;
-      if( v != fog[ fx + x ][ fy + y - 1 ] ||
-          v != fog[ fx + x - 1 ][ fy + y ] ||
-          v != fog[ fx + x + 1 ][ fy + y ] ||
-          v != fog[ fx + x ][ fy + y + 1 ] ) {
+      if( v != fog[ fx + x ][ fy + y - 1 ] || v != fog[ fx + x - 1 ][ fy + y ] ||
+          v != fog[ fx + x + 1 ][ fy + y ] || v != fog[ fx + x ][ fy + y + 1 ] ) {
         e[pCount] = true;
       }
 
@@ -269,9 +264,9 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
       intersects( 0, 0, 
                   map->getAdapter()->getScreenWidth(), 
                   map->getAdapter()->getScreenHeight(), 
-                  (int)minLightX, (int)minLightY, 
-                  (int)( maxLightX - minLightX ), 
-                  (int)( maxLightY - minLightY ) ) ) {
+                  static_cast<int>(minLightX), static_cast<int>(minLightY),
+                  static_cast<int>( maxLightX - minLightX ), 
+                  static_cast<int>( maxLightY - minLightY ) ) ) {
     
     
     glBegin( GL_QUADS );
@@ -433,7 +428,7 @@ void Fog::getScreenXY( GLdouble mapx, GLdouble mapy, GLdouble mapz,
 
 void Fog::createOverlayTexture() {
 
-  float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
+  float half = (static_cast<float>(OVERLAY_SIZE) - 0.5f) / 2.0f;
   int maxP = 75;
   int minP = 50;
 
@@ -442,8 +437,8 @@ void Fog::createOverlayTexture() {
   for( unsigned int i = 0; i < OVERLAY_SIZE; i++) {
     for( unsigned int j = 0; j < OVERLAY_SIZE; j++) {
       
-      float id = (float)i - half;
-      float jd = (float)j - half;
+      float id = static_cast<float>(i) - half;
+      float jd = static_cast<float>(j) - half;
 
       // the distance
       float dist = sqrt( id * id + jd * jd );
@@ -460,18 +455,18 @@ void Fog::createOverlayTexture() {
         r = ER;
         g = EG;
         b = EB;
-      } else {        
+      } else {
         r = 0xff - 
-          (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - ER ) / (float)( maxP - minP ) ) );
+          static_cast<int>( static_cast<float>( percent - minP ) * 
+                 ( static_cast<float>( 0xff - ER ) / static_cast<float>( maxP - minP ) ) );
         if( r < ER ) r = ER;
         g = 0xff - 
-          (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - EG ) / (float)( maxP - minP ) ) );
+          static_cast<int>( static_cast<float>( percent - minP ) * 
+                 ( static_cast<float>( 0xff - EG ) / static_cast<float>( maxP - minP ) ) );
         if( g < EG ) g = EG;
         b = 0xff - 
-          (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - EB ) / (float)( maxP - minP ) ) );
+          static_cast<int>( static_cast<float>( percent - minP ) * 
+                 ( static_cast<float>( 0xff - EB ) / static_cast<float>( maxP - minP ) ) );
         if( b < EB ) b = EB;
       }
       overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = (unsigned char)r;
@@ -492,7 +487,7 @@ void Fog::createOverlayTexture() {
 
 void Fog::createShadeTexture() {
 
-  float half = ((float)OVERLAY_SIZE - 0.5f) / 2.0f;
+  float half = (static_cast<float>(OVERLAY_SIZE) - 0.5f) / 2.0f;
   int maxP = 90;
   int minP = 70;
 
@@ -500,43 +495,40 @@ void Fog::createShadeTexture() {
   glGenTextures(1, (GLuint*)&shade_tex);
   for( unsigned int i = 0; i < OVERLAY_SIZE; i++) {
     for( unsigned int j = 0; j < OVERLAY_SIZE; j++) {
-      
-      float id = (float)i - half;
-      float jd = (float)j - half;
 
-      // the distance
-      float dist = sqrt( id * id + jd * jd );
+			float id = static_cast<float>(i) - half;
+			float jd = static_cast<float>(j) - half;
 
-      // the distance as a percent of the max distance
-      float percent = dist / ( sqrt( half * half ) / 100.0f );
+			// the distance
+			float dist = sqrt( id * id + jd * jd );
 
-      int r, g, b;
-      if( percent < minP ) {
-        r = SR;
-        g = SG;
-        b = SB;
-      } else if( percent >= maxP ) {
-        r = 0xff;
-        g = 0xff;
-        b = 0xff;
-      } else {        
-        r = SR + 
-          (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - SR ) / (float)( maxP - minP ) ) );
-        if( r > 0xff ) r = 0xff;
-        g = SG +
-          (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - SG ) / (float)( maxP - minP ) ) );
-        if( g > 0xff ) g = 0xff;
-        b = SB +
-          (int)( (float)( percent - minP ) * 
-                 ( (float)( 0xff - SB ) / (float)( maxP - minP ) ) );
-        if( b > 0xff ) b = 0xff;
-      }
-      shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = (unsigned char)r;
-      shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = (unsigned char)g;
-      shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = (unsigned char)b;
-    }
+			// the distance as a percent of the max distance
+			float percent = dist / ( sqrt( half * half ) / 100.0f );
+
+			int r, g, b;
+			if( percent < minP ) {
+				r = SR;
+				g = SG;
+				b = SB;
+			} else if( percent >= maxP ) {
+				r = 0xff;
+				g = 0xff;
+				b = 0xff;
+			} else {
+				r = SR + static_cast<int>( static_cast<float>( percent - minP ) * ( static_cast<float>( 0xff - SR ) / static_cast<float>( maxP - minP ) ) );
+				if( r > 0xff )
+					r = 0xff;
+				g = SG + static_cast<int>( static_cast<float>( percent - minP ) * ( static_cast<float>( 0xff - SG ) / static_cast<float>( maxP - minP ) ) );
+				if( g > 0xff )
+					g = 0xff;
+				b = SB + static_cast<int>( static_cast<float>( percent - minP ) * ( static_cast<float>( 0xff - SB ) / static_cast<float>( maxP - minP ) ) );
+				if( b > 0xff )
+					b = 0xff;
+			}
+			shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = (unsigned char)r;
+			shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = (unsigned char)g;
+			shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = (unsigned char)b;
+		}
   }
   glBindTexture(GL_TEXTURE_2D, shade_tex);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

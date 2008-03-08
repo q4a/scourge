@@ -20,7 +20,7 @@
 using namespace std;
 
 int Date::dayInMonth[13] = {
-    0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+	0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
 
 const char * Date::monthName[13] = {
@@ -31,11 +31,11 @@ const char * Date::monthName[13] = {
 	N_( "April" ), 
 	N_( "May" ), 
 	N_( "June" ), 
-  N_( "July" ), 
+	N_( "July" ), 
 	N_( "August" ), 
-  N_( "September" ), 
+	N_( "September" ), 
 	N_( "October" ), 
-  N_( "November" ), 
+	N_( "November" ), 
 	N_( "December" )
 };
 
@@ -50,12 +50,12 @@ const char * Date::dayName[8] = {
 	N_( "Sunday" )
 };
  
-Date::Date(){    
-    reset();
+Date::Date(){
+	reset();
 }
 
 Date::Date(int sec, int min, int hour, int day, int month, int year){           
-    setDate(sec, min, hour, day, month, year);           
+	setDate(sec, min, hour, day, month, year);           
 }
 
 Date::Date( char *shortString ) {
@@ -63,41 +63,41 @@ Date::Date( char *shortString ) {
 }
 
 char *Date::getShortString() {
-  snprintf( shortString, SHORT_SIZE, "%d/%d/%d/%d/%d/%d", year, month, day, hour, min, sec );
-  return shortString;
+	snprintf( shortString, SHORT_SIZE, "%d/%d/%d/%d/%d/%d", year, month, day, hour, min, sec );
+	return shortString;
 }
 
 void Date::setDate(int s, int m, int h, int day, int month, int year){
-	this->sec = s;      
-	this->min = m;    
-	this->hour = h;         
-	this->day = day;   
-	this->month = month;  
-	this->year = year;   
+	this->sec = s;
+	this->min = m;
+	this->hour = h;
+	this->day = day;
+	this->month = month;
+	this->year = year;
 }
 
 void Date::setDate( char *shortString ) {
-  char *p = strdup( shortString );
-  
-  char *q = strtok( p, "/" );
-  this->year = atoi( q );
+	char *p = strdup( shortString );
 
-  q = strtok( NULL, "/" );
-  this->month = atoi( q );
+	char *q = strtok( p, "/" );
+	this->year = atoi( q );
 
-  q = strtok( NULL, "/" );
-  this->day = atoi( q );
+	q = strtok( NULL, "/" );
+	this->month = atoi( q );
 
-  q = strtok( NULL, "/" );
-  this->hour = atoi( q );
+	q = strtok( NULL, "/" );
+	this->day = atoi( q );
 
-  q = strtok( NULL, "/" );
-  this->min = atoi( q );
+	q = strtok( NULL, "/" );
+	this->hour = atoi( q );
 
-  q = strtok( NULL, "/" );
-  this->sec = atoi( q );
+	q = strtok( NULL, "/" );
+	this->min = atoi( q );
 
-  free( p );
+	q = strtok( NULL, "/" );
+	this->sec = atoi( q );
+
+	free( p );
 }
 
 void Date::reset( char *shortString ){
@@ -180,67 +180,54 @@ void Date::addDate( Date d ) {
 }
 
 
-bool Date::isInferiorTo(Date d){    
-    
-    if(d.isEqualTo(*this)) return false;       
-    
-    if(year < d.getYear()) return true;
-    else if(month < d.getMonth()) return true;            
-    else if(month > d.getMonth()) return false;
-    else if(day < d.getDay()) return true;
-    else if(day > d.getDay()) return false;
-    else if(hour < d.getHour()) return true;
-    else if(hour > d.getHour()) return false;
-    else if(min < d.getMin()) return true;
-    else if(min > d.getMin()) return false;
-    else if(sec < d.getSec()) return true;
-    else if(sec > d.getSec()) return false;
-    return false;
+bool Date::isInferiorTo(Date d) {
+
+	if(d == *this) return false;
+
+	if(year < d.getYear()) return true;
+	else if(month < d.getMonth()) return true;
+	else if(month > d.getMonth()) return false;
+	else if(day < d.getDay()) return true;
+	else if(day > d.getDay()) return false;
+	else if(hour < d.getHour()) return true;
+	else if(hour > d.getHour()) return false;
+	else if(min < d.getMin()) return true;
+	else if(min > d.getMin()) return false;
+	else if(sec < d.getSec()) return true;
+	else if(sec > d.getSec()) return false;
+	return false;
 }
 
-bool Date::isEqualTo(Date d){
-    return(
-            year == d.getYear()
-        &&  month == d.getMonth()
-        &&  day  == d.getDay()
-        &&  hour == d.getHour()
-        &&  min  == d.getMin()
-        &&  sec  == d.getSec()
-    );
+bool Date::operator==(const Date& d) const {
+	return year == d.year && month == d.month && day == d.day && hour == d.hour && min == d.min && sec == d.sec;
 }
 
-
-void Date::print(){    
-    cout << day << "/" << month << "/" << year << " "<< hour << "h" << min << ":" << sec << " ";
+void Date::print(){
+	cout << day << "/" << month << "/" << year << " "<< hour << "h" << min << ":" << sec << " ";
 }
-
 
 void Date::buildDateString(){
-    char buff[10];
-                
-    buff[0] = _( monthName[month] )[0];
-    buff[1] = _( monthName[month] )[1];
-    buff[2] = _( monthName[month] )[2];
-    buff[3] = ' ';
-    buff[4] = '\0';    
-    
-    snprintf( dateString, DATE_SIZE, "%s %.2d %.2d:%.2d", 
-						 buff, (int)day, (int)hour, (int)min );
+	char buff[10];
+
+	buff[0] = _( monthName[month] )[0];
+	buff[1] = _( monthName[month] )[1];
+	buff[2] = _( monthName[month] )[2];
+	buff[3] = ' ';
+	buff[4] = '\0';
+
+	snprintf(dateString, DATE_SIZE, "%s %.2d %.2d:%.2d", buff, static_cast<int>(day), static_cast<int>(hour), static_cast<int>(min));
 }
 
 Date::~Date(){
-
 }
 
 bool Date::isADayLater(Date date) {
-  return(date.getYear() < getYear() ||
-         (date.getYear() == getYear() && date.getMonth() < getMonth()) ||
+	return(date.getYear() < getYear() || (date.getYear() == getYear() && date.getMonth() < getMonth()) ||
          (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() < getDay()));
 }
 
 bool Date::isAnHourLater(Date date) {
-  return(date.getYear() < getYear() ||
-         (date.getYear() == getYear() && date.getMonth() < getMonth()) ||
+	return(date.getYear() < getYear() || (date.getYear() == getYear() && date.getMonth() < getMonth()) ||
          (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() < getDay()) ||
 				 (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() == getDay() && date.getHour() < getHour()));
 }

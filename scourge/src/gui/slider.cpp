@@ -176,7 +176,7 @@ void Slider::removeEffects(Widget *parent) {
 }
 
 void Slider::setValue(int n) {
-  pos = (int)((float)(n * getWidth()) / (float)(maxValue - minValue));
+  pos = static_cast<int>(static_cast<float>(n * getWidth()) / static_cast<float>(maxValue - minValue));
   if(pos >= getWidth() - BUTTON_SIZE / 2) pos = getWidth() - BUTTON_SIZE / 2;
   if(pos < 0) pos = 0;
 }

@@ -85,7 +85,7 @@ public:
 
 bool MyApp::Initialize( int& argc, wxChar **argv ) {
 	// initialize scourge rootDir
-	int err = Constants::initRootDir( (int)argc, (char**)argv );
+	int err = Constants::initRootDir( static_cast<int>(argc), (char**)argv );
 	if( err ) return false;
 
 	// continue initializing our app

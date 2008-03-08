@@ -105,11 +105,11 @@ void IdentifyDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 void IdentifyDialog::render( const Widget *widget, const Item *item, std::string& buffer ) {
 	std::string s;
   ((Item*)item)->getDetailedDescription( s );
-  float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
+  float skill = static_cast<float>( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
   // level-based mark-up is already included and price is randomized
   int price = ( ((Item*)item)->getPrice() / 20) * ( 6 - ((Item*)item)->getRpgItem()->getRareness() );
   // 25% variance based on leadership skill.
-  int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
+  int percentage = static_cast<int>( static_cast<float>(price) * ( 100.0f - skill ) / 100.0f * 0.25f );
   int total = price + percentage;
   prices[ (Item*)item ] = total;
 

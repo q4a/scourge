@@ -583,9 +583,9 @@ void Window::drawBackground( int topY, int openHeight ) {
     glBegin (GL_QUADS);
     glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY);
-    glTexCoord2f (0, openHeight / (float)tileHeight);
+    glTexCoord2f (0, openHeight / static_cast<float>(tileHeight));
     glVertex2i (0, topY + openHeight);
-    glTexCoord2f (1, openHeight / (float)tileHeight);
+    glTexCoord2f (1, openHeight / static_cast<float>(tileHeight));
     glVertex2i (w, topY + openHeight);
     glTexCoord2f (1, 0);      
     glVertex2i (w, topY);
@@ -605,22 +605,20 @@ void Window::drawBackground( int topY, int openHeight ) {
 
     //applyBackgroundColor();
     if( theme->getWindowBackground() ) {
-      glColor4f( theme->getWindowBackground()->color.r,
-                 theme->getWindowBackground()->color.g,
-                 theme->getWindowBackground()->color.b,
-                 theme->getWindowBackground()->color.a );
+      glColor4f( theme->getWindowBackground()->color.r, theme->getWindowBackground()->color.g,
+                 theme->getWindowBackground()->color.b, theme->getWindowBackground()->color.a );
     }
 
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
     glVertex2i(0, topY);
-    glTexCoord2f(0.0f, ( openHeight )/(float)tileHeight);
+    glTexCoord2f(0.0f, ( openHeight )/static_cast<float>(tileHeight));
     glVertex2i(0, topY + openHeight);
-    //glTexCoord2f( w/(float)tileWidth, ( openHeight ) /(float)tileHeight );
-    glTexCoord2f( 1, ( openHeight ) /(float)tileHeight);
+    //glTexCoord2f( w/static_cast<float>(tileWidth), ( openHeight ) /static_cast<float>(tileHeight) );
+    glTexCoord2f( 1, ( openHeight ) /static_cast<float>(tileHeight));
     glVertex2i(w, topY + openHeight);
-    glTexCoord2f( 1, 0.0f);      
-    //glTexCoord2d( w/(float)tileWidth, 0 );
+    glTexCoord2f( 1, 0.0f);
+    //glTexCoord2d( w/static_cast<float>(tileWidth), 0 );
     glVertex2i(w, topY);
     glEnd();
   }

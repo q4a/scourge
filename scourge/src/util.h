@@ -146,6 +146,12 @@ namespace Util {
 
 	bool StringCaseCompare(const std::string sStr1, const std::string sStr2);
 
+	template <class T> struct CaseCompare : public std::binary_function<T, T, bool> {
+		bool operator() (const T& a, const T& b) const {
+			return StringCaseCompare(a, b);
+		}
+	};
+
 	int dice( int size );  // random integer from 0 to size-1
 
 	int pickOne( int min, int max ); // random integer from min to max

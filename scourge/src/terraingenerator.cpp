@@ -335,7 +335,7 @@ void TerrainGenerator::addItems(Map *map, ShapePalette *shapePal) {
   }
 
   // populate containers
-  for(int i = 0; i < (int)containers.size(); i++) {
+  for(int i = 0; i < static_cast<int>(containers.size()); i++) {
     Item *item = containers[i];
     int cx = containerX[i];
     int cy = containerY[i];
@@ -424,14 +424,14 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
 	bool dungeonBoss = false;
   // add monsters in every room
   if(monsters) {
-    int totalLevel = (int)( (float)scourge->getParty()->getTotalLevel() * getMonsterLevelMod() );
+    int totalLevel = static_cast<int>( static_cast<float>(scourge->getParty()->getTotalLevel()) * getMonsterLevelMod() );
     //fprintf(stderr, "creating monsters for total player level: %d\n", totalLevel);
     for(int i = 0; i < roomCount; i++) {
 			// the first room should have less monsters than the rest (this is where the party starts.)
 			int totalLevelUsed = ( i == 0 ? totalLevel / 2 : totalLevel );
       int areaCovered = 0;
       // don't crowd the rooms
-      int roomAreaUsed = (int)(room[i].w * room[i].h * unitSide * 0.33f);
+      int roomAreaUsed = static_cast<int>(room[i].w * room[i].h * unitSide * 0.33f);
       int monsterLevelTotal = 0;
       bool badAssMonsters = 
 				( i > 0 && 
@@ -539,7 +539,7 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
     for(int i = 0; i < roomCount; i++) {
       int areaCovered = 0;
       // don't crowd the rooms
-      int roomAreaUsed = (int)(room[i].w * room[i].h * unitSide * 0.33f);
+      int roomAreaUsed = static_cast<int>(room[i].w * room[i].h * unitSide * 0.33f);
       while(areaCovered < roomAreaUsed) {
         Monster *monster = (Monster*)Monster::getRandomNpc();
         //fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
@@ -597,7 +597,7 @@ void TerrainGenerator::addMagicPools( Map *map, ShapePalette *shapePal ) {
 	// add some magic pools
   DisplayInfo di;
   for( int i = 0; i < roomCount; i++ ) {
-    //???: if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
+    //???: if( 0 == static_cast<int>( 0.0f * rand() / RAND_MAX ) ) {
       MagicSchool *ms = MagicSchool::getRandomSchool();
       di.red = ms->getDeityRed();
       di.green = ms->getDeityGreen();
@@ -692,7 +692,7 @@ void TerrainGenerator::lockDoors(Map *map, ShapePalette *shapePal) {
     lockLocation(map, mapx, mapy);
   }
   // lock some teleporters
-  for(int i = 0; i < (int)teleporterX.size(); i++) {
+  for(int i = 0; i < static_cast<int>(teleporterX.size()); i++) {
     lockLocation(map, teleporterX[i], teleporterY[i]);
   }
 
@@ -790,7 +790,7 @@ void TerrainGenerator::getRandomLocation(Map *map, Shape *shape,
   while(1) {
     // get a random location
     // FIXME: rand() is too teethless random generator for it  
-    int n = (int)Util::roll( 0, ffCount-1 );
+    int n = static_cast<int>(Util::roll( 0, ffCount-1 ));
     x = ff[n * 2];
     y = ff[n * 2 + 1];
 
@@ -835,7 +835,7 @@ void TerrainGenerator::getRandomLocationSimple( Map *map, Shape *shape,
   for( int i = 0; i < 500; i++ ) {
     // get a random location
     // FIXME: rand() is too teethless to deal with 100 000+ locations 
-    int n = (int)Util::roll( 0, ffCount-1 );
+    int n = static_cast<int>(Util::roll( 0, ffCount-1 ));
     x = ff[ n * 2 ];
     y = ff[ n * 2 + 1 ];
 

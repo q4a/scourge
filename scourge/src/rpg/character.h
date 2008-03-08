@@ -84,8 +84,9 @@ public:
   inline static Character *getRandomCharacter() { return rootCharacters[ Util::dice( rootCharacters.size() ) ]; }
 	static Character *getRandomCharacter( int level );
 	inline static int getRootCharacterIndexByName( char *p ) {
-		for( int i = 0; i < (int)rootCharacters.size(); i++ ) {
-			if( !strcmp( rootCharacters[i]->getName(), p ) ) return i;
+		for( int i = 0; i < static_cast<int>(rootCharacters.size()); i++ ) {
+			if( !strcmp( rootCharacters[i]->getName(), p ) )
+				return i;
 		}
 		std::cerr << "*** Error: cannot find root profession: " << p << std::endl;
 		return -1;

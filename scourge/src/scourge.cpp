@@ -681,27 +681,22 @@ bool Scourge::loadMap( const string& mapName, bool fromRandomMap, bool absoluteP
 }
 
 void Scourge::linkMissionObjectives( vector< RenderedItem* > *items, vector< RenderedCreature* > *creatures ) {
-  cerr << "***********************" << endl << "Linking mission objectives:" << endl;
-  set<int> used;
+	cerr << "***********************" << endl << "Linking mission objectives:" << endl;
+	set<int> used;
 
-  for( int i = 0; i < (int)creatures->size(); i++ ) {
-    Creature *creature = (Creature*)( (*creatures)[i] );
-//		cerr << "\ttesting:" << creature->getName() << endl;
-    if( creature->isSavedMissionObjective() ) {
-//			cerr << "\t\tmission creature... linking..." << endl;
-      for( int t = 0; t < (int)getSession()->getCurrentMission()->getCreatureCount(); t++ ) {
-//				cerr << "\t\t\ttesting vs. " << getSession()->getCurrentMission()->getCreature( t )->getType() << endl;
-        if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() &&
-            used.find( t ) == used.end() ) {
-          cerr << "\t\tLinking mission creature " << creature->getName() << endl;
-          getSession()->getCurrentMission()->
-            addCreatureInstanceMap( creature, creature->getMonster() );
-          used.insert( t );
-        }
-      }
-    }
-  }
-  cerr << "***********************" << endl;
+	for(vector<RenderedCreature*>::iterator i = creatures->begin(); i != creatures->end(); i++ ) {
+		Creature *creature = dynamic_cast<Creature*>(*i);
+		if( creature->isSavedMissionObjective() ) {
+			for( int t = 0; t < static_cast<int>(getSession()->getCurrentMission()->getCreatureCount()); t++ ) {
+				if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() && used.find( t ) == used.end() ) {
+					cerr << "\t\tLinking mission creature " << creature->getName() << endl;
+					getSession()->getCurrentMission()->addCreatureInstanceMap( creature, creature->getMonster() );
+					used.insert( t );
+				}
+			}
+		}
+	}
+	cerr << "***********************" << endl;
 }
 
 void Scourge::showLevelInfo() {
@@ -1574,10 +1569,10 @@ bool Scourge::fightCurrentBattleTurn() {
         if( battle->fightTurn() ) {
           battleTurn++;
         }
-        roundOver = ( battleTurn >= (int)battleRound.size() );
+        roundOver = ( battleTurn >= static_cast<int>(battleRound.size()) );
       } else {
         // RT: fight every battle turn
-        for( int i = 0; i < (int)battleRound.size(); i++) {
+        for( int i = 0; i < static_cast<int>(battleRound.size()); i++) {
           Battle *battle = battleRound[i];
           battle->fightTurn();
         }
@@ -1730,10 +1725,10 @@ void Scourge::resetUIAfterBattle() {
     party->getParty(i)->cancelTarget();
     ((AnimatedShape*)party->getParty(i)->getShape())->setPauseAnimation( false );
     if(party->getParty(i)->anyMovesLeft()) {
-      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN, true);
+      party->getParty(i)->getShape()->setCurrentAnimation(static_cast<int>(MD2_RUN), true);
 	  if( party->getParty(i) == party->getPlayer() ) party->getPlayer()->playFootstep();
     } else {
-      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND, true);
+      party->getParty(i)->getShape()->setCurrentAnimation(static_cast<int>(MD2_STAND), true);
     }
   }
   // animate monsters again after TB combat (see resetNonParticipantAnimation() )
@@ -1755,14 +1750,14 @@ void Scourge::moveCreatures( bool allCreatures ) {
   // change animation if needed
   for(int i = 0; i < party->getPartySize(); i++) {
     if(((AnimatedShape*)(party->getParty(i)->getShape()))->getAttackEffect()) {
-      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_ATTACK);
+      party->getParty(i)->getShape()->setCurrentAnimation(static_cast<int>(MD2_ATTACK));
       ((AnimatedShape*)(party->getParty(i)->getShape()))->setAngle(party->getParty(i)->getTargetAngle());
     } else if( party->getParty(i)->isMoving() ) {
-      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_RUN);
+      party->getParty(i)->getShape()->setCurrentAnimation(static_cast<int>(MD2_RUN));
 	  if( party->getParty(i) == party->getPlayer() ) party->getPlayer()->playFootstep();
 			party->getParty(i)->setMoving( false );
     } else {
-      party->getParty(i)->getShape()->setCurrentAnimation((int)MD2_STAND);
+      party->getParty(i)->getShape()->setCurrentAnimation(static_cast<int>(MD2_STAND));
     }
   }
 
@@ -1799,7 +1794,7 @@ void Scourge::moveMonster(Creature *monster) {
   // set running animation (currently move or attack)
   if(((AnimatedShape*)(monster->getShape()))->getAttackEffect()) {
 		if( monster->getCharacter() ) cerr << "111" << endl;
-    //monster->getShape()->setCurrentAnimation((int)MD2_ATTACK);
+    //monster->getShape()->setCurrentAnimation(static_cast<int>(MD2_ATTACK));
     //((AnimatedShape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
     // don't move when attacking
     return;
@@ -1809,8 +1804,8 @@ void Scourge::moveMonster(Creature *monster) {
                                            || monster->getMotion() == Constants::MOTION_MOVE_TOWARDS 
                                            || monster->getMotion() == Constants::MOTION_MOVE_AWAY
                                            || monster->getMotion() == Constants::MOTION_CLEAR_PATH?
-                                              (int)MD2_RUN :
-                                              (int)MD2_STAND );
+                                              static_cast<int>(MD2_RUN) :
+                                              static_cast<int>(MD2_STAND) );
   }
   //CASE 1: Fleeing or clearing a path
   if( monster->getMotion() == Constants::MOTION_MOVE_AWAY || monster->getMotion() == Constants::MOTION_CLEAR_PATH) {
@@ -1822,7 +1817,7 @@ void Scourge::moveMonster(Creature *monster) {
     // monster gives up when low on hp or bored
     // FIXME: when low on hp, it should run away not loiter
     if(monster->getAction() == Constants::ACTION_NO_ACTION &&
-       monster->getHp() < (int)((float)monster->getStartingHp() * 0.2f)) {
+       monster->getHp() < static_cast<int>(static_cast<float>(monster->getStartingHp()) * 0.2f)) {
       monster->setMotion(Constants::MOTION_LOITER);//the monster will plan a path to wander on next decision cycle
       monster->cancelTarget();
       return;
@@ -2102,7 +2097,6 @@ void Scourge::createPartyUI() {
                                   this, NULL, true );
     cards->addWidget( playerWeapon[i], 0 );
   }
-  //int quickButtonWidth = (int)((float)(Scourge::PARTY_GUI_WIDTH - offsetX - 20) / 12.0f);	
 
 	int inventoryButtonWidth = 2 * quickButtonWidth;
 	inventoryButton = 
@@ -2162,14 +2156,10 @@ void Scourge::drawWidgetContents(Widget *w) {
 							 _( "MP" ),
                p->getMp(), p->getMaxMp() );
       w->setTooltip( msg );
-      Util::drawBar( 10, 5, ( i == 0 ? 60 : 35 ),
-                     (float)p->getHp(), (float)p->getMaxHp(),
-                     -1, -1, -1, true,
-                     NULL,
-                     //mainWin->getTheme(),
-                     Util::VERTICAL_LAYOUT );
+      Util::drawBar( 10, 5, ( i == 0 ? 60 : 35 ), static_cast<float>(p->getHp()), static_cast<float>(p->getMaxHp()),
+                     -1, -1, -1, true, NULL, Util::VERTICAL_LAYOUT );
       Util::drawBar( 17, 5, ( i == 0 ? 60 : 35 ),
-                     (float)p->getMp(), (float)p->getMaxMp(),
+                     static_cast<float>(p->getMp()), static_cast<float>(p->getMaxMp()),
                      0, 0, 1, false,
                      NULL,
                      //mainWin->getTheme(),
@@ -2337,7 +2327,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 		bool darker = false;
 		if( inTurnBasedCombat() ) {
 			bool found = false;
-			for( int i = battleTurn; i < (int)battleRound.size(); i++ ) {
+			for( int i = battleTurn; i < static_cast<int>(battleRound.size()); i++ ) {
 				if( battleRound[i]->getCreature() == p ) {
 					found = true;
 					break;
@@ -2420,7 +2410,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 		int xp = 0;
 		int yp = 1;
 		int n = 12;
-		int row = ( width / (int)( n + 1 ) );
+		int row = ( width / static_cast<int>( n + 1 ) );
 		GLuint icon;
 		char name[255];
 		Color color;
@@ -2621,10 +2611,10 @@ void Scourge::updatePartyUI() {
 }
 
 void Scourge::setPlayer(int n) {
-  // don't change player in TB combat
-  if(battleTurn < (int)battleRound.size() &&
-     getUserConfiguration()->isBattleTurnBased()) return;
-  party->setPlayer(n);
+	// don't change player in TB combat
+	if(battleTurn < static_cast<int>(battleRound.size()) && getUserConfiguration()->isBattleTurnBased())
+		return;
+	party->setPlayer(n);
 }
 
 void Scourge::setPlayerUI(int index) {
@@ -2638,15 +2628,13 @@ void Scourge::setPlayerUI(int index) {
 }
 
 void Scourge::toggleRoundUI(bool startRound) {
-  if(battleTurn < (int)battleRound.size() &&
-     getUserConfiguration()->isBattleTurnBased()) {
-    if(!startRound &&
-       !battleRound[battleTurn]->getCreature()->isMonster()) {
-      //roundButton->setLabel("Begin Turn");
+	if(battleTurn < static_cast<int>(battleRound.size()) && getUserConfiguration()->isBattleTurnBased()) {
+		if(!startRound && !battleRound[battleTurn]->getCreature()->isMonster()) {
+			//roundButton->setLabel("Begin Turn");
 			roundButton->setTexture( getShapePalette()->getStartTexture() );
-      roundButton->setGlowing(true);
-     	roundButton->setTooltip( _( "Begin Turn" ) );
-    } else {
+			roundButton->setGlowing(true);
+			roundButton->setTooltip( _( "Begin Turn" ) );
+		} else {
       //roundButton->setLabel("...in Turn...");
 			roundButton->setTexture( getShapePalette()->getWaitTexture() );
       roundButton->setGlowing(false);
@@ -2697,7 +2685,7 @@ void Scourge::createBoardUI() {
                         BOARD_GUI_WIDTH, BOARD_GUI_HEIGHT,
                         _( "Available Missions" ), true, Window::SIMPLE_WINDOW,
                         "wood" );
-	int colWidth = (int)( BOARD_GUI_WIDTH * 0.6f );
+	int colWidth = static_cast<int>( BOARD_GUI_WIDTH * 0.6f );
 	int colHeight = BOARD_GUI_HEIGHT / 2 - 30;
   missionList = new ScrollingList(5, 30, colWidth, colHeight, getSession()->getShapePalette()->getHighlightTexture());
   boardWin->addWidget(missionList);
@@ -2729,23 +2717,24 @@ void Scourge::setMissionDescriptionUI(char *s, int mapx, int mapy) {
 }
 
 void Scourge::removeBattle(Battle *b) {
-  for(int i = 0; i < (int)battleRound.size(); i++) {
-    Battle *battle = battleRound[i];
-    if(battle == b) {
-      delete battle;
-      if(battleTurn > i) battleTurn--;
-      for(int t = i; t < (int)battleRound.size() - 1; t++) {
-        battle[t] = battle[t + 1];
-      }
-      return;
-    }
-  }
+	for(int i = 0; i < static_cast<int>(battleRound.size()); i++) {
+		Battle *battle = battleRound[i];
+		if(battle == b) {
+			delete battle;
+			if(battleTurn > i)
+				battleTurn--;
+			for(int t = i; t < static_cast<int>(battleRound.size()) - 1; t++) {
+				battle[t] = battle[t + 1];
+			}
+			return;
+		}
+	}
 }
 
 void Scourge::resetBattles() {
   // delete battle references
   if( !battleRound.empty() ) {
-    for( int i = 0; i < (int)battleRound.size(); i++ ) {
+    for( int i = 0; i < static_cast<int>(battleRound.size()); i++ ) {
       battleRound[i]->reset();
     }
     battleRound.clear();
@@ -3006,7 +2995,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error ) {
 		Uint32 n;
 		file->read( &n );
 		Creature *pc[MAX_PARTY_SIZE];
-		for(int i = 0; i < (int)n; i++) {
+		for(int i = 0; i < static_cast<int>(n); i++) {
 			CreatureInfo *info = Persist::loadCreature( file );
 			pc[i] = session->getParty()->getParty(i)->load( session, info );
 			Persist::deleteCreatureInfo( info );
@@ -3022,7 +3011,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error ) {
 		if( version >= 18 ) {
 			file->read( &n );
 			cerr << "Loading " << n << " missions." << endl;
-			for( int i = 0; i < (int)n; i++ ) {
+			for( int i = 0; i < static_cast<int>(n); i++ ) {
 				MissionInfo *info = Persist::loadMission( file );
 				Mission *mission = Mission::load( session, info );
 				if( !mission->isStoryLine() ) {					
@@ -3115,7 +3104,7 @@ bool Scourge::testLoadGame( Session *session ) {
     file->read( &storylineIndex );
     file->read( &n );
     Creature *pc[MAX_PARTY_SIZE];
-    for(int i = 0; i < (int)n; i++) {
+    for(int i = 0; i < static_cast<int>(n); i++) {
       CreatureInfo *info = Persist::loadCreature( file );
       pc[i] = session->getParty()->getParty(i)->load( session, info );
       Persist::deleteCreatureInfo( info );
@@ -3125,7 +3114,7 @@ bool Scourge::testLoadGame( Session *session ) {
     //session->getParty()->setParty( n, pc, storylineIndex );
 
     cerr << "Loaded party:" << endl;
-    for( int i = 0; i < (int)n; i++ ) {
+    for( int i = 0; i < static_cast<int>(n); i++ ) {
       cerr << "\t" << pc[i]->getName() << endl;
     }
 
@@ -3220,9 +3209,6 @@ void Scourge::evalSpecialSkills() {
   for( int i = 0; i < session->getCreatureCount(); i++ ) {
     session->getCreature(i)->evalSpecialSkills();
   }
-  //    cerr << "\tIt took: " <<
-  //      ( ((float)( SDL_GetTicks() - t ) / 1000.0f ) ) <<
-  //      " seconds." << endl;
 }
 
 bool Scourge::playSelectedMission() {
@@ -3698,7 +3684,7 @@ bool Scourge::useItem( Creature *creature, Item *item ) {
 
 				// eat/drink food, drink or potion
 			} else if( item->getRpgItem()->getType() == RpgItem::DRINK ||
-								 item->getRpgItem()->getType() == RpgItem::FOOD || 
+								 item->getRpgItem()->getType() == RpgItem::FOOD ||
 								 item->getRpgItem()->getType() == RpgItem::POTION ) {
 				// this action will occur in the next battle round
 				creature->setAction( Constants::ACTION_EAT_DRINK, item, NULL );
@@ -3781,35 +3767,40 @@ void Scourge::camp() {
 Uint32 lastMovingDoorUpdate = 0;
 
 void Scourge::moveDoors() {
-  Uint32 now = SDL_GetTicks();
-  if( now - lastMovingDoorUpdate > DOOR_UPDATE_MILLIS ) {
-	lastMovingDoorUpdate = now;
-	for( unsigned int n = 0; n < movingDoors.size(); n++ ) {
-	  Location *pos = getMap()->getLocation( toint( movingDoors[n].x ), toint( movingDoors[n].y ), 0 );
-	  if( !pos ) {
-		movingDoors.erase( movingDoors.begin() + n );
-		n--;
-		continue;
-	  } else if( ( movingDoors[n].angleDelta < 0 && movingDoors[n].startAngle <= movingDoors[n].endAngle ) || 
-				 ( movingDoors[n].angleDelta > 0 && movingDoors[n].startAngle >= movingDoors[n].endAngle ) ) { 
-		pos->angleZ = 0;
-		pos->moveX = pos->moveY = 0;
-		// replace shapes
-		openDoor( &(movingDoors[n]) );
-		movingDoors.erase( movingDoors.begin() + n );
-		n--;
-		continue;
-	  }
-	  movingDoors[n].startAngle += movingDoors[n].angleDelta * DOOR_ANGLE_DELTA;
-	  if( movingDoors[n].startX < movingDoors[n].endX ) movingDoors[n].startX += DOOR_MOVE_DELTA;
-	  if( movingDoors[n].startY < movingDoors[n].endY ) movingDoors[n].startY += DOOR_MOVE_DELTA;
-	  if( pos ) {
-		pos->angleZ = movingDoors[n].startAngle;
-		pos->moveX = movingDoors[n].startX / DIV;
-		pos->moveY = movingDoors[n].startY / DIV;
-	  }
+	Uint32 now = SDL_GetTicks();
+	if( now - lastMovingDoorUpdate > DOOR_UPDATE_MILLIS ) {
+		lastMovingDoorUpdate = now;
+		for( unsigned int n = 0; n < movingDoors.size(); n++ ) {
+			Location *pos = getMap()->getLocation( toint( movingDoors[n].x ), toint( movingDoors[n].y ), 0 );
+
+			if( !pos ) {
+				movingDoors.erase( movingDoors.begin() + n );
+				n--;
+				continue;
+			} else if( ( movingDoors[n].angleDelta < 0 && movingDoors[n].startAngle <= movingDoors[n].endAngle ) || 
+					( movingDoors[n].angleDelta > 0 && movingDoors[n].startAngle >= movingDoors[n].endAngle ) ) { 
+				pos->angleZ = 0;
+				pos->moveX = pos->moveY = 0;
+				// replace shapes
+				openDoor( &(movingDoors[n]) );
+				movingDoors.erase( movingDoors.begin() + n );
+				n--;
+				continue;
+			}
+
+			movingDoors[n].startAngle += movingDoors[n].angleDelta * DOOR_ANGLE_DELTA;
+
+			if( movingDoors[n].startX < movingDoors[n].endX )
+				movingDoors[n].startX += DOOR_MOVE_DELTA;
+			if( movingDoors[n].startY < movingDoors[n].endY )
+				movingDoors[n].startY += DOOR_MOVE_DELTA;
+			if( pos ) {
+				pos->angleZ = movingDoors[n].startAngle;
+				pos->moveX = movingDoors[n].startX / DIV;
+				pos->moveY = movingDoors[n].startY / DIV;
+			}
+		}
 	}
-  }
 }
 
 bool Scourge::isDoorBlocked() {
@@ -3817,159 +3808,154 @@ bool Scourge::isDoorBlocked() {
 }
 
 void Scourge::openDoor( MovingDoor *movingDoor ) {
-  // switch door
-  Sint16 ox = (Sint16)movingDoor->x;
-  Sint16 oy = (Sint16)movingDoor->y;
-  Sint16 nx = (Sint16)movingDoor->x;
-  Sint16 ny = (Sint16)(movingDoor->y - movingDoor->oldDoorShape->getDepth()) + movingDoor->newDoorShape->getDepth();
-  
-  //  Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
-  levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
-  Location *blocker = levelMap->isBlocked(nx, ny, toint(party->getPlayer()->getZ()),
-										  ox, oy, toint(party->getPlayer()->getZ()),
+	// switch door
+	Sint16 ox = (Sint16)movingDoor->x;
+	Sint16 oy = (Sint16)movingDoor->y;
+	Sint16 nx = (Sint16)movingDoor->x;
+	Sint16 ny = (Sint16)(movingDoor->y - movingDoor->oldDoorShape->getDepth()) + movingDoor->newDoorShape->getDepth();
+
+	//  Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
+	levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
+	Location *blocker = levelMap->isBlocked(nx, ny, toint(party->getPlayer()->getZ()), ox, oy, toint(party->getPlayer()->getZ()),
 										  movingDoor->newDoorShape);
-  if ( !blocker ) {
-	
-	// there is a chance that the door will be destroyed
-	if( !movingDoor->openLocked && getSession()->getCurrentMission() && 0 == Util::dice( 20 ) ) {
-	  getSession()->getSound()->playSound( Sound::TELEPORT );
-	  destroyDoor( ox, oy, movingDoor->oldDoorShape );
-	  levelMap->updateLightMap();
+
+	if ( !blocker ) {
+		// there is a chance that the door will be destroyed
+		if( !movingDoor->openLocked && getSession()->getCurrentMission() && 0 == Util::dice( 20 ) ) {
+			getSession()->getSound()->playSound( Sound::TELEPORT );
+			destroyDoor( ox, oy, movingDoor->oldDoorShape );
+			levelMap->updateLightMap();
+		} else {
+			//getSession()->getSound()->playSound( Sound::OPEN_DOOR );
+			levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), movingDoor->newDoorShape);
+			levelMap->updateLightMap();
+			levelMap->updateDoorLocation(ox, oy, toint(party->getPlayer()->getZ()), nx, ny, toint(party->getPlayer()->getZ()));
+			if( movingDoor->openLocked ) {
+				startDoorEffect( Constants::EFFECT_GREEN, ox, oy, movingDoor->oldDoorShape );
+			}
+		}
+		return;
+	} else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
+		getSession()->getSound()->playSound( Window::DROP_FAILED );
+		// rollback if blocked by a player			
+		levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), movingDoor->oldDoorShape);
+		getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
+		return;
 	} else {
-	  //getSession()->getSound()->playSound( Sound::OPEN_DOOR );
-	  levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), movingDoor->newDoorShape);
-	  levelMap->updateLightMap();
-	  levelMap->updateDoorLocation(ox, oy, toint(party->getPlayer()->getZ()),
-								   nx, ny, toint(party->getPlayer()->getZ()));
-	  if( movingDoor->openLocked ) {
-		startDoorEffect( Constants::EFFECT_GREEN, ox, oy, movingDoor->oldDoorShape );
-	  }
+		// Deeestroy!
+		getSession()->getSound()->playSound( Sound::TELEPORT );
+		destroyDoor( ox, oy, movingDoor->oldDoorShape );
+		levelMap->updateLightMap();
+		return;
 	}
-	return;
-  } else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
-	getSession()->getSound()->playSound( Window::DROP_FAILED );
-	// rollback if blocked by a player			
-	levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), movingDoor->oldDoorShape);
-	getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
-	return;
-  } else {
-	// Deeestroy!
-	getSession()->getSound()->playSound( Sound::TELEPORT );
-	destroyDoor( ox, oy, movingDoor->oldDoorShape );
-	levelMap->updateLightMap();
-	return;
-  }
 }
 
 bool Scourge::useDoor( Location *pos, bool openLocked ) {
-  Shape *newDoorShape = NULL;
-  Shape *oldDoorShape = pos->shape;
-  if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR")) {
-    newDoorShape = getSession()->getShapePalette()->findShapeByName("NS_DOOR");
-  } else if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR")) {
-    newDoorShape = getSession()->getShapePalette()->findShapeByName("EW_DOOR");
-  }
-  if (newDoorShape) {
-    int doorX = pos->x;
-    int doorY = pos->y;
-    int doorZ = pos->z;
-
-    // see if the door is open or closed. This is done by checking the shape above the
-    // door. If there's something there and the orientation (NS vs. EW) matches, the
-    // door is closed. I know it's a hack.
-    Location *above = levelMap->getLocation(doorX,
-                                            doorY,
-                                            doorZ + pos->shape->getHeight());
-    //if(above && above->shape) cerr << "ABOVE: shape=" << above->shape->getName() << endl;
-    //else cerr << "Nothing above!" << endl;
-    bool closed = ((pos->shape == getSession()->getShapePalette()->findShapeByName("EW_DOOR") &&
-                    above && above->shape == getSession()->getShapePalette()->findShapeByName("EW_DOOR_TOP")) ||
-                   (pos->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR") &&
-                    above && above->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR_TOP")) ?
-                   true : false);
-    //cerr << "DOOR is closed? " << closed << endl;
-    if( closed && levelMap->isLocked( doorX, doorY, doorZ ) ) {
-	  if( openLocked ) {
-		int keyX, keyY, keyZ;
-		levelMap->getKeyLocation( doorX, doorY, doorZ, &keyX, &keyY, &keyZ );
-		assert( keyX > -1 || keyY > -1 || keyZ > -1 );
-		bool b = useLever( levelMap->getLocation( keyX, keyY, keyZ ), false );
-		assert( b );
-		getDescriptionScroller()->addDescription( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ) );
-	  } else {
-		getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
-		getSession()->getSound()->playSound( "smash-door" );
-		return true;
-	  }
-    }
-
-	if( SMOOTH_DOORS ) {
-	  MovingDoor movingDoor;
-	  movingDoor.x = pos->x;
-	  movingDoor.y = pos->y;
-
-	  //	  cerr << "old shape=" << ( oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR") ? "EW" : "NS" ) << " " << ( closed ? "closed" : "open" ) << endl;
-	  if( oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR") ) {
-		movingDoor.startAngle = 0;
-		movingDoor.endAngle = 90;
-		movingDoor.endX = 1;
-		movingDoor.endY = 0;
-	  } else {
-		movingDoor.startAngle = 0;
-		movingDoor.endAngle = -90;
-		movingDoor.endX = 0;
-		movingDoor.endY = 1;
-	  }
-	  movingDoor.startX = movingDoor.startY = 0;
-	  movingDoor.angleDelta = ( movingDoor.startAngle < movingDoor.endAngle ? 1 : -1 );
-	  movingDoor.oldDoorShape = oldDoorShape;
-	  movingDoor.newDoorShape = newDoorShape;
-	  movingDoor.openLocked = openLocked;
-	  movingDoor.endTime = SDL_GetTicks() + 5000;
-	  movingDoors.push_back(movingDoor);
-	  getSession()->getSound()->playSound( Sound::OPEN_DOOR );
-	} else {
-	  // switch door
-	  Sint16 ox = pos->x;
-	  Sint16 oy = pos->y;
-	  Sint16 nx = pos->x;
-	  Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
-	  
-	  Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
-	  Location *blocker = levelMap->isBlocked(nx, ny, toint(party->getPlayer()->getZ()),
-											  ox, oy, toint(party->getPlayer()->getZ()),
-											  newDoorShape);
-	  if ( !blocker ) {
-		
-		// there is a chance that the door will be destroyed
-		if( !openLocked && getSession()->getCurrentMission() && 0 == Util::dice( 20 ) ) {
-		  destroyDoor( ox, oy, oldDoorShape );
-		  levelMap->updateLightMap();
-		} else {
-		  getSession()->getSound()->playSound( Sound::OPEN_DOOR );
-		  levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
-		  levelMap->updateLightMap();
-		  levelMap->updateDoorLocation(doorX, doorY, doorZ,
-									   nx, ny, toint(party->getPlayer()->getZ()));
-		  if( openLocked ) {
-			startDoorEffect( Constants::EFFECT_GREEN, ox, oy, oldDoorShape );
-		  }
-		}
-		return true;
-	  } else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
-		// rollback if blocked by a player			
-		levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
-		getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
-		return true;
-	  } else {
-		// Deeestroy!
-		destroyDoor( ox, oy, oldDoorShape );
-		levelMap->updateLightMap();
-		return true;
-	  }
+	Shape *newDoorShape = NULL;
+	Shape *oldDoorShape = pos->shape;
+	if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("EW_DOOR")) {
+		newDoorShape = getSession()->getShapePalette()->findShapeByName("NS_DOOR");
+	} else if (oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR")) {
+		newDoorShape = getSession()->getShapePalette()->findShapeByName("EW_DOOR");
 	}
-  }
-  return false;
+	if (newDoorShape) {
+		int doorX = pos->x;
+		int doorY = pos->y;
+		int doorZ = pos->z;
+
+		// see if the door is open or closed. This is done by checking the shape above the
+		// door. If there's something there and the orientation (NS vs. EW) matches, the
+		// door is closed. I know it's a hack.
+		Location *above = levelMap->getLocation(doorX,
+																						doorY,
+																						doorZ + pos->shape->getHeight());
+		//if(above && above->shape) cerr << "ABOVE: shape=" << above->shape->getName() << endl;
+		//else cerr << "Nothing above!" << endl;
+		bool closed = ((pos->shape == getSession()->getShapePalette()->findShapeByName("EW_DOOR") &&
+										above && above->shape == getSession()->getShapePalette()->findShapeByName("EW_DOOR_TOP")) ||
+									(pos->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR") &&
+										above && above->shape == getSession()->getShapePalette()->findShapeByName("NS_DOOR_TOP")));
+
+		//cerr << "DOOR is closed? " << closed << endl;
+		if( closed && levelMap->isLocked( doorX, doorY, doorZ ) ) {
+			if( openLocked ) {
+				int keyX, keyY, keyZ;
+				levelMap->getKeyLocation( doorX, doorY, doorZ, &keyX, &keyY, &keyZ );
+				assert( keyX > -1 || keyY > -1 || keyZ > -1 );
+				bool b = useLever( levelMap->getLocation( keyX, keyY, keyZ ), false );
+				assert( b );
+				getDescriptionScroller()->addDescription( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ) );
+			} else {
+				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
+				getSession()->getSound()->playSound( "smash-door" );
+				return true;
+			}
+		}
+
+		if( SMOOTH_DOORS ) {
+			MovingDoor movingDoor;
+			movingDoor.x = pos->x;
+			movingDoor.y = pos->y;
+	
+			if( oldDoorShape == getSession()->getShapePalette()->findShapeByName("NS_DOOR") ) {
+				movingDoor.startAngle = 0;
+				movingDoor.endAngle = 90;
+				movingDoor.endX = 1;
+				movingDoor.endY = 0;
+			} else {
+				movingDoor.startAngle = 0;
+				movingDoor.endAngle = -90;
+				movingDoor.endX = 0;
+				movingDoor.endY = 1;
+			}
+			movingDoor.startX = movingDoor.startY = 0;
+			movingDoor.angleDelta = ( movingDoor.startAngle < movingDoor.endAngle ? 1 : -1 );
+			movingDoor.oldDoorShape = oldDoorShape;
+			movingDoor.newDoorShape = newDoorShape;
+			movingDoor.openLocked = openLocked;
+			movingDoor.endTime = SDL_GetTicks() + 5000;
+			movingDoors.push_back(movingDoor);
+			getSession()->getSound()->playSound( Sound::OPEN_DOOR );
+		} else {
+			// switch door
+			Sint16 ox = pos->x;
+			Sint16 oy = pos->y;
+			Sint16 nx = pos->x;
+			Sint16 ny = (pos->y - pos->shape->getDepth()) + newDoorShape->getDepth();
+
+			Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
+			Location *blocker = levelMap->isBlocked(nx, ny, toint(party->getPlayer()->getZ()), ox, oy, toint(party->getPlayer()->getZ()),
+													newDoorShape);
+			if ( !blocker ) {
+
+				// there is a chance that the door will be destroyed
+				if( !openLocked && getSession()->getCurrentMission() && 0 == Util::dice( 20 ) ) {
+					destroyDoor( ox, oy, oldDoorShape );
+					levelMap->updateLightMap();
+				} else {
+					getSession()->getSound()->playSound( Sound::OPEN_DOOR );
+					levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
+					levelMap->updateLightMap();
+					levelMap->updateDoorLocation(doorX, doorY, doorZ, nx, ny, toint(party->getPlayer()->getZ()));
+					if( openLocked ) {
+						startDoorEffect( Constants::EFFECT_GREEN, ox, oy, oldDoorShape );
+					}
+				}
+				return true;
+			} else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
+				// rollback if blocked by a player			
+				levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
+				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
+				return true;
+			} else {
+				// Deeestroy!
+				destroyDoor( ox, oy, oldDoorShape );
+				levelMap->updateLightMap();
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void Scourge::destroyDoor( Sint16 ox, Sint16 oy, Shape *shape ) {
@@ -3979,11 +3965,10 @@ void Scourge::destroyDoor( Sint16 ox, Sint16 oy, Shape *shape ) {
 
 void Scourge::startDoorEffect( int effect, Sint16 ox, Sint16 oy, Shape *shape ) {
 	for( int i = 0; i < 8; i++ ) {
-		int x = ox + (int)( (float)( shape->getWidth() ) * rand() / RAND_MAX );
-		int y = oy - (int)( (float)( shape->getDepth() ) * rand() / RAND_MAX );
-		int z = 2 + (int)(( ( (float)( shape->getHeight() ) / 2.0f ) - 2.0f ) * rand() / RAND_MAX );
-		levelMap->startEffect( x, y, z, effect,
-													 (GLuint)( (float)Constants::DAMAGE_DURATION / 2.0f ), 2, 2,
-													 (GLuint)((float)(i) / 4.0f * (float)Constants::DAMAGE_DURATION) );
+		int x = ox + static_cast<int>( static_cast<float>( shape->getWidth() ) * rand() / RAND_MAX );
+		int y = oy - static_cast<int>( static_cast<float>( shape->getDepth() ) * rand() / RAND_MAX );
+		int z = 2 + static_cast<int>(( ( static_cast<float>( shape->getHeight() ) / 2.0f ) - 2.0f ) * rand() / RAND_MAX );
+		levelMap->startEffect( x, y, z, effect, (GLuint)( static_cast<float>(Constants::DAMAGE_DURATION) / 2.0f ), 2, 2,
+													 (GLuint)(static_cast<float>(i) / 4.0f * static_cast<float>(Constants::DAMAGE_DURATION)) );
   }
 }

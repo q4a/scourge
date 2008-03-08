@@ -72,48 +72,48 @@ void GLTorch::draw() {
         particle[i] = NULL;
       }
     }
-    
-    // draw it      
-    if(particle[i]) {            
-      
+
+    // draw it
+    if(particle[i]) {
+
       // save the model_view matrix
       glPushMatrix();
-      
-      w = (float)(width / DIV) / 2.0;
-      //float d = (float)(depth / DIV) / 2.0;
-      h = (float)(height / DIV) / 2.5;
+
+      w = static_cast<float>(width / DIV) / 2.0;
+      //float d = static_cast<float>(depth / DIV) / 2.0;
+      h = static_cast<float>(height / DIV) / 2.5;
       if(h == 0) h = 0.25f / DIV;
-      
+
       // position the particle
-      GLfloat z = (float)(particle[i]->z * h) / 10.0;
+      GLfloat z = static_cast<float>(particle[i]->z * h) / 10.0;
       if(isSpell) {
         glTranslatef( particle[i]->x, z, particle[i]->y );
         w = h = 0.75f / DIV;
       } else {
         glTranslatef( particle[i]->x, particle[i]->y, z );
       }
-      
+
       // rotate each particle to face viewer
       glRotatef(-zrot, 0.0f, 0.0f, 1.0f);
       glRotatef(-(90.0 + yrot), 1.0f, 0.0f, 0.0f);      
-      
+
       if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
-      
+
       if(color == 0xffffffff) {
         float color = 1.0f / ((GLfloat)particle[i]->height / (GLfloat)particle[i]->z);
         float red = Util::roll( 0.0f, (1.0f - color) / 4.0 );
         float green = Util::roll( 0.0f, (1.0f - color) / 8.0 );
-        float blue = Util::roll( 0.0f, (1.0f - color) / 10.0 );      
-        glColor4f(color + red, color + green, color + blue, 1.0f);      
+        float blue = Util::roll( 0.0f, (1.0f - color) / 10.0 );
+        glColor4f(color + red, color + green, color + blue, 1.0f);
       } else {
-        float red = ((float)((this->color & 0xff000000) >> (3 * 8)) + 
-					 Util::roll( -32.0f, 32.0f )) / (float)0xff;
-        float green = ((float)((this->color & 0x00ff0000) >> (2 * 8)) + 
-					   Util::roll( -32.0f, 32.0f )) / (float)0xff;
-        float blue = ((float)((this->color & 0x0000ff00) >> (1 * 8)) + 
-					  Util::roll( -32.0f, 32.0f )) / (float)0xff;
+        float red = (static_cast<float>((this->color & 0xff000000) >> (3 * 8)) + 
+					 Util::roll( -32.0f, 32.0f )) / static_cast<float>(0xff);
+        float green = (static_cast<float>((this->color & 0x00ff0000) >> (2 * 8)) + 
+					   Util::roll( -32.0f, 32.0f )) / static_cast<float>(0xff);
+        float blue = (static_cast<float>((this->color & 0x0000ff00) >> (1 * 8)) + 
+					  Util::roll( -32.0f, 32.0f )) / static_cast<float>(0xff);
         float height = ((GLfloat)particle[i]->z / (GLfloat)particle[i]->height );
-        glColor4f(height * red, height * green, height * blue, 1.0f);       
+        glColor4f(height * red, height * green, height * blue, 1.0f);
       }
       glBegin( GL_QUADS );
       // front

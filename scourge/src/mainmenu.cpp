@@ -302,7 +302,7 @@ void MainMenu::drawView() {
       Uint32 t = SDL_GetTicks();
       if( t - lastTick > 40 ) {
         int d = (scourge->getSDLHandler()->getScreen()->h - openingTop) / 20;
-        openingTop -= (10 + (int)(d * 1.2));
+        openingTop -= (10 + static_cast<int>(d * 1.2));
         if(openingTop < top) openingTop = top;
         lastTick = t;
       }
@@ -351,12 +351,12 @@ void MainMenu::drawAfter() {
 			scourge->getSDLHandler()->
 				texPrint( x, y - 3, "%s: %d%%", 
 									getUpdate(), 
-									(int)( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / 100.0f ) ) );
+									static_cast<int>( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / 100.0f ) ) );
 			glTranslatef( x + 150, y - 15, 0 );
 
 			progress->updateStatusLight( NULL, 
-																	 (int)( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / maxStatus ) ), 
-																	 (int)maxStatus );
+																	 static_cast<int>( ( getUpdateValue() + 1 ) / ( getUpdateTotal() / maxStatus ) ), 
+																	 static_cast<int>(maxStatus) );
 		} else {
 			scourge->getSDLHandler()->texPrint( x, y - 3, getUpdate() );
 		}
@@ -396,7 +396,7 @@ void MainMenu::drawMenu() {
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
 	glColor4f( 1, 1, 1, 1 );
-	for( int i = 0; i < (int)textEffects.size(); i++ ) {
+	for( int i = 0; i < static_cast<int>(textEffects.size()); i++ ) {
 		TextEffect *textEffect = textEffects[i];
 		textEffect->setActive( i == activeMenuItem );
 		textEffect->draw();
@@ -507,7 +507,6 @@ void MainMenu::drawStars() {
     glColor3f( Util::roll( 0.2f, 0.99f ), 
                Util::roll( 0.2f, 0.99f ), 
                Util::roll( 0.2f, 0.99f ) );
-    //int n = (int)(2.0f * rand()/RAND_MAX) + 1;
     int n = 1;
     glBegin( GL_QUADS );
     glVertex2d( 0, 0 );
@@ -734,7 +733,7 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   if( event->motion.x >= 50 && event->motion.x < 400 ) {
     activeMenuItem = ( event->motion.y - ( top + 240 ) ) / 50;
   }
-  if( event->type == SDL_MOUSEBUTTONUP && activeMenuItem > -1 && activeMenuItem < (int)textEffects.size() ) {
+  if( event->type == SDL_MOUSEBUTTONUP && activeMenuItem > -1 && activeMenuItem < static_cast<int>(textEffects.size()) ) {
     value = values[activeMenuItem];
     if( value == ABOUT ) {
       aboutDialog->setVisible( true );

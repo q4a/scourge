@@ -619,11 +619,11 @@ public:
   inline static float toRadians(float angle) {
 		// 2.13.3(1) The type of a floating literal is double unless explicitly specified by a suffix.
 		// explicit float conversion to silence warning
-		return (float)(3.14159 * (angle / 180.0f));
+		return static_cast<float>(3.14159 * (angle / 180.0f));
   }
 
   inline static float toAngle(float rad) {
-		return (float)((180.0f * rad) / 3.14159);
+		return static_cast<float>((180.0f * rad) / 3.14159);
   }
 
 	static void getQuadrantAndAngle( float nx, float ny, int *q, float *angle );
@@ -665,20 +665,20 @@ public:
 		*/
 	double magnitude() const;
 	void normalize();
-	
+
 	/**
 		* @return This returns the cross product between 2 vectors
 		*/
 	CVector3 cross(const CVector3& vVector1);
-	
+
 	CVector3 operator+(const CVector3& vVector1) const;
 	void operator+=(const CVector3& vVector1);
-	
+
 	CVector3 operator-(const CVector3& vPoint1) const;
-	
+
 	CVector3 operator/(const float scalar) const;
 	void operator/=(const float scalar);
-	
+
 	bool operator==(const CVector3& compare) const;
 	void operator=(const CVector3& copy);
 

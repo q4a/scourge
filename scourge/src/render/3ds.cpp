@@ -441,43 +441,43 @@ void CLoad3DS::ReadColorChunk(tMaterialInfo *pMaterial, tChunk *pChunk)
 
 void CLoad3DS::ReadVertexIndices(t3DObject *pObject, tChunk *pPreviousChunk)
 {
-    unsigned short index = 0;                   // This is used to read in the current face index
+	unsigned short index = 0;                   // This is used to read in the current face index
 
-    // In order to read in the vertex indices for the object, we need to first
-    // read in the number of them, then read them in.  Remember,
-    // we only want 3 of the 4 values read in for each face.  The fourth is
-    // a visibility flag for 3D Studio Max that doesn't mean anything to us.
+	// In order to read in the vertex indices for the object, we need to first
+	// read in the number of them, then read them in.  Remember,
+	// we only want 3 of the 4 values read in for each face.  The fourth is
+	// a visibility flag for 3D Studio Max that doesn't mean anything to us.
 
-    // Read in the number of faces that are in this object (int)
-    pPreviousChunk->bytesRead += fread(&pObject->numOfFaces, 1, 2, m_FilePointer);
+	// Read in the number of faces that are in this object, int
+	pPreviousChunk->bytesRead += fread(&pObject->numOfFaces, 1, 2, m_FilePointer);
 	if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
 	  pObject->numOfFaces = SDL_SwapLE32(pObject->numOfFaces);
 	}
 
-    // Alloc enough memory for the faces and initialize the structure
-    pObject->pFaces = new tFace [pObject->numOfFaces];
-    memset(pObject->pFaces, 0, sizeof(tFace) * pObject->numOfFaces);
+	// Alloc enough memory for the faces and initialize the structure
+	pObject->pFaces = new tFace [pObject->numOfFaces];
+	memset(pObject->pFaces, 0, sizeof(tFace) * pObject->numOfFaces);
 
-    // Go through all of the faces in this object
-    for(int i = 0; i < pObject->numOfFaces; i++)
-    {
-        // Next, we read in the A then B then C index for the face, but ignore the 4th value.
-        // The fourth value is a visibility flag for 3D Studio Max, we don't care about this.
-        for(int j = 0; j < 4; j++)
-        {
-            // Read the first vertice index for the current face 
-            pPreviousChunk->bytesRead += fread(&index, 1, sizeof(index), m_FilePointer);
+	// Go through all of the faces in this object
+	for(int i = 0; i < pObject->numOfFaces; i++)
+	{
+		// Next, we read in the A then B then C index for the face, but ignore the 4th value.
+		// The fourth value is a visibility flag for 3D Studio Max, we don't care about this.
+		for(int j = 0; j < 4; j++)
+		{
+			// Read the first vertice index for the current face 
+			pPreviousChunk->bytesRead += fread(&index, 1, sizeof(index), m_FilePointer);
 			if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
 			  index = SDL_SwapLE16(index);
 			}
 
-            if(j < 3)
-            {
-                // Store the index in our face structure.
-                pObject->pFaces[i].vertIndex[j] = index;
-            }
-        }
-    }
+			if(j < 3)
+			{
+				// Store the index in our face structure.
+				pObject->pFaces[i].vertIndex[j] = index;
+			}
+		}
+	}
 }
 
 
@@ -489,20 +489,20 @@ void CLoad3DS::ReadVertexIndices(t3DObject *pObject, tChunk *pPreviousChunk)
 
 void CLoad3DS::ReadUVCoordinates(t3DObject *pObject, tChunk *pPreviousChunk)
 {
-    // In order to read in the UV indices for the object, we need to first
-    // read in the amount there are, then read them in.
+	// In order to read in the UV indices for the object, we need to first
+	// read in the amount there are, then read them in.
 
-    // Read in the number of UV coordinates there are (int)
-    pPreviousChunk->bytesRead += fread(&pObject->numTexVertex, 1, 2, m_FilePointer);
+	// Read in the number of UV coordinates there are, int
+	pPreviousChunk->bytesRead += fread(&pObject->numTexVertex, 1, 2, m_FilePointer);
 	if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
 	  pObject->numTexVertex = SDL_SwapLE32(pObject->numTexVertex);
 	}
 
-    // Allocate memory to hold the UV coordinates
-    pObject->pTexVerts = new CVector2 [pObject->numTexVertex];
+	// Allocate memory to hold the UV coordinates
+	pObject->pTexVerts = new CVector2 [pObject->numTexVertex];
 
-    // Read in the texture coodinates (an array 2 float)
-    pPreviousChunk->bytesRead += fread(pObject->pTexVerts, 1, pPreviousChunk->length - pPreviousChunk->bytesRead, m_FilePointer);	
+	// Read in the texture coodinates (an array 2 float)
+	pPreviousChunk->bytesRead += fread(pObject->pTexVerts, 1, pPreviousChunk->length - pPreviousChunk->bytesRead, m_FilePointer);	
 	if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
 	  for(int i = 0; i < pObject->numTexVertex; i++) {
 		/* Note: byteswapping floats works on my powerbook, but I think
@@ -529,24 +529,24 @@ void CLoad3DS::ReadUVCoordinates(t3DObject *pObject, tChunk *pPreviousChunk)
 
 void CLoad3DS::ReadVertices(t3DObject *pObject, tChunk *pPreviousChunk)
 {
-    // Like most chunks, before we read in the actual vertices, we need
-    // to find out how many there are to read in.  Once we have that number
-    // we then fread() them into our vertice array.
+	// Like most chunks, before we read in the actual vertices, we need
+	// to find out how many there are to read in.  Once we have that number
+	// we then fread() them into our vertice array.
 
-    // Read in the number of vertices (int)
-    pPreviousChunk->bytesRead += fread(&(pObject->numOfVerts), 1, 2, m_FilePointer);
+	// Read in the number of vertices, int
+	pPreviousChunk->bytesRead += fread(&(pObject->numOfVerts), 1, 2, m_FilePointer);
 	if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
 	  pObject->numOfVerts = SDL_SwapLE32(pObject->numOfVerts);
 	}
 
-    // Allocate the memory for the verts and initialize the structure
-    pObject->pVerts = new CVector3 [pObject->numOfVerts];
-    memset(pObject->pVerts, 0, sizeof(CVector3) * pObject->numOfVerts);
+	// Allocate the memory for the verts and initialize the structure
+	pObject->pVerts = new CVector3 [pObject->numOfVerts];
+	memset(pObject->pVerts, 0, sizeof(CVector3) * pObject->numOfVerts);
 
-    // Read in the array of vertices (an array of 3 floats)
-    pPreviousChunk->bytesRead += fread(pObject->pVerts, 1, pPreviousChunk->length - pPreviousChunk->bytesRead, m_FilePointer);
+	// Read in the array of vertices (an array of 3 floats)
+	pPreviousChunk->bytesRead += fread(pObject->pVerts, 1, pPreviousChunk->length - pPreviousChunk->bytesRead, m_FilePointer);
 	if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-	  for(int i = 0; i < pObject->numOfVerts; i++) {
+		for(int i = 0; i < pObject->numOfVerts; i++) {
 		/* Note: byteswapping floats works on my powerbook, but I think
 		   this may cause problems in the future. Floats and doubles aren't
 		   as easy to change from LE to BE as ints.

@@ -46,7 +46,7 @@ char *floorTypeName[2][80] = {
 */  
   
 bool contains( vector<Shape*> *seen, Shape *shape ) {
-  for( int i = 0; i < (int)seen->size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(seen->size()); i++ ) {
     if( (*seen)[i] == shape ) return true;
   }
   return false;
@@ -414,14 +414,14 @@ bool MapEditor::handleEvent(SDL_Event *event) {
 bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
 
   int found = -1;
-  for( int i = 0; i < (int)toggleButtonList.size(); i++ ) {
+  for( int i = 0; i < static_cast<int>(toggleButtonList.size()); i++ ) {
     if( toggleButtonList[ i ] == widget ) {
       found = i;
       break;
     }
   }
   if( found > -1 ) {
-    for( int i = 0; i < (int)toggleButtonList.size(); i++ ) {
+    for( int i = 0; i < static_cast<int>(toggleButtonList.size()); i++ ) {
       toggleButtonList[ i ]->setSelected( i == found );
     }
   }

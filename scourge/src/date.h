@@ -29,26 +29,26 @@
 
 
 class Date {
- private:    
-     
+ private:
+
   int sec;      // 0 to 59
   int min;      // 0 to 59
   int hour;     // 0 to 23  
   int day;      // 1 to 31 or 30 or 29
   int month;    // 1 to 12
-  int year;     // -32000 to +32000      
+  int year;     // -32000 to +32000
 
   enum { SHORT_SIZE = 30, DATE_SIZE = 100 };
-  char dateString[ DATE_SIZE ];  
-  void buildDateString();    
+  char dateString[ DATE_SIZE ];
+  void buildDateString();
   char shortString[ SHORT_SIZE ];
-  
+
  public:
- 
+
   static int dayInMonth[13]; 
   static const char * monthName[13];
   static const char * dayName[8]; 
-    
+
   void addDate(Date d); 
   void setDate(int s, int m, int h, int day, int month, int year);
 	void setDate( char *shortString );
@@ -59,7 +59,7 @@ class Date {
 	void addDay( int n );
 	void addMonth( int n );
 	void addYear( int n );
-     
+
   inline int getYear()        { return year; }
   inline int getMonth()       { return month; }
   inline int getDay()         { return day; }
@@ -67,26 +67,26 @@ class Date {
   inline int getMin()         { return min; }
   inline int getSec()         { return sec; }
   inline char * getDateString()   { buildDateString();return dateString; }
-  void reset( char *shortString=NULL );    
-  
+  void reset( char *shortString=NULL );
+
   /*bool operator==(const Date &d);
   bool operator<=(const Date &d);
   bool operator<(const Date &d);*/
-  
+
   bool isInferiorTo(Date d);
-  bool isEqualTo(Date d);
+	bool operator==(const Date& d) const;
   void print();
   bool isADayLater(Date date);
 	bool isAnHourLater(Date date);
   char *getShortString();
-  
+
   Date();
   Date(int sec, int min, int hour, int day, int month, int year);
   Date( char *shortString );
   ~Date();
-  
+
  protected:
-  
+
 
 };
 

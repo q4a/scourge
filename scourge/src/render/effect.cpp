@@ -135,7 +135,7 @@ void Effect::draw(int effect, int startTime, float percent) {
 void Effect::glowShape(bool proceed, int startTime) {
   glColor4f( 1, 0, 0, 1 );
   int t = SDL_GetTicks();
-  float scale = 1.0f + (float)(t - startTime) / Constants::DAMAGE_DURATION;
+  float scale = 1.0f + static_cast<float>(t - startTime) / Constants::DAMAGE_DURATION;
   if(scale > 2.0f) scale = 2.0f;
   glScalef(scale, scale, scale);
   shape->draw();
@@ -155,7 +155,7 @@ void Effect::drawFlames(bool proceed) {
     // draw it      
     if(particle[i]) {            
       
-      float gg = 1 - ((float)particle[i]->life / 3.0f);
+      float gg = 1 - (static_cast<float>(particle[i]->life) / 3.0f);
       if(gg < 0) gg = 0;
       glColor4f(1, gg, 1, 0.5);
 
@@ -185,11 +185,10 @@ void Effect::drawTeleport(bool proceed) {
     } else if(proceed) {
       moveParticle(&(particle[i]));
     }
-    
-    // draw it      
-    if(particle[i]) {            
-      
-      //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+
+    // draw it
+    if(particle[i]) {
+
       float c = fabs(particle[i]->z - 8) / 8.0f;
       if(c > 1) c = 1;
       glColor4f(c / 2.0f, c, 1.0f, 0.5);
@@ -231,9 +230,9 @@ void Effect::drawGreen(bool proceed) {
       float max = particle[i]->maxLife / 4;
       float c = 1.0f;
       if( particle[i]->life <= max ) {
-        c = (float)( particle[i]->life ) / max;
+        c = static_cast<float>( particle[i]->life ) / max;
       } else if( particle[i]->life > particle[i]->maxLife - max ) {
-        c = (float)( particle[i]->maxLife - particle[i]->life ) / max;
+        c = static_cast<float>( particle[i]->maxLife - particle[i]->life ) / max;
       }
       if( !diWasSet ) {
         glColor4f( 0.15f, 1, 0.15f, 0.2f * c );
@@ -266,10 +265,9 @@ void Effect::drawExplosion(bool proceed) {
 	  moveParticle(&(particle[i]));
     }
 
-    // draw it      
-    if(particle[i]) {            
+    // draw it
+    if(particle[i]) {
 
-	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
 	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1) c = 1;
       glColor4f(c, c / 2.0f, c / 2.0f, 0.5);
@@ -285,9 +283,9 @@ void Effect::drawBlast(bool proceed, float percent ) {
   for(int i = 0; i < 15; i++) {
     if(!particle[i]) {
       createParticle(&(particle[i]));
-      particle[i]->z = (int)Util::roll( 0.5f * percent, 2.5f * percent );
+      particle[i]->z = static_cast<int>(Util::roll( 0.5f * percent, 2.5f * percent ));
       particle[i]->moveDelta = Util::roll( 0.05f, 0.1f );
-      particle[i]->maxLife = (int)Util::roll( 5.0f * percent, 15.0f * percent );
+      particle[i]->maxLife = static_cast<int>(Util::roll( 5.0f * percent, 15.0f * percent ));
       particle[i]->zoom = 3;
       particle[i]->tail = true;
       particle[i]->trail = 2;
@@ -323,7 +321,7 @@ void Effect::drawDust(bool proceed) {
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-	  particle[i]->z = (int)Util::dice( 2 );
+	  particle[i]->z = static_cast<int>(Util::dice( 2 ));
 	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 	  particle[i]->moveDelta = 0;
 	  particle[i]->rotate = Util::roll( 0.0f, 180.0f );
@@ -337,10 +335,9 @@ void Effect::drawDust(bool proceed) {
 	  moveParticle(&(particle[i]));
     }
 
-    // draw it      
-    if(particle[i]) {            
+    // draw it
+    if(particle[i]) {
 
-	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
 	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1.0f) c = 1.0f;
       glColor4f(c / 4.0f, c / 4.0f, c / 4.0f, 0.35f);
@@ -368,10 +365,9 @@ void Effect::drawHail(bool proceed) {
       moveParticle(&(particle[i]));
     }
 
-    // draw it      
-    if(particle[i]) {            
+    // draw it
+    if(particle[i]) {
 
-	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
 	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1) c = 1;
     glColor4f( 0, c / 4.0f, 1.0f, 0.75 );
@@ -414,20 +410,19 @@ void Effect::drawTower(bool proceed) {
       }
       moveParticle(&(particle[i]));
     }
-    
-    // draw it      
-    if(particle[i]) {            
-      
-      //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+
+    // draw it
+    if(particle[i]) {
+
       float c = fabs(particle[i]->z - 8) / 8.0f;
       if(c > 1) c = 1;
       glColor4f( 1.0f, c / 4.0f, 0, 0.75 );
-      
+
       particle[i]->tailColor.r = 0.85f;
       particle[i]->tailColor.g = c / 3.0f;
       particle[i]->tailColor.b = 0.15f;    
       particle[i]->tailColor.a = 0.25f;
-      
+
       drawParticle(particle[i]);
     }
   }
@@ -436,14 +431,14 @@ void Effect::drawTower(bool proceed) {
 void Effect::drawSwirl(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
-	float angle = (float)i * (360.0f / (float)PARTICLE_COUNT);
+	float angle = static_cast<float>(i) * (360.0f / static_cast<float>(PARTICLE_COUNT));
     if(!particle[i]) {
       // create a new particle
       createParticle(&(particle[i]));
-	  particle[i]->x = (((float)(shape->getWidth()) / 2.0f) / DIV) +
-		(((float)(shape->getWidth()) / 2.0f) / DIV) * cos(angle);
-	  particle[i]->y = (((float)(shape->getDepth()) / 2.0f) / DIV) +
-		(((float)(shape->getDepth()) / 2.0f) / DIV) * sin(angle);
+	  particle[i]->x = ((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) +
+		((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) * cos(angle);
+	  particle[i]->y = ((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) +
+		((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) * sin(angle);
 	  particle[i]->z = 1;
 	  particle[i]->moveDelta = 0.15f;
 	  particle[i]->rotate = angle;
@@ -452,17 +447,16 @@ void Effect::drawSwirl(bool proceed) {
     } else if(proceed) {
 	  particle[i]->zoom += 0.01f;
 	  particle[i]->rotate += 5.0f;
-	  particle[i]->x = (((float)(shape->getWidth()) / 2.0f) / DIV) + 
-		(((float)(shape->getWidth()) / 2.0f) / DIV) * cos(particle[i]->rotate);
-	  particle[i]->y = (((float)(shape->getDepth()) / 2.0f) / DIV) +
-		(((float)(shape->getDepth()) / 2.0f) / DIV) * sin(particle[i]->rotate);
+	  particle[i]->x = ((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) + 
+		((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) * cos(particle[i]->rotate);
+	  particle[i]->y = ((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) +
+		((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) * sin(particle[i]->rotate);
 	  moveParticle(&(particle[i]));
     }
 
-    // draw it      
-    if(particle[i]) {            
+    // draw it
+    if(particle[i]) {
 
-	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
 	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1) c = 1;
       glColor4f(c / 2.0f, c / 4.0f, c, 0.5);
@@ -488,9 +482,8 @@ void Effect::drawCastSpell(bool proceed) {
 	  moveParticle(&(particle[i]));
     }
 
-    // draw it      
-    if(particle[i]) {            
-	  //	  float c = (((float)particle[i]->life) / ((float)particle[i]->maxLife));
+    // draw it
+    if(particle[i]) {
 	  float c = fabs(particle[i]->z - 8) / 8.0f;
 	  if(c > 1) c = 1;
 
@@ -575,7 +568,7 @@ void Effect::createParticle(ParticleStruct **particle) {
   *particle = new ParticleStruct();
   (*particle)->x = Util::roll( 0.0f, shape->getWidth() / DIV );
   (*particle)->y = Util::roll( 0.0f, shape->getDepth() / DIV );
-  //  (*particle)->z = (int)(6.0 * rand()/RAND_MAX) + 10;
+  //  (*particle)->z = static_cast<int>(6.0 * rand()/RAND_MAX) + 10;
   (*particle)->z = Util::roll( 0.0f, 0.8f );
   (*particle)->startZ = (*particle)->z;
   (*particle)->height = Util::pickOne( 10, 24 );
@@ -603,9 +596,8 @@ void Effect::moveParticle(ParticleStruct **particle) {
 void Effect::drawParticle(ParticleStruct *particle) {
   float w, h, sh;
 
-  w = (float)(shape->getWidth() / DIV) / 4.0f;
-  //float d = (float)(shape->getDepth() / DIV) / 2.0;
-  h = (float)(shape->getHeight() / DIV) / 3.0f;
+  w = static_cast<float>(shape->getWidth() / DIV) / 4.0f;
+  h = static_cast<float>(shape->getHeight() / DIV) / 3.0f;
   if(h == 0) h = 0.25f / DIV;
   sh = ( fabs( particle->z - particle->startZ ) / DIV) / 3.0f;
   if(h == 0) h = 0.25f / DIV;
@@ -616,7 +608,6 @@ void Effect::drawParticle(ParticleStruct *particle) {
     glPushMatrix();
     
     // position the particle
-    //  GLfloat z = (float)(particle->z * h) / 10.0;
     GLfloat z = (particle->z + i) / DIV;
     glTranslatef( particle->x, particle->y, z );  
     

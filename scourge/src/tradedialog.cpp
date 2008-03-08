@@ -149,11 +149,11 @@ void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 void TradeDialog::render( const Widget *widget, const Item *item, std::string& buffer ) {
 	std::string s;
   ((Item*)item)->getDetailedDescription( s );
-  float skill = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
+  float skill = static_cast<float>( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
   // level-based mark-up is already included and price is randomized
   int price = ((Item*)item)->getPrice();
   // 25% variance based on leadership skill.
-  int percentage = (int)( (float)price * ( 100.0f - skill ) / 100.0f * 0.25f );
+  int percentage = static_cast<int>( static_cast<float>(price) * ( 100.0f - skill ) / 100.0f * 0.25f );
   int total = price + ( widget == listA ? ( -1 * percentage ) : percentage );
   prices[ (Item*)item ] = total;
   char priceStr[20];
@@ -260,13 +260,13 @@ void TradeDialog::steal() {
     scourge->showMessageDialog( _( "Select items to steal." ) );
     return;
   }
-  
-  float steal = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::STEALING ) );
-  float luck = (float)( scourge->getParty()->getPlayer()->getSkill( Skill::LUCK ) );
 
-  float stealB = (float)( creature->getSkill( Skill::STEALING ) );
-  float coordinationB = (float)( creature->getSkill( Skill::COORDINATION ) );
-  float luckB = (float)( creature->getSkill( Skill::LUCK ) );
+  float steal = static_cast<float>( scourge->getParty()->getPlayer()->getSkill( Skill::STEALING ) );
+  float luck = static_cast<float>( scourge->getParty()->getPlayer()->getSkill( Skill::LUCK ) );
+
+  float stealB = static_cast<float>( creature->getSkill( Skill::STEALING ) );
+  float coordinationB = static_cast<float>( creature->getSkill( Skill::COORDINATION ) );
+  float luckB = static_cast<float>( creature->getSkill( Skill::LUCK ) );
 
   int price = 0;
   int exp = 0;
@@ -277,11 +277,9 @@ void TradeDialog::steal() {
     float maxB = ( stealB / 2.0f ) + ( coordinationB / 2.0f ) + ( luckB / 4.0f );
     float valueB = Util::roll( 0.75f * maxB, maxB );
     if( success ) {
-      success = ( valueA > valueB ? true : false );
+      success = valueA > valueB;
     }
-    exp += (int)( maxA > maxB ? 
-                  maxA - ( maxA - maxB ) : 
-                  maxA + maxB );
+    exp += static_cast<int>( maxA > maxB ? maxB : maxA + maxB );
     price += prices[ listB->getSelectedItem( i ) ];
   }
 

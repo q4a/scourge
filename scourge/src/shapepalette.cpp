@@ -275,7 +275,7 @@ ShapePalette::~ShapePalette() {
 	delete [] scourgeImage;
 	if( paperDoll ) SDL_FreeSurface( paperDoll );
 	delete [] paperDollImage;
-  //    for(int i =0; i < (int)creature_models.size(); i++){
+  //    for(int i =0; i < static_cast<int>(creature_models.size()); i++){
   //        delete creature_models[i];    
   //    }
 }
@@ -289,14 +289,14 @@ void ShapePalette::initFonts( ConfigLang *config ) {
     vector<ConfigNode*> *faces = fontsNode->getChildrenByName( fontNames[i] );
     if( faces ) {
       ConfigNode *node = (*faces)[0];
-  
-      SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
-      info->path = node->getValueAsString( "path" );
-      info->size = (int)node->getValueAsFloat( "size" );
-      info->style = (int)node->getValueAsFloat( "style" );
-      info->yoffset = (int)node->getValueAsFloat( "yoffset" );
-  		info->shadowX = (int)node->getValueAsFloat( "shadowX" );
-  		info->shadowY = (int)node->getValueAsFloat( "shadowY" );
+
+			SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
+			info->path = node->getValueAsString( "path" );
+			info->size = static_cast<int>(node->getValueAsFloat( "size" ));
+			info->style = static_cast<int>(node->getValueAsFloat( "style" ));
+			info->yoffset = static_cast<int>(node->getValueAsFloat( "yoffset" ));
+			info->shadowX = static_cast<int>(node->getValueAsFloat( "shadowX" ));
+			info->shadowY = static_cast<int>(node->getValueAsFloat( "shadowY" ));
       info->font = NULL;
       info->fontMgr = NULL;
   
@@ -358,12 +358,15 @@ void ShapePalette::initInventory( ConfigLang *config ) {
 
 void ShapePalette::initCursor( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "cursor" );
-
 	strcpy( cursorDir, (*v)[0]->getValueAsString( "path" ) );
-	cursorWidth = (int)((*v)[0]->getValueAsFloat( "width" ));
-	if( cursorWidth <= 0 ) cursorWidth = 48;
-	cursorHeight = (int)((*v)[0]->getValueAsFloat( "height" ));
-	if( cursorHeight <= 0 ) cursorHeight = 48;
+
+	cursorWidth = static_cast<int>((*v)[0]->getValueAsFloat( "width" ));
+	if( cursorWidth <= 0 )
+		cursorWidth = 48;
+
+	cursorHeight = static_cast<int>((*v)[0]->getValueAsFloat( "height" ));
+	if( cursorHeight <= 0 )
+		cursorHeight = 48;
 
 	loadCursors();
 }

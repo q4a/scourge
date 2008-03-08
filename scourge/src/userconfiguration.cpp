@@ -843,7 +843,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
     } else if (!strcmp(argv[i], "--nosound")) {
       soundEnabled = false;
     } else if (argv[i][0] == '-' && argv[i][1] != '-') {
-      for (int t = 1; t < (int)strlen(argv[i]); t++) {
+      for (int t = 1; t < static_cast<int>(strlen(argv[i])); t++) {
         switch (argv[i][t]) {
         case 'h':
         case '?': printusage = true; break;

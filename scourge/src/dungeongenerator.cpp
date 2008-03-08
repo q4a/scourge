@@ -626,7 +626,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
         // init the free space
         int secretDoor = 0;
         if(nodes[x][y] & E_DOOR) {
-          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
+          if( 0 == Util::dice( static_cast<int>(SECRET_DOOR_CHANCE) ) ) {
             nodes[x][y] -= E_DOOR;
             secretDoor = E_DOOR;
             nodes[x][y] -= E_PASS;
@@ -634,7 +634,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             drawDoor(map, shapePal, mapx, mapy, E_DOOR);
           }
         } else if(nodes[x][y] & W_DOOR) {
-          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
+          if( 0 == Util::dice( static_cast<int>(SECRET_DOOR_CHANCE) ) ) {
             nodes[x][y] -= W_DOOR;
             secretDoor = W_DOOR;
             nodes[x][y] -= W_PASS;
@@ -642,7 +642,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             drawDoor(map, shapePal, mapx, mapy, W_DOOR);
           }
         } else if(nodes[x][y] & N_DOOR) {
-          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
+          if( 0 == Util::dice( static_cast<int>(SECRET_DOOR_CHANCE) ) ) {
             nodes[x][y] -= N_DOOR;
             secretDoor = N_DOOR;
             nodes[x][y] -= N_PASS;
@@ -650,7 +650,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             drawDoor(map, shapePal, mapx, mapy, N_DOOR);
           }
         } else if(nodes[x][y] & S_DOOR) {
-          if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
+          if( 0 == Util::dice( static_cast<int>(SECRET_DOOR_CHANCE) ) ) {
             nodes[x][y] -= S_DOOR;
             secretDoor = S_DOOR;
             nodes[x][y] -= S_PASS;
@@ -665,7 +665,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
              !(nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & S_PASS)) {
             if( Util::dice( 100 ) <= randomDoors) {
-              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
+              if( 0 == Util::dice( static_cast<int>(SECRET_DOOR_CHANCE) ) ) {
                 nodes[x][y] -= W_DOOR;
                 secretDoor = W_DOOR;
                 nodes[x][y] -= W_PASS;
@@ -678,7 +678,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
              !(nodes[x][y] & N_PASS) &&
              !(nodes[x][y] & S_PASS)) {
             if( Util::dice( 100 ) <= randomDoors) {
-              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
+              if( 0 == Util::dice( static_cast<int>(SECRET_DOOR_CHANCE) ) ) {
                 nodes[x][y] -= E_DOOR;
                 secretDoor = E_DOOR;
                 nodes[x][y] -= E_PASS;
@@ -691,7 +691,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
              !(nodes[x][y] & W_PASS) &&
              !(nodes[x][y] & E_PASS)) {
             if( Util::dice( 100 ) <= randomDoors ) {
-              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
+              if( 0 == Util::dice( static_cast<int>(SECRET_DOOR_CHANCE) ) ) {
                 nodes[x][y] -= S_DOOR;
                 secretDoor = S_DOOR;
                 nodes[x][y] -= S_PASS;
@@ -704,7 +704,7 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
              !(nodes[x][y] & W_PASS) &&
              !(nodes[x][y] & E_PASS)) {
             if( Util::dice( 100 ) <= randomDoors) {
-              if( 0 == Util::dice( (int)SECRET_DOOR_CHANCE ) ) {
+              if( 0 == Util::dice( static_cast<int>(SECRET_DOOR_CHANCE) ) ) {
                 nodes[x][y] -= N_DOOR;
                 secretDoor = N_DOOR;
                 nodes[x][y] -= N_PASS;
@@ -995,25 +995,23 @@ void DungeonGenerator::drawDoor( Map *map, ShapePalette *shapePal,
 }
 
 void DungeonGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
-  // add tables, chairs, etc.
-  addItemsInEveryRoom(RpgItem::getItemByName("Table"), 1);
-  addItemsInEveryRoom(RpgItem::getItemByName("Chair"), 2);  
+	// add tables, chairs, etc.
+	addItemsInEveryRoom(RpgItem::getItemByName("Table"), 1);
+	addItemsInEveryRoom(RpgItem::getItemByName("Chair"), 2);  
 
-  // add some magic pools
-  DisplayInfo di;
-  for( int i = 0; i < roomCount; i++ ) {
-    //??? if( 0 == (int)( 0.0f * rand() / RAND_MAX ) ) {
-      MagicSchool *ms = MagicSchool::getRandomSchool();
-      di.red = ms->getDeityRed();
-      di.green = ms->getDeityGreen();
-      di.blue = ms->getDeityBlue();
-      Location *pos = addShapeInRoom( scourge->getShapePalette()->findShapeByName("POOL"), i, &di );
-      if( pos ) {
-        // store pos->deity in scourge
-        scourge->addDeityLocation( pos, ms );
-      }
-    //}
-  }
+	// add some magic pools
+	DisplayInfo di;
+	for( int i = 0; i < roomCount; i++ ) {
+		MagicSchool *ms = MagicSchool::getRandomSchool();
+		di.red = ms->getDeityRed();
+		di.green = ms->getDeityGreen();
+		di.blue = ms->getDeityBlue();
+		Location *pos = addShapeInRoom( scourge->getShapePalette()->findShapeByName("POOL"), i, &di );
+		if( pos ) {
+			// store pos->deity in scourge
+			scourge->addDeityLocation( pos, ms );
+		}
+	}
 }
 
 void DungeonGenerator::addContainers(Map *map, ShapePalette *shapePal) {

@@ -59,7 +59,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
   int sy = 130;
   canvas = new Canvas( width - 130, 5, width - 10, sy - 10, this );
   win->addWidget( canvas );
-  
+
   answer = new ScrollingLabel( 10, 25, width - 150, 215, "" );
   answer->setWordClickedHandler( this );
   Color color;
@@ -72,7 +72,6 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 
   list = new ScrollingList( width - 130, sy, 120, 110, scourge->getShapePalette()->getHighlightTexture() );
   win->addWidget( list );
-  wordCount = 0;
 
   sy = 260;
   win->createLabel( 9, sy, _( "Talk about:" ) );
@@ -168,8 +167,7 @@ void ConversationGui::start( Creature *creature, char const* message, bool useCr
   label->setText( tmp );
   answer->setText( message );
   win->setVisible( true );
-  wordCount = 0;
-  list->setLines( wordCount, words );
+  list->setLines( words.begin(), words.end() );
 
   // show the correct buttons
   cards->setActiveCard( creature->getNpcInfo() ? creature->getNpcInfo()->type : Constants::NPC_TYPE_COMMONER );
@@ -195,74 +193,57 @@ void ConversationGui::wordClicked( std::string const& pWord ) {
 	}
 
   char answerStr[255];
-  scourge->getSession()->getSquirrel()->
-    callConversationMethod( "converse", creature, first, answerStr );
+  scourge->getSession()->getSquirrel()->callConversationMethod( "converse", creature, first, answerStr );
   if( !strlen( answerStr ) ) {
     // Get the answer the usual way
     if( creature ) {
-      if( word == TRADE_WORD &&
-          creature->getNpcInfo() &&
-          creature->getNpcInfo()->type == Constants::NPC_TYPE_MERCHANT ) scourge->getTradeDialog()->setCreature( creature );
-      else if( word == HEAL_WORD &&
-               creature->getNpcInfo() &&
-               creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getHealDialog()->setCreature( creature );
-      else if( word == TRAIN_WORD &&
-               creature->getNpcInfo() &&
-               creature->getNpcInfo()->type == Constants::NPC_TYPE_TRAINER ) scourge->getTrainDialog()->setCreature( creature );
-      else if( word == UNCURSE_WORD &&
-          creature->getNpcInfo() &&
-          creature->getNpcInfo()->type == Constants::NPC_TYPE_SAGE ) scourge->getUncurseDialog()->setCreature( creature );
-      else if( word == IDENTIFY_WORD &&
-          creature->getNpcInfo() &&
-          creature->getNpcInfo()->type == Constants::NPC_TYPE_SAGE ) scourge->getIdentifyDialog()->setCreature( creature );
-      else if( word == RECHARGE_WORD &&
-          creature->getNpcInfo() &&
-          creature->getNpcInfo()->type == Constants::NPC_TYPE_SAGE ) scourge->getRechargeDialog()->setCreature( creature );
-      else if( word == DONATE_WORD &&
-               creature->getNpcInfo() &&
-               creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER ) scourge->getDonateDialog()->setCreature( creature );
+      if( word == TRADE_WORD && creature->getNpcInfo() && creature->getNpcInfo()->type == Constants::NPC_TYPE_MERCHANT )
+        scourge->getTradeDialog()->setCreature( creature );
+      else if( word == HEAL_WORD && creature->getNpcInfo() && creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER )
+        scourge->getHealDialog()->setCreature( creature );
+      else if( word == TRAIN_WORD && creature->getNpcInfo() && creature->getNpcInfo()->type == Constants::NPC_TYPE_TRAINER )
+        scourge->getTrainDialog()->setCreature( creature );
+      else if( word == UNCURSE_WORD && creature->getNpcInfo() && creature->getNpcInfo()->type == Constants::NPC_TYPE_SAGE )
+        scourge->getUncurseDialog()->setCreature( creature );
+      else if( word == IDENTIFY_WORD && creature->getNpcInfo() && creature->getNpcInfo()->type == Constants::NPC_TYPE_SAGE )
+        scourge->getIdentifyDialog()->setCreature( creature );
+      else if( word == RECHARGE_WORD && creature->getNpcInfo() && creature->getNpcInfo()->type == Constants::NPC_TYPE_SAGE )
+        scourge->getRechargeDialog()->setCreature( creature );
+      else if( word == DONATE_WORD && creature->getNpcInfo() && creature->getNpcInfo()->type == Constants::NPC_TYPE_HEALER )
+        scourge->getDonateDialog()->setCreature( creature );
     }
-  
-    if( useCreature ) {
-		char const* s = Mission::getAnswer( creature->getMonster()->getType(), word.c_str() );
-		if( !s ) s = Mission::getAnswer( creature->getName(), word.c_str() );
-	  answer->setText( s );
-    } else {
-		answer->setText( Mission::getAnswer( word.c_str() ) );
-    }
-  } else {
-    answer->setText( answerStr );
-  }
 
-  for( int i = 0; i < wordCount; i++ ) {
-	  if( words[i] == word ) {
-      // delete it
-      for( int t = i; t < wordCount - 1; t++ ) {
-        words[t] = words[t + 1];
-      }
-      wordCount--;
-      list->setLines( wordCount, words );
-      return;
-    }
-  }
+		if( useCreature ) {
+			char const* s = Mission::getAnswer( creature->getMonster()->getType(), word.c_str() );
+			if( !s )
+				s = Mission::getAnswer( creature->getName(), word.c_str() );
+			answer->setText( s );
+		} else {
+			answer->setText( Mission::getAnswer( word.c_str() ) );
+		}
+	} else {
+		answer->setText( answerStr );
+	}
+
+	vector<string>::iterator pos = find_if(words.begin(), words.end(), bind2nd(Util::CaseCompare<string>(), word));
+	if( pos != words.end() ) {
+		// delete it
+		words.erase(pos);
+		list->setLines( words.begin(), words.end() );
+	}
 }
 
 void ConversationGui::showingWord( char *word ) {
-  for( int i = 0; i < wordCount; i++ ) {
-	  if( words[i] == word ) {
-      return;
-    }
-  }
-  // add new word
-  if( wordCount < MAX_WORDS ) {
-    words[ wordCount++ ] = word;
-    list->setLines( wordCount, words );
-  }
+	if(find_if(words.begin(), words.end(), bind2nd(Util::CaseCompare<string>(), word)) != words.end())
+		return;
+
+	// add new word
+	words.push_back(word);
+	list->setLines( words.begin(), words.end() );
 }
 
 void ConversationGui::drawWidgetContents(Widget *w) {
-  if( w == canvas && creature && creature->getMonster() && 
-      creature->getMonster()->getPortraitTexture() ) {
+  if( w == canvas && creature && creature->getMonster() && creature->getMonster()->getPortraitTexture() ) {
     //glEnable( GL_ALPHA_TEST );
     //glAlphaFunc( GL_EQUAL, 0xff );
     glEnable(GL_TEXTURE_2D);
@@ -270,7 +251,7 @@ void ConversationGui::drawWidgetContents(Widget *w) {
     //    glTranslatef( x, y, 0 );
     glBindTexture( GL_TEXTURE_2D, creature->getMonster()->getPortraitTexture() );
     glColor4f(1, 1, 1, 1);
-    
+
     glBegin( GL_QUADS );
     glNormal3f( 0, 0, 1 );
     glTexCoord2f( 0, 0 );
@@ -283,7 +264,7 @@ void ConversationGui::drawWidgetContents(Widget *w) {
     glVertex3f( canvas->getWidth(), 0, 0 );
     glEnd();
     glPopMatrix();
-    
+
     //glDisable( GL_ALPHA_TEST );
     glDisable(GL_TEXTURE_2D);
   }

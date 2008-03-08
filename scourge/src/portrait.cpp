@@ -259,7 +259,7 @@ void Portrait::showStats() {
 
 	y += 15;
   pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "AP" ) );
-	int maxAp = (int)creature->getMaxAP();
+	int maxAp = static_cast<int>(creature->getMaxAP());
 	int ap = ( pcUi->getScourge()->inTurnBasedCombatPlayerTurn() ? creature->getBattle()->getAP() : maxAp );
   drawBar( 120, y - 10, ap, maxAp, 1, 0, 1, 1 );
   pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", ap, maxAp );
@@ -316,13 +316,13 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 void Portrait::scrollSkillsUp() {
 	skillOffset--;
 	if( skillOffset < 1 ) {
-		skillOffset = (int)SkillGroup::groups.size() - 1;
+		skillOffset = static_cast<int>(SkillGroup::groups.size()) - 1;
 	}
 }
 
 void Portrait::scrollSkillsDown() {
 	skillOffset++;
-	if( skillOffset >= (int)SkillGroup::groups.size() ) {
+	if( skillOffset >= static_cast<int>(SkillGroup::groups.size()) ) {
 		skillOffset = 1;
 	}
 }
@@ -435,7 +435,7 @@ void Portrait::showStateMods() {
   y += 15;
   
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Carrying (kg)" ) );
-  drawBar( 100, y - 10, (int)( creature->getInventoryWeight() * 100 ), (int)( creature->getMaxInventoryWeight() * 100 ) );
+  drawBar( 100, y - 10, static_cast<int>(creature->getInventoryWeight() * 100), static_cast<int>(creature->getMaxInventoryWeight() * 100));
   pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%2.1f/%2.1f", creature->getInventoryWeight(), creature->getMaxInventoryWeight() );
 	drawHorizontalLine( y + 4 );
 	y += 18;
@@ -544,7 +544,7 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 		v = value + mod;
 		if( v > maxValue ) v = maxValue;
 		if( v > 0 ) {
-			n = (int)( (float)v * (float)BAR_INNER_WIDTH / (float)maxValue );
+			n = static_cast<int>( static_cast<float>(v) * static_cast<float>(BAR_INNER_WIDTH) / static_cast<float>(maxValue) );
 			glDisable( GL_TEXTURE_2D );
 			glColor4f( 0, 0.5f, 1, 1 );
 			glBegin( GL_QUADS );
@@ -559,7 +559,7 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	v = value;
 	if( v > maxValue ) v = maxValue;
 	if( v > 0 ) {
-		n = (int)( (float)v * (float)BAR_INNER_WIDTH / (float)maxValue );
+		n = static_cast<int>( static_cast<float>(v) * static_cast<float>(BAR_INNER_WIDTH) / static_cast<float>(maxValue) );
 		glDisable( GL_TEXTURE_2D );
 		glColor4f( r, g, b, a );
 		glBegin( GL_QUADS );

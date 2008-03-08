@@ -241,7 +241,7 @@ void Sound::stopMusic( int ms ) {
 
 		// remember where the level music is stopped
 		if( currentMusic != fightMusic ) {
-			musicPosition = (double)( SDL_GetTicks() - musicStartTime );
+			musicPosition = static_cast<double>( SDL_GetTicks() - musicStartTime );
 		}
 
 		if( !Mix_FadeOutMusic( ms ) ) {
@@ -298,15 +298,14 @@ void Sound::loadSounds(Preferences *preferences) {
 				i != Item::soundMap.end(); ++i) {
 		//Creature *creature = i->first;
 		vector<string> *v = i->second;
-		for(int r = 0; r < (int)v->size(); r++) {
-			string file = (*v)[r];
-			storeSound(0, file.c_str());
+		for(vector<string>::iterator r = v->begin(); r != v->end(); r++) {
+			storeSound(0, *r);
 		}
 	}
 
 	//cerr << "Loading spell sounds..." << endl;
-	for(int i = 0; i < (int)MagicSchool::getMagicSchoolCount(); i++) {
-		for(int t = 0; t < (int)MagicSchool::getMagicSchool(i)->getSpellCount(); t++) {
+	for(int i = 0; i < static_cast<int>(MagicSchool::getMagicSchoolCount()); i++) {
+		for(int t = 0; t < static_cast<int>(MagicSchool::getMagicSchool(i)->getSpellCount()); t++) {
 			storeSound(0, MagicSchool::getMagicSchool(i)->getSpell(t)->getSound());
 		}
 	}
@@ -335,7 +334,7 @@ void Sound::storeAmbientObjectSound( std::string const& sound ) {
 void Sound::playObjectSound( std::string& name, int percent ) {
 #ifdef HAVE_SDL_MIXER
 	if( haveSound ) {
-		int volume = (int)( ( MIX_MAX_VOLUME / 100.0f ) * (float)percent );
+		int volume = static_cast<int>( ( MIX_MAX_VOLUME / 100.0f ) * static_cast<float>(percent) );
 		//cerr << "vol=" << volume << endl;
 		Mix_Volume( 5, volume );
 		if( !Mix_Playing( 5 ) ) {
@@ -347,15 +346,13 @@ void Sound::playObjectSound( std::string& name, int percent ) {
 #endif	
 }
 
-void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m,
-							   Preferences *preferences ) {
+void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m, Preferences *preferences ) {
 	//  cerr << "Loading monster sounds for " << monsterType << "..." << endl;
 	if( m ) {
 		for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
 			vector<string> *v = i2->second;
-			for(int i = 0; i < (int)v->size(); i++) {
-				string file = (*v)[i];
-				storeSound(0, file.c_str());
+			for(vector<string>::iterator i = v->begin(); i != v->end(); i++) {
+				storeSound(0, *i);
 			}
 		}
 	}
@@ -367,9 +364,8 @@ void Sound::unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m
 	if( m ) {
 		for(map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2) {
 			vector<string> *v = i2->second;
-			for(int i = 0; i < (int)v->size(); i++) {
-				string file = (*v)[i];
-				unloadSound(0, file.c_str());
+			for(vector<string>::iterator i = v->begin(); i != v->end(); i++) {
+				unloadSound(0, *i);
 			}
 		}
 	}

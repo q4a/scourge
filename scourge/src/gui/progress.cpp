@@ -48,8 +48,8 @@ void Progress::updateStatusLight( const char *message, int n, int max ) {
   // display as % if too large
   int maxWidth = scourgeGui->getScreenWidth() - 50;
   if( width >= maxWidth ) {
-    maxStatus = (int)((float)( maxStatus * maxWidth ) / (float)width);
-    status = (int)((float)( status * maxWidth ) / (float)width);
+    maxStatus = static_cast<int>(static_cast<float>( maxStatus * maxWidth ) / static_cast<float>(width));
+    status = static_cast<int>(static_cast<float>( status * maxWidth ) / static_cast<float>(width));
     width = maxWidth;
   }
 
@@ -112,10 +112,10 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   // display as % if too large
   int maxWidth = scourgeGui->getScreenWidth() - 50;
   if( width >= maxWidth ) {
-    maxStatus = (int)((float)( maxStatus * maxWidth ) / (float)width);
-    status = (int)((float)( status * maxWidth ) / (float)width);
+    maxStatus = static_cast<int>(static_cast<float>( maxStatus * maxWidth ) / static_cast<float>(width));
+    status = static_cast<int>(static_cast<float>( status * maxWidth ) / static_cast<float>(width));
     if( alt > -1 )
-      alt = (int)((float)( alt * maxWidth ) / (float)width);
+      alt = static_cast<int>(static_cast<float>( alt * maxWidth ) / static_cast<float>(width));
     width = maxWidth;
   }
 
