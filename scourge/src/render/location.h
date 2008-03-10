@@ -53,6 +53,22 @@ public:
   }
 };
 
+class OutdoorTexture {
+public:
+	float offsetX, offsetY, width, height; // measured in map units
+	float angle;
+	bool horizFlip, vertFlip;
+	GLuint texture;
+	
+	OutdoorTexture() {
+		angle = 0;
+		horizFlip = vertFlip = false;
+		texture = 0;
+		offsetX = offsetY = 0;
+		width = height = 2;
+	}
+};
+
 class Location {
 public:
   // shapes

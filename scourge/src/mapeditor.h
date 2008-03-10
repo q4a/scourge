@@ -51,7 +51,10 @@ private:
 
   // map settings
   int level, depth;
-
+  
+  // outdoor texture editing
+  float outdoorTextureAngle;
+  bool outdoorTextureHorizFlip, outdoorTextureVertFlip;
   
   // UI
   Window *mainWin;
@@ -67,6 +70,7 @@ private:
   Button *rugButton, *secretButton, *trapButton;
   std::vector<Button *> toggleButtonList;
 	Button *pathButton;
+	Button *outdoorTexturesButton;
                                                                                              
   TextField *nameText;
   Button *loadButton, *saveButton;
@@ -84,13 +88,14 @@ private:
   MapWidget *mapWidget;	
   
   // lists
-  ScrollingList *shapeList, *itemList, *creatureList, *furnitureList, *outdoorTextures;
+  ScrollingList *shapeList, *itemList, *creatureList, *furnitureList, *outdoorTexturesList;
 	enum { NAME_SIZE = 120 };
 	typedef char NAME[NAME_SIZE];
 	std::string* shapeNames; 
 	std::string* itemNames; 
 	std::string* creatureNames; 
 	std::string* furnitureNames;
+	std::string* outdoorTextureNames;
 	std::map<std::string, Monster*> creatures;
 
   std::map<Monster*,GLShape*> creatureOutlines;

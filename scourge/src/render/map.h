@@ -22,6 +22,7 @@
 #include <vector>
 #include <set>
 #include <sstream>
+#include "location.h"
 
 class CFrustum;
 class RenderedProjectile;
@@ -243,6 +244,7 @@ private:
 	bool quakesEnabled;
 
 	bool heightMapEnabled;
+	OutdoorTexture outdoorTex[MAP_WIDTH / OUTDOORS_STEP][MAP_DEPTH / OUTDOORS_STEP];
 	float ground[MAP_WIDTH][MAP_DEPTH];
 	GLuint groundTex[MAP_WIDTH][MAP_DEPTH];
 	bool refreshGroundPos;
@@ -404,6 +406,11 @@ private:
   void setPosition(Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *di=NULL);
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
   Shape *removeLocation(Sint16 x, Sint16 y, Sint16 z);
+  
+  void setOutdoorTexture( int x, int y, float offsetX, float offsetY,
+                          float width, float height, GLuint texture, 
+                          float angle, bool horizFlip, bool vertFlip );
+  void removeOutdoorTexture( int x, int y, float width, float height );
 	
 	Shape *removeItemPosition( Sint16 x, Sint16 y );
   
@@ -602,6 +609,10 @@ private:
 	 * selection circles on top of un-even terrain.
 	 */
 	void drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, float angle=0 );
+	
+	void drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, float angle=0 );
+	
+	void debugGround( int sx, int sy, int ex, int ey );
 
 	void initOutdoorsGroundTexture();
 
