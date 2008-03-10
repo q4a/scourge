@@ -29,6 +29,9 @@
 
 using namespace std;
 
+#define OUTDOOR_TEXTURE_WIDTH 4
+#define OUTDOOR_TEXTURE_DEPTH 4
+
 char *floorTypeName[2][80] = { 
   { "FLOOR_TILE", N_( "Tile: Passage" ) },
   { "ROOM_FLOOR_TILE", N_( "Tile: Room" ) }
@@ -58,6 +61,9 @@ MapEditor::MapEditor( Scourge *scourge ) {
   // default map settings
   level = 1;
   depth = 0;
+  
+  outdoorTextureAngle = 0;
+  outdoorTextureHorizFlip = outdoorTextureVertFlip = false;
 
   mapSettings = new EditorMapSettings();
 
@@ -229,6 +235,22 @@ MapEditor::MapEditor( Scourge *scourge ) {
     }
   }
   shapeList->setLines( count, shapeNames );
+  
+  // outdoor textures
+  outdoorTexturesButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Outdoor Textures" ), true );
+  toggleButtonList.push_back( outdoorTexturesButton );
+	yy += ystep;
+  outdoorTexturesList = new ScrollingList( startx, yy, w - 16, 75, scourge->getShapePalette()->getHighlightTexture() );
+  mainWin->addWidget( outdoorTexturesList );
+	yy += 79;
+
+	map<string,GLuint> *outdoorTextureMap = scourge->getShapePalette()->getOutdoorNamedTextures();
+	count = 0;
+  outdoorTextureNames = new string[ outdoorTextureMap->size() ];
+  for( map<string, GLuint>::iterator i = outdoorTextureMap->begin(); i != outdoorTextureMap->end(); ++i ) {
+  	outdoorTextureNames[ count++ ] = i->first;
+  }
+  outdoorTexturesList->setLines( count, outdoorTextureNames );  
 
   miniMap = new MiniMap( scourge, true ); 
 }                                                                         
@@ -322,7 +344,7 @@ void MapEditor::drawView() {
                                         scourge->getMap()->getCursorChunkX(), 
                                         scourge->getMap()->getCursorChunkY(),
 																				_( "Shape" ),
-                                        ( pos ? pos->shape->getName() : "NULL" ),
+                                        ( pos && pos->shape ? pos->shape->getName() : "NULL" ),
 																				_( "Item" ),
                                         ( pos && pos->item ? ((Item*)(pos->item))->getRpgItem()->getDisplayName() : "NULL" ),
 																				_( "Creature" ),
@@ -354,11 +376,17 @@ void MapEditor::drawAfter() {
 bool MapEditor::handleEvent(SDL_Event *event) {
   scourge->getMap()->cursorWidth = scourge->getMap()->cursorDepth = 1;
   scourge->getMap()->cursorHeight = MAP_WALL_HEIGHT;
-  GLShape *shape;
-  if( getShape( &shape ) ) {
-    scourge->getMap()->cursorWidth = shape->getWidth();
-    scourge->getMap()->cursorDepth = shape->getDepth();
-    scourge->getMap()->cursorHeight = shape->getHeight();
+  if( outdoorTexturesButton->isSelected() ) {
+    scourge->getMap()->cursorWidth = OUTDOOR_TEXTURE_WIDTH;
+    scourge->getMap()->cursorDepth = OUTDOOR_TEXTURE_DEPTH;
+    scourge->getMap()->cursorHeight = 1;
+  } else {
+	  GLShape *shape;
+	  if( getShape( &shape ) ) {
+	    scourge->getMap()->cursorWidth = shape->getWidth();
+	    scourge->getMap()->cursorDepth = shape->getDepth();
+	    scourge->getMap()->cursorHeight = shape->getHeight();
+	  }
   }
   
   // find the highest point under the cursor
@@ -618,23 +646,39 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
     //int mapy = scourge->getMap()->getCursorChunkY() * MAP_UNIT + MAP_OFFSET;
 
     GLShape *shape;
-    if( button == SDL_BUTTON_LEFT ) {
-      Item *item;
-      Creature *creature;
-      if( getShape( &shape, &item, &creature ) ) {
-        if( item ) {
-          scourge->getMap()->setItem( xx, yy + 1, editorZ, item );
-        } else if( creature ) {
-          scourge->getMap()->setCreature( xx, yy + 1, editorZ, creature );
-					creature->moveTo( xx, yy + 1, editorZ );
-        } else if( shape ) {
-					cerr << "editorZ=" << editorZ << endl;
-          scourge->getMap()->setPosition( xx, yy + 1, editorZ, shape );
-        }
-        return;
-      }
+    if( button == SDL_BUTTON_LEFT ) {    	
+    	if( outdoorTexturesButton->isSelected() ) {
+    		if( outdoorTexturesList->getSelectedLine() > -1 ) {
+    			string s = outdoorTextureNames[ outdoorTexturesList->getSelectedLine() ];
+      		GLuint texture = scourge->getShapePalette()->getOutdoorNamedTexture( s );
+      		scourge->getMap()->setOutdoorTexture( xx, yy + 1, 
+      		                                      0, 0, 
+      		                                      OUTDOOR_TEXTURE_WIDTH, OUTDOOR_TEXTURE_DEPTH, 
+      		                                      texture, 
+      		                                      outdoorTextureAngle, 
+      		                                      outdoorTextureHorizFlip, 
+      		                                      outdoorTextureVertFlip );
+    		}
+    		return;
+    	} else {
+	      Item *item;
+	      Creature *creature;
+	      if( getShape( &shape, &item, &creature ) ) {
+	        if( item ) {
+	          scourge->getMap()->setItem( xx, yy + 1, editorZ, item );
+	        } else if( creature ) {
+	          scourge->getMap()->setCreature( xx, yy + 1, editorZ, creature );
+						creature->moveTo( xx, yy + 1, editorZ );
+	        } else if( shape ) {
+	          scourge->getMap()->setPosition( xx, yy + 1, editorZ, shape );
+	        }
+	        return;
+	      }
+    	}
     } else if( button == SDL_BUTTON_RIGHT ) {
-      if( getShape( &shape ) ) {
+    	if( outdoorTexturesButton->isSelected() ) {
+    		scourge->getMap()->removeOutdoorTexture( xx, yy + 1, OUTDOOR_TEXTURE_WIDTH, OUTDOOR_TEXTURE_DEPTH );    	
+    	} else if( getShape( &shape ) ) {
         for( int sx = 0; sx < shape->getWidth(); sx++ ) {
           for( int sy = 0; sy < shape->getDepth(); sy++ ) {
             for( int sz = MAP_VIEW_HEIGHT - 1; sz >= 0; sz-- ) {
@@ -1383,7 +1427,7 @@ bool MapEditor::isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name
       mapz >= 0 && mapz < MAP_VIEW_HEIGHT ) {
     Location *pos = scourge->getMap()->getLocation( mapx, mapy, mapz );
 //    cerr << " found=" << ( !pos ? "NULL" : pos->shape->getName() ) << endl;
-    return( pos && !strcmp( pos->shape->getName(), name ) );
+    return( pos && pos->shape && !strcmp( pos->shape->getName(), name ) );
   } else {
 //    cerr << " found nothing." << endl;
     return false;

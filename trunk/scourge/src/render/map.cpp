@@ -188,11 +188,13 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 		for( int y = 0; y < MAP_DEPTH; y++ ) {
 			ground[x][y] = 0;
 			groundTex[x][y] = 0;
+			outdoorTex[x][y].texture = 0;
 		}
 	}
 	heightMapEnabled = false;
 	for( int i = 0; i < 4; i++ )
 		debugHeightPosXX[i] = debugHeightPosYY[i] = 0;
+	
 
   // initialize the lightmap
 	for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
@@ -364,6 +366,7 @@ void Map::reset() {
 		for( int y = 0; y < MAP_DEPTH; y++ ) {
 			ground[x][y] = 0;
 			groundTex[x][y] = 0;
+			outdoorTex[x][y].texture = 0;
 		}
 	}
 	heightMapEnabled = false;
@@ -2129,7 +2132,35 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 	return pos;
 }
 
-void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z, Shape *shape, RenderedItem *item, RenderedCreature *creature ) {
+void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY,
+                             float width, float height, GLuint texture, 
+                             float angle, bool horizFlip, bool vertFlip ) {
+	int tx = x / OUTDOORS_STEP;
+	int ty = ( y - height - 1 ) / OUTDOORS_STEP;
+	int tw = static_cast<int>(width / OUTDOORS_STEP);
+	int th = static_cast<int>(height / OUTDOORS_STEP);
+	outdoorTex[tx][ty].offsetX = offsetX;
+	outdoorTex[tx][ty].offsetY = offsetY;
+	outdoorTex[tx][ty].width = tw;
+	outdoorTex[tx][ty].height = th;
+	outdoorTex[tx][ty].angle = angle;
+	outdoorTex[tx][ty].horizFlip = horizFlip;
+	outdoorTex[tx][ty].vertFlip = vertFlip;
+	outdoorTex[tx][ty].texture = texture;
+	mapChanged = true;
+}
+
+void Map::removeOutdoorTexture( int x, int y, float width, float height ) {
+	int tx = x / OUTDOORS_STEP;
+	int ty = ( y - height - 1 ) / OUTDOORS_STEP;
+	outdoorTex[tx][ty].texture = 0;
+	mapChanged = true;
+}
+
+void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z, 
+														Shape *shape, 
+														RenderedItem *item, 
+														RenderedCreature *creature ) {
 	
 	resortShapes = mapChanged = true;
 	//cerr << "FIXME: Map::setPosition" << endl;
@@ -3913,27 +3944,23 @@ void Map::setSecretDoorDetected( int x, int y ) {
 }
 
 void Map::renderFloor() {
-	//float xpos2 = static_cast<float>(getX() - mapViewWidth / 2) / DIV;
-	//float ypos2 = static_cast<float>(getY() - mapViewDepth / 2) / DIV;
-	if( settings->isGridShowing() ) {
-		glDisable( GL_TEXTURE_2D );
-		glColor4f( 0, 0, 0, 0.9f );
-	} else {
-		glEnable( GL_TEXTURE_2D );
-		glColor4f(1, 1, 1, 0.9f);
-		glBindTexture( GL_TEXTURE_2D, floorTex );
-	}
+	glEnable( GL_TEXTURE_2D );
+	glColor4f(1, 1, 1, 0.9f);
+	glBindTexture( GL_TEXTURE_2D, floorTex );
 	glPushMatrix();
-
 	if( isHeightMapEnabled() ) {
 		drawHeightMapFloor();
 		drawWaterLevel();
 		setupShapes(true, false);
 	}	else {
+		if( settings->isGridShowing() ) {
+			glDisable( GL_TEXTURE_2D );
+			glColor4f( 0, 0, 0, 0 );
+		}
 		drawFlatFloor();
 	}
 	glPopMatrix();
-
+	
 	// show floor in map editor
 	if( settings->isGridShowing() ) {
 		setupShapes(true, false);
@@ -3964,9 +3991,104 @@ void Map::drawHeightMapFloor() {
 			}
 			glEnd();
 		}
-	}	
+	}
+	
+	// draw outdoor textures
+	//cerr << "from: " << getX() << "," << getY() << " to: " << ( getX() + mapViewWidth ) << "," << ( getY() + mapViewDepth ) << endl;  
+	for( int yy = getY() / OUTDOORS_STEP; yy < ( getY() + mapViewDepth ) / OUTDOORS_STEP; yy++ ) {
+		for( int xx = getX() / OUTDOORS_STEP; xx < ( getX() + mapViewWidth ) / OUTDOORS_STEP; xx++ ) {
+			if( outdoorTex[xx][yy].texture > 0 ) {
+				glColor4f( 1, 1, 1, 1 );
+				drawOutdoorTex( outdoorTex[xx][yy].texture, 
+				               xx + outdoorTex[xx][yy].offsetX, yy + outdoorTex[xx][yy].offsetY,
+				               outdoorTex[xx][yy].width, outdoorTex[xx][yy].height, outdoorTex[xx][yy].angle );
+			}
+		}
+	}
 }
 
+// this one uses OUTDOORS_STEP coordinates
+void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, float angle ) {
+
+	//glEnable( GL_DEPTH_TEST );
+	glDepthMask( GL_FALSE );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glDisable( GL_CULL_FACE );
+	glEnable( GL_TEXTURE_2D );
+	glBindTexture( GL_TEXTURE_2D, tex );
+
+	glMatrixMode( GL_TEXTURE );
+	glPushMatrix();
+	glLoadIdentity();
+	
+	glTranslatef( 0.5f, 0.5f, 0 );
+	glRotatef( angle, 0, 0, 1 );
+	glTranslatef( -0.5f, -0.5f, 0 );
+
+	//glTranslatef( offSX, offSY, 0 );
+	glMatrixMode( GL_MODELVIEW );
+	
+	int sx = tx;
+	int sy = ty;
+	int ex = tx + tw;
+	if( ex == sx ) ex++;
+	int ey = ty + th;
+	if( ey == sy ) ey++;	
+
+	float gx, gy;
+	for( int xx = sx; xx < ex; xx++ ) {
+		for( int yy = sy; yy < ey; yy++ ) {
+
+			float texSx = ( ( xx - sx ) ) / ( ex - sx );
+			float texEx = ( ( xx + 1 - sx ) ) / ( ex - sx );
+			float texSy = ( ( yy - sy ) ) / ( ey - sy );
+			float texEy = ( ( yy + 1 - sy ) ) / ( ey - sy );
+
+			//glBegin( GL_LINE_LOOP );
+			glBegin( GL_QUADS );
+
+			glTexCoord2f( texSx, texEy );
+			//glColor4f( 1, 1, 1, 1 );
+			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
+			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + 0.26f / DIV );
+
+
+			glTexCoord2f( texSx, texSy );
+			//glColor4f( 1, 0, 0, 1 );
+			gx = groundPos[ xx ][ yy ].x - getX() / DIV;
+			gy = groundPos[ xx ][ yy ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + 0.26f / DIV );
+
+			glTexCoord2f( texEx, texSy );
+			//glColor4f( 1, 1, 1, 1 );
+			gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
+			gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + 0.26f / DIV );
+
+			glTexCoord2f( texEx, texEy );
+			//glColor4f( 1, 1, 1, 1 );
+			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
+			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + 0.26f / DIV );
+
+			glEnd();
+		}
+	}
+	
+	glMatrixMode( GL_TEXTURE );
+	glPopMatrix();
+	glMatrixMode( GL_MODELVIEW );
+	
+	//glDisable( GL_DEPTH_TEST );
+	glDepthMask( GL_TRUE );
+	glDisable( GL_BLEND );
+	
+	// debugGround( sx, sy, ex, ey );
+}
+
+// this one uses map coordinates
 void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, float angle ) {
 
 	//glEnable( GL_DEPTH_TEST );
@@ -4081,9 +4203,13 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 	glDepthMask( GL_TRUE );
 	glDisable( GL_BLEND );
 
-	/*
+//	debugGround( sx, sy, ex, ey );
+}
+
+void Map::debugGround( int sx, int sy, int ex, int ey ) {
 	glDisable( GL_TEXTURE_2D );
 	glColor4f( 0, 1, 0, 1 );
+	float gx, gy;
 	for( int xx = sx; xx <= ex; xx++ ) {
 		for( int yy = sy; yy <= ey; yy++ ) {
 			glBegin( GL_LINE_LOOP );
@@ -4106,8 +4232,7 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 			glEnd();
 		}
 	}
-	glEnable( GL_TEXTURE_2D );
-	*/
+	glEnable( GL_TEXTURE_2D );	
 }
 
 void Map::createGroundMap() {
