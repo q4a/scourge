@@ -61,7 +61,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   // default map settings
   level = 1;
   depth = 0;
-  
+
   outdoorTextureAngle = 0;
   outdoorTextureHorizFlip = outdoorTextureVertFlip = false;
 
@@ -238,6 +238,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   
   // outdoor textures
   outdoorTexturesButton = mainWin->createButton( startx, yy, w - 10, yy + 20, _( "Outdoor Textures" ), true );
+  outdoorTexturesButton->setEnabled( false );
   toggleButtonList.push_back( outdoorTexturesButton );
 	yy += ystep;
   outdoorTexturesList = new ScrollingList( startx, yy, w - 16, 75, scourge->getShapePalette()->getHighlightTexture() );
@@ -350,6 +351,11 @@ void MapEditor::drawView() {
 																				_( "Creature" ),
                                         ( pos && pos->creature ? pos->creature->getName() : "NULL" ) );
   }
+  if( outdoorTexturesButton->isSelected() ) {
+  	glColor3f( 1, 1, 0 );
+  	scourge->getSDLHandler()->texPrint( 50, 130, "Keys: z,x - rotate, a,s - mirror" );
+  	glColor3f( 1, 0, 0 );
+  }
   glTranslatef( 50, 50, 0 );
   glRotatef( scourge->getMap()->getZRot(), 0, 0, 1 );
   
@@ -432,6 +438,16 @@ bool MapEditor::handleEvent(SDL_Event *event) {
              event->key.keysym.sym == SDLK_KP_MINUS ) {
     miniMap->setShowMiniMap( miniMap->isMiniMapShown() ? false : true );
     return false;
+  } else if( event->key.keysym.sym == SDLK_x ) {
+  	outdoorTextureAngle += 90;
+  	if( outdoorTextureAngle >= 360 ) outdoorTextureAngle -= 360;
+  } else if( event->key.keysym.sym == SDLK_z ) {
+  	outdoorTextureAngle -= 90;
+  	if( outdoorTextureAngle < 360 ) outdoorTextureAngle += 360;
+  } else if( event->key.keysym.sym == SDLK_a ) {
+  	  outdoorTextureHorizFlip = !(outdoorTextureHorizFlip);
+  } else if( event->key.keysym.sym == SDLK_s ) {
+  	  outdoorTextureVertFlip = !(outdoorTextureVertFlip);
   }
   break;  
   default: break;
@@ -465,6 +481,7 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->getMap()->loadMap( tmp, result );
 		if( scourge->getMap()->isHeightMapEnabled() ) {
 			pathButton->setEnabled( true );
+			outdoorTexturesButton->setEnabled( true );
 		}
 	scourge->showMessageDialog( result.c_str() );
     miniMap->reset();
@@ -500,9 +517,11 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
 				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
 				delete og;				
 				pathButton->setEnabled( true );
+				outdoorTexturesButton->setEnabled( true );
 			} else {
 				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
 				pathButton->setEnabled( false );
+				outdoorTexturesButton->setEnabled( false );
 			}
     }
     this->level = atoi( levelText->getText() );
