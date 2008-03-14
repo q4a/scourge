@@ -109,7 +109,7 @@ int TradeDialog::getSelectedTotal( ItemList *list ) {
 void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
   if( widget == win->closeButton || widget == closeButton ) {
     win->setVisible( false );
-  } else if( widget == infoButtonA &&listA->getSelectedLineCount() ) {
+  } else if( widget == infoButtonA && listA->getSelectedLineCount() ) {
     scourge->getInfoGui()->
     setItem( listA->getSelectedItem( 0 ) );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
@@ -121,7 +121,7 @@ void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
       scourge->getInfoGui()->getWindow()->setVisible( true );
   } else if( widget == listA || widget == listB ) {
     updateLabels();
-  } else if( widget == coinPlusA && tradeA + 1 < scourge->getParty()->getPlayer()->getMoney() ) {
+  } else if( widget == coinPlusA && ( tradeA + 1 < scourge->getParty()->getPlayer()->getMoney() ) ) {
     tradeA++;
     updateLabels(); 
   } else if( widget == coinMinusA && tradeA ) {

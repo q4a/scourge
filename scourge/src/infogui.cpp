@@ -301,10 +301,12 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
 	} else if( widget == useButton ) {
 		if ( item->getRpgItem()->hasSpell() ) {
 			scourge->getPcUi()->hide();
-			this->getWindow()->setVisible(false);
 		}
+		this->getWindow()->setVisible(false);
 		scourge->executeItem(item);
 	} else if( widget == transcribeButton ) {
+//		scourge->getPcUi()->hide();
+		this->getWindow()->setVisible(false);
 		scourge->transcribeItem(scourge->getParty()->getPlayer(), item);
 	} else if( widget == castButton ) {
 		scourge->getPcUi()->hide();
