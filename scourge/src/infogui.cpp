@@ -749,7 +749,7 @@ void InfoGui::appendMagicItemInfo( char *description, Item *item ) {
   } else if(item->getRpgItem()->getType() == RpgItem::SCROLL) {
     strcat(description, "|");
     strcat(description, _( "School: " ) );
-    strcat(description, item->getSpell()->getSchool()->getName() );
+    strcat(description, item->getSpell()->getSchool()->getDisplayName());
     strcat(description, "|");
     strcat(description, item->getSpell()->getNotes());
   }
