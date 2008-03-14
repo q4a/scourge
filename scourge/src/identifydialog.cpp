@@ -107,7 +107,9 @@ void IdentifyDialog::render( const Widget *widget, const Item *item, std::string
   ((Item*)item)->getDetailedDescription( s );
   float skill = static_cast<float>( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
   // level-based mark-up is already included and price is randomized
-  int price = ( ((Item*)item)->getPrice() / 20) * ( 6 - ((Item*)item)->getRpgItem()->getRareness() );
+  int rareness = 6 - ((Item*)item)->getRpgItem()->getRareness();
+  if ( rareness < 1 ) rareness = 1;
+  int price = ( ((Item*)item)->getPrice() / 20) * rareness;
   // 25% variance based on leadership skill.
   int percentage = static_cast<int>( static_cast<float>(price) * ( 100.0f - skill ) / 100.0f * 0.25f );
   int total = price + percentage;
