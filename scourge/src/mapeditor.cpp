@@ -110,7 +110,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   startPosButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Start Pos" ), true );
   toggleButtonList.push_back( startPosButton );
 	pathButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, _( "Path" ), true );
-  toggleButtonList.push_back( startPosButton );
+  //toggleButtonList.push_back( pathButton );
 	pathButton->setSelected( false );
 	pathButton->setEnabled( false );
 	yy += ystep;
