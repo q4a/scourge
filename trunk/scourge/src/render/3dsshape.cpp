@@ -469,7 +469,7 @@ void C3DSShape::draw() {
     cerr << "*** Warning: shape not intialized. name=" << getName() << endl;
   }
 
-  bool textureEnabled = glIsEnabled( GL_TEXTURE_2D );
+  GLboolean textureEnabled = glIsEnabled( GL_TEXTURE_2D );
 
 #ifdef DEBUG_3DS
   if ( glIsEnabled( GL_TEXTURE_2D ) ) {

@@ -435,7 +435,7 @@ void GLShape::draw() {
   // cull back faces
   glEnable( GL_CULL_FACE );
   glCullFace( GL_BACK );
-  bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
+  GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   glEnable( GL_TEXTURE_2D );
 
   bool *sides = getOccludedSides();

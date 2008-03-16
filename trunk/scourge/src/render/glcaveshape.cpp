@@ -114,7 +114,7 @@ void GLCaveShape::draw() {
   float h = static_cast<float>(height) / DIV;
   if (h == 0) h = 0.25f / DIV;
 
-  bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
+  GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   if( !useShadow ) {
     glEnable( GL_TEXTURE_2D );
     glEnable( GL_CULL_FACE );

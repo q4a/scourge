@@ -73,8 +73,9 @@ GetAwayGoal::GetAwayGoal(int x, int y, float distance){
 GetAwayGoal::~GetAwayGoal(){}
 
 bool GetAwayGoal::fulfilledBy( CPathNode * node){
-	int dx = node->x - x;
-	int dy = node->y - y;
+	// int dx, dy; may cause ambiquity between sqrt(double) and sqrt(float)
+	float dx = node->x - x; 
+	float dy = node->y - y;
 	return distance < sqrt(dx*dx + dy*dy);
 }
 
@@ -157,9 +158,10 @@ DistanceAwayHeuristic::DistanceAwayHeuristic(int x, int y){
 DistanceAwayHeuristic::~DistanceAwayHeuristic(){}
 
 double DistanceAwayHeuristic::heuristic( CPathNode * node){
-  int dx = node->x - x;
-  int dy = node->y - y;
-  return -sqrt(dx*dx + dy*dy)*1.001;  //the extra 0.001 is a tweak to make farther away paths get checked first
+	// int dx, dy; may cause ambiquity between sqrt(double) and sqrt(float)
+	float dx = node->x - x;
+	float dy = node->y - y;
+	return -sqrt(dx*dx + dy*dy)*1.001;  //the extra 0.001 is a tweak to make farther away paths get checked first
 }
 
 
