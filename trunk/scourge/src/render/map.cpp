@@ -3377,9 +3377,9 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 	} else if( info->map_type == MapRenderHelper::OUTDOOR_HELPER ) {
 		// it's an outdoors type map
 		setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
-		// FIXME: needed but not used
+		// FIXME: do not hard-code
 		if( getPreferences()->isDebugTheme() ) shapes->loadDebugTheme();
-		else shapes->loadRandomTheme();
+		else shapes->loadTheme("outdoor");
 	} else {
 		cerr << "*** error unknown map type: " << info->map_type << endl;
 		return false;

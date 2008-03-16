@@ -108,7 +108,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
   updateStatus( _( "Loading theme" ) );
   if( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
-	else shapePal->loadRandomTheme();
+	else shapePal->loadTheme("outdoor");
 
 	map->setHeightMapEnabled( true );
 
