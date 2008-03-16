@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-03-11 12:44+0100\n"
+"POT-Creation-Date: 2008-03-16 10:08+0100\n"
 "PO-Revision-Date: 2007-10-08 23:05+0100\n"
 "Last-Translator: Claudio Canavese (CoD) <cod@fsfe.org>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -23,9 +23,9 @@ msgid "%s suffers poison damage!"
 msgstr "%s subisce danno da veleno!"
 
 #: src/events/statemodexpirationevent.cpp:48
-#, fuzzy, c-format
+#, c-format
 msgid "%s poison."
-msgstr "%s è avvelenato"
+msgstr "veleno %s."
 
 #: src/events/thirsthungerevent.cpp:53
 #, c-format
@@ -136,9 +136,8 @@ msgid "Starting party"
 msgstr "Avvio gruppo"
 
 #: src/render/map.cpp:3609
-#, fuzzy
 msgid "Map loaded: "
-msgstr "Mappa caricata: %s"
+msgstr "Mappa caricata: "
 
 #: src/render/map.cpp:3630
 #, fuzzy
@@ -341,7 +340,7 @@ msgstr "Vuoi davvero tornare alla base?"
 msgid "OK"
 msgstr "OK"
 
-#: src/common/constants.cpp:91 src/savegamedialog.cpp:55 src/mapeditor.cpp:305
+#: src/common/constants.cpp:91 src/savegamedialog.cpp:55 src/mapeditor.cpp:306
 msgid "Cancel"
 msgstr "Annulla"
 
@@ -450,7 +449,7 @@ msgstr "Maledizione! È sbarrata!"
 
 #: src/common/constants.cpp:118
 msgid "Try as you might, you can't open it."
-msgstr "Prova finché vuoi, non la puoi aprire."
+msgstr "Prova finché vuoi ma non la riuscirai ad aprire."
 
 #: src/common/constants.cpp:119
 msgid "Perhaps it's locked."
@@ -807,7 +806,7 @@ msgstr "... Attacco da un punto cieco!"
 msgid "skill"
 msgstr "abilità"
 
-#: src/creature.cpp:2564 src/creature.cpp:2608 src/infogui.cpp:659
+#: src/creature.cpp:2564 src/creature.cpp:2608 src/infogui.cpp:661
 msgid "vs."
 msgstr "contro"
 
@@ -1058,9 +1057,8 @@ msgid "Loading Shapes"
 msgstr "Caricamento forme"
 
 #: src/shapepalette.cpp:676 src/board.cpp:62
-#, fuzzy
 msgid "Loading Sounds"
-msgstr "Caricamento stati"
+msgstr "Caricamento suoni"
 
 #: src/shapepalette.cpp:872
 msgid "Loading Locations"
@@ -1155,7 +1153,7 @@ msgstr "(GROTTA)"
 
 #: src/board.cpp:291
 msgid "(OUTDOORS)"
-msgstr ""
+msgstr "(ALL'APERTO)"
 
 #: src/board.cpp:295 src/equip.cpp:709 src/equip.cpp:721 src/equip.cpp:731
 msgid "(completed)"
@@ -1176,7 +1174,7 @@ msgid "level"
 msgstr "livello"
 
 #: src/healdialog.cpp:93 src/tradedialog.cpp:160 src/uncursedialog.cpp:117
-#: src/identifydialog.cpp:117 src/rechargedialog.cpp:119
+#: src/identifydialog.cpp:119 src/rechargedialog.cpp:119
 #, c-format
 msgid "$%d "
 msgstr ""
@@ -1490,6 +1488,8 @@ msgstr ""
 #: src/battle.cpp:1324
 msgid "...the news spreads quickly and his minions cower before you."
 msgstr ""
+"... la notizia si diffonde rapidamente e i suoi servi si inginocchiano "
+"davanti a voi."
 
 #: src/battle.cpp:1334
 #, c-format
@@ -1556,7 +1556,7 @@ msgstr "Pulisci"
 
 #: src/tradedialog.cpp:62
 msgid "Diff"
-msgstr ""
+msgstr "Diff"
 
 #: src/tradedialog.cpp:64
 msgid "Shift+click to select multiple items, right click to get info."
@@ -1575,7 +1575,7 @@ msgid "Selected Coins:"
 msgstr "Monete selezionate:"
 
 #: src/tradedialog.cpp:166 src/tradedialog.cpp:211 src/tradedialog.cpp:254
-#: src/uncursedialog.cpp:123 src/identifydialog.cpp:123
+#: src/uncursedialog.cpp:123 src/identifydialog.cpp:125
 #: src/rechargedialog.cpp:125
 msgid "Inventories changed."
 msgstr "Inventari cambiati."
@@ -1594,7 +1594,7 @@ msgstr "L'oggetto non entra nell'inventario."
 
 #: src/tradedialog.cpp:206
 msgid "Selected items traded."
-msgstr "Gli oggetti selezionati sono stati commerciati."
+msgstr "Affare fatto! Ecco ciò che hai chiesto."
 
 #: src/tradedialog.cpp:217
 msgid "Select items to sell."
@@ -1697,7 +1697,7 @@ msgstr ""
 
 #: src/optionsmenu.cpp:91
 msgid "Frame map in fullscreen mode"
-msgstr ""
+msgstr "Disegna cornice"
 
 #: src/optionsmenu.cpp:93
 msgid "Is battle turn-based?"
@@ -2097,12 +2097,12 @@ msgstr "La partita è stata eliminata con successo."
 msgid "Initiative"
 msgstr "Iniziativa"
 
-#: src/scourge.cpp:3522 src/scourge.cpp:3529 src/infogui.cpp:594
-#: src/infogui.cpp:599 src/infogui.cpp:604
+#: src/scourge.cpp:3522 src/scourge.cpp:3529 src/infogui.cpp:596
+#: src/infogui.cpp:601 src/infogui.cpp:606
 msgid "ATK"
 msgstr "ATT"
 
-#: src/scourge.cpp:3536 src/infogui.cpp:596 src/infogui.cpp:602
+#: src/scourge.cpp:3536 src/infogui.cpp:598 src/infogui.cpp:604
 msgid "APR"
 msgstr "A/R"
 
@@ -2525,7 +2525,7 @@ msgstr "Torna da me quando avrai raggiunto il livello %d."
 #: src/traindialog.cpp:133
 #, c-format
 msgid "%s, you are ready to learn."
-msgstr "%s, vedo nei tuoi occhi che sei pronto per apprendere."
+msgstr "%s, leggo nei tuoi occhi che sei pronto per apprendere."
 
 #: src/traindialog.cpp:135
 msgid "Select your next profession from the list below."
@@ -2572,234 +2572,234 @@ msgstr "Descrizione dettagliata:"
 msgid "You must rest a while before identifying items again."
 msgstr "Devi riposarti un poco prima di identificare altri oggetti."
 
-#: src/infogui.cpp:362
+#: src/infogui.cpp:364
 msgid "Requirements"
 msgstr "Requisiti"
 
-#: src/infogui.cpp:375
+#: src/infogui.cpp:377
 #, c-format
 msgid "%s is too low."
 msgstr "%s ha un valore troppo basso."
 
-#: src/infogui.cpp:382
+#: src/infogui.cpp:384
 #, c-format
 msgid "Bonus for %s!"
 msgstr "Bonus per %s!"
 
-#: src/infogui.cpp:393
+#: src/infogui.cpp:395
 msgid "All requirements met."
 msgstr "Tutti i requisiti soddisfatti"
 
-#: src/infogui.cpp:405
+#: src/infogui.cpp:407
 #, c-format
 msgid "(L:%d) (M:%d) %s"
 msgstr ""
 
-#: src/infogui.cpp:416
+#: src/infogui.cpp:418
 #, fuzzy, c-format
 msgid "School: %s"
 msgstr "Scuola di magia: "
 
-#: src/infogui.cpp:420 src/infogui.cpp:504 src/infogui.cpp:532
+#: src/infogui.cpp:422 src/infogui.cpp:506 src/infogui.cpp:534
 #, c-format
 msgid "Skill: %s"
 msgstr "Abilità: %s"
 
-#: src/infogui.cpp:424
+#: src/infogui.cpp:426
 #, fuzzy, c-format
 msgid "Deity: %s"
 msgstr "Divinità"
 
-#: src/infogui.cpp:428 src/infogui.cpp:488
+#: src/infogui.cpp:430 src/infogui.cpp:490
 #, c-format
 msgid "Level: %d"
 msgstr "Livello: %d"
 
-#: src/infogui.cpp:432
+#: src/infogui.cpp:434
 #, fuzzy, c-format
 msgid "MP: %d"
 msgstr "Prezzo: %d"
 
-#: src/infogui.cpp:436
+#: src/infogui.cpp:438
 #, fuzzy, c-format
 msgid "Failure rate: %d percent"
 msgstr "Danno: %d percento"
 
-#: src/infogui.cpp:450
+#: src/infogui.cpp:452
 #, c-format
 msgid "(%s) %s"
 msgstr ""
 
-#: src/infogui.cpp:450
+#: src/infogui.cpp:452
 #, fuzzy
 msgid "M"
 msgstr "PM"
 
-#: src/infogui.cpp:450
+#: src/infogui.cpp:452
 #, fuzzy
 msgid "A"
 msgstr "CA"
 
-#: src/infogui.cpp:461
+#: src/infogui.cpp:463
 #, fuzzy, c-format
 msgid "Type: %s"
 msgstr "Incantesimo: %s"
 
-#: src/infogui.cpp:461
+#: src/infogui.cpp:463
 #, fuzzy
 msgid "Manual"
 msgstr "Gennaio"
 
-#: src/infogui.cpp:461
+#: src/infogui.cpp:463
 #, fuzzy
 msgid "Automatic"
 msgstr "Talento automatico"
 
-#: src/infogui.cpp:491
+#: src/infogui.cpp:493
 #, c-format
 msgid "Weight: %.2f"
 msgstr "Peso:  %.2f"
 
-#: src/infogui.cpp:494
+#: src/infogui.cpp:496
 #, c-format
 msgid "Price: %d"
 msgstr "Prezzo: %d"
 
-#: src/infogui.cpp:498
+#: src/infogui.cpp:500
 #, c-format
 msgid "Damage: %d percent"
 msgstr "Danno: %d percento"
 
-#: src/infogui.cpp:501
+#: src/infogui.cpp:503
 #, c-format
 msgid "Damage Type: %s"
 msgstr "Tipo di danno: %s"
 
-#: src/infogui.cpp:508
+#: src/infogui.cpp:510
 #, c-format
 msgid "Parry: %d percent of %s skill"
 msgstr "Parare: %d percento nell'abilità '%s'"
 
-#: src/infogui.cpp:514
+#: src/infogui.cpp:516
 #, c-format
 msgid "AP cost: %d"
 msgstr "Costo CA: %d"
 
-#: src/infogui.cpp:519
+#: src/infogui.cpp:521
 #, c-format
 msgid "Range: %d"
 msgstr "Gittata: %d"
 
-#: src/infogui.cpp:526
+#: src/infogui.cpp:528
 #, c-format
 msgid "Defense vs. %s damage: %d"
 msgstr "Difesa contro danni '%s': %d"
 
-#: src/infogui.cpp:535
+#: src/infogui.cpp:537
 #, c-format
 msgid "Dodge penalty: %d"
 msgstr "Penalità nello schivare: %d"
 
-#: src/infogui.cpp:540
+#: src/infogui.cpp:542
 #, c-format
 msgid "Power: %d"
 msgstr "Potere: %d"
 
-#: src/infogui.cpp:546
+#: src/infogui.cpp:548
 #, c-format
 msgid "Charges: %d(%d)"
 msgstr "Cariche: %d(%d)"
 
-#: src/infogui.cpp:550
+#: src/infogui.cpp:552
 #, c-format
 msgid "Spell: %s"
 msgstr "Incantesimo: %s"
 
-#: src/infogui.cpp:558
+#: src/infogui.cpp:560
 #, c-format
 msgid "Duration: %d"
 msgstr "Durata: %d"
 
-#: src/infogui.cpp:564
+#: src/infogui.cpp:566
 #, c-format
 msgid "Two handed weapon."
 msgstr "Arma a due mani."
 
-#: src/infogui.cpp:569
+#: src/infogui.cpp:571
 #, c-format
 msgid "Optionally handed weapon."
 msgstr "Arma a una mano e mezza."
 
-#: src/infogui.cpp:578
+#: src/infogui.cpp:580
 #, c-format
 msgid "Attack Info for each player:"
 msgstr "Statistiche per ciascun giocatore"
 
-#: src/infogui.cpp:629
+#: src/infogui.cpp:631
 #, c-format
 msgid "%d bonus to attack and damage."
 msgstr "%d bonus in attacco e danni."
 
-#: src/infogui.cpp:631
+#: src/infogui.cpp:633
 #, c-format
 msgid "%d bonus to armor points."
 msgstr "%d bonus alla classe armatura."
 
-#: src/infogui.cpp:641
+#: src/infogui.cpp:643
 #, c-format
 msgid "Double damage"
 msgstr "Danno doppio"
 
-#: src/infogui.cpp:645
+#: src/infogui.cpp:647
 #, c-format
 msgid "Triple damage"
 msgstr "Danno triplo"
 
-#: src/infogui.cpp:649
+#: src/infogui.cpp:651
 #, c-format
 msgid "Quad damage"
 msgstr "Danno quadruplo"
 
-#: src/infogui.cpp:653
+#: src/infogui.cpp:655
 #, c-format
 msgid "%dX damage"
 msgstr "danno x %d"
 
-#: src/infogui.cpp:662
+#: src/infogui.cpp:664
 msgid " vs. any creature."
 msgstr " contro qualunque creatura."
 
-#: src/infogui.cpp:671
+#: src/infogui.cpp:673
 #, c-format
 msgid "Extra damage of %1$s %2$s magic."
-msgstr ""
+msgstr "Danno extra: %1$s nella scuola di magia %2$s."
 
-#: src/infogui.cpp:675
+#: src/infogui.cpp:677
 #, c-format
 msgid "Extra %d pts of %s magic resistance."
 msgstr "%d punti extra di resistenza ad incantesimi di '%s'"
 
-#: src/infogui.cpp:686
+#: src/infogui.cpp:688
 msgid "Sets state mods:"
 msgstr ""
 
-#: src/infogui.cpp:703
+#: src/infogui.cpp:705
 msgid "Protects from state mods:"
 msgstr "Protegge da:"
 
-#: src/infogui.cpp:732
+#: src/infogui.cpp:734
 msgid "Bonuses to skills:"
 msgstr "Bonus alle abilità:"
 
-#: src/infogui.cpp:743
+#: src/infogui.cpp:745
 msgid "This item is cursed!"
 msgstr "Questo oggetto è maledetto!"
 
-#: src/infogui.cpp:749
+#: src/infogui.cpp:751
 msgid "School: "
 msgstr "Scuola di magia: "
 
-#: src/infogui.cpp:756
+#: src/infogui.cpp:758
 msgid ""
 "You have a feeling there is more to this item than what you've been able to "
 "glean..."
@@ -3061,7 +3061,7 @@ msgstr "Segreto"
 msgid "Trap"
 msgstr "Trappola"
 
-#: src/mapeditor.cpp:132 src/mapeditor.cpp:348
+#: src/mapeditor.cpp:132 src/mapeditor.cpp:349
 msgid "Item"
 msgstr "Oggetto"
 
@@ -3069,11 +3069,11 @@ msgstr "Oggetto"
 msgid "Furniture"
 msgstr "Mobilia"
 
-#: src/mapeditor.cpp:179 src/mapeditor.cpp:350
+#: src/mapeditor.cpp:179 src/mapeditor.cpp:351
 msgid "Creature"
 msgstr "Creatura"
 
-#: src/mapeditor.cpp:220 src/mapeditor.cpp:346
+#: src/mapeditor.cpp:220 src/mapeditor.cpp:347
 msgid "Shape"
 msgstr "Forma"
 
@@ -3081,38 +3081,38 @@ msgstr "Forma"
 msgid "Outdoor Textures"
 msgstr ""
 
-#: src/mapeditor.cpp:264
+#: src/mapeditor.cpp:265
 msgid "Map Properties"
 msgstr "Proprietà mappa"
 
-#: src/mapeditor.cpp:273
+#: src/mapeditor.cpp:274
 msgid "Map level"
 msgstr "Livello mappa"
 
-#: src/mapeditor.cpp:276
+#: src/mapeditor.cpp:277
 msgid "Map depth"
 msgstr "Profondità mappa"
 
-#: src/mapeditor.cpp:279
+#: src/mapeditor.cpp:280
 msgid "Map theme:"
 msgstr "Tema della mappa:"
 
-#: src/mapeditor.cpp:295
+#: src/mapeditor.cpp:296
 msgid "Create an outdoor map:"
 msgstr ""
 
-#: src/mapeditor.cpp:298
+#: src/mapeditor.cpp:299
 #, fuzzy
 msgid "Select map location: (click on map, drag to move)"
 msgstr ""
 "Seleziona l'ambientazione della mappa: (clicca sulla mappa, trascina per "
 "muoverti)"
 
-#: src/mapeditor.cpp:303
+#: src/mapeditor.cpp:304
 msgid "New Map"
 msgstr "Nuova mappa"
 
-#: src/mapeditor.cpp:304
+#: src/mapeditor.cpp:305
 msgid "Apply"
 msgstr "Applica"
 
@@ -3327,7 +3327,7 @@ msgstr "(non ancora completato)"
 msgid "Special"
 msgstr "Speciale"
 
-#: src/equip.cpp:739
+#: src/equip.cpp:740
 msgid "No current mission."
 msgstr "Nessuna missione al momento."
 
@@ -3400,17 +3400,17 @@ msgstr "Non puoi permetterti le cure."
 msgid "Selected items uncursed."
 msgstr "Gli oggetti selezionati sono stati commerciati."
 
-#: src/identifydialog.cpp:129
+#: src/identifydialog.cpp:131
 #, fuzzy
 msgid "Select items to identify."
 msgstr "Scegli l'oggetto da comprare."
 
-#: src/identifydialog.cpp:132
+#: src/identifydialog.cpp:134
 #, fuzzy
 msgid "You can't afford the identifying."
 msgstr "Non puoi permetterti le cure."
 
-#: src/identifydialog.cpp:149
+#: src/identifydialog.cpp:151
 #, fuzzy
 msgid "Selected items identified."
 msgstr "Gli oggetti selezionati sono stati commerciati."
@@ -3659,11 +3659,11 @@ msgstr "Alcune piante crescono da queste parti"
 
 #: ../scourge_data/config/map.cfg:368
 msgid "Old ruins of forgotten kingdoms litter the grounds."
-msgstr ""
+msgstr "Antiche rovine di un regno ormai dimenticato."
 
 #: ../scourge_data/config/map.cfg:371
 msgid "Moss and lichens grow on these crumbling stones."
-msgstr ""
+msgstr "Su queste pietre sgretolate crescono muschi e licheni."
 
 #: ../scourge_data/config/map.cfg:377
 msgid "The wisdom of ages is scrawled upon the immense trunk of this tree."
@@ -3676,6 +3676,10 @@ msgstr ""
 #: ../scourge_data/config/map.cfg:383
 msgid ""
 "The images upon the gnarled bark of this unusual tree seems to tell stories."
+msgstr ""
+
+#: ../scourge_data/config/map.cfg:389
+msgid "A sturdy roof adorns this small cottege."
 msgstr ""
 
 #: ../scourge_data/config/item.cfg:97
@@ -3808,7 +3812,7 @@ msgid ""
 msgstr ""
 "Il coltello porta il simbolo di Unamoin. Il dio è seduto su un trono di "
 "fiamme, davanti a lui sfila una lunga serie di anime, pronte ad essere "
-"sacrificate per la festa divina."
+"sacrificate per il banchetto divino."
 
 #: ../scourge_data/config/weapon.cfg:272
 msgid "Ceremonial Dagger"
@@ -4479,8 +4483,8 @@ msgstr "Una lunga asta con una lama di ascia alla sua estremità"
 #: ../scourge_data/config/weapon.cfg:2698
 msgid "A reaping scythe strengthened and sharpened for more than just crops."
 msgstr ""
-"Una falcione da combattimento, rinforzata e affilata molto più di una "
-"normale falce da lavoro."
+"Un falcione da combattimento, rinforzato e affilato molto più di una normale "
+"falce da lavoro."
 
 #: ../scourge_data/config/weapon.cfg:2699
 msgid "War-scythe"
@@ -4496,7 +4500,7 @@ msgid ""
 "the saw-blade and bone handle was her choice weapon."
 msgstr ""
 "La driade cadavere Milmoril non ha bisogno di presentazioni. Questa lunga "
-"falce dalla lama nera e simile ad una sega ed una impugnatura di osso era la "
+"falce dalla lama nera simile ad una sega e con l'impugnatura di osso era la "
 "sua arma preferita."
 
 #: ../scourge_data/config/weapon.cfg:2758
@@ -4516,6 +4520,7 @@ msgstr ""
 "creature che lanciano incantesimi. L'odio di questo re per tutto ciò che è "
 "magico era ben noto."
 
+# this is Iconoclast and not Iconoclastus, 'cause it's an untransaltable play on word
 #: ../scourge_data/config/weapon.cfg:2817
 msgid "Brand of Iconoclast"
 msgstr "Brando di Iconoclastus"
@@ -4583,7 +4588,7 @@ msgid ""
 "still in tact rescued from the depths."
 msgstr ""
 "Alcuni minuti di pulizia rivelano un bottino raro: un paio di guanti d'arme "
-"ancora intatti recuperati dalle profondità"
+"ancora intatti recuperati dall'oblio"
 
 #: ../scourge_data/config/armor.cfg:67
 msgid "Plaite Gauntlet"
@@ -4646,12 +4651,12 @@ msgid ""
 "This large helmet covers your entire face and parts of your neck and "
 "shoulders. It is worn mostly by knights."
 msgstr ""
-"Questo grande elmo copre la tua faccia e il tuo collo e parte delle spalle. "
-"Viene indossato per la maggior parte dei cavalieri."
+"Questo grande elmo copre la tua faccia, il tuo collo e parte delle spalle. "
+"Generalmente viene indossato dai cavalieri."
 
 #: ../scourge_data/config/armor.cfg:168
 msgid "Knight's helmet"
-msgstr "Elmo del Cavaliere"
+msgstr "Elmo da Cavaliere"
 
 #: ../scourge_data/config/armor.cfg:176
 msgid "A giant metal orb of a helmet. The visor is rusted shut."
@@ -4702,9 +4707,9 @@ msgid ""
 "of life-saving cover in battle. On the positive side, at least it's a small, "
 "maneuverable shield."
 msgstr ""
-"Sono sicuro che questa la coppia di fragili tavole tenute assieme da budello "
-"di gatto forniranno tonnellate di protezione in battaglia.Beh almeno questo "
-"piccolo scudo è maneggevole."
+"Una coppia di fragili tavole tenute assieme da budello di gatto... di sicuro "
+"sarai incredibilmente protetto in battaglia! Beh se non altro questo piccolo "
+"scudo è maneggevole."
 
 #: ../scourge_data/config/armor.cfg:230
 msgid "Buckler"
@@ -4826,8 +4831,8 @@ msgid ""
 "The lightweight cloth keeps you warm (and ready to party) but does not "
 "protect you from weapon attacks."
 msgstr ""
-"Questi vestiti leggeri ti mantengono caldo (e pronto per la festa) ma non ti "
-"proteggono di certo contro le armi nemiche."
+"Questi vestiti leggeri ti mantengono caldo (e pronto all'azione) ma non ti "
+"proteggono di certo dalle armi nemiche."
 
 #: ../scourge_data/config/armor.cfg:450
 msgid "Toga"
@@ -4928,8 +4933,8 @@ msgid ""
 msgstr ""
 "Un piccolo passo avanti nella produzione delle armature di pelle: questa "
 "corazza è dotata di borchie di metallo, messe lì più per intimidire che per "
-"causare un effettivo danno. Ma ci sarebbe molto di più da dire su quanto "
-"appaia elegante."
+"causare un effettivo danno. Ma ci sarebbe molto di più da dire su quanto ciò "
+"la renda elegante."
 
 #: ../scourge_data/config/armor.cfg:572
 msgid "Studded Leather Armor"
@@ -5526,7 +5531,7 @@ msgstr "Il palmo di una mano guaritrice pende da questo talismano."
 
 #: ../scourge_data/config/magicitem.cfg:253
 msgid "Amulet of Guiding Hand"
-msgstr "Amuleto della Mano Guidante"
+msgstr "Amuleto della Mano Guida"
 
 #: ../scourge_data/config/magicitem.cfg:262
 msgid "A talisman with the etching of a hand."
@@ -5641,8 +5646,8 @@ msgid ""
 "Pure evil emanates from the horned skull head set atop this staff. The "
 "ornamental top appears to suggest you rid yourself of your party members."
 msgstr ""
-"Puro male viene emanato dal teschio cornuto posto in cima a questa verga. "
-"Questo ornamento sembra suggerirti di sbarazzarti dei tuoi compagni..."
+"Un'aura di pura malvagità viene emanata dal teschio cornuto posto in cima a "
+"questa verga. Sembra suggerirti di sbarazzarti dei tuoi compagni..."
 
 #: ../scourge_data/config/magicitem.cfg:609
 msgid "Horned Staff of the Shade"
@@ -5751,8 +5756,7 @@ msgstr "Vaso nanico"
 
 #: ../scourge_data/config/otheritem.cfg:97
 msgid "A vase showing a dwarven host in battle."
-msgstr ""
-"Un vaso decorato con la scena di un nano perso in mezzo ad una battaglia."
+msgstr "Un vaso decorato con la scena di una armata nanica in battaglia."
 
 #: ../scourge_data/config/otheritem.cfg:102
 msgid "This dresser has seen better days"
@@ -5842,7 +5846,7 @@ msgstr "Una piccola stufa"
 
 #: ../scourge_data/config/otheritem.cfg:179
 msgid "A long worktable carved from splintery wood"
-msgstr "Un lungo tavolo di legno scheggiato"
+msgstr "Un lungo bancone di legno scheggiato"
 
 #: ../scourge_data/config/otheritem.cfg:180
 msgid "Desk"
@@ -6029,7 +6033,6 @@ msgid "A bottle of dark fluid"
 msgstr "Una bottiglia di liquido scuro"
 
 #: ../scourge_data/config/otheritem.cfg:369
-#, fuzzy
 msgid ""
 "A cellar aged bottle of vintage wine with a label that reads 'Coates de "
 "Rhone'"
@@ -6236,8 +6239,8 @@ msgid ""
 "It very much looks to be the sort of thing that while you're curious to open "
 "it, common sense tells you that it's best to leave the box closed."
 msgstr ""
-"Questa sembra il tipico oggetto che mentre stai pensando di aprire divorato "
-"dalla curiosità il buon senso ti dice di lasciare chiuso."
+"Questo sembra proprio il tipico oggetto che mentre stai pensando di aprire "
+"divorato dalla curiosità il buon senso ti dice di lasciare chiuso."
 
 #: ../scourge_data/config/otheritem.cfg:630
 msgid "Treasure Chest"
@@ -6253,7 +6256,7 @@ msgid ""
 "must have been host to a large group of parasitic micro-organisms."
 msgstr ""
 "Stivali di qualcuno chiamato 'Mycotharsius'. A giudicare dall'odore il "
-"proprietario doveva essere l'albergo di numerosi microorganismi parassiti."
+"proprietario dev'essere stato la casa di numerosi microorganismi parassiti."
 
 #: ../scourge_data/config/otheritem.cfg:642
 msgid "Boots of Mycotharsius"
@@ -6748,8 +6751,9 @@ msgid ""
 "Death suddenly feels very near. Faint lights suggest the ghosts of those "
 "before you wailing in the walls."
 msgstr ""
-"La morte sembra improvvisamente vicinissima. La fioca luce sembra suggerire "
-"la presenza di fantasmi che piangono piano dentro a queste mura."
+"La morte sembra improvvisamente vicinissima. Pallide luci sembrano suggerire "
+"la presenza dei fantasmi di coloro che vennero prima di te... disperati e "
+"prigionieri dentro a queste mura."
 
 #: ../scourge_data/config/spell.cfg:418
 msgid "You sense that perhaps you will live another day."
@@ -7087,7 +7091,7 @@ msgid ""
 "single victim of its very life-force."
 msgstr ""
 " Lo Sterminatore Oscuro è un incantesimo che va sussurrato! È la creazione "
-"del mago baul non morto Shamoul il morboso. Un vortice di energia empia "
+"del mago bauul non morto Shamoul il morboso. Un vortice di energia empia "
 "risucchia ogni energia dal corpo della vittima."
 
 #: ../scourge_data/config/spell.cfg:721
@@ -7152,7 +7156,7 @@ msgstr ""
 
 #: ../scourge_data/config/book.cfg:5
 msgid "Treatiese on the Handling of Imps"
-msgstr ""
+msgstr "Trattato: \"Dei folletti e dei loro usi\""
 
 #: ../scourge_data/config/book.cfg:7
 msgid ""
@@ -7214,7 +7218,7 @@ msgid ""
 "your mission, do dispatch them quickly."
 msgstr ""
 "Un nuovo cliente con uno sguardo poco rassicurante ci ha chiesto di "
-"recuperare ${item}. A quanto pare l'oggetto è alquanto costoso. La cosa che "
+"recuperare ${item} . A quanto pare l'oggetto è alquanto costoso. La cosa che "
 "rende questo caso stranamente interessante è che chiunque abbia posato lo "
 "sguardo su questo oggetto è impazzito. Se doveste incontrare qualcuna di "
 "queste anime perdute durante la vostra missione... eliminatele alla svelta."
@@ -7225,7 +7229,8 @@ msgid ""
 "backs for now, happy with his recovered ${item1}."
 msgstr ""
 "Molte grazie per aver completato la missione. Ci siamo liberati da un altro "
-"disgustoso cliente, che adesso è da qualche parte col suo ${item1}."
+"disgustoso cliente, che adesso sarà da qualche parte a godersi il suo "
+"oggetto \"${item1}\"."
 
 #: ../scourge_data/config/mission.cfg:44
 msgid ""
@@ -7387,6 +7392,12 @@ msgid ""
 "depositing the day's load at a nearby meadow. Please hurry and retrieve the "
 "object!"
 msgstr ""
+"Una vera opera di carità... non so perché perdiamo tempo con queste cose... "
+"ad ogni modo, visto che bisogna sempre restituire i favori ricevuti, abbiamo "
+"deciso di occuparci del caso della gilda dei raccoglitori di letame. Temo "
+"che abbiano perso ${item1} mentre depositavano il loro carico quotidiano "
+"nella prateria qui vicino. Fate presto, per favore, e recuperate "
+"quell'oggetto."
 
 #: ../scourge_data/config/mission.cfg:93
 msgid ""
@@ -7394,6 +7405,10 @@ msgid ""
 "They're most grateful that we returned their lost object and I must say - as "
 "a token of their appreciation - my chamberpot has never been cleaner!"
 msgstr ""
+"Ottimo lavoro! Finalmente non dobbiamo più avere a che fare con la gilda dei "
+"raccoglitori di letame... Ci sono veramente grati per aver recuperato il "
+"loro oggetto e, come segno della loro riconoscenza, il mio gabinetto non è "
+"mai stato così pulito!"
 
 #: ../scourge_data/config/mission.cfg:94
 msgid ""
@@ -7401,6 +7416,9 @@ msgid ""
 "not have lots of money, but I'd rather not upset the guild for... obvious "
 "reasons."
 msgstr ""
+"Ricordatevi che non avete ancora finito con la gilda dei raccoglitori di "
+"letame! Non avranno molti soldi ma eviterei di farli innervosire... per "
+"ovvie ragioni."
 
 #: ../scourge_data/config/mission.cfg:99
 msgid "Dispatch the ${creature1}"
@@ -7413,6 +7431,11 @@ msgid ""
 "timely removal of this creature. Please go immediately and see that its "
 "reign of terror is silenced once and for all."
 msgstr ""
+"Una ${creature1} terrorizza una radura controllata dai druidi del Cicrolo "
+"dell'Abbraccio del Vento. I druidi ci hanno offerto molto denaro in cambio "
+"di una rapida rimozione di questa minaccia. Per favore: recatevi "
+"immediatamente in quei luoghi e vedete di far cessare definitivamente questo "
+"regno di terrore."
 
 #: ../scourge_data/config/mission.cfg:103
 msgid ""
@@ -7420,6 +7443,10 @@ msgid ""
 "without the annoying interuptions of one their group being eaten during "
 "service. They thank us profusely."
 msgstr ""
+"I druidi erano entusiasti alla notizia del vostro successo! Finalmente "
+"potranno dedicarsi alle loro preghiere senza essere interrotti continuamente "
+"dalle urla di qualche loro confratello divorato da un mostro. Ci hanno "
+"ringraziato in maniera... cospiqua."
 
 #: ../scourge_data/config/mission.cfg:104
 msgid ""
@@ -7428,6 +7455,10 @@ msgid ""
 "upon one of the congregation) interferes with most holy delivery of the "
 "sermon. So do be quick!"
 msgstr ""
+"I druidi ci fanno pressione continuando a ricordarci quanto è importante "
+"eliminare ${creature1}. Sembra che lo scricchiolare delle ossa e il suono "
+"dei muscoli masticati (quando una delle bestie si 'intrattiene' con uno dei "
+"loro confratelli) disturbi la sacralità dei loro sermoni. Quindi fate presto!"
 
 #: ../scourge_data/config/mission.cfg:110
 msgid "Chapter 1: Greasy pork chops with turned milk "
@@ -7446,6 +7477,16 @@ msgid ""
 "Bring it back to headquarters so Sabien's helper can transport it to his "
 "trapped master."
 msgstr ""
+"La solita storia: un mago poco esperto di nome Sabien ha evocato e perso il "
+"controllo di un demone minore. Nella lotta col demone è riuscito ad "
+"intrappolare sé stesso nella dimensione della Nausea Estrema.||Nonostante in "
+"questo caso sembri ewidente che l'uomo si trovi in una situazione "
+"irrisolvibile, è sempre una buona cosa cercare di aiutare un utenre di "
+"magia. Non si può mai dire: persino la persona più incapace può rivelarsi "
+"utile in futuro!||Perciò è imperativo che completiate la missione: andate e "
+"recuperate la favolosa Verga della Nausea che Sabien teneva al sicuro nella "
+"sua dimora. Riportatela al quartier generale, così l'aiutante di Sabien "
+"potrà riportare indietro il suo maestro."
 
 #: ../scourge_data/config/mission.cfg:115
 msgid ""
@@ -7459,6 +7500,15 @@ msgid ""
 "reversed and used to extricate himself from this situation. I believe we can "
 "make a powerful friend here if your mission succeeds!"
 msgstr ""
+"Questa mattina presto una figura alta e ovviamente non umana mi attendeva "
+"qui nel quartier generale. Il suo sguardo si muoveva nervosamente a destra e "
+"a sinistra mentre mi narrava la storia della bacchetta del suo maestro. A "
+"quanto pare una notte, mentre lavorava, riuscì ad evocare una creatura che "
+"non fu in grado di controllare. Mentre lottava con questo essere sembra che "
+"sia riuscito ad intrappolarlo, assieme a sé stesso, nella dimensione della "
+"Nausea Estrema. Il suo discepolo mi ha spiegato che crede sia possibile "
+"invertire il processo e richiamare indeitro il suo maestro. Credo proprio "
+"che portando a termine questa missione ci potremmo fare un potente alleato!"
 
 #: ../scourge_data/config/mission.cfg:116
 #, fuzzy
@@ -7474,12 +7524,12 @@ msgid ""
 "Remember to find the wand for $Sabien! He is an important client and he's in "
 "deep trouble at the moment."
 msgstr ""
-"Ricordatevi di trovare la bacchetta per $Sabien! E' un cliente importante e "
-"si trova in un serio problema al momento."
+"Ricordatevi di trovare la verga di $Sabien! È un cliente importante e si "
+"trova in guai seri al momento."
 
 #: ../scourge_data/config/mission.cfg:125
 msgid "Chapter 2: Maw of the Grizzled Beast!"
-msgstr ""
+msgstr "Capitolo 2: il ventre della Bestia Grigia!"
 
 #: ../scourge_data/config/mission.cfg:130
 msgid ""
@@ -7492,6 +7542,16 @@ msgid ""
 "payment. Unfortunately for us, the chest is in Sabien's other workshop and "
 "is guarded by hordes of monsters. Good luck!"
 msgstr ""
+"Forse vi ricorderete di Sabien, il mago che abbiamo salvato dalla dimensione "
+"della Nausea Estrema. Sembra che sia di nuovo nei guai. Questa volta pare "
+"sia stato rapito da un gruppo di razziatori che si fa chiamare Ordine del "
+"Pony Grigio. Nonostante non sia molto chiaro perché un gruppo di banditi "
+"debba rapire un vecchio mago senza avere un obbiettivo in mente, l'uomo ci "
+"ha chiesto di recuperare il suo scrigno e di pagare ai sequestratori quanto "
+"essi chiedono. Il resto del tesoro lo potremo tenere per noi come "
+"ricompensa. Sfortunatamente per noi lo scrigno si trova in uno dei "
+"laboratori di Sabien ed è custodito da orde di mostri inferociti... quindi.. "
+"beh, buona fortuna!"
 
 #: ../scourge_data/config/mission.cfg:131
 msgid ""
@@ -7499,6 +7559,9 @@ msgid ""
 "poets) has accepted the payment and let $Sabien go. I have a feeling  this "
 "won't be our last dealing with the $Order!"
 msgstr ""
+"Il misterioso $Ordine (che si è rivelato essere composto interamente da nani "
+"poeti) ha accettato il pagamento e ha rilasciato $Sabien . Ho la sensazione "
+"che questa non sarà l'ultima volta che avremo a che fare con quell'$Ordine !"
 
 #: ../scourge_data/config/mission.cfg:132
 msgid ""
@@ -7506,6 +7569,9 @@ msgid ""
 "group of dwarven poets... they keep sending me threats... their letters "
 "rhyme and the poetry is $awful!"
 msgstr ""
+"Per favore sbrigatevi e recuperate $Sabien! Là$Ordine del Pony grigio è un "
+"gruppo di nani poeti... conitnuano ad inviarmi le loro minacce e... la loro "
+"poesia è $terribile!"
 
 #: ../scourge_data/config/mission.cfg:140
 msgid "Chapter 3: The Mysterious Benefactor"
@@ -7522,6 +7588,16 @@ msgid ""
 "moved in to replace the dwarves. At any rate your job is turn up documents, "
 "maps or other clues that might shed light on who the Order works for."
 msgstr ""
+"Sabien il mago ci ha fatto sapere che mentre era prigioniero dell'Ordine del "
+"Pony Grigio ha udito una conversazione intererssante. Ci ha chiesto di "
+"introdurci nel nascondiglio ormai abbandonato dell'Ordine e di cercare "
+"qualche indizio riguardante il loro misterioso benefattore. I tunnel usati "
+"da questi poeti-terroristi dovrebbero essere vuoti al momento, visto che le "
+"loro recite sono state spostate altrove. Ovviamente nessuna statnza "
+"sotterranea rimane vuota a lungo... chissà quali creature hanno rimpiazzato "
+"i nani. In ogni caso la vostra missione è di recuperare documenti, mappe o "
+"altri indizi che possano gettare luce su chi stia dietro all'Ordine del Pony "
+"Grigio."
 
 #: ../scourge_data/config/mission.cfg:146
 msgid ""
@@ -7531,16 +7607,24 @@ msgid ""
 "cannot possibly be behind the $Order... unless... unless the he's joined "
 "forces again with an Abyssal being. $Melathor should know more about this."
 msgstr ""
+"Stivali di $Mycotharsius e una mappa dellà$Abisso?! Questo non promette "
+"niente di buono... Chiedete a $Melathor informazioni su $Mycotharsius. Da "
+"quel che ne so è morto da parecchio tempo, ucciso in battaglia dalla sua "
+"stessa brama di potere. Non è possibile che ci sia lui dietro all'$Ordine... "
+"a meno che... a meno che non si sia nuovamente alleato con qualche forza "
+"Abissale. $Melathor ne sa sicuramente più di me su questa storia."
 
 #: ../scourge_data/config/mission.cfg:147
 msgid ""
 "$Sabien is still waiting for any info you can dig up about the $Order. He "
 "needs to know who the dwarves are working for."
 msgstr ""
+"$Sabien sta ancora aspettando un qualunque indizio circa l'$Ordine. Vuole "
+"sapere per chi stanno lavorando quei nani."
 
 #: ../scourge_data/config/mission.cfg:158
 msgid "Chapter 4: Among the Groez-Duil"
-msgstr ""
+msgstr "Capitolo 4: dentro a Groez-Duil"
 
 #: ../scourge_data/config/mission.cfg:163
 msgid ""
@@ -7554,6 +7638,16 @@ msgid ""
 "can trust. He understands the true nature of the Order and he might be able "
 "to shed light on their connection to Mycotharsius."
 msgstr ""
+"Dovete recarvi a Thuzgol, la città dei nani di montagna, o Groez-Duil come "
+"la chiamano loro. Una volta arrivati cercate il mio vecchio maestro "
+"Orhithales e mostrategli la mappa che avete recuperato dal covo dell'Ordine "
+"del Pony Grigio. Se avete tempo, chiedete in giro di Mycotharsius e "
+"dell'Ordine. Tenete a mente, in ogni caso, che questa operazione è molto più "
+"delicata di quanto possiate pensare. Fate molta attenzione mentre siete a "
+"Groez-Duil: tra i nani di montagna molti pensano che l'Ordine sia composto "
+"da eroi mistici, leggende che risalgono all'età doro nanica. Di Orhithales "
+"vi potete fidare: conosce la vera natura dell'Ordine e potrebbe illuminarci "
+"sui loro legami con Mycotharsius."
 
 #: ../scourge_data/config/mission.cfg:164
 msgid ""
@@ -7562,20 +7656,26 @@ msgid ""
 "Good work nevertheless! It's good to hear from $Orhithales again! We were "
 "quite close for a long time, perhaps he told you."
 msgstr ""
+"Corazza di scaglie di drago?! Non ne vedevo una dalla $scomparsa dei "
+"$Guardiani del Regno. Dovrò penasre come utilizzarla... Gran bel lavoro, "
+"comunque! È bello avere nuovamente notizie di $Orhithales! Siamo stati molto "
+"amici per lungo tempo, forse ve ne ha parlato."
 
 #: ../scourge_data/config/mission.cfg:165
 msgid "Remember to journey to $Thuzgol and talk to $Orhithales."
-msgstr ""
+msgstr "Ricordatevi di recarvi a $Thuzgol e di parlare con $Orhithales."
 
 #: ../scourge_data/config/mission.cfg:170
 msgid "Return to Thuzgol"
-msgstr ""
+msgstr "Torna a Thuzgol "
 
 #: ../scourge_data/config/mission.cfg:171
 msgid ""
 "Visit the ancient mountain dwarf city of Thuzgol. Its weapon-smiths and "
 "fight trainers are renowned throughout the land."
 msgstr ""
+"Visitate Thuzgol, l'antica città dei nani di montagna. GLi armaioli e i "
+"maestri d'armi di quel luogo sono famosi in ogni landa. "
 
 #: ../scourge_data/config/mission.cfg:176
 msgid "Chapter 5: A brief visit with Mycotharsius"
@@ -8005,7 +8105,7 @@ msgstr ""
 
 #: ../scourge_data/config/profession.cfg:199
 msgid "Supreme Executioner"
-msgstr "Supremo Esecutore"
+msgstr "Carnefice Supremo"
 
 #: ../scourge_data/config/profession.cfg:215
 msgid "Lightbringer Warrior"
@@ -8565,7 +8665,7 @@ msgstr "%s non è più ubriaco"
 
 #: ../scourge_data/config/rpg.cfg:47
 msgid "of Jelly"
-msgstr ""
+msgstr "della gelatina"
 
 #: ../scourge_data/config/rpg.cfg:51
 msgid "poisoned"
@@ -9465,7 +9565,7 @@ msgstr "Folletto"
 
 #: ../scourge_data/config/monster.cfg:39
 msgid "Oozing Green Waddler"
-msgstr "Vagabondo di melma verde"
+msgstr "Melma verde vagabonda"
 
 #: ../scourge_data/config/monster.cfg:54
 msgid "Buggerling"
@@ -9485,7 +9585,7 @@ msgstr ""
 
 #: ../scourge_data/config/monster.cfg:122
 msgid "Gray Slimy Waddler"
-msgstr "Vagabondo di fango grigio"
+msgstr "Fango grigio vagabondo"
 
 #: ../scourge_data/config/monster.cfg:139
 msgid "Fleshworm"
@@ -10638,6 +10738,11 @@ msgid ""
 "need an update on the current $news, just ask. Feel free to explore the head-"
 "quarters without worry: there are no $monsters here."
 msgstr ""
+"Benvenuti, o coraggiosi eroi, nelle possenti stanze della compagnia di "
+"ripulitura dungeon $S.C.O.U.R.G.E. ! Il mio $nome è Uzudil la $Mano. Se "
+"avete bisogno di qualche aggiornamento sulle ultime $notizie chiedete pure. "
+"Sentitevi liberi di esplorare il nostro quartier generale: non ci sono "
+"$mostri qui."
 
 #: ../scourge_data/maps/hq.cfg:200 ../scourge_data/maps/thuzgol.cfg:145
 msgid "That is beyond my knowledge..."
@@ -10646,7 +10751,7 @@ msgstr "Questo va oltre le mie conoscenze..."
 #: ../scourge_data/maps/hq.cfg:201 ../scourge_data/maps/library3.cfg:63
 #: ../scourge_data/maps/thuzgol.cfg:146
 msgid "I can't help you with that."
-msgstr "Temo di non poterti aiutare."
+msgstr "Temo di non potervi aiutare."
 
 #: ../scourge_data/maps/hq.cfg:202
 msgid "SCOURGE"
@@ -10662,10 +10767,18 @@ msgid ""
 "matters here is to keep our $clients happy. I am sure, you will find the "
 "$missions... 'challenging'."
 msgstr ""
+"Pensate a queste stanze come alla vostra nuova casa, d'ora in poi. La "
+"corporazione S.C.O.U.R.G.E. è stata creata per aiutare gli avventurieri poco "
+"fortunati a star lontani dai guai e allo stesso tempo ad esercitare le loro "
+"capacità. Il nostro obiettivo è fare affari. I $proprietari non chiederano "
+"nulla su voi o le vostre vite. Il vostro passato (per quanto orribile possa "
+"essere) è un vostro segreto. L'unica cosa che importa qui è far sì che i "
+"clienti siano contenti. Sono sicuro che troverete le nostre $missioni... "
+"'stuzzicanti'."
 
 #: ../scourge_data/maps/hq.cfg:204
 msgid "name"
-msgstr ""
+msgstr "nome"
 
 #: ../scourge_data/maps/hq.cfg:205
 msgid ""
@@ -10673,10 +10786,14 @@ msgid ""
 "$job is to handle the company's daily affairs for the $owners. Check back "
 "with me between $missions for $news about our $clients."
 msgstr ""
+"Benché Uzudil sia il mio vero nome, molti amici mi chiamano ' la $Mano ' "
+"perché il mio $lavoro qui consiste nel gestire gli affari quotidiani dei "
+"$proprietari. Tornate da me dopo le vostre $missioni per avere $notizie sui "
+"nostri $clienti."
 
 #: ../scourge_data/maps/hq.cfg:206
 msgid "Hand"
-msgstr ""
+msgstr "Mano"
 
 #: ../scourge_data/maps/hq.cfg:207
 msgid ""
@@ -10684,10 +10801,13 @@ msgid ""
 "here at head-quarters. As you can see we have many different types of people "
 "traveling through here so we have a strict set of $rules."
 msgstr ""
+"A parte trattare con i clienti la mia specialità è... uhm... 'mantenere la "
+"pace' qui nel quartier generale. Come potete vedere da qui passano persone "
+"di ogni tipo e quindi abbiamo dovuto stabilire alcune $regole severe."
 
 #: ../scourge_data/maps/hq.cfg:208
 msgid "rules"
-msgstr ""
+msgstr "regole"
 
 #: ../scourge_data/maps/hq.cfg:209
 msgid ""
@@ -10695,28 +10815,33 @@ msgid ""
 "tolerance for fighting here. Save your energy for the $monsters... you'll "
 "need it!"
 msgstr ""
+"Le regole della casa sono semplici: il quartier generale è un campo "
+"neutrale. Ciò significa che non tolleriamo alcun tipo di combattimento qui. "
+"Risparmiate le energie per i $mostri... ne avrete bisogno!"
 
 #: ../scourge_data/maps/hq.cfg:210
 msgid "job"
-msgstr ""
+msgstr "lavoro"
 
 #: ../scourge_data/maps/hq.cfg:211
 msgid ""
 "Mostly I am the mediator between our $clients and the $owners and you, the "
 "adventurers."
 msgstr ""
+"Principalemnte sono un mediatore tra i nostri $clienti, i $proprietari e "
+"voi, gli avventurieri."
 
 #: ../scourge_data/maps/hq.cfg:212
 msgid "owners"
-msgstr ""
+msgstr "proprietari"
 
 #: ../scourge_data/maps/hq.cfg:213
 msgid "I sense that you're not yet ready to learn about them."
-msgstr ""
+msgstr "Sento che non siete ancora pronti per sapere di più su di loro."
 
 #: ../scourge_data/maps/hq.cfg:214
 msgid "clients"
-msgstr ""
+msgstr "clienti"
 
 #: ../scourge_data/maps/hq.cfg:215
 msgid ""
@@ -10727,10 +10852,17 @@ msgid ""
 "as a bonus they remain anonymous. Sure it's dirty work, but someone's gotta "
 "do it..."
 msgstr ""
+"Credetemi, non sono persone che vorreste incontrare... Folli, maghi malvagi, "
+"chierici impazziti e (qualche volta) vere e proprie aberrazioni in cerca di "
+"aiuto. Persone come queste non possono certo sprecare i loro poteri magici "
+"nel ripulire quella che diventerà la sede del loro presidio in questa "
+"dimensione. Quindi ci pagano per farlo al posto loro e in più amano rimanere "
+"nel più stretto anonimato. Certo è un lavoro sporco, ma qualcuno deve pur "
+"farlo... "
 
 #: ../scourge_data/maps/hq.cfg:216
 msgid "board"
-msgstr ""
+msgstr "lavagna"
 
 #: ../scourge_data/maps/hq.cfg:217
 msgid ""
@@ -10738,10 +10870,13 @@ msgid ""
 "with the purple flames. This is where I post new $missions as they arrive "
 "from our $clients."
 msgstr ""
+"Sì, controllatela di frequente per vedere le nuove missioni. La trovate "
+"nella stanza con i bracieri dalle fiamme viola. È là che appendo le nuove "
+"$missioni non appena uno dei nostri $clienti ci contatta."
 
 #: ../scourge_data/maps/hq.cfg:218
 msgid "missions"
-msgstr ""
+msgstr "missioni"
 
 #: ../scourge_data/maps/hq.cfg:219
 msgid ""
@@ -10750,6 +10885,11 @@ msgid ""
 "purple, remember that those are more important. The client is usually under "
 "time pressure and thus will pay more for the mission's timely completion!"
 msgstr ""
+"Le richieste dei nostri $clienti sono presentate come $missioni che io "
+"appendo di volta in volta alla nostra $lavagna nella stanza delel fiamme "
+"viola. Ricordate: le missioni scritte in viola sono le più importanti. Il "
+"cliente di solito ha fretta e ci pagherà di più se completiamo il lavoro "
+"rapidamente!"
 
 #: ../scourge_data/maps/hq.cfg:220
 msgid ""
@@ -10761,6 +10901,14 @@ msgid ""
 "only a rumor, and I doubt it would effect us much this far away... If you "
 "are concerned, ask $Melathor about nature spelling doom for humanity."
 msgstr ""
+"Al momento ho solo qualche vaga diceria da riferirvi. In ogni caso tornate "
+"più tardi: ho la sensazione che stia per arrivare qualche importante "
+"informazione. Ho sentito da una fonte attendibile che nelle regioni montuose "
+"del regno di Hanath la $natura ha dichiarato guerra al genere umano! "
+"Orribili mostri composti interamente da piante hanno raso al suolo intere "
+"città attacco dopo attacco. Certo per ora tutto questo è solo una diceria e "
+"dubito che ci riguarderà in qualche modo... Se siete preoccupati chiedete a "
+"$Melathor di parlarvi di come la natura porta alla rovina del genere umano."
 
 #: ../scourge_data/maps/hq.cfg:221
 msgid ""
@@ -10768,16 +10916,21 @@ msgid ""
 "causes any trouble... he is... 'dependent' on his concoctions and sometimes "
 "he forgets the $rules."
 msgstr ""
+"È il 'saggio' mago elfo che vive nella stanza a sud. Fatemi sapere se vi "
+"causa problemi... è... 'dipendente' dai suoi intrugli e ogni tanto dimentica "
+"le nostre $regole"
 
 #: ../scourge_data/maps/hq.cfg:222
 msgid ""
 "Not much to worry about I say... the only piece of nature we see here are "
 "the roots and rocks under the earth."
 msgstr ""
+"Non dovreste preoccuparvene troppo, secondo me... le uniche parti di natura "
+"che abbiamo qui sono le radici e le rocce sotto di noi."
 
 #: ../scourge_data/maps/hq.cfg:223 ../scourge_data/maps/library3.cfg:94
 msgid "monsters"
-msgstr ""
+msgstr "mostri"
 
 #: ../scourge_data/maps/hq.cfg:224
 msgid ""
@@ -10786,12 +10939,19 @@ msgid ""
 "prepared with high level weapons, magic and lots of healing potions! Also, "
 "you can always return here to HQ to catch some rest."
 msgstr ""
+"Incontrerete molti terribili esseri nei vostri viaggi! Alcuni useranno la "
+"forza per eliminarvi, altri la loro grande magia. È meglio essere preparati "
+"con armi potenti, incantesimi e molte pozioni curatrici! In ogni caso "
+"potrete sempre tornare qui al quartier generale per riposarvi un po' prima "
+"di continuare."
 
 #: ../scourge_data/maps/hq.cfg:225
 msgid ""
 "An astute student of magic he was. Unfortunately he lacked the strength to "
 "stay far away from the powers of darkness."
 msgstr ""
+"È stato un grande studioso di magia. Sfortunatamente mancava della forza "
+"d'animo necessaria per non soccombere al sottile richiamo dell'oscurità."
 
 #: ../scourge_data/maps/hq.cfg:226
 msgid ""
@@ -10799,6 +10959,8 @@ msgid ""
 "It's a group of dwarven terrorist poets that has been causing trouble in the "
 "underworld."
 msgstr ""
+"Nooo... non mi parlate di loro! Mi tormentano con la loro $terribile poesia. "
+"È un gruppo di poeti-terroristi nanici che ha già causato parecchi problemi."
 
 #: ../scourge_data/maps/hq.cfg:227
 msgid ""
@@ -10816,7 +10978,7 @@ msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:229
 msgid "awful"
-msgstr ""
+msgstr "terribile"
 
 #: ../scourge_data/maps/hq.cfg:230
 msgid ""
@@ -10830,7 +10992,7 @@ msgstr ""
 #: ../scourge_data/maps/hq.cfg:231 ../scourge_data/maps/library.cfg:44
 #: ../scourge_data/maps/emeril2.cfg:36
 msgid "Guardians,Realm"
-msgstr ""
+msgstr "Guardiani,Regno"
 
 #: ../scourge_data/maps/hq.cfg:232
 msgid ""
@@ -10838,10 +11000,13 @@ msgid ""
 "time ago. Unfortunately, they no longer exist: they were all $killed in the "
 "final battle against the forces of darkness eons ago."
 msgstr ""
+"I Guardiani del Regno erano i cusotdi della pace in tutta la landa, molto, "
+"molto tempo fa. Sfortunatamente nessuno di loro esiste più: furono tutti "
+"$uccisi nella battaglia finale contro le forze dell'oscurità, molte ere fa."
 
 #: ../scourge_data/maps/hq.cfg:233
 msgid "end,killed"
-msgstr ""
+msgstr "scomparsa,uccisi"
 
 #: ../scourge_data/maps/hq.cfg:234
 msgid ""
@@ -10850,6 +11015,10 @@ msgid ""
 "darkness. I don't know much about this great conflict, save that none of the "
 "$Guardians survived."
 msgstr ""
+"I $Guardiani del Regno combatterono e morirono valorosamente alle foci del "
+"grande fiume Manar in una battaglia apocalittica contro le forze dell-"
+"oscurità. Non so molto di questo scontro, a parte che nessuno dei $Guardiani "
+"sopravvisse."
 
 #: ../scourge_data/maps/hq.cfg:237
 msgid ""
@@ -10889,7 +11058,7 @@ msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:246
 msgid "You sure have a funny way of talking..."
-msgstr ""
+msgstr "Sapeteç avete un modo proprio curioso di parlare..."
 
 #: ../scourge_data/maps/hq.cfg:247
 msgid "Those were them $times!"
@@ -10901,18 +11070,21 @@ msgstr "Mmm-mmm, quant'era buona quella $zuppa!"
 
 #: ../scourge_data/maps/hq.cfg:249
 msgid "You look like an out-of-work $adventurer!"
-msgstr "Sembri uno di quegli $avventurieri senza lavoro!"
+msgstr "Sembri uno dei soliti $avventurieri senza lavoro!"
 
 #: ../scourge_data/maps/hq.cfg:250
 msgid "times"
 msgstr "tempi"
 
 #: ../scourge_data/maps/hq.cfg:251
+#, fuzzy
 msgid ""
 "I reckon it must've been during the reign of $Haladil the grim when I was "
 "just a young lad. I would roam the country slay monsters, right wrongs and "
 "the like."
 msgstr ""
+"Fatemi fare due conti... Dev'essere stato durante il regno di $Haladil il "
+"crudele quando ero ancora giovane."
 
 #: ../scourge_data/maps/hq.cfg:252
 msgid "Haladil"
