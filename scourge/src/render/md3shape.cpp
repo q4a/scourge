@@ -97,7 +97,7 @@ void MD3Shape::draw() {
   // It seems that Quake2 orders their polygons clock-wise.  
   glEnable( GL_CULL_FACE );
   glCullFace( GL_BACK );
-  bool textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
+  GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   glEnable( GL_TEXTURE_2D );
 	
 	glScalef( div, div, div );
