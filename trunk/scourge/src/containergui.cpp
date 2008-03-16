@@ -143,6 +143,14 @@ bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
 			}
 		}
 		showContents();
+	} else if( scourge->getSDLHandler()->isDoubleClick ) {
+			Item *item = container->getContainedItem( list->getSelectedLine() );
+			if( scourge->getPcUi()->receiveInventory( item ) ) {
+				container->removeContainedItem( 0 );
+			} else {
+				scourge->showMessageDialog( _( "There is not enough room in your backpack for everything." ) );
+			}
+		showContents();
 	}
 	return false;
 }
