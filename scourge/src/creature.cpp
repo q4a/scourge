@@ -2970,6 +2970,8 @@ void Creature::rollPerception() {
 					session->getSound()->playSound( "notice-trap" );
           session->getGameAdapter()->addDescription( message );
           addExperienceWithMessage( 50 );
+          setMotion(Constants::MOTION_STAND);
+          stopMoving();
         }
       }
     }
