@@ -658,7 +658,7 @@ void InfoGui::appendMagicItemInfo( char *description, Item *item ) {
         }
         if( item->getMonsterType() ) {
           char const* p = Monster::getDescriptiveType( item->getMonsterType() );
-          snprintf( tmp, TXT_SIZE, " %s %s.", _( "vs." ), ( p ? p : item->getMonsterType() ));
+          snprintf( tmp, TXT_SIZE, " %s %s.", _( "vs." ), ( p ? p : _( item->getMonsterType() ) ));
           strcat( description, tmp );
         } else {
           strcat( description, _( " vs. any creature." ) );
