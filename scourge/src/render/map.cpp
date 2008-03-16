@@ -612,8 +612,21 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 							setupPosition( posX, posY, 0, xpos2, ypos2, 0, shape, itemPos[posX][posY]->item, NULL, NULL, true );
 						}
 
-
-            for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
+          	// skip roofs if inside
+						bool underRoof = true;
+						if( adapter->getPlayer() ) {
+							Location *roof = 
+								getLocation( toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 ), 
+								             toint( adapter->getPlayer()->getY() - 1 - adapter->getPlayer()->getShape()->getDepth() / 2 ), 
+								             MAP_WALL_HEIGHT );
+							if( !roof ) {
+								underRoof = false;
+							}
+						}
+          	int maxZ = ( underRoof ? MAP_WALL_HEIGHT : MAP_VIEW_HEIGHT );
+          	
+						
+            for(int zp = 0; zp < maxZ; zp++) {
               if(lightMap[chunkX][chunkY] && effect[posX][posY][zp] && !effect[posX][posY][zp]->isInDelay() ) {
                 xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
                 ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - 1 + yp + chunkOffsetY) / DIV;
@@ -672,7 +685,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 
                   setupPosition(posX, posY, zp, xpos2, ypos2, zpos2, shape, pos[posX][posY][zp]->item,
                                 pos[posX][posY][zp]->creature, NULL);
-                }
+              	}
               }
             }
           }
