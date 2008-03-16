@@ -329,6 +329,11 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         uc->setFullscreen(fullscreenCheckbox->isChecked());
     } 
     else if(widget == resizeableCheckbox){
+        // if resizeable checked -> not fullscreen
+        if(resizeableCheckbox->isChecked()){
+            fullscreenCheckbox->setCheck(false);
+            uc->setFullscreen(false);
+        }
         uc->setResizeable(resizeableCheckbox->isChecked());
     }
     else if(widget == doublebufCheckbox){
