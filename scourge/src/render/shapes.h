@@ -332,7 +332,8 @@ protected:
   void loadStencil( const std::string& filename, int index );
 	void loadCursors();
 	GLuint *findOrMakeTextureGroup( char *s );
-	void setupPNG( const std::string& filename, SDL_Surface*& surface, GLubyte*& image, bool isAbsPath=false );
+	void setupPNG( const std::string& filename, SDL_Surface*& surface, GLubyte*& image, bool isAbsPath=false, bool hasAlpha=true );
+	void setupImage( const std::string &filename, SDL_Surface*& surface, GLubyte*& image );
 };
 
 #endif

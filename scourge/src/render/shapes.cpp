@@ -498,7 +498,6 @@ bool inline isPowerOfTwo( const GLuint n ) {
 // FIXME: this should be similar to loadTextureWithAlpha but adding alpha
 // screws up the stencils in caves. No time to debug now.
 GLuint Shapes::getBMPData( const string& filename, TextureData& data, int *imgwidth, int *imgheight ) {
-	GLuint ret = 0;
 	string fn = rootDir + filename;
 
 //  cerr << "loading lava data: " << fn << endl;
@@ -793,9 +792,15 @@ void Shapes::setupAlphaBlendedBMP( const string& filename,
 			}
 		}
 		
-		image[count++] = r;
-		image[count++] = g;
-		image[count++] = b;
+		if(Util::StringCaseCompare(fn.substr(fn.length() - 4, 4), ".jpg")) {
+			image[count++] = b;
+			image[count++] = g;
+			image[count++] = r;
+		} else {
+			image[count++] = r;
+			image[count++] = g;
+			image[count++] = b;
+		}
 		image[count++] = a;
 	}
 }
@@ -886,7 +891,10 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 
 		SDL_Surface *tmpSurface;
 		GLubyte *tmpImage;
+		
 		setupAlphaBlendedBMP( path, tmpSurface, tmpImage );
+		//setupImage( path, tmpSurface, tmpImage );
+				
 		if( tmpSurface ) {
 			id = textures[ texture_count ].id = 
 				loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );			
@@ -919,11 +927,7 @@ GLuint Shapes::loadAlphaTexture( string& filename, int *width, int *height ) {
   SDL_Surface *tmpSurface = NULL;
   GLubyte *tmpImage = NULL;
 
-  if( filename.substr( filename.size() - 4 ) == ".png" ) {
-	instance->setupPNG( filename, tmpSurface, tmpImage );
-  } else {
-	instance->setupAlphaBlendedBMP( filename, tmpSurface, tmpImage );
-  }
+  instance->setupImage( filename, tmpSurface, tmpImage );
 
   GLuint texId = 0;
   if( width && height ) {
@@ -936,13 +940,24 @@ GLuint Shapes::loadAlphaTexture( string& filename, int *width, int *height ) {
   return texId;
 }
 
-void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& image, bool isAbsPath ) {
+void Shapes::setupImage( const string &filename, SDL_Surface*& surface, GLubyte*& image ) {
+  if( filename.substr( filename.size() - 4 ) == ".png" ) {
+  	setupPNG( filename, surface, image, false, true );
+  } else if( filename.substr( filename.size() - 4 ) == ".jpg" ) {
+  	setupPNG( filename, surface, image, false, false );
+  } else {
+  	setupAlphaBlendedBMP( filename, surface, image );
+  }	
+}
+
+void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& image, bool isAbsPath, bool hasAlpha ) {
 
 	if( headless )
 		return;
 
 	string fn( isAbsPath ? filename : rootDir + filename );
 
+	if( !hasAlpha ) debugFileLoad = true;
 	if( debugFileLoad ) {
 		cerr << "file: " << fn << endl;
 	}
@@ -958,8 +973,9 @@ void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& 
 	}
 
 	if( debugFileLoad ) {
-		cerr << "...loaded! Bytes per pixel=" << static_cast<int>(surface->format->BytesPerPixel) << endl;
+		cerr << "...loaded! Bytes per pixel=" << static_cast<int>(surface->format->BytesPerPixel) << " BPP=" << static_cast<int>(surface->format->BitsPerPixel) << endl;
 	}
+	debugFileLoad = false;
 
 	// Rearrange the pixelData
 	int width  = surface->w;
@@ -983,17 +999,23 @@ void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& 
 	for(int i = 0; i < width * height; ++i) {
 		if(i > 0 && i % width == 0) {
 			c += surface->pitch - (width * surface->format->BytesPerPixel);
-		}
-
-		unsigned char r = data[c++];
-		unsigned char g = data[c++];
-		unsigned char b = data[c++];
-		unsigned char a = data[c++];
-		
-		image[count++] = b;
-		image[count++] = g;
-		image[count++] = r;
-		image[count++] = a;
+		}		
+	   unsigned char r = data[c++];
+	   unsigned char g = data[c++];
+	   unsigned char b = data[c++];
+	   	
+	   if( hasAlpha ) {
+	  	 unsigned char a = data[c++];
+		   image[count++] = b;
+		   image[count++] = g;
+		   image[count++] = r;
+		   image[count++] = a;
+	   } else {
+	  	 image[count++] = b;
+ 		   image[count++] = g;
+ 		   image[count++] = r;
+ 		   image[count++] = 1;
+	   }
 	}
 }
 
