@@ -299,7 +299,7 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
 	} else if( widget == openButton ) {
 		scourge->openContainerGui( item );
 	} else if( widget == useButton ) {
-		if ( item->getRpgItem()->hasSpell() ) {
+		if ( item->getRpgItem()->hasSpell() || item->getRpgItem()->isScroll() ) {
 			scourge->getPcUi()->hide();
 		}
 		this->getWindow()->setVisible(false);
