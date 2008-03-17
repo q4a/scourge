@@ -3703,6 +3703,41 @@ void Scourge::addDescription(char const* description, float r, float g, float b)
 	descriptionScroller->addDescription( description, r, g, b );
 }
 
+void Scourge::writeLogMessage( char *message, int messageType, int logLevel ) {
+
+if (getUserConfiguration()->getLogLevel() < logLevel) return;
+
+	if (messageType == Constants::MSGTYPE_NORMAL ) {
+		addDescription( message, 1, 1, 0 );
+	} else if (messageType == Constants::MSGTYPE_MISSION ) {
+		addDescription( message, 1, 1, 1 );
+	} else if (messageType == Constants::MSGTYPE_PLAYERDAMAGE ) {
+		addDescription( message, 1, 0, 0 );
+	} else if (messageType == Constants::MSGTYPE_NPCDAMAGE ) {
+		addDescription( message, 0, 1, 0 );
+	} else if (messageType == Constants::MSGTYPE_PLAYERMAGIC ) {
+		addDescription( message, 1, 0, 1 );
+	} else if (messageType == Constants::MSGTYPE_NPCMAGIC ) {
+		addDescription( message, 0.7f, 0, 1 );
+	} else if (messageType == Constants::MSGTYPE_PLAYERITEM ) {
+		addDescription( message, 0, 0, 1 );
+	} else if (messageType == Constants::MSGTYPE_NPCITEM ) {
+		addDescription( message, 0, 0.5f, 1 );
+	} else if (messageType == Constants::MSGTYPE_PLAYERBATTLE ) {
+		addDescription( message, 1, 0.8f, 0.8f );
+	} else if (messageType == Constants::MSGTYPE_NPCBATTLE ) {
+		addDescription( message, 1, 0.5f, 0.5f );
+	} else if (messageType == Constants::MSGTYPE_PLAYERDEATH ) {
+		addDescription( message, 0.7f, 0.7f, 0 );
+	} else if (messageType == Constants::MSGTYPE_NPCDEATH ) {
+		addDescription( message, 0, 0.7f, 0 );
+	} else if (messageType == Constants::MSGTYPE_FAILURE ) {
+		addDescription( message, 0.7f, 0.7f, 0.7f );
+	} else if (messageType == Constants::MSGTYPE_STATS ) {
+		addDescription( message, 1, 0.5f, 0 );
+	}
+}
+
 void Scourge::initChapterIntro() {
 	session->setShowChapterIntro( true );
 	hideGui();
