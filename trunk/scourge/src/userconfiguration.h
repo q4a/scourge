@@ -88,6 +88,7 @@ private:
   bool outlineInteractiveItems;
   int combatInfoDetail;
   bool hideInventoriesOnMove;
+  int logLevel;
 
 
   // audio settings
@@ -142,6 +143,7 @@ private:
   inline bool getTooltipEnabled() { return tooltipEnabled; }
 	inline bool getEnableScreenshots() { return enableScreenshots; }
   inline int getTooltipInterval() { return tooltipInterval; }
+  inline int getLogLevel() { return logLevel; }
   inline int getMonsterToughness() { return monsterToughness; }
   
   inline void setFullscreen(bool t){ fullscreen=t; }
@@ -173,6 +175,7 @@ private:
   inline void setTooltipEnabled( bool b ) { tooltipEnabled = b; }
 	inline void setEnableScreenshots( bool b ) { enableScreenshots = b; }
   inline void setTooltipInterval( int n ) { tooltipInterval = n; }
+  inline void setLogLevel(int t)   { if(t >= 0 && t <= 3) logLevel=t; } // [0, 1, 2, 3]
   inline void setMonsterToughness( int n ) { monsterToughness = n; }
   
   // return gameSpeed in ticks

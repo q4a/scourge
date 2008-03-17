@@ -102,6 +102,13 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   y += SPACING + MINOR_SPACING;
   tooltipInterval = new Slider(XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 200, _( "Tooltip Delay:" ) );
   cards->addWidget(tooltipInterval, GAME_SETTINGS);
+  y += SPACING + SPACING;
+  logLevelML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Log level" ), 100);
+  logLevelML -> addText(strdup( _( "Minimal" )));
+  logLevelML -> addText(strdup( _( "Partial" ) ));
+  logLevelML -> addText(strdup( _( "Verbose" )));
+  logLevelML -> addText(strdup( _( "Full" )));
+  cards->addWidget(logLevelML, GAME_SETTINGS);
    
   // Video settings tabs        
   y = YPOS;
@@ -167,6 +174,7 @@ void OptionsMenu::loadGameSettings(){
     effectsVolume->setValue(scourge->getUserConfiguration()->getEffectsVolume());
     tooltipEnabled->setCheck(uc->getTooltipEnabled());
     tooltipInterval->setValue(scourge->getUserConfiguration()->getTooltipInterval());
+    logLevelML->setText(uc->getLogLevel());
 }
 
 // line i must correspond to engine action i if we want this scrolling list to work
@@ -310,6 +318,8 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         if( !( uc ->getTooltipEnabled() ) ) scourge->resetInfos();
     } else if(widget == tooltipInterval){
         uc->setTooltipInterval(tooltipInterval->getValue());
+    } else if(widget == logLevelML){
+        uc->setLogLevel(logLevelML->getCurrentTextInd());
     } else if(widget == videoResolutionML){
         string line, s1, s2;
         int end;
