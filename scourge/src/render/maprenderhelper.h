@@ -87,6 +87,7 @@ public:
   virtual ~OutdoorRenderHelper();
 	inline virtual bool drawShadow() { return false; }
 	virtual inline float getLampRadiusSquared() { return 100.0f; }
+  inline virtual bool isLightMapEnabled() { return true; }	
 };
 
 class DebugOutdoorRenderHelper : public MapRenderHelper {

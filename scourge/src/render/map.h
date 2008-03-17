@@ -640,7 +640,7 @@ protected:
 
 	void renderFloor();
 	void drawFlatFloor();
-	void drawHeightMapFloor();
+	bool drawHeightMapFloor();
 	void drawWaterLevel();
 
 	 void willDrawGrid();

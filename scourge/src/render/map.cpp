@@ -649,7 +649,8 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
                       ( drawSide & Constants::MOVE_RIGHT && xp >= MAP_UNIT - MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) )
                     );
 
-                if( shape && ( lightMap[chunkX][chunkY] || lightEdge ) ) {
+                // visible or on the edge or a roof piece
+                if( shape && ( lightMap[chunkX][chunkY] || lightEdge || zp >= MAP_WALL_HEIGHT ) ) {
                   if( pos[posX][posY][zp]->creature ) {
 
                     if( debugMd2Shapes ) {
@@ -3980,14 +3981,15 @@ void Map::renderFloor() {
 	}
 }
 
-void Map::drawHeightMapFloor() {
+bool Map::drawHeightMapFloor() {		
 	glDisable( GL_CULL_FACE );
 	glColor4f( 1, 1, 1, 1 );
 	CVectorTex *p[4];
 	float gx, gy;
-	
+		
+	bool ret = true;
 	for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
-		for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
+		for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {			
 			glBindTexture( GL_TEXTURE_2D, groundPos[ xx ][ yy ].tex );
 
 			p[0] = &( groundPos[ xx ][ yy + 1 ] );
@@ -4018,6 +4020,8 @@ void Map::drawHeightMapFloor() {
 			}
 		}
 	}
+	
+	return ret;
 }
 
 // this one uses OUTDOORS_STEP coordinates
