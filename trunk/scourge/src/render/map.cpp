@@ -138,6 +138,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   
   mapChanged = true;
   resortShapes = true;
+  groundVisible = true;
 
   floorTexWidth = floorTexHeight = 0;
   floorTex = 0;
@@ -297,6 +298,7 @@ void Map::reset() {
   //alwaysCenter = true;
   debugX = debugY = debugZ = -1;
   mapChanged = true;
+  groundVisible = true;
   resortShapes = true;
   lastOutlinedX = lastOutlinedY = lastOutlinedZ = MAP_WIDTH;
   floorTexWidth = floorTexHeight = 0;
@@ -2604,6 +2606,7 @@ Location *Map::getDropLocation(Shape *shape, int x, int y, int z) {
 // the world has changed...
 void Map::configureLightMap() {
 	lightMapChanged = false;
+	groundVisible = false;
 
 	// draw nothing at first
 	for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
@@ -2649,6 +2652,13 @@ void Map::traceLight(int chunkX, int chunkY, int lm[MAP_WIDTH / MAP_UNIT][MAP_DE
 
 	// let there be light
 	lm[chunkX][chunkY] = 1;
+	
+	// if there is no roof here, enable the ground
+	if( !getLocation( MAP_OFFSET + chunkX * MAP_UNIT + (MAP_UNIT / 2), 
+	                  MAP_OFFSET + chunkY * MAP_UNIT + (MAP_UNIT / 2), 
+	                  MAP_WALL_HEIGHT )  ) {
+		groundVisible = true;
+	}	
 
 	// can we go N?
 	int x, y;
@@ -2702,16 +2712,18 @@ void Map::traceLight(int chunkX, int chunkY, int lm[MAP_WIDTH / MAP_UNIT][MAP_DE
 
 bool Map::isLocationBlocked(int x, int y, int z, bool onlyLockedDoors) {
 	if(x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH && z >= 0 && z < MAP_VIEW_HEIGHT) {
-		Location *pos = getLocation(x, y, z);
+		Location *pos = getLocation(x, y, z);		
 
+		bool ret = true;
 		if(pos == NULL || pos->item || pos->creature)
-			return false;
+			ret = false;
 		else if(onlyLockedDoors && isDoor(x, y)) 
-			return isLocked(pos->x, pos->y, pos->z);
+			ret = isLocked(pos->x, pos->y, pos->z);
 		else if( pos && isSecretDoor( pos ) && pos->z > 0 )
-			return false;
+			ret = false;
 		else if(!((GLShape*)(pos->shape))->isLightBlocking())
-			return false;
+			ret = false;
+		return ret;
 	}
 	return true;
 }
@@ -3963,8 +3975,10 @@ void Map::renderFloor() {
 	glBindTexture( GL_TEXTURE_2D, floorTex );
 	glPushMatrix();
 	if( isHeightMapEnabled() ) {
-		drawHeightMapFloor();
-		drawWaterLevel();
+		if( groundVisible ) {
+			drawHeightMapFloor();
+			drawWaterLevel();
+		}
 		setupShapes(true, false);
 	}	else {
 		if( settings->isGridShowing() ) {

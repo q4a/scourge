@@ -191,6 +191,7 @@ private:
 
   bool lightMapChanged;
   int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
+  bool groundVisible;
   
   // FIXME: either make this value adjustable or find a faster way to blast it onscreen?
   static const int SHADE_SIZE = 20;
