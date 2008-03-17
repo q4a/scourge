@@ -570,6 +570,23 @@ public:
     LOGLEVEL_FULL,
   };
 
+  enum {			// Message types as they show up in the log window
+    MSGTYPE_NORMAL=0,		// Normal text: Descriptions etc.
+    MSGTYPE_MISSION,		// Mission related and other key text
+    MSGTYPE_PLAYERDAMAGE,	// Player has taken damage
+    MSGTYPE_NPCDAMAGE,		// NPC/monster has taken damage
+    MSGTYPE_PLAYERMAGIC,	// Player uses magic
+    MSGTYPE_NPCMAGIC,		// NPC/monster uses magic
+    MSGTYPE_PLAYERITEM,		// Player uses an item
+    MSGTYPE_NPCITEM,		// NPC/monster uses an item
+    MSGTYPE_PLAYERBATTLE,	// Player's battle actions
+    MSGTYPE_NPCBATTLE,		// NPCs'/monsters' battle actions
+    MSGTYPE_PLAYERDEATH,	// A player character has died
+    MSGTYPE_NPCDEATH,		// An NPC or monster has died
+    MSGTYPE_FAILURE,		// The player has failed at something
+    MSGTYPE_STATS,		// Players stats have changed: State mods, leveled up etc.
+  };
+
   enum {
     ACTION_NO_ACTION=-1,
     ACTION_EAT_DRINK=0,

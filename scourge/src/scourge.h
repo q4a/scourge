@@ -637,6 +637,8 @@ public:
 	void openDoor( MovingDoor *movingDoor );
 	inline std::vector<MovingDoor> *getMovingDoors() { return &movingDoors; }
 
+	void writeLogMessage( char *message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel=Constants::LOGLEVEL_FULL );
+
 protected:
   bool getItem(Location *pos);
   // returns new z coordinate
