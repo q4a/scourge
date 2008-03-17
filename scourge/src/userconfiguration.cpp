@@ -315,6 +315,7 @@ UserConfiguration::UserConfiguration(){
     combatInfoDetail = 0;
     monsterToughness = 0;
     hideInventoriesOnMove = true;
+    logLevel = 3;
 
 
     // audio settings
@@ -578,6 +579,8 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
 		snprintf(textLine, TXT_SIZE, "set tooltipinterval %d\n", tooltipInterval );
     writeFile(configFile, textLine);
+		snprintf(textLine, TXT_SIZE, "set loglevel %d  // 0 : minimal, 3 : full\n", logLevel);
+    writeFile(configFile, textLine);
 		snprintf(textLine, TXT_SIZE, "\n// Audio settings\n");
     writeFile(configFile, textLine);
 		snprintf(textLine, TXT_SIZE, "set soundenabled %s\n", soundEnabled ? "true" : "false");
@@ -656,14 +659,12 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
        s1 == "ovalcutoutshown" || s1 == "outlineinteractiveitems" ||
        s1 == "hideinventoriesonmove" ||
        s1 == "soundenabled" || s1 == "alwaysshowpath" || s1 == "tooltipenabled" || 
-			 s1 == "enablescreenshots" ){
-        if(s2 == "true"){
+			 s1 == "enablescreenshots" ) {
+        if(s2 == "true") {
             paramValue = true;
-        }
-        else if(s2 == "false"){
+        } else if(s2 == "false") {
             paramValue = false;
-        }
-        else{          
+        } else {
 		  cerr << "Warning : in file " << CONFIG_FILE // _NAME 
              << " invalid parameter at line " << lineNumber 
              << ", valid parameter are 'true' or 'false'. Ignoring line" << endl; 
@@ -671,32 +672,23 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
         }
     }
 
-    if(s1 == "fullscreen"){
+    if(s1 == "fullscreen") {
         fullscreen = paramValue;
-    }
-    else if(s1 == "doublebuf"){
+    } else if(s1 == "doublebuf") {
         doublebuf = paramValue;
-    }
-    else if(s1 == "hwpal"){
+    } else if(s1 == "hwpal") {
         hwpal = paramValue;
-    }
-    else if(s1 == "resizeable"){
+    } else if(s1 == "resizeable") {
         resizeable = paramValue;
-    }
-    else if(s1 == "force_hwsurf"){
+    } else if(s1 == "force_hwsurf") {
         force_hwsurf = paramValue;
-    }
-    else if(s1 == "force_swsurf"){
+    } else if(s1 == "force_swsurf") {
         force_swsurf = paramValue;
-    }
-    else if(s1 == "hwaccel"){
+    } else if(s1 == "hwaccel") {
         hwaccel = paramValue;
-    }
-    else if(s1 == "test"){
+    } else if(s1 == "test") {
         test = paramValue;
-    }
-
-    else if(s1 == "bpp"){
+    } else if(s1 == "bpp") {
         bpp = atoi(s2.c_str());
         if(!(bpp ==8 || bpp == 15 || bpp == 16 || bpp == 24 || bpp == 32)) {
 		  cerr << "Warning : in file " << CONFIG_FILE //_NAME 
@@ -712,14 +704,13 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
       effectsVolume = atoi(s2.c_str());
     } else if(s1 == "tooltipinterval") {
       tooltipInterval = atoi(s2.c_str());
-    } else if(s1 == "w"){
+    } else if(s1 == "w") {
         w = atoi(s2.c_str());
-    }
-    else if(s1 == "h"){
+    } else if(s1 == "h") {
         h = atoi(s2.c_str());
-    } else if(s1 == "combatinfodetail"){
+    } else if(s1 == "combatinfodetail") {
       combatInfoDetail = atoi(s2.c_str());
-    } else if(s1 == "shadows"){
+    } else if(s1 == "shadows") {
         shadows = atoi(s2.c_str());
         if(!(shadows == 0 || 
            shadows == 1 || 
@@ -729,23 +720,17 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
              << ", valid modes 0, 1, 2 . Ignoring line" << endl;
              shadows = 2; // Default value
         }
-    }
-    else if(s1 == "stencilbuf"){
+    } else if(s1 == "stencilbuf") {
         stencilbuf = paramValue;
-    }  
-    else if(s1 == "multitexturing"){
+    } else if(s1 == "multitexturing") {
         Constants::multitexture = paramValue;
-    }
-    else if(s1 == "centermap"){
+    } else if(s1 == "centermap") {
         centermap = paramValue;
-    }
-    else if(s1 == "keepmapsize") {
+    } else if(s1 == "keepmapsize") {
       keepMapSize = paramValue;
-    } 
-    else if(s1 == "frameonfullscreen") {
+    } else if(s1 == "frameonfullscreen") {
       frameOnFullScreen = paramValue;
-    }
-    else if(s1 == "turnbasedbattle") {
+    } else if(s1 == "turnbasedbattle") {
       turnBasedBattle = paramValue;
     } else if(s1 == "ovalcutoutshown") {
       ovalCutoutShown = paramValue;
@@ -755,23 +740,27 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
       hideInventoriesOnMove = paramValue;
     } else if(s1 == "soundenabled") {
       soundEnabled = paramValue;
-    }
-    else if(s1 == "alwaysshowpath" ) {
+    } else if(s1 == "alwaysshowpath" ) {
       alwaysShowPath = paramValue;
-    }
-    else if(s1 == "tooltipenabled" ) {
+    } else if(s1 == "tooltipenabled" ) {
       tooltipEnabled = paramValue;
+    } else if(s1 == "loglevel") {
+        logLevel = atoi(s2.c_str());
+        if(logLevel < 0 || logLevel > 3) {
+		  cerr << "Warning : in file " << CONFIG_FILE //_NAME 
+             << " invalid loglevel at line " << lineNumber 
+             << ", valid values are 0, 1, 2 and 3 . Ignoring line" << endl;
+             logLevel = 3; // Default value
+        }
     } else if( s1 == "enablescreenshots" ) {
 			enableScreenshots = paramValue;
-		}
-    else if(s1 == "monstertoughness" ) {
+    } else if(s1 == "monstertoughness" ) {
       monsterToughness = atoi(s2.c_str());
       if( monsterToughness < 0 ) monsterToughness = 0;
       if( monsterToughness > 2 ) monsterToughness = 2;
-    }
-    else if(s1 == "gamespeed"){
+    } else if(s1 == "gamespeed") {
         gamespeed = atoi(s2.c_str());
-        if(gamespeed < 0 || gamespeed > 4){
+        if(gamespeed < 0 || gamespeed > 4) {
 		  cerr << "Warning : in file " << CONFIG_FILE //_NAME 
              << " invalid gamespeed level at line " << lineNumber 
              << ", valid values are 0, 1, 2, 3 and 4 . Ignoring line" << endl;
@@ -1150,6 +1139,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set alwaysshowpath false" << endl;
   configFile << "set tooltipenabled true" << endl;
   configFile << "set tooltipinterval 50" << endl;
+  configFile << "set loglevel 3" << endl;
   configFile << "" << endl;
   configFile << "// Audio settings" << endl;
   configFile << "set soundenabled true" << endl;

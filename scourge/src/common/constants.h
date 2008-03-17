@@ -564,6 +564,13 @@ public:
   };
 
   enum {
+    LOGLEVEL_MINIMAL=0,
+    LOGLEVEL_PARTIAL,
+    LOGLEVEL_VERBOSE,
+    LOGLEVEL_FULL,
+  };
+
+  enum {
     ACTION_NO_ACTION=-1,
     ACTION_EAT_DRINK=0,
     ACTION_CAST_SPELL,
@@ -795,8 +802,7 @@ struct t3DModel
     int *pGlCommands;                   // The glCommands used to draw the model faster
 };
 
-// FIXME: only works in english, use only for upload text (cause of death) which is not internationalized.
-#define getAn( name ) ( ( name[0] == 'a' || name[0] == 'e' || name[0] == 'i' || name[0] == 'o' || name[0] == 'u' || name[0] == 'y' ? _( "an" ) : _( "a" ) ) )
+char *getAn( const char *name );
 
 typedef unsigned char byte;
 

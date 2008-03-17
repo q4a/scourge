@@ -63,6 +63,10 @@ std::string get_file_name(const std::string fileName ) {
 	return config;
 }
 
+char *getAn( const char *name ) { 
+	return ( name[0] == 'a' || name[0] == 'e' || name[0] == 'i' || name[0] == 'o' || name[0] == 'u' || name[0] == 'y' ? _( "an" ) : _( "a" ) );
+}
+
 //snprintf(s, sSize, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
 char *Constants::messages[][100] = {
 	{
