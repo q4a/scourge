@@ -648,7 +648,7 @@ void InfoGui::appendMagicItemInfo( char *description, Item *item ) {
           strcat( description, tmp );
           strcat( description, "|" );
         } else if( item->getDamageMultiplier() == 4 ) {
-          snprintf( tmp, TXT_SIZE, _( "Quad damage" ) );          
+          snprintf( tmp, TXT_SIZE, _( "Quad damage" ) );
           strcat( description, tmp );
           strcat( description, "|" );
         } else if( item->getDamageMultiplier() > 4 ) {
@@ -672,11 +672,11 @@ void InfoGui::appendMagicItemInfo( char *description, Item *item ) {
         if(item->getRpgItem()->isWeapon()) {
           snprintf(tmp, TXT_SIZE, _( "Extra damage of %1$s %2$s magic." ), 
                   item->describeMagicDamage(),
-                  item->getSchool()->getName());
+                  item->getSchool()->getDisplayName());
         } else {
           snprintf(tmp, TXT_SIZE, _( "Extra %d pts of %s magic resistance." ), 
                   item->getMagicResistance(),
-                  item->getSchool()->getName());
+                  item->getSchool()->getDisplayName());
         }
         strcat(description, tmp);
         strcat( description, "|" );
