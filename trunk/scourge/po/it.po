@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-03-16 10:08+0100\n"
+"POT-Creation-Date: 2008-03-19 07:52+0100\n"
 "PO-Revision-Date: 2007-10-08 23:05+0100\n"
 "Last-Translator: Claudio Canavese (CoD) <cod@fsfe.org>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -95,61 +95,61 @@ msgstr "%s si sente vulnerabile..."
 msgid "%s feels a loss of contentment."
 msgstr "%s sente svanire la contentezza."
 
-#: src/render/map.cpp:1882
+#: src/render/map.cpp:1898
 msgid "A tremor shakes the earth..."
 msgstr ""
 
-#: src/render/map.cpp:3133
+#: src/render/map.cpp:3159
 msgid "You need to name the map first."
 msgstr "Devi dare un nome alla mappa, prima."
 
-#: src/render/map.cpp:3330 src/render/map.cpp:3616
+#: src/render/map.cpp:3356 src/render/map.cpp:3642
 msgid "Enter a name of a map to load."
 msgstr "Inserite il nome di una mappa da caricare."
 
-#: src/render/map.cpp:3352
+#: src/render/map.cpp:3378
 msgid "Loading map"
 msgstr "Caricamento mappa"
 
-#: src/render/map.cpp:3357 src/dungeongenerator.cpp:594 src/mondrian.cpp:485
+#: src/render/map.cpp:3383 src/dungeongenerator.cpp:594 src/mondrian.cpp:485
 msgid "Loading theme"
 msgstr "Caricamento tema"
 
-#: src/render/map.cpp:3407
+#: src/render/map.cpp:3433
 msgid "Starting map"
 msgstr "Avvio mappa"
 
-#: src/render/map.cpp:3430
+#: src/render/map.cpp:3456
 msgid "Initializing map"
 msgstr "Inizializzazione mappa"
 
-#: src/render/map.cpp:3565
+#: src/render/map.cpp:3591
 msgid "Finishing map"
 msgstr "Completamento mappa"
 
-#: src/render/map.cpp:3571 src/rpg/monster.cpp:26 src/session.cpp:119
+#: src/render/map.cpp:3597 src/rpg/monster.cpp:26 src/session.cpp:119
 msgid "Loading Creatures"
 msgstr "Caricamento creature"
 
-#: src/render/map.cpp:3589
+#: src/render/map.cpp:3615
 msgid "Starting party"
 msgstr "Avvio gruppo"
 
-#: src/render/map.cpp:3609
+#: src/render/map.cpp:3635
 msgid "Map loaded: "
 msgstr "Mappa caricata: "
 
-#: src/render/map.cpp:3630
+#: src/render/map.cpp:3656
 #, fuzzy
 msgid "Can't find map: "
 msgstr "Non trovo la mappa %s"
 
-#: src/render/map.cpp:3640
+#: src/render/map.cpp:3666
 #, fuzzy
 msgid "Map header loaded: "
 msgstr "Intestazione della mappa caricata: %s"
 
-#: src/gui/textdialog.cpp:31 src/common/constants.cpp:123
+#: src/gui/textdialog.cpp:31 src/common/constants.cpp:127
 msgid "Information"
 msgstr "Informazione"
 
@@ -161,7 +161,7 @@ msgstr "Conferma"
 msgid "Ok"
 msgstr "Sì"
 
-#: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:93
+#: src/gui/confirmdialog.cpp:38 src/common/constants.cpp:97
 msgid "No"
 msgstr "No"
 
@@ -249,370 +249,379 @@ msgstr "Non può usare le seguenti armi:"
 msgid "Not allowed to use armor:"
 msgstr "Non può usare le seguenti armature:"
 
-#: src/common/constants.cpp:69
+#: src/common/constants.cpp:67
+#, fuzzy
+msgid "an"
+msgstr "Mano"
+
+#: src/common/constants.cpp:67
+msgid "a"
+msgstr ""
+
+#: src/common/constants.cpp:73
 msgid "Infamy awaits in the dungeons of Scourge!"
 msgstr "L'infamia aspetta nei dungeons di Scourge!"
 
-#: src/common/constants.cpp:70
+#: src/common/constants.cpp:74
 msgid "Another day, another sewer! Welcome to Scourge!"
 msgstr "Un nuovo giorno, una nuova fogna. Benvenuto in Scourge!"
 
-#: src/common/constants.cpp:71
+#: src/common/constants.cpp:75
 msgid "Happy hunting; welcome to Scourge!"
 msgstr "Buona caccia; benvenuto in Scourge!"
 
-#: src/common/constants.cpp:72
+#: src/common/constants.cpp:76
 msgid "That item is out of your reach"
 msgstr "Questo oggetto è fuori dalla tua portata"
 
-#: src/common/constants.cpp:73
+#: src/common/constants.cpp:77
 msgid "You can't touch that"
 msgstr "Non puoi toccare questo oggetto"
 
-#: src/common/constants.cpp:74
+#: src/common/constants.cpp:78
 msgid "You have to be closer to get that"
 msgstr "Devi essere più vicino"
 
-#: src/common/constants.cpp:75
+#: src/common/constants.cpp:79
 msgid "You are too far to reach it"
 msgstr "Sei troppo distante"
 
-#: src/common/constants.cpp:76
+#: src/common/constants.cpp:80
 msgid "The door is blocked"
 msgstr "La porta è bloccata"
 
-#: src/common/constants.cpp:77
+#: src/common/constants.cpp:81
 msgid "Something is blocking that door"
 msgstr "Qualcosa blocca questa porta"
 
-#: src/common/constants.cpp:78
+#: src/common/constants.cpp:82
 msgid "You can't use that door; something is in the way"
 msgstr "Non puoi usare questa porta: qualcosa la blocca"
 
-#: src/common/constants.cpp:79
+#: src/common/constants.cpp:83
 msgid "You are now in single-step mode"
 msgstr "Modalità singolo personaggio attivata"
 
-#: src/common/constants.cpp:80
+#: src/common/constants.cpp:84
 msgid "You are now in group mode"
 msgstr "Modalità di gruppo attivata"
 
-#: src/common/constants.cpp:81
+#: src/common/constants.cpp:85
 msgid "Paused: you have entered turn-based mode"
 msgstr "PAUSA: gioco in modalità a turni"
 
-#: src/common/constants.cpp:82
+#: src/common/constants.cpp:86
 msgid "Un-paused: you are in real-time mode"
 msgstr "FINE PAUSA: gioco in modalità tempo reale"
 
-#: src/common/constants.cpp:83 src/containergui.cpp:43 src/healdialog.cpp:49
+#: src/common/constants.cpp:87 src/containergui.cpp:43 src/healdialog.cpp:49
 #: src/tradedialog.cpp:55 src/optionsmenu.cpp:60 src/conversationgui.cpp:83
 #: src/donatedialog.cpp:50 src/traindialog.cpp:55 src/uncursedialog.cpp:49
 #: src/identifydialog.cpp:49 src/rechargedialog.cpp:49
 msgid "Close"
 msgstr "Chiudi"
 
-#: src/common/constants.cpp:84
+#: src/common/constants.cpp:88
 msgid "Drop Item"
 msgstr "Abbandona l'oggetto"
 
-#: src/common/constants.cpp:85
+#: src/common/constants.cpp:89
 msgid "Open Item"
 msgstr "Apri l'oggetto"
 
-#: src/common/constants.cpp:86
+#: src/common/constants.cpp:90
 msgid "Drag items to/from the list, Right click for info"
 msgstr "Trascinare per usare, click destro per informazioni"
 
-#: src/common/constants.cpp:87
+#: src/common/constants.cpp:91
 msgid "Play Mission"
 msgstr "Inizia la missione"
 
-#: src/common/constants.cpp:88
+#: src/common/constants.cpp:92
 msgid "Do you really want to exit this mission?"
 msgstr "Vuoi davvero abbandonare questa missione?"
 
-#: src/common/constants.cpp:89
+#: src/common/constants.cpp:93
 msgid "Teleport back to base?"
 msgstr "Vuoi davvero tornare alla base?"
 
-#: src/common/constants.cpp:90
+#: src/common/constants.cpp:94
 msgid "OK"
 msgstr "OK"
 
-#: src/common/constants.cpp:91 src/savegamedialog.cpp:55 src/mapeditor.cpp:306
+#: src/common/constants.cpp:95 src/savegamedialog.cpp:55 src/mapeditor.cpp:306
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/common/constants.cpp:92
+#: src/common/constants.cpp:96
 msgid "Yes"
 msgstr "Sì"
 
-#: src/common/constants.cpp:94
+#: src/common/constants.cpp:98
 msgid "Select a character who is alive and has leveled up."
 msgstr ""
 "Scegli un personaggio che sia vivo e che abbia appena guadagnato un livello"
 
-#: src/common/constants.cpp:95
+#: src/common/constants.cpp:99
 msgid "No skill points available."
 msgstr "Nessun punto abilità disponibile"
 
-#: src/common/constants.cpp:96
+#: src/common/constants.cpp:100
 msgid "Select a skill first."
 msgstr "Scegli un'abilità prima"
 
-#: src/common/constants.cpp:97
+#: src/common/constants.cpp:101
 msgid "S.C.O.U.R.G.E. dialog"
 msgstr "S.C.O.U.R.G.E. informazioni"
 
-#: src/common/constants.cpp:98
+#: src/common/constants.cpp:102
 msgid "Use gate to descend a level?"
 msgstr "Usare la porta per scendere di un livello?"
 
-#: src/common/constants.cpp:99
+#: src/common/constants.cpp:103
 msgid "Use gate to ascend a level?"
 msgstr "Usare la porta per salire di un livello?"
 
-#: src/common/constants.cpp:100
+#: src/common/constants.cpp:104
 msgid "A dead character cannot perform this action."
 msgstr "Un personaggio morto non può eseguire questa azione"
 
-#: src/common/constants.cpp:101
+#: src/common/constants.cpp:105
 msgid "hp:"
 msgstr "PF:"
 
-#: src/common/constants.cpp:102
+#: src/common/constants.cpp:106
 msgid "ac:"
 msgstr "CA:"
 
-#: src/common/constants.cpp:103
+#: src/common/constants.cpp:107
 msgid "Your magic fizzles and dies."
 msgstr "Il tuo incantesimo si dissolve in uno sfrigolio."
 
-#: src/common/constants.cpp:104
+#: src/common/constants.cpp:108
 msgid "Only the roaches are impressed by your mumbled words."
 msgstr "Coi tuoi mormorii hai impressionato solo gli scarafaggi."
 
-#: src/common/constants.cpp:105
+#: src/common/constants.cpp:109
 msgid "The silence is broken only by some crickets nearby."
 msgstr "Il silenzio è rotto solo dal canto di qualche grillo poco lontano."
 
-#: src/common/constants.cpp:106
+#: src/common/constants.cpp:110
 msgid "Bazzoomm! A small cloud of smoke rises to the ceiling."
 msgstr "Bazzoomm! Una piccola nuvola di fumo si alza verso l'alto"
 
-#: src/common/constants.cpp:107
+#: src/common/constants.cpp:111
 msgid "Your character cannot equip that item."
 msgstr "Il tuo personaggio non può utilizzare questo oggetto."
 
-#: src/common/constants.cpp:108
+#: src/common/constants.cpp:112
 msgid "Fill out the server details, first."
 msgstr "Riempi i dati relativi al server, prima."
 
-#: src/common/constants.cpp:109
+#: src/common/constants.cpp:113
 msgid "Unable to connect to server."
 msgstr "Non riesco a connettermi al server"
 
-#: src/common/constants.cpp:110
+#: src/common/constants.cpp:114
 msgid "You hear a very loud, metallic sound nearby."
 msgstr "Senti chiaramente un forte suono metallico provenire da poco distante."
 
-#: src/common/constants.cpp:111
+#: src/common/constants.cpp:115
 msgid "Something clicks."
 msgstr "Qualcosa è scattato."
 
-#: src/common/constants.cpp:112
+#: src/common/constants.cpp:116
 msgid "The loud twang doesn't help; this is freaky enough already."
 msgstr ""
 "Il forte suono metallico non serve a molto: è tutto già abbastanza strambo."
 
-#: src/common/constants.cpp:113
+#: src/common/constants.cpp:117
 msgid "A muffled, metalic, grating noise echoes from the dark."
 msgstr "Un cigolio mettallico risuona soffocato nell'oscurità"
 
-#: src/common/constants.cpp:114
+#: src/common/constants.cpp:118
 msgid ""
 "You've done something... you're not sure what but you hope it's had dinner."
 msgstr "Senti un rumore... qualunque cosa sia speri abbia già pranzato."
 
-#: src/common/constants.cpp:115
+#: src/common/constants.cpp:119
 msgid "You feel the resonance of an almost sub-tonal bass note."
 msgstr "Una nota bassa echeggia nel buio..."
 
-#: src/common/constants.cpp:116
+#: src/common/constants.cpp:120
 msgid "An omnious sound floats from a distant corner."
 msgstr "Avverti un suono minaccioso proveniente da lontano."
 
-#: src/common/constants.cpp:117
+#: src/common/constants.cpp:121
 msgid "Suck! It is locked shut!"
 msgstr "Maledizione! È sbarrata!"
 
-#: src/common/constants.cpp:118
+#: src/common/constants.cpp:122
 msgid "Try as you might, you can't open it."
 msgstr "Prova finché vuoi ma non la riuscirai ad aprire."
 
-#: src/common/constants.cpp:119
+#: src/common/constants.cpp:123
 msgid "Perhaps it's locked."
 msgstr "Forse è bloccata"
 
-#: src/common/constants.cpp:120
+#: src/common/constants.cpp:124
 msgid "This teleporter is off-line."
 msgstr "Questo portale è inattivo"
 
-#: src/common/constants.cpp:121
+#: src/common/constants.cpp:125
 msgid "Nothing happens."
 msgstr "Non succede niente."
 
-#: src/common/constants.cpp:122
+#: src/common/constants.cpp:126
 msgid "The teleporter blinks unimpressively."
 msgstr "Il portale risplende in maniera non molto impressionante."
 
-#: src/common/constants.cpp:124
+#: src/common/constants.cpp:128
 msgid "Delete old saved game?"
 msgstr "Cancellare il vecchio salvataggio?"
 
-#: src/common/constants.cpp:125
+#: src/common/constants.cpp:129
 msgid "You're not experienced enough to equip it yet."
 msgstr "Non hai ancora abbastanza esperienza per utilizzare questo oggetto."
 
-#: src/common/constants.cpp:126
+#: src/common/constants.cpp:130
 msgid "Change key"
 msgstr "Cambia tasto"
 
-#: src/common/constants.cpp:127
+#: src/common/constants.cpp:131
 msgid "Waiting for new key (Esc to cancel)"
 msgstr "Attendo il nuovo tasto (Premi ESC per annullare)"
 
-#: src/common/constants.cpp:128
+#: src/common/constants.cpp:132
 msgid "Conversation"
 msgstr "Conversazione"
 
-#: src/common/constants.cpp:129 src/conversationgui.cpp:108
+#: src/common/constants.cpp:133 src/conversationgui.cpp:108
 msgid "Trade"
 msgstr "Commercia"
 
-#: src/common/constants.cpp:130 src/conversationgui.cpp:104
+#: src/common/constants.cpp:134 src/conversationgui.cpp:104
 msgid "Train"
 msgstr "Allena"
 
-#: src/common/constants.cpp:131
+#: src/common/constants.cpp:135
 msgid "Healing Services"
 msgstr "Servizio di cura"
 
-#: src/common/constants.cpp:132
+#: src/common/constants.cpp:136
 msgid "Donate to Temple"
 msgstr "Donazione al Tempio"
 
-#: src/common/constants.cpp:133
+#: src/common/constants.cpp:137
 msgid "You don't meet the prerequisites for this capability."
 msgstr "Non possiedi i prerequisiti per questo talento."
 
-#: src/common/constants.cpp:134
+#: src/common/constants.cpp:138
 msgid "You cannot activate an automatic capability."
 msgstr "Non puoi attivare un talento automatico"
 
-#: src/common/constants.cpp:135
+#: src/common/constants.cpp:139
 msgid "A two handed item requires two free hands."
 msgstr "Un oggetto a due mani richiede due mani libere."
 
-#: src/common/constants.cpp:136
+#: src/common/constants.cpp:140
 msgid "TRAIN"
 msgstr "ALLENA"
 
-#: src/common/constants.cpp:137
+#: src/common/constants.cpp:141
 msgid "SKILL"
 msgstr "ABILITÀ"
 
-#: src/common/constants.cpp:138
+#: src/common/constants.cpp:142
 msgid "A magical force turns the lock's tumbles to open."
 msgstr "Una magica forza fa scattare i meccanismi della serratura."
 
-#: src/common/constants.cpp:139
+#: src/common/constants.cpp:143
 msgid "Some kind of summoned energy opens the lock."
 msgstr "Qualche tipo di energia evocata apre la serratura."
 
-#: src/common/constants.cpp:140
+#: src/common/constants.cpp:144
 #, fuzzy
 msgid "Killed by"
 msgstr "Arco assassino"
 
-#: src/common/constants.cpp:141
+#: src/common/constants.cpp:145
 msgid "Annihilated by"
 msgstr ""
 
-#: src/common/constants.cpp:142
+#: src/common/constants.cpp:146
 #, fuzzy
 msgid "Slain by"
 msgstr "assassino"
 
-#: src/common/constants.cpp:143
+#: src/common/constants.cpp:147
 msgid "Brought low by"
 msgstr ""
 
-#: src/common/constants.cpp:144
+#: src/common/constants.cpp:148
 msgid "Dropped by"
 msgstr ""
 
-#: src/common/constants.cpp:145
+#: src/common/constants.cpp:149
 msgid "Ruined by"
 msgstr ""
 
-#: src/common/constants.cpp:146
+#: src/common/constants.cpp:150
 msgid "Extinguished by"
 msgstr ""
 
-#: src/common/constants.cpp:147
+#: src/common/constants.cpp:151
 msgid "Laid low by"
 msgstr ""
 
-#: src/common/constants.cpp:148
+#: src/common/constants.cpp:152
 #, fuzzy
 msgid "Uncurse items"
 msgstr "Usa oggetto"
 
-#: src/common/constants.cpp:149
+#: src/common/constants.cpp:153
 #, fuzzy
 msgid "Recharge items"
 msgstr "Incantare oggetti"
 
-#: src/common/constants.cpp:150
+#: src/common/constants.cpp:154
 #, fuzzy
 msgid "Identify items"
 msgstr "Identificare oggetti"
 
-#: src/common/constants.cpp:170
+#: src/common/constants.cpp:174
 msgid "Lesser"
 msgstr "minore"
 
-#: src/common/constants.cpp:171
+#: src/common/constants.cpp:175
 msgid "Greater"
 msgstr "maggiore"
 
-#: src/common/constants.cpp:172
+#: src/common/constants.cpp:176
 msgid "Champion"
 msgstr "Campione"
 
-#: src/common/constants.cpp:173
+#: src/common/constants.cpp:177
 msgid "Divine"
 msgstr "Divino"
 
-#: src/common/constants.cpp:210
+#: src/common/constants.cpp:214
 msgid "commoner"
 msgstr "cittadino comune"
 
-#: src/common/constants.cpp:211
+#: src/common/constants.cpp:215
 msgid "merchant"
 msgstr "mercante"
 
-#: src/common/constants.cpp:212
+#: src/common/constants.cpp:216
 msgid "healer"
 msgstr "guaritore"
 
-#: src/common/constants.cpp:213
+#: src/common/constants.cpp:217
 msgid "sage"
 msgstr "saggio"
 
-#: src/common/constants.cpp:214
+#: src/common/constants.cpp:218
 msgid "trainer"
 msgstr "allenatore"
 
@@ -827,185 +836,185 @@ msgstr "max"
 msgid "%s notices a trap!"
 msgstr "%1$s individua una trappola!"
 
-#: src/creature.cpp:2986
+#: src/creature.cpp:2988
 #, fuzzy, c-format
 msgid "%s notices a secret door!"
 msgstr "%1$s individua una porta segreta!"
 
-#: src/creature.cpp:3005
+#: src/creature.cpp:3007
 #, c-format
 msgid "%1$s blunders into a trap and takes %2$d points of damage!"
 msgstr "%1$s casca in una trappola e subisce %2$d punti di danno!"
 
-#: src/creature.cpp:3019
+#: src/creature.cpp:3021
 #, fuzzy, c-format
 msgid "%s attempts to disable the trap:"
 msgstr "%1$s cerca di disattivare la trappola:"
 
-#: src/creature.cpp:3023
+#: src/creature.cpp:3025
 msgid "   and succeeds!"
 msgstr ""
 
-#: src/creature.cpp:3030
+#: src/creature.cpp:3032
 #, c-format
 msgid "    and fails! %1$s takes %2$d points of damage!"
 msgstr "    e fallisce! %1$s subisce %2$d punti di danno!"
 
-#: src/creature.cpp:3036
+#: src/creature.cpp:3038
 #, fuzzy
 msgid "This trap is already disabled."
 msgstr "Questo oggetto è già incantato."
 
-#: src/userconfiguration.cpp:872
+#: src/userconfiguration.cpp:861
 #, c-format
 msgid "S.C.O.U.R.G.E.: Heroes of Lesser Renown\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:873
+#: src/userconfiguration.cpp:862
 #, c-format
 msgid ""
 "A 3D, roguelike game of not quite epic proportions.\n"
 "\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:874
+#: src/userconfiguration.cpp:863
 #, fuzzy, c-format
 msgid "Usage:\n"
 msgstr "saggio"
 
-#: src/userconfiguration.cpp:875
+#: src/userconfiguration.cpp:864
 #, c-format
 msgid ""
 "scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:876
+#: src/userconfiguration.cpp:865
 #, fuzzy, c-format
 msgid "version: %s\n"
 msgstr "Scourge versione %s"
 
-#: src/userconfiguration.cpp:878
+#: src/userconfiguration.cpp:867
 #, fuzzy, c-format
 msgid "[Multiplayer support]\n"
 msgstr "Impostazioni gioco via rete"
 
-#: src/userconfiguration.cpp:881
+#: src/userconfiguration.cpp:870
 #, fuzzy, c-format
 msgid "[Sound support]\n"
 msgstr "[Suono]"
 
-#: src/userconfiguration.cpp:883
+#: src/userconfiguration.cpp:872
 #, fuzzy, c-format
 msgid ""
 "\n"
 "Options:\n"
 msgstr "Opzioni"
 
-#: src/userconfiguration.cpp:884
+#: src/userconfiguration.cpp:873
 #, c-format
 msgid "\tf - disable fullscreen mode\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:885
+#: src/userconfiguration.cpp:874
 #, fuzzy, c-format
 msgid "\td - disable double buffering\n"
 msgstr "Usa double buffering"
 
-#: src/userconfiguration.cpp:886
+#: src/userconfiguration.cpp:875
 #, fuzzy, c-format
 msgid "\tp - disable hardware palette\n"
 msgstr "Usa palette hardware"
 
-#: src/userconfiguration.cpp:887
+#: src/userconfiguration.cpp:876
 #, c-format
 msgid "\tr - disable resizable window\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:888
+#: src/userconfiguration.cpp:877
 #, fuzzy, c-format
 msgid "\tH - force hardware surface\n"
 msgstr "Forza superfici hardware"
 
-#: src/userconfiguration.cpp:889
+#: src/userconfiguration.cpp:878
 #, fuzzy, c-format
 msgid "\tS - force software surface\n"
 msgstr "Forza superfici software"
 
-#: src/userconfiguration.cpp:890
+#: src/userconfiguration.cpp:879
 #, fuzzy, c-format
 msgid "\ta - disable hardware acceleration\n"
 msgstr "Usa accelerazione hardware"
 
-#: src/userconfiguration.cpp:891
+#: src/userconfiguration.cpp:880
 #, c-format
 msgid "\th,?,--help - show this info\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:892
+#: src/userconfiguration.cpp:881
 #, fuzzy, c-format
 msgid "\ts - disable stencil buffer\n"
 msgstr "Usa stencil buffer"
 
-#: src/userconfiguration.cpp:893
+#: src/userconfiguration.cpp:882
 #, fuzzy, c-format
 msgid "\tm - disable multitexturing\n"
 msgstr "Usa multitexturing"
 
-#: src/userconfiguration.cpp:894
+#: src/userconfiguration.cpp:883
 #, c-format
 msgid "\t--test - list card's supported video modes\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:895
+#: src/userconfiguration.cpp:884
 #, c-format
 msgid "\t--test-config - print out the file configuration and exit\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:896
+#: src/userconfiguration.cpp:885
 #, c-format
 msgid ""
 "\t--run-tests [path] - run internal tests of the rpg engine and save the "
 "result in html in the $path dir\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:897
+#: src/userconfiguration.cpp:886
 #, c-format
 msgid "\t--version - print the build version\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:898
+#: src/userconfiguration.cpp:887
 #, c-format
 msgid "\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:899
+#: src/userconfiguration.cpp:888
 #, c-format
 msgid "\t--widthXX - use XX pixels for the screen width\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:900
+#: src/userconfiguration.cpp:889
 #, c-format
 msgid "\t--heightXX - use XX pixels for the screen height\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:901
+#: src/userconfiguration.cpp:890
 #, c-format
 msgid ""
 "\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-"
 "everything\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:902
+#: src/userconfiguration.cpp:891
 #, c-format
 msgid "\t--themeXYZ - use gui theme XYZ to draw the ui.\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:903
+#: src/userconfiguration.cpp:892
 #, c-format
 msgid "\t--debugtheme - use the debug theme only to for wall textures.\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:904
+#: src/userconfiguration.cpp:893
 #, c-format
 msgid ""
 "\n"
@@ -1023,44 +1032,44 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:906
+#: src/userconfiguration.cpp:895
 #, fuzzy, c-format
 msgid "Multiplayer options:\n"
 msgstr "Impostazioni gioco via rete"
 
-#: src/userconfiguration.cpp:907
+#: src/userconfiguration.cpp:896
 #, c-format
 msgid "\t--serverPORT - run a standalone server w/o a ui on PORT\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:908
+#: src/userconfiguration.cpp:897
 #, c-format
 msgid ""
 "\t--clientHOST:PORT,USERNAME - run a standalone admin client w/o a ui. "
 "Connect to server HOST:PORT as USERNAME.\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:911
+#: src/userconfiguration.cpp:900
 #, c-format
 msgid "Sound options:\n"
 msgstr ""
 
-#: src/userconfiguration.cpp:912
+#: src/userconfiguration.cpp:901
 #, c-format
 msgid "\t--nosound - run without sound\n"
 msgstr ""
 
-#: src/shapepalette.cpp:27 src/shapepalette.cpp:396 src/shapepalette.cpp:420
-#: src/shapepalette.cpp:443 src/shapepalette.cpp:478 src/shapepalette.cpp:651
-#: src/shapepalette.cpp:693 src/shapepalette.cpp:754 src/session.cpp:98
+#: src/shapepalette.cpp:27 src/shapepalette.cpp:395 src/shapepalette.cpp:419
+#: src/shapepalette.cpp:442 src/shapepalette.cpp:477 src/shapepalette.cpp:650
+#: src/shapepalette.cpp:692 src/shapepalette.cpp:753 src/session.cpp:98
 msgid "Loading Shapes"
 msgstr "Caricamento forme"
 
-#: src/shapepalette.cpp:676 src/board.cpp:62
+#: src/shapepalette.cpp:675 src/board.cpp:62
 msgid "Loading Sounds"
 msgstr "Caricamento suoni"
 
-#: src/shapepalette.cpp:872
+#: src/shapepalette.cpp:871
 msgid "Loading Locations"
 msgstr "Caricamento luoghi"
 
@@ -1116,16 +1125,16 @@ msgstr "Info"
 msgid "Get All"
 msgstr "Prendi tutto"
 
-#: src/containergui.cpp:141
+#: src/containergui.cpp:141 src/containergui.cpp:151
 msgid "There is not enough room in your backpack for everything."
 msgstr "Non c'è abbastanza spazio nel tuo zaino per tutto"
 
-#: src/containergui.cpp:157 src/scourge.cpp:1225
+#: src/containergui.cpp:165 src/scourge.cpp:1225
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr "%1$s è riposto in %2$s."
 
-#: src/containergui.cpp:167 src/scourge.cpp:1222
+#: src/containergui.cpp:175 src/scourge.cpp:1222
 msgid "The item won't fit in that container!"
 msgstr "L'oggetto non entrerà nel contenitore!"
 
@@ -1719,75 +1728,98 @@ msgstr "Mostra suggerimenti"
 msgid "Tooltip Delay:"
 msgstr "Ritardo suggerimenti:"
 
+#: src/optionsmenu.cpp:106
+#, fuzzy
+msgid "Log level"
+msgstr "livello"
+
+#: src/optionsmenu.cpp:107
+#, fuzzy
+msgid "Minimal"
+msgstr "Gennaio"
+
 #: src/optionsmenu.cpp:108
+#, fuzzy
+msgid "Partial"
+msgstr "Gruppo"
+
+#: src/optionsmenu.cpp:109
+msgid "Verbose"
+msgstr ""
+
+#: src/optionsmenu.cpp:110
+msgid "Full"
+msgstr ""
+
+#: src/optionsmenu.cpp:115
 msgid "Screen resolution"
 msgstr "Risoluzione schermo"
 
-#: src/optionsmenu.cpp:118
+#: src/optionsmenu.cpp:125
 msgid "Fullscreen"
 msgstr "Pieno schermo"
 
-#: src/optionsmenu.cpp:120
+#: src/optionsmenu.cpp:127
 msgid "Window resizeable"
 msgstr "Finestra ridimensionabile"
 
-#: src/optionsmenu.cpp:122
+#: src/optionsmenu.cpp:129
 msgid "Use double buffering"
 msgstr "Usa double buffering"
 
-#: src/optionsmenu.cpp:124
+#: src/optionsmenu.cpp:131
 msgid "Use stencil buffer"
 msgstr "Usa stencil buffer"
 
-#: src/optionsmenu.cpp:126
+#: src/optionsmenu.cpp:133
 msgid "Force hardware surfaces"
 msgstr "Forza superfici hardware"
 
-#: src/optionsmenu.cpp:128
+#: src/optionsmenu.cpp:135
 msgid "Force software surfaces"
 msgstr "Forza superfici software"
 
-#: src/optionsmenu.cpp:130
+#: src/optionsmenu.cpp:137
 msgid "Use multitexturing"
 msgstr "Usa multitexturing"
 
-#: src/optionsmenu.cpp:132
+#: src/optionsmenu.cpp:139
 msgid "Use hardware palette"
 msgstr "Usa palette hardware"
 
-#: src/optionsmenu.cpp:134
+#: src/optionsmenu.cpp:141
 msgid "Use hardware acceleration"
 msgstr "Usa accelerazione hardware"
 
-#: src/optionsmenu.cpp:136
+#: src/optionsmenu.cpp:143
 msgid "Shadows"
 msgstr "Ombre"
 
-#: src/optionsmenu.cpp:137
+#: src/optionsmenu.cpp:144
 msgid "None"
 msgstr "Nessuna"
 
-#: src/optionsmenu.cpp:138
+#: src/optionsmenu.cpp:145
 msgid "Some"
 msgstr "Qualcuna"
 
-#: src/optionsmenu.cpp:139
+#: src/optionsmenu.cpp:146
 msgid "All"
 msgstr "Tutte"
 
-#: src/optionsmenu.cpp:146
+#: src/optionsmenu.cpp:153
 msgid "Music Volume:"
 msgstr "Volume musica:"
 
-#: src/optionsmenu.cpp:149
+#: src/optionsmenu.cpp:156
 msgid "Effects Volume:"
 msgstr "Volume effetti:"
 
-#: src/optionsmenu.cpp:375
+#: src/optionsmenu.cpp:390
 msgid "Some changes will only take effect upon restart"
 msgstr "Alcuni cambiamenti saranno attivi dopo un riavvio"
 
-#: src/optionsmenu.cpp:378
+#: src/optionsmenu.cpp:393
 msgid "Saved: some options require a restart to take effect."
 msgstr "Salvato: alcune opzioni richiedono un riavvio del gioco."
 
@@ -2165,7 +2197,7 @@ msgstr "Questo oggetto non ha più cariche"
 msgid "You cannot use this item."
 msgstr "Non puoi usare questo oggetto."
 
-#: src/scourge.cpp:3962
+#: src/scourge.cpp:3997
 msgid "The door splinters into many, tiny pieces!"
 msgstr "La porta si frantuma in tanti, piccoli pezzi!"
 
@@ -2294,7 +2326,7 @@ msgstr "Aggiunta portali"
 
 #: src/terraingenerator.cpp:175
 msgid "Adding mission objectives"
-msgstr "Aggiungo obbiettivi missione"
+msgstr "Aggiunta obbiettivi missione"
 
 #: src/terraingenerator.cpp:181
 msgid "Adding traps"
@@ -2318,11 +2350,11 @@ msgstr "Calcolo i valori delle stanze"
 
 #: src/terraingenerator.cpp:197
 msgid "Adding monsters"
-msgstr "Aggiungo mostri"
+msgstr "Aggiunta mostri"
 
 #: src/terraingenerator.cpp:202
 msgid "Adding items"
-msgstr "Aggiungo oggetti"
+msgstr "Aggiunta oggetti"
 
 #: src/terraingenerator.cpp:205
 msgid "Adding furniture"
@@ -2596,9 +2628,9 @@ msgid "(L:%d) (M:%d) %s"
 msgstr ""
 
 #: src/infogui.cpp:418
-#, fuzzy, c-format
+#, c-format
 msgid "School: %s"
-msgstr "Scuola di magia: "
+msgstr "Scuola di magia: %s"
 
 #: src/infogui.cpp:422 src/infogui.cpp:506 src/infogui.cpp:534
 #, c-format
@@ -3510,175 +3542,175 @@ msgstr ""
 "dei bug:Abe & Asha||(consultate il file  README per dettagli sui "
 "contributi.)||"
 
-#: ../scourge_data/config/map.cfg:215
+#: ../scourge_data/config/map.cfg:228
 msgid "Pale weeds grow over these ancient walls"
 msgstr "Pallide erbacce crescono tra queste antiche mura"
 
-#: ../scourge_data/config/map.cfg:218
+#: ../scourge_data/config/map.cfg:231
 msgid "The walls crumble with age, yet appear sturdy"
 msgstr "Il muro appare ancora solido, anche se sgretolato dai secoli"
 
-#: ../scourge_data/config/map.cfg:221
+#: ../scourge_data/config/map.cfg:234
 msgid "Dark limestone walls mark these corridors"
 msgstr "Muri di scura pietra calcarea si perdono nell'oscurità"
 
-#: ../scourge_data/config/map.cfg:227
+#: ../scourge_data/config/map.cfg:240
 msgid "It appears to be a thick wooden door"
 msgstr "Sembra essere una spessa porta di legno"
 
-#: ../scourge_data/config/map.cfg:230
+#: ../scourge_data/config/map.cfg:243
 msgid "A dungeon door made of wood"
 msgstr "La classica porta di legno di un dungeon"
 
-#: ../scourge_data/config/map.cfg:233
+#: ../scourge_data/config/map.cfg:246
 msgid "The aged oak door is scarred by knife points and torch flame"
 msgstr ""
 "La vecchia porta di quercia è segnata da graffi di coltello e bruciature di "
 "torcia"
 
-#: ../scourge_data/config/map.cfg:239
+#: ../scourge_data/config/map.cfg:252
 msgid "The door frames seem to be made of some hard wood"
 msgstr ""
 "Gli stipiti della porta sembrano fatti di un qualche legno molto robusto"
 
-#: ../scourge_data/config/map.cfg:242
+#: ../scourge_data/config/map.cfg:255
 msgid "The wood around the doors is reinforced by metal nails"
 msgstr "Il legno attorno alla porta è rinforzato con chiodi di metallo"
 
-#: ../scourge_data/config/map.cfg:248
+#: ../scourge_data/config/map.cfg:261
 msgid "A torch blazes nearby"
 msgstr "Una torcia arde poco distante"
 
-#: ../scourge_data/config/map.cfg:251
+#: ../scourge_data/config/map.cfg:264
 msgid "The light is firmly attached to the wall, you cannot get it"
 msgstr "La luce è ben fissata al muro, non puoi prenderla"
 
-#: ../scourge_data/config/map.cfg:254
+#: ../scourge_data/config/map.cfg:267
 msgid "It is a burning torch"
 msgstr "È una torcia che brucia"
 
-#: ../scourge_data/config/map.cfg:260
+#: ../scourge_data/config/map.cfg:273
 msgid "A large wooden board that describes available missions"
-msgstr "Una grande lavagna di legno che elenca le varie missioni possibili"
+msgstr "Un grosso tabellone di legno che elenca le varie missioni possibili"
 
-#: ../scourge_data/config/map.cfg:263
+#: ../scourge_data/config/map.cfg:276
 msgid "Click on the board to learn about your missions"
-msgstr "Clicca sulla lavagna per sapere di più sulle tue missioni"
+msgstr "Clicca sul tabellone per sapere di più sulle tue missioni"
 
-#: ../scourge_data/config/map.cfg:266
+#: ../scourge_data/config/map.cfg:279
 msgid "The corporate 'brains' of S.C.O.U.R.G.E. inc."
 msgstr "Il 'cervello' centrale della S.C.O.U.R.G.E. inc."
 
-#: ../scourge_data/config/map.cfg:272
+#: ../scourge_data/config/map.cfg:285
 msgid "A burning brazier"
 msgstr "Un braciere acceso"
 
-#: ../scourge_data/config/map.cfg:275
+#: ../scourge_data/config/map.cfg:288
 msgid "A brazier radiates heat nearby"
 msgstr "Un braciere irradia il suo calore nelle vicinanze"
 
-#: ../scourge_data/config/map.cfg:281
+#: ../scourge_data/config/map.cfg:294
 msgid "You see a shiny marble column"
 msgstr "Vedi una lucida colonna di marmo"
 
-#: ../scourge_data/config/map.cfg:284
+#: ../scourge_data/config/map.cfg:297
 msgid "The column supports the ceiling"
 msgstr "La colonna regge il soffitto"
 
-#: ../scourge_data/config/map.cfg:290
+#: ../scourge_data/config/map.cfg:303
 msgid "This teleporter is here courtesy of the management"
 msgstr "Questo portale è qui per gentile concessione della direzione"
 
-#: ../scourge_data/config/map.cfg:293
+#: ../scourge_data/config/map.cfg:306
 msgid "This teleporter can take you back to headquarters"
 msgstr "Questo portale può riportarti al quartier generale"
 
-#: ../scourge_data/config/map.cfg:296
+#: ../scourge_data/config/map.cfg:309
 msgid "It is a teleporter"
 msgstr "È un portale magico"
 
-#: ../scourge_data/config/map.cfg:302
+#: ../scourge_data/config/map.cfg:315
 msgid "These stairs lead to another level"
 msgstr "Queste scale portano ad un altro livello"
 
-#: ../scourge_data/config/map.cfg:305
+#: ../scourge_data/config/map.cfg:318
 msgid "Stairs leading into darkness"
 msgstr "Scale che conducono nel buio"
 
-#: ../scourge_data/config/map.cfg:308
+#: ../scourge_data/config/map.cfg:321
 msgid "You see a flight of stairs"
 msgstr "Vedi una rampa di scale"
 
-#: ../scourge_data/config/map.cfg:314
+#: ../scourge_data/config/map.cfg:327
 msgid "It's a rusty lever."
 msgstr "È una leva arrugginita"
 
-#: ../scourge_data/config/map.cfg:317
+#: ../scourge_data/config/map.cfg:330
 msgid "It is best to leave that alone."
 msgstr "È meglio non toccarla"
 
-#: ../scourge_data/config/map.cfg:320
+#: ../scourge_data/config/map.cfg:333
 msgid "Touch it: it may add new germs to your collection."
 msgstr "Toccala: potrebbe aggiungere nuovi germi alla tua collezione"
 
-#: ../scourge_data/config/map.cfg:326
+#: ../scourge_data/config/map.cfg:339
 msgid "It's a calm pool of liquid radiating energy."
 msgstr "Una vasca riempita di un liquido calmo che irradia energia"
 
-#: ../scourge_data/config/map.cfg:329
+#: ../scourge_data/config/map.cfg:342
 msgid "It appears to be a shallow pool of liquid."
 msgstr "Sembra essere una vasca poco profonda piena di liquido"
 
-#: ../scourge_data/config/map.cfg:335
+#: ../scourge_data/config/map.cfg:348
 msgid "This teleporter smells faintly of sulphur."
 msgstr "Questo portale odora vagamente di zolfo"
 
-#: ../scourge_data/config/map.cfg:338
+#: ../scourge_data/config/map.cfg:351
 msgid "It is the fabled red teleporter!"
 msgstr "È il leggendario portale purpureo!"
 
-#: ../scourge_data/config/map.cfg:341
+#: ../scourge_data/config/map.cfg:354
 msgid "Where does this teleporter lead?"
 msgstr "Dove condurrà questo portale?"
 
-#: ../scourge_data/config/map.cfg:347
+#: ../scourge_data/config/map.cfg:360
 msgid "A sturdy wooden column."
 msgstr "Una robusta colonna di legno"
 
-#: ../scourge_data/config/map.cfg:353
+#: ../scourge_data/config/map.cfg:366
 msgid "A rack for our less fortunate guests."
 msgstr "Una gogna per i nostri ospiti meno fortunati"
 
-#: ../scourge_data/config/map.cfg:359
+#: ../scourge_data/config/map.cfg:372
 msgid "You see dense vegetation."
 msgstr "Vedi una folta vegetazione"
 
-#: ../scourge_data/config/map.cfg:362
+#: ../scourge_data/config/map.cfg:375
 msgid "Some plants grow here."
 msgstr "Alcune piante crescono da queste parti"
 
-#: ../scourge_data/config/map.cfg:368
+#: ../scourge_data/config/map.cfg:381
 msgid "Old ruins of forgotten kingdoms litter the grounds."
 msgstr "Antiche rovine di un regno ormai dimenticato."
 
-#: ../scourge_data/config/map.cfg:371
+#: ../scourge_data/config/map.cfg:384
 msgid "Moss and lichens grow on these crumbling stones."
 msgstr "Su queste pietre sgretolate crescono muschi e licheni."
 
-#: ../scourge_data/config/map.cfg:377
+#: ../scourge_data/config/map.cfg:390
 msgid "The wisdom of ages is scrawled upon the immense trunk of this tree."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:380
+#: ../scourge_data/config/map.cfg:393
 msgid "You hear a gentle humming coming from the branches of this giant tree."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:383
+#: ../scourge_data/config/map.cfg:396
 msgid ""
 "The images upon the gnarled bark of this unusual tree seems to tell stories."
 msgstr ""
 
-#: ../scourge_data/config/map.cfg:389
+#: ../scourge_data/config/map.cfg:402
 msgid "A sturdy roof adorns this small cottege."
 msgstr ""
 
@@ -7479,14 +7511,13 @@ msgid ""
 msgstr ""
 "La solita storia: un mago poco esperto di nome Sabien ha evocato e perso il "
 "controllo di un demone minore. Nella lotta col demone è riuscito ad "
-"intrappolare sé stesso nella dimensione della Nausea Estrema.||Nonostante in "
-"questo caso sembri ewidente che l'uomo si trovi in una situazione "
-"irrisolvibile, è sempre una buona cosa cercare di aiutare un utenre di "
-"magia. Non si può mai dire: persino la persona più incapace può rivelarsi "
-"utile in futuro!||Perciò è imperativo che completiate la missione: andate e "
-"recuperate la favolosa Verga della Nausea che Sabien teneva al sicuro nella "
-"sua dimora. Riportatela al quartier generale, così l'aiutante di Sabien "
-"potrà riportare indietro il suo maestro."
+"intrappolare sé stesso nella dimensione della Nausea Estrema.||Nonostante "
+"questa sembri una di quelle situazioni senza speranze, è sempre una buona "
+"cosa cercare di aiutare un utente di magia. Non si può mai dire: persino la "
+"persona più incapace può rivelarsi utile in futuro!||Perciò è imperativo che "
+"completiate la missione: andate e recuperate la favolosa Verga della Nausea "
+"che Sabien teneva al sicuro nella sua dimora. Riportatela al quartier "
+"generale, così l'aiutante di Sabien potrà riportare indietro il suo maestro."
 
 #: ../scourge_data/config/mission.cfg:115
 msgid ""
@@ -7511,13 +7542,15 @@ msgstr ""
 "che portando a termine questa missione ci potremmo fare un potente alleato!"
 
 #: ../scourge_data/config/mission.cfg:116
-#, fuzzy
 msgid ""
 "Thanks to your heroic efforts $Sabien (the hapless wizard) is safely at home "
-"again! He vows to "
+"again! He vows to 'do something grand' for us in the near future. Actually, "
+"this worries me far more than most missions we accept..."
 msgstr ""
 "Grazie ai vostri eroici sforzi $Sabien (il mago sfortunato) è di nuovo al "
-"sicuro a casa! "
+"sicuro a casa! Sostiene di voler fare 'qualcosa di grandioso' per noi nel "
+"prossimo futuro. Non so perché ma questa cosa mi preoccupa più della maggior "
+"parte delle missioni che accettiamo di solito..."
 
 #: ../scourge_data/config/mission.cfg:117
 msgid ""
@@ -7545,13 +7578,13 @@ msgstr ""
 "Forse vi ricorderete di Sabien, il mago che abbiamo salvato dalla dimensione "
 "della Nausea Estrema. Sembra che sia di nuovo nei guai. Questa volta pare "
 "sia stato rapito da un gruppo di razziatori che si fa chiamare Ordine del "
-"Pony Grigio. Nonostante non sia molto chiaro perché un gruppo di banditi "
-"debba rapire un vecchio mago senza avere un obbiettivo in mente, l'uomo ci "
-"ha chiesto di recuperare il suo scrigno e di pagare ai sequestratori quanto "
-"essi chiedono. Il resto del tesoro lo potremo tenere per noi come "
-"ricompensa. Sfortunatamente per noi lo scrigno si trova in uno dei "
-"laboratori di Sabien ed è custodito da orde di mostri inferociti... quindi.. "
-"beh, buona fortuna!"
+"Pony Grigio. Benché non sia molto chiaro perché un gruppo di banditi debba "
+"rapire un vecchio mago senza avere un obbiettivo in mente, abbiamo accettato "
+"la richiesta di Sabien di recuperare il suo scrigno e pagare ai "
+"sequestratori quanto essi chiedono. Il resto del tesoro lo potremo tenere "
+"per noi come ricompensa. Sfortunatamente lo scrigno si trova in uno dei "
+"laboratori di Sabien ed è custodito da orde di mostri inferociti... "
+"quindi... beh, buona fortuna!"
 
 #: ../scourge_data/config/mission.cfg:131
 msgid ""
@@ -7679,13 +7712,27 @@ msgstr ""
 
 #: ../scourge_data/config/mission.cfg:176
 msgid "Chapter 5: A brief visit with Mycotharsius"
-msgstr ""
+msgstr "Capitolo 5: Una breve visita a Mycotharsius"
 
 #: ../scourge_data/config/mission.cfg:181
 msgid ""
 "Our agents have located Mycotharsius in the cellars of a peaceful monastery "
-"called "
+"called \"the Tower\", near the city of Orn. You must journey here and "
+"confront him. Before ridding the world of him for good, find out as much as "
+"you can about why he hired the Order of the Grizzled Pony to kidnap our "
+"friend Sabien. I'm afraid however, that his failures made Mycotharsius quite "
+"Mad. Therefore if all he can offer is gibberish, try to look around his lair "
+"for clues."
 msgstr ""
+"I nostri agenti hanno localizzato Mycotharsius nelle cantine di un paicifco "
+"monastero chiamato \"la Torre\", vicino alla città di Orn. Dovete recarvi là "
+"e confrontarvi con lui. Prima di liberare il mondo dalla sua presenza "
+"cercate di trovare più informazioni possibili sul perché abbia deciso di "
+"assumere l'Ordine del Pony Grigio per rapire il nostro amico Sabien. Ad ogni "
+"modo temo che a causa dei continui fallimenti Mycotharsius sia ormai "
+"completamente folle, quindi in caso delirasse e non foste in grado di "
+"strappargli alcuna informazione, date un'occhiata al suo covo in cerca di "
+"indizi."
 
 #: ../scourge_data/config/mission.cfg:182
 msgid ""
@@ -7695,16 +7742,23 @@ msgid ""
 "civilization may be bad for business... I marked Sabien's lair on the map "
 "posted on the mission board."
 msgstr ""
+"Avete sconfitto Mycotharsius! Bravi! Ora sappiano perche $Sabien è stato "
+"rapito dall'$Ordine! Ho inviato a $Sabien la mappa dell'$Abisso che avete "
+"trovato e adesso dovreste andare da lui e chiedergli dove potremmo trovare "
+"$Mothrazu. Temo che la fine della civiltà umana non gioverebbe affatto ai "
+"nostri affari... Ho segnato la posizione del nascondiglio di $Sabien sulla "
+"mappa, nella sala delle missioni."
 
 #: ../scourge_data/config/mission.cfg:183
 msgid ""
 "You still have to journey to the monastery of the Tower and defeat "
 "$Mycotharsius."
 msgstr ""
+"Dovete ancora recarvi al monastero \"la Torre\" e sconfiggere $Mycotharsius."
 
 #: ../scourge_data/config/mission.cfg:185
 msgid "Kill Mycotharsius the Mad"
-msgstr ""
+msgstr "Uccidete Mycotharsius il Pazzo"
 
 #: ../scourge_data/config/mission.cfg:190
 msgid "Chapter 6: Sabien's Revelations"
@@ -8413,6 +8467,12 @@ msgid ""
 "The prerequisites for this capability is an at least 3rd level player with "
 "the bow skill of 20."
 msgstr ""
+"Ti sei specializzato nella difesa dai proiettili al punto di essere "
+"automaticamente in grado di predire la traiettoria di qualunque oggetto "
+"scagliato contro di te. Questo talento innato ti garantisce un bonus extra "
+"nella difesa contro armi da lancio. I prerequisiti per questo talento sono: "
+"aver raggiunto almeno il 3° livello e avere una capacità nelle armi da "
+"lancio di 20 o superiore."
 
 #: ../scourge_data/config/ability.cfg:62
 msgid "War-rage"
@@ -8424,6 +8484,10 @@ msgid ""
 "when using melee weapons, you cause extra damage resulting from your battle- "
 "lust. The prerequisites for this capability are having more than 30 skill."
 msgstr ""
+"Distruggere chiunque ti stia di fronte è per te una gioia assoluta. Per ogni "
+"attacco con armi da mischia, sei in grado di causare un danno extra grazie "
+"alla tua furia inarrestabile. Devi avere almeno 30 in abilità per attivare "
+"questo talento."
 
 #: ../scourge_data/config/ability.cfg:72
 msgid "Killer Blow"
@@ -8439,10 +8503,17 @@ msgid ""
 "may take a bonus to your attacks. Only barbarians are allowed to use this "
 "special capability."
 msgstr ""
+"Essere un barbaro è un duro lavoro: non solo non ti è permesso leggere, fare "
+"il bagno o comportarsi in maniera anche lontanamente 'ambigua', devi anche "
+"sottostare ad una dieta malsana priva di fibre o vitamine. Per fortuna puoi "
+"prendere parte ad un sacco di attività tipicamente barbariche come la gara a "
+"chi uccide il proprio nemico conun colpo solo. Questo allenamento si rivela "
+"estremamente utile sul campo di battaglia dove ottieni un bouns ad ogni tuo "
+"attacco. Solo i barbari posso utilizzare questo talento."
 
 #: ../scourge_data/config/ability.cfg:82
 msgid "Smallarm Mastery"
-msgstr ""
+msgstr "Lama assassina"
 
 #: ../scourge_data/config/ability.cfg:83
 msgid ""
@@ -8450,6 +8521,9 @@ msgid ""
 "(daggers and knives). With this capability, they cause extra points of "
 "damage in combat when wielding a small weapon."
 msgstr ""
+"Anni e anni passati a lottare per sopravvivere rendono i ladri dei maestri "
+"nell'uso di armi piccole come daghe e coltelli. Grazie a questo talento sono "
+"in grado di causare danni extra quando impugnano una di queste armi."
 
 #: ../scourge_data/config/ability.cfg:92
 msgid "Neutralize Poison"
@@ -8461,6 +8535,10 @@ msgid ""
 "healing physiology. With this skill, a high level rogue character can shake "
 "off the effects of poison up to three times a day."
 msgstr ""
+"Si dice che lo stile di vita 'vai-avanti-e-non-ci-pensare' tipico dei ladri "
+"porti alla capacità di curarsi velocemente. Con questo talento un ladro di "
+"alto livello può ignorare gli effetti di un avvelenamento per tre volte al "
+"giorno."
 
 #: ../scourge_data/config/ability.cfg:101
 msgid "Terminal Energy"
@@ -8473,6 +8551,10 @@ msgid ""
 "this capability is to be a magic user or student of lore teetering on the "
 "verge of death."
 msgstr ""
+"Un utente di magia ridotto allo stremo delle forze durante un combattimento "
+"può ottenere alcuni punti magia extra in un disperato tentativo di "
+"sopravvivere. I prerequisiti per utilizzare questo talento sono di essere un "
+"utente di magia o uno studioso ed essere in punto di morte."
 
 #: ../scourge_data/config/ability.cfg:111
 msgid "Mystic Defense"
@@ -8485,6 +8567,10 @@ msgid ""
 "the deity Xelphate. The prerequisite to this capability is being a magic "
 "user and having at least 25"
 msgstr ""
+"Usando questo talento un mago o uno studioso può aumentare le capacità "
+"difensive della propria armatura richiamando le energie della divinità "
+"Xelphate. I prerequisiti per questo talento sono: essere un utente di magia "
+"e avere al minimo 25"
 
 #: ../scourge_data/config/ability.cfg:121
 msgid "Speedy Casting"
@@ -8497,6 +8583,11 @@ msgid ""
 "conjure up magic faster than others. The prerequisites to this skill is high "
 "levels in the magical skills."
 msgstr ""
+"Fin dalla più tenera età sei stato introdotto all'arte della magia. Le basi "
+"di questa disciplina sono una seconda natura per te e per questo sei in "
+"grado di pronunciare un incantesimo più velocemente di chiunque altro. Il "
+"prerequisito per poter utilizzare questo talento è avere un alto livello "
+"nelle abilità magiche."
 
 #: ../scourge_data/config/ability.cfg:131
 msgid "Natural Healing"
@@ -9625,7 +9716,7 @@ msgstr "Cobra delle tempeste"
 
 #: ../scourge_data/config/monster.cfg:311
 msgid "Hydralisk"
-msgstr ""
+msgstr "Hydralisk"
 
 #: ../scourge_data/config/monster.cfg:330
 msgid "Red Brawn"
@@ -9665,7 +9756,7 @@ msgstr "Cobra neurale"
 
 #: ../scourge_data/config/monster.cfg:508
 msgid "Hydralisk Deathlord"
-msgstr ""
+msgstr "Signore della morte Hydralisk"
 
 #: ../scourge_data/config/monster.cfg:527
 msgid "Spirit Phantom"
@@ -10862,7 +10953,7 @@ msgstr ""
 
 #: ../scourge_data/maps/hq.cfg:216
 msgid "board"
-msgstr "lavagna"
+msgstr "tabellone"
 
 #: ../scourge_data/maps/hq.cfg:217
 msgid ""
@@ -10886,7 +10977,7 @@ msgid ""
 "time pressure and thus will pay more for the mission's timely completion!"
 msgstr ""
 "Le richieste dei nostri $clienti sono presentate come $missioni che io "
-"appendo di volta in volta alla nostra $lavagna nella stanza delel fiamme "
+"appendo di volta in volta sul nostr $tabellone nella stanza delle fiamme "
 "viola. Ricordate: le missioni scritte in viola sono le più importanti. Il "
 "cliente di solito ha fretta e ci pagherà di più se completiamo il lavoro "
 "rapidamente!"
@@ -10975,6 +11066,9 @@ msgid ""
 "The plane of absolute evil... never been there myself, but I've heard it "
 "said that those who visit simply cannot leave! Must be a mad party!"
 msgstr ""
+"Il piano del male assoluto... non ci sono mai stato di persona ma ho sentito "
+"che chi lo ha visitato non è più tornato indietro! Dev'essere un party "
+"pazzesco!"
 
 #: ../scourge_data/maps/hq.cfg:229
 msgid "awful"
@@ -10988,6 +11082,12 @@ msgid ""
 "unless you want us to murder, those close to you and then, send poems of the "
 "same pen.' Aaagh! I don't think I can take much more of this!"
 msgstr ""
+"Sì è proprio orribile, persino per della poesia nanica. Ecco un esempio che "
+"ho ricevuto. È una specie di minaccia che ci hanno spedito per sconsigliarci "
+"di indagare sul loro $Ordine. Recita:|'State lontani da ogni nostro affare|"
+"se non ci volete veder assassinare|i votri cari e poi|legger altre rime "
+"fatte da noi.'|Aaargh! Non credo dsi poter sopportare un'altra di queste "
+"lettere!"
 
 #: ../scourge_data/maps/hq.cfg:231 ../scourge_data/maps/library.cfg:44
 #: ../scourge_data/maps/emeril2.cfg:36
@@ -14151,9 +14251,6 @@ msgstr ""
 
 #~ msgid "Mission"
 #~ msgstr "Missione"
-
-#~ msgid "Party"
-#~ msgstr "Gruppo"
 
 #~ msgid "Hide"
 #~ msgstr "Nascondi"
