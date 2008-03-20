@@ -607,7 +607,12 @@ bool ScourgeHandler::handlePartyEvent(Widget *widget, SDL_Event *event) {
 								scourge->getTargetSelectionFor()->getActionSpell()->isCreatureTargetAllowed() ) ) ) {
           scourge->handleTargetSelectionOfCreature( scourge->getParty()->getParty( t ) );
         } else {
-          scourge->setPlayer( t );
+          	if( event->button.button == SDL_BUTTON_LEFT) {
+			scourge->setPlayer( t );
+		} else if (event->button.button == SDL_BUTTON_RIGHT ) {
+			scourge->setPlayer( t );
+			scourge->toggleInventoryWindow();
+		}
         }
       } else if( widget == scourge->getPlayerHpMp( t ) ) {
         if( !scourge->inTurnBasedCombat() ||

@@ -2010,9 +2010,8 @@ void Scourge::fightProjectileHitTurn(Projectile *proj, int x, int y) {
 
 void Scourge::createPartyUI() {
 
-	tbCombatWin = new Window( getSDLHandler(),
-														0, 0, 80 + 9, 52, _( "Combat" ),
-														false, Window::BASIC_WINDOW, "default" );
+	char tooltip[255];
+	tbCombatWin = new Window( getSDLHandler(), 0, 0, 80 + 9, 52, _( "Combat" ), false, Window::BASIC_WINDOW, "default" );
 	endTurnButton = tbCombatWin->createButton( 8, 0, 80, 20, _( "End Turn" ), 0 );
 	tbCombatWin->setVisible( false );
 	tbCombatWin->setLocked( true );
@@ -2037,7 +2036,9 @@ void Scourge::createPartyUI() {
 
 
 	roundButton = cards->createButton( 8, 0, offsetX, offsetX - 2, "", 0, false );
-	roundButton->setTooltip( _( "Pause game" ) );	
+	snprintf( tooltip, 255, _( "Pause game [%s]" ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_NEXT_ROUND ) );
+	roundButton->setTooltip( tooltip );	
+//	roundButton->setTooltip( _( "Pause game" ) );	
 	ioButton = cards->createButton( 8, offsetX, offsetX, 2 * offsetX - 6, "", 0, false );
     ioButton->setTexture( getShapePalette()->getIoTexture() );
     ioButton->setTooltip( _( "Load or Save Game" ) );	
@@ -2057,14 +2058,16 @@ void Scourge::createPartyUI() {
 												 xstart + quickButtonWidth, quickButtonWidth, 
 												 "", 0, false, 
 												 getShapePalette()->getOptionsTexture() );
-	optionsButton->setTooltip( _( "Game options" ) );
+	snprintf( tooltip, 255, _( "Game options [%s]" ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_OPTIONS ) );
+	optionsButton->setTooltip( tooltip );
 	xstart = Scourge::PARTY_GUI_WIDTH - 10 - quickButtonWidth * 3;
 	groupButton = 
 		cards->createButton( xstart, 0,  
 												 xstart + quickButtonWidth, quickButtonWidth, 
 												 "", 0, true, 
 												 getShapePalette()->getGroupTexture() );
-	groupButton->setTooltip( _( "Move as a group" ) );
+	snprintf( tooltip, 255, _( "Move as a group [%s]" ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_GROUP_MODE ) );
+	groupButton->setTooltip( tooltip );
 
   groupButton->setToggle(true);
   groupButton->setSelected(true);
@@ -2122,7 +2125,8 @@ void Scourge::createPartyUI() {
 												 getShapePalette()->getInventoryTexture() );
   inventoryButton->setToggle(true);
   inventoryButton->setSelected(false);
-	inventoryButton->setTooltip( _( "Inventory and party info" ) );
+	snprintf( tooltip, 255, _( "Inventory and party info [%s]" ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_INVENTORY ) );
+	inventoryButton->setTooltip( tooltip );
 
 
 	int gap = 0;
@@ -2644,12 +2648,14 @@ void Scourge::setPlayerUI(int index) {
 }
 
 void Scourge::toggleRoundUI(bool startRound) {
+	char tooltip[255];
 	if(battleTurn < static_cast<int>(battleRound.size()) && getUserConfiguration()->isBattleTurnBased()) {
 		if(!startRound && !battleRound[battleTurn]->getCreature()->isMonster()) {
 			//roundButton->setLabel("Begin Turn");
 			roundButton->setTexture( getShapePalette()->getStartTexture() );
 			roundButton->setGlowing(true);
-			roundButton->setTooltip( _( "Begin Turn" ) );
+			snprintf( tooltip, 255, _( "Begin Turn [%s]" ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_NEXT_ROUND ) );
+			roundButton->setTooltip( tooltip );
 		} else {
       //roundButton->setLabel("...in Turn...");
 			roundButton->setTexture( getShapePalette()->getWaitTexture() );
@@ -2660,11 +2666,13 @@ void Scourge::toggleRoundUI(bool startRound) {
     if(startRound) {
 			//roundButton->setLabel("Real-Time      ");
 			roundButton->setTexture( getShapePalette()->getRealTimeTexture() );
-			roundButton->setTooltip( _( "Pause Game" ) );
+			snprintf( tooltip, 255, _( "Pause Game [%s]" ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_NEXT_ROUND ) );
+			roundButton->setTooltip( tooltip );
 		} else { 
 			//roundButton->setLabel("Paused");
 			roundButton->setTexture( getShapePalette()->getPausedTexture() );
-			roundButton->setTooltip( _( "Unpause game." ) );
+			snprintf( tooltip, 255, _( "Unpause game. [%s]" ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_NEXT_ROUND ) );
+			roundButton->setTooltip( tooltip );
 		}
     roundButton->setGlowing(false);
   }
