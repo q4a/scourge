@@ -107,52 +107,55 @@ bool ContainerGui::handleEvent(SDL_Event *event) {
 }
 
 bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
-	if(widget == win->closeButton || widget == closeButton) {
-		win->setVisible(false);
-		return true;
-  } else if(widget == list && scourge->getTargetSelectionFor() ) {
-    int itemIndex = list->getSelectedLine();  
-    if(itemIndex > -1) {
-      Item *item = container->getContainedItem(itemIndex);
-      scourge->handleTargetSelectionOfItem( item );
+    if (widget == win->closeButton || widget == closeButton) {
+        win->setVisible(false);
+        return true;
+    } else if (widget == list && scourge->getTargetSelectionFor() ) {
+        int itemIndex = list->getSelectedLine();
+        if (itemIndex > -1) {
+            Item *item = container->getContainedItem(itemIndex);
+            scourge->handleTargetSelectionOfItem( item );
+        }
+    } else if (widget == infoButton ||
+               (widget == list && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT)) {
+        int itemIndex = list->getSelectedLine();
+        if (itemIndex > -1) {
+            Item *item = container->getContainedItem(itemIndex);
+            scourge->getInfoGui()->setItem( item );
+            if (!scourge->getInfoGui()->getWindow()->isVisible())
+                scourge->getInfoGui()->getWindow()->setVisible( true );
+        }
+    } else if (widget == openButton) {
+        int n = list->getSelectedLine();
+        if (n > -1 &&
+                container->getContainedItem(n)->getRpgItem()->getType() == RpgItem::CONTAINER) {
+            scourge->openContainerGui(container->getContainedItem(n));
+        }
+    } else if ( widget == getAllButton ) {
+        while ( container->getContainedItemCount() > 0 ) {
+            Item *item = container->getContainedItem( 0 );
+            // try to add it
+            if ( scourge->getPcUi()->receiveInventory( item ) ) {
+                container->removeContainedItem( 0 );
+            } else {
+                scourge->showMessageDialog( _( "There is not enough room in your backpack for everything." ) );
+                break;
+            }
+        }
+        showContents();
+    } else if ( scourge->getSDLHandler()->isDoubleClick ) {
+        int itemIndex = list->getSelectedLine();
+        if (itemIndex > -1) {
+            Item *item = container->getContainedItem( itemIndex );
+            if ( scourge->getPcUi()->receiveInventory( item ) ) {
+                container->removeContainedItem( itemIndex );
+            } else {
+                scourge->showMessageDialog( _( "There is not enough room in your backpack for everything." ) );
+            }
+        }
+        showContents();
     }
-  } else if(widget == infoButton || 
-            (widget == list && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT)) {
-      int itemIndex = list->getSelectedLine();  
-      if(itemIndex > -1) {
-        Item *item = container->getContainedItem(itemIndex);
-        scourge->getInfoGui()->setItem( item );
-        if(!scourge->getInfoGui()->getWindow()->isVisible()) 
-          scourge->getInfoGui()->getWindow()->setVisible( true );
-      }
-	} else if(widget == openButton) {
-		int n = list->getSelectedLine();
-		if(n > -1 && 
-			 container->getContainedItem(n)->getRpgItem()->getType() == RpgItem::CONTAINER) { 
-			scourge->openContainerGui(container->getContainedItem(n));
-		}
-	} else if( widget == getAllButton ) {
-		while( container->getContainedItemCount() > 0 ) {
-			Item *item = container->getContainedItem( 0 );
-			// try to add it
-			if( scourge->getPcUi()->receiveInventory( item ) ) {
-				container->removeContainedItem( 0 );
-			} else {
-				scourge->showMessageDialog( _( "There is not enough room in your backpack for everything." ) );
-				break;
-			}
-		}
-		showContents();
-	} else if( scourge->getSDLHandler()->isDoubleClick ) {
-			Item *item = container->getContainedItem( list->getSelectedLine() );
-			if( scourge->getPcUi()->receiveInventory( item ) ) {
-				container->removeContainedItem( 0 );
-			} else {
-				scourge->showMessageDialog( _( "There is not enough room in your backpack for everything." ) );
-			}
-		showContents();
-	}
-	return false;
+    return false;
 }
 
 void ContainerGui::receive(Widget *widget) {
