@@ -1013,7 +1013,7 @@ void Item::identify( int infoDetailLevel ) {
 
 		if( isIdentified() ) {
 			describeMagic( rpgItem->getDisplayName() );
-			session->getGameAdapter()->addDescription( _( "An item was fully identified!" ) );
+			session->getGameAdapter()->writeLogMessage( _( "An item was fully identified!" ) );
 			// update ui
 			session->getGameAdapter()->refreshInventoryUI();
 		}

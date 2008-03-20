@@ -56,7 +56,7 @@ void SpellCaster::spellFailed() {
   if(!spell) return;
   
   // print patronizing message...
-  battle->getSession()->getGameAdapter()->addDescription(Constants::getMessage(Constants::SPELL_FAILED_MESSAGE), 1, 0.15f, 1);
+  battle->getSession()->getGameAdapter()->writeLogMessage(Constants::getMessage(Constants::SPELL_FAILED_MESSAGE), Constants::MSGTYPE_FAILURE);
   
   // put code here for spells with something spectacular when they fail...
   // (fouled fireball decimates party, etc.)
@@ -84,7 +84,7 @@ void SpellCaster::spellFailed() {
     if( tmpTarget ) {
       char message[200];
       snprintf( message, 200, _( "...fumble: hits %s instead!" ), tmpTarget->getName() );
-      battle->getSession()->getGameAdapter()->addDescription( message, 1, 0.15f, 1 );
+      battle->getSession()->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
       Creature *oldTarget = battle->getCreature()->getTargetCreature();
       battle->getCreature()->setTargetCreature( tmpTarget );
 			
@@ -244,7 +244,7 @@ void SpellCaster::viewInfo() {
                 if( !battle->getSession()->getMap()->isSecretDoorDetected( pos ) ) {
                   battle->getSession()->getMap()->setSecretDoorDetected( pos );
                   snprintf( msg, MSG_SIZE, _( "%s discovers a secret door!" ), creature->getName() );
-                  battle->getSession()->getGameAdapter()->addDescription( msg, 1, 0.2f, 1 );
+                  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_MISSION );
                 }
               }
             }
@@ -256,7 +256,7 @@ void SpellCaster::viewInfo() {
               if( !trap->discovered ) {
                 trap->discovered = true;
                 snprintf( msg, MSG_SIZE, _( "%s discovers a trap!" ), creature->getName() );
-                battle->getSession()->getGameAdapter()->addDescription( msg, 1, 0.2f, 1 );
+                battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_MISSION );
               }
             }
           }
@@ -281,7 +281,12 @@ void SpellCaster::increaseHP() {
   creature->getTargetCreature()->setHp(static_cast<int>(creature->getTargetCreature()->getHp() + n));
   char msg[200];
   snprintf(msg, 200, _( "%s heals %d points." ), creature->getTargetCreature()->getName(), n);
-  battle->getSession()->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
+  battle->getSession()->getGameAdapter()->writeLogMessage(msg, Constants::MSGTYPE_STATS);
+	if ( creature->getCharacter() ) {
+	  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERMAGIC );
+	} else {
+	  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_NPCMAGIC );
+	}
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 }
 
@@ -297,7 +302,7 @@ void SpellCaster::increaseAC() {
   creature->getTargetCreature()->setBonusArmor(creature->getTargetCreature()->getBonusArmor() + n);
   char msg[200];
   snprintf(msg, 200, _( "%s feels impervious to damage!" ), creature->getTargetCreature()->getName());
-  battle->getSession()->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
+  battle->getSession()->getGameAdapter()->writeLogMessage(msg, Constants::MSGTYPE_STATS);
   creature->getTargetCreature()->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 
   // add calendar event to remove armor bonus
@@ -349,7 +354,11 @@ Projectile *SpellCaster::launchProjectile( int count, bool stopOnImpact, Project
   if( !p ) {
     char msg[ 200 ];
     snprintf(msg, 200, _( "...%s has finished firing a volley" ), creature->getName());
-    battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);
+	if ( creature->getCharacter() ) {
+	  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERMAGIC );
+	} else {
+	  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_NPCMAGIC );
+	}
   } else {
     p->setCasterLevel( level );
   }
@@ -379,7 +388,11 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 		damage /= 2.0f;
 		snprintf( msg, MSG_SIZE, _( "%s dodges some of the damage." ), 
 						 creature->getTargetCreature()->getName() );
-		battle->getSession()->getGameAdapter()->addDescription( msg, 1, 0.15f, 1 );
+			if ( creature->getTargetCreature()->getCharacter() ) {
+			  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERBATTLE );
+			} else {
+			  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_NPCBATTLE );
+			}
 	}
 
   // check for resistance
@@ -392,12 +405,20 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
           creature->getName(), 
           creature->getTargetCreature()->getName(),
           spell->getDisplayName());
-  battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);
+	if ( creature->getCharacter() ) {
+	  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERMAGIC );
+	} else {
+	  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_NPCMAGIC );
+	}
   if( resistance > 0 && !lowDamage ) {
     snprintf(msg, MSG_SIZE, _( "%s resists the spell with %d." ), 
             creature->getTargetCreature()->getName(),
             resistance);
-    battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    
+	if ( creature->getTargetCreature()->getCharacter() ) {
+	  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERBATTLE );
+	} else {
+	  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_NPCBATTLE );
+	}
   }
 
   // script spell resistance
@@ -482,7 +503,11 @@ void SpellCaster::setStateMod(int mod, bool setting) {
         snprintf(msg, MSG_SIZE, _( "%s resists the spell! [%d]" ), 
                 creature->getName(), 
                 creature->getSkill(spell->getSchool()->getResistSkill()));
-        battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    
+		if ( creature->getCharacter() ) {
+		  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERBATTLE );
+		} else {
+		  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_NPCBATTLE );
+		}
         continue;
       }
 
@@ -491,7 +516,11 @@ void SpellCaster::setStateMod(int mod, bool setting) {
       if( protectiveItem && 0 == Util::dice( 2 ) ) {
         snprintf(msg, MSG_SIZE, _( "%s resists the spell with magic item!" ), 
                 creature->getName());
-        battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    
+		if ( creature->getCharacter() ) {
+		  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERBATTLE );
+		} else {
+		  battle->getSession()->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_NPCBATTLE );
+		}
         continue;
       }
     }
@@ -499,7 +528,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     if(!strcasecmp(spell->getName(), "Remove curse")) {
       // remove cursed items
       if( creature->removeCursedItems() ) {
-        battle->getSession()->getGameAdapter()->addDescription( _( "Cursed items have been doffed." ), 1, 0.15f, 1 );
+        battle->getSession()->getGameAdapter()->writeLogMessage( _( "Cursed items have been doffed." ) );
       }
     }
 
@@ -524,7 +553,7 @@ void SpellCaster::setStateMod(int mod, bool setting) {
     } else {
 			snprintf( msg, MSG_SIZE, StateMod::stateMods[mod]->getUnsetState(), creature->getName() );
     }
-    battle->getSession()->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);
+    battle->getSession()->getGameAdapter()->writeLogMessage(msg, Constants::MSGTYPE_STATS);
     
     // cancel existing event if any
     if(e) {

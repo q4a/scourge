@@ -220,7 +220,7 @@ void Creature::changeProfession( Character *c ) {
 			setSkill( i, newValue );
 			
 			snprintf( message, MSG_SIZE, _( "%1$s's skill in %2$s has increased." ), getName(), Skill::skills[ i ]->getDisplayName() );
-			session->getGameAdapter()->addDescription( message );
+			session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_STATS );
 		}
 	}
 
@@ -231,7 +231,7 @@ void Creature::changeProfession( Character *c ) {
 			if( !c->canEquip( item->getRpgItem() ) ) {
 				doff( equipped[i] );
 				snprintf( message, MSG_SIZE, _( "%1$s is not allowed to equip %2$s." ), getName(), item->getName() );
-				session->getGameAdapter()->addDescription( message );				 
+				session->getGameAdapter()->writeLogMessage( message );
 			}
 		}
 	}
@@ -548,7 +548,7 @@ void Creature::setTargetCreature( Creature *c, bool findPath, float range) {
       // Keep the target creature anyway.
       if( session->getPreferences()->isBattleTurnBased() ) {
 
-        session->getGameAdapter()->addDescription( _( "Can't find path to target. Sorry!" ) );
+	session->getGameAdapter()->writeLogMessage( _( "Can't find path to target. Sorry!" ), Constants::MSGTYPE_SYSTEM );
 				session->getGameAdapter()->setCursorMode( Constants::CURSOR_FORBIDDEN );
       }
     }
@@ -918,7 +918,7 @@ bool Creature::addInventory(Item *item, bool force) {
       if( !isMonster() ) {
         char msg[80];
         snprintf(msg, 80, _( "%s is overloaded." ), getName());
-        session->getGameAdapter()->addDescription(msg);
+        session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_STATS );
       }
       setStateMod(StateMod::overloaded, true);
     }
@@ -992,7 +992,7 @@ Item *Creature::removeInventory(int index) {
       if( !isMonster() ) {
         char msg[80];
         snprintf(msg, 80, _( "%s is not overloaded anymore." ), getName());
-        session->getGameAdapter()->addDescription(msg);
+        session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_STATS );
       }
       setStateMod(StateMod::overloaded, false);
     }
@@ -1029,7 +1029,7 @@ bool Creature::eatDrink(Item *item) {
   if(type == RpgItem::FOOD){
     if(getHunger() == 10){                
       snprintf(msg, MSG_SIZE, _( "%s is not hungry at the moment." ), getName()); 
-      session->getGameAdapter()->addDescription(msg); 
+      session->getGameAdapter()->writeLogMessage( msg );
       return false;
     }
 
@@ -1040,29 +1040,29 @@ bool Creature::eatDrink(Item *item) {
     strcpy(buff, rpgItem->getShortDesc());
     buff[0] = tolower(buff[0]);
     snprintf(msg, MSG_SIZE, _( "%1$s eats %2$s." ), getName(), buff);
-    session->getGameAdapter()->addDescription(msg);
+    session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERITEM );
     bool b = item->decrementCharges();
     if(b) {
       snprintf(msg, MSG_SIZE, _( "%s is used up." ), item->getItemName());
-      session->getGameAdapter()->addDescription(msg);
+      session->getGameAdapter()->writeLogMessage( msg );
     }
     return b;
   } else if(type == RpgItem::DRINK){
     if(getThirst() == 10){                
       snprintf(msg, MSG_SIZE, _( "%s is not thirsty at the moment." ), getName()); 
-      session->getGameAdapter()->addDescription(msg); 
+      session->getGameAdapter()->writeLogMessage( msg ); 
       return false;
     }
     setThirst(getThirst() + level);
     strcpy(buff, rpgItem->getShortDesc());
     buff[0] = tolower(buff[0]);
     snprintf(msg, MSG_SIZE, _( "%1$s drinks %2$s." ), getName(), buff);
-    session->getGameAdapter()->addDescription(msg); 
+    session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERITEM );
     // TODO : according to the alcool rate set drunk state or not            
     bool b = item->decrementCharges();
     if(b) {
       snprintf(msg, MSG_SIZE, _( "%s is used up." ), item->getItemName());
-      session->getGameAdapter()->addDescription(msg);
+      session->getGameAdapter()->writeLogMessage( msg );
     }
     return b;
   } else if(type == RpgItem::POTION) {
@@ -1072,16 +1072,16 @@ bool Creature::eatDrink(Item *item) {
     buff[0] = tolower(buff[0]);
     setThirst(getThirst() + level);
     snprintf(msg, MSG_SIZE, _( "%1$s drinks from %2$s." ), getName(), buff);
-    session->getGameAdapter()->addDescription(msg); 
+    session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERITEM );
     usePotion(item);
     bool b = item->decrementCharges();
     if(b) {
       snprintf(msg, MSG_SIZE, _( "%s is used up." ), item->getItemName());
-      session->getGameAdapter()->addDescription(msg);
+      session->getGameAdapter()->writeLogMessage( msg );
     }
     return b;
   } else {
-    session->getGameAdapter()->addDescription( _( "You cannot eat or drink that!" ), 1, 0.2f, 0.2f);
+    session->getGameAdapter()->writeLogMessage( _( "You cannot eat or drink that!" ) );
     return false;
   }
 }
@@ -1103,7 +1103,7 @@ void Creature::usePotion(Item *item) {
         n = getMaxHp() - getHp();
       setHp(getHp() + n);
       snprintf(msg, MSG_SIZE, _( "%s heals %d points." ), getName(), n);
-      session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
+      session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_STATS );
       startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
       return;
     case Constants::MP:
@@ -1112,7 +1112,7 @@ void Creature::usePotion(Item *item) {
         n = getMaxMp() - getMp();
       setMp(getMp() + n);
       snprintf(msg, MSG_SIZE, _( "%s receives %d magic points." ), getName(), n);
-      session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
+      session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_STATS );
       startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
       return;
     case Constants::AC:
@@ -1120,7 +1120,7 @@ void Creature::usePotion(Item *item) {
         bonusArmor += item->getRpgItem()->getPotionPower();
         recalcAggregateValues();
         snprintf(msg, MSG_SIZE, _( "%s feels impervious to damage!" ), getName());
-        session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
+      session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_STATS );
         startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 
         // add calendar event to remove armor bonus
@@ -1140,7 +1140,7 @@ void Creature::usePotion(Item *item) {
     skillBonus[skill] += item->getRpgItem()->getPotionPower();
     //	recalcAggregateValues();
     snprintf(msg, MSG_SIZE, _( "%s feels at peace." ), getName());
-    session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
+    session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_STATS );
     startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 
     // add calendar event to remove armor bonus
@@ -1184,7 +1184,14 @@ void Creature::setAction(int action, Item *item, Spell *spell, SpecialSkill *ski
     cerr << "*** Error: unknown action " << action << endl;
     return;
   }
-  if(strlen(msg)) session->getGameAdapter()->addDescription(msg, 1, 1, 0.5f);
+
+  if(strlen(msg)) {
+	if ( getCharacter() ) {
+	session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERBATTLE );
+	} else {
+	session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_NPCBATTLE );
+	}
+  }
 }
 
 void Creature::equipInventory( int index, int locationHint ) {
@@ -1554,7 +1561,7 @@ void Creature::resurrect( int rx, int ry ) {
 
   char msg[120];
   snprintf( msg, 120, _( "%s is raised from the dead!" ), getName() );
-  session->getGameAdapter()->addDescription( msg, 0, 1, 1 );
+  session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_STATS );
 }
 
 // add exp after killing a creature
@@ -1606,14 +1613,14 @@ int Creature::addExperienceWithMessage( int exp ) {
     n = addExperience( exp );
     if( n > 0 ) {
       snprintf( message, MSG_SIZE, _( "%s gains %d experience points." ), getName(), n );
-      session->getGameAdapter()->addDescription( message );
+      session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_STATS );
       if( oldLevel != level ) {
         snprintf( message, MSG_SIZE, _( "%s gains a level!" ), getName() );
-        session->getGameAdapter()->addDescription( message, 1.0f, 0.5f, 0.5f );
+        session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_STATS );
       }
     } else if( n < 0 ) {
       snprintf( message, MSG_SIZE, _( "%s looses %d experience points!" ), getName(), -n );
-      session->getGameAdapter()->addDescription( message, 1.0f, 0.05f, 0.05f );
+      session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_STATS );
     }
   }
   return n;
@@ -2212,7 +2219,7 @@ void Creature::evalSpecialSkills() {
 				if( oldSpecialSkills.find( ss ) == oldSpecialSkills.end() ) {
 					if( session->getParty()->isPartyMember( this ) ) {
 						snprintf( tmp, TMP_SIZE, _( "%1$s gains the %2$s special ability!" ), getName(), ss->getDisplayName() );
-						session->getGameAdapter()->addDescription( tmp, 0.3f, 1.0f, 0.2f );
+						session->getGameAdapter()->writeLogMessage( tmp, Constants::MSGTYPE_STATS );
 					}
 				}
       }
@@ -2224,7 +2231,7 @@ void Creature::evalSpecialSkills() {
 				oldSpecialSkills.find( ss ) != oldSpecialSkills.end() ) {
 			if( session->getParty()->isPartyMember( this ) ) {
 				snprintf( tmp, TMP_SIZE, _( "%1$s looses the %2$s special ability!" ), getName(), ss->getDisplayName() );
-				session->getGameAdapter()->addDescription( tmp, 1.0f, 0.3f, 0.2f );
+				session->getGameAdapter()->writeLogMessage( tmp, Constants::MSGTYPE_STATS );
 			}
 		}
 	}
@@ -2420,7 +2427,11 @@ float Creature::getDodge( Creature *attacker, Item *weapon ) {
 	float dodge = getSkill( Skill::DODGE_ATTACK ) - dodgePenalty;
 	if( !inFOV ) {
 		dodge /= 2.0f;
-		session->getGameAdapter()->addDescription( _( "...Attack from blind-spot!" ) );
+			if ( getCharacter() ) {
+			  session->getGameAdapter()->writeLogMessage( _( "...Attack from blind-spot!" ), Constants::MSGTYPE_PLAYERBATTLE );
+			} else {
+			  session->getGameAdapter()->writeLogMessage( _( "...Attack from blind-spot!" ), Constants::MSGTYPE_NPCBATTLE );
+			}
 	}
 	return dodge;
 }
@@ -2565,7 +2576,7 @@ float Creature::getInfluenceBonus( Item *weapon,
 							 value, 
 							 _( "bonus" ),
 							 n );
-			session->getGameAdapter()->addDescription( message );
+			session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_SYSTEM );
 		}
 		
 		bonus += n;
@@ -2608,7 +2619,7 @@ void Creature::getCth( Item *weapon, float *cth, float *skill, bool showDebug ) 
 						 _( "vs." ),
 						 _( "skill" ),
 						  *skill );
-		session->getGameAdapter()->addDescription( message );
+		session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_SYSTEM );
 	}
 }
 
@@ -2968,7 +2979,7 @@ void Creature::rollPerception() {
           char message[ 120 ];
           snprintf( message, 120, _( "%s notices a trap!" ), getName() );
 					session->getSound()->playSound( "notice-trap" );
-          session->getGameAdapter()->addDescription( message );
+          session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_MISSION );
           addExperienceWithMessage( 50 );
           setMotion(Constants::MOTION_STAND);
           stopMoving();
@@ -2987,7 +2998,7 @@ void Creature::rollPerception() {
 					char message[ 120 ];
 					snprintf( message, 120, _( "%s notices a secret door!" ), getName() );
 					session->getSound()->playSound( "notice-trap" );
-          session->getGameAdapter()->addDescription( message );
+          session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_MISSION );
           addExperienceWithMessage( 50 );
 				}
 			}
@@ -3006,7 +3017,11 @@ void Creature::evalTrap() {
       char message[ 120 ];
       snprintf( message, 120, _( "%1$s blunders into a trap and takes %2$d points of damage!" ), getName(), damage );
 			session->getSound()->playSound( "trigger-trap" );
-      session->getGameAdapter()->addDescription( message );
+	if ( getCharacter() ) {
+	session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDAMAGE );
+	} else {
+	session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDAMAGE );
+	}
       takeDamage( damage );
     }
   }
@@ -3019,10 +3034,10 @@ void Creature::disableTrap( Trap *trap ) {
 		enum { MSG_SIZE = 120 };
 		char message[ MSG_SIZE ];
 		snprintf( message, MSG_SIZE, _( "%s attempts to disable the trap:" ), getName() );
-		session->getGameAdapter()->addDescription( message );
+		session->getGameAdapter()->writeLogMessage( message );
 		bool ret = rollSkill( Skill::FIND_TRAP, 5.0f );
 		if( ret ) {
-			session->getGameAdapter()->addDescription( _( "   and succeeds!" ) );
+			session->getGameAdapter()->writeLogMessage( _( "   and succeeds!" ), Constants::MSGTYPE_MISSION );
 			session->getSound()->playSound( "disarm-trap" );
 			int exp = static_cast<int>(Util::getRandomSum( 50, session->getCurrentMission()->getLevel() ));
 			addExperienceWithMessage( exp );
@@ -3031,11 +3046,11 @@ void Creature::disableTrap( Trap *trap ) {
 			char message[ MSG_SIZE ];
 			snprintf( message, MSG_SIZE, _( "    and fails! %1$s takes %2$d points of damage!" ), getName(), damage );
 			session->getSound()->playSound( "trigger-trap" );
-			session->getGameAdapter()->addDescription( message );
+			session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
 			takeDamage( damage );
 		}
 	} else {
-		session->getGameAdapter()->addDescription( _( "This trap is already disabled." ) );
+		session->getGameAdapter()->writeLogMessage( _( "This trap is already disabled." ) );
 	}
 }
 

@@ -277,7 +277,7 @@ void Equip::receive( Widget *widget ) {
 					snprintf( message, 119, _( "%s picks up %s." ), 
 									 creature->getName(),
 									 item->getItemName() );
-					pcUi->getScourge()->addDescription( message );
+					pcUi->getScourge()->writeLogMessage( message );
 					pcUi->getScourge()->endItemDrag();
 					int index = creature->findInInventory( item );
 					creature->equipInventory( index, currentHole );
@@ -323,7 +323,7 @@ bool Equip::startDrag( Widget *widget, int x, int y ) {
 				snprintf(message, 119, _( "%s drops %s." ), 
 								creature->getName(),
 								item->getItemName() );
-				pcUi->getScourge()->addDescription( message );
+				pcUi->getScourge()->writeLogMessage( message );
 	
 				return true;
 			}
@@ -668,7 +668,7 @@ void Equip::storeStorable( Storable *storable ) {
 		pcUi->getScourge()->showMessageDialog( p );
 	} else {
 		this->storable = storable;
-		pcUi->getScourge()->addDescription( _( "Click a quickspell slot to store this spell." ) );
+		pcUi->getScourge()->writeLogMessage( _( "Click a quickspell slot to store this spell." ), Constants::MSGTYPE_SYSTEM );
 	}
 }
 

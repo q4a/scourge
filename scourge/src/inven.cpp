@@ -166,7 +166,7 @@ bool Inven::receive(Item *item, bool atCursor)
 			snprintf( message, 119, _( "%s picks up %s." ), 
 								creature->getName(),
 								item->getItemName() );
-			pcUi->getScourge()->addDescription( message );
+			pcUi->getScourge()->writeLogMessage( message );
 			pcUi->getScourge()->endItemDrag();
 			pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_SUCCESS );
 		} else {
@@ -210,7 +210,7 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
 				snprintf(message, 119, _( "%s drops %s." ), 
 								creature->getName(),
 								item->getItemName() );
-				pcUi->getScourge()->addDescription( message );
+				pcUi->getScourge()->writeLogMessage( message );
 	
 				return true;
 			//}
@@ -419,7 +419,7 @@ void Inven::storeItem( Item *item ) {
 		pcUi->getScourge()->showMessageDialog( p );
 	} else {
 		this->storable = s;
-		pcUi->getScourge()->addDescription( _( "Click a quickspell slot to store this item." ) );
+		pcUi->getScourge()->writeLogMessage( _( "Click a quickspell slot to store this item." ) );
 		pcUi->hide();
 	}
 }

@@ -230,8 +230,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
   selectedTrapIndex = -1;
 
-  adapter->addDescription(Constants::getMessage(Constants::WELCOME), 1.0f, 0.5f, 1.0f);
-  adapter->addDescription("----------------------------------", 1.0f, 0.5f, 1.0f);
+  adapter->writeLogMessage(Constants::getMessage(Constants::WELCOME), Constants::MSGTYPE_SYSTEM);
+  adapter->writeLogMessage("----------------------------------", Constants::MSGTYPE_SYSTEM);
 }
 
 Map::~Map(){
@@ -1895,7 +1895,7 @@ void Map::initMapView( bool ignoreRot ) {
 				Util::dice( QUAKE_DELAY / 2 );
 			// start a quake unless this is the very first time
 			quakeStartTime = ( quakeStartTime == 0 ? nextQuakeStartTime : now );
-			if( quakeStartTime == now ) adapter->addDescription( _( "A tremor shakes the earth..." ) );
+			if( quakeStartTime == now ) adapter->writeLogMessage( _( "A tremor shakes the earth..." ) );
 		}
 
 		// is it quaking now?
@@ -2384,8 +2384,8 @@ void Map::setCreature(Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature) 
 						removeItem( pos[x + xp][y - yp][z + zp]->x, pos[x + xp][y - yp][z + zp]->y, pos[x + xp][y - yp][z + zp]->z );
 						creature->pickUpOnMap( item );
 						char message[120];
-						snprintf( message, 120, "%s picks up %s.", creature->getName(), item->getItemName() );
-						adapter->addDescription( message );
+						snprintf( message, 120, _( "%s picks up %s." ), creature->getName(), item->getItemName() );
+						adapter->writeLogMessage( message );
 					}
 				}
 			}
@@ -2435,8 +2435,8 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy,
 							removeItem(pos[newX][newY][newZ]->x, pos[newX][newY][newZ]->y, pos[newX][newY][newZ]->z);
 							creature->pickUpOnMap(item);
 							char message[120];
-							snprintf(message, 120, "%s picks up %s.", creature->getName(), item->getItemName());
-							adapter->addDescription(message);
+							snprintf(message, 120, _( "%s picks up %s." ), creature->getName(), item->getItemName());
+							adapter->writeLogMessage(message);
 						} else {
 							cerr << "*** Error: when moving " << creature->getName() << " path contained a non-item position." << endl;
 						}
