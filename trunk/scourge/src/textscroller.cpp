@@ -87,6 +87,8 @@ if (scourge->getUserConfiguration()->getLogLevel() < logLevel) return;
 		addDescription( message, 0.7f, 0.7f, 0.7f );
 	} else if (messageType == Constants::MSGTYPE_STATS ) {
 		addDescription( message, 1, 0.5f, 0 );
+	} else if (messageType == Constants::MSGTYPE_SYSTEM ) {
+		addDescription( message, 0, 0.8f, 0.8f );
 	}
 }
 

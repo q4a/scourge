@@ -689,14 +689,18 @@ void Battle::useSkill() {
   snprintf(message, MESSAGE_SIZE, _( "%1$s uses capability %2$s!" ), 
           creature->getName(), 
           creature->getActionSkill()->getDisplayName());
-  session->getGameAdapter()->addDescription(message, 1, 0.15f, 1);
+  if ( creature->getCharacter() ) {
+    session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERMAGIC );
+  } else {
+    session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCMAGIC );
+  }
   ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
 
   char *err = 
     creature->useSpecialSkill( creature->getActionSkill(), 
                                true );
   if( err ) {
-    session->getGameAdapter()->addDescription( err, 1, 0, 0 );
+    session->getGameAdapter()->writeLogMessage( err, Constants::MSGTYPE_FAILURE );
     //showMessageDialog( err );
   }
 
@@ -722,7 +726,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
       if( creature->getActionItem()->getRpgItem()->getMaxCharges() > 0 ) {
 				if( creature->getActionItem()->getCurrentCharges() <= 0 ) {
 					snprintf(message,MESSAGE_SIZE, _( "Your %s is out of charges." ), creature->getActionItem()->getItemName() );
-					session->getGameAdapter()->addDescription( message );
+					session->getGameAdapter()->writeLogMessage( message );
 					creature->cancelTarget();
 					// also cancel path
 					if( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
@@ -731,19 +735,19 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 					creature->getActionItem()->setCurrentCharges( 
 						creature->getActionItem()->getCurrentCharges() - 1 );
 					snprintf(message,MESSAGE_SIZE, _( "Your %s feels lighter." ), creature->getActionItem()->getItemName() );
-					session->getGameAdapter()->addDescription( message );
+					session->getGameAdapter()->writeLogMessage( message );
 				}
       } else {
         creature->removeInventory(itemIndex);
         snprintf(message,MESSAGE_SIZE, _( "%s crumbles into dust." ), creature->getActionItem()->getItemName());
-        session->getGameAdapter()->addDescription(message);
+	session->getGameAdapter()->writeLogMessage( message );
       }
       if(!session->getGameAdapter()->isHeadless()) 
         session->getGameAdapter()->refreshInventoryUI();
     } else {
       // scroll was removed from inventory before casting
       snprintf( message,MESSAGE_SIZE, _( "Couldn't find scroll, cancelled spell." ) );
-      session->getGameAdapter()->addDescription(message);
+      session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
       creature->cancelTarget();
       // also cancel path
       if( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
@@ -754,7 +758,11 @@ void Battle::castSpell( bool alwaysSucceeds ) {
   snprintf(message,MESSAGE_SIZE, _( "%1$s casts %2$s!" ), 
           creature->getName(), 
           creature->getActionSpell()->getDisplayName());
-  session->getGameAdapter()->addDescription(message, 1, 0.15f, 1);
+    if ( creature->getCharacter() ) {
+      session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERMAGIC );
+    } else {
+      session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCMAGIC );
+    }
   ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
 
   // spell succeeds?
@@ -815,10 +823,10 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 	if( !alwaysSucceeds && !projectileHit ) {
 	  if( Util::dice( maxSkill ) > skill + delta ) {
 			snprintf( message,MESSAGE_SIZE, _( "...%s needs more practice." ), creature->getName() );
-		session->getGameAdapter()->addDescription( message, 1, 0.15f, 1 );
+	        session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
 		failed = true;
 	  } else if( Util::dice( 100 ) + delta < creature->getActionSpell()->getFailureRate() ) {
-		session->getGameAdapter()->addDescription( _( "...the magic fails inexplicably!" ), 1, 0.15f, 1 );
+	        session->getGameAdapter()->writeLogMessage( _( "...the magic fails inexplicably!" ), Constants::MSGTYPE_FAILURE );
 		failed = true;
 	  }
 	}
@@ -848,10 +856,18 @@ void Battle::launchProjectile() {
                                 new ShapeProjectileRenderer( session->getShapePalette()->findShapeByName("ARROW") ),
                                 creature->getMaxProjectileCount(item))) {
     snprintf(message,MESSAGE_SIZE, _( "...%s has finished firing a volley" ), creature->getName());
-    session->getGameAdapter()->addDescription(message);
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+	}
   } else {
     snprintf(message,MESSAGE_SIZE, _( "...%s shoots a projectile" ), creature->getName());
-    session->getGameAdapter()->addDescription(message); 
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+	}
   }
 
   if( creature->isMonster() && 
@@ -940,7 +956,11 @@ void Battle::prepareToHitMessage() {
                creature->getTargetCreature()->getName(),
                item->getItemName() );
     }
-      session->getGameAdapter()->addDescription(message);
+    if ( creature->getCharacter() ) {
+      session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+    } else {
+      session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+    }
     ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
 
     // play item sound
@@ -954,7 +974,11 @@ void Battle::prepareToHitMessage() {
     snprintf( message,MESSAGE_SIZE, _( "%1$s attacks %2$s with bare hands!" ), 
              creature->getName(), 
              creature->getTargetCreature()->getName() );
-    session->getGameAdapter()->addDescription(message);
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+	}
     ((AnimatedShape*)(creature->getShape()))->setAttackEffect(true);
   }
 }
@@ -989,7 +1013,7 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
         // play item sound
         if(item) session->playSound(item->getRandomSound());
         snprintf( message,MESSAGE_SIZE, _( "...fumble: hits %s instead!" ), tmpTarget->getName() );
-        session->getGameAdapter()->addDescription( message );
+        session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
         Creature *oldTarget = creature->getTargetCreature();
         creature->setTargetCreature( tmpTarget );
 
@@ -1017,27 +1041,43 @@ void Battle::applyHighAttackRoll( float *damage, float attack, float min, float 
     switch( mul ) {
     case 2:
     strcpy(message, _( "...precise hit: double damage!" ) );
-    session->getGameAdapter()->addDescription(message);
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDAMAGE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDAMAGE );
+	}
     (*damage) *= mul;
     break;
 
     case 3:
     strcpy(message, _( "...precise hit: triple damage!" ) );
-    session->getGameAdapter()->addDescription(message);
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDAMAGE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDAMAGE );
+	}
     (*damage) *= mul;
     break;
 
     case 4:
     strcpy(message, _( "...precise hit: quad damage!" ) );
-    session->getGameAdapter()->addDescription(message);
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDAMAGE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDAMAGE );
+	}
     (*damage) *= mul;
     break;
 
     case 0:
     if( percent >= 98 ) {
       strcpy(message, _( "...precise hit: instant kill!" ) );
-      session->getGameAdapter()->addDescription(message);
-      (*damage) = 1000;
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDEATH );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDEATH );
+	}
+      (*damage) = 10000;
     }
     break;
 
@@ -1061,16 +1101,32 @@ void Battle::applyMagicItemDamage( float *damage ) {
     if( mul < 1 ) mul = 1;
     if( mul == 2 ) {
       strcpy( message, _( "...double damage!" ) );
-      session->getGameAdapter()->addDescription( message );
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDAMAGE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDAMAGE );
+	}
     } else if( mul == 3 ) {
       strcpy( message, _( "...triple damage!" ) );
-      session->getGameAdapter()->addDescription( message );
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDAMAGE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDAMAGE );
+	}
     } else if( mul == 4 ) {
       strcpy( message, _( "...quad damage!" ) );
-      session->getGameAdapter()->addDescription( message );
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDAMAGE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDAMAGE );
+	}
     } else if( mul > 4 ) {
       snprintf( message,MESSAGE_SIZE, _( "...%d-times damage!" ), mul );
-      session->getGameAdapter()->addDescription( message );
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDAMAGE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDAMAGE );
+	}
     }
     (*damage) *= mul;
   }
@@ -1101,12 +1157,20 @@ float Battle::applyMagicItemSpellDamage() {
              creature->getName(), 
              creature->getTargetCreature()->getName(),
              item->getSchool()->getShortName() );
-    getSession()->getGameAdapter()->addDescription( msg, 1, 0.15f, 1 );
+	if ( creature->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERMAGIC );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCMAGIC );
+	}
     if( resistance > 0 ) {
       snprintf( msg, MESSAGE_SIZE, _( "%s resists the magic with %d." ), 
                creature->getTargetCreature()->getName(),
                resistance );
-      getSession()->getGameAdapter()->addDescription( msg, 1, 0.15f, 1 );
+	if ( creature->getTargetCreature()->getCharacter() ) {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+	} else {
+	  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+	}
     }
     
     return damage;
@@ -1132,7 +1196,11 @@ void Battle::hitWithItem() {
 				snprintf( message, MESSAGE_SIZE, _( "...%1$s blocks attack with %2$s!" ), 
 								 creature->getTargetCreature()->getName(),
 								 parryItem->getName() );
-				session->getGameAdapter()->addDescription( message );
+				if ( creature->getTargetCreature()->getCharacter() ) {
+				  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+				} else {
+				  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+				}
 			} else {
 				// a hit!
 			
@@ -1145,17 +1213,25 @@ void Battle::hitWithItem() {
 	
 				// cursed items
 				if( item && item->isCursed() ) {
-					session->getGameAdapter()->addDescription( _( "...Using cursed item!" ) );
+				        session->getGameAdapter()->writeLogMessage( _( "...Using cursed item!" ), Constants::MSGTYPE_FAILURE );
 					attack -= ( attack / 3.0f );
 				}
 	
 				snprintf( message, MESSAGE_SIZE, _( "...%s attacks for %d points." ), 
 								 creature->getName(), toint( attack ) );
-				session->getGameAdapter()->addDescription( message );
+					if ( creature->getCharacter() ) {
+					  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+					} else {
+					  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+					}
 				if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
 					snprintf(message, MESSAGE_SIZE, _( "...DAM:%.2f-%.2f extra:%.2f" ),
 									min, max, extra );
-					session->getGameAdapter()->addDescription( message );
+					if ( creature->getCharacter() ) {
+					  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+					} else {
+					  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+					}
 				}
 	
 				// very low attack rolls (fumble)
@@ -1170,7 +1246,11 @@ void Battle::hitWithItem() {
 				if( toint( armor ) > 0 ) {
 					snprintf( message, MESSAGE_SIZE, _( "...%s's armor blocks %d points" ), 
 									 creature->getTargetCreature()->getName(), toint( armor ) );
-					session->getGameAdapter()->addDescription( message );
+					if ( creature->getTargetCreature()->getCharacter() ) {
+					  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+					} else {
+					  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+					}
 				}
 								
 				float damage = ( armor > attack ? 0 : attack - armor );
@@ -1239,12 +1319,16 @@ void Battle::hitWithItem() {
 			// a miss
 			snprintf(message, MESSAGE_SIZE, _( "...%s dodges the attack." ), 
 							creature->getTargetCreature()->getName() );
-			session->getGameAdapter()->addDescription(message);
+				if ( creature->getTargetCreature()->getCharacter() ) {
+				  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+				} else {
+				  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+				}
 		}
 	} else {
 		// a miss
 		snprintf(message, MESSAGE_SIZE, _( "...%s misses the target." ), creature->getName() );
-		session->getGameAdapter()->addDescription(message);
+        	session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
 	}
 }
 
@@ -1265,8 +1349,11 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 		damage += extra;
 
 		snprintf(message, MESSAGE_SIZE, _( "...%s hits for %d points of damage" ), creature->getName(), toint( damage ) );
-		session->getGameAdapter()->addDescription(message, 1.0f, 0.5f, 0.5f);
-
+			if ( creature->getTargetCreature()->getCharacter() ) {
+			  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDAMAGE );
+			} else {
+			  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDAMAGE );
+			}
 
 		// play hit sound
 		if(damage > 0) {
@@ -1294,9 +1381,13 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 				creature->getShape()->setCurrentAnimation(static_cast<int>(MD2_TAUNT)); 
 
 			snprintf(message, MESSAGE_SIZE, _( "...%s is killed!" ), tc->getName());
-			session->getGameAdapter()->addDescription(message, 1.0f, 0.5f, 0.5f);
+				if ( creature->getCharacter() ) {
+				  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDEATH );
+				} else {
+				  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDEATH );
+				}
 			if( session->getParty()->isPartyMember( tc ) ) 
-				session->getGameAdapter()->addDescription( tc->getCauseOfDeath(), 1.0f, 0.5f, 0.5f);
+				session->getGameAdapter()->writeLogMessage( tc->getCauseOfDeath(), Constants::MSGTYPE_PLAYERDEATH );
 
 			// add exp. points and money
 			if( !IS_AUTO_CONTROL( creature ) ) {
@@ -1313,15 +1404,15 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 						int n = session->getParty()->getParty(i)->addMoney( tc );
 						if(n > 0) {
 							snprintf(message, MESSAGE_SIZE, _( "%s finds %d coins!" ), session->getParty()->getParty(i)->getName(), n);
-							session->getGameAdapter()->addDescription(message);
+							session->getGameAdapter()->writeLogMessage( message );
 						}
 					}
 				}
 				// end of FIXME
 
 				if( tc->isBoss() ) {
-					session->getGameAdapter()->addDescription( _( "You have defeated the dungeon boss!" ), 0.5f, 1, 0.5f );
-					session->getGameAdapter()->addDescription( _( "...the news spreads quickly and his minions cower before you." ), 0.5f, 1, 0.5f );
+					session->getGameAdapter()->writeLogMessage( _( "You have defeated the dungeon boss!" ), Constants::MSGTYPE_MISSION );
+					session->getGameAdapter()->writeLogMessage( _( "...the news spreads quickly and his minions cower before you." ), Constants::MSGTYPE_MISSION );
 				}
 
 				// see if this is a mission objective
@@ -1332,7 +1423,11 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 		}
 	} else {
 		snprintf(message, MESSAGE_SIZE, _( "...no damaged caused." ) );
-		session->getGameAdapter()->addDescription(message);
+			if ( creature->getCharacter() ) {
+			  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERBATTLE );
+			} else {
+			  session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCBATTLE );
+			}
 	}
 }
 

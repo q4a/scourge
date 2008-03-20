@@ -69,7 +69,7 @@ void PotionExpirationEvent::execute() {
 	case Constants::AC:
 	  creature->setBonusArmor(creature->getBonusArmor() - amount);
 	  snprintf(msg, MSG_SIZE, _( "%s feels vulnerable..." ), creature->getName());
-	  session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
+	  session->getGameAdapter()->writeLogMessage(msg, Constants::MSGTYPE_STATS);
 	  creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
 	  return;
 	default:
@@ -82,7 +82,7 @@ void PotionExpirationEvent::execute() {
 							amount);
 	//	recalcAggregateValues();
 	snprintf(msg, MSG_SIZE,  _( "%s feels a loss of contentment." ), creature->getName());
-	session->getGameAdapter()->addDescription(msg, 0.2f, 1, 1);
+	session->getGameAdapter()->writeLogMessage(msg, Constants::MSGTYPE_STATS);
 	creature->startEffect(Constants::EFFECT_SWIRL, (Constants::DAMAGE_DURATION * 4));
   }
 }

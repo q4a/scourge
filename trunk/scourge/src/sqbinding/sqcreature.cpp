@@ -387,7 +387,11 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
     if(protectiveItem && 0 == Util::dice( 2 )) {
 			snprintf( msg, MSG_SIZE, _( "%s resists the spell with magic item!" )
 			       , object->getName());
-      SqBinding::sessionRef->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);    
+	if ( object->getCharacter() ) {
+	  SqBinding::sessionRef->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERBATTLE );
+	} else {
+	  SqBinding::sessionRef->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_NPCBATTLE );
+	}
       return 0;
     }
   }
@@ -412,7 +416,7 @@ int SqCreature::_setStateMod( HSQUIRRELVM vm ) {
   } else {
     snprintf( msg, MSG_SIZE, StateMod::stateMods[ mod ]->getUnsetState(), object->getName() );
   }
-  SqBinding::sessionRef->getGameAdapter()->addDescription(msg, 1, 0.15f, 1);
+  SqBinding::sessionRef->getGameAdapter()->writeLogMessage(msg, Constants::MSGTYPE_STATS);
   
   // cancel existing event if any
   if( e ) {

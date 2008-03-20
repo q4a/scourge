@@ -584,7 +584,8 @@ public:
     MSGTYPE_PLAYERDEATH,	// A player character has died
     MSGTYPE_NPCDEATH,		// An NPC or monster has died
     MSGTYPE_FAILURE,		// The player has failed at something
-    MSGTYPE_STATS,		// Players stats have changed: State mods, leveled up etc.
+    MSGTYPE_STATS,		// Player's stats have changed: State mods, leveled up etc.
+    MSGTYPE_SYSTEM,		// System and debug messages
   };
 
   enum {

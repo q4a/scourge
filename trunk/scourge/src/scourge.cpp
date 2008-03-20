@@ -972,7 +972,11 @@ bool Scourge::handleTargetSelectionOfLocation( Uint16 mapx, Uint16 mapy, Uint16 
     c->setSelXY(mapx,mapy); // and get a path there. Probably should make this get in range for the spell.
     char msg[80];
     snprintf(msg, 80, _( "%s selected a target" ), c->getName());
-    getDescriptionScroller()->addDescription(msg);
+	if ( c->getCharacter() ) {
+	  getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERMAGIC );
+	} else {
+	  getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_NPCMAGIC );
+	}
     ret = true;
     closeAllContainerGuis();
   } else {
@@ -994,7 +998,11 @@ bool Scourge::handleTargetSelectionOfDoor( Uint16 mapx, Uint16 mapy, Uint16 mapz
     c->setSelXY(mapx,mapy); // and need to get a path there, otherwise we'll run on the spot
     char msg[80];
     snprintf(msg, 80, _( "%s selected a target" ), c->getName());
-    getDescriptionScroller()->addDescription(msg);
+	if ( c->getCharacter() ) {
+	  getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERMAGIC );
+	} else {
+	  getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_NPCMAGIC );
+	}
     ret = true;
   } else {
     cancelTargetSelection();
@@ -1018,7 +1026,11 @@ bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
     //no need to get paths to the target creature, the battle should handle this
     char msg[ 80 ];
     snprintf(msg, 80, _( "%1$s will target %2$s" ), c->getName(), c->getTargetCreature()->getName());
-    getDescriptionScroller()->addDescription(msg);
+	if ( c->getCharacter() ) {
+	  getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERMAGIC );
+	} else {
+	  getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_NPCMAGIC );
+	}
     ret = true;
   } else {
     cancelTargetSelection();
@@ -1040,7 +1052,11 @@ bool Scourge::handleTargetSelectionOfItem( Item *item, int x, int y, int z ) {
     c->setTargetItem( x, y, z, item );
 		char msg[ 80 ];
     snprintf( msg, 80, _( "%1$s targeted %2$s." ), c->getName(), item->getRpgItem()->getDisplayName() );
-    getDescriptionScroller()->addDescription( msg );
+	if ( c->getCharacter() ) {
+	  getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERMAGIC );
+	} else {
+	  getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_NPCMAGIC );
+	}
     ret = true;
   } else {
     cancelTargetSelection();
@@ -1078,7 +1094,7 @@ void Scourge::describeLocation(int mapx, int mapy, int mapz) {
 				}
 			}
 			if ( !description.empty() ) {
-				getDescriptionScroller()->addDescription( description.c_str() );
+				getDescriptionScroller()->writeLogMessage( description.c_str() );
 			}
 		}
 	}
@@ -1124,7 +1140,7 @@ bool Scourge::useItem(int x, int y, int z) {
                                  party->getPlayer()->getShape(),
                                  x, y, z,
                                  shape)) {
-      getDescriptionScroller()->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
+      getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::ITEM_OUT_OF_REACH), Constants::MSGTYPE_FAILURE);
 			getParty()->setSelXY( x, y, false ); // get as close as possible to location
       return true;
     } else {
@@ -1168,7 +1184,7 @@ bool Scourge::getItem(Location *pos) {
 																 toint(party->getPlayer()->getX()),
 																 toint(party->getPlayer()->getY()),
 																 0)) {
-				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::ITEM_OUT_OF_REACH));
+				getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::ITEM_OUT_OF_REACH), Constants::MSGTYPE_FAILURE);
 	  } else {
 			movingX = pos->x;
 			movingY = pos->y;
@@ -1225,7 +1241,7 @@ int Scourge::dropItem(int x, int y) {
         snprintf(message, sizeof( message ), _( "%1$s is placed in %2$s." ),
                 movingItem->getItemName(),
                 levelMap->getSelectedDropTarget()->item->getItemName());
-        getDescriptionScroller()->addDescription(message);
+        getDescriptionScroller()->writeLogMessage(message);
         // if this container's gui is open, update it
         refreshContainerGui(((Item*)(levelMap->getSelectedDropTarget()->item)));
       }
@@ -1305,7 +1321,7 @@ bool Scourge::useTeleporter(Location *pos) {
   if( p && p->shape && 
 			p->shape == getSession()->getShapePalette()->findShapeByName("TELEPORTER") ) {
     if(levelMap->isLocked(pos->x, pos->y, pos->z)) {
-      getDescriptionScroller()->addDescription(Constants::getMessage(Constants::TELEPORTER_OFFLINE));
+      getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::TELEPORTER_OFFLINE), Constants::MSGTYPE_FAILURE);
       return true;
     } else {
       // able to teleport if any party member is alive
@@ -1343,11 +1359,11 @@ bool Scourge::useLever( Location *pos, bool showMessage ) {
 			// show message, depending on distance from key to door
 			float d = Constants::distance(keyX,  keyY, 1, 1, doorX, doorY, 1, 1);
 			if(d < 20.0f) {
-				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_OPENED_CLOSE));
+				getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::DOOR_OPENED_CLOSE), Constants::MSGTYPE_MISSION);
 			} else if(d >= 20.0f && d < 100.0f) {
-				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_OPENED));
+				getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::DOOR_OPENED), Constants::MSGTYPE_MISSION);
 			} else {
-				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_OPENED_FAR));
+				getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::DOOR_OPENED_FAR), Constants::MSGTYPE_MISSION);
 			}
 			getSession()->getSound()->playSound( "switch" );
 		}
@@ -1412,7 +1428,7 @@ bool Scourge::useSecretDoor(Location *pos) {
         } else {
           levelMap->setPosition( pos->x, pos->y - wall->getDepth() + post->getDepth(), 0, post );
         }
-        getDescriptionScroller()->addDescription( _( "Something is blocking the door from closing." ) );
+        getDescriptionScroller()->writeLogMessage( _( "Something is blocking the door from closing." ) );
         return false;
       }
 
@@ -1785,7 +1801,7 @@ void Scourge::addGameSpeed(int speedFactor){
   getUserConfiguration()->setGameSpeedLevel(getUserConfiguration()->getGameSpeedLevel() + speedFactor);
   char msg[80];
   snprintf(msg, 80, _( "Speed set to %d\n" ), getUserConfiguration()->getGameSpeedTicks());
-  getDescriptionScroller()->addDescription(msg);
+  getDescriptionScroller()->writeLogMessage(msg, Constants::MSGTYPE_SYSTEM);
 }
 
 //#define MONSTER_FLEE_IF_LOW_HP
@@ -1939,10 +1955,10 @@ void Scourge::missionCompleted() {
 
     // how many points?
     int exp = (getSession()->getCurrentMission()->getLevel() + 1) * 100;
-    getDescriptionScroller()->addDescription( _( "For completing the mission" ), 0, 1, 1);
+    getDescriptionScroller()->writeLogMessage( _( "For completing the mission" ), Constants::MSGTYPE_MISSION);
     char message[200];
     snprintf(message, 200, _( "The party receives %d points." ), exp);
-    getDescriptionScroller()->addDescription(message, 0, 1, 1);
+    getDescriptionScroller()->writeLogMessage(message, Constants::MSGTYPE_MISSION);
 
     for(int i = 0; i < getParty()->getPartySize(); i++) {
 			getParty()->getParty(i)->addExperienceWithMessage( exp );
@@ -2936,7 +2952,7 @@ bool Scourge::saveGame( Session *session, const string& dirName, const string& t
 
 bool Scourge::loadGame( Session *session, string& dirName, char* error ) {
 	bool b = doLoadGame( session, dirName, error );
-	addDescription( b ? _( "Game loaded successfully." ) : error );
+	writeLogMessage( b ? _( "Game loaded successfully." ) : error, Constants::MSGTYPE_SYSTEM );
 	return b;
 }
 
@@ -3611,7 +3627,7 @@ bool Scourge::enchantItem( Creature *creature, Item *item ) {
 					item->getDetailedDescription( tmp );
 					char msg[255];
 					snprintf( msg, 255, _( "You created: %s." ) , tmp.c_str() );
-					addDescription(msg);
+					writeLogMessage(msg);
 					creature->startEffect( Constants::EFFECT_SWIRL, Constants::DAMAGE_DURATION * 4 );
 					ret = true;
 				} else {
@@ -3639,7 +3655,7 @@ bool Scourge::transcribeItem( Creature *creature, Item *item ) {
 					creature->removeInventory( creature->findInInventory( item ) );
 					char msg[120];
 					snprintf( msg, 120, _( "%s crumbles into dust." ), item->getItemName());
-					addDescription(msg);
+					writeLogMessage(msg);
 					ret = true;
 				} else {
 					showMessageDialog( _( "You already know this spell" ) );
@@ -3843,7 +3859,7 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
 		getSession()->getSound()->playSound( Window::DROP_FAILED );
 		// rollback if blocked by a player			
 		levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), movingDoor->oldDoorShape);
-		getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
+		getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::DOOR_BLOCKED));
 		return;
 	} else {
 		// Deeestroy!
@@ -3888,9 +3904,9 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 				assert( keyX > -1 || keyY > -1 || keyZ > -1 );
 				bool b = useLever( levelMap->getLocation( keyX, keyY, keyZ ), false );
 				assert( b );
-				getDescriptionScroller()->addDescription( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ) );
+				getDescriptionScroller()->writeLogMessage( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ), Constants::MSGTYPE_MISSION );
 			} else {
-				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_LOCKED));
+				getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::DOOR_LOCKED), Constants::MSGTYPE_FAILURE);
 				getSession()->getSound()->playSound( "smash-door" );
 				return true;
 			}
@@ -3949,7 +3965,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 			} else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
 				// rollback if blocked by a player			
 				levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), oldDoorShape);
-				getDescriptionScroller()->addDescription(Constants::getMessage(Constants::DOOR_BLOCKED));
+				getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::DOOR_BLOCKED));
 				return true;
 			} else {
 				// Deeestroy!
@@ -3963,7 +3979,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 }
 
 void Scourge::destroyDoor( Sint16 ox, Sint16 oy, Shape *shape ) {
-	getDescriptionScroller()->addDescription( _( "The door splinters into many, tiny pieces!" ), 0, 1, 1 );
+	getDescriptionScroller()->writeLogMessage( _( "The door splinters into many, tiny pieces!" ) );
 	startDoorEffect( Constants::EFFECT_DUST, ox, oy, shape );
 }
 
