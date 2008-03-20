@@ -37,6 +37,7 @@ TextScroller::TextScroller( Scourge *scourge ) {
 	offset = 0;
 	lastCheck = SDL_GetTicks();
   inside = false;
+  visible = false;
 	scrollTexture = 0;
 }
 
@@ -94,11 +95,11 @@ if (scourge->getUserConfiguration()->getLogLevel() < logLevel) return;
 
 void TextScroller::draw() {
 
-  if( !inside ) {
+  if( !visible ) {
     lineOffset = 0;
   }
 
-	if( scourge->getParty()->isRealTimeMode() && !inside ) {
+	if( scourge->getParty()->isRealTimeMode() && !visible ) {
 		Uint32 now = SDL_GetTicks();
 		if( now - lastCheck > SCROLL_SPEED ) {
 			lastCheck = now;
@@ -128,7 +129,7 @@ void TextScroller::draw() {
 	glTranslatef( xp, ytop, 0 );
 	glDisable( GL_DEPTH_TEST );
 
-  if( inside ) {
+  if( visible ) {
     int margin = 10;
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -170,7 +171,7 @@ void TextScroller::draw() {
 	glScissor( xp, scourge->getScreenHeight() - ( ytop + height ), SCROLL_WIDTH, height );
   glEnable( GL_SCISSOR_TEST );
 
-	int currentOffset = ( inside ? 0 : offset );
+	int currentOffset = ( visible ? 0 : offset );
 	int x = 0;
 	int y = height - currentOffset;
 	// cerr << "text.size=" << text.size() << endl;
@@ -178,7 +179,7 @@ void TextScroller::draw() {
 		if( text[ i ] != "" ) {
 			Color *c = color[ i ];
       float a;
-      if( inside ) a = 1;
+      if( visible ) a = 1;
       else a = c->a * ( ( LINES_SHOWN - ( ( i - lineOffset ) + ( currentOffset / static_cast<float>(LINE_HEIGHT) ) ) ) / static_cast<float>(LINES_SHOWN) );
 			glColor4f( c->r, c->g, c->b, a  );
 			scourge->getSDLHandler()->texPrint( x, y, text[ i ].c_str() );
@@ -201,13 +202,14 @@ bool TextScroller::handleEvent( SDL_Event *event ) {
 	int mx = scourge->getSDLHandler()->mouseX;
 	int my = scourge->getSDLHandler()->mouseY;
 	int ytop = ( scourge->inTurnBasedCombat() ? yp + 50 : yp );
-	bool before = inside;
+	bool before = visible;
 	inside = ( mx >= xp && mx < xp + SCROLL_WIDTH &&
 						 my >= ytop && my < ytop + LINES_SHOWN * LINE_HEIGHT &&
 						 !( scourge->getSession()->getMap()->isMouseRotating() || 
 								scourge->getSession()->getMap()->isMouseZooming() ||
 								scourge->getSession()->getMap()->isMapMoving() ) );
-	if( inside && !before ) {
+	if( inside && !before && my >= ytop && my <= ytop + 15 ) {
+		visible = true;
 		startOffset = lineOffset = 0;
 		for( unsigned int i = 0; i < text.size(); i++ ) {
 			if( text[i] != "" ) {
@@ -216,8 +218,11 @@ bool TextScroller::handleEvent( SDL_Event *event ) {
 			}
 		}
 	}
+
+	if(!inside && before) visible = false;
+
 	if( event->type == SDL_MOUSEBUTTONDOWN ) {
-		if( inside ) {
+		if( inside && visible ) {
 			if( event->button.button == SDL_BUTTON_WHEELUP ) {
 				lineOffset++;
 				if( lineOffset + LINES_SHOWN >= static_cast<int>(text.size()) ) {
@@ -229,6 +234,6 @@ bool TextScroller::handleEvent( SDL_Event *event ) {
 			}
 		}
 	}
-  return inside;
+  return visible;
 }
 
