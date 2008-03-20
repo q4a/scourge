@@ -173,6 +173,7 @@ public:
 	inline Button *getReplayIntro() { return replayIntro; }
 
 	virtual void addDescription(char const* description, float r=1.0f, float g=1.0f, float b=0.4f);
+	virtual void writeLogMessage( char const* message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel=Constants::LOGLEVEL_FULL );
 
   void movePartyToGateAndEndMission();
 
@@ -636,8 +637,6 @@ public:
 	bool isDoorBlocked();
 	void openDoor( MovingDoor *movingDoor );
 	inline std::vector<MovingDoor> *getMovingDoors() { return &movingDoors; }
-
-	void writeLogMessage( char *message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel=Constants::LOGLEVEL_FULL );
 
 protected:
   bool getItem(Location *pos);

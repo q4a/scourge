@@ -74,7 +74,8 @@ public:
   virtual bool intersects( int x, int y, int w, int h,
                            int x2, int y2, int w2, int h2 ) = 0;
 
-  virtual void addDescription(char *description, float r=1.0f, float g=1.0f, float b=0.4f) = 0;
+  virtual void addDescription(char const* description, float r=1.0f, float g=1.0f, float b=0.4f) = 0;
+  virtual void writeLogMessage( char const* message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel=Constants::LOGLEVEL_FULL ) = 0;
 
 	virtual GLuint getNamedTexture( char *name ) = 0;
 };
