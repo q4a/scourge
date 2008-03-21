@@ -2163,6 +2163,7 @@ void Scourge::receive( Widget *widget ) {
 }
 
 void Scourge::drawWidgetContents(Widget *w) {
+  char tooltip[255];
   for(int i = 0; i < party->getPartySize(); i++) {
     if(playerInfo[i] == w) {
       drawPortrait( w, party->getParty( i ) );
@@ -2216,7 +2217,8 @@ void Scourge::drawWidgetContents(Widget *w) {
           if( getParty()->getPlayer()->getQuickSpell( t ) ) {
             Storable *storable = getParty()->getPlayer()->getQuickSpell( t );
               if ( storable ) {
-                w->setTooltip( _( storable->getName() ) );
+                snprintf( tooltip, 255, "%s [%s]", _( storable->getName() ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_QUICKSPELL1 + t ) );
+                w->setTooltip( tooltip );
               } else if ( !(Item*)storable ) {
                 w->setTooltip( NULL );
               }

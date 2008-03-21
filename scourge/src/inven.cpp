@@ -419,7 +419,7 @@ void Inven::storeItem( Item *item ) {
 		pcUi->getScourge()->showMessageDialog( p );
 	} else {
 		this->storable = s;
-		pcUi->getScourge()->writeLogMessage( _( "Click a quickspell slot to store this item." ) );
+		pcUi->getScourge()->showMessageDialog( _( "Click a quickspell slot to store this item." ) );
 		pcUi->hide();
 	}
 }
