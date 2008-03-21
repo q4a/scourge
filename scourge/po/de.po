@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-03-21 00:38+0100\n"
-"PO-Revision-Date: 2008-03-21 00:39-0000\n"
+"POT-Creation-Date: 2008-03-21 03:26+0100\n"
+"PO-Revision-Date: 2008-03-21 03:35-0000\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <dmurczak@versanet.de>\n"
 "MIME-Version: 1.0\n"
@@ -823,7 +823,7 @@ msgstr "gegen"
 msgid "bonus"
 msgstr "Bonus"
 
-#: src/creature.cpp:2615 src/scourge.cpp:3559
+#: src/creature.cpp:2615 src/scourge.cpp:3561
 msgid "CTH"
 msgstr "TRC"
 
@@ -863,6 +863,150 @@ msgstr "    und versagt! %1$s nimmt %2$d Punkte Schaden!"
 #: src/creature.cpp:3053
 msgid "This trap is already disabled."
 msgstr "Diese Falle wurde bereits entschärft."
+
+#: src/userconfiguration.cpp:227
+msgid "Scroll map south"
+msgstr "Karte südwärts scrollen"
+
+#: src/userconfiguration.cpp:228
+msgid "Scroll map north"
+msgstr "Karte nordwärts scrollen"
+
+#: src/userconfiguration.cpp:229
+msgid "Scroll map east"
+msgstr "Karte ostwärts scrollen"
+
+#: src/userconfiguration.cpp:230
+msgid "Scroll map west"
+msgstr "Karte westwärts scrollen"
+
+#: src/userconfiguration.cpp:232
+msgid "Select player 0"
+msgstr "Ersten Charakter wählen"
+
+#: src/userconfiguration.cpp:233
+msgid "Select player 1"
+msgstr "Zweiten Charakter wählen"
+
+#: src/userconfiguration.cpp:234
+msgid "Select player 2"
+msgstr "Dritten Charakter wählen"
+
+#: src/userconfiguration.cpp:235
+msgid "Select player 3"
+msgstr "Vierten Charakter wählen"
+
+#: src/userconfiguration.cpp:236
+msgid "Toggle group mode"
+msgstr "Gruppenmodus/Einzelmodus"
+
+#: src/userconfiguration.cpp:238
+msgid "Show inventory"
+msgstr "Inventar anzeigen"
+
+#: src/userconfiguration.cpp:239
+msgid "Show options"
+msgstr "Einstellungen anzeigen"
+
+#: src/userconfiguration.cpp:240
+msgid "Choose next formation"
+msgstr "Nächste Formation"
+
+#: src/userconfiguration.cpp:242
+msgid "Toggle minimap"
+msgstr "Minikarte an/aus"
+
+#: src/userconfiguration.cpp:244
+msgid "Zoom in map"
+msgstr "Karte hineinzoomen"
+
+#: src/userconfiguration.cpp:245
+msgid "Zoom out map"
+msgstr "Karte herauszoomen"
+
+#: src/userconfiguration.cpp:247 src/optionsmenu.cpp:87
+msgid "Always center map"
+msgstr "Karte immer zentrieren"
+
+#: src/userconfiguration.cpp:248
+msgid "Increase game speed"
+msgstr "Spielgeschwindigkeit erhöhen"
+
+#: src/userconfiguration.cpp:249
+msgid "Decrease game speed"
+msgstr "Spielgeschwindigkeit verringern"
+
+#: src/userconfiguration.cpp:251
+msgid "Start next round"
+msgstr "Nächste Runde starten"
+
+#: src/userconfiguration.cpp:253
+msgid "Floating UI layout"
+msgstr "UI-Layout: Frei"
+
+#: src/userconfiguration.cpp:254
+msgid "Bottom UI layout"
+msgstr "UI-Layout: Unten"
+
+#: src/userconfiguration.cpp:255
+msgid "Inventory UI layout"
+msgstr "UI-Layout: Inventar"
+
+#: src/userconfiguration.cpp:257
+msgid "Switch combat mode"
+msgstr "Kampfmodus an/aus"
+
+#: src/userconfiguration.cpp:259
+msgid "Switch to next weapon"
+msgstr "Nächste Waffe wählen"
+
+#: src/userconfiguration.cpp:261
+msgid "Quick Spell 1"
+msgstr "Schnellwahlslot 1"
+
+#: src/userconfiguration.cpp:262
+msgid "Quick Spell 2"
+msgstr "Schnellwahlslot 2"
+
+#: src/userconfiguration.cpp:263
+msgid "Quick Spell 3"
+msgstr "Schnellwahlslot 3"
+
+#: src/userconfiguration.cpp:264
+msgid "Quick Spell 4"
+msgstr "Schnellwahlslot 4"
+
+#: src/userconfiguration.cpp:265
+msgid "Quick Spell 5"
+msgstr "Schnellwahlslot 5"
+
+#: src/userconfiguration.cpp:266
+msgid "Quick Spell 6"
+msgstr "Schnellwahlslot 6"
+
+#: src/userconfiguration.cpp:267
+msgid "Quick Spell 7"
+msgstr "Schnellwahlslot 7"
+
+#: src/userconfiguration.cpp:268
+msgid "Quick Spell 8"
+msgstr "Schnellwahlslot 8"
+
+#: src/userconfiguration.cpp:269
+msgid "Quick Spell 9"
+msgstr "Schnellwahlslot 9"
+
+#: src/userconfiguration.cpp:270
+msgid "Quick Spell 10"
+msgstr "Schnellwahlslot 10"
+
+#: src/userconfiguration.cpp:271
+msgid "Quick Spell 11"
+msgstr "Schnellwahlslot 11"
+
+#: src/userconfiguration.cpp:272
+msgid "Quick Spell 12"
+msgstr "Schnellwahlslot 12"
 
 #: src/userconfiguration.cpp:861
 #, c-format
@@ -1263,7 +1407,7 @@ msgstr "AP"
 msgid "RANGE"
 msgstr "REICHWEITE"
 
-#: src/item.cpp:1339 src/scourge.cpp:3507
+#: src/item.cpp:1339 src/scourge.cpp:3509
 msgid "DEF"
 msgstr "VRT"
 
@@ -1312,11 +1456,11 @@ msgstr "Kosten"
 msgid "Basic Statistics:"
 msgstr "Grundwerte:"
 
-#: src/characterinfo.cpp:49 src/scourge.cpp:2174 src/portrait.cpp:251
+#: src/characterinfo.cpp:49 src/scourge.cpp:2175 src/portrait.cpp:251
 msgid "HP"
 msgstr "LP"
 
-#: src/characterinfo.cpp:50 src/scourge.cpp:2176 src/portrait.cpp:256
+#: src/characterinfo.cpp:50 src/scourge.cpp:2177 src/portrait.cpp:256
 msgid "MP"
 msgstr "MP"
 
@@ -1343,7 +1487,7 @@ msgstr "Euer %s hat keine verbleibenden Anwendungen mehr."
 msgid "Your %s feels lighter."
 msgstr "Euer %s fühlt sich leichter an."
 
-#: src/battle.cpp:742 src/scourge.cpp:3665
+#: src/battle.cpp:742 src/scourge.cpp:3667
 #, c-format
 msgid "%s crumbles into dust."
 msgstr "%s zerfällt zu Staub."
@@ -1716,10 +1860,6 @@ msgstr "Schnell"
 msgid "Fastest"
 msgstr "Sehr schnell"
 
-#: src/optionsmenu.cpp:87
-msgid "Always center map"
-msgstr "Karte immer zentrieren"
-
 #: src/optionsmenu.cpp:89
 msgid "Keep zoom when switching layouts"
 msgstr "Zoom beibehalten bei Layout-Wechsel"
@@ -2042,188 +2182,188 @@ msgstr ""
 "Klicken, um einen Zauber, eine Fähigkeit oder einen magischen Gegenstand "
 "zuzuweisen."
 
-#: src/scourge.cpp:2191
+#: src/scourge.cpp:2192
 msgid "Current Weapon: Bare Hands"
 msgstr "Aktuelle Waffe: Bloße Hände"
 
-#: src/scourge.cpp:2197
+#: src/scourge.cpp:2198
 #, c-format
 msgid "Current Weapon: %s"
 msgstr "Aktuelle Waffe: %s"
 
-#: src/scourge.cpp:2470 src/portrait.cpp:427
+#: src/scourge.cpp:2472 src/portrait.cpp:427
 msgid "Thirst"
 msgstr "Durst"
 
-#: src/scourge.cpp:2484 src/portrait.cpp:432
+#: src/scourge.cpp:2486 src/portrait.cpp:432
 msgid "Hunger"
 msgstr "Hunger"
 
-#: src/scourge.cpp:2566 src/equip.cpp:628
+#: src/scourge.cpp:2568 src/equip.cpp:628
 msgid "Not enough Magic Points to cast this spell!"
 msgstr "Nicht genug Magiepunkte, um diesen Zauber zu sprechen!"
 
-#: src/scourge.cpp:2657
+#: src/scourge.cpp:2659
 #, c-format
 msgid "Begin Turn [%s]"
 msgstr "Runde beginnen [%s]"
 
-#: src/scourge.cpp:2663
+#: src/scourge.cpp:2665
 msgid "...In Turn..."
 msgstr "...Zug läuft..."
 
-#: src/scourge.cpp:2669
+#: src/scourge.cpp:2671
 #, c-format
 msgid "Pause Game [%s]"
 msgstr "Spielpause [%s]"
 
-#: src/scourge.cpp:2674
+#: src/scourge.cpp:2676
 #, c-format
 msgid "Unpause game. [%s]"
 msgstr "Spiel fortsetzen [%s]"
 
-#: src/scourge.cpp:2710
+#: src/scourge.cpp:2712
 msgid "Available Missions"
 msgstr "Verfügbare Missionen"
 
-#: src/scourge.cpp:2716
+#: src/scourge.cpp:2718
 msgid "Drag map to look around."
 msgstr "Zieht die Karte mit der Maus, um Euch umzusehen"
 
-#: src/scourge.cpp:2785
+#: src/scourge.cpp:2787
 msgid "This spell has no effect here..."
 msgstr "Dieser Zauberspruch ist hier unwirksam..."
 
-#: src/scourge.cpp:2963
+#: src/scourge.cpp:2965
 msgid "Game loaded successfully."
 msgstr "Spiel erfolgreich geladen."
 
-#: src/scourge.cpp:2986
+#: src/scourge.cpp:2988
 msgid "Error: Saved game version is too old."
 msgstr "Fehler: Der Spielstand wurde mit einer zu alten Spielversion erstellt."
 
-#: src/scourge.cpp:3339
+#: src/scourge.cpp:3341
 msgid "You cannot hire more party members."
 msgstr "Ihr könnt keine weiteren Gruppenmitglieder anwerben."
 
-#: src/scourge.cpp:3359
+#: src/scourge.cpp:3361
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr "Möchtet Ihr %s, den %s, entlassen?"
 
-#: src/scourge.cpp:3394
+#: src/scourge.cpp:3396
 #, c-format
 msgid "%s the level %d %s"
 msgstr "%s, der Stufe %d %s"
 
-#: src/scourge.cpp:3402
+#: src/scourge.cpp:3404
 #, c-format
 msgid "in a cave on level %d"
 msgstr "in einer Höhle auf Ebene %d"
 
-#: src/scourge.cpp:3405
+#: src/scourge.cpp:3407
 #, c-format
 msgid "in dungeon level %d at %s"
 msgstr "auf der Dungeon-Ebene %d in %s"
 
-#: src/scourge.cpp:3410
+#: src/scourge.cpp:3412
 msgid " while attempting to "
 msgstr " bei "
 
-#: src/scourge.cpp:3414
+#: src/scourge.cpp:3416
 msgid " kill "
 msgstr " der Jagd auf "
 
-#: src/scourge.cpp:3420
+#: src/scourge.cpp:3422
 msgid " recover "
 msgstr " der Suche nach "
 
-#: src/scourge.cpp:3429
+#: src/scourge.cpp:3431
 msgid "suddenly, while resting at HQ"
 msgstr "unerwarted während des Aufenthalts im Hauptquartier"
 
-#: src/scourge.cpp:3433
+#: src/scourge.cpp:3435
 #, c-format
 msgid "Expired %s. Cause of demise: %s. Reached chapter %d of the story."
 msgstr "Verstarb %s. Todesursache: %s. Erreichte Kapitel %d der Handlung."
 
-#: src/scourge.cpp:3458
+#: src/scourge.cpp:3460
 msgid "Score was successfully uploaded."
 msgstr "Die Punktzahl wurde erfolgreich hochgeladen."
 
-#: src/scourge.cpp:3503
+#: src/scourge.cpp:3505
 msgid "Initiative"
 msgstr "Initiative"
 
-#: src/scourge.cpp:3546 src/scourge.cpp:3553 src/infogui.cpp:596
+#: src/scourge.cpp:3548 src/scourge.cpp:3555 src/infogui.cpp:596
 #: src/infogui.cpp:601 src/infogui.cpp:606
 msgid "ATK"
 msgstr "ANG"
 
-#: src/scourge.cpp:3560 src/infogui.cpp:598 src/infogui.cpp:604
+#: src/scourge.cpp:3562 src/infogui.cpp:598 src/infogui.cpp:604
 msgid "APR"
 msgstr "APR"
 
-#: src/scourge.cpp:3612
+#: src/scourge.cpp:3614
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: src/scourge.cpp:3614
+#: src/scourge.cpp:3616
 #, c-format
 msgid "per %.2f R"
 msgstr "alle %.2f R"
 
-#: src/scourge.cpp:3623
+#: src/scourge.cpp:3625
 msgid "This item is already enchanted."
 msgstr "Dieser Gegenstand ist bereits verzaubert."
 
-#: src/scourge.cpp:3625
+#: src/scourge.cpp:3627
 msgid "This item cannot be enchanted."
 msgstr "Dieser Gegenstand kann nicht verzaubert werden."
 
-#: src/scourge.cpp:3633
+#: src/scourge.cpp:3635
 msgid "You succesfully enchanted an item!"
 msgstr "Ihr habt erfolgreich einen Gegenstand verzaubert!"
 
-#: src/scourge.cpp:3637
+#: src/scourge.cpp:3639
 #, c-format
 msgid "You created: %s."
 msgstr "Ihr erschuft: %s."
 
-#: src/scourge.cpp:3642
+#: src/scourge.cpp:3644
 msgid "You failed to enchant the item."
 msgstr "Ihr habt es nicht geschafft, den Gegenstand zu verzaubern."
 
-#: src/scourge.cpp:3646
+#: src/scourge.cpp:3648
 msgid "You can only enchant one item per day."
 msgstr "Ihr könnt nur einen Gegenstand pro Tag verzaubern."
 
-#: src/scourge.cpp:3661
+#: src/scourge.cpp:3663
 msgid "Spell was entered into your spellbook."
 msgstr "Der Zauber wurde in Euer Zauberbuch aufgenommen."
 
-#: src/scourge.cpp:3669
+#: src/scourge.cpp:3671
 msgid "You already know this spell"
 msgstr "Ihr kennt diesen Zauber bereits"
 
-#: src/scourge.cpp:3672
+#: src/scourge.cpp:3674
 msgid "You are not proficient enough to transcribe this scroll."
 msgstr "Ihr seid nicht erfahren genug, um diese Spruchrolle abzuschreiben."
 
-#: src/scourge.cpp:3675
+#: src/scourge.cpp:3677
 msgid "You can only transcribe scrolls!"
 msgstr "Ihr könnt nur Spruchrollen abschreiben!"
 
-#: src/scourge.cpp:3706
+#: src/scourge.cpp:3708
 msgid "This item is out of charges."
 msgstr "Dieser Gegenstand ist aufgebraucht."
 
-#: src/scourge.cpp:3719
+#: src/scourge.cpp:3721
 msgid "You cannot use this item."
 msgstr "Ihr könnt diesen Gegenstand nicht benutzen."
 
-#: src/scourge.cpp:3990
+#: src/scourge.cpp:3992
 msgid "The door splinters into many, tiny pieces!"
 msgstr "Die Tür zerspringt in unzählige kleine Teile!"
 
@@ -3812,7 +3952,7 @@ msgstr "Ein gut ausbalancierter Wurfdolch."
 
 #: ../scourge_data/config/weapon.cfg:172
 msgid "Many-a-throats were silenced by this here black iron"
-msgstr "Viele Kehlen wurden hiermit zum Schweigen gebracht."
+msgstr "So manche Kehle wurde hiermit zum Schweigen gebracht."
 
 #: ../scourge_data/config/weapon.cfg:173
 msgid "Dagger"
