@@ -224,52 +224,52 @@ const char * UserConfiguration :: ENGINE_ACTION_UP_NAMES[]={
 
 const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
 
-  "Scroll map south",
-  "Scroll map north",
-  "Scroll map east",
-  "Scroll map west",
+  _( "Scroll map south" ),
+  _( "Scroll map north" ),
+  _( "Scroll map east" ),
+  _( "Scroll map west" ),
 
-  "Select player 0",
-  "Select player 1",
-  "Select player 2",
-  "Select player 3",
-  "Toggle group mode",
+  _( "Select player 0" ),
+  _( "Select player 1" ),
+  _( "Select player 2" ),
+  _( "Select player 3" ),
+  _( "Toggle group mode" ),
 
-  "Show inventory",
-  "Show options",
-  "Choose next formation",
+  _( "Show inventory" ),
+  _( "Show options" ),
+  _( "Choose next formation" ),
 
-  "Toggle minimap",
+  _( "Toggle minimap" ),
 
-  "Zoom in map",
-  "Zoom out map",
+  _( "Zoom in map" ),
+  _( "Zoom out map" ),
 
-  "Always center map",
-  "Increase game speed", 
-  "Decrease game speed",
+  _( "Always center map" ),
+  _( "Increase game speed" ), 
+  _( "Decrease game speed" ),
 
-  "Start next round",
+  _( "Start next round" ),
 
-  "Floating UI layout",
-  "Bottom UI layout",
-  "Inventory UI layout",
+  _( "Floating UI layout" ),
+  _( "Bottom UI layout" ),
+  _( "Inventory UI layout" ),
 
-  "Switch combat mode",
+  _( "Switch combat mode" ),
 
-  "Switch to next weapon",
+  _( "Switch to next weapon" ),
 
-  "Quick Spell 1",
-  "Quick Spell 2",
-  "Quick Spell 3",
-  "Quick Spell 4",
-  "Quick Spell 5",
-  "Quick Spell 6",
-  "Quick Spell 7",
-  "Quick Spell 8",
-  "Quick Spell 9",
-  "Quick Spell 10",
-  "Quick Spell 11",
-  "Quick Spell 12"
+  _( "Quick Spell 1" ),
+  _( "Quick Spell 2" ),
+  _( "Quick Spell 3" ),
+  _( "Quick Spell 4" ),
+  _( "Quick Spell 5" ),
+  _( "Quick Spell 6" ),
+  _( "Quick Spell 7" ),
+  _( "Quick Spell 8" ),
+  _( "Quick Spell 9" ),
+  _( "Quick Spell 10" ),
+  _( "Quick Spell 11" ),
+  _( "Quick Spell 12" )
 
 };
 
@@ -975,7 +975,7 @@ int UserConfiguration::getEngineAction(SDL_Event *event){
 
 const char * UserConfiguration::getEngineActionDescription(int i){
     if(! (i < 0 || i > ENGINE_ACTION_COUNT)){
-        return ENGINE_ACTION_DESCRIPTION[i];
+        return _(ENGINE_ACTION_DESCRIPTION[i]);
     }
     else{
         return "";
