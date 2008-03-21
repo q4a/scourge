@@ -726,7 +726,7 @@ void InfoGui::appendMagicItemInfo( char *description, Item *item ) {
         int skill = i->first;
         int bonus = i->second;
         char tmp2[80];
-        snprintf(tmp2, 80, " %s+%d", Skill::skills[skill]->getDisplayName(), bonus);
+        snprintf(tmp2, 80, "| %s +%d", Skill::skills[skill]->getDisplayName(), bonus);
         strcat( tmp, tmp2 );
         found = true;
       }

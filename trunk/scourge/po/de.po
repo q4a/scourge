@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
 "POT-Creation-Date: 2008-03-21 03:26+0100\n"
-"PO-Revision-Date: 2008-03-21 03:35-0000\n"
+"PO-Revision-Date: 2008-03-21 04:20-0000\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <dmurczak@versanet.de>\n"
 "MIME-Version: 1.0\n"
@@ -2931,12 +2931,12 @@ msgstr "Angriffswerte für alle Spieler:"
 #: src/infogui.cpp:631
 #, c-format
 msgid "%d bonus to attack and damage."
-msgstr "%d-Bonus auf Angriff und Schaden."
+msgstr "%d Punkte Bonus auf Angriff und Schaden."
 
 #: src/infogui.cpp:633
 #, c-format
 msgid "%d bonus to armor points."
-msgstr "%d-Bonus auf Rüstungspunkte."
+msgstr "%d Punkte Bonus auf Rüstungspunkte."
 
 #: src/infogui.cpp:643
 #, c-format
