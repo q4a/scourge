@@ -668,7 +668,7 @@ void Equip::storeStorable( Storable *storable ) {
 		pcUi->getScourge()->showMessageDialog( p );
 	} else {
 		this->storable = storable;
-		pcUi->getScourge()->writeLogMessage( _( "Click a quickspell slot to store this spell." ), Constants::MSGTYPE_SYSTEM );
+		pcUi->getScourge()->showMessageDialog( _( "Click a quickspell slot to store this spell." ) );
 	}
 }
 
