@@ -63,8 +63,9 @@ std::string get_file_name(const std::string fileName ) {
 	return config;
 }
 
+// this function should not be translated... its use should be deprecated
 char *getAn( const char *name ) { 
-	return ( name[0] == 'a' || name[0] == 'e' || name[0] == 'i' || name[0] == 'o' || name[0] == 'u' || name[0] == 'y' ? _( "an" ) : _( "a" ) );
+	return (char*)( name[0] == 'a' || name[0] == 'e' || name[0] == 'i' || name[0] == 'o' || name[0] == 'u' || name[0] == 'y' ? "an" : "a" );
 }
 
 //snprintf(s, sSize, "Welcome to Scourge version %7.2f", SCOURGE_VERSION);
