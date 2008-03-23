@@ -616,7 +616,9 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 
           	// skip roofs if inside
 						bool underRoof = true;
-						if( adapter->getPlayer() ) {
+						if( settings->isGridShowing() ) {
+							underRoof = false;
+						} else if( adapter->getPlayer() ) {
 							Location *roof = 
 								getLocation( toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 ), 
 								             toint( adapter->getPlayer()->getY() - 1 - adapter->getPlayer()->getShape()->getDepth() / 2 ), 
@@ -3975,7 +3977,7 @@ void Map::renderFloor() {
 	glBindTexture( GL_TEXTURE_2D, floorTex );
 	glPushMatrix();
 	if( isHeightMapEnabled() ) {
-		if( groundVisible ) {
+		if( groundVisible || settings->isGridShowing() ) {
 			drawHeightMapFloor();
 			drawWaterLevel();
 		}

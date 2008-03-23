@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <map>
+#include <set>
 #include "common/constants.h"
 #include "terraingenerator.h"
 
@@ -42,6 +43,7 @@ class OutdoorGenerator : public TerrainGenerator {
 private:
 	float ground[MAP_WIDTH][MAP_DEPTH];
   CellularAutomaton *cellular[2][2];
+  std::set<int> keepFloor;
 
 public:
 	OutdoorGenerator( Scourge *scourge, int level, int depth, int maxDepth,
@@ -51,6 +53,12 @@ public:
 
 	void printMaze();
 	inline void getName(char *s) { strcpy( s, "outdoor" ); }
+	
+	void addVillage( Map *map, ShapePalette *shapePal );
+	void addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy );
+	void flattenPathChunk( Map *map, Sint16 mapx, Sint16 mapy );
+	void flattenChunk( Map *map, Sint16 mapX, Sint16 mapY, float height=0 ); 
+	void addFloor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool doFlattenChunk, GLShape *shape );	
 
 	// -=K=-: just a wrapper class of static-sized-bool-array;
 	// far quicker than large dynamic sets with their inner trees and stuff
@@ -73,6 +81,12 @@ public:
 		bool seen[MAP_STEP_WIDTH][MAP_STEP_DEPTH];
 	};
 protected:
+	void addEWDoor( Map *map, ShapePalette *shapePal, int x, int y );
+	void addNSDoor( Map *map, ShapePalette *shapePal, int x, int y );
+	void removeLakes( Map *map, int x, int y );
+	int createRoad( Map *map, ShapePalette *shapePal, int x, int y, bool vert );
+	void createHouses( Map *map, ShapePalette *shapePal, int x, int y, int roadX, int roadY );
+	bool createHouse( Map *map, ShapePalette *shapePal, int x, int y, int w, int h );
 	virtual void generate( Map *map, ShapePalette *shapePal );
 	int getMountainSize( int x, int y, Map *map, AroundMapLooker& lake );
 	virtual bool drawNodes( Map *map, ShapePalette *shapePal );
@@ -95,8 +109,7 @@ protected:
 	
 	virtual void addRugs( Map *map, ShapePalette *shapePal );
 	virtual void addTraps( Map *map, ShapePalette *shapePal );
-	virtual void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal);
-		
+	virtual void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal);	
 };
 
 #endif 
