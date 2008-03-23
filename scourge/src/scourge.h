@@ -172,7 +172,7 @@ public:
 	inline Button *getBeginChapter() { return beginChapter; }
 	inline Button *getReplayIntro() { return replayIntro; }
 
-	virtual void addDescription(char const* description, float r=1.0f, float g=1.0f, float b=0.4f);
+	virtual void addDescription(char const* description, float r=1.0f, float g=1.0f, float b=0.4f, int logLevel=Constants::LOGLEVEL_FULL);
 	virtual void writeLogMessage( char const* message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel=Constants::LOGLEVEL_FULL );
 
   void movePartyToGateAndEndMission();

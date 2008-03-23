@@ -3725,8 +3725,8 @@ bool Scourge::useItem( Creature *creature, Item *item ) {
 	return ret;
 }
 
-void Scourge::addDescription(char const* description, float r, float g, float b) {
-	descriptionScroller->addDescription( description, r, g, b );
+void Scourge::addDescription(char const* description, float r, float g, float b, int logLevel) {
+	descriptionScroller->addDescription( description, r, g, b, logLevel );
 }
 
 void Scourge::writeLogMessage( char const* message, int messageType, int logLevel ) {

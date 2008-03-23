@@ -567,7 +567,7 @@ public:
     LOGLEVEL_MINIMAL=0,
     LOGLEVEL_PARTIAL,
     LOGLEVEL_VERBOSE,
-    LOGLEVEL_FULL,
+    LOGLEVEL_FULL
   };
 
   enum {			// Message types as they show up in the log window
@@ -586,6 +586,7 @@ public:
     MSGTYPE_FAILURE,		// The player has failed at something
     MSGTYPE_STATS,		// Player's stats have changed: State mods, leveled up etc.
     MSGTYPE_SYSTEM,		// System and debug messages
+    MSGTYPE_SKILL		// Skill related messages
   };
 
   enum {
