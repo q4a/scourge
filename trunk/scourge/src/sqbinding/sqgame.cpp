@@ -47,7 +47,7 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "string", "getValue", SqGame::_getValue, 2, "xs", "Get the value associated with a given key from the value map. The first parameter is the key." },
   { "void", "setValue", SqGame::_setValue, 3, "xss", "Add a new or set an existing key and its value in the value map. The first parameter is the key, the second is its value." },
   { "void", "eraseValue", SqGame::_eraseValue, 2, "xs", "Remove a key and its value from the value map. The first parameter is the key to be removed." },
-  { "void", "printMessage", SqGame::_printMessage, 2, "xs", "Print a message in the scourge message window. The resulting message will always be displayed in a lovely shade of purple." },
+  { "void", "printMessage", SqGame::_printMessage, 2, "xs", "Print a message in the scourge message window. The resulting message will always be displayed in a refreshing shade of cyan." },
   { "void", "reloadNuts", SqGame::_reloadNuts, 0, 0, "Reload all currently used squirrel (.nut) files. The game engine will also do this for you automatically every 5 game minutes." },
   { "void", "documentSOM", SqGame::_documentSOM, 2, "xs", "Produce this documentation. The first argument is the location where the html files will be placed." },
   { "void", "runTests", SqGame::_runTests, 2, "xs", "Run internal tests of the rpg combat engine. Results are saved in path given as param to runTests()." },
@@ -233,7 +233,7 @@ int SqGame::_eraseValue( HSQUIRRELVM vm ) {
 
 int SqGame::_printMessage( HSQUIRRELVM vm ) {
   GET_STRING( message, 80 )
-  SqBinding::sessionRef->getGameAdapter()->writeLogMessage( message );
+  SqBinding::sessionRef->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_SKILL );
   return 0;
 }
 

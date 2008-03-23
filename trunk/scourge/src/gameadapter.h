@@ -172,7 +172,7 @@ public:
 	virtual RenderedCreature *createWanderingHero( int level ) { return NULL; }
 	virtual bool useDoor( Location *pos, bool openLocked=false ) { return false; }
 
-	virtual inline void addDescription(char const* description, float r=1.0f, float g=1.0f, float b=0.4f) {}
+	virtual inline void addDescription(char const* description, float r=1.0f, float g=1.0f, float b=0.4f, int logLevel=Constants::LOGLEVEL_FULL ) {}
 	virtual inline void writeLogMessage( char const* message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel=Constants::LOGLEVEL_FULL ) {}
 
 	virtual GLuint getNamedTexture( char *name ) { return 0; }

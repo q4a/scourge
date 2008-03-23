@@ -44,7 +44,9 @@ TextScroller::TextScroller( Scourge *scourge ) {
 TextScroller::~TextScroller() {
 }
 
-void TextScroller::addDescription( char const* description, float r, float g, float b ) {
+void TextScroller::addDescription( char const* description, float r, float g, float b, int logLevel ) {
+	if (scourge->getUserConfiguration()->getLogLevel() < logLevel) return;
+
 	string s = description;
 	color.insert( color.begin(), new Color( r, g, b, 1 ) );
 	text.insert( text.begin(), s );
@@ -58,38 +60,38 @@ void TextScroller::addDescription( char const* description, float r, float g, fl
 
 void TextScroller::writeLogMessage( char const* message, int messageType, int logLevel ) {
 
-if (scourge->getUserConfiguration()->getLogLevel() < logLevel) return;
-
 	if (messageType == Constants::MSGTYPE_NORMAL ) {
-		addDescription( message, 1, 1, 0 );
+		addDescription( message, 1, 1, 0, logLevel );
 	} else if (messageType == Constants::MSGTYPE_MISSION ) {
-		addDescription( message, 1, 1, 1 );
+		addDescription( message, 1, 1, 1, logLevel );
 	} else if (messageType == Constants::MSGTYPE_PLAYERDAMAGE ) {
-		addDescription( message, 1, 0, 0 );
+		addDescription( message, 1, 0, 0, logLevel );
 	} else if (messageType == Constants::MSGTYPE_NPCDAMAGE ) {
-		addDescription( message, 0, 1, 0 );
+		addDescription( message, 0, 1, 0, logLevel );
 	} else if (messageType == Constants::MSGTYPE_PLAYERMAGIC ) {
-		addDescription( message, 1, 0, 1 );
+		addDescription( message, 1, 0, 1, logLevel );
 	} else if (messageType == Constants::MSGTYPE_NPCMAGIC ) {
-		addDescription( message, 0.7f, 0, 1 );
+		addDescription( message, 0.7f, 0, 1, logLevel );
 	} else if (messageType == Constants::MSGTYPE_PLAYERITEM ) {
-		addDescription( message, 0, 0, 1 );
+		addDescription( message, 0, 0, 1, logLevel );
 	} else if (messageType == Constants::MSGTYPE_NPCITEM ) {
-		addDescription( message, 0, 0.5f, 1 );
+		addDescription( message, 0, 0.5f, 1, logLevel );
 	} else if (messageType == Constants::MSGTYPE_PLAYERBATTLE ) {
-		addDescription( message, 1, 0.8f, 0.8f );
+		addDescription( message, 1, 0.8f, 0.8f, logLevel );
 	} else if (messageType == Constants::MSGTYPE_NPCBATTLE ) {
-		addDescription( message, 1, 0.5f, 0.5f );
+		addDescription( message, 1, 0.5f, 0.5f, logLevel );
 	} else if (messageType == Constants::MSGTYPE_PLAYERDEATH ) {
-		addDescription( message, 0.7f, 0.7f, 0 );
+		addDescription( message, 0.7f, 0.7f, 0, logLevel );
 	} else if (messageType == Constants::MSGTYPE_NPCDEATH ) {
-		addDescription( message, 0, 0.7f, 0 );
+		addDescription( message, 0, 0.7f, 0, logLevel );
 	} else if (messageType == Constants::MSGTYPE_FAILURE ) {
-		addDescription( message, 0.7f, 0.7f, 0.7f );
+		addDescription( message, 0.7f, 0.7f, 0.7f, logLevel );
 	} else if (messageType == Constants::MSGTYPE_STATS ) {
-		addDescription( message, 1, 0.5f, 0 );
+		addDescription( message, 1, 0.5f, 0, logLevel );
 	} else if (messageType == Constants::MSGTYPE_SYSTEM ) {
-		addDescription( message, 0, 0.8f, 0.8f );
+		addDescription( message, 0, 0.8f, 0.8f, logLevel );
+	} else if (messageType == Constants::MSGTYPE_SKILL ) {
+		addDescription( message, 0, 1, 1, logLevel );
 	}
 }
 
