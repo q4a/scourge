@@ -180,15 +180,21 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			if( x >= offs && x < 2 * WIDTH_IN_NODES + offs &&
 					y >= offs && y < 2 * DEPTH_IN_NODES + offs ) {
 				int cx = ( x - offs ) / WIDTH_IN_NODES;
-				int cy = ( y - offs ) / DEPTH_IN_NODES;
+				int cy = ( y - offs ) / DEPTH_IN_NODES;				 
 				int mx = ( x - offs ) % WIDTH_IN_NODES;
 				int my = ( y - offs ) % DEPTH_IN_NODES;
 				if( cellular[ cx ][ cy ]->getNode( mx, my )->island ) {
 					GLShape *shape = getRandomTreeShape( shapePal );
 					int xx = x * OUTDOORS_STEP;
 					int yy = y * OUTDOORS_STEP + shape->getHeight();
-					if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
-						map->setPosition( xx, yy, 0, shape );
+
+					// don't put them on roads and in houses
+					int fx = ( ( xx ) / MAP_UNIT ) * MAP_UNIT;
+					int fy = ( ( yy - shape->getHeight() ) / MAP_UNIT ) * MAP_UNIT;
+					if( !map->getFloorPosition( fx, fy ) ) {										
+						if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
+							map->setPosition( xx, yy, 0, shape );
+						}
 					}
 				}
 			}
@@ -201,9 +207,14 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	//map->setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, shapePal->getNamedTexture( "grass" ) );
 
 	// set the floor, so random positioning works in terrain generator
+	// a bit of a song-and-dance with keepFloor is so that random objects aren't placed in rooms
 	for( int x = MAP_OFFSET; x < MAP_WIDTH - MAP_OFFSET; x += MAP_UNIT ) {
-		for( int y = MAP_OFFSET; y < MAP_DEPTH - MAP_OFFSET; y += MAP_UNIT ) {			
-			map->setFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT, (Shape*)shapePal->findShapeByName( "FLOOR_TILE", true ) );
+		for( int y = MAP_OFFSET; y < MAP_DEPTH - MAP_OFFSET; y += MAP_UNIT ) {
+			if( keepFloor.find( x + MAP_WIDTH * y ) != keepFloor.end() ) {
+				map->removeFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT );
+			} else {
+				map->setFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT, (Shape*)shapePal->findShapeByName( "FLOOR_TILE", true ) );
+			}
 		}
 	}
 
@@ -237,28 +248,27 @@ void OutdoorGenerator::removeLakes( Map *map, int x, int y ) {
 	}	
 }
 
-#define MIN_HOUSE_SIZE 2
-#define MAX_HOUSE_SIZE 3
-
+#define HOUSE_SHAPES_SIZE 3
+int HOUSE_SHAPES[][2] = { { 2, 2 }, { 2, 3 }, { 3, 2 } };
 void OutdoorGenerator::createHouses( Map *map, ShapePalette *shapePal, int x, int y, int roadX, int roadY ) {
 	for( int iy = -2; iy < VILLAGE_HEIGHT + 2; iy++ ) {
 		for( int ix = -2; ix < VILLAGE_HEIGHT + 2; ix++ ) {
 			if( 0 == Util::dice( 2 ) ) {
-				int w = Util::pickOne( MIN_HOUSE_SIZE, MAX_HOUSE_SIZE );
-				int h = Util::pickOne( MIN_HOUSE_SIZE, MAX_HOUSE_SIZE );
+				int n = Util::dice( HOUSE_SHAPES_SIZE );
+				int *i = HOUSE_SHAPES[ n ];				
 				int vx = x + ix * MAP_UNIT;
 				int vy = y + iy * MAP_UNIT;
-				createHouse( map, shapePal, vx, vy, w, h );
+				createHouse( map, shapePal, vx, vy, i[0], i[1] );
 			}
 		}
 	}
 }
 
 bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int y, int w, int h ) {
-	if( !( x >= MAP_OFFSET && 
-			y >= MAP_OFFSET && 
-			x + w * MAP_UNIT < MAP_WIDTH - MAP_OFFSET && 
-			y + h * MAP_UNIT < MAP_DEPTH - MAP_OFFSET ) ) {
+	if( !( x >= MAP_OFFSET + MAP_UNIT && 
+			y >= MAP_OFFSET + MAP_UNIT && 
+			x + w * MAP_UNIT < MAP_WIDTH - MAP_OFFSET -  MAP_UNIT && 
+			y + h * MAP_UNIT < MAP_DEPTH - MAP_OFFSET - MAP_UNIT ) ) {
 		return false;
 	}
 	for( int vx = -1; vx < w + 1; vx++ ) {
@@ -274,19 +284,20 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 		for( int vy = 0; vy < h; vy++ ) {
 			int xp = x + vx * MAP_UNIT;
 			int yp = y + vy * MAP_UNIT;
-			addFloor( map, shapePal, xp, yp, true, shapePal->findShapeByName( "ROOM_FLOOR_TILE", true ) );
-			keepFloor.insert( xp + MAP_WIDTH * yp );
+			GLShape *shape = shapePal->findShapeByName( "ROOM_FLOOR_TILE", true );
+			addFloor( map, shapePal, xp, yp, true, shape );
+			keepFloor[ xp + MAP_WIDTH * yp ] = shape;
 			
 			// draw the walls
 			if( vx == 0 ) {
 				if( vy == 0 ) {
 					map->setPosition( xp, yp + 2, 0, shapePal->findShapeByName( "CORNER", true ) );
-					if( door == 0 ) {
+					if( door == 0 || door == 3 ) {
 						addEWDoor( map, shapePal, xp, yp );
 					} else {					
 						map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_EXTRA", true ) );
 					}
-					if( door == 1 ) {
+					if( door == 1 || door == 2 ) {
 						addNSDoor( map, shapePal, xp + 2, yp + 2 );
 					} else {
 						map->setPosition( xp + 2, yp + 2, 0, shapePal->findShapeByName( "NS_WALL_EXTRA", true ) );
@@ -295,7 +306,7 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 				} else if( vy == h - 1 ) {
 					map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "CORNER", true ) );
 					map->setPosition( xp, yp + MAP_UNIT - 2, 0, shapePal->findShapeByName( "EW_WALL_EXTRA", true ) );
-					if( door == 3 ) {
+					if( door == 3 || door == 0 ) {
 						addNSDoor( map, shapePal, xp + 2, yp + MAP_UNIT );
 					} else {					
 						map->setPosition( xp + 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "NS_WALL_EXTRA", true ) );
@@ -308,7 +319,7 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 			} else if( vx == w - 1 ) {
 				if( vy == 0 ) {
 					map->setPosition( xp + MAP_UNIT - 2, yp + 2, 0, shapePal->findShapeByName( "CORNER", true ) );
-					if( door == 2 ) {
+					if( door == 2 || door == 1 ) {
 						addEWDoor( map, shapePal, xp + MAP_UNIT - 2, yp );
 					} else {					
 						map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_EXTRA", true ) );
@@ -363,7 +374,7 @@ int OutdoorGenerator::createRoad( Map *map, ShapePalette *shapePal, int x, int y
 		for( int i = 0; i < VILLAGE_HEIGHT; i++ ) {
 			vy = y + ( i * MAP_UNIT );
 			addPath( map, shapePal, vx, vy );
-			keepFloor.insert( vx + MAP_WIDTH * vy );
+			keepFloor[ vx + MAP_WIDTH * vy ] = shapePal->findShapeByName( "FLOOR_TILE", true );
 		}
 		return vx;
 	} else {
@@ -371,7 +382,7 @@ int OutdoorGenerator::createRoad( Map *map, ShapePalette *shapePal, int x, int y
 		for( int i = 0; i < VILLAGE_WIDTH; i++ ) {
 			vx = x + ( i * MAP_UNIT );
 			addPath( map, shapePal, vx, vy );
-			keepFloor.insert( vx + MAP_WIDTH * vy );
+			keepFloor[ vx + MAP_WIDTH * vy ] = shapePal->findShapeByName( "FLOOR_TILE", true );
 		}
 		return vy;
 	}
@@ -591,9 +602,10 @@ void OutdoorGenerator::deleteFreeSpaceMap( Map *map, ShapePalette *shapePal ) {
 	for( int x = MAP_OFFSET; x < MAP_WIDTH - MAP_OFFSET; x += MAP_UNIT ) {
 		for( int y = MAP_OFFSET; y < MAP_DEPTH - MAP_OFFSET; y += MAP_UNIT ) {
 			if( keepFloor.find( x + MAP_WIDTH * y ) != keepFloor.end() ) {
-				continue;
+				map->setFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT, keepFloor[ x + MAP_WIDTH * y ] );
+			} else {
+				map->removeFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT );
 			}
-			map->removeFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT );
 		}
 	}
 }

@@ -43,7 +43,7 @@ class OutdoorGenerator : public TerrainGenerator {
 private:
 	float ground[MAP_WIDTH][MAP_DEPTH];
   CellularAutomaton *cellular[2][2];
-  std::set<int> keepFloor;
+  std::map<int, GLShape*> keepFloor;
 
 public:
 	OutdoorGenerator( Scourge *scourge, int level, int depth, int maxDepth,
