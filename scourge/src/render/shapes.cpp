@@ -23,6 +23,7 @@
 #include "md2shape.h"
 #include "Md2.h"
 #include "glcaveshape.h"
+#include "../session.h"
 #include <fstream>
 #include <iostream>
 
@@ -143,13 +144,13 @@ void WallTheme::debug() {
 
 Shapes *Shapes::instance = NULL;
 
-Shapes::Shapes( bool headless ){
+Shapes::Shapes( Session *session ){
   texture_count = 0;
   textureGroupCount = 1;
 	textureGroup[0][0] = textureGroup[0][1] = textureGroup[0][2] = 0;
   themeCount = allThemeCount = caveThemeCount = 0;
   currentTheme = NULL;
-  this->headless = headless;
+  this->session = session;
 	if( !instance ) instance = this;
 }
 
@@ -214,6 +215,9 @@ void Shapes::initialize() {
 
 	// create shapes
 	for(int i = 0; i < static_cast<int>(shapeValueVector.size()); i++) {
+		
+		session->getGameAdapter()->setUpdate( _( "Creating Shapes" ), i, shapeValueVector.size() );
+		
 		ShapeValues *sv = shapeValueVector[i];
 		// Resolve the texture group.
 		// For theme-based shapes, leave texture NULL, they will be resolved later.
@@ -290,7 +294,7 @@ void Shapes::initialize() {
 			string s = sv->theme;
       themeShapeRef.push_back( s );
     } else {
-      if( !headless ) shapes[(i + 1)]->initialize();
+      if( !session->getGameAdapter()->isHeadless() ) shapes[(i + 1)]->initialize();
     }
 
     // set the effect
@@ -331,7 +335,7 @@ void Shapes::initialize() {
   shapes[shapeCount]->setSkipSide(false);
   shapes[shapeCount]->setStencil(false);
   shapes[shapeCount]->setLightBlocking(false);  
-  if( !headless ) shapes[shapeCount]->initialize();
+  if( !session->getGameAdapter()->isHeadless() ) shapes[shapeCount]->initialize();
   string nameStr = shapes[shapeCount]->getName();
   shapeMap[nameStr] = shapes[shapeCount];
   shapeCount++;
@@ -428,7 +432,7 @@ void Shapes::loadTheme( WallTheme *theme ) {
         GLuint *textureGroup = currentTheme->getTextureGroup( ref );
         //      cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
         //        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
-        if( !headless ) shape->setTexture( textureGroup );
+        if( !session->getGameAdapter()->isHeadless() ) shape->setTexture( textureGroup );
   
         // create extra shapes for variations
         shape->deleteVariationShapes();
@@ -558,7 +562,7 @@ GLuint Shapes::getBMPData( const string& filename, TextureData& data, int *imgwi
 /* function to load in bitmap as a GL texture */
 GLuint Shapes::loadGLTextures(const string& filename) {
 
-	if( headless ) 
+	if( session->getGameAdapter()->isHeadless() ) 
 		return 0;
 
   string fn = rootDir + filename;
@@ -613,12 +617,12 @@ GLuint Shapes::loadGLTextures(const string& filename) {
 
 /* function to load in bitmap as a GL texture */
 GLuint Shapes::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int glscale) {
-  if( headless ) return 0;
+  if( session->getGameAdapter()->isHeadless() ) return 0;
   return loadGLTextureBGRA( surface->w, surface->h, image, glscale );
 }
 
 GLuint Shapes::loadGLTextureBGRA(int w, int h, GLubyte *image, int glscale) {
-  if( headless ) return 0;
+  if( session->getGameAdapter()->isHeadless() ) return 0;
 
   GLuint texture[1];
 
@@ -653,7 +657,7 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
 }
 
 void Shapes::loadStencil( const string& filename, int index ) {
-  if( headless ) return;
+  if( session->getGameAdapter()->isHeadless() ) return;
 
 	string fn = rootDir + filename;
 //  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
@@ -698,7 +702,7 @@ void Shapes::setupAlphaBlendedBMP( const string& filename,
                                    bool swapImage,
                                    bool grayscale ) {
 
-	if( headless ) return;
+	if( session->getGameAdapter()->isHeadless() ) return;
 
 	string fn( isAbsPath ? filename : rootDir + filename ); 
 
@@ -810,7 +814,7 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
                                              int tileWidth, int tileHeight, 
                                              int red, int green, int blue,
                                              int nred, int ngreen, int nblue ) {
-  if( headless )
+  if( session->getGameAdapter()->isHeadless() )
 		return;
 
   string fn = rootDir + filename;
@@ -872,7 +876,7 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
 }
 
 GLuint Shapes::loadSystemTexture( const string& line ) {
-  if( headless ) return 0;
+  if( session->getGameAdapter()->isHeadless() ) return 0;
 
   if( texture_count >= MAX_SYSTEM_TEXTURE_COUNT ) {
     cerr << "Error: *** no more room for system textures!. Not loading: " << line << endl;
@@ -952,7 +956,7 @@ void Shapes::setupImage( const string &filename, SDL_Surface*& surface, GLubyte*
 
 void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& image, bool isAbsPath, bool hasAlpha ) {
 
-	if( headless )
+	if( session->getGameAdapter()->isHeadless() )
 		return;
 
 	string fn( isAbsPath ? filename : rootDir + filename );
