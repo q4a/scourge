@@ -446,13 +446,13 @@ void SDLHandler::mainLoop() {
 		if( isActive ) drawScreen();
 		gameAdapter->getSession()->getSound()->checkMusic( gameAdapter->inTurnBasedCombat() );
 		Uint32 now = SDL_GetTicks();
-		if( !gameAdapter->getAmbientPaused() &&
-				0 == Util::dice( AMBIENT_ROLL ) &&  
-				now - lastAmbientTime > AMBIENT_PAUSE_MIN ) {
+		if( !gameAdapter->getAmbientPaused() && now - lastAmbientTime > AMBIENT_PAUSE_MIN ) {
 			lastAmbientTime = now;
-			gameAdapter->getSession()->getSound()->
-				startAmbientSound( gameAdapter->getSession()->getAmbientSoundName(), 
+				if( Util::dice( AMBIENT_ROLL ) == 0 ) {
+					gameAdapter->getSession()->getSound()->
+					startAmbientSound( gameAdapter->getSession()->getAmbientSoundName(), 
 													 gameAdapter->getCurrentDepth() );
+			}
 		}
 	}
 }

@@ -643,6 +643,8 @@ AmbientSound::~AmbientSound() {
 
 int AmbientSound::playRandomAmbientSample() {
 #ifdef HAVE_SDL_MIXER
+	// Abort if already playing an ambient
+	if ( Mix_Playing( 6 ) ) return -1;
 	int n = Util::dice( ambients.size() );
 	//cerr << "\t" << n << " out of " << ambients.size() << endl;
 	for( int t = 0; t < 5; t++ ) {
