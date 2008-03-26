@@ -31,6 +31,7 @@
 class GLShape;
 class GLTorch;
 class Shapes;
+class Session;
 
 struct Occurs {
 	bool rooms_only;
@@ -188,6 +189,7 @@ public:
 };
 
 protected:
+	Session *session;
   bool headless;
   GLShape *shapes[256];
   std::map<std::string, GLShape *> shapeMap;
@@ -252,7 +254,7 @@ protected:
 	static bool debugFileLoad;
 
 public: 
-  Shapes( bool headless );
+  Shapes( Session *session );
   virtual ~Shapes();
 
 	inline bool isHeadless() { return headless; }

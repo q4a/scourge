@@ -27,7 +27,7 @@ using namespace std;
 #define UPDATE_MESSAGE N_("Loading Shapes")
 
 ShapePalette::ShapePalette( Session *session ) 
-             : Shapes( session->getGameAdapter()->isHeadless() ) 
+             : Shapes( session ) 
              , paperDoll( NULL )
              , paperDollImage( NULL )
              , logo( NULL )
