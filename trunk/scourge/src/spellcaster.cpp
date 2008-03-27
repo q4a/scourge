@@ -100,7 +100,8 @@ void SpellCaster::spellFailed() {
 void SpellCaster::spellSucceeded() {
   if(!spell) return;
 
-  battle->getSession()->playSound(spell->getSound());
+  int panning = battle->getSession()->getMap()->getPanningFromMapXY( battle->getCreature()->getX(), battle->getCreature()->getY() );
+  battle->getSession()->playSound(spell->getSound(), panning);
 
 //  cerr << "SUCCEEDED: " << spell->getName() << " power=" << power << endl;
   if(!strcasecmp(spell->getName(), "Lesser healing touch") ||

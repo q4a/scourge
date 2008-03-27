@@ -872,10 +872,12 @@ void Battle::launchProjectile() {
 
   if( creature->isMonster() && 
      0 == Util::dice( session->getPreferences()->getSoundFreq() ) ) {
-    session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK));
+    int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
+    session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK), panning);
   }
 
-  session->playSound( getRandomSound(bowSwishSoundStart, bowSwishSoundCount) );
+  int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
+  session->playSound( getRandomSound(bowSwishSoundStart, bowSwishSoundCount), panning );
 }
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *target) {
@@ -966,9 +968,11 @@ void Battle::prepareToHitMessage() {
     // play item sound
     if( creature->isMonster() && 
        0 == Util::dice( session->getPreferences()->getSoundFreq() ) ) {
-      session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK));
+      int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
+      session->playSound(creature->getMonster()->getRandomSound(Constants::SOUND_TYPE_ATTACK), panning);
     }
-    session->playSound( getRandomSound(handheldSwishSoundStart, handheldSwishSoundCount) );
+    int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
+    session->playSound( getRandomSound(handheldSwishSoundStart, handheldSwishSoundCount), panning );
 
   } else {
     snprintf( message,MESSAGE_SIZE, _( "%1$s attacks %2$s with bare hands!" ), 
@@ -1011,7 +1015,8 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
       }
       if( tmpTarget ) {
         // play item sound
-        if(item) session->playSound(item->getRandomSound());
+	int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
+        if(item) session->playSound(item->getRandomSound(), panning);
         snprintf( message,MESSAGE_SIZE, _( "...fumble: hits %s instead!" ), tmpTarget->getName() );
         session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
         Creature *oldTarget = creature->getTargetCreature();
@@ -1256,7 +1261,8 @@ void Battle::hitWithItem() {
 				float damage = ( armor > attack ? 0 : attack - armor );
 				if( damage > 0 ) {
 					// play item sound
-					if( item ) session->playSound( item->getRandomSound() );
+					int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
+					if( item ) session->playSound( item->getRandomSound(), panning );
 		
 					applyMagicItemDamage( &damage );
 		
@@ -1359,11 +1365,14 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 		if(damage > 0) {
 			if(creature->getTargetCreature()->isMonster()) {
 				char const*soundname = creature->getTargetCreature()->getMonster()->getRandomSound(Constants::SOUND_TYPE_HIT);
-				if (soundname)
-					session->playSound(soundname);
+					if (soundname) {
+						int panning = session->getMap()->getPanningFromMapXY( creature->getTargetCreature()->getX(), creature->getTargetCreature()->getY() );
+						session->playSound(soundname, panning);
+					}
 			} else {
 				//session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
-				creature->getTargetCreature()->playCharacterSound( GameAdapter::HIT_SOUND );
+				int panning = session->getMap()->getPanningFromMapXY( creature->getTargetCreature()->getX(), creature->getTargetCreature()->getY() );
+				creature->getTargetCreature()->playCharacterSound( GameAdapter::HIT_SOUND, panning );
 			}
 		}
 
@@ -1448,7 +1457,8 @@ void Battle::executeEatDrinkAction() {
   // is it still in the inventory?
   int index = creature->findInInventory(creature->getActionItem());
   if(index > -1) {
-    session->playSound( getRandomSound(potionSoundStart, potionSoundCount) );
+    int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
+    session->playSound( getRandomSound(potionSoundStart, potionSoundCount), panning );
     if(creature->eatDrink(creature->getActionItem())){
       creature->removeInventory(index);
       if(!session->getGameAdapter()->isHeadless()) 

@@ -37,7 +37,7 @@ public:
 	AmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel );
 	~AmbientSound();
 	int playRandomAmbientSample();
-	int playFootsteps();
+	int playFootsteps( int panning );
 	inline std::string &getAfterFirstLevel() { return afterFirstLevel; }
 };
 
@@ -109,12 +109,12 @@ public:
 
   void loadCharacterSounds( char *type );
   void unloadCharacterSounds( char *type );
-  void playCharacterSound( char *type, int soundType );
+  void playCharacterSound( char *type, int soundType, int panning );
 
 	void storeSound(const std::string& name, const std::string& file);
   void storeSound(int type, const std::string& file);
   void unloadSound( int type, const std::string& file );
-  void playSound(const std::string& file);
+  void playSound( const std::string& file, int panning );
 
   void setMusicVolume(int volume);
   void setEffectsVolume(int volume);
@@ -123,14 +123,14 @@ public:
 
   void checkMusic( bool inCombat );
 
-  void startFootsteps( std::string& name, int depth );
+  void startFootsteps( std::string& name, int depth, int panning );
   void stopFootsteps();
 
 	void addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel );
 	void startAmbientSound( std::string& name, int depth );
 	void stopAmbientSound();
 
-	void playObjectSound( std::string& name, int percent );
+	void playObjectSound( std::string& name, int percent, int panning );
 	void storeAmbientObjectSound( std::string const& sound );
 
 protected:

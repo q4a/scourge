@@ -673,7 +673,7 @@ void PcEditor::drawWidgetContents( Widget *w ) {
     }
     if( willModelPlaySound ) {
       scourge->playCharacterSound( cmi->model_name, 
-                                   GameAdapter::SELECT_SOUND );
+                                   GameAdapter::SELECT_SOUND, 127 );
       willModelPlaySound = false;
     }
     glPushMatrix();

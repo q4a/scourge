@@ -226,7 +226,8 @@ void Party::setPlayer(int n, bool updateui) {
     if(lastPlayer != player) {
       if(lastPlayer && !player->getStateMod(StateMod::dead)) {
         //session->playSound(player->getCharacter()->getRandomSound(Constants::SOUND_TYPE_SELECT));
-        player->playCharacterSound( GameAdapter::SELECT_SOUND );
+	int panning = session->getMap()->getPanningFromMapXY( player->getX(), player->getY() );
+        player->playCharacterSound( GameAdapter::SELECT_SOUND, panning );
       }
       lastPlayer = player;          
     }

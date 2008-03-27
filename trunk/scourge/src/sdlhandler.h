@@ -122,7 +122,7 @@ public:
   SDLHandler( GameAdapter *gameAdapter );
   virtual ~SDLHandler();
 
-	virtual void playSound( const std::string& file );
+	virtual void playSound( const std::string& file, int panning );
 
 	inline void setCursorVisible( bool b ) { cursorVisible = b; }
 	inline void endMainLoop() { running = false; }

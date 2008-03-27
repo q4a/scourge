@@ -593,6 +593,8 @@ private:
   bool isPositionAccessible(int atX, int atY);
 
   void getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy);
+  void getScreenXYAtMapXY(Uint16 mapx, Uint16 mapy, Uint16 *screenx, Uint16 *screeny);
+  int getPanningFromMapXY(Uint16 mapx, Uint16 mapy);
 
 	inline void setGroundHeight( int x, int y, float h ) { this->ground[x][y] = h; refreshGroundPos = true; }
 	inline float getGroundHeight( int x, int y ) { return this->ground[x][y]; }

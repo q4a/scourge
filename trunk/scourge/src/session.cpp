@@ -650,6 +650,6 @@ std::string& Session::getAmbientSoundName() {
 	return getCurrentMission() ? getCurrentMission()->getAmbientSoundName() : HQ_AMBIENT_SOUND;
 }
 
-void Session::playSound(const std::string& sound) { 
-	getSound()->playSound(sound); 
+void Session::playSound(const std::string& sound, int panning) { 
+	getSound()->playSound(sound, panning); 
 }

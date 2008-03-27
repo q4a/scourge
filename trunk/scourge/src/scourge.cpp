@@ -1281,7 +1281,7 @@ int Scourge::dropItem(int x, int y) {
     }
   }
   endItemDrag();
-  getSession()->getSound()->playSound(Window::DROP_SUCCESS);
+  getSession()->getSound()->playSound(Window::DROP_SUCCESS, 127);
   return z;
 }
 
@@ -1365,7 +1365,8 @@ bool Scourge::useLever( Location *pos, bool showMessage ) {
 			} else {
 				getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::DOOR_OPENED_FAR), Constants::MSGTYPE_MISSION);
 			}
-			getSession()->getSound()->playSound( "switch" );
+			int panning = getSession()->getMap()->getPanningFromMapXY( keyX, keyY );
+			getSession()->getSound()->playSound( "switch", panning );
 		}
     return true;
   }
@@ -1403,10 +1404,12 @@ bool Scourge::useSecretDoor(Location *pos) {
       
       levelMap->setPosition( pos->x, pos->y, 0, post );
       if( wall->getWidth() > wall->getDepth() ) {
-				getSession()->getSound()->playSound( Sound::OPEN_DOOR );
+				int panning = getSession()->getMap()->getPanningFromMapXY( pos->x, pos->y );
+				getSession()->getSound()->playSound( Sound::OPEN_DOOR, panning );
         levelMap->setPosition( pos->x + wall->getWidth() - post->getWidth(), pos->y, 0, post );
       } else {
-				getSession()->getSound()->playSound( Sound::OPEN_DOOR );
+				int panning = getSession()->getMap()->getPanningFromMapXY( pos->x, pos->y );
+				getSession()->getSound()->playSound( Sound::OPEN_DOOR, panning );
         levelMap->setPosition( pos->x, pos->y - wall->getDepth() + post->getDepth(), 0, post );
       }
     } else {
@@ -1864,7 +1867,7 @@ void Scourge::openContainerGui(Item *container) {
   }
   // open new window
   if(containerGuiCount < MAX_CONTAINER_GUI) {
-		getSession()->getSound()->playSound( Sound::OPEN_BOX );
+		getSession()->getSound()->playSound( Sound::OPEN_BOX, 127 );
     containerGui[containerGuiCount++] = new ContainerGui(this, container,
                                                          10 + containerGuiCount * 15,
                                                          10 + containerGuiCount * 15);
@@ -2822,8 +2825,8 @@ void Scourge::unloadCharacterSounds( char *type ) {
   getSession()->getSound()->unloadCharacterSounds( type );
 }
 
-void Scourge::playCharacterSound( char *type, int soundType ) {
-  getSession()->getSound()->playCharacterSound( type, soundType );
+void Scourge::playCharacterSound( char *type, int soundType, int panning ) {
+  getSession()->getSound()->playCharacterSound( type, soundType, panning );
 }
 
 ShapePalette *Scourge::getShapePalette() {
@@ -3249,7 +3252,12 @@ bool Scourge::playSelectedMission() {
 }
 
 void Scourge::movePartyToGateAndEndMission() {
-	if( teleporting ) getSession()->getSound()->playSound( Sound::TELEPORT );
+  int panning = 127;
+
+  if (gatepos) {
+    panning = getSession()->getMap()->getPanningFromMapXY( gatepos->x, gatepos->y );
+  }
+	if( teleporting ) getSession()->getSound()->playSound( Sound::TELEPORT, panning );
   exitConfirmationDialog->setText(Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->setVisible(false);
   endMission();
@@ -3852,7 +3860,8 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
 	if ( !blocker ) {
 		// there is a chance that the door will be destroyed
 		if( !movingDoor->openLocked && getSession()->getCurrentMission() && 0 == Util::dice( 20 ) ) {
-			getSession()->getSound()->playSound( Sound::TELEPORT );
+			int panning = getSession()->getMap()->getPanningFromMapXY( ox, oy );
+			getSession()->getSound()->playSound( Sound::TELEPORT, panning );
 			destroyDoor( ox, oy, movingDoor->oldDoorShape );
 			levelMap->updateLightMap();
 		} else {
@@ -3866,14 +3875,16 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
 		}
 		return;
 	} else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
-		getSession()->getSound()->playSound( Window::DROP_FAILED );
+		int panning = getSession()->getMap()->getPanningFromMapXY( ox, oy );
+		getSession()->getSound()->playSound( Window::DROP_FAILED, panning );
 		// rollback if blocked by a player			
 		levelMap->setPosition(ox, oy, toint(party->getPlayer()->getZ()), movingDoor->oldDoorShape);
 		getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::DOOR_BLOCKED));
 		return;
 	} else {
 		// Deeestroy!
-		getSession()->getSound()->playSound( Sound::TELEPORT );
+		int panning = getSession()->getMap()->getPanningFromMapXY( ox, oy );
+		getSession()->getSound()->playSound( Sound::TELEPORT, panning );
 		destroyDoor( ox, oy, movingDoor->oldDoorShape );
 		levelMap->updateLightMap();
 		return;
@@ -3917,7 +3928,8 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 				getDescriptionScroller()->writeLogMessage( Constants::getMessage( Constants::LOCKED_DOOR_OPENS_MAGICALLY ), Constants::MSGTYPE_MISSION );
 			} else {
 				getDescriptionScroller()->writeLogMessage(Constants::getMessage(Constants::DOOR_LOCKED), Constants::MSGTYPE_FAILURE);
-				getSession()->getSound()->playSound( "smash-door" );
+				int panning = getSession()->getMap()->getPanningFromMapXY( doorX, doorY );
+				getSession()->getSound()->playSound( "smash-door", panning );
 				return true;
 			}
 		}
@@ -3945,7 +3957,8 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 			movingDoor.openLocked = openLocked;
 			movingDoor.endTime = SDL_GetTicks() + 5000;
 			movingDoors.push_back(movingDoor);
-			getSession()->getSound()->playSound( Sound::OPEN_DOOR );
+			int panning = getSession()->getMap()->getPanningFromMapXY( movingDoor.x, movingDoor.y );
+			getSession()->getSound()->playSound( Sound::OPEN_DOOR, panning );
 		} else {
 			// switch door
 			Sint16 ox = pos->x;
@@ -3963,7 +3976,8 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 					destroyDoor( ox, oy, oldDoorShape );
 					levelMap->updateLightMap();
 				} else {
-					getSession()->getSound()->playSound( Sound::OPEN_DOOR );
+					int panning = getSession()->getMap()->getPanningFromMapXY( ox, oy );
+					getSession()->getSound()->playSound( Sound::OPEN_DOOR, panning );
 					levelMap->setPosition(nx, ny, toint(party->getPlayer()->getZ()), newDoorShape);
 					levelMap->updateLightMap();
 					levelMap->updateDoorLocation(doorX, doorY, doorZ, nx, ny, toint(party->getPlayer()->getZ()));

@@ -265,7 +265,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
       message_dialog->setVisible(false);
     }
     if(w) {
-      if(w->hasSound()) scourgeGui->playSound(Window::ACTION_SOUND);
+      if(w->hasSound()) scourgeGui->playSound(Window::ACTION_SOUND, 127);
       return w;
     }
     
@@ -282,7 +282,7 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
       if(closeButton->handleEvent(this, event, 
                                   x - ( getX() + ( getWidth() - 10 - closeButton->getWidth())), 
 																 y - ( getY() + 8 ) ) ) {
-        scourgeGui->playSound(Window::ACTION_SOUND);
+        scourgeGui->playSound(Window::ACTION_SOUND, 127);
         return closeButton;
       }
     }
@@ -1159,7 +1159,7 @@ void Window::move(int x, int y) {
 void Window::setLastWidget(Widget *w) {
   if(w != lastWidget) {
     lastWidget = w;
-    scourgeGui->playSound(Window::ROLL_OVER_SOUND);
+    scourgeGui->playSound(Window::ROLL_OVER_SOUND, 127);
   }
 }
 

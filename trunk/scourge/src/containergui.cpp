@@ -171,10 +171,10 @@ void ContainerGui::receive(Widget *widget) {
 	  scourge->writeLogMessage(message);	  
 	  scourge->endItemDrag();
 	  showContents();
-    scourge->getSession()->getSound()->playSound(Window::DROP_SUCCESS);
+    scourge->getSession()->getSound()->playSound(Window::DROP_SUCCESS, 127);
 	} else {
 	  // message: the container is full
-    scourge->getSession()->getSound()->playSound(Window::DROP_FAILED);
+    scourge->getSession()->getSound()->playSound(Window::DROP_FAILED, 127);
     scourge->showMessageDialog( _( "The item won't fit in that container!" ) );
 	}
   }

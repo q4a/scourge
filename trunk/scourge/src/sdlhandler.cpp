@@ -1209,7 +1209,7 @@ void SDLHandler::setUpdate( char *message, int n, int total ) {
 	}
 }
 
-void SDLHandler::playSound( const std::string& file ) {
-	gameAdapter->getSession()->getSound()->playSound( file );
+void SDLHandler::playSound( const std::string& file, int panning ) {
+	gameAdapter->getSession()->getSound()->playSound( file, panning );
 }
 

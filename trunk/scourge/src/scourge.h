@@ -478,7 +478,7 @@ public:
   void unloadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap );
   void loadCharacterSounds( char *type );
   void unloadCharacterSounds( char *type );
-  void playCharacterSound( char *type, int soundType );
+  void playCharacterSound( char *type, int soundType, int panning );
 
   void fightProjectileHitTurn(Projectile *proj, RenderedCreature *creature);
 
