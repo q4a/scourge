@@ -131,7 +131,8 @@ void ScourgeView::ambientObjectSounds() {
 						float percent = 100 - ( dist / static_cast<float>(MAX_AMBIENT_OBJECT_DISTANCE) ) * 100.0f + 20;
 						if( percent > 100 )
 							percent = 100;
-						scourge->getSession()->getSound()->playObjectSound( ((GLShape*)pos->shape)->getAmbientName(), toint( percent ) );
+						int panning = scourge->getMap()->getPanningFromMapXY(pos->x, pos->y);
+						scourge->getSession()->getSound()->playObjectSound( ((GLShape*)pos->shape)->getAmbientName(), toint( percent ), panning );
 
 						// fixme: it should play every unique sound not just the first
 						return;

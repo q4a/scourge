@@ -1830,6 +1830,49 @@ bool Map::isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
   } return false;
 }
 
+void Map::getScreenXYAtMapXY(Uint16 mapx, Uint16 mapy, Uint16 *screenx, Uint16 *screeny) {
+  glPushMatrix();
+
+  // Initialize the scene with y rotation.
+  initMapView(false);
+
+  double obj_x = (mapx - getX() + 1) / DIV;
+  double obj_y = (mapy - getY() - 2) / DIV;
+  double obj_z = 0.0f;
+  //double obj_z = mapz / DIV;
+  double win_x, win_y, win_z;
+
+  double projection[16];
+  double modelview[16];
+  GLint viewport[4];
+
+  glGetDoublev(GL_PROJECTION_MATRIX, projection);
+  glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+  glGetIntegerv(GL_VIEWPORT, viewport);
+
+  int res = gluProject(obj_x, obj_y, obj_z, modelview, projection, viewport, &win_x, &win_y, &win_z);
+
+  glDisable( GL_SCISSOR_TEST );
+  glPopMatrix();
+
+  if(res) {
+    win_y = adapter->getScreenHeight() - win_y;
+    if( win_x < 0 ) win_x = 0;
+    if( win_x > adapter->getScreenWidth() - 1 ) win_x = adapter->getScreenWidth() -1;
+    if( win_y < 0 ) win_y = 0;
+    if( win_y > adapter->getScreenHeight() - 1 ) win_y = adapter->getScreenHeight() -1;
+    *screenx = static_cast<Uint16>(win_x);
+    *screeny = static_cast<Uint16>(win_y);
+  }
+}
+
+int Map::getPanningFromMapXY(Uint16 mapx, Uint16 mapy) {
+  Uint16 screenx, screeny;
+  getScreenXYAtMapXY( mapx, mapy, &screenx, &screeny );
+  float panning = ( static_cast<float>(screenx) / adapter->getScreenWidth() ) * 255;
+  return toint(panning);
+}
+
 /*
 void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message) {
   float xpos2 = (static_cast<float>(mapx - getX()) / DIV);

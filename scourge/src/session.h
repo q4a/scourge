@@ -121,7 +121,7 @@ public:
   inline bool isMultiPlayerGame() { return multiplayerGame; }
   inline void setMultiPlayerGame(bool b) { multiplayerGame = b; }
   inline GameAdapter *getGameAdapter() { return adapter; }
-  void playSound(const std::string& sound);
+  void playSound(const std::string& sound, int panning );
 	std::string& getAmbientSoundName();
 
   /**

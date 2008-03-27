@@ -331,12 +331,14 @@ void Sound::storeAmbientObjectSound( std::string const& sound ) {
 #endif
 }
 
-void Sound::playObjectSound( std::string& name, int percent ) {
+void Sound::playObjectSound( std::string& name, int percent, int panning ) {
 #ifdef HAVE_SDL_MIXER
 	if( haveSound ) {
 		int volume = static_cast<int>( ( MIX_MAX_VOLUME / 100.0f ) * static_cast<float>(percent) );
+
 		//cerr << "vol=" << volume << endl;
 		Mix_Volume( 5, volume );
+		Mix_SetPanning( 5, 255 - panning, panning );
 		if( !Mix_Playing( 5 ) ) {
 			for( int i = 0; i < 5; i++ ) {
 				if(Mix_PlayChannel(5, ambient_objects[ name ], 0) != -1) break;
@@ -414,7 +416,7 @@ void Sound::storeCharacterSounds( map<int,vector<Mix_Chunk*>*> *charSoundMap,
 }
 #endif
 
-void Sound::playCharacterSound( char *type, int soundType ) {
+void Sound::playCharacterSound( char *type, int soundType, int panning ) {
 #ifdef HAVE_SDL_MIXER
 	if( haveSound ) {
 		string typeStr = type;
@@ -424,10 +426,13 @@ void Sound::playCharacterSound( char *type, int soundType ) {
 				vector<Mix_Chunk*> *v = (*charSoundMap)[ soundType ];
 				if( v->size() > 0 ) {
 					int index = Util::dice( v->size() );
-					if( Mix_PlayChannel( -1, (*v)[ index ], 0 ) == -1 ) {
+					int channel = Mix_PlayChannel( -1, (*v)[ index ], 0 );
+					if( channel == -1 ) {
 						// commented out; happens too often
 						//cerr << "*** Error playing WAV file: " << fileStr << endl;
 						//cerr << "\t" << Mix_GetError() << endl;
+					} else {
+						Mix_SetPanning( channel, 255 - panning, panning );
 					}
 				}
 			}
@@ -505,7 +510,7 @@ void Sound::unloadSound( int type, const string& file ) {
 }
 
 // ######################################
-void Sound::playSound(const string& file) {
+void Sound::playSound(const string& file, int panning ) {
 #ifdef HAVE_SDL_MIXER
 	if(haveSound) {
 		//cerr << "*** Playing WAV: " << file << endl;
@@ -513,7 +518,10 @@ void Sound::playSound(const string& file) {
 		if(soundMap.find(s) != soundMap.end()) {
 			for( int t = 0; t < 5; t++ ) {
 				for( int i = 0; i < 3; i++ ) {
-					if(Mix_PlayChannel(i, soundMap[s], 0) == i) return;
+					if(Mix_PlayChannel(i, soundMap[s], 0) == i) {
+						Mix_SetPanning( i, 255 - panning, panning );
+						return;
+					}
 				}
 			}
 		}
@@ -521,11 +529,11 @@ void Sound::playSound(const string& file) {
 #endif
 }
 
-void Sound::startFootsteps( std::string& name, int depth ) {
+void Sound::startFootsteps( std::string& name, int depth, int panning ) {
 #ifdef HAVE_SDL_MIXER
 	if(haveSound) {
 		AmbientSound *as = getAmbientSound( name, depth );
-		if( as ) as->playFootsteps();
+		if( as ) as->playFootsteps( panning );
 	}
 #endif
 }
@@ -645,6 +653,8 @@ int AmbientSound::playRandomAmbientSample() {
 #ifdef HAVE_SDL_MIXER
 	// Abort if already playing an ambient
 	if ( Mix_Playing( 6 ) ) return -1;
+	int panning = Util::pickOne( 63, 191 );
+	Mix_SetPanning( 6, 255 - panning, panning );
 	int n = Util::dice( ambients.size() );
 	//cerr << "\t" << n << " out of " << ambients.size() << endl;
 	for( int t = 0; t < 5; t++ ) {
@@ -654,8 +664,9 @@ int AmbientSound::playRandomAmbientSample() {
 	return -1;
 }
 
-int AmbientSound::playFootsteps() {
+int AmbientSound::playFootsteps( int panning ) {
 #ifdef HAVE_SDL_MIXER
+	Mix_SetPanning( 7, 255 - panning, panning );
 	for( int i = 0; i < 5; i++ ) {
 		if(Mix_PlayChannel(7, footsteps, 0) != -1) return 1;
   }

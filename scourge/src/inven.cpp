@@ -168,10 +168,10 @@ bool Inven::receive(Item *item, bool atCursor)
 								item->getItemName() );
 			pcUi->getScourge()->writeLogMessage( message );
 			pcUi->getScourge()->endItemDrag();
-			pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_SUCCESS );
+			pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_SUCCESS, 127 );
 		} else {
 			// message: the player's inventory is full
-			pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_FAILED );
+			pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_FAILED, 127 );
 			return false;
 		}
 	}

@@ -619,7 +619,8 @@ bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) 
     if(0 == Util::dice(  session->getPreferences()->getSoundFreq() ) &&
        !getStateMod(StateMod::dead)) {
       //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
-      playCharacterSound( GameAdapter::COMMAND_SOUND );
+      int panning = session->getMap()->getPanningFromMapXY( this->x, this->y);
+      playCharacterSound( GameAdapter::COMMAND_SOUND, panning );
     }
   }
   
@@ -674,7 +675,8 @@ bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNot
        0 == Util::dice(  session->getPreferences()->getSoundFreq() ) &&
        !getStateMod(StateMod::dead)) {
       //session->playSound(getCharacter()->getRandomSound(Constants::SOUND_TYPE_COMMAND));
-      playCharacterSound( GameAdapter::COMMAND_SOUND );
+      int panning = session->getMap()->getPanningFromMapXY( this->x, this->y);
+      playCharacterSound( GameAdapter::COMMAND_SOUND, panning );
     }
   }
   return ret;
@@ -883,7 +885,8 @@ Uint32 lastFootstepTime = 0;
 void Creature::playFootstep() {
   Uint32 now = SDL_GetTicks();
   if( now - lastFootstepTime > (Uint32)(session->getPreferences()->getGameSpeedTicks() * 4) ) {
-		session->getSound()->startFootsteps( session->getAmbientSoundName(), session->getGameAdapter()->getCurrentDepth() );
+		int panning = session->getMap()->getPanningFromMapXY( this->x, this->y );
+		session->getSound()->startFootsteps( session->getAmbientSoundName(), session->getGameAdapter()->getCurrentDepth(), panning );
 		lastFootstepTime = now;
   }
 }
@@ -2913,9 +2916,9 @@ void Creature::setCharacter( Character *c ) {
 	character = c;
 }
 
-void Creature::playCharacterSound( int soundType ) {
+void Creature::playCharacterSound( int soundType, int panning ) {
 	if( !monster )
-		session->getSound()->playCharacterSound( model_name, soundType );
+		session->getSound()->playCharacterSound( model_name, soundType, panning );
 }
 
 bool Creature::rollSkill( int skill, float luckDiv ) {
@@ -2978,7 +2981,8 @@ void Creature::rollPerception() {
         if( trap->discovered ) {
           char message[ 120 ];
           snprintf( message, 120, _( "%s notices a trap!" ), getName() );
-					session->getSound()->playSound( "notice-trap" );
+          int panning = session->getMap()->getPanningFromMapXY( trap->r.x, trap->r.y );
+          session->getSound()->playSound( "notice-trap", panning );
           session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_MISSION );
           addExperienceWithMessage( 50 );
           setMotion(Constants::MOTION_STAND);
@@ -2997,7 +3001,8 @@ void Creature::rollPerception() {
 					session->getMap()->setSecretDoorDetected( pos );
 					char message[ 120 ];
 					snprintf( message, 120, _( "%s notices a secret door!" ), getName() );
-					session->getSound()->playSound( "notice-trap" );
+					int panning = session->getMap()->getPanningFromMapXY( pos->x, pos->y );
+					session->getSound()->playSound( "notice-trap", panning );
           session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_MISSION );
           addExperienceWithMessage( 50 );
 				}
@@ -3016,7 +3021,8 @@ void Creature::evalTrap() {
       int damage = static_cast<int>(Util::getRandomSum( 10, session->getCurrentMission()->getLevel() ));
       char message[ 120 ];
       snprintf( message, 120, _( "%1$s blunders into a trap and takes %2$d points of damage!" ), getName(), damage );
-			session->getSound()->playSound( "trigger-trap" );
+      int panning = session->getMap()->getPanningFromMapXY( trap->r.x, trap->r.y );
+      session->getSound()->playSound( "trigger-trap", panning );
 	if ( getCharacter() ) {
 	session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDAMAGE );
 	} else {
@@ -3038,14 +3044,16 @@ void Creature::disableTrap( Trap *trap ) {
 		bool ret = rollSkill( Skill::FIND_TRAP, 5.0f );
 		if( ret ) {
 			session->getGameAdapter()->writeLogMessage( _( "   and succeeds!" ), Constants::MSGTYPE_MISSION );
-			session->getSound()->playSound( "disarm-trap" );
+			int panning = session->getMap()->getPanningFromMapXY( trap->r.x, trap->r.y );
+			session->getSound()->playSound( "disarm-trap", panning );
 			int exp = static_cast<int>(Util::getRandomSum( 50, session->getCurrentMission()->getLevel() ));
 			addExperienceWithMessage( exp );
 		} else {
 			int damage = static_cast<int>(Util::getRandomSum( 10, session->getCurrentMission()->getLevel() ));
 			char message[ MSG_SIZE ];
 			snprintf( message, MSG_SIZE, _( "    and fails! %1$s takes %2$d points of damage!" ), getName(), damage );
-			session->getSound()->playSound( "trigger-trap" );
+			int panning = session->getMap()->getPanningFromMapXY( trap->r.x, trap->r.y );
+			session->getSound()->playSound( "trigger-trap", panning );
 			session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
 			takeDamage( damage );
 		}

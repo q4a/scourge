@@ -88,7 +88,7 @@ public:
   virtual inline void loadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap ) {}
   virtual inline void unloadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap ) {}
   virtual inline void loadCharacterSounds( char *type ) {}
-  virtual inline void playCharacterSound( char *type, int soundType ) {}
+  virtual inline void playCharacterSound( char *type, int soundType, int panning ) {}
   virtual inline void unloadCharacterSounds( char *type ) {}
   virtual inline void createParty( Creature **pc, int *partySize ) {}
   virtual inline void teleport( bool toHQ=true ) {}

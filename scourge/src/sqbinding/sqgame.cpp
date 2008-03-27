@@ -259,7 +259,7 @@ int SqGame::_runTests( HSQUIRRELVM vm ) {
 int SqGame::_playSound( HSQUIRRELVM vm ) {
 	GET_STRING( path, 255 )
 	string s = path;
-	SqBinding::sessionRef->getSound()->playSound( s );
+	SqBinding::sessionRef->getSound()->playSound( s, 127 );
 	return 0;
 }
 

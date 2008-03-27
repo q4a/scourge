@@ -212,7 +212,7 @@ class Creature : public RenderedCreature {
     quickSpell[ index ] = storable; 
   }
   inline Storable *getQuickSpell( int index ) { return quickSpell[ index ]; }
-  void playCharacterSound( int soundType );
+  void playCharacterSound( int soundType, int panning );
 
   inline void setDeityIndex( int n ) { deityIndex = n; }
   inline int getDeityIndex() { return deityIndex; }
