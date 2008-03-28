@@ -653,7 +653,7 @@ int AmbientSound::playRandomAmbientSample() {
 #ifdef HAVE_SDL_MIXER
 	// Abort if already playing an ambient
 	if ( Mix_Playing( 6 ) ) return -1;
-	int panning = Util::pickOne( 63, 191 );
+	int panning = Util::pickOne( 41, 213 );
 	Mix_SetPanning( 6, 255 - panning, panning );
 	int n = Util::dice( ambients.size() );
 	//cerr << "\t" << n << " out of " << ambients.size() << endl;
