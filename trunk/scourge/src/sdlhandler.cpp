@@ -250,7 +250,8 @@ char **SDLHandler::getVideoModes(int &nbModes){
     SDL_Rect **modes;
     char ** modesDescription;
     Uint32 flags;  
-    int i;    
+    int i, c;    
+    int suitableModes;
         
     if(!screen){
         fprintf(stderr, "SDLHandler :: you must allocate screen before calling getVideoModes!!\n");
@@ -268,35 +269,42 @@ char **SDLHandler::getVideoModes(int &nbModes){
         nbModes = 0;            
         if(modes == (SDL_Rect **)-1) {
             // All modes are available, so let's go..
-            nbModes = 16;
+            nbModes = 14;
             modesDescription = (char **) malloc (nbModes * sizeof(char *));
-            modesDescription[0] = strdup("  320 x 200");
-            modesDescription[1] = strdup("  320 x 240");
-            modesDescription[2] = strdup("  400 x 300");
-            modesDescription[3] = strdup("  512 x 384");
-            modesDescription[4] = strdup("  640 x 480");
-            modesDescription[5] = strdup("  800 x 600");
-            modesDescription[6] = strdup("  848 x 480");
-            modesDescription[7] = strdup(" 1024 x 768");
-            modesDescription[8] = strdup(" 1152 x 864");
-            modesDescription[9] = strdup(" 1280 x 720");
-            modesDescription[10] = strdup(" 1280 x 768");
-            modesDescription[11] = strdup(" 1280 x 960");
-            modesDescription[12] = strdup("1280 x 1024");
-            modesDescription[13] = strdup(" 1360 x 768");
-            modesDescription[14] = strdup("1600 x 1024");
-            modesDescription[15] = strdup("1600 x 1200");        
+            modesDescription[0] = strdup("  800 x 600");
+            modesDescription[1] = strdup(" 1024 x 600");
+            modesDescription[2] = strdup(" 1024 x 768");
+            modesDescription[3] = strdup(" 1152 x 864");
+            modesDescription[4] = strdup(" 1280 x 768");
+            modesDescription[5] = strdup(" 1280 x 800");
+            modesDescription[6] = strdup(" 1280 x 960");
+            modesDescription[7] = strdup(" 1280 x 1024");
+            modesDescription[8] = strdup(" 1400 x 1050");
+            modesDescription[9] = strdup(" 1440 x 900");
+            modesDescription[10] = strdup(" 1600 x 1200");
+            modesDescription[11] = strdup(" 1680 x 1050");
+            modesDescription[12] = strdup(" 1920 x 1200");
+            modesDescription[13] = strdup(" 2048 x 1536");
         }
         else{
             // Only a few modes available, which ones ?            
             for(nbModes = 0; modes[nbModes]; nbModes++);
-            if(nbModes) {
-              modesDescription = (char **)malloc(nbModes * sizeof(char *));
-              for(i=0; i < nbModes; i++){
-                char temp[ 50 ];
-                snprintf(temp, 50, "%d x %d", modes[i]->w, modes[i]->h);                
-                modesDescription[i] = strdup(temp);
-              }
+		if (nbModes) {
+			for (i=0; i < nbModes; i++) {
+				// Filter out very small and large resolutions that may cause problems
+				if ( modes[i]->h > 599 && modes[i]->w < 2049 ) suitableModes++;
+			}
+		modesDescription = (char **)malloc(suitableModes * sizeof(char *));
+		c = 0;
+			for (i = 0; i < nbModes; i++) {
+				if ( modes[i]->h > 599 && modes[i]->w < 2049 ) {
+					char temp[ 50 ];
+					snprintf(temp, 50, "%d x %d", modes[i]->w, modes[i]->h);
+					modesDescription[c] = strdup(temp);
+					c++;
+				}
+			}
+		nbModes = suitableModes;
            } else {
              nbModes = 1;           
              modesDescription = (char **) malloc (sizeof(char *));
