@@ -237,6 +237,19 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	int roadY = createRoad( map, shapePal, x, y, false );
 	
 	createHouses( map, shapePal, x, y, roadX, roadY + MAP_UNIT );
+		
+	// the rest of the village is in squirrel
+	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageX", x );
+	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageY", y );
+	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageWidth", VILLAGE_WIDTH );
+	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageHeight", VILLAGE_HEIGHT );
+	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadX", roadX );
+	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadY", roadY );
+	shapePal->getSession()->getSquirrel()->callNoArgMethod( "villageRoads" );
+	
+	// add npc-s
+	
+	// populateRooms
 }
 
 // roads and lakes don't mix well

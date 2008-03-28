@@ -429,8 +429,8 @@ void Fog::getScreenXY( GLdouble mapx, GLdouble mapy, GLdouble mapz,
 void Fog::createOverlayTexture() {
 
   float half = (static_cast<float>(OVERLAY_SIZE) - 0.5f) / 2.0f;
-  int maxP = 75;
-  int minP = 50;
+  int maxP = 95;
+  int minP = 90;
 
   // create the dark texture
   glGenTextures(1, (GLuint*)&overlay_tex);
