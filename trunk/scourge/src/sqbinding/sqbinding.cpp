@@ -103,16 +103,14 @@ SqBinding::SqBinding( Session *session ) {
   // compile some static scripts:
   // Special skills
   string s = rootDir + "/script/skills.nut";
-  if( !compile( s ) ) {
-    cerr << "Error: *** Unable to compile special skills code: " << s << endl;
-  }
   registerScript( s );
 
   // map interaction
   s =  rootDir + "/script/map.nut";
-  if( !compile( s ) ) {
-    cerr << "Error: *** Unable to compile map interaction code: " << s << endl;
-  }
+  registerScript( s );
+  
+  // terrain generation
+  s =  rootDir + "/script/terrain.nut";
   registerScript( s );
 }
 
@@ -798,7 +796,10 @@ void SqBinding::printArgs( HSQUIRRELVM v ) {
   printf("\n");
 }
 
-void SqBinding::registerScript( const string& file ) { 
+void SqBinding::registerScript( const string& file ) {
+  if( !compile( file ) ) {
+    cerr << "Error: *** Unable to compile squirrel file: " << file << endl;
+  }	
   loadedScripts[ file ] = getLastModTime( file );
 }
 
