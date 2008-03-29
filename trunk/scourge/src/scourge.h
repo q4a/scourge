@@ -599,6 +599,8 @@ public:
 	ConfirmDialog *getDismissHeroDialog() { return dismissHeroDialog; }
 	ConfirmDialog *getConfirmUpload() { return confirmUpload; }
 	void uploadScore();
+	ConfirmDialog *getConfirmQuicksaveDialog() { return confirmQuicksaveDialog; }
+	ConfirmDialog *getConfirmQuickloadDialog() { return confirmQuickloadDialog; }
 	TextDialog *getTextDialog() { return textDialog; }
   PcEditor *getPcEditor() { return pcEditor; }
 
@@ -808,6 +810,8 @@ protected:
 
 	ConfirmDialog *dismissHeroDialog;
 	ConfirmDialog *confirmUpload;
+	ConfirmDialog *confirmQuicksaveDialog;
+	ConfirmDialog *confirmQuickloadDialog;
 
   PcEditor *pcEditor;
 	SavegameDialog *saveDialog;

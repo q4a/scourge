@@ -32,7 +32,7 @@ using namespace std;
 //        - make an array for variables too (they are all hard coded for now)
 //        - default config if config file not there ??
 
-const char UserConfiguration::default_key[][20] = {
+const char UserConfiguration::default_key[][40] = {
 
   /*
   SET_MOVE_DOWN = 0,
@@ -144,9 +144,14 @@ const char UserConfiguration::default_key[][20] = {
   "f9",
   "f10",
   "f11",
-  "f12"
+  "f12",
 
-
+/*
+  QUICK_SAVE,
+  QUICK_LOAD,
+*/
+  "q",
+  "w"
 };
 
 // Must be exact copy of enums defined in userconfiguration.h
@@ -198,7 +203,10 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
   "QUICK_SPELL_9",
   "QUICK_SPELL_10",
   "QUICK_SPELL_11",
-  "QUICK_SPELL_12"
+  "QUICK_SPELL_12",
+
+  "QUICK_SAVE",
+  "QUICK_LOAD"
 };
 
 
@@ -269,8 +277,10 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
   _( "Quick Spell 9" ),
   _( "Quick Spell 10" ),
   _( "Quick Spell 11" ),
-  _( "Quick Spell 12" )
+  _( "Quick Spell 12" ),
 
+  _( "Quick save" ),
+  _( "Quick load" )
 };
 
 
@@ -1108,6 +1118,8 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "bind j layout_4" << endl;
   configFile << "bind c switch_combat" << endl;
   configFile << "bind ] next_weapon" << endl;
+  configFile << "bind q quick_save" << endl;
+  configFile << "bind w quick_load" << endl;
   configFile << "" << endl;
   configFile << "// Video settings" << endl;
   configFile << "set fullscreen true" << endl;
