@@ -1517,16 +1517,16 @@ void Scourge::createUI() {
   exitLabel = new Label(20, 25, Constants::getMessage(Constants::EXIT_MISSION_LABEL));
   exitConfirmationDialog->addWidget((Widget*)exitLabel);
 */
-  squirrelWin = new Window( getSDLHandler(), 5, 0, getSDLHandler()->getScreen()->w - 10, 200, _( "Squirrel Console" ),
+  squirrelWin = new Window( getSDLHandler(), 5, 0, getSDLHandler()->getScreen()->w - 200, 200, _( "Squirrel Console" ),
                             getSession()->getShapePalette()->getGuiTexture(), true,
                             Window::BASIC_WINDOW, getSession()->getShapePalette()->getGuiTexture2() );
-  squirrelLabel = new ScrollingLabel( 5, 0, getSDLHandler()->getScreen()->w - 30, 145, "" );
+  squirrelLabel = new ScrollingLabel( 5, 0, getSDLHandler()->getScreen()->w - 220, 145, "" );
   squirrelLabel->setCanGetFocus( false );
   squirrelWin->addWidget( squirrelLabel );
   squirrelText = new TextField( 8, 150, 100 );
   squirrelWin->addWidget( squirrelText );
-  squirrelRun = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 110, 150, getSDLHandler()->getScreen()->w - 30, 170, _( "Run" ) );
-  squirrelClear = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 200, 150, getSDLHandler()->getScreen()->w - 120, 170, _( "Clear" ) );
+  squirrelRun = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 300, 150, getSDLHandler()->getScreen()->w - 220, 170, _( "Run" ) );
+  squirrelClear = squirrelWin->createButton( getSDLHandler()->getScreen()->w - 370, 150, getSDLHandler()->getScreen()->w - 310, 170, _( "Clear" ) );
 }
 
 void Scourge::playRound() {

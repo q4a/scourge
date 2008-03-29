@@ -57,7 +57,8 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "bool", "isDoorLocked", SqMission::_isDoorLocked, 0, 0, "Is the door at location x,y,z locked?" },
 	{ "bool", "isStoryLineMission", SqMission::_isStoryLineMission, 0, 0, "Is the current mission a storyline mission?" },
 	{ "bool", "isReplayMap", SqMission::_isReplayMap, 0, 0, "Is the current mission a replayed storyline map?" },
-	{ "void", "setMapConfig", SqMission::_setMapConfig, 0, 0, "Load conversation and npc info from this file and apply it to the current map." },	
+	{ "void", "setMapConfig", SqMission::_setMapConfig, 0, 0, "Load conversation and npc info from this file and apply it to the current map." },
+	{ "Item", "addItem", SqMission::_addItem, 0, 0, "Create a new item on the map at this location." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -114,6 +115,17 @@ int SqMission::_addCreature( HSQUIRRELVM vm ) {
 	Creature *c = SqBinding::sessionRef->addCreatureFromScript( creatureType, x, y );
 	sq_pushobject( vm, *(SqBinding::binding->creatureMap[ c ]) );
 	return 1;
+}
+
+int SqMission::_addItem( HSQUIRRELVM vm ) {
+	GET_BOOL( isContainer )
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )	
+	GET_STRING( itemType, 200 )
+	Item *item = SqBinding::sessionRef->addItemFromScript( itemType, x, y, z, isContainer, 1, 1 );
+	sq_pushobject( vm, *(SqBinding::binding->itemMap[ item ]) );
+	return 1;	
 }
 
 int SqMission::_getItemCount( HSQUIRRELVM vm ) {

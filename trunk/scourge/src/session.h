@@ -136,6 +136,8 @@ public:
     @return the item created.
   */
   virtual Item *newItem(RpgItem *rpgItem, int level=1, Spell *spell=NULL, bool loading=false);
+  
+  virtual Item *addItemFromScript( char *name, int x, int y, int z, bool isContainer=false, int level=1, int depth=1 );
 
   /**
     Create a new creature for use on this story. Calling this method instead of new Creature()

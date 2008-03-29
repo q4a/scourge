@@ -54,6 +54,7 @@ public:
 
   static int _getItemCount( HSQUIRRELVM vm );
   static int _getItem( HSQUIRRELVM vm );
+	static int _addItem( HSQUIRRELVM vm );  
 
   // battle-related (maybe move this to another class?)
   static int _getCurrentWeapon( HSQUIRRELVM vm );
