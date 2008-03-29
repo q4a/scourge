@@ -68,6 +68,9 @@ public:
 
 	void deleteUnvisitedMaps( const string& dirName, std::set<std::string> *visitedMaps );
 
+	bool quickSave( const string& dirName, const string& title );
+	void quickLoad();
+
 protected:
 	bool findFiles();
 	bool readFileDetails( const string& path );

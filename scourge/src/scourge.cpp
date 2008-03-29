@@ -155,6 +155,10 @@ void Scourge::initUI() {
 	dismissHeroDialog = new ConfirmDialog( getSDLHandler(), _( "Dismiss Party Member" ) );
 	confirmUpload = new ConfirmDialog( getSDLHandler(), _( "Need permission to upload score to web" ) );
 	confirmUpload->setText( _( "Upload your score to the internet?" ) );
+	confirmQuicksaveDialog = new ConfirmDialog( getSDLHandler(), _( "Save game" ) );
+	confirmQuicksaveDialog->setText( _( "Do you want to quicksave the game now?" ) );
+	confirmQuickloadDialog = new ConfirmDialog( getSDLHandler(), _( "Load game" ) );
+	confirmQuickloadDialog->setText( _( "Do you really want to reload the current game?" ) );
 	textDialog = new TextDialog( getSDLHandler() );
 
   // load character, item sounds
@@ -254,7 +258,9 @@ void Scourge::start() {
 						// delete any maps saved since our last save but not used in the savegame.
 						getSaveDialog()->deleteUnvisitedMaps( session->getLoadgameName(), &visitedMaps );
 						session->setSavegameName( session->getLoadgameName() );
+						session->setSavegameTitle( session->getLoadgameTitle() );
 						session->setLoadgameName( "" );
+						session->setLoadgameTitle( "" );
 						loaded = true;
 					} else {
 						showMessageDialog( error );
@@ -770,6 +776,8 @@ void Scourge::showGui() {
 void Scourge::hideGui() {
 	dismissHeroDialog->setVisible( false );
 	confirmUpload->setVisible( false );
+	confirmQuicksaveDialog->setVisible( false );
+	confirmQuickloadDialog->setVisible( false );
 	mainWin->setVisible(false);
 	closeAllContainerGuis();
 	if( pcui->getWindow()->isVisible() ) {

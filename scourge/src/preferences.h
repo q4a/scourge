@@ -72,7 +72,10 @@ enum engine_action_int{
   QUICK_SPELL_9,      
   QUICK_SPELL_10,      
   QUICK_SPELL_11,      
-  QUICK_SPELL_12,      
+  QUICK_SPELL_12,
+
+  QUICK_SAVE,
+  QUICK_LOAD,
   
   // must be last
   ENGINE_ACTION_COUNT    

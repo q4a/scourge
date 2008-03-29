@@ -615,6 +615,10 @@ void Session::setSavegameName( string& s ) {
 	savegame = s;
 }
 
+void Session::setSavegameTitle( string& s ) {
+	savetitle = s;
+}
+
 Creature *Session::getCreatureByName( char const* name ) {
 	for( unsigned int i = 0; i < creatures.size(); i++ ) {
 		if( !strcmp( creatures[i]->getName(), name ) ) return creatures[i];

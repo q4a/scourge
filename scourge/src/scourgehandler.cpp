@@ -286,6 +286,10 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
       //scourge->setUILayout(Constants::GUI_LAYOUT_INVENTORY);
     } else if( ea >= QUICK_SPELL_1 && ea <= QUICK_SPELL_12 ) {
       quickSpellAction( ea - QUICK_SPELL_1 );
+    } else if(ea == QUICK_SAVE) {
+	scourge->getConfirmQuicksaveDialog()->setVisible( true );
+    } else if(ea == QUICK_LOAD) {
+	scourge->getConfirmQuickloadDialog()->setVisible( true );
     }
     break;
   default: break;
@@ -421,7 +425,20 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 															 //getPartySize() )->
 			//setTexture( 0 );
 		scourge->getDismissHeroDialog()->setVisible( false );
-  } else if( widget == scourge->getTextDialog()->win->closeButton ||
+	} else if( widget == scourge->getConfirmQuicksaveDialog()->win->closeButton ||
+						 widget == scourge->getConfirmQuicksaveDialog()->cancelButton ) {
+		scourge->getConfirmQuicksaveDialog()->setVisible( false );
+	} else if( widget == scourge->getConfirmQuicksaveDialog()->okButton ) {
+		scourge->getConfirmQuicksaveDialog()->setVisible( false );
+		bool b = scourge->getSaveDialog()->quickSave( scourge->getSession()->getSavegameName(), scourge->getSession()->getSavegameTitle() );
+		scourge->writeLogMessage( b ? _( "Game saved successfully." ) : _( "Error saving the game." ), Constants::MSGTYPE_SYSTEM );
+	} else if( widget == scourge->getConfirmQuickloadDialog()->win->closeButton ||
+						 widget == scourge->getConfirmQuickloadDialog()->cancelButton ) {
+		scourge->getConfirmQuickloadDialog()->setVisible( false );
+	} else if( widget == scourge->getConfirmQuickloadDialog()->okButton ) {
+		scourge->getConfirmQuickloadDialog()->setVisible( false );
+		scourge->getSaveDialog()->quickLoad();
+	} else if( widget == scourge->getTextDialog()->win->closeButton ||
 						 widget == scourge->getTextDialog()->okButton ) {
 		scourge->getTextDialog()->setVisible( false );		
 	} else if( widget == scourge->getPcEditor()->getOkButton() ) {

@@ -34,7 +34,7 @@ private:
   static const char * ENGINE_ACTION_NAMES[];     
   static const char * ENGINE_ACTION_UP_NAMES[];
   static const char * ENGINE_ACTION_DESCRIPTION[];   
-  static const char default_key[][20];
+  static const char default_key[][40];
   
   // becomes true every time loadConfiguration is called  
   // and false every time getConfigurationChanged is called

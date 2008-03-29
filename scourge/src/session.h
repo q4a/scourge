@@ -77,6 +77,8 @@ private:
   std::map<RpgItem*, Item*> special;
 	std::string savegame;
 	std::string loadgame;
+	std::string savetitle;
+	std::string loadtitle;
 	char scoreid[40];
 
   // private constructor: call startGame instead.
@@ -208,6 +210,10 @@ public:
 	inline std::string& getSavegameName() { return savegame; }
 	inline void setLoadgameName( const std::string& s ) { loadgame = s; }
 	inline std::string& getLoadgameName() { return loadgame; }
+	void setSavegameTitle( std::string& s );
+	inline std::string& getSavegameTitle() { return savetitle; }
+	inline void setLoadgameTitle( const std::string& s ) { loadtitle = s; }
+	inline std::string& getLoadgameTitle() { return loadtitle; }
 	inline bool willLoadGame() { return( loadgame.length()  ? true : false ); }
 
 	inline char *getScoreid() { return scoreid; }

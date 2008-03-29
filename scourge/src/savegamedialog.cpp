@@ -137,6 +137,7 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 void SavegameDialog::loadGame( int n ) {
 	getWindow()->setVisible( false );
 	scourge->getSession()->setLoadgameName( fileInfos[n]->path );
+	scourge->getSession()->setLoadgameTitle( fileInfos[n]->title );
 	scourge->getSDLHandler()->endMainLoop();
 }
 
@@ -295,6 +296,22 @@ bool SavegameDialog::createNewSaveGame() {
 	return saveGameInternal( &info );
 }
 
+void SavegameDialog::quickLoad() {
+	scourge->getSession()->setLoadgameName( scourge->getSession()->getSavegameName() );
+	scourge->getSession()->setLoadgameTitle( scourge->getSession()->getSavegameTitle() );
+	scourge->getSDLHandler()->endMainLoop();
+}
+
+bool SavegameDialog::quickSave( const string& dirName, const string& title ) {
+	SavegameInfo info;
+	info.path = dirName;
+	info.title = title;
+	// create a new save game title
+	setSavegameInfoTitle( &info );
+
+	return saveGameInternal( &info );
+}
+
 bool SavegameDialog::createSaveGame( SavegameInfo *info ) {
 	// create a new save game title
 	setSavegameInfoTitle( info );
@@ -333,6 +350,7 @@ bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
 	
 			// set it to be the current savegame
 			scourge->getSession()->setSavegameName( info->path );
+			scourge->getSession()->setSavegameTitle( info->title );
 			
 		}
 	}
