@@ -248,6 +248,25 @@ Item *Session::newItem(RpgItem *rpgItem, int level, Spell *spell, bool loading) 
   return item;
 }
 
+Item *Session::addItemFromScript( char *name, int x, int y, int z, bool isContainer, int level, int depth ) {
+	RpgItem *rpgItem = RpgItem::getItemByName( name );
+	if( !rpgItem ) {
+		cerr << "*** Error: no item named " << name << endl;
+		return NULL;
+	}
+	Item *item = newItem( rpgItem );
+	// register with squirrel
+	getSquirrel()->registerItem( item );
+	
+	if( isContainer ) {
+		getGameAdapter()->fillContainer( item, level, depth );
+	}
+	
+	getMap()->setItem( x, y, z, item );
+	
+	return item;
+}
+
 Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, int *fx, int *fy ) {
 	Monster *monster = Monster::getMonsterByName( creatureType );
 	if( !monster ) {

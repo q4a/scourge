@@ -537,8 +537,12 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == mapWidget->getCanvas() ) {
 //    mapWidget->setPosition( scourge->getMouseX() - newMapWin->getX() - mapWidget->getCanvas()->getX(),
 //                            scourge->getMouseY() - newMapWin->getY() - mapWidget->getCanvas()->getY() - Window::TOP_HEIGHT );
+  } else if( widget == scourge->getSquirrelRun() ||
+             widget == scourge->getSquirrelText() ) {
+    scourge->runSquirrelConsole();
+  } else if( widget == scourge->getSquirrelClear() ) {
+    scourge->clearSquirrelConsole();  	
   }
-
   return false;
 }
 

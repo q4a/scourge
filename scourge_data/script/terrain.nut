@@ -15,7 +15,14 @@ function villageRoads() {
 	print( "villageRoadX=" + villageRoadX + " villageRoadY=" + villageRoadY + "\n" );
 	
 	i <- 0
-	for( i = villageY; i < villageY + villageHeight; i+=10 ) {
-		scourgeGame.getMission().setMapPosition( villageRoadX, i, 0, "STREETLIGHT" );
+	for( i = villageY; i < villageY + villageHeight; i+=4 ) {
+		if( i < villageRoadY || i > villageRoadY + 16 ) {
+			if( 0 == ( rand() * 5.0 / RAND_MAX ).tointeger() ) {
+				scourgeGame.getMission().setMapPosition( villageRoadX, i, 0, "STREETLIGHT" );
+			} else if( 0 == ( rand() * 5.0 / RAND_MAX ).tointeger() ) {
+				ix <- ( 0 == ( rand() * 2.0 / RAND_MAX ).tointeger() ? villageRoadX + 4 : villageRoadX + 10 );
+				scourgeGame.getMission().addItem( "Barrel", ix, i, 0, true );
+			}
+		}
 	}
 }
