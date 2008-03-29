@@ -1,5 +1,6 @@
 // =============================================================
-// This squirrel file contains the code called during terrain generation
+// This squirrel file contains the code called during terrain generation.
+// Functions here are not story-related and can be used anytime for map building
 //
 
 /**
@@ -11,5 +12,10 @@
 function villageRoads() {
 	print( "villageX=" + villageX + " villageY=" + villageY + "\n" );
 	print( "villageWidth=" + villageWidth + " villageHeight=" + villageWidth + "\n" );
-	print( "villageRoadX=" + villageRoadX + " villageRoadY=" + villageRoadX + "\n" );
+	print( "villageRoadX=" + villageRoadX + " villageRoadY=" + villageRoadY + "\n" );
+	
+	i <- 0
+	for( i = villageY; i < villageY + villageHeight; i+=10 ) {
+		scourgeGame.getMission().setMapPosition( villageRoadX, i, 0, "STREETLIGHT" );
+	}
 }

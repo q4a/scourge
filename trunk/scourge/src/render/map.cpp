@@ -4635,3 +4635,7 @@ bool Map::isEmpty( int x, int y ) {
 	}
 	return( getLocation( x, y, 0 ) == NULL ? true : false );
 }
+
+bool Map::inMapEditor() {
+	return settings->isGridShowing();
+}

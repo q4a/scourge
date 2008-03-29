@@ -213,8 +213,8 @@ public:
 	void partyChanged();
 
 	void initLevelObjects();
-  bool startLevel();	
-  bool endLevel();
+  bool startLevel( bool callMapEvents=true );	
+  bool endLevel( bool callMapEvents=true );
 
 	void registerCreature( Creature *ptr );
 	void registerItem( Item *ptr );

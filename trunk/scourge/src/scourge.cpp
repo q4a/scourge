@@ -228,9 +228,15 @@ void Scourge::start() {
       if( value == EDITOR ) {
         glPushAttrib(GL_ENABLE_BIT);
 
+        // todo: make one simple call for all this
+        getSession()->getSquirrel()->startGame();
+        getSession()->getSquirrel()->startLevel(false);
+        getSession()->getSquirrel()->initLevelObjects();
         mapEditor->show();
         getSDLHandler()->setHandlers((SDLEventHandler *)mapEditor, (SDLScreenView *)mapEditor);
         getSDLHandler()->mainLoop();
+        getSession()->getSquirrel()->endLevel(false);
+        getSession()->getSquirrel()->endGame();
 
         glPopAttrib();
       } else {

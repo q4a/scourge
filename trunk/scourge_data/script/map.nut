@@ -1,5 +1,6 @@
 // =============================================================
-// This squirrel file contains the code to handle interaction with map objects
+// This (poorly named) squirrel file contains the code to handle interaction with map objects.
+// It is also the file that handles the story-related special events.
 //
 
 // Called when entering map                    
