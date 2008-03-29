@@ -159,6 +159,8 @@ void Scourge::initUI() {
 	confirmQuicksaveDialog->setText( _( "Do you want to quicksave the game now?" ) );
 	confirmQuickloadDialog = new ConfirmDialog( getSDLHandler(), _( "Load game" ) );
 	confirmQuickloadDialog->setText( _( "Do you really want to reload the current game?" ) );
+	confirmAutoloadDialog = new ConfirmDialog( getSDLHandler(), _( "Load game" ) );
+	confirmAutoloadDialog->setText( _( "Do you really want to load the autosave game?" ) );
 	textDialog = new TextDialog( getSDLHandler() );
 
   // load character, item sounds
@@ -254,13 +256,14 @@ void Scourge::start() {
 				bool loaded = false;
 				if( session->willLoadGame() ) {
 					char error[255];
-					if( loadGame( session, session->getLoadgameName(), error ) ) {
+					if( loadGame( session, session->getLoadgameName(), error, session->getLoadAutosave() ) ) {
 						// delete any maps saved since our last save but not used in the savegame.
 						getSaveDialog()->deleteUnvisitedMaps( session->getLoadgameName(), &visitedMaps );
 						session->setSavegameName( session->getLoadgameName() );
 						session->setSavegameTitle( session->getLoadgameTitle() );
 						session->setLoadgameName( "" );
 						session->setLoadgameTitle( "" );
+						session->setLoadAutosave( false );
 						loaded = true;
 					} else {
 						showMessageDialog( error );
@@ -372,12 +375,14 @@ void Scourge::startMission( bool startInHq ) {
 
 			setAmbientPaused( true );
 			// Save the current map (except HQ)
-			if( !session->isMultiPlayerGame() && 
-					session->getCurrentMission() ) {
-				if( !saveCurrentMap("") ) {
-					showMessageDialog( _( "Error saving current map." ) );
+				if( !session->isMultiPlayerGame() && session->getCurrentMission() ) {
+					if ( !saveGame( session, session->getSavegameName(), session->getSavegameTitle(), true ) ) {
+						showMessageDialog( _( "Error saving the auto save game." ) );
+					}
+					if( !saveCurrentMap("") ) {
+						showMessageDialog( _( "Error saving current map." ) );
+					}
 				}
-			}
 
       getSession()->getSquirrel()->endLevel();
 
@@ -778,6 +783,7 @@ void Scourge::hideGui() {
 	confirmUpload->setVisible( false );
 	confirmQuicksaveDialog->setVisible( false );
 	confirmQuickloadDialog->setVisible( false );
+	confirmAutoloadDialog->setVisible( false );
 	mainWin->setVisible(false);
 	closeAllContainerGuis();
 	if( pcui->getWindow()->isVisible() ) {
@@ -2882,9 +2888,9 @@ Color *Scourge::getOutlineColor( Location *pos ) {
 
 #define HQ_MISSION_SAVED_NAME "__HQ__"
 
-bool Scourge::saveGame( Session *session, const string& dirName, const string& title ) {
+bool Scourge::saveGame( Session *session, const string& dirName, const string& title, bool isAutosave ) {
   {
-		string path = get_file_name( dirName + "/savegame.dat" );
+		string path = get_file_name( dirName + ( isAutosave ? "/savegamea.dat" : "/savegame.dat" ) );
 		cerr << "Saving: " << path << endl;
     FILE *fp = fopen( path.c_str(), "wb" );
     if(!fp) {
@@ -2958,7 +2964,7 @@ bool Scourge::saveGame( Session *session, const string& dirName, const string& t
   }
 
   {
-    string path = get_file_name( dirName + "/values.dat" );
+    string path = get_file_name( dirName + ( isAutosave ? "/valuesa.dat" : "/values.dat" ) );
 		cerr << "Saving: " << path << endl;
     FILE *fp = fopen( path.c_str(), "wb" );
     if(!fp) {
@@ -2977,16 +2983,16 @@ bool Scourge::saveGame( Session *session, const string& dirName, const string& t
   return true;
 }
 
-bool Scourge::loadGame( Session *session, string& dirName, char* error ) {
-	bool b = doLoadGame( session, dirName, error );
+bool Scourge::loadGame( Session *session, string& dirName, char* error, bool isAutosave ) {
+	bool b = doLoadGame( session, dirName, error, isAutosave );
 	writeLogMessage( b ? _( "Game loaded successfully." ) : error, Constants::MSGTYPE_SYSTEM );
 	return b;
 }
 
-bool Scourge::doLoadGame( Session *session, string& dirName, char* error ) {
+bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool isAutosave ) {
 	strcpy( error, "" );
 
-	string path = get_file_name( dirName + "/savegame.dat" );
+	string path = get_file_name( dirName + ( isAutosave ? "/savegamea.dat" : "/savegame.dat" ) );
 
 	cerr << "Loading: " << path << endl;
 	FILE *fp = fopen( path.c_str(), "rb" );
@@ -3104,7 +3110,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error ) {
 	}
 
 	{
-		string path = get_file_name( dirName + "/values.dat" );
+		string path = get_file_name( dirName + ( isAutosave ? "/valuesa.dat" : "/values.dat" ) );
 		cerr << "Loading: " << path << endl;
 		FILE *fp = fopen( path.c_str(), "rb" );
 		if( fp ) {

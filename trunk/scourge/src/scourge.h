@@ -591,8 +591,8 @@ public:
 
   void mouseClickWhileExiting();
 
-  bool saveGame( Session *session, const std::string& dirName, const std::string& title );
-  bool loadGame( Session *session, std::string& dirName, char* error );	
+  bool saveGame( Session *session, const std::string& dirName, const std::string& title, bool isAutosave = false );
+  bool loadGame( Session *session, std::string& dirName, char* error, bool isAutosave = false );
 
 	RenderedCreature *createWanderingHero( int level );
 
@@ -601,6 +601,7 @@ public:
 	void uploadScore();
 	ConfirmDialog *getConfirmQuicksaveDialog() { return confirmQuicksaveDialog; }
 	ConfirmDialog *getConfirmQuickloadDialog() { return confirmQuickloadDialog; }
+	ConfirmDialog *getConfirmAutoloadDialog() { return confirmAutoloadDialog; }
 	TextDialog *getTextDialog() { return textDialog; }
   PcEditor *getPcEditor() { return pcEditor; }
 
@@ -674,7 +675,7 @@ protected:
 
   char *getAPRDescription( Creature *p, Item *item, char *buff, size_t buffSize );
 
-	bool doLoadGame( Session *session, std::string& dirName, char* error );
+	bool doLoadGame( Session *session, std::string& dirName, char* error, bool isAutosave = false );
 
 	void drawPortrait( Widget *w, Creature *p=NULL );
 
@@ -812,6 +813,7 @@ protected:
 	ConfirmDialog *confirmUpload;
 	ConfirmDialog *confirmQuicksaveDialog;
 	ConfirmDialog *confirmQuickloadDialog;
+	ConfirmDialog *confirmAutoloadDialog;
 
   PcEditor *pcEditor;
 	SavegameDialog *saveDialog;

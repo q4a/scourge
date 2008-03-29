@@ -149,9 +149,11 @@ const char UserConfiguration::default_key[][40] = {
 /*
   QUICK_SAVE,
   QUICK_LOAD,
+  AUTO_LOAD,
 */
   "q",
-  "w"
+  "w",
+  "a"
 };
 
 // Must be exact copy of enums defined in userconfiguration.h
@@ -206,7 +208,8 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[]={
   "QUICK_SPELL_12",
 
   "QUICK_SAVE",
-  "QUICK_LOAD"
+  "QUICK_LOAD",
+  "AUTO_LOAD"
 };
 
 
@@ -280,7 +283,8 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[]={
   _( "Quick Spell 12" ),
 
   _( "Quick save" ),
-  _( "Quick load" )
+  _( "Quick load" ),
+  _( "Load autosave" )
 };
 
 
@@ -1118,8 +1122,21 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "bind j layout_4" << endl;
   configFile << "bind c switch_combat" << endl;
   configFile << "bind ] next_weapon" << endl;
+  configFile << "bind f1 quick_spell_1" << endl;
+  configFile << "bind f2 quick_spell_2" << endl;
+  configFile << "bind f3 quick_spell_3" << endl;
+  configFile << "bind f4 quick_spell_4" << endl;
+  configFile << "bind f5 quick_spell_5" << endl;
+  configFile << "bind f6 quick_spell_6" << endl;
+  configFile << "bind f7 quick_spell_7" << endl;
+  configFile << "bind f8 quick_spell_8" << endl;
+  configFile << "bind f9 quick_spell_9" << endl;
+  configFile << "bind f10 quick_spell_10" << endl;
+  configFile << "bind f11 quick_spell_11" << endl;
+  configFile << "bind f12 quick_spell_12" << endl;
   configFile << "bind q quick_save" << endl;
   configFile << "bind w quick_load" << endl;
+  configFile << "bind a auto_load" << endl;
   configFile << "" << endl;
   configFile << "// Video settings" << endl;
   configFile << "set fullscreen true" << endl;

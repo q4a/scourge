@@ -80,6 +80,7 @@ private:
 	std::string savetitle;
 	std::string loadtitle;
 	char scoreid[40];
+	bool autosave;
 
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
@@ -212,6 +213,8 @@ public:
 	inline std::string& getSavegameName() { return savegame; }
 	inline void setLoadgameName( const std::string& s ) { loadgame = s; }
 	inline std::string& getLoadgameName() { return loadgame; }
+	inline void setLoadAutosave( bool b ) { autosave = b; }
+	inline bool getLoadAutosave() { return autosave; }
 	void setSavegameTitle( std::string& s );
 	inline std::string& getSavegameTitle() { return savetitle; }
 	inline void setLoadgameTitle( const std::string& s ) { loadtitle = s; }
