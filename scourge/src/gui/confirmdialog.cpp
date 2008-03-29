@@ -20,7 +20,7 @@
 #include "button.h"
 #include "label.h"
 
-#define CONFIRM_WIDTH 400
+#define CONFIRM_WIDTH 440
 #define CONFIRM_HEIGHT 120
 
 ConfirmDialog::ConfirmDialog( ScourgeGui *scourgeGui, char const* title ) {

@@ -290,6 +290,8 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
 	scourge->getConfirmQuicksaveDialog()->setVisible( true );
     } else if(ea == QUICK_LOAD) {
 	scourge->getConfirmQuickloadDialog()->setVisible( true );
+    } else if(ea == AUTO_LOAD) {
+	scourge->getConfirmAutoloadDialog()->setVisible( true );
     }
     break;
   default: break;
@@ -438,6 +440,15 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 	} else if( widget == scourge->getConfirmQuickloadDialog()->okButton ) {
 		scourge->getConfirmQuickloadDialog()->setVisible( false );
 		scourge->getSaveDialog()->quickLoad();
+	} else if( widget == scourge->getConfirmAutoloadDialog()->win->closeButton ||
+						 widget == scourge->getConfirmAutoloadDialog()->cancelButton ) {
+		scourge->getConfirmAutoloadDialog()->setVisible( false );
+	} else if( widget == scourge->getConfirmAutoloadDialog()->okButton ) {
+		scourge->getConfirmAutoloadDialog()->setVisible( false );
+		scourge->getSession()->setLoadgameName( scourge->getSession()->getSavegameName() );
+		scourge->getSession()->setLoadgameTitle( scourge->getSession()->getSavegameTitle() );
+		scourge->getSession()->setLoadAutosave( true );
+		scourge->getSDLHandler()->endMainLoop();
 	} else if( widget == scourge->getTextDialog()->win->closeButton ||
 						 widget == scourge->getTextDialog()->okButton ) {
 		scourge->getTextDialog()->setVisible( false );		

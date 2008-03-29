@@ -76,6 +76,7 @@ enum engine_action_int{
 
   QUICK_SAVE,
   QUICK_LOAD,
+  AUTO_LOAD,
   
   // must be last
   ENGINE_ACTION_COUNT    
