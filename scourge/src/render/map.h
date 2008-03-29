@@ -632,6 +632,8 @@ private:
 	 */
 	bool canFit( int x, int y, Shape *shape );
 	bool isEmpty( int x, int y );
+	
+	bool inMapEditor();
 
 protected:
 

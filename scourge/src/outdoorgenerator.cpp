@@ -219,7 +219,9 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	}
 
 	// event handler for custom map processing
-	scourge->getSession()->getSquirrel()->callMapMethod( "outdoorMapCompleted", map->getName() );
+	if( !scourge->getSession()->getMap()->inMapEditor() ) {
+		scourge->getSession()->getSquirrel()->callMapMethod( "outdoorMapCompleted", map->getName() );
+	}
 
 	return true;
 }
@@ -237,12 +239,14 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	int roadY = createRoad( map, shapePal, x, y, false );
 	
 	createHouses( map, shapePal, x, y, roadX, roadY + MAP_UNIT );
+	
+	cerr << "in C: x=" << x << " y=" << y << " w=" << VILLAGE_WIDTH << " h=" << VILLAGE_HEIGHT << " road: " << roadX << "," << roadY << endl;
 		
 	// the rest of the village is in squirrel
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageX", x );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageY", y );
-	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageWidth", VILLAGE_WIDTH );
-	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageHeight", VILLAGE_HEIGHT );
+	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageWidth", VILLAGE_WIDTH * MAP_UNIT );
+	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageHeight", VILLAGE_HEIGHT * MAP_UNIT );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadX", roadX );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadY", roadY );
 	shapePal->getSession()->getSquirrel()->callNoArgMethod( "villageRoads" );

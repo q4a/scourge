@@ -195,15 +195,17 @@ void SqBinding::startGame() {
   }
 
   // create the party
-  if( DEBUG_SQUIRREL ) cerr << "Creating party:" << endl;
-	partySize = session->getParty()->getPartySize();
-  for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-    if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), &(refParty[i]) ) ) ) {
-      // Set a token in the class so we can resolve the squirrel instance to a native creature.
-      // The value is the address of the native creature object.
-      setObjectValue( refParty[i], SCOURGE_ID_TOKEN, session->getParty()->getParty(i) );
-      partyMap[ session->getParty()->getParty(i) ] = &(refParty[i]);
-    }
+  if( session->getParty() ) {
+	  if( DEBUG_SQUIRREL ) cerr << "Creating party:" << endl;
+		partySize = session->getParty()->getPartySize();
+	  for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+	    if( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), &(refParty[i]) ) ) ) {
+	      // Set a token in the class so we can resolve the squirrel instance to a native creature.
+	      // The value is the address of the native creature object.
+	      setObjectValue( refParty[i], SCOURGE_ID_TOKEN, session->getParty()->getParty(i) );
+	      partyMap[ session->getParty()->getParty(i) ] = &(refParty[i]);
+	    }
+	  }
   }
 
   // create spells
@@ -224,17 +226,17 @@ void SqBinding::startGame() {
       }
     }
   }
-
-
 }
 
 void SqBinding::endGame() {
   // release party references
-  for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-    sq_release( vm, &(refParty[ i ]) );  
-  }
-  partyMap.clear();
-	partySize = 0;
+	if( session->getParty() ) {
+	  for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+	    sq_release( vm, &(refParty[ i ]) );  
+	  }
+	  partyMap.clear();
+		partySize = 0;
+	}
 
   // destroy the spell references
   for( int i = 0; i < static_cast<int>(refSpell.size()); i++ ) {
@@ -297,7 +299,7 @@ void SqBinding::initLevelObjects() {
   }
 }
 
-bool SqBinding::startLevel() {
+bool SqBinding::startLevel( bool callMapEvents ) {
 
   // create the creatures of the level
   if( DEBUG_SQUIRREL ) cerr << "Creating level's creatures:" << endl;  
@@ -311,13 +313,11 @@ bool SqBinding::startLevel() {
 		registerItem( session->getItem( i ) );
   }
 
-  bool ret = callMapMethod( "enterMap", session->getMap()->getName() );
-  return ret;
+  return( callMapEvents ? callMapMethod( "enterMap", session->getMap()->getName() ) : true );
 }     
 
-bool SqBinding::endLevel() {
-  
-  bool ret = callMapMethod( "exitMap", session->getMap()->getName() );
+bool SqBinding::endLevel( bool callMapEvents ) {
+  bool ret = ( callMapEvents ? callMapMethod( "exitMap", session->getMap()->getName() ) : true );
 
   // destroy the creatures of the level
   for( int i = 0; i < static_cast<int>(refCreature.size()); i++ ) {

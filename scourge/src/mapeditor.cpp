@@ -353,7 +353,7 @@ void MapEditor::drawView() {
   }
   if( outdoorTexturesButton->isSelected() ) {
   	glColor3f( 1, 1, 0 );
-  	scourge->getSDLHandler()->texPrint( 50, 130, "Keys: z,x - rotate, a,s - mirror" );
+  	scourge->getSDLHandler()->texPrint( 50, 130, "Keys: z,x - rotate, q,w - mirror" );
   	glColor3f( 1, 0, 0 );
   }
   glTranslatef( 50, 50, 0 );
@@ -444,10 +444,12 @@ bool MapEditor::handleEvent(SDL_Event *event) {
   } else if( event->key.keysym.sym == SDLK_z ) {
   	outdoorTextureAngle -= 90;
   	if( outdoorTextureAngle < 360 ) outdoorTextureAngle += 360;
-  } else if( event->key.keysym.sym == SDLK_a ) {
-  	  outdoorTextureHorizFlip = !(outdoorTextureHorizFlip);
-  } else if( event->key.keysym.sym == SDLK_s ) {
-  	  outdoorTextureVertFlip = !(outdoorTextureVertFlip);
+  } else if( event->key.keysym.sym == SDLK_q ) {
+  	outdoorTextureHorizFlip = !(outdoorTextureHorizFlip);
+  } else if( event->key.keysym.sym == SDLK_w ) {
+  	outdoorTextureVertFlip = !(outdoorTextureVertFlip);
+  } else if(event->key.keysym.sym == SDLK_s ) {
+  	scourge->getSquirrelConsole()->setVisible( scourge->getSquirrelConsole()->isVisible() ? false : true );
   }
   break;  
   default: break;
