@@ -1045,7 +1045,7 @@ bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
     c->setTargetCreature( potentialTarget );
     //no need to get paths to the target creature, the battle should handle this
     char msg[ 80 ];
-    snprintf(msg, 80, _( "%1$s will target %2$s" ), c->getName(), _( c->getTargetCreature()->getName() ));
+    snprintf(msg, 80, _( "%1$s will target %2$s" ), c->getName(), c->getTargetCreature()->getName() );
 	if ( c->getCharacter() ) {
 	  getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERMAGIC );
 	} else {
@@ -2994,7 +2994,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 
 	string path = get_file_name( dirName + ( isAutosave ? "/savegamea.dat" : "/savegame.dat" ) );
 
-	cerr << "Loading: " << path << endl;
+	//cerr << "Loading: " << path << endl;
 	FILE *fp = fopen( path.c_str(), "rb" );
 	if(!fp) {
 		return false;
@@ -3059,7 +3059,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 		session->getBoard()->setStorylineIndex( storylineIndex );
 		if( version >= 18 ) {
 			file->read( &n );
-			cerr << "Loading " << n << " missions." << endl;
+			//cerr << "Loading " << n << " missions." << endl;
 			for( int i = 0; i < static_cast<int>(n); i++ ) {
 				MissionInfo *info = Persist::loadMission( file );
 				Mission *mission = Mission::load( session, info );
@@ -3070,7 +3070,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 			}
 		}
 		session->getBoard()->initMissions();
-		cerr << "mission count=" << session->getBoard()->getMissionCount() << endl;
+		//cerr << "mission count=" << session->getBoard()->getMissionCount() << endl;
 
 		// load the list of visited maps
 		if( version >= 33 ) {
@@ -3086,7 +3086,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 
 		// start on the correct mission and story (depth)
 		nextMission = -1;
-		cerr << "Looking for mission:" << endl;
+		//cerr << "Looking for mission:" << endl;
 		if( strcmp( (char*)mission, HQ_MISSION_SAVED_NAME ) ) {
 			for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
 				cerr << "\tmission:" << session->getBoard()->getMission(i)->getName() << endl;
@@ -3104,14 +3104,14 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 		}
 		oldStory = currentStory = story;
 		inHq = ( startInHq == 1 ? true : false );
-		cerr << "Starting on mission index=" << nextMission << " depth=" << oldStory << endl;
+		//cerr << "Starting on mission index=" << nextMission << " depth=" << oldStory << endl;
 
 		delete file;
 	}
 
 	{
 		string path = get_file_name( dirName + ( isAutosave ? "/valuesa.dat" : "/values.dat" ) );
-		cerr << "Loading: " << path << endl;
+		//cerr << "Loading: " << path << endl;
 		FILE *fp = fopen( path.c_str(), "rb" );
 		if( fp ) {
 			File *file = new File( fp );

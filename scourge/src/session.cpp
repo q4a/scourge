@@ -62,6 +62,7 @@ Session::Session(GameAdapter *adapter)
 	strcpy( scoreid, "" );
 	dataInitialized = NOT_INITIALIZED;
 	Session::instance = this;
+	autosave = false;
 }
 
 Session::~Session() {
