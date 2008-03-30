@@ -688,7 +688,7 @@ char const* Mission::getFirstKeyPhrase( char const* keyphrase ) {
     return firstKeyPhrase[ ks ].c_str();
   } else {
     cerr << "*** Warning: Unknown phrase: " << keyphrase << endl;
-    return NULL;
+    return unknownPhrases[ Util::dice( unknownPhrases.size() ) ].c_str();
   }
 }
 
