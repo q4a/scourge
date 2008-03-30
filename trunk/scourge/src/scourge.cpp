@@ -1045,7 +1045,7 @@ bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
     c->setTargetCreature( potentialTarget );
     //no need to get paths to the target creature, the battle should handle this
     char msg[ 80 ];
-    snprintf(msg, 80, _( "%1$s will target %2$s" ), c->getName(), c->getTargetCreature()->getName());
+    snprintf(msg, 80, _( "%1$s will target %2$s" ), c->getName(), _( c->getTargetCreature()->getName() ));
 	if ( c->getCharacter() ) {
 	  getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERMAGIC );
 	} else {
