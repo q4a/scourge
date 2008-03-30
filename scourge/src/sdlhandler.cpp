@@ -271,20 +271,20 @@ char **SDLHandler::getVideoModes(int &nbModes){
             // All modes are available, so let's go..
             nbModes = 14;
             modesDescription = (char **) malloc (nbModes * sizeof(char *));
-            modesDescription[0] = strdup("  800 x 600");
-            modesDescription[1] = strdup(" 1024 x 600");
-            modesDescription[2] = strdup(" 1024 x 768");
-            modesDescription[3] = strdup(" 1152 x 864");
-            modesDescription[4] = strdup(" 1280 x 768");
-            modesDescription[5] = strdup(" 1280 x 800");
-            modesDescription[6] = strdup(" 1280 x 960");
-            modesDescription[7] = strdup(" 1280 x 1024");
-            modesDescription[8] = strdup(" 1400 x 1050");
-            modesDescription[9] = strdup(" 1440 x 900");
-            modesDescription[10] = strdup(" 1600 x 1200");
-            modesDescription[11] = strdup(" 1680 x 1050");
-            modesDescription[12] = strdup(" 1920 x 1200");
-            modesDescription[13] = strdup(" 2048 x 1536");
+            modesDescription[0] = strdup("800 x 600");
+            modesDescription[1] = strdup("1024 x 600");
+            modesDescription[2] = strdup("1024 x 768");
+            modesDescription[3] = strdup("1152 x 864");
+            modesDescription[4] = strdup("1280 x 768");
+            modesDescription[5] = strdup("1280 x 800");
+            modesDescription[6] = strdup("1280 x 960");
+            modesDescription[7] = strdup("1280 x 1024");
+            modesDescription[8] = strdup("1400 x 1050");
+            modesDescription[9] = strdup("1440 x 900");
+            modesDescription[10] = strdup("1600 x 1200");
+            modesDescription[11] = strdup("1680 x 1050");
+            modesDescription[12] = strdup("1920 x 1200");
+            modesDescription[13] = strdup("2048 x 1536");
         }
         else{
             // Only a few modes available, which ones ?            
