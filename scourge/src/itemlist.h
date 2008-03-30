@@ -61,6 +61,7 @@ private:
 	bool needsRechargeOnly;
 	bool cursedOnly;
 	bool allowCursed;
+	bool allowEquipped;
 	std::string name[MAX_INVENTORY_SIZE];
 	Color *color;
   GLuint *icon;
@@ -78,6 +79,7 @@ public:
 	inline void setNeedsRechargeOnly( bool b ) { needsRechargeOnly = b; }
 	inline void setCursedOnly( bool b ) { cursedOnly = b; allowCursed = true; }
 	inline void setAllowCursed( bool b ) { allowCursed = b; }
+	inline void setAllowEquipped( bool b ) { allowEquipped = b; }
   
   char *getName();
   int getItemCount();

@@ -38,6 +38,7 @@ ScrollingList( x, y, width, height, scourge->getShapePalette()->getHighlightText
 	this->needsRechargeOnly = false;
 	this->cursedOnly = false;
 	this->allowCursed = true;
+	this->allowEquipped = true;
 
   color = (Color*)malloc( MAX_INVENTORY_SIZE * sizeof( Color ) );
   icon = (GLuint*)malloc( MAX_INVENTORY_SIZE * sizeof( GLuint ) );
@@ -70,6 +71,9 @@ void ItemList::commonInit() {
   int count = 0;
   for(int t = 0; t < getItemCount(); t++) {
     Item *item = getItem( t );
+
+    // Skip equipped items if they are not to be shown
+    if( !allowEquipped && creature->isEquipped( item ) ) continue;
 
     // if there is a non-empty filter, it should contain this type of item
     if( filter && !filter->empty() && 
@@ -121,7 +125,7 @@ void ItemList::commonInit() {
     name[t].clear();
   }  
   setLines( count, name, color, icon );
-  //setSelectedLine( 0 );
+  setSelectedLine( NULL );
 }
 
 char *ItemList::getName() {

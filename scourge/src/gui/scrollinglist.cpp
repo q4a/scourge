@@ -492,8 +492,14 @@ void ScrollingList::removeEffects(Widget *parent) {
 }
 
 void ScrollingList::setSelectedLine(size_t line) {
-	if( selectedLine == NULL )
+	if( selectedLine == NULL ) return;
+
+	if( line == NULL ) {
+		selectedLineCount = 0;
+		selectedLine[ 0 ] = 0;
 		return;
+	}
+
 	selectedLine[ 0 ] = (line < list.size() ? line : list.size() - 1);
   selectedLineCount = 1;
 

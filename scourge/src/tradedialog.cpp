@@ -38,6 +38,8 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   totalA = win->createLabel( xStart, 28, _( "Selected Total:" ) );
   listA = new ItemList( scourge, win, 75, 35, 220, 210, this );
 	listA->setAllowCursed( false );
+	// We don't want to sell equipped items
+	listA->setAllowEquipped( false );
   win->addWidget( listA );
   sellButton = win->createButton( xStart, 35, 70, 55, _( "Sell" ) );
   infoButtonA = win->createButton( xStart, 60, 70, 80, _( "Info" ) );
@@ -47,6 +49,7 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   totalB = win->createLabel( 305, 28, _( "Selected Total:" ) );
   listB = new ItemList( scourge, win, 300, 35, 220, 210, this );
 	listB->setAllowCursed( false );
+//	listB->setAllowEquipped( false );
   win->addWidget( listB );
   tradeButton = win->createButton( 530, 35, 595, 55, _( "Buy" ) );
   stealButton = win->createButton( 530, 60, 595, 80, _( "Steal" ) );  
