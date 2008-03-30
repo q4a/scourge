@@ -182,11 +182,12 @@ public:
   inline bool isInHQ() { return inHq; }
 
   inline Window *getSquirrelConsole() { return squirrelWin; }
-  void runSquirrelConsole();
+  void runSquirrelConsole(char *s=NULL);
   void clearSquirrelConsole();
   inline TextField *getSquirrelText() { return squirrelText; }
   inline Button *getSquirrelRun() { return squirrelRun; }
   inline Button *getSquirrelClear() { return squirrelClear; }
+  inline Button *getSquirrelReload() { return squirrelReload; }
 
   inline void addDeityLocation( Location *pos, MagicSchool *ms ) { deityLocation[pos] = ms; }
   char *getDeityLocation( Location *pos );
@@ -802,7 +803,7 @@ protected:
   Window *squirrelWin;
   ScrollingLabel *squirrelLabel;
   TextField *squirrelText;
-  Button *squirrelRun, *squirrelClear;
+  Button *squirrelRun, *squirrelClear, *squirrelReload;
 
   std::map<Location*, MagicSchool*> deityLocation;
 
