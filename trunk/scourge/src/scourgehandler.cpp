@@ -411,6 +411,8 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
     scourge->runSquirrelConsole();
   } else if( widget == scourge->getSquirrelClear() ) {
     scourge->clearSquirrelConsole();
+  } else if( widget == scourge->getSquirrelReload() ) {
+  	scourge->runSquirrelConsole("scourgeGame.reloadNuts();");
 	} else if( widget == scourge->getConfirmUpload()->win->closeButton ||
 						 widget == scourge->getConfirmUpload()->cancelButton ) {
 		scourge->getConfirmUpload()->setVisible( false );
