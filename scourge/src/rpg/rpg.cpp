@@ -225,7 +225,7 @@ StateMod *StateMod::getRandomGood() {
 }
 
 StateMod *StateMod::getRandomBad() {
-  return badStateMods[ Util::dice( goodStateMods.size() ) ];
+  return badStateMods[ Util::dice( badStateMods.size() ) ];
 }
   
 bool StateMod::isStateModTransitionWanted( bool setting ) {
