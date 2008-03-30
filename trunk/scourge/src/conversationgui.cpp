@@ -43,6 +43,9 @@ using namespace std;
 #define HEAL_WORD "heal"
 #define DONATE_WORD "donate"
 
+#define MODEL_SIZE 210
+GLShape *shape;
+
 ConversationGui::ConversationGui(Scourge *scourge) {
   this->scourge = scourge;
 
@@ -111,6 +114,7 @@ ConversationGui::ConversationGui(Scourge *scourge) {
 }
 
 ConversationGui::~ConversationGui() {
+  scourge->getShapePalette()->decrementSkinRefCountAndDeleteShape( creature->getModelName(), creature->getSkinName(), shape );
   delete win;
 }
 
@@ -267,6 +271,23 @@ void ConversationGui::drawWidgetContents(Widget *w) {
 
     //glDisable( GL_ALPHA_TEST );
     glDisable(GL_TEXTURE_2D);
+  } else {
+    shape = scourge->getShapePalette()->getCreatureShape( creature->getModelName(), creature->getSkinName(), 2 );
+    shape->setCurrentAnimation( MD2_STAND );
+
+    glPushMatrix();
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glEnable(GL_DEPTH_TEST);
+    glEnable( GL_TEXTURE_2D );
+    glTranslatef( 130, MODEL_SIZE + 40, 500 );
+    glRotatef( 90, 1, 0, 0 );
+    glRotatef( 180, 0, 0, 1 );
+    glScalef( 2.2f, 2.2f, 2.2f );
+    glColor4f( 1, 1, 1, 1 );
+    shape->draw();
+    glDisable( GL_TEXTURE_2D );
+    glDisable(GL_DEPTH_TEST);
+    glPopMatrix();
   }
 }
 
