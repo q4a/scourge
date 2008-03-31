@@ -29,18 +29,18 @@ HealDialog::HealDialog( Scourge *scourge ) {
   this->scourge = scourge;
   this->creature = NULL;
   int w = 400;
-  int h = 300;
+  int h = 350;
   win = 
     scourge->createWindow( 50, 50, 
                            w, h, 
                            Constants::getMessage( Constants::HEAL_DIALOG_TITLE ) );
   creatureLabel = win->createLabel( 10, 15, "" );
   coinLabel = win->createLabel( 10, 30, _( "Coins Available:" ) );
-  spellList = new ScrollingList( 10, 40, w - 20, 110, 
+  spellList = new ScrollingList( 10, 40, w - 20, 160, 
                                  scourge->getHighlightTexture(), 
                                  NULL, 30 );
   win->addWidget( spellList );
-  spellDescription = new ScrollingLabel( 10, 160, w - 20, 70, "" );
+  spellDescription = new ScrollingLabel( 10, 210, w - 20, 70, "" );
   win->addWidget( spellDescription );
 
   h = 20;
