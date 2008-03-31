@@ -494,7 +494,6 @@ void ScrollingList::removeEffects(Widget *parent) {
 void ScrollingList::unselectAllLines() {
 	if( allowMultipleSelection ) {
 		selectedLineCount = 0;
-		selectedLine[ 0 ] = 0;
 	} else {
 		setSelectedLine( 0 );
 	}
