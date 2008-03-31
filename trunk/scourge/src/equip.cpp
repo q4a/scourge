@@ -737,7 +737,6 @@ void MissionInfoUI::refresh() {
 			objectiveText.push_back(_("Special") + string(". ") + _("(not yet done)"));
 			missionColor.push_back(red);
 		}
-		cerr << "objectiveText size=" << objectiveText.size() << endl;
 		objectiveList->setLines( objectiveText.begin(), objectiveText.end(), &missionColor[0] );
 	} else {
 		strncpy(missionText, _( "No current mission." ), MISSNTXT_SIZE );
