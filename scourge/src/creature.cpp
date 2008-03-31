@@ -1636,7 +1636,7 @@ int Creature::addMoney(Creature *creature_killed) {
   // fixme: use creature_killed->getMonster()->getMoney() instead of 100.0f
   long delta = (long)n * Util::dice( 50 );
   money += delta;
-  return money;
+  return delta;
 }
 
 void Creature::monsterInit() {
