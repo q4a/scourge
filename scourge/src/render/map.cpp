@@ -229,6 +229,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	hackBlockingPos->x = hackBlockingPos->y = hackBlockingPos->z = 0;
 
   selectedTrapIndex = -1;
+  
+  isRoofShowing = true;
 
   adapter->writeLogMessage(Constants::getMessage(Constants::WELCOME), Constants::MSGTYPE_SYSTEM);
   adapter->writeLogMessage("----------------------------------", Constants::MSGTYPE_SYSTEM);
@@ -376,6 +378,8 @@ void Map::reset() {
 		debugHeightPosXX[i] = debugHeightPosYY[i] = 0;
 	
 	refreshGroundPos = true;
+	
+	isRoofShowing = true;
 
   clearTraps();
 }
@@ -617,7 +621,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
           	// skip roofs if inside
 						bool underRoof = true;
 						if( settings->isGridShowing() ) {
-							underRoof = false;
+							underRoof = !isRoofShowing;
 						} else if( adapter->getPlayer() ) {
 							Location *roof = 
 								getLocation( toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 ), 
@@ -2619,6 +2623,15 @@ bool Map::shapeFits(Shape *shape, int x, int y, int z) {
 		}
 	}
 	return true;
+}
+
+bool Map::coversDoor( Shape *shape, int x, int y ) {
+  for( int ty = y - shape->getDepth() - 6; ty < y + 6; ty++ ) {
+    for( int tx = x - 6; tx < x + shape->getWidth() + 6; tx++ ) {
+      if( isDoor( tx, ty ) ) return true;
+    }
+  }
+  return false;
 }
 
 // FIXME: only uses x, y for now

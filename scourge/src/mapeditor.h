@@ -67,7 +67,7 @@ private:
   Button *creatureButton;
   Button *startPosButton;
   Button *floorType;
-  Button *rugButton, *secretButton, *trapButton;
+  Button *rugButton, *secretButton, *trapButton, *roofButton;
   std::vector<Button *> toggleButtonList;
 	Button *pathButton;
 	Button *outdoorTexturesButton;

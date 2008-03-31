@@ -94,6 +94,7 @@ protected:
 	GLShape *getRandomTreeShape( ShapePalette *shapePal );
 	void createGround();
 	virtual void addFurniture( Map *map, ShapePalette *shapePal );
+	void addContainers(Map *map, ShapePalette *shapePal);
 	virtual void lockDoors( Map *map, ShapePalette *shapePal );
 
 	/**
@@ -107,7 +108,7 @@ protected:
 
 	virtual void addMonsters(Map *map, ShapePalette *shapePal);
 	
-	virtual void addRugs( Map *map, ShapePalette *shapePal );
+	//virtual void addRugs( Map *map, ShapePalette *shapePal );
 	virtual void addTraps( Map *map, ShapePalette *shapePal );
 	virtual void deleteFreeSpaceMap(Map *map, ShapePalette *shapePal);	
 };

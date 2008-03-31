@@ -44,6 +44,7 @@ ScriptClassMemberDecl SqMission::members[] = {
   { "Item", "getCurrentWeapon", SqMission::_getCurrentWeapon, 0, 0, "Get the item currently used to attack the player. (or null if by hands or spell.)" },
 	{ "int", "getChapter", SqMission::_getChapter, 0, 0, "Get the current storyline chapter." },
 	{ "void", "removeMapPosition", SqMission::_removeMapPosition, 0, 0, "Remove the shape at this map position." },
+	{ "void", "isFree", SqMission::_isFree, 0, 0, "Will this place fit at this location? This method returns false if the position is occupied or if it would block a door." },	
 	{ "void", "setMapPosition", SqMission::_setMapPosition, 0, 0, "Set a shape at this map position. Shape is given by its name." },
 	{ "float", "getHeightMap", SqMission::_getHeightMap, 0, 0, "Get the ground height (outdoors only) at this map position." },
 	{ "void", "setHeightMap", SqMission::_setHeightMap, 0, 0, "Set the ground height (outdoors only) at this map position." },
@@ -188,6 +189,18 @@ int SqMission::_setMapPosition( HSQUIRRELVM vm ) {
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
 	SqBinding::sessionRef->getMap()->setPosition( x, y, z, shape );
 	return 0;
+}
+
+int SqMission::_isFree( HSQUIRRELVM vm ) {
+	GET_STRING( shapeName, 255 )
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
+	SQBool b = (SqBinding::sessionRef->getMap()->shapeFits( shape, x, y, z ) && 
+			SqBinding::sessionRef->getMap()->coversDoor( shape, x, y )); 
+	sq_pushbool(vm, b);
+	return 1;
 }
 
 int SqMission::_getHeightMap( HSQUIRRELVM vm ) {
