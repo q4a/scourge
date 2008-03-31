@@ -41,9 +41,10 @@ using namespace std;
 //#define EG 110
 //#define EB 130
 
-#define ER 85
-#define EG 80
-#define EB 150
+#define ER 192
+#define EG 192
+#define EB 210
+#define EA 128
 
 //#define DARK_R 0.05f
 //#define DARK_G 0.04f
@@ -252,9 +253,11 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
   //glBindTexture( GL_TEXTURE_2D, texture );
   
   glEnable( GL_BLEND );
-  glBlendFunc(GL_DST_COLOR, GL_ZERO);
-//  glColor4f( 0.65f, 0.45f, 0.60f, 0.5f);
-  glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, 0.5f);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, EA / 255.0f );
+  //glBlendFunc(GL_DST_COLOR, GL_ZERO);
+  //glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, 0.5f);
+  
 
   glPushMatrix();
   glLoadIdentity();
@@ -297,7 +300,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
     // draw the light circle
     glEnable( GL_TEXTURE_2D );
     glLoadIdentity();  
-    glColor4f( 1, 1, 1, 0.5f);
+    glColor4f( 1, 1, 1, 1);
     
     glBindTexture( GL_TEXTURE_2D, overlay_tex );
     glBegin( GL_QUADS );
@@ -429,8 +432,8 @@ void Fog::getScreenXY( GLdouble mapx, GLdouble mapy, GLdouble mapz,
 void Fog::createOverlayTexture() {
 
   float half = (static_cast<float>(OVERLAY_SIZE) - 0.5f) / 2.0f;
-  int maxP = 95;
-  int minP = 90;
+  int maxP = 90;
+  int minP = 75;
 
   // create the dark texture
   glGenTextures(1, (GLuint*)&overlay_tex);
@@ -446,32 +449,22 @@ void Fog::createOverlayTexture() {
       // the distance as a percent of the max distance
       float percent = dist / ( sqrt( half * half ) / 100.0f );
 
-      int r, g, b;
+      int r, g, b, a;
+      r = ER;
+      g = EG;
+      b = EB;
       if( percent < minP ) {
-        r = 0xff;
-        g = 0xff;
-        b = 0xff;
+      	a = 0;
       } else if( percent >= maxP ) {
-        r = ER;
-        g = EG;
-        b = EB;
+      	a = EA;
       } else {
-        r = 0xff - 
-          static_cast<int>( static_cast<float>( percent - minP ) * 
-                 ( static_cast<float>( 0xff - ER ) / static_cast<float>( maxP - minP ) ) );
-        if( r < ER ) r = ER;
-        g = 0xff - 
-          static_cast<int>( static_cast<float>( percent - minP ) * 
-                 ( static_cast<float>( 0xff - EG ) / static_cast<float>( maxP - minP ) ) );
-        if( g < EG ) g = EG;
-        b = 0xff - 
-          static_cast<int>( static_cast<float>( percent - minP ) * 
-                 ( static_cast<float>( 0xff - EB ) / static_cast<float>( maxP - minP ) ) );
-        if( b < EB ) b = EB;
+      	a = static_cast<int>( static_cast<float>( percent - minP ) * 
+               ( static_cast<float>( EA ) / static_cast<float>( maxP - minP ) ) );
       }
-      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = (unsigned char)r;
-      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = (unsigned char)g;
-      overlay_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = (unsigned char)b;
+      overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 0] = (unsigned char)r;
+      overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 1] = (unsigned char)g;
+      overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 2] = (unsigned char)b;
+      overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 3] = (unsigned char)a;
     }
   }
   glBindTexture(GL_TEXTURE_2D, overlay_tex);
@@ -481,8 +474,8 @@ void Fog::createOverlayTexture() {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  glTexImage2D(GL_TEXTURE_2D, 0, 3, OVERLAY_SIZE, OVERLAY_SIZE, 0, 
-			   GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
+  glTexImage2D(GL_TEXTURE_2D, 0, 4, OVERLAY_SIZE, OVERLAY_SIZE, 0, 
+			   GL_RGBA, GL_UNSIGNED_BYTE, overlay_data);
 }
 
 void Fog::createShadeTexture() {

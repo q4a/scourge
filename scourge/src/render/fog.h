@@ -35,7 +35,7 @@ private:
 
 #define OVERLAY_SIZE 16
   GLuint overlay_tex;
-  unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
+  unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 4];
 
   GLuint shade_tex;
   unsigned char shade_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
