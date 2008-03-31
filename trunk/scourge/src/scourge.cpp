@@ -379,7 +379,7 @@ void Scourge::startMission( bool startInHq ) {
 					if ( !saveGame( session, session->getSavegameName(), session->getSavegameTitle(), true ) ) {
 						showMessageDialog( _( "Error saving the auto save game." ) );
 					}
-					if( !saveCurrentMap("") ) {
+					if( !saveCurrentMap( session->getSavegameName() ) ) {
 						showMessageDialog( _( "Error saving current map." ) );
 					}
 				}
