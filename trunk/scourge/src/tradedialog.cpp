@@ -85,6 +85,8 @@ void TradeDialog::updateUI() {
   listB->setCreature( creature, creature->getNpcInfo()->getSubtype() );
   tradeA = 0;
   updateLabels();
+  listA->unselectAllLines();
+  listB->unselectAllLines();
 }
 
 void TradeDialog::updateLabels() {

@@ -80,6 +80,7 @@ class ScrollingList : public Widget {
 	void setLine(const std::string& toPush);
 	void setLine(size_t pos, const std::string& toPush);
 	inline const std::string& getLine(int index) { return list[index]; }
+	void unselectAllLines();
 
   inline int getSelectedLine() { return ( selectedLine!=NULL ? selectedLine[ 0 ] : -1 ); }
 	void setSelectedLine( size_t n );
