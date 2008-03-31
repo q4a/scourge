@@ -198,7 +198,7 @@ int SqMission::_isFree( HSQUIRRELVM vm ) {
 	GET_INT( x )
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
 	SQBool b = (SqBinding::sessionRef->getMap()->shapeFits( shape, x, y, z ) && 
-			SqBinding::sessionRef->getMap()->coversDoor( shape, x, y )); 
+			!SqBinding::sessionRef->getMap()->coversDoor( shape, x, y )); 
 	sq_pushbool(vm, b);
 	return 1;
 }
