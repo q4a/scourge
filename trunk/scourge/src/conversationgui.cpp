@@ -43,7 +43,6 @@ using namespace std;
 #define HEAL_WORD "heal"
 #define DONATE_WORD "donate"
 
-#define MODEL_SIZE 210
 GLShape *shape;
 
 ConversationGui::ConversationGui(Scourge *scourge) {
@@ -271,24 +270,72 @@ void ConversationGui::drawWidgetContents(Widget *w) {
 
     //glDisable( GL_ALPHA_TEST );
     glDisable(GL_TEXTURE_2D);
-  } else {
+  } else if ( w == canvas && creature && creature->getMonster() ) {
+
+    GLuint *textureGroup = scourge->getMap()->getShapes()->getCurrentTheme()->getTextureGroup( WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ] );
+    GLuint texture = textureGroup[ GLShape::FRONT_SIDE ];
+
+    glPushMatrix();
+    glEnable( GL_TEXTURE_2D );
+    glColor4f( 1, 1, 1, 1 );
+    glBindTexture( GL_TEXTURE_2D, texture );
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
+    glVertex2i( 20, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( 170, 0 );
+    glTexCoord2f( 1, 1 );
+    glVertex2i( 170, 150 );
+    glTexCoord2f( 0, 1 );
+    glVertex2i( 20, 150 );
+    glEnd();
+    glDisable( GL_TEXTURE_2D );
+    glPopMatrix();
+
+    glPushMatrix();
+    glEnable( GL_TEXTURE_2D );
+    glColor4f( 1, 1, 1, 1 );
+    glBindTexture( GL_TEXTURE_2D, texture );
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
+    glVertex2i( -130, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( 20, 0 );
+    glTexCoord2f( 1, 1 );
+    glVertex2i( 20, 150 );
+    glTexCoord2f( 0, 1 );
+    glVertex2i( -130, 150 );
+    glEnd();
+    glDisable( GL_TEXTURE_2D );
+    glPopMatrix();
+
     shape = scourge->getShapePalette()->getCreatureShape( creature->getModelName(), creature->getSkinName(), 1 );
     shape->setCurrentAnimation( MD2_STAND );
 
     glPushMatrix();
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glEnable(GL_DEPTH_TEST);
-    glEnable( GL_TEXTURE_2D );
+    glEnable(GL_BLEND);
+    glTranslatef( 125, 190, 0 );
+    glRotatef( 90, 1, 0, 0 );
+    glRotatef( 180, 0, 0, 1 );
+    glScalef( 2.75f, 2.75f, 2.75f );
+    glColor4f( 0, 0, 0, 0.7f );
+    shape->draw();
+    glDisable(GL_BLEND);
+    glPopMatrix();
+
+    glPushMatrix();
     glTranslatef( 135, 190, 500 );
     glRotatef( 90, 1, 0, 0 );
     glRotatef( 180, 0, 0, 1 );
     glScalef( 2.8f, 2.8f, 2.8f );
     glColor4f( 1, 1, 1, 1 );
     shape->draw();
-    glDisable( GL_TEXTURE_2D );
     glDisable(GL_DEPTH_TEST);
     glPopMatrix();
-  }
+ }
 }
 
 void ConversationGui::hide() {
