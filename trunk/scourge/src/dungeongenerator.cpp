@@ -893,8 +893,7 @@ void DungeonGenerator::removeColumns(Map *map, ShapePalette *shapePal) {
 }
 
 void DungeonGenerator::drawEastDoor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool secret ) {
-  if(!coversDoor(map, shapePal, 
-                 shapePal->findShapeByName("EW_DOOR"), 
+  if(!map->coversDoor(shapePal->findShapeByName("EW_DOOR"), 
                  mapx + unitSide - unitOffset + 1, mapy + unitSide - unitOffset - 2)) {
     if( secret ) {
     } else {
@@ -918,8 +917,7 @@ void DungeonGenerator::drawEastDoor( Map *map, ShapePalette *shapePal, Sint16 ma
 }
 
 void DungeonGenerator::drawWestDoor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool secret ) {
-  if(!coversDoor(map, shapePal, 
-                 shapePal->findShapeByName("EW_DOOR"), 
+  if(!map->coversDoor(shapePal->findShapeByName("EW_DOOR"), 
                  mapx + 1, mapy + unitSide - unitOffset - 2)) {
     map->setPosition(mapx, mapy + unitSide - unitOffset, 
                      wallHeight - 2, shapePal->findShapeByName("EW_DOOR_TOP"));
@@ -940,8 +938,7 @@ void DungeonGenerator::drawWestDoor( Map *map, ShapePalette *shapePal, Sint16 ma
 }
 
 void DungeonGenerator::drawSouthDoor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool secret ) {
-  if(!coversDoor(map, shapePal, 
-                 shapePal->findShapeByName("NS_DOOR"), 
+  if(!map->coversDoor(shapePal->findShapeByName("NS_DOOR"), 
                  mapx + unitOffset * 2, mapy + unitSide - 1)) {
     map->setPosition(mapx + unitOffset, mapy + unitSide, 
                      wallHeight - 2, shapePal->findShapeByName("NS_DOOR_TOP"));
@@ -962,8 +959,7 @@ void DungeonGenerator::drawSouthDoor( Map *map, ShapePalette *shapePal, Sint16 m
 }
 
 void DungeonGenerator::drawNorthDoor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool secret ) {
-  if(!coversDoor(map, shapePal, 
-                 shapePal->findShapeByName("NS_DOOR"), 
+  if(!map->coversDoor(shapePal->findShapeByName("NS_DOOR"), 
                  mapx + unitOffset * 2, mapy + unitOffset - 1)) {
     map->setPosition(mapx + unitOffset, mapy + unitOffset, 
                      wallHeight - 2, shapePal->findShapeByName("NS_DOOR_TOP"));
@@ -1015,58 +1011,7 @@ void DungeonGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
 }
 
 void DungeonGenerator::addContainers(Map *map, ShapePalette *shapePal) {
-  int x = 0;
-  int y = 0;
-  RpgItem *rpgItem;
-  // add the containers
-  for(int i = 0; i < roomCount; i++) {
-    for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
-      rpgItem = RpgItem::getRandomContainer();
-      if(rpgItem) {
-        // WEST side
-        x = (room[i].x * unitSide) + unitOffset + offset;
-        y = (room[i].y * unitSide) + pos + offset;
-        Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
-        if(map->shapeFits(shape, x, y, 0) && 
-           !coversDoor(map, shapePal, shape, x, y)) {
-          addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
-        }
-      }
-      rpgItem = RpgItem::getRandomContainer();
-      if(rpgItem) {
-        // EAST side
-        x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
-        Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
-        if(map->shapeFits(shape, x, y, 0) && 
-           !coversDoor(map, shapePal, shape, x, y)) {
-          addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
-        }
-      }
-    }
-    for(int pos = unitOffset; pos < room[i].w * unitSide; pos++) {
-      rpgItem = RpgItem::getRandomContainerNS();
-      if(rpgItem) {
-        // NORTH side
-        x = (room[i].x * unitSide) + pos + offset;
-        y = (room[i].y * unitSide) + (unitOffset * 2) + offset;
-        Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
-        if(map->shapeFits(shape, x, y, 0) && 
-           !coversDoor(map, shapePal, shape, x, y)) {
-          addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
-        }
-      }
-      rpgItem = RpgItem::getRandomContainerNS();
-      if(rpgItem) {
-        // SOUTH side
-        y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide - unitOffset + offset;
-        Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
-        if(map->shapeFits(shape, x, y, 0) && 
-           !coversDoor(map, shapePal, shape, x, y)) {
-          addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
-        }
-      }
-    }
-  }
+	addContainersInRooms( map, shapePal );
 }
 
 MapRenderHelper *DungeonGenerator::getMapRenderHelper() {

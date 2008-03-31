@@ -169,8 +169,6 @@ protected:
   bool getLocationInRoom(Map *map, int roomIndex, Shape *shape, 
                          int *xpos, int *ypos, bool startMiddle=false);
   
-  bool coversDoor(Map *map, ShapePalette *shapePal, Shape *shape, int x, int y);
-  
   static const int MAX_STEPS = 10000;
   bool isAccessible(Map *map, int x, int y, int fromX, int fromY, int stepsTaken=0, int dir=DIR_N);
   
@@ -207,6 +205,8 @@ protected:
 	 * be adjusted by depth, and some other random settings.
 	 */
 	virtual inline int getBaseMonsterLevel() { return level; }
+	
+	virtual void addContainersInRooms( Map *map, ShapePalette *shapePal );
   
 };
 

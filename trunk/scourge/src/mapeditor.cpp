@@ -122,6 +122,9 @@ MapEditor::MapEditor( Scourge *scourge ) {
   yy += ystep;
   trapButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Trap" ), true );
   toggleButtonList.push_back( trapButton );
+  roofButton = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, _( "Show Roofs" ), true );
+  roofButton->setSelected( true );
+  //toggleButtonList.push_back( roofButton );  
   yy += ystep;
 
 
@@ -473,7 +476,9 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
   }
 
   string result;
-  if( widget == saveButton ) {
+  if( widget == roofButton ) {
+  	scourge->getMap()->setRoofShowing( roofButton->isSelected() );
+  } else if( widget == saveButton ) {
 		string tmp(nameText->getText());
     scourge->getMap()->saveMap( tmp, result );
 	scourge->showMessageDialog( result.c_str() );

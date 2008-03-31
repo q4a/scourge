@@ -266,7 +266,7 @@ bool TerrainGenerator::addStairs(Map *map, ShapePalette *shapePal) {
       Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_UP");
       int x, y;
       bool fits = getLocationInRoom(map, i, shape, &x, &y);
-			if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
+			if(fits && !map->coversDoor(shape, x, y)) {
         addItem(map, NULL, NULL, shape, x, y);
 				stairsUpX = x;
 				stairsUpY = y;
@@ -288,7 +288,7 @@ bool TerrainGenerator::addStairs(Map *map, ShapePalette *shapePal) {
       Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_DOWN");
       int x, y;
       bool fits = getLocationInRoom(map, i, shape, &x, &y);
-      if(fits && !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
+      if(fits && !map->coversDoor(shape, x, y)) {
         addItem(map, NULL, NULL, shape, x, y);
 				stairsDownX = x;
 				stairsDownY = y;
@@ -798,7 +798,7 @@ void TerrainGenerator::getRandomLocation(Map *map, Shape *shape,
     bool fits = map->shapeFits(shape, x, y, 0);
     // doesn't fit? try again (could be inf. loop)
     if(fits && 
-       !coversDoor(map, scourge->getShapePalette(), shape, x, y)) {
+       !map->coversDoor(shape, x, y)) {
 
       // check if location is accessible
       if(accessible) {
@@ -864,7 +864,7 @@ void TerrainGenerator::addItemsInRoom( RpgItem *rpgItem, int n, int room ) {
     for(int t = 0; t < 5; t++) { // 5 tries
       Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
       bool fits = getLocationInRoom(scourge->getMap(), room, shape, &x, &y);
-      if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
+      if(fits && !scourge->getMap()->coversDoor(shape, x, y)) {
         Item *item = scourge->getSession()->newItem(rpgItem);
         addItem(scourge->getMap(), NULL, item, NULL, x, y);
         break;
@@ -885,7 +885,7 @@ Location *TerrainGenerator::addShapeInRoom( Shape *shape, int room, DisplayInfo 
   int x, y;
   for(int t = 0; t < 5; t++) { // 5 tries
     bool fits = getLocationInRoom(scourge->getMap(), room, shape, &x, &y);
-    if(fits && !coversDoor(scourge->getMap(), scourge->getShapePalette(), shape, x, y)) {
+    if(fits && !scourge->getMap()->coversDoor(shape, x, y)) {
       addItem(scourge->getMap(), NULL, NULL, shape, x, y, 0, di );
       return scourge->getMap()->getLocation( x, y, 0 );
     }
@@ -951,17 +951,6 @@ bool TerrainGenerator::getLocationInRoom(Map *map, int roomIndex, Shape *shape,
 
   free(fff);
   return fits;
-}
-
-// move this to Map class
-bool TerrainGenerator::coversDoor(Map *map, ShapePalette *shapePal, 
-                                  Shape *shape, int x, int y) {
-  for(int ty = y - shape->getDepth() - 6; ty < y + 6; ty++) {
-    for(int tx = x - 6; tx < x + shape->getWidth() + 6; tx++) {
-      if(map->isDoor(tx, ty)) return true;
-    }
-  }
-  return false;
 }
 
 bool TerrainGenerator::isAccessible(Map *map, int x, int y, int fromX, int fromY, int stepsTaken, int dir) {
@@ -1041,6 +1030,7 @@ int TerrainGenerator::getRoomIndex(int x, int y) {
 }
 
 void TerrainGenerator::addRugs( Map *map, ShapePalette *shapePal ) {
+	//cerr << "*** Adding rugs" << endl;
 	for(int roomIndex = 0; roomIndex < roomCount; roomIndex++) {
     int startx = room[roomIndex].x;
     //int endx = room[roomIndex].x + room[roomIndex].w - 1;
@@ -1063,12 +1053,10 @@ void TerrainGenerator::addRugs( Map *map, ShapePalette *shapePal ) {
 				rug.texture = shapePal->getRandomRug();
 				rug.angle = Util::roll( -15.0f, 15.0f );
 	
-				/*
-				cerr << "*** Adding rug (tex: " << rug.texture << ") at " << px << "," << py << 
-					" room: " << room[roomIndex].x << "," << room[roomIndex].y << 
-					"-" << ( room[roomIndex].w + room[roomIndex].x ) << "," <<
-					( room[roomIndex].h + room[roomIndex].y ) << endl;
-				*/					
+//				cerr << "*** Adding rug (tex: " << rug.texture << ") at " << px << "," << py << 
+//					" room: " << room[roomIndex].x << "," << room[roomIndex].y << 
+//					"-" << ( room[roomIndex].w + room[roomIndex].x ) << "," <<
+//					( room[roomIndex].h + room[roomIndex].y ) << endl;
 				map->setRugPosition( px, py, &rug );
 			}
 		}
@@ -1089,3 +1077,59 @@ void TerrainGenerator::addTraps( Map *map, ShapePalette *shapePal ) {
   delete dummy;
 }
 
+// ----------------------------------
+// Room helper functions
+void TerrainGenerator::addContainersInRooms( Map *map, ShapePalette *shapePal ) {
+	int x = 0;
+	int y = 0;
+	RpgItem *rpgItem;
+	// add the containers
+	for(int i = 0; i < roomCount; i++) {
+	  for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
+	    rpgItem = RpgItem::getRandomContainer();
+	    if(rpgItem) {
+	      // WEST side
+	      x = (room[i].x * unitSide) + unitOffset + offset;
+	      y = (room[i].y * unitSide) + pos + offset;
+	      Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
+	      if(map->shapeFits(shape, x, y, 0) && 
+	         !map->coversDoor(shape, x, y)) {
+	        addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
+	      }
+	    }
+	    rpgItem = RpgItem::getRandomContainer();
+	    if(rpgItem) {
+	      // EAST side
+	      x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
+	      Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
+	      if(map->shapeFits(shape, x, y, 0) && 
+	         !map->coversDoor(shape, x, y)) {
+	        addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
+	      }
+	    }
+	  }
+	  for(int pos = unitOffset; pos < room[i].w * unitSide; pos++) {
+	    rpgItem = RpgItem::getRandomContainerNS();
+	    if(rpgItem) {
+	      // NORTH side
+	      x = (room[i].x * unitSide) + pos + offset;
+	      y = (room[i].y * unitSide) + (unitOffset * 2) + offset;
+	      Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
+	      if(map->shapeFits(shape, x, y, 0) && 
+	         !map->coversDoor(shape, x, y)) {
+	        addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
+	      }
+	    }
+	    rpgItem = RpgItem::getRandomContainerNS();
+	    if(rpgItem) {
+	      // SOUTH side
+	      y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide - unitOffset + offset;
+	      Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
+	      if(map->shapeFits(shape, x, y, 0) && 
+	         !map->coversDoor(shape, x, y)) {
+	        addItem(map, NULL, scourge->getSession()->newItem(rpgItem), NULL, x, y);
+	      }
+	    }
+	  }
+	}
+}

@@ -258,6 +258,7 @@ private:
   std::vector<Trap> trapList;
   std::set<Uint8> trapSet;
   int selectedTrapIndex;
+  bool isRoofShowing;
 
  public:
   bool useFrustum;
@@ -272,6 +273,9 @@ private:
 
 	inline void setQuakesEnabled( bool b ) { quakesEnabled = b; }
 	inline bool areQuakesEnabled() { return quakesEnabled; }
+	
+	inline void setRoofShowing( bool b ) { isRoofShowing = b; mapChanged = true; }
+	inline bool getRoofShowing() { return isRoofShowing; }
 
   void addSecretDoor( int x, int y );
   void removeSecretDoor( int x, int y );
@@ -634,6 +638,7 @@ private:
 	bool isEmpty( int x, int y );
 	
 	bool inMapEditor();
+	bool coversDoor( Shape *shape, int x, int y );
 
 protected:
 

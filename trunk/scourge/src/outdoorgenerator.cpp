@@ -112,26 +112,6 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
 	map->setHeightMapEnabled( true );
 
-  // set rooms
-  doorCount = 0;
-	roomCount = 0;
-	for( int cx = 0; cx < 2; cx++ ) {
-		for( int cy = 0; cy < 2; cy++ ) {
-			//CellularAutomaton *c = cellular[cx][cy];
-			room[ roomCount ].x = ( cx * WIDTH_IN_NODES * OUTDOORS_STEP ) / MAP_UNIT;
-			room[ roomCount ].y = ( cy * DEPTH_IN_NODES * OUTDOORS_STEP ) / MAP_UNIT;
-			room[ roomCount ].w = WIDTH_IN_NODES * OUTDOORS_STEP / MAP_UNIT;
-			room[ roomCount ].h = DEPTH_IN_NODES * OUTDOORS_STEP / MAP_UNIT;
-			room[ roomCount ].valueBonus = 0;
-			roomCount++;
-		}
-	}
-  roomMaxWidth = 0;
-  roomMaxHeight = 0;
-  objectCount = 7 + ( level / 8 ) * 5;
-  monsters = true;
-
-
 	// add mountains
 	int offs = MAP_OFFSET / OUTDOORS_STEP;
 	for( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
@@ -202,9 +182,25 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	}
 	
 	map->initOutdoorsGroundTexture();
-	
-	// is this needed?
-	//map->setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, shapePal->getNamedTexture( "grass" ) );
+
+	// create a set of rooms for outdoor items
+  doorCount = 0;
+	roomCount = 0;
+	for( int cx = 0; cx < 2; cx++ ) {
+		for( int cy = 0; cy < 2; cy++ ) {
+			//CellularAutomaton *c = cellular[cx][cy];
+			room[ roomCount ].x = ( cx * WIDTH_IN_NODES * OUTDOORS_STEP ) / MAP_UNIT;
+			room[ roomCount ].y = ( cy * DEPTH_IN_NODES * OUTDOORS_STEP ) / MAP_UNIT;
+			room[ roomCount ].w = WIDTH_IN_NODES * OUTDOORS_STEP / MAP_UNIT;
+			room[ roomCount ].h = DEPTH_IN_NODES * OUTDOORS_STEP / MAP_UNIT;
+			room[ roomCount ].valueBonus = 0;
+			roomCount++;
+		}
+	}
+  roomMaxWidth = 0;
+  roomMaxHeight = 0;
+  objectCount = 7 + ( level / 8 ) * 5;
+  monsters = true;	
 
 	// set the floor, so random positioning works in terrain generator
 	// a bit of a song-and-dance with keepFloor is so that random objects aren't placed in rooms
@@ -240,8 +236,6 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	
 	createHouses( map, shapePal, x, y, roadX, roadY + MAP_UNIT );
 	
-	cerr << "in C: x=" << x << " y=" << y << " w=" << VILLAGE_WIDTH << " h=" << VILLAGE_HEIGHT << " road: " << roadX << "," << roadY << endl;
-		
 	// the rest of the village is in squirrel
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageX", x );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageY", y );
@@ -253,7 +247,24 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	
 	// add npc-s
 	
-	// populateRooms
+	
+	// add some decor
+	addRugs( map, shapePal );
+	
+	// Hack: limit free space to just houses for now.
+	createFreeSpaceMap( map, shapePal );
+	
+	// add some containers
+	addContainersInRooms( map, shapePal );
+	
+	// add tables, chairs, etc.
+	addItemsInEveryRoom( RpgItem::getItemByName("Table"), 1 );
+	addItemsInEveryRoom( RpgItem::getItemByName("Chair"), 2 );
+	addItemsInEveryRoom( RpgItem::getItemByName("Bed"), 1 );
+	addItemsInEveryRoom( RpgItem::getItemByName("Stove"), 1 );
+	
+	// clean up free space
+	deleteFreeSpaceMap( map, shapePal );
 }
 
 // roads and lakes don't mix well
@@ -268,6 +279,15 @@ void OutdoorGenerator::removeLakes( Map *map, int x, int y ) {
 #define HOUSE_SHAPES_SIZE 3
 int HOUSE_SHAPES[][2] = { { 2, 2 }, { 2, 3 }, { 3, 2 } };
 void OutdoorGenerator::createHouses( Map *map, ShapePalette *shapePal, int x, int y, int roadX, int roadY ) {
+	
+  // set rooms
+  doorCount = 0;
+	roomCount = 0;
+  roomMaxWidth = 3;
+  roomMaxHeight = 3;
+  objectCount = 20;
+  monsters = true;
+	
 	for( int iy = -2; iy < VILLAGE_HEIGHT + 2; iy++ ) {
 		for( int ix = -2; ix < VILLAGE_HEIGHT + 2; ix++ ) {
 			if( 0 == Util::dice( 2 ) ) {
@@ -275,7 +295,14 @@ void OutdoorGenerator::createHouses( Map *map, ShapePalette *shapePal, int x, in
 				int *i = HOUSE_SHAPES[ n ];				
 				int vx = x + ix * MAP_UNIT;
 				int vy = y + iy * MAP_UNIT;
-				createHouse( map, shapePal, vx, vy, i[0], i[1] );
+				if( createHouse( map, shapePal, vx, vy, i[0], i[1] ) ) {
+					room[ roomCount ].x = ( vx - MAP_OFFSET ) / MAP_UNIT;
+					room[ roomCount ].y = ( vy - MAP_OFFSET ) / MAP_UNIT;
+					room[ roomCount ].w = i[0];
+					room[ roomCount ].h = i[1];
+					room[ roomCount ].valueBonus = 0;
+					roomCount++;					
+				}
 			}
 		}
 	}
@@ -295,7 +322,7 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 			}
 		}
 	}
-	cerr << "house at: " << x << "," << y << " dim=" << w << "," << h << endl;
+	//cerr << "house at: " << x << "," << y << " dim=" << w << "," << h << endl;
 	int door = Util::dice( 4 );
 	for( int vx = 0; vx < w; vx++ ) {
 		for( int vy = 0; vy < h; vy++ ) {
@@ -567,8 +594,10 @@ void OutdoorGenerator::createGround() {
 	}
 }
 
-void OutdoorGenerator::addFurniture( Map *map, ShapePalette *shapePal ) {
-  addMagicPools( map, shapePal );
+void OutdoorGenerator::addFurniture(Map *map, ShapePalette *shapePal) {
+}
+
+void OutdoorGenerator::addContainers(Map *map, ShapePalette *shapePal) {	
 }
 
 void OutdoorGenerator::lockDoors( Map *map, ShapePalette *shapePal ) {
@@ -604,11 +633,11 @@ void OutdoorGenerator::printMaze() {
 		}
 	}
 }
-
+/*
 void OutdoorGenerator::addRugs( Map *map, ShapePalette *shapePal ) {
      // no rugs
 }
-
+*/
 void OutdoorGenerator::addTraps( Map *map, ShapePalette *shapePal ) {
      // no traps
 }
