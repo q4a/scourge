@@ -698,6 +698,8 @@ void MissionInfoUI::refresh() {
 	char missionText[MISSNTXT_SIZE], tmp[TMP_SIZE];
 	Scourge *scourge = pcUi->getScourge();
 	Mission* curMission = scourge->getSession()->getCurrentMission();
+	objectiveText.clear();
+	missionColor.clear();
 
 	if( curMission ) {
 		snprintf( tmp, TMP_SIZE, _("Depth: %d out of %d."), (scourge->getCurrentDepth() + 1), curMission->getDepth() );
@@ -735,10 +737,10 @@ void MissionInfoUI::refresh() {
 			objectiveText.push_back(_("Special") + string(". ") + _("(not yet done)"));
 			missionColor.push_back(red);
 		}
+		cerr << "objectiveText size=" << objectiveText.size() << endl;
 		objectiveList->setLines( objectiveText.begin(), objectiveText.end(), &missionColor[0] );
 	} else {
 		strncpy(missionText, _( "No current mission." ), MISSNTXT_SIZE );
-		objectiveText.clear();
 	}
 	description->setText( missionText );
 }
