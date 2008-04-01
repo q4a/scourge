@@ -326,7 +326,7 @@ bool SavegameDialog::saveGameInternal( SavegameInfo *info ) {
 
 		// if there is a current game and it's diff. than the one we're saving, copy the maps over
 		string s(scourge->getSession()->getSavegameName());
-		if( s == info->path && s != "" ) {
+		if( s != info->path && s != "" ) {
 			b = copyMaps( s, info->path );
 		}
 
@@ -420,6 +420,12 @@ bool SavegameDialog::copyMaps( const string& fromDirName, const string& toDirNam
 bool SavegameDialog::copyFile( const string& fromDirName, const string& toDirName, const string& fileName ) {
 	string fromPath = get_file_name( fromDirName + "/" + fileName );
 	string toPath = get_file_name( toDirName + "/" + fileName );
+	
+	// a bandaid to keep from creating 0-length files
+	if( fromPath == toPath ) {
+		cerr << "*** ERROR: copying over the same file. This will create a 0-length file." << endl;
+		return false;
+	}
 
 	cerr << "+++ copying file: " << fromPath << " to " << toPath << endl;
 
