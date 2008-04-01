@@ -378,8 +378,13 @@ void SavegameDialog::deleteUnreferencedMaps( const string& dirName ) {
 	vector<string> referencedMaps;
 	for( int i = 0; i < scourge->getSession()->getBoard()->getMissionCount(); i++ ) {
 		string s = scourge->getSession()->getBoard()->getMission( i )->getSavedMapName();
-		if( s != "" )
-			referencedMaps.push_back( s );
+		if( s == "" ) { s = "_"; s += scourge->getSession()->getBoard()->getMission( i )->getMapName(); }
+      			for(int d = 0; d <= scourge->getSession()->getBoard()->getMission( i )->getDepth(); d++) {
+        			stringstream mapName;
+        			mapName << s << "_" << d;
+				//cerr << "REFMAP: " << mapName.str() << endl;
+				referencedMaps.push_back( mapName.str() );
+      			}
 	}
 
 	string path = get_file_name( dirName );
