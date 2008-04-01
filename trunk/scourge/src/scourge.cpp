@@ -367,6 +367,7 @@ void Scourge::startMission( bool startInHq ) {
 				if(inHq) getSession()->getSound()->playMusicHQ();
 				else getSession()->getSound()->playMusicMission();
 				setAmbientPaused( false );
+				if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
 			}
       getSDLHandler()->fade( 1, 0, 20 );
 
@@ -1984,8 +1985,17 @@ void Scourge::missionCompleted() {
     snprintf(message, 200, _( "The party receives %d points." ), exp);
     getDescriptionScroller()->writeLogMessage(message, Constants::MSGTYPE_MISSION);
 
-    for(int i = 0; i < getParty()->getPartySize(); i++) {
-			getParty()->getParty(i)->addExperienceWithMessage( exp );
+      for(int i = 0; i < getParty()->getPartySize(); i++) {
+        getParty()->getParty(i)->addExperienceWithMessage( exp );
+      }
+
+  // If we know we will never come here again, remove the map from the list of visited maps
+  if( getSession()->getCurrentMission() && getSession()->getCurrentMission()->isCompleted() && !getSession()->getCurrentMission()->isReplayable() && getSession()->getCurrentMission()->getSavedMapName().length() ) {
+      for(int i = 0; i <= getSession()->getCurrentMission()->getDepth(); i++) {
+        stringstream mapName;
+        mapName << getSession()->getCurrentMission()->getSavedMapName() << "_" << i;
+        visitedMaps.erase( mapName.str() );
+      }
     }
   }
 }
