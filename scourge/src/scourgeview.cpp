@@ -86,13 +86,7 @@ void ScourgeView::drawView() {
 	scourge->getMap()->preDraw();
   scourge->getMap()->draw();
 	scourge->getMap()->postDraw();
-  scourge->getMiniMap()->drawMap();
 
-	ambientObjectSounds();
-
-  // the boards outside the map
-  drawOutsideMap();
-  
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_TEXTURE_2D );
   drawMapInfos();
@@ -101,6 +95,13 @@ void ScourgeView::drawView() {
 	glDisable( GL_CULL_FACE );
   glDisable( GL_SCISSOR_TEST );
 
+  scourge->getMiniMap()->drawMap();
+
+	ambientObjectSounds();
+
+  // the boards outside the map
+  drawOutsideMap();
+  
   drawBorder();
 
   drawTextEffect();  
