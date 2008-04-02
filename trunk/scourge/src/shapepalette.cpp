@@ -299,7 +299,7 @@ void ShapePalette::initFonts( ConfigLang *config ) {
     		string locale = current->getValueAsString( "locale" );
     		if( locale == "" || locale == "all" || locale == "*" ) {
     			all = current;
-    		} else if( Constants::getCurrentLocale().find( locale, 0 ) == 0 ) {
+    		} else if( Constants::scourgeLocaleName.find( locale, 0 ) == 0 ) {
     			specific = current;
     		}
     	}
