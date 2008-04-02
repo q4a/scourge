@@ -90,10 +90,6 @@ void ScourgeView::drawView() {
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_TEXTURE_2D );
   drawMapInfos();
-  glEnable( GL_DEPTH_TEST );
-  glEnable( GL_TEXTURE_2D );
-	glDisable( GL_CULL_FACE );
-  glDisable( GL_SCISSOR_TEST );
 
   scourge->getMiniMap()->drawMap();
 
@@ -102,6 +98,11 @@ void ScourgeView::drawView() {
   // the boards outside the map
   drawOutsideMap();
   
+  glEnable( GL_DEPTH_TEST );
+  glEnable( GL_TEXTURE_2D );
+	glDisable( GL_CULL_FACE );
+  glDisable( GL_SCISSOR_TEST );
+
   drawBorder();
 
   drawTextEffect();  
