@@ -244,7 +244,7 @@ Item *Inven::getItemAtPos( int x, int y ) {
 
 // note: optimize this, current O(n^2)
 bool Inven::findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem ) {
-	if( creature ) {
+	if( creature && item ) {
 		int colCount = canvas->getWidth() / GRID_SIZE;
 		int rowCount = canvas->getHeight() / GRID_SIZE;
 
