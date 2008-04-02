@@ -1989,14 +1989,6 @@ void Scourge::missionCompleted() {
         getParty()->getParty(i)->addExperienceWithMessage( exp );
       }
 
-  // If we know we will never come here again, remove the map from the list of visited maps
-  if( getSession()->getCurrentMission() && getSession()->getCurrentMission()->isCompleted() && !getSession()->getCurrentMission()->isReplayable() && getSession()->getCurrentMission()->getSavedMapName().length() ) {
-      for(int i = 0; i <= getSession()->getCurrentMission()->getDepth(); i++) {
-        stringstream mapName;
-        mapName << getSession()->getCurrentMission()->getSavedMapName() << "_" << i;
-        visitedMaps.erase( mapName.str() );
-      }
-    }
   }
 }
 
