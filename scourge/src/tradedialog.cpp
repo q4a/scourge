@@ -30,41 +30,35 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   
   win = 
     scourge->createWindow( 50, 50, 
-                           605, 340, 
+                           605, 345, 
                            Constants::getMessage( Constants::TRADE_DIALOG_TITLE ) );
   //win->setModal( true );
 	int xStart = 8;
-  labelA = win->createLabel( xStart, 15, "" );
-  totalA = win->createLabel( xStart, 28, _( "Selected Total:" ) );
+  labelA = win->createLabel( 80, 15, "" );
+  totalA = win->createLabel( 80, 28, _( "Selected Total:" ) );
   listA = new ItemList( scourge, win, 75, 35, 220, 210, this );
 	listA->setAllowCursed( false );
 	// We don't want to sell equipped items
 	listA->setAllowEquipped( false );
   win->addWidget( listA );
-  sellButton = win->createButton( xStart, 35, 70, 55, _( "Sell" ) );
-  infoButtonA = win->createButton( xStart, 60, 70, 80, _( "Info" ) );
+  infoButtonA = win->createButton( xStart, 35, 70, 55, _( "Info" ) );
 
   
   labelB = win->createLabel( 305, 15, "" );
   totalB = win->createLabel( 305, 28, _( "Selected Total:" ) );
   listB = new ItemList( scourge, win, 300, 35, 220, 210, this );
 	listB->setAllowCursed( false );
-//	listB->setAllowEquipped( false );
+	listB->setAllowEquipped( false );
   win->addWidget( listB );
-  tradeButton = win->createButton( 530, 35, 595, 55, _( "Buy" ) );
-  stealButton = win->createButton( 530, 60, 595, 80, _( "Steal" ) );  
-  infoButtonB = win->createButton( 530, 85, 595, 105, _( "Info" ) );
+  stealButton = win->createButton( 530, 35, 595, 55, _( "Steal" ) );  
+  infoButtonB = win->createButton( 530, 60, 595, 80, _( "Info" ) );
 
-  closeButton = win->createButton( 530, 290, 595, 310, _( "Close" ) );
+  tradeButton = win->createButton( this->getWindow()->getWidth() / 2 - 45, 270, this->getWindow()->getWidth() / 2 + 45, 290, _( "Trade!" ) );
+  closeButton = win->createButton( 530, 295, 595, 315, _( "Close" ) );
   
   coinAvailA = win->createLabel( xStart, 260, _( "Available Coins:" ) );
-  coinTradeA = win->createLabel( xStart, 280, _( "$0" ) );
-  coinReset = win->createButton( 180, 270, 220, 290, _( "Clr" ) );
-  coinPlusA = win->createButton( 225, 270, 265, 290, "+1" );
-  coinMinusA = win->createButton( 270, 270, 310, 290, "-1" );
-  coinRest = win->createButton( 315, 270, 355, 290, _( "Diff" ) );
 
-  win->createLabel( xStart, 305, _( "Shift+click to select multiple items, right click to get info." ) );
+  win->createLabel( xStart, 310, _( "Shift+click to select multiple items, right click to get info." ) );
 }
 
 TradeDialog::~TradeDialog() {
@@ -92,11 +86,10 @@ void TradeDialog::updateUI() {
 void TradeDialog::updateLabels() {
 	enum { TMP_SIZE = 120 };
   char tmp[ TMP_SIZE ];
-  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney() );
+  snprintf( tmp, TMP_SIZE, _( "%s $%d, %s $%d" ), _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney(), ( tradeA < 0 ? _( "you receive:" ) : _( "to pay:" ) ), ( tradeA < 0 ? -tradeA : tradeA ) );
+  coinAvailA->move( ( this->getWindow()->getWidth() / 2 ) - ( scourge->getSDLHandler()->textWidth( tmp ) / 2  ), 260 );
   coinAvailA->setText( tmp );
-  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Coins:" ), tradeA );
-  coinTradeA->setText( tmp );
-  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), ( getSelectedTotal( listA ) + tradeA ) );
+  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), getSelectedTotal( listA ) );
   totalA->setText( tmp );
   snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), getSelectedTotal( listB ) );
   totalB->setText( tmp );
@@ -125,27 +118,10 @@ void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   } else if( widget == listA || widget == listB ) {
-    updateLabels();
-  } else if( widget == coinPlusA && ( tradeA + 1 < scourge->getParty()->getPlayer()->getMoney() ) ) {
-    tradeA++;
-    updateLabels(); 
-  } else if( widget == coinMinusA && tradeA ) {
-    tradeA--;
-    updateLabels();
-  } else if( widget == coinReset ) {
-    tradeA = 0;
-    updateLabels();
-  } else if( widget == coinRest ) {
-    int total = getSelectedTotal( listB ) - getSelectedTotal( listA );
-    tradeA = ( total < scourge->getParty()->getPlayer()->getMoney() ? 
-               total : 
-               scourge->getParty()->getPlayer()->getMoney() );
-    if( tradeA < 0 ) tradeA = 0;
+    tradeA = getSelectedTotal( listB ) - getSelectedTotal( listA );
     updateLabels();
   } else if( widget == tradeButton ) {
     trade();
-  } else if( widget == sellButton ) {
-    sell();
   } else if( widget == stealButton ) {
     steal();
   }
@@ -172,24 +148,26 @@ void TradeDialog::trade() {
     return;
   }
   
-  int totalA = getSelectedTotal( listA ) + tradeA;
+  int totalA = getSelectedTotal( listA );
   int totalB = getSelectedTotal( listB );
-  if( !totalB ) {
-    scourge->showMessageDialog( _( "Select items to buy." ) );
+  if( !totalA && !totalB ) {
+    scourge->showMessageDialog( _( "Select items to trade." ) );
     return;
-  } else if( totalA < totalB ) {
-    scourge->showMessageDialog( _( "You are not offering enough to trade." ) );
-    return;
-  } else if( totalA > totalB ) {
-    // FIXME: show are you sure? dialog.
   }
-  
+
+  // Do we have enough money?
+  if( ( scourge->getParty()->getPlayer()->getMoney() + totalA - totalB ) < 0 ) {
+    scourge->showMessageDialog( _( "You can't afford this deal!" ) );
+    return;
+  }
+
   // move items
   for( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
     Item *item = listA->getSelectedItem( i );
     scourge->getParty()->getPlayer()->removeInventory( scourge->getParty()->getPlayer()->findInInventory( item ) );
     creature->addInventory( item, true );
   }
+
   for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {
     Item *item = listB->getSelectedItem( i );
     if(!scourge->getPcUi()->receiveInventory(item))
@@ -201,41 +179,11 @@ void TradeDialog::trade() {
   }
   
   // move money
-  scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() - tradeA );
-  if( totalA > totalB ) 
-    scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() + 
-                                    ( totalA - totalB ) );
-  
+  scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() + totalA - totalB );
+
   updateUI();
   scourge->refreshInventoryUI();
   scourge->showMessageDialog( _( "Selected items traded." ) );
-}
-
-void TradeDialog::sell() {
-  if( !validateInventory() ) {
-    scourge->showMessageDialog( _( "Inventories changed." ) );
-    return;
-  }
-  
-  int totalA = getSelectedTotal( listA );
-  if( !totalA ) {
-    scourge->showMessageDialog( _( "Select items to sell." ) );
-    return;
-  }
-  
-  // move items
-  for( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
-    Item *item = listA->getSelectedItem( i );
-    scourge->getParty()->getPlayer()->removeInventory( scourge->getParty()->getPlayer()->findInInventory( item ) );
-    creature->addInventory( item, true );
-  }
-  
-  // move money
-  scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() + totalA );
-  
-  updateUI();
-  scourge->refreshInventoryUI();
-  scourge->showMessageDialog( _( "Selected items sold." ) );
 }
 
 /**
