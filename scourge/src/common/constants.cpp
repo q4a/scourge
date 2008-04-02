@@ -23,7 +23,7 @@ using namespace std;
 const char *Constants::localhost = "localhost";
 const char *Constants::adminUserName = "admin";
 int Constants::maxMissionId = 1;
-string Constants::currentLocale = "";
+std::string Constants::scourgeLocaleName = "";
 
 // assign the data dir
 //char rootDir[300] = DATA_DIR;
@@ -539,11 +539,11 @@ int Constants::findLocaleDir() {
 	// Set the working locale. 
 	// To change it, change the env var LANGUAGE or LANG (order of precedence.)
 	setlocale( LC_ALL, "C" );
-	char *loc = setlocale( LC_MESSAGES, "" );
-	if( !loc ) {
-		cerr << "*** Error: unable to set locale from environment variables." << endl;
+	char *s = setlocale( LC_MESSAGES, "" );
+	if( !s ) {
+		cerr << "*** Error: can't set locale from environment settings" << endl;
 	} else {
-		strcpy( currentLocale, loc );
+		scourgeLocaleName = s;
 	}
 
 	// assume translations dir in rootDir
