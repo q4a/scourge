@@ -42,9 +42,8 @@ private:
   Label *labelA, *labelB;
   Label *totalA, *totalB;
   ItemList *listA, *listB;
-  Button *closeButton, *tradeButton, *infoButtonA, *infoButtonB, *sellButton, *stealButton;
+  Button *closeButton, *tradeButton, *infoButtonA, *infoButtonB, *stealButton;
   Label *coinAvailA, *coinTradeA;
-  Button *coinPlusA, *coinMinusA, *coinRest, *coinReset;
   
 public:
   TradeDialog( Scourge *scourge );
@@ -59,7 +58,6 @@ public:
 protected:
     void updateLabels();
   void trade();
-  void sell();
   void steal();
   int getSelectedTotal( ItemList *list );
   bool validateInventory();
