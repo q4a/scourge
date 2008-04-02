@@ -232,9 +232,8 @@ void ShapePalette::initialize() {
   textures[texture_count++].filename = "textures/formation6.bmp";
 
   // load the status modifier icons
-  stringstream path;
   for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-		path.clear();
+    stringstream path;
     path << "/icons/i" << i << ".bmp";
     GLuint icon = loadGLTextures(path.str());
 //    cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
