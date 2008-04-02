@@ -314,6 +314,7 @@ public:
 class Constants {
 private:
 	static int maxMissionId;
+	static std::string currentLocale;
 public:
 
 	static inline int getNextMissionId() { return maxMissionId++; }
@@ -700,6 +701,8 @@ public:
 	static int initRootDir( int argc, char *argv[] );
 
 	static int findLocaleDir();
+	
+	inline static std::string getCurrentLocale() { return currentLocale; }
 
 private:
   static bool checkFile(const std::string& dir, const std::string& file);

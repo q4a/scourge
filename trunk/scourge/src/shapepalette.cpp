@@ -288,19 +288,37 @@ void ShapePalette::initFonts( ConfigLang *config ) {
   for( int i = 0; i < 4; i++ ) {
     vector<ConfigNode*> *faces = fontsNode->getChildrenByName( fontNames[i] );
     if( faces ) {
-      ConfigNode *node = (*faces)[0];
-
-			SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
-			info->path = node->getValueAsString( "path" );
-			info->size = static_cast<int>(node->getValueAsFloat( "size" ));
-			info->style = static_cast<int>(node->getValueAsFloat( "style" ));
-			info->yoffset = static_cast<int>(node->getValueAsFloat( "yoffset" ));
-			info->shadowX = static_cast<int>(node->getValueAsFloat( "shadowX" ));
-			info->shadowY = static_cast<int>(node->getValueAsFloat( "shadowY" ));
-      info->font = NULL;
-      info->fontMgr = NULL;
-  
-      SDLHandler::fontInfos.push_back( info );
+    	ConfigNode *faceNode = (*faces)[0];
+    	
+    	// find the current locale or "all"
+    	vector<ConfigNode*> *locales = faceNode->getChildrenByName( "locale" );
+    	ConfigNode *specific = NULL;
+    	ConfigNode *all = NULL;    	    	
+    	for( unsigned int loc = 0; loc < locales->size(); loc++ ) {
+    		ConfigNode *current = (*locales)[loc];    		
+    		string locale = current->getValueAsString( "locale" );
+    		if( locale == "" || locale == "all" || locale == "*" ) {
+    			all = current;
+    		} else if( Constants::getCurrentLocale().find( locale, 0 ) == 0 ) {
+    			specific = current;
+    		}
+    	}
+    		
+    	ConfigNode *node = ( specific ? specific : all );
+    	if( node ) {
+    		cerr << "For font >" << fontNames[i] << "< using locale >" << node->getValueAsString( "locale" ) << "<" << endl;
+				SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
+				info->path = node->getValueAsString( "path" );
+				info->size = static_cast<int>(node->getValueAsFloat( "size" ));
+				info->style = static_cast<int>(node->getValueAsFloat( "style" ));
+				info->yoffset = static_cast<int>(node->getValueAsFloat( "yoffset" ));
+				info->shadowX = static_cast<int>(node->getValueAsFloat( "shadowX" ));
+				info->shadowY = static_cast<int>(node->getValueAsFloat( "shadowY" ));
+	      info->font = NULL;
+	      info->fontMgr = NULL;
+	  
+	      SDLHandler::fontInfos.push_back( info );
+    	}
     }
   }
 }
