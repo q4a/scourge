@@ -230,7 +230,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
   selectedTrapIndex = -1;
   
-  isRoofShowing = true;
+  isCurrentlyUnderRoof = isRoofShowing = true;
 
   adapter->writeLogMessage(Constants::getMessage(Constants::WELCOME), Constants::MSGTYPE_SYSTEM);
   adapter->writeLogMessage("----------------------------------", Constants::MSGTYPE_SYSTEM);
@@ -379,7 +379,7 @@ void Map::reset() {
 	
 	refreshGroundPos = true;
 	
-	isRoofShowing = true;
+	isCurrentlyUnderRoof = isRoofShowing = true;
 
   clearTraps();
 }
@@ -619,19 +619,23 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 						}
 
           	// skip roofs if inside
-						bool underRoof = true;
+						bool oldRoof = isCurrentlyUnderRoof;
+						isCurrentlyUnderRoof = true;
 						if( settings->isGridShowing() ) {
-							underRoof = !isRoofShowing;
+							isCurrentlyUnderRoof = !isRoofShowing;
 						} else if( adapter->getPlayer() ) {
 							Location *roof = 
 								getLocation( toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 ), 
 								             toint( adapter->getPlayer()->getY() - 1 - adapter->getPlayer()->getShape()->getDepth() / 2 ), 
 								             MAP_WALL_HEIGHT );
 							if( !roof ) {
-								underRoof = false;
+								isCurrentlyUnderRoof = false;
 							}
 						}
-          	int maxZ = ( underRoof ? MAP_WALL_HEIGHT : MAP_VIEW_HEIGHT );
+						if( isCurrentlyUnderRoof != oldRoof ) {
+							resortShapes = true;
+						}
+          	int maxZ = ( isCurrentlyUnderRoof ? MAP_WALL_HEIGHT : MAP_VIEW_HEIGHT );          	
           	
 						
             for(int zp = 0; zp < maxZ; zp++) {
@@ -1304,7 +1308,7 @@ void Map::draw() {
 
     // draw the fog of war or shading
 #ifdef USE_LIGHTING
-    if( helper )
+    if( helper && !(isCurrentlyUnderRoof && !groundVisible ) )
 			helper->draw( getX(), getY(), MVW, MVD );
 #endif
 

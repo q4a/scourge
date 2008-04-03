@@ -258,7 +258,7 @@ private:
   std::vector<Trap> trapList;
   std::set<Uint8> trapSet;
   int selectedTrapIndex;
-  bool isRoofShowing;
+  bool isRoofShowing, isCurrentlyUnderRoof;
 
  public:
   bool useFrustum;
