@@ -229,6 +229,7 @@ public:
 
   bool callBoolMethod( const char *name, HSQOBJECT *param, bool *result );
   bool callNoArgMethod( const char *name, HSQOBJECT *param=NULL );
+  bool callNoArgStringReturnMethod( const char *name, char *answer );
 	bool callOneArgMethod( const char *name, HSQOBJECT *param1 );
 	// if s is not NULL it is pushed on the stack instead of param2.
   bool callTwoArgMethod( const char *name, HSQOBJECT *param1, HSQOBJECT *param2, const char *s=NULL );

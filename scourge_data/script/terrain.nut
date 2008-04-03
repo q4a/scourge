@@ -4,15 +4,17 @@
 //
 
 /**
+ * Add some objects to a village road. This method is called by the outdoor terrain generation code.
+ * 
  * The following global variables will exist:
  * villageX, villageY - upper left of area where village is
  * villageWidth, villageHeight - width and height of village area
  * villageRoadX, villageRoadY - x and y of two village roads (running entire width and height of village)
  */
 function villageRoads() {
-	print( "villageX=" + villageX + " villageY=" + villageY + "\n" );
-	print( "villageWidth=" + villageWidth + " villageHeight=" + villageWidth + "\n" );
-	print( "villageRoadX=" + villageRoadX + " villageRoadY=" + villageRoadY + "\n" );
+//	print( "villageX=" + villageX + " villageY=" + villageY + "\n" );
+//	print( "villageWidth=" + villageWidth + " villageHeight=" + villageWidth + "\n" );
+//	print( "villageRoadX=" + villageRoadX + " villageRoadY=" + villageRoadY + "\n" );
 	
 	containers <- [ ["Barrel", "BARREL"], ["Crate", "CRATE"] ];
 	
@@ -56,4 +58,16 @@ function villageRoads() {
 			}		
 		}
 	}
+}
+
+/**
+ * Return a random npc type (name, really) to use for a village population.
+ * This method is called repeatedly by the outdoor terrain generator code.
+ */
+function getVillageNpcType() {
+	// in the future, there should be human towns, dwarven towns, etc.
+	npcs <- [ "Male Vagrant", "Male Traveling Wizard", "Male Knight", "Male Rogue", 
+	          "Female Hobo", "Female Bard", "Female Ranger", "Female Priestess" ];
+	c = ( rand() * npcs.len().tofloat() / RAND_MAX ).tointeger();
+	return npcs[ c ];
 }
