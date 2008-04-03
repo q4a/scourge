@@ -125,7 +125,6 @@ void ItemList::commonInit() {
     name[t].clear();
   }  
   setLines( count, name, color, icon );
-  this->unselectAllLines();
 }
 
 char *ItemList::getName() {

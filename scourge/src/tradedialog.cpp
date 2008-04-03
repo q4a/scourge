@@ -56,7 +56,7 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   tradeButton = win->createButton( this->getWindow()->getWidth() / 2 - 45, 270, this->getWindow()->getWidth() / 2 + 45, 290, _( "Trade!" ) );
   closeButton = win->createButton( 530, 295, 595, 315, _( "Close" ) );
   
-  coinAvailA = win->createLabel( xStart, 260, _( "Available Coins:" ) );
+  tradeInfo = win->createLabel( xStart, 260, _( "Available Coins:" ) );
 
   win->createLabel( xStart, 310, _( "Shift+click to select multiple items, right click to get info." ) );
 }
@@ -77,18 +77,18 @@ void TradeDialog::updateUI() {
   listA->setCreature( scourge->getParty()->getPlayer(), creature->getNpcInfo()->getSubtype() );
   labelB->setText( _( creature->getName() ) );
   listB->setCreature( creature, creature->getNpcInfo()->getSubtype() );
-  tradeA = 0;
-  updateLabels();
   listA->unselectAllLines();
   listB->unselectAllLines();
+  totalAmount = 0;
+  updateLabels();
 }
 
 void TradeDialog::updateLabels() {
 	enum { TMP_SIZE = 120 };
   char tmp[ TMP_SIZE ];
-  snprintf( tmp, TMP_SIZE, _( "%s $%d, %s $%d" ), _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney(), ( tradeA < 0 ? _( "you receive:" ) : _( "to pay:" ) ), ( tradeA < 0 ? -tradeA : tradeA ) );
-  coinAvailA->move( ( this->getWindow()->getWidth() / 2 ) - ( scourge->getSDLHandler()->textWidth( tmp ) / 2  ), 260 );
-  coinAvailA->setText( tmp );
+  snprintf( tmp, TMP_SIZE, _( "%s $%d, %s $%d" ), _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney(), ( totalAmount < 0 ? _( "you receive:" ) : _( "to pay:" ) ), ( totalAmount < 0 ? -totalAmount : totalAmount ) );
+  tradeInfo->move( ( this->getWindow()->getWidth() / 2 ) - ( scourge->getSDLHandler()->textWidth( tmp ) / 2  ), 260 );
+  tradeInfo->setText( tmp );
   snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), getSelectedTotal( listA ) );
   totalA->setText( tmp );
   snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), getSelectedTotal( listB ) );
@@ -118,7 +118,7 @@ void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   } else if( widget == listA || widget == listB ) {
-    tradeA = getSelectedTotal( listB ) - getSelectedTotal( listA );
+    totalAmount = getSelectedTotal( listB ) - getSelectedTotal( listA );
     updateLabels();
   } else if( widget == tradeButton ) {
     trade();

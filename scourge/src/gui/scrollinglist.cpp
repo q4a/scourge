@@ -102,10 +102,10 @@ void ScrollingList::setupHeight() {
 
   if( !list.empty() ) {
     selectedLine = new int[ list.size() ];
-    selectedLine[ 0 ] = 0;
-// ***********************
-    selectedLineCount = 1;
-// ***********************
+      if ( !allowMultipleSelection ) {
+        selectedLine[ 0 ] = 0;
+        selectedLineCount = 1;
+      }
   }
 }
 
@@ -359,17 +359,17 @@ int ScrollingList::getLineAtPoint( int x, int y ) {
 void ScrollingList::selectLine( int x, int y, bool addToSelection, bool mouseDown ) {
   int n = getLineAtPoint( x, y );
   if( n > -1 ) {
-    if( addToSelection && allowMultipleSelection ) {
+    if( addToSelection && allowMultipleSelection && selectedLineCount > 0 ) {
       // is it already selected?
       for( int i = 0; i < selectedLineCount; i++ ) {
         if( selectedLine[ i ] == n ) {
           
-//          if( mouseDown ) {
+          if( mouseDown ) {
             for( int t = i; t < selectedLineCount - 1; t++ ) {
               selectedLine[ t ] = selectedLine[ t + 1 ];
             }
             selectedLineCount--;
-//          }
+          }
 
           return;
         }        
@@ -439,13 +439,27 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 	case SDL_MOUSEBUTTONDOWN:
 		if( event->button.button ) {
 			if( event->button.button == SDL_BUTTON_WHEELUP ) {
+				eventType = EVENT_DRAG;
 				if( isInside(x, y) ) {
-					moveSelectionUp();
+					if(listHeight > getHeight()) {
+					int scrollDelta = static_cast<int>( 100.0f / static_cast<float>(list.size()) );
+					if( scrollDelta == 0 ) scrollDelta = 1;
+					value -= scrollDelta;
+					if(value < 0)	value = 0;
+					scrollerY = static_cast<int>((static_cast<float>(getHeight() - scrollerHeight) / 100.0f) * static_cast<float>(value));
+					}
 					return true;
 				}
 			} if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
+				eventType = EVENT_DRAG;
 				if( isInside(x, y) ) {
-					moveSelectionDown();
+					if(listHeight > getHeight()) {
+					int scrollDelta = static_cast<int>( 100.0f / static_cast<float>(list.size()) );
+					if( scrollDelta == 0 ) scrollDelta = 1;
+					value += scrollDelta;
+					if(value > 100)	value = 100;
+					scrollerY = static_cast<int>((static_cast<float>(getHeight() - scrollerHeight) / 100.0f) * static_cast<float>(value));
+					}
 					return true;
 				}
 			} else if( event->button.button == SDL_BUTTON_LEFT ||
