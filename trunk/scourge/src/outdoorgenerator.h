@@ -96,6 +96,9 @@ protected:
 	virtual void addFurniture( Map *map, ShapePalette *shapePal );
 	void addContainers(Map *map, ShapePalette *shapePal);
 	virtual void lockDoors( Map *map, ShapePalette *shapePal );
+	virtual void addNpcs( Map *map, ShapePalette *shapePal, int villageX, int villageY, int villageWidth, int villageHeight );
+	virtual void createNpc( Map *map, ShapePalette *shapePal, int x, int y );
+
 
 	/**
 	 * Outdoors have low level monsters only.	

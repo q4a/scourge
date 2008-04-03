@@ -243,10 +243,10 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageHeight", VILLAGE_HEIGHT * MAP_UNIT );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadX", roadX );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadY", roadY );
-	shapePal->getSession()->getSquirrel()->callNoArgMethod( "villageRoads" );
+	shapePal->getSession()->getSquirrel()->callNoArgMethod( "villageRoads" );	
 	
 	// add npc-s
-	
+	addNpcs( map, shapePal, x, y, VILLAGE_WIDTH * MAP_UNIT, VILLAGE_HEIGHT * MAP_UNIT );
 	
 	// add some decor
 	addRugs( map, shapePal );
@@ -265,6 +265,49 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	
 	// clean up free space
 	deleteFreeSpaceMap( map, shapePal );
+}
+
+void OutdoorGenerator::addNpcs( Map *map, ShapePalette *shapePal, int villageX, int villageY, int villageWidth, int villageHeight ) {
+	for( int i = 0; i < 10; i++ ) {
+		createNpc( map, shapePal, 
+		           Util::pickOne( villageX, villageX + villageWidth ), 
+		           Util::pickOne( villageY, villageY + villageHeight ) );
+	}	
+	for( int i = 0; i < roomCount; i++ ) {
+		createNpc( map, shapePal, 
+		           ( room[ i ].x + room[ i ].w / 2 ) * MAP_UNIT + MAP_OFFSET, 
+		           ( room[ i ].y + room[ i ].h / 2 ) * MAP_UNIT + MAP_OFFSET );
+	}
+}
+
+void OutdoorGenerator::createNpc( Map *map, ShapePalette *shapePal, int x, int y ) {
+	Monster *npc;
+	char npcName[255];
+	shapePal->getSession()->getSquirrel()->callNoArgStringReturnMethod( "getVillageNpcType", npcName );
+	if( !strlen( npcName ) ) {
+		cerr << "*** getVillageNpcType from squirrel returned no npc name." << endl;
+		return;
+	} else {
+		npc = Monster::getMonsterByName( npcName );
+		if( !npc ) {
+			cerr << "*** Can't find npc: " << npcName << endl;
+			return;
+		} else if( !npc->isNpc() ) {
+			cerr << "*** Can't find npc: " << npcName << endl;
+			return;			
+		}
+	}
+	
+	cerr << "Adding NPC: " << npcName << endl;
+
+	GLShape *shape = scourge->getShapePalette()->getCreatureShape( npc->getModelName(), npc->getSkinName(), npc->getScale(), npc);
+  Creature *creature = scourge->getSession()->newCreature( npc, shape );
+  int fx, fy;
+  creature->findPlace( x, y, &fx, &fy );
+  
+  cerr << "\tat: " << fx << "," << fy << endl;
+  //addItem( levelMap, creature, NULL, NULL, fx, fy );
+  //creature->moveTo( fx, fy, 0 );
 }
 
 // roads and lakes don't mix well
