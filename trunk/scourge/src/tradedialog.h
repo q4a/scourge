@@ -36,14 +36,14 @@ private:
   Scourge *scourge;
   Creature *creature;
   Window *win;
-  int tradeA, tradeB;
+  int totalAmount;
   std::map<Item*, int> prices;
   
   Label *labelA, *labelB;
   Label *totalA, *totalB;
   ItemList *listA, *listB;
   Button *closeButton, *tradeButton, *infoButtonA, *infoButtonB, *stealButton;
-  Label *coinAvailA, *coinTradeA;
+  Label *tradeInfo;
   
 public:
   TradeDialog( Scourge *scourge );
