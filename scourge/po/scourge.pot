@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-04-02 20:39+0100\n"
+"POT-Creation-Date: 2008-04-04 18:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,61 +94,61 @@ msgstr ""
 msgid "%s feels a loss of contentment."
 msgstr ""
 
-#: src/render/map.cpp:1947
+#: src/render/map.cpp:1951
 msgid "A tremor shakes the earth..."
 msgstr ""
 
-#: src/render/map.cpp:2436 src/render/map.cpp:2487 src/equip.cpp:277
+#: src/render/map.cpp:2440 src/render/map.cpp:2491 src/equip.cpp:277
 #: src/inven.cpp:166
 #, c-format
 msgid "%s picks up %s."
 msgstr ""
 
-#: src/render/map.cpp:3217
+#: src/render/map.cpp:3221
 msgid "You need to name the map first."
 msgstr ""
 
-#: src/render/map.cpp:3406 src/render/map.cpp:3692
+#: src/render/map.cpp:3410 src/render/map.cpp:3696
 msgid "Enter a name of a map to load."
 msgstr ""
 
-#: src/render/map.cpp:3428
+#: src/render/map.cpp:3432
 msgid "Loading map"
 msgstr ""
 
-#: src/render/map.cpp:3433 src/dungeongenerator.cpp:594 src/mondrian.cpp:485
+#: src/render/map.cpp:3437 src/dungeongenerator.cpp:594 src/mondrian.cpp:485
 msgid "Loading theme"
 msgstr ""
 
-#: src/render/map.cpp:3483
+#: src/render/map.cpp:3487
 msgid "Starting map"
 msgstr ""
 
-#: src/render/map.cpp:3506
+#: src/render/map.cpp:3510
 msgid "Initializing map"
 msgstr ""
 
-#: src/render/map.cpp:3641
+#: src/render/map.cpp:3645
 msgid "Finishing map"
 msgstr ""
 
-#: src/render/map.cpp:3647 src/rpg/monster.cpp:26 src/session.cpp:120
+#: src/render/map.cpp:3651 src/rpg/monster.cpp:26 src/session.cpp:120
 msgid "Loading Creatures"
 msgstr ""
 
-#: src/render/map.cpp:3665
+#: src/render/map.cpp:3669
 msgid "Starting party"
 msgstr ""
 
-#: src/render/map.cpp:3685
+#: src/render/map.cpp:3689
 msgid "Map loaded: "
 msgstr ""
 
-#: src/render/map.cpp:3706
+#: src/render/map.cpp:3710
 msgid "Can't find map: "
 msgstr ""
 
-#: src/render/map.cpp:3716
+#: src/render/map.cpp:3720
 msgid "Map header loaded: "
 msgstr ""
 
@@ -1328,7 +1328,7 @@ msgstr ""
 msgid "level"
 msgstr ""
 
-#: src/healdialog.cpp:93 src/tradedialog.cpp:144 src/uncursedialog.cpp:117
+#: src/healdialog.cpp:93 src/tradedialog.cpp:141 src/uncursedialog.cpp:117
 #: src/identifydialog.cpp:119 src/rechargedialog.cpp:119
 #, c-format
 msgid "$%d "
@@ -1425,11 +1425,11 @@ msgstr ""
 msgid "Projectile did not reach the target (blocked)."
 msgstr ""
 
-#: src/scourgeview.cpp:779
+#: src/scourgeview.cpp:781
 msgid "Move"
 msgstr ""
 
-#: src/scourgeview.cpp:1049
+#: src/scourgeview.cpp:1051
 msgid "cost"
 msgstr ""
 
@@ -1722,51 +1722,51 @@ msgstr ""
 msgid "%s $%d"
 msgstr ""
 
-#: src/tradedialog.cpp:150 src/tradedialog.cpp:210 src/uncursedialog.cpp:123
+#: src/tradedialog.cpp:147 src/tradedialog.cpp:207 src/uncursedialog.cpp:123
 #: src/identifydialog.cpp:125 src/rechargedialog.cpp:125
 msgid "Inventories changed."
 msgstr ""
 
-#: src/tradedialog.cpp:157
+#: src/tradedialog.cpp:154
 msgid "Select items to trade."
 msgstr ""
 
-#: src/tradedialog.cpp:163
+#: src/tradedialog.cpp:160
 msgid "You can't afford this deal!"
 msgstr ""
 
-#: src/tradedialog.cpp:178 src/inven.cpp:138
+#: src/tradedialog.cpp:175 src/inven.cpp:138
 msgid "Can't fit item in inventory."
 msgstr ""
 
-#: src/tradedialog.cpp:189
+#: src/tradedialog.cpp:186
 msgid "Selected items traded."
 msgstr ""
 
-#: src/tradedialog.cpp:216
+#: src/tradedialog.cpp:213
 msgid "Select items to steal."
 msgstr ""
 
-#: src/tradedialog.cpp:244
+#: src/tradedialog.cpp:241
 msgid "You succesfully burgled the items!"
 msgstr ""
 
-#: src/tradedialog.cpp:253
+#: src/tradedialog.cpp:250
 msgid ""
 "You succesfully burgled the items but some did not fit in your backpack!"
 msgstr ""
 
-#: src/tradedialog.cpp:274
+#: src/tradedialog.cpp:271
 #, c-format
 msgid "%s looses %d coins!"
 msgstr ""
 
-#: src/tradedialog.cpp:284
+#: src/tradedialog.cpp:281
 #, c-format
 msgid "Item confiscated: %s"
 msgstr ""
 
-#: src/tradedialog.cpp:289
+#: src/tradedialog.cpp:286
 msgid "Your burgling attempt failed. Items and ex. were confiscated."
 msgstr ""
 
@@ -2515,80 +2515,84 @@ msgstr ""
 msgid "Cleaning up"
 msgstr ""
 
-#: src/date.cpp:28
+#: src/date.cpp:29
 msgid "January"
 msgstr ""
 
-#: src/date.cpp:29
+#: src/date.cpp:30
 msgid "February"
 msgstr ""
 
-#: src/date.cpp:30
+#: src/date.cpp:31
 msgid "March"
 msgstr ""
 
-#: src/date.cpp:31
+#: src/date.cpp:32
 msgid "April"
 msgstr ""
 
-#: src/date.cpp:32
+#: src/date.cpp:33
 msgid "May"
 msgstr ""
 
-#: src/date.cpp:33
+#: src/date.cpp:34
 msgid "June"
 msgstr ""
 
-#: src/date.cpp:34
+#: src/date.cpp:35
 msgid "July"
 msgstr ""
 
-#: src/date.cpp:35
+#: src/date.cpp:36
 msgid "August"
 msgstr ""
 
-#: src/date.cpp:36
+#: src/date.cpp:37
 msgid "September"
 msgstr ""
 
-#: src/date.cpp:37
+#: src/date.cpp:38
 msgid "October"
 msgstr ""
 
-#: src/date.cpp:38
+#: src/date.cpp:39
 msgid "November"
 msgstr ""
 
-#: src/date.cpp:39
+#: src/date.cpp:40
 msgid "December"
 msgstr ""
 
-#: src/date.cpp:44
+#: src/date.cpp:45
 msgid "Monday"
 msgstr ""
 
-#: src/date.cpp:45
+#: src/date.cpp:46
 msgid "Tuesday"
 msgstr ""
 
-#: src/date.cpp:46
+#: src/date.cpp:47
 msgid "Wednesday"
 msgstr ""
 
-#: src/date.cpp:47
+#: src/date.cpp:48
 msgid "Thursday"
 msgstr ""
 
-#: src/date.cpp:48
+#: src/date.cpp:49
 msgid "Friday"
 msgstr ""
 
-#: src/date.cpp:49
+#: src/date.cpp:50
 msgid "Saturday"
 msgstr ""
 
-#: src/date.cpp:50
+#: src/date.cpp:51
 msgid "Sunday"
+msgstr ""
+
+#: src/date.cpp:215
+msgid "MON DAY HOU:MIN"
 msgstr ""
 
 #: src/conversationgui.cpp:59
