@@ -132,10 +132,12 @@ bool Button::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   inverse = ( inside && event->motion.state == SDL_PRESSED );
 	break;
   case SDL_MOUSEBUTTONUP:
+	if( event->button.button != SDL_BUTTON_LEFT ) return false;
 	if(inside && toggle) selected = (selected ? false : true);
 	return inside;
   case SDL_MOUSEBUTTONDOWN:
-  inverse = inside;
+	if( event->button.button != SDL_BUTTON_LEFT ) return false;
+	inverse = inside;
 	break;
   default:
 	break;

@@ -245,8 +245,8 @@ Widget *Window::handleWindowEvent(SDL_Event *event, int x, int y) {
       if( this->widget[t]->isVisible() && this->widget[t]->isEnabled() ) {
         if(!insideWidget) {
           if(insideWidget = this->widget[t]->isInside(x - getX(), y - getY() - gutter)) {
-            if(event->type == SDL_MOUSEBUTTONUP || 
-               event->type == SDL_MOUSEBUTTONDOWN) {
+            if( ( event->type == SDL_MOUSEBUTTONUP || 
+               event->type == SDL_MOUSEBUTTONDOWN ) && event->button.button == SDL_BUTTON_LEFT ) {
               currentWin = this;
               setFocus(this->widget[t]);
             }
@@ -342,9 +342,10 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   dragging = false;
   break;
   case SDL_MOUSEBUTTONDOWN:
+  if( event->button.button != SDL_BUTTON_LEFT ) return false;
   toTop();
   if(!isLocked()) {
-    dragging = ( event->button.button == SDL_BUTTON_LEFT && isInside(x, y) );
+    dragging = ( isInside(x, y) );
     dragX = x - getX();
     dragY = y - getY();
   }

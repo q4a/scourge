@@ -462,8 +462,7 @@ bool ScrollingList::handleEvent(Widget *parent, SDL_Event *event, int x, int y) 
 					}
 					return true;
 				}
-			} else if( event->button.button == SDL_BUTTON_LEFT ||
-								 event->button.button == SDL_BUTTON_RIGHT ) {
+			} else if( event->button.button == SDL_BUTTON_LEFT ) {
 				if(scrollerHeight < getHeight() && x - getX() < scrollerWidth) {
 					innerDrag = false;
 					dragging = inside;
