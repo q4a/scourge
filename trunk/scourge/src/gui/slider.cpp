@@ -161,6 +161,7 @@ bool Slider::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     return true;
   }
   case SDL_MOUSEBUTTONDOWN:
+  if( event->button.button != SDL_BUTTON_LEFT ) return false;
   if(inside) {
     dragging = true;
   }

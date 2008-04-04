@@ -60,6 +60,7 @@ bool MapWidget::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   ((Window*)parent)->setMouseLock( NULL );  
   return isInside( x, y );
   case SDL_MOUSEBUTTONDOWN:
+  if( event->button.button != SDL_BUTTON_LEFT ) return false;
   if( isInside( x, y ) ) {
     oldx = x;
     oldy = y;
