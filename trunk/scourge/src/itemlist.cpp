@@ -73,7 +73,7 @@ void ItemList::commonInit() {
     Item *item = getItem( t );
 
     // Skip equipped items if they are not to be shown
-    if( !allowEquipped && creature->isEquipped( item ) ) continue;
+    if( !allowEquipped && creature && creature->isEquipped( item ) ) continue;
 
     // if there is a non-empty filter, it should contain this type of item
     if( filter && !filter->empty() && 
@@ -141,9 +141,9 @@ Item *ItemList::getItem( int index ) {
 
 bool ItemList::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
   bool ret = ScrollingList::handleEvent( parent, event, x, y );
-  if( isInside( x, y ) && getSelectedLineCount() && event->button.button == SDL_BUTTON_RIGHT ) {
+  if( isInside( x, y ) && event->button.button == SDL_BUTTON_RIGHT ) {
     scourge->getInfoGui()->
-    setItem( getSelectedItem( 0 ) );
+    setItem( items[getLineAtPoint( x, y )] );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
   }
