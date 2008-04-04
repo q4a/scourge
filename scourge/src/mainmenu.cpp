@@ -119,7 +119,7 @@ MainMenu::MainMenu(Scourge *scourge){
   
   // about dialog
   w = 500;
-  h = 300;
+  h = 350;
   aboutDialog = new Window( scourge->getSDLHandler(),
                             (scourge->getSDLHandler()->getScreen()->w/2) - (w/2), 
                             (scourge->getSDLHandler()->getScreen()->h/2) - (h/2), 
@@ -691,7 +691,7 @@ bool MainMenu::handleEvent(SDL_Event *event) {
 
   if( partyEditor && partyEditor->isVisible() ) {
     partyEditor->handleEvent( NULL, event );
-		//return false;
+    return false;
   }
 
   /*
@@ -733,6 +733,7 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   if( event->motion.x >= 50 && event->motion.x < 400 ) {
     activeMenuItem = ( event->motion.y - ( top + 240 ) ) / 50;
   }
+  if( event->button.button != SDL_BUTTON_LEFT ) return false;
   if( event->type == SDL_MOUSEBUTTONUP && activeMenuItem > -1 && activeMenuItem < static_cast<int>(textEffects.size()) ) {
     value = values[activeMenuItem];
     if( value == ABOUT ) {
