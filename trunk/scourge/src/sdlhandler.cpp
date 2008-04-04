@@ -419,6 +419,7 @@ void SDLHandler::setVideoMode( Preferences * uc ) {
   
   /* resize the initial window */
   resizeWindow( screen->w, screen->h );
+  SDL_WarpMouse ( uc->getW() / 2, uc->getH() / 2 );
 }
 
 void SDLHandler::fireEvent(Widget *widget, SDL_Event *event) {
