@@ -57,6 +57,7 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
   closeButton = win->createButton( 530, 295, 595, 315, _( "Close" ) );
   
   tradeInfo = win->createLabel( xStart, 260, _( "Available Coins:" ) );
+  tradeInfo->setSpecialColor();
 
   win->createLabel( xStart, 310, _( "Shift+click to select multiple items, right click to get info." ) );
 }
@@ -87,6 +88,13 @@ void TradeDialog::updateLabels() {
 	enum { TMP_SIZE = 120 };
   char tmp[ TMP_SIZE ];
   snprintf( tmp, TMP_SIZE, _( "%s $%d, %s $%d" ), _( "Available Coins:" ), scourge->getParty()->getPlayer()->getMoney(), ( totalAmount < 0 ? _( "you receive:" ) : _( "to pay:" ) ), ( totalAmount < 0 ? -totalAmount : totalAmount ) );
+  if( ( scourge->getParty()->getPlayer()->getMoney() - totalAmount ) < 0 ) {
+    tradeInfo->setColor( 1, 0, 0);
+    tradeButton->setEnabled( false );
+  } else {
+    tradeInfo->setColor( 1, 1, 1);
+    tradeButton->setEnabled( true );
+  }
   tradeInfo->move( ( this->getWindow()->getWidth() / 2 ) - ( scourge->getSDLHandler()->textWidth( tmp ) / 2  ), 260 );
   tradeInfo->setText( tmp );
   snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), getSelectedTotal( listA ) );
