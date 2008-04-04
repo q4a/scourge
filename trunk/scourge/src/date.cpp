@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "date.h"
+#include <sstream>
 
 using namespace std;
 
@@ -207,15 +208,25 @@ void Date::print(){
 }
 
 void Date::buildDateString(){
-	char buff[10];
 
-	buff[0] = _( monthName[month] )[0];
-	buff[1] = _( monthName[month] )[1];
-	buff[2] = _( monthName[month] )[2];
-	buff[3] = ' ';
-	buff[4] = '\0';
+	string formatString, monthString;
+	stringstream monthdayString, hourString, minuteString;
 
-	snprintf(dateString, DATE_SIZE, "%s %.2d %.2d:%.2d", buff, static_cast<int>(day), static_cast<int>(hour), static_cast<int>(min));
+	formatString = _( "MON DAY HOU:MIN" );
+	monthString = _( monthName[month] );
+	monthdayString << day;
+	hourString << hour;
+	minuteString << min;
+
+	if( formatString.find( "YEA" ) != string::npos ) formatString.replace( formatString.find( "YEA" ), 3, monthString, 0, 3 );
+	if( formatString.find( "MON" ) != string::npos ) formatString.replace( formatString.find( "MON" ), 3, monthString, 0, 3 );
+	if( formatString.find( "DAY" ) != string::npos ) formatString.replace( formatString.find( "DAY" ), 3, monthdayString.str() );
+	if( formatString.find( "HOU" ) != string::npos ) formatString.replace( formatString.find( "HOU" ), 3, hourString.str() );
+	if( formatString.find( "MIN" ) != string::npos ) formatString.replace( formatString.find( "MIN" ), 3, minuteString.str() );
+	if( formatString.find( "SEC" ) != string::npos ) formatString.replace( formatString.find( "SEC" ), 3, monthString, 0, 3 );
+
+	snprintf(dateString, DATE_SIZE, "%s", formatString.c_str());
+
 }
 
 Date::~Date(){
