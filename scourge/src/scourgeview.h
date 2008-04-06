@@ -62,6 +62,14 @@ private:
   GLUquadric *quadric;
   Progress *turnProgress;
 
+  #define RAIN_DROP_COUNT 200
+  #define RAIN_DROP_SIZE 32
+  int rainDropX[RAIN_DROP_COUNT];
+  int rainDropY[RAIN_DROP_COUNT];
+  Uint32 lastWeatherUpdate;
+  Uint32 lastLightning;
+  Uint32 lastLightningRoll;
+
 public:
   ScourgeView( Scourge *scourge );
   virtual ~ScourgeView();
@@ -100,6 +108,7 @@ protected:
   void drawDraggedItem();
 	void drawDisk( float w, float diff );
 	void ambientObjectSounds();
+	void drawWeather();
 };
 
 #endif

@@ -55,6 +55,11 @@ ScourgeView::ScourgeView( Scourge *scourge ) {
   targetWidth = 0.0f;
   targetWidthDelta = 0.05f;
   lastTargetTick = SDL_GetTicks();
+  lastWeatherUpdate = SDL_GetTicks();
+    for( int i = 0; i < RAIN_DROP_COUNT; i++ ) {
+      rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, scourge->getUserConfiguration()->getW() );
+      rainDropY[i] = Util::pickOne( -RAIN_DROP_SIZE, scourge->getUserConfiguration()->getH() );
+    }
 }
 
 void ScourgeView::initUI() {
@@ -90,6 +95,8 @@ void ScourgeView::drawView() {
   glDisable( GL_DEPTH_TEST );
   glDisable( GL_TEXTURE_2D );
   drawMapInfos();
+
+//  drawWeather();
 
   scourge->getMiniMap()->drawMap();
 
@@ -1071,3 +1078,102 @@ void ScourgeView::drawDraggedItem() {
 	}
 }
 
+void ScourgeView::drawWeather() {
+
+//  #define RAIN_DROP_SPEED 600
+
+  Uint32 now = SDL_GetTicks();
+
+  if( lastLightningRoll == 0 ) lastLightningRoll = now;
+
+  int screenW = scourge->getUserConfiguration()->getW();
+  int screenH = scourge->getUserConfiguration()->getH();
+
+  int deltaY = ( now - lastWeatherUpdate );
+  int deltaX = ( now - lastWeatherUpdate ) / 4;
+
+  glDisable( GL_CULL_FACE );
+  glDisable( GL_DEPTH_TEST );
+
+  glDepthMask(GL_FALSE);
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+  for( int i = 0; i < RAIN_DROP_COUNT; i++ ) {
+
+    glPushMatrix();
+    glLoadIdentity();
+    glTranslatef( rainDropX[i], rainDropY[i], 500 );
+    glEnable( GL_TEXTURE_2D );
+    glColor4f( 0, 0.6f, 1, 0.7f );
+    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
+    glVertex2i( 0, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( RAIN_DROP_SIZE, 0 );
+    glTexCoord2f( 1, 1 );
+    glVertex2i( RAIN_DROP_SIZE, RAIN_DROP_SIZE );
+    glTexCoord2f( 0, 1 );
+    glVertex2i( 0, RAIN_DROP_SIZE );
+    glEnd();
+    glDisable( GL_TEXTURE_2D );
+
+    glPopMatrix();
+
+    rainDropY[i] += deltaY;
+    rainDropX[i] -= deltaX;
+
+      if( ( rainDropX[i] < -RAIN_DROP_SIZE ) || ( rainDropY[i] > screenH ) ) {
+        rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, static_cast<int>( static_cast<float>( screenW ) * 1.25f ) );
+        rainDropY[i] = -Util::pickOne( RAIN_DROP_SIZE, screenH );
+      }
+  }
+
+  int lightningTime = now - lastLightning;
+
+  if( lightningTime < 1001 ) {
+
+    float brightness;
+
+      if( lightningTime < 501 ) {
+        brightness = 0.8f / static_cast<float>( 501 - lightningTime );
+      } else {
+        brightness = 0.8f / static_cast<float>( lightningTime - 500 );
+      }
+    glPushMatrix();
+    glLoadIdentity();
+    glTranslatef( 0, 0, 500 );
+    glEnable( GL_TEXTURE_2D );
+    glColor4f( 1, 1, 1, brightness );
+    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
+    glVertex2i( 0, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( screenW, 0 );
+    glTexCoord2f( 1, 1 );
+    glVertex2i( screenW, screenH );
+    glTexCoord2f( 0, 1 );
+    glVertex2i( 0, screenH );
+    glEnd();
+    glDisable( GL_TEXTURE_2D );
+
+    glPopMatrix();
+  }
+
+  if( now > ( lastLightningRoll + 500 ) ) {
+    if( Util::dice( 25 ) == 0 ) {
+      lastLightning = now;
+    }
+    lastLightningRoll = now;
+  }
+
+  lastWeatherUpdate = now;
+
+  glEnable( GL_CULL_FACE );
+  glEnable( GL_DEPTH_TEST );
+
+}
