@@ -592,6 +592,14 @@ public:
   };
 
   enum {
+    WEATHER_CLEAR = 0,
+    WEATHER_FOG,
+    WEATHER_RAIN,
+    WEATHER_THUNDER,
+    WEATHER_COUNT
+  };
+
+  enum {
     ACTION_NO_ACTION=-1,
     ACTION_EAT_DRINK=0,
     ACTION_CAST_SPELL,

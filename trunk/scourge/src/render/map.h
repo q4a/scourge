@@ -260,6 +260,8 @@ private:
   int selectedTrapIndex;
   bool isRoofShowing, isCurrentlyUnderRoof;
 
+  int weather;
+
  public:
   bool useFrustum;
   static bool debugMd2Shapes;
@@ -276,6 +278,9 @@ private:
 	
 	inline void setRoofShowing( bool b ) { isRoofShowing = b; mapChanged = true; }
 	inline bool getRoofShowing() { return isRoofShowing; }
+
+	inline void setWeather( int i ) { weather = i; }
+	inline int getWeather() { return weather; }
 
   void addSecretDoor( int x, int y );
   void removeSecretDoor( int x, int y );

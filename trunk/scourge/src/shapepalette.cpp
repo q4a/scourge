@@ -219,6 +219,20 @@ void ShapePalette::initialize() {
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
+  tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/raindrop.bmp", tmpSurface, tmpImage );
+  raindropTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  delete [] tmpImage;
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
+  tmpSurface = NULL;
+  tmpImage = NULL;
+  setupAlphaBlendedBMP( "/textures/lightning.bmp", tmpSurface, tmpImage );
+  lightningTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  delete [] tmpImage;
+  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+
   // load map textures
   initMapGrid();
 

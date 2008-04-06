@@ -129,6 +129,8 @@ public:
   GLuint systemTexture;
   GLuint ioTexture;
 
+  GLuint raindropTexture, lightningTexture;
+
   inline GLuint getGuiTexture() { return gui_texture; }
   inline GLuint getGuiTexture2() { return gui_texture2; }
   inline GLuint getGuiWoodTexture() { return gui_wood_texture; }
@@ -153,6 +155,9 @@ public:
   inline GLuint getIoTexture() { return ioTexture; }	
 
   inline GLuint getSystemIconTexture() { return systemTexture; }
+
+  inline GLuint getRaindropTexture() { return raindropTexture; }
+  inline GLuint getLightningTexture() { return lightningTexture; }
 
   inline int getPortraitCount( int sex ) { return portraitTextures[sex].size(); }
   inline GLuint getPortraitTexture( int sex, int index ) { return portraitTextures[sex][ index ]; }
