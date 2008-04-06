@@ -185,8 +185,8 @@ class Window : public Widget {
   static Widget *delegateEvent(SDL_Event *event, int x, int y);
   static void toTop(Window *win);
   static void toBottom(Window *win);
-  static void nextWindowToTop( bool includeLocked = true );
-  static void prevWindowToTop();
+  static void nextWindowToTop( Window *win, bool includeLocked = true );
+  static void prevWindowToTop( Window *win, bool includeLocked = true );
   static bool anyFloatingWindowsOpen();
 
   // static message dialog
