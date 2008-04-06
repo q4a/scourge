@@ -64,6 +64,11 @@ function villageRoads() {
 				if( scourgeGame.getMission().isFree( i, iy, 0, containers[c][1] ) ) {
 					scourgeGame.getMission().addItem( containers[c][0], i, iy, 0, true );
 				}
+			} else if( 0 == ( rand() * 8.0 / RAND_MAX ).tointeger() ) {
+				iy <- ( 0 == ( rand() * 2.0 / RAND_MAX ).tointeger() ? villageRoadY + 8 : villageRoadY + 13 );
+				if( scourgeGame.getMission().isFree( i, iy, 0, "ANVIL" ) ) {
+					scourgeGame.getMission().setMapPosition( i, iy, 0, "ANVIL" );
+				}
 			}		
 		}
 	}
@@ -79,4 +84,24 @@ function getVillageNpcType() {
 	          "Female Hobo", "Female Bard", "Female Ranger", "Female Priestess" ];
 	c = ( rand() * npcs.len().tofloat() / RAND_MAX ).tointeger();
 	return npcs[ c ];
+}
+
+/**
+ * Add some random shapes throughout the town. Currently it's trees only but it could
+ * contain other random shapes.
+ */
+function villageShapes() {
+	shapes <- [ "tree01", "tree02", "tree03", "tree07", "tree12", "tree13", "tree14", "tree15", "tree17", "tree20", "tree21" ];
+	i <- 0;
+	c <- 0;
+	x <- 0;
+	y <- 0;
+	for( i = 0; i < 20; i++ ) {
+		x = villageX + ( rand() * villageWidth.tofloat() / RAND_MAX ).tointeger();
+		y = villageY + ( rand() * villageHeight.tofloat() / RAND_MAX ).tointeger();
+		c = ( rand() * shapes.len().tofloat() / RAND_MAX ).tointeger();
+		if( scourgeGame.getMission().isFreeOutdoors( x, y, 0, shapes[c] ) ) {
+			scourgeGame.getMission().setMapPosition( x, y, 0, shapes[c] );
+		}
+	}
 }

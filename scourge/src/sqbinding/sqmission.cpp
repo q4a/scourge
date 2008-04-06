@@ -45,6 +45,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "int", "getChapter", SqMission::_getChapter, 0, 0, "Get the current storyline chapter." },
 	{ "void", "removeMapPosition", SqMission::_removeMapPosition, 0, 0, "Remove the shape at this map position." },
 	{ "void", "isFree", SqMission::_isFree, 0, 0, "Will this place fit at this location? This method returns false if the position is occupied or if it would block a door." },	
+	{ "void", "isFreeOutdoors", SqMission::_isFreeOutdoors, 0, 0, "Same as isFree plus it discounts lakes, high elevations and where a floor shape is set." },
 	{ "void", "setMapPosition", SqMission::_setMapPosition, 0, 0, "Set a shape at this map position. Shape is given by its name." },
 	{ "float", "getHeightMap", SqMission::_getHeightMap, 0, 0, "Get the ground height (outdoors only) at this map position." },
 	{ "void", "setHeightMap", SqMission::_setHeightMap, 0, 0, "Set the ground height (outdoors only) at this map position." },
@@ -199,6 +200,27 @@ int SqMission::_isFree( HSQUIRRELVM vm ) {
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
 	SQBool b = (SqBinding::sessionRef->getMap()->shapeFits( shape, x, y, z ) && 
 			!SqBinding::sessionRef->getMap()->coversDoor( shape, x, y )); 
+	sq_pushbool(vm, b);
+	return 1;
+}
+
+int SqMission::_isFreeOutdoors( HSQUIRRELVM vm ) {
+	GET_STRING( shapeName, 255 )
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
+	SQBool b = (SqBinding::sessionRef->getMap()->shapeFits( shape, x, y, z ) && 
+			!SqBinding::sessionRef->getMap()->coversDoor( shape, x, y ));
+	if( b ) {
+		int h = SqBinding::sessionRef->getMap()->getGroundHeight( x / OUTDOORS_STEP, y / OUTDOORS_STEP );
+		b = h >= -3 && h < 3;
+		if( b ) {
+			int fx = ( ( x - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+			int fy = ( ( y - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+			b = SqBinding::sessionRef->getMap()->getFloorPosition( fx, fy ) == NULL;
+		}
+	}
 	sq_pushbool(vm, b);
 	return 1;
 }
