@@ -146,6 +146,7 @@ protected:
 	virtual void addMagicPools( Map *map, ShapePalette *shapePal );
   virtual bool addTeleporters(Map *map, ShapePalette *shapePal);
   virtual bool addParty(Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown );
+  virtual void getPartyStartingLocation( int *xx, int *yy );
   virtual void lockDoors(Map *map, ShapePalette *shapePal);
   virtual void lockLocation(Map *map, int mapx, int mapy);
   virtual void createFreeSpaceMap(Map *map, ShapePalette *shapePal);

@@ -654,17 +654,16 @@ bool TerrainGenerator::addTeleporters(Map *map, ShapePalette *shapePal) {
 bool TerrainGenerator::addParty( Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown ) {
   int xx, yy;
   if( goingDown && stairsUpX > 0 ) {
-	cerr << "TERRAINGEN. Starting at up-stairs." << endl;
-	xx = stairsUpX;
-	yy = stairsUpY;
+  	cerr << "TERRAINGEN. Starting at up-stairs." << endl;
+  	xx = stairsUpX;
+  	yy = stairsUpY;
   } else if( goingUp && stairsDownX > 0 ) {
-	cerr << "TERRAINGEN. Starting at down-stairs." << endl;
-	xx = stairsDownX;
-	yy = stairsDownY;
+  	cerr << "TERRAINGEN. Starting at down-stairs." << endl;
+  	xx = stairsDownX;
+  	yy = stairsDownY;
   } else {
-	cerr << "TERRAINGEN. Starting in middle of room 0." << endl;
-	xx = MAP_OFFSET + ( room[0].x + room[0].w / 2 ) * MAP_UNIT;
-	yy = MAP_OFFSET + ( room[0].y + room[0].h / 2 ) * MAP_UNIT;
+  	cerr << "TERRAINGEN. Starting in middle of room 0." << endl;
+  	getPartyStartingLocation( &xx, &yy );
   }
   int nx, ny;
   for( int r = 0; r < scourge->getParty()->getPartySize(); r++ ) {
@@ -682,6 +681,11 @@ bool TerrainGenerator::addParty( Map *map, ShapePalette *shapePal, bool goingUp,
     }
   }
   return true;
+}
+
+void TerrainGenerator::getPartyStartingLocation( int *xx, int *yy ) {
+	*xx = MAP_OFFSET + ( room[0].x + room[0].w / 2 ) * MAP_UNIT;
+	*yy = MAP_OFFSET + ( room[0].y + room[0].h / 2 ) * MAP_UNIT;	
 }
 
 void TerrainGenerator::lockDoors(Map *map, ShapePalette *shapePal) {

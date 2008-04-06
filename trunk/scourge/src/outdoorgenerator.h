@@ -44,6 +44,7 @@ private:
 	float ground[MAP_WIDTH][MAP_DEPTH];
   CellularAutomaton *cellular[2][2];
   std::map<int, GLShape*> keepFloor;
+  int roadX, roadY;
 
 public:
 	OutdoorGenerator( Scourge *scourge, int level, int depth, int maxDepth,
@@ -54,6 +55,7 @@ public:
 	void printMaze();
 	inline void getName(char *s) { strcpy( s, "outdoor" ); }
 	
+	void getPartyStartingLocation( int *xx, int *yy );
 	void addVillage( Map *map, ShapePalette *shapePal );
 	void addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy );
 	void flattenPathChunk( Map *map, Sint16 mapx, Sint16 mapy );
@@ -99,7 +101,7 @@ protected:
 	virtual void lockDoors( Map *map, ShapePalette *shapePal );
 	virtual void addNpcs( Map *map, ShapePalette *shapePal, int villageX, int villageY, int villageWidth, int villageHeight );
 	virtual void createNpc( Map *map, ShapePalette *shapePal, int x, int y );
-
+	virtual bool isShapeOnFloor( Shape *shape, int x, int y, Map *map );
 
 	/**
 	 * Outdoors have low level monsters only.	

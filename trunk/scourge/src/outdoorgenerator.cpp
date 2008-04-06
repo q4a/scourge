@@ -52,6 +52,7 @@ TerrainGenerator( scourge, level, depth, maxDepth, stairsDown, stairsUp, mission
 	this->cellular[1][0] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
 	this->cellular[0][1] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
 	this->cellular[1][1] = new CellularAutomaton( WIDTH_IN_NODES, DEPTH_IN_NODES );
+	roadX = roadY = MAP_OFFSET + MAP_UNIT;
 }
 
 OutdoorGenerator::~OutdoorGenerator() {
@@ -169,9 +170,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 					int yy = y * OUTDOORS_STEP + shape->getHeight();
 
 					// don't put them on roads and in houses
-					int fx = ( ( xx ) / MAP_UNIT ) * MAP_UNIT;
-					int fy = ( ( yy - shape->getHeight() ) / MAP_UNIT ) * MAP_UNIT;
-					if( !map->getFloorPosition( fx, fy ) ) {										
+					if( !isShapeOnFloor( shape, x, y, map ) ) {										
 						if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
 							map->setPosition( xx, yy, 0, shape );
 						}
@@ -222,8 +221,30 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	return true;
 }
 
+bool OutdoorGenerator::isShapeOnFloor( Shape *shape, int x, int y, Map *map ) {
+	int fx = ( ( x - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+	int fy = ( ( y - shape->getHeight() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+	if( !map->getFloorPosition( fx, fy ) ) return true;
+	fx = ( ( x - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+	fy = ( ( y - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+	if( !map->getFloorPosition( fx, fy ) ) return true;
+	fx = ( ( x + shape->getWidth() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+	fy = ( ( y - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+	if( !map->getFloorPosition( fx, fy ) ) return true;
+	fx = ( ( x + shape->getWidth() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+	fy = ( ( y - shape->getHeight() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+	if( !map->getFloorPosition( fx, fy ) ) return true;
+	return false;
+}
+
 #define VILLAGE_WIDTH 7
 #define VILLAGE_HEIGHT 7
+
+// start party in the middle of the cross-roads
+void OutdoorGenerator::getPartyStartingLocation( int *xx, int *yy ) {
+	*xx = roadX;
+	*yy = roadY;
+}
 
 void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	int x = MAP_OFFSET + ( ( Util::dice( MAP_WIDTH - ( MAP_OFFSET * 4 ) - VILLAGE_WIDTH ) / MAP_UNIT ) * MAP_UNIT );
@@ -231,8 +252,8 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	
 	removeLakes( map, x, y );
 	
-	int roadX = createRoad( map, shapePal, x, y, true );
-	int roadY = createRoad( map, shapePal, x, y, false );
+	roadX = createRoad( map, shapePal, x, y, true );
+	roadY = createRoad( map, shapePal, x, y, false );
 	
 	createHouses( map, shapePal, x, y, roadX, roadY - MAP_UNIT );
 	
@@ -243,7 +264,12 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageHeight", VILLAGE_HEIGHT * MAP_UNIT );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadX", roadX );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadY", roadY );
-	shapePal->getSession()->getSquirrel()->callNoArgMethod( "villageRoads" );	
+	
+	// fix up the roads
+	shapePal->getSession()->getSquirrel()->callNoArgMethod( "villageRoads" );
+	
+	// add some random items thru town
+	shapePal->getSession()->getSquirrel()->callNoArgMethod( "villageShapes" );
 	
 	// add npc-s
 	addNpcs( map, shapePal, x, y, VILLAGE_WIDTH * MAP_UNIT, VILLAGE_HEIGHT * MAP_UNIT );
@@ -314,7 +340,7 @@ void OutdoorGenerator::createNpc( Map *map, ShapePalette *shapePal, int x, int y
 void OutdoorGenerator::removeLakes( Map *map, int x, int y ) {
 	for( int vx = x; vx < x + VILLAGE_WIDTH * MAP_UNIT; vx++ ) {
 		for( int vy = y; vy < y + VILLAGE_HEIGHT * MAP_UNIT; vy++ ) {
-			flattenChunk( map, vx, vy, Util::roll( 0, 3 ) );
+			flattenChunk( map, vx, vy, Util::roll( 0.3f, 3 ) );
 		}
 	}	
 }

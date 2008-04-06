@@ -1029,6 +1029,7 @@ void Mission::initNpcs( ConfigLang *config, GameAdapter *adapter ) {
 		strcpy( npcSubType, node->getValueAsString( "subtype" ) );
   
 		// store npc info
+		//addNpcInfo( x, y, npcName, level, npcType, npcSubtype );
 		string key = getNpcInfoKey( x,y );
 		NpcInfo *npcInfo = 
 			new NpcInfo( x, y, 

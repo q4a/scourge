@@ -65,6 +65,7 @@ public:
 	static int _getChapter( HSQUIRRELVM vm );
 
 	static int _isFree( HSQUIRRELVM vm );
+	static int _isFreeOutdoors( HSQUIRRELVM vm ); 
 	static int _setMapPosition( HSQUIRRELVM vm );
 	static int _removeMapPosition( HSQUIRRELVM vm );	
 	static int _getShape( HSQUIRRELVM vm );
