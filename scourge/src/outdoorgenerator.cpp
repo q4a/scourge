@@ -222,8 +222,8 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	return true;
 }
 
-#define VILLAGE_WIDTH 10
-#define VILLAGE_HEIGHT 10
+#define VILLAGE_WIDTH 7
+#define VILLAGE_HEIGHT 7
 
 void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	int x = MAP_OFFSET + ( ( Util::dice( MAP_WIDTH - ( MAP_OFFSET * 4 ) - VILLAGE_WIDTH ) / MAP_UNIT ) * MAP_UNIT );
@@ -234,7 +234,7 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	int roadX = createRoad( map, shapePal, x, y, true );
 	int roadY = createRoad( map, shapePal, x, y, false );
 	
-	createHouses( map, shapePal, x, y, roadX, roadY + MAP_UNIT );
+	createHouses( map, shapePal, x, y, roadX, roadY - MAP_UNIT );
 	
 	// the rest of the village is in squirrel
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageX", x );
@@ -330,25 +330,43 @@ void OutdoorGenerator::createHouses( Map *map, ShapePalette *shapePal, int x, in
   roomMaxHeight = 3;
   objectCount = 20;
   monsters = true;
-	
-	for( int iy = -2; iy < VILLAGE_HEIGHT + 2; iy++ ) {
-		for( int ix = -2; ix < VILLAGE_HEIGHT + 2; ix++ ) {
-			if( 0 == Util::dice( 2 ) ) {
-				int n = Util::dice( HOUSE_SHAPES_SIZE );
-				int *i = HOUSE_SHAPES[ n ];				
-				int vx = x + ix * MAP_UNIT;
-				int vy = y + iy * MAP_UNIT;
-				if( createHouse( map, shapePal, vx, vy, i[0], i[1] ) ) {
-					room[ roomCount ].x = ( vx - MAP_OFFSET ) / MAP_UNIT;
-					room[ roomCount ].y = ( vy - MAP_OFFSET ) / MAP_UNIT;
-					room[ roomCount ].w = i[0];
-					room[ roomCount ].h = i[1];
-					room[ roomCount ].valueBonus = 0;
-					roomCount++;					
-				}
-			}
-		}
+  
+  int rx = ( roadX - x ) / MAP_UNIT;
+  int ry = ( roadY - y ) / MAP_UNIT;
+  
+  for( int iy = -2; iy < VILLAGE_HEIGHT + 2; iy++ ) {
+  	int n = Util::dice( HOUSE_SHAPES_SIZE );
+  	int *i = HOUSE_SHAPES[ n ];
+  	buildHouse( map, shapePal, x, y, rx - i[0], iy, i[0], i[1] );
+  	
+  	n = Util::dice( HOUSE_SHAPES_SIZE );
+  	i = HOUSE_SHAPES[ n ];
+  	buildHouse( map, shapePal, x, y, rx + 1, iy, i[0], i[1] );
+  }
+  for( int ix = -2; ix < VILLAGE_HEIGHT + 2; ix++ ) {
+  	int n = Util::dice( HOUSE_SHAPES_SIZE );
+  	int *i = HOUSE_SHAPES[ n ];
+  	buildHouse( map, shapePal, x, y, ix, ry - i[1] - 1, i[0], i[1] );
+  	
+  	n = Util::dice( HOUSE_SHAPES_SIZE );
+  	i = HOUSE_SHAPES[ n ];
+  	buildHouse( map, shapePal, x, y, ix, ry + 1, i[0], i[1]  );
+  }	
+}
+
+bool OutdoorGenerator::buildHouse( Map *map, ShapePalette *shapePal, int x, int y, int ix, int iy, int w, int h ) {
+	int vx = x + ix * MAP_UNIT;
+	int vy = y + iy * MAP_UNIT;
+	if( createHouse( map, shapePal, vx, vy, w, h ) ) {
+		room[ roomCount ].x = ( vx - MAP_OFFSET ) / MAP_UNIT;
+		room[ roomCount ].y = ( vy - MAP_OFFSET ) / MAP_UNIT;
+		room[ roomCount ].w = w;
+		room[ roomCount ].h = h;
+		room[ roomCount ].valueBonus = 0;
+		roomCount++;
+		return true;
 	}
+	return false;
 }
 
 bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int y, int w, int h ) {
@@ -358,13 +376,23 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 			y + h * MAP_UNIT < MAP_DEPTH - MAP_OFFSET - MAP_UNIT ) ) {
 		return false;
 	}
-	for( int vx = -1; vx < w + 1; vx++ ) {
-		for( int vy = -1; vy < h + 1; vy++ ) {
-			if( map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT ) ) {
+	// not on the road
+	for( int vx = 0; vx < w; vx++ ) {
+		for( int vy = 0; vy < h; vy++ ) {
+			if( map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT ) ) {
 				return false;
 			}
 		}
 	}
+	// not too close to another house
+	for( int vx = -1; vx < w + 1; vx++ ) {
+		for( int vy = -1; vy < h + 1; vy++ ) {
+			Shape *shape = map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT ); 
+			if( shape == shapePal->findShapeByName( "ROOM_FLOOR_TILE", true ) ) {
+				return false;
+			}
+		}
+	}	
 	//cerr << "house at: " << x << "," << y << " dim=" << w << "," << h << endl;
 	int door = Util::dice( 4 );
 	for( int vx = 0; vx < w; vx++ ) {

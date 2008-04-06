@@ -29,6 +29,10 @@ function villageRoads() {
 					scourgeGame.getMission().setMapPosition( villageRoadX, i, 0, "STREETLIGHT" );
 					last = i;
 				}
+			} else if( 0 == ( rand() * 8.0 / RAND_MAX ).tointeger() ) {
+				if( scourgeGame.getMission().isFree( villageRoadX, i, 0, "PEDESTAL" ) ) {
+					scourgeGame.getMission().setMapPosition( villageRoadX, i, 0, "PEDESTAL" );
+				}
 			} else if( 0 == ( rand() * 5.0 / RAND_MAX ).tointeger() ) {
 				c = ( rand() * containers.len().tofloat() / RAND_MAX ).tointeger()
 				ix <- ( 0 == ( rand() * 2.0 / RAND_MAX ).tointeger() ? villageRoadX + 4 : villageRoadX + 9 );
@@ -49,6 +53,11 @@ function villageRoads() {
 					scourgeGame.getMission().setMapPosition( i, iy, 0, "BENCH" );
 					last = i;
 				}
+			} else if( 0 == ( rand() * 8.0 / RAND_MAX ).tointeger() ) {
+				iy <- ( 0 == ( rand() * 2.0 / RAND_MAX ).tointeger() ? villageRoadY + 8 : villageRoadY + 13 );
+				if( scourgeGame.getMission().isFree( i, iy, 0, "PEDESTAL" ) ) {
+					scourgeGame.getMission().setMapPosition( i, iy, 0, "PEDESTAL" );
+				}				
 			} else if( 0 == ( rand() * 5.0 / RAND_MAX ).tointeger() ) {
 				c = ( rand() * containers.len().tofloat() / RAND_MAX ).tointeger()
 				iy <- ( 0 == ( rand() * 2.0 / RAND_MAX ).tointeger() ? villageRoadY + 8 : villageRoadY + 13 );

@@ -86,6 +86,7 @@ protected:
 	void removeLakes( Map *map, int x, int y );
 	int createRoad( Map *map, ShapePalette *shapePal, int x, int y, bool vert );
 	void createHouses( Map *map, ShapePalette *shapePal, int x, int y, int roadX, int roadY );
+	bool buildHouse( Map *map, ShapePalette *shapePal, int x, int y, int ix, int iy, int w, int h );
 	bool createHouse( Map *map, ShapePalette *shapePal, int x, int y, int w, int h );
 	virtual void generate( Map *map, ShapePalette *shapePal );
 	int getMountainSize( int x, int y, Map *map, AroundMapLooker& lake );
