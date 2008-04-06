@@ -315,9 +315,9 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   if(event->key.keysym.sym == SDLK_TAB) {
     if(SDL_GetModState() & KMOD_CTRL) {
       if(SDL_GetModState() & KMOD_SHIFT) {
-        prevWindowToTop();
+        prevWindowToTop(this);
       } else {
-        nextWindowToTop();
+        nextWindowToTop(this);
       }
     } else if(SDL_GetModState() & KMOD_SHIFT) {
       prevFocus();
@@ -330,7 +330,7 @@ bool Window::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
     setVisible(false);
     // raise the next unlocked window
     currentWin = NULL;
-    nextWindowToTop( false );
+    nextWindowToTop( this, false );
     return true;
   } else {
     return false;
@@ -1019,7 +1019,7 @@ void Window::setVisible(bool b, bool animate) {
 		}
     y = currentY;
     windowWasClosed = true;
-    nextWindowToTop();
+    nextWindowToTop(this);
 
     // Any windows open?
     if( !anyFloatingWindowsOpen() ) scourgeGui->allWindowsClosed();
@@ -1077,32 +1077,36 @@ void Window::toBottom(Window *win) {
   }
 }
 
-void Window::nextWindowToTop( bool includeLocked ) {
-  bool next = false;
-  
-  for(int i = 0; i < windowCount; i++) {
-    if(window[i]->isVisible() && window[i]->isModal()) {
-      currentWin = window[i];
-      currentWin->toTop();
-      return;
-    }
-  }
+void Window::nextWindowToTop( Window *win, bool includeLocked ) {
+  int nextWindow = -1;
+  int nextZ;
 
-  for(int t = 0; t < 2; t++) {
-    for(int i = 0; i < windowCount; i++) {
-      if( window[i]->isVisible() && next ) {
-        currentWin = window[i];
-        currentWin->toTop();
-        return;
-      } else if( !currentWin || currentWin == window[i]) {
-        next = true;
-      }
+  for( int i = 0; i < windowCount; i++ ) {
+    if( window[i]->isVisible() && ( window[i]->getZ() < win->getZ() ) && ( window[i]->getZ() > nextZ ) ) {
+      if( !includeLocked && window[i]->isLocked() ) continue;
+      nextWindow = i;
+      nextZ = window[i]->getZ();
     }
   }
+  if( nextWindow == -1 ) return;
+  currentWin = window[nextWindow];
+  currentWin->toTop();
 }
 
-void Window::prevWindowToTop() {
-  // FIXME: implement me; harder than nextWindowToTop() b/c toTop reorders windows
+void Window::prevWindowToTop( Window *win, bool includeLocked ) {
+  int prevWindow = -1;
+  int prevZ;
+
+  for( int i = 0; i < windowCount; i++ ) {
+    if( window[i]->isVisible() && ( window[i]->getZ() > win->getZ() ) && ( window[i]->getZ() < prevZ ) ) {
+      if( !includeLocked && window[i]->isLocked() ) continue;
+      prevWindow = i;
+      prevZ = window[i]->getZ();
+    }
+  }
+  if( prevWindow == -1 ) return;
+  currentWin = window[prevWindow];
+  currentWin->toTop();
 }
 
 void Window::showMessageDialog(ScourgeGui *scourgeGui, 
