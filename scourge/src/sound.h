@@ -133,6 +133,9 @@ public:
 	void playObjectSound( std::string& name, int percent, int panning );
 	void storeAmbientObjectSound( std::string const& sound );
 
+	void startRain();
+	void stopRain();
+
 protected:
 	AmbientSound *getAmbientSound( std::string& name, int depth );
 #ifdef HAVE_SDL_MIXER
