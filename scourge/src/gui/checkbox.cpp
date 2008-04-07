@@ -82,7 +82,6 @@ bool Checkbox::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
   case SDL_MOUSEMOTION:
 	break;
   case SDL_MOUSEBUTTONUP:
-    if( event->button.button != SDL_BUTTON_LEFT ) return false;
     if(inside){toggleCheck();}
 	return inside;
   case SDL_MOUSEBUTTONDOWN:
