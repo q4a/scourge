@@ -279,6 +279,8 @@ private:
 	inline void setRoofShowing( bool b ) { isRoofShowing = b; mapChanged = true; }
 	inline bool getRoofShowing() { return isRoofShowing; }
 
+	inline bool getCurrentlyUnderRoof() { return isCurrentlyUnderRoof; }
+
 	inline void setWeather( int i ) { weather = i; }
 	inline int getWeather() { return weather; }
 

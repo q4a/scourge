@@ -310,6 +310,13 @@ void Sound::loadSounds(Preferences *preferences) {
 		}
 	}
 	
+	// FIXME: Put thunder sounds in an array
+	storeSound( "rain", "/sound/weather/rain.wav" );
+	storeSound( "thunder1", "/sound/weather/thunder1.wav" );
+	storeSound( "thunder2", "/sound/weather/thunder2.wav" );
+	storeSound( "thunder3", "/sound/weather/thunder3.wav" );
+	storeSound( "thunder4", "/sound/weather/thunder4.wav" );
+
 	setEffectsVolume(preferences->getEffectsVolume());
 }
 
