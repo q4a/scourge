@@ -231,6 +231,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   selectedTrapIndex = -1;
   
   isCurrentlyUnderRoof = isRoofShowing = true;
+  weather = Constants::WEATHER_CLEAR;
 
   adapter->writeLogMessage(Constants::getMessage(Constants::WELCOME), Constants::MSGTYPE_SYSTEM);
   adapter->writeLogMessage("----------------------------------", Constants::MSGTYPE_SYSTEM);
@@ -3687,6 +3688,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
     }
   }
   result = _( "Map loaded: " ) + name;
+
   return true;
 }
 
@@ -4647,4 +4649,16 @@ bool Map::isEmpty( int x, int y ) {
 
 bool Map::inMapEditor() {
 	return settings->isGridShowing();
+}
+
+int Map::generateWeather() {
+
+	if( Util::dice( 3 ) == 0 && heightMapEnabled ) {
+		weather = Util::pickOne( 1, Constants::WEATHER_COUNT - 1 );
+	} else {
+		weather = Constants::WEATHER_CLEAR;
+	}
+
+return weather;
+
 }

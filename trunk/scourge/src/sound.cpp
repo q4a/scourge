@@ -28,6 +28,11 @@ using namespace std;
 #define MISSION_MUSIC_COUNT 6
 #define FIGHT_MUSIC_COUNT 1
 
+#define OBJECT_CHANNEL 0
+#define AMBIENT_CHANNEL 1
+#define FOOTSTEP_CHANNEL 2
+#define RAIN_CHANNEL 3
+
 char *Sound::TELEPORT = "teleport";
 char *Sound::OPEN_DOOR = "open door";
 char *Sound::OPEN_BOX = "open box";
@@ -46,10 +51,10 @@ Sound::Sound(Preferences *preferences) {
 		}
 
 		int reserved_count;
-		reserved_count=Mix_ReserveChannels(8);
-		if(reserved_count!=8) {
+		reserved_count = Mix_ReserveChannels(16);
+		if(reserved_count != 16) {
 		  cerr << "reserved " << reserved_count << " channels from default mixing." << endl;
-		  cerr << "8 channels were not reserved!" << endl;
+		  cerr << "16 channels were not reserved!" << endl;
 		  // this might be a critical error...
 		}
 
@@ -344,11 +349,11 @@ void Sound::playObjectSound( std::string& name, int percent, int panning ) {
 		int volume = static_cast<int>( ( MIX_MAX_VOLUME / 100.0f ) * static_cast<float>(percent) );
 
 		//cerr << "vol=" << volume << endl;
-		Mix_Volume( 5, volume );
-		Mix_SetPanning( 5, 255 - panning, panning );
-		if( !Mix_Playing( 5 ) ) {
+		Mix_Volume( OBJECT_CHANNEL, volume );
+		Mix_SetPanning( OBJECT_CHANNEL, 255 - panning, panning );
+		if( !Mix_Playing( OBJECT_CHANNEL ) ) {
 			for( int i = 0; i < 5; i++ ) {
-				if(Mix_PlayChannel(5, ambient_objects[ name ], 0) != -1) break;
+				if(Mix_PlayChannel(OBJECT_CHANNEL, ambient_objects[ name ], 0) != -1) break;
 			}
 		}
 	}
@@ -524,7 +529,7 @@ void Sound::playSound(const string& file, int panning ) {
 		string s = ( soundNameMap.find( file ) != soundNameMap.end() ? soundNameMap[file] : file );
 		if(soundMap.find(s) != soundMap.end()) {
 			for( int t = 0; t < 5; t++ ) {
-				for( int i = 0; i < 3; i++ ) {
+				for( int i = 4; i < 15; i++ ) {
 					if(Mix_PlayChannel(i, soundMap[s], 0) == i) {
 						Mix_SetPanning( i, 255 - panning, panning );
 						return;
@@ -533,6 +538,32 @@ void Sound::playSound(const string& file, int panning ) {
 			}
 		}
   }
+#endif
+}
+
+void Sound::startRain() {
+#ifdef HAVE_SDL_MIXER
+	if(haveSound) {
+		int panning = 127;
+		//cerr << "*** Playing WAV: " << file << endl;
+		string s = soundNameMap["rain"];
+		if(soundMap.find(s) != soundMap.end()) {
+			for( int t = 0; t < 5; t++ ) {
+					if(Mix_PlayChannel(RAIN_CHANNEL, soundMap[s], -1) == RAIN_CHANNEL) {
+						Mix_SetPanning( RAIN_CHANNEL, 255 - panning, panning );
+						return;
+					}
+			}
+		}
+  }
+#endif
+}
+
+void Sound::stopRain() {
+#ifdef HAVE_SDL_MIXER
+	if(haveSound) {
+		Mix_HaltChannel( RAIN_CHANNEL );
+	}
 #endif
 }
 
@@ -548,7 +579,7 @@ void Sound::startFootsteps( std::string& name, int depth, int panning ) {
 void Sound::stopFootsteps() {
 #ifdef HAVE_SDL_MIXER
 	if(haveSound) {
-		Mix_HaltChannel( 7 );
+		Mix_HaltChannel( FOOTSTEP_CHANNEL );
 	}
 #endif
 }
@@ -573,7 +604,7 @@ void Sound::startAmbientSound( std::string& name, int depth ) {
 void Sound::stopAmbientSound() {
 #ifdef HAVE_SDL_MIXER
 	if(haveSound) {
-		Mix_HaltChannel( 6 );
+		Mix_HaltChannel( AMBIENT_CHANNEL );
 	}
 #endif
 }
@@ -659,13 +690,13 @@ AmbientSound::~AmbientSound() {
 int AmbientSound::playRandomAmbientSample() {
 #ifdef HAVE_SDL_MIXER
 	// Abort if already playing an ambient
-	if ( Mix_Playing( 6 ) ) return -1;
+	if ( Mix_Playing( AMBIENT_CHANNEL ) ) return -1;
 	int panning = Util::pickOne( 41, 213 );
-	Mix_SetPanning( 6, 255 - panning, panning );
+	Mix_SetPanning( AMBIENT_CHANNEL, 255 - panning, panning );
 	int n = Util::dice( ambients.size() );
 	//cerr << "\t" << n << " out of " << ambients.size() << endl;
 	for( int t = 0; t < 5; t++ ) {
-		if( Mix_PlayChannel( 6, ambients[ n ], 0 ) ) return 1;
+		if( Mix_PlayChannel( AMBIENT_CHANNEL, ambients[ n ], 0 ) ) return 1;
 	}
 #endif
 	return -1;
@@ -673,9 +704,9 @@ int AmbientSound::playRandomAmbientSample() {
 
 int AmbientSound::playFootsteps( int panning ) {
 #ifdef HAVE_SDL_MIXER
-	Mix_SetPanning( 7, 255 - panning, panning );
+	Mix_SetPanning( FOOTSTEP_CHANNEL, 255 - panning, panning );
 	for( int i = 0; i < 5; i++ ) {
-		if(Mix_PlayChannel(7, footsteps, 0) != -1) return 1;
+		if(Mix_PlayChannel(FOOTSTEP_CHANNEL, footsteps, 0) != -1) return 1;
   }
 #endif
 	return -1;

@@ -96,7 +96,7 @@ void ScourgeView::drawView() {
   glDisable( GL_TEXTURE_2D );
   drawMapInfos();
 
-//  drawWeather();
+  drawWeather();
 
   scourge->getMiniMap()->drawMap();
 
@@ -1079,148 +1079,148 @@ void ScourgeView::drawDraggedItem() {
 }
 
 void ScourgeView::drawWeather() {
-
-  #define RAIN_DROP_SPEED 1200
-
-  // Draw weather effects only on outdoor maps, when not inside a house
-  bool shouldDrawWeather = scourge->getMap()->isHeightMapEnabled() && !scourge->getMap()->getCurrentlyUnderRoof();
-
-  Uint32 now = SDL_GetTicks();
-
-  if( lastLightningRoll == 0 ) lastLightningRoll = now;
-
-  int screenW = scourge->getUserConfiguration()->getW();
-  int screenH = scourge->getUserConfiguration()->getH();
-
-  int deltaY = static_cast<int>( static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 ) );
-  int deltaX = deltaY / 4;
-
-  glDisable( GL_CULL_FACE );
-  glDisable( GL_DEPTH_TEST );
-
-  glDepthMask(GL_FALSE);
-  glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-  // Draw the fog
-  if( shouldDrawWeather ) {
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef( 0, 0, 500 );
-  glEnable( GL_TEXTURE_2D );
-  glColor4f( 0.6f, 0.6f, 0.6f, 0.5f );
-  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
-  glBegin( GL_QUADS );
-  glNormal3f( 0, 0, 1 );
-  glTexCoord2f( 0, 0 );
-  glVertex2i( 0, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex2i( screenW, 0 );
-  glTexCoord2f( 1, 1 );
-  glVertex2i( screenW, screenH );
-  glTexCoord2f( 0, 1 );
-  glVertex2i( 0, screenH );
-  glEnd();
-  glDisable( GL_TEXTURE_2D );
-
-  glPopMatrix();
-  }
-
-  // Draw the rain drops
-  if( shouldDrawWeather ) {
-  for( int i = 0; i < RAIN_DROP_COUNT; i++ ) {
-    glPushMatrix();
-    glLoadIdentity();
-    glTranslatef( rainDropX[i], rainDropY[i], 500 );
-    glEnable( GL_TEXTURE_2D );
-    if( ( now - lastLightning ) < 1001 ) {
-      glColor4f( 1, 1, 1, 1 );
-    } else {
-      glColor4f( 0, 0.8f, 1, 0.8f );
-    }
-    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
-    glBegin( GL_QUADS );
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 0, 0 );
-    glVertex2i( 0, 0 );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( RAIN_DROP_SIZE, 0 );
-    glTexCoord2f( 1, 1 );
-    glVertex2i( RAIN_DROP_SIZE, RAIN_DROP_SIZE );
-    glTexCoord2f( 0, 1 );
-    glVertex2i( 0, RAIN_DROP_SIZE );
-    glEnd();
-    glDisable( GL_TEXTURE_2D );
-
-    glPopMatrix();
-
-    rainDropY[i] += deltaY;
-    rainDropX[i] -= deltaX;
-
-      if( ( rainDropX[i] < -RAIN_DROP_SIZE ) || ( rainDropY[i] > screenH ) ) {
-        rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, static_cast<int>( static_cast<float>( screenW ) * 1.25f ) );
-        rainDropY[i] = -Util::pickOne( RAIN_DROP_SIZE, screenH );
-      }
-  }
-  }
-
-  // Draw the lightning
-  int lightningTime = now - lastLightning;
-
-  if( lightningTime < 1001 ) {
-
-    float brightness;
-
-    if( shouldDrawWeather ) {
-      if( lightningTime < 501 ) {
-        brightness = 0.9f / static_cast<float>( 501 - lightningTime );
-      } else {
-        brightness = 0.9f / static_cast<float>( lightningTime - 500 );
-      }
-    glPushMatrix();
-    glLoadIdentity();
-    glTranslatef( 0, 0, 500 );
-    glEnable( GL_TEXTURE_2D );
-    glColor4f( 1, 1, 1, brightness );
-    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
-    glBegin( GL_QUADS );
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 0, 0 );
-    glVertex2i( 0, 0 );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( screenW, 0 );
-    glTexCoord2f( 1, 1 );
-    glVertex2i( screenW, screenH );
-    glTexCoord2f( 0, 1 );
-    glVertex2i( 0, screenH );
-    glEnd();
-    glDisable( GL_TEXTURE_2D );
-
-    glPopMatrix();
-  }
-  }
-
-  if( now > ( lastLightningRoll + 500 ) ) {
-    if( Util::dice( 25 ) == 0 ) {
-      lastLightning = now;
-        if( shouldDrawWeather ) {
-          if( Util::pickOne( 1, 4 ) == 1 ) {
-            scourge->getSession()->getSound()->playSound( "thunder1", Util::pickOne( 64, 192 ) );
-          } else if( Util::pickOne( 1, 4 ) == 2 ) {
-            scourge->getSession()->getSound()->playSound( "thunder2", Util::pickOne( 64, 192 ) );
-          } else if( Util::pickOne( 1, 4 ) == 3 ) {
-            scourge->getSession()->getSound()->playSound( "thunder3", Util::pickOne( 64, 192 ) );
-          } else if( Util::pickOne( 1, 4 ) == 4 ) {
-            scourge->getSession()->getSound()->playSound( "thunder4", Util::pickOne( 64, 192 ) );
-          }
-        }
-    }
-    lastLightningRoll = now;
-  }
-
-  lastWeatherUpdate = now;
-
-  glEnable( GL_CULL_FACE );
-  glEnable( GL_DEPTH_TEST );
-
+	
+	#define RAIN_DROP_SPEED 1200
+	
+	// Draw weather effects only on outdoor maps, when not inside a house
+	bool shouldDrawWeather = scourge->getMap()->isHeightMapEnabled() && !scourge->getMap()->getCurrentlyUnderRoof();
+	
+	Uint32 now = SDL_GetTicks();
+	
+	if ( lastLightningRoll == 0 ) lastLightningRoll = now;
+	
+	int screenW = scourge->getUserConfiguration()->getW();
+	int screenH = scourge->getUserConfiguration()->getH();
+	
+	int deltaY = static_cast<int>( static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 ) );
+	int deltaX = deltaY / 4;
+	
+	glDisable( GL_CULL_FACE );
+	glDisable( GL_DEPTH_TEST );
+	
+	glDepthMask(GL_FALSE);
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	
+	// Draw the fog
+	if ( shouldDrawWeather && ( scourge->getMap()->getWeather() == Constants::WEATHER_FOG || scourge->getMap()->getWeather() == Constants::WEATHER_FOG_RAIN || scourge->getMap()->getWeather() == Constants::WEATHER_FOG_THUNDER ) ) {
+	    glPushMatrix();
+	    glLoadIdentity();
+	    glTranslatef( 0, 0, 500 );
+	    glEnable( GL_TEXTURE_2D );
+	    glColor4f( 0.6f, 0.6f, 0.6f, 0.5f );
+	    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
+	    glBegin( GL_QUADS );
+	    glNormal3f( 0, 0, 1 );
+	    glTexCoord2f( 0, 0 );
+	    glVertex2i( 0, 0 );
+	    glTexCoord2f( 1, 0 );
+	    glVertex2i( screenW, 0 );
+	    glTexCoord2f( 1, 1 );
+	    glVertex2i( screenW, screenH );
+	    glTexCoord2f( 0, 1 );
+	    glVertex2i( 0, screenH );
+	    glEnd();
+	    glDisable( GL_TEXTURE_2D );
+	
+	    glPopMatrix();
+	}
+	
+	// Draw the rain drops
+	if ( shouldDrawWeather && scourge->getMap()->getWeather() != Constants::WEATHER_CLEAR && scourge->getMap()->getWeather() != Constants::WEATHER_FOG ) {
+	    for ( int i = 0; i < RAIN_DROP_COUNT; i++ ) {
+	        glPushMatrix();
+	        glLoadIdentity();
+	        glTranslatef( rainDropX[i], rainDropY[i], 500 );
+	        glEnable( GL_TEXTURE_2D );
+	        if ( ( now - lastLightning ) < 1001 ) {
+	            glColor4f( 1, 1, 1, 1 );
+	        } else {
+	            glColor4f( 0, 0.8f, 1, 0.8f );
+	        }
+	        glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
+	        glBegin( GL_QUADS );
+	        glNormal3f( 0, 0, 1 );
+	        glTexCoord2f( 0, 0 );
+	        glVertex2i( 0, 0 );
+	        glTexCoord2f( 1, 0 );
+	        glVertex2i( RAIN_DROP_SIZE, 0 );
+	        glTexCoord2f( 1, 1 );
+	        glVertex2i( RAIN_DROP_SIZE, RAIN_DROP_SIZE );
+	        glTexCoord2f( 0, 1 );
+	        glVertex2i( 0, RAIN_DROP_SIZE );
+	        glEnd();
+	        glDisable( GL_TEXTURE_2D );
+	
+	        glPopMatrix();
+	
+	        rainDropY[i] += deltaY;
+	        rainDropX[i] -= deltaX;
+	
+	        if ( ( rainDropX[i] < -RAIN_DROP_SIZE ) || ( rainDropY[i] > screenH ) ) {
+	            rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, static_cast<int>( static_cast<float>( screenW ) * 1.25f ) );
+	            rainDropY[i] = -Util::pickOne( RAIN_DROP_SIZE, screenH );
+	        }
+	    }
+	}
+	
+	// Draw the lightning
+	int lightningTime = now - lastLightning;
+	
+	if ( lightningTime < 1001 ) {
+	
+	    float brightness;
+	
+	    if ( shouldDrawWeather && ( scourge->getMap()->getWeather() == Constants::WEATHER_THUNDER || scourge->getMap()->getWeather() == Constants::WEATHER_FOG_THUNDER ) ) {
+	        if ( lightningTime < 501 ) {
+	            brightness = 0.9f / static_cast<float>( 501 - lightningTime );
+	        } else {
+	            brightness = 0.9f / static_cast<float>( lightningTime - 500 );
+	        }
+	        glPushMatrix();
+	        glLoadIdentity();
+	        glTranslatef( 0, 0, 500 );
+	        glEnable( GL_TEXTURE_2D );
+	        glColor4f( 1, 1, 1, brightness );
+	        glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
+	        glBegin( GL_QUADS );
+	        glNormal3f( 0, 0, 1 );
+	        glTexCoord2f( 0, 0 );
+	        glVertex2i( 0, 0 );
+	        glTexCoord2f( 1, 0 );
+	        glVertex2i( screenW, 0 );
+	        glTexCoord2f( 1, 1 );
+	        glVertex2i( screenW, screenH );
+	        glTexCoord2f( 0, 1 );
+	        glVertex2i( 0, screenH );
+	        glEnd();
+	        glDisable( GL_TEXTURE_2D );
+	
+	        glPopMatrix();
+	    }
+	}
+	
+	if ( now > ( lastLightningRoll + 500 ) ) {
+	    if ( Util::dice( 25 ) == 0 ) {
+	        lastLightning = now;
+	        if ( scourge->getMap()->isHeightMapEnabled() && ( scourge->getMap()->getWeather() == Constants::WEATHER_THUNDER || scourge->getMap()->getWeather() == Constants::WEATHER_FOG_THUNDER ) ) {
+	            if ( Util::pickOne( 1, 4 ) == 1 ) {
+	                scourge->getSession()->getSound()->playSound( "thunder1", Util::pickOne( 41, 213 ) );
+	            } else if ( Util::pickOne( 1, 4 ) == 2 ) {
+	                scourge->getSession()->getSound()->playSound( "thunder2", Util::pickOne( 41, 213 ) );
+	            } else if ( Util::pickOne( 1, 4 ) == 3 ) {
+	                scourge->getSession()->getSound()->playSound( "thunder3", Util::pickOne( 41, 213 ) );
+	            } else if ( Util::pickOne( 1, 4 ) == 4 ) {
+	                scourge->getSession()->getSound()->playSound( "thunder4", Util::pickOne( 41, 213 ) );
+	            }
+	        }
+	    }
+	    lastLightningRoll = now;
+	}
+	
+	lastWeatherUpdate = now;
+	
+	glEnable( GL_CULL_FACE );
+	glEnable( GL_DEPTH_TEST );
+	
 }

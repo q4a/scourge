@@ -283,6 +283,7 @@ private:
 
 	inline void setWeather( int i ) { weather = i; }
 	inline int getWeather() { return weather; }
+	int generateWeather();
 
   void addSecretDoor( int x, int y );
   void removeSecretDoor( int x, int y );
