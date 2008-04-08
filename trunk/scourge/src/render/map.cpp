@@ -4657,9 +4657,8 @@ bool Map::inMapEditor() {
 
 int Map::generateWeather() {
 	if( heightMapEnabled ) {
-	//if( Util::dice( 3 ) == 0 && heightMapEnabled ) {
-		//weather = Util::pickOne( 1, MAX_WEATHER );
-		weather = WEATHER_RAIN | WEATHER_THUNDER;
+	if( Util::dice( 3 ) == 0 && heightMapEnabled ) {
+		weather = Util::pickOne( 1, MAX_WEATHER );
 	} else {
 		weather = WEATHER_CLEAR;
 	}
