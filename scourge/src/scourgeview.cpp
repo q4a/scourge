@@ -1143,7 +1143,7 @@ void ScourgeView::drawWeather() {
 	        glTranslatef( rainDropX[i], rainDropY[i], 500 );
 	        glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
 	        glEnable( GL_TEXTURE_2D );
-	        if ( ( now - lastLightning ) < 1001 ) {
+	        if ( ( now - lastLightning ) < 1001 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
 	            glColor4f( 1, 1, 1, 1 );
 	        } else {
 	            glColor4f( 0, 0.8f, 1, 0.8f );
@@ -1166,6 +1166,8 @@ void ScourgeView::drawWeather() {
 	
 	        if ( ( rainDropX[i] < -RAIN_DROP_SIZE ) || ( rainDropY[i] > screenH ) ) {
 	            rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, screenWPlusMore );
+                    // Start new drops somewhere above the screen.
+                    // It prevents them sometimes aligning in horizontal "waves".
 	            rainDropY[i] = -Util::pickOne( RAIN_DROP_SIZE, screenH );
 	        }
 

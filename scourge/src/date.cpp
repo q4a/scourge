@@ -210,20 +210,22 @@ void Date::print(){
 void Date::buildDateString(){
 
 	string formatString, monthString;
-	stringstream monthdayString, hourString, minuteString;
+	stringstream yearString, monthdayString, hourString, minuteString, secondString;
 
 	formatString = _( "MON DAY HOU:MIN" );
+	yearString << year;
 	monthString = _( monthName[month] );
 	monthdayString << day;
 	hourString << hour;
-	minuteString << min;
+	minuteString << ( min < 10 ? "0" : "" ) << min;
+	secondString << ( sec < 10 ? "0" : "" ) << sec;
 
-	if( formatString.find( "YEA" ) != string::npos ) formatString.replace( formatString.find( "YEA" ), 3, monthString, 0, 3 );
+	if( formatString.find( "YEA" ) != string::npos ) formatString.replace( formatString.find( "YEA" ), 3, yearString.str(), 0, 3 );
 	if( formatString.find( "MON" ) != string::npos ) formatString.replace( formatString.find( "MON" ), 3, monthString, 0, 3 );
 	if( formatString.find( "DAY" ) != string::npos ) formatString.replace( formatString.find( "DAY" ), 3, monthdayString.str() );
 	if( formatString.find( "HOU" ) != string::npos ) formatString.replace( formatString.find( "HOU" ), 3, hourString.str() );
 	if( formatString.find( "MIN" ) != string::npos ) formatString.replace( formatString.find( "MIN" ), 3, minuteString.str() );
-	if( formatString.find( "SEC" ) != string::npos ) formatString.replace( formatString.find( "SEC" ), 3, monthString, 0, 3 );
+	if( formatString.find( "SEC" ) != string::npos ) formatString.replace( formatString.find( "SEC" ), 3, secondString.str(), 0, 3 );
 
 	snprintf(dateString, DATE_SIZE, "%s", formatString.c_str());
 
