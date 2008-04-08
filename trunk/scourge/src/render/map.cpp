@@ -231,7 +231,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   selectedTrapIndex = -1;
   
   isCurrentlyUnderRoof = isRoofShowing = true;
-  weather = Constants::WEATHER_CLEAR;
+  weather = WEATHER_CLEAR;
 
   adapter->writeLogMessage(Constants::getMessage(Constants::WELCOME), Constants::MSGTYPE_SYSTEM);
   adapter->writeLogMessage("----------------------------------", Constants::MSGTYPE_SYSTEM);
@@ -953,6 +953,10 @@ void Map::setupPosition( int posX, int posY, int posZ,
       laterCount++;
     }
   }
+}
+
+float Map::getZoomPercent() {
+	return ( zoom - settings->getMinZoomIn() ) / ( settings->getMaxZoomOut() - settings->getMinZoomIn() );
 }
 
 void Map::preDraw() {
@@ -4652,13 +4656,12 @@ bool Map::inMapEditor() {
 }
 
 int Map::generateWeather() {
-
-	if( Util::dice( 3 ) == 0 && heightMapEnabled ) {
-		weather = Util::pickOne( 1, Constants::WEATHER_COUNT - 1 );
+	if( heightMapEnabled ) {
+	//if( Util::dice( 3 ) == 0 && heightMapEnabled ) {
+		//weather = Util::pickOne( 1, MAX_WEATHER );
+		weather = WEATHER_RAIN | WEATHER_THUNDER;
 	} else {
-		weather = Constants::WEATHER_CLEAR;
+		weather = WEATHER_CLEAR;
 	}
-
-return weather;
-
+	return weather;
 }
