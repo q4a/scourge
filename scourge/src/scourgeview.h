@@ -62,7 +62,7 @@ private:
   GLUquadric *quadric;
   Progress *turnProgress;
 
-  #define RAIN_DROP_COUNT 200
+  #define RAIN_DROP_COUNT 500
   #define RAIN_DROP_SIZE 32
   int rainDropX[RAIN_DROP_COUNT];
   int rainDropY[RAIN_DROP_COUNT];

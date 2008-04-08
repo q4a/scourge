@@ -1078,6 +1078,8 @@ void ScourgeView::drawDraggedItem() {
 	}
 }
 
+#define MIN_RAIN_DROP_COUNT 50
+
 void ScourgeView::drawWeather() {
 	
 	#define RAIN_DROP_SPEED 1200
@@ -1103,7 +1105,7 @@ void ScourgeView::drawWeather() {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	
 	// Draw the fog
-	if ( shouldDrawWeather && ( scourge->getMap()->getWeather() == Constants::WEATHER_FOG || scourge->getMap()->getWeather() == Constants::WEATHER_FOG_RAIN || scourge->getMap()->getWeather() == Constants::WEATHER_FOG_THUNDER ) ) {
+	if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_FOG ) {
 	    glPushMatrix();
 	    glLoadIdentity();
 	    glTranslatef( 0, 0, 500 );
@@ -1127,11 +1129,15 @@ void ScourgeView::drawWeather() {
 	}
 	
 	// Draw the rain drops
-	if ( shouldDrawWeather && scourge->getMap()->getWeather() != Constants::WEATHER_CLEAR && scourge->getMap()->getWeather() != Constants::WEATHER_FOG ) {
-	    for ( int i = 0; i < RAIN_DROP_COUNT; i++ ) {
+	if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_RAIN ) {
+			int rainDropCount = (int)( RAIN_DROP_COUNT * ( 1.0f - scourge->getMap()->getZoomPercent() ) );
+			if( rainDropCount > RAIN_DROP_COUNT ) rainDropCount = RAIN_DROP_COUNT;
+			else if( rainDropCount < MIN_RAIN_DROP_COUNT ) rainDropCount = MIN_RAIN_DROP_COUNT;
+	    for ( int i = 0; i < rainDropCount; i++ ) {
 	        glPushMatrix();
 	        glLoadIdentity();
 	        glTranslatef( rainDropX[i], rainDropY[i], 500 );
+	        glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
 	        glEnable( GL_TEXTURE_2D );
 	        if ( ( now - lastLightning ) < 1001 ) {
 	            glColor4f( 1, 1, 1, 1 );
@@ -1171,7 +1177,7 @@ void ScourgeView::drawWeather() {
 	
 	    float brightness;
 	
-	    if ( shouldDrawWeather && ( scourge->getMap()->getWeather() == Constants::WEATHER_THUNDER || scourge->getMap()->getWeather() == Constants::WEATHER_FOG_THUNDER ) ) {
+	    if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_THUNDER ) {
 	        if ( lightningTime < 501 ) {
 	            brightness = 0.9f / static_cast<float>( 501 - lightningTime );
 	        } else {
@@ -1203,7 +1209,7 @@ void ScourgeView::drawWeather() {
 	if ( now > ( lastLightningRoll + 500 ) ) {
 	    if ( Util::dice( 25 ) == 0 ) {
 	        lastLightning = now;
-	        if ( scourge->getMap()->isHeightMapEnabled() && ( scourge->getMap()->getWeather() == Constants::WEATHER_THUNDER || scourge->getMap()->getWeather() == Constants::WEATHER_FOG_THUNDER ) ) {
+	        if ( scourge->getMap()->isHeightMapEnabled() && scourge->getMap()->getWeather() & WEATHER_THUNDER ) {
 	            if ( Util::pickOne( 1, 4 ) == 1 ) {
 	                scourge->getSession()->getSound()->playSound( "thunder1", Util::pickOne( 41, 213 ) );
 	            } else if ( Util::pickOne( 1, 4 ) == 2 ) {

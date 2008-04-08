@@ -591,16 +591,12 @@ public:
     MSGTYPE_SKILL		// Skill related messages
   };
 
-  enum {
-    WEATHER_CLEAR = 0,
-    WEATHER_RAIN,
-    WEATHER_THUNDER,
-    WEATHER_FOG,
-    WEATHER_FOG_RAIN,
-    WEATHER_FOG_THUNDER,
-    WEATHER_COUNT
-  };
-
+#define WEATHER_CLEAR 0x00
+#define WEATHER_RAIN 0x01
+#define WEATHER_THUNDER 0x02
+#define WEATHER_FOG 0x04
+#define MAX_WEATHER 0x08
+  
   enum {
     ACTION_NO_ACTION=-1,
     ACTION_EAT_DRINK=0,

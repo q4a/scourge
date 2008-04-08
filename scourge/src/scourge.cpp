@@ -368,7 +368,7 @@ void Scourge::startMission( bool startInHq ) {
 				else getSession()->getSound()->playMusicMission();
 				setAmbientPaused( false );
 				getMap()->generateWeather();
-				if( getMap()->getWeather() == Constants::WEATHER_RAIN || getMap()->getWeather() == Constants::WEATHER_THUNDER || getMap()->getWeather() == Constants::WEATHER_FOG_RAIN || getMap()->getWeather() == Constants::WEATHER_FOG_THUNDER ) getSession()->getSound()->startRain();
+				if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
 				if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
 			}
       getSDLHandler()->fade( 1, 0, 20 );
@@ -3808,7 +3808,7 @@ void Scourge::endChapterIntro() {
 	else getSession()->getSound()->playMusicMission();
 	setAmbientPaused( false );
 	getMap()->generateWeather();
-	if( getMap()->getWeather() == Constants::WEATHER_RAIN || getMap()->getWeather() == Constants::WEATHER_THUNDER || getMap()->getWeather() == Constants::WEATHER_FOG_RAIN || getMap()->getWeather() == Constants::WEATHER_FOG_THUNDER ) getSession()->getSound()->startRain();
+	if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
 	getSDLHandler()->fade( 1, 0, 20 );
 }
 

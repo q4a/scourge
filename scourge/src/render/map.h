@@ -369,6 +369,7 @@ private:
   inline void setZoomIn(bool b) { zoomIn = b; }
   inline void setZoomOut(bool b) { zoomOut = b; }
   inline float getZoom() { return zoom; }
+  float getZoomPercent();
 
   inline void setXRot(float b) { xRotating = b; }
   inline void setYRot(float b) { yRotating = b; }
