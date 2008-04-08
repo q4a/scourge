@@ -50,11 +50,19 @@ Sound::Sound(Preferences *preferences) {
 			haveSound = true;
 		}
 
+		int allocated_count;
+		allocated_count = Mix_AllocateChannels(32);
+		if(allocated_count != 32) {
+		  cerr << "allocated " << allocated_count << " channels from default mixing." << endl;
+		  cerr << "32 channels were not allocated!" << endl;
+		  // this might be a critical error...
+		}
+
 		int reserved_count;
-		reserved_count = Mix_ReserveChannels(16);
-		if(reserved_count != 16) {
+		reserved_count = Mix_ReserveChannels(8);
+		if(reserved_count != 8) {
 		  cerr << "reserved " << reserved_count << " channels from default mixing." << endl;
-		  cerr << "16 channels were not reserved!" << endl;
+		  cerr << "8 channels were not reserved!" << endl;
 		  // this might be a critical error...
 		}
 
@@ -437,14 +445,13 @@ void Sound::playCharacterSound( char *type, int soundType, int panning ) {
 			if( charSoundMap->find( soundType ) != charSoundMap->end() ) {
 				vector<Mix_Chunk*> *v = (*charSoundMap)[ soundType ];
 				if( v->size() > 0 ) {
-					int index = Util::dice( v->size() );
-					int channel = Mix_PlayChannel( -1, (*v)[ index ], 0 );
-					if( channel == -1 ) {
-						// commented out; happens too often
-						//cerr << "*** Error playing WAV file: " << fileStr << endl;
-						//cerr << "\t" << Mix_GetError() << endl;
-					} else {
-						Mix_SetPanning( channel, 255 - panning, panning );
+					for( int t = 0; t < 5; t++ ) {
+						int index = Util::dice( v->size() );
+						int channel = Mix_PlayChannel( -1, (*v)[ index ], 0 );
+						if( channel != -1 ) {
+							Mix_SetPanning( channel, 255 - panning, panning );
+						return;
+						}
 					}
 				}
 			}
@@ -529,15 +536,14 @@ void Sound::playSound(const string& file, int panning ) {
 		string s = ( soundNameMap.find( file ) != soundNameMap.end() ? soundNameMap[file] : file );
 		if(soundMap.find(s) != soundMap.end()) {
 			for( int t = 0; t < 5; t++ ) {
-				for( int i = 4; i < 15; i++ ) {
-					if(Mix_PlayChannel(i, soundMap[s], 0) == i) {
-						Mix_SetPanning( i, 255 - panning, panning );
-						return;
-					}
+				int channel = Mix_PlayChannel( -1, soundMap[s], 0 );
+				if( channel != -1 ) {
+					Mix_SetPanning( channel, 255 - panning, panning );
+					return;
 				}
 			}
 		}
-  }
+	}
 #endif
 }
 
