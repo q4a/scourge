@@ -1092,6 +1092,7 @@ void ScourgeView::drawWeather() {
 	if ( lastLightningRoll == 0 ) lastLightningRoll = now;
 	
 	int screenW = scourge->getUserConfiguration()->getW();
+	int screenWPlusMore = static_cast<int>( static_cast<float>( screenW ) * 1.25f );
 	int screenH = scourge->getUserConfiguration()->getH();
 	
 	int deltaY = static_cast<int>( static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 ) );
@@ -1133,9 +1134,12 @@ void ScourgeView::drawWeather() {
 			int rainDropCount = (int)( RAIN_DROP_COUNT * ( 1.0f - scourge->getMap()->getZoomPercent() ) );
 			if( rainDropCount > RAIN_DROP_COUNT ) rainDropCount = RAIN_DROP_COUNT;
 			else if( rainDropCount < MIN_RAIN_DROP_COUNT ) rainDropCount = MIN_RAIN_DROP_COUNT;
+
+            glPushMatrix();
+            glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
+
 	    for ( int i = 0; i < rainDropCount; i++ ) {
-	        glPushMatrix();
-	        glLoadIdentity();
+                glLoadIdentity();
 	        glTranslatef( rainDropX[i], rainDropY[i], 500 );
 	        glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
 	        glEnable( GL_TEXTURE_2D );
@@ -1144,7 +1148,6 @@ void ScourgeView::drawWeather() {
 	        } else {
 	            glColor4f( 0, 0.8f, 1, 0.8f );
 	        }
-	        glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
 	        glBegin( GL_QUADS );
 	        glNormal3f( 0, 0, 1 );
 	        glTexCoord2f( 0, 0 );
@@ -1158,15 +1161,16 @@ void ScourgeView::drawWeather() {
 	        glEnd();
 	        glDisable( GL_TEXTURE_2D );
 	
-	        glPopMatrix();
-	
 	        rainDropY[i] += deltaY;
 	        rainDropX[i] -= deltaX;
 	
 	        if ( ( rainDropX[i] < -RAIN_DROP_SIZE ) || ( rainDropY[i] > screenH ) ) {
-	            rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, static_cast<int>( static_cast<float>( screenW ) * 1.25f ) );
+	            rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, screenWPlusMore );
 	            rainDropY[i] = -Util::pickOne( RAIN_DROP_SIZE, screenH );
 	        }
+
+            glPopMatrix();
+
 	    }
 	}
 	
@@ -1210,13 +1214,14 @@ void ScourgeView::drawWeather() {
 	    if ( Util::dice( 25 ) == 0 ) {
 	        lastLightning = now;
 	        if ( scourge->getMap()->isHeightMapEnabled() && scourge->getMap()->getWeather() & WEATHER_THUNDER ) {
-	            if ( Util::pickOne( 1, 4 ) == 1 ) {
+                    int thunderSound = Util::pickOne( 1, 4 );
+	            if ( thunderSound == 1 ) {
 	                scourge->getSession()->getSound()->playSound( "thunder1", Util::pickOne( 41, 213 ) );
-	            } else if ( Util::pickOne( 1, 4 ) == 2 ) {
+	            } else if ( thunderSound == 2 ) {
 	                scourge->getSession()->getSound()->playSound( "thunder2", Util::pickOne( 41, 213 ) );
-	            } else if ( Util::pickOne( 1, 4 ) == 3 ) {
+	            } else if ( thunderSound == 3 ) {
 	                scourge->getSession()->getSound()->playSound( "thunder3", Util::pickOne( 41, 213 ) );
-	            } else if ( Util::pickOne( 1, 4 ) == 4 ) {
+	            } else if ( thunderSound == 4 ) {
 	                scourge->getSession()->getSound()->playSound( "thunder4", Util::pickOne( 41, 213 ) );
 	            }
 	        }
