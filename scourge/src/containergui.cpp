@@ -118,7 +118,12 @@ bool ContainerGui::handleEvent(Widget *widget, SDL_Event *event) {
         }
     } else if (widget == infoButton ||
                (widget == list && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT)) {
-        int itemIndex = list->getSelectedLine();
+        int itemIndex;
+        if( widget == infoButton ) {
+          itemIndex = list->getSelectedLine();
+        } else {
+          itemIndex = list->getLineAtPoint( scourge->getSDLHandler()->mouseX - list->getX(), scourge->getSDLHandler()->mouseY - list->getY() );
+        }
         if (itemIndex > -1) {
             Item *item = container->getContainedItem(itemIndex);
             scourge->getInfoGui()->setItem( item );
