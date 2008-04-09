@@ -39,9 +39,9 @@ private:
   int totalAmount;
   std::map<Item*, int> prices;
   
-  Label *labelA, *labelB;
-  Label *totalA, *totalB;
-  ItemList *listA, *listB;
+  Label *playerName, *creatureName;
+  Label *playerTotal, *creatureTotal;
+  ItemList *playerList, *creatureList;
   Button *closeButton, *tradeButton, *infoButtonA, *infoButtonB, *stealButton;
   Label *tradeInfo;
   
