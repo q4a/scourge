@@ -34,22 +34,22 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
                            Constants::getMessage( Constants::TRADE_DIALOG_TITLE ) );
   //win->setModal( true );
 	int xStart = 8;
-  labelA = win->createLabel( 80, 15, "" );
-  totalA = win->createLabel( 80, 28, _( "Selected Total:" ) );
-  listA = new ItemList( scourge, win, 75, 35, 220, 210, this );
-	listA->setAllowCursed( false );
+  playerName = win->createLabel( 80, 15, "" );
+  playerTotal = win->createLabel( 80, 28, _( "Selected Total:" ) );
+  playerList = new ItemList( scourge, win, 75, 35, 220, 210, this );
+	playerList->setAllowCursed( false );
 	// We don't want to sell equipped items
-	listA->setAllowEquipped( false );
-  win->addWidget( listA );
+	playerList->setAllowEquipped( false );
+  win->addWidget( playerList );
   infoButtonA = win->createButton( xStart, 35, 70, 55, _( "Info" ) );
 
   
-  labelB = win->createLabel( 305, 15, "" );
-  totalB = win->createLabel( 305, 28, _( "Selected Total:" ) );
-  listB = new ItemList( scourge, win, 300, 35, 220, 210, this );
-	listB->setAllowCursed( false );
-	listB->setAllowEquipped( false );
-  win->addWidget( listB );
+  creatureName = win->createLabel( 305, 15, "" );
+  creatureTotal = win->createLabel( 305, 28, _( "Selected Total:" ) );
+  creatureList = new ItemList( scourge, win, 300, 35, 220, 210, this );
+	creatureList->setAllowCursed( false );
+	creatureList->setAllowEquipped( false );
+  win->addWidget( creatureList );
   stealButton = win->createButton( 530, 35, 595, 55, _( "Steal" ) );  
   infoButtonB = win->createButton( 530, 60, 595, 80, _( "Info" ) );
 
@@ -74,12 +74,12 @@ void TradeDialog::setCreature( Creature *creature ) {
 
 void TradeDialog::updateUI() {
   prices.clear();  
-  labelA->setText( scourge->getParty()->getPlayer()->getName() );
-  listA->setCreature( scourge->getParty()->getPlayer(), creature->getNpcInfo()->getSubtype() );
-  labelB->setText( _( creature->getName() ) );
-  listB->setCreature( creature, creature->getNpcInfo()->getSubtype() );
-  listA->unselectAllLines();
-  listB->unselectAllLines();
+  playerList->unselectAllLines();
+  playerName->setText( scourge->getParty()->getPlayer()->getName() );
+  playerList->setCreature( scourge->getParty()->getPlayer(), creature->getNpcInfo()->getSubtype() );
+  creatureList->unselectAllLines();
+  creatureName->setText( _( creature->getName() ) );
+  creatureList->setCreature( creature, creature->getNpcInfo()->getSubtype() );
   totalAmount = 0;
   updateLabels();
 }
@@ -97,10 +97,10 @@ void TradeDialog::updateLabels() {
   }
   tradeInfo->move( ( this->getWindow()->getWidth() / 2 ) - ( scourge->getSDLHandler()->textWidth( tmp ) / 2  ), 260 );
   tradeInfo->setText( tmp );
-  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), getSelectedTotal( listA ) );
-  totalA->setText( tmp );
-  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), getSelectedTotal( listB ) );
-  totalB->setText( tmp );
+  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), getSelectedTotal( playerList ) );
+  playerTotal->setText( tmp );
+  snprintf( tmp, TMP_SIZE, _( "%s $%d" ), _( "Selected Total:" ), getSelectedTotal( creatureList ) );
+  creatureTotal->setText( tmp );
 }
 
 int TradeDialog::getSelectedTotal( ItemList *list ) {
@@ -115,18 +115,18 @@ int TradeDialog::getSelectedTotal( ItemList *list ) {
 void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
   if( widget == win->closeButton || widget == closeButton ) {
     win->setVisible( false );
-  } else if( widget == infoButtonA && listA->getSelectedLineCount() ) {
+  } else if( widget == infoButtonA && playerList->getSelectedLineCount() ) {
     scourge->getInfoGui()->
-    setItem( listA->getSelectedItem( 0 ) );
+    setItem( playerList->getSelectedItem( 0 ) );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
-  } else if( widget == infoButtonB && listB->getSelectedLineCount() ) {
+  } else if( widget == infoButtonB && creatureList->getSelectedLineCount() ) {
     scourge->getInfoGui()->
-    setItem( listB->getSelectedItem( 0 ) );
+    setItem( creatureList->getSelectedItem( 0 ) );
     if( !scourge->getInfoGui()->getWindow()->isVisible() ) 
       scourge->getInfoGui()->getWindow()->setVisible( true );
-  } else if( widget == listA || widget == listB ) {
-    totalAmount = getSelectedTotal( listB ) - getSelectedTotal( listA );
+  } else if( widget == playerList || widget == creatureList ) {
+    totalAmount = getSelectedTotal( creatureList ) - getSelectedTotal( playerList );
     updateLabels();
   } else if( widget == tradeButton ) {
     trade();
@@ -143,7 +143,7 @@ void TradeDialog::render( const Widget *widget, const Item *item, std::string& b
   int price = ((Item*)item)->getPrice();
   // 25% variance based on leadership skill.
   int percentage = static_cast<int>( static_cast<float>(price) * ( 100.0f - skill ) / 100.0f * 0.25f );
-  int total = price + ( widget == listA ? ( -1 * percentage ) : percentage );
+  int total = price + ( widget == playerList ? ( -1 * percentage ) : percentage );
   prices[ (Item*)item ] = total;
   char priceStr[20];
 	snprintf( priceStr, 20, _( "$%d " ), total );
@@ -156,38 +156,37 @@ void TradeDialog::trade() {
     return;
   }
   
-  int totalA = getSelectedTotal( listA );
-  int totalB = getSelectedTotal( listB );
-  if( !totalA && !totalB ) {
+  int playerTotal = getSelectedTotal( playerList );
+  int creatureTotal = getSelectedTotal( creatureList );
+  if( !playerTotal && !creatureTotal ) {
     scourge->showMessageDialog( _( "Select items to trade." ) );
     return;
   }
 
   // Do we have enough money?
-  if( ( scourge->getParty()->getPlayer()->getMoney() + totalA - totalB ) < 0 ) {
+  if( ( scourge->getParty()->getPlayer()->getMoney() + playerTotal - creatureTotal ) < 0 ) {
     scourge->showMessageDialog( _( "You can't afford this deal!" ) );
     return;
   }
 
   // move items
-  for( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
-    Item *item = listA->getSelectedItem( i );
+  for( int i = 0; i < playerList->getSelectedLineCount(); i++ ) {
+    Item *item = playerList->getSelectedItem( i );
     scourge->getParty()->getPlayer()->removeInventory( scourge->getParty()->getPlayer()->findInInventory( item ) );
     creature->addInventory( item, true );
+    scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() + prices[ (Item*)item ] );
   }
 
-  for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {
-    Item *item = listB->getSelectedItem( i );
+  for( int i = 0; i < creatureList->getSelectedLineCount(); i++ ) {
+    Item *item = creatureList->getSelectedItem( i );
     if(!scourge->getPcUi()->receiveInventory(item))
     {
 	scourge->showMessageDialog( _( "Can't fit item in inventory." ) );
 	return;
     }
     creature->removeInventory( creature->findInInventory( item ) );
+    scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() - prices[ (Item*)item ] );
   }
-  
-  // move money
-  scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() + totalA - totalB );
 
   updateUI();
   scourge->refreshInventoryUI();
@@ -216,8 +215,8 @@ void TradeDialog::steal() {
     return;
   }
 
-  int totalB = getSelectedTotal( listB );
-  if( !totalB ) {
+  int creatureTotal = getSelectedTotal( creatureList );
+  if( !creatureTotal ) {
     scourge->showMessageDialog( _( "Select items to steal." ) );
     return;
   }
@@ -232,7 +231,7 @@ void TradeDialog::steal() {
   int price = 0;
   int exp = 0;
   bool success = true;
-  for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {
+  for( int i = 0; i < creatureList->getSelectedLineCount(); i++ ) {
     float maxA = steal + ( luck / 4.0f );
     float valueA = Util::roll( 0.75f * maxA, maxA );
     float maxB = ( stealB / 2.0f ) + ( coordinationB / 2.0f ) + ( luckB / 4.0f );
@@ -241,7 +240,7 @@ void TradeDialog::steal() {
       success = valueA > valueB;
     }
     exp += static_cast<int>( maxA > maxB ? maxB : maxA + maxB );
-    price += prices[ listB->getSelectedItem( i ) ];
+    price += prices[ creatureList->getSelectedItem( i ) ];
   }
 
   char *p;
@@ -249,8 +248,8 @@ void TradeDialog::steal() {
     p = _( "You succesfully burgled the items!" );
 
     // move items
-    for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {
-      Item *item = listB->getSelectedItem( i );
+    for( int i = 0; i < creatureList->getSelectedLineCount(); i++ ) {
+      Item *item = creatureList->getSelectedItem( i );
       //scourge->getParty()->getPlayer()->addInventory( item, true );
       if( scourge->getPcUi()->receiveInventory( item ) ) {
         creature->removeInventory( creature->findInInventory( item ) );
@@ -300,13 +299,13 @@ void TradeDialog::steal() {
 }
 
 bool TradeDialog::validateInventory() {
-  for( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
-    Item *item = listA->getSelectedItem( i );
+  for( int i = 0; i < playerList->getSelectedLineCount(); i++ ) {
+    Item *item = playerList->getSelectedItem( i );
     cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInInventory( item ) << endl;
     if( scourge->getParty()->getPlayer()->findInInventory( item ) == -1 ) return false;
   }
-  for( int i = 0; i < listB->getSelectedLineCount(); i++ ) {
-    Item *item = listB->getSelectedItem( i );
+  for( int i = 0; i < creatureList->getSelectedLineCount(); i++ ) {
+    Item *item = creatureList->getSelectedItem( i );
     if( creature->findInInventory( item ) == -1 ) return false;
   }
   return true;
