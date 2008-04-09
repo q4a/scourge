@@ -188,6 +188,8 @@ public:
 	inline bool isShowingChapterIntro() { return showChapterIntro; }
 
   virtual Creature *getClosestVisibleMonster(int x, int y, int w, int h, int radius);
+  virtual Creature *getClosestMonster(int x, int y, int w, int h, int radius);
+  virtual Creature *getClosestNPC(int x, int y, int w, int h, int radius);
   virtual void creatureDeath( Creature *creature );
 
   inline SqBinding *getSquirrel() { return squirrel; }

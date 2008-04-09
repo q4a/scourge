@@ -431,6 +431,44 @@ Creature *Session::getClosestVisibleMonster(int x, int y, int w, int h, int radi
   return p;
 }
 
+Creature *Session::getClosestMonster(int x, int y, int w, int h, int radius) {
+  float minDist = 0;
+  Creature *p = NULL;
+  for(int i = 0; i < getCreatureCount(); i++) {
+    if(!getCreature(i)->getStateMod(StateMod::dead) && !getCreature(i)->getStateMod(StateMod::possessed) && map->isLocationInLight(toint(getCreature(i)->getX()), toint(getCreature(i)->getY()), getCreature(i)->getShape()) && (getCreature(i)->isMonster() || !getCreature(i)->isNpc())) {
+      float dist = Constants::distance(x, y, w, h,
+                                       getCreature(i)->getX(),
+                                       getCreature(i)->getY(),
+                                       getCreature(i)->getShape()->getWidth(),
+                                       getCreature(i)->getShape()->getDepth());
+      if(dist <= static_cast<float>(radius) && (!p || dist < minDist)) {
+        p = getCreature(i);
+        minDist = dist;
+      }
+    }
+  }
+  return p;
+}
+
+Creature *Session::getClosestNPC(int x, int y, int w, int h, int radius) {
+  float minDist = 0;
+  Creature *p = NULL;
+  for(int i = 0; i < getCreatureCount(); i++) {
+    if(!getCreature(i)->getStateMod(StateMod::dead) && !getCreature(i)->getStateMod(StateMod::possessed) && map->isLocationInLight(toint(getCreature(i)->getX()), toint(getCreature(i)->getY()), getCreature(i)->getShape()) && (!getCreature(i)->isMonster() || getCreature(i)->isNpc() || getCreature(i)->getCharacter())) {
+      float dist = Constants::distance(x, y, w, h,
+                                       getCreature(i)->getX(),
+                                       getCreature(i)->getY(),
+                                       getCreature(i)->getShape()->getWidth(),
+                                       getCreature(i)->getShape()->getDepth());
+      if(dist <= static_cast<float>(radius) && (!p || dist < minDist)) {
+        p = getCreature(i);
+        minDist = dist;
+      }
+    }
+  }
+  return p;
+}
+
 void Session::creatureDeath( Creature *creature ) {
 
   bool result;
