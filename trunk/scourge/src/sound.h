@@ -114,7 +114,7 @@ public:
 	void storeSound(const std::string& name, const std::string& file);
   void storeSound(int type, const std::string& file);
   void unloadSound( int type, const std::string& file );
-  void playSound( const std::string& file, int panning );
+  int playSound( const std::string& file, int panning );
 
   void setMusicVolume(int volume);
   void setEffectsVolume(int volume);

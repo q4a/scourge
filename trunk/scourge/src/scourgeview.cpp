@@ -1129,7 +1129,16 @@ void ScourgeView::drawWeather() {
 	    glPopMatrix();
 	}
 	
+        if( scourge->getMap()->isHeightMapEnabled() && scourge->getMap()->getCurrentlyUnderRoof() ) {
+          Mix_Volume(Constants::RAIN_CHANNEL, 40);
+          Mix_Volume(Constants::AMBIENT_CHANNEL, 40);
+        } else if( scourge->getMap()->isHeightMapEnabled() ) {
+          Mix_Volume(Constants::RAIN_CHANNEL, 128);
+          Mix_Volume(Constants::AMBIENT_CHANNEL, 128);
+        }
+
 	// Draw the rain drops
+
 	if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_RAIN ) {
 			int rainDropCount = (int)( RAIN_DROP_COUNT * ( 1.0f - scourge->getMap()->getZoomPercent() ) );
 			if( rainDropCount > RAIN_DROP_COUNT ) rainDropCount = RAIN_DROP_COUNT;
@@ -1216,15 +1225,21 @@ void ScourgeView::drawWeather() {
 	    if ( Util::dice( 25 ) == 0 ) {
 	        lastLightning = now;
 	        if ( scourge->getMap()->isHeightMapEnabled() && scourge->getMap()->getWeather() & WEATHER_THUNDER ) {
+                    int channel;
+                    int volume = ( scourge->getMap()->getCurrentlyUnderRoof() ? 40 : 128 );
                     int thunderSound = Util::pickOne( 1, 4 );
 	            if ( thunderSound == 1 ) {
-	                scourge->getSession()->getSound()->playSound( "thunder1", Util::pickOne( 41, 213 ) );
+	                channel = scourge->getSession()->getSound()->playSound( "thunder1", Util::pickOne( 41, 213 ) );
+                        if( channel > -1 ) Mix_Volume( channel, volume );
 	            } else if ( thunderSound == 2 ) {
-	                scourge->getSession()->getSound()->playSound( "thunder2", Util::pickOne( 41, 213 ) );
+	                channel = scourge->getSession()->getSound()->playSound( "thunder2", Util::pickOne( 41, 213 ) );
+                        if( channel > -1 ) Mix_Volume( channel, volume );
 	            } else if ( thunderSound == 3 ) {
-	                scourge->getSession()->getSound()->playSound( "thunder3", Util::pickOne( 41, 213 ) );
+	                channel = scourge->getSession()->getSound()->playSound( "thunder3", Util::pickOne( 41, 213 ) );
+                        if( channel > -1 ) Mix_Volume( channel, volume );
 	            } else if ( thunderSound == 4 ) {
-	                scourge->getSession()->getSound()->playSound( "thunder4", Util::pickOne( 41, 213 ) );
+	                channel = scourge->getSession()->getSound()->playSound( "thunder4", Util::pickOne( 41, 213 ) );
+                        if( channel > -1 ) Mix_Volume( channel, volume );
 	            }
 	        }
 	    }
