@@ -42,3 +42,6 @@ equip/cant_equip.wav
 voices for :
 models/character/darkness
 models/character/yohko
+
+Claudio Canavese (CoD)
+sound/magic/harm.wav
