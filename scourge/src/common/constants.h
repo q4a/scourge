@@ -618,6 +618,14 @@ public:
     SOUND_TYPE_COUNT
   };
 
+  // reserved sound channels
+  enum {
+    OBJECT_CHANNEL = 0,
+    AMBIENT_CHANNEL,
+    FOOTSTEP_CHANNEL,
+    RAIN_CHANNEL
+  };
+
   // npc types
   enum {
     NPC_TYPE_COMMONER=0,
