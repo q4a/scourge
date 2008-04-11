@@ -2446,7 +2446,7 @@ float Creature::getArmor( float *armorP, float *dodgePenaltyP,
   // negative feedback: for monsters only, allow hits now and then
   // -=K=-: the sentence in if seems screwed up
   if( monster && 
-      ( rand() / RAND_MAX < 
+      ( Util::mt_rand() < 
 				monsterToughness[ session->getPreferences()->getMonsterToughness() ].
 				armorMisfuction ) ) {
       // 3.0f * rand() / RAND_MAX < 1.0f ) {
@@ -2781,7 +2781,7 @@ float Creature::getDefenderStateModPercent( bool magical ) {
       delta -= Util::roll( 0.0f, 7.0f );
     }
     if(magical && getTargetCreature()->getStateMod(StateMod::magic_protected)) {
-      delta -= (7.0f * rand()/RAND_MAX);
+      delta -= (7.0f * Util::mt_rand());
     }
     if(getTargetCreature()->getStateMod(StateMod::blessed)) {
       delta -= Util::roll( 0.0f, 5.0f );

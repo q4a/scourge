@@ -122,7 +122,7 @@ void TextEffect::drawEffect( float divisor, int count ) {
 			case 2: particle[i].dir = 180.0f + particle[i].dir; break;
 			//default: // do nothing
 			}
-			particle[i].step = 4.0f * rand() / RAND_MAX;
+			particle[i].step = 4.0f * Util::mt_rand();
 		}
 		
 		if( active ) {

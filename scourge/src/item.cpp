@@ -1250,8 +1250,8 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 				iconEffectParticle[i]->life = 0;
 				iconEffectParticle[i]->maxLife = Util::pickOne( 30, 59 );
 				iconEffectParticle[i]->zoom = 0.5f;
-				iconEffectParticle[i]->x = static_cast<float>(w) * rand() / RAND_MAX;
-				iconEffectParticle[i]->y = static_cast<float>(h) * rand() / RAND_MAX;
+				iconEffectParticle[i]->x = static_cast<float>(w) * Util::mt_rand();
+				iconEffectParticle[i]->y = static_cast<float>(h) * Util::mt_rand();
 				iconEffectParticle[i]->z = 0;
 			}
 			iconEffectParticle[i]->zoom += ( iconEffectParticle[i]->life >= iconEffectParticle[i]->maxLife / 2.0f ? -1 : 1 ) * 0.5f;

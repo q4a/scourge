@@ -793,7 +793,6 @@ void TerrainGenerator::getRandomLocation(Map *map, Shape *shape,
   int x, y;
   while(1) {
     // get a random location
-    // FIXME: rand() is too teethless random generator for it  
     int n = static_cast<int>(Util::roll( 0, ffCount-1 ));
     x = ff[n * 2];
     y = ff[n * 2 + 1];
@@ -838,7 +837,6 @@ void TerrainGenerator::getRandomLocationSimple( Map *map, Shape *shape,
   int x, y;
   for( int i = 0; i < 500; i++ ) {
     // get a random location
-    // FIXME: rand() is too teethless to deal with 100 000+ locations 
     int n = static_cast<int>(Util::roll( 0, ffCount-1 ));
     x = ff[ n * 2 ];
     y = ff[ n * 2 + 1 ];

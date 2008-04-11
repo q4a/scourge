@@ -229,7 +229,8 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 	//If this is the first iteration, randomize init. 
 	//   Later it's used to decide wether to divide the room 	horzontal or vertical 
 	if( init ) 
-		init = (rand()%2 == 0);
+//		init = (rand()%2 == 0);
+		init = (Util::dice(2));
 
 //	fprintf( stderr, "Iteration: %d %d : %d %d\n", x_start, y_start, width, height);
 
