@@ -3763,13 +3763,16 @@ void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy) {
 }
 
 void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
+  static Uint16 lastMapX, lastMapY, lastMapZ;
+  static Uint16 lastX, lastY;
+
   // only do this if the mouse has moved some (optimization)
-//  if(abs(lastX - x) < POSITION_SAMPLE_DELTA && abs(lastY - y) < POSITION_SAMPLE_DELTA) {
-//    *mapx = lastMapX;
-//    *mapy = lastMapY;
-//    *mapz = lastMapZ;
-//    return;
-//  }
+  if( ( lastX - adapter->getMouseX() == 0 ) && ( lastY - adapter->getMouseY() == 0 ) ) {
+    *mapx = lastMapX;
+    *mapy = lastMapY;
+    *mapz = lastMapZ;
+    return;
+  }
 
   GLuint buffer[512];
   GLint  hits, viewport[4];
@@ -3834,13 +3837,12 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   debugY = *mapy;
   debugZ = *mapz;
   */
-  /*
+
   lastMapX = *mapx;
   lastMapY = *mapy;
   lastMapZ = *mapz;
-  lastX = getSDLHandler()->mouseX;
-  lastY = getSDLHandler()->mouseY;
-  */
+  lastX = adapter->getMouseX();
+  lastY = adapter->getMouseY();
 }
 
 void Map::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
