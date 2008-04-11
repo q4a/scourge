@@ -377,25 +377,83 @@ bool Util::StringCaseCompare(const std::string sStr1, const std::string sStr2) {
 		return false;
 }
 
-// *** algorithms based on rand() ***
-// it may be worth to switch to Mersenne Twister one day  
+// *** algorithms based on the Mersenne Twister random number generator ***
+
+#define MT_N 624
+#define MT_M 397
+
+static unsigned long mt_sequence[MT_N];
+static int mt_index = MT_N + 1;
+
+// Start the MT random number generator with a specific seed.
+void Util::mt_srand( unsigned long s ) {
+    mt_sequence[0]= s & 0xffffffffUL;
+    
+    for ( mt_index = 1; mt_index < MT_N; mt_index++ ) {
+        mt_sequence[mt_index] = ( 1812433253UL * ( mt_sequence[mt_index - 1] ^ ( mt_sequence[mt_index - 1] >> 30 ) ) + mt_index );
+        mt_sequence[mt_index] &= 0xffffffffUL;
+    }
+}
+
+// Mersenne twister core algorithm. Returns a float between 0 and 1.
+// Multiple times faster than rand() and has a period of (2^19937 - 1).
+float Util::mt_rand() {
+    const unsigned MT_HI = 0x80000000UL;
+    const unsigned MT_LO = 0x7fffffffUL;
+
+    unsigned long y;
+    static unsigned long mag[2] = { 0x0UL, 0x9908b0dfUL };
+
+    if ( mt_index >= MT_N ) {
+        int k;
+
+        // Seed the generator when not yet done.
+        if ( mt_index == MT_N + 1 ) mt_srand( (unsigned long)time( (time_t*)NULL ) );
+
+        for ( k = 0; k < MT_N - MT_M; k++ ) {
+            y = ( mt_sequence[k] & MT_HI ) | ( mt_sequence[k + 1] & MT_LO );
+            mt_sequence[k] = mt_sequence[k + MT_M] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
+        }
+
+        for ( ; k<MT_N-1; k++ ) {
+            y = ( mt_sequence[k] & MT_HI) | ( mt_sequence[k + 1] & MT_LO );
+            mt_sequence[k] = mt_sequence[k + ( MT_M - MT_N )] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
+        }
+
+        y = ( mt_sequence[MT_N - 1] & MT_HI ) | ( mt_sequence[0] & MT_LO );
+        mt_sequence[MT_N - 1] = mt_sequence[MT_M - 1] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
+        mt_index = 0;
+    }
+
+    y = mt_sequence[mt_index++];
+
+    /* Tempering */
+    y ^= ( y >> 11 );
+    y ^= ( y << 7 ) & 0x9d2c5680UL;
+    y ^= ( y << 15 ) & 0xefc60000UL;
+    y ^= ( y >> 18 );
+
+    return (float)y * ( 1.0 / 4294967296.0 );
+}
 
 // random integer from 0 to size-1
 // size must be bigger than 0 and not bigger than RAND_MAX + 1
 // makes noise otherwise ;-)
 // size is exclusive
+
 int Util::dice( int size ) { 
 	if ( 0 >= size || size - 1 > RAND_MAX )
 	{
 	  std::cerr << "ERROR: Util::dice with size = " << size << " RAND_MAX=" << RAND_MAX << " +1=" << (RAND_MAX + 1) << endl;
 		return static_cast<int>(roll( 0, size ));
 	}
-	do {
-		unsigned r = rand();
-		if ( r >= ((unsigned)RAND_MAX + 1) % (unsigned)size ) { //remove some rand values that make the result unfair
+	return static_cast<int>(roll( 0, size ));
+/*	do {
+		unsigned r = mt_rand();
+		if ( ( r * RAND_MAX ) >= ((unsigned)RAND_MAX + 1) % (unsigned)size ) { //remove some rand values that make the result unfair
 			return r % size;
 		}
-	} while ( true ); 
+	} while ( true ); */
 }
 
 // random integer  from min to max
@@ -408,5 +466,6 @@ int Util::pickOne( int min, int max ) {
 
 // random float from min to max (both inclusive)
 float Util::roll( float min, float max ) { 
-	return (max - min) * rand() / RAND_MAX + min;
+//	return (max - min) * rand() / RAND_MAX + min;
+	return (max - min) * mt_rand() + min;
 }

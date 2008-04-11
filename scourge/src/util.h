@@ -158,6 +158,9 @@ namespace Util {
 
 	float roll( float min, float max );  // random float from min to max
 
+	void mt_srand( unsigned long s );
+	float mt_rand();
+
 }
 
 #endif
