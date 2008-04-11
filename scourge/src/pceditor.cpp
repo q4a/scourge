@@ -215,7 +215,7 @@ void PcEditor::rollSkillsForCreature( Creature *c ) {
 	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 		int n;
 		if( Skill::skills[i]->getGroup()->isStat() ) {
-			n = c->getCharacter()->getSkill( i ) + Util::pickOne( 1, 14 );
+			n = ( c->getCharacter()->getSkill( i ) * 3 - 1 ) + Util::pickOne( 1, 5 );
 		} else {
 			
 			// create the starting value as a function of the stats
@@ -516,6 +516,7 @@ weaknesses of each profession." ),
 	p = cards->createLabel( secondColStart, 30, _( "Statistics:" ), STAT_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
+	char statDesc[3000];
 	int n = 0;
 	for( int i = 0; n < 10 && i < static_cast<int>(Skill::skills.size()); i++ ) {
 		Skill *skill = Skill::skills[i];
@@ -530,11 +531,14 @@ weaknesses of each profession." ),
 																					"+", 
 																					STAT_TAB );
 			skillPlus[n]->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+			Util::addLineBreaks( skill->getDescription(), statDesc );
+			skillPlus[n]->setTooltip( statDesc ) ;
 			skillMinus[n] = cards->createButton( secondColStart + 180, y - 10,
 																					 secondColStart + 180 + 25, y - 10 + buttonHeight,
 																					 "-", 
 																					 STAT_TAB );
 			skillMinus[n]->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+			skillMinus[n]->setTooltip( statDesc ) ;
 
 			n++;
 		}
