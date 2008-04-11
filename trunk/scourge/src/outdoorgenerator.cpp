@@ -224,16 +224,16 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 bool OutdoorGenerator::isShapeOnFloor( Shape *shape, int x, int y, Map *map ) {
 	int fx = ( ( x - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
 	int fy = ( ( y - shape->getHeight() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-	if( !map->getFloorPosition( fx, fy ) ) return true;
+	if( map->getFloorPosition( fx, fy ) ) return true;
 	fx = ( ( x - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
 	fy = ( ( y - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-	if( !map->getFloorPosition( fx, fy ) ) return true;
+	if( map->getFloorPosition( fx, fy ) ) return true;
 	fx = ( ( x + shape->getWidth() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
 	fy = ( ( y - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-	if( !map->getFloorPosition( fx, fy ) ) return true;
+	if( map->getFloorPosition( fx, fy ) ) return true;
 	fx = ( ( x + shape->getWidth() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
 	fy = ( ( y - shape->getHeight() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-	if( !map->getFloorPosition( fx, fy ) ) return true;
+	if( map->getFloorPosition( fx, fy ) ) return true;
 	return false;
 }
 
