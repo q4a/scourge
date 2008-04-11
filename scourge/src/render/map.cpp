@@ -3767,7 +3767,7 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   static Uint16 lastX, lastY;
 
   // only do this if the mouse has moved some (optimization)
-  if( ( lastX - adapter->getMouseX() == 0 ) && ( lastY - adapter->getMouseY() == 0 ) ) {
+  if( ( ( lastX - adapter->getMouseX() == 0 ) && ( lastY - adapter->getMouseY() == 0 ) ) || isMapMoving() ) {
     *mapx = lastMapX;
     *mapy = lastMapY;
     *mapz = lastMapZ;
