@@ -83,6 +83,7 @@ void Scourge::setBlendFuncStatic() {
 Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 	// init the random number generator
 	srand( (unsigned int)time( (time_t*)NULL ) );
+        Util::mt_srand( (unsigned int)time( (time_t*)NULL ) );
 
   oldStory = currentStory = 0;
   lastTick = 0;
@@ -194,6 +195,7 @@ void Scourge::start() {
 
 	// initialize the random number generator
 	srand( (unsigned int)time( (time_t *)NULL ) );
+        Util::mt_srand( (unsigned int)time( (time_t*)NULL ) );
 
 	bool initMainMenu = true;
 	int value = CONTINUE_GAME;
@@ -4038,9 +4040,9 @@ void Scourge::destroyDoor( Sint16 ox, Sint16 oy, Shape *shape ) {
 
 void Scourge::startDoorEffect( int effect, Sint16 ox, Sint16 oy, Shape *shape ) {
 	for( int i = 0; i < 8; i++ ) {
-		int x = ox + static_cast<int>( static_cast<float>( shape->getWidth() ) * rand() / RAND_MAX );
-		int y = oy - static_cast<int>( static_cast<float>( shape->getDepth() ) * rand() / RAND_MAX );
-		int z = 2 + static_cast<int>(( ( static_cast<float>( shape->getHeight() ) / 2.0f ) - 2.0f ) * rand() / RAND_MAX );
+		int x = ox + static_cast<int>( static_cast<float>( shape->getWidth() ) * Util::mt_rand() );
+		int y = oy - static_cast<int>( static_cast<float>( shape->getDepth() ) * Util::mt_rand() );
+		int z = 2 + static_cast<int>(( ( static_cast<float>( shape->getHeight() ) / 2.0f ) - 2.0f ) * Util::mt_rand() );
 		levelMap->startEffect( x, y, z, effect, (GLuint)( static_cast<float>(Constants::DAMAGE_DURATION) / 2.0f ), 2, 2,
 													 (GLuint)(static_cast<float>(i) / 4.0f * static_cast<float>(Constants::DAMAGE_DURATION)) );
   }
