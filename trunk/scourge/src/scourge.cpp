@@ -202,7 +202,7 @@ void Scourge::start() {
   while(true) {
 
 		// forget all the known maps
-		visitedMaps.clear();		
+		visitedMaps.clear();
 
 		if( !session->willLoadGame() ) {
 			if(initMainMenu) {
@@ -213,10 +213,12 @@ void Scourge::start() {
 			getSDLHandler()->setHandlers((SDLEventHandler *)mainMenu, (SDLScreenView *)mainMenu);
 			getSDLHandler()->mainLoop();
 			session->deleteCreaturesAndItems( false );
+			getBoard()->setStorylineIndex( 0 );
 	
 			// evaluate results and start a missions
 			value = mainMenu->getValue();
 		}
+
 
     if(value == NEW_GAME_START ||
        value == MULTIPLAYER_START ||
