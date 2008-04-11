@@ -83,7 +83,7 @@ void Scourge::setBlendFuncStatic() {
 Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 	// init the random number generator
 	srand( (unsigned int)time( (time_t*)NULL ) );
-        Util::mt_srand( (unsigned int)time( (time_t*)NULL ) );
+        Util::mt_srand( (unsigned long)time( (time_t*)NULL ) );
 
   oldStory = currentStory = 0;
   lastTick = 0;
@@ -195,7 +195,7 @@ void Scourge::start() {
 
 	// initialize the random number generator
 	srand( (unsigned int)time( (time_t *)NULL ) );
-        Util::mt_srand( (unsigned int)time( (time_t*)NULL ) );
+        Util::mt_srand( (unsigned long)time( (time_t*)NULL ) );
 
 	bool initMainMenu = true;
 	int value = CONTINUE_GAME;
