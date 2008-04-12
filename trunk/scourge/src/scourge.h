@@ -673,6 +673,7 @@ protected:
 	void initChapterIntro();
 
 	bool describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull );
+	void renderHandAttackIcon( int x, int y, int size );
 
   char *getAPRDescription( Creature *p, Item *item, char *buff, size_t buffSize );
 

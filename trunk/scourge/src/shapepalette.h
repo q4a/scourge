@@ -48,7 +48,7 @@ class ShapePalette : public Shapes {
 private:
 	ModelLoader *loader;
 
-  GLuint gui_texture, gui_wood_texture, gui_texture2;
+  GLuint gui_texture, gui_wood_texture, gui_texture2, hand_attack_icon;
   std::map<int, GLuint> statModIcons;
 	GLuint thirstIcon, hungerIcon;
 
@@ -76,6 +76,8 @@ public:
   inline GLuint getProgressHighlightTexture() { return progressHighlightTexture; }
 
   inline GLuint getMapGridTile( int x, int y ) { return mapGrid[ x ][ y ]; }
+
+	inline GLuint getHandsAttackIcon() { return hand_attack_icon; }
 
   void initMapGrid();
 
