@@ -1147,16 +1147,18 @@ void ScourgeView::drawWeather() {
             glPushMatrix();
             glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
 
+            if ( ( now - lastLightning ) < 1001 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
+	      glColor4f( 1, 1, 1, 1 );
+	    } else {
+	      glColor4f( 0, 0.8f, 1, 0.8f );
+	    }
+
 	    for ( int i = 0; i < rainDropCount; i++ ) {
                 glLoadIdentity();
 	        glTranslatef( rainDropX[i], rainDropY[i], 500 );
 	        glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
+		glRotatef( 15, 0, 0, 1 );
 	        glEnable( GL_TEXTURE_2D );
-	        if ( ( now - lastLightning ) < 1001 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
-	            glColor4f( 1, 1, 1, 1 );
-	        } else {
-	            glColor4f( 0, 0.8f, 1, 0.8f );
-	        }
 	        glBegin( GL_QUADS );
 	        glNormal3f( 0, 0, 1 );
 	        glTexCoord2f( 0, 0 );
