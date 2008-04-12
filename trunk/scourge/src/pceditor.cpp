@@ -366,6 +366,7 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
               availableSkillMod < AVAILABLE_SKILL_POINTS ) {
             creature->setSkillMod( n, creature->getSkillMod( n ) - 1 );
             availableSkillMod++;
+            okButton->setEnabled( false );
           }
           loadUI();
         } else if( widget == skillPlus[n] ) {
@@ -373,6 +374,7 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
               availableSkillMod > 0 ) {
             creature->setSkillMod( n, creature->getSkillMod( n ) + 1 );
             availableSkillMod--;
+            if( availableSkillMod == 0 ) okButton->setEnabled( true );
           }
           loadUI();
         }
@@ -445,6 +447,7 @@ void PcEditor::createUI() {
 																firstColWidth, 
 																h - x - win->getGutter(), 
 																_( "Accept" ) );
+	okButton->setEnabled( false );
 	cancelButton = win->createButton( x + firstColWidth + buttonSpace, 
 																		h - x - buttonHeight - win->getGutter(), 
 																		firstColWidth + buttonSpace + firstColWidth, 
