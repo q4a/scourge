@@ -2223,6 +2223,7 @@ void Scourge::drawWidgetContents(Widget *w) {
       // draw the current weapon
       if( party->getParty( i )->getPreferredWeapon() == -1 ) {
         w->setTooltip( _( "Current Weapon: Bare Hands" ) );
+				renderHandAttackIcon( 0, 0, 32 );
       } else {
         Item *item = party->getParty( i )->getItemAtLocation( party->getParty( i )->getPreferredWeapon() );
         if(item &&
@@ -3558,6 +3559,22 @@ void Scourge::describeDefense( Creature *p, int x, int y ) {
 	getSDLHandler()->texPrint( x, y + 24, s );
 }
 
+void Scourge::renderHandAttackIcon( int x, int y, int size ) {
+	glEnable( GL_TEXTURE_2D );
+	glColor4f( 1, 1, 1, 1 );
+	glBindTexture( GL_TEXTURE_2D, getShapePalette()->getHandsAttackIcon() );
+	glBegin( GL_QUADS );
+	glTexCoord2d( 0, 1 );
+	glVertex2d( x, y + size );
+	glTexCoord2d( 0, 0 );
+	glVertex2d( x, y );
+	glTexCoord2d( 1, 0 );
+	glVertex2d( x + size, y );
+	glTexCoord2d( 1, 1 );
+	glVertex2d( x + size, y + size );
+	glEnd();
+}
+
 bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull ) {
 	enum { LINE_SIZE = 80 };
 	char buff[ LINE_SIZE ];
@@ -3569,16 +3586,7 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
 			glEnable( GL_TEXTURE_2D );
 			item->renderIcon( this, x, y - 10, 32, 32, true );
 		} else {
-			glDisable( GL_TEXTURE_2D );
-			glColor4f( 1, 0.8f, 0.6f, 1 );
-			glBegin( GL_LINE_LOOP );
-			glVertex2d( x, y - 10 + 32 );
-			glVertex2d( x, y - 10 );
-			glVertex2d( x + 32, y - 10 );
-			glVertex2d( x + 32, y - 10 + 32 );
-			glEnd();
-			glEnable( GL_TEXTURE_2D );
-			glColor4f( 1, 1, 1, 1 );
+			renderHandAttackIcon( x, y - 10, 32 );
 		}
     p->getAttack( item, &max, &min );
 		p->getCth( item, &cth, &skill, false );

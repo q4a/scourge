@@ -233,6 +233,9 @@ void ShapePalette::initialize() {
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
+	string s = "/textures/hands.png";
+	hand_attack_icon = loadAlphaTexture( s );
+
   // load map textures
   initMapGrid();
 
