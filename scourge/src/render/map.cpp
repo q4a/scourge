@@ -383,6 +383,9 @@ void Map::reset() {
 	isCurrentlyUnderRoof = isRoofShowing = true;
 
   clearTraps();
+  
+  gates.clear();
+  teleporters.clear();
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -525,9 +528,11 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
       float chunkPosY = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
 
       // frustum testing (including extra for roof pieces)
-      if(useFrustum && !frustum->CubeInFrustum(chunkPosX - ( 4 / DIV ), chunkPosY - ( 4 / DIV ), 0.0f, static_cast<float>(MAP_UNIT + 8) / DIV)) 
-      	
+      if(useFrustum && !frustum->CubeInFrustum(chunkPosX - ( 4 / DIV ), 
+                                               chunkPosY - ( 4 / DIV ), 0.0f, 
+                                               static_cast<float>(MAP_UNIT + 8) / DIV)) { 
         continue;
+      }
 
 
       // FIXME: works but slow. Use 1 polygon instead (like floor)
@@ -2279,6 +2284,14 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 			}
 		}
 	}
+	
+	// remember gates and teleporters
+	if( shape == shapes->findShapeByName("GATE_UP") ||
+			shape == shapes->findShapeByName("GATE_DOWN") ) {
+		gates.insert( p );
+	} else if( shape == shapes->findShapeByName("TELEPORTER") ) {
+		teleporters.insert( p );
+	}
 }
 
 void Map::setPosition( Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *di ) {
@@ -2335,6 +2348,14 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 
 		// Actually free the shape
 		mapMemoryManager->deleteLocation( p );
+		
+		// forget gates and teleporters
+		if( shape == shapes->findShapeByName("GATE_UP") ||
+				shape == shapes->findShapeByName("GATE_DOWN") ) {
+			gates.erase( p );
+		} else if( shape == shapes->findShapeByName("TELEPORTER") ) {
+			teleporters.erase( p );
+		}
   }
   return shape;
 }

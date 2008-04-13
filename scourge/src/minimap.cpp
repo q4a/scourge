@@ -360,6 +360,10 @@ void MiniMap::drawMap() {
     glDisable( GL_ALPHA_TEST );
     glEnable(GL_BLEND);
     glPopMatrix();
+    
+    // draw pointers for gates and teleporters
+    drawPointers( scourge->getSession()->getMap()->getGates(), Color( 1, 0, 0, 1 ) );
+    drawPointers( scourge->getSession()->getMap()->getTeleporters(), Color( 0, 0, 1, 1 ) );
   }
 
   glPopMatrix();
@@ -369,3 +373,33 @@ void MiniMap::drawMap() {
   glEnable( GL_TEXTURE_2D );
 }
 
+void MiniMap::drawPointers( std::set<Location*> *p, Color color ) {
+  // player's pos
+  float px = scourge->getParty()->getPlayer()->getX();
+  float py = scourge->getParty()->getPlayer()->getY();
+  
+  // center coord. of minimap
+  float r = MINI_MAP_SIZE * MINI_MAP_BLOCK / 2;
+  
+  for( set<Location*>::iterator e = p->begin(); e != p->end(); ++e ) {
+  	Location *pos = *e;
+  	float angle = Util::getAngle( px, py, 0, 0, (float)pos->x, (float)pos->y, 0, 0 );
+  	float nx = r + ( r - 10 ) * cos( Constants::toRadians( angle ) ) - 5;
+  	float ny = r + ( r - 10 ) * sin( Constants::toRadians( angle ) );
+  	glColor4f( color.r, color.g, color.b, color.a );
+    glBegin( GL_QUADS );   
+    glVertex2d( nx, ny + 4 ); 
+    glVertex2d( nx + 4, ny + 4 ); 
+    glVertex2d( nx + 4, ny ); 
+    glVertex2d( nx, ny );     
+    glEnd();
+    glColor4f( 0, 0, 0, 1 );
+    glBegin( GL_LINE_LOOP );   
+    glVertex2d( nx - 1, ny + 6 ); 
+    glVertex2d( nx + 6, ny + 6 ); 
+    glVertex2d( nx + 6, ny - 1 ); 
+    glVertex2d( nx - 1, ny - 1 );     
+    glEnd();    
+  }
+  glColor4f( 1, 1, 1, 1 );
+}

@@ -70,6 +70,9 @@ private:
   inline void setShowMiniMap( bool b ) { showMiniMap = b; }
   inline bool isMiniMapShown() { return showMiniMap; }
   
+protected:
+	void drawPointers( std::set<Location*> *p, Color color );
+  
 };
 
 #endif

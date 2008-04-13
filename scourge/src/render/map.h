@@ -261,6 +261,8 @@ private:
   bool isRoofShowing, isCurrentlyUnderRoof;
 
   int weather;
+  
+  std::set<Location*> gates, teleporters;
 
  public:
   bool useFrustum;
@@ -648,6 +650,9 @@ private:
 	
 	bool inMapEditor();
 	bool coversDoor( Shape *shape, int x, int y );
+	
+	inline std::set<Location*> *getGates() { return &gates; }
+	inline std::set<Location*> *getTeleporters() { return &teleporters; }
 
 protected:
 
