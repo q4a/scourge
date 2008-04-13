@@ -1190,16 +1190,17 @@ void ScourgeView::drawWeather() {
 	// Draw the lightning
 	int lightningTime = now - lastLightning;
 	
-	if ( lightningTime < 1001 ) {
+	if ( lightningTime < 201 ) {
 	
 	    float brightness;
 	
 	    if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_THUNDER ) {
-	        if ( lightningTime < 501 ) {
-	            brightness = 0.9f / static_cast<float>( 501 - lightningTime );
+	        if ( lightningTime < 101 ) {
+	            brightness = ( (float)lightningTime / 100 ) * lightningBrightness;
 	        } else {
-	            brightness = 0.9f / static_cast<float>( lightningTime - 500 );
+	            brightness = ( ( 201 - (float)lightningTime ) / 100 ) * lightningBrightness;
 	        }
+
 	        glPushMatrix();
 	        glLoadIdentity();
 	        glTranslatef( 0, 0, 500 );
@@ -1226,6 +1227,7 @@ void ScourgeView::drawWeather() {
 	if ( now > ( lastLightningRoll + 500 ) ) {
 	    if ( Util::dice( 25 ) == 0 ) {
 	        lastLightning = now;
+                lightningBrightness = 0.3f + ( Util::mt_rand() * 0.5f );
 	        if ( scourge->getMap()->isHeightMapEnabled() && scourge->getMap()->getWeather() & WEATHER_THUNDER ) {
                     int channel;
                     int volume = ( scourge->getMap()->getCurrentlyUnderRoof() ? 40 : 128 );
