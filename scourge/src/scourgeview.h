@@ -69,6 +69,7 @@ private:
   Uint32 lastWeatherUpdate;
   Uint32 lastLightning;
   Uint32 lastLightningRoll;
+  float lightningBrightness;
 
 public:
   ScourgeView( Scourge *scourge );
