@@ -524,9 +524,9 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
       float chunkPosX = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) / DIV;
       float chunkPosY = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
 
-      // frustum testing
-      //frustum->CalculateFrustum();
-      if(useFrustum && !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, static_cast<float>(MAP_UNIT) / DIV)) 
+      // frustum testing (including extra for roof pieces)
+      if(useFrustum && !frustum->CubeInFrustum(chunkPosX - ( 4 / DIV ), chunkPosY - ( 4 / DIV ), 0.0f, static_cast<float>(MAP_UNIT + 8) / DIV)) 
+      	
         continue;
 
 
