@@ -3560,6 +3560,8 @@ void Scourge::describeDefense( Creature *p, int x, int y ) {
 }
 
 void Scourge::renderHandAttackIcon( int x, int y, int size ) {
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 	glBindTexture( GL_TEXTURE_2D, getShapePalette()->getHandsAttackIcon() );
@@ -3573,6 +3575,7 @@ void Scourge::renderHandAttackIcon( int x, int y, int size ) {
 	glTexCoord2d( 1, 1 );
 	glVertex2d( x + size, y + size );
 	glEnd();
+	glDisable( GL_BLEND );
 }
 
 bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull ) {
