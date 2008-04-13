@@ -34,7 +34,7 @@ using namespace std;
 TerrainGenerator *TerrainGenerator::getGenerator( Scourge *scourge, int depth ) {
 	Mission *mission = scourge->getSession()->getCurrentMission();
 	TerrainGenerator *dg;
-	if( strstr( mission->getMapName(), "outdoors" ) && depth == 0 ) {
+	if( depth == 0 ) {
 		dg = new OutdoorGenerator( scourge, 
 															 mission->getLevel(), 
 															 depth,

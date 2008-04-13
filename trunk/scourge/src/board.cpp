@@ -236,6 +236,11 @@ void Board::initMissions() {
     int depth =  static_cast<int>(static_cast<float>(level) / static_cast<float>(MAX_MISSION_DEPTH - 3) ) + 1 + Util::dice( 3 );
     if( depth > MAX_MISSION_DEPTH ) depth = MAX_MISSION_DEPTH;
     int templateIndex = Util::dice( templates.size() );
+    
+    // only outdoor maps can be 1 depth
+    if( depth ==1 && tolower( templates[ templateIndex ]->getMapType() ) != 'o' ) {
+    	depth++;
+    }
 		// Create a new mission but only keep it if there isn't another mission with this name already.
 		// This is because missions are 'found' on load via name, so names have to be unique.
 		Mission *mission = templates[ templateIndex ]->createMission( session, level, depth );
@@ -288,7 +293,7 @@ void Board::initMissions() {
 		missionText[i] = str;
 		snprintf( str, 20, _("S:%d, "), availableMissions[i]->getDepth() );
 		missionText[i] += str;
-		missionText[i] += ( availableMissions[i]->isReplay() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : ""; 
+		missionText[i] += ( availableMissions[i]->isReplay() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : ""; 
 //		missionText[i] += ( availableMissions[i]->isStoryLine() && availableMissions[i]->isCompleted() && availableMissions[i]->isReplayable() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : ""; 
 		missionText[i] += " ";
 		missionText[i] += availableMissions[i]->getDisplayName();
