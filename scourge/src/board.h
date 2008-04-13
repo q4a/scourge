@@ -273,6 +273,7 @@ public:
 	inline char *getName() { return name; }
   inline char *getDisplayName() { return displayName; }
 	inline std::string& getAmbientSoundName() { return ambientSoundName; }
+	inline char getMapType() { return mapType; }
 private:
   void parseText( Session *session, int level, int depth,
                   char *text, char *parsedText,
