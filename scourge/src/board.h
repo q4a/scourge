@@ -163,7 +163,7 @@ public:
   inline char *getSpecial() { return special; }
   inline void setSpecial( char const* s ) { strncpy( special, s, 79 ); special[79]='\0'; }
 	inline void setAmbientSoundName( std::string& s ) { this->ambientSoundName = s; }
-	inline std::string& getAmbientSoundName() { return this->ambientSoundName; }
+	std::string& getAmbientSoundName();
 
   inline void setStoryLine( bool b ) { storyLine = b; }
   inline bool isStoryLine() { return storyLine; }
