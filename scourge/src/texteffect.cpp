@@ -47,18 +47,23 @@ TextEffect::~TextEffect() {
 void TextEffect::draw() {
   glDisable(GL_DEPTH_TEST);
   glDisable( GL_CULL_FACE );
-  
-	if( !textureInMemory ) {
+
+  if( !textureInMemory ) {
     buildTextures();
   }
 
   float zoom = MENU_ITEM_ZOOM;
-  glEnable( GL_TEXTURE_2D );
   zoom = ( active ? MENU_ITEM_ZOOM * 1.5f : MENU_ITEM_ZOOM );
+
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+  //scourge->setBlendFunc();
+
   glPushMatrix();
   glLoadIdentity();
   glTranslatef( x + 40, y + FONT_OFFSET, 0 );
   glBindTexture( GL_TEXTURE_2D, texture[0] );
+
   if( active ) {
     //glColor4f( 1, 0.6f, 0.5f, 1 );
     glColor4f( 0.9f, 0.7f, 0.15f, 1 );
@@ -66,10 +71,7 @@ void TextEffect::draw() {
     glColor4f( 1, 1, 1, 1 );
   }
 
-  glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-  //scourge->setBlendFunc();
-
+  glEnable( GL_TEXTURE_2D );
   glBegin( GL_QUADS );
 //  glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 1 );
@@ -81,13 +83,12 @@ void TextEffect::draw() {
   glTexCoord2f( 0, 0 );
   glVertex2f( 0, MENU_ITEM_HEIGHT * zoom );
   glEnd();
-	glPopMatrix();
+  glDisable( GL_TEXTURE_2D );
+  glDisable( GL_BLEND );
+  glPopMatrix();
 
+  drawEffect( 4.0f, 20 );
 
-	glBlendFunc( GL_DST_COLOR, GL_ONE );
-	drawEffect( 4.0f, 20 );
-	glDisable( GL_BLEND );  
-  
   // move menu
   Uint32 tt = SDL_GetTicks();
   if( tt - lastTickMenu > 40 ) {
@@ -107,6 +108,13 @@ void TextEffect::draw() {
 }
 
 void TextEffect::drawEffect( float divisor, int count ) {
+	float scaledDivisor = 256.0f * divisor;
+
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_DST_COLOR, GL_ONE );
+	glPushMatrix();
+	glBindTexture( GL_TEXTURE_2D, texture[0] );
+
 	for( int i = 0; i < count; i++ ) {
 		if( !( particle[i].life ) ) {
 			particle[i].life = Util::dice( MAX_PARTICLE_LIFE );
@@ -124,21 +132,19 @@ void TextEffect::drawEffect( float divisor, int count ) {
 			}
 			particle[i].step = 4.0f * Util::mt_rand();
 		}
-		
+
 		if( active ) {
-			glPushMatrix();
 			glLoadIdentity();
-			glTranslatef( x + particle[i].x, 
-										y + particle[i].y, 0 );
-			glBindTexture( GL_TEXTURE_2D, texture[0] );
+			glTranslatef( x + particle[i].x, y + particle[i].y, 0 );
 			
 			float a = static_cast<float>( MAX_PARTICLE_LIFE - particle[i].life ) / static_cast<float>( MAX_PARTICLE_LIFE );
 			//if( i == 0 ) cerr << "life=" << particle[i].life << " a=" << a << endl;
-			glColor4f( static_cast<float>( particle[i].r ) / ( 256.0f * divisor ), 
-								 static_cast<float>( particle[i].g ) / ( 256.0f * divisor ), 
-								 static_cast<float>( particle[i].b ) / ( 256.0f * divisor ), 
+			glColor4f( static_cast<float>( particle[i].r ) / ( scaledDivisor ), 
+								 static_cast<float>( particle[i].g ) / ( scaledDivisor ), 
+								 static_cast<float>( particle[i].b ) / ( scaledDivisor ), 
 								 a / divisor );
 			
+			glEnable( GL_TEXTURE_2D );
 			glBegin( GL_QUADS );
 			glNormal3f( 0, 0, 1 );
 			glTexCoord2f( 0, 1 );
@@ -150,9 +156,11 @@ void TextEffect::drawEffect( float divisor, int count ) {
 			glTexCoord2f( 0, 0 );
 			glVertex2f( 0, MENU_ITEM_HEIGHT * particle[i].zoom );
 			glEnd();
-			glPopMatrix();  
+			glDisable( GL_TEXTURE_2D );
 		}
 	}
+	glPopMatrix();  
+	glDisable( GL_BLEND );
 }
 
 void TextEffect::buildTextures() {
@@ -160,19 +168,17 @@ void TextEffect::buildTextures() {
   int width = MENU_ITEM_WIDTH;
   int height = MENU_ITEM_HEIGHT;
 
-
   glPushMatrix();
   glLoadIdentity();
-  glDisable( GL_TEXTURE_2D );
   glColor4f( 0, 0, 0, 0 );
+
+  glEnable( GL_TEXTURE_2D );
   glBegin( GL_QUADS );
   glVertex2f( x, y - FONT_OFFSET );
   glVertex2f( x + width, y - FONT_OFFSET );
   glVertex2f( x + width, y - FONT_OFFSET + height );
   glVertex2f( x, y - FONT_OFFSET + height );
   glEnd();
-  glEnable( GL_TEXTURE_2D );
-
 
   scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 
@@ -200,12 +206,13 @@ void TextEffect::buildTextures() {
   
   // Copy to a texture
   glLoadIdentity();
-  glEnable( GL_TEXTURE_2D );
   glBindTexture( GL_TEXTURE_2D, texture[0] );
   glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 
                     x, scourge->getSDLHandler()->getScreen()->h - ( y - FONT_OFFSET + height ), 
                     width, height, 0 );
   scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+
+  glDisable( GL_TEXTURE_2D );
   glPopMatrix();
 }
 
