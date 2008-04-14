@@ -75,7 +75,7 @@ void PcEditor::setCreature( Creature *c, bool isEditable ) {
     deleteCreature = true;
   }
 
-  rollSkills();
+	setCharType( charType->getSelectedLine() );
 
 	detailsInfo->setCreature( win, creature );
 
@@ -215,7 +215,7 @@ void PcEditor::rollSkillsForCreature( Creature *c ) {
 	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
 		int n;
 		if( Skill::skills[i]->getGroup()->isStat() ) {
-			n = ( c->getCharacter()->getSkill( i ) * 3 - 1 ) + Util::pickOne( 1, 5 );
+				n = ( c->getCharacter()->getSkill( i ) * 3 - 1 ) + Util::pickOne( 1, 5 );
 		} else {
 			
 			// create the starting value as a function of the stats

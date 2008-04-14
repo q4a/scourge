@@ -45,7 +45,7 @@ TextEffect::~TextEffect() {
 }
 
 void TextEffect::draw() {
-  glDisable(GL_DEPTH_TEST);
+  glEnable(GL_DEPTH_TEST);
   glDisable( GL_CULL_FACE );
   
 	if( !textureInMemory ) {
