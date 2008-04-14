@@ -88,33 +88,26 @@ void ScourgeView::drawView() {
   // in TB combat, center map when monster's turn
   centerOnMonsterInTB();  
 
-	scourge->getMap()->preDraw();
+  scourge->getMap()->preDraw();
   scourge->getMap()->draw();
-	scourge->getMap()->postDraw();
+  scourge->getMap()->postDraw();
 
-  glDisable( GL_DEPTH_TEST );
-  glDisable( GL_TEXTURE_2D );
   drawMapInfos();
 
   drawWeather();
 
   scourge->getMiniMap()->drawMap();
 
-	ambientObjectSounds();
+  ambientObjectSounds();
 
   // the boards outside the map
   drawOutsideMap();
-  
-  glEnable( GL_DEPTH_TEST );
-  glEnable( GL_TEXTURE_2D );
-	glDisable( GL_CULL_FACE );
-  glDisable( GL_SCISSOR_TEST );
 
   drawBorder();
 
   drawTextEffect();  
 
-	scourge->getDescriptionScroller()->draw();
+  scourge->getDescriptionScroller()->draw();
 
   // Hack: A container window may have been closed by hitting the Esc. button.
   if(Window::windowWasClosed) {
@@ -510,6 +503,10 @@ void ScourgeView::drawBorder() {
      scourge->getMap()->getViewHeight() == scourge->getSDLHandler()->getScreen()->h &&
      !scourge->getUserConfiguration()->getFrameOnFullScreen()) return;
 
+  glEnable( GL_TEXTURE_2D );
+  glDisable( GL_CULL_FACE );
+  glDisable( GL_SCISSOR_TEST );
+
   glPushMatrix();
   glLoadIdentity();
 
@@ -699,6 +696,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   glPushMatrix();
   //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
 
+  glEnable( GL_TEXTURE_2D );
   glEnable( GL_DEPTH_TEST );
   glDepthMask(GL_FALSE);
   glEnable( GL_BLEND );
