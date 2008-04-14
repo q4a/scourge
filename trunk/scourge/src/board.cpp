@@ -1270,6 +1270,11 @@ void Mission::loadStorylineMission( MissionInfo *info ) {
 	setCompleted( info->completed ? true : false );
 }
 
+string outdoors_ambient_sound = "outdoors";
+string& Mission::getAmbientSoundName() { 
+	return( !isStoryLine() && board->getSession()->getGameAdapter()->getCurrentDepth() == 0 ? outdoors_ambient_sound : ambientSoundName );
+}
+
 NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype ) {
   this->x = x;
   this->y = y;
