@@ -3789,11 +3789,13 @@ void Scourge::initChapterIntro() {
 	chapterIntroWin->setVisible( true );
 	getSession()->getSound()->playMusicChapter();
 
+	// Try to add line breaks fitting the screen resolution
+	int charsPerRow = ( getScreenWidth() - 300 ) / 14 + 1;
 	char tmp[3000];
 	Util::addLineBreaks( ( strlen( session->getCurrentMission()->getIntroDescription() ) ? 
 												 session->getCurrentMission()->getIntroDescription() :
 												 session->getCurrentMission()->getDescription() ), 
-											 tmp, 62 );
+											 tmp, charsPerRow );
 	chapterText.clear();
 	Util::getLines( tmp, &chapterText );
 	chapterTextPos = -2000;
