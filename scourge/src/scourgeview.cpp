@@ -60,6 +60,12 @@ ScourgeView::ScourgeView( Scourge *scourge ) {
       rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, scourge->getUserConfiguration()->getW() );
       rainDropY[i] = Util::pickOne( -RAIN_DROP_SIZE, scourge->getUserConfiguration()->getH() );
     }
+    for( int i = 0; i < CLOUD_COUNT; i++ ) {
+      cloudSize[i] = 3.0f + ( Util::mt_rand() * 9 );
+      cloudSpeed[i] = Util::pickOne( 20, 40 );
+      cloudX[i] = Util::pickOne( -(int)( 256.0f * cloudSize[i] ), scourge->getUserConfiguration()->getW() );
+      cloudY[i] = Util::pickOne( -(int)( 128.0f * cloudSize[i] ), scourge->getUserConfiguration()->getH() );
+    }
 }
 
 void ScourgeView::initUI() {
@@ -1077,6 +1083,7 @@ void ScourgeView::drawDraggedItem() {
 }
 
 #define MIN_RAIN_DROP_COUNT 50
+#define MIN_CLOUD_COUNT 5
 
 void ScourgeView::drawWeather() {
 	
@@ -1093,9 +1100,10 @@ void ScourgeView::drawWeather() {
 	int screenWPlusMore = static_cast<int>( static_cast<float>( screenW ) * 1.25f );
 	int screenH = scourge->getUserConfiguration()->getH();
 	
-	int deltaY = static_cast<int>( static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 ) );
-	int deltaX = deltaY / 4;
-	
+	int deltaY;
+	int deltaX;
+	float cloudDelta;
+
 	glDisable( GL_CULL_FACE );
 	glDisable( GL_DEPTH_TEST );
 	
@@ -1125,6 +1133,7 @@ void ScourgeView::drawWeather() {
 	    glDisable( GL_TEXTURE_2D );
 	
 	    glPopMatrix();
+
 	}
 	
         if( scourge->getMap()->isHeightMapEnabled() && scourge->getMap()->getCurrentlyUnderRoof() ) {
@@ -1136,11 +1145,14 @@ void ScourgeView::drawWeather() {
         }
 
 	// Draw the rain drops
-
 	if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_RAIN ) {
-			int rainDropCount = (int)( RAIN_DROP_COUNT * ( 1.0f - scourge->getMap()->getZoomPercent() ) );
-			if( rainDropCount > RAIN_DROP_COUNT ) rainDropCount = RAIN_DROP_COUNT;
-			else if( rainDropCount < MIN_RAIN_DROP_COUNT ) rainDropCount = MIN_RAIN_DROP_COUNT;
+
+	    deltaY = static_cast<int>( static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 ) );
+            deltaX = deltaY / 4;
+
+            int rainDropCount = (int)( RAIN_DROP_COUNT * ( 1.0f - scourge->getMap()->getZoomPercent() ) );
+            if( rainDropCount > RAIN_DROP_COUNT ) rainDropCount = RAIN_DROP_COUNT;
+            else if( rainDropCount < MIN_RAIN_DROP_COUNT ) rainDropCount = MIN_RAIN_DROP_COUNT;
 
             glPushMatrix();
             glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
@@ -1185,7 +1197,57 @@ void ScourgeView::drawWeather() {
 	    }
 	}
 	
+        glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
+
+        //Draw the fog clouds
+	if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_FOG ) {
+
+            glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->cloud );
+            glColor4f( 0.6f, 0.6f, 0.4f, 0.5f );
+            glPushMatrix();
+
+            int cloudCount = (int)( CLOUD_COUNT * ( 1.0f - scourge->getMap()->getZoomPercent() ) );
+            if( cloudCount > CLOUD_COUNT ) cloudCount = CLOUD_COUNT;
+            else if( cloudCount < MIN_CLOUD_COUNT ) cloudCount = MIN_CLOUD_COUNT;
+
+            for( int i = 0; i < cloudCount; i++ ) {
+
+              cloudDelta = static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( cloudSpeed[i] ) / 1000 );
+
+              glLoadIdentity();
+              glTranslatef( cloudX[i], cloudY[i], 0 );
+              glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
+              glEnable( GL_TEXTURE_2D );
+              glBegin( GL_QUADS );
+              glNormal3f( 0.0f, 0.0f, 1.0f );
+              glTexCoord2f( 1.0f, 1.0f );
+              glVertex2f( cloudSize[i] * 256.0f, cloudSize[i] * 128.0f );
+              glTexCoord2f( 1.0f, 0.0f );
+              glVertex2f( cloudSize[i] * 256.0f, 0 );
+              glTexCoord2f( 0.0f, 0.0f );
+              glVertex2f( 0, 0 );
+              glTexCoord2f( 0.0f, 1.0f );
+              glVertex2f( 0, cloudSize[i] * 128.0f );
+              glEnd();
+              glDisable( GL_TEXTURE_2D );
+
+	      cloudX[i] -= cloudDelta;
+	
+	      if ( cloudX[i] < -(256.0f * cloudSize[i]) ) {
+                cloudSize[i] = 3.0f + ( Util::mt_rand() * 9 );
+                cloudSpeed[i] = Util::pickOne( 20, 40 );
+                cloudX[i] = Util::pickOne( scourge->getUserConfiguration()->getW(), scourge->getUserConfiguration()->getW() * 2 );
+                cloudY[i] = Util::pickOne( -(int)( 128.0f * cloudSize[i] ), scourge->getUserConfiguration()->getH() );
+	      }
+
+            }
+
+        glPopMatrix();
+
+        }
+
 	// Draw the lightning
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	int lightningTime = now - lastLightning;
 	
 	if ( lightningTime < 201 ) {

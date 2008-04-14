@@ -66,6 +66,11 @@ private:
   #define RAIN_DROP_SIZE 32
   int rainDropX[RAIN_DROP_COUNT];
   int rainDropY[RAIN_DROP_COUNT];
+  #define CLOUD_COUNT 50
+  float cloudX[CLOUD_COUNT];
+  float cloudY[CLOUD_COUNT];
+  float cloudSize[CLOUD_COUNT];
+  int cloudSpeed[CLOUD_COUNT];
   Uint32 lastWeatherUpdate;
   Uint32 lastLightning;
   Uint32 lastLightningRoll;
