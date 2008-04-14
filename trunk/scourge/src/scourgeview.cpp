@@ -1147,7 +1147,7 @@ void ScourgeView::drawWeather() {
             glPushMatrix();
             glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
 
-            if ( ( now - lastLightning ) < 1001 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
+            if ( ( now - lastLightning ) < 501 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
 	      glColor4f( 1, 1, 1, 1 );
 	    } else {
 	      glColor4f( 0, 0.8f, 1, 0.8f );
