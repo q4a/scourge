@@ -1075,7 +1075,7 @@ void ScourgeView::drawDraggedItem() {
 }
 
 #define MIN_RAIN_DROP_COUNT 50
-#define MIN_CLOUD_COUNT 5
+#define MIN_CLOUD_COUNT 10
 
 void ScourgeView::drawWeather() {
 	
@@ -1137,6 +1137,7 @@ void ScourgeView::drawWeather() {
         }
 
 	// Draw the rain drops
+        glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
 	if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_RAIN ) {
 
 	    deltaY = static_cast<int>( static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 ) );
@@ -1152,12 +1153,13 @@ void ScourgeView::drawWeather() {
             if ( ( now - lastLightning ) < 501 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
 	      glColor4f( 1, 1, 1, 1 );
 	    } else {
-	      glColor4f( 0, 0.8f, 1, 0.8f );
+//	      glColor4f( 0, 0.8f, 1, 0.5f );
+	      glColor4f( 0, 0.5f, 0.7f, 0.5f );
 	    }
 
 	    for ( int i = 0; i < rainDropCount; i++ ) {
                 glLoadIdentity();
-	        glTranslatef( rainDropX[i], rainDropY[i], 500 );
+	        glTranslatef( rainDropX[i], rainDropY[i], 0 );
 	        glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
 		glRotatef( 15, 0, 0, 1 );
 	        glEnable( GL_TEXTURE_2D );
@@ -1207,7 +1209,7 @@ void ScourgeView::drawWeather() {
               cloudDelta = static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( cloudSpeed[i] ) / 1000 );
 
               glLoadIdentity();
-              glTranslatef( cloudX[i], cloudY[i], 0 );
+              glTranslatef( cloudX[i], cloudY[i], 10 );
               glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
               glEnable( GL_TEXTURE_2D );
               glBegin( GL_QUADS );
@@ -1225,7 +1227,7 @@ void ScourgeView::drawWeather() {
 
 	      cloudX[i] -= cloudDelta;
 	
-	      if ( cloudX[i] < -(256.0f * cloudSize[i]) ) {
+	      if ( cloudX[i] < -(256.0f * scourge->getMap()->getZoom() * cloudSize[i]) ) {
                 cloudSize[i] = 3.0f + ( Util::mt_rand() * 9 );
                 cloudSpeed[i] = Util::pickOne( 20, 40 );
                 cloudX[i] = Util::pickOne( scourge->getUserConfiguration()->getW(), scourge->getUserConfiguration()->getW() * 2 );
