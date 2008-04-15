@@ -62,9 +62,9 @@ class NpcConversation {
 class NpcInfo {
 public:
   int x, y, level, type;
-  char *name;
+  char name[255];
   std::set<int> subtype;
-  char *subtypeStr;
+  char subtypeStr[255];
 
   NpcInfo( int x, int y, char *name, int level, char *type, char *subtype );
   ~NpcInfo();
@@ -231,6 +231,9 @@ public:
 	MissionInfo *save();
 	static Mission *load( Session *session, MissionInfo *info );
 	void loadStorylineMission( MissionInfo *info );
+	
+	static NpcInfo *addNpcInfo( int x, int y, char *npcName, int level, char *npcType, char *npcSubType );
+	static void createTypedNpc( Creature *creature, int level, int fx, int fy );
 
 private:
 	//static void addWanderingHeroes( GameAdapter *adapter );
