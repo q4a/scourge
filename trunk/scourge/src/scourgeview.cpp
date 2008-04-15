@@ -56,16 +56,8 @@ ScourgeView::ScourgeView( Scourge *scourge ) {
   targetWidthDelta = 0.05f;
   lastTargetTick = SDL_GetTicks();
   lastWeatherUpdate = SDL_GetTicks();
-    for( int i = 0; i < RAIN_DROP_COUNT; i++ ) {
-      rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, scourge->getUserConfiguration()->getW() );
-      rainDropY[i] = Util::pickOne( -RAIN_DROP_SIZE, scourge->getUserConfiguration()->getH() );
-    }
-    for( int i = 0; i < CLOUD_COUNT; i++ ) {
-      cloudSize[i] = 3.0f + ( Util::mt_rand() * 9 );
-      cloudSpeed[i] = Util::pickOne( 20, 40 );
-      cloudX[i] = Util::pickOne( -(int)( 256.0f * cloudSize[i] ), scourge->getUserConfiguration()->getW() );
-      cloudY[i] = Util::pickOne( -(int)( 128.0f * cloudSize[i] ), scourge->getUserConfiguration()->getH() );
-    }
+  generateRain();
+  generateClouds();
 }
 
 void ScourgeView::initUI() {
@@ -1315,4 +1307,20 @@ void ScourgeView::drawWeather() {
 	glEnable( GL_CULL_FACE );
 	glEnable( GL_DEPTH_TEST );
 	
+}
+
+void ScourgeView::generateRain() {
+    for( int i = 0; i < RAIN_DROP_COUNT; i++ ) {
+      rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, scourge->getUserConfiguration()->getW() );
+      rainDropY[i] = Util::pickOne( -RAIN_DROP_SIZE, scourge->getUserConfiguration()->getH() );
+    }
+}
+
+void ScourgeView::generateClouds() {
+    for( int i = 0; i < CLOUD_COUNT; i++ ) {
+      cloudSize[i] = 3.0f + ( Util::mt_rand() * 9 );
+      cloudSpeed[i] = Util::pickOne( 20, 40 );
+      cloudX[i] = Util::pickOne( -(int)( 256.0f * cloudSize[i] ), scourge->getUserConfiguration()->getW() );
+      cloudY[i] = Util::pickOne( -(int)( 128.0f * cloudSize[i] ), scourge->getUserConfiguration()->getH() );
+    }
 }
