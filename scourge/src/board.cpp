@@ -1282,7 +1282,7 @@ void Mission::createTypedNpc( Creature *creature, int level, int fx, int fy ) {
 	char npcSubType[255];
 	strcpy( npcSubType, "" );	
 	char npcTypeName[255];
-	strcpy( npcTypeName, Constants::npcTypeDisplayName[ npcType ] );
+	strcpy( npcTypeName, _( Constants::npcTypeDisplayName[ npcType ] ) );
 	if( npcType == Constants::NPC_TYPE_MERCHANT ) {
 		// fixme: trade-able should be an attribute to itemType in item.cfg
 		int n = Util::dice( 5 );
