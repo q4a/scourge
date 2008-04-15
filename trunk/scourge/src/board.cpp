@@ -1034,17 +1034,7 @@ void Mission::initNpcs( ConfigLang *config, GameAdapter *adapter ) {
 		strcpy( npcSubType, node->getValueAsString( "subtype" ) );
   
 		// store npc info
-		//addNpcInfo( x, y, npcName, level, npcType, npcSubtype );
-		string key = getNpcInfoKey( x,y );
-		NpcInfo *npcInfo = 
-			new NpcInfo( x, y, 
-									 strdup( npcName ), 
-									 level, 
-									 strdup( npcType ), 
-									 ( strlen( npcSubType ) ? 
-										 strdup( npcSubType ) : 
-										 NULL ) );
-		npcInfos[ key ] = npcInfo;
+		NpcInfo *npcInfo = addNpcInfo( x, y, npcName, level, npcType, npcSubType );
   
 		// Assign to creature
 		Location *pos = adapter->getSession()->getMap()->getLocation( x, y, 0 );
@@ -1275,10 +1265,51 @@ string& Mission::getAmbientSoundName() {
 	return( !isStoryLine() && board->getSession()->getGameAdapter()->getCurrentDepth() == 0 ? outdoors_ambient_sound : ambientSoundName );
 }
 
+NpcInfo *Mission::addNpcInfo( int x, int y, char *npcName, int level, char *npcType, char *npcSubType ) {
+	string key = getNpcInfoKey( x,y );
+	NpcInfo *npcInfo = 
+		new NpcInfo( x, y, 
+								 npcName, 
+								 level, 
+								 npcType, 
+								 ( strlen( npcSubType ) ? npcSubType : NULL ) ); 
+	npcInfos[ key ] = npcInfo;
+	return npcInfo;
+}
+
+void Mission::createTypedNpc( Creature *creature, int level, int fx, int fy ) {
+	int npcType = 1 + Util::dice( Constants::NPC_TYPE_COUNT - 1 );
+	char npcSubType[255];
+	strcpy( npcSubType, "" );	
+	char npcTypeName[255];
+	strcpy( npcTypeName, Constants::npcTypeDisplayName[ npcType ] );
+	if( npcType == Constants::NPC_TYPE_MERCHANT ) {
+		// fixme: trade-able should be an attribute to itemType in item.cfg
+		int n = Util::dice( 5 );
+		switch( n ) {
+		case 0: strcpy( npcSubType, "POTION;WAND;RING;AMULET;STAFF" ); strcpy( npcTypeName, _( "Magic Merchant" ) ); break;
+		case 1: strcpy( npcSubType, "ARMOR" ); strcpy( npcTypeName, _( "Armor Merchant" ) ); break;
+		case 2: strcpy( npcSubType, "FOOD;DRINK" ); strcpy( npcTypeName, _( "Rations Merchant" ) ); break;
+		case 3: strcpy( npcSubType, "SCROLL" ); strcpy( npcTypeName, _( "Scrolls Merchant" ) ); break;
+		case 4: strcpy( npcSubType, "SWORD;AXE;BOW;MACE;POLE" ); strcpy( npcTypeName, _( "Weapons Merchant" ) ); break;
+		}
+	} else if( npcType == Constants::NPC_TYPE_TRAINER ) {
+		Character *character = Character::getRandomCharacter();
+		strcpy( npcSubType, character->getDisplayName() );
+		sprintf( npcTypeName, _( "Trainer for %s" ), character->getDisplayName() );
+	} else if( npcType == Constants::NPC_TYPE_HEALER ) {
+		strcpy( npcSubType, MagicSchool::getRandomSchool()->getDisplayName() );
+	}
+	char name[255];
+	sprintf( name, _( "%s the %s" ), Rpg::createName(), npcTypeName );
+	NpcInfo *npcInfo = Mission::addNpcInfo( fx, fy, name, level, (char*)Constants::npcTypeName[ npcType ], npcSubType );
+	creature->setNpcInfo( npcInfo );
+}
+
 NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype ) {
   this->x = x;
   this->y = y;
-  this->name = name;
+  strcpy( this->name, name );
   this->level = level;
   this->type = -1;
   for( int i = 0; i < Constants::NPC_TYPE_COUNT; i++ ) {
@@ -1294,7 +1325,7 @@ NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype
   
   if( subtype ) {
     // store as a string
-    this->subtypeStr = subtype;
+    strcpy( this->subtypeStr, subtype );
     
     // parse for some npc types
     char s[255];
@@ -1316,6 +1347,5 @@ NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype
 }
 
 NpcInfo::~NpcInfo() {
-  delete [] name;
 }
 

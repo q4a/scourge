@@ -324,16 +324,14 @@ void OutdoorGenerator::createNpc( Map *map, ShapePalette *shapePal, int x, int y
 		}
 	}
 	
-	cerr << "Adding NPC: " << npcName << endl;
-
 	GLShape *shape = scourge->getShapePalette()->getCreatureShape( npc->getModelName(), npc->getSkinName(), npc->getScale(), npc);
   Creature *creature = scourge->getSession()->newCreature( npc, shape );
   int fx, fy;
   creature->findPlace( x, y, &fx, &fy );
   
-  cerr << "\tat: " << fx << "," << fy << endl;
-  //addItem( levelMap, creature, NULL, NULL, fx, fy );
-  //creature->moveTo( fx, fy, 0 );
+  if( 0 == Util::dice( 5 ) ) {
+  	Mission::createTypedNpc( creature, level, fx, fy );
+  }
 }
 
 // roads and lakes don't mix well
