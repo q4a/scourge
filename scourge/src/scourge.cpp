@@ -371,10 +371,11 @@ void Scourge::startMission( bool startInHq ) {
 				if(inHq) getSession()->getSound()->playMusicHQ();
 				else getSession()->getSound()->playMusicMission();
 				setAmbientPaused( false );
-				int oldWeather = getMap()->getWeather();
+
+				// Set up the weather
 				getMap()->generateWeather();
-				if( ( getMap()->getWeather() & WEATHER_RAIN ) && !( oldWeather & WEATHER_RAIN ) ) view->generateRain();
-				if( ( getMap()->getWeather() & WEATHER_FOG ) && !( oldWeather & WEATHER_FOG ) ) view->generateClouds();
+				if( getMap()->getWeather() & WEATHER_RAIN ) view->generateRain();
+				if( getMap()->getWeather() & WEATHER_FOG ) view->generateClouds();
 				if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
 				if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
 			}
@@ -3823,12 +3824,20 @@ void Scourge::endChapterIntro() {
 	getChapterIntroWin()->setVisible( false );
 	showGui();
 	showLevelInfo();
+
 	// start the haunting tunes
 	if( isInHQ() ) getSession()->getSound()->playMusicHQ();
+	if(inHq) getSession()->getSound()->playMusicHQ();
 	else getSession()->getSound()->playMusicMission();
 	setAmbientPaused( false );
+
+	// Set up the weather
 	getMap()->generateWeather();
+	if( getMap()->getWeather() & WEATHER_RAIN ) view->generateRain();
+	if( getMap()->getWeather() & WEATHER_FOG ) view->generateClouds();
 	if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
+	if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
+
 	getSDLHandler()->fade( 1, 0, 20 );
 }
 
