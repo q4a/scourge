@@ -371,7 +371,10 @@ void Scourge::startMission( bool startInHq ) {
 				if(inHq) getSession()->getSound()->playMusicHQ();
 				else getSession()->getSound()->playMusicMission();
 				setAmbientPaused( false );
+				int oldWeather = getMap()->getWeather();
 				getMap()->generateWeather();
+				if( ( getMap()->getWeather() & WEATHER_RAIN ) && !( oldWeather & WEATHER_RAIN ) ) view->generateRain();
+				if( ( getMap()->getWeather() & WEATHER_FOG ) && !( oldWeather & WEATHER_FOG ) ) view->generateClouds();
 				if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
 				if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
 			}

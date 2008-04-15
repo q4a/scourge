@@ -99,6 +99,9 @@ public:
   void resetInfos();
   void initUI();
 
+  void generateRain();
+  void generateClouds();
+
 protected:
 	void drawChapterIntro();
   void centerOnMonsterInTB();
