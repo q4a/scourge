@@ -64,8 +64,9 @@ private:
 
   #define RAIN_DROP_COUNT 500
   #define RAIN_DROP_SIZE 32
-  int rainDropX[RAIN_DROP_COUNT];
-  int rainDropY[RAIN_DROP_COUNT];
+  float rainDropX[RAIN_DROP_COUNT];
+  float rainDropY[RAIN_DROP_COUNT];
+  float rainDropZ[RAIN_DROP_COUNT];
   #define CLOUD_COUNT 50
   float cloudX[CLOUD_COUNT];
   float cloudY[CLOUD_COUNT];

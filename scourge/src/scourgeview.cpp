@@ -1137,31 +1137,34 @@ void ScourgeView::drawWeather() {
         }
 
 	// Draw the rain drops
-        glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
-	if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_RAIN ) {
+        //glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_RAIN ) {
 
-	    deltaY = static_cast<int>( static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 ) );
-            deltaX = deltaY / 4;
+        	deltaY = static_cast<int>( static_cast<float>( now - lastWeatherUpdate ) * ( static_cast<float>( RAIN_DROP_SPEED ) / 1000 ) );
+        	deltaX = deltaY / 4;
 
-            int rainDropCount = (int)( RAIN_DROP_COUNT * ( 1.0f - scourge->getMap()->getZoomPercent() ) );
-            if( rainDropCount > RAIN_DROP_COUNT ) rainDropCount = RAIN_DROP_COUNT;
-            else if( rainDropCount < MIN_RAIN_DROP_COUNT ) rainDropCount = MIN_RAIN_DROP_COUNT;
+        	int rainDropCount = (int)( RAIN_DROP_COUNT * ( 1.0f - scourge->getMap()->getZoomPercent() ) );
+        	if( rainDropCount > RAIN_DROP_COUNT ) rainDropCount = RAIN_DROP_COUNT;
+        	else if( rainDropCount < MIN_RAIN_DROP_COUNT ) rainDropCount = MIN_RAIN_DROP_COUNT;
+        	
+        	glPushMatrix();
+          glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
 
-            glPushMatrix();
-            glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
-
-            if ( ( now - lastLightning ) < 501 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
-	      glColor4f( 1, 1, 1, 1 );
-	    } else {
-//	      glColor4f( 0, 0.8f, 1, 0.5f );
-	      glColor4f( 0, 0.5f, 0.7f, 0.5f );
-	    }
+            
 
 	    for ( int i = 0; i < rainDropCount; i++ ) {
+	    	if ( ( now - lastLightning ) < 501 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
+        	glColor4f( 1, 1, 1, rainDropZ[i] );
+        } else {
+        	//	      glColor4f( 0, 0.8f, 1, 0.5f );
+        	glColor4f( 0, 0.5f, 0.7f, rainDropZ[i] );
+        }
+	    	
                 glLoadIdentity();
 	        glTranslatef( rainDropX[i], rainDropY[i], 0 );
 	        glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
-		glRotatef( 15, 0, 0, 1 );
+	        glRotatef( 15, 0, 0, 1 );
 	        glEnable( GL_TEXTURE_2D );
 	        glBegin( GL_QUADS );
 	        glNormal3f( 0, 0, 1 );
@@ -1176,8 +1179,8 @@ void ScourgeView::drawWeather() {
 	        glEnd();
 	        glDisable( GL_TEXTURE_2D );
 	
-	        rainDropY[i] += deltaY;
-	        rainDropX[i] -= deltaX;
+	        rainDropY[i] += (deltaY * rainDropZ[i]);
+	        rainDropX[i] -= (deltaX * rainDropZ[i]);
 	
 	        if ( ( rainDropX[i] < -RAIN_DROP_SIZE ) || ( rainDropY[i] > screenH ) ) {
 	            rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, screenWPlusMore );
@@ -1315,6 +1318,7 @@ void ScourgeView::generateRain() {
     for( int i = 0; i < RAIN_DROP_COUNT; i++ ) {
       rainDropX[i] = Util::pickOne( -RAIN_DROP_SIZE, scourge->getUserConfiguration()->getW() );
       rainDropY[i] = Util::pickOne( -RAIN_DROP_SIZE, scourge->getUserConfiguration()->getH() );
+      rainDropZ[i] = Util::roll( 0.25f, 1.0f ); 
     }
 }
 
