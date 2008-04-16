@@ -1023,9 +1023,10 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
         creature->setTargetCreature( tmpTarget );
 
 				char tmp[255];
-				snprintf( tmp,255, _( "%s %s own fumbling hands" ),  
-								 Constants::getMessage( Constants::CAUSE_OF_DEATH ),
-								 ( creature->getSex() == Constants::SEX_MALE ? _( "his" ) : _( "her" ) ) );
+				snprintf( tmp,255, 
+					( creature->getSex() == Constants::SEX_MALE ? _( "%s his own fumbling hands" ) : _( "%s her fumbling hands" ) ), 
+					Constants::getMessage( Constants::CAUSE_OF_DEATH ) 
+				);
 				creature->setPendingCauseOfDeath( tmp );
 
         dealDamage( Util::roll( 0.5f * MIN_FUMBLE_RANGE, 1.5f * MIN_FUMBLE_RANGE ) );
