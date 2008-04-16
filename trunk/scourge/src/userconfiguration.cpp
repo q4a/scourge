@@ -292,6 +292,7 @@ UserConfiguration::UserConfiguration(){
     unsigned int i, j;
     string temp;
 
+    flaky = false;
     standAloneMode = NONE;
 		debugTheme = false;
 
@@ -861,6 +862,9 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
         case 'm': Constants::multitexture = false; break;
         }
       }
+    } else if( !strcmp(argv[i], "--flaky") ) {
+    	// disable some gfx effects for flaky GPU-s
+    	flaky = true;
     } else if( !strcmp(argv[i], "--run-tests") ) {
       // this is ok
       standAloneMode = TEST;
@@ -904,6 +908,7 @@ void UserConfiguration::parseCommandLine(int argc, char *argv[]){
     printf( _( "\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-everything\n" ) );
 		printf( _( "\t--themeXYZ - use gui theme XYZ to draw the ui.\n" ) );
 		printf( _( "\t--debugtheme - use the debug theme only to for wall textures.\n" ) );
+		printf( _( "\t--flaky - disable some graphic effects for flaky video cards.\n" ) );
     printf( _( "\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n" ) );
 #ifdef HAVE_SDL_NET
     printf( _( "Multiplayer options:\n" ) );

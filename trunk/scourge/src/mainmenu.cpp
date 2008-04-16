@@ -397,9 +397,22 @@ void MainMenu::drawMenu() {
 	glDisable(GL_DEPTH_TEST);
 	glColor4f( 1, 1, 1, 1 );
 	for( int i = 0; i < static_cast<int>(textEffects.size()); i++ ) {
-		TextEffect *textEffect = textEffects[i];
-		textEffect->setActive( i == activeMenuItem );
-		textEffect->draw();
+		if( this->scourge->getSession()->getPreferences()->getFlaky() == false ) {		
+			TextEffect *textEffect = textEffects[i];
+			textEffect->setActive( i == activeMenuItem );
+			textEffect->draw();
+		} else {
+			glDisable(GL_DEPTH_TEST);
+			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
+			if( i == activeMenuItem ) {
+				glColor4f( 1, 1, 0, 1 );
+			} else {
+				glColor4f( 1, 1, 1, 1 );			
+			}
+			scourge->getSDLHandler()->texPrint( 50, top + 230 + ( i * 50 ), _(menuText[i]) );
+			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+			glEnable(GL_DEPTH_TEST);
+		}
 	}
 }
 
@@ -731,7 +744,11 @@ bool MainMenu::handleEvent(SDL_Event *event) {
   case SDL_MOUSEMOTION:
   case SDL_MOUSEBUTTONUP:
   if( event->motion.x >= 50 && event->motion.x < 400 ) {
-    activeMenuItem = ( event->motion.y - ( top + 240 ) ) / 50;
+  	if( this->scourge->getSession()->getPreferences()->getFlaky() == false ) {
+  		activeMenuItem = ( event->motion.y - ( top + 240 ) ) / 50;
+  	} else {
+  		activeMenuItem = ( event->motion.y - ( top + 230 + SDLHandler::fontInfos[ Constants::SCOURGE_LARGE_FONT ]->yoffset ) ) / 50;
+  	}
   }
   if( event->button.button != SDL_BUTTON_LEFT ) return false;
   if( event->type == SDL_MOUSEBUTTONUP && activeMenuItem > -1 && activeMenuItem < static_cast<int>(textEffects.size()) ) {

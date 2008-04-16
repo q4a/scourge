@@ -102,6 +102,7 @@ private:
   int port;
   int monsterToughness;
 	bool debugTheme;
+	bool flaky;
    
  public:
  
@@ -112,6 +113,7 @@ private:
   const char * getEngineActionKeyName(int i);      
               
   // engine variables
+  inline bool getFlaky()     { return flaky; }
   inline bool getFullscreen(){ return fullscreen; }
   inline bool getDoublebuf() { return doublebuf;  }
   inline bool getHwpal()     { return hwpal;      }
