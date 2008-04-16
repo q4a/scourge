@@ -221,7 +221,7 @@ void ShapePalette::initialize() {
 
   tmpSurface = NULL;
   tmpImage = NULL;
-  setupAlphaBlendedBMP( "/textures/raindrop.bmp", tmpSurface, tmpImage );
+  setupAlphaBlendedBMP( "/textures/raindrop.bmp", tmpSurface, tmpImage, 0, 0, 0, false, false, true );
   raindropTexture = loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
