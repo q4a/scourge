@@ -68,7 +68,7 @@ void MiniMap::prepare() {
   glGenTextures(1, texture);    
   glBindTexture(GL_TEXTURE_2D, texture[0]); 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliqué a la texture
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);                                          // filtre appliquï¿½ a la texture
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
@@ -162,8 +162,6 @@ void MiniMap::drawMap() {
 
   glDisable( GL_CULL_FACE );
   glDisable( GL_DEPTH_TEST );
-  glDisable( GL_TEXTURE_2D );
-
  
   glPushMatrix();  
   glLoadIdentity();
@@ -206,6 +204,27 @@ void MiniMap::drawMap() {
     glStencilFunc( GL_EQUAL, 1, 0xffffffff );
     glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ); 
     glDepthMask( GL_FALSE );
+  }
+
+  if( useStencil && directMode ) {
+    glPushMatrix();
+    glEnable(GL_BLEND);
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getMinimapMaskTexture() );
+    glColor4f( 0, 0, 0, 0.5f );
+    glBegin( GL_QUADS );   
+    glTexCoord2f( 0, 1 );
+    glVertex2d( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
+    glTexCoord2f( 1, 1 );
+    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
+    glTexCoord2f( 1, 0 );
+    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 ); 
+    glTexCoord2f( 0, 0 );
+    glVertex2d( 0, 0 );     
+    glEnd();       
+    glDisable(GL_TEXTURE_2D); 
+    glPopMatrix();
   }
 
   glEnable( GL_BLEND );

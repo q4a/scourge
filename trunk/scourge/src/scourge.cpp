@@ -129,7 +129,7 @@ void Scourge::initUI() {
   this->levelMap = session->getMap();
   mapSettings = new GameMapSettings();
   levelMap->setMapSettings( mapSettings );
-  miniMap = new MiniMap(this);
+  miniMap = new MiniMap(this, getSession()->getPreferences()->getFlaky());
 
   // create the mission board
   this->board = session->getBoard();
