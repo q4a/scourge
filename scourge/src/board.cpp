@@ -293,8 +293,8 @@ void Board::initMissions() {
 		missionText[i] = str;
 		snprintf( str, 20, _("S:%d, "), availableMissions[i]->getDepth() );
 		missionText[i] += str;
-		missionText[i] += ( availableMissions[i]->isReplay() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : ""; 
-//		missionText[i] += ( availableMissions[i]->isStoryLine() && availableMissions[i]->isCompleted() && availableMissions[i]->isReplayable() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : ""; 
+//		missionText[i] += ( availableMissions[i]->isReplay() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : ""; 
+		missionText[i] += ( availableMissions[i]->isStoryLine() && availableMissions[i]->isCompleted() && availableMissions[i]->isReplayable() ) ? _( "(EXCURSION)" ) : availableMissions[i]->isStoryLine() ? _( "(STORY)" ) : strstr( availableMissions[i]->getMapName(), "caves" ) ? _( "(CAVE)" ) : strstr( availableMissions[i]->getMapName(), "outdoors" ) ? _( "(OUTDOORS)" ) : ""; 
 		missionText[i] += " ";
 		missionText[i] += availableMissions[i]->getDisplayName();
 		if ( availableMissions[i]->isCompleted() && !availableMissions[i]->isReplayable() ) missionText[i] += _( "(completed)" );

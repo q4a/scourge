@@ -2743,8 +2743,8 @@ void Scourge::initUpdate(char *message) {
 void Scourge::initEnd() {
 }
 
-#define BOARD_GUI_WIDTH 600
-#define BOARD_GUI_HEIGHT 360
+#define BOARD_GUI_WIDTH 680
+#define BOARD_GUI_HEIGHT 400
 
 void Scourge::createBoardUI() {
   // init gui
