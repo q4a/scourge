@@ -197,8 +197,13 @@ void Scourge::start() {
 	srand( (unsigned int)time( (time_t *)NULL ) );
         Util::mt_srand( (unsigned long)time( (time_t*)NULL ) );
 
+	// Set up the weather effects
+	view->generateRain();
+	view->generateClouds();
+
 	bool initMainMenu = true;
 	int value = CONTINUE_GAME;
+
   while(true) {
 
 		// forget all the known maps
@@ -372,12 +377,13 @@ void Scourge::startMission( bool startInHq ) {
 				else getSession()->getSound()->playMusicMission();
 				setAmbientPaused( false );
 
-				// Set up the weather
-				getMap()->generateWeather();
-				if( getMap()->getWeather() & WEATHER_RAIN ) view->generateRain();
-				if( getMap()->getWeather() & WEATHER_FOG ) view->generateClouds();
-				if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
 				if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
+
+				// Set up the weather
+				if( !inHq ) {
+					getMap()->generateWeather();
+					if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
+				}
 			}
       getSDLHandler()->fade( 1, 0, 20 );
 
@@ -677,7 +683,6 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 	delete dg;
 	dg = NULL;
 	
-
 	return mapCreated;
 }
 
@@ -3831,12 +3836,11 @@ void Scourge::endChapterIntro() {
 	else getSession()->getSound()->playMusicMission();
 	setAmbientPaused( false );
 
+	if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
+
 	// Set up the weather
 	getMap()->generateWeather();
-	if( getMap()->getWeather() & WEATHER_RAIN ) view->generateRain();
-	if( getMap()->getWeather() & WEATHER_FOG ) view->generateClouds();
 	if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
-	if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
 
 	getSDLHandler()->fade( 1, 0, 20 );
 }
