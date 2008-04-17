@@ -1234,21 +1234,7 @@ void Creature::equipInventory( int index, int locationHint ) {
 		// handle magic attrib settings
 		if(item->isMagicItem()) {
 			
-			//item->debugMagic("Equip: ");
-			
-			// set the good attributes
-			for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-				if(item->isStateModSet(i)) {
-					this->setStateMod(i, true);
-				}
-			}
-			// set the protected attributes
-			for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-				if(item->isStateModProtected(i)) {
-					this->setProtectedStateMod(i, true);
-				}
-			}
-			// skill bonuses
+			// increase skill bonuses
 			map<int,int> *m = item->getSkillBonusMap();
 			for(map<int,int>::iterator e=m->begin(); e!=m->end(); ++e) {
 				int skill = e->first;
@@ -1260,15 +1246,15 @@ void Creature::equipInventory( int index, int locationHint ) {
 				int skill = item->getSchool()->getResistSkill();
 				setSkillBonus(skill, getSkillBonus(skill) + item->getMagicResistance());
 			}
-			// refresh map for invisibility, etc.
-			session->getMap()->refresh();
+
 		}
 		
+		// recalc current weapon, and the state mods
+		recalcAggregateValues();
+
 		// call script
 		if( !monster ) session->getSquirrel()->callItemEvent( this, item, "equipItem" );
 
-		// recalc current weapon
-		recalcAggregateValues();
 		return;
   }
 }
@@ -1285,42 +1271,39 @@ int Creature::doff(int index) {
       // handle magic attrib settings
       if(item->isMagicItem()) {
 
-        //item->debugMagic("Doff: ");
-
-        // set the good attributes
+        // unset the good attributes
         for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
           if(item->isStateModSet(i)) {
             this->setStateMod(i, false);
           }
         }
-        // set the protected attributes
+        // unset the protected attributes
         for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
           if(item->isStateModProtected(i)) {
             this->setProtectedStateMod(i, false);
           }
         }
-        // skill bonus
+        // decrease skill bonus
         map<int,int> *m = item->getSkillBonusMap();
         for(map<int,int>::iterator e=m->begin(); e!=m->end(); ++e) {
           int skill = e->first;
           int bonus = e->second;
           setSkillBonus(skill, getSkillBonus(skill) - bonus);
         }
-        // if armor, enhance magic resistance
+        // if armor, reduce magic resistance
         if(!item->getRpgItem()->isWeapon() && item->getSchool()) {
           int skill = item->getSchool()->getResistSkill();
           setSkillBonus(skill, getSkillBonus(skill) - item->getMagicResistance());
         }
 
-        // refresh map for invisibility, etc.
-        session->getMap()->refresh();
       }
+
+      // recalc current weapon, and the state mods
+      recalcAggregateValues();
 
       // call script
       if( !monster ) session->getSquirrel()->callItemEvent( this, item, "doffItem" );
 
-      // recalc current weapon
-      recalcAggregateValues();
       return 1;
     }
   }
@@ -1441,6 +1424,30 @@ void Creature::recalcAggregateValues() {
       }
     }
   }
+
+	for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+		if( isEquipped( i ) ) {
+			Item *item = getInventory(i);
+			// handle magic attrib settings
+			if( item->isMagicItem() ) {
+				
+				// set the good attributes
+				for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
+					if(item->isStateModSet(i)) {
+						this->setStateMod(i, true);
+					}
+				}
+				// set the protected attributes
+				for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
+					if(item->isStateModProtected(i)) {
+						this->setProtectedStateMod(i, true);
+					}
+				}
+				// refresh map for invisibility, etc.
+				session->getMap()->refresh();
+			}
+		}
+	}
 }
 
 bool Creature::nextPreferredWeapon() {
