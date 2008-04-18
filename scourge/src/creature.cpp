@@ -1272,15 +1272,15 @@ int Creature::doff(int index) {
       if(item->isMagicItem()) {
 
         // unset the good attributes
-        for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-          if(item->isStateModSet(i)) {
-            this->setStateMod(i, false);
+        for(int k = 0; k < StateMod::STATE_MOD_COUNT; k++) {
+          if(item->isStateModSet(k)) {
+            this->setStateMod(k, false);
           }
         }
         // unset the protected attributes
-        for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-          if(item->isStateModProtected(i)) {
-            this->setProtectedStateMod(i, false);
+        for(int k = 0; k < StateMod::STATE_MOD_COUNT; k++) {
+          if(item->isStateModProtected(k)) {
+            this->setProtectedStateMod(k, false);
           }
         }
         // decrease skill bonus
@@ -1426,26 +1426,24 @@ void Creature::recalcAggregateValues() {
   }
 
 	for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
-		if( isEquipped( i ) ) {
-			Item *item = getInventory(i);
-			// handle magic attrib settings
-			if( item->isMagicItem() ) {
-				
-				// set the good attributes
-				for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-					if(item->isStateModSet(i)) {
-						this->setStateMod(i, true);
-					}
+		Item *item = getEquippedInventory( i );
+		// handle magic attrib settings
+		if( item!=NULL && item->isMagicItem() ) {
+			
+			// set the good attributes
+			for(int k = 0; k < StateMod::STATE_MOD_COUNT; k++) {
+				if(item->isStateModSet(k)) {
+					this->setStateMod(k, true);
 				}
-				// set the protected attributes
-				for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-					if(item->isStateModProtected(i)) {
-						this->setProtectedStateMod(i, true);
-					}
-				}
-				// refresh map for invisibility, etc.
-				session->getMap()->refresh();
 			}
+			// set the protected attributes
+			for(int k = 0; k < StateMod::STATE_MOD_COUNT; k++) {
+				if(item->isStateModProtected(k)) {
+					this->setProtectedStateMod(k, true);
+				}
+			}
+			// refresh map for invisibility, etc.
+			session->getMap()->refresh();
 		}
 	}
 }
