@@ -40,7 +40,7 @@ struct TextItemParticle {
 class TextEffect {
 private:
   Scourge *scourge;
-  char text[80];
+  char text[255];
   GLuint texture[1];
   unsigned char *textureInMemory;
   int x;
@@ -55,6 +55,8 @@ public:
 
   inline void setActive( bool b ) { this->active = b; }
   inline bool isActive() { return active; }
+
+  inline char *getText() { return text; }
 
   void draw();
 
