@@ -637,10 +637,38 @@ bool ScourgeView::startTextEffect( char *message ) {
 }
 
 void ScourgeView::drawTextEffect() {
+static char message[255];
+
   // draw the current text effect
   if( textEffect ) {
     if( SDL_GetTicks() - textEffectTimer < 5000 ) {
-      textEffect->draw();
+      if( scourge->getUserConfiguration()->getFlaky() ) {
+        // When we don't use a fancy TextEffect, use blinking normal text
+	if( ( SDL_GetTicks() % 500 ) > 199 ) {
+	  glDisable(GL_DEPTH_TEST);
+	  glEnable(GL_BLEND);
+
+	  glPushMatrix();
+	  glLoadIdentity();
+	  glEnable(GL_TEXTURE_2D);
+
+	  glColor4f( 1, 1, 0, 1 );
+	  scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
+	  strncpy( message, textEffect->getText(), 255 );
+	  int x = (scourge->getUserConfiguration()->getW() / 2) - (scourge->getSDLHandler()->textWidth(message) / 2);
+	  int y = (scourge->getUserConfiguration()->getH() / 2);
+	  scourge->getSDLHandler()->texPrint( x, y, message );
+	  scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+
+	  glDisable(GL_TEXTURE_2D);
+	  glPopMatrix();
+
+	  glDisable(GL_BLEND);
+	  glEnable(GL_DEPTH_TEST);
+	}
+      } else {
+        textEffect->draw();
+      }
     } else {
       delete textEffect;
       textEffect = NULL;

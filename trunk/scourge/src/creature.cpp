@@ -1626,7 +1626,7 @@ int Creature::addExperienceWithMessage( int exp ) {
       session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_STATS );
       if( oldLevel != level ) {
         snprintf( message, MSG_SIZE, _( "%s gains a level!" ), getName() );
-        session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_STATS );
+        session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_MISSION );
       }
     } else if( n < 0 ) {
       snprintf( message, MSG_SIZE, _( "%s looses %d experience points!" ), getName(), -n );
