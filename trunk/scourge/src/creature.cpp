@@ -2247,7 +2247,7 @@ void Creature::evalSpecialSkills() {
 
 void Creature::setSkill(int index, int value) { 
 	int oldValue = getSkill( index );
-  skills[index] = ( value < 0 ? 0 : value );
+  skills[index] = ( value < 0 ? 0 : value > 100 ? 100 : value );
 	skillChanged( index, oldValue, getSkill( index ) );
   evalSpecialSkills();
   session->getParty()->recomputeMaxSkills();

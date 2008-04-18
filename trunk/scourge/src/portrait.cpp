@@ -155,11 +155,15 @@ bool Portrait::handleEvent( Widget *widget, SDL_Event *event ) {
 			if( findCurrentSkill( event->button.x - pcUi->getWindow()->getX() - x, 
 														event->button.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT ) ) {
 				if( currentMode == 0 && creature->getSkillMod( currentSkill->getIndex() ) > 0 ) {
-					creature->setAvailableSkillMod( creature->getAvailableSkillMod() + 1 );
-					creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) - 1 );
+					if( creature->getSkill( currentSkill->getIndex() ) > 0 ) {
+						creature->setAvailableSkillMod( creature->getAvailableSkillMod() + 1 );
+						creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) - 1 );
+					}
 				} else if( currentMode == 1 && creature->getAvailableSkillMod() > 0 ) {
-					creature->setAvailableSkillMod( creature->getAvailableSkillMod() - 1 );
-					creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) + 1 );
+					if( creature->getSkill( currentSkill->getIndex() ) < 100 ) {
+						creature->setAvailableSkillMod( creature->getAvailableSkillMod() - 1 );
+						creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) + 1 );
+					}
 				}
 			}
 		}
