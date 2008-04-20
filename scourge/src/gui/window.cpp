@@ -1079,10 +1079,10 @@ void Window::toBottom(Window *win) {
 
 void Window::nextWindowToTop( Window *win, bool includeLocked ) {
   int nextWindow = -1;
-  int nextZ;
+  int nextZ;  
 
   for( int i = 0; i < windowCount; i++ ) {
-    if( window[i]->isVisible() && ( window[i]->getZ() < win->getZ() ) && ( window[i]->getZ() > nextZ ) ) {
+    if( window[i]->isVisible() && ( window[i]->getZ() < win->getZ() ) && ( nextWindow == -1 || window[i]->getZ() > nextZ ) ) {
       if( !includeLocked && window[i]->isLocked() ) continue;
       nextWindow = i;
       nextZ = window[i]->getZ();
@@ -1098,7 +1098,7 @@ void Window::prevWindowToTop( Window *win, bool includeLocked ) {
   int prevZ;
 
   for( int i = 0; i < windowCount; i++ ) {
-    if( window[i]->isVisible() && ( window[i]->getZ() > win->getZ() ) && ( window[i]->getZ() < prevZ ) ) {
+    if( window[i]->isVisible() && ( window[i]->getZ() > win->getZ() ) && ( prevWindow == -1 || window[i]->getZ() < prevZ ) ) {
       if( !includeLocked && window[i]->isLocked() ) continue;
       prevWindow = i;
       prevZ = window[i]->getZ();
