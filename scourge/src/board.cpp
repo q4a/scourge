@@ -1028,7 +1028,7 @@ void Mission::initNpcs( ConfigLang *config, GameAdapter *adapter ) {
 		strcpy( line, node->getValueAsString( "position" ) );
     x = atoi( strtok( line, "," ) );
 		y = atoi( strtok( NULL, "," ) );
-		strcpy( npcName, node->getValueAsString( "name" ) );
+		strcpy( npcName, node->getValueAsString( "display_name" ) );
 		level = node->getValueAsInt( "level" );
 		strcpy( npcType, node->getValueAsString( "type" ) );
 		strcpy( npcSubType, node->getValueAsString( "subtype" ) );
