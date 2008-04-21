@@ -1279,9 +1279,9 @@ NpcInfo *Mission::addNpcInfo( int x, int y, char *npcName, int level, char *npcT
 
 void Mission::createTypedNpc( Creature *creature, int level, int fx, int fy ) {
 	int npcType = 1 + Util::dice( Constants::NPC_TYPE_COUNT - 1 );
-	char npcSubType[255];
-	strcpy( npcSubType, "" );	
-	char npcTypeName[255];
+	int const NAME_LEN = 254;
+	char npcSubType[NAME_LEN+1] = {0};
+	char npcTypeName[NAME_LEN+1] = {0};
 	strcpy( npcTypeName, _( Constants::npcTypeDisplayName[ npcType ] ) );
 	if( npcType == Constants::NPC_TYPE_MERCHANT ) {
 		// fixme: trade-able should be an attribute to itemType in item.cfg
@@ -1296,12 +1296,12 @@ void Mission::createTypedNpc( Creature *creature, int level, int fx, int fy ) {
 	} else if( npcType == Constants::NPC_TYPE_TRAINER ) {
 		Character *character = Character::getRandomCharacter();
 		strcpy( npcSubType, character->getDisplayName() );
-		sprintf( npcTypeName, _( "Trainer for %s" ), character->getDisplayName() );
+		snprintf( npcTypeName, NAME_LEN, _( "Trainer for %s" ), character->getDisplayName() );
 	} else if( npcType == Constants::NPC_TYPE_HEALER ) {
 		strcpy( npcSubType, MagicSchool::getRandomSchool()->getDisplayName() );
 	}
-	char name[255];
-	sprintf( name, _( "%s the %s" ), Rpg::createName(), npcTypeName );
+	char name[NAME_LEN+1] = {0};
+	snprintf( name,NAME_LEN, _( "%s the %s" ), Rpg::createName(), npcTypeName );
 	NpcInfo *npcInfo = Mission::addNpcInfo( fx, fy, name, level, (char*)Constants::npcTypeName[ npcType ], npcSubType );
 	creature->setNpcInfo( npcInfo );
 }
