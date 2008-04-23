@@ -412,12 +412,12 @@ float Util::mt_rand() {
         // Seed the generator when not yet done.
         if ( mt_index == MT_N + 1 ) mt_srand( (unsigned long)time( (time_t*)NULL ) );
 
-        for ( k = 0; k < MT_N - MT_M; k++ ) {
+        for ( k = 0; k < MT_N - MT_M; ++k ) {
             y = ( mt_sequence[k] & MT_HI ) | ( mt_sequence[k + 1] & MT_LO );
             mt_sequence[k] = mt_sequence[k + MT_M] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
         }
 
-        for ( ; k<MT_N-1; k++ ) {
+        for ( ; k<MT_N-1; ++k ) {
             y = ( mt_sequence[k] & MT_HI) | ( mt_sequence[k + 1] & MT_LO );
             mt_sequence[k] = mt_sequence[k + ( MT_M - MT_N )] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
         }
@@ -427,7 +427,7 @@ float Util::mt_rand() {
         mt_index = 0;
     }
 
-    y = mt_sequence[mt_index++];
+    y = mt_sequence[++mt_index];
 
     /* Tempering */
     y ^= ( y >> 11 );
