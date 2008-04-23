@@ -85,6 +85,8 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 	srand( (unsigned int)time( (time_t*)NULL ) );
         Util::mt_srand( (unsigned long)time( (time_t*)NULL ) );
 
+	Constants::generateTrigTables();
+
   oldStory = currentStory = 0;
   lastTick = 0;
   textDialog = NULL;
@@ -200,6 +202,8 @@ void Scourge::start() {
 	// Set up the weather effects
 	view->generateRain();
 	view->generateClouds();
+
+	Constants::generateTrigTables();
 
 	bool initMainMenu = true;
 	int value = CONTINUE_GAME;

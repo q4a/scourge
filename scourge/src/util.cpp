@@ -23,12 +23,12 @@ using namespace std;
 
 void Util::rotate(Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle) {
 	// convert to radians
-	angle = degreesToRadians(angle);
+	// angle = degreesToRadians(angle);
 	// rotate
 	float oldx = static_cast<float>(x);
 	float oldy = static_cast<float>(y);
-	*px = (Sint16)rint((oldx * cos(angle)) - (oldy * sin(angle)));
-	*py = (Sint16)rint((oldx * sin(angle)) + (oldy * cos(angle)));
+	*px = (Sint16)rint((oldx * Constants::cosFromAngle(angle)) - (oldy * Constants::sinFromAngle(angle)));
+	*py = (Sint16)rint((oldx * Constants::sinFromAngle(angle)) + (oldy * Constants::cosFromAngle(angle)));
 }
 
 float Util::dot_product(float v1[3], float v2[3]) {

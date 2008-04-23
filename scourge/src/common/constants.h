@@ -717,6 +717,10 @@ public:
 
 	static int findLocaleDir();
 
+	static void generateTrigTables();
+	static float sinFromAngle(int angle);
+	static float cosFromAngle(int angle);
+
 private:
   static bool checkFile(const std::string& dir, const std::string& file);
   // used to run scourge with local resources

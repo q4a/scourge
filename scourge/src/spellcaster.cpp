@@ -230,8 +230,8 @@ void SpellCaster::viewInfo() {
       for( int r = spellEffectSize; r; r += spellEffectSize ) {
         if( r > radius ) r = radius;
         for( int angle = 0; angle < 360; angle += 10 ) {
-          int x = toint( sx + ( static_cast<float>(r) * cos( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
-          int y = toint( sy - ( static_cast<float>(r) * sin( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
+          int x = toint( sx + ( static_cast<float>(r) * Constants::cosFromAngle( static_cast<float>(angle) ) ) );
+          int y = toint( sy - ( static_cast<float>(r) * Constants::sinFromAngle( static_cast<float>(angle) ) ) );
           if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
             battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_GREEN, 
                                                          (Constants::DAMAGE_DURATION * 4), 
@@ -607,8 +607,8 @@ void SpellCaster::windAttack() {
 		di.blue = static_cast<float>(r) / static_cast<float>(radius);
 
 		for( int angle = 0; angle < 360; angle += 10 ) {
-			int x = toint( sx + ( static_cast<float>(r) * cos( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
-			int y = toint( sy - ( static_cast<float>(r) * sin( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
+			int x = toint( sx + ( static_cast<float>(r) * Constants::cosFromAngle( static_cast<float>(angle) ) ) );
+			int y = toint( sy - ( static_cast<float>(r) * Constants::sinFromAngle( static_cast<float>(angle) ) ) );
 			if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
 	//      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
 				battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_GREEN, 
@@ -625,8 +625,8 @@ void SpellCaster::windAttack() {
 						// knock the creature back
 						int cx = toint( targets[ i ]->getX() );
 						int cy = toint( targets[ i ]->getY() );
-						int px = toint( cx + ( 2.0f * cos( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
-						int py = toint( cy - ( 2.0f * sin( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
+						int px = toint( cx + ( 2.0f * Constants::cosFromAngle( static_cast<float>(angle) ) ) );
+						int py = toint( cy - ( 2.0f * Constants::sinFromAngle( static_cast<float>(angle) ) ) );
 						if( !( battle->getSession()->getMap()->
 									 moveCreature( cx, cy, 0, 
 																 px, py, 0, 
@@ -655,8 +655,8 @@ void SpellCaster::circleAttack() {
   int targetCount = 0;
   Creature *c = battle->getCreature()->getTargetCreature();
   for( int angle = 0; angle < 360; angle += 10 ) {
-    int x = toint( sx + ( static_cast<float>(radius) * cos( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
-    int y = toint( sy - ( static_cast<float>(radius) * sin( Util::degreesToRadians( static_cast<float>(angle) ) ) ) );
+    int x = toint( sx + ( static_cast<float>(radius) * Constants::cosFromAngle( static_cast<float>(angle) ) ) );
+    int y = toint( sy - ( static_cast<float>(radius) * Constants::sinFromAngle( static_cast<float>(angle) ) ) );
     if( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH ) {
 //      Location *pos = battle->getSession()->getMap()->getLocation( x, y, 0 );
       battle->getSession()->getMap()->startEffect( x, y, 1, Constants::EFFECT_DUST, 

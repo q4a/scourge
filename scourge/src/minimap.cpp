@@ -403,8 +403,8 @@ void MiniMap::drawPointers( std::set<Location*> *p, Color color ) {
   for( set<Location*>::iterator e = p->begin(); e != p->end(); ++e ) {
   	Location *pos = *e;
   	float angle = Util::getAngle( px, py, 0, 0, (float)pos->x, (float)pos->y, 0, 0 );
-  	float nx = r + ( r - 10 ) * cos( Constants::toRadians( angle ) ) - 5;
-  	float ny = r + ( r - 10 ) * sin( Constants::toRadians( angle ) );
+  	float nx = r + ( r - 10 ) * Constants::cosFromAngle( angle ) - 5;
+  	float ny = r + ( r - 10 ) * Constants::sinFromAngle( angle );
   	glColor4f( color.r, color.g, color.b, color.a );
     glBegin( GL_QUADS );   
     glVertex2d( nx, ny + 4 ); 

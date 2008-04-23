@@ -2965,10 +2965,10 @@ void Map::moveMap(int dir) {
 			float z = moveAngle - ( getZRot() - 90 );
 			if (z < 0) z += 360;
 			if (z >= 360) z -= 360;
-			float zrad = Constants::toRadians(z);
+			//float zrad = Constants::toRadians(z);
 
-			mapx += -moveDelta / 5.0f * sin(zrad);
-			mapy += moveDelta / 5.0f * cos(zrad);
+			mapx += -moveDelta / 5.0f * Constants::sinFromAngle( z );
+			mapy += moveDelta / 5.0f * Constants::cosFromAngle( z );
 			moveDelta = 0; // reset to only move when the mouse is moved
 		} else {
 			
@@ -2976,26 +2976,26 @@ void Map::moveMap(int dir) {
 			float z = getZRot();
 			if (z < 0) z += 360;
 			if (z >= 360) z -= 360;
-			float zrad = Constants::toRadians(z);
+			//float zrad = Constants::toRadians(z);
 
 			//	cerr << "-------------------" << endl;
 			//	cerr << "x=" << x << " y=" << y << " zrot=" << z << endl;
 				
 			if (dir & Constants::MOVE_DOWN) {
-				mapx += delta * sin(zrad);
-				mapy += delta * cos(zrad);
+				mapx += delta * Constants::sinFromAngle( z );
+				mapy += delta * Constants::cosFromAngle( z );
 			}
 			if (dir & Constants::MOVE_UP) {
-				mapx += delta * -sin(zrad);
-				mapy += delta * -cos(zrad);
+				mapx += delta * -Constants::sinFromAngle( z );
+				mapy += delta * -Constants::cosFromAngle( z );
 			}
 			if (dir & Constants::MOVE_LEFT) {
-				mapx += delta * -cos(zrad);
-				mapy += delta * sin(zrad);
+				mapx += delta * -Constants::cosFromAngle( z );
+				mapy += delta * Constants::sinFromAngle( z );
 			}
 			if (dir & Constants::MOVE_RIGHT) {
-				mapx += delta * cos(zrad);
-				mapy += delta * -sin(zrad);
+				mapx += delta * Constants::cosFromAngle( z );
+				mapy += delta * -Constants::sinFromAngle( z );
 			}
 		}
 

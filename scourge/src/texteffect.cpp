@@ -94,8 +94,8 @@ void TextEffect::draw() {
   if( tt - lastTickMenu > 40 ) {
     lastTickMenu = tt;
     for( int i = 0; i < 20; i++ ) {
-      particle[i].x += cos( Constants::toRadians( particle[i].dir ) ) * particle[i].step;
-      particle[i].y += sin( Constants::toRadians( particle[i].dir ) ) * particle[i].step;
+      particle[i].x += Constants::cosFromAngle( particle[i].dir ) * particle[i].step;
+      particle[i].y += Constants::sinFromAngle( particle[i].dir ) * particle[i].step;
       particle[i].life++;
       if( particle[i].life >= MAX_PARTICLE_LIFE ) {
         particle[i].life = 0;
