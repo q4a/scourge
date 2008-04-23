@@ -74,9 +74,10 @@ GetAwayGoal::~GetAwayGoal(){}
 
 bool GetAwayGoal::fulfilledBy( CPathNode * node){
 	// int dx, dy; may cause ambiquity between sqrt(double) and sqrt(float)
-	float dx = node->x - x; 
-	float dy = node->y - y;
-	return distance < sqrt(dx*dx + dy*dy);
+	//float dx = node->x - x; 
+	//float dy = node->y - y;
+	//return distance < sqrt(dx*dx + dy*dy);
+	return distance < Constants::distance( node->x, node->y, 0, 0, x, y, 0, 0);
 }
 
 /**
@@ -159,9 +160,10 @@ DistanceAwayHeuristic::~DistanceAwayHeuristic(){}
 
 double DistanceAwayHeuristic::heuristic( CPathNode * node){
 	// int dx, dy; may cause ambiquity between sqrt(double) and sqrt(float)
-	float dx = node->x - x;
-	float dy = node->y - y;
-	return -sqrt(dx*dx + dy*dy)*1.001;  //the extra 0.001 is a tweak to make farther away paths get checked first
+	//float dx = node->x - x;
+	//float dy = node->y - y;
+	//return -sqrt(dx*dx + dy*dy)*1.001;  //the extra 0.001 is a tweak to make farther away paths get checked first
+	return -Constants::distance( node->x, node->y, 0, 0, x, y, 0, 0) * 1.001;
 }
 
 
