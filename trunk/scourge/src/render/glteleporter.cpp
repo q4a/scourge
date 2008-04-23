@@ -53,8 +53,8 @@ void GLTeleporter::draw() {
       starAngle[i] = Util::roll( 0.0f, 360.0f );
       starSpeed[i] = Util::roll( 2.0f, 10.0f );
     }
-    star[i][0] = r + (r * cos(3.14159 / (180.0f / starAngle[i])));
-    star[i][1] = r + (r * sin(3.14159 / (180.0f / starAngle[i])));
+    star[i][0] = r + (r * Constants::cosFromAngle( starAngle[i] ));
+    star[i][1] = r + (r * Constants::sinFromAngle( starAngle[i] ));
 
     // draw
     glDisable( GL_CULL_FACE );

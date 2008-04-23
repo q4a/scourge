@@ -145,9 +145,9 @@ bool Projectile::move() {
   float oldAngle = angle;
   if(parabolic != 0.0f) {
     float a = (179.0f * steps) / distToTarget;
-    angle = angle + parabolic * 40 * sin(Constants::toRadians(a));
-    ssx += ( cos( Constants::toRadians( angle ) ) * DELTA );
-    ssy += ( sin( Constants::toRadians( angle ) ) * DELTA );
+    angle = angle + parabolic * 40 * Constants::sinFromAngle(a);
+    ssx += ( Constants::cosFromAngle( angle ) * DELTA );
+    ssy += ( Constants::sinFromAngle( angle ) * DELTA );
     angle = oldAngle;
   } else {
     // angle-based floating pt. movement    
@@ -167,8 +167,8 @@ bool Projectile::move() {
         " cos=" << cos(Constants::toRadians(angle)) <<
         " sin=" << sin(Constants::toRadians(angle)) << endl;
         */
-      ssx += ( cos( Constants::toRadians( angle ) ) * DELTA );
-      ssy += ( sin( Constants::toRadians( angle ) ) * DELTA );
+      ssx += ( Constants::cosFromAngle( angle ) * DELTA );
+      ssy += ( Constants::sinFromAngle( angle ) * DELTA );
       //cerr << "after: " << sx << "," << sy << endl;
     }
   }
