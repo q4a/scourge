@@ -379,11 +379,11 @@ bool Util::StringCaseCompare(const std::string sStr1, const std::string sStr2) {
 
 // *** algorithms based on the Mersenne Twister random number generator ***
 
-#define MT_N 624
-#define MT_M 397
+#define MT_N 624L
+#define MT_M 397L
 
 static unsigned long mt_sequence[MT_N];
-static int mt_index = MT_N + 1;
+static long mt_index = MT_N + 1;
 
 // Start the MT random number generator with a specific seed.
 void Util::mt_srand( unsigned long s ) {
@@ -395,17 +395,19 @@ void Util::mt_srand( unsigned long s ) {
     }
 }
 
+#define MT_HI 0x80000000UL
+#define MT_LO 0x7fffffffUL
+
+static unsigned long mag[2] = { 0x0UL, 0x9908b0dfUL };
+static const float multiplier = 1.0 / 4294967296.0;
+
 // Mersenne twister core algorithm. Returns a float between 0 and 1.
 // Multiple times faster than rand() and has a period of (2^19937 - 1).
 float Util::mt_rand() {
-    const unsigned MT_HI = 0x80000000UL;
-    const unsigned MT_LO = 0x7fffffffUL;
-
-    unsigned long y;
-    static unsigned long mag[2] = { 0x0UL, 0x9908b0dfUL };
+    register unsigned long y;
 
     if ( mt_index >= MT_N ) {
-        int k;
+        register long k;
 
         // Seed the generator when not yet done.
         if ( mt_index == MT_N + 1 ) mt_srand( (unsigned long)time( (time_t*)NULL ) );
@@ -433,7 +435,7 @@ float Util::mt_rand() {
     y ^= ( y << 15 ) & 0xefc60000UL;
     y ^= ( y >> 18 );
 
-    return (float)y * ( 1.0 / 4294967296.0 );
+    return (float)y * multiplier;
 }
 
 // random integer from 0 to size-1
