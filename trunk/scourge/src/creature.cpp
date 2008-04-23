@@ -775,7 +775,8 @@ Location *Creature::takeAStepOnPath() {
     float diffX = targetX - newX; //distance between creature's (continuous) location and the target (discrete) location
     float diffY = targetY - newY;
     //get the x and y values for a step-length vector in the direction of diffX,diffY
-    float dist = sqrt(diffX*diffX + diffY*diffY); //distance to location
+    //float dist = sqrt(diffX*diffX + diffY*diffY); //distance to location
+    float dist = Constants::distance(newX, newY, 0, 0, targetX, targetY, 0, 0); //distance to location
     //if(dist < step) step = dist; //if the step is too great, we slow ourselves to avoid overstepping
 	if ( dist != 0.0f ) { // thee shall not divide with zero
       float stepX = (diffX * step)/dist;

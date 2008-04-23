@@ -493,6 +493,8 @@ void ComputeNormals(t3DModel *pModel)
 /**
  * Finds the shortest distance from (x1,y1,x1+w1,y1-h1) to the x2,y2 equivalent.
  **/
+static float distTable[500][500];
+
 float Constants::distance(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
 	//distance between rectangles with x,y and dimensions set to integers
 	int xa = toint(x1);
@@ -515,7 +517,7 @@ float Constants::distance(float x1, float y1, float w1, float h1, float x2, floa
 	//do the rectangles *not* overlap on the x axis?
 	if(xa+wa <= xb || xb+wb <= xa)
 		dx = min(abs(xa+wa-xb), abs(xb+wb-xa));
-	return sqrt(dx*dx + dy*dy);
+	return ( ( dx < 500 ) && ( dy < 500 ) ? distTable[(int)dx][(int)dy] : sqrt( dx * dx + dy * dy ) );
 }
 
 void Constants::checkTexture(char *message, int w, int h) {
@@ -712,8 +714,8 @@ void Constants::getQuadrantAndAngle( float nx, float ny, int *q, float *angle ) 
 	}
 }
 
-static float sinTable[359];
-static float cosTable[359];
+static float sinTable[360];
+static float cosTable[360];
 
 void Constants::generateTrigTables() {
   for( int i = 0; i < 360; i++ ) {
@@ -722,6 +724,12 @@ void Constants::generateTrigTables() {
 
   for( int i = 0; i < 360; i++ ) {
     cosTable[i] = (float)cos( Constants::toRadians( i ) );
+  }
+
+  for( int y = 0; y < 500; y++ ) {
+    for( int x = 0; x < 500; x++ ) {
+      distTable[x][y] = sqrt( x * x + y * y);
+    }
   }
 }
 
