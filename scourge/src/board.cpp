@@ -268,6 +268,7 @@ void Board::initMissions() {
       availableMissions.insert( availableMissions.end(), storylineMissions[ i ] );
       availableMissions[ availableMissions.size() -1 ]->setDisplayName( storylineMissions[i]->getReplayDisplayName() ) ;
       availableMissions[ availableMissions.size() -1 ]->setDescription( storylineMissions[i]->getReplayDescription() ) ;
+      availableMissions[ availableMissions.size() -1 ]->setChapter( -1 );
     }
   }
 
@@ -302,7 +303,7 @@ void Board::initMissions() {
       missionColor[i].r = 1.0f;
       missionColor[i].g = 1.0f;
       missionColor[i].b = 0.0f;
-      if(availableMissions[i]->isStoryLine() && availableMissions[i]->isCompleted() && availableMissions[i]->isReplayable()) {
+      if(availableMissions[i]->isReplay()) {
         missionColor[i].r = 0.0f;
         missionColor[i].g = 0.75f;
         missionColor[i].b = 1.0f;
