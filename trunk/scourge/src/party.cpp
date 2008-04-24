@@ -310,7 +310,7 @@ bool Party::setSelXY( Uint16 mapx, Uint16 mapy, bool cancelIfNotPossible ) {
     }
   }
   // Try to move the current player
-  return getPlayer()->setSelXY( mapx, mapy, cancelIfNotPossible, 500 );  
+  return getPlayer()->setSelXY( mapx, mapy, cancelIfNotPossible, MAX_PATH_NODES );  
 }
 
 bool Party::isPartyInRange() {
