@@ -574,7 +574,7 @@ void Scourge::resetGame( bool resetParty ) {
 void Scourge::createMissionInfoMessage( Mission *lastMission ) {
 
 	if( lastMission->isReplay() ) { return; }
-
+	
 	snprintf( infoMessage, INFO_SIZE,
 					 ( lastMission->isCompleted() ?
 						 lastMission->getSuccess() :

@@ -208,7 +208,7 @@ public:
   inline char *getMapName() { return mapName; } 
   inline bool isEdited() { return edited; }
   inline bool isReplayable() { return replayable; }
-  inline bool isReplay() { return storyLine && completed && replayable; }
+  inline bool isReplay() { return storyLine && ( chapter == -1 ) && replayable; }
   void reset();
 
   // these return true if the mission has been completed
