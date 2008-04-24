@@ -543,7 +543,7 @@ bool Creature::move(Uint16 dir) {
 void Creature::setTargetCreature( Creature *c, bool findPath, float range) { 
   targetCreature = c; 
   if( findPath ) {
-    if( !setSelCreature( c , range, false, 500) ) { //500 keeps this in line with the setSelXY in party.cpp
+    if( !setSelCreature( c , range, false, MAX_PATH_NODES ) ) { //500 keeps this in line with the setSelXY in party.cpp
       // FIXME: should mark target somehow. Path alg. cannot reach it; blocked by something.
       // Keep the target creature anyway.
       if( session->getPreferences()->isBattleTurnBased() ) {

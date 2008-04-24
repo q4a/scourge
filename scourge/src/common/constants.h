@@ -353,7 +353,9 @@ public:
     MOTION_LOITER, //wander slowly
     MOTION_STAND //FREEZE!
   };
-  
+
+#define MAX_PATH_NODES 20000
+
   enum {
   	SEX_MALE=0,
   	SEX_FEMALE
