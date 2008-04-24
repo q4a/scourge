@@ -278,8 +278,14 @@ void Monster::addSound( int type, char *line, map<int, vector<string>*>* current
 }
 
 Monster *Monster::getRandomMonster(int level) {
-  if(monsters.find(level) == monsters.end()) return NULL;
-  vector<Monster*> *list = monsters[level];
+  int l;
+
+  // Find max monster level that is below or equal to level
+  for( l = level; l > 0; l-- ) {
+    if( monsters.find(l) != monsters.end() ) break;
+  }
+
+  vector<Monster*> *list = monsters[l];
 
   // create a new list where each monster occurs monster->rareness times
   vector<Monster*> rareList;
