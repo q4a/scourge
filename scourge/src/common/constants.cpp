@@ -728,7 +728,7 @@ void Constants::generateTrigTables() {
 
   for( int y = 0; y < 500; y++ ) {
     for( int x = 0; x < 500; x++ ) {
-      distTable[x][y] = sqrt( x * x + y * y);
+      distTable[x][y] = sqrt( static_cast<float>(x * x + y * y) );
     }
   }
 }
