@@ -294,7 +294,7 @@ void Shapes::initialize() {
 			string s = sv->theme;
       themeShapeRef.push_back( s );
     } else {
-      if( !session->getGameAdapter()->isHeadless() ) shapes[(i + 1)]->initialize();
+      if( !isHeadless() ) shapes[(i + 1)]->initialize();
     }
 
     // set the effect
@@ -335,7 +335,7 @@ void Shapes::initialize() {
   shapes[shapeCount]->setSkipSide(false);
   shapes[shapeCount]->setStencil(false);
   shapes[shapeCount]->setLightBlocking(false);  
-  if( !session->getGameAdapter()->isHeadless() ) shapes[shapeCount]->initialize();
+  if( !isHeadless() ) shapes[shapeCount]->initialize();
   string nameStr = shapes[shapeCount]->getName();
   shapeMap[nameStr] = shapes[shapeCount];
   shapeCount++;
@@ -432,7 +432,7 @@ void Shapes::loadTheme( WallTheme *theme ) {
         GLuint *textureGroup = currentTheme->getTextureGroup( ref );
         //      cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
         //        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
-        if( !session->getGameAdapter()->isHeadless() ) shape->setTexture( textureGroup );
+        if( !isHeadless() ) shape->setTexture( textureGroup );
   
         // create extra shapes for variations
         shape->deleteVariationShapes();
@@ -562,7 +562,7 @@ GLuint Shapes::getBMPData( const string& filename, TextureData& data, int *imgwi
 /* function to load in bitmap as a GL texture */
 GLuint Shapes::loadGLTextures(const string& filename) {
 
-	if( session->getGameAdapter()->isHeadless() ) 
+	if( isHeadless() ) 
 		return 0;
 
   string fn = rootDir + filename;
@@ -617,12 +617,12 @@ GLuint Shapes::loadGLTextures(const string& filename) {
 
 /* function to load in bitmap as a GL texture */
 GLuint Shapes::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int glscale) {
-  if( session->getGameAdapter()->isHeadless() ) return 0;
+  if( isHeadless() ) return 0;
   return loadGLTextureBGRA( surface->w, surface->h, image, glscale );
 }
 
 GLuint Shapes::loadGLTextureBGRA(int w, int h, GLubyte *image, int glscale) {
-  if( session->getGameAdapter()->isHeadless() ) return 0;
+  if( isHeadless() ) return 0;
 
   GLuint texture[1];
 
@@ -657,7 +657,7 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
 }
 
 void Shapes::loadStencil( const string& filename, int index ) {
-  if( session->getGameAdapter()->isHeadless() ) return;
+  if( isHeadless() ) return;
 
 	string fn = rootDir + filename;
 //  fprintf(stderr, "setupAlphaBlendedBMP, rootDir=%s\n", rootDir);
@@ -702,7 +702,7 @@ void Shapes::setupAlphaBlendedBMP( const string& filename,
                                    bool swapImage,
                                    bool grayscale ) {
 
-	if( session->getGameAdapter()->isHeadless() ) return;
+	if( isHeadless() ) return;
 
 	string fn( isAbsPath ? filename : rootDir + filename ); 
 
@@ -814,7 +814,7 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
                                              int tileWidth, int tileHeight, 
                                              int red, int green, int blue,
                                              int nred, int ngreen, int nblue ) {
-  if( session->getGameAdapter()->isHeadless() )
+  if( isHeadless() )
 		return;
 
   string fn = rootDir + filename;
@@ -876,7 +876,7 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
 }
 
 GLuint Shapes::loadSystemTexture( const string& line ) {
-  if( session->getGameAdapter()->isHeadless() ) return 0;
+  if( isHeadless() ) return 0;
 
   if( texture_count >= MAX_SYSTEM_TEXTURE_COUNT ) {
     cerr << "Error: *** no more room for system textures!. Not loading: " << line << endl;
@@ -956,7 +956,7 @@ void Shapes::setupImage( const string &filename, SDL_Surface*& surface, GLubyte*
 
 void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& image, bool isAbsPath, bool hasAlpha ) {
 
-	if( session->getGameAdapter()->isHeadless() )
+	if( isHeadless() )
 		return;
 
 	string fn( isAbsPath ? filename : rootDir + filename );

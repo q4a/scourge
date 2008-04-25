@@ -23,6 +23,7 @@
 #include <vector>
 #include <map>
 #include "modelwrapper.h"
+#include "../session.h" // -=K=-: can't declare inline bool Shapes::isHeadless() without
 
 /**
   *@author Gabor Torok
@@ -190,7 +191,7 @@ public:
 
 protected:
 	Session *session;
-  bool headless;
+  //bool headless; -=K=- it was left uninitialized but value was still used at some places.
   GLShape *shapes[256];
   std::map<std::string, GLShape *> shapeMap;
   int shapeCount;
@@ -257,7 +258,7 @@ public:
   Shapes( Session *session );
   virtual ~Shapes();
 
-	inline bool isHeadless() { return headless; }
+	inline bool isHeadless() { return session->getGameAdapter()->isHeadless(); }
 
 	inline int getRugCount() { return rugs.size(); }
 	inline GLuint getRug( int index ) { return rugs[ index ]; }
