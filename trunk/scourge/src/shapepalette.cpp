@@ -116,8 +116,7 @@ void ShapePalette::initialize() {
   // call "super"
   Shapes::initialize();
 
-	loader = new ModelLoader( headless, 
-														 textureGroup[ 14 ] );
+	loader = new ModelLoader( isHeadless(), textureGroup[ 14 ] );
 
   // load textures
   SDL_Surface *tmpSurface = NULL;
