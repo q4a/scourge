@@ -354,7 +354,8 @@ public:
     MOTION_STAND //FREEZE!
   };
 
-#define MAX_PATH_NODES 20000
+//#define MAX_PATH_NODES 20000
+#define MAX_PATH_NODES 500
 
   enum {
   	SEX_MALE=0,
