@@ -719,7 +719,7 @@ bool Scourge::loadMap( const string& mapName, bool fromRandomMap, bool absoluteP
 }
 
 void Scourge::linkMissionObjectives( vector< RenderedItem* > *items, vector< RenderedCreature* > *creatures ) {
-	cerr << "***********************" << endl << "Linking mission objectives:" << endl;
+	//cerr << "***********************" << endl << "Linking mission objectives:" << endl;
 	set<int> used;
 
 	for(vector<RenderedCreature*>::iterator i = creatures->begin(); i != creatures->end(); i++ ) {
@@ -727,14 +727,14 @@ void Scourge::linkMissionObjectives( vector< RenderedItem* > *items, vector< Ren
 		if( creature->isSavedMissionObjective() ) {
 			for( int t = 0; t < static_cast<int>(getSession()->getCurrentMission()->getCreatureCount()); t++ ) {
 				if( getSession()->getCurrentMission()->getCreature( t ) == creature->getMonster() && used.find( t ) == used.end() ) {
-					cerr << "\t\tLinking mission creature " << creature->getName() << endl;
+					//cerr << "\t\tLinking mission creature " << creature->getName() << endl;
 					getSession()->getCurrentMission()->addCreatureInstanceMap( creature, creature->getMonster() );
 					used.insert( t );
 				}
 			}
 		}
 	}
-	cerr << "***********************" << endl;
+	//cerr << "***********************" << endl;
 }
 
 void Scourge::showLevelInfo() {

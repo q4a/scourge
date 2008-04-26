@@ -427,7 +427,7 @@ float Util::mt_rand() {
         mt_index = 0;
     }
 
-    y = mt_sequence[++mt_index];
+    y = mt_sequence[mt_index++];
 
     /* Tempering */
     y ^= ( y >> 11 );
@@ -435,7 +435,13 @@ float Util::mt_rand() {
     y ^= ( y << 15 ) & 0xefc60000UL;
     y ^= ( y >> 18 );
 
-    return (float)y * multiplier;
+    float ret = (float)y * multiplier;
+		if( ret < 0 || ret >= 1 ) {
+			cerr << "*** error: rand=" << ret << " mt_index=" << mt_index << " y=" << y << endl;
+			// stop with an error
+			CVector3 *p = NULL; p->x = 2;
+		}
+		return ret;
 }
 
 // random integer from 0 to size-1
@@ -444,30 +450,17 @@ float Util::mt_rand() {
 // size is exclusive
 
 int Util::dice( int size ) { 
-	if ( 0 >= size || size - 1 > RAND_MAX )
-	{
-	  std::cerr << "ERROR: Util::dice with size = " << size << " RAND_MAX=" << RAND_MAX << " +1=" << (RAND_MAX + 1) << endl;
-		return static_cast<int>(roll( 0, size ));
-	}
 	return static_cast<int>(roll( 0, size ));
-/*	do {
-		unsigned r = mt_rand();
-		if ( ( r * RAND_MAX ) >= ((unsigned)RAND_MAX + 1) % (unsigned)size ) { //remove some rand values that make the result unfair
-			return r % size;
-		}
-	} while ( true ); */
 }
 
 // random integer  from min to max
 // min must be <= max
 // this method is inclusive on both min and max
 int Util::pickOne( int min, int max ) {
-	// dice checks params
 	return dice( max + 1 - min ) + min;
 }
 
 // random float from min to max (both inclusive)
 float Util::roll( float min, float max ) { 
-//	return (max - min) * rand() / RAND_MAX + min;
 	return (max - min) * mt_rand() + min;
 }
