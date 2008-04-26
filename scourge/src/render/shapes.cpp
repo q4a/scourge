@@ -477,8 +477,8 @@ GLShape *Shapes::findShapeByName(const char *name, bool variation) {
   if( !variation || shape->getVariationShapesCount() == 0 ) return shape;
 
   int n = Util::dice( VARIATION_BASE + shape->getVariationShapesCount() );
-  if( n >= static_cast<int>(VARIATION_BASE) ) {
-    return shape->getVariationShape( n - static_cast<int>(VARIATION_BASE) );
+  if( n >= VARIATION_BASE ) {
+    return shape->getVariationShape( n - VARIATION_BASE );
   }
   return shape;
 }

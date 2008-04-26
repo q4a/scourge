@@ -329,7 +329,7 @@ void OutdoorGenerator::createNpc( Map *map, ShapePalette *shapePal, int x, int y
   int fx, fy;
   creature->findPlace( x, y, &fx, &fy );
   
-  if( 0 == Util::dice( 5 ) ) {
+  if( 0 == Util::dice( 3 ) ) {
   	Mission::createTypedNpc( creature, level, fx, fy );
   }
 }

@@ -396,9 +396,9 @@ void CellularAutomaton::connectRooms( int pathWidth ) {
 				if( success ) break;
 			}
 
-			if( !success ) {
-				cerr << "*** Warning: unable to create exit from this room: " << room[i].x << "," << room[i].y << endl;
-			}
+			//if( !success ) {
+				//cerr << "*** Warning: unable to create exit from this room: " << room[i].x << "," << room[i].y << endl;
+			//}
 		}
 	}
 }
