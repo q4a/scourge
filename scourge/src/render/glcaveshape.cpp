@@ -281,7 +281,7 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
     glVertex3f( w, 0, n );
     glEnd();
     glPopMatrix();    
-    glDisable( GL_BLEND );
+    //glDisable( GL_BLEND );
     glDisable( GL_ALPHA_TEST );
   }
   glEnable(GL_DEPTH_TEST);
@@ -810,9 +810,9 @@ void GLCaveShape::createFloorTexture( Shapes *shapes, int stencilIndex ) {
       GLubyte sb = stencil[ x + y * 256 ];
   
       int p = ( ( 3 * x ) + ( y * 256 * 3 ) );
-	  GLubyte r = ( floorThemeData.empty() ? (GLubyte)0x80 : floorThemeData[ p + 0 ] );
+      GLubyte b = ( floorThemeData.empty() ? (GLubyte)0x80 : floorThemeData[ p + 0 ] );
       GLubyte g = ( floorThemeData.empty() ? (GLubyte)0x80 : floorThemeData[ p + 1 ] );
-      GLubyte b = ( floorThemeData.empty() ? (GLubyte)0x80 : floorThemeData[ p + 2 ] );
+      GLubyte r = ( floorThemeData.empty() ? (GLubyte)0x80 : floorThemeData[ p + 2 ] );
   
       if( sb == 0 ) {
         floorData[ stencilIndex ][ ( ( 4 * x ) + ( y * 256 * 4 ) ) + 0 ] = 0;
