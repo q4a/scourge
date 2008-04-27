@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 38
+#define PERSIST_VERSION 39
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -59,6 +59,13 @@ struct ItemInfo {
 
 };
 
+struct NpcInfoInfo {
+  Uint32 version;
+  Uint32 x, y, level, type;
+  Uint8 name[255];
+  Uint8 subtype[255];
+};
+
 struct CreatureInfo {
   Uint32 version;
   Uint8 name[255];
@@ -89,6 +96,7 @@ struct CreatureInfo {
 
 	Uint8 boss;
   Uint8 mission;
+  NpcInfoInfo *npcInfo;
 };
 
 struct LocationInfo {

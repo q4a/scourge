@@ -649,7 +649,15 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		//bool loaded = loadMap( path, fromRandomMap );
 		//if( !loaded ) 
     string result;
-    levelMap->loadMap( string(HQ_MAP_NAME), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );
+    std::vector< RenderedCreature* > creaturesLoaded;
+    levelMap->loadMap( string(HQ_MAP_NAME), result, this, 1, currentStory, changingStory, false, goingUp, goingDown, NULL, &creaturesLoaded );
+    // HACK: remember npc infos for memory cleaning later. So lame.
+    for( unsigned int i = 0; i < creaturesLoaded.size(); i++ ) {
+    	Creature *c = (Creature*)creaturesLoaded[ i ];
+    	if( c->isNpc() && c->getNpcInfo() ) {
+    		Mission::addNpcInfo( c->getNpcInfo() );
+    	}
+    }
 #endif
 
 	} else {
@@ -3086,7 +3094,7 @@ bool Scourge::doLoadGame( Session *session, string& dirName, char* error, bool i
 		//cerr << "Looking for mission:" << endl;
 		if( strcmp( (char*)mission, HQ_MISSION_SAVED_NAME ) ) {
 			for( int i = 0; i < session->getBoard()->getMissionCount(); i++ ) {
-				cerr << "\tmission:" << session->getBoard()->getMission(i)->getName() << endl;
+				//cerr << "\tmission:" << session->getBoard()->getMission(i)->getName() << endl;
 				if( !strcmp( session->getBoard()->getMission(i)->getName(), (char*)mission ) ) {
 					nextMission = i;
 					break;

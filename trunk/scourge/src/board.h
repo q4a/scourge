@@ -35,6 +35,7 @@ class Session;
 class Board;
 class GameAdapter;
 class ConfigLang;
+class NpcInfoInfo;
 
 /**
   *@author Gabor Torok
@@ -68,6 +69,9 @@ public:
 
   NpcInfo( int x, int y, char *name, int level, char *type, char *subtype );
   ~NpcInfo();
+  
+  NpcInfoInfo *NpcInfo::save();
+  static NpcInfo *NpcInfo::load( NpcInfoInfo *info );
 
   inline int isSubtype( int value ) { return( subtype.find( value ) != subtype.end() ); }
   inline std::set<int> *getSubtype() { return &subtype; }
@@ -233,6 +237,7 @@ public:
 	void loadStorylineMission( MissionInfo *info );
 	
 	static NpcInfo *addNpcInfo( int x, int y, char *npcName, int level, char *npcType, char *npcSubType );
+	static NpcInfo *addNpcInfo( NpcInfo *info );
 	static void createTypedNpc( Creature *creature, int level, int fx, int fy );
 
 private:

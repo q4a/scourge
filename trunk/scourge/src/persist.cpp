@@ -30,6 +30,32 @@ namespace { //anonymous
 		file->write( &(info->sides) );
 		file->write( &(info->mod) );
 	}
+	
+	void saveNpcInfoInfo( File *file, NpcInfoInfo *info ) {
+		file->write( &(info->version) );
+		file->write( &(info->x) );
+		file->write( &(info->y) );
+		file->write( &(info->level) );
+		file->write( &(info->type) );
+		file->write( info->name, 255 );
+		file->write( info->subtype, 255 );
+	}
+	
+	NpcInfoInfo *loadNpcInfoInfo( File *file ) {
+		NpcInfoInfo *info = (NpcInfoInfo*)malloc(sizeof(NpcInfoInfo));
+		file->read( &(info->version) );
+		file->read( &(info->x) );
+		file->read( &(info->y) );
+		file->read( &(info->level) );
+		file->read( &(info->type) );
+		file->read( info->name, 255 );
+		file->read( info->subtype, 255 );
+		return info;
+	}
+	
+	void deleteNpcInfoInfo( NpcInfoInfo *info ) {
+		free( info );
+	}
 
 	void saveItem( File *file, ItemInfo *info ) {
 		file->write( &(info->version) );
@@ -557,6 +583,9 @@ void Persist::deleteCreatureInfo( CreatureInfo *info ) {
   for(int i = 0; i < static_cast<int>(info->inventory_count); i++) {
     deleteItemInfo( info->inventory[i] );
   }
+  if( info->npcInfo ) {
+  	deleteNpcInfoInfo( info->npcInfo );
+  }
   free( info );
 }
 
@@ -610,6 +639,14 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
   }
 	file->write( &( info->boss ) );
   file->write( &(info->mission) );
+  if( info->npcInfo ) {
+  	Uint8 n = 1;
+  	file->write( &n );
+  	saveNpcInfoInfo( file, info->npcInfo );
+  } else {
+  	Uint8 n = 0;
+  	file->write( &n );  	
+  }
 }
 
 CreatureInfo *Persist::loadCreature( File *file ) {
@@ -668,6 +705,13 @@ CreatureInfo *Persist::loadCreature( File *file ) {
     file->read( &(info->mission) );
   } else {
     info->mission = 0;
+  }
+  if( info->version >= 39 ) {
+  	Uint8 n;
+  	file->read( &n );
+  	info->npcInfo = ( n ? loadNpcInfoInfo( file ) : NULL );
+  } else {
+  	info->npcInfo = NULL;
   }
   return info;
 }
