@@ -830,6 +830,12 @@ void Mission::loadMapData( GameAdapter *adapter, const string& filename ) {
 
   // read the level's data
   loadMapDataFile( adapter, filename );
+  
+  // if nothing was read read from hq.cfg
+  if( intros.size() == 0 ) {
+  	string s = rootDir + "/maps/general.map";
+  	loadMapDataFile( adapter, s, true );
+  }
 }
 
 /**
@@ -1098,7 +1104,6 @@ string Mission::getMapConfigFile( const string& filename ) {
 	} else {
 		s.append(".cfg");
 	}
-
 	return s;
 }
 
