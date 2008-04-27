@@ -39,7 +39,7 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   ignoreKeyUp = false;
 
   mainWin = new Window( scourge->getSDLHandler(),
-                        100, 170, WIN_WIDTH, 320, 
+                        100, 170, WIN_WIDTH, 340, 
                         _( "Options" ), 
                         scourge->getShapePalette()->getGuiTexture(),
                         true, Window::BASIC_WINDOW,
@@ -55,9 +55,9 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   controlsButton = mainWin->createButton (x, 0, x + BUTTON_WIDTH, SPACING, _( "Controls" ), true);
 
   x = 10;
-  saveButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, _( "Save" ), false);
+  saveButton = mainWin->createButton(x, 285, x + BUTTON_WIDTH, 285 + SPACING, _( "Save" ), false);
   x += BUTTON_WIDTH + MINOR_SPACING;
-  closeButton = mainWin->createButton(x, 265, x + BUTTON_WIDTH, 265 + SPACING, _( "Close" ), false);
+  closeButton = mainWin->createButton(x, 285, x + BUTTON_WIDTH, 285 + SPACING, _( "Close" ), false);
 
   cards = new CardContainer(mainWin);
   
@@ -104,11 +104,18 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   cards->addWidget(tooltipInterval, GAME_SETTINGS);
   y += SPACING + SPACING;
   logLevelML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Log level" ), 100);
-  logLevelML -> addText(strdup( _( "Minimal" )));
-  logLevelML -> addText(strdup( _( "Partial" ) ));
-  logLevelML -> addText(strdup( _( "Verbose" )));
-  logLevelML -> addText(strdup( _( "Full" )));
+  logLevelML->addText(strdup( _( "Minimal" )));
+  logLevelML->addText(strdup( _( "Partial" ) ));
+  logLevelML->addText(strdup( _( "Verbose" )));
+  logLevelML->addText(strdup( _( "Full" )));
   cards->addWidget(logLevelML, GAME_SETTINGS);
+
+  y += SPACING + MINOR_SPACING;
+  pathFindingQualityML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Path finding quality" ), 100);
+  pathFindingQualityML->addText(strdup( _( "Basic" )));
+  pathFindingQualityML->addText(strdup( _( "Advanced" ) ));
+  pathFindingQualityML->addText(strdup( _( "Excellent" )));
+  cards->addWidget(pathFindingQualityML, GAME_SETTINGS);
    
   // Video settings tabs        
   y = YPOS;
@@ -175,6 +182,7 @@ void OptionsMenu::loadGameSettings(){
     tooltipEnabled->setCheck(uc->getTooltipEnabled());
     tooltipInterval->setValue(scourge->getUserConfiguration()->getTooltipInterval());
     logLevelML->setText(uc->getLogLevel());
+    pathFindingQualityML->setText(uc->getPathFindingQuality());
 }
 
 // line i must correspond to engine action i if we want this scrolling list to work
@@ -320,6 +328,8 @@ bool OptionsMenu::handleEvent(Widget *widget, SDL_Event *event) {
         uc->setTooltipInterval(tooltipInterval->getValue());
     } else if(widget == logLevelML){
         uc->setLogLevel(logLevelML->getCurrentTextInd());
+    } else if(widget == pathFindingQualityML){
+        uc->setPathFindingQuality(pathFindingQualityML->getCurrentTextInd());
     } else if(widget == videoResolutionML){
         string line, s1, s2;
         int end;

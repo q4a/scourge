@@ -157,6 +157,9 @@ public:
   virtual char *getHost() = 0;
   virtual char *getUserName() = 0;
   virtual int getPort() = 0;
+  virtual int getLogLevel() = 0;
+  virtual int getPathFindingQuality() = 0;
+  virtual long getMaxPathNodes() = 0;
   virtual int getMonsterToughness() = 0;
 	virtual bool getEnableScreenshots() = 0;
 	virtual bool getFlaky() = 0;

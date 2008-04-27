@@ -58,11 +58,11 @@ class PathManager{
     inline std::vector<Location>* getPath(){return &path;}
     inline int getPositionOnPath(){return positionOnPath;}
 
-    virtual bool findPath(int x, int y, Creature* player, Map* map, bool ignoreParty=false, int maxNodes=100);
-    virtual bool findPathToCreature(Creature* target, Creature* player, Map* map, float distance=MIN_DISTANCE, bool ignoreParty=false, int maxNodes=100);
-    virtual void findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty=false, int maxNodes=100);
+    virtual bool findPath(int x, int y, Creature* player, Map* map, bool ignoreParty=false);
+    virtual bool findPathToCreature(Creature* target, Creature* player, Map* map, float distance=MIN_DISTANCE, bool ignoreParty=false);
+    virtual void findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty=false);
     void findWanderingPath(unsigned int maxPathLength, Creature* player, Map* map);
-    void findPathOffLocations(std::set<Location,LocationComparitor>* locations, Creature* player, Map* map, int maxNodes);
+    void findPathOffLocations(std::set<Location,LocationComparitor>* locations, Creature* player, Map* map);
     
     void moveNPCsOffPath(Creature* player, Map* map); //runs up the path, asking any stationary NPCs to clear off
     virtual float getSpeed();
@@ -108,9 +108,9 @@ class FormationLeaderPathManager : PathManager{
     FormationLeaderPathManager(Creature* owner, FormationFollowerPathManager* followers, int followersSize);
     virtual ~FormationLeaderPathManager();
 
-    virtual bool findPath(int x, int y, Creature* player, Map* map, bool ignoreParty=false, int maxNodes=100);
-    virtual bool findPathToCreature(Creature* target, Creature* player, Map* map, float distance=MIN_DISTANCE, bool ignoreParty=false, int maxNodes=100);
-    virtual void findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty=false, int maxNodes=100);
+    virtual bool findPath(int x, int y, Creature* player, Map* map, bool ignoreParty=false);
+    virtual bool findPathToCreature(Creature* target, Creature* player, Map* map, float distance=MIN_DISTANCE, bool ignoreParty=false);
+    virtual void findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty=false);
 
     /**
      * Get the position of this creature in the formation, given the leaders location and facing.

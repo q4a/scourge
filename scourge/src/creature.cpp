@@ -544,7 +544,7 @@ bool Creature::move(Uint16 dir) {
 void Creature::setTargetCreature( Creature *c, bool findPath, float range) { 
   targetCreature = c; 
   if( findPath ) {
-    if( !setSelCreature( c , range, false, MAX_PATH_NODES ) ) { //500 keeps this in line with the setSelXY in party.cpp
+    if( !setSelCreature( c , range, false ) ) {
       // FIXME: should mark target somehow. Path alg. cannot reach it; blocked by something.
       // Keep the target creature anyway.
       if( session->getPreferences()->isBattleTurnBased() ) {
@@ -575,7 +575,7 @@ bool Creature::follow( Creature *leader ) {
         return setSelCreature(leader,1);
 }
 
-bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) { 
+bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible ) { 
   bool ignoreParty = session->getParty()->getPlayer() == this && !session->getGameAdapter()->inTurnBasedCombat();
   int oldSelX = selX;
   int oldSelY = selY;
@@ -595,7 +595,7 @@ bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) 
   bool ret = pathManager->findPath(selX, selY, 
                   session->getParty()->getPlayer(),
                   session->getMap(),
-                  ignoreParty,maxNodes);
+                  ignoreParty);
 
   /**
    * For pc-s cancel the move.
@@ -632,7 +632,7 @@ bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible, int maxNodes ) 
  * Use this instead of setSelXY when targetting creatures so that it will check all locations
  * occupied by large creatures.
  **/
-bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNotPossible, int maxNodes) { 
+bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNotPossible ) { 
   bool ignoreParty = session->getParty()->getPlayer() == this && !session->getGameAdapter()->inTurnBasedCombat();
   int oldSelX = selX;
   int oldSelY = selY;
@@ -655,7 +655,7 @@ bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNot
   bool ret = pathManager->findPathToCreature(creature,
                   session->getParty()->getPlayer(), 
                   session->getMap(),
-                  range,ignoreParty,maxNodes);
+                  range,ignoreParty);
 
   /**
    * For pc-s cancel the move.
