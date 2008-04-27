@@ -25,6 +25,7 @@
 #include "shapepalette.h"
 #include "configlang.h"
 #include "sound.h"
+#include "persist.h"
 
 using namespace std;
 
@@ -1278,6 +1279,12 @@ NpcInfo *Mission::addNpcInfo( int x, int y, char *npcName, int level, char *npcT
 	return npcInfo;
 }
 
+NpcInfo *Mission::addNpcInfo( NpcInfo *info ) {
+	string key = getNpcInfoKey( info->x, info->y );
+	npcInfos[ key ] = info;
+	return info;
+}
+
 void Mission::createTypedNpc( Creature *creature, int level, int fx, int fy ) {
 	int npcType = 1 + Util::dice( Constants::NPC_TYPE_COUNT - 1 );
 	int const NAME_LEN = 254;
@@ -1350,3 +1357,17 @@ NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype
 NpcInfo::~NpcInfo() {
 }
 
+NpcInfoInfo *NpcInfo::save() {
+	NpcInfoInfo *info = (NpcInfoInfo*)malloc(sizeof(NpcInfoInfo));
+	info->x = x;
+	info->y = y;
+	strcpy( (char*)info->name, name );
+	info->level = level;
+	info->type = type;
+	strcpy( (char*)info->subtype, subtypeStr );	
+	return info;	
+}
+
+NpcInfo *NpcInfo::load( NpcInfoInfo *info ) {
+	return new NpcInfo( info->x, info->y, (char*)info->name, info->level, (char*)Constants::npcTypeName[info->type], (char*)info->subtype );
+}

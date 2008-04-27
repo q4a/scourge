@@ -253,10 +253,12 @@ CreatureInfo *Creature::save() {
     strcpy((char*)info->character_name, "");
     strcpy((char*)info->monster_name, monster->getType());
     info->character_model_info_index = 0;
+   	info->npcInfo = ( isNpc() && getNpcInfo() ? getNpcInfo()->save() : NULL );
   } else {
     strcpy((char*)info->character_name, character->getName());
     strcpy((char*)info->monster_name, "");    
     info->character_model_info_index = character_model_info_index;
+    info->npcInfo = NULL;
   }
   info->deityIndex = deityIndex;
   info->hp = hp;
@@ -317,11 +319,6 @@ CreatureInfo *Creature::save() {
 
 	info->boss = (Uint8)boss;
   info->mission = (Uint8)( session->getCurrentMission() && session->getCurrentMission()->isMissionCreature( this ) ? 1 : 0 );
-	if( info->mission ) {
-		cerr << "*********************************" << endl;
-		cerr << "Saving mission creature:" << getName() << endl;
-		cerr << "*********************************" << endl;
-	}
 
   return info;
 }
@@ -343,6 +340,10 @@ Creature *Creature::load(Session *session, CreatureInfo *info) {
                         monster );
     creature = session->newCreature( monster, shape, true );
 		creature->setName( (char*)info->name ); // important for npc-s
+		if( info->npcInfo ) {
+			NpcInfo *npcInfo = NpcInfo::load( info->npcInfo );
+			if( npcInfo ) creature->setNpcInfo( npcInfo );
+		}
 		
 		// fixme: throw away this code when saving stats_mods and calendar events is implemented
 		// for now, set a monsters stat mods as declared in creatures.txt

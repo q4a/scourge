@@ -177,7 +177,6 @@ bool SavegameDialog::findFiles() {
 		if( i->substr( 0, 5 ) == "save_" && readFileDetails( *i ) ) {
 			filenames.push_back(fileInfos.back()->title);
 			screens.push_back(loadScreenshot( fileInfos.back()->path ));
-			cout << "last screen: " << screens.back() << endl;
 
 			int n = static_cast<int>(strtol( i->c_str() + 5, (char**)NULL, 16 ));
 			if( n > maxFileSuffix )
