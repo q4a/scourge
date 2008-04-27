@@ -251,7 +251,7 @@ public:
                         Map *map,
                         Creature *creature,
                         Creature *player,
-                        int maxNodes,
+                        long maxNodes,
                         bool ignoreParty,
                         GoalFunction * goal,
                         Heuristic * heuristic );
@@ -261,7 +261,7 @@ public:
                         Map *map,
                         Creature *creature,
                         Creature *player,
-                        int maxNodes,
+                        long maxNodes,
                         bool ignoreParty,
                         GoalFunction * goal ); //TODO: pass in a set of targets, not a goal
 

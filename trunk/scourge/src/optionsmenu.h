@@ -77,7 +77,8 @@ private:
   Checkbox * alwaysShowPath;
   Checkbox *tooltipEnabled;
   Slider *tooltipInterval;
-  MultipleLabel * logLevelML; 
+  MultipleLabel * logLevelML;
+  MultipleLabel * pathFindingQualityML;
   
   MultipleLabel * videoResolutionML;  
   Checkbox * fullscreenCheckbox;

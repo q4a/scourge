@@ -89,7 +89,8 @@ private:
   int combatInfoDetail;
   bool hideInventoriesOnMove;
   int logLevel;
-
+  int pathFindingQuality;
+  long maxPathNodes;
 
   // audio settings
   bool soundEnabled;
@@ -146,8 +147,10 @@ private:
 	inline bool getEnableScreenshots() { return enableScreenshots; }
   inline int getTooltipInterval() { return tooltipInterval; }
   inline int getLogLevel() { return logLevel; }
+  inline int getPathFindingQuality() { return pathFindingQuality; }
+  inline long getMaxPathNodes() { return maxPathNodes; }
   inline int getMonsterToughness() { return monsterToughness; }
-  
+
   inline void setFullscreen(bool t){ fullscreen=t; }
   inline void setDoublebuf(bool t) { doublebuf=t;  }
   inline void setHwpal(bool t)     { hwpal=t;      }
@@ -178,6 +181,7 @@ private:
 	inline void setEnableScreenshots( bool b ) { enableScreenshots = b; }
   inline void setTooltipInterval( int n ) { tooltipInterval = n; }
   inline void setLogLevel(int t)   { if(t >= 0 && t <= 3) logLevel=t; } // [0, 1, 2, 3]
+  inline void setPathFindingQuality( int t ) { if(t >= 0 && t <= 2) { pathFindingQuality = t; maxPathNodes =  pow( 10, ( t + 1 ) ) * 50;} }
   inline void setMonsterToughness( int n ) { monsterToughness = n; }
   
   // return gameSpeed in ticks

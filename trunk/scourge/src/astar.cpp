@@ -206,7 +206,7 @@ void AStar::findPathToNearest( Sint16 sx, Sint16 sy,
                       Map *map,
                       Creature *creature,
                       Creature *player,
-                      int maxNodes,
+                      long maxNodes,
                       bool ignoreParty,
                       GoalFunction * goal ) {
   Heuristic * heuristic = new NoHeuristic();
@@ -249,7 +249,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
                       Map *map,
                       Creature *creature,
                       Creature *player,
-                      int maxNodes,
+                      long maxNodes,
                       bool ignoreParty,
                       GoalFunction * goal,
                       Heuristic * heuristic ) {
@@ -269,7 +269,7 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
 
   set<CPathNode*,XYNodeComparitor> openContents; //to check for membership of the open queue
   set<CPathNode*,XYNodeComparitor>::iterator setItr; //iterator to be used with closed when we want to delete nodes from memory
-  int closedSize = 0; //STL Set can take O(n) to determine size, so we keep a record ourselves
+  long closedSize = 0; //STL Set can take O(n) to determine size, so we keep a record ourselves
   
   CPathNode * start = new CPathNode();     // Has to be persistent, so we put it on the heap.
   start->x = sx;                         // Create the start node

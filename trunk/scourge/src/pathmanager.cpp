@@ -59,7 +59,9 @@ PathManager::~PathManager(){
 
 }
 
-bool PathManager::findPath(int x, int y, Creature* player, Map* map, bool ignoreParty, int maxNodes){
+bool PathManager::findPath(int x, int y, Creature* player, Map* map, bool ignoreParty){
+  long maxNodes = map->getPreferences()->getMaxPathNodes();
+
   GoalFunction * goal = new SingleNodeGoal(x,y);
   Heuristic * heuristic = new DiagonalDistanceHeuristic(x,y);
   AStar::findPath(toint(owner->getX()),toint(owner->getY()),&path,map,owner,player,maxNodes,ignoreParty,goal,heuristic);
@@ -78,7 +80,9 @@ bool PathManager::findPath(int x, int y, Creature* player, Map* map, bool ignore
 /**
  * Move within a certain distance of the target creature
  **/
-bool PathManager::findPathToCreature(Creature* target, Creature* player, Map* map, float distance, bool ignoreParty, int maxNodes){
+bool PathManager::findPathToCreature(Creature* target, Creature* player, Map* map, float distance, bool ignoreParty){
+  long maxNodes = map->getPreferences()->getMaxPathNodes();
+
   GoalFunction * goal = new GetCloseGoal(owner,target,distance);
   Heuristic * heuristic = new DiagonalDistanceHeuristic(toint(target->getX() + target->getShape()->getWidth()/2.0f),toint(target->getY() - target->getShape()->getDepth()/2.0f));
   AStar::findPath(toint(owner->getX()),toint(owner->getY()),&path,map,owner,player,maxNodes,ignoreParty,goal,heuristic);
@@ -96,7 +100,9 @@ bool PathManager::findPathToCreature(Creature* target, Creature* player, Map* ma
 /**
  * Get a path away from a given location.
  **/
-void PathManager::findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty, int maxNodes){
+void PathManager::findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty){
+  long maxNodes = map->getPreferences()->getMaxPathNodes();
+
   GoalFunction * goal = new GetAwayGoal(awayX,awayY,distance);
   Heuristic * heuristic = new DistanceAwayHeuristic(awayX,awayY);
   AStar::findPath(toint(owner->getX()),toint(owner->getY()),&path,map,owner,player,maxNodes,ignoreParty,goal,heuristic);
@@ -227,7 +233,9 @@ Uint16 PathManager::getAntiClockwiseDirection(Uint16 direction){
  * x and y location will be changed.
  * This will also tell the creature to set its motion to MOTION_CLEAR_PATH, which will in turn make it move fast.
  **/
-void PathManager::findPathOffLocations(set<Location,LocationComparitor>* locations, Creature* player, Map* map, int maxNodes){
+void PathManager::findPathOffLocations(set<Location,LocationComparitor>* locations, Creature* player, Map* map){
+  long maxNodes = map->getPreferences()->getMaxPathNodes();
+
   GoalFunction * goal = new ClearLocationsGoal(owner,locations);
   Heuristic * heuristic = new NoHeuristic();
   AStar::findPath(toint(owner->getX()),toint(owner->getY()),&path,map,owner,player,maxNodes,false,goal,heuristic);
@@ -286,7 +294,7 @@ void PathManager::moveNPCsOffPath(Creature* player, Map* map){
       }
       //it's some other NPC who isn't moving! Get OUT of the WAY!
       if(inTheWay)
-        blocker->getPathManager()->findPathOffLocations(&allPathLocations,player,map,100);
+        blocker->getPathManager()->findPathOffLocations(&allPathLocations,player,map);
       else{
       //  cout << "blocker is getting out of the way, current: " << toint(blocker->getX()) << "," << toint(blocker->getY()) << " target: " << blocker->getPathManager()->getEndOfPath().x << "," << blocker->getPathManager()->getEndOfPath().y << "\n";  
       }
@@ -454,16 +462,16 @@ void FormationLeaderPathManager::getFormationPosition( Sint16 *px, Sint16 *py, i
   
 }
 
-bool FormationLeaderPathManager::findPath(int x, int y, Creature* player, Map* map, bool ignoreParty, int maxNodes){
-  return PathManager::findPath(x,y,player,map,ignoreParty,maxNodes);
+bool FormationLeaderPathManager::findPath(int x, int y, Creature* player, Map* map, bool ignoreParty){
+  return PathManager::findPath(x,y,player,map,ignoreParty);
 }
 
-bool FormationLeaderPathManager::findPathToCreature(Creature* target, Creature* player, Map* map, float distance, bool ignoreParty, int maxNodes){
-  return PathManager::findPathToCreature(target,player,map,distance,ignoreParty,maxNodes);
+bool FormationLeaderPathManager::findPathToCreature(Creature* target, Creature* player, Map* map, float distance, bool ignoreParty){
+  return PathManager::findPathToCreature(target,player,map,distance,ignoreParty);
 }
 
-void FormationLeaderPathManager::findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty, int maxNodes){
-  return PathManager::findPathAway(awayX,awayY,player,map,distance,ignoreParty,maxNodes);
+void FormationLeaderPathManager::findPathAway(int awayX, int awayY, Creature* player, Map* map, float distance, bool ignoreParty){
+  return PathManager::findPathAway(awayX,awayY,player,map,distance,ignoreParty);
 }
 
 FormationFollowerPathManager::FormationFollowerPathManager(Creature* owner,FormationLeaderPathManager* leader) : PathManager(owner){

@@ -331,7 +331,7 @@ UserConfiguration::UserConfiguration(){
     monsterToughness = 0;
     hideInventoriesOnMove = true;
     logLevel = 3;
-
+    pathFindingQuality = 0;
 
     // audio settings
     soundEnabled = true;
@@ -596,6 +596,8 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
 		snprintf(textLine, TXT_SIZE, "set loglevel %d  // 0 : minimal, 3 : full\n", logLevel);
     writeFile(configFile, textLine);
+		snprintf(textLine, TXT_SIZE, "set pathfindingquality %d  // 0 : basic, 2 : excellent\n", pathFindingQuality);
+    writeFile(configFile, textLine);
 		snprintf(textLine, TXT_SIZE, "\n// Audio settings\n");
     writeFile(configFile, textLine);
 		snprintf(textLine, TXT_SIZE, "set soundenabled %s\n", soundEnabled ? "true" : "false");
@@ -767,6 +769,15 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
              << ", valid values are 0, 1, 2 and 3 . Ignoring line" << endl;
              logLevel = 3; // Default value
         }
+    } else if(s1 == "pathfindingquality") {
+        pathFindingQuality = atoi(s2.c_str());
+        if(pathFindingQuality < 0 || pathFindingQuality > 2) {
+		  cerr << "Warning : in file " << CONFIG_FILE //_NAME 
+             << " invalid pathfindingquality at line " << lineNumber 
+             << ", valid values are 0, 1 and 2 . Ignoring line" << endl;
+             pathFindingQuality = 0; // Default value
+        }
+        maxPathNodes =  pow( 10, ( pathFindingQuality + 1 ) ) * 50;
     } else if( s1 == "enablescreenshots" ) {
 			enableScreenshots = paramValue;
     } else if(s1 == "monstertoughness" ) {
@@ -1174,6 +1185,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set tooltipenabled true" << endl;
   configFile << "set tooltipinterval 50" << endl;
   configFile << "set loglevel 3" << endl;
+  configFile << "set pathfindingquality 0" << endl;
   configFile << "" << endl;
   configFile << "// Audio settings" << endl;
   configFile << "set soundenabled true" << endl;
