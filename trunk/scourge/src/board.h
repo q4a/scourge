@@ -70,8 +70,8 @@ public:
   NpcInfo( int x, int y, char *name, int level, char *type, char *subtype );
   ~NpcInfo();
   
-  NpcInfoInfo *NpcInfo::save();
-  static NpcInfo *NpcInfo::load( NpcInfoInfo *info );
+  NpcInfoInfo* save();
+  static NpcInfo* load( NpcInfoInfo *info );
 
   inline int isSubtype( int value ) { return( subtype.find( value ) != subtype.end() ); }
   inline std::set<int> *getSubtype() { return &subtype; }
