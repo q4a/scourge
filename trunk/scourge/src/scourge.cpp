@@ -688,6 +688,9 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 			dg = TerrainGenerator::getGenerator( this, currentStory );
 			mapCreated = dg->toMap( levelMap, getSession()->getShapePalette(),
 									goingUp, goingDown );
+			// load the generic conversation
+			string s = rootDir + "/maps/general.map";
+			Mission::loadMapData( this, s );
 		}
 	}
 
