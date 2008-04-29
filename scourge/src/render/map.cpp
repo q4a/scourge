@@ -2287,7 +2287,8 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	
 	// remember gates and teleporters
 	if( shape == shapes->findShapeByName("GATE_UP") ||
-			shape == shapes->findShapeByName("GATE_DOWN") ) {
+			shape == shapes->findShapeByName("GATE_DOWN") ||
+			shape == shapes->findShapeByName("GATE_DOWN_OUTDOORS") ) {
 		gates.insert( p );
 	} else if( shape == shapes->findShapeByName("TELEPORTER") ) {
 		teleporters.insert( p );
@@ -2351,7 +2352,8 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 		
 		// forget gates and teleporters
 		if( shape == shapes->findShapeByName("GATE_UP") ||
-				shape == shapes->findShapeByName("GATE_DOWN") ) {
+				shape == shapes->findShapeByName("GATE_DOWN") ||
+				shape == shapes->findShapeByName("GATE_DOWN_OUTDOORS") ) {
 			gates.erase( p );
 		} else if( shape == shapes->findShapeByName("TELEPORTER") ) {
 			teleporters.erase( p );
@@ -3607,7 +3609,8 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 				setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
 				if( settings->isPlayerEnabled() ) {
 					if( ( goingUp && !strcmp( (char*)info->pos[i]->shape_name, "GATE_DOWN" ) ) ||
-							( goingDown && !strcmp( (char*)info->pos[i]->shape_name, "GATE_UP" ) ) ) {
+							( goingDown && !strcmp( (char*)info->pos[i]->shape_name, "GATE_UP" ) ) ||
+							( goingUp && !strcmp( (char*)info->pos[i]->shape_name, "GATE_DOWN_OUTDOORS" ) ) ) {
 						float d = ( info->pos[i]->x - adapter->getPlayer()->getX() ) * ( info->pos[i]->x - adapter->getPlayer()->getX() ) +
 											( info->pos[i]->y - adapter->getPlayer()->getY() ) * ( info->pos[i]->y - adapter->getPlayer()->getY() );
 						if( start_dist == -1 || d < start_dist ) {

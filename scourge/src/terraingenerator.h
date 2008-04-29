@@ -122,6 +122,7 @@ public:
 
 protected:
 
+	virtual inline const char *getGateDownShapeName() { return "GATE_DOWN"; } 
   void updateStatus(const char *statusMessage);
 
   bool drawNodesOnMap(Map *map, ShapePalette *shapePal, bool goingUp, bool goingDown);
