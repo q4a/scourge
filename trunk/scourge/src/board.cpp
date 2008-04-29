@@ -798,8 +798,6 @@ void Mission::clearConversations() {
 
 //TODO: this will segfault if filename starts with a .
 void Mission::loadMapData( GameAdapter *adapter, const string& filename ) {
-	clearConversations();
-
   // read general conversation from level 0.
   char dup[300];
   strcpy( dup, filename.c_str() );
@@ -1315,7 +1313,8 @@ void Mission::createTypedNpc( Creature *creature, int level, int fx, int fy ) {
 	}
 	char name[NAME_LEN+1] = {0};
 	snprintf( name,NAME_LEN, _( "%s the %s" ), Rpg::createName(), npcTypeName );
-	NpcInfo *npcInfo = Mission::addNpcInfo( fx, fy, name, level, (char*)Constants::npcTypeName[ npcType ], npcSubType );
+	// don't add it to the mission, just create the objects. They're added later in scourge.cpp.
+	NpcInfo *npcInfo = new NpcInfo( fx, fy, name, level, (char*)Constants::npcTypeName[ npcType ], npcSubType );
 	creature->setNpcInfo( npcInfo );
 }
 
