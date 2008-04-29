@@ -239,10 +239,10 @@ public:
 	static NpcInfo *addNpcInfo( int x, int y, char *npcName, int level, char *npcType, char *npcSubType );
 	static NpcInfo *addNpcInfo( NpcInfo *info );
 	static void createTypedNpc( Creature *creature, int level, int fx, int fy );
-
-private:
-	//static void addWanderingHeroes( GameAdapter *adapter );
 	static void clearConversations();
+	
+private:
+	//static void addWanderingHeroes( GameAdapter *adapter );	
   static void loadMapDataFile( GameAdapter *adapter, const std::string& filename, bool generalOnly=false );
 	static std::string getMapConfigFile( const std::string& filename );
 	static void initConversations( ConfigLang *config, GameAdapter *adapter, bool generalOnly );

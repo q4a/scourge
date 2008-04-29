@@ -606,6 +606,8 @@ void Scourge::createMissionInfoMessage( Mission *lastMission ) {
 }
 
 bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
+	Mission::clearConversations();
+	
 	bool mapCreated = true;
 	TerrainGenerator *dg = NULL;
 	if(nextMission == -1) {
@@ -649,15 +651,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		//bool loaded = loadMap( path, fromRandomMap );
 		//if( !loaded ) 
     string result;
-    std::vector< RenderedCreature* > creaturesLoaded;
-    levelMap->loadMap( string(HQ_MAP_NAME), result, this, 1, currentStory, changingStory, false, goingUp, goingDown, NULL, &creaturesLoaded );
-    // HACK: remember npc infos for memory cleaning later. So lame.
-    for( unsigned int i = 0; i < creaturesLoaded.size(); i++ ) {
-    	Creature *c = (Creature*)creaturesLoaded[ i ];
-    	if( c->isNpc() && c->getNpcInfo() ) {
-    		Mission::addNpcInfo( c->getNpcInfo() );
-    	}
-    }
+    levelMap->loadMap( string(HQ_MAP_NAME), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );
 #endif
 
 	} else {
