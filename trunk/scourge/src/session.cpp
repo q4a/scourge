@@ -94,8 +94,6 @@ void Session::start() {
 }
 
 void Session::doInitData() {
-	cerr << "doInitData: start" << endl;
-	
 	adapter->setUpdate( _( "Loading Shapes" ) );
 	shapePal->initialize();
 	
@@ -146,7 +144,6 @@ void Session::doInitData() {
 	adapter->initUI();
 	
 	adapter->setUpdate( "" );
-	cerr << "doInitData: done" << endl;
 }
 
 void Session::initData() {
