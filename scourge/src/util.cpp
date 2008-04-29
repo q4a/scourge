@@ -437,9 +437,9 @@ float Util::mt_rand() {
 
     float ret = (float)y * multiplier;
 		if( ret < 0 || ret >= 1 ) {
-			cerr << "*** error: rand=" << ret << " mt_index=" << mt_index << " y=" << y << endl;
-			// stop with an error
-			CVector3 *p = NULL; p->x = 2;
+			cerr << "*** error: rand=" << ret << " mt_index=" << mt_index << " y=" << y << ". Correcting..." << endl;
+			// this happens occasianlly... fall back to rand()
+			ret = rand() / RAND_MAX;
 		}
 		return ret;
 }

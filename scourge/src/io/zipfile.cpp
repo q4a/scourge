@@ -114,9 +114,9 @@ int ZipFile::writeZip( int flush ) {
     if( flush == Z_FINISH ) {
 #ifdef DEBUG_ZIP  
       cerr << "Z_FINISH:" << endl;
-#endif
       if( ret == Z_OK ) cerr << "\tZ_OK" << endl;
       if( ret == Z_STREAM_END ) cerr << "\tZ_STREAM_END" << endl;
+#endif      
     }
 
     have = CHUNK - strm.avail_out;

@@ -143,7 +143,7 @@ void Rpg::initStateMods( ConfigLang *config ) {
     if( type == StateMod::GOOD ) StateMod::goodStateMods.push_back( stateMod );
     if( type == StateMod::BAD ) StateMod::badStateMods.push_back( stateMod );
   }
-  cerr << "** Read " << StateMod::stateMods.size() << " state mods." << endl;
+  //cerr << "** Read " << StateMod::stateMods.size() << " state mods." << endl;
 }
 
 void Rpg::initRpg() { 

@@ -335,7 +335,7 @@ void Sound::storeAmbientObjectSound( std::string const& sound ) {
 		Mix_Chunk *sample = Mix_LoadWAV( filename.str().c_str() );
 		if( sample ) {
 			if( ambient_objects.find( sound ) == ambient_objects.end() ) {
-				cerr << "\tstoring " << sound << endl;
+				//cerr << "\tstoring " << sound << endl;
 				ambient_objects[sound] = sample;
 			}
 		} else {

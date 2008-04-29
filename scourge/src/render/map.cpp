@@ -3733,7 +3733,7 @@ void Map::loadMapLocation( const std::string& name, std::string& result, int *gr
   } else {
     fileName << rootDir << "/maps/" << name << ".map";
   }
-  cerr << "loading map header: " << fileName.str() << endl;
+  //cerr << "loading map header: " << fileName.str() << endl;
 
   FILE *fp = fopen( fileName.str().c_str(), "rb" );
   if( !fp ) {
