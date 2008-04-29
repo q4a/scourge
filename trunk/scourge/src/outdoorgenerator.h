@@ -83,6 +83,7 @@ public:
 		bool seen[MAP_STEP_WIDTH][MAP_STEP_DEPTH];
 	};
 protected:
+	virtual inline const char *getGateDownShapeName() { return "GATE_DOWN_OUTDOORS"; }
 	void addEWDoor( Map *map, ShapePalette *shapePal, int x, int y );
 	void addNSDoor( Map *map, ShapePalette *shapePal, int x, int y );
 	void removeLakes( Map *map, int x, int y );

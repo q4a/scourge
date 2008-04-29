@@ -1310,7 +1310,8 @@ bool Scourge::useGate(Location *pos) {
       if (pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_UP")) {
         ascendDungeon( pos );
         return true;
-      } else if (pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_DOWN")) {
+      } else if (pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_DOWN") ||
+      		pos->shape == getSession()->getShapePalette()->findShapeByName("GATE_DOWN_OUTDOORS")) {
 				descendDungeon( pos );
         return true;
       }

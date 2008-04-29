@@ -285,7 +285,7 @@ bool TerrainGenerator::addStairs(Map *map, ShapePalette *shapePal) {
   if(stairsDown) {
     bool done = false;
     for(int i = roomCount - 1; i >= 0; i--) {
-      Shape *shape = scourge->getShapePalette()->findShapeByName("GATE_DOWN");
+      Shape *shape = scourge->getShapePalette()->findShapeByName(getGateDownShapeName());
       int x, y;
       bool fits = getLocationInRoom(map, i, shape, &x, &y);
       if(fits && !map->coversDoor(shape, x, y)) {

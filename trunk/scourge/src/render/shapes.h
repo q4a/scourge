@@ -192,7 +192,7 @@ public:
 protected:
 	Session *session;
   //bool headless; -=K=- it was left uninitialized but value was still used at some places.
-  GLShape *shapes[256];
+  GLShape *shapes[512];
   std::map<std::string, GLShape *> shapeMap;
   int shapeCount;
   
