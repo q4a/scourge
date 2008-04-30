@@ -332,6 +332,7 @@ UserConfiguration::UserConfiguration(){
     hideInventoriesOnMove = true;
     logLevel = 3;
     pathFindingQuality = 0;
+    maxPathNodes = 500;
 
     // audio settings
     soundEnabled = true;
@@ -777,7 +778,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
              << ", valid values are 0, 1 and 2 . Ignoring line" << endl;
              pathFindingQuality = 0; // Default value
         }
-        maxPathNodes =  pow( 10, ( pathFindingQuality + 1 ) ) * 50;
+        maxPathNodes =  pow( 10, pathFindingQuality ) * 500;
     } else if( s1 == "enablescreenshots" ) {
 			enableScreenshots = paramValue;
     } else if(s1 == "monstertoughness" ) {
