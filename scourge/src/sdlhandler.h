@@ -101,6 +101,8 @@ private:
 	bool running;
 	bool cursorVisible;
 
+  void getVideoModes();
+
 public: 
 
   struct FontInfo {
@@ -185,8 +187,10 @@ public:
   */
   inline SDLEventHandler *getEventHandler() { return eventHandler; }
 
+  // 
+  int getVideoModeCount();
+  std::string getVideoMode(int mode);
   void setVideoMode(Preferences *uc);
-  char ** getVideoModes(int &nbModes);
   void mainLoop();
   void drawScreen();
   bool processEvents( bool *isActive=NULL );

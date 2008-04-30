@@ -33,6 +33,8 @@ using namespace std;
 string willSavePath = "";
 
 vector<SDLHandler::FontInfo*> SDLHandler::fontInfos;
+vector<string> modeDescriptions;
+int videoModeCount;
 
 #define FORBIDDEN_CURSOR_TIME 2000
 
@@ -246,13 +248,12 @@ int testModes(Uint32 flags, bool findMaxBpp=false) {
 }
 
 
-char **SDLHandler::getVideoModes(int &nbModes){
+void SDLHandler::getVideoModes(){
     SDL_Rect **modes;
-    char ** modesDescription;
     Uint32 flags;  
-    int i, c;    
-    int suitableModes;
-        
+
+    modeDescriptions.clear();
+
     if(!screen){
         fprintf(stderr, "SDLHandler :: you must allocate screen before calling getVideoModes!!\n");
         exit(-1);
@@ -266,57 +267,57 @@ char **SDLHandler::getVideoModes(int &nbModes){
 
     // Copy them to a char array
     if(modes != (SDL_Rect **)0){                    
-        nbModes = 0;            
+        videoModeCount = 0;            
         if(modes == (SDL_Rect **)-1) {
             // All modes are available, so let's go..
-            nbModes = 14;
-            modesDescription = (char **) malloc (nbModes * sizeof(char *));
-            modesDescription[0] = strdup("800 x 600");
-            modesDescription[1] = strdup("1024 x 600");
-            modesDescription[2] = strdup("1024 x 768");
-            modesDescription[3] = strdup("1152 x 864");
-            modesDescription[4] = strdup("1280 x 768");
-            modesDescription[5] = strdup("1280 x 800");
-            modesDescription[6] = strdup("1280 x 960");
-            modesDescription[7] = strdup("1280 x 1024");
-            modesDescription[8] = strdup("1400 x 1050");
-            modesDescription[9] = strdup("1440 x 900");
-            modesDescription[10] = strdup("1600 x 1200");
-            modesDescription[11] = strdup("1680 x 1050");
-            modesDescription[12] = strdup("1920 x 1200");
-            modesDescription[13] = strdup("2048 x 1536");
-        }
-        else{
-            // Only a few modes available, which ones ?            
-            for(nbModes = 0; modes[nbModes]; nbModes++);
-		if (nbModes) {
-			for (i=0; i < nbModes; i++) {
-				// Filter out very small and large resolutions that may cause problems
-				if ( modes[i]->h > 599 && modes[i]->w < 2049 ) suitableModes++;
-			}
-		modesDescription = (char **)malloc(suitableModes * sizeof(char *));
-		c = 0;
-			for (i = 0; i < nbModes; i++) {
-				if ( modes[i]->h > 599 && modes[i]->w < 2049 ) {
-					char temp[ 50 ];
-					snprintf(temp, 50, "%d x %d", modes[i]->w, modes[i]->h);
-					modesDescription[c] = strdup(temp);
-					c++;
+            videoModeCount = 14;
+            modeDescriptions.push_back("800 x 600");
+            modeDescriptions.push_back("1024 x 600");
+            modeDescriptions.push_back("1024 x 768");
+            modeDescriptions.push_back("1152 x 864");
+            modeDescriptions.push_back("1280 x 768");
+            modeDescriptions.push_back("1280 x 800");
+            modeDescriptions.push_back("1280 x 960");
+            modeDescriptions.push_back("1280 x 1024");
+            modeDescriptions.push_back("1400 x 1050");
+            modeDescriptions.push_back("1440 x 900");
+            modeDescriptions.push_back("1600 x 1200");
+            modeDescriptions.push_back("1680 x 1050");
+            modeDescriptions.push_back("1920 x 1200");
+            modeDescriptions.push_back("2048 x 1536");
+        } else {
+		// Only a few modes available, which ones ?            
+		for(videoModeCount = 0; modes[videoModeCount]; videoModeCount++);
+			if (videoModeCount) {
+				for (int i = 0; i < videoModeCount; i++) {
+					if ( modes[i]->h > 599 && modes[i]->w < 2049 ) {
+						char temp[ 50 ];
+						snprintf(temp, 50, "%d x %d", modes[i]->w, modes[i]->h);
+						modeDescriptions.push_back(temp);
+					}
 				}
-			}
-		nbModes = suitableModes;
-           } else {
-             nbModes = 1;           
-             modesDescription = (char **) malloc (sizeof(char *));
-             modesDescription[0] = strdup("No modes available!\n");              
-           }  
-        } 
-    } else {         
-        nbModes = 1;           
-        modesDescription = (char **) malloc (sizeof(char *));
-        modesDescription[0] = strdup("No modes available!\n");         
+			videoModeCount = modeDescriptions.size();
+			} else {
+				videoModeCount = 1;           
+				modeDescriptions.push_back("No modes available!\n");              
+			}  
+		} 
+    } else {
+        videoModeCount = 1;           
+        modeDescriptions.push_back("No modes available!\n");         
     }
-    return modesDescription;
+}
+
+int SDLHandler::getVideoModeCount(){
+  getVideoModes();
+  return videoModeCount;
+}
+
+std::string SDLHandler::getVideoMode(int mode){
+//  char vm[255];
+//  snprintf(vm, 255, "%s", modeDescriptions[mode].c_str());
+  return modeDescriptions[mode];
+//  return vm;
 }
 
 void SDLHandler::setVideoMode( Preferences * uc ) {    
