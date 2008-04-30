@@ -121,10 +121,13 @@ OptionsMenu::OptionsMenu(Scourge *scourge){
   y = YPOS;
   videoResolutionML = new MultipleLabel(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Screen resolution" ), 100);
   int nbModes, i;
-  char **modes;    
-  modes = scourge->getSDLHandler()->getVideoModes(nbModes);    
+  char * vm;
+  nbModes = scourge->getSDLHandler()->getVideoModeCount();
   for(i = 0; i < nbModes; i++) {
-    videoResolutionML -> addText(modes[i]);
+    std::string s = scourge->getSDLHandler()->getVideoMode(i);
+    vm = new char[s.size() + 1];
+    strcpy(vm, s.c_str());
+    videoResolutionML->addText(vm);
   }
   cards->addWidget(videoResolutionML, VIDEO);
 
