@@ -25,7 +25,7 @@
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <autoinstall>false</autoinstall>
-      <autokdesu>false</autokdesu>
+      <autokdesu>true</autokdesu>
       <envvars/>
     </run>
     <filetypes>
@@ -156,7 +156,7 @@
       <includestyle>3</includestyle>
       <root>/usr/share/qt3</root>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake>/usr/bin/qmake-qt3</qmake>
+      <qmake></qmake>
       <designer></designer>
       <designerpluginpaths/>
     </qt>
@@ -164,7 +164,7 @@
       <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>
       <automaticHeaderCompletion>true</automaticHeaderCompletion>
-      <codeCompletionDelay>250</codeCompletionDelay>
+      <codeCompletionDelay>400</codeCompletionDelay>
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
       <showOnlyAccessibleItems>false</showOnlyAccessibleItems>
@@ -177,10 +177,10 @@
       <processFunctionArguments>true</processFunctionArguments>
       <preProcessAllHeaders>true</preProcessAllHeaders>
       <parseMissingHeadersExperimental>false</parseMissingHeadersExperimental>
-      <resolveIncludePathsUsingMakeExperimental>false</resolveIncludePathsUsingMakeExperimental>
+      <resolveIncludePathsUsingMakeExperimental>true</resolveIncludePathsUsingMakeExperimental>
       <alwaysParseInBackground>true</alwaysParseInBackground>
       <usePermanentCaching>true</usePermanentCaching>
-      <alwaysIncludeNamespaces>false</alwaysIncludeNamespaces>
+      <alwaysIncludeNamespaces>true</alwaysIncludeNamespaces>
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
@@ -212,19 +212,33 @@
     </projectdoc>
   </kdevdocumentation>
   <ctagspart>
-    <customArguments/>
+    <customArguments>-R</customArguments>
     <customTagfilePath>scourge/kdevelop/tags</customTagfilePath>
-    <activeTagsFiles/>
+    <activeTagsFiles>
+      <file>scourge/kdevelop/tags</file>
+    </activeTagsFiles>
   </ctagspart>
   <kdevfileview>
     <groups>
+      <group pattern="scourge/src/rpg/*.cpp" name="RPG core" />
+      <group pattern="scourge/src/render/*.cpp" name="3D engine" />
+      <group pattern="scourge/src/gui/*.cpp" name="GUI code" />
+      <group pattern="scourge/src/io/*.cpp" name="File I/O" />
+      <group pattern="scourge/src/freetype/*.cpp" name="Font manager" />
+      <group pattern="scourge/src/net/*.cpp" name="Net related" />
+      <group pattern="scourge/src/events/*.cpp" name="Events" />
+      <group pattern="scourge/src/common/*.cpp" name="Common stuff" />
+      <group pattern="scourge/src/sqbinding/*.cpp" name="Squirrel bindings" />
+      <group pattern="scourge/src/tools/*.cpp" name="Data editor" />
+      <group pattern="scourge_data/script/*.nut" name="Squirrel scripts" />
+      <group pattern="scourge/src/*.cpp" name="All C sources" />
       <hidenonprojectfiles>false</hidenonprojectfiles>
       <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <hidenonprojectfiles>false</hidenonprojectfiles>
-      <showvcsfields>false</showvcsfields>
+      <showvcsfields>true</showvcsfields>
     </tree>
   </kdevfileview>
   <dist>
@@ -232,14 +246,14 @@
     <bzip>false</bzip>
     <archname/>
     <appname>scourge</appname>
-    <version>1</version>
+    <version>0.20</version>
     <release/>
     <vendor/>
-    <licence/>
-    <summary/>
+    <licence>GPL</licence>
+    <summary>A roguelike game</summary>
     <group/>
-    <packager/>
-    <description/>
+    <packager>Dennis Murczak</packager>
+    <description>bla</description>
     <changelog/>
     <devpackage>false</devpackage>
     <docspackage>false</docspackage>
