@@ -1309,7 +1309,7 @@ void Mission::createTypedNpc( Creature *creature, int level, int fx, int fy ) {
 		strcpy( npcSubType, character->getDisplayName() );
 		snprintf( npcTypeName, NAME_LEN, _( "Trainer for %s" ), character->getDisplayName() );
 	} else if( npcType == Constants::NPC_TYPE_HEALER ) {
-		strcpy( npcSubType, MagicSchool::getRandomSchool()->getDisplayName() );
+		strcpy( npcSubType, MagicSchool::getRandomSchool()->getName() );
 	}
 	char name[NAME_LEN+1] = {0};
 	snprintf( name,NAME_LEN, _( "%s the %s" ), Rpg::createName(), npcTypeName );
