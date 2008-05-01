@@ -491,8 +491,10 @@ public:
     LESSER_MAGIC_ITEM=0,
     GREATER_MAGIC_ITEM,
     CHAMPION_MAGIC_ITEM,
-    DIVINE_MAGIC_ITEM
+    DIVINE_MAGIC_ITEM,
+    MAGIC_ITEM_LEVEL_COUNT
   };
+
   static const char *MAGIC_ITEM_NAMES[];
   static const Color *MAGIC_ITEM_COLOR[];
   static const Color *SPECIAL_ITEM_COLOR;

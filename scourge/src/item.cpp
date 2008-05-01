@@ -638,6 +638,7 @@ void Item::enchant( int newMagicLevel ) {
   if( magicLevel != -1 ) return;
 
   magicLevel = newMagicLevel;
+  if( magicLevel >= Constants::MAGIC_ITEM_LEVEL_COUNT ) magicLevel = Constants::MAGIC_ITEM_LEVEL_COUNT - 1;
 
   // item level caps the magic level:
   // 0-9: lesser
