@@ -746,6 +746,14 @@ Location *Creature::moveToLocator() {
       cantMoveCounter = 0;
       setMoving( true );
     }
+  } else {
+  	if( !(getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND) ) {
+#if PATH_DEBUG
+  		cerr << "Creature stuck: " << getName() << endl;
+#endif
+  		stopMoving();
+  		setMotion(Constants::MOTION_STAND);
+  	}
   }
   return pos;
 }
@@ -779,7 +787,7 @@ Location *Creature::takeAStepOnPath() {
     //float dist = sqrt(diffX*diffX + diffY*diffY); //distance to location
     float dist = Constants::distance(newX, newY, 0, 0, targetX, targetY, 0, 0); //distance to location
     //if(dist < step) step = dist; //if the step is too great, we slow ourselves to avoid overstepping
-	if ( dist != 0.0f ) { // thee shall not divide with zero
+    if ( dist != 0.0f ) { // thee shall not divide with zero
       float stepX = (diffX * step)/dist;
       float stepY = (diffY * step)/dist;
 
@@ -788,6 +796,7 @@ Location *Creature::takeAStepOnPath() {
 
       int nx = toint(newX);
       int ny = toint(newY);
+            
       position = session->getMap()->
             moveCreature(cx, cy, toint(getZ()),
                          nx, ny, toint(getZ()),
@@ -795,6 +804,9 @@ Location *Creature::takeAStepOnPath() {
 
       if(position && cx != location.x && cy != location.y
          && ((cx != nx && cy == ny) || (cx == nx && cy != ny)) ){
+#if PATH_DEBUG
+      	cerr << "Popping: " << this->getName() << endl;
+#endif      	
       //we are blocked at our next step, are moving diagonally, and did not complete the diagonal move
         newX = targetX;
         newY = targetY; //we just "pop" to the target location
@@ -805,7 +817,7 @@ Location *Creature::takeAStepOnPath() {
                        nx, ny, toint(getZ()),
                        this);
       }
-	}
+    }
 
    /* cout << getName() << " stepping (" << getX() << "," << getY() << ") to (" << newX << "," << newY << ")  towards (" << location.x << "," << location.y << ")\n";
     if(position){ 
@@ -825,9 +837,15 @@ Location *Creature::takeAStepOnPath() {
           pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap()); //this clears the path infront
       }
     } else {
+#if PATH_DEBUG
+      	cerr << "Blocked, stopping: " << this->getName() << endl;
+#endif      	    	
       // if we can't get to the destination, stop trying
       // do this so the animation switches to "stand"
-      //stopMoving();
+      if( session->getParty()->getPlayer() != this ) {
+	      stopMoving();
+	      setMotion( Constants::MOTION_STAND );
+      }
       //clear the path infront incase an NPC is what is blocking us
       if(getMotion() != Constants::MOTION_LOITER)
           pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());
