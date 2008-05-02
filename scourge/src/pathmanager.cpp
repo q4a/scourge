@@ -283,7 +283,9 @@ void PathManager::moveNPCsOffPath(Creature* player, Map* map){
        mapLoc->creature != player &&
        (!mapLoc->creature->isMonster() || mapLoc->creature->isNpc())){
       Creature* blocker = (Creature*)mapLoc->creature;
-     // cout << blocker->getName() << " is in the way.\n";
+#if PATH_DEBUG      
+      cout << blocker->getName() << " is in the way.\n";
+#endif      
       blocker->setMotion(Constants::MOTION_CLEAR_PATH); //make sure monsters do the move too
 
       bool inTheWay = blocker->getPathManager()->atEndOfPath();
@@ -293,10 +295,11 @@ void PathManager::moveNPCsOffPath(Creature* player, Map* map){
         inTheWay = isBlockingPath(blocker,end.x,end.y);
       }
       //it's some other NPC who isn't moving! Get OUT of the WAY!
-      if(inTheWay)
+      if(inTheWay) {
         blocker->getPathManager()->findPathOffLocations(&allPathLocations,player,map);
-      else{
-      //  cout << "blocker is getting out of the way, current: " << toint(blocker->getX()) << "," << toint(blocker->getY()) << " target: " << blocker->getPathManager()->getEndOfPath().x << "," << blocker->getPathManager()->getEndOfPath().y << "\n";  
+#if PATH_DEBUG        
+        cout << "blocker is getting out of the way, current: " << toint(blocker->getX()) << "," << toint(blocker->getY()) << " target: " << blocker->getPathManager()->getEndOfPath().x << "," << blocker->getPathManager()->getEndOfPath().y << "\n";  
+#endif      
       }
     }
     setItr++;
