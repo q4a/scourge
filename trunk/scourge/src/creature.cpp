@@ -556,8 +556,8 @@ void Creature::setTargetCreature( Creature *c, bool findPath, float range) {
   }
 }
 
-bool Creature::isNpc() {
-	return( monster ? monster->isNpc() : false );
+bool Creature::isWanderingHero() {
+  return( !session->getParty()->isPartyMember(this) && ( character != NULL ) );
 }
 
 bool Creature::follow( Creature *leader ) {
