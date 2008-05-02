@@ -185,7 +185,11 @@ class Creature : public RenderedCreature {
 	inline bool isMoving() { return moving; }
 	inline void setMoving( bool b ) { moving = b; }
 
-	bool isNpc();
+	inline bool isNpc() { return( monster ? monster->isNpc() : false ); }
+	bool isWanderingHero();
+	inline bool isMonster() { return( monster != NULL ); }
+	inline bool isNonNPCMonster() { return( ( monster != NULL ) && !monster->isNpc() ); }
+
 
   inline GLfloat getAngle() { return angle; }
 
@@ -239,8 +243,6 @@ class Creature : public RenderedCreature {
 
   inline void setLastTurn(int n) { lastTurn = n; }
   inline int getLastTurn() { return lastTurn; }
-
-  inline bool isMonster() { return (monster != NULL); }
 
   inline int getTargetX() { if(targetCreature) return toint(targetCreature->getX()); else return targetX; }
   inline int getTargetY() { if(targetCreature) return toint(targetCreature->getY()); else return targetY; }
