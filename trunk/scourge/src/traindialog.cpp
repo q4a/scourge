@@ -106,7 +106,7 @@ void TrainDialog::updateUI() {
 		errorLabel->setText( s );
 		snprintf( s, S_SIZE, _( "You must seek out one who can train a %s." ), rc->getDisplayName() );
 		errorLabel2->setText( s );
-	} else if( creature->getNpcInfo()->level < player->getLevel() ) {
+	} else if( creature->getNpcInfo()->level < player->getCharacter()->getMinLevelReq() ) {
 		errorLabel->setColor( 0, 1, 1 );
 		errorLabel2->setColor( 0, 1, 1 );
 		snprintf( s, S_SIZE, _( "%s, I can teach you no more. " ), player->getName() );
