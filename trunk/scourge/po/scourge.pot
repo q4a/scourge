@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-05-01 15:25+0200\n"
+"POT-Creation-Date: 2008-05-04 18:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,187 +63,187 @@ msgstr ""
 msgid "Can't find path to target. Sorry!"
 msgstr ""
 
-#: src/creature.cpp:925
+#: src/creature.cpp:943
 #, c-format
 msgid "%s is overloaded."
 msgstr ""
 
-#: src/creature.cpp:999
+#: src/creature.cpp:1017
 #, c-format
 msgid "%s is not overloaded anymore."
 msgstr ""
 
-#: src/creature.cpp:1036
+#: src/creature.cpp:1054
 #, c-format
 msgid "%s is not hungry at the moment."
 msgstr ""
 
-#: src/creature.cpp:1047
+#: src/creature.cpp:1065
 #, c-format
 msgid "%1$s eats %2$s."
 msgstr ""
 
-#: src/creature.cpp:1051 src/creature.cpp:1069 src/creature.cpp:1084
+#: src/creature.cpp:1069 src/creature.cpp:1087 src/creature.cpp:1102
 #, c-format
 msgid "%s is used up."
 msgstr ""
 
-#: src/creature.cpp:1057
+#: src/creature.cpp:1075
 #, c-format
 msgid "%s is not thirsty at the moment."
 msgstr ""
 
-#: src/creature.cpp:1064
+#: src/creature.cpp:1082
 #, c-format
 msgid "%1$s drinks %2$s."
 msgstr ""
 
-#: src/creature.cpp:1079
+#: src/creature.cpp:1097
 #, c-format
 msgid "%1$s drinks from %2$s."
 msgstr ""
 
-#: src/creature.cpp:1089
+#: src/creature.cpp:1107
 msgid "You cannot eat or drink that!"
 msgstr ""
 
-#: src/creature.cpp:1110 src/spellcaster.cpp:284
+#: src/creature.cpp:1128 src/spellcaster.cpp:284
 #, c-format
 msgid "%s heals %d points."
 msgstr ""
 
-#: src/creature.cpp:1119
+#: src/creature.cpp:1137
 #, c-format
 msgid "%s receives %d magic points."
 msgstr ""
 
-#: src/creature.cpp:1127 src/spellcaster.cpp:305
+#: src/creature.cpp:1145 src/spellcaster.cpp:305
 #, c-format
 msgid "%s feels impervious to damage!"
 msgstr ""
 
-#: src/creature.cpp:1147
+#: src/creature.cpp:1165
 #, c-format
 msgid "%s feels at peace."
 msgstr ""
 
-#: src/creature.cpp:1173
+#: src/creature.cpp:1191
 #, c-format
 msgid "%1$s will consume %2$s."
 msgstr ""
 
-#: src/creature.cpp:1177
+#: src/creature.cpp:1195
 #, c-format
 msgid "%1$s will cast %2$s."
 msgstr ""
 
-#: src/creature.cpp:1181
+#: src/creature.cpp:1199
 #, c-format
 msgid "%1$s will use capability %2$s."
 msgstr ""
 
-#: src/creature.cpp:1573
+#: src/creature.cpp:1591
 #, c-format
 msgid "%s is raised from the dead!"
 msgstr ""
 
-#: src/creature.cpp:1607
+#: src/creature.cpp:1625
 #, c-format
 msgid "  %s levels up!"
 msgstr ""
 
-#: src/creature.cpp:1625
+#: src/creature.cpp:1643
 #, c-format
 msgid "%s gains %d experience points."
 msgstr ""
 
-#: src/creature.cpp:1628
+#: src/creature.cpp:1646
 #, c-format
 msgid "%s gains a level!"
 msgstr ""
 
-#: src/creature.cpp:1632
+#: src/creature.cpp:1650
 #, c-format
 msgid "%s looses %d experience points!"
 msgstr ""
 
-#: src/creature.cpp:2130
+#: src/creature.cpp:2148
 #, c-format
 msgid "%s (L:%d HP:%d/%d MP:%d/%d)"
 msgstr ""
 
-#: src/creature.cpp:2135
+#: src/creature.cpp:2153
 msgid "*Mission*"
 msgstr ""
 
-#: src/creature.cpp:2138
+#: src/creature.cpp:2156
 msgid "*Boss*"
 msgstr ""
 
-#: src/creature.cpp:2231
+#: src/creature.cpp:2249
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2243
+#: src/creature.cpp:2261
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr ""
 
-#: src/creature.cpp:2441 src/creature.cpp:2443
+#: src/creature.cpp:2459 src/creature.cpp:2461
 msgid "...Attack from blind-spot!"
 msgstr ""
 
-#: src/creature.cpp:2581 src/creature.cpp:2630
+#: src/creature.cpp:2599 src/creature.cpp:2648
 msgid "skill"
 msgstr ""
 
-#: src/creature.cpp:2585 src/creature.cpp:2629 src/infogui.cpp:661
+#: src/creature.cpp:2603 src/creature.cpp:2647 src/infogui.cpp:661
 msgid "vs."
 msgstr ""
 
-#: src/creature.cpp:2587
+#: src/creature.cpp:2605
 msgid "bonus"
 msgstr ""
 
-#: src/creature.cpp:2625 src/scourge.cpp:3603
+#: src/creature.cpp:2643 src/scourge.cpp:3603
 msgid "CTH"
 msgstr ""
 
-#: src/creature.cpp:2627
+#: src/creature.cpp:2645
 msgid "max"
 msgstr ""
 
-#: src/creature.cpp:2990
+#: src/creature.cpp:3008
 #, c-format
 msgid "%s notices a trap!"
 msgstr ""
 
-#: src/creature.cpp:3010
+#: src/creature.cpp:3028
 #, c-format
 msgid "%s notices a secret door!"
 msgstr ""
 
-#: src/creature.cpp:3030
+#: src/creature.cpp:3048
 #, c-format
 msgid "%1$s blunders into a trap and takes %2$d points of damage!"
 msgstr ""
 
-#: src/creature.cpp:3049
+#: src/creature.cpp:3067
 #, c-format
 msgid "%s attempts to disable the trap:"
 msgstr ""
 
-#: src/creature.cpp:3053
+#: src/creature.cpp:3071
 msgid "   and succeeds!"
 msgstr ""
 
-#: src/creature.cpp:3061
+#: src/creature.cpp:3079
 #, c-format
 msgid "    and fails! %1$s takes %2$d points of damage!"
 msgstr ""
 
-#: src/creature.cpp:3068
+#: src/creature.cpp:3086
 msgid "This trap is already disabled."
 msgstr ""
 
@@ -789,7 +789,7 @@ msgstr ""
 msgid "Initiative"
 msgstr ""
 
-#: src/scourge.cpp:3541 src/item.cpp:1339
+#: src/scourge.cpp:3541 src/item.cpp:1340
 msgid "DEF"
 msgstr ""
 
@@ -1031,7 +1031,7 @@ msgstr ""
 msgid "Male"
 msgstr ""
 
-#: src/portrait.cpp:231 src/item.cpp:1350 src/equip.cpp:199
+#: src/portrait.cpp:231 src/item.cpp:1351 src/equip.cpp:199
 #: src/tools/subpagespells.cpp:54 src/tools/pagecreatures.cpp:49
 msgid "Level"
 msgstr ""
@@ -1040,7 +1040,7 @@ msgstr ""
 msgid "XP"
 msgstr ""
 
-#: src/portrait.cpp:265 src/item.cpp:1330 src/characterinfo.cpp:51
+#: src/portrait.cpp:265 src/item.cpp:1331 src/characterinfo.cpp:51
 msgid "AP"
 msgstr ""
 
@@ -1684,53 +1684,53 @@ msgstr ""
 msgid "Loading Items"
 msgstr ""
 
-#: src/item.cpp:781
+#: src/item.cpp:782
 msgid "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $symbol"
 msgstr ""
 
-#: src/item.cpp:799
+#: src/item.cpp:800
 msgid "Protective"
 msgstr ""
 
-#: src/item.cpp:804
+#: src/item.cpp:805
 msgid "Slaying"
 msgstr ""
 
-#: src/item.cpp:896
+#: src/item.cpp:897
 #, c-format
 msgid "Scroll of %s"
 msgstr ""
 
-#: src/item.cpp:1016
+#: src/item.cpp:1017
 msgid "An item was fully identified!"
 msgstr ""
 
-#: src/item.cpp:1326
+#: src/item.cpp:1327
 msgid "DAM"
 msgstr ""
 
-#: src/item.cpp:1334
+#: src/item.cpp:1335
 msgid "RANGE"
 msgstr ""
 
-#: src/item.cpp:1342
+#: src/item.cpp:1343
 #, c-format
 msgid " %d(%c)"
 msgstr ""
 
-#: src/item.cpp:1354 ../scourge_data/config/rpg.cfg:137
+#: src/item.cpp:1355 ../scourge_data/config/rpg.cfg:137
 msgid "Power"
 msgstr ""
 
-#: src/item.cpp:1359
+#: src/item.cpp:1360
 msgid "Charges"
 msgstr ""
 
-#: src/item.cpp:1362
+#: src/item.cpp:1363
 msgid "Spell"
 msgstr ""
 
-#: src/item.cpp:1367
+#: src/item.cpp:1368
 msgid "Duration"
 msgstr ""
 
@@ -3918,7 +3918,7 @@ msgid ""
 "wiping out humanity. Boring you say? But wait, there is more! Your stay at "
 "the S.c.o.u.r.g.e. head-quarters is generously detailed in 3d! You will "
 "travel to strange and exotic underground locations! The randomly generated "
-"maps ensure the game's infinite replayability. There is A:music, effects, a, "
+"maps ensure the game's infinite replayability. There is music, effects, a, "
 "a... a plot! You will encounter, speak, trade with, and occasionally "
 "dispatch a large number of npc-s and monsters. Blood-curdling combat will "
 "unfold in either frantic real-time or thoughtful turn-based presentation.||"
@@ -3927,8 +3927,8 @@ msgstr ""
 #: ../scourge_data/config/scourge.cfg:26
 msgid ""
 "So stay a while... hunker down for adventure in the true underworld. The "
-"noxious fumes and A:psychedelic molds from the very walls of the crypts "
-"below the city of Horghh await.||"
+"noxious fumes and psychedelic molds from the very walls of the crypts below "
+"the city of Horghh await.||"
 msgstr ""
 
 #: ../scourge_data/config/scourge.cfg:30
