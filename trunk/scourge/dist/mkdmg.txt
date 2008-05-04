@@ -56,7 +56,7 @@ main()
     SRC=$1
     NAME=`basename $SRC`
     NAME="$NAME"
-    ARCH="$NAME Archive"
+    ARCH=$NAME"_Archive"
 
     echo -n "Using source $SRC"
 
