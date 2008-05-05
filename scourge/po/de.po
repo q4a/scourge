@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
 "POT-Creation-Date: 2008-05-04 18:58+0200\n"
-"PO-Revision-Date: 2008-05-04 19:00+0100\n"
+"PO-Revision-Date: 2008-05-05 17:12+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <dmurczak@versanet.de>\n"
 "MIME-Version: 1.0\n"
@@ -7277,7 +7277,7 @@ msgstr "Schurke"
 
 #: ../scourge_data/config/npc.cfg:86
 msgid "Female Hobo"
-msgstr "Weiblicher Hobo"
+msgstr "Wanderarbeiterin"
 
 #: ../scourge_data/config/npc.cfg:105
 msgid "Female Bard"
