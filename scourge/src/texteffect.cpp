@@ -165,8 +165,9 @@ void TextEffect::drawEffect( float divisor, int count ) {
 
 void TextEffect::buildTextures() {
 
-  int width = MENU_ITEM_WIDTH;
-  int height = MENU_ITEM_HEIGHT;
+  // must be powers of 2
+  int width = 256;
+  int height = 64;
 
   glPushMatrix();
   glLoadIdentity();

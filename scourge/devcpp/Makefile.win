@@ -10,21 +10,21 @@ LINKOBJ  = ../src/battle.o ../src/board.o ../src/calendar.o ../src/containergui.
 LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -lfreetype -lSDL_mixer -lSDL_net -lz -lSDL_ttf -lSDL_image -lintl -liconv  
 INCS =  -I"C:/Dev-Cpp/include" 
 CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
-BIN  = ../scourge.exe
+BIN  = ../win32/scourge.exe
 CXXFLAGS = $(CXXINCS) -O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main -I"C:\Dev-Cpp\\include\freetype2" -I"C:\Dev-Cpp\\include" -I"C:\Documents and Settings\ctorok\Desktop\scourge_release\scourge\src\squirrel"  
 CFLAGS = $(INCS) -O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main -I"C:\Dev-Cpp\\include\freetype2" -I"C:\Dev-Cpp\\include" -I"C:\Documents and Settings\ctorok\Desktop\scourge_release\scourge\src\squirrel"    
 RM = rm -f
 
 .PHONY: all all-before all-after clean clean-custom
 
-all: all-before ../scourge.exe all-after
+all: all-before ../win32/scourge.exe all-after
 
 
 clean: clean-custom
 	${RM} $(OBJ) $(BIN)
 
 $(BIN): $(OBJ)
-	$(CPP) $(LINKOBJ) -o "..\scourge.exe" $(LIBS)
+	$(CPP) $(LINKOBJ) -o "..\win32\scourge.exe" $(LIBS)
 
 ../src/battle.o: ../src/battle.cpp
 	$(CPP) -c ../src/battle.cpp -o ../src/battle.o $(CXXFLAGS)
