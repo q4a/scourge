@@ -670,6 +670,7 @@ string Constants::findLocalResources(const string& appPath) {
 	for(int i = 0; i < 10; i++) {
 		size_t pp = dir.find_last_of( '/' );
 		size_t p = dir.find_last_of( SEPARATOR );
+		//cerr << "dir=" << dir << " p=" << p << " pp=" << pp << " npos=" << string::npos << endl;
 		if(p == string::npos && pp == string::npos) {
 			cerr << "*** Can't find local version of data dir. You're running a distribution." << endl;
 			dir = "";
@@ -677,8 +678,7 @@ string Constants::findLocalResources(const string& appPath) {
 		}
 		// Take whichever comes first. This is to solve a problem when running in
 		// mingw or cygwin. It may cause problems if the actual path has a \ or / in it.
-		if(pp > p) 
-			p = pp;
+		if(pp > p && pp != string::npos) p = pp;
 
 		dir = dir.substr(0, p + 1);
 		//cerr << "*** Looking at: dir=" << dir << endl;
