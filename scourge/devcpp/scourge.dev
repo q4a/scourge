@@ -1,7 +1,7 @@
 [Project]
 FileName=scourge.dev
 Name=scourge
-UnitCount=324
+UnitCount=330
 Type=0
 Ver=1
 ObjFiles=
@@ -10,9 +10,9 @@ Libs=
 PrivateResource=scourge_private.rc
 ResourceIncludes=
 MakeIncludes=
-Compiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@__@@__@@_
-CppCompiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\gabor\scourge\src\squirrel"_@@_
-Linker=-O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -lfreetype -lSDL_mixer -lSDL_net -lz -lSDL_ttf -lintl -liconv_@@_
+Compiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\scourge_release\scourge\src\squirrel"_@@__@@__@@_
+CppCompiler=-O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"<INCLUDE>\SDL" -Dmain=SDL_main -I"<INCLUDE>\freetype2" -I"<INCLUDE>" -I"C:\Documents and Settings\ctorok\Desktop\scourge_release\scourge\src\squirrel"_@@_
+Linker=-O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -lfreetype -lSDL_mixer -lSDL_net -lz -lSDL_ttf -lSDL_image -lintl -liconv_@@_
 IsCpp=1
 Icon=scourge.ico
 ExeOutput=..
@@ -3279,6 +3279,66 @@ BuildCmd=
 
 [Unit324]
 FileName=..\src\cellular.cpp
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit325]
+FileName=..\src\uncursedialog.cpp
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit326]
+FileName=..\src\identifydialog.h
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit327]
+FileName=..\src\rechargedialog.h
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit328]
+FileName=..\src\uncursedialog.h
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit329]
+FileName=..\src\identifydialog.cpp
+CompileCpp=1
+Folder=scourge
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit330]
+FileName=..\src\rechargedialog.cpp
 CompileCpp=1
 Folder=scourge
 Compile=1
