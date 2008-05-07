@@ -1,0 +1,507 @@
+# Project: scourge
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = scourge_private.res
+OBJ  = ../src/battle.o ../src/board.o ../src/calendar.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/item.o ../src/main.o ../src/mainmenu.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/net/broadcast.o ../src/net/client.o ../src/net/clientinfo.o ../src/net/commands.o ../src/net/gamestatehandler.o ../src/net/server.o ../src/net/tcputil.o ../src/net/testgamestatehandler.o ../src/gameadapter.o ../src/multiplayer.o ../src/netplay.o ../src/session.o ../src/gui/progress.o ../src/gui/textfield.o ../src/sound.o ../src/persist.o ../src/infogui.o ../src/gui/slider.o ../src/gui/scrollinglabel.o ../src/partyeditor.o ../src/gui/guitheme.o ../src/conversationgui.o ../src/render/3ds.o ../src/render/3dsshape.o ../src/render/effect.o ../src/render/frustum.o ../src/render/gllocator.o ../src/render/glshape.o ../src/render/glteleporter.o ../src/render/gltorch.o ../src/render/location.o ../src/render/map.o ../src/render/mapadapter.o ../src/render/Md2.o ../src/render/md2shape.o ../src/render/renderedcreature.o ../src/render/renderedprojectile.o ../src/render/shape.o ../src/render/shapes.o ../src/io/file.o ../src/io/zipfile.o ../src/donatedialog.o ../src/healdialog.o ../src/itemlist.o ../src/mapeditor.o ../src/mapwidget.o ../src/texteffect.o ../src/tradedialog.o ../src/traindialog.o ../src/squirrel/sqapi.o ../src/squirrel/sqbaselib.o ../src/squirrel/sqclass.o ../src/squirrel/sqcompiler.o ../src/squirrel/sqdebug.o ../src/squirrel/sqfuncstate.o ../src/squirrel/sqlexer.o ../src/squirrel/sqmem.o ../src/squirrel/sqobject.o ../src/squirrel/sqstate.o ../src/squirrel/sqtable.o ../src/squirrel/sqvm.o ../src/sqstdlib/sqstdsystem.o ../src/sqstdlib/sqstdaux.o ../src/sqstdlib/sqstdblob.o ../src/sqstdlib/sqstdio.o ../src/sqstdlib/sqstdmath.o ../src/sqstdlib/sqstdrex.o ../src/sqstdlib/sqstdstream.o ../src/sqstdlib/sqstdstring.o ../src/sqbinding/sqbinding.o ../src/sqbinding/sqcreature.o ../src/sqbinding/sqgame.o ../src/rpg/specialskill.o ../src/characterinfo.o ../src/test/combattest.o ../src/events/reloadevent.o ../src/sqbinding/sqitem.o ../src/sqbinding/sqmission.o ../src/sqbinding/sqobject.o ../src/terraingenerator.o ../src/cavemaker.o ../src/render/glcaveshape.o ../src/render/maprenderhelper.o ../src/render/fog.o ../src/scourgehandler.o ../src/scourgeview.o ../src/skillsview.o ../src/rpg/rpg.o ../src/sqbinding/sqspell.o ../src/render/projectilerenderer.o ../src/gui/confirmdialog.o ../src/common/constants.o ../src/pceditor.o ../src/mondrian.o ../src/gui/textdialog.o ../src/savegamedialog.o ../src/render/animatedshape.o ../src/render/Md3.o ../src/render/md3shape.o ../src/render/modelwrapper.o ../src/common/binreloc.o ../src/upload.o ../src/freetype/fontmgr.o ../src/pcui.o ../src/equip.o ../src/inven.o ../src/configlang.o ../src/portrait.o ../src/textscroller.o ../src/pathmanager.o ../src/astar.o ../src/outdoorgenerator.o ../src/quickhull.o ../src/cellular.o ../src/uncursedialog.o ../src/identifydialog.o ../src/rechargedialog.o $(RES)
+LINKOBJ  = ../src/battle.o ../src/board.o ../src/calendar.o ../src/containergui.o ../src/creature.o ../src/date.o ../src/dungeongenerator.o ../src/item.o ../src/main.o ../src/mainmenu.o ../src/minimap.o ../src/optionsmenu.o ../src/party.o ../src/projectile.o ../src/scourge.o ../src/sdleventhandler.o ../src/sdlhandler.o ../src/sdlscreenview.o ../src/shapepalette.o ../src/spellcaster.o ../src/text.o ../src/userconfiguration.o ../src/util.o ../src/events/event.o ../src/events/potionexpirationevent.o ../src/events/statemodexpirationevent.o ../src/events/thirsthungerevent.o ../src/gui/button.o ../src/gui/canvas.o ../src/gui/cardcontainer.o ../src/gui/checkbox.o ../src/gui/draganddrop.o ../src/gui/label.o ../src/gui/multiplelabel.o ../src/gui/scrollinglist.o ../src/gui/widget.o ../src/gui/widgetview.o ../src/gui/window.o ../src/rpg/character.o ../src/rpg/monster.o ../src/rpg/rpgitem.o ../src/rpg/spell.o ../src/net/broadcast.o ../src/net/client.o ../src/net/clientinfo.o ../src/net/commands.o ../src/net/gamestatehandler.o ../src/net/server.o ../src/net/tcputil.o ../src/net/testgamestatehandler.o ../src/gameadapter.o ../src/multiplayer.o ../src/netplay.o ../src/session.o ../src/gui/progress.o ../src/gui/textfield.o ../src/sound.o ../src/persist.o ../src/infogui.o ../src/gui/slider.o ../src/gui/scrollinglabel.o ../src/partyeditor.o ../src/gui/guitheme.o ../src/conversationgui.o ../src/render/3ds.o ../src/render/3dsshape.o ../src/render/effect.o ../src/render/frustum.o ../src/render/gllocator.o ../src/render/glshape.o ../src/render/glteleporter.o ../src/render/gltorch.o ../src/render/location.o ../src/render/map.o ../src/render/mapadapter.o ../src/render/Md2.o ../src/render/md2shape.o ../src/render/renderedcreature.o ../src/render/renderedprojectile.o ../src/render/shape.o ../src/render/shapes.o ../src/io/file.o ../src/io/zipfile.o ../src/donatedialog.o ../src/healdialog.o ../src/itemlist.o ../src/mapeditor.o ../src/mapwidget.o ../src/texteffect.o ../src/tradedialog.o ../src/traindialog.o ../src/squirrel/sqapi.o ../src/squirrel/sqbaselib.o ../src/squirrel/sqclass.o ../src/squirrel/sqcompiler.o ../src/squirrel/sqdebug.o ../src/squirrel/sqfuncstate.o ../src/squirrel/sqlexer.o ../src/squirrel/sqmem.o ../src/squirrel/sqobject.o ../src/squirrel/sqstate.o ../src/squirrel/sqtable.o ../src/squirrel/sqvm.o ../src/sqstdlib/sqstdsystem.o ../src/sqstdlib/sqstdaux.o ../src/sqstdlib/sqstdblob.o ../src/sqstdlib/sqstdio.o ../src/sqstdlib/sqstdmath.o ../src/sqstdlib/sqstdrex.o ../src/sqstdlib/sqstdstream.o ../src/sqstdlib/sqstdstring.o ../src/sqbinding/sqbinding.o ../src/sqbinding/sqcreature.o ../src/sqbinding/sqgame.o ../src/rpg/specialskill.o ../src/characterinfo.o ../src/test/combattest.o ../src/events/reloadevent.o ../src/sqbinding/sqitem.o ../src/sqbinding/sqmission.o ../src/sqbinding/sqobject.o ../src/terraingenerator.o ../src/cavemaker.o ../src/render/glcaveshape.o ../src/render/maprenderhelper.o ../src/render/fog.o ../src/scourgehandler.o ../src/scourgeview.o ../src/skillsview.o ../src/rpg/rpg.o ../src/sqbinding/sqspell.o ../src/render/projectilerenderer.o ../src/gui/confirmdialog.o ../src/common/constants.o ../src/pceditor.o ../src/mondrian.o ../src/gui/textdialog.o ../src/savegamedialog.o ../src/render/animatedshape.o ../src/render/Md3.o ../src/render/md3shape.o ../src/render/modelwrapper.o ../src/common/binreloc.o ../src/upload.o ../src/freetype/fontmgr.o ../src/pcui.o ../src/equip.o ../src/inven.o ../src/configlang.o ../src/portrait.o ../src/textscroller.o ../src/pathmanager.o ../src/astar.o ../src/outdoorgenerator.o ../src/quickhull.o ../src/cellular.o ../src/uncursedialog.o ../src/identifydialog.o ../src/rechargedialog.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lm -lfreetype -lSDL_mixer -lSDL_net -lz -lSDL_ttf -lSDL_image -lintl -liconv  
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
+BIN  = ../win32/scourge.exe
+CXXFLAGS = $(CXXINCS) -O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main -I"C:\Dev-Cpp\\include\freetype2" -I"C:\Dev-Cpp\\include" -I"C:\Documents and Settings\ctorok\Desktop\scourge_release\scourge\src\squirrel"  
+CFLAGS = $(INCS) -O2 -Wall -Wno-deprecated -fomit-frame-pointer -ffast-math -fexpensive-optimizations -Wall -DHAVE_SDL_NET=1 -DHAVE_SDL_MIXER=1 -I"C:\Dev-Cpp\\include\SDL" -Dmain=SDL_main -I"C:\Dev-Cpp\\include\freetype2" -I"C:\Dev-Cpp\\include" -I"C:\Documents and Settings\ctorok\Desktop\scourge_release\scourge\src\squirrel"    
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before ../win32/scourge.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "..\win32\scourge.exe" $(LIBS)
+
+../src/battle.o: ../src/battle.cpp
+	$(CPP) -c ../src/battle.cpp -o ../src/battle.o $(CXXFLAGS)
+
+../src/board.o: ../src/board.cpp
+	$(CPP) -c ../src/board.cpp -o ../src/board.o $(CXXFLAGS)
+
+../src/calendar.o: ../src/calendar.cpp
+	$(CPP) -c ../src/calendar.cpp -o ../src/calendar.o $(CXXFLAGS)
+
+../src/containergui.o: ../src/containergui.cpp
+	$(CPP) -c ../src/containergui.cpp -o ../src/containergui.o $(CXXFLAGS)
+
+../src/creature.o: ../src/creature.cpp
+	$(CPP) -c ../src/creature.cpp -o ../src/creature.o $(CXXFLAGS)
+
+../src/date.o: ../src/date.cpp
+	$(CPP) -c ../src/date.cpp -o ../src/date.o $(CXXFLAGS)
+
+../src/dungeongenerator.o: ../src/dungeongenerator.cpp
+	$(CPP) -c ../src/dungeongenerator.cpp -o ../src/dungeongenerator.o $(CXXFLAGS)
+
+../src/item.o: ../src/item.cpp
+	$(CPP) -c ../src/item.cpp -o ../src/item.o $(CXXFLAGS)
+
+../src/main.o: ../src/main.cpp
+	$(CPP) -c ../src/main.cpp -o ../src/main.o $(CXXFLAGS)
+
+../src/mainmenu.o: ../src/mainmenu.cpp
+	$(CPP) -c ../src/mainmenu.cpp -o ../src/mainmenu.o $(CXXFLAGS)
+
+../src/minimap.o: ../src/minimap.cpp
+	$(CPP) -c ../src/minimap.cpp -o ../src/minimap.o $(CXXFLAGS)
+
+../src/optionsmenu.o: ../src/optionsmenu.cpp
+	$(CPP) -c ../src/optionsmenu.cpp -o ../src/optionsmenu.o $(CXXFLAGS)
+
+../src/party.o: ../src/party.cpp
+	$(CPP) -c ../src/party.cpp -o ../src/party.o $(CXXFLAGS)
+
+../src/projectile.o: ../src/projectile.cpp
+	$(CPP) -c ../src/projectile.cpp -o ../src/projectile.o $(CXXFLAGS)
+
+../src/scourge.o: ../src/scourge.cpp
+	$(CPP) -c ../src/scourge.cpp -o ../src/scourge.o $(CXXFLAGS)
+
+../src/sdleventhandler.o: ../src/sdleventhandler.cpp
+	$(CPP) -c ../src/sdleventhandler.cpp -o ../src/sdleventhandler.o $(CXXFLAGS)
+
+../src/sdlhandler.o: ../src/sdlhandler.cpp
+	$(CPP) -c ../src/sdlhandler.cpp -o ../src/sdlhandler.o $(CXXFLAGS)
+
+../src/sdlscreenview.o: ../src/sdlscreenview.cpp
+	$(CPP) -c ../src/sdlscreenview.cpp -o ../src/sdlscreenview.o $(CXXFLAGS)
+
+../src/shapepalette.o: ../src/shapepalette.cpp
+	$(CPP) -c ../src/shapepalette.cpp -o ../src/shapepalette.o $(CXXFLAGS)
+
+../src/spellcaster.o: ../src/spellcaster.cpp
+	$(CPP) -c ../src/spellcaster.cpp -o ../src/spellcaster.o $(CXXFLAGS)
+
+../src/text.o: ../src/text.cpp
+	$(CPP) -c ../src/text.cpp -o ../src/text.o $(CXXFLAGS)
+
+../src/userconfiguration.o: ../src/userconfiguration.cpp
+	$(CPP) -c ../src/userconfiguration.cpp -o ../src/userconfiguration.o $(CXXFLAGS)
+
+../src/util.o: ../src/util.cpp
+	$(CPP) -c ../src/util.cpp -o ../src/util.o $(CXXFLAGS)
+
+../src/events/event.o: ../src/events/event.cpp
+	$(CPP) -c ../src/events/event.cpp -o ../src/events/event.o $(CXXFLAGS)
+
+../src/events/potionexpirationevent.o: ../src/events/potionexpirationevent.cpp
+	$(CPP) -c ../src/events/potionexpirationevent.cpp -o ../src/events/potionexpirationevent.o $(CXXFLAGS)
+
+../src/events/statemodexpirationevent.o: ../src/events/statemodexpirationevent.cpp
+	$(CPP) -c ../src/events/statemodexpirationevent.cpp -o ../src/events/statemodexpirationevent.o $(CXXFLAGS)
+
+../src/events/thirsthungerevent.o: ../src/events/thirsthungerevent.cpp
+	$(CPP) -c ../src/events/thirsthungerevent.cpp -o ../src/events/thirsthungerevent.o $(CXXFLAGS)
+
+../src/gui/button.o: ../src/gui/button.cpp
+	$(CPP) -c ../src/gui/button.cpp -o ../src/gui/button.o $(CXXFLAGS)
+
+../src/gui/canvas.o: ../src/gui/canvas.cpp
+	$(CPP) -c ../src/gui/canvas.cpp -o ../src/gui/canvas.o $(CXXFLAGS)
+
+../src/gui/cardcontainer.o: ../src/gui/cardcontainer.cpp
+	$(CPP) -c ../src/gui/cardcontainer.cpp -o ../src/gui/cardcontainer.o $(CXXFLAGS)
+
+../src/gui/checkbox.o: ../src/gui/checkbox.cpp
+	$(CPP) -c ../src/gui/checkbox.cpp -o ../src/gui/checkbox.o $(CXXFLAGS)
+
+../src/gui/draganddrop.o: ../src/gui/draganddrop.cpp
+	$(CPP) -c ../src/gui/draganddrop.cpp -o ../src/gui/draganddrop.o $(CXXFLAGS)
+
+../src/gui/label.o: ../src/gui/label.cpp
+	$(CPP) -c ../src/gui/label.cpp -o ../src/gui/label.o $(CXXFLAGS)
+
+../src/gui/multiplelabel.o: ../src/gui/multiplelabel.cpp
+	$(CPP) -c ../src/gui/multiplelabel.cpp -o ../src/gui/multiplelabel.o $(CXXFLAGS)
+
+../src/gui/scrollinglist.o: ../src/gui/scrollinglist.cpp
+	$(CPP) -c ../src/gui/scrollinglist.cpp -o ../src/gui/scrollinglist.o $(CXXFLAGS)
+
+../src/gui/widget.o: ../src/gui/widget.cpp
+	$(CPP) -c ../src/gui/widget.cpp -o ../src/gui/widget.o $(CXXFLAGS)
+
+../src/gui/widgetview.o: ../src/gui/widgetview.cpp
+	$(CPP) -c ../src/gui/widgetview.cpp -o ../src/gui/widgetview.o $(CXXFLAGS)
+
+../src/gui/window.o: ../src/gui/window.cpp
+	$(CPP) -c ../src/gui/window.cpp -o ../src/gui/window.o $(CXXFLAGS)
+
+../src/rpg/character.o: ../src/rpg/character.cpp
+	$(CPP) -c ../src/rpg/character.cpp -o ../src/rpg/character.o $(CXXFLAGS)
+
+../src/rpg/monster.o: ../src/rpg/monster.cpp
+	$(CPP) -c ../src/rpg/monster.cpp -o ../src/rpg/monster.o $(CXXFLAGS)
+
+../src/rpg/rpgitem.o: ../src/rpg/rpgitem.cpp
+	$(CPP) -c ../src/rpg/rpgitem.cpp -o ../src/rpg/rpgitem.o $(CXXFLAGS)
+
+../src/rpg/spell.o: ../src/rpg/spell.cpp
+	$(CPP) -c ../src/rpg/spell.cpp -o ../src/rpg/spell.o $(CXXFLAGS)
+
+../src/net/broadcast.o: ../src/net/broadcast.cpp
+	$(CPP) -c ../src/net/broadcast.cpp -o ../src/net/broadcast.o $(CXXFLAGS)
+
+../src/net/client.o: ../src/net/client.cpp
+	$(CPP) -c ../src/net/client.cpp -o ../src/net/client.o $(CXXFLAGS)
+
+../src/net/clientinfo.o: ../src/net/clientinfo.cpp
+	$(CPP) -c ../src/net/clientinfo.cpp -o ../src/net/clientinfo.o $(CXXFLAGS)
+
+../src/net/commands.o: ../src/net/commands.cpp
+	$(CPP) -c ../src/net/commands.cpp -o ../src/net/commands.o $(CXXFLAGS)
+
+../src/net/gamestatehandler.o: ../src/net/gamestatehandler.cpp
+	$(CPP) -c ../src/net/gamestatehandler.cpp -o ../src/net/gamestatehandler.o $(CXXFLAGS)
+
+../src/net/server.o: ../src/net/server.cpp
+	$(CPP) -c ../src/net/server.cpp -o ../src/net/server.o $(CXXFLAGS)
+
+../src/net/tcputil.o: ../src/net/tcputil.cpp
+	$(CPP) -c ../src/net/tcputil.cpp -o ../src/net/tcputil.o $(CXXFLAGS)
+
+../src/net/testgamestatehandler.o: ../src/net/testgamestatehandler.cpp
+	$(CPP) -c ../src/net/testgamestatehandler.cpp -o ../src/net/testgamestatehandler.o $(CXXFLAGS)
+
+../src/gameadapter.o: ../src/gameadapter.cpp
+	$(CPP) -c ../src/gameadapter.cpp -o ../src/gameadapter.o $(CXXFLAGS)
+
+../src/multiplayer.o: ../src/multiplayer.cpp
+	$(CPP) -c ../src/multiplayer.cpp -o ../src/multiplayer.o $(CXXFLAGS)
+
+../src/netplay.o: ../src/netplay.cpp
+	$(CPP) -c ../src/netplay.cpp -o ../src/netplay.o $(CXXFLAGS)
+
+../src/session.o: ../src/session.cpp
+	$(CPP) -c ../src/session.cpp -o ../src/session.o $(CXXFLAGS)
+
+../src/gui/progress.o: ../src/gui/progress.cpp
+	$(CPP) -c ../src/gui/progress.cpp -o ../src/gui/progress.o $(CXXFLAGS)
+
+../src/gui/textfield.o: ../src/gui/textfield.cpp
+	$(CPP) -c ../src/gui/textfield.cpp -o ../src/gui/textfield.o $(CXXFLAGS)
+
+../src/sound.o: ../src/sound.cpp
+	$(CPP) -c ../src/sound.cpp -o ../src/sound.o $(CXXFLAGS)
+
+../src/persist.o: ../src/persist.cpp
+	$(CPP) -c ../src/persist.cpp -o ../src/persist.o $(CXXFLAGS)
+
+../src/infogui.o: ../src/infogui.cpp
+	$(CPP) -c ../src/infogui.cpp -o ../src/infogui.o $(CXXFLAGS)
+
+../src/gui/slider.o: ../src/gui/slider.cpp
+	$(CPP) -c ../src/gui/slider.cpp -o ../src/gui/slider.o $(CXXFLAGS)
+
+../src/gui/scrollinglabel.o: ../src/gui/scrollinglabel.cpp
+	$(CPP) -c ../src/gui/scrollinglabel.cpp -o ../src/gui/scrollinglabel.o $(CXXFLAGS)
+
+../src/partyeditor.o: ../src/partyeditor.cpp
+	$(CPP) -c ../src/partyeditor.cpp -o ../src/partyeditor.o $(CXXFLAGS)
+
+../src/gui/guitheme.o: ../src/gui/guitheme.cpp
+	$(CPP) -c ../src/gui/guitheme.cpp -o ../src/gui/guitheme.o $(CXXFLAGS)
+
+../src/conversationgui.o: ../src/conversationgui.cpp
+	$(CPP) -c ../src/conversationgui.cpp -o ../src/conversationgui.o $(CXXFLAGS)
+
+../src/render/3ds.o: ../src/render/3ds.cpp
+	$(CPP) -c ../src/render/3ds.cpp -o ../src/render/3ds.o $(CXXFLAGS)
+
+../src/render/3dsshape.o: ../src/render/3dsshape.cpp
+	$(CPP) -c ../src/render/3dsshape.cpp -o ../src/render/3dsshape.o $(CXXFLAGS)
+
+../src/render/effect.o: ../src/render/effect.cpp
+	$(CPP) -c ../src/render/effect.cpp -o ../src/render/effect.o $(CXXFLAGS)
+
+../src/render/frustum.o: ../src/render/frustum.cpp
+	$(CPP) -c ../src/render/frustum.cpp -o ../src/render/frustum.o $(CXXFLAGS)
+
+../src/render/gllocator.o: ../src/render/gllocator.cpp
+	$(CPP) -c ../src/render/gllocator.cpp -o ../src/render/gllocator.o $(CXXFLAGS)
+
+../src/render/glshape.o: ../src/render/glshape.cpp
+	$(CPP) -c ../src/render/glshape.cpp -o ../src/render/glshape.o $(CXXFLAGS)
+
+../src/render/glteleporter.o: ../src/render/glteleporter.cpp
+	$(CPP) -c ../src/render/glteleporter.cpp -o ../src/render/glteleporter.o $(CXXFLAGS)
+
+../src/render/gltorch.o: ../src/render/gltorch.cpp
+	$(CPP) -c ../src/render/gltorch.cpp -o ../src/render/gltorch.o $(CXXFLAGS)
+
+../src/render/location.o: ../src/render/location.cpp
+	$(CPP) -c ../src/render/location.cpp -o ../src/render/location.o $(CXXFLAGS)
+
+../src/render/map.o: ../src/render/map.cpp
+	$(CPP) -c ../src/render/map.cpp -o ../src/render/map.o $(CXXFLAGS)
+
+../src/render/mapadapter.o: ../src/render/mapadapter.cpp
+	$(CPP) -c ../src/render/mapadapter.cpp -o ../src/render/mapadapter.o $(CXXFLAGS)
+
+../src/render/Md2.o: ../src/render/Md2.cpp
+	$(CPP) -c ../src/render/Md2.cpp -o ../src/render/Md2.o $(CXXFLAGS)
+
+../src/render/md2shape.o: ../src/render/md2shape.cpp
+	$(CPP) -c ../src/render/md2shape.cpp -o ../src/render/md2shape.o $(CXXFLAGS)
+
+../src/render/renderedcreature.o: ../src/render/renderedcreature.cpp
+	$(CPP) -c ../src/render/renderedcreature.cpp -o ../src/render/renderedcreature.o $(CXXFLAGS)
+
+../src/render/renderedprojectile.o: ../src/render/renderedprojectile.cpp
+	$(CPP) -c ../src/render/renderedprojectile.cpp -o ../src/render/renderedprojectile.o $(CXXFLAGS)
+
+../src/render/shape.o: ../src/render/shape.cpp
+	$(CPP) -c ../src/render/shape.cpp -o ../src/render/shape.o $(CXXFLAGS)
+
+../src/render/shapes.o: ../src/render/shapes.cpp
+	$(CPP) -c ../src/render/shapes.cpp -o ../src/render/shapes.o $(CXXFLAGS)
+
+../src/io/file.o: ../src/io/file.cpp
+	$(CPP) -c ../src/io/file.cpp -o ../src/io/file.o $(CXXFLAGS)
+
+../src/io/zipfile.o: ../src/io/zipfile.cpp
+	$(CPP) -c ../src/io/zipfile.cpp -o ../src/io/zipfile.o $(CXXFLAGS)
+
+../src/donatedialog.o: ../src/donatedialog.cpp
+	$(CPP) -c ../src/donatedialog.cpp -o ../src/donatedialog.o $(CXXFLAGS)
+
+../src/healdialog.o: ../src/healdialog.cpp
+	$(CPP) -c ../src/healdialog.cpp -o ../src/healdialog.o $(CXXFLAGS)
+
+../src/itemlist.o: ../src/itemlist.cpp
+	$(CPP) -c ../src/itemlist.cpp -o ../src/itemlist.o $(CXXFLAGS)
+
+../src/mapeditor.o: ../src/mapeditor.cpp
+	$(CPP) -c ../src/mapeditor.cpp -o ../src/mapeditor.o $(CXXFLAGS)
+
+../src/mapwidget.o: ../src/mapwidget.cpp
+	$(CPP) -c ../src/mapwidget.cpp -o ../src/mapwidget.o $(CXXFLAGS)
+
+../src/texteffect.o: ../src/texteffect.cpp
+	$(CPP) -c ../src/texteffect.cpp -o ../src/texteffect.o $(CXXFLAGS)
+
+../src/tradedialog.o: ../src/tradedialog.cpp
+	$(CPP) -c ../src/tradedialog.cpp -o ../src/tradedialog.o $(CXXFLAGS)
+
+../src/traindialog.o: ../src/traindialog.cpp
+	$(CPP) -c ../src/traindialog.cpp -o ../src/traindialog.o $(CXXFLAGS)
+
+../src/squirrel/sqapi.o: ../src/squirrel/sqapi.cpp
+	$(CPP) -c ../src/squirrel/sqapi.cpp -o ../src/squirrel/sqapi.o $(CXXFLAGS)
+
+../src/squirrel/sqbaselib.o: ../src/squirrel/sqbaselib.cpp
+	$(CPP) -c ../src/squirrel/sqbaselib.cpp -o ../src/squirrel/sqbaselib.o $(CXXFLAGS)
+
+../src/squirrel/sqclass.o: ../src/squirrel/sqclass.cpp
+	$(CPP) -c ../src/squirrel/sqclass.cpp -o ../src/squirrel/sqclass.o $(CXXFLAGS)
+
+../src/squirrel/sqcompiler.o: ../src/squirrel/sqcompiler.cpp
+	$(CPP) -c ../src/squirrel/sqcompiler.cpp -o ../src/squirrel/sqcompiler.o $(CXXFLAGS)
+
+../src/squirrel/sqdebug.o: ../src/squirrel/sqdebug.cpp
+	$(CPP) -c ../src/squirrel/sqdebug.cpp -o ../src/squirrel/sqdebug.o $(CXXFLAGS)
+
+../src/squirrel/sqfuncstate.o: ../src/squirrel/sqfuncstate.cpp
+	$(CPP) -c ../src/squirrel/sqfuncstate.cpp -o ../src/squirrel/sqfuncstate.o $(CXXFLAGS)
+
+../src/squirrel/sqlexer.o: ../src/squirrel/sqlexer.cpp
+	$(CPP) -c ../src/squirrel/sqlexer.cpp -o ../src/squirrel/sqlexer.o $(CXXFLAGS)
+
+../src/squirrel/sqmem.o: ../src/squirrel/sqmem.cpp
+	$(CPP) -c ../src/squirrel/sqmem.cpp -o ../src/squirrel/sqmem.o $(CXXFLAGS)
+
+../src/squirrel/sqobject.o: ../src/squirrel/sqobject.cpp
+	$(CPP) -c ../src/squirrel/sqobject.cpp -o ../src/squirrel/sqobject.o $(CXXFLAGS)
+
+../src/squirrel/sqstate.o: ../src/squirrel/sqstate.cpp
+	$(CPP) -c ../src/squirrel/sqstate.cpp -o ../src/squirrel/sqstate.o $(CXXFLAGS)
+
+../src/squirrel/sqtable.o: ../src/squirrel/sqtable.cpp
+	$(CPP) -c ../src/squirrel/sqtable.cpp -o ../src/squirrel/sqtable.o $(CXXFLAGS)
+
+../src/squirrel/sqvm.o: ../src/squirrel/sqvm.cpp
+	$(CPP) -c ../src/squirrel/sqvm.cpp -o ../src/squirrel/sqvm.o $(CXXFLAGS)
+
+../src/sqstdlib/sqstdsystem.o: ../src/sqstdlib/sqstdsystem.cpp
+	$(CPP) -c ../src/sqstdlib/sqstdsystem.cpp -o ../src/sqstdlib/sqstdsystem.o $(CXXFLAGS)
+
+../src/sqstdlib/sqstdaux.o: ../src/sqstdlib/sqstdaux.cpp
+	$(CPP) -c ../src/sqstdlib/sqstdaux.cpp -o ../src/sqstdlib/sqstdaux.o $(CXXFLAGS)
+
+../src/sqstdlib/sqstdblob.o: ../src/sqstdlib/sqstdblob.cpp
+	$(CPP) -c ../src/sqstdlib/sqstdblob.cpp -o ../src/sqstdlib/sqstdblob.o $(CXXFLAGS)
+
+../src/sqstdlib/sqstdio.o: ../src/sqstdlib/sqstdio.cpp
+	$(CPP) -c ../src/sqstdlib/sqstdio.cpp -o ../src/sqstdlib/sqstdio.o $(CXXFLAGS)
+
+../src/sqstdlib/sqstdmath.o: ../src/sqstdlib/sqstdmath.cpp
+	$(CPP) -c ../src/sqstdlib/sqstdmath.cpp -o ../src/sqstdlib/sqstdmath.o $(CXXFLAGS)
+
+../src/sqstdlib/sqstdrex.o: ../src/sqstdlib/sqstdrex.c
+	$(CPP) -c ../src/sqstdlib/sqstdrex.c -o ../src/sqstdlib/sqstdrex.o $(CXXFLAGS)
+
+../src/sqstdlib/sqstdstream.o: ../src/sqstdlib/sqstdstream.cpp
+	$(CPP) -c ../src/sqstdlib/sqstdstream.cpp -o ../src/sqstdlib/sqstdstream.o $(CXXFLAGS)
+
+../src/sqstdlib/sqstdstring.o: ../src/sqstdlib/sqstdstring.cpp
+	$(CPP) -c ../src/sqstdlib/sqstdstring.cpp -o ../src/sqstdlib/sqstdstring.o $(CXXFLAGS)
+
+../src/sqbinding/sqbinding.o: ../src/sqbinding/sqbinding.cpp
+	$(CPP) -c ../src/sqbinding/sqbinding.cpp -o ../src/sqbinding/sqbinding.o $(CXXFLAGS)
+
+../src/sqbinding/sqcreature.o: ../src/sqbinding/sqcreature.cpp
+	$(CPP) -c ../src/sqbinding/sqcreature.cpp -o ../src/sqbinding/sqcreature.o $(CXXFLAGS)
+
+../src/sqbinding/sqgame.o: ../src/sqbinding/sqgame.cpp
+	$(CPP) -c ../src/sqbinding/sqgame.cpp -o ../src/sqbinding/sqgame.o $(CXXFLAGS)
+
+../src/rpg/specialskill.o: ../src/rpg/specialskill.cpp
+	$(CPP) -c ../src/rpg/specialskill.cpp -o ../src/rpg/specialskill.o $(CXXFLAGS)
+
+../src/characterinfo.o: ../src/characterinfo.cpp
+	$(CPP) -c ../src/characterinfo.cpp -o ../src/characterinfo.o $(CXXFLAGS)
+
+../src/test/combattest.o: ../src/test/combattest.cpp
+	$(CPP) -c ../src/test/combattest.cpp -o ../src/test/combattest.o $(CXXFLAGS)
+
+../src/events/reloadevent.o: ../src/events/reloadevent.cpp
+	$(CPP) -c ../src/events/reloadevent.cpp -o ../src/events/reloadevent.o $(CXXFLAGS)
+
+../src/sqbinding/sqitem.o: ../src/sqbinding/sqitem.cpp
+	$(CPP) -c ../src/sqbinding/sqitem.cpp -o ../src/sqbinding/sqitem.o $(CXXFLAGS)
+
+../src/sqbinding/sqmission.o: ../src/sqbinding/sqmission.cpp
+	$(CPP) -c ../src/sqbinding/sqmission.cpp -o ../src/sqbinding/sqmission.o $(CXXFLAGS)
+
+../src/sqbinding/sqobject.o: ../src/sqbinding/sqobject.cpp
+	$(CPP) -c ../src/sqbinding/sqobject.cpp -o ../src/sqbinding/sqobject.o $(CXXFLAGS)
+
+../src/terraingenerator.o: ../src/terraingenerator.cpp
+	$(CPP) -c ../src/terraingenerator.cpp -o ../src/terraingenerator.o $(CXXFLAGS)
+
+../src/cavemaker.o: ../src/cavemaker.cpp
+	$(CPP) -c ../src/cavemaker.cpp -o ../src/cavemaker.o $(CXXFLAGS)
+
+../src/render/glcaveshape.o: ../src/render/glcaveshape.cpp
+	$(CPP) -c ../src/render/glcaveshape.cpp -o ../src/render/glcaveshape.o $(CXXFLAGS)
+
+../src/render/maprenderhelper.o: ../src/render/maprenderhelper.cpp
+	$(CPP) -c ../src/render/maprenderhelper.cpp -o ../src/render/maprenderhelper.o $(CXXFLAGS)
+
+../src/render/fog.o: ../src/render/fog.cpp
+	$(CPP) -c ../src/render/fog.cpp -o ../src/render/fog.o $(CXXFLAGS)
+
+../src/scourgehandler.o: ../src/scourgehandler.cpp
+	$(CPP) -c ../src/scourgehandler.cpp -o ../src/scourgehandler.o $(CXXFLAGS)
+
+../src/scourgeview.o: ../src/scourgeview.cpp
+	$(CPP) -c ../src/scourgeview.cpp -o ../src/scourgeview.o $(CXXFLAGS)
+
+../src/skillsview.o: ../src/skillsview.cpp
+	$(CPP) -c ../src/skillsview.cpp -o ../src/skillsview.o $(CXXFLAGS)
+
+../src/rpg/rpg.o: ../src/rpg/rpg.cpp
+	$(CPP) -c ../src/rpg/rpg.cpp -o ../src/rpg/rpg.o $(CXXFLAGS)
+
+../src/sqbinding/sqspell.o: ../src/sqbinding/sqspell.cpp
+	$(CPP) -c ../src/sqbinding/sqspell.cpp -o ../src/sqbinding/sqspell.o $(CXXFLAGS)
+
+../src/render/projectilerenderer.o: ../src/render/projectilerenderer.cpp
+	$(CPP) -c ../src/render/projectilerenderer.cpp -o ../src/render/projectilerenderer.o $(CXXFLAGS)
+
+../src/gui/confirmdialog.o: ../src/gui/confirmdialog.cpp
+	$(CPP) -c ../src/gui/confirmdialog.cpp -o ../src/gui/confirmdialog.o $(CXXFLAGS)
+
+../src/common/constants.o: ../src/common/constants.cpp
+	$(CPP) -c ../src/common/constants.cpp -o ../src/common/constants.o $(CXXFLAGS)
+
+../src/pceditor.o: ../src/pceditor.cpp
+	$(CPP) -c ../src/pceditor.cpp -o ../src/pceditor.o $(CXXFLAGS)
+
+../src/mondrian.o: ../src/mondrian.cpp
+	$(CPP) -c ../src/mondrian.cpp -o ../src/mondrian.o $(CXXFLAGS)
+
+../src/gui/textdialog.o: ../src/gui/textdialog.cpp
+	$(CPP) -c ../src/gui/textdialog.cpp -o ../src/gui/textdialog.o $(CXXFLAGS)
+
+../src/savegamedialog.o: ../src/savegamedialog.cpp
+	$(CPP) -c ../src/savegamedialog.cpp -o ../src/savegamedialog.o $(CXXFLAGS)
+
+../src/render/animatedshape.o: ../src/render/animatedshape.cpp
+	$(CPP) -c ../src/render/animatedshape.cpp -o ../src/render/animatedshape.o $(CXXFLAGS)
+
+../src/render/Md3.o: ../src/render/Md3.cpp
+	$(CPP) -c ../src/render/Md3.cpp -o ../src/render/Md3.o $(CXXFLAGS)
+
+../src/render/md3shape.o: ../src/render/md3shape.cpp
+	$(CPP) -c ../src/render/md3shape.cpp -o ../src/render/md3shape.o $(CXXFLAGS)
+
+../src/render/modelwrapper.o: ../src/render/modelwrapper.cpp
+	$(CPP) -c ../src/render/modelwrapper.cpp -o ../src/render/modelwrapper.o $(CXXFLAGS)
+
+../src/common/binreloc.o: ../src/common/binreloc.c
+	$(CPP) -c ../src/common/binreloc.c -o ../src/common/binreloc.o $(CXXFLAGS)
+
+../src/upload.o: ../src/upload.cpp
+	$(CPP) -c ../src/upload.cpp -o ../src/upload.o $(CXXFLAGS)
+
+../src/freetype/fontmgr.o: ../src/freetype/fontmgr.cpp
+	$(CPP) -c ../src/freetype/fontmgr.cpp -o ../src/freetype/fontmgr.o $(CXXFLAGS)
+
+../src/pcui.o: ../src/pcui.cpp
+	$(CPP) -c ../src/pcui.cpp -o ../src/pcui.o $(CXXFLAGS)
+
+../src/equip.o: ../src/equip.cpp
+	$(CPP) -c ../src/equip.cpp -o ../src/equip.o $(CXXFLAGS)
+
+../src/inven.o: ../src/inven.cpp
+	$(CPP) -c ../src/inven.cpp -o ../src/inven.o $(CXXFLAGS)
+
+../src/configlang.o: ../src/configlang.cpp
+	$(CPP) -c ../src/configlang.cpp -o ../src/configlang.o $(CXXFLAGS)
+
+../src/portrait.o: ../src/portrait.cpp
+	$(CPP) -c ../src/portrait.cpp -o ../src/portrait.o $(CXXFLAGS)
+
+../src/textscroller.o: ../src/textscroller.cpp
+	$(CPP) -c ../src/textscroller.cpp -o ../src/textscroller.o $(CXXFLAGS)
+
+../src/pathmanager.o: ../src/pathmanager.cpp
+	$(CPP) -c ../src/pathmanager.cpp -o ../src/pathmanager.o $(CXXFLAGS)
+
+../src/astar.o: ../src/astar.cpp
+	$(CPP) -c ../src/astar.cpp -o ../src/astar.o $(CXXFLAGS)
+
+../src/outdoorgenerator.o: ../src/outdoorgenerator.cpp
+	$(CPP) -c ../src/outdoorgenerator.cpp -o ../src/outdoorgenerator.o $(CXXFLAGS)
+
+../src/quickhull.o: ../src/quickhull.cpp
+	$(CPP) -c ../src/quickhull.cpp -o ../src/quickhull.o $(CXXFLAGS)
+
+../src/cellular.o: ../src/cellular.cpp
+	$(CPP) -c ../src/cellular.cpp -o ../src/cellular.o $(CXXFLAGS)
+
+../src/uncursedialog.o: ../src/uncursedialog.cpp
+	$(CPP) -c ../src/uncursedialog.cpp -o ../src/uncursedialog.o $(CXXFLAGS)
+
+../src/identifydialog.o: ../src/identifydialog.cpp
+	$(CPP) -c ../src/identifydialog.cpp -o ../src/identifydialog.o $(CXXFLAGS)
+
+../src/rechargedialog.o: ../src/rechargedialog.cpp
+	$(CPP) -c ../src/rechargedialog.cpp -o ../src/rechargedialog.o $(CXXFLAGS)
+
+scourge_private.res: scourge_private.rc 
+	$(WINDRES) -i scourge_private.rc --input-format=rc -o scourge_private.res -O coff 

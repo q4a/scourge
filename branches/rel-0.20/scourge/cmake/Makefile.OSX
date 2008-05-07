@@ -1,0 +1,22 @@
+# Makefile for use with Fink version of SDL.
+CPP = g++
+TARGET = scourge
+include objects.mk
+CFLAGS = `sdl-config --cflags` -Isrc -Wno-deprecated -c -g
+LDFLAGS = `sdl-config --libs` -framework GLUT -noprebind 
+
+.SUFFIXES : .o .cpp
+
+.cpp.o :
+	$(CPP) $(CFLAGS) $< -o $*.o
+
+all: $(TARGET)
+
+$(TARGET): ${OBJS}
+	$(CPP) -o $@ ${OBJS} $(LDFLAGS)
+
+clean:
+	rm -f $(TARGET) ${OBJS} core
+
+cleanui:
+	rm -f src/gui/*.o

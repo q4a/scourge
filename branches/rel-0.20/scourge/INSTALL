@@ -1,0 +1,21 @@
+# To check out the code and data into a scourge directory
+svn co https://svn.sourceforge.net/svnroot/scourge/trunk scourge
+
+# To configure it
+cd scourge/scourge
+autoreconf -i
+
+# To compile it
+cd ..
+mkdir build
+cd build
+../scourge/configure --enable-debug
+make
+
+# Run
+./src/scourge -f
+
+Thanks,
+--Gabor
+(cctorok@yahoo.com)
+

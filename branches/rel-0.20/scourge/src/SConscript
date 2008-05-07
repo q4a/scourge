@@ -1,0 +1,58 @@
+# ==============================
+#
+# Scripts taken from the game 'Mars, land of no mercy'
+# http://www.marsnomercy.org/
+#
+# ==============================
+
+# import variables
+Import('env', 'opts', 'bin_dir')
+
+# build targets
+common = ['common/constants.cpp',\
+'common/binreloc.c']
+
+events = ['events/event.cpp',\
+'events/potionexpirationevent.cpp',\
+'events/reloadevent.cpp',\
+'events/statemodexpirationevent.cpp',\
+'events/thirsthungerevent.cpp']
+
+freetype = ['freetype/fontmgr.cpp']
+
+gui = ['gui/button.cpp',\
+'gui/canvas.cpp',\
+'gui/cardcontainer.cpp',\
+'gui/checkbox.cpp',\
+'gui/confirmdialog.cpp',\
+'gui/draganddrop.cpp',\
+'gui/guitheme.cpp',\
+'gui/label.cpp',\
+'gui/multiplelabel.cpp',\
+'gui/progress.cpp',\
+'gui/scrollinglabel.cpp',\
+'gui/scrollinglist.cpp',\
+'gui/slider.cpp',\
+'gui/textdialog.cpp',\
+'gui/textfield.cpp',\
+'gui/widget.cpp',\
+'gui/widgetview.cpp',\
+'gui/window.cpp']
+
+io = ['io/file.cpp', 'io/zipfile.cpp']
+net = ['net/broadcast.cpp', 'net/client.cpp', 'net/clientinfo.cpp', 'net/commands.cpp', 'net/gamestatehandler.cpp', 'net/server.cpp', 'net/tcputil.cpp', 'net/testgamestatehandler.cpp']
+render = ['render/vbo.cpp', 'render/3ds.cpp', 'render/3dsshape.cpp', 'render/animatedshape.cpp', 'render/effect.cpp', 'render/fog.cpp', 'render/frustum.cpp', 'render/glcaveshape.cpp', 'render/gllocator.cpp', 'render/glshape.cpp', 'render/glteleporter.cpp', 'render/gltorch.cpp', 'render/location.cpp', 'render/mapadapter.cpp', 'render/map.cpp', 'render/maprenderhelper.cpp', 'render/Md2.cpp', 'render/md2shape.cpp', 'render/Md3.cpp', 'render/md3shape.cpp', 'render/modelwrapper.cpp', 'render/projectilerenderer.cpp', 'render/renderedcreature.cpp', 'render/renderedprojectile.cpp', 'render/shape.cpp', 'render/shapes.cpp']
+rpg = ['rpg/character.cpp', 'rpg/monster.cpp', 'rpg/rpg.cpp', 'rpg/rpgitem.cpp', 'rpg/specialskill.cpp', 'rpg/spell.cpp']
+squirrel = ['squirrel/sqapi.cpp', 'squirrel/sqbaselib.cpp', 'squirrel/sqclass.cpp', 'squirrel/sqcompiler.cpp', 'squirrel/sqdebug.cpp', 'squirrel/sqfuncstate.cpp', 'squirrel/sqlexer.cpp', 'squirrel/sqmem.cpp', 'squirrel/sqobject.cpp', 'squirrel/sqstate.cpp', 'squirrel/sqtable.cpp', 'squirrel/sqvm.cpp']
+sqstdlib = ['sqstdlib/sqstdrex.c', 'sqstdlib/sqstdaux.cpp', 'sqstdlib/sqstdblob.cpp', 'sqstdlib/sqstdio.cpp', 'sqstdlib/sqstdmath.cpp', 'sqstdlib/sqstdstream.cpp', 'sqstdlib/sqstdstring.cpp', 'sqstdlib/sqstdsystem.cpp']
+sqbinding = ['sqbinding/sqbinding.cpp', 'sqbinding/sqcreature.cpp', 'sqbinding/sqgame.cpp', 'sqbinding/sqitem.cpp', 'sqbinding/sqmission.cpp', 'sqbinding/sqobject.cpp', 'sqbinding/sqspell.cpp']
+test = ['test/combattest.cpp']
+scourge = [ 'quickhull.cpp', 'cellular.cpp', 'battle.cpp', 'board.cpp', 'calendar.cpp', 'cavemaker.cpp', 'characterinfo.cpp', 'configlang.cpp', 'containergui.cpp', 'conversationgui.cpp', 'creature.cpp', 'date.cpp', 'donatedialog.cpp', 'dungeongenerator.cpp', 'equip.cpp', 'gameadapter.cpp', 'healdialog.cpp', 'infogui.cpp', 'inven.cpp', 'item.cpp', 'itemlist.cpp', 'main.cpp', 'mainmenu.cpp', 'mapeditor.cpp', 'mapwidget.cpp', 'minimap.cpp', 'mondrian.cpp', 'multiplayer.cpp', 'netplay.cpp', 'optionsmenu.cpp', 'party.cpp', 'partyeditor.cpp', 'pathmanager.cpp', 'pceditor.cpp', 'pcui.cpp', 'persist.cpp', 'portrait.cpp', 'projectile.cpp', 'savegamedialog.cpp', 'scourge.cpp', 'scourgehandler.cpp', 'scourgeview.cpp', 'sdleventhandler.cpp', 'sdlhandler.cpp', 'sdlscreenview.cpp', 'session.cpp', 'shapepalette.cpp', 'skillsview.cpp', 'sound.cpp', 'spellcaster.cpp', 'terraingenerator.cpp', 'text.cpp', 'texteffect.cpp', 'textscroller.cpp', 'tradedialog.cpp', 'traindialog.cpp', 'uncursedialog.cpp', 'rechargedialog.cpp', 'identifydialog.cpp', 'upload.cpp', 'userconfiguration.cpp', 'util.cpp', 'outdoorgenerator.cpp', 'astar.cpp' ]
+
+prog = env.Program('../scourge',common + events + freetype + gui + io + net + render + rpg + squirrel + sqstdlib + sqbinding + test + scourge )
+
+# install
+if bin_dir != '':
+	env.Install(bin_dir, prog)
+	env.Alias('install', bin_dir)
+

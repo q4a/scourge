@@ -1,0 +1,76 @@
+Before this project I didn't know anything about OpenGL.
+Credit for my education goes to the following:
+
+General opengl code:
+Lots of people at http://nehe.gamedev.net/. 
+These are probably the best opengl tutorials on the web.
+
+3ds, md2 model loading and animation:
+DigiBen (digiben@gametutorials.com) from http://www.gametutorials.com
+Also very well written tutorials. I esp. appreciate the fact that both
+sites included linux versions.
+
+The dungeon generator alg. was described here:
+http://www.aarg.net/~minam/dungeon_design.html
+Narrated by Jamis Buck (jgb3@email.byu.edu)
+
+Quake 2 models were borrowed from:
+http://www.planetquake.com/polycount/
+
+Quake2 Model authors:
+Devil Hunter Yohko, by Evil Bastard (brian@zono.com)
+Blade, by Mr. Rogers (ryan@sunstorm.net)
+Shinju Murasaki, by sTuPiD fOoL (fool@rochester.rr.com)
+Perelith Knight, by James Green (no email given)
+Hydralisk, by Warlord (warlord@smithco.net)
+Bauul, by Evil Bastard (brian@zono.com)
+Morbobrawn, by Rowan "Sumaleth" Crawford (sumaleth@frag.com)
+Phantom, by Bjarne Kristensen (bk@mailme.dk)
+Fairy, by Evil Bastard (brian@zono.com)
+Raptor, by Conor O'Kane (conor@matrix.ie)
+Bug, by Tatey (d.r.scott1-96@student.lboro.ac.uk)
+Demoness, by RavenSoftware, Pascal "Firebrandt" Jurock (pascal@jurock.com)
+Frog, by ??
+Hueteotl, by Evil Bastard (brian@zono.com)
+Darkness, by Jlbr (jlbr43@hotmail.com)
+Sidney, by Evil Bastard (brian@zono.com)
+Alita, by Evil Bastard (brian@zono.com)
+Jive devil, by Crash, Frankie, Dines, mOO
+SuperFlashOmegaDragon8, by Burnt Kona, Crash, Firestarter, OgrO_FiX, Sgt. Science (science@pathcom.com)
+
+QUAKE(R) and QUAKE II(R) are registered trademarks of id Software, Inc.
+
+Additional dungeon and cave textures by:
+tp-egyptian, by Sock (sock@planetquake.com)
+wb-dragoon, by whiteblaizer (whiteblaizer@hotmail.com)
+*lots*, by David Gurrea (www.davegh.com)
+
+Sound and Music by:
+Toofan Hosseinnezhad
+Vincent Fiack
+
+The A* alg. was described on some message board that I can no longer find.
+
+The Text class was adopted from code originally written by 
+Mark Kilgard (mjk@nvidia.com) (c) 1997
+see: http://www.opengl.org/developers/code/mjktips/TexFont/TexFont.html
+(used with his permission!)
+
+The glut for Mingw32 package is from http://mywebpage.netscape.com/PtrPck/glut.htm
+
+Freetype is available at (http://www.freetype.org)
+
+Bitstream Vera fonts are available from:
+http://www.gnome.org/fonts/
+
+Cas_antn.ttf font is available from:
+http://www.angelfire.com/la/bryde/fonts.html
+
+Part of the graphic tiles (for inventory) used in this program is the public 
+domain roguelike tileset "RLTiles".
+You can find the original tileset at:
+http://rltiles.sf.net
+
+Scons makefile from 'Mars, land of no mercy'
+http://www.marsnomercy.org
+

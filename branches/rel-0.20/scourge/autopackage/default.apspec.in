@@ -1,0 +1,93 @@
+# -*-shell-script-*-
+
+#
+# This is an example specfile. Delete these comments when you're done.
+#
+
+[Meta]
+RootName: @scourgeweb.org/scourge:$SOFTWAREVERSION
+DisplayName: S.C.O.U.R.G.E. Heroes of Lesser Renown
+ShortName: scourge
+Maintainer: Gabor Torok <gabortorok@users.sourceforge.net>
+Packager: Gabor Torok <gabortorok@users.sourceforge.net>
+Summary: Scourge is a 3d roguelike game
+URL: http://scourgeweb.org
+License: GNU General Public License, Version 2
+SoftwareVersion: @VERSION@
+Repository: http://scourgeweb.org/downloads/scourge.xml
+PackageFileName: $SHORTNAME-$SOFTWAREVERSION.x86.package
+
+# If you change the autopackage but not the software itself,
+# increment this number.
+
+# PackageVersion: 2
+
+# This is the version of the autopackage runtime this package is
+# written for. Increasing this number implies you have read the
+# "Migrating to 1.X" document and understand the impact it will have
+# on your package. Some APIs may change their behaviour and new
+# features will be enabled depending on what this is set to.
+AutopackageTarget: 1.2
+
+# Only uncomment InterfaceVersion if your package exposes interfaces
+# to other software, for instance if it includes DSOs or python/perl
+# modules. See the developer guide for more info, or ask on
+# autopackage-dev if you aren't sure about interface versioning.
+#
+# InterfaceVersion: 0.0
+
+[Description]
+S.C.O.U.R.G.E. is a rogue-like game in the fine tradition of NetHack and Moria 
+It sports a graphical front-end, similar to glHack or the Falcon's eye. 
+I tried to design the 3D UI as a best of both worlds from old to new: 
+It lets you rotate the view, zoom in/out, view special effects, etc. 
+On the other hand I've always liked the old-school isometric games like 
+Exult or Woodward.
+
+[BuildPrepare]
+# For ./configure based systems this is a good default
+prepareBuild --enable-binreloc
+
+[BuildUnprepare]
+unprepareBuild
+
+[Globals]
+# Anything put here will be run during makeinstall and at
+# install/uninstall time. Define useful variables here:
+
+# export MY_VAR=1
+
+[Imports]
+import <<EOF
+$source_dir/src/scourge
+$source_dir/../scourge_data
+$source_dir/assets/scourge.desktop
+$source_dir/assets/scourge.png
+EOF
+
+[Prepare]
+# Dependency checking
+require @libsdl.org/sdl 1.2
+require @libsdl.org/sdl_net 1.2
+require @libsdl.org/sdl_mixer 1.2
+require @freetype.org/freetype2 2.0
+require @libsdl.org/sdl_ttf 2.0
+
+# The user may have already installed the program from an RPM.
+# Let's try and uninstall it first. We only need one call if 3rd party
+# packages have split the program up into multiple packages.
+
+# removeOwningPackage $PREFIX/bin/my-program
+
+[Install]
+# Put your installation script here
+installExe scourge
+installData scourge_data
+# chmod -R 755 $PREFIX/share/scourge_data
+installDesktop "Game/RolePlaying" scourge.desktop
+installIcon scourge.png
+
+[Uninstall]
+# Usually just the following line is enough to uninstall everything
+uninstallFromLog
+

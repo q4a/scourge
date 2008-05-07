@@ -1,0 +1,52 @@
+------------------------------------------------------------------------
+Monastery Theme for S.C.O.U.R.G.E.
+Claudio Canavese 2007 - cod@cod-web.net
+------------------------------------------------------------------------
+A Monastery-like hi-res theme for S.C.O.U.R.G.E. 
+
+All textures were made starting from scratch.
+If you need the vectorial sources of arabesques, bas-relief or anything else
+just write to the author ;)
+
+------------------------------------------------------------------------
+Block for map.cfg
+------------------------------------------------------------------------
+This theme is based on the Debug Theme, so it uses default debug textures names.
+
+
+		[theme]
+			name="monastery"
+			wall="themes/monastery/wall_f,themes/monastery/wall_t,themes/monastery/wall_s,themes/monastery/wall_add,themes/monastery/wall_add2"
+			corner="themes/monastery/corner_f,themes/monastery/corner_t,themes/monastery/corner_s,themes/monastery/corner_add"
+			door_ew="themes/monastery/doorew_f,themes/monastery/doorew_t,themes/monastery/doorew_s,themes/monastery/doorew_add"
+			door_ns="themes/monastery/doorns_f,themes/monastery/doorns_t,themes/monastery/doorns_s,themes/monastery/doorns_add"
+			passage_floor="themes/monastery/pfloor_f,themes/monastery/pfloor_t,themes/monastery/pfloor_s,themes/monastery/pfloor_add"
+			room_floor="themes/monastery/rfloor_f,themes/monastery/rfloor_t,themes/monastery/rfloor_s,themes/monastery/rfloor_add"
+			headboard="themes/monastery/headboard_f,themes/monastery/headboard_t,themes/monastery/headboard_s,themes/monastery/headboard_add,themes/monastery/headboard_add2"
+			medium_multitexture="0.5,0.5,0.5,0.7,1"
+			dark_multitexture="0.5,0.5,0.5,0.8,1"
+		[/theme]
+
+
+------------------------------------------------------------------------
+License
+------------------------------------------------------------------------
+This work is licensed under the Creative Commons Attribution 2.5 License. 
+To view a copy of this license, visit http://creativecommons.org/licenses/by/2.5/
+or send a letter to Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
+
+
+------------------------------------------------------------------------
+What is S.C.O.U.R.G.E.?
+------------------------------------------------------------------------
+
+S.C.O.U.R.G.E. is a cross platform, open source rogue-like game 
+in the fine tradition of NetHack and Moria It sports a graphical 
+front-end, similar to glHack or the Falcon's eye.
+The design of the 3D UI is an attempt at the best of both worlds 
+from old to new: It lets you rotate the view, zoom in/out, view special 
+effects, etc with the feeling of the old-school isometric games like 
+Exult or Woodward.
+
+S.C.O.U.R.G.E. is Free Software and you can download it from the official website:
+http://scourgeweb.org

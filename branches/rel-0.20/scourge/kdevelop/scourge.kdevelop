@@ -1,0 +1,268 @@
+<?xml version = '1.0'?>
+<kdevelop>
+  <general>
+    <author>Gabor Torok</author>
+    <email/>
+    <version>1</version>
+    <projectmanagement>KDevCustomProject</projectmanagement>
+    <primarylanguage>C</primarylanguage>
+    <ignoreparts/>
+    <projectname>scourge</projectname>
+    <projectdirectory>../..</projectdirectory>
+    <absoluteprojectpath>false</absoluteprojectpath>
+    <description/>
+    <defaultencoding/>
+    <versioncontrol>kdevsubversion</versioncontrol>
+  </general>
+  <kdevcustomproject>
+    <run>
+      <directoryradio>executable</directoryradio>
+      <mainprogram>scourge/scourge</mainprogram>
+      <programargs/>
+      <globaldebugarguments/>
+      <globalcwd>scourge</globalcwd>
+      <useglobalprogram>false</useglobalprogram>
+      <terminal>false</terminal>
+      <autocompile>false</autocompile>
+      <autoinstall>false</autoinstall>
+      <autokdesu>true</autokdesu>
+      <envvars/>
+    </run>
+    <filetypes>
+      <filetype>*.java</filetype>
+      <filetype>*.h</filetype>
+      <filetype>*.H</filetype>
+      <filetype>*.hh</filetype>
+      <filetype>*.hxx</filetype>
+      <filetype>*.hpp</filetype>
+      <filetype>*.c</filetype>
+      <filetype>*.C</filetype>
+      <filetype>*.cc</filetype>
+      <filetype>*.cpp</filetype>
+      <filetype>*.c++</filetype>
+      <filetype>*.cxx</filetype>
+      <filetype>Makefile</filetype>
+      <filetype>CMakeLists.txt</filetype>
+      <filetype>*.nut</filetype>
+    </filetypes>
+    <blacklist/>
+    <build>
+      <buildtool>other</buildtool>
+      <builddir>scourge</builddir>
+    </build>
+    <other>
+      <prio>0</prio>
+      <otherbin>autoreconf -i &amp;&amp; ./configure &amp;&amp; scons</otherbin>
+      <defaulttarget/>
+      <otheroptions>debug=true</otheroptions>
+      <selectedenvironment>default</selectedenvironment>
+      <environments>
+        <default/>
+      </environments>
+    </other>
+    <make>
+      <abortonerror>false</abortonerror>
+      <numberofjobs>0</numberofjobs>
+      <prio>0</prio>
+      <dontact>false</dontact>
+      <makebin/>
+      <defaulttarget/>
+      <makeoptions/>
+      <selectedenvironment>default</selectedenvironment>
+      <environments>
+        <default/>
+      </environments>
+    </make>
+  </kdevcustomproject>
+  <kdevdebugger>
+    <general>
+      <dbgshell/>
+      <gdbpath>/usr/bin/gdb</gdbpath>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
+      <breakonloadinglibs>true</breakonloadinglibs>
+      <separatetty>false</separatetty>
+      <floatingtoolbar>false</floatingtoolbar>
+      <raiseGDBOnStart>false</raiseGDBOnStart>
+    </general>
+    <display>
+      <staticmembers>false</staticmembers>
+      <demanglenames>true</demanglenames>
+      <outputradix>10</outputradix>
+    </display>
+  </kdevdebugger>
+  <kdevdoctreeview>
+    <ignoretocs>
+      <toc>ada</toc>
+      <toc>ada_bugs_gcc</toc>
+      <toc>bash</toc>
+      <toc>bash_bugs</toc>
+      <toc>clanlib</toc>
+      <toc>fortran_bugs_gcc</toc>
+      <toc>gnome1</toc>
+      <toc>gnustep</toc>
+      <toc>gtk</toc>
+      <toc>gtk_bugs</toc>
+      <toc>haskell</toc>
+      <toc>haskell_bugs_ghc</toc>
+      <toc>java_bugs_gcc</toc>
+      <toc>java_bugs_sun</toc>
+      <toc>kde2book</toc>
+      <toc>libstdc++</toc>
+      <toc>opengl</toc>
+      <toc>pascal_bugs_fp</toc>
+      <toc>php</toc>
+      <toc>php_bugs</toc>
+      <toc>perl</toc>
+      <toc>perl_bugs</toc>
+      <toc>python</toc>
+      <toc>python_bugs</toc>
+      <toc>qt-kdev3</toc>
+      <toc>ruby</toc>
+      <toc>ruby_bugs</toc>
+      <toc>sdl</toc>
+      <toc>stl</toc>
+      <toc>sw</toc>
+      <toc>w3c-dom-level2-html</toc>
+      <toc>w3c-svg</toc>
+      <toc>w3c-uaag10</toc>
+      <toc>wxwidgets_bugs</toc>
+    </ignoretocs>
+    <ignoreqt_xml>
+      <toc>Guide to the Qt Translation Tools</toc>
+      <toc>Qt Assistant Manual</toc>
+      <toc>Qt Designer Manual</toc>
+      <toc>Qt Reference Documentation</toc>
+      <toc>qmake User Guide</toc>
+    </ignoreqt_xml>
+    <ignoredoxygen>
+      <toc>KDE Libraries (Doxygen)</toc>
+    </ignoredoxygen>
+  </kdevdoctreeview>
+  <kdevfilecreate>
+    <filetypes/>
+    <useglobaltypes>
+      <type ext="cpp" />
+      <type ext="c" />
+      <type ext="h" />
+      <type ext="dox" />
+    </useglobaltypes>
+  </kdevfilecreate>
+  <kdevcppsupport>
+    <qt>
+      <used>false</used>
+      <version>3</version>
+      <includestyle>3</includestyle>
+      <root>/usr/share/qt3</root>
+      <designerintegration>EmbeddedKDevDesigner</designerintegration>
+      <qmake></qmake>
+      <designer></designer>
+      <designerpluginpaths/>
+    </qt>
+    <codecompletion>
+      <automaticCodeCompletion>true</automaticCodeCompletion>
+      <automaticArgumentsHint>true</automaticArgumentsHint>
+      <automaticHeaderCompletion>true</automaticHeaderCompletion>
+      <codeCompletionDelay>400</codeCompletionDelay>
+      <argumentsHintDelay>400</argumentsHintDelay>
+      <headerCompletionDelay>250</headerCompletionDelay>
+      <showOnlyAccessibleItems>false</showOnlyAccessibleItems>
+      <completionBoxItemOrder>0</completionBoxItemOrder>
+      <howEvaluationContextMenu>true</howEvaluationContextMenu>
+      <showCommentWithArgumentHint>true</showCommentWithArgumentHint>
+      <statusBarTypeEvaluation>true</statusBarTypeEvaluation>
+      <namespaceAliases>std=_GLIBCXX_STD;__gnu_cxx=std</namespaceAliases>
+      <processPrimaryTypes>true</processPrimaryTypes>
+      <processFunctionArguments>true</processFunctionArguments>
+      <preProcessAllHeaders>true</preProcessAllHeaders>
+      <parseMissingHeadersExperimental>false</parseMissingHeadersExperimental>
+      <resolveIncludePathsUsingMakeExperimental>true</resolveIncludePathsUsingMakeExperimental>
+      <alwaysParseInBackground>true</alwaysParseInBackground>
+      <usePermanentCaching>true</usePermanentCaching>
+      <alwaysIncludeNamespaces>true</alwaysIncludeNamespaces>
+      <includePaths>.;</includePaths>
+    </codecompletion>
+    <creategettersetter>
+      <prefixGet/>
+      <prefixSet>set</prefixSet>
+      <prefixVariable>m_,_</prefixVariable>
+      <parameterName>theValue</parameterName>
+      <inlineGet>true</inlineGet>
+      <inlineSet>true</inlineSet>
+    </creategettersetter>
+    <splitheadersource>
+      <enabled>false</enabled>
+      <synchronize>true</synchronize>
+      <orientation>Vertical</orientation>
+    </splitheadersource>
+    <references/>
+  </kdevcppsupport>
+  <cppsupportpart>
+    <filetemplates>
+      <interfacesuffix>.h</interfacesuffix>
+      <implementationsuffix>.cpp</implementationsuffix>
+    </filetemplates>
+  </cppsupportpart>
+  <kdevdocumentation>
+    <projectdoc>
+      <docsystem/>
+      <docurl/>
+      <usermanualurl/>
+    </projectdoc>
+  </kdevdocumentation>
+  <ctagspart>
+    <customArguments>-R</customArguments>
+    <customTagfilePath>scourge/kdevelop/tags</customTagfilePath>
+    <activeTagsFiles>
+      <file>scourge/kdevelop/tags</file>
+    </activeTagsFiles>
+  </ctagspart>
+  <kdevfileview>
+    <groups>
+      <group pattern="scourge/src/rpg/*.cpp" name="RPG core" />
+      <group pattern="scourge/src/render/*.cpp" name="3D engine" />
+      <group pattern="scourge/src/gui/*.cpp" name="GUI code" />
+      <group pattern="scourge/src/io/*.cpp" name="File I/O" />
+      <group pattern="scourge/src/freetype/*.cpp" name="Font manager" />
+      <group pattern="scourge/src/net/*.cpp" name="Net related" />
+      <group pattern="scourge/src/events/*.cpp" name="Events" />
+      <group pattern="scourge/src/common/*.cpp" name="Common stuff" />
+      <group pattern="scourge/src/sqbinding/*.cpp" name="Squirrel bindings" />
+      <group pattern="scourge/src/tools/*.cpp" name="Data editor" />
+      <group pattern="scourge_data/script/*.nut" name="Squirrel scripts" />
+      <group pattern="scourge/src/*.cpp" name="All C sources" />
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+      <hidenonlocation>false</hidenonlocation>
+    </groups>
+    <tree>
+      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+      <showvcsfields>true</showvcsfields>
+    </tree>
+  </kdevfileview>
+  <dist>
+    <custom>false</custom>
+    <bzip>false</bzip>
+    <archname/>
+    <appname>scourge</appname>
+    <version>0.20</version>
+    <release/>
+    <vendor/>
+    <licence>GPL</licence>
+    <summary>A roguelike game</summary>
+    <group/>
+    <packager>Dennis Murczak</packager>
+    <description>bla</description>
+    <changelog/>
+    <devpackage>false</devpackage>
+    <docspackage>false</docspackage>
+    <appicon>false</appicon>
+    <arch>2</arch>
+    <genHTML>false</genHTML>
+    <useRPM>false</useRPM>
+    <ftpkde>false</ftpkde>
+    <appskde>false</appskde>
+    <url/>
+  </dist>
+</kdevelop>
