@@ -148,7 +148,7 @@ typedef void (APIENTRY * PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, G
   #define assert(x) x;
 #endif
 
-#define SCOURGE_VERSION "0.20"
+#define SCOURGE_VERSION "0.21"
 #define MAX_PARTY_SIZE 4
 
 // Max level depth per mission
@@ -174,7 +174,7 @@ extern PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB;
 
 
 /*
-  Float swapping code by:
+  Float swapping code by:http://sourceforge.net/project/stats/?group_id=98006&ugn=scourge
   Ramin Firoozye' -- rp&A Inc.
   1995/06/30 found on Google groups
  */
