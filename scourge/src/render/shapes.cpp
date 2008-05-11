@@ -43,7 +43,10 @@ char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
   "door_ns",
   "passage_floor",
   "room_floor",
-  "headboard"
+  "headboard",
+	"street_floor_tile",
+	"street_vert_floor_tile",
+	"street_cross_floor_tile"
 };
 
 WallTheme::WallTheme( char const* name, Shapes *shapePal ) 
