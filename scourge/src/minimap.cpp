@@ -381,7 +381,7 @@ void MiniMap::drawMap() {
     glPopMatrix();
     
     // draw pointers for gates and teleporters
-    if( scourge->getParty()->getPlayer() ) {
+    if( scourge->getParty() && scourge->getParty()->getPartySize() ) {
     	drawPointers( scourge->getSession()->getMap()->getGates(), Color( 1, 0, 0, 1 ) );
     	drawPointers( scourge->getSession()->getMap()->getTeleporters(), Color( 0, 0, 1, 1 ) );
     }

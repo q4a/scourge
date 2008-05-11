@@ -399,12 +399,12 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 			y + h * MAP_UNIT < MAP_DEPTH - MAP_OFFSET - MAP_UNIT ) ) {
 		return false;
 	}
-	cerr << "house at: " << x << "," << y << " dim=" << w << "," << h << endl;
+	//cerr << "house at: " << x << "," << y << " dim=" << w << "," << h << endl;
 	// not on the road
 	for( int vx = 0; vx < w; vx++ ) {
 		for( int vy = 0; vy < h; vy++ ) {
 			if( map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT ) ) {
-				cerr << "\tabandon: on road." << endl;
+				//cerr << "\tabandon: on road." << endl;
 				return false;
 			}
 		}
@@ -414,7 +414,7 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 		for( int vy = -1; vy < h + 1; vy++ ) {
 			Shape *shape = map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT ); 
 			if( shape == shapePal->findShapeByName( "ROOM_FLOOR_TILE", true ) ) {
-				cerr << "\tabandon: too close to another." << endl;
+				//cerr << "\tabandon: too close to another." << endl;
 				return false;
 			}
 		}
