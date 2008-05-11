@@ -57,7 +57,6 @@ public:
 	
 	void getPartyStartingLocation( int *xx, int *yy );
 	void addVillage( Map *map, ShapePalette *shapePal );
-	void addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy );
 	void flattenPathChunk( Map *map, Sint16 mapx, Sint16 mapy );
 	void flattenChunk( Map *map, Sint16 mapX, Sint16 mapY, float height=0 ); 
 	void addFloor( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, bool doFlattenChunk, GLShape *shape );	
@@ -87,7 +86,8 @@ protected:
 	void addEWDoor( Map *map, ShapePalette *shapePal, int x, int y );
 	void addNSDoor( Map *map, ShapePalette *shapePal, int x, int y );
 	void removeLakes( Map *map, int x, int y );
-	int createRoad( Map *map, ShapePalette *shapePal, int x, int y, bool vert );
+	void createRoads( Map *map, ShapePalette *shapePal, int x, int y );
+	void addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, const char *shapeName );
 	void createHouses( Map *map, ShapePalette *shapePal, int x, int y, int roadX, int roadY );
 	bool buildHouse( Map *map, ShapePalette *shapePal, int x, int y, int ix, int iy, int w, int h );
 	bool createHouse( Map *map, ShapePalette *shapePal, int x, int y, int w, int h );

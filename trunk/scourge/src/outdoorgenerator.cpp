@@ -252,8 +252,7 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	
 	removeLakes( map, x, y );
 	
-	roadX = createRoad( map, shapePal, x, y, true );
-	roadY = createRoad( map, shapePal, x, y, false );
+	createRoads( map, shapePal, x, y );
 	
 	createHouses( map, shapePal, x, y, roadX, roadY - MAP_UNIT );
 	
@@ -400,10 +399,12 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 			y + h * MAP_UNIT < MAP_DEPTH - MAP_OFFSET - MAP_UNIT ) ) {
 		return false;
 	}
+	cerr << "house at: " << x << "," << y << " dim=" << w << "," << h << endl;
 	// not on the road
 	for( int vx = 0; vx < w; vx++ ) {
 		for( int vy = 0; vy < h; vy++ ) {
 			if( map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT ) ) {
+				cerr << "\tabandon: on road." << endl;
 				return false;
 			}
 		}
@@ -413,11 +414,11 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 		for( int vy = -1; vy < h + 1; vy++ ) {
 			Shape *shape = map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT ); 
 			if( shape == shapePal->findShapeByName( "ROOM_FLOOR_TILE", true ) ) {
+				cerr << "\tabandon: too close to another." << endl;
 				return false;
 			}
 		}
-	}	
-	//cerr << "house at: " << x << "," << y << " dim=" << w << "," << h << endl;
+	}		
 	int door = Util::dice( 4 );
 	for( int vx = 0; vx < w; vx++ ) {
 		for( int vy = 0; vy < h; vy++ ) {
@@ -506,29 +507,24 @@ void OutdoorGenerator::addNSDoor( Map *map, ShapePalette *shapePal, int x, int y
 	map->setPosition( x + 12, y, 0, shapePal->findShapeByName( "CORNER", true ) );
 }
 
-int OutdoorGenerator::createRoad( Map *map, ShapePalette *shapePal, int x, int y, bool vert ) {
-	int vy, vx;		
-	if( vert ) {
-		int vx = x + Util::dice( VILLAGE_WIDTH ) * MAP_UNIT;
-		for( int i = 0; i < VILLAGE_HEIGHT; i++ ) {
-			vy = y + ( i * MAP_UNIT );
-			addPath( map, shapePal, vx, vy );
-			keepFloor[ vx + MAP_WIDTH * vy ] = shapePal->findShapeByName( "FLOOR_TILE", true );
-		}
-		return vx;
-	} else {
-		vy = y + Util::dice( VILLAGE_HEIGHT ) * MAP_UNIT;
-		for( int i = 0; i < VILLAGE_WIDTH; i++ ) {
-			vx = x + ( i * MAP_UNIT );
-			addPath( map, shapePal, vx, vy );
-			keepFloor[ vx + MAP_WIDTH * vy ] = shapePal->findShapeByName( "FLOOR_TILE", true );
-		}
-		return vy;
+void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int y ) {
+	roadX = x + ( 1 + Util::dice( VILLAGE_WIDTH - 1 ) ) * MAP_UNIT;
+	for( int i = 0; i < VILLAGE_HEIGHT; i++ ) {
+		int vy = y + ( i * MAP_UNIT );
+		addPath( map, shapePal, roadX, vy, "STREET_VERT_FLOOR_TILE" );
+	}
+
+	roadY = y + ( 1 + Util::dice( VILLAGE_HEIGHT - 1 ) ) * MAP_UNIT;
+	for( int i = 0; i < VILLAGE_WIDTH; i++ ) {
+		int vx = x + ( i * MAP_UNIT );
+		addPath( map, shapePal, vx, roadY, ( vx == roadX ? "STREET_CROSS_FLOOR_TILE" : "STREET_FLOOR_TILE" ) );
 	}
 }
 
-void OutdoorGenerator::addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy ) {
-	addFloor( map, shapePal, mapx, mapy, false, shapePal->findShapeByName( "FLOOR_TILE", true ) );
+void OutdoorGenerator::addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, const char *shapeName ) {
+	GLShape *shape = shapePal->findShapeByName( shapeName, true );
+	addFloor( map, shapePal, mapx, mapy, false, shape );
+	keepFloor[ mapx + MAP_WIDTH * mapy ] = shape;
 	for( int cx = -1; cx < 2; cx++ ) {
 		for( int cy = -1; cy < 2; cy++ ) {
 			flattenPathChunk( map, mapx + ( cx * MAP_UNIT ), mapy + ( cy * MAP_UNIT ) );
