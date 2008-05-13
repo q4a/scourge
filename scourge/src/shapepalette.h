@@ -44,6 +44,12 @@ struct MapGridLocation {
   char type;
 };
 
+struct NamedOutdoorTexture {
+	char name[80];
+	GLuint tex;
+	int width, height;
+};
+
 class ShapePalette : public Shapes {
 private:
 	ModelLoader *loader;
@@ -63,7 +69,8 @@ private:
   GLuint mapGrid[ Constants::MAP_GRID_TILE_WIDTH ][ Constants::MAP_GRID_TILE_HEIGHT ];
   std::map<char, std::vector<MapGridLocation*>*> mapGridLocationByType;
 
-	std::map<std::string,GLuint> namedTextures, outdoorNamedTextures;
+	std::map<std::string,GLuint> namedTextures;
+	std::map<std::string,NamedOutdoorTexture> outdoorNamedTextures;
 	SDL_Rect inventoryHoles[ Constants::INVENTORY_COUNT ];
 
 public: 
@@ -177,10 +184,10 @@ public:
 	inline GLuint getNamedTexture( std::string name ) {
 		return( namedTextures.find( name ) == namedTextures.end() ? 0 : namedTextures[ name ] );
 	}
-	inline GLuint getOutdoorNamedTexture( std::string name ) {
-		return( outdoorNamedTextures.find( name ) == outdoorNamedTextures.end() ? 0 : outdoorNamedTextures[ name ] );
+	inline NamedOutdoorTexture *getOutdoorNamedTexture( std::string name ) {
+		return( outdoorNamedTextures.find( name ) == outdoorNamedTextures.end() ? NULL : &(outdoorNamedTextures[ name ]) );
 	}
-	inline std::map<std::string,GLuint> *getOutdoorNamedTextures() {
+	inline std::map<std::string,NamedOutdoorTexture> *getOutdoorNamedTextures() {
 		return &outdoorNamedTextures;
 	}
 	inline SDL_Rect *getInventoryHole( int inventoryLocation ) {

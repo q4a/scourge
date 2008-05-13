@@ -403,10 +403,19 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 	// not on the road
 	for( int vx = 0; vx < w; vx++ ) {
 		for( int vy = 0; vy < h; vy++ ) {
+			int hx = x + vx * MAP_UNIT;
+			int hy = y + vy * MAP_UNIT + MAP_UNIT;
+			if( hx == roadX && hy >= y && hy < y + VILLAGE_HEIGHT ) {
+				return false;
+			} else if( hy == roadY && hx >= x && hx < x + VILLAGE_WIDTH ) {
+				return false;
+			}
+			/*
 			if( map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT ) ) {
 				//cerr << "\tabandon: on road." << endl;
 				return false;
 			}
+			*/
 		}
 	}
 	// not too close to another house
@@ -511,14 +520,22 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 	roadX = x + ( 1 + Util::dice( VILLAGE_WIDTH - 1 ) ) * MAP_UNIT;
 	for( int i = 0; i < VILLAGE_HEIGHT; i++ ) {
 		int vy = y + ( i * MAP_UNIT );
-		addPath( map, shapePal, roadX, vy, "STREET_VERT_FLOOR_TILE" );
+		//addPath( map, shapePal, roadX, vy, "STREET_VERT_FLOOR_TILE" );
+		addOutdoorTexture( map, shapePal, roadX, vy, "street", 90.0f );
 	}
 
 	roadY = y + ( 1 + Util::dice( VILLAGE_HEIGHT - 1 ) ) * MAP_UNIT;
 	for( int i = 0; i < VILLAGE_WIDTH; i++ ) {
 		int vx = x + ( i * MAP_UNIT );
-		addPath( map, shapePal, vx, roadY, ( vx == roadX ? "STREET_CROSS_FLOOR_TILE" : "STREET_FLOOR_TILE" ) );
+		//addPath( map, shapePal, vx, roadY, ( vx == roadX ? "STREET_CROSS_FLOOR_TILE" : "STREET_FLOOR_TILE" ) );
+		addOutdoorTexture( map, shapePal, vx, roadY, ( vx == roadX ? "street_cross" : "street" ) );
 	}
+}
+
+void OutdoorGenerator::addOutdoorTexture( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, const char *name, float angle, bool horiz, bool vert ) {
+	string s = name;
+	NamedOutdoorTexture *ot = shapePal->getOutdoorNamedTexture( s );
+	map->setOutdoorTexture( mapx, mapy + 1, 0, 0, ot->width, ot->height, ot->tex, angle, horiz, vert );
 }
 
 void OutdoorGenerator::addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, const char *shapeName ) {

@@ -88,6 +88,7 @@ protected:
 	void removeLakes( Map *map, int x, int y );
 	void createRoads( Map *map, ShapePalette *shapePal, int x, int y );
 	void addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, const char *shapeName );
+	void addOutdoorTexture( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, const char *name, float angle=0.0f, bool horiz=false, bool vert=false );
 	void createHouses( Map *map, ShapePalette *shapePal, int x, int y, int roadX, int roadY );
 	bool buildHouse( Map *map, ShapePalette *shapePal, int x, int y, int ix, int iy, int w, int h );
 	bool createHouse( Map *map, ShapePalette *shapePal, int x, int y, int w, int h );

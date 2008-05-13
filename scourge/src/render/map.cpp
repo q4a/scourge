@@ -4157,10 +4157,10 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 	for( int xx = sx; xx < ex; xx++ ) {
 		for( int yy = sy; yy < ey; yy++ ) {
 
-			float texSx = ( ( xx - sx ) ) / ( ex - sx );
-			float texEx = ( ( xx + 1 - sx ) ) / ( ex - sx );
-			float texSy = ( ( yy - sy ) ) / ( ey - sy );
-			float texEy = ( ( yy + 1 - sy ) ) / ( ey - sy );
+			float texSx = ( ( xx - sx ) ) / (float)( ex - sx );
+			float texEx = ( ( xx + 1 - sx ) ) / (float)( ex - sx );
+			float texSy = ( ( yy - sy ) ) / (float)( ey - sy );
+			float texEy = ( ( yy + 1 - sy ) ) / (float)( ey - sy );
 
 			//glBegin( GL_LINE_LOOP );
 			glBegin( GL_QUADS );
@@ -4202,7 +4202,9 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 	glDepthMask( GL_TRUE );
 	glDisable( GL_BLEND );
 	
-	// debugGround( sx, sy, ex, ey );
+#ifdef DEBUG_HEIGHT_MAP
+	debugGround( sx, sy, ex, ey );
+#endif
 }
 
 // this one uses map coordinates
@@ -4320,7 +4322,9 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 	glDepthMask( GL_TRUE );
 	glDisable( GL_BLEND );
 
-//	debugGround( sx, sy, ex, ey );
+#ifdef DEBUG_HEIGHT_MAP
+	debugGround( sx, sy, ex, ey );
+#endif
 }
 
 void Map::debugGround( int sx, int sy, int ex, int ey ) {
