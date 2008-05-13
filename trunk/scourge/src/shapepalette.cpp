@@ -350,13 +350,21 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 		if( value.substr( value.size() - 4 ) == ".png" ) {
 		  int w, h;		  
 			if( outdoors ) {
-				outdoorNamedTextures[ name ] = loadAlphaTexture( value, &w, &h );
+				NamedOutdoorTexture ot;
+				ot.tex = loadAlphaTexture( value, &w, &h );
+				ot.width = node->getValueAsInt( "width" );
+				ot.height = node->getValueAsInt( "width" );
+				outdoorNamedTextures[ name ] = ot;
 			} else {
 				namedTextures[ name ] = loadAlphaTexture( value, &w, &h );
 			}
 		} else {
 			if( outdoors ) { 
-				outdoorNamedTextures[ name ] = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
+				NamedOutdoorTexture ot;
+				ot.tex = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
+				ot.width = node->getValueAsInt( "width" );
+				ot.height = node->getValueAsInt( "width" );
+				outdoorNamedTextures[ name ] = ot;
 			} else {
 				namedTextures[ name ] = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
 			}

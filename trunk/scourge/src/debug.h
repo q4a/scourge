@@ -71,5 +71,7 @@
 #define AMBIENT_PAUSE_MIN 1000
 #define AMBIENT_ROLL 5
 
+//#define DEBUG_HEIGHT_MAP 1
+
 #endif
 

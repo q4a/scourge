@@ -248,10 +248,10 @@ MapEditor::MapEditor( Scourge *scourge ) {
   mainWin->addWidget( outdoorTexturesList );
 	yy += 79;
 
-	map<string,GLuint> *outdoorTextureMap = scourge->getShapePalette()->getOutdoorNamedTextures();
+	map<string,NamedOutdoorTexture> *outdoorTextureMap = scourge->getShapePalette()->getOutdoorNamedTextures();
 	count = 0;
   outdoorTextureNames = new string[ outdoorTextureMap->size() ];
-  for( map<string, GLuint>::iterator i = outdoorTextureMap->begin(); i != outdoorTextureMap->end(); ++i ) {
+  for( map<string, NamedOutdoorTexture>::iterator i = outdoorTextureMap->begin(); i != outdoorTextureMap->end(); ++i ) {
   	outdoorTextureNames[ count++ ] = i->first;
   }
   outdoorTexturesList->setLines( count, outdoorTextureNames );  
@@ -682,11 +682,11 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
     	if( outdoorTexturesButton->isSelected() ) {
     		if( outdoorTexturesList->getSelectedLine() > -1 ) {
     			string s = outdoorTextureNames[ outdoorTexturesList->getSelectedLine() ];
-      		GLuint texture = scourge->getShapePalette()->getOutdoorNamedTexture( s );
+      		NamedOutdoorTexture *ot = scourge->getShapePalette()->getOutdoorNamedTexture( s );
       		scourge->getMap()->setOutdoorTexture( xx, yy + 1, 
       		                                      0, 0, 
-      		                                      OUTDOOR_TEXTURE_WIDTH, OUTDOOR_TEXTURE_DEPTH, 
-      		                                      texture, 
+      		                                      ot->width, ot->height, 
+      		                                      ot->tex, 
       		                                      outdoorTextureAngle, 
       		                                      outdoorTextureHorizFlip, 
       		                                      outdoorTextureVertFlip );
