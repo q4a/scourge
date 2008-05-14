@@ -47,7 +47,11 @@ private:
 
   float originalZoom, fromZoom, currentZoom, toZoom;
 
-  bool cutscenePlaying, cutsceneFinished, endingCutscene;
+  // true if we are in cutscene mode (black bars visible)
+  bool cutscenePlaying;
+  // false if some cutscene action is still playing
+  bool cutsceneFinished;
+  bool endingCutscene;
 
 public:
   Cutscene( Session *session );

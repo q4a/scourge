@@ -18,23 +18,31 @@
 #include "cutscene.h"
 #include "map.h"
 
+using namespace std;
+
 Cutscene::Cutscene( Session *session ){
   this->session = session;
+
+  letterboxHeight = (int)( (float)session->getPreferences()->getH() / 8 );
+
+  cutscenePlaying = false;
+  cutsceneFinished = false;
+  endingCutscene = false;
 }
 
 Cutscene::~Cutscene(){
 }
 
 void Cutscene::startCutsceneMode() {
-  originalX = session->getMap()->getXPos();
-  originalY = session->getMap()->getYPos();
-  originalZ = session->getMap()->getZPos();
+  fromX = originalX = session->getMap()->getXPos();
+  fromY = originalY = session->getMap()->getYPos();
+  fromZ = originalZ = session->getMap()->getZPos();
 
-  originalXRot = session->getMap()->getXRot();
-  originalYRot = session->getMap()->getYRot();
-  originalZRot = session->getMap()->getZRot();
+  fromXRot = originalXRot = session->getMap()->getXRot();
+  fromYRot = originalYRot = session->getMap()->getYRot();
+  fromZRot = originalZRot = session->getMap()->getZRot();
 
-  originalZoom = session->getMap()->getZoom();
+  fromZoom = originalZoom = session->getMap()->getZoom();
 
   cutscenePlaying = true;
   cutsceneFinished = false;
@@ -52,9 +60,11 @@ void Cutscene::endCutsceneMode() {
   endLetterbox();
 }
 
-#define LETTERBOX_DURATION 3000
+#define LETTERBOX_DURATION 1500
 
 void Cutscene::updateCutscene() {
+  if(!cutscenePlaying) return;
+
   Uint32 now = SDL_GetTicks();
 
   cutsceneFinished = false;
@@ -78,19 +88,24 @@ void Cutscene::updateCutscene() {
     doNothingStartTime = doNothingDuration = 0;
   }
 
-  if( ( letterboxStartTime > 0 ) && ( ( now - letterboxStartTime ) > LETTERBOX_DURATION ) ) {
+  if( ( !endingCutscene ) && ( letterboxStartTime > 0 ) && ( ( now - letterboxStartTime ) > LETTERBOX_DURATION ) ) {
     cutsceneFinished = true;
     letterboxStartTime = 0;
-  } else {
-    // TODO: calculate letterbox height
+  } else if( !endingCutscene ) {
+    float percent = (float)( now - letterboxStartTime ) / LETTERBOX_DURATION;
+    if( percent > 1.0f ) percent = 1.0f;
+    currentLetterboxHeight = (int)( (float)letterboxHeight * percent );
   }
 
-  if( ( letterboxEndTime > 0 ) && ( ( now - letterboxEndTime ) > LETTERBOX_DURATION ) ) {
+  if( ( endingCutscene ) && ( letterboxEndTime > 0 ) && ( ( now - letterboxEndTime ) > LETTERBOX_DURATION ) ) {
     cutsceneFinished = true;
     cutscenePlaying = false;
+    endingCutscene = false;
     letterboxEndTime = 0;
-  } else {
-    // TODO: calculate letterbox height
+  } else if( endingCutscene ) {
+    float percent = (float)( now - letterboxEndTime ) / LETTERBOX_DURATION;
+    if( percent > 1.0f ) percent = 1.0f;
+    currentLetterboxHeight = (int)( (float)letterboxHeight * ( 1.0f - percent ) );
   }
 }
 
