@@ -262,7 +262,7 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageWidth", VILLAGE_WIDTH * MAP_UNIT );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageHeight", VILLAGE_HEIGHT * MAP_UNIT );
 	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadX", roadX );
-	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadY", roadY );
+	shapePal->getSession()->getSquirrel()->setGlobalVariable( "villageRoadY", roadY - MAP_UNIT );
 	
 	// fix up the roads
 	shapePal->getSession()->getSquirrel()->callNoArgMethod( "villageRoads" );
@@ -520,15 +520,27 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 	roadX = x + ( 1 + Util::dice( VILLAGE_WIDTH - 1 ) ) * MAP_UNIT;
 	for( int i = 0; i < VILLAGE_HEIGHT; i++ ) {
 		int vy = y + ( i * MAP_UNIT );
-		//addPath( map, shapePal, roadX, vy, "STREET_VERT_FLOOR_TILE" );
-		addOutdoorTexture( map, shapePal, roadX, vy, "street", 90.0f );
+		if( i == 0 ) {
+			addOutdoorTexture( map, shapePal, roadX, vy, "street_end", 270 );
+		} else if( i == VILLAGE_WIDTH - 1 ) {
+			addOutdoorTexture( map, shapePal, roadX, vy, "street_end", 90 );
+		} else {
+			addOutdoorTexture( map, shapePal, roadX, vy, "street", 90.0f );
+		}
 	}
 
 	roadY = y + ( 1 + Util::dice( VILLAGE_HEIGHT - 1 ) ) * MAP_UNIT;
 	for( int i = 0; i < VILLAGE_WIDTH; i++ ) {
 		int vx = x + ( i * MAP_UNIT );
-		//addPath( map, shapePal, vx, roadY, ( vx == roadX ? "STREET_CROSS_FLOOR_TILE" : "STREET_FLOOR_TILE" ) );
-		addOutdoorTexture( map, shapePal, vx, roadY, ( vx == roadX ? "street_cross" : "street" ) );
+		if( vx == roadX ) {
+			addOutdoorTexture( map, shapePal, vx, roadY, "street_cross" );
+		} else if( i == 0 ) {
+			addOutdoorTexture( map, shapePal, vx, roadY, "street_end" );
+		} else if( i == VILLAGE_WIDTH - 1 ) {
+			addOutdoorTexture( map, shapePal, vx, roadY, "street_end", 180 );
+		} else {
+			addOutdoorTexture( map, shapePal, vx, roadY, "street" );
+		}
 	}
 }
 
@@ -536,6 +548,21 @@ void OutdoorGenerator::addOutdoorTexture( Map *map, ShapePalette *shapePal, Sint
 	string s = name;
 	NamedOutdoorTexture *ot = shapePal->getOutdoorNamedTexture( s );
 	map->setOutdoorTexture( mapx, mapy + 1, 0, 0, ot->width, ot->height, ot->tex, angle, horiz, vert );
+	flattenChunkWithLimits( map, mapx, mapy, ot->width, ot->height, 0, 1 );
+}
+
+void OutdoorGenerator::flattenChunkWithLimits( Map *map, Sint16 mapX, Sint16 mapY, Sint16 mapEndX, Sint16 mapEndY, float minLimit, float maxLimit ) {
+	for( int x = mapX; x < mapEndX; x++ ) {
+		for( int y = mapY; y < mapEndY; y++ ) {
+			int xx = x / OUTDOORS_STEP;
+			int yy = y / OUTDOORS_STEP;
+			if( map->getGroundHeight( xx, yy ) < minLimit ) {
+				map->setGroundHeight( xx, yy, minLimit );
+			} else if( map->getGroundHeight( xx, yy ) > maxLimit ) {
+				map->setGroundHeight( xx, yy, maxLimit );
+			}			
+		}
+	}
 }
 
 void OutdoorGenerator::addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, const char *shapeName ) {
