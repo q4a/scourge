@@ -119,6 +119,7 @@ protected:
 	void drawDisk( float w, float diff );
 	void ambientObjectSounds();
 	void drawWeather();
+	void drawLetterbox();
 };
 
 #endif

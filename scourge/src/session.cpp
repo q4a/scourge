@@ -22,6 +22,7 @@
 #include "sqbinding/sqbinding.h"
 #include "test/combattest.h"
 #include "shapepalette.h"
+#include "render/cutscene.h"
 #include <iostream>
 #include <stdlib.h>
 //#include <strings.h>
@@ -48,6 +49,7 @@ Session::Session(GameAdapter *adapter)
   party = NULL;
   map = NULL;
   board = NULL;
+  cutscene = NULL;
 #ifdef HAVE_SDL_NET
   server = NULL;
   client = NULL;
@@ -72,6 +74,7 @@ Session::~Session() {
 	if(sound) delete sound;
   if(party) delete party;
   if(board) delete board;
+  if(cutscene) delete cutscene;
 #ifdef HAVE_SDL_NET
 	delete server;
 	delete client;
@@ -82,6 +85,7 @@ Session::~Session() {
 void Session::initialize() {
 	sound = new Sound(adapter->getPreferences());
   shapePal = new ShapePalette(this);
+  cutscene = new Cutscene(this);
   adapter->setSession(this);
   adapter->initVideo();
 	shapePal->preInitialize();

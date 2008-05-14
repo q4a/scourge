@@ -49,6 +49,7 @@ class GLShape;
 class SqBinding;
 class ShapePalette;
 class Sound;
+class Cutscene;
 
 /**
  *@author Gabor Torok
@@ -62,6 +63,7 @@ private:
   Party *party;
   Map *map;
   Board *board;
+  Cutscene *cutscene;
 #ifdef HAVE_SDL_NET
   Server *server;
   Client *client;
@@ -180,6 +182,7 @@ public:
   inline Party *getParty() { return party; }
   inline Preferences *getPreferences() { return getGameAdapter()->getPreferences(); }
   inline Mission *getCurrentMission() { return currentMission; }
+  inline Cutscene *getCutscene() { return cutscene; }
   void setCurrentMission(Mission *mission);
 	inline TextureData const& getChapterImage() { return chapterImage; }
 	inline int getChapterImageWidth() { return chapterImageWidth; }

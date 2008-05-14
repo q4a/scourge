@@ -32,6 +32,7 @@
 #include "debug.h"
 #include "textscroller.h"
 #include "sound.h"
+#include "render/cutscene.h"
 
 using namespace std;  
 
@@ -92,18 +93,25 @@ void ScourgeView::drawView() {
 
   drawWeather();
 
-  scourge->getMiniMap()->drawMap();
-
   ambientObjectSounds();
 
-  // the boards outside the map
-  drawOutsideMap();
+  if( !scourge->getSession()->getCutscene()->isCutscenePlaying() ) {
+    scourge->getMiniMap()->drawMap();
 
-  drawBorder();
+    // the boards outside the map
+    drawOutsideMap();
 
-  drawTextEffect();  
+    drawBorder();
 
-  scourge->getDescriptionScroller()->draw();
+    drawTextEffect();  
+
+    scourge->getDescriptionScroller()->draw();
+
+    if( !scourge->getPartyWindow()->isVisible() ) scourge->getPartyWindow()->setVisible( true, false );
+  } else {
+    scourge->getSession()->getCutscene()->updateCutscene();
+    drawLetterbox();
+  }
 
   // Hack: A container window may have been closed by hitting the Esc. button.
   if(Window::windowWasClosed) {
@@ -1352,4 +1360,42 @@ void ScourgeView::generateClouds() {
       cloudX[i] = Util::pickOne( -(int)( 256.0f * cloudSize[i] ), scourge->getUserConfiguration()->getW() );
       cloudY[i] = Util::pickOne( -(int)( 128.0f * cloudSize[i] ), scourge->getUserConfiguration()->getH() );
     }
+}
+
+void ScourgeView::drawLetterbox() {
+  int w = scourge->getUserConfiguration()->getW();
+  int h = scourge->getSession()->getCutscene()->getCurrentLetterboxHeight();
+
+  glDisable( GL_CULL_FACE );
+  glDisable( GL_DEPTH_TEST );
+  glDisable(GL_BLEND);
+
+  glColor3f( 0.0f, 0.0f, 0.0f );
+
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( 0, 0, 0 );
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glVertex2i( 0, 0 );
+  glVertex2i( w, 0 );
+  glVertex2i( w, h );
+  glVertex2i( 0, h );
+  glEnd();
+  glPopMatrix();
+
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( 0, scourge->getUserConfiguration()->getH() - h, 500 );
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glVertex2i( 0, 0 );
+  glVertex2i( w, 0 );
+  glVertex2i( w, h );
+  glVertex2i( 0, h );
+  glEnd();
+  glPopMatrix();
+
+  glEnable( GL_CULL_FACE );
+  glEnable( GL_DEPTH_TEST );
 }
