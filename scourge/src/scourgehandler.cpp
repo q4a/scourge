@@ -140,13 +140,6 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
     if(event->key.keysym.sym == SDLK_d) {
 			//scourge->getParty()->getPlayer()->setPendingCauseOfDeath( "Testing" );
       //scourge->getParty()->getPlayer()->takeDamage( 1000 );
-		if( scourge->getSession()->getCutscene()->isCutscenePlaying() ) {
-			scourge->getSession()->getCutscene()->endCutsceneMode();
-			//scourge->getPartyWindow()->setVisible(true);
-		} else {
-			scourge->getPartyWindow()->setVisible( false );
-			scourge->getSession()->getCutscene()->startCutsceneMode();
-		}
 			//scourge->camp();
       return false;
     } else if(event->key.keysym.sym == SDLK_l) {
