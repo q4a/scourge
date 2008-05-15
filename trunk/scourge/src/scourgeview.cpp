@@ -95,7 +95,7 @@ void ScourgeView::drawView() {
 
   ambientObjectSounds();
 
-  if( !scourge->getSession()->getCutscene()->isCutscenePlaying() ) {
+  if( !scourge->getSession()->getCutscene()->isInMovieMode() ) {
     scourge->getMiniMap()->drawMap();
 
     // the boards outside the map
@@ -109,7 +109,6 @@ void ScourgeView::drawView() {
 
     if( !scourge->getPartyWindow()->isVisible() ) scourge->getPartyWindow()->setVisible( true, false );
   } else {
-    scourge->getSession()->getCutscene()->updateCutscene();
     drawLetterbox();
   }
 
