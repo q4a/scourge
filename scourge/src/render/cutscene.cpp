@@ -231,7 +231,8 @@ float Cutscene::getCameraXRot() {
       r = fromXRot;
     } else {
       float percent = (float)( now - cameraStartTime ) / cameraDuration;
-      // TODO: calculate the current angle
+      float diff = Util::diffAngle( toXRot, fromXRot );
+      r = (float)( (int)( fromXRot + ( diff * percent ) ) % 360 );
     }
 
   } else {
@@ -252,7 +253,8 @@ float Cutscene::getCameraYRot() {
       r = fromYRot;
     } else {
       float percent = (float)( now - cameraStartTime ) / cameraDuration;
-      // TODO: calculate the current angle
+      float diff = Util::diffAngle( toYRot, fromYRot );
+      r = (float)( (int)( fromYRot + ( diff * percent ) ) % 360 );
     }
 
   } else {
@@ -273,7 +275,8 @@ float Cutscene::getCameraZRot() {
       r = fromZRot;
     } else {
       float percent = (float)( now - cameraStartTime ) / cameraDuration;
-      // TODO: calculate the current angle
+      float diff = Util::diffAngle( toZRot, fromZRot );
+      r = (float)( (int)( fromZRot + ( diff * percent ) ) % 360 );
     }
 
   } else {
