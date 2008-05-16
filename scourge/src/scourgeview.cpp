@@ -1052,10 +1052,28 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
       }
     }
   }
-  glDisable(GL_TEXTURE_2D);
-  scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
-  glEnable(GL_DEPTH_TEST);
 
+  scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+
+  // draw creature talk
+  if( creature->isTalking() ) {
+    xpos2 = static_cast<float>( creature->getX() + creature->getShape()->getWidth() / 2 - scourge->getMap()->getX()) / DIV;
+    ypos2 = static_cast<float>( creature->getY() - creature->getShape()->getDepth() / 2 - scourge->getMap()->getY()) / DIV;
+    zpos2 = static_cast<float>(creature->getShape()->getHeight() * 2.0f ) / DIV;
+
+    glPushMatrix();
+    glTranslatef( xpos2, ypos2, zpos2 );
+    glRotatef( -( scourge->getMap()->getZRot() ), 0.0f, 0.0f, 1.0f);
+    glRotatef( -scourge->getMap()->getYRot(), 1.0f, 0.0f, 0.0f);
+
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f );
+    scourge->getSDLHandler()->texPrint( -( scourge->getSDLHandler()->textWidth( creature->getSpeech() ) / 2 ), 0, creature->getSpeech() );
+
+    glPopMatrix();
+  }
+
+  glDisable(GL_TEXTURE_2D);
+  glEnable(GL_DEPTH_TEST);
 
   glEnable( GL_CULL_FACE );
   glDisable( GL_BLEND );
