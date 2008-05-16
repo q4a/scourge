@@ -34,6 +34,8 @@ RenderedCreature::RenderedCreature( Preferences *preferences,
   effect = NULL;
   effectType = Constants::EFFECT_FLAMES;
   recentDamagesCount = 0;
+
+  talkStartTime = 0;
 }
 
 RenderedCreature::~RenderedCreature() {
@@ -289,3 +291,17 @@ bool RenderedCreature::canReach( int startx, int starty, int firstx, int firsty,
   return false;
 }
 
+void RenderedCreature::say( char const* text ) {
+  talkStartTime = SDL_GetTicks();
+  strncpy( speech, text, 2000 );
+}
+
+#define TALK_DURATION 5000
+
+bool RenderedCreature::isTalking() {
+  if( SDL_GetTicks() > ( talkStartTime + TALK_DURATION ) ) { return false; } else { return true; }
+}
+
+char *RenderedCreature::getSpeech() {
+  if( isTalking() ) { return speech; } else { return NULL; }
+}

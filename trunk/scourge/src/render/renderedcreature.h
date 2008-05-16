@@ -54,6 +54,9 @@ protected:
   DamagePos recentDamages[MAX_RECENT_DAMAGE];
   int recentDamagesCount;
 
+  char speech[2000];
+  Uint32 talkStartTime;
+
 public:
   RenderedCreature( Preferences *preferences, 
                     Shapes *shapes, 
@@ -69,6 +72,10 @@ public:
   virtual inline DamagePos *getRecentDamage(int i) { return &(recentDamages[i]); }
   virtual bool addRecentDamage( int damage );
   virtual void removeRecentDamage( int i );
+
+  virtual void say( char const* text );
+  virtual bool isTalking();
+  virtual char *getSpeech();
 
 	virtual bool isBoss() = 0;
 	virtual bool isNpc() = 0;
