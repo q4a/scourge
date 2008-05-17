@@ -104,12 +104,14 @@ void ShapePalette::initialize() {
 	initRugs( config );
   initSystemTextures( config );
 	initDescriptions( config );
-	initThemes( config );
 	initNativeShapes( config );
 	init3dsShapes( config );
 	initSounds( config );
   delete config;
 
+	config = ConfigLang::load( "config/themes.cfg" );
+	initThemes( config );
+	delete config;
 
 
 
@@ -508,14 +510,11 @@ void ShapePalette::initSystemTextures( ConfigLang *config ) {
 
 void ShapePalette::initThemes( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "themes" );
-	vector<ConfigNode*> *vv = (*v)[0]->
 		getChildrenByName( "theme" );
+	for( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = (*v)[i];
 
-	for( unsigned int i = 0; i < vv->size(); i++ ) {
-		ConfigNode *node = (*vv)[i];
-
-		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
+		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, v->size() );
 
 		bool special = node->getValueAsBool( "special" );
 		bool cave = node->getValueAsBool( "cave" );
@@ -557,6 +556,28 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 			theme->setMultiTexInt( i, atof( p ) );
 			p = strtok( NULL, "," );
 			theme->setMultiTexSmooth( i, ( atoi( p ) != 0 ) );
+		}
+
+		// read the outdoor theme info
+		vector<ConfigNode*> *outv = (*v)[0]->
+			getChildrenByName( "outdoors" );
+		if( outv && outv->size() ) {
+			theme->setHasOutdoor( true );
+			ConfigNode *outnode = (*outv)[0];
+			for(int ref = 0; ref < WallTheme::OUTDOOR_THEME_REF_COUNT; ref++) {
+				strcpy( line, outnode->getValueAsString( WallTheme::outdoorThemeRefName[ ref ] ) );
+				char *p = strtok( line, "," );
+				int w = atoi( p );
+				int h = atoi( strtok( NULL, "," ) );
+				theme->setOutdoorTextureDimensions( ref, w, h );
+				p = strtok( NULL, "," );
+				int face;
+				for( face = 0; face < MAX_TEXTURE_COUNT && p; face++ ) {
+					theme->addOutdoorTextureName( ref, face, p );
+					p = strtok( NULL, "," );
+				}
+				theme->setOutdoorFaceCount( ref, face );
+			}
 		}
 		
 		if( !special && !cave ) {

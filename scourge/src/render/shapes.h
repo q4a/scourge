@@ -100,14 +100,28 @@ class WallTheme {
     THEME_REF_PASSAGE_FLOOR,
     THEME_REF_ROOM_FLOOR,
     THEME_REF_HEADBOARD,
-		THEME_REF_STREET,
-		THEME_REF_STREET_VERT,
-		THEME_REF_STREET_CROSS,
 
     // must be the last one
     THEME_REF_COUNT
   };
   static char themeRefName[THEME_REF_COUNT][40];
+
+	// outdoor theme sections
+	enum {
+    OUTDOOR_THEME_REF_GRASS,
+    OUTDOOR_THEME_REF_STREET,
+		OUTDOOR_THEME_REF_STREET_CROSS,
+		OUTDOOR_THEME_REF_STREET_END,
+		OUTDOOR_THEME_REF_TRAIL,
+		OUTDOOR_THEME_REF_TRAIL_TURN,
+		OUTDOOR_THEME_REF_TRAIL_END,
+		OUTDOOR_THEME_REF_WATER,
+
+    // must be the last one
+    OUTDOOR_THEME_REF_COUNT
+  };
+  static char outdoorThemeRefName[OUTDOOR_THEME_REF_COUNT][40];
+
   static const int MULTI_TEX_COUNT = 2;
 
  private:
@@ -125,6 +139,13 @@ class WallTheme {
   bool cave;
   TextureData lavaData;
   TextureData floorData;
+	bool hasOutdoor;
+	int outdoorTextureWidth[OUTDOOR_THEME_REF_COUNT];
+	int outdoorTextureHeight[OUTDOOR_THEME_REF_COUNT];
+	char outdoorTextures[OUTDOOR_THEME_REF_COUNT][MAX_TEXTURE_COUNT][NAME_LENGTH];
+  GLuint outdoorTextureGroup[OUTDOOR_THEME_REF_COUNT][MAX_TEXTURE_COUNT];
+  int outdoorFaceCount[OUTDOOR_THEME_REF_COUNT];
+  std::map<std::string,int> outdoorThemeRefMap;
 
  public:
   WallTheme( char const* name, Shapes *shapePal );
@@ -155,6 +176,43 @@ class WallTheme {
       */        
     }
   }
+
+	inline void addOutdoorTextureName(int outdoorThemeRef, int face, const char *name) { 
+    if( outdoorThemeRef < 0 || outdoorThemeRef > OUTDOOR_THEME_REF_COUNT ) {
+      std::cerr << "*** Error: outdoor theme ref is out of bounds: theme=" << getName() << std::endl;
+    } else {
+      strncpy( outdoorTextures[outdoorThemeRef][face], name, NAME_LENGTH - 1 ); 
+      outdoorTextures[outdoorThemeRef][face][NAME_LENGTH - 1] = '\0';
+    }
+  }
+
+	inline void setOutdoorTextureDimensions(int outdoorThemeRef, int w, int h) {
+		if( outdoorThemeRef < 0 || outdoorThemeRef > OUTDOOR_THEME_REF_COUNT ) {
+      std::cerr << "*** Error: outdoor theme ref is out of bounds: theme=" << getName() << std::endl;
+    } else {
+			outdoorTextureWidth[outdoorThemeRef] = w;
+			outdoorTextureHeight[outdoorThemeRef] = h;
+		}
+	}
+
+	inline int getOutdoorTextureWidth( int ref ) {
+		return outdoorTextureWidth[ ref ];
+	}
+
+	inline int getOutdoorTextureHeight( int ref ) {
+		return outdoorTextureHeight[ ref ];
+	}
+
+	GLuint *getOutdoorTextureGroup( int ref ) {
+		return outdoorTextureGroup[ ref ];
+	}
+
+	inline void setOutdoorFaceCount( int themeRef, int value ) { outdoorFaceCount[ themeRef ] = value; }
+  int getOutdoorFaceCount( std::string themeRefName );
+	inline int getOutdoorFaceCount( int ref ) { return outdoorFaceCount[ ref ]; }
+	inline void setHasOutdoor( bool b ) { this->hasOutdoor = b; }
+	inline bool getHasOutdoor() { return this->hasOutdoor; }
+
   inline void setMultiTexRed( int index, GLfloat value ) { r[index] = value; }
   inline void setMultiTexGreen( int index, GLfloat value ) { g[index] = value; }
   inline void setMultiTexBlue( int index, GLfloat value ) { b[index] = value; }
@@ -173,7 +231,7 @@ class WallTheme {
   void unload();
 
  protected:
-  void loadTextureGroup( int ref, int face, char *texture );
+  void loadTextureGroup( int ref, int face, char *texture, bool outdoor = false );
   void debug();
 };
   
