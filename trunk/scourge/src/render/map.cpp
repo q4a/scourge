@@ -218,7 +218,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
 	outdoorShadow = adapter->getNamedTexture( "outdoors_shadow" );
 	outdoorShadowTree = adapter->getNamedTexture( "outdoors_shadow_tree" );
-	waterTexture = adapter->getNamedTexture( "water" );
+	//waterTexture = adapter->getNamedTexture( "water" );
 
 	hackBlockingPos = new Location();
 	hackBlockingPos->creature = NULL;
@@ -4468,7 +4468,7 @@ void Map::drawWaterLevel() {
   }
 
 	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D, waterTexture );
+	glBindTexture( GL_TEXTURE_2D, getShapes()->getCurrentTheme()->getOutdoorTextureGroup( WallTheme::OUTDOOR_THEME_REF_WATER )[0] );
 	glColor4f( 1, 1, 1, 0.45f );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -4515,16 +4515,11 @@ void Map::initOutdoorsGroundTexture() {
 	int ey = MAP_DEPTH / OUTDOORS_STEP;
 	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
-			GLuint tex = 0;
-			int n = Util::dice( 3 );
-			switch( n ) {
-			case 0:
-				tex = adapter->getNamedTexture( "grass1" ); break;
-			case 1:
-				tex = adapter->getNamedTexture( "grass2" ); break;
-			default:
-				tex = adapter->getNamedTexture( "grass" );
-			}
+			//GLuint tex = 0;
+			//int n = Util::dice( 3 );
+			int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( WallTheme::OUTDOOR_THEME_REF_GRASS );
+			GLuint *textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( WallTheme::OUTDOOR_THEME_REF_GRASS );
+			GLuint tex = textureGroup[ Util::dice( faceCount ) ];
 			for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ){
 				for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
 					setGroundTex( x + xx, y + yy, tex );				

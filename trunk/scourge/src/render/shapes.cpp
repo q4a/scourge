@@ -44,17 +44,25 @@ char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
   "passage_floor",
   "room_floor",
   "headboard",
-	"street_floor_tile",
-	"street_vert_floor_tile",
-	"street_cross_floor_tile"
+};
+
+char WallTheme::outdoorThemeRefName[OUTDOOR_THEME_REF_COUNT][40] = {
+	"grass", "street", "street_cross", "street_end", "trail", "trail_turn", "trail_end", "water"
 };
 
 WallTheme::WallTheme( char const* name, Shapes *shapePal ) 
 {
   strcpy( this->name, name );
   this->shapePal = shapePal;
-  for(int i = 0; i < THEME_REF_COUNT; i++)
+	this->hasOutdoor = false;
+  for(int i = 0; i < THEME_REF_COUNT; i++) {
     themeRefMap[ themeRefName[i] ] = i;
+		faceCount[ i ] = 0;
+	}
+	for( int i = 0; i < OUTDOOR_THEME_REF_COUNT; i++ ) {
+		outdoorThemeRefMap[ outdoorThemeRefName[ i ] ] = i;
+		outdoorFaceCount[ i ] = 0;
+	}
 }
 
 WallTheme::~WallTheme() {
@@ -69,17 +77,28 @@ void WallTheme::load() {
       loadTextureGroup( ref, face, textures[ ref ][ face ] );
     }
   }
+	if( getHasOutdoor() ) {
+		for(int ref = 0; ref < OUTDOOR_THEME_REF_COUNT; ref++) {
+			for(int face = 0; face < outdoorFaceCount[ ref ]; face++) {
+				loadTextureGroup( ref, face, outdoorTextures[ ref ][ face ], true );
+			}
+		}
+	}
 }
 
-void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
-  string path, bmp;  
+void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor ) {
+	//cerr << "Loading theme texture. Theme: " << getName() << " ref=" << ( outdoor ? outdoorThemeRefName[ ref ] : themeRefName[ ref ] ) << " face=" << face << " texture=" << texture << endl;
+  string path;  
+	GLuint id = 0;
   if ( texture && strcmp( texture, "null" ) ) {
     string s = texture;
-    GLuint id;
     if ( loadedTextures.find(s) == loadedTextures.end() ) {
 
       // see if it's a system texture (no need to double load it)
-      bmp = texture + string(".bmp");
+			string bmp = texture;
+			if( bmp.find( ".", 0 ) == string::npos ) {
+				bmp += string(".bmp");
+			}
       path = "/" + bmp;
 
       // keep lava texture data
@@ -96,29 +115,41 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture ) {
 
       id = shapePal->findTextureByName( bmp );
       if ( id == 0 ) {
-        id = shapePal->loadGLTextures(path);
+				// two ways of loading for backward compat.
+				if( path.find( ".bmp", 0 ) == path.length() - 4 ) {
+					//cerr << "\tLoading BMP" << endl;
+					id = shapePal->loadGLTextures(path);
+				} else {
+					//cerr << "\tLoading non-BMP" << endl;
+					id = shapePal->loadAlphaTexture( path );
+				}
         loadedTextures[s] = id;
       }
     } else {
       id = loadedTextures[s];
     }
-    textureGroup[ref][face] = id;  
-  } else {
-    textureGroup[ref][face] = 0;
-  }
+	}
+	if( outdoor ) {
+		outdoorTextureGroup[ref][face] = id;  
+	} else {
+		textureGroup[ref][face] = id;  		
+	}
 }
 
 void WallTheme::unload() {
-  string bmp;
 //  cerr << "*** Dumping theme: " << getName() << endl;
   for (map<string,GLuint>::iterator i=loadedTextures.begin(); i!=loadedTextures.end(); ++i) {
     string s = i->first;
     GLuint id = i->second;
 
     // don't delete system textures!
-    bmp = s + ".bmp";
+		string bmp = s;
+		if( bmp.find( ".", 0 ) == string::npos ) {
+			bmp += string(".bmp");
+		}
     id = shapePal->findTextureByName( bmp );
     if ( id == 0 ) {
+			//cerr << "Unloading texture: " << bmp << endl;
       glDeleteTextures( 1, &id );
     }
   }
@@ -133,6 +164,11 @@ GLuint *WallTheme::getTextureGroup( string themeRefName ) {
 int WallTheme::getFaceCount( string themeRefName ) {
   int ref = themeRefMap[ themeRefName ];
   return faceCount[ ref ];
+}
+
+int WallTheme::getOutdoorFaceCount( string themeRefName ) {
+  int ref = outdoorThemeRefMap[ themeRefName ];
+  return outdoorFaceCount[ ref ];
 }
     
 void WallTheme::debug() {
