@@ -545,19 +545,15 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 }
 
 void OutdoorGenerator::addOutdoorTexture( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, int ref, float angle, bool horiz, bool vert ) {
-	//string s = name;
-	//NamedOutdoorTexture *ot = shapePal->getOutdoorNamedTexture( s );
-
 	int faceCount = shapePal->getCurrentTheme()->getOutdoorFaceCount( ref );
 	if( faceCount == 0 ) {
 		cerr << "Error: no textures for outdoor theme!" << endl;
 		return;
 	}
-	GLuint *textureGroup = shapePal->getCurrentTheme()->getOutdoorTextureGroup( ref );	
 	int w = shapePal->getCurrentTheme()->getOutdoorTextureWidth( ref );
 	int h = shapePal->getCurrentTheme()->getOutdoorTextureHeight( ref );
 
-	map->setOutdoorTexture( mapx, mapy + 1, 0, 0, w, h, textureGroup[0], angle, horiz, vert );
+	map->setOutdoorTexture( mapx, mapy + 1, 0, 0, ref, angle, horiz, vert );
 	flattenChunkWithLimits( map, mapx, mapy, w, h, 0, 1 );
 }
 
