@@ -59,6 +59,7 @@ public:
 	float angle;
 	bool horizFlip, vertFlip;
 	GLuint texture;
+	int outdoorThemeRef;
 	
 	OutdoorTexture() {
 		angle = 0;
@@ -66,6 +67,7 @@ public:
 		texture = 0;
 		offsetX = offsetY = 0;
 		width = height = 2;
+		outdoorThemeRef = -1;
 	}
 };
 

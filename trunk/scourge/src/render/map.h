@@ -424,8 +424,7 @@ private:
   Shape *removeLocation(Sint16 x, Sint16 y, Sint16 z);
   
   void setOutdoorTexture( int x, int y, float offsetX, float offsetY,
-                          float width, float height, GLuint texture, 
-                          float angle, bool horizFlip, bool vertFlip );
+                          int ref, float angle, bool horizFlip, bool vertFlip );
   void removeOutdoorTexture( int x, int y, float width, float height );
 	
 	Shape *removeItemPosition( Sint16 x, Sint16 y );

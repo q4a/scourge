@@ -2212,26 +2212,39 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 }
 
 void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY,
-                             float width, float height, GLuint texture, 
+                             int ref, 
                              float angle, bool horizFlip, bool vertFlip ) {
+	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
+	if( faceCount == 0 ) {
+		cerr << "Error: no textures for outdoor theme!" << endl;
+		return;
+	}
+	GLuint *textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );	
+	int width = getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
+	int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );	
+
 	int tx = x / OUTDOORS_STEP;
 	int ty = ( y - height - 1 ) / OUTDOORS_STEP;
 	int tw = static_cast<int>(width / OUTDOORS_STEP);
 	int th = static_cast<int>(height / OUTDOORS_STEP);
 	outdoorTex[tx][ty].offsetX = offsetX;
 	outdoorTex[tx][ty].offsetY = offsetY;
-	outdoorTex[tx][ty].width = tw;
-	outdoorTex[tx][ty].height = th;
 	outdoorTex[tx][ty].angle = angle;
 	outdoorTex[tx][ty].horizFlip = horizFlip;
 	outdoorTex[tx][ty].vertFlip = vertFlip;
-	outdoorTex[tx][ty].texture = texture;
+	outdoorTex[tx][ty].outdoorThemeRef = ref;
+	
+	// computed values
+	outdoorTex[tx][ty].width = tw;
+	outdoorTex[tx][ty].height = th;	
+	outdoorTex[tx][ty].texture = textureGroup[ Util::dice( faceCount ) ];
 	mapChanged = true;
 }
 
 void Map::removeOutdoorTexture( int x, int y, float width, float height ) {
 	int tx = x / OUTDOORS_STEP;
 	int ty = ( y - height - 1 ) / OUTDOORS_STEP;
+	outdoorTex[tx][ty].outdoorThemeRef = -1;
 	outdoorTex[tx][ty].texture = 0;
 	mapChanged = true;
 }

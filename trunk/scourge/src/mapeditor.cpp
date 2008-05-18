@@ -681,12 +681,19 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
     if( button == SDL_BUTTON_LEFT ) {    	
     	if( outdoorTexturesButton->isSelected() ) {
     		if( outdoorTexturesList->getSelectedLine() > -1 ) {
-    			string s = outdoorTextureNames[ outdoorTexturesList->getSelectedLine() ];
-      		NamedOutdoorTexture *ot = scourge->getShapePalette()->getOutdoorNamedTexture( s );
+    			//string s = outdoorTextureNames[ outdoorTexturesList->getSelectedLine() ];
+      		//NamedOutdoorTexture *ot = scourge->getShapePalette()->getOutdoorNamedTexture( s );
+    			int ref = WallTheme::OUTDOOR_THEME_REF_STREET;
+    			int faceCount = scourge->getShapePalette()->getCurrentTheme()->getOutdoorFaceCount( ref );
+  				if( faceCount == 0 ) {
+  					cerr << "Error: no textures for outdoor theme!" << endl;
+  					return;
+  				}
+//  				int w = scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureWidth( ref );
+//  				int h = scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureHeight( ref );
       		scourge->getMap()->setOutdoorTexture( xx, yy + 1, 
       		                                      0, 0, 
-      		                                      ot->width, ot->height, 
-      		                                      ot->tex, 
+      		                                      ref, 
       		                                      outdoorTextureAngle, 
       		                                      outdoorTextureHorizFlip, 
       		                                      outdoorTextureVertFlip );
