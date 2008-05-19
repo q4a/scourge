@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 39
+#define PERSIST_VERSION 40
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -143,6 +143,14 @@ struct TrapInfo {
 	Uint8 type, discovered, enabled;
 };
 
+struct OutdoorTextureInfo {
+	Uint16 x, y;
+	Uint32 offsetX, offsetY; // measured in map units
+	Uint32 angle;
+	Uint8 horizFlip, vertFlip;
+	Uint16 outdoorThemeRef;
+};
+
 struct MapInfo {
   Uint32 version;
 	Uint8 map_type;
@@ -167,6 +175,8 @@ struct MapInfo {
 	Uint32 ground[ MAP_WIDTH / OUTDOORS_STEP ][ MAP_DEPTH / OUTDOORS_STEP ];
 	Uint8 trapCount;
 	TrapInfo *trap[ 255 ];
+	Uint32 outdoorTextureInfoCount;
+	OutdoorTextureInfo *outdoorTexture[ ( MAP_WIDTH / OUTDOORS_STEP ) * ( MAP_DEPTH / OUTDOORS_STEP ) ];
 };
 
 struct MissionInfo {
