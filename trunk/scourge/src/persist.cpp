@@ -354,6 +354,18 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 	for( int i = 0; i < info->trapCount; i++ ) {
 		saveTrap( file, info->trap[ i ] );
 	}
+	file->write( &( info->outdoorTextureInfoCount ) );
+	for( int x = 0; x < static_cast<int>(info->outdoorTextureInfoCount); x++ ) {
+		OutdoorTextureInfo *oti = info->outdoorTexture[ x ];
+		file->write( &( oti->x ) );
+		file->write( &( oti->y ) );
+		file->write( &( oti->angle ) );
+		file->write( &( oti->horizFlip ) );
+		file->write( &( oti->vertFlip ) );
+		file->write( &( oti->offsetX ) );
+		file->write( &( oti->offsetY ) );
+		file->write( &( oti->outdoorThemeRef ) );
+	}
 }
 
 // FIXME: reuse this in loadmap
@@ -551,6 +563,23 @@ MapInfo *Persist::loadMap( File *file ) {
 	} else {
 		info->trapCount = 0;
 	}
+	if( info->version >= 40 ) {
+		file->read( &( info->outdoorTextureInfoCount ) );
+		for( int x = 0; x < static_cast<int>(info->outdoorTextureInfoCount); x++ ) {
+			OutdoorTextureInfo *oti = (OutdoorTextureInfo*)malloc( sizeof( OutdoorTextureInfo ) );
+			file->read( &( oti->x ) );
+			file->read( &( oti->y ) );
+			file->read( &( oti->angle ) );
+			file->read( &( oti->horizFlip ) );
+			file->read( &( oti->vertFlip ) );
+			file->read( &( oti->offsetX ) );
+			file->read( &( oti->offsetY ) );
+			file->read( &( oti->outdoorThemeRef ) );
+			info->outdoorTexture[ x ] = oti;
+		}		
+	} else {
+		info->outdoorTextureInfoCount = 0;
+	}
 	return info;
 }
 
@@ -576,6 +605,9 @@ void Persist::deleteMapInfo( MapInfo *info ) {
 	for( int i = 0; i < static_cast<int>(info->trapCount); i++ ) {
     deleteTrapInfo( info->trap[i] );
   }
+	for( int i = 0; i < static_cast<int>(info->outdoorTextureInfoCount ); i++ ) {
+		free( info->outdoorTexture[i] );
+	}
   free( info );
 }
 

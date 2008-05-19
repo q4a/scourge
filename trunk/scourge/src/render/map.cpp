@@ -2211,8 +2211,7 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 	return pos;
 }
 
-void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY,
-                             int ref, 
+void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref, 
                              float angle, bool horizFlip, bool vertFlip ) {
 	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
 	if( faceCount == 0 ) {
@@ -3386,11 +3385,28 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 	info->edited = edited;
 
 	// save ground height for outdoors maps
-	info->heightMapEnabled = (Uint8)( heightMapEnabled ? 1 : 0 );
+	// save the outdoor textures
+	info->heightMapEnabled = (Uint8)( heightMapEnabled ? 1 : 0 );	
+	info->outdoorTextureInfoCount = 0;
 	for( int gx = 0; gx < MAP_WIDTH / OUTDOORS_STEP; gx++ ) {
 		for( int gy = 0; gy < MAP_DEPTH / OUTDOORS_STEP; gy++ ) {
 			Uint32 base = ( ground[ gx ][ gy ] < 0 ? NEG_GROUND_HEIGHT : 0x00000000 );
 			info->ground[ gx ][ gy ] = (Uint32)( fabs( ground[ gx ][ gy ] ) * 100 ) + base;
+			if( outdoorTex[ gx ][ gy ].texture > 0 ) {
+				OutdoorTextureInfo *oti = (OutdoorTextureInfo*)malloc( sizeof( OutdoorTextureInfo ) );
+				int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( outdoorTex[ gx ][ gy ].outdoorThemeRef );
+				int mx = gx * OUTDOORS_STEP;
+				int my = gy * OUTDOORS_STEP + height + 1;
+				oti->x = mx;
+				oti->y = my;
+				oti->angle = outdoorTex[ gx ][ gy ].angle * 1000;
+				oti->horizFlip = outdoorTex[ gx ][ gy ].horizFlip;
+				oti->vertFlip = outdoorTex[ gx ][ gy ].vertFlip;
+				oti->offsetX = outdoorTex[ gx ][ gy ].offsetX * 1000;
+				oti->offsetY = outdoorTex[ gx ][ gy ].offsetY * 1000;
+				oti->outdoorThemeRef = outdoorTex[ gx ][ gy ].outdoorThemeRef;
+				info->outdoorTexture[ info->outdoorTextureInfoCount++ ] = oti;
+			}
 		}
 	}
 
@@ -3519,6 +3535,15 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 			}
 		}
 	}
+	
+	for( int i = 0; i < (int)info->outdoorTextureInfoCount; i++ ) {
+		OutdoorTextureInfo *oti = info->outdoorTexture[i];
+		setOutdoorTexture( oti->x, oti->y, 
+		                   oti->offsetX / 1000.0f, oti->offsetY / 1000.0f, 
+		                   oti->outdoorThemeRef, oti->angle / 1000.0f, 
+		                   oti->horizFlip, oti->vertFlip );
+	}
+	
 	if( heightMapEnabled ) {
 		initOutdoorsGroundTexture();
 	}
