@@ -630,11 +630,12 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 						if( settings->isGridShowing() ) {
 							isCurrentlyUnderRoof = !isRoofShowing;
 						} else if( adapter->getPlayer() ) {
-							Location *roof = 
-								getLocation( toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 ), 
-								             toint( adapter->getPlayer()->getY() - 1 - adapter->getPlayer()->getShape()->getDepth() / 2 ), 
-								             MAP_WALL_HEIGHT );
-							if( !roof ) {
+							int px = toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 );
+							int py = toint( adapter->getPlayer()->getY() - 1 - adapter->getPlayer()->getShape()->getDepth() / 2 );
+							int fx = ( ( px - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+							int fy = ( ( py - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+							Location *roof = getLocation( px, py, MAP_WALL_HEIGHT );
+							if( !( roof && getFloorPosition( fx, fy ) ) ) {
 								isCurrentlyUnderRoof = false;
 							}
 						}
