@@ -4128,17 +4128,29 @@ bool Map::drawHeightMapFloor() {
 		
 	bool ret = true;
 	for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
-		for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {			
-			glBindTexture( GL_TEXTURE_2D, groundPos[ xx ][ yy ].tex );
+		for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
 
+			int chunkX = ( ( xx * OUTDOORS_STEP ) - MAP_OFFSET ) / MAP_UNIT;
+			int chunkY = ( ( ( yy + 1 ) * OUTDOORS_STEP ) - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
+			if( lightMap[chunkX][chunkY] ) {
+				glEnable( GL_TEXTURE_2D );
+				glBindTexture( GL_TEXTURE_2D, groundPos[ xx ][ yy ].tex );
+			} else {
+				glDisable( GL_TEXTURE_2D );
+			}
+	
 			p[0] = &( groundPos[ xx ][ yy + 1 ] );
 			p[1] = &( groundPos[ xx ][ yy ] );
 			p[2] = &( groundPos[ xx + 1 ][ yy ] );
 			p[3] = &( groundPos[ xx + 1 ][ yy + 1 ] );
 			glBegin( GL_QUADS );
 			for( int i = 0; i < 4; i++ ) {
-				glTexCoord2f( p[i]->u, p[i]->v );
-				glColor4f( p[i]->r, p[i]->g, p[i]->b, p[i]->a );
+				if( lightMap[chunkX][chunkY] ) {
+					glTexCoord2f( p[i]->u, p[i]->v );
+					glColor4f( p[i]->r, p[i]->g, p[i]->b, p[i]->a );
+				} else {
+					glColor4f( 0, 0, 0, 0 );
+				}
 				gx = p[i]->x - getX() / DIV;
 				gy = p[i]->y - getY() / DIV;
 				glVertex3f( gx, gy, p[i]->z );
@@ -4146,6 +4158,7 @@ bool Map::drawHeightMapFloor() {
 			glEnd();
 		}
 	}
+	glEnable( GL_TEXTURE_2D );
 	
 	// draw outdoor textures
 	//cerr << "from: " << getX() << "," << getY() << " to: " << ( getX() + mapViewWidth ) << "," << ( getY() + mapViewDepth ) << endl;  
