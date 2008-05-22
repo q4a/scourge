@@ -4159,7 +4159,34 @@ bool Map::drawHeightMapFloor() {
 			}
 		}
 	}
-	
+
+	if( settings->isGridShowing() ) {
+		//glDisable( GL_DEPTH_TEST );
+		glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );	
+		glDisable( GL_TEXTURE_2D );
+		glColor4f( 0.4f, 0.4f, 0.4f, 0.3f );
+		for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
+			for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {			
+				
+				p[0] = &( groundPos[ xx ][ yy + 1 ] );
+				p[1] = &( groundPos[ xx ][ yy ] );
+				p[2] = &( groundPos[ xx + 1 ][ yy ] );
+				p[3] = &( groundPos[ xx + 1 ][ yy + 1 ] );
+				glBegin( GL_LINE_LOOP );
+				for( int i = 0; i < 4; i++ ) {
+					gx = p[i]->x - getX() / DIV;
+					gy = p[i]->y - getY() / DIV;
+					glVertex3f( gx, gy, p[i]->z + 0.05f / DIV );
+				}
+				glEnd();
+			}
+		}
+		glEnable( GL_TEXTURE_2D );
+		//glEnable( GL_DEPTH_TEST );
+		glDisable( GL_BLEND );
+	}
+
 	return ret;
 }
 
@@ -4400,7 +4427,7 @@ void Map::createGroundMap() {
 	for( int xx = 0; xx < MAP_WIDTH / OUTDOORS_STEP; xx++ ) {		
 		for( int yy = 0; yy < MAP_DEPTH /  OUTDOORS_STEP; yy++ ) {
 			w = static_cast<float>( xx * OUTDOORS_STEP ) / DIV;
-			d = static_cast<float>( yy * OUTDOORS_STEP ) / DIV;
+			d = static_cast<float>( yy * OUTDOORS_STEP - 1 ) / DIV;
 			h = ( ground[ xx ][ yy ] ) / DIV;
 
 			groundPos[ xx ][ yy ].x = w;
