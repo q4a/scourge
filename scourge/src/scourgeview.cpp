@@ -70,6 +70,9 @@ ScourgeView::~ScourgeView() {
 
 void ScourgeView::drawView() {
 	if( scourge->getSession()->isShowingChapterIntro() ) {
+		
+		endScissorToMap();
+		
 		drawChapterIntro();
 		return;
 	}
@@ -95,27 +98,46 @@ void ScourgeView::drawView() {
 
   ambientObjectSounds();
 
-  if( !scourge->getSession()->getCutscene()->isInMovieMode() ) {
-    scourge->getMiniMap()->drawMap();
+  if( scourge->getSession()->getCutscene()->isInMovieMode() ) {
+  	endScissorToMap();
+  } else {
+    scourge->getMiniMap()->drawMap();  
 
     // the boards outside the map
     drawOutsideMap();
+    
+    endScissorToMap();
 
     drawBorder();
 
     drawTextEffect();  
 
     scourge->getDescriptionScroller()->draw();
-
-    if( !scourge->getPartyWindow()->isVisible() ) scourge->getPartyWindow()->setVisible( true, false );
-  } else {
-    drawLetterbox();
   }
 
   // Hack: A container window may have been closed by hitting the Esc. button.
   if(Window::windowWasClosed) {
     scourge->removeClosedContainerGuis();
   }
+}
+
+// flip all the switches (seemingly at random) to try to restore the rendering pipeline...
+void ScourgeView::endScissorToMap() {
+	glEnable( GL_TEXTURE_2D );
+  glEnable( GL_CULL_FACE );
+  glDisable( GL_SCISSOR_TEST );
+	glDisable( GL_BLEND );
+  if( scourge->getPreferences()->getStencilbuf() && 
+      scourge->getPreferences()->getStencilBufInitialized() ) {
+  	glClear( GL_STENCIL_BUFFER_BIT );
+  	glColorMask( 1, 1, 1, 1 );
+  	glStencilFunc( GL_EQUAL, 1, 0xffffffff );
+  	glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+  	glDisable(GL_STENCIL_TEST);
+  }
+  glDepthMask( GL_TRUE );
+	glDisable( GL_ALPHA_TEST );
+	glColor4f( 1, 1, 1, 1 );
 }
 
 #define MAX_AMBIENT_OBJECT_DISTANCE 11
@@ -155,9 +177,7 @@ int chapterTextTimer = 0;
 void ScourgeView::drawChapterIntro() {
 	glDisable(GL_TEXTURE_2D);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-  glDisable( GL_DEPTH_TEST );
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_SCISSOR_TEST );
+  
   //glEnable(GL_ALPHA_TEST);
   //glAlphaFunc(GL_NOTEQUAL, 0);
   glPushMatrix();
@@ -505,10 +525,6 @@ void ScourgeView::drawBorder() {
   if(scourge->getMap()->getViewWidth() == scourge->getSDLHandler()->getScreen()->w &&
      scourge->getMap()->getViewHeight() == scourge->getSDLHandler()->getScreen()->h &&
      !scourge->getUserConfiguration()->getFrameOnFullScreen()) return;
-
-  glEnable( GL_TEXTURE_2D );
-  glDisable( GL_CULL_FACE );
-  glDisable( GL_SCISSOR_TEST );
 
   glPushMatrix();
   glLoadIdentity();
@@ -1088,7 +1104,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 }
 
 void ScourgeView::drawAfter() {
-
+	
 	drawDraggedItem();
 
 	// draw turn info
@@ -1111,6 +1127,10 @@ void ScourgeView::drawAfter() {
 		glPopMatrix();
 		//glPushAttrib(GL_ENABLE_BIT);
 	}
+	
+	if( scourge->getSession()->getCutscene()->isInMovieMode() ) {
+	  	scourge->getSession()->getCutscene()->drawLetterbox();
+	}	
 }
 
 void ScourgeView::drawDraggedItem() {
@@ -1377,42 +1397,4 @@ void ScourgeView::generateClouds() {
       cloudX[i] = Util::pickOne( -(int)( 256.0f * cloudSize[i] ), scourge->getUserConfiguration()->getW() );
       cloudY[i] = Util::pickOne( -(int)( 128.0f * cloudSize[i] ), scourge->getUserConfiguration()->getH() );
     }
-}
-
-void ScourgeView::drawLetterbox() {
-  int w = scourge->getUserConfiguration()->getW();
-  int h = scourge->getSession()->getCutscene()->getCurrentLetterboxHeight();
-
-  glDisable( GL_CULL_FACE );
-  glDisable( GL_DEPTH_TEST );
-  glDisable(GL_BLEND);
-
-  glColor3f( 0.0f, 0.0f, 0.0f );
-
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef( 0, 0, 0 );
-  glBegin( GL_QUADS );
-  glNormal3f( 0, 0, 1 );
-  glVertex2i( 0, 0 );
-  glVertex2i( w, 0 );
-  glVertex2i( w, h );
-  glVertex2i( 0, h );
-  glEnd();
-  glPopMatrix();
-
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef( 0, scourge->getUserConfiguration()->getH() - h, 500 );
-  glBegin( GL_QUADS );
-  glNormal3f( 0, 0, 1 );
-  glVertex2i( 0, 0 );
-  glVertex2i( w, 0 );
-  glVertex2i( w, h );
-  glVertex2i( 0, h );
-  glEnd();
-  glPopMatrix();
-
-  glEnable( GL_CULL_FACE );
-  glEnable( GL_DEPTH_TEST );
 }

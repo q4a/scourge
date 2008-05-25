@@ -23,6 +23,7 @@ using namespace std;
 Cutscene::Cutscene( Session *session ){
   this->session = session;
 
+  // fixme: perhaps this should be the hdtv aspect ration given the current pixel width?
   letterboxHeight = (int)( (float)session->getPreferences()->getH() / 8 );
 
   inMovieMode = false;
@@ -60,7 +61,7 @@ void Cutscene::endMovieMode() {
   endLetterbox();
 }
 
-#define LETTERBOX_DURATION 1500
+#define LETTERBOX_DURATION 300
 
 void Cutscene::startLetterbox() {
   letterboxStartTime = SDL_GetTicks();
@@ -92,7 +93,7 @@ int Cutscene::getCurrentLetterboxHeight() {
       h = letterboxHeight;
     } else {
       float percent = (float)( now - letterboxEndTime ) / LETTERBOX_DURATION;
-      h = (float)letterboxHeight * percent;
+      h = (float)letterboxHeight * ( 1.0f - percent );
     }
 
   } else {
@@ -101,7 +102,7 @@ int Cutscene::getCurrentLetterboxHeight() {
       h = letterboxHeight;
     } else {
       float percent = (float)( now - letterboxStartTime ) / LETTERBOX_DURATION;
-      h = (float)letterboxHeight * ( 1.0f - percent );
+      h = (float)letterboxHeight * ( percent );
     }
 
   }
@@ -305,4 +306,43 @@ float Cutscene::getCameraZoom() {
   }
 
   return m;
+}
+
+void Cutscene::drawLetterbox() {
+  int w = session->getGameAdapter()->getScreenWidth();
+  int h = getCurrentLetterboxHeight();
+
+  glDisable( GL_TEXTURE_2D );
+  glDisable( GL_CULL_FACE );
+  glDisable( GL_DEPTH_TEST );
+  glDisable( GL_BLEND );
+
+  glColor3f( 0.0f, 0.0f, 0.0f );
+
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( 0, 0, 0 );
+  glBegin( GL_QUADS );
+  glVertex2i( 0, 0 );
+  glVertex2i( w, 0 );
+  glVertex2i( w, h );
+  glVertex2i( 0, h );
+  glEnd();
+  glPopMatrix();
+
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( 0, session->getGameAdapter()->getScreenHeight() - h, 0 );
+  glBegin( GL_QUADS );
+  glVertex2i( 0, 0 );
+  glVertex2i( w, 0 );
+  glVertex2i( w, h );
+  glVertex2i( 0, h );
+  glEnd();
+  glPopMatrix();
+
+  glEnable( GL_DEPTH_TEST );
+  glEnable( GL_CULL_FACE );
+  glEnable( GL_TEXTURE_2D );
+  glColor4f( 1, 1, 1, 1 );
 }
