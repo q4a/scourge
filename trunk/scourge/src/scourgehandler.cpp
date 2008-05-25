@@ -141,6 +141,13 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
 			//scourge->getParty()->getPlayer()->setPendingCauseOfDeath( "Testing" );
       //scourge->getParty()->getPlayer()->takeDamage( 1000 );
 			//scourge->camp();
+    	if( scourge->getSession()->getCutscene()->isInMovieMode() ) {
+    		scourge->getPartyWindow()->setVisible( true );
+    		scourge->getSession()->getCutscene()->endMovieMode();    		
+    	} else {
+    		scourge->getPartyWindow()->setVisible( false );
+    		scourge->getSession()->getCutscene()->startMovieMode();    		
+    	}
       return false;
     } else if(event->key.keysym.sym == SDLK_l) {
 			if( scourge->getParty()->getPlayer()->getLevel() < MAX_LEVEL ) {

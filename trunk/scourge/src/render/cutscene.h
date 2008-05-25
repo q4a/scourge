@@ -71,6 +71,8 @@ public:
   float getCameraZoom();
 
   int getCurrentLetterboxHeight();
+  
+  void drawLetterbox();
 };
 
 #endif
