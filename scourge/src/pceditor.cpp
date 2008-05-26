@@ -172,6 +172,13 @@ void PcEditor::loadUI() {
 			}
 		}
 		snprintf( message, MSG_SIZE, "%d", availableSkillMod );
+		if( availableSkillMod > 0 ) {
+			remainingCaptionLabel->setColor(1, 0, 0, 1);
+			remainingLabel->setColor(1, 0, 0, 1);
+		} else {
+			remainingCaptionLabel->setColor(1, 1, 1, 1);
+			remainingLabel->setColor(1, 1, 1, 1);
+		}
 		remainingLabel->setText( message );
 
 		int deityIndex = Util::dice( MagicSchool::getMagicSchoolCount() );
@@ -546,8 +553,10 @@ weaknesses of each profession." ),
 			n++;
 		}
 	}
-	cards->createLabel( secondColStart + 180 + 25 + 15, 60, _( "Points Remaining:" ), STAT_TAB );
+	remainingCaptionLabel = cards->createLabel( secondColStart + 180 + 25 + 15, 60, _( "Points Remaining:" ), STAT_TAB );
+	remainingCaptionLabel->setSpecialColor();
 	remainingLabel = cards->createLabel( secondColStart + 180 + 25 + 15, 80, "0", STAT_TAB );
+	remainingLabel->setSpecialColor();
   reroll = cards->createButton( secondColStart + 180 + 25 + 15, 100, w - 10, 120, _( "Reroll" ), STAT_TAB );
 
 	int detailsHeight = 145;
