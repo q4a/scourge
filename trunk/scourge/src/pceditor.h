@@ -51,7 +51,7 @@ private:
 	ScrollingLabel *charTypeDescription;
 	Label *skillValue[10];
 	Button *skillPlus[10], *skillMinus[10];
-	Label *remainingLabel;
+	Label *remainingCaptionLabel, *remainingLabel;
 	CharacterInfoUI *detailsInfo;
   Canvas *detailsCanvas;
   ScrollingLabel *deityTypeDescription;
