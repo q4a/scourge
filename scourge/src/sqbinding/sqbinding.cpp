@@ -299,7 +299,7 @@ void SqBinding::initLevelObjects() {
   }
 }
 
-bool SqBinding::startLevel( bool callMapEvents ) {
+bool SqBinding::startLevel( const char *methodName ) {
 
   // create the creatures of the level
   if( DEBUG_SQUIRREL ) cerr << "Creating level's creatures:" << endl;  
@@ -313,7 +313,7 @@ bool SqBinding::startLevel( bool callMapEvents ) {
 		registerItem( session->getItem( i ) );
   }
 
-  return( callMapEvents ? callMapMethod( "enterMap", session->getMap()->getName() ) : true );
+  return( methodName ? callMapMethod( methodName, session->getMap()->getName() ) : true );
 }     
 
 bool SqBinding::endLevel( bool callMapEvents ) {

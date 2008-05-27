@@ -641,8 +641,13 @@ public:
 	bool isDoorBlocked();
 	void openDoor( MovingDoor *movingDoor );
 	inline std::vector<MovingDoor> *getMovingDoors() { return &movingDoors; }
+	
+	void startMovieMode();
+	void endMovieMode();
+	void setContinueAt( char *func, int timeout );
 
 protected:
+	void preMainLoop();
   bool getItem(Location *pos);
   // returns new z coordinate
   int dropItem(int x, int y);

@@ -27,6 +27,8 @@
 #include "debug.h"
 #include "freetype/fontmgr.h"
 #include "sound.h"
+#include "sqbinding/sqbinding.h"
+#include "render/cutscene.h"
 
 using namespace std;
 
@@ -79,6 +81,8 @@ SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
   fadeoutCurrentStep = 0;
   fadeoutTimer = 0;
 	cursorVisible = true;
+	continueFunc = "";
+	continueTimeout = continueStart = 0;
 }
 
 SDLHandler::~SDLHandler(){
@@ -463,6 +467,14 @@ void SDLHandler::mainLoop() {
 					startAmbientSound( gameAdapter->getSession()->getAmbientSoundName(), 
 													 gameAdapter->getCurrentDepth() );
 			}
+		}
+		if( continueTimeout > 0 && now - continueStart > continueTimeout ) {
+			char tmp[200];
+			strcpy( tmp, continueFunc.c_str() );
+			// clear it first, in case continueAt is called again from squirrel
+			continueStart = continueTimeout = 0;
+			continueFunc = "";
+			gameAdapter->getSession()->getSquirrel()->callNoArgMethod( tmp );
 		}
 	}
 }
@@ -1223,3 +1235,8 @@ void SDLHandler::playSound( const std::string& file, int panning ) {
 	gameAdapter->getSession()->getSound()->playSound( file, panning );
 }
 
+void SDLHandler::setContinueAt( char *func, int timeout ) {
+	this->continueFunc = func;
+	this->continueTimeout = timeout;
+	this->continueStart = SDL_GetTicks();
+}

@@ -46,5 +46,6 @@
 #include "Md3.h"
 #include "md3shape.h"
 #include "modelwrapper.h"
+#include "cutscene.h"
 
 #endif

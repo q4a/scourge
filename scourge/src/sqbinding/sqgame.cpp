@@ -56,6 +56,9 @@ ScriptClassMemberDecl SqGame::members[] = {
   { "string", "getDeityLocation", SqGame::_getDeityLocation, 4, "xnnn", "Get the deity whose presense is bound to this location (like an altar). Results the name of the deity." },    
 	{ "void", "endConversation", SqGame::_endConversation, 0, 0, "Close the conversation dialog." },
 	{ "string", "getTranslatedString", SqGame::_getTranslatedString, 0, 0, "Get the translated version of this string. Calls GNU gettext." },
+	{ "void", "setMovieMode", SqGame::_setMovieMode, 0, 0, "Start or end letterboxed movie mode." },
+	{ "void", "moveCamera", SqGame::_moveCamera, 0, 0, "Position the camera." },
+	{ "void", "continueAt", SqGame::_continueAt, 0, 0, "Call a squirrel function after the specified timeout." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members, 
@@ -301,3 +304,36 @@ int SqGame::_getTranslatedString( HSQUIRRELVM vm ) {
   return 1;
 }
 
+int SqGame::_setMovieMode( HSQUIRRELVM vm ) {
+	GET_BOOL( start )
+	if( start ) {
+		SqBinding::sessionRef->getGameAdapter()->startMovieMode();
+	}	else {
+		SqBinding::sessionRef->getGameAdapter()->endMovieMode();
+	}
+	return 0;
+}
+
+int SqGame::_moveCamera( HSQUIRRELVM vm ) {
+	GET_INT( duration )
+	GET_FLOAT( zoom )
+	GET_FLOAT( zRot )
+	GET_FLOAT( yRot )
+	GET_FLOAT( xRot )
+	GET_FLOAT( z )
+	GET_FLOAT( y )
+	GET_FLOAT( x )
+	if( duration > 0 ) {
+		SqBinding::sessionRef->getCutscene()->animateCamera( x, y, z, xRot, yRot, zRot, zoom, duration );
+	} else {
+		SqBinding::sessionRef->getCutscene()->placeCamera( x, y, z, xRot, yRot, zRot, zoom );
+	}
+	return 0;
+}
+
+int SqGame::_continueAt( HSQUIRRELVM vm ) {
+	GET_INT( timeout )
+	GET_STRING( func, 200 )
+	SqBinding::sessionRef->getGameAdapter()->setContinueAt( func, timeout );
+	return 0;
+}

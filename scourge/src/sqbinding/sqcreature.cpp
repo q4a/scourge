@@ -48,7 +48,9 @@ ScriptClassMemberDecl SqCreature::members[] = {
   { "int", "getProtectedStateMod", SqCreature::_getProtectedStateMod, SQ_MATCHTYPEMASKSTRING, "xn", "Returns a boolean value indicating if the character is protected from the given state mod. See <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModCount() and <a href=\"ScourgeGame.html\">ScourgeGame</a>.getStateModName()." },
 	{ "int", "getSex", SqCreature::_getSex, 0, 0, "Returns the creature's sex: 0-male, 1-female." },
 	{ "bool", "hasCapability", SqCreature::_hasCapability, 0, 0, "Does this creature currently able to use this special capability?" },
-  { "float", "getArmor", SqCreature::_getArmor, 0, 0, "Return the armor value (sum of armor items worn modified by skills.)" },  
+  { "float", "getArmor", SqCreature::_getArmor, 0, 0, "Return the armor value (sum of armor items worn modified by skills.)" },
+  { "float", "getX", SqCreature::_getX, 0, 0, "X position of the creature." },  
+  { "float", "getY", SqCreature::_getY, 0, 0, "Y position of the creature." },
 
   { "void", "setLevel", SqCreature::_setLevel, SQ_MATCHTYPEMASKSTRING, "xn", "" },
   { "void", "setExp", SqCreature::_setExp, SQ_MATCHTYPEMASKSTRING, "xn", "" },
@@ -77,6 +79,10 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "void", "startConversationAbout", SqCreature::_startConversationAbout, 0, 0, "Start a conversation with this creature about a specific topic." },
 	{ "void", "setIntro", SqCreature::_setIntro, 0, 0, "Set this NPC's intro text to the text referenced by this keyphrase in the <map>.txt file." },
 	{ "void", "addInventoryByName", SqCreature::_addInventoryByName, 0, 0, "Add a new item of this name to the creature's inventory." },
+	{ "void", "moveTo", SqCreature::_moveTo, 0, 0, "Move creature to this location." },	
+	{ "bool", "isScripted", SqCreature::_isScripted, 0, 0, "Is this creature scripted? (being moved by script)" },
+	{ "void", "setScripted", SqCreature::_setScripted, 0, 0, "Set the value of whether this creature is being moved by script." },
+	{ "void", "say", SqCreature::_say, 0, 0, "The creature says something in a bubble of text." },
 
 	{ "bool", "isCharacter", SqCreature::_isCharacter, 0, 0, "Is this creature a pc?" },
 	{ "bool", "isMonster", SqCreature::_isMonster, 0, 0, "Is this creature a monster?" },
@@ -568,3 +574,43 @@ int SqCreature::_isNpc( HSQUIRRELVM vm ) {
 	return 1;
 }
 
+int SqCreature::_moveTo( HSQUIRRELVM vm ) {
+	GET_INT( y )
+	GET_INT( x )
+  GET_OBJECT( Creature* )
+  object->setSelXY( x, y );
+	return 0;
+}
+
+int SqCreature::_getX( HSQUIRRELVM vm ) {
+  GET_OBJECT( Creature* )
+  sq_pushfloat( vm, object->getX() );
+	return 1;
+}
+
+int SqCreature::_getY( HSQUIRRELVM vm ) {
+  GET_OBJECT( Creature* )
+  sq_pushfloat( vm, object->getY() );
+	return 1;
+}
+
+int SqCreature::_setScripted( HSQUIRRELVM vm ) {
+	GET_BOOL( b )
+	GET_OBJECT( Creature* )
+	object->setScripted( b );
+	return 0;
+}
+
+int SqCreature::_isScripted( HSQUIRRELVM vm ) {
+	GET_OBJECT( Creature* )
+	SQBool b = ( object->isScripted() ? true : false );
+	sq_pushbool( vm, b );
+	return 1;
+}
+
+int SqCreature::_say( HSQUIRRELVM vm ) {
+	GET_STRING( text, 2000 )
+	GET_OBJECT( Creature* )
+	object->say( text );
+	return 0;
+}

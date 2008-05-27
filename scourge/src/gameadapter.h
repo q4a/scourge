@@ -177,6 +177,9 @@ public:
 
 	virtual GLuint getNamedTexture( char *name ) { return 0; }
 
+	virtual void startMovieMode() {}
+	virtual void endMovieMode() {}
+	virtual void setContinueAt( char *func, int timeout ) {}
 };
 
 class SDLOpenGLAdapter : public GameAdapter {

@@ -88,6 +88,10 @@ public:
 	static int _endConversation( HSQUIRRELVM vm );
 
 	static int _getTranslatedString( HSQUIRRELVM vm );
+	
+	static int _setMovieMode( HSQUIRRELVM vm );
+	static int _moveCamera( HSQUIRRELVM vm );
+	static int _continueAt( HSQUIRRELVM vm );
 };
 
 #endif
