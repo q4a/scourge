@@ -152,7 +152,7 @@ class Creature : public RenderedCreature {
 	bool inventoryArranged;
 	std::map<Item*, InventoryInfo*> invInfos;
 	Uint32 lastPerceptionCheck;
-	bool boss, savedMissionObjective;
+	bool boss, savedMissionObjective, scripted;
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -169,6 +169,8 @@ class Creature : public RenderedCreature {
 
   void playFootstep();
 
+  inline void setScripted( bool b ) { this->scripted = b; }
+  inline bool isScripted() { return this->scripted; }
 	inline void setBoss( bool b ) { this->boss = b; }
 	virtual inline bool isBoss() { return this->boss; }
   inline bool isSavedMissionObjective() { return savedMissionObjective; }
@@ -255,7 +257,7 @@ class Creature : public RenderedCreature {
   inline void setTargetItem(int x, int y, int z, Item *item) { setTargetLocation(x, y, z); targetItem = item; }
   inline Item *getTargetItem() { return targetItem; }
 
-  inline void setMotion(int motion) { this->motion = motion; }  
+  void setMotion(int motion);  
   inline int getMotion() { return this->motion; }
 
   /**

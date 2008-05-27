@@ -102,6 +102,14 @@ public:
 
 	// other
 	static int _addInventoryByName( HSQUIRRELVM vm );
+	
+	// movement and movie mode
+	static int _moveTo( HSQUIRRELVM vm );
+	static int _getX( HSQUIRRELVM vm );
+	static int _getY( HSQUIRRELVM vm ); 
+	static int _setScripted( HSQUIRRELVM vm );
+	static int _isScripted( HSQUIRRELVM vm );
+	static int _say( HSQUIRRELVM vm );
 };
 #endif
 

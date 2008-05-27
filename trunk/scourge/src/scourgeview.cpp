@@ -124,7 +124,7 @@ void ScourgeView::drawView() {
 // flip all the switches (seemingly at random) to try to restore the rendering pipeline...
 void ScourgeView::endScissorToMap() {
 	glEnable( GL_TEXTURE_2D );
-  glEnable( GL_CULL_FACE );
+  glDisable( GL_CULL_FACE );
   glDisable( GL_SCISSOR_TEST );
 	glDisable( GL_BLEND );
   if( scourge->getPreferences()->getStencilbuf() && 

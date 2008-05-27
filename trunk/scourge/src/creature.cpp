@@ -107,6 +107,7 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool init
 
 void Creature::commonInit() {
 
+	this->scripted = false;
 	this->lastPerceptionCheck = 0;
 	this->boss = false;
   this->savedMissionObjective = false;
@@ -696,7 +697,7 @@ Location *Creature::moveToLocator() {
 
     // if we've no more steps
     if( pathManager->atEndOfPath() ) {
-      if(!session->getParty()->isPartyMember(this)){
+      if( !session->getParty()->isPartyMember( this ) && !scripted ){
         setMotion( Constants::MOTION_LOITER); //All NPCs and monsters should loiter.
         //some wandering heroes won't get their paths made elsewhere - HACK: put their logic here
         if(getCharacter()){
@@ -708,8 +709,7 @@ Location *Creature::moveToLocator() {
           }
         }
         
-      }
-      else{
+      } else{
         stopMoving();
         setMotion( Constants::MOTION_STAND);	
       }	
@@ -724,25 +724,23 @@ Location *Creature::moveToLocator() {
           }
         }
       }*/
-    } 
-    else if( pos ) {
+    } else if( pos ) {
       if(getMotion() != Constants::MOTION_LOITER)
         pathManager->moveNPCsOffPath(session->getParty()->getPlayer(),session->getMap());        
 
-      cantMoveCounter++;
-      //loiterers can just wander off
-      if(getMotion() == Constants::MOTION_LOITER){
-        if(cantMoveCounter > 15){
-          stopMoving();
-          setMotion(Constants::MOTION_STAND);
-          cantMoveCounter = 0;
-        }
-        else if(cantMoveCounter > 5){
-          pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
-      }
-    } 
-    } 
-    else if( !pos ) {
+	      cantMoveCounter++;
+	      //loiterers can just wander off
+	      if(getMotion() == Constants::MOTION_LOITER){
+	        if(cantMoveCounter > 15){
+	          stopMoving();
+	          setMotion(Constants::MOTION_STAND);
+	          cantMoveCounter = 0;
+	        }
+	        else if(cantMoveCounter > 5){
+	          pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
+	      }
+	    } 
+    } else if( !pos ) {
       cantMoveCounter = 0;
       setMoving( true );
     }
@@ -1849,7 +1847,7 @@ void Creature::cancelTarget() {
   if(preActionTargetCreature) setTargetCreature(preActionTargetCreature);
   preActionTargetCreature = NULL;
   setAction(Constants::ACTION_NO_ACTION);
-  if(isMonster()){
+  if( isMonster() && !scripted ){
     setMotion(Constants::MOTION_LOITER);
     pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
   }
@@ -1986,7 +1984,7 @@ void Creature::decideMonsterAction() {
         if(getMotion() == Constants::MOTION_STAND){ 
         //if standing, there is a 1/500 chance to start loitering. Has to be a slim chance because
         //this gets checked so often..
-        if( Util::dice( 500 ) == 0){ 
+        if( Util::dice( 500 ) == 0 && !scripted ){ 
           //need to make a path to wander on
           pathManager->findWanderingPath(10,session->getParty()->getPlayer(),session->getMap());
           setMotion(Constants::MOTION_LOITER);
@@ -3087,3 +3085,6 @@ void Creature::disableTrap( Trap *trap ) {
 	}
 }
 
+void Creature::setMotion( int motion ) {
+	this->motion = motion; 
+}

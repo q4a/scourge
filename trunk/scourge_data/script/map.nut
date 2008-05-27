@@ -10,6 +10,10 @@ function enterMap( mapName ) {
 	print( "v" + scourgeGame.getVersion() + "\n" );
   print( "You are on the " + mapName + " map.\n" );
 	print( "Chapter=" + scourgeGame.getMission().getChapter() + " Depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
+	
+	if( mapName == "hq" ) {
+		initHq();
+	}
 
 	if( scourgeGame.getMission().isStoryLineMission() && !scourgeGame.getMission().isReplayMap() ) {
 		switch( scourgeGame.getMission().getChapter() ) {
@@ -376,6 +380,53 @@ function damageHandlerCloakSafePass( attacker, item ) {
       scourgeGame.printMessage( format( _( "...damage is reduced by %d pts! (Cloak of Safe Passage)" ), delta.tointeger() ) );
     }
   }
+}
+
+function initHq() {
+	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
+		key <- "hqMovie";
+		value <- scourgeGame.getValue( key );
+		if( value == null ) {
+			scourgeGame.setValue( key, "true" );
+			
+			// start movie mode
+			scourgeGame.setMovieMode( true );
+			
+			//scourgeGame._moveCamera( scourgeGame.getPartyMember( 0 ).getX().tointeger(), scourgeGame.getPartyMember( 0 ).get0().tointeger(), 0, ...  )
+
+			// Uzudil walks over to the party
+			creature <- findCreatureByName( "Uzudil the Hand" );
+			
+			creature.setScripted( true );
+			
+			creature.moveTo( scourgeGame.getPartyMember( 0 ).getX().tointeger(), 
+			                 scourgeGame.getPartyMember( 0 ).getY().tointeger() );
+			
+			scourgeGame.continueAt( "initHq_part2", 2000 );
+		}
+	}
+}
+	
+function initHq_part2() {	
+	creature.say( _( "Welcome to the S.c.o.u.r.g.e. headquarters!" ) );	
+	scourgeGame.continueAt( "initHq_part3", 5000 );
+}
+
+function initHq_part3() {
+	scourgeGame.setMovieMode( false );
+}
+
+// slow method, oh well
+function findCreatureByName( name ) {
+	i <- 0;
+	creature <- null;
+	for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+		creature = scourgeGame.getMission().getCreature( i );
+		if( creature.getName() == name ) {
+			break;
+		}
+	}
+	return creature;
 }
 
 function initChapter6() {

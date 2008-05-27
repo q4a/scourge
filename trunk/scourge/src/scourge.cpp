@@ -249,7 +249,7 @@ void Scourge::start() {
 
         // todo: make one simple call for all this
         getSession()->getSquirrel()->startGame();
-        getSession()->getSquirrel()->startLevel(false);
+        getSession()->getSquirrel()->startLevel( NULL );
         getSession()->getSquirrel()->initLevelObjects();
         mapEditor->show();
         getSDLHandler()->setHandlers((SDLEventHandler *)mapEditor, (SDLScreenView *)mapEditor);
@@ -372,24 +372,10 @@ void Scourge::startMission( bool startInHq ) {
 					session->getCurrentMission()->isStoryLine() &&
 					fromHq && !session->getCurrentMission()->isReplay() ) {
 				initChapterIntro();
+				getSDLHandler()->fade( 1, 0, 20 );
 			} else {
-				// converse with Uzudil or show "welcome to level" message
-				showLevelInfo();
-
-				// start the haunting tunes
-				if(inHq) getSession()->getSound()->playMusicHQ();
-				else getSession()->getSound()->playMusicMission();
-				setAmbientPaused( false );
-
-				if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
-
-				// Set up the weather
-				if( !inHq ) {
-					getMap()->generateWeather();
-					if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
-				}
+				preMainLoop();
 			}
-      getSDLHandler()->fade( 1, 0, 20 );
 
       // run mission
       getSDLHandler()->mainLoop();
@@ -425,6 +411,24 @@ void Scourge::startMission( bool startInHq ) {
 		if( changeLevel() ) break;
   }
 	endGame();
+}
+
+void Scourge::preMainLoop() {
+	// converse with Uzudil or show "welcome to level" message
+	showLevelInfo();
+	
+	// start the haunting tunes
+	if(inHq) getSession()->getSound()->playMusicHQ();
+	else getSession()->getSound()->playMusicMission();
+	setAmbientPaused( false );
+
+	if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
+
+	// Set up the weather
+	getMap()->generateWeather();
+	if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
+
+	getSDLHandler()->fade( 1, 0, 20 );
 }
 
 string Scourge::getCurrentMapName( const string& dirName, int depth, string* mapFileName ) {
@@ -1779,7 +1783,7 @@ void Scourge::resetUIAfterBattle() {
         !( session->getCreature(i)->getMonster() &&
 					 session->getCreature(i)->getMonster()->isNpc() ) ) {
 			*/
-      session->getCreature(i)->setMotion( Constants::MOTION_LOITER );
+      session->getCreature(i)->setMotion( session->getCreature(i)->isScripted() ? Constants::MOTION_STAND : Constants::MOTION_LOITER );
       ((AnimatedShape*)session->getCreature(i)->getShape())->setPauseAnimation( false );
     }
   }
@@ -3811,21 +3815,7 @@ void Scourge::endChapterIntro() {
 	getSession()->getSound()->stopMusic();
 	getChapterIntroWin()->setVisible( false );
 	showGui();
-	showLevelInfo();
-
-	// start the haunting tunes
-	if( isInHQ() ) getSession()->getSound()->playMusicHQ();
-	if(inHq) getSession()->getSound()->playMusicHQ();
-	else getSession()->getSound()->playMusicMission();
-	setAmbientPaused( false );
-
-	if( session->getCurrentMission() ) saveCurrentMap( session->getSavegameName() );
-
-	// Set up the weather
-	getMap()->generateWeather();
-	if( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
-
-	getSDLHandler()->fade( 1, 0, 20 );
+	preMainLoop();
 }
 
 GLuint Scourge::getNamedTexture( char *name ) { 
@@ -4060,4 +4050,24 @@ void Scourge::startDoorEffect( int effect, Sint16 ox, Sint16 oy, Shape *shape ) 
 		levelMap->startEffect( x, y, z, effect, (GLuint)( static_cast<float>(Constants::DAMAGE_DURATION) / 2.0f ), 2, 2,
 													 (GLuint)(static_cast<float>(i) / 4.0f * static_cast<float>(Constants::DAMAGE_DURATION)) );
   }
+}
+
+void Scourge::startMovieMode() {
+	getSDLHandler()->setCursorVisible( false );
+	getPartyWindow()->setVisible( false );
+	getSession()->getCutscene()->startMovieMode();
+}
+
+void Scourge::endMovieMode() {
+	getSDLHandler()->setContinueAt( "", 0 ); // clear continue at
+	for( int i = 0; i < getSession()->getCreatureCount(); i++ ) {
+		getSession()->getCreature( i )->setScripted( false );
+	}
+	getSDLHandler()->setCursorVisible( true );
+	getPartyWindow()->setVisible( true );
+	getSession()->getCutscene()->endMovieMode();	
+}
+
+void Scourge::setContinueAt( char *func, int timeout ) {
+	getSDLHandler()->setContinueAt( func, timeout );
 }

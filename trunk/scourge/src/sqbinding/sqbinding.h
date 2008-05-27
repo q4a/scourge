@@ -213,7 +213,7 @@ public:
 	void partyChanged();
 
 	void initLevelObjects();
-  bool startLevel( bool callMapEvents=true );	
+  bool startLevel( const char *methodName );	
   bool endLevel( bool callMapEvents=true );
 
 	void registerCreature( Creature *ptr );

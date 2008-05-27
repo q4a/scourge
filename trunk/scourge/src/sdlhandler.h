@@ -100,6 +100,9 @@ private:
 
 	bool running;
 	bool cursorVisible;
+	
+	std::string continueFunc;
+	Uint32 continueTimeout, continueStart;
 
   void getVideoModes();
 
@@ -228,6 +231,8 @@ public:
 	void saveScreenNow( std::string& path );
 
 	void setUpdate( char *message, int n=-1, int total=-1 );
+	
+	void setContinueAt( char *func, int timeout );
 
 protected:	
 	bool popHandlers();

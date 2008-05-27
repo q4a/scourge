@@ -62,6 +62,13 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
   int ea;
 
   if( scourge->getDescriptionScroller()->handleEvent( event ) ) return false;
+  
+  if( scourge->getSession()->getCutscene()->isInMovieMode() ) {
+  	if( event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE ) {
+  		scourge->endMovieMode();
+  	}
+  	return false;
+  }
 
   for( int i = 0; i < scourge->getContainerGuiCount(); i++ ) {
     if( scourge->getContainerGui( i )->handleEvent( event ) ) {
@@ -141,12 +148,8 @@ bool ScourgeHandler::handleEvent(SDL_Event *event) {
 			//scourge->getParty()->getPlayer()->setPendingCauseOfDeath( "Testing" );
       //scourge->getParty()->getPlayer()->takeDamage( 1000 );
 			//scourge->camp();
-    	if( scourge->getSession()->getCutscene()->isInMovieMode() ) {
-    		scourge->getPartyWindow()->setVisible( true );
-    		scourge->getSession()->getCutscene()->endMovieMode();    		
-    	} else {
-    		scourge->getPartyWindow()->setVisible( false );
-    		scourge->getSession()->getCutscene()->startMovieMode();    		
+    	if( !scourge->getSession()->getCutscene()->isInMovieMode() ) {
+    		scourge->startMovieMode();    		
     	}
       return false;
     } else if(event->key.keysym.sym == SDLK_l) {
@@ -337,7 +340,7 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
       scourge->isInfoDialogShowing() ) {
     scourge->getParty()->toggleRound( false );
     scourge->setInfoDialogShowing( false );
-    scourge->getSession()->getSquirrel()->startLevel();
+    scourge->getSession()->getSquirrel()->startLevel( "enterMap" );
     scourge->evalSpecialSkills();
     scourge->getParty()->startEffect( Constants::EFFECT_TELEPORT, 
                                       ( Constants::DAMAGE_DURATION * 4 ) );
