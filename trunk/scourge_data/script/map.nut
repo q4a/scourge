@@ -395,7 +395,7 @@ function initHq() {
 			//scourgeGame._moveCamera( scourgeGame.getPartyMember( 0 ).getX().tointeger(), scourgeGame.getPartyMember( 0 ).get0().tointeger(), 0, ...  )
 
 			// Uzudil walks over to the party
-			creature <- findCreatureByName( "Uzudil the Hand" );
+			creature <- findCreatureByType( "Uzudil the Hand" );
 			
 			creature.setScripted( true );
 			
@@ -417,12 +417,12 @@ function initHq_part3() {
 }
 
 // slow method, oh well
-function findCreatureByName( name ) {
+function findCreatureByType( name ) {
 	i <- 0;
 	creature <- null;
 	for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
 		creature = scourgeGame.getMission().getCreature( i );
-		if( creature.getName() == name ) {
+		if( creature.getMonsterType() == name ) {
 			break;
 		}
 	}
