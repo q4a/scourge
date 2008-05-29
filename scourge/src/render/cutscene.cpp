@@ -20,6 +20,8 @@
 
 using namespace std;
 
+#define LETTERBOX_DURATION 300
+
 Cutscene::Cutscene( Session *session ){
   this->session = session;
 
@@ -35,9 +37,9 @@ Cutscene::~Cutscene(){
 }
 
 void Cutscene::startMovieMode() {
-  fromX = originalX = session->getMap()->getXPos();
-  fromY = originalY = session->getMap()->getYPos();
-  fromZ = originalZ = session->getMap()->getZPos();
+  fromX = originalX = session->getMap()->getMapX();
+  fromY = originalY = session->getMap()->getMapY();
+  fromZ = originalZ = 0;
 
   fromXRot = originalXRot = session->getMap()->getXRot();
   fromYRot = originalYRot = session->getMap()->getYRot();
@@ -58,10 +60,13 @@ void Cutscene::endMovieMode() {
   // Initiate end of the movie. Note that movie mode does
   // not end until the letterbox has faded out completely.
   endingMovie = true;
+	// reset the camera
+	animateCamera( originalX, originalY, originalZ, 
+								 originalXRot, originalYRot, originalZRot, 
+								 originalZoom, 
+								 LETTERBOX_DURATION );
   endLetterbox();
 }
-
-#define LETTERBOX_DURATION 300
 
 void Cutscene::startLetterbox() {
   letterboxStartTime = SDL_GetTicks();
@@ -144,6 +149,12 @@ void Cutscene::animateCamera( float targetX, float targetY, float targetZ, float
   cameraStartTime = now;
   cameraDuration = duration;
   cameraMoving = true;
+}
+
+void Cutscene::updateCameraPosition() {
+	session->getMap()->setPos( getCameraX(), getCameraY(), getCameraZ() );
+	session->getMap()->setRot( getCameraXRot(), getCameraYRot(), getCameraZRot() );
+	session->getMap()->setZoom( getCameraZoom() );
 }
 
 bool Cutscene::isCameraMoving() {

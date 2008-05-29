@@ -386,24 +386,28 @@ function initHq() {
 	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
 		key <- "hqMovie";
 		value <- scourgeGame.getValue( key );
-		if( value == null ) {
+		//if( value == null ) {
 			scourgeGame.setValue( key, "true" );
 			
 			// start movie mode
 			scourgeGame.setMovieMode( true );
-			
-			//scourgeGame._moveCamera( scourgeGame.getPartyMember( 0 ).getX().tointeger(), scourgeGame.getPartyMember( 0 ).get0().tointeger(), 0, ...  )
 
-			// Uzudil walks over to the party
-			creature <- findCreatureByType( "Uzudil the Hand" );
+			player <- scourgeGame.getPartyMember( 0 );
+			player.moveTo( 210, 216 );
+			// player.face( 0 );
+
+			uzudil <- findCreatureByType( "Uzudil the Hand" );
+			uzudil.setScripted( true );
+			uzudil.moveTo( 210, 210 );
+			// uzudil.face( 0 );
 			
-			creature.setScripted( true );
-			
-			creature.moveTo( scourgeGame.getPartyMember( 0 ).getX().tointeger(), 
-			                 scourgeGame.getPartyMember( 0 ).getY().tointeger() );
+			scourgeGame.moveCamera( 150, 140, 0, 
+															0, 85, 260, 
+															1.8,
+															500 );
 			
 			scourgeGame.continueAt( "initHq_part2", 2000 );
-		}
+		//}
 	}
 }
 	
