@@ -12,7 +12,7 @@ function enterMap( mapName ) {
 	print( "Chapter=" + scourgeGame.getMission().getChapter() + " Depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
 	
 	if( mapName == "hq" ) {
-		initHq();
+		startHqMovie();
 	}
 
 	if( scourgeGame.getMission().isStoryLineMission() && !scourgeGame.getMission().isReplayMap() ) {
@@ -380,44 +380,6 @@ function damageHandlerCloakSafePass( attacker, item ) {
       scourgeGame.printMessage( format( _( "...damage is reduced by %d pts! (Cloak of Safe Passage)" ), delta.tointeger() ) );
     }
   }
-}
-
-function initHq() {
-	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
-		key <- "hqMovie";
-		value <- scourgeGame.getValue( key );
-		//if( value == null ) {
-			scourgeGame.setValue( key, "true" );
-			
-			// start movie mode
-			scourgeGame.setMovieMode( true );
-
-			player <- scourgeGame.getPartyMember( 0 );
-			player.moveTo( 210, 216 );
-			// player.face( 0 );
-
-			uzudil <- findCreatureByType( "Uzudil the Hand" );
-			uzudil.setScripted( true );
-			uzudil.moveTo( 210, 210 );
-			// uzudil.face( 0 );
-			
-			scourgeGame.moveCamera( 150, 140, 0, 
-															0, 85, 260, 
-															1.8,
-															500 );
-			
-			scourgeGame.continueAt( "initHq_part2", 2000 );
-		//}
-	}
-}
-	
-function initHq_part2() {	
-	creature.say( _( "Welcome to the S.c.o.u.r.g.e. headquarters!" ) );	
-	scourgeGame.continueAt( "initHq_part3", 5000 );
-}
-
-function initHq_part3() {
-	scourgeGame.setMovieMode( false );
 }
 
 // slow method, oh well

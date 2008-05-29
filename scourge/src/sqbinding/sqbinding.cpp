@@ -112,6 +112,10 @@ SqBinding::SqBinding( Session *session ) {
   // terrain generation
   s =  rootDir + "/script/terrain.nut";
   registerScript( s );
+
+	// movies
+	s =  rootDir + "/script/hqmovie.nut";
+  registerScript( s );
 }
 
 SqBinding::~SqBinding() {
