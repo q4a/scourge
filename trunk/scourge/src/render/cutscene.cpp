@@ -179,7 +179,7 @@ float Cutscene::getCameraX() {
       placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
       x = fromX;
     } else {
-      float percent = (float)( now - cameraStartTime ) / cameraDuration;
+      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
       x = fromX + ( percent * ( toX - fromX ) );
     }
 
@@ -200,7 +200,7 @@ float Cutscene::getCameraY() {
       placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
       y = fromY;
     } else {
-      float percent = (float)( now - cameraStartTime ) / cameraDuration;
+      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
       y = fromY + ( percent * ( toY - fromY ) );
     }
 
@@ -221,7 +221,7 @@ float Cutscene::getCameraZ() {
       placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
       z = fromZ;
     } else {
-      float percent = (float)( now - cameraStartTime ) / cameraDuration;
+      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
       z = fromZ + ( percent * ( toZ - fromZ ) );
     }
 
@@ -242,7 +242,7 @@ float Cutscene::getCameraXRot() {
       placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
       r = fromXRot;
     } else {
-      float percent = (float)( now - cameraStartTime ) / cameraDuration;
+      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
       float diff = Util::diffAngle( toXRot, fromXRot );
       r = (float)( (int)( fromXRot + ( diff * percent ) ) % 360 );
     }
@@ -264,7 +264,7 @@ float Cutscene::getCameraYRot() {
       placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
       r = fromYRot;
     } else {
-      float percent = (float)( now - cameraStartTime ) / cameraDuration;
+      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
       float diff = Util::diffAngle( toYRot, fromYRot );
       r = (float)( (int)( fromYRot + ( diff * percent ) ) % 360 );
     }
@@ -286,7 +286,7 @@ float Cutscene::getCameraZRot() {
       placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
       r = fromZRot;
     } else {
-      float percent = (float)( now - cameraStartTime ) / cameraDuration;
+      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
       float diff = Util::diffAngle( toZRot, fromZRot );
       r = (float)( (int)( fromZRot + ( diff * percent ) ) % 360 );
     }
@@ -308,7 +308,7 @@ float Cutscene::getCameraZoom() {
       placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
       m = fromZoom;
     } else {
-      float percent = (float)( now - cameraStartTime ) / cameraDuration;
+      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
       m = fromZoom + ( percent * ( toZoom - fromZoom ) );
     }
 
