@@ -58,6 +58,7 @@ public:
 
   void placeCamera( float x, float y, float z, float xRot, float yRot, float zRot, float zoom );
   void animateCamera( float targetX, float targetY, float targetZ, float targetXRot, float targetYRot, float targetZRot, float targetZoom, Uint32 duration );
+	void updateCameraPosition();
 
   bool isInMovieMode();
   bool isCameraMoving();

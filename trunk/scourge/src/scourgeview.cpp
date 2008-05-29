@@ -88,6 +88,11 @@ void ScourgeView::drawView() {
   // in TB combat, center map when monster's turn
   centerOnMonsterInTB();  
 
+	// apply movie transformations
+	if( scourge->getSession()->getCutscene()->isInMovieMode() ) {
+		scourge->getSession()->getCutscene()->updateCameraPosition();
+	}
+
   scourge->getMap()->preDraw();
   scourge->getMap()->draw();
   scourge->getMap()->postDraw();

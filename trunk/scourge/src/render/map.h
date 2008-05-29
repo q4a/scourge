@@ -389,6 +389,11 @@ private:
   inline float getYPos() { return ypos; }
   inline float getZPos() { return zpos; } 
 
+	// camera control
+	void setPos( float x, float y, float z );
+	inline void setRot( float x, float y, float z ) { xrot = x; yrot = y; zrot = z; }
+	inline void setZoom( float zoom ) { this->zoom = zoom; }
+
   bool isLocationVisible(int x, int y);
 
   bool isLocationInLight(int x, int y, Shape *shape);
@@ -408,6 +413,9 @@ private:
 	 The map top left y coordinate
   */
   inline int getY() { return y; }
+
+	inline float getMapX() { return mapx; }
+	inline float getMapY() { return mapy; }
   
   inline void setXY(int x, int y) { this->x = x; this->y = y; }
   
