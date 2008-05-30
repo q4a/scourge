@@ -244,7 +244,8 @@ float Cutscene::getCameraXRot() {
     } else {
       float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
       float diff = Util::diffAngle( toXRot, fromXRot );
-      r = (float)( (int)( fromXRot + ( diff * percent ) ) % 360 );
+      r = fromXRot + ( diff * percent );
+			while( r >= 360 ) r -= 360;
     }
 
   } else {
@@ -266,7 +267,8 @@ float Cutscene::getCameraYRot() {
     } else {
       float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
       float diff = Util::diffAngle( toYRot, fromYRot );
-      r = (float)( (int)( fromYRot + ( diff * percent ) ) % 360 );
+      r = fromYRot + ( diff * percent );
+			while( r >= 360 ) r -= 360;
     }
 
   } else {
@@ -288,7 +290,8 @@ float Cutscene::getCameraZRot() {
     } else {
       float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
       float diff = Util::diffAngle( toZRot, fromZRot );
-      r = (float)( (int)( fromZRot + ( diff * percent ) ) % 360 );
+      r = fromZRot + ( diff * percent );
+			while( r >= 360 ) r -= 360;
     }
 
   } else {
