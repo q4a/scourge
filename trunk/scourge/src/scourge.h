@@ -298,7 +298,7 @@ public:
   /**
     @return the map editor
   */
-  inline MapEditor *getMapEditor() { return mapEditor; }
+  MapEditor *getMapEditor();
 
   /**
     @return the options menu
