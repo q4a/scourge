@@ -1908,15 +1908,15 @@ void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message)
 */
 
 void Map::setPos( float x, float y, float z ) {
-	//if( this->x != (int)x || this->y != (int)y ) {
-//		cerr << "setPos, from: " << this->x << "," << this->y << " to: " << x << "," << y << endl;
+	//if( this->mapx != x || this->mapy != y ) {
+//		cerr << "setPos, from: " << this->mapx << "," << this->mapy << " to: " << x << "," << y << endl;
 //	}
 	this->x = (int)x;
 	this->y = (int)y;
 	this->mapx = x;
 	this->mapy = y;
 	mapChanged = true;
-	lightMapChanged = true;
+	//lightMapChanged = true;
 }
 
 /**

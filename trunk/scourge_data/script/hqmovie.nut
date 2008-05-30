@@ -52,7 +52,7 @@ function initHq_part4() {
 													5000 );
 	player <- scourgeGame.getPartyMember( 0 );
 	player.say( _( "Thank you. I will report for duty soon. Now where is the beer-hall?" ) );	
-	scourgeGame.continueAt( "initHq_part_last", 10000 );
+	scourgeGame.continueAt( "initHq_part_last", 7000 );
 }
 
 function initHq_part_last() {
