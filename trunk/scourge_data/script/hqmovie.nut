@@ -19,40 +19,42 @@ function startHqMovie() {
 
 			// should temporarily "hide" other npc-s...
 			
-			scourgeGame.moveCamera( 150, 135, 0, 
-															0, 85, 260, 
-															1.8,
-															500 );
+			scourgeGame.moveCamera( 150, 138, 0, 0, 85, 260, 1.8, 500 );
 			
-			scourgeGame.continueAt( "initHq_part2", 2000 );
+			scourgeGame.continueAt( "initHq_part2", 1000 );
 		//}
 	}
 }
-	
 function initHq_part2() {	
+	scourgeGame.moveCamera( 150, 120, 0, 0, 85, 320, 1.8, 10000 );
+	scourgeGame.continueAt( "initHq_part3", 1000 );
+}
+	
+function initHq_part3() {	
 	uzudil <- findCreatureByType( "Uzudil the Hand" );
 	uzudil.say( _( "Welcome to the S.c.o.u.r.g.e. headquarters!" ) );	
-	scourgeGame.continueAt( "initHq_part3", 5000 );
-}
-
-function initHq_part3() {	
-	scourgeGame.moveCamera( 150, 125, 0, 
-													0, 85, 300, 
-													1.8,
-													5000 );
-	uzudil <- findCreatureByType( "Uzudil the Hand" );
-	uzudil.say( _( "Come and talk to me anytime, or check the board for new missions." ) );	
-	scourgeGame.continueAt( "initHq_part4", 7000 );
+	scourgeGame.continueAt( "initHq_part4", 5000 );
 }
 
 function initHq_part4() {	
-	scourgeGame.moveCamera( 150, 140, 0, 
-													0, 85, 240, 
-													1.8,
-													5000 );
+	uzudil <- findCreatureByType( "Uzudil the Hand" );
+	uzudil.say( _( "Come and talk to me anytime, or check the board for new missions." ) );	
+	scourgeGame.continueAt( "initHq_part5", 7000 );
+}
+
+function initHq_part5() {	
 	player <- scourgeGame.getPartyMember( 0 );
 	player.say( _( "Thank you. I will report for duty soon. Now where is the beer-hall?" ) );	
-	scourgeGame.continueAt( "initHq_part_last", 7000 );
+	scourgeGame.continueAt( "initHq_part6", 3000 );
+}
+
+function initHq_part6() {	
+	scourgeGame.moveCamera( 150, 150, 0, 0, 70, 230, 1.2, 6000 );
+	scourgeGame.continueAt( "initHq_part7", 6000 );
+}
+
+function initHq_part7() {	
+	scourgeGame.continueAt( "initHq_part_last", 1000 );
 }
 
 function initHq_part_last() {
