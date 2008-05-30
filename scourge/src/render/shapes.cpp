@@ -252,115 +252,21 @@ void Shapes::initialize() {
 		}
 	}
 
-	// create shapes
 	for(int i = 0; i < static_cast<int>(shapeValueVector.size()); i++) {
-		
-		session->getGameAdapter()->setUpdate( _( "Creating Shapes" ), i, shapeValueVector.size() );
-		
+		shapes[i + 1] = NULL;
 		ShapeValues *sv = shapeValueVector[i];
 		// Resolve the texture group.
 		// For theme-based shapes, leave texture NULL, they will be resolved later.
-		bool themeBasedShape = false;
-		GLuint *texture = textureGroup[ 0 ];
 		if( strlen( sv->theme ) ) {
-			themeBasedShape = true;
-		} else if( strlen( sv->textures ) ) {
-			texture = findOrMakeTextureGroup( sv->textures );
-		}
-
-    if(sv->teleporter) {
-      shapes[(i + 1)] =
-				new GLTeleporter( texture, findTextureByName( "flame.bmp", true ),
-													sv->width, sv->depth, sv->height,
-													strdup(sv->name), 
-													sv->descriptionIndex,
-													sv->color,
-													(i + 1),
-													sv->teleporter );
-    } else if(sv->m3ds_name.length()) {
-      shapes[(i + 1)] =
-      new C3DSShape(sv->m3ds_name, sv->m3ds_scale, this,
-                    texture,                     
-                    strdup(sv->name), 
-                    sv->descriptionIndex,
-                    sv->color,
-                    (i + 1),
-                    sv->m3ds_x, sv->m3ds_y, sv->m3ds_z,
-                    sv->o3ds_x, sv->o3ds_y, sv->o3ds_z,
-										sv->xrot3d, sv->yrot3d, sv->zrot3d,
-										sv->lighting, sv->base_w, sv->base_h );
-    } else if(sv->torch > -1) {
-      if(sv->torch == 5) {
-        shapes[(i + 1)] =
-        new GLTorch(texture, findTextureByName( "flame.bmp", true ),
-										//textures[9].id,
-                    sv->width, sv->depth, sv->height,
-                    strdup(sv->name),
-                    sv->descriptionIndex,
-                    sv->color,
-                    (i + 1));
-      } else {
-        shapes[(i + 1)] =
-        new GLTorch(texture, findTextureByName( "flame.bmp", true ),
-										//textures[9].id,
-                    sv->width, sv->depth, sv->height,
-                    strdup(sv->name),
-                    sv->descriptionIndex,
-                    sv->color,
-                    (i + 1), 
-                    torchback, sv->torch);
-      }
-    } else {
-      shapes[(i + 1)] =
-      new GLShape(texture,
-                  sv->width, sv->depth, sv->height,
-                  strdup(sv->name),
-                  sv->descriptionIndex,
-                  sv->color,
-                  (i + 1));
-    }
-    shapes[(i + 1)]->setSkipSide(sv->skipSide);
-    shapes[(i + 1)]->setStencil(sv->stencil == 1);
-    shapes[(i + 1)]->setLightBlocking(sv->blocksLight == 1);
-    shapes[(i + 1)]->setIconRotation(sv->xrot, sv->yrot, sv->zrot);
-
-		if( sv->wallShape ) shapes[(i + 1)]->setIsWallShape( true );
-
-    // Call this when all other intializations are done.
-    if(themeBasedShape) {
-      themeShapes.push_back( shapes[(i + 1)] );
-      //string s = ( sv->textureGroupIndex + 6 );
+			string name = sv->name;
+      themeShapes.push_back( name );
 			string s = sv->theme;
       themeShapeRef.push_back( s );
-    } else {
-      if( !isHeadless() ) shapes[(i + 1)]->initialize();
-    }
+		}
+	}
 
-    // set the effect
-    shapes[ ( i + 1 ) ]->setEffectType( sv->effectType, 
-                                        sv->effectWidth, sv->effectDepth, sv->effectHeight, 
-                                        sv->effectX, sv->effectY, sv->effectZ );
-
-    shapes[ ( i + 1 ) ]->setInteractive( sv->interactive );
-
-		shapes[ ( i + 1 ) ]->setOutdoorWeight( sv->outdoorsWeight );
-		shapes[ ( i + 1 ) ]->setOutdoorShadow( sv->outdoorShadow );
-		shapes[ ( i + 1 ) ]->setWind( sv->wind );
-
-		shapes[ ( i + 1 ) ]->setOccurs( &(sv->occurs) );
-		shapes[ ( i + 1 ) ]->setIconRotation( sv->iconRotX, sv->iconRotY, sv->iconRotZ );
-		shapes[ ( i + 1 ) ]->setIcon( sv->icon, sv->iconWidth, sv->iconHeight );
-		shapes[ ( i + 1 ) ]->setAmbientName( sv->ambient );
-
-    string s = sv->name;
-    shapeMap[s] = shapes[(i + 1)];
-  }
   // remember the number of shapes
   shapeCount = static_cast<int>(shapeValueVector.size()) + 1;
-
-  // clean up temp. shape objects 
-  // FIXME: do we need to free the vector's elements?
-  if ( !shapeValueVector.empty() ) shapeValueVector.clear();
 
   // add some special, "internal" shapes
 	shapes[shapeCount] =
@@ -466,7 +372,8 @@ void Shapes::loadTheme( WallTheme *theme ) {
       //    cerr << "*** Applying theme to shapes: ***" << endl;
       GLShape::createDarkTexture( currentTheme );
       for(int i = 0; i < static_cast<int>(themeShapes.size()); i++) {
-        GLShape *shape = themeShapes[i];
+				string name = themeShapes[i];
+        GLShape *shape = findShapeByName( name.c_str() );
         string ref = themeShapeRef[i];
         GLuint *textureGroup = currentTheme->getTextureGroup( ref );
         //      cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
@@ -505,12 +412,22 @@ GLuint Shapes::findTextureByName( const string& filename, bool loadIfMissing ) {
   return 0;
 }
 
+GLShape *Shapes::getShape( int index ) { 
+	if( !shapes[ index ] ) {
+		loadShape( shapeValueVector[ index - 1 ]->name );
+	}
+	return shapes[ index ]; 
+}
+
 GLShape *Shapes::findShapeByName(const char *name, bool variation) {
   if(!name || !strlen(name)) return NULL;
   string s = name;
-  if(shapeMap.find(s) == shapeMap.end()) {
-    cerr << "&&& warning: could not find shape by name " << s << endl;
-    return NULL;
+  if( shapeMap.find( s ) == shapeMap.end() ) {
+		loadShape( name );
+		if( shapeMap.find( s ) == shapeMap.end() ) {
+			cerr << "&&& warning: could not find shape by name " << s << endl;
+			return NULL;
+		}
   }
   GLShape *shape = shapeMap[s];
   if( !variation || shape->getVariationShapesCount() == 0 ) return shape;
@@ -523,15 +440,149 @@ GLShape *Shapes::findShapeByName(const char *name, bool variation) {
 }
 
 // defaults to SWORD for unknown shapes
-int Shapes::findShapeIndexByName(const char *name) {
+int Shapes::findShapeIndexByName( const char *name ) {
   string s;
   if(!name || !strlen(name)) s = "SWORD";
   else s = name;
-  if(shapeMap.find(s) == shapeMap.end()) {
-    cerr << "&&& warning: could not find shape INDEX by name " << s << endl;
-    return 0;
+
+	int index;
+	ShapeValues *sv = getShapeValueByName( s.c_str(), &index );
+	return( sv ? index + 1 : 0 );
+}
+
+void Shapes::getShapeDimensions( const char *name, int *w, int *d, int *h ) {
+	int index;
+	ShapeValues *sv = getShapeValueByName( name, &index );
+	if( sv ) {
+		*w = sv->width;
+		*d = sv->depth;
+		*h = sv->height;
+	} else {
+		*w = *d = *h = 0;
+	}
+}
+
+ShapeValues *Shapes::getShapeValueByName( const char *name, int *index ) {
+	for( int i = 0; i < static_cast<int>(shapeValueVector.size()); i++ ) {
+		ShapeValues *sv = shapeValueVector[ i ];
+		if( !strcmp( sv->name, name ) ) {
+			*index = i;
+			return sv;
+		}
+	}
+	cerr << "&&& warning: could not find shape values by name " << name << endl;
+	return NULL;
+}
+
+void Shapes::loadShape( const char *name ) {
+	// already loaded?
+	string s = name;
+	if( shapeMap.find( s ) != shapeMap.end() ) {
+		return;
+	}
+
+
+	for(int i = 0; i < static_cast<int>(shapeValueVector.size()); i++) {
+		//session->getGameAdapter()->setUpdate( _( "Creating Shapes" ), i, shapeValueVector.size() );
+		ShapeValues *sv = shapeValueVector[i];
+
+		// find the correct name
+		if( strcmp( sv->name, name ) ) {
+			continue;
+		}
+
+		//cerr << "+++ Loading shape: " << name << endl;
+
+		// Resolve the texture group.
+		// For theme-based shapes, leave texture NULL, they will be resolved later.
+		GLuint *texture = textureGroup[ 0 ];
+		if( !strlen( sv->theme ) ) {
+			texture = findOrMakeTextureGroup( sv->textures );
+		}
+
+    if(sv->teleporter) {
+      shapes[(i + 1)] =
+				new GLTeleporter( texture, findTextureByName( "flame.bmp", true ),
+													sv->width, sv->depth, sv->height,
+													strdup(sv->name), 
+													sv->descriptionIndex,
+													sv->color,
+													(i + 1),
+													sv->teleporter );
+    } else if(sv->m3ds_name.length()) {
+      shapes[(i + 1)] =
+      new C3DSShape(sv->m3ds_name, sv->m3ds_scale, this,
+                    texture,                     
+                    strdup(sv->name), 
+                    sv->descriptionIndex,
+                    sv->color,
+                    (i + 1),
+                    sv->m3ds_x, sv->m3ds_y, sv->m3ds_z,
+                    sv->o3ds_x, sv->o3ds_y, sv->o3ds_z,
+										sv->xrot3d, sv->yrot3d, sv->zrot3d,
+										sv->lighting, sv->base_w, sv->base_h );
+    } else if(sv->torch > -1) {
+      if(sv->torch == 5) {
+        shapes[(i + 1)] =
+        new GLTorch(texture, findTextureByName( "flame.bmp", true ),
+										//textures[9].id,
+                    sv->width, sv->depth, sv->height,
+                    strdup(sv->name),
+                    sv->descriptionIndex,
+                    sv->color,
+                    (i + 1));
+      } else {
+        shapes[(i + 1)] =
+        new GLTorch(texture, findTextureByName( "flame.bmp", true ),
+										//textures[9].id,
+                    sv->width, sv->depth, sv->height,
+                    strdup(sv->name),
+                    sv->descriptionIndex,
+                    sv->color,
+                    (i + 1), 
+                    torchback, sv->torch);
+      }
+    } else {
+      shapes[(i + 1)] =
+      new GLShape(texture,
+                  sv->width, sv->depth, sv->height,
+                  strdup(sv->name),
+                  sv->descriptionIndex,
+                  sv->color,
+                  (i + 1));
+    }
+    shapes[(i + 1)]->setSkipSide(sv->skipSide);
+    shapes[(i + 1)]->setStencil(sv->stencil == 1);
+    shapes[(i + 1)]->setLightBlocking(sv->blocksLight == 1);
+    shapes[(i + 1)]->setIconRotation(sv->xrot, sv->yrot, sv->zrot);
+
+		if( sv->wallShape ) shapes[(i + 1)]->setIsWallShape( true );
+
+    // Call this when all other intializations are done.
+    if( !( strlen( sv->theme ) || isHeadless() ) ) {
+      shapes[(i + 1)]->initialize();
+    }
+
+    // set the effect
+    shapes[ ( i + 1 ) ]->setEffectType( sv->effectType, 
+                                        sv->effectWidth, sv->effectDepth, sv->effectHeight, 
+                                        sv->effectX, sv->effectY, sv->effectZ );
+
+    shapes[ ( i + 1 ) ]->setInteractive( sv->interactive );
+
+		shapes[ ( i + 1 ) ]->setOutdoorWeight( sv->outdoorsWeight );
+		shapes[ ( i + 1 ) ]->setOutdoorShadow( sv->outdoorShadow );
+		shapes[ ( i + 1 ) ]->setWind( sv->wind );
+
+		shapes[ ( i + 1 ) ]->setOccurs( &(sv->occurs) );
+		shapes[ ( i + 1 ) ]->setIconRotation( sv->iconRotX, sv->iconRotY, sv->iconRotZ );
+		shapes[ ( i + 1 ) ]->setIcon( sv->icon, sv->iconWidth, sv->iconHeight );
+		shapes[ ( i + 1 ) ]->setAmbientName( sv->ambient );
+
+    string s = sv->name;
+    shapeMap[s] = shapes[(i + 1)];
+		break;
   }
-  return shapeMap[s]->getShapePalIndex();
 }
 
 bool inline isPowerOfTwo( const GLuint n ) {

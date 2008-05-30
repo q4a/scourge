@@ -132,10 +132,8 @@ void Scourge::initUI() {
   mapSettings = new GameMapSettings();
   levelMap->setMapSettings( mapSettings );
   miniMap = new MiniMap(this, getSession()->getPreferences()->getFlaky());
-
   // create the mission board
   this->board = session->getBoard();
-
   this->party = session->getParty();
   createBoardUI();
   netPlay = new NetPlay(this);
@@ -148,10 +146,9 @@ void Scourge::initUI() {
 	beginChapter = chapterIntroWin->createButton( 10, 10, 140, 30, _( "Begin Chapter" ) );
 	replayIntro = chapterIntroWin->createButton( 10, 40, 140, 60, _( "Replay" ) );
 	chapterIntroWin->setVisible( false );
-
   // show the main menu
   //mainMenu = new MainMenu(this);
-  mapEditor = new MapEditor( this );
+  mapEditor = NULL;
   //optionsMenu = new OptionsMenu(this);
   //multiplayer = new MultiplayerDialog(this);
 
@@ -165,12 +162,9 @@ void Scourge::initUI() {
 	confirmAutoloadDialog = new ConfirmDialog( getSDLHandler(), _( "Load game" ) );
 	confirmAutoloadDialog->setText( _( "Do you really want to load the autosave game?" ) );
 	textDialog = new TextDialog( getSDLHandler() );
-
   // load character, item sounds
   getSession()->getSound()->loadSounds( getUserConfiguration() );
-
   view->initUI();
-
 	  // re-create progress bar for map loading (recreate with different options)
   progress = new Progress(this->getSDLHandler(),
                           getSession()->getShapePalette()->getProgressTexture(),
@@ -251,8 +245,9 @@ void Scourge::start() {
         getSession()->getSquirrel()->startGame();
         getSession()->getSquirrel()->startLevel( NULL );
         getSession()->getSquirrel()->initLevelObjects();
-        mapEditor->show();
-        getSDLHandler()->setHandlers((SDLEventHandler *)mapEditor, (SDLScreenView *)mapEditor);
+				MapEditor *me = getMapEditor();
+        me->show();
+        getSDLHandler()->setHandlers((SDLEventHandler *)me, (SDLScreenView *)me);
         getSDLHandler()->mainLoop();
         getSession()->getSquirrel()->endLevel(false);
         getSession()->getSquirrel()->endGame();
@@ -4071,3 +4066,9 @@ void Scourge::endMovieMode() {
 void Scourge::setContinueAt( char *func, int timeout ) {
 	getSDLHandler()->setContinueAt( func, timeout );
 }
+
+MapEditor *Scourge::getMapEditor() { 
+	if( !mapEditor ) mapEditor = new MapEditor( this );
+	return mapEditor; 
+}
+

@@ -341,8 +341,12 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 												strdup( long_description ), strdup( short_description ),
 												inventory_location, shape_index,
 												minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
-		GLShape *s = shapePal->findShapeByName(shape);
-		RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );
+		//GLShape *s = shapePal->findShapeByName(shape);
+		//RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );
+
+		int w, d, h;
+		shapePal->getShapeDimensions( shape, &w, &d, &h );
+		RpgItem::addItem( last, w, d, h );
 
 		last->setSpellLevel( toint( node->getValueAsFloat( "spell_level" ) ) );
 

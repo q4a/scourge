@@ -291,7 +291,7 @@ protected:
   WallTheme *allThemes[100];
   int themeCount, allThemeCount, caveThemeCount;
   WallTheme *currentTheme;
-  std::vector<GLShape*> themeShapes;
+  std::vector<std::string> themeShapes;
   std::vector<std::string> themeShapeRef;
 
   // cursor
@@ -354,7 +354,7 @@ public:
   inline GLuint getTexture(int index) { return textures[index].id; }
 
   // 1-based!
-  inline GLShape *getShape(int index) { return shapes[index]; }
+  GLShape *getShape(int index);
   inline int getShapeCount() { return shapeCount; }
 
   inline std::map<std::string, GLShape *> *getShapeMap() { return &shapeMap; }
@@ -369,6 +369,7 @@ public:
   GLuint findTextureByName(const std::string& filename, bool loadIfMissing=false );
   GLShape *findShapeByName(const char *name, bool variation=false);
   int findShapeIndexByName(const char *name);
+	void getShapeDimensions( const char *name, int *w, int *d, int *h );
   
   char const* getRandomDescription(int descriptionGroup);
 
@@ -388,6 +389,8 @@ public:
 
 protected:
 	static Shapes *instance;
+	void loadShape( const char *name );
+	ShapeValues *getShapeValueByName( const char *name, int *index );
   GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int gl_scale=GL_NEAREST);
   GLuint loadGLTextureBGRA(int w, int h, GLubyte *image, int gl_scale=GL_NEAREST);
   void setupAlphaBlendedBMP(const std::string& filename, SDL_Surface*& surface, GLubyte*& image, int red=0, int green=0, int blue=0, bool isAbsFile=false, bool swapImage=false, bool grayscale=false );
