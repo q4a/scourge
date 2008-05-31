@@ -355,8 +355,8 @@ void Cutscene::drawLetterbox() {
   glEnd();
   glPopMatrix();
 
-  glEnable( GL_DEPTH_TEST );
-  glEnable( GL_CULL_FACE );
   glEnable( GL_TEXTURE_2D );
   glColor4f( 1, 1, 1, 1 );
+  glEnable( GL_DEPTH_TEST );
+  glEnable( GL_CULL_FACE );
 }

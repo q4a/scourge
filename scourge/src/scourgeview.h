@@ -120,6 +120,7 @@ protected:
 	void ambientObjectSounds();
 	void drawWeather();
 	void endScissorToMap();
+	void showMovieConversation( Creature *creature );
 };
 
 #endif

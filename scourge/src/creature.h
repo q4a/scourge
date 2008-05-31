@@ -167,6 +167,7 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Monster *monster, GLShape *shape, bool initMonster=true);
   ~Creature();
 
+	void drawPortrait( int width, int height, bool inFrame=false );
   void playFootstep();
 
   inline void setScripted( bool b ) { this->scripted = b; }

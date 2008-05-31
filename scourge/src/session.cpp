@@ -324,6 +324,20 @@ Creature *Session::replaceCreature( Creature *creature, char *newCreatureType ) 
 	return replacement;
 }
 
+void Session::setVisible( Creature *creature, bool b ) {
+	if( b && !isVisible( creature ) ) {
+		nonVisibleCreatures.erase( creature );
+		getMap()->setCreature( toint( creature->getX() ), toint( creature->getY() ), toint( creature->getZ() ), creature );
+	} else if( !b && isVisible( creature ) ) {
+		nonVisibleCreatures.insert( creature );
+		getMap()->removeCreature( toint( creature->getX() ), toint( creature->getY() ), toint( creature->getZ() ) );
+	}
+}
+
+bool Session::isVisible( Creature *creature ) {
+	return( nonVisibleCreatures.find( creature ) == nonVisibleCreatures.end() );
+}
+
 // creatures created for the mission
 Creature *Session::newCreature(Monster *monster, GLShape *shape, bool loaded) {
   Creature *c = new Creature(this, monster, shape, !loaded);

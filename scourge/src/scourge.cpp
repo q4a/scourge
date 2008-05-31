@@ -4057,6 +4057,7 @@ void Scourge::endMovieMode() {
 	getSDLHandler()->setContinueAt( "", 0 ); // clear continue at
 	for( int i = 0; i < getSession()->getCreatureCount(); i++ ) {
 		getSession()->getCreature( i )->setScripted( false );
+		getSession()->setVisible( getSession()->getCreature( i ), true );
 	}
 	getSDLHandler()->setCursorVisible( true );
 	getPartyWindow()->setVisible( true );
