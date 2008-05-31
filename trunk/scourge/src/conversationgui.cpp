@@ -246,96 +246,9 @@ void ConversationGui::showingWord( char *word ) {
 }
 
 void ConversationGui::drawWidgetContents(Widget *w) {
-  if( w == canvas && creature && creature->getMonster() && creature->getMonster()->getPortraitTexture() ) {
-    //glEnable( GL_ALPHA_TEST );
-    //glAlphaFunc( GL_EQUAL, 0xff );
-    glEnable(GL_TEXTURE_2D);
-    glPushMatrix();
-    //    glTranslatef( x, y, 0 );
-    glBindTexture( GL_TEXTURE_2D, creature->getMonster()->getPortraitTexture() );
-    glColor4f(1, 1, 1, 1);
-
-    glBegin( GL_QUADS );
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 0, 0 );
-    glVertex3f( 0, 0, 0 );
-    glTexCoord2f( 0, 1 );
-    glVertex3f( 0, canvas->getHeight(), 0 );
-    glTexCoord2f( 1, 1 );
-    glVertex3f( canvas->getWidth(), canvas->getHeight(), 0 );
-    glTexCoord2f( 1, 0 );
-    glVertex3f( canvas->getWidth(), 0, 0 );
-    glEnd();
-    glPopMatrix();
-
-    //glDisable( GL_ALPHA_TEST );
-    glDisable(GL_TEXTURE_2D);
-  } else if ( w == canvas && creature && creature->getMonster() ) {
-
-    GLuint *textureGroup = scourge->getMap()->getShapes()->getCurrentTheme()->getTextureGroup( WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ] );
-    GLuint texture = textureGroup[ GLShape::FRONT_SIDE ];
-
-    glPushMatrix();
-    glEnable( GL_TEXTURE_2D );
-    glColor4f( 1, 1, 1, 1 );
-    glBindTexture( GL_TEXTURE_2D, texture );
-    glBegin( GL_QUADS );
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 0, 0 );
-    glVertex2i( 20, 0 );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( 170, 0 );
-    glTexCoord2f( 1, 1 );
-    glVertex2i( 170, 150 );
-    glTexCoord2f( 0, 1 );
-    glVertex2i( 20, 150 );
-    glEnd();
-    glDisable( GL_TEXTURE_2D );
-    glPopMatrix();
-
-    glPushMatrix();
-    glEnable( GL_TEXTURE_2D );
-    glColor4f( 1, 1, 1, 1 );
-    glBindTexture( GL_TEXTURE_2D, texture );
-    glBegin( GL_QUADS );
-    glNormal3f( 0, 0, 1 );
-    glTexCoord2f( 0, 0 );
-    glVertex2i( -130, 0 );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( 20, 0 );
-    glTexCoord2f( 1, 1 );
-    glVertex2i( 20, 150 );
-    glTexCoord2f( 0, 1 );
-    glVertex2i( -130, 150 );
-    glEnd();
-    glDisable( GL_TEXTURE_2D );
-    glPopMatrix();
-
-    shape = scourge->getShapePalette()->getCreatureShape( creature->getModelName(), creature->getSkinName(), 1 );
-    shape->setCurrentAnimation( MD2_STAND );
-
-    glPushMatrix();
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glTranslatef( 125, 190, 0 );
-    glRotatef( 90, 1, 0, 0 );
-    glRotatef( 180, 0, 0, 1 );
-    glScalef( 2.75f, 2.75f, 2.75f );
-    glColor4f( 0, 0, 0, 0.7f );
-    shape->draw();
-    glDisable(GL_BLEND);
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef( 135, 190, 500 );
-    glRotatef( 90, 1, 0, 0 );
-    glRotatef( 180, 0, 0, 1 );
-    glScalef( 2.8f, 2.8f, 2.8f );
-    glColor4f( 1, 1, 1, 1 );
-    shape->draw();
-    glDisable(GL_DEPTH_TEST);
-    glPopMatrix();
- }
+	if( w == canvas ) {
+		creature->drawPortrait( canvas->getWidth(), canvas->getHeight() );
+	}
 }
 
 void ConversationGui::hide() {

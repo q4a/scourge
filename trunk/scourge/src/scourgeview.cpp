@@ -484,6 +484,10 @@ void ScourgeView::drawCreatureInfos() {
 }
 
 void ScourgeView::drawInfos() {
+	if( scourge->getSession()->getCutscene()->isInMovieMode() ) {
+		return;
+	}
+
   float xpos2, ypos2, zpos2;
   for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
 
@@ -498,6 +502,10 @@ void ScourgeView::drawInfos() {
 }
 
 void ScourgeView::checkForDropTarget() {
+	if( scourge->getSession()->getCutscene()->isInMovieMode() ) {
+		return;
+	}
+
   // find the drop target
   if( scourge->getMovingItem() ) {
 
@@ -745,6 +753,11 @@ void ScourgeView::drawDisk( float w, float diff ) {
 
 //#define BASE_DEBUG 1
 void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool selected, bool groupMode, bool wanderingHero ) {
+
+	if( scourge->getSession()->getCutscene()->isInMovieMode() ) {
+		return;
+	}
+
   glPushMatrix();
   //showInfoAtMapPos(creature->getX(), creature->getY(), creature->getZ(), creature->getName());
 
@@ -1076,23 +1089,6 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
   scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 
-  // draw creature talk
-  if( creature->isTalking() ) {
-    xpos2 = static_cast<float>( creature->getX() + creature->getShape()->getWidth() / 2 - scourge->getMap()->getX()) / DIV;
-    ypos2 = static_cast<float>( creature->getY() - creature->getShape()->getDepth() / 2 - scourge->getMap()->getY()) / DIV;
-    zpos2 = static_cast<float>(creature->getShape()->getHeight() * 2.0f ) / DIV;
-
-    glPushMatrix();
-    glTranslatef( xpos2, ypos2, zpos2 );
-    glRotatef( -( scourge->getMap()->getZRot() ), 0.0f, 0.0f, 1.0f);
-    glRotatef( -scourge->getMap()->getYRot(), 1.0f, 0.0f, 0.0f);
-
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f );
-    scourge->getSDLHandler()->texPrint( -( scourge->getSDLHandler()->textWidth( creature->getSpeech() ) / 2 ), 0, creature->getSpeech() );
-
-    glPopMatrix();
-  }
-
   glDisable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
 
@@ -1134,8 +1130,53 @@ void ScourgeView::drawAfter() {
 	}
 	
 	if( scourge->getSession()->getCutscene()->isInMovieMode() ) {
-	  	scourge->getSession()->getCutscene()->drawLetterbox();
+		scourge->getSession()->getCutscene()->drawLetterbox();
+
+		// draw creature talk
+		for( int i = 0; i < scourge->getSession()->getCreatureCount(); i++ ) {
+			showMovieConversation( scourge->getSession()->getCreature( i ) );
+		}
+		for( int i = 0; i < scourge->getParty()->getPartySize(); i++ ) {
+			showMovieConversation( scourge->getParty()->getParty( i ) );
+		}
 	}	
+}
+
+void ScourgeView::showMovieConversation( Creature *creature ) {
+	if( creature->isTalking() ) {
+		glDisable( GL_DEPTH_TEST );
+		glDisable( GL_CULL_FACE );
+		glEnable( GL_TEXTURE_2D );
+		
+		glPushMatrix();
+		glLoadIdentity();
+		glTranslatef( 20, 20, 600 );
+		creature->drawPortrait( 100, 100, true );
+		glPopMatrix();
+
+		char tmp[3000];
+		Util::addLineBreaks( creature->getSpeech(), tmp );
+		vector<string> lines;
+		Util::getLines( tmp, &lines );
+		scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
+		glPushMatrix();
+		glLoadIdentity();
+		glDisable(GL_DEPTH_TEST);
+		glEnable( GL_TEXTURE_2D );
+		glTranslatef( 150, 50, 600 );
+		glColor4f( 1, 1, 0.75f, 1 );
+		sprintf( tmp, "%s:", creature->getName() );
+		scourge->getSDLHandler()->texPrint( 0, 0, tmp );
+		glColor4f( 1, 1, 1, 1 );
+		for( unsigned int i = 0; i < lines.size(); i++ ) {
+			scourge->getSDLHandler()->texPrint( 0, ( i + 1 ) * 32, lines[ i ].c_str() );
+		}
+		glPopMatrix();
+		scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+
+		glEnable( GL_DEPTH_TEST );
+		glEnable( GL_CULL_FACE );
+	}
 }
 
 void ScourgeView::drawDraggedItem() {

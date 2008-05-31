@@ -19,6 +19,7 @@
 #define SESSION_H
 
 #include <vector>
+#include <set>
 #include "common/constants.h"
 #include "preferences.h"
 //#include "board.h"
@@ -75,6 +76,8 @@ private:
 	bool showChapterIntro;
   std::vector<Item*> newItems;
   std::vector<Creature*> creatures;
+	std::set<Creature*> nonVisibleCreatures;
+
   SqBinding *squirrel;
   std::map<RpgItem*, Item*> special;
 	std::string savegame;
@@ -167,6 +170,8 @@ public:
 	virtual Creature *addCreatureFromScript( char *creatureType, int cx, int cy, int *fx=NULL, int *fy=NULL );
 	virtual bool removeCreatureRef( Creature *creature, int index );
 	virtual void addCreatureRef( Creature *creature, int index );
+	void setVisible( Creature *creature, bool b );
+	bool isVisible( Creature *creature );
 
   inline int getCreatureCount() { return creatures.size(); }
   inline Creature *getCreature(int index) { return creatures[index]; }

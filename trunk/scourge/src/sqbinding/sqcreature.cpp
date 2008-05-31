@@ -83,6 +83,8 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "bool", "isScripted", SqCreature::_isScripted, 0, 0, "Is this creature scripted? (being moved by script)" },
 	{ "void", "setScripted", SqCreature::_setScripted, 0, 0, "Set the value of whether this creature is being moved by script." },
 	{ "void", "say", SqCreature::_say, 0, 0, "The creature says something in a bubble of text." },
+	{ "bool", "isVisible", SqCreature::_isVisible, 0, 0, "Is this creature being rendered?" },
+	{ "void", "setVisible", SqCreature::_setVisible, 0, 0, "Set the value of whether this creature is being rendered." },
 
 	{ "bool", "isCharacter", SqCreature::_isCharacter, 0, 0, "Is this creature a pc?" },
 	{ "bool", "isMonster", SqCreature::_isMonster, 0, 0, "Is this creature a monster?" },
@@ -614,3 +616,18 @@ int SqCreature::_say( HSQUIRRELVM vm ) {
 	object->say( text );
 	return 0;
 }
+
+int SqCreature::_setVisible( HSQUIRRELVM vm ) {
+	GET_BOOL( b )
+	GET_OBJECT( Creature* )
+	SqBinding::sessionRef->setVisible( object, b );
+	return 0;
+}
+
+int SqCreature::_isVisible( HSQUIRRELVM vm ) {
+	GET_OBJECT( Creature* )
+	SQBool b = ( SqBinding::sessionRef->isVisible( object ) ? true : false );
+	sq_pushbool( vm, b );
+	return 1;
+}
+

@@ -10,14 +10,13 @@ function startHqMovie() {
 
 			player <- scourgeGame.getPartyMember( 0 );
 			player.moveTo( 210, 216 );
-			// player.face( 0 );
 
 			uzudil <- findCreatureByType( "Uzudil the Hand" );
 			uzudil.setScripted( true );
 			uzudil.moveTo( 210, 210 );
-			// uzudil.face( 0 );
 
 			// should temporarily "hide" other npc-s...
+			hideUnScripted();
 			
 			scourgeGame.moveCamera( 150, 138, 0, 0, 85, 260, 1.8, 500 );
 			
@@ -25,14 +24,27 @@ function startHqMovie() {
 		//}
 	}
 }
+
+function hideUnScripted(){
+	i <- 0;
+	creature <- null;
+	for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+		creature = scourgeGame.getMission().getCreature( i );
+		if( !creature.isScripted() ) {
+			creature.setVisible( false );
+		}
+	}
+}
+
 function initHq_part2() {	
 	scourgeGame.moveCamera( 150, 120, 0, 0, 85, 320, 1.8, 10000 );
 	scourgeGame.continueAt( "initHq_part3", 1000 );
 }
 	
 function initHq_part3() {	
+	player <- scourgeGame.getPartyMember( 0 );
 	uzudil <- findCreatureByType( "Uzudil the Hand" );
-	uzudil.say( _( "Welcome to the S.c.o.u.r.g.e. headquarters!" ) );	
+	uzudil.say( player.getName() + _( ", welcome to the S.c.o.u.r.g.e. headquarters!" ) );	
 	scourgeGame.continueAt( "initHq_part4", 5000 );
 }
 
