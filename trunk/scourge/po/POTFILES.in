@@ -31,6 +31,7 @@ src/render/renderedprojectile.cpp
 src/render/modelwrapper.cpp
 src/render/location.cpp
 src/render/fog.cpp
+src/render/cutscene.cpp
 src/render/animatedshape.cpp
 src/render/Md3.cpp
 src/render/gltorch.cpp
@@ -201,6 +202,7 @@ src/io/file.h
 src/io/zipfile.h
 src/texteffect.h
 src/mondrian.h
+src/creature_interface.h
 src/shapepalette.h
 src/mapwidget.h
 src/mainmenu.h
@@ -228,6 +230,7 @@ src/render/md3shape.h
 src/render/location.h
 src/render/Md3.h
 src/render/map.h
+src/render/cutscene.h
 src/render/gllocator.h
 src/render/shape.h
 src/render/renderedprojectile.h
@@ -390,6 +393,7 @@ src/gui/canvas.h
 ../scourge_data/config/monster.cfg
 ../scourge_data/config/pcmodel.cfg
 ../scourge_data/config/magicitem.cfg
+../scourge_data/config/climate.cfg
 ../scourge_data/config/weapon.cfg
 ../scourge_data/config/rpg.cfg
 ../scourge_data/config/profession.cfg
@@ -403,6 +407,7 @@ src/gui/canvas.h
 ../scourge_data/config/ui.cfg
 ../scourge_data/config/spell.cfg
 ../scourge_data/config/item.cfg
+../scourge_data/config/themes.cfg
 ../scourge_data/config/mission.cfg
 ../scourge_data/maps/hq1.cfg
 ../scourge_data/maps/tree.cfg
@@ -422,3 +427,4 @@ src/gui/canvas.h
 ../scourge_data/script/map.nut
 ../scourge_data/script/terrain.nut
 ../scourge_data/script/skills.nut
+../scourge_data/script/hqmovie.nut
