@@ -1150,12 +1150,12 @@ void ScourgeView::showMovieConversation( Creature *creature ) {
 		
 		glPushMatrix();
 		glLoadIdentity();
-		glTranslatef( 20, 20, 600 );
+		glTranslatef( 20, scourge->getSession()->getCutscene()->getLetterboxHeight() + 30, 600 );
 		creature->drawPortrait( 100, 100, true );
 		glPopMatrix();
 
 		char tmp[3000];
-		Util::addLineBreaks( creature->getSpeech(), tmp );
+		Util::addLineBreaks( creature->getSpeech(), tmp, 45 );
 		vector<string> lines;
 		Util::getLines( tmp, &lines );
 		scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
@@ -1163,7 +1163,7 @@ void ScourgeView::showMovieConversation( Creature *creature ) {
 		glLoadIdentity();
 		glDisable(GL_DEPTH_TEST);
 		glEnable( GL_TEXTURE_2D );
-		glTranslatef( 150, 50, 600 );
+		glTranslatef( 140, scourge->getSession()->getCutscene()->getLetterboxHeight() + 60, 600 );
 		glColor4f( 1, 1, 0.75f, 1 );
 		sprintf( tmp, "%s:", creature->getName() );
 		scourge->getSDLHandler()->texPrint( 0, 0, tmp );
