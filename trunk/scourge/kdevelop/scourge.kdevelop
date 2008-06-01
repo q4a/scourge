@@ -180,7 +180,7 @@
       <resolveIncludePathsUsingMakeExperimental>true</resolveIncludePathsUsingMakeExperimental>
       <alwaysParseInBackground>true</alwaysParseInBackground>
       <usePermanentCaching>true</usePermanentCaching>
-      <alwaysIncludeNamespaces>true</alwaysIncludeNamespaces>
+      <alwaysIncludeNamespaces>false</alwaysIncludeNamespaces>
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
