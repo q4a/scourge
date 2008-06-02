@@ -1155,9 +1155,7 @@ void ScourgeView::showMovieConversation( Creature *creature ) {
 		glPopMatrix();
 
 		char tmp[3000];
-		Util::addLineBreaks( creature->getSpeech(), tmp, 45 );
-		vector<string> lines;
-		Util::getLines( tmp, &lines );
+		vector<string> lines = *creature->getSpeechWrapped();
 		scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 		glPushMatrix();
 		glLoadIdentity();

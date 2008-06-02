@@ -19,6 +19,8 @@
 #define RENDERED_CREATURE_H
 
 #include "render.h"
+#include <vector>
+#include <string>
 #include <set>
 
 class RenderedItem;
@@ -55,6 +57,7 @@ protected:
   int recentDamagesCount;
 
   char speech[2000];
+  std::vector<std::string> speechWrapped;
   Uint32 talkStartTime;
 
 public:
@@ -76,6 +79,7 @@ public:
   virtual void say( char const* text );
   virtual bool isTalking();
   virtual char *getSpeech();
+  std::vector<std::string> *getSpeechWrapped();
 
 	virtual bool isBoss() = 0;
 	virtual bool isNpc() = 0;
