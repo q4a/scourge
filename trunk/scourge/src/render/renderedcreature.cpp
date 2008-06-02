@@ -294,6 +294,12 @@ bool RenderedCreature::canReach( int startx, int starty, int firstx, int firsty,
 void RenderedCreature::say( char const* text ) {
   talkStartTime = SDL_GetTicks();
   strncpy( speech, text, 2000 );
+
+  speechWrapped.clear();
+
+  char tmp[3000];
+  Util::addLineBreaks( speech, tmp, 45 );
+  Util::getLines( tmp, &speechWrapped );
 }
 
 #define TALK_DURATION 5000
@@ -304,4 +310,8 @@ bool RenderedCreature::isTalking() {
 
 char *RenderedCreature::getSpeech() {
   if( isTalking() ) { return speech; } else { return NULL; }
+}
+
+std::vector<std::string> *RenderedCreature::getSpeechWrapped() {
+  if( isTalking() ) { return &speechWrapped; } else { return NULL; }
 }
