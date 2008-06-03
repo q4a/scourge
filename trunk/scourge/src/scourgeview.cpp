@@ -1154,23 +1154,26 @@ void ScourgeView::showMovieConversation( Creature *creature ) {
 		creature->drawPortrait( 100, 100, true );
 		glPopMatrix();
 
-		char tmp[3000];
-		vector<string> lines = *creature->getSpeechWrapped();
-		scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
-		glPushMatrix();
-		glLoadIdentity();
-		glDisable(GL_DEPTH_TEST);
-		glEnable( GL_TEXTURE_2D );
-		glTranslatef( 140, scourge->getSession()->getCutscene()->getLetterboxHeight() + 60, 600 );
-		glColor4f( 1, 1, 0.75f, 1 );
-		sprintf( tmp, "%s:", creature->getName() );
-		scourge->getSDLHandler()->texPrint( 0, 0, tmp );
-		glColor4f( 1, 1, 1, 1 );
-		for( unsigned int i = 0; i < lines.size(); i++ ) {
-			scourge->getSDLHandler()->texPrint( 0, ( i + 1 ) * 32, lines[ i ].c_str() );
+		
+		vector<string> *lines = creature->getSpeechWrapped();
+		if( lines ) {
+			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
+			glPushMatrix();
+			glLoadIdentity();
+			glDisable(GL_DEPTH_TEST);
+			glEnable( GL_TEXTURE_2D );
+			glTranslatef( 140, scourge->getSession()->getCutscene()->getLetterboxHeight() + 60, 600 );
+			glColor4f( 1, 1, 0.75f, 1 );
+			char tmp[3000];
+			sprintf( tmp, "%s:", creature->getName() );
+			scourge->getSDLHandler()->texPrint( 0, 0, tmp );
+			glColor4f( 1, 1, 1, 1 );
+			for( unsigned int i = 0; i < lines->size(); i++ ) {
+				scourge->getSDLHandler()->texPrint( 0, ( i + 1 ) * 32, (*lines)[ i ].c_str() );
+			}
+			glPopMatrix();
+			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 		}
-		glPopMatrix();
-		scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 
 		glEnable( GL_DEPTH_TEST );
 		glEnable( GL_CULL_FACE );
