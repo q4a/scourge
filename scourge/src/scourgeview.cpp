@@ -1105,7 +1105,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 }
 
 void ScourgeView::drawAfter() {
-	
+
 	drawDraggedItem();
 
 	// draw turn info
@@ -1151,7 +1151,7 @@ void ScourgeView::showMovieConversation( Creature *creature ) {
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef( 20, scourge->getSession()->getCutscene()->getLetterboxHeight() + 30, 600 );
-		creature->drawPortrait( 100, 100, true );
+		creature->drawMoviePortrait( 100, 100 );
 		glPopMatrix();
 
 		

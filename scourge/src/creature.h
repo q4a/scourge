@@ -153,6 +153,9 @@ class Creature : public RenderedCreature {
 	std::map<Item*, InventoryInfo*> invInfos;
 	Uint32 lastPerceptionCheck;
 	bool boss, savedMissionObjective, scripted;
+	
+  GLuint portrait[1];
+  unsigned char * portraitInMemory;	
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -167,6 +170,7 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Monster *monster, GLShape *shape, bool initMonster=true);
   ~Creature();
 
+  void drawMoviePortrait( int width, int height );
 	void drawPortrait( int width, int height, bool inFrame=false );
   void playFootstep();
 
