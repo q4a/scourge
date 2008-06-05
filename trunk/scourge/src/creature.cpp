@@ -106,7 +106,8 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool init
 }
 
 void Creature::commonInit() {
-
+	this->portraitInMemory = NULL;
+	
 	this->scripted = false;
 	this->lastPerceptionCheck = 0;
 	this->boss = false;
@@ -188,6 +189,11 @@ void Creature::commonInit() {
 }
 
 Creature::~Creature(){
+	if( portraitInMemory ) {
+		free( portraitInMemory );
+		glDeleteTextures( 1, portrait );
+	}
+	
 	// cancel this creature's events
 	session->getParty()->getCalendar()->cancelEventsForCreature( this );
 
@@ -3089,6 +3095,141 @@ void Creature::setMotion( int motion ) {
 	this->motion = motion; 
 }
 
+void Creature::drawMoviePortrait( int width, int height ) {
+	// todo: should be next power of 2 after width/height (maybe cap-ed at 256)
+  int textureSizeW = 128; 
+  int textureSizeH = 128;
+	
+  if( !portraitInMemory ) {
+  	portraitInMemory = (unsigned char *) malloc( textureSizeW * textureSizeH * 4);    
+	
+	  glGenTextures(1, portrait);    
+	  glBindTexture(GL_TEXTURE_2D, portrait[0]); 
+	  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
+	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
+	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
+	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
+	  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0,
+	                GL_RGBA, GL_UNSIGNED_BYTE, portraitInMemory );                       
+	
+	  glDisable( GL_CULL_FACE );
+	  glDisable( GL_DEPTH_TEST );	  
+	  
+	  glPushMatrix();  
+	  glLoadIdentity();
+	  
+	  glDisable( GL_TEXTURE_2D );
+	  glColor4f( 0, 0, 0, 0 );
+	  
+	  glBegin( GL_QUADS );
+    glVertex3f( 0, 0, 0 );
+    glVertex3f( 0, textureSizeH, 0 );
+    glVertex3f( textureSizeW, textureSizeH, 0 );
+    glVertex3f( textureSizeW, 0, 0 );
+    glEnd();
+	  
+    glEnable( GL_TEXTURE_2D );
+    glColor4f(1, 1, 1, 1);
+    
+	  drawPortrait( width, height );
+	  
+	  glDisable( GL_CULL_FACE );
+	  glDisable( GL_DEPTH_TEST );
+	  glEnable( GL_TEXTURE_2D );
+	  glColor4f(1, 1, 1, 1);
+
+	  glEnable( GL_BLEND );
+	  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	  glBindTexture( GL_TEXTURE_2D, session->getShapePalette()->getNamedTexture( "conv_filter" ) );      
+    glBegin( GL_QUADS );
+    glNormal3f( 0, 0, 1 );
+    glTexCoord2f( 0, 0 );
+    glVertex3f( 0, 0, 0 );
+    glTexCoord2f( 0, 1 );
+    glVertex3f( 0, height, 0 );
+    glTexCoord2f( 1, 1 );
+    glVertex3f( width, height, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex3f( width, 0, 0 );
+    glEnd();	  
+	  glDisable( GL_BLEND );
+	  
+	  glPopMatrix();	  
+	
+	  // Copy to a texture
+	  glLoadIdentity();
+	  glEnable(GL_TEXTURE_2D);
+	  glBindTexture(GL_TEXTURE_2D, portrait[0]);
+	  glCopyTexSubImage2D(
+	                     GL_TEXTURE_2D,
+	                     0,      // MIPMAP level
+	                     0,      // x texture offset
+	                     0,      // y texture offset
+	                     0,              // x window coordinates
+	                     session->getGameAdapter()->getScreenHeight() - textureSizeH,   // y window coordinates
+	                     textureSizeW,    // width
+	                     textureSizeH     // height
+	                     ); 
+	  cerr << "OpenGl result for minimap texture building: " << Util::getOpenGLError() << endl;          
+	  glPopMatrix();
+	  //  glPopAttrib();
+	
+	  glDisable( GL_BLEND );
+	  glEnable( GL_CULL_FACE );
+	  glEnable( GL_DEPTH_TEST );
+	  glEnable( GL_TEXTURE_2D );
+  }
+
+  glDisable( GL_DEPTH_TEST );  
+  glDisable( GL_CULL_FACE );
+	glEnable(GL_TEXTURE_2D);
+  //    glTranslatef( x, y, 0 );
+	
+	glEnable( GL_BLEND );
+//	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glBlendFunc( Scourge::blendA, Scourge::blendB );
+  glBindTexture( GL_TEXTURE_2D, portrait[0] );  
+  glColor4f(1, 1, 1, 1);
+
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 0, 1 );
+  glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, textureSizeH, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( textureSizeW, textureSizeH, 0 );
+  glTexCoord2f( 1, 1 );
+  glVertex3f( textureSizeW, 0, 0 );
+  glEnd();
+  
+	glBindTexture( GL_TEXTURE_2D, session->getShapePalette()->getNamedTexture( "conv" ) );
+  glColor4f(1, 1, 1, 1);	
+
+  glPushMatrix();
+  glTranslatef( -10, -20, 0 );
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 0, 1 );
+  glVertex3f( 0, height + 40, 0 );
+  glTexCoord2f( 1, 1 );
+  glVertex3f( width + 20, height + 40, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( width + 20, 0, 0 );
+  glEnd();
+  glPopMatrix();
+	
+	glDisable( GL_BLEND );
+	glEnable( GL_DEPTH_TEST );
+  
+  //glDisable( GL_ALPHA_TEST );
+  //glDisable(GL_TEXTURE_2D);
+  //glEnable( GL_CULL_FACE );
+}
+
 void Creature::drawPortrait( int width, int height, bool inFrame ) {
   if( getCharacter() || ( getMonster() && getMonster()->getPortraitTexture() ) ) {
     //glEnable( GL_ALPHA_TEST );
@@ -3139,7 +3280,7 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
     glEnd();
     glDisable( GL_TEXTURE_2D );
     glPopMatrix();
-
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE );
     glPushMatrix();
     glEnable( GL_TEXTURE_2D );
     glColor4f( 1, 1, 1, 1 );
@@ -3186,6 +3327,7 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 
 	// This is a bit of a hack: the "conv" texture covers up the rectangular edges of the portrait
 	// in order to make it look oval... Otherwise we'd need to use the stencil buffer... :-/
+/*  
 	if( inFrame ) {
 		glDisable( GL_DEPTH_TEST );
 		glEnable( GL_TEXTURE_2D );
@@ -3212,5 +3354,7 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		glDisable( GL_BLEND );
 		glEnable( GL_DEPTH_TEST );
 	}
+*/	
 }
+
 
