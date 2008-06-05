@@ -3112,7 +3112,7 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
 	  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0,
 	                GL_RGBA, GL_UNSIGNED_BYTE, portraitInMemory );                       
-	
+
 	  glDisable( GL_CULL_FACE );
 	  glDisable( GL_DEPTH_TEST );	  
 	  
@@ -3134,13 +3134,13 @@ void Creature::drawMoviePortrait( int width, int height ) {
     
 	  drawPortrait( width, height );
 	  
+	  // draw the alpha pixels only
 	  glDisable( GL_CULL_FACE );
 	  glDisable( GL_DEPTH_TEST );
 	  glEnable( GL_TEXTURE_2D );
+	  glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
 	  glColor4f(1, 1, 1, 1);
 
-	  glEnable( GL_BLEND );
-	  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	  glBindTexture( GL_TEXTURE_2D, session->getShapePalette()->getNamedTexture( "conv_filter" ) );      
     glBegin( GL_QUADS );
     glNormal3f( 0, 0, 1 );
@@ -3153,10 +3153,10 @@ void Creature::drawMoviePortrait( int width, int height ) {
     glTexCoord2f( 1, 0 );
     glVertex3f( width, 0, 0 );
     glEnd();	  
-	  glDisable( GL_BLEND );
 	  
 	  glPopMatrix();	  
-	
+	  glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+
 	  // Copy to a texture
 	  glLoadIdentity();
 	  glEnable(GL_TEXTURE_2D);
@@ -3221,7 +3221,7 @@ void Creature::drawMoviePortrait( int width, int height ) {
   glVertex3f( width + 20, 0, 0 );
   glEnd();
   glPopMatrix();
-	
+
 	glDisable( GL_BLEND );
 	glEnable( GL_DEPTH_TEST );
   
