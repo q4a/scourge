@@ -62,6 +62,7 @@ private:
   int videoFlags;
   bool invertMouse;
   int cursorMode;
+	float orthoDepthMin, orthoDepthMax;
 
   // rotation for test draw view
   GLfloat rtri, rquad;
@@ -167,8 +168,6 @@ public:
   GLuint loadSystemTexture( char *line );
   void allWindowsClosed();
 
-  void setOrthoView();
-
   void setCursorMode(int n, bool useTimer=false );
   int getCursorMode() { return cursorMode; }
   void applyMouseOffset(int x, int y, int *newX, int *newY);
@@ -233,6 +232,11 @@ public:
 	void setUpdate( char *message, int n=-1, int total=-1 );
 	
 	void setContinueAt( char *func, int timeout );
+
+	void setDepthLimits( float min, float max );
+	void resetDepthLimits();
+
+	void setOrthoView();
 
 protected:	
 	bool popHandlers();

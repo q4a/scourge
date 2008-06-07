@@ -25,6 +25,8 @@ Shape::Shape(int width, int depth, int height, char *name, int descriptionGroup)
   this->descriptionGroup = descriptionGroup;
   this->stencil = false;
   this->outlineColor = NULL;
+	this->textureCount = 0;
+	this->textureIndex = -1; // use default texture
   groundSX = groundEX = groundSY = groundEY = 0;
   interactive = false;
   outdoorWeight = 0;
@@ -41,6 +43,8 @@ Shape::Shape(Shape *shape) {
   this->name = shape->getName();
   this->descriptionGroup = shape->getDescriptionGroup();
   this->outlineColor = NULL;
+	this->textureCount = shape->getTextureCount();
+	this->textureIndex = shape->getTextureIndex();
   groundSX = groundEX = groundSY = groundEY = 0;
   interactive = false;
   outdoorWeight = 0;

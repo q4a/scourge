@@ -4061,6 +4061,7 @@ void Scourge::endMovieMode() {
 	}
 	getSDLHandler()->setCursorVisible( true );
 	getPartyWindow()->setVisible( true );
+	getSDLHandler()->resetDepthLimits();
 	getSession()->getCutscene()->endMovieMode();	
 }
 

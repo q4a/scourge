@@ -31,9 +31,6 @@ using namespace std;
 
 #define ALWAYS_RELOAD_THEME 1
 
-//#define VARIATION_BASE 10.0f
-#define VARIATION_BASE 4
-
 bool Shapes::debugFileLoad = false;
 
 char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
@@ -356,7 +353,7 @@ void Shapes::loadTheme(const char *themeName) {
 }
 
 void Shapes::loadTheme( WallTheme *theme ) {
-//  cerr << "*** Using theme: " << theme->getName() << " current=" << (!currentTheme ? "null" : currentTheme->getName()) << endl;
+  //cerr << "*** Loading theme: " << theme->getName() << " current=" << (!currentTheme ? "null" : currentTheme->getName()) << endl;
   if( ALWAYS_RELOAD_THEME || currentTheme != theme) {
 
     // unload the previous theme
@@ -378,13 +375,11 @@ void Shapes::loadTheme( WallTheme *theme ) {
         GLuint *textureGroup = currentTheme->getTextureGroup( ref );
         //      cerr << "\tshape=" << shape->getName() << " ref=" << ref << 
         //        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;  
-        if( !isHeadless() ) shape->setTexture( textureGroup );
-  
-        // create extra shapes for variations
-        shape->deleteVariationShapes();
-        for( int i = 3; i < currentTheme->getFaceCount( ref ); i++ ) {
-          shape->createVariationShape( i, textureGroup );
-        }
+        if( !isHeadless() ) {
+        	//cerr << "\tshape=" << shape->getName() << " ref=" << ref << " count=" << currentTheme->getFaceCount( ref ) << endl; 
+					shape->setTexture( textureGroup );
+					shape->setTextureCount( currentTheme->getFaceCount( ref ) );
+				}				
       }  
       //    cerr << "**********************************" << endl;
     }
@@ -419,7 +414,7 @@ GLShape *Shapes::getShape( int index ) {
 	return shapes[ index ]; 
 }
 
-GLShape *Shapes::findShapeByName(const char *name, bool variation) {
+GLShape *Shapes::findShapeByName(const char *name) {
   if(!name || !strlen(name)) return NULL;
   string s = name;
   if( shapeMap.find( s ) == shapeMap.end() ) {
@@ -429,14 +424,7 @@ GLShape *Shapes::findShapeByName(const char *name, bool variation) {
 			return NULL;
 		}
   }
-  GLShape *shape = shapeMap[s];
-  if( !variation || shape->getVariationShapesCount() == 0 ) return shape;
-
-  int n = Util::dice( VARIATION_BASE + shape->getVariationShapesCount() );
-  if( n >= VARIATION_BASE ) {
-    return shape->getVariationShape( n - VARIATION_BASE );
-  }
-  return shape;
+	return shapeMap[s];
 }
 
 // defaults to SWORD for unknown shapes

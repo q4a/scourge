@@ -968,7 +968,7 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->
         setPosition( mapx, mapy + MAP_UNIT, 0, 
                      scourge->getShapePalette()->
-                     findShapeByName( "CORNER", true ) );
+                     findShapeByName( "CORNER" ) );
     }
 
     // corner
@@ -979,29 +979,29 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->
         setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0, 
                      scourge->getShapePalette()->
-                     findShapeByName( "CORNER", true ) );  
+                     findShapeByName( "CORNER" ) );  
     }
 
     if( north && south ) {
       scourge->getMap()->
         setPosition( mapx, mapy + MAP_UNIT, 0, 
                      scourge->getShapePalette()->
-                     findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
+                     findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
     } else if( south ) {
       scourge->getMap()->
         setPosition( mapx, mapy + MAP_UNIT, 0, 
                      scourge->getShapePalette()->
-                     findShapeByName( "EW_WALL_EXTRA", true ) );
+                     findShapeByName( "EW_WALL_EXTRA" ) );
     } else if( north ) {
       scourge->getMap()->
         setPosition( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, 0, 
                      scourge->getShapePalette()->
-                     findShapeByName( "EW_WALL_EXTRA", true ) );
+                     findShapeByName( "EW_WALL_EXTRA" ) );
     } else {
       scourge->getMap()->
         setPosition( mapx, mapy + MAP_UNIT - MAP_UNIT_OFFSET, 0, 
                      scourge->getShapePalette()->
-                     findShapeByName( "EW_WALL", true ) );
+                     findShapeByName( "EW_WALL" ) );
     }
 
     // add a light
@@ -1009,17 +1009,17 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
       if( dir == 1 ) {
         scourge->getMap()->
           setPosition( mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT - 4, 
-                       6, scourge->getShapePalette()->findShapeByName( "LAMP_WEST", true ) );
+                       6, scourge->getShapePalette()->findShapeByName( "LAMP_WEST" ) );
         scourge->getMap()->
           setPosition( mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT - 4, 
-                       4, scourge->getShapePalette()->findShapeByName( "LAMP_BASE", true ) );
+                       4, scourge->getShapePalette()->findShapeByName( "LAMP_BASE" ) );
       } else {
         scourge->getMap()->
           setPosition( mapx - 1, mapy + MAP_UNIT - 4, 
-                       6, scourge->getShapePalette()->findShapeByName("LAMP_EAST", true));
+                       6, scourge->getShapePalette()->findShapeByName("LAMP_EAST"));
         scourge->getMap()->
           setPosition( mapx - 1, mapy + MAP_UNIT - 4, 
-                       4, scourge->getShapePalette()->findShapeByName("LAMP_BASE", true));
+                       4, scourge->getShapePalette()->findShapeByName("LAMP_BASE"));
       }
     }
 
@@ -1034,7 +1034,7 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->removeLocation( mapx, mapy, 0 );
       scourge->getMap()->
         setPosition( mapx, mapy, 0, scourge->getShapePalette()->
-                     findShapeByName( "EW_WALL_EXTRA", true ) );
+                     findShapeByName( "EW_WALL_EXTRA" ) );
     }
 
     //cerr << "Looking north of EW_WALL_EXTRA map=" << mapx << "," << mapy << endl;
@@ -1046,7 +1046,7 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->removeLocation( mapx, mapy, 0 );
       scourge->getMap()->
         setPosition( mapx, mapy, 0, scourge->getShapePalette()->
-                     findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
+                     findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
     }
 
     // change the south chunk
@@ -1060,7 +1060,7 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->
         setPosition( mapx, mapy + MAP_UNIT + MAP_UNIT - MAP_UNIT_OFFSET, 0,
                      scourge->getShapePalette()->
-                     findShapeByName( "EW_WALL_EXTRA", true ) );
+                     findShapeByName( "EW_WALL_EXTRA" ) );
     }
     //cerr << "Looking south of EW_WALL_EXTRA map=" << mapx << "," << mapy << endl;
     if( isShape( mapx, mapy + MAP_UNIT + MAP_UNIT, 0, "EW_WALL_EXTRA" ) &&
@@ -1072,7 +1072,7 @@ void MapEditor::addEWWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->
         setPosition( mapx, mapy + MAP_UNIT + MAP_UNIT, 0,
                      scourge->getShapePalette()->
-                     findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
+                     findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
     }
     //cerr << "----------------------------------------------------" << endl;
   }
@@ -1106,7 +1106,7 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->
         setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0,
                      scourge->getShapePalette()->
-                     findShapeByName( "CORNER", true ) );
+                     findShapeByName( "CORNER" ) );
     }
     
     // corner
@@ -1119,22 +1119,22 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->
         setPosition( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0,
                      scourge->getShapePalette()->
-                     findShapeByName( "CORNER", true ) );
+                     findShapeByName( "CORNER" ) );
     }
 
 
     if( east && west ) {
       scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0,
-                                      scourge->getShapePalette()->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+                                      scourge->getShapePalette()->findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
     } else if( west ) {
       scourge->getMap()->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0,
-                                      scourge->getShapePalette()->findShapeByName( "NS_WALL_EXTRA", true ) );
+                                      scourge->getShapePalette()->findShapeByName( "NS_WALL_EXTRA" ) );
     } else if( east ) {
       scourge->getMap()->setPosition( mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0,
-                                      scourge->getShapePalette()->findShapeByName( "NS_WALL_EXTRA", true ) );
+                                      scourge->getShapePalette()->findShapeByName( "NS_WALL_EXTRA" ) );
     } else {
       scourge->getMap()->setPosition( mapx + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0,
-                                      scourge->getShapePalette()->findShapeByName( "NS_WALL", true ) );
+                                      scourge->getShapePalette()->findShapeByName( "NS_WALL" ) );
     }
 
     // Add a light
@@ -1142,10 +1142,10 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
       if( dir == 1 ) {
         scourge->getMap()->
           setPosition(mapx + 4, mapy + MAP_UNIT_OFFSET + 1, 6, 
-                      scourge->getShapePalette()->findShapeByName( "LAMP_NORTH", true) );
+                      scourge->getShapePalette()->findShapeByName( "LAMP_NORTH" ) );
         scourge->getMap()->
           setPosition(mapx + 4, mapy + MAP_UNIT_OFFSET + 1, 4, 
-                      scourge->getShapePalette()->findShapeByName("LAMP_BASE", true));
+                      scourge->getShapePalette()->findShapeByName("LAMP_BASE" ));
       } else {
         /*
         See gltorch.cpp on why there aren't southern torches... <sigh>
@@ -1169,7 +1169,7 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->removeLocation( mapx - MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0 );
       scourge->getMap()->
         setPosition( mapx - MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0, 
-                     scourge->getShapePalette()->findShapeByName( "NS_WALL_EXTRA", true ) );
+                     scourge->getShapePalette()->findShapeByName( "NS_WALL_EXTRA" ) );
     }
     if( isShape( mapx - MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0, "NS_WALL_EXTRA" ) &&
         isShape( mapx - MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0, "CORNER" ) &&
@@ -1178,7 +1178,7 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->removeLocation( mapx - MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0 );
       scourge->getMap()->
         setPosition( mapx - MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0, 
-                     scourge->getShapePalette()->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+                     scourge->getShapePalette()->findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
     }
 
     // change the east chunk
@@ -1190,7 +1190,7 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->
         setPosition( mapx + MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0,
                      scourge->getShapePalette()->
-                     findShapeByName( "NS_WALL_EXTRA", true ) );
+                     findShapeByName( "NS_WALL_EXTRA" ) );
     }
     if( isShape( mapx + MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0, "NS_WALL_EXTRA" ) &&
         isShape( mapx + MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0, "CORNER" ) &&
@@ -1200,7 +1200,7 @@ void MapEditor::addNSWall( Sint16 mapx, Sint16 mapy, int dir ) {
       scourge->getMap()->
         setPosition( mapx + MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0,
                      scourge->getShapePalette()->
-                     findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+                     findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
     }
   }
 }
@@ -1211,8 +1211,7 @@ void MapEditor::addFloor( Sint16 mapx, Sint16 mapy, bool doFlattenChunk ) {
   scourge->getMap()->
     setFloorPosition( mapx, mapy + MAP_UNIT, 
                       scourge->getShapePalette()->
-                      findShapeByName( floorTypeName[ floorType->isSelected() ? 0 : 1 ][ 0 ], 
-                                       true ) );
+                      findShapeByName( floorTypeName[ floorType->isSelected() ? 0 : 1 ][ 0 ] ) );
 }
 
 void MapEditor::addPath( Sint16 mapx, Sint16 mapy ) {
@@ -1308,7 +1307,7 @@ void MapEditor::blendCorners( Sint16 mapx, Sint16 mapy ) {
     if( ( nsWall || nsWallExtra ) && ( ewWall || ewWallExtra ) ) {
 
       levelMap->setPosition( mapx, mapy + MAP_UNIT_OFFSET, 0, 
-                             pal->findShapeByName( "CORNER", true ) );
+                             pal->findShapeByName( "CORNER" ) );
       levelMap->removeLocation( mapx - 1, mapy + 1, 0 );
       levelMap->removeLocation( mapx, mapy - 1, 0 );
     
@@ -1316,22 +1315,22 @@ void MapEditor::blendCorners( Sint16 mapx, Sint16 mapy ) {
       if( nsWall ) {
         levelMap->removeLocation( mapx - MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0 );
         levelMap->setPosition( mapx - MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0,
-                               pal->findShapeByName( "NS_WALL_EXTRA", true ) );
+                               pal->findShapeByName( "NS_WALL_EXTRA" ) );
       } else if( nsWallExtra ) {
         levelMap->removeLocation( mapx - MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0 );
         levelMap->setPosition( mapx - MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0,
-                               pal->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+                               pal->findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
       }
       
       // change north chunk
       if( ewWall ) {
         levelMap->removeLocation( mapx, mapy - MAP_UNIT_OFFSET, 0 );
         levelMap->setPosition( mapx, mapy, 0,
-                               pal->findShapeByName( "EW_WALL_EXTRA", true ) );
+                               pal->findShapeByName( "EW_WALL_EXTRA" ) );
       } else if( ewWallExtra ) {
         levelMap->removeLocation( mapx, mapy - MAP_UNIT_OFFSET, 0 );
         levelMap->setPosition( mapx, mapy, 0,
-                               pal->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
+                               pal->findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
       }      
     }
   }
@@ -1349,7 +1348,7 @@ void MapEditor::blendCorners( Sint16 mapx, Sint16 mapy ) {
     if( ( nsWall || nsWallExtra ) && ( ewWall || ewWallExtra ) ) {
 
       levelMap->setPosition( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0, 
-                             pal->findShapeByName( "CORNER", true ) );
+                             pal->findShapeByName( "CORNER" ) );
       levelMap->removeLocation( mapx + MAP_UNIT, mapy + 1, 0 );
       levelMap->removeLocation( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy - 1, 0 );
     
@@ -1357,22 +1356,22 @@ void MapEditor::blendCorners( Sint16 mapx, Sint16 mapy ) {
       if( nsWall ) {
         levelMap->removeLocation( mapx + MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0 );
         levelMap->setPosition( mapx + MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0,
-                               pal->findShapeByName( "NS_WALL_EXTRA", true ) );
+                               pal->findShapeByName( "NS_WALL_EXTRA" ) );
       } else if( nsWallExtra ) {
         levelMap->removeLocation( mapx + MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT_OFFSET, 0 );
         levelMap->setPosition( mapx + MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0,
-                               pal->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+                               pal->findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
       }
       
       // change north chunk
       if( ewWall ) {
         levelMap->removeLocation( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy - MAP_UNIT_OFFSET, 0 );
         levelMap->setPosition( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy, 0,
-                               pal->findShapeByName( "EW_WALL_EXTRA", true ) );
+                               pal->findShapeByName( "EW_WALL_EXTRA" ) );
       } else if( ewWallExtra ) {
         levelMap->removeLocation( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy - MAP_UNIT_OFFSET, 0 );
         levelMap->setPosition( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy, 0,
-                               pal->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
+                               pal->findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
       }      
     }
   }
@@ -1390,7 +1389,7 @@ void MapEditor::blendCorners( Sint16 mapx, Sint16 mapy ) {
     if( ( nsWall || nsWallExtra ) && ( ewWall || ewWallExtra ) ) {
 
       levelMap->setPosition( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT, 0, 
-                             pal->findShapeByName( "CORNER", true ) );
+                             pal->findShapeByName( "CORNER" ) );
       levelMap->removeLocation( mapx + MAP_UNIT, mapy + MAP_UNIT_OFFSET, 0 );
       levelMap->removeLocation( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT + MAP_UNIT_OFFSET, 0 );
     
@@ -1398,22 +1397,22 @@ void MapEditor::blendCorners( Sint16 mapx, Sint16 mapy ) {
       if( nsWall ) {
         levelMap->removeLocation( mapx + MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT, 0 );
         levelMap->setPosition( mapx + MAP_UNIT, mapy + MAP_UNIT, 0,
-                               pal->findShapeByName( "NS_WALL_EXTRA", true ) );
+                               pal->findShapeByName( "NS_WALL_EXTRA" ) );
       } else if( nsWallExtra ) {
         levelMap->removeLocation( mapx + MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT, 0 );
         levelMap->setPosition( mapx + MAP_UNIT, mapy + MAP_UNIT, 0,
-                               pal->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+                               pal->findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
       }
       
       // change north chunk
       if( ewWall ) {
         levelMap->removeLocation( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT + MAP_UNIT - MAP_UNIT_OFFSET, 0 );
         levelMap->setPosition( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT + MAP_UNIT - MAP_UNIT_OFFSET, 0,
-                               pal->findShapeByName( "EW_WALL_EXTRA", true ) );
+                               pal->findShapeByName( "EW_WALL_EXTRA" ) );
       } else if( ewWallExtra ) {
         levelMap->removeLocation( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT + MAP_UNIT, 0 );
         levelMap->setPosition( mapx + MAP_UNIT - MAP_UNIT_OFFSET, mapy + MAP_UNIT + MAP_UNIT, 0,
-                               pal->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
+                               pal->findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
       }      
     }
   }
@@ -1431,7 +1430,7 @@ void MapEditor::blendCorners( Sint16 mapx, Sint16 mapy ) {
     if( ( nsWall || nsWallExtra ) && ( ewWall || ewWallExtra ) ) {
 
       levelMap->setPosition( mapx, mapy + MAP_UNIT, 0, 
-                             pal->findShapeByName( "CORNER", true ) );
+                             pal->findShapeByName( "CORNER" ) );
       levelMap->removeLocation( mapx - MAP_UNIT_OFFSET, mapy + MAP_UNIT, 0 );
       levelMap->removeLocation( mapx, mapy + MAP_UNIT + MAP_UNIT_OFFSET, 0 );
     
@@ -1439,22 +1438,22 @@ void MapEditor::blendCorners( Sint16 mapx, Sint16 mapy ) {
       if( nsWall ) {
         levelMap->removeLocation( mapx - MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT, 0 );
         levelMap->setPosition( mapx - MAP_UNIT + MAP_UNIT_OFFSET, mapy + MAP_UNIT, 0,
-                               pal->findShapeByName( "NS_WALL_EXTRA", true ) );
+                               pal->findShapeByName( "NS_WALL_EXTRA" ) );
       } else if( nsWallExtra ) {
         levelMap->removeLocation( mapx - MAP_UNIT, mapy + MAP_UNIT, 0 );
         levelMap->setPosition( mapx - MAP_UNIT, mapy + MAP_UNIT, 0,
-                               pal->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
+                               pal->findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
       }
       
       // change north chunk
       if( ewWall ) {
         levelMap->removeLocation( mapx, mapy + MAP_UNIT + MAP_UNIT - MAP_UNIT_OFFSET, 0 );
         levelMap->setPosition( mapx, mapy + MAP_UNIT + MAP_UNIT - MAP_UNIT_OFFSET, 0,
-                               pal->findShapeByName( "EW_WALL_EXTRA", true ) );
+                               pal->findShapeByName( "EW_WALL_EXTRA" ) );
       } else if( ewWallExtra ) {
         levelMap->removeLocation( mapx, mapy + MAP_UNIT + MAP_UNIT, 0 );
         levelMap->setPosition( mapx, mapy + MAP_UNIT + MAP_UNIT, 0,
-                               pal->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
+                               pal->findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
       }      
     }
   }

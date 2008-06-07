@@ -617,10 +617,10 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
 
         if(nodes[x][y] >= ROOM) {
           map->setFloorPosition(mapx, mapy + unitSide, 
-                                shapePal->findShapeByName("ROOM_FLOOR_TILE", true));
+                                shapePal->findShapeByName("ROOM_FLOOR_TILE"));
         } else {
           map->setFloorPosition(mapx, mapy + unitSide, 
-                                shapePal->findShapeByName("FLOOR_TILE", true));
+                                shapePal->findShapeByName("FLOOR_TILE"));
         }
 
         // init the free space
@@ -721,19 +721,19 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if(nodes[x][y] & N_PASS && nodes[x][y] & S_PASS) {
             wallX = mapx;
             wallY = mapy + unitSide;
-            wall = shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS", true );
+            wall = shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS");
           } else if(nodes[x][y] & N_PASS) {
             wallX = mapx;
             wallY = mapy + unitSide - unitOffset;
-            wall = shapePal->findShapeByName( "EW_WALL_EXTRA", true );
+            wall = shapePal->findShapeByName( "EW_WALL_EXTRA");
           } else if(nodes[x][y] & S_PASS) {
             wallX = mapx;
             wallY = mapy + unitSide;
-            wall = shapePal->findShapeByName( "EW_WALL_EXTRA", true );
+            wall = shapePal->findShapeByName( "EW_WALL_EXTRA");
           } else {
             wallX = mapx;
             wallY = mapy + unitSide - unitOffset;
-            wall = shapePal->findShapeByName( "EW_WALL", true );
+            wall = shapePal->findShapeByName( "EW_WALL");
           }
           if( wall ) {
             map->setPosition( wallX, wallY, 0, wall );
@@ -742,9 +742,9 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             } else {
               if( Util::dice( 100 ) <= torches ) {
                 map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-                                 6, shapePal->findShapeByName("LAMP_WEST", true));
+                                 6, shapePal->findShapeByName("LAMP_WEST"));
                 map->setPosition(mapx + unitOffset, mapy + unitSide - 4, 
-                                 4, shapePal->findShapeByName("LAMP_BASE", true));
+                                 4, shapePal->findShapeByName("LAMP_BASE"));
               }
             }
           }
@@ -753,19 +753,19 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if(nodes[x][y] & N_PASS && nodes[x][y] & S_PASS) {
             wallX = mapx + unitSide - unitOffset;
             wallY = mapy + unitSide;
-            wall = shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS", true );
+            wall = shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS" );
           } else if(nodes[x][y] & N_PASS) {
             wallX = mapx + unitSide - unitOffset;
             wallY = mapy + unitSide - unitOffset;
-            wall = shapePal->findShapeByName( "EW_WALL_EXTRA", true );
+            wall = shapePal->findShapeByName( "EW_WALL_EXTRA" );
           } else if(nodes[x][y] & S_PASS) {
             wallX = mapx + unitSide - unitOffset;
             wallY = mapy + unitSide;
-            wall = shapePal->findShapeByName( "EW_WALL_EXTRA", true );
+            wall = shapePal->findShapeByName( "EW_WALL_EXTRA" );
           } else {
             wallX = mapx + unitSide - unitOffset;
             wallY = mapy + unitSide - unitOffset;
-            wall = shapePal->findShapeByName( "EW_WALL", true );
+            wall = shapePal->findShapeByName( "EW_WALL" );
           }
           if( wall ) {
             map->setPosition( wallX, wallY, 0, wall );
@@ -774,9 +774,9 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             } else {
               if( Util::dice( 100 ) <= torches) {
                 map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-                                 6, shapePal->findShapeByName("LAMP_EAST", true));
+                                 6, shapePal->findShapeByName("LAMP_EAST" ));
                 map->setPosition(mapx + unitSide - (unitOffset + 1), mapy + unitSide - 4, 
-                                 4, shapePal->findShapeByName("LAMP_BASE", true));
+                                 4, shapePal->findShapeByName("LAMP_BASE" ));
               }
             }
           }
@@ -785,19 +785,19 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if(nodes[x][y] & W_PASS && nodes[x][y] & E_PASS) {
             wallX = mapx;
             wallY = mapy + unitOffset;
-            wall = shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS", true );
+            wall = shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS" );
           } else if(nodes[x][y] & W_PASS) {
             wallX = mapx;
             wallY = mapy + unitOffset;
-            wall = shapePal->findShapeByName( "NS_WALL_EXTRA", true );
+            wall = shapePal->findShapeByName( "NS_WALL_EXTRA" );
           } else if(nodes[x][y] & E_PASS) {
             wallX = mapx + unitOffset;
             wallY = mapy + unitOffset; 
-            wall = shapePal->findShapeByName( "NS_WALL_EXTRA", true );
+            wall = shapePal->findShapeByName( "NS_WALL_EXTRA" );
           } else {
             wallX = mapx + unitOffset;
             wallY = mapy + unitOffset; 
-            wall = shapePal->findShapeByName( "NS_WALL", true );
+            wall = shapePal->findShapeByName( "NS_WALL" );
           }
           if( wall ) {
             map->setPosition( wallX, wallY, 0, wall );
@@ -806,9 +806,9 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
             } else {
               if( Util::dice( 100 ) <= torches ) {
                 map->setPosition(mapx + 4, mapy + unitOffset + 1, 6, 
-                                 shapePal->findShapeByName("LAMP_NORTH", true));
+                                 shapePal->findShapeByName("LAMP_NORTH" ));
                 map->setPosition(mapx + 4, mapy + unitOffset + 1, 4, 
-                                 shapePal->findShapeByName("LAMP_BASE", true));
+                                 shapePal->findShapeByName("LAMP_BASE" ));
               }
             }
           }
@@ -817,19 +817,19 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
           if(nodes[x][y] & W_PASS && nodes[x][y] & E_PASS) {
             wallX = mapx;
             wallY = mapy + unitSide;
-            wall = shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS", true );
+            wall = shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS" );
           } else if(nodes[x][y] & W_PASS) {
             wallX = mapx;
             wallY = mapy + unitSide;
-            wall = shapePal->findShapeByName( "NS_WALL_EXTRA", true );
+            wall = shapePal->findShapeByName( "NS_WALL_EXTRA" );
           } else if(nodes[x][y] & E_PASS) {
             wallX = mapx + unitOffset;
             wallY = mapy + unitSide;
-            wall = shapePal->findShapeByName( "NS_WALL_EXTRA", true );
+            wall = shapePal->findShapeByName( "NS_WALL_EXTRA" );
           } else {
             wallX = mapx + unitOffset;
             wallY = mapy + unitSide;
-            wall = shapePal->findShapeByName( "NS_WALL", true );
+            wall = shapePal->findShapeByName( "NS_WALL" );
           }
           if( wall ) {
             map->setPosition( wallX, wallY, 0, wall );
@@ -842,35 +842,35 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
 
         if(nodes[x][y] & N_PASS && nodes[x][y] & W_PASS) {
           map->setPosition(mapx, mapy + unitOffset, 0, 
-                           shapePal->findShapeByName("CORNER", true));
+                           shapePal->findShapeByName("CORNER"));
         }
         if(nodes[x][y] & N_PASS && nodes[x][y] & E_PASS) {
           map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset, 0, 
-                           shapePal->findShapeByName("CORNER", true));
+                           shapePal->findShapeByName("CORNER"));
         }
         if(nodes[x][y] & S_PASS && nodes[x][y] & W_PASS) {
           map->setPosition(mapx, mapy + unitSide, 0, 
-                           shapePal->findShapeByName("CORNER", true));
+                           shapePal->findShapeByName("CORNER"));
         }
         if(nodes[x][y] & S_PASS && nodes[x][y] & E_PASS) {
           map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 0, 
-                           shapePal->findShapeByName("CORNER", true));
+                           shapePal->findShapeByName("CORNER"));
         }
         if(!(nodes[x][y] & N_PASS) && !(nodes[x][y] & W_PASS)) {
           map->setPosition(mapx, mapy + unitOffset, 0, 
-                           shapePal->findShapeByName("CORNER", true));
+                           shapePal->findShapeByName("CORNER"));
         }
         if(!(nodes[x][y] & N_PASS) && !(nodes[x][y] & E_PASS)) {
           map->setPosition(mapx + unitSide - unitOffset, mapy + unitOffset, 0, 
-                           shapePal->findShapeByName("CORNER", true)); 
+                           shapePal->findShapeByName("CORNER")); 
         }
         if(!(nodes[x][y] & S_PASS) && !(nodes[x][y] & W_PASS)) {
           map->setPosition(mapx, mapy + unitSide, 0, 
-                           shapePal->findShapeByName("CORNER", true)); 
+                           shapePal->findShapeByName("CORNER")); 
         }
         if(!(nodes[x][y] & S_PASS) && !(nodes[x][y] & E_PASS)) {
           map->setPosition(mapx + unitSide - unitOffset, mapy + unitSide, 0, 
-                           shapePal->findShapeByName("CORNER", true)); 
+                           shapePal->findShapeByName("CORNER")); 
         }
       }
     }

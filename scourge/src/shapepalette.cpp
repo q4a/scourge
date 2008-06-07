@@ -579,6 +579,15 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 				theme->setOutdoorFaceCount( ref, face );
 			}
 		}
+
+		if( node->hasValue( "alt_walls" ) ) {
+			strcpy( line, node->getValueAsString( "alt_walls" ) );
+			char *p = strtok( line, "," );
+			while( p ) {
+				theme->addAltWallTheme( p );
+				p = strtok( NULL, "," );
+			}
+		}
 		
 		if( !special && !cave ) {
 			themes[ themeCount++ ] = theme;
