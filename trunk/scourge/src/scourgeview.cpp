@@ -327,7 +327,6 @@ void ScourgeView::drawOutsideMap() {
 
 void ScourgeView::checkForInfo() {
   Uint16 mapx, mapy, mapz;
-
   // change cursor when over a hostile creature
   if( scourge->getSDLHandler()->getCursorMode() == Constants::CURSOR_NORMAL ||
       scourge->getSDLHandler()->getCursorMode() == Constants::CURSOR_ATTACK ||

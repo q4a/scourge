@@ -43,7 +43,7 @@ protected:
     Represents an array of 3 addresses for textures. If tex[i]==NULL, no texture is given,
     only a color.
   */
-  GLuint *tex;
+  GLuint *tex;	
   Uint8 shapePalIndex;
   int skipside;
   bool useTexture;
@@ -51,8 +51,6 @@ protected:
   float xIconRot, yIconRot, zIconRot;
   GLuint displayListStart;
   bool initialized;
-  std::vector<GLShape*> variationShape;
-  int variationTextureIndex;
 	bool wallShape;
 	int iconRotX;
 	int iconRotY;
@@ -116,15 +114,8 @@ public:
   virtual void initialize();
   virtual inline void cleanup() {}
 
-  void deleteVariationShapes();
-  void createVariationShape( int textureIndex, GLuint *textureGroup );
-  inline void setVariationTextureIndex( int index ) { variationTextureIndex = index; }
-  inline int getVariationTextureIndex() { return variationTextureIndex; }
-  inline int getVariationShapesCount() { return variationShape.size(); }
-  inline GLShape *getVariationShape( int index ) { return variationShape[ index ]; }
-
   static void createDarkTexture( WallTheme *theme );
-  void setTexture( GLuint *textureGroup );
+  void setTexture( GLuint *textureGroup );	
 
   inline void setSkipSide(int n) { skipside = n; }
   bool fitsInside( GLShape *smaller, bool relaxedRules=false );  

@@ -146,11 +146,13 @@ class WallTheme {
   GLuint outdoorTextureGroup[OUTDOOR_THEME_REF_COUNT][MAX_TEXTURE_COUNT];
   int outdoorFaceCount[OUTDOOR_THEME_REF_COUNT];
   std::map<std::string,int> outdoorThemeRefMap;
+	std::vector<std::string> altWallThemes;
 
  public:
   WallTheme( char const* name, Shapes *shapePal );
   ~WallTheme();
 
+	void addAltWallTheme( char *p ) { std::string s = p; altWallThemes.push_back( s ); }
   inline TextureData& getFloorData() { return floorData; }
 
   inline void setSpecial( bool b ) { special = b; }
@@ -367,7 +369,7 @@ public:
   inline GLuint getAreaTexture() { return areaTex; }
 
   GLuint findTextureByName(const std::string& filename, bool loadIfMissing=false );
-  GLShape *findShapeByName(const char *name, bool variation=false);
+  GLShape *findShapeByName(const char *name);
   int findShapeIndexByName(const char *name);
 	void getShapeDimensions( const char *name, int *w, int *d, int *h );
   

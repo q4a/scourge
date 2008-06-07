@@ -40,6 +40,7 @@ private:
 	bool wind;
 	WindInfo *windInfo;
 	bool occludedSides[6];
+	int textureCount, textureIndex;
 
 protected:
 	int width, height, depth;
@@ -134,6 +135,11 @@ public:
 	virtual inline float getWindValue() { return 0; }
 
   virtual inline bool isFlatCaveshape() { return false; }
+
+	inline void setTextureCount( int count ) { this->textureCount = count; }
+	inline int getTextureCount() { return textureCount; }
+	inline void setTextureIndex( int index ) { this->textureIndex = index; }
+	inline int getTextureIndex() { return textureIndex; }
 };
 
 #endif

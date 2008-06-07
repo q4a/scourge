@@ -52,6 +52,9 @@ bool SDLHandler::showDebugInfo = SHOW_FPS;
 // pixel range 
 #define DOUBLE_CLICK_TOLERANCE 5
 
+#define DEFAULT_MIN_DEPTH -3000
+#define DEFAULT_MAX_DEPTH 1000
+
 SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
   /* These are to calculate our fps */
   this->gameAdapter = gameAdapter;
@@ -83,6 +86,8 @@ SDLHandler::SDLHandler( GameAdapter *gameAdapter ){
 	cursorVisible = true;
 	continueFunc = "";
 	continueTimeout = continueStart = 0;
+	orthoDepthMin = DEFAULT_MIN_DEPTH;
+	orthoDepthMax = DEFAULT_MAX_DEPTH;
 }
 
 SDLHandler::~SDLHandler(){
@@ -130,6 +135,16 @@ void SDLHandler::quit( int returnCode ) {
   exit( returnCode );
 }
 
+void SDLHandler::resetDepthLimits() {
+	setDepthLimits( DEFAULT_MIN_DEPTH, DEFAULT_MAX_DEPTH );
+}
+
+void SDLHandler::setDepthLimits( float min, float max ) {
+	this->orthoDepthMin = min;
+	this->orthoDepthMax = max;
+	resizeWindow( screen->w, screen->h );
+}
+
 /* function to reset our viewport after a window resize */
 int SDLHandler::resizeWindow( int width, int height ) {
    // Height / width ratio
@@ -137,8 +152,8 @@ int SDLHandler::resizeWindow( int width, int height ) {
 
     // Protect against a divide by zero
    if ( height == 0 ) height = 1;
-   this->lastWidth = width;
-   this->lastHeight = height;
+	 lastWidth = width;
+	 lastHeight = height;
    
 //    ratio = ( GLfloat )width / ( GLfloat )height;
 
@@ -162,8 +177,9 @@ int SDLHandler::resizeWindow( int width, int height ) {
     return( TRUE );
 }
 
+// Note: !!! also called from Map::getMapXYZAtScreenXY !!!
 void SDLHandler::setOrthoView() {
-    glOrtho(0.0f, lastWidth, lastHeight, 0.0f, -1000.0f, 1000.0f);
+	glOrtho( 0.0f, lastWidth, lastHeight, 0.0f, orthoDepthMin, orthoDepthMax );
 }
 
 /* general OpenGL initialization function */

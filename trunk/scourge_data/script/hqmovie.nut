@@ -4,6 +4,9 @@ function startHqMovie() {
 		value <- scourgeGame.getValue( key );
 		//if( value == null ) {
 			scourgeGame.setValue( key, "true" );
+
+			// set the depth of the rendered area
+			scourgeGame.setDepthLimits( -1000, 1000 );
 			
 			// start movie mode
 			scourgeGame.setMovieMode( true );

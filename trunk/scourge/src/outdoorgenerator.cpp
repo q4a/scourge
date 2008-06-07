@@ -208,7 +208,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			if( keepFloor.find( x + MAP_WIDTH * y ) != keepFloor.end() ) {
 				map->removeFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT );
 			} else {
-				map->setFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT, (Shape*)shapePal->findShapeByName( "FLOOR_TILE", true ) );
+				map->setFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT, (Shape*)shapePal->findShapeByName( "FLOOR_TILE" ) );
 			}
 		}
 	}
@@ -422,7 +422,7 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 	for( int vx = -1; vx < w + 1; vx++ ) {
 		for( int vy = -1; vy < h + 1; vy++ ) {
 			Shape *shape = map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT ); 
-			if( shape == shapePal->findShapeByName( "ROOM_FLOOR_TILE", true ) ) {
+			if( shape == shapePal->findShapeByName( "ROOM_FLOOR_TILE" ) ) {
 				//cerr << "\tabandon: too close to another." << endl;
 				return false;
 			}
@@ -433,64 +433,64 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 		for( int vy = 0; vy < h; vy++ ) {
 			int xp = x + vx * MAP_UNIT;
 			int yp = y + vy * MAP_UNIT;
-			GLShape *shape = shapePal->findShapeByName( "ROOM_FLOOR_TILE", true );
+			GLShape *shape = shapePal->findShapeByName( "ROOM_FLOOR_TILE" );
 			addFloor( map, shapePal, xp, yp, true, shape );
 			keepFloor[ xp + MAP_WIDTH * yp ] = shape;
 			
 			// draw the walls
 			if( vx == 0 ) {
 				if( vy == 0 ) {
-					map->setPosition( xp, yp + 2, 0, shapePal->findShapeByName( "CORNER", true ) );
+					map->setPosition( xp, yp + 2, 0, shapePal->findShapeByName( "CORNER" ) );
 					if( door == 0 || door == 3 ) {
 						addEWDoor( map, shapePal, xp, yp );
 					} else {					
-						map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_EXTRA", true ) );
+						map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_EXTRA" ) );
 					}
 					if( door == 1 || door == 2 ) {
 						addNSDoor( map, shapePal, xp + 2, yp + 2 );
 					} else {
-						map->setPosition( xp + 2, yp + 2, 0, shapePal->findShapeByName( "NS_WALL_EXTRA", true ) );
+						map->setPosition( xp + 2, yp + 2, 0, shapePal->findShapeByName( "NS_WALL_EXTRA" ) );
 					}
-					map->setPosition( xp - 2, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_NW", true ) );
+					map->setPosition( xp - 2, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_NW" ) );
 				} else if( vy == h - 1 ) {
-					map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "CORNER", true ) );
-					map->setPosition( xp, yp + MAP_UNIT - 2, 0, shapePal->findShapeByName( "EW_WALL_EXTRA", true ) );
+					map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "CORNER" ) );
+					map->setPosition( xp, yp + MAP_UNIT - 2, 0, shapePal->findShapeByName( "EW_WALL_EXTRA" ) );
 					if( door == 3 || door == 0 ) {
 						addNSDoor( map, shapePal, xp + 2, yp + MAP_UNIT );
 					} else {					
-						map->setPosition( xp + 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "NS_WALL_EXTRA", true ) );
+						map->setPosition( xp + 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "NS_WALL_EXTRA" ) );
 					}
-					map->setPosition( xp - 2, yp + MAP_UNIT + 2, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_SW", true ) );
+					map->setPosition( xp - 2, yp + MAP_UNIT + 2, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_SW" ) );
 				} else {
-					map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
-					map->setPosition( xp - 2, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_W", true ) );
+					map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
+					map->setPosition( xp - 2, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_W" ) );
 				}
 			} else if( vx == w - 1 ) {
 				if( vy == 0 ) {
-					map->setPosition( xp + MAP_UNIT - 2, yp + 2, 0, shapePal->findShapeByName( "CORNER", true ) );
+					map->setPosition( xp + MAP_UNIT - 2, yp + 2, 0, shapePal->findShapeByName( "CORNER" ) );
 					if( door == 2 || door == 1 ) {
 						addEWDoor( map, shapePal, xp + MAP_UNIT - 2, yp );
 					} else {					
-						map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_EXTRA", true ) );
+						map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_EXTRA" ) );
 					}
-					map->setPosition( xp, yp + 2, 0, shapePal->findShapeByName( "NS_WALL_EXTRA", true ) );
-					map->setPosition( xp, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_NE", true ) );
+					map->setPosition( xp, yp + 2, 0, shapePal->findShapeByName( "NS_WALL_EXTRA" ) );
+					map->setPosition( xp, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_NE" ) );
 				} else if( vy == h - 1 ) {
-					map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "CORNER", true ) );
-					map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT - 2, 0, shapePal->findShapeByName( "EW_WALL_EXTRA", true ) );
-					map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "NS_WALL_EXTRA", true ) );
-					map->setPosition( xp, yp + MAP_UNIT + 2, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_SE", true ) );
+					map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "CORNER" ) );
+					map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT - 2, 0, shapePal->findShapeByName( "EW_WALL_EXTRA" ) );
+					map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "NS_WALL_EXTRA" ) );
+					map->setPosition( xp, yp + MAP_UNIT + 2, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_SE" ) );
 				} else {
-					map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS", true ) );
-					map->setPosition( xp, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_E", true ) );
+					map->setPosition( xp + MAP_UNIT - 2, yp + MAP_UNIT, 0, shapePal->findShapeByName( "EW_WALL_TWO_EXTRAS" ) );
+					map->setPosition( xp, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_E" ) );
 				}
 			} else if( vx > 0 && vx < w - 1 ) {
 				if( vy == 0 ) {
-					map->setPosition( xp, yp + 2, 0, shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
-					map->setPosition( xp, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_N", true ) );
+					map->setPosition( xp, yp + 2, 0, shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
+					map->setPosition( xp, yp + MAP_UNIT, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_N" ) );
 				} else if( vy == h - 1 ) {
-					map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS", true ) );
-					map->setPosition( xp, yp + MAP_UNIT + 2, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_S", true ) );
+					map->setPosition( xp, yp + MAP_UNIT, 0, shapePal->findShapeByName( "NS_WALL_TWO_EXTRAS" ) );
+					map->setPosition( xp, yp + MAP_UNIT + 2, MAP_WALL_HEIGHT, shapePal->findShapeByName( "ROOF_S" ) );
 				}
 			}
 		}
@@ -499,21 +499,21 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 }
 
 void OutdoorGenerator::addEWDoor( Map *map, ShapePalette *shapePal, int x, int y ) {
-	map->setPosition( x, y + MAP_UNIT, 0, shapePal->findShapeByName( "CORNER", true ) );
-	map->setPosition( x, y + MAP_UNIT - 2, 0, shapePal->findShapeByName( "DOOR_SIDE", true ) );
-	map->setPosition( x, y + MAP_UNIT - 4, 0, shapePal->findShapeByName( "DOOR_SIDE", true ) );
-	map->setPosition( x, y + MAP_UNIT - 6, 0, shapePal->findShapeByName( "EW_DOOR", true ) );
-	map->setPosition( x, y + MAP_UNIT - 12, 0, shapePal->findShapeByName( "DOOR_SIDE", true ) );
-	map->setPosition( x, y + MAP_UNIT - 2, MAP_WALL_HEIGHT - 2, shapePal->findShapeByName( "EW_DOOR_TOP", true ) );	
+	map->setPosition( x, y + MAP_UNIT, 0, shapePal->findShapeByName( "CORNER" ) );
+	map->setPosition( x, y + MAP_UNIT - 2, 0, shapePal->findShapeByName( "DOOR_SIDE" ) );
+	map->setPosition( x, y + MAP_UNIT - 4, 0, shapePal->findShapeByName( "DOOR_SIDE" ) );
+	map->setPosition( x, y + MAP_UNIT - 6, 0, shapePal->findShapeByName( "EW_DOOR" ) );
+	map->setPosition( x, y + MAP_UNIT - 12, 0, shapePal->findShapeByName( "DOOR_SIDE" ) );
+	map->setPosition( x, y + MAP_UNIT - 2, MAP_WALL_HEIGHT - 2, shapePal->findShapeByName( "EW_DOOR_TOP" ) );	
 }
 
 void OutdoorGenerator::addNSDoor( Map *map, ShapePalette *shapePal, int x, int y ) {
-	map->setPosition( x, y, 0, shapePal->findShapeByName( "DOOR_SIDE", true ) );
-	map->setPosition( x + 2, y, 0, shapePal->findShapeByName( "DOOR_SIDE", true ) );
-	map->setPosition( x + 4, y, 0, shapePal->findShapeByName( "NS_DOOR", true ) );
-	map->setPosition( x + 10, y, 0, shapePal->findShapeByName( "DOOR_SIDE", true ) );
-	map->setPosition( x, y, MAP_WALL_HEIGHT - 2, shapePal->findShapeByName( "NS_DOOR_TOP", true ) );
-	map->setPosition( x + 12, y, 0, shapePal->findShapeByName( "CORNER", true ) );
+	map->setPosition( x, y, 0, shapePal->findShapeByName( "DOOR_SIDE" ) );
+	map->setPosition( x + 2, y, 0, shapePal->findShapeByName( "DOOR_SIDE" ) );
+	map->setPosition( x + 4, y, 0, shapePal->findShapeByName( "NS_DOOR" ) );
+	map->setPosition( x + 10, y, 0, shapePal->findShapeByName( "DOOR_SIDE" ) );
+	map->setPosition( x, y, MAP_WALL_HEIGHT - 2, shapePal->findShapeByName( "NS_DOOR_TOP" ) );
+	map->setPosition( x + 12, y, 0, shapePal->findShapeByName( "CORNER" ) );
 }
 
 void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int y ) {
@@ -572,7 +572,7 @@ void OutdoorGenerator::flattenChunkWithLimits( Map *map, Sint16 mapX, Sint16 map
 }
 
 void OutdoorGenerator::addPath( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, const char *shapeName ) {
-	GLShape *shape = shapePal->findShapeByName( shapeName, true );
+	GLShape *shape = shapePal->findShapeByName( shapeName );
 	addFloor( map, shapePal, mapx, mapy, false, shape );
 	keepFloor[ mapx + MAP_WIDTH * mapy ] = shape;
 	for( int cx = -1; cx < 2; cx++ ) {

@@ -180,6 +180,7 @@ public:
 	virtual void startMovieMode() {}
 	virtual void endMovieMode() {}
 	virtual void setContinueAt( char *func, int timeout ) {}
+	virtual void setDepthLimits( float minLimit, float maxLimit ) {}
 };
 
 class SDLOpenGLAdapter : public GameAdapter {
@@ -212,6 +213,8 @@ public:
   inline void setDebugStr(char *s) { sdlHandler->setDebugStr(s); }
 
   virtual inline bool isHeadless() { return false; }
+
+	virtual void setDepthLimits( float minLimit, float maxLimit ) { getSDLHandler()->setDepthLimits( minLimit, maxLimit ); }
   
   /**
    * Set up the opengl view.

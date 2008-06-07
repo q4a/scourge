@@ -92,6 +92,7 @@ public:
 	static int _setMovieMode( HSQUIRRELVM vm );
 	static int _moveCamera( HSQUIRRELVM vm );
 	static int _continueAt( HSQUIRRELVM vm );
+	static int _setDepthLimits( HSQUIRRELVM vm );
 };
 
 #endif

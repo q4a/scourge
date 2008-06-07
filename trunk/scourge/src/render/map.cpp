@@ -1742,8 +1742,15 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
 			findOccludedSides( later, sides );
 			shape->setOccludedSides( sides );
 		}
-		if( later && later->pos && later->pos->outlineColor && !useShadow ) 
-			shape->outline( later->pos->outlineColor );
+		if( later && later->pos ) { 
+			if( later->pos->outlineColor && !useShadow ) { 
+				shape->outline( later->pos->outlineColor );
+			}
+			if( shape->getTextureCount() > 3 ) {
+				// select which alternate texture to use
+				shape->setTextureIndex( later->pos->texIndex );
+			}
+		}
 		shape->draw();
 	}
 	glPopName();
@@ -2271,8 +2278,9 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 
 	bool isNonBlockingItem = ( item && !item->isBlocking() && !z && settings->isItemPosEnabled() );
 	Location *p = ( isNonBlockingItem ? itemPos[ x ][ y ] : pos[ x ][ y ][ z ] );
-	if( !p )
+	if( !p ) {
 		p = mapMemoryManager->newLocation();
+	}
 
 	p->shape = shape;
 	p->item = item;
@@ -2282,7 +2290,12 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	p->y = y;
 	p->z = z;
 	p->outlineColor = NULL;
-	
+	if( p->shape->getTextureCount() > 3 ) {
+		// pick one of the texture groups (3 textures + variants)
+		int n = Util::dice( p->shape->getTextureCount() - 2 );
+		// -1 means, use the correct default texture (correct for the side of the glShape)
+		p->texIndex = ( n == 0 ? -1 : n + 2 );
+	}
 
 	for(int xp = 0; xp < shape->getWidth(); xp++) {
 		for(int yp = 0; yp < shape->getDepth(); yp++) {
@@ -3598,7 +3611,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 		}
 
 		if( strlen( (char*)(info->pos[i]->floor_shape_name) ) ) {
-			shape = shapes->findShapeByName( (char*)(info->pos[i]->floor_shape_name), true );
+			shape = shapes->findShapeByName( (char*)(info->pos[i]->floor_shape_name) );
 			if( shape )
 				setFloorPosition( info->pos[i]->x, info->pos[i]->y, shape );
 			else 
@@ -3655,7 +3668,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 				if( creatures ) creatures->push_back(  creature );
 			} else cerr << "Map::load failed to creature at pos: " << info->pos[i]->x << "," << info->pos[i]->y << "," << info->pos[i]->z << endl;
 		} else if( strlen( (char*)(info->pos[i]->shape_name) ) ) {
-			shape = shapes->findShapeByName( (char*)(info->pos[i]->shape_name), true );
+			shape = shapes->findShapeByName( (char*)(info->pos[i]->shape_name) );
 			if( shape ) {
 				setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
 				if( settings->isPlayerEnabled() ) {
@@ -3880,10 +3893,10 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
 
     for(int loop = 0; loop < hits; loop++) {   // Loop Through All The Detected Hits
 
-      //            fprintf(stderr, "\tloop=%d 0=%u 1=%u 2=%u 3=%u 4=%u \n", loop, 
-      //                    buffer[loop*5+0], buffer[loop*5+1], buffer[loop*5+2], 
-      //                    buffer[loop*5+3],  buffer[loop*5+4]);
-      if(buffer[loop*5+4] > 0) {
+			//fprintf(stderr, "\tloop=%d 0=%u 1=%u 2=%u 3=%u 4=%u \n", loop, 
+							//buffer[loop*5+0], buffer[loop*5+1], buffer[loop*5+2], 
+							//buffer[loop*5+3],  buffer[loop*5+4]);
+			if(buffer[loop*5+4] > 0) {
         decodeName(buffer[loop*5+4], mapx, mapy, mapz);
       }
 
@@ -3990,6 +4003,7 @@ Location *MapMemoryManager::newLocation() {
   pos->item = NULL;
   pos->creature = NULL;
   pos->outlineColor = NULL;
+	pos->texIndex = NULL;
 
   return pos;
 }
