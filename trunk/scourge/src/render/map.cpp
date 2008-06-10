@@ -4656,7 +4656,20 @@ void Map::initOutdoorsGroundTexture() {
 				bool s = isRockTexture( x, y + OUTDOOR_FLOOR_TEX_SIZE );
 				bool n = isRockTexture( x, y - OUTDOOR_FLOOR_TEX_SIZE );
 				
-				if( !w && !s ) {
+				if( !w && !s && !e ) {
+					angle = 0;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP; 
+				} else if( !e && !s && !n ) {
+					angle = 90;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+				} else if( !e && !n && !w ) {
+					angle = 180;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+				} else if( !w && !n && !s ) {
+					angle = 270;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;				
+				
+				} else if( !w && !s ) {
 					angle = 0;
 					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER; 
 				} else if( !e && !s ) {
