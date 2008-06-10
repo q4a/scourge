@@ -4191,7 +4191,6 @@ bool Map::drawHeightMapFloor() {
 	for( int yy = getY() / OUTDOORS_STEP; yy < ( getY() + mapViewDepth ) / OUTDOORS_STEP; yy++ ) {
 		for( int xx = getX() / OUTDOORS_STEP; xx < ( getX() + mapViewWidth ) / OUTDOORS_STEP; xx++ ) {
 			if( outdoorTex[xx][yy].texture > 0 ) {
-				glColor4f( 1, 1, 1, 1 );
 				drawOutdoorTex( outdoorTex[xx][yy].texture, 
 				               xx + outdoorTex[xx][yy].offsetX, yy + outdoorTex[xx][yy].offsetY,
 				               outdoorTex[xx][yy].width, outdoorTex[xx][yy].height, outdoorTex[xx][yy].angle );
@@ -4258,7 +4257,8 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 	int ey = ty + th;
 	if( ey == sy ) ey++;	
 
-	float gx, gy;
+	int DIFF_Z = 0.01f / DIV;
+	CVectorTex *p;	
 	for( int xx = sx; xx < ex; xx++ ) {
 		for( int yy = sy; yy < ey; yy++ ) {
 
@@ -4270,30 +4270,25 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 			//glBegin( GL_LINE_LOOP );
 			glBegin( GL_QUADS );
 
+			p = &groundPos[ xx ][ yy + 1 ];
+			glColor4f( p->r, p->g, p->b, p->a );
 			glTexCoord2f( texSx, texEy );
-			//glColor4f( 1, 1, 1, 1 );
-			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
-			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + 0.26f / DIV );
+			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );			
 
-
+			p = &groundPos[ xx ][ yy ];
+			glColor4f( p->r, p->g, p->b, p->a );
 			glTexCoord2f( texSx, texSy );
-			//glColor4f( 1, 0, 0, 1 );
-			gx = groundPos[ xx ][ yy ].x - getX() / DIV;
-			gy = groundPos[ xx ][ yy ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + 0.26f / DIV );
+			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );
 
+			p = &groundPos[ xx + 1 ][ yy ];
+			glColor4f( p->r, p->g, p->b, p->a );
 			glTexCoord2f( texEx, texSy );
-			//glColor4f( 1, 1, 1, 1 );
-			gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
-			gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + 0.26f / DIV );
+			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );
 
+			p = &groundPos[ xx + 1 ][ yy + 1 ];
+			glColor4f( p->r, p->g, p->b, p->a );
 			glTexCoord2f( texEx, texEy );
-			//glColor4f( 1, 1, 1, 1 );
-			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
-			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + 0.26f / DIV );
+			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );
 
 			glEnd();
 		}
@@ -4486,41 +4481,46 @@ void Map::createGroundMap() {
 						ground[ xx + 1 ][ yy ] >= 10 && ground[ xx ][ yy + 1 ] >= 10 && 
 						ground[ xx - 1 ][ yy ] >= 10 && ground[ xx ][ yy - 1 ] >= 10 ) {
 					// snow
-					groundPos[ xx ][ yy ].r = 1;
-					groundPos[ xx ][ yy ].g = 1;
-					groundPos[ xx ][ yy ].b = 1;
-					groundPos[ xx ][ yy ].a = 1;
+//					groundPos[ xx ][ yy ].r = 1;
+//					groundPos[ xx ][ yy ].g = 1;
+//					groundPos[ xx ][ yy ].b = 1;
+//					groundPos[ xx ][ yy ].a = 1;
 				} else {
 					// ground (rock)
 					float n = ( h / ( 13.0f / DIV ) );
 					groundPos[ xx ][ yy ].r = n * 0.9f;
-					groundPos[ xx ][ yy ].g = n * 0.6f;
-					groundPos[ xx ][ yy ].b = n * 0.05f;
+					groundPos[ xx ][ yy ].g = n * 0.9f;
+					groundPos[ xx ][ yy ].b = n * 0.9f;
 					groundPos[ xx ][ yy ].a = 1;
 				}
 			} else if( ground[ xx ][ yy ] <= -10 ) {
+				// water
 				float n = ( -h / ( 13.0f / DIV ) );
 				groundPos[ xx ][ yy ].r = n * 0.05f;
 				groundPos[ xx ][ yy ].g = n * 0.4f;
 				groundPos[ xx ][ yy ].b = n * 1;
-				groundPos[ xx ][ yy ].a = 1;
+				groundPos[ xx ][ yy ].a = 1;				
 			} else {
 				float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;
 				if( Util::dice( 6 ) ) {
-					groundPos[ xx ][ yy ].r = n * 0.55f;
+					//groundPos[ xx ][ yy ].r = n * 0.55f;
+					groundPos[ xx ][ yy ].r = n;
 					groundPos[ xx ][ yy ].g = n;
-					groundPos[ xx ][ yy ].b = n * 0.45f;
+					//groundPos[ xx ][ yy ].b = n * 0.45f;
+					groundPos[ xx ][ yy ].b = n;
 					groundPos[ xx ][ yy ].a = 1;
 				} else {
 					groundPos[ xx ][ yy ].r = n;
 					groundPos[ xx ][ yy ].g = n;
-					groundPos[ xx ][ yy ].b = n * 0.25f;
+					//groundPos[ xx ][ yy ].b = n * 0.25f;
+					groundPos[ xx ][ yy ].b = n;
 					groundPos[ xx ][ yy ].a = 1;
 				}
 			}
 			//n++;
 		}
 	}
+	
 	
 	// add light
 	CVectorTex *p[3];
@@ -4616,6 +4616,9 @@ void Map::drawFlatFloor() {
 
 void Map::initOutdoorsGroundTexture() {
 	// set ground texture
+	
+	map<int,int> texturesUsed;
+	
 	int ex = MAP_WIDTH / OUTDOORS_STEP;
 	int ey = MAP_DEPTH / OUTDOORS_STEP;
 	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
@@ -4625,13 +4628,85 @@ void Map::initOutdoorsGroundTexture() {
 			int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( WallTheme::OUTDOOR_THEME_REF_GRASS );
 			GLuint *textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( WallTheme::OUTDOOR_THEME_REF_GRASS );
 			GLuint tex = textureGroup[ Util::dice( faceCount ) ];
+			
+			int rockFaceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( WallTheme::OUTDOOR_THEME_REF_ROCK );
+			GLuint *rockTextureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( WallTheme::OUTDOOR_THEME_REF_ROCK );
+			GLuint rockTex = rockTextureGroup[ Util::dice( rockFaceCount ) ];
+						
+			bool high = isRockTexture( x, y );			
 			for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ){
 				for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
-					setGroundTex( x + xx, y + yy, tex );				
+					setGroundTex( x + xx, y + yy, high ? rockTex : tex );
 				}
 			}
 		}
 	}
+			
+		
+	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
+		for( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
+			if( isRockTexture( x, y ) ) {
+				int angle = 0;
+				int sx = x;
+				int sy = y + 1 + OUTDOOR_FLOOR_TEX_SIZE;
+				int ref = -1;
+				
+				bool w = isRockTexture( x - OUTDOOR_FLOOR_TEX_SIZE, y );
+				bool e = isRockTexture( x + OUTDOOR_FLOOR_TEX_SIZE, y );
+				bool s = isRockTexture( x, y + OUTDOOR_FLOOR_TEX_SIZE );
+				bool n = isRockTexture( x, y - OUTDOOR_FLOOR_TEX_SIZE );
+				
+				if( !w && !s ) {
+					angle = 0;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER; 
+				} else if( !e && !s ) {
+					angle = 90;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
+				} else if( !e && !n ) {
+					angle = 180;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
+				} else if( !w && !n ) {
+					angle = 270;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;					
+				
+				} else if( !e ) {
+					angle = 180;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+				} else if( !w ) {
+					angle = 0;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+				} else if( !n ) {
+					angle = 270;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+				} else if( !s ) {
+					angle = 90;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+				}			
+				
+				if( ref > -1 ) {
+					setOutdoorTexture( sx * OUTDOORS_STEP, 
+					                   sy * OUTDOORS_STEP, 
+					                   0, 0, 
+					                   ref, 
+					                   angle, 
+					                   false, false );					
+				}
+			}
+		}
+	}
+}
+
+bool Map::isRockTexture( int x, int y ) {
+	bool high = false;
+	for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ){
+		for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
+			if( fabs( ground[ x + xx ][ y + yy ] ) > 10 ) {
+				high = true;
+				break;
+			}
+		}
+	}
+	return high;
 }
 
 int Map::addTrap( int x, int y, int w, int h ) {
