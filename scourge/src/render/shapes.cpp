@@ -44,7 +44,7 @@ char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
 };
 
 char WallTheme::outdoorThemeRefName[OUTDOOR_THEME_REF_COUNT][40] = {
-	"grass", "street", "street_cross", "street_end", "trail", "trail_turn", "trail_end", "water", "rock", "grass_edge", "grass_corner"
+	"grass", "street", "street_cross", "street_end", "trail", "trail_turn", "trail_end", "water", "rock", "grass_edge", "grass_corner", "grass_tip"
 };
 
 WallTheme::WallTheme( char const* name, Shapes *shapePal ) 
