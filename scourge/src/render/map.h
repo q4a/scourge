@@ -259,6 +259,7 @@ private:
   std::set<Uint8> trapSet;
   int selectedTrapIndex;
   bool isRoofShowing, isCurrentlyUnderRoof;
+  bool gridEnabled;
 
   int weather;
   
@@ -275,6 +276,9 @@ private:
   Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes );
   ~Map();
 
+  inline void setGridEnabled(bool b) { this->gridEnabled = b; }
+  inline bool isGridEnabled() { return this->gridEnabled; }
+  
 	inline void setQuakesEnabled( bool b ) { quakesEnabled = b; }
 	inline bool areQuakesEnabled() { return quakesEnabled; }
 	

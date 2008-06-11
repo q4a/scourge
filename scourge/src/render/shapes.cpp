@@ -1016,7 +1016,10 @@ GLuint Shapes::loadAlphaTexture( string& filename, int *width, int *height ) {
 	*width = tmpSurface->w;
 	*height = tmpSurface->h;
   }
-  if( tmpImage ) texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) {
+  	//texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  	texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_NEAREST );
+  }
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
   return texId;
