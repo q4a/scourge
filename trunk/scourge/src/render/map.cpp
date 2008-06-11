@@ -232,6 +232,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   
   isCurrentlyUnderRoof = isRoofShowing = true;
   weather = WEATHER_CLEAR;
+  
+  gridEnabled = true;
 
   adapter->writeLogMessage(Constants::getMessage(Constants::WELCOME), Constants::MSGTYPE_SYSTEM);
   adapter->writeLogMessage("----------------------------------", Constants::MSGTYPE_SYSTEM);
@@ -386,6 +388,8 @@ void Map::reset() {
   
   gates.clear();
   teleporters.clear();
+  
+  gridEnabled = true;
 }
 
 void Map::setViewArea(int x, int y, int w, int h) {
@@ -1337,7 +1341,7 @@ void Map::draw() {
 		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
 	}
 
-  if( settings->isGridShowing() ) willDrawGrid();
+  if( settings->isGridShowing() && gridEnabled ) willDrawGrid();
 }
 
 void Map::willDrawGrid() {
@@ -4198,7 +4202,7 @@ bool Map::drawHeightMapFloor() {
 		}
 	}
 
-	if( settings->isGridShowing() ) {
+	if( settings->isGridShowing() && gridEnabled ) {
 		//glDisable( GL_DEPTH_TEST );
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );	
@@ -4477,22 +4481,12 @@ void Map::createGroundMap() {
 
 			// height-based light
 			if( ground[ xx ][ yy ] >= 10 ) {
-				if( 0 == Util::dice( 5 ) &&
-						ground[ xx + 1 ][ yy ] >= 10 && ground[ xx ][ yy + 1 ] >= 10 && 
-						ground[ xx - 1 ][ yy ] >= 10 && ground[ xx ][ yy - 1 ] >= 10 ) {
-					// snow
-//					groundPos[ xx ][ yy ].r = 1;
-//					groundPos[ xx ][ yy ].g = 1;
-//					groundPos[ xx ][ yy ].b = 1;
-//					groundPos[ xx ][ yy ].a = 1;
-				} else {
-					// ground (rock)
-					float n = ( h / ( 13.0f / DIV ) );
-					groundPos[ xx ][ yy ].r = n * 0.9f;
-					groundPos[ xx ][ yy ].g = n * 0.9f;
-					groundPos[ xx ][ yy ].b = n * 0.9f;
-					groundPos[ xx ][ yy ].a = 1;
-				}
+				// ground (rock)
+				float n = ( h / ( 13.0f / DIV ) );
+				groundPos[ xx ][ yy ].r = n * 0.7f;
+				groundPos[ xx ][ yy ].g = n * 0.7f;
+				groundPos[ xx ][ yy ].b = n * 1.0f;
+				groundPos[ xx ][ yy ].a = 1;
 			} else if( ground[ xx ][ yy ] <= -10 ) {
 				// water
 				float n = ( -h / ( 13.0f / DIV ) );
@@ -4711,8 +4705,8 @@ void Map::initOutdoorsGroundTexture() {
 
 bool Map::isRockTexture( int x, int y ) {
 	bool high = false;
-	for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ){
-		for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
+	for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE + 1; xx++ ){
+		for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE + 1; yy++ ) {
 			if( fabs( ground[ x + xx ][ y + yy ] ) > 10 ) {
 				high = true;
 				break;

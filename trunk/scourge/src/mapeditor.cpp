@@ -453,6 +453,8 @@ bool MapEditor::handleEvent(SDL_Event *event) {
   	outdoorTextureVertFlip = !(outdoorTextureVertFlip);
   } else if(event->key.keysym.sym == SDLK_s ) {
   	scourge->getSquirrelConsole()->setVisible( scourge->getSquirrelConsole()->isVisible() ? false : true );
+  } else if(event->key.keysym.sym == SDLK_g ) {
+  	scourge->getMap()->setGridEnabled( scourge->getMap()->isGridEnabled() ? false : true );
   }
   break;  
   default: break;
