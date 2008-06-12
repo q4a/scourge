@@ -125,10 +125,10 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 				int mx = ( x - offs ) % WIDTH_IN_NODES;
 				int my = ( y - offs ) % DEPTH_IN_NODES;
 				if( cellular[ cx ][ cy ]->getNode( mx, my )->wall ) {
-					map->setGroundHeight( x, y, Util::roll( 10.0f, 16.0f ) );
+					map->setGroundHeight( x, y, Util::roll( 14.0f, 20.0f ) );
 				}
 			} else {
-				map->setGroundHeight( x, y, Util::roll( 10.0f, 16.0f ) );
+				map->setGroundHeight( x, y, Util::roll( 14.0f, 20.0f ) );
 			}
 		}
 	}

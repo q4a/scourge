@@ -4483,8 +4483,8 @@ void Map::createGroundMap() {
 			if( ground[ xx ][ yy ] >= 10 ) {
 				// ground (rock)
 				float n = ( h / ( 13.0f / DIV ) );
-				groundPos[ xx ][ yy ].r = n * 0.7f;
-				groundPos[ xx ][ yy ].g = n * 0.7f;
+				groundPos[ xx ][ yy ].r = n * 0.5f;
+				groundPos[ xx ][ yy ].g = n * 0.6f;
 				groundPos[ xx ][ yy ].b = n * 1.0f;
 				groundPos[ xx ][ yy ].a = 1;
 			} else if( ground[ xx ][ yy ] <= -10 ) {
@@ -4649,6 +4649,7 @@ void Map::initOutdoorsGroundTexture() {
 				bool e = isRockTexture( x + OUTDOOR_FLOOR_TEX_SIZE, y );
 				bool s = isRockTexture( x, y + OUTDOOR_FLOOR_TEX_SIZE );
 				bool n = isRockTexture( x, y - OUTDOOR_FLOOR_TEX_SIZE );
+				//bool high = isAllHigh( x, y - OUTDOOR_FLOOR_TEX_SIZE );
 				
 				if( !w && !s && !e ) {
 					angle = 0;
@@ -4661,7 +4662,14 @@ void Map::initOutdoorsGroundTexture() {
 					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
 				} else if( !w && !n && !s ) {
 					angle = 270;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;				
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+					
+				} else if( !w && !e ) {
+					angle = 0;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;
+				} else if( !n && !s ) {
+					angle = 90;
+					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;					
 				
 				} else if( !w && !s ) {
 					angle = 0;
@@ -4688,7 +4696,10 @@ void Map::initOutdoorsGroundTexture() {
 				} else if( !s ) {
 					angle = 90;
 					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-				}			
+//				} else if( high ) {
+//					angle = 0;
+//					ref = WallTheme::OUTDOOR_THEME_REF_SNOW;					
+				}
 				
 				if( ref > -1 ) {
 					setOutdoorTexture( sx * OUTDOORS_STEP, 
@@ -4709,6 +4720,19 @@ bool Map::isRockTexture( int x, int y ) {
 		for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE + 1; yy++ ) {
 			if( fabs( ground[ x + xx ][ y + yy ] ) > 10 ) {
 				high = true;
+				break;
+			}
+		}
+	}
+	return high;
+}
+
+bool Map::isAllHigh( int x, int y ) {
+	bool high = true;
+	for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE + 1; xx++ ){
+		for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE + 1; yy++ ) {
+			if( fabs( ground[ x + xx ][ y + yy ] ) < 10 ) {
+				high = false;
 				break;
 			}
 		}

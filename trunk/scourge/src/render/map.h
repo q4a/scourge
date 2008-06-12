@@ -666,7 +666,8 @@ private:
 	inline std::set<Location*> *getTeleporters() { return &teleporters; }
 
 protected:
-	bool isRockTexture( int x, int y ); 
+	bool isRockTexture( int x, int y );
+	bool isAllHigh( int x, int y );
   void clearTraps();
   void drawTraps();
 
