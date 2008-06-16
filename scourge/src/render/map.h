@@ -435,6 +435,8 @@ private:
   Shape *removePosition(Sint16 x, Sint16 y, Sint16 z);
   Shape *removeLocation(Sint16 x, Sint16 y, Sint16 z);
   
+  bool hasOutdoorTexture( int x, int y, int width, int height );
+  
   void setOutdoorTexture( int x, int y, float offsetX, float offsetY,
                           int ref, float angle, bool horizFlip, bool vertFlip );
   void removeOutdoorTexture( int x, int y, float width, float height );
@@ -666,8 +668,9 @@ private:
 	inline std::set<Location*> *getTeleporters() { return &teleporters; }
 
 protected:
+	void addHighVariation(int ref);
 	bool isRockTexture( int x, int y );
-	bool isAllHigh( int x, int y );
+	bool isAllHigh( int x, int y, int w, int h );
   void clearTraps();
   void drawTraps();
 

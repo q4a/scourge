@@ -2235,6 +2235,17 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 	return pos;
 }
 
+bool Map::hasOutdoorTexture( int x, int y, int width, int height ) {
+	for( int xx = x; xx < x + width; xx++ ) {
+		for( int yy = y - height - 1; yy <= y; yy++ ) {
+			int tx = x / OUTDOORS_STEP;
+			int ty = y / OUTDOORS_STEP;
+			if( outdoorTex[tx][ty].outdoorThemeRef != -1 ) return true;
+		}
+	}
+	return false;
+}
+
 void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref, 
                              float angle, bool horizFlip, bool vertFlip ) {
 	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
@@ -4649,7 +4660,6 @@ void Map::initOutdoorsGroundTexture() {
 				bool e = isRockTexture( x + OUTDOOR_FLOOR_TEX_SIZE, y );
 				bool s = isRockTexture( x, y + OUTDOOR_FLOOR_TEX_SIZE );
 				bool n = isRockTexture( x, y - OUTDOOR_FLOOR_TEX_SIZE );
-				//bool high = isAllHigh( x, y - OUTDOOR_FLOOR_TEX_SIZE );
 				
 				if( !w && !s && !e ) {
 					angle = 0;
@@ -4696,9 +4706,6 @@ void Map::initOutdoorsGroundTexture() {
 				} else if( !s ) {
 					angle = 90;
 					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-//				} else if( high ) {
-//					angle = 0;
-//					ref = WallTheme::OUTDOOR_THEME_REF_SNOW;					
 				}
 				
 				if( ref > -1 ) {
@@ -4712,6 +4719,28 @@ void Map::initOutdoorsGroundTexture() {
 			}
 		}
 	}
+	
+	addHighVariation( WallTheme::OUTDOOR_THEME_REF_SNOW );
+	addHighVariation( WallTheme::OUTDOOR_THEME_REF_SNOW_BIG );
+		
+}
+
+void Map::addHighVariation(int ref) {
+	int width = getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
+	int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
+	int outdoor_w = width / OUTDOORS_STEP;
+	int outdoor_h = height / OUTDOORS_STEP;
+	int ex = MAP_WIDTH / OUTDOORS_STEP;
+	int ey = MAP_DEPTH / OUTDOORS_STEP;
+	for( int x = 0; x < ex; x += outdoor_w ) {
+		for( int y = 0; y < ey; y += outdoor_h ) {
+			if( isAllHigh( x, y, outdoor_w, outdoor_h ) && !Util::dice( 10 ) && 
+					!hasOutdoorTexture( x, y, width, height ) ) {
+				setOutdoorTexture( x * OUTDOORS_STEP, ( y + outdoor_h + 1 ) * OUTDOORS_STEP, 
+				                   0, 0, ref, Util::dice( 4 ) * 90.0f, false, false );
+			}
+		}
+	}	
 }
 
 bool Map::isRockTexture( int x, int y ) {
@@ -4727,11 +4756,11 @@ bool Map::isRockTexture( int x, int y ) {
 	return high;
 }
 
-bool Map::isAllHigh( int x, int y ) {
+bool Map::isAllHigh( int x, int y, int w, int h ) {
 	bool high = true;
-	for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE + 1; xx++ ){
-		for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE + 1; yy++ ) {
-			if( fabs( ground[ x + xx ][ y + yy ] ) < 10 ) {
+	for( int xx = 0; xx < w + 1; xx++ ){
+		for( int yy = 0; yy < h + 1; yy++ ) {
+			if( ground[ x + xx ][ y + yy ] < 10 ) {
 				high = false;
 				break;
 			}
