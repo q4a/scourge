@@ -40,6 +40,13 @@ class Effect;
 class DisplayInfo;
 class MapRenderHelper;
 
+#define OUTDOOR_TEXTURE_STACK 10
+
+enum {
+	GRASS_LAYER = 0,
+	LAKEBED_LAYER
+};
+
 class Trap {
 public:
 	SDL_Rect r;
@@ -245,7 +252,7 @@ private:
 	bool quakesEnabled;
 
 	bool heightMapEnabled;
-	OutdoorTexture outdoorTex[MAP_WIDTH / OUTDOORS_STEP][MAP_DEPTH / OUTDOORS_STEP];
+	OutdoorTexture outdoorTex[MAP_WIDTH / OUTDOORS_STEP][MAP_DEPTH / OUTDOORS_STEP][OUTDOOR_TEXTURE_STACK];
 	float ground[MAP_WIDTH][MAP_DEPTH];
 	GLuint groundTex[MAP_WIDTH][MAP_DEPTH];
 	bool refreshGroundPos;
@@ -438,8 +445,9 @@ private:
   bool hasOutdoorTexture( int x, int y, int width, int height );
   
   void setOutdoorTexture( int x, int y, float offsetX, float offsetY,
-                          int ref, float angle, bool horizFlip, bool vertFlip );
-  void removeOutdoorTexture( int x, int y, float width, float height );
+                          int ref, float angle, bool horizFlip, 
+													bool vertFlip, int z );
+  void removeOutdoorTexture( int x, int y, float width, float height, int z );
 	
 	Shape *removeItemPosition( Sint16 x, Sint16 y );
   
@@ -668,8 +676,10 @@ private:
 	inline std::set<Location*> *getTeleporters() { return &teleporters; }
 
 protected:
-	void addHighVariation(int ref);
+	GLuint getThemeTex( int ref );
+	void addHighVariation(int ref, int z);
 	bool isRockTexture( int x, int y );
+	bool isLakebedTexture( int x, int y );
 	bool isAllHigh( int x, int y, int w, int h );
   void clearTraps();
   void drawTraps();
