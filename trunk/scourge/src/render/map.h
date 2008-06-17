@@ -40,11 +40,11 @@ class Effect;
 class DisplayInfo;
 class MapRenderHelper;
 
-#define OUTDOOR_TEXTURE_STACK 10
-
 enum {
-	GRASS_LAYER = 0,
-	LAKEBED_LAYER
+	GROUND_LAYER = 0,
+	ROAD_LAYER,
+
+	MAX_OUTDOOR_LAYER
 };
 
 class Trap {
@@ -252,7 +252,7 @@ private:
 	bool quakesEnabled;
 
 	bool heightMapEnabled;
-	OutdoorTexture outdoorTex[MAP_WIDTH / OUTDOORS_STEP][MAP_DEPTH / OUTDOORS_STEP][OUTDOOR_TEXTURE_STACK];
+	OutdoorTexture outdoorTex[MAP_WIDTH / OUTDOORS_STEP][MAP_DEPTH / OUTDOORS_STEP][MAX_OUTDOOR_LAYER];
 	float ground[MAP_WIDTH][MAP_DEPTH];
 	GLuint groundTex[MAP_WIDTH][MAP_DEPTH];
 	bool refreshGroundPos;
@@ -676,6 +676,7 @@ private:
 	inline std::set<Location*> *getTeleporters() { return &teleporters; }
 
 protected:
+	void applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n );
 	GLuint getThemeTex( int ref );
 	void addHighVariation(int ref, int z);
 	bool isRockTexture( int x, int y );

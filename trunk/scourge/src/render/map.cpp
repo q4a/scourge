@@ -189,7 +189,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 		for( int y = 0; y < MAP_DEPTH; y++ ) {
 			ground[x][y] = 0;
 			groundTex[x][y] = 0;
-			for( int z = 0; z < OUTDOOR_TEXTURE_STACK; z++ ) {
+			for( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 				int tx = x / OUTDOORS_STEP;
 				int ty = y / OUTDOORS_STEP;
 				outdoorTex[tx][ty][z].texture = 0;
@@ -377,7 +377,7 @@ void Map::reset() {
 		for( int y = 0; y < MAP_DEPTH; y++ ) {
 			ground[x][y] = 0;
 			groundTex[x][y] = 0;
-			for( int z = 0; z < OUTDOOR_TEXTURE_STACK; z++ ) {
+			for( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 				int tx = x / OUTDOORS_STEP;
 				int ty = y / OUTDOORS_STEP;
 				outdoorTex[tx][ty][z].texture = 0;
@@ -2248,7 +2248,7 @@ bool Map::hasOutdoorTexture( int x, int y, int width, int height ) {
 		for( int yy = y - height - 1; yy <= y; yy++ ) {
 			int tx = x / OUTDOORS_STEP;
 			int ty = y / OUTDOORS_STEP;
-			for( int z = 0; z < OUTDOOR_TEXTURE_STACK; z++ ) {
+			for( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 				if( outdoorTex[tx][ty][z].outdoorThemeRef != -1 ) return true;
 			}
 		}
@@ -3443,7 +3443,7 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 		for( int gy = 0; gy < MAP_DEPTH / OUTDOORS_STEP; gy++ ) {
 			Uint32 base = ( ground[ gx ][ gy ] < 0 ? NEG_GROUND_HEIGHT : 0x00000000 );
 			info->ground[ gx ][ gy ] = (Uint32)( fabs( ground[ gx ][ gy ] ) * 100 ) + base;
-			for( int z = 0; z < OUTDOOR_TEXTURE_STACK; z++ ) {
+			for( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 				if( outdoorTex[ gx ][ gy ][ z ].texture > 0 ) {
 					OutdoorTextureInfo *oti = (OutdoorTextureInfo*)malloc( sizeof( OutdoorTextureInfo ) );
 					int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( outdoorTex[ gx ][ gy ][z].outdoorThemeRef );
@@ -4216,7 +4216,7 @@ bool Map::drawHeightMapFloor() {
 	
 	// draw outdoor textures
 	//cerr << "from: " << getX() << "," << getY() << " to: " << ( getX() + mapViewWidth ) << "," << ( getY() + mapViewDepth ) << endl;  
-	for( int z = 0; z < OUTDOOR_TEXTURE_STACK; z++ ) {
+	for( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 		for( int yy = getY() / OUTDOORS_STEP; yy < ( getY() + mapViewDepth ) / OUTDOORS_STEP; yy++ ) {
 			for( int xx = getX() / OUTDOORS_STEP; xx < ( getX() + mapViewWidth ) / OUTDOORS_STEP; xx++ ) {
 				if( outdoorTex[xx][yy][z].texture > 0 ) {
@@ -4663,147 +4663,88 @@ void Map::initOutdoorsGroundTexture() {
 	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
 			if( isLakebedTexture( x, y ) ) {
-				int angle = 0;
-				int sx = x;
-				int sy = y + 1 + OUTDOOR_FLOOR_TEX_SIZE;
-				int ref = -1;
-				
 				bool w = isLakebedTexture( x - OUTDOOR_FLOOR_TEX_SIZE, y );
 				bool e = isLakebedTexture( x + OUTDOOR_FLOOR_TEX_SIZE, y );
 				bool s = isLakebedTexture( x, y + OUTDOOR_FLOOR_TEX_SIZE );
-				bool n = isLakebedTexture( x, y - OUTDOOR_FLOOR_TEX_SIZE );
-				
-				if( !w && !s && !e ) {
-					angle = 0;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP; 
-				} else if( !e && !s && !n ) {
-					angle = 90;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-				} else if( !e && !n && !w ) {
-					angle = 180;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-				} else if( !w && !n && !s ) {
-					angle = 270;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-					
-				} else if( !w && !e ) {
-					angle = 0;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;
-				} else if( !n && !s ) {
-					angle = 90;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;					
-				
-				} else if( !w && !s ) {
-					angle = 0;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER; 
-				} else if( !e && !s ) {
-					angle = 90;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-				} else if( !e && !n ) {
-					angle = 180;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-				} else if( !w && !n ) {
-					angle = 270;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;					
-				
-				} else if( !e ) {
-					angle = 180;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-				} else if( !w ) {
-					angle = 0;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-				} else if( !n ) {
-					angle = 270;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-				} else if( !s ) {
-					angle = 90;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-				}
-				
-				if( ref > -1 ) {
-					setOutdoorTexture( sx * OUTDOORS_STEP, 
-					                   sy * OUTDOORS_STEP, 
-					                   0, 0, 
-					                   ref, 
-					                   angle, 
-					                   false, false,
-														 LAKEBED_LAYER );					
-				}
+				bool n = isLakebedTexture( x, y - OUTDOOR_FLOOR_TEX_SIZE );				
+				applyGrassEdges( x, y, w, e, s, n );
 			}
 			if( isRockTexture( x, y ) ) {
-				int angle = 0;
-				int sx = x;
-				int sy = y + 1 + OUTDOOR_FLOOR_TEX_SIZE;
-				int ref = -1;
-				
 				bool w = isRockTexture( x - OUTDOOR_FLOOR_TEX_SIZE, y );
 				bool e = isRockTexture( x + OUTDOOR_FLOOR_TEX_SIZE, y );
 				bool s = isRockTexture( x, y + OUTDOOR_FLOOR_TEX_SIZE );
 				bool n = isRockTexture( x, y - OUTDOOR_FLOOR_TEX_SIZE );
-				
-				if( !w && !s && !e ) {
-					angle = 0;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP; 
-				} else if( !e && !s && !n ) {
-					angle = 90;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-				} else if( !e && !n && !w ) {
-					angle = 180;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-				} else if( !w && !n && !s ) {
-					angle = 270;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-					
-				} else if( !w && !e ) {
-					angle = 0;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;
-				} else if( !n && !s ) {
-					angle = 90;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;					
-				
-				} else if( !w && !s ) {
-					angle = 0;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER; 
-				} else if( !e && !s ) {
-					angle = 90;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-				} else if( !e && !n ) {
-					angle = 180;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-				} else if( !w && !n ) {
-					angle = 270;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;					
-				
-				} else if( !e ) {
-					angle = 180;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-				} else if( !w ) {
-					angle = 0;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-				} else if( !n ) {
-					angle = 270;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-				} else if( !s ) {
-					angle = 90;
-					ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
-				}
-				
-				if( ref > -1 ) {
-					setOutdoorTexture( sx * OUTDOORS_STEP, 
-					                   sy * OUTDOORS_STEP, 
-					                   0, 0, 
-					                   ref, 
-					                   angle, 
-					                   false, false,
-														 GRASS_LAYER );					
-				}
+				applyGrassEdges( x, y, w, e, s, n );
 			}
 		}
 	}
 	
-	addHighVariation( WallTheme::OUTDOOR_THEME_REF_SNOW, GRASS_LAYER );
-	addHighVariation( WallTheme::OUTDOOR_THEME_REF_SNOW_BIG, GRASS_LAYER );
+	addHighVariation( WallTheme::OUTDOOR_THEME_REF_SNOW, GROUND_LAYER );
+	addHighVariation( WallTheme::OUTDOOR_THEME_REF_SNOW_BIG, GROUND_LAYER );
 		
+}
+
+void Map::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
+	int angle = 0;
+	int sx = x;
+	int sy = y + 1 + OUTDOOR_FLOOR_TEX_SIZE;
+	int ref = -1;
+	if( !w && !s && !e ) {
+		angle = 0;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP; 
+	} else if( !e && !s && !n ) {
+		angle = 90;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+	} else if( !e && !n && !w ) {
+		angle = 180;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+	} else if( !w && !n && !s ) {
+		angle = 270;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+
+	} else if( !w && !e ) {
+		angle = 0;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;
+	} else if( !n && !s ) {
+		angle = 90;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;					
+
+	} else if( !w && !s ) {
+		angle = 0;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER; 
+	} else if( !e && !s ) {
+		angle = 90;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
+	} else if( !e && !n ) {
+		angle = 180;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
+	} else if( !w && !n ) {
+		angle = 270;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;					
+
+	} else if( !e ) {
+		angle = 180;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+	} else if( !w ) {
+		angle = 0;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+	} else if( !n ) {
+		angle = 270;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+	} else if( !s ) {
+		angle = 90;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_EDGE;
+	}
+
+	if( ref > -1 ) {
+		setOutdoorTexture( sx * OUTDOORS_STEP, 
+											 sy * OUTDOORS_STEP, 
+											 0, 0, 
+											 ref, 
+											 angle, 
+											 false, false,
+											 GROUND_LAYER );					
+	}
 }
 
 GLuint Map::getThemeTex( int ref ) {

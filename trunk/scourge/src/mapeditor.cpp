@@ -698,7 +698,8 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
       		                                      ref, 
       		                                      outdoorTextureAngle, 
       		                                      outdoorTextureHorizFlip, 
-      		                                      outdoorTextureVertFlip, 0 );
+      		                                      outdoorTextureVertFlip, 
+																								ROAD_LAYER );
     		}
     		return;
     	} else {
@@ -719,7 +720,7 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
     } else if( button == SDL_BUTTON_RIGHT ) {
     	if( outdoorTexturesButton->isSelected() ) {
 				int ref = outdoorTexturesList->getSelectedLine();
-    		scourge->getMap()->removeOutdoorTexture( xx, yy + 1, scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureWidth( ref ), scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureHeight( ref ), 0 );    	
+    		scourge->getMap()->removeOutdoorTexture( xx, yy + 1, scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureWidth( ref ), scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureHeight( ref ), ROAD_LAYER );
     	} else if( getShape( &shape ) ) {
         for( int sx = 0; sx < shape->getWidth(); sx++ ) {
           for( int sy = 0; sy < shape->getDepth(); sy++ ) {
