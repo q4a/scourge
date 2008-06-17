@@ -365,6 +365,7 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 		file->write( &( oti->offsetX ) );
 		file->write( &( oti->offsetY ) );
 		file->write( &( oti->outdoorThemeRef ) );
+		file->write( &( oti->z ) );
 	}
 }
 
@@ -575,6 +576,11 @@ MapInfo *Persist::loadMap( File *file ) {
 			file->read( &( oti->offsetX ) );
 			file->read( &( oti->offsetY ) );
 			file->read( &( oti->outdoorThemeRef ) );
+			if( info->version >= 41 ) {
+				file->read( &( oti->z ) );
+			} else {
+				oti->z = 0;
+			}
 			info->outdoorTexture[ x ] = oti;
 		}		
 	} else {

@@ -23,7 +23,7 @@
 
 class File;
 
-#define PERSIST_VERSION 40
+#define PERSIST_VERSION 41
 
 #define OLDEST_HANDLED_VERSION 15
 
@@ -149,6 +149,7 @@ struct OutdoorTextureInfo {
 	Uint32 angle;
 	Uint8 horizFlip, vertFlip;
 	Uint16 outdoorThemeRef;
+	Uint8 z;
 };
 
 struct MapInfo {

@@ -698,7 +698,7 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
       		                                      ref, 
       		                                      outdoorTextureAngle, 
       		                                      outdoorTextureHorizFlip, 
-      		                                      outdoorTextureVertFlip );
+      		                                      outdoorTextureVertFlip, 0 );
     		}
     		return;
     	} else {
@@ -719,7 +719,7 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
     } else if( button == SDL_BUTTON_RIGHT ) {
     	if( outdoorTexturesButton->isSelected() ) {
 				int ref = outdoorTexturesList->getSelectedLine();
-    		scourge->getMap()->removeOutdoorTexture( xx, yy + 1, scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureWidth( ref ), scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureHeight( ref ) );    	
+    		scourge->getMap()->removeOutdoorTexture( xx, yy + 1, scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureWidth( ref ), scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureHeight( ref ), 0 );    	
     	} else if( getShape( &shape ) ) {
         for( int sx = 0; sx < shape->getWidth(); sx++ ) {
           for( int sy = 0; sy < shape->getDepth(); sy++ ) {
