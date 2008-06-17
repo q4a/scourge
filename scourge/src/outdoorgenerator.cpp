@@ -553,7 +553,7 @@ void OutdoorGenerator::addOutdoorTexture( Map *map, ShapePalette *shapePal, Sint
 	int w = shapePal->getCurrentTheme()->getOutdoorTextureWidth( ref );
 	int h = shapePal->getCurrentTheme()->getOutdoorTextureHeight( ref );
 
-	map->setOutdoorTexture( mapx, mapy + 1, 0, 0, ref, angle, horiz, vert, 0 );
+	map->setOutdoorTexture( mapx, mapy + 1, 0, 0, ref, angle, horiz, vert, ROAD_LAYER );
 	flattenChunkWithLimits( map, mapx, mapy, w, h, 0, 1 );
 }
 
