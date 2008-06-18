@@ -4641,40 +4641,36 @@ void Map::initOutdoorsGroundTexture() {
 	
 	int ex = MAP_WIDTH / OUTDOORS_STEP;
 	int ey = MAP_DEPTH / OUTDOORS_STEP;
+	// ideally the below would be refs[ex][ey] but that won't work in C++... :-(
+	int refs[MAP_WIDTH][MAP_DEPTH];
 	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
 		for( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
-			//GLuint tex = 0;
-			//int n = Util::dice( 3 );
-			GLuint grassTex = getThemeTex( WallTheme::OUTDOOR_THEME_REF_GRASS );
-			GLuint rockTex = getThemeTex( WallTheme::OUTDOOR_THEME_REF_ROCK );
-			GLuint lakebedTex = getThemeTex( WallTheme::OUTDOOR_THEME_REF_LAKEBED );
-						
 			bool high = isRockTexture( x, y );
-			bool low = isLakebedTexture( x, y );			
+			bool low = isLakebedTexture( x, y );
+			// if it's both high and low, make rock texture. Otherwise mountain sides will be drawn with lakebed texture.
+			int r = high ? WallTheme::OUTDOOR_THEME_REF_ROCK : 
+				( low ? WallTheme::OUTDOOR_THEME_REF_LAKEBED : 
+					WallTheme::OUTDOOR_THEME_REF_GRASS );
+			GLuint tex = getThemeTex( r );
 			for( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ){
 				for( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
-					setGroundTex( x + xx, y + yy, high ? rockTex : ( low ? lakebedTex : grassTex ) );
+					refs[x + xx][y + yy] = r;
+					setGroundTex( x + xx, y + yy, tex );
 				}
 			}
 		}
 	}
 			
-		
-	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
-		for( int y = 0; y < ey; y += OUTDOOR_FLOOR_TEX_SIZE ) {
-			if( isLakebedTexture( x, y ) ) {
-				bool w = isLakebedTexture( x - OUTDOOR_FLOOR_TEX_SIZE, y );
-				bool e = isLakebedTexture( x + OUTDOOR_FLOOR_TEX_SIZE, y );
-				bool s = isLakebedTexture( x, y + OUTDOOR_FLOOR_TEX_SIZE );
-				bool n = isLakebedTexture( x, y - OUTDOOR_FLOOR_TEX_SIZE );				
-				applyGrassEdges( x, y, w, e, s, n );
-			}
-			if( isRockTexture( x, y ) ) {
-				bool w = isRockTexture( x - OUTDOOR_FLOOR_TEX_SIZE, y );
-				bool e = isRockTexture( x + OUTDOOR_FLOOR_TEX_SIZE, y );
-				bool s = isRockTexture( x, y + OUTDOOR_FLOOR_TEX_SIZE );
-				bool n = isRockTexture( x, y - OUTDOOR_FLOOR_TEX_SIZE );
-				applyGrassEdges( x, y, w, e, s, n );
+	for( int x = OUTDOOR_FLOOR_TEX_SIZE; x < ex - OUTDOOR_FLOOR_TEX_SIZE; x += OUTDOOR_FLOOR_TEX_SIZE ) {
+		for( int y = OUTDOOR_FLOOR_TEX_SIZE; y < ey - OUTDOOR_FLOOR_TEX_SIZE; y += OUTDOOR_FLOOR_TEX_SIZE ) {
+			if( refs[x][y] != WallTheme::OUTDOOR_THEME_REF_GRASS ) {
+				bool w = refs[x - OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
+				bool e = refs[x + OUTDOOR_FLOOR_TEX_SIZE][y] == refs[x][y] ? true : false;
+				bool s = refs[x][y + OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
+				bool n = refs[x][y - OUTDOOR_FLOOR_TEX_SIZE] == refs[x][y] ? true : false;
+				if( !( w && e && s && n ) ) {
+					applyGrassEdges( x, y, w, e, s, n );
+				}
 			}
 		}
 	}
