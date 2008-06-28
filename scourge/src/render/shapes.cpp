@@ -955,6 +955,9 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
   }
 }
 
+// places to look for system textures (must end in "")
+char *textureDirs[] = { "/textures/", "/cave/default/", "" };
+
 GLuint Shapes::loadSystemTexture( const string& line ) {
   if( isHeadless() ) return 0;
 
@@ -966,27 +969,25 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
   GLuint id = findTextureByName( line );
   if( !id ) {
     textures[texture_count].filename = line;
-    string path = "/textures/" + textures[texture_count].filename;
-    // load the texture
-		/*
-    id = textures[ texture_count ].id = loadGLTextures( path );
-    texture_count++;
-		*/
-
-		SDL_Surface *tmpSurface;
-		GLubyte *tmpImage;
-		
-		setupAlphaBlendedBMP( path, tmpSurface, tmpImage );
-		//setupImage( path, tmpSurface, tmpImage );
-				
-		if( tmpSurface ) {
-			id = textures[ texture_count ].id = 
-				loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );			
-			SDL_FreeSurface( tmpSurface );
-			delete [] tmpImage;
-		} else {
-			id = textures[ texture_count ].id = 0;
-		}
+    int dirCount = 0;
+    while( strlen( textureDirs[dirCount] ) ) {
+	    string path = textureDirs[dirCount] + textures[texture_count].filename;
+	    // load the texture
+			SDL_Surface *tmpSurface;
+			GLubyte *tmpImage;
+			
+			setupAlphaBlendedBMP( path, tmpSurface, tmpImage );				
+			if( tmpSurface ) {
+				id = textures[ texture_count ].id = 
+					loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );			
+				SDL_FreeSurface( tmpSurface );
+				delete [] tmpImage;
+				break;
+			} else {
+				id = textures[ texture_count ].id = 0;
+			}
+			dirCount++;
+    }
 		texture_count++;
   }
   return id;
