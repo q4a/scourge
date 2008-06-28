@@ -22,6 +22,7 @@
 #include "../render/renderlib.h"
 #include "../test/combattest.h"
 #include "../sound.h"
+#include "../debug.h"
 
 using namespace std;
 
@@ -60,6 +61,7 @@ ScriptClassMemberDecl SqGame::members[] = {
 	{ "void", "moveCamera", SqGame::_moveCamera, 0, 0, "Position the camera." },
 	{ "void", "continueAt", SqGame::_continueAt, 0, 0, "Call a squirrel function after the specified timeout." },
 	{ "void", "setDepthLimits", SqGame::_setDepthLimits, 0, 0, "Set the min and max depth values used for orthographic rendering." },
+	{ "bool", "getRerunMovies", SqGame::_getRerunMovies, 0, 0, "Always re-run movies? A debug feature." },	
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members, 
@@ -346,3 +348,7 @@ int SqGame::_setDepthLimits( HSQUIRRELVM vm ) {
 	return 0;
 }
 
+int SqGame::_getRerunMovies( HSQUIRRELVM vm ) {
+  sq_pushbool( vm, RERUN_MOVIES );
+  return 1;
+}

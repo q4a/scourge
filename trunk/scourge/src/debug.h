@@ -73,5 +73,8 @@
 
 //#define DEBUG_HEIGHT_MAP 1
 
+// Set to 0 or 1 to always rerun movies. Useful to debug movies that only occur once.
+#define RERUN_MOVIES 0
+
 #endif
 
