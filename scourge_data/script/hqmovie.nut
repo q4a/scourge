@@ -2,7 +2,7 @@ function startHqMovie() {
 	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
 		key <- "hqMovie";
 		value <- scourgeGame.getValue( key );
-		//if( value == null ) {
+		if( value == null || scourgeGame.getRerunMovies() ) {
 			scourgeGame.setValue( key, "true" );
 
 			// set the depth of the rendered area
@@ -24,7 +24,7 @@ function startHqMovie() {
 			scourgeGame.moveCamera( 150, 138, 0, 0, 85, 260, 1.8, 500 );
 			
 			scourgeGame.continueAt( "initHq_part2", 1000 );
-		//}
+		}
 	}
 }
 
