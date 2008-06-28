@@ -333,7 +333,7 @@ void C3DSShape::preRenderLight() {
         }
 
         // reverse and convert to value between 0 and 1
-        delta = 1.0f - (delta / 180.0f);
+        delta = 0.3f + ( 1.0f - (delta / 180.0f) ) * 0.7f;
 
         // store the value
         pObject->shadingColorDelta[ index ] = delta;
