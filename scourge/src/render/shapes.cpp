@@ -72,12 +72,20 @@ void WallTheme::load() {
 //  cerr << "*** Loading theme: " << getName() << endl;
 //  debug();
   for(int ref = 0; ref < THEME_REF_COUNT; ref++) {
+  	if( faceCount[ ref ] == 0 ) {
+			cerr << "No textures defined for theme. Ref=" << themeRefName[ ref ] << endl;
+			continue;
+		}
     for(int face = 0; face < faceCount[ ref ]; face++) {
       loadTextureGroup( ref, face, textures[ ref ][ face ] );
     }
   }
 	if( getHasOutdoor() ) {
 		for(int ref = 0; ref < OUTDOOR_THEME_REF_COUNT; ref++) {
+			if( outdoorFaceCount[ ref ] == 0 ) {
+				cerr << "No textures defined for outdoor theme. Ref=" << outdoorThemeRefName[ ref ] << endl;
+				continue;
+			}
 			for(int face = 0; face < outdoorFaceCount[ ref ]; face++) {
 				loadTextureGroup( ref, face, outdoorTextures[ ref ][ face ], true );
 			}
@@ -122,12 +130,19 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 					//cerr << "\tLoading non-BMP" << endl;
 					id = shapePal->loadAlphaTexture( path );
 				}
+				
+				if( id == 0 ) {
+			  	cerr << "Error: unable to load theme texture for: ref=" << 
+			  	( outdoor ? outdoorThemeRefName[ ref ] : themeRefName[ ref ] ) << 
+			  	" path=" << path << endl;
+			  }				
+				
         loadedTextures[s] = id;
       }
     } else {
       id = loadedTextures[s];
     }
-	}
+	}  
 	if( outdoor ) {
 		outdoorTextureGroup[ref][face] = id;  
 	} else {
@@ -335,6 +350,12 @@ void Shapes::loadCaveTheme( char *name ) {
 
 void Shapes::loadRandomTheme() {
   loadTheme( themes[ Util::dice( themeCount ) ] );
+}
+
+void Shapes::loadRandomOutdoorTheme() {
+	cerr << "loadRandomOutdoorTheme out of " << outdoorThemes.size() << endl;
+  loadTheme( outdoorThemes[ Util::dice( outdoorThemes.size() ) ] );
+  cerr << "\tcurrent theme=" << currentTheme->getName() << endl;
 }
 
 void Shapes::loadTheme(const char *themeName) {

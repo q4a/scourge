@@ -298,6 +298,7 @@ protected:
   std::vector<CharacterModelInfo*> character_models[2];
 
   WallTheme *themes[100], *caveThemes[100];
+  std::vector<WallTheme*> outdoorThemes;
   WallTheme *allThemes[100];
   int themeCount, allThemeCount, caveThemeCount;
   WallTheme *currentTheme;
@@ -357,6 +358,7 @@ public:
   void loadTheme( WallTheme *theme );
   void loadTheme( const char *name );
   void loadRandomTheme();
+  void loadRandomOutdoorTheme();
   void loadRandomCaveTheme();
 	void loadCaveTheme( char *name );
 	void loadDebugTheme();
