@@ -688,7 +688,7 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
     			int ref = outdoorTexturesList->getSelectedLine();
     			int faceCount = scourge->getShapePalette()->getCurrentTheme()->getOutdoorFaceCount( ref );
   				if( faceCount == 0 ) {
-  					cerr << "Error: no textures for outdoor theme!" << endl;
+  					cerr << "Map Editor Error: no textures for outdoor theme! ref=" << WallTheme::outdoorThemeRefName[ref] << endl;
   					return;
   				}
 //  				int w = scourge->getShapePalette()->getCurrentTheme()->getOutdoorTextureWidth( ref );

@@ -2260,7 +2260,7 @@ void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref
                              float angle, bool horizFlip, bool vertFlip, int z ) {
 	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
 	if( faceCount == 0 ) {
-		cerr << "Error: no textures for outdoor theme!" << endl;
+		//cerr << "Map Error: no textures for outdoor theme! ref=" << WallTheme::outdoorThemeRefName[ref] << endl;
 		return;
 	}
 	GLuint *textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );	
@@ -3568,9 +3568,8 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 	} else if( info->map_type == MapRenderHelper::OUTDOOR_HELPER ) {
 		// it's an outdoors type map
 		setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
-		// FIXME: do not hard-code
 		if( getPreferences()->isDebugTheme() ) shapes->loadDebugTheme();
-		else shapes->loadTheme("outdoor");
+		else shapes->loadTheme( (const char*)info->theme_name );
 	} else {
 		cerr << "*** error unknown map type: " << info->map_type << endl;
 		return false;

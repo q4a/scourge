@@ -109,7 +109,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 
   updateStatus( _( "Loading theme" ) );
   if( map->getPreferences()->isDebugTheme() ) shapePal->loadDebugTheme();
-	else shapePal->loadTheme("outdoor");
+	else shapePal->loadRandomOutdoorTheme();
 
 	map->setHeightMapEnabled( true );
 
@@ -547,7 +547,7 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 void OutdoorGenerator::addOutdoorTexture( Map *map, ShapePalette *shapePal, Sint16 mapx, Sint16 mapy, int ref, float angle, bool horiz, bool vert ) {
 	int faceCount = shapePal->getCurrentTheme()->getOutdoorFaceCount( ref );
 	if( faceCount == 0 ) {
-		cerr << "Error: no textures for outdoor theme!" << endl;
+		cerr << "Outdoor Generator Error: no textures for outdoor theme! ref=" << WallTheme::outdoorThemeRefName[ref] << endl;
 		return;
 	}
 	int w = shapePal->getCurrentTheme()->getOutdoorTextureWidth( ref );
