@@ -242,6 +242,7 @@ class WallTheme {
 
  protected:
   void loadTextureGroup( int ref, int face, char *texture, bool outdoor = false );
+  void createOutdoorEdgeTexture( int ref );
   void debug();
 };
   
@@ -330,6 +331,7 @@ public:
   Shapes( Session *session );
   virtual ~Shapes();
 
+  inline Session *getSession() { return this->session; }
 	inline bool isHeadless() { return session->getGameAdapter()->isHeadless(); }
 
 	inline int getRugCount() { return rugs.size(); }
