@@ -400,6 +400,8 @@ public:
 	inline int getCursorHeight() { return cursorHeight; }
 
 	inline GLuint getSelection() { return selection; }
+	
+	GLuint createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW=256, int textureSizeH=256, int width=256, int height=256 );
 
 protected:
 	static Shapes *instance;

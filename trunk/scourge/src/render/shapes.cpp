@@ -99,120 +99,12 @@ void WallTheme::load() {
 }
 
 // Overlay the current 'grass' texture on the alpha-blended edge texture to create a theme-specific blend.
-void WallTheme::createOutdoorEdgeTexture( int ref ) {	
-	// todo: should be next power of 2 after width/height (maybe cap-ed at 256)
-  int textureSizeW = 256; 
-  int textureSizeH = 256;
-  int width = 256;
-  int height = 256;
-	
-  unsigned char *texInMem = (unsigned char *) malloc( textureSizeW * textureSizeH * 4);    
-  GLuint tex[1];
-  
-  glGenTextures(1, tex);    
-  glBindTexture(GL_TEXTURE_2D, tex[ 0 ]); 
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);  
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
-  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0,
-                GL_RGBA, GL_UNSIGNED_BYTE, texInMem );                       
-
-  glDisable( GL_CULL_FACE );
-  glDisable( GL_DEPTH_TEST );	  
-  
-  glPushMatrix();  
-  glLoadIdentity();
-  
-  glDisable( GL_TEXTURE_2D );
-  glColor4f( 0, 0, 0, 0 );
-  
-  glBegin( GL_QUADS );
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( 0, textureSizeH, 0 );
-  glVertex3f( textureSizeW, textureSizeH, 0 );
-  glVertex3f( textureSizeW, 0, 0 );
-  glEnd();
-  
-  glEnable( GL_TEXTURE_2D );
-  glColor4f(1, 1, 1, 1);
-
-  // draw the grass
-  //glEnable( GL_ALPHA_TEST );
-  //glAlphaFunc( GL_EQUAL, 0xff );
-  glEnable(GL_TEXTURE_2D);
-  glPushMatrix();
-  //    glTranslatef( x, y, 0 );
-  glBindTexture( GL_TEXTURE_2D, outdoorTextureGroup[ OUTDOOR_THEME_REF_GRASS ][ 0 ] );
-  glColor4f(1, 1, 1, 1);
-  
-  glBegin( GL_QUADS );
-  glNormal3f( 0, 0, 1 );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, 0, 0 );
-  glTexCoord2f( 0, 1 );
-  glVertex3f( 0, height, 0 );
-  glTexCoord2f( 1, 1 );
-  glVertex3f( width, height, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( width, 0, 0 );
-  glEnd();
-  glPopMatrix();
-
-  //glDisable( GL_ALPHA_TEST );
-  glDisable(GL_TEXTURE_2D);
-  
-  // draw the alpha pixels only
-  glDisable( GL_CULL_FACE );
-  glDisable( GL_DEPTH_TEST );
-  glEnable( GL_TEXTURE_2D );
-  glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
-  glColor4f(1, 1, 1, 1);
-
-  glBindTexture( GL_TEXTURE_2D, outdoorTextureGroup[ ref ][ 0 ] );      
-  glBegin( GL_QUADS );
-  glNormal3f( 0, 0, 1 );
-  glTexCoord2f( 0, 0 );
-  glVertex3f( 0, 0, 0 );
-  glTexCoord2f( 0, 1 );
-  glVertex3f( 0, height, 0 );
-  glTexCoord2f( 1, 1 );
-  glVertex3f( width, height, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( width, 0, 0 );
-  glEnd();	  
-  
-  glPopMatrix();	  
-  glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-
-  // Copy to a texture
-  glLoadIdentity();
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, tex[0]);
-  glCopyTexSubImage2D(
-                     GL_TEXTURE_2D,
-                     0,      // MIPMAP level
-                     0,      // x texture offset
-                     0,      // y texture offset
-                     0,              // x window coordinates
-                     shapePal->getSession()->getGameAdapter()->getScreenHeight() - textureSizeH,   // y window coordinates
-                     textureSizeW,    // width
-                     textureSizeH     // height
-                     ); 
-  cerr << "OpenGl result for minimap texture building: " << Util::getOpenGLError() << endl;          
-  glPopMatrix();
-  //  glPopAttrib();
-
-  glDisable( GL_BLEND );
-  glEnable( GL_CULL_FACE );
-  glEnable( GL_DEPTH_TEST );
-  glEnable( GL_TEXTURE_2D );
-  
-  // copy texture to theme and clean up
+void WallTheme::createOutdoorEdgeTexture( int ref ) {
+	GLuint tex = shapePal->createAlphaTexture( outdoorTextureGroup[ ref ][ 0 ],
+	                                           outdoorTextureGroup[ OUTDOOR_THEME_REF_GRASS ][ 0 ] );  
   glDeleteTextures( 1, outdoorTextureGroup[ ref ] );
-  outdoorTextureGroup[ ref ][ 0 ] = tex[0];
-  free( texInMem );
+  outdoorTextureGroup[ ref ][ 0 ] = tex;
+	
 }
 
 void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor ) {
@@ -1249,4 +1141,129 @@ void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& 
 	   }
 	}
 }
+
+GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW, int textureSizeH, int width, int height ) {	
+	// todo: should be next power of 2 after width/height (maybe cap-ed at 256)
+//  int textureSizeW = 256; 
+//  int textureSizeH = 256;
+//  int width = 256;
+//  int height = 256;
+	
+  unsigned char *texInMem = (unsigned char *) malloc( textureSizeW * textureSizeH * 4);    
+  GLuint tex[1];
+  
+  glGenTextures(1, tex);    
+  glBindTexture(GL_TEXTURE_2D, tex[ 0 ]); 
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);  
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
+  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0,
+                GL_RGBA, GL_UNSIGNED_BYTE, texInMem );                       
+
+  glDisable( GL_CULL_FACE );
+  glDisable( GL_DEPTH_TEST );	  
+  
+  glPushMatrix();  
+  glLoadIdentity();
+  
+  glDisable( GL_TEXTURE_2D );
+  glColor4f( 0, 0, 0, 0 );
+  
+  glBegin( GL_QUADS );
+  glVertex3f( 0, 0, 0 );
+  glVertex3f( 0, textureSizeH, 0 );
+  glVertex3f( textureSizeW, textureSizeH, 0 );
+  glVertex3f( textureSizeW, 0, 0 );
+  glEnd();
+  
+  glEnable( GL_TEXTURE_2D );
+  glColor4f(1, 1, 1, 1);
+
+  // draw the grass
+  //glEnable( GL_ALPHA_TEST );
+  //glAlphaFunc( GL_EQUAL, 0xff );
+  glEnable(GL_TEXTURE_2D);
+  
+  //    glTranslatef( x, y, 0 );
+  glBindTexture( GL_TEXTURE_2D, sampleTex );
+  glColor4f(1, 1, 1, 1);
+  
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 0, 1 );
+  glVertex3f( 0, height, 0 );
+  glTexCoord2f( 1, 1 );
+  glVertex3f( width, height, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( width, 0, 0 );
+  glEnd();
+
+  //glDisable( GL_ALPHA_TEST );
+  glDisable(GL_TEXTURE_2D);
+  
+  // draw the alpha pixels only
+  glDisable( GL_CULL_FACE );
+  glDisable( GL_DEPTH_TEST );
+  glEnable( GL_TEXTURE_2D );
+  glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
+  glColor4f(1, 1, 1, 1);
+
+  glBindTexture( GL_TEXTURE_2D, alphaTex );      
+  glBegin( GL_QUADS );
+  glNormal3f( 0, 0, 1 );
+  glTexCoord2f( 0, 0 );
+  glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 0, 1 );
+  glVertex3f( 0, height, 0 );
+  glTexCoord2f( 1, 1 );
+  glVertex3f( width, height, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( width, 0, 0 );
+  glEnd();	  
+  
+  glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+
+  // Copy to a texture
+  glLoadIdentity();
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, tex[0]);
+  glCopyTexSubImage2D(
+                     GL_TEXTURE_2D,
+                     0,      // MIPMAP level
+                     0,      // x texture offset
+                     0,      // y texture offset
+                     0,              // x window coordinates
+                     getSession()->getGameAdapter()->getScreenHeight() - textureSizeH,   // y window coordinates
+                     textureSizeW,    // width
+                     textureSizeH     // height
+                     ); 
+  cerr << "OpenGl result for minimap texture building: " << Util::getOpenGLError() << endl;            
+  //  glPopAttrib();
+  
+  // cover with black
+  // todo: this should be the original background, not black
+  glDisable( GL_TEXTURE_2D );
+  glColor4f(0, 0, 0, 0);
+  glBegin( GL_QUADS );
+  glVertex3f( 0, 0, 0 );
+  glVertex3f( 0, height, 0 );
+  glVertex3f( width, height, 0 );
+  glVertex3f( width, 0, 0 );
+  glEnd();
+  glPopMatrix();    
+
+  glDisable( GL_BLEND );
+  glEnable( GL_CULL_FACE );
+  glEnable( GL_DEPTH_TEST );
+  glEnable( GL_TEXTURE_2D );
+  
+  // copy texture to theme and clean up
+  free( texInMem );
+  return tex[0];
+}
+
 
