@@ -155,7 +155,6 @@ class Creature : public RenderedCreature {
 	bool boss, savedMissionObjective, scripted;
 	
   GLuint portrait[1];
-  unsigned char * portraitInMemory;	
   
  public:
   static const int DIAMOND_FORMATION = 0;
