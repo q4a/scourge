@@ -560,9 +560,7 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 
 		// read the outdoor theme info
 		vector<ConfigNode*> *outv = node->getChildrenByName( "outdoors" );
-		cerr << "init theme: " << theme->getName() << endl;
 		if( outv && outv->size() ) {
-			cerr << "\thas outdoors" << endl;
 			theme->setHasOutdoor( true );
 			ConfigNode *outnode = (*outv)[0];
 			for(int ref = 0; ref < WallTheme::OUTDOOR_THEME_REF_COUNT; ref++) {
@@ -583,8 +581,6 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 				}
 				theme->setOutdoorFaceCount( ref, face );
 			}
-		} else {
-			cerr << "\thas NO outdoors" << endl;
 		}
 
 		if( node->hasValue( "alt_walls" ) ) {
@@ -596,15 +592,11 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 			}
 		}
 		
-		cerr << "init theme:" << theme->getName() << endl;
 		if( theme->getHasOutdoor() ) {
-			cerr << "\toutdoor" << endl;
 			outdoorThemes.push_back( theme );
 		} else if( cave ) {
-			cerr << "\tcave" << endl;
 			caveThemes[ caveThemeCount++ ] = theme;			
 		} else if( !special ) {
-			cerr << "\tregular" << endl;
 			themes[ themeCount++ ] = theme;
 		}
 		allThemes[ allThemeCount++ ] = theme;

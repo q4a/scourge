@@ -177,6 +177,8 @@ public:
 		glRotatef( iconRotY, 0.f, 1.f, 0.f );
 		glRotatef( iconRotZ, 0.f, 0.f, 1.f );	
 	}
+	
+	virtual inline bool isShownInMapEditor() { return true; }
   
 protected:
 	float getLight( float *normal );
