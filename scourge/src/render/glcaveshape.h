@@ -154,7 +154,7 @@ public:
   static void initializeShapes( Shapes *shapes );
   static inline GLCaveShape *getShape( int index ) { return shapeList[ index ]; }
 
-
+  virtual inline bool isShownInMapEditor() { return false; }
 
 protected:
   void drawFaces();

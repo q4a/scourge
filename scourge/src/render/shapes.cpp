@@ -367,9 +367,7 @@ void Shapes::loadRandomTheme() {
 }
 
 void Shapes::loadRandomOutdoorTheme() {
-	cerr << "loadRandomOutdoorTheme out of " << outdoorThemes.size() << endl;
   loadTheme( outdoorThemes[ Util::dice( outdoorThemes.size() ) ] );
-  cerr << "\tcurrent theme=" << currentTheme->getName() << endl;
 }
 
 void Shapes::loadTheme(const char *themeName) {
@@ -497,6 +495,13 @@ ShapeValues *Shapes::getShapeValueByName( const char *name, int *index ) {
 	}
 	cerr << "&&& warning: could not find shape values by name " << name << endl;
 	return NULL;
+}
+
+void Shapes::loadAllShapes() {
+	for(int i = 0; i < static_cast<int>(shapeValueVector.size()); i++) {
+		ShapeValues *sv = shapeValueVector[i];
+		loadShape( sv->name );
+	}
 }
 
 void Shapes::loadShape( const char *name ) {
@@ -991,7 +996,7 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
 }
 
 // places to look for system textures (must end in "")
-char *textureDirs[] = { "/textures/", "/cave/default/", "" };
+char *textureDirs[] = { "/textures/", "/cave/default/", "/objects/houses/", "" };
 
 GLuint Shapes::loadSystemTexture( const string& line ) {
   if( isHeadless() ) return 0;
@@ -1241,7 +1246,7 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
                      textureSizeW,    // width
                      textureSizeH     // height
                      ); 
-  cerr << "OpenGl result for minimap texture building: " << Util::getOpenGLError() << endl;            
+  //cerr << "OpenGl result for minimap texture building: " << Util::getOpenGLError() << endl;            
   //  glPopAttrib();
   
   // cover with black

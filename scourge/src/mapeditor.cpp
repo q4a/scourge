@@ -70,6 +70,8 @@ MapEditor::MapEditor( Scourge *scourge ) {
 	scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
 
 	createNewMapDialog();
+	
+	scourge->getShapePalette()->loadAllShapes();
 
   int w = 200;
   mainWin = new Window( scourge->getSDLHandler(),
@@ -229,10 +231,11 @@ MapEditor::MapEditor( Scourge *scourge ) {
 	yy += 79;
 
   map< string, GLShape* > *shapeMap = scourge->getShapePalette()->getShapeMap();
-  shapeNames = new string[ shapeMap->size() ];
+  shapeNames = new std::string[shapeMap->size()];
   count = 0;
   for (map<string, GLShape*>::iterator i = shapeMap->begin(); i != shapeMap->end(); ++i ) {
-    if( !contains( &seen, i->second ) ) {
+  	GLShape *shape = i->second;
+    if( !contains( &seen, shape ) && shape->isShownInMapEditor() ) {
       shapeNames[ count ] = i->first;
       count++;
     }

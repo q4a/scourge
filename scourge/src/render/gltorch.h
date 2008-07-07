@@ -52,6 +52,7 @@ public:
   inline bool drawLater() { return true; }
   inline void setupBlending() { glBlendFunc(GL_SRC_ALPHA, GL_ONE); }
 
+	virtual inline bool isShownInMapEditor() { return false; }
           
 protected:
   void initParticles();
