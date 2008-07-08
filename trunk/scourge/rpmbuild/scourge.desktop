@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Scourge
+Exec=scourge
+Icon=scourge
+Terminal=false
+Type=Application
+Encoding=UTF-8
+Categories=Game;ArcadeGame;RolePlaying;
+
