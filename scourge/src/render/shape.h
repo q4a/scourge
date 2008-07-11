@@ -41,6 +41,7 @@ private:
 	WindInfo *windInfo;
 	bool occludedSides[6];
 	int textureCount, textureIndex;
+	bool roof;
 
 protected:
 	int width, height, depth;
@@ -140,6 +141,11 @@ public:
 	inline int getTextureCount() { return textureCount; }
 	inline void setTextureIndex( int index ) { this->textureIndex = index; }
 	inline int getTextureIndex() { return textureIndex; }
+	
+	virtual inline bool isVirtual() { return false; }
+	
+	inline void setRoof( bool b ) { this->roof = b; }
+	inline bool isRoof() { return roof; }
 };
 
 #endif

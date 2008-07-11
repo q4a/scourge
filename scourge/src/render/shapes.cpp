@@ -23,6 +23,7 @@
 #include "md2shape.h"
 #include "Md2.h"
 #include "glcaveshape.h"
+#include "virtualshape.h"
 #include "../session.h"
 #include <fstream>
 #include <iostream>
@@ -572,6 +573,21 @@ void Shapes::loadShape( const char *name ) {
                     (i + 1), 
                     torchback, sv->torch);
       }
+    } else if( strlen( sv->refs ) ) {
+    	// recursive call:
+    	cerr << "* creating virtual shape: " << sv->name << endl;
+    	cerr << "\t* loading ref: " << sv->refs << endl;
+    	GLShape *refShape = findShapeByName( sv->refs );
+    	if( !refShape ) {
+    		cerr << "*** Error: can't find referenced shape: " << sv->refs << " for shape " << sv->name << endl;
+    	}
+    	shapes[(i + 1)] = 
+    		new VirtualShape( strdup( sv->name ),
+    		                  sv->width, sv->height, sv->depth,
+    		                  sv->o3ds_x, sv->o3ds_y, sv->o3ds_z,
+    		                  sv->draws, 
+    		                  refShape,
+    		                  i + 1 );
     } else {
       shapes[(i + 1)] =
       new GLShape(texture,
@@ -608,6 +624,7 @@ void Shapes::loadShape( const char *name ) {
 		shapes[ ( i + 1 ) ]->setIconRotation( sv->iconRotX, sv->iconRotY, sv->iconRotZ );
 		shapes[ ( i + 1 ) ]->setIcon( sv->icon, sv->iconWidth, sv->iconHeight );
 		shapes[ ( i + 1 ) ]->setAmbientName( sv->ambient );
+		shapes[ ( i + 1 ) ]->setRoof( sv->roof );
 
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];

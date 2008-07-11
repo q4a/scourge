@@ -206,6 +206,7 @@ protected:
   void initRugs( ConfigLang *config );
   void initSystemTextures( ConfigLang *config );
 	void initNativeShapes( ConfigLang *config );
+	void initVirtualShapes( ConfigLang *config );
 	void init3dsShapes( ConfigLang *config );
 	void initOccurance( ConfigNode *node, ShapeValues *sv );
 	void initThemes( ConfigLang *config );

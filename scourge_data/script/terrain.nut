@@ -105,3 +105,20 @@ function villageShapes() {
 		}
 	}
 }
+
+MAP_UNIT <- 16
+function drawHouse( x, y, w, h ) {
+	print( "in drawHouse x=" + x + " y=" + y + " w=" + w + " h=" + h + "\n" );
+	if( w >= 3 * MAP_UNIT ) {
+		if( scourgeGame.getMission().isFree( x + 2, y + h - 4, 0, "HOUSE_1_BASE" ) ) {
+			print( "\tadding house\n" );
+			//scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_1_BASE" );
+			scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_1_BASE_1" );
+			scourgeGame.getMission().setMapPosition( x + 2 + 6, y + h - 4, 0, "HOUSE_1_BASE_2" );
+			scourgeGame.getMission().setMapPosition( x + 2 + 36, y + h - 4, 0, "HOUSE_1_BASE_3" );
+			scourgeGame.getMission().setMapPosition( x + 2 + 16, y + h - 4 - 19, 0, "HOUSE_1_BASE_4" );
+			scourgeGame.getMission().setMapPosition( x + 2 + 6, y + h - 4 - 19, 0, "HOUSE_1_BASE_5" );
+			scourgeGame.getMission().setMapPosition( x + 2 - 3, y + h - 4, 10, "HOUSE_1_TOP" );
+		}
+	}
+}

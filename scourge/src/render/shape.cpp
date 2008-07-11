@@ -33,6 +33,7 @@ Shape::Shape(int width, int depth, int height, char *name, int descriptionGroup)
   outdoorShadow = false;
   wind = false;
   windInfo = NULL;
+  this->roof = false;
   for( int i = 0; i < 6; i++ ) occludedSides[i] = true;
 }
 
@@ -51,6 +52,7 @@ Shape::Shape(Shape *shape) {
   outdoorShadow = false;
   wind = false;
   windInfo = NULL;
+  this->roof = shape->roof;
   for( int i = 0; i < 6; i++ ) occludedSides[i] = true;
 }
 

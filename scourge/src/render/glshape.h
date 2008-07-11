@@ -179,7 +179,6 @@ public:
 	}
 	
 	virtual inline bool isShownInMapEditor() { return true; }
-  
 protected:
 	float getLight( float *normal );
   bool locked;

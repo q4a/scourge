@@ -1150,7 +1150,7 @@ bool Scourge::useItem(int x, int y, int z) {
 
   Location *pos = levelMap->getPosition(x, y, z);
 	if( !pos ) pos = levelMap->getItemLocation( x, y );
-  if (pos) {
+  if (pos ) {
     Shape *shape = (pos->item ? pos->item->getShape() : pos->shape);
     if (levelMap->isWallBetweenShapes(toint(party->getPlayer()->getX()),
                                  toint(party->getPlayer()->getY()),

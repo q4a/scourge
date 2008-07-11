@@ -499,8 +499,6 @@ bool ScourgeHandler::handleEvent(Widget *widget, SDL_Event *event) {
 
 void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, bool wasMapMoving ) {
 
-	
-
   // don't drag if you haven't started yet
   willStartDrag = false;
 
@@ -552,13 +550,10 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, boo
 			return;
     }
 	
-
-
-
     if( scourge->useItem( mapx, mapy, mapz ) ) {
       return;
     }
-
+    
     if(shouldCloseAllContainers && !scourge->inTurnBasedCombatPlayerTurn() && scourge->getUserConfiguration()->isHideInventoriesOnMove()) {
       scourge->closeAllContainerGuis();
     }	
@@ -577,21 +572,21 @@ void ScourgeHandler::processGameMouseClick(Uint16 x, Uint16 y, Uint8 button, boo
         return;
       }
     }
-
+		
     // Make party move to new location
     int xx = mapx - ( scourge->getParty()->getPlayer()->getShape()->getWidth() / 2);
     int yy = mapy + 1 + ( scourge->getParty()->getPlayer()->getShape()->getHeight() / 2);
     if( !scourge->getParty()->setSelXY( xx, yy ) ) {
       scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_FORBIDDEN, true );
     }
-
+    
     // start round
     if( scourge->inTurnBasedCombatPlayerTurn() ) {
       if( scourge->getSDLHandler()->isDoubleClick ) {
         scourge->getParty()->toggleRound( false );
       }
     }
-
+    
   } else if( button == SDL_BUTTON_RIGHT && !wasMapMoving ) {
     scourge->describeLocation( scourge->getMap()->getCursorMapX(), 
                                scourge->getMap()->getCursorMapY(), 

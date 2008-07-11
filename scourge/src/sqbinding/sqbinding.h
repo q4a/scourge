@@ -227,6 +227,7 @@ public:
 
   bool compile( const std::string& filename );
 
+  bool callIntArgMethod( const char *name, int argc, int *args );
   bool callBoolMethod( const char *name, HSQOBJECT *param, bool *result );
   bool callNoArgMethod( const char *name, HSQOBJECT *param=NULL );
   bool callNoArgStringReturnMethod( const char *name, char *answer );
