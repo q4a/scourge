@@ -421,13 +421,36 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 	// not too close to another house
 	for( int vx = -1; vx < w + 1; vx++ ) {
 		for( int vy = -1; vy < h + 1; vy++ ) {
-			Shape *shape = map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT ); 
-			if( shape == shapePal->findShapeByName( "ROOM_FLOOR_TILE" ) ) {
-				//cerr << "\tabandon: too close to another." << endl;
-				return false;
+			for( int vz = 0; vz < MAP_VIEW_HEIGHT; vz++ ) {
+				Location *pos = map->getLocation( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT, vz );
+				if( pos ) {
+					return false;
+				}
 			}
+//			Shape *shape = map->getFloorPosition( x + vx * MAP_UNIT, y + vy * MAP_UNIT + MAP_UNIT ); 
+//			if( shape == shapePal->findShapeByName( "ROOM_FLOOR_TILE" ) ) {
+//				//cerr << "\tabandon: too close to another." << endl;
+//				return false;
+//			}
 		}
-	}		
+	}	
+	
+	for( int vx = 0; vx < w; vx++ ) {
+		for( int vy = 0; vy < h; vy++ ) {
+			int xp = x + vx * MAP_UNIT;
+			int yp = y + vy * MAP_UNIT;
+			flattenChunk( map, xp, yp );
+		}
+	}
+	
+	int coords[4];
+	coords[0] = x;
+	coords[1] = y;
+	coords[2] = w * MAP_UNIT;
+	coords[3] = h * MAP_UNIT;
+	shapePal->getSession()->getSquirrel()->callIntArgMethod( "drawHouse", 4, coords );
+	
+	/*
 	int door = Util::dice( 4 );
 	for( int vx = 0; vx < w; vx++ ) {
 		for( int vy = 0; vy < h; vy++ ) {
@@ -495,6 +518,7 @@ bool OutdoorGenerator::createHouse( Map *map, ShapePalette *shapePal, int x, int
 			}
 		}
 	}
+	*/
 	return true;
 }
 

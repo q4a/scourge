@@ -644,20 +644,20 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 						} else if( adapter->getPlayer() ) {
 							int px = toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 );
 							int py = toint( adapter->getPlayer()->getY() - 1 - adapter->getPlayer()->getShape()->getDepth() / 2 );
-							int fx = ( ( px - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
-							int fy = ( ( py - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+							//int fx = ( ( px - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+							//int fy = ( ( py - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
 							Location *roof = getLocation( px, py, MAP_WALL_HEIGHT );
-							if( !( roof && getFloorPosition( fx, fy ) ) ) {
+							if( !( roof && roof->shape && roof->shape->isRoof() ) ) {
 								isCurrentlyUnderRoof = false;
 							}
 						}
 						if( isCurrentlyUnderRoof != oldRoof ) {
 							resortShapes = true;
 						}
-          	int maxZ = ( isCurrentlyUnderRoof ? MAP_WALL_HEIGHT : MAP_VIEW_HEIGHT );          	
+          	//int maxZ = ( isCurrentlyUnderRoof ? MAP_WALL_HEIGHT : MAP_VIEW_HEIGHT );          	
           	
 						
-            for(int zp = 0; zp < maxZ; zp++) {
+            for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
               if(lightMap[chunkX][chunkY] && effect[posX][posY][zp] && !effect[posX][posY][zp]->isInDelay() ) {
                 xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
                 ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - 1 + yp + chunkOffsetY) / DIV;
@@ -1625,6 +1625,11 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   if( helper && later && later->creature && !helper->isVisible( later->pos->x, later->pos->y, later->creature->getShape() ) ) {
     return;
   }
+  
+  // fixme: should draw with alpha value that fades out...
+  if( shape->isRoof() && ( selectMode || isCurrentlyUnderRoof ) ) {
+  	return;
+  }
 
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
 
@@ -1765,6 +1770,20 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
 		}
 		shape->draw();
 	}
+  
+  // in the map editor outline virtual shapes
+  if( shape->isVirtual() && settings->isGridShowing() && gridEnabled ) {
+  	glColor4f( 0.75f, 0.75f, 1, 1 );
+  	glDisable( GL_TEXTURE_2D );
+  	glBegin( GL_LINE_LOOP );
+  	glVertex3f( 0, 0, shape->getHeight() / DIV );
+  	glVertex3f( 0, shape->getDepth() / DIV, shape->getHeight() / DIV );
+  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, shape->getHeight() / DIV );
+  	glVertex3f( shape->getWidth() / DIV, 0, shape->getHeight() / DIV );
+  	glEnd();
+  	glEnable( GL_TEXTURE_2D );
+  }
+  
 	glPopName();
 	glPopMatrix();
 
@@ -2087,7 +2106,7 @@ Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z, Sint16 shapeX, Sint16 sh
       int sz = z;
       while(sz < zz + s->getHeight()) {
         Location *loc = pos[x + sx][y - sy][z + sz];
-        if(loc && loc->shape && 
+        if(loc && loc->shape && !loc->shape->isRoof() &&
            !(loc->x == shapeX && loc->y == shapeY && loc->z == shapeZ)) {
           if(newz && (loc->item || loc->creature)) {
             int tz = loc->z + loc->shape->getHeight();

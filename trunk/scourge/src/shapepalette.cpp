@@ -106,6 +106,7 @@ void ShapePalette::initialize() {
 	initDescriptions( config );
 	initNativeShapes( config );
 	init3dsShapes( config );
+	initVirtualShapes( config );
 	initSounds( config );
   delete config;
 
@@ -633,6 +634,8 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	if( sv->ambient != "" ) {
 		session->getSound()->storeAmbientObjectSound( sv->ambient );
 	}
+	sv->draws = false;
+	strcpy( sv->refs, "" );
 
 	// load some common values
 	strcpy( sv->name, node->getValueAsString( "name" ) );
@@ -711,7 +714,8 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	} else {
 	  sv->icon = sv->iconWidth = sv->iconHeight = 0;
 	}
-
+	sv->roof = node->getValueAsBool( "roof" );
+	
 	return sv;
 }
 
@@ -754,6 +758,42 @@ void ShapePalette::initSounds( ConfigLang *config ) {
 		string sound = node->getValueAsString( "sound" );
 		getSession()->getSound()->storeSound( name, sound );
 	}
+}
+
+void ShapePalette::initVirtualShapes( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+		getChildrenByName( "3ds_shapes" );
+	vector<ConfigNode*> *vv = (*v)[0]->
+		getChildrenByName( "virtual_shape" );
+
+	for( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = (*vv)[i];
+		
+		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
+
+		ShapeValues *sv = createShapeValues( node );
+
+		// dimensions
+		char tmp[100];
+		strcpy( tmp, node->getValueAsString( "dimensions" ) );
+		sv->width = atoi( strtok( tmp, "," ) );
+		sv->depth = atoi( strtok( NULL, "," ) );
+		sv->height = atoi( strtok( NULL, "," ) );
+
+		// hack: reuse 3ds offsets for map offset of virtual shapes
+		strcpy( tmp, node->getValueAsString( "offset" ) );
+    if( strlen( tmp ) ) {
+      sv->o3ds_x = atof( strtok( tmp, "," ) );
+      sv->o3ds_y = atof( strtok( NULL, "," ) );
+      sv->o3ds_z = atof( strtok( NULL, "," ) );
+    }
+    
+    strcpy( sv->refs, node->getValueAsString( "refs" ) );
+    sv->draws = node->getValueAsBool( "draws" );
+
+    // store it for now
+    shapeValueVector.push_back(sv);
+	}	
 }
 
 void ShapePalette::init3dsShapes( ConfigLang *config ) {

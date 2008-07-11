@@ -428,7 +428,7 @@ bool AStar::isBlocked( Sint16 x, Sint16 y,
                loc->creature == creature->getTargetCreature() )) continue;
 
         //if there is some other shape there then we are blocked by it
-        if( loc->shape ) {
+        if( loc->shape && !loc->shape->isRoof() ) {
           return true;
         }
       }

@@ -68,11 +68,13 @@ function useShape( x, y, z ) {
 				print( "...going up..." );
 				scourgeGame.getMission().ascendDungeon( x, y, z );
 			}
+			return true;
 		} else if( shape == "TREE-EMERIL-TRUNK" || shape == "TREE-EMERIL-TOP" ) {
 			handleTreeOfEmeril();
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 // deities from spells.txt

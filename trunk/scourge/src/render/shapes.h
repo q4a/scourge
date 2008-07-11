@@ -79,6 +79,9 @@ public:
 	std::string ambient;
 	int lighting;
 	float base_w, base_h;
+	char refs[100];
+	bool draws;
+	bool roof;
 };
 
 struct CharacterModelInfo {
