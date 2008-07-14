@@ -118,7 +118,17 @@ function drawHouse( x, y, w, h ) {
 			scourgeGame.getMission().setMapPosition( x + 2 + 36, y + h - 4, 0, "HOUSE_1_BASE_3" );
 			scourgeGame.getMission().setMapPosition( x + 2 + 16, y + h - 4 - 19, 0, "HOUSE_1_BASE_4" );
 			scourgeGame.getMission().setMapPosition( x + 2 + 6, y + h - 4 - 19, 0, "HOUSE_1_BASE_5" );
+			
+			// the door
+			scourgeGame.getMission().setMapPosition( x + 2 + 10, y + h - 4 - 22, 0, "NS_DOOR" );
+			
+			// the top
 			scourgeGame.getMission().setMapPosition( x + 2 - 3, y + h - 4, 10, "HOUSE_1_TOP" );
+			
+
+			// tell the terrain generator where the room is inside the base
+			print( "\tsetting room\n" );
+			scourgeGame.addRoom( x + 6, y + h - 4 - 21, 34, 17 );
 		}
 	}
 }

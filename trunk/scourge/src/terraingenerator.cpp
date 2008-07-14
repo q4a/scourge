@@ -97,14 +97,17 @@ TerrainGenerator::TerrainGenerator( Scourge *scourge,
   // reasonable defaults
   doorCount = 0;
   roomCount = 1;
-  room[0].x = room[0].y = 0;
-  room[0].w = ( MAP_WIDTH - ( 2 * MAP_OFFSET ) ) / MAP_UNIT;
-  room[0].h = ( MAP_DEPTH - ( 2 * MAP_OFFSET ) ) / MAP_UNIT;
+  room[0].x = room[0].y = MAP_OFFSET;
+  room[0].w = ( MAP_WIDTH - ( 2 * MAP_OFFSET ) );
+  room[0].h = ( MAP_DEPTH - ( 2 * MAP_OFFSET ) );
   room[0].valueBonus = 0;
   roomMaxWidth = 0;
   roomMaxHeight = 0;
   objectCount = 50;
   monsters = true;
+  
+  // register
+  scourge->getSession()->setTerrainGenerator( this );
 }
 
 TerrainGenerator::~TerrainGenerator() {
@@ -187,10 +190,10 @@ bool TerrainGenerator::drawNodesOnMap( Map *map, ShapePalette *shapePal, bool go
   updateStatus( _( "Adding containers" ) );
   addContainers(map, shapePal);  
   
-  updateStatus( _( "Locking doors and chests" ) );
-  lockDoors(map, shapePal);
-  
-	if( scourge->getParty()->getPartySize() ) {
+  if( scourge->getParty()->getPartySize() ) {
+	  updateStatus( _( "Locking doors and chests" ) );
+	  lockDoors(map, shapePal);  
+	
 		updateStatus( _( "Calculating room values" ) );
 		calculateRoomValues(map, shapePal);
 		
@@ -431,7 +434,7 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
 			int totalLevelUsed = ( i == 0 ? totalLevel / 2 : totalLevel );
       int areaCovered = 0;
       // don't crowd the rooms
-      int roomAreaUsed = static_cast<int>(room[i].w * room[i].h * unitSide * 0.33f);
+      int roomAreaUsed = static_cast<int>(room[i].w * room[i].h * 0.33f);
       int monsterLevelTotal = 0;
       bool badAssMonsters = 
 				( i > 0 && 
@@ -539,7 +542,7 @@ void TerrainGenerator::addMonsters(Map *levelMap, ShapePalette *shapePal) {
     for(int i = 0; i < roomCount; i++) {
       int areaCovered = 0;
       // don't crowd the rooms
-      int roomAreaUsed = static_cast<int>(room[i].w * room[i].h * unitSide * 0.33f);
+      int roomAreaUsed = static_cast<int>(room[i].w * room[i].h * 0.33f);
       while(areaCovered < roomAreaUsed) {
         Monster *monster = (Monster*)Monster::getRandomNpc();
         //fprintf(stderr, "Trying to add %s to room %d\n", monster->getType(), i);
@@ -681,8 +684,8 @@ bool TerrainGenerator::addParty( Map *map, ShapePalette *shapePal, bool goingUp,
 }
 
 void TerrainGenerator::getPartyStartingLocation( int *xx, int *yy ) {
-	*xx = MAP_OFFSET + ( room[0].x + room[0].w / 2 ) * MAP_UNIT;
-	*yy = MAP_OFFSET + ( room[0].y + room[0].h / 2 ) * MAP_UNIT;	
+	*xx = ( room[0].x + room[0].w / 2 );
+	*yy = ( room[0].y + room[0].h / 2 );	
 }
 
 void TerrainGenerator::lockDoors(Map *map, ShapePalette *shapePal) {
@@ -732,8 +735,8 @@ void TerrainGenerator::calculateRoomValues(Map *map, ShapePalette *shapePal) {
 	map->configureAccessMap(toint(scourge->getParty()->getPlayer()->getX()), 
 													toint(scourge->getParty()->getPlayer()->getY()));
 	for(int i = 0; i < roomCount; i++) {
-		int x = offset + room[i].x * unitSide + room[i].w  * (unitSide / 2);
-		int y = offset + room[i].y * unitSide + room[i].h * ( unitSide / 2);
+		int x = room[i].x + room[i].w / 2;
+		int y = room[i].y + room[i].h / 2;
 		if(!map->isPositionAccessible(x, y)) {
 			room[i].valueBonus++;
 			//      cerr << "\tRoom " << i << " is locked. valueBonus=" << room[i].valueBonus << endl;
@@ -897,10 +900,10 @@ bool TerrainGenerator::getLocationInRoom(Map *map, int roomIndex, Shape *shape,
 										 int *xpos, int *ypos,
 										 bool startMiddle) {
 
-  int startx = offset + room[roomIndex].x * unitSide + unitOffset;
-  int endx = offset + (room[roomIndex].x + room[roomIndex].w) * unitSide;
-  int starty = offset + room[roomIndex].y * unitSide + unitOffset;
-  int endy = offset + (room[roomIndex].y + room[roomIndex].h) * unitSide;
+  int startx = room[roomIndex].x + unitOffset;
+  int endx = room[roomIndex].x + room[roomIndex].w;
+  int starty = room[roomIndex].y + unitOffset;
+  int endy = room[roomIndex].y + room[roomIndex].h;
 
   Sint16* fff = (Sint16*)malloc( 2 * sizeof(Sint16) * (endx - startx) * (endy - starty) );  
 
@@ -1018,11 +1021,9 @@ void TerrainGenerator::addItem(Map *map,
 }
 
 int TerrainGenerator::getRoomIndex(int x, int y) {
-  int rx = (x - offset) / unitSide;
-  int ry = (y - offset) / unitSide;
   for(int i = 0; i < roomCount; i++) {
-    if(rx >= room[i].x && rx < room[i].x + room[i].w &&
-       ry >= room[i].y && ry < room[i].y + room[i].h)
+    if(x >= room[i].x && x < room[i].x + room[i].w &&
+       y >= room[i].y && y < room[i].y + room[i].h)
       return i;
   }
   return -1;
@@ -1031,16 +1032,16 @@ int TerrainGenerator::getRoomIndex(int x, int y) {
 void TerrainGenerator::addRugs( Map *map, ShapePalette *shapePal ) {
 	//cerr << "*** Adding rugs" << endl;
 	for(int roomIndex = 0; roomIndex < roomCount; roomIndex++) {
-    int startx = room[roomIndex].x;
+    int startx = ( room[roomIndex].x - offset ) / unitSide;
     //int endx = room[roomIndex].x + room[roomIndex].w - 1;
-    int starty = room[roomIndex].y;
+    int starty = ( room[roomIndex].y - offset ) / unitSide;
     //int endy = room[roomIndex].y + room[roomIndex].h - 1;
 
 		int n = Util::dice( 5 );
 		for( int i = 0; i < n; i++ ) {
 			// pick a random location in the room
-			int px = startx + Util::dice( room[roomIndex].w );
-			int py = starty + Util::dice( room[roomIndex].h );
+			int px = startx + Util::dice( room[roomIndex].w / unitSide );
+			int py = starty + Util::dice( room[roomIndex].h / unitSide );
 			if( !map->hasRugAtPosition( px, py ) ) {
 			
 				// pick an orientation
@@ -1084,12 +1085,12 @@ void TerrainGenerator::addContainersInRooms( Map *map, ShapePalette *shapePal ) 
 	RpgItem *rpgItem;
 	// add the containers
 	for(int i = 0; i < roomCount; i++) {
-	  for(int pos = unitOffset; pos < room[i].h * unitSide; pos++) {
+	  for(int pos = unitOffset; pos < room[i].h; pos++) {
 	    rpgItem = RpgItem::getRandomContainer();
 	    if(rpgItem) {
 	      // WEST side
-	      x = (room[i].x * unitSide) + unitOffset + offset;
-	      y = (room[i].y * unitSide) + pos + offset;
+	      x = (room[i].x) + unitOffset;
+	      y = (room[i].y) + pos;
 	      Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 	      if(map->shapeFits(shape, x, y, 0) && 
 	         !map->coversDoor(shape, x, y)) {
@@ -1099,7 +1100,8 @@ void TerrainGenerator::addContainersInRooms( Map *map, ShapePalette *shapePal ) 
 	    rpgItem = RpgItem::getRandomContainer();
 	    if(rpgItem) {
 	      // EAST side
-	      x = ((room[i].x + room[i].w - 1) * unitSide) + unitSide - (unitOffset * 2) + offset;
+	      x = room[i].x + room[i].w - (unitOffset * 2);
+	      y = (room[i].y) + pos;
 	      Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 	      if(map->shapeFits(shape, x, y, 0) && 
 	         !map->coversDoor(shape, x, y)) {
@@ -1107,12 +1109,12 @@ void TerrainGenerator::addContainersInRooms( Map *map, ShapePalette *shapePal ) 
 	      }
 	    }
 	  }
-	  for(int pos = unitOffset; pos < room[i].w * unitSide; pos++) {
+	  for(int pos = unitOffset; pos < room[i].w; pos++) {
 	    rpgItem = RpgItem::getRandomContainerNS();
 	    if(rpgItem) {
 	      // NORTH side
-	      x = (room[i].x * unitSide) + pos + offset;
-	      y = (room[i].y * unitSide) + (unitOffset * 2) + offset;
+	      x = (room[i].x) + pos;
+	      y = (room[i].y) + (unitOffset * 2);
 	      Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 	      if(map->shapeFits(shape, x, y, 0) && 
 	         !map->coversDoor(shape, x, y)) {
@@ -1122,7 +1124,8 @@ void TerrainGenerator::addContainersInRooms( Map *map, ShapePalette *shapePal ) 
 	    rpgItem = RpgItem::getRandomContainerNS();
 	    if(rpgItem) {
 	      // SOUTH side
-	      y = ((room[i].y + room[i].h - 1) * unitSide) + unitSide - unitOffset + offset;
+	    	x = (room[i].x) + pos;
+	      y = room[i].y + room[i].h - unitOffset;
 	      Shape *shape = scourge->getShapePalette()->getShape(rpgItem->getShapeIndex());
 	      if(map->shapeFits(shape, x, y, 0) && 
 	         !map->coversDoor(shape, x, y)) {
@@ -1131,4 +1134,15 @@ void TerrainGenerator::addContainersInRooms( Map *map, ShapePalette *shapePal ) 
 	    }
 	  }
 	}
+}
+
+void TerrainGenerator::addRoom( int x, int y, int w, int h ) {
+	//room[ roomCount ].x = ( vx - MAP_OFFSET ) / MAP_UNIT;
+	//room[ roomCount ].y = ( vy - MAP_OFFSET ) / MAP_UNIT;
+	room[ roomCount ].x = x;
+	room[ roomCount ].y = y;
+	room[ roomCount ].w = w;
+	room[ roomCount ].h = h;
+	room[ roomCount ].valueBonus = 0;
+	roomCount++;	
 }

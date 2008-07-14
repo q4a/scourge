@@ -95,6 +95,9 @@ public:
 	static int _setDepthLimits( HSQUIRRELVM vm );
 	
 	static int _getRerunMovies( HSQUIRRELVM vm );
+	
+	// should really be in sqterraingenerator.h
+	static int _addRoom( HSQUIRRELVM vm );
 };
 
 #endif

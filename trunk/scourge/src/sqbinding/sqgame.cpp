@@ -23,6 +23,7 @@
 #include "../test/combattest.h"
 #include "../sound.h"
 #include "../debug.h"
+#include "../terraingenerator.h"
 
 using namespace std;
 
@@ -62,6 +63,7 @@ ScriptClassMemberDecl SqGame::members[] = {
 	{ "void", "continueAt", SqGame::_continueAt, 0, 0, "Call a squirrel function after the specified timeout." },
 	{ "void", "setDepthLimits", SqGame::_setDepthLimits, 0, 0, "Set the min and max depth values used for orthographic rendering." },
 	{ "bool", "getRerunMovies", SqGame::_getRerunMovies, 0, 0, "Always re-run movies? A debug feature." },	
+	{ "void", "addRoom", SqGame::_addRoom, 0, 0, "Tell the terrain generator where a room is." },	
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members, 
@@ -351,4 +353,13 @@ int SqGame::_setDepthLimits( HSQUIRRELVM vm ) {
 int SqGame::_getRerunMovies( HSQUIRRELVM vm ) {
   sq_pushbool( vm, RERUN_MOVIES );
   return 1;
+}
+
+int SqGame::_addRoom( HSQUIRRELVM vm ) {
+	GET_INT( h )
+	GET_INT( w )
+	GET_INT( y )
+	GET_INT( x )
+	SqBinding::sessionRef->getTerrainGenerator()->addRoom( x, y, w, h );
+	return 0;
 }

@@ -41,6 +41,7 @@ public:
   void draw();
   void outline( float r, float g, float b );
   virtual inline bool isVirtual() { return true; }
+  inline GLShape *getRef() { return refShape; }
 };
 
 #endif /*VIRTUALSHAPE_H_*/

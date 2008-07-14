@@ -118,7 +118,7 @@ public:
   virtual void printMaze()=0;
 	virtual void getName(char *s)=0;
 
-  
+	virtual void addRoom( int x, int y, int w, int h ); 
 
 protected:
 

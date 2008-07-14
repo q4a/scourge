@@ -29,6 +29,7 @@
 #include "net/gamestatehandler.h"
 #include "net/commands.h"
 #include "gameadapter.h"
+#include "terraingenerator.h"
 
 #ifdef HAVE_SDL_NET
 class Server;
@@ -51,6 +52,7 @@ class SqBinding;
 class ShapePalette;
 class Sound;
 class Cutscene;
+class TerrainGenerator;
 
 /**
  *@author Gabor Torok
@@ -91,6 +93,7 @@ private:
   Session(GameAdapter *adapter);
 
 	int dataInitialized;
+	TerrainGenerator *terrainGenerator;
 
 public:
 
@@ -237,6 +240,8 @@ public:
 	virtual void doInitData();
 	inline bool isDataInitialized() { return dataInitialized == INIT_DONE; }
 
+	inline void setTerrainGenerator( TerrainGenerator *tg ) { this->terrainGenerator = tg; }
+	inline TerrainGenerator *getTerrainGenerator() { return this->terrainGenerator; } 
 };
 
 #endif

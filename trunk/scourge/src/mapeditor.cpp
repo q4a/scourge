@@ -26,6 +26,7 @@
 #include "creature.h"
 #include "shapepalette.h"
 #include "outdoorgenerator.h"
+#include "dungeongenerator.h"
 
 using namespace std;
 
@@ -105,7 +106,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   
   
 
-  newButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "Properties" ) );
+  newButton = mainWin->createButton( startx, yy, ( w - 10 ) / 2, yy + 20, _( "New Map" ) );
   floorType = mainWin->createButton( ( w - 10 ) / 2 + 5, yy, w - 10, yy + 20, _( floorTypeName[ 1 ][ 1 ] ), true );
 	yy += ystep;
 
@@ -298,8 +299,11 @@ void MapEditor::createNewMapDialog() {
   }
   themeList->setLines( scourge->getShapePalette()->getAllThemeCount(), themeNames );
 
-	newMapWin->createLabel( startx, 130, _( "Create an outdoor map:" ) );
-	outdoorMapButton = newMapWin->createButton( startx + 200, 120, startx + 300, 140, "Outdoors Map", true );
+	newMapWin->createLabel( startx, 135, _( "Outdoor Map:" ) );
+	outdoorMapButton = newMapWin->createButton( startx + 100, 120, startx + 200, 140, "Outdoors", true );
+	
+	newMapWin->createLabel( startx + 210, 135, _( "Dungeon Map:" ) );
+	dungeonMapButton = newMapWin->createButton( startx + 310, 120, startx + 410, 140, "Dungeon", true );
 
   newMapWin->createLabel( startx, 160, _( "Select map location: (click on map, drag to move)" ) );
   mapWidget = new MapWidget( scourge, newMapWin, startx, 170, nw - startx, 335 );
@@ -512,6 +516,8 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
   } else if( widget == okButton || widget == applyButton ) {
     newMapWin->setVisible( false );
 
+    this->level = atoi( levelText->getText() );
+    this->depth = atoi( depthText->getText() );    
     if( widget == okButton ) {
       scourge->getMap()->reset();
       int line = themeList->getSelectedLine();
@@ -524,20 +530,22 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
 
 			if( outdoorMapButton->isSelected() ) {
 				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::OUTDOOR_HELPER ] );
-				cerr << "*** Generating outdoor terrain ***" << endl;
-				OutdoorGenerator *og = new OutdoorGenerator( scourge,level,depth, 1, false, false, NULL );
+				OutdoorGenerator *og = new OutdoorGenerator( scourge, level, depth, 1, false, false, NULL );
 				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
 				delete og;				
 				pathButton->setEnabled( true );
 				outdoorTexturesButton->setEnabled( true );
+			} else if( dungeonMapButton->isSelected() ) {
+				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
+				DungeonGenerator *og = new DungeonGenerator( scourge, level, depth, 1, false, false, NULL );
+				og->toMap( scourge->getMap(), scourge->getShapePalette(), false, false );
+				delete og;				
 			} else {
 				scourge->getMap()->setMapRenderHelper( MapRenderHelper::helpers[ MapRenderHelper::ROOM_HELPER ] );
 				pathButton->setEnabled( false );
 				outdoorTexturesButton->setEnabled( false );
 			}
     }
-    this->level = atoi( levelText->getText() );
-    this->depth = atoi( depthText->getText() );
     mapWidget->getSelection( &(scourge->getMap()->mapGridX), &(scourge->getMap()->mapGridY) );
 
   } else if( widget == cancelButton ) {
