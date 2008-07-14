@@ -614,6 +614,8 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
           if(forGround || forWater) {
             shape = floorPositions[posX][posY];
             if(shape) {
+            	//cerr << "pos=" << posX << "," << posY << endl;
+            	//cerr << "\tfloor shape=" << shape->getName() << endl;
               xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
               ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) / DIV;
 
@@ -1774,13 +1776,19 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   // in the map editor outline virtual shapes
   if( shape->isVirtual() && settings->isGridShowing() && gridEnabled ) {
   	glColor4f( 0.75f, 0.75f, 1, 1 );
+  	
+  	glPushMatrix();
+  	glTranslatef( 0, 20, shape->getHeight() / DIV );
+  	adapter->texPrint( 0, 0, "virtual" );
+  	glPopMatrix();
+  	
   	glDisable( GL_TEXTURE_2D );
   	glBegin( GL_LINE_LOOP );
   	glVertex3f( 0, 0, shape->getHeight() / DIV );
   	glVertex3f( 0, shape->getDepth() / DIV, shape->getHeight() / DIV );
   	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, shape->getHeight() / DIV );
   	glVertex3f( shape->getWidth() / DIV, 0, shape->getHeight() / DIV );
-  	glEnd();
+  	glEnd();  	
   	glEnable( GL_TEXTURE_2D );
   }
   
@@ -2063,6 +2071,12 @@ void Map::setRugPosition( Sint16 xchunk, Sint16 ychunk, Rug *rug ) {
 }
 
 void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
+	if( x < MAP_OFFSET || y < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+		cerr << "*** floor position out of bounds: " << x << "," << y << endl;
+		((RenderedCreature*)NULL)->getName();
+		return;
+	}
+	
   floorPositions[x][y] = shape;
   WaterTile *w = new WaterTile;
   for( int xp = 0; xp < WATER_TILE_X; xp++ ) {
@@ -2316,6 +2330,13 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 														Shape *shape, 
 														RenderedItem *item, 
 														RenderedCreature *creature ) {
+	
+	if( x < MAP_OFFSET || y < MAP_OFFSET || z < 0 || 
+			x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET || z >= MAP_VIEW_HEIGHT ) {
+		cerr << "*** Error can't set position outside bounds:" << x << "," << y << "," << z << endl;
+		((RenderedCreature*)NULL)->getName();
+		return;
+	}
 	
 	resortShapes = mapChanged = true;
 	//cerr << "FIXME: Map::setPosition" << endl;

@@ -51,6 +51,7 @@ public:
   virtual void saveMapData( const std::string& name ) = 0;
 	virtual char *getMagicSchoolIndexForLocation( Location *pos ) = 0;
 	virtual void setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolName ) = 0;
+	virtual void texPrint(GLfloat x, GLfloat y, const char *fmt, ...) = 0;
 
   /**
    * What color to outline this location with? If NULL is returned

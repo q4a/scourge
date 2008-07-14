@@ -160,6 +160,7 @@ public:
 
   // squirrel console
   virtual void printToConsole( const char *s ) { std::cerr << s << std::endl; }
+  virtual void texPrint(GLfloat x, GLfloat y, const char *fmt, ...) {}
 
   virtual void startConversation( RenderedCreature *creature, char *message=NULL ) {}
 	virtual void endConversation() {}
@@ -215,6 +216,7 @@ public:
   virtual inline bool isHeadless() { return false; }
 
 	virtual void setDepthLimits( float minLimit, float maxLimit ) { getSDLHandler()->setDepthLimits( minLimit, maxLimit ); }
+	virtual void texPrint(GLfloat x, GLfloat y, const char *fmt, ...) { getSDLHandler()->texPrint( x, y, fmt ); }
   
   /**
    * Set up the opengl view.

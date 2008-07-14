@@ -21,6 +21,7 @@
 #include "board.h"
 #include "render/maprenderhelper.h"
 #include "render/glshape.h"
+#include "render/virtualshape.h"
 #include "cellular.h"
 #include "sqbinding/sqbinding.h"
 #include "rpg/rpglib.h"
@@ -154,7 +155,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	
 	// add a village
 	addVillage( map, shapePal );
-
+	
 	// add trees
 	for( int x = 0; x < MAP_STEP_WIDTH; x++ ) {
 		for( int y = 0; y < MAP_STEP_DEPTH; y++ ) {
@@ -170,10 +171,9 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 					int yy = y * OUTDOORS_STEP + shape->getHeight();
 
 					// don't put them on roads and in houses
-					if( !isShapeOnFloor( shape, x, y, map ) ) {										
-						if( !map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
-							map->setPosition( xx, yy, 0, shape );
-						}
+					if( !isShapeOnFloor( shape, x, y, map ) && 
+							!map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
+						map->setPosition( xx, yy, 0, shape );
 					}
 				}
 			}
@@ -188,10 +188,10 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 	for( int cx = 0; cx < 2; cx++ ) {
 		for( int cy = 0; cy < 2; cy++ ) {
 			//CellularAutomaton *c = cellular[cx][cy];
-			room[ roomCount ].x = ( cx * WIDTH_IN_NODES * OUTDOORS_STEP ) / MAP_UNIT;
-			room[ roomCount ].y = ( cy * DEPTH_IN_NODES * OUTDOORS_STEP ) / MAP_UNIT;
-			room[ roomCount ].w = WIDTH_IN_NODES * OUTDOORS_STEP / MAP_UNIT;
-			room[ roomCount ].h = DEPTH_IN_NODES * OUTDOORS_STEP / MAP_UNIT;
+			room[ roomCount ].x = offset + ( cx * WIDTH_IN_NODES * OUTDOORS_STEP );
+			room[ roomCount ].y = offset + ( cy * DEPTH_IN_NODES * OUTDOORS_STEP );
+			room[ roomCount ].w = WIDTH_IN_NODES * OUTDOORS_STEP;
+			room[ roomCount ].h = DEPTH_IN_NODES * OUTDOORS_STEP;
 			room[ roomCount ].valueBonus = 0;
 			roomCount++;
 		}
@@ -199,12 +199,12 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
   roomMaxWidth = 0;
   roomMaxHeight = 0;
   objectCount = 7 + ( level / 8 ) * 5;
-  monsters = true;	
-
+  monsters = true;
+  
 	// set the floor, so random positioning works in terrain generator
 	// a bit of a song-and-dance with keepFloor is so that random objects aren't placed in rooms
 	for( int x = MAP_OFFSET; x < MAP_WIDTH - MAP_OFFSET; x += MAP_UNIT ) {
-		for( int y = MAP_OFFSET; y < MAP_DEPTH - MAP_OFFSET; y += MAP_UNIT ) {
+		for( int y = MAP_OFFSET; y < MAP_DEPTH - MAP_OFFSET - MAP_UNIT; y += MAP_UNIT ) {
 			if( keepFloor.find( x + MAP_WIDTH * y ) != keepFloor.end() ) {
 				map->removeFloorPosition( (Sint16)x, (Sint16)y + MAP_UNIT );
 			} else {
@@ -212,28 +212,34 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 			}
 		}
 	}
-
+	
 	// event handler for custom map processing
 	if( !scourge->getSession()->getMap()->inMapEditor() ) {
 		scourge->getSession()->getSquirrel()->callMapMethod( "outdoorMapCompleted", map->getName() );
 	}
-
+	
 	return true;
 }
 
+// make sure we're not inside a house
 bool OutdoorGenerator::isShapeOnFloor( Shape *shape, int x, int y, Map *map ) {
-	int fx = ( ( x - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
-	int fy = ( ( y - shape->getHeight() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-	if( map->getFloorPosition( fx, fy ) ) return true;
-	fx = ( ( x - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
-	fy = ( ( y - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-	if( map->getFloorPosition( fx, fy ) ) return true;
-	fx = ( ( x + shape->getWidth() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
-	fy = ( ( y - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-	if( map->getFloorPosition( fx, fy ) ) return true;
-	fx = ( ( x + shape->getWidth() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
-	fy = ( ( y - shape->getHeight() - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-	if( map->getFloorPosition( fx, fy ) ) return true;
+	int cx = x + shape->getWidth() / 2;
+	int cy = y - shape->getDepth() / 2;
+	for( int xx = cx - 3 * MAP_UNIT; xx < cx + 3 * MAP_UNIT; xx++) {
+		for( int yy = cy - 3 * MAP_UNIT; yy < cy + 3 * MAP_UNIT; yy++) {
+			if( xx < 0 || yy < 0 || xx >= MAP_WIDTH || yy >= MAP_DEPTH ) {
+				continue;				
+			}
+			Location *pos = map->getLocation( xx, yy, 0 );
+			if( pos && pos->shape ) {
+				Shape *other = pos->shape->isVirtual() ? ((VirtualShape*)pos->shape)->getRef() : pos->shape;
+				if( scourge->getSDLHandler()->intersects( x, y, shape->getWidth(), shape->getDepth(), 
+				                                          xx, yy, other->getWidth(), other->getDepth() ) ) {
+					return true;
+				}
+			}
+		}		
+	}
 	return false;
 }
 
@@ -300,8 +306,8 @@ void OutdoorGenerator::addNpcs( Map *map, ShapePalette *shapePal, int villageX, 
 	}	
 	for( int i = 0; i < roomCount; i++ ) {
 		createNpc( map, shapePal, 
-		           ( room[ i ].x + room[ i ].w / 2 ) * MAP_UNIT + MAP_OFFSET, 
-		           ( room[ i ].y + room[ i ].h / 2 ) * MAP_UNIT + MAP_OFFSET );
+		           ( room[ i ].x + room[ i ].w / 2 ), 
+		           ( room[ i ].y + room[ i ].h / 2 ) );
 	}
 }
 
@@ -381,12 +387,6 @@ bool OutdoorGenerator::buildHouse( Map *map, ShapePalette *shapePal, int x, int 
 	int vx = x + ix * MAP_UNIT;
 	int vy = y + iy * MAP_UNIT;
 	if( createHouse( map, shapePal, vx, vy, w, h ) ) {
-		room[ roomCount ].x = ( vx - MAP_OFFSET ) / MAP_UNIT;
-		room[ roomCount ].y = ( vy - MAP_OFFSET ) / MAP_UNIT;
-		room[ roomCount ].w = w;
-		room[ roomCount ].h = h;
-		room[ roomCount ].valueBonus = 0;
-		roomCount++;
 		return true;
 	}
 	return false;

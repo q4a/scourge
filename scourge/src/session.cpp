@@ -65,6 +65,7 @@ Session::Session(GameAdapter *adapter)
 	dataInitialized = NOT_INITIALIZED;
 	Session::instance = this;
 	autosave = false;
+	terrainGenerator = NULL;
 }
 
 Session::~Session() {

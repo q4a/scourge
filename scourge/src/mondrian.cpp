@@ -356,7 +356,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		if( roomCount % 2 == 0 ) {
 			for(int x = 0; x < room[r].w; x++){
 				for(int y = 0; y < room[r].h; y++){
-					nodes[x + room[r].x][y + room[r].y] -= ROOM;
+					nodes[x + (room[r].x - offset) / unitSide][y + (room[r].y - offset) / unitSide] -= ROOM;
 				}
 			}
 		}
@@ -380,7 +380,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 		if( roomCount % 2 == 0 ) {
 			for(int x = 0; x < room[r].w; x++){
 				for(int y = 0; y < room[r].h; y++){
-					nodes[x + room[r].x][y + room[r].y] -= ROOM;
+					nodes[x + (room[r].x - offset) / unitSide][y + (room[r].y - offset) / unitSide] -= ROOM;
 				}
 			}
 		}
@@ -775,10 +775,10 @@ void MondrianGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
 void MondrianGenerator::removeColumns(Map *map, ShapePalette *shapePal) {
   // Remove 'columns' from rooms
   for(int roomIndex = 0; roomIndex < roomCount; roomIndex++) {
-    int startx = offset + (room[roomIndex].x * unitSide) + unitOffset;
-    int endx = offset + ((room[roomIndex].x + room[roomIndex].w) * unitSide) - (unitOffset * 2);
-    int starty = offset + (room[roomIndex].y * unitSide) + (unitOffset * 2);
-    int endy = offset + ((room[roomIndex].y + room[roomIndex].h) * unitSide) - unitOffset;
+    int startx = (room[roomIndex].x) + unitOffset;
+    int endx = (room[roomIndex].x + room[roomIndex].w) - (unitOffset * 2);
+    int starty = (room[roomIndex].y) + (unitOffset * 2);
+    int endy = (room[roomIndex].y + room[roomIndex].h) - unitOffset;
     for(int x = startx; x < endx; x++) {
       for(int y = starty; y < endy; y++) {
         map->removePosition( x, y, 0 );

@@ -632,8 +632,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		// display the HQ map
 		getSession()->setCurrentMission(NULL);
 		missionWillAwardExpPoints = false;
-
-
+		
 #ifdef CAVE_TEST
 		//dsg = new CaveMaker( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
 		dg = new OutdoorGenerator( this, CAVE_TEST_LEVEL, 1, 1, false, false, NULL );
@@ -652,7 +651,6 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
     string result;
     levelMap->loadMap( string(HQ_MAP_NAME), result, this, 1, currentStory, changingStory, false, goingUp, goingDown );
 #endif
-
 	} else {
 		// NOT in HQ map
 		inHq = false;

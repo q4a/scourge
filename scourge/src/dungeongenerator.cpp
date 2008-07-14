@@ -162,12 +162,12 @@ void DungeonGenerator::makeRooms() {
     // set the room
     if(px > -1 && py > -1) {
 
-	  // save the room info
-	  room[i].x = px;
-	  room[i].y = py;
-	  room[i].w = rw;
-	  room[i].h = rh;
-      room[i].valueBonus = depth / 2;
+    	// save the room info
+    	room[i].x = offset + px * unitSide;
+    	room[i].y = offset + py * unitSide;
+    	room[i].w = rw * unitSide;
+    	room[i].h = rh * unitSide;
+    	room[i].valueBonus = depth / 2;
 
       for(int x = px; x < px + rw; x++) {
         for(int y = py; y < py + rh; y++) {
@@ -880,10 +880,10 @@ void DungeonGenerator::drawBasics(Map *map, ShapePalette *shapePal) {
 void DungeonGenerator::removeColumns(Map *map, ShapePalette *shapePal) {
   // Remove 'columns' from rooms
   for(int roomIndex = 0; roomIndex < roomCount; roomIndex++) {
-    int startx = offset + (room[roomIndex].x * unitSide) + unitOffset;
-    int endx = offset + ((room[roomIndex].x + room[roomIndex].w) * unitSide) - (unitOffset * 2);
-    int starty = offset + (room[roomIndex].y * unitSide) + (unitOffset * 2);
-    int endy = offset + ((room[roomIndex].y + room[roomIndex].h) * unitSide) - unitOffset;
+    int startx = (room[roomIndex].x) + unitOffset;
+    int endx = (room[roomIndex].x + room[roomIndex].w) - (unitOffset * 2);
+    int starty = (room[roomIndex].y) + (unitOffset * 2);
+    int endy = (room[roomIndex].y + room[roomIndex].h) - unitOffset;
     for(int x = startx; x < endx; x++) {
       for(int y = starty; y < endy; y++) {
         map->removePosition( x, y, 0 );
