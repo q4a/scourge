@@ -58,6 +58,7 @@ protected:
 	GLuint icon;
 	int iconWidth, iconHeight;
 	std::string ambient;
+	float alpha;
 
   Surface *surfaces[5];
   enum { 
@@ -88,6 +89,9 @@ protected:
 		NORMAL_LIGHTING=0,
 		OUTDOOR_LIGHTING
 	};
+	
+	inline void setAlpha( float f ) { this->alpha = f; }
+	inline float getAlpha() { return this->alpha; }
   
   inline void setUseTexture(bool b) { useTexture = b; }
   inline bool getUseTexture() { return useTexture; }

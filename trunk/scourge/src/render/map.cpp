@@ -95,6 +95,9 @@ const float Map::shadowTransformMatrix[16] = {
 MapMemoryManager *Map::mapMemoryManager = new MapMemoryManager();
 
 Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
+	roofAlphaUpdate = 0;
+	roofAlpha = 1;
+	
   hasWater = false;
 
   startx = starty = 128;
@@ -214,7 +217,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 
   helper = NULL;
 
-	laterCount = stencilCount = otherCount = damageCount = 0;
+	laterCount = stencilCount = otherCount = damageCount = roofCount = 0;
 
 	quakesEnabled = false;
 
@@ -251,6 +254,9 @@ Map::~Map(){
 }
 
 void Map::reset() {
+	roofAlphaUpdate = 0;
+	roofAlpha = 1;
+		
   //cerr << "reset 1" << endl;
   edited = false;
   strcpy( this->name, "" );
@@ -370,7 +376,7 @@ void Map::reset() {
 
   if( helper ) helper->reset();
 
-	laterCount = stencilCount = otherCount = damageCount = 0;
+	laterCount = stencilCount = otherCount = damageCount = roofCount = 0;
 
 	quakesEnabled = false;
 	for( int x = 0; x < MAP_WIDTH; x++ ) {
@@ -499,7 +505,7 @@ void Map::removeCurrentEffects() {
 */
 void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *csy, int *cey) {
   if(!forGround && !forWater) {
-    laterCount = stencilCount = otherCount = damageCount = 0;
+    laterCount = stencilCount = otherCount = damageCount = roofCount = 0;
     trapSet.clear();
     mapChanged = false;
   }
@@ -655,6 +661,8 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 						}
 						if( isCurrentlyUnderRoof != oldRoof ) {
 							resortShapes = true;
+							//roofAlphaUpdate = 0;
+							//roofAlpha = 1;
 						}
           	//int maxZ = ( isCurrentlyUnderRoof ? MAP_WALL_HEIGHT : MAP_VIEW_HEIGHT );          	
           	
@@ -907,7 +915,7 @@ void Map::setupPosition( int posX, int posY, int posZ,
   name = posX + (MAP_WIDTH * (posY)) + (MAP_WIDTH * MAP_DEPTH * posZ);    
 
   // special effects
-  if(effect || (creature && creature->isEffectOn())) {
+  if((effect || (creature && creature->isEffectOn())) && !shape->isRoof()) {
     damage[damageCount].xpos = xpos2;
     damage[damageCount].ypos = ypos2;
     damage[damageCount].zpos = zpos2;
@@ -925,8 +933,22 @@ void Map::setupPosition( int posX, int posY, int posZ,
     // don't draw shape if it's an area effect
     if(!creature) return;
   }
-
-  if(shape->isStencil()) {
+  
+  if(shape->isRoof()) {
+  	roof[roofCount].xpos = xpos2;
+    roof[roofCount].ypos = ypos2;
+    roof[roofCount].zpos = zpos2;
+    roof[roofCount].shape = shape;
+    roof[roofCount].item = item;
+    roof[roofCount].creature = creature;
+    roof[roofCount].effect = NULL;
+    roof[roofCount].name = name;
+		roof[roofCount].pos = ( itemPos ? getItemLocation( posX, posY ) : getLocation( posX, posY, posZ ) );
+    roof[roofCount].inFront = false;
+		roof[roofCount].x = posX;
+		roof[roofCount].y = posY;
+    roofCount++;
+  } else if(shape->isStencil()) {
     stencil[stencilCount].xpos = xpos2;
     stencil[stencilCount].ypos = ypos2;
     stencil[stencilCount].zpos = zpos2;
@@ -957,7 +979,7 @@ void Map::setupPosition( int posX, int posY, int posZ,
 			other[otherCount].y = posY;
       otherCount++;
     }
-    if(shape->drawLater() || invisible) {
+    if(shape->drawLater()) {
       later[laterCount].xpos = xpos2;
       later[laterCount].ypos = ypos2;
       later[laterCount].zpos = zpos2;
@@ -1319,10 +1341,41 @@ void Map::draw() {
 
     // draw the effects
     glEnable(GL_TEXTURE_2D);
+
+    // draw the roofs
+    glEnable( GL_BLEND );  
+    //glDepthMask( GL_FALSE );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    
+    Uint32 now = SDL_GetTicks();
+  	if( now - roofAlphaUpdate > 25 ) {
+  		roofAlphaUpdate = now;
+  		if( isCurrentlyUnderRoof ) {
+				if( roofAlpha > 0 ) {
+					roofAlpha -= 0.05f;
+				} else {
+					roofAlpha = 0;  					
+				}
+  		} else {
+  			if( roofAlpha < 1 ) {
+  				roofAlpha += 0.05f;
+  			} else {
+  				roofAlpha = 1;  					
+  			}
+  		}
+  	}    
+    if( roofAlpha > 0 ) {
+	    for(int i = 0; i < roofCount; i++) {
+	    	((GLShape*)roof[i].shape)->setAlpha( roofAlpha );
+	      doDrawShape(&roof[i]);
+	    }
+    }
+    glDisable(GL_BLEND);
+    
     glEnable(GL_BLEND);  
     glDepthMask(GL_FALSE);
     for(int i = 0; i < laterCount; i++) {
-      later[i].shape->setupBlending();
+			later[i].shape->setupBlending();  			
       doDrawShape(&later[i]);
       later[i].shape->endBlending();
     }
@@ -1629,7 +1682,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   }
   
   // fixme: should draw with alpha value that fades out...
-  if( shape->isRoof() && ( selectMode || isCurrentlyUnderRoof ) ) {
+  if( shape->isRoof() && selectMode ) {
   	return;
   }
 
@@ -1761,7 +1814,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
 			findOccludedSides( later, sides );
 			shape->setOccludedSides( sides );
 		}
-		if( later && later->pos ) { 
+		if( later && later->pos ) {
 			if( later->pos->outlineColor && !useShadow ) { 
 				shape->outline( later->pos->outlineColor );
 			}
@@ -1770,7 +1823,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
 				shape->setTextureIndex( later->pos->texIndex );
 			}
 		}
-		shape->draw();
+		shape->draw();		
 	}
   
   // in the map editor outline virtual shapes
@@ -2073,7 +2126,7 @@ void Map::setRugPosition( Sint16 xchunk, Sint16 ychunk, Rug *rug ) {
 void Map::setFloorPosition(Sint16 x, Sint16 y, Shape *shape) {
 	if( x < MAP_OFFSET || y < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
 		cerr << "*** floor position out of bounds: " << x << "," << y << endl;
-		((RenderedCreature*)NULL)->getName();
+		//((RenderedCreature*)NULL)->getName();
 		return;
 	}
 	
@@ -2334,7 +2387,7 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	if( x < MAP_OFFSET || y < MAP_OFFSET || z < 0 || 
 			x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET || z >= MAP_VIEW_HEIGHT ) {
 		cerr << "*** Error can't set position outside bounds:" << x << "," << y << "," << z << endl;
-		((RenderedCreature*)NULL)->getName();
+		//((RenderedCreature*)NULL)->getName();
 		return;
 	}
 	
@@ -4376,6 +4429,7 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 #endif
 }
 
+#define GROUND_TEX_Z_OFFSET 0.26f
 // this one uses map coordinates
 void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, float angle ) {
 
@@ -4453,26 +4507,26 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 			//glColor4f( 1, 1, 1, 1 );
 			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
 			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + 0.26f / DIV );
+			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET / DIV );
 
 
 			glTexCoord2f( texSx, texSy );
 			//glColor4f( 1, 0, 0, 1 );
 			gx = groundPos[ xx ][ yy ].x - getX() / DIV;
 			gy = groundPos[ xx ][ yy ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + 0.26f / DIV );
+			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + GROUND_TEX_Z_OFFSET / DIV );
 
 			glTexCoord2f( texEx, texSy );
 			//glColor4f( 1, 1, 1, 1 );
 			gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
 			gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + 0.26f / DIV );
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + GROUND_TEX_Z_OFFSET / DIV );
 
 			glTexCoord2f( texEx, texEy );
 			//glColor4f( 1, 1, 1, 1 );
 			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
 			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + 0.26f / DIV );
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET / DIV );
 
 			glEnd();
 		}
@@ -4505,19 +4559,19 @@ void Map::debugGround( int sx, int sy, int ex, int ey ) {
 			glBegin( GL_LINE_LOOP );
 			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
 			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + 0.26f / DIV );
+			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET / DIV );
 
 			gx = groundPos[ xx ][ yy ].x - getX() / DIV;
 			gy = groundPos[ xx ][ yy ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + 0.26f / DIV );
+			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + GROUND_TEX_Z_OFFSET / DIV );
 
 			gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
 			gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + 0.26f / DIV );
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + GROUND_TEX_Z_OFFSET / DIV );
 
 			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
 			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + 0.26f / DIV );
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET / DIV );
 
 			glEnd();
 		}

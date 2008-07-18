@@ -575,8 +575,6 @@ void Shapes::loadShape( const char *name ) {
       }
     } else if( strlen( sv->refs ) ) {
     	// recursive call:
-    	cerr << "* creating virtual shape: " << sv->name << endl;
-    	cerr << "\t* loading ref: " << sv->refs << endl;
     	GLShape *refShape = findShapeByName( sv->refs );
     	if( !refShape ) {
     		cerr << "*** Error: can't find referenced shape: " << sv->refs << " for shape " << sv->name << endl;
