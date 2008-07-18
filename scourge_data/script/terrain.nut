@@ -108,10 +108,8 @@ function villageShapes() {
 
 MAP_UNIT <- 16
 function drawHouse( x, y, w, h ) {
-	print( "in drawHouse x=" + x + " y=" + y + " w=" + w + " h=" + h + "\n" );
 	if( w >= 3 * MAP_UNIT ) {
 		if( scourgeGame.getMission().isFree( x + 2, y + h - 4, 0, "HOUSE_1_BASE" ) ) {
-			print( "\tadding house\n" );
 			//scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_1_BASE" );
 			scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_1_BASE_1" );
 			scourgeGame.getMission().setMapPosition( x + 2 + 6, y + h - 4, 0, "HOUSE_1_BASE_2" );
@@ -125,9 +123,14 @@ function drawHouse( x, y, w, h ) {
 			// the top
 			scourgeGame.getMission().setMapPosition( x + 2 - 3, y + h - 4, 10, "HOUSE_1_TOP" );
 			
-
-			// tell the terrain generator where the room is inside the base
-			print( "\tsetting room\n" );
+			// add some objects
+			scourgeGame.getMission().setMapPosition( x + 2 + 31, y + h - 10, 0, "BED" );
+			scourgeGame.getMission().setMapPosition( x + 2 + 12, y + h - 14, 0, "TABLE" );
+			scourgeGame.getMission().setMapPosition( x + 2 + 14, y + h - 12, 0, "CHAIR" );
+			scourgeGame.getMission().setMapPosition( x + 2 + 10, y + h - 16, 0, "CHAIR" );
+			scourgeGame.getMission().setMapPosition( x + 2 + 27, y + h - 10, 0, "STOVE" );
+			
+			// tell the terrain generator where to populate the room with containers
 			scourgeGame.addRoom( x + 6, y + h - 4 - 21, 34, 17 );
 		}
 	}

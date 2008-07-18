@@ -134,7 +134,7 @@ protected:
   void resolveTextures();
   void normalizeModel();
   void createDisplayList( GLuint listName, bool isShadow );
-	void drawShape( bool isShadow );
+	void drawShape( bool isShadow, float alpha=1.0f );
 
 	inline GLfloat getXRot3d() { return xrot3d; }
 	inline GLfloat getYRot3d() { return yrot3d; }

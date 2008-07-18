@@ -266,7 +266,9 @@ private:
   std::set<Uint8> trapSet;
   int selectedTrapIndex;
   bool isRoofShowing, isCurrentlyUnderRoof;
-  bool gridEnabled;
+  Uint32 roofAlphaUpdate;
+  float roofAlpha;
+  bool gridEnabled;  
 
   int weather;
   
@@ -748,8 +750,8 @@ protected:
    };
    ChunkInfo chunks[100];
    int chunkCount;
-   DrawLater later[100], stencil[1000], other[1000], damage[1000];
-   int laterCount, stencilCount, otherCount, damageCount;
+   DrawLater later[100], stencil[1000], other[1000], damage[1000], roof[1000];
+   int laterCount, stencilCount, otherCount, damageCount, roofCount;
    std::map<Uint32, EffectLocation*> currentEffectsMap;
   
   /**

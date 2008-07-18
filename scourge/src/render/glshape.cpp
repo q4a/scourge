@@ -36,6 +36,7 @@ GLShape::GLShape(GLuint tex[], int width, int depth, int height, char *name, int
 }
 
 void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
+	this->alpha = 1.0f;
   this->tex = tex;
   this->color = color;
   this->shapePalIndex = shapePalIndex; 

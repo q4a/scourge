@@ -283,7 +283,7 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	addRugs( map, shapePal );
 	
 	// Hack: limit free space to just houses for now.
-	createFreeSpaceMap( map, shapePal );
+	//createFreeSpaceMap( map, shapePal );
 	
 	// add some containers
 	addContainersInRooms( map, shapePal );
@@ -295,7 +295,7 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	addItemsInEveryRoom( RpgItem::getItemByName("Stove"), 1 );
 	
 	// clean up free space
-	deleteFreeSpaceMap( map, shapePal );
+	//deleteFreeSpaceMap( map, shapePal );
 }
 
 void OutdoorGenerator::addNpcs( Map *map, ShapePalette *shapePal, int villageX, int villageY, int villageWidth, int villageHeight ) {
@@ -380,7 +380,7 @@ void OutdoorGenerator::createHouses( Map *map, ShapePalette *shapePal, int x, in
   	n = Util::dice( HOUSE_SHAPES_SIZE );
   	i = HOUSE_SHAPES[ n ];
   	buildHouse( map, shapePal, x, y, ix, ry + 1, i[0], i[1]  );
-  }	
+  }
 }
 
 bool OutdoorGenerator::buildHouse( Map *map, ShapePalette *shapePal, int x, int y, int ix, int iy, int w, int h ) {

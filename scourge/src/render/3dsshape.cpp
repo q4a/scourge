@@ -361,7 +361,7 @@ void C3DSShape::createDisplayList( GLuint listName, bool isShadow ) {
   glEndList();
 }
 
-void C3DSShape::drawShape( bool isShadow ) {
+void C3DSShape::drawShape( bool isShadow, float alpha ) {
   // Since we know how many objects our model has, go through each of them.
   for (int i = 0; i < g_3DModel.numOfObjects; i++) {
     // Make sure we have valid objects just in case. (size() is in the vector class)
@@ -444,7 +444,7 @@ void C3DSShape::drawShape( bool isShadow ) {
 					} else {
 					  // todo: implement outdoor shading
 					}
-          glColor3f(c[0], c[1], c[2]);
+          glColor4f(c[0], c[1], c[2], alpha);
         }
 
         // Pass in the current vertex of the object (Corner of current face)
@@ -483,11 +483,17 @@ void C3DSShape::draw() {
   glGetFloatv( GL_CURRENT_COLOR, currentColor );
 
   glPushMatrix();
-  if( !useShadow && hasAlphaValues ) {
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc( GL_NOTEQUAL, 0 );
-		glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  if( !useShadow && getAlpha() == 1.0f ) {
+  	if( hasAlphaValues ) {
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc( GL_NOTEQUAL, 0 );
+			glEnable( GL_BLEND );
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  	} else {
+  		glEnable( GL_BLEND );
+  		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  		glColor4f( 1, 1, 1, 0.5f );
+  	}
   }
 	glTranslatef( offs_x / DIV, offs_y / DIV, offs_z / DIV );
   glTranslatef(-movex * divx, 0.0f, 0.0f);
@@ -497,15 +503,20 @@ void C3DSShape::draw() {
   // update the wind
   if( isWind() && !useShadow ) {
 		if( windInfo.update() ) {
-			createDisplayList( displayListStart, false );
+//			createDisplayList( displayListStart, false );
 		}
 	}
   
-  glCallList( displayListStart + (useShadow ? 1 : 0) );
+//  glCallList( displayListStart + (useShadow ? 1 : 0) );
+  drawShape( useShadow, getAlpha() );
 	
-  if( !useShadow && hasAlphaValues ) {
-		glDisable( GL_BLEND );
-		glDisable(GL_ALPHA_TEST);
+  if( !useShadow ) {
+  	if( hasAlphaValues ) {
+  		glDisable( GL_BLEND );
+  		glDisable(GL_ALPHA_TEST);
+  	} else {
+  		glDisable( GL_BLEND );
+  	}
 	}
 	glPopMatrix();
 	
