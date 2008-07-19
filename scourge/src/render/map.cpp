@@ -1342,11 +1342,7 @@ void Map::draw() {
     // draw the effects
     glEnable(GL_TEXTURE_2D);
 
-    // draw the roofs
-    glEnable( GL_BLEND );  
-    //glDepthMask( GL_FALSE );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    
+    // draw the roofs    
     Uint32 now = SDL_GetTicks();
   	if( now - roofAlphaUpdate > 25 ) {
   		roofAlphaUpdate = now;
@@ -1366,11 +1362,13 @@ void Map::draw() {
   	}    
     if( roofAlpha > 0 ) {
 	    for(int i = 0; i < roofCount; i++) {
+	    	glEnable( GL_BLEND );
+	      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );	    	
 	    	((GLShape*)roof[i].shape)->setAlpha( roofAlpha );
 	      doDrawShape(&roof[i]);
-	    }
-    }
-    glDisable(GL_BLEND);
+	      glDisable( GL_BLEND );
+	    }	    
+    }    
     
     glEnable(GL_BLEND);  
     glDepthMask(GL_FALSE);
