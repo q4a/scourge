@@ -1015,6 +1015,10 @@ char *textureDirs[] = { "/textures/", "/cave/default/", "/objects/houses/", "" }
 
 GLuint Shapes::loadSystemTexture( const string& line ) {
   if( isHeadless() ) return 0;
+  
+  if( line == "none.bmp" ) {
+  	return 0;
+  }
 
   if( texture_count >= MAX_SYSTEM_TEXTURE_COUNT ) {
     cerr << "Error: *** no more room for system textures!. Not loading: " << line << endl;
@@ -1023,26 +1027,39 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 
   GLuint id = findTextureByName( line );
   if( !id ) {
+  	id = textures[ texture_count ].id = 0;
     textures[texture_count].filename = line;
     int dirCount = 0;
     while( strlen( textureDirs[dirCount] ) ) {
 	    string path = textureDirs[dirCount] + textures[texture_count].filename;
-	    // load the texture
-			SDL_Surface *tmpSurface;
-			GLubyte *tmpImage;
-			
-			setupAlphaBlendedBMP( path, tmpSurface, tmpImage );				
-			if( tmpSurface ) {
-				id = textures[ texture_count ].id = 
-					loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );			
-				SDL_FreeSurface( tmpSurface );
-				delete [] tmpImage;
-				break;
-			} else {
-				id = textures[ texture_count ].id = 0;
-			}
+	    
+	    // file exists?
+	    string fn( rootDir + path );
+	    FILE *fp = fopen( fn.c_str(), "rb" );
+	    if( fp ) {
+	    	fclose( fp );
+	    	
+		    // load the texture
+				SDL_Surface *tmpSurface;
+				GLubyte *tmpImage;
+				
+				setupAlphaBlendedBMP( path, tmpSurface, tmpImage );				
+				if( tmpSurface ) {
+					id = textures[ texture_count ].id = 
+						loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );			
+					SDL_FreeSurface( tmpSurface );
+					delete [] tmpImage;
+					break;
+				} else {
+					id = textures[ texture_count ].id = 0;
+				}
+	    }
 			dirCount++;
     }
+    if( !id ) {
+    	cerr << "*** Error: Unable to find texture: " << line << endl;
+    }
+    
 		texture_count++;
   }
   return id;
@@ -1100,7 +1117,7 @@ void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& 
 
 	string fn( isAbsPath ? filename : rootDir + filename );
 
-	if( !hasAlpha ) debugFileLoad = true;
+	//if( !hasAlpha ) debugFileLoad = true;
 	if( debugFileLoad ) {
 		cerr << "file: " << fn << endl;
 	}
@@ -1118,7 +1135,7 @@ void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& 
 	if( debugFileLoad ) {
 		cerr << "...loaded! Bytes per pixel=" << static_cast<int>(surface->format->BytesPerPixel) << " BPP=" << static_cast<int>(surface->format->BitsPerPixel) << endl;
 	}
-	debugFileLoad = false;
+	//debugFileLoad = false;
 
 	// Rearrange the pixelData
 	int width  = surface->w;

@@ -1828,17 +1828,19 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   if( shape->isVirtual() && settings->isGridShowing() && gridEnabled ) {
   	glColor4f( 0.75f, 0.75f, 1, 1 );
   	
+  	float z = ( shape->getHeight() + 0.25f ) / DIV;
+  	
   	glPushMatrix();
-  	glTranslatef( 0, 20, shape->getHeight() / DIV );
+  	glTranslatef( 0, 20, z );
   	adapter->texPrint( 0, 0, "virtual" );
   	glPopMatrix();
   	
   	glDisable( GL_TEXTURE_2D );
   	glBegin( GL_LINE_LOOP );
-  	glVertex3f( 0, 0, shape->getHeight() / DIV );
-  	glVertex3f( 0, shape->getDepth() / DIV, shape->getHeight() / DIV );
-  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, shape->getHeight() / DIV );
-  	glVertex3f( shape->getWidth() / DIV, 0, shape->getHeight() / DIV );
+  	glVertex3f( 0, 0, z );
+  	glVertex3f( 0, shape->getDepth() / DIV, z );
+  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, z );
+  	glVertex3f( shape->getWidth() / DIV, 0, z );
   	glEnd();  	
   	glEnable( GL_TEXTURE_2D );
   }
