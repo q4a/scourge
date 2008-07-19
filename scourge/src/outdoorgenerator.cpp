@@ -280,7 +280,7 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	addNpcs( map, shapePal, x, y, VILLAGE_WIDTH * MAP_UNIT, VILLAGE_HEIGHT * MAP_UNIT );
 	
 	// add some decor
-	addRugs( map, shapePal );
+	//addRugs( map, shapePal );
 	
 	// Hack: limit free space to just houses for now.
 	//createFreeSpaceMap( map, shapePal );

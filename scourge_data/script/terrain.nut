@@ -144,9 +144,9 @@ function drawHouse_3x2( x, y, w, h ) {
 
 function drawHouse_2x2( x, y, w, h ) {
 	if( scourgeGame.getMission().isFree( x + 2, y + h - 4, 0, "HOUSE_2_BASE" ) ) {
-		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_2_BASE_1" );
+		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4 + 2, 0, "HOUSE_2_BASE_1" );
 		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4 - 16, 0, "HOUSE_2_BASE_2" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 2 + 16, y + h - 4, 0, "HOUSE_2_BASE_3" );
+		scourgeGame.getMission().setMapPosition( x + 2 + 2 + 16, y + h - 4 + 2, 0, "HOUSE_2_BASE_3" );
 		scourgeGame.getMission().setMapPosition( x + 2 + 2, y + h - 4 - 18, 0, "HOUSE_2_BASE_4" );
 		scourgeGame.getMission().setMapPosition( x + 2 + 2, y + h - 4 + 2, 0, "HOUSE_2_BASE_4" );
 		
@@ -157,13 +157,15 @@ function drawHouse_2x2( x, y, w, h ) {
 		scourgeGame.getMission().setMapPosition( x + 2 - 2, y + h - 4 + 4, 12, "HOUSE_2_TOP" );
 		
 		// add some objects
-		scourgeGame.getMission().setMapPosition( x + 2 + 2, y + h - 4 - 1, 0, "BED" );
-		//scourgeGame.getMission().setMapPosition( x + 2 + 12, y + h - 14, 0, "TABLE" );
-		//scourgeGame.getMission().setMapPosition( x + 2 + 14, y + h - 12, 0, "CHAIR" );
-		//scourgeGame.getMission().setMapPosition( x + 2 + 10, y + h - 16, 0, "CHAIR" );
-		//scourgeGame.getMission().setMapPosition( x + 2 + 27, y + h - 10, 0, "STOVE" );
+		scourgeGame.getMission().setMapPosition( x + 2 + 2, y + h - 4, 0, "BED" );
+		scourgeGame.getMission().setMapPosition( x + 2 + 8, y + h - 4 - 7, 0, "TABLE" );
+		scourgeGame.getMission().setMapPosition( x + 2 + 10, y + h - 4 - 4, 0, "CHAIR" );
+		//scourgeGame.getMission().setMapPosition( x + 2 + 5, y + h - 4 - 8, 0, "CHAIR" );
+		scourgeGame.getMission().setMapPosition( x + 2 + 16, y + h - 4, 0, "STOVE" );
+		
+		//scourgeGame.getMission().addRug( x + 2 + 8, y + h - 4 - 8 );
 		
 		// tell the terrain generator where to populate the room with containers
-		scourgeGame.addRoom( x + 2 + 3, y + h - 4 - 17, 15, 17 );
+		scourgeGame.addRoom( x + 2, y + h - 4 - 20, 20, 22 );
 	}
 }
