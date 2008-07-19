@@ -202,7 +202,6 @@ src/io/file.h
 src/io/zipfile.h
 src/texteffect.h
 src/mondrian.h
-src/creature_interface.h
 src/shapepalette.h
 src/mapwidget.h
 src/mainmenu.h
