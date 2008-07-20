@@ -210,17 +210,7 @@ int SqMission::_isFreeOutdoors( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
-	SQBool b = (SqBinding::sessionRef->getMap()->shapeFits( shape, x, y, z ) && 
-			!SqBinding::sessionRef->getMap()->coversDoor( shape, x, y ));
-	if( b ) {
-		int h = SqBinding::sessionRef->getMap()->getGroundHeight( x / OUTDOORS_STEP, y / OUTDOORS_STEP );
-		b = h >= -3 && h < 3;
-		if( b ) {
-			int fx = ( ( x - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
-			int fy = ( ( y - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-			b = SqBinding::sessionRef->getMap()->getFloorPosition( fx, fy ) == NULL;
-		}
-	}
+	SQBool b = SqBinding::sessionRef->getMap()->shapeFitsOutdoors( shape, x, y, z );
 	sq_pushbool(vm, b);
 	return 1;
 }

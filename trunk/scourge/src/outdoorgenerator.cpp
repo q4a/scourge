@@ -171,8 +171,7 @@ bool OutdoorGenerator::drawNodes( Map *map, ShapePalette *shapePal ) {
 					int yy = y * OUTDOORS_STEP + shape->getHeight();
 
 					// don't put them on roads and in houses
-					if( !isShapeOnFloor( shape, x, y, map ) && 
-							!map->isBlocked( xx, yy, 0, 0, 0, 0, shape ) ) {
+					if( map->shapeFitsOutdoors( shape, xx, yy, 0 ) ) {
 						map->setPosition( xx, yy, 0, shape );
 					}
 				}
@@ -289,10 +288,10 @@ void OutdoorGenerator::addVillage( Map *map, ShapePalette *shapePal ) {
 	addContainersInRooms( map, shapePal );
 	
 	// add tables, chairs, etc.
-	addItemsInEveryRoom( RpgItem::getItemByName("Table"), 1 );
-	addItemsInEveryRoom( RpgItem::getItemByName("Chair"), 2 );
-	addItemsInEveryRoom( RpgItem::getItemByName("Bed"), 1 );
-	addItemsInEveryRoom( RpgItem::getItemByName("Stove"), 1 );
+//	addItemsInEveryRoom( RpgItem::getItemByName("Table"), 1 );
+//	addItemsInEveryRoom( RpgItem::getItemByName("Chair"), 2 );
+//	addItemsInEveryRoom( RpgItem::getItemByName("Bed"), 1 );
+//	addItemsInEveryRoom( RpgItem::getItemByName("Stove"), 1 );
 	
 	// clean up free space
 	//deleteFreeSpaceMap( map, shapePal );

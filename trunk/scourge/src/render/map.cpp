@@ -2813,6 +2813,20 @@ bool Map::shapeFits(Shape *shape, int x, int y, int z) {
 	return true;
 }
 
+bool Map::shapeFitsOutdoors( GLShape *shape, int x, int y, int z ) {
+	bool b = shapeFits( shape, x, y, z ) && !coversDoor( shape, x, y );
+	if( b ) {
+		int h = getGroundHeight( x / OUTDOORS_STEP, y / OUTDOORS_STEP );
+		b = h >= -3 && h < 3;
+		if( b ) {
+			int fx = ( ( x - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
+			int fy = ( ( y - MAP_OFFSET )  / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
+			b = getFloorPosition( fx, fy ) == NULL;
+		}
+	}
+	return b;
+}
+
 bool Map::coversDoor( Shape *shape, int x, int y ) {
   for( int ty = y - shape->getDepth() - 6; ty < y + 6; ty++ ) {
     for( int tx = x - 6; tx < x + shape->getWidth() + 6; tx++ ) {
