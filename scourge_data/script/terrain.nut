@@ -34,7 +34,7 @@ function villageRoads() {
 					scourgeGame.getMission().setMapPosition( villageRoadX, i, 0, "PEDESTAL" );
 				}
 			} else if( 0 == ( rand() * 5.0 / RAND_MAX ).tointeger() ) {
-				c = ( rand() * containers.len().tofloat() / RAND_MAX ).tointeger()
+				c = ( rand() * containers.len().tofloat() / RAND_MAX ).tointeger();
 				ix <- ( 0 == ( rand() * 2.0 / RAND_MAX ).tointeger() ? villageRoadX + 4 : villageRoadX + 9 );
 				if( scourgeGame.getMission().isFree( ix, i, 0, containers[c][1] ) ) {
 					scourgeGame.getMission().addItem( containers[c][0], ix, i, 0, true );
@@ -110,8 +110,38 @@ MAP_UNIT <- 16
 function drawHouse( x, y, w, h ) {
 	if( w >= 3 * MAP_UNIT ) {
 		drawHouse_3x2( x, y, w, h );
+	} else if( h >= 3 * MAP_UNIT ) {
+		drawHouse_2x3( x, y, w, h );
 	} else if( w == 2 * MAP_UNIT ) {
 		drawHouse_2x2( x, y, w, h );
+	}
+}
+
+function drawHouse_2x3( x, y, w, h ) {
+	xx <- x + 5;
+	yy <- y + h - 4;
+	if( scourgeGame.getMission().isFree( xx, yy, 0, "HOUSE_3_BASE" ) ) {
+		//scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_1_BASE" );
+		scourgeGame.getMission().setMapPosition( xx, yy, 0, "HOUSE_3_BASE_1" );
+		scourgeGame.getMission().setMapPosition( xx + 19, yy, 0, "HOUSE_3_BASE_2" );
+		scourgeGame.getMission().setMapPosition( xx + 3, yy - 29, 0, "HOUSE_3_BASE_3" );
+		scourgeGame.getMission().setMapPosition( xx + 11, yy, 0, "HOUSE_3_BASE_4" );
+		
+		// the door
+		scourgeGame.getMission().setMapPosition( xx + 4, yy - 1, 0, "NS_DOOR" );
+		
+		// the top
+		scourgeGame.getMission().setMapPosition( xx - 5, yy + 1, 12, "HOUSE_3_TOP" );
+		
+		// add some objects
+		scourgeGame.getMission().setMapPosition( xx + 14, yy - 22, 0, "BED" );
+		scourgeGame.getMission().setMapPosition( xx + 4, yy - 20, 0, "TABLE" );
+		scourgeGame.getMission().setMapPosition( xx + 6, yy - 26 0, "CHAIR" );
+		scourgeGame.getMission().setMapPosition( xx + 7, yy - 17, 0, "CHAIR" );
+		scourgeGame.getMission().setMapPosition( xx + 16, yy - 3, 0, "STOVE" );
+		
+		// tell the terrain generator where to populate the room with containers
+		scourgeGame.addRoom( xx + 1, yy - 31, 20, 30 );
 	}
 }
 

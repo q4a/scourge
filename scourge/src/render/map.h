@@ -510,7 +510,9 @@ private:
   Shape *isWallBetween(int x1, int y1, int z1,
                        int x2, int y2, int z2);
   
-  bool shapeFits(Shape *shape, int x, int y, int z);
+  bool shapeFits( Shape *shape, int x, int y, int z );
+  
+  bool shapeFitsOutdoors( GLShape *shape, int x, int y, int z );
 
   // like shapefits, but returns the blocking location or, NULL if there's nothing there
   Location *getBlockingLocation(Shape *shape, int x, int y, int z);
