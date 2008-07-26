@@ -59,6 +59,7 @@ protected:
 	int iconWidth, iconHeight;
 	std::string ambient;
 	float alpha;
+	std::vector<GLShape*> virtualShapes;
 
   Surface *surfaces[5];
   enum { 
@@ -183,6 +184,11 @@ public:
 	}
 	
 	virtual inline bool isShownInMapEditor() { return true; }
+	
+	void addVirtualShape( int x, int y, int z, int w, int d, int h, bool draws );
+	inline bool hasVirtualShapes() { return virtualShapes.size() > 0; }
+	inline std::vector<GLShape*> *getVirtualShapes() { return &virtualShapes; }
+	void clearVirtualShapes();
 protected:
 	float getLight( float *normal );
   bool locked;

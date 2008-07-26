@@ -252,6 +252,8 @@ public:
   
   inline static void setCurrentWeapon( Item *item ) { currentWeapon = item; }
   inline static Item *getCurrentWeapon() { return currentWeapon; }
+  
+  void callInitCode();
 
 protected:
   void registerScript( const std::string& file );

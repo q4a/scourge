@@ -18,6 +18,7 @@
 #include "glshape.h"
 #include "shapes.h"
 #include "../util.h"
+#include "virtualshape.h"
 
 using namespace std;
 
@@ -337,6 +338,7 @@ GLShape::~GLShape(){
 	delete surfaces[RIGHT_SURFACE];
 	delete surfaces[FRONT_SURFACE];
 	delete surfaces[TOP_SURFACE];
+	clearVirtualShapes();
   if( initialized ) glDeleteLists( displayListStart, 3 );
 }
 
@@ -675,3 +677,16 @@ void GLShape::setOccurs( Occurs *o ) {
 	memcpy( &occurs, o, sizeof( Occurs ) ); 
 }
 
+void GLShape::addVirtualShape( int x, int y, int z, int w, int d, int h, bool draws ) {
+	char tmp[255];
+	sprintf( tmp, "%s_%d", getName(), (int)virtualShapes.size() );
+	GLShape *shape = new VirtualShape( strdup( tmp ), w, d, h, x, y, z, draws, this, getShapePalIndex() );
+	virtualShapes.push_back( shape );
+}
+
+void GLShape::clearVirtualShapes() {
+	for( unsigned int n = 0; n < virtualShapes.size(); n++ ) {
+		delete virtualShapes[n];
+	}
+	virtualShapes.clear();
+}

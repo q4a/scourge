@@ -22,6 +22,7 @@
 #include "shape.h"
 #include "shapes.h"
 #include "glshape.h"
+#include "virtualshape.h"
 #include "md2shape.h"
 #include "renderedprojectile.h"
 #include "renderedcreature.h"
@@ -2383,7 +2384,6 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 														Shape *shape, 
 														RenderedItem *item, 
 														RenderedCreature *creature ) {
-	
 	if( x < MAP_OFFSET || y < MAP_OFFSET || z < 0 || 
 			x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET || z >= MAP_VIEW_HEIGHT ) {
 		cerr << "*** Error can't set position outside bounds:" << x << "," << y << "," << z << endl;
@@ -2455,16 +2455,26 @@ void Map::setPosition( Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *
 	GLShape* gls = dynamic_cast<GLShape*>(shape);
 	if(gls) {
 		
-		setPositionInner( x, y, z, shape, NULL, NULL );
-
-		if( gls->getEffectType() > -1 ) {
-
-			int ex = x + gls->getEffectX();
-			int ey = y - shape->getDepth() - gls->getEffectY();
-			int ez = z + gls->getEffectZ();
-
-			if( !effect[ex][ey][ez] ) {
-				startEffect( ex, ey, ez, gls->getEffectType(), 0, gls->getEffectWidth(), gls->getEffectDepth(), 0, true, di );
+		if( gls->hasVirtualShapes() ) {
+//			cerr << "Adding virtual shapes for: " << shape->getName() << endl;
+			for( unsigned int n = 0; n < gls->getVirtualShapes()->size(); n++ ) {
+				VirtualShape *vs = (VirtualShape*)(gls->getVirtualShapes()->at(n));
+//				cerr << "virtual shape: offset=" << vs->getOffsetX() << "," << vs->getOffsetY() << "," << vs->getOffsetZ() << " dim=" <<
+//					vs->getWidth() << "," << vs->getDepth() << "," << vs->getHeight() << endl;
+				setPositionInner( x + vs->getOffsetX(), y + vs->getOffsetY(), z + vs->getOffsetZ(), vs, NULL, NULL );				
+			}
+		} else {
+			setPositionInner( x, y, z, shape, NULL, NULL );
+	
+			if( gls->getEffectType() > -1 ) {
+	
+				int ex = x + gls->getEffectX();
+				int ey = y - shape->getDepth() - gls->getEffectY();
+				int ez = z + gls->getEffectZ();
+	
+				if( !effect[ex][ey][ez] ) {
+					startEffect( ex, ey, ez, gls->getEffectType(), 0, gls->getEffectWidth(), gls->getEffectDepth(), 0, true, di );
+				}
 			}
 		}
 	}
@@ -3464,8 +3474,10 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 				info->pos_count++;
       }
 
+			// for virtual shapes, only save the reference shape pointed to by the virutal shape that is actually drawn
       for( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
-        if( pos[x][y][z] && pos[x][y][z]->x == x && pos[x][y][z]->y == y && pos[x][y][z]->z == z && 
+        if( pos[x][y][z] && pos[x][y][z]->x == x && pos[x][y][z]->y == y && pos[x][y][z]->z == z &&
+        		!( pos[x][y][z]->shape && pos[x][y][z]->shape->isVirtual() && !((VirtualShape*)pos[x][y][z]->shape)->isDrawn() ) &&
             !( pos[x][y][z]->creature && !(pos[x][y][z]->creature->isMonster() ) ) ) {
 
           info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, z );
@@ -3484,7 +3496,15 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 							info->pos[ info->pos_count ]->creature = pos[x][y][z]->creature->save();
 						}
           } else {
-            strncpy( (char*)(info->pos[ info->pos_count ]->shape_name), pos[x][y][z]->shape->getName(), 254 );
+          	if( pos[x][y][z]->shape->isVirtual() ) {
+          		VirtualShape *vs = (VirtualShape*)pos[x][y][z]->shape;
+          		strncpy( (char*)(info->pos[ info->pos_count ]->shape_name), vs->getRef()->getName(), 254 );
+          		info->pos[ info->pos_count ]->x -= vs->getOffsetX();
+          		info->pos[ info->pos_count ]->y -= vs->getOffsetY();
+          		info->pos[ info->pos_count ]->z -= vs->getOffsetZ();
+          	} else {
+          		strncpy( (char*)(info->pos[ info->pos_count ]->shape_name), pos[x][y][z]->shape->getName(), 254 );          		
+          	}
             info->pos[ info->pos_count ]->shape_name[254] = 0;
           }
 

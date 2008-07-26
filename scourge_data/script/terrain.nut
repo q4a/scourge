@@ -106,6 +106,37 @@ function villageShapes() {
 	}
 }
 
+/**
+ * This method is called when a shape is loaded or when squirrel scripts are reloaded.
+ * It is used create extra virtual shapes to draw instead when the real shape is drawn.
+ */
+function addVirtualShapes( shape_name ) {
+	if( shape_name == "HOUSE_1_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 6, 25, 10, true );
+		scourgeGame.addVirtualShape( shape_name, 6, 0, 0, 30, 6, 10, false );
+		scourgeGame.addVirtualShape( shape_name, 36, 0, 0, 6, 25, 10, false );
+		scourgeGame.addVirtualShape( shape_name, 16, -19, 0, 20, 6, 10, false );
+		scourgeGame.addVirtualShape( shape_name, 6, -19, 0, 4, 6, 10, false );						
+	} else if( shape_name == "HOUSE_2_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, 2, 0, 2, 12, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -16, 0, 2, 4, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 18, 2, 0, 2, 22, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 2, -18, 0, 16, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 2, 2, 0, 16, 2, 12, false );
+	} else if( shape_name == "HOUSE_3_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 3, 32, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 19, 0, 0, 3, 32, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 3, -29, 0, 16, 3, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 11, 0, 0, 8, 3, 12, false );		
+	}
+}
+
+/**
+ * This method is called by the OutdoorGenerator when it needs to draw a house.
+ */
 MAP_UNIT <- 16
 function drawHouse( x, y, w, h ) {
 	if( w >= 3 * MAP_UNIT ) {
@@ -121,11 +152,7 @@ function drawHouse_2x3( x, y, w, h ) {
 	xx <- x + 5;
 	yy <- y + h - 4;
 	if( scourgeGame.getMission().isFree( xx, yy, 0, "HOUSE_3_BASE" ) ) {
-		//scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_1_BASE" );
-		scourgeGame.getMission().setMapPosition( xx, yy, 0, "HOUSE_3_BASE_1" );
-		scourgeGame.getMission().setMapPosition( xx + 19, yy, 0, "HOUSE_3_BASE_2" );
-		scourgeGame.getMission().setMapPosition( xx + 3, yy - 29, 0, "HOUSE_3_BASE_3" );
-		scourgeGame.getMission().setMapPosition( xx + 11, yy, 0, "HOUSE_3_BASE_4" );
+		scourgeGame.getMission().setMapPosition( xx, yy, 0, "HOUSE_3_BASE" );
 		
 		// the door
 		scourgeGame.getMission().setMapPosition( xx + 4, yy - 1, 0, "NS_DOOR" );
@@ -146,13 +173,9 @@ function drawHouse_2x3( x, y, w, h ) {
 }
 
 function drawHouse_3x2( x, y, w, h ) {
-	if( scourgeGame.getMission().isFree( x + 2, y + h - 4, 0, "HOUSE_1_BASE" ) ) {
-		//scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_1_BASE" );
-		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_1_BASE_1" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 6, y + h - 4, 0, "HOUSE_1_BASE_2" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 36, y + h - 4, 0, "HOUSE_1_BASE_3" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 16, y + h - 4 - 19, 0, "HOUSE_1_BASE_4" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 6, y + h - 4 - 19, 0, "HOUSE_1_BASE_5" );
+	shape_name <- "HOUSE_1_BASE"	
+	if( scourgeGame.getMission().isFree( x + 2, y + h - 4, 0, shape_name ) ) {
+		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, shape_name );
 		
 		// the door
 		scourgeGame.getMission().setMapPosition( x + 2 + 10, y + h - 4 - 22, 0, "NS_DOOR" );
@@ -174,11 +197,7 @@ function drawHouse_3x2( x, y, w, h ) {
 
 function drawHouse_2x2( x, y, w, h ) {
 	if( scourgeGame.getMission().isFree( x + 2, y + h - 4, 0, "HOUSE_2_BASE" ) ) {
-		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4 + 2, 0, "HOUSE_2_BASE_1" );
-		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4 - 16, 0, "HOUSE_2_BASE_2" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 2 + 16, y + h - 4 + 2, 0, "HOUSE_2_BASE_3" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 2, y + h - 4 - 18, 0, "HOUSE_2_BASE_4" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 2, y + h - 4 + 2, 0, "HOUSE_2_BASE_4" );
+		scourgeGame.getMission().setMapPosition( x + 2, y + h - 4, 0, "HOUSE_2_BASE" );
 		
 		// the door
 		scourgeGame.getMission().setMapPosition( x + 2 + 1, y + h - 4 - 10, 0, "EW_DOOR" );
