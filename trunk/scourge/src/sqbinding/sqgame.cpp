@@ -24,6 +24,7 @@
 #include "../sound.h"
 #include "../debug.h"
 #include "../terraingenerator.h"
+#include "../shapepalette.h"
 
 using namespace std;
 
@@ -63,7 +64,9 @@ ScriptClassMemberDecl SqGame::members[] = {
 	{ "void", "continueAt", SqGame::_continueAt, 0, 0, "Call a squirrel function after the specified timeout." },
 	{ "void", "setDepthLimits", SqGame::_setDepthLimits, 0, 0, "Set the min and max depth values used for orthographic rendering." },
 	{ "bool", "getRerunMovies", SqGame::_getRerunMovies, 0, 0, "Always re-run movies? A debug feature." },	
-	{ "void", "addRoom", SqGame::_addRoom, 0, 0, "Tell the terrain generator where a room is." },	
+	{ "void", "addRoom", SqGame::_addRoom, 0, 0, "Tell the terrain generator where a room is." },
+	{ "void", "addVirtualShape", SqGame::_addVirtualShape, 0, 0, "Add a virtual shape." },
+	{ "void", "clearVirtualShapes", SqGame::_clearVirtualShapes, 0, 0, "Clear all virtual shapes." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members, 
@@ -361,5 +364,26 @@ int SqGame::_addRoom( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
 	SqBinding::sessionRef->getTerrainGenerator()->addRoom( x, y, w, h );
+	return 0;
+}
+
+int SqGame::_addVirtualShape( HSQUIRRELVM vm ) {
+	GET_BOOL( draws )
+	GET_INT( h )
+	GET_INT( d )
+	GET_INT( w )
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	GET_STRING( shapeName, 255 )
+	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
+	shape->addVirtualShape( x, y, z, w, d, h, draws );
+	return 0;
+}
+
+int SqGame::_clearVirtualShapes( HSQUIRRELVM vm ) {
+	GET_STRING( shapeName, 255 )
+	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
+	shape->clearVirtualShapes();
 	return 0;
 }

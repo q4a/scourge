@@ -18,7 +18,7 @@
 #include "virtualshape.h"
 
 VirtualShape::VirtualShape( char *name,
-                            int width, int height, int depth,
+                            int width, int depth, int height,
                             int offsetX, int offsetY, int offsetZ,
                             bool draws, GLShape *refShape, 
                             int shapePalIndex ) :

@@ -98,6 +98,8 @@ public:
 	
 	// should really be in sqterraingenerator.h
 	static int _addRoom( HSQUIRRELVM vm );
+	static int _addVirtualShape( HSQUIRRELVM vm );
+	static int _clearVirtualShapes( HSQUIRRELVM vm );
 };
 
 #endif

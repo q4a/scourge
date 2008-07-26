@@ -106,7 +106,7 @@ void ShapePalette::initialize() {
 	initDescriptions( config );
 	initNativeShapes( config );
 	init3dsShapes( config );
-	initVirtualShapes( config );
+	//initVirtualShapes( config );
 	initSounds( config );
   delete config;
 

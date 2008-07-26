@@ -30,8 +30,9 @@
 #include "../squirrel/sqstdmath.h"
 #include "../squirrel/sqstdstring.h"
 #include "../io/file.h"
-#include "../render/map.h"
+#include "../render/renderlib.h"
 #include "../debug.h"
+#include "../shapepalette.h"
 #include <set>
 
 using namespace std;
@@ -877,6 +878,16 @@ void SqBinding::reloadScripts() {
     }
   }
   if( DEBUG_SQUIRREL ) cerr << "----------------------" << endl;
+  
+  // re-init the virtual shapes
+  callInitCode();  
+}
+
+void SqBinding::callInitCode() {
+	// run some init code
+  for( int i = 1; i < SqBinding::sessionRef->getShapePalette()->getShapeCount(); i++) {
+  	callMapMethod( "addVirtualShapes", SqBinding::sessionRef->getShapePalette()->getShape(i)->getName() );
+  }
 }
 
 time_t SqBinding::getLastModTime( const string& file ) {

@@ -42,6 +42,11 @@ public:
   void outline( float r, float g, float b );
   virtual inline bool isVirtual() { return true; }
   inline GLShape *getRef() { return refShape; }
+  virtual inline bool isShownInMapEditor() { return false; }
+  virtual inline int getOffsetX() { return this->offsetX; }
+  virtual inline int getOffsetY() { return this->offsetY; }
+  virtual inline int getOffsetZ() { return this->offsetZ; }
+  virtual inline bool isDrawn() { return this->draws; }
 };
 
 #endif /*VIRTUALSHAPE_H_*/

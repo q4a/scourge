@@ -25,6 +25,7 @@
 #include "glcaveshape.h"
 #include "virtualshape.h"
 #include "../session.h"
+#include "../sqbinding/sqbinding.h"
 #include <fstream>
 #include <iostream>
 
@@ -626,6 +627,10 @@ void Shapes::loadShape( const char *name ) {
 
     string s = sv->name;
     shapeMap[s] = shapes[(i + 1)];
+    
+    // init its virtual shapes
+    session->getSquirrel()->callMapMethod( "addVirtualShapes", shapes[(i + 1)]->getName() );
+    
 		break;
   }
 }
