@@ -381,9 +381,11 @@ int SqGame::_addVirtualShape( HSQUIRRELVM vm ) {
 	return 0;
 }
 
+// this method leaks memory, it should only be used while debugging
+// we can't remove the virtual shapes b/c they could be used in a map
 int SqGame::_clearVirtualShapes( HSQUIRRELVM vm ) {
 	GET_STRING( shapeName, 255 )
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
-	shape->clearVirtualShapes();
+	shape->clearVirtualShapes( false );
 	return 0;
 }

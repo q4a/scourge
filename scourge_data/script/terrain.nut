@@ -120,11 +120,11 @@ function addVirtualShapes( shape_name ) {
 		scourgeGame.addVirtualShape( shape_name, 6, -19, 0, 4, 6, 10, false );						
 	} else if( shape_name == "HOUSE_2_BASE" ) {
 		scourgeGame.clearVirtualShapes( shape_name );
-		scourgeGame.addVirtualShape( shape_name, 0, 2, 0, 2, 12, 12, false );
-		scourgeGame.addVirtualShape( shape_name, 0, -16, 0, 2, 4, 12, true );
-		scourgeGame.addVirtualShape( shape_name, 18, 2, 0, 2, 22, 12, false );
-		scourgeGame.addVirtualShape( shape_name, 2, -18, 0, 16, 2, 12, false );
-		scourgeGame.addVirtualShape( shape_name, 2, 2, 0, 16, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, 2, 0, 3, 12, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -16, 0, 3, 4, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 19, 2, 0, 2, 22, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 3, -18, 0, 16, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 3, 2, 0, 16, 2, 12, false );
 	} else if( shape_name == "HOUSE_3_BASE" ) {
 		scourgeGame.clearVirtualShapes( shape_name );
 		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 3, 32, 12, true );
@@ -182,6 +182,12 @@ function drawHouse_3x2( x, y, w, h ) {
 		
 		// the top
 		scourgeGame.getMission().setMapPosition( x + 2 - 3, y + h - 4, 10, "HOUSE_1_TOP" );
+		scourgeGame.getMission().setMapEffect( x + 2 + 6, y + h - 4 - 7, 10, // map location 
+		                                       "EFFECT_GREEN",												// effect 
+		                                       3, 3, 																	// base size
+		                                       0.5, 0, 15, 														// offset
+		                                       0.4, 0.4, 1 														// color
+																					);
 		
 		// add some objects
 		scourgeGame.getMission().setMapPosition( x + 2 + 31, y + h - 10, 0, "BED" );
@@ -206,15 +212,34 @@ function drawHouse_2x2( x, y, w, h ) {
 		scourgeGame.getMission().setMapPosition( x + 2 - 2, y + h - 4 + 4, 12, "HOUSE_2_TOP" );
 		
 		// add some objects
-		scourgeGame.getMission().setMapPosition( x + 2 + 2, y + h - 4, 0, "BED" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 8, y + h - 4 - 7, 0, "TABLE" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 10, y + h - 4 - 4, 0, "CHAIR" );
+		scourgeGame.getMission().setMapPosition( x + 3 + 2, y + h - 4, 0, "BED" );
+		scourgeGame.getMission().setMapPosition( x + 3 + 10, y + h - 4 - 7, 0, "TABLE" );
+		scourgeGame.getMission().setMapPosition( x + 3 + 12, y + h - 4 - 4, 0, "CHAIR" );
 		//scourgeGame.getMission().setMapPosition( x + 2 + 5, y + h - 4 - 8, 0, "CHAIR" );
-		scourgeGame.getMission().setMapPosition( x + 2 + 16, y + h - 4, 0, "STOVE" );
+		scourgeGame.getMission().setMapPosition( x + 3 + 15, y + h - 4, 0, "STOVE" );
+		
+		scourgeGame.getMission().setMapEffect( x + 2 - 1, y + h - 4 - 17, 9, // map location 
+				                                       "EFFECT_GREEN",  												// effect 
+				                                       1, 1, 																	// base size
+				                                       0.3, -0.7, 0, 														// offset
+				                                       1, 0.7, 0.2 														// color
+																							);		
+		scourgeGame.getMission().setMapEffect( x + 2 - 1, y + h - 4 - 7, 9, // map location 
+				                                       "EFFECT_GREEN",  												// effect 
+				                                       1, 1, 																	// base size
+				                                       0.3, -0.7, 0, 														// offset
+				                                       1, 0.7, 0.2 														// color
+																							);
+		scourgeGame.getMission().setMapEffect( x + 2 + 14, y + h - 4 - 3, 10, // map location 
+				                                       "EFFECT_GREEN",  												// effect 
+				                                       4, 4, 																	// base size
+				                                       0, 0, 20, 														// offset
+				                                       1, 0.2, 1 														// color
+																							);		
 		
 		//scourgeGame.getMission().addRug( x + 2 + 8, y + h - 4 - 8 );
 		
 		// tell the terrain generator where to populate the room with containers
-		scourgeGame.addRoom( x + 2, y + h - 4 - 20, 20, 22 );
+		scourgeGame.addRoom( x + 2 + 1, y + h - 4 - 20, 19, 22 );
 	}
 }

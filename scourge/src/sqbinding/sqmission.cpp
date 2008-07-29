@@ -47,6 +47,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "isFree", SqMission::_isFree, 0, 0, "Will this place fit at this location? This method returns false if the position is occupied or if it would block a door." },	
 	{ "void", "isFreeOutdoors", SqMission::_isFreeOutdoors, 0, 0, "Same as isFree plus it discounts lakes, high elevations and where a floor shape is set." },
 	{ "void", "setMapPosition", SqMission::_setMapPosition, 0, 0, "Set a shape at this map position. Shape is given by its name." },
+	{ "void", "setMapEffect", SqMission::_setMapEffect, 0, 0, "Set an effect at this map position. The effect is identified by its name." },
 	{ "float", "getHeightMap", SqMission::_getHeightMap, 0, 0, "Get the ground height (outdoors only) at this map position." },
 	{ "void", "setHeightMap", SqMission::_setHeightMap, 0, 0, "Set the ground height (outdoors only) at this map position." },
 	{ "String", "getShape", SqMission::_getShape, 0, 0, "Get the name of a shape at this position." },
@@ -189,6 +190,37 @@ int SqMission::_setMapPosition( HSQUIRRELVM vm ) {
 	GET_INT( x )
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
 	SqBinding::sessionRef->getMap()->setPosition( x, y, z, shape );
+	return 0;
+}
+
+int SqMission::_setMapEffect( HSQUIRRELVM vm ) {
+	GET_FLOAT( b )
+	GET_FLOAT( g )
+	GET_FLOAT( r )
+	GET_FLOAT( oz )
+	GET_FLOAT( oy )
+	GET_FLOAT( ox )
+	GET_INT( h )
+	GET_INT( w )
+	GET_STRING( effectName, 255 )
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	int effect_type = 0;
+	for( int i = 0; i < Constants::EFFECT_COUNT; i++) {
+		if( !strcmp( effectName, Constants::EFFECT_NAMES[i] ) ) {
+			effect_type = i;
+			break;
+		}
+	}
+	DisplayInfo di;
+	di.red = r;
+	di.green = g;
+	di.blue = b;
+	di.offset_x = ox;
+	di.offset_y = oy;
+	di.offset_z = oz;
+	SqBinding::sessionRef->getMap()->startEffect(x, y, z, effect_type, 0, w, h, 0, true, &di );
 	return 0;
 }
 

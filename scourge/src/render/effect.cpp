@@ -102,6 +102,13 @@ void Effect::draw(int effect, int startTime, float percent) {
   bool proceed = (lastTimeStamp == 0 || 
                   t - lastTimeStamp >= preferences->getGameSpeedTicks() / 2);
   if(proceed) lastTimeStamp = t;
+  
+  if( diWasSet ) {
+  	glPushMatrix();
+  	glTranslatef( this->di.offset_x / DIV, 
+  	              this->di.offset_y / DIV, 
+  	              this->di.offset_z / DIV );
+  }
 
   if(effect == Constants::EFFECT_FLAMES) {
     drawFlames(proceed);
@@ -129,6 +136,10 @@ void Effect::draw(int effect, int startTime, float percent) {
     drawTower(proceed);
   } else {
     glowShape(proceed, startTime);
+  }
+  
+  if( diWasSet ) {
+    	glPopMatrix();
   }
 }
 
