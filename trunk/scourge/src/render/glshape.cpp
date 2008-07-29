@@ -338,7 +338,7 @@ GLShape::~GLShape(){
 	delete surfaces[RIGHT_SURFACE];
 	delete surfaces[FRONT_SURFACE];
 	delete surfaces[TOP_SURFACE];
-	clearVirtualShapes();
+	clearVirtualShapes( true );
   if( initialized ) glDeleteLists( displayListStart, 3 );
 }
 
@@ -684,9 +684,11 @@ void GLShape::addVirtualShape( int x, int y, int z, int w, int d, int h, bool dr
 	virtualShapes.push_back( shape );
 }
 
-void GLShape::clearVirtualShapes() {
-	for( unsigned int n = 0; n < virtualShapes.size(); n++ ) {
-		delete virtualShapes[n];
+void GLShape::clearVirtualShapes( bool freeMemory ) {
+	if( freeMemory ) {
+		for( unsigned int n = 0; n < virtualShapes.size(); n++ ) {
+			delete virtualShapes[n];
+		}
 	}
 	virtualShapes.clear();
 }

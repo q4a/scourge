@@ -188,7 +188,7 @@ public:
 	void addVirtualShape( int x, int y, int z, int w, int d, int h, bool draws );
 	inline bool hasVirtualShapes() { return virtualShapes.size() > 0; }
 	inline std::vector<GLShape*> *getVirtualShapes() { return &virtualShapes; }
-	void clearVirtualShapes();
+	void clearVirtualShapes( bool freeMemory );
 protected:
 	float getLight( float *normal );
   bool locked;

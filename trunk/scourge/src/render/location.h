@@ -34,19 +34,28 @@ class RenderedCreature;
 class DisplayInfo {
 public:
   GLfloat red, green, blue;
+  GLfloat offset_x, offset_y, offset_z;
 
   DisplayInfo() {
     reset();
   }
+  
   ~DisplayInfo() {
   }
 
-  inline void reset() { red = green = blue = 1.0f; }
+  inline void reset() { 
+  	red = green = blue = 1.0f; 
+  	offset_x = offset_y = offset_z = 0.0f; 
+  }
+  
   inline void copy( DisplayInfo *di ) { 
     if( di ) {
       red = di->red; 
       green = di->green; 
       blue = di->blue; 
+      offset_x = di->offset_x;
+      offset_y = di->offset_y;
+      offset_z = di->offset_z;
     } else {
       reset();
     }
