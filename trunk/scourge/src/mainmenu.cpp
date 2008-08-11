@@ -234,38 +234,46 @@ void MainMenu::drawView() {
 						 
   // draw the boards
   if(openingTop > 0) {
-    glPushMatrix();
-    glColor3f( 1, 1, 1 );
-    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getGuiWoodTexture() );
+  	glPushMatrix();
+    glColor3f( 1, 1, 1 );    
+    
     //    float TILE_W = 510 / 2.0f;
-    float TILE_H = 270 / 3.0f; 
+    float TILE_W = 256.0f;
+    float TILE_H = 256.0f; 
     glEnable( GL_TEXTURE_2D );
-
+    GLuint yellow = scourge->getShapePalette()->getNamedTexture( "menu" );
+    
+    glPushMatrix();
     glLoadIdentity();
-    glTranslatef( 0, 0, 0 );
+    glTranslatef( 0, openingTop, 0 );
+    glBindTexture( GL_TEXTURE_2D, yellow );
     glBegin( GL_QUADS );
-    glTexCoord2f( 0, openingTop / TILE_H );
-    glVertex2i( 0, 0 );
     glTexCoord2f( 0, 0 );
-    glVertex2i( 0, openingTop );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( scourge->getSDLHandler()->getScreen()->w, openingTop );
-    glTexCoord2f( 1, openingTop / TILE_H );
+    glVertex2i( 0, -scourge->getSDLHandler()->getScreen()->h / 2 );
+    glTexCoord2f( 0, scourge->getSDLHandler()->getScreen()->h / TILE_H );
+    glVertex2i( 0, 0 );
+    glTexCoord2f( scourge->getSDLHandler()->getScreen()->w / TILE_W, scourge->getSDLHandler()->getScreen()->h / TILE_H );
     glVertex2i( scourge->getSDLHandler()->getScreen()->w, 0 );
+    glTexCoord2f( scourge->getSDLHandler()->getScreen()->w / TILE_W, 0 );
+    glVertex2i( scourge->getSDLHandler()->getScreen()->w, -scourge->getSDLHandler()->getScreen()->h / 2 );
     glEnd();
-
+    glPopMatrix();
+    
+    glPushMatrix();
     glLoadIdentity();
     glTranslatef( 0, scourge->getSDLHandler()->getScreen()->h - openingTop, 0 );
+    glBindTexture( GL_TEXTURE_2D, yellow );
     glBegin( GL_QUADS );
     glTexCoord2f( 0, 0 );
     glVertex2i( 0, 0 );
-    glTexCoord2f( 0, openingTop / TILE_H );
-    glVertex2i( 0, openingTop );
-    glTexCoord2f( 1, openingTop / TILE_H );
-    glVertex2i( scourge->getSDLHandler()->getScreen()->w, openingTop );
-    glTexCoord2f( 1, 0 );
+    glTexCoord2f( 0, scourge->getSDLHandler()->getScreen()->h / TILE_H );
+    glVertex2i( 0, scourge->getSDLHandler()->getScreen()->h / 2 );
+    glTexCoord2f( scourge->getSDLHandler()->getScreen()->w / TILE_W, scourge->getSDLHandler()->getScreen()->h / TILE_H );
+    glVertex2i( scourge->getSDLHandler()->getScreen()->w, scourge->getSDLHandler()->getScreen()->h / 2 );
+    glTexCoord2f( scourge->getSDLHandler()->getScreen()->w / TILE_W, 0 );
     glVertex2i( scourge->getSDLHandler()->getScreen()->w, 0 );
     glEnd();
+    glPopMatrix();
     glDisable( GL_TEXTURE_2D );
 
     for(int i = 0; i < 2; i++) {
