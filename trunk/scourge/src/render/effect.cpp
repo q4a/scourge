@@ -116,6 +116,10 @@ void Effect::draw(int effect, int startTime, float percent) {
     drawTeleport(proceed);
   } else if(effect == Constants::EFFECT_GREEN) {
     drawGreen(proceed);
+  } else if(effect == Constants::EFFECT_SMOKE) {
+    drawSmoke(proceed);
+  } else if(effect == Constants::EFFECT_FIRE) {
+  	drawFire(proceed);    
   } else if(effect == Constants::EFFECT_EXPLOSION) {
     drawExplosion(proceed);
   } else if(effect == Constants::EFFECT_BLAST) {
@@ -571,8 +575,89 @@ void Effect::drawRipple(bool proceed) {
   }
 }
 
+void Effect::drawSmoke(bool proceed) {
+  // manage particles
+  for(int i = 0; i < PARTICLE_COUNT; i++) {
+    if(!particle[i]) {
+      // create a new particle
+      createParticle(&(particle[i]));
+      particle[i]->z = Util::roll( 0.0f, 1.0f );      
+      particle[i]->moveDelta = Util::roll( 0.1f, 0.3f );      
+      //particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+      // particle[i]->moveDelta = 0.15f;
+      particle[i]->rotate = Util::roll( 0.0f, 180.0f );
+      particle[i]->maxLife = Util::pickOne( 50, 70 );
+      particle[i]->trail = 2;
+      particle[i]->zoom = Util::roll( 1.0f, 2.0f );
+    } else if(proceed) {
+      particle[i]->rotate -= Util::roll( 3.0f, 6.0f );
 
+      // this causes an explosion!
+      //particle[i]->zoom += 0.3f;
+      moveParticle(&(particle[i]));
+    }
 
+    // draw it      
+    if(particle[i]) {            
+
+      float max = particle[i]->maxLife / 4;
+      float c = 1.0f;
+      if( particle[i]->life <= max / 2 ) {
+        c = static_cast<float>( particle[i]->life ) / ( max / 2 );
+      } else if( particle[i]->life > particle[i]->maxLife - max ) {
+        c = static_cast<float>( particle[i]->maxLife - particle[i]->life ) / max;
+      }
+      float r = ( diWasSet ? di.red : 0.2f );
+      float g = ( diWasSet ? di.green : 0.2f );
+      float b = ( diWasSet ? di.blue : 0.5f );
+      glColor4f( r, g, b, 0.2f * c );
+      if( particle[i]->zoom < 5 ) {
+      	particle[i]->zoom *= 1.05f;
+      }      
+
+      drawParticle(particle[i]);
+    }
+  }
+}
+
+void Effect::drawFire(bool proceed) {
+	for( int i = 0; i < PARTICLE_COUNT; i++ ) {
+		if(!particle[i]) {
+      // create a new particle
+			createParticle(&(particle[i]));
+      particle[i]->z = Util::roll( 0.0f, 0.5f );
+      particle[i]->maxLife = Util::roll( 4.0f, 10.0f );
+      particle[i]->moveDelta = Util::roll( 0.1f, 0.4f );
+      particle[i]->zoom = Util::roll( 1.8f, 2.5f );
+      particle[i]->trail = 2;
+    } else if(proceed) {
+      // move this particle
+    	moveParticle(&(particle[i]));
+    }
+
+    // draw it
+    if(particle[i]) {
+				float max = particle[i]->maxLife / 5;
+	      float c = 1.0f;
+	      if( particle[i]->life <= max ) {
+	        c = static_cast<float>( particle[i]->life ) / max;
+	      } else if( particle[i]->life > particle[i]->maxLife - max ) {
+	        c = static_cast<float>( particle[i]->maxLife - particle[i]->life ) / max;
+	      }
+	      
+	      if( particle[i]->zoom < 3 ) {
+        	particle[i]->zoom *= 1.05f;
+        }	      
+    	
+        float color = 1.0f / ((GLfloat)particle[i]->maxLife / (GLfloat)particle[i]->life);
+        float red = Util::roll( 0.0f, (1.0f - color) / 4.0 );
+        float green = Util::roll( 0.0f, (1.0f - color) / 8.0 );
+        float blue = Util::roll( 0.0f, (1.0f - color) / 10.0 );
+        glColor4f(color + red, color + green, color + blue, c);
+        drawParticle(particle[i]);
+    }
+	}
+}
 
 void Effect::createParticle(ParticleStruct **particle) {
   // create a new particle
