@@ -514,6 +514,8 @@ public:
     EFFECT_HAIL,
     EFFECT_TOWER,
     EFFECT_BLAST,
+    EFFECT_SMOKE,
+    EFFECT_FIRE,
 
     // must be last
     EFFECT_COUNT

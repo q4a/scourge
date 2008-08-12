@@ -201,7 +201,9 @@ const char *Constants::EFFECT_NAMES[] = {
 	"EFFECT_DUST",
   "EFFECT_HAIL", 
 	"EFFECT_TOWER", 
-	"EFFECT_BLAST"
+	"EFFECT_BLAST",
+	"EFFECT_SMOKE",
+	"EFFECT_FIRE"
 };
 
 const char *Constants::npcTypeName[] = {

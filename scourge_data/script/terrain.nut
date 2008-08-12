@@ -183,10 +183,10 @@ function drawHouse_3x2( x, y, w, h ) {
 		// the top
 		scourgeGame.getMission().setMapPosition( x + 2 - 3, y + h - 4, 10, "HOUSE_1_TOP" );
 		scourgeGame.getMission().setMapEffect( x + 2 + 6, y + h - 4 - 7, 10, // map location 
-		                                       "EFFECT_GREEN",												// effect 
+		                                       "EFFECT_SMOKE",												// effect 
 		                                       3, 3, 																	// base size
 		                                       0.5, 0, 15, 														// offset
-		                                       0.4, 0.4, 1 														// color
+		                                       0.2, 0.2, 0.5 														// color
 																					);
 		
 		// add some objects
@@ -219,22 +219,22 @@ function drawHouse_2x2( x, y, w, h ) {
 		scourgeGame.getMission().setMapPosition( x + 3 + 15, y + h - 4, 0, "STOVE" );
 		
 		scourgeGame.getMission().setMapEffect( x + 2 - 1, y + h - 4 - 17, 9, // map location 
-				                                       "EFFECT_GREEN",  												// effect 
+		                                       	"EFFECT_FIRE",  												// effect 
 				                                       1, 1, 																	// base size
 				                                       0.3, -0.7, 0, 														// offset
-				                                       1, 0.7, 0.2 														// color
+				                                       0.5, 0.3, 0.1 														// color
 																							);		
 		scourgeGame.getMission().setMapEffect( x + 2 - 1, y + h - 4 - 7, 9, // map location 
-				                                       "EFFECT_GREEN",  												// effect 
+		                                       "EFFECT_FIRE",  												// effect 
 				                                       1, 1, 																	// base size
 				                                       0.3, -0.7, 0, 														// offset
-				                                       1, 0.7, 0.2 														// color
+				                                       0.5, 0.3, 0.1 														// color
 																							);
 		scourgeGame.getMission().setMapEffect( x + 2 + 14, y + h - 4 - 3, 10, // map location 
-				                                       "EFFECT_GREEN",  												// effect 
+				                                       "EFFECT_SMOKE",  												// effect 
 				                                       4, 4, 																	// base size
-				                                       0, 0, 20, 														// offset
-				                                       1, 0.2, 1 														// color
+				                                       0, 0, 18, 														// offset
+				                                       0.3, 0.1, 0.3 														// color
 																							);		
 		
 		//scourgeGame.getMission().addRug( x + 2 + 8, y + h - 4 - 8 );

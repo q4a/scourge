@@ -69,6 +69,8 @@ protected:
   void drawFlames(bool proceed);
   void drawTeleport(bool proceed);
   void drawGreen(bool proceed);
+  void drawSmoke(bool proceed);
+  void drawFire(bool proceed);
   void drawExplosion(bool proceed);
   void drawSwirl(bool proceed);
   void drawCastSpell(bool proceed);
