@@ -64,7 +64,9 @@ PcEditor::~PcEditor() {
 }
 
 void PcEditor::setCreature( Creature *c, bool isEditable ) {
-  if( deleteCreature ) delete creature;
+  if( deleteCreature && creature ) {
+  	delete creature;
+  }
 
   if( c ) {
     this->creature = c;
@@ -74,12 +76,10 @@ void PcEditor::setCreature( Creature *c, bool isEditable ) {
     this->creature = createPartyMember();
     deleteCreature = true;
   }
-
-	setCharType( charType->getSelectedLine() );
-
-	detailsInfo->setCreature( win, creature );
-
+  
+  detailsInfo->setCreature( win, creature );
 	loadUI();
+	setCharType( charType->getSelectedLine() );
 
 	cards->setActiveCard( NAME_TAB );
 	nameButton->setSelected( true );
