@@ -4072,3 +4072,6 @@ MapEditor *Scourge::getMapEditor() {
 	return mapEditor; 
 }
 
+void Scourge::shapeAdded( const char *shapeName, int x, int y, int z ) {
+	getSession()->getSquirrel()->callMapPosShapeMethod( "shapeAdded", shapeName, x, y, z );
+}

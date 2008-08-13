@@ -182,12 +182,6 @@ function drawHouse_3x2( x, y, w, h ) {
 		
 		// the top
 		scourgeGame.getMission().setMapPosition( x + 2 - 3, y + h - 4, 10, "HOUSE_1_TOP" );
-		scourgeGame.getMission().setMapEffect( x + 2 + 6, y + h - 4 - 7, 10, // map location 
-		                                       "EFFECT_SMOKE",												// effect 
-		                                       3, 3, 																	// base size
-		                                       0.5, 0, 15, 														// offset
-		                                       0.2, 0.2, 0.5 														// color
-																					);
 		
 		// add some objects
 		scourgeGame.getMission().setMapPosition( x + 2 + 31, y + h - 10, 0, "BED" );
@@ -217,29 +211,42 @@ function drawHouse_2x2( x, y, w, h ) {
 		scourgeGame.getMission().setMapPosition( x + 3 + 12, y + h - 4 - 4, 0, "CHAIR" );
 		//scourgeGame.getMission().setMapPosition( x + 2 + 5, y + h - 4 - 8, 0, "CHAIR" );
 		scourgeGame.getMission().setMapPosition( x + 3 + 15, y + h - 4, 0, "STOVE" );
+				
+		//scourgeGame.getMission().addRug( x + 2 + 8, y + h - 4 - 8 );
 		
-		scourgeGame.getMission().setMapEffect( x + 2 - 1, y + h - 4 - 17, 9, // map location 
+		// tell the terrain generator where to populate the room with containers
+		scourgeGame.addRoom( x + 2 + 1, y + h - 4 - 20, 19, 22 );
+	}
+}
+
+// called whenever a shape is added to the map
+function shapeAdded( shape_name, x, y, z ) {
+	if( shape_name == "HOUSE_1_TOP" ) {
+		scourgeGame.getMission().setMapEffect( x + 9, y - 7, z, // map location 
+	                                       "EFFECT_SMOKE",												// effect 
+	                                       3, 3, 																	// base size
+	                                       0.5, 0, 15, 														// offset
+	                                       0.2, 0.2, 0.5 														// color
+																				);
+	} else if( shape_name == "HOUSE_2_BASE" ) {
+		scourgeGame.getMission().setMapEffect( x - 1, y - 17, z + 9, // map location 
 		                                       	"EFFECT_FIRE",  												// effect 
 				                                       1, 1, 																	// base size
 				                                       0.3, -0.7, 0, 														// offset
 				                                       0.5, 0.3, 0.1 														// color
 																							);		
-		scourgeGame.getMission().setMapEffect( x + 2 - 1, y + h - 4 - 7, 9, // map location 
+		scourgeGame.getMission().setMapEffect( x - 1, y - 7, z + 9, // map location 
 		                                       "EFFECT_FIRE",  												// effect 
 				                                       1, 1, 																	// base size
 				                                       0.3, -0.7, 0, 														// offset
 				                                       0.5, 0.3, 0.1 														// color
 																							);
-		scourgeGame.getMission().setMapEffect( x + 2 + 14, y + h - 4 - 3, 10, // map location 
+	} else if( shape_name == "HOUSE_2_TOP" ) {
+		scourgeGame.getMission().setMapEffect( x + 16, y + - 7, z - 2, // map location 
 				                                       "EFFECT_SMOKE",  												// effect 
 				                                       4, 4, 																	// base size
 				                                       0, 0, 18, 														// offset
 				                                       0.3, 0.1, 0.3 														// color
 																							);		
-		
-		//scourgeGame.getMission().addRug( x + 2 + 8, y + h - 4 - 8 );
-		
-		// tell the terrain generator where to populate the room with containers
-		scourgeGame.addRoom( x + 2 + 1, y + h - 4 - 20, 19, 22 );
 	}
 }

@@ -238,6 +238,7 @@ public:
 	bool callItemEvent( Item *item, const char *function );
   bool callSpellEvent( Creature *creature, Spell *spell, const char *function );
 	bool callSkillEvent( Creature *creature, const char *skillName, const char *function );
+	bool callMapPosShapeMethod( const char *name, const char *shapeName, int x, int y, int z ); 
   bool callMapPosMethod( const char *name, int x, int y, int z );
   bool callMapMethod( const char *name, const char *mapName );
   bool callConversationMethod( const char *name, Creature *creature, const char *word, char *answer );

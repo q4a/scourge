@@ -138,6 +138,8 @@ public:
 	virtual void setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolName ) {}
 
   virtual inline void completeCurrentMission() {}
+  
+  virtual inline void shapeAdded( const char *shapeName, int x, int y, int z ) {}
 
   /**
    * Set up the opengl view.

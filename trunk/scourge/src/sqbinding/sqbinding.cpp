@@ -555,6 +555,29 @@ bool SqBinding::callMapPosMethod( const char *name, int x, int y, int z ) {
   return ret;
 }
 
+bool SqBinding::callMapPosShapeMethod( const char *name, const char *shapeName, int x, int y, int z ) {
+  bool ret;
+  int top = sq_gettop( vm ); //saves the stack size before the call
+  sq_pushroottable( vm ); //pushes the global table
+  sq_pushstring( vm, _SC( name ), -1 );
+  if( SQ_SUCCEEDED( sq_get( vm, -2 ) ) ) { //gets the field 'foo' from the global table
+    sq_pushroottable( vm ); //push the 'this' (in this case is the global table)
+    sq_pushstring( vm, shapeName, -1 );
+    sq_pushinteger( vm, x );
+    sq_pushinteger( vm, y );
+    sq_pushinteger( vm, z );
+		sq_call( vm, 5, 1 ); //calls the function
+    SQBool sqres;
+    sq_getbool( vm, -1, &sqres );
+    ret = (bool)sqres;
+  } else {
+    cerr << "Can't find function " << name << endl;
+    ret = false;
+  }
+  sq_settop( vm, top ); //restores the original stack size
+  return ret;
+}
+
 bool SqBinding::callIntArgMethod( const char *name, int argc, int *args ) {
   bool ret;
   int top = sq_gettop( vm ); //saves the stack size before the call

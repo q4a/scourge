@@ -2477,6 +2477,9 @@ void Map::setPosition( Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *
 				}
 			}
 		}
+		
+		// squirrel trimmings
+		adapter->shapeAdded( shape->getName(), x, y, z );
 	}
 }
 
