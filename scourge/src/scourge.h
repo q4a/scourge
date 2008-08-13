@@ -147,6 +147,7 @@ public:
   Scourge( UserConfiguration *config );
   ~Scourge();
 
+  void shapeAdded( const char *shapeName, int x, int y, int z );
 	inline TextScroller *getDescriptionScroller() { return descriptionScroller; }
 	inline Window *getTBCombatWin() { return tbCombatWin; }
   //inline Button *getYesExitConfirm() { return yesExitConfirm; }
