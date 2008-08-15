@@ -107,34 +107,6 @@ function villageShapes() {
 }
 
 /**
- * This method is called when a shape is loaded or when squirrel scripts are reloaded.
- * It is used create extra virtual shapes to draw instead when the real shape is drawn.
- */
-function addVirtualShapes( shape_name ) {
-	if( shape_name == "HOUSE_1_BASE" ) {
-		scourgeGame.clearVirtualShapes( shape_name );
-		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 6, 25, 10, true );
-		scourgeGame.addVirtualShape( shape_name, 6, 0, 0, 30, 6, 10, false );
-		scourgeGame.addVirtualShape( shape_name, 36, 0, 0, 6, 25, 10, false );
-		scourgeGame.addVirtualShape( shape_name, 16, -19, 0, 20, 6, 10, false );
-		scourgeGame.addVirtualShape( shape_name, 6, -19, 0, 4, 6, 10, false );						
-	} else if( shape_name == "HOUSE_2_BASE" ) {
-		scourgeGame.clearVirtualShapes( shape_name );
-		scourgeGame.addVirtualShape( shape_name, 0, 2, 0, 3, 12, 12, false );
-		scourgeGame.addVirtualShape( shape_name, 0, -16, 0, 3, 4, 12, true );
-		scourgeGame.addVirtualShape( shape_name, 19, 2, 0, 2, 22, 12, false );
-		scourgeGame.addVirtualShape( shape_name, 3, -18, 0, 16, 2, 12, false );
-		scourgeGame.addVirtualShape( shape_name, 3, 2, 0, 16, 2, 12, false );
-	} else if( shape_name == "HOUSE_3_BASE" ) {
-		scourgeGame.clearVirtualShapes( shape_name );
-		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 3, 32, 12, true );
-		scourgeGame.addVirtualShape( shape_name, 19, 0, 0, 3, 32, 12, false );
-		scourgeGame.addVirtualShape( shape_name, 3, -29, 0, 16, 3, 12, false );
-		scourgeGame.addVirtualShape( shape_name, 11, 0, 0, 8, 3, 12, false );		
-	}
-}
-
-/**
  * This method is called by the OutdoorGenerator when it needs to draw a house.
  */
 MAP_UNIT <- 16
@@ -219,7 +191,9 @@ function drawHouse_2x2( x, y, w, h ) {
 	}
 }
 
-// called whenever a shape is added to the map
+/** 
+ * Called whenever a shape is added to the map.
+ */
 function shapeAdded( shape_name, x, y, z ) {
 	if( shape_name == "HOUSE_1_TOP" ) {
 		scourgeGame.getMission().setMapEffect( x + 9, y - 7, z, // map location 
@@ -248,5 +222,33 @@ function shapeAdded( shape_name, x, y, z ) {
 				                                       0, 0, 18, 														// offset
 				                                       0.3, 0.1, 0.3 														// color
 																							);		
+	}
+}
+
+/**
+ * This method is called when a shape is loaded or when squirrel scripts are reloaded.
+ * It is used create extra virtual shapes to draw instead when the real shape is drawn.
+ */
+function addVirtualShapes( shape_name ) {
+	if( shape_name == "HOUSE_1_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 6, 25, 10, true );
+		scourgeGame.addVirtualShape( shape_name, 6, 0, 0, 30, 6, 10, false );
+		scourgeGame.addVirtualShape( shape_name, 36, 0, 0, 6, 25, 10, false );
+		scourgeGame.addVirtualShape( shape_name, 16, -19, 0, 20, 6, 10, false );
+		scourgeGame.addVirtualShape( shape_name, 6, -19, 0, 4, 6, 10, false );						
+	} else if( shape_name == "HOUSE_2_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, 2, 0, 3, 12, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, -16, 0, 3, 4, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 19, 2, 0, 2, 22, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 3, -18, 0, 16, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 3, 2, 0, 16, 2, 12, false );
+	} else if( shape_name == "HOUSE_3_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 3, 32, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 19, 0, 0, 3, 32, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 3, -29, 0, 16, 3, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 11, 0, 0, 8, 3, 12, false );		
 	}
 }
