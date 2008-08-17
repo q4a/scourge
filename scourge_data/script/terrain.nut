@@ -249,6 +249,17 @@ function addVirtualShapes( shape_name ) {
 		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 3, 32, 12, true );
 		scourgeGame.addVirtualShape( shape_name, 19, 0, 0, 3, 32, 12, false );
 		scourgeGame.addVirtualShape( shape_name, 3, -29, 0, 16, 3, 12, false );
-		scourgeGame.addVirtualShape( shape_name, 11, 0, 0, 8, 3, 12, false );		
+		scourgeGame.addVirtualShape( shape_name, 11, 0, 0, 8, 3, 12, false );
+	} else if( shape_name == "MONASTERY_BASE" ) {
+		scourgeGame.clearVirtualShapes( shape_name );
+		scourgeGame.addVirtualShape( shape_name, 0, -20, 0, 4, 6, 12, true );
+		scourgeGame.addVirtualShape( shape_name, 4, -24, 0, 15, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 25, -24, 0, 7, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 32, -20, 0, 4, 6, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 32, -6, 0, 2, 14, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 32, 0, 0, 4, 6, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 0, 0, 0, 4, 6, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 4, 0, 0, 28, 2, 12, false );
+		scourgeGame.addVirtualShape( shape_name, 2, -6, 0, 2, 8, 12, false );
 	}
 }

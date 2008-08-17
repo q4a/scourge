@@ -849,6 +849,8 @@ void ShapePalette::init3dsShapes( ConfigLang *config ) {
 				sv->base_h = atof( strtok( NULL, "," ) );
 			}
 		}
+		
+		sv->stencil = toint( node->getValueAsFloat( "stencil" ) );
 
 		initOccurance( node, sv );
     
