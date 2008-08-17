@@ -410,10 +410,10 @@ bool MapEditor::handleEvent(SDL_Event *event) {
   for( int gx = 0; gx < scourge->getMap()->cursorWidth; gx++ ) {
     for( int gy = 0; gy < scourge->getMap()->cursorDepth; gy++ ) {
       for( int i = MAP_VIEW_HEIGHT - 1; i >= 0; i-- ) {
-        if( scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX() + gx,
-                                            scourge->getMap()->getCursorFlatMapY() - gy, 
-                                            i ) &&
-            maxz < i + 1 ) {
+      	Location *pos = scourge->getMap()->getLocation( scourge->getMap()->getCursorFlatMapX() + gx,
+      	                                                scourge->getMap()->getCursorFlatMapY() - gy, 
+      	                                                i );
+        if( pos && pos->shape && !((GLShape*)pos->shape)->hasVirtualShapes() && !pos->shape->isRoof() && maxz < i + 1 ) {
           maxz = i + 1;
         }
       }
@@ -723,6 +723,13 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
 	          scourge->getMap()->setCreature( xx, yy + 1, editorZ, creature );
 						creature->moveTo( xx, yy + 1, editorZ );
 	        } else if( shape ) {
+	        	if( shape->isStencil() ) {
+	        		for( int sx = mapx; sx < mapx + shape->getWidth(); sx++ ) {
+	        			for( int sy = mapy - shape->getDepth(); sy <= mapy; sy++ ) {
+	        				flattenChunk( sx, sy );	        				
+	        			}
+	        		}
+	        	}
 	          scourge->getMap()->setPosition( xx, yy + 1, editorZ, shape );
 	        }
 	        return;
