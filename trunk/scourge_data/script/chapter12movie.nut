@@ -32,7 +32,7 @@ function chapter12_part3() {
 
 function chapter12_part4() {
 	scourgeGame.moveCamera( 230, 370, 0, 0, 30, 110, 0.5, 2000 );
-	karzul <- scourgeGame.getMission().addCreature( 321, 443, 0, "Karzul the Destroyer" );
+	karzul <- scourgeGame.getMission().addCreature( 321, 443, 0, "Karzul Agmordexu" );
 	karzul.moveTo( 321, 443 );
 	karzul.setVisible( true );
 	karzul.setScripted( true );
@@ -42,5 +42,7 @@ function chapter12_part4() {
 }
 
 function chapter12_end() {
+	karzul <- findCreatureByType( "Karzul Agmordexu" );
+	replacement <- scourgeGame.getMission().replaceCreature( karzul, "Karzul the Destroyer" ); 
 	scourgeGame.setMovieMode( false );
 }
