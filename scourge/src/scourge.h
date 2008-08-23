@@ -645,6 +645,7 @@ public:
 	
 	void startMovieMode();
 	void endMovieMode();
+	bool isInMovieMode();
 	void setContinueAt( char *func, int timeout );
 
 protected:

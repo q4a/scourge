@@ -117,6 +117,8 @@ SqBinding::SqBinding( Session *session ) {
 	// movies
 	s =  rootDir + "/script/hqmovie.nut";
   registerScript( s );
+	s =  rootDir + "/script/chapter12movie.nut";
+  registerScript( s );  
 }
 
 SqBinding::~SqBinding() {

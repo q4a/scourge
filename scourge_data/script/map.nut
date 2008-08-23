@@ -72,6 +72,12 @@ function useShape( x, y, z ) {
 		} else if( shape == "TREE-EMERIL-TRUNK" || shape == "TREE-EMERIL-TOP" ) {
 			handleTreeOfEmeril();
 			return true;
+		} else if( shape == "EW_DOOR" &&
+				x == 351 && y == 396 &&
+				scourgeGame.getMission().getDungeonDepth() == 0 && 
+				scourgeGame.getMission().getChapter() == 11 ) {
+			startChapter12Movie();
+			return false;
 		}
 	}
 	return false;

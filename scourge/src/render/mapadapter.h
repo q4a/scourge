@@ -80,6 +80,8 @@ public:
   virtual void writeLogMessage( char const* message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel=Constants::LOGLEVEL_FULL ) = 0;
 
 	virtual GLuint getNamedTexture( char *name ) = 0;
+	
+	virtual bool isInMovieMode() = 0;
 };
 
 #endif

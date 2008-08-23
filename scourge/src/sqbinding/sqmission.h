@@ -80,6 +80,7 @@ public:
 
 	static int _setQuakesEnabled( HSQUIRRELVM vm );
 	static int _areQuakesEnabled( HSQUIRRELVM vm );
+	static int _quake( HSQUIRRELVM vm );
 
 	static int _setDoorLocked( HSQUIRRELVM vm );
 	static int _isDoorLocked( HSQUIRRELVM vm );

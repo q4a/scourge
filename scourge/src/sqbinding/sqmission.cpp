@@ -56,6 +56,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "ascendDungeon", SqMission::_ascendDungeon, 0, 0, "Travel one dungeon level higher." },
 	{ "bool", "areQuakesEnabled", SqMission::_areQuakesEnabled, 0, 0, "Are earthquakes enabled on this level?" },
 	{ "void", "setQuakesEnabled", SqMission::_setQuakesEnabled, 0, 0, "Set to true if quakes are enabled on this level. (False by default.)" },
+	{ "void", "quake", SqMission::_quake, 0, 0, "Start an earthquake now." },
 	{ "void", "setDoorLocked", SqMission::_setDoorLocked, 0, 0, "Set the door located at x,y,z to locked value (true=locked, false=unlocked)" },
 	{ "bool", "isDoorLocked", SqMission::_isDoorLocked, 0, 0, "Is the door at location x,y,z locked?" },
 	{ "bool", "isStoryLineMission", SqMission::_isStoryLineMission, 0, 0, "Is the current mission a storyline mission?" },
@@ -314,6 +315,11 @@ int SqMission::_areQuakesEnabled( HSQUIRRELVM vm ) {
 	SQBool b = SqBinding::sessionRef->getMap()->areQuakesEnabled();
 	sq_pushbool( vm, b );
 	return 1;
+}
+
+int SqMission::_quake( HSQUIRRELVM vm ) {
+	SqBinding::sessionRef->getMap()->quake();
+	return 0;
 }
 
 int SqMission::_setDoorLocked( HSQUIRRELVM vm ) {
