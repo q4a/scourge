@@ -31,7 +31,13 @@ function chapter12_part3() {
 }
 
 function chapter12_part4() {
-	scourgeGame.moveCamera( 230, 370, 0, 0, 30, 110, 0.5, 2000 );	
+	scourgeGame.moveCamera( 230, 370, 0, 0, 30, 110, 0.5, 2000 );
+	karzul <- scourgeGame.getMission().addCreature( 321, 443, 0, "Karzul the Destroyer" );
+	karzul.moveTo( 321, 443 );
+	karzul.setVisible( true );
+	karzul.setScripted( true );
+	karzul.setStateMod( 11, false );
+	karzul.say( _( "Ooh it feels good to breathe the air again! I suggest you do so too for a last time, my friends..." ) );
 	scourgeGame.continueAt( "chapter12_end", 5000 );
 }
 
