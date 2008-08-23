@@ -69,7 +69,7 @@ private:
   Button *floorType;
   Button *rugButton, *secretButton, *trapButton, *roofButton;
   std::vector<Button *> toggleButtonList;
-	Button *pathButton;
+	Button *lowerButton, *raiseButton;
 	Button *outdoorTexturesButton;
                                                                                              
   TextField *nameText;
@@ -119,7 +119,7 @@ public:
 
 protected:
 	void flattenChunk( Sint16 mapx, Sint16 mapy );
-	void flattenPathChunk( Sint16 mapx, Sint16 mapy );
+	void changePathChunk( Sint16 mapx, Sint16 mapy, bool lower=true );
 	void createNewMapDialog();
   void processMouseMotion( Uint8 button, int editorZ );
   bool getShape( GLShape **shape,
@@ -147,7 +147,8 @@ protected:
   void removeEWWall( Sint16 mapx, Sint16 mapy, int dir );
   void removeNSWall( Sint16 mapx, Sint16 mapy, int dir );
   void addFloor( Sint16 mapx, Sint16 mapy, bool doFlattenChunk=true );
-	void addPath( Sint16 mapx, Sint16 mapy );
+	void lowerGroundHeight( Sint16 mapx, Sint16 mapy );
+	void raiseGroundHeight( Sint16 mapx, Sint16 mapy );
   void removeFloor( Sint16 mapx, Sint16 mapy );
   void blendCorners( Sint16 mapx, Sint16 mapy );
   bool isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name );
