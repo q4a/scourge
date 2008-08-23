@@ -89,6 +89,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "bool", "isCharacter", SqCreature::_isCharacter, 0, 0, "Is this creature a pc?" },
 	{ "bool", "isMonster", SqCreature::_isMonster, 0, 0, "Is this creature a monster?" },
 	{ "bool", "isNpc", SqCreature::_isNpc, 0, 0, "Is this creature an npc?" },
+	{ "void", "setNpc", SqCreature::_setNpc, 0, 0, "Toggle if this creature is an npc or a monster." },
 
   { 0,0,0,0,0 } // terminator
 };
@@ -573,6 +574,13 @@ int SqCreature::_isNpc( HSQUIRRELVM vm ) {
 	GET_OBJECT( Creature* )
 	SQBool b = ( object->isNpc() ? true : false );
 	sq_pushbool( vm, b );
+	return 1;
+}
+
+int SqCreature::_setNpc( HSQUIRRELVM vm ) {
+	GET_BOOL( b )
+	GET_OBJECT( Creature* )
+	object->setNpc( b );
 	return 1;
 }
 
