@@ -85,6 +85,7 @@ float quakeOffsY = 0;
 Uint32 quakeStartTime = 0;
 Uint32 nextQuakeStartTime = 0;
 Uint32 lastQuakeTick = 0;
+bool quakeOnce = false;
 
 const float Map::shadowTransformMatrix[16] = { 
 	1, 0, 0, 0,
@@ -1385,7 +1386,7 @@ void Map::draw() {
 
     // draw the fog of war or shading
 #ifdef USE_LIGHTING
-    if( helper && !(isCurrentlyUnderRoof && !groundVisible ) )
+    if( helper && !adapter->isInMovieMode() && !(isCurrentlyUnderRoof && !groundVisible ) )
 			helper->draw( getX(), getY(), MVW, MVD );
 #endif
 
@@ -2082,11 +2083,22 @@ void Map::initMapView( bool ignoreRot ) {
 				lastQuakeTick = now;				
 			}
 		} else {
+			if( quakeOnce ) {
+				quakeOnce = false;
+				quakesEnabled = false;
+			}
 			quakeOffsX = quakeOffsY = 0;
 		}
 
 		glTranslatef( quakeOffsX, quakeOffsY, 0 );
 	}
+}
+
+void Map::quake() {
+	quakesEnabled = true;
+	nextQuakeStartTime = SDL_GetTicks() + 2 * QUAKE_DELAY;
+	quakeStartTime = SDL_GetTicks();
+	quakeOnce = true;
 }
 
 Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Uint16 dir,RenderedCreature *newCreature) {

@@ -290,6 +290,7 @@ private:
   
 	inline void setQuakesEnabled( bool b ) { quakesEnabled = b; }
 	inline bool areQuakesEnabled() { return quakesEnabled; }
+	void quake();
 	
 	inline void setRoofShowing( bool b ) { isRoofShowing = b; mapChanged = true; }
 	inline bool getRoofShowing() { return isRoofShowing; }

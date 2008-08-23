@@ -182,6 +182,7 @@ public:
 
 	virtual void startMovieMode() {}
 	virtual void endMovieMode() {}
+	virtual bool isInMovieMode() { return false; }
 	virtual void setContinueAt( char *func, int timeout ) {}
 	virtual void setDepthLimits( float minLimit, float maxLimit ) {}
 };

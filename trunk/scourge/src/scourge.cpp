@@ -4063,6 +4063,10 @@ void Scourge::endMovieMode() {
 	getSession()->getCutscene()->endMovieMode();	
 }
 
+bool Scourge::isInMovieMode() {
+	return getSession()->getCutscene()->isInMovieMode();
+}
+
 void Scourge::setContinueAt( char *func, int timeout ) {
 	getSDLHandler()->setContinueAt( func, timeout );
 }
