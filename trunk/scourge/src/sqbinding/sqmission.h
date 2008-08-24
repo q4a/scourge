@@ -89,6 +89,8 @@ public:
 	static int _isReplayMap( HSQUIRRELVM vm );
 
 	static int _setMapConfig( HSQUIRRELVM vm );
+	
+	static int _setOffset( HSQUIRRELVM vm );	
 };
 
 #endif

@@ -294,7 +294,7 @@ Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, in
 	} else {
 		int ffx, ffy;
 		replacement->findPlace( cx, cy, &ffx, &ffy );
-		replacement->moveTo( cx, cy, 0 );
+		//replacement->moveTo( cx, cy, 0 );
 	}
 	replacement->cancelTarget();
 

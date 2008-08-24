@@ -102,6 +102,7 @@ public:
   int getSkillLevel(const char *skillName);
   const char *getRandomSound(int type);
   inline bool isNpc() { return npc; }
+  inline void setNpc( bool b ) { npc = b; }
   inline char *getPortrait() { return portrait; }
   inline GLuint getPortraitTexture() { return portraitTexture; }
   inline void setPortraitTexture( GLuint n ) { portraitTexture = n; }

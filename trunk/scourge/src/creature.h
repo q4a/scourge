@@ -69,7 +69,6 @@ public:
 class Creature : public RenderedCreature {
   
  private:
-	 bool npcOverride;
   // gui information
   GLShape *shape;
   char *model_name, *skin_name;
@@ -192,11 +191,14 @@ class Creature : public RenderedCreature {
 	inline bool isMoving() { return moving; }
 	inline void setMoving( bool b ) { moving = b; }
 
-	inline bool isNpc() { return( monster ? monster->isNpc() && npcOverride : false ); }
-	inline void setNpc( bool b ) { npcOverride = b; }
+	inline bool isNpc() { return( monster ? monster->isNpc() : false ); }
+	inline void setNpc( bool b ) {
+		if( monster ) monster->setNpc( b );
+		if( !b ) npcInfo = NULL; 
+	}
 	bool isWanderingHero();
 	inline bool isMonster() { return( monster != NULL ); }
-	inline bool isNonNPCMonster() { return( ( monster != NULL ) && !( monster->isNpc() && npcOverride ) ); }
+	inline bool isNonNPCMonster() { return( ( monster != NULL ) && !monster->isNpc() ); }
 
 
   inline GLfloat getAngle() { return angle; }
