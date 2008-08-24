@@ -3196,6 +3196,7 @@ void Scourge::printToConsole( const char *s ) {
       if( !*(p + 1) ) break;
       p = strpbrk( p + 1, "\n\r" );
     }
+    // cerr << s << endl;
     squirrelLabel->appendText( q );
 	free( q );
   } else {

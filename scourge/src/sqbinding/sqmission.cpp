@@ -63,6 +63,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "bool", "isReplayMap", SqMission::_isReplayMap, 0, 0, "Is the current mission a replayed storyline map?" },
 	{ "void", "setMapConfig", SqMission::_setMapConfig, 0, 0, "Load conversation and npc info from this file and apply it to the current map." },
 	{ "Item", "addItem", SqMission::_addItem, 0, 0, "Create a new item on the map at this location." },
+	{ "void", "setOffset", SqMission::_setOffset, 0, 0, "Set a location's offset on the map." },
   { 0,0,0,0,0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
@@ -372,3 +373,17 @@ int SqMission::_setMapConfig( HSQUIRRELVM vm ) {
 	return 0;
 }
 
+int SqMission::_setOffset( HSQUIRRELVM vm ) {
+	GET_FLOAT( oz )
+	GET_FLOAT( oy )
+	GET_FLOAT( ox )
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	Location *pos = SqBinding::sessionRef->getMap()->getLocation( x, y, z );
+	if( pos ) {
+		pos->moveX = ox / DIV;
+		pos->moveY = oy / DIV;
+		pos->moveZ = oz / DIV;
+	}
+}

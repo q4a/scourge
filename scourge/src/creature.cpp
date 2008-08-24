@@ -106,7 +106,6 @@ Creature::Creature(Session *session, Monster *monster, GLShape *shape, bool init
 }
 
 void Creature::commonInit() {
-	this->npcOverride = true;
 	this->portrait[0] = 0;
 	
 	this->scripted = false;

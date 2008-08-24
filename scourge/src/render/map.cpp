@@ -720,7 +720,6 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 																																			 pos[posX][posY][zp]->creature->getY(), 
 																																			 pos[posX][posY][zp]->creature->getZ() );
 
-
                   } else {
                     xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
                     ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) / DIV;
@@ -1677,7 +1676,7 @@ void Map::doDrawShape(DrawLater *later, int effect) {
 void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuint name, int effect, DrawLater *later) {
 
   // fog test for creatures
-  if( helper && later && later->creature && !helper->isVisible( later->pos->x, later->pos->y, later->creature->getShape() ) ) {
+  if( helper && later && later->creature && !adapter->isInMovieMode() && !helper->isVisible( later->pos->x, later->pos->y, later->creature->getShape() ) ) {
     return;
   }
   
