@@ -199,6 +199,8 @@ function shapeAdded( shape_name, x, y, z ) {
 		scourgeGame.getMission().setMapEffect( x + 9, y - 7, z, // map location 
 	                                       "EFFECT_SMOKE",												// effect 
 	                                       3, 3, 																	// base size
+	                                       0,																			// delay
+	                                       true,																	// forever 
 	                                       0.5, 0, 15, 														// offset
 	                                       0.2, 0.2, 0.5 														// color
 																				);
@@ -206,12 +208,16 @@ function shapeAdded( shape_name, x, y, z ) {
 		scourgeGame.getMission().setMapEffect( x - 1, y - 17, z + 9, // map location 
 		                                       	"EFFECT_FIRE",  												// effect 
 				                                       1, 1, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
 				                                       0.3, -0.7, 0, 														// offset
 				                                       0.5, 0.3, 0.1 														// color
 																							);		
 		scourgeGame.getMission().setMapEffect( x - 1, y - 7, z + 9, // map location 
 		                                       "EFFECT_FIRE",  												// effect 
 				                                       1, 1, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
 				                                       0.3, -0.7, 0, 														// offset
 				                                       0.5, 0.3, 0.1 														// color
 																							);
@@ -219,6 +225,8 @@ function shapeAdded( shape_name, x, y, z ) {
 		scourgeGame.getMission().setMapEffect( x + 16, y + - 7, z - 2, // map location 
 				                                       "EFFECT_SMOKE",  												// effect 
 				                                       4, 4, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
 				                                       0, 0, 18, 														// offset
 				                                       0.3, 0.1, 0.3 														// color
 																							);		

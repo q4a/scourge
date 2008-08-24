@@ -202,6 +202,8 @@ int SqMission::_setMapEffect( HSQUIRRELVM vm ) {
 	GET_FLOAT( oz )
 	GET_FLOAT( oy )
 	GET_FLOAT( ox )
+	GET_BOOL( forever )
+	GET_INT( delay )
 	GET_INT( h )
 	GET_INT( w )
 	GET_STRING( effectName, 255 )
@@ -222,7 +224,7 @@ int SqMission::_setMapEffect( HSQUIRRELVM vm ) {
 	di.offset_x = ox;
 	di.offset_y = oy;
 	di.offset_z = oz;
-	SqBinding::sessionRef->getMap()->startEffect(x, y, z, effect_type, 0, w, h, 0, true, &di );
+	SqBinding::sessionRef->getMap()->startEffect(x, y, z, effect_type, (Constants::DAMAGE_DURATION * 4), w, h, delay, forever, &di );
 	return 0;
 }
 
