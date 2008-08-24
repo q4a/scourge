@@ -113,6 +113,8 @@ public:
 	static int _setVisible( HSQUIRRELVM vm );
 	static int _isVisible( HSQUIRRELVM vm );
 	static int _say( HSQUIRRELVM vm );
+	static int _setOffset( HSQUIRRELVM vm );
+	
 };
 #endif
 

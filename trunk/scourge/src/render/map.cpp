@@ -2234,6 +2234,10 @@ Location *Map::getPosition(Sint16 x, Sint16 y, Sint16 z) {
   return NULL;
 }
 
+void Map::stopEffect(Sint16 x, Sint16 y, Sint16 z) {
+	removeEffect( x, y, z );
+}
+
 void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, int effect_type, GLuint duration, int width, int height, GLuint delay, bool forever, DisplayInfo *di ) {
 
   if( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {

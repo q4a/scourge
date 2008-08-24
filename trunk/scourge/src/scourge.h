@@ -709,6 +709,8 @@ protected:
 
 	bool saveScoreid( const std::string& dirName, char *p );
 	bool loadScoreid( const std::string& dirName, char *p );
+	
+	void thunder();
 
  private:
 	TextScroller *descriptionScroller;

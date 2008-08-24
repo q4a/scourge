@@ -3188,7 +3188,8 @@ bool Scourge::isLevelShaded() {
 
 void Scourge::printToConsole( const char *s ) {
   if( squirrelLabel ) {
-	char *q = strdup( s );
+    //cerr << s << endl;
+    char *q = strdup( s );
     // replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
     char *p = strpbrk( q, "\n\r" );
     while( p ) {
@@ -4079,4 +4080,8 @@ MapEditor *Scourge::getMapEditor() {
 
 void Scourge::shapeAdded( const char *shapeName, int x, int y, int z ) {
 	getSession()->getSquirrel()->callMapPosShapeMethod( "shapeAdded", shapeName, x, y, z );
+}
+
+void Scourge::thunder() {
+	view->thunder();
 }

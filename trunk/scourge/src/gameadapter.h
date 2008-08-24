@@ -139,6 +139,8 @@ public:
 
   virtual inline void completeCurrentMission() {}
   
+  virtual inline void thunder() {}
+  
   virtual inline void shapeAdded( const char *shapeName, int x, int y, int z ) {}
 
   /**

@@ -76,10 +76,13 @@ private:
   Uint32 lastLightning;
   Uint32 lastLightningRoll;
   float lightningBrightness;
+  bool thunderOnce;
 
 public:
   ScourgeView( Scourge *scourge );
   virtual ~ScourgeView();
+  
+  void thunder();
 
   /**
     The main app loop calls this method to repaint the screen. In this implementation the 

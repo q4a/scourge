@@ -435,6 +435,7 @@ private:
   
   void center(Sint16 x, Sint16 y, bool force=false);
 
+  void stopEffect( Sint16 x, Sint16 y, Sint16 z );
   void startEffect( Sint16 x, Sint16 y, Sint16 z, 
                     int effect_type, GLuint duration = Constants::DAMAGE_DURATION,
                     int width=1, int height=1,

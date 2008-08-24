@@ -68,6 +68,7 @@ public:
 	static int _isFreeOutdoors( HSQUIRRELVM vm ); 
 	static int _setMapPosition( HSQUIRRELVM vm );
 	static int _setMapEffect( HSQUIRRELVM vm );
+	static int _removeMapEffect( HSQUIRRELVM vm );
 	static int _removeMapPosition( HSQUIRRELVM vm );	
 	static int _getShape( HSQUIRRELVM vm );
 
@@ -81,6 +82,7 @@ public:
 	static int _setQuakesEnabled( HSQUIRRELVM vm );
 	static int _areQuakesEnabled( HSQUIRRELVM vm );
 	static int _quake( HSQUIRRELVM vm );
+	static int _thunder( HSQUIRRELVM vm );
 
 	static int _setDoorLocked( HSQUIRRELVM vm );
 	static int _isDoorLocked( HSQUIRRELVM vm );

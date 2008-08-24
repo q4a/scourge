@@ -20,6 +20,7 @@
 #include "../session.h"
 #include "../creature.h"
 #include "../rpg/rpglib.h"
+#include "../render/glshape.h"
 
 using namespace std;
 
@@ -90,6 +91,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "bool", "isMonster", SqCreature::_isMonster, 0, 0, "Is this creature a monster?" },
 	{ "bool", "isNpc", SqCreature::_isNpc, 0, 0, "Is this creature an npc?" },
 	{ "void", "setNpc", SqCreature::_setNpc, 0, 0, "Toggle if this creature is an npc or a monster." },
+	{ "void", "setOffset", SqCreature::_setOffset, 0, 0, "Set the creature's offset on the map." },
 
   { 0,0,0,0,0 } // terminator
 };
@@ -639,3 +641,17 @@ int SqCreature::_isVisible( HSQUIRRELVM vm ) {
 	return 1;
 }
 
+int SqCreature::_setOffset( HSQUIRRELVM vm ) {
+	GET_FLOAT( oz )
+	GET_FLOAT( oy )
+	GET_FLOAT( ox )
+	GET_OBJECT( Creature* )
+	Location *pos = SqBinding::sessionRef->getMap()->getLocation( object->getX(), object->getY(), object->getZ() );
+	if( pos ) {
+		pos->moveX = ox / DIV;
+		pos->moveY = oy / DIV;
+		pos->moveZ = oz / DIV;
+	} else {
+		cerr << "*** Error: can't find creature " << object->getName() << " on the map." << endl;
+	}
+}
