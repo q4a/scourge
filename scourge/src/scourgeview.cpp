@@ -57,6 +57,7 @@ ScourgeView::ScourgeView( Scourge *scourge ) {
   targetWidthDelta = 0.05f;
   lastTargetTick = SDL_GetTicks();
   lastWeatherUpdate = SDL_GetTicks();
+  thunderOnce = false;
 }
 
 void ScourgeView::initUI() {
@@ -1365,7 +1366,7 @@ void ScourgeView::drawWeather() {
 	
 	    float brightness;
 	
-	    if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_THUNDER ) {
+	    if ( thunderOnce || ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
 	        if ( lightningTime < 101 ) {
 	            brightness = ( (float)lightningTime / 100 ) * lightningBrightness;
 	        } else {
@@ -1399,7 +1400,7 @@ void ScourgeView::drawWeather() {
 	    if ( Util::dice( 25 ) == 0 ) {
 	        lastLightning = now;
                 lightningBrightness = 0.3f + ( Util::mt_rand() * 0.5f );
-	        if ( scourge->getMap()->isHeightMapEnabled() && scourge->getMap()->getWeather() & WEATHER_THUNDER ) {
+	        if ( thunderOnce || ( scourge->getMap()->isHeightMapEnabled() && scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
                     int channel;
                     int volume = ( scourge->getMap()->getCurrentlyUnderRoof() ? 40 : 128 );
                     int thunderSound = Util::pickOne( 1, 4 );
@@ -1416,6 +1417,7 @@ void ScourgeView::drawWeather() {
 	                channel = scourge->getSession()->getSound()->playSound( "thunder4", Util::pickOne( 41, 213 ) );
                         if( channel > -1 ) Mix_Volume( channel, volume );
 	            }
+	            thunderOnce = false;
 	        }
 	    }
 	    lastLightningRoll = now;
@@ -1425,7 +1427,15 @@ void ScourgeView::drawWeather() {
 	
 	glEnable( GL_CULL_FACE );
 	glEnable( GL_DEPTH_TEST );
-	
+	glDepthMask(GL_TRUE);
+	glDisable( GL_BLEND );
+}
+
+
+void ScourgeView::thunder() {
+	thunderOnce = true;
+	lastLightning = SDL_GetTicks();
+	lastLightningRoll = 0;
 }
 
 void ScourgeView::generateRain() {

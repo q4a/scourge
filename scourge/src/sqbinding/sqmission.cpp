@@ -48,6 +48,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "isFreeOutdoors", SqMission::_isFreeOutdoors, 0, 0, "Same as isFree plus it discounts lakes, high elevations and where a floor shape is set." },
 	{ "void", "setMapPosition", SqMission::_setMapPosition, 0, 0, "Set a shape at this map position. Shape is given by its name." },
 	{ "void", "setMapEffect", SqMission::_setMapEffect, 0, 0, "Set an effect at this map position. The effect is identified by its name." },
+	{ "void", "removeMapEffect", SqMission::_removeMapEffect, 0, 0, "Remove an effect at this map position." },
 	{ "float", "getHeightMap", SqMission::_getHeightMap, 0, 0, "Get the ground height (outdoors only) at this map position." },
 	{ "void", "setHeightMap", SqMission::_setHeightMap, 0, 0, "Set the ground height (outdoors only) at this map position." },
 	{ "String", "getShape", SqMission::_getShape, 0, 0, "Get the name of a shape at this position." },
@@ -57,6 +58,7 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "bool", "areQuakesEnabled", SqMission::_areQuakesEnabled, 0, 0, "Are earthquakes enabled on this level?" },
 	{ "void", "setQuakesEnabled", SqMission::_setQuakesEnabled, 0, 0, "Set to true if quakes are enabled on this level. (False by default.)" },
 	{ "void", "quake", SqMission::_quake, 0, 0, "Start an earthquake now." },
+	{ "void", "thunder", SqMission::_thunder, 0, 0, "Start a thunder now." },
 	{ "void", "setDoorLocked", SqMission::_setDoorLocked, 0, 0, "Set the door located at x,y,z to locked value (true=locked, false=unlocked)" },
 	{ "bool", "isDoorLocked", SqMission::_isDoorLocked, 0, 0, "Is the door at location x,y,z locked?" },
 	{ "bool", "isStoryLineMission", SqMission::_isStoryLineMission, 0, 0, "Is the current mission a storyline mission?" },
@@ -195,6 +197,14 @@ int SqMission::_setMapPosition( HSQUIRRELVM vm ) {
 	return 0;
 }
 
+int SqMission::_removeMapEffect( HSQUIRRELVM vm ) {
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	SqBinding::sessionRef->getMap()->stopEffect( x, y, z );
+	return 0;
+}
+
 int SqMission::_setMapEffect( HSQUIRRELVM vm ) {
 	GET_FLOAT( b )
 	GET_FLOAT( g )
@@ -325,6 +335,11 @@ int SqMission::_quake( HSQUIRRELVM vm ) {
 	return 0;
 }
 
+int SqMission::_thunder( HSQUIRRELVM vm ) {
+	SqBinding::sessionRef->getGameAdapter()->thunder();
+	return 0;
+}
+
 int SqMission::_setDoorLocked( HSQUIRRELVM vm ) {
 	GET_BOOL( locked )
 	GET_INT( z )
@@ -388,4 +403,5 @@ int SqMission::_setOffset( HSQUIRRELVM vm ) {
 		pos->moveY = oy / DIV;
 		pos->moveZ = oz / DIV;
 	}
+	return 0;
 }
