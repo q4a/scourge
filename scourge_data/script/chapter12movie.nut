@@ -20,6 +20,8 @@ function startChapter12Movie() {
 }
 
 function chapter12_part2() {
+	player <- scourgeGame.getPartyMember( 0 );
+	player.say( _( "Like clouds gathering before a storm... An evil presence moves out of the darkness below..." ) );	
 	scourgeGame.moveCamera( 230, 370, 0, 0, 50, 90, 0.7, 2000 );	
 	scourgeGame.continueAt( "chapter12_part3", 3000 );
 }
@@ -44,8 +46,6 @@ function chapter12_part4() {
 	karzul.setScripted( true );
 	karzul.setStateMod( 11, false );
 	karzul.setOffset( 0, 0, -8 ); // karzul is sunk into the ground
-	//scourgeGame.getMission().setOffset( karzul.getX(), karzul.getY(), 0, 0, 0, -8 ); // karzul is sunk into the ground
-	karzul.say( _( "Ooh it feels good to breathe the air again! I suggest you do so too for a last time, my friends..." ) );
 	drawEffects();
 	scourgeGame.continueAt( "chapter12_part5", 5000 );
 }
@@ -54,7 +54,6 @@ function chapter12_part5() {
 	scourgeGame.moveCamera( 240, 370, 0, 0, 45, 110, 1.0, 2000 );
 	karzul <- findCreatureByType( "Karzul Agmordexu" );
 	karzul.setOffset( 0, 0, -6 ); // karzul is sunk into the ground
-	karzul.say( _( "Yes my puny human worshippers, time to end your insignificant mortal wanderings..." ) );
 	drawEffects();	
 	scourgeGame.continueAt( "chapter12_part6", 5000 );
 }
@@ -63,7 +62,6 @@ function chapter12_part6() {
 	scourgeGame.moveCamera( 240, 370, 0, 0, 45, 110, 1.0, 2000 );
 	karzul <- findCreatureByType( "Karzul Agmordexu" );
 	karzul.setOffset( 0, 0, -4 ); // karzul is sunk into the ground
-	karzul.say( _( "Your quest has ceased to be, for the beginning of a new era is upon us! The era of unbounded evil. With the help of the Spawn of Arcanox, nothing will stand in my way!" ) );
 	drawEffects();
 	scourgeGame.continueAt( "chapter12_part7", 5000 );
 }
@@ -72,15 +70,33 @@ function chapter12_part7() {
 	scourgeGame.moveCamera( 240, 370, 0, 0, 45, 110, 1.0, 2000 );
 	karzul <- findCreatureByType( "Karzul Agmordexu" );
 	karzul.setOffset( 0, 0, -2 ); // karzul is sunk into the ground
-	karzul.say( _( "Mothrazu served me well. Hells! YOU have served me well! As a reward I will personally see that your souls are well taken care of... by my people below." ) );
 	drawEffects();	
-	scourgeGame.continueAt( "chapter12_end", 5000 );
+	scourgeGame.continueAt( "chapter12_part8", 5000 );
+}
+
+function chapter12_part8() {
+	scourgeGame.moveCamera( 200, 380, 0, 0, 80, 110, 1.5, 2000 );
+	scourgeGame.getMission().removeMapEffect( 325, 444, 4 );
+	karzul <- findCreatureByType( "Karzul Agmordexu" );
+	karzul.setOffset( 0, 0, 0 ); // karzul is sunk into the ground
+	karzul.say( _( "Ooh it feels good to breathe the air again! I suggest you do so too for a last time, my friends. Yes my puny human worshippers, time to end your insignificant mortal wanderings..." ) );
+	scourgeGame.continueAt( "chapter12_part9", 10000 );
+}
+
+function chapter12_part9() {
+	karzul <- findCreatureByType( "Karzul Agmordexu" );
+	karzul.say( _( "Your quest has ceased to be, for the beginning of a new era is upon us! The era of unbounded evil. With the help of the Spawn of Arcanox, nothing will stand in my way!" ) );
+	scourgeGame.continueAt( "chapter12_part10", 10000 );
+}
+
+function chapter12_part10() {
+	karzul <- findCreatureByType( "Karzul Agmordexu" );
+	karzul.say( _( "Mothrazu served me well. Hells! YOU have served me well! As a reward I will personally see that your souls are well taken care of... by my people below." ) );
+	scourgeGame.continueAt( "chapter12_end", 10000 );	
 }
 
 function chapter12_end() {
-	scourgeGame.getMission().removeMapEffect( 325, 444, 4 );
-	karzul <- findCreatureByType( "Karzul Agmordexu" );
-	karzul.setOffset( 0, 0, 0 ); // karzul is sunk into the ground	
+	karzul <- findCreatureByType( "Karzul Agmordexu" );	
 	karzul.setNpc( false );
 	scourgeGame.setMovieMode( false );
 }
