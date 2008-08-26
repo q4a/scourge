@@ -88,8 +88,8 @@ class Creature : public RenderedCreature {
   Item *targetItem;
   bool arrived; // true if no particular destination set for this creature
   std::map<int, Event*> stateModEventMap;
-  GLfloat angle, wantedAngle, angleStep;
   int portraitTextureIndex;
+  GLfloat angle, wantedAngle, angleStep;
   
   // inventory
   Item *inventory[MAX_INVENTORY_SIZE];
@@ -153,8 +153,9 @@ class Creature : public RenderedCreature {
 	std::map<Item*, InventoryInfo*> invInfos;
 	Uint32 lastPerceptionCheck;
 	bool boss, savedMissionObjective, scripted;
+	int scriptedAnim;
 	
-  GLuint portrait[1];
+  GLuint portrait[1];  
   
  public:
   static const int DIAMOND_FORMATION = 0;
@@ -168,12 +169,14 @@ class Creature : public RenderedCreature {
   Creature(Session *session, Character *character, char *name, int sex, int character_model_info_index);
   Creature(Session *session, Monster *monster, GLShape *shape, bool initMonster=true);
   ~Creature();
-
+  
   void drawMoviePortrait( int width, int height );
 	void drawPortrait( int width, int height, bool inFrame=false );
   void playFootstep();
 
-  inline void setScripted( bool b ) { this->scripted = b; }
+  inline void setScriptedAnimation( int n ) { this->scriptedAnim = n; }
+  void setScripted( bool b );
+  inline int getScriptedAnimation() { return this->scriptedAnim; }
   inline bool isScripted() { return this->scripted; }
 	inline void setBoss( bool b ) { this->boss = b; }
 	virtual inline bool isBoss() { return this->boss; }
