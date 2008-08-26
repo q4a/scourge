@@ -110,6 +110,7 @@ public:
 	static int _getY( HSQUIRRELVM vm ); 
 	static int _setScripted( HSQUIRRELVM vm );
 	static int _isScripted( HSQUIRRELVM vm );
+	static int _setAnimation( HSQUIRRELVM vm );
 	static int _setVisible( HSQUIRRELVM vm );
 	static int _isVisible( HSQUIRRELVM vm );
 	static int _say( HSQUIRRELVM vm );

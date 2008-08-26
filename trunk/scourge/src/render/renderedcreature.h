@@ -59,12 +59,18 @@ protected:
   char speech[2000];
   std::vector<std::string> speechWrapped;
   Uint32 talkStartTime;
+  float offsX, offsY, offsZ;
 
 public:
   RenderedCreature( Preferences *preferences, 
                     Shapes *shapes, 
                     Map *levelMap );
   virtual ~RenderedCreature();
+  
+  inline void setOffset( float x, float y, float z ) { this->offsX = x; this->offsY = y; this->offsZ = z; }
+  inline float getOffsetX() { return offsX; }
+  inline float getOffsetY() { return offsY; }
+  inline float getOffsetZ() { return offsZ; }  
 
   virtual inline GLfloat getX() { return x; }
   virtual inline GLfloat getY() { return y; }

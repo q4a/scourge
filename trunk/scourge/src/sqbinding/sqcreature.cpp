@@ -83,6 +83,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "void", "moveTo", SqCreature::_moveTo, 0, 0, "Move creature to this location." },	
 	{ "bool", "isScripted", SqCreature::_isScripted, 0, 0, "Is this creature scripted? (being moved by script)" },
 	{ "void", "setScripted", SqCreature::_setScripted, 0, 0, "Set the value of whether this creature is being moved by script." },
+	{ "void", "setAnimation", SqCreature::_setAnimation, 0, 0, "Set the creature's animation while scripted." },
 	{ "void", "say", SqCreature::_say, 0, 0, "The creature says something in a bubble of text." },
 	{ "bool", "isVisible", SqCreature::_isVisible, 0, 0, "Is this creature being rendered?" },
 	{ "void", "setVisible", SqCreature::_setVisible, 0, 0, "Set the value of whether this creature is being rendered." },
@@ -613,6 +614,13 @@ int SqCreature::_setScripted( HSQUIRRELVM vm ) {
 	return 0;
 }
 
+int SqCreature::_setAnimation( HSQUIRRELVM vm ) {
+	GET_INT( anim )
+	GET_OBJECT( Creature* )
+	object->setScriptedAnimation( anim );
+	return 0;
+}
+
 int SqCreature::_isScripted( HSQUIRRELVM vm ) {
 	GET_OBJECT( Creature* )
 	SQBool b = ( object->isScripted() ? true : false );
@@ -646,12 +654,6 @@ int SqCreature::_setOffset( HSQUIRRELVM vm ) {
 	GET_FLOAT( oy )
 	GET_FLOAT( ox )
 	GET_OBJECT( Creature* )
-	Location *pos = SqBinding::sessionRef->getMap()->getLocation( object->getX(), object->getY(), object->getZ() );
-	if( pos ) {
-		pos->moveX = ox / DIV;
-		pos->moveY = oy / DIV;
-		pos->moveZ = oz / DIV;
-	} else {
-		cerr << "*** Error: can't find creature " << object->getName() << " on the map." << endl;
-	}
+	object->setOffset( ox / DIV, oy / DIV, oz / DIV );
+	return 0;
 }

@@ -1717,6 +1717,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
 			glRotatef( later->pos->angleX, 1, 0, 0 );
 			glRotatef( later->pos->angleY, 0, 1, 0 );
 			glRotatef( later->pos->angleZ, 0, 0, 1 );
+		} 
+		
+		if( later && later->creature ) {
+			glTranslatef( later->creature->getOffsetX(), later->creature->getOffsetY(), later->creature->getOffsetZ() );
 		}
 
 #ifdef DEBUG_SECRET_DOORS    

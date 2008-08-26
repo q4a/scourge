@@ -3,6 +3,28 @@
 // It is also the file that handles the story-related special events.
 //
 
+// Some definitions. Maybe this should live in its own file.
+MD2_STAND <- 0;
+MD2_RUN <- 1;
+MD2_ATTACK <- 2;
+MD2_PAIN1 <- 3;
+MD2_PAIN2 <- 4;
+MD2_PAIN3 <- 5;
+MD2_JUMP <- 6;
+MD2_FLIP <- 7;
+MD2_SALUTE <- 8;    
+MD2_TAUNT <- 9;
+MD2_WAVE <- 10;
+MD2_POINT <- 11;
+MD2_CRSTAND <- 12;
+MD2_CRWALK <- 13;
+MD2_CRATTACK <- 14;
+MD2_CRPAIN <- 15;
+MD2_CRDEATH <- 16;    
+MD2_DEATH1 <- 17;
+MD2_DEATH2 <- 18;
+MD2_DEATH3 <- 19;
+
 // Called when entering map                    
 function enterMap( mapName ) {
   print( "Welcome to S.C.O.U.R.G.E.: Heroes of Lesser Renown\n" );

@@ -109,6 +109,7 @@ void Creature::commonInit() {
 	this->portrait[0] = 0;
 	
 	this->scripted = false;
+	this->scriptedAnim = MD2_STAND;
 	this->lastPerceptionCheck = 0;
 	this->boss = false;
   this->savedMissionObjective = false;
@@ -1995,14 +1996,18 @@ void Creature::decideMonsterAction() {
           setMotion(Constants::MOTION_LOITER);
         }
         else if(!isMonster() || isNpc()){
-          //friendlies also have a chance to wave etc.
-          int n = Util::dice( 600 );
-          switch( n ) {
-            case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;
-            case 1 : getShape()->setCurrentAnimation(MD2_POINT); break;
-            case 2 : getShape()->setCurrentAnimation(MD2_SALUTE); break;
-            default : getShape()->setCurrentAnimation(MD2_STAND); break;
-          }
+        	if( scripted ) {
+        		getShape()->setCurrentAnimation(getScriptedAnimation());
+        	} else {
+	          //friendlies also have a chance to wave etc.
+	          int n = Util::dice( 600 );
+	          switch( n ) {
+	            case 0 : getShape()->setCurrentAnimation(MD2_WAVE); break;
+	            case 1 : getShape()->setCurrentAnimation(MD2_POINT); break;
+	            case 2 : getShape()->setCurrentAnimation(MD2_SALUTE); break;
+	            default : getShape()->setCurrentAnimation(MD2_STAND); break;
+	          }
+        	}
         }
       }
       else if(getMotion() == Constants::MOTION_LOITER && pathManager->atEndOfPath()){
@@ -3092,6 +3097,11 @@ void Creature::disableTrap( Trap *trap ) {
 
 void Creature::setMotion( int motion ) {
 	this->motion = motion; 
+}
+
+void Creature::setScripted( bool b ) { 
+	this->scripted = b; 
+	if( scripted ) stopMoving(); 
 }
 
 void Creature::drawMoviePortrait( int width, int height ) {

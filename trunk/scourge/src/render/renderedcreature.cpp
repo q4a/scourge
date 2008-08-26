@@ -34,7 +34,7 @@ RenderedCreature::RenderedCreature( Preferences *preferences,
   effect = NULL;
   effectType = Constants::EFFECT_FLAMES;
   recentDamagesCount = 0;
-
+  this->offsX = this->offsY = this->offsZ = 0.0f;
   talkStartTime = 0;
 }
 
