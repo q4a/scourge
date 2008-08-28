@@ -27,6 +27,8 @@ function chapter12_part2() {
 }
 
 function chapter12_part3() {
+	player <- scourgeGame.getPartyMember( 0 );
+	player.clearSpeech();
 	scourgeGame.getMission().setMapEffect( 325, 444, 4, // map location 
 	                                       "EFFECT_RING",  												// effect 
 	                                       20, 20, 																	// base size

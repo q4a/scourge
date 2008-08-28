@@ -85,6 +85,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "void", "setScripted", SqCreature::_setScripted, 0, 0, "Set the value of whether this creature is being moved by script." },
 	{ "void", "setAnimation", SqCreature::_setAnimation, 0, 0, "Set the creature's animation while scripted." },
 	{ "void", "say", SqCreature::_say, 0, 0, "The creature says something in a bubble of text." },
+	{ "void", "clearSpeech", SqCreature::_clearSpeech, 0, 0, "Stop showing the bubble text for the creature." },
 	{ "bool", "isVisible", SqCreature::_isVisible, 0, 0, "Is this creature being rendered?" },
 	{ "void", "setVisible", SqCreature::_setVisible, 0, 0, "Set the value of whether this creature is being rendered." },
 
@@ -632,6 +633,25 @@ int SqCreature::_say( HSQUIRRELVM vm ) {
 	GET_STRING( text, 2000 )
 	GET_OBJECT( Creature* )
 	object->say( text );
+	// everyone else: quiet
+	for( int i = 0; i < SqBinding::sessionRef->getCreatureCount(); i++ ) {
+		RenderedCreature *c = SqBinding::sessionRef->getCreature( i );
+		if( c != object ) {
+			c->clearSpeech();
+		}
+	}
+	for( int i = 0; i < SqBinding::sessionRef->getParty()->getPartySize(); i++ ) {
+		RenderedCreature *c = SqBinding::sessionRef->getParty()->getParty( i );
+		if( c != object ) {
+			c->clearSpeech();
+		}
+	}
+	return 0;
+}
+
+int SqCreature::_clearSpeech( HSQUIRRELVM vm ) {
+	GET_OBJECT( Creature* )
+	object->clearSpeech();
 	return 0;
 }
 

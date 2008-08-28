@@ -295,17 +295,22 @@ void RenderedCreature::say( char const* text ) {
   talkStartTime = SDL_GetTicks();
   strncpy( speech, text, 2000 );
 
-  speechWrapped.clear();
+  clearSpeech();
 
   char tmp[3000];
   Util::addLineBreaks( speech, tmp, 45 );
   Util::getLines( tmp, &speechWrapped );
 }
 
+void RenderedCreature::clearSpeech() {
+	speechWrapped.clear();
+}
+
 #define TALK_DURATION 5000
 
 bool RenderedCreature::isTalking() {
-  if( SDL_GetTicks() > ( talkStartTime + TALK_DURATION ) ) { return false; } else { return true; }
+  //if( SDL_GetTicks() > ( talkStartTime + TALK_DURATION ) ) { return false; } else { return true; }
+	return speechWrapped.size() > 0 ? true : false;
 }
 
 char *RenderedCreature::getSpeech() {

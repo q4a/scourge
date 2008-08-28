@@ -83,6 +83,7 @@ public:
   virtual void removeRecentDamage( int i );
 
   virtual void say( char const* text );
+	virtual void clearSpeech();
   virtual bool isTalking();
   virtual char *getSpeech();
   std::vector<std::string> *getSpeechWrapped();
