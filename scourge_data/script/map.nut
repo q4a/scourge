@@ -44,6 +44,7 @@ function enterMap( mapName ) {
 		case 8: initChapter9(); break;
 		case 9: initChapter10(); break;
 		case 10: initChapter11(); break;
+		case 11: initChapter12(); break;
 		}
 	}
 }
@@ -596,6 +597,51 @@ function initChapter11() {
 		//print( "Adding creature: count=" + scourgeGame.getMission().getCreatureCount() );
 		scourgeGame.getMission().addCreature( 5, 5, 0, "Spawn of Arcanex" );
 		scourgeGame.getMission().setMapConfig( "/maps/tree" );
+	}
+}
+
+function initChapter12() {
+	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
+		scourgeGame.getMission().setMapEffect( 312, 446, 1, // map location 
+		                                       "EFFECT_SMOKE",  												// effect 
+		                                       1, 1, 																	// base size
+		                                       0,																			// delay
+		                                       true,																	// forever 
+		                                       0, 0, 0, 														// offset
+		                                       0.2, 0.2, 0.5 														// color
+																					);	
+		scourgeGame.getMission().setMapEffect( 317, 438, 1, // map location 
+				                                       "EFFECT_SMOKE",  												// effect 
+				                                       1, 1, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
+				                                       0, 0, 0, 														// offset
+				                                       0.2, 0.2, 0.5 														// color
+																							);
+		scourgeGame.getMission().setMapEffect( 319, 455, 1, // map location 
+				                                       "EFFECT_SMOKE",  												// effect 
+				                                       1, 1, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
+				                                       0, 0, 0, 														// offset
+				                                       0.2, 0.2, 0.5 														// color
+																							);
+		scourgeGame.getMission().setMapEffect( 331, 455, 1, // map location 
+				                                       "EFFECT_SMOKE",  												// effect 
+				                                       1, 1, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
+				                                       0, 0, 0, 														// offset
+				                                       0.2, 0.2, 0.5 														// color
+																							);
+		scourgeGame.getMission().setMapEffect( 330, 438, 1, // map location 
+				                                       "EFFECT_SMOKE",  												// effect 
+				                                       1, 1, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
+				                                       0, 0, 0, 														// offset
+				                                       0.2, 0.2, 0.5 														// color
+																							);
 	}
 }
 

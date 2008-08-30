@@ -2544,7 +2544,6 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 						cerr << "Error removing position:" << " x=" << ( x + xp ) << " y=" << ( y - yp ) << " z=" << ( z + zp ) << endl;
 					} else {
 						pos[ x + xp ][ y - yp ][ z + zp ] = NULL;
-						cerr << "removing position:" << " x=" << ( x + xp ) << " y=" << ( y - yp ) << " z=" << ( z + zp ) << endl;
 					}
         }
       }
