@@ -67,6 +67,7 @@ public:
   int effectWidth, effectDepth, effectHeight;
   int effectX, effectY, effectZ;
   bool interactive;
+  bool ignoreHeightMap;
 	float outdoorsWeight;
 	bool outdoorShadow;
 	bool wind;
@@ -127,6 +128,7 @@ class WallTheme {
 		OUTDOOR_THEME_REF_SNOW,
 		OUTDOOR_THEME_REF_SNOW_BIG,
 		OUTDOOR_THEME_REF_LAKEBED,
+		OUTDOOR_THEME_REF_EXTRA,
 
     // must be the last one
     OUTDOOR_THEME_REF_COUNT

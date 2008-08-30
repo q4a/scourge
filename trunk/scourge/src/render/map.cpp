@@ -1691,7 +1691,18 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   // glPushAttrib(GL_ENABLE_BIT);
 
   glPushMatrix();
-  float heightPos = ( later && later->pos ? later->pos->heightPos / DIV : ( later->effect ? later->effect->heightPos : 0 ) );
+  
+  float heightPos = 0.0f;
+  if( later && later->pos ) {
+  	GLShape *s = (GLShape*)later->pos->shape;
+  	if( s->isVirtual() ) {
+  		s = ((VirtualShape*)s)->getRef();
+  	}
+  	heightPos = ( s->getIgnoreHeightMap() ? 0.0f : later->pos->heightPos );
+  } else if( later && later->effect ) {
+  	heightPos = later->effect->heightPos;
+  }
+  
   if(useShadow) {
 		// put shadow above the floor a little
 
@@ -4835,16 +4846,16 @@ void Map::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
 	int sy = y + 1 + OUTDOOR_FLOOR_TEX_SIZE;
 	int ref = -1;
 	if( !w && !s && !e ) {
-		angle = 180;
+		angle = 0;
 		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP; 
 	} else if( !e && !s && !n ) {
-		angle = 270;
+		angle = 90;
 		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
 	} else if( !e && !n && !w ) {
-		angle = 0;
+		angle = 180;
 		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
 	} else if( !w && !n && !s ) {
-		angle = 90;
+		angle = 270;
 		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
 
 	} else if( !w && !e ) {
@@ -4855,16 +4866,16 @@ void Map::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
 		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_NARROW;					
 
 	} else if( !w && !s ) {
-		angle = 0;
+		angle = 90;
 		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER; 
 	} else if( !e && !s ) {
-		angle = 90;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-	} else if( !e && !n ) {
 		angle = 180;
 		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
-	} else if( !w && !n ) {
+	} else if( !e && !n ) {
 		angle = 270;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;
+	} else if( !w && !n ) {
+		angle = 0;
 		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_CORNER;					
 
 	} else if( !e ) {

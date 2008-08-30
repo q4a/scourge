@@ -1,3 +1,13 @@
+// todo: 
+// - conversations to show until cleared or changed
+// - register a cleanup function to run if movie is Esc-aped
+// - make tooltips show as scrolls
+// - better tooltips text for new models (houses, etc.)
+// - extra decoration in Karzul's 'pen'
+// - summon monster spell
+// - karzul to summon 'help' (demons)
+
+
 function startChapter12Movie() {
 	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
 		key <- "chapter12Movie";
