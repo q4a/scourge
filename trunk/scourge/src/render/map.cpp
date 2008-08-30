@@ -1698,7 +1698,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   	if( s->isVirtual() ) {
   		s = ((VirtualShape*)s)->getRef();
   	}
-  	heightPos = ( s->getIgnoreHeightMap() ? 0.0f : later->pos->heightPos );
+  	
+  	if( !s->getIgnoreHeightMap() ) {
+  		heightPos = later->pos->heightPos / DIV;
+  	}
   } else if( later && later->effect ) {
   	heightPos = later->effect->heightPos;
   }
@@ -2541,6 +2544,7 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 						cerr << "Error removing position:" << " x=" << ( x + xp ) << " y=" << ( y - yp ) << " z=" << ( z + zp ) << endl;
 					} else {
 						pos[ x + xp ][ y - yp ][ z + zp ] = NULL;
+						cerr << "removing position:" << " x=" << ( x + xp ) << " y=" << ( y - yp ) << " z=" << ( z + zp ) << endl;
 					}
         }
       }
