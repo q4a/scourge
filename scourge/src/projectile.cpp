@@ -179,7 +179,14 @@ bool Projectile::move() {
     this->ty = target->getY();
     this->tw = target->getShape()->getWidth();
     this->td = target->getShape()->getDepth();
-    if(!(ssx == ex && ssy == ey)) calculateAngle( ssx, ssy );
+    if(!( toint( ssx ) == toint( ex ) && toint( ssy ) == toint( ey ))) calculateAngle( ssx, ssy );
+  }
+  
+  // sanity checking: are we off the map?
+  if( toint( ssx ) < MAP_OFFSET || toint( ssy ) < MAP_OFFSET ||
+  		toint( ssx ) >= MAP_WIDTH - MAP_OFFSET ||
+  		toint( ssy ) >= MAP_DEPTH - MAP_OFFSET ) {
+  	return true;
   }
 
   // recalculate the distance
