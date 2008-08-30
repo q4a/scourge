@@ -51,7 +51,8 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
 	this->iconRotX = this->iconRotY = this->iconRotZ = 0;
 	this->icon = 0;
 	this->iconWidth = this->iconHeight = 0;
-	this->ambient = "";	
+	this->ambient = "";
+	this->ignoreHeightMap = false;
 
 	this->occurs.rooms_only = false;
 	this->occurs.max_count = 0;

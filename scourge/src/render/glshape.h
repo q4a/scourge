@@ -60,6 +60,7 @@ protected:
 	std::string ambient;
 	float alpha;
 	std::vector<GLShape*> virtualShapes;
+	bool ignoreHeightMap;
 
   Surface *surfaces[5];
   enum { 
@@ -104,6 +105,9 @@ protected:
 
 	void setOccurs( Occurs *o );
 	inline Occurs *getOccurs() { return &occurs; }
+	
+	inline void setIgnoreHeightMap( bool b ) { this->ignoreHeightMap = b; }
+	inline bool getIgnoreHeightMap() { return this->ignoreHeightMap; }
 
 public:
 

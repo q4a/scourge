@@ -48,7 +48,7 @@ char WallTheme::themeRefName[THEME_REF_COUNT][40] = {
 char WallTheme::outdoorThemeRefName[OUTDOOR_THEME_REF_COUNT][40] = {
 	"grass", "street", "street_cross", "street_end", "trail", "trail_turn", "trail_end", 
 	"water", "rock", "grass_edge", "grass_corner", "grass_tip", "grass_narrow", "snow", 
-	"snow_big", "lakebed"
+	"snow_big", "lakebed", "extra"
 };
 
 WallTheme::WallTheme( char const* name, Shapes *shapePal ) 
@@ -600,6 +600,7 @@ void Shapes::loadShape( const char *name ) {
     shapes[(i + 1)]->setStencil(sv->stencil == 1);
     shapes[(i + 1)]->setLightBlocking(sv->blocksLight == 1);
     shapes[(i + 1)]->setIconRotation(sv->xrot, sv->yrot, sv->zrot);
+    shapes[(i + 1)]->setIgnoreHeightMap( sv->ignoreHeightMap );
 
 		if( sv->wallShape ) shapes[(i + 1)]->setIsWallShape( true );
 
