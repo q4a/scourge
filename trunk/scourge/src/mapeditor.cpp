@@ -732,7 +732,7 @@ void MapEditor::processMouseMotion( Uint8 button, int editorZ ) {
 	          scourge->getMap()->setCreature( xx, yy + 1, editorZ, creature );
 						creature->moveTo( xx, yy + 1, editorZ );
 	        } else if( shape ) {
-	        	if( shape->getIgnoreHeightMap() ) {
+	        	if( shape->getIgnoreHeightMap() && !shape->isRoof() ) {
 	        		for( int sx = mapx; sx < mapx + shape->getWidth(); sx++ ) {
 	        			for( int sy = mapy - shape->getDepth(); sy <= mapy; sy++ ) {
 	        				flattenChunk( sx, sy );	        				
