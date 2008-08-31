@@ -651,7 +651,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 
 	sv->color = strtoul( node->getValueAsString( "color" ), NULL, 16 );
 	sv->interactive = node->getValueAsBool( "interactive" );
-	sv->ignoreHeightMap = node->getValueAsBool( "ignore_height_map" );
+	sv->ignoreHeightMap = node->getValueAsBool( "ignores_height_map" );
 
 	if( node->hasValue( "rotate" ) ) {
 		char rotation[128];

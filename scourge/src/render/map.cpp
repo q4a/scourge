@@ -964,7 +964,7 @@ void Map::setupPosition( int posX, int posY, int posZ,
 		stencil[stencilCount].y = posY;
     stencilCount++;
   } else if(!shape->isStencil()) {
-    bool invisible = (creature && creature->getStateMod(StateMod::invisible));
+    bool invisible = false; // (creature && creature->getStateMod(StateMod::invisible));
     if(!invisible && shape->drawFirst()) {
       other[otherCount].xpos = xpos2;
       other[otherCount].ypos = ypos2;
@@ -1680,7 +1680,6 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
     return;
   }
   
-  // fixme: should draw with alpha value that fades out...
   if( shape->isRoof() && selectMode ) {
   	return;
   }
@@ -1792,7 +1791,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
     }
   } else if( later && later->creature && !useShadow ) {
     if(later->creature->getStateMod(StateMod::invisible)) {
-      glColor4f(0.3f, 0.8f, 1.0f, 1.0f);    
+      glColor4f(0.3f, 0.8f, 1.0f, 0.5f);
+      glEnable( GL_BLEND );
+      //glDepthMask( GL_FALSE );
+      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     } else if(later->creature->getStateMod(StateMod::possessed)) {
       glColor4f(1.0, 0.3f, 0.8f, 1.0f);    
     }
@@ -1809,6 +1811,12 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
 			shape->outline( later->pos->outlineColor );
 		}
 		shape->draw();
+		
+		if(later->creature->getStateMod(StateMod::invisible)) {
+			glDisable( GL_BLEND );
+			//glDepthMask( GL_TRUE );			
+		}
+		
   } else if( later && later->item && !useShadow ) {
 
     if( later->item->isSpecial() ) {
@@ -1845,9 +1853,18 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   
   // in the map editor outline virtual shapes
   if( shape->isVirtual() && settings->isGridShowing() && gridEnabled ) {
+  	
+  	if( heightPos > 1 ) {
+  		cerr << "heightPos=" << heightPos << " for virtual shape " << shape->getName() << endl;
+  	}
+  	if( later && later->pos && later->pos->z > 0 ) {
+  		cerr << "z=" << later->pos->z << " for virtual shape " << shape->getName() << endl;
+  	}
+  	
   	glColor4f( 0.75f, 0.75f, 1, 1 );
   	
   	float z = ( shape->getHeight() + 0.25f ) / DIV;
+  	float lowZ = 0.25f / DIV;
   	
   	glPushMatrix();
   	glTranslatef( 0, 20, z );
@@ -1860,6 +1877,27 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   	glVertex3f( 0, shape->getDepth() / DIV, z );
   	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, z );
   	glVertex3f( shape->getWidth() / DIV, 0, z );
+  	
+  	glVertex3f( 0, 0, z );
+  	glVertex3f( 0, 0, lowZ );
+  	glVertex3f( shape->getWidth() / DIV, 0, lowZ );
+  	glVertex3f( shape->getWidth() / DIV, 0, z );
+  	
+  	glVertex3f( 0, shape->getDepth() / DIV, z );
+  	glVertex3f( 0, shape->getDepth() / DIV, lowZ );
+  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, lowZ );
+  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, z );
+  	
+  	glVertex3f( 0, 0, z );
+  	glVertex3f( 0, 0, lowZ );
+  	glVertex3f( 0, shape->getDepth() / DIV, lowZ );
+  	glVertex3f( 0, shape->getDepth() / DIV, z );
+  	
+  	glVertex3f( shape->getWidth() / DIV, 0, z );
+  	glVertex3f( shape->getWidth() / DIV, 0, lowZ );
+  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, lowZ );
+  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, z );
+  	
   	glEnd();  	
   	glEnable( GL_TEXTURE_2D );
   }
