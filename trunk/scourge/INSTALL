@@ -1,16 +1,18 @@
 # To check out the code and data into a scourge directory
-svn co https://svn.sourceforge.net/svnroot/scourge/trunk scourge
+svn co https://scourge.svn.sourceforge.net/svnroot/scourge/trunk scourge
 
 # To configure it
 cd scourge/scourge
 autoreconf -i
 
-# To compile it
-cd ..
-mkdir build
-cd build
-../scourge/configure --enable-debug
-make
+# To enable multilanguage support
+./translate.sh
+
+# To compile it normally
+scons
+
+# To compile it with debug support
+scons debug=true
 
 # Run
 ./src/scourge -f
