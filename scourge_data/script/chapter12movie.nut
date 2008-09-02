@@ -17,6 +17,8 @@ function startChapter12Movie() {
 			
 			// start movie mode
 			scourgeGame.setMovieMode( true );
+			
+			scourgeGame.setInterruptFunction( "chapter12MovieInterrupt" )
 
 			scourgeGame.moveCamera( 230, 370, 0, 0, 50, 30, 0.7, 4500 );
 			
@@ -120,6 +122,18 @@ function chapter12_end() {
 	karzul <- findCreatureByType( "Karzul Agmordexu" );	
 	karzul.setNpc( false );
 	scourgeGame.setMovieMode( false );
+}
+
+function chapter12MovieInterrupt() {
+	print( "in chapter12MovieInterrupt\n" )
+	scourgeGame.getMission().removeMapEffect( 325, 444, 4 );
+	karzul <- findCreatureByType( "Karzul Agmordexu" );
+	if( karzul == null ) {
+		karzul = scourgeGame.getMission().addCreature( 320, 449, 0, "Karzul Agmordexu" );		
+	}
+	karzul.setScripted( true );
+	karzul.setOffset( 0.0, 0.0, 0.0 );
+	karzul.setNpc( false );
 }
 
 function drawEffects() {

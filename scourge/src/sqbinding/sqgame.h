@@ -90,6 +90,7 @@ public:
 	static int _getTranslatedString( HSQUIRRELVM vm );
 	
 	static int _setMovieMode( HSQUIRRELVM vm );
+	static int _setInterruptFunction( HSQUIRRELVM vm );
 	static int _moveCamera( HSQUIRRELVM vm );
 	static int _continueAt( HSQUIRRELVM vm );
 	static int _setDepthLimits( HSQUIRRELVM vm );

@@ -88,6 +88,8 @@ private:
 	std::string loadtitle;
 	char scoreid[40];
 	bool autosave;
+	
+	char interruptFunction[255];
 
   // private constructor: call startGame instead.
   Session(GameAdapter *adapter);
@@ -134,6 +136,9 @@ public:
   inline GameAdapter *getGameAdapter() { return adapter; }
   void playSound(const std::string& sound, int panning );
 	std::string& getAmbientSoundName();
+	
+	inline void setInterruptFunction( char *s ) { strcpy( this->interruptFunction, s ); }
+	inline char *getInterruptFunction() { return this->interruptFunction; }
 
   /**
     Creat a new item for use on this story. Calling this method instead of new Item()
