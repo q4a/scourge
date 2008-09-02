@@ -60,6 +60,7 @@ ScriptClassMemberDecl SqGame::members[] = {
 	{ "void", "endConversation", SqGame::_endConversation, 0, 0, "Close the conversation dialog." },
 	{ "string", "getTranslatedString", SqGame::_getTranslatedString, 0, 0, "Get the translated version of this string. Calls GNU gettext." },
 	{ "void", "setMovieMode", SqGame::_setMovieMode, 0, 0, "Start or end letterboxed movie mode." },
+	{ "void", "setInterruptFunction", SqGame::_setInterruptFunction, 0, 0, "Set which function to call if the movie is ended by the user. (By pressing escape.)" },
 	{ "void", "moveCamera", SqGame::_moveCamera, 0, 0, "Position the camera." },
 	{ "void", "continueAt", SqGame::_continueAt, 0, 0, "Call a squirrel function after the specified timeout." },
 	{ "void", "setDepthLimits", SqGame::_setDepthLimits, 0, 0, "Set the min and max depth values used for orthographic rendering." },
@@ -310,6 +311,11 @@ int SqGame::_getTranslatedString( HSQUIRRELVM vm ) {
 	GET_STRING( s, 3000 )
 	sq_pushstring( vm, _( s ), -1 );
   return 1;
+}
+
+int SqGame::_setInterruptFunction( HSQUIRRELVM vm ) {
+	GET_STRING( s, 3000 )
+	SqBinding::sessionRef->setInterruptFunction( s );
 }
 
 int SqGame::_setMovieMode( HSQUIRRELVM vm ) {

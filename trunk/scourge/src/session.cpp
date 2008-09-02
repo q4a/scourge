@@ -66,6 +66,7 @@ Session::Session(GameAdapter *adapter)
 	Session::instance = this;
 	autosave = false;
 	terrainGenerator = NULL;
+	strcpy( interruptFunction, "" );
 }
 
 Session::~Session() {

@@ -4051,9 +4051,13 @@ void Scourge::startMovieMode() {
 	getSDLHandler()->setCursorVisible( false );
 	getPartyWindow()->setVisible( false );
 	getSession()->getCutscene()->startMovieMode();
+	getSession()->setInterruptFunction( "" );
 }
 
 void Scourge::endMovieMode() {
+	if( strlen( session->getInterruptFunction() ) ) {
+		getSession()->getSquirrel()->callNoArgMethod( session->getInterruptFunction() );
+	}
 	getSDLHandler()->setContinueAt( "", 0 ); // clear continue at
 	for( int i = 0; i < getSession()->getCreatureCount(); i++ ) {
 		getSession()->getCreature( i )->setScripted( false );

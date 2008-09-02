@@ -420,10 +420,10 @@ function findCreatureByType( name ) {
 	for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
 		creature = scourgeGame.getMission().getCreature( i );
 		if( creature.getMonsterType() == name ) {
-			break;
+			return creature;
 		}
 	}
-	return creature;
+	return null;
 }
 
 function initChapter6() {
