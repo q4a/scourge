@@ -224,6 +224,11 @@ Shapes::Shapes( Session *session ){
 }
 
 GLuint *Shapes::findOrMakeTextureGroup( char *s ) {
+
+	if( !strlen( s ) ) {
+		return textureGroup[ 0 ];
+	}
+
 	char tmp[255];
 	strcpy( tmp, s );
 
