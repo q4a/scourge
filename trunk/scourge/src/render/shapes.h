@@ -283,7 +283,7 @@ protected:
   GLShape *shapeNameArray[256];
 
   // native texture groups
-  GLuint textureGroup[100][3];
+  GLuint textureGroup[256][3];
   int textureGroupCount;
 
   GLuint md2_tex[6];
