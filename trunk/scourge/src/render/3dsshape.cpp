@@ -265,8 +265,13 @@ void C3DSShape::resolveTextures() {
       // instead of loading the texture, get one of the already loaded textures
 			string s = g_3DModel.pMaterials[i].strFile;
 			// a lame but effective attempt at determining if alpha blending is used
-			if( !hasAlphaValues && s.substr( s.length() - 4 ) != ".bmp" ) {
+			if( !hasAlphaValues && s.substr( s.length() - 4, 1 ) == "."  && 
+					!( ( s.substr( s.length() - 3, 1 ) == "b" || s.substr( s.length() - 3, 1 ) == "B" ) &&
+						 ( s.substr( s.length() - 2, 1 ) == "m" || s.substr( s.length() - 2, 1 ) == "M" ) &&
+						 ( s.substr( s.length() - 1, 1 ) == "p" || s.substr( s.length() - 1, 1 ) == "P" ) ) ) {
+				//cerr << "s=" << s << " has alpha, ends in " << s.substr( s.length() - 4 ) << endl;
 				hasAlphaValues = true;
+				//cerr << "s=" << s << " has NO alpha" << endl;
 			}
       g_Texture[i] = shapePal->findTextureByName( s, true );
 			if( !g_Texture[i] ) cerr << "*** error: can't find 3ds texture reference: " << g_3DModel.pMaterials[i].strFile << endl;
@@ -483,17 +488,11 @@ void C3DSShape::draw() {
   glGetFloatv( GL_CURRENT_COLOR, currentColor );
 
   glPushMatrix();
-  if( !useShadow && getAlpha() == 1.0f ) {
-  	if( hasAlphaValues ) {
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc( GL_NOTEQUAL, 0 );
-			glEnable( GL_BLEND );
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  	} else {
-  		glEnable( GL_BLEND );
-  		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  		glColor4f( 1, 1, 1, 0.5f );
-  	}
+  if( !useShadow && hasAlphaValues ) {
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc( GL_NOTEQUAL, 0 );
+		glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   }
 	glTranslatef( offs_x / DIV, offs_y / DIV, offs_z / DIV );
   glTranslatef(-movex * divx, 0.0f, 0.0f);
@@ -506,17 +505,11 @@ void C3DSShape::draw() {
 //			createDisplayList( displayListStart, false );
 		}
 	}
-  
-//  glCallList( displayListStart + (useShadow ? 1 : 0) );
   drawShape( useShadow, getAlpha() );
-	
-  if( !useShadow ) {
-  	if( hasAlphaValues ) {
-  		glDisable( GL_BLEND );
-  		glDisable(GL_ALPHA_TEST);
-  	} else {
-  		glDisable( GL_BLEND );
-  	}
+  
+	if( !useShadow && hasAlphaValues ) {
+		glDisable( GL_BLEND );
+		glDisable(GL_ALPHA_TEST);
 	}
 	glPopMatrix();
 	
