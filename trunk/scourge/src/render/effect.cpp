@@ -56,9 +56,6 @@ void Effect::commonInit() {
   flameTex = shapePal->findTextureByName( "flame.bmp", true );
   ringTex = shapePal->findTextureByName( "ring2.bmp", true );
   rippleTex = shapePal->getRippleTexture();
-  for(int i = 0; i < PARTICLE_COUNT; i++) {
-    particle[i] = NULL;
-  }
   rippleRadius = 2.0f;
   rippleAlpha = 0.4f;
   ringRadius = 0.25f;
@@ -89,10 +86,7 @@ void Effect::setSize( int width, int height ) {
 
 void Effect::deleteParticles() {
   for(int i = 0; i < PARTICLE_COUNT; i++) {
-    if(particle[i]) {
-      delete particle[i];
-      particle[i] = 0;
-    }
+  	particle[i].active = false;
   }
 }
 
@@ -159,27 +153,29 @@ void Effect::glowShape(bool proceed, int startTime) {
 void Effect::drawFlames(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
-    if(!particle[i]) {
-      createParticle(&(particle[i]));
-      particle[i]->zoom = 1.4f;
-      particle[i]->tail = true;
+    if(!particle[i].active) {
+    	particle[i].reset();
+    	particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+    	particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );
+      particle[i].zoom = 1.4f;
+      particle[i].tail = true;
     } else if(proceed) {
-      moveParticle(&(particle[i]));
+    	particle[i].move();
     }
     
     // draw it      
-    if(particle[i]) {            
+    if(particle[i].active) {            
       
-      float gg = 1 - (static_cast<float>(particle[i]->life) / 3.0f);
+      float gg = 1 - (static_cast<float>(particle[i].life) / 3.0f);
       if(gg < 0) gg = 0;
       glColor4f(1, gg, 1, 0.5);
 
-      particle[i]->tailColor.r = 1;
-      particle[i]->tailColor.g = gg;
-      particle[i]->tailColor.b = 1;
-      particle[i]->tailColor.a = 0.5f;
+      particle[i].tailColor.r = 1;
+      particle[i].tailColor.g = gg;
+      particle[i].tailColor.b = 1;
+      particle[i].tailColor.a = 0.5f;
       
-      drawParticle(particle[i]);
+      drawParticle(&(particle[i]));
     }
   }
 }
@@ -187,33 +183,35 @@ void Effect::drawFlames(bool proceed) {
 void Effect::drawTeleport(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
-    if(!particle[i]) {
+    if(!particle[i].active) {
       // create a new particle
-      createParticle(&(particle[i]));
-      particle[i]->z = Util::pickOne( 7, 8 );
-      particle[i]->moveDelta = Util::roll( 0.15f, 0.3f );
-      if(particle[i]->z < 8) particle[i]->moveDelta *= -1.0f;
-      particle[i]->maxLife = 10000;
-      particle[i]->trail = 4;
-      particle[i]->zoom = 1.4f;
-      particle[i]->tail = true;
+      particle[i].reset();
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );
+      particle[i].z = Util::pickOne( 7, 8 );
+      particle[i].moveDelta = Util::roll( 0.15f, 0.3f );
+      if(particle[i].z < 8) particle[i].moveDelta *= -1.0f;
+      particle[i].maxLife = 10000;
+      particle[i].trail = 4;
+      particle[i].zoom = 1.4f;
+      particle[i].tail = true;
     } else if(proceed) {
-      moveParticle(&(particle[i]));
+      particle[i].move();
     }
 
     // draw it
-    if(particle[i]) {
+    if(particle[i].active) {
 
-      float c = fabs(particle[i]->z - 8) / 8.0f;
+      float c = fabs(particle[i].z - 8) / 8.0f;
       if(c > 1) c = 1;
       glColor4f(c / 2.0f, c, 1.0f, 0.5);
 
-      particle[i]->tailColor.r = c / 2.0f;
-      particle[i]->tailColor.g = c;
-      particle[i]->tailColor.b = 1;
-      particle[i]->tailColor.a = 0.5f;
+      particle[i].tailColor.r = c / 2.0f;
+      particle[i].tailColor.g = c;
+      particle[i].tailColor.b = 1;
+      particle[i].tailColor.a = 0.5f;
       
-      drawParticle(particle[i]);
+      drawParticle(&(particle[i]));
     }
   }
 }
@@ -221,33 +219,35 @@ void Effect::drawTeleport(bool proceed) {
 void Effect::drawGreen(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT / 4; i++) {
-    if(!particle[i]) {
+    if(!particle[i].active) {
       // create a new particle
-      createParticle(&(particle[i]));
-      particle[i]->z = Util::roll( 0.0f, 1.0f );
-      //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
-      particle[i]->moveDelta = 0.15f;
-      particle[i]->rotate = Util::roll( 0.0f, 180.0f );
-	  particle[i]->maxLife = Util::pickOne( 20, 50 );
-      particle[i]->trail = 2;
-      particle[i]->zoom = Util::roll( 1.0f, 3.0f );
+      particle[i].reset();
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );
+      particle[i].z = Util::roll( 0.0f, 1.0f );
+      //	  particle[i].moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+      particle[i].moveDelta = 0.15f;
+      particle[i].rotate = Util::roll( 0.0f, 180.0f );
+      particle[i].maxLife = Util::pickOne( 20, 50 );
+      particle[i].trail = 2;
+      particle[i].zoom = Util::roll( 1.0f, 3.0f );
     } else if(proceed) {
-      particle[i]->rotate -= Util::roll( 3.0f, 6.0f );
+      particle[i].rotate -= Util::roll( 3.0f, 6.0f );
 
       // this causes an explosion!
-      //particle[i]->zoom += 0.3f;
-      moveParticle(&(particle[i]));
+      //particle[i].zoom += 0.3f;
+      particle[i].move();
     }
 
     // draw it      
-    if(particle[i]) {            
+    if(particle[i].active) {            
 
-      float max = particle[i]->maxLife / 4;
+      float max = particle[i].maxLife / 4;
       float c = 1.0f;
-      if( particle[i]->life <= max ) {
-        c = static_cast<float>( particle[i]->life ) / max;
-      } else if( particle[i]->life > particle[i]->maxLife - max ) {
-        c = static_cast<float>( particle[i]->maxLife - particle[i]->life ) / max;
+      if( particle[i].life <= max ) {
+        c = static_cast<float>( particle[i].life ) / max;
+      } else if( particle[i].life > particle[i].maxLife - max ) {
+        c = static_cast<float>( particle[i].maxLife - particle[i].life ) / max;
       }
       if( !diWasSet ) {
         glColor4f( 0.15f, 1, 0.15f, 0.2f * c );
@@ -255,7 +255,7 @@ void Effect::drawGreen(bool proceed) {
         glColor4f( di.red, di.green, di.blue, 0.2f * c );
       }
 
-      drawParticle(particle[i]);
+      drawParticle(&(particle[i]));
     }
   }
 }
@@ -263,31 +263,33 @@ void Effect::drawGreen(bool proceed) {
 void Effect::drawExplosion(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
-    if(!particle[i]) {
+    if(!particle[i].active) {
       // create a new particle
-      createParticle(&(particle[i]));
-	  particle[i]->z = Util::pickOne( 3, 4 );
-	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
-	  particle[i]->moveDelta = 0;
-	  particle[i]->rotate = Util::roll( 0.0f, 180.0f );
-	  particle[i]->maxLife = 5000;
-	  particle[i]->trail = 4;
+      particle[i].reset();
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+		  particle[i].z = Util::pickOne( 3, 4 );
+		  //	  particle[i].moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+		  particle[i].moveDelta = 0;
+		  particle[i].rotate = Util::roll( 0.0f, 180.0f );
+		  particle[i].maxLife = 5000;
+		  particle[i].trail = 4;
     } else if(proceed) {
-	  particle[i]->rotate = Util::roll( 0.0f, 360.0f );
-
-	  // this causes an explosion!
-	  if(particle[i]->zoom < 4.0f) particle[i]->zoom += 0.5f;
-	  moveParticle(&(particle[i]));
+		  particle[i].rotate = Util::roll( 0.0f, 360.0f );
+	
+		  // this causes an explosion!
+		  if(particle[i].zoom < 4.0f) particle[i].zoom += 0.5f;
+	  	particle[i].move();
     }
 
     // draw it
-    if(particle[i]) {
+    if(particle[i].active) {
 
-	  float c = fabs(particle[i]->z - 8) / 8.0f;
+	  float c = fabs(particle[i].z - 8) / 8.0f;
 	  if(c > 1) c = 1;
       glColor4f(c, c / 2.0f, c / 2.0f, 0.5);
 
-	  drawParticle(particle[i]);
+      drawParticle(&(particle[i]));
     }
   }
 }
@@ -296,36 +298,38 @@ void Effect::drawBlast(bool proceed, float percent ) {
 
   // manage particles
   for(int i = 0; i < 15; i++) {
-    if(!particle[i]) {
-      createParticle(&(particle[i]));
-      particle[i]->z = static_cast<int>(Util::roll( 0.5f * percent, 2.5f * percent ));
-      particle[i]->moveDelta = Util::roll( 0.05f, 0.1f );
-      particle[i]->maxLife = static_cast<int>(Util::roll( 5.0f * percent, 15.0f * percent ));
-      particle[i]->zoom = 3;
-      particle[i]->tail = true;
-      particle[i]->trail = 2;
+    if(!particle[i].active) {
+      particle[i].reset();
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      particle[i].z = static_cast<int>(Util::roll( 0.5f * percent, 2.5f * percent ));
+      particle[i].moveDelta = Util::roll( 0.05f, 0.1f );
+      particle[i].maxLife = static_cast<int>(Util::roll( 5.0f * percent, 15.0f * percent ));
+      particle[i].zoom = 3;
+      particle[i].tail = true;
+      particle[i].trail = 2;
     } else if(proceed) {
-      moveParticle(&(particle[i]));
+      particle[i].move();
     }
     
     // draw it      
-    if(particle[i]) {            
+    if(particle[i].active) {            
       
-      float p = particle[i]->life / ( particle[i]->maxLife / 100.0f );
+      float p = particle[i].life / ( particle[i].maxLife / 100.0f );
       float a = ( 0.5f / 100.0f ) * ( 100.0f - p );
       float gg = Util::roll( 0.8f, 1.0f );
 
-      particle[i]->tailColor.r = gg / ( particle[i]->life );
-      particle[i]->tailColor.g = gg / ( particle[i]->life / 10.0f );
-      particle[i]->tailColor.b = gg;
-      particle[i]->tailColor.a = a;
+      particle[i].tailColor.r = gg / ( particle[i].life );
+      particle[i].tailColor.g = gg / ( particle[i].life / 10.0f );
+      particle[i].tailColor.b = gg;
+      particle[i].tailColor.a = a;
 
-      glColor4f( particle[i]->tailColor.r, 
-                 particle[i]->tailColor.g, 
-                 particle[i]->tailColor.b, 
-                 particle[i]->tailColor.a );
+      glColor4f( particle[i].tailColor.r, 
+                 particle[i].tailColor.g, 
+                 particle[i].tailColor.b, 
+                 particle[i].tailColor.a );
       
-      drawParticle(particle[i]);
+      drawParticle(&(particle[i]));
     }
   }
 }
@@ -333,31 +337,33 @@ void Effect::drawBlast(bool proceed, float percent ) {
 void Effect::drawDust(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
-    if(!particle[i]) {
+    if(!particle[i].active) {
       // create a new particle
-      createParticle(&(particle[i]));
-	  particle[i]->z = static_cast<int>(Util::dice( 2 ));
-	  //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
-	  particle[i]->moveDelta = 0;
-	  particle[i]->rotate = Util::roll( 0.0f, 180.0f );
-	  particle[i]->maxLife = 5000;
-	  particle[i]->trail = 4;
+      particle[i].reset();
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+		  particle[i].z = static_cast<int>(Util::dice( 2 ));
+		  //	  particle[i].moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+		  particle[i].moveDelta = 0;
+		  particle[i].rotate = Util::roll( 0.0f, 180.0f );
+		  particle[i].maxLife = 5000;
+		  particle[i].trail = 4;
     } else if(proceed) {
-	  particle[i]->rotate = Util::roll( 0.0f, 360.0f );
-
-	  // this causes an explosion!
-	  if(particle[i]->zoom < 4.0f) particle[i]->zoom += 0.5f;
-	  moveParticle(&(particle[i]));
+		  particle[i].rotate = Util::roll( 0.0f, 360.0f );
+	
+		  // this causes an explosion!
+		  if(particle[i].zoom < 4.0f) particle[i].zoom += 0.5f;
+	  	particle[i].move();
     }
 
     // draw it
-    if(particle[i]) {
+    if(particle[i].active) {
 
-	  float c = fabs(particle[i]->z - 8) / 8.0f;
+	  float c = fabs(particle[i].z - 8) / 8.0f;
 	  if(c > 1.0f) c = 1.0f;
       glColor4f(c / 4.0f, c / 4.0f, c / 4.0f, 0.35f);
 
-	  drawParticle(particle[i]);
+      drawParticle(&(particle[i]));
     }
   }
 }
@@ -365,34 +371,36 @@ void Effect::drawDust(bool proceed) {
 void Effect::drawHail(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT / 4; i++) {
-    if(!particle[i]) {
+    if(!particle[i].active) {
       // create a new particle
-      createParticle(&(particle[i]));
-      particle[i]->z = Util::pickOne( 5, 6 );
-      particle[i]->moveDelta = Util::roll( 0.5f, 0.8f );
-      particle[i]->moveDelta *= -1.0f;
-      particle[i]->maxLife = 40000;
-      particle[i]->trail = 2;
-      particle[i]->zoom = 4.0f;
-      particle[i]->tail = true;
-      particle[i]->untilGround = true;
+      particle[i].reset();
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      particle[i].z = Util::pickOne( 5, 6 );
+      particle[i].moveDelta = Util::roll( 0.5f, 0.8f );
+      particle[i].moveDelta *= -1.0f;
+      particle[i].maxLife = 40000;
+      particle[i].trail = 2;
+      particle[i].zoom = 4.0f;
+      particle[i].tail = true;
+      particle[i].untilGround = true;
     } else if(proceed) {
-      moveParticle(&(particle[i]));
+      particle[i].move();
     }
 
     // draw it
-    if(particle[i]) {
+    if(particle[i].active) {
 
-	  float c = fabs(particle[i]->z - 8) / 8.0f;
+	  float c = fabs(particle[i].z - 8) / 8.0f;
 	  if(c > 1) c = 1;
     glColor4f( 0, c / 4.0f, 1.0f, 0.75 );
     
-    particle[i]->tailColor.r = 0.15f;
-    particle[i]->tailColor.g = c / 3.0f;
-    particle[i]->tailColor.b = 0.85f;
-    particle[i]->tailColor.a = 0.5f;
+    particle[i].tailColor.r = 0.15f;
+    particle[i].tailColor.g = c / 3.0f;
+    particle[i].tailColor.b = 0.85f;
+    particle[i].tailColor.a = 0.5f;
 
-	  drawParticle(particle[i]);
+	  drawParticle(&(particle[i]));
     }
   }
 }
@@ -400,45 +408,47 @@ void Effect::drawHail(bool proceed) {
 void Effect::drawTower(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
-    if(!particle[i]) {
+    if(!particle[i].active) {
       // create a new particle
-      createParticle(&(particle[i]));
-      if( (i % 3) ) {
-        particle[i]->z = Util::roll( 0.0f, 1.0f );
-        //	  particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
-        particle[i]->moveDelta = 0.15f;
-        particle[i]->rotate = Util::roll( 0.0f, 180.0f );
-        particle[i]->maxLife = 5000;
-        particle[i]->trail = 2;
-        particle[i]->zoom = 1.5f;
+      particle[i].reset();
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      if( (i % 3) ) {      	
+        particle[i].z = Util::roll( 0.0f, 1.0f );
+        //	  particle[i].moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+        particle[i].moveDelta = 0.15f;
+        particle[i].rotate = Util::roll( 0.0f, 180.0f );
+        particle[i].maxLife = 5000;
+        particle[i].trail = 2;
+        particle[i].zoom = 1.5f;
       } else {
-        particle[i]->z = Util::dice( 2 );
-        particle[i]->moveDelta = Util::roll( 0.5f, 0.8f );
-        particle[i]->maxLife = 40000;
-        particle[i]->trail = 8;
-        particle[i]->zoom = 4.0f;
-        particle[i]->tail = true;
+        particle[i].z = Util::dice( 2 );
+        particle[i].moveDelta = Util::roll( 0.5f, 0.8f );
+        particle[i].maxLife = 40000;
+        particle[i].trail = 8;
+        particle[i].zoom = 4.0f;
+        particle[i].tail = true;
       }
     } else if(proceed) {
       if( ( i % 3 ) ) {
-        particle[i]->rotate -= Util::roll( 3.0f, 6.0f );
+        particle[i].rotate -= Util::roll( 3.0f, 6.0f );
       }
-      moveParticle(&(particle[i]));
+      particle[i].move();
     }
 
     // draw it
-    if(particle[i]) {
+    if(particle[i].active) {
 
-      float c = fabs(particle[i]->z - 8) / 8.0f;
+      float c = fabs(particle[i].z - 8) / 8.0f;
       if(c > 1) c = 1;
       glColor4f( 1.0f, c / 4.0f, 0, 0.75 );
 
-      particle[i]->tailColor.r = 0.85f;
-      particle[i]->tailColor.g = c / 3.0f;
-      particle[i]->tailColor.b = 0.15f;    
-      particle[i]->tailColor.a = 0.25f;
+      particle[i].tailColor.r = 0.85f;
+      particle[i].tailColor.g = c / 3.0f;
+      particle[i].tailColor.b = 0.15f;    
+      particle[i].tailColor.a = 0.25f;
 
-      drawParticle(particle[i]);
+      drawParticle(&(particle[i]));
     }
   }
 }
@@ -447,36 +457,34 @@ void Effect::drawSwirl(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
 	float angle = static_cast<float>(i) * (360.0f / static_cast<float>(PARTICLE_COUNT));
-    if(!particle[i]) {
+    if(!particle[i].active) {
       // create a new particle
-      createParticle(&(particle[i]));
-	  particle[i]->x = ((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) +
-		((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) * cos(angle);
-	  particle[i]->y = ((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) +
-		((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) * sin(angle);
-	  particle[i]->z = 1;
-	  particle[i]->moveDelta = 0.15f;
-	  particle[i]->rotate = angle;
-	  particle[i]->maxLife = 5000;
-	  //particle[i]->trail = 2;
+      particle[i].reset();
+		  particle[i].x = ((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) +
+			((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) * cos(angle);
+		  particle[i].y = ((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) +
+			((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) * sin(angle);
+		  particle[i].z = 1;
+		  particle[i].moveDelta = 0.15f;
+		  particle[i].rotate = angle;
+		  particle[i].maxLife = 5000;
+		  //particle[i].trail = 2;
     } else if(proceed) {
-	  particle[i]->zoom += 0.01f;
-	  particle[i]->rotate += 5.0f;
-	  particle[i]->x = ((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) + 
-		((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) * cos(particle[i]->rotate);
-	  particle[i]->y = ((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) +
-		((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) * sin(particle[i]->rotate);
-	  moveParticle(&(particle[i]));
+		  particle[i].zoom += 0.01f;
+		  particle[i].rotate += 5.0f;
+		  particle[i].x = ((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) + 
+			((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) * cos(particle[i].rotate);
+		  particle[i].y = ((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) +
+			((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) * sin(particle[i].rotate);
+		  particle[i].move();
     }
 
     // draw it
-    if(particle[i]) {
-
-	  float c = fabs(particle[i]->z - 8) / 8.0f;
-	  if(c > 1) c = 1;
-      glColor4f(c / 2.0f, c / 4.0f, c, 0.5);
-
-	  drawParticle(particle[i]);
+    if(particle[i].active) {
+		  float c = fabs(particle[i].z - 8) / 8.0f;
+		  if(c > 1) c = 1;
+	    glColor4f(c / 2.0f, c / 4.0f, c, 0.5);	
+		  drawParticle(&(particle[i]));
     }
   }
 }
@@ -484,30 +492,32 @@ void Effect::drawSwirl(bool proceed) {
 void Effect::drawCastSpell(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
-    if(!particle[i]) {
+    if(!particle[i].active) {
       // create a new particle
-      createParticle(&(particle[i]));
-	  particle[i]->z = Util::pickOne( 3, 4 );
-	  //	  particle[i]->moveDelta = 0.15f + (0.2f * rand()/RAND_MAX);
-	  particle[i]->moveDelta = 0;
-	  particle[i]->maxLife = 10000;
-	  particle[i]->trail = 1;
-	  particle[i]->zoom = 0.5f;
+      particle[i].reset();
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+		  particle[i].z = Util::pickOne( 3, 4 );
+		  //	  particle[i].moveDelta = 0.15f + (0.2f * rand()/RAND_MAX);
+		  particle[i].moveDelta = 0;
+		  particle[i].maxLife = 10000;
+		  particle[i].trail = 1;
+		  particle[i].zoom = 0.5f;
     } else if(proceed) {
-	  moveParticle(&(particle[i]));
+    	particle[i].move();
     }
 
     // draw it
-    if(particle[i]) {
-	  float c = fabs(particle[i]->z - 8) / 8.0f;
-	  if(c > 1) c = 1;
+    if(particle[i].active) {
+		  float c = fabs(particle[i].z - 8) / 8.0f;
+		  if(c > 1) c = 1;
 
-	  //	  particle[i]->rotate += 5.0f;
-	  particle[i]->zoom = ((particle[i]->life % 200) / 60.0f + 1) * 1.5f;
+		  //	  particle[i].rotate += 5.0f;
+		  particle[i].zoom = ((particle[i].life % 200) / 60.0f + 1) * 1.5f;
 
       glColor4f(c / 2.0f, c / 4.0f, 1.0f, 0.25);
 
-	  drawParticle(particle[i]);
+      drawParticle(&(particle[i]));
     }
   }
 }
@@ -578,118 +588,126 @@ void Effect::drawRipple(bool proceed) {
 void Effect::drawSmoke(bool proceed) {
   // manage particles
   for(int i = 0; i < PARTICLE_COUNT; i++) {
-    if(!particle[i]) {
+    if(!particle[i].active) {
       // create a new particle
-      createParticle(&(particle[i]));
-      particle[i]->z = Util::roll( 0.0f, 1.0f );      
-      particle[i]->moveDelta = Util::roll( 0.1f, 0.3f );      
-      //particle[i]->moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
-      // particle[i]->moveDelta = 0.15f;
-      particle[i]->rotate = Util::roll( 0.0f, 180.0f );
-      particle[i]->maxLife = Util::pickOne( 50, 70 );
-      particle[i]->trail = 2;
-      particle[i]->zoom = Util::roll( 1.0f, 2.0f );
+      particle[i].reset();
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      particle[i].z = Util::roll( 0.0f, 1.0f );      
+      particle[i].moveDelta = Util::roll( 0.1f, 0.3f );      
+      //particle[i].moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
+      // particle[i].moveDelta = 0.15f;
+      particle[i].rotate = Util::roll( 0.0f, 180.0f );
+      particle[i].maxLife = Util::pickOne( 50, 70 );
+      particle[i].trail = 2;
+      particle[i].zoom = Util::roll( 1.0f, 2.0f );
     } else if(proceed) {
-      particle[i]->rotate -= Util::roll( 3.0f, 6.0f );
+      particle[i].rotate -= Util::roll( 3.0f, 6.0f );
 
       // this causes an explosion!
-      //particle[i]->zoom += 0.3f;
-      moveParticle(&(particle[i]));
+      //particle[i].zoom += 0.3f;
+      particle[i].move();
     }
 
     // draw it      
-    if(particle[i]) {            
+    if(particle[i].active) {            
 
-      float max = particle[i]->maxLife / 4;
+      float max = particle[i].maxLife / 4;
       float c = 1.0f;
-      if( particle[i]->life <= max / 2 ) {
-        c = static_cast<float>( particle[i]->life ) / ( max / 2 );
-      } else if( particle[i]->life > particle[i]->maxLife - max ) {
-        c = static_cast<float>( particle[i]->maxLife - particle[i]->life ) / max;
+      if( particle[i].life <= max / 2 ) {
+        c = static_cast<float>( particle[i].life ) / ( max / 2 );
+      } else if( particle[i].life > particle[i].maxLife - max ) {
+        c = static_cast<float>( particle[i].maxLife - particle[i].life ) / max;
       }
       float r = ( diWasSet ? di.red : 0.2f );
       float g = ( diWasSet ? di.green : 0.2f );
       float b = ( diWasSet ? di.blue : 0.5f );
       glColor4f( r, g, b, 0.2f * c );
-      if( particle[i]->zoom < 5 ) {
-      	particle[i]->zoom *= 1.05f;
+      if( particle[i].zoom < 5 ) {
+      	particle[i].zoom *= 1.05f;
       }      
 
-      drawParticle(particle[i]);
+      drawParticle(&(particle[i]));
     }
   }
 }
 
 void Effect::drawFire(bool proceed) {
 	for( int i = 0; i < PARTICLE_COUNT; i++ ) {
-		if(!particle[i]) {
+		if(!particle[i].active) {
       // create a new particle
-			createParticle(&(particle[i]));
-      particle[i]->z = Util::roll( 0.0f, 0.5f );
-      particle[i]->maxLife = Util::roll( 4.0f, 10.0f );
-      particle[i]->moveDelta = Util::roll( 0.1f, 0.4f );
-      particle[i]->zoom = Util::roll( 1.8f, 2.5f );
-      particle[i]->trail = 2;
+			particle[i].reset();
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );			
+      particle[i].z = Util::roll( 0.0f, 0.5f );
+      particle[i].maxLife = Util::roll( 4.0f, 10.0f );
+      particle[i].moveDelta = Util::roll( 0.1f, 0.4f );
+      particle[i].zoom = Util::roll( 1.8f, 2.5f );
+      particle[i].trail = 2;
     } else if(proceed) {
       // move this particle
-    	moveParticle(&(particle[i]));
+    	particle[i].move();
     }
 
     // draw it
-    if(particle[i]) {
-				float max = particle[i]->maxLife / 5;
+    if(particle[i].active) {
+				float max = particle[i].maxLife / 5;
 	      float c = 1.0f;
-	      if( particle[i]->life <= max ) {
-	        c = static_cast<float>( particle[i]->life ) / max;
-	      } else if( particle[i]->life > particle[i]->maxLife - max ) {
-	        c = static_cast<float>( particle[i]->maxLife - particle[i]->life ) / max;
+	      if( particle[i].life <= max ) {
+	        c = static_cast<float>( particle[i].life ) / max;
+	      } else if( particle[i].life > particle[i].maxLife - max ) {
+	        c = static_cast<float>( particle[i].maxLife - particle[i].life ) / max;
 	      }
 	      
-	      if( particle[i]->zoom < 3 ) {
-        	particle[i]->zoom *= 1.05f;
+	      if( particle[i].zoom < 3 ) {
+        	particle[i].zoom *= 1.05f;
         }	      
     	
-        float color = 1.0f / ((GLfloat)particle[i]->maxLife / (GLfloat)particle[i]->life);
+        float color = 1.0f / ((GLfloat)particle[i].maxLife / (GLfloat)particle[i].life);
         float red = Util::roll( 0.0f, (1.0f - color) / 4.0 );
         float green = Util::roll( 0.0f, (1.0f - color) / 8.0 );
         float blue = Util::roll( 0.0f, (1.0f - color) / 10.0 );
         glColor4f(color + red, color + green, color + blue, c);
-        drawParticle(particle[i]);
+        drawParticle(&(particle[i]));
     }
 	}
 }
 
-void Effect::createParticle(ParticleStruct **particle) {
-  // create a new particle
-  *particle = new ParticleStruct();
-  (*particle)->x = Util::roll( 0.0f, shape->getWidth() / DIV );
-  (*particle)->y = Util::roll( 0.0f, shape->getDepth() / DIV );
-  //  (*particle)->z = static_cast<int>(6.0 * rand()/RAND_MAX) + 10;
-  (*particle)->z = Util::roll( 0.0f, 0.8f );
-  (*particle)->startZ = (*particle)->z;
-  (*particle)->height = Util::pickOne( 10, 24 );
-  (*particle)->life = 0;
-  (*particle)->moveDelta = Util::roll( 0.2f, 0.5f );
-  (*particle)->maxLife = 10;
-  (*particle)->trail = 1;
-  (*particle)->rotate = 0.0f;
-  (*particle)->zoom = 1.0f;
-  (*particle)->tail = false;
-  (*particle)->untilGround = false;
+Particle::Particle() {
+	reset();
 }
 
-void Effect::moveParticle(ParticleStruct **particle) {
+void Particle::reset() {
+	active = true;
+  x = y = 0;
+  //  z = static_cast<int>(6.0 * rand()/RAND_MAX) + 10;
+  z = Util::roll( 0.0f, 0.8f );
+  startZ = z;
+  height = Util::pickOne( 10, 24 );
+  life = 0;
+  moveDelta = Util::roll( 0.2f, 0.5f );
+  maxLife = 10;
+  trail = 1;
+  rotate = 0.0f;
+  zoom = 1.0f;
+  tail = false;
+  untilGround = false;
+}
+
+Particle::~Particle() {
+}
+
+void Particle::move() {
   // move this particle
-  (*particle)->life++;
-  (*particle)->z+=(*particle)->moveDelta;
-  if((*particle)->z < 0 || (*particle)->z > MAP_VIEW_HEIGHT || 
-     (!((*particle)->untilGround) && (*particle)->life >= (*particle)->maxLife)) {
-    delete *particle;
-    (*particle) = 0;
+  life++;
+  z+=moveDelta;
+  if(z < 0 || z > MAP_VIEW_HEIGHT || 
+     (!(untilGround) && life >= maxLife)) {
+  	active = false;
   }
 }
 
-void Effect::drawParticle(ParticleStruct *particle) {
+void Effect::drawParticle(Particle *particle) {
   float w, h, sh;
 
   w = static_cast<float>(shape->getWidth() / DIV) / 4.0f;
