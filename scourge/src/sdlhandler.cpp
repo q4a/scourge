@@ -371,27 +371,30 @@ void SDLHandler::setVideoMode( Preferences * uc ) {
 	quit( 1 );
   }
   
-  /* the flags to pass to SDL_SetVideoMode */
+  
   videoFlags  = SDL_OPENGL;          /* Enable OpenGL in SDL */
-  if(uc->getDoublebuf())
-	videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
-  if(uc->getHwpal())
-	videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
-  if(uc->getResizeable())
-	videoFlags |= SDL_RESIZABLE;       /* Enable window resizing */
-  
+
+	// these make no sense, accrd. to: http://osdl.sourceforge.net/main/documentation/rendering/SDL-openGL.html#flags
+  //if(uc->getDoublebuf()) {
+		//videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
+	//}
+  //if(uc->getHwpal())
+	//videoFlags |= SDL_HWPALETTE;       /* Store the palette in hardware */
   /* This checks to see if surfaces can be stored in memory */
-  if(uc->getForce_hwsurf()) videoFlags |= SDL_HWSURFACE;
-  else if(uc->getForce_swsurf()) videoFlags |= SDL_SWSURFACE;
-  else {
-	if ( videoInfo->hw_available ) videoFlags |= SDL_HWSURFACE;
-	else videoFlags |= SDL_SWSURFACE;
-  }
+//	if(uc->getForce_hwsurf()) videoFlags |= SDL_HWSURFACE;
+//	else if(uc->getForce_swsurf()) videoFlags |= SDL_SWSURFACE;
+//	else {
+		//if ( videoInfo->hw_available ) videoFlags |= SDL_HWSURFACE;
+		//else videoFlags |= SDL_SWSURFACE;
+	//}
+  ///* This checks if hardware blits can be done */
+  //if ( uc->getHwaccel() && videoInfo->blit_hw ) videoFlags |= SDL_HWACCEL;
   
-  /* This checks if hardware blits can be done */
-  if ( uc->getHwaccel() && videoInfo->blit_hw ) videoFlags |= SDL_HWACCEL;
-  
-  if(uc->getFullscreen()) videoFlags |= SDL_FULLSCREEN;
+  if(uc->getFullscreen()) {
+		videoFlags |= SDL_FULLSCREEN;
+	} else if(uc->getResizeable()) {
+		videoFlags |= SDL_RESIZABLE;       // Enable window resizing
+	}
 
   if(uc->getTest()) {
 	testModes(videoFlags);
@@ -413,8 +416,15 @@ void SDLHandler::setVideoMode( Preferences * uc ) {
   }
   
   /* Sets up OpenGL double buffering */
-  if(uc->getDoublebuf()) 
+  if(uc->getDoublebuf()) {
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+	} else {
+		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 0 );
+	}
+	
+	// vertical retrace (0-off, 1-on, >1 every n-th retrace)
+	SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, 0 );
+
   if(uc->getStencilbuf()) {
     uc->setStencilBufInitialized(true);
     stencilBufferUsed = true;
@@ -736,6 +746,10 @@ void SDLHandler::drawScreenInternal() {
 	if( showDebugInfo ) {
 		drawDebugInfo();
 	}
+
+	// these tie cpu execution to the gpu's so there is no benefit from the overlap
+	//glFlush();
+	//glFinish();
 
 	/* Draw it to the screen */
 	SDL_GL_SwapBuffers( );
