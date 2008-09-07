@@ -30,6 +30,28 @@ class Shapes;
 class GLShape;
 class Map;
 
+class Particle {
+public:
+	Particle();
+	~Particle();
+	
+  GLfloat x, y, z, startZ;
+  GLint height;
+  int life;
+  GLfloat moveDelta;
+  int maxLife;
+  int trail;
+  float rotate;
+  float zoom;
+  bool tail;
+  bool untilGround;
+  Color tailColor;
+  bool active;
+  
+  void move();
+  void reset();
+};
+
 class Effect {
 private:  
   Map *levelMap;
@@ -42,7 +64,7 @@ private:
   GLint lastTimeStamp;
   
   static const int PARTICLE_COUNT = 30;
-  ParticleStruct *particle[PARTICLE_COUNT];
+  Particle particle[PARTICLE_COUNT];
 
   DisplayInfo di;
   bool diWasSet;
@@ -81,11 +103,7 @@ protected:
   void drawTower(bool proceed);
   void drawBlast(bool proceed, float percent);
   
-  // particle management
-  void createParticle(ParticleStruct **particle);
-  void moveParticle(ParticleStruct **particle);
-  void drawParticle(ParticleStruct *particle);
-   
+  void drawParticle(Particle *particle);
 };
 
 #endif
