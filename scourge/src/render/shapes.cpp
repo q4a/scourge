@@ -558,6 +558,9 @@ void Shapes::loadShape( const char *name ) {
                     sv->o3ds_x, sv->o3ds_y, sv->o3ds_z,
 										sv->xrot3d, sv->yrot3d, sv->zrot3d,
 										sv->lighting, sv->base_w, sv->base_h );
+      if( sv->usesAlpha ) {
+      	((C3DSShape*)shapes[(i + 1)])->setHasAlphaValues( true );
+      }
     } else if(sv->torch > -1) {
       if(sv->torch == 5) {
         shapes[(i + 1)] =

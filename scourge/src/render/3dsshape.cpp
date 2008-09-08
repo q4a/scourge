@@ -264,15 +264,6 @@ void C3DSShape::resolveTextures() {
 
       // instead of loading the texture, get one of the already loaded textures
 			string s = g_3DModel.pMaterials[i].strFile;
-			// a lame but effective attempt at determining if alpha blending is used
-			if( !hasAlphaValues && s.substr( s.length() - 4, 1 ) == "."  && 
-					!( ( s.substr( s.length() - 3, 1 ) == "b" || s.substr( s.length() - 3, 1 ) == "B" ) &&
-						 ( s.substr( s.length() - 2, 1 ) == "m" || s.substr( s.length() - 2, 1 ) == "M" ) &&
-						 ( s.substr( s.length() - 1, 1 ) == "p" || s.substr( s.length() - 1, 1 ) == "P" ) ) ) {
-				//cerr << "s=" << s << " has alpha, ends in " << s.substr( s.length() - 4 ) << endl;
-				hasAlphaValues = true;
-				//cerr << "s=" << s << " has NO alpha" << endl;
-			}
       g_Texture[i] = shapePal->findTextureByName( s, true );
 			if( !g_Texture[i] ) cerr << "*** error: can't find 3ds texture reference: " << g_3DModel.pMaterials[i].strFile << endl;
       //cerr << "\tTexture: " << g_3DModel.pMaterials[i].strFile << " found? " << g_Texture[i] << endl;
