@@ -26,7 +26,7 @@
  * This way it will only recompile the affected .cpp files.
  */
 
-#define SHOW_FPS false
+#define SHOW_FPS true
  
 // battle.cpp
 #define DEBUG_BATTLE false

@@ -127,6 +127,7 @@ public:
   void setupBlending();
   void endBlending();
 	inline float getWindValue() { return windInfo.getValue(); }
+	inline void setHasAlphaValues( bool b ) { this->hasAlphaValues = b; }
 
 protected:
   void commonInit(const std::string& file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z, float xrot3d, float yrot3d, float zrot3d, int lighting, float base_w, float base_h );

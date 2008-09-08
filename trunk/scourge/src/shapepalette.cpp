@@ -717,6 +717,8 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	}
 	sv->roof = node->getValueAsBool( "roof" );
 	
+	sv->usesAlpha = node->getValueAsBool( "uses_alpha" );
+	
 	return sv;
 }
 
