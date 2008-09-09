@@ -47,8 +47,6 @@ using namespace std;
 
 #define KEEP_MAP_SIZE 0
 
-//#define MVW 100
-//#define MVD 110
 #define MVW 150
 #define MVD 150
 
@@ -501,6 +499,10 @@ void Map::removeCurrentEffects() {
 */  
 }
 
+bool Map::checkLightMap( int chunkX, int chunkY ) {
+	return !helper->isLightMapEnabled() || lightMap[chunkX][chunkY];
+}
+
 /**
    If 'ground' is true, it draws the ground layer.
    Otherwise the shape arrays (other, stencil, later) are populated.
@@ -581,7 +583,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
       // chunk that should be hidden. To really fix it, we need to
       // keep track of which side of the chunk to draw.
       Uint16 drawSide = 0;
-      if(!lightMap[chunkX][chunkY]) {
+      if( !checkLightMap( chunkX, chunkY ) ) {
         if(forGround || forWater) continue;
         else {
           // look to the left
@@ -616,7 +618,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 
           // show traps
           int trapIndex = getTrapAtLoc( posX, posY );
-          if( trapIndex > -1 && lightMap[ chunkX ][ chunkY ] ) 
+          if( trapIndex > -1 && checkLightMap( chunkX, chunkY ) ) 
             trapSet.insert( (Uint8)trapIndex );
 
           if(forGround || forWater) {
@@ -635,7 +637,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
             }
           } else {
 
-						if(lightMap[chunkX][chunkY] && itemPos[posX][posY] && 
+						if( checkLightMap( chunkX, chunkY ) && itemPos[posX][posY] && 
 								itemPos[posX][posY]->x == posX && itemPos[posX][posY]->y == posY ) {
 
 							shape = itemPos[posX][posY]->shape;
@@ -670,7 +672,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
           	
 						
             for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
-              if(lightMap[chunkX][chunkY] && effect[posX][posY][zp] && !effect[posX][posY][zp]->isInDelay() ) {
+              if( checkLightMap( chunkX, chunkY ) && effect[posX][posY][zp] && !effect[posX][posY][zp]->isInDelay() ) {
                 xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
                 ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - 1 + yp + chunkOffsetY) / DIV;
                 zpos2 = static_cast<float>(zp) / DIV;
@@ -679,13 +681,14 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
                               effect[posX][posY][zp]->effect->getShape(), NULL, NULL, effect[posX][posY][zp]);
               }
 
-              if(pos[posX][posY][zp] && pos[posX][posY][zp]->x == posX && pos[posX][posY][zp]->y == posY &&
-                 pos[posX][posY][zp]->z == zp) {
-                shape = pos[posX][posY][zp]->shape;
+              Location *location = pos[posX][posY][zp];
+              if( location && location->x == posX && location->y == posY && location->z == zp ) {
+                shape = location->shape;
+                
 
                 // is this shape visible on the edge an chunk in darkness?
                 bool lightEdge = 
-                  ( !lightMap[chunkX][chunkY] && shape && !pos[posX][posY][zp]->creature &&
+                  ( !checkLightMap( chunkX, chunkY ) && shape && !location->creature &&
                     ( ( drawSide & Constants::MOVE_DOWN && yp >= MAP_UNIT - MAP_UNIT_OFFSET && shape->getDepth() <= MAP_UNIT_OFFSET ) ||
                       ( drawSide & Constants::MOVE_UP && yp <= MAP_UNIT_OFFSET && shape->getDepth() <= MAP_UNIT_OFFSET ) ||
                       ( drawSide & Constants::MOVE_LEFT && xp < MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) ||
@@ -693,41 +696,20 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
                     );
 
                 // visible or on the edge or a roof piece
-                if( shape && ( lightMap[chunkX][chunkY] || lightEdge || zp >= MAP_WALL_HEIGHT ) ) {
-                  if( pos[posX][posY][zp]->creature ) {
-
-                    if( debugMd2Shapes ) {
-                      // debug
-                      xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
-                      ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) / DIV;
-                      zpos2 = static_cast<float>(zp) / DIV;
-                      setupPosition(posX, posY, zp, xpos2, ypos2, zpos2,
-                                    ((AnimatedShape*)pos[posX][posY][zp]->shape)->getDebugShape(), NULL, NULL, NULL);
-                      // end debug
-                    }
-
-
-                    //xpos2 = (pos[posX][posY][zp]->creature->getX() - (GLfloat)getX()) / DIV;
-                    //ypos2 = (pos[posX][posY][zp]->creature->getY() - (GLfloat)getY() - (GLfloat)(shape->getDepth())) / DIV;
-
-                    float xdiff = ( pos[posX][posY][zp]->creature->getX() - static_cast<float>(toint(pos[posX][posY][zp]->creature->getX())));
-                    float ydiff = ( pos[posX][posY][zp]->creature->getY() - static_cast<float>(toint(pos[posX][posY][zp]->creature->getY())));
-                    xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX + xdiff ) / DIV;
-                    ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY + 
-                                    ydiff ) / DIV;
-
-										pos[posX][posY][zp]->heightPos = findMaxHeightPos( pos[posX][posY][zp]->creature->getX(), 
-																																			 pos[posX][posY][zp]->creature->getY(), 
-																																			 pos[posX][posY][zp]->creature->getZ() );
-
-                  } else {
-                    xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
-                    ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) / DIV;
+                if( shape && ( checkLightMap( chunkX, chunkY ) || lightEdge ) ) {
+                	float xdiff = 0;
+                	float ydiff = 0;
+                  if( location->creature ) {
+                    xdiff = ( location->creature->getX() - static_cast<float>(toint(location->creature->getX())));
+                    ydiff = ( location->creature->getY() - static_cast<float>(toint(location->creature->getY())));
+										location->heightPos = findMaxHeightPos( location->creature->getX(),
+										                                        location->creature->getY(),
+										                                        location->creature->getZ() );
                   }
+                  xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX + xdiff ) / DIV;
+                  ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY + ydiff ) / DIV;
                   zpos2 = static_cast<float>(zp) / DIV;
-
-                  setupPosition(posX, posY, zp, xpos2, ypos2, zpos2, shape, pos[posX][posY][zp]->item,
-                                pos[posX][posY][zp]->creature, NULL);
+                  setupPosition(posX, posY, zp, xpos2, ypos2, zpos2, shape, location->item, location->creature, NULL);
               	}
               }
             }
@@ -1059,14 +1041,15 @@ void Map::preDraw() {
   }
   
   if( !selectMode ) frustum->CalculateFrustum();
-  if( lightMapChanged ) configureLightMap();
+  if( lightMapChanged && helper->isLightMapEnabled() ) configureLightMap();
   if( !currentEffectsMap.empty() ) removeCurrentEffects();
   // populate the shape arrays
   if( mapChanged ) {
-    if( settings->isPlayerEnabled() && adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
+    //if( settings->isPlayerEnabled() && adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
     int csx, cex, csy, cey;
     setupShapes(false, false, &csx, &cex, &csy, &cey);
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
+#ifdef SHOW_FPS    
     if( settings->isPlayerEnabled() ) {
       snprintf(mapDebugStr, DEBUG_SIZE, "c=%d,%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d", 
 			   cursorFlatMapX, cursorFlatMapY + 1,
@@ -1082,6 +1065,7 @@ void Map::preDraw() {
               csx, cex, csy, cey, shapeCount);
     }
     adapter->setDebugStr(mapDebugStr);
+#endif    
   }
 }
 
@@ -1105,42 +1089,36 @@ void Map::postDraw() {
 
 void Map::draw() {
   if( selectMode ) {
-    for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
-    for(int i = 0; i < laterCount; i++) doDrawShape(&later[i]);
-    for(int i = 0; i < stencilCount; i++) 
-      if( isSecretDoor( stencil[i].pos ) || isDoor( stencil[i].shape ) )
-          doDrawShape(&stencil[i]);
+    drawSelectMode();
   } else {  
+  	if( helper->isIndoors() ) {
+  		drawIndoors();
+  	} else {
+  		drawOutdoors();
+  	}
+  	
+  	drawProjectiles();
+  	
+  	// find the map floor coordinate (must be done after drawing is complete)
+  	getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
+		cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+  }
 
-#ifdef DEBUG_MOUSE_POS
-  // debugging mouse position
-    DrawLater later2;
-    later2.shape = shapes->findShapeByName("LAMP_BASE");
-    later2.xpos = (static_cast<float>(cursorFlatMapX - getX()) / DIV);
-    later2.ypos = (static_cast<float>(cursorFlatMapY - getY()) / DIV);
-    later2.zpos = static_cast<float>(0) / DIV;
-    later2.item = NULL;
-    later2.creature = NULL;
-    later2.name = 0;
-    later2.pos = NULL;
-    later2.effect = NULL;
-    later2.inFront = false;
-		later2.x = cursorFlatMapX - getX();
-		later2.y = cursorFlatMapY - getY();
-    doDrawShape(&later2);
+  if( settings->isGridShowing() && gridEnabled ) 
+  	willDrawGrid();
+}
 
-    //later2.shape = shapes->findShapeByName("LAMP_BASE");
-    //later2.xpos = (static_cast<float>(debugX - getX()) / DIV);
-    //later2.ypos = (static_cast<float>(debugY - getY()) / DIV);
-    //later2.zpos = static_cast<float>(debugZ) / DIV;
-    //doDrawShape(&later2);
-#endif
+void Map::drawSelectMode() {
+	for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
+	for(int i = 0; i < laterCount; i++) doDrawShape(&later[i]);
+	for(int i = 0; i < stencilCount; i++) 
+	  if( isSecretDoor( stencil[i].pos ) || isDoor( stencil[i].shape ) )
+	      doDrawShape(&stencil[i]);	
+}
 
-
-    if( preferences->getStencilbuf() &&
-        preferences->getStencilBufInitialized() ) {
-
-
+void Map::drawIndoors() {
+	if( preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
       // stencil and draw the floor
       //glDisable(GL_DEPTH_TEST);
       //glColorMask(0,0,0,0);
@@ -1184,34 +1162,6 @@ void Map::draw() {
     } else {
       // draw the ground  
       setupShapes(true, false);
-
-      /*
-      // -------------------------------------------
-      // Only here to debug glshape changes. After that REMOVE this!
-      // -------------------------------------------
-      // shadows
-      glDisable(GL_TEXTURE_2D);
-      glDepthMask(GL_FALSE);
-      glEnable(GL_BLEND);
-      useShadow = true;
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      for(int i = 0; i < otherCount; i++) {
-        doDrawShape(&other[i]);
-      }
-      if(session->getPreferences()->getShadows() == Constants::ALL_SHADOWS) {
-        for(int i = 0; i < stencilCount; i++) {
-          doDrawShape(&stencil[i]);
-        }
-      }
-      useShadow = false;
-      glDisable(GL_BLEND);
-      glEnable(GL_TEXTURE_2D);
-      glDepthMask(GL_TRUE);
-      // -------------------------------------------
-      // Only here to debug glshape changes. After that REMOVE this!
-      // -------------------------------------------
-      */
-
     }
 
     // draw lava flows
@@ -1259,7 +1209,9 @@ void Map::draw() {
     if( playerDrawLater ) {
 
       if( floorTexWidth == 0 && resortShapes ) {
-        sortShapes( playerDrawLater, stencil, stencilCount );
+      	if( helper->isShapeSortingEnabled() ) {
+      		sortShapes( playerDrawLater, stencil, stencilCount );
+      	}
         resortShapes = false;
       }
 
@@ -1283,14 +1235,14 @@ void Map::draw() {
         // FIXME: blending walls have some artifacts that depth-sorting 
         // is supposed to get rid of but that didn't work for me.
         //glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         for( int i = 0; i < stencilCount; i++ ) {
-		  if( stencil[i].inFront ) {
-			glColor4f( 1, 1, 1, 0.45f );
-			colorAlreadySet = true;
-			doDrawShape( &(stencil[i]) );
-		  }
-		}
+        	if( stencil[i].inFront ) {
+        		glColor4f( 1, 1, 1, 0.45f );
+        		colorAlreadySet = true;
+        		doDrawShape( &(stencil[i]) );
+        	}
+        }
 
         // draw the water (except where the transp. walls are)
         glStencilFunc(GL_NOTEQUAL, 1, 0xffffffff);
@@ -1392,18 +1344,99 @@ void Map::draw() {
     glDisable(GL_BLEND);
 
     glDepthMask(GL_TRUE);
+}
 
-    drawProjectiles();
+void Map::drawOutdoors() {
+	// draw the ground  
+	renderFloor();
+
+  // draw the creatures/objects/doors/etc.
+  for(int i = 0; i < otherCount; i++) {
+    if(selectedDropTarget && ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
+        (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
+      colorAlreadySet = true;
+      glColor4f(0, 1, 1, 1);
+    }
+    doDrawShape(&other[i]);
+
+		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
+		// draw simple shadow in outdoors
+		if( other[i].creature ) {
+			glColor4f( 0.04f, 0, 0.07f, 0.4f );
+			drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f,
+										 ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f,
+										 other[i].creature->getShape()->getDepth() * 0.7f );
+		} else if( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
+			glColor4f( 0.04f, 0, 0.07f, 0.4f );
+			drawGroundTex( outdoorShadowTree,
+										 static_cast<float>(other[i].pos->x) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ),
+										 static_cast<float>(other[i].pos->y) + ( other[i].shape->getDepth() / 2.0f ),
+										 other[i].shape->getWidth() * 1.7f,
+										 other[i].shape->getDepth() * 1.7f );
+		}
   }
 
-  // find the map floor coordinate (must be done after drawing is complete)
-	if( !selectMode ) {
-		getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
-		cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
-	}
+  for( int i = 0; i < stencilCount; i++ ) doDrawShape( &(stencil[i]) );
 
-  if( settings->isGridShowing() && gridEnabled ) willDrawGrid();
+  // draw the effects
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_BLEND);    
+  drawRoofs();
+  
+  glDepthMask(GL_FALSE);
+  drawEffects();
+
+  // draw the fog of war or shading
+#ifdef USE_LIGHTING
+  if( helper && !adapter->isInMovieMode() && !(isCurrentlyUnderRoof && !groundVisible ) ) {
+		helper->draw( getX(), getY(), MVW, MVD );
+  }
+#endif
+
+  glDisable(GL_BLEND);
+  glDepthMask(GL_TRUE);	
+}
+
+void Map::drawEffects() {
+	for(int i = 0; i < laterCount; i++) {
+		later[i].shape->setupBlending();  			
+    doDrawShape(&later[i]);
+    later[i].shape->endBlending();
+  }
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+  for(int i = 0; i < damageCount; i++) {
+    doDrawShape(&damage[i], 1);
+  }	
+}
+
+void Map::drawRoofs() {
+  // draw the roofs    
+  Uint32 now = SDL_GetTicks();
+	if( now - roofAlphaUpdate > 25 ) {
+		roofAlphaUpdate = now;
+		if( isCurrentlyUnderRoof ) {
+			if( roofAlpha > 0 ) {
+				roofAlpha -= 0.05f;
+			} else {
+				roofAlpha = 0;  					
+			}
+		} else {
+			if( roofAlpha < 1 ) {
+				roofAlpha += 0.05f;
+			} else {
+				roofAlpha = 1;  					
+			}
+		}
+	}    
+  if( roofAlpha > 0 ) {
+//		glEnable( GL_BLEND );
+//		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    for(int i = 0; i < roofCount; i++) {
+    	((GLShape*)roof[i].shape)->setAlpha( roofAlpha );
+      doDrawShape(&roof[i]);
+    }
+//    glDisable( GL_BLEND );
+  }
 }
 
 void Map::willDrawGrid() {
@@ -4384,14 +4417,14 @@ bool Map::drawHeightMapFloor() {
 	for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
 		for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
 
-			int chunkX = ( ( xx * OUTDOORS_STEP ) - MAP_OFFSET ) / MAP_UNIT;
-			int chunkY = ( ( ( yy + 1 ) * OUTDOORS_STEP ) - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
-			if( lightMap[chunkX][chunkY] ) {
+			//int chunkX = ( ( xx * OUTDOORS_STEP ) - MAP_OFFSET ) / MAP_UNIT;
+			//int chunkY = ( ( ( yy + 1 ) * OUTDOORS_STEP ) - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
+			//if( lightMap[chunkX][chunkY] ) {
 				glEnable( GL_TEXTURE_2D );
 				glBindTexture( GL_TEXTURE_2D, groundPos[ xx ][ yy ].tex );
-			} else {
-				glDisable( GL_TEXTURE_2D );
-			}
+			//} else {
+				//glDisable( GL_TEXTURE_2D );
+			//}
 	
 			p[0] = &( groundPos[ xx ][ yy + 1 ] );
 			p[1] = &( groundPos[ xx ][ yy ] );
@@ -4399,12 +4432,12 @@ bool Map::drawHeightMapFloor() {
 			p[3] = &( groundPos[ xx + 1 ][ yy + 1 ] );
 			glBegin( GL_QUADS );
 			for( int i = 0; i < 4; i++ ) {
-				if( lightMap[chunkX][chunkY] ) {
+				//if( lightMap[chunkX][chunkY] ) {
 					glTexCoord2f( p[i]->u, p[i]->v );
 					glColor4f( p[i]->r, p[i]->g, p[i]->b, p[i]->a );
-				} else {
-					glColor4f( 0, 0, 0, 0 );
-				}
+				//} else {
+					//glColor4f( 0, 0, 0, 0 );
+				//}
 				gx = p[i]->x - getX() / DIV;
 				gy = p[i]->y - getY() / DIV;
 				glVertex3f( gx, gy, p[i]->z );

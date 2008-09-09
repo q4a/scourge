@@ -57,6 +57,8 @@ public:
   inline virtual void visit( RenderedCreature *creature ) {}
   inline virtual void hideDeadParty() {}
   inline virtual bool isLightMapEnabled() { return true; }
+  inline virtual bool isShapeSortingEnabled() { return true; }
+  inline virtual bool isIndoors() { return true; }
 	inline virtual void loadHelper( FogInfo *fogInfo ) {}
 	inline virtual void saveHelper( FogInfo *fogInfo ) {}
 	inline virtual bool drawShadow() { return true; }
@@ -87,7 +89,9 @@ public:
   virtual ~OutdoorRenderHelper();
 	inline virtual bool drawShadow() { return false; }
 	virtual inline float getLampRadiusSquared() { return 100.0f; }
-  inline virtual bool isLightMapEnabled() { return true; }	
+  inline virtual bool isLightMapEnabled() { return false; }
+  inline virtual bool isShapeSortingEnabled() { return false; }
+  inline virtual bool isIndoors() { return false; }
 };
 
 class DebugOutdoorRenderHelper : public MapRenderHelper {
