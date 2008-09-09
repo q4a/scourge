@@ -682,6 +682,12 @@ private:
 	inline std::set<Location*> *getTeleporters() { return &teleporters; }
 
 protected:
+	void drawSelectMode();
+	void drawIndoors();
+	void drawOutdoors();
+	void drawEffects();
+	void drawRoofs();
+	bool checkLightMap( int chunkX, int chunkY );
 	void applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n );
 	GLuint getThemeTex( int ref );
 	void addHighVariation(int ref, int z);
