@@ -72,7 +72,7 @@ void ShapePalette::preInitialize() {
 	initInventory( config );
 	delete config;
 
-	  // set up the logo
+  // set up the logo
   setupAlphaBlendedBMP("/textures/logo2.bmp", logo, logoImage);
   logo_texture = loadGLTextureBGRA(logo, logoImage, GL_LINEAR);
   setupAlphaBlendedBMP("/textures/chain.bmp", chain, chainImage);
@@ -80,7 +80,11 @@ void ShapePalette::preInitialize() {
 
   // set up the scourge
   setupAlphaBlendedBMP("/textures/scourge.bmp", scourge, scourgeImage);
-	setupAlphaBlendedBMP("/textures/scourge-backdrop.bmp", scourgeBackdrop, scourgeImageBackdrop);
+  scourge_texture = loadGLTextureBGRA(scourge, scourgeImage, GL_LINEAR);
+
+  // set up the backdrop image
+  setupAlphaBlendedBMP("/textures/scourge-backdrop.bmp", scourgeBackdrop, scourgeImageBackdrop);
+  scourgeBackdrop_texture = loadGLTextureBGRA(scourgeBackdrop, scourgeImageBackdrop, GL_LINEAR);
 
   gui_texture = loadGLTextures("/textures/gui.bmp");
   gui_texture2 = loadGLTextures("/textures/gui2.bmp");
