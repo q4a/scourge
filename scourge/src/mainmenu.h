@@ -143,6 +143,8 @@ public:
   void drawLogo();
   void drawMenu();
   void drawStars();
+  void drawScourge();
+  void drawBackdrop();
 };
 
 #endif

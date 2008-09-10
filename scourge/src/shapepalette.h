@@ -121,15 +121,17 @@ public:
   SDL_Surface *logo;
   GLubyte *logoImage;   
   GLuint logo_texture;
-
+ 
   SDL_Surface *chain;
   GLubyte *chainImage;   
   GLuint chain_texture;
 
   SDL_Surface *scourge;
   GLubyte *scourgeImage;
-	SDL_Surface *scourgeBackdrop;
+  GLuint scourge_texture;
+  SDL_Surface *scourgeBackdrop;
   GLubyte *scourgeImageBackdrop;
+  GLuint scourgeBackdrop_texture;
 
   GLuint cloud, candle, highlight;
   GLuint border, border2, gargoyle;

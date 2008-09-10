@@ -163,18 +163,9 @@ void MainMenu::drawView() {
 
 	glDisable(GL_TEXTURE_2D);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-  glEnable(GL_ALPHA_TEST);
-  glAlphaFunc(GL_NOTEQUAL, 0);        
-  glPushMatrix();
-  glLoadIdentity( );                         
-	glTranslatef( 0, 0, -100 );
-  glPixelZoom( 1.0, -1.0 );
-  glRasterPos2f( 0, top + (600 - WATER_HEIGHT - scourge->getShapePalette()->scourgeBackdrop->h) );
-  glDrawPixels(scourge->getShapePalette()->scourgeBackdrop->w, 
-							 scourge->getShapePalette()->scourgeBackdrop->h,
-							 GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->scourgeImageBackdrop);
-	glDisable(GL_ALPHA_TEST);
-  glPopMatrix();
+
+  drawBackdrop();
+
   glEnable( GL_TEXTURE_2D );	
 
 	// create a stencil for the water
@@ -216,22 +207,14 @@ void MainMenu::drawView() {
 	glDisable(GL_TEXTURE_2D);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glDisable(GL_DEPTH_TEST);
-  glEnable(GL_ALPHA_TEST);
-  glAlphaFunc(GL_NOTEQUAL, 0);        
-  glPushMatrix();
-  glLoadIdentity( );                         
-  glPixelZoom( 1.0, -1.0 );
-  glRasterPos2f( scourge->getSDLHandler()->getScreen()->w - scourge->getShapePalette()->scourge->w, top );
-  glDrawPixels(scourge->getShapePalette()->scourge->w, 
-							 scourge->getShapePalette()->scourge->h,
-							 GL_BGRA, GL_UNSIGNED_BYTE, scourge->getShapePalette()->scourgeImage);
-	glDisable(GL_ALPHA_TEST);
-  glPopMatrix();
+
+  drawScourge();
+
   glEnable( GL_TEXTURE_2D );
   glEnable(GL_DEPTH_TEST);
 
-	drawMenu();
-						 
+  drawMenu();
+
   // draw the boards
   if(openingTop > 0) {
   	glPushMatrix();
@@ -426,11 +409,12 @@ void MainMenu::drawMenu() {
 
 void MainMenu::drawLogo() {
 
-
   glEnable( GL_ALPHA_TEST );
   //glAlphaFunc( GL_EQUAL, 0xff );
-	glAlphaFunc( GL_NOTEQUAL, 0 );
+  glAlphaFunc( GL_NOTEQUAL, 0 );
   glEnable( GL_TEXTURE_2D );
+
+  //Draw the Scourge logo
   glPushMatrix();
   glLoadIdentity();
   glTranslatef( 70, logoRot, 0 );
@@ -478,8 +462,6 @@ void MainMenu::drawLogo() {
 
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_ALPHA_TEST );
-
-
 
   GLint t = SDL_GetTicks();
   if(t - logoTicks > logoTicksDelta) {
@@ -539,6 +521,73 @@ void MainMenu::drawStars() {
   }
   glEnable( GL_TEXTURE_2D );
   
+}
+
+void MainMenu::drawScourge() {
+
+  glEnable( GL_ALPHA_TEST );
+  //glAlphaFunc( GL_EQUAL, 0xff );
+  glAlphaFunc( GL_NOTEQUAL, 0 );
+  glEnable( GL_TEXTURE_2D );
+
+  //Draw the scourge
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( scourge->getSDLHandler()->getScreen()->w - scourge->getShapePalette()->scourge->w, top, 0 );
+  float w = scourge->getShapePalette()->scourge->w;
+  float h = scourge->getShapePalette()->scourge->h;
+  glColor4f( 1, 1, 1, 1 );
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->scourge_texture );
+  glBegin( GL_QUADS );
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(w, h, 0);
+  glTexCoord2f( 1.0f, 0.0f );
+  glVertex3f(w, 0, 0);
+  glTexCoord2f( 0.0f, 0.0f );
+  glVertex3f(0, 0, 0);
+  glTexCoord2f( 0.0f, 1.0f );
+  glVertex3f(0, h, 0);
+  glEnd();
+  glPopMatrix();
+
+  glDisable( GL_TEXTURE_2D );
+  glDisable( GL_BLEND );
+
+}
+
+void MainMenu::drawBackdrop() {
+
+  glEnable( GL_ALPHA_TEST );
+  //glAlphaFunc( GL_EQUAL, 0xff );
+  glAlphaFunc( GL_NOTEQUAL, 0 );
+  glEnable( GL_TEXTURE_2D );
+
+  //Draw the backdrop image
+  glPushMatrix();
+  glLoadIdentity();
+  glTranslatef( 0, top + (600 - WATER_HEIGHT - scourge->getShapePalette()->scourgeBackdrop->h), 0 );
+//  float w = scourge->getShapePalette()->scourgeBackdrop->w;
+  float w = scourge->getSDLHandler()->getScreen()->w;
+  float h = scourge->getShapePalette()->scourgeBackdrop->h;
+  glColor4f( 1, 1, 1, 1 );
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->scourgeBackdrop_texture );
+  glBegin( GL_QUADS );
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(w, h, 0);
+  glTexCoord2f( 1.0f, 0.0f );
+  glVertex3f(w, 0, 0);
+  glTexCoord2f( 0.0f, 0.0f );
+  glVertex3f(0, 0, 0);
+  glTexCoord2f( 0.0f, 1.0f );
+  glVertex3f(0, h, 0);
+  glEnd();
+  glPopMatrix();
+
+  glDisable( GL_TEXTURE_2D );
+  glDisable( GL_BLEND );
+
 }
 
 void MainMenu::drawClouds(bool moveClouds, bool flipped) {
