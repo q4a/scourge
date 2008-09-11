@@ -527,17 +527,18 @@ void MainMenu::drawScourge() {
 
   glEnable( GL_ALPHA_TEST );
   //glAlphaFunc( GL_EQUAL, 0xff );
-  glAlphaFunc( GL_NOTEQUAL, 0 );
+  glAlphaFunc( GL_GREATER, 0 );
   glEnable( GL_TEXTURE_2D );
+  
+  float w = 554; //scourge->getShapePalette()->scourge->w;
+  float h = 600; //scourge->getShapePalette()->scourge->h;
 
   //Draw the scourge
   glPushMatrix();
   glLoadIdentity();
-  glTranslatef( scourge->getSDLHandler()->getScreen()->w - scourge->getShapePalette()->scourge->w, top, 0 );
-  float w = scourge->getShapePalette()->scourge->w;
-  float h = scourge->getShapePalette()->scourge->h;
+  glTranslatef( scourge->getSDLHandler()->getScreen()->w - w, top, 0 );  
   glColor4f( 1, 1, 1, 1 );
-  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->scourge_texture );
+  glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getNamedTexture( "scourge" ) );
   glBegin( GL_QUADS );
   glNormal3f(0.0f, 0.0f, 1.0f);
   glTexCoord2f( 1.0f, 1.0f );

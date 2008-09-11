@@ -126,9 +126,9 @@ public:
   GLubyte *chainImage;   
   GLuint chain_texture;
 
-  SDL_Surface *scourge;
-  GLubyte *scourgeImage;
-  GLuint scourge_texture;
+  //SDL_Surface *scourge;
+  //GLubyte *scourgeImage;
+  //GLuint scourge_texture;
   SDL_Surface *scourgeBackdrop;
   GLubyte *scourgeImageBackdrop;
   GLuint scourgeBackdrop_texture;
