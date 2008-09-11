@@ -34,8 +34,6 @@ ShapePalette::ShapePalette( Session *session )
              , logoImage( NULL )
              , chain( NULL )
              , chainImage( NULL )
-             , scourge( NULL )
-             , scourgeImage( NULL )
 {
   this->session = session;
 	this->loader = NULL;
@@ -79,8 +77,8 @@ void ShapePalette::preInitialize() {
   chain_texture = loadGLTextureBGRA(chain, chainImage, GL_LINEAR);
 
   // set up the scourge
-  setupAlphaBlendedBMP("/textures/scourge.bmp", scourge, scourgeImage);
-  scourge_texture = loadGLTextureBGRA(scourge, scourgeImage, GL_LINEAR);
+  //setupAlphaBlendedBMP("/textures/scourge.bmp", scourge, scourgeImage);
+  //scourge_texture = loadGLTextureBGRA(scourge, scourgeImage, GL_LINEAR);
 
   // set up the backdrop image
   setupAlphaBlendedBMP("/textures/scourge-backdrop.bmp", scourgeBackdrop, scourgeImageBackdrop);
@@ -293,8 +291,6 @@ ShapePalette::~ShapePalette() {
 	delete [] logoImage;
 	if( chain ) SDL_FreeSurface( chain );
 	delete [] chainImage;
-	if( scourge ) SDL_FreeSurface( scourge );
-	delete [] scourgeImage;
 	if( paperDoll ) SDL_FreeSurface( paperDoll );
 	delete [] paperDollImage;
   //    for(int i =0; i < static_cast<int>(creature_models.size()); i++){
