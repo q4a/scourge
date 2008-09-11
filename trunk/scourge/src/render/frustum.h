@@ -27,6 +27,8 @@ This code was originally written by:
 
 #include "render.h"
 
+class Shape;
+
 /**
   *@author Gabor Torok
   */
@@ -47,6 +49,8 @@ public:
 
     // This takes the center and half the length of the cube.
     bool CubeInFrustum( float x, float y, float z, float size );
+    
+    bool ShapeInFrustum( float x, float y, float z, Shape *shape );
 
 private:
 

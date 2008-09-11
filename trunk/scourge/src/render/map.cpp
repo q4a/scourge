@@ -550,9 +550,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
       float chunkPosY = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
 
       // frustum testing (including extra for roof pieces)
-      if(useFrustum && !frustum->CubeInFrustum(chunkPosX - ( 4 / DIV ), 
-                                               chunkPosY - ( 4 / DIV ), 0.0f, 
-                                               static_cast<float>(MAP_UNIT + 8) / DIV)) { 
+      if(useFrustum && !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, static_cast<float>(MAP_UNIT) / DIV)) { 
         continue;
       }
 
@@ -599,6 +597,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
         }
       }
 
+      // draw rugs
 			if( ( forGround || forWater ) && rugPos[ chunkX ][ chunkY ].texture > 0 ) {
 				xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) / DIV;
 				ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
@@ -699,17 +698,29 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
                 if( shape && ( checkLightMap( chunkX, chunkY ) || lightEdge ) ) {
                 	float xdiff = 0;
                 	float ydiff = 0;
+                	float zdiff = 0;
                   if( location->creature ) {
                     xdiff = ( location->creature->getX() - static_cast<float>(toint(location->creature->getX())));
                     ydiff = ( location->creature->getY() - static_cast<float>(toint(location->creature->getY())));
+                    zdiff = 0;
 										location->heightPos = findMaxHeightPos( location->creature->getX(),
 										                                        location->creature->getY(),
 										                                        location->creature->getZ() );
+										xdiff += location->creature->getOffsetX();
+										ydiff += location->creature->getOffsetY();
+										zdiff += location->creature->getOffsetZ(); 
+                  } else {
+                  	xdiff += location->moveX;
+                  	ydiff += location->moveY;
+                  	zdiff += location->moveZ;
                   }
                   xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX + xdiff ) / DIV;
-                  ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY + ydiff ) / DIV;
-                  zpos2 = static_cast<float>(zp) / DIV;
-                  setupPosition(posX, posY, zp, xpos2, ypos2, zpos2, shape, location->item, location->creature, NULL);
+                  ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + yp - shape->getDepth() + chunkOffsetY + ydiff ) / DIV;
+                  zpos2 = static_cast<float>(zp + zdiff) / DIV;
+                  
+                  //if( !useFrustum || frustum->ShapeInFrustum( xpos2, ypos2, zpos2, shape ) ) {
+                  	setupPosition(posX, posY, zp, xpos2, ypos2, zpos2, shape, location->item, location->creature, NULL);
+                  //}
               	}
               }
             }
@@ -1110,10 +1121,14 @@ void Map::draw() {
 }
 
 void Map::drawSelectMode() {
-	for(int i = 0; i < otherCount; i++) doDrawShape(&other[i]);
-	for(int i = 0; i < laterCount; i++) doDrawShape(&later[i]);
+	for(int i = 0; i < otherCount; i++) {
+		if( other[i].pos->shape->isInteractive() || other[i].pos->item || other[i].pos->creature ) doDrawShape(&other[i]);
+	}
+	for(int i = 0; i < laterCount; i++) {
+		if( later[i].pos->shape->isInteractive() || later[i].pos->item || later[i].pos->creature ) doDrawShape(&later[i]);
+	}
 	for(int i = 0; i < stencilCount; i++) 
-	  if( isSecretDoor( stencil[i].pos ) || isDoor( stencil[i].shape ) )
+	  if( isSecretDoor( stencil[i].pos ) || isDoor( stencil[i].shape ) || stencil[i].pos->shape->isInteractive() || stencil[i].pos->item || stencil[i].pos->creature )
 	      doDrawShape(&stencil[i]);	
 }
 
@@ -1757,17 +1772,6 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
     if(shape) shape->setupToDraw();
 
     glTranslatef( xpos2, ypos2, zpos2 + heightPos );
-
-		if( later && later->pos ) {
-			glTranslatef( later->pos->moveX, later->pos->moveY, later->pos->moveZ );
-			glRotatef( later->pos->angleX, 1, 0, 0 );
-			glRotatef( later->pos->angleY, 0, 1, 0 );
-			glRotatef( later->pos->angleZ, 0, 0, 1 );
-		} 
-		
-		if( later && later->creature ) {
-			glTranslatef( later->creature->getOffsetX(), later->creature->getOffsetY(), later->creature->getOffsetZ() );
-		}
 
 #ifdef DEBUG_SECRET_DOORS    
     if( later && later->pos ) {
