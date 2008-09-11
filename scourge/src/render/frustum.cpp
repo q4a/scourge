@@ -13,6 +13,8 @@
 //***********************************************************************//
 
 #include "frustum.h"
+#include "shape.h"
+#include "glshape.h"
 
 // We create an enum of the sides so we don't have to call each side 0 or 1.
 // This way it makes it more understandable and readable when dealing with frustum sides.
@@ -286,6 +288,21 @@ bool CFrustum::CubeInFrustum( float x, float y, float z, float size )
     }
 
     return true;
+}
+
+bool CFrustum::ShapeInFrustum( float x, float y, float z, Shape *shape ) {
+	float w = ( shape->getWidth() ) / DIV;
+	float d = ( shape->getDepth() ) / DIV;
+	float h = ( shape->getHeight() ) / DIV;
+	return (
+			PointInFrustum( x    , y    , z ) ||
+			PointInFrustum( x + w, y    , z ) ||
+			PointInFrustum( x + w, y + d, z ) ||
+			PointInFrustum( x    , y + d, z ) ||
+			PointInFrustum( x    , y    , z + h ) ||
+			PointInFrustum( x + w, y    , z + h ) ||
+			PointInFrustum( x + w, y + d, z + h ) ||
+			PointInFrustum( x    , y + d, z + h ) );	
 }
 
 
