@@ -47,8 +47,8 @@ using namespace std;
 
 #define KEEP_MAP_SIZE 0
 
-#define MVW 150
-#define MVD 150
+#define MVW 100
+#define MVD 100
 
 #define WATER_AMP 0.25f
 #define WATER_ANIM_SPEED 10.0f
@@ -1062,13 +1062,14 @@ void Map::preDraw() {
     int shapeCount = laterCount + otherCount + damageCount + stencilCount;
 #ifdef SHOW_FPS    
     if( settings->isPlayerEnabled() ) {
-      snprintf(mapDebugStr, DEBUG_SIZE, "c=%d,%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d", 
+      snprintf(mapDebugStr, DEBUG_SIZE, "c=%d,%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d zoom=%.2f xrot=%.2f yrot=%.2f zrot=%.2f", 
 			   cursorFlatMapX, cursorFlatMapY + 1,
 			   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
 			   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
 			   (useFrustum ? "*" : ""),
 			   chunkCount, ((cex - csx)*(cey - csy)),
-			   csx, cex, csy, cey, shapeCount, selectedTrapIndex );
+			   csx, cex, csy, cey, shapeCount, selectedTrapIndex,
+			   zoom, xrot, yrot, zrot );
       //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
     } else {
       snprintf(mapDebugStr, DEBUG_SIZE, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
@@ -2147,8 +2148,8 @@ void Map::initMapView( bool ignoreRot ) {
       ydiff = ( c->getY() - static_cast<float>( toint( c->getY() ) ) );
 		}
   }
-  float startx = -( static_cast<float>(mapViewWidth) / 2.0 + ( mapx - static_cast<float>(x) + xdiff ) ) / DIV;
-  float starty = -( static_cast<float>(mapViewDepth) / 2.0 + ( mapy - static_cast<float>(y) + ydiff ) ) / DIV;
+  float startx = -( static_cast<float>(mapViewWidth) / 2.0 + ( mapx - static_cast<float>(x) + xdiff ) - 4 ) / DIV;
+  float starty = -( static_cast<float>(mapViewDepth) / 2.0 + ( mapy - static_cast<float>(y) + ydiff ) - 8 ) / DIV;
   float startz = 0.0;
 
   glTranslatef( startx, starty, startz );
@@ -3484,7 +3485,7 @@ bool GameMapSettings::isItemPosEnabled() {
 }
 
 float GameMapSettings::getMinZoomIn() {
-  return 0.5f;
+  return 0.85f;
 }
 
 float GameMapSettings::getMaxZoomOut() {
