@@ -348,13 +348,13 @@ void Equip::drawWidgetContents( Widget *widget ) {
 		glBindTexture( GL_TEXTURE_2D, scrollTexture );
 	}
 	glColor4f( 1, 1, 1, 1 );
-	glBegin( GL_QUADS );
-	glTexCoord2d( 0, 1 );
-	glVertex2d( 0, h );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( 0, 0 );
 	glTexCoord2d( 1, 0 );
 	glVertex2d( w, 0 );
+	glTexCoord2d( 0, 1 );
+	glVertex2d( 0, h );
 	glTexCoord2d( 1, 1 );
 	glVertex2d( w, h );
 	glEnd();
@@ -433,10 +433,10 @@ void Equip::drawSpells() {
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		// glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 		glColor4f( 0, 0, 0, 0.75 );
-		glBegin( GL_QUADS );
-		glVertex2d( 0, size );
+		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2d( 0, 1 );
 		glVertex2d( size + width, 1 );
+		glVertex2d( 0, size );
 		glVertex2d( size + width, size );
 		glEnd();
 		glDisable( GL_BLEND );
@@ -446,13 +446,13 @@ void Equip::drawSpells() {
 		glAlphaFunc( GL_NOTEQUAL, 0 );
 		glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ) );
 		glColor4f( 1, 1, 1, 1 );
-		glBegin( GL_QUADS );
-		glTexCoord2d( 0, 1 );
-		glVertex2d( 0, size );
+		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2d( 0, 0 );
 		glVertex2d( 0, 0 );
 		glTexCoord2d( 1, 0 );
 		glVertex2d( size, 0 );
+		glTexCoord2d( 0, 1 );
+		glVertex2d( 0, size );
 		glTexCoord2d( 1, 1 );
 		glVertex2d( size, size );
 		glEnd();
@@ -471,13 +471,13 @@ void Equip::drawSpells() {
 			if( creature && creature->isSpellMemorized( spell ) ) {
 				glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
 				glColor4f( 1, 1, 1, 1 );
-				glBegin( GL_QUADS );
-				glTexCoord2d( 0, 1 );
-				glVertex2d( xx, yy + SPELL_SIZE );
+				glBegin( GL_TRIANGLE_STRIP );
 				glTexCoord2d( 0, 0 );
 				glVertex2d( xx, yy );
 				glTexCoord2d( 1, 0 );
 				glVertex2d( xx + SPELL_SIZE, yy );
+				glTexCoord2d( 0, 1 );
+				glVertex2d( xx, yy + SPELL_SIZE );
 				glTexCoord2d( 1, 1 );
 				glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
 				glEnd();
@@ -518,10 +518,10 @@ void Equip::drawCapabilities() {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	// glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 	glColor4f( 0, 0, 0, 0.75 );
-	glBegin( GL_QUADS );
-	glVertex2d( 0, size );
+	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2d( 0, 1 );
 	glVertex2d( size + width, 1 );
+	glVertex2d( 0, size );
 	glVertex2d( size + width, size );
 	glEnd();
 	glDisable( GL_BLEND );
@@ -564,13 +564,13 @@ void Equip::drawCapabilities() {
 
 			glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ] );
 			glColor4f( 1, 1, 1, 1 );
-			glBegin( GL_QUADS );
-			glTexCoord2d( 0, 1 );
-			glVertex2d( xx, yy + SPELL_SIZE );
+			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2d( 0, 0 );
 			glVertex2d( xx, yy );
 			glTexCoord2d( 1, 0 );
 			glVertex2d( xx + SPELL_SIZE, yy );
+			glTexCoord2d( 0, 1 );
+			glVertex2d( xx, yy + SPELL_SIZE );
 			glTexCoord2d( 1, 1 );
 			glVertex2d( xx + SPELL_SIZE, yy + SPELL_SIZE );
 			glEnd();

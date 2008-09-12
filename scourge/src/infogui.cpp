@@ -339,16 +339,16 @@ void InfoGui::drawWidgetContents(Widget *w) {
 
     glColor4f(1, 1, 1, 1);
     
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     glNormal3f( 0, 0, 1 );
     glTexCoord2f( 0, 0 );
     glVertex3f( 0, 0, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex3f( image->getWidth(), 0, 0 );
     glTexCoord2f( 0, 1 );
     glVertex3f( 0, image->getHeight(), 0 );
     glTexCoord2f( 1, 1 );
     glVertex3f( image->getWidth(), image->getHeight(), 0 );
-    glTexCoord2f( 1, 0 );
-    glVertex3f( image->getWidth(), 0, 0 );
     glEnd();
     glPopMatrix();
     

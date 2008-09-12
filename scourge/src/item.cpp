@@ -1105,13 +1105,13 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool sm
 								 ( !smallIcon && getShape()->getIcon() > 0 ? 
 									 getShape()->getIcon() : 
 									 session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] ) );
-	glBegin( GL_QUADS );
-	glTexCoord2d( 0, 1 );
-	glVertex2d( x, y + h );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( x, y );
 	glTexCoord2d( 1, 0 );
 	glVertex2d( x + w, y );
+	glTexCoord2d( 0, 1 );
+	glVertex2d( x, y + h );
 	glTexCoord2d( 1, 1 );
 	glVertex2d( x + w, y + h );
 	glEnd();
@@ -1228,13 +1228,13 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 		glTranslatef( iconUnderEffectParticle[i]->x - iconUnderEffectParticle[i]->zoom / 2, 
 									iconUnderEffectParticle[i]->y - iconUnderEffectParticle[i]->zoom / 2, 0 );
 		//glRotatef( iconUnderEffectParticle[i]->life, 0, 0, 1 );
-		glBegin( GL_QUADS );
-		glTexCoord2d( 0, 1 );
-		glVertex2d( 0, iconUnderEffectParticle[i]->zoom );
+		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2d( 0, 0 );
 		glVertex2d( 0, 0 );
 		glTexCoord2d( 1, 0 );
 		glVertex2d( iconUnderEffectParticle[i]->zoom, 0 );
+		glTexCoord2d( 0, 1 );
+		glVertex2d( 0, iconUnderEffectParticle[i]->zoom );
 		glTexCoord2d( 1, 1 );
 		glVertex2d( iconUnderEffectParticle[i]->zoom, iconUnderEffectParticle[i]->zoom );
 		glEnd();
@@ -1284,13 +1284,13 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 		//glRotatef( 45, 0, 0, 1 );
 		glTranslatef( iconEffectParticle[i]->x - iconEffectParticle[i]->zoom / 2, 
 									iconEffectParticle[i]->y - iconEffectParticle[i]->zoom / 2, 0 );
-		glBegin( GL_QUADS );
-		glTexCoord2d( 0, 1 );
-		glVertex2d( x, y + iconEffectParticle[i]->zoom );
+		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2d( 0, 0 );
 		glVertex2d( x, y );
 		glTexCoord2d( 1, 0 );
 		glVertex2d( x + iconEffectParticle[i]->zoom, y );
+		glTexCoord2d( 0, 1 );
+		glVertex2d( x, y + iconEffectParticle[i]->zoom );
 		glTexCoord2d( 1, 1 );
 		glVertex2d( x + iconEffectParticle[i]->zoom, y + iconEffectParticle[i]->zoom );
 		glEnd();
