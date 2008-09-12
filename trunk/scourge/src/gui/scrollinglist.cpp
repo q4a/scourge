@@ -145,11 +145,11 @@ void ScrollingList::drawWidget(Widget *parent) {
         applySelectionColor();
       }
       for( int i = 0; i < selectedLineCount; i++ ) {
-        glBegin( GL_QUADS );
-        glVertex2d(scrollerWidth, textPos + (selectedLine[i] * lineHeight) + 5);
-        glVertex2d(scrollerWidth, textPos + ((selectedLine[i] + 1) * lineHeight + 5));
-        glVertex2d(w, textPos + ((selectedLine[i] + 1) * lineHeight + 5));
+        glBegin( GL_TRIANGLE_STRIP );
         glVertex2d(w, textPos + (selectedLine[i] * lineHeight) + 5);
+        glVertex2d(scrollerWidth, textPos + (selectedLine[i] * lineHeight) + 5);
+        glVertex2d(w, textPos + ((selectedLine[i] + 1) * lineHeight + 5));
+        glVertex2d(scrollerWidth, textPos + ((selectedLine[i] + 1) * lineHeight + 5));
         glEnd();
       }
 	  glDisable( GL_BLEND );
@@ -222,11 +222,11 @@ void ScrollingList::drawWidget(Widget *parent) {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glColor4f( 0, 0, 0, 0.4f );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
   glVertex2d(0, 0);
+  glVertex2d(scrollerWidth, 0);  
   glVertex2d(0, h);
   glVertex2d(scrollerWidth, h);
-  glVertex2d(scrollerWidth, 0);  
   glEnd();
 	glDisable( GL_BLEND );
 	glEnable( GL_TEXTURE_2D );
@@ -311,16 +311,16 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
   if(icon) glBindTexture( GL_TEXTURE_2D, icon );
   glColor4f(1, 1, 1, 1);
   
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
   if(icon) glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
+  if(icon) glTexCoord2f( 1, 0 );
+  glVertex3f( n, 0, 0 );
   if(icon) glTexCoord2f( 0, 1 );
   glVertex3f( 0, n, 0 );
   if(icon) glTexCoord2f( 1, 1 );
   glVertex3f( n, n, 0 );
-  if(icon) glTexCoord2f( 1, 0 );
-  glVertex3f( n, 0, 0 );
   glEnd();
 
   glDisable( GL_ALPHA_TEST );

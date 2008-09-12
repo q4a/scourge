@@ -314,13 +314,13 @@ void Inven::drawWidgetContents( Widget *widget ) {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glBindTexture( GL_TEXTURE_2D, backgroundTexture );
 	glColor4f( 1, 1, 1, 1 );
-	glBegin( GL_QUADS );
-	glTexCoord2d( 0, 1 );
-	glVertex2d( 0, h );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( 0, 0 );
 	glTexCoord2d( 1, 0 );
 	glVertex2d( w, 0 );
+	glTexCoord2d( 0, 1 );
+	glVertex2d( 0, h );
 	glTexCoord2d( 1, 1 );
 	glVertex2d( w, h );
 	glEnd();
@@ -353,10 +353,10 @@ void Inven::drawWidgetContents( Widget *widget ) {
 			int pw = pcUi->getScourge()->getMovingItem()->getInventoryWidth() * GRID_SIZE;
 			int ph = pcUi->getScourge()->getMovingItem()->getInventoryHeight() * GRID_SIZE;
 			//cerr << "pw=" << pw << " ph=" << ph << endl;
-			glBegin( GL_QUADS );
-			glVertex2d( px, py + ph );
+			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2d( px, py );
 			glVertex2d( px + pw, py );
+			glVertex2d( px, py + ph );
 			glVertex2d( px + pw, py + ph );
 			glEnd();
 		}

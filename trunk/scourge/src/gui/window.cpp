@@ -504,11 +504,11 @@ void Window::drawWidget(Widget *parent) {
 			glColor4f( 0, 0, 0, 0.5f );
 			glEnable( GL_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			glBegin( GL_QUADS );
+			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2f( 0, topY );
 			glVertex2f( getWidth(), topY );
-			glVertex2f( getWidth(), topY + TITLE_HEIGHT );
 			glVertex2f( 0, topY + TITLE_HEIGHT );
+			glVertex2f( getWidth(), topY + TITLE_HEIGHT );
 			glEnd();
 			glDisable( GL_BLEND );
 		}
@@ -567,29 +567,29 @@ void Window::drawWidget(Widget *parent) {
 void Window::drawBackground( int topY, int openHeight ) {
   if( theme->getWindowBackground() && !theme->getWindowBackground()->rep_h ) {
 	glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
-    glBegin (GL_QUADS);
+    glBegin (GL_TRIANGLE_STRIP);
     glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY);
+    glTexCoord2f (1, 0);      
+    glVertex2i (w, topY);
     glTexCoord2f (0, 1);
     glVertex2i (0, topY + openHeight);
     glTexCoord2f (1, 1);
     glVertex2i (w, topY + openHeight);
-    glTexCoord2f (1, 0);      
-    glVertex2i (w, topY);
     glEnd ();
   } else if(type == SIMPLE_WINDOW) {
     if( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
       glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
     }
-    glBegin (GL_QUADS);
+    glBegin (GL_TRIANGLE_STRIP);
     glTexCoord2f (0.0f, 0.0f);
     glVertex2i (0, topY);
+    glTexCoord2f (1, 0);      
+    glVertex2i (w, topY);
     glTexCoord2f (0, openHeight / static_cast<float>(tileHeight));
     glVertex2i (0, topY + openHeight);
     glTexCoord2f (1, openHeight / static_cast<float>(tileHeight));
     glVertex2i (w, topY + openHeight);
-    glTexCoord2f (1, 0);      
-    glVertex2i (w, topY);
     glEnd ();
   } else if(type == BASIC_WINDOW) {
     /*
@@ -610,17 +610,17 @@ void Window::drawBackground( int topY, int openHeight ) {
                  theme->getWindowBackground()->color.b, theme->getWindowBackground()->color.a );
     }
 
-    glBegin(GL_QUADS);
+    glBegin(GL_TRIANGLE_STRIP);
     glTexCoord2f(0.0f, 0.0f);
     glVertex2i(0, topY);
+    glTexCoord2f( 1, 0.0f);
+    //glTexCoord2d( w/static_cast<float>(tileWidth), 0 );
+    glVertex2i(w, topY);
     glTexCoord2f(0.0f, ( openHeight )/static_cast<float>(tileHeight));
     glVertex2i(0, topY + openHeight);
     //glTexCoord2f( w/static_cast<float>(tileWidth), ( openHeight ) /static_cast<float>(tileHeight) );
     glTexCoord2f( 1, ( openHeight ) /static_cast<float>(tileHeight));
     glVertex2i(w, topY + openHeight);
-    glTexCoord2f( 1, 0.0f);
-    //glTexCoord2d( w/static_cast<float>(tileWidth), 0 );
-    glVertex2i(w, topY);
     glEnd();
   }
 }
@@ -756,15 +756,15 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glTranslatef( theme->getWindowBorderTexture()->width,
 								topY + theme->getWindowBorderTexture()->width,
 								0 );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex2i( 0, 0 );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
 	glTexCoord2f( 0, 1 );
 	glVertex2i( 0, n );
 	glTexCoord2f( 1, 1 );
 	glVertex2i( n, n );
-	glTexCoord2f( 1, 0 );
-	glVertex2i( n, 0 );
 	glEnd();
 	glPopMatrix();
 
@@ -773,15 +773,15 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
 								topY + theme->getWindowBorderTexture()->width,
 								0 );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex2i( 0, 0 );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
 	glTexCoord2f( 0, 1 );
 	glVertex2i( 0, n );
 	glTexCoord2f( 1, 1 );
 	glVertex2i( n, n );
-	glTexCoord2f( 1, 0 );
-	glVertex2i( n, 0 );
 	glEnd();
 	glPopMatrix();
 
@@ -790,15 +790,15 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
 								topY + openHeight - n - theme->getWindowBorderTexture()->width,
 								0 );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex2i( 0, 0 );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
 	glTexCoord2f( 0, 1 );
 	glVertex2i( 0, n );
 	glTexCoord2f( 1, 1 );
 	glVertex2i( n, n );
-	glTexCoord2f( 1, 0 );
-	glVertex2i( n, 0 );
 	glEnd();
 	glPopMatrix();
 
@@ -807,15 +807,15 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glTranslatef( theme->getWindowBorderTexture()->width,
 								topY + openHeight - n - theme->getWindowBorderTexture()->width,
 								0 );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex2i( 0, 0 );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
 	glTexCoord2f( 0, 1 );
 	glVertex2i( 0, n );
 	glTexCoord2f( 1, 1 );
 	glVertex2i( n, n );
-	glTexCoord2f( 1, 0 );
-	glVertex2i( n, 0 );
 	glEnd();
 	glPopMatrix();
 
@@ -825,15 +825,15 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glTranslatef( theme->getWindowBorderTexture()->width,
 								topY + theme->getWindowBorderTexture()->width + n,
 								0 );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex2i( 0, 0 );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
 	glTexCoord2f( 0, 1 );
 	glVertex2i( 0, h );
 	glTexCoord2f( 1, 1 );
 	glVertex2i( n, h );
-	glTexCoord2f( 1, 0 );
-	glVertex2i( n, 0 );
 	glEnd();
 	glPopMatrix();
 
@@ -842,15 +842,15 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
 								topY + theme->getWindowBorderTexture()->width + n,
 								0 );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex2i( 0, 0 );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( n, 0 );
 	glTexCoord2f( 0, 1 );
 	glVertex2i( 0, h );
 	glTexCoord2f( 1, 1 );
 	glVertex2i( n, h );
-	glTexCoord2f( 1, 0 );
-	glVertex2i( n, 0 );
 	glEnd();
 	glPopMatrix();
 
@@ -860,15 +860,15 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glTranslatef( n + theme->getWindowBorderTexture()->width,
 								topY + theme->getWindowBorderTexture()->width,
 								0 );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex2i( 0, 0 );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( w, 0 );
 	glTexCoord2f( 0, 1 );
 	glVertex2i( 0, n );
 	glTexCoord2f( 1, 1 );
 	glVertex2i( w, n );
-	glTexCoord2f( 1, 0 );
-	glVertex2i( w, 0 );
 	glEnd();
 	glPopMatrix();
 
@@ -877,15 +877,15 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glTranslatef( n + theme->getWindowBorderTexture()->width,
 								topY + openHeight - n - theme->getWindowBorderTexture()->width,
 								0 );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex2i( 0, 0 );
+	glTexCoord2f( 1, 0 );
+	glVertex2i( w, 0 );
 	glTexCoord2f( 0, 1 );
 	glVertex2i( 0, n );
 	glTexCoord2f( 1, 1 );
 	glVertex2i( w, n );
-	glTexCoord2f( 1, 0 );
-	glVertex2i( w, 0 );
 	glEnd();
 	glPopMatrix();
 

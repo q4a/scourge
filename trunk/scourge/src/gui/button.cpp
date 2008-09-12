@@ -65,16 +65,16 @@ void Button::drawWidget(Widget *parent) {
 			glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 		}
 		
-		glBegin( GL_QUADS );
+		glBegin( GL_TRIANGLE_STRIP );
 		glNormal3f( 0, 0, 1 );
 		glTexCoord2f( 0, 0 );
 		glVertex3f( 0, 0, 0 );
+		glTexCoord2f( 1, 0 );
+		glVertex3f( getWidth(), 0, 0 );
 		glTexCoord2f( 0, 1 );
 		glVertex3f( 0, getHeight(), 0 );
 		glTexCoord2f( 1, 1 );
 		glVertex3f( getWidth(), getHeight(), 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex3f( getWidth(), 0, 0 );
 		glEnd();
 		glPopMatrix();
 		

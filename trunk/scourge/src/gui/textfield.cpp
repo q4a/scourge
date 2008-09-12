@@ -138,11 +138,11 @@ void TextField::drawWidget(Widget *parent) {
     applyHighlightedBorderColor();
   }
   glPushMatrix();
-  glBegin(GL_QUADS);
+  glBegin(GL_TRIANGLE_STRIP);
   glVertex2d(0, 0);
+  glVertex2d(getWidth(), 0);
   glVertex2d(0, getHeight());
   glVertex2d(getWidth(), getHeight());
-  glVertex2d(getWidth(), 0);
   glEnd();
   glPopMatrix();
 
