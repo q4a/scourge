@@ -756,25 +756,25 @@ void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) 
 	glEnable( GL_TEXTURE_2D );
 	glColor4f(1, 1, 1, 0.9f);
 	glBindTexture( GL_TEXTURE_2D, rug->texture );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	if( rug->isHorizontal ) {
 		glTexCoord2f( 1, 0 );
 		glVertex2f( sx, sy );
 		glTexCoord2f( 1, 1 );
 		glVertex2f( ex, sy );
-		glTexCoord2f( 0, 1 );
-		glVertex2f( ex, ey );
 		glTexCoord2f( 0, 0 );
 		glVertex2f( sx, ey );
+		glTexCoord2f( 0, 1 );
+		glVertex2f( ex, ey );
 	} else {
 		glTexCoord2f( 0, 0 );
 		glVertex2f( sx, sy );
 		glTexCoord2f( 1, 0 );
 		glVertex2f( ex, sy );
-		glTexCoord2f( 1, 1 );
-		glVertex2f( ex, ey );
 		glTexCoord2f( 0, 1 );
 		glVertex2f( sx, ey );
+		glTexCoord2f( 1, 1 );
+		glVertex2f( ex, ey );
 	}
 	glEnd();
 	glDisable( GL_TEXTURE_2D );
@@ -822,7 +822,7 @@ void Map::drawWaterPosition(int posX, int posY,
     while( true ) {
       int stx = xp;
       int sty = yp;
-      glBegin( GL_QUADS );
+      glBegin( GL_TRIANGLE_STRIP );
       for( int i = 0; i < 4; i++ ) {
         int wx, wy;
         if( xp == WATER_TILE_X && yp == WATER_TILE_Y ) {
@@ -870,9 +870,9 @@ void Map::drawWaterPosition(int posX, int posY,
 
         switch( i ) {
         case 0: xp++; break;
-        case 1: yp++; break;
-        case 2: xp--; break;
-        case 3: yp--; break;
+        case 1: yp++; xp--; break;
+        case 2: xp++; break;
+        case 3: yp--; xp--; break;
         }
         if( xp > WATER_TILE_X || yp > WATER_TILE_Y ) {
           break;
@@ -4431,11 +4431,11 @@ bool Map::drawHeightMapFloor() {
 				//glDisable( GL_TEXTURE_2D );
 			//}
 	
-			p[0] = &( groundPos[ xx ][ yy + 1 ] );
-			p[1] = &( groundPos[ xx ][ yy ] );
-			p[2] = &( groundPos[ xx + 1 ][ yy ] );
+			p[0] = &( groundPos[ xx ][ yy ] );
+			p[1] = &( groundPos[ xx + 1 ][ yy ] );
+			p[2] = &( groundPos[ xx ][ yy + 1 ] );
 			p[3] = &( groundPos[ xx + 1 ][ yy + 1 ] );
-			glBegin( GL_QUADS );
+			glBegin( GL_TRIANGLE_STRIP );
 			for( int i = 0; i < 4; i++ ) {
 				//if( lightMap[chunkX][chunkY] ) {
 					glTexCoord2f( p[i]->u, p[i]->v );
@@ -4536,12 +4536,7 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 			float texEy = ( ( yy + 1 - sy ) ) / (float)( ey - sy );
 
 			//glBegin( GL_LINE_LOOP );
-			glBegin( GL_QUADS );
-
-			p = &groundPos[ xx ][ yy + 1 ];
-			glColor4f( p->r, p->g, p->b, p->a );
-			glTexCoord2f( texSx, texEy );
-			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );			
+			glBegin( GL_TRIANGLE_STRIP );
 
 			p = &groundPos[ xx ][ yy ];
 			glColor4f( p->r, p->g, p->b, p->a );
@@ -4552,6 +4547,11 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 			glColor4f( p->r, p->g, p->b, p->a );
 			glTexCoord2f( texEx, texSy );
 			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );
+
+			p = &groundPos[ xx ][ yy + 1 ];
+			glColor4f( p->r, p->g, p->b, p->a );
+			glTexCoord2f( texSx, texEy );
+			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );			
 
 			p = &groundPos[ xx + 1 ][ yy + 1 ];
 			glColor4f( p->r, p->g, p->b, p->a );
@@ -4647,14 +4647,7 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 			float texEy = ( ( yy + 1 - sy ) * ( offEY - offSY ) ) / ( ey - sy );
 
 			//glBegin( GL_LINE_LOOP );
-			glBegin( GL_QUADS );
-
-			glTexCoord2f( texSx, texEy );
-			//glColor4f( 1, 1, 1, 1 );
-			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
-			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET / DIV );
-
+			glBegin( GL_TRIANGLE_STRIP );
 
 			glTexCoord2f( texSx, texSy );
 			//glColor4f( 1, 0, 0, 1 );
@@ -4667,6 +4660,12 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 			gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
 			gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
 			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + GROUND_TEX_Z_OFFSET / DIV );
+
+			glTexCoord2f( texSx, texEy );
+			//glColor4f( 1, 1, 1, 1 );
+			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
+			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET / DIV );
 
 			glTexCoord2f( texEx, texEy );
 			//glColor4f( 1, 1, 1, 1 );
@@ -4841,16 +4840,16 @@ void Map::drawWaterLevel() {
 	float d = static_cast<float>( mapViewDepth ) / DIV;
 	//float z = -4 / DIV;
 	//glTranslatef( xpos2, ypos2, 0.0f);
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	glNormal3f( 0, 0, 1 );
 	glTexCoord2f( getX() * DIV * ratio + waterTexX, getY() * DIV * ratio + waterTexY );
 	glVertex3f( 0, 0, -0.3f );
+	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio + waterTexX, getY() * DIV * ratio + waterTexY );
+	glVertex3f( w, 0, -0.3f );
 	glTexCoord2f( getX() * DIV * ratio + waterTexX, ( getY() + mapViewDepth ) * DIV * ratio + waterTexY );
 	glVertex3f( 0, d, -0.3f );
 	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio + waterTexX, ( getY() + mapViewDepth ) * DIV * ratio + waterTexY );
 	glVertex3f( w, d, -0.3f );
-	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio + waterTexX, getY() * DIV * ratio + waterTexY );
-	glVertex3f( w, 0, -0.3f );
 	glEnd();
 	glDisable( GL_BLEND );
 }
@@ -4860,16 +4859,16 @@ void Map::drawFlatFloor() {
 	float w = static_cast<float>( mapViewWidth ) / DIV;
 	float d = static_cast<float>( mapViewDepth ) / DIV;
 	//glTranslatef( xpos2, ypos2, 0.0f);
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	glNormal3f( 0, 0, 1 );
 	glTexCoord2f( getX() * DIV * ratio, getY() * DIV * ratio );
 	glVertex3f( 0, 0, 0 );
+	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, getY() * DIV * ratio );
+	glVertex3f( w, 0, 0 );
 	glTexCoord2f( getX() * DIV * ratio, ( getY() + mapViewDepth ) * DIV * ratio );
 	glVertex3f( 0, d, 0 );
 	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, ( getY() + mapViewDepth ) * DIV * ratio );
 	glVertex3f( w, d, 0 );
-	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, getY() * DIV * ratio );
-	glVertex3f( w, 0, 0 );
 	glEnd();
 }
 
