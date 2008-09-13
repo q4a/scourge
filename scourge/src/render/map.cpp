@@ -447,6 +447,7 @@ void Map::removeCurrentEffects() {
       currentEffectsMap.erase( i++ );
       removeEffect( x, y, z );
       resortShapes = mapChanged = true;
+      //cerr << "MAPCHANGED: removeCurrentEffects" << endl;
     } else {
       ++i;
     }
@@ -1019,89 +1020,91 @@ float Map::getZoomPercent() {
 }
 
 void Map::preDraw() {
-
-	if( refreshGroundPos ) {
-		createGroundMap();
-		refreshGroundPos = false;
-	}
-
-  // must move map before calling getMapXY(Z)AtScreenXY!
-  if( move && !selectMode ) moveMap( move );
-
-  if(zoomIn) {
-    if(zoom <= settings->getMinZoomIn() ) {
-      zoomOut = false;
-    } else {
-      zoom /= ZOOM_DELTA;
-    }
-    mapChanged = true;
-  } else if(zoomOut) {
-    if(zoom >= settings->getMaxZoomOut() ) {
-      zoomOut = false;
-    } else {
-      zoom *= ZOOM_DELTA; 
-    }
-  }
-
-  float adjust = static_cast<float>(viewWidth) / 800.0f;
-  xpos = static_cast<int>(static_cast<float>(viewWidth) / zoom / 2.0f / adjust);
-  ypos = static_cast<int>(static_cast<float>(viewHeight) / zoom / 2.0f / adjust);
-
-  float oldrot;
-
-  oldrot = yrot;
-  if(yRotating != 0) yrot+=yRotating;
-  if(yrot >= settings->getMaxYRot() || yrot < 0) yrot = oldrot;
-
-  oldrot = zrot;
-  if(zRotating != 0) {
-    resortShapes = true;
-    zrot+=zRotating;
-  }
-  if(zrot >= 360) zrot -= 360;
-  if(zrot < 0) zrot = 360 + zrot;
-
-  if( !selectMode ) initMapView();
-
-  // find cursor location on map (for named shapes)
-  if( adapter->isMouseIsMovingOverMap() && !selectMode ) {
-    // save mapChanged (fixes bug where map won't draw initially)
-    bool b = mapChanged;
-    selectMode = true;    
-    // careful this calls draw() again!    
-    getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
-    selectMode = false;
-    mapChanged = b;
-  }
-  
-  if( !selectMode ) frustum->CalculateFrustum();
-  if( lightMapChanged && helper->isLightMapEnabled() ) configureLightMap();
-  if( !currentEffectsMap.empty() ) removeCurrentEffects();
-  // populate the shape arrays
-  if( mapChanged ) {
-    //if( settings->isPlayerEnabled() && adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
-    int csx, cex, csy, cey;
-    setupShapes(false, false, &csx, &cex, &csy, &cey);
-    int shapeCount = laterCount + otherCount + damageCount + stencilCount;
+	if( !selectMode ) {
+		if( refreshGroundPos ) {
+			createGroundMap();
+			refreshGroundPos = false;
+		}
+	
+	  // must move map before calling getMapXY(Z)AtScreenXY!
+	  if( move ) moveMap( move );
+	
+	  if(zoomIn) {
+	    if(zoom <= settings->getMinZoomIn() ) {
+	      zoomOut = false;
+	    } else {
+	      zoom /= ZOOM_DELTA;
+	    }
+	    mapChanged = true;
+	    //cerr << "MAPCHANGED: preDraw" << endl;
+	  } else if(zoomOut) {
+	    if(zoom >= settings->getMaxZoomOut() ) {
+	      zoomOut = false;
+	    } else {
+	      zoom *= ZOOM_DELTA; 
+	    }
+	  }
+	
+	  float adjust = static_cast<float>(viewWidth) / 800.0f;
+	  xpos = static_cast<int>(static_cast<float>(viewWidth) / zoom / 2.0f / adjust);
+	  ypos = static_cast<int>(static_cast<float>(viewHeight) / zoom / 2.0f / adjust);
+	
+	  float oldrot;
+	
+	  oldrot = yrot;
+	  if(yRotating != 0) yrot+=yRotating;
+	  if(yrot >= settings->getMaxYRot() || yrot < 0) yrot = oldrot;
+	
+	  oldrot = zrot;
+	  if(zRotating != 0) {
+	    resortShapes = true;
+	    zrot+=zRotating;
+	  }
+	  if(zrot >= 360) zrot -= 360;
+	  if(zrot < 0) zrot = 360 + zrot;
+	
+	  initMapView();
+	
+	  // find cursor location on map (for named shapes)
+	  if( adapter->isMouseIsMovingOverMap() ) {
+	    // save mapChanged (fixes bug where map won't draw initially)
+	    bool b = mapChanged;
+	    selectMode = true;    
+	    // careful this calls draw() again!    
+	    getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
+	    selectMode = false;
+	    mapChanged = b;
+	  }
+	  
+	  frustum->CalculateFrustum();
+	  if( lightMapChanged && helper->isLightMapEnabled() ) configureLightMap();
+	  if( !currentEffectsMap.empty() ) removeCurrentEffects();
+	  // populate the shape arrays
+	  if( mapChanged ) {
+	    //if( settings->isPlayerEnabled() && adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
+	    int csx, cex, csy, cey;
+	    setupShapes(false, false, &csx, &cex, &csy, &cey);
+	    int shapeCount = laterCount + otherCount + damageCount + stencilCount;
 #ifdef SHOW_FPS    
-    if( settings->isPlayerEnabled() ) {
-      snprintf(mapDebugStr, DEBUG_SIZE, "c=%d,%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d zoom=%.2f xrot=%.2f yrot=%.2f zrot=%.2f", 
-			   cursorFlatMapX, cursorFlatMapY + 1,
-			   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
-			   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
-			   (useFrustum ? "*" : ""),
-			   chunkCount, ((cex - csx)*(cey - csy)),
-			   csx, cex, csy, cey, shapeCount, selectedTrapIndex,
-			   zoom, xrot, yrot, zrot );
-      //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
-    } else {
-      snprintf(mapDebugStr, DEBUG_SIZE, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
-              static_cast<int>(currentEffectsMap.size()), (useFrustum ? "*" : ""), chunkCount, ((cex - csx)*(cey - csy)),
-              csx, cex, csy, cey, shapeCount);
-    }
-    adapter->setDebugStr(mapDebugStr);
-#endif    
-  }
+	    if( settings->isPlayerEnabled() ) {
+	      snprintf(mapDebugStr, DEBUG_SIZE, "c=%d,%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d zoom=%.2f xrot=%.2f yrot=%.2f zrot=%.2f", 
+				   cursorFlatMapX, cursorFlatMapY + 1,
+				   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
+				   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
+				   (useFrustum ? "*" : ""),
+				   chunkCount, ((cex - csx)*(cey - csy)),
+				   csx, cex, csy, cey, shapeCount, selectedTrapIndex,
+				   zoom, xrot, yrot, zrot );
+	      //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
+	    } else {
+	      snprintf(mapDebugStr, DEBUG_SIZE, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
+	              static_cast<int>(currentEffectsMap.size()), (useFrustum ? "*" : ""), chunkCount, ((cex - csx)*(cey - csy)),
+	              csx, cex, csy, cey, shapeCount);
+	    }
+	    adapter->setDebugStr(mapDebugStr);
+#endif
+	  }
+	}
 }
 
 void Map::postDraw() {
@@ -2133,6 +2136,7 @@ void Map::setPos( float x, float y, float z ) {
 	this->mapx = x;
 	this->mapy = y;
 	mapChanged = true;
+	//cerr << "MAPCHANGED: setPos" << endl;
 	//lightMapChanged = true;
 }
 
@@ -2235,6 +2239,7 @@ Location *Map::moveCreature(Sint16 x, Sint16 y, Sint16 z, Sint16 nx, Sint16 ny, 
   // no need to actually move data
   if( x == nx && y == ny && z == nz ) {
     resortShapes = mapChanged = true;
+    //cerr << "MAPCHANGED: moveCreature" << endl;
     return NULL;
   }
 
@@ -2389,6 +2394,7 @@ void Map::startEffect(Sint16 x, Sint16 y, Sint16 z, int effect_type, GLuint dura
 
   // need to do this to make sure effect shows up
   resortShapes = mapChanged = true;
+  //cerr << "MAPCHANGED: startEffect" << endl;
 }
 
 void Map::removeEffect(Sint16 x, Sint16 y, Sint16 z) {
@@ -2502,6 +2508,7 @@ void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref
 	outdoorTex[tx][ty][z].height = th;	
 	outdoorTex[tx][ty][z].texture = textureGroup[ Util::dice( faceCount ) ];
 	mapChanged = true;
+	//cerr << "MAPCHANGED: setOutdoorTexture" << endl;
 }
 
 void Map::removeOutdoorTexture( int x, int y, float width, float height, int z ) {
@@ -2510,6 +2517,7 @@ void Map::removeOutdoorTexture( int x, int y, float width, float height, int z )
 	outdoorTex[tx][ty][z].outdoorThemeRef = -1;
 	outdoorTex[tx][ty][z].texture = 0;
 	mapChanged = true;
+	//cerr << "MAPCHANGED: removeOutdoorTexture" << endl;
 }
 
 void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z, 
@@ -2524,7 +2532,7 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	}
 	
 	resortShapes = mapChanged = true;
-	//cerr << "FIXME: Map::setPosition" << endl;
+	//cerr << "MAPCHANGED: setPositionInner" << endl;	
 
 	bool isNonBlockingItem = ( item && !item->isBlocking() && !z && settings->isItemPosEnabled() );
 	Location *p = ( isNonBlockingItem ? itemPos[ x ][ y ] : pos[ x ][ y ][ z ] );
@@ -2619,6 +2627,7 @@ Shape *Map::removePosition(Sint16 x, Sint16 y, Sint16 z) {
 	Shape *shape = NULL;
 	if(pos[x][y][z] && pos[x][y][z]->shape && pos[x][y][z]->x == x && pos[x][y][z]->y == y && pos[x][y][z]->z == z) {
 		resortShapes = mapChanged = true;
+		//cerr << "MAPCHANGED: removePosition" << endl;
 		shape = pos[x][y][z]->shape;
 		if( ((GLShape*)shape)->getEffectType() > -1 ) {
 			int ex = x + ((GLShape*)shape)->getEffectX();
@@ -2667,6 +2676,7 @@ Shape *Map::removeItemPosition( Sint16 x, Sint16 y ) {
 	Shape *shape = NULL;
 	if( itemPos[x][y] && itemPos[x][y]->shape && itemPos[x][y]->x == x && itemPos[x][y]->y == y ) {
 		resortShapes = mapChanged = true;
+		//cerr << "MAPCHANGED: setItemPosition" << endl;
 		shape = itemPos[x][y]->shape;
 		if( ((GLShape*)shape)->getEffectType() > -1 ) {
 			int ex = x + ((GLShape*)shape)->getEffectX();
@@ -2781,6 +2791,7 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy,
 	Location *p = pos[ox][oy][oz];
 	if( creature && creature->getShape() && p && p->creature && p->x == ox && p->y == oy && p->z == oz ) {
 		resortShapes = mapChanged = true;
+		//cerr << "MAPCHANGED: moveCreaturePos" << endl;
 
 		// remove the old pos
 		Location *tmp[MAP_UNIT][MAP_UNIT][MAP_UNIT];
@@ -3275,6 +3286,7 @@ void Map::moveMap(int dir) {
     setZRot(0);
 
 		mapChanged = resortShapes = true;
+		//cerr << "MAPCHANGED: moveMap" << endl;
 		float delta = (SDL_GetModState() & KMOD_SHIFT ? 0.5f : 1.0f);
 		if( mouseMove ) {
 
@@ -4367,6 +4379,7 @@ void Map::addSecretDoor( int x, int y ) {
   int index = y * MAP_WIDTH + x;
   secretDoors[ index ] = false;
   resortShapes = mapChanged = true;
+  //cerr << "MAPCHANGED: addSecretDoor" << endl;
 }
 
 void Map::removeSecretDoor( int x, int y ) {
@@ -4374,6 +4387,7 @@ void Map::removeSecretDoor( int x, int y ) {
   if( secretDoors.find( index ) != secretDoors.end() ) {
     secretDoors.erase( index );
     resortShapes = mapChanged = true;
+    //cerr << "MAPCHANGED: removeSecretDoor" << endl;
   }
 }
 
@@ -5099,6 +5113,7 @@ int Map::addTrap( int x, int y, int w, int h ) {
 
 	trapList.push_back( trap );
   mapChanged = true;
+  //cerr << "MAPCHANGED: addTrap" << endl;
   return trapIndex;
 }
 
@@ -5126,6 +5141,7 @@ void Map::removeTrap( int trapIndex ) {
     }
     trapList.erase( trapList.begin() + trapIndex );
     mapChanged = true;
+    //cerr << "MAPCHANGED: removeTrap" << endl;
   }
 }
 
@@ -5225,4 +5241,15 @@ int Map::generateWeather() {
 		weather = WEATHER_CLEAR;
 	}
 	return weather;
+}
+
+void Map::setRoofShowing( bool b ) { 
+	isRoofShowing = b; 
+	mapChanged = true;
+	//cerr << "MAPCHANGED: setRoofShowing" << endl;
+}
+
+void Map::refresh() { 
+	mapChanged = lightMapChanged = resortShapes = true; 
+	//cerr << "MAPCHANGED: refresh" << endl;
 }
