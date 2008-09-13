@@ -539,6 +539,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
     *cey = chunkEndY;
   }
 
+  set<Location*> seenPos;
   Shape *shape;
   int posX, posY;
   float xpos2, ypos2, zpos2;
@@ -681,47 +682,10 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
               }
 
               Location *location = pos[posX][posY][zp];
-              if( location && location->x == posX && location->y == posY && location->z == zp ) {
-                shape = location->shape;
-                
-
-                // is this shape visible on the edge an chunk in darkness?
-                bool lightEdge = 
-                  ( !checkLightMap( chunkX, chunkY ) && shape && !location->creature &&
-                    ( ( drawSide & Constants::MOVE_DOWN && yp >= MAP_UNIT - MAP_UNIT_OFFSET && shape->getDepth() <= MAP_UNIT_OFFSET ) ||
-                      ( drawSide & Constants::MOVE_UP && yp <= MAP_UNIT_OFFSET && shape->getDepth() <= MAP_UNIT_OFFSET ) ||
-                      ( drawSide & Constants::MOVE_LEFT && xp < MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) ||
-                      ( drawSide & Constants::MOVE_RIGHT && xp >= MAP_UNIT - MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) )
-                    );
-
-                // visible or on the edge or a roof piece
-                if( shape && ( checkLightMap( chunkX, chunkY ) || lightEdge ) ) {
-                	float xdiff = 0;
-                	float ydiff = 0;
-                	float zdiff = 0;
-                  if( location->creature ) {
-                    xdiff = ( location->creature->getX() - static_cast<float>(toint(location->creature->getX())));
-                    ydiff = ( location->creature->getY() - static_cast<float>(toint(location->creature->getY())));
-                    zdiff = 0;
-										location->heightPos = findMaxHeightPos( location->creature->getX(),
-										                                        location->creature->getY(),
-										                                        location->creature->getZ() );
-										xdiff += location->creature->getOffsetX();
-										ydiff += location->creature->getOffsetY();
-										zdiff += location->creature->getOffsetZ(); 
-                  } else {
-                  	xdiff += location->moveX;
-                  	ydiff += location->moveY;
-                  	zdiff += location->moveZ;
-                  }
-                  xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX + xdiff ) / DIV;
-                  ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + yp - shape->getDepth() + chunkOffsetY + ydiff ) / DIV;
-                  zpos2 = static_cast<float>(zp + zdiff) / DIV;
-                  
-                  //if( !useFrustum || frustum->ShapeInFrustum( xpos2, ypos2, zpos2, shape ) ) {
-                  	setupPosition(posX, posY, zp, xpos2, ypos2, zpos2, shape, location->item, location->creature, NULL);
-                  //}
-              	}
+              if( location && seenPos.find( location ) == seenPos.end() ) {
+              	seenPos.insert( location );
+              //if( location && location->x == posX && location->y == posY && location->z == zp ) {
+              	setupLocation( location, drawSide, chunkStartX, chunkStartY, chunkOffsetX, chunkOffsetY );
               }
             }
           }
@@ -729,6 +693,65 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
       }
     }
   }
+}
+
+void Map::setupLocation( Location *location, Uint16 drawSide, int chunkStartX, int chunkStartY, int chunkOffsetX, int chunkOffsetY ) {
+	
+	int posX = location->x;
+	int posY = location->y;
+	
+	int chunkX = ( posX - MAP_OFFSET ) / MAP_UNIT;
+	int chunkY = ( posY - 1 - MAP_OFFSET ) / MAP_UNIT;
+	
+	int xp = ( posX - MAP_OFFSET ) % MAP_UNIT;
+	int yp = ( posY - 1 - MAP_OFFSET ) % MAP_UNIT;	
+	int zp = location->z;
+	
+  
+  
+  //cerr << "posXY=" << location->x << "," << location->y << " chunk=" << chunkX << "," << chunkY << " xpyz=" << xp << "," << yp << "," << zp << endl;
+	
+	Shape *shape = location->shape;
+	
+
+  // is this shape visible on the edge an chunk in darkness?
+  bool lightEdge = false;
+    ( !checkLightMap( chunkX, chunkY ) && shape && !location->creature &&
+    		( ( drawSide & Constants::MOVE_DOWN && yp >= MAP_UNIT - MAP_UNIT_OFFSET && shape->getDepth() <= MAP_UNIT_OFFSET ) ||
+        ( drawSide & Constants::MOVE_UP && yp <= MAP_UNIT_OFFSET && shape->getDepth() <= MAP_UNIT_OFFSET ) ||
+        ( drawSide & Constants::MOVE_LEFT && xp < MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) ||
+        ( drawSide & Constants::MOVE_RIGHT && xp >= MAP_UNIT - MAP_UNIT_OFFSET && shape->getWidth() <= MAP_UNIT_OFFSET ) )
+      );
+
+  // visible or on the edge or a roof piece
+  if( shape && ( checkLightMap( chunkX, chunkY ) || lightEdge ) ) {
+  	float xdiff = 0;
+  	float ydiff = 0;
+  	float zdiff = 0;
+    if( location->creature ) {
+      xdiff = ( location->creature->getX() - static_cast<float>(toint(location->creature->getX())));
+      ydiff = ( location->creature->getY() - static_cast<float>(toint(location->creature->getY())));
+      zdiff = 0;
+			location->heightPos = findMaxHeightPos( location->creature->getX(),
+			                                        location->creature->getY(),
+			                                        location->creature->getZ() );
+			xdiff += location->creature->getOffsetX();
+			ydiff += location->creature->getOffsetY();
+			zdiff += location->creature->getOffsetZ(); 
+    } else {
+    	xdiff += location->moveX;
+    	ydiff += location->moveY;
+    	zdiff += location->moveZ;
+    }
+    float xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX + xdiff ) / DIV;
+    float ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + yp - shape->getDepth() + chunkOffsetY + ydiff ) / DIV;
+    float zpos2 = static_cast<float>(zp + zdiff) / DIV;
+    
+    //if( !useFrustum || frustum->ShapeInFrustum( xpos2, ypos2, zpos2, shape ) ) {
+    	setupPosition(posX, posY, zp, xpos2, ypos2, zpos2, shape, location->item, location->creature, NULL);
+    //}
+	}
+	
 }
 
 void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) {

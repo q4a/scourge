@@ -773,6 +773,7 @@ protected:
                      float xpos2, float ypos2, float zpos2,
                      Shape *shape, RenderedItem *item, RenderedCreature *creature, 
                      EffectLocation *effect, bool itemPos=false);
+  void setupLocation( Location *location, Uint16 drawSide, int chunkStartX, int chunkStartY, int chunkOffsetX, int chunkOffsetY );
 	void drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk );
   void drawGroundPosition(int posX, int posY,
 						  float xpos2, float ypos2,
