@@ -69,17 +69,17 @@ void GLTeleporter::draw() {
 
     glColor4f(1, 1, 1, 1);
 
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     // front
     glNormal3f(0.0f, 0.0f, 1.0f);
     if(flameTex) glTexCoord2f( 0.0f, 0.0f );
     glVertex3f(star[i][0], star[i][1], h);
     if(flameTex) glTexCoord2f( 1.0f, 0.0f );
     glVertex3f(star[i][0] + w, star[i][1], h);
-    if(flameTex) glTexCoord2f( 1.0f, 1.0f );
-    glVertex3f(star[i][0] + w, star[i][1] + d, h);
     if(flameTex) glTexCoord2f( 0.0f, 1.0f );
     glVertex3f(star[i][0], star[i][1] + d, h);
+    if(flameTex) glTexCoord2f( 1.0f, 1.0f );
+    glVertex3f(star[i][0] + w, star[i][1] + d, h);
     glEnd();
 
     glPopMatrix();
@@ -116,17 +116,17 @@ void GLTeleporter::draw() {
     float dist = 1.5f - abs(static_cast<int>(max - ring[i])) / max;
     glColor4f(red, green, blue, dist);
 
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     // front
     glNormal3f(0.0f, 0.0f, 1.0f);
     if(flameTex) glTexCoord2f( 0.0f, 0.0f );
     glVertex3f(0, 0, h);
     if(flameTex) glTexCoord2f( 1.0f, 0.0f );
     glVertex3f(w, 0, h);
-    if(flameTex) glTexCoord2f( 1.0f, 1.0f );
-    glVertex3f(w, d, h);
     if(flameTex) glTexCoord2f( 0.0f, 1.0f );
     glVertex3f(0, d, h);
+    if(flameTex) glTexCoord2f( 1.0f, 1.0f );
+    glVertex3f(w, d, h);
     glEnd();
 
     glPopMatrix();

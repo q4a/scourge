@@ -294,28 +294,28 @@ void ScourgeView::drawOutsideMap() {
 
     glLoadIdentity();
     glTranslatef( scourge->getMap()->getViewWidth(), 0, 0 );
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 0, 0 );
     glVertex2i( 0, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( scourge->getSDLHandler()->getScreen()->w - scourge->getMap()->getViewWidth(), 0 );
     glTexCoord2f( 0, scourge->getSDLHandler()->getScreen()->h / TILE_H );
     glVertex2i( 0, scourge->getSDLHandler()->getScreen()->h );
     glTexCoord2f( 1, scourge->getSDLHandler()->getScreen()->h / TILE_H );
     glVertex2i( scourge->getSDLHandler()->getScreen()->w - scourge->getMap()->getViewWidth(), scourge->getSDLHandler()->getScreen()->h );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( scourge->getSDLHandler()->getScreen()->w - scourge->getMap()->getViewWidth(), 0 );
     glEnd();
 
     glLoadIdentity();
     glTranslatef( 0, scourge->getMap()->getViewHeight(), 0 );
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 0, 0 );
     glVertex2i( 0, 0 );
+    glTexCoord2f( 1, 0 );
+    glVertex2i( scourge->getMap()->getViewWidth(), 0 );
     glTexCoord2f( 0, scourge->getMap()->getViewHeight() / TILE_H );
     glVertex2i( 0, scourge->getMap()->getViewHeight() );
     glTexCoord2f( 1, scourge->getMap()->getViewHeight() / TILE_H );
     glVertex2i( scourge->getMap()->getViewWidth(), scourge->getMap()->getViewHeight() );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( scourge->getMap()->getViewWidth(), 0 );
     glEnd();
 
     glPopMatrix();
@@ -621,16 +621,16 @@ void ScourgeView::drawBorder() {
   glLoadIdentity();
   //glTranslatef(10, -5, 0);
   //glRotatef(20, 0, 0, 1);
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   // top left
   glTexCoord2f (0, 0);
   glVertex2i (0, 0);
+  glTexCoord2f ((1.0f / gw) * (gw - 1), 0);
+  glVertex2i (gw, 0);
   glTexCoord2f (0, 1);
   glVertex2i (0, gh);
   glTexCoord2f ((1.0f / gw) * (gw - 1), 1);
   glVertex2i (gw, gh);
-  glTexCoord2f ((1.0f / gw) * (gw - 1), 0);
-  glVertex2i (gw, 0);
   glEnd();
   glPopMatrix();
 
@@ -639,15 +639,15 @@ void ScourgeView::drawBorder() {
   glLoadIdentity();
   glTranslatef(w - gw, 0, 0);
   //glRotatef(-20, 0, 0, 1);
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f ((1.0f / gw) * (gw - 1), 0);
   glVertex2i (0, 0);
+  glTexCoord2f (0, 0);
+  glVertex2i (gw, 0);
   glTexCoord2f ((1.0f / gw) * (gw - 1), 1);
   glVertex2i (0, gh);
   glTexCoord2f (0, 1);
   glVertex2i (gw, gh);
-  glTexCoord2f (0, 0);
-  glVertex2i (gw, 0);
   glEnd();
 
   glPopMatrix();
@@ -737,16 +737,16 @@ void ScourgeView::drawDisk( float w, float diff ) {
 
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getSelection() );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
 	//glNormal3f( 0, 0, 1 );
 	glTexCoord2f( 0, 0 );
 	glVertex2f( -diff, -diff );
+	glTexCoord2f( 1, 0 );
+	glVertex2f( n + diff, -diff );
 	glTexCoord2f( 0, 1 );
 	glVertex2f( -diff, n + diff );
 	glTexCoord2f( 1, 1 );
 	glVertex2f( n + diff, n + diff );
-	glTexCoord2f( 1, 0 );
-	glVertex2f( n + diff, -diff );
 	glEnd();
 	glDisable( GL_TEXTURE_2D );
 }
@@ -912,16 +912,16 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
         glTranslatef( -7, -7, 0 );
 
 				glBindTexture( GL_TEXTURE_2D, icon );
-        glBegin( GL_QUADS );
+        glBegin( GL_TRIANGLE_STRIP );
         glNormal3f( 0, 0, 1 );
         if(icon) glTexCoord2f( 0, 0 );
         glVertex3f( 0, 0, 0 );
+        if(icon) glTexCoord2f( 1, 0 );
+        glVertex3f( n, 0, 0 );
         if(icon) glTexCoord2f( 0, 1 );
         glVertex3f( 0, n, 0 );
         if(icon) glTexCoord2f( 1, 1 );
         glVertex3f( n, n, 0 );
-        if(icon) glTexCoord2f( 1, 0 );
-        glVertex3f( n, 0, 0 );
         glEnd();
         glPopMatrix();
         count++;
@@ -1230,16 +1230,16 @@ void ScourgeView::drawWeather() {
 	    glEnable( GL_TEXTURE_2D );
 	    glColor4f( 0.6f, 0.6f, 0.6f, 0.5f );
 	    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
-	    glBegin( GL_QUADS );
+	    glBegin( GL_TRIANGLE_STRIP );
 	    glNormal3f( 0, 0, 1 );
 	    glTexCoord2f( 0, 0 );
 	    glVertex2i( 0, 0 );
 	    glTexCoord2f( 1, 0 );
 	    glVertex2i( screenW, 0 );
-	    glTexCoord2f( 1, 1 );
-	    glVertex2i( screenW, screenH );
 	    glTexCoord2f( 0, 1 );
 	    glVertex2i( 0, screenH );
+	    glTexCoord2f( 1, 1 );
+	    glVertex2i( screenW, screenH );
 	    glEnd();
 	    glDisable( GL_TEXTURE_2D );
 	
@@ -1283,16 +1283,16 @@ void ScourgeView::drawWeather() {
 	        glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
 	        glRotatef( 15, 0, 0, 1 );
 	        glEnable( GL_TEXTURE_2D );
-	        glBegin( GL_QUADS );
+	        glBegin( GL_TRIANGLE_STRIP );
 	        glNormal3f( 0, 0, 1 );
 	        glTexCoord2f( 0, 0 );
 	        glVertex2i( 0, 0 );
 	        glTexCoord2f( 1, 0 );
 	        glVertex2i( RAIN_DROP_SIZE, 0 );
-	        glTexCoord2f( 1, 1 );
-	        glVertex2i( RAIN_DROP_SIZE, RAIN_DROP_SIZE );
 	        glTexCoord2f( 0, 1 );
 	        glVertex2i( 0, RAIN_DROP_SIZE );
+	        glTexCoord2f( 1, 1 );
+	        glVertex2i( RAIN_DROP_SIZE, RAIN_DROP_SIZE );
 	        glEnd();
 	        glDisable( GL_TEXTURE_2D );
 	
@@ -1331,16 +1331,16 @@ void ScourgeView::drawWeather() {
               glTranslatef( cloudX[i], cloudY[i], 10 );
               glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
               glEnable( GL_TEXTURE_2D );
-              glBegin( GL_QUADS );
+              glBegin( GL_TRIANGLE_STRIP );
               glNormal3f( 0.0f, 0.0f, 1.0f );
-              glTexCoord2f( 1.0f, 1.0f );
-              glVertex2f( cloudSize[i] * 256.0f, cloudSize[i] * 128.0f );
-              glTexCoord2f( 1.0f, 0.0f );
-              glVertex2f( cloudSize[i] * 256.0f, 0 );
               glTexCoord2f( 0.0f, 0.0f );
               glVertex2f( 0, 0 );
+              glTexCoord2f( 1.0f, 0.0f );
+              glVertex2f( cloudSize[i] * 256.0f, 0 );
               glTexCoord2f( 0.0f, 1.0f );
               glVertex2f( 0, cloudSize[i] * 128.0f );
+              glTexCoord2f( 1.0f, 1.0f );
+              glVertex2f( cloudSize[i] * 256.0f, cloudSize[i] * 128.0f );
               glEnd();
               glDisable( GL_TEXTURE_2D );
 
@@ -1379,16 +1379,16 @@ void ScourgeView::drawWeather() {
 	        glEnable( GL_TEXTURE_2D );
 	        glColor4f( 1, 1, 1, brightness );
 	        glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
-	        glBegin( GL_QUADS );
+	        glBegin( GL_TRIANGLE_STRIP );
 	        glNormal3f( 0, 0, 1 );
 	        glTexCoord2f( 0, 0 );
 	        glVertex2i( 0, 0 );
 	        glTexCoord2f( 1, 0 );
 	        glVertex2i( screenW, 0 );
-	        glTexCoord2f( 1, 1 );
-	        glVertex2i( screenW, screenH );
 	        glTexCoord2f( 0, 1 );
 	        glVertex2i( 0, screenH );
+	        glTexCoord2f( 1, 1 );
+	        glVertex2i( screenW, screenH );
 	        glEnd();
 	        glDisable( GL_TEXTURE_2D );
 	

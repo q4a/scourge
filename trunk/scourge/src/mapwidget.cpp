@@ -147,16 +147,16 @@ void MapWidget::drawWidgetContents(Widget *w) {
                      scourge->getShapePalette()->
                      getMapGridTile( gx + xx, gy + yy ) );
       glColor4f( 1, 1, 1, 1 );
-      glBegin( GL_QUADS );
+      glBegin( GL_TRIANGLE_STRIP );
       glNormal3f( 0, 0, 1 );
       glTexCoord2f( 0, 0 );
       glVertex2f( 0, 0 );
+      glTexCoord2f( 1, 0 );
+      glVertex2d( Constants::MAP_GRID_TILE_PIXEL_WIDTH, 0 );
       glTexCoord2f( 0, 1 );
       glVertex2f( 0, Constants::MAP_GRID_TILE_PIXEL_HEIGHT );
       glTexCoord2f( 1, 1 );
       glVertex2d( Constants::MAP_GRID_TILE_PIXEL_WIDTH, Constants::MAP_GRID_TILE_PIXEL_HEIGHT );
-      glTexCoord2f( 1, 0 );
-      glVertex2d( Constants::MAP_GRID_TILE_PIXEL_WIDTH, 0 );
       glEnd();
       glPopMatrix();
     }
@@ -193,11 +193,11 @@ void MapWidget::drawWidgetContents(Widget *w) {
                 0 );
   glDisable( GL_TEXTURE_2D );
   glColor4f( 1, 0, 0, 0 );
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glVertex2f( 0, 0 );
   glVertex2f( 10, 0 );
-  glVertex2f( 10, 10 );
   glVertex2f( 0, 10 );
+  glVertex2f( 10, 10 );
   glEnd();
   glColor4f( 0, 0, 0, 0 );
   glBegin( GL_LINE_LOOP );

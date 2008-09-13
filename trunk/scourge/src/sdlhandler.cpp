@@ -660,16 +660,16 @@ void SDLHandler::drawCursor() {
   glBindTexture( GL_TEXTURE_2D, 
                  gameAdapter->getCursorTexture( cursorMode ) );
   glColor4f(1, 1, 1, 1);
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
-  glTexCoord2f( 1, 1 );
-  glVertex2f( gameAdapter->getCursorWidth(), gameAdapter->getCursorHeight() );
-  glTexCoord2f( 0, 1 );
-  glVertex2f( 0, gameAdapter->getCursorHeight() );
   glTexCoord2f( 0, 0 );
   glVertex2f( 0, 0 );
   glTexCoord2f( 1, 0 );
   glVertex2f( gameAdapter->getCursorWidth(), 0 );
+  glTexCoord2f( 0, 1 );
+  glVertex2f( 0, gameAdapter->getCursorHeight() );
+  glTexCoord2f( 1, 1 );
+  glVertex2f( gameAdapter->getCursorWidth(), gameAdapter->getCursorHeight() );
   glEnd();
   glPopMatrix();
 
@@ -683,10 +683,10 @@ void SDLHandler::drawCursor() {
   glLoadIdentity();
   glTranslatef( mouseX, mouseY, 0 );
   glColor4f( 1, 1, 1, 1 );
-  glBegin( GL_QUADS );
-  glVertex2f( 0, 10 );
+  glBegin( GL_TRIANGLE_STRIP );
   glVertex2f( 0, 0 );
   glVertex2f( 10, 0 );
+  glVertex2f( 0, 10 );
   glVertex2f( 10, 10 );
   glEnd();
   glPopMatrix();
@@ -838,11 +838,11 @@ void SDLHandler::drawDebugInfo() {
 	glDisable( GL_CULL_FACE );
   glLoadIdentity();
   glColor3f( 0, 0, 0 );
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glVertex2f( 400, 0 );
+  glVertex2f( screen->w, 0 );
   glVertex2f( 400, 12 );
   glVertex2f( screen->w, 12 );
-  glVertex2f( screen->w, 0 );
   glEnd();
 	glEnable( GL_TEXTURE_2D );
   glColor4f( 0.8f, 0.7f, 0.2f, 1.0f );
@@ -867,11 +867,11 @@ void SDLHandler::drawFadeout() {
 										 fadeoutCurrentStep ) / static_cast<float>(fadeoutSteps) ) ) );
 	}
 	glLoadIdentity();
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
+	glVertex2d( 0, 0 );
+	glVertex2d( screen->w, 0 );
 	glVertex2d( 0, screen->h );
 	glVertex2d( screen->w, screen->h );
-	glVertex2d( screen->w, 0 );
-	glVertex2d( 0, 0 );
 	glEnd();
 	
 	glEnable( GL_DEPTH_TEST );
@@ -1066,9 +1066,9 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 	
 	//glColor4f( 0, 0.15f, 0.05f, 0.5 );
 	glColor4f( r, g, b, 0.8f );
-	glBegin( GL_QUADS );
+	glBegin( GL_TRIANGLE_STRIP );
+	glVertex2f( x, y );
 	glVertex2f( x + w, y );
-	glVertex2f( x, y  );
 	glVertex2f( x, y + h );
 	glVertex2f( x + w, y + h );
 	glEnd();

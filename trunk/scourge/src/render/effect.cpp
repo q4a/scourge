@@ -535,13 +535,13 @@ void Effect::drawRing(bool proceed) {
               1.0f, 0.7f);
     if(ringTex) glBindTexture( GL_TEXTURE_2D, ringTex );
     glScalef( n, n, n );
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     // front
     glNormal3f(0.0f, 1.0f, 0.0f);
-    if(ringTex) glTexCoord2f( 1.0f, 1.0f );
-    glVertex3f(r, -r, 0);
     if(ringTex) glTexCoord2f( 0.0f, 1.0f );
     glVertex3f(-r, -r, 0);
+    if(ringTex) glTexCoord2f( 1.0f, 1.0f );
+    glVertex3f(r, -r, 0);
     if(ringTex) glTexCoord2f( 0.0f, 0.0f );
     glVertex3f(-r, r, 0);
     if(ringTex) glTexCoord2f( 1.0f, 0.0f );
@@ -565,13 +565,13 @@ void Effect::drawRipple(bool proceed) {
   glPushMatrix();
   glColor4f( 0.3f, 0.25f, 0.17f, rippleAlpha );
   if(rippleTex) glBindTexture( GL_TEXTURE_2D, rippleTex );
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   // front
   glNormal3f(0.0f, 1.0f, 0.0f);
-  if(ringTex) glTexCoord2f( 1.0f, 1.0f );
-  glVertex3f(r, -r, z);
   if(ringTex) glTexCoord2f( 0.0f, 1.0f );
   glVertex3f(-r, -r, z);
+  if(ringTex) glTexCoord2f( 1.0f, 1.0f );
+  glVertex3f(r, -r, z);
   if(ringTex) glTexCoord2f( 0.0f, 0.0f );
   glVertex3f(-r, r, z);
   if(ringTex) glTexCoord2f( 1.0f, 0.0f );
@@ -739,26 +739,26 @@ void Effect::drawParticle(Particle *particle) {
     
     if( particle->tail ) {
       glColor4f( particle->tailColor.r, particle->tailColor.g, particle->tailColor.b, particle->tailColor.a );
-      glBegin( GL_QUADS );
+      glBegin( GL_TRIANGLE_STRIP );
       //glNormal3f(0.0f, 1.0f, 0.0f);
       glNormal3f( 0, 0, 1 );
-      if(flameTex) glTexCoord2f( 1.0f, 1.0f );
-      glVertex2f(w/2.0f, -sh );
       if(flameTex) glTexCoord2f( 0.0f, 1.0f );
       glVertex2f(-w/2.0f, -sh );
+      if(flameTex) glTexCoord2f( 1.0f, 1.0f );
+      glVertex2f(w/2.0f, -sh );
       if(flameTex) glTexCoord2f( 0.0f, 0.0f );
       glVertex2f(-w/2.0f, 0 );
       if(flameTex) glTexCoord2f( 1.0f, 0.0f );
       glVertex2f(w/2.0f, 0 );  
       glEnd();    
     }
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     //glNormal3f(0.0f, 1.0f, 0.0f);
     glNormal3f( 0, 0, 1 );
-    if(flameTex) glTexCoord2f( 1.0f, 1.0f );
-    glVertex2f(w/2.0f, -h/2.0f);
     if(flameTex) glTexCoord2f( 0.0f, 1.0f );
     glVertex2f(-w/2.0f, -h/2.0f );
+    if(flameTex) glTexCoord2f( 1.0f, 1.0f );
+    glVertex2f(w/2.0f, -h/2.0f);
     if(flameTex) glTexCoord2f( 0.0f, 0.0f );
     glVertex2f(-w/2.0f, h/2.0f );
     if(flameTex) glTexCoord2f( 1.0f, 0.0f );

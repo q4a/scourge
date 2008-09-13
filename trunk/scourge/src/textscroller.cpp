@@ -138,10 +138,10 @@ void TextScroller::draw() {
     glDisable( GL_TEXTURE_2D );
     // glColor4f( 1, 1, 1, 0.25f );
 		glColor4f( 0, 0, 0, 0.5f );
-    glBegin( GL_QUADS );
-    glVertex2d( -margin, height + margin );
+    glBegin( GL_TRIANGLE_STRIP );
     glVertex2d( -margin, 0 );
     glVertex2d( SCROLL_WIDTH + margin, 0 );
+    glVertex2d( -margin, height + margin );
     glVertex2d( SCROLL_WIDTH + margin, height + margin );
     glEnd();
     glColor4f( 0.5f, 0.5f, 0.5f, 1 );
@@ -159,11 +159,11 @@ void TextScroller::draw() {
     glVertex2d( SCROLL_WIDTH + margin - 7, height );
 		glEnd();
 		int ypos = static_cast<int>( ( lineOffset * ( height - 10 ) ) / static_cast<float>( text.size() - 1 ) );
-		glBegin( GL_QUADS );
+		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2d( SCROLL_WIDTH + margin - 10, height - ( ypos + 10 ) );
-    glVertex2d( SCROLL_WIDTH + margin - 10, height - ypos );
-    glVertex2d( SCROLL_WIDTH + margin - 7, height - ypos );
-    glVertex2d( SCROLL_WIDTH + margin - 7, height - ( ypos + 10 ) );
+		glVertex2d( SCROLL_WIDTH + margin - 7, height - ( ypos + 10 ) );
+		glVertex2d( SCROLL_WIDTH + margin - 10, height - ypos );
+		glVertex2d( SCROLL_WIDTH + margin - 7, height - ypos );
 		glEnd();
 
     glEnable( GL_TEXTURE_2D );

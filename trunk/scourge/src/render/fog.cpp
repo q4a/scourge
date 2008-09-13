@@ -303,25 +303,25 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
     glColor4f( 1, 1, 1, 1);
     
     glBindTexture( GL_TEXTURE_2D, overlay_tex );
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     //  glNormal3f(0.0f, 1.0f, 0.0f);
     glTexCoord2f( 0.0f, 0.0f );
     glVertex2f( minLightX, minLightY );
+    glTexCoord2f( 1.0f, 0.0f );
+    glVertex2f( maxLightX, minLightY );
     glTexCoord2f( 0.0f, 1.0f );
     glVertex2f( minLightX, maxLightY );
     glTexCoord2f( 1.0f, 1.0f );
     glVertex2f( maxLightX, maxLightY );
-    glTexCoord2f( 1.0f, 0.0f );
-    glVertex2f( maxLightX, minLightY );
     glEnd();
     glDisable( GL_TEXTURE_2D );
   } else {
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     glVertex2f( 0, 0 );
+    glVertex2f( map->getAdapter()->getScreenWidth(), 0 );
     glVertex2f( 0, map->getAdapter()->getScreenHeight() );
     glVertex2f( map->getAdapter()->getScreenWidth(), 
                 map->getAdapter()->getScreenHeight() );
-    glVertex2f( map->getAdapter()->getScreenWidth(), 0 );
     glEnd();
   }
 
@@ -343,29 +343,29 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
       glBlendFunc(GL_DST_COLOR, GL_ZERO);
       glColor4f( 1, 1, 1, 0.5f );
       glBindTexture( GL_TEXTURE_2D, shade_tex );
-      glBegin( GL_QUADS );
+      glBegin( GL_TRIANGLE_STRIP );
       glTexCoord2f( 0, 0 );
       glVertex2f( x - ( w / 2), y - ( h / 2 ) );
       //glVertex2f( x, y );
+      glTexCoord2f( 1, 0 );
+      glVertex2f( x + w + ( w / 2), y - ( h / 2 ) );
+      //glVertex2f( x + w, y );
       glTexCoord2f( 0, 1 );
       glVertex2f( x - ( w / 2), y + h + ( h / 2 ) );
       //glVertex2f( x, y + h );
       glTexCoord2f( 1, 1 );
       glVertex2f( x + w + ( w / 2), y + h + ( h / 2 ) );
       //glVertex2f( x + w, y + h );
-      glTexCoord2f( 1, 0 );
-      glVertex2f( x + w + ( w / 2), y - ( h / 2 ) );
-      //glVertex2f( x + w, y );
       glEnd();
       glDisable( GL_BLEND );
       glDisable( GL_TEXTURE_2D );
       glColor3f( DARK_R, DARK_G, DARK_B );
     } else {
-      glBegin( GL_QUADS );
+      glBegin( GL_TRIANGLE_STRIP );
       glVertex2f( x, y );
+      glVertex2f( x + w, y );
       glVertex2f( x, y + h );
       glVertex2f( x + w, y + h );
-      glVertex2f( x + w, y );
       glEnd();
     }
   }
