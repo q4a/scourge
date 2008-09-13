@@ -273,6 +273,7 @@ private:
   int weather;
   
   std::set<Location*> gates, teleporters;
+  std::map<RenderedCreature*, DrawLater*> creatureMap;
 
  public:
   bool useFrustum;
@@ -797,6 +798,18 @@ protected:
   void moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz,
                        Sint16 ox, Sint16 oy, Sint16 oz,
                        RenderedCreature *creature);
+  
+  void calculateChunkInfo( int *chunkOffsetX, int *chunkOffsetY,
+                           int *chunkStartX, int *chunkStartY,
+                           int *chunkEndX, int *chunkEndY );
+  void calculateLocationInfo( Location *location, 
+                              int chunkStartX, int chunkStartY, 
+                              int chunkOffsetX, int chunkOffsetY,
+                              Uint16 drawSide,
+                              int *posX, int *posY, int *posZ, 
+                              float *xpos, float *ypos, float *zpos,
+                              int *chunkX, int *chunkY,
+                              bool *lightEdge );  
 
   void drawWater();
 
