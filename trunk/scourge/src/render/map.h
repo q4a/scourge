@@ -292,7 +292,7 @@ private:
 	inline bool areQuakesEnabled() { return quakesEnabled; }
 	void quake();
 	
-	inline void setRoofShowing( bool b ) { isRoofShowing = b; mapChanged = true; }
+	void setRoofShowing( bool b );
 	inline bool getRoofShowing() { return isRoofShowing; }
 
 	inline bool getCurrentlyUnderRoof() { return isCurrentlyUnderRoof; }
@@ -523,7 +523,7 @@ private:
 
   inline void updateLightMap() { lightMapChanged = resortShapes = true; }
 
-  inline void refresh() { mapChanged = lightMapChanged = resortShapes = true; }
+  void refresh();
 
   inline void refreshTransparency() { resortShapes = true; }
 
