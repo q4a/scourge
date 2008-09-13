@@ -1222,11 +1222,11 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   glDisable( GL_TEXTURE_2D );
   glColor4f( 0, 0, 0, 0 );
   
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glVertex3f( 0, 0, 0 );
+  glVertex3f( textureSizeW, 0, 0 );
   glVertex3f( 0, textureSizeH, 0 );
   glVertex3f( textureSizeW, textureSizeH, 0 );
-  glVertex3f( textureSizeW, 0, 0 );
   glEnd();
   
   glEnable( GL_TEXTURE_2D );
@@ -1241,16 +1241,16 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   glBindTexture( GL_TEXTURE_2D, sampleTex );
   glColor4f(1, 1, 1, 1);
   
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( width, 0, 0 );
   glTexCoord2f( 0, 1 );
   glVertex3f( 0, height, 0 );
   glTexCoord2f( 1, 1 );
   glVertex3f( width, height, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( width, 0, 0 );
   glEnd();
 
   //glDisable( GL_ALPHA_TEST );
@@ -1264,16 +1264,16 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   glColor4f(1, 1, 1, 1);
 
   glBindTexture( GL_TEXTURE_2D, alphaTex );      
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( width, 0, 0 );
   glTexCoord2f( 0, 1 );
   glVertex3f( 0, height, 0 );
   glTexCoord2f( 1, 1 );
   glVertex3f( width, height, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( width, 0, 0 );
   glEnd();	  
   
   glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
@@ -1299,11 +1299,11 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   // todo: this should be the original background, not black
   glDisable( GL_TEXTURE_2D );
   glColor4f(0, 0, 0, 0);
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glVertex3f( 0, 0, 0 );
+  glVertex3f( width, 0, 0 );
   glVertex3f( 0, height, 0 );
   glVertex3f( width, height, 0 );
-  glVertex3f( width, 0, 0 );
   glEnd();
   glPopMatrix();    
 

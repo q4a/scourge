@@ -87,11 +87,11 @@ void MiniMap::prepare() {
   for( int x = 0; x < textureSizeW; x++ ) {
     for( int y = 0; y < textureSizeH; y++ ) {
       glColor3f( 0, 0, 0 );
-      glBegin( GL_QUADS );
+      glBegin( GL_TRIANGLE_STRIP );
       glVertex2f( x, y );
+      glVertex2f( x + 1, y );
       glVertex2f( x, y + 1 );
       glVertex2f( x + 1, y + 1 );
-      glVertex2f( x + 1, y );
       glEnd();
     }
   }
@@ -100,10 +100,10 @@ void MiniMap::prepare() {
       Location *pos = scourge->getSession()->getMap()->getLocation( x + MAP_OFFSET, y + MAP_OFFSET, 0 );
       if( pos && pos->shape && !pos->shape->isInteractive() && !( pos->item ) && !( pos->creature ) ) {
         glColor3f( 1, 1, 1 );
-        glBegin( GL_QUADS );
-        glVertex2f( x, textureSizeH - y );
+        glBegin( GL_TRIANGLE_STRIP );
         glVertex2f( x, textureSizeH - (y + 1) );
         glVertex2f( x + 1, textureSizeH - (y + 1) );
+        glVertex2f( x, textureSizeH - y );
         glVertex2f( x + 1, textureSizeH - y );
         glEnd();
       }
@@ -185,15 +185,15 @@ void MiniMap::drawMap() {
     glEnable(GL_TEXTURE_2D);
     glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getMinimapMaskTexture() );
     glColor4f( 1, 1, 1, 1 );
-    glBegin( GL_QUADS );   
+    glBegin( GL_TRIANGLE_STRIP );   
+    glTexCoord2f( 0, 0 );
+    glVertex2d( 0, 0 );     
+    glTexCoord2f( 1, 0 );
+    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 ); 
     glTexCoord2f( 0, 1 );
     glVertex2d( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
     glTexCoord2f( 1, 1 );
     glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
-    glTexCoord2f( 1, 0 );
-    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 ); 
-    glTexCoord2f( 0, 0 );
-    glVertex2d( 0, 0 );     
     glEnd();       
     glDisable(GL_TEXTURE_2D); 
     glDisable( GL_ALPHA_TEST );
@@ -213,15 +213,15 @@ void MiniMap::drawMap() {
     glEnable(GL_TEXTURE_2D);
     glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getMinimapMaskTexture() );
     glColor4f( 0, 0, 0, 0.5f );
-    glBegin( GL_QUADS );   
+    glBegin( GL_TRIANGLE_STRIP );   
+    glTexCoord2f( 0, 0 );
+    glVertex2d( 0, 0 );     
+    glTexCoord2f( 1, 0 );
+    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 ); 
     glTexCoord2f( 0, 1 );
     glVertex2d( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
     glTexCoord2f( 1, 1 );
     glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
-    glTexCoord2f( 1, 0 );
-    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 ); 
-    glTexCoord2f( 0, 0 );
-    glVertex2d( 0, 0 );     
     glEnd();       
     glDisable(GL_TEXTURE_2D); 
     glPopMatrix();
@@ -249,16 +249,16 @@ void MiniMap::drawMap() {
     float tex = ( sx - MAP_OFFSET + MINI_MAP_SIZE ) / div;
     float tey = ( sy - yoffs + MINI_MAP_SIZE ) / div;
     
-    glBegin(GL_QUADS); 
+    glBegin(GL_TRIANGLE_STRIP); 
     glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+    glTexCoord2f( tsx, tsy );
+    glVertex2d( 0, 0 );     
+    glTexCoord2f( tex, tsy );
+    glVertex2d( w, 0 ); 
     glTexCoord2f( tsx, tey );
     glVertex2d( 0, h ); 
     glTexCoord2f( tex, tey );
     glVertex2d( w, h ); 
-    glTexCoord2f( tex, tsy );
-    glVertex2d( w, 0 ); 
-    glTexCoord2f( tsx, tsy );
-    glVertex2d( 0, 0 );     
     glEnd();       
     glDisable(GL_TEXTURE_2D); 
     glPopMatrix();
@@ -341,11 +341,11 @@ void MiniMap::drawMap() {
           float xp = ( x - sx ) * MINI_MAP_BLOCK;
           float yp = ( y - sy ) * MINI_MAP_BLOCK;
 
-          glBegin( GL_QUADS );
+          glBegin( GL_TRIANGLE_STRIP );
           glVertex2f( xp, yp );
+          glVertex2f( xp + MINI_MAP_BLOCK, yp );
           glVertex2f( xp, yp + MINI_MAP_BLOCK );
           glVertex2f( xp + MINI_MAP_BLOCK, yp + MINI_MAP_BLOCK );
-          glVertex2f( xp + MINI_MAP_BLOCK, yp );
           glEnd();
         }
       }
@@ -365,15 +365,15 @@ void MiniMap::drawMap() {
     glEnable(GL_TEXTURE_2D);
     glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getMinimapTexture() );
     glColor4f( 1, 1, 1, 1 );
-    glBegin( GL_QUADS );   
+    glBegin( GL_TRIANGLE_STRIP );   
+    glTexCoord2f( 0, 0 );
+    glVertex2d( 0, 0 );     
+    glTexCoord2f( 1, 0 );
+    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 ); 
     glTexCoord2f( 0, 1 );
     glVertex2d( 0, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
     glTexCoord2f( 1, 1 );
     glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, MINI_MAP_SIZE * MINI_MAP_BLOCK ); 
-    glTexCoord2f( 1, 0 );
-    glVertex2d( MINI_MAP_SIZE * MINI_MAP_BLOCK, 0 ); 
-    glTexCoord2f( 0, 0 );
-    glVertex2d( 0, 0 );     
     glEnd();       
     glDisable(GL_TEXTURE_2D); 
     glDisable( GL_ALPHA_TEST );
@@ -408,11 +408,11 @@ void MiniMap::drawPointers( std::set<Location*> *p, Color color ) {
   	float nx = r + ( r - 10 ) * Constants::cosFromAngle( angle ) - 5;
   	float ny = r + ( r - 10 ) * Constants::sinFromAngle( angle );
   	glColor4f( color.r, color.g, color.b, color.a );
-    glBegin( GL_QUADS );   
+    glBegin( GL_TRIANGLE_STRIP );   
+    glVertex2d( nx, ny );     
+    glVertex2d( nx + 4, ny ); 
     glVertex2d( nx, ny + 4 ); 
     glVertex2d( nx + 4, ny + 4 ); 
-    glVertex2d( nx + 4, ny ); 
-    glVertex2d( nx, ny );     
     glEnd();
     glColor4f( 0, 0, 0, 1 );
     glBegin( GL_LINE_LOOP );   

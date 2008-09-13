@@ -198,32 +198,32 @@ void GLCaveShape::drawFaces() {
 void GLCaveShape::drawBlock( float w, float h, float d ) {
   if( useShadow ) return;
   glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::TOP_SIDE ] );
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, h );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( w, 0, h );
   glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, h );
   glTexCoord2f( 1, 1 );
   glVertex3f( w, d, h );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, h );
   glEnd();
 }
 
 void GLCaveShape::drawFloor( float w, float h, float d ) {
   if( useShadow ) return;
   glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::TOP_SIDE ] );
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, h );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( w, 0, h );
   glTexCoord2f( 0, 1 );
   glVertex3f( 0, d, h );
   glTexCoord2f( 1, 1 );
   glVertex3f( w, d, h );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( w, 0, h );
   glEnd();
 }
 
@@ -248,16 +248,16 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::FRONT_SIDE ] );
   glColor4f(  1, 1, 1, 0.75f );
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0 + lavaTexX, 0 + lavaTexY );
   glVertex3f( 0, 0, n );
+  glTexCoord2f( 1 + lavaTexX, 0 + lavaTexY );
+  glVertex3f( w, 0, n );
   glTexCoord2f( 0 + lavaTexX, 1 + lavaTexY );
   glVertex3f( 0, d, n );
   glTexCoord2f( 1 + lavaTexX, 1 + lavaTexY );
   glVertex3f( w, d, n );
-  glTexCoord2f( 1 + lavaTexX, 0 + lavaTexY );
-  glVertex3f( w, 0, n );
   glEnd();
   glDisable( GL_BLEND );
 
@@ -269,16 +269,16 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
     glRotatef( stencilAngle, 0, 0, 1 );
     glTranslatef( -( w / 2 ), -( d / 2 ), 0 );    
     glBindTexture( GL_TEXTURE_2D, floorTex[ stencilIndex ] );
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     glNormal3f( 0, 0, 1 );
     glTexCoord2f( 0, 0 );
     glVertex3f( 0, 0, n );
+    glTexCoord2f( 1, 0 );
+    glVertex3f( w, 0, n );
     glTexCoord2f( 0, 1 );
     glVertex3f( 0, d, n );
     glTexCoord2f( 1, 1 );
     glVertex3f( w, d, n );
-    glTexCoord2f( 1, 0 );
-    glVertex3f( w, 0, n );
     glEnd();
     glPopMatrix();    
     //glDisable( GL_BLEND );

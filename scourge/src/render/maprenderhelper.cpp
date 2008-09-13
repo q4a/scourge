@@ -170,16 +170,16 @@ void RoomRenderHelper::draw( int x, int y, int w, int h ) {
     glColor4f( 1, 1, 1, 0.5f);
     
     glBindTexture( GL_TEXTURE_2D, overlay_tex );
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_STRIP );
     //  glNormal3f(0.0f, 1.0f, 0.0f);
     glTexCoord2f( 0.0f, 0.0f );
     glVertex3f(0, 0, 0);
+    glTexCoord2f( 1.0f, 0.0f );
+    glVertex3f(getMap()->getViewWidth(), 0, 0);
     glTexCoord2f( 0.0f, 1.0f );
     glVertex3f(0, getMap()->getViewHeight(), 0);
     glTexCoord2f( 1.0f, 1.0f );
     glVertex3f(getMap()->getViewWidth(), getMap()->getViewHeight(), 0);
-    glTexCoord2f( 1.0f, 0.0f );
-    glVertex3f(getMap()->getViewWidth(), 0, 0);
     glEnd();
     
     //glEnable( GL_TEXTURE_2D );

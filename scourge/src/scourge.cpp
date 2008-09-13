@@ -2258,16 +2258,16 @@ void Scourge::drawWidgetContents(Widget *w) {
             }
             glColor4f(1, 1, 1, 1);
 
-            glBegin( GL_QUADS );
+            glBegin( GL_TRIANGLE_STRIP );
             glNormal3f( 0, 0, 1 );
             glTexCoord2f( 0, 0 );
             glVertex3f( 0, 0, 0 );
+            glTexCoord2f( 1, 0 );
+            glVertex3f( w->getWidth(), 0, 0 );
             glTexCoord2f( 0, 1 );
             glVertex3f( 0, w->getHeight(), 0 );
             glTexCoord2f( 1, 1 );
             glVertex3f( w->getWidth(), w->getHeight(), 0 );
-            glTexCoord2f( 1, 0 );
-            glVertex3f( w->getWidth(), 0, 0 );
             glEnd();
             glPopMatrix();
 
@@ -2294,16 +2294,16 @@ void Scourge::drawItemIcon( Item *item, int n ) {
   glColor4f(1, 1, 1, 1);
   glPushMatrix();
   //glTranslatef( 0, 5, 0 );
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
+  glTexCoord2f( 1, 0 );
+  glVertex3f( n, 0, 0 );
   glTexCoord2f( 0, 1 );
   glVertex3f( 0, n, 0 );
   glTexCoord2f( 1, 1 );
   glVertex3f( n, n, 0 );
-  glTexCoord2f( 1, 0 );
-  glVertex3f( n, 0, 0 );
   glEnd();
   glDisable( GL_ALPHA_TEST );
   glDisable( GL_TEXTURE_2D );
@@ -2353,16 +2353,16 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
   } else {
     glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() ) );
   }
-  glBegin( GL_QUADS );
+  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
   glTexCoord2f( 0, 0 );
   glVertex2i( -offs_x, -offs_y );
   glTexCoord2f( 1, 0 );
   glVertex2i( width - offs_x, -offs_y );
-  glTexCoord2f( 1, 1 );
-  glVertex2i( width - offs_x, height - offs_y );
   glTexCoord2f( 0, 1 );
   glVertex2i( -offs_x, height - offs_y );
+  glTexCoord2f( 1, 1 );
+  glVertex2i( width - offs_x, height - offs_y );
   glEnd();
   glDisable( GL_TEXTURE_2D );
 
@@ -2405,11 +2405,11 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 		if( shade ) {
 			glEnable( GL_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			glBegin( GL_QUADS );
+			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( 0, 0 );
 			glVertex2i( width, 0 );
-			glVertex2i( width, height );
 			glVertex2i( 0, height );
+			glVertex2i( width, height );
 			glEnd();
 			glDisable( GL_BLEND );
 		}
@@ -2437,11 +2437,11 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 			glTranslatef( 3, 14, 0 );
 			glEnable( GL_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			glBegin( GL_QUADS );
+			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2i( 0, 0 );
 			glVertex2i( 40, 0 );
-			glVertex2i( 40, 13 );
 			glVertex2i( 0, 13 );
+			glVertex2i( 40, 13 );
 			glEnd();
 			glDisable( GL_BLEND );
 			glPopMatrix();
@@ -2465,16 +2465,16 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 				glColor4f( color.r, color.g, color.b, color.a );
 				glPushMatrix();
 				glTranslatef( 5 + xp * (n + 1), height - (yp * (n + 1)) - n, 0 );
-				glBegin( GL_QUADS );
+				glBegin( GL_TRIANGLE_STRIP );
 				glNormal3f( 0, 0, 1 );
 				glTexCoord2f( 0, 0 );
 				glVertex3f( 0, 0, 0 );
+				glTexCoord2f( 1, 0 );
+				glVertex3f( n, 0, 0 );
 				glTexCoord2f( 0, 1 );
 				glVertex3f( 0, n, 0 );
 				glTexCoord2f( 1, 1 );
 				glVertex3f( n, n, 0 );
-				glTexCoord2f( 1, 0 );
-				glVertex3f( n, 0, 0 );
 				glEnd();
 				glPopMatrix();
 				xp++;
@@ -3556,13 +3556,13 @@ void Scourge::renderHandAttackIcon( int x, int y, int size ) {
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 	glBindTexture( GL_TEXTURE_2D, getShapePalette()->getHandsAttackIcon() );
-	glBegin( GL_QUADS );
-	glTexCoord2d( 0, 1 );
-	glVertex2d( x, y + size );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( x, y );
 	glTexCoord2d( 1, 0 );
 	glVertex2d( x + size, y );
+	glTexCoord2d( 0, 1 );
+	glVertex2d( x, y + size );
 	glTexCoord2d( 1, 1 );
 	glVertex2d( x + size, y + size );
 	glEnd();
