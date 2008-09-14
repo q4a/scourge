@@ -810,6 +810,7 @@ protected:
                               float *xpos, float *ypos, float *zpos,
                               int *chunkX, int *chunkY,
                               bool *lightEdge );  
+  bool checkUnderRoof();
 
   void drawWater();
 

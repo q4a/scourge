@@ -254,6 +254,8 @@ Map::~Map(){
 }
 
 void Map::reset() {
+	creatureMap.clear();
+	
 	roofAlphaUpdate = 0;
 	roofAlpha = 1;
 		
@@ -510,6 +512,7 @@ bool Map::checkLightMap( int chunkX, int chunkY ) {
 void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *csy, int *cey) {
   if(!forGround && !forWater) {
     laterCount = stencilCount = otherCount = damageCount = roofCount = 0;
+    creatureMap.clear();
     trapSet.clear();
     mapChanged = false;
   }
@@ -635,28 +638,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 							setupPosition( posX, posY, 0, xpos2, ypos2, 0, shape, itemPos[posX][posY]->item, NULL, NULL, true );
 						}
 
-          	// skip roofs if inside
-						bool oldRoof = isCurrentlyUnderRoof;
-						isCurrentlyUnderRoof = true;
-						if( settings->isGridShowing() ) {
-							isCurrentlyUnderRoof = !isRoofShowing;
-						} else if( adapter->getPlayer() ) {
-							int px = toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 );
-							int py = toint( adapter->getPlayer()->getY() - 1 - adapter->getPlayer()->getShape()->getDepth() / 2 );
-							//int fx = ( ( px - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
-							//int fy = ( ( py - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET + MAP_UNIT;
-							Location *roof = getLocation( px, py, MAP_WALL_HEIGHT );
-							if( !( roof && roof->shape && roof->shape->isRoof() ) ) {
-								isCurrentlyUnderRoof = false;
-							}
-						}
-						if( isCurrentlyUnderRoof != oldRoof ) {
-							resortShapes = true;
-							//roofAlphaUpdate = 0;
-							//roofAlpha = 1;
-						}
-          	//int maxZ = ( isCurrentlyUnderRoof ? MAP_WALL_HEIGHT : MAP_VIEW_HEIGHT );          	
-          	
+						checkUnderRoof();
 						
             for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
               if( checkLightMap( chunkX, chunkY ) && effect[posX][posY][zp] && !effect[posX][posY][zp]->isInDelay() ) {
@@ -680,6 +662,27 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
       }
     }
   }
+}
+
+/**
+ * Update the "under the roof" status.
+ * Return true if the "under the roof" status has changed.
+ */
+bool Map::checkUnderRoof() {
+	// skip roofs if inside
+	bool oldRoof = isCurrentlyUnderRoof;
+	isCurrentlyUnderRoof = true;
+	if( settings->isGridShowing() ) {
+		isCurrentlyUnderRoof = !isRoofShowing;
+	} else if( adapter->getPlayer() ) {
+		int px = toint( adapter->getPlayer()->getX() + adapter->getPlayer()->getShape()->getWidth() / 2 );
+		int py = toint( adapter->getPlayer()->getY() - 1 - adapter->getPlayer()->getShape()->getDepth() / 2 );
+		Location *roof = getLocation( px, py, MAP_WALL_HEIGHT );
+		if( !( roof && roof->shape && roof->shape->isRoof() ) ) {
+			isCurrentlyUnderRoof = false;
+		}
+	}
+	return ( isCurrentlyUnderRoof != oldRoof );
 }
 
 void Map::setupLocation( Location *location, Uint16 drawSide, int chunkStartX, int chunkStartY, int chunkOffsetX, int chunkOffsetY ) {
@@ -2818,38 +2821,48 @@ void Map::moveCreaturePos(Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy,
 		// resortShapes = mapChanged = true;
 		DrawLater *later = creatureMap[creature];
 		if( later ) {
-			//cerr << "*** adjusting rendering info for " << creature->getName() << endl;
-			// resort shapes if the player moved
-			if( adapter->getPlayer() == creature ) {
-				//cerr << "*** player moved" << endl;
-				resortShapes = true;
+			if( later->creature != creature ) {
+				cerr << "*** Error: creatureMap is damaged!!! creature=" << creature->getName() << endl;
+				cerr << "\tlocation: shape=" << ( later->shape ? later->shape->getName() : "null" ) <<
+				" item=" << ( later->item ? later->item->getItemName() : "null" ) <<
+				" creature=" << ( later->creature ? later->creature->getName() : "null" ) <<
+				endl;
+				//creatureMap.clear();
+				resortShapes = mapChanged = true;
+			} else {
+				//cerr << "*** adjusting rendering info for " << creature->getName() << endl;
+				// resort shapes if the player moved
+				if( adapter->getPlayer() == creature ) {
+					checkUnderRoof();
+					//cerr << "*** player moved" << endl;
+					resortShapes = true;
+				}
+				
+				int chunkOffsetX, chunkOffsetY; 
+				int chunkStartX, chunkStartY; 
+				int chunkEndX, chunkEndY;
+				calculateChunkInfo( &chunkOffsetX, &chunkOffsetY, &chunkStartX, &chunkStartY, &chunkEndX, &chunkEndY );
+				
+				Location *location = pos[nx][ny][nz];
+				int posX, posY, posZ;
+				bool lightEdge;
+				float xpos2, ypos2, zpos2;
+				int chunkX, chunkY;
+				calculateLocationInfo( location, chunkStartX, chunkStartY, chunkOffsetX, chunkOffsetY, 0,
+				                                 &posX, &posY, &posZ, &xpos2, &ypos2, &zpos2,
+				                                 &chunkX, &chunkY, &lightEdge );			
+	
+				location->heightPos = findMaxHeightPos( location->creature->getX(),
+				                                        location->creature->getY(),
+				                                        location->creature->getZ() );
+	    	later->xpos = xpos2;
+	      later->ypos = ypos2;
+	      later->zpos = zpos2;
+	      //later->pos = location;
+	      //later->inFront = false;
+				later->x = posX;
+				later->y = posY;
 			}
-			
-			int chunkOffsetX, chunkOffsetY; 
-			int chunkStartX, chunkStartY; 
-			int chunkEndX, chunkEndY;
-			calculateChunkInfo( &chunkOffsetX, &chunkOffsetY, &chunkStartX, &chunkStartY, &chunkEndX, &chunkEndY );
-			
-			Location *location = pos[nx][ny][nz];
-			int posX, posY, posZ;
-			bool lightEdge;
-			float xpos2, ypos2, zpos2;
-			int chunkX, chunkY;
-			calculateLocationInfo( location, chunkStartX, chunkStartY, chunkOffsetX, chunkOffsetY, 0,
-			                                 &posX, &posY, &posZ, &xpos2, &ypos2, &zpos2,
-			                                 &chunkX, &chunkY, &lightEdge );			
-
-			location->heightPos = findMaxHeightPos( location->creature->getX(),
-			                                        location->creature->getY(),
-			                                        location->creature->getZ() );
-		    
-    	later->xpos = xpos2;
-      later->ypos = ypos2;
-      later->zpos = zpos2;
-      later->pos = location;
-      later->inFront = false;
-			later->x = posX;
-			later->y = posY;			
 		}
 	}
 }
