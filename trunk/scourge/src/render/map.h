@@ -178,7 +178,7 @@ private:
   EffectLocation *effect[MAP_WIDTH][MAP_DEPTH][MAP_VIEW_HEIGHT];
   Location *posCache[MAX_POS_CACHE];
   signed int nbPosCache;
-	Rug rugPos[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
+	Rug rugPos[MAP_CHUNKS_X][MAP_CHUNKS_Y];
   Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
   struct WaterTile {
     float z[WATER_TILE_X][WATER_TILE_Y];
@@ -197,7 +197,7 @@ private:
   static const int Y_CENTER_TOLERANCE = 8;
 
   bool lightMapChanged;
-  int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
+  int lightMap[MAP_CHUNKS_X][MAP_CHUNKS_Y];
   bool groundVisible;
   
   // FIXME: either make this value adjustable or find a faster way to blast it onscreen?
@@ -210,7 +210,7 @@ private:
   bool colorAlreadySet;
   Location *selectedDropTarget;
 
-  int accessMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT];
+  int accessMap[MAP_CHUNKS_X][MAP_CHUNKS_Y];
   std::map<Uint32, bool> locked;
   std::map<Uint32, Uint32> doorToKey;
   std::map<Uint32, Uint32> keyToDoor;
@@ -252,7 +252,7 @@ private:
 	bool quakesEnabled;
 
 	bool heightMapEnabled;
-	OutdoorTexture outdoorTex[MAP_WIDTH / OUTDOORS_STEP][MAP_DEPTH / OUTDOORS_STEP][MAX_OUTDOOR_LAYER];
+	OutdoorTexture outdoorTex[MAP_TILES_X][MAP_TILES_Y][MAX_OUTDOOR_LAYER];
 	float ground[MAP_WIDTH][MAP_DEPTH];
 	GLuint groundTex[MAP_WIDTH][MAP_DEPTH];
 	bool refreshGroundPos;
@@ -785,7 +785,7 @@ protected:
   Shape *isWall(int x, int y, int z);
 
   void configureLightMap();
-  void traceLight(int chunkX, int chunkY, int lightMap[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT], bool onlyLockedDoors);
+  void traceLight(int chunkX, int chunkY, int lightMap[MAP_CHUNKS_X][MAP_CHUNKS_Y], bool onlyLockedDoors);
   bool isLocationBlocked(int x, int y, int z, bool onlyLockedDoors);
 
   void drawProjectiles();

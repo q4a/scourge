@@ -162,7 +162,7 @@ struct MapInfo {
 	Uint8 reference_type;
   LocationInfo *pos[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
 	Uint32 rug_count;
-	RugInfo *rugPos[ ( MAP_WIDTH / MAP_UNIT ) * ( MAP_DEPTH / MAP_UNIT ) ];
+	RugInfo *rugPos[ ( MAP_CHUNKS_X ) * ( MAP_CHUNKS_Y ) ];
 	Uint8 hasWater;
 	Uint32 locked_count;
 	LockedInfo *locked[ MAP_WIDTH * MAP_DEPTH * MAP_VIEW_HEIGHT ];
@@ -173,11 +173,11 @@ struct MapInfo {
 	FogInfo fog_info;
 	Uint8 edited;
 	Uint8 heightMapEnabled;
-	Uint32 ground[ MAP_WIDTH / OUTDOORS_STEP ][ MAP_DEPTH / OUTDOORS_STEP ];
+	Uint32 ground[ MAP_TILES_X ][ MAP_TILES_Y ];
 	Uint8 trapCount;
 	TrapInfo *trap[ 255 ];
 	Uint32 outdoorTextureInfoCount;
-	OutdoorTextureInfo *outdoorTexture[ ( MAP_WIDTH / OUTDOORS_STEP ) * ( MAP_DEPTH / OUTDOORS_STEP ) ];
+	OutdoorTextureInfo *outdoorTexture[ ( MAP_TILES_X ) * ( MAP_TILES_Y ) ];
 };
 
 struct MissionInfo {
