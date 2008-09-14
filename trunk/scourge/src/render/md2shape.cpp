@@ -80,10 +80,10 @@ void MD2Shape::draw() {
   glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 
   // move to the middle of the space
-  //glTranslatef( (static_cast<float>(width) / DIV) / 2.0f, 
-                //0.25f / DIV, 
-                //-(static_cast<float>(depth) / DIV) / 2.0f );
-  glTranslatef( (static_cast<float>(width) / 2.0f) / DIV, 0.25f / DIV, -((static_cast<float>(depth) / 2.0f) / DIV ) );
+  //glTranslatef( (static_cast<float>(width) * MUL) / 2.0f, 
+                //0.25f * MUL, 
+                //-(static_cast<float>(depth) * MUL) / 2.0f );
+  glTranslatef( (static_cast<float>(width) / 2.0f) * MUL, 0.25f * MUL, -((static_cast<float>(depth) / 2.0f) * MUL ) );
 
   // rotate to movement angle
   glRotatef(getAngle() - 90, 0.0f, 1.0f, 0.0f);
@@ -120,7 +120,7 @@ void MD2Shape::outline( float r, float g, float b ) {
 	glPushMatrix();
   // rotate to upright
   glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-  glTranslatef( (static_cast<float>(width) / 2.0f) / DIV, 0.25f / DIV, -((static_cast<float>(depth) / 2.0f) / DIV ) );
+  glTranslatef( (static_cast<float>(width) / 2.0f) * MUL, 0.25f * MUL, -((static_cast<float>(depth) / 2.0f) * MUL ) );
 
   // rotate to movement angle
   glRotatef(getAngle() - 90, 0.0f, 1.0f, 0.0f);

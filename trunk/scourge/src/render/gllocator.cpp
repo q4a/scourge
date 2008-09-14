@@ -29,9 +29,9 @@ GLLocator::~GLLocator() {
 }
 
 void GLLocator::draw() {
-    float w = static_cast<float>(width) / DIV;
-    float d = static_cast<float>(depth) / DIV;
-    float h = 0.26f / DIV;
+    float w = static_cast<float>(width) * MUL;
+    float d = static_cast<float>(depth) * MUL;
+    float h = 0.26f * MUL;
 
     glDisable( GL_TEXTURE_2D );
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);

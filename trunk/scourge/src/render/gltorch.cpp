@@ -56,11 +56,11 @@ void GLTorch::draw() {
       // create a new particle
       particle[i] = new ParticleStruct();
       if(isSpell) {
-        particle[i]->x = Util::roll( 0.0f, width / 5.0f / DIV );
-        particle[i]->y = Util::roll( 0.0f, depth / 5.0f / DIV );
+        particle[i]->x = Util::roll( 0.0f, width / 5.0f * MUL );
+        particle[i]->y = Util::roll( 0.0f, depth / 5.0f * MUL );
       } else {
-        particle[i]->x = Util::roll( 0.0f, width / DIV );
-        particle[i]->y = Util::roll( 0.0f, depth / DIV );
+        particle[i]->x = Util::roll( 0.0f, width * MUL );
+        particle[i]->y = Util::roll( 0.0f, depth * MUL );
       }
       particle[i]->z = 0.0f;
       particle[i]->height = Util::roll( 10.0f, 35.0f );
@@ -79,16 +79,16 @@ void GLTorch::draw() {
       // save the model_view matrix
       glPushMatrix();
 
-      w = static_cast<float>(width / DIV) / 2.0;
-      //float d = static_cast<float>(depth / DIV) / 2.0;
-      h = static_cast<float>(height / DIV) / 2.5;
-      if(h == 0) h = 0.25f / DIV;
+      w = static_cast<float>(width * MUL) / 2.0;
+      //float d = static_cast<float>(depth * MUL) / 2.0;
+      h = static_cast<float>(height * MUL) / 2.5;
+      if(h == 0) h = 0.25f * MUL;
 
       // position the particle
       GLfloat z = static_cast<float>(particle[i]->z * h) / 10.0;
       if(isSpell) {
         glTranslatef( particle[i]->x, z, particle[i]->y );
-        w = h = 0.75f / DIV;
+        w = h = 0.75f * MUL;
       } else {
         glTranslatef( particle[i]->x, particle[i]->y, z );
       }
@@ -138,30 +138,30 @@ void GLTorch::draw() {
   
   // add the flickering reflection on the wall behind
   // max. amount of movement
-  float mm = 0.4f / DIV;
+  float mm = 0.4f * MUL;
 
   float red = Util::roll( 1.0f, 1.25f ) - 0.5f;
   if(red > 1.0f) red = 1.0f;
   float green = Util::roll( 1.0f, 1.25f ) - 0.5f;
   if(green > 1.0f) red = 1.0f;
   
-  float size = 5.0f/DIV;
+  float size = 5.0f * MUL;
 
   glPushMatrix();
   // a little away from the wall
   float offset = 0.1f;
   if(torch_dir == Constants::NORTH) {
-    glTranslatef( -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ), 
+    glTranslatef( -size/2.0f + (1.0f * MUL) - Util::roll( -mm, mm ), 
                   0.0f + offset, 
-                  -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ) );
+                  -size/2.0f + (1.0f * MUL) - Util::roll( -mm, mm ) );
   } else if(torch_dir == Constants::WEST) {
     glTranslatef( 0.0f + offset,
-                  -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ), 
-                  -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ) );
+                  -size/2.0f + (1.0f * MUL) - Util::roll( -mm, mm ), 
+                  -size/2.0f + (1.0f * MUL) - Util::roll( -mm, mm ) );
   } else if(torch_dir == Constants::EAST) {
-    glTranslatef( 1.0f/DIV - offset,
-                  -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ), 
-                  -size/2.0f + (1.0f / DIV) - Util::roll( -mm, mm ) );
+    glTranslatef( 1.0f * MUL - offset,
+                  -size/2.0f + (1.0f * MUL) - Util::roll( -mm, mm ), 
+                  -size/2.0f + (1.0f * MUL) - Util::roll( -mm, mm ) );
   } else if(isSpell) {
     
     // rotate each particle to face viewer
@@ -174,9 +174,9 @@ void GLTorch::draw() {
                   -(size / 2.0f));	
     
     // HACK: this is for spells
-    //	glTranslatef( -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
+    //	glTranslatef( -size/2.0f + (1.0f * MUL) + (mm * rand()/RAND_MAX) - (mm * 2.0f), 
     //				  0.0f,
-    //				  -size/2.0f + (1.0f / DIV) + (mm * rand()/RAND_MAX) - (mm * 2.0f));
+    //				  -size/2.0f + (1.0f * MUL) + (mm * rand()/RAND_MAX) - (mm * 2.0f));
     
   }
   //  glBindTexture( GL_TEXTURE_2D, torchback );

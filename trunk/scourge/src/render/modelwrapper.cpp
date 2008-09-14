@@ -355,9 +355,9 @@ void ModelWrapper::normalizeModel( int *width, int *depth, int *height, float di
 	//if( md3 ) cerr << "*** 1 min=" << min[2] << "," << min[0] << "," << min[1] << endl;
 		
 	// set the dimensions
-	float fw = max[2] * div * DIV;
-	float fd = max[0] * div * DIV;
-	float fh = max[1] * div * DIV;
+	float fw = max[2] * div / MUL;
+	float fd = max[0] * div / MUL;
+	float fh = max[1] * div / MUL;
 		
 	// make it a square
 	if (fw > fd) fd = fw;

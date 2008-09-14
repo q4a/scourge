@@ -674,6 +674,6 @@ int SqCreature::_setOffset( HSQUIRRELVM vm ) {
 	GET_FLOAT( oy )
 	GET_FLOAT( ox )
 	GET_OBJECT( Creature* )
-	object->setOffset( ox / DIV, oy / DIV, oz / DIV );
+	object->setOffset( ox * MUL, oy * MUL, oz * MUL );
 	return 0;
 }

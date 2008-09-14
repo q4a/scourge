@@ -399,9 +399,9 @@ int SqMission::_setOffset( HSQUIRRELVM vm ) {
 	GET_INT( x )
 	Location *pos = SqBinding::sessionRef->getMap()->getLocation( x, y, z );
 	if( pos ) {
-		pos->moveX = ox / DIV;
-		pos->moveY = oy / DIV;
-		pos->moveZ = oz / DIV;
+		pos->moveX = ox * MUL;
+		pos->moveY = oy * MUL;
+		pos->moveZ = oz * MUL;
 	}
 	return 0;
 }
