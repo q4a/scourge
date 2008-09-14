@@ -382,6 +382,10 @@ public:
 #define MAP_UNIT_OFFSET 2
 #define MAP_WALL_HEIGHT 12
 
+// Number of chunks on the map
+#define MAP_CHUNKS_X MAP_WIDTH / MAP_UNIT
+#define MAP_CHUNKS_Y MAP_DEPTH / MAP_UNIT
+
 // How far from the edge to start drawing in map
 #define MAP_OFFSET 80
 
@@ -392,6 +396,10 @@ public:
 
 // outdoor floor tile
 #define OUTDOORS_STEP 4
+
+// Number of tiles on an outdoor map
+#define MAP_TILES_X MAP_WIDTH / OUTDOORS_STEP
+#define MAP_TILES_Y MAP_DEPTH / OUTDOORS_STEP
 
 // The max value of a skill under normal circumstances.
 #define MAX_SKILL 100

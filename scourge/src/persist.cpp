@@ -345,8 +345,8 @@ void Persist::saveMap( File *file, MapInfo *info ) {
 		}
 	}
 	file->write( &( info->heightMapEnabled ) );
-	for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
-		for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
+	for( int x = 0; x < MAP_TILES_X; x++ ) {
+		for( int y = 0; y < MAP_TILES_Y; y++ ) {
 			file->write( &( info->ground[ x ][ y ] ) );
 		}
 	}
@@ -550,8 +550,8 @@ MapInfo *Persist::loadMap( File *file ) {
 	}
 	if( info->version >= 34 ) {
 		file->read( &( info->heightMapEnabled ) );
-		for( int x = 0; x < MAP_WIDTH / OUTDOORS_STEP; x++ ) {
-			for( int y = 0; y < MAP_DEPTH / OUTDOORS_STEP; y++ ) {
+		for( int x = 0; x < MAP_TILES_X; x++ ) {
+			for( int y = 0; y < MAP_TILES_Y; y++ ) {
 				file->read( &( info->ground[ x ][ y ] ) );
 			}
 		}

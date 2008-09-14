@@ -190,6 +190,9 @@ int SDLHandler::initGL() {
     /* Enable smooth shading */
     glShadeModel( GL_SMOOTH );
 
+    // We use ortho projection, so perspective correction isn't needed
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+
 	// which one to use?
     // default is good
 	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);

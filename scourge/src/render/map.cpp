@@ -103,7 +103,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   startx = starty = 128;
   cursorMapX = cursorMapY = cursorMapZ = MAP_WIDTH + 1;
   cursorFlatMapX = cursorFlatMapY = MAP_WIDTH + 1;
-  cursorChunkX = cursorChunkY = ( MAP_WIDTH / MAP_UNIT ) + 1;
+  cursorChunkX = cursorChunkY = ( MAP_CHUNKS_X ) + 1;
   cursorWidth = 1;
   cursorDepth = 1;
   cursorHeight = MAP_WALL_HEIGHT;
@@ -165,8 +165,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   this->debugGridFlag = false;
   this->drawGridFlag = false;
 
-	for( int x = 0; x < MAP_WIDTH / MAP_UNIT; x++ ) {
-		for( int y = 0; y < MAP_DEPTH / MAP_UNIT; y++ ) {
+	for( int x = 0; x < MAP_CHUNKS_X; x++ ) {
+		for( int y = 0; y < MAP_CHUNKS_Y; y++ ) {
 			rugPos[x][y].texture = 0;
 		}
 	}
@@ -205,8 +205,8 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	
 
   // initialize the lightmap
-	for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
-		for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+	for(int x = 0; x < MAP_CHUNKS_X; x++) {
+		for(int y = 0; y < MAP_CHUNKS_Y; y++) {
 			lightMap[x][y] = (LIGHTMAP_ENABLED ? 0 : 1);
 		}
 	}
@@ -342,8 +342,8 @@ void Map::reset() {
   
   //cerr << "reset 6" << endl;  
 
-	for( int x = 0; x < MAP_WIDTH / MAP_UNIT; x++ ) {
-		for( int y = 0; y < MAP_DEPTH / MAP_UNIT; y++ ) {
+	for( int x = 0; x < MAP_CHUNKS_X; x++ ) {
+		for( int y = 0; y < MAP_CHUNKS_Y; y++ ) {
 			rugPos[x][y].texture = 0;
 		}
 	}
@@ -367,8 +367,8 @@ void Map::reset() {
 
   //cerr << "reset 7" << endl;
   // initialize the lightmap
-  for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
-    for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+  for(int x = 0; x < MAP_CHUNKS_X; x++) {
+    for(int y = 0; y < MAP_CHUNKS_Y; y++) {
       lightMap[x][y] = (LIGHTMAP_ENABLED ? 0 : 1);
     }
   }
@@ -558,7 +558,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
         }
       }
 
-      if( chunkX < 0 || chunkX > MAP_WIDTH / MAP_UNIT || chunkY < 0 || chunkY > MAP_DEPTH / MAP_UNIT ) 
+      if( chunkX < 0 || chunkX > MAP_CHUNKS_X || chunkY < 0 || chunkY > MAP_CHUNKS_Y ) 
         continue;
 
       // store this chunk
@@ -578,11 +578,11 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
           // look to the left
           if(chunkX >= 1 && lightMap[chunkX - 1][chunkY]) drawSide |= Constants::MOVE_LEFT;
           // look to the right
-          if(chunkX + 1 < MAP_WIDTH / MAP_UNIT && lightMap[chunkX + 1][chunkY]) drawSide |= Constants::MOVE_RIGHT;
+          if(chunkX + 1 < MAP_CHUNKS_X && lightMap[chunkX + 1][chunkY]) drawSide |= Constants::MOVE_RIGHT;
           // look above
           if(chunkY - 1 >= 0 && lightMap[chunkX][chunkY - 1]) drawSide |= Constants::MOVE_UP;
           // look below
-          if(chunkY + 1< MAP_DEPTH / MAP_UNIT && lightMap[chunkX][chunkY + 1]) drawSide |= Constants::MOVE_DOWN;
+          if(chunkY + 1< MAP_CHUNKS_Y && lightMap[chunkX][chunkY + 1]) drawSide |= Constants::MOVE_DOWN;
           // if not, skip this chunk
           if(!drawSide) continue;
         }
@@ -3081,8 +3081,8 @@ void Map::configureLightMap() {
 	groundVisible = false;
 
 	// draw nothing at first
-	for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
-		for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+	for(int x = 0; x < MAP_CHUNKS_X; x++) {
+		for(int y = 0; y < MAP_CHUNKS_Y; y++) {
 			lightMap[x][y] = ( LIGHTMAP_ENABLED && settings->isLightMapEnabled() ? 0 : 1 );
 		}
 	}
@@ -3104,8 +3104,8 @@ bool Map::isPositionAccessible(int atX, int atY) {
 
 void Map::configureAccessMap(int fromX, int fromY) {
 	// create the access map
-	for(int x = 0; x < MAP_WIDTH / MAP_UNIT; x++) {
-		for(int y = 0; y < MAP_DEPTH / MAP_UNIT; y++) {
+	for(int x = 0; x < MAP_CHUNKS_X; x++) {
+		for(int y = 0; y < MAP_CHUNKS_Y; y++) {
 			accessMap[x][y] = 0;
 		}
 	}
@@ -3114,8 +3114,8 @@ void Map::configureAccessMap(int fromX, int fromY) {
 	traceLight(chunkX, chunkY, accessMap, true);
 }
 
-void Map::traceLight(int chunkX, int chunkY, int lm[MAP_WIDTH / MAP_UNIT][MAP_DEPTH / MAP_UNIT], bool onlyLockedDoors) {
-	if(chunkX < 0 || chunkX >= MAP_WIDTH / MAP_UNIT || chunkY < 0 || chunkY >= MAP_DEPTH / MAP_UNIT)
+void Map::traceLight(int chunkX, int chunkY, int lm[MAP_CHUNKS_X][MAP_CHUNKS_Y], bool onlyLockedDoors) {
+	if(chunkX < 0 || chunkX >= MAP_CHUNKS_X || chunkY < 0 || chunkY >= MAP_CHUNKS_Y)
 		return;
 
 	// already visited?
@@ -3725,8 +3725,8 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 
 	// save rugs
 	info->rug_count = 0;
-	for( int x = 0; x < MAP_WIDTH / MAP_UNIT; x++ ) {
-    for( int y = 0; y < MAP_DEPTH / MAP_UNIT; y++ ) {
+	for( int x = 0; x < MAP_CHUNKS_X; x++ ) {
+    for( int y = 0; y < MAP_CHUNKS_Y; y++ ) {
 			if( rugPos[x][y].texture > 0 ) {
 				info->rugPos[ info->rug_count ] = Persist::createRugInfo( x, y );
 				info->rugPos[ info->rug_count ]->angle = toint( rugPos[x][y].angle * 100.0f );
@@ -3768,8 +3768,8 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 	// save the outdoor textures
 	info->heightMapEnabled = (Uint8)( heightMapEnabled ? 1 : 0 );	
 	info->outdoorTextureInfoCount = 0;
-	for( int gx = 0; gx < MAP_WIDTH / OUTDOORS_STEP; gx++ ) {
-		for( int gy = 0; gy < MAP_DEPTH / OUTDOORS_STEP; gy++ ) {
+	for( int gx = 0; gx < MAP_TILES_X; gx++ ) {
+		for( int gy = 0; gy < MAP_TILES_Y; gy++ ) {
 			Uint32 base = ( ground[ gx ][ gy ] < 0 ? NEG_GROUND_HEIGHT : 0x00000000 );
 			info->ground[ gx ][ gy ] = (Uint32)( fabs( ground[ gx ][ gy ] ) * 100 ) + base;
 			for( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
@@ -3908,8 +3908,8 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 
 	// load ground heights for outdoors maps
 	heightMapEnabled = ( info->heightMapEnabled == 1 );
-	for( int gx = 0; gx < MAP_WIDTH / OUTDOORS_STEP; gx++ ) {
-		for( int gy = 0; gy < MAP_DEPTH / OUTDOORS_STEP; gy++ ) {
+	for( int gx = 0; gx < MAP_TILES_X; gx++ ) {
+		for( int gy = 0; gy < MAP_TILES_Y; gy++ ) {
 			if( info->ground[ gx ][ gy ] > NEG_GROUND_HEIGHT ) {
 				ground[ gx ][ gy ] = ( info->ground[ gx ][ gy ] - NEG_GROUND_HEIGHT ) / -100.0f;
 			} else {
@@ -4816,7 +4816,7 @@ void Map::debugGround( int sx, int sy, int ex, int ey ) {
 
 void Map::createGroundMap() {
 	float w, d, h;
-	for( int xx = 0; xx < MAP_WIDTH / OUTDOORS_STEP; xx++ ) {		
+	for( int xx = 0; xx < MAP_TILES_X; xx++ ) {		
 		for( int yy = 0; yy < MAP_DEPTH /  OUTDOORS_STEP; yy++ ) {
 			w = static_cast<float>( xx * OUTDOORS_STEP ) / DIV;
 			d = static_cast<float>( yy * OUTDOORS_STEP - 1 ) / DIV;
@@ -4872,8 +4872,8 @@ void Map::createGroundMap() {
 	
 	// add light
 	CVectorTex *p[3];
-	for( int xx = 0; xx < MAP_WIDTH / OUTDOORS_STEP; xx++ ) {
-		for( int yy = 0; yy < MAP_DEPTH / OUTDOORS_STEP; yy++ ) {
+	for( int xx = 0; xx < MAP_TILES_X; xx++ ) {
+		for( int yy = 0; yy < MAP_TILES_Y; yy++ ) {
 			p[0] = &( groundPos[ xx ][ yy ] );
 			p[1] = &( groundPos[ xx + 1 ][ yy ] );
 			p[2] = &( groundPos[ xx ][ yy + 1 ] );
@@ -4967,8 +4967,8 @@ void Map::initOutdoorsGroundTexture() {
 	
 	map<int,int> texturesUsed;
 	
-	int ex = MAP_WIDTH / OUTDOORS_STEP;
-	int ey = MAP_DEPTH / OUTDOORS_STEP;
+	int ex = MAP_TILES_X;
+	int ey = MAP_TILES_Y;
 	// ideally the below would be refs[ex][ey] but that won't work in C++... :-(
 	int refs[MAP_WIDTH][MAP_DEPTH];
 	for( int x = 0; x < ex; x += OUTDOOR_FLOOR_TEX_SIZE ) {
@@ -5082,8 +5082,8 @@ void Map::addHighVariation( int ref, int z ) {
 	int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
 	int outdoor_w = width / OUTDOORS_STEP;
 	int outdoor_h = height / OUTDOORS_STEP;
-	int ex = MAP_WIDTH / OUTDOORS_STEP;
-	int ey = MAP_DEPTH / OUTDOORS_STEP;
+	int ex = MAP_TILES_X;
+	int ey = MAP_TILES_Y;
 	for( int x = 0; x < ex; x += outdoor_w ) {
 		for( int y = 0; y < ey; y += outdoor_h ) {
 			if( isAllHigh( x, y, outdoor_w, outdoor_h ) && !Util::dice( 10 ) && 
