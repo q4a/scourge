@@ -145,7 +145,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
   int fy = sy / FOG_CHUNK_SIZE;
   int fw = w / FOG_CHUNK_SIZE;
   int fh = h / FOG_CHUNK_SIZE;
-  float nn = FOG_CHUNK_SIZE / DIV;
+  float nn = FOG_CHUNK_SIZE * MUL;
   int ox = sx % FOG_CHUNK_SIZE;
   int oy = sy % FOG_CHUNK_SIZE;
 
@@ -161,10 +161,10 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
       int v = fog[ fx + x ][ fy + y ];
       if( v == FOG_VISITED ) continue;
 
-      float xp = static_cast<float>( x * FOG_CHUNK_SIZE - ox ) / DIV;
-      float yp = static_cast<float>( y * FOG_CHUNK_SIZE - oy ) / DIV;
+      float xp = static_cast<float>( x * FOG_CHUNK_SIZE - ox ) * MUL;
+      float yp = static_cast<float>( y * FOG_CHUNK_SIZE - oy ) * MUL;
       int z = getHighestZ( ( fx + x ) * FOG_CHUNK_SIZE, ( fy + y ) * FOG_CHUNK_SIZE, FOG_CHUNK_SIZE, FOG_CHUNK_SIZE );
-      float zp = static_cast<float>( z ) / DIV;
+      float zp = static_cast<float>( z ) * MUL;
 
       // FIXME: we should check 2d inclusion in screen rect instead
       if( !frustum->CubeInFrustum( xp, yp, 0.0f, nn ) )

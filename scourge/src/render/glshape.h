@@ -23,7 +23,7 @@
 #include <vector>
 #include "shapes.h"
 
-#define DIV 0.06f
+#define MUL 16
 
 class WallTheme;
 class Effect;

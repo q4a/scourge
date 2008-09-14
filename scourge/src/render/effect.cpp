@@ -99,9 +99,9 @@ void Effect::draw(int effect, int startTime, float percent) {
   
   if( diWasSet ) {
   	glPushMatrix();
-  	glTranslatef( this->di.offset_x / DIV, 
-  	              this->di.offset_y / DIV, 
-  	              this->di.offset_z / DIV );
+  	glTranslatef( this->di.offset_x * MUL, 
+  	              this->di.offset_y * MUL, 
+  	              this->di.offset_z * MUL );
   }
 
   if(effect == Constants::EFFECT_FLAMES) {
@@ -155,8 +155,8 @@ void Effect::drawFlames(bool proceed) {
   for(int i = 0; i < PARTICLE_COUNT; i++) {
     if(!particle[i].active) {
     	particle[i].reset();
-    	particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-    	particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );
+    	particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+    	particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );
       particle[i].zoom = 1.4f;
       particle[i].tail = true;
     } else if(proceed) {
@@ -186,8 +186,8 @@ void Effect::drawTeleport(bool proceed) {
     if(!particle[i].active) {
       // create a new particle
       particle[i].reset();
-      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );
       particle[i].z = Util::pickOne( 7, 8 );
       particle[i].moveDelta = Util::roll( 0.15f, 0.3f );
       if(particle[i].z < 8) particle[i].moveDelta *= -1.0f;
@@ -222,8 +222,8 @@ void Effect::drawGreen(bool proceed) {
     if(!particle[i].active) {
       // create a new particle
       particle[i].reset();
-      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );
       particle[i].z = Util::roll( 0.0f, 1.0f );
       //	  particle[i].moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
       particle[i].moveDelta = 0.15f;
@@ -266,8 +266,8 @@ void Effect::drawExplosion(bool proceed) {
     if(!particle[i].active) {
       // create a new particle
       particle[i].reset();
-      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );      
 		  particle[i].z = Util::pickOne( 3, 4 );
 		  //	  particle[i].moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 		  particle[i].moveDelta = 0;
@@ -300,8 +300,8 @@ void Effect::drawBlast(bool proceed, float percent ) {
   for(int i = 0; i < 15; i++) {
     if(!particle[i].active) {
       particle[i].reset();
-      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );      
       particle[i].z = static_cast<int>(Util::roll( 0.5f * percent, 2.5f * percent ));
       particle[i].moveDelta = Util::roll( 0.05f, 0.1f );
       particle[i].maxLife = static_cast<int>(Util::roll( 5.0f * percent, 15.0f * percent ));
@@ -340,8 +340,8 @@ void Effect::drawDust(bool proceed) {
     if(!particle[i].active) {
       // create a new particle
       particle[i].reset();
-      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );      
 		  particle[i].z = static_cast<int>(Util::dice( 2 ));
 		  //	  particle[i].moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
 		  particle[i].moveDelta = 0;
@@ -374,8 +374,8 @@ void Effect::drawHail(bool proceed) {
     if(!particle[i].active) {
       // create a new particle
       particle[i].reset();
-      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );      
       particle[i].z = Util::pickOne( 5, 6 );
       particle[i].moveDelta = Util::roll( 0.5f, 0.8f );
       particle[i].moveDelta *= -1.0f;
@@ -411,8 +411,8 @@ void Effect::drawTower(bool proceed) {
     if(!particle[i].active) {
       // create a new particle
       particle[i].reset();
-      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );      
       if( (i % 3) ) {      	
         particle[i].z = Util::roll( 0.0f, 1.0f );
         //	  particle[i].moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
@@ -460,10 +460,10 @@ void Effect::drawSwirl(bool proceed) {
     if(!particle[i].active) {
       // create a new particle
       particle[i].reset();
-		  particle[i].x = ((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) +
-			((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) * cos(angle);
-		  particle[i].y = ((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) +
-			((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) * sin(angle);
+		  particle[i].x = ((static_cast<float>(shape->getWidth()) / 2.0f) * MUL) +
+			((static_cast<float>(shape->getWidth()) / 2.0f) * MUL) * cos(angle);
+		  particle[i].y = ((static_cast<float>(shape->getDepth()) / 2.0f) * MUL) +
+			((static_cast<float>(shape->getDepth()) / 2.0f) * MUL) * sin(angle);
 		  particle[i].z = 1;
 		  particle[i].moveDelta = 0.15f;
 		  particle[i].rotate = angle;
@@ -472,10 +472,10 @@ void Effect::drawSwirl(bool proceed) {
     } else if(proceed) {
 		  particle[i].zoom += 0.01f;
 		  particle[i].rotate += 5.0f;
-		  particle[i].x = ((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) + 
-			((static_cast<float>(shape->getWidth()) / 2.0f) / DIV) * cos(particle[i].rotate);
-		  particle[i].y = ((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) +
-			((static_cast<float>(shape->getDepth()) / 2.0f) / DIV) * sin(particle[i].rotate);
+		  particle[i].x = ((static_cast<float>(shape->getWidth()) / 2.0f) * MUL) + 
+			((static_cast<float>(shape->getWidth()) / 2.0f) * MUL) * cos(particle[i].rotate);
+		  particle[i].y = ((static_cast<float>(shape->getDepth()) / 2.0f) * MUL) +
+			((static_cast<float>(shape->getDepth()) / 2.0f) * MUL) * sin(particle[i].rotate);
 		  particle[i].move();
     }
 
@@ -495,8 +495,8 @@ void Effect::drawCastSpell(bool proceed) {
     if(!particle[i].active) {
       // create a new particle
       particle[i].reset();
-      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );      
 		  particle[i].z = Util::pickOne( 3, 4 );
 		  //	  particle[i].moveDelta = 0.15f + (0.2f * rand()/RAND_MAX);
 		  particle[i].moveDelta = 0;
@@ -524,7 +524,7 @@ void Effect::drawCastSpell(bool proceed) {
 
 void Effect::drawRing(bool proceed) {
 
-  float r = ringRadius / DIV;
+  float r = ringRadius * MUL;
 
   float n = Util::roll( 1.0f, 1.05f );
   for(int i = 0; i < 2; i++) {
@@ -558,8 +558,8 @@ void Effect::drawRing(bool proceed) {
 
 void Effect::drawRipple(bool proceed) {
 
-  float r = rippleRadius / DIV;
-  float z = 0.3f / DIV;
+  float r = rippleRadius * MUL;
+  float z = 0.3f * MUL;
 
   glDisable( GL_CULL_FACE );
   glPushMatrix();
@@ -591,8 +591,8 @@ void Effect::drawSmoke(bool proceed) {
     if(!particle[i].active) {
       // create a new particle
       particle[i].reset();
-      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );      
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );      
       particle[i].z = Util::roll( 0.0f, 1.0f );      
       particle[i].moveDelta = Util::roll( 0.1f, 0.3f );      
       //particle[i].moveDelta = 0.15f + (0.15f * rand()/RAND_MAX);
@@ -637,8 +637,8 @@ void Effect::drawFire(bool proceed) {
 		if(!particle[i].active) {
       // create a new particle
 			particle[i].reset();
-      particle[i].x = Util::roll( 0.0f, shape->getWidth() / DIV );
-      particle[i].y = Util::roll( 0.0f, shape->getDepth() / DIV );			
+      particle[i].x = Util::roll( 0.0f, shape->getWidth() * MUL );
+      particle[i].y = Util::roll( 0.0f, shape->getDepth() * MUL );			
       particle[i].z = Util::roll( 0.0f, 0.5f );
       particle[i].maxLife = Util::roll( 4.0f, 10.0f );
       particle[i].moveDelta = Util::roll( 0.1f, 0.4f );
@@ -710,11 +710,11 @@ void Particle::move() {
 void Effect::drawParticle(Particle *particle) {
   float w, h, sh;
 
-  w = static_cast<float>(shape->getWidth() / DIV) / 4.0f;
-  h = static_cast<float>(shape->getHeight() / DIV) / 3.0f;
-  if(h == 0) h = 0.25f / DIV;
-  sh = ( fabs( particle->z - particle->startZ ) / DIV) / 3.0f;
-  if(h == 0) h = 0.25f / DIV;
+  w = static_cast<float>(shape->getWidth() * MUL) / 4.0f;
+  h = static_cast<float>(shape->getHeight() * MUL) / 3.0f;
+  if(h == 0) h = 0.25f * MUL;
+  sh = ( fabs( particle->z - particle->startZ ) * MUL) / 3.0f;
+  if(h == 0) h = 0.25f * MUL;
 
   glDisable( GL_CULL_FACE );
   glEnable( GL_TEXTURE_2D );
@@ -722,7 +722,7 @@ void Effect::drawParticle(Particle *particle) {
     glPushMatrix();
     
     // position the particle
-    GLfloat z = (particle->z + i) / DIV;
+    GLfloat z = (particle->z + i) * MUL;
     glTranslatef( particle->x, particle->y, z );  
     
     // rotate each particle to face viewer

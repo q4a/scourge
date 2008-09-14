@@ -537,11 +537,11 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
     for(int chunkY = chunkStartY; chunkY < chunkEndY; chunkY++) {
 
       // remember the chunk's starting pos.
-      float chunkPosX = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) / DIV;
-      float chunkPosY = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
+      float chunkPosX = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) * MUL;
+      float chunkPosY = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) * MUL;
 
       // frustum testing (including extra for roof pieces)
-      if(useFrustum && !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, static_cast<float>(MAP_UNIT) / DIV)) { 
+      if(useFrustum && !frustum->CubeInFrustum(chunkPosX, chunkPosY, 0.0f, static_cast<float>(MAP_UNIT) * MUL)) { 
         continue;
       }
 
@@ -551,8 +551,8 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
       if( !( forGround || forWater ) && floorTexWidth > 0 && !isHeightMapEnabled() && ( chunkX < 0 || chunkY < 0 ) ) {
         for( int yp = CAVE_CHUNK_SIZE; yp < MAP_UNIT + CAVE_CHUNK_SIZE; yp += CAVE_CHUNK_SIZE ) {
           for( int xp = 0; xp < MAP_UNIT; xp += CAVE_CHUNK_SIZE ) {
-            xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
-            ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - CAVE_CHUNK_SIZE + yp + chunkOffsetY) / DIV;
+            xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) * MUL;
+            ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - CAVE_CHUNK_SIZE + yp + chunkOffsetY) * MUL;
             setupPosition( 0, CAVE_CHUNK_SIZE, 0, xpos2, ypos2, 0, pos[0][CAVE_CHUNK_SIZE][0]->shape, NULL, NULL, NULL );
           }
         }
@@ -590,8 +590,8 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 
       // draw rugs
 			if( ( forGround || forWater ) && rugPos[ chunkX ][ chunkY ].texture > 0 ) {
-				xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) / DIV;
-				ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) / DIV;
+				xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) * MUL;
+				ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) * MUL;
 				drawRug( &rugPos[ chunkX ][ chunkY ], xpos2, ypos2, chunkX, chunkY );
 			}
 
@@ -616,8 +616,8 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
             if(shape) {
             	//cerr << "pos=" << posX << "," << posY << endl;
             	//cerr << "\tfloor shape=" << shape->getName() << endl;
-              xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
-              ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) / DIV;
+              xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) * MUL;
+              ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) * MUL;
 
               if( forWater ) {
 								drawWaterPosition(posX, posY, xpos2, ypos2, shape);
@@ -632,8 +632,8 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 
 							shape = itemPos[posX][posY]->shape;
 
-							xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
-							ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) / DIV;
+							xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) * MUL;
+							ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) * MUL;
 
 							setupPosition( posX, posY, 0, xpos2, ypos2, 0, shape, itemPos[posX][posY]->item, NULL, NULL, true );
 						}
@@ -642,9 +642,9 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 						
             for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
               if( checkLightMap( chunkX, chunkY ) && effect[posX][posY][zp] && !effect[posX][posY][zp]->isInDelay() ) {
-                xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) / DIV;
-                ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - 1 + yp + chunkOffsetY) / DIV;
-                zpos2 = static_cast<float>(zp) / DIV;
+                xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) * MUL;
+                ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - 1 + yp + chunkOffsetY) * MUL;
+                zpos2 = static_cast<float>(zp) * MUL;
 
                 setupPosition(posX, posY, zp - effect[posX][posY][zp]->z, xpos2, ypos2, zpos2,
                               effect[posX][posY][zp]->effect->getShape(), NULL, NULL, effect[posX][posY][zp]);
@@ -711,10 +711,10 @@ void Map::setupLocation( Location *location, Uint16 drawSide, int chunkStartX, i
 
 void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) {
 	glPushMatrix();
-	glTranslatef( xpos2, ypos2, 0.255f / DIV );
+	glTranslatef( xpos2, ypos2, 0.255f * MUL );
 	glRotatef( rug->angle, 0, 0, 1 );
-	float f = MAP_UNIT / DIV;
-	float offset = 2.5f / DIV;
+	float f = MAP_UNIT * MUL;
+	float offset = 2.5f * MUL;
 
 	float sx, sy, ex, ey;
 	// starting section
@@ -792,8 +792,8 @@ void Map::drawWaterPosition(int posX, int posY,
   if( water.find( key ) != water.end() ) {
     glDisable( GL_CULL_FACE );
 
-    float sx = ( static_cast<float>(MAP_UNIT) / static_cast<float>(WATER_TILE_X) ) / DIV;
-    float sy = ( static_cast<float>(MAP_UNIT) / static_cast<float>(WATER_TILE_Y) ) / DIV;
+    float sx = ( static_cast<float>(MAP_UNIT) / static_cast<float>(WATER_TILE_X) ) * MUL;
+    float sy = ( static_cast<float>(MAP_UNIT) / static_cast<float>(WATER_TILE_Y) ) * MUL;
 
     int xp = 0;
     int yp = 0;
@@ -837,7 +837,7 @@ void Map::drawWaterPosition(int posX, int posY,
         }
 
         float zz = ( w ? w->z[xx][yy] : 0.0f );
-        float sz = ( WATER_HEIGHT + zz ) / DIV;
+        float sz = ( WATER_HEIGHT + zz ) * MUL;
         glColor4f( 0.3f + ( zz / 30.0f ), 
                    0.25f + ( zz / 10.0f ), 
                    0.17f + ( zz / 15.0f ), 
@@ -1446,12 +1446,12 @@ void Map::willDrawGrid() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
 	// draw the starting position
-	float xpos2 = static_cast<float>( this->startx - getX() ) / DIV;
-	float ypos2 = static_cast<float>( this->starty - getY() - 1 ) / DIV;
-	float zpos2 = 0.0f / DIV;
-	float w = 2.0f /  DIV;
-	float h = 4.0f /  DIV;
-	if( useFrustum && frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w / DIV ) ) {
+	float xpos2 = static_cast<float>( this->startx - getX() ) * MUL;
+	float ypos2 = static_cast<float>( this->starty - getY() - 1 ) * MUL;
+	float zpos2 = 0.0f * MUL;
+	float w = 2.0f * MUL;
+	float h = 4.0f * MUL;
+	if( useFrustum && frustum->CubeInFrustum( xpos2, ypos2, 0.0f, w * MUL ) ) {
 		for( int i = 0; i < 2; i++ ) {
 			glPushMatrix();
 			glTranslatef( xpos2, ypos2, zpos2 );
@@ -1505,14 +1505,14 @@ void Map::willDrawGrid() {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
 	int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
-	float m = 0.5f / DIV;
+	float m = 0.5f * MUL;
 
 	for(int i = 0; i < chunkCount; i++) {
 
-		float n = static_cast<float>(MAP_UNIT) / DIV;
+		float n = static_cast<float>(MAP_UNIT) * MUL;
 
 		glPushMatrix();
-		glTranslatef( chunks[i].x, chunks[i].y - ( 1.0f / DIV ), 0 );
+		glTranslatef( chunks[i].x, chunks[i].y - ( 1.0f * MUL ), 0 );
 
 		if( chunks[i].cx == chunkX && chunks[i].cy == chunkY ) {
 			glColor4f( 0,1,0,0.25f );
@@ -1533,12 +1533,12 @@ void Map::willDrawGrid() {
 
 	glPushMatrix();
 
-	float xp = static_cast<float>(cursorFlatMapX - getX()) / DIV;
-	float yp = (static_cast<float>(cursorFlatMapY - getY()) - 1.0f) / DIV;
-	float cw = static_cast<float>(cursorWidth) / DIV;
-	float cd = -static_cast<float>(cursorDepth) / DIV;
-	m = ( cursorZ ? cursorZ : 0.5f ) / DIV;
-	float ch = static_cast<float>( cursorHeight + cursorZ ) / DIV;
+	float xp = static_cast<float>(cursorFlatMapX - getX()) * MUL;
+	float yp = (static_cast<float>(cursorFlatMapY - getY()) - 1.0f) * MUL;
+	float cw = static_cast<float>(cursorWidth) * MUL;
+	float cd = -static_cast<float>(cursorDepth) * MUL;
+	m = ( cursorZ ? cursorZ : 0.5f ) * MUL;
+	float ch = static_cast<float>( cursorHeight + cursorZ ) * MUL;
 
 	float red = 1.0f;
 	float green = 0.9f;
@@ -1689,9 +1689,9 @@ void Map::drawProjectiles() {
       vector<CVector3> path;
 			for( int i = 0; i < proj->getStepCount(); i++ ) {
 				CVector3 v;
-				v.x = ( ( proj->getX( i ) + proj->getRenderer()->getOffsetX() - static_cast<float>(getX()) ) / DIV );
-				v.y = ( ( proj->getY( i ) - proj->getRenderer()->getOffsetY() - static_cast<float>(getY()) - 1.0f ) / DIV );
-				v.z = ( proj->getZ( i ) + proj->getRenderer()->getOffsetZ() ) / DIV;
+				v.x = ( ( proj->getX( i ) + proj->getRenderer()->getOffsetX() - static_cast<float>(getX()) ) * MUL );
+				v.y = ( ( proj->getY( i ) - proj->getRenderer()->getOffsetY() - static_cast<float>(getY()) - 1.0f ) * MUL );
+				v.z = ( proj->getZ( i ) + proj->getRenderer()->getOffsetZ() ) * MUL;
 				path.push_back( v );
 			}
 			proj->getRenderer()->drawPath( this, proj, &path );
@@ -1729,7 +1729,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   	}
   	
   	if( !s->getIgnoreHeightMap() ) {
-  		heightPos = later->pos->heightPos / DIV;
+  		heightPos = later->pos->heightPos * MUL;
   	}
   } else if( later && later->effect ) {
   	heightPos = later->effect->heightPos;
@@ -1738,7 +1738,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   if(useShadow) {
 		// put shadow above the floor a little
 
-		glTranslatef( xpos2, ypos2, ( 0.26f / DIV + heightPos ) );
+		glTranslatef( xpos2, ypos2, ( 0.26f * MUL + heightPos ) );
 		glMultMatrixf(shadowTransformMatrix);
 
     // gray shadows
@@ -1760,7 +1760,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
       ydiff = ( later->creature->getY() - static_cast<float>(toint(later->creature->getY())));
     }
 
-    glTranslatef( xpos2 + xdiff / DIV, ypos2 + ydiff / DIV, zpos2 + heightPos );
+    glTranslatef( xpos2 + xdiff * MUL, ypos2 + ydiff * MUL, zpos2 + heightPos );
     
     if( later && later->pos ) { 	 
 			glTranslatef( later->pos->moveX, later->pos->moveY, later->pos->moveZ ); 	 
@@ -1818,10 +1818,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   if( effect && later ) {
     if( later->creature ) {
       // translate hack for md2 models... see: md2shape::draw()
-      //glTranslatef( 0, -1 / DIV, 0 );
+      //glTranslatef( 0, -1 * MUL, 0 );
       later->creature->getEffect()->draw(later->creature->getEffectType(),
                                          later->creature->getDamageEffect());
-      //glTranslatef( 0, 1 / DIV, 0 );
+      //glTranslatef( 0, 1 * MUL, 0 );
     } else if(later->effect) {
       later->effect->getEffect()->draw(later->effect->getEffectType(),
                                        later->effect->getDamageEffect());
@@ -1900,8 +1900,8 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   	
   	glColor4f( 0.75f, 0.75f, 1, 1 );
   	
-  	float z = ( shape->getHeight() + 0.25f ) / DIV;
-  	float lowZ = 0.25f / DIV;
+  	float z = ( shape->getHeight() + 0.25f ) * MUL;
+  	float lowZ = 0.25f * MUL;
   	
   	glPushMatrix();
   	glTranslatef( 0, 20, z );
@@ -1911,29 +1911,29 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   	glDisable( GL_TEXTURE_2D );
   	glBegin( GL_LINE_LOOP );
   	glVertex3f( 0, 0, z );
-  	glVertex3f( 0, shape->getDepth() / DIV, z );
-  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, z );
-  	glVertex3f( shape->getWidth() / DIV, 0, z );
+  	glVertex3f( 0, shape->getDepth() * MUL, z );
+  	glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, z );
+  	glVertex3f( shape->getWidth() * MUL, 0, z );
   	
   	glVertex3f( 0, 0, z );
   	glVertex3f( 0, 0, lowZ );
-  	glVertex3f( shape->getWidth() / DIV, 0, lowZ );
-  	glVertex3f( shape->getWidth() / DIV, 0, z );
+  	glVertex3f( shape->getWidth() * MUL, 0, lowZ );
+  	glVertex3f( shape->getWidth() * MUL, 0, z );
   	
-  	glVertex3f( 0, shape->getDepth() / DIV, z );
-  	glVertex3f( 0, shape->getDepth() / DIV, lowZ );
-  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, lowZ );
-  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, z );
+  	glVertex3f( 0, shape->getDepth() * MUL, z );
+  	glVertex3f( 0, shape->getDepth() * MUL, lowZ );
+  	glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, lowZ );
+  	glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, z );
   	
   	glVertex3f( 0, 0, z );
   	glVertex3f( 0, 0, lowZ );
-  	glVertex3f( 0, shape->getDepth() / DIV, lowZ );
-  	glVertex3f( 0, shape->getDepth() / DIV, z );
+  	glVertex3f( 0, shape->getDepth() * MUL, lowZ );
+  	glVertex3f( 0, shape->getDepth() * MUL, z );
   	
-  	glVertex3f( shape->getWidth() / DIV, 0, z );
-  	glVertex3f( shape->getWidth() / DIV, 0, lowZ );
-  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, lowZ );
-  	glVertex3f( shape->getWidth() / DIV, shape->getDepth() / DIV, z );
+  	glVertex3f( shape->getWidth() * MUL, 0, z );
+  	glVertex3f( shape->getWidth() * MUL, 0, lowZ );
+  	glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, lowZ );
+  	glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, z );
   	
   	glEnd();  	
   	glEnable( GL_TEXTURE_2D );
@@ -2017,10 +2017,10 @@ bool Map::isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz) {
   // Initialize the scene w/o y rotation.
   initMapView(true);
 
-  double obj_x = (mapx - getX() + 1) / DIV;
-  double obj_y = (mapy - getY() - 2) / DIV;
+  double obj_x = (mapx - getX() + 1) * MUL;
+  double obj_y = (mapy - getY() - 2) * MUL;
   double obj_z = 0.0f;
-  //double obj_z = mapz / DIV;
+  //double obj_z = mapz * MUL;
   double win_x, win_y, win_z;
 
   double projection[16];
@@ -2048,10 +2048,10 @@ void Map::getScreenXYAtMapXY(Uint16 mapx, Uint16 mapy, Uint16 *screenx, Uint16 *
   // Initialize the scene with y rotation.
   initMapView(false);
 
-  double obj_x = (mapx - getX() + 1) / DIV;
-  double obj_y = (mapy - getY() - 2) / DIV;
+  double obj_x = (mapx - getX() + 1) * MUL;
+  double obj_y = (mapy - getY() - 2) * MUL;
   double obj_z = 0.0f;
-  //double obj_z = mapz / DIV;
+  //double obj_z = mapz * MUL;
   double win_x, win_y, win_z;
 
   double projection[16];
@@ -2087,9 +2087,9 @@ int Map::getPanningFromMapXY(Uint16 mapx, Uint16 mapy) {
 
 /*
 void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message) {
-  float xpos2 = (static_cast<float>(mapx - getX()) / DIV);
-  float ypos2 = (static_cast<float>(mapy - getY()) / DIV);
-  float zpos2 = static_cast<float>(mapz) / DIV;
+  float xpos2 = (static_cast<float>(mapx - getX()) * MUL);
+  float ypos2 = (static_cast<float>(mapy - getY()) * MUL);
+  float zpos2 = static_cast<float>(mapz) * MUL;
   glTranslatef( xpos2, ypos2, zpos2 + 100);
 
   //glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -2143,8 +2143,8 @@ void Map::initMapView( bool ignoreRot ) {
       ydiff = ( c->getY() - static_cast<float>( toint( c->getY() ) ) );
 		}
   }
-  float startx = -( static_cast<float>(mapViewWidth) / 2.0 + ( mapx - static_cast<float>(x) + xdiff ) - 4 ) / DIV;
-  float starty = -( static_cast<float>(mapViewDepth) / 2.0 + ( mapy - static_cast<float>(y) + ydiff ) - 8 ) / DIV;
+  float startx = -( static_cast<float>(mapViewWidth) / 2.0 + ( mapx - static_cast<float>(x) + xdiff ) - 4 ) * MUL;
+  float starty = -( static_cast<float>(mapViewDepth) / 2.0 + ( mapy - static_cast<float>(y) + ydiff ) - 8 ) * MUL;
   float startz = 0.0;
 
   glTranslatef( startx, starty, startz );
@@ -2166,8 +2166,8 @@ void Map::initMapView( bool ignoreRot ) {
 		// is it quaking now?
 		if( now - quakeStartTime < QUAKE_DURATION ) {
 			if( now - lastQuakeTick >= QUAKE_TICK_FREQ ) {
-				quakeOffsX = Util::roll( 0.0f, 3.0f / DIV );
-				quakeOffsY = Util::roll( 0.0f, 3.0f / DIV );
+				quakeOffsX = Util::roll( 0.0f, 3.0f * MUL );
+				quakeOffsY = Util::roll( 0.0f, 3.0f * MUL );
 				lastQuakeTick = now;				
 			}
 		} else {
@@ -2893,9 +2893,9 @@ void Map::calculateLocationInfo( Location *location,
         ( drawSide & Constants::MOVE_RIGHT && xp >= MAP_UNIT - MAP_UNIT_OFFSET && location->shape->getWidth() <= MAP_UNIT_OFFSET ) )
       );
 
-  *xpos = static_cast<float>((*chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX ) / DIV;
-  *ypos = static_cast<float>((*chunkY - chunkStartY) * MAP_UNIT + yp - location->shape->getDepth() + chunkOffsetY ) / DIV;
-  *zpos = static_cast<float>(zp) / DIV;	
+  *xpos = static_cast<float>((*chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX ) * MUL;
+  *ypos = static_cast<float>((*chunkY - chunkStartY) * MAP_UNIT + yp - location->shape->getDepth() + chunkOffsetY ) * MUL;
+  *zpos = static_cast<float>(zp) * MUL;	
 }
 
 void Map::calculateChunkInfo( int *chunkOffsetX, int *chunkOffsetY, 
@@ -4195,12 +4195,12 @@ void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy) {
   int res = gluUnProject(win_x, win_y, win_z, modelview, projection, viewport, &obj_x, &obj_y, &obj_z);
 
   if(res) {
-    *mapx = getX() + (Uint16)( obj_x * DIV );
-    *mapy = getY() + (Uint16)( obj_y * DIV );
+    *mapx = getX() + (Uint16)( obj_x / MUL );
+    *mapy = getY() + (Uint16)( obj_y / MUL );
 
-    debugX = getX() + static_cast<int>( obj_x * DIV );
-    debugY = getY() + static_cast<int>( obj_y * DIV );
-    debugZ = static_cast<int>( obj_z * DIV );
+    debugX = getX() + static_cast<int>( obj_x / MUL );
+    debugY = getY() + static_cast<int>( obj_y / MUL );
+    debugZ = static_cast<int>( obj_z / MUL );
   } else {
     *mapx = *mapy = MAP_WIDTH + 1;
   }
@@ -4533,8 +4533,8 @@ bool Map::drawHeightMapFloor() {
 				//} else {
 					//glColor4f( 0, 0, 0, 0 );
 				//}
-				gx = p[i]->x - getX() / DIV;
-				gy = p[i]->y - getY() / DIV;
+				gx = p[i]->x - getX() * MUL;
+				gy = p[i]->y - getY() * MUL;
 				glVertex3f( gx, gy, p[i]->z );
 			}
 			glEnd();
@@ -4571,9 +4571,9 @@ bool Map::drawHeightMapFloor() {
 				p[3] = &( groundPos[ xx + 1 ][ yy + 1 ] );
 				glBegin( GL_LINE_LOOP );
 				for( int i = 0; i < 4; i++ ) {
-					gx = p[i]->x - getX() / DIV;
-					gy = p[i]->y - getY() / DIV;
-					glVertex3f( gx, gy, p[i]->z + 0.05f / DIV );
+					gx = p[i]->x - getX() * MUL;
+					gy = p[i]->y - getY() * MUL;
+					glVertex3f( gx, gy, p[i]->z + 0.05f * MUL );
 				}
 				glEnd();
 			}
@@ -4615,7 +4615,7 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 	int ey = ty + th;
 	if( ey == sy ) ey++;	
 
-	int DIFF_Z = 0.01f / DIV;
+	int DIFF_Z = 0.01f * MUL;
 	CVectorTex *p;	
 	for( int xx = sx; xx < ex; xx++ ) {
 		for( int yy = sy; yy < ey; yy++ ) {
@@ -4631,22 +4631,22 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 			p = &groundPos[ xx ][ yy ];
 			glColor4f( p->r, p->g, p->b, p->a );
 			glTexCoord2f( texSx, texSy );
-			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );
+			glVertex3f( p->x - getX() * MUL, p->y - getY() * MUL, p->z + DIFF_Z );
 
 			p = &groundPos[ xx + 1 ][ yy ];
 			glColor4f( p->r, p->g, p->b, p->a );
 			glTexCoord2f( texEx, texSy );
-			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );
+			glVertex3f( p->x - getX() * MUL, p->y - getY() * MUL, p->z + DIFF_Z );
 
 			p = &groundPos[ xx ][ yy + 1 ];
 			glColor4f( p->r, p->g, p->b, p->a );
 			glTexCoord2f( texSx, texEy );
-			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );			
+			glVertex3f( p->x - getX() * MUL, p->y - getY() * MUL, p->z + DIFF_Z );			
 
 			p = &groundPos[ xx + 1 ][ yy + 1 ];
 			glColor4f( p->r, p->g, p->b, p->a );
 			glTexCoord2f( texEx, texEy );
-			glVertex3f( p->x - getX() / DIV, p->y - getY() / DIV, p->z + DIFF_Z );
+			glVertex3f( p->x - getX() * MUL, p->y - getY() * MUL, p->z + DIFF_Z );
 
 			glEnd();
 		}
@@ -4741,27 +4741,27 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 
 			glTexCoord2f( texSx, texSy );
 			//glColor4f( 1, 0, 0, 1 );
-			gx = groundPos[ xx ][ yy ].x - getX() / DIV;
-			gy = groundPos[ xx ][ yy ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + GROUND_TEX_Z_OFFSET / DIV );
+			gx = groundPos[ xx ][ yy ].x - getX() * MUL;
+			gy = groundPos[ xx ][ yy ].y - getY() * MUL;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + GROUND_TEX_Z_OFFSET * MUL );
 
 			glTexCoord2f( texEx, texSy );
 			//glColor4f( 1, 1, 1, 1 );
-			gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
-			gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + GROUND_TEX_Z_OFFSET / DIV );
+			gx = groundPos[ xx + 1 ][ yy ].x - getX() * MUL;
+			gy = groundPos[ xx + 1 ][ yy ].y - getY() * MUL;
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + GROUND_TEX_Z_OFFSET * MUL );
 
 			glTexCoord2f( texSx, texEy );
 			//glColor4f( 1, 1, 1, 1 );
-			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
-			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET / DIV );
+			gx = groundPos[ xx ][ yy + 1 ].x - getX() * MUL;
+			gy = groundPos[ xx ][ yy + 1 ].y - getY() * MUL;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );
 
 			glTexCoord2f( texEx, texEy );
 			//glColor4f( 1, 1, 1, 1 );
-			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
-			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET / DIV );
+			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() * MUL;
+			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() * MUL;
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );
 
 			glEnd();
 		}
@@ -4792,21 +4792,21 @@ void Map::debugGround( int sx, int sy, int ex, int ey ) {
 	for( int xx = sx; xx <= ex; xx++ ) {
 		for( int yy = sy; yy <= ey; yy++ ) {
 			glBegin( GL_LINE_LOOP );
-			gx = groundPos[ xx ][ yy + 1 ].x - getX() / DIV;
-			gy = groundPos[ xx ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET / DIV );
+			gx = groundPos[ xx ][ yy + 1 ].x - getX() * MUL;
+			gy = groundPos[ xx ][ yy + 1 ].y - getY() * MUL;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );
 
-			gx = groundPos[ xx ][ yy ].x - getX() / DIV;
-			gy = groundPos[ xx ][ yy ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + GROUND_TEX_Z_OFFSET / DIV );
+			gx = groundPos[ xx ][ yy ].x - getX() * MUL;
+			gy = groundPos[ xx ][ yy ].y - getY() * MUL;
+			glVertex3f( gx, gy, groundPos[ xx ][ yy ].z + GROUND_TEX_Z_OFFSET * MUL );
 
-			gx = groundPos[ xx + 1 ][ yy ].x - getX() / DIV;
-			gy = groundPos[ xx + 1 ][ yy ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + GROUND_TEX_Z_OFFSET / DIV );
+			gx = groundPos[ xx + 1 ][ yy ].x - getX() * MUL;
+			gy = groundPos[ xx + 1 ][ yy ].y - getY() * MUL;
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy ].z + GROUND_TEX_Z_OFFSET * MUL );
 
-			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() / DIV;
-			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() / DIV;
-			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET / DIV );
+			gx = groundPos[ xx + 1 ][ yy + 1 ].x - getX() * MUL;
+			gy = groundPos[ xx + 1 ][ yy + 1 ].y - getY() * MUL;
+			glVertex3f( gx, gy, groundPos[ xx + 1 ][ yy + 1 ].z + GROUND_TEX_Z_OFFSET * MUL );
 
 			glEnd();
 		}
@@ -4818,9 +4818,9 @@ void Map::createGroundMap() {
 	float w, d, h;
 	for( int xx = 0; xx < MAP_TILES_X; xx++ ) {		
 		for( int yy = 0; yy < MAP_DEPTH /  OUTDOORS_STEP; yy++ ) {
-			w = static_cast<float>( xx * OUTDOORS_STEP ) / DIV;
-			d = static_cast<float>( yy * OUTDOORS_STEP - 1 ) / DIV;
-			h = ( ground[ xx ][ yy ] ) / DIV;
+			w = static_cast<float>( xx * OUTDOORS_STEP ) * MUL;
+			d = static_cast<float>( yy * OUTDOORS_STEP - 1 ) * MUL;
+			h = ( ground[ xx ][ yy ] ) * MUL;
 
 			groundPos[ xx ][ yy ].x = w;
 			groundPos[ xx ][ yy ].y = d;
@@ -4836,20 +4836,20 @@ void Map::createGroundMap() {
 			// height-based light
 			if( ground[ xx ][ yy ] >= 10 ) {
 				// ground (rock)
-				float n = ( h / ( 13.0f / DIV ) );
+				float n = ( h / ( 13.0f * MUL ) );
 				groundPos[ xx ][ yy ].r = n * 0.5f;
 				groundPos[ xx ][ yy ].g = n * 0.6f;
 				groundPos[ xx ][ yy ].b = n * 1.0f;
 				groundPos[ xx ][ yy ].a = 1;
 			} else if( ground[ xx ][ yy ] <= -10 ) {
 				// water
-				float n = ( -h / ( 13.0f / DIV ) );
+				float n = ( -h / ( 13.0f * MUL ) );
 				groundPos[ xx ][ yy ].r = n * 0.05f;
 				groundPos[ xx ][ yy ].g = n * 0.4f;
 				groundPos[ xx ][ yy ].b = n * 1;
 				groundPos[ xx ][ yy ].a = 1;				
 			} else {
-				float n = ( h / ( 6.0f / DIV ) ) * 0.65f + 0.35f;
+				float n = ( h / ( 6.0f * MUL ) ) * 0.65f + 0.35f;
 				if( Util::dice( 6 ) ) {
 					//groundPos[ xx ][ yy ].r = n * 0.55f;
 					groundPos[ xx ][ yy ].r = n;
@@ -4926,19 +4926,19 @@ void Map::drawWaterLevel() {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
-	float w = static_cast<float>( mapViewWidth ) / DIV;
-	float d = static_cast<float>( mapViewDepth ) / DIV;
-	//float z = -4 / DIV;
+	float w = static_cast<float>( mapViewWidth ) * MUL;
+	float d = static_cast<float>( mapViewDepth ) * MUL;
+	//float z = -4 * MUL;
 	//glTranslatef( xpos2, ypos2, 0.0f);
 	glBegin( GL_TRIANGLE_STRIP );
 	glNormal3f( 0, 0, 1 );
-	glTexCoord2f( getX() * DIV * ratio + waterTexX, getY() * DIV * ratio + waterTexY );
+	glTexCoord2f( getX() / MUL * ratio + waterTexX, getY() / MUL * ratio + waterTexY );
 	glVertex3f( 0, 0, -0.3f );
-	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio + waterTexX, getY() * DIV * ratio + waterTexY );
+	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio + waterTexX, getY() / MUL * ratio + waterTexY );
 	glVertex3f( w, 0, -0.3f );
-	glTexCoord2f( getX() * DIV * ratio + waterTexX, ( getY() + mapViewDepth ) * DIV * ratio + waterTexY );
+	glTexCoord2f( getX() / MUL * ratio + waterTexX, ( getY() + mapViewDepth ) / MUL * ratio + waterTexY );
 	glVertex3f( 0, d, -0.3f );
-	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio + waterTexX, ( getY() + mapViewDepth ) * DIV * ratio + waterTexY );
+	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio + waterTexX, ( getY() + mapViewDepth ) / MUL * ratio + waterTexY );
 	glVertex3f( w, d, -0.3f );
 	glEnd();
 	glDisable( GL_BLEND );
@@ -4946,18 +4946,18 @@ void Map::drawWaterLevel() {
 
 void Map::drawFlatFloor() {
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
-	float w = static_cast<float>( mapViewWidth ) / DIV;
-	float d = static_cast<float>( mapViewDepth ) / DIV;
+	float w = static_cast<float>( mapViewWidth ) * MUL;
+	float d = static_cast<float>( mapViewDepth ) * MUL;
 	//glTranslatef( xpos2, ypos2, 0.0f);
 	glBegin( GL_TRIANGLE_STRIP );
 	glNormal3f( 0, 0, 1 );
-	glTexCoord2f( getX() * DIV * ratio, getY() * DIV * ratio );
+	glTexCoord2f( getX() / MUL * ratio, getY() / MUL * ratio );
 	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, getY() * DIV * ratio );
+	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio, getY() / MUL * ratio );
 	glVertex3f( w, 0, 0 );
-	glTexCoord2f( getX() * DIV * ratio, ( getY() + mapViewDepth ) * DIV * ratio );
+	glTexCoord2f( getX() / MUL * ratio, ( getY() + mapViewDepth ) / MUL * ratio );
 	glVertex3f( 0, d, 0 );
-	glTexCoord2f( ( getX() + mapViewWidth ) * DIV * ratio, ( getY() + mapViewDepth ) * DIV * ratio );
+	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio, ( getY() + mapViewDepth ) / MUL * ratio );
 	glVertex3f( w, d, 0 );
 	glEnd();
 }
@@ -5241,7 +5241,7 @@ void Map::drawTraps() {
       glBegin( GL_LINE_LOOP );
   		for( unsigned int i = 0; i < trap->hull.size(); i++ ) {
   			CVector2 *p = trap->hull[ i ];
-  			glVertex3f( ( p->x - getX() ) / DIV, ( p->y - getY() ) / DIV, 0.5f / DIV );
+  			glVertex3f( ( p->x - getX() ) * MUL, ( p->y - getY() ) * MUL, 0.5f * MUL );
   		}
   		glEnd();
       glLineWidth( 1 );

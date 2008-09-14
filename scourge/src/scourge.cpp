@@ -3864,8 +3864,8 @@ void Scourge::moveDoors() {
 				movingDoors[n].startY += DOOR_MOVE_DELTA;
 			if( pos ) {
 				pos->angleZ = movingDoors[n].startAngle;
-				pos->moveX = movingDoors[n].startX / DIV;
-				pos->moveY = movingDoors[n].startY / DIV;
+				pos->moveX = movingDoors[n].startX * MUL;
+				pos->moveY = movingDoors[n].startY * MUL;
 			}
 		}
 	}

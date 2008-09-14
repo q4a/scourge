@@ -622,11 +622,11 @@ Surface *GLShape::new_surface(float vertices[4][3]) {
 
 void GLShape::initSurfaces() {
 	// initialize the surfaces
-	float w = static_cast<float>(width) / DIV;
-	float d = static_cast<float>(depth) / DIV;
-	float h = static_cast<float>(height) / DIV;
+	float w = static_cast<float>(width) * MUL;
+	float d = static_cast<float>(depth) * MUL;
+	float h = static_cast<float>(height) * MUL;
 	if (h == 0) 
-		h = 0.25f / DIV;
+		h = 0.25f * MUL;
 
   float v[4][3];
 

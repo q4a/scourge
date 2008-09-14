@@ -110,10 +110,10 @@ void GLCaveShape::initialize() {
 
 void GLCaveShape::draw() {
 
-  float w = (float)width / DIV;
-  float d = (float)depth / DIV;
-  float h = (float)height / DIV;
-  if (h == 0) h = 0.25f / DIV;
+  float w = (float)width * MUL;
+  float d = (float)depth * MUL;
+  float h = (float)height * MUL;
+  if (h == 0) h = 0.25f * MUL;
 
   GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   if( !useShadow ) {
@@ -239,7 +239,7 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
     if( lavaTexY >= 1.0f ) lavaTexY -= 1.0f;
   }
 
-  GLfloat n = 0.25f / DIV;
+  GLfloat n = 0.25f * MUL;
 
   glDisable(GL_DEPTH_TEST);
 
@@ -442,7 +442,7 @@ void GLCaveShape::bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 ) {
   CVector3 normal;
   findNormal( n1, n2, n3, &normal );  
   
-  float f = 2.0f / DIV;
+  float f = 2.0f * MUL;
   // move base points along normal
   if( a->z == 0 ) {
     // move the anchor out if on bottom
@@ -525,10 +525,10 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
 	floorData[i].resize( 4 * 256 * 256 );
   }
 
-  float w = (float)CAVE_CHUNK_SIZE / DIV;
-  float d = (float)CAVE_CHUNK_SIZE / DIV;
-  float h = (float)MAP_WALL_HEIGHT / DIV; // fixme: for floor it should be 0
-  if (h == 0) h = 0.25f / DIV;
+  float w = (float)CAVE_CHUNK_SIZE * MUL;
+  float d = (float)CAVE_CHUNK_SIZE * MUL;
+  float h = (float)MAP_WALL_HEIGHT * MUL; // fixme: for floor it should be 0
+  if (h == 0) h = 0.25f * MUL;
 
   for( int i = 0; i < CAVE_INDEX_COUNT; i++ ) {
     polys.push_back( new vector<CaveFace*>() );

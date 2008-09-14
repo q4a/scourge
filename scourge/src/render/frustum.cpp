@@ -291,9 +291,9 @@ bool CFrustum::CubeInFrustum( float x, float y, float z, float size )
 }
 
 bool CFrustum::ShapeInFrustum( float x, float y, float z, Shape *shape ) {
-	float w = ( shape->getWidth() ) / DIV;
-	float d = ( shape->getDepth() ) / DIV;
-	float h = ( shape->getHeight() ) / DIV;
+	float w = ( shape->getWidth() ) * MUL;
+	float d = ( shape->getDepth() ) * MUL;
+	float h = ( shape->getHeight() ) * MUL;
 	return (
 			PointInFrustum( x    , y    , z ) ||
 			PointInFrustum( x + w, y    , z ) ||

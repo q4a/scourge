@@ -492,9 +492,9 @@ void ScourgeView::drawInfos() {
   for (map<InfoMessage *, Uint32>::iterator i=infos.begin(); i!=infos.end(); ++i) {
 
     InfoMessage *message = i->first;
-    xpos2 = (static_cast<float>(message->x - scourge->getMap()->getX()) / DIV);
-    ypos2 = (static_cast<float>(message->y - scourge->getMap()->getY()) / DIV);
-    zpos2 = (static_cast<float>(message->z) / DIV);
+    xpos2 = (static_cast<float>(message->x - scourge->getMap()->getX()) * MUL);
+    ypos2 = (static_cast<float>(message->y - scourge->getMap()->getY()) * MUL);
+    zpos2 = (static_cast<float>(message->z) * MUL);
 
     scourge->getSDLHandler()->drawTooltip(xpos2, ypos2, zpos2, -(scourge->getMap()->getZRot()), -(scourge->getMap()->getYRot()),
 																					 message->message, 0, 0.15f, 0.05f, 1.0f / scourge->getSession()->getMap()->getZoom() );
@@ -769,8 +769,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   glDisable( GL_CULL_FACE );
 
   // draw circle
-  double w = (static_cast<double>(creature->getShape()->getWidth()) / 2.0f) / DIV;
-  //double w = ((static_cast<double>(creature->getShape()->getWidth()) / 2.0f) + 1.0f) / DIV;
+  double w = (static_cast<double>(creature->getShape()->getWidth()) / 2.0f) * MUL;
+  //double w = ((static_cast<double>(creature->getShape()->getWidth()) / 2.0f) + 1.0f) * MUL;
   double s = 0.45f;
 
   float xpos2, ypos2, zpos2;
@@ -802,9 +802,9 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 			else
 				glColor4f(0, 0.4f, 1, 0.5f);
 
-			xpos2 = (static_cast<float>(i->x - scourge->getMap()->getX()) / DIV);
-			ypos2 = (static_cast<float>(i->y - scourge->getMap()->getY()) / DIV);
-			zpos2 = scourge->getMap()->getGroundHeight( i->x / OUTDOORS_STEP, i->y / OUTDOORS_STEP ) / DIV;
+			xpos2 = (static_cast<float>(i->x - scourge->getMap()->getX()) * MUL);
+			ypos2 = (static_cast<float>(i->y - scourge->getMap()->getY()) * MUL);
+			zpos2 = scourge->getMap()->getGroundHeight( i->x / OUTDOORS_STEP, i->y / OUTDOORS_STEP ) * MUL;
 
 			scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getNamedTexture( "path" ),
 																				i->x + creature->getShape()->getWidth() / 2, 
@@ -813,7 +813,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 			/*
       glPushMatrix();
       //glTranslatef( xpos2 + w, ypos2 - w, zpos2 + 5);
-			glTranslatef( xpos2 + w, ypos2 - w - 1 / DIV, zpos2 + 5);
+			glTranslatef( xpos2 + w, ypos2 - w - 1 * MUL, zpos2 + 5);
       gluDisk(quadric, 0, 4, 12, 1);
       glPopMatrix();
 			*/
@@ -831,12 +831,12 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 																			creature->getSelY() + targetWidth / 2, creature->getShape()->getWidth() + targetWidth,
 																			creature->getShape()->getDepth() + targetWidth );
 
-    xpos2 = (static_cast<float>(creature->getSelX() - scourge->getMap()->getX()) / DIV);
-    ypos2 = (static_cast<float>(creature->getSelY() - scourge->getMap()->getY()) / DIV);
+    xpos2 = (static_cast<float>(creature->getSelX() - scourge->getMap()->getX()) * MUL);
+    ypos2 = (static_cast<float>(creature->getSelY() - scourge->getMap()->getY()) * MUL);
 		float groundHeight = scourge->getMap()->findMaxHeightPos( creature->getSelX(), creature->getSelY(), 0, true );
-		zpos2 = groundHeight / DIV;
+		zpos2 = groundHeight * MUL;
     glPushMatrix();
-		glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 );
+		glTranslatef( xpos2, ypos2 - w * 2 - 1 * MUL, zpos2 );
 
 		glDisable( GL_TEXTURE_2D );
 		glDisable( GL_DEPTH_TEST );
@@ -859,7 +859,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   // red for attack target
   if( !creature->getStateMod( StateMod::dead ) && player && creature->getTargetCreature() &&
       !creature->getTargetCreature()->getStateMod( StateMod::dead ) ) {
-    //double tw = (static_cast<double>(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) / DIV;
+    //double tw = (static_cast<double>(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) * MUL;
     glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
 
 		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(), creature->getTargetCreature()->getX(),
@@ -867,11 +867,11 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 																			creature->getTargetCreature()->getShape()->getDepth() );
   }
 
-  xpos2 = (creature->getX() - static_cast<float>(scourge->getMap()->getX())) / DIV;
-  ypos2 = (creature->getY() - static_cast<float>(scourge->getMap()->getY())) / DIV;
+  xpos2 = (creature->getX() - static_cast<float>(scourge->getMap()->getX())) * MUL;
+  ypos2 = (creature->getY() - static_cast<float>(scourge->getMap()->getY())) * MUL;
 	float groundHeight = scourge->getMap()->findMaxHeightPos( creature->getX(), creature->getY(), creature->getZ(), true );
-	zpos2 = groundHeight / DIV;
-	//zpos2 = creature->getZ() / DIV;
+	zpos2 = groundHeight * MUL;
+	//zpos2 = creature->getZ() * MUL;
 
 	if(creature->getAction() != Constants::ACTION_NO_ACTION) {
     glColor4f(0, 0.7f, 1, 0.5f);
@@ -903,7 +903,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
 			if( scourge->getStateModIcon( &icon, name, &color, creature, i ) ) {
         glPushMatrix();
-        glTranslatef( xpos2 + w, ypos2 - ( w * 2.0f ) - ( 1.0f / DIV ) + w, zpos2 + 5);
+        glTranslatef( xpos2 + w, ypos2 - ( w * 2.0f ) - ( 1.0f * MUL ) + w, zpos2 + 5);
         float angle = -(count * 30) - (scourge->getMap()->getZRot() + 180);
 
         glRotatef( angle, 0, 0, 1 );
@@ -953,7 +953,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
 		/*
     glPushMatrix();
-		glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 + 5);
+		glTranslatef( xpos2, ypos2 - w * 2 - 1 * MUL, zpos2 + 5);
 		*/
     if( groupMode || player || creature->isMonster() || wanderingHero ) {
       //gluDisk(quadric, w - s, w, 12, 1);
@@ -973,7 +973,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
           }
 
           float range = scourge->getParty()->getPlayer()->getBattle()->getRange();
-          //float n = ( ( MIN_DISTANCE + range + creature->getShape()->getWidth() ) * 2.0f ) / DIV;
+          //float n = ( ( MIN_DISTANCE + range + creature->getShape()->getWidth() ) * 2.0f ) * MUL;
 					float nn = ( ( MIN_DISTANCE + range + creature->getShape()->getWidth() ) * 2.0f );
 
 					glColor4f( 0.85f, 0.25f, 0.15f, 0.4f );
@@ -989,7 +989,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
             areaRot += AREA_ROT_DELTA;
             if( areaRot >= 360.0f ) areaRot -= 360.0f;
           }
-					float h = ( creature->getShape()->getWidth() / 2.0f ) / DIV;
+					float h = ( creature->getShape()->getWidth() / 2.0f ) * MUL;
 					glTranslatef( h, h, 0 );
           glRotatef( areaRot, 0, 0, 1 );
           glTranslatef( -( n / 2 ), -( n / 2 ), 0 );
@@ -1024,11 +1024,11 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 				glDisable( GL_CULL_FACE );
 
-				xpos2 = (static_cast<float>(creature->getX() - scourge->getMap()->getX()) / DIV);
-				ypos2 = (static_cast<float>(creature->getY() - scourge->getMap()->getY()) / DIV);
-				zpos2 = scourge->getMap()->findMaxHeightPos( creature->getX(), creature->getY(), 0, true ) / DIV;
+				xpos2 = (static_cast<float>(creature->getX() - scourge->getMap()->getX()) * MUL);
+				ypos2 = (static_cast<float>(creature->getY() - scourge->getMap()->getY()) * MUL);
+				zpos2 = scourge->getMap()->findMaxHeightPos( creature->getX(), creature->getY(), 0, true ) * MUL;
 				glPushMatrix();
-				glTranslatef( xpos2, ypos2 - w * 2 - 1 / DIV, zpos2 );
+				glTranslatef( xpos2, ypos2 - w * 2 - 1 * MUL, zpos2 );
 				
         char cost[40];
         Color color;
@@ -1056,9 +1056,9 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   const float posDelta = 0.3f;
   for( int i = 0; i < creature->getRecentDamageCount(); i++ ) {
     DamagePos *dp = creature->getRecentDamage( i );
-    xpos2 = static_cast<float>( creature->getX() + creature->getShape()->getWidth() / 2 - scourge->getMap()->getX()) / DIV;
-    ypos2 = static_cast<float>( creature->getY() - creature->getShape()->getDepth() / 2 - scourge->getMap()->getY()) / DIV;
-    zpos2 = (static_cast<float>(creature->getShape()->getHeight() * 1.25f) + dp->pos ) / DIV;
+    xpos2 = static_cast<float>( creature->getX() + creature->getShape()->getWidth() / 2 - scourge->getMap()->getX()) * MUL;
+    ypos2 = static_cast<float>( creature->getY() - creature->getShape()->getDepth() / 2 - scourge->getMap()->getY()) * MUL;
+    zpos2 = (static_cast<float>(creature->getShape()->getHeight() * 1.25f) + dp->pos ) * MUL;
     glPushMatrix();
     //glTranslatef( xpos2 + w, ypos2 - w * 2, zpos2 + 5);
     glTranslatef( xpos2, ypos2, zpos2 );

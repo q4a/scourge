@@ -197,14 +197,14 @@ void C3DSShape::normalizeModel() {
   
   movex = 0;
   movey = maxy;
-  n = 0.25f / DIV;
+  n = 0.25f * MUL;
   movez = n;
 
 	if( divx > 0 ) {
 		// calculate dimensions where 'div' is given
-		float fw = maxx * divx * DIV;
-		float fd = maxy * divy * DIV;
-		float fh = maxz * divz * DIV;
+		float fw = maxx * divx / MUL;
+		float fd = maxy * divy / MUL;
+		float fh = maxz * divz / MUL;
 
 		// set the shape's dimensions
 		this->width = static_cast<int>(max(fw + 0.5f, 1.0f));
@@ -231,9 +231,9 @@ void C3DSShape::normalizeModel() {
 	  this->height = toint( size_z );
 	  if(this->height < 1) this->height = 1;		
 	
-		divx = size_x / ( maxx * DIV );
-		divy = size_y / ( maxy * DIV );
-		divz = size_z / ( maxz * DIV );
+		divx = size_x / ( maxx / MUL );
+		divy = size_y / ( maxy / MUL );
+		divz = size_z / ( maxz / MUL );
 
 		/*
 		cerr << "div=(" << divx << "," << divy << "," << divz << ") " <<
@@ -485,9 +485,9 @@ void C3DSShape::draw() {
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   }
-	glTranslatef( offs_x / DIV, offs_y / DIV, offs_z / DIV );
+	glTranslatef( offs_x * MUL, offs_y * MUL, offs_z * MUL );
   glTranslatef(-movex * divx, 0.0f, 0.0f);
-  glTranslatef(0.0f, (getDepth() / DIV) - (movey * divy), 0.0f);
+  glTranslatef(0.0f, (getDepth() * MUL) - (movey * divy), 0.0f);
   glTranslatef(0.0f, 0.0f, movez);
 
   // update the wind
