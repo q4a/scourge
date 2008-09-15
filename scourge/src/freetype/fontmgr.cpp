@@ -98,7 +98,7 @@ void FontMgr::textSizeUNICODE( Uint16 *p, SDL_Rect *r ) {
 
 
 void FontMgr::drawTextUTF8(char *text, int x, int y) {
-	glPushAttrib(GL_BLEND);
+	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -117,7 +117,7 @@ void FontMgr::drawTextUTF8(char *text, int x, int y) {
 }
 
 void FontMgr::drawText(char *text, int x, int y) {
-	glPushAttrib(GL_BLEND);
+	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
