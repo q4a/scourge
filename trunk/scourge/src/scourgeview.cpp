@@ -133,17 +133,17 @@ void ScourgeView::endScissorToMap() {
   glDisable( GL_CULL_FACE );
   glDisable( GL_SCISSOR_TEST );
 	glDisable( GL_BLEND );
-  if( scourge->getPreferences()->getStencilbuf() && 
+/*  if( scourge->getPreferences()->getStencilbuf() && 
       scourge->getPreferences()->getStencilBufInitialized() ) {
   	glClear( GL_STENCIL_BUFFER_BIT );
   	glColorMask( 1, 1, 1, 1 );
   	glStencilFunc( GL_EQUAL, 1, 0xffffffff );
   	glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
   	glDisable(GL_STENCIL_TEST);
-  }
-  glDepthMask( GL_TRUE );
+  } */
+  //glDepthMask( GL_TRUE );
 	glDisable( GL_ALPHA_TEST );
-	glColor4f( 1, 1, 1, 1 );
+//	glColor4f( 1, 1, 1, 1 );
 }
 
 #define MAX_AMBIENT_OBJECT_DISTANCE 11
@@ -1094,7 +1094,6 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
   glEnable( GL_CULL_FACE );
   glDisable( GL_BLEND );
-  glDisable( GL_DEPTH_TEST );
   glDepthMask(GL_TRUE);
 
   // draw name
@@ -1220,6 +1219,7 @@ void ScourgeView::drawWeather() {
 	
 	glDepthMask(GL_FALSE);
 	glEnable( GL_BLEND );
+	glEnable( GL_TEXTURE_2D );
 	
 	// Draw the fog
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -1227,7 +1227,6 @@ void ScourgeView::drawWeather() {
 	    glPushMatrix();
 	    glLoadIdentity();
 	    glTranslatef( 0, 0, 500 );
-	    glEnable( GL_TEXTURE_2D );
 	    glColor4f( 0.6f, 0.6f, 0.6f, 0.5f );
 	    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
 	    glBegin( GL_TRIANGLE_STRIP );
@@ -1241,7 +1240,6 @@ void ScourgeView::drawWeather() {
 	    glTexCoord2f( 1, 1 );
 	    glVertex2i( screenW, screenH );
 	    glEnd();
-	    glDisable( GL_TEXTURE_2D );
 	
 	    glPopMatrix();
 
@@ -1273,16 +1271,15 @@ void ScourgeView::drawWeather() {
             
 	    for ( int i = 0; i < rainDropCount; i++ ) {
 	    	if ( lightningTime < 501 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
-        	glColor4f( 1, 1, 1, rainDropZ[i] );
-        } else {
-        	//	      glColor4f( 0, 0.8f, 1, 0.5f );
-        	glColor4f( 0, 0.5f, 0.7f, rainDropZ[i] );
-        }
+        		glColor4f( 1, 1, 1, rainDropZ[i] );
+	        } else {
+        		//glColor4f( 0, 0.8f, 1, 0.5f );
+        		glColor4f( 0, 0.5f, 0.7f, rainDropZ[i] );
+        	}
                 glLoadIdentity();
 	        glTranslatef( rainDropX[i], rainDropY[i], 0 );
 	        glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
 	        glRotatef( 15, 0, 0, 1 );
-	        glEnable( GL_TEXTURE_2D );
 	        glBegin( GL_TRIANGLE_STRIP );
 	        glNormal3f( 0, 0, 1 );
 	        glTexCoord2f( 0, 0 );
@@ -1294,7 +1291,6 @@ void ScourgeView::drawWeather() {
 	        glTexCoord2f( 1, 1 );
 	        glVertex2i( RAIN_DROP_SIZE, RAIN_DROP_SIZE );
 	        glEnd();
-	        glDisable( GL_TEXTURE_2D );
 	
 	        rainDropY[i] += (deltaY * rainDropZ[i]);
 	        rainDropX[i] -= (deltaX * rainDropZ[i]);
@@ -1330,7 +1326,6 @@ void ScourgeView::drawWeather() {
               glLoadIdentity();
               glTranslatef( cloudX[i], cloudY[i], 10 );
               glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
-              glEnable( GL_TEXTURE_2D );
               glBegin( GL_TRIANGLE_STRIP );
               glNormal3f( 0.0f, 0.0f, 1.0f );
               glTexCoord2f( 0.0f, 0.0f );
@@ -1342,7 +1337,6 @@ void ScourgeView::drawWeather() {
               glTexCoord2f( 1.0f, 1.0f );
               glVertex2f( cloudSize[i] * 256.0f, cloudSize[i] * 128.0f );
               glEnd();
-              glDisable( GL_TEXTURE_2D );
 
 	      cloudX[i] -= cloudDelta;
 	
@@ -1376,7 +1370,7 @@ void ScourgeView::drawWeather() {
 	        glPushMatrix();
 	        glLoadIdentity();
 	        glTranslatef( 0, 0, 0 );
-	        glEnable( GL_TEXTURE_2D );
+	        //glEnable( GL_TEXTURE_2D );
 	        glColor4f( 1, 1, 1, brightness );
 	        glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
 	        glBegin( GL_TRIANGLE_STRIP );
@@ -1390,8 +1384,6 @@ void ScourgeView::drawWeather() {
 	        glTexCoord2f( 1, 1 );
 	        glVertex2i( screenW, screenH );
 	        glEnd();
-	        glDisable( GL_TEXTURE_2D );
-	
 	        glPopMatrix();
 	    }
 	}
@@ -1425,6 +1417,7 @@ void ScourgeView::drawWeather() {
 	
 	lastWeatherUpdate = now;
 	
+        glDisable( GL_TEXTURE_2D );
 	glEnable( GL_CULL_FACE );
 	glEnable( GL_DEPTH_TEST );
 	glDepthMask(GL_TRUE);

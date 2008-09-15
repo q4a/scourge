@@ -1262,7 +1262,6 @@ void Map::drawIndoors() {
           glEnable(GL_TEXTURE_2D);
         }
       }
-      glDisable( GL_BLEND );
       glDepthMask(GL_TRUE);
 
     } else {
@@ -1277,14 +1276,14 @@ void Map::drawIndoors() {
         glDisable(GL_TEXTURE_2D);
         glBlendFunc( GL_ONE, GL_SRC_COLOR );
         setupShapes(false, true);
-        glDisable(GL_BLEND);
-        glEnable(GL_TEXTURE_2D);
         glDepthMask(GL_TRUE);
       }
     }
 
     // draw the effects
     glEnable(GL_TEXTURE_2D);
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );	    	
 
     // draw the roofs    
     Uint32 now = SDL_GetTicks();
@@ -1306,16 +1305,13 @@ void Map::drawIndoors() {
   	}    
     if( roofAlpha > 0 ) {
 	    for(int i = 0; i < roofCount; i++) {
-	    	glEnable( GL_BLEND );
-	      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );	    	
 	    	((GLShape*)roof[i].shape)->setAlpha( roofAlpha );
 	      doDrawShape(&roof[i]);
-	      glDisable( GL_BLEND );
 	    }	    
     }    
     
-    glEnable(GL_BLEND);  
     glDepthMask(GL_FALSE);
+
     for(int i = 0; i < laterCount; i++) {
 			later[i].shape->setupBlending();  			
       doDrawShape(&later[i]);
@@ -1328,12 +1324,10 @@ void Map::drawIndoors() {
 
     // draw the fog of war or shading
 #ifdef USE_LIGHTING
-    if( helper && !adapter->isInMovieMode() && !(isCurrentlyUnderRoof && !groundVisible ) )
-			helper->draw( getX(), getY(), MVW, MVD );
+    if( helper && !adapter->isInMovieMode() && !(isCurrentlyUnderRoof && !groundVisible ) ) helper->draw( getX(), getY(), MVW, MVD );
 #endif
 
     glDisable(GL_BLEND);
-
     glDepthMask(GL_TRUE);
 }
 
@@ -4491,13 +4485,12 @@ void Map::renderFloor() {
 }
 
 bool Map::drawHeightMapFloor() {		
-	glDisable( GL_CULL_FACE );
-	glColor4f( 1, 1, 1, 1 );
 	CVectorTex *p[4];
 	float gx, gy;
 		
 	bool ret = true;
 
+	glDisable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
 
 	for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
@@ -4535,8 +4528,6 @@ bool Map::drawHeightMapFloor() {
 	glDepthMask( GL_FALSE );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glDisable( GL_CULL_FACE );
-	glEnable( GL_TEXTURE_2D );
 
 	// draw outdoor textures
 	//cerr << "from: " << getX() << "," << getY() << " to: " << ( getX() + mapViewWidth ) << "," << ( getY() + mapViewDepth ) << endl;  
@@ -4928,7 +4919,7 @@ void Map::drawWaterLevel() {
 	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio + waterTexX, ( getY() + mapViewDepth ) / MUL * ratio + waterTexY );
 	glVertex3f( w, d, -0.3f );
 	glEnd();
-	glDisable( GL_BLEND );
+	//glDisable( GL_BLEND );
 }
 
 void Map::drawFlatFloor() {
