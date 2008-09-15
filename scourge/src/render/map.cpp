@@ -589,11 +589,11 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
       }
 
       // draw rugs
-			if( ( forGround || forWater ) && rugPos[ chunkX ][ chunkY ].texture > 0 ) {
-				xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) * MUL;
-				ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) * MUL;
-				drawRug( &rugPos[ chunkX ][ chunkY ], xpos2, ypos2, chunkX, chunkY );
-			}
+	if( ( forGround || forWater ) && rugPos[ chunkX ][ chunkY ].texture > 0 ) {
+		xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + chunkOffsetX) * MUL;
+		ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT + chunkOffsetY) * MUL;
+		drawRug( &rugPos[ chunkX ][ chunkY ], xpos2, ypos2, chunkX, chunkY );
+	}
 
       for(int yp = 0; yp < MAP_UNIT; yp++) {
         for(int xp = 0; xp < MAP_UNIT; xp++) {
@@ -608,7 +608,7 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
 
           // show traps
           int trapIndex = getTrapAtLoc( posX, posY );
-          if( trapIndex > -1 && checkLightMap( chunkX, chunkY ) ) 
+          if( trapIndex != -1 && checkLightMap( chunkX, chunkY ) ) 
             trapSet.insert( (Uint8)trapIndex );
 
           if(forGround || forWater) {
@@ -627,18 +627,18 @@ void Map::setupShapes(bool forGround, bool forWater, int *csx, int *cex, int *cs
             }
           } else {
 
-						if( checkLightMap( chunkX, chunkY ) && itemPos[posX][posY] && 
-								itemPos[posX][posY]->x == posX && itemPos[posX][posY]->y == posY ) {
+		if( checkLightMap( chunkX, chunkY ) && itemPos[posX][posY] && 
+			itemPos[posX][posY]->x == posX && itemPos[posX][posY]->y == posY ) {
 
-							shape = itemPos[posX][posY]->shape;
+			shape = itemPos[posX][posY]->shape;
 
-							xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) * MUL;
-							ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) * MUL;
+			xpos2 = static_cast<float>((chunkX - chunkStartX) * MAP_UNIT + xp + chunkOffsetX) * MUL;
+			ypos2 = static_cast<float>((chunkY - chunkStartY) * MAP_UNIT - shape->getDepth() + yp + chunkOffsetY) * MUL;
 
-							setupPosition( posX, posY, 0, xpos2, ypos2, 0, shape, itemPos[posX][posY]->item, NULL, NULL, true );
-						}
+			setupPosition( posX, posY, 0, xpos2, ypos2, 0, shape, itemPos[posX][posY]->item, NULL, NULL, true );
+		}
 
-						checkUnderRoof();
+		checkUnderRoof();
 						
             for(int zp = 0; zp < MAP_VIEW_HEIGHT; zp++) {
               if( checkLightMap( chunkX, chunkY ) && effect[posX][posY][zp] && !effect[posX][posY][zp]->isInDelay() ) {
@@ -1188,16 +1188,10 @@ void Map::drawIndoors() {
 			if( !helper->drawShadow() ) {
 				if( other[i].creature ) {
 					glColor4f( 0.04f, 0, 0.07f, 0.4f );
-					drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f,
-												 ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f,
-												 other[i].creature->getShape()->getDepth() * 0.7f );
+					drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f, ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f, other[i].creature->getShape()->getDepth() * 0.7f );
 				} else if( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
 					glColor4f( 0.04f, 0, 0.07f, 0.4f );
-					drawGroundTex( outdoorShadowTree,
-												 static_cast<float>(other[i].pos->x) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ),
-												 static_cast<float>(other[i].pos->y) + ( other[i].shape->getDepth() / 2.0f ),
-												 other[i].shape->getWidth() * 1.7f,
-												 other[i].shape->getDepth() * 1.7f );
+					drawGroundTex( outdoorShadowTree,	 static_cast<float>(other[i].pos->x) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ), static_cast<float>(other[i].pos->y) + ( other[i].shape->getDepth() / 2.0f ), other[i].shape->getWidth() * 1.7f, other[i].shape->getDepth() * 1.7f );
 				}
 			}
     }
@@ -1360,16 +1354,10 @@ void Map::drawOutdoors() {
 		// draw simple shadow in outdoors
 		if( other[i].creature ) {
 			glColor4f( 0.04f, 0, 0.07f, 0.4f );
-			drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f,
-										 ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f,
-										 other[i].creature->getShape()->getDepth() * 0.7f );
+			drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f, ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f, other[i].creature->getShape()->getDepth() * 0.7f );
 		} else if( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
 			glColor4f( 0.04f, 0, 0.07f, 0.4f );
-			drawGroundTex( outdoorShadowTree,
-										 static_cast<float>(other[i].pos->x) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ),
-										 static_cast<float>(other[i].pos->y) + ( other[i].shape->getDepth() / 2.0f ),
-										 other[i].shape->getWidth() * 1.7f,
-										 other[i].shape->getDepth() * 1.7f );
+			drawGroundTex( outdoorShadowTree, static_cast<float>(other[i].pos->x) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ), static_cast<float>(other[i].pos->y) + ( other[i].shape->getDepth() / 2.0f ), other[i].shape->getWidth() * 1.7f, other[i].shape->getDepth() * 1.7f );
 		}
   }
 
@@ -4509,14 +4497,16 @@ bool Map::drawHeightMapFloor() {
 	float gx, gy;
 		
 	bool ret = true;
+
+	glEnable( GL_TEXTURE_2D );
+
 	for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
 		for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
 
 			//int chunkX = ( ( xx * OUTDOORS_STEP ) - MAP_OFFSET ) / MAP_UNIT;
 			//int chunkY = ( ( ( yy + 1 ) * OUTDOORS_STEP ) - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
 			//if( lightMap[chunkX][chunkY] ) {
-				glEnable( GL_TEXTURE_2D );
-				glBindTexture( GL_TEXTURE_2D, groundPos[ xx ][ yy ].tex );
+			glBindTexture( GL_TEXTURE_2D, groundPos[ xx ][ yy ].tex );
 			//} else {
 				//glDisable( GL_TEXTURE_2D );
 			//}
@@ -4540,21 +4530,29 @@ bool Map::drawHeightMapFloor() {
 			glEnd();
 		}
 	}
-	glEnable( GL_TEXTURE_2D );
 	
+	//glEnable( GL_DEPTH_TEST );
+	glDepthMask( GL_FALSE );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glDisable( GL_CULL_FACE );
+	glEnable( GL_TEXTURE_2D );
+
 	// draw outdoor textures
 	//cerr << "from: " << getX() << "," << getY() << " to: " << ( getX() + mapViewWidth ) << "," << ( getY() + mapViewDepth ) << endl;  
 	for( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 		for( int yy = getY() / OUTDOORS_STEP; yy < ( getY() + mapViewDepth ) / OUTDOORS_STEP; yy++ ) {
 			for( int xx = getX() / OUTDOORS_STEP; xx < ( getX() + mapViewWidth ) / OUTDOORS_STEP; xx++ ) {
-				if( outdoorTex[xx][yy][z].texture > 0 ) {
-					drawOutdoorTex( outdoorTex[xx][yy][z].texture, 
-												 xx + outdoorTex[xx][yy][z].offsetX, yy + outdoorTex[xx][yy][z].offsetY,
-												 outdoorTex[xx][yy][z].width, outdoorTex[xx][yy][z].height, outdoorTex[xx][yy][z].angle );
+				if( outdoorTex[xx][yy][z].texture != 0 ) {
+					drawOutdoorTex( outdoorTex[xx][yy][z].texture, xx + outdoorTex[xx][yy][z].offsetX, yy + outdoorTex[xx][yy][z].offsetY, outdoorTex[xx][yy][z].width, outdoorTex[xx][yy][z].height, outdoorTex[xx][yy][z].angle );
 				}
 			}
 		}
 	}
+	
+	//glDisable( GL_DEPTH_TEST );
+	glDepthMask( GL_TRUE );
+	glDisable( GL_BLEND );
 
 	if( settings->isGridShowing() && gridEnabled ) {
 		//glDisable( GL_DEPTH_TEST );
@@ -4588,13 +4586,6 @@ bool Map::drawHeightMapFloor() {
 
 // this one uses OUTDOORS_STEP coordinates
 void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, float angle ) {
-
-	//glEnable( GL_DEPTH_TEST );
-	glDepthMask( GL_FALSE );
-	glEnable( GL_BLEND );
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glDisable( GL_CULL_FACE );
-	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, tex );
 
 	glMatrixMode( GL_TEXTURE );
@@ -4655,10 +4646,6 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 	glMatrixMode( GL_TEXTURE );
 	glPopMatrix();
 	glMatrixMode( GL_MODELVIEW );
-	
-	//glDisable( GL_DEPTH_TEST );
-	glDepthMask( GL_TRUE );
-	glDisable( GL_BLEND );
 	
 #ifdef DEBUG_HEIGHT_MAP
 	debugGround( sx, sy, ex, ey );
