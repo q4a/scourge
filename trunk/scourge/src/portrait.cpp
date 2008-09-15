@@ -508,8 +508,8 @@ void Portrait::drawStateModIcon( GLuint icon, char *name, Color color, int x, in
 	glColor4f( color.r, color.g, color.b, color.a );
 	glPushMatrix();
 	glTranslatef( x, y - size, 0 );
-	glBegin( GL_TRIANGLE_STRIP );
 	glNormal3f( 0, 0, 1 );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex3f( 0, 0, 0 );
 	glTexCoord2f( 1, 0 );

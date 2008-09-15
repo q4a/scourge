@@ -223,11 +223,11 @@ void ScrollingList::drawWidget(Widget *parent) {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glColor4f( 0, 0, 0, 0.4f );
 	glBegin( GL_TRIANGLE_STRIP );
-  glVertex2d(0, 0);
-  glVertex2d(scrollerWidth, 0);  
-  glVertex2d(0, h);
-  glVertex2d(scrollerWidth, h);
-  glEnd();
+	glVertex2d(0, 0);
+	glVertex2d(scrollerWidth, 0);  
+	glVertex2d(0, h);
+	glVertex2d(scrollerWidth, h);
+	glEnd();
 	glDisable( GL_BLEND );
 	glEnable( GL_TEXTURE_2D );
 
@@ -311,8 +311,8 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
   if(icon) glBindTexture( GL_TEXTURE_2D, icon );
   glColor4f(1, 1, 1, 1);
   
-  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
+  glBegin( GL_TRIANGLE_STRIP );
   if(icon) glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
   if(icon) glTexCoord2f( 1, 0 );

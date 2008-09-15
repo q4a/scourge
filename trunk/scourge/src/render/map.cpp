@@ -4908,8 +4908,8 @@ void Map::drawWaterLevel() {
 	float d = static_cast<float>( mapViewDepth ) * MUL;
 	//float z = -4 * MUL;
 	//glTranslatef( xpos2, ypos2, 0.0f);
-	glBegin( GL_TRIANGLE_STRIP );
 	glNormal3f( 0, 0, 1 );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( getX() / MUL * ratio + waterTexX, getY() / MUL * ratio + waterTexY );
 	glVertex3f( 0, 0, -0.3f );
 	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio + waterTexX, getY() / MUL * ratio + waterTexY );
@@ -4927,8 +4927,8 @@ void Map::drawFlatFloor() {
 	float w = static_cast<float>( mapViewWidth ) * MUL;
 	float d = static_cast<float>( mapViewDepth ) * MUL;
 	//glTranslatef( xpos2, ypos2, 0.0f);
-	glBegin( GL_TRIANGLE_STRIP );
 	glNormal3f( 0, 0, 1 );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( getX() / MUL * ratio, getY() / MUL * ratio );
 	glVertex3f( 0, 0, 0 );
 	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio, getY() / MUL * ratio );

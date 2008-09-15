@@ -68,10 +68,10 @@ void GLTeleporter::draw() {
     if(flameTex) glBindTexture( GL_TEXTURE_2D, flameTex );
 
     glColor4f(1, 1, 1, 1);
+    glNormal3f(0.0f, 0.0f, 1.0f);
 
     glBegin( GL_TRIANGLE_STRIP );
     // front
-    glNormal3f(0.0f, 0.0f, 1.0f);
     if(flameTex) glTexCoord2f( 0.0f, 0.0f );
     glVertex3f(star[i][0], star[i][1], h);
     if(flameTex) glTexCoord2f( 1.0f, 0.0f );
@@ -115,10 +115,10 @@ void GLTeleporter::draw() {
     //	float dist = 1.5f - abs(max - ring[i]) / max;
     float dist = 1.5f - abs(static_cast<int>(max - ring[i])) / max;
     glColor4f(red, green, blue, dist);
+    glNormal3f(0.0f, 0.0f, 1.0f);
 
     glBegin( GL_TRIANGLE_STRIP );
     // front
-    glNormal3f(0.0f, 0.0f, 1.0f);
     if(flameTex) glTexCoord2f( 0.0f, 0.0f );
     glVertex3f(0, 0, h);
     if(flameTex) glTexCoord2f( 1.0f, 0.0f );

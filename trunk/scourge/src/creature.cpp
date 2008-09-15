@@ -3130,8 +3130,8 @@ void Creature::drawMoviePortrait( int width, int height ) {
   glBindTexture( GL_TEXTURE_2D, portrait[0] );  
   glColor4f(1, 1, 1, 1);
 
-  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
+  glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f( 0, 1 );
   glVertex3f( 0, 0, 0 );
   glTexCoord2f( 1, 1 );
@@ -3147,8 +3147,8 @@ void Creature::drawMoviePortrait( int width, int height ) {
 
   glPushMatrix();
   glTranslatef( -10, -20, 0 );
-  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
+  glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
   glTexCoord2f( 1, 0 );
@@ -3181,8 +3181,8 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 										 getMonster()->getPortraitTexture() ) );
     glColor4f(1, 1, 1, 1);
 
-    glBegin( GL_TRIANGLE_STRIP );
     glNormal3f( 0, 0, 1 );
+    glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 0, 0 );
     glVertex3f( 0, 0, 0 );
     glTexCoord2f( 1, 0 );
@@ -3205,8 +3205,8 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
     glEnable( GL_TEXTURE_2D );
     glColor4f( 1, 1, 1, 1 );
     glBindTexture( GL_TEXTURE_2D, texture );
-    glBegin( GL_TRIANGLE_STRIP );
     glNormal3f( 0, 0, 1 );
+    glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 0, 0 );
     glVertex2i( 20, 0 );
     glTexCoord2f( 1, 0 );
@@ -3223,8 +3223,8 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
     glEnable( GL_TEXTURE_2D );
     glColor4f( 1, 1, 1, 1 );
     glBindTexture( GL_TEXTURE_2D, texture );
-    glBegin( GL_TRIANGLE_STRIP );
     glNormal3f( 0, 0, 1 );
+    glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 0, 0 );
     glVertex2i( -130, 0 );
     glTexCoord2f( 1, 0 );
