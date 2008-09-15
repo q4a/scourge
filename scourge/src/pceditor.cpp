@@ -659,8 +659,8 @@ void PcEditor::drawWidgetContents( Widget *w ) {
     glBindTexture( GL_TEXTURE_2D, 
                    scourge->getShapePalette()->
 									 getPortraitTexture( getSex(), portraitIndex ) );
-    glBegin( GL_TRIANGLE_STRIP );
     glNormal3f( 0, 0, 1 );
+    glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 0, 0 );
     glVertex2i( 0, 0 );
     glTexCoord2f( 1, 0 );
@@ -696,16 +696,16 @@ void PcEditor::drawWidgetContents( Widget *w ) {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
     glClearDepth( 1.0f );
-		glBegin( GL_TRIANGLE_STRIP );
-		glColor3f( 0, 0.1f, 0.25f );
-		glVertex2f( 0, 0 );
-		glColor3f( 0, 0, 0 );
-		glVertex2f( model->getWidth(), 0 );
-		glColor3f( 0, 0, 0 );
-		glVertex2f( 0, model->getHeight() );
-		glColor3f( 0, 0.1f, 0.25f );
-		glVertex2f( model->getWidth(), model->getHeight() );
-		glEnd();
+    glBegin( GL_TRIANGLE_STRIP );
+    glColor3f( 0, 0.1f, 0.25f );
+    glVertex2f( 0, 0 );
+    glColor3f( 0, 0, 0 );
+    glVertex2f( model->getWidth(), 0 );
+    glColor3f( 0, 0, 0 );
+    glVertex2f( 0, model->getHeight() );
+    glColor3f( 0, 0.1f, 0.25f );
+    glVertex2f( model->getWidth(), model->getHeight() );
+    glEnd();
     glEnable(GL_DEPTH_TEST);
     glDisable( GL_BLEND );
     glDepthMask(GL_TRUE);

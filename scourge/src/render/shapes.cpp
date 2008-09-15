@@ -1240,9 +1240,9 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   //    glTranslatef( x, y, 0 );
   glBindTexture( GL_TEXTURE_2D, sampleTex );
   glColor4f(1, 1, 1, 1);
-  
-  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
+
+  glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
   glTexCoord2f( 1, 0 );
@@ -1264,8 +1264,8 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   glColor4f(1, 1, 1, 1);
 
   glBindTexture( GL_TEXTURE_2D, alphaTex );      
-  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f( 0, 0, 1 );
+  glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
   glTexCoord2f( 1, 0 );

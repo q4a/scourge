@@ -65,8 +65,8 @@ void Button::drawWidget(Widget *parent) {
 			glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 		}
 		
-		glBegin( GL_TRIANGLE_STRIP );
 		glNormal3f( 0, 0, 1 );
+		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );
 		glVertex3f( 0, 0, 0 );
 		glTexCoord2f( 1, 0 );

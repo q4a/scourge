@@ -912,8 +912,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
         glTranslatef( -7, -7, 0 );
 
 				glBindTexture( GL_TEXTURE_2D, icon );
-        glBegin( GL_TRIANGLE_STRIP );
         glNormal3f( 0, 0, 1 );
+        glBegin( GL_TRIANGLE_STRIP );
         if(icon) glTexCoord2f( 0, 0 );
         glVertex3f( 0, 0, 0 );
         if(icon) glTexCoord2f( 1, 0 );
@@ -1229,8 +1229,8 @@ void ScourgeView::drawWeather() {
 	    glTranslatef( 0, 0, 500 );
 	    glColor4f( 0.6f, 0.6f, 0.6f, 0.5f );
 	    glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
-	    glBegin( GL_TRIANGLE_STRIP );
 	    glNormal3f( 0, 0, 1 );
+	    glBegin( GL_TRIANGLE_STRIP );
 	    glTexCoord2f( 0, 0 );
 	    glVertex2i( 0, 0 );
 	    glTexCoord2f( 1, 0 );
@@ -1280,8 +1280,8 @@ void ScourgeView::drawWeather() {
 	        glTranslatef( rainDropX[i], rainDropY[i], 0 );
 	        glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
 	        glRotatef( 15, 0, 0, 1 );
-	        glBegin( GL_TRIANGLE_STRIP );
 	        glNormal3f( 0, 0, 1 );
+	        glBegin( GL_TRIANGLE_STRIP );
 	        glTexCoord2f( 0, 0 );
 	        glVertex2i( 0, 0 );
 	        glTexCoord2f( 1, 0 );
@@ -1326,8 +1326,8 @@ void ScourgeView::drawWeather() {
               glLoadIdentity();
               glTranslatef( cloudX[i], cloudY[i], 10 );
               glScalef( scourge->getMap()->getZoom(), scourge->getMap()->getZoom(), scourge->getMap()->getZoom() );
-              glBegin( GL_TRIANGLE_STRIP );
               glNormal3f( 0.0f, 0.0f, 1.0f );
+              glBegin( GL_TRIANGLE_STRIP );
               glTexCoord2f( 0.0f, 0.0f );
               glVertex2f( 0, 0 );
               glTexCoord2f( 1.0f, 0.0f );
@@ -1373,8 +1373,8 @@ void ScourgeView::drawWeather() {
 	        //glEnable( GL_TEXTURE_2D );
 	        glColor4f( 1, 1, 1, brightness );
 	        glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getLightningTexture() );
-	        glBegin( GL_TRIANGLE_STRIP );
 	        glNormal3f( 0, 0, 1 );
+	        glBegin( GL_TRIANGLE_STRIP );
 	        glTexCoord2f( 0, 0 );
 	        glVertex2i( 0, 0 );
 	        glTexCoord2f( 1, 0 );

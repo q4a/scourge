@@ -422,8 +422,8 @@ void MainMenu::drawLogo() {
   float h = scourge->getShapePalette()->logo->h;
   glColor4f( 1, 1, 1, 1 );
   glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
-  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f(0.0f, 0.0f, 1.0f);
+  glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f( 0.0f, 0.0f );
   glVertex3f(0, 0, 0);
   glTexCoord2f( 1.0f, 0.0f );
@@ -446,8 +446,8 @@ void MainMenu::drawLogo() {
     float h = scourge->getShapePalette()->chain->h;
     glColor4f( 1, 1, 1, 1 );
     glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->chain_texture );
-    glBegin( GL_TRIANGLE_STRIP );
     glNormal3f(0.0f, 0.0f, 1.0f);
+    glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 0.0f, 0.0f );
     glVertex3f(0, 0, 0);
     glTexCoord2f( 1.0f, 0.0f );
@@ -485,8 +485,8 @@ void MainMenu::drawLogo() {
   glTranslatef( candleFlameX, candleFlameY, 0 ); 
   w = 64;
   h = 64;
-  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f(0.0f, 0.0f, 1.0f);
+  glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f( 0.0f, 0.0f );
   glVertex3f(0, 0, 0);
   glTexCoord2f( 1.0f, 0.0f );
@@ -539,8 +539,8 @@ void MainMenu::drawScourge() {
   glTranslatef( scourge->getSDLHandler()->getScreen()->w - w, top, 0 );  
   glColor4f( 1, 1, 1, 1 );
   glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getNamedTexture( "scourge" ) );
-  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f(0.0f, 0.0f, 1.0f);
+  glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f( 0.0f, 0.0f );
   glVertex3f(0, 0, 0);
   glTexCoord2f( 1.0f, 0.0f );
@@ -573,8 +573,8 @@ void MainMenu::drawBackdrop() {
   float h = scourge->getShapePalette()->scourgeBackdrop->h;
   glColor4f( 1, 1, 1, 1 );
   glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->scourgeBackdrop_texture );
-  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f(0.0f, 0.0f, 1.0f);
+  glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f( 0.0f, 0.0f );
   glVertex3f(0, 0, 0);
   glTexCoord2f( 1.0f, 0.0f );
@@ -611,8 +611,8 @@ void MainMenu::drawClouds(bool moveClouds, bool flipped) {
 	glTranslatef( cloud[i].x, 
 				  top + (flipped ? 600 - (cloud[i].y + h / 2.0) : cloud[i].y + 130), 
 				  0 );
-    glBegin( GL_TRIANGLE_STRIP );
     glNormal3f(0.0f, 0.0f, 1.0f);
+    glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 0.0f, (flipped ? 1.0f : 0.0f) );
     glVertex3f(0, 0, 0);
     glTexCoord2f( 1.0f, (flipped ? 1.0f : 0.0f) );
@@ -649,8 +649,8 @@ void MainMenu::drawWater() {
   //  glDisable( GL_LIGHTING );
   //glEnable( GL_BLEND );
   //glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
-  glBegin( GL_TRIANGLE_STRIP );
   glNormal3f(0.0f, 0.0f, 1.0f);
+  glBegin( GL_TRIANGLE_STRIP );
   glColor4f(0, 0, 0.1f, 1);
   glVertex3f(0, 0, 0);
   glColor4f(0, 0, 0.1f, 1);

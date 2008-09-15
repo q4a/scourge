@@ -140,8 +140,8 @@ void ImageCanvas::drawWidgetContents( Widget *w ) {
 	glPushMatrix();
 	glBindTexture( GL_TEXTURE_2D, image );
 	glColor4f(1, 1, 1, 1);
-	glBegin( GL_TRIANGLE_STRIP );
 	glNormal3f( 0, 0, 1 );
+	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex3f( 0, 0, 0 );
 	glTexCoord2f( 1, 0 );

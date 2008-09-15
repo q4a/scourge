@@ -145,8 +145,8 @@ void TextEffect::drawEffect( float divisor, int count ) {
 								 a / divisor );
 			
 			glEnable( GL_TEXTURE_2D );
-			glBegin( GL_TRIANGLE_STRIP );
 			glNormal3f( 0, 0, 1 );
+			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2f( 0, 1 );
 			glVertex2f( 0, 0 );
 			glTexCoord2f( 1, 1 );
