@@ -201,7 +201,7 @@ void TextEffect::buildTextures() {
   // Draw image
   //x = x;
   //y = y;
-  glColor4f( 1, 1, 1, 1 );
+  glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
   scourge->getSDLHandler()->texPrint( x, y, text );
   //y += height;
   

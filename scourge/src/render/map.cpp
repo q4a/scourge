@@ -4803,7 +4803,7 @@ void Map::debugGround( int sx, int sy, int ex, int ey ) {
 void Map::createGroundMap() {
 	float w, d, h;
 	for( int xx = 0; xx < MAP_TILES_X; xx++ ) {		
-		for( int yy = 0; yy < MAP_DEPTH /  OUTDOORS_STEP; yy++ ) {
+		for( int yy = 0; yy < MAP_TILES_Y; yy++ ) {
 			w = static_cast<float>( xx * OUTDOORS_STEP ) * MUL;
 			d = static_cast<float>( yy * OUTDOORS_STEP - 1 ) * MUL;
 			h = ( ground[ xx ][ yy ] ) * MUL;
