@@ -732,6 +732,7 @@ public:
 	static void generateTrigTables();
 	static float sinFromAngle(int angle);
 	static float cosFromAngle(int angle);
+	static float windFromAngle(float angle);
 
 private:
   static bool checkFile(const std::string& dir, const std::string& file);
