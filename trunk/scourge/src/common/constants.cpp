@@ -718,6 +718,7 @@ void Constants::getQuadrantAndAngle( float nx, float ny, int *q, float *angle ) 
 
 static float sinTable[360];
 static float cosTable[360];
+static float windTable[36000];
 
 void Constants::generateTrigTables() {
   for( int i = 0; i < 360; i++ ) {
@@ -726,6 +727,10 @@ void Constants::generateTrigTables() {
 
   for( int i = 0; i < 360; i++ ) {
     cosTable[i] = (float)cos( Constants::toRadians( i ) );
+  }
+
+  for( int i = 0; i < 36000; i++ ) {
+    windTable[i] = (float)sin( (float)i / 100 );
   }
 
   for( int y = 0; y < 500; y++ ) {
@@ -741,4 +746,8 @@ float Constants::sinFromAngle(int angle) {
 
 float Constants::cosFromAngle(int angle) {
   return cosTable[angle % 360];
+}
+
+float Constants::windFromAngle(float angle) {
+  return windTable[(int)(angle * 100)];
 }

@@ -85,8 +85,6 @@ Scourge::Scourge(UserConfiguration *config) : SDLOpenGLAdapter(config) {
 	srand( (unsigned int)time( (time_t*)NULL ) );
         Util::mt_srand( (unsigned long)time( (time_t*)NULL ) );
 
-	Constants::generateTrigTables();
-
   oldStory = currentStory = 0;
   lastTick = 0;
   textDialog = NULL;
@@ -193,11 +191,17 @@ void Scourge::start() {
 	srand( (unsigned int)time( (time_t *)NULL ) );
         Util::mt_srand( (unsigned long)time( (time_t*)NULL ) );
 
+	cerr << "Creating lookup tables... ";
+	Uint32 now = SDL_GetTicks();
+
+	// Precalculate trigonometry
+	Constants::generateTrigTables();
+
 	// Set up the weather effects
 	view->generateRain();
 	view->generateClouds();
 
-	Constants::generateTrigTables();
+	cerr << "done in " << ( SDL_GetTicks() - now ) << " millis." << endl;
 
 	bool initMainMenu = true;
 	int value = CONTINUE_GAME;

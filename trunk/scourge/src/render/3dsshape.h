@@ -72,7 +72,8 @@ public:
 			lastWindStep = now;
 			windAngle += windSpeed;
 			if( windAngle >= 360.0f ) windAngle -= 360.0f;
-			value = Constants::sinFromAngle( (int)windAngle ) * windAmp;
+			//value = sin( windAngle ) * windAmp;
+			value = Constants::windFromAngle( windAngle ) * windAmp;
 			ret = true;
 		}
 		return ret;
