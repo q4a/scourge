@@ -712,7 +712,7 @@ void Map::setupLocation( Location *location, Uint16 drawSide, int chunkStartX, i
 void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) {
 	glPushMatrix();
 	glTranslatef( xpos2, ypos2, 0.255f * MUL );
-	glRotatef( rug->angle, 0, 0, 1 );
+	glRotatef( rug->angle, 0.0f, 0.0f, 1.0f );
 	float f = MAP_UNIT * MUL;
 	float offset = 2.5f * MUL;
 
@@ -732,26 +732,26 @@ void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) 
 
 	glDisable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
-	glColor4f(1, 1, 1, 0.9f);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
 	glBindTexture( GL_TEXTURE_2D, rug->texture );
 	glBegin( GL_TRIANGLE_STRIP );
 	if( rug->isHorizontal ) {
-		glTexCoord2f( 1, 0 );
+		glTexCoord2f( 1.0f, 0.0f );
 		glVertex2f( sx, sy );
-		glTexCoord2f( 1, 1 );
+		glTexCoord2f( 1.0f, 1.0f );
 		glVertex2f( ex, sy );
-		glTexCoord2f( 0, 0 );
+		glTexCoord2f( 0.0f, 0.0f );
 		glVertex2f( sx, ey );
-		glTexCoord2f( 0, 1 );
+		glTexCoord2f( 0.0f, 1.0f );
 		glVertex2f( ex, ey );
 	} else {
-		glTexCoord2f( 0, 0 );
+		glTexCoord2f( 0.0f, 0.0f );
 		glVertex2f( sx, sy );
-		glTexCoord2f( 1, 0 );
+		glTexCoord2f( 1.0f, 0.0f );
 		glVertex2f( ex, sy );
-		glTexCoord2f( 0, 1 );
+		glTexCoord2f( 0.0f, 1.0f );
 		glVertex2f( sx, ey );
-		glTexCoord2f( 1, 1 );
+		glTexCoord2f( 1.0f, 1.0f );
 		glVertex2f( ex, ey );
 	}
 	glEnd();
@@ -768,7 +768,7 @@ void Map::drawGroundPosition(int posX, int posY,
   glTranslatef( xpos2, ypos2, 0.0f);
   
   glPushName( name );
-  glColor4f(1, 1, 1, 0.9f);
+  glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
 	if( isHeightMapEnabled() ) {
 		shape->drawHeightMap( ground, posX, posY );
 	} else {
@@ -1179,7 +1179,7 @@ void Map::drawIndoors() {
       if(selectedDropTarget && ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
           (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
         colorAlreadySet = true;
-        glColor4f(0, 1, 1, 1);
+        glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
       }
       doDrawShape(&other[i]);
 
@@ -1187,10 +1187,10 @@ void Map::drawIndoors() {
 			// draw simple shadow in outdoors
 			if( !helper->drawShadow() ) {
 				if( other[i].creature ) {
-					glColor4f( 0.04f, 0, 0.07f, 0.4f );
+					glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
 					drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f, ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f, other[i].creature->getShape()->getDepth() * 0.7f );
 				} else if( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
-					glColor4f( 0.04f, 0, 0.07f, 0.4f );
+					glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
 					drawGroundTex( outdoorShadowTree,	 static_cast<float>(other[i].pos->x) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ), static_cast<float>(other[i].pos->y) + ( other[i].shape->getDepth() / 2.0f ), other[i].shape->getWidth() * 1.7f, other[i].shape->getDepth() * 1.7f );
 				}
 			}
@@ -1229,7 +1229,7 @@ void Map::drawIndoors() {
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         for( int i = 0; i < stencilCount; i++ ) {
         	if( stencil[i].inFront ) {
-        		glColor4f( 1, 1, 1, 0.45f );
+        		glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
         		colorAlreadySet = true;
         		doDrawShape( &(stencil[i]) );
         	}
@@ -1250,7 +1250,7 @@ void Map::drawIndoors() {
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         for( int i = 0; i < stencilCount; i++ ) {
 		  if( stencil[i].inFront ) {
-			glColor4f( 1, 1, 1, 0.45f );
+			glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
 			colorAlreadySet = true;
 			doDrawShape( &(stencil[i]) );
 		  }
@@ -1340,17 +1340,17 @@ void Map::drawOutdoors() {
     if(selectedDropTarget && ((selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature) ||
         (selectedDropTarget->item && selectedDropTarget->item == other[i].item))) {
       colorAlreadySet = true;
-      glColor4f(0, 1, 1, 1);
+      glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
     }
     doDrawShape(&other[i]);
 
 		// FIXME: if feeling masochistic, try using stencil buffer to remove shadow-on-shadow effect.
 		// draw simple shadow in outdoors
 		if( other[i].creature ) {
-			glColor4f( 0.04f, 0, 0.07f, 0.4f );
+			glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
 			drawGroundTex( outdoorShadow, other[i].creature->getX() + 0.25f, other[i].creature->getY() + 0.25f, ( other[i].creature->getShape()->getWidth() + 2 ) * 0.7f, other[i].creature->getShape()->getDepth() * 0.7f );
 		} else if( other[i].pos && other[i].shape && other[i].shape->isOutdoorShadow() ) {
-			glColor4f( 0.04f, 0, 0.07f, 0.4f );
+			glColor4f( 0.04f, 0.0f, 0.07f, 0.4f );
 			drawGroundTex( outdoorShadowTree, static_cast<float>(other[i].pos->x) - ( other[i].shape->getWidth() / 2.0f ) + ( other[i].shape->getWindValue() / 2.0f ), static_cast<float>(other[i].pos->y) + ( other[i].shape->getDepth() / 2.0f ), other[i].shape->getWidth() * 1.7f, other[i].shape->getDepth() * 1.7f );
 		}
   }
@@ -1438,43 +1438,43 @@ void Map::willDrawGrid() {
 			glPushMatrix();
 			glTranslatef( xpos2, ypos2, zpos2 );
 			if( i == 0 ) {
-				glColor4f( 1, 0, 0, 0.5f );
+				glColor4f( 1.0f, 0.0f, 0.0f, 0.5f );
 				glBegin( GL_TRIANGLES );
 			} else {
-				glColor4f( 1, 0.7f, 0, 0.5f );
+				glColor4f( 1.0f, 0.7f, 0.0f, 0.5f );
 				glBegin( GL_LINE_LOOP );
 			}
 
-			glVertex3f( 0, 0, 0 );
+			glVertex3f( 0.0f, 0.0f, 0.0f );
 			glVertex3f( -w, -w, h );
 			glVertex3f( w, -w, h );
 
-			glVertex3f( 0, 0, 0 );
+			glVertex3f( 0.0f, 0.0f, 0.0f );
 			glVertex3f( -w, w, h );
 			glVertex3f( w, w, h );
 
-			glVertex3f( 0, 0, 0 );
+			glVertex3f( 0.0f, 0.0f, 0.0f );
 			glVertex3f( -w, -w, h );
 			glVertex3f( -w, w, h );
 
-			glVertex3f( 0, 0, 0 );
+			glVertex3f( 0.0f, 0.0f, 0.0f );
 			glVertex3f( w, -w, h );
 			glVertex3f( w, w, h );
 
 
-			glVertex3f( 0, 0, h * 2 );
+			glVertex3f( 0.0f, 0.0f, h * 2 );
 			glVertex3f( -w, -w, h );
 			glVertex3f( w, -w, h );
 
-			glVertex3f( 0, 0, h * 2 );
+			glVertex3f( 0.0f, 0.0f, h * 2 );
 			glVertex3f( -w, w, h );
 			glVertex3f( w, w, h );
 
-			glVertex3f( 0, 0, h * 2 );
+			glVertex3f( 0.0f, 0.0f, h * 2 );
 			glVertex3f( -w, -w, h );
 			glVertex3f( -w, w, h );
 
-			glVertex3f( 0, 0, h * 2 );
+			glVertex3f( 0.0f, 0.0f, h * 2 );
 			glVertex3f( w, -w, h );
 			glVertex3f( w, w, h );
 
@@ -1497,17 +1497,17 @@ void Map::willDrawGrid() {
 		glTranslatef( chunks[i].x, chunks[i].y - ( 1.0f * MUL ), 0 );
 
 		if( chunks[i].cx == chunkX && chunks[i].cy == chunkY ) {
-			glColor4f( 0,1,0,0.25f );
+			glColor4f( 0.0f, 1.0f, 0.0f, 0.25f );
 			glLineWidth( 5 );
 		} else {
-			glColor4f( 1,1,1,0.25f );
+			glColor4f( 1.0f, 1.0f, 1.0f, 0.25f );
 			glLineWidth( 1 );
 		}
 		glBegin( GL_LINE_LOOP );
-		glVertex3f( 0, 0, m );
-		glVertex3f( n, 0, m );
+		glVertex3f( 0.0f, 0.0f, m );
+		glVertex3f( n, 0.0f, m );
 		glVertex3f( n, n, m );
-		glVertex3f( 0, n, m );
+		glVertex3f( 0.0f, n, m );
 		glEnd();
 
 		glPopMatrix();
@@ -1543,38 +1543,38 @@ void Map::willDrawGrid() {
 	}
 
 	glColor4f( red, green, blue, 0.25f );
-	glTranslatef( xp, yp, 0 );
+	glTranslatef( xp, yp, 0.0f );
 	glBegin( GL_QUADS );
 
-	glVertex3f( 0, 0, m );
-	glVertex3f( cw, 0, m );
+	glVertex3f( 0.0f, 0.0f, m );
+	glVertex3f( cw, 0.0f, m );
 	glVertex3f( cw, cd, m );
-	glVertex3f( 0, cd, m );
+	glVertex3f( 0.0f, cd, m );
 
-	glVertex3f( 0, 0, ch );
-	glVertex3f( cw, 0, ch );
+	glVertex3f( 0.0f, 0.0f, ch );
+	glVertex3f( cw, 0.0f, ch );
 	glVertex3f( cw, cd, ch );
-	glVertex3f( 0, cd, ch );
+	glVertex3f( 0.0f, cd, ch );
 
-	glVertex3f( 0, 0, m );
-	glVertex3f( cw, 0, m );
-	glVertex3f( cw, 0, ch );
-	glVertex3f( 0, 0, ch );
+	glVertex3f( 0.0f, 0.0f, m );
+	glVertex3f( cw, 0.0f, m );
+	glVertex3f( cw, 0.0f, ch );
+	glVertex3f( 0.0f, 0.0f, ch );
 
-	glVertex3f( 0, cd, m );
-	glVertex3f( cw, cd, m );
-	glVertex3f( cw, cd, ch );
-	glVertex3f( 0, cd, ch );
-
-	glVertex3f( 0, 0, m );
-	glVertex3f( 0, cd, m );
-	glVertex3f( 0, cd, ch );
-	glVertex3f( 0, 0, ch );
-
-	glVertex3f( cw, 0, m );
+	glVertex3f( 0.0f, cd, m );
 	glVertex3f( cw, cd, m );
 	glVertex3f( cw, cd, ch );
-	glVertex3f( cw, 0, ch );
+	glVertex3f( 0.0f, cd, ch );
+
+	glVertex3f( 0.0f, 0.0f, m );
+	glVertex3f( 0.0f, cd, m );
+	glVertex3f( 0.0f, cd, ch );
+	glVertex3f( 0.0f, 0.0f, ch );
+
+	glVertex3f( cw, 0.0f, m );
+	glVertex3f( cw, cd, m );
+	glVertex3f( cw, cd, ch );
+	glVertex3f( cw, 0.0f, ch );
 
 	glEnd();
 	glPopMatrix();
@@ -1727,7 +1727,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
     //glColor4f( 0, 0, 0, 0.5f );
 
     // purple shadows
-    glColor4f( 0.04f, 0, 0.07f, 0.6f );    
+    glColor4f( 0.04f, 0.0f, 0.07f, 0.6f );    
 
     // debugging red
     //glColor4f(1, 0, 0, 0.5f);
@@ -1746,9 +1746,9 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
     
     if( later && later->pos ) { 	 
 			glTranslatef( later->pos->moveX, later->pos->moveY, later->pos->moveZ ); 	 
-			glRotatef( later->pos->angleX, 1, 0, 0 ); 	 
-			glRotatef( later->pos->angleY, 0, 1, 0 ); 	 
-			glRotatef( later->pos->angleZ, 0, 0, 1 ); 	 
+			glRotatef( later->pos->angleX, 1.0f, 0.0f, 0.0f ); 	 
+			glRotatef( later->pos->angleY, 0.0f, 1.0f, 0.0f ); 	 
+			glRotatef( later->pos->angleZ, 0.0f, 0.0f, 1.0f ); 	 
     } 	 
  
     if( later && later->creature ) { 	 
@@ -1761,7 +1761,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
       int yp = later->pos->y;
       int index = xp + MAP_WIDTH * yp;
       if( secretDoors.find( index ) != secretDoors.end() ) {
-        glColor4f(1, 0.3f, 0.3f, 1.0f);
+        glColor4f(1.0f, 0.3f, 0.3f, 1.0f);
         colorAlreadySet = true;
       }
     }
@@ -1779,10 +1779,10 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
       colorAlreadySet = false;
     } else {
       if(later && later->pos && isLocked(later->pos->x, later->pos->y, later->pos->z)) {
-        glColor4f(1, 0.3f, 0.3f, 1.0f);
+        glColor4f(1.0f, 0.3f, 0.3f, 1.0f);
       } else {
         //glColor4f(0.72f, 0.65f, 0.55f, 0.5f);
-        glColor4f(1, 1, 1, 0.9f);
+        glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
       }
     }
   }
@@ -1880,42 +1880,45 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   		cerr << "z=" << later->pos->z << " for virtual shape " << shape->getName() << endl;
   	}
   	
-  	glColor4f( 0.75f, 0.75f, 1, 1 );
+  	glColor4f( 0.75f, 0.75f, 1.0f, 1.0f );
   	
   	float z = ( shape->getHeight() + 0.25f ) * MUL;
   	float lowZ = 0.25f * MUL;
-  	
+
+	float wm = shape->getWidth() * MUL;
+	float dm = shape->getDepth() * MUL;
+
   	glPushMatrix();
-  	glTranslatef( 0, 20, z );
+  	glTranslatef( 0.0f, 20.0f, z );
   	adapter->texPrint( 0, 0, "virtual" );
   	glPopMatrix();
-  	
+
   	glDisable( GL_TEXTURE_2D );
   	glBegin( GL_LINE_LOOP );
-  	glVertex3f( 0, 0, z );
-  	glVertex3f( 0, shape->getDepth() * MUL, z );
-  	glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, z );
-  	glVertex3f( shape->getWidth() * MUL, 0, z );
+  	glVertex3f( 0.0f, 0.0f, z );
+  	glVertex3f( 0.0f, dm, z );
+  	glVertex3f( wm, dm, z );
+  	glVertex3f( wm, 0.0f, z );
   	
-  	glVertex3f( 0, 0, z );
-  	glVertex3f( 0, 0, lowZ );
-  	glVertex3f( shape->getWidth() * MUL, 0, lowZ );
-  	glVertex3f( shape->getWidth() * MUL, 0, z );
+  	glVertex3f( 0.0f, 0.0f, z );
+  	glVertex3f( 0.0f, 0.0f, lowZ );
+  	glVertex3f( wm, 0.0f, lowZ );
+  	glVertex3f( wm, 0.0f, z );
   	
-  	glVertex3f( 0, shape->getDepth() * MUL, z );
-  	glVertex3f( 0, shape->getDepth() * MUL, lowZ );
-  	glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, lowZ );
-  	glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, z );
+  	glVertex3f( 0.0f, dm, z );
+  	glVertex3f( 0.0f, dm, lowZ );
+  	glVertex3f( wm, dm, lowZ );
+  	glVertex3f( wm, dm, z );
   	
-  	glVertex3f( 0, 0, z );
-  	glVertex3f( 0, 0, lowZ );
-  	glVertex3f( 0, shape->getDepth() * MUL, lowZ );
-  	glVertex3f( 0, shape->getDepth() * MUL, z );
+  	glVertex3f( 0.0f, 0.0f, z );
+  	glVertex3f( 0.0f, 0.0f, lowZ );
+  	glVertex3f( 0.0f, dm, lowZ );
+  	glVertex3f( 0.0f, dm, z );
   	
-  	glVertex3f( shape->getWidth() * MUL, 0, z );
-  	glVertex3f( shape->getWidth() * MUL, 0, lowZ );
-  	glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, lowZ );
-  	glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, z );
+  	glVertex3f( wm, 0.0f, z );
+  	glVertex3f( wm, 0.0f, lowZ );
+  	glVertex3f( wm, dm, lowZ );
+  	glVertex3f( wm, dm, z );
   	
   	glEnd();  	
   	glEnable( GL_TEXTURE_2D );
@@ -2113,7 +2116,7 @@ void Map::initMapView( bool ignoreRot ) {
     glRotatef( yrot, 1.0f, 0.0f, 0.0f );  
     glRotatef( zrot, 0.0f, 0.0f, 1.0f );
   }
-  glTranslatef( 0, 0, this->zpos);  
+  glTranslatef( 0.0f, 0.0f, this->zpos);  
 
   // adjust for centered-map movement
   float xdiff = 0;
@@ -3185,42 +3188,42 @@ bool Map::isLocationBlocked(int x, int y, int z, bool onlyLockedDoors) {
 void Map::drawCube(float x, float y, float z, float r) {
   glBegin(GL_QUADS);
   // front
-  glNormal3f(0.0, 0.0, 1.0);
+  glNormal3f(0.0f, 0.0f, 1.0f);
   glVertex3f(-r+x, -r+y, r+z);
   glVertex3f(r+x, -r+y, r+z);
   glVertex3f(r+x, r+y, r+z);
   glVertex3f(-r+x, r+y, r+z);
 
   // back
-  glNormal3f(0.0, 0.0, -1.0);
+  glNormal3f(0.0f, 0.0f, -1.0f);
   glVertex3f(r+x, -r+y, -r+z);
   glVertex3f(-r+x, -r+y, -r+z);
   glVertex3f(-r+x, r+y, -r+z);
   glVertex3f(r+x, r+y, -r+z);
 
   // top
-  glNormal3f(0.0, 1.0, 0.0);
+  glNormal3f(0.0f, 1.0f, 0.0f);
   glVertex3f(-r+x, r+y, r+z);
   glVertex3f(r+x, r+y, r+z);
   glVertex3f(r+x, r+y, -r+z);
   glVertex3f(-r+x, r+y, -r+z);
 
   // bottom
-  glNormal3f(0.0, -1.0, 0.0);
+  glNormal3f(0.0f, -1.0f, 0.0f);
   glVertex3f(-r+x, -r+y, -r+z);
   glVertex3f(r+x, -r+y, -r+z);
   glVertex3f(r+x, -r+y, r+z);
   glVertex3f(-r+x, -r+y, r+z);
 
   // left
-  glNormal3f(-1.0, 0.0, 0.0);
+  glNormal3f(-1.0f, 0.0f, 0.0f);
   glVertex3f(-r+x, -r+y, -r+z);
   glVertex3f(-r+x, -r+y, r+z);
   glVertex3f(-r+x, r+y, r+z);
   glVertex3f(-r+x, r+y, -r+z);
 
   // right
-  glNormal3f(1.0, 0.0, 0.0);
+  glNormal3f(1.0f, 0.0f, 0.0f);
   glVertex3f(r+x, -r+y, r+z);
   glVertex3f(r+x, -r+y, -r+z);
   glVertex3f(r+x, r+y, -r+z);
@@ -4460,7 +4463,7 @@ void Map::setSecretDoorDetected( int x, int y ) {
 
 void Map::renderFloor() {
 	glEnable( GL_TEXTURE_2D );
-	glColor4f(1, 1, 1, 0.9f);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
 	glBindTexture( GL_TEXTURE_2D, floorTex );
 	glPushMatrix();
 	if( isHeightMapEnabled() ) {
@@ -4472,7 +4475,7 @@ void Map::renderFloor() {
 	}	else {
 		if( settings->isGridShowing() ) {
 			glDisable( GL_TEXTURE_2D );
-			glColor4f( 0, 0, 0, 0 );
+			glColor4f( 0.0f, 0.0f, 0.0f, 0.0f );
 		}
 		drawFlatFloor();
 	}
@@ -4493,8 +4496,13 @@ bool Map::drawHeightMapFloor() {
 	glDisable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
 
-	for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
-		for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {
+	int startX = ( getX() / OUTDOORS_STEP );
+	int startY = ( getY() / OUTDOORS_STEP );
+	int endX = ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1;
+	int endY = ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1;
+
+	for( int yy = startY; yy < endY; yy++ ) {
+		for( int xx = startX; xx < endX; xx++ ) {
 
 			//int chunkX = ( ( xx * OUTDOORS_STEP ) - MAP_OFFSET ) / MAP_UNIT;
 			//int chunkY = ( ( ( yy + 1 ) * OUTDOORS_STEP ) - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
@@ -4532,8 +4540,8 @@ bool Map::drawHeightMapFloor() {
 	// draw outdoor textures
 	//cerr << "from: " << getX() << "," << getY() << " to: " << ( getX() + mapViewWidth ) << "," << ( getY() + mapViewDepth ) << endl;  
 	for( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
-		for( int yy = getY() / OUTDOORS_STEP; yy < ( getY() + mapViewDepth ) / OUTDOORS_STEP; yy++ ) {
-			for( int xx = getX() / OUTDOORS_STEP; xx < ( getX() + mapViewWidth ) / OUTDOORS_STEP; xx++ ) {
+		for( int yy = startY; yy < endY; yy++ ) {
+			for( int xx = startX; xx < endX; xx++ ) {
 				if( outdoorTex[xx][yy][z].texture != 0 ) {
 					drawOutdoorTex( outdoorTex[xx][yy][z].texture, xx + outdoorTex[xx][yy][z].offsetX, yy + outdoorTex[xx][yy][z].offsetY, outdoorTex[xx][yy][z].width, outdoorTex[xx][yy][z].height, outdoorTex[xx][yy][z].angle );
 				}
@@ -4551,8 +4559,8 @@ bool Map::drawHeightMapFloor() {
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );	
 		glDisable( GL_TEXTURE_2D );
 		glColor4f( 0.4f, 0.4f, 0.4f, 0.3f );
-		for( int yy = ( getY() / OUTDOORS_STEP ); yy < ( ( getY() + mapViewDepth ) / OUTDOORS_STEP ) - 1; yy++ ) {
-			for( int xx = ( getX() / OUTDOORS_STEP ); xx < ( ( getX() + mapViewWidth ) / OUTDOORS_STEP ) - 1; xx++ ) {			
+		for( int yy = startY; yy < endY; yy++ ) {
+			for( int xx = startX; xx < endX; xx++ ) {			
 				
 				p[0] = &( groundPos[ xx ][ yy + 1 ] );
 				p[1] = &( groundPos[ xx ][ yy ] );
@@ -4583,9 +4591,9 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 	glPushMatrix();
 	glLoadIdentity();
 	
-	glTranslatef( 0.5f, 0.5f, 0 );
-	glRotatef( angle, 0, 0, 1 );
-	glTranslatef( -0.5f, -0.5f, 0 );
+	glTranslatef( 0.5f, 0.5f, 0.0f );
+	glRotatef( angle, 0.0f, 0.0f, 1.0f );
+	glTranslatef( -0.5f, -0.5f, 0.0f );
 
 	//glTranslatef( offSX, offSY, 0 );
 	glMatrixMode( GL_MODELVIEW );
@@ -4697,11 +4705,11 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 	glPushMatrix();
 	glLoadIdentity();
 	
-	glTranslatef( 0.5f, 0.5f, 0 );
-	glRotatef( angle, 0, 0, 1 );
-	glTranslatef( -0.5f, -0.5f, 0 );
+	glTranslatef( 0.5f, 0.5f, 0.0f );
+	glRotatef( angle, 0.0f, 0.0f, 1.0f );
+	glTranslatef( -0.5f, -0.5f, 0.0f );
 
-	glTranslatef( offSX, offSY, 0 );
+	glTranslatef( offSX, offSY, 0.0f );
 	glMatrixMode( GL_MODELVIEW );
 
 								 
@@ -4765,7 +4773,7 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 
 void Map::debugGround( int sx, int sy, int ex, int ey ) {
 	glDisable( GL_TEXTURE_2D );
-	glColor4f( 0, 1, 0, 1 );
+	glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
 	float gx, gy;
 	for( int xx = sx; xx <= ex; xx++ ) {
 		for( int yy = sy; yy <= ey; yy++ ) {
@@ -4900,7 +4908,6 @@ void Map::drawWaterLevel() {
 
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, getShapes()->getCurrentTheme()->getOutdoorTextureGroup( WallTheme::OUTDOOR_THEME_REF_WATER )[0] );
-	glColor4f( 1, 1, 1, 0.45f );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
@@ -4908,14 +4915,15 @@ void Map::drawWaterLevel() {
 	float d = static_cast<float>( mapViewDepth ) * MUL;
 	//float z = -4 * MUL;
 	//glTranslatef( xpos2, ypos2, 0.0f);
-	glNormal3f( 0, 0, 1 );
+	glColor4f( 1.0f, 1.0f, 1.0f, 0.35f );
+	glNormal3f( 0.0f, 0.0f, 1.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( getX() / MUL * ratio + waterTexX, getY() / MUL * ratio + waterTexY );
-	glVertex3f( 0, 0, -0.3f );
+	glVertex3f( 0.0f, 0.0f, -0.3f );
 	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio + waterTexX, getY() / MUL * ratio + waterTexY );
-	glVertex3f( w, 0, -0.3f );
+	glVertex3f( w, 0.0f, -0.3f );
 	glTexCoord2f( getX() / MUL * ratio + waterTexX, ( getY() + mapViewDepth ) / MUL * ratio + waterTexY );
-	glVertex3f( 0, d, -0.3f );
+	glVertex3f( 0.0f, d, -0.3f );
 	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio + waterTexX, ( getY() + mapViewDepth ) / MUL * ratio + waterTexY );
 	glVertex3f( w, d, -0.3f );
 	glEnd();
@@ -4927,16 +4935,16 @@ void Map::drawFlatFloor() {
 	float w = static_cast<float>( mapViewWidth ) * MUL;
 	float d = static_cast<float>( mapViewDepth ) * MUL;
 	//glTranslatef( xpos2, ypos2, 0.0f);
-	glNormal3f( 0, 0, 1 );
+	glNormal3f( 0.0f, 0.0f, 1.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( getX() / MUL * ratio, getY() / MUL * ratio );
-	glVertex3f( 0, 0, 0 );
+	glVertex3f( 0.0f, 0.0f, 0.0f );
 	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio, getY() / MUL * ratio );
-	glVertex3f( w, 0, 0 );
+	glVertex3f( w, 0.0f, 0.0f );
 	glTexCoord2f( getX() / MUL * ratio, ( getY() + mapViewDepth ) / MUL * ratio );
-	glVertex3f( 0, d, 0 );
+	glVertex3f( 0.0f, d, 0.0f );
 	glTexCoord2f( ( getX() + mapViewWidth ) / MUL * ratio, ( getY() + mapViewDepth ) / MUL * ratio );
-	glVertex3f( w, d, 0 );
+	glVertex3f( w, d, 0.0f );
 	glEnd();
 }
 
@@ -5039,13 +5047,7 @@ void Map::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
 	}
 
 	if( ref > -1 ) {
-		setOutdoorTexture( sx * OUTDOORS_STEP, 
-											 sy * OUTDOORS_STEP, 
-											 0, 0, 
-											 ref, 
-											 angle, 
-											 false, false,
-											 GROUND_LAYER );					
+		setOutdoorTexture( sx * OUTDOORS_STEP, sy * OUTDOORS_STEP, 0, 0, ref, angle, false, false, GROUND_LAYER );
 	}
 }
 
@@ -5207,11 +5209,11 @@ void Map::drawTraps() {
           glColor4f( 0.3f, 0.3f, 0.5f, 0.5f );
         } else {
           // ret = enabledTrapColor;
-          glColor4f( 1, 1, 0, 0.5f );
+          glColor4f( 1.0f, 1.0f, 0.0f, 0.5f );
         }
       } else {
         // ret = debugTrapColor;
-        glColor4f( 0, 1, 1, 0.5f );
+        glColor4f( 0.0f, 1.0f, 1.0f, 0.5f );
       }
 
       glLineWidth( 3 );
