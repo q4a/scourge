@@ -44,18 +44,18 @@ void ShapePalette::preInitialize() {
   SDL_Surface *tmpSurface = NULL;
   GLubyte *tmpImage = NULL;
   setupAlphaBlendedBMP("/textures/process.bmp", tmpSurface, tmpImage);
-  progressTexture = loadGLTextureBGRA(tmpSurface, tmpImage);
+  progressTexture = loadGLTextureBGRA(tmpSurface, tmpImage, true);
   delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
   setupAlphaBlendedBMP("/textures/bar.bmp", tmpSurface, tmpImage);
-  progressHighlightTexture = loadGLTextureBGRA(tmpSurface, tmpImage);
+  progressHighlightTexture = loadGLTextureBGRA(tmpSurface, tmpImage, true);
   delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
 
 
-  highlight = loadGLTextures("/textures/highlight.bmp");
+  highlight = loadGLTextures("/textures/highlight.bmp", true);
 
 
   // configure
@@ -72,9 +72,9 @@ void ShapePalette::preInitialize() {
 
   // set up the logo
   setupAlphaBlendedBMP("/textures/logo2.bmp", logo, logoImage);
-  logo_texture = loadGLTextureBGRA(logo, logoImage);
+  logo_texture = loadGLTextureBGRA(logo, logoImage, true);
   setupAlphaBlendedBMP("/textures/chain.bmp", chain, chainImage);
-  chain_texture = loadGLTextureBGRA(chain, chainImage);
+  chain_texture = loadGLTextureBGRA(chain, chainImage, true);
 
   // set up the scourge
   //setupAlphaBlendedBMP("/textures/scourge.bmp", scourge, scourgeImage);
@@ -82,16 +82,16 @@ void ShapePalette::preInitialize() {
 
   // set up the backdrop image
   setupAlphaBlendedBMP("/textures/scourge-backdrop.bmp", scourgeBackdrop, scourgeImageBackdrop);
-  scourgeBackdrop_texture = loadGLTextureBGRA(scourgeBackdrop, scourgeImageBackdrop);
+  scourgeBackdrop_texture = loadGLTextureBGRA(scourgeBackdrop, scourgeImageBackdrop, true);
 
-  gui_texture = loadGLTextures("/textures/gui.bmp");
-  gui_texture2 = loadGLTextures("/textures/gui2.bmp");
+  gui_texture = loadGLTextures("/textures/gui.bmp", true);
+  gui_texture2 = loadGLTextures("/textures/gui2.bmp", true);
 //  paper_doll_texture = loadGLTextures("/paperdoll.bmp");
   cloud = loadGLTextures("/textures/cloud.bmp");
   candle = loadGLTextures("/textures/candle.bmp");
 
-  border = loadGLTextures("/textures/border.bmp");
-  border2 = loadGLTextures("/textures/border2.bmp");
+  border = loadGLTextures("/textures/border.bmp", true);
+  border2 = loadGLTextures("/textures/border2.bmp", true);
 
   gui_wood_texture = this->findTextureByName( "gui-wood.bmp", true );
 }
@@ -128,98 +128,98 @@ void ShapePalette::initialize() {
   
   GLubyte *tmpImage = NULL;
   setupAlphaBlendedBMP("/textures/dragon.bmp", tmpSurface, tmpImage);
-  gargoyle = loadGLTextureBGRA(tmpSurface, tmpImage);
+  gargoyle = loadGLTextureBGRA(tmpSurface, tmpImage, true);
   delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
   tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP("/textures/minimap.bmp", tmpSurface, tmpImage);
-  minimap = loadGLTextureBGRA(tmpSurface, tmpImage);
+  minimap = loadGLTextureBGRA(tmpSurface, tmpImage, true);
   delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
   tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP("/textures/minimask.bmp", tmpSurface, tmpImage);
-  minimapMask = loadGLTextureBGRA(tmpSurface, tmpImage);
+  minimapMask = loadGLTextureBGRA(tmpSurface, tmpImage, true);
   delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP("/textures/exit.bmp", tmpSurface, tmpImage);
-	exitTexture = loadGLTextureBGRA(tmpSurface, tmpImage);
+	exitTexture = loadGLTextureBGRA(tmpSurface, tmpImage, true);
   delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/dismiss.bmp", tmpSurface, tmpImage );
-  dismiss = loadGLTextureBGRA( tmpSurface, tmpImage );
+  dismiss = loadGLTextureBGRA( tmpSurface, tmpImage, true );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/options.bmp", tmpSurface, tmpImage );
-  options = loadGLTextureBGRA( tmpSurface, tmpImage );
+  options = loadGLTextureBGRA( tmpSurface, tmpImage, true );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/group.bmp", tmpSurface, tmpImage );
-  group = loadGLTextureBGRA( tmpSurface, tmpImage );
+  group = loadGLTextureBGRA( tmpSurface, tmpImage, true );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/inventory.bmp", tmpSurface, tmpImage );
-  inventory = loadGLTextureBGRA( tmpSurface, tmpImage );
+  inventory = loadGLTextureBGRA( tmpSurface, tmpImage, true );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
   tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/wait.bmp", tmpSurface, tmpImage );
-  waitTexture = loadGLTextureBGRA( tmpSurface, tmpImage );
+  waitTexture = loadGLTextureBGRA( tmpSurface, tmpImage, true );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
   tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/io.bmp", tmpSurface, tmpImage );
-  ioTexture = loadGLTextureBGRA( tmpSurface, tmpImage );
+  ioTexture = loadGLTextureBGRA( tmpSurface, tmpImage, true );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 	
   tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/system.bmp", tmpSurface, tmpImage );
-	systemTexture = loadGLTextureBGRA( tmpSurface, tmpImage );
+	systemTexture = loadGLTextureBGRA( tmpSurface, tmpImage, true );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/start.bmp", tmpSurface, tmpImage );
-	startTexture = loadGLTextureBGRA( tmpSurface, tmpImage );
+	startTexture = loadGLTextureBGRA( tmpSurface, tmpImage, true );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/paused.bmp", tmpSurface, tmpImage );
-	pausedTexture = loadGLTextureBGRA( tmpSurface, tmpImage );
+	pausedTexture = loadGLTextureBGRA( tmpSurface, tmpImage, true );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	tmpSurface = NULL;
   tmpImage = NULL;
   setupAlphaBlendedBMP( "/textures/realtime.bmp", tmpSurface, tmpImage );
-	realTimeTexture = loadGLTextureBGRA( tmpSurface, tmpImage );
+	realTimeTexture = loadGLTextureBGRA( tmpSurface, tmpImage, true );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
@@ -238,7 +238,7 @@ void ShapePalette::initialize() {
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 
 	string s = "/textures/hands.png";
-	hand_attack_icon = loadAlphaTexture( s );
+	hand_attack_icon = loadAlphaTexture( s, NULL, NULL, true );
 
   // load map textures
   initMapGrid();
@@ -256,20 +256,20 @@ void ShapePalette::initialize() {
   for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
     stringstream path;
     path << "/icons/i" << i << ".bmp";
-    GLuint icon = loadGLTextures(path.str());
+    GLuint icon = loadGLTextures(path.str(), true);
 //    cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
     if(icon) statModIcons[i] = icon;
   }
 
-	thirstIcon = loadGLTextures( "/icons/t.bmp" );
-	hungerIcon = loadGLTextures( "/icons/h.bmp" );
+	thirstIcon = loadGLTextures( "/icons/t.bmp", true );
+	hungerIcon = loadGLTextures( "/icons/h.bmp", true );
 
   // set up the inventory tiles
   setupAlphaBlendedBMPGrid( "/textures/tiles.bmp", &tiles, tilesImage, 20, 18, 
 							32, 32, 71, 108, 108, 80, 80, 80 );
   for( int x = 0; x < 20; x++ ) {
     for( int y = 0; y < 18; y++ ) {
-      tilesTex[x][y] = loadGLTextureBGRA( 32, 32, tilesImage[x][y] );
+      tilesTex[x][y] = loadGLTextureBGRA( 32, 32, tilesImage[x][y], true );
     }
   }
 
@@ -278,7 +278,7 @@ void ShapePalette::initialize() {
 							32, 32, 71, 108, 108, 80, 80, 80 );
   for( int x = 0; x < 20; x++ ) {
     for( int y = 0; y < 18; y++ ) {
-      spellsTex[x][y] = loadGLTextureBGRA( 32, 32, spellsImage[x][y] );
+      spellsTex[x][y] = loadGLTextureBGRA( 32, 32, spellsImage[x][y], true );
     }
   }
   
@@ -441,12 +441,12 @@ void ShapePalette::initPcPortraits( ConfigLang *config ) {
 		string image = node->getValueAsString( "image" );
 		string sex = node->getValueAsString( "sex" );
 		if( strstr( image.c_str(), "death" ) ) {
-			deathPortraitTexture = loadGLTextures( image );
+			deathPortraitTexture = loadGLTextures( image, true );
 		} else {
 			int sexNum = ( sex == "M" ? 
 										 Constants::SEX_MALE : 
 										 Constants::SEX_FEMALE );
-			portraitTextures[sexNum].push_back( loadGLTextures( image ) );
+			portraitTextures[sexNum].push_back( loadGLTextures( image, true ) );
 		}
 	}
 }
@@ -708,7 +708,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	  string s = temp;
 //	  debugFileLoad = true;
 	  int w, h;
-	  sv->icon = loadAlphaTexture( s, &w, &h );
+	  sv->icon = loadAlphaTexture( s, &w, &h, true );
 	  sv->iconWidth = w / 32;
 	  sv->iconHeight = h / 32;
 //	  debugFileLoad = false;
@@ -962,7 +962,7 @@ void ShapePalette::loadNpcPortraits() {
        i != Monster::monstersByName.end(); ++i ) {
     Monster *m = i->second;
     if( m->getPortrait() ) {
-      m->setPortraitTexture( this->loadGLTextures( m->getPortrait() ) );
+      m->setPortraitTexture( this->loadGLTextures( m->getPortrait(), true ) );
       if( !m->getPortraitTexture() ) {
         cerr << "*** Warning: couldn't load monster portrait: " << m->getPortrait() << endl;
       }
@@ -977,7 +977,7 @@ void ShapePalette::initMapGrid() {
       char textureName[80];
       snprintf( textureName, 80, "/mapgrid/map%d-%d.bmp", x, y );
       //cerr << "loading: " << textureName << endl;
-      mapGrid[ x ][ y ] = loadGLTextures( textureName );
+      mapGrid[ x ][ y ] = loadGLTextures( textureName, true );
     }
   }
 

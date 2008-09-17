@@ -190,7 +190,7 @@ bool SavegameDialog::findFiles() {
 
 GLuint SavegameDialog::loadScreenshot( const string& dirName ) {
 	string path = get_file_name( dirName + "/screen.bmp" );
-	return Shapes::loadTextureWithAlpha( path, -1, -1, -1, true, false ); // -1 no alpha
+	return Shapes::loadTextureWithAlpha( path, -1, -1, -1, true, false, false, true ); // -1 no alpha
 }
 
 bool SavegameDialog::readFileDetails( const string& dirname ) {
