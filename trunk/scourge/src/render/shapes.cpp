@@ -270,7 +270,7 @@ void Shapes::initialize() {
   GLubyte *areaImage = NULL;
 	string areabmp("/textures/area.bmp");
   setupAlphaBlendedBMP(areabmp, area, areaImage);
-  areaTex = loadGLTextureBGRA(area, areaImage, GL_LINEAR);
+  areaTex = loadGLTextureBGRA(area, areaImage);
   //areaTex = loadGLTextures("/area.bmp");
 
 	// load as a grayscale (use gray value as alpha)
@@ -709,7 +709,7 @@ GLuint Shapes::getBMPData( const string& filename, TextureData& data, int *imgwi
 
 
 /* function to load in bitmap as a GL texture */
-GLuint Shapes::loadGLTextures(const string& filename) {
+GLuint Shapes::loadGLTextures(const string& filename, bool isSprite) {
 
 	if( isHeadless() ) 
 		return 0;
@@ -746,9 +746,9 @@ GLuint Shapes::loadGLTextures(const string& filename) {
     //            			  GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
 
     /* Linear Filtering */
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_NEAREST );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3,
+    if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 3,
                       TextureImage[0]->w, TextureImage[0]->h,
                       GL_BGR, GL_UNSIGNED_BYTE, TextureImage[0]->pixels);
   } else {
@@ -765,12 +765,12 @@ GLuint Shapes::loadGLTextures(const string& filename) {
 }
 
 /* function to load in bitmap as a GL texture */
-GLuint Shapes::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int glscale) {
+GLuint Shapes::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, bool isSprite) {
   if( isHeadless() ) return 0;
-  return loadGLTextureBGRA( surface->w, surface->h, image, glscale );
+  return loadGLTextureBGRA( surface->w, surface->h, image, isSprite );
 }
 
-GLuint Shapes::loadGLTextureBGRA(int w, int h, GLubyte *image, int glscale) {
+GLuint Shapes::loadGLTextureBGRA(int w, int h, GLubyte *image, bool isSprite) {
   if( isHeadless() ) return 0;
 
   GLuint texture[1];
@@ -783,15 +783,9 @@ GLuint Shapes::loadGLTextureBGRA(int w, int h, GLubyte *image, int glscale) {
   /* Typical Texture Generation Using Data From The Bitmap */
   glBindTexture( GL_TEXTURE_2D, texture[0] );
 
-  /* Use faster filtering here */
-  //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glscale );
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glscale );
-
-//  glTexImage2D( GL_TEXTURE_2D, 0, 4,
-//                surface->w, surface->h, 0, 
-//                GL_BGRA, GL_UNSIGNED_BYTE, image );
-  gluBuild2DMipmaps(GL_TEXTURE_2D, 4, w, h, GL_BGRA, GL_UNSIGNED_BYTE, image);
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_NEAREST );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+  if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, w, h, GL_BGRA, GL_UNSIGNED_BYTE, image);
   return texture[0];
 }
 
@@ -1060,7 +1054,7 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 				setupAlphaBlendedBMP( path, tmpSurface, tmpImage );				
 				if( tmpSurface ) {
 					id = textures[ texture_count ].id = 
-						loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );			
+						loadGLTextureBGRA( tmpSurface, tmpImage );			
 					SDL_FreeSurface( tmpSurface );
 					delete [] tmpImage;
 					break;
@@ -1083,18 +1077,18 @@ GLuint Shapes::getCursorTexture( int cursorMode ) {
 	return cursorTexture[ cursorMode ];
 }
 
-GLuint Shapes::loadTextureWithAlpha( string& filename, int r, int g, int b, bool isAbsPath, bool swapImage, bool grayscale ) {
+GLuint Shapes::loadTextureWithAlpha( string& filename, int r, int g, int b, bool isAbsPath, bool swapImage, bool grayscale, bool isSprite ) {
   SDL_Surface *tmpSurface = NULL;
   GLubyte *tmpImage = NULL;
   instance->setupAlphaBlendedBMP( filename, tmpSurface, tmpImage, r, g, b, isAbsPath, swapImage, grayscale );
   GLuint texId = 0;
-  if( tmpImage ) texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
+  if( tmpImage ) texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, isSprite );
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
   return texId;
 }
 
-GLuint Shapes::loadAlphaTexture( string& filename, int *width, int *height ) {
+GLuint Shapes::loadAlphaTexture( string& filename, int *width, int *height, bool isSprite ) {
   SDL_Surface *tmpSurface = NULL;
   GLubyte *tmpImage = NULL;
 
@@ -1107,7 +1101,7 @@ GLuint Shapes::loadAlphaTexture( string& filename, int *width, int *height ) {
   }
   if( tmpImage ) {
   	//texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  	texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_NEAREST );
+  	texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, isSprite );
   }
   delete [] tmpImage;
   if( tmpSurface ) SDL_FreeSurface( tmpSurface );
@@ -1193,7 +1187,7 @@ void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& 
 	}
 }
 
-GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW, int textureSizeH, int width, int height ) {	
+GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW, int textureSizeH, int width, int height, bool isSprite ) {	
 	// todo: should be next power of 2 after width/height (maybe cap-ed at 256)
 //  int textureSizeW = 256; 
 //  int textureSizeH = 256;
@@ -1206,11 +1200,11 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   glGenTextures(1, tex);    
   glBindTexture(GL_TEXTURE_2D, tex[ 0 ]); 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_NEAREST );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);  
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
-  gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_RGBA, GL_UNSIGNED_BYTE, texInMem);
+  if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_RGBA, GL_UNSIGNED_BYTE, texInMem);
   glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0,
                 GL_RGBA, GL_UNSIGNED_BYTE, texInMem );                       
 

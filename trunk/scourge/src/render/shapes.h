@@ -393,21 +393,21 @@ public:
   
   char const* getRandomDescription(int descriptionGroup);
 
-  GLuint loadGLTextures(const std::string& fileName);
+  GLuint loadGLTextures(const std::string& fileName, bool isSprite = false);
 
   GLuint getBMPData( const std::string& filename, TextureData& data, int *width=NULL, int *height=NULL );
 
   GLuint getCursorTexture( int cursorMode );
 
-  static GLuint loadTextureWithAlpha( std::string& fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false, bool grayscale=false );
-  static GLuint loadAlphaTexture( std::string& filename, int *width=NULL, int *height=NULL );
+  static GLuint loadTextureWithAlpha( std::string& fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false, bool grayscale=false, bool isSprite = false );
+  static GLuint loadAlphaTexture( std::string& filename, int *width=NULL, int *height=NULL, bool isSprite = false );
 
 	inline int getCursorWidth() { return cursorWidth; }
 	inline int getCursorHeight() { return cursorHeight; }
 
 	inline GLuint getSelection() { return selection; }
 	
-	GLuint createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW=256, int textureSizeH=256, int width=256, int height=256 );
+	GLuint createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW=256, int textureSizeH=256, int width=256, int height=256, bool isSprite = false );
 	
 	void loadAllShapes();
 
@@ -415,8 +415,8 @@ protected:
 	static Shapes *instance;
 	void loadShape( const char *name );
 	ShapeValues *getShapeValueByName( const char *name, int *index );
-  GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, int gl_scale=GL_NEAREST);
-  GLuint loadGLTextureBGRA(int w, int h, GLubyte *image, int gl_scale=GL_NEAREST);
+  GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, bool isSprite = false);
+  GLuint loadGLTextureBGRA(int w, int h, GLubyte *image, bool isSprite = false);
   void setupAlphaBlendedBMP(const std::string& filename, SDL_Surface*& surface, GLubyte*& image, int red=0, int green=0, int blue=0, bool isAbsFile=false, bool swapImage=false, bool grayscale=false );
   void setupAlphaBlendedBMPGrid(const std::string& filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight, int red=0, int green=0, int blue=0, int nred=-1, int ngreen=-1, int nblue=-1);
   void swap(unsigned char & a, unsigned char & b);
