@@ -3116,7 +3116,7 @@ void Creature::drawMoviePortrait( int width, int height ) {
   											 getMonster()->getPortraitTexture() ) );
   	portrait[0] = session->getShapePalette()->createAlphaTexture( session->getShapePalette()->getNamedTexture( "conv_filter" ), 
   	                                                              getCharacter() ? getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() ) : 
-  	                                                              	getMonster()->getPortraitTexture(), 128, 128, width, height );
+  	                                                              	getMonster()->getPortraitTexture(), 128, 128, width, height, true );
   }
 
   glDisable( GL_DEPTH_TEST );  
