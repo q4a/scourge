@@ -1,0 +1,54 @@
+------------------------------------------------------------------------
+Indoor gate down model for S.C.O.U.R.G.E.
+Claudio Canavese 2008 - cod@cod-web.net
+------------------------------------------------------------------------
+A model for the "indoor gate down" to use in the game S.C.O.U.R.G.E.
+
+------------------------------------------------------------------------
+Installation
+------------------------------------------------------------------------
+Put gateup.3ds your scourge_data/objects folder
+Put gateup.bmp in your scourge_data/textures folder
+
+------------------------------------------------------------------------
+Block for map.cfg
+------------------------------------------------------------------------
+To test this object in game change the existing gate-down block with
+this.
+Don't forget to make a backup!
+
+		[3ds_shape]
+			name="GATE_DOWN"
+			description="stairs_description"
+			path="/objects/gate-down.3ds"
+			dimensions="10,10,2.75"
+			interactive=1
+		[/3ds_shape]
+
+
+------------------------------------------------------------------------
+License
+------------------------------------------------------------------------
+This work is licensed under the Creative Commons Attribution 2.5 License. 
+To view a copy of this license, visit http://creativecommons.org/licenses/by/2.5/
+or send a letter to:
+
+Creative Commons, 1
+71 Second Street, Suite 300, San Francisco, 
+California, 94105, USA.
+
+
+------------------------------------------------------------------------
+What is S.C.O.U.R.G.E.?
+------------------------------------------------------------------------
+
+S.C.O.U.R.G.E. is a cross platform, open source rogue-like game 
+in the fine tradition of NetHack and Moria It sports a graphical 
+front-end, similar to glHack or the Falcon's eye.
+The design of the 3D UI is an attempt at the best of both worlds 
+from old to new: It lets you rotate the view, zoom in/out, view special 
+effects, etc with the feeling of the old-school isometric games like 
+Exult or Woodward.
+
+S.C.O.U.R.G.E. is Free Software and you can download it from the official website:
+http://scourgeweb.org
