@@ -1020,16 +1020,17 @@ void Map::preDraw() {
 	
 	  initMapView();
 	
-	  // find cursor location on map (for named shapes)
-	  if( adapter->isMouseIsMovingOverMap() ) {
-	    // save mapChanged (fixes bug where map won't draw initially)
-	    bool b = mapChanged;
-	    selectMode = true;    
-	    // careful this calls draw() again!    
-	    getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
-	    selectMode = false;
-	    mapChanged = b;
-	  }
+//	  // find cursor location on map (for named shapes)
+//	  if( adapter->isMouseIsMovingOverMap() ) {
+//	  	cerr << "." << SDL_GetTicks() << endl;
+//	    // save mapChanged (fixes bug where map won't draw initially)
+//	    bool b = mapChanged;
+//	    selectMode = true;    
+//	    // careful this calls draw() again!    
+//	    getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
+//	    selectMode = false;
+//	    mapChanged = b;
+//	  }
 	  
 	  frustum->CalculateFrustum();
 	  if( lightMapChanged && helper->isLightMapEnabled() ) configureLightMap();
@@ -1092,10 +1093,39 @@ void Map::draw() {
   	
   	drawProjectiles();
   	
-  	// find the map floor coordinate (must be done after drawing is complete)
-  	getMapXYAtScreenXY( &cursorFlatMapX, &cursorFlatMapY );
-		cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+  	if( adapter->isMouseIsMovingOverMap() ) {
+  		// find the map coordinates (must be done after drawing is complete)
+  		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
+  		
+  		Location *pos = getLocation( cursorMapX, cursorMapY, cursorMapZ );
+  		if( !pos && cursorMapZ > 0 ) {
+  			pos = getLocation( cursorMapX - 1, cursorMapY, cursorMapZ );
+  		}
+  		if( !pos && cursorMapZ > 0 ) {
+  			pos = getLocation( cursorMapX, cursorMapY - 1, cursorMapZ );
+  		}
+  		
+//  		cerr << "pos=" << cursorMapX << "," << cursorMapY << "," << cursorMapZ << 
+//  						" location=" << ( pos && pos->shape ? pos->shape->getName() : "null" ) << endl;
+  		if( pos ) {
+  			cursorMapX = pos->x;
+  			cursorMapY = pos->y;
+  			cursorMapZ = pos->z;
+  			
+//  			cerr << "\tpos=" << cursorMapX << "," << ( pos->y - pos->shape->getDepth() - 1 ) << "," << cursorMapZ << "-" << 
+//  				( pos->x + pos->shape->getWidth() ) << "," <<
+//  				 pos->y << "," <<
+//  				 ( pos->z - pos->shape->getHeight() ) <<
+//  				endl;
+  			
+  		}
+  		
+  		cursorFlatMapX = cursorMapX;
+  		cursorFlatMapY = cursorMapY;
+
+			cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+			cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+	  }		
   }
 
   if( settings->isGridShowing() && gridEnabled ) 
@@ -4192,6 +4222,41 @@ void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy) {
 }
 
 void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
+  double obj_x, obj_y, obj_z;
+  double win_x = static_cast<double>( adapter->getMouseX() );
+  double win_y = static_cast<double>( adapter->getScreenHeight() - adapter->getMouseY() );
+
+  // get the depth buffer value
+  float win_z;
+  glReadPixels( static_cast<int>(win_x), static_cast<int>(win_y), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &win_z );
+
+  double projection[16];
+  double modelview[16];
+  GLint viewport[4];
+
+  glGetDoublev(GL_PROJECTION_MATRIX, projection);
+  glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+  glGetIntegerv(GL_VIEWPORT, viewport);
+
+  int res = gluUnProject(win_x, win_y, win_z, modelview, projection, viewport, &obj_x, &obj_y, &obj_z);
+
+  if(res) {
+    *mapx = getX() + (Uint16)( toint( obj_x / (float)MUL ) );
+    *mapy = getY() + (Uint16)( toint( obj_y / (float)MUL ) ) + 2;
+    *mapz = (Uint16)( toint( obj_z / (float)MUL ) );
+    if( *mapz > 0 ) (*mapz)--;
+    	
+  	debugX = *mapx;
+    debugY = *mapy;
+    debugZ = *mapz;    	
+    
+  } else {
+    *mapx = *mapy = MAP_WIDTH + 1;
+  }	
+}
+
+/*
+void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   static Uint16 lastMapX, lastMapY, lastMapZ;
   static Uint16 lastX, lastY;
 
@@ -4261,11 +4326,9 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   // Go back to modelview for normal rendering
   glMatrixMode(GL_MODELVIEW);
 
-  /*
-  debugX = *mapx;
-  debugY = *mapy;
-  debugZ = *mapz;
-  */
+//  debugX = *mapx;
+//  debugY = *mapy;
+//  debugZ = *mapz;
 
   lastMapX = *mapx;
   lastMapY = *mapy;
@@ -4273,7 +4336,7 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   lastX = adapter->getMouseX();
   lastY = adapter->getMouseY();
 }
-
+*/
 void Map::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
     char *s;
     if(name > 0) {

@@ -513,10 +513,9 @@ bool SDLHandler::processEvents( bool *isActive ) {
   SDL_Event event;
   int mx, my;
 
-  int eventCount = 0;  
   Uint32 now = SDL_GetTicks();
   mouseIsMovingOverMap = false;
-  while(SDL_PollEvent(&event) && (eventCount++) < 10) {
+  while(SDL_PollEvent(&event)) {
     isDoubleClick = false;
     mouseEvent = mouseButton = 0;
     Widget *widget = NULL;
