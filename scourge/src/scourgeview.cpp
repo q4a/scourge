@@ -195,25 +195,51 @@ void ScourgeView::drawChapterIntro() {
 	scourge->getSDLHandler()->texPrint( 10, 36, scourge->getSession()->getCurrentMission()->getDisplayName() );
 	glColor4f( 1, 1, 1, 1 );
 	
-	int px = ( scourge->getScreenWidth() - scourge->getSession()->getChapterImageWidth() ) / 2;
-	if( px < 0 )
-		px = 0; // needed to show image in low resolution
-	int py = 40;
-	int textHeight = scourge->getScreenHeight() - scourge->getSession()->getChapterImageHeight() - py;
+//	int px = ( scourge->getScreenWidth() - scourge->getSession()->getChapterImageWidth() ) / 2;
+//	if( px < 0 )
+//		px = 0; // needed to show image in low resolution
+//	int py = 40;
+	int imageX = 0;
+	int imageY = 40;
+	float imageScale = (float)scourge->getScreenWidth() / (float)scourge->getSession()->getChapterImageWidth();
+	int imageW = (float)scourge->getSession()->getChapterImageWidth() * imageScale;
+	int imageH = (float)scourge->getSession()->getChapterImageHeight() * imageScale;
+
+	int textHeight = scourge->getScreenHeight() - imageH - imageY;
 
 	// pos the text the first time
 	if( scourge->getChapterTextPos() == -2000 ) {
 		scourge->setChapterTextPos( textHeight );
 	}
 
-	glRasterPos2f( px, py );
-	TextureData const& image = scourge->getSession()->getChapterImage();
-	if( !image.empty() ) {
-		glDrawPixels( scourge->getSession()->getChapterImageWidth(), scourge->getSession()->getChapterImageHeight(),
-									GL_BGR, GL_UNSIGNED_BYTE, &image[0] );
+	GLuint const& image = scourge->getSession()->getChapterImageTexture();
+	if( image ) {
+	  glEnable( GL_TEXTURE_2D );
+	  glDisable( GL_BLEND );
+
+          glPushMatrix();
+  
+          glBindTexture( GL_TEXTURE_2D, image );
+          glColor4f( 1, 1, 1, 1 );
+          
+	  glLoadIdentity();
+	  glTranslatef( imageX, imageY, 0 );
+          glNormal3f( 0, 0, 1 );
+          glBegin( GL_TRIANGLE_STRIP );
+          glTexCoord2f( 0, 0 );
+          glVertex2i( 0, 0 );
+          glTexCoord2f( 1, 0 );
+          glVertex2i( imageW, 0 );
+          glTexCoord2f( 0, 1 );
+          glVertex2i( 0, imageH );
+          glTexCoord2f( 1, 1 );
+          glVertex2i( imageW, imageH );
+          glEnd();
+
+          glPopMatrix();
 	}
 
-	scourge->getChapterIntroWin()->move( 0, scourge->getSession()->getChapterImageHeight() + py + 10 - 30 );
+	scourge->getChapterIntroWin()->move( 0, imageH + imageY + 10 - 30 );
 
 	glScissor( 150, 0, scourge->getScreenWidth() - 150, textHeight );
   glEnable( GL_SCISSOR_TEST );
