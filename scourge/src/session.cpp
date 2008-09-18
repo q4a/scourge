@@ -718,6 +718,7 @@ void Session::setCurrentMission( Mission *mission ) {
 			chapterImageWidth = chapterImageHeight = 0;
 		} else {
 			chapterImageTexture = shapePal->loadGLTextures(filename, true);
+			GLclampf pri = 0.1f; glPrioritizeTextures(1, &chapterImageTexture, &pri);
 			cerr << "***********************************" << endl;
 			cerr << "Loaded chapter art: " << filename << 
 				" dimensions=" << chapterImageWidth << "," << chapterImageHeight << endl;

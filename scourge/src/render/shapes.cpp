@@ -104,6 +104,7 @@ void WallTheme::load() {
 void WallTheme::createOutdoorEdgeTexture( int ref ) {
 	GLuint tex = shapePal->createAlphaTexture( outdoorTextureGroup[ ref ][ 0 ],
 	                                           outdoorTextureGroup[ OUTDOOR_THEME_REF_GRASS ][ 0 ] );  
+  GLclampf pri = 0.9f; glPrioritizeTextures(1, &tex, &pri);
   glDeleteTextures( 1, outdoorTextureGroup[ ref ] );
   outdoorTextureGroup[ ref ][ 0 ] = tex;
 	
@@ -153,6 +154,7 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 			  	" path=" << path << endl;
 			  }				
 				
+	GLclampf pri = 0.9f; glPrioritizeTextures(1, &id, &pri);
         loadedTextures[s] = id;
       }
     } else {
@@ -342,6 +344,7 @@ void Shapes::loadCursors() {
   for( int i = 0; i < Constants::CURSOR_COUNT; i++ ) {
 	string path = string(cursorDir) + "/" + string(Constants::cursorTextureName[ i ]);
 	cursorTexture[i] = loadAlphaTexture( path, NULL, NULL, true );
+
   }
 }
 

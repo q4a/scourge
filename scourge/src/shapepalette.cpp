@@ -73,8 +73,11 @@ void ShapePalette::preInitialize() {
   // set up the logo
   setupAlphaBlendedBMP("/textures/logo2.bmp", logo, logoImage);
   logo_texture = loadGLTextureBGRA(logo, logoImage, true);
+  GLclampf pri = 0.1f; glPrioritizeTextures(1, &logo_texture, &pri);
+
   setupAlphaBlendedBMP("/textures/chain.bmp", chain, chainImage);
   chain_texture = loadGLTextureBGRA(chain, chainImage, true);
+  pri = 0.1f; glPrioritizeTextures(1, &chain_texture, &pri);
 
   // set up the scourge
   //setupAlphaBlendedBMP("/textures/scourge.bmp", scourge, scourgeImage);
@@ -83,6 +86,7 @@ void ShapePalette::preInitialize() {
   // set up the backdrop image
   setupAlphaBlendedBMP("/textures/scourge-backdrop.bmp", scourgeBackdrop, scourgeImageBackdrop);
   scourgeBackdrop_texture = loadGLTextureBGRA(scourgeBackdrop, scourgeImageBackdrop, true);
+  pri = 0.1f; glPrioritizeTextures(1, &scourgeBackdrop_texture, &pri);
 
   gui_texture = loadGLTextures("/textures/gui.bmp", true);
   gui_texture2 = loadGLTextures("/textures/gui2.bmp", true);
@@ -136,6 +140,7 @@ void ShapePalette::initialize() {
   tmpImage = NULL;
   setupAlphaBlendedBMP("/textures/minimap.bmp", tmpSurface, tmpImage);
   minimap = loadGLTextureBGRA(tmpSurface, tmpImage, true);
+  GLclampf pri = 0.9f; glPrioritizeTextures(1, &minimap, &pri);
   delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
@@ -143,6 +148,7 @@ void ShapePalette::initialize() {
   tmpImage = NULL;
   setupAlphaBlendedBMP("/textures/minimask.bmp", tmpSurface, tmpImage);
   minimapMask = loadGLTextureBGRA(tmpSurface, tmpImage, true);
+  pri = 0.9f; glPrioritizeTextures(1, &minimapMask, &pri);
   delete [] tmpImage;
   if(tmpSurface) SDL_FreeSurface( tmpSurface );
 
