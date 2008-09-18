@@ -73,7 +73,8 @@ private:
 #endif
   bool multiplayerGame;
   Mission *currentMission;
-	TextureData chapterImage; 
+	TextureData chapterImage;
+	GLuint chapterImageTexture; 
 	int chapterImageWidth, chapterImageHeight;
 	bool showChapterIntro;
   std::vector<Item*> newItems;
@@ -198,6 +199,7 @@ public:
   inline Cutscene *getCutscene() { return cutscene; }
   void setCurrentMission(Mission *mission);
 	inline TextureData const& getChapterImage() { return chapterImage; }
+	inline GLuint const& getChapterImageTexture() { return chapterImageTexture; }
 	inline int getChapterImageWidth() { return chapterImageWidth; }
 	inline int getChapterImageHeight() { return chapterImageHeight; }
 	inline void setShowChapterIntro( bool b ) { this->showChapterIntro = b; }

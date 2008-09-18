@@ -714,8 +714,10 @@ void Session::setCurrentMission( Mission *mission ) {
 		if( !shapePal->getBMPData( filename, chapterImage, &chapterImageWidth, &chapterImageHeight ) ) {
 			cerr << "Error loading image for chapter " << currentMission->getChapter() << endl;
 			chapterImage.clear();
+			chapterImageTexture = 0;
 			chapterImageWidth = chapterImageHeight = 0;
 		} else {
+			chapterImageTexture = shapePal->loadGLTextures(filename, true);
 			cerr << "***********************************" << endl;
 			cerr << "Loaded chapter art: " << filename << 
 				" dimensions=" << chapterImageWidth << "," << chapterImageHeight << endl;
