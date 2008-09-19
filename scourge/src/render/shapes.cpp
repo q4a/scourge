@@ -744,16 +744,13 @@ GLuint Shapes::loadGLTextures(const string& filename, bool isSprite) {
     glBindTexture( GL_TEXTURE_2D, texture[0] );
 
     /* Generate The Texture */
-    //	    glTexImage2D( GL_TEXTURE_2D, 0, 3,
-    //                    TextureImage[0]->w, TextureImage[0]->h, 0, GL_BGR,
-    //            			  GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
+//    glTexImage2D( GL_TEXTURE_2D, 0, 3, TextureImage[0]->w, TextureImage[0]->h, 0, GL_BGR,GL_UNSIGNED_BYTE, TextureImage[0]->pixels );
 
     /* Linear Filtering */
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_NEAREST );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3,
-                      TextureImage[0]->w, TextureImage[0]->h,
-                      GL_BGR, GL_UNSIGNED_BYTE, TextureImage[0]->pixels);
+    //FIXME: Don't generate mipmaps when isSprite is true
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, TextureImage[0]->w, TextureImage[0]->h, GL_BGR, GL_UNSIGNED_BYTE, TextureImage[0]->pixels);
   } else {
     texture[0] = 0;
 //    fprintf(stderr, "\tNot found.\n");
@@ -788,6 +785,8 @@ GLuint Shapes::loadGLTextureBGRA(int w, int h, GLubyte *image, bool isSprite) {
 
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_NEAREST );
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+  //FIXME: Don't generate mipmaps when isSprite is true
   gluBuild2DMipmaps(GL_TEXTURE_2D, 4, w, h, GL_BGRA, GL_UNSIGNED_BYTE, image);
   return texture[0];
 }
@@ -1207,9 +1206,9 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
-  gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_RGBA, GL_UNSIGNED_BYTE, texInMem);
   glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0,
                 GL_RGBA, GL_UNSIGNED_BYTE, texInMem );                       
+  if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_RGBA, GL_UNSIGNED_BYTE, texInMem);
 
   glDisable( GL_CULL_FACE );
   glDisable( GL_DEPTH_TEST );	  
