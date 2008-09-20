@@ -1206,9 +1206,9 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
-  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0,
+  glTexImage2D( GL_TEXTURE_2D, 0, GL_BGRA, textureSizeW, textureSizeH, 0,
                 GL_RGBA, GL_UNSIGNED_BYTE, texInMem );                       
-  if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_RGBA, GL_UNSIGNED_BYTE, texInMem);
+  if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_BGRA, GL_UNSIGNED_BYTE, texInMem);
 
   glDisable( GL_CULL_FACE );
   glDisable( GL_DEPTH_TEST );	  
