@@ -172,7 +172,7 @@ void RoomRenderHelper::draw( int x, int y, int w, int h ) {
     
     glBindTexture( GL_TEXTURE_2D, overlay_tex );
     glBegin( GL_TRIANGLE_STRIP );
-    //  glNormal3f(0.0f, 1.0f, 0.0f);
+//      glNormal3f(0.0f, 1.0f, 0.0f);
     glTexCoord2f( 0.0f, 0.0f );
     glVertex3f(0, 0, 0);
     glTexCoord2f( 1.0f, 0.0f );

@@ -117,7 +117,7 @@ void GLTorch::draw() {
       }
       glBegin( GL_QUADS );
       // front
-      glNormal3f(0.0f, 1.0f, 0.0f);
+      
       if(flameTex) glTexCoord2f( 1.0f, 1.0f );
       glVertex3f(w/2.0f, 0, -h/2.0f);
       if(flameTex) glTexCoord2f( 0.0f, 1.0f );
@@ -186,7 +186,7 @@ void GLTorch::draw() {
     w = size;
     d = 0;
     h = size;
-    glNormal3f(0.0f, 1.0f, 0.0f);
+    //glNormal3f(0.0f, 1.0f, 0.0f);
     glTexCoord2f( 1.0f, 1.0f );
     glVertex3f(w, d, 0);
     glTexCoord2f( 1.0f, 0.0f );
@@ -199,7 +199,7 @@ void GLTorch::draw() {
     w = 0;
     d = size;
     h = size;
-    glNormal3f(-1.0f, 0.0f, 0.0f);
+    //glNormal3f(-1.0f, 0.0f, 0.0f);
     glTexCoord2f( 1.0f, 1.0f );
     glVertex3f(w, d, 0);
     glTexCoord2f( 0.0f, 1.0f );
@@ -212,7 +212,7 @@ void GLTorch::draw() {
     w = 0;
     d = size;
     h = size;
-    glNormal3f(-1.0f, 0.0f, 0.0f);
+    //glNormal3f(-1.0f, 0.0f, 0.0f);
     glTexCoord2f( 1.0f, 1.0f );
     glVertex3f(w, d, 0);
     glTexCoord2f( 1.0f, 0.0f );
@@ -225,7 +225,7 @@ void GLTorch::draw() {
     w = size;
     d = 0;
     h = size;
-    glNormal3f(0.0f, 1.0f, 0.0f);
+//    glNormal3f(0.0f, 1.0f, 0.0f);
     glTexCoord2f( 1.0f, 1.0f );
     glVertex3f(w, 0, 0);
     glTexCoord2f( 0.0f, 1.0f );

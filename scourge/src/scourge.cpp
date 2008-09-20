@@ -2262,7 +2262,7 @@ void Scourge::drawWidgetContents(Widget *w) {
             }
             glColor4f(1, 1, 1, 1);
 
-            glNormal3f( 0, 0, 1 );
+//            glNormal3f( 0, 0, 1 );
             glBegin( GL_TRIANGLE_STRIP );
             glTexCoord2f( 0, 0 );
             glVertex3f( 0, 0, 0 );
@@ -2298,7 +2298,7 @@ void Scourge::drawItemIcon( Item *item, int n ) {
   glColor4f(1, 1, 1, 1);
   glPushMatrix();
   //glTranslatef( 0, 5, 0 );
-  glNormal3f( 0, 0, 1 );
+//  glNormal3f( 0, 0, 1 );
   glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );
@@ -2357,7 +2357,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
   } else {
     glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() ) );
   }
-  glNormal3f( 0, 0, 1 );
+//  glNormal3f( 0, 0, 1 );
   glBegin( GL_TRIANGLE_STRIP );
   glTexCoord2f( 0, 0 );
   glVertex2i( -offs_x, -offs_y );
@@ -2469,7 +2469,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 				glColor4f( color.r, color.g, color.b, color.a );
 				glPushMatrix();
 				glTranslatef( 5 + xp * (n + 1), height - (yp * (n + 1)) - n, 0 );
-				glNormal3f( 0, 0, 1 );
+//				glNormal3f( 0, 0, 1 );
 				glBegin( GL_TRIANGLE_STRIP );
 				glTexCoord2f( 0, 0 );
 				glVertex3f( 0, 0, 0 );

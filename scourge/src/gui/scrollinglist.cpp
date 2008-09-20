@@ -311,7 +311,7 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
   if(icon) glBindTexture( GL_TEXTURE_2D, icon );
   glColor4f(1, 1, 1, 1);
   
-  glNormal3f( 0, 0, 1 );
+  
   glBegin( GL_TRIANGLE_STRIP );
   if(icon) glTexCoord2f( 0, 0 );
   glVertex3f( 0, 0, 0 );

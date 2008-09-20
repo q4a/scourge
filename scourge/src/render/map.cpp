@@ -3179,42 +3179,42 @@ bool Map::isLocationBlocked(int x, int y, int z, bool onlyLockedDoors) {
 void Map::drawCube(float x, float y, float z, float r) {
   glBegin(GL_QUADS);
   // front
-  glNormal3f(0.0f, 0.0f, 1.0f);
+//  glNormal3f(0.0f, 0.0f, 1.0f);
   glVertex3f(-r+x, -r+y, r+z);
   glVertex3f(r+x, -r+y, r+z);
   glVertex3f(r+x, r+y, r+z);
   glVertex3f(-r+x, r+y, r+z);
 
   // back
-  glNormal3f(0.0f, 0.0f, -1.0f);
+//  glNormal3f(0.0f, 0.0f, -1.0f);
   glVertex3f(r+x, -r+y, -r+z);
   glVertex3f(-r+x, -r+y, -r+z);
   glVertex3f(-r+x, r+y, -r+z);
   glVertex3f(r+x, r+y, -r+z);
 
   // top
-  glNormal3f(0.0f, 1.0f, 0.0f);
+//  glNormal3f(0.0f, 1.0f, 0.0f);
   glVertex3f(-r+x, r+y, r+z);
   glVertex3f(r+x, r+y, r+z);
   glVertex3f(r+x, r+y, -r+z);
   glVertex3f(-r+x, r+y, -r+z);
 
   // bottom
-  glNormal3f(0.0f, -1.0f, 0.0f);
+//  glNormal3f(0.0f, -1.0f, 0.0f);
   glVertex3f(-r+x, -r+y, -r+z);
   glVertex3f(r+x, -r+y, -r+z);
   glVertex3f(r+x, -r+y, r+z);
   glVertex3f(-r+x, -r+y, r+z);
 
   // left
-  glNormal3f(-1.0f, 0.0f, 0.0f);
+//  glNormal3f(-1.0f, 0.0f, 0.0f);
   glVertex3f(-r+x, -r+y, -r+z);
   glVertex3f(-r+x, -r+y, r+z);
   glVertex3f(-r+x, r+y, r+z);
   glVertex3f(-r+x, r+y, -r+z);
 
   // right
-  glNormal3f(1.0f, 0.0f, 0.0f);
+//  glNormal3f(1.0f, 0.0f, 0.0f);
   glVertex3f(r+x, -r+y, r+z);
   glVertex3f(r+x, -r+y, -r+z);
   glVertex3f(r+x, r+y, -r+z);
@@ -4857,7 +4857,7 @@ void Map::drawWaterLevel() {
 	//float z = -4 * MUL;
 	//glTranslatef( xpos2, ypos2, 0.0f);
 	glColor4f( 1.0f, 1.0f, 1.0f, 0.35f );
-	glNormal3f( 0.0f, 0.0f, 1.0f );
+//	glNormal3f( 0.0f, 0.0f, 1.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( getX() / MUL * ratio + waterTexX, getY() / MUL * ratio + waterTexY );
 	glVertex3f( 0.0f, 0.0f, -0.3f );
@@ -4876,7 +4876,7 @@ void Map::drawFlatFloor() {
 	float w = static_cast<float>( mapViewWidth ) * MUL;
 	float d = static_cast<float>( mapViewDepth ) * MUL;
 	//glTranslatef( xpos2, ypos2, 0.0f);
-	glNormal3f( 0.0f, 0.0f, 1.0f );
+//	glNormal3f( 0.0f, 0.0f, 1.0f );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( getX() / MUL * ratio, getY() / MUL * ratio );
 	glVertex3f( 0.0f, 0.0f, 0.0f );
