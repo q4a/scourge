@@ -392,7 +392,7 @@ void C3DSShape::drawShape( bool isShadow, float alpha ) {
         int index = pObject->pFaces[j].vertIndex[whichVertex];
 
         // Give OpenGL the normal for this vertex.
-        glNormal3f(pObject->pNormals[ index ].x, pObject->pNormals[ index ].y, pObject->pNormals[ index ].z);
+        //glNormal3f(pObject->pNormals[ index ].x, pObject->pNormals[ index ].y, pObject->pNormals[ index ].z);
 
         // If the object has a texture associated with it, give it a texture coordinate.
         if (!isShadow) {

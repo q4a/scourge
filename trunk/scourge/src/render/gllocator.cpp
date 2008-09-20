@@ -36,7 +36,6 @@ void GLLocator::draw() {
     glDisable( GL_TEXTURE_2D );
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glEnable(GL_BLEND);
-    //glNormal3f(0.0f, 0.0f, 1.0f);
     glColor4f(0.2f, 0.5f, 0.1f, 0.7f);
     glBegin( GL_TRIANGLE_STRIP );
       glVertex3f(0, 0, h);

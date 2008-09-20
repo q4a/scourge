@@ -100,7 +100,7 @@ void GLShape::createShadowList( GLuint listName ) {
   
   // left
   if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {    
-    glNormal3f(-1.0f, 0.0f, 0.0f);
+    //glNormal3f(-1.0f, 0.0f, 0.0f);
     glBegin( GL_TRIANGLE_STRIP );
     glVertex3fv(surfaces[LEFT_SURFACE]->vertices[1]);
     glVertex3fv(surfaces[LEFT_SURFACE]->vertices[2]);
@@ -111,7 +111,7 @@ void GLShape::createShadowList( GLuint listName ) {
 
   // bottom
   if(!(skipside & (1 << GLShape::FRONT_SIDE))) {    
-    glNormal3f(0.0f, -1.0f, 0.0f);
+    //glNormal3f(0.0f, -1.0f, 0.0f);
     glBegin( GL_TRIANGLE_STRIP );
     glVertex3fv(surfaces[BOTTOM_SURFACE]->vertices[1]);
     glVertex3fv(surfaces[BOTTOM_SURFACE]->vertices[2]);
@@ -122,7 +122,7 @@ void GLShape::createShadowList( GLuint listName ) {
 
   // right
   if(!(skipside & ( 1 << GLShape::LEFT_RIGHT_SIDE ))) {
-    glNormal3f(1.0f, 0.0f, 0.0f);
+    //glNormal3f(1.0f, 0.0f, 0.0f);
     glBegin(GL_TRIANGLE_STRIP);
     glVertex3fv(surfaces[RIGHT_SURFACE]->vertices[1]);
     glVertex3fv(surfaces[RIGHT_SURFACE]->vertices[2]);
@@ -133,7 +133,7 @@ void GLShape::createShadowList( GLuint listName ) {
 
   // front
   if(!(skipside & (1 << GLShape::FRONT_SIDE))) {    
-    glNormal3f(0.0f, 1.0f, 0.0f);
+    //glNormal3f(0.0f, 1.0f, 0.0f);
     glBegin( GL_TRIANGLE_STRIP );
     glVertex3fv(surfaces[FRONT_SURFACE]->vertices[1]);
     glVertex3fv(surfaces[FRONT_SURFACE]->vertices[2]);
@@ -143,7 +143,7 @@ void GLShape::createShadowList( GLuint listName ) {
   }
 
   // top
-  glNormal3f(0.0f, 0.0f, 1.0f);
+  //glNormal3f(0.0f, 0.0f, 1.0f);
   glBegin( GL_TRIANGLE_STRIP );
   glVertex3fv(surfaces[TOP_SURFACE]->vertices[1]);
   glVertex3fv(surfaces[TOP_SURFACE]->vertices[2]);
@@ -159,7 +159,7 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 
 	// --------------------------------------------
 	if( side == Shape::W_SIDE ) {
-		glNormal3f(-1.0f, 0.0f, 0.0f);
+		//glNormal3f(-1.0f, 0.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0.0f, 0.0f );
 		glVertex3fv(surfaces[LEFT_SURFACE]->vertices[1]);
@@ -175,7 +175,7 @@ void GLShape::createBodyList( int side, GLuint listName ) {
   // --------------------------------------------
 	if( side == Shape::N_SIDE ) {
 		// bottom
-		glNormal3f(0.0f, -1.0f, 0.0f);
+		//glNormal3f(0.0f, -1.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		if(Constants::multitexture) {
 			glSDLMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 0.0f);
@@ -216,7 +216,7 @@ void GLShape::createBodyList( int side, GLuint listName ) {
   // --------------------------------------------
 	if( side == Shape::E_SIDE ) {		
 		// right
-		glNormal3f(1.0f, 0.0f, 0.0f);
+		//glNormal3f(1.0f, 0.0f, 0.0f);
 		glBegin(GL_TRIANGLE_STRIP);
 		if(Constants::multitexture) {
 			glSDLMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 0.0f);
@@ -256,7 +256,7 @@ void GLShape::createBodyList( int side, GLuint listName ) {
   // --------------------------------------------
 	if( side == Shape::S_SIDE ) {
 		// front
-		glNormal3f(0.0f, 1.0f, 0.0f);
+		//glNormal3f(0.0f, 1.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		if(Constants::multitexture) {
 			glSDLMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 0.0f);
@@ -297,7 +297,7 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 void GLShape::createTopList( GLuint listName ) {
 	glNewList( listName, GL_COMPILE );
 
-	glNormal3f(0.0f, 0.0f, 1.0f);
+	//glNormal3f(0.0f, 0.0f, 1.0f);
 	glBegin(GL_TRIANGLE_STRIP);
 
 	if( getWidth() > getHeight() ) {

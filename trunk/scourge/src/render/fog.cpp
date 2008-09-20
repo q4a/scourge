@@ -304,7 +304,7 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
     
     glBindTexture( GL_TEXTURE_2D, overlay_tex );
     glBegin( GL_TRIANGLE_STRIP );
-    //  glNormal3f(0.0f, 1.0f, 0.0f);
+
     glTexCoord2f( 0.0f, 0.0f );
     glVertex2f( minLightX, minLightY );
     glTexCoord2f( 1.0f, 0.0f );
