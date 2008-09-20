@@ -1042,22 +1042,22 @@ void Map::preDraw() {
 	    setupShapes(false, false, &csx, &cex, &csy, &cey);
 	    int shapeCount = laterCount + otherCount + damageCount + stencilCount;
 #ifdef SHOW_FPS    
-	    if( settings->isPlayerEnabled() ) {
-	      snprintf(mapDebugStr, DEBUG_SIZE, "c=%d,%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d zoom=%.2f xrot=%.2f yrot=%.2f zrot=%.2f", 
-				   cursorFlatMapX, cursorFlatMapY + 1,
-				   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
-				   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
-				   (useFrustum ? "*" : ""),
-				   chunkCount, ((cex - csx)*(cey - csy)),
-				   csx, cex, csy, cey, shapeCount, selectedTrapIndex,
-				   zoom, xrot, yrot, zrot );
-	      //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
-	    } else {
-	      snprintf(mapDebugStr, DEBUG_SIZE, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
-	              static_cast<int>(currentEffectsMap.size()), (useFrustum ? "*" : ""), chunkCount, ((cex - csx)*(cey - csy)),
-	              csx, cex, csy, cey, shapeCount);
-	    }
-	    adapter->setDebugStr(mapDebugStr);
+//	    if( settings->isPlayerEnabled() ) {
+//	      snprintf(mapDebugStr, DEBUG_SIZE, "c=%d,%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d zoom=%.2f xrot=%.2f yrot=%.2f zrot=%.2f", 
+//				   cursorFlatMapX, cursorFlatMapY + 1,
+//				   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getX()) : -1 ),
+//				   ( adapter->getPlayer() ? toint(adapter->getPlayer()->getY()) : -1 ),
+//				   (useFrustum ? "*" : ""),
+//				   chunkCount, ((cex - csx)*(cey - csy)),
+//				   csx, cex, csy, cey, shapeCount, selectedTrapIndex,
+//				   zoom, xrot, yrot, zrot );
+//	      //            shapeCount, laterCount, otherCount, damageCount, stencilCount);
+//	    } else {
+//	      snprintf(mapDebugStr, DEBUG_SIZE, "E=%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d", 
+//	              static_cast<int>(currentEffectsMap.size()), (useFrustum ? "*" : ""), chunkCount, ((cex - csx)*(cey - csy)),
+//	              csx, cex, csy, cey, shapeCount);
+//	    }
+//	    adapter->setDebugStr(mapDebugStr);
 #endif
 	  }
 	}
@@ -1097,13 +1097,21 @@ void Map::draw() {
   		// find the map coordinates (must be done after drawing is complete)
   		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
   		
-  		Location *pos = getLocation( cursorMapX, cursorMapY, cursorMapZ );
-  		if( !pos && cursorMapZ > 0 ) {
-  			pos = getLocation( cursorMapX - 1, cursorMapY, cursorMapZ );
+  		Location *pos = NULL;
+  		if( cursorMapX >= 0 && cursorMapX < MAP_WIDTH &&
+  				cursorMapY >= 0 && cursorMapY < MAP_DEPTH &&
+  				cursorMapZ >= 0 && cursorMapZ < MAP_VIEW_HEIGHT ) {
+  			pos = getLocation( cursorMapX, cursorMapY, cursorMapZ );
   		}
-  		if( !pos && cursorMapZ > 0 ) {
-  			pos = getLocation( cursorMapX, cursorMapY - 1, cursorMapZ );
+  		char tmp[255];
+  		if(pos && pos->shape) {
+  			snprintf(tmp, 255, "%s %d,%d,%d-%d,%d,%d", pos->shape->getName(), pos->x, pos->y, pos->z, pos->x + pos->shape->getWidth(), pos->y - pos->shape->getDepth(), pos->z + pos->shape->getHeight() );
+  		} else {
+  			tmp[0] = 0;
   		}
+      snprintf( mapDebugStr, DEBUG_SIZE, "pos=%d,%d,%d pos=%s", cursorMapX, cursorMapY, cursorMapZ, tmp );  
+	    adapter->setDebugStr(mapDebugStr);  		
+  		
   		
 //  		cerr << "pos=" << cursorMapX << "," << cursorMapY << "," << cursorMapZ << 
 //  						" location=" << ( pos && pos->shape ? pos->shape->getName() : "null" ) << endl;
@@ -1276,15 +1284,15 @@ void Map::drawIndoors() {
         glDisable(GL_STENCIL_TEST); 
       } else {
         // draw transp. walls and water w/o stencil buffer
-		//        glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        for( int i = 0; i < stencilCount; i++ ) {
-		  if( stencil[i].inFront ) {
-			glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
-			colorAlreadySet = true;
-			doDrawShape( &(stencil[i]) );
-		  }
-		}
+      	//        glBlendFunc( GL_SRC_ALPHA, GL_SRC_COLOR );
+      	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+      	for( int i = 0; i < stencilCount; i++ ) {
+      		if( stencil[i].inFront ) {
+      			glColor4f( 1.0f, 1.0f, 1.0f, 0.45f );
+      			colorAlreadySet = true;
+      			doDrawShape( &(stencil[i]) );
+      		}
+      	}
         if( hasWater ) {
           glDisable(GL_TEXTURE_2D);
           glBlendFunc( GL_ONE, GL_SRC_COLOR );
@@ -4221,6 +4229,55 @@ void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy) {
   }
 }
 
+// these are arrived at by trial-and-error
+#define RAY_PICK_MIN_T 0.6f
+#define RAY_PICK_MAX_T 0.8f
+#define RAY_PICK_STEP_COUNT 30
+void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
+  double win_x = static_cast<double>( adapter->getMouseX() );
+  double win_y = static_cast<double>( adapter->getScreenHeight() - adapter->getMouseY() );
+
+  double projection[16];
+  double modelview[16];
+  GLint viewport[4];
+
+  glGetDoublev(GL_PROJECTION_MATRIX, projection);
+  glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+  glGetIntegerv(GL_VIEWPORT, viewport);
+
+  // the near plane's mouse coordinates
+  double px, py, pz;
+  int res = gluUnProject(win_x, win_y, 0.0f, modelview, projection, viewport, &px, &py, &pz);
+  
+  // the far plane's mouse coordinates
+  double qx, qy, qz;
+  res = gluUnProject(win_x, win_y, 1.0f, modelview, projection, viewport, &qx, &qy, &qz);
+
+  // Take steps along the pick-ray. A t of 0 to 1 is the line segment from the near to the far plane.
+  //cerr << "------------------------------" << endl;
+  for( int i = 0; i < RAY_PICK_STEP_COUNT; i++ ) {
+  	float t = RAY_PICK_MIN_T + ( ( (float)i / (float)RAY_PICK_STEP_COUNT ) * ( RAY_PICK_MAX_T - RAY_PICK_MIN_T ) );
+		double ox = px + t * ( qx - px );
+		double oy = py + t * ( qy - py );
+		double oz = pz + t * ( qz - pz );
+		
+		*mapx = getX() + (Uint16)( toint( ox / (float)MUL ) );
+    *mapy = getY() + (Uint16)( toint( oy / (float)MUL ) ) + 2;
+    *mapz = (Uint16)( toint( oz / (float)MUL ) );
+    if( *mapz > 0 ) (*mapz)--;
+    
+    //cerr << "\t" << t << " - " << *mapx << "," << *mapy << "," << *mapz << "," << endl;
+    
+    if( *mapx < MAP_WIDTH && *mapy < MAP_DEPTH && *mapz < MAP_VIEW_HEIGHT ) {
+    	Location *pos = getLocation( *mapx, *mapy, *mapz );
+    	if( pos ) {
+    		return;
+    	}
+    }
+  }	
+}
+
+/*
 void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   double obj_x, obj_y, obj_z;
   double win_x = static_cast<double>( adapter->getMouseX() );
@@ -4245,6 +4302,30 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
     *mapy = getY() + (Uint16)( toint( obj_y / (float)MUL ) ) + 2;
     *mapz = (Uint16)( toint( obj_z / (float)MUL ) );
     if( *mapz > 0 ) (*mapz)--;
+    
+    if( *mapx >= 0 && *mapx < MAP_WIDTH &&
+    		*mapy >= 0 && *mapy < MAP_DEPTH &&
+    		*mapz >= 0 && *mapz < MAP_VIEW_HEIGHT ) {
+    	Location *pos = getLocation( *mapx, *mapy, *mapz );
+			if( !pos ) {
+				// get a second point on the same pick ray
+				double obj_near_x, obj_near_y, obj_near_z;			
+				gluUnProject(win_x, win_y, 0, modelview, projection, viewport, &obj_near_x, &obj_near_y, &obj_near_z);
+				
+				// take a step "into" the shape along the pick-ray
+				double ox = obj_x - 0.1f * ( obj_near_x - obj_x );
+				double oy = obj_y - 0.1f * ( obj_near_y - obj_y );
+				double oz = obj_z - 0.1f * ( obj_near_z - obj_z );
+				
+				// recompute map coordinates
+				*mapx = getX() + (Uint16)( toint( ox / (float)MUL ) );
+		    *mapy = getY() + (Uint16)( toint( oy / (float)MUL ) ) + 2;
+		    *mapz = (Uint16)( toint( oz / (float)MUL ) );
+		    if( *mapz > 0 ) (*mapz)--;
+				
+				
+			}
+    }
     	
   	debugX = *mapx;
     debugY = *mapy;
@@ -4254,6 +4335,7 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
     *mapx = *mapy = MAP_WIDTH + 1;
   }	
 }
+*/
 
 /*
 void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
