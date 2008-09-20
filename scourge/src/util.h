@@ -1,5 +1,5 @@
 /***************************************************************************
-                          util.h  -  description
+                    util.h  -  General utility functions
                              -------------------
     begin                : Sun Jun 22 2003
     copyright            : (C) 2003 by Gabor Torok

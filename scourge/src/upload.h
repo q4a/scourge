@@ -1,5 +1,5 @@
 /***************************************************************************
-                          upload.h  -  description
+                upload.h  -  Uploads final game score to web
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

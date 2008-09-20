@@ -1,5 +1,5 @@
 /***************************************************************************
-                          characterinfo.h  -  description
+               characterinfo.h  -  Basic character info widget
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

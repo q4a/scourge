@@ -1,5 +1,5 @@
 /***************************************************************************
-                          main.cpp  -  description
+             main.cpp  -  The code that starts everything else
                              -------------------
     begin                : Sat May  3 19:39:34 EDT 2003
     copyright            : (C) 2003 by Gabor Torok

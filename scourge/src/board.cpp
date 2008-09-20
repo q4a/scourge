@@ -1,5 +1,5 @@
 /***************************************************************************
-                          board.cpp  -  description
+                  board.cpp  -  Mission/Mission board classes
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

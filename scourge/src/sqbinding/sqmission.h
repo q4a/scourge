@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqmission.h  -  description
+               sqmission.h  -  Squirrel binding - Mission class
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok

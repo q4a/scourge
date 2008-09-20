@@ -1,5 +1,5 @@
 /***************************************************************************
-                          cellular.cpp  -  description
+             cellular.cpp  -  Cellular automaton for map generation
                              -------------------
     begin                : Thu May 15 2003
     copyright            : (C) 2003 by Gabor Torok

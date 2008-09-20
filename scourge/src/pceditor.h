@@ -1,5 +1,5 @@
 /***************************************************************************
-                          pceditor.h  -  description
+                 pceditor.h  -  The create character window
                              -------------------
     begin                : Tue Jul 10 2006
     copyright            : (C) 2006 by Gabor Torok

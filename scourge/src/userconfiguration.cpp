@@ -1,5 +1,5 @@
 /***************************************************************************
-                          userconfiguration.cpp  -  description
+             userconfiguration.cpp  -  Manages game preferences
                              -------------------
     begin                : Sat Feb 14 2004
     copyright            : (C) 2004 by Daroth-U 

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          gameadapter.h  -  description
+             gameadapter.h  -  Globally available base functions
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

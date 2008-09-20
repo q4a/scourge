@@ -1,5 +1,5 @@
 /***************************************************************************
-                          pcui.cpp  -  description
+                 pcui.cpp  -  the character/inventory window
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

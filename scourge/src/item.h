@@ -1,5 +1,5 @@
 /***************************************************************************
-                          item.h  -  description
+                item.h  -  Class representing a specific item
                              -------------------
     begin                : Sun Sep 28 2003
     copyright            : (C) 2003 by Gabor Torok

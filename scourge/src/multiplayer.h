@@ -1,6 +1,6 @@
 
 /***************************************************************************
-                          multiplayer.h  -  description
+                   multiplayer.h  -  The multiplayer dialog
                              -------------------
     begin                : Tue Aug 12 2003
     copyright            : (C) 2003 by Gabor Torok

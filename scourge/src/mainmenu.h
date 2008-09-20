@@ -1,5 +1,5 @@
 /***************************************************************************
-                          mainmenu.h  -  description
+                     mainmenu.h  -  The game's main menu
                              -------------------
     begin                : Tue Aug 12 2003
     copyright            : (C) 2003 by Gabor Torok

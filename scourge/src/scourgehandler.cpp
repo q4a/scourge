@@ -1,5 +1,5 @@
 /***************************************************************************
-                          scourgehandler.cpp  -  description
+                   scourgehandler.cpp  -  Game event handler
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

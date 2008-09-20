@@ -1,5 +1,5 @@
 /***************************************************************************
-tradedialog.h  -  description
+tradedialog.h  -  The trade dialog
 -------------------
     begin                : 8/26/2005
     copyright            : (C) 2005 by Gabor Torok

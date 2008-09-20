@@ -1,5 +1,5 @@
 /***************************************************************************
-                          texteffect.h  -  description
+         texteffect.h  -  Class for large text with animated effects
                              -------------------
     begin                : Sept 13, 2005
     copyright            : (C) 2003 by Gabor Torok

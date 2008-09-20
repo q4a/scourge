@@ -1,5 +1,5 @@
 /***************************************************************************
-                          outdoorgenerator.h  -  description
+                outdoorgenerator.h  -  Generates outdoor maps
                              -------------------
     begin                : Sat May 12 2007
     copyright            : (C) 2007 by Gabor Torok

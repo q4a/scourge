@@ -4,7 +4,7 @@
  */
 
 /***************************************************************************
-                          text.cpp  -  description
+                  text.cpp  -  Font manager for .txf fonts
                              -------------------
     begin                : Mon Jul 7 2003
     copyright            : (C) 2003 by Gabor Torok

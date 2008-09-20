@@ -1,5 +1,5 @@
 /***************************************************************************
-                          pathmanager.cpp  -  description
+                   pathmanager.cpp  -  Manages creature paths
                              -------------------
     begin                : Thu Sep 6 2007
     copyright            : (C) 2007 by Jonathan Teutenberg

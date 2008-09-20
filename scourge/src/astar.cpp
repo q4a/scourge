@@ -1,5 +1,5 @@
 /***************************************************************************
-                          astar.cpp  -  description
+                   astar.cpp  -  A* pathfinding algorithm
                              -------------------
     begin                : Sun Jun 22 2003
     copyright            : (C) 2003 by Gabor Torok

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          scourgeview.h  -  description
+               scourgeview.h  -  Manages the ingame main view
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

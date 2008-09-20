@@ -1,5 +1,5 @@
 /***************************************************************************
-                          spellcaster.h  -  description
+                 spellcaster.h  -  Currently cast spell class
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

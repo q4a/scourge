@@ -1,8 +1,8 @@
 /***************************************************************************
-                          quickhull.cpp  -  description
+                    quickhull.cpp  -  Quick Hull Algorithm
                              -------------------
     begin                : Sun July 8 2007
-    copyright            : (C) 2003 by Gabor Torok
+    copyright            : (C) 2007 by Gabor Torok
     email                : cctorok@yahoo.com
 ***************************************************************************/
 

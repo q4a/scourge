@@ -1,5 +1,5 @@
 /***************************************************************************
-  savegamedialog.cpp  -  description
+  savegamedialog.cpp  -  The save/load game dialog
 -------------------
     begin                : 9/9/2005
     copyright            : (C) 2005 by Gabor Torok

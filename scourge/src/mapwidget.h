@@ -1,5 +1,5 @@
 /***************************************************************************
-                          mapwidget.h  -  description
+            mapwidget.h  -  Widget that displays a draggable map
                              -------------------
     begin                : Tue Jun 18 2005
     copyright            : (C) 2005 by Gabor Torok

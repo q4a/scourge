@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqcreature.cpp  -  description
+             sqcreature.cpp  -  Squirrel binding - Creature class
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok

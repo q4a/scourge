@@ -1,5 +1,5 @@
 /***************************************************************************
-                          debug.h  -  description
+                debug.h  -  Global symbols for game debugging
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok

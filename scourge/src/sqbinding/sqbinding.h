@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqbinding.h  -  description
+                    sqbinding.h  -  Squirrel binding - General
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok

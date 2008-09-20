@@ -1,5 +1,5 @@
 /***************************************************************************
-                          cavemaker.h  -  description
+                        cavemaker.h  -  Cave generator
                              -------------------
     begin                : Thu May 15 2003
     copyright            : (C) 2003 by Gabor Torok
