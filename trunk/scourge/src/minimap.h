@@ -1,5 +1,5 @@
 /***************************************************************************
-                          map.h  -  description
+                      minimap.h  -  The ingame minimap
                              -------------------
     begin                : Thu Jan 29 2004
     copyright            : (C) 2004 by Daroth-U

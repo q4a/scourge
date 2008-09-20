@@ -1,5 +1,5 @@
 /***************************************************************************
-                          portrait.h  -  description
+               portrait.h  -  The portrait + stats/skills widget
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

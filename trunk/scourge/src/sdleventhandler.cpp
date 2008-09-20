@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sdleventhandler.cpp  -  description
+             sdleventhandler.cpp  -  Maps SDL events to game events
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

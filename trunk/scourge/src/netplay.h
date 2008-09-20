@@ -1,5 +1,5 @@
 /***************************************************************************
-                          netplay.h  -  description
+                    netplay.h  -  Handler for online play
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

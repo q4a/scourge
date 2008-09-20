@@ -1,5 +1,5 @@
 /***************************************************************************
-                          shapepalette.cpp  -  description
+            shapepalette.cpp  -  Loads and inits textures/models
                              -------------------
     begin                : Sat Jun 14 2003
     copyright            : (C) 2003 by Gabor Torok

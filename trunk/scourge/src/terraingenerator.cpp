@@ -1,5 +1,5 @@
 /***************************************************************************
-                          terraingenerator.cpp  -  description
+      terraingenerator.cpp  -  Wrapper for the different map generators
                              -------------------
     begin                : Thu Jan 15 2006
     copyright            : (C) 2003 by Gabor Torok

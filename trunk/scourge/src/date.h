@@ -1,5 +1,5 @@
 /***************************************************************************
-                          calendar.cpp  -  description
+                    date.h  -  Manages ingame date/time
                              -------------------
     begin                : Wed April 7 2004
     copyright            : (C) 2004 by Daroth-U

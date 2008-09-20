@@ -1,5 +1,5 @@
 /***************************************************************************
-                          mondriangenerator.h  -  description
+                      mondrian.h  -  Dungeon generator
                              -------------------
     begin                : Thu May 15 2003
     copyright            : (C) 2006 by Raphael Bosshard

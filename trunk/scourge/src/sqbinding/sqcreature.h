@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqcreature.h  -  description
+              sqcreature.h  -  Squirrel binding - Creature class
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok

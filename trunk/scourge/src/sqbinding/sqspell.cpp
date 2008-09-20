@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqspell.cpp  -  description
+                sqspell.cpp  -  Squirrel binding - Spell class
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok

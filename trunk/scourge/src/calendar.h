@@ -1,5 +1,5 @@
 /***************************************************************************
-                          calendar.cpp  -  description
+                   calendar.cpp  -  Schedules ingame events
                              -------------------
     begin                : Wed April 7 2004
     copyright            : (C) 2004 by Daroth-U

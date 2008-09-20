@@ -1,5 +1,5 @@
 /***************************************************************************
-                          date.cpp  -  description
+                     date.cpp  -  Manages ingame date/time
                              -------------------
     begin                : Wed April 7 2004
     copyright            : (C) 2004 by Daroth-U

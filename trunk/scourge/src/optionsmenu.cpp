@@ -1,5 +1,5 @@
 /***************************************************************************
-                          optionsmenu.cpp  -  description
+                    optionsmenu.cpp  -  The options menu
                              -------------------
     begin                : Tue Aug 12 2003
     copyright            : (C) 2003 by Gabor Torok

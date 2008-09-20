@@ -1,5 +1,5 @@
 /***************************************************************************
-                          containergui.h  -  description
+              containergui.h  -  The container contents window
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

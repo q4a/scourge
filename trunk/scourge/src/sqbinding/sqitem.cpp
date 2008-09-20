@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqitem.cpp  -  description
+                 sqitem.cpp  -  Squirrel binding - Item class
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok

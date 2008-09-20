@@ -1,5 +1,5 @@
 /***************************************************************************
-                          creature.cpp  -  description
+              creature.cpp  -  A class describing any creature
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqobject.cpp  -  description
+                    sqobject.cpp  -  Squirrel object class
                              -------------------
     begin                : Sat Nov 6 2005
     copyright            : (C) 2005 by Gabor Torok

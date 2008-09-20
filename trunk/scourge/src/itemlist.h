@@ -1,5 +1,5 @@
 /***************************************************************************
-itemlist.h  -  description
+itemlist.h  -  Item list widget
 -------------------
     begin                : 8/27/2005
     copyright            : (C) 2005 by Gabor Torok

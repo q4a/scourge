@@ -1,5 +1,5 @@
 /***************************************************************************
-                          storable.h  -  description
+             storable.h  -  Class for quickspell-storable objects
                              -------------------
     begin                : Sat Oct 22 2005
     copyright            : (C) 2005 by Gabor Torok

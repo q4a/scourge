@@ -1,5 +1,5 @@
 /***************************************************************************
-                          scourge.h  -  description
+         scourge.h  -  The all-powerful mother-of-everything object
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

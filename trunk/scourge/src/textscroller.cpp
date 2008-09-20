@@ -1,5 +1,5 @@
 /***************************************************************************
-                          textscroller.cpp  -  description
+             textscroller.cpp  -  "Scrolling text lines" widget
                              -------------------
     begin                : Sat Apr 14 2007
     copyright            : (C) 2003 by Gabor Torok

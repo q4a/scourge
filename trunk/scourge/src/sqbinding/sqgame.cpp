@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqgame.cpp  -  description
+            sqgame.cpp  -  Squirrel binding - Generic game related
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok

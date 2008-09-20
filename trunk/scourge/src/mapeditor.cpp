@@ -1,5 +1,5 @@
 /***************************************************************************
-                          mapeditor.cpp  -  description
+            mapeditor.cpp  -  The (not yet supported) map editor
                              -------------------
     begin                : Tue Jun 18 2005
     copyright            : (C) 2005 by Gabor Torok

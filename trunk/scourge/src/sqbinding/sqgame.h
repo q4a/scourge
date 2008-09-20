@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqgame.h  -  description
+            sqgame.h  -  Squirrel binding - Generic game related
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          dungeongenerator.cpp  -  description
+              dungeongenerator.cpp  -  Generates multilevel mazes
                              -------------------
     begin                : Thu May 15 2003
     copyright            : (C) 2003 by Gabor Torok

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          util.cpp  -  description
+                   util.cpp  -  General utility functions
                              -------------------
     begin                : Sun Jun 22 2003
     copyright            : (C) 2003 by Gabor Torok

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sdlhandler.cpp  -  description
+                     sdlhandler.cpp  -  Interface to SDL
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

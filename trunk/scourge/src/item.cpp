@@ -1,5 +1,5 @@
 /***************************************************************************
-                          item.cpp  -  description
+               item.cpp  -  Class representing a specific item
                              -------------------
     begin                : Sun Sep 28 2003
     copyright            : (C) 2003 by Gabor Torok

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          config.h  -  description
+           configlang.h  -  Config file parser with gettext support
                              -------------------
     begin                : Thu May 15 2003
     copyright            : (C) 2003 by Gabor Torok

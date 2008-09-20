@@ -1,5 +1,5 @@
 /***************************************************************************
-                          netplay.cpp  -  description
+                  netplay.cpp  -  Handler for online play
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

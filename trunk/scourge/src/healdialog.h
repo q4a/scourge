@@ -1,5 +1,5 @@
 /***************************************************************************
-  healdialog.h  -  description
+  healdialog.h  -  The heal dialog
 -------------------
     begin                : 9/9/2005
     copyright            : (C) 2005 by Gabor Torok

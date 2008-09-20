@@ -5,7 +5,7 @@
  */
 
 /***************************************************************************
-                          text.h  -  description
+                    text.h  -  Font manager for .txf fonts
                              -------------------
     begin                : Mon Jul 7 2003
     copyright            : (C) 2003 by Gabor Torok

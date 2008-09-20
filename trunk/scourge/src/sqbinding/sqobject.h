@@ -1,5 +1,5 @@
 /***************************************************************************
-                          sqobject.h  -  description
+                     sqobject.h  -  Squirrel object class
                              -------------------
     begin                : Sat Oct 8 2005
     copyright            : (C) 2005 by Gabor Torok
