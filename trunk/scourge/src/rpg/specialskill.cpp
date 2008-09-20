@@ -1,5 +1,5 @@
 /***************************************************************************
-                          specialskill.cpp  -  description
+                   specialskill.cpp  -  Special skill class
                              -------------------
     begin                : Sat Oct 19 2005
     copyright            : (C) 2003 by Gabor Torok

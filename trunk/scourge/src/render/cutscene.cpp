@@ -1,5 +1,5 @@
 /***************************************************************************
-                          cutscene.h  -  description
+                  cutscene.cpp  -  Utilities for movie mode
                              -------------------
     begin                : Tue May 13 2008
     copyright            : (C) 2008 by Dennis Murczak

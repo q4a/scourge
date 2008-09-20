@@ -9,7 +9,7 @@
  */
 
 /***************************************************************************
-                          md2shape.cpp  -  description
+     md2shape.cpp  -  Extends AnimatedShape with MD2 specific functions
                              -------------------
     begin                : Fri Oct 3 2003
     copyright            : (C) 2003 by Gabor Torok

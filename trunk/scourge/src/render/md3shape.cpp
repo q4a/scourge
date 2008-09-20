@@ -1,5 +1,5 @@
 /***************************************************************************
-                          md3shape.cpp  -  description
+     md3shape.cpp  -  Extends AnimatedShape with MD2 specific functions
                              -------------------
     begin                : Thu Aug 31 2006
     copyright            : (C) 2006 by Gabor Torok

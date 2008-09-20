@@ -1,5 +1,5 @@
 /***************************************************************************
-                          spell.h  -  description
+                 spell.h  -  Spell and magic school classes
                              -------------------
     begin                : Sun Sep 28 2003
     copyright            : (C) 2003 by Gabor Torok

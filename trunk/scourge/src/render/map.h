@@ -1,5 +1,5 @@
 /***************************************************************************
-                          map.h  -  description
+                  map.h  -  Manages and renders the level map
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

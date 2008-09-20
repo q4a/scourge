@@ -1,5 +1,5 @@
 /***************************************************************************
-                          textfield.cpp  -  description
+              textfield.cpp  -  Single-line text input widget
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -72,10 +72,7 @@ bool TextField::handleEvent(Widget *parent, SDL_Event *event, int x, int y) {
 				pos = 0;
 			} else if(event->key.keysym.sym == SDLK_END) {
 				pos = maxPos;
-			} else if( maxPos < numChars && 
-								 event->key.keysym.sym > SDLK_ESCAPE &&
-								 event->key.keysym.sym < SDLK_UP &&
-								 event->key.keysym.sym != SDLK_DELETE) {
+			} else if( maxPos < numChars && event->key.keysym.sym > SDLK_ESCAPE && event->key.keysym.sym < SDLK_UP && event->key.keysym.sym != SDLK_DELETE ) {
         for(int i = maxPos; i > pos; i--) {
           text[i] = text[i - 1];
         }

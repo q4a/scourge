@@ -1,5 +1,5 @@
 /***************************************************************************
-                          event.cpp  -  description
+                   event.cpp  -  Base class for ingame events
                              -------------------
     begin                : Thu Apr 8 2004
     copyright            : (C) 2004 by Daroth-U

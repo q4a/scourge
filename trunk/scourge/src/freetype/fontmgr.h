@@ -1,5 +1,5 @@
 /***************************************************************************
-                          fontmgr.h  -  description
+                    fontmgr.h  -  Freetype font rendering
                              -------------------
     begin                : Tue Jan 23 2007
     copyright            : (C) 2003 by Gabor Torok

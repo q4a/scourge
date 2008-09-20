@@ -1,5 +1,5 @@
 /***************************************************************************
-                          rpgitem.cpp  -  description
+                         rpgitem.cpp  -  Item class
                              -------------------
     begin                : Sun Sep 28 2003
     copyright            : (C) 2003 by Gabor Torok

@@ -1,6 +1,6 @@
 
 /***************************************************************************
-                          statemodexpirationevent.cpp  -  description
+          statemodexpirationevent.cpp  -  State mod expiration event
                              -------------------
     begin                : Thu Apr 8 2004
     copyright            : (C) 2004 by Gabor Torok

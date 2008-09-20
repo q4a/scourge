@@ -11,7 +11,7 @@
 
 
 /***************************************************************************
-                          md2shape.h  -  description
+      md2shape.h  -  Extends AnimatedShape with MD2 specific functions
                              -------------------
     begin                : Fri Oct 3 2003
     copyright            : (C) 2003 by Gabor Torok

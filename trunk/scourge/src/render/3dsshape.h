@@ -5,7 +5,7 @@
 
 
 /***************************************************************************
-                          3dsshape.h  -  description
+                  3dsshape.h  -  .3ds loader for static shapes
                              -------------------
     begin                : Fri Oct 3 2003
     copyright            : (C) 2003 by Gabor Torok

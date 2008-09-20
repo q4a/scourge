@@ -1,5 +1,5 @@
 /***************************************************************************
-                          virtualshape.cpp  -  description
+           virtualshape.cpp  -  Extends GLShape for virtual shapes
                              -------------------
     begin                : Tue Jul 8 2008
     copyright            : (C) 2008 by Gabor Torok

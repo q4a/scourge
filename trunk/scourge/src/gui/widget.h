@@ -1,5 +1,5 @@
 /***************************************************************************
-                          widget.h  -  description
+                       widget.h  -  Widget base class
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          scrollinglabel.h  -  description
+            scrollinglabel.h  -  Scrollable multiline text widget
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok

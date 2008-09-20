@@ -1,5 +1,5 @@
 /***************************************************************************
-                          animatedshape.cpp  -  description
+        animatedshape.cpp  -  Additional functions for animated shapes
                              -------------------
     begin                : Thu Aug 31 2006
     copyright            : (C) 2006 by Gabor Torok

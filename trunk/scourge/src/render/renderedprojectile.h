@@ -1,5 +1,5 @@
 /***************************************************************************
-                          renderedprojectile.h  -  description
+          renderedprojectile.h  -  Class representing a projectile
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

@@ -1,6 +1,6 @@
 
 /***************************************************************************
-                          gltorch.cpp  -  description
+                 gllocator.cpp  -  Locator dot for the minimap
                              -------------------
     begin                : Sat Sep 20 2003
     copyright            : (C) 2003 by Gabor Torok

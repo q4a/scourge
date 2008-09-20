@@ -1,5 +1,5 @@
 /***************************************************************************
-                          projectilerenderer.cpp  -  description
+         projectilerenderer.cpp  -  Well, it renders projectiles :-)
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

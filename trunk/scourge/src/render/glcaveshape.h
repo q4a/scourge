@@ -1,5 +1,5 @@
 /***************************************************************************
-                          glshape.h  -  description
+            glcaveshape.h  -  extends GLShape for rendering caves
                              -------------------
     begin                : Thu Jul 10 2003
     copyright            : (C) 2003 by Gabor Torok

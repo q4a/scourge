@@ -1,5 +1,5 @@
 /***************************************************************************
-                          zipfile.h  -  description
+                     zipfile.h  -  Zipfile I/O via zlib
                              -------------------
     begin                : Sat Jul 29, 2005
     copyright            : (C) 2005 by Gabor Torok

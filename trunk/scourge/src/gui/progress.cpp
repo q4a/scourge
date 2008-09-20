@@ -1,5 +1,5 @@
 /***************************************************************************
-                          progress.cpp  -  description
+                      progress.cpp  -  Progress bar widget
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

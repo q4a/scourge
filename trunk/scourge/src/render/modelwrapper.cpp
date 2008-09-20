@@ -1,5 +1,5 @@
 /***************************************************************************
-                          modelwrapper.cpp  -  description
+             modelwrapper.cpp  -  Generic character model loader
                              -------------------
     begin                : Thu Aug 31 2006
     copyright            : (C) 2006 by Gabor Torok

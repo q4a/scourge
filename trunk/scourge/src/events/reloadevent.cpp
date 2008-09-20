@@ -1,5 +1,5 @@
 /***************************************************************************
-                          reloadevent.cpp  -  description
+                  reloadevent.cpp  -  "Reload" event
                              -------------------
     begin                : Thu Apr 8 2004
     copyright            : (C) 2004 by Daroth-U

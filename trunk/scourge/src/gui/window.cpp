@@ -1,5 +1,5 @@
 /***************************************************************************
-                          window.cpp  -  description
+                        window.cpp  -  Window manager
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok

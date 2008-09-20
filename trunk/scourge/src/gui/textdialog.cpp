@@ -1,5 +1,5 @@
 /***************************************************************************
-                          textdialog.cpp  -  description
+            textdialog.cpp  -  Simple text dialog with "Ok" button
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok

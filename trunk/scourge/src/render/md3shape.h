@@ -1,5 +1,5 @@
 /***************************************************************************
-                          md3shape.h  -  description
+       md3shape.h  -  Extends AnimatedShape with MD3 specific functions
                              -------------------
     begin                : Thu Aug 31 2006
     copyright            : (C) 2006 by Gabor Torok
