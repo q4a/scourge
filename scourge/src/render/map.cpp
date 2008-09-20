@@ -1020,18 +1020,6 @@ void Map::preDraw() {
 	
 	  initMapView();
 	
-//	  // find cursor location on map (for named shapes)
-//	  if( adapter->isMouseIsMovingOverMap() ) {
-//	  	cerr << "." << SDL_GetTicks() << endl;
-//	    // save mapChanged (fixes bug where map won't draw initially)
-//	    bool b = mapChanged;
-//	    selectMode = true;    
-//	    // careful this calls draw() again!    
-//	    getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
-//	    selectMode = false;
-//	    mapChanged = b;
-//	  }
-	  
 	  frustum->CalculateFrustum();
 	  if( lightMapChanged && helper->isLightMapEnabled() ) configureLightMap();
 	  if( !currentEffectsMap.empty() ) removeCurrentEffects();
@@ -1040,8 +1028,8 @@ void Map::preDraw() {
 	    //if( settings->isPlayerEnabled() && adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
 	    int csx, cex, csy, cey;
 	    setupShapes(false, false, &csx, &cex, &csy, &cey);
-	    int shapeCount = laterCount + otherCount + damageCount + stencilCount;
-#ifdef SHOW_FPS    
+#ifdef SHOW_FPS
+//	    int shapeCount = laterCount + otherCount + damageCount + stencilCount;    
 //	    if( settings->isPlayerEnabled() ) {
 //	      snprintf(mapDebugStr, DEBUG_SIZE, "c=%d,%d p=%d,%d chunks=(%s %d out of %d) x:%d-%d y:%d-%d shapes=%d trap=%d zoom=%.2f xrot=%.2f yrot=%.2f zrot=%.2f", 
 //				   cursorFlatMapX, cursorFlatMapY + 1,
@@ -1095,42 +1083,10 @@ void Map::draw() {
   	
   	if( adapter->isMouseIsMovingOverMap() ) {
   		// find the map coordinates (must be done after drawing is complete)
-  		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ );
-  		
   		Location *pos = NULL;
-  		if( cursorMapX >= 0 && cursorMapX < MAP_WIDTH &&
-  				cursorMapY >= 0 && cursorMapY < MAP_DEPTH &&
-  				cursorMapZ >= 0 && cursorMapZ < MAP_VIEW_HEIGHT ) {
-  			pos = getLocation( cursorMapX, cursorMapY, cursorMapZ );
-  		}
-  		char tmp[255];
-  		if(pos && pos->shape) {
-  			snprintf(tmp, 255, "%s %d,%d,%d-%d,%d,%d", pos->shape->getName(), pos->x, pos->y, pos->z, pos->x + pos->shape->getWidth(), pos->y - pos->shape->getDepth(), pos->z + pos->shape->getHeight() );
-  		} else {
-  			tmp[0] = 0;
-  		}
-      snprintf( mapDebugStr, DEBUG_SIZE, "pos=%d,%d,%d pos=%s", cursorMapX, cursorMapY, cursorMapZ, tmp );  
-	    adapter->setDebugStr(mapDebugStr);  		
-  		
-  		
-//  		cerr << "pos=" << cursorMapX << "," << cursorMapY << "," << cursorMapZ << 
-//  						" location=" << ( pos && pos->shape ? pos->shape->getName() : "null" ) << endl;
-  		if( pos ) {
-  			cursorMapX = pos->x;
-  			cursorMapY = pos->y;
-  			cursorMapZ = pos->z;
-  			
-//  			cerr << "\tpos=" << cursorMapX << "," << ( pos->y - pos->shape->getDepth() - 1 ) << "," << cursorMapZ << "-" << 
-//  				( pos->x + pos->shape->getWidth() ) << "," <<
-//  				 pos->y << "," <<
-//  				 ( pos->z - pos->shape->getHeight() ) <<
-//  				endl;
-  			
-  		}
-  		
+  		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ, &pos );
   		cursorFlatMapX = cursorMapX;
   		cursorFlatMapY = cursorMapY;
-
 			cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
 			cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
 	  }		
@@ -1720,10 +1676,10 @@ void Map::drawProjectiles() {
 }
 
 void Map::doDrawShape(DrawLater *later, int effect) {
-	doDrawShape(later->xpos, later->ypos, later->zpos, later->shape, later->name, effect, later);
+	doDrawShape(later->xpos, later->ypos, later->zpos, later->shape, effect, later);
 }
 
-void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuint name, int effect, DrawLater *later) {
+void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, int effect, DrawLater *later) {
 
   // fog test for creatures
   if( helper && later && later->creature && !adapter->isInMovieMode() && !helper->isVisible( later->pos->x, later->pos->y, later->creature->getShape() ) ) {
@@ -1827,8 +1783,6 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
 
   glDisable( GL_CULL_FACE );
 
-  // encode this shape's map location in its name
-  glPushName( name );
   if(shape) {
     ((GLShape*)shape)->setCameraRot(xrot, yrot, zrot);
     ((GLShape*)shape)->setCameraPos(xpos, ypos, zpos, xpos2, ypos2, zpos2);
@@ -1962,7 +1916,6 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, GLuin
   	glEnable( GL_TEXTURE_2D );
   }
   
-	glPopName();
 	glPopMatrix();
 
 	// slow on mac os X
@@ -4233,7 +4186,7 @@ void Map::getMapXYAtScreenXY(Uint16 x, Uint16 y, Uint16 *mapx, Uint16 *mapy) {
 #define RAY_PICK_MIN_T 0.6f
 #define RAY_PICK_MAX_T 0.8f
 #define RAY_PICK_STEP_COUNT 30
-void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
+void Map::getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Location **pos ) {
   double win_x = static_cast<double>( adapter->getMouseX() );
   double win_y = static_cast<double>( adapter->getScreenHeight() - adapter->getMouseY() );
 
@@ -4241,17 +4194,17 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
   double modelview[16];
   GLint viewport[4];
 
-  glGetDoublev(GL_PROJECTION_MATRIX, projection);
-  glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-  glGetIntegerv(GL_VIEWPORT, viewport);
+  glGetDoublev( GL_PROJECTION_MATRIX, projection );
+  glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+  glGetIntegerv( GL_VIEWPORT, viewport );
 
   // the near plane's mouse coordinates
   double px, py, pz;
-  int res = gluUnProject(win_x, win_y, 0.0f, modelview, projection, viewport, &px, &py, &pz);
+  int res = gluUnProject( win_x, win_y, 0.0f, modelview, projection, viewport, &px, &py, &pz );
   
   // the far plane's mouse coordinates
   double qx, qy, qz;
-  res = gluUnProject(win_x, win_y, 1.0f, modelview, projection, viewport, &qx, &qy, &qz);
+  res = gluUnProject( win_x, win_y, 1.0f, modelview, projection, viewport, &qx, &qy, &qz );
 
   // Take steps along the pick-ray. A t of 0 to 1 is the line segment from the near to the far plane.
   //cerr << "------------------------------" << endl;
@@ -4263,186 +4216,29 @@ void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
 		
 		*mapx = getX() + (Uint16)( toint( ox / (float)MUL ) );
     *mapy = getY() + (Uint16)( toint( oy / (float)MUL ) ) + 2;
-    *mapz = (Uint16)( toint( oz / (float)MUL ) );
-    if( *mapz > 0 ) (*mapz)--;
+    float gh = ( *mapx < MAP_WIDTH && *mapy < MAP_DEPTH ? getGroundHeight( ( *mapx ) / OUTDOORS_STEP, ( *mapy ) / OUTDOORS_STEP ) : 0 );
+    *mapz = (Uint16)( toint( ( oz / (float)MUL ) - gh ) );
+    //if( *mapz > 0 ) (*mapz)--;
     
     //cerr << "\t" << t << " - " << *mapx << "," << *mapy << "," << *mapz << "," << endl;
     
+    // hit something
     if( *mapx < MAP_WIDTH && *mapy < MAP_DEPTH && *mapz < MAP_VIEW_HEIGHT ) {
-    	Location *pos = getLocation( *mapx, *mapy, *mapz );
-    	if( pos ) {
+    	*pos = getLocation( *mapx, *mapy, *mapz );
+    	if( *pos && ( (*pos)->creature || (*pos)->item || (*pos)->shape->isInteractive() ) ) {
+    		*mapx = (*pos)->x;
+    		*mapy = (*pos)->y;
+    		*mapz = (*pos)->z;
     		return;
     	}
     }
-  }	
-}
-
-/*
-void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
-  double obj_x, obj_y, obj_z;
-  double win_x = static_cast<double>( adapter->getMouseX() );
-  double win_y = static_cast<double>( adapter->getScreenHeight() - adapter->getMouseY() );
-
-  // get the depth buffer value
-  float win_z;
-  glReadPixels( static_cast<int>(win_x), static_cast<int>(win_y), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &win_z );
-
-  double projection[16];
-  double modelview[16];
-  GLint viewport[4];
-
-  glGetDoublev(GL_PROJECTION_MATRIX, projection);
-  glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-  glGetIntegerv(GL_VIEWPORT, viewport);
-
-  int res = gluUnProject(win_x, win_y, win_z, modelview, projection, viewport, &obj_x, &obj_y, &obj_z);
-
-  if(res) {
-    *mapx = getX() + (Uint16)( toint( obj_x / (float)MUL ) );
-    *mapy = getY() + (Uint16)( toint( obj_y / (float)MUL ) ) + 2;
-    *mapz = (Uint16)( toint( obj_z / (float)MUL ) );
-    if( *mapz > 0 ) (*mapz)--;
+ 		*pos = NULL;
     
-    if( *mapx >= 0 && *mapx < MAP_WIDTH &&
-    		*mapy >= 0 && *mapy < MAP_DEPTH &&
-    		*mapz >= 0 && *mapz < MAP_VIEW_HEIGHT ) {
-    	Location *pos = getLocation( *mapx, *mapy, *mapz );
-			if( !pos ) {
-				// get a second point on the same pick ray
-				double obj_near_x, obj_near_y, obj_near_z;			
-				gluUnProject(win_x, win_y, 0, modelview, projection, viewport, &obj_near_x, &obj_near_y, &obj_near_z);
-				
-				// take a step "into" the shape along the pick-ray
-				double ox = obj_x - 0.1f * ( obj_near_x - obj_x );
-				double oy = obj_y - 0.1f * ( obj_near_y - obj_y );
-				double oz = obj_z - 0.1f * ( obj_near_z - obj_z );
-				
-				// recompute map coordinates
-				*mapx = getX() + (Uint16)( toint( ox / (float)MUL ) );
-		    *mapy = getY() + (Uint16)( toint( oy / (float)MUL ) ) + 2;
-		    *mapz = (Uint16)( toint( oz / (float)MUL ) );
-		    if( *mapz > 0 ) (*mapz)--;
-				
-				
-			}
+    // hit the floor
+    if( *mapz == 0 ) {
+    	return;
     }
-    	
-  	debugX = *mapx;
-    debugY = *mapy;
-    debugZ = *mapz;    	
-    
-  } else {
-    *mapx = *mapy = MAP_WIDTH + 1;
   }	
-}
-*/
-
-/*
-void Map::getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz) {
-  static Uint16 lastMapX, lastMapY, lastMapZ;
-  static Uint16 lastX, lastY;
-
-  // only do this if the mouse has moved some (optimization)
-  if( ( ( lastX - adapter->getMouseX() == 0 ) && ( lastY - adapter->getMouseY() == 0 ) ) || isMapMoving() ) {
-    *mapx = lastMapX;
-    *mapy = lastMapY;
-    *mapz = lastMapZ;
-    return;
-  }
-
-  GLuint buffer[512];
-  GLint  hits, viewport[4];
-
-  glGetIntegerv(GL_VIEWPORT, viewport);
-  glSelectBuffer(512, buffer);
-  glRenderMode(GL_SELECT);
-  glInitNames();
-  glPushName(0);
-
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
-  gluPickMatrix(adapter->getMouseX(), 
-                viewport[3] - adapter->getMouseY(), 
-                1, 1, viewport);
-  adapter->setView();
-
-  glMatrixMode(GL_MODELVIEW);
-  //levelMap->selectMode = true;
-  draw();
-  //levelMap->selectMode = false;
-
-  glFlush();
-  hits = glRenderMode(GL_RENDER);
-  //cerr << "hits=" << hits << endl;
-  if(hits > 0) {           // If There Were More Than 0 Hits
-    int choose = buffer[4];         // Make Our Selection The First Object
-    int depth = buffer[1];          // Store How Far Away It Is
-
-    for(int loop = 0; loop < hits; loop++) {   // Loop Through All The Detected Hits
-
-			//fprintf(stderr, "\tloop=%d 0=%u 1=%u 2=%u 3=%u 4=%u \n", loop, 
-							//buffer[loop*5+0], buffer[loop*5+1], buffer[loop*5+2], 
-							//buffer[loop*5+3],  buffer[loop*5+4]);
-			if(buffer[loop*5+4] > 0) {
-        decodeName(buffer[loop*5+4], mapx, mapy, mapz);
-      }
-
-      // If This Object Is Closer To Us Than The One We Have Selected
-      if(buffer[loop*5+1] < GLuint(depth)) {
-        choose = buffer[loop*5+4];        // Select The Closer Object
-        depth = buffer[loop*5+1];     // Store How Far Away It Is
-      }
-    }
-
-    //cerr << "choose=" << choose << endl;
-    decodeName(choose, mapx, mapy, mapz);
-  } else {
-    *mapx = *mapy = MAP_WIDTH + 1;
-  }
-
-  // Restore the projection matrix
-  glMatrixMode(GL_PROJECTION);
-  glPopMatrix();
-
-  // Go back to modelview for normal rendering
-  glMatrixMode(GL_MODELVIEW);
-
-//  debugX = *mapx;
-//  debugY = *mapy;
-//  debugZ = *mapz;
-
-  lastMapX = *mapx;
-  lastMapY = *mapy;
-  lastMapZ = *mapz;
-  lastX = adapter->getMouseX();
-  lastY = adapter->getMouseY();
-}
-*/
-void Map::decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz) {
-    char *s;
-    if(name > 0) {
-        // decode the encoded map coordinates
-        *mapz = name / (MAP_WIDTH * MAP_DEPTH);
-        if(*mapz > 0)
-            name %= (MAP_WIDTH * MAP_DEPTH);
-        *mapx = name % MAP_WIDTH;
-        *mapy = name / MAP_WIDTH;
-        Location *pos = getPosition(*mapx, *mapy, 0);
-        if(pos) {
-            if(pos->shape) s = pos->shape->getName();
-            else if(pos->item && pos->item->getShape()) {
-                s = pos->item->getShape()->getName();
-            }
-        } else s = NULL;
-		//        fprintf(stderr, "\tmap coordinates: pos null=%s shape null=%s item null=%s %u,%u,%u name=%s\n", 
-		//                (pos ? "no" : "yes"), (pos && pos->shape ? "no" : "yes"), (pos && pos->item ? "no" : "yes"), *mapx, *mapy, *mapz, (s ? s : "NULL"));
-    } else {
-        *mapx = MAP_WIDTH + 1;
-        *mapy = 0;
-        *mapz = 0;
-		//        fprintf(stderr, "\t---\n");
-    }
 }
 
 /**
