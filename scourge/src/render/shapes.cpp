@@ -783,6 +783,8 @@ GLuint Shapes::loadGLTextureBGRA(int w, int h, GLubyte *image, bool isSprite) {
   /* Typical Texture Generation Using Data From The Bitmap */
   glBindTexture( GL_TEXTURE_2D, texture[0] );
 
+	// glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glscale );
+	// glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glscale );  
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_NEAREST );
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
@@ -1201,14 +1203,18 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   
   glGenTextures(1, tex);    
   glBindTexture(GL_TEXTURE_2D, tex[ 0 ]); 
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);        
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_NEAREST );
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  
+  /**
+   * This method should not create mip-maps. They don't work well with alpha-tested textures and cause flickering.
+   */
+  //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_NEAREST : GL_LINEAR_MIPMAP_NEAREST );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
-  glTexImage2D( GL_TEXTURE_2D, 0, GL_BGRA, textureSizeW, textureSizeH, 0,
-                GL_RGBA, GL_UNSIGNED_BYTE, texInMem );                       
-  if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_BGRA, GL_UNSIGNED_BYTE, texInMem);
+  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, texInMem );                       
+  //if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_BGRA, GL_UNSIGNED_BYTE, texInMem);
 
   glDisable( GL_CULL_FACE );
   glDisable( GL_DEPTH_TEST );	  
