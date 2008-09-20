@@ -545,8 +545,7 @@ private:
   bool isOnScreen(Uint16 mapx, Uint16 mapy, Uint16 mapz);
   void doDrawShape(DrawLater *later, int effect=0);
   void doDrawShape(float xpos2, float ypos2, float zpos2, 
-           Shape *shape, GLuint name, int effect=0,
-           DrawLater *later=NULL);
+           Shape *shape, int effect=0, DrawLater *later=NULL);
   void findOccludedSides( DrawLater *later, bool *sides );
 
   bool isDoor(int x, int y);
@@ -821,8 +820,7 @@ protected:
                    int shapeCount );
 
   void getMapXYAtScreenXY( Uint16 *mapx, Uint16 *mapy );
-  void getMapXYZAtScreenXY(Uint16 *mapx, Uint16 *mapy, Uint16 *mapz);
-  void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
+  void getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Location **pos );
 
   bool isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, std::map< std::string, bool > *cache, GLdouble *mm, GLdouble *pm, GLint *vp );
 
