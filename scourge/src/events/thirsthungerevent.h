@@ -1,5 +1,5 @@
 /***************************************************************************
-                          thirsthungerevent.h  -  description
+                 thirsthungerevent.h  -  Thirst/hunger event
                              -------------------
     begin                : Thu Apr 8 2004
     copyright            : (C) 2004 by Daroth-U

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          file.h  -  description
+                    file.h  -  Platform agnostic file I/O
                              -------------------
     begin                : Sat Jul 29, 2005
     copyright            : (C) 2005 by Gabor Torok

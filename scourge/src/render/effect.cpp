@@ -1,5 +1,5 @@
 /***************************************************************************
-                          effect.cpp  -  description
+                      effect.cpp  -  particle effects
                              -------------------
     begin                : Thu Jul 10 2003
     copyright            : (C) 2003 by Gabor Torok

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          character.h  -  description
+           character.h  -  Class describing a playable character
                              -------------------
     begin                : Mon Jul 7 2003
     copyright            : (C) 2003 by Gabor Torok

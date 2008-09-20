@@ -1,5 +1,5 @@
 /***************************************************************************
-                          mapadapter.cpp  -  description
+               mapadapter.cpp  -  Map related utility interface
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

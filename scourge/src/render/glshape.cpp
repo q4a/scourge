@@ -1,5 +1,5 @@
 /***************************************************************************
-                          glshape.cpp  -  description
+               glshape.cpp  -  Class representing any 3D shape
                              -------------------
     begin                : Thu Jul 10 2003
     copyright            : (C) 2003 by Gabor Torok

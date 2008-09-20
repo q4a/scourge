@@ -1,5 +1,5 @@
 /***************************************************************************
-                          rpg.h  -  description
+                  rpg.h  -  Classes for character attributes
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

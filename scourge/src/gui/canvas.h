@@ -1,5 +1,5 @@
 /***************************************************************************
-                          canvas.h  -  description
+                         canvas.h  -  Canvas widget
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok

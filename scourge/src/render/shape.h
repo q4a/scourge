@@ -1,5 +1,5 @@
 /***************************************************************************
-                          shape.h  -  description
+                    shape.h  -  Class for static 3D shapes
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

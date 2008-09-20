@@ -1,5 +1,5 @@
 /***************************************************************************
-                          gltorch.h  -  description
+                          gltorch.h  -  Torch shape
                              -------------------
     begin                : Sat Sep 20 2003
     copyright            : (C) 2003 by Gabor Torok

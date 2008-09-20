@@ -1,5 +1,5 @@
 /***************************************************************************
-                          maprenderhelper.cpp  -  description
+      maprenderhelper.cpp  -  Helper functions for specific level types
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok

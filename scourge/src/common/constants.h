@@ -1,5 +1,5 @@
 /***************************************************************************
-                          common/constants.h  -  description
+            constants.h  -  Global constants and utility functions
                              -------------------
     begin                : Sun Oct 12 2003
     copyright            : (C) 2003 by Gabor Torok

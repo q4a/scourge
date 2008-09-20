@@ -1,5 +1,5 @@
 /***************************************************************************
-                          glshape.h  -  description
+                       frustum.h  -  Frustum culling
                              -------------------
     begin                : Thu Jul 10 2003
     copyright            : (C) 2003 by Gabor Torok

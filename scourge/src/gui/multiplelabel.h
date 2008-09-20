@@ -1,5 +1,5 @@
 /***************************************************************************
-                      multiplelabel.h  -  description
+                multiplelabel.h  -  Multi-state button widget
                              -------------------
     begin                : Thu Mar 09 2004
     copyright            : (C) 2004 by Daroth-U

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          label.h  -  description
+                           label.h  -  Label widget
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok

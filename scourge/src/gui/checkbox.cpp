@@ -1,5 +1,5 @@
 /***************************************************************************
-                      checkbox.h  -  description
+                      checkbox.cpp  -  Checkbox widget
                              -------------------
     begin                : Sat Mar 13 2004
     copyright            : (C) 2004 by Daroth-U

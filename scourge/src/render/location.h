@@ -1,6 +1,6 @@
 
 /***************************************************************************
-                          location.h  -  description
+                   location.h  -  Location on a level map
                              -------------------
     begin                : Mon May 12 2003
     copyright            : (C) 2003 by Gabor Torok

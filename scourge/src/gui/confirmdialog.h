@@ -1,5 +1,5 @@
 /***************************************************************************
-                          confirmdialog.h  -  description
+               confirmdialog.h  -  Yes/No confirmation dialog
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok

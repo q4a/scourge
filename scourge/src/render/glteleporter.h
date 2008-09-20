@@ -1,5 +1,5 @@
 /***************************************************************************
-                          glteleporter.h  -  description
+                     glteleporter.h  -  Teleporter shape
                              -------------------
     begin                : Thu Jul 10 2003
     copyright            : (C) 2003 by Gabor Torok

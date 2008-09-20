@@ -1,5 +1,5 @@
 /***************************************************************************
-                          monster.h  -  description
+                       monster.h  -  NPC/monster class
                              -------------------
     begin                : Mon Jul 7 2003
     copyright            : (C) 2003 by Gabor Torok

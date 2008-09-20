@@ -1,5 +1,5 @@
 /***************************************************************************
-                          character.cpp  -  description
+           character.cpp  -  Class describing a playable character
                              -------------------
     begin                : Mon Jul 7 2003
     copyright            : (C) 2003 by Gabor Torok

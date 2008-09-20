@@ -1,5 +1,5 @@
 /***************************************************************************
-                          draganddrop.cpp  -  description
+                    draganddrop.cpp  -  Drag & Drop handler
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok

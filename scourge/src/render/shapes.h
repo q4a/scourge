@@ -1,5 +1,5 @@
 /***************************************************************************
-                          shapes.h  -  description
+                      shapes.h  -  Shape/texture loader
                              -------------------
     begin                : Sat Jun 14 2003
     copyright            : (C) 2003 by Gabor Torok

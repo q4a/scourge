@@ -1,5 +1,5 @@
 /***************************************************************************
-                          cardcontainer.cpp  -  description
+                  cardcontainer.cpp  -  Tab container widget
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok
