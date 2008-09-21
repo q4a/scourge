@@ -179,12 +179,12 @@ extern PFNGLMULTITEXCOORD2IARBPROC glSDLMultiTexCoord2iARB;
   1995/06/30 found on Google groups
  */
 
-/*
- * Helpful macros in swapping bytes etc...
- * This union lets  us map just about any common datatype onto the
- * specified value, so we can use direct array access to do byte, word,
- * or long swapping.
- */
+
+/** Helpful macros in swapping bytes etc...
+  * This union lets  us map just about any common datatype onto the
+  * specified value, so we can use direct array access to do byte, word,
+  * or long swapping.
+  */
 union NetValue
 {
   short s;  /* Straight 2-byte short */
@@ -250,7 +250,7 @@ typedef union NetValue NetValue;
  ((long *)&dst)[0] = _t.gL[1]; ((long *)&dst)[1] = _t.gL[0]; \
 }
 
-// GL color in float
+/// GL color in float
 class Color {
  public:
   float r, g, b, a;
@@ -278,6 +278,7 @@ class Color {
   *@author Gabor Torok
   */
 
+/// A particle.
 struct ParticleStruct {
   GLfloat x, y, z, startZ;
   GLint height;
@@ -302,6 +303,7 @@ struct ParticleStruct {
 
 #define MIN_DISTANCE 1.0f
 
+/// A progress display.
 class StatusReport {
 public:
   StatusReport() {
@@ -311,6 +313,7 @@ public:
   virtual void updateStatus( int status, int maxStatus, const char *message=NULL ) = 0;
 };
 
+/// Encapsulates most of the game's constants, and a few utility functions.
 class Constants {
 private:
 	static int maxMissionId;
@@ -742,6 +745,7 @@ private:
 
 std::string GetDataPath(const std::string& file);
 
+/// A 3D point with texture coordinates and color.
 class CVectorTex
 {
 public:
@@ -749,13 +753,14 @@ public:
 		GLuint tex;
 };
 
+/// A 3D point with texture coordinates.
 class CVector5
 {
 public:
     float x, y, z, u, v;
 };
 
-// This is our 3D point class.  This will be used to store the vertices of our model.
+/// This is our 3D point class.  This will be used to store the vertices of our model.
 class CVector3
 {
 public:
@@ -789,7 +794,7 @@ public:
 	CVector3(const CVector3& copy);
 };
 
-// This is our 2D point class.  This will be used to store the UV coordinates.
+/// This is our 2D point class.  This will be used to store the UV coordinates.
 class CVector2
 {
 public:
@@ -804,24 +809,29 @@ public:
 // the same as the rest of the model loaders on our site so that we could eventually
 // use a base class in the future for a library.
 //
+
 typedef unsigned char BYTE;
 #define MAX_TEXTURES 100								// The maximum amount of textures to load
 
 // -=K=-: to avoid using mallocs lets keep Texture data in vectors
 typedef std::vector<GLubyte> TextureData;
 
-// This is our face structure.  This is is used for indexing into the vertex
-// and texture coordinate arrays.  From this information we know which vertices
-// from our vertex array go to which face, along with the correct texture coordinates.
+/// A triangle face for use in arrays.
+
+/// This is our face structure.  This is is used for indexing into the vertex
+/// and texture coordinate arrays.  From this information we know which vertices
+/// from our vertex array go to which face, along with the correct texture coordinates.
 struct tFace
 {
 	int vertIndex[3];			// indicies for the verts that make up this triangle
 	int coordIndex[3];			// indicies for the tex coords to texture this face
 };
 
-// This holds the information for a material.  It may be a texture map of a color.
-// Some of these are not used, but I left them because you will want to eventually
-// read in the UV tile ratio and the UV tile offset for some models.
+/// A material (for character models)
+
+/// This holds the information for a material.  It may be a texture map of a color.
+/// Some of these are not used, but I left them because you will want to eventually
+/// read in the UV tile ratio and the UV tile offset for some models.
 struct tMaterialInfo
 {
 	char  strName[255];			// The texture name
@@ -834,10 +844,12 @@ struct tMaterialInfo
 	float vOffset;				// v offset of texture	(Currently not used)
 } ;
 
-// This holds all the information for our model/scene.
-// You should eventually turn into a robust class that
-// has loading/drawing/querying functions like:
-// LoadModel(...); DrawObject(...); DrawModel(...); DestroyModel(...);
+/// An inanimate 3D object.
+
+/// This holds all the information for our model/scene.
+/// You should eventually turn into a robust class that
+/// has loading/drawing/querying functions like:
+/// LoadModel(...); DrawObject(...); DrawModel(...); DestroyModel(...);
 struct t3DObject
 {
 	int  numOfVerts;			// The number of verts in the model
@@ -854,9 +866,10 @@ struct t3DObject
 	tFace *pFaces;				// The faces information of the object
 };
 
+/// A character model animation.
 
-// This holds our information for each animation of the Quake model.
-// A STL vector list of this structure is created in our t3DModel structure below.
+/// This holds our information for each animation of the Quake model.
+/// A STL vector list of this structure is created in our t3DModel structure below.
 struct tAnimationInfo
 {
     char strName[255];          // This stores the name of the animation (Jump, Pain, etc..)
@@ -868,9 +881,11 @@ struct tAnimationInfo
 
 typedef float vect3d[3];
 
-// We added 4 new variables to our model structure.  These will help us handle
-// the current animation.  As of now, the current animation will continue to loop
-// from it's start from to it's end frame until we right click and change animations.
+/// A 3D character model.
+
+/// We added 4 new variables to our model structure.  These will help us handle
+/// the current animation.  As of now, the current animation will continue to loop
+/// from it's start from to it's end frame until we right click and change animations.
 struct t3DModel
 {
     int numOfObjects;                   // The number of objects in the model

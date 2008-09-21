@@ -34,6 +34,7 @@ class Button;
 class Label;
 class Window;
 
+/// A simple dialog that displays text and yes/no buttons.
 class ConfirmDialog {
 private:
 	int mode;

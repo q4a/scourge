@@ -30,6 +30,7 @@
 class SDLHandler;
 class Label;
 
+/// A multistate push button widget that displays different text for each state.
 class MultipleLabel : public Widget {
  private:
   int x2, y2;

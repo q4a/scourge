@@ -26,6 +26,7 @@ class GLShape;
   *@author Gabor Torok
   */
 
+/// A torch 3D shape.
 class GLTorch : public GLShape  {
 private:
   GLuint flameTex;

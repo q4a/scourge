@@ -31,7 +31,8 @@
 /**
   *@author Gabor Torok
   */
-	
+
+/// A single text glyph.	
 class GlyphInfo {
 public:
 	int minx, maxx;
@@ -46,6 +47,7 @@ public:
 	~GlyphInfo();
 };
 	
+/// The Freetype font manager.
 class FontMgr {
 private:  
 	static int initCounter;

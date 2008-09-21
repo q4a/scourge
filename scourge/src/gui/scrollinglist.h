@@ -28,6 +28,7 @@
   *@author Gabor Torok
   */
 
+/// A flexible list widget that can also display icons next to entries.
 class ScrollingList : public Widget {
  protected:
 	std::vector<std::string> list;

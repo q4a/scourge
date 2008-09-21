@@ -47,6 +47,7 @@ enum {
 	MAX_OUTDOOR_LAYER
 };
 
+/// It's a trap!
 class Trap {
 public:
 	SDL_Rect r;
@@ -56,6 +57,7 @@ public:
 	std::vector<CVector2*> hull;
 };
 
+/// General map settings.
 class MapSettings {
 
 public:
@@ -74,6 +76,7 @@ public:
   virtual float getMaxYRot() = 0;
 };
 
+/// General map settings (ingame).
 class GameMapSettings : public MapSettings {
 
 public:
@@ -89,6 +92,7 @@ public:
   float getMaxYRot();
 };
 
+/// General map settings for the map editor.
 class EditorMapSettings : public MapSettings {
 
 public:
@@ -104,6 +108,7 @@ public:
   float getMaxYRot();
 };
 
+/// Stores the state and contents of a level map location for later drawing.
 struct DrawLater {
   float xpos, ypos, zpos;
   Shape *shape;
@@ -124,6 +129,7 @@ struct DrawLater {
 
 class Map;
 
+/// Utilities for cleaning up on level maps.
 class MapMemoryManager {
   private:
     std::vector<Location*> unused;
@@ -146,6 +152,7 @@ class MapMemoryManager {
 };  
 
 
+/// A nice, fluffy rug.
 struct Rug {
 	GLuint texture;
 	bool isHorizontal;
@@ -159,6 +166,8 @@ struct Rug {
 /**
  *@author Gabor Torok
  */
+
+/// This huge class contains a level map.
 class Map {
 private:
 	MapAdapter *adapter;

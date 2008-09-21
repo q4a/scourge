@@ -42,6 +42,7 @@ class Shapes;
 typedef unsigned char BYTE;
 
 
+/// Holds info about how a tree sways in the wind.
 class WindInfo {
 private:
 	float windAmp;
@@ -83,6 +84,7 @@ public:
 	inline float getYMod() { return ymod; }
 };
 
+/// A .3ds based shape.
 class C3DSShape : public GLShape  {
 
 private:

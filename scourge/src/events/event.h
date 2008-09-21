@@ -28,7 +28,8 @@
  
 class Date;
 class Creature;
-    
+
+/// A scheduled ingame event (hunger, thirst, potion expires etc.) 
 class Event  {
 
 private:

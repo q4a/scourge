@@ -29,6 +29,7 @@ class RenderedProjectile;
 class Preferences;
 class Shapes;
 
+/// Renders projectiles.
 class ProjectileRenderer {
 private:
 	std::set<RenderedProjectile*> proj;
@@ -56,6 +57,7 @@ public:
 	}
 };
 
+/// Renders projectiles using a 3D shape.
 class ShapeProjectileRenderer : public ProjectileRenderer {
 private:
   Shape *shape;
@@ -76,6 +78,7 @@ public:
 
 #define MAX_EFFECT_COUNT 100
 
+/// Renders projectiles with special effects.
 class EffectProjectileRenderer : public ProjectileRenderer {
 private:
 	std::vector<Effect*> effects;

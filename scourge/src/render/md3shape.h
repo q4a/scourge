@@ -31,7 +31,8 @@
 
 class ModelLoader;
 
-// this has to be unique per model instance (so we can reuse md3-s)
+/// Info about a shape's current animation status.
+/// This has to be unique per model instance (so we can reuse md3-s).
 struct AnimInfo {
 	int currentAnim;					// The current index into pAnimations list 
 	int currentFrame;					// The current frame of the current animation 
@@ -40,6 +41,7 @@ struct AnimInfo {
 	float lastTime;						// This stores the last time that was stored
 };
 
+/// .md3 specific rendering functions
 class MD3Shape : public AnimatedShape  {
 
 // uncomment to show debug shapes

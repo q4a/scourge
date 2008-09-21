@@ -1,5 +1,5 @@
 /***************************************************************************
-            scrollinglabel.h  -  Scrollable multiline text widget
+         scrollinglabel.h  -  Scrollable multiline hypertext widget
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -29,7 +29,7 @@
   *@author Gabor Torok
   */
 
-
+/// Looks whether a hyperlink is in view or clicked on.
 class WordClickedHandler {
 public:
 	WordClickedHandler() {
@@ -42,6 +42,7 @@ public:
   virtual void showingWord( char *word ) = 0;
 };
 
+/// A text box widget with clickable hyperlinks.
 class ScrollingLabel : public Widget {
  protected:
    static const int TEXT_SIZE = 3000;

@@ -26,6 +26,7 @@
 
 class SDLHandler;
 
+/// Base class for GUI widgets.
 class Widget {
  protected:
   int x, y, w, h;

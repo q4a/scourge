@@ -30,6 +30,7 @@ class Shapes;
 class GLShape;
 class Map;
 
+/// A single particle.
 class Particle {
 public:
 	Particle();
@@ -52,6 +53,7 @@ public:
   void reset();
 };
 
+/// A special particle effect, like spells and teleporters.
 class Effect {
 private:  
   Map *levelMap;

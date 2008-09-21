@@ -26,6 +26,7 @@
 
 class SkillGroup;
 
+/// Inits the RPG framework.
 class Rpg {
 private:
 	static std::vector<char*> firstSyl;
@@ -42,6 +43,7 @@ protected:
 	static void initStateMods( ConfigLang *config );
 };
 
+/// An attribute or skill.
 class Skill {
 private:
 	char name[80];
@@ -137,6 +139,7 @@ public:
 	static std::vector<Skill*> skills;	
 };
 
+/// A group of related skills.
 class SkillGroup {
 private:
 	char name[80];
@@ -172,6 +175,7 @@ public:
 	static std::vector<SkillGroup*> groups;
 };
 
+/// A state mod.
 class StateMod {
 private:
 	char name[80];

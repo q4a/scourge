@@ -31,6 +31,7 @@ class ConfigLang;
   *@author Gabor Torok
   */
 
+/// A non-player character or monster
 class Monster  {
 
  private:

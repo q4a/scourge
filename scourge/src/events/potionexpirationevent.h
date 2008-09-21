@@ -30,6 +30,7 @@ class Creature;
 class Session;
 class Item;
   
+/// "Potion expires" event
 class PotionExpirationEvent : public Event  {
 
 private:

@@ -29,6 +29,7 @@ class Button;
 class Label;
 class Checkbox;
 
+/// A widget that contains groups of other widgets, which are switched between using tabs.
 class CardContainer {
  protected:
   static const int MAX_CARDS = 20;

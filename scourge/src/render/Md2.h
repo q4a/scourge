@@ -27,7 +27,7 @@
 
 // TODO :  Load different skins
 
-// Md2 header information 
+/// Md2 header information.
 struct tMd2Header
 { 
    int magic;                   // This is used to identify the file
@@ -50,14 +50,14 @@ struct tMd2Header
 };
 
 
-// This is used to store the vertices that are read in for the current frame
+/// This is used to store the vertices that are read in for the current frame.
 struct tMd2AliasTriangle
 {
    byte vertex[3];
    byte lightNormalIndex;
 };
 
-// This stores the animation scale, translation and name information for a frame, plus verts
+/// This stores the animation scale, translation and name information for a frame, plus verts.
 struct tMd2AliasFrame
 {
    float scale[3];
@@ -97,7 +97,7 @@ enum md2_action{
     MD2_CREATURE_ACTION_COUNT
 };
 
-
+/// Loader for .md2 files.
 class CLoadMD2
 {
  

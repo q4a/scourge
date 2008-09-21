@@ -25,6 +25,7 @@
 
 class WindInfo;
 
+/// Contains a static 3D shape.
 class Shape {
 
 private:

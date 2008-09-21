@@ -28,7 +28,7 @@
 
 #define MAX_BUFF_SIZE 1024
 
-
+/// A custom file object.
 class File {
 private:
   FILE *fp;

@@ -26,6 +26,7 @@ class Shape;
 class Map;
 class RenderedCreature;
 
+/// The "unvisited" fog and fog of war
 class Fog {
 private:
 	float lampRadiusSquared;

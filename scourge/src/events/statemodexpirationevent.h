@@ -30,6 +30,7 @@
 class Creature;
 class Session;
   
+/// "State mod expires" event
 class StateModExpirationEvent : public Event  {
 
 private:

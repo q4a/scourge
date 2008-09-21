@@ -39,6 +39,7 @@ class TextField;
 
 #define TITLE_HEIGHT 21
 
+/// Looks whether a window is closing.
 class WindowListener {
 public:
 	WindowListener() {
@@ -50,6 +51,7 @@ public:
 	virtual void windowClosing() = 0;
 };
 
+/// A GUI window.
 class Window : public Widget {
  private:
   // the image is 510x270

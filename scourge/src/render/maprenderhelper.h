@@ -64,6 +64,7 @@ public:
 	inline virtual bool drawShadow() { return true; }
 };
 
+/// Helper functions for caves.
 class CaveRenderHelper : public MapRenderHelper {
 private:
   Fog *fog;
@@ -83,6 +84,7 @@ public:
 	virtual void saveHelper( FogInfo *fogInfo );
 };
 
+/// Helper functions for outdoors.
 class OutdoorRenderHelper : public CaveRenderHelper {
 public:
   OutdoorRenderHelper();
@@ -94,6 +96,7 @@ public:
   inline virtual bool isIndoors() { return false; }
 };
 
+/// Outdoor render helper (debug version).
 class DebugOutdoorRenderHelper : public MapRenderHelper {
 public:
   DebugOutdoorRenderHelper();
@@ -103,6 +106,7 @@ public:
 
 #define OVERLAY_SIZE 16
 
+/// Helper functions for dungeons.
 class RoomRenderHelper : public MapRenderHelper {
 private:  
   GLuint overlay_tex;

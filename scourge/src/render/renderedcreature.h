@@ -35,6 +35,7 @@ class Map;
  * A creature rendered on the map.
  */
 
+/// A map position where a damage counter is displayed.
 struct DamagePos {
   int damage;
   float pos;
@@ -43,6 +44,7 @@ struct DamagePos {
 
 #define MAX_RECENT_DAMAGE 100
 
+/// A creature rendered on the map.
 class RenderedCreature {
 protected:
   GLfloat x, y, z;

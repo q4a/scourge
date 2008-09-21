@@ -33,7 +33,8 @@ class Shape;
   *@author Gabor Torok
   */
 
-// This will allow us to create an object to keep track of our frustum
+/// This will allow us to create an object to keep track of our frustum.
+/// The frustum is used to determine which objects are in our view.
 class CFrustum {
 
 public:

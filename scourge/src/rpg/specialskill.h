@@ -28,6 +28,7 @@
   *@author Gabor Torok
   */
 
+/// A special ability (the type you can put into quickspell slots).
 class SpecialSkill : public Storable {
 private:
   const char *name;

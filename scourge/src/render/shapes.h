@@ -34,6 +34,7 @@ class GLTorch;
 class Shapes;
 class Session;
 
+/// Defines where a static shape can occur.
 struct Occurs {
 	bool rooms_only;
 	int max_count;
@@ -42,8 +43,8 @@ struct Occurs {
 	char theme[255];
 };
 
-// temporary information when constructing shapes from a file
-// -=K=-: turning that struct into class, (complex members, so its class, not PODS)  
+/// Temporary information when constructing shapes from a file.
+/// -=K=-: turning that struct into class, (complex members, so its class, not PODS)  
 class ShapeValues {
 public:
   // char textureGroupIndex[100]; // index or theme ref.
@@ -86,6 +87,7 @@ public:
 	bool usesAlpha;
 };
 
+/// Basic info about a character model.
 struct CharacterModelInfo {
   char model_name[100];
   char skin_name[300]; 
@@ -93,6 +95,8 @@ struct CharacterModelInfo {
 };
 
 #define MAX_TEXTURE_COUNT 10
+
+/// A level theme (custom textures for walls and floors).
 class WallTheme {
  public:
 

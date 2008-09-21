@@ -26,7 +26,7 @@ class GLShape;
 /**
  * @author Gabor Torok
  * 
- * A creature rendered on the map.
+ * An item rendered on the map.
  */
 
 class RenderedItem {
