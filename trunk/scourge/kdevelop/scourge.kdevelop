@@ -2,7 +2,7 @@
 <kdevelop>
   <general>
     <author>Gabor Torok</author>
-    <email/>
+    <email></email>
     <version>1</version>
     <projectmanagement>KDevCustomProject</projectmanagement>
     <primarylanguage>C</primarylanguage>
@@ -10,19 +10,19 @@
     <projectname>scourge</projectname>
     <projectdirectory>../..</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description>S.C.O.U.R.G.E. is a cross platform, open source rogue-like game in the fine tradition of NetHack and Moria It sports a graphical front-end, similar to glHack or the Falcon's eye.The design of the 3D UI is an attempt at the best of both worlds from old to new: It lets you rotate the view, zoom in/out, view special effects, etc with the feeling of the old-school isometric games like Exult or Woodward.</description>
+    <defaultencoding></defaultencoding>
     <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevcustomproject>
     <run>
       <directoryradio>executable</directoryradio>
       <mainprogram>scourge/scourge</mainprogram>
-      <programargs/>
-      <globaldebugarguments/>
+      <programargs></programargs>
+      <globaldebugarguments></globaldebugarguments>
       <globalcwd>scourge</globalcwd>
       <useglobalprogram>false</useglobalprogram>
-      <terminal>false</terminal>
+      <terminal>true</terminal>
       <autocompile>false</autocompile>
       <autoinstall>false</autoinstall>
       <autokdesu>true</autokdesu>
@@ -45,7 +45,11 @@
       <filetype>CMakeLists.txt</filetype>
       <filetype>*.nut</filetype>
     </filetypes>
-    <blacklist/>
+    <blacklist>
+      <path>latex</path>
+      <path>html</path>
+      <path>xml</path>
+    </blacklist>
     <build>
       <buildtool>other</buildtool>
       <builddir>scourge</builddir>
@@ -53,7 +57,7 @@
     <other>
       <prio>0</prio>
       <otherbin>autoreconf -i &amp;&amp; ./configure &amp;&amp; scons</otherbin>
-      <defaulttarget/>
+      <defaulttarget></defaulttarget>
       <otheroptions>debug=true</otheroptions>
       <selectedenvironment>default</selectedenvironment>
       <environments>
@@ -65,9 +69,9 @@
       <numberofjobs>0</numberofjobs>
       <prio>0</prio>
       <dontact>false</dontact>
-      <makebin/>
-      <defaulttarget/>
-      <makeoptions/>
+      <makebin></makebin>
+      <defaulttarget></defaulttarget>
+      <makeoptions></makeoptions>
       <selectedenvironment>default</selectedenvironment>
       <environments>
         <default/>
@@ -76,11 +80,11 @@
   </kdevcustomproject>
   <kdevdebugger>
     <general>
-      <dbgshell/>
+      <dbgshell></dbgshell>
       <gdbpath>/usr/bin/gdb</gdbpath>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -154,10 +158,10 @@
       <used>false</used>
       <version>3</version>
       <includestyle>3</includestyle>
-      <root>/usr/share/qt3</root>
+      <root>/usr/lib/qt3</root>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake></qmake>
-      <designer></designer>
+      <qmake>/usr/lib/qt3/bin/qmake</qmake>
+      <designer>/usr/bin/designer-qt3</designer>
       <designerpluginpaths/>
     </qt>
     <codecompletion>
@@ -184,7 +188,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -206,17 +210,15 @@
   </cppsupportpart>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem/>
-      <docurl/>
-      <usermanualurl/>
+      <docsystem></docsystem>
+      <docurl></docurl>
+      <usermanualurl></usermanualurl>
     </projectdoc>
   </kdevdocumentation>
   <ctagspart>
     <customArguments>-R</customArguments>
     <customTagfilePath>scourge/kdevelop/tags</customTagfilePath>
-    <activeTagsFiles>
-      <file>scourge/kdevelop/tags</file>
-    </activeTagsFiles>
+    <activeTagsFiles/>
   </ctagspart>
   <kdevfileview>
     <groups>
