@@ -41,6 +41,7 @@
 #include "render.h"
 #include "animatedshape.h"
 
+/// .md2 specific rendering functions
 class MD2Shape : public AnimatedShape  {
 
 // uncomment to show debug shapes

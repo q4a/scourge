@@ -26,6 +26,7 @@
   *@author Gabor Torok
   */
 
+/// A slider widget which lets you select a value by dragging.
 class Slider : public Widget {
  private:
   int x2;

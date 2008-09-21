@@ -27,6 +27,7 @@ class GLShape;
   *@author Gabor Torok
   */
 
+/// A locator dot (as seen around the minimap).
 class GLLocator : public GLShape  {
 private:
   

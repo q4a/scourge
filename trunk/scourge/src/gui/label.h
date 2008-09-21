@@ -28,6 +28,7 @@
 
 class SDLHandler;
 
+/// A text label widget with word wrap support.
 class Label : public Widget {
  private:
 	 char text[3000];

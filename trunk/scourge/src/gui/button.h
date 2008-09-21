@@ -25,6 +25,7 @@
   *@author Gabor Torok
   */
 
+/// A push button widget.
 class Button : public Widget {
  private:
   int x2, y2;

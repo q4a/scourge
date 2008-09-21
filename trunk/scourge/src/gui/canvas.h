@@ -27,6 +27,7 @@
   *@author Gabor Torok
   */
 
+/// A simple canvas widget (we can draw stuff on it etc.).
 class Canvas : public Widget {
  private:
   WidgetView *view;
@@ -70,6 +71,7 @@ class Canvas : public Widget {
 	void cancelDrag();
 };
 
+/// A widget displaying an image.
 class ImageCanvas : public Canvas, WidgetView {
 private:
 	GLuint image;

@@ -30,6 +30,7 @@
 class Creature;
 class Scourge;
   
+/// Thirst and hunger event.
 class ThirstHungerEvent : public Event  {
 
 private:

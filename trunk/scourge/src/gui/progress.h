@@ -23,6 +23,8 @@
 /**
   *@author Gabor Torok
   */
+
+/// A progress bar widget.
 class Progress	{								
  private:
   ScourgeGui *scourgeGui;

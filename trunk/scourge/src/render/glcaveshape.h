@@ -24,6 +24,7 @@
 
 class Shapes;
 
+/// A triangle face in a cave.
 class CaveFace {
 public:
 	int p1, p2, p3; // point indexes
@@ -56,6 +57,7 @@ public:
 	}
 };
 
+/// Creates the shapes (walls, lava, floor etc.) that are used inside caves
 class GLCaveShape : public GLShape {
 private:
   int mode;

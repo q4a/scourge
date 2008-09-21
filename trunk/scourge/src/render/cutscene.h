@@ -22,6 +22,7 @@
 
 class Session;
 
+/// A "movie" object that controls camera movement, widescreen effect etc.
 class Cutscene {
 private:
   Session *session;

@@ -30,6 +30,7 @@
 class RenderedCreature;
 class ProjectileRenderer;
 
+/// A projectile rendered on the map.
 class RenderedProjectile {
 protected:
   static std::map<RenderedCreature*, std::vector<RenderedProjectile*>*> projectiles;

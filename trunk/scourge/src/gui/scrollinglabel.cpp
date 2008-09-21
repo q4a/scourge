@@ -1,5 +1,5 @@
 /***************************************************************************
-           scrollinglabel.cpp  -  Scrollable multiline text widget
+        scrollinglabel.cpp  -  Scrollable multiline hypertext widget
                              -------------------
     begin                : Thu Aug 28 2003
     copyright            : (C) 2003 by Gabor Torok

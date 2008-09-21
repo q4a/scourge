@@ -31,12 +31,15 @@ class Effect;
 /**
   *@author Gabor Torok
   */
+
+/// A flat surface making up one side of a wall etc.
 struct Surface {
 	float vertices[4][3];
   //	float matrix[9];
   //	float s_dist, t_dist;
 };
 
+/// Nearly every 3D object in the game is a GLShape.
 class GLShape : public Shape  {
 protected:
   /**

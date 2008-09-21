@@ -32,7 +32,8 @@
 class RpgItem;
 class Skill;
 class SkillGroup;
-  
+
+/// A playable character.
 class Character  {
 private:
   char *name;

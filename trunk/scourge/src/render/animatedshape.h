@@ -31,6 +31,7 @@
 
 class ModelWrapper;
 
+/// An animated shape (character model).
 class AnimatedShape : public GLShape  {
 
 // uncomment to show debug shapes

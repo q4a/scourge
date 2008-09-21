@@ -25,6 +25,7 @@ class Shape;
 class Location;
 class RenderedItem;
 
+/// Utility functions for level maps.
 class MapAdapter {
 public:
   MapAdapter();

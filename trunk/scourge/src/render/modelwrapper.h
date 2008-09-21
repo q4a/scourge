@@ -27,6 +27,7 @@ class AnimatedShape;
 class GLShape;
 class ModelLoader;
 
+/// Loads and sets up a character model.
 class ModelWrapper  {
 private:
 	t3DModel *md2;
@@ -48,6 +49,7 @@ public:
 	
 };
 
+/// Basic info for .md2 models.
 struct Md2ModelInfo {
 	ModelWrapper wrapper;
   char name[100];
@@ -55,6 +57,7 @@ struct Md2ModelInfo {
   float scale;	
 };
 
+/// Manages the character model pool.
 class ModelLoader {
 private:
 	bool headless;

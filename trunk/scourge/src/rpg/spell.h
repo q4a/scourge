@@ -24,6 +24,7 @@
 #include "../storable.h"
 #include "../util.h"
 
+/// A dice. You know at least one belongs in every RPG.
 class Dice {
 private:
 	enum { S_SIZE = 80 };
@@ -53,6 +54,7 @@ public:
 
 class MagicSchool;
 
+/// A magical spell.
 class Spell : public Storable {
  private:
   char *name;
@@ -130,8 +132,7 @@ class Spell : public Storable {
 
 };
 
-
-
+/// A magic school.
 class MagicSchool {
  private:
   char *name;

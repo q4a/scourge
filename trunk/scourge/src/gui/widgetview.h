@@ -25,6 +25,7 @@
   *@author Gabor Torok
   */
 
+/// This class lets you draw a widget.
 class WidgetView {
  public: 
   WidgetView();

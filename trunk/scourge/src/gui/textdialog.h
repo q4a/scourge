@@ -34,6 +34,7 @@ class Button;
 class ScrollingLabel;
 class Window;
 
+/// A simple dialog box that displays text and an "Ok" button.
 class TextDialog {
 private:
 	int mode;

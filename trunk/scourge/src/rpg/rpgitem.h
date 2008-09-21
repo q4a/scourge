@@ -39,6 +39,7 @@ class Spell;
 class RpgItem;
 class GameAdapter;
 
+/// Describes a type or class of items.
 struct ItemType {
   char name[40];
   bool isWeapon, isArmor, isRandom, isRanged, hasSpell, isEnchantable;
@@ -58,12 +59,14 @@ enum {
 	INFLUENCE_LIMIT_COUNT
 };
 
+/// A special weapon bonus etc.
 struct WeaponInfluence {
 	int limit;
 	char type;
 	float base;
 };
 
+/// Describes a specific "base item".
 class RpgItem {
 private:
 

@@ -27,6 +27,7 @@
 
 class Session;
   
+/// "Reload" event
 class ReloadEvent : public Event  {
 
 private:

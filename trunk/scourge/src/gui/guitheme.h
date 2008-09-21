@@ -26,6 +26,7 @@
   *@author Gabor Torok
   */
 
+/// A single element of a GUI theme.
 class ThemeElement {
  public:
   char textureFileName[40], north[40], south[40], east[40], west[40];
@@ -42,6 +43,7 @@ class ThemeElement {
   void loadTextures( ScourgeGui *scourgeGui );
 };
 
+/// A theme for the game's GUI.
 class GuiTheme {
 private:
   char *name;

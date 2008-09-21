@@ -37,13 +37,13 @@
 #define OBJECT_UV           0x4140          // The UV texture coordinates
 
 
-// Here is our structure for our 3DS indicies (since .3DS stores 4 unsigned shorts)
+/// Here is our structure for our 3DS indicies (since .3DS stores 4 unsigned shorts).
 struct tIndices {
 
     unsigned short a, b, c, bVisible;       // This will hold point1, 2, and 3 index's into the vertex array plus a visible flag
 };
 
-// This holds the chunk info
+/// This holds the chunk info.
 struct tChunk
 {
     unsigned short int ID;                  // The chunk's ID       
@@ -51,7 +51,7 @@ struct tChunk
     unsigned int bytesRead;                 // The amount of bytes read within that chunk
 };
 
-// This class handles all of the loading code
+/// This class handles all of the .3ds loading code.
 class CLoad3DS
 {
 public:

@@ -59,6 +59,7 @@ PFNGLBUFFERDATAARBPROC glBufferDataARB = NULL;					// VBO Data Loading Procedure
 PFNGLDELETEBUFFERSARBPROC glDeleteBuffersARB = NULL;			// VBO Deletion Procedure
 
 
+/// An OpenGL vertex buffer object.
 class VBO {
 private:
 	static bool initialized;

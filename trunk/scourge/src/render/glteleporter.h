@@ -25,6 +25,7 @@
   *@author Gabor Torok
   */
 
+/// A teleporter 3D shape.
 class GLTeleporter : public GLShape  {
  private:
   static const int MAX_STARS = 20;

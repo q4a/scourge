@@ -28,6 +28,7 @@
   *@author Gabor Torok
   */
 
+/// A single-line text input widget.
 class TextField : public  Widget {
 private:
   int numChars;

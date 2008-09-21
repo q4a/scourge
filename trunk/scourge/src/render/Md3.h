@@ -81,7 +81,7 @@ typedef enum
 // these Quake3 structures to our own structures in Md3.cpp so that we are not dependant
 // on their model data structures.  You can do what ever you want, but I like mine :P :)
 
-// This holds the header information that is read in at the beginning of the file
+/// This holds the header information that is read in at the beginning of the file.
 struct tMd3Header
 { 
 	char	fileID[4];					// This stores the file ID - Must be "IDP3"
@@ -97,7 +97,7 @@ struct tMd3Header
 	int		fileSize;					// This stores the file size
 };
 
-// This structure is used to read in the mesh data for the .md3 models
+/// This structure is used to read in the mesh data for the .md3 models.
 struct tMd3MeshInfo
 {
 	char	meshID[4];					// This stores the mesh ID (We don't care)
@@ -113,8 +113,8 @@ struct tMd3MeshInfo
 	int		meshSize;					// This stores the total mesh size
 };
 
-// This is our tag structure for the .MD3 file format.  These are used link other
-// models to and the rotate and transate the child models of that model.
+/// This is our tag structure for the .MD3 file format.  These are used link other
+/// models to and the rotate and translate the child models of that model.
 struct tMd3Tag
 {
 	char		strName[64];			// This stores the name of the tag (I.E. "tag_torso")
@@ -122,7 +122,7 @@ struct tMd3Tag
 	float		rotation[3][3];			// This stores the 3x3 rotation matrix for this frame
 };
 
-// This stores the bone information (useless as far as I can see...)
+/// This stores the bone information (useless as far as I can see...).
 struct tMd3Bone
 {
 	float	mins[3];					// This is the min (x, y, z) value for the bone
@@ -133,7 +133,7 @@ struct tMd3Bone
 };
 
 
-// This stores the normals and vertex indices 
+/// This stores the normals and vertex indices.
 struct tMd3Triangle
 {
    signed short	 vertex[3];				// The vertex for this face (scale down by 64.0f)
@@ -141,28 +141,28 @@ struct tMd3Triangle
 };
 
 
-// This stores the indices into the vertex and texture coordinate arrays
+/// This stores the indices into the vertex and texture coordinate arrays.
 struct tMd3Face
 {
    int vertexIndices[3];				
 };
 
 
-// This stores UV coordinates
+/// This stores UV coordinates.
 struct tMd3TexCoord
 {
    float textureCoord[2];
 };
 
 
-// This stores a skin name (We don't use this, just the name of the model to get the texture)
+/// This stores a skin name (We don't use this, just the name of the model to get the texture).
 struct tMd3Skin 
 {
 	char strName[68];
 };
 
 
-// This class handles all of the main loading code
+/// This class handles all of the main .md3 loading code.
 class CLoadMD3
 {
 
@@ -208,7 +208,7 @@ private:
 	tMd3Bone				*m_pBones;			// This stores the bone data (not used)
 };
 
-// This is our model class that we use to load and draw and free the Quake3 characters
+/// This is our model class that we use to load and draw and free the Quake3 characters.
 class CModelMD3
 {
 
@@ -294,7 +294,7 @@ private:
 };
 
 
-// This is our quaternion class
+/// This is our quaternion class.
 class CQuaternion 
 {
 
