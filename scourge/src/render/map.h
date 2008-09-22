@@ -386,7 +386,6 @@ private:
 
   int toggleLightMap();
 
-  bool selectMode;
   bool floorOnly;
 
   inline void setSelectedDropTarget(Location *loc) { selectedDropTarget = loc; }
@@ -691,7 +690,6 @@ private:
 	inline std::set<Location*> *getTeleporters() { return &teleporters; }
 
 protected:
-	void drawSelectMode();
 	void drawIndoors();
 	void drawOutdoors();
 	void drawEffects();
