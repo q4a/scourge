@@ -23,7 +23,7 @@
 #include <vector>
 #include "shapes.h"
 
-#define MUL 16
+#define MUL 16.0f
 
 class WallTheme;
 class Effect;

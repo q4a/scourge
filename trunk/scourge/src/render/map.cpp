@@ -132,7 +132,6 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
   zoomIn = zoomOut = false;
   x = y = 0;
   mapx = mapy = 0.0f;
-  selectMode = false;
   floorOnly = false;
   useShadow = false;
   //alwaysCenter = true;
@@ -309,7 +308,6 @@ void Map::reset() {
   zoomIn = zoomOut = false;
   x = y = 0;
   mapx = mapy = 0.0f;
-  selectMode = false;
   floorOnly = false;
   useShadow = false;
   //alwaysCenter = true;
@@ -976,58 +974,57 @@ float Map::getZoomPercent() {
 }
 
 void Map::preDraw() {
-	if( !selectMode ) {
-		if( refreshGroundPos ) {
-			createGroundMap();
-			refreshGroundPos = false;
-		}
-	
-	  // must move map before calling getMapXY(Z)AtScreenXY!
-	  if( move ) moveMap( move );
-	
-	  if(zoomIn) {
-	    if(zoom <= settings->getMinZoomIn() ) {
-	      zoomOut = false;
-	    } else {
-	      zoom /= ZOOM_DELTA;
-	      mapChanged = true;
-	    }
-	  } else if(zoomOut) {
-	    if(zoom >= settings->getMaxZoomOut() ) {
-	      zoomOut = false;
-	    } else {
-	      zoom *= ZOOM_DELTA; 
-	    }
-	  }
-	
-	  float adjust = static_cast<float>(viewWidth) / 800.0f;
-	  xpos = static_cast<int>(static_cast<float>(viewWidth) / zoom / 2.0f / adjust);
-	  ypos = static_cast<int>(static_cast<float>(viewHeight) / zoom / 2.0f / adjust);
-	
-	  float oldrot;
-	
-	  oldrot = yrot;
-	  if(yRotating != 0) yrot+=yRotating;
-	  if(yrot >= settings->getMaxYRot() || yrot < 0) yrot = oldrot;
-	
-	  oldrot = zrot;
-	  if(zRotating != 0) {
-	    resortShapes = true;
-	    zrot+=zRotating;
-	  }
-	  if(zrot >= 360) zrot -= 360;
-	  if(zrot < 0) zrot = 360 + zrot;
-	
-	  initMapView();
-	
-	  frustum->CalculateFrustum();
-	  if( lightMapChanged && helper->isLightMapEnabled() ) configureLightMap();
-	  if( !currentEffectsMap.empty() ) removeCurrentEffects();
-	  // populate the shape arrays
-	  if( mapChanged ) {
-	    //if( settings->isPlayerEnabled() && adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
-	    int csx, cex, csy, cey;
-	    setupShapes(false, false, &csx, &cex, &csy, &cey);
+	if( refreshGroundPos ) {
+		createGroundMap();
+		refreshGroundPos = false;
+	}
+
+  // must move map before calling getMapXY(Z)AtScreenXY!
+  if( move ) moveMap( move );
+
+  if(zoomIn) {
+    if(zoom <= settings->getMinZoomIn() ) {
+      zoomOut = false;
+    } else {
+      zoom /= ZOOM_DELTA;
+      mapChanged = true;
+    }
+  } else if(zoomOut) {
+    if(zoom >= settings->getMaxZoomOut() ) {
+      zoomOut = false;
+    } else {
+      zoom *= ZOOM_DELTA; 
+    }
+  }
+
+  float adjust = static_cast<float>(viewWidth) / 800.0f;
+  xpos = static_cast<int>(static_cast<float>(viewWidth) / zoom / 2.0f / adjust);
+  ypos = static_cast<int>(static_cast<float>(viewHeight) / zoom / 2.0f / adjust);
+
+  float oldrot;
+
+  oldrot = yrot;
+  if(yRotating != 0) yrot+=yRotating;
+  if(yrot >= settings->getMaxYRot() || yrot < 0) yrot = oldrot;
+
+  oldrot = zrot;
+  if(zRotating != 0) {
+    resortShapes = true;
+    zrot+=zRotating;
+  }
+  if(zrot >= 360) zrot -= 360;
+  if(zrot < 0) zrot = 360 + zrot;
+
+  initMapView();
+
+  frustum->CalculateFrustum();
+  if( lightMapChanged && helper->isLightMapEnabled() ) configureLightMap();
+  if( !currentEffectsMap.empty() ) removeCurrentEffects();
+  // populate the shape arrays
+  if( mapChanged ) {
+    //if( settings->isPlayerEnabled() && adapter->getPlayer() ) adapter->getPlayer()->setMapChanged();
+    int csx, cex, csy, cey;
+    setupShapes(false, false, &csx, &cex, &csy, &cey);
 #ifdef SHOW_FPS
 //	    int shapeCount = laterCount + otherCount + damageCount + stencilCount;    
 //	    if( settings->isPlayerEnabled() ) {
@@ -1047,8 +1044,7 @@ void Map::preDraw() {
 //	    }
 //	    adapter->setDebugStr(mapDebugStr);
 #endif
-	  }
-	}
+  }
 }
 
 void Map::postDraw() {
@@ -1070,42 +1066,27 @@ void Map::postDraw() {
 }
 
 void Map::draw() {
-  if( selectMode ) {
-    drawSelectMode();
-  } else {  
-  	if( helper->isIndoors() ) {
-  		drawIndoors();
-  	} else {
-  		drawOutdoors();
-  	}
-  	
-  	drawProjectiles();
-  	
-  	if( adapter->isMouseIsMovingOverMap() ) {
-  		// find the map coordinates (must be done after drawing is complete)
-  		Location *pos = NULL;
-  		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ, &pos );
-  		cursorFlatMapX = cursorMapX;
-  		cursorFlatMapY = cursorMapY;
-			cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
-			cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
-	  }		
-  }
+	if( helper->isIndoors() ) {
+		drawIndoors();
+	} else {
+		drawOutdoors();
+	}
+	
+	drawProjectiles();
+	
+	if( adapter->isMouseIsMovingOverMap() ) {
+		// find the map coordinates (must be done after drawing is complete)
+		Location *pos = NULL;
+		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ, &pos );
+		cursorFlatMapX = cursorMapX;
+		cursorFlatMapY = cursorMapY;
+		cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+  }		
 
-  if( settings->isGridShowing() && gridEnabled ) 
+  if( settings->isGridShowing() && gridEnabled ) { 
   	willDrawGrid();
-}
-
-void Map::drawSelectMode() {
-	for(int i = 0; i < otherCount; i++) {
-		if( other[i].pos->shape->isInteractive() || other[i].pos->item || other[i].pos->creature ) doDrawShape(&other[i]);
-	}
-	for(int i = 0; i < laterCount; i++) {
-		if( later[i].pos->shape->isInteractive() || later[i].pos->item || later[i].pos->creature ) doDrawShape(&later[i]);
-	}
-	for(int i = 0; i < stencilCount; i++) 
-	  if( isSecretDoor( stencil[i].pos ) || isDoor( stencil[i].shape ) || stencil[i].pos->shape->isInteractive() || stencil[i].pos->item || stencil[i].pos->creature )
-	      doDrawShape(&stencil[i]);	
+  }
 }
 
 void Map::drawIndoors() {
@@ -1686,10 +1667,6 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, int e
     return;
   }
   
-  if( shape->isRoof() && selectMode ) {
-  	return;
-  }
-
   if(shape) ((GLShape*)shape)->useShadow = useShadow;
 
   // slow on mac os X:
