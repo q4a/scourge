@@ -45,6 +45,7 @@ class Label;
 class Button;
 class Storable;
 
+/// The widget showing equipped inventory, available spells and special abilities.
 class Equip : public DragAndDropHandler, WidgetView {
 private:
 	Creature *creature;
@@ -104,6 +105,7 @@ protected:
 	void useSpecialSkill( SpecialSkill *ss );
 };
 
+/// The widget displaying info about the current mission.
 class MissionInfoUI {
 private:
 	PcUi *pcUi;

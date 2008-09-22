@@ -27,6 +27,7 @@
 
 class Widget;
 
+/// Handles events triggered by SDL or a GUI widget.
 class SDLEventHandler {
 public: 
 	SDLEventHandler();

@@ -38,12 +38,14 @@ using namespace std;
 
 #define MAX_SAVEGAME_COUNT 100
 
+/// Information about a savegame.
 class SavegameInfo {
 public:
 	std::string path;
 	std::string title;
 };
 
+/// The save/load game dialog.
 class SavegameDialog {
 private:
   Scourge *scourge;

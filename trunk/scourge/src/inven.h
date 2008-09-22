@@ -39,6 +39,7 @@ class Item;
 class PcUi;
 class Storable;
 
+/// Inventory widget and manager.
 class Inven : public DragAndDropHandler, WidgetView {
 private:
 	Creature *creature;

@@ -122,7 +122,7 @@ class FormationLeaderPathManager : PathManager{
 };
 
 /**
- *
+ * Path manager for characters following the path leader.
  */
 class FormationFollowerPathManager : PathManager{
   protected:

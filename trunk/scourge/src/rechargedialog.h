@@ -31,6 +31,7 @@ class Widget;
 class Item;
 class PcUi;
 
+/// The "recharge item" dialog.
 class RechargeDialog : public ItemRenderer {
 private:
   Scourge *scourge;

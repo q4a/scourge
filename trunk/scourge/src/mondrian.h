@@ -46,6 +46,7 @@ class MapRenderHelper;
   *@author 
   */
 
+/// Dungeon specific map generator.
 class MondrianGenerator : public TerrainGenerator {
 private:
 

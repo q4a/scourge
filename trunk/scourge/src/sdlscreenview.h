@@ -24,6 +24,7 @@
   *@author Gabor Torok
   */
 
+/// Manages screen updates during loading screens.
 class SDLScreenView {
 private:
 	char updateEvent[300];

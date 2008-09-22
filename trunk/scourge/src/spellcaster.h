@@ -36,6 +36,7 @@ class ProjectileRenderer;
 class Spell;
 class SpecialSkill;
 
+/// Holds a spell that is currently being cast.
 class SpellCaster {
  private:
   Battle *battle;

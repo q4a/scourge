@@ -26,6 +26,7 @@ class ConfigValue;
 class ConfigNode;
 class ConfigLang;
 
+/// An individual configuration value.
 class ConfigValue {
 public:
 	enum TYPE {
@@ -49,6 +50,7 @@ public:
 	inline std::string getOriginal() { return original; }
 };
 
+/// A config node (cfg files can contain multiple blocks and levels).
 class ConfigNode {
 private:
 	ConfigNode *super;
@@ -128,6 +130,7 @@ protected:
 
 };
 
+/// Configuration file parser.
 class ConfigLang {
 private:
   std::map<std::string, ConfigNode*> idmap;

@@ -1,5 +1,5 @@
 /***************************************************************************
-                 pceditor.h  -  The create character window
+                pceditor.h  -  The "recruit character" window
                              -------------------
     begin                : Tue Jul 10 2006
     copyright            : (C) 2006 by Gabor Torok
@@ -36,6 +36,7 @@ class Canvas;
 class CharacterInfoUI;
 class Character;
 
+/// The window that lets you edit a character's skills before recruiting him/her.
 class PcEditor : public WidgetView {
 private:
 	Window *win;

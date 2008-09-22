@@ -31,6 +31,7 @@ class Widget;
 class Item;
 class PcUi;
 
+/// The trade dialog.
 class TradeDialog : public ItemRenderer {
 private:
   Scourge *scourge;

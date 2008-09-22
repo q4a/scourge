@@ -58,6 +58,7 @@ class TerrainGenerator;
  *@author Gabor Torok
  */
 
+/// Manages a game session (basically the whole "real" ingame part).
 class Session {
 private:
 	Sound *sound;

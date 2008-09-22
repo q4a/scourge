@@ -107,6 +107,7 @@ class SpecialSkill;
 #define CREATURES_DIR "creatures/"
 #define MAX_BATTLE_COUNT 200
 
+/// Holds the state of a door that is currently opening or closing.
 struct MovingDoor {
   float x, y, startAngle, endAngle, angleDelta, startX, startY, endX, endY;
   Shape *oldDoorShape, *newDoorShape;

@@ -1,5 +1,5 @@
 /***************************************************************************
-                 pceditor.cpp  -  The create character window
+               pceditor.cpp  -  The "recruit character" window
                              -------------------
     begin                : Tue Jul 10 2006
     copyright            : (C) 2006 by Gabor Torok

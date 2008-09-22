@@ -41,6 +41,7 @@ class NpcInfoInfo;
   *@author Gabor Torok
   */
 	
+/// An NPC conversation flow.
 class NpcConversation {
   public:
 
@@ -77,6 +78,7 @@ public:
   inline std::set<int> *getSubtype() { return &subtype; }
 };
 
+/// An individual mission, consisting of several maps, objectives etc.
 class Mission {
 private:
 	int chapter;
@@ -263,6 +265,7 @@ private:
 };                                  
 
 
+/// A template for random missions.
 class MissionTemplate {
 private:
   Board *board;
@@ -292,7 +295,7 @@ private:
 
 
 
-
+/// Manages the list of missions, and the advancement of the story line.
 class Board	{								
  private:
   Session *session;

@@ -30,6 +30,7 @@ class Widget;
 class Button;
 class TextField;
 
+/// The donate window.
 class DonateDialog {
 private:
   Scourge *scourge;

@@ -48,6 +48,7 @@ public:
   }
 };
 
+/// Draws the entire ingame view.
 class ScourgeView : public SDLScreenView {
 private:
   Scourge *scourge;

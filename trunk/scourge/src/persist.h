@@ -30,11 +30,13 @@ class File;
 // -=K=- since this header declares classes it is  C++ header
 // C++ does "typedef struct StructName StructName;" implicitly
 
+/// Dice info for savegame.
 struct DiceInfo {
   Uint32 version;
   Uint32 count, sides, mod;
 };
 
+/// Item info for savegame.
 struct ItemInfo {
   Uint32 version;
   Uint32 level;
@@ -59,6 +61,7 @@ struct ItemInfo {
 
 };
 
+/// NPC info for savegame.
 struct NpcInfoInfo {
   Uint32 version;
   Uint32 x, y, level, type;
@@ -66,6 +69,7 @@ struct NpcInfoInfo {
   Uint8 subtype[255];
 };
 
+/// Creature info for savegame.
 struct CreatureInfo {
   Uint32 version;
   Uint8 name[255];
@@ -99,6 +103,7 @@ struct CreatureInfo {
   NpcInfoInfo *npcInfo;
 };
 
+/// Level map location info for savegame.
 struct LocationInfo {
   Uint16 x, y, z;
   Uint8 floor_shape_name[255];
@@ -112,6 +117,7 @@ struct LocationInfo {
 	Uint8 magic_school_name[255]; // the deity at this location
 };
 
+/// Rug info for savegame.
 struct RugInfo {
 	Uint32 texture;
 	Uint8 isHorizontal;
@@ -119,16 +125,19 @@ struct RugInfo {
 	Uint16 cx, cy;
 };
 
+/// "Object locked" status for savegame.
 struct LockedInfo {
 	Uint32 key;
 	Uint8 value;
 };
 
+/// Door info for savegame.
 struct DoorInfo {
 	Uint32 key;
 	Uint32 value;
 };
 
+/// Fog info for savegame.
 struct FogInfo {
 	Uint8 fog[MAP_WIDTH][MAP_DEPTH];
 	Uint8 players[MAP_WIDTH * MAP_DEPTH][4];
@@ -137,12 +146,14 @@ struct FogInfo {
 #define REF_TYPE_NAME 0
 #define REF_TYPE_OBJECT 1
 
+/// Trap info for savegame.
 struct TrapInfo {
 	Uint32 version;
 	Uint16 x, y, w, h;
 	Uint8 type, discovered, enabled;
 };
 
+/// Info on the ground texturing at an outdoor map position.
 struct OutdoorTextureInfo {
 	Uint16 x, y;
 	Uint32 offsetX, offsetY; // measured in map units
@@ -152,6 +163,7 @@ struct OutdoorTextureInfo {
 	Uint8 z;
 };
 
+/// Level map info for savegame.
 struct MapInfo {
   Uint32 version;
 	Uint8 map_type;
@@ -180,6 +192,7 @@ struct MapInfo {
 	OutdoorTextureInfo *outdoorTexture[ ( MAP_TILES_X ) * ( MAP_TILES_Y ) ];
 };
 
+/// Mission info for savegame.
 struct MissionInfo {
 	Uint32 version;
   Uint8 level;

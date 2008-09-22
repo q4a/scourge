@@ -238,7 +238,7 @@ class SingleCreatureGoal : public GoalFunction {
 };
 
 //////////////////////////////////////////////////////
-//              The search method(s)
+///        Pathfinding: The search method(s)
 //////////////////////////////////////////////////////
 class AStar {
   

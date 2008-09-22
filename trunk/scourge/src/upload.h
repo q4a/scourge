@@ -18,6 +18,7 @@
 #ifndef UPLOAD
 #define UPLOAD
 
+/// Uploads the death score and description to the web.
 class Upload {
 public:
 	enum { RESULT_SIZE = 300 }; 

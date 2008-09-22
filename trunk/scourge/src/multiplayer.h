@@ -35,6 +35,7 @@ class Scourge;
 class Party;
 class Creature;
 
+/// The multiplayer dialog that is reached from the main menu.
 class MultiplayerDialog {
 private:
   Scourge *scourge;

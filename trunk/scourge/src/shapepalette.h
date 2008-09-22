@@ -37,6 +37,7 @@ class ConfigLang;
 class ConfigNode;
 class SDLScreenView;
 
+/// A location on the world map.
 struct MapGridLocation {
   char name[80];
   int x, y;
@@ -44,12 +45,14 @@ struct MapGridLocation {
   char type;
 };
 
+/// An outdoor texture that can be referenced by name.
 struct NamedOutdoorTexture {
 	char name[80];
 	GLuint tex;
 	int width, height;
 };
 
+/// Interface to the game's texture pool.
 class ShapePalette : public Shapes {
 private:
 	ModelLoader *loader;

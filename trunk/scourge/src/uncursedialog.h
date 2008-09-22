@@ -31,6 +31,7 @@ class Widget;
 class Item;
 class PcUi;
 
+/// The "uncurse item" dialog.
 class UncurseDialog : public ItemRenderer {
 private:
   Scourge *scourge;

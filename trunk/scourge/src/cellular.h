@@ -28,18 +28,21 @@
 
 #define MAX_ROOM_COUNT 100
 
+/// A generated node.
 struct NodePoint {
   bool wall, island;
   int room;
   bool seen;
 };
 
+/// A generated room.
 struct Room {
   int size;
   int x,y;
 };
 
 
+/// A cellular automaton, used in map generation
 class CellularAutomaton {
 private:
   int w, h;

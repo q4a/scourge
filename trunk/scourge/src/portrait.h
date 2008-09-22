@@ -39,6 +39,7 @@ class Item;
 class PcUi;
 class Skill;
 
+/// A rectangle that can tell you whether it contains a specific x,y point.
 class ActionRect {
 public:
 			int x, y, x2, y2;
@@ -52,6 +53,7 @@ public:
 			inline bool containsPoint( int px, int py ) { return( x <= px && x2 > px && y <= py && y2 > py ); }
 };
 
+/// Widget that displays a char's portrait, stats and equipped weapon.
 class Portrait : public WidgetView {
 private:
 	PcUi *pcUi;

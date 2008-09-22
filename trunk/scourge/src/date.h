@@ -28,6 +28,7 @@
   */
 
 
+/// The "ingame time" object.
 class Date {
  private:
 

@@ -25,6 +25,7 @@ http://www.cse.yorku.ca/~aaw/Hang/quick_hull/Algorithm.html
 #include <set>
 #include "common/constants.h"
 
+/// Quick Hull algorithm.
 class QuickHull {
 public:
 	static void findConvexHull( std::vector<CVector2*> *in, std::vector<CVector2*> *out );

@@ -48,6 +48,7 @@ class FontMgr;
 #define TRUE  1
 #define FALSE 0
 
+/// Interface to SDL.
 class SDLHandler : public ScourgeGui {
 private:
   GameAdapter *gameAdapter;

@@ -60,12 +60,14 @@ class Trap;
 // how many times to attempt to move to range
 #define MAX_FAILED_MOVE_ATTEMPTS 10
 
+/// Contains the location of an item in the inventory or where it is equipped.
 class InventoryInfo {
 public:
 	int inventoryIndex;
 	int equipIndex;
 };
 
+/// An individual char/NPC/monster (look and state).
 class Creature : public RenderedCreature {
   
  private:

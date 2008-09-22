@@ -33,6 +33,7 @@ class Spell;
 
 using namespace std;
 
+/// The heal dialog.
 class HealDialog {
 private:
   Scourge *scourge;

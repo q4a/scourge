@@ -1,6 +1,6 @@
 
 /***************************************************************************
-                gllocator.h  -  Locator dot for the minimap
+                    gllocator.h  -  Some unused 3D shape
                              -------------------
     begin                : Sat Sep 20 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -27,7 +27,7 @@ class GLShape;
   *@author Gabor Torok
   */
 
-/// A locator dot (as seen around the minimap).
+/// This shape is unused in the game.
 class GLLocator : public GLShape  {
 private:
   
