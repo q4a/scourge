@@ -43,6 +43,7 @@
 class Scourge;
 class UserConfiguration;
 
+/// The options menu.
 class OptionsMenu {
 private:
 

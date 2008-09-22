@@ -29,6 +29,7 @@ class Scourge;
 
 using namespace std;
 
+/// An individual effect particle of a TextEffect.
 struct TextItemParticle {
   int life;
   float x, y;
@@ -37,6 +38,7 @@ struct TextItemParticle {
   float zoom;
 };
 
+/// Displays large text with a nice animated effect.
 class TextEffect {
 private:
   Scourge *scourge;

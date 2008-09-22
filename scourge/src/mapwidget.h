@@ -30,6 +30,7 @@
 class Scourge;
 //class Canvas;
 
+/// A widget that displays a draggable world map with location marks.
 class MapWidget : public Canvas, WidgetView {
 private:
   Scourge *scourge;

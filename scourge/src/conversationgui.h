@@ -33,6 +33,7 @@
 class Creature;
 class CardContainer;
 
+/// The conversation window.
 class ConversationGui : public WordClickedHandler, WidgetView {
 
  private:

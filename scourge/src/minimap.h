@@ -36,6 +36,7 @@ class Scourge;
 class Location;
 class Canvas;
 
+/// Unused.
 struct MiniMapPoint {
     GLfloat r, g, b;
     bool visible;
@@ -44,6 +45,8 @@ struct MiniMapPoint {
 /**
  *@author Daroth-U
  */
+
+/// The minimap in the upper left of the ingame view.
 class MiniMap {
 private:
     

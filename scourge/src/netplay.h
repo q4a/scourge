@@ -28,6 +28,8 @@
 /** 
   @author Gabor Torok
 */ 
+
+/// Handles online play.
 class NetPlay : public GameStateHandler,CommandInterpreter {
 private:
   Scourge *scourge;

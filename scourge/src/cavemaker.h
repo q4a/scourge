@@ -40,6 +40,7 @@ class DisplayInfo;
 class Location;
 class CellularAutomaton;
 
+/// Extends the terrain generator with cave generation specific functions.
 class CaveMaker : public TerrainGenerator {
 private:
   int w, h;

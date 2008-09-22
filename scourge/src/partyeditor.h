@@ -1,5 +1,5 @@
 /***************************************************************************
-                          partyeditor.h  -  description
+                 partyeditor.h  -  The "create character" window
                              -------------------
     begin                : Tue Aug 12 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -46,6 +46,7 @@ class SkillsView;
 
 class PcEditor;
 
+/// GUI for creating a player character.
 class PartyEditor : public CreatureGroupInfo {
 private:
 

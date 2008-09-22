@@ -24,6 +24,7 @@
 
 class Scourge;
 
+/// Log-like text scroller widget as seen at the game screen's top.
 class TextScroller {
 private:
 	Scourge *scourge;

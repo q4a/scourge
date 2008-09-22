@@ -34,6 +34,7 @@
 class Event;
 class Date;
 
+/// Manages ingame events, like potions expiring and characters getting hungry.
 class Calendar {
  private:
 

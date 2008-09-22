@@ -37,6 +37,7 @@ class Widget;
 class CreatureGroupInfo;
 class SkillGroup;
 
+/// A skills list widget.
 class SkillsView {
 
 public:

@@ -44,6 +44,7 @@ class MapRenderHelper;
 // raise the magic item level by 1 for every 3 levels (magic item level [0,1,2,3])
 #define MAGIC_ITEM_MUL 3
 
+/// The game's map generator.
 class TerrainGenerator {
 protected:
 

@@ -32,6 +32,7 @@ class ProjectileRenderer;
   *@author Gabor Torok
   */
 
+/// Contains looks and attributes of an individual projectile.
 class Projectile : public RenderedProjectile {
  private:
   Creature *creature, *target;

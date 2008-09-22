@@ -28,6 +28,7 @@
 // set to non-zero for debugging
 #define DEBUG_USER_CONFIG 0  
 
+/// Interface to the saved game options.
 class UserConfiguration : public Preferences {
 
 private:

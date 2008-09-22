@@ -102,6 +102,7 @@ enum engine_action_up_int{
   ENGINE_ACTION_UP_COUNT
 };
 
+/// This object holds the game's set preferences.
 class Preferences {
 
 protected:

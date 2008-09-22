@@ -31,6 +31,7 @@ class Widget;
 class Item;
 class PcUi;
 
+/// The "identify item" dialog.
 class IdentifyDialog : public ItemRenderer {
 private:
   Scourge *scourge;

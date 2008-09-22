@@ -1,5 +1,5 @@
 /***************************************************************************
-                          partyeditor.cpp  -  description
+                partyeditor.cpp  - The "create character" window
                              -------------------
     begin                : Tue Aug 12 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -49,6 +49,7 @@ using namespace std;
 #define STARTING_PARTY_SIZE 1
 #define LEVEL STARTING_PARTY_LEVEL
 
+/// Unused.
 struct Preset {
   char name[80];
   int deity;

@@ -37,6 +37,7 @@ class Preferences;
 class RenderedItem;
 class RenderedCreature;
 
+/// This class encapsulates functions that should be callable from everywhere.
 class GameAdapter : public MapAdapter {
 protected:
   Preferences *preferences;
@@ -189,6 +190,7 @@ public:
 	virtual void setDepthLimits( float minLimit, float maxLimit ) {}
 };
 
+/// SDL/OpenGL related extensions to GameAdapter.
 class SDLOpenGLAdapter : public GameAdapter {
 protected:
   SDLHandler *sdlHandler;
@@ -235,6 +237,7 @@ protected:
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
 };
 
+/// GameAdapter, server version
 class ServerAdapter : public GameAdapter {
 public:
   ServerAdapter( Preferences *config );
@@ -242,6 +245,7 @@ public:
   void start();
 };
 
+/// GameAdapter, client version
 class ClientAdapter : public GameAdapter {
 public:
   ClientAdapter( Preferences *config );

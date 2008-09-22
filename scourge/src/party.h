@@ -28,6 +28,7 @@ class Session;
 class Creature;
 class Item;
 
+/// Small utility class.
 class CreatureGroupInfo {
 public:
   CreatureGroupInfo() {
@@ -39,6 +40,7 @@ public:
   virtual Creature *getHighestSkillPC( int skill ) = 0;
 };
 
+/// A party of characters.
 class Party : public CreatureGroupInfo {
  private:
     

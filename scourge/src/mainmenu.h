@@ -39,6 +39,7 @@ class SavegameDialog;
 class Progress;
 class TextEffect;
 
+/// An individual particle of the main menu text effect.
 struct MenuItemParticle {
   int life;
   float x, y;
@@ -47,6 +48,7 @@ struct MenuItemParticle {
   float zoom;
 };
 
+/// An item of the main menu.
 struct MenuItem {
   char text[80];
   GLuint texture[1];
@@ -58,6 +60,7 @@ struct MenuItem {
   MenuItemParticle particle[100];
 };
 
+/// This object displays the main menu and can return the selected item.
 class MainMenu : public SDLEventHandler,SDLScreenView {
 private:
   Scourge *scourge;

@@ -44,6 +44,7 @@ class GLShape;
 class MiniMap;
 class Monster;
 
+/// The (highly unofficial so far) map editor.
 class MapEditor : public SDLEventHandler, SDLScreenView {
 private:
   Scourge *scourge;

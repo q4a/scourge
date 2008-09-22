@@ -51,7 +51,7 @@ bool loading = false;
 // how close to stay to the player
 #define CLOSE_DISTANCE 8
 
-// Describes monster toughness in general
+/// Describes monster toughness in general.
 struct MonsterToughness {
   float minSkillBase, maxSkillBase;
   float minHpMpBase, maxHpMpBase;

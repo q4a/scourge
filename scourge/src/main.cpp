@@ -84,6 +84,7 @@ inline void RedirectIOToConsole(void)
 #endif //defined(_MSC_VER) && defined(WANT_CONSOLE) 
 }
 
+/// Everything begins here.
 int main(int argc, char *argv[]) {
   BrInitError error; 
   if( br_init( &error ) == 0 && error != BR_INIT_ERROR_DISABLED ) { 

@@ -36,6 +36,7 @@ class Item;
 class Spell;
 class SpecialSkill;
 
+/// The window that appears when you right click on items, spells etc.
 class InfoGui : public WidgetView {
 
  private:

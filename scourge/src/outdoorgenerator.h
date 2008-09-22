@@ -39,6 +39,7 @@ class CellularAutomaton;
 #define MAP_STEP_DEPTH (MAP_DEPTH / OUTDOORS_STEP)
 #define MAP_STEP_SIZE (MAP_STEP_WIDTH*MAP_STEP_DEPTH) 
 
+/// Outdoor specific terrain generator.
 class OutdoorGenerator : public TerrainGenerator {
 private:
 	float ground[MAP_WIDTH][MAP_DEPTH];

@@ -32,6 +32,7 @@ class Button;
 class TextField;
 class Character;
 
+/// The train dialog.
 class TrainDialog {
 private:
   Scourge *scourge;

@@ -46,6 +46,7 @@ class MapRenderHelper;
   *@author Gabor Torok
   */
 
+/// Dungeon specific extensions for map generation.
 class DungeonGenerator : public TerrainGenerator {
 private:
 

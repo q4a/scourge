@@ -42,6 +42,7 @@ class Portrait;
 class MissionInfoUI;
 class CardContainer;
 
+/// The window that displays a character's inventory, attributes etc.
 class PcUi : public WindowListener {
 private:
 	Scourge *scourge;
