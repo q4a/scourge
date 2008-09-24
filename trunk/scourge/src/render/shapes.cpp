@@ -343,7 +343,8 @@ void Shapes::initialize() {
 void Shapes::loadCursors() {
   for( int i = 0; i < Constants::CURSOR_COUNT; i++ ) {
 	string path = string(cursorDir) + "/" + string(Constants::cursorTextureName[ i ]);
-	cursorTexture[i] = loadAlphaTexture( path, NULL, NULL, true );
+	//cursorTexture[i] = loadAlphaTexture( path, NULL, NULL, true );
+	cursorTexture[i] = loadTexture( path, Constants::TEXTURE_TYPE_GUI );
 
   }
 }
@@ -801,6 +802,59 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
   b    = temp;
 
   return;
+}
+
+/// Generic texture loader.
+
+/// Accepts one of the TEXTURE_TYPE_* constants defined in constants.h and
+/// tries to set up everything correctly according to the desired texture type.
+/// Returns an OpenGL texture name.
+
+GLuint Shapes::loadTexture( const string& filename, int type ) {
+  string fn = rootDir + filename;
+  SDL_Surface* surface = IMG_Load( fn.c_str() );
+
+  GLuint destFormat;
+  GLuint srcFormat;
+  GLuint minFilter;
+  bool hasAlpha;
+
+  GLuint texture;
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
+
+  SDL_PixelFormat *format = surface->format;
+  if ( format->Amask ) {
+    hasAlpha = true;
+    srcFormat = GL_RGBA;
+//    destFormat = 4;
+  } else {
+    hasAlpha = false;
+    srcFormat = GL_RGB;
+//    destFormat = 3;
+  }
+
+  if ( type == Constants::TEXTURE_TYPE_NORMAL ) {
+    destFormat = GL_RGB;
+    minFilter = GL_LINEAR_MIPMAP_NEAREST;
+  } else if ( type == Constants::TEXTURE_TYPE_GUI ) {
+    destFormat = GL_RGBA;
+    minFilter = GL_LINEAR;
+  } else if ( type == Constants::TEXTURE_TYPE_ALPHA ) {
+    destFormat = GL_RGBA;
+    minFilter = GL_LINEAR;
+  }
+
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+//  glTexImage2D( GL_TEXTURE_2D, 0, destFormat, surface->w, surface->h, 0, srcFormat, GL_UNSIGNED_BYTE, surface->pixels );
+
+  gluBuild2DMipmaps(GL_TEXTURE_2D, destFormat, surface->w, surface->h, srcFormat, GL_UNSIGNED_BYTE, surface->pixels);
+
+  SDL_FreeSurface(surface);
+  return texture;
 }
 
 void Shapes::loadStencil( const string& filename, int index ) {
