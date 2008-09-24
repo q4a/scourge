@@ -606,12 +606,20 @@ public:
     MSGTYPE_SKILL		// Skill related messages
   };
 
+// Weather modifiers
 #define WEATHER_CLEAR 0x00
 #define WEATHER_RAIN 0x01
 #define WEATHER_THUNDER 0x02
 #define WEATHER_FOG 0x04
 #define MAX_WEATHER 0x08
-  
+
+  // Texture types
+  enum {
+    TEXTURE_TYPE_GUI = 0,
+    TEXTURE_TYPE_ALPHA,
+    TEXTURE_TYPE_NORMAL
+  };
+
   enum {
     ACTION_NO_ACTION=-1,
     ACTION_EAT_DRINK=0,
