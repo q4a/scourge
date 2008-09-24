@@ -121,7 +121,7 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
       // see if it's a system texture (no need to double load it)
 			string bmp = texture;
 			if( bmp.find( ".", 0 ) == string::npos ) {
-				bmp += string(".bmp");
+				bmp += string(".png");
 			}
       path = "/" + bmp;
 
@@ -139,7 +139,7 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 
       id = shapePal->findTextureByName( bmp );
       if ( id == 0 ) {
-				// two ways of loading for backward compat.
+/*				// two ways of loading for backward compat.
 				if( path.find( ".bmp", 0 ) == path.length() - 4 ) {
 					//cerr << "\tLoading BMP" << endl;
 					id = shapePal->loadGLTextures(path);
@@ -152,8 +152,8 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 			  	cerr << "Error: unable to load theme texture for: ref=" << 
 			  	( outdoor ? outdoorThemeRefName[ ref ] : themeRefName[ ref ] ) << 
 			  	" path=" << path << endl;
-			  }				
-				
+			  	}*/
+	id = shapePal->loadTexture( path, Constants::TEXTURE_TYPE_NORMAL );
 	GLclampf pri = 0.9f; glPrioritizeTextures(1, &id, &pri);
         loadedTextures[s] = id;
       }
@@ -177,7 +177,7 @@ void WallTheme::unload() {
     // don't delete system textures!
 		string bmp = s;
 		if( bmp.find( ".", 0 ) == string::npos ) {
-			bmp += string(".bmp");
+			bmp += string(".png");
 		}
     id = shapePal->findTextureByName( bmp );
     if ( id == 0 ) {
@@ -812,12 +812,15 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
 
 GLuint Shapes::loadTexture( const string& filename, int type ) {
   string fn = rootDir + filename;
-  SDL_Surface* surface = IMG_Load( fn.c_str() );
-
   GLuint destFormat;
   GLuint srcFormat;
   GLuint minFilter;
-  bool hasAlpha;
+
+  SDL_Surface* surface = IMG_Load( fn.c_str() );
+  if( surface == NULL ) {
+    cerr << "*** Error loading image (" << fn << "): " << IMG_GetError() << endl;
+    return NULL;
+  }
 
   GLuint texture;
   glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -826,11 +829,9 @@ GLuint Shapes::loadTexture( const string& filename, int type ) {
 
   SDL_PixelFormat *format = surface->format;
   if ( format->Amask ) {
-    hasAlpha = true;
     srcFormat = GL_RGBA;
 //    destFormat = 4;
   } else {
-    hasAlpha = false;
     srcFormat = GL_RGB;
 //    destFormat = 3;
   }
