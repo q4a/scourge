@@ -265,19 +265,14 @@ GLuint *Shapes::findOrMakeTextureGroup( char *s ) {
 
 void Shapes::initialize() {
   // load textures
-  ripple_texture = loadGLTextures("/textures/ripple.bmp");
-  torchback = loadGLTextures("/textures/torchback.bmp");
-  
-  SDL_Surface *area;
-  GLubyte *areaImage = NULL;
-	string areabmp("/textures/area.bmp");
-  setupAlphaBlendedBMP(areabmp, area, areaImage);
-  areaTex = loadGLTextureBGRA(area, areaImage);
+  ripple_texture = loadTexture("/textures/ripple.png");
+  torchback = loadTexture("/textures/torchback.png");
+
+  areaTex = loadTexture("/textures/area.png");
   //areaTex = loadGLTextures("/area.bmp");
 
 	// load as a grayscale (use gray value as alpha)
-	string sel("/textures/sel.bmp");
-	selection = Shapes::loadTextureWithAlpha( sel, 0, 0, 0, false, false, true );
+	selection = loadTexture( "/textures/sel.png" );
 
 	// default to textures
 	strcpy( cursorDir, "/textures" );
@@ -307,7 +302,7 @@ void Shapes::initialize() {
 
   // add some special, "internal" shapes
 	shapes[shapeCount] =
-		new GLTorch(textureGroup[ 0 ], findTextureByName( "flame.bmp", true ),
+		new GLTorch(textureGroup[ 0 ], findTextureByName( "flame.png", true ),
 								1, 1, 2,
 								strdup("SPELL_FIREBALL"),
 								0,
@@ -543,7 +538,7 @@ void Shapes::loadShape( const char *name ) {
 
     if(sv->teleporter) {
       shapes[(i + 1)] =
-				new GLTeleporter( texture, findTextureByName( "flame.bmp", true ),
+				new GLTeleporter( texture, findTextureByName( "flame.png", true ),
 													sv->width, sv->depth, sv->height,
 													strdup(sv->name), 
 													sv->descriptionIndex,
@@ -568,7 +563,7 @@ void Shapes::loadShape( const char *name ) {
     } else if(sv->torch > -1) {
       if(sv->torch == 5) {
         shapes[(i + 1)] =
-        new GLTorch(texture, findTextureByName( "flame.bmp", true ),
+        new GLTorch(texture, findTextureByName( "flame.png", true ),
 										//textures[9].id,
                     sv->width, sv->depth, sv->height,
                     strdup(sv->name),
@@ -577,7 +572,7 @@ void Shapes::loadShape( const char *name ) {
                     (i + 1));
       } else {
         shapes[(i + 1)] =
-        new GLTorch(texture, findTextureByName( "flame.bmp", true ),
+        new GLTorch(texture, findTextureByName( "flame.png", true ),
 										//textures[9].id,
                     sv->width, sv->depth, sv->height,
                     strdup(sv->name),

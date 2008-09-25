@@ -81,7 +81,8 @@ MainMenu::MainMenu(Scourge *scourge){
 	cloud[i].speed = Util::pickOne( 1, 2 );
   }
 
-  logoRot = -scourge->getShapePalette()->logo->h;
+  //logoRot = -scourge->getShapePalette()->logo->h;
+  logoRot = -173;
   logoRotDelta = LOGO_DELTA;
   logoTicks = 0;
   logoTicksDelta = 50;
@@ -359,7 +360,8 @@ void MainMenu::drawAfter() {
 }
 
 void MainMenu::show() { 
-  logoRot = -scourge->getShapePalette()->logo->h;
+  //logoRot = -scourge->getShapePalette()->logo->h;
+  logoRot = -173;
 }
 
 void MainMenu::hide() { 
@@ -418,8 +420,10 @@ void MainMenu::drawLogo() {
   glPushMatrix();
   glLoadIdentity();
   glTranslatef( 70, logoRot, 0 );
-  float w = scourge->getShapePalette()->logo->w;
-  float h = scourge->getShapePalette()->logo->h;
+//  float w = scourge->getShapePalette()->logo->w;
+//  float h = scourge->getShapePalette()->logo->h;
+  float w = 352.0f;
+  float h = 173.0f;
   glColor4f( 1, 1, 1, 1 );
   glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
   
@@ -438,12 +442,15 @@ void MainMenu::drawLogo() {
   for( int i = 0; i < 2; i++ ) {
     glPushMatrix();
     glLoadIdentity();
-    glTranslatef( ( !i ? 100 : 
-                    70 + scourge->getShapePalette()->logo->w - 30 - 
-                    scourge->getShapePalette()->chain->w ), 
-                  logoRot - scourge->getShapePalette()->chain->h, 0 );
-    float w = scourge->getShapePalette()->chain->w;
-    float h = scourge->getShapePalette()->chain->h;
+//    glTranslatef( ( !i ? 100 : 
+//                    70 + scourge->getShapePalette()->logo->w - 30 - 
+//                    scourge->getShapePalette()->chain->w ), 
+//                  logoRot - scourge->getShapePalette()->chain->h, 0 );
+//    float w = scourge->getShapePalette()->chain->w;
+//    float h = scourge->getShapePalette()->chain->h;
+    glTranslatef( ( !i ? 100 : 70 + 352 - 30 - 32 ), logoRot - 256, 0 );
+    float w = 32.0f;
+    float h = 256.0f;
     glColor4f( 1, 1, 1, 1 );
     glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->chain_texture );
     
@@ -564,13 +571,15 @@ void MainMenu::drawBackdrop() {
   glAlphaFunc( GL_NOTEQUAL, 0 );
   glEnable( GL_TEXTURE_2D );
 
+//  float w = scourge->getShapePalette()->scourgeBackdrop->w;
+  float w = scourge->getSDLHandler()->getScreen()->w;
+  //float h = scourge->getShapePalette()->scourgeBackdrop->h;
+  float h = 160.0f;
+
   //Draw the backdrop image
   glPushMatrix();
   glLoadIdentity();
-  glTranslatef( 0, top + (600 - WATER_HEIGHT - scourge->getShapePalette()->scourgeBackdrop->h), 0 );
-//  float w = scourge->getShapePalette()->scourgeBackdrop->w;
-  float w = scourge->getSDLHandler()->getScreen()->w;
-  float h = scourge->getShapePalette()->scourgeBackdrop->h;
+  glTranslatef( 0, top + (600 - WATER_HEIGHT - h), 0 );
   glColor4f( 1, 1, 1, 1 );
   glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->scourgeBackdrop_texture );
   
