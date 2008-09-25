@@ -200,7 +200,7 @@ ThemeElement *GuiTheme::parseElement( const char *s ) {
   if( p ) {
     ThemeElement *element = new ThemeElement();
     strcpy( element->textureFileName, p );
-    strcat( element->textureFileName, ".bmp" );
+    strcat( element->textureFileName, ".png" );
     element->color.r = atof( strtok( NULL, "," ) );
     element->color.g = atof( strtok( NULL, "," ) );
     element->color.b = atof( strtok( NULL, "," ) );
@@ -218,42 +218,42 @@ ThemeElement *GuiTheme::parseElement( const char *s ) {
     p = strtok( NULL, "," );
     if( p && strcmp(p,"none") ) {
       strcpy( element->north, p );
-      strcat( element->north, ".bmp" );
+      strcat( element->north, ".png" );
     } else strcpy( element->north, "" );
     p = strtok( NULL, "," );
     if( p && strcmp(p,"none") ) {
       strcpy( element->south, p );
-      strcat( element->south, ".bmp" );
+      strcat( element->south, ".png" );
     } else strcpy( element->south, "" );
     p = strtok( NULL, "," );
     if( p && strcmp(p,"none") ) {
       strcpy( element->east, p );
-      strcat( element->east, ".bmp" );
+      strcat( element->east, ".png" );
     } else strcpy( element->east, "" );    
     p = strtok( NULL, "," );
     if( p && strcmp(p,"none") ) {
       strcpy( element->west, p );
-      strcat( element->west, ".bmp" );
+      strcat( element->west, ".png" );
     } else strcpy( element->west, "" );
     p = strtok( NULL, "," );
     if( p && strcmp(p,"none") ) {
       strcpy( element->nw, p );
-      strcat( element->nw, ".bmp" );
+      strcat( element->nw, ".png" );
     } else strcpy( element->nw, "" );
     p = strtok( NULL, "," );
     if( p && strcmp(p,"none") ) {
       strcpy( element->ne, p );
-      strcat( element->ne, ".bmp" );
+      strcat( element->ne, ".png" );
     } else strcpy( element->ne, "" );
         p = strtok( NULL, "," );
     if( p && strcmp(p,"none") ) {
       strcpy( element->sw, p );
-      strcat( element->sw, ".bmp" );
+      strcat( element->sw, ".png" );
     } else strcpy( element->sw, "" );
     p = strtok( NULL, "," );
     if( p && strcmp(p,"none") ) {
       strcpy( element->se, p );
-      strcat( element->se, ".bmp" );
+      strcat( element->se, ".png" );
     } else strcpy( element->se, "" );
     return element;
   } else {

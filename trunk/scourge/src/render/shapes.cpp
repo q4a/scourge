@@ -1074,7 +1074,7 @@ char *textureDirs[] = { "/textures/", "/cave/default/", "/objects/houses/", "" }
 GLuint Shapes::loadSystemTexture( const string& line ) {
   if( isHeadless() ) return 0;
   
-  if( line == "none.bmp" ) {
+  if( line == "none.png" ) {
   	return 0;
   }
 
