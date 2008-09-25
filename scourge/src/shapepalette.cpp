@@ -356,18 +356,20 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 		string value = node->getValueAsString( "value" );
 		bool grayscale = node->getValueAsBool( "grayscale" );
 		bool outdoors = node->getValueAsBool( "outdoors" );
-		if( value.substr( value.size() - 4 ) == ".png" ) {
+//		if( value.substr( value.size() - 4 ) == ".png" ) {
 		  int w, h;		  
 			if( outdoors ) {
 				NamedOutdoorTexture ot;
-				ot.tex = loadAlphaTexture( value, &w, &h );
+//				ot.tex = loadAlphaTexture( value, &w, &h );
+				ot.tex = loadTexture( value );
 				ot.width = node->getValueAsInt( "width" );
 				ot.height = node->getValueAsInt( "width" );
 				outdoorNamedTextures[ name ] = ot;
 			} else {
-				namedTextures[ name ] = loadAlphaTexture( value, &w, &h );
+				//namedTextures[ name ] = loadAlphaTexture( value, &w, &h );
+				namedTextures[ name ] = loadTexture( value );
 			}
-		} else {
+/*		} else {
 			if( outdoors ) { 
 				NamedOutdoorTexture ot;
 				ot.tex = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
@@ -377,7 +379,7 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 			} else {
 				namedTextures[ name ] = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
 			}
-		}
+		}*/
 	}
 //	Shapes::debugFileLoad = false;
 }
@@ -447,12 +449,12 @@ void ShapePalette::initPcPortraits( ConfigLang *config ) {
 		string image = node->getValueAsString( "image" );
 		string sex = node->getValueAsString( "sex" );
 		if( strstr( image.c_str(), "death" ) ) {
-			deathPortraitTexture = loadGLTextures( image, true );
+			deathPortraitTexture = loadTexture( image );
 		} else {
 			int sexNum = ( sex == "M" ? 
 										 Constants::SEX_MALE : 
 										 Constants::SEX_FEMALE );
-			portraitTextures[sexNum].push_back( loadGLTextures( image, true ) );
+			portraitTextures[sexNum].push_back( loadTexture( image ) );
 		}
 	}
 }
@@ -491,12 +493,13 @@ void ShapePalette::initRugs( ConfigLang *config ) {
 
 		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
-		SDL_Surface *tmpSurface = NULL;
-		GLubyte *tmpImage = NULL;
-		setupAlphaBlendedBMP( node->getValueAsString( "path" ), tmpSurface, tmpImage );
-		rugs.push_back( loadGLTextureBGRA( tmpSurface, tmpImage ) );
-		delete [] tmpImage;
-		if( tmpSurface ) SDL_FreeSurface( tmpSurface );
+		//SDL_Surface *tmpSurface = NULL;
+		//GLubyte *tmpImage = NULL;
+		//setupAlphaBlendedBMP( node->getValueAsString( "path" ), tmpSurface, tmpImage );
+		//rugs.push_back( loadGLTextureBGRA( tmpSurface, tmpImage ) );
+		rugs.push_back( loadTexture( node->getValueAsString( "path" ) ) );
+		//delete [] tmpImage;
+		//if( tmpSurface ) SDL_FreeSurface( tmpSurface );
   }
 }
 
@@ -981,9 +984,9 @@ void ShapePalette::initMapGrid() {
   for( int x = 0; x < Constants::MAP_GRID_TILE_WIDTH; x++ ) {
     for( int y = 0; y < Constants::MAP_GRID_TILE_HEIGHT; y++ ) {
       char textureName[80];
-      snprintf( textureName, 80, "/mapgrid/map%d-%d.bmp", x, y );
+      snprintf( textureName, 80, "/mapgrid/map%d-%d.png", x, y );
       //cerr << "loading: " << textureName << endl;
-      mapGrid[ x ][ y ] = loadGLTextures( textureName, true );
+      mapGrid[ x ][ y ] = loadTexture( textureName );
     }
   }
 
