@@ -153,7 +153,7 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 			  	( outdoor ? outdoorThemeRefName[ ref ] : themeRefName[ ref ] ) << 
 			  	" path=" << path << endl;
 			  	}*/
-	id = shapePal->loadTexture( path, Constants::TEXTURE_TYPE_NORMAL );
+	id = shapePal->loadTexture( path );
 	GLclampf pri = 0.9f; glPrioritizeTextures(1, &id, &pri);
         loadedTextures[s] = id;
       }
@@ -344,7 +344,7 @@ void Shapes::loadCursors() {
   for( int i = 0; i < Constants::CURSOR_COUNT; i++ ) {
 	string path = string(cursorDir) + "/" + string(Constants::cursorTextureName[ i ]);
 	//cursorTexture[i] = loadAlphaTexture( path, NULL, NULL, true );
-	cursorTexture[i] = loadTexture( path, Constants::TEXTURE_TYPE_GUI );
+	cursorTexture[i] = loadTexture( path );
 
   }
 }
@@ -804,13 +804,13 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
   return;
 }
 
-/// Generic texture loader.
+/// Grand unified generic texture loader.
 
-/// Accepts one of the TEXTURE_TYPE_* constants defined in constants.h and
-/// tries to set up everything correctly according to the desired texture type.
+/// Creates an OpenGL texture from a file and tries to set up everything
+/// correctly according to the properties of the source image.
 /// Returns an OpenGL texture name.
 
-GLuint Shapes::loadTexture( const string& filename, int type ) {
+GLuint Shapes::loadTexture( const string& filename ) {
   string fn = rootDir + filename;
   GLuint destFormat;
   GLuint srcFormat;
@@ -830,21 +830,12 @@ GLuint Shapes::loadTexture( const string& filename, int type ) {
   SDL_PixelFormat *format = surface->format;
   if ( format->Amask ) {
     srcFormat = GL_RGBA;
-//    destFormat = 4;
+    destFormat = 4;
+    minFilter = GL_LINEAR;
   } else {
     srcFormat = GL_RGB;
-//    destFormat = 3;
-  }
-
-  if ( type == Constants::TEXTURE_TYPE_NORMAL ) {
-    destFormat = GL_RGB;
+    destFormat = 3;
     minFilter = GL_LINEAR_MIPMAP_NEAREST;
-  } else if ( type == Constants::TEXTURE_TYPE_GUI ) {
-    destFormat = GL_RGBA;
-    minFilter = GL_LINEAR;
-  } else if ( type == Constants::TEXTURE_TYPE_ALPHA ) {
-    destFormat = GL_RGBA;
-    minFilter = GL_LINEAR;
   }
 
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter );
@@ -1107,7 +1098,7 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 	    	fclose( fp );
 	    	
 		    // load the texture
-				SDL_Surface *tmpSurface;
+/*				SDL_Surface *tmpSurface;
 				GLubyte *tmpImage;
 				
 				setupAlphaBlendedBMP( path, tmpSurface, tmpImage );				
@@ -1119,7 +1110,9 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 					break;
 				} else {
 					id = textures[ texture_count ].id = 0;
-				}
+				}*/
+				id = loadTexture( path );
+				textures[ texture_count ].id = id;
 	    }
 			dirCount++;
     }

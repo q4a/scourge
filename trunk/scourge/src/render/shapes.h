@@ -405,7 +405,7 @@ public:
 
   static GLuint loadTextureWithAlpha( std::string& fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false, bool grayscale=false, bool isSprite = false );
   static GLuint loadAlphaTexture( std::string& filename, int *width=NULL, int *height=NULL, bool isSprite = false );
-  GLuint loadTexture( const std::string& filename, int type );
+  GLuint loadTexture( const std::string& filename );
 
 	inline int getCursorWidth() { return cursorWidth; }
 	inline int getCursorHeight() { return cursorHeight; }
