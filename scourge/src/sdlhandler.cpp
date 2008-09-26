@@ -193,6 +193,16 @@ int SDLHandler::initGL() {
     // We use ortho projection, so perspective correction isn't needed
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
+    // Create really nice mipmaps.
+    glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+
+    // Use per-vertex fog.
+    glHint(GL_FOG_HINT, GL_FASTEST);
+
+    // Faster antialiasing for primitives.
+    glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+    glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+
 	// which one to use?
     // default is good
 	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
@@ -218,8 +228,6 @@ int SDLHandler::initGL() {
     } else {
       glEnable( GL_DITHER );
     }
-    /* Really Nice Perspective Calculations */
-//    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
     glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE ) ;
     glEnable( GL_COLOR_MATERIAL );
