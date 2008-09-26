@@ -858,7 +858,8 @@ void ShapePalette::loadNpcPortraits() {
        i != Monster::monstersByName.end(); ++i ) {
     Monster *m = i->second;
     if( m->getPortrait() ) {
-      m->setPortraitTexture( this->loadGLTextures( m->getPortrait(), true ) );
+      //m->setPortraitTexture( this->loadGLTextures( m->getPortrait(), true ) );
+      m->setPortraitTexture( this->loadTexture( m->getPortrait() ) );
       if( !m->getPortraitTexture() ) {
         cerr << "*** Warning: couldn't load monster portrait: " << m->getPortrait() << endl;
       }
