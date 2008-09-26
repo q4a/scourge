@@ -810,6 +810,7 @@ GLuint Shapes::loadTexture( const string& filename ) {
   GLuint destFormat;
   GLuint srcFormat;
   GLuint minFilter;
+  int bpp = session->getPreferences()->getBpp();
 
   SDL_Surface* surface = IMG_Load( fn.c_str() );
   if( surface == NULL ) {
@@ -825,11 +826,11 @@ GLuint Shapes::loadTexture( const string& filename ) {
   SDL_PixelFormat *format = surface->format;
   if ( format->Amask ) {
     srcFormat = GL_RGBA;
-    destFormat = 4;
+    destFormat = ( bpp > 16 ? GL_RGBA : GL_RGBA4 );
     minFilter = GL_LINEAR;
   } else {
     srcFormat = GL_RGB;
-    destFormat = 3;
+    destFormat = ( bpp > 16 ? GL_RGB : GL_RGB5 );
     minFilter = GL_LINEAR_MIPMAP_NEAREST;
   }
 

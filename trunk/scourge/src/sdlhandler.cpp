@@ -212,6 +212,12 @@ int SDLHandler::initGL() {
     /* The Type Of Depth Test To Do */
     glDepthFunc( GL_LEQUAL );
 
+    // Don't dither textures on truecolor displays.
+    if ( gameAdapter->getPreferences()->getBpp() > 16 ) {
+      glDisable( GL_DITHER );
+    } else {
+      glEnable( GL_DITHER );
+    }
     /* Really Nice Perspective Calculations */
 //    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
