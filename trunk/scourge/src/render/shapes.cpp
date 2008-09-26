@@ -832,11 +832,12 @@ GLuint Shapes::loadTexture( const string& filename ) {
     srcFormat = GL_RGB;
     destFormat = ( bpp > 16 ? GL_RGB : GL_RGB5 );
     minFilter = GL_LINEAR_MIPMAP_NEAREST;
+    // Anisotropic filtering looks great but frequently freezes X on my system
+    // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2.0f);
   }
 
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter );
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
 //  glTexImage2D( GL_TEXTURE_2D, 0, destFormat, surface->w, surface->h, 0, srcFormat, GL_UNSIGNED_BYTE, surface->pixels );
 
   gluBuild2DMipmaps(GL_TEXTURE_2D, destFormat, surface->w, surface->h, srcFormat, GL_UNSIGNED_BYTE, surface->pixels);
