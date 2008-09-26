@@ -710,15 +710,18 @@ void Session::setCurrentMission( Mission *mission ) {
 	getGameAdapter()->refreshInventoryUI();
 	if( oldMission != currentMission && currentMission && currentMission->isStoryLine() && !currentMission->isReplay() ) {
 		char filename[300];
-		snprintf( filename, 300, "/chapters/chapter%d.bmp", currentMission->getChapter() );
-		if( !shapePal->getBMPData( filename, chapterImage, &chapterImageWidth, &chapterImageHeight ) ) {
+		snprintf( filename, 300, "/chapters/chapter%d.png", currentMission->getChapter() );
+		chapterImageTexture = shapePal->loadTexture(filename);
+		if( !chapterImageTexture ) {
 			cerr << "Error loading image for chapter " << currentMission->getChapter() << endl;
 			chapterImage.clear();
 			chapterImageTexture = 0;
 			chapterImageWidth = chapterImageHeight = 0;
 		} else {
-			chapterImageTexture = shapePal->loadGLTextures(filename, true);
+			//chapterImageTexture = shapePal->loadGLTextures(filename, true);
 			GLclampf pri = 0.1f; glPrioritizeTextures(1, &chapterImageTexture, &pri);
+			chapterImageWidth = 1000;
+			chapterImageHeight = 458;
 			cerr << "***********************************" << endl;
 			cerr << "Loaded chapter art: " << filename << 
 				" dimensions=" << chapterImageWidth << "," << chapterImageHeight << endl;

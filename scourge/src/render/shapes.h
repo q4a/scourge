@@ -397,7 +397,7 @@ public:
   
   char const* getRandomDescription(int descriptionGroup);
 
-  GLuint loadGLTextures(const std::string& fileName, bool isSprite = false);
+  //GLuint loadGLTextures(const std::string& fileName, bool isSprite = false);
 
   GLuint getBMPData( const std::string& filename, TextureData& data, int *width=NULL, int *height=NULL );
 
