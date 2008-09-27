@@ -26,6 +26,7 @@ class CModelMD3;
 class AnimatedShape;
 class GLShape;
 class ModelLoader;
+class ShapePalette;
 
 /// Loads and sets up a character model.
 class ModelWrapper  {
@@ -67,8 +68,10 @@ private:
 	std::map<std::string, Md2ModelInfo*> creature_models;
 	std::map<Md2ModelInfo*, int> loaded_models;
 
+	ShapePalette *shapePal;
+
 public:
-	ModelLoader( bool headless, GLuint *textureGroup );
+	ModelLoader( ShapePalette *shapePal, bool headless, GLuint *textureGroup );
 
 	virtual ~ModelLoader();
   

@@ -107,7 +107,7 @@ void ShapePalette::initialize() {
   // call "super"
   Shapes::initialize();
 
-  loader = new ModelLoader( isHeadless(), textureGroup[ 14 ] );
+  loader = new ModelLoader( this, isHeadless(), textureGroup[ 14 ] );
 
   // load textures
   gargoyle = loadTexture("/textures/dragon.png");

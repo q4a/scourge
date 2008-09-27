@@ -805,8 +805,8 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
 /// correctly according to the properties of the source image.
 /// Returns an OpenGL texture name.
 
-GLuint Shapes::loadTexture( const string& filename ) {
-  string fn = rootDir + filename;
+GLuint Shapes::loadTexture( const string& filename, bool absolutePath ) {
+  string fn = ( absolutePath ? filename : rootDir + filename);
   GLuint destFormat;
   GLuint srcFormat;
   GLuint minFilter;
@@ -834,7 +834,7 @@ GLuint Shapes::loadTexture( const string& filename ) {
     srcFormat = GL_RGB;
     destFormat = ( bpp > 16 ? GL_RGB : GL_RGB5 );
     minFilter = GL_LINEAR_MIPMAP_NEAREST;
-    // Anisotropic filtering looks great but frequently freezes X on my system
+    // FIXME: Anisotropic filtering looks great but frequently freezes X on my system
     // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2.0f);
   }
 
