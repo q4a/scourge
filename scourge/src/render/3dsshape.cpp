@@ -244,7 +244,7 @@ void C3DSShape::normalizeModel() {
 }
 
 void C3DSShape::resolveTextures() {
-  // Depending on how many textures we found, load each one (Assuming .BMP)
+  // Depending on how many textures we found, load each one (Assuming .png)
   // If you want to load other files than bitmaps, you will need to adjust CreateTexture().
   // Below, we go through all of the materials and check if they have a texture map to load.
   // Otherwise, the material just holds the color information and we don't need to load a texture.

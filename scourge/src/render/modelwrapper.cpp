@@ -127,13 +127,11 @@ GLuint ModelLoader::loadSkinTexture( const string& skin_name ) {
 #ifdef DEBUG_LOADING
       cerr << "&&&&&&&&&& Loading texture: " << skin_name << endl;
 #endif
-      //CreateTexture(&skin_texture, skin_name, 0);
 
-			//skin_texture = Shapes::loadTextureWithAlpha( skin, 0, 0, 0, true, true );
-			skin_texture = shapePal->loadTexture( skin, true );
+      skin_texture = shapePal->loadTexture( skin, true );
 
 #ifdef DEBUG_LOADING
-			cerr << "\t&&&&&&&&&& Loaded texture: " << skin_texture << endl;
+      cerr << "\t&&&&&&&&&& Loaded texture: " << skin_texture << endl;
 #endif
       creature_skins[skin] = skin_texture;
     }

@@ -190,7 +190,25 @@ bool SavegameDialog::findFiles() {
 
 GLuint SavegameDialog::loadScreenshot( const string& dirName ) {
 	string path = get_file_name( dirName + "/screen.bmp" );
-	return Shapes::loadTextureWithAlpha( path, -1, -1, -1, true, false, false, true ); // -1 no alpha
+	SDL_Surface* surface = SDL_LoadBMP( path.c_str() );
+
+	if( surface == NULL ) {
+		cerr << "*** Error loading screenshot image (" << path << "): " << IMG_GetError() << endl;
+		return NULL;
+	}
+
+	GLuint texture;
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, surface->w, surface->h, GL_BGR, GL_UNSIGNED_BYTE, surface->pixels);
+
+	SDL_FreeSurface(surface);
+	return texture;
 }
 
 bool SavegameDialog::readFileDetails( const string& dirname ) {

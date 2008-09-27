@@ -229,7 +229,7 @@ const char *Constants::cursorTextureName[] = {
 	"talk.png", 
 	"use.png", 
 	"forbidden.png", 
-	"ranged.bmp", 
+	"ranged.png", 
 	"move.png"
 };
 
