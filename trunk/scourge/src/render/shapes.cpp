@@ -139,21 +139,7 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 
       id = shapePal->findTextureByName( bmp );
       if ( id == 0 ) {
-/*				// two ways of loading for backward compat.
-				if( path.find( ".bmp", 0 ) == path.length() - 4 ) {
-					//cerr << "\tLoading BMP" << endl;
-					id = shapePal->loadGLTextures(path);
-				} else {
-					//cerr << "\tLoading non-BMP" << endl;
-					id = shapePal->loadAlphaTexture( path );
-				}
-				
-				if( id == 0 ) {
-			  	cerr << "Error: unable to load theme texture for: ref=" << 
-			  	( outdoor ? outdoorThemeRefName[ ref ] : themeRefName[ ref ] ) << 
-			  	" path=" << path << endl;
-			  	}*/
-	id = shapePal->loadTexture( path );
+	id = shapePal->loadTexture( path, false, true );
 	GLclampf pri = 0.9f; glPrioritizeTextures(1, &id, &pri);
         loadedTextures[s] = id;
       }
@@ -751,7 +737,7 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
 /// correctly according to the properties of the source image.
 /// Returns an OpenGL texture name.
 
-GLuint Shapes::loadTexture( const string& filename, bool absolutePath ) {
+GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool anisotropy ) {
   string fn = ( absolutePath ? filename : rootDir + filename);
   GLuint destFormat;
   GLuint srcFormat;
@@ -780,12 +766,22 @@ GLuint Shapes::loadTexture( const string& filename, bool absolutePath ) {
     srcFormat = GL_RGB;
     destFormat = ( bpp > 16 ? GL_RGB : GL_RGB5 );
     minFilter = GL_LINEAR_MIPMAP_NEAREST;
-    // FIXME: Anisotropic filtering looks great but frequently freezes X on my system
-    // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2.0f);
   }
 
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter );
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+  // Enable anisotropic filtering if requested, mipmapping is enabled
+  // and the hardware supports it.
+  if ( anisotropy && !format->Amask && strstr((char*)glGetString(GL_EXTENSIONS), 
+    "GL_EXT_texture_filter_anisotropic") ) {
+    float maxAnisotropy;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
+  } else {
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 0.0f);
+  }
+
 //  glTexImage2D( GL_TEXTURE_2D, 0, destFormat, surface->w, surface->h, 0, srcFormat, GL_UNSIGNED_BYTE, surface->pixels );
 
   gluBuild2DMipmaps(GL_TEXTURE_2D, destFormat, surface->w, surface->h, srcFormat, GL_UNSIGNED_BYTE, surface->pixels);
@@ -1041,23 +1037,10 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 	    FILE *fp = fopen( fn.c_str(), "rb" );
 	    if( fp ) {
 	    	fclose( fp );
-	    	
-		    // load the texture
-/*				SDL_Surface *tmpSurface;
-				GLubyte *tmpImage;
-				
-				setupAlphaBlendedBMP( path, tmpSurface, tmpImage );				
-				if( tmpSurface ) {
-					id = textures[ texture_count ].id = 
-						loadGLTextureBGRA( tmpSurface, tmpImage );			
-					SDL_FreeSurface( tmpSurface );
-					delete [] tmpImage;
-					break;
-				} else {
-					id = textures[ texture_count ].id = 0;
-				}*/
-				id = loadTexture( path );
-				textures[ texture_count ].id = id;
+		// FIXME: Anisotropic filtering for system textures freezes X for some reason.
+		// id = loadTexture( path, false, true );
+		id = loadTexture( path );
+		textures[ texture_count ].id = id;
 	    }
 			dirCount++;
     }
