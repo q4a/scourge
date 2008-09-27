@@ -100,7 +100,7 @@ private:
   float movex, movey, movez;
   Shapes *shapePal;
 	float size_x, size_y, size_z;
-  float offs_x, offs_y, offs_z;
+	float offs_x, offs_y, offs_z;
   GLShape *debugShape;
   GLuint displayListStart;
   bool initialized;

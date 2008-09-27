@@ -485,10 +485,12 @@ void C3DSShape::draw() {
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   }
-	glTranslatef( offs_x * MUL, offs_y * MUL, offs_z * MUL );
-  glTranslatef(-movex * divx, 0.0f, 0.0f);
-  glTranslatef(0.0f, (getDepth() * MUL) - (movey * divy), 0.0f);
-  glTranslatef(0.0f, 0.0f, movez);
+  setOffset( offs_x * MUL - movex * divx, 
+             offs_y * MUL + (getDepth() * MUL) - (movey * divy),
+             offs_z * MUL + movez );
+	glTranslatef( offs_x * MUL - movex * divx, 
+	              offs_y * MUL + (getDepth() * MUL) - (movey * divy), 
+	              offs_z * MUL + movez );
 
   // update the wind
   if( isWind() && !useShadow ) {
