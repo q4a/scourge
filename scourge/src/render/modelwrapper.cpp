@@ -24,6 +24,7 @@
 #include "Md3.h"
 #include "glshape.h"
 #include "shapes.h"
+#include "../shapepalette.h"
 
 using namespace std;
 
@@ -36,7 +37,8 @@ enum {
 	LOAD_MD3
 };
 
-ModelLoader::ModelLoader( bool headless, GLuint *textureGroup ) {
+ModelLoader::ModelLoader( ShapePalette *shapePal, bool headless, GLuint *textureGroup ) {
+	this->shapePal = shapePal;
 	this->headless = headless;
 	this->textureGroup = textureGroup;
 }
@@ -127,7 +129,8 @@ GLuint ModelLoader::loadSkinTexture( const string& skin_name ) {
 #endif
       //CreateTexture(&skin_texture, skin_name, 0);
 
-			skin_texture = Shapes::loadTextureWithAlpha( skin, 0, 0, 0, true, true );
+			//skin_texture = Shapes::loadTextureWithAlpha( skin, 0, 0, 0, true, true );
+			skin_texture = shapePal->loadTexture( skin, true );
 
 #ifdef DEBUG_LOADING
 			cerr << "\t&&&&&&&&&& Loaded texture: " << skin_texture << endl;
