@@ -235,7 +235,6 @@ void ShapePalette::initFonts( ConfigLang *config ) {
 }
 
 void ShapePalette::initNamedTextures( ConfigLang *config ) {
-//	Shapes::debugFileLoad = true;
 	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "texture" );
 	for( unsigned int i = 0; v && i < v->size(); i++ ) {
 		ConfigNode *node = (*v)[i];
@@ -243,32 +242,16 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 		string value = node->getValueAsString( "value" );
 		bool grayscale = node->getValueAsBool( "grayscale" );
 		bool outdoors = node->getValueAsBool( "outdoors" );
-//		if( value.substr( value.size() - 4 ) == ".png" ) {
-		  int w, h;		  
 			if( outdoors ) {
 				NamedOutdoorTexture ot;
-//				ot.tex = loadAlphaTexture( value, &w, &h );
 				ot.tex = loadTexture( value );
 				ot.width = node->getValueAsInt( "width" );
 				ot.height = node->getValueAsInt( "width" );
 				outdoorNamedTextures[ name ] = ot;
 			} else {
-				//namedTextures[ name ] = loadAlphaTexture( value, &w, &h );
 				namedTextures[ name ] = loadTexture( value );
 			}
-/*		} else {
-			if( outdoors ) { 
-				NamedOutdoorTexture ot;
-				ot.tex = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
-				ot.width = node->getValueAsInt( "width" );
-				ot.height = node->getValueAsInt( "width" );
-				outdoorNamedTextures[ name ] = ot;
-			} else {
-				namedTextures[ name ] = loadTextureWithAlpha( value, 0, 0, 0, false, false, grayscale );
-			}
-		}*/
 	}
-//	Shapes::debugFileLoad = false;
 }
 
 void ShapePalette::initInventory( ConfigLang *config ) {

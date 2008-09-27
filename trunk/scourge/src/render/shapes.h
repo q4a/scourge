@@ -403,7 +403,6 @@ public:
 
   GLuint getCursorTexture( int cursorMode );
 
-  static GLuint loadTextureWithAlpha( std::string& fileName, int r=0, int b=0, int g=0, bool isAbsPath=false, bool swapImage=false, bool grayscale=false, bool isSprite = false );
   static GLuint loadAlphaTexture( std::string& filename, int *width=NULL, int *height=NULL, bool isSprite = false );
   GLuint loadTexture( const std::string& filename, bool absolutePath = false );
 

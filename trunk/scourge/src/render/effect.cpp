@@ -53,8 +53,8 @@ Effect::Effect( Map *levelMap, Preferences *preferences, Shapes *shapePal, GLSha
 }
 
 void Effect::commonInit() {
-  flameTex = shapePal->findTextureByName( "flame.bmp", true );
-  ringTex = shapePal->findTextureByName( "ring2.bmp", true );
+  flameTex = shapePal->findTextureByName( "flame.png", true );
+  ringTex = shapePal->findTextureByName( "ring2.png", true );
   rippleTex = shapePal->getRippleTexture();
   rippleRadius = 2.0f;
   rippleAlpha = 0.4f;

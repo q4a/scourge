@@ -1870,8 +1870,8 @@ bool CLoadMD3::LoadSkin(t3DModel *pModel, const std::string& strSkin, MD3Shape *
 	// her upper body model links to 2 texture; one for her body and the other for
 	// her face/head.  The .skin file for the lara_upper.md3 model has 2 textures:
 	//
-	// u_torso,models/players/laracroft/default.bmp
-	// u_head,models/players/laracroft/default_h.bmp
+	// u_torso,models/players/laracroft/default.png
+	// u_head,models/players/laracroft/default_h.png
 	//
 	// Notice the first word, then a comma.  This word is the name of the object
 	// in the .md3 file.  Remember, each .md3 file can have many sub-objects.
@@ -1880,14 +1880,14 @@ bool CLoadMD3::LoadSkin(t3DModel *pModel, const std::string& strSkin, MD3Shape *
 	// because we aren't making Quake, I just grab the texture name at the
 	// end of the string and disregard the rest.  of course, later this is
 	// concatenated to the original MODEL_PATH that we passed into load our character.
-	// So, for the torso object it's clear that default.bmp is assigned to it, where
-	// as the head model with the pony tail, is assigned to default_h.bmp.  Simple enough.
+	// So, for the torso object it's clear that default.png is assigned to it, where
+	// as the head model with the pony tail, is assigned to default_h.png.  Simple enough.
 	// What this function does is go through all the lines of the .skin file, and then
 	// goes through all of the sub-objects in the .md3 file to see if their name is
 	// in that line as a sub string.  We use our cool IsInString() function for that.
 	// If it IS in that line, then we know that we need to grab it's texture file at
 	// the end of the line.  I just parse backwards until I find the last '/' character,
-	// then copy all the characters from that index + 1 on (I.E. "default.bmp").
+	// then copy all the characters from that index + 1 on (I.E. "default.png").
 	// Remember, it's important to note that I changed the texture files from .tga
 	// files to .bmp files because that is what all of our tutorials use.  That way
 	// you don't have to sift through tons of image loading code.  You can write or
