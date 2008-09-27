@@ -46,6 +46,7 @@ private:
 
 protected:
 	int width, height, depth;
+	float offsetX, offsetY, offsetZ;
 
 public: 
 	enum {
@@ -75,6 +76,11 @@ public:
 	inline int getGroundSY() { return groundSY; }
 	inline int getGroundEX() { return groundEX; }
 	inline int getGroundEY() { return groundEY; }
+	
+	inline float getOffsX() { return offsetX; }
+	inline float getOffsY() { return offsetY; }
+	inline float getOffsZ() { return offsetZ; }
+	inline void setOffset( float x, float y, float z ) { offsetX = x; offsetY = y; offsetZ = z; }
 
   /**
     Call this once before the shape is to be displayed.

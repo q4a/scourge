@@ -37,7 +37,8 @@
 
 using namespace std;
 
-//#define DEBUG_MOUSE_POS 1
+// set to 1 to enable bounding box and ground grid drawing
+#define DEBUG_MOUSE_POS 0
 
 #define USE_LIGHTING 1
 
@@ -1084,7 +1085,7 @@ void Map::draw() {
 		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
   }		
 
-  if( settings->isGridShowing() && gridEnabled ) { 
+  if( DEBUG_MOUSE_POS || ( settings->isGridShowing() && gridEnabled ) ) { 
   	willDrawGrid();
   }
 }
@@ -1299,7 +1300,9 @@ void Map::drawIndoors() {
 
     // draw the fog of war or shading
 #ifdef USE_LIGHTING
+#if DEBUG_MOUSE_POS == 0    
     if( helper && !adapter->isInMovieMode() && !(isCurrentlyUnderRoof && !groundVisible ) ) helper->draw( getX(), getY(), MVW, MVD );
+#endif    
 #endif
 
     glDisable(GL_BLEND);
@@ -1342,9 +1345,11 @@ void Map::drawOutdoors() {
 
   // draw the fog of war or shading
 #ifdef USE_LIGHTING
+#if DEBUG_MOUSE_POS == 0  
   if( helper && !adapter->isInMovieMode() && !(isCurrentlyUnderRoof && !groundVisible ) ) {
 		helper->draw( getX(), getY(), MVW, MVD );
   }
+#endif  
 #endif
 
   glDisable(GL_BLEND);
@@ -1463,7 +1468,7 @@ void Map::willDrawGrid() {
 	int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
 	int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
 	float m = 0.5f * MUL;
-
+	char tmp[100];
 	for(int i = 0; i < chunkCount; i++) {
 
 		float n = static_cast<float>(MAP_UNIT) * MUL;
@@ -1473,18 +1478,29 @@ void Map::willDrawGrid() {
 
 		if( chunks[i].cx == chunkX && chunks[i].cy == chunkY ) {
 			glColor4f( 0.0f, 1.0f, 0.0f, 0.25f );
-			glLineWidth( 5 );
+			glLineWidth( 1 );
+			sprintf(tmp, "%d,%d", (chunkX * MAP_UNIT + MAP_OFFSET), (chunkY * MAP_UNIT + MAP_OFFSET + 1) );
+			adapter->texPrint( 0, 0, tmp );
+			for( int xx = 1; xx < MAP_UNIT; xx++ ) {
+				glBegin( GL_LINES );
+				glVertex3f( 0, xx * MUL, m );
+				glVertex3f( n, xx * MUL, m );
+				glEnd();
+				glBegin( GL_LINES );
+				glVertex3f( xx * MUL, 0, m );
+				glVertex3f( xx * MUL, n, m );
+				glEnd();
+			}
 		} else {
 			glColor4f( 1.0f, 1.0f, 1.0f, 0.25f );
 			glLineWidth( 1 );
-		}
+		}		
 		glBegin( GL_LINE_LOOP );
 		glVertex3f( 0.0f, 0.0f, m );
 		glVertex3f( n, 0.0f, m );
 		glVertex3f( n, n, m );
 		glVertex3f( 0.0f, n, m );
 		glEnd();
-
 		glPopMatrix();
 	}
 
@@ -1517,6 +1533,7 @@ void Map::willDrawGrid() {
 		green = 0.15f;
 	}
 
+	// draw the cursor
 	glColor4f( red, green, blue, 0.25f );
 	glTranslatef( xp, yp, 0.0f );
 	glBegin( GL_QUADS );
@@ -1838,6 +1855,46 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, int e
 		}
 		shape->draw();		
 	}
+  
+#if DEBUG_MOUSE_POS == 1
+  if( shape && !useShadow && ( ( later && later->item ) || ( later && later->creature ) || shape->isInteractive() ) ) {
+  	glDisable( GL_DEPTH_TEST );
+	  glDepthMask( GL_FALSE );
+	  glDisable( GL_CULL_FACE );
+	  glDisable( GL_TEXTURE_2D );
+	  glColor4f( 1, 1, 1, 1 );
+	  glBegin( GL_LINE_LOOP );
+	  glVertex3f( 0, 0, 0 );
+	  glVertex3f( 0, shape->getDepth() * MUL, 0 );
+	  glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, 0 );
+	  glVertex3f( shape->getWidth() * MUL, 0, 0 );
+	  glEnd();
+	  glBegin( GL_LINE_LOOP );
+	  glVertex3f( 0, 0, shape->getHeight() * MUL );
+	  glVertex3f( 0, shape->getDepth() * MUL, shape->getHeight() * MUL );
+	  glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, shape->getHeight() * MUL );
+	  glVertex3f( shape->getWidth() * MUL, 0, shape->getHeight() * MUL );
+	  glEnd();
+	  glBegin( GL_LINES );
+	  glVertex3f( 0, 0, 0 );
+	  glVertex3f( 0, 0, shape->getHeight() * MUL );
+	  glEnd();
+	  glBegin( GL_LINES );
+	  glVertex3f( 0, shape->getDepth() * MUL, 0 );
+	  glVertex3f( 0, shape->getDepth() * MUL, shape->getHeight() * MUL );
+	  glEnd();
+	  glBegin( GL_LINES );
+	  glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, 0 );
+	  glVertex3f( shape->getWidth() * MUL, shape->getDepth() * MUL, shape->getHeight() * MUL );
+	  glEnd();
+	  glBegin( GL_LINES );
+	  glVertex3f( shape->getWidth() * MUL, 0, 0 );
+	  glVertex3f( shape->getWidth() * MUL, 0, shape->getHeight() * MUL );
+	  glEnd();
+	  glDepthMask( GL_TRUE );
+	  glEnable(GL_DEPTH_TEST);
+  }
+#endif
   
   // in the map editor outline virtual shapes
   if( shape->isVirtual() && settings->isGridShowing() && gridEnabled ) {
@@ -4184,38 +4241,73 @@ void Map::getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Locatio
   res = gluUnProject( win_x, win_y, 1.0f, modelview, projection, viewport, &qx, &qy, &qz );
 
   // Take steps along the pick-ray. A t of 0 to 1 is the line segment from the near to the far plane.
-  //cerr << "------------------------------" << endl;
+#if DEBUG_MOUSE_POS == 1  
+  cerr << "------------------------------" << endl;
+#endif  
   for( int i = 0; i < RAY_PICK_STEP_COUNT; i++ ) {
   	float t = RAY_PICK_MIN_T + ( ( (float)i / (float)RAY_PICK_STEP_COUNT ) * ( RAY_PICK_MAX_T - RAY_PICK_MIN_T ) );
 		double ox = px + t * ( qx - px );
 		double oy = py + t * ( qy - py );
 		double oz = pz + t * ( qz - pz );
 		
-		*mapx = getX() + (Uint16)( toint( ox / (float)MUL ) );
-    *mapy = getY() + (Uint16)( toint( oy / (float)MUL ) ) + 2;
-    float gh = ( *mapx < MAP_WIDTH && *mapy < MAP_DEPTH ? getGroundHeight( ( *mapx ) / OUTDOORS_STEP, ( *mapy ) / OUTDOORS_STEP ) : 0 );
-    *mapz = (Uint16)( toint( ( oz / (float)MUL ) - gh ) );
-    //if( *mapz > 0 ) (*mapz)--;
-    
-    //cerr << "\t" << t << " - " << *mapx << "," << *mapy << "," << *mapz << "," << endl;
-    
-    // hit something
-    if( *mapx < MAP_WIDTH && *mapy < MAP_DEPTH && *mapz < MAP_VIEW_HEIGHT ) {
-    	*pos = getLocation( *mapx, *mapy, *mapz );
-    	if( *pos && ( (*pos)->creature || (*pos)->item || (*pos)->shape->isInteractive() ) ) {
-    		*mapx = (*pos)->x;
-    		*mapy = (*pos)->y;
-    		*mapz = (*pos)->z;
-    		return;
-    	}
-    }
- 		*pos = NULL;
-    
-    // hit the floor
-    if( *mapz == 0 ) {
-    	return;
-    }
-  }	
+		double mx = getX() + ( ox / MUL );
+		double my = getY() + ( oy / MUL ) + 2.0f;
+		float gh = ( mx >= 0 && mx < MAP_WIDTH && my >= 0 && my < MAP_DEPTH ? findMaxHeightPos( mx, my, 0 ) : 0 );
+		double mz = ( ( oz ) / MUL ) - gh;
+#if DEBUG_MOUSE_POS == 1		
+		cerr << "map: " << mx << "," << my << "," << mz << " ground=" << gh << endl;
+#endif
+		*mapx = (Uint16)mx;
+		*mapy = (Uint16)my;
+
+    // hit something?
+  	for( int xx = -1; xx < 1; xx++ ) {
+  		for( int yy = -1; yy < 1; yy++ ) {
+  			for( int zz = -1; zz < 1; zz++ ) {
+  				
+		    	float fx = mx + xx;
+		    	float fy = my + yy;
+		    	float fz = mz + zz;  				
+  				
+			    if( fx >= 0 && fx < MAP_WIDTH && 
+			    		fy >= 0 && fy < MAP_DEPTH && 
+			    		fz >= 0 && fz < MAP_VIEW_HEIGHT ) {
+			    	Location *location = getLocation( (int)fx, (int)fy, (int)fz );
+			    	if( location && (location)->shape && ( (location)->creature || (location)->item || (location)->shape->isInteractive() ) ) {
+			    		Shape *shape = (location)->shape;
+			    		if( mx >= (location)->x + shape->getOffsX() / MUL && 
+			    				mx < (location)->x + shape->getOffsX() / MUL + shape->getWidth() &&
+			    				my >= (location)->y + shape->getOffsY() / MUL - shape->getDepth() &&
+			    				my < (location)->y + shape->getOffsY() / MUL + 1 &&
+			    				mz >= (location)->z + shape->getOffsZ() / MUL && 
+			    				mz < (location)->z + shape->getOffsZ() / MUL + shape->getHeight() ) {
+			    			*pos = location;
+	  						*mapx = location->x;
+	  						*mapy = location->y;
+	  						*mapz = location->z;
+	  						sprintf( mapDebugStr, "map: %.2f,%.2f,%.2f pos:%d,%d,%d - %d,%d,%d", 
+	  						         mx, my, mz,
+	  						         location->x, location->y - shape->getDepth() + 1, location->z,
+	  						         location->x + shape->getWidth(), location->y + 1, location->z + shape->getHeight() );
+	  						adapter->setDebugStr(mapDebugStr);
+	  						return;
+			    		}
+			    	}
+			    }			
+  			}
+  		}
+  	}
+  	if( toint( mz ) <= 0.25f ) {
+  		*pos = NULL;
+  		*mapz = 0;
+  		sprintf( mapDebugStr, "map: %d,%d,%d", *mapx, *mapy, *mapz );
+  		adapter->setDebugStr(mapDebugStr);
+  		return;
+  	}
+  }
+  *pos = NULL;
+  *mapz = 0;
+	adapter->setDebugStr("map: ");
 }
 
 /**
@@ -4471,7 +4563,7 @@ bool Map::drawHeightMapFloor() {
 	glDepthMask( GL_TRUE );
 	glDisable( GL_BLEND );
 
-	if( settings->isGridShowing() && gridEnabled ) {
+	if( DEBUG_MOUSE_POS || ( settings->isGridShowing() && gridEnabled ) ) {
 		//glDisable( GL_DEPTH_TEST );
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );	
