@@ -4273,7 +4273,7 @@ void Map::getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Locatio
 			    		fy >= 0 && fy < MAP_DEPTH && 
 			    		fz >= 0 && fz < MAP_VIEW_HEIGHT ) {
 			    	Location *location = getLocation( (int)fx, (int)fy, (int)fz );
-			    	if( location && (location)->shape && ( (location)->creature || (location)->item || (location)->shape->isInteractive() ) ) {
+			    	if( location && (location)->shape && ( (location)->creature || (location)->item || (location)->shape->isInteractive() || isSecretDoor( location ) ) ) {
 			    		Shape *shape = (location)->shape;
 			    		if( mx >= (location)->x + shape->getOffsX() / MUL && 
 			    				mx < (location)->x + shape->getOffsX() / MUL + shape->getWidth() &&
