@@ -66,6 +66,7 @@ class GLTeleporter : public GLShape  {
   inline bool drawLater() { return true; }
   inline void setupBlending() { glBlendFunc(GL_SRC_ALPHA, GL_ONE); }
 	inline int getTeleporterType() { return teleporterType; }
+	inline void outline( float r, float g, float b ) {}
 
  protected:
   void commonInit(GLuint flameTex);
