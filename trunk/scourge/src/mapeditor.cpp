@@ -265,7 +265,7 @@ MapEditor::MapEditor( Scourge *scourge ) {
   }
   outdoorTexturesList->setLines( count, outdoorTextureNames );  
 
-  miniMap = new MiniMap( scourge, true ); 
+  miniMap = new MiniMap( scourge ); 
 }                                                                         
 
 void MapEditor::createNewMapDialog() {
@@ -507,7 +507,6 @@ bool MapEditor::handleEvent(Widget *widget, SDL_Event *event) {
 			outdoorTexturesButton->setEnabled( true );
 		}
 	scourge->showMessageDialog( result.c_str() );
-    miniMap->reset();
 //    scourge->getParty()->toggleRound( false );
   } else if( widget == newButton ) {
     newMapWin->setVisible( true );

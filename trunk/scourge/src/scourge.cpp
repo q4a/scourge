@@ -129,7 +129,7 @@ void Scourge::initUI() {
   this->levelMap = session->getMap();
   mapSettings = new GameMapSettings();
   levelMap->setMapSettings( mapSettings );
-  miniMap = new MiniMap(this, getSession()->getPreferences()->getFlaky());
+  miniMap = new MiniMap(this);
   // create the mission board
   this->board = session->getBoard();
   this->party = session->getParty();
@@ -554,8 +554,6 @@ void Scourge::resetGame( bool resetParty ) {
 
 		getSession()->getSquirrel()->startGame();
 	}
-	//cerr << "Minimap reset" << endl;
-	miniMap->reset();
 
 	// ready the party
 	//cerr << "Party reset" << endl;
