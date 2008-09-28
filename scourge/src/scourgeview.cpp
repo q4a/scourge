@@ -914,8 +914,9 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
   }
 
 	if( !creature->getStateMod( StateMod::dead ) && ( groupMode || player || creature->isMonster() || wanderingHero ) ) {
-		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(), creature->getX(), creature->getY(),
-																				creature->getShape()->getWidth(), creature->getShape()->getDepth() );
+		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(), 
+		                                  creature->getX(), creature->getY() + creature->getShape()->getDepth() / 2.0f - 1,
+		                                  creature->getShape()->getWidth(), creature->getShape()->getDepth() );
 	}
 
   // draw state mods
