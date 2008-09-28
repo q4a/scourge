@@ -1707,8 +1707,14 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, int e
   
   if(useShadow) {
 		// put shadow above the floor a little
-
-		glTranslatef( xpos2, ypos2, ( 0.26f * MUL + heightPos ) );
+  	
+    float xdiff = 0;
+    float ydiff = 0;
+    if( later && later->creature ) {
+      xdiff = ( later->creature->getX() - static_cast<float>(toint(later->creature->getX())));
+      ydiff = ( later->creature->getY() - static_cast<float>(toint(later->creature->getY())));
+    }
+    glTranslatef( xpos2 + xdiff * MUL, ypos2 + ydiff * MUL, ( 0.26f * MUL + heightPos ) );  	
 		glMultMatrixf(shadowTransformMatrix);
 
     // gray shadows
