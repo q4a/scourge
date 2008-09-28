@@ -534,7 +534,7 @@ void MainMenu::drawScourge() {
 
   glEnable( GL_ALPHA_TEST );
   //glAlphaFunc( GL_EQUAL, 0xff );
-  glAlphaFunc( GL_GREATER, 0 );
+  glAlphaFunc( GL_EQUAL, 0xff );
   glEnable( GL_TEXTURE_2D );
   
   float w = 554; //scourge->getShapePalette()->scourge->w;
