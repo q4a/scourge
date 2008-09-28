@@ -151,9 +151,9 @@ void MiniMap::drawMap() {
     ( scourge->getPreferences()->getStencilbuf() && 
       scourge->getPreferences()->getStencilBufInitialized() );
 
-  int sx = scourge->getSession()->getMap()->getX() + 75 - ( MINI_MAP_SIZE / 2 );
+  int sx = scourge->getSession()->getMap()->getX() + 75 - 30 - ( MINI_MAP_SIZE / 2 );
   if( sx < MAP_OFFSET ) sx = MAP_OFFSET;
-  int sy = scourge->getSession()->getMap()->getY() + 75 - ( MINI_MAP_SIZE / 2 );
+  int sy = scourge->getSession()->getMap()->getY() + 75 - 30 - ( MINI_MAP_SIZE / 2 );
   if( sy < MAP_OFFSET ) sy = MAP_OFFSET;
   int ex = sx + MINI_MAP_SIZE;
   if( ex > textureSizeW ) ex = textureSizeW;
