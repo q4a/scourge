@@ -21,7 +21,8 @@ function startHqMovie() {
 			// should temporarily "hide" other npc-s...
 			hideUnScripted();
 			
-			scourgeGame.moveCamera( 150, 138, 0, 0, 85, 260, 1.8, 500 );
+			//scourgeGame.moveCamera( 150, 138, 0, 0, 85, 260, 1.8, 500 );
+			scourgeGame.moveCamera( 180, 168, 0, 0, 85, 260, 1.8, 500 );
 			
 			scourgeGame.continueAt( "initHq_part2", 1000 );
 		}
@@ -39,8 +40,10 @@ function hideUnScripted(){
 	}
 }
 
-function initHq_part2() {	
-	scourgeGame.moveCamera( 150, 120, 0, 0, 85, 320, 1.8, 10000 );
+function initHq_part2() {
+	//scourgeGame.moveCamera( 150, 120, 0, 0, 85, 320, 1.8, 10000 );
+	//scourgeGame.moveCamera( 175, 150, 0, 0, 80, 320, 1.8, 10000 );
+	scourgeGame.moveCamera( 180, 150, 0, 0, 85, 320, 1.8, 10000 );
 	scourgeGame.continueAt( "initHq_part3", 1000 );
 }
 	
@@ -63,8 +66,10 @@ function initHq_part5() {
 	scourgeGame.continueAt( "initHq_part6", 3000 );
 }
 
-function initHq_part6() {	
-	scourgeGame.moveCamera( 150, 150, 0, 0, 70, 230, 1.2, 6000 );
+function initHq_part6() {
+	//scourgeGame.moveCamera( 150, 150, 0, 0, 70, 230, 1.2, 6000 );
+	//scourgeGame.moveCamera( 180, 165, 0, 0, 80, 260, 1.8, 6000 );
+	scourgeGame.moveCamera( 180, 180, 0, 0, 70, 230, 1.2, 6000 );
 	scourgeGame.continueAt( "initHq_part7", 6000 );
 }
 
