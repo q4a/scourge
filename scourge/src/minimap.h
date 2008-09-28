@@ -55,19 +55,12 @@ private:
   bool showMiniMap;     // true : draw it, false : don't draw the minimap
   // Texture that will hold the minimap
   int textureSizeH, textureSizeW;   
-  GLuint texture[1];
-  unsigned char * textureInMemory;
-  bool mustBuildTexture;
-  bool directMode;
     
  public:
   MiniMap();
   ~MiniMap();
-  MiniMap( Scourge *scourge, bool directMode = false );
+  MiniMap( Scourge *scourge );
 
-  void reset();
-
-  void prepare();
   void drawMap();
 
   inline void setShowMiniMap( bool b ) { showMiniMap = b; }
