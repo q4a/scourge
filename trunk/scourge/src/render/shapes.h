@@ -293,6 +293,10 @@ protected:
 
   GLuint md2_tex[6];
 
+  // Info about the texture most recently loaded by loadTexture().
+  int lastTextureWidth, lastTextureHeight;
+  bool lastTextureAlpha;
+
   // how big to make the walls
   const static Sint16 unitSide = MAP_UNIT;
   const static Sint16 unitOffset = MAP_UNIT_OFFSET;
@@ -403,7 +407,6 @@ public:
 
   GLuint getCursorTexture( int cursorMode );
 
-  static GLuint loadAlphaTexture( std::string& filename, int *width=NULL, int *height=NULL, bool isSprite = false );
   GLuint loadTexture( const std::string& filename, bool absolutePath = false, bool anisotropy = false );
 
 	inline int getCursorWidth() { return cursorWidth; }
@@ -411,7 +414,7 @@ public:
 
 	inline GLuint getSelection() { return selection; }
 	
-	GLuint createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW=256, int textureSizeH=256, int width=256, int height=256, bool isSprite = false );
+	GLuint createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW=256, int textureSizeH=256, int width=256, int height=256 );
 	
 	void loadAllShapes();
 
@@ -421,14 +424,11 @@ protected:
 	ShapeValues *getShapeValueByName( const char *name, int *index );
   GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, bool isSprite = false);
   GLuint loadGLTextureBGRA(int w, int h, GLubyte *image, bool isSprite = false);
-  void setupAlphaBlendedBMP(const std::string& filename, SDL_Surface*& surface, GLubyte*& image, int red=0, int green=0, int blue=0, bool isAbsFile=false, bool swapImage=false, bool grayscale=false );
   void setupAlphaBlendedBMPGrid(const std::string& filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight, int red=0, int green=0, int blue=0, int nred=-1, int ngreen=-1, int nblue=-1);
   void swap(unsigned char & a, unsigned char & b);
   void loadStencil( const std::string& filename, int index );
 	void loadCursors();
 	GLuint *findOrMakeTextureGroup( char *s );
-	void setupPNG( const std::string& filename, SDL_Surface*& surface, GLubyte*& image, bool isAbsPath=false, bool hasAlpha=true );
-	void setupImage( const std::string &filename, SDL_Surface*& surface, GLubyte*& image );
 };
 
 #endif
