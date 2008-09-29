@@ -100,7 +100,6 @@ void MiniMap::drawMap() {
     glEnd();       
     glDisable(GL_TEXTURE_2D); 
     glDisable( GL_ALPHA_TEST );
-    glEnable(GL_BLEND);
     glPopMatrix();
 
     glColorMask( 1, 1, 1, 1 );
@@ -111,7 +110,6 @@ void MiniMap::drawMap() {
     // Draw the transparent background.
     glPushMatrix();
     glEnable(GL_BLEND);
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable(GL_TEXTURE_2D);
     glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getMinimapMaskTexture() );
     glColor4f( 0, 0, 0, 0.5f );
@@ -169,36 +167,18 @@ void MiniMap::drawMap() {
 
         if( pos->shape ) {
 
-          if( !pos->shape->isInteractive() ) {
-
-            if( !pos->creature ) {
-              glColor4f( 1, 1, 1, 0.5f );
-            } else {
-                if( pos->creature->isMonster() ) {
-                  if( ((Creature*)pos->creature)->getMonster()->isNpc() ) {
-                    glColor4f( 1, 1, 0, 0.5f );
-                  } else {
-                    glColor4f( 1, 0, 0, 0.5f );
-                  }
-                } else {
-                  if( pos->creature == scourge->getSession()->getParty()->getPlayer() ) {
-                    glColor4f( 1, 0, 1, 0.5f );
-                  } else {
-                    glColor4f( 0, 1, 0, 0.5f );
-                  }
-                }
-            }
-
-          } else {
+          if( !pos->creature ) {
 
             if( pos->item ) {
               glColor4f( 0, 0, 1, 0.5f );
             } else {
-              glColor4f( 1, 0.7f, 0, 0.5f );
+              if( !pos->shape->isInteractive() ) {
+                glColor4f( 1, 1, 1, 0.5f );
+              } else {
+                glColor4f( 1, 0.7f, 0, 0.5f );
+              }
             }
-          }
 
-          if( !pos->creature ) {
             float xp = ( x - sx ) * MINI_MAP_BLOCK;
             float yp = ( y - sy ) * MINI_MAP_BLOCK;
 
@@ -208,7 +188,29 @@ void MiniMap::drawMap() {
             glVertex2f( xp, yp + MINI_MAP_BLOCK );
             glVertex2f( xp + MINI_MAP_BLOCK, yp + MINI_MAP_BLOCK );
             glEnd();
+
           } else {
+ 
+           if( pos->creature->isMonster() ) {
+              if( ((Creature*)pos->creature)->getMonster()->isNpc() ) {
+                glColor4f( 0.8f, 0.8f, 0, 0.5f );
+              } else {
+                glColor4f( 1, 0, 0, 0.5f );
+              }
+            } else {
+              if( pos->creature == scourge->getSession()->getParty()->getPlayer() ) {
+                glColor4f( 0, 1, 0, 0.5f );
+              } else {
+                glColor4f( 0, 0.8f, 0.8f, 0.5f );
+                for( int c = 0; c < scourge->getParty()->getPartySize(); c++ ) {
+                  if( pos->creature == scourge->getSession()->getParty()->getParty( c ) ) {
+                    glColor4f( 0, 0.8f, 0, 0.5f );
+                    break;
+                  }
+                }
+              }
+            }
+
             float width = pos->creature->getShape()->getWidth() / 2.0f * MINI_MAP_BLOCK;
             float cx =  ( pos->creature->getX() - sx ) * MINI_MAP_BLOCK + width;
             float cy = ( pos->creature->getY() - sy ) * MINI_MAP_BLOCK - width;
@@ -222,6 +224,7 @@ void MiniMap::drawMap() {
             glVertex2f( 0, -width );
             glEnd();
             glPopMatrix();
+
           }
 
         }
@@ -237,7 +240,6 @@ void MiniMap::drawMap() {
     glDisable(GL_STENCIL_TEST);
 
     glPushMatrix();
-    glEnable(GL_BLEND);
     glEnable( GL_ALPHA_TEST );
     //glAlphaFunc( GL_EQUAL, 0xff );
     glAlphaFunc( GL_ALWAYS, 0 );
