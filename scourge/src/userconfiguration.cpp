@@ -318,6 +318,7 @@ UserConfiguration::UserConfiguration(){
     tooltipEnabled = true;
 		enableScreenshots = true;
     tooltipInterval = 50;
+    aniso_filter = false;
 
     // game settings
     gamespeed = 1;  // fast speed
@@ -565,6 +566,8 @@ void UserConfiguration::saveConfiguration(){
     writeFile(configFile, textLine);
 		snprintf(textLine, TXT_SIZE, "set bpp %d\n", bpp);
     writeFile(configFile, textLine);
+		snprintf(textLine, TXT_SIZE, "set aniso_filter %s\n", aniso_filter ? "true":"false");
+    writeFile(configFile, textLine);
 		snprintf(textLine, TXT_SIZE, "\n// Game settings\n");
     writeFile(configFile, textLine);
 		snprintf(textLine, TXT_SIZE, "set gamespeed %d  // 0 : fastest, 4 : slowest\n", gamespeed);
@@ -677,7 +680,7 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
        s1 == "ovalcutoutshown" || s1 == "outlineinteractiveitems" ||
        s1 == "hideinventoriesonmove" ||
        s1 == "soundenabled" || s1 == "alwaysshowpath" || s1 == "tooltipenabled" || 
-			 s1 == "enablescreenshots" ) {
+			 s1 == "enablescreenshots" || s1 == "aniso_filter") {
         if(s2 == "true") {
             paramValue = true;
         } else if(s2 == "false") {
@@ -714,6 +717,8 @@ void UserConfiguration::set(string s1, string s2, int lineNumber){
              << ", valid values are 8, 15, 16, 24 or 32 . Ignoring line" << endl;    
              bpp = -1; // To autodetect best bpp value
         }
+    } else if(s1 == "aniso_filter") {
+        aniso_filter = paramValue;
     } else if(s1 == "soundfreq") {
       soundFreq = atoi(s2.c_str());
     } else if(s1 == "musicvolume") {
@@ -1170,6 +1175,7 @@ void UserConfiguration::createDefaultConfigFile() {
   configFile << "set h 768" << endl;
   configFile << "set bpp 32" << endl;
 	configFile << "set enablescreenshots true" << endl;
+  configFile << "set aniso_filter false" << endl;
   configFile << "" << endl;
   configFile << "// Game settings" << endl;
   configFile << "set gamespeed 2  // 0 : fastest, 4 : slowest" << endl;
@@ -1197,4 +1203,3 @@ void UserConfiguration::createDefaultConfigFile() {
 
   configFile.close();
 }
-

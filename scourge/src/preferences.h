@@ -138,6 +138,7 @@ public:
   virtual int getW() = 0;
   virtual int getH() = 0;
   virtual int getShadows() = 0;
+  virtual bool getAnisoFilter() = 0;
   virtual int getGameSpeedLevel() = 0; // [0, 1, 2, 3, 4] 
   virtual bool getAlwaysCenterMap() = 0;
   virtual bool getKeepMapSize() = 0;
