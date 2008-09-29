@@ -744,6 +744,9 @@ GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool anis
   GLuint minFilter;
   int bpp = session->getPreferences()->getBpp();
 
+  lastTextureWidth = lastTextureHeight = 0;
+  lastTextureAlpha = false;
+
   SDL_Surface* surface = IMG_Load( fn.c_str() );
   if( surface == NULL ) {
     cerr << "*** Error loading image (" << fn << "): " << IMG_GetError() << endl;
@@ -758,6 +761,10 @@ GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool anis
   glBindTexture(GL_TEXTURE_2D, texture);
 
   SDL_PixelFormat *format = surface->format;
+
+  lastTextureWidth = surface->w; lastTextureHeight = surface->h;
+  lastTextureAlpha = format->Amask;
+
   if ( format->Amask ) {
     srcFormat = GL_RGBA;
     destFormat = ( bpp > 16 ? GL_RGBA : GL_RGBA4 );
@@ -826,121 +833,6 @@ void Shapes::loadStencil( const string& filename, int index ) {
 	}
 
 	stencilImage[ index ] = p;
-}
-
-void Shapes::setupAlphaBlendedBMP( const string& filename, 
-                                   SDL_Surface*& surface, 
-                                   GLubyte*& image, 
-                                   int red, int green, int blue,
-                                   bool isAbsPath,
-                                   bool swapImage,
-                                   bool grayscale ) {
-
-	if( isHeadless() ) return;
-
-	string fn( isAbsPath ? filename : rootDir + filename ); 
-
-	if( debugFileLoad ) {
-		cerr << "file: " << fn << " red=" << red << " green=" << green << " blue=" << blue << endl;
-	}
-
-	if(Util::StringCaseCompare(fn.substr(fn.length() - 4, 4), ".bmp")) {
-		surface = SDL_LoadBMP( fn.c_str() );
-	} else {
-		surface = IMG_Load( fn.c_str() );
-		if( surface == NULL ) {
-			cerr << "Problem loading image(" << fn << "): " << IMG_GetError() << endl;
-		}
-	}
-
-	if( surface == NULL ) {
-		if( debugFileLoad ) {
-			cerr << "...not found:" << filename << endl;
-		}
-		return;
-	}
-
-
-	if( debugFileLoad ) {
-		cerr << "...loaded! Bytes per pixel=" << static_cast<int>(surface->format->BytesPerPixel) << endl;
-	}
-
-	// Rearrange the pixelData
-	int width  = surface->w;
-	int height = surface->h;
-
-	/*    if( width != height && 
-		( !isPowerOfTwo( width ) ||
-		  !isPowerOfTwo( height ) ) ) {
-	  cerr << "*** Possible error: Width or Heigth not a power of 2: file=" << fn 
-					 << " w=" << width 
-					 << " h=" << height 
-					 << " bpp=" << (*surface)->format->BitsPerPixel 
-					 << " byte/pix=" << (*surface)->format->BytesPerPixel 
-					 << " pitch=" << (*surface)->pitch << endl;
-	} */
-
-	unsigned char * data = (unsigned char *) surface->pixels;         // the pixel data
-
-	if( swapImage ) {
-		int width  = surface->w;
-		int height = surface->h;		
-		int BytesPerPixel = surface->format->BytesPerPixel;
-		for( int i = 0 ; i < (height / 2) ; ++i ) {
-			for( int j = 0 ; j < width * BytesPerPixel; j += BytesPerPixel ) {
-				for(int k = 0; k < BytesPerPixel; ++k) {
-					swap( data[ (i * width * BytesPerPixel) + j + k]
-					    , data[ ( (height - i - 1) * width * BytesPerPixel ) + j + k]);
-				}
-			}
-		}
-	}
-
-	image = new GLubyte[width * height * 4];
-	int count = 0;
-	int c = 0;
-	unsigned char r,g,b,a;
-	// the following lines extract R,G and B values from any bitmap
-	for(int i = 0; i < width * height; ++i) {
-		if(i > 0 && i % width == 0) {
-			c += (  surface->pitch - (width * surface->format->BytesPerPixel) );
-		}
-
-		if( surface->format->BytesPerPixel == 1 ) {
-			Uint32 pixel_value = (Uint32)data[c++];
-			SDL_GetRGB( pixel_value, surface->format, (Uint8*)&b, (Uint8*)&g, (Uint8*)&r);
-			a = (GLubyte)( (static_cast<int>(r) == blue && static_cast<int>(g) == green && static_cast<int>(b) == red ? 0x00 : 0xff) );
-		} else {
-			r = data[c++];
-			g = data[c++];
-			b = data[c++];
-			if( surface->format->BytesPerPixel == 4 ) {
-				a = data[c++];
-			} else {
-				if( grayscale ) {
-					a = (GLubyte)( static_cast<float>( r + b + g ) / 3.0f );
-					if( a <= 0.05f )
-						a = 0;
-				} else {
-					if(static_cast<int>(r) == blue && static_cast<int>(g) == green && static_cast<int>(b) == red)
-						a = static_cast<GLubyte>(0x00);
-					else
-						a = static_cast<GLubyte>(0xff);
-				}
-			}
-		}
-		
-		if(Util::StringCaseCompare(fn.substr(fn.length() - 4, 4), ".jpg")) {
-			image[count++] = b;
-			image[count++] = g;
-			image[count++] = r;
-		} else {
-			image[count++] = r;
-			image[count++] = g;
-			image[count++] = b;
-		}
-		image[count++] = a;
-	}
 }
 
 void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **surface, 
@@ -1058,106 +950,7 @@ GLuint Shapes::getCursorTexture( int cursorMode ) {
 	return cursorTexture[ cursorMode ];
 }
 
-GLuint Shapes::loadAlphaTexture( string& filename, int *width, int *height, bool isSprite ) {
-  SDL_Surface *tmpSurface = NULL;
-  GLubyte *tmpImage = NULL;
-
-  instance->setupImage( filename, tmpSurface, tmpImage );
-
-  GLuint texId = 0;
-  if( width && height ) {
-	*width = tmpSurface->w;
-	*height = tmpSurface->h;
-  }
-  if( tmpImage ) {
-  	//texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, GL_LINEAR );
-  	texId = instance->loadGLTextureBGRA( tmpSurface, tmpImage, isSprite );
-  }
-  delete [] tmpImage;
-  if( tmpSurface ) SDL_FreeSurface( tmpSurface );
-  return texId;
-}
-
-void Shapes::setupImage( const string &filename, SDL_Surface*& surface, GLubyte*& image ) {
-  if( filename.substr( filename.size() - 4 ) == ".png" ) {
-  	setupPNG( filename, surface, image, false, true );
-  } else if( filename.substr( filename.size() - 4 ) == ".jpg" ) {
-  	setupPNG( filename, surface, image, false, false );
-  } else {
-  	setupAlphaBlendedBMP( filename, surface, image );
-  }	
-}
-
-void Shapes::setupPNG( const string& filename, SDL_Surface*& surface, GLubyte*& image, bool isAbsPath, bool hasAlpha ) {
-
-	if( isHeadless() )
-		return;
-
-	string fn( isAbsPath ? filename : rootDir + filename );
-
-	//if( !hasAlpha ) debugFileLoad = true;
-	if( debugFileLoad ) {
-		cerr << "file: " << fn << endl;
-	}
-
-	surface = IMG_Load( fn.c_str() );
-
-	if( surface == NULL ) {
-		cerr << "Problem loading image( " << fn << " ): " <<  IMG_GetError() << endl;
-		if( debugFileLoad ) {
-			cerr << "...not found:" << filename << endl;
-		}
-		return;
-	}
-
-	if( debugFileLoad ) {
-		cerr << "...loaded! Bytes per pixel=" << static_cast<int>(surface->format->BytesPerPixel) << " BPP=" << static_cast<int>(surface->format->BitsPerPixel) << endl;
-	}
-	//debugFileLoad = false;
-
-	// Rearrange the pixelData
-	int width  = surface->w;
-	int height = surface->h;
-
-/*    if( width != height && ( !isPowerOfTwo( width ) || !isPowerOfTwo( height ) ) ) {
-      cerr  << "*** Possible error: Width or Heigth not a power of 2: file=" << fn 
-						<< "w=" << width 
-						<< " h=" << height 
-						<< " bpp=" << (*surface)->format->BitsPerPixel 
-						<< " byte/pix=" << (*surface)->format->BytesPerPixel 
-						<< " pitch=" <<  (*surface)->pitch << endl;
-    } */
-
-	unsigned char * data = (unsigned char *) surface->pixels;         // the pixel data
-
-	image = new GLubyte[width * height * 4];
-	int count = 0;
-	int c = 0;
-	// the following lines extract R,G and B values from any bitmap
-	for(int i = 0; i < width * height; ++i) {
-		if(i > 0 && i % width == 0) {
-			c += surface->pitch - (width * surface->format->BytesPerPixel);
-		}		
-	   unsigned char r = data[c++];
-	   unsigned char g = data[c++];
-	   unsigned char b = data[c++];
-	   	
-	   if( hasAlpha ) {
-	  	 unsigned char a = data[c++];
-		   image[count++] = b;
-		   image[count++] = g;
-		   image[count++] = r;
-		   image[count++] = a;
-	   } else {
-	  	 image[count++] = b;
- 		   image[count++] = g;
- 		   image[count++] = r;
- 		   image[count++] = 1;
-	   }
-	}
-}
-
-GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW, int textureSizeH, int width, int height, bool isSprite ) {	
+GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW, int textureSizeH, int width, int height ) {	
 	// todo: should be next power of 2 after width/height (maybe cap-ed at 256)
 //  int textureSizeW = 256; 
 //  int textureSizeH = 256;
