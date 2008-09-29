@@ -28,12 +28,6 @@ using namespace std;
 
 ShapePalette::ShapePalette( Session *session ) 
              : Shapes( session ) 
-             , paperDoll( NULL )
-             , paperDollImage( NULL )
-             , logo( NULL )
-             , logoImage( NULL )
-             , chain( NULL )
-             , chainImage( NULL )
 {
   this->session = session;
 	this->loader = NULL;
@@ -175,17 +169,11 @@ void ShapePalette::initialize() {
     }
   }
   
-  setupAlphaBlendedBMP("/textures/paperdoll.bmp", paperDoll, paperDollImage);
+  //setupAlphaBlendedBMP("/textures/paperdoll.bmp", paperDoll, paperDollImage);
 }
 
 ShapePalette::~ShapePalette() {
 	delete loader;
-	if( logo ) SDL_FreeSurface( logo );
-	delete [] logoImage;
-	if( chain ) SDL_FreeSurface( chain );
-	delete [] chainImage;
-	if( paperDoll ) SDL_FreeSurface( paperDoll );
-	delete [] paperDollImage;
   //    for(int i =0; i < static_cast<int>(creature_models.size()); i++){
   //        delete creature_models[i];    
   //    }
