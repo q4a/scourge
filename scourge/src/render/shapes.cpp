@@ -952,7 +952,8 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
 		return;
 
   string fn = rootDir + filename;
-  if(((*surface) = SDL_LoadBMP( fn.c_str() ))) {
+  //if(((*surface) = SDL_LoadBMP( fn.c_str() ))) {
+  if(((*surface) = IMG_Load( fn.c_str() ))) {
 
     // Rearrange the pixelData
     int width  = (*surface) -> w;

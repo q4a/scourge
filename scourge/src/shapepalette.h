@@ -118,22 +118,9 @@ public:
   SDL_Surface *tiles, *spells;
   GLubyte *tilesImage[20][20], *spellsImage[20][20];
   GLuint tilesTex[20][20], spellsTex[20][20];
-  SDL_Surface *paperDoll;
-  GLubyte *paperDollImage;
 
-  SDL_Surface *logo;
-  GLubyte *logoImage;   
   GLuint logo_texture;
- 
-  SDL_Surface *chain;
-  GLubyte *chainImage;   
   GLuint chain_texture;
-
-  //SDL_Surface *scourge;
-  //GLubyte *scourgeImage;
-  //GLuint scourge_texture;
-  SDL_Surface *scourgeBackdrop;
-  GLubyte *scourgeImageBackdrop;
   GLuint scourgeBackdrop_texture;
 
   GLuint cloud, candle, highlight;
