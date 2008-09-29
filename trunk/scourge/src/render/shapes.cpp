@@ -774,12 +774,12 @@ GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool anis
   // Enable anisotropic filtering if requested, mipmapping is enabled
   // and the hardware supports it.
   if ( anisotropy && !format->Amask && strstr((char*)glGetString(GL_EXTENSIONS), 
-    "GL_EXT_texture_filter_anisotropic") ) {
+    "GL_EXT_texture_filter_anisotropic") && session->getPreferences()->getAnisoFilter() ) {
     float maxAnisotropy;
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
   } else {
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 0.0f);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
   }
 
 //  glTexImage2D( GL_TEXTURE_2D, 0, destFormat, surface->w, surface->h, 0, srcFormat, GL_UNSIGNED_BYTE, surface->pixels );

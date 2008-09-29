@@ -78,7 +78,8 @@ private:
   bool tooltipEnabled;
   int tooltipInterval;
 	bool enableScreenshots;
-  
+  bool aniso_filter;
+
   // game settings
   int gamespeed;
   bool centermap;
@@ -130,6 +131,7 @@ private:
   inline int getW()          { return w;          }
   inline int getH()          { return h;          }
   inline int getShadows()    { return shadows;    }  
+  inline bool getAnisoFilter() { return aniso_filter; }
   inline int getGameSpeedLevel()  { return gamespeed;  } // [0, 1, 2, 3, 4] 
   inline bool getAlwaysCenterMap(){ return centermap;  }  
   inline bool getKeepMapSize() { return keepMapSize; }
@@ -165,6 +167,7 @@ private:
   inline void setW(int t)           { w=t;          }
   inline void setH(int t)           { h=t;          }
   inline void setShadows(int t)     { shadows=t; }
+  inline void setAnisoFilter( bool t ) { aniso_filter = t;}
   inline void setGameSpeedLevel(int t)   { if(t >= 0 && t <= 4) gamespeed=t; } // [0, 1, 2, 3, 4]
   inline void setAlwaysCenterMap(bool t) { centermap=t; }
   inline void setKeepMapSize(bool t) { keepMapSize = t; }
