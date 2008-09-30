@@ -692,12 +692,51 @@ GLuint Shapes::getBMPData( const string& filename, TextureData& data, int *imgwi
 	return 1;
 }
 
-GLuint Shapes::getTileTexture(int w, int h, GLubyte *image, bool isSprite) {
+/// Returns a tile of an SDL surface as a texture.
+
+/// This function allows you to define the size of a tile and which tile you want. It
+/// is then created as a texture from the appropriate part of the SDL surface.
+
+GLuint Shapes::createTileTexture( SDL_Surface **surface, int tileX, int tileY, int tileWidth, int tileHeight ) {
   if( isHeadless() ) return 0;
 
-  GLuint texture[1];
+  // The raw data of the source image.
+  unsigned char * data = (unsigned char *) ((*surface) -> pixels);
+  GLubyte *image[1];
 
-  //Constants::checkTexture("Shapes::getTileTexture", w, h);
+  // The destination image (a single tile)
+  image[0] = (unsigned char*)malloc( tileWidth * tileHeight * 4 );
+  int count = 0;
+  // where the tile starts in a line
+  int offs = tileX * tileWidth * 4;
+  // where the tile ends in a line
+  int rest = ( tileX + 1 ) * tileWidth * 4;
+  // Current position in the source data
+  int c = offs + ( tileY * tileHeight * (*surface)->pitch );
+  // the following lines extract R,G and B values from any bitmap
+
+  for(int i = 0; i < tileWidth * tileHeight; ++i) {
+
+    if( i > 0 && i % tileWidth == 0 ) {
+      // skip the rest of the line
+      c += ( (*surface)->pitch - rest );
+      // skip the offset (go to where the tile starts)
+      c += offs;
+    }
+
+    for( int p = 0; p < 4; p++ ) {
+      image[0][count++] = data[c++];
+    }
+
+  }
+
+  int bpp = session->getPreferences()->getBpp();
+
+  lastTextureWidth = tileWidth;
+  lastTextureHeight = tileHeight;
+  lastTextureAlpha = true;
+
+  GLuint texture[1];
 
   /* Create The Texture */
   glGenTextures( 1, &texture[0] );
@@ -705,13 +744,11 @@ GLuint Shapes::getTileTexture(int w, int h, GLubyte *image, bool isSprite) {
   /* Typical Texture Generation Using Data From The Bitmap */
   glBindTexture( GL_TEXTURE_2D, texture[0] );
 
-	// glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glscale );
-	// glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glscale );  
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_NEAREST );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-  //FIXME: Don't generate mipmaps when isSprite is true
-  gluBuild2DMipmaps(GL_TEXTURE_2D, 4, w, h, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, ( bpp > 16 ? GL_RGBA : GL_RGBA4 ), tileWidth, tileHeight, GL_RGBA, GL_UNSIGNED_BYTE, image[0]);
+
   return texture[0];
 }
 
@@ -829,58 +866,14 @@ void Shapes::loadStencil( const string& filename, int index ) {
 	stencilImage[ index ] = p;
 }
 
-/// Loads an image containing tiles from disk.
+/// Loads an image containing tiles from disk into a SDL surface.
 
-/// This function operates on the raw image data to split the image into the
-/// individual tiles, which are then stored in an array.
-
-void Shapes::loadTilesGrid( const string& filename, SDL_Surface **surface, 
-                                             GLubyte *image[20][20], int imageWidth, int imageHeight,
-                                             int tileWidth, int tileHeight ) {
-  if( isHeadless() )
-		return;
+void Shapes::loadTiles( const string& filename, SDL_Surface **surface ) {
+  if( isHeadless() ) return;
 
   string fn = rootDir + filename;
-  if(((*surface) = IMG_Load( fn.c_str() ))) {
-
-    // Rearrange the pixelData
-    int width  = (*surface) -> w;
-    int height = (*surface) -> h;
-
-    // The raw data of the source image.
-    unsigned char * data = (unsigned char *) ((*surface) -> pixels);
-
-    for( int x = 0; x < width / tileWidth; x++ ) {
-      if( x >= imageWidth ) continue;
-      for( int y = 0; y < height / tileHeight; y++ ) {
-        if( y >= imageHeight ) continue;
-
-        // The destination image (a single tile)
-        image[ x ][ y ] = (unsigned char*)malloc( tileWidth * tileHeight * 4 );
-        int count = 0;
-        // where the tile starts in a line
-        int offs = x * tileWidth * 4;
-        // where the tile ends in a line
-        int rest = ( x + 1 ) * tileWidth * 4;
-        // Current position in the source data
-        int c = offs + ( y * tileHeight * (*surface)->pitch );
-        unsigned char r,g,b,a;
-        // the following lines extract R,G and B values from any bitmap
-        for(int i = 0; i < tileWidth * tileHeight; ++i) {
-
-          if( i > 0 && i % tileWidth == 0 ) {
-            // skip the rest of the line
-            c += ( (*surface)->pitch - rest );
-            // skip the offset (go to where the tile starts)
-            c += offs;
-          }
-
-          for( int p = 0; p < 4; p++ ) {
-            image[ x ][ y ][count++] = data[c++];
-          }
-        }
-      }
-    }
+  if(!((*surface) = IMG_Load( fn.c_str() ))) {
+    cerr << "*** Error loading tiles (" << fn << "): " << IMG_GetError() << endl;
   }
 }
 
@@ -931,6 +924,8 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 GLuint Shapes::getCursorTexture( int cursorMode ) {
 	return cursorTexture[ cursorMode ];
 }
+
+/// Adds the alpha channel of the alphaTex texture to the sampleTex texture.
 
 GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW, int textureSizeH, int width, int height ) {	
 	// todo: should be next power of 2 after width/height (maybe cap-ed at 256)

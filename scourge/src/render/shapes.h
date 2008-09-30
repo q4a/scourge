@@ -422,8 +422,8 @@ protected:
 	static Shapes *instance;
 	void loadShape( const char *name );
 	ShapeValues *getShapeValueByName( const char *name, int *index );
-  GLuint getTileTexture(int w, int h, GLubyte *image, bool isSprite = false);
-  void loadTilesGrid(const std::string& filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight);
+  GLuint createTileTexture(SDL_Surface **surface, int tileX, int tileY, int tileWidth, int tileHeight);
+  void loadTiles(const std::string& filename, SDL_Surface **surface);
   void swap(unsigned char & a, unsigned char & b);
   void loadStencil( const std::string& filename, int index );
 	void loadCursors();

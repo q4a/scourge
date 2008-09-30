@@ -116,7 +116,6 @@ public:
 
   // cursor
   SDL_Surface *tiles, *spells;
-  GLubyte *tilesImage[20][20], *spellsImage[20][20];
   GLuint tilesTex[20][20], spellsTex[20][20];
 
   GLuint logo_texture;

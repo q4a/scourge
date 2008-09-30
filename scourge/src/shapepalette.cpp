@@ -152,18 +152,18 @@ void ShapePalette::initialize() {
 	hungerIcon = loadTexture( "/icons/h.png" );
 
   // set up the inventory tiles
-  loadTilesGrid( "/textures/tiles.png", &tiles, tilesImage, 20, 18, 32, 32 );
+  loadTiles( "/textures/tiles.png", &tiles );
   for( int x = 0; x < 20; x++ ) {
     for( int y = 0; y < 18; y++ ) {
-      tilesTex[x][y] = getTileTexture( 32, 32, tilesImage[x][y], true );
+      tilesTex[x][y] = createTileTexture( &tiles, x, y, 32, 32 );
     }
   }
 
   // set up the spell tiles
-  loadTilesGrid( "/textures/spells.png", &spells, spellsImage, 20, 18, 32, 32 );
+  loadTiles( "/textures/spells.png", &spells );
   for( int x = 0; x < 20; x++ ) {
     for( int y = 0; y < 18; y++ ) {
-      spellsTex[x][y] = getTileTexture( 32, 32, spellsImage[x][y], true );
+      spellsTex[x][y] = createTileTexture( &spells, x, y, 32, 32 );
     }
   }
   
