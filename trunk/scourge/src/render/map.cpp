@@ -1016,6 +1016,9 @@ void Map::preDraw() {
   if(zrot >= 360) zrot -= 360;
   if(zrot < 0) zrot = 360 + zrot;
 
+  if( settings->isPlayerEnabled() && ( preferences->getAlwaysCenterMap() || mapCenterCreature ) ) {
+  	mapChanged = resortShapes = true;
+  }
   initMapView();
 
   frustum->CalculateFrustum();
