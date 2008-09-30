@@ -692,18 +692,12 @@ GLuint Shapes::getBMPData( const string& filename, TextureData& data, int *imgwi
 	return 1;
 }
 
-/* function to load in bitmap as a GL texture */
-GLuint Shapes::loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, bool isSprite) {
-  if( isHeadless() ) return 0;
-  return loadGLTextureBGRA( surface->w, surface->h, image, isSprite );
-}
-
-GLuint Shapes::loadGLTextureBGRA(int w, int h, GLubyte *image, bool isSprite) {
+GLuint Shapes::getTileTexture(int w, int h, GLubyte *image, bool isSprite) {
   if( isHeadless() ) return 0;
 
   GLuint texture[1];
 
-  //Constants::checkTexture("Shapes::loadGLTextureBGRA", w, h);
+  //Constants::checkTexture("Shapes::getTileTexture", w, h);
 
   /* Create The Texture */
   glGenTextures( 1, &texture[0] );
@@ -717,7 +711,7 @@ GLuint Shapes::loadGLTextureBGRA(int w, int h, GLubyte *image, bool isSprite) {
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
   //FIXME: Don't generate mipmaps when isSprite is true
-  gluBuild2DMipmaps(GL_TEXTURE_2D, 4, w, h, GL_BGRA, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, 4, w, h, GL_RGBA, GL_UNSIGNED_BYTE, image);
   return texture[0];
 }
 
@@ -835,37 +829,42 @@ void Shapes::loadStencil( const string& filename, int index ) {
 	stencilImage[ index ] = p;
 }
 
-void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **surface, 
+/// Loads an image containing tiles from disk.
+
+/// This function operates on the raw image data to split the image into the
+/// individual tiles, which are then stored in an array.
+
+void Shapes::loadTilesGrid( const string& filename, SDL_Surface **surface, 
                                              GLubyte *image[20][20], int imageWidth, int imageHeight,
-                                             int tileWidth, int tileHeight, 
-                                             int red, int green, int blue,
-                                             int nred, int ngreen, int nblue ) {
+                                             int tileWidth, int tileHeight ) {
   if( isHeadless() )
 		return;
 
   string fn = rootDir + filename;
-  //if(((*surface) = SDL_LoadBMP( fn.c_str() ))) {
   if(((*surface) = IMG_Load( fn.c_str() ))) {
 
     // Rearrange the pixelData
     int width  = (*surface) -> w;
     int height = (*surface) -> h;
 
-    unsigned char * data = (unsigned char *) ((*surface) -> pixels);         // the pixel data
+    // The raw data of the source image.
+    unsigned char * data = (unsigned char *) ((*surface) -> pixels);
 
     for( int x = 0; x < width / tileWidth; x++ ) {
       if( x >= imageWidth ) continue;
       for( int y = 0; y < height / tileHeight; y++ ) {
         if( y >= imageHeight ) continue;
 
+        // The destination image (a single tile)
         image[ x ][ y ] = (unsigned char*)malloc( tileWidth * tileHeight * 4 );
         int count = 0;
         // where the tile starts in a line
-        int offs = x * tileWidth * (*surface)->format->BytesPerPixel;
+        int offs = x * tileWidth * 4;
         // where the tile ends in a line
-        int rest = ( x + 1 ) * tileWidth * (*surface)->format->BytesPerPixel;
+        int rest = ( x + 1 ) * tileWidth * 4;
+        // Current position in the source data
         int c = offs + ( y * tileHeight * (*surface)->pitch );
-        unsigned char r,g,b,n;
+        unsigned char r,g,b,a;
         // the following lines extract R,G and B values from any bitmap
         for(int i = 0; i < tileWidth * tileHeight; ++i) {
 
@@ -876,26 +875,9 @@ void Shapes::setupAlphaBlendedBMPGrid( const string& filename, SDL_Surface **sur
             c += offs;
           }
 
-          // FIXME: make this more generic...
-          if( (*surface)->format->BytesPerPixel == 1 ) {
-            n = data[c++];
-            r = (*surface)->format->palette->colors[n].b;
-            g = (*surface)->format->palette->colors[n].g;
-            b = (*surface)->format->palette->colors[n].r;
-          } else {
-            r = data[c++];
-            g = data[c++];
-            b = data[c++];
+          for( int p = 0; p < 4; p++ ) {
+            image[ x ][ y ][count++] = data[c++];
           }
-
-          image[ x ][ y ][count++] = ( r == red && nred > -1 ? nred : r );
-          image[ x ][ y ][count++] = ( g == green && ngreen > -1 ? ngreen : g );
-          image[ x ][ y ][count++] = ( b == blue && nblue > -1 ? nblue : b );
-
-					if(static_cast<int>(r) == blue && static_cast<int>(g) == green && static_cast<int>(b) == red)
-						image[ x ][ y ][count++] = static_cast<GLubyte>(0x00);
-					else
-						image[ x ][ y ][count++] = static_cast<GLubyte>(0xff);
         }
       }
     }

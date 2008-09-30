@@ -60,7 +60,7 @@ void ShapePalette::preInitialize() {
 
   // set up the scourge
   //setupAlphaBlendedBMP("/textures/scourge.bmp", scourge, scourgeImage);
-  //scourge_texture = loadGLTextureBGRA(scourge, scourgeImage, GL_LINEAR);
+  //scourge_texture = getTileTexture(scourge, scourgeImage, GL_LINEAR);
 
   // set up the backdrop image
   scourgeBackdrop_texture = loadTexture("/textures/scourge-backdrop.png");
@@ -152,20 +152,18 @@ void ShapePalette::initialize() {
 	hungerIcon = loadTexture( "/icons/h.png" );
 
   // set up the inventory tiles
-  setupAlphaBlendedBMPGrid( "/textures/tiles.bmp", &tiles, tilesImage, 20, 18, 
-							32, 32, 71, 108, 108, 80, 80, 80 );
+  loadTilesGrid( "/textures/tiles.png", &tiles, tilesImage, 20, 18, 32, 32 );
   for( int x = 0; x < 20; x++ ) {
     for( int y = 0; y < 18; y++ ) {
-      tilesTex[x][y] = loadGLTextureBGRA( 32, 32, tilesImage[x][y], true );
+      tilesTex[x][y] = getTileTexture( 32, 32, tilesImage[x][y], true );
     }
   }
 
   // set up the spell tiles
-  setupAlphaBlendedBMPGrid( "/textures/spells.bmp", &spells, spellsImage, 20, 18, 
-							32, 32, 71, 108, 108, 80, 80, 80 );
+  loadTilesGrid( "/textures/spells.png", &spells, spellsImage, 20, 18, 32, 32 );
   for( int x = 0; x < 20; x++ ) {
     for( int y = 0; y < 18; y++ ) {
-      spellsTex[x][y] = loadGLTextureBGRA( 32, 32, spellsImage[x][y], true );
+      spellsTex[x][y] = getTileTexture( 32, 32, spellsImage[x][y], true );
     }
   }
   
@@ -354,7 +352,7 @@ void ShapePalette::initRugs( ConfigLang *config ) {
 		//SDL_Surface *tmpSurface = NULL;
 		//GLubyte *tmpImage = NULL;
 		//setupAlphaBlendedBMP( node->getValueAsString( "path" ), tmpSurface, tmpImage );
-		//rugs.push_back( loadGLTextureBGRA( tmpSurface, tmpImage ) );
+		//rugs.push_back( getTileTexture( tmpSurface, tmpImage ) );
 		rugs.push_back( loadTexture( node->getValueAsString( "path" ), false, false ) );
 		//delete [] tmpImage;
 		//if( tmpSurface ) SDL_FreeSurface( tmpSurface );
