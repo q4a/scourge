@@ -888,9 +888,12 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
     //double tw = (static_cast<double>(creature->getTargetCreature()->getShape()->getWidth()) / 2.0f) * MUL;
     glColor4f(1.0f, 0.15f, 0.0f, 0.5f);
 
-		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(), creature->getTargetCreature()->getX(),
-																			creature->getTargetCreature()->getY(), creature->getTargetCreature()->getShape()->getWidth(),
+		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(), 
+		                                  creature->getTargetCreature()->getX(),
+																			creature->getTargetCreature()->getY() + creature->getTargetCreature()->getShape()->getDepth() / 2.0f - 1, 
+																			creature->getTargetCreature()->getShape()->getWidth(),
 																			creature->getTargetCreature()->getShape()->getDepth() );
+		
   }
 
   xpos2 = (creature->getX() - static_cast<float>(scourge->getMap()->getX())) * MUL;
