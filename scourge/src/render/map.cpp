@@ -1086,6 +1086,11 @@ void Map::draw() {
 		cursorFlatMapY = cursorMapY;
 		cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
 		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
+		if( pos ) {
+			cursorMapX = pos->x;
+			cursorMapY = pos->y;
+			cursorMapZ = pos->z;
+		}
   }		
 
   if( DEBUG_MOUSE_POS || ( settings->isGridShowing() && gridEnabled ) ) { 
@@ -1969,7 +1974,7 @@ void Map::doDrawShape(float xpos2, float ypos2, float zpos2, Shape *shape, int e
 }
 
 void Map::findOccludedSides( DrawLater *later, bool *sides ) {
-	if( colorAlreadySet || !later || !later->shape || !later->shape->isStencil() || ( later->shape && isDoor( later->shape ) ) ) {
+	if( colorAlreadySet || !later || !later->pos || !later->shape || !later->shape->isStencil() || ( later->shape && isDoor( later->shape ) ) ) {
 		sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = sides[Shape::S_SIDE] = 
 																sides[Shape::E_SIDE] = sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
 		return;
@@ -2529,11 +2534,13 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	p->y = y;
 	p->z = z;
 	p->outlineColor = NULL;
+	p->texIndex = -1;
 	if( p->shape->getTextureCount() > 3 ) {
 		// pick one of the texture groups (3 textures + variants)
 		int n = Util::dice( p->shape->getTextureCount() - 2 );
 		// -1 means, use the correct default texture (correct for the side of the glShape)
 		p->texIndex = ( n == 0 ? -1 : n + 2 );
+		if( p->texIndex > -1 ) cerr << "shape=" << p->shape->getName() << " texIndex=" << p->texIndex << endl;
 	}
 
 	for(int xp = 0; xp < shape->getWidth(); xp++) {
@@ -4291,9 +4298,9 @@ void Map::getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Locatio
 			    				mz >= (location)->z + shape->getOffsZ() / MUL && 
 			    				mz < (location)->z + shape->getOffsZ() / MUL + shape->getHeight() ) {
 			    			*pos = location;
-	  						*mapx = location->x;
-	  						*mapy = location->y;
-	  						*mapz = location->z;
+	  						*mapx = fx;
+	  						*mapy = fy;
+	  						*mapz = fz;
 	  						sprintf( mapDebugStr, "map: %.2f,%.2f,%.2f pos:%d,%d,%d - %d,%d,%d", 
 	  						         mx, my, mz,
 	  						         location->x, location->y - shape->getDepth() + 1, location->z,
