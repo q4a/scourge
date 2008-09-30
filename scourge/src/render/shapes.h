@@ -422,9 +422,8 @@ protected:
 	static Shapes *instance;
 	void loadShape( const char *name );
 	ShapeValues *getShapeValueByName( const char *name, int *index );
-  GLuint loadGLTextureBGRA(SDL_Surface *surface, GLubyte *image, bool isSprite = false);
-  GLuint loadGLTextureBGRA(int w, int h, GLubyte *image, bool isSprite = false);
-  void setupAlphaBlendedBMPGrid(const std::string& filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight, int red=0, int green=0, int blue=0, int nred=-1, int ngreen=-1, int nblue=-1);
+  GLuint getTileTexture(int w, int h, GLubyte *image, bool isSprite = false);
+  void loadTilesGrid(const std::string& filename, SDL_Surface **surface, GLubyte *tilesImage[20][20], int imageWidth, int imageHeight, int tileWidth, int tileHeight);
   void swap(unsigned char & a, unsigned char & b);
   void loadStencil( const std::string& filename, int index );
 	void loadCursors();
