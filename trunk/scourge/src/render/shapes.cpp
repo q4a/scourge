@@ -139,7 +139,7 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 
       id = shapePal->findTextureByName( bmp );
       if ( id == 0 ) {
-	id = shapePal->loadTexture( path, false, true );
+	id = shapePal->loadTexture( path, false, false, true );
 	GLclampf pri = 0.9f; glPrioritizeTextures(1, &id, &pri);
         loadedTextures[s] = id;
       }
@@ -254,11 +254,11 @@ void Shapes::initialize() {
   ripple_texture = loadTexture("/textures/ripple.png");
   torchback = loadTexture("/textures/torchback.png");
 
-  areaTex = loadTexture("/textures/area.png");
+  areaTex = loadTexture("/textures/area.png", false, false);
   //areaTex = loadGLTextures("/area.bmp");
 
 	// load as a grayscale (use gray value as alpha)
-	selection = loadTexture( "/textures/sel.png" );
+	selection = loadTexture( "/textures/sel.png", false, false );
 
 	// default to textures
 	strcpy( cursorDir, "/textures" );
@@ -737,7 +737,7 @@ void Shapes::swap(unsigned char & a, unsigned char & b) {
 /// correctly according to the properties of the source image.
 /// Returns an OpenGL texture name.
 
-GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool anisotropy ) {
+GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool isSprite, bool anisotropy ) {
   string fn = ( absolutePath ? filename : rootDir + filename);
   GLuint destFormat;
   GLuint srcFormat;
@@ -768,7 +768,7 @@ GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool anis
   if ( format->Amask ) {
     srcFormat = GL_RGBA;
     destFormat = ( bpp > 16 ? GL_RGBA : GL_RGBA4 );
-    minFilter = GL_LINEAR; // No mipmaps for alpha textures, creates flicker
+    minFilter = ( isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_NEAREST );
   } else {
     srcFormat = GL_RGB;
     destFormat = ( bpp > 16 ? GL_RGB : GL_RGB5 );
@@ -931,8 +931,8 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 	    if( fp ) {
 	    	fclose( fp );
 		// FIXME: Anisotropic filtering for system textures freezes X for some reason.
-		// id = loadTexture( path, false, true );
-		id = loadTexture( path );
+		// id = loadTexture( path, false, false, true );
+		id = loadTexture( path, false, false );
 		textures[ texture_count ].id = id;
 	    }
 			dirCount++;

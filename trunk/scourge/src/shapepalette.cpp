@@ -123,7 +123,7 @@ void ShapePalette::initialize() {
   startTexture = loadTexture( "/textures/start.png" );
   pausedTexture = loadTexture( "/textures/paused.png" );
   realTimeTexture = loadTexture( "/textures/realtime.png" );
-  raindropTexture = loadTexture( "/textures/raindrop.png" );
+  raindropTexture = loadTexture( "/textures/raindrop.png", false, false );
   lightningTexture = loadTexture( "/textures/lightning.png" );
   hand_attack_icon = loadTexture( "/textures/hands.png" );
 
@@ -355,7 +355,7 @@ void ShapePalette::initRugs( ConfigLang *config ) {
 		//GLubyte *tmpImage = NULL;
 		//setupAlphaBlendedBMP( node->getValueAsString( "path" ), tmpSurface, tmpImage );
 		//rugs.push_back( loadGLTextureBGRA( tmpSurface, tmpImage ) );
-		rugs.push_back( loadTexture( node->getValueAsString( "path" ) ) );
+		rugs.push_back( loadTexture( node->getValueAsString( "path" ), false, false ) );
 		//delete [] tmpImage;
 		//if( tmpSurface ) SDL_FreeSurface( tmpSurface );
   }

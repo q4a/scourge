@@ -407,7 +407,7 @@ public:
 
   GLuint getCursorTexture( int cursorMode );
 
-  GLuint loadTexture( const std::string& filename, bool absolutePath = false, bool anisotropy = false );
+  GLuint loadTexture( const std::string& filename, bool absolutePath = false, bool isSprite = true, bool anisotropy = false );
 
 	inline int getCursorWidth() { return cursorWidth; }
 	inline int getCursorHeight() { return cursorHeight; }
