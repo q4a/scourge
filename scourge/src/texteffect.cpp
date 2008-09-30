@@ -195,7 +195,7 @@ void TextEffect::buildTextures() {
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
-  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
+  glTexImage2D( GL_TEXTURE_2D, 0, (scourge->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4), width, height, 0,
                 GL_RGBA, GL_UNSIGNED_BYTE, textureInMemory );
   
   // Draw image

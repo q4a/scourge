@@ -148,10 +148,9 @@ void RoomRenderHelper::createOverlayTexture() {
   //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, 4, OVERLAY_SIZE, OVERLAY_SIZE, GL_RGBA, GL_UNSIGNED_BYTE, overlay_data);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  glTexImage2D(GL_TEXTURE_2D, 0, 3, OVERLAY_SIZE, OVERLAY_SIZE, 0, 
-			   GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB5, OVERLAY_SIZE, OVERLAY_SIZE, 0, GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB5, OVERLAY_SIZE, OVERLAY_SIZE, GL_RGB, GL_UNSIGNED_BYTE, overlay_data);
 }
 
 void RoomRenderHelper::draw( int x, int y, int w, int h ) {

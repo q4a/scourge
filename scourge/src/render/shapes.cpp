@@ -799,7 +799,7 @@ GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool isSp
   if ( format->Amask ) {
     srcFormat = GL_RGBA;
     destFormat = ( bpp > 16 ? GL_RGBA : GL_RGBA4 );
-    minFilter = ( isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_NEAREST );
+    minFilter = ( isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_LINEAR );
   } else {
     srcFormat = GL_RGB;
     destFormat = ( bpp > 16 ? GL_RGB : GL_RGB5 );
@@ -949,7 +949,7 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP );
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP ); 
-  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, texInMem );                       
+  glTexImage2D( GL_TEXTURE_2D, 0, (session->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, texInMem );                       
   //if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_BGRA, GL_UNSIGNED_BYTE, texInMem);
 
   glDisable( GL_CULL_FACE );

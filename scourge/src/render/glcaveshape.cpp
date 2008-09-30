@@ -835,11 +835,11 @@ void GLCaveShape::createFloorTexture( Shapes *shapes, int stencilIndex ) {
   
   glBindTexture( GL_TEXTURE_2D, floorTex[ stencilIndex ] );
   glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
   glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, 
-               GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ] );
+  glTexImage2D( GL_TEXTURE_2D, 0, (shapes->getSession()->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4), 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ] );
+  gluBuild2DMipmaps(GL_TEXTURE_2D, (shapes->getSession()->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4), 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ]);
 }
 
 void GLCaveShape::createLavaTexture( int index, int stencilIndex, int rot ) {
