@@ -13,13 +13,16 @@ int clientInfoLoop(void *data);
 
 class Server;
 
+/* does nothing that std::vector<char> does not 
 class Message {
  public:
   char *message;
   int length;
   Message(char *message, int length);
   ~Message();
-};
+};*/
+
+typedef std::vector<char> Message;
 
 class ClientInfo : public CommandInterpreter {
  public:

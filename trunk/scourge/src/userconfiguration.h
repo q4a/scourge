@@ -185,7 +185,7 @@ private:
 	inline void setEnableScreenshots( bool b ) { enableScreenshots = b; }
   inline void setTooltipInterval( int n ) { tooltipInterval = n; }
   inline void setLogLevel(int t)   { if(t >= 0 && t <= 3) logLevel=t; } // [0, 1, 2, 3]
-  inline void setPathFindingQuality( int t ) { if(t >= 0 && t <= 2) { pathFindingQuality = t; maxPathNodes =  pow( 10, ( t + 1 ) ) * 50;} }
+  inline void setPathFindingQuality( int t ) { if(t >= 0 && t <= 2) { pathFindingQuality = t; maxPathNodes =  pow( 10., t + 1. ) * 50;} }
   inline void setMonsterToughness( int n ) { monsterToughness = n; }
   
   // return gameSpeed in ticks

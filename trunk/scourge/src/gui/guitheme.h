@@ -46,7 +46,7 @@ class ThemeElement {
 /// A theme for the game's GUI.
 class GuiTheme {
 private:
-  char *name;
+  std::string nameX;
   ThemeElement *windowBack;
   ThemeElement *windowTop;
   ThemeElement *windowBorder;
@@ -71,7 +71,7 @@ private:
   static std::map<std::string, GuiTheme*> themes;
 
 public:
-  GuiTheme( char *name );
+  GuiTheme( char const* name );
   virtual ~GuiTheme();
 
   static char DEFAULT_THEME[255];
@@ -86,7 +86,7 @@ public:
 	}
   }
 
-  inline char *getName() { return name; }
+  char const* getName() { return nameX.c_str(); }
   inline ThemeElement *getWindowBackground() { return windowBack; }
   inline ThemeElement *getWindowTop() { return windowTop; }
   inline ThemeElement *getWindowBorder() { return windowBorder; }
@@ -135,4 +135,5 @@ public:
 };
 
 #endif
+
 

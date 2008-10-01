@@ -669,8 +669,9 @@ void GLShape::setOccurs( Occurs *o ) {
 }
 
 void GLShape::addVirtualShape( int x, int y, int z, int w, int d, int h, bool draws ) {
-	char tmp[255];
-	sprintf( tmp, "%s_%d", getName(), (int)virtualShapes.size() );
+	int const TMPLEN = 255;
+	char tmp[TMPLEN];
+	snprintf( tmp, TMPLEN, "%s_%d", getName(), (int)virtualShapes.size() );
 	GLShape *shape = new VirtualShape( strdup( tmp ), w, d, h, x, y, z, draws, this, getShapePalIndex() );
 	virtualShapes.push_back( shape );
 }

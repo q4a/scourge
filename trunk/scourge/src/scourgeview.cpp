@@ -1196,7 +1196,7 @@ void ScourgeView::showMovieConversation( Creature *creature ) {
 			glTranslatef( 140, scourge->getSession()->getCutscene()->getLetterboxHeight() + 60, 600 );
 			glColor4f( 1, 1, 0.75f, 1 );
 			char tmp[3000];
-			sprintf( tmp, "%s:", creature->getName() );
+			snprintf( tmp, 3000, "%s:", creature->getName() );
 			scourge->getSDLHandler()->texPrint( 0, 0, tmp );
 			glColor4f( 1, 1, 1, 1 );
 			for( unsigned int i = 0; i < lines->size(); i++ ) {

@@ -27,7 +27,7 @@ int main( int argc, char *argv[] ) {
     exit( 1 );
   }
   bool useStencilBuffer = ( !strcmp( argv[1], "true" ) );
-  rootDir = strdup( argv[ 2 ] );
+  rootDir = argv[ 2 ];
 
   // Set up the graphics and preferences
   Graphics *graphics = new Graphics();
@@ -38,4 +38,5 @@ int main( int argc, char *argv[] ) {
   Game *game = new Game( pref, graphics );
   graphics->mainLoop( game );
 }
+
 

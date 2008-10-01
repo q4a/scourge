@@ -26,8 +26,8 @@ using namespace std;
 map<string, GuiTheme*> GuiTheme::themes;
 char GuiTheme::DEFAULT_THEME[255] = "default";
 
-GuiTheme::GuiTheme( char *name ) {
-  this->name = name;
+GuiTheme::GuiTheme( char const* name ) {
+  this->nameX = name;
   windowBack = NULL;
   windowTop = NULL;
   windowBorder = NULL;
@@ -49,7 +49,6 @@ GuiTheme::GuiTheme( char *name ) {
 }
 
 GuiTheme::~GuiTheme() {
-  free( name );
   delete windowBack;
   delete windowTop;
   delete windowBorder;
@@ -84,7 +83,7 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
 		//config->setUpdate( "Loading UI themes", i, vv->size() );
   
 		const char *name = node->getValueAsString( "name" );
-		GuiTheme *theme = new GuiTheme( strdup( name ) );
+		GuiTheme *theme = new GuiTheme( name );
 
 		ThemeElement *element = parseElement( node->getValueAsString( "window_background" ) );
 		if( element ) theme->setWindowBackground( element );
@@ -293,4 +292,5 @@ void ThemeElement::loadTextures( ScourgeGui *scourgeGui ) {
   if( strlen( sw ) ) tex_sw = scourgeGui->loadSystemTexture( sw );
   if( strlen( se ) ) tex_se = scourgeGui->loadSystemTexture( se );
 }
+
 

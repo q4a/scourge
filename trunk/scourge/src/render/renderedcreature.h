@@ -118,6 +118,7 @@ public:
 
 protected:
 	bool doFindStart( int *startx, int *starty );
+	bool isEmptyUnSeenPlace( int x, int y, std::set<int> *seen );
 	bool doFindPlace( int startx, int starty, int *finalX, int *finalY, std::set<int> *seen );
   bool canReach( int startx, int starty, int firstx, int firsty, int xx, int yy, std::map<int,bool> *seen );
 

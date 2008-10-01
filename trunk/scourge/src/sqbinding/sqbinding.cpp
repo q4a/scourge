@@ -397,7 +397,7 @@ bool SqBinding::callBoolMethod( const char *name,
     sq_call( vm, 2, 1 ); //calls the function
     SQBool sqres;
     sq_getbool( vm, -1, &sqres );
-    *result = (bool)sqres;
+    *result = sqres != SQFalse;
     ret = true;
   } else {
     cerr << "Can't find function " << name << endl;
@@ -548,7 +548,7 @@ bool SqBinding::callMapPosMethod( const char *name, int x, int y, int z ) {
 		sq_call( vm, 4, 1 ); //calls the function
     SQBool sqres;
     sq_getbool( vm, -1, &sqres );
-    ret = (bool)sqres;
+    ret = sqres != SQFalse;
   } else {
     cerr << "Can't find function " << name << endl;
     ret = false;
@@ -571,7 +571,7 @@ bool SqBinding::callMapPosShapeMethod( const char *name, const char *shapeName, 
 		sq_call( vm, 5, 1 ); //calls the function
     SQBool sqres;
     sq_getbool( vm, -1, &sqres );
-    ret = (bool)sqres;
+    ret = sqres != SQFalse;
   } else {
     cerr << "Can't find function " << name << endl;
     ret = false;

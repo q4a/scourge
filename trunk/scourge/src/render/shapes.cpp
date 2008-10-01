@@ -794,7 +794,7 @@ GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool isSp
   SDL_PixelFormat *format = surface->format;
 
   lastTextureWidth = surface->w; lastTextureHeight = surface->h;
-  lastTextureAlpha = format->Amask;
+  lastTextureAlpha = format->Amask != 0;
 
   if ( format->Amask ) {
     srcFormat = GL_RGBA;

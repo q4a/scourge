@@ -1476,7 +1476,8 @@ void Map::willDrawGrid() {
 	int chunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
 	int chunkY = ( cursorFlatMapY - MAP_OFFSET - 1 ) / MAP_UNIT;
 	float m = 0.5f * MUL;
-	char tmp[100];
+	int const TMPLEN = 100;
+	char tmp[TMPLEN];
 	for(int i = 0; i < chunkCount; i++) {
 
 		float n = static_cast<float>(MAP_UNIT) * MUL;
@@ -1487,7 +1488,7 @@ void Map::willDrawGrid() {
 		if( chunks[i].cx == chunkX && chunks[i].cy == chunkY ) {
 			glColor4f( 0.0f, 1.0f, 0.0f, 0.25f );
 			glLineWidth( 1 );
-			sprintf(tmp, "%d,%d", (chunkX * MAP_UNIT + MAP_OFFSET), (chunkY * MAP_UNIT + MAP_OFFSET + 1) );
+			snprintf(tmp, TMPLEN, "%d,%d", (chunkX * MAP_UNIT + MAP_OFFSET), (chunkY * MAP_UNIT + MAP_OFFSET + 1) );
 			adapter->texPrint( 0, 0, tmp );
 			for( int xx = 1; xx < MAP_UNIT; xx++ ) {
 				glBegin( GL_LINES );
@@ -3948,7 +3949,7 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 		setOutdoorTexture( oti->x, oti->y, 
 		                   oti->offsetX / 1000.0f, oti->offsetY / 1000.0f, 
 		                   oti->outdoorThemeRef, oti->angle / 1000.0f, 
-		                   oti->horizFlip, oti->vertFlip, oti->z );
+		                   oti->horizFlip != 0, oti->vertFlip != 0, oti->z );
 	}
 	
 	if( heightMapEnabled ) {
@@ -4300,7 +4301,7 @@ void Map::getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Locatio
 	  						*mapx = fx;
 	  						*mapy = fy;
 	  						*mapz = fz;
-	  						sprintf( mapDebugStr, "map: %.2f,%.2f,%.2f pos:%d,%d,%d - %d,%d,%d", 
+	  						snprintf( mapDebugStr, DEBUG_SIZE, "map: %.2f,%.2f,%.2f pos:%d,%d,%d - %d,%d,%d", 
 	  						         mx, my, mz,
 	  						         location->x, location->y - shape->getDepth() + 1, location->z,
 	  						         location->x + shape->getWidth(), location->y + 1, location->z + shape->getHeight() );
@@ -4315,7 +4316,7 @@ void Map::getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Locatio
   	if( toint( mz ) <= 0.25f ) {
   		*pos = NULL;
   		*mapz = 0;
-  		sprintf( mapDebugStr, "map: %d,%d,%d", *mapx, *mapy, *mapz );
+  		snprintf( mapDebugStr, DEBUG_SIZE, "map: %d,%d,%d", *mapx, *mapy, *mapz );
   		adapter->setDebugStr(mapDebugStr);
   		return;
   	}
