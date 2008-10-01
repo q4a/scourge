@@ -294,12 +294,15 @@ void Portrait::showStats() {
 
 void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 	int size = 20;
+
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	glPushMatrix();
-	glTranslatef( x, y, 0 );
-	glEnable( GL_ALPHA_TEST );
-	glAlphaFunc( GL_NOTEQUAL, 0 );
-	glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( icon ) );
 	glColor4f( 1, 1, 1, 1 );
+	glTranslatef( x, y, 0 );
+	glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( icon ) );
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( 0, 0 );
@@ -310,7 +313,9 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 	glTexCoord2d( 1, 1 );
 	glVertex2d( size, size );
 	glEnd();
-	glDisable( GL_ALPHA_TEST );
+
+	glDisable(GL_BLEND);
+
 	if( creature ) {
 		pcUi->getScourge()->getSDLHandler()->texPrint( size, 15, "%d%%", creature->getSkill( skill, false ) );
 	}

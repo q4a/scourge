@@ -133,10 +133,10 @@ ImageCanvas::~ImageCanvas() {
 }
 
 void ImageCanvas::drawWidgetContents( Widget *w ) {
-	glEnable( GL_ALPHA_TEST );
-	//glAlphaFunc( GL_EQUAL, 0xff );
-	glAlphaFunc( GL_NOTEQUAL, 0 );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable(GL_TEXTURE_2D);
+
 	glPushMatrix();
 	glBindTexture( GL_TEXTURE_2D, image );
 	glColor4f(1, 1, 1, 1);
@@ -152,6 +152,7 @@ void ImageCanvas::drawWidgetContents( Widget *w ) {
 	glVertex3f( getWidth(), getHeight(), 0 );
 	glEnd();
 	glPopMatrix();	
-	glDisable( GL_ALPHA_TEST );
+
 	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
 }

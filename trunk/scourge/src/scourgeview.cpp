@@ -639,8 +639,8 @@ void ScourgeView::drawBorder() {
   int gw = 220;
   int gh = 64;
 
-  glEnable( GL_ALPHA_TEST );
-  glAlphaFunc( GL_GREATER, 0 );
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glBindTexture( GL_TEXTURE_2D, scourge->getSession()->getShapePalette()->getGargoyleTexture() );
 
   glPushMatrix();
@@ -679,7 +679,7 @@ void ScourgeView::drawBorder() {
   glPopMatrix();
 
   //glEnable( GL_TEXTURE_2D );
-  glDisable( GL_ALPHA_TEST );
+  glDisable( GL_BLEND );
   glEnable(GL_DEPTH_TEST);
   glPopMatrix();
 }

@@ -419,6 +419,10 @@ void Equip::drawSpells() {
 	int startX = 20;
 	int xx = startX;
 	int yy = 20;
+
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
 		MagicSchool *school = MagicSchool::getMagicSchool( i );
 
@@ -429,9 +433,6 @@ void Equip::drawSpells() {
 		int width = w - 55;
 
 		glDisable( GL_TEXTURE_2D );
-		glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		// glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
 		glColor4f( 0, 0, 0, 0.75 );
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex2d( 0, 1 );
@@ -439,11 +440,8 @@ void Equip::drawSpells() {
 		glVertex2d( 0, size );
 		glVertex2d( size + width, size );
 		glEnd();
-		glDisable( GL_BLEND );
 		glEnable( GL_TEXTURE_2D );
 
-		glEnable( GL_ALPHA_TEST );
-		glAlphaFunc( GL_NOTEQUAL, 0 );
 		glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ) );
 		glColor4f( 1, 1, 1, 1 );
 		glBegin( GL_TRIANGLE_STRIP );
@@ -456,7 +454,6 @@ void Equip::drawSpells() {
 		glTexCoord2d( 1, 1 );
 		glVertex2d( size, size );
 		glEnd();
-		glDisable( GL_ALPHA_TEST );
 
 		glColor4f( 1, 0.35f, 0, 1 );
 		pcUi->getScourge()->getSDLHandler()->setFontType( Constants::SCOURGE_MONO_FONT );
@@ -500,6 +497,7 @@ void Equip::drawSpells() {
 		xx = startX;
 		yy += SPELL_SIZE + 12;
 	}
+	glDisable( GL_BLEND );
 }
 
 void Equip::drawCapabilities() {
@@ -513,10 +511,10 @@ void Equip::drawCapabilities() {
 	int size = 15;
 	int width = w - 55;
 	
-	glDisable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	// glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+	glDisable( GL_TEXTURE_2D );
+
 	glColor4f( 0, 0, 0, 0.75 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glVertex2d( 0, 1 );
@@ -524,7 +522,7 @@ void Equip::drawCapabilities() {
 	glVertex2d( 0, size );
 	glVertex2d( size + width, size );
 	glEnd();
-	glDisable( GL_BLEND );
+
 	glEnable( GL_TEXTURE_2D );
 	
 	glColor4f( 1, 0.35f, 0, 1 );
@@ -600,6 +598,7 @@ void Equip::drawCapabilities() {
 		specialSkill = false;
 		canvas->setTooltip( "" );
 	}
+	glDisable( GL_BLEND );
 }
 
 void Equip::useSpecialSkill( SpecialSkill *ss ) {

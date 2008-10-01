@@ -457,9 +457,10 @@ void Widget::drawTooltip( Widget *parent ) {
 void Widget::drawBorderedTexture( GLuint texture, int x, int y, int width, int height, 
                                   int left, int right, int textureWidth, bool inverse ) {
   
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glEnable( GL_TEXTURE_2D );
-  glEnable( GL_ALPHA_TEST );    
-  glAlphaFunc( GL_GREATER, 0 );
+
   glBindTexture( GL_TEXTURE_2D, texture );
   
   glPushMatrix();
@@ -528,34 +529,9 @@ void Widget::drawBorderedTexture( GLuint texture, int x, int y, int width, int h
   }
   glEnd();
 
-  /* debugging only
-  glDisable( GL_TEXTURE_2D );
-  glColor4f( 1, 0, 0, 1 );
-  glBegin( GL_LINE_LOOP );
-  
-  // quad A
-  glVertex3f( 0, 0, 0 );
-  glVertex3f( 0, height, 0);
-  glVertex3f( left, height, 0 );
-  glVertex3f( left, 0, 0 );
-
-  // quad B
-  glVertex3f( left, 0, 0 );
-  glVertex3f( left, height, 0);
-  glVertex3f( width - right, height, 0 );
-  glVertex3f( width - right, 0, 0 );
-
-  // quad C
-  glVertex3f( width - right, 0, 0 );
-  glVertex3f( width - right, height, 0);
-  glVertex3f( width, height, 0 );
-  glVertex3f( width, 0, 0 );
-  
-  glEnd();
-  */
-
   glPopMatrix();
 
+  glDisable(GL_BLEND);
 }
 
 int Widget::getTextWidth( Widget *parent, const char *s ) {

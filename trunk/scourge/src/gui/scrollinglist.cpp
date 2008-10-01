@@ -302,10 +302,10 @@ void ScrollingList::printLine( Widget *parent, int x, int y, const std::string& 
 void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
   float n = lineHeight - 3;
 
-  glEnable( GL_ALPHA_TEST );
-  //glAlphaFunc( GL_EQUAL, 0xff );
-	glAlphaFunc( GL_NOTEQUAL, 0 );
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glEnable(GL_TEXTURE_2D);
+
   glPushMatrix();
   glTranslatef( x, y, 0 );
   if(icon) glBindTexture( GL_TEXTURE_2D, icon );
@@ -323,7 +323,6 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
   glVertex3f( n, n, 0 );
   glEnd();
 
-  glDisable( GL_ALPHA_TEST );
   glDisable(GL_TEXTURE_2D);
 
 	if( iconBorder ) {
@@ -344,6 +343,8 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
 		glEnd();
 	}
   glPopMatrix();
+
+  glDisable(GL_BLEND);
 }
 
 int ScrollingList::getLineAtPoint( int x, int y ) {

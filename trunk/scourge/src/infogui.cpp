@@ -324,10 +324,10 @@ bool InfoGui::handleEvent(Widget *widget, SDL_Event *event) {
 void InfoGui::drawWidgetContents(Widget *w) {
 
   if( w == image && ( item || spell || skill ) ) {
-    glEnable( GL_ALPHA_TEST );
-    //glAlphaFunc( GL_EQUAL, 0xff );
-		glAlphaFunc( GL_NOTEQUAL, 0 );
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable(GL_TEXTURE_2D);
+
     glPushMatrix();
     //    glTranslatef( x, y, 0 );
 	if ( hasItem() ) {
@@ -339,7 +339,6 @@ void InfoGui::drawWidgetContents(Widget *w) {
 	}
 
     glColor4f(1, 1, 1, 1);
-    
     
     glBegin( GL_TRIANGLE_STRIP );
     glTexCoord2f( 0, 0 );
@@ -353,8 +352,8 @@ void InfoGui::drawWidgetContents(Widget *w) {
     glEnd();
     glPopMatrix();
     
-    glDisable( GL_ALPHA_TEST );
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
   }
 }
 

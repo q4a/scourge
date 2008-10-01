@@ -68,8 +68,7 @@ void Progress::updateStatusLight( const char *message, int n, int max ) {
                                  HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
   }
   //status++;
-  
-	glDisable( GL_ALPHA_TEST );
+
 }
 
 void Progress::updateStatus(const char *message, bool updateScreen, int n, int max, int alt, bool drawScreen) {
@@ -88,19 +87,7 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
 
   glDisable( GL_DEPTH_TEST );
   glDepthMask(GL_FALSE);
-  glDisable( GL_BLEND );
   glDisable( GL_CULL_FACE );
-  glDisable( GL_TEXTURE_2D );
-
-  /* for testing opacity only
-  glColor4f( 1,1,1,1 );
-  glBegin( GL_QUADS );
-  glVertex2f( 0, 0 );
-  glVertex2f( 600, 0 );
-  glVertex2f( 600, 600 );
-  glVertex2f( 0, 600 );
-  glEnd();
-  */
 
   int w = 10;  
 //  int h = 22;
@@ -124,11 +111,9 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
   int y = 0;
   glTranslatef( x, y, 0 );
 
-  if(!opaque) {
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  }
-  
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
   glColor4f( 1, 1, 1, 0.8f );
   Widget::drawBorderedTexture( texture, 
                                -TEXTURE_BORDER, 
@@ -137,9 +122,6 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
                                60,
                                TEXTURE_BORDER, TEXTURE_BORDER, 
                                256 );
-  glDisable( GL_TEXTURE_2D );
-  glDisable( GL_ALPHA_TEST );
-  glDisable( GL_BLEND );
 
   glColor4f(1, 1, 1, 1);
   if(message) scourgeGui->texPrint(0, 22, message);
@@ -163,7 +145,7 @@ void Progress::updateStatus(const char *message, bool updateScreen, int n, int m
                                  HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
     glPopMatrix();
   }
-  glDisable( GL_TEXTURE_2D );
+  //glDisable( GL_TEXTURE_2D );
   /* Draw it to the screen */
   if(updateScreen) {
     if( drawScreen ) {

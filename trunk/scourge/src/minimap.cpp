@@ -154,8 +154,6 @@ void MiniMap::drawMap() {
     glEnd();
   }
 
-  glEnable( GL_BLEND );
-
   // Draw the surrounding objects into the map. Naive method: draw each block.
   for( int x = sx; x < ex; x++ ) {
     if( x < 0 || x >= MAP_WIDTH ) continue;
@@ -241,7 +239,6 @@ void MiniMap::drawMap() {
 
     glPushMatrix();
     glEnable( GL_ALPHA_TEST );
-    //glAlphaFunc( GL_EQUAL, 0xff );
     glAlphaFunc( GL_ALWAYS, 0 );
     glEnable(GL_TEXTURE_2D);
     glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getMinimapTexture() );

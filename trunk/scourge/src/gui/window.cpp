@@ -743,9 +743,10 @@ void Window::drawLineBorder( int topY, int openHeight ) {
 
 void Window::drawBorder( int topY, int openHeight ) {
 	int n = 16; // FIXME: compute when loading textures
+
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
-	glEnable( GL_ALPHA_TEST );
-	glAlphaFunc( GL_NOTEQUAL, 0x00 );
 
 	glColor4f( theme->getWindowBorderTexture()->color.r,
 						 theme->getWindowBorderTexture()->color.g,
@@ -890,7 +891,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glPopMatrix();
 
 	glDisable( GL_TEXTURE_2D );
-	glDisable( GL_ALPHA_TEST );
+	glDisable(GL_BLEND);
 }
 
 

@@ -2247,10 +2247,10 @@ void Scourge::drawWidgetContents(Widget *w) {
               } else if ( !(Item*)storable ) {
                 w->setTooltip( NULL );
               }
-            glEnable( GL_ALPHA_TEST );
-            //glAlphaFunc( GL_EQUAL, 0xff );
-						glAlphaFunc( GL_NOTEQUAL, 0 );
+            glEnable( GL_BLEND );
+            glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
             glEnable(GL_TEXTURE_2D);
+
             glPushMatrix();
             //    glTranslatef( x, y, 0 );
             if( storable->getStorableType() == Storable::ITEM_STORABLE ) {
@@ -2273,7 +2273,7 @@ void Scourge::drawWidgetContents(Widget *w) {
             glEnd();
             glPopMatrix();
 
-            glDisable( GL_ALPHA_TEST );
+            glDisable(GL_BLEND);
             glDisable(GL_TEXTURE_2D);
           }
           return;
@@ -2288,12 +2288,13 @@ void Scourge::drawWidgetContents(Widget *w) {
 
 void Scourge::drawItemIcon( Item *item, int n ) {
   glEnable( GL_TEXTURE_2D );
-  glEnable( GL_ALPHA_TEST );
-  //glAlphaFunc( GL_EQUAL, 0xff );
-	glAlphaFunc( GL_NOTEQUAL, 0 );
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glBindTexture( GL_TEXTURE_2D,
                  getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ] );
+
   glColor4f(1, 1, 1, 1);
+
   glPushMatrix();
   //glTranslatef( 0, 5, 0 );
 //  glNormal3f( 0, 0, 1 );
@@ -2307,8 +2308,10 @@ void Scourge::drawItemIcon( Item *item, int n ) {
   glTexCoord2f( 1, 1 );
   glVertex3f( n, n, 0 );
   glEnd();
-  glDisable( GL_ALPHA_TEST );
+
+  glDisable(GL_BLEND);
   glDisable( GL_TEXTURE_2D );
+
   glPopMatrix();
 }
 
