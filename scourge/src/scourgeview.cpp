@@ -525,6 +525,9 @@ void ScourgeView::drawInfos() {
     scourge->getSDLHandler()->drawTooltip(xpos2, ypos2, zpos2, -(scourge->getMap()->getZRot()), -(scourge->getMap()->getYRot()),
 																					 message->message, 0, 0.15f, 0.05f, 1.0f / scourge->getSession()->getMap()->getZoom() );
   }
+
+  glEnable( GL_DEPTH_TEST );
+
 }
 
 void ScourgeView::checkForDropTarget() {
@@ -879,7 +882,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
                                              cost, 0.5f, 0.2f, 0.0f, 1.0f / scourge->getMap()->getZoom() );
     }
     glPopMatrix();
-		glEnable( GL_DEPTH_TEST );
+    glEnable( GL_DEPTH_TEST );
   }
 
   // red for attack target
@@ -1063,7 +1066,6 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
         char cost[40];
         Color color;
         if( scourge->getParty()->getPlayer()->getBattle()->describeAttack( creature, cost, 40, &color, player ) ) {
-          glDisable( GL_DEPTH_TEST );
           scourge->getSDLHandler()->drawTooltip( 0, 0, 0, -( scourge->getMap()->getZRot() ), -( scourge->getMap()->getYRot() ),
                                                  cost, color.r, color.g, color.b, 1.0f / scourge->getMap()->getZoom() );
           glEnable( GL_DEPTH_TEST );
