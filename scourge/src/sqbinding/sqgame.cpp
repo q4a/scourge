@@ -316,6 +316,7 @@ int SqGame::_getTranslatedString( HSQUIRRELVM vm ) {
 int SqGame::_setInterruptFunction( HSQUIRRELVM vm ) {
 	GET_STRING( s, 3000 )
 	SqBinding::sessionRef->setInterruptFunction( s );
+	return 0;
 }
 
 int SqGame::_setMovieMode( HSQUIRRELVM vm ) {

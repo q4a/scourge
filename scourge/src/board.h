@@ -35,7 +35,7 @@ class Session;
 class Board;
 class GameAdapter;
 class ConfigLang;
-class NpcInfoInfo;
+struct NpcInfoInfo;
 
 /**
   *@author Gabor Torok

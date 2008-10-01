@@ -133,14 +133,14 @@ void ClientInfo::sendMessageAsync(char *message, int length) {
 
     // put the message on the queue
     Message *m;
-    if(!length) {
-      m = new Message(strdup(message), strlen(message) + 1);
+    if ( !length ) {
+      m = new Message( strlen( message ) + 1 );
+	  strcpy( &(*m)[0], message );
     } else {
-      char *s = new char[length];
-      memcpy(s, message, length);
-      m = new Message(s, length);
+      m = new Message( length );
+      memcpy( &(*m)[0], message, length );
     }
-    messageQueue.push(m);
+    messageQueue.push( m );
 
     // unlock the mutex
     if(SDL_mutexV(mutex) == -1) {
@@ -222,9 +222,9 @@ int clientInfoLoop(void *data) {
 
       // do I need to copy the message?
       message = clientInfo->getMessageQueue()->front();
-      messageLength = message->length;
+      messageLength = message->size();
       messageStr = new char[messageLength];
-      memcpy(messageStr, message->message, messageLength);
+      memcpy(messageStr, &(*message)[0], messageLength);
 
       clientInfo->getMessageQueue()->pop();
       delete message;
@@ -305,6 +305,7 @@ Uint32 ClientInfo::updateLag(int frame) {
 	return (Uint32)0;
 }
 
+/*
 Message::Message(char *message, int length) {
   this->message = message;
   this->length = length;
@@ -312,5 +313,5 @@ Message::Message(char *message, int length) {
 
 Message::~Message() {
   free(message);
-}
+}*/
 #endif

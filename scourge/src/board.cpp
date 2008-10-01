@@ -568,7 +568,8 @@ Mission::Mission( Board *board, int level, int depth, bool replayable,
   } else {
     edited = false;
     char *s;
-    assert( board->getSession()->getShapePalette()->getRandomMapLocation( mapType, &s, &mapX, &mapY ) );
+	bool got = board->getSession()->getShapePalette()->getRandomMapLocation( mapType, &s, &mapX, &mapY ); 
+    assert( got );
     strcpy( this->mapName, s );
   }
   

@@ -109,11 +109,14 @@ void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
 
 // Find a free starting location (for the recursion) to the left and above the given start.
 bool RenderedCreature::doFindStart( int *startx, int *starty ) {
+	if ( getShape() == NULL ) {
+		cerr << "Error: placing shapeless creature." << endl;
+		return false;
+	}
   int xx;
-  int yy = *starty;
-  while( yy >= MAP_OFFSET ) {
-	xx = *startx;
-	while( xx >= MAP_OFFSET ) {
+  int yy;
+  for ( yy = *starty; yy >= MAP_OFFSET; --yy ) {
+	for ( xx = *startx; xx >= MAP_OFFSET; ) {
 	  Location *pos = levelMap->getLocation( xx, yy, 0 );
 	  if( !pos ) {
 		*startx = xx;
@@ -123,8 +126,7 @@ bool RenderedCreature::doFindStart( int *startx, int *starty ) {
 		xx = pos->x - 1;
 	  }
 	}
-	xx = *startx;
-	while( xx < MAP_WIDTH - MAP_OFFSET ) {
+	for( xx = *startx; xx < MAP_WIDTH - MAP_OFFSET; ) {
 	  Location *pos = levelMap->getLocation( xx, yy, 0 );
 	  if( !pos ) {
 		*startx = xx;
@@ -134,12 +136,9 @@ bool RenderedCreature::doFindStart( int *startx, int *starty ) {
 		xx = pos->x + pos->shape->getWidth();
 	  }
 	}
-	yy--;
   }
-  yy = *starty;
-  while( yy < MAP_DEPTH - MAP_OFFSET ) {
-	xx = *startx;
-	while( xx >= MAP_OFFSET ) {
+  for ( yy = *starty; yy < MAP_DEPTH - MAP_OFFSET; ++yy ) {
+	for ( xx = *startx; xx >= MAP_OFFSET; ) {
 	  Location *pos = levelMap->getLocation( xx, yy, 0 );
 	  if( !pos ) {
 		*startx = xx;
@@ -149,8 +148,7 @@ bool RenderedCreature::doFindStart( int *startx, int *starty ) {
 		xx = pos->x - 1;
 	  }
 	}
-	xx = *startx;
-	while( xx < MAP_WIDTH - MAP_OFFSET ) {
+	for ( xx = *startx; xx < MAP_WIDTH - MAP_OFFSET; ) {
 	  Location *pos = levelMap->getLocation( xx, yy, 0 );
 	  if( !pos ) {
 		*startx = xx;
@@ -160,12 +158,15 @@ bool RenderedCreature::doFindStart( int *startx, int *starty ) {
 		xx = pos->x + pos->shape->getWidth();
 	  }
 	}
-	yy++;
   }
   return false;
 }
 
-#define EMPTY_POS(x,y) !(*finalX) && levelMap->isEmpty( (x), (y) ) && seen->find( (x) + (y) * MAP_WIDTH ) == seen->end()
+
+bool RenderedCreature::isEmptyUnSeenPlace( int x, int y, set<int> *seen ) {
+	return levelMap->isEmpty( x, y ) 
+	       && seen->find( x + y * MAP_WIDTH ) == seen->end();
+}
 
 bool RenderedCreature::doFindPlace( int startx, int starty, int *finalX, int *finalY, set<int> *seen ) {
 	if( *finalX ) return true;
@@ -178,16 +179,16 @@ bool RenderedCreature::doFindPlace( int startx, int starty, int *finalX, int *fi
 
 	seen->insert( startx + starty * MAP_WIDTH );
 
-	if( EMPTY_POS( startx + 1, starty ) ) {
+	if( isEmptyUnSeenPlace( startx + 1, starty, seen ) ) {
 		if( doFindPlace( startx + 1, starty, finalX, finalY, seen ) ) return true;
 	}
-	if( EMPTY_POS( startx, starty + 1 ) ) {
+	if( isEmptyUnSeenPlace( startx, starty + 1, seen ) ) {
 		if( doFindPlace( startx, starty + 1, finalX, finalY, seen ) ) return true;
 	}
-	if( EMPTY_POS( startx - 1, starty ) ) {
+	if( isEmptyUnSeenPlace( startx - 1, starty, seen ) ) {
 		if( doFindPlace( startx - 1, starty, finalX, finalY, seen ) ) return true;
 	}
-	if( EMPTY_POS( startx, starty - 1 ) ) {
+	if( isEmptyUnSeenPlace( startx, starty - 1, seen ) ) {
 		if( doFindPlace( startx, starty - 1, finalX, finalY, seen ) ) return true;
 	}
 	

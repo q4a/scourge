@@ -121,6 +121,12 @@ MondrianGenerator::~MondrianGenerator(){
 }
 
 /* Nice unicode maze printer. Doesn't work with all fonts, through */
+
+#ifdef _MSC_VER  // -=K=-: and i dont want the warnings
+#	pragma warning(push)
+#	pragma warning(disable : 4566) // "character cannot be represented in current code page"  
+#endif
+
 void MondrianGenerator::printMazeUC() {
   printf("---------------------------------------\n");
   for(int y = 0; y < height; y++) {    
@@ -170,6 +176,11 @@ void MondrianGenerator::printMazeUC() {
 	}
 	printf("---------------------------------------\n");
 }
+
+#ifdef _MSC_VER 
+#	pragma warning(pop) // back
+#endif
+
 
 void MondrianGenerator::printMaze() {
   printf("---------------------------------------\n");
@@ -230,7 +241,7 @@ int MondrianGenerator::subdivideMaze(Sint16 x_start, Sint16 y_start, Sint16 widt
 	//   Later it's used to decide wether to divide the room 	horzontal or vertical 
 	if( init ) 
 //		init = (rand()%2 == 0);
-		init = (Util::dice(2));
+		init = (Util::dice(2)) != 0;
 
 //	fprintf( stderr, "Iteration: %d %d : %d %d\n", x_start, y_start, width, height);
 

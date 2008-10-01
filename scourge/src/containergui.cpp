@@ -90,6 +90,7 @@ void ContainerGui::showContents() {
 }
 
 bool ContainerGui::handleEvent(SDL_Event *event) {
+  /* -=K=-: commented out to silence "code that does nothing" warning
   switch(event->type) {
   case SDL_MOUSEBUTTONUP:
 	
@@ -102,7 +103,7 @@ bool ContainerGui::handleEvent(SDL_Event *event) {
 	default: break;
 	}
   default: break;
-  }
+  }*/
   return false;
 }
 

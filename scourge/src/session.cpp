@@ -293,7 +293,7 @@ Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, in
 	if( fx && fy ) {
 		replacement->findPlace( cx, cy, fx, fy );
 	} else {
-		int ffx, ffy;
+		//int ffx, ffy;
 		//replacement->findPlace( cx, cy, &ffx, &ffy );
 		replacement->moveTo( cx, cy, 0 );
 		getMap()->setCreature( cx, cy, 0, replacement );
