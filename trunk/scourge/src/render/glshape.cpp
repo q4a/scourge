@@ -66,14 +66,13 @@ void GLShape::commonInit(GLuint tex[], Uint32 color, Uint8 shapePalIndex) {
   surfaces[FRONT_SURFACE] = NULL;
   surfaces[TOP_SURFACE] = NULL;
   initSurfaces();
+  
+  initialize();
 }
 
 void GLShape::setTexture( GLuint *textureGroup ) {
-  if( initialized ) {
-    glDeleteLists( displayListStart, 8 );
-  }
   this->tex = textureGroup;
-  initialize();
+  setTextureIndex(-1);
 }
 
 void GLShape::initialize() {
@@ -370,68 +369,59 @@ void GLShape::draw() {
   glCullFace( GL_BACK );
   GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
   glEnable( GL_TEXTURE_2D );
-
-  int textureIndex;
   bool isFloorShape = ( height < 1 );
   bool *sides = getOccludedSides();
+  int textureIndexTop = isFloorShape && getTextureIndex() > -1 ? getTextureIndex() : GLShape::TOP_SIDE;
+  int textureIndexFront = ( !isFloorShape && depth < width && getTextureIndex() > -1 ? getTextureIndex() : GLShape::FRONT_SIDE );
+  int textureIndexSide = ( !isFloorShape && depth > width && getTextureIndex() > -1 ? getTextureIndex() : GLShape::LEFT_RIGHT_SIDE );
+  
   if( sides[Shape::TOP_SIDE] ) {
-  	textureIndex = isFloorShape && getTextureIndex() > -1 ? getTextureIndex() : GLShape::TOP_SIDE;
-		glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
+		glBindTexture( GL_TEXTURE_2D, tex[textureIndexTop] );
 		glCallList( displayListStart + 1 );
 	}
   if( sides[Shape::N_SIDE] ) {
-  	textureIndex = ( !isFloorShape && depth < width && getTextureIndex() > -1 ? getTextureIndex() : GLShape::FRONT_SIDE );
 		if(Constants::multitexture) {
 			glSDLActiveTextureARB(GL_TEXTURE0_ARB);
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, tex[textureIndex]);
+			glBindTexture(GL_TEXTURE_2D, tex[textureIndexFront]);
 			glSDLActiveTextureARB(GL_TEXTURE1_ARB);
 			glEnable(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, lightmap_tex_num);
 		} else {
-			glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
+			glBindTexture( GL_TEXTURE_2D, tex[textureIndexFront] );
 		}
 		glCallList( displayListStart + 2 + Shape::N_SIDE );
 	}
   if( sides[Shape::S_SIDE] ) {
-  	textureIndex = ( !isFloorShape && depth < width && getTextureIndex() > -1 ? getTextureIndex() : GLShape::FRONT_SIDE );
 		if(Constants::multitexture) {
 			glSDLActiveTextureARB(GL_TEXTURE0_ARB);
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, tex[textureIndex]);
+			glBindTexture(GL_TEXTURE_2D, tex[textureIndexFront]);
 			glSDLActiveTextureARB(GL_TEXTURE1_ARB);
 			glEnable(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, lightmap_tex_num);
 		} else {
-			glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
+			glBindTexture( GL_TEXTURE_2D, tex[textureIndexFront] );
 		}
 		glCallList( displayListStart + 2 + Shape::S_SIDE );
 	}
   if( sides[Shape::E_SIDE] ) {
-  	textureIndex = ( !isFloorShape && depth > width && getTextureIndex() > -1 ? getTextureIndex() : GLShape::LEFT_RIGHT_SIDE );
 		if(Constants::multitexture) {
 			glSDLActiveTextureARB(GL_TEXTURE0_ARB);
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, tex[textureIndex]);
+			glBindTexture(GL_TEXTURE_2D, tex[textureIndexSide]);
 			glSDLActiveTextureARB(GL_TEXTURE1_ARB);
 			glEnable(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, lightmap_tex_num2);
 		} else {
-			glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
+			glBindTexture( GL_TEXTURE_2D, tex[textureIndexSide] );
 		}
 		glCallList( displayListStart + 2 + Shape::E_SIDE );
 	}
   if( sides[Shape::W_SIDE] ) {
-  	textureIndex = ( !isFloorShape && depth > width && getTextureIndex() > -1 ? getTextureIndex() : GLShape::LEFT_RIGHT_SIDE );  	
-		glBindTexture( GL_TEXTURE_2D, tex[textureIndex] );
+		glBindTexture( GL_TEXTURE_2D, tex[textureIndexSide] );
 		glCallList( displayListStart + 2 + Shape::W_SIDE );
 	}
-	  //  if( occludedSides[Shape::TOP_SIDE ) glCallList( displayListStart + 2 + Shape::TOP_SIDE );
-	  //  if( occludedSides[Shape::BOTTOM_SIDE ) glCallList( displayListStart + 2 + Shape::BOTTOM_SIDE );
-
-	  //  for( int i = 0; i < 6; i++ ) {
-	  //glCallList( displayListStart + 2 + i );
-	  //}
 
   if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
 }

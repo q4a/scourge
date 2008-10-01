@@ -2540,7 +2540,6 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 		int n = Util::dice( p->shape->getTextureCount() - 2 );
 		// -1 means, use the correct default texture (correct for the side of the glShape)
 		p->texIndex = ( n == 0 ? -1 : n + 2 );
-		if( p->texIndex > -1 ) cerr << "shape=" << p->shape->getName() << " texIndex=" << p->texIndex << endl;
 	}
 
 	for(int xp = 0; xp < shape->getWidth(); xp++) {
