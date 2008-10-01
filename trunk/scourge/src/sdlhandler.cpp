@@ -1077,6 +1077,7 @@ void SDLHandler::drawTooltip( float xpos2, float ypos2, float zpos2,
 	
 	glScalef( zoom, zoom, zoom );
 	
+        glDisable( GL_DEPTH_TEST );
 	glDisable( GL_CULL_FACE );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );  
