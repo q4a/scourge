@@ -384,11 +384,8 @@ void MainMenu::drawMenu() {
 	glDisable(GL_STENCIL_TEST);
 	glDisable(GL_SCISSOR_TEST);
 	glDisable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
-	glColor4f( 1, 1, 1, 1 );
+
 	for( int i = 0; i < static_cast<int>(textEffects.size()); i++ ) {
 		if( this->scourge->getSession()->getPreferences()->getFlaky() == false ) {		
 			TextEffect *textEffect = textEffects[i];
@@ -411,9 +408,8 @@ void MainMenu::drawMenu() {
 
 void MainMenu::drawLogo() {
 
-  glEnable( GL_ALPHA_TEST );
-  //glAlphaFunc( GL_EQUAL, 0xff );
-  glAlphaFunc( GL_NOTEQUAL, 0 );
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glEnable( GL_TEXTURE_2D );
 
   //Draw the Scourge logo
@@ -467,9 +463,6 @@ void MainMenu::drawLogo() {
     glPopMatrix();
   }
 
-  glDisable( GL_TEXTURE_2D );
-  glDisable( GL_ALPHA_TEST );
-
   GLint t = SDL_GetTicks();
   if(t - logoTicks > logoTicksDelta) {
     if( logoRot < 120 - ( ( 1024 - scourge->getScreenHeight() ) / 4 ) ) {
@@ -480,11 +473,8 @@ void MainMenu::drawLogo() {
     candleFlameY = top + 385 + Util::dice( 4 ) - 4;
   }
 
-  // draw candle flame
-  glEnable( GL_TEXTURE_2D );
-  glEnable(GL_BLEND);  
   glBlendFunc(GL_SRC_COLOR, GL_ONE);
-  //setBlendFunc();
+
   glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->candle );
   glColor4f( 0.7f, 0.7f, 0.3f, 0.5f );
   glPushMatrix();
@@ -504,6 +494,7 @@ void MainMenu::drawLogo() {
   glVertex3f(w, h, 0);
   glEnd();
   glPopMatrix();
+
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_BLEND );
 }
@@ -532,9 +523,8 @@ void MainMenu::drawStars() {
 
 void MainMenu::drawScourge() {
 
-  glEnable( GL_ALPHA_TEST );
-  //glAlphaFunc( GL_EQUAL, 0xff );
-  glAlphaFunc( GL_EQUAL, 0xff );
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glEnable( GL_TEXTURE_2D );
   
   float w = 554; //scourge->getShapePalette()->scourge->w;
@@ -561,14 +551,12 @@ void MainMenu::drawScourge() {
 
   glDisable( GL_TEXTURE_2D );
   glDisable( GL_BLEND );
-
 }
 
 void MainMenu::drawBackdrop() {
 
-  glEnable( GL_ALPHA_TEST );
-  //glAlphaFunc( GL_EQUAL, 0xff );
-  glAlphaFunc( GL_NOTEQUAL, 0 );
+  glEnable( GL_BLEND );
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glEnable( GL_TEXTURE_2D );
 
 //  float w = scourge->getShapePalette()->scourgeBackdrop->w;
@@ -603,12 +591,13 @@ void MainMenu::drawBackdrop() {
 void MainMenu::drawClouds(bool moveClouds, bool flipped) {
   // draw clouds
   float w, h;
+
   glEnable( GL_TEXTURE_2D );
-  //  glDisable( GL_LIGHTING );
   glEnable( GL_BLEND );
   glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
-  //  setBlendFunc();
+
   glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->cloud );
+
   if(flipped) 
 	glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );
   else
@@ -641,9 +630,7 @@ void MainMenu::drawClouds(bool moveClouds, bool flipped) {
 	}
   }
   glDisable( GL_BLEND );
-  //glEnable(GL_DEPTH_TEST);
   glDisable( GL_TEXTURE_2D );
-  //  glDisable( GL_LIGHTING );
 }
 
 void MainMenu::drawWater() {

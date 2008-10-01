@@ -49,22 +49,17 @@ void Button::drawWidget(Widget *parent) {
 
 	if( texture ) {
 		glDisable( GL_CULL_FACE );
-		glEnable( GL_ALPHA_TEST );
-		//glAlphaFunc( GL_EQUAL, 0xff );
-		glAlphaFunc( GL_NOTEQUAL, 0 );
+		glEnable( GL_BLEND );	
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable(GL_TEXTURE_2D);
 		glPushMatrix();
 		glBindTexture( GL_TEXTURE_2D, texture );
-		if( glowing || inside ) {
-			glEnable( GL_BLEND );	
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		}
+
 		if( isEnabled() ) {
 			glColor4f( 1, 1, 1, ( glowing || inside ? getAlpha() + 0.3f : 1 ) );
 		} else {
 			glColor4f( 0.5f, 0.5f, 0.5f, 0.5f );
 		}
-		
 		
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );
@@ -78,11 +73,8 @@ void Button::drawWidget(Widget *parent) {
 		glEnd();
 		glPopMatrix();
 		
-		glDisable( GL_ALPHA_TEST );
 		glDisable(GL_TEXTURE_2D);
-		if( glowing || inside ) {
-			glDisable( GL_BLEND );
-		}
+		glDisable( GL_BLEND );
 	}
 
   if( strlen( label ) ) {

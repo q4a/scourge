@@ -1129,16 +1129,15 @@ void Item::create3dTex( Scourge *scourge, float w, float h ) {
 	unsigned int textureSizeH = 32;
   textureInMemory = (unsigned char *) malloc( textureSizeW * textureSizeH * 4);    
 
-	glPushAttrib( GL_ALL_ATTRIB_BITS );
-	glDisable( GL_CULL_FACE );
+  glPushAttrib( GL_ALL_ATTRIB_BITS );
+
+  glDisable( GL_CULL_FACE );
   glEnable( GL_DEPTH_TEST );
-	glDepthMask( GL_TRUE );
+  glDepthMask( GL_TRUE );
   glEnable( GL_TEXTURE_2D );
   glDisable( GL_BLEND );
-	glDisable( GL_ALPHA_TEST );
-	glDisable( GL_SCISSOR_TEST );
-	glDisable( GL_STENCIL_TEST );
-  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glDisable( GL_SCISSOR_TEST );
+  glDisable( GL_STENCIL_TEST );
 
   glGenTextures(1, tex3d);    
   glBindTexture(GL_TEXTURE_2D, tex3d[0]); 
@@ -1172,7 +1171,6 @@ void Item::create3dTex( Scourge *scourge, float w, float h ) {
   // Copy to a texture
 	glPushMatrix();
   glLoadIdentity();
-  glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, tex3d[0]);
   glCopyTexSubImage2D(
                      GL_TEXTURE_2D,
@@ -1187,6 +1185,7 @@ void Item::create3dTex( Scourge *scourge, float w, float h ) {
 	glPopMatrix();
 	fprintf(stderr, "OpenGl result for item(%s) glCopyTexSubImage2D: %s\n", getName(), Util::getOpenGLError());          
   
+  glDisable(GL_TEXTURE_2D);
   glPopAttrib();
 }
 
