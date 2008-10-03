@@ -234,6 +234,7 @@ void Scourge::start() {
 
       // fade away
       getSession()->getSound()->stopMusic();
+			// FIXME: Also fade out when continuing a saved game.
 			if( !session->willLoadGame() ) {
 				getSDLHandler()->fade( 0, 1, 20 );
 			}

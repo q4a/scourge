@@ -85,6 +85,7 @@ public:
 };
 
 /// A .3ds based shape.
+
 class C3DSShape : public GLShape  {
 
 private:

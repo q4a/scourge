@@ -44,9 +44,6 @@ namespace Util {
 
 	inline float degreesToRadians(float angle) { return Constants::toRadians( angle ); }
 
-	/**
-	* Rotate the 2D point(x,y) by angle(in degrees). Return the result in px,py.
-	*/
 	void rotate(Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle);
 
 	// some math functions
@@ -56,25 +53,12 @@ namespace Util {
 	void multiply_vector_by_matrix(const float m[9], float v[3]);
 	void multiply_vector_by_matrix2(const float m[16], float v[4]);
 
-	/**
-	* Return a string containing the last OpenGL error
-	* Useful to debug strange OpenGL behaviors
-	*/
 	char* getOpenGLError();
 
-	/**
-	* Returns next word from the given position
-	*/
 	std::string getNextWord(const std::string& theInput, int fromPos, int &endWord);
 
-	/**
-	* get the angle between two shapes (x,y,width,depth)
-	*/
 	float getAngle(float sx, float sy, float sw, float sd, float tx, float ty, float tw, float td);
 
-	/**
-	* get the difference between a and b ( returns a - b )
-	*/
 	float diffAngle(float a, float b);
 
 	// draw a percentage bar
@@ -96,9 +80,6 @@ namespace Util {
 	char *toLowerCase( char *s );
 	std::string& toLowerCase( std::string& s );
 
-	/**
-	* Is px,py in the field of vision defined by x,y,angle?
-	*/
 	bool isInFOV( float x, float y, float angle, float px, float py );
 
 	char *addLineBreaks( const char *in, char *out, int lineLength=40 );

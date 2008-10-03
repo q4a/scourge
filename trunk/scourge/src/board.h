@@ -296,6 +296,7 @@ private:
 
 
 /// Manages the list of missions, and the advancement of the story line.
+
 class Board	{								
  private:
   Session *session;

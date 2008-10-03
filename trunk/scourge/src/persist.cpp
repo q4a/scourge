@@ -384,6 +384,11 @@ void Persist::loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY ) {
   file->read( gridY );
 }
 
+/// Loads a level map from disk.
+
+/// The map can be an edited base map from the data directory
+/// or a map that is stored together with a savegame.
+
 MapInfo *Persist::loadMap( File *file ) {
   MapInfo *info = (MapInfo*)malloc(sizeof(MapInfo));
   file->read( &(info->version) );

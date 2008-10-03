@@ -688,6 +688,8 @@ AmbientSound::~AmbientSound() {
 #endif
 }
 
+/// Plays a random sample from the map's ambient sound set.
+
 int AmbientSound::playRandomAmbientSample() {
 #ifdef HAVE_SDL_MIXER
 	// Abort if already playing an ambient
@@ -702,6 +704,8 @@ int AmbientSound::playRandomAmbientSample() {
 #endif
 	return -1;
 }
+
+/// Plays the footstep sound.
 
 int AmbientSound::playFootsteps( int panning ) {
 #ifdef HAVE_SDL_MIXER
