@@ -480,8 +480,8 @@ void C3DSShape::draw() {
 
   glPushMatrix();
   if( !useShadow && hasAlphaValues ) {
-//		glEnable(GL_ALPHA_TEST);
-//		glAlphaFunc( GL_NOTEQUAL, 0 );
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc( GL_NOTEQUAL, 0 );
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   }
@@ -502,7 +502,7 @@ void C3DSShape::draw() {
   
 	if( !useShadow && hasAlphaValues ) {
 		glDisable( GL_BLEND );
-//		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_ALPHA_TEST);
 	}
 	glPopMatrix();
 	
