@@ -44,6 +44,11 @@ map<string, NpcInfo*> Mission::npcInfos;
   *@author Gabor Torok
   */
 
+/// Sets up the mission board object.
+
+/// This object contains all missions that are displayed on the board,
+/// as well as all information required for the game to start them.
+
 Board::Board(Session *session) 
 		:missionText(NULL) {
   this->session = session;
@@ -156,6 +161,8 @@ void Board::freeListText() {
   }
 }
 
+/// Resets the board, and the story line index.
+
 void Board::reset() {
   for( int i = 0; i < static_cast<int>(storylineMissions.size()); i++ ) {
     Mission *mission = storylineMissions[i];
@@ -170,6 +177,11 @@ void Board::reset() {
   }
   availableMissions.clear();
 }
+
+/// Handles completed missions.
+
+/// This function removes completed missions from the board and
+/// items from completed missions from the party's inventory.
 
 void Board::removeCompletedMissionsAndItems() {
   // remove completed missions
@@ -189,6 +201,11 @@ void Board::removeCompletedMissionsAndItems() {
 		}
   }
 }
+
+/// Creates a set of missions.
+
+/// The set contains the current storyline mission and a selection
+/// of random missions that are suited to the party's level.
 
 void Board::initMissions() {
   // free ui
@@ -340,6 +357,8 @@ void Board::initMissions() {
   }
 }
 
+/// Sets the storyline index.
+
 void Board::setStorylineIndex( int n ) {
 	if( n < 0 )
 		n = 0;
@@ -351,6 +370,8 @@ void Board::setStorylineIndex( int n ) {
 		storylineMissions[i]->setCompleted( i < storylineIndex ? true : false );
 	}
 }
+
+/// Called when a storyline mission has been completed.
 
 void Board::storylineMissionCompleted( Mission *mission ) {
 	for( int i = 0; i < static_cast<int>(storylineMissions.size()); i++ ) {

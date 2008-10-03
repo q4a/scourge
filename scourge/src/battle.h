@@ -35,9 +35,8 @@ class Item;
 class Projectile;
 class Spell;
 
-/**
-   This class represents a single battle turn.
- */
+/// This class represents a single battle turn.
+
 class Battle {
 	enum { 
 		MESSAGE_SIZE = 200
@@ -79,26 +78,13 @@ class Battle {
   
    void endTurn();
 
-  /**
-	 This method sets up and creates battle turns (Battle objects) in order of initiative.
-   */
   static void setupBattles(Session *session, Battle *battle[], int count, std::vector<Battle *> *turns);
 
-  /**
-	 Call these when a projectile weapon finally hits.
-	 It sets up a turn and plays it.
-  */
   static void projectileHitTurn(Session *session, Projectile *proj, Creature *target);
   static void projectileHitTurn(Session *session, Projectile *proj, int x, int y);
 
-  /**
-	 A no-op turn of battle.
-  */
   Battle();
 
-  /**
-	 A Battle is a round of battle between 'creature' and 'creature->getTargetCreature()'
-   */
   Battle(Session *session, Creature *creature);
   ~Battle();
 

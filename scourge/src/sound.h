@@ -27,6 +27,7 @@
 #include "board.h"
 
 /// This object manages random ambient sounds, and footstep sounds.
+
 class AmbientSound {
 	std::string name;
 #ifdef HAVE_SDL_MIXER
@@ -43,6 +44,7 @@ public:
 };
 
 /// The game's main sound object.
+
 class Sound {
 private:
   int missionMusicIndex;

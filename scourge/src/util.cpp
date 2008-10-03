@@ -21,6 +21,8 @@
 
 using namespace std;
 
+/// Rotate the 2D point(x,y) by angle(in degrees). Return the result in px,py.
+
 void Util::rotate(Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle) {
 	// convert to radians
 	// angle = degreesToRadians(angle);
@@ -76,8 +78,11 @@ void Util::multiply_vector_by_matrix2(const float m[16], float v[4]) {
 }
 
 
-// Return a string containing the last OpenGL error.
-// Useful to debug strange OpenGL behaviors
+/// Returns the last OpenGL error ( simple non-GLU version).
+
+/// Return a string containing the last OpenGL error.
+/// Useful to debug strange OpenGL behaviors
+
 char * Util :: getOpenGLError(){
 	int error;
 	error = glGetError();
@@ -96,8 +101,11 @@ char * Util :: getOpenGLError(){
 	}
 }
 
-// Returns next word from the given position. If there is not a space at the given
-// position, the function suppose it is the first letter of the word wanted. 
+/// Returns next word from the given position.
+
+/// If there is not a space at the given
+/// position, the function suppose it is the first letter of the word wanted.
+
 string Util::getNextWord(const string& theInput, int fromPos, int &endWord){
 	int firstChar, lastStringChar;
 	string sub;
@@ -121,6 +129,8 @@ string Util::getNextWord(const string& theInput, int fromPos, int &endWord){
 	return sub;
 }
 
+/// get the angle between two shapes (x,y,width,depth)
+
 float Util::getAngle(float fx, float fy, float fw, float fd, float tx, float ty, float tw, float td) {
 	// figure out targetCreatureAngle
 	float sx = fx + (fw / 2);
@@ -132,6 +142,7 @@ float Util::getAngle(float fx, float fy, float fw, float fd, float tx, float ty,
 	float y = ey - sy;
 	if( x == 0.0f )
 		x = 0.001f;
+	// FIXME: Use lookup table instead of expensive atan().
 	float angle = Constants::toAngle(atan(y / x));
 
 	// read about the arctan problem: 
@@ -156,9 +167,8 @@ float Util::getAngle(float fx, float fy, float fw, float fd, float tx, float ty,
 
 #define FOV_ANGLE 60
 
-/**
- * Is px,py in the field of vision defined by x,y,angle?
- */
+/// Is px,py in the field of vision defined by x,y,angle?
+
 bool Util::isInFOV( float x, float y, float angle, float px, float py ) {
 	float angleToP = getAngle( x, y, 1, 1, px, py, 1, 1 );
 
@@ -167,6 +177,8 @@ bool Util::isInFOV( float x, float y, float angle, float px, float py ) {
 
 	return b;
 }
+
+/// Returns the difference between two angles (degrees version).
 
 float Util::diffAngle(float a, float b) {
 //  a -= (static_cast<int>(a) / 360) * 360;
@@ -179,6 +191,8 @@ float Util::diffAngle(float a, float b) {
 	}
 	return diff;
 }
+
+/// Draws a little bar that displays a value graphically.
 
 void Util::drawBar( int x, int y, float barLength, float value, float maxValue,
                     float red, float green, float blue, float gradient, GuiTheme *theme,
@@ -294,6 +308,8 @@ char *Util::addLineBreaks( const char *in, char *out, int lineLength ) {
 	return out;
 }
 
+/// Break a string into paragraphs using a special delimiter.
+
 void Util::getLines( const char *in, vector<string> *out ) {
 	char tmp[3000];
 	char *q = tmp;
@@ -385,7 +401,8 @@ bool Util::StringCaseCompare(const std::string sStr1, const std::string sStr2) {
 static unsigned long mt_sequence[MT_N];
 static long mt_index = MT_N + 1;
 
-// Start the MT random number generator with a specific seed.
+/// Starts the Mersenne Twister random number generator with a specified seed.
+
 void Util::mt_srand( unsigned long s ) {
     mt_sequence[0]= s & 0xffffffffUL;
     
@@ -401,8 +418,11 @@ void Util::mt_srand( unsigned long s ) {
 static unsigned long mag[2] = { 0x0UL, 0x9908b0dfUL };
 static const float multiplier = 1.0 / 4294967296.0;
 
-// Mersenne twister core algorithm. Returns a float between 0 and 1.
-// Multiple times faster than rand() and has a period of (2^19937 - 1).
+/// Mersenne Twister random number generator.
+
+/// This is the Mersenne Twister core algorithm. Returns a float between 0 and 1.
+/// Multiple times faster than rand() and has a period of (2^19937 - 1).
+
 float Util::mt_rand() {
     register unsigned long y;
 
@@ -444,23 +464,27 @@ float Util::mt_rand() {
 		return ret;
 }
 
-// random integer from 0 to size-1
-// size must be bigger than 0 and not bigger than RAND_MAX + 1
-// makes noise otherwise ;-)
-// size is exclusive
+/// Returns a random integer from 0 to size - 1.
+
+/// size must be bigger than 0 and not bigger than RAND_MAX + 1
+/// makes noise otherwise ;-)
+/// size is exclusive
 
 int Util::dice( int size ) { 
 	return static_cast<int>(roll( 0, size ));
 }
 
-// random integer  from min to max
-// min must be <= max
-// this method is inclusive on both min and max
+/// Returns a random integer between min and max.
+
+/// min must be <= max
+/// this method is inclusive on both min and max
+
 int Util::pickOne( int min, int max ) {
 	return dice( max + 1 - min ) + min;
 }
 
-// random float from min to max (both inclusive)
+/// random float from min to max (both inclusive)
+
 float Util::roll( float min, float max ) { 
 	return (max - min) * mt_rand() + min;
 }

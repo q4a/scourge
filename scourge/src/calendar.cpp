@@ -50,6 +50,8 @@ void Calendar::reset(bool resetTime){
 	timeFrozen = false; 
 }
 
+/// Inserts an event into the queue.
+
 void Calendar::scheduleEvent(Event *e){
 	if(scheduledEvents.size() < MAX_SCHEDULED_EVENTS){
 		scheduledEvents.push_back(e);

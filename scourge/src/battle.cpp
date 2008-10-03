@@ -61,9 +61,13 @@ enum {
   WAIT,
 };
 
+/// A no-op turn of battle.
+
 Battle::Battle() {
   this->creature = NULL;
 }
+
+/// A Battle is a round of battle between 'creature' and 'creature->getTargetCreature()'
 
 Battle::Battle(Session *session, Creature *creature) {
   this->session = session;
@@ -97,6 +101,8 @@ void Battle::reset( bool keepPaused, bool keepAP ) {
   creature->getShape()->setCurrentAnimation(static_cast<int>(MD2_STAND));
   ((AnimatedShape*)(creature->getShape()))->setAttackEffect(false);
 }
+
+/// This method sets up and creates battle turns (Battle objects) in order of initiative.
 
 void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<Battle *> *turns) {
   // for now put all battles into the vector
@@ -133,6 +139,8 @@ void Battle::setupBattles(Session *session, Battle *battle[], int count, vector<
   cerr << "-----------------------------------" << endl;
   */
 }                 
+
+/// Executes a creature's battle turn.
 
 bool Battle::fightTurn() {
   if(debugBattle) cerr << "TURN: creature=" << creature->getName() << 
@@ -236,11 +244,15 @@ bool Battle::fightTurn() {
   return false;
 }
 
+/// Swaps the turn between monsters and the party.
+
 void Battle::endTurn() {
   ap = 0;
   session->getParty()->toggleRound(false);
   //paused = false;
 }
+
+/// Handles the pre-turn pause in turn based combat.
 
 bool Battle::pauseBeforePlayerTurn() {
   // go to single-player mode
@@ -285,6 +297,8 @@ bool Battle::pauseBeforePlayerTurn() {
   return false;
 }
 
+/// Calculates the current creature's radius of action.
+
 int Battle::calculateRange( Item *item ) {
   int range;
   if( creature->getActionSkill() ) {
@@ -321,6 +335,8 @@ int Battle::getAdjustedWait( int originalWait ) {
 	//}
 	return newWait;
 }																										 	
+
+/// Initializes a creature's battle turn.
 
 void Battle::initTurnStep( bool callScript ) {
   dist = creature->getDistanceToTarget();
@@ -363,6 +379,8 @@ void Battle::initTurnStep( bool callScript ) {
   }
 }
 
+/// Simple action script for auto-controlled creatures.
+
 void Battle::executeAction() {
   // try to heal someone
   if( !creature->getActionSpell() ) {
@@ -401,6 +419,8 @@ void Battle::executeAction() {
 	// pause after each hit
 	steps = 0;
 }
+
+/// Handles moving towards a target creature.
 
 void Battle::stepCloserToTarget() {
   // try to heal someone
@@ -518,6 +538,8 @@ void Battle::stepCloserToTarget() {
   }
 }
 
+/// Moves a creature one step towards its target. Also handles loss of target.
+
 bool Battle::moveCreature() {
 
   // Set the movement mode; otherwise character won't move
@@ -623,6 +645,8 @@ bool Battle::moveCreature() {
   return false;
 }
 
+/// Returns a hostile target near the party.
+
 Creature *Battle::getAvailablePartyTarget() {
   for( int i = 0; i < session->getParty()->getPartySize(); i++) {
     bool visible = ( session->getMap()->isLocationVisible(toint(session->getParty()->getParty(i)->getX()), 
@@ -637,6 +661,8 @@ Creature *Battle::getAvailablePartyTarget() {
   }
   return NULL;
 }
+
+/// Returns the closest hostile target of a character.
 
 Creature *Battle::getAvailableTarget() {
   if( creature->isMonster() ) {
@@ -659,6 +685,8 @@ Creature *Battle::getAvailableTarget() {
   }
   return target;
 }
+
+/// Selects a new target for player characters.
 
 bool Battle::selectNewTarget() {
   // select a new target
@@ -685,6 +713,8 @@ bool Battle::selectNewTarget() {
   }
 }
 
+/// Makes a creature use a special capability.
+
 void Battle::useSkill() {
   snprintf(message, MESSAGE_SIZE, _( "%1$s uses capability %2$s!" ), 
           creature->getName(), 
@@ -709,6 +739,8 @@ void Battle::useSkill() {
   // also cancel path
   if( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
 }
+
+/// Spell casting (using a known spell, item or scroll).
 
 void Battle::castSpell( bool alwaysSucceeds ) {
   int casterLevel;
@@ -851,6 +883,8 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 	
 }
 
+/// Makes a creature fire a projectile.
+
 void Battle::launchProjectile() {
   if(!Projectile::addProjectile(creature, creature->getTargetCreature(), item, 
                                 new ShapeProjectileRenderer( session->getShapePalette()->findShapeByName("ARROW") ),
@@ -879,6 +913,8 @@ void Battle::launchProjectile() {
   int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
   session->playSound( getRandomSound(bowSwishSoundStart, bowSwishSoundCount), panning );
 }
+
+/// Call these when a projectile weapon finally hits. It sets up a turn and plays it.
 
 void Battle::projectileHitTurn(Session *session, Projectile *proj, Creature *target) {
   if(debugBattle) cerr << "*** Projectile hit (target): creature=" << proj->getCreature()->getName() << endl;  
@@ -942,9 +978,8 @@ void Battle::projectileHitTurn(Session *session, Projectile *proj, int x, int y)
 
 
 
-/**
- * Message to user about battle turn.
- */
+/// Message to user about battle turn.
+
 void Battle::prepareToHitMessage() {
   if(item) {
     if( session->getPreferences()->getCombatInfoDetail() > 0 ) {
@@ -987,11 +1022,12 @@ void Battle::prepareToHitMessage() {
   }
 }
 
-/**
- * Special actions for very low attack roll. If the attack roll
- * is below 10% of the max and the attack range is greater than 4pts,
- * roll to see if there is a fumble.
- */
+/// Handles low attack rolls.
+
+/// Special actions for very low attack roll. If the attack roll
+/// is below 10% of the max and the attack range is greater than 4pts,
+/// roll to see if there is a fumble.
+
 bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
   if( max - min >= MIN_FUMBLE_RANGE && 
       creature->getTargetCreature() &&
@@ -1037,6 +1073,8 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
   }
   return false;
 }
+
+/// Modify the damage for high attack roll.
 
 void Battle::applyHighAttackRoll( float *damage, float attack, float min, float max ) {
   float percent = ( attack - min ) / ( ( max - min ) / 100.0f );
@@ -1093,6 +1131,8 @@ void Battle::applyHighAttackRoll( float *damage, float attack, float min, float 
   }
 }
 
+/// Modify the damage according to the properties of a magic item used.
+
 void Battle::applyMagicItemDamage( float *damage ) {
   // magical weapons
   if( item && item->isMagicItem() ) {
@@ -1137,6 +1177,8 @@ void Battle::applyMagicItemDamage( float *damage ) {
     (*damage) *= mul;
   }
 }
+
+/// Applies the effects of a magical item containing a spell.
 
 float Battle::applyMagicItemSpellDamage() {
   // magical damage
@@ -1183,6 +1225,8 @@ float Battle::applyMagicItemSpellDamage() {
   }
   return -1.0f;
 }
+
+/// Handles physical attacks.
 
 void Battle::hitWithItem() {
   prepareToHitMessage();
@@ -1339,6 +1383,8 @@ void Battle::hitWithItem() {
 	}
 }
 
+/// Deals the actual damage after an attack.
+
 void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) {
 
 	// monsters fight back
@@ -1454,6 +1500,8 @@ void Battle::initItem(Item *item) {
 }
 */
 
+/// Makes a creature eat or drink the action item.
+
 void Battle::executeEatDrinkAction() {
   // is it still in the inventory?
   int index = creature->findInInventory(creature->getActionItem());
@@ -1481,6 +1529,8 @@ char *Battle::getRandomSound(int start, int count) {
     return sound[ start + Util::dice( count ) ];
   else return NULL;
 }
+
+/// Describes the current type of attack to be later used as part of a log message.
 
 bool Battle::describeAttack( Creature *target, char *buff, size_t buffSize, Color *color, bool includeActions ) {
 
@@ -1580,6 +1630,8 @@ bool Battle::describeAttack( Creature *target, char *buff, size_t buffSize, Colo
 	color->b = 0;
   return true;
 }
+
+/// Returns whether the target is within weapon range.
 
 bool Battle::isInRangeOfTarget() {
 	// FIXME: should also work with target item, location
