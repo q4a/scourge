@@ -1040,25 +1040,25 @@ int Item::getInventoryHeight() {
 void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
 	GLuint tex;
 	int rw, rh, ox, oy, iw, ih;
-	//  cerr << "name=" << getName() << endl;
-	getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, smallIcon );
-	//  cerr << "\tdim=" << rw << "," << rh << " offset=" << ox << "," << oy << " smallIcon=" << smallIcon << endl;
+	// getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, smallIcon );
+	getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, false );	
 	glPushMatrix();
 	glTranslatef( x + ox, y + oy, 0 );
-	if ( !smallIcon ) {
+//	if ( !smallIcon ) {
 		if ( w > 0 && h > 0 ) glScalef( rw / static_cast<float>( w ), rh / static_cast<float>( h ), 1 );
 		if ( isMagicItem() ) {
 			renderUnderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
 		}
-	}
-	renderItemIcon( scourge, 0, 0, rw, rh, smallIcon );
-	if ( !smallIcon ) {
+//	}
+	// renderItemIcon( scourge, 0, 0, rw, rh, smallIcon );
+	renderItemIcon( scourge, 0, 0, rw, rh, false );
+//	if ( !smallIcon ) {
 		if ( isMagicItem() ) {
 			renderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
 			renderItemIconIdentificationEffect( scourge, 0, 0, rw, rh );
 		}
 		glScalef( 1, 1, 1 );
-	}
+//	}
 	glPopMatrix();
 }
 
@@ -1101,10 +1101,7 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool sm
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D,
-	               ( !smallIcon && getShape()->getIcon() > 0 ?
-	                 getShape()->getIcon() :
-	                 session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] ) );
+	glBindTexture( GL_TEXTURE_2D, getItemIconTexture( smallIcon ) );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( x, y );
@@ -1116,6 +1113,11 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool sm
 	glVertex2d( x + w, y + h );
 	glEnd();
 	glDisable( GL_BLEND );
+}
+
+GLuint Item::getItemIconTexture( bool smallIcon ) {
+	return ( !smallIcon && getShape()->getIcon() > 0 ? getShape()->getIcon() : 
+		session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] );
 }
 
 void Item::create3dTex( Scourge *scourge, float w, float h ) {

@@ -332,7 +332,7 @@ void InfoGui::drawWidgetContents( Widget *w ) {
 		glPushMatrix();
 		//    glTranslatef( x, y, 0 );
 		if ( hasItem() ) {
-			glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ] );
+			glBindTexture( GL_TEXTURE_2D, item->getItemIconTexture() ); 
 		} else if ( hasSpell() ) {
 			glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
 		} else if ( hasSkill() ) {
