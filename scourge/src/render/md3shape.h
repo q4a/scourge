@@ -73,7 +73,6 @@ public:
 	void setModelAnimation();
 	void draw();
 	void outline( float r, float g, float b );
-	void setupToDraw();
 	AnimInfo *getAnimInfo( t3DModel *model );
 
 	inline std::vector<Uint32> *getTextures() {
