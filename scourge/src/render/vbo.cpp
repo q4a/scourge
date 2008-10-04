@@ -14,7 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
+#include "../common/constants.h"
 #include "vbo.h"
 
 using namespace std;

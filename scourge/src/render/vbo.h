@@ -17,6 +17,7 @@
 
 #ifndef VBO_H
 #define VBO_H
+#pragma once
 
 #include "render.h"
 

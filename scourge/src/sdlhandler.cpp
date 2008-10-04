@@ -745,7 +745,6 @@ void SDLHandler::drawScreenInternal() {
 	if ( stencilBufferUsed ) glClear( GL_STENCIL_BUFFER_BIT );
 	glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
 	glClearDepth( 1.0f );
-	cerr << fadeoutTimer << endl;
 	screenView->drawView();
 
 	// redraw the gui
