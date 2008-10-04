@@ -3620,32 +3620,32 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
 }
 
 void Scourge::describeAttacks( Creature *p, int x, int y, bool currentOnly ) {
-	Item *left = p->getItemAtLocation( Constants::INVENTORY_LEFT_HAND );
-	Item *right = p->getItemAtLocation( Constants::INVENTORY_RIGHT_HAND );
-	Item *ranged = p->getItemAtLocation( Constants::INVENTORY_WEAPON_RANGED );
+  Item *left = p->getItemAtLocation( Constants::EQUIP_LOCATION_LEFT_HAND );
+  Item *right = p->getItemAtLocation( Constants::EQUIP_LOCATION_RIGHT_HAND );
+  Item *ranged = p->getItemAtLocation( Constants::EQUIP_LOCATION_WEAPON_RANGED );
 
 	int row = 0;
 	int col = 0;
 	int colWidth = 120;
 	int rowHeight = 37;
-	if ( ( Constants::INVENTORY_LEFT_HAND == p->getPreferredWeapon() || !currentOnly ) &&
-	        describeWeapon( p, left, x + col * colWidth, y + row * rowHeight, Constants::INVENTORY_LEFT_HAND, false ) ) {
+	if( ( Constants::EQUIP_LOCATION_LEFT_HAND == p->getPreferredWeapon() || !currentOnly ) && 
+			describeWeapon( p, left, x + col * colWidth, y + row * rowHeight, Constants::EQUIP_LOCATION_LEFT_HAND, false ) ) {
 		col++;
 		if ( col > 1 ) {
 			col = 0;
 			row++;
 		}
 	}
-	if ( ( Constants::INVENTORY_RIGHT_HAND == p->getPreferredWeapon() || !currentOnly ) &&
-	        describeWeapon( p, right, x + col * colWidth, y + row * rowHeight, Constants::INVENTORY_RIGHT_HAND, false ) ) {
+	if( ( Constants::EQUIP_LOCATION_RIGHT_HAND == p->getPreferredWeapon() || !currentOnly ) && 
+			describeWeapon( p, right, x + col * colWidth, y + row * rowHeight, Constants::EQUIP_LOCATION_RIGHT_HAND, false ) ) {
 		col++;
 		if ( col > 1 ) {
 			col = 0;
 			row++;
 		}
 	}
-	if ( ( Constants::INVENTORY_WEAPON_RANGED == p->getPreferredWeapon() || !currentOnly ) &&
-	        describeWeapon( p, ranged, x + col * colWidth, y + row * rowHeight, Constants::INVENTORY_WEAPON_RANGED, false ) ) {
+	if( ( Constants::EQUIP_LOCATION_WEAPON_RANGED == p->getPreferredWeapon() || !currentOnly ) &&  
+			describeWeapon( p, ranged, x + col * colWidth, y + row * rowHeight, Constants::EQUIP_LOCATION_WEAPON_RANGED, false ) ) {
 		col++;
 		if ( col > 1 ) {
 			col = 0;

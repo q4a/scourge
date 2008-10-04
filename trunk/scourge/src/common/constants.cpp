@@ -232,7 +232,7 @@ const char *Constants::cursorTextureName[] = {
 	"move.png"
 };
 
-const char *Constants::inventoryTags[] = {
+const char *Constants::equipLocationTags[] = {
 	"HEAD", "NECK", "BACK", "CHEST", "LEFT_HAND", "RIGHT_HAND", "BELT", "LEGS", "FEET", "RING1", "RING2", "RING3", "RING4", "WEAPON_RANGED", "GLOVE"
 };
 
@@ -260,11 +260,12 @@ int Constants::getPotionSkillByName( char const* p ) {
 	return -1;
 }
 
-/*
-  Read until the EOL (or EOF whichever comes first)
-  Put line chars into 'line', excluding EOL chars.
-  Return first char after EOL.
- */
+/// Reads a line of text from a file.
+
+/// Read until the EOL (or EOF whichever comes first)
+/// Put line chars into 'line', excluding EOL chars.
+/// Return first char after EOL.
+
 int Constants::readLine( char *line, FILE *fp ) {
 	bool reachedEOL = false;
 	int lc = 0;

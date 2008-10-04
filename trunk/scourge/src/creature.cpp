@@ -137,7 +137,7 @@ void Creature::commonInit() {
 
 	this->inventory_count = 0;
 	this->preferredWeapon = -1;
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+  for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		equipped[i] = MAX_INVENTORY_SIZE;
 	}
 	for ( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
@@ -215,6 +215,8 @@ Creature::~Creature() {
 	}
 }
 
+/// Changes a character-type creature's profession, and applies the effects.
+
 void Creature::changeProfession( Character *c ) {
 	enum { MSG_SIZE = 120 };
 	char message[ MSG_SIZE ];
@@ -233,7 +235,7 @@ void Creature::changeProfession( Character *c ) {
 	}
 
 	// remove forbidden items
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+	for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
 		if ( equipped[i] < MAX_INVENTORY_SIZE ) {
 			Item *item = inventory[ equipped[i] ];
 			if ( !c->canEquip( item->getRpgItem() ) ) {
@@ -303,7 +305,7 @@ CreatureInfo *Creature::save() {
 		info->inventory[i] = inventory[i]->save();
 		//info->containedItems[i] = inventory[i]->saveContainedItems();
 	}
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+  for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		info->equipped[i] = equipped[i];
 	}
 
@@ -410,7 +412,7 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 		Item *item = Item::load( session, info->inventory[i] );
 		if ( item ) creature->addInventory( item, true );
 	}
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+  for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		if ( info->equipped[i] < MAX_INVENTORY_SIZE ) {
 			creature->equipInventory( info->equipped[i], i );
 		} else {
@@ -470,6 +472,8 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 char *Creature::getType() {
 	return( monster ? monster->getType() : character->getName() );
 }
+
+/// Gets the number of experience points required to level up.
 
 void Creature::calculateExpOfNextLevel() {
 	if ( isMonster() ) return;
@@ -582,6 +586,8 @@ bool Creature::follow( Creature *leader ) {
 	//bool found = pathManager->findPathToCreature( leader, player, session->getMap());
 	return setSelCreature( leader, 1 );
 }
+
+/// Sets where to move the creature. Returns true if the move is possible, false otherwise.
 
 bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible ) {
 	bool ignoreParty = session->getParty()->getPlayer() == this && !session->getGameAdapter()->inTurnBasedCombat();
@@ -857,6 +863,8 @@ Location *Creature::takeAStepOnPath() {
 	return position;
 }
 
+/// Computes the angle the creature should assume to reach newX, nexY.
+
 void Creature::computeAngle( GLfloat newX, GLfloat newY ) {
 	GLfloat a = Util::getAngle( newX, newY, 1, 1,
 	                            getX(), getY(), 1, 1 );
@@ -914,6 +922,8 @@ void Creature::playFootstep() {
 	}
 }
 
+/// Checks whether the creature has any moves left on its path.
+
 bool Creature::anyMovesLeft() {
 	return( selX > -1 && !pathManager->atEndOfPath() );
 }
@@ -926,6 +936,8 @@ float Creature::getMaxInventoryWeight() {
 void Creature::pickUpOnMap( RenderedItem *item ) {
 	addInventory( ( Item* )item );
 }
+
+/// Adds an item to the creature's inventory.
 
 bool Creature::addInventory( Item *item, bool force ) {
 	if ( inventory_count < MAX_INVENTORY_SIZE &&
@@ -975,6 +987,8 @@ InventoryInfo *Creature::getInventoryInfo( Item *item, bool createIfMissing ) {
 		return invInfos[ item ];
 	}
 }
+
+/// Returns the inventory index of an item.
 
 int Creature::findInInventory( Item *item ) {
 	InventoryInfo *info = getInventoryInfo( item );
@@ -1029,7 +1043,7 @@ Item *Creature::removeInventory( int index ) {
 		}
 		inventory_count--;
 		// adjust equipped indexes too
-		for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+    for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 			if ( equipped[i] > index && equipped[i] < MAX_INVENTORY_SIZE ) {
 				equipped[i]--;
 			}
@@ -1038,6 +1052,8 @@ Item *Creature::removeInventory( int index ) {
 	}
 	return item;
 }
+
+/// returns true if ate/drank item completely and false else
 
 bool Creature::eatDrink( int index ) {
 	return eatDrink( getInventory( index ) );
@@ -1219,6 +1235,8 @@ void Creature::setAction( int action, Item *item, Spell *spell, SpecialSkill *sk
 	}
 }
 
+/// equip or doff if already equipped
+
 void Creature::equipInventory( int index, int locationHint ) {
 	this->battle->invalidate();
 	// doff
@@ -1229,7 +1247,7 @@ void Creature::equipInventory( int index, int locationHint ) {
 
 	int place = -1;
 	vector<int> places;
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+	for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		// if the slot is empty and the item can be worn here
 		if ( item->getRpgItem()->getEquip() & ( 1 << i ) &&
 		        equipped[i] == MAX_INVENTORY_SIZE ) {
@@ -1281,9 +1299,11 @@ void Creature::equipInventory( int index, int locationHint ) {
 	}
 }
 
+/// Unequips an item.
+
 int Creature::doff( int index ) {
 	// doff
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+  for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		if ( equipped[i] == index ) {
 			Item *item = getInventory( index );
 			equipped[i] = MAX_INVENTORY_SIZE;
@@ -1332,9 +1352,8 @@ int Creature::doff( int index ) {
 	return 0;
 }
 
-/**
-   Get item at equipped index. (What is at equipped location?)
- */
+/// Get item at equipped index. (What is at equipped location?)
+
 Item *Creature::getEquippedInventory( int index ) {
 	int n = equipped[index];
 	if ( n < MAX_INVENTORY_SIZE ) {
@@ -1353,7 +1372,7 @@ bool Creature::isEquipped( Item *item ) {
 	InventoryInfo *info = getInventoryInfo( item );
 	return( info && info->equipIndex > -1 );
 	/*
-	 for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+  for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 	   if(equipped[i] < MAX_INVENTORY_SIZE &&
 	      inventory[ equipped[i] ] == item ) return true;
 	 }
@@ -1365,7 +1384,7 @@ bool Creature::isEquipped( int inventoryIndex ) {
 	if ( inventoryIndex < 0 || inventoryIndex >= inventory_count ) return false;
 	return isEquipped( inventory[ inventoryIndex ] );
 	/*
-	 for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+  for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 	   if( equipped[i] == inventoryIndex ) return true;
 	 }
 	 return false;
@@ -1374,7 +1393,7 @@ bool Creature::isEquipped( int inventoryIndex ) {
 
 bool Creature::removeCursedItems() {
 	bool found = false;
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+  for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		if ( equipped[i] < MAX_INVENTORY_SIZE && inventory[ equipped[i] ]->isCursed() ) {
 			found = true;
 			// not the most efficient way to do this, but it works...
@@ -1384,15 +1403,14 @@ bool Creature::removeCursedItems() {
 	return found;
 }
 
-/**
-   Get equipped index of inventory index. (Where is the item worn?)
-*/
+/// Get equipped index of inventory index. (Where is the item worn?)
+
 int Creature::getEquippedIndex( int index ) {
 	if ( index < 0 || index >= inventory_count ) return -1;
 	InventoryInfo *info = getInventoryInfo( inventory[ index ] );
 	return info->equipIndex;
 	/*
-	 for(int i = 0; i < Constants::INVENTORY_COUNT; i++) {
+  for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 	   if(equipped[i] == index) return i;
 	 }
 	 return -1;
@@ -1412,9 +1430,11 @@ bool Creature::isItemInInventory( Item *item ) {
 
 }
 
+/// Return the item at an equip location.
+
 Item *Creature::getItemAtLocation( int location ) {
 	int i;
-	for ( i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+  for(i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		if ( ( 1 << i ) == location ) {
 			if ( equipped[i] < MAX_INVENTORY_SIZE ) {
 				return getInventory( equipped[i] );
@@ -1433,9 +1453,9 @@ void Creature::recalcAggregateValues() {
 	// try to select a new preferred weapon if needed.
 	if ( preferredWeapon == -1 || !isEquippedWeapon( preferredWeapon ) ) {
 		int values[] = {
-			Constants::INVENTORY_LEFT_HAND,
-			Constants::INVENTORY_RIGHT_HAND,
-			Constants::INVENTORY_WEAPON_RANGED,
+      Constants::EQUIP_LOCATION_LEFT_HAND, 
+      Constants::EQUIP_LOCATION_RIGHT_HAND, 
+      Constants::EQUIP_LOCATION_WEAPON_RANGED,
 			-1
 		};
 		preferredWeapon = -1;
@@ -1447,7 +1467,7 @@ void Creature::recalcAggregateValues() {
 		}
 	}
 
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+	for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		Item *item = getEquippedInventory( i );
 		// handle magic attrib settings
 		if ( item != NULL && item->isMagicItem() ) {
@@ -1474,10 +1494,10 @@ bool Creature::nextPreferredWeapon() {
 	int pos = preferredWeapon;
 	for ( int i = 0; i < 4; i++ ) {
 		switch ( pos ) {
-		case Constants::INVENTORY_LEFT_HAND: pos = Constants::INVENTORY_RIGHT_HAND; break;
-		case Constants::INVENTORY_RIGHT_HAND: pos = Constants::INVENTORY_WEAPON_RANGED; break;
-		case Constants::INVENTORY_WEAPON_RANGED: pos = -1; break;
-		case - 1: pos = Constants::INVENTORY_LEFT_HAND; break;
+    case Constants::EQUIP_LOCATION_LEFT_HAND: pos = Constants::EQUIP_LOCATION_RIGHT_HAND; break;
+    case Constants::EQUIP_LOCATION_RIGHT_HAND: pos = Constants::EQUIP_LOCATION_WEAPON_RANGED; break;
+    case Constants::EQUIP_LOCATION_WEAPON_RANGED: pos = -1; break;
+    case -1: pos = Constants::EQUIP_LOCATION_LEFT_HAND; break;
 		}
 		if ( pos == -1 || isEquippedWeapon( pos ) ) {
 			preferredWeapon = pos;
@@ -1497,9 +1517,9 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
 		ret = ( preferredWeapon > -1 ? getItemAtLocation( preferredWeapon ) : NULL );
 	} else {
 		int location[] = {
-			Constants::INVENTORY_RIGHT_HAND,
-			Constants::INVENTORY_LEFT_HAND,
-			Constants::INVENTORY_WEAPON_RANGED,
+      Constants::EQUIP_LOCATION_RIGHT_HAND,
+      Constants::EQUIP_LOCATION_LEFT_HAND,
+      Constants::EQUIP_LOCATION_WEAPON_RANGED,
 			-1
 		};
 		for ( int i = 0; location[i] > -1; i++ ) {
@@ -1594,8 +1614,11 @@ void Creature::resurrect( int rx, int ry ) {
 	session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_STATS );
 }
 
-// add exp after killing a creature
-// only called for characters
+/// Gives experience points for a creature kill.
+
+/// add exp after killing a creature
+/// only called for characters
+
 int Creature::addExperience( Creature *creature_killed ) {
 	int n = ( creature_killed->level + 1 ) * 25;
 	// extra for killing higher level creatures
@@ -1604,10 +1627,11 @@ int Creature::addExperience( Creature *creature_killed ) {
 	return addExperienceWithMessage( n );
 }
 
-/**
- * Add n exp points. Only called for characters
- * Note that n can be a negative number. (eg.: failure to steal)
- */
+/// Gives experience points.
+
+/// Add n exp points. Only called for characters
+/// Note that n can be a negative number. (eg.: failure to steal)
+
 int Creature::addExperience( int delta ) {
 	int n = delta;
 	experience += n;
@@ -1634,6 +1658,8 @@ int Creature::addExperience( int delta ) {
 	return n;
 }
 
+/// Gives experience points and adds an appropriate message to the log scroller.
+
 int Creature::addExperienceWithMessage( int exp ) {
 	int n = 0;
 	if ( !getStateMod( StateMod::dead ) ) {
@@ -1656,7 +1682,8 @@ int Creature::addExperienceWithMessage( int exp ) {
 	return n;
 }
 
-// add money after a creature is killed
+/// Adds money after a creature kill
+
 int Creature::addMoney( Creature *creature_killed ) {
 	int n = creature_killed->level - getLevel();
 	if ( n < 1 ) n = 1;
@@ -1787,8 +1814,11 @@ bool Creature::isSpellMemorized( Spell *spell ) {
 	return false;
 }
 
-// FIXME: O(n) but there aren't that many spells...
-// return true if spell was added, false if creature already had this spell
+/// Adds a spell to the creature.
+
+/// FIXME: O(n) but there aren't that many spells...
+/// return true if spell was added, false if creature already had this spell
+
 bool Creature::addSpell( Spell *spell ) {
 	for ( vector<Spell*>::iterator e = spells.begin(); e != spells.end(); ++e ) {
 		Spell *thisSpell = *e;
@@ -1809,6 +1839,8 @@ bool Creature::isTargetValid() {
 	        !canAttack( getTargetCreature() ) ) return false;
 	return true;
 }
+
+/// Returns whether the creature can attack the other creature, and the mouse cursor the game should display.
 
 bool Creature::canAttack( RenderedCreature *creature, int *cursor ) {
 	// when attacking, attack the opposite kind (unless possessed)
@@ -1844,6 +1876,8 @@ bool Creature::canAttack( RenderedCreature *creature, int *cursor ) {
 	}
 	return ret;
 }
+
+/// Cancels the creature's target selection.
 
 void Creature::cancelTarget() {
 	setTargetCreature( NULL );
@@ -1930,9 +1964,8 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 	return( closest && closestDist < 20.0f ? closest : NULL );
 }
 
-/**
- * Try to heal someone; returns true if someone was found.
- */
+/// Try to heal someone; returns true if someone was found.
+
 bool Creature::castHealingSpell() {
 	if ( !isMonster() ) return false;
 
@@ -1965,6 +1998,8 @@ bool Creature::castHealingSpell() {
 	}
 	return false;
 }
+
+/// Basic NPC/monster AI.
 
 void Creature::decideMonsterAction() {
 
@@ -2169,6 +2204,8 @@ void Creature::setMp() {
 	mp = ( getLevel() + 1 ) * getCharacter()->getStartingMp();
 }
 
+/// Draws the creature.
+
 void Creature::draw() {
 	getShape()->draw();
 }
@@ -2323,6 +2360,8 @@ void Creature::skillChanged( int index, int oldValue, int newValue ) {
 	}
 }
 
+/// Applies the skill point based changes to skills.
+
 void Creature::applySkillMods() {
 	for ( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
 		if ( skillMod[ i ] > 0 ) {
@@ -2346,6 +2385,8 @@ void Creature::setProtectedStateMod( int mod, bool setting ) {
 	evalSpecialSkills();
 }
 
+/// Applies the effects of recurring (periodic) special capabilities.
+
 void Creature::applyRecurringSpecialSkills() {
 	for ( int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++ ) {
 		SpecialSkill *skill = SpecialSkill::getSpecialSkill( t );
@@ -2355,6 +2396,8 @@ void Creature::applyRecurringSpecialSkills() {
 		}
 	}
 }
+
+/// Applies the effects of automatic special capabilities.
 
 float Creature::applyAutomaticSpecialSkills( int event,
     char *varName,
@@ -2493,6 +2536,8 @@ float Creature::getArmor( float *armorP, float *dodgePenaltyP,
 	return armor;
 }
 
+/// Calculates armor and dodge penalty.
+
 void Creature::calcArmor( int damageType,
                           float *armorP,
                           float *dodgePenaltyP,
@@ -2502,7 +2547,7 @@ void Creature::calcArmor( int damageType,
 			lastArmor[ t ] = ( monster ? monster->getBaseArmor() : 0 );
 			lastDodgePenalty[ t ] = 0;
 			int armorCount = 0;
-			for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+			for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 				if ( equipped[i] != MAX_INVENTORY_SIZE ) {
 					Item *item = inventory[equipped[i]];
 					if ( item->getRpgItem()->getType() == RpgItem::ARMOR ||
@@ -2724,9 +2769,9 @@ float Creature::getAttack( Item *weapon,
 
 float Creature::getParry( Item **parryItem ) {
 	int location[] = {
-		Constants::INVENTORY_RIGHT_HAND,
-		Constants::INVENTORY_LEFT_HAND,
-		Constants::INVENTORY_WEAPON_RANGED,
+		Constants::EQUIP_LOCATION_RIGHT_HAND,
+		Constants::EQUIP_LOCATION_LEFT_HAND,
+		Constants::EQUIP_LOCATION_WEAPON_RANGED,
 		-1
 	};
 	float ret = 0;
@@ -2904,6 +2949,8 @@ float Creature::getWeaponAPCost( Item *item, bool showDebug ) {
 	return baseAP;
 }
 
+/// Checks whether an item can be equipped, returns error message or NULL if successful.
+
 char *Creature::canEquipItem( Item *item, bool interactive ) {
 
 	// check item tags to see if this item can be equipped.
@@ -2919,10 +2966,10 @@ char *Creature::canEquipItem( Item *item, bool interactive ) {
 	}
 
 	// two handed weapon violations
-	if ( item->getRpgItem()->getEquip() & Constants::INVENTORY_LEFT_HAND ||
-	        item->getRpgItem()->getEquip() & Constants::INVENTORY_RIGHT_HAND ) {
-		Item *leftHandWeapon = getItemAtLocation( Constants::INVENTORY_LEFT_HAND );
-		Item *rightHandWeapon = getItemAtLocation( Constants::INVENTORY_RIGHT_HAND );
+  if( item->getRpgItem()->getEquip() & Constants::EQUIP_LOCATION_LEFT_HAND ||
+      item->getRpgItem()->getEquip() & Constants::EQUIP_LOCATION_RIGHT_HAND ) {
+    Item *leftHandWeapon = getItemAtLocation( Constants::EQUIP_LOCATION_LEFT_HAND );
+    Item *rightHandWeapon = getItemAtLocation( Constants::EQUIP_LOCATION_RIGHT_HAND );
 		bool bothHandsFree = !( leftHandWeapon || rightHandWeapon );
 		bool holdsTwoHandedWeapon =
 		  ( ( leftHandWeapon && leftHandWeapon->getRpgItem()->getTwoHanded() == RpgItem::ONLY_TWO_HANDED ) ||
@@ -3061,6 +3108,8 @@ void Creature::evalTrap() {
 	}
 }
 
+/// Handles trap disarming.
+
 void Creature::disableTrap( Trap *trap ) {
 	if ( trap->enabled ) {
 		trap->discovered = true;
@@ -3098,6 +3147,8 @@ void Creature::setScripted( bool b ) {
 	this->scripted = b;
 	if ( scripted ) stopMoving();
 }
+
+/// Draws the creature's portrait in movie mode.
 
 void Creature::drawMoviePortrait( int width, int height ) {
 	// todo: should be next power of 2 after width/height (maybe cap-ed at 256)
@@ -3161,6 +3212,8 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	//glDisable(GL_TEXTURE_2D);
 	//glEnable( GL_CULL_FACE );
 }
+
+/// Draws the creature's portrait, if it exists, else it draws a little 3D view of the creature.
 
 void Creature::drawPortrait( int width, int height, bool inFrame ) {
 	if ( getCharacter() || ( getMonster() && getMonster()->getPortraitTexture() ) ) {

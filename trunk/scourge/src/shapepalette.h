@@ -74,7 +74,7 @@ private:
 
 	std::map<std::string, GLuint> namedTextures;
 	std::map<std::string, NamedOutdoorTexture> outdoorNamedTextures;
-	SDL_Rect inventoryHoles[ Constants::INVENTORY_COUNT ];
+	SDL_Rect equipLocationHoles[ Constants::EQUIP_LOCATION_COUNT ];
 
 public:
 	ShapePalette( Session *session );
@@ -251,8 +251,8 @@ public:
 	}
 	inline SDL_Rect *getInventoryHole( int inventoryLocation ) {
 		return( inventoryLocation >= 0 &&
-		        inventoryLocation < Constants::INVENTORY_COUNT ?
-		        &( inventoryHoles[ inventoryLocation ] ) :
+						inventoryLocation < Constants::EQUIP_LOCATION_COUNT ? 
+						&( equipLocationHoles[ inventoryLocation ] ) : 
 		        NULL );
 	}
 

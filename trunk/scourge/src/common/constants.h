@@ -330,24 +330,24 @@ public:
 	static std::string scourgeLocaleName;
 
 	// inventory locations
-	static const int INVENTORY_HEAD = 1;
-	static const int INVENTORY_NECK = 2;
-	static const int INVENTORY_BACK = 4;
-	static const int INVENTORY_CHEST = 8;
-	static const int INVENTORY_LEFT_HAND = 16;
-	static const int INVENTORY_RIGHT_HAND = 32;
-	static const int INVENTORY_BELT = 64;
-	static const int INVENTORY_LEGS = 128;
-	static const int INVENTORY_FEET = 256;
-	static const int INVENTORY_RING1 = 512;
-	static const int INVENTORY_RING2 = 1024;
-	static const int INVENTORY_RING3 = 2048;
-	static const int INVENTORY_RING4 = 4096;
-	static const int INVENTORY_WEAPON_RANGED = 8192;
-	static const int INVENTORY_GLOVE = 16382;
-	static const int INVENTORY_COUNT = 15;
+  static const int EQUIP_LOCATION_HEAD = 1;
+  static const int EQUIP_LOCATION_NECK = 2;
+  static const int EQUIP_LOCATION_BACK = 4;
+  static const int EQUIP_LOCATION_CHEST = 8;
+  static const int EQUIP_LOCATION_LEFT_HAND = 16;
+  static const int EQUIP_LOCATION_RIGHT_HAND = 32;
+  static const int EQUIP_LOCATION_BELT = 64;
+  static const int EQUIP_LOCATION_LEGS = 128;
+  static const int EQUIP_LOCATION_FEET = 256;
+  static const int EQUIP_LOCATION_RING1 = 512;
+  static const int EQUIP_LOCATION_RING2 = 1024;
+  static const int EQUIP_LOCATION_RING3 = 2048;
+  static const int EQUIP_LOCATION_RING4 = 4096;
+  static const int EQUIP_LOCATION_WEAPON_RANGED = 8192;
+  static const int EQUIP_LOCATION_GLOVE = 16384;
+  static const int EQUIP_LOCATION_COUNT = 15;
 
-	static const char *inventoryTags[];
+	static const char *equipLocationTags[];
 
 	static const int MAP_GRID_TILE_WIDTH = 6;
 	static const int MAP_GRID_TILE_HEIGHT = 5;

@@ -61,6 +61,7 @@ class Trap;
 #define MAX_FAILED_MOVE_ATTEMPTS 10
 
 /// Contains the location of an item in the inventory or where it is equipped.
+
 class InventoryInfo {
 public:
 	int inventoryIndex;
@@ -68,6 +69,7 @@ public:
 };
 
 /// An individual char/NPC/monster (look and state).
+
 class Creature : public RenderedCreature {
 
 private:
@@ -96,7 +98,7 @@ private:
 	// inventory
 	Item *inventory[MAX_INVENTORY_SIZE];
 	int inventory_count;
-	int equipped[Constants::INVENTORY_COUNT];
+  int equipped[Constants::EQUIP_LOCATION_COUNT];
 	int preferredWeapon;
 
 	// character information
@@ -357,9 +359,6 @@ public:
 		return this->motion;
 	}
 
-	/**
-	Return true only if a range is specified and we're within it.
-	*/
 //  bool Creature::isInRange();
 
 	inline void setFacingDirection( int direction ) {
@@ -385,6 +384,7 @@ public:
 	/**
 	The movement functions return true if movement has occured, false if it has not.
 	 */
+
 	bool move( Uint16 dir );
 	void switchDirection( bool force );
 	bool follow( Creature *leader );
@@ -415,10 +415,6 @@ public:
 
 	void draw();
 
-	/**
-	 * Set where to move the creature.
-	 * Returns true if the move is possible, false otherwise.
-	 */
 	bool setSelXY( int x, int y, bool cancelIfNotPossible = false );
 	bool setSelCreature( Creature* creature, float range, bool cancelIfNotPossible = false );
 	inline void setSelXYNoPath( int x, int y ) {
@@ -436,10 +432,9 @@ public:
 	}
 	bool anyMovesLeft();
 	void moveAway( Creature *other );
-	void cancelMoveAway();
+	//void cancelMoveAway();
 
 	// inventory
-	// get the item at the given equip-index (inventory location)
 	float inventoryWeight;
 	inline float getInventoryWeight() {
 		return inventoryWeight;
@@ -464,21 +459,21 @@ public:
 		preferredWeapon = n;
 	}
 	bool nextPreferredWeapon();
-	// returns the index of the last item added
+
 	void pickUpOnMap( RenderedItem *item );
 	bool addInventory( Item *item, bool force = false );
 	Item *removeInventory( int index );
 	int findInInventory( Item *item );
-	// returns true if ate/drank item completely and false else
+
 	bool eatDrink( int index );
 	bool eatDrink( Item *item );
-	// equip or doff if already equipped
+
 	void equipInventory( int index, int locationHint = -1 );
 	int doff( int index );
-	// return the equip index (inventory location) for an inventory index
+
 	int getEquippedIndex( int index );
 	bool isItemInInventory( Item *item );
-	// return the item at location Character::INVENTORY_LEFT_HAND, etc.
+
 	Item *getItemAtLocation( int location );
 	bool isEquipped( Item *item );
 	bool isEquipped( int inventoryIndex );

@@ -241,26 +241,26 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 }
 
 void ShapePalette::initInventory( ConfigLang *config ) {
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
-		inventoryHoles[ i ].x = inventoryHoles[ i ].y = inventoryHoles[ i ].w = inventoryHoles[ i ].h = 0;
+	for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
+		equipLocationHoles[ i ].x = equipLocationHoles[ i ].y = equipLocationHoles[ i ].w = equipLocationHoles[ i ].h = 0;
 	}
 	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "inventory" );
 	if ( v ) {
 		char tmp[255];
-		for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
-			char const* s = ( *v )[0]->getValueAsString( Constants::inventoryTags[ i ] );
+		for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
+			char const* s = (*v)[0]->getValueAsString( Constants::equipLocationTags[ i ] );
 			if ( s ) {
 				strcpy( tmp, s );
 				char *p = strtok( tmp, "," );
-				inventoryHoles[ i ].x = atoi( p );
+				equipLocationHoles[ i ].x = atoi( p );
 				p = strtok( NULL, "," );
-				inventoryHoles[ i ].y = atoi( p );
+				equipLocationHoles[ i ].y = atoi( p );
 				p = strtok( NULL, "," );
-				inventoryHoles[ i ].w = atoi( p );
+				equipLocationHoles[ i ].w = atoi( p );
 				p = strtok( NULL, "," );
-				inventoryHoles[ i ].h = atoi( p );
+				equipLocationHoles[ i ].h = atoi( p );
 			} else {
-				cerr << "*** Error: Can't find inventory tag: " << Constants::inventoryTags[ i ] << endl;
+				cerr << "*** Error: Can't find inventory tag: " << Constants::equipLocationTags[ i ] << endl;
 			}
 		}
 	}

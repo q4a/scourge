@@ -673,7 +673,7 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
 	for ( int i = 0; i < static_cast<int>( info->inventory_count ); i++ ) {
 		saveItem( file, info->inventory[i] );
 	}
-	file->write( info->equipped, Constants::INVENTORY_COUNT );
+  file->write( info->equipped, Constants::EQUIP_LOCATION_COUNT );
 	file->write( &( info->spell_count ) );
 	for ( int i = 0; i < static_cast<int>( info->spell_count ); i++ ) {
 		file->write( info->spell_name[i], 255 );
@@ -732,7 +732,7 @@ CreatureInfo *Persist::loadCreature( File *file ) {
 	for ( int i = 0; i < static_cast<int>( info->inventory_count ); i++ ) {
 		info->inventory[i] = loadItem( file );
 	}
-	file->read( info->equipped, Constants::INVENTORY_COUNT );
+	file->read( info->equipped, Constants::EQUIP_LOCATION_COUNT );
 	file->read( &( info->spell_count ) );
 	for ( int i = 0; i < static_cast<int>( info->spell_count ); i++ ) {
 		file->read( info->spell_name[i], 255 );
