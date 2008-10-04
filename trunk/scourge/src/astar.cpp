@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "common/constants.h"
 #include "astar.h"
 #include "render/renderlib.h"
 #include "creature.h"
