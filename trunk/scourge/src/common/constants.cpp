@@ -245,6 +245,8 @@ Constants::Constants(){
 Constants::~Constants(){
 }
 
+/// Returns a string from the messages[] table.
+
 char *Constants::getMessage(int index) {
   int n = Util::dice( messageCount[index] );
   return _( messages[index][n] );
@@ -492,9 +494,8 @@ void ComputeNormals(t3DModel *pModel)
 }
 
 
-/**
- * Finds the shortest distance from (x1,y1,x1+w1,y1-h1) to the x2,y2 equivalent.
- **/
+/// Finds the shortest distance from (x1,y1,x1+w1,y1-h1) to the x2,y2 equivalent.
+
 static float distTable[500][500];
 
 float Constants::distance(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
@@ -521,6 +522,8 @@ float Constants::distance(float x1, float y1, float w1, float h1, float x2, floa
 		dx = min(abs(xa+wa-xb), abs(xb+wb-xa));
 	return ( ( dx < 500 ) && ( dy < 500 ) ? distTable[(int)dx][(int)dy] : sqrt( dx * dx + dy * dy ) );
 }
+
+/// Checks whether the dimensions of a texture are within the limits of the OpenGL implementation.
 
 void Constants::checkTexture(char *message, int w, int h) {
 	GLint maxTextureSize;
@@ -646,6 +649,8 @@ int Constants::initRootDir( int argc, char *argv[] ) {
 	return 0;
 }
 
+/// Checks whether a file exists.
+
 bool Constants::checkFile(const string& dir, const string& file) {
 	string path = dir + file;
 	//fprintf(stderr, "\tchecking path: %s\n", path);
@@ -720,6 +725,8 @@ static float sinTable[360];
 static float cosTable[360];
 static float windTable[36000];
 
+/// Sets up the trigonometry lookup tables, to be initialized at game start.
+
 void Constants::generateTrigTables() {
   for( int i = 0; i < 360; i++ ) {
     sinTable[i] = (float)sin( Constants::toRadians( i ) );
@@ -740,9 +747,13 @@ void Constants::generateTrigTables() {
   }
 }
 
+/// Returns from a lookup table the sine corresponding to an angle (in degrees).
+
 float Constants::sinFromAngle(int angle) {
   return sinTable[angle % 360];
 }
+
+/// Returns from a lookup table the cosine corresponding to an angle (in degrees).
 
 float Constants::cosFromAngle(int angle) {
   return cosTable[angle % 360];

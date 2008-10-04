@@ -22,9 +22,8 @@
 #include <string>
 #include <vector>
 
-/**
- * An interface for console printing.
- */
+/// An interface for console printing.
+
 class ConsolePrinter {
 public:
   ConsolePrinter() {

@@ -37,6 +37,7 @@ class Item;
 class Scourge;
 
 /// A widget that shows basic character info.
+
 class CharacterInfoUI : public WidgetView {
 private:
   Scourge *scourge;

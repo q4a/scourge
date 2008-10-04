@@ -52,6 +52,7 @@ struct tChunk
 };
 
 /// This class handles all of the .3ds loading code.
+
 class CLoad3DS
 {
 public:

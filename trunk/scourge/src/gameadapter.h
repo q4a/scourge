@@ -225,9 +225,8 @@ public:
 	virtual void setDepthLimits( float minLimit, float maxLimit ) { getSDLHandler()->setDepthLimits( minLimit, maxLimit ); }
 	virtual void texPrint(GLfloat x, GLfloat y, const char *fmt, ...) { getSDLHandler()->texPrint( x, y, fmt ); }
   
-  /**
-   * Set up the opengl view.
-   */
+  /// Set up the opengl view.
+
   virtual void setView() { getSDLHandler()->setOrthoView(); }
 
   bool intersects( int x, int y, int w, int h,
@@ -237,7 +236,8 @@ protected:
   void decodeName(int name, Uint16* mapx, Uint16* mapy, Uint16* mapz);
 };
 
-/// GameAdapter, server version
+/// GameAdapter, server version.
+
 class ServerAdapter : public GameAdapter {
 public:
   ServerAdapter( Preferences *config );
@@ -245,7 +245,8 @@ public:
   void start();
 };
 
-/// GameAdapter, client version
+/// GameAdapter, client version.
+
 class ClientAdapter : public GameAdapter {
 public:
   ClientAdapter( Preferences *config );

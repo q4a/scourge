@@ -31,6 +31,7 @@
 class Item;
 
 /// The "container contents" window (for open chests etc.)
+
 class ContainerGui : public DragAndDropHandler {
 
  private:
