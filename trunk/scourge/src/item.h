@@ -76,6 +76,7 @@ public:
 	}
 
 	void renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon = false );
+	GLuint getItemIconTexture( bool smallIcon = false );
 	void getTooltip( char *tooltip );
 
 	inline void setInventoryLocation( int x, int y ) {

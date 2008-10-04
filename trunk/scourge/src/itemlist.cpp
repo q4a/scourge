@@ -119,7 +119,7 @@ void ItemList::commonInit() {
 			color[count].b = Constants::MAGIC_ITEM_COLOR[ item->getMagicLevel() ]->b;
 		}
 		color[count].a = 1;
-		icon[count] = scourge->getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ];
+		icon[count] = item->getItemIconTexture();
 		count++;
 	}
 	for ( int t = count; t < MAX_INVENTORY_SIZE; t++ ) {

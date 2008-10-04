@@ -2293,8 +2293,7 @@ void Scourge::drawItemIcon( Item *item, int n ) {
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glBindTexture( GL_TEXTURE_2D,
-	               getShapePalette()->tilesTex[ item->getRpgItem()->getIconTileX() ][ item->getRpgItem()->getIconTileY() ] );
+	glBindTexture( GL_TEXTURE_2D, item->getItemIconTexture() );
 
 	glColor4f( 1, 1, 1, 1 );
 

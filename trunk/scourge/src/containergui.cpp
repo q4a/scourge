@@ -82,7 +82,7 @@ void ContainerGui::showContents() {
 			itemColor[i].b = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem( i )->getMagicLevel() ]->b;
 		}
 		itemColor[i].a = 1;
-		itemIcon[i] = scourge->getShapePalette()->tilesTex[ container->getContainedItem( i )->getRpgItem()->getIconTileX() ][ container->getContainedItem( i )->getRpgItem()->getIconTileY() ];
+		itemIcon[i] = container->getContainedItem( i )->getItemIconTexture();
 	}
 	list->setLines( container->getContainedItemCount(),
 	                containedItemNames,
