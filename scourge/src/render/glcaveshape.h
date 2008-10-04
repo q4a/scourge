@@ -26,6 +26,7 @@
 class Shapes;
 
 /// A triangle face in a cave.
+
 class CaveFace {
 public:
 	int p1, p2, p3; // point indexes

@@ -177,6 +177,8 @@ void ConversationGui::start( Creature *creature, char const* message, bool useCr
 	cards->setActiveCard( creature->getNpcInfo() ? creature->getNpcInfo()->type : Constants::NPC_TYPE_COMMONER );
 }
 
+/// Handles clicking on a keyword.
+
 void ConversationGui::wordClicked( std::string const& pWord ) {
 
 	// convert to lower case
@@ -236,6 +238,8 @@ void ConversationGui::wordClicked( std::string const& pWord ) {
 		list->setLines( words.begin(), words.end() );
 	}
 }
+
+/// Adds a conversation keyword to the dialog.
 
 void ConversationGui::showingWord( char *word ) {
 	if ( find_if( words.begin(), words.end(), bind2nd( Util::CaseCompare<string>(), word ) ) != words.end() )

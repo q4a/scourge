@@ -43,6 +43,7 @@ struct Room {
 
 
 /// A cellular automaton, used in map generation
+
 class CellularAutomaton {
 private:
 	int w, h;

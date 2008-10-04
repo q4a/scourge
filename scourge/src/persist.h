@@ -91,7 +91,7 @@ struct CreatureInfo {
 	Uint32 inventory_count;
 	ItemInfo *inventory[MAX_INVENTORY_SIZE];
 	//ContainedItemInfo containedItems[MAX_INVENTORY_SIZE];
-	Uint32 equipped[Constants::INVENTORY_COUNT];
+  Uint32 equipped[Constants::EQUIP_LOCATION_COUNT];
 
 	// spells memorized ([school][spell]
 	Uint32 spell_count;

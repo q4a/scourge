@@ -177,9 +177,9 @@ void Portrait::setCurrentWeaponTooltip() {
 		char tmp[ 1000 ];
 		snprintf( tmp, 1000, "%s:%s (%s)",
 		          _( "Current attack" ),
-		          ( Constants::INVENTORY_LEFT_HAND == creature->getPreferredWeapon() ? _( "Left Hand" ) :
-		            ( Constants::INVENTORY_RIGHT_HAND == creature->getPreferredWeapon() ? _( "Right Hand" ) :
-		              ( Constants::INVENTORY_WEAPON_RANGED == creature->getPreferredWeapon() ? _( "Ranged Weapon" ) :
+						 ( Constants::EQUIP_LOCATION_LEFT_HAND == creature->getPreferredWeapon() ? _( "Left Hand" ) :
+							 ( Constants::EQUIP_LOCATION_RIGHT_HAND == creature->getPreferredWeapon() ? _( "Right Hand" ) :
+								 ( Constants::EQUIP_LOCATION_WEAPON_RANGED == creature->getPreferredWeapon() ? _( "Ranged Weapon" ) :
 		                _( "Bare Hands" ) ) ) ),
 		          _( "Click to change" ) );
 		canvas->setTooltip( tmp );

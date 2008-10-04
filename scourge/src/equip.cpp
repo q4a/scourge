@@ -254,7 +254,7 @@ int Equip::getHoleAtPos( int x, int y ) {
 	point.x = x;
 	point.y = y;
 	point.w = point.h = 1;
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+  for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
 		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
 		if ( SDLHandler::intersects( rect, &point ) ) {
 			return i;
@@ -373,7 +373,7 @@ void Equip::drawWidgetContents( Widget *widget ) {
 }
 
 void Equip::drawEquipment() {
-	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+	for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
 		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
 		Item *item = creature->getEquippedInventory( i );
 		if ( item ) {
