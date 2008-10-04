@@ -66,15 +66,6 @@ void AnimatedShape::setDir( int dir ) {
 	}
 }
 
-//void AnimatedShape::draw() {
-//}
-
-//void AnimatedShape::outline( float r, float g, float b ) {
-//}
-
-//void AnimatedShape::setupToDraw() {
-//}
-
 void AnimatedShape::setupBlending() {
 	glBlendFunc( GL_ONE, GL_ONE );
 }

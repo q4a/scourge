@@ -257,6 +257,7 @@ Map::~Map() {
 
 void Map::reset() {
 	creatureMap.clear();
+	creatureEffectMap.clear();
 
 	roofAlphaUpdate = 0;
 	roofAlpha = 1;
@@ -514,6 +515,7 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 	if ( !forGround && !forWater ) {
 		laterCount = stencilCount = otherCount = damageCount = roofCount = 0;
 		creatureMap.clear();
+		creatureEffectMap.clear();
 		trapSet.clear();
 		mapChanged = false;
 	}
@@ -901,6 +903,9 @@ void Map::setupPosition( int posX, int posY, int posZ,
 		damage[damageCount].inFront = false;
 		damage[damageCount].x = posX;
 		damage[damageCount].y = posY;
+		if ( creature ) {
+			creatureEffectMap[creature] = &( damage[damageCount] );
+		}
 		damageCount++;
 
 		// don't draw shape if it's an area effect
@@ -1715,38 +1720,21 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 	} else if ( later && later->effect ) {
 		heightPos = later->effect->heightPos;
 	}
+	
+	float xdiff = 0;
+	float ydiff = 0;
+	if ( later && later->creature ) {
+		xdiff = ( later->creature->getX() - static_cast<float>( toint( later->creature->getX() ) ) );
+		ydiff = ( later->creature->getY() - static_cast<float>( toint( later->creature->getY() ) ) );
+	}
 
 	if ( useShadow ) {
 		// put shadow above the floor a little
-
-		float xdiff = 0;
-		float ydiff = 0;
-		if ( later && later->creature ) {
-			xdiff = ( later->creature->getX() - static_cast<float>( toint( later->creature->getX() ) ) );
-			ydiff = ( later->creature->getY() - static_cast<float>( toint( later->creature->getY() ) ) );
-		}
 		glTranslatef( xpos2 + xdiff * MUL, ypos2 + ydiff * MUL, ( 0.26f * MUL + heightPos ) );
 		glMultMatrixf( shadowTransformMatrix );
-
-		// gray shadows
-		//glColor4f( 0, 0, 0, 0.5f );
-
 		// purple shadows
 		glColor4f( 0.04f, 0.0f, 0.07f, 0.6f );
-
-		// debugging red
-		//glColor4f(1, 0, 0, 0.5f);
 	} else {
-
-		if ( shape ) shape->setupToDraw();
-
-		float xdiff = 0;
-		float ydiff = 0;
-		if ( later && later->creature ) {
-			xdiff = ( later->creature->getX() - static_cast<float>( toint( later->creature->getX() ) ) );
-			ydiff = ( later->creature->getY() - static_cast<float>( toint( later->creature->getY() ) ) );
-		}
-
 		glTranslatef( xpos2 + xdiff * MUL, ypos2 + ydiff * MUL, zpos2 + heightPos );
 
 		if ( later && later->pos ) {
@@ -2881,9 +2869,7 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 				    &posX, &posY, &posZ, &xpos2, &ypos2, &zpos2,
 				    &chunkX, &chunkY, &lightEdge );
 
-				location->heightPos = findMaxHeightPos( location->creature->getX(),
-				    location->creature->getY(),
-				    location->creature->getZ() );
+				location->heightPos = findMaxHeightPos( location->creature->getX(), location->creature->getY(), location->creature->getZ() );
 				later->xpos = xpos2;
 				later->ypos = ypos2;
 				later->zpos = zpos2;
@@ -2891,6 +2877,16 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 				//later->inFront = false;
 				later->x = posX;
 				later->y = posY;
+
+				// also move the creature's effect
+				DrawLater *effect = creatureEffectMap[creature];
+				if( effect ) {
+					effect->xpos = xpos2;
+					effect->ypos = ypos2;
+					effect->zpos = zpos2;
+					effect->x = posX;
+					effect->y = posY;
+				}
 			}
 		}
 	}

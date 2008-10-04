@@ -140,7 +140,6 @@ public:
 		outline( color->r, color->g, color->b );
 	};
 	virtual void outline( float r, float g, float b ) {};
-	virtual void setupToDraw() = 0;
 
 	inline void setIndex( Uint8 index ) {
 		this->index = index;

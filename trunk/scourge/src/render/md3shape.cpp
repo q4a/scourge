@@ -189,9 +189,6 @@ void MD3Shape::setModelAnimation() {
 	}
 }
 
-void MD3Shape::setupToDraw() {
-}
-
 AnimInfo *MD3Shape::getAnimInfo( t3DModel *model ) {
 	if ( model == md3->GetModel( kLower ) ) {
 		return &aiLower;

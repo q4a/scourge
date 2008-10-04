@@ -283,7 +283,7 @@ private:
 	int weather;
 
 	std::set<Location*> gates, teleporters;
-	std::map<RenderedCreature*, DrawLater*> creatureMap;
+	std::map<RenderedCreature*, DrawLater*> creatureMap, creatureEffectMap;
 
 public:
 	bool useFrustum;

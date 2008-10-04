@@ -144,9 +144,6 @@ void MD2Shape::setModelAnimation() {
 	currentFrame = g_3DModel->pAnimations[ currentAnim ].startFrame;
 }
 
-void MD2Shape::setupToDraw() {
-}
-
 // This returns time t for the interpolation between the current and next key frame
 float MD2Shape::ReturnCurrentTime( int nextFrame ) {
 	float time = SDL_GetTicks();

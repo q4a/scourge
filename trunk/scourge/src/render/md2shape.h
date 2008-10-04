@@ -79,7 +79,6 @@ public:
 	void setModelAnimation();
 	void draw();
 	void outline( float r, float g, float b );
-	void setupToDraw();
 	inline GLuint getTextureId() {
 		return textureId;
 	}

@@ -30,7 +30,6 @@ void ShapeProjectileRenderer::drawPath( Map *map,
 	CVector3 last = path->back();
 
 	glPushMatrix();
-	shape->setupToDraw();
 	glTranslatef( last.x, last.y, last.z );
 	glColor4f( 1, 1, 1, 0.9f );
 	glDisable( GL_CULL_FACE );
