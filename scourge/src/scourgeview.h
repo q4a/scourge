@@ -17,8 +17,8 @@
 
 #ifndef SCOURGE_VIEW_H
 #define SCOURGE_VIEW_H
+#pragma once
 
-#include "common/constants.h"
 #include "sdlscreenview.h"
 #include <map>
 
@@ -32,94 +32,94 @@ class Progress;
 
 class InfoMessage {
 public:
-  char message[300];
-  void *obj;
-  int x, y, z;
+	char message[300];
+	void *obj;
+	int x, y, z;
 
-  InfoMessage( char const* s, void *obj, int x, int y, int z ) {
-    strcpy( this->message, s );
-    this->obj = obj;
-    this->x = x;
-    this->y = y;
-    this->z = z;
-  }
+	InfoMessage( char const* s, void *obj, int x, int y, int z ) {
+		strcpy( this->message, s );
+		this->obj = obj;
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
 
-  ~InfoMessage() {
-  }
+	~InfoMessage() {
+	}
 };
 
 /// Draws the entire ingame view.
 class ScourgeView : public SDLScreenView {
 private:
-  Scourge *scourge;
-  bool needToCheckInfo;
-  std::map<InfoMessage *, Uint32> infos;
-  Color *outlineColor, *disabledTrapColor, *enabledTrapColor, *debugTrapColor;
-  TextEffect *textEffect;
-  GLint textEffectTimer;
-  bool needToCheckDropLocation;
-  float targetWidth, targetWidthDelta;
-  Uint32 lastTargetTick;
-  GLUquadric *quadric;
-  Progress *turnProgress;
+	Scourge *scourge;
+	bool needToCheckInfo;
+	std::map<InfoMessage *, Uint32> infos;
+	Color *outlineColor, *disabledTrapColor, *enabledTrapColor, *debugTrapColor;
+	TextEffect *textEffect;
+	GLint textEffectTimer;
+	bool needToCheckDropLocation;
+	float targetWidth, targetWidthDelta;
+	Uint32 lastTargetTick;
+	GLUquadric *quadric;
+	Progress *turnProgress;
 
-  #define RAIN_DROP_COUNT 500
-  #define RAIN_DROP_SIZE 32
-  float rainDropX[RAIN_DROP_COUNT];
-  float rainDropY[RAIN_DROP_COUNT];
-  float rainDropZ[RAIN_DROP_COUNT];
-  #define CLOUD_COUNT 50
-  float cloudX[CLOUD_COUNT];
-  float cloudY[CLOUD_COUNT];
-  float cloudSize[CLOUD_COUNT];
-  int cloudSpeed[CLOUD_COUNT];
-  Uint32 lastWeatherUpdate;
-  Uint32 lastLightning;
-  Uint32 lastLightningRoll;
-  float lightningBrightness;
-  bool thunderOnce;
+#define RAIN_DROP_COUNT 500
+#define RAIN_DROP_SIZE 32
+	float rainDropX[RAIN_DROP_COUNT];
+	float rainDropY[RAIN_DROP_COUNT];
+	float rainDropZ[RAIN_DROP_COUNT];
+#define CLOUD_COUNT 50
+	float cloudX[CLOUD_COUNT];
+	float cloudY[CLOUD_COUNT];
+	float cloudSize[CLOUD_COUNT];
+	int cloudSpeed[CLOUD_COUNT];
+	Uint32 lastWeatherUpdate;
+	Uint32 lastLightning;
+	Uint32 lastLightningRoll;
+	float lightningBrightness;
+	bool thunderOnce;
 
 public:
-  ScourgeView( Scourge *scourge );
-  virtual ~ScourgeView();
-  
-  void thunder();
+	ScourgeView( Scourge *scourge );
+	virtual ~ScourgeView();
 
-  /**
-    The main app loop calls this method to repaint the screen. In this implementation the 
-    following happens: the round is played, the map is drawn, the map overlay (circles around
-    the good guys, names of creatues, etc.) is painted and some extra updates to other components
-    (like the minimap, message ui, etc.) occur.    
-  */
-  virtual void drawView();
+	void thunder();
 
-  /**
-    The main app loop calls this after the drawView and the UI (windows) have been drawn.
-    In this implementation, the dragged item is drawn over the map.
-  */
-  virtual void drawAfter();
+	/**
+	  The main app loop calls this method to repaint the screen. In this implementation the
+	  following happens: the round is played, the map is drawn, the map overlay (circles around
+	  the good guys, names of creatues, etc.) is painted and some extra updates to other components
+	  (like the minimap, message ui, etc.) occur.
+	*/
+	virtual void drawView();
 
-  Color *getOutlineColor( Location *pos );
-  bool startTextEffect( char *message );
-  void resetInfos();
-  void initUI();
+	/**
+	  The main app loop calls this after the drawView and the UI (windows) have been drawn.
+	  In this implementation, the dragged item is drawn over the map.
+	*/
+	virtual void drawAfter();
 
-  void generateRain();
-  void generateClouds();
+	Color *getOutlineColor( Location *pos );
+	bool startTextEffect( char *message );
+	void resetInfos();
+	void initUI();
+
+	void generateRain();
+	void generateClouds();
 
 protected:
 	void drawChapterIntro();
-  void centerOnMonsterInTB();
-  void drawTextEffect();
-  void drawOutsideMap();
-  void checkForInfo();
-  void drawMapInfos();
-  void drawCreatureInfos();
-  void drawInfos();
-  void checkForDropTarget();
-  void drawBorder();
-  void showCreatureInfo( Creature *creature, bool player, bool selected, bool groupMode, bool wanderingHero );
-  void drawDraggedItem();
+	void centerOnMonsterInTB();
+	void drawTextEffect();
+	void drawOutsideMap();
+	void checkForInfo();
+	void drawMapInfos();
+	void drawCreatureInfos();
+	void drawInfos();
+	void checkForDropTarget();
+	void drawBorder();
+	void showCreatureInfo( Creature *creature, bool player, bool selected, bool groupMode, bool wanderingHero );
+	void drawDraggedItem();
 	void drawDisk( float w, float diff );
 	void ambientObjectSounds();
 	void drawWeather();

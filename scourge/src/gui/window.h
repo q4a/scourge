@@ -17,6 +17,7 @@
 
 #ifndef WINDOW_H
 #define WINDOW_H
+#pragma once
 
 #include "gui.h"
 #include "widget.h"
@@ -53,163 +54,193 @@ public:
 
 /// A GUI window.
 class Window : public Widget {
- private:
-  // the image is 510x270
-  static const int TILE_W=510 / 2;
-  static const int TILE_H=270 / 2; 
+private:
+	// the image is 510x270
+	static const int TILE_W = 510 / 2;
+	static const int TILE_H = 270 / 2;
 
-  static const int MAX_WINDOW = 1000;
-  static const int MAX_WIDGET = 1000;
+	static const int MAX_WINDOW = 1000;
+	static const int MAX_WIDGET = 1000;
 
-  char title[255];
-  GLuint texture, texture2;
-  ScourgeGui *scourgeGui;
-  Widget *widget[MAX_WIDGET];
-  int tileWidth, tileHeight;
-  int widgetCount;
-  bool dragging;
-  int dragX, dragY;
-  int openHeight, currentY;
-  GLint lastTick;
-  int z;  
-  bool modal;
-  int type;
-  bool locked;
-  GuiTheme *theme;
-  bool opening;
+	char title[255];
+	GLuint texture, texture2;
+	ScourgeGui *scourgeGui;
+	Widget *widget[MAX_WIDGET];
+	int tileWidth, tileHeight;
+	int widgetCount;
+	bool dragging;
+	int dragX, dragY;
+	int openHeight, currentY;
+	GLint lastTick;
+	int z;
+	bool modal;
+	int type;
+	bool locked;
+	GuiTheme *theme;
+	bool opening;
 	int gutter;
 
-  static Window *window[];
-  static int windowCount;  
+	static Window *window[];
+	static int windowCount;
 
-  static Window *message_dialog;
-  static Label *message_label;
-  static Window *currentWin;
+	static Window *message_dialog;
+	static Label *message_label;
+	static Window *currentWin;
 
-  Widget *lastWidget;
-  int animation;
+	Widget *lastWidget;
+	int animation;
 
-  static Window *mouseLockWindow;
-  static Widget *mouseLockWidget;
+	static Window *mouseLockWindow;
+	static Widget *mouseLockWidget;
 
 	std::vector<WindowListener*> listeners;
 
- public: 
+public:
 
-  enum {
-    DEFAULT_ANIMATION=0,
-    SLIDE_UP
-  };
-   
-   static const char ROLL_OVER_SOUND[80];
-   static const char ACTION_SOUND[80];
-   static const char DROP_SUCCESS[80];
-   static const char DROP_FAILED[80];
-   
-   static bool windowWasClosed;
-   
-   Button *closeButton;
-   
-   enum {
-     BASIC_WINDOW=0,
-     SIMPLE_WINDOW,
-		 INVISIBLE_WINDOW
-   };
+	enum {
+		DEFAULT_ANIMATION = 0,
+		SLIDE_UP
+	};
 
-  static const int SCREEN_GUTTER = 0;
+	static const char ROLL_OVER_SOUND[80];
+	static const char ACTION_SOUND[80];
+	static const char DROP_SUCCESS[80];
+	static const char DROP_FAILED[80];
 
-  Window(ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title=NULL, 
-         GLuint texture=0, bool hasCloseButton=true, int type=BASIC_WINDOW, 
-         GLuint texture2=0);
+	static bool windowWasClosed;
 
-  Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title=NULL, 
-		  bool hasCloseButton=true, int type=BASIC_WINDOW, const char *themeName=NULL );
+	Button *closeButton;
 
-  ~Window();
+	enum {
+		BASIC_WINDOW = 0,
+		SIMPLE_WINDOW,
+		INVISIBLE_WINDOW
+	};
 
-	void addWindowListener( WindowListener *listener) { listeners.push_back( listener ); }
+	static const int SCREEN_GUTTER = 0;
 
-  void setMouseLock( Widget *widget );
+	Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title = NULL,
+	        GLuint texture = 0, bool hasCloseButton = true, int type = BASIC_WINDOW,
+	        GLuint texture2 = 0 );
 
-  inline void setAnimation( int a ) { animation = a; }
-  inline int getAnimation() { return animation; }
+	Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title = NULL,
+	        bool hasCloseButton = true, int type = BASIC_WINDOW, const char *themeName = NULL );
 
-  inline GuiTheme *getTheme() { return theme; }
+	~Window();
 
-  inline void setTitle(char *s) { strncpy(title, ( s ? s : "" ), 255); title[254] = '\0'; }
+	void addWindowListener( WindowListener *listener ) {
+		listeners.push_back( listener );
+	}
 
-  inline bool isOpening() { 
-    return ( opening ); 
-  }
+	void setMouseLock( Widget *widget );
 
-  inline void setBackgroundTileWidth(int n) { tileWidth = n; }
-  inline void setBackgroundTileHeight(int n) { tileHeight = n; }
-  
-  inline void setZ(int z) { this->z = z; }
-  inline int getZ() { return z; }
+	inline void setAnimation( int a ) {
+		animation = a;
+	}
+	inline int getAnimation() {
+		return animation;
+	}
 
-  inline void setModal(bool b) { modal = b; }
-  inline bool isModal() { return modal; }
+	inline GuiTheme *getTheme() {
+		return theme;
+	}
 
-  void setVisible(bool b, bool animate=true);
-  inline ScourgeGui *getScourgeGui() { return scourgeGui; }
-  void toTop();
-  void toBottom();
+	inline void setTitle( char *s ) {
+		strncpy( title, ( s ? s : "" ), 255 ); title[254] = '\0';
+	}
 
-  inline void setLocked(bool locked) { this->locked = locked; if(locked) toBottom(); }
-  inline bool isLocked() { return locked; }
+	inline bool isOpening() {
+		return ( opening );
+	}
 
-  // crop view to window area. Don't forget to call glDisable( GL_SCISSOR_TEST ) after!
-  void scissorToWindow( bool insideOnly=true );
-  
-  // widget managment functions
-  Button    * createButton(int x1, int y1, int x2, int y2, char *label, bool toggle=false, GLuint texture=0);    
-  Label     * createLabel(int x1, int x2, char const* label, int color=Constants::DEFAULT_COLOR); 
-  Checkbox  * createCheckbox(int x1, int y1, int x2, int y2, char *label);  
-  TextField * createTextField(int x, int y, int numChars);
-  void addWidget(Widget *widget);
-  void removeWidget(Widget *widget);
-  Widget *handleWindowEvent(SDL_Event *event, int x, int y);
-  void setFocus(Widget *w);
-  void nextFocus();
-  void prevFocus();
+	inline void setBackgroundTileWidth( int n ) {
+		tileWidth = n;
+	}
+	inline void setBackgroundTileHeight( int n ) {
+		tileHeight = n;
+	}
 
-  // from Widget
-  void drawWidget(Widget *parent);
-  bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
-  bool isInside(int x, int y);
-  
-  
-  // window management
-  static void drawVisibleWindows();
-  static void addWindow(Window *win);
-  static void removeWindow(Window *win);
-  static Widget *delegateEvent(SDL_Event *event, int x, int y);
-  static void toTop(Window *win);
-  static void toBottom(Window *win);
-  static void nextWindowToTop( Window *win, bool includeLocked = true );
-  static void prevWindowToTop( Window *win, bool includeLocked = true );
-  static bool anyFloatingWindowsOpen();
+	inline void setZ( int z ) {
+		this->z = z;
+	}
+	inline int getZ() {
+		return z;
+	}
 
-  // static message dialog
-  static Button *message_button; // so you can check for it in other classes
-  static void showMessageDialog(ScourgeGui *scourgeGui, 
-                                int x, int y, int w, int h, 
-                                char *title, GLuint texture,
-                                char const* message, 
-                                char *buttonLabel = _( Constants::messages[Constants::OK_LABEL][0] ));
-  
-  void move(int x, int y);
+	inline void setModal( bool b ) {
+		modal = b;
+	}
+	inline bool isModal() {
+		return modal;
+	}
 
-  void setLastWidget(Widget *w);
+	void setVisible( bool b, bool animate = true );
+	inline ScourgeGui *getScourgeGui() {
+		return scourgeGui;
+	}
+	void toTop();
+	void toBottom();
 
-	inline int getGutter() { return gutter; }
+	inline void setLocked( bool locked ) {
+		this->locked = locked; if ( locked ) toBottom();
+	}
+	inline bool isLocked() {
+		return locked;
+	}
 
-  void setTopWindowBorderColor();
-  void setWindowBorderColor();
+	// crop view to window area. Don't forget to call glDisable( GL_SCISSOR_TEST ) after!
+	void scissorToWindow( bool insideOnly = true );
+
+	// widget managment functions
+	Button    * createButton( int x1, int y1, int x2, int y2, char *label, bool toggle = false, GLuint texture = 0 );
+	Label     * createLabel( int x1, int x2, char const* label, int color = Constants::DEFAULT_COLOR );
+	Checkbox  * createCheckbox( int x1, int y1, int x2, int y2, char *label );
+	TextField * createTextField( int x, int y, int numChars );
+	void addWidget( Widget *widget );
+	void removeWidget( Widget *widget );
+	Widget *handleWindowEvent( SDL_Event *event, int x, int y );
+	void setFocus( Widget *w );
+	void nextFocus();
+	void prevFocus();
+
+	// from Widget
+	void drawWidget( Widget *parent );
+	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
+	bool isInside( int x, int y );
+
+
+	// window management
+	static void drawVisibleWindows();
+	static void addWindow( Window *win );
+	static void removeWindow( Window *win );
+	static Widget *delegateEvent( SDL_Event *event, int x, int y );
+	static void toTop( Window *win );
+	static void toBottom( Window *win );
+	static void nextWindowToTop( Window *win, bool includeLocked = true );
+	static void prevWindowToTop( Window *win, bool includeLocked = true );
+	static bool anyFloatingWindowsOpen();
+
+	// static message dialog
+	static Button *message_button; // so you can check for it in other classes
+	static void showMessageDialog( ScourgeGui *scourgeGui,
+	                               int x, int y, int w, int h,
+	                               char *title, GLuint texture,
+	                               char const* message,
+	                               char *buttonLabel = _( Constants::messages[Constants::OK_LABEL][0] ) );
+
+	void move( int x, int y );
+
+	void setLastWidget( Widget *w );
+
+	inline int getGutter() {
+		return gutter;
+	}
+
+	void setTopWindowBorderColor();
+	void setWindowBorderColor();
 
 protected:
-  void commonInit(ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type);
+	void commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type );
 	void drawBorder( int topY, int openHeight );
 	void drawLineBorder( int topY, int openHeight );
 	void drawTitle( int topY, int openHeight );

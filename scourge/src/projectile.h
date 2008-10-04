@@ -17,6 +17,7 @@
 
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
+#pragma once
 
 #include <map>
 #include <vector>
@@ -34,73 +35,103 @@ class ProjectileRenderer;
 
 /// Contains looks and attributes of an individual projectile.
 class Projectile : public RenderedProjectile {
- private:
-  Creature *creature, *target;
-  float tx, ty;
-  int tw, td;
-  Item *item;
-  Spell *spell;
-  std::vector<float> sx, sy;
-  float ex, ey; 
-  float angle;
-  float parabolic;
-  int q;
-  int cx, cy;
-  int steps;
-  ProjectileRenderer *renderer;
-  float maxDist;
-  float startX, startY, distToTarget;
-  bool stopOnImpact;
-  bool seeker;
-  Uint32 timeToLive;
+private:
+	Creature *creature, *target;
+	float tx, ty;
+	int tw, td;
+	Item *item;
+	Spell *spell;
+	std::vector<float> sx, sy;
+	float ex, ey;
+	float angle;
+	float parabolic;
+	int q;
+	int cx, cy;
+	int steps;
+	ProjectileRenderer *renderer;
+	float maxDist;
+	float startX, startY, distToTarget;
+	bool stopOnImpact;
+	bool seeker;
+	Uint32 timeToLive;
 	bool reachedTarget;
-  int casterLevel;
+	int casterLevel;
 
-  static Uint32 lastProjectileTick;
-  
- public:
-  Projectile(Creature *creature, Creature *target, Item *item, ProjectileRenderer *renderer, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
-  Projectile(Creature *creature, Creature *target, Spell *spell, ProjectileRenderer *renderer, float parabolic=0.0f, bool stopOnImpact=true, bool seeker=false);
-  Projectile(Creature *creature, int x, int y, int w, int d, Spell *spell, ProjectileRenderer *renderer, float parabolic=0.0f, bool stopOnImpact=true);
-  virtual ~Projectile();
+	static Uint32 lastProjectileTick;
 
-  inline bool doesStopOnImpact() { return stopOnImpact; }
+public:
+	Projectile( Creature *creature, Creature *target, Item *item, ProjectileRenderer *renderer, float parabolic = 0.0f, bool stopOnImpact = true, bool seeker = false );
+	Projectile( Creature *creature, Creature *target, Spell *spell, ProjectileRenderer *renderer, float parabolic = 0.0f, bool stopOnImpact = true, bool seeker = false );
+	Projectile( Creature *creature, int x, int y, int w, int d, Spell *spell, ProjectileRenderer *renderer, float parabolic = 0.0f, bool stopOnImpact = true );
+	virtual ~Projectile();
 
-  // return true when out of moves
-  bool move();
-  
-  inline void setCasterLevel( int n ) { casterLevel = n; }
-  inline int getCasterLevel() { return casterLevel; }
+	inline bool doesStopOnImpact() {
+		return stopOnImpact;
+	}
 
-  inline int getStepCount() { return sx.size(); }
-  inline float getX( int index ) { return( index < 0 ? sx[0] : sx[ index ] ); }
-  inline float getY( int index ) { return( index < 0 ? sy[0] : sy[ index ] ); }
-  inline float getZ( int index ) { return 0; }
-  inline float getCurrentX() { return sx.back(); }
-  inline float getCurrentY() { return sy.back(); }
-  inline float getCurrentZ() { return 0; }
-  inline float getAngle() { return angle; }
-  inline ProjectileRenderer *getRenderer() { return renderer; }
-  inline RenderedCreature *getCreature() { return (RenderedCreature*)creature; }
-  inline Item *getItem() { return item; }
-  inline Spell *getSpell() { return spell; }
+	// return true when out of moves
+	bool move();
 
-  static Projectile *addProjectile(Creature *creature, Creature *target, 
-								   Item *item, ProjectileRenderer *renderer,
-								   int maxProjectiles, bool stopOnImpact=true);
-  static Projectile *addProjectile(Creature *creature, Creature *target, 
-								   Spell *spell, ProjectileRenderer *renderer, 
-								   int maxProjectiles, bool stopOnImpact=true);
-  static Projectile *addProjectile(Creature *creature, int x, int y, int w, int d, 
-								   Spell *spell, ProjectileRenderer *renderer, 
-								   int maxProjectiles, bool stopOnImpact=true);
-  static void moveProjectiles(Session *session);
-  bool atTargetLocation();
-  void debug();                                           
+	inline void setCasterLevel( int n ) {
+		casterLevel = n;
+	}
+	inline int getCasterLevel() {
+		return casterLevel;
+	}
 
- protected:
-  void commonInit();
-  void calculateAngle( float sx, float sy );
+	inline int getStepCount() {
+		return sx.size();
+	}
+	inline float getX( int index ) {
+		return( index < 0 ? sx[0] : sx[ index ] );
+	}
+	inline float getY( int index ) {
+		return( index < 0 ? sy[0] : sy[ index ] );
+	}
+	inline float getZ( int index ) {
+		return 0;
+	}
+	inline float getCurrentX() {
+		return sx.back();
+	}
+	inline float getCurrentY() {
+		return sy.back();
+	}
+	inline float getCurrentZ() {
+		return 0;
+	}
+	inline float getAngle() {
+		return angle;
+	}
+	inline ProjectileRenderer *getRenderer() {
+		return renderer;
+	}
+	inline RenderedCreature *getCreature() {
+		return ( RenderedCreature* )creature;
+	}
+	inline Item *getItem() {
+		return item;
+	}
+	inline Spell *getSpell() {
+		return spell;
+	}
+
+	static Projectile *addProjectile( Creature *creature, Creature *target,
+	                                  Item *item, ProjectileRenderer *renderer,
+	                                  int maxProjectiles, bool stopOnImpact = true );
+	static Projectile *addProjectile( Creature *creature, Creature *target,
+	                                  Spell *spell, ProjectileRenderer *renderer,
+	                                  int maxProjectiles, bool stopOnImpact = true );
+	static Projectile *addProjectile( Creature *creature, int x, int y, int w, int d,
+	                                  Spell *spell, ProjectileRenderer *renderer,
+	                                  int maxProjectiles, bool stopOnImpact = true );
+	static void moveProjectiles( Session *session );
+	bool atTargetLocation();
+	void debug();
+
+protected:
+	void commonInit();
+	void calculateAngle( float sx, float sy );
 };
 
 #endif

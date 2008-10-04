@@ -15,30 +15,31 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "common/constants.h"
 #include "sdlscreenview.h"
 
 using namespace std;
 
-SDLScreenView::SDLScreenView(){
+SDLScreenView::SDLScreenView() {
 	updateEvent[0] = 0;
 	updateValue = -1;
 	updateTotal = -1;
 }
-SDLScreenView::~SDLScreenView(){
+SDLScreenView::~SDLScreenView() {
 }
 
 // return true if the screen needs to be updated
 bool SDLScreenView::setUpdate( char *message, int n, int total ) {
 	int oldValue = updateValue;
-	int percent = static_cast<int>( n / ( total / 100.0f) );
+	int percent = static_cast<int>( n / ( total / 100.0f ) );
 
 	strcpy( this->updateEvent, message );
 	this->updateValue = n;
 	this->updateTotal = total;
 
-	return( oldValue <= 0 || 
-					updateValue <= 0 || 
-					percent == 100 || 
-					( updateValue % 10 ) == 0 ? true : false );
+	return( oldValue <= 0 ||
+	        updateValue <= 0 ||
+	        percent == 100 ||
+	        ( updateValue % 10 ) == 0 ? true : false );
 }
 

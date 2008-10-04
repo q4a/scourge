@@ -17,21 +17,21 @@
 
 #ifndef RENDER_H
 #define RENDER_H
+#pragma once
 
-// definitely outside of dir                    
-#include "../common/constants.h"
+// definitely outside of dir
 #include "../persist.h"
 #include "../preferences.h"
 #include "../util.h"
 
-/** 
+/**
  *@author Gabor Torok
- * 
+ *
  * The class thru which this directory talks to the rest of the code.
  * Never include this file outside this dir. (use renderlib.h instead.)
  */
 class Render {
-  public:
+public:
 };
 
 #endif

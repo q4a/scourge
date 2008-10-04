@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "../common/constants.h"
 #include "confirmdialog.h"
 #include "window.h"
 #include "button.h"
@@ -24,21 +25,21 @@
 #define CONFIRM_HEIGHT 120
 
 ConfirmDialog::ConfirmDialog( ScourgeGui *scourgeGui, char const* title ) {
-  win = new Window( scourgeGui,
-										( scourgeGui->getScreenWidth() / 2 ) - ( CONFIRM_WIDTH / 2 ),
-										( scourgeGui->getScreenHeight() / 2 ) - ( CONFIRM_HEIGHT / 2 ),
-										CONFIRM_WIDTH, CONFIRM_HEIGHT,
-					(char*)( title ? title : _( "Confirmation" ) ),
-										scourgeGui->getGuiTexture(), true, 
-										Window::BASIC_WINDOW,
-										scourgeGui->getGuiTexture2() );
-  int mx = CONFIRM_WIDTH / 2;
-  okButton = new Button( mx - 80, 60, mx - 10, 80, scourgeGui->getHighlightTexture(), _( "Ok" ) );
-  win->addWidget( (Widget*)okButton );
-  cancelButton = new Button( mx + 10, 60, mx + 80, 80, scourgeGui->getHighlightTexture(), _( "No" ) );
-  win->addWidget( (Widget*)cancelButton );
-  label = new Label( 20, 30, "" );
-  win->addWidget( (Widget*)label );
+	win = new Window( scourgeGui,
+	                  ( scourgeGui->getScreenWidth() / 2 ) - ( CONFIRM_WIDTH / 2 ),
+	                  ( scourgeGui->getScreenHeight() / 2 ) - ( CONFIRM_HEIGHT / 2 ),
+	                  CONFIRM_WIDTH, CONFIRM_HEIGHT,
+	                  ( char* )( title ? title : _( "Confirmation" ) ),
+	                  scourgeGui->getGuiTexture(), true,
+	                  Window::BASIC_WINDOW,
+	                  scourgeGui->getGuiTexture2() );
+	int mx = CONFIRM_WIDTH / 2;
+	okButton = new Button( mx - 80, 60, mx - 10, 80, scourgeGui->getHighlightTexture(), _( "Ok" ) );
+	win->addWidget( ( Widget* )okButton );
+	cancelButton = new Button( mx + 10, 60, mx + 80, 80, scourgeGui->getHighlightTexture(), _( "No" ) );
+	win->addWidget( ( Widget* )cancelButton );
+	label = new Label( 20, 30, "" );
+	win->addWidget( ( Widget* )label );
 
 	mode = 0;
 	object = NULL;
@@ -47,7 +48,7 @@ ConfirmDialog::ConfirmDialog( ScourgeGui *scourgeGui, char const* title ) {
 ConfirmDialog::~ConfirmDialog() {
 	delete win;
 }
-	
+
 void ConfirmDialog::setText( char *text ) {
 	label->setText( text );
 	int textWidth = win->getScourgeGui()->textWidth( text );

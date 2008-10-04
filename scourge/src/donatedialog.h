@@ -17,8 +17,8 @@
 
 #ifndef DONATE_DIALOG_H
 #define DONATE_DIALOG_H
+#pragma once
 
-#include "common/constants.h"
 #include <map>
 
 class Scourge;
@@ -33,25 +33,27 @@ class TextField;
 /// The donate window.
 class DonateDialog {
 private:
-  Scourge *scourge;
-  Creature *creature;
-  Window *win;
-  
-  Label *creatureLabel, *coinLabel;
-  ScrollingLabel *result;
-  Button *closeButton, *applyButton;
-  TextField *amount;
+	Scourge *scourge;
+	Creature *creature;
+	Window *win;
+
+	Label *creatureLabel, *coinLabel;
+	ScrollingLabel *result;
+	Button *closeButton, *applyButton;
+	TextField *amount;
 
 public:
-  DonateDialog( Scourge *scourge );
-  ~DonateDialog();
-  void setCreature( Creature *creature );
-  void updateUI();
-  inline Window *getWindow() { return win; }
-  void handleEvent( Widget *widget, SDL_Event *event );
-  
+	DonateDialog( Scourge *scourge );
+	~DonateDialog();
+	void setCreature( Creature *creature );
+	void updateUI();
+	inline Window *getWindow() {
+		return win;
+	}
+	void handleEvent( Widget *widget, SDL_Event *event );
+
 protected:
-  void donate( int amount );
+	void donate( int amount );
 };
 
 #endif

@@ -17,6 +17,7 @@
 
 #ifndef TEXT_DIALOG_H
 #define TEXT_DIALOG_H
+#pragma once
 
 #include "gui.h"
 #include "widget.h"
@@ -45,9 +46,9 @@ public:
 	Window *win;
 	Button *okButton;
 
-	TextDialog( ScourgeGui *scourgeGui, char const* title=NULL );
+	TextDialog( ScourgeGui *scourgeGui, char const* title = NULL );
 	~TextDialog();
-	
+
 	void setText( char *text );
 	void setVisible( bool b );
 	bool isVisible();

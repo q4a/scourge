@@ -17,8 +17,8 @@
 
 #ifndef CALENDAR_H
 #define CALENDAR_H
+#pragma once
 
-#include "common/constants.h"
 #include <iostream>
 #include <vector>    // STL for Vector
 #include "date.h"
@@ -35,45 +35,48 @@ class Event;
 class Date;
 
 /// Manages ingame events, like potions expiring and characters getting hungry.
-
 class Calendar {
- private:
+private:
 
-  static Calendar *instance;
+	static Calendar *instance;
 
-  Date currentDate;
-  int timeMultiplicator;
-  GLint lastTick;
-  bool timeFrozen;
+	Date currentDate;
+	int timeMultiplicator;
+	GLint lastTick;
+	bool timeFrozen;
 	char nextResetDate[40];
 
-  std::vector<Event*> scheduledEvents;
+	std::vector<Event*> scheduledEvents;
 
- public:
+public:
 
-  static Calendar * getInstance();
-  bool update(int gameSpeed);
-  void setPause(bool mustPause);
-  void setTimeMultiplicator(int t);
-  void scheduleEvent(Event *e);
-  void reset(bool resetTime=true);
-  void cancelEvent(Event *e);
+	static Calendar * getInstance();
+	bool update( int gameSpeed );
+	void setPause( bool mustPause );
+	void setTimeMultiplicator( int t );
+	void scheduleEvent( Event *e );
+	void reset( bool resetTime = true );
+	void cancelEvent( Event *e );
 	void cancelEventsForCreature( Creature *creature );
 
 	// next time you reset, set the date to this
-	inline void setNextResetDate( char *s ) { strcpy( nextResetDate, s ); }
+	inline void setNextResetDate( char *s ) {
+		strcpy( nextResetDate, s );
+	}
 
-  // return date by value to avoid modification by other classes
-  inline Date getCurrentDate() { return currentDate; }
-  inline void addADay() {
-    currentDate.setDate( currentDate.getSec(), currentDate.getMin(), currentDate.getHour(), currentDate.getDay() + 1, 
-                         currentDate.getMonth(), currentDate.getYear() );
-  }
+	// return date by value to avoid modification by other classes
+	inline Date getCurrentDate() {
+		return currentDate;
+	}
+	inline void addADay() {
+		currentDate.setDate( currentDate.getSec(), currentDate.getMin(), currentDate.getHour(), currentDate.getDay() + 1,
+		                     currentDate.getMonth(), currentDate.getYear() );
+	}
 
-  Calendar();
-  ~Calendar();
+	Calendar();
+	~Calendar();
 
- protected:
+protected:
 };
 
 #endif

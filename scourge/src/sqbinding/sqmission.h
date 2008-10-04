@@ -17,6 +17,7 @@
 
 #ifndef SQMISSION_H
 #define SQMISSION_H
+#pragma once
 
 #include "sqbinding.h"
 #include "sqobject.h"
@@ -27,53 +28,59 @@
  */
 class SqMission : public SqObject {
 private:
-  static const char *className;
-  static SquirrelClassDecl classDecl;
-  static ScriptClassMemberDecl members[];
+	static const char *className;
+	static SquirrelClassDecl classDecl;
+	static ScriptClassMemberDecl members[];
 
-  
+
 
 public:
-  SqMission();
-  ~SqMission();
+	SqMission();
+	~SqMission();
 
-  inline const char *getInstanceName() { return "mission"; }
-  inline const char *getClassName() { return SqMission::className; }
-  inline SquirrelClassDecl *getClassDeclaration() { return &SqMission::classDecl; }
+	inline const char *getInstanceName() {
+		return "mission";
+	}
+	inline const char *getClassName() {
+		return SqMission::className;
+	}
+	inline SquirrelClassDecl *getClassDeclaration() {
+		return &SqMission::classDecl;
+	}
 
-  // ===========================================================================
-  // Static callback methods to ScourgeGame squirrel object member functions.
-  static int _squirrel_typeof( HSQUIRRELVM vm );
-  static int _constructor( HSQUIRRELVM vm );
+	// ===========================================================================
+	// Static callback methods to ScourgeGame squirrel object member functions.
+	static int _squirrel_typeof( HSQUIRRELVM vm );
+	static int _constructor( HSQUIRRELVM vm );
 
-  // general
-  static int _getCreatureCount( HSQUIRRELVM vm );
-  static int _getCreature( HSQUIRRELVM vm );
+	// general
+	static int _getCreatureCount( HSQUIRRELVM vm );
+	static int _getCreature( HSQUIRRELVM vm );
 	static int _replaceCreature( HSQUIRRELVM vm );
 	static int _addCreature( HSQUIRRELVM vm );
 
-  static int _getItemCount( HSQUIRRELVM vm );
-  static int _getItem( HSQUIRRELVM vm );
-	static int _addItem( HSQUIRRELVM vm );  
+	static int _getItemCount( HSQUIRRELVM vm );
+	static int _getItem( HSQUIRRELVM vm );
+	static int _addItem( HSQUIRRELVM vm );
 
-  // battle-related (maybe move this to another class?)
-  static int _getCurrentWeapon( HSQUIRRELVM vm );
+	// battle-related (maybe move this to another class?)
+	static int _getCurrentWeapon( HSQUIRRELVM vm );
 
-  static int _isCompleted( HSQUIRRELVM vm );
-  static int _setCompleted( HSQUIRRELVM vm );
+	static int _isCompleted( HSQUIRRELVM vm );
+	static int _setCompleted( HSQUIRRELVM vm );
 
 	static int _getChapter( HSQUIRRELVM vm );
 
 	static int _isFree( HSQUIRRELVM vm );
-	static int _isFreeOutdoors( HSQUIRRELVM vm ); 
+	static int _isFreeOutdoors( HSQUIRRELVM vm );
 	static int _setMapPosition( HSQUIRRELVM vm );
 	static int _setMapEffect( HSQUIRRELVM vm );
 	static int _removeMapEffect( HSQUIRRELVM vm );
-	static int _removeMapPosition( HSQUIRRELVM vm );	
+	static int _removeMapPosition( HSQUIRRELVM vm );
 	static int _getShape( HSQUIRRELVM vm );
 
 	static int _getHeightMap( HSQUIRRELVM vm );
-	static int _setHeightMap( HSQUIRRELVM vm );	
+	static int _setHeightMap( HSQUIRRELVM vm );
 
 	static int _getDungeonDepth( HSQUIRRELVM vm );
 	static int _descendDungeon( HSQUIRRELVM vm );
@@ -91,8 +98,8 @@ public:
 	static int _isReplayMap( HSQUIRRELVM vm );
 
 	static int _setMapConfig( HSQUIRRELVM vm );
-	
-	static int _setOffset( HSQUIRRELVM vm );	
+
+	static int _setOffset( HSQUIRRELVM vm );
 };
 
 #endif

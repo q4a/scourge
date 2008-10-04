@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "common/constants.h"
 #include "util.h"
 #include "render/renderlib.h"
 #include "debug.h"
@@ -23,35 +24,35 @@ using namespace std;
 
 /// Rotate the 2D point(x,y) by angle(in degrees). Return the result in px,py.
 
-void Util::rotate(Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle) {
+void Util::rotate( Sint16 x, Sint16 y, Sint16 *px, Sint16 *py, float angle ) {
 	// convert to radians
 	// angle = degreesToRadians(angle);
 	// rotate
-	float oldx = static_cast<float>(x);
-	float oldy = static_cast<float>(y);
-	*px = (Sint16)rint((oldx * Constants::cosFromAngle(angle)) - (oldy * Constants::sinFromAngle(angle)));
-	*py = (Sint16)rint((oldx * Constants::sinFromAngle(angle)) + (oldy * Constants::cosFromAngle(angle)));
+	float oldx = static_cast<float>( x );
+	float oldy = static_cast<float>( y );
+	*px = ( Sint16 )rint( ( oldx * Constants::cosFromAngle( angle ) ) - ( oldy * Constants::sinFromAngle( angle ) ) );
+	*py = ( Sint16 )rint( ( oldx * Constants::sinFromAngle( angle ) ) + ( oldy * Constants::cosFromAngle( angle ) ) );
 }
 
-float Util::dot_product(float v1[3], float v2[3]) {
-	return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
+float Util::dot_product( float v1[3], float v2[3] ) {
+	return ( v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2] );
 }
 
-void Util::normalize(float v[3]) {
-	float f = 1.0f / sqrt(dot_product(v, v));
+void Util::normalize( float v[3] ) {
+	float f = 1.0f / sqrt( dot_product( v, v ) );
 
 	v[0] *= f;
 	v[1] *= f;
 	v[2] *= f;
 }
 
-void Util::cross_product(const float *v1, const float *v2, float *out) {
+void Util::cross_product( const float *v1, const float *v2, float *out ) {
 	out[0] = v1[1] * v2[2] - v1[2] * v2[1];
 	out[1] = v1[2] * v2[0] - v1[0] * v2[2];
 	out[2] = v1[0] * v2[1] - v1[1] * v2[0];
 }
 
-void Util::multiply_vector_by_matrix(const float m[9], float v[3]) {
+void Util::multiply_vector_by_matrix( const float m[9], float v[3] ) {
 	float tmp[3];
 
 	tmp[0] = v[0] * m[0] + v[1] * m[3] + v[2] * m[6];
@@ -63,7 +64,7 @@ void Util::multiply_vector_by_matrix(const float m[9], float v[3]) {
 	v[2] = tmp[2];
 }
 
-void Util::multiply_vector_by_matrix2(const float m[16], float v[4]) {
+void Util::multiply_vector_by_matrix2( const float m[16], float v[4] ) {
 	float tmp[4];
 
 	tmp[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[8] + v[3] * m[12];
@@ -83,21 +84,21 @@ void Util::multiply_vector_by_matrix2(const float m[16], float v[4]) {
 /// Return a string containing the last OpenGL error.
 /// Useful to debug strange OpenGL behaviors
 
-char * Util :: getOpenGLError(){
+char * Util :: getOpenGLError() {
 	int error;
 	error = glGetError();
 
 	// All openGl errors possible
-	switch(error){
-		case GL_NO_ERROR : return "GL_NO_ERROR";
-		case GL_INVALID_ENUM : return "GL_INVALID_ENUM"; 
-		case GL_INVALID_VALUE : return "GL_INVALID_VALUE"; 
-		case GL_INVALID_OPERATION : return "GL_INVALID_OPERATION"; 
-		case GL_STACK_OVERFLOW : return "GL_STACK_OVERFLOW"; 
-		case GL_OUT_OF_MEMORY : return "GL_OUT_OF_MEMORY"; 
-		default : 
-			cerr << "GL Error=" << error << endl;
-			return "Unknown error";
+	switch ( error ) {
+	case GL_NO_ERROR : return "GL_NO_ERROR";
+	case GL_INVALID_ENUM : return "GL_INVALID_ENUM";
+	case GL_INVALID_VALUE : return "GL_INVALID_VALUE";
+	case GL_INVALID_OPERATION : return "GL_INVALID_OPERATION";
+	case GL_STACK_OVERFLOW : return "GL_STACK_OVERFLOW";
+	case GL_OUT_OF_MEMORY : return "GL_OUT_OF_MEMORY";
+	default :
+		cerr << "GL Error=" << error << endl;
+		return "Unknown error";
 	}
 }
 
@@ -106,60 +107,60 @@ char * Util :: getOpenGLError(){
 /// If there is not a space at the given
 /// position, the function suppose it is the first letter of the word wanted.
 
-string Util::getNextWord(const string& theInput, int fromPos, int &endWord){
+string Util::getNextWord( const string& theInput, int fromPos, int &endWord ) {
 	int firstChar, lastStringChar;
 	string sub;
-	
-	if (theInput.empty() || fromPos==-1)
+
+	if ( theInput.empty() || fromPos == -1 )
 		return sub;
 
-	lastStringChar = theInput.find_last_not_of(' ');
-	if(theInput[fromPos] == ' ')
-		firstChar = theInput.find_first_not_of(' ', fromPos);
+	lastStringChar = theInput.find_last_not_of( ' ' );
+	if ( theInput[fromPos] == ' ' )
+		firstChar = theInput.find_first_not_of( ' ', fromPos );
 	else
 		firstChar = fromPos;
 
-	endWord = theInput.find_first_of(' ', firstChar);
+	endWord = theInput.find_first_of( ' ', firstChar );
 
-	if(endWord == -1 && lastStringChar >= firstChar && firstChar != -1)
-		sub = theInput.substr(firstChar, lastStringChar - firstChar + 1);
+	if ( endWord == -1 && lastStringChar >= firstChar && firstChar != -1 )
+		sub = theInput.substr( firstChar, lastStringChar - firstChar + 1 );
 	else
-		sub = theInput.substr(firstChar, endWord - firstChar);
+		sub = theInput.substr( firstChar, endWord - firstChar );
 
 	return sub;
 }
 
 /// get the angle between two shapes (x,y,width,depth)
 
-float Util::getAngle(float fx, float fy, float fw, float fd, float tx, float ty, float tw, float td) {
+float Util::getAngle( float fx, float fy, float fw, float fd, float tx, float ty, float tw, float td ) {
 	// figure out targetCreatureAngle
-	float sx = fx + (fw / 2);
-	float sy = fy - (fd / 2);
-	float ex = tx + (tw / 2);
-	float ey = ty - (td / 2);
+	float sx = fx + ( fw / 2 );
+	float sy = fy - ( fd / 2 );
+	float ex = tx + ( tw / 2 );
+	float ey = ty - ( td / 2 );
 
 	float x = ex - sx;
 	float y = ey - sy;
-	if( x == 0.0f )
+	if ( x == 0.0f )
 		x = 0.001f;
 	// FIXME: Use lookup table instead of expensive atan().
-	float angle = Constants::toAngle(atan(y / x));
+	float angle = Constants::toAngle( atan( y / x ) );
 
-	// read about the arctan problem: 
+	// read about the arctan problem:
 	// http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
 	//  q = 1;
-	if(x < 0) { 		// Quadrant 2 & 3
-	//	q = ( y >= 0 ? 2 : 3);
+	if ( x < 0 ) {   // Quadrant 2 & 3
+		// q = ( y >= 0 ? 2 : 3);
 		angle += 180;
-	} else if(y < 0) { // Quadrant 4
-	//	q = 4;
+	} else if ( y < 0 ) { // Quadrant 4
+		// q = 4;
 		angle += 360;
 	}
 
 	// normalize
-	if( angle < 0.0f )
+	if ( angle < 0.0f )
 		angle = 360.0f + angle;
-	if( angle >= 360.0f )
+	if ( angle >= 360.0f )
 		angle -= 360.0f;
 
 	return angle;
@@ -180,13 +181,13 @@ bool Util::isInFOV( float x, float y, float angle, float px, float py ) {
 
 /// Returns the difference between two angles (degrees version).
 
-float Util::diffAngle(float a, float b) {
+float Util::diffAngle( float a, float b ) {
 //  a -= (static_cast<int>(a) / 360) * 360;
 //  b -= (static_cast<int>(b) / 360) * 360;
 	float diff = a - b;
-	if( diff > 180.0f ) {
-		diff = -(360.0f - diff);
-	} else if( diff < -180.0f ) {
+	if ( diff > 180.0f ) {
+		diff = -( 360.0f - diff );
+	} else if ( diff < -180.0f ) {
 		diff = 360 + diff;
 	}
 	return diff;
@@ -197,28 +198,28 @@ float Util::diffAngle(float a, float b) {
 void Util::drawBar( int x, int y, float barLength, float value, float maxValue,
                     float red, float green, float blue, float gradient, GuiTheme *theme,
                     int layout ) {
-	float percent = (maxValue == 0 ? 0 : (value >= maxValue ? 100.0f : value / (maxValue / 100.0f)));
-	float length = barLength * (percent / 100.0f);
-	if(length < 0) {
+	float percent = ( maxValue == 0 ? 0 : ( value >= maxValue ? 100.0f : value / ( maxValue / 100.0f ) ) );
+	float length = barLength * ( percent / 100.0f );
+	if ( length < 0 ) {
 		length = percent = 0;
 	}
 
 	glPushMatrix();
 	glTranslatef( x, y, 0 );
 
-	glLineWidth(6.0f);
+	glLineWidth( 6.0f );
 
 	//  glColor3f( 0.2f, 0.2f, 0.2f );
-	if( theme && theme->getWindowBorder() ) {
+	if ( theme && theme->getWindowBorder() ) {
 		glColor4f( theme->getWindowBorder()->color.r,
-							theme->getWindowBorder()->color.g,
-							theme->getWindowBorder()->color.b,
-							theme->getWindowBorder()->color.a );
+		           theme->getWindowBorder()->color.g,
+		           theme->getWindowBorder()->color.b,
+		           theme->getWindowBorder()->color.a );
 	} else {
 		glColor3f( 0, 0, 0 );
 	}
 	glBegin( GL_LINES );
-	if( layout == HORIZONTAL_LAYOUT ) {
+	if ( layout == HORIZONTAL_LAYOUT ) {
 		glVertex3f( 0, 0, 0 );
 		glVertex3f( barLength, 0, 0 );
 	} else {
@@ -228,20 +229,20 @@ void Util::drawBar( int x, int y, float barLength, float value, float maxValue,
 	glEnd();
 
 	// default args so I don't have to recompile .h file
-	if(red == -1) {
+	if ( red == -1 ) {
 		red = 0.5f;
 		green = 1.0f;
 		blue = 0.5f;
 	}
-	if(!gradient || percent > 40.0f) {  
+	if ( !gradient || percent > 40.0f ) {
 		glColor3f( red, green, blue );
-	} else if(percent > 25.0f) {
+	} else if ( percent > 25.0f ) {
 		glColor3f( 1.0f, 1.0f, 0.5f );
 	} else {
 		glColor3f( 1.0f, 0.5f, 0.5f );
 	}
 	glBegin( GL_LINES );
-	if( layout == HORIZONTAL_LAYOUT ) {
+	if ( layout == HORIZONTAL_LAYOUT ) {
 		glVertex3f( 0, 0, 0 );
 		glVertex3f( length, 0, 0 );
 	} else {
@@ -250,7 +251,7 @@ void Util::drawBar( int x, int y, float barLength, float value, float maxValue,
 	}
 	glEnd();
 
-	glLineWidth(1.0f);
+	glLineWidth( 1.0f );
 
 	glPopMatrix();
 }
@@ -258,7 +259,7 @@ void Util::drawBar( int x, int y, float barLength, float value, float maxValue,
 float Util::getRandomSum( float base, int count, float div ) {
 	float sum = 0;
 	float third = base / div;
-	for( int i = 0; i < ( count < 1 ? 1 : count ); i++ ) {
+	for ( int i = 0; i < ( count < 1 ? 1 : count ); i++ ) {
 		sum += Util::roll( 0.0f, third ) + base - third;
 	}
 	return sum;
@@ -266,8 +267,8 @@ float Util::getRandomSum( float base, int count, float div ) {
 
 char *Util::toLowerCase( char *s ) {
 	char *p = s;
-	while( *p ) {
-		if( *p >= 'A' && *p <= 'Z' ) *p = *p - 'A' + 'a';
+	while ( *p ) {
+		if ( *p >= 'A' && *p <= 'Z' ) *p = *p - 'A' + 'a';
 		p++;
 	}
 	return s;
@@ -275,7 +276,7 @@ char *Util::toLowerCase( char *s ) {
 
 string& Util::toLowerCase( string& s ) {
 	for ( unsigned int i = 0; i < s.size(); i++ ) {
-		if( 'A' <= s[i] && s[i] <= 'Z' ) s[i] -= 'A' - 'a';
+		if ( 'A' <= s[i] && s[i] <= 'Z' ) s[i] -= 'A' - 'a';
 	}
 	return s;
 }
@@ -287,16 +288,16 @@ char *Util::addLineBreaks( const char *in, char *out, int lineLength ) {
 	strcpy( tmp, in );
 	char *token = strtok( tmp, " \r\n\t" );
 	int count = 0;
-	while( token ) {
-		int len = static_cast<int>(strlen( token ));
-		for( int i = len - 1; i >= 0; i-- ) {
-			if( token[i] == '|' ) {
+	while ( token ) {
+		int len = static_cast<int>( strlen( token ) );
+		for ( int i = len - 1; i >= 0; i-- ) {
+			if ( token[i] == '|' ) {
 				count = len - i;
 				len = count;
 				break;
 			}
 		}
-		if( count + len >= lineLength ) {
+		if ( count + len >= lineLength ) {
 			strcat( out, "|" );
 			count = 0;
 		}
@@ -317,7 +318,7 @@ void Util::getLines( const char *in, vector<string> *out ) {
 	tmp[2999] = '\0';
 
 	char *p = strchr( q, '|' );
-	while( p ) {
+	while ( p ) {
 		*p = 0;
 		string s = q;
 		out->push_back( s );
@@ -336,45 +337,45 @@ float Util::getLight( float *normal, float lightAngle ) {
 	float y = ( normal[1] == 0 ? 0.01f : normal[1] );
 	float z = ( normal[2] == 0 ? 0.01f : normal[2] );
 
-	return ( getLightComp( x, y, lightAngle ) + 
-					 getLightComp( z, y, lightAngle ) +
-					 getLightComp( z, z, lightAngle ) ) / 3.0f;
+	return ( getLightComp( x, y, lightAngle ) +
+	         getLightComp( z, y, lightAngle ) +
+	         getLightComp( z, z, lightAngle ) ) / 3.0f;
 }
 
 float Util::getLightComp( float x, float y, float lightAngle ) {
 	float rad = atan( y / x );
 	float angle = ( 180.0f * rad ) / 3.14159;
 
-	// read about the arctan problem: 
+	// read about the arctan problem:
 	// http://hyperphysics.phy-astr.gsu.edu/hbase/ttrig.html#c3
 	int q = 1;
-	if( x < 0 ) {     // Quadrant 2 & 3
+	if ( x < 0 ) {    // Quadrant 2 & 3
 		q = ( y >= 0 ? 2 : 3 );
 		angle += 180;
-	} else if( y < 0 ) { // Quadrant 4
+	} else if ( y < 0 ) { // Quadrant 4
 		q = 4;
 		angle += 360;
 	}
 
 	// assertion
 #ifdef DEBUG_3DS
-	if( angle < 0 || angle > 360 ) {
+	if ( angle < 0 || angle > 360 ) {
 		cerr << "Warning: object: " << getName() << " angle=" << angle << " quadrant=" << q << endl;
 	}
 #endif
 
 	// calculate the angle distance from the light
 	float delta = 0;
-	if( angle > lightAngle && angle < lightAngle + 180.0f ) {
+	if ( angle > lightAngle && angle < lightAngle + 180.0f ) {
 		delta = angle - lightAngle;
 	} else {
-		if( angle < lightAngle ) angle += 360.0f;
+		if ( angle < lightAngle ) angle += 360.0f;
 		delta = ( 360 + lightAngle ) - angle;
 	}
 
 	// assertion
 #ifdef DEBUG_3DS
-	if (delta < 0 || delta > 180.0f) {
+	if ( delta < 0 || delta > 180.0f ) {
 		cerr << "WARNING: object: " << getName() << " angle=" << angle << " delta=" << delta << endl;
 	}
 #endif
@@ -386,9 +387,9 @@ float Util::getLightComp( float x, float y, float lightAngle ) {
 	return delta;
 }
 
-bool Util::StringCaseCompare(const std::string sStr1, const std::string sStr2) {
-	if (sStr1.length() == sStr2.length())
-		return std::equal(sStr1.begin(), sStr1.end(), sStr2.begin(), equal_ignore_case<std::string::value_type>());
+bool Util::StringCaseCompare( const std::string sStr1, const std::string sStr2 ) {
+	if ( sStr1.length() == sStr2.length() )
+		return std::equal( sStr1.begin(), sStr1.end(), sStr2.begin(), equal_ignore_case<std::string::value_type>() );
 	else
 		return false;
 }
@@ -404,12 +405,12 @@ static long mt_index = MT_N + 1;
 /// Starts the Mersenne Twister random number generator with a specified seed.
 
 void Util::mt_srand( unsigned long s ) {
-    mt_sequence[0]= s & 0xffffffffUL;
-    
-    for ( mt_index = 1; mt_index < MT_N; mt_index++ ) {
-        mt_sequence[mt_index] = ( 1812433253UL * ( mt_sequence[mt_index - 1] ^ ( mt_sequence[mt_index - 1] >> 30 ) ) + mt_index );
-        mt_sequence[mt_index] &= 0xffffffffUL;
-    }
+	mt_sequence[0] = s & 0xffffffffUL;
+
+	for ( mt_index = 1; mt_index < MT_N; mt_index++ ) {
+		mt_sequence[mt_index] = ( 1812433253UL * ( mt_sequence[mt_index - 1] ^ ( mt_sequence[mt_index - 1] >> 30 ) ) + mt_index );
+		mt_sequence[mt_index] &= 0xffffffffUL;
+	}
 }
 
 #define MT_HI 0x80000000UL
@@ -424,44 +425,44 @@ static const float multiplier = 1.0 / 4294967296.0;
 /// Multiple times faster than rand() and has a period of (2^19937 - 1).
 
 float Util::mt_rand() {
-    register unsigned long y;
+	register unsigned long y;
 
-    if ( mt_index >= MT_N ) {
-        register long k;
+	if ( mt_index >= MT_N ) {
+		register long k;
 
-        // Seed the generator when not yet done.
-        if ( mt_index == MT_N + 1 ) mt_srand( (unsigned long)time( (time_t*)NULL ) );
+		// Seed the generator when not yet done.
+		if ( mt_index == MT_N + 1 ) mt_srand( ( unsigned long )time( ( time_t* )NULL ) );
 
-        for ( k = 0; k < MT_N - MT_M; ++k ) {
-            y = ( mt_sequence[k] & MT_HI ) | ( mt_sequence[k + 1] & MT_LO );
-            mt_sequence[k] = mt_sequence[k + MT_M] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
-        }
-
-        for ( ; k<MT_N-1; ++k ) {
-            y = ( mt_sequence[k] & MT_HI) | ( mt_sequence[k + 1] & MT_LO );
-            mt_sequence[k] = mt_sequence[k + ( MT_M - MT_N )] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
-        }
-
-        y = ( mt_sequence[MT_N - 1] & MT_HI ) | ( mt_sequence[0] & MT_LO );
-        mt_sequence[MT_N - 1] = mt_sequence[MT_M - 1] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
-        mt_index = 0;
-    }
-
-    y = mt_sequence[mt_index++];
-
-    /* Tempering */
-    y ^= ( y >> 11 );
-    y ^= ( y << 7 ) & 0x9d2c5680UL;
-    y ^= ( y << 15 ) & 0xefc60000UL;
-    y ^= ( y >> 18 );
-
-    float ret = (float)y * multiplier;
-		if( ret < 0 || ret >= 1 ) {
-			cerr << "*** error: rand=" << ret << " mt_index=" << mt_index << " y=" << y << ". Correcting..." << endl;
-			// this happens occasianlly... fall back to rand()
-			ret = rand() / RAND_MAX;
+		for ( k = 0; k < MT_N - MT_M; ++k ) {
+			y = ( mt_sequence[k] & MT_HI ) | ( mt_sequence[k + 1] & MT_LO );
+			mt_sequence[k] = mt_sequence[k + MT_M] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
 		}
-		return ret;
+
+		for ( ; k < MT_N - 1; ++k ) {
+			y = ( mt_sequence[k] & MT_HI ) | ( mt_sequence[k + 1] & MT_LO );
+			mt_sequence[k] = mt_sequence[k + ( MT_M - MT_N )] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
+		}
+
+		y = ( mt_sequence[MT_N - 1] & MT_HI ) | ( mt_sequence[0] & MT_LO );
+		mt_sequence[MT_N - 1] = mt_sequence[MT_M - 1] ^ ( y >> 1 ) ^ mag[y & 0x1UL];
+		mt_index = 0;
+	}
+
+	y = mt_sequence[mt_index++];
+
+	/* Tempering */
+	y ^= ( y >> 11 );
+	y ^= ( y << 7 ) & 0x9d2c5680UL;
+	y ^= ( y << 15 ) & 0xefc60000UL;
+	y ^= ( y >> 18 );
+
+	float ret = ( float )y * multiplier;
+	if ( ret < 0 || ret >= 1 ) {
+		cerr << "*** error: rand=" << ret << " mt_index=" << mt_index << " y=" << y << ". Correcting..." << endl;
+		// this happens occasianlly... fall back to rand()
+		ret = rand() / RAND_MAX;
+	}
+	return ret;
 }
 
 /// Returns a random integer from 0 to size - 1.
@@ -470,8 +471,8 @@ float Util::mt_rand() {
 /// makes noise otherwise ;-)
 /// size is exclusive
 
-int Util::dice( int size ) { 
-	return static_cast<int>(roll( 0, size ));
+int Util::dice( int size ) {
+	return static_cast<int>( roll( 0, size ) );
 }
 
 /// Returns a random integer between min and max.
@@ -485,6 +486,6 @@ int Util::pickOne( int min, int max ) {
 
 /// random float from min to max (both inclusive)
 
-float Util::roll( float min, float max ) { 
-	return (max - min) * mt_rand() + min;
+float Util::roll( float min, float max ) {
+	return ( max - min ) * mt_rand() + min;
 }

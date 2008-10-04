@@ -17,6 +17,7 @@
 
 #ifndef MAP_RENDER_HELPER_H
 #define MAP_RENDER_HELPER_H
+#pragma once
 
 #include "render.h"
 
@@ -30,56 +31,76 @@ class  RenderedCreature;
  */
 class MapRenderHelper {
 private:
-  Map *map;
+	Map *map;
 
 public:
-  
-  enum {
-    CAVE_HELPER=0,
-    ROOM_HELPER,
+
+	enum {
+		CAVE_HELPER = 0,
+		ROOM_HELPER,
 		OUTDOOR_HELPER,
 		DEBUG_OUTDOOR_HELPER,
 
-    HELPER_COUNT
-  };
+		HELPER_COUNT
+	};
 
-  static MapRenderHelper *helpers[];
+	static MapRenderHelper *helpers[];
 
-  MapRenderHelper();
-  virtual ~MapRenderHelper();
+	MapRenderHelper();
+	virtual ~MapRenderHelper();
 
-  virtual inline void setMap( Map *map ) { this->map = map; }
-  inline Map *getMap() { return map; }
-	virtual inline float getLampRadiusSquared() { return 36.0f; }
-  inline virtual void reset() {}
-  inline virtual void draw( int x, int y, int w, int h ) {}
-  inline virtual bool isVisible( int x, int y, Shape *shape ) { return true; }
-  inline virtual void visit( RenderedCreature *creature ) {}
-  inline virtual void hideDeadParty() {}
-  inline virtual bool isLightMapEnabled() { return true; }
-  inline virtual bool isShapeSortingEnabled() { return true; }
-  inline virtual bool isIndoors() { return true; }
+	virtual inline void setMap( Map *map ) {
+		this->map = map;
+	}
+	inline Map *getMap() {
+		return map;
+	}
+	virtual inline float getLampRadiusSquared() {
+		return 36.0f;
+	}
+	inline virtual void reset() {}
+	inline virtual void draw( int x, int y, int w, int h ) {}
+	inline virtual bool isVisible( int x, int y, Shape *shape ) {
+		return true;
+	}
+	inline virtual void visit( RenderedCreature *creature ) {}
+	inline virtual void hideDeadParty() {}
+	inline virtual bool isLightMapEnabled() {
+		return true;
+	}
+	inline virtual bool isShapeSortingEnabled() {
+		return true;
+	}
+	inline virtual bool isIndoors() {
+		return true;
+	}
 	inline virtual void loadHelper( FogInfo *fogInfo ) {}
 	inline virtual void saveHelper( FogInfo *fogInfo ) {}
-	inline virtual bool drawShadow() { return true; }
+	inline virtual bool drawShadow() {
+		return true;
+	}
 };
 
 /// Helper functions for caves.
 class CaveRenderHelper : public MapRenderHelper {
 private:
-  Fog *fog;
+	Fog *fog;
 
 public:
-  CaveRenderHelper();
-  virtual ~CaveRenderHelper();
-	virtual inline float getLampRadiusSquared() { return 36.0f; }
-  virtual void setMap( Map *map );
-  virtual void reset();
-  virtual void draw( int x, int y, int w, int h );
-  virtual bool isVisible( int x, int y, Shape *shape );
-  virtual void visit( RenderedCreature *creature );
-  virtual void hideDeadParty();
-  inline virtual bool isLightMapEnabled() { return false; }
+	CaveRenderHelper();
+	virtual ~CaveRenderHelper();
+	virtual inline float getLampRadiusSquared() {
+		return 36.0f;
+	}
+	virtual void setMap( Map *map );
+	virtual void reset();
+	virtual void draw( int x, int y, int w, int h );
+	virtual bool isVisible( int x, int y, Shape *shape );
+	virtual void visit( RenderedCreature *creature );
+	virtual void hideDeadParty();
+	inline virtual bool isLightMapEnabled() {
+		return false;
+	}
 	virtual void loadHelper( FogInfo *fogInfo );
 	virtual void saveHelper( FogInfo *fogInfo );
 };
@@ -87,39 +108,51 @@ public:
 /// Helper functions for outdoors.
 class OutdoorRenderHelper : public CaveRenderHelper {
 public:
-  OutdoorRenderHelper();
-  virtual ~OutdoorRenderHelper();
-	inline virtual bool drawShadow() { return false; }
-	virtual inline float getLampRadiusSquared() { return 100.0f; }
-  inline virtual bool isLightMapEnabled() { return false; }
-  inline virtual bool isShapeSortingEnabled() { return false; }
-  inline virtual bool isIndoors() { return false; }
+	OutdoorRenderHelper();
+	virtual ~OutdoorRenderHelper();
+	inline virtual bool drawShadow() {
+		return false;
+	}
+	virtual inline float getLampRadiusSquared() {
+		return 100.0f;
+	}
+	inline virtual bool isLightMapEnabled() {
+		return false;
+	}
+	inline virtual bool isShapeSortingEnabled() {
+		return false;
+	}
+	inline virtual bool isIndoors() {
+		return false;
+	}
 };
 
 /// Outdoor render helper (debug version).
 class DebugOutdoorRenderHelper : public MapRenderHelper {
 public:
-  DebugOutdoorRenderHelper();
-  virtual ~DebugOutdoorRenderHelper();
-	inline virtual bool drawShadow() { return false; }
+	DebugOutdoorRenderHelper();
+	virtual ~DebugOutdoorRenderHelper();
+	inline virtual bool drawShadow() {
+		return false;
+	}
 };
 
 #define OVERLAY_SIZE 16
 
 /// Helper functions for dungeons.
 class RoomRenderHelper : public MapRenderHelper {
-private:  
-  GLuint overlay_tex;
-  unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
+private:
+	GLuint overlay_tex;
+	unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
 
 public:
-  RoomRenderHelper();
-  virtual ~RoomRenderHelper();
-  virtual void setMap( Map *map );
-  virtual void draw( int x, int y, int w, int h );
+	RoomRenderHelper();
+	virtual ~RoomRenderHelper();
+	virtual void setMap( Map *map );
+	virtual void draw( int x, int y, int w, int h );
 
 protected:
-  void createOverlayTexture();
+	void createOverlayTexture();
 
 };
 

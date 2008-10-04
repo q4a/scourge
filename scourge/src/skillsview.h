@@ -17,11 +17,11 @@
 
 #ifndef SKILLS_VIEW_H
 #define SKILLS_VIEW_H
+#pragma once
 
 #include <iostream>
 #include <string>
 #include <vector>
-#include "common/constants.h"
 #include "session.h"
 #include "rpg/rpg.h"
 
@@ -42,28 +42,36 @@ class SkillsView {
 
 public:
 	enum { SKILL_SIZE = 120 };
-  SkillsView( Scourge *scourge, int x, int y, int w, int h );
-  ~SkillsView();
+	SkillsView( Scourge *scourge, int x, int y, int w, int h );
+	~SkillsView();
 
-  void setCreature( Creature *creature, CreatureGroupInfo *info=NULL );
-  inline Creature *getCreature() { return creature; }
+	void setCreature( Creature *creature, CreatureGroupInfo *info = NULL );
+	inline Creature *getCreature() {
+		return creature;
+	}
 
-  int getSelectedLine();
-  void setSelectedLine( int n );
+	int getSelectedLine();
+	void setSelectedLine( int n );
 
-  inline void clearSkillGroupFilters() { filter.clear(); }
-  inline void addSkillGroupFilter( SkillGroup *group ) { filter.insert( group ); }
+	inline void clearSkillGroupFilters() {
+		filter.clear();
+	}
+	inline void addSkillGroupFilter( SkillGroup *group ) {
+		filter.insert( group );
+	}
 
-  inline Widget *getWidget() { return skillList; }
+	inline Widget *getWidget() {
+		return skillList;
+	}
 
 private:
-  Scourge *scourge;
-  Creature *creature;
-  Window *win;
-  ScrollingList *skillList;
-  std::string skillLine[ Skill::SKILL_COUNT ];
-  Color skillColor[ Skill::SKILL_COUNT ];
-  std::set<SkillGroup*> filter;
+	Scourge *scourge;
+	Creature *creature;
+	Window *win;
+	ScrollingList *skillList;
+	std::string skillLine[ Skill::SKILL_COUNT ];
+	Color skillColor[ Skill::SKILL_COUNT ];
+	std::set<SkillGroup*> filter;
 };
 
 #endif

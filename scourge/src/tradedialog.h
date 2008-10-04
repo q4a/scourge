@@ -17,8 +17,8 @@ tradedialog.h  -  The trade dialog
 
 #ifndef TRADE_DIALOG_H
 #define TRADE_DIALOG_H
+#pragma once
 
-#include "common/constants.h"
 #include "itemlist.h"
 #include "pcui.h"
 #include <map>
@@ -34,34 +34,36 @@ class PcUi;
 /// The trade dialog.
 class TradeDialog : public ItemRenderer {
 private:
-  Scourge *scourge;
-  Creature *creature;
-  Window *win;
-  int totalAmount;
-  std::map<Item*, int> prices;
-  
-  Label *playerName, *creatureName;
-  Label *playerTotal, *creatureTotal;
-  ItemList *playerList, *creatureList;
-  Button *closeButton, *tradeButton, *infoButtonA, *infoButtonB, *stealButton;
-  Label *tradeInfo;
-  
+	Scourge *scourge;
+	Creature *creature;
+	Window *win;
+	int totalAmount;
+	std::map<Item*, int> prices;
+
+	Label *playerName, *creatureName;
+	Label *playerTotal, *creatureTotal;
+	ItemList *playerList, *creatureList;
+	Button *closeButton, *tradeButton, *infoButtonA, *infoButtonB, *stealButton;
+	Label *tradeInfo;
+
 public:
-  TradeDialog( Scourge *scourge );
-  ~TradeDialog();
-  void setCreature( Creature *creature );
-  void updateUI();
-  inline Window *getWindow() { return win; }
-  void handleEvent( Widget *widget, SDL_Event *event );
-  
-  void render( const Widget *widget, const Item *item, std::string& buffer );
-  
+	TradeDialog( Scourge *scourge );
+	~TradeDialog();
+	void setCreature( Creature *creature );
+	void updateUI();
+	inline Window *getWindow() {
+		return win;
+	}
+	void handleEvent( Widget *widget, SDL_Event *event );
+
+	void render( const Widget *widget, const Item *item, std::string& buffer );
+
 protected:
-    void updateLabels();
-  void trade();
-  void steal();
-  int getSelectedTotal( ItemList *list );
-  bool validateInventory();
+	void updateLabels();
+	void trade();
+	void steal();
+	int getSelectedTotal( ItemList *list );
+	bool validateInventory();
 };
 
 #endif

@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "../common/constants.h"
 #include "renderedprojectile.h"
 #include "renderedcreature.h"
 
@@ -29,23 +30,23 @@ RenderedProjectile::~RenderedProjectile() {
 }
 
 void RenderedProjectile::addProjectile( RenderedProjectile *proj ) {
-  vector<RenderedProjectile*> *v;
-  if( projectiles.find( proj->getCreature() ) == projectiles.end() ) {
-    v = new vector<RenderedProjectile*>();
-    projectiles[ proj->getCreature() ] = v;
-  } else {
-    v = projectiles[ proj->getCreature() ];
-  }
-  v->push_back( proj );
+	vector<RenderedProjectile*> *v;
+	if ( projectiles.find( proj->getCreature() ) == projectiles.end() ) {
+		v = new vector<RenderedProjectile*>();
+		projectiles[ proj->getCreature() ] = v;
+	} else {
+		v = projectiles[ proj->getCreature() ];
+	}
+	v->push_back( proj );
 }
 
 void RenderedProjectile::resetProjectiles() {
 	for ( map<RenderedCreature *, vector<RenderedProjectile*>*>::iterator i = projectiles.begin()
-	      ; i != projectiles.end(); ) {
+	        ; i != projectiles.end(); ) {
 		vector<RenderedProjectile*> *v = i->second;
 		for ( vector<RenderedProjectile*>::iterator e2 = v->begin()
-		      ; e2 != v->end(); ++e2 ) {
-			RenderedProjectile *proj = *e2;  
+		        ; e2 != v->end(); ++e2 ) {
+			RenderedProjectile *proj = *e2;
 			delete proj;
 		}
 		delete v;
@@ -54,18 +55,18 @@ void RenderedProjectile::resetProjectiles() {
 }
 
 void RenderedProjectile::removeProjectile( RenderedProjectile *p ) {
-  if( projectiles.find( p->getCreature() ) != projectiles.end() ) {
-    vector<RenderedProjectile*> *v = projectiles[ p->getCreature() ];
-    for( vector<RenderedProjectile*>::iterator e = v->begin(); e != v->end(); ++e ) {
-      RenderedProjectile *proj = *e;  
-      if( proj == p ) {
-        v->erase( e );
-		if( v->empty() ) {
-          projectiles.erase( p->getCreature() );
-        }
-        return;
-      }
-    }
-  }
+	if ( projectiles.find( p->getCreature() ) != projectiles.end() ) {
+		vector<RenderedProjectile*> *v = projectiles[ p->getCreature() ];
+		for ( vector<RenderedProjectile*>::iterator e = v->begin(); e != v->end(); ++e ) {
+			RenderedProjectile *proj = *e;
+			if ( proj == p ) {
+				v->erase( e );
+				if ( v->empty() ) {
+					projectiles.erase( p->getCreature() );
+				}
+				return;
+			}
+		}
+	}
 }
 

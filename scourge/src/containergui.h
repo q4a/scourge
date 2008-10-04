@@ -17,10 +17,10 @@
 
 #ifndef CONTAINER_GUI_H
 #define CONTAINER_GUI_H
+#pragma once
 
 #include <iostream>
 #include <string>
-#include "common/constants.h"
 #include "scourge.h"
 #include "gui/window.h"
 #include "gui/widget.h"
@@ -31,39 +31,44 @@
 class Item;
 
 /// The "container contents" window (for open chests etc.)
-
 class ContainerGui : public DragAndDropHandler {
 
- private:
-  Scourge *scourge;
-  Item *container;
-  Window *win;
-  Button *openButton, *infoButton, *closeButton, *getAllButton;
-  ScrollingList *list;
-  Label *label;
-  std::string containedItemNames[MAX_CONTAINED_ITEMS];
-  Color *itemColor;
-  GLuint *itemIcon;
+private:
+	Scourge *scourge;
+	Item *container;
+	Window *win;
+	Button *openButton, *infoButton, *closeButton, *getAllButton;
+	ScrollingList *list;
+	Label *label;
+	std::string containedItemNames[MAX_CONTAINED_ITEMS];
+	Color *itemColor;
+	GLuint *itemIcon;
 
- public:
-  ContainerGui(Scourge *scourge, Item *container, int x, int y);
-  ~ContainerGui();
+public:
+	ContainerGui( Scourge *scourge, Item *container, int x, int y );
+	~ContainerGui();
 
-  bool handleEvent(SDL_Event *event);
-  bool handleEvent(Widget *widget, SDL_Event *event);
+	bool handleEvent( SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
 
-  inline Item *getContainer() { return container; }
-  inline Window *getWindow() { return win; }
-  inline void refresh() { showContents(); }
+	inline Item *getContainer() {
+		return container;
+	}
+	inline Window *getWindow() {
+		return win;
+	}
+	inline void refresh() {
+		showContents();
+	}
 
-  // drag and drop handling
-  void receive(Widget *widget);
-  bool startDrag(Widget *widget, int x=0, int y=0);
+	// drag and drop handling
+	void receive( Widget *widget );
+	bool startDrag( Widget *widget, int x = 0, int y = 0 );
 
- private:
-  void showContents();
-  void dropItem();
-  
+private:
+	void showContents();
+	void dropItem();
+
 };
 
 #endif

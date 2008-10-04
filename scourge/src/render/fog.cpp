@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "../common/constants.h"
 #include "fog.h"
 #include "glshape.h"
 #include "frustum.h"
@@ -64,433 +65,433 @@ using namespace std;
 
 Fog::Fog( Map *map, float lampRadiusSquared ) {
 	this->lampRadiusSquared = lampRadiusSquared;
-  players = new std::set<RenderedCreature *> [MAP_WIDTH * MAP_DEPTH];
-  this->map = map;
-  createOverlayTexture();
-  createShadeTexture();
-  reset();
+	players = new std::set<RenderedCreature *> [MAP_WIDTH * MAP_DEPTH];
+	this->map = map;
+	createOverlayTexture();
+	createShadeTexture();
+	reset();
 }
 
 Fog::~Fog() {
-  glDeleteTextures(1, (GLuint*)&overlay_tex);
-  glDeleteTextures(1, (GLuint*)&shade_tex);
-  delete [] players;
+	glDeleteTextures( 1, ( GLuint* )&overlay_tex );
+	glDeleteTextures( 1, ( GLuint* )&shade_tex );
+	delete [] players;
 }
 
 void Fog::reset() {
-  for( int x = 0; x < FOG_WIDTH; x++ ) {
-    for( int y = 0; y < FOG_DEPTH; y++ ) {
-      fog[x][y] = FOG_UNVISITED;
-      players[x + (y * MAP_WIDTH)].clear();
-    }
-  }
+	for ( int x = 0; x < FOG_WIDTH; x++ ) {
+		for ( int y = 0; y < FOG_DEPTH; y++ ) {
+			fog[x][y] = FOG_UNVISITED;
+			players[x + ( y * MAP_WIDTH )].clear();
+		}
+	}
 }
 
-int Fog::getValue( int mapx, int mapy ) { 
-  return fog[mapx / FOG_CHUNK_SIZE][mapy / FOG_CHUNK_SIZE]; 
+int Fog::getValue( int mapx, int mapy ) {
+	return fog[mapx / FOG_CHUNK_SIZE][mapy / FOG_CHUNK_SIZE];
 }
 
 void Fog::visit( RenderedCreature *player ) {
-  for( int x = 0; x < FOG_WIDTH; x++ ) {
-    for( int y = 0; y < FOG_DEPTH; y++ ) {
+	for ( int x = 0; x < FOG_WIDTH; x++ ) {
+		for ( int y = 0; y < FOG_DEPTH; y++ ) {
 
-      int fx = toint( player->getX() / FOG_CHUNK_SIZE );
-      int fy = toint( player->getY() / FOG_CHUNK_SIZE );
+			int fx = toint( player->getX() / FOG_CHUNK_SIZE );
+			int fy = toint( player->getY() / FOG_CHUNK_SIZE );
 
-      double d = static_cast<double>( ( fx - x ) * ( fx - x) ) + static_cast<double>( ( fy - y ) * ( fy - y ) );
-      if( d <= lampRadiusSquared ) {
-        fog[x][y] = FOG_CLEAR;
-        players[x + (y * MAP_WIDTH)].insert( player );
-      } else if( fog[x][y] == FOG_CLEAR ) {
-        players[x + (y * MAP_WIDTH)].erase( player );
-        if( players[x + (y * MAP_WIDTH)].empty() ) {
-          fog[x][y] = FOG_VISITED;
-        }
-      }
-    }
-  }
+			double d = static_cast<double>( ( fx - x ) * ( fx - x ) ) + static_cast<double>( ( fy - y ) * ( fy - y ) );
+			if ( d <= lampRadiusSquared ) {
+				fog[x][y] = FOG_CLEAR;
+				players[x + ( y * MAP_WIDTH )].insert( player );
+			} else if ( fog[x][y] == FOG_CLEAR ) {
+				players[x + ( y * MAP_WIDTH )].erase( player );
+				if ( players[x + ( y * MAP_WIDTH )].empty() ) {
+					fog[x][y] = FOG_VISITED;
+				}
+			}
+		}
+	}
 }
 
 void Fog::hideDeadParty() {
-  for( int i = 0; i < map->getAdapter()->getPartySize(); i++ ) {
-    if( map->getAdapter()->getParty(i)->getStateMod( StateMod::dead ) ) {
-      for( int x = 0; x < FOG_WIDTH; x++ ) {
-        for( int y = 0; y < FOG_DEPTH; y++ ) {
-          if( fog[x][y] == FOG_CLEAR ) {
-            players[x + (y * MAP_WIDTH)].erase( map->getAdapter()->getParty(i) );
-            if( players[x + (y * MAP_WIDTH)].empty() ) {
-              fog[x][y] = FOG_VISITED;
-            }
-          }
-        }
-      }
-    }
-  }
+	for ( int i = 0; i < map->getAdapter()->getPartySize(); i++ ) {
+		if ( map->getAdapter()->getParty( i )->getStateMod( StateMod::dead ) ) {
+			for ( int x = 0; x < FOG_WIDTH; x++ ) {
+				for ( int y = 0; y < FOG_DEPTH; y++ ) {
+					if ( fog[x][y] == FOG_CLEAR ) {
+						players[x + ( y * MAP_WIDTH )].erase( map->getAdapter()->getParty( i ) );
+						if ( players[x + ( y * MAP_WIDTH )].empty() ) {
+							fog[x][y] = FOG_VISITED;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 int Fog::getVisibility( int xp, int yp, Shape *shape ) {
-  int v = FOG_UNVISITED;
-  for( int x = 0; x < shape->getWidth(); x++ ) {
-    for( int y = 0; y < shape->getDepth(); y++ ) {
-      int vv = getValue( xp + x, yp - y );
-      if( vv == FOG_CLEAR ) return FOG_CLEAR;
-      else if( vv == FOG_VISITED ) v = vv;
-    }
-  }
-  return v;
+	int v = FOG_UNVISITED;
+	for ( int x = 0; x < shape->getWidth(); x++ ) {
+		for ( int y = 0; y < shape->getDepth(); y++ ) {
+			int vv = getValue( xp + x, yp - y );
+			if ( vv == FOG_CLEAR ) return FOG_CLEAR;
+			else if ( vv == FOG_VISITED ) v = vv;
+		}
+	}
+	return v;
 }
 
-void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {  
-  int fx = sx / FOG_CHUNK_SIZE;
-  int fy = sy / FOG_CHUNK_SIZE;
-  int fw = w / FOG_CHUNK_SIZE;
-  int fh = h / FOG_CHUNK_SIZE;
-  float nn = FOG_CHUNK_SIZE * MUL;
-  int ox = sx % FOG_CHUNK_SIZE;
-  int oy = sy % FOG_CHUNK_SIZE;
+void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
+	int fx = sx / FOG_CHUNK_SIZE;
+	int fy = sy / FOG_CHUNK_SIZE;
+	int fw = w / FOG_CHUNK_SIZE;
+	int fh = h / FOG_CHUNK_SIZE;
+	float nn = FOG_CHUNK_SIZE * MUL;
+	int ox = sx % FOG_CHUNK_SIZE;
+	int oy = sy % FOG_CHUNK_SIZE;
 
-  GLfloat minLightX, minLightY, maxLightX, maxLightY;
-  minLightX = minLightY = 2000;
-  maxLightX = maxLightY = 0;
-  bool e[1000];
-  int f[1000];
-  GLfloat p[1000][4];
-  int pCount = 0;
-  for( int x = 0; x < fw; x ++ ) {
-    for( int y = 0; y < fh; y ++ ) {
-      int v = fog[ fx + x ][ fy + y ];
-      if( v == FOG_VISITED ) continue;
+	GLfloat minLightX, minLightY, maxLightX, maxLightY;
+	minLightX = minLightY = 2000;
+	maxLightX = maxLightY = 0;
+	bool e[1000];
+	int f[1000];
+	GLfloat p[1000][4];
+	int pCount = 0;
+	for ( int x = 0; x < fw; x ++ ) {
+		for ( int y = 0; y < fh; y ++ ) {
+			int v = fog[ fx + x ][ fy + y ];
+			if ( v == FOG_VISITED ) continue;
 
-      float xp = static_cast<float>( x * FOG_CHUNK_SIZE - ox ) * MUL;
-      float yp = static_cast<float>( y * FOG_CHUNK_SIZE - oy ) * MUL;
-      int z = getHighestZ( ( fx + x ) * FOG_CHUNK_SIZE, ( fy + y ) * FOG_CHUNK_SIZE, FOG_CHUNK_SIZE, FOG_CHUNK_SIZE );
-      float zp = static_cast<float>( z ) * MUL;
+			float xp = static_cast<float>( x * FOG_CHUNK_SIZE - ox ) * MUL;
+			float yp = static_cast<float>( y * FOG_CHUNK_SIZE - oy ) * MUL;
+			int z = getHighestZ( ( fx + x ) * FOG_CHUNK_SIZE, ( fy + y ) * FOG_CHUNK_SIZE, FOG_CHUNK_SIZE, FOG_CHUNK_SIZE );
+			float zp = static_cast<float>( z ) * MUL;
 
-      // FIXME: we should check 2d inclusion in screen rect instead
-      if( !frustum->CubeInFrustum( xp, yp, 0.0f, nn ) )
-        continue;
+			// FIXME: we should check 2d inclusion in screen rect instead
+			if ( !frustum->CubeInFrustum( xp, yp, 0.0f, nn ) )
+				continue;
 
-      // get all screen points of the bounding box; draw bounding rectangle on screen
-      float obj[20][3] = {
-        { xp, yp, zp },
-        { xp, yp+nn, zp },
-        { xp+nn, yp+nn, zp },
-        { xp+nn, yp, zp },
+			// get all screen points of the bounding box; draw bounding rectangle on screen
+			float obj[20][3] = {
+				{ xp, yp, zp },
+				{ xp, yp + nn, zp },
+				{ xp + nn, yp + nn, zp },
+				{ xp + nn, yp, zp },
 
-        { xp, yp, zp },
-        { xp, yp, 0 },
-        { xp+nn, yp, 0 },
-        { xp+nn, yp, zp },
+				{ xp, yp, zp },
+				{ xp, yp, 0 },
+				{ xp + nn, yp, 0 },
+				{ xp + nn, yp, zp },
 
-        { xp, yp+nn, zp },
-        { xp, yp+nn, 0 },
-        { xp+nn, yp+nn, 0 },
-        { xp+nn, yp+nn, zp },
+				{ xp, yp + nn, zp },
+				{ xp, yp + nn, 0 },
+				{ xp + nn, yp + nn, 0 },
+				{ xp + nn, yp + nn, zp },
 
-        { xp, yp, zp },
-        { xp, yp, 0 },
-        { xp, yp+nn, 0 },
-        { xp, yp+nn, zp },
+				{ xp, yp, zp },
+				{ xp, yp, 0 },
+				{ xp, yp + nn, 0 },
+				{ xp, yp + nn, zp },
 
-        { xp+nn, yp, zp },
-        { xp+nn, yp, 0 },
-        { xp+nn, yp+nn, 0 },
-        { xp+nn, yp+nn, zp }
-      };
-      GLfloat maxScX, maxScY;
-      GLfloat minScX, minScY;
+				{ xp + nn, yp, zp },
+				{ xp + nn, yp, 0 },
+				{ xp + nn, yp + nn, 0 },
+				{ xp + nn, yp + nn, zp }
+			};
+			GLfloat maxScX, maxScY;
+			GLfloat minScX, minScY;
 
-      maxScX = maxScY = 0;
-      minScX = minScY = 2000;
-      for( int i = 0; i < 20; i++ ) {
-        GLdouble scx, scy;
-        getScreenXY( (GLdouble)obj[i][0], (GLdouble)obj[i][1], (GLdouble)obj[i][2], &scx, &scy );
+			maxScX = maxScY = 0;
+			minScX = minScY = 2000;
+			for ( int i = 0; i < 20; i++ ) {
+				GLdouble scx, scy;
+				getScreenXY( ( GLdouble )obj[i][0], ( GLdouble )obj[i][1], ( GLdouble )obj[i][2], &scx, &scy );
 
-        // only show light area for current player
-        if( v == FOG_CLEAR &&
-            players[x + fx + ((y + fy) * MAP_WIDTH)].find( map->getAdapter()->getPlayer() ) != players[x + fx + ((y + fy) * MAP_WIDTH)].end() ) {
-          if( scx < minLightX ) minLightX = (GLfloat)scx;
-          if( scx > maxLightX ) maxLightX = (GLfloat)scx;
-          if( scy < minLightY ) minLightY = (GLfloat)scy;
-          if( scy > maxLightY ) maxLightY = (GLfloat)scy;
-        } else {
-          if( scx < minScX ) minScX = (GLfloat)scx;
-          if( scx > maxScX ) maxScX = (GLfloat)scx;
-          if( scy < minScY ) minScY = (GLfloat)scy;
-          if( scy > maxScY ) maxScY = (GLfloat)scy;
-        }
-      }
+				// only show light area for current player
+				if ( v == FOG_CLEAR &&
+				        players[x + fx + ( ( y + fy ) * MAP_WIDTH )].find( map->getAdapter()->getPlayer() ) != players[x + fx + ( ( y + fy ) * MAP_WIDTH )].end() ) {
+					if ( scx < minLightX ) minLightX = ( GLfloat )scx;
+					if ( scx > maxLightX ) maxLightX = ( GLfloat )scx;
+					if ( scy < minLightY ) minLightY = ( GLfloat )scy;
+					if ( scy > maxLightY ) maxLightY = ( GLfloat )scy;
+				} else {
+					if ( scx < minScX ) minScX = ( GLfloat )scx;
+					if ( scx > maxScX ) maxScX = ( GLfloat )scx;
+					if ( scy < minScY ) minScY = ( GLfloat )scy;
+					if ( scy > maxScY ) maxScY = ( GLfloat )scy;
+				}
+			}
 
-      if( v == FOG_CLEAR )
-        continue;
+			if ( v == FOG_CLEAR )
+				continue;
 
-      f[pCount] = v;
-      p[pCount][0] = minScX;
-      p[pCount][1] = minScY;
-      p[pCount][2] = maxScX - minScX;
-      p[pCount][3] = maxScY - minScY;
+			f[pCount] = v;
+			p[pCount][0] = minScX;
+			p[pCount][1] = minScY;
+			p[pCount][2] = maxScX - minScX;
+			p[pCount][3] = maxScY - minScY;
 
-      e[pCount] = false;
-      if( v != fog[ fx + x ][ fy + y - 1 ] || v != fog[ fx + x - 1 ][ fy + y ] ||
-          v != fog[ fx + x + 1 ][ fy + y ] || v != fog[ fx + x ][ fy + y + 1 ] ) {
-        e[pCount] = true;
-      }
+			e[pCount] = false;
+			if ( v != fog[ fx + x ][ fy + y - 1 ] || v != fog[ fx + x - 1 ][ fy + y ] ||
+			        v != fog[ fx + x + 1 ][ fy + y ] || v != fog[ fx + x ][ fy + y + 1 ] ) {
+				e[pCount] = true;
+			}
 
-      pCount++;
-      if( pCount >= 1000 ) break;
-    }
-  }
+			pCount++;
+			if ( pCount >= 1000 ) break;
+		}
+	}
 
 
 
-  // ***************************
-  // DRAW IT!
+	// ***************************
+	// DRAW IT!
 
-  glDisable( GL_TEXTURE_2D );
-  glDisable( GL_CULL_FACE );    
-  glDisable(GL_DEPTH_TEST);
-  
-  //glBindTexture( GL_TEXTURE_2D, texture );
-  
-  glEnable( GL_BLEND );
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, EA / 255.0f );
-  //glBlendFunc(GL_DST_COLOR, GL_ZERO);
-  //glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, 0.5f);
-  
+	glDisable( GL_TEXTURE_2D );
+	glDisable( GL_CULL_FACE );
+	glDisable( GL_DEPTH_TEST );
 
-  glPushMatrix();
-  glLoadIdentity();
+	//glBindTexture( GL_TEXTURE_2D, texture );
 
-  // draw a gray rect.
-  if( map->getAdapter()->
-      intersects( 0, 0, 
-                  map->getAdapter()->getScreenWidth(), 
-                  map->getAdapter()->getScreenHeight(), 
-                  static_cast<int>(minLightX), static_cast<int>(minLightY),
-                  static_cast<int>( maxLightX - minLightX ), 
-                  static_cast<int>( maxLightY - minLightY ) ) ) {
-    
-    
-    glBegin( GL_QUADS );
-    
-    glVertex2f( 0, 0 );
-    glVertex2f( 0, minLightY );
-    glVertex2f( map->getAdapter()->getScreenWidth(), minLightY );
-    glVertex2f( map->getAdapter()->getScreenWidth(), 0 );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, EA / 255.0f );
+	//glBlendFunc(GL_DST_COLOR, GL_ZERO);
+	//glColor4f( ER / 255.0f, EG / 255.0f, EB / 255.0f, 0.5f);
 
-    glVertex2f( 0, maxLightY );
-    glVertex2f( 0, map->getAdapter()->getScreenHeight() );
-    glVertex2f( map->getAdapter()->getScreenWidth(), map->getAdapter()->getScreenHeight() );
-    glVertex2f( map->getAdapter()->getScreenWidth(), maxLightY );
 
-    glVertex2f( 0, minLightY );
-    glVertex2f( 0, maxLightY );
-    glVertex2f( minLightX, maxLightY );
-    glVertex2f( minLightX, minLightY );
+	glPushMatrix();
+	glLoadIdentity();
 
-    glVertex2f( maxLightX, minLightY );
-    glVertex2f( maxLightX, maxLightY );
-    glVertex2f( map->getAdapter()->getScreenWidth(), maxLightY );
-    glVertex2f( map->getAdapter()->getScreenWidth(), minLightY );
+	// draw a gray rect.
+	if ( map->getAdapter()->
+	        intersects( 0, 0,
+	                    map->getAdapter()->getScreenWidth(),
+	                    map->getAdapter()->getScreenHeight(),
+	                    static_cast<int>( minLightX ), static_cast<int>( minLightY ),
+	                    static_cast<int>( maxLightX - minLightX ),
+	                    static_cast<int>( maxLightY - minLightY ) ) ) {
 
-    glEnd();
-  
-    
-    // draw the light circle
-    glEnable( GL_TEXTURE_2D );
-    glLoadIdentity();  
-    glColor4f( 1, 1, 1, 1);
-    
-    glBindTexture( GL_TEXTURE_2D, overlay_tex );
-    glBegin( GL_TRIANGLE_STRIP );
 
-    glTexCoord2f( 0.0f, 0.0f );
-    glVertex2f( minLightX, minLightY );
-    glTexCoord2f( 1.0f, 0.0f );
-    glVertex2f( maxLightX, minLightY );
-    glTexCoord2f( 0.0f, 1.0f );
-    glVertex2f( minLightX, maxLightY );
-    glTexCoord2f( 1.0f, 1.0f );
-    glVertex2f( maxLightX, maxLightY );
-    glEnd();
-    glDisable( GL_TEXTURE_2D );
-  } else {
-    glBegin( GL_TRIANGLE_STRIP );
-    glVertex2f( 0, 0 );
-    glVertex2f( map->getAdapter()->getScreenWidth(), 0 );
-    glVertex2f( 0, map->getAdapter()->getScreenHeight() );
-    glVertex2f( map->getAdapter()->getScreenWidth(), 
-                map->getAdapter()->getScreenHeight() );
-    glEnd();
-  }
+		glBegin( GL_QUADS );
 
-  // draw the dark (unvisited) fog
-  glLoadIdentity();
-  glDisable( GL_BLEND );
-  //glColor4f( 0.08f, 0.03f, 0.07f, 0.5f);
-  glColor3f( DARK_R, DARK_G, DARK_B );
-  for( int i = 0; i < pCount; i++ ) {
-    GLfloat x = p[i][0];
-    GLfloat y = p[i][1];
-    GLfloat w = p[i][2];
-    GLfloat h = p[i][3];
+		glVertex2f( 0, 0 );
+		glVertex2f( 0, minLightY );
+		glVertex2f( map->getAdapter()->getScreenWidth(), minLightY );
+		glVertex2f( map->getAdapter()->getScreenWidth(), 0 );
 
-    if( e[i] ) {
+		glVertex2f( 0, maxLightY );
+		glVertex2f( 0, map->getAdapter()->getScreenHeight() );
+		glVertex2f( map->getAdapter()->getScreenWidth(), map->getAdapter()->getScreenHeight() );
+		glVertex2f( map->getAdapter()->getScreenWidth(), maxLightY );
 
-      glEnable( GL_TEXTURE_2D );
-      glEnable( GL_BLEND );
-      glBlendFunc(GL_DST_COLOR, GL_ZERO);
-      glColor4f( 1, 1, 1, 0.5f );
-      glBindTexture( GL_TEXTURE_2D, shade_tex );
-      glBegin( GL_TRIANGLE_STRIP );
-      glTexCoord2f( 0, 0 );
-      glVertex2f( x - ( w / 2), y - ( h / 2 ) );
-      //glVertex2f( x, y );
-      glTexCoord2f( 1, 0 );
-      glVertex2f( x + w + ( w / 2), y - ( h / 2 ) );
-      //glVertex2f( x + w, y );
-      glTexCoord2f( 0, 1 );
-      glVertex2f( x - ( w / 2), y + h + ( h / 2 ) );
-      //glVertex2f( x, y + h );
-      glTexCoord2f( 1, 1 );
-      glVertex2f( x + w + ( w / 2), y + h + ( h / 2 ) );
-      //glVertex2f( x + w, y + h );
-      glEnd();
-      glDisable( GL_BLEND );
-      glDisable( GL_TEXTURE_2D );
-      glColor3f( DARK_R, DARK_G, DARK_B );
-    } else {
-      glBegin( GL_TRIANGLE_STRIP );
-      glVertex2f( x, y );
-      glVertex2f( x + w, y );
-      glVertex2f( x, y + h );
-      glVertex2f( x + w, y + h );
-      glEnd();
-    }
-  }
-  glPopMatrix();
+		glVertex2f( 0, minLightY );
+		glVertex2f( 0, maxLightY );
+		glVertex2f( minLightX, maxLightY );
+		glVertex2f( minLightX, minLightY );
 
-#ifdef DEBUG_FOG 
-  glLoadIdentity();               
-  glDisable( GL_BLEND );
-  glColor3f( 1, 1, 1 );
-  for( int i = 0; i < pCount; i++ ) {
-    glBegin( GL_LINE_LOOP );
-    glVertex2f( p[i][0], p[i][1] );
-    glVertex2f( p[i][0], p[i][1] + p[i][3] );
-    glVertex2f( p[i][0] + p[i][2], p[i][1] + p[i][3] );
-    glVertex2f( p[i][0] + p[i][2], p[i][1] );
-    glEnd();
-  }
-  glEnable( GL_BLEND );
-#endif              
+		glVertex2f( maxLightX, minLightY );
+		glVertex2f( maxLightX, maxLightY );
+		glVertex2f( map->getAdapter()->getScreenWidth(), maxLightY );
+		glVertex2f( map->getAdapter()->getScreenWidth(), minLightY );
 
-  glEnable( GL_BLEND );
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_DEPTH_TEST);
+		glEnd();
+
+
+		// draw the light circle
+		glEnable( GL_TEXTURE_2D );
+		glLoadIdentity();
+		glColor4f( 1, 1, 1, 1 );
+
+		glBindTexture( GL_TEXTURE_2D, overlay_tex );
+		glBegin( GL_TRIANGLE_STRIP );
+
+		glTexCoord2f( 0.0f, 0.0f );
+		glVertex2f( minLightX, minLightY );
+		glTexCoord2f( 1.0f, 0.0f );
+		glVertex2f( maxLightX, minLightY );
+		glTexCoord2f( 0.0f, 1.0f );
+		glVertex2f( minLightX, maxLightY );
+		glTexCoord2f( 1.0f, 1.0f );
+		glVertex2f( maxLightX, maxLightY );
+		glEnd();
+		glDisable( GL_TEXTURE_2D );
+	} else {
+		glBegin( GL_TRIANGLE_STRIP );
+		glVertex2f( 0, 0 );
+		glVertex2f( map->getAdapter()->getScreenWidth(), 0 );
+		glVertex2f( 0, map->getAdapter()->getScreenHeight() );
+		glVertex2f( map->getAdapter()->getScreenWidth(),
+		            map->getAdapter()->getScreenHeight() );
+		glEnd();
+	}
+
+	// draw the dark (unvisited) fog
+	glLoadIdentity();
+	glDisable( GL_BLEND );
+	//glColor4f( 0.08f, 0.03f, 0.07f, 0.5f);
+	glColor3f( DARK_R, DARK_G, DARK_B );
+	for ( int i = 0; i < pCount; i++ ) {
+		GLfloat x = p[i][0];
+		GLfloat y = p[i][1];
+		GLfloat w = p[i][2];
+		GLfloat h = p[i][3];
+
+		if ( e[i] ) {
+
+			glEnable( GL_TEXTURE_2D );
+			glEnable( GL_BLEND );
+			glBlendFunc( GL_DST_COLOR, GL_ZERO );
+			glColor4f( 1, 1, 1, 0.5f );
+			glBindTexture( GL_TEXTURE_2D, shade_tex );
+			glBegin( GL_TRIANGLE_STRIP );
+			glTexCoord2f( 0, 0 );
+			glVertex2f( x - ( w / 2 ), y - ( h / 2 ) );
+			//glVertex2f( x, y );
+			glTexCoord2f( 1, 0 );
+			glVertex2f( x + w + ( w / 2 ), y - ( h / 2 ) );
+			//glVertex2f( x + w, y );
+			glTexCoord2f( 0, 1 );
+			glVertex2f( x - ( w / 2 ), y + h + ( h / 2 ) );
+			//glVertex2f( x, y + h );
+			glTexCoord2f( 1, 1 );
+			glVertex2f( x + w + ( w / 2 ), y + h + ( h / 2 ) );
+			//glVertex2f( x + w, y + h );
+			glEnd();
+			glDisable( GL_BLEND );
+			glDisable( GL_TEXTURE_2D );
+			glColor3f( DARK_R, DARK_G, DARK_B );
+		} else {
+			glBegin( GL_TRIANGLE_STRIP );
+			glVertex2f( x, y );
+			glVertex2f( x + w, y );
+			glVertex2f( x, y + h );
+			glVertex2f( x + w, y + h );
+			glEnd();
+		}
+	}
+	glPopMatrix();
+
+#ifdef DEBUG_FOG
+	glLoadIdentity();
+	glDisable( GL_BLEND );
+	glColor3f( 1, 1, 1 );
+	for ( int i = 0; i < pCount; i++ ) {
+		glBegin( GL_LINE_LOOP );
+		glVertex2f( p[i][0], p[i][1] );
+		glVertex2f( p[i][0], p[i][1] + p[i][3] );
+		glVertex2f( p[i][0] + p[i][2], p[i][1] + p[i][3] );
+		glVertex2f( p[i][0] + p[i][2], p[i][1] );
+		glEnd();
+	}
+	glEnable( GL_BLEND );
+#endif
+
+	glEnable( GL_BLEND );
+	glEnable( GL_TEXTURE_2D );
+	glEnable( GL_DEPTH_TEST );
 }
 
 // FIXME: highest static point can be stored in the fog[][] struct
 int Fog::getHighestZ( int sx, int sy, int w, int h ) {
-  int z = 0;
-  for( int x = sx; x < sx + w; x++ ) {
-    for( int y = sy; y < sy + h; y++ ) {
-      Location *pos = map->getLocation( x, y, 0 );
-      if( pos && pos->shape ) {
-        int zz = pos->z + pos->shape->getHeight();
-        if( zz > z ) z = zz;
-      }
-    }
-  }
-  return z;
+	int z = 0;
+	for ( int x = sx; x < sx + w; x++ ) {
+		for ( int y = sy; y < sy + h; y++ ) {
+			Location *pos = map->getLocation( x, y, 0 );
+			if ( pos && pos->shape ) {
+				int zz = pos->z + pos->shape->getHeight();
+				if ( zz > z ) z = zz;
+			}
+		}
+	}
+	return z;
 }
 
 void Fog::getScreenXY( GLdouble mapx, GLdouble mapy, GLdouble mapz,
                        GLdouble *screenx, GLdouble *screeny ) {
-  GLdouble screenz;
-  
-  double projection[16];
-  double modelview[16];
-  GLint viewport[4];
-  
-  glGetDoublev(GL_PROJECTION_MATRIX, projection);
-  glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-  glGetIntegerv(GL_VIEWPORT, viewport);
-  
-  int res = gluProject(mapx, mapy, mapz,
-                       modelview,
-                       projection,
-                       viewport,
-                       screenx, screeny, &screenz);
-  *screeny = ( map->getAdapter()->getScreenHeight() - *screeny );
-  if(!res) {
-    *screenx = *screeny = 2000;
-  }
+	GLdouble screenz;
+
+	double projection[16];
+	double modelview[16];
+	GLint viewport[4];
+
+	glGetDoublev( GL_PROJECTION_MATRIX, projection );
+	glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+	glGetIntegerv( GL_VIEWPORT, viewport );
+
+	int res = gluProject( mapx, mapy, mapz,
+	                      modelview,
+	                      projection,
+	                      viewport,
+	                      screenx, screeny, &screenz );
+	*screeny = ( map->getAdapter()->getScreenHeight() - *screeny );
+	if ( !res ) {
+		*screenx = *screeny = 2000;
+	}
 }
 
 void Fog::createOverlayTexture() {
 
-  float half = (static_cast<float>(OVERLAY_SIZE) - 0.5f) / 2.0f;
-  int maxP = 90;
-  int minP = 75;
+	float half = ( static_cast<float>( OVERLAY_SIZE ) - 0.5f ) / 2.0f;
+	int maxP = 90;
+	int minP = 75;
 
-  // create the dark texture
-  glGenTextures(1, (GLuint*)&overlay_tex);
-  for( unsigned int i = 0; i < OVERLAY_SIZE; i++) {
-    for( unsigned int j = 0; j < OVERLAY_SIZE; j++) {
-      
-      float id = static_cast<float>(i) - half;
-      float jd = static_cast<float>(j) - half;
+	// create the dark texture
+	glGenTextures( 1, ( GLuint* )&overlay_tex );
+	for ( unsigned int i = 0; i < OVERLAY_SIZE; i++ ) {
+		for ( unsigned int j = 0; j < OVERLAY_SIZE; j++ ) {
 
-      // the distance
-      float dist = sqrt( id * id + jd * jd );
+			float id = static_cast<float>( i ) - half;
+			float jd = static_cast<float>( j ) - half;
 
-      // the distance as a percent of the max distance
-      float percent = dist / ( sqrt( half * half ) / 100.0f );
+			// the distance
+			float dist = sqrt( id * id + jd * jd );
 
-      int r, g, b, a;
-      r = ER;
-      g = EG;
-      b = EB;
-      if( percent < minP ) {
-      	a = 0;
-      } else if( percent >= maxP ) {
-      	a = EA;
-      } else {
-      	a = static_cast<int>( static_cast<float>( percent - minP ) * 
-               ( static_cast<float>( EA ) / static_cast<float>( maxP - minP ) ) );
-      }
-      overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 0] = (unsigned char)r;
-      overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 1] = (unsigned char)g;
-      overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 2] = (unsigned char)b;
-      overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 3] = (unsigned char)a;
-    }
-  }
-  glBindTexture(GL_TEXTURE_2D, overlay_tex);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  glTexImage2D(GL_TEXTURE_2D, 0, (map->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4), OVERLAY_SIZE, OVERLAY_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, overlay_data);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, (map->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4), OVERLAY_SIZE, OVERLAY_SIZE, GL_RGBA, GL_UNSIGNED_BYTE, overlay_data);
+			// the distance as a percent of the max distance
+			float percent = dist / ( sqrt( half * half ) / 100.0f );
+
+			int r, g, b, a;
+			r = ER;
+			g = EG;
+			b = EB;
+			if ( percent < minP ) {
+				a = 0;
+			} else if ( percent >= maxP ) {
+				a = EA;
+			} else {
+				a = static_cast<int>( static_cast<float>( percent - minP ) *
+				                      ( static_cast<float>( EA ) / static_cast<float>( maxP - minP ) ) );
+			}
+			overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 0] = ( unsigned char )r;
+			overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 1] = ( unsigned char )g;
+			overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 2] = ( unsigned char )b;
+			overlay_data[i * OVERLAY_SIZE * 4 + j * 4 + 3] = ( unsigned char )a;
+		}
+	}
+	glBindTexture( GL_TEXTURE_2D, overlay_tex );
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	glTexImage2D( GL_TEXTURE_2D, 0, ( map->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), OVERLAY_SIZE, OVERLAY_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, overlay_data );
+	gluBuild2DMipmaps( GL_TEXTURE_2D, ( map->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), OVERLAY_SIZE, OVERLAY_SIZE, GL_RGBA, GL_UNSIGNED_BYTE, overlay_data );
 }
 
 void Fog::createShadeTexture() {
 
-  float half = (static_cast<float>(OVERLAY_SIZE) - 0.5f) / 2.0f;
-  int maxP = 90;
-  int minP = 70;
+	float half = ( static_cast<float>( OVERLAY_SIZE ) - 0.5f ) / 2.0f;
+	int maxP = 90;
+	int minP = 70;
 
-  // create the dark texture
-  glGenTextures(1, (GLuint*)&shade_tex);
-  for( unsigned int i = 0; i < OVERLAY_SIZE; i++) {
-    for( unsigned int j = 0; j < OVERLAY_SIZE; j++) {
+	// create the dark texture
+	glGenTextures( 1, ( GLuint* )&shade_tex );
+	for ( unsigned int i = 0; i < OVERLAY_SIZE; i++ ) {
+		for ( unsigned int j = 0; j < OVERLAY_SIZE; j++ ) {
 
-			float id = static_cast<float>(i) - half;
-			float jd = static_cast<float>(j) - half;
+			float id = static_cast<float>( i ) - half;
+			float jd = static_cast<float>( j ) - half;
 
 			// the distance
 			float dist = sqrt( id * id + jd * jd );
@@ -499,52 +500,52 @@ void Fog::createShadeTexture() {
 			float percent = dist / ( sqrt( half * half ) / 100.0f );
 
 			int r, g, b;
-			if( percent < minP ) {
+			if ( percent < minP ) {
 				r = SR;
 				g = SG;
 				b = SB;
-			} else if( percent >= maxP ) {
+			} else if ( percent >= maxP ) {
 				r = 0xff;
 				g = 0xff;
 				b = 0xff;
 			} else {
 				r = SR + static_cast<int>( static_cast<float>( percent - minP ) * ( static_cast<float>( 0xff - SR ) / static_cast<float>( maxP - minP ) ) );
-				if( r > 0xff )
+				if ( r > 0xff )
 					r = 0xff;
 				g = SG + static_cast<int>( static_cast<float>( percent - minP ) * ( static_cast<float>( 0xff - SG ) / static_cast<float>( maxP - minP ) ) );
-				if( g > 0xff )
+				if ( g > 0xff )
 					g = 0xff;
 				b = SB + static_cast<int>( static_cast<float>( percent - minP ) * ( static_cast<float>( 0xff - SB ) / static_cast<float>( maxP - minP ) ) );
-				if( b > 0xff )
+				if ( b > 0xff )
 					b = 0xff;
 			}
-			shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = (unsigned char)r;
-			shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = (unsigned char)g;
-			shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = (unsigned char)b;
+			shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 0] = ( unsigned char )r;
+			shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 1] = ( unsigned char )g;
+			shade_data[i * OVERLAY_SIZE * 3 + j * 3 + 2] = ( unsigned char )b;
 		}
-  }
-  glBindTexture(GL_TEXTURE_2D, shade_tex);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  glTexImage2D(GL_TEXTURE_2D, 0, (map->getPreferences()->getBpp() > 16 ? GL_RGB : GL_RGB5), OVERLAY_SIZE, OVERLAY_SIZE, 0, GL_RGB, GL_UNSIGNED_BYTE, shade_data);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, (map->getPreferences()->getBpp() > 16 ? GL_RGB : GL_RGB5), OVERLAY_SIZE, OVERLAY_SIZE, GL_RGB, GL_UNSIGNED_BYTE, shade_data);
+	}
+	glBindTexture( GL_TEXTURE_2D, shade_tex );
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	glTexImage2D( GL_TEXTURE_2D, 0, ( map->getPreferences()->getBpp() > 16 ? GL_RGB : GL_RGB5 ), OVERLAY_SIZE, OVERLAY_SIZE, 0, GL_RGB, GL_UNSIGNED_BYTE, shade_data );
+	gluBuild2DMipmaps( GL_TEXTURE_2D, ( map->getPreferences()->getBpp() > 16 ? GL_RGB : GL_RGB5 ), OVERLAY_SIZE, OVERLAY_SIZE, GL_RGB, GL_UNSIGNED_BYTE, shade_data );
 }
 
 void Fog::load( FogInfo *fogInfo ) {
-	for( int x = 0; x < MAP_WIDTH; x++ ) {
-		for( int y = 0; y < MAP_DEPTH; y++ ) {
+	for ( int x = 0; x < MAP_WIDTH; x++ ) {
+		for ( int y = 0; y < MAP_DEPTH; y++ ) {
 			fog[x][y] = fogInfo->fog[x][y];
 		}
 	}
 }
 
 void Fog::save( FogInfo *fogInfo ) {
-	for( int x = 0; x < MAP_WIDTH; x++ ) {
-		for( int y = 0; y < MAP_DEPTH; y++ ) {
+	for ( int x = 0; x < MAP_WIDTH; x++ ) {
+		for ( int y = 0; y < MAP_DEPTH; y++ ) {
 			fogInfo->fog[x][y] = fog[x][y];
 		}
 	}

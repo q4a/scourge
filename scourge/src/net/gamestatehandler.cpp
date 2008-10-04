@@ -1,3 +1,4 @@
+#include "../common/constants.h"
 #include "gamestatehandler.h"
 
 using namespace std;

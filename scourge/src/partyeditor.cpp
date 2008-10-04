@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "common/constants.h"
 #include "partyeditor.h"
 #include "render/renderlib.h"
 #include "rpg/rpglib.h"
@@ -51,54 +52,54 @@ using namespace std;
 
 /// Unused.
 struct Preset {
-  char name[80];
-  int deity;
-  int charClass;
-  int portrait;
-  int model;
+	char name[80];
+	int deity;
+	int charClass;
+	int portrait;
+	int model;
 };
 
 Preset presets[] = {
-  { "Lezidor",     4, 4, 7, 0 }, // rogue
-  { "Kaz-Mokh",    1, 0, 8, 1 }, // fighter
-  { "Arcoraxe",    2, 1, 6, 15 }, // mage
-  { "Deiligiliam", 0, 2, 10, 7 }, // healer
+	{ "Lezidor",     4, 4, 7, 0 }, // rogue
+	{ "Kaz-Mokh",    1, 0, 8, 1 }, // fighter
+	{ "Arcoraxe",    2, 1, 6, 15 }, // mage
+	{ "Deiligiliam", 0, 2, 10, 7 }, // healer
 };
 
-PartyEditor::PartyEditor(Scourge *scourge) {
-  this->scourge = scourge;
+PartyEditor::PartyEditor( Scourge *scourge ) {
+	this->scourge = scourge;
 	pcEditor = new PcEditor( scourge );
-  pcEditor->setCreature(); // use a temp. creature
+	pcEditor->setCreature(); // use a temp. creature
 }
 
 PartyEditor::~PartyEditor() {
 }
 
 void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
-  
-  //
-  // cancel and done are handled in mainmenu.cpp
-  //
 
-	if( pcEditor->getWindow()->isVisible() ) pcEditor->handleEvent( widget,event );
+	//
+	// cancel and done are handled in mainmenu.cpp
+	//
+
+	if ( pcEditor->getWindow()->isVisible() ) pcEditor->handleEvent( widget, event );
 }
 
 void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInventory ) {
-	for( int i = 0; i < STARTING_PARTY_SIZE; i++ )
+	for ( int i = 0; i < STARTING_PARTY_SIZE; i++ )
 		pc[i] = pcEditor->createPartyMember();
-	if( addRandomInventory ) addStartingInventory( pc, STARTING_PARTY_SIZE );
-	if( partySize ) *partySize = STARTING_PARTY_SIZE;
+	if ( addRandomInventory ) addStartingInventory( pc, STARTING_PARTY_SIZE );
+	if ( partySize ) *partySize = STARTING_PARTY_SIZE;
 }
 
 RenderedCreature *PartyEditor::createWanderingHero( int level ) {
 	int sex = Util::dice( 2 ) ? Constants::SEX_MALE : Constants::SEX_FEMALE;
 	Creature *pc = scourge->getSession()->
-		newCreature( Character::getRandomCharacter( level ),
-								 Rpg::createName(), 
-								 sex,
-								 Util::dice( scourge->getShapePalette()->getCharacterModelInfoCount( sex ) ) );
-	pc->setLevel( LEVEL ); 
-	pc->setExp(0);
+	               newCreature( Character::getRandomCharacter( level ),
+	                            Rpg::createName(),
+	                            sex,
+	                            Util::dice( scourge->getShapePalette()->getCharacterModelInfoCount( sex ) ) );
+	pc->setLevel( LEVEL );
+	pc->setExp( 0 );
 	pc->setHp();
 	pc->setMp();
 	pc->setHunger( Util::pickOne( 5, 9 ) );
@@ -106,13 +107,13 @@ RenderedCreature *PartyEditor::createWanderingHero( int level ) {
 
 	// deity
 	pc->setDeityIndex( MagicSchool::getRandomSchoolIndex() );
-	
+
 	// assign portraits
 	pc->setPortraitTextureIndex( Util::dice( scourge->getShapePalette()->getPortraitCount( sex ) ) );
-	
+
 	// compute starting skill levels
 	pcEditor->rollSkillsForCreature( pc );
-	
+
 	addStartingInventory( pc );
 
 	pc->setMotion( Constants::MOTION_LOITER );
@@ -121,115 +122,115 @@ RenderedCreature *PartyEditor::createWanderingHero( int level ) {
 }
 
 void PartyEditor::addStartingInventory( Creature **pc, int partySize ) {
-  for( int i = 0; i < partySize; i++ ) {
+	for ( int i = 0; i < partySize; i++ ) {
 		addStartingInventory( pc[i] );
-		if( LEVEL > 1 && i == 0 ) {
+		if ( LEVEL > 1 && i == 0 ) {
 			// add all special items
-			for( int t = 0; t < RpgItem::getSpecialCount(); t++ ) {
+			for ( int t = 0; t < RpgItem::getSpecialCount(); t++ ) {
 				pc[i]->addInventory( scourge->getSession()->newItem( RpgItem::getSpecial( t ) ), true );
 			}
 			// add some spell-containing items
-			for( int t = 0; t < 5; t++ ) {
-				pc[i]->addInventory( 
-					scourge->getSession()->newItem( 
-						RpgItem::getItemByName( "Dwarven steel ring" ),
-						1, 
-						MagicSchool::getRandomSpell( 1 ) ), true );
+			for ( int t = 0; t < 5; t++ ) {
+				pc[i]->addInventory(
+				  scourge->getSession()->newItem(
+				    RpgItem::getItemByName( "Dwarven steel ring" ),
+				    1,
+				    MagicSchool::getRandomSpell( 1 ) ), true );
 			}
 		}
-  }
+	}
 }
 
 void PartyEditor::addStartingInventory( Creature *pc ) {
 	// add a weapon anyone can wield
 	int n = Util::dice( 5 );
-	switch(n) {
-	case 0: pc->addInventory(scourge->getSession()->newItem( RpgItem::getItemByName("Smallbow"), LEVEL, NULL, true ), true); break;
-	case 1: pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Short sword"), LEVEL, NULL, true ), true); break;
-	case 2: pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Dagger"), LEVEL, NULL, true ), true ); break;
-	case 3: pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Wooden club"), LEVEL, NULL, true ), true ); break;
-	case 4: pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Quarter Staff"), LEVEL, NULL, true ), true ); break;
+	switch ( n ) {
+	case 0: pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Smallbow" ), LEVEL, NULL, true ), true ); break;
+	case 1: pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Short sword" ), LEVEL, NULL, true ), true ); break;
+	case 2: pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Dagger" ), LEVEL, NULL, true ), true ); break;
+	case 3: pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Wooden club" ), LEVEL, NULL, true ), true ); break;
+	case 4: pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Quarter Staff" ), LEVEL, NULL, true ), true ); break;
 	}
 	int invIndex = 0;
 	pc->equipInventory( invIndex++ );
 
 	// add some armor
-	if( 0 == Util::dice( 4 ) ) {
-		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Horned helmet"), LEVEL, NULL, true ), true);
+	if ( 0 == Util::dice( 4 ) ) {
+		pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Horned helmet" ), LEVEL, NULL, true ), true );
 		pc->equipInventory( invIndex++ );
 	}
-	if( 0 == Util::dice( 3 ) ) {
-		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Buckler"), LEVEL, NULL, true ), true);
+	if ( 0 == Util::dice( 3 ) ) {
+		pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Buckler" ), LEVEL, NULL, true ), true );
 		pc->equipInventory( invIndex++ );
 	}
 
 	// some potions
-	if( 0 == Util::dice( 4 ) )
-		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Health potion"), LEVEL ), true);  
-	if( 0 == Util::dice( 4 ) )
-		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Magic potion"), LEVEL ), true);  
-	if( 0 == Util::dice( 4 ) )
-		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Liquid armor"), LEVEL ), true);  
+	if ( 0 == Util::dice( 4 ) )
+		pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Health potion" ), LEVEL ), true );
+	if ( 0 == Util::dice( 4 ) )
+		pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Magic potion" ), LEVEL ), true );
+	if ( 0 == Util::dice( 4 ) )
+		pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Liquid armor" ), LEVEL ), true );
 
 	// some food
-	for( int t = 0; t < Util::dice( 6 ); t++ ) {
-		if( 0 == Util::dice( 4 ) )
-			pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Apple")), true);
-		if( 0 == Util::dice( 4 ) )
-			pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Bread")), true);
-		if( 0 == Util::dice( 4 ) )
-		pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mushroom")), true);
-		if( 0 == Util::dice( 4 ) )
-			pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Big egg")), true);
-		if( 0 == Util::dice( 4 ) )
-			pc->addInventory(scourge->getSession()->newItem(RpgItem::getItemByName("Mutton meat")), true);
+	for ( int t = 0; t < Util::dice( 6 ); t++ ) {
+		if ( 0 == Util::dice( 4 ) )
+			pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Apple" ) ), true );
+		if ( 0 == Util::dice( 4 ) )
+			pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Bread" ) ), true );
+		if ( 0 == Util::dice( 4 ) )
+			pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Mushroom" ) ), true );
+		if ( 0 == Util::dice( 4 ) )
+			pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Big egg" ) ), true );
+		if ( 0 == Util::dice( 4 ) )
+			pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Mutton meat" ) ), true );
 	}
 
 	// some spells
-	if(pc->getMaxMp() > 0) {
+	if ( pc->getMaxMp() > 0 ) {
 		// useful spells
-		pc->addSpell(Spell::getSpellByName("Flame of Azun"));
-		pc->addSpell(Spell::getSpellByName("Ole Taffy's purty colors"));
+		pc->addSpell( Spell::getSpellByName( "Flame of Azun" ) );
+		pc->addSpell( Spell::getSpellByName( "Ole Taffy's purty colors" ) );
 		// attack spell
-		if( 0 == Util::dice( 2 ) )
-			pc->addSpell(Spell::getSpellByName("Silent knives"));
+		if ( 0 == Util::dice( 2 ) )
+			pc->addSpell( Spell::getSpellByName( "Silent knives" ) );
 		else
-			pc->addSpell(Spell::getSpellByName("Stinging light"));
+			pc->addSpell( Spell::getSpellByName( "Stinging light" ) );
 		// defensive spell
-		if( 0 == Util::dice( 2 ) )
-			pc->addSpell(Spell::getSpellByName("Lesser healing touch"));
+		if ( 0 == Util::dice( 2 ) )
+			pc->addSpell( Spell::getSpellByName( "Lesser healing touch" ) );
 		else
-			pc->addSpell(Spell::getSpellByName("Body of stone"));
+			pc->addSpell( Spell::getSpellByName( "Body of stone" ) );
 
 
 		// testing
-		if( LEVEL > 1 ) {
-			pc->addSpell(Spell::getSpellByName("Ring of Harm"));
-			pc->addSpell(Spell::getSpellByName("Malice Storm"));
-			pc->addSpell(Spell::getSpellByName("Unholy Decimator"));
-			pc->addSpell(Spell::getSpellByName("Remove curse"));
-			pc->addSpell(Spell::getSpellByName("Teleportation"));
-			pc->addSpell(Spell::getSpellByName("Recall to life"));
-			pc->addSpell(Spell::getSpellByName("Blast of Fury"));        
-			pc->addSpell(Spell::getSpellByName("Dori's Tumblers"));        
-			pc->addSpell(Spell::getSpellByName("Gust of wind"));        
+		if ( LEVEL > 1 ) {
+			pc->addSpell( Spell::getSpellByName( "Ring of Harm" ) );
+			pc->addSpell( Spell::getSpellByName( "Malice Storm" ) );
+			pc->addSpell( Spell::getSpellByName( "Unholy Decimator" ) );
+			pc->addSpell( Spell::getSpellByName( "Remove curse" ) );
+			pc->addSpell( Spell::getSpellByName( "Teleportation" ) );
+			pc->addSpell( Spell::getSpellByName( "Recall to life" ) );
+			pc->addSpell( Spell::getSpellByName( "Blast of Fury" ) );
+			pc->addSpell( Spell::getSpellByName( "Dori's Tumblers" ) );
+			pc->addSpell( Spell::getSpellByName( "Gust of wind" ) );
 			pc->setMp( 5000 );
 			pc->setMoney( 10000 );
 		}
 	}
 }
 
-bool PartyEditor::isVisible() { 
-  return pcEditor->getWindow()->isVisible(); 
+bool PartyEditor::isVisible() {
+	return pcEditor->getWindow()->isVisible();
 }
 
-void PartyEditor::setVisible( bool b ) { 
-  //mainWin->setVisible( b ); 
+void PartyEditor::setVisible( bool b ) {
+	//mainWin->setVisible( b );
 	pcEditor->getWindow()->setVisible( b );
 }
 
 Creature *PartyEditor::getHighestSkillPC( int skill ) {
-  return( maxSkills.find( skill ) == maxSkills.end() ? NULL : maxSkills[ skill ] );
+	return( maxSkills.find( skill ) == maxSkills.end() ? NULL : maxSkills[ skill ] );
 }
 
 Button *PartyEditor::getStartGameButton() {

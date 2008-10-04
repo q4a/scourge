@@ -17,6 +17,7 @@
 
 #ifndef RENDER_LIB_H
 #define RENDER_LIB_H
+#pragma once
 
 /**
  * A way for external classes to this dir to get everything in one include file.

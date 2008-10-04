@@ -17,6 +17,7 @@
 
 #ifndef VIRTUALSHAPE_H_
 #define VIRTUALSHAPE_H_
+#pragma once
 
 #include "glshape.h"
 
@@ -30,25 +31,39 @@ private:
 	int offsetX, offsetY, offsetZ;
 	bool draws;
 	GLShape *refShape;
-  
+
 public:
-  VirtualShape( char *name,
-                int width, int height, int depth,
-                int offsetX, int offsetY, int offsetZ,
-                bool draws, GLShape *refShape,
-                int shapePalIndex ); 
-	
-  ~VirtualShape();
-  
-  void draw();
-  void outline( float r, float g, float b );
-  virtual inline bool isVirtual() { return true; }
-  inline GLShape *getRef() { return refShape; }
-  virtual inline bool isShownInMapEditor() { return false; }
-  virtual inline int getOffsetX() { return this->offsetX; }
-  virtual inline int getOffsetY() { return this->offsetY; }
-  virtual inline int getOffsetZ() { return this->offsetZ; }
-  virtual inline bool isDrawn() { return this->draws; }
+	VirtualShape( char *name,
+	              int width, int height, int depth,
+	              int offsetX, int offsetY, int offsetZ,
+	              bool draws, GLShape *refShape,
+	              int shapePalIndex );
+
+	~VirtualShape();
+
+	void draw();
+	void outline( float r, float g, float b );
+	virtual inline bool isVirtual() {
+		return true;
+	}
+	inline GLShape *getRef() {
+		return refShape;
+	}
+	virtual inline bool isShownInMapEditor() {
+		return false;
+	}
+	virtual inline int getOffsetX() {
+		return this->offsetX;
+	}
+	virtual inline int getOffsetY() {
+		return this->offsetY;
+	}
+	virtual inline int getOffsetZ() {
+		return this->offsetZ;
+	}
+	virtual inline bool isDrawn() {
+		return this->draws;
+	}
 };
 
 #endif /*VIRTUALSHAPE_H_*/

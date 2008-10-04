@@ -17,6 +17,7 @@
 
 #ifndef GLTORCH_H
 #define GLTORCH_H
+#pragma once
 
 #include "glshape.h"
 
@@ -29,34 +30,42 @@ class GLShape;
 /// A torch 3D shape.
 class GLTorch : public GLShape  {
 private:
-  GLuint flameTex;
+	GLuint flameTex;
 
-  int PARTICLE_COUNT;
-  ParticleStruct *particle[200];
-  
-  GLuint torchback;
-  int torch_dir;
-  
+	int PARTICLE_COUNT;
+	ParticleStruct *particle[200];
+
+	GLuint torchback;
+	int torch_dir;
+
 public:
-  GLTorch(GLuint texture[], GLuint flameTex,
-		  int width, int depth, int height,
-		  char *name, int descriptionGroup,
-		  Uint32 color, Uint8 shapePalIndex=0, 
-		  GLuint torchback=0, int torch_dir=Constants::NORTH);
-	
-  ~GLTorch();
-  
-  void draw();
+	GLTorch( GLuint texture[], GLuint flameTex,
+	         int width, int depth, int height,
+	         char *name, int descriptionGroup,
+	         Uint32 color, Uint8 shapePalIndex = 0,
+	         GLuint torchback = 0, int torch_dir = Constants::NORTH );
 
-  inline bool drawFirst() { return false; }
-  // if true, the next two functions are called
-  inline bool drawLater() { return true; }
-  inline void setupBlending() { glBlendFunc(GL_SRC_ALPHA, GL_ONE); }
+	~GLTorch();
 
-	virtual inline bool isShownInMapEditor() { return false; }
-          
+	void draw();
+
+	inline bool drawFirst() {
+		return false;
+	}
+	// if true, the next two functions are called
+	inline bool drawLater() {
+		return true;
+	}
+	inline void setupBlending() {
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	}
+
+	virtual inline bool isShownInMapEditor() {
+		return false;
+	}
+
 protected:
-  void initParticles();
+	void initParticles();
 };
 
 #endif

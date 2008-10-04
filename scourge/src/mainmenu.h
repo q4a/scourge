@@ -17,8 +17,8 @@
 
 #ifndef MAINMENU_H
 #define MAINMENU_H
+#pragma once
 
-#include "common/constants.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
 #include <vector>
@@ -41,77 +41,77 @@ class TextEffect;
 
 /// An individual particle of the main menu text effect.
 struct MenuItemParticle {
-  int life;
-  float x, y;
-  int r, g, b;
-  float dir, step;
-  float zoom;
+	int life;
+	float x, y;
+	int r, g, b;
+	float dir, step;
+	float zoom;
 };
 
 /// An item of the main menu.
 struct MenuItem {
-  char text[80];
-  GLuint texture[1];
-  unsigned char *textureInMemory;
-  int x;
-  int y;
-  bool active;
-  int value;
-  MenuItemParticle particle[100];
+	char text[80];
+	GLuint texture[1];
+	unsigned char *textureInMemory;
+	int x;
+	int y;
+	bool active;
+	int value;
+	MenuItemParticle particle[100];
 };
 
 /// This object displays the main menu and can return the selected item.
-class MainMenu : public SDLEventHandler,SDLScreenView {
+class MainMenu : public SDLEventHandler, SDLScreenView {
 private:
-  Scourge *scourge;
-  int value;
-  float logoRot, logoRotDelta;
-  GLint logoTicks;
-  GLint logoTicksDelta;
-  int top, openingTop;
+	Scourge *scourge;
+	int value;
+	float logoRot, logoRotDelta;
+	GLint logoTicks;
+	GLint logoTicksDelta;
+	int top, openingTop;
 	bool musicStarted;
-  Uint32 lastTick, lastTickMenu;
-  int candleFlameX, candleFlameY;
-  PartyEditor *partyEditor;
-  bool initTextures;
-  Window *aboutDialog;
-  ScrollingLabel *aboutText;
-  Button *aboutOK;
-  int lastMenuTick; // this is when the program last drew the main menu (to make the sleep a bit more sensible) 
+	Uint32 lastTick, lastTickMenu;
+	int candleFlameX, candleFlameY;
+	PartyEditor *partyEditor;
+	bool initTextures;
+	Window *aboutDialog;
+	ScrollingLabel *aboutText;
+	Button *aboutOK;
+	int lastMenuTick; // this is when the program last drew the main menu (to make the sleep a bit more sensible)
 
 #define MAX_LOGOS 100
-  struct LogoSprite {
-	float x, y, angle, rot;
-	int quadrant, steps;
-  };
-  int logoSpriteCount;
-  LogoSprite logoSprite[MAX_LOGOS];
+	struct LogoSprite {
+		float x, y, angle, rot;
+		int quadrant, steps;
+	};
+	int logoSpriteCount;
+	LogoSprite logoSprite[MAX_LOGOS];
 
 
-  struct Cloud {
-    int x, y, w, h, speed;
-  };
-  Cloud cloud[100];
-  int cloudCount;
-  int starCount;
-  struct Star {
-    int x, y;
-  };
-  Star star[500];
+	struct Cloud {
+		int x, y, w, h, speed;
+	};
+	Cloud cloud[100];
+	int cloudCount;
+	int starCount;
+	struct Star {
+		int x, y;
+	};
+	Star star[500];
 
 	SavegameDialog *savegameDialog;
 
-  Window *newGameConfirm;
-  Button *newGameConfirmOK, *newGameConfirmCancel;
+	Window *newGameConfirm;
+	Button *newGameConfirmOK, *newGameConfirmCancel;
 
-  static const char *menuText[];
-  static const int values[];
-  std::vector< MenuItem* > menuItemList;
+	static const char *menuText[];
+	static const int values[];
+	std::vector< MenuItem* > menuItemList;
 
 	Progress *progress;
 
 	std::vector<TextEffect*> textEffects;
-  
+
 public:
 #define NEW_GAME 1
 #define CONTINUE_GAME 2
@@ -123,31 +123,31 @@ public:
 #define NEW_GAME_START 8
 #define EDITOR 9
 
-  MainMenu(Scourge *scourge);
-  ~MainMenu();
+	MainMenu( Scourge *scourge );
+	~MainMenu();
 
-  void drawView();
-  void drawAfter();
-  bool handleEvent(SDL_Event *event);
-  bool handleEvent(Widget *widget, SDL_Event *event);
-  int getValue();
-  void showNewGameConfirmationDialog();
-	void showSavegameDialog( bool inSaveMode=true );
+	void drawView();
+	void drawAfter();
+	bool handleEvent( SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
+	int getValue();
+	void showNewGameConfirmationDialog();
+	void showSavegameDialog( bool inSaveMode = true );
 
-  void show();
-  void hide();
-  void showPartyEditor();
-  void createParty( Creature **pc, int *partySize );
+	void show();
+	void hide();
+	void showPartyEditor();
+	void createParty( Creature **pc, int *partySize );
 	RenderedCreature *createWanderingHero( int level );
 
- protected:
-  void drawClouds(bool moveClouds, bool flipped);
-  void drawWater();
-  void drawLogo();
-  void drawMenu();
-  void drawStars();
-  void drawScourge();
-  void drawBackdrop();
+protected:
+	void drawClouds( bool moveClouds, bool flipped );
+	void drawWater();
+	void drawLogo();
+	void drawMenu();
+	void drawStars();
+	void drawScourge();
+	void drawBackdrop();
 };
 
 #endif

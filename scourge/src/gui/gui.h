@@ -17,8 +17,8 @@
 
 #ifndef GUI_GUI_H
 #define GUI_GUI_H
+#pragma once
 
-#include "../common/constants.h"
 #include "../configlang.h"
 
 class Widget;
@@ -31,35 +31,35 @@ class Widget;
  */
 class ScourgeGui {
 public:
-  ScourgeGui() {
-  }
+	ScourgeGui() {
+	}
 
-  virtual ~ScourgeGui() {
-  }
+	virtual ~ScourgeGui() {
+	}
 
-  virtual void processEventsAndRepaint() = 0;
-  virtual void playSound( const std::string& file, int panning ) = 0;
-  virtual void texPrint(GLfloat x, GLfloat y, const char *fmt, ...) = 0;
-  virtual int textWidth( const char *fmt, ... ) = 0;
-  virtual int getScreenWidth() = 0;
-  virtual int getScreenHeight() = 0;
-  virtual void setCursorMode( int n, bool useTimer=false ) = 0;
-  virtual int getCursorMode() = 0;
-  virtual GLuint getHighlightTexture() = 0;
+	virtual void processEventsAndRepaint() = 0;
+	virtual void playSound( const std::string& file, int panning ) = 0;
+	virtual void texPrint( GLfloat x, GLfloat y, const char *fmt, ... ) = 0;
+	virtual int textWidth( const char *fmt, ... ) = 0;
+	virtual int getScreenWidth() = 0;
+	virtual int getScreenHeight() = 0;
+	virtual void setCursorMode( int n, bool useTimer = false ) = 0;
+	virtual int getCursorMode() = 0;
+	virtual GLuint getHighlightTexture() = 0;
 	virtual GLuint getGuiTexture() = 0;
 	virtual GLuint getGuiTexture2() = 0;
 	virtual Uint16 getMouseX() = 0;
-  virtual Uint16 getMouseY() = 0;
-  virtual void drawTooltip( float xpos2, float ypos2, float zpos2, 
-                            float zrot, float yrot, 
-                            char *message,
-                            float r=0, float g=0.15f, float b=0.05f, float zoom=1.0f ) = 0;
-  virtual void setFontType( int fontType ) = 0;
-  virtual GLuint loadSystemTexture( char *line ) = 0;
-  virtual void unlockMouse() = 0;
-  virtual void lockMouse( Widget *widget ) = 0;
-  virtual void allWindowsClosed() = 0;
-  virtual void blockEvent() = 0;
-};                                    
+	virtual Uint16 getMouseY() = 0;
+	virtual void drawTooltip( float xpos2, float ypos2, float zpos2,
+	                          float zrot, float yrot,
+	                          char *message,
+	                          float r = 0, float g = 0.15f, float b = 0.05f, float zoom = 1.0f ) = 0;
+	virtual void setFontType( int fontType ) = 0;
+	virtual GLuint loadSystemTexture( char *line ) = 0;
+	virtual void unlockMouse() = 0;
+	virtual void lockMouse( Widget *widget ) = 0;
+	virtual void allWindowsClosed() = 0;
+	virtual void blockEvent() = 0;
+};
 
 #endif

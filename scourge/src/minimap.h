@@ -17,6 +17,7 @@
 
 #ifndef MINIMAP_H
 #define MINIMAP_H
+#pragma once
 
 #define MINI_MAP_X_SCALE 3
 #define MINI_MAP_Y_SCALE 3
@@ -26,7 +27,6 @@
 #define MINI_MAP_WIDTH MAP_WIDTH/MINI_MAP_X_SCALE
 #define MINI_MAP_DEPTH MAP_DEPTH/MINI_MAP_Y_SCALE
 
-#include "common/constants.h"
 #include "gui/widgetview.h"
 #include "gui/window.h"
 
@@ -38,8 +38,8 @@ class Canvas;
 
 /// Unused.
 struct MiniMapPoint {
-    GLfloat r, g, b;
-    bool visible;
+	GLfloat r, g, b;
+	bool visible;
 };
 
 /**
@@ -49,26 +49,30 @@ struct MiniMapPoint {
 /// The minimap in the upper left of the ingame view.
 class MiniMap {
 private:
-    
-  Scourge *scourge;  
-  
-  bool showMiniMap;     // true : draw it, false : don't draw the minimap
-  // Texture that will hold the minimap
-  int textureSizeH, textureSizeW;   
-    
- public:
-  MiniMap();
-  ~MiniMap();
-  MiniMap( Scourge *scourge );
 
-  void drawMap();
+	Scourge *scourge;
 
-  inline void setShowMiniMap( bool b ) { showMiniMap = b; }
-  inline bool isMiniMapShown() { return showMiniMap; }
-  
+	bool showMiniMap;     // true : draw it, false : don't draw the minimap
+	// Texture that will hold the minimap
+	int textureSizeH, textureSizeW;
+
+public:
+	MiniMap();
+	~MiniMap();
+	MiniMap( Scourge *scourge );
+
+	void drawMap();
+
+	inline void setShowMiniMap( bool b ) {
+		showMiniMap = b;
+	}
+	inline bool isMiniMapShown() {
+		return showMiniMap;
+	}
+
 protected:
 	void drawPointers( std::set<Location*> *p, Color color );
-  
+
 };
 
 #endif

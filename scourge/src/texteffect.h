@@ -17,8 +17,8 @@
 
 #ifndef TEXT_EFFECT_H
 #define TEXT_EFFECT_H
+#pragma once
 
-#include "common/constants.h"
 #include <vector>
 
 /**
@@ -31,40 +31,46 @@ using namespace std;
 
 /// An individual effect particle of a TextEffect.
 struct TextItemParticle {
-  int life;
-  float x, y;
-  int r, g, b;
-  float dir, step;
-  float zoom;
+	int life;
+	float x, y;
+	int r, g, b;
+	float dir, step;
+	float zoom;
 };
 
 /// Displays large text with a nice animated effect.
 class TextEffect {
 private:
-  Scourge *scourge;
-  char text[255];
-  GLuint texture[1];
-  unsigned char *textureInMemory;
-  int x;
-  int y;
-  bool active;
-  TextItemParticle particle[100];
-  Uint32 lastTickMenu;
+	Scourge *scourge;
+	char text[255];
+	GLuint texture[1];
+	unsigned char *textureInMemory;
+	int x;
+	int y;
+	bool active;
+	TextItemParticle particle[100];
+	Uint32 lastTickMenu;
 
 public:
-  TextEffect( Scourge *scourge, int x, int y, char const* text );
-  ~TextEffect();
+	TextEffect( Scourge *scourge, int x, int y, char const* text );
+	~TextEffect();
 
-  inline void setActive( bool b ) { this->active = b; }
-  inline bool isActive() { return active; }
+	inline void setActive( bool b ) {
+		this->active = b;
+	}
+	inline bool isActive() {
+		return active;
+	}
 
-  inline char *getText() { return text; }
+	inline char *getText() {
+		return text;
+	}
 
-  void draw();
+	void draw();
 
 protected:
-  void drawEffect( float divisor, int count );
-  void buildTextures();
+	void drawEffect( float divisor, int count );
+	void buildTextures();
 };
 
 #endif

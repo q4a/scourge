@@ -18,8 +18,8 @@
 
 #ifndef MULTIPLAYER_H
 #define MULTIPLAYER_H
+#pragma once
 
-#include "common/constants.h"
 #include "scourge.h"
 #include "gui/window.h"
 #include "gui/label.h"
@@ -38,40 +38,54 @@ class Creature;
 /// The multiplayer dialog that is reached from the main menu.
 class MultiplayerDialog {
 private:
-  Scourge *scourge;
-  Window *mainWin;
-  Button *startServer;
-  Button *joinServer;
-  Button *okButton;
-  TextField *serverName;
-  TextField *serverPort;
-  TextField *userName;
-  ScrollingList *characterList;
-  int value;
-  char **charStr;
-  Creature *pc[MAX_PARTY_SIZE];
-  int pcCount;
-  
+	Scourge *scourge;
+	Window *mainWin;
+	Button *startServer;
+	Button *joinServer;
+	Button *okButton;
+	TextField *serverName;
+	TextField *serverPort;
+	TextField *userName;
+	ScrollingList *characterList;
+	int value;
+	char **charStr;
+	Creature *pc[MAX_PARTY_SIZE];
+	int pcCount;
+
 public:
 
-  static const int START_SERVER = 1;
-  static const int JOIN_SERVER = 2;
+	static const int START_SERVER = 1;
+	static const int JOIN_SERVER = 2;
 
-  MultiplayerDialog(Scourge *scourge);
-  ~MultiplayerDialog();
+	MultiplayerDialog( Scourge *scourge );
+	~MultiplayerDialog();
 
-  inline void show() { value = 0; mainWin->setVisible(true); }
-  inline void hide() { mainWin->setVisible(false); }
-  inline bool isVisible() { return mainWin->isVisible(); }
+	inline void show() {
+		value = 0; mainWin->setVisible( true );
+	}
+	inline void hide() {
+		mainWin->setVisible( false );
+	}
+	inline bool isVisible() {
+		return mainWin->isVisible();
+	}
 
-  inline char *getServerName() { return serverName->getText(); }
-  inline char *getServerPort() { return serverPort->getText(); }
-  inline char *getUserName() { return userName->getText(); }
-  inline int getValue() { return value; }
-  Creature *getCreature();
+	inline char *getServerName() {
+		return serverName->getText();
+	}
+	inline char *getServerPort() {
+		return serverPort->getText();
+	}
+	inline char *getUserName() {
+		return userName->getText();
+	}
+	inline int getValue() {
+		return value;
+	}
+	Creature *getCreature();
 
-  bool handleEvent(SDL_Event *event);
-  bool handleEvent(Widget *widget, SDL_Event *event);
+	bool handleEvent( SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
 };
 
 #endif

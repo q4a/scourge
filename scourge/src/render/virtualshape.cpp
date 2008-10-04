@@ -15,19 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "../common/constants.h"
 #include "virtualshape.h"
 
 VirtualShape::VirtualShape( char *name,
                             int width, int depth, int height,
                             int offsetX, int offsetY, int offsetZ,
-                            bool draws, GLShape *refShape, 
+                            bool draws, GLShape *refShape,
                             int shapePalIndex ) :
-  GLShape( NULL, 
-           width, depth, height, 
-           name, 
-           refShape->getDescriptionGroup(), 
-           1, 
-           shapePalIndex ) {
+		GLShape( NULL,
+		         width, depth, height,
+		         name,
+		         refShape->getDescriptionGroup(),
+		         1,
+		         shapePalIndex ) {
 	this->offsetX = offsetX;
 	this->offsetY = offsetY;
 	this->offsetZ = offsetZ;
@@ -40,13 +41,13 @@ VirtualShape::~VirtualShape() {
 }
 
 void VirtualShape::draw() {
-	if( draws ) {
+	if ( draws ) {
 		refShape->draw();
 	}
 }
 
 void VirtualShape::outline( float r, float g, float b ) {
-	if( draws ) {
+	if ( draws ) {
 		refShape->outline( r, g, b );
 	}
 }

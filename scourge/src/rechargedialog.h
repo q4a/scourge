@@ -17,8 +17,8 @@ rechargedialog.h  -  The recharge item dialog
 
 #ifndef RECHARGE_DIALOG_H
 #define RECHARGE_DIALOG_H
+#pragma once
 
-#include "common/constants.h"
 #include "itemlist.h"
 #include "pcui.h"
 #include <map>
@@ -34,33 +34,35 @@ class PcUi;
 /// The "recharge item" dialog.
 class RechargeDialog : public ItemRenderer {
 private:
-  Scourge *scourge;
-  Creature *creature;
-  Window *win;
-  int tradeA;
-  std::map<Item*, int> prices;
-  
-  Label *labelA;
-  Label *totalA;
-  ItemList *listA;
-  Button *closeButton, *infoButtonA, *rechargeButton;
-  Label *coinAvailA;
-  
+	Scourge *scourge;
+	Creature *creature;
+	Window *win;
+	int tradeA;
+	std::map<Item*, int> prices;
+
+	Label *labelA;
+	Label *totalA;
+	ItemList *listA;
+	Button *closeButton, *infoButtonA, *rechargeButton;
+	Label *coinAvailA;
+
 public:
-  RechargeDialog( Scourge *scourge );
-  ~RechargeDialog();
-  void setCreature( Creature *creature );
-  void updateUI();
-  inline Window *getWindow() { return win; }
-  void handleEvent( Widget *widget, SDL_Event *event );
-  
-  void render( const Widget *widget, const Item *item, std::string& buffer );
-  
+	RechargeDialog( Scourge *scourge );
+	~RechargeDialog();
+	void setCreature( Creature *creature );
+	void updateUI();
+	inline Window *getWindow() {
+		return win;
+	}
+	void handleEvent( Widget *widget, SDL_Event *event );
+
+	void render( const Widget *widget, const Item *item, std::string& buffer );
+
 protected:
-  void updateLabels();
-  void recharge();
-  int getSelectedTotal( ItemList *list );
-  bool validateInventory();
+	void updateLabels();
+	void recharge();
+	int getSelectedTotal( ItemList *list );
+	bool validateInventory();
 };
 
 #endif

@@ -17,6 +17,7 @@
 
 #ifndef MD3SHAPE_H
 #define MD3SHAPE_H
+#pragma once
 
 #include <iostream>
 #include <stdio.h>
@@ -34,11 +35,11 @@ class ModelLoader;
 /// Info about a shape's current animation status.
 /// This has to be unique per model instance (so we can reuse md3-s).
 struct AnimInfo {
-	int currentAnim;					// The current index into pAnimations list 
-	int currentFrame;					// The current frame of the current animation 
-	int nextFrame;						// The next frame of animation to interpolate too
-	float t;							// The ratio of 0.0f to 1.0f between each key frame
-	float lastTime;						// This stores the last time that was stored
+	int currentAnim;     // The current index into pAnimations list
+	int currentFrame;     // The current frame of the current animation
+	int nextFrame;      // The next frame of animation to interpolate too
+	float t;       // The ratio of 0.0f to 1.0f between each key frame
+	float lastTime;      // This stores the last time that was stored
 };
 
 /// .md3 specific rendering functions
@@ -48,34 +49,36 @@ class MD3Shape : public AnimatedShape  {
 //#define DEBUG_MD3 1
 
 private:
-  bool cleanupDone;
-  float div;
+	bool cleanupDone;
+	float div;
 	CModelMD3 *md3;
 	ModelLoader *loader;
 	AnimInfo aiUpper, aiLower, aiHead;
-	
+
 	// This stores the texture array for each of the textures assigned to this model
 	std::vector<Uint32> m_Textures;
 	// The list of material information (Textures and colors)
 	std::vector<tMaterialInfo> pMaterialUpper, pMaterialLower, pMaterialHead;
 	int numOfMaterialsUpper, numOfMaterialsLower, numOfMaterialsHead;
 
-public:     
-  MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div,
-            GLuint texture[], int width, int depth, int height,
-            char *name, int descriptionGroup,
-            Uint32 color, Uint8 shapePalIndex=0 );
+public:
+	MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div,
+	          GLuint texture[], int width, int depth, int height,
+	          char *name, int descriptionGroup,
+	          Uint32 color, Uint8 shapePalIndex = 0 );
 
 	virtual ~MD3Shape();
 
-  void cleanup();
-  void setModelAnimation();
-  void draw();
-  void outline( float r, float g, float b );
-  void setupToDraw();
+	void cleanup();
+	void setModelAnimation();
+	void draw();
+	void outline( float r, float g, float b );
+	void setupToDraw();
 	AnimInfo *getAnimInfo( t3DModel *model );
 
-	inline std::vector<Uint32> *getTextures() { return &m_Textures; }
+	inline std::vector<Uint32> *getTextures() {
+		return &m_Textures;
+	}
 	std::vector<tMaterialInfo> *getMaterialInfos( t3DModel *pModel );
 	int getNumOfMaterials( t3DModel *pModel );
 	void setNumOfMaterials( t3DModel *pModel, int n );

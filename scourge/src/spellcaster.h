@@ -17,11 +17,11 @@
 
 #ifndef SPELL_CASTER_H
 #define SPELL_CASTER_H
+#pragma once
 
 #include <iostream>
 #include <string>
 #include <vector>
-#include "common/constants.h"
 #include "session.h"
 #include "battle.h"
 
@@ -38,39 +38,41 @@ class SpecialSkill;
 
 /// Holds a spell that is currently being cast.
 class SpellCaster {
- private:
-  Battle *battle;
-  Spell *spell;
-  bool projectileHit;
-  float power;
-  int level;
+private:
+	Battle *battle;
+	Spell *spell;
+	bool projectileHit;
+	float power;
+	int level;
 
- public:
+public:
 
-  SpellCaster( Battle *battle, Spell *spell, bool projectileHit, int level );
-  virtual ~SpellCaster();
-  
-  void spellFailed();
+	SpellCaster( Battle *battle, Spell *spell, bool projectileHit, int level );
+	virtual ~SpellCaster();
 
-  void spellSucceeded();
+	void spellFailed();
 
- protected:
-  inline int getLevel() { return level; }
-  float getPower();
-  void viewInfo();
-  void increaseHP();
-  void increaseAC();
-  // count==0 means that count depends on level
-  Projectile *launchProjectile( int count, bool stopOnImpact=true, ProjectileRenderer *renderer=NULL );
-  void causeDamage( bool multiplyByLevel=true, GLuint delay=0, GLfloat mult=1.0f );
-  void setStateMod(int mod, bool setting=true);
-  void circleAttack();
+	void spellSucceeded();
+
+protected:
+	inline int getLevel() {
+		return level;
+	}
+	float getPower();
+	void viewInfo();
+	void increaseHP();
+	void increaseAC();
+	// count==0 means that count depends on level
+	Projectile *launchProjectile( int count, bool stopOnImpact = true, ProjectileRenderer *renderer = NULL );
+	void causeDamage( bool multiplyByLevel = true, GLuint delay = 0, GLfloat mult = 1.0f );
+	void setStateMod( int mod, bool setting = true );
+	void circleAttack();
 	void windAttack();
 	void openLocked();
-  void hailAttack();
-  void resurrect();
+	void hailAttack();
+	void resurrect();
 
-  int getRadius( int spellEffectSize, float *sx, float *sy );
+	int getRadius( int spellEffectSize, float *sx, float *sy );
 };
 
 #endif

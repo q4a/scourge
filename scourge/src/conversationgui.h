@@ -17,11 +17,11 @@
 
 #ifndef CONVERSATION_GUI_H
 #define CONVERSATION_GUI_H
+#pragma once
 
 #include <iostream>
 #include <string>
 #include <map>
-#include "common/constants.h"
 #include "scourge.h"
 #include "gui/window.h"
 #include "gui/widget.h"
@@ -36,40 +36,44 @@ class CardContainer;
 /// The conversation window.
 class ConversationGui : public WordClickedHandler, WidgetView {
 
- private:
-  Scourge *scourge;
-  Creature *creature;
-  Window *win;
-  bool useCreature;
-  Label *label;
-  ScrollingLabel *answer;
+private:
+	Scourge *scourge;
+	Creature *creature;
+	Window *win;
+	bool useCreature;
+	Label *label;
+	ScrollingLabel *answer;
 
-  ScrollingList *list;
+	ScrollingList *list;
 	std::vector<std::string> words;
-  TextField *entry;
-  Canvas *canvas;
+	TextField *entry;
+	Canvas *canvas;
 
-  Button *closeButton, *tradeButton, *trainButton;
-  Button *identifyButton, *uncurseItemButton, *rechargeButton;
-  Button *healButton, *donateButton;
-  CardContainer *cards;
+	Button *closeButton, *tradeButton, *trainButton;
+	Button *identifyButton, *uncurseItemButton, *rechargeButton;
+	Button *healButton, *donateButton;
+	CardContainer *cards;
 
- public:
-  ConversationGui(Scourge *scourge);
-  ~ConversationGui();
+public:
+	ConversationGui( Scourge *scourge );
+	~ConversationGui();
 
-  bool handleEvent(Widget *widget, SDL_Event *event);
+	bool handleEvent( Widget *widget, SDL_Event *event );
 
-  inline Creature *getCreature() { return creature; }
-  void start(Creature *creature);
-  void start(Creature *creature, char const* message, bool useCreature);
-  inline Window *getWindow() { return win; }
-  void hide();
+	inline Creature *getCreature() {
+		return creature;
+	}
+	void start( Creature *creature );
+	void start( Creature *creature, char const* message, bool useCreature );
+	inline Window *getWindow() {
+		return win;
+	}
+	void hide();
 
-  void wordClicked( std::string const& word );
-  void showingWord( char *word );
+	void wordClicked( std::string const& word );
+	void showingWord( char *word );
 
-  void drawWidgetContents(Widget *w);
+	void drawWidgetContents( Widget *w );
 };
 
 #endif

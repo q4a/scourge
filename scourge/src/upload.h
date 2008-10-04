@@ -17,11 +17,12 @@
 
 #ifndef UPLOAD
 #define UPLOAD
+#pragma once
 
 /// Uploads the death score and description to the web.
 class Upload {
 public:
-	enum { RESULT_SIZE = 300 }; 
+	enum { RESULT_SIZE = 300 };
 	typedef char RESULT[ RESULT_SIZE ];
 	static int uploadScoreToWeb( char *score, RESULT& result );
 };

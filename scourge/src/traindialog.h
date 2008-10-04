@@ -17,8 +17,8 @@
 
 #ifndef TRAIN_DIALOG_H
 #define TRAIN_DIALOG_H
+#pragma once
 
-#include "common/constants.h"
 #include <vector>
 
 class Scourge;
@@ -35,12 +35,12 @@ class Character;
 /// The train dialog.
 class TrainDialog {
 private:
-  Scourge *scourge;
-  Creature *creature;
-  Window *win;
-  
-  Label *creatureLabel, *errorLabel, *errorLabel2;
-  Button *closeButton, *applyButton;
+	Scourge *scourge;
+	Creature *creature;
+	Window *win;
+
+	Label *creatureLabel, *errorLabel, *errorLabel2;
+	Button *closeButton, *applyButton;
 	ScrollingList *list;
 	ScrollingLabel *description;
 	int cost;
@@ -49,15 +49,17 @@ private:
 	std::string text[ MAX_TEXT_COUNT ];
 
 public:
-  TrainDialog( Scourge *scourge );
-  ~TrainDialog();
-  void setCreature( Creature *creature );
-  void updateUI();
-  inline Window *getWindow() { return win; }
-  void handleEvent( Widget *widget, SDL_Event *event );
-  
+	TrainDialog( Scourge *scourge );
+	~TrainDialog();
+	void setCreature( Creature *creature );
+	void updateUI();
+	inline Window *getWindow() {
+		return win;
+	}
+	void handleEvent( Widget *widget, SDL_Event *event );
+
 protected:
-  void train( Character *newProfession );
+	void train( Character *newProfession );
 };
 
 #endif

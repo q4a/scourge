@@ -17,6 +17,7 @@
 
 #ifndef SCROLLING_LIST_H
 #define SCROLLING_LIST_H
+#pragma once
 
 #include "gui.h"
 #include "widget.h"
@@ -30,7 +31,7 @@
 
 /// A flexible list widget that can also display icons next to entries.
 class ScrollingList : public Widget {
- protected:
+protected:
 	std::vector<std::string> list;
 	const Color *colors;
 	const GLuint *icons;
@@ -58,70 +59,94 @@ class ScrollingList : public Widget {
 	bool linewrap;
 	bool iconBorder;
 
- public: 
+public:
 
 	enum {
-		EVENT_DRAG=0,
+		EVENT_DRAG = 0,
 		EVENT_ACTION
 	};
 
 	bool debug;
 
-	ScrollingList(int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler = NULL, int lineHeight=15);
+	ScrollingList( int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler = NULL, int lineHeight = 15 );
 	virtual ~ScrollingList();
 
-	inline void setTextLinewrap( bool b ) { linewrap = b; }
-	inline void setIconBorder( bool b ) { iconBorder = b; }
+	inline void setTextLinewrap( bool b ) {
+		linewrap = b;
+	}
+	inline void setIconBorder( bool b ) {
+		iconBorder = b;
+	}
 
-	inline void setAllowMultipleSelection( bool b ) { allowMultipleSelection = b; }
-	inline bool getAllowMultipleSelection() { return allowMultipleSelection; }
+	inline void setAllowMultipleSelection( bool b ) {
+		allowMultipleSelection = b;
+	}
+	inline bool getAllowMultipleSelection() {
+		return allowMultipleSelection;
+	}
 	//unused: inline int getLineCount() { return list.size(); }
-  void setLines(int count, std::string const s[], const Color *colors=NULL, const GLuint *icon=NULL);
-	void setLines(const std::vector<std::string>::iterator begin, const std::vector<std::string>::iterator end, const Color *colors=NULL, const GLuint *icon=NULL);
-	void setLine(const std::string& toPush);
-	void setLine(size_t pos, const std::string& toPush);
-	inline const std::string& getLine(int index) { return list[index]; }
+	void setLines( int count, std::string const s[], const Color *colors = NULL, const GLuint *icon = NULL );
+	void setLines( const std::vector<std::string>::iterator begin, const std::vector<std::string>::iterator end, const Color *colors = NULL, const GLuint *icon = NULL );
+	void setLine( const std::string& toPush );
+	void setLine( size_t pos, const std::string& toPush );
+	inline const std::string& getLine( int index ) {
+		return list[index];
+	}
 	void unselectAllLines();
 
-  inline int getSelectedLine() { return ( selectedLine!=NULL ? selectedLine[ 0 ] : -1 ); }
+	inline int getSelectedLine() {
+		return ( selectedLine != NULL ? selectedLine[ 0 ] : -1 );
+	}
 	void setSelectedLine( size_t n );
-	inline bool isSelected( int line ) { 
-    if( selectedLine == NULL ) {
-			return false; 
+	inline bool isSelected( int line ) {
+		if ( selectedLine == NULL ) {
+			return false;
 		} else {
-			for( int i = 0; i < selectedLineCount; i++ ) {
-				if( selectedLine[i] == line ) return true; 
+			for ( int i = 0; i < selectedLineCount; i++ ) {
+				if ( selectedLine[i] == line ) return true;
 			}
 		}
-		return false; 
+		return false;
 	}
-	inline int getSelectedLineCount() { return selectedLineCount; }
-	inline int getSelectedLine( int index ) { return selectedLine[ index ]; }
+	inline int getSelectedLineCount() {
+		return selectedLineCount;
+	}
+	inline int getSelectedLine( int index ) {
+		return selectedLine[ index ];
+	}
 
-	void drawWidget(Widget *parent);
+	void drawWidget( Widget *parent );
 
-	inline int getEventType() { return eventType; }
+	inline int getEventType() {
+		return eventType;
+	}
 
 	/**
 	Return true, if the event activated this widget. (For example, button push, etc.)
 	Another way to think about it is that if true, the widget fires an "activated" event
 	to the outside world.
 	*/
-	bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
+	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
 
-	void removeEffects(Widget *parent);
+	void removeEffects( Widget *parent );
 
 	// don't play sound when the value changes
-	virtual inline bool hasSound() { return false; }
+	virtual inline bool hasSound() {
+		return false;
+	}
 
-	inline bool canGetFocus() { return canGetFocusVar; }
-	inline void setCanGetFocus(bool b) { this->canGetFocusVar = b; }
+	inline bool canGetFocus() {
+		return canGetFocusVar;
+	}
+	inline void setCanGetFocus( bool b ) {
+		this->canGetFocusVar = b;
+	}
 
 	int getLineAtPoint( int x, int y );
 
- private:
-	void selectLine(int x, int y, bool addToSelection = false, bool mouseDown=false );
-	void drawIcon( int x, int y, GLuint icon, Widget *parent );  
+private:
+	void selectLine( int x, int y, bool addToSelection = false, bool mouseDown = false );
+	void drawIcon( int x, int y, GLuint icon, Widget *parent );
 	void moveSelectionUp();
 	void moveSelectionDown();
 

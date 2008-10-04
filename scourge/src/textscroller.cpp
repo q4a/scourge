@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "common/constants.h"
 #include "textscroller.h"
 #include "scourge.h"
 #include "sdlhandler.h"
@@ -33,11 +34,11 @@ TextScroller::TextScroller( Scourge *scourge ) {
 	this->scourge = scourge;
 	this->xp = 300;
 	this->yp = 0;
-  startOffset = lineOffset = 0;
+	startOffset = lineOffset = 0;
 	offset = 0;
 	lastCheck = SDL_GetTicks();
-  inside = false;
-  visible = false;
+	inside = false;
+	visible = false;
 	scrollTexture = 0;
 }
 
@@ -45,12 +46,12 @@ TextScroller::~TextScroller() {
 }
 
 void TextScroller::addDescription( char const* description, float r, float g, float b, int logLevel ) {
-	if (scourge->getUserConfiguration()->getLogLevel() < logLevel) return;
+	if ( scourge->getUserConfiguration()->getLogLevel() < logLevel ) return;
 
 	string s = description;
 	color.insert( color.begin(), new Color( r, g, b, 1 ) );
 	text.insert( text.begin(), s );
-	if( text.size() == MAX_QUEUE_SIZE ) {
+	if ( text.size() == MAX_QUEUE_SIZE ) {
 		text.erase( text.end() - 1 );
 		Color *c = color[ color.size() - 1 ];
 		delete( c );
@@ -60,58 +61,58 @@ void TextScroller::addDescription( char const* description, float r, float g, fl
 
 void TextScroller::writeLogMessage( char const* message, int messageType, int logLevel ) {
 
-	if (messageType == Constants::MSGTYPE_NORMAL ) {
+	if ( messageType == Constants::MSGTYPE_NORMAL ) {
 		addDescription( message, 1, 1, 0, logLevel );
-	} else if (messageType == Constants::MSGTYPE_MISSION ) {
+	} else if ( messageType == Constants::MSGTYPE_MISSION ) {
 		addDescription( message, 1, 1, 1, logLevel );
-	} else if (messageType == Constants::MSGTYPE_PLAYERDAMAGE ) {
+	} else if ( messageType == Constants::MSGTYPE_PLAYERDAMAGE ) {
 		addDescription( message, 1, 0, 0, logLevel );
-	} else if (messageType == Constants::MSGTYPE_NPCDAMAGE ) {
+	} else if ( messageType == Constants::MSGTYPE_NPCDAMAGE ) {
 		addDescription( message, 0, 1, 0, logLevel );
-	} else if (messageType == Constants::MSGTYPE_PLAYERMAGIC ) {
+	} else if ( messageType == Constants::MSGTYPE_PLAYERMAGIC ) {
 		addDescription( message, 1, 0, 1, logLevel );
-	} else if (messageType == Constants::MSGTYPE_NPCMAGIC ) {
+	} else if ( messageType == Constants::MSGTYPE_NPCMAGIC ) {
 		addDescription( message, 0.7f, 0, 1, logLevel );
-	} else if (messageType == Constants::MSGTYPE_PLAYERITEM ) {
+	} else if ( messageType == Constants::MSGTYPE_PLAYERITEM ) {
 		addDescription( message, 0, 0, 1, logLevel );
-	} else if (messageType == Constants::MSGTYPE_NPCITEM ) {
+	} else if ( messageType == Constants::MSGTYPE_NPCITEM ) {
 		addDescription( message, 0, 0.5f, 1, logLevel );
-	} else if (messageType == Constants::MSGTYPE_PLAYERBATTLE ) {
+	} else if ( messageType == Constants::MSGTYPE_PLAYERBATTLE ) {
 		addDescription( message, 1, 0.8f, 0.8f, logLevel );
-	} else if (messageType == Constants::MSGTYPE_NPCBATTLE ) {
+	} else if ( messageType == Constants::MSGTYPE_NPCBATTLE ) {
 		addDescription( message, 1, 0.5f, 0.5f, logLevel );
-	} else if (messageType == Constants::MSGTYPE_PLAYERDEATH ) {
+	} else if ( messageType == Constants::MSGTYPE_PLAYERDEATH ) {
 		addDescription( message, 0.7f, 0.7f, 0, logLevel );
-	} else if (messageType == Constants::MSGTYPE_NPCDEATH ) {
+	} else if ( messageType == Constants::MSGTYPE_NPCDEATH ) {
 		addDescription( message, 0, 0.7f, 0, logLevel );
-	} else if (messageType == Constants::MSGTYPE_FAILURE ) {
+	} else if ( messageType == Constants::MSGTYPE_FAILURE ) {
 		addDescription( message, 0.7f, 0.7f, 0.7f, logLevel );
-	} else if (messageType == Constants::MSGTYPE_STATS ) {
+	} else if ( messageType == Constants::MSGTYPE_STATS ) {
 		addDescription( message, 1, 0.5f, 0, logLevel );
-	} else if (messageType == Constants::MSGTYPE_SYSTEM ) {
+	} else if ( messageType == Constants::MSGTYPE_SYSTEM ) {
 		addDescription( message, 0, 0.8f, 0.8f, logLevel );
-	} else if (messageType == Constants::MSGTYPE_SKILL ) {
+	} else if ( messageType == Constants::MSGTYPE_SKILL ) {
 		addDescription( message, 0, 1, 1, logLevel );
 	}
 }
 
 void TextScroller::draw() {
 
-  if( !visible ) {
-    lineOffset = 0;
-  }
+	if ( !visible ) {
+		lineOffset = 0;
+	}
 
-	if( scourge->getParty()->isRealTimeMode() && !visible ) {
+	if ( scourge->getParty()->isRealTimeMode() && !visible ) {
 		Uint32 now = SDL_GetTicks();
-		if( now - lastCheck > SCROLL_SPEED ) {
+		if ( now - lastCheck > SCROLL_SPEED ) {
 			lastCheck = now;
 			offset += OFFSET_DELTA;
-			if( offset >= LINE_HEIGHT ) {
+			if ( offset >= LINE_HEIGHT ) {
 				offset = 0;
 				text.insert( text.begin(), "" );
-        color.insert( color.begin(), new Color( 0, 0, 0, 0 ) );
-				for( unsigned int i = LINES_SHOWN; i < text.size(); i++ ) {
-					if( text[i] == "" ) {
+				color.insert( color.begin(), new Color( 0, 0, 0, 0 ) );
+				for ( unsigned int i = LINES_SHOWN; i < text.size(); i++ ) {
+					if ( text[i] == "" ) {
 						text.erase( text.begin() + i );
 						Color *c = color[ i ];
 						delete( c );
@@ -123,7 +124,7 @@ void TextScroller::draw() {
 		}
 	}
 
-  int height = LINES_SHOWN * LINE_HEIGHT;
+	int height = LINES_SHOWN * LINE_HEIGHT;
 
 	glPushMatrix();
 	glLoadIdentity();
@@ -131,32 +132,32 @@ void TextScroller::draw() {
 	glTranslatef( xp, ytop, 0 );
 	glDisable( GL_DEPTH_TEST );
 
-  if( visible ) {
-    int margin = 10;
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glDisable( GL_TEXTURE_2D );
-    // glColor4f( 1, 1, 1, 0.25f );
+	if ( visible ) {
+		int margin = 10;
+		glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glDisable( GL_TEXTURE_2D );
+		// glColor4f( 1, 1, 1, 0.25f );
 		glColor4f( 0, 0, 0, 0.5f );
-    glBegin( GL_TRIANGLE_STRIP );
-    glVertex2d( -margin, 0 );
-    glVertex2d( SCROLL_WIDTH + margin, 0 );
-    glVertex2d( -margin, height + margin );
-    glVertex2d( SCROLL_WIDTH + margin, height + margin );
-    glEnd();
-    glColor4f( 0.5f, 0.5f, 0.5f, 1 );
-    glBegin( GL_LINE_LOOP );
-    glVertex2d( -margin, height + margin );
-    glVertex2d( -margin, 0 );
-    glVertex2d( SCROLL_WIDTH + margin, 0 );
-    glVertex2d( SCROLL_WIDTH + margin, height + margin );
-    glEnd();
+		glBegin( GL_TRIANGLE_STRIP );
+		glVertex2d( -margin, 0 );
+		glVertex2d( SCROLL_WIDTH + margin, 0 );
+		glVertex2d( -margin, height + margin );
+		glVertex2d( SCROLL_WIDTH + margin, height + margin );
+		glEnd();
+		glColor4f( 0.5f, 0.5f, 0.5f, 1 );
+		glBegin( GL_LINE_LOOP );
+		glVertex2d( -margin, height + margin );
+		glVertex2d( -margin, 0 );
+		glVertex2d( SCROLL_WIDTH + margin, 0 );
+		glVertex2d( SCROLL_WIDTH + margin, height + margin );
+		glEnd();
 
 		glBegin( GL_LINE_LOOP );
 		glVertex2d( SCROLL_WIDTH + margin - 10, height );
-    glVertex2d( SCROLL_WIDTH + margin - 10, 10 );
-    glVertex2d( SCROLL_WIDTH + margin - 7, 10 );
-    glVertex2d( SCROLL_WIDTH + margin - 7, height );
+		glVertex2d( SCROLL_WIDTH + margin - 10, 10 );
+		glVertex2d( SCROLL_WIDTH + margin - 7, 10 );
+		glVertex2d( SCROLL_WIDTH + margin - 7, height );
 		glEnd();
 		int ypos = static_cast<int>( ( lineOffset * ( height - 10 ) ) / static_cast<float>( text.size() - 1 ) );
 		glBegin( GL_TRIANGLE_STRIP );
@@ -166,23 +167,23 @@ void TextScroller::draw() {
 		glVertex2d( SCROLL_WIDTH + margin - 7, height - ypos );
 		glEnd();
 
-    glEnable( GL_TEXTURE_2D );
+		glEnable( GL_TEXTURE_2D );
 		glDisable( GL_BLEND );
-  }
+	}
 
 	glScissor( xp, scourge->getScreenHeight() - ( ytop + height ), SCROLL_WIDTH, height );
-  glEnable( GL_SCISSOR_TEST );
+	glEnable( GL_SCISSOR_TEST );
 
 	int currentOffset = ( visible ? 0 : offset );
 	int x = 0;
 	int y = height - currentOffset;
 	// cerr << "text.size=" << text.size() << endl;
-	for( unsigned int i = lineOffset; static_cast<int>(i) < lineOffset + LINES_SHOWN && i < text.size(); i++ ) {
-		if( text[ i ] != "" ) {
+	for ( unsigned int i = lineOffset; static_cast<int>( i ) < lineOffset + LINES_SHOWN && i < text.size(); i++ ) {
+		if ( text[ i ] != "" ) {
 			Color *c = color[ i ];
-      float a;
-      if( visible ) a = 1;
-      else a = c->a * ( ( LINES_SHOWN - ( ( i - lineOffset ) + ( currentOffset / static_cast<float>(LINE_HEIGHT) ) ) ) / static_cast<float>(LINES_SHOWN) );
+			float a;
+			if ( visible ) a = 1;
+			else a = c->a * ( ( LINES_SHOWN - ( ( i - lineOffset ) + ( currentOffset / static_cast<float>( LINE_HEIGHT ) ) ) ) / static_cast<float>( LINES_SHOWN ) );
 			glColor4f( c->r, c->g, c->b, a  );
 			scourge->getSDLHandler()->texPrint( x, y, text[ i ].c_str() );
 		}
@@ -206,36 +207,36 @@ bool TextScroller::handleEvent( SDL_Event *event ) {
 	int ytop = ( scourge->inTurnBasedCombat() ? yp + 50 : yp );
 	bool before = visible;
 	inside = ( mx >= xp && mx < xp + SCROLL_WIDTH &&
-						 my >= ytop && my < ytop + LINES_SHOWN * LINE_HEIGHT &&
-						 !( scourge->getSession()->getMap()->isMouseRotating() || 
-								scourge->getSession()->getMap()->isMouseZooming() ||
-								scourge->getSession()->getMap()->isMapMoving() ) );
-	if( inside && !before && my >= ytop && my <= ytop + 15 ) {
+	           my >= ytop && my < ytop + LINES_SHOWN * LINE_HEIGHT &&
+	           !( scourge->getSession()->getMap()->isMouseRotating() ||
+	              scourge->getSession()->getMap()->isMouseZooming() ||
+	              scourge->getSession()->getMap()->isMapMoving() ) );
+	if ( inside && !before && my >= ytop && my <= ytop + 15 ) {
 		visible = true;
 		startOffset = lineOffset = 0;
-		for( unsigned int i = 0; i < text.size(); i++ ) {
-			if( text[i] != "" ) {
+		for ( unsigned int i = 0; i < text.size(); i++ ) {
+			if ( text[i] != "" ) {
 				startOffset = lineOffset = i;
 				break;
 			}
 		}
 	}
 
-	if(!inside && before) visible = false;
+	if ( !inside && before ) visible = false;
 
-	if( event->type == SDL_MOUSEBUTTONDOWN ) {
-		if( inside && visible ) {
-			if( event->button.button == SDL_BUTTON_WHEELUP ) {
+	if ( event->type == SDL_MOUSEBUTTONDOWN ) {
+		if ( inside && visible ) {
+			if ( event->button.button == SDL_BUTTON_WHEELUP ) {
 				lineOffset++;
-				if( lineOffset + LINES_SHOWN >= static_cast<int>(text.size()) ) {
+				if ( lineOffset + LINES_SHOWN >= static_cast<int>( text.size() ) ) {
 					lineOffset = text.size() - LINES_SHOWN + 1;
 				}
-			} else if( event->button.button == SDL_BUTTON_WHEELDOWN ) {
+			} else if ( event->button.button == SDL_BUTTON_WHEELDOWN ) {
 				lineOffset--;
-				if( lineOffset < startOffset ) lineOffset = startOffset;
+				if ( lineOffset < startOffset ) lineOffset = startOffset;
 			}
 		}
 	}
-  return visible;
+	return visible;
 }
 

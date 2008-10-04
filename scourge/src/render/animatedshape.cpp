@@ -15,7 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <string>  
+#include "../common/constants.h"
+#include <string>
 #include "modelwrapper.h"
 #include "animatedshape.h"
 #include "md2shape.h"
@@ -24,45 +25,45 @@
 
 using namespace std;
 
-AnimatedShape::AnimatedShape( int width, int depth, int height, 
-															char *name, int descriptionGroup,
-															Uint32 color, Uint8 shapePalIndex ) :
-  GLShape( 0, width, depth, height/2, name, descriptionGroup, color, shapePalIndex ) {
-  
-  this->g_ViewMode = GL_TRIANGLES;
-  this->attackEffect = false;
-  this->debug = false;  
+AnimatedShape::AnimatedShape( int width, int depth, int height,
+                              char *name, int descriptionGroup,
+                              Uint32 color, Uint8 shapePalIndex ) :
+		GLShape( 0, width, depth, height / 2, name, descriptionGroup, color, shapePalIndex ) {
+
+	this->g_ViewMode = GL_TRIANGLES;
+	this->attackEffect = false;
+	this->debug = false;
 	this->useShadow = false;
-  setDir(Constants::MOVE_UP); // sets dir, angle
+	setDir( Constants::MOVE_UP ); // sets dir, angle
 	this->creatureSpeed = 5;
 	this->currentAnim = 0;
-	this->animationWaiting = -1;      
+	this->animationWaiting = -1;
 	this->pauseAnimation = false;
-	this->playedOnce = true;  
-	
+	this->playedOnce = true;
+
 #ifdef DEBUG_MD2
-  debugShape = new GLShape( 0, this->width, this->depth, this->height, 
-                            name, descriptionGroup, color, shapePalIndex );
-  debugShape->initialize();
+	debugShape = new GLShape( 0, this->width, this->depth, this->height,
+	                          name, descriptionGroup, color, shapePalIndex );
+	debugShape->initialize();
 #endif
 }
 
 AnimatedShape::~AnimatedShape() {
 }
 
-void AnimatedShape::setDir(int dir) { 
-  this->dir = dir; 
-  switch(dir) {
-  case Constants::MOVE_UP:
-    angle = 0.0f; 
-    break;
-  case Constants::MOVE_LEFT:
-    angle = -90.0f; break;
-  case Constants::MOVE_RIGHT:
-    angle = 90.0f;break;
-  default:
-    angle = 180.0f;
-  }
+void AnimatedShape::setDir( int dir ) {
+	this->dir = dir;
+	switch ( dir ) {
+	case Constants::MOVE_UP:
+		angle = 0.0f;
+		break;
+	case Constants::MOVE_LEFT:
+		angle = -90.0f; break;
+	case Constants::MOVE_RIGHT:
+		angle = 90.0f;break;
+	default:
+		angle = 180.0f;
+	}
 }
 
 //void AnimatedShape::draw() {
@@ -74,29 +75,29 @@ void AnimatedShape::setDir(int dir) {
 //void AnimatedShape::setupToDraw() {
 //}
 
-void AnimatedShape::setupBlending() { 
-	glBlendFunc(GL_ONE, GL_ONE); 
+void AnimatedShape::setupBlending() {
+	glBlendFunc( GL_ONE, GL_ONE );
 }
 
-void AnimatedShape::endBlending() { 
+void AnimatedShape::endBlending() {
 }
 
-bool AnimatedShape::drawFirst() { 
-	return true; 
+bool AnimatedShape::drawFirst() {
+	return true;
 }
-  // if true, the next two functions are called
-bool AnimatedShape::drawLater() { 
-	return false; 
+// if true, the next two functions are called
+bool AnimatedShape::drawLater() {
+	return false;
 }
 
 void AnimatedShape::animationFinished() {
 	//cerr << "animationFinished for " << getName() << " anim=" << currentAnim << endl;
-	playedOnce = true;            
+	playedOnce = true;
 	// some animations only run once
-	if( !(currentAnim == MD2_STAND || currentAnim == MD2_RUN) ) {
-		if( animationWaiting == - 1 ){
+	if ( !( currentAnim == MD2_STAND || currentAnim == MD2_RUN ) ) {
+		if ( animationWaiting == - 1 ) {
 			setCurrentAnimation( MD2_STAND );
-		} else{
+		} else {
 			setCurrentAnimation( animationWaiting );
 			animationWaiting = -1;
 		}
@@ -104,23 +105,23 @@ void AnimatedShape::animationFinished() {
 	}
 }
 
-void AnimatedShape::setCurrentAnimation( int numAnim, bool force ){    
-  if( numAnim != currentAnim && numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT ){
-    if( ( force && currentAnim == MD2_RUN ) || playedOnce ){
-      currentAnim = numAnim;                
-      //currentFrame = g_3DModel->pAnimations[currentAnim].startFrame; 
+void AnimatedShape::setCurrentAnimation( int numAnim, bool force ) {
+	if ( numAnim != currentAnim && numAnim >= 0 && numAnim <= MD2_CREATURE_ACTION_COUNT ) {
+		if ( ( force && currentAnim == MD2_RUN ) || playedOnce ) {
+			currentAnim = numAnim;
+			//currentFrame = g_3DModel->pAnimations[currentAnim].startFrame;
 			setModelAnimation();
-      
-      // MD2_STAND animation is too long, so we make it "interruptible"
-      if( currentAnim != MD2_STAND ){
-        playedOnce = false;                    
-      }
-    } else {
-      // if animationWaiting != -1 there is already an animation waiting
-      // and we store only one at a time
-      if( animationWaiting == -1 ){
-        animationWaiting = currentAnim;
-      }
-    }
-  }
+
+			// MD2_STAND animation is too long, so we make it "interruptible"
+			if ( currentAnim != MD2_STAND ) {
+				playedOnce = false;
+			}
+		} else {
+			// if animationWaiting != -1 there is already an animation waiting
+			// and we store only one at a time
+			if ( animationWaiting == -1 ) {
+				animationWaiting = currentAnim;
+			}
+		}
+	}
 }

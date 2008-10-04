@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "common/constants.h"
 #include "pceditor.h"
 #include "gui/window.h"
 #include "gui/cardcontainer.h"
@@ -46,7 +47,7 @@ std::map<CharacterModelInfo*, GLShape*> shapesMap;
 PcEditor::PcEditor( Scourge *scourge ) {
 	this->scourge = scourge;
 	this->creature = NULL;
-  this->deleteCreature = false;
+	this->deleteCreature = false;
 
 	availableSkillMod = AVAILABLE_SKILL_POINTS;
 
@@ -57,27 +58,27 @@ PcEditor::PcEditor( Scourge *scourge ) {
 
 PcEditor::~PcEditor() {
 	delete win;
-	if( deleteCreature ) delete creature;
+	if ( deleteCreature ) delete creature;
 	delete[] charTypeStr;
 	delete[] deityTypeStr;
 	deleteLoadedShapes();
 }
 
 void PcEditor::setCreature( Creature *c, bool isEditable ) {
-  if( deleteCreature && creature ) {
-  	delete creature;
-  }
+	if ( deleteCreature && creature ) {
+		delete creature;
+	}
 
-  if( c ) {
-    this->creature = c;
-    deleteCreature = false;
-  } else {
-    // create a tmp creature to use for the ui	
-    this->creature = createPartyMember();
-    deleteCreature = true;
-  }
-  
-  detailsInfo->setCreature( win, creature );
+	if ( c ) {
+		this->creature = c;
+		deleteCreature = false;
+	} else {
+		// create a tmp creature to use for the ui
+		this->creature = createPartyMember();
+		deleteCreature = true;
+	}
+
+	detailsInfo->setCreature( win, creature );
 	loadUI();
 	setCharType( charType->getSelectedLine() );
 
@@ -87,12 +88,12 @@ void PcEditor::setCreature( Creature *c, bool isEditable ) {
 	statsButton->setSelected( false );
 	deityButton->setSelected( false );
 	imageButton->setSelected( false );
-	
+
 	// disable/enable some controls
 	prevModel->setEnabled( isEditable );
-  nextModel->setEnabled( isEditable );
-  //prevPortrait->setEnabled( isEditable );
-  //nextPortrait->setEnabled( isEditable );
+	nextModel->setEnabled( isEditable );
+	//prevPortrait->setEnabled( isEditable );
+	//nextPortrait->setEnabled( isEditable );
 	male->setEnabled( isEditable );
 	female->setEnabled( isEditable );
 	//charType->setEnabled( isEditable );
@@ -100,16 +101,16 @@ void PcEditor::setCreature( Creature *c, bool isEditable ) {
 }
 
 void PcEditor::deleteLoadedShapes() {
-  for( map<CharacterModelInfo*, GLShape*>::iterator i=shapesMap.begin(); i!=shapesMap.end(); ++i ) {
-    CharacterModelInfo *cmi = i->first;
-    GLShape *shape = i->second;
+	for ( map<CharacterModelInfo*, GLShape*>::iterator i = shapesMap.begin(); i != shapesMap.end(); ++i ) {
+		CharacterModelInfo *cmi = i->first;
+		GLShape *shape = i->second;
 		// delete the md2/3 shape
-    scourge->getShapePalette()->
-			decrementSkinRefCountAndDeleteShape( cmi->model_name, 
-																					 cmi->skin_name, 
-																					 shape );
-  }
-  shapesMap.clear();
+		scourge->getShapePalette()->
+		decrementSkinRefCountAndDeleteShape( cmi->model_name,
+		    cmi->skin_name,
+		    shape );
+	}
+	shapesMap.clear();
 }
 
 /**
@@ -119,65 +120,65 @@ void PcEditor::saveUI() {
 	// name
 	char *s = nameField->getText();
 	bool deleteS = false;
-	if( !s || !strlen( s ) ) {
+	if ( !s || !strlen( s ) ) {
 		//s = presets[i].name;
 		s = Rpg::createName();
 		deleteS = true;
 	}
 	creature->setName( s );
-	if( deleteS ) free( s );
+	if ( deleteS ) free( s );
 	// character type
-	int index = charType->getSelectedLine();  
+	int index = charType->getSelectedLine();
 	Character *c = Character::rootCharacters[ index ];
 	creature->setCharacter( c );
-	creature->setLevel( STARTING_PARTY_LEVEL ); 
-	creature->setExp(0);
+	creature->setLevel( STARTING_PARTY_LEVEL );
+	creature->setExp( 0 );
 	creature->setHp();
 	creature->setMp();
-	
+
 	// sex
 	creature->setSex( getSex() );
 
 	// deity
 	creature->setDeityIndex( deityType->getSelectedLine() );
-	
+
 	// assign portraits
 	creature->setPortraitTextureIndex( portraitIndex );
 }
 
 void PcEditor::loadUI() {
-	if( creature ) {
+	if ( creature ) {
 		nameField->setText( creature->getName() );
-		
+
 		male->setSelected( creature->getSex() == Constants::SEX_MALE ? true : false );
 		female->setSelected( male->isSelected() ? false : true );
 
-		for(int i = 0; i < static_cast<int>(Character::rootCharacters.size()); i++) {
-			if( Character::rootCharacters[i] == creature->getCharacter() ) {
+		for ( int i = 0; i < static_cast<int>( Character::rootCharacters.size() ); i++ ) {
+			if ( Character::rootCharacters[i] == creature->getCharacter() ) {
 				charType->setSelectedLine( i );
 				break;
 			}
 		}
 
-		if( charType->getSelectedLine() > -1 ) 
+		if ( charType->getSelectedLine() > -1 )
 			charTypeDescription->setText( Character::rootCharacters[charType->getSelectedLine()]->getDescription() );
 		enum { MSG_SIZE = 300 };
 		char message[ MSG_SIZE ];
 		int n = 0;
-		for( int i = 0; n < 10 && i < static_cast<int>(Skill::skills.size()); i++ ) {
+		for ( int i = 0; n < 10 && i < static_cast<int>( Skill::skills.size() ); i++ ) {
 			Skill *sk = Skill::skills[i];
-			if( sk->getGroup()->isStat() ) {
+			if ( sk->getGroup()->isStat() ) {
 				snprintf( message, MSG_SIZE, "%d (%d)", creature->getSkill( i ), creature->getSkillMod( i ) );
 				skillValue[n++]->setText( message );
 			}
 		}
 		snprintf( message, MSG_SIZE, "%d", availableSkillMod );
-		if( availableSkillMod > 0 ) {
-			remainingCaptionLabel->setColor(1, 0, 0, 1);
-			remainingLabel->setColor(1, 0, 0, 1);
+		if ( availableSkillMod > 0 ) {
+			remainingCaptionLabel->setColor( 1, 0, 0, 1 );
+			remainingLabel->setColor( 1, 0, 0, 1 );
 		} else {
-			remainingCaptionLabel->setColor(1, 1, 1, 1);
-			remainingLabel->setColor(1, 1, 1, 1);
+			remainingCaptionLabel->setColor( 1, 1, 1, 1 );
+			remainingLabel->setColor( 1, 1, 1, 1 );
 		}
 		remainingLabel->setText( message );
 
@@ -185,16 +186,16 @@ void PcEditor::loadUI() {
 		deityType->setSelectedLine( deityIndex );
 		deityTypeDescription->setText( MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
 
-		for( int i = 0; i < scourge->getShapePalette()->getPortraitCount( creature->getSex() ); i++ ) {
-			if( creature->getPortraitTextureIndex() == i ) {
+		for ( int i = 0; i < scourge->getShapePalette()->getPortraitCount( creature->getSex() ); i++ ) {
+			if ( creature->getPortraitTextureIndex() == i ) {
 				portraitIndex = i;
 				break;
 			}
 		}
 
-		for( int i = 0; i < scourge->getShapePalette()->getCharacterModelInfoCount( creature->getSex() ); i++ ) {
-			if( !strcmp( creature->getModelName(), scourge->getShapePalette()->getCharacterModelInfo( creature->getSex(), i )->model_name ) &&
-					!strcmp( creature->getSkinName(), scourge->getShapePalette()->getCharacterModelInfo( creature->getSex(), i )->skin_name ) ) {
+		for ( int i = 0; i < scourge->getShapePalette()->getCharacterModelInfoCount( creature->getSex() ); i++ ) {
+			if ( !strcmp( creature->getModelName(), scourge->getShapePalette()->getCharacterModelInfo( creature->getSex(), i )->model_name ) &&
+			        !strcmp( creature->getSkinName(), scourge->getShapePalette()->getCharacterModelInfo( creature->getSex(), i )->skin_name ) ) {
 				modelIndex = i;
 				break;
 			}
@@ -203,9 +204,9 @@ void PcEditor::loadUI() {
 	} else {
 		nameField->setText( "" );
 		int n = 0;
-		for( int i = 0; n < 10 && i < static_cast<int>(Skill::skills.size()); i++ ) {
+		for ( int i = 0; n < 10 && i < static_cast<int>( Skill::skills.size() ); i++ ) {
 			Skill *sk = Skill::skills[i];
-			if( sk->getGroup()->isStat() ) {
+			if ( sk->getGroup()->isStat() ) {
 				skillValue[n++]->setText( "" );
 			}
 		}
@@ -214,25 +215,25 @@ void PcEditor::loadUI() {
 
 void PcEditor::rollSkills() {
 	availableSkillMod = AVAILABLE_SKILL_POINTS;
-	rollSkillsForCreature( creature );  		
+	rollSkillsForCreature( creature );
 	loadUI();
 }
 
 void PcEditor::rollSkillsForCreature( Creature *c ) {
-	for(int i = 0; i < Skill::SKILL_COUNT; i++) {
+	for ( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
 		int n;
-		if( Skill::skills[i]->getGroup()->isStat() ) {
-				n = ( c->getCharacter()->getSkill( i ) * 3 - 1 ) + Util::pickOne( 1, 5 );
+		if ( Skill::skills[i]->getGroup()->isStat() ) {
+			n = ( c->getCharacter()->getSkill( i ) * 3 - 1 ) + Util::pickOne( 1, 5 );
 		} else {
-			
+
 			// create the starting value as a function of the stats
 			n = 0;
-			for( int t = 0; t < Skill::skills[i]->getPreReqStatCount(); t++ ) {
+			for ( int t = 0; t < Skill::skills[i]->getPreReqStatCount(); t++ ) {
 				int index = Skill::skills[i]->getPreReqStat( t )->getIndex();
 				n += c->getSkill( index );
 			}
-			n = static_cast<int>( ( n / static_cast<float>( Skill::skills[i]->getPreReqStatCount() ) ) * 
-														static_cast<float>( Skill::skills[i]->getPreReqMultiplier() ) );
+			n = static_cast<int>( ( n / static_cast<float>( Skill::skills[i]->getPreReqStatCount() ) ) *
+			                      static_cast<float>( Skill::skills[i]->getPreReqMultiplier() ) );
 		}
 		c->setSkill( i, n );
 		c->setSkillMod( i, 0 );
@@ -240,33 +241,33 @@ void PcEditor::rollSkillsForCreature( Creature *c ) {
 }
 
 Creature *PcEditor::createPartyMember() {
-	Creature *c = new Creature( scourge->getSession(), 
-                              Character::rootCharacters[ charType->getSelectedLine() ], 
-                              strdup( nameField->getText() ), 
-															getSex(),
-                              modelIndex );
-	c->setLevel( STARTING_PARTY_LEVEL ); 
-	c->setExp(0);
+	Creature *c = new Creature( scourge->getSession(),
+	                            Character::rootCharacters[ charType->getSelectedLine() ],
+	                            strdup( nameField->getText() ),
+	                            getSex(),
+	                            modelIndex );
+	c->setLevel( STARTING_PARTY_LEVEL );
+	c->setExp( 0 );
 	c->setHp();
 	c->setMp();
 	c->setHunger( Util::pickOne( 5, 9 ) );
-	c->setThirst( Util::pickOne( 5, 9 ) ); 
+	c->setThirst( Util::pickOne( 5, 9 ) );
 
-  // stats
-  if( creature ) {
-    // copy skills from prototype creature
-    for( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
-      c->setSkill( i, creature->getSkill( i, true ) );
-      c->setSkillMod( i, 0 );
-    }
-  } else {
-    // roll the skills
-    rollSkillsForCreature( c );
-  }
+	// stats
+	if ( creature ) {
+		// copy skills from prototype creature
+		for ( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
+			c->setSkill( i, creature->getSkill( i, true ) );
+			c->setSkillMod( i, 0 );
+		}
+	} else {
+		// roll the skills
+		rollSkillsForCreature( c );
+	}
 
 	// deity
 	c->setDeityIndex( deityType->getSelectedLine() );
-	
+
 	// assign portraits
 	c->setPortraitTextureIndex( portraitIndex );
 
@@ -274,140 +275,140 @@ Creature *PcEditor::createPartyMember() {
 }
 
 void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
-	if( widget == cancelButton ) {
+	if ( widget == cancelButton ) {
 		win->setVisible( false );
-	} else if( widget == okButton ) {
+	} else if ( widget == okButton ) {
 		saveUI();
-		if( creature ) creature->applySkillMods();
+		if ( creature ) creature->applySkillMods();
 		win->setVisible( false );
-	} else if( widget == nameButton ) {
+	} else if ( widget == nameButton ) {
 		cards->setActiveCard( NAME_TAB );
 		nameButton->setSelected( true );
 		profButton->setSelected( false );
 		statsButton->setSelected( false );
 		deityButton->setSelected( false );
 		imageButton->setSelected( false );
-	} else if( widget == profButton ) {
+	} else if ( widget == profButton ) {
 		cards->setActiveCard( CLASS_TAB );
 		nameButton->setSelected( false );
 		profButton->setSelected( true );
 		statsButton->setSelected( false );
 		deityButton->setSelected( false );
 		imageButton->setSelected( false );
-	} else if( widget == statsButton ) {
+	} else if ( widget == statsButton ) {
 		cards->setActiveCard( STAT_TAB );
 		nameButton->setSelected( false );
 		profButton->setSelected( false );
 		statsButton->setSelected( true );
 		deityButton->setSelected( false );
 		imageButton->setSelected( false );
-	} else if( widget == deityButton ) {
+	} else if ( widget == deityButton ) {
 		cards->setActiveCard( DEITY_TAB );
 		nameButton->setSelected( false );
 		profButton->setSelected( false );
 		statsButton->setSelected( false );
 		deityButton->setSelected( true );
 		imageButton->setSelected( false );
-	} else if( widget == imageButton ) {
+	} else if ( widget == imageButton ) {
 		cards->setActiveCard( IMAGE_TAB );
 		nameButton->setSelected( false );
 		profButton->setSelected( false );
 		statsButton->setSelected( false );
 		deityButton->setSelected( false );
 		imageButton->setSelected( true );
-  } else if( widget == prevPortrait ) {
-    if( portraitIndex > 0 ) {
-      portraitIndex--;
-    } else {
-      portraitIndex = scourge->getShapePalette()->getPortraitCount( creature->getSex() ) - 1;
-    }
-    saveUI();
-  } else if( widget == nextPortrait ) {
-    if( portraitIndex < scourge->getShapePalette()->getPortraitCount( creature->getSex() ) - 1 ) {
-      portraitIndex++;
-    } else {
-      portraitIndex = 0;
-    }
-    saveUI();
-  } else if( widget == prevModel ) {
-    if( modelIndex > 0 ) {
-      modelIndex--;
-    } else {
-      modelIndex = scourge->getShapePalette()->getCharacterModelInfoCount( creature->getSex() ) - 1;
-    }
-    saveUI();
-    willModelPlaySound = true;
-  } else if( widget == nextModel ) {
-    if( modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount( creature->getSex() ) - 1 ) {
-      modelIndex++;
-    } else {
-      modelIndex = 0;
-    }
-    saveUI();
-    willModelPlaySound = true;
-	} else if( widget == charType ) {
+	} else if ( widget == prevPortrait ) {
+		if ( portraitIndex > 0 ) {
+			portraitIndex--;
+		} else {
+			portraitIndex = scourge->getShapePalette()->getPortraitCount( creature->getSex() ) - 1;
+		}
+		saveUI();
+	} else if ( widget == nextPortrait ) {
+		if ( portraitIndex < scourge->getShapePalette()->getPortraitCount( creature->getSex() ) - 1 ) {
+			portraitIndex++;
+		} else {
+			portraitIndex = 0;
+		}
+		saveUI();
+	} else if ( widget == prevModel ) {
+		if ( modelIndex > 0 ) {
+			modelIndex--;
+		} else {
+			modelIndex = scourge->getShapePalette()->getCharacterModelInfoCount( creature->getSex() ) - 1;
+		}
+		saveUI();
+		willModelPlaySound = true;
+	} else if ( widget == nextModel ) {
+		if ( modelIndex < scourge->getShapePalette()->getCharacterModelInfoCount( creature->getSex() ) - 1 ) {
+			modelIndex++;
+		} else {
+			modelIndex = 0;
+		}
+		saveUI();
+		willModelPlaySound = true;
+	} else if ( widget == charType ) {
 		setCharType( charType->getSelectedLine() );
-	} else if( widget == deityType ) {
+	} else if ( widget == deityType ) {
 		setDeityType( deityType->getSelectedLine() );
-  } else if( widget == reroll ) {
-    rollSkills();
-  } else if( widget == male ) {
-  	female->setSelected( male->isSelected() ? false : true );
+	} else if ( widget == reroll ) {
+		rollSkills();
+	} else if ( widget == male ) {
+		female->setSelected( male->isSelected() ? false : true );
 		rollApperance();
-  	saveUI();
-  } else if( widget == female ) {
-  	male->setSelected( female->isSelected() ? false : true );
+		saveUI();
+	} else if ( widget == female ) {
+		male->setSelected( female->isSelected() ? false : true );
 		rollApperance();
-  	saveUI();  	
-	} else if( widget == nameChangeButton ) {
+		saveUI();
+	} else if ( widget == nameChangeButton ) {
 		char *s = Rpg::createName();
 		nameField->setText( s );
 		free( s );
-  } else {
-    int n = 0;
-    for( int i = 0; n < 10 && i < static_cast<int>(Skill::skills.size()); i++ ) {
-      Skill *sk = Skill::skills[i];
-      if( sk->getGroup()->isStat() ) {
-        if( widget == skillMinus[n] ) {
-          if( creature->getSkillMod( n ) > 0 && 
-              availableSkillMod < AVAILABLE_SKILL_POINTS ) {
-            creature->setSkillMod( n, creature->getSkillMod( n ) - 1 );
-            availableSkillMod++;
-            okButton->setEnabled( false );
-          }
-          loadUI();
-        } else if( widget == skillPlus[n] ) {
-          if( creature->getSkill( n, true ) < 20 && 
-              availableSkillMod > 0 ) {
-            creature->setSkillMod( n, creature->getSkillMod( n ) + 1 );
-            availableSkillMod--;
-            if( availableSkillMod == 0 ) okButton->setEnabled( true );
-          }
-          loadUI();
-        }
-        n++;
-      }
-    }
-  }
+	} else {
+		int n = 0;
+		for ( int i = 0; n < 10 && i < static_cast<int>( Skill::skills.size() ); i++ ) {
+			Skill *sk = Skill::skills[i];
+			if ( sk->getGroup()->isStat() ) {
+				if ( widget == skillMinus[n] ) {
+					if ( creature->getSkillMod( n ) > 0 &&
+					        availableSkillMod < AVAILABLE_SKILL_POINTS ) {
+						creature->setSkillMod( n, creature->getSkillMod( n ) - 1 );
+						availableSkillMod++;
+						okButton->setEnabled( false );
+					}
+					loadUI();
+				} else if ( widget == skillPlus[n] ) {
+					if ( creature->getSkill( n, true ) < 20 &&
+					        availableSkillMod > 0 ) {
+						creature->setSkillMod( n, creature->getSkillMod( n ) + 1 );
+						availableSkillMod--;
+						if ( availableSkillMod == 0 ) okButton->setEnabled( true );
+					}
+					loadUI();
+				}
+				n++;
+			}
+		}
+	}
 }
 
 void PcEditor::setCharType( int charIndex ) {
-  if( charIndex > -1 ) {     
-    Character *character = Character::rootCharacters[ charIndex ];
-    if( character ) {
-      charTypeDescription->setText( character->getDescription() );
+	if ( charIndex > -1 ) {
+		Character *character = Character::rootCharacters[ charIndex ];
+		if ( character ) {
+			charTypeDescription->setText( character->getDescription() );
 			saveUI();
-      rollSkills();      
-    }
-  }
+			rollSkills();
+		}
+	}
 }
 
 void PcEditor::setDeityType( int deityIndex ) {
-  if( deityIndex > -1 ) {
-    MagicSchool *school = MagicSchool::getMagicSchool( deityIndex );
-    if( school ) deityTypeDescription->setText( school->getDeityDescription() );
-    saveUI();
-  }
+	if ( deityIndex > -1 ) {
+		MagicSchool *school = MagicSchool::getMagicSchool( deityIndex );
+		if ( school ) deityTypeDescription->setText( school->getDeityDescription() );
+		saveUI();
+	}
 }
 
 int PcEditor::getSex() {
@@ -416,22 +417,22 @@ int PcEditor::getSex() {
 
 #define TEXT_WIDTH 55
 
-void PcEditor::createUI() {	
+void PcEditor::createUI() {
 	int w = 500;
 	int h = 420;
 	int x = scourge->getScreenWidth() / 2 - ( w / 2 );
 	int y = scourge->getScreenHeight() / 2 - ( h / 2 );
 
 	win = new Window( scourge->getSDLHandler(),
-										x, y, w, h,
-										_( "Character Details" ), 
-										true, 
-										Window::BASIC_WINDOW, 
-										"default" );
-  win->setVisible( false );
-  win->setModal( true );  
+	                  x, y, w, h,
+	                  _( "Character Details" ),
+	                  true,
+	                  Window::BASIC_WINDOW,
+	                  "default" );
+	win->setVisible( false );
+	win->setModal( true );
 
-	x = 10;	
+	x = 10;
 	int buttonHeight = 17;
 	int buttonSpace = 5;
 	y = buttonSpace;
@@ -449,19 +450,19 @@ void PcEditor::createUI() {
 	y += buttonHeight + buttonSpace;
 	imageButton = win->createButton( x, y, firstColWidth, y + buttonHeight, _( "Image" ), true );
 	y += buttonHeight + buttonSpace;
-	okButton = win->createButton( x, 
-																h - x - buttonHeight - win->getGutter(), 
-																firstColWidth, 
-																h - x - win->getGutter(), 
-																_( "Accept" ) );
+	okButton = win->createButton( x,
+	                              h - x - buttonHeight - win->getGutter(),
+	                              firstColWidth,
+	                              h - x - win->getGutter(),
+	                              _( "Accept" ) );
 	okButton->setEnabled( false );
-	cancelButton = win->createButton( x + firstColWidth + buttonSpace, 
-																		h - x - buttonHeight - win->getGutter(), 
-																		firstColWidth + buttonSpace + firstColWidth, 
-																		h - x - win->getGutter(), 
-																		_( "Dismiss" ) );
+	cancelButton = win->createButton( x + firstColWidth + buttonSpace,
+	               h - x - buttonHeight - win->getGutter(),
+	               firstColWidth + buttonSpace + firstColWidth,
+	               h - x - win->getGutter(),
+	               _( "Dismiss" ) );
 
-	cards = new CardContainer( win );  
+	cards = new CardContainer( win );
 
 
 	// ----------------------------------------------
@@ -470,24 +471,24 @@ void PcEditor::createUI() {
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 	nameField = new TextField( secondColStart, 50, 22 );
 	nameChangeButton = cards->createButton( w - 80, 50, w - 20, 70, _( "Change" ), NAME_TAB );
-  char *s = Rpg::createName();
-  nameField->setText( s );
-  free( s );
+	char *s = Rpg::createName();
+	nameField->setText( s );
+	free( s );
 	cards->addWidget( nameField, NAME_TAB );
-	cards->addWidget( new Label( secondColStart, 90, 
-															 _( "What is your name, great hero? Enter it here, but choose wisely! You will not be able to change it again." ),
-															 TEXT_WIDTH ), 
-										NAME_TAB );
-										
-										
+	cards->addWidget( new Label( secondColStart, 90,
+	                             _( "What is your name, great hero? Enter it here, but choose wisely! You will not be able to change it again." ),
+	                             TEXT_WIDTH ),
+	                  NAME_TAB );
+
+
 	male = cards->createButton( secondColStart, 150, secondColStart + 90, 170, _( "Male" ), NAME_TAB, true );
 	female = cards->createButton( secondColStart + 100, 150, secondColStart + 190, 170, _( "Female" ), NAME_TAB, true );
 	male->setSelected( true );
-	female->setSelected( false );	
-	cards->addWidget( new Label( secondColStart, 200, 
-															 _( "Select the sex of your hero. Besides some visual effects, it has no other impact on game mechanics." ),
-															 TEXT_WIDTH ), 
-										NAME_TAB );										
+	female->setSelected( false );
+	cards->addWidget( new Label( secondColStart, 200,
+	                             _( "Select the sex of your hero. Besides some visual effects, it has no other impact on game mechanics." ),
+	                             TEXT_WIDTH ),
+	                  NAME_TAB );
 
 
 	// ----------------------------------------------
@@ -495,29 +496,29 @@ void PcEditor::createUI() {
 	p = cards->createLabel( secondColStart, 30, _( "Profession:" ), CLASS_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
-	cards->addWidget( new Label( secondColStart, 50, 
-															 _( "Which starting profession most closely resembles your hero? \
-Your character will evolve into a more powerful and refined practicer \
-of the chosen art. Below is a brief description of the strengths and \
-weaknesses of each profession." ),
-															 TEXT_WIDTH ), 
-										CLASS_TAB );
+	cards->addWidget( new Label( secondColStart, 50,
+	                             _( "Which starting profession most closely resembles your hero? \
+	                                Your character will evolve into a more powerful and refined practicer \
+	                                of the chosen art. Below is a brief description of the strengths and \
+	                                weaknesses of each profession." ),
+	                             TEXT_WIDTH ),
+	                  CLASS_TAB );
 
 
-  charType = new ScrollingList( secondColStart, 130, 
-																secondColWidth, 80, 
-																scourge->getShapePalette()->getHighlightTexture() );
-  cards->addWidget( charType, CLASS_TAB );
+	charType = new ScrollingList( secondColStart, 130,
+	                              secondColWidth, 80,
+	                              scourge->getShapePalette()->getHighlightTexture() );
+	cards->addWidget( charType, CLASS_TAB );
 	charTypeStr = new string[ Character::rootCharacters.size() ];
-  for(int i = 0; i < static_cast<int>(Character::rootCharacters.size()); i++) {
+	for ( int i = 0; i < static_cast<int>( Character::rootCharacters.size() ); i++ ) {
 		charTypeStr[i] = Character::rootCharacters[i]->getDisplayName();
-  }
-  charType->setLines( static_cast<int>(Character::rootCharacters.size()), charTypeStr );
-  int charIndex = Util::dice( Character::rootCharacters.size() );
-  charType->setSelectedLine( charIndex );
-  charTypeDescription = new ScrollingLabel( secondColStart, 230, 
-																						secondColWidth, 130, 
-																						Character::rootCharacters[charIndex]->getDescription() );
+	}
+	charType->setLines( static_cast<int>( Character::rootCharacters.size() ), charTypeStr );
+	int charIndex = Util::dice( Character::rootCharacters.size() );
+	charType->setSelectedLine( charIndex );
+	charTypeDescription = new ScrollingLabel( secondColStart, 230,
+	    secondColWidth, 130,
+	    Character::rootCharacters[charIndex]->getDescription() );
 	cards->addWidget( charTypeDescription, CLASS_TAB );
 
 
@@ -528,25 +529,25 @@ weaknesses of each profession." ),
 
 	char statDesc[3000];
 	int n = 0;
-	for( int i = 0; n < 10 && i < static_cast<int>(Skill::skills.size()); i++ ) {
+	for ( int i = 0; n < 10 && i < static_cast<int>( Skill::skills.size() ); i++ ) {
 		Skill *skill = Skill::skills[i];
-		if( skill->getGroup()->isStat() ) {
+		if ( skill->getGroup()->isStat() ) {
 			y = 60 + n * buttonHeight;
 			cards->createLabel( secondColStart, y, skill->getDisplayName(), STAT_TAB );
-			skillValue[n] = cards->createLabel( secondColStart + 105, y, 
-																					"", 
-																					STAT_TAB );
+			skillValue[n] = cards->createLabel( secondColStart + 105, y,
+			                "",
+			                STAT_TAB );
 			skillPlus[n] = cards->createButton( secondColStart + 150, y - 10,
-																					secondColStart + 150 + 25, y - 10 + buttonHeight,
-																					"+", 
-																					STAT_TAB );
+			               secondColStart + 150 + 25, y - 10 + buttonHeight,
+			               "+",
+			               STAT_TAB );
 			skillPlus[n]->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 			Util::addLineBreaks( skill->getDescription(), statDesc );
 			skillPlus[n]->setTooltip( statDesc ) ;
 			skillMinus[n] = cards->createButton( secondColStart + 180, y - 10,
-																					 secondColStart + 180 + 25, y - 10 + buttonHeight,
-																					 "-", 
-																					 STAT_TAB );
+			                secondColStart + 180 + 25, y - 10 + buttonHeight,
+			                "-",
+			                STAT_TAB );
 			skillMinus[n]->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 			skillMinus[n]->setTooltip( statDesc ) ;
 
@@ -557,14 +558,14 @@ weaknesses of each profession." ),
 	remainingCaptionLabel->setSpecialColor();
 	remainingLabel = cards->createLabel( secondColStart + 180 + 25 + 15, 80, "0", STAT_TAB );
 	remainingLabel->setSpecialColor();
-  reroll = cards->createButton( secondColStart + 180 + 25 + 15, 100, w - 10, 120, _( "Reroll" ), STAT_TAB );
+	reroll = cards->createButton( secondColStart + 180 + 25 + 15, 100, w - 10, 120, _( "Reroll" ), STAT_TAB );
 
 	int detailsHeight = 145;
-  detailsInfo = new CharacterInfoUI( scourge );
-  detailsCanvas = new Canvas( secondColStart, 200, 
-															secondColStart + secondColWidth, 200 + detailsHeight, 
-															detailsInfo );
-  cards->addWidget( detailsCanvas, STAT_TAB );
+	detailsInfo = new CharacterInfoUI( scourge );
+	detailsCanvas = new Canvas( secondColStart, 200,
+	                            secondColStart + secondColWidth, 200 + detailsHeight,
+	                            detailsInfo );
+	cards->addWidget( detailsCanvas, STAT_TAB );
 
 
 
@@ -573,30 +574,30 @@ weaknesses of each profession." ),
 	p = cards->createLabel( secondColStart, 30, _( "Patron Deity:" ), DEITY_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
-	cards->addWidget( new Label( secondColStart, 50, 
-															 _( "At times on your journey you may be reduced to nothing but a prayer. \
-Therefore it is important to keep in mind to whom such requests are directed. Given below is a list \
-of known deities of the land with a brief description for each." ),
-															 TEXT_WIDTH ), 
-										DEITY_TAB );
+	cards->addWidget( new Label( secondColStart, 50,
+	                             _( "At times on your journey you may be reduced to nothing but a prayer. \
+	                                Therefore it is important to keep in mind to whom such requests are directed. Given below is a list \
+	                                of known deities of the land with a brief description for each." ),
+	                             TEXT_WIDTH ),
+	                  DEITY_TAB );
 
-  int deityHeight = 100;
-  deityType = new ScrollingList( secondColStart, 130, 
-                                 secondColWidth, deityHeight, 
-                                 scourge->getShapePalette()->getHighlightTexture() );
-  cards->addWidget( deityType, DEITY_TAB );
-  deityTypeStr = new string[ MagicSchool::getMagicSchoolCount()];
-  for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
-    deityTypeStr[i] = MagicSchool::getMagicSchool( i )->getDeity();
-  }
-  deityType->setLines( MagicSchool::getMagicSchoolCount(), deityTypeStr );
-  int deityIndex = Util::dice( MagicSchool::getMagicSchoolCount() );
-  deityType->setSelectedLine( deityIndex );
+	int deityHeight = 100;
+	deityType = new ScrollingList( secondColStart, 130,
+	    secondColWidth, deityHeight,
+	    scourge->getShapePalette()->getHighlightTexture() );
+	cards->addWidget( deityType, DEITY_TAB );
+	deityTypeStr = new string[ MagicSchool::getMagicSchoolCount()];
+	for ( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
+		deityTypeStr[i] = MagicSchool::getMagicSchool( i )->getDeity();
+	}
+	deityType->setLines( MagicSchool::getMagicSchoolCount(), deityTypeStr );
+	int deityIndex = Util::dice( MagicSchool::getMagicSchoolCount() );
+	deityType->setSelectedLine( deityIndex );
 
-  deityTypeDescription = new ScrollingLabel( secondColStart, 130 + 10 + deityHeight, 
-                                             secondColWidth, 120, 
-                                             MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
-  cards->addWidget( deityTypeDescription, DEITY_TAB );
+	deityTypeDescription = new ScrollingLabel( secondColStart, 130 + 10 + deityHeight,
+	    secondColWidth, 120,
+	    MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
+	cards->addWidget( deityTypeDescription, DEITY_TAB );
 
 
 	// ----------------------------------------------
@@ -604,41 +605,41 @@ of known deities of the land with a brief description for each." ),
 	p = cards->createLabel( secondColStart, 30, _( "Appearance:" ), IMAGE_TAB );
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
-	cards->addWidget( new Label( secondColStart, 50, 
-															 _( "You may now choose a portrait and a character model \
-to represent your hero. Your appearance is only a matter of personal choice, it will \
-not affect the game in any way." ),
-															 TEXT_WIDTH ), 
-										IMAGE_TAB );
+	cards->addWidget( new Label( secondColStart, 50,
+	                             _( "You may now choose a portrait and a character model \
+	                                to represent your hero. Your appearance is only a matter of personal choice, it will \
+	                                not affect the game in any way." ),
+	                             TEXT_WIDTH ),
+	                  IMAGE_TAB );
 
-  // portrait
+	// portrait
 	int yy = 110;
-  int imageWidth = PORTRAIT_SIZE;
-  portrait = new Canvas( secondColStart, yy, 
-                         secondColStart + imageWidth, yy + PORTRAIT_SIZE, this );
-  cards->addWidget( portrait, IMAGE_TAB );
-	
+	int imageWidth = PORTRAIT_SIZE;
+	portrait = new Canvas( secondColStart, yy,
+	                       secondColStart + imageWidth, yy + PORTRAIT_SIZE, this );
+	cards->addWidget( portrait, IMAGE_TAB );
+
 	rollApperance();
-  
+
 	prevPortrait = cards->createButton( secondColStart, yy + PORTRAIT_SIZE + 10,
-                                      secondColStart + imageWidth / 2 - 5, yy + PORTRAIT_SIZE + 10 + buttonHeight, 
-                                      "<<", IMAGE_TAB );
-  nextPortrait = cards->createButton( secondColStart + imageWidth / 2 + 5, yy + PORTRAIT_SIZE + 10,
-                                      secondColStart + imageWidth, yy + PORTRAIT_SIZE + 10 + buttonHeight, 
-                                      "    >>", IMAGE_TAB );
-  // model
-  int modelStart = secondColStart + imageWidth + 25;
-  //int modelWidth = w - 10 - modelStart;
+	               secondColStart + imageWidth / 2 - 5, yy + PORTRAIT_SIZE + 10 + buttonHeight,
+	               "<<", IMAGE_TAB );
+	nextPortrait = cards->createButton( secondColStart + imageWidth / 2 + 5, yy + PORTRAIT_SIZE + 10,
+	               secondColStart + imageWidth, yy + PORTRAIT_SIZE + 10 + buttonHeight,
+	               "    >>", IMAGE_TAB );
+	// model
+	int modelStart = secondColStart + imageWidth + 25;
+	//int modelWidth = w - 10 - modelStart;
 	int modelWidth = PORTRAIT_SIZE;
-  model = new Canvas( modelStart, yy, 
-											modelStart + modelWidth, yy + MODEL_SIZE, this );
-  cards->addWidget( model, IMAGE_TAB );
-  prevModel = cards->createButton( modelStart, yy + MODEL_SIZE + 10,
-                                   modelStart + modelWidth / 2 - 5, yy + MODEL_SIZE + 10 + buttonHeight, 
-                                   "<<", IMAGE_TAB );
-  nextModel = cards->createButton( modelStart + modelWidth / 2 + 5, yy + MODEL_SIZE + 10,
-                                   modelStart + modelWidth, yy + MODEL_SIZE + 10 + buttonHeight,
-                                   "    >>", IMAGE_TAB );
+	model = new Canvas( modelStart, yy,
+	                    modelStart + modelWidth, yy + MODEL_SIZE, this );
+	cards->addWidget( model, IMAGE_TAB );
+	prevModel = cards->createButton( modelStart, yy + MODEL_SIZE + 10,
+	            modelStart + modelWidth / 2 - 5, yy + MODEL_SIZE + 10 + buttonHeight,
+	            "<<", IMAGE_TAB );
+	nextModel = cards->createButton( modelStart + modelWidth / 2 + 5, yy + MODEL_SIZE + 10,
+	            modelStart + modelWidth, yy + MODEL_SIZE + 10 + buttonHeight,
+	            "    >>", IMAGE_TAB );
 }
 
 void PcEditor::rollApperance() {
@@ -651,77 +652,77 @@ void PcEditor::rollApperance() {
 }
 
 void PcEditor::drawWidgetContents( Widget *w ) {
-  if( w == portrait ) {
-    glPushMatrix();
-    glEnable( GL_TEXTURE_2D );
-    glDisable( GL_CULL_FACE );
-    glColor4f( 1, 1, 1, 1 );
-    glBindTexture( GL_TEXTURE_2D, 
-                   scourge->getShapePalette()->
-									 getPortraitTexture( getSex(), portraitIndex ) );
-    
-    glBegin( GL_TRIANGLE_STRIP );
-    glTexCoord2f( 0, 0 );
-    glVertex2i( 0, 0 );
-    glTexCoord2f( 1, 0 );
-    glVertex2i( PORTRAIT_SIZE, 0 );
-    glTexCoord2f( 0, 1 );
-    glVertex2i( 0, PORTRAIT_SIZE );
-    glTexCoord2f( 1, 1 );
-    glVertex2i( PORTRAIT_SIZE, PORTRAIT_SIZE );
-    glEnd();
-    glDisable( GL_TEXTURE_2D );
-    glPopMatrix();
-  } else if( w == model ) {
-    // draw model
-    CharacterModelInfo *cmi = scourge->getShapePalette()->
-      getCharacterModelInfo( getSex(), modelIndex );
-    GLShape *shape;
-    if( shapesMap.find( cmi ) == shapesMap.end() ) {
-      shape = 
-        scourge->getShapePalette()->getCreatureShape( cmi->model_name, 
-                                                      cmi->skin_name, 
-                                                      cmi->scale );
-      shapesMap[ cmi ] = shape;
-      shape->setCurrentAnimation( MD2_STAND );
-    } else {
-      shape = shapesMap[ cmi ];
-    }
-    if( willModelPlaySound ) {
-      scourge->playCharacterSound( cmi->model_name, 
-                                   GameAdapter::SELECT_SOUND, 127 );
-      willModelPlaySound = false;
-    }
-    glPushMatrix();
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
-    glClearDepth( 1.0f );
-    glBegin( GL_TRIANGLE_STRIP );
-    glColor3f( 0, 0.1f, 0.25f );
-    glVertex2f( 0, 0 );
-    glColor3f( 0, 0, 0 );
-    glVertex2f( model->getWidth(), 0 );
-    glColor3f( 0, 0, 0 );
-    glVertex2f( 0, model->getHeight() );
-    glColor3f( 0, 0.1f, 0.25f );
-    glVertex2f( model->getWidth(), model->getHeight() );
-    glEnd();
-    glEnable(GL_DEPTH_TEST);
-    glDisable( GL_BLEND );
-    glDepthMask(GL_TRUE);
-    glEnable( GL_TEXTURE_2D );
-    glTranslatef( 130, MODEL_SIZE + 10, 500 );
-    glRotatef( 90, 1, 0, 0 );
-    glRotatef( 180, 0, 0, 1 );
-    glScalef( 2, 2, 2 );
-    glColor4f( 1, 1, 1, 1 );
-    //glDisable( GL_SCISSOR_TEST );
-    shape->draw();
-    glDisable( GL_TEXTURE_2D );
-    glDepthMask(GL_FALSE);
-    glDisable(GL_DEPTH_TEST);
-    glDisable( GL_BLEND );
-    glPopMatrix();
-  }
+	if ( w == portrait ) {
+		glPushMatrix();
+		glEnable( GL_TEXTURE_2D );
+		glDisable( GL_CULL_FACE );
+		glColor4f( 1, 1, 1, 1 );
+		glBindTexture( GL_TEXTURE_2D,
+		               scourge->getShapePalette()->
+		               getPortraitTexture( getSex(), portraitIndex ) );
+
+		glBegin( GL_TRIANGLE_STRIP );
+		glTexCoord2f( 0, 0 );
+		glVertex2i( 0, 0 );
+		glTexCoord2f( 1, 0 );
+		glVertex2i( PORTRAIT_SIZE, 0 );
+		glTexCoord2f( 0, 1 );
+		glVertex2i( 0, PORTRAIT_SIZE );
+		glTexCoord2f( 1, 1 );
+		glVertex2i( PORTRAIT_SIZE, PORTRAIT_SIZE );
+		glEnd();
+		glDisable( GL_TEXTURE_2D );
+		glPopMatrix();
+	} else if ( w == model ) {
+		// draw model
+		CharacterModelInfo *cmi = scourge->getShapePalette()->
+		                          getCharacterModelInfo( getSex(), modelIndex );
+		GLShape *shape;
+		if ( shapesMap.find( cmi ) == shapesMap.end() ) {
+			shape =
+			  scourge->getShapePalette()->getCreatureShape( cmi->model_name,
+			      cmi->skin_name,
+			      cmi->scale );
+			shapesMap[ cmi ] = shape;
+			shape->setCurrentAnimation( MD2_STAND );
+		} else {
+			shape = shapesMap[ cmi ];
+		}
+		if ( willModelPlaySound ) {
+			scourge->playCharacterSound( cmi->model_name,
+			                             GameAdapter::SELECT_SOUND, 127 );
+			willModelPlaySound = false;
+		}
+		glPushMatrix();
+		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
+		glClearDepth( 1.0f );
+		glBegin( GL_TRIANGLE_STRIP );
+		glColor3f( 0, 0.1f, 0.25f );
+		glVertex2f( 0, 0 );
+		glColor3f( 0, 0, 0 );
+		glVertex2f( model->getWidth(), 0 );
+		glColor3f( 0, 0, 0 );
+		glVertex2f( 0, model->getHeight() );
+		glColor3f( 0, 0.1f, 0.25f );
+		glVertex2f( model->getWidth(), model->getHeight() );
+		glEnd();
+		glEnable( GL_DEPTH_TEST );
+		glDisable( GL_BLEND );
+		glDepthMask( GL_TRUE );
+		glEnable( GL_TEXTURE_2D );
+		glTranslatef( 130, MODEL_SIZE + 10, 500 );
+		glRotatef( 90, 1, 0, 0 );
+		glRotatef( 180, 0, 0, 1 );
+		glScalef( 2, 2, 2 );
+		glColor4f( 1, 1, 1, 1 );
+		//glDisable( GL_SCISSOR_TEST );
+		shape->draw();
+		glDisable( GL_TEXTURE_2D );
+		glDepthMask( GL_FALSE );
+		glDisable( GL_DEPTH_TEST );
+		glDisable( GL_BLEND );
+		glPopMatrix();
+	}
 }
 

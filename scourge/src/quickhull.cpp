@@ -18,6 +18,7 @@
 This quickhull alg. was described here:
 http://www.cse.yorku.ca/~aaw/Hang/quick_hull/Algorithm.html
 */
+#include "common/constants.h"
 #include "quickhull.h"
 
 using namespace std;
@@ -35,30 +36,30 @@ float distance( CVector2 *A, CVector2 *B, CVector2 *C ) {
 	float ABx = B->x - A->x;
 	float ABy = B->y - A->y;
 	float num = ABx * ( A->y - C->y ) - ABy * ( A->x - C->x );
-	if( num < 0 ) num = -num;
+	if ( num < 0 ) num = -num;
 	return num;
 }
 
 // Find points on convex hull from the set Sk of points
 // that are on the right side of the oriented line from P to Q
 void findHull( set<CVector2*> *sk, CVector2 *p, CVector2 *q, vector<CVector2*> *out ) {
-	if( sk == NULL || sk->empty() ) return;
+	if ( sk == NULL || sk->empty() ) return;
 
 	// find the point C which is the farthest from the segment pq
 	float d = -1;
 	CVector2 *c;
-	for( set<CVector2*>::iterator e = sk->begin(); e != sk->end(); ++e ) {
+	for ( set<CVector2*>::iterator e = sk->begin(); e != sk->end(); ++e ) {
 		CVector2 *point = *e;
 		float dist = distance( p, q, point );
-		if( d == -1 || dist > d ) {
+		if ( d == -1 || dist > d ) {
 			d = dist;
 			c = point;
 		}
 	}
 
 	// add c to the hull between p and q
-	for( vector<CVector2*>::iterator e = out->begin(); e != out->end(); ++e ) {
-		if( *e == p ) {
+	for ( vector<CVector2*>::iterator e = out->begin(); e != out->end(); ++e ) {
+		if ( *e == p ) {
 			out->insert( e, c );
 			break;
 		}
@@ -66,11 +67,11 @@ void findHull( set<CVector2*> *sk, CVector2 *p, CVector2 *q, vector<CVector2*> *
 
 	// partition the rest of the points into two new sets: right of pc and right of cq
 	set<CVector2*> s1, s2;
-	for( set<CVector2*>::iterator e = sk->begin(); e != sk->end(); ++e ) {
+	for ( set<CVector2*>::iterator e = sk->begin(); e != sk->end(); ++e ) {
 		CVector2 *point = *e;
-		if( point != c ) {
-			if( pointLocation( p, c, point ) < 0 ) s1.insert( point );
-			else if( pointLocation( c, q, point ) < 0 ) s2.insert( point );
+		if ( point != c ) {
+			if ( pointLocation( p, c, point ) < 0 ) s1.insert( point );
+			else if ( pointLocation( c, q, point ) < 0 ) s2.insert( point );
 		}
 	}
 
@@ -81,14 +82,14 @@ void findHull( set<CVector2*> *sk, CVector2 *p, CVector2 *q, vector<CVector2*> *
 
 void QuickHull::findConvexHull( vector<CVector2*> *in, vector<CVector2*> *out ) {
 	out->clear();
-	if( !in || !out || in->size() < 2 ) return;
+	if ( !in || !out || in->size() < 2 ) return;
 	// find the right- and left-most points
 	CVector2 *a, *b;
 	a = b = in->at( 0 );
-	for( unsigned i = 0; i < in->size(); i++ ) {
-    CVector2 *p = in->at( i );
-		if( p->x < a->x ) a = p;
-		else if( p->x > b->x ) b = p;
+	for ( unsigned i = 0; i < in->size(); i++ ) {
+		CVector2 *p = in->at( i );
+		if ( p->x < a->x ) a = p;
+		else if ( p->x > b->x ) b = p;
 	}
 	//cerr << "Quickhull: min=" << a->x << "," << a->y << " max=" << b->x << "," << b->y << endl;
 
@@ -97,11 +98,11 @@ void QuickHull::findConvexHull( vector<CVector2*> *in, vector<CVector2*> *out ) 
 
 	// find points to the right of ab and to the right of ba
 	set<CVector2*> s1, s2;
-	for( unsigned i = 0; i < in->size(); i++ ) {
+	for ( unsigned i = 0; i < in->size(); i++ ) {
 		CVector2 *p = in->at( i );
-		if( p != a && p != b ) {
-			if( pointLocation( a, b, p ) < 0 ) s1.insert( p );
-			else if( pointLocation( b, a, p ) < 0 ) s2.insert( p );
+		if ( p != a && p != b ) {
+			if ( pointLocation( a, b, p ) < 0 ) s1.insert( p );
+			else if ( pointLocation( b, a, p ) < 0 ) s2.insert( p );
 		}
 	}
 

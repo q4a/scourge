@@ -15,7 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <string>  
+#include "../common/constants.h"
+#include <string>
 #include "Md3.h"
 #include "Md2.h"
 #include "md3shape.h"
@@ -25,14 +26,14 @@ using namespace std;
 
 //#define DEBUG_MD2 1
 
-MD3Shape::MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div, 
-										GLuint texture[], int width, int depth, int height,
-										char *name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
-  AnimatedShape( width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
+MD3Shape::MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div,
+                    GLuint texture[], int width, int depth, int height,
+                    char *name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
+		AnimatedShape( width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
 	// clone the md3 so we have our own animation data
-  this->md3 = md3;
-  this->loader = loader;
-  this->div = div;
+	this->md3 = md3;
+	this->loader = loader;
+	this->div = div;
 	numOfMaterialsUpper = numOfMaterialsLower = numOfMaterialsHead = 0;
 	aiLower.currentAnim = aiUpper.currentAnim = aiHead.currentAnim = 0;
 	aiLower.currentFrame = aiUpper.currentFrame = aiHead.currentFrame = 0;
@@ -45,13 +46,13 @@ MD3Shape::MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div,
 }
 
 MD3Shape::~MD3Shape() {
-  if( !cleanupDone ) {
-      cerr << "*** WARN: call cleanup first!" << endl;
-  }
+	if ( !cleanupDone ) {
+		cerr << "*** WARN: call cleanup first!" << endl;
+	}
 }
 
 void MD3Shape::cleanup() {
-  // this has to be done before the md3 is killed
+	// this has to be done before the md3 is killed
 	unloadSkinTextures( numOfMaterialsLower, &pMaterialLower );
 	unloadSkinTextures( numOfMaterialsUpper, &pMaterialUpper );
 	unloadSkinTextures( numOfMaterialsHead, &pMaterialHead );
@@ -59,10 +60,10 @@ void MD3Shape::cleanup() {
 }
 
 void MD3Shape::unloadSkinTextures( int count, vector<tMaterialInfo> *materials ) {
-  // can't use the md3 to get loader as it's been deleted by now.   
-	for( unsigned int i = 0; i < (unsigned)count && i < materials->size(); i++) {
+	// can't use the md3 to get loader as it's been deleted by now.
+	for ( unsigned int i = 0; i < ( unsigned )count && i < materials->size(); i++ ) {
 		tMaterialInfo info = materials->at( i );
-		if( info.strFile.length() > 0 ) {
+		if ( info.strFile.length() > 0 ) {
 			loader->unloadSkinTexture( info.strFile );
 		}
 	}
@@ -72,65 +73,65 @@ void MD3Shape::unloadSkinTextures( int count, vector<tMaterialInfo> *materials )
 void MD3Shape::draw() {
 
 #ifdef DEBUG_MD2
-  //if( glIsEnabled( GL_TEXTURE_2D ) ) {
-    glPushMatrix();
-    debugShape->draw();
-    glPopMatrix();
-  //}
+	//if( glIsEnabled( GL_TEXTURE_2D ) ) {
+	glPushMatrix();
+	debugShape->draw();
+	glPopMatrix();
+	//}
 #endif
 
-  glPushMatrix();
+	glPushMatrix();
 
-  // rotate to upright
-  glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
+	// rotate to upright
+	glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 
-  // move to the middle of the space
-  //glTranslatef( (static_cast<float>(width) * MUL) / 2.0f, 
-                //0.25f * MUL, 
-                //-(static_cast<float>(depth) * MUL) / 2.0f );
-  glTranslatef( (static_cast<float>(width) / 2.0f) * MUL, 0.25f * MUL, -((static_cast<float>(depth) / 2.0f) * MUL ) );
+	// move to the middle of the space
+	//glTranslatef( (static_cast<float>(width) * MUL) / 2.0f,
+	//0.25f * MUL,
+	//-(static_cast<float>(depth) * MUL) / 2.0f );
+	glTranslatef( ( static_cast<float>( width ) / 2.0f ) * MUL, 0.25f * MUL, -( ( static_cast<float>( depth ) / 2.0f ) * MUL ) );
 
-  // rotate to movement angle
-  glRotatef(getAngle() - 90, 0.0f, 1.0f, 0.0f);
+	// rotate to movement angle
+	glRotatef( getAngle() - 90, 0.0f, 1.0f, 0.0f );
 
-  // To make our model render somewhat faster, we do some front back culling.
-  // It seems that Quake2 orders their polygons clock-wise.  
-  glEnable( GL_CULL_FACE );
-  glCullFace( GL_BACK );
-  GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
-  glEnable( GL_TEXTURE_2D );
-	
+	// To make our model render somewhat faster, we do some front back culling.
+	// It seems that Quake2 orders their polygons clock-wise.
+	glEnable( GL_CULL_FACE );
+	glCullFace( GL_BACK );
+	GLboolean textureWasEnabled = glIsEnabled( GL_TEXTURE_2D );
+	glEnable( GL_TEXTURE_2D );
+
 	glScalef( div, div, div );
 	md3->setAnimationPaused( isAnimationPaused() );
 	md3->DrawModel( this );
- 
-  if( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
-  glDisable(GL_CULL_FACE);
-  glPopMatrix();
+
+	if ( !textureWasEnabled ) glDisable( GL_TEXTURE_2D );
+	glDisable( GL_CULL_FACE );
+	glPopMatrix();
 }
 
 void MD3Shape::outline( float r, float g, float b ) {
 	useShadow = true;
-  GLboolean blend;
-  glGetBooleanv( GL_BLEND, &blend );
-  //glEnable( GL_BLEND );
-  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	GLboolean blend;
+	glGetBooleanv( GL_BLEND, &blend );
+	//glEnable( GL_BLEND );
+	//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	GLboolean texture = glIsEnabled( GL_TEXTURE_2D );
-  glDisable( GL_TEXTURE_2D );
+	glDisable( GL_TEXTURE_2D );
 	glFrontFace( GL_CCW );
-  glPolygonMode( GL_BACK, GL_LINE );
-  glLineWidth( 4 );
-  glEnable( GL_CULL_FACE );
-  glCullFace( GL_FRONT );
-  glColor3f( r, g, b );
+	glPolygonMode( GL_BACK, GL_LINE );
+	glLineWidth( 4 );
+	glEnable( GL_CULL_FACE );
+	glCullFace( GL_FRONT );
+	glColor3f( r, g, b );
 
 	glPushMatrix();
-  // rotate to upright
-  glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-  glTranslatef( (static_cast<float>(width) / 2.0f) * MUL, 0.25f * MUL, -((static_cast<float>(depth) / 2.0f) * MUL ) );
+	// rotate to upright
+	glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
+	glTranslatef( ( static_cast<float>( width ) / 2.0f ) * MUL, 0.25f * MUL, -( ( static_cast<float>( depth ) / 2.0f ) * MUL ) );
 
-  // rotate to movement angle
-  glRotatef(getAngle() - 90, 0.0f, 1.0f, 0.0f);
+	// rotate to movement angle
+	glRotatef( getAngle() - 90, 0.0f, 1.0f, 0.0f );
 
 	//glTranslatef( -md3->getMin()[2], -md3->getMin()[0], -md3->getMin()[1] );
 	//glTranslatef( -md3->getMax()[2] / 2, 0, -md3->getMax()[1] / 2 );
@@ -139,23 +140,23 @@ void MD3Shape::outline( float r, float g, float b ) {
 	md3->setAnimationPaused( isAnimationPaused() );
 	md3->DrawModel( this );
 
-  glPopMatrix();
+	glPopMatrix();
 
 	glLineWidth( 1 );
-  glDisable( GL_CULL_FACE );
-  glPolygonMode( GL_BACK, GL_FILL );
-	if( !blend ) glDisable( GL_BLEND );
-	if( texture ) glEnable( GL_TEXTURE_2D );
-  useShadow = false;
-  glColor4f(1, 1, 1, 0.9f);	
+	glDisable( GL_CULL_FACE );
+	glPolygonMode( GL_BACK, GL_FILL );
+	if ( !blend ) glDisable( GL_BLEND );
+	if ( texture ) glEnable( GL_TEXTURE_2D );
+	useShadow = false;
+	glColor4f( 1, 1, 1, 0.9f );
 }
 
 void MD3Shape::setModelAnimation() {
 
- // cerr << "setting md3 model animation to=" << currentAnim << endl;
+// cerr << "setting md3 model animation to=" << currentAnim << endl;
 
 	// convert to MD3 animation (I know this is lame)
-	switch( currentAnim ) {
+	switch ( currentAnim ) {
 	case MD2_ATTACK:
 		md3->SetTorsoAnimation( "TORSO_ATTACK", true, this );
 		md3->SetLegsAnimation( "LEGS_IDLE", true, this );
@@ -175,7 +176,7 @@ void MD3Shape::setModelAnimation() {
 		md3->SetTorsoAnimation( "TORSO_STAND", true, this );
 		md3->SetLegsAnimation( "LEGS_IDLE", true, this );
 		break;
-	case MD2_PAIN1:		
+	case MD2_PAIN1:
 		md3->SetTorsoAnimation( "TORSO_STAND2", true, this );
 		md3->SetLegsAnimation( "LEGS_IDLE", true, this );
 	case MD2_PAIN2:
@@ -192,11 +193,11 @@ void MD3Shape::setupToDraw() {
 }
 
 AnimInfo *MD3Shape::getAnimInfo( t3DModel *model ) {
-	if( model == md3->GetModel( kLower ) ) {
+	if ( model == md3->GetModel( kLower ) ) {
 		return &aiLower;
-	} else if( model == md3->GetModel( kUpper ) ) {
+	} else if ( model == md3->GetModel( kUpper ) ) {
 		return &aiUpper;
-	} else if( model == md3->GetModel( kHead ) ) {
+	} else if ( model == md3->GetModel( kHead ) ) {
 		return &aiHead;
 	} else {
 		cerr << "*** Error: can't find animation info for model." << endl;
@@ -205,11 +206,11 @@ AnimInfo *MD3Shape::getAnimInfo( t3DModel *model ) {
 }
 
 std::vector<tMaterialInfo> *MD3Shape::getMaterialInfos( t3DModel *pModel ) {
-	if( pModel == md3->GetModel( kLower ) ) {
+	if ( pModel == md3->GetModel( kLower ) ) {
 		return &pMaterialLower;
-	} else if( pModel == md3->GetModel( kUpper ) ) {
+	} else if ( pModel == md3->GetModel( kUpper ) ) {
 		return &pMaterialUpper;
-	} else if( pModel == md3->GetModel( kHead ) ) {
+	} else if ( pModel == md3->GetModel( kHead ) ) {
 		return &pMaterialHead;
 	} else {
 		cerr << "*** Error: can't find material info for model." << endl;
@@ -218,11 +219,11 @@ std::vector<tMaterialInfo> *MD3Shape::getMaterialInfos( t3DModel *pModel ) {
 }
 
 int MD3Shape::getNumOfMaterials( t3DModel *pModel ) {
-	if( pModel == md3->GetModel( kLower ) ) {
+	if ( pModel == md3->GetModel( kLower ) ) {
 		return numOfMaterialsLower;
-	} else if( pModel == md3->GetModel( kUpper ) ) {
+	} else if ( pModel == md3->GetModel( kUpper ) ) {
 		return numOfMaterialsUpper;
-	} else if( pModel == md3->GetModel( kHead ) ) {
+	} else if ( pModel == md3->GetModel( kHead ) ) {
 		return numOfMaterialsHead;
 	} else {
 		cerr << "*** Error: can't find num of materials for model." << endl;
@@ -231,11 +232,11 @@ int MD3Shape::getNumOfMaterials( t3DModel *pModel ) {
 }
 
 void MD3Shape::setNumOfMaterials( t3DModel *pModel, int n ) {
-	if( pModel == md3->GetModel( kLower ) ) {
+	if ( pModel == md3->GetModel( kLower ) ) {
 		numOfMaterialsLower = n;
-	} else if( pModel == md3->GetModel( kUpper ) ) {
+	} else if ( pModel == md3->GetModel( kUpper ) ) {
 		numOfMaterialsUpper = n;
-	} else if( pModel == md3->GetModel( kHead ) ) {
+	} else if ( pModel == md3->GetModel( kHead ) ) {
 		numOfMaterialsHead = n;
 	} else {
 		cerr << "*** Error: can't set num of materials for model." << endl;

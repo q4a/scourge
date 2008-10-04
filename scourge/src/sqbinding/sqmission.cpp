@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "../common/constants.h"
 #include "sqmission.h"
 #include "../session.h"
 #include "../creature.h"
@@ -31,20 +32,20 @@ using namespace std;
 
 const char *SqMission::className = "Mission";
 ScriptClassMemberDecl SqMission::members[] = {
-  { "void", "_typeof", SqMission::_squirrel_typeof, 1, 0, "" },
-  { "void", "constructor", SqMission::_constructor, 0, 0, "" },
-  { "bool", "isCompleted", SqMission::_isCompleted, 0, 0, "" },
-  { "void", "setCompleted", SqMission::_setCompleted, 0, 0, "Mark the current mission as completed." },
-  { "int", "getCreatureCount", SqMission::_getCreatureCount, 0, 0, "Get the number of monsters and npc-s on this level." },
-  { "Creature", "getCreature", SqMission::_getCreature, 0, 0, "Return a reference to a monster or npc on this level. These references are only valid while on this map." },
+	{ "void", "_typeof", SqMission::_squirrel_typeof, 1, 0, "" },
+	{ "void", "constructor", SqMission::_constructor, 0, 0, "" },
+	{ "bool", "isCompleted", SqMission::_isCompleted, 0, 0, "" },
+	{ "void", "setCompleted", SqMission::_setCompleted, 0, 0, "Mark the current mission as completed." },
+	{ "int", "getCreatureCount", SqMission::_getCreatureCount, 0, 0, "Get the number of monsters and npc-s on this level." },
+	{ "Creature", "getCreature", SqMission::_getCreature, 0, 0, "Return a reference to a monster or npc on this level. These references are only valid while on this map." },
 	{ "void", "replaceCreature", SqMission::_replaceCreature, 0, 0, "Replace the given creature with a new one of the given type on the map." },
 	{ "Creature", "addCreature", SqMission::_addCreature, 0, 0, "Create a new creature from the given template. Return a reference to the monster or npc created. It is valid while on this map." },
-  { "int", "getItemCount", SqMission::_getItemCount, 0, 0, "Get the number of items on this level." },
-  { "Item", "getItem", SqMission::_getItem, 0, 0, "Returns a reference to an item on this level. These references are only valid while on this map." },
-  { "Item", "getCurrentWeapon", SqMission::_getCurrentWeapon, 0, 0, "Get the item currently used to attack the player. (or null if by hands or spell.)" },
+	{ "int", "getItemCount", SqMission::_getItemCount, 0, 0, "Get the number of items on this level." },
+	{ "Item", "getItem", SqMission::_getItem, 0, 0, "Returns a reference to an item on this level. These references are only valid while on this map." },
+	{ "Item", "getCurrentWeapon", SqMission::_getCurrentWeapon, 0, 0, "Get the item currently used to attack the player. (or null if by hands or spell.)" },
 	{ "int", "getChapter", SqMission::_getChapter, 0, 0, "Get the current storyline chapter." },
 	{ "void", "removeMapPosition", SqMission::_removeMapPosition, 0, 0, "Remove the shape at this map position." },
-	{ "void", "isFree", SqMission::_isFree, 0, 0, "Will this place fit at this location? This method returns false if the position is occupied or if it would block a door." },	
+	{ "void", "isFree", SqMission::_isFree, 0, 0, "Will this place fit at this location? This method returns false if the position is occupied or if it would block a door." },
 	{ "void", "isFreeOutdoors", SqMission::_isFreeOutdoors, 0, 0, "Same as isFree plus it discounts lakes, high elevations and where a floor shape is set." },
 	{ "void", "setMapPosition", SqMission::_setMapPosition, 0, 0, "Set a shape at this map position. Shape is given by its name." },
 	{ "void", "setMapEffect", SqMission::_setMapEffect, 0, 0, "Set an effect at this map position. The effect is identified by its name." },
@@ -66,10 +67,11 @@ ScriptClassMemberDecl SqMission::members[] = {
 	{ "void", "setMapConfig", SqMission::_setMapConfig, 0, 0, "Load conversation and npc info from this file and apply it to the current map." },
 	{ "Item", "addItem", SqMission::_addItem, 0, 0, "Create a new item on the map at this location." },
 	{ "void", "setOffset", SqMission::_setOffset, 0, 0, "Set a location's offset on the map." },
-  { 0,0,0,0,0 } // terminator
+	{ 0, 0, 0, 0, 0 } // terminator
 };
 SquirrelClassDecl SqMission::classDecl = { SqMission::className, 0, members,
-  "Information about the currently used map." };
+    "Information about the currently used map."
+                                         };
 
 SqMission::SqMission() {
 }
@@ -80,37 +82,37 @@ SqMission::~SqMission() {
 // ===========================================================================
 // Static callback methods to ScourgeGame squirrel object member functions.
 int SqMission::_squirrel_typeof( HSQUIRRELVM vm ) {
-  sq_pushstring( vm, SqMission::className, -1 );
-  return 1; // 1 value is returned
+	sq_pushstring( vm, SqMission::className, -1 );
+	return 1; // 1 value is returned
 }
 
 int SqMission::_constructor( HSQUIRRELVM vm ) {
-  return 0; // no values returned
+	return 0; // no values returned
 }
 
 int SqMission::_getCreatureCount( HSQUIRRELVM vm ) {
-  sq_pushinteger( vm, SqBinding::sessionRef->getCreatureCount() );
-  return 1;
+	sq_pushinteger( vm, SqBinding::sessionRef->getCreatureCount() );
+	return 1;
 }
 
 int SqMission::_getCreature( HSQUIRRELVM vm ) {
-  int index;
-  if( SQ_FAILED( sq_getinteger( vm, 2, &index ) ) ) {
-    return sq_throwerror( vm, _SC( "Can't get creature index in _getCreature." ) );
-  }
-  if( index < 0 || index > SqBinding::sessionRef->getCreatureCount() ) {
-    return sq_throwerror( vm, _SC( "Creature index is out of range." ) );
-  }
+	int index;
+	if ( SQ_FAILED( sq_getinteger( vm, 2, &index ) ) ) {
+		return sq_throwerror( vm, _SC( "Can't get creature index in _getCreature." ) );
+	}
+	if ( index < 0 || index > SqBinding::sessionRef->getCreatureCount() ) {
+		return sq_throwerror( vm, _SC( "Creature index is out of range." ) );
+	}
 
-  sq_pushobject( vm, *(SqBinding::binding->refCreature[index]) );
-  return 1;
+	sq_pushobject( vm, *( SqBinding::binding->refCreature[index] ) );
+	return 1;
 }
 
 int SqMission::_replaceCreature( HSQUIRRELVM vm ) {
 	GET_STRING( newCreatureType, 200 )
 	GET_OBJECT( Creature* )
 	Creature *replacement = SqBinding::sessionRef->replaceCreature( object, newCreatureType );
-	sq_pushobject( vm, *(SqBinding::binding->creatureMap[ replacement ]) );
+	sq_pushobject( vm, *( SqBinding::binding->creatureMap[ replacement ] ) );
 	return 1;
 }
 
@@ -120,7 +122,7 @@ int SqMission::_addCreature( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
 	Creature *c = SqBinding::sessionRef->addCreatureFromScript( creatureType, x, y );
-	sq_pushobject( vm, *(SqBinding::binding->creatureMap[ c ]) );
+	sq_pushobject( vm, *( SqBinding::binding->creatureMap[ c ] ) );
 	return 1;
 }
 
@@ -128,55 +130,55 @@ int SqMission::_addItem( HSQUIRRELVM vm ) {
 	GET_BOOL( isContainer )
 	GET_INT( z )
 	GET_INT( y )
-	GET_INT( x )	
+	GET_INT( x )
 	GET_STRING( itemType, 200 )
 	Item *item = SqBinding::sessionRef->addItemFromScript( itemType, x, y, z, isContainer, 1, 1 );
-	sq_pushobject( vm, *(SqBinding::binding->itemMap[ item ]) );
-	return 1;	
+	sq_pushobject( vm, *( SqBinding::binding->itemMap[ item ] ) );
+	return 1;
 }
 
 int SqMission::_getItemCount( HSQUIRRELVM vm ) {
-  sq_pushinteger( vm, SqBinding::sessionRef->getItemCount() );
-  return 1;
+	sq_pushinteger( vm, SqBinding::sessionRef->getItemCount() );
+	return 1;
 }
 
 int SqMission::_getItem( HSQUIRRELVM vm ) {
-  int index;
-  if( SQ_FAILED( sq_getinteger( vm, 2, &index ) ) ) {
-    return sq_throwerror( vm, _SC( "Can't get item index in _getItem." ) );
-  }
-  if( index < 0 || index > SqBinding::sessionRef->getItemCount() ) {
-    return sq_throwerror( vm, _SC( "Item index is out of range." ) );
-  }
+	int index;
+	if ( SQ_FAILED( sq_getinteger( vm, 2, &index ) ) ) {
+		return sq_throwerror( vm, _SC( "Can't get item index in _getItem." ) );
+	}
+	if ( index < 0 || index > SqBinding::sessionRef->getItemCount() ) {
+		return sq_throwerror( vm, _SC( "Item index is out of range." ) );
+	}
 
-  sq_pushobject( vm, *(SqBinding::binding->refItem[ index ]) );
-  return 1;
+	sq_pushobject( vm, *( SqBinding::binding->refItem[ index ] ) );
+	return 1;
 }
 
 int SqMission::_getCurrentWeapon( HSQUIRRELVM vm ) {
-  if( SqBinding::getCurrentWeapon() ) {
-    sq_pushobject( vm, *( SqBinding::binding->getItemRef( SqBinding::getCurrentWeapon() ) ) );
-  } else {
-    sq_pushnull( vm );
-  }
-  return 1;
+	if ( SqBinding::getCurrentWeapon() ) {
+		sq_pushobject( vm, *( SqBinding::binding->getItemRef( SqBinding::getCurrentWeapon() ) ) );
+	} else {
+		sq_pushnull( vm );
+	}
+	return 1;
 }
 
 int SqMission::_isCompleted( HSQUIRRELVM vm ) {
-  sq_pushbool( vm, ( SqBinding::sessionRef->getCurrentMission() && 
-                     SqBinding::sessionRef->getCurrentMission()->isCompleted() ? 
-                     true : false ) );
-  return 1;
+	sq_pushbool( vm, ( SqBinding::sessionRef->getCurrentMission() &&
+	                   SqBinding::sessionRef->getCurrentMission()->isCompleted() ?
+	                   true : false ) );
+	return 1;
 }
 
 int SqMission::_setCompleted( HSQUIRRELVM vm ) {
-  SqBinding::sessionRef->getGameAdapter()->completeCurrentMission();
-  return 0;
+	SqBinding::sessionRef->getGameAdapter()->completeCurrentMission();
+	return 0;
 }
 
 int SqMission::_getChapter( HSQUIRRELVM vm ) {
 	sq_pushinteger( vm, SqBinding::sessionRef->getBoard()->getStorylineIndex() );
-  return 1;
+	return 1;
 }
 
 int SqMission::_removeMapPosition( HSQUIRRELVM vm ) {
@@ -221,8 +223,8 @@ int SqMission::_setMapEffect( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
 	int effect_type = 0;
-	for( int i = 0; i < Constants::EFFECT_COUNT; i++) {
-		if( !strcmp( effectName, Constants::EFFECT_NAMES[i] ) ) {
+	for ( int i = 0; i < Constants::EFFECT_COUNT; i++ ) {
+		if ( !strcmp( effectName, Constants::EFFECT_NAMES[i] ) ) {
 			effect_type = i;
 			break;
 		}
@@ -234,7 +236,7 @@ int SqMission::_setMapEffect( HSQUIRRELVM vm ) {
 	di.offset_x = ox;
 	di.offset_y = oy;
 	di.offset_z = oz;
-	SqBinding::sessionRef->getMap()->startEffect(x, y, z, effect_type, (Constants::DAMAGE_DURATION * 4), w, h, delay, forever, &di );
+	SqBinding::sessionRef->getMap()->startEffect( x, y, z, effect_type, ( Constants::DAMAGE_DURATION * 4 ), w, h, delay, forever, &di );
 	return 0;
 }
 
@@ -244,9 +246,9 @@ int SqMission::_isFree( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
-	SQBool b = (SqBinding::sessionRef->getMap()->shapeFits( shape, x, y, z ) && 
-			!SqBinding::sessionRef->getMap()->coversDoor( shape, x, y )); 
-	sq_pushbool(vm, b);
+	SQBool b = ( SqBinding::sessionRef->getMap()->shapeFits( shape, x, y, z ) &&
+	             !SqBinding::sessionRef->getMap()->coversDoor( shape, x, y ) );
+	sq_pushbool( vm, b );
 	return 1;
 }
 
@@ -257,14 +259,14 @@ int SqMission::_isFreeOutdoors( HSQUIRRELVM vm ) {
 	GET_INT( x )
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
 	SQBool b = SqBinding::sessionRef->getMap()->shapeFitsOutdoors( shape, x, y, z );
-	sq_pushbool(vm, b);
+	sq_pushbool( vm, b );
 	return 1;
 }
 
 int SqMission::_getHeightMap( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
-	if( SqBinding::sessionRef->getMap()->isHeightMapEnabled() ) {
+	if ( SqBinding::sessionRef->getMap()->isHeightMapEnabled() ) {
 		sq_pushfloat( vm, SqBinding::sessionRef->getMap()->getGroundHeight( x / OUTDOORS_STEP, y / OUTDOORS_STEP ) );
 	} else {
 		sq_pushfloat( vm, 0 );
@@ -276,7 +278,7 @@ int SqMission::_setHeightMap( HSQUIRRELVM vm ) {
 	GET_FLOAT( h )
 	GET_INT( y )
 	GET_INT( x )
-	if( SqBinding::sessionRef->getMap()->isHeightMapEnabled() ) {
+	if ( SqBinding::sessionRef->getMap()->isHeightMapEnabled() ) {
 		SqBinding::sessionRef->getMap()->setGroundHeight( x / OUTDOORS_STEP, y / OUTDOORS_STEP, h );
 	}
 	return 0;
@@ -287,7 +289,7 @@ int SqMission::_getShape( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
 	Location *pos = SqBinding::sessionRef->getMap()->getLocation( x, y, z );
-	if( pos && pos->shape ) {
+	if ( pos && pos->shape ) {
 		sq_pushstring( vm, pos->shape->getName(), -1 );
 	} else {
 		sq_pushnull( vm );
@@ -304,8 +306,8 @@ int SqMission::_descendDungeon( HSQUIRRELVM vm ) {
 	GET_INT( z )
 	GET_INT( y )
 	GET_INT( x )
-	SqBinding::sessionRef->getGameAdapter()->descendDungeon( 
-		SqBinding::sessionRef->getMap()->getLocation( x, y, z ) );
+	SqBinding::sessionRef->getGameAdapter()->descendDungeon(
+	  SqBinding::sessionRef->getMap()->getLocation( x, y, z ) );
 	return 0;
 }
 
@@ -313,8 +315,8 @@ int SqMission::_ascendDungeon( HSQUIRRELVM vm ) {
 	GET_INT( z )
 	GET_INT( y )
 	GET_INT( x )
-	SqBinding::sessionRef->getGameAdapter()->ascendDungeon( 
-		SqBinding::sessionRef->getMap()->getLocation( x, y, z ) );
+	SqBinding::sessionRef->getGameAdapter()->ascendDungeon(
+	  SqBinding::sessionRef->getMap()->getLocation( x, y, z ) );
 	return 0;
 }
 
@@ -349,9 +351,9 @@ int SqMission::_setDoorLocked( HSQUIRRELVM vm ) {
 	cerr << "isDoor=" << SqBinding::sessionRef->getMap()->isDoor( x, y ) << endl;
 	Location *pos = SqBinding::sessionRef->getMap()->getLocation( x, y, z );
 	if( pos ) {
-		cerr << "\tpos=" << pos->shape->getName() << " at: " << pos->x << "," << pos->y << "," << pos->z << endl;
+	 cerr << "\tpos=" << pos->shape->getName() << " at: " << pos->x << "," << pos->y << "," << pos->z << endl;
 	} else {
-		cerr << "\tpos=NULL" << endl;
+	 cerr << "\tpos=NULL" << endl;
 	}
 	cerr << "BEFORE locked=" << SqBinding::sessionRef->getMap()->isLocked( x, y, z ) << endl;
 	cerr << "Setting door at " << x << "," << y << "," << z << " to locked: " << locked << endl;
@@ -398,7 +400,7 @@ int SqMission::_setOffset( HSQUIRRELVM vm ) {
 	GET_INT( y )
 	GET_INT( x )
 	Location *pos = SqBinding::sessionRef->getMap()->getLocation( x, y, z );
-	if( pos ) {
+	if ( pos ) {
 		pos->moveX = ox * MUL;
 		pos->moveY = oy * MUL;
 		pos->moveZ = oz * MUL;

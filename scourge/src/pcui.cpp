@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "common/constants.h"
 #include "pcui.h"
 #include "rpg/rpglib.h"
 #include "sdlhandler.h"
@@ -51,10 +52,10 @@ PcUi::PcUi( Scourge *scourge ) {
 	this->scourge = scourge;
 	this->creature = NULL;
 
-	mainWin = scourge->createWindow( ( scourge->getScreenWidth() - ( WIN_WIDTH ) ) / 2, 
-																	 ( scourge->getScreenHeight() - ( WIN_HEIGHT ) ) / 2,
-																	 WIN_WIDTH, WIN_HEIGHT,
-																	 _( "Character Information" ) );
+	mainWin = scourge->createWindow( ( scourge->getScreenWidth() - ( WIN_WIDTH ) ) / 2,
+	          ( scourge->getScreenHeight() - ( WIN_HEIGHT ) ) / 2,
+	          WIN_WIDTH, WIN_HEIGHT,
+	          _( "Character Information" ) );
 	mainWin->addWindowListener( this );
 	int x = 10;
 	int y = 5;
@@ -106,14 +107,14 @@ PcUi::PcUi( Scourge *scourge ) {
 	x += 33;
 	status = new Label( x + 5, y + 22, _( DEFAULT_STATUS ) );
 	mainWin->addWidget( status );
-	
+
 	x = WIN_WIDTH - 12 - 33 - 33;
 	prev = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "prev" ) );
 	prev->setTooltip( _( "Switch to previous party member" ) );
 	x += 33;
 	next = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "next" ) );
 	next->setTooltip( _( "Switch to next party member" ) );
-	
+
 	x = WIN_WIDTH - 12 - 33;
 	y = 5;
 	stats = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "stats" ) );
@@ -125,7 +126,7 @@ PcUi::PcUi( Scourge *scourge ) {
 	y += 33;
 	statemods = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "stateMods" ) );
 	statemods->setTooltip( _( "Show additional info about the character" ) );
-	
+
 	y = PORTRAIT_HEIGHT - 33 - 33 - 33 - 33 + 5;
 	poolMoney = mainWin->createButton( x, y, x + 32, y + 32, NULL, false, scourge->getShapePalette()->getNamedTexture( "pool" ) );
 	poolMoney->setTooltip( _( "Give all of the party's coins to this character" ) );
@@ -142,7 +143,7 @@ PcUi::PcUi( Scourge *scourge ) {
 	applyMods->setTooltip( _( "Apply Skill Modifications" ) );
 	storeSpell = mainWin->createButton( 10, y, 10 + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "store" ) );
 	storeSpell->setTooltip( _( "Store spell or capability in a quickspell slot" ) );
-	
+
 	up->setEnabled( false );
 	down->setEnabled( false );
 	poolMoney->setEnabled( true );
@@ -157,56 +158,56 @@ PcUi::~PcUi() {
 	delete portrait;
 }
 
-bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
+bool PcUi::handleEvent( Widget *widget, SDL_Event *event ) {
 	equip->handleEvent( widget, event );
 	inven->handleEvent( widget, event );
 	portrait->handleEvent( widget, event );
 
-  if( widget == mainWin->closeButton ) {
-    scourge->toggleInventoryWindow();
-	} else if( widget == info ) {
+	if ( widget == mainWin->closeButton ) {
+		scourge->toggleInventoryWindow();
+	} else if ( widget == info ) {
 		toggleButtons( info );
-	} else if( widget == use ) {
+	} else if ( widget == use ) {
 		toggleButtons( use );
-	} else if( widget == transcribe ) {
+	} else if ( widget == transcribe ) {
 		toggleButtons( transcribe );
-	} else if( widget == enchant ) {
+	} else if ( widget == enchant ) {
 		toggleButtons( enchant );
-	} else if( widget == store ) {
+	} else if ( widget == store ) {
 		toggleButtons( store );
-	} else if( widget == prev ) {
+	} else if ( widget == prev ) {
 		scourge->getParty()->previousPartyMember();
-	} else if( widget == next ) {
+	} else if ( widget == next ) {
 		scourge->getParty()->nextPartyMember();
-	} else if( widget == stats ) {
+	} else if ( widget == stats ) {
 		stats->setSelected( true );
 		skills->setSelected( false );
 		statemods->setSelected( false );
 		up->setEnabled( false );
 		down->setEnabled( false );
-		applyMods->setEnabled( false );		
+		applyMods->setEnabled( false );
 		portrait->setMode( Portrait::STATS_MODE );
-	} else if( widget == skills ) {
+	} else if ( widget == skills ) {
 		stats->setSelected( false );
 		skills->setSelected( true );
-		statemods->setSelected( false );	
+		statemods->setSelected( false );
 		up->setEnabled( true );
 		down->setEnabled( true );
 		applyMods->setEnabled( true );
 		portrait->setMode( Portrait::SKILLS_MODE );
-	} else if( widget == statemods ) {
+	} else if ( widget == statemods ) {
 		stats->setSelected( false );
 		skills->setSelected( false );
 		statemods->setSelected( true );
 		up->setEnabled( false );
 		down->setEnabled( false );
-		applyMods->setEnabled( false );		
-		portrait->setMode( Portrait::STATE_MODS );		
-	} else if( widget == poolMoney ) {
-		if( creature ) {
-			for( int i = 0; i < scourge->getSession()->getParty()->getPartySize(); i++ ) {
-				Creature *c = scourge->getSession()->getParty()->getParty(i);
-				if( c != creature ) {
+		applyMods->setEnabled( false );
+		portrait->setMode( Portrait::STATE_MODS );
+	} else if ( widget == poolMoney ) {
+		if ( creature ) {
+			for ( int i = 0; i < scourge->getSession()->getParty()->getPartySize(); i++ ) {
+				Creature *c = scourge->getSession()->getParty()->getParty( i );
+				if ( c != creature ) {
 					creature->setMoney( creature->getMoney() + c->getMoney() );
 					c->setMoney( 0 );
 				}
@@ -215,49 +216,49 @@ bool PcUi::handleEvent(Widget *widget, SDL_Event *event) {
 			snprintf( msg, 120, _( "Party members give all their money to %s." ), creature->getName() );
 			scourge->showMessageDialog( msg );
 		}
-	} else if( widget == up ) {
+	} else if ( widget == up ) {
 		portrait->scrollSkillsUp();
-	} else if( widget == down ) {
+	} else if ( widget == down ) {
 		portrait->scrollSkillsDown();
-	} else if( widget == applyMods && creature && creature->getHasAvailableSkillPoints() ) {
-		if( creature->getAvailableSkillMod() > 0 ) {
-				scourge->showMessageDialog( _( "You still have skill points to distribute." ) );
+	} else if ( widget == applyMods && creature && creature->getHasAvailableSkillPoints() ) {
+		if ( creature->getAvailableSkillMod() > 0 ) {
+			scourge->showMessageDialog( _( "You still have skill points to distribute." ) );
 		} else {
 			creature->applySkillMods();
 			scourge->showMessageDialog( _( "All available skill points have been applied." ) );
 		}
-	} else if( widget == equipButton ) {
+	} else if ( widget == equipButton ) {
 		toggleLeftButtons( equipButton );
 		equip->setMode( Equip::EQUIP_MODE );
 		//cc->setActiveCard( EQUIP_CARD );
-	} else if( widget == spellsButton ) {
+	} else if ( widget == spellsButton ) {
 		toggleLeftButtons( spellsButton );
 		equip->setMode( Equip::SPELLS_MODE );
 		//cc->setActiveCard( EQUIP_CARD );
-	} else if( widget == capabilitiesButton ) {
+	} else if ( widget == capabilitiesButton ) {
 		toggleLeftButtons( capabilitiesButton );
 		equip->setMode( Equip::CAPABILITIES_MODE );
 		//cc->setActiveCard( EQUIP_CARD );
-	} else if( widget == missionButton ) {
+	} else if ( widget == missionButton ) {
 		toggleLeftButtons( missionButton );
 		//cc->setActiveCard( MISSION_CARD );
-	}	else if( widget == cast || widget == storeSpell ) {
-		toggleSpellButtons( (Button*)widget );
-	} else if( widget == missionInfo->getConsoleButton() ) {
+	} else if ( widget == cast || widget == storeSpell ) {
+		toggleSpellButtons( ( Button* )widget );
+	} else if ( widget == missionInfo->getConsoleButton() ) {
 		scourge->getSquirrelConsole()->setVisible( true );
 	}
-  return false;
+	return false;
 }
 
 void PcUi::toggleLeftButtons( Button *button ) {
-	if( button != equipButton ) equipButton->setSelected( false );
-	if( button != spellsButton ) spellsButton->setSelected( false );
-	if( button != capabilitiesButton ) capabilitiesButton->setSelected( false );
-	if( button != missionButton ) missionButton->setSelected( false );
+	if ( button != equipButton ) equipButton->setSelected( false );
+	if ( button != spellsButton ) spellsButton->setSelected( false );
+	if ( button != capabilitiesButton ) capabilitiesButton->setSelected( false );
+	if ( button != missionButton ) missionButton->setSelected( false );
 	bool b = ( button == spellsButton || button == capabilitiesButton );
 	cast->setEnabled( b );
 	storeSpell->setEnabled( b );
-	if( missionButton->isSelected() ) {
+	if ( missionButton->isSelected() ) {
 		missionInfo->show();
 		equip->getWidget()->setVisible( false );
 	} else {
@@ -267,12 +268,12 @@ void PcUi::toggleLeftButtons( Button *button ) {
 }
 
 void PcUi::toggleButtons( Button *button ) {
-	if( button != info ) info->setSelected( false );
-	if( button != use ) use->setSelected( false );
-	if( button != transcribe ) transcribe->setSelected( false );
-	if( button != enchant ) enchant->setSelected( false );
-	if( button != store ) store->setSelected( false );
-	if( info->isSelected() || use->isSelected() || transcribe->isSelected() || enchant->isSelected() || store->isSelected() ) {
+	if ( button != info ) info->setSelected( false );
+	if ( button != use ) use->setSelected( false );
+	if ( button != transcribe ) transcribe->setSelected( false );
+	if ( button != enchant ) enchant->setSelected( false );
+	if ( button != store ) store->setSelected( false );
+	if ( info->isSelected() || use->isSelected() || transcribe->isSelected() || enchant->isSelected() || store->isSelected() ) {
 		status->setText( _( "Click on an item to select it..." ) );
 		scourge->setCursorMode( Constants::CURSOR_CROSSHAIR );
 	} else {
@@ -318,9 +319,9 @@ void PcUi::unselectSpellButtons() {
 }
 
 void PcUi::toggleSpellButtons( Button *button ) {
-	if( button != cast ) cast->setSelected( false );
-	if( button != storeSpell ) storeSpell->setSelected( false );
-	if( cast->isSelected() || storeSpell->isSelected() ) {
+	if ( button != cast ) cast->setSelected( false );
+	if ( button != storeSpell ) storeSpell->setSelected( false );
+	if ( cast->isSelected() || storeSpell->isSelected() ) {
 		status->setText( _( "Click on a spell or capability to select it..." ) );
 		scourge->setCursorMode( Constants::CURSOR_CROSSHAIR );
 	} else {
@@ -329,22 +330,22 @@ void PcUi::toggleSpellButtons( Button *button ) {
 	}
 }
 
-bool PcUi::handleEvent(SDL_Event *event) {
+bool PcUi::handleEvent( SDL_Event *event ) {
 	equip->handleEvent( event );
 	inven->handleEvent( event );
 	portrait->handleEvent( event );
 
-  switch(event->type) {
-  case SDL_KEYUP:
-    switch(event->key.keysym.sym) {
-    case SDLK_ESCAPE: 
-    scourge->toggleInventoryWindow();
-    return true;
-    default: break;
-    }
-  default: break;
-  }
-  return false;
+	switch ( event->type ) {
+	case SDL_KEYUP:
+		switch ( event->key.keysym.sym ) {
+		case SDLK_ESCAPE:
+			scourge->toggleInventoryWindow();
+			return true;
+		default: break;
+		}
+	default: break;
+	}
+	return false;
 }
 
 void PcUi::windowClosing() {
@@ -362,14 +363,14 @@ void PcUi::setCreature( Creature *creature ) {
 }
 
 void PcUi::receiveInventory() {
-  inven->receive( inven->getWidget() );
-  missionInfo->refresh();
+	inven->receive( inven->getWidget() );
+	missionInfo->refresh();
 }
 
-bool PcUi::receiveInventory(Item *item) {
-  bool b = inven->receive(item, false);
-  missionInfo->refresh();
-  return b;
+bool PcUi::receiveInventory( Item *item ) {
+	bool b = inven->receive( item, false );
+	missionInfo->refresh();
+	return b;
 }
 
 
@@ -387,7 +388,7 @@ void PcUi::refresh() {
 	prev->setEnabled( !scourge->inTurnBasedCombat() );
 }
 
-Storable *PcUi::getStorable() { 
+Storable *PcUi::getStorable() {
 	return( equip->getStorable() ? equip->getStorable() : inven->getStorable() );
 }
 

@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "common/constants.h"
 #include "portrait.h"
 #include "render/renderlib.h"
 #include "rpg/rpglib.h"
@@ -84,7 +85,7 @@ Portrait::Portrait( PcUi *pcUi, int x, int y, int w, int h ) {
 }
 
 Portrait::~Portrait() {
-  for( map<string,ActionRect*>::iterator e = boxes.begin(); e != boxes.end(); ++e ) {
+	for ( map<string, ActionRect*>::iterator e = boxes.begin(); e != boxes.end(); ++e ) {
 		ActionRect *rect = e->second;
 		delete rect;
 	}
@@ -92,48 +93,48 @@ Portrait::~Portrait() {
 }
 
 string getBoxKey( Skill *skill, int mode ) {
-  stringstream tmp;
-  tmp << skill->getName() << "," << mode;
-  return tmp.str();
+	stringstream tmp;
+	tmp << skill->getName() << "," << mode;
+	return tmp.str();
 }
 
 bool Portrait::findCurrentSkill( int px, int py ) {
 	SkillGroup *sg = SkillGroup::groups[ skillOffset ];
 	currentSkill = NULL;
 	currentMode = 0;
-	for( int i = 0; i < sg->getSkillCount(); i++ ) {
-			 for( int t = 0; t < 2; t++ ) {
-			 			string key = getBoxKey( sg->getSkill( i ), t );
-			 			if( boxes.find( key ) != boxes.end() )  {
-								ActionRect *rect = boxes[ key ];
-								if( rect->containsPoint( px, py ) ) {
-							     currentSkill = sg->getSkill( i );
-							     currentMode = t;
-							     return true;
-								}
-						 }
+	for ( int i = 0; i < sg->getSkillCount(); i++ ) {
+		for ( int t = 0; t < 2; t++ ) {
+			string key = getBoxKey( sg->getSkill( i ), t );
+			if ( boxes.find( key ) != boxes.end() )  {
+				ActionRect *rect = boxes[ key ];
+				if ( rect->containsPoint( px, py ) ) {
+					currentSkill = sg->getSkill( i );
+					currentMode = t;
+					return true;
 				}
+			}
+		}
 	}
 	return false;
-}		 
+}
 
 bool Portrait::handleEvent( SDL_Event *event ) {
-	if( event->type == SDL_MOUSEMOTION ) {
+	if ( event->type == SDL_MOUSEMOTION ) {
 		int mx = event->motion.x - pcUi->getWindow()->getX() - x;
 		int my = event->motion.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT;
-		if( creature && mx >= 80 && mx < 200 && my >= 55 && my < 90 ) {
+		if ( creature && mx >= 80 && mx < 200 && my >= 55 && my < 90 ) {
 			setCurrentWeaponTooltip();
 		} else {
-			if( mode == SKILLS_MODE ) {
+			if ( mode == SKILLS_MODE ) {
 				findCurrentSkill( mx, my );
-			} else if( mode == STATS_MODE ) {
+			} else if ( mode == STATS_MODE ) {
 				int index = -1;
-				if( my >= 250 ) {
+				if ( my >= 250 ) {
 					index = ( mx - 10 ) / RESISTANCE_WIDTH;
 				}
-				canvas->setTooltip( index > -1 && index < resistanceCount ? 
-														Skill::skills[ resistanceSkills[ index ] ]->getDisplayName() : 
-														"" );
+				canvas->setTooltip( index > -1 && index < resistanceCount ?
+				                    Skill::skills[ resistanceSkills[ index ] ]->getDisplayName() :
+				                    "" );
 			}
 		}
 	}
@@ -141,46 +142,46 @@ bool Portrait::handleEvent( SDL_Event *event ) {
 }
 
 bool Portrait::handleEvent( Widget *widget, SDL_Event *event ) {
-	if( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT && 
-			event->type == SDL_MOUSEBUTTONUP ) {
+	if ( pcUi->getScourge()->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT &&
+	        event->type == SDL_MOUSEBUTTONUP ) {
 		int mx = event->button.x - pcUi->getWindow()->getX() - x;
 		int my = event->button.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT;
-		if( creature && mx >= 80 && mx < 200 && my >= 55 && my < 90 ) {
-			if( creature->nextPreferredWeapon() ) {
+		if ( creature && mx >= 80 && mx < 200 && my >= 55 && my < 90 ) {
+			if ( creature->nextPreferredWeapon() ) {
 				// reset but don't pause again
 				creature->getBattle()->reset( true, true );
 				setCurrentWeaponTooltip();
 			}
-		} else if( mode == SKILLS_MODE ) {
-			if( findCurrentSkill( event->button.x - pcUi->getWindow()->getX() - x, 
-														event->button.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT ) ) {
-				if( currentMode == 0 && creature->getSkillMod( currentSkill->getIndex() ) > 0 ) {
-					if( creature->getSkill( currentSkill->getIndex() ) > 0 ) {
+		} else if ( mode == SKILLS_MODE ) {
+			if ( findCurrentSkill( event->button.x - pcUi->getWindow()->getX() - x,
+			                       event->button.y - pcUi->getWindow()->getY() - y - TITLE_HEIGHT ) ) {
+				if ( currentMode == 0 && creature->getSkillMod( currentSkill->getIndex() ) > 0 ) {
+					if ( creature->getSkill( currentSkill->getIndex() ) > 0 ) {
 						creature->setAvailableSkillMod( creature->getAvailableSkillMod() + 1 );
 						creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) - 1 );
 					}
-				} else if( currentMode == 1 && creature->getAvailableSkillMod() > 0 ) {
-					if( creature->getSkill( currentSkill->getIndex() ) < 100 ) {
+				} else if ( currentMode == 1 && creature->getAvailableSkillMod() > 0 ) {
+					if ( creature->getSkill( currentSkill->getIndex() ) < 100 ) {
 						creature->setAvailableSkillMod( creature->getAvailableSkillMod() - 1 );
 						creature->setSkillMod( currentSkill->getIndex(), creature->getSkillMod( currentSkill->getIndex() ) + 1 );
 					}
 				}
 			}
 		}
-  }
-  return false;
+	}
+	return false;
 }
 
 void Portrait::setCurrentWeaponTooltip() {
-	if( creature ) {
+	if ( creature ) {
 		char tmp[ 1000 ];
-		snprintf( tmp, 1000, "%s:%s (%s)", 
-						 _( "Current attack" ), 
-						 ( Constants::INVENTORY_LEFT_HAND == creature->getPreferredWeapon() ? _( "Left Hand" ) :
-							 ( Constants::INVENTORY_RIGHT_HAND == creature->getPreferredWeapon() ? _( "Right Hand" ) :
-								 ( Constants::INVENTORY_WEAPON_RANGED == creature->getPreferredWeapon() ? _( "Ranged Weapon" ) :
-									 _( "Bare Hands" ) ) ) ),
-						 _( "Click to change" ) );
+		snprintf( tmp, 1000, "%s:%s (%s)",
+		          _( "Current attack" ),
+		          ( Constants::INVENTORY_LEFT_HAND == creature->getPreferredWeapon() ? _( "Left Hand" ) :
+		            ( Constants::INVENTORY_RIGHT_HAND == creature->getPreferredWeapon() ? _( "Right Hand" ) :
+		              ( Constants::INVENTORY_WEAPON_RANGED == creature->getPreferredWeapon() ? _( "Ranged Weapon" ) :
+		                _( "Bare Hands" ) ) ) ),
+		          _( "Click to change" ) );
 		canvas->setTooltip( tmp );
 	}
 }
@@ -202,11 +203,11 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	glVertex2d( w, h );
 	glEnd();
 	glDisable( GL_BLEND );
-	
-	if( creature ) {
-		glScissor( pcUi->getWindow()->getX() + x + 12, 
-							 pcUi->getScourge()->getScreenHeight() - ( pcUi->getWindow()->getY() + y + TITLE_HEIGHT + 14 + 77 ), 
-							 62, 77 );
+
+	if ( creature ) {
+		glScissor( pcUi->getWindow()->getX() + x + 12,
+		           pcUi->getScourge()->getScreenHeight() - ( pcUi->getWindow()->getY() + y + TITLE_HEIGHT + 14 + 77 ),
+		           62, 77 );
 		glEnable( GL_SCISSOR_TEST );
 		glPushMatrix();
 		glTranslatef( 12, 14, 0 );
@@ -224,9 +225,9 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 
 	glColor4f( 1, 1, 1, 1 );
 	y = 35 + 17;
-	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s", 
-												   ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
-												   creature->getCharacter()->getDisplayName() );	
+	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s",
+	    ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
+	    creature->getCharacter()->getDisplayName() );
 	y += 12;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s:%d (%s: %d)", _( "Level" ), creature->getLevel(), _( "XP" ), creature->getExp() );
 	y += 12;
@@ -235,9 +236,9 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	pcUi->getScourge()->describeDefense( creature, 200, y );
 	glColor4f( 1, 1, 1, 1 );
 
-	if( mode == STATS_MODE ) {
+	if ( mode == STATS_MODE ) {
 		showStats();
-	} else if( mode == SKILLS_MODE ) {
+	} else if ( mode == SKILLS_MODE ) {
 		showSkills();
 	} else {
 		showStateMods();
@@ -249,31 +250,31 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 
 void Portrait::showStats() {
 	// hp/mp
-  int y = 120;	
-//	y += 18;
+	int y = 120;
+// y += 18;
 	glColor4f( 1, 1, 1, 1 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
-  drawBar( 120, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", creature->getHp(), creature->getMaxHp() );
-
-  y += 15;
-  pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "MP" ) );
-  drawBar( 120, y - 10, creature->getMp(), creature->getMaxMp(), 0, 0, 1, 1 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", creature->getMp(), creature->getMaxMp() );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "HP" ) );
+	drawBar( 120, y - 10, creature->getHp(), creature->getMaxHp(), 1, 0, 0, 1 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", creature->getHp(), creature->getMaxHp() );
 
 	y += 15;
-  pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "AP" ) );
-	int maxAp = static_cast<int>(creature->getMaxAP());
-	int ap = ( pcUi->getScourge()->inTurnBasedCombatPlayerTurn() ? creature->getBattle()->getAP() : maxAp );
-  drawBar( 120, y - 10, ap, maxAp, 1, 0, 1, 1 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", ap, maxAp );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "MP" ) );
+	drawBar( 120, y - 10, creature->getMp(), creature->getMaxMp(), 0, 0, 1, 1 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", creature->getMp(), creature->getMaxMp() );
 
-  y += 15;
-  drawHorizontalLine( y - 9 );
-  
+	y += 15;
+	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "AP" ) );
+	int maxAp = static_cast<int>( creature->getMaxAP() );
+	int ap = ( pcUi->getScourge()->inTurnBasedCombatPlayerTurn() ? creature->getBattle()->getAP() : maxAp );
+	drawBar( 120, y - 10, ap, maxAp, 1, 0, 1, 1 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 240, y, "%d/%d", ap, maxAp );
+
+	y += 15;
+	drawHorizontalLine( y - 9 );
+
 	// stats
-  y += 5;
-	for( int i = 0; i < SkillGroup::stats->getSkillCount(); i++ ) {
+	y += 5;
+	for ( int i = 0; i < SkillGroup::stats->getSkillCount(); i++ ) {
 		int yy = y + ( i * 15 );
 		Skill *skill = SkillGroup::stats->getSkill( i );
 		drawSkill( skill, yy );
@@ -286,8 +287,8 @@ void Portrait::showStats() {
 	glColor4f( 1, 1, 1, 1 );
 	int x = 5;
 	glEnable( GL_TEXTURE_2D );
-	for( int i = 0; i < resistanceCount; i++ ) {
-		drawResistance( x, y, resistanceIcons[ i ], resistanceSkills[ i ] ); 
+	for ( int i = 0; i < resistanceCount; i++ ) {
+		drawResistance( x, y, resistanceIcons[ i ], resistanceSkills[ i ] );
 		x += RESISTANCE_WIDTH;
 	}
 }
@@ -314,9 +315,9 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 	glVertex2d( size, size );
 	glEnd();
 
-	glDisable(GL_BLEND);
+	glDisable( GL_BLEND );
 
-	if( creature ) {
+	if ( creature ) {
 		pcUi->getScourge()->getSDLHandler()->texPrint( size, 15, "%d%%", creature->getSkill( skill, false ) );
 	}
 	glPopMatrix();
@@ -324,14 +325,14 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 
 void Portrait::scrollSkillsUp() {
 	skillOffset--;
-	if( skillOffset < 1 ) {
-		skillOffset = static_cast<int>(SkillGroup::groups.size()) - 1;
+	if ( skillOffset < 1 ) {
+		skillOffset = static_cast<int>( SkillGroup::groups.size() ) - 1;
 	}
 }
 
 void Portrait::scrollSkillsDown() {
 	skillOffset++;
-	if( skillOffset >= static_cast<int>(SkillGroup::groups.size()) ) {
+	if ( skillOffset >= static_cast<int>( SkillGroup::groups.size() ) ) {
 		skillOffset = 1;
 	}
 }
@@ -340,11 +341,11 @@ void Portrait::showSkills() {
 	int y = 120;
 	glColor4f( 1, 1, 1, 1 );
 	SkillGroup *sg = SkillGroup::groups[ skillOffset ];
-	if( creature->getHasAvailableSkillPoints() ) glColor3f( 1, 0, 0 );
+	if ( creature->getHasAvailableSkillPoints() ) glColor3f( 1, 0, 0 );
 	else glColor3f( 1, 1, 1 );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, "%s:%d",
-																								 _( "Available Skill Points" ), 
-																								 creature->getAvailableSkillMod() );
+	    _( "Available Skill Points" ),
+	    creature->getAvailableSkillMod() );
 	drawHorizontalLine( y + 4 );
 	y += 18;
 
@@ -352,7 +353,7 @@ void Portrait::showSkills() {
 	pcUi->getScourge()->getSDLHandler()->texPrint( 160, y, sg->getDisplayName() );
 	glColor4f( 1, 1, 1, 1 );
 
-	for( int i = 0; i < sg->getSkillCount(); i++, y += 30 ) {
+	for ( int i = 0; i < sg->getSkillCount(); i++, y += 30 ) {
 		Skill *skill = sg->getSkill( i );
 		glColor4f( 1, 1, 1, 1 );
 		drawSkill( skill, y );
@@ -369,39 +370,39 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 	strncpy( tmp, skill->getDisplayName(), SKILL_NAME_LENGTH );
 	tmp[SKILL_NAME_LENGTH] = '\0';
 	if( strlen( skill->getDisplayName() ) > SKILL_NAME_LENGTH ) {
-		strcat( tmp, "." );
+	 strcat( tmp, "." );
 	}
 	*/
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, yy, skill->getDisplayName() );
-	
-	
 
-	if( !skill->getGroup()->isStat() ) {
+
+
+	if ( !skill->getGroup()->isStat() ) {
 		yy += 15;
 		int x = 80;
 		drawBar( x, yy - 10, value, ( skill->getGroup()->isStat() ? 20 : 100 ), 0, 1, 0, 1, bonus );
-		if( bonus > 0 ) {
+		if ( bonus > 0 ) {
 			pcUi->getScourge()->getSDLHandler()->texPrint( x + 130, yy, "%d(%d)", ( value + bonus ), bonus );
 		} else {
 			pcUi->getScourge()->getSDLHandler()->texPrint( x + 130, yy, "%d", value );
 		}
-		if( !skill->getGroup()->isStat() ) {
-			for( int i = 0; i < 2; i++ ) {
-				
+		if ( !skill->getGroup()->isStat() ) {
+			for ( int i = 0; i < 2; i++ ) {
+
 				int dy = yy + 1 - 10;
 				int xx = ( i == 0 ? x - 17 : x + 115 );
 				string key = getBoxKey( skill, i );
-				if( boxes.find( key ) == boxes.end() ) {
-						boxes[ key ] = new ActionRect( xx, dy, xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE );
+				if ( boxes.find( key ) == boxes.end() ) {
+					boxes[ key ] = new ActionRect( xx, dy, xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE );
 				}
-				if( creature->getHasAvailableSkillPoints() ) {
-						if( currentSkill == skill && currentMode == i ) {
-						  glColor3f( 1, 1, 0 );
-						} else {
-							glColor3f( 1, 1, 1 );
-						}
+				if ( creature->getHasAvailableSkillPoints() ) {
+					if ( currentSkill == skill && currentMode == i ) {
+						glColor3f( 1, 1, 0 );
+					} else {
+						glColor3f( 1, 1, 1 );
+					}
 				} else glColor3f( 0.5, 0.5, 0.5 );
-				
+
 				glBegin( GL_LINE_LOOP );
 				glVertex2f( xx, dy + SKILL_BUTTON_SIZE );
 				glVertex2f( xx, dy );
@@ -411,16 +412,16 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 				glBegin( GL_LINES );
 				glVertex2f( xx, dy + SKILL_BUTTON_SIZE / 2 );
 				glVertex2f( xx + SKILL_BUTTON_SIZE, dy + SKILL_BUTTON_SIZE / 2 );
-				if( i > 0 ) {
-            glVertex2f( xx + SKILL_BUTTON_SIZE / 2, dy );
-            glVertex2f( xx + SKILL_BUTTON_SIZE / 2, dy + SKILL_BUTTON_SIZE);
-        }
+				if ( i > 0 ) {
+					glVertex2f( xx + SKILL_BUTTON_SIZE / 2, dy );
+					glVertex2f( xx + SKILL_BUTTON_SIZE / 2, dy + SKILL_BUTTON_SIZE );
+				}
 				glEnd();
 			}
 		}
 	} else {
 		drawBar( 120, yy - 10, value, ( skill->getGroup()->isStat() ? 20 : 100 ), 0, 1, 0, 1, bonus );
-		if( bonus > 0 ) {
+		if ( bonus > 0 ) {
 			pcUi->getScourge()->getSDLHandler()->texPrint( 240, yy, "%d(%d)", ( value + bonus ), bonus );
 		} else {
 			pcUi->getScourge()->getSDLHandler()->texPrint( 240, yy, "%d", value );
@@ -429,23 +430,23 @@ void Portrait::drawSkill( Skill *skill, int yy ) {
 }
 
 void Portrait::showStateMods() {
-  int y = 120;
+	int y = 120;
 	glColor4f( 1, 1, 1, 1 );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, "%s:%d", _( "Coins" ), creature->getMoney() );
 	y += 15;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Thirst" ) );
-  drawBar( 100, y - 10, creature->getThirst(), 10 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%d/%d", creature->getThirst(), 10 );
-  y += 15;
-	
+	drawBar( 100, y - 10, creature->getThirst(), 10 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%d/%d", creature->getThirst(), 10 );
+	y += 15;
+
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Hunger" ) );
-  drawBar( 100, y - 10, creature->getHunger(), 10 );
-  pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%d/%d", creature->getHunger(), 10 );
-  y += 15;
-  
+	drawBar( 100, y - 10, creature->getHunger(), 10 );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%d/%d", creature->getHunger(), 10 );
+	y += 15;
+
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Carrying (kg)" ) );
-  drawBar( 100, y - 10, static_cast<int>(creature->getInventoryWeight() * 100), static_cast<int>(creature->getMaxInventoryWeight() * 100));
-  pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%2.1f/%2.1f", creature->getInventoryWeight(), creature->getMaxInventoryWeight() );
+	drawBar( 100, y - 10, static_cast<int>( creature->getInventoryWeight() * 100 ), static_cast<int>( creature->getMaxInventoryWeight() * 100 ) );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%2.1f/%2.1f", creature->getInventoryWeight(), creature->getMaxInventoryWeight() );
 	drawHorizontalLine( y + 4 );
 	y += 18;
 
@@ -459,12 +460,12 @@ void Portrait::showStateMods() {
 	char name[255];
 	Color color;
 	int size = 12;
-  for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
-		if( pcUi->getScourge()->getStateModIcon( &icon, name, &color, creature, i ) ) {
+	for ( int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++ ) {
+		if ( pcUi->getScourge()->getStateModIcon( &icon, name, &color, creature, i ) ) {
 
 			// will it fit?
 			int textWidth = pcUi->getScourge()->getSDLHandler()->textWidth( name ) + 20 + size;
-			if( x + textWidth > this->w - 20 ) {
+			if ( x + textWidth > this->w - 20 ) {
 				x = 10;
 				y += 15;
 			}
@@ -474,9 +475,9 @@ void Portrait::showStateMods() {
 			glPopMatrix();
 
 			x += textWidth;
-      
-    }
-  }
+
+		}
+	}
 	y += 15;
 
 	drawHorizontalLine( y - 12 );
@@ -486,12 +487,12 @@ void Portrait::showStateMods() {
 	glColor4f( 1, 1, 1, 1 );
 	y += 15;
 	x = 10;
-	for(int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++) {
-		if( pcUi->getScourge()->getStateModIcon( &icon, name, &color, creature, i, true ) ) {
+	for ( int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++ ) {
+		if ( pcUi->getScourge()->getStateModIcon( &icon, name, &color, creature, i, true ) ) {
 
 			// will it fit?
 			int textWidth = pcUi->getScourge()->getSDLHandler()->textWidth( name ) + 20 + size;
-			if( x + textWidth > this->w - 20 ) {
+			if ( x + textWidth > this->w - 20 ) {
 				x = 10;
 				y += 15;
 			}
@@ -501,9 +502,9 @@ void Portrait::showStateMods() {
 			glPopMatrix();
 
 			x += textWidth;
-      
-    }
-  }
+
+		}
+	}
 	y += 15;
 }
 
@@ -513,7 +514,7 @@ void Portrait::drawStateModIcon( GLuint icon, char *name, Color color, int x, in
 	glColor4f( color.r, color.g, color.b, color.a );
 	glPushMatrix();
 	glTranslatef( x, y - size, 0 );
-	
+
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
 	glVertex3f( 0, 0, 0 );
@@ -544,16 +545,16 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	glVertex2d( 0, BAR_HEIGHT );
 	glTexCoord2d( 1, 1 );
 	glVertex2d( BAR_WIDTH, BAR_HEIGHT );
-	glEnd();	
+	glEnd();
 
 	glDisable( GL_TEXTURE_2D );
 
 	int v, n;
-	if( mod > 0 ) {
+	if ( mod > 0 ) {
 		v = value + mod;
-		if( v > maxValue ) v = maxValue;
-		if( v > 0 ) {
-			n = static_cast<int>( static_cast<float>(v) * static_cast<float>(BAR_INNER_WIDTH) / static_cast<float>(maxValue) );
+		if ( v > maxValue ) v = maxValue;
+		if ( v > 0 ) {
+			n = static_cast<int>( static_cast<float>( v ) * static_cast<float>( BAR_INNER_WIDTH ) / static_cast<float>( maxValue ) );
 			glDisable( GL_TEXTURE_2D );
 			glColor4f( 0, 0.5f, 1, 1 );
 			glBegin( GL_TRIANGLE_STRIP );
@@ -561,14 +562,14 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 			glVertex2d( BAR_X + n, BAR_Y );
 			glVertex2d( BAR_X, BAR_Y + BAR_INNER_HEIGHT );
 			glVertex2d( BAR_X + n, BAR_Y + BAR_INNER_HEIGHT );
-			glEnd();	
+			glEnd();
 		}
 	}
 
 	v = value;
-	if( v > maxValue ) v = maxValue;
-	if( v > 0 ) {
-		n = static_cast<int>( static_cast<float>(v) * static_cast<float>(BAR_INNER_WIDTH) / static_cast<float>(maxValue) );
+	if ( v > maxValue ) v = maxValue;
+	if ( v > 0 ) {
+		n = static_cast<int>( static_cast<float>( v ) * static_cast<float>( BAR_INNER_WIDTH ) / static_cast<float>( maxValue ) );
 		glDisable( GL_TEXTURE_2D );
 		glColor4f( r, g, b, a );
 		glBegin( GL_TRIANGLE_STRIP );
@@ -597,27 +598,27 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	glPopMatrix();
 }
 
-void Portrait::setCreature( Creature *creature ) { 
-	this->creature = creature; 
+void Portrait::setCreature( Creature *creature ) {
+	this->creature = creature;
 }
 
 void Portrait::drawHorizontalLine( int y ) {
-  glLineWidth( 2 );
-  glDisable( GL_TEXTURE_2D );
-  //pcUi->getWindow()->setTopWindowBorderColor();
+	glLineWidth( 2 );
+	glDisable( GL_TEXTURE_2D );
+	//pcUi->getWindow()->setTopWindowBorderColor();
 	glEnable( GL_BLEND );
-  glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
-  glBegin( GL_LINES );
-  glColor4f( 0.45f, 0.25f, 0, 0.75f );
-  glVertex2d( 20, y );
-  glColor4f( 1, 0.75f, 0, 0.75f );
-  glVertex2d( ( canvas->getWidth() - 20 ) / 2, y );
-  glVertex2d( ( canvas->getWidth() - 20 ) / 2, y );
-  glColor4f( 0.45f, 0.25f, 0, 0.75f );
-  glVertex2d( canvas->getWidth() - 20, y );
-  glEnd();
-  glDisable( GL_BLEND );
-  glColor4f( 1, 1, 1, 1 );
-  glEnable( GL_TEXTURE_2D );
-  glLineWidth( 1 );
+	glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+	glBegin( GL_LINES );
+	glColor4f( 0.45f, 0.25f, 0, 0.75f );
+	glVertex2d( 20, y );
+	glColor4f( 1, 0.75f, 0, 0.75f );
+	glVertex2d( ( canvas->getWidth() - 20 ) / 2, y );
+	glVertex2d( ( canvas->getWidth() - 20 ) / 2, y );
+	glColor4f( 0.45f, 0.25f, 0, 0.75f );
+	glVertex2d( canvas->getWidth() - 20, y );
+	glEnd();
+	glDisable( GL_BLEND );
+	glColor4f( 1, 1, 1, 1 );
+	glEnable( GL_TEXTURE_2D );
+	glLineWidth( 1 );
 }

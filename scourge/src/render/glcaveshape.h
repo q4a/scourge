@@ -17,6 +17,7 @@
 
 #ifndef GLCAVE_SHAPE_H
 #define GLCAVE_SHAPE_H
+#pragma once
 
 #include "render.h"
 #include "glshape.h"
@@ -31,15 +32,15 @@ public:
 	CVector3 normal;
 	GLfloat tex[3][2]; // texture coordinates per point
 	enum {
-		WALL=0,
+		WALL = 0,
 		TOP,
 		FLOOR
 	};
 	int textureType;
 	GLfloat shade;
 
-	CaveFace( int p1, int p2, int p3, GLfloat u1, GLfloat v1, GLfloat u2, GLfloat v2, GLfloat u3, GLfloat v3, int textureType ) 
-		: normal(0, 0, 0) {
+	CaveFace( int p1, int p2, int p3, GLfloat u1, GLfloat v1, GLfloat u2, GLfloat v2, GLfloat u3, GLfloat v3, int textureType )
+			: normal( 0, 0, 0 ) {
 		this->p1 = p1;
 		this->p2 = p2;
 		this->p3 = p3;
@@ -60,120 +61,126 @@ public:
 /// Creates the shapes (walls, lava, floor etc.) that are used inside caves
 class GLCaveShape : public GLShape {
 private:
-  int mode;
-  int dir;
-  Shapes *shapes;
-  GLuint *wallTextureGroup;
-  GLuint *topTextureGroup;
-  GLuint *floorTextureGroup;
-  int caveIndex;
-  int stencilIndex;
-  int stencilAngle;
+	int mode;
+	int dir;
+	Shapes *shapes;
+	GLuint *wallTextureGroup;
+	GLuint *topTextureGroup;
+	GLuint *floorTextureGroup;
+	int caveIndex;
+	int stencilIndex;
+	int stencilAngle;
 
-  enum {
-    MODE_FLAT=0,
-    MODE_CORNER,
-    MODE_BLOCK,
-    MODE_FLOOR,
-    MODE_INV,
-    MODE_LAVA
-  };
+	enum {
+		MODE_FLAT = 0,
+		MODE_CORNER,
+		MODE_BLOCK,
+		MODE_FLOOR,
+		MODE_INV,
+		MODE_LAVA
+	};
 
-  enum {
-    DIR_N=0,
-    DIR_E,
-    DIR_S,
-    DIR_W,
-    DIR_NE,
-    DIR_SE,
-    DIR_SW,
-    DIR_NW,
-    DIR_CROSS_NW,
-    DIR_CROSS_NE
-  };
+	enum {
+		DIR_N = 0,
+		DIR_E,
+		DIR_S,
+		DIR_W,
+		DIR_NE,
+		DIR_SE,
+		DIR_SW,
+		DIR_NW,
+		DIR_CROSS_NW,
+		DIR_CROSS_NE
+	};
 
-  static char *names[];
+	static char *names[];
 
-  static GLCaveShape *shapeList[];
+	static GLCaveShape *shapeList[];
 
-  static std::vector<CVector3*> points;
-  static std::vector<std::vector<CaveFace*>*> polys;
+	static std::vector<CVector3*> points;
+	static std::vector<std::vector<CaveFace*>*> polys;
 
 public:
 
-  GLCaveShape( Shapes *shapes, GLuint texture[], int width, int depth, int height, char *name, int index, 
-               int mode, int dir, int caveIndex, int stencilIndex=0, int stencilAngle=0 );
-  virtual ~GLCaveShape();
+	GLCaveShape( Shapes *shapes, GLuint texture[], int width, int depth, int height, char *name, int index,
+	             int mode, int dir, int caveIndex, int stencilIndex = 0, int stencilAngle = 0 );
+	virtual ~GLCaveShape();
 
-  virtual void initialize();
+	virtual void initialize();
 
-  void draw();
+	void draw();
 
-  virtual inline bool isFlatCaveshape() { return caveIndex >= LAVA_SIDE_W; }
+	virtual inline bool isFlatCaveshape() {
+		return caveIndex >= LAVA_SIDE_W;
+	}
 
-  enum {
-    CAVE_INDEX_N=0,
-    CAVE_INDEX_E,
-    CAVE_INDEX_S,
-    CAVE_INDEX_W,
-    CAVE_INDEX_NE,
-    CAVE_INDEX_SE,
-    CAVE_INDEX_SW,
-    CAVE_INDEX_NW,
-    CAVE_INDEX_INV_NE,
-    CAVE_INDEX_INV_SE,
-    CAVE_INDEX_INV_SW,
-    CAVE_INDEX_INV_NW,
-    CAVE_INDEX_CROSS_NW,
-    CAVE_INDEX_CROSS_NE,
-    CAVE_INDEX_BLOCK,
-    CAVE_INDEX_FLOOR,
-    
-    LAVA_SIDE_W,
-    LAVA_SIDE_E,
-    LAVA_SIDE_N,
-    LAVA_SIDE_S,
-    LAVA_OUTSIDE_TURN_NW,
-    LAVA_OUTSIDE_TURN_NE,
-    LAVA_OUTSIDE_TURN_SE,
-    LAVA_OUTSIDE_TURN_SW,
-    LAVA_U_N,
-    LAVA_U_E,
-    LAVA_U_S,
-    LAVA_U_W,
-    LAVA_SIDES_NS,
-    LAVA_SIDES_EW,
-    LAVA_ALL,
-    LAVA_NONE,
+	enum {
+		CAVE_INDEX_N = 0,
+		CAVE_INDEX_E,
+		CAVE_INDEX_S,
+		CAVE_INDEX_W,
+		CAVE_INDEX_NE,
+		CAVE_INDEX_SE,
+		CAVE_INDEX_SW,
+		CAVE_INDEX_NW,
+		CAVE_INDEX_INV_NE,
+		CAVE_INDEX_INV_SE,
+		CAVE_INDEX_INV_SW,
+		CAVE_INDEX_INV_NW,
+		CAVE_INDEX_CROSS_NW,
+		CAVE_INDEX_CROSS_NE,
+		CAVE_INDEX_BLOCK,
+		CAVE_INDEX_FLOOR,
 
-    CAVE_INDEX_COUNT
-  };
+		LAVA_SIDE_W,
+		LAVA_SIDE_E,
+		LAVA_SIDE_N,
+		LAVA_SIDE_S,
+		LAVA_OUTSIDE_TURN_NW,
+		LAVA_OUTSIDE_TURN_NE,
+		LAVA_OUTSIDE_TURN_SE,
+		LAVA_OUTSIDE_TURN_SW,
+		LAVA_U_N,
+		LAVA_U_E,
+		LAVA_U_S,
+		LAVA_U_W,
+		LAVA_SIDES_NS,
+		LAVA_SIDES_EW,
+		LAVA_ALL,
+		LAVA_NONE,
 
-  static GLuint floorTex[];
-  static TextureData floorData[];
+		CAVE_INDEX_COUNT
+	};
 
-  static void createShapes( GLuint texture[], int shapeCount, Shapes *shapes );
-  static void initializeShapes( Shapes *shapes );
-  static inline GLCaveShape *getShape( int index ) { return shapeList[ index ]; }
+	static GLuint floorTex[];
+	static TextureData floorData[];
 
-  virtual inline bool isShownInMapEditor() { return false; }
+	static void createShapes( GLuint texture[], int shapeCount, Shapes *shapes );
+	static void initializeShapes( Shapes *shapes );
+	static inline GLCaveShape *getShape( int index ) {
+		return shapeList[ index ];
+	}
+
+	virtual inline bool isShownInMapEditor() {
+		return false;
+	}
 
 protected:
-  void drawFaces();
-  void drawBlock( float w, float h, float d );
-  void drawFloor( float w, float h, float d );
-  void drawLava( float w, float h, float d );
+	void drawFaces();
+	void drawBlock( float w, float h, float d );
+	void drawFloor( float w, float h, float d );
+	void drawLava( float w, float h, float d );
 
 private:
-  static void removeDupPoints();
-  static void updatePointIndexes( int oldIndex, int newIndex );
-  static void dividePolys();
-  static CVector3 *divideSegment( CVector3 *v1, CVector3 *v2 );
-  static void bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 );
-  static void calculateNormals();
-  static void calculateLight();
-  static void createFloorTexture( Shapes *shapes, int stencilIndex );  
-  static void createLavaTexture( int index, int stencilIndex, int rot );
+	static void removeDupPoints();
+	static void updatePointIndexes( int oldIndex, int newIndex );
+	static void dividePolys();
+	static CVector3 *divideSegment( CVector3 *v1, CVector3 *v2 );
+	static void bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 );
+	static void calculateNormals();
+	static void calculateLight();
+	static void createFloorTexture( Shapes *shapes, int stencilIndex );
+	static void createLavaTexture( int index, int stencilIndex, int rot );
 };
 
 #endif

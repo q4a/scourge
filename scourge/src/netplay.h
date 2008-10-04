@@ -17,6 +17,7 @@
 
 #ifndef NET_PLAY_H
 #define NET_PLAY_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -25,40 +26,42 @@
 #include "net/commands.h"
 
 
-/** 
+/**
   @author Gabor Torok
-*/ 
+*/
 
 /// Handles online play.
-class NetPlay : public GameStateHandler,CommandInterpreter {
+class NetPlay : public GameStateHandler, CommandInterpreter {
 private:
-  Scourge *scourge;
-  Window *mainWin;
-  ScrollingList *messageList;
-  TextField *chatText;
-  int chatStrCount;
-  std::string* chatStr;
-  static const int MAX_CHAT_SIZE = 100;
-  static const int CHAT_STR_LENGTH = 120;
+	Scourge *scourge;
+	Window *mainWin;
+	ScrollingList *messageList;
+	TextField *chatText;
+	int chatStrCount;
+	std::string* chatStr;
+	static const int MAX_CHAT_SIZE = 100;
+	static const int CHAT_STR_LENGTH = 120;
 
 public:
-  NetPlay(Scourge *scourge);
-  virtual ~NetPlay();
+	NetPlay( Scourge *scourge );
+	virtual ~NetPlay();
 
-  char *getGameState();
-  
-  void chat(char *message);
-  void logout();
-  void ping(int frame);
-  void processGameState(int frame, char *p);
-  void handleUnknownMessage();
-  void serverClosing();
-  void character(char *bytes, int length);
-  void addPlayer(Uint32 id, char *bytes, int length);
+	char *getGameState();
 
-  inline Window *getWindow() { return mainWin; }
+	void chat( char *message );
+	void logout();
+	void ping( int frame );
+	void processGameState( int frame, char *p );
+	void handleUnknownMessage();
+	void serverClosing();
+	void character( char *bytes, int length );
+	void addPlayer( Uint32 id, char *bytes, int length );
 
-  bool handleEvent(Widget *widget, SDL_Event *event);
+	inline Window *getWindow() {
+		return mainWin;
+	}
+
+	bool handleEvent( Widget *widget, SDL_Event *event );
 };
 
 #endif

@@ -17,6 +17,7 @@
 
 #ifndef CONSOLE_PRINTER_H
 #define CONSOLE_PRINTER_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -26,13 +27,13 @@
 
 class ConsolePrinter {
 public:
-  ConsolePrinter() {
-  }
+	ConsolePrinter() {
+	}
 
-  virtual ~ConsolePrinter() {
-  }
+	virtual ~ConsolePrinter() {
+	}
 
-  virtual void printToConsole( const char *s ) = 0;
+	virtual void printToConsole( const char *s ) = 0;
 };
 
 #endif

@@ -17,8 +17,8 @@
 
 #ifndef SDLSCREENVIEW_H
 #define SDLSCREENVIEW_H
+#pragma once
 
-#include "common/constants.h"
 
 /**
   *@author Gabor Torok
@@ -30,21 +30,27 @@ private:
 	char updateEvent[300];
 	int updateValue, updateTotal;
 
-public: 
+public:
 	SDLScreenView();
 	virtual ~SDLScreenView();
 
-  /** Draw shapes, etc. */
-  virtual void drawView() = 0;
+	/** Draw shapes, etc. */
+	virtual void drawView() = 0;
 
-  /** Draw stuff on top of the gui */
-  virtual void drawAfter() = 0;
+	/** Draw stuff on top of the gui */
+	virtual void drawAfter() = 0;
 
-	virtual bool setUpdate( char *p, int n=-1, int total=-1 );
-	
-	virtual inline char *getUpdate() { return updateEvent; }
-	virtual inline int getUpdateValue() { return updateValue; }
-	virtual inline int getUpdateTotal() { return updateTotal; }
+	virtual bool setUpdate( char *p, int n = -1, int total = -1 );
+
+	virtual inline char *getUpdate() {
+		return updateEvent;
+	}
+	virtual inline int getUpdateValue() {
+		return updateValue;
+	}
+	virtual inline int getUpdateTotal() {
+		return updateTotal;
+	}
 };
 
 #endif

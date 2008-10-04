@@ -17,11 +17,11 @@
 
 #ifndef CHARACTER_INFO_H
 #define CHARACTER_INFO_H
+#pragma once
 
 #include <iostream>
 #include <string>
 #include <vector>
-#include "common/constants.h"
 #include "session.h"
 #include "gui/widgetview.h"
 
@@ -37,26 +37,29 @@ class Item;
 class Scourge;
 
 /// A widget that shows basic character info.
-
 class CharacterInfoUI : public WidgetView {
 private:
-  Scourge *scourge;
-  Creature *creature;
-  Window *win;
+	Scourge *scourge;
+	Creature *creature;
+	Window *win;
 
 public:
-  CharacterInfoUI( Scourge *scourge );
-  ~CharacterInfoUI();
+	CharacterInfoUI( Scourge *scourge );
+	~CharacterInfoUI();
 
-  void setCreature( Window *win, Creature *creature );
-  inline Creature *getCreature() { return creature; }
-  inline Window *getWindow() { return win; }
+	void setCreature( Window *win, Creature *creature );
+	inline Creature *getCreature() {
+		return creature;
+	}
+	inline Window *getWindow() {
+		return win;
+	}
 
-  /** Draw the widget. */
-  virtual void drawWidgetContents( Widget *w );
+	/** Draw the widget. */
+	virtual void drawWidgetContents( Widget *w );
 
 private:
-  //unused: char *getAPRDescription( Creature *p, Item *item, char *buff );
+	//unused: char *getAPRDescription( Creature *p, Item *item, char *buff );
 
 };
 

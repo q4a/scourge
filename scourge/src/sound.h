@@ -17,21 +17,20 @@
 
 #ifndef SOUND_H
 #define SOUND_H
+#pragma once
 
 #include <string>
 #include <map>
 #include <vector>
-#include "common/constants.h"
 #include "gui/window.h"
 #include "userconfiguration.h"
 #include "board.h"
 
 /// This object manages random ambient sounds, and footstep sounds.
-
 class AmbientSound {
 	std::string name;
 #ifdef HAVE_SDL_MIXER
-  Mix_Chunk *footsteps;
+	Mix_Chunk *footsteps;
 	std::vector<Mix_Chunk*> ambients;
 #endif
 	std::string afterFirstLevel;
@@ -40,32 +39,33 @@ public:
 	~AmbientSound();
 	int playRandomAmbientSample();
 	int playFootsteps( int panning );
-	inline std::string &getAfterFirstLevel() { return afterFirstLevel; }
+	inline std::string &getAfterFirstLevel() {
+		return afterFirstLevel;
+	}
 };
 
 /// The game's main sound object.
-
 class Sound {
 private:
-  int missionMusicIndex;
-  int fightMusicIndex;
-  bool haveSound;  
+	int missionMusicIndex;
+	int fightMusicIndex;
+	bool haveSound;
 	std::map<std::string, AmbientSound*> ambients;
 #ifdef HAVE_SDL_MIXER
-  Mix_Music *menuMusic;
-  Mix_Music *hqMusic;
-  Mix_Music *missionMusic;
-  Mix_Music *fightMusic;
-  Mix_Music *currentMusic;
-  Mix_Music *currentLevelMusic;
+	Mix_Music *menuMusic;
+	Mix_Music *hqMusic;
+	Mix_Music *missionMusic;
+	Mix_Music *fightMusic;
+	Mix_Music *currentMusic;
+	Mix_Music *currentLevelMusic;
 	Mix_Music *chapterMusic;
 	int lastChapter;
-  Uint32 musicStartTime;
-  double musicPosition;
-  std::map<std::string, Mix_Chunk*> soundMap;  
-	std::map<std::string, std::string> soundNameMap;  
+	Uint32 musicStartTime;
+	double musicPosition;
+	std::map<std::string, Mix_Chunk*> soundMap;
+	std::map<std::string, std::string> soundNameMap;
 	std::map<std::string, Mix_Chunk*> ambient_objects;
-  std::map<std::string, std::map<int, std::vector<Mix_Chunk*>* >* > characterSounds;
+	std::map<std::string, std::map<int, std::vector<Mix_Chunk*>* >* > characterSounds;
 #endif
 
 public:
@@ -76,59 +76,59 @@ public:
 	static char *FOOTSTEP_INDOORS;
 	static char *FOOTSTEP_OUTDOORS;
 
-  Sound(Preferences *preferences);
-  virtual ~Sound();
+	Sound( Preferences *preferences );
+	virtual ~Sound();
 
-  inline void playMusicMenu() {
+	inline void playMusicMenu() {
 #ifdef HAVE_SDL_MIXER
-    playMusic(menuMusic);
+		playMusic( menuMusic );
 #endif
-  }
+	}
 
-  inline void playMusicHQ() {
+	inline void playMusicHQ() {
 #ifdef HAVE_SDL_MIXER
-    playMusic(hqMusic);
+		playMusic( hqMusic );
 #endif
-  }
+	}
 
-  inline void playMusicMission() {
+	inline void playMusicMission() {
 #ifdef HAVE_SDL_MIXER
-    playMusic( missionMusic );
+		playMusic( missionMusic );
 #endif
-  }
+	}
 
-  inline void playMusicChapter() {
+	inline void playMusicChapter() {
 #ifdef HAVE_SDL_MIXER
-    playMusic( chapterMusic, 2000, 1 );
+		playMusic( chapterMusic, 2000, 1 );
 #endif
-  }
+	}
 
-	void stopMusic( int ms=3000 );
+	void stopMusic( int ms = 3000 );
 
-  void loadSounds(Preferences *preferences);
-	void loadUISounds(Preferences *preferences);
-  void loadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m,
-													Preferences *preferences );
-  void unloadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m );
+	void loadSounds( Preferences *preferences );
+	void loadUISounds( Preferences *preferences );
+	void loadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m,
+	                        Preferences *preferences );
+	void unloadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m );
 
-  void loadCharacterSounds( char *type );
-  void unloadCharacterSounds( char *type );
-  void playCharacterSound( char *type, int soundType, int panning );
+	void loadCharacterSounds( char *type );
+	void unloadCharacterSounds( char *type );
+	void playCharacterSound( char *type, int soundType, int panning );
 
-	void storeSound(const std::string& name, const std::string& file);
-  void storeSound(int type, const std::string& file);
-  void unloadSound( int type, const std::string& file );
-  int playSound( const std::string& file, int panning );
+	void storeSound( const std::string& name, const std::string& file );
+	void storeSound( int type, const std::string& file );
+	void unloadSound( int type, const std::string& file );
+	int playSound( const std::string& file, int panning );
 
-  void setMusicVolume(int volume);
-  void setEffectsVolume(int volume);
+	void setMusicVolume( int volume );
+	void setEffectsVolume( int volume );
 
-  void selectMusic( Preferences *preferences, Mission *mission=NULL );
+	void selectMusic( Preferences *preferences, Mission *mission = NULL );
 
-  void checkMusic( bool inCombat );
+	void checkMusic( bool inCombat );
 
-  void startFootsteps( std::string& name, int depth, int panning );
-  void stopFootsteps();
+	void startFootsteps( std::string& name, int depth, int panning );
+	void stopFootsteps();
 
 	void addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel );
 	void startAmbientSound( std::string& name, int depth );
@@ -143,9 +143,9 @@ public:
 protected:
 	AmbientSound *getAmbientSound( std::string& name, int depth );
 #ifdef HAVE_SDL_MIXER
-  void playMusic( Mix_Music *music, int ms=2000, int loopCount=-1 );
-  void storeCharacterSounds( std::map<int,std::vector<Mix_Chunk*>*> *charSoundMap, 
-                             char *type, int soundType, char *filePrefix );
+	void playMusic( Mix_Music *music, int ms = 2000, int loopCount = -1 );
+	void storeCharacterSounds( std::map<int, std::vector<Mix_Chunk*>*> *charSoundMap,
+	                           char *type, int soundType, char *filePrefix );
 #endif
 };
 
