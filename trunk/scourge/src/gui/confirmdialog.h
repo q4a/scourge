@@ -17,6 +17,7 @@
 
 #ifndef CONFIRM_DIALOG_H
 #define CONFIRM_DIALOG_H
+#pragma once
 
 #include "gui.h"
 #include "widget.h"
@@ -35,7 +36,6 @@ class Label;
 class Window;
 
 /// A simple dialog that displays text and yes/no buttons.
-
 class ConfirmDialog {
 private:
 	int mode;
@@ -47,16 +47,24 @@ public:
 	Button *okButton;
 	Button *cancelButton;
 
-	ConfirmDialog( ScourgeGui *scourgeGui, char const* title=NULL );
+	ConfirmDialog( ScourgeGui *scourgeGui, char const* title = NULL );
 	~ConfirmDialog();
-	
+
 	void setText( char *text );
 	void setVisible( bool b );
 	bool isVisible();
-	inline void setMode( int n ) { mode = n; }
-	inline int getMode() { return mode; }
-	inline void setObject( void *p ) { object = p; }
-	inline void *getObject() { return object; }
+	inline void setMode( int n ) {
+		mode = n;
+	}
+	inline int getMode() {
+		return mode;
+	}
+	inline void setObject( void *p ) {
+		object = p;
+	}
+	inline void *getObject() {
+		return object;
+	}
 
 };
 

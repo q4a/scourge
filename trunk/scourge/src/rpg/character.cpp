@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "../common/constants.h"
 #include "character.h"
 #include "rpg.h"
 #include "rpgitem.h"
@@ -27,17 +28,17 @@ vector<Character*> Character::character_list;
 vector<Character*> Character::rootCharacters;
 
 void Character::initCharacters() {
-  Character *last = NULL;
-  char name[255];
+	Character *last = NULL;
+	char name[255];
 	char displayName[255];
-  char parent[255];
+	char parent[255];
 
 	ConfigLang *config = ConfigLang::load( "config/profession.cfg" );
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "profession" );
+	                         getChildrenByName( "profession" );
 
-	for( unsigned int i = 0; i < v->size(); i++ ) {
-		ConfigNode *node = (*v)[i];
+	for ( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
 
 		config->setUpdate( _( "Loading Professions" ), i, v->size() );
 
@@ -52,105 +53,105 @@ void Character::initCharacters() {
 		int levelProgression = node->getValueAsInt( "level_progression" );
 
 		last = new Character( strdup( name ),
-													strdup( displayName ),
-													( strlen( parent ) ? strdup( parent ) : NULL ), 
-													hp, mp, 
-													levelProgression, minLevelReq );
+		                      strdup( displayName ),
+		                      ( strlen( parent ) ? strdup( parent ) : NULL ),
+		                      hp, mp,
+		                      levelProgression, minLevelReq );
 		string s = name;
 		character_class[s] = last;
-		character_list.push_back(last);
+		character_list.push_back( last );
 
 		strcpy( last->description, node->getValueAsString( "description" ) );
-		
+
 		vector<ConfigNode*> *vv = node->getChildrenByName( "skills" );
-		if( vv ) {
-			ConfigNode *skillNode = (*vv)[0];
-			for( map<string,ConfigValue*>::iterator e = skillNode->getValues()->begin();
-					 e != skillNode->getValues()->end(); ++e ) {
+		if ( vv ) {
+			ConfigNode *skillNode = ( *vv )[0];
+			for ( map<string, ConfigValue*>::iterator e = skillNode->getValues()->begin();
+			        e != skillNode->getValues()->end(); ++e ) {
 				string name = e->first;
 				ConfigValue *value = e->second;
-				last->skills[ Skill::getSkillByName( name.c_str() )->getIndex() ] = static_cast<int>(value->getAsFloat());
+				last->skills[ Skill::getSkillByName( name.c_str() )->getIndex() ] = static_cast<int>( value->getAsFloat() );
 			}
 		}
 		vv = node->getChildrenByName( "groups" );
-		if( vv ) {
-			ConfigNode *skillNode = (*vv)[0];
-			for( map<string,ConfigValue*>::iterator e = skillNode->getValues()->begin();
-					 e != skillNode->getValues()->end(); ++e ) {
+		if ( vv ) {
+			ConfigNode *skillNode = ( *vv )[0];
+			for ( map<string, ConfigValue*>::iterator e = skillNode->getValues()->begin();
+			        e != skillNode->getValues()->end(); ++e ) {
 				string name = e->first;
 				ConfigValue *value = e->second;
 				SkillGroup *group = SkillGroup::getGroupByName( name.c_str() );
-				for( int i = 0; i < group->getSkillCount(); i++ ) {
-					last->skills[ group->getSkill( i )->getIndex() ] = static_cast<int>(value->getAsFloat());
+				for ( int i = 0; i < group->getSkillCount(); i++ ) {
+					last->skills[ group->getSkill( i )->getIndex() ] = static_cast<int>( value->getAsFloat() );
 				}
 			}
 		}
-		addItemTags( node->getValueAsString( "allowed_weapons" ), &(last->allowedWeaponTags) );
-		addItemTags( node->getValueAsString( "forbidden_weapons" ), &(last->forbiddenWeaponTags) );
-		addItemTags( node->getValueAsString( "allowed_armor" ), &(last->allowedArmorTags) );
-		addItemTags( node->getValueAsString( "forbidden_armor" ), &(last->forbiddenArmorTags) );
+		addItemTags( node->getValueAsString( "allowed_weapons" ), &( last->allowedWeaponTags ) );
+		addItemTags( node->getValueAsString( "forbidden_weapons" ), &( last->forbiddenWeaponTags ) );
+		addItemTags( node->getValueAsString( "allowed_armor" ), &( last->allowedArmorTags ) );
+		addItemTags( node->getValueAsString( "forbidden_armor" ), &( last->forbiddenArmorTags ) );
 	}
 
 	delete config;
 
-  buildTree();
+	buildTree();
 }
 
 void Character::addItemTags( const char *s, set<string> *list ) {
 	char line[1000];
 	strcpy( line, s );
 	char *p = strtok( line, "," );
-	while( p ) {				
+	while ( p ) {
 		//char *lastChar = p + strlen( p ) - 1;
 		//*lastChar = '\0';
 		string s = strdup( p );
-		if( !( *p == '*' ) && RpgItem::tagsDescriptions.find( s ) == RpgItem::tagsDescriptions.end() ) {
+		if ( !( *p == '*' ) && RpgItem::tagsDescriptions.find( s ) == RpgItem::tagsDescriptions.end() ) {
 			cerr << "*** Warning: item tag has no description: " << s << endl;
 		}
 		list->insert( s );
 		p = strtok( NULL, "," );
 	}
-}		
-
-Character::Character( char *name, char *displayName, char *parentName, 
-                      int startingHp, int startingMp, 
-                      int level_progression, int minLevelReq ) {
-  this->name = name;
-	this->displayName = displayName;
-  this->parentName = parentName;
-  this->startingHp = startingHp;
-  this->startingMp = startingMp;
-  this->level_progression = level_progression;
-	this->minLevelReq = minLevelReq;
-  this->parent = NULL;
-  strcpy( description, "" );
 }
 
-Character::~Character(){  
+Character::Character( char *name, char *displayName, char *parentName,
+                      int startingHp, int startingMp,
+                      int level_progression, int minLevelReq ) {
+	this->name = name;
+	this->displayName = displayName;
+	this->parentName = parentName;
+	this->startingHp = startingHp;
+	this->startingMp = startingMp;
+	this->level_progression = level_progression;
+	this->minLevelReq = minLevelReq;
+	this->parent = NULL;
+	strcpy( description, "" );
+}
+
+Character::~Character() {
 }
 
 #define MIN_STARTING_MP 2
 void Character::buildTree() {
-	for( int i = 0; i < static_cast<int>(character_list.size()); i++ ) {
+	for ( int i = 0; i < static_cast<int>( character_list.size() ); i++ ) {
 		Character *c = character_list[i];
 		c->describeProfession();
-		if( c->getParentName() ) {
+		if ( c->getParentName() ) {
 			c->parent = getCharacterByName( c->getParentName() );
-			if( !c->parent ) {
+			if ( !c->parent ) {
 				cerr << "Error: Can't find parent: " << c->getParentName() << " for character " << c->getName() << endl;
 				exit( 1 );
 			}
 			// inherit some stats
 			c->startingHp = c->parent->startingHp;
 			c->startingMp = c->parent->startingMp;
-			if( c->startingMp <= 0 ) {
+			if ( c->startingMp <= 0 ) {
 				// sanity check: if skills include a magic skill, add min. amount of MP
-				for( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
-					if( c->getSkill( MagicSchool::getMagicSchool( i )->getSkill() ) > -1 ) {
+				for ( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
+					if ( c->getSkill( MagicSchool::getMagicSchool( i )->getSkill() ) > -1 ) {
 						c->startingMp = MIN_STARTING_MP;
 						break;
 					}
-					if( c->getSkill( MagicSchool::getMagicSchool( i )->getResistSkill() ) > -1 ) {
+					if ( c->getSkill( MagicSchool::getMagicSchool( i )->getResistSkill() ) > -1 ) {
 						c->startingMp = MIN_STARTING_MP;
 						break;
 					}
@@ -177,12 +178,12 @@ void Character::describeProfession() {
 	// first loop thru to see if skill-groups are supported
 	strcat( s, _( "Skill bonuses to:" ) );
 	strcat( s, "|" );
-	map<SkillGroup*,int> groupCount;
-	for( map<int, int>::iterator i = skills.begin(); i != skills.end(); ++i ) {
+	map<SkillGroup*, int> groupCount;
+	for ( map<int, int>::iterator i = skills.begin(); i != skills.end(); ++i ) {
 		Skill *skill = Skill::skills[ i->first ];
 		int value = i->second;
-		if( value >= 5 && !skill->getGroup()->isStat() ) {
-			if( groupCount.find( skill->getGroup() ) != groupCount.end() ) {
+		if ( value >= 5 && !skill->getGroup()->isStat() ) {
+			if ( groupCount.find( skill->getGroup() ) != groupCount.end() ) {
 				int n = groupCount[ skill->getGroup() ];
 				groupCount[skill->getGroup()] = ( n + 1 );
 			} else {
@@ -191,13 +192,13 @@ void Character::describeProfession() {
 		}
 	}
 	// print group or skill names
-	for( map<int, int>::iterator i = skills.begin(); i != skills.end(); ++i ) {
+	for ( map<int, int>::iterator i = skills.begin(); i != skills.end(); ++i ) {
 		Skill *skill = Skill::skills[ i->first ];
 		int value = i->second;
-		if( value >= 5 && !skill->getGroup()->isStat() ) {
+		if ( value >= 5 && !skill->getGroup()->isStat() ) {
 			// HACK: already seen this group
-			if( groupCount[skill->getGroup()] == -1 ) continue;
-			if( groupCount[skill->getGroup()] == skill->getGroup()->getSkillCount() ) {
+			if ( groupCount[skill->getGroup()] == -1 ) continue;
+			if ( groupCount[skill->getGroup()] == skill->getGroup()->getSkillCount() ) {
 				groupCount[skill->getGroup()] = -1;
 				snprintf( tmp, TMP_SIZE, "   %s|", skill->getGroup()->getDescription() );
 			} else {
@@ -205,12 +206,12 @@ void Character::describeProfession() {
 			}
 			strcat( s, tmp );
 		}
-	}	
+	}
 	strcat( tmp, "|" );
-	
-	
+
+
 	// describe capabilities
-	
+
 	// describe weapons
 	describeAcl( s, &allowedWeaponTags, &forbiddenWeaponTags, ITEM_TYPE_WEAPON );
 
@@ -222,114 +223,114 @@ void Character::describeProfession() {
 
 void Character::describeAcl( char *s, set<string> *allowed, set<string> *forbidden, int itemType ) {
 	string all = "*";
-	if( allowed->find( all ) != allowed->end() ) {
-		if( !forbidden->empty() ) {
-      if( itemType == ITEM_TYPE_WEAPON ) {
-        strcat( s, _( "Can use any weapons, except:" ) );
+	if ( allowed->find( all ) != allowed->end() ) {
+		if ( !forbidden->empty() ) {
+			if ( itemType == ITEM_TYPE_WEAPON ) {
+				strcat( s, _( "Can use any weapons, except:" ) );
 				strcat( s, "|" );
-      } else {
-        strcat( s, _( "Can use any armor, except:" ) );
+			} else {
+				strcat( s, _( "Can use any armor, except:" ) );
 				strcat( s, "|" );
-      }
-			for( set<string>::iterator i = forbidden->begin(); i != forbidden->end(); ++i ) {
+			}
+			for ( set<string>::iterator i = forbidden->begin(); i != forbidden->end(); ++i ) {
 				string tag = *i;
-				if( !strcmp( tag.c_str(), "*" ) ) continue;
-        strcat( s, "   " );
+				if ( !strcmp( tag.c_str(), "*" ) ) continue;
+				strcat( s, "   " );
 				strcat( s, RpgItem::getTagDescription( tag ) );
-        strcat( s, "|" );
+				strcat( s, "|" );
 			}
 		} else {
-      if( itemType == ITEM_TYPE_WEAPON ) {
-        strcat( s, _( "Can use any weapons." ) );
+			if ( itemType == ITEM_TYPE_WEAPON ) {
+				strcat( s, _( "Can use any weapons." ) );
 				strcat( s, "|" );
-      } else {
-        strcat( s, _( "Can use any armor." ) );
+			} else {
+				strcat( s, _( "Can use any armor." ) );
 				strcat( s, "|" );
-      }
+			}
 		}
-	} else if( forbidden->find( all ) != forbidden->end() ) {
-		if( !allowed->empty() ) {
-      if( itemType == ITEM_TYPE_WEAPON ) {
-        strcat( s, _( "Not allowed to use any weapons, except:" ) );
+	} else if ( forbidden->find( all ) != forbidden->end() ) {
+		if ( !allowed->empty() ) {
+			if ( itemType == ITEM_TYPE_WEAPON ) {
+				strcat( s, _( "Not allowed to use any weapons, except:" ) );
 				strcat( s, "|" );
-      } else {
-        strcat( s, _( "Not allowed to use any armor, except:" ) );
+			} else {
+				strcat( s, _( "Not allowed to use any armor, except:" ) );
 				strcat( s, "|" );
-      }
-			for( set<string>::iterator i = allowed->begin(); i != allowed->end(); ++i ) {
+			}
+			for ( set<string>::iterator i = allowed->begin(); i != allowed->end(); ++i ) {
 				string tag = *i;
-				if( !strcmp( tag.c_str(), "*" ) ) continue;
-        strcat( s, "   " );
+				if ( !strcmp( tag.c_str(), "*" ) ) continue;
+				strcat( s, "   " );
 				strcat( s, RpgItem::getTagDescription( tag ) );
-        strcat( s, "|" );
+				strcat( s, "|" );
 			}
 		} else {
-      if( itemType == ITEM_TYPE_WEAPON ) {
-        strcat( s, _( "Not allowed to use any weapons." ) );
+			if ( itemType == ITEM_TYPE_WEAPON ) {
+				strcat( s, _( "Not allowed to use any weapons." ) );
 				strcat( s, "|" );
-      } else {
-        strcat( s, _( "Not allowed to use any armor." ) );
+			} else {
+				strcat( s, _( "Not allowed to use any armor." ) );
 				strcat( s, "|" );
-      }
+			}
 		}
 	} else {
-		for( set<string>::iterator i = allowed->begin(); i != allowed->end(); ++i ) {
+		for ( set<string>::iterator i = allowed->begin(); i != allowed->end(); ++i ) {
 			string tag = *i;
-			if( !strcmp( tag.c_str(), "*" ) ) continue;
-      if( itemType == ITEM_TYPE_WEAPON ) {
-        strcat( s, _( "Can use weapons:" ) );
-      } else {
-        strcat( s, _( "Can use armor:" ) );
-      }
+			if ( !strcmp( tag.c_str(), "*" ) ) continue;
+			if ( itemType == ITEM_TYPE_WEAPON ) {
+				strcat( s, _( "Can use weapons:" ) );
+			} else {
+				strcat( s, _( "Can use armor:" ) );
+			}
 			strcat( s, RpgItem::getTagDescription( tag ) );
-      strcat( s, ".|" );
+			strcat( s, ".|" );
 		}
-		for( set<string>::iterator i = forbidden->begin(); i != forbidden->end(); ++i ) {
+		for ( set<string>::iterator i = forbidden->begin(); i != forbidden->end(); ++i ) {
 			string tag = *i;
-			if( !strcmp( tag.c_str(), "*" ) ) continue;
+			if ( !strcmp( tag.c_str(), "*" ) ) continue;
 
-      if( itemType == ITEM_TYPE_WEAPON ) {
-        strcat( s, _( "Not allowed to use weapons:" ) );
-      } else {
-        strcat( s, _( "Not allowed to use armor:" ) );
-      }
+			if ( itemType == ITEM_TYPE_WEAPON ) {
+				strcat( s, _( "Not allowed to use weapons:" ) );
+			} else {
+				strcat( s, _( "Not allowed to use armor:" ) );
+			}
 			strcat( s, RpgItem::getTagDescription( tag ) );
-      strcat( s, ".|" );
+			strcat( s, ".|" );
 		}
 	}
 }
 
-bool Character::canEquip( RpgItem *item ) {	
-	if( item->isWeapon() ) {
+bool Character::canEquip( RpgItem *item ) {
+	if ( item->isWeapon() ) {
 		return canEquip( item, &allowedWeaponTags, &forbiddenWeaponTags );
-	} else if( item->isArmor() ) {
+	} else if ( item->isArmor() ) {
 		return canEquip( item, &allowedArmorTags, &forbiddenArmorTags );
 	}
 	return true;
-}			
+}
 
 bool Character::canEquip( RpgItem *item, set<string> *allowed, set<string> *forbidden ) {
 	string all = "*";
-	if( allowed->find( all ) != allowed->end() ) {
-		for( set<string>::iterator e = forbidden->begin(); e != forbidden->end(); ++e ) {
+	if ( allowed->find( all ) != allowed->end() ) {
+		for ( set<string>::iterator e = forbidden->begin(); e != forbidden->end(); ++e ) {
 			string tag = *e;
-			if( item->hasTag( tag ) ) return false;
+			if ( item->hasTag( tag ) ) return false;
 		}
 		return true;
-	} else if( forbidden->find( all ) != forbidden->end() ) {
-		for( set<string>::iterator e = allowed->begin(); e != allowed->end(); ++e ) {
+	} else if ( forbidden->find( all ) != forbidden->end() ) {
+		for ( set<string>::iterator e = allowed->begin(); e != allowed->end(); ++e ) {
 			string tag = *e;
-			if( item->hasTag( tag ) ) return true;
+			if ( item->hasTag( tag ) ) return true;
 		}
 		return false;
 	} else {
-		for( set<string>::iterator e = forbidden->begin(); e != forbidden->end(); ++e ) {
+		for ( set<string>::iterator e = forbidden->begin(); e != forbidden->end(); ++e ) {
 			string tag = *e;
-			if( item->hasTag( tag ) ) return false;
+			if ( item->hasTag( tag ) ) return false;
 		}
-		for( set<string>::iterator e = allowed->begin(); e != allowed->end(); ++e ) {
+		for ( set<string>::iterator e = allowed->begin(); e != allowed->end(); ++e ) {
 			string tag = *e;
-			if( item->hasTag( tag ) ) return true;
+			if ( item->hasTag( tag ) ) return true;
 		}
 		return true;
 	}
@@ -337,8 +338,8 @@ bool Character::canEquip( RpgItem *item, set<string> *allowed, set<string> *forb
 
 Character *Character::getRandomCharacter( int level ) {
 	Character *c = getRandomCharacter();
-	while( c && c->getChildCount() && 
-				 c->getChild( 0 )->getMinLevelReq() <= level ) {
+	while ( c && c->getChildCount() &&
+	        c->getChild( 0 )->getMinLevelReq() <= level ) {
 		int index = Util::dice( c->getChildCount() );
 		c = c->getChild( index );
 	}

@@ -17,14 +17,14 @@
 
 #ifndef PARTY_EDITOR_H
 #define PARTY_EDITOR_H
+#pragma once
 
 #include <string.h>
 #include <map>
-#include "common/constants.h"
 #include "gui/widgetview.h"
 #include "party.h"
 #include "rpg/rpg.h"
-                         
+
 /**
   *@author Gabor Torok
   */
@@ -50,31 +50,31 @@ class PcEditor;
 class PartyEditor : public CreatureGroupInfo {
 private:
 
-  Scourge *scourge;
-  std::map<int,Creature*> maxSkills;
+	Scourge *scourge;
+	std::map<int, Creature*> maxSkills;
 	PcEditor *pcEditor;
-  
+
 public:
-  PartyEditor(Scourge *scourge);
-  ~PartyEditor();
+	PartyEditor( Scourge *scourge );
+	~PartyEditor();
 
-  Creature *getHighestSkillPC( int skill );
-  void recomputeMaxSkills();
+	Creature *getHighestSkillPC( int skill );
+	void recomputeMaxSkills();
 
-  bool isVisible();
-  void setVisible( bool b );
-  Button *getStartGameButton();
-  Button *getCancelButton();
-  void handleEvent( Widget *widget, SDL_Event *event );
-  void createParty( Creature **pc, int *partySize=NULL, bool addRandomInventory=true );
+	bool isVisible();
+	void setVisible( bool b );
+	Button *getStartGameButton();
+	Button *getCancelButton();
+	void handleEvent( Widget *widget, SDL_Event *event );
+	void createParty( Creature **pc, int *partySize = NULL, bool addRandomInventory = true );
 	RenderedCreature *createWanderingHero( int level );
 
- protected:
-  void saveUI( Creature **pc );
-  void addStartingInventory( Creature **pc, int partySize );
+protected:
+	void saveUI( Creature **pc );
+	void addStartingInventory( Creature **pc, int partySize );
 	void addStartingInventory( Creature *pc );
-  //void setCharType( int pcIndex, int charIndex );
-  //void setDeityType( int pcIndex, int deityIndex );
+	//void setCharType( int pcIndex, int charIndex );
+	//void setDeityType( int pcIndex, int deityIndex );
 
 };
 

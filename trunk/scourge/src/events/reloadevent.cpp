@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "../common/constants.h"
 #include "reloadevent.h"
 #include "../session.h"
 #include "../sqbinding/sqbinding.h"
@@ -21,25 +22,25 @@
 
 using namespace std;
 
-ReloadEvent::ReloadEvent(Date currentDate, Date timeOut, int nbExecutionsToDo, Session *session, int mode) : 
-Event(currentDate, timeOut, nbExecutionsToDo) {
-  this->session = session;
-  this->mode = mode;
+ReloadEvent::ReloadEvent( Date currentDate, Date timeOut, int nbExecutionsToDo, Session *session, int mode ) :
+		Event( currentDate, timeOut, nbExecutionsToDo ) {
+	this->session = session;
+	this->mode = mode;
 }
 
-void ReloadEvent::execute(){
-	switch( mode ) {
+void ReloadEvent::execute() {
+	switch ( mode ) {
 	case MODE_RELOAD_SCRIPTS:
 		session->getSquirrel()->reloadScripts(); break;
 	case MODE_REGAIN_POINTS:
 		session->getParty()->regainMp();
-		session->getParty()->applyRecurringSpecialSkills(); 
+		session->getParty()->applyRecurringSpecialSkills();
 		break;
 	default:
 		cerr << "Unknown mode " << mode << " in ReloadEvent." << endl;
-  }
+	}
 }
 
-ReloadEvent::~ReloadEvent(){
+ReloadEvent::~ReloadEvent() {
 }
 

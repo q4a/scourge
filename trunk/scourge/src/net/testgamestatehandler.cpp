@@ -1,9 +1,10 @@
+#include "../common/constants.h"
 #include "testgamestatehandler.h"
 
 using namespace std;
 
 TestGameStateHandler::TestGameStateHandler() {
-  strcpy(state, "xyzabcdef");
+	strcpy( state, "xyzabcdef" );
 }
 
 TestGameStateHandler::~TestGameStateHandler() {
@@ -11,5 +12,5 @@ TestGameStateHandler::~TestGameStateHandler() {
 
 // the producer
 char *TestGameStateHandler::getGameState() {
-  return state;
+	return state;
 }

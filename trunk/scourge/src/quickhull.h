@@ -20,10 +20,10 @@ http://www.cse.yorku.ca/~aaw/Hang/quick_hull/Algorithm.html
 */
 #ifndef QUICK_HULL_H
 #define QUICK_HULL_H
+#pragma once
 
 #include <vector>
 #include <set>
-#include "common/constants.h"
 
 /// Quick Hull algorithm.
 class QuickHull {

@@ -17,38 +17,40 @@
 
 #ifndef RELOAD_EVENT_H
 #define RELOAD_EVENT_H
+#pragma once
 
-#include "../common/constants.h"
 #include "event.h"
 
-/** 
+/**
  * @author Gabor Torok
  */
 
 class Session;
-  
+
 /// "Reload" event
 class ReloadEvent : public Event  {
 
 private:
-  Session *session;
-  int mode;
+	Session *session;
+	int mode;
 
 public:
 
-  enum {
-    MODE_RELOAD_SCRIPTS=0,
-    MODE_REGAIN_POINTS
-  };
+	enum {
+		MODE_RELOAD_SCRIPTS = 0,
+		MODE_REGAIN_POINTS
+	};
 
-  void execute();    
-  
-  ReloadEvent(Date currentDate, Date timeOut, int nbExecutionsToDo, Session *session, int mode);  
-  ReloadEvent();
-  virtual ~ReloadEvent();  
+	void execute();
 
-  inline const char *getName() { return "ReloadEvent"; }
-  
+	ReloadEvent( Date currentDate, Date timeOut, int nbExecutionsToDo, Session *session, int mode );
+	ReloadEvent();
+	virtual ~ReloadEvent();
+
+	inline const char *getName() {
+		return "ReloadEvent";
+	}
+
 };
 
 #endif

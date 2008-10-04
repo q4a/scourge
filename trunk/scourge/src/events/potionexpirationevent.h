@@ -17,42 +17,46 @@
 
 #ifndef POTION_EXPIRATION_EVENT_H
 #define POTION_EXPIRATION_EVENT_H
+#pragma once
 
-#include "../common/constants.h"
 #include "event.h"
 
 
 /**
   *@author Gabor Torok
   */
-  
+
 class Creature;
 class Session;
 class Item;
-  
+
 /// "Potion expires" event
 class PotionExpirationEvent : public Event  {
 
 private:
-  Creature *creature;
-  int potionSkill;
-  int amount;
-  Session *session;
+	Creature *creature;
+	int potionSkill;
+	int amount;
+	Session *session;
 
 public:
 
-  void execute();    
-  
-  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, Item *item, Session *session, int nbExecutionsToDo);  
-  PotionExpirationEvent(Date currentDate, Date timeOut, Creature *c, int potionSkill, int amount, Session *session, int nbExecutionsToDo);
-  PotionExpirationEvent();
-  virtual ~PotionExpirationEvent();  
+	void execute();
+
+	PotionExpirationEvent( Date currentDate, Date timeOut, Creature *c, Item *item, Session *session, int nbExecutionsToDo );
+	PotionExpirationEvent( Date currentDate, Date timeOut, Creature *c, int potionSkill, int amount, Session *session, int nbExecutionsToDo );
+	PotionExpirationEvent();
+	virtual ~PotionExpirationEvent();
 	virtual bool doesReferenceCreature( Creature *creature );
 
-  inline const char *getName() { return "PotionExpirationEvent"; }
+	inline const char *getName() {
+		return "PotionExpirationEvent";
+	}
 
-	virtual inline Creature *getCreature() { return creature; }
-  
+	virtual inline Creature *getCreature() {
+		return creature;
+	}
+
 };
 
 #endif

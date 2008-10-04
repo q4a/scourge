@@ -16,11 +16,11 @@
  ***************************************************************************/
 #ifndef CAVEMAKER_H
 #define CAVEMAKER_H
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <map>
-#include "common/constants.h"
 #include "terraingenerator.h"
 
 // forward decl.
@@ -43,28 +43,34 @@ class CellularAutomaton;
 /// Extends the terrain generator with cave generation specific functions.
 class CaveMaker : public TerrainGenerator {
 private:
-  int w, h;
-  CellularAutomaton *cellular;
+	int w, h;
+	CellularAutomaton *cellular;
 
 public:
 
-  CaveMaker( Scourge *scourge, int level, int depth, int maxDepth, 
-             bool stairsDown, bool stairsUp, 
-             Mission *mission);
-  virtual ~CaveMaker();
+	CaveMaker( Scourge *scourge, int level, int depth, int maxDepth,
+	           bool stairsDown, bool stairsUp,
+	           Mission *mission );
+	virtual ~CaveMaker();
 
 	void printMaze();
-	inline void getName(char *s) { strcpy( s, "cave" ); }
+	inline void getName( char *s ) {
+		strcpy( s, "cave" );
+	}
 
 protected:
-  virtual bool drawNodes( Map *map, ShapePalette *shapePal );
-  virtual void generate( Map *map, ShapePalette *shapePal );
-  virtual void addFurniture(Map *map, ShapePalette *shapePal);
-  virtual MapRenderHelper *getMapRenderHelper();
+	virtual bool drawNodes( Map *map, ShapePalette *shapePal );
+	virtual void generate( Map *map, ShapePalette *shapePal );
+	virtual void addFurniture( Map *map, ShapePalette *shapePal );
+	virtual MapRenderHelper *getMapRenderHelper();
 
 	// Make cave rooms easier.
-	virtual inline float getMonsterLevelMod() { return 0.5f; }
-	virtual bool getUseBadassMonsters() { return false; }
+	virtual inline float getMonsterLevelMod() {
+		return 0.5f;
+	}
+	virtual bool getUseBadassMonsters() {
+		return false;
+	}
 
 };
 

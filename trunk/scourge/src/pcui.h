@@ -17,10 +17,10 @@
 
 #ifndef PCUI_H
 #define PCUI_H
+#pragma once
 
 #include <iostream>
 #include <vector>
-#include "common/constants.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/draganddrop.h"
@@ -66,11 +66,15 @@ public:
 
 	virtual void windowClosing();
 
-  inline Window *getWindow() { return mainWin; }
+	inline Window *getWindow() {
+		return mainWin;
+	}
 	void show();
 	void hide();
 	void refresh();
-	inline Scourge *getScourge() { return scourge; }
+	inline Scourge *getScourge() {
+		return scourge;
+	}
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
@@ -85,7 +89,7 @@ public:
 	bool isStoreSpellSelected();
 	void unselectSpellButtons();
 	void receiveInventory();
-	bool receiveInventory(Item *item);
+	bool receiveInventory( Item *item );
 	Storable *getStorable();
 	void clearStorable();
 

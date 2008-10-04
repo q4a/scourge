@@ -18,40 +18,44 @@
 
 #ifndef STATE_MOD_EXPIRATION_EVENT_H
 #define STATE_MOD_EXPIRATION_EVENT_H
+#pragma once
 
-#include "../common/constants.h"
 #include "event.h"
 
 
 /**
   *@author Gabor Torok
   */
-  
+
 class Creature;
 class Session;
-  
+
 /// "State mod expires" event
 class StateModExpirationEvent : public Event  {
 
 private:
-  Creature *creature;
-  int stateMod;
-  Session *session;
+	Creature *creature;
+	int stateMod;
+	Session *session;
 
 public:
 
-  void execute();
-  void executeBeforeDelete();
-  
-  StateModExpirationEvent(Date currentDate, Date timeOut, Creature *c, int stateMod, Session *session, int nbExecutionsToDo);
-  StateModExpirationEvent();
-  virtual ~StateModExpirationEvent();  
+	void execute();
+	void executeBeforeDelete();
+
+	StateModExpirationEvent( Date currentDate, Date timeOut, Creature *c, int stateMod, Session *session, int nbExecutionsToDo );
+	StateModExpirationEvent();
+	virtual ~StateModExpirationEvent();
 
 	virtual bool doesReferenceCreature( Creature *creature );
 
-  inline const char *getName() { return "StateModExpirationEvent"; }
-	virtual inline Creature *getCreature() { return creature; }
-  
+	inline const char *getName() {
+		return "StateModExpirationEvent";
+	}
+	virtual inline Creature *getCreature() {
+		return creature;
+	}
+
 };
 
 #endif

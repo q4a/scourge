@@ -17,40 +17,41 @@
 
 #ifndef ZIP_FILE_H
 #define ZIP_FILE_H
+#pragma once
 
 #include <zlib.h>
 #include "file.h"
 
 #define CHUNK 16384
 
-                   
+
 /**
  * Save file with zip compression. Uses zlib. Code adapted from zlib example code:
  * http://www.zlib.net/zpipe.c
  */
 class ZipFile : public File {
 private:
-  int mode;
-  z_stream strm;
-  char zipBuff[ CHUNK ], tmpBuff[ CHUNK ];
-  int tmpBuffOffset;
-  int ret;
+	int mode;
+	z_stream strm;
+	char zipBuff[ CHUNK ], tmpBuff[ CHUNK ];
+	int tmpBuffOffset;
+	int ret;
 
 public:
-  enum {
-    ZIP_READ=0,
-    ZIP_WRITE
-  };
+	enum {
+		ZIP_READ = 0,
+		ZIP_WRITE
+	};
 
-  ZipFile( FILE *fp, int mode = ZIP_WRITE, int level = Z_DEFAULT_COMPRESSION );
-  virtual ~ZipFile();
+	ZipFile( FILE *fp, int mode = ZIP_WRITE, int level = Z_DEFAULT_COMPRESSION );
+	virtual ~ZipFile();
 
 protected:
-  virtual int write( void *buff, size_t size, int count );
-  virtual int writeZip( int flush );
+	virtual int write( void *buff, size_t size, int count );
+	virtual int writeZip( int flush );
 
-  virtual int read( void *buff, size_t size, int count );
-  virtual int inflateMore();
+	virtual int read( void *buff, size_t size, int count );
+	virtual int inflateMore();
 };
 
 #endif

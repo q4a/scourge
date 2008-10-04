@@ -17,8 +17,8 @@
 
 #ifndef TEXT_SCROLLER_H
 #define TEXT_SCROLLER_H
+#pragma once
 
-#include "common/constants.h"
 #include <vector>
 #include <set>
 
@@ -33,23 +33,29 @@ private:
 	int offset;
 	Uint32 lastCheck;
 	int xp, yp;
-  bool inside, visible;
-  int lineOffset, startOffset;
+	bool inside, visible;
+	int lineOffset, startOffset;
 	GLuint scrollTexture;
 
 public:
 	TextScroller( Scourge *scourge );
 	~TextScroller();
 
-	void addDescription( char const* description, float r=1.0f, float g=1.0f, float b=0.4f, int logLevel=Constants::LOGLEVEL_FULL );
-	void writeLogMessage( char const* message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel=Constants::LOGLEVEL_FULL );
+	void addDescription( char const* description, float r = 1.0f, float g = 1.0f, float b = 0.4f, int logLevel = Constants::LOGLEVEL_FULL );
+	void writeLogMessage( char const* message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel = Constants::LOGLEVEL_FULL );
 	void draw();
 	void scrollUp();
 	void scrollDown();
-	inline void move( int x, int y ) { this->xp = x; this->yp = y; }
-	inline int getX() { return xp; }
-	inline int getY() { return yp; }
-  bool handleEvent( SDL_Event *event );
+	inline void move( int x, int y ) {
+		this->xp = x; this->yp = y;
+	}
+	inline int getX() {
+		return xp;
+	}
+	inline int getY() {
+		return yp;
+	}
+	bool handleEvent( SDL_Event *event );
 };
 
 #endif

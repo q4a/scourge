@@ -17,6 +17,7 @@
 
 #ifndef SQOBJECT_H
 #define SQOBJECT_H
+#pragma once
 
 #include "sqbinding.h"
 #include <set>
@@ -26,21 +27,21 @@
  */
 class SqObject {
 public:
-  SqObject();
-  virtual ~SqObject();
+	SqObject();
+	virtual ~SqObject();
 
-  virtual const char *getInstanceName() = 0;
-  virtual const char *getClassName() = 0;
-  virtual SquirrelClassDecl *getClassDeclaration() = 0;
+	virtual const char *getInstanceName() = 0;
+	virtual const char *getClassName() = 0;
+	virtual SquirrelClassDecl *getClassDeclaration() = 0;
 
-  void documentSOM( char *path, std::set<std::string> *names );
+	void documentSOM( char *path, std::set<std::string> *names );
 
 private:
-  char *describeTypeMask( const SQChar *typemask, 
-                          char *buffer );
-  char *describeReturnType( const char *returnType, 
-                            std::set<std::string> *names, 
-                            char *buffer, size_t bufferSize );
+	char *describeTypeMask( const SQChar *typemask,
+	                        char *buffer );
+	char *describeReturnType( const char *returnType,
+	                          std::set<std::string> *names,
+	                          char *buffer, size_t bufferSize );
 
 };
 

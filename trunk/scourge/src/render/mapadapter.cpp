@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "../common/constants.h"
 #include "mapadapter.h"
 
 MapAdapter::MapAdapter() {

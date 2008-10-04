@@ -18,11 +18,11 @@
 
 #ifndef INFO_GUI_H
 #define INFO_GUI_H
+#pragma once
 
 #include <iostream>
 #include <string>
 #include <map>
-#include "common/constants.h"
 #include "scourge.h"
 #include "pcui.h"
 #include "gui/window.h"
@@ -39,42 +39,56 @@ class SpecialSkill;
 /// The window that appears when you right click on items, spells etc.
 class InfoGui : public WidgetView {
 
- private:
-  Scourge *scourge;
-  Item *item;
-  Spell *spell;
-  SpecialSkill *skill;
-  Window *win;
-  Button *openButton, *idButton, *closeButton, *useButton, *transcribeButton, *castButton, *skillButton;
-  ScrollingLabel *label;
-  ScrollingLabel *nameLabel;
-  Canvas *image;
-  enum { NAME_SIZE = 500, DESCR_SIZE = 1000 }; 
-  char name[NAME_SIZE], description[DESCR_SIZE];
+private:
+	Scourge *scourge;
+	Item *item;
+	Spell *spell;
+	SpecialSkill *skill;
+	Window *win;
+	Button *openButton, *idButton, *closeButton, *useButton, *transcribeButton, *castButton, *skillButton;
+	ScrollingLabel *label;
+	ScrollingLabel *nameLabel;
+	Canvas *image;
+	enum { NAME_SIZE = 500, DESCR_SIZE = 1000 };
+	char name[NAME_SIZE], description[DESCR_SIZE];
 
- public:
-  InfoGui(Scourge *scourge);
-  ~InfoGui();
+public:
+	InfoGui( Scourge *scourge );
+	~InfoGui();
 
-  bool handleEvent(Widget *widget, SDL_Event *event);
+	bool handleEvent( Widget *widget, SDL_Event *event );
 
-  inline Item *getItem() { return item; }
-  inline Spell *getSpell() { return spell; }
-  inline SpecialSkill *getSkill() { return skill; }
-  inline bool hasItem() { return item != NULL; }
-  inline bool hasSpell() { return spell != NULL; }
-  inline bool hasSkill() { return skill != NULL; }
-  void setItem(Item *item);
-  void setSpell(Spell *spell);
-  void setSkill(SpecialSkill *skill);
-  inline Window *getWindow() { return win; }
+	inline Item *getItem() {
+		return item;
+	}
+	inline Spell *getSpell() {
+		return spell;
+	}
+	inline SpecialSkill *getSkill() {
+		return skill;
+	}
+	inline bool hasItem() {
+		return item != NULL;
+	}
+	inline bool hasSpell() {
+		return spell != NULL;
+	}
+	inline bool hasSkill() {
+		return skill != NULL;
+	}
+	void setItem( Item *item );
+	void setSpell( Spell *spell );
+	void setSkill( SpecialSkill *skill );
+	inline Window *getWindow() {
+		return win;
+	}
 
-  void drawWidgetContents(Widget *w);
+	void drawWidgetContents( Widget *w );
 
 protected:
-  void describe();
-  void appendMagicItemInfo( char *description, Item *item );
-  void describeRequirements( char *description, int influenceTypeCount );
+	void describe();
+	void appendMagicItemInfo( char *description, Item *item );
+	void describeRequirements( char *description, int influenceTypeCount );
 };
 
 #endif

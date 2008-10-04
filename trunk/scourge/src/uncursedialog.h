@@ -17,8 +17,8 @@ uncursedialog.h  -  The uncurse item dialog
 
 #ifndef UNCURSE_DIALOG_H
 #define UNCURSE_DIALOG_H
+#pragma once
 
-#include "common/constants.h"
 #include "itemlist.h"
 #include "pcui.h"
 #include <map>
@@ -34,33 +34,35 @@ class PcUi;
 /// The "uncurse item" dialog.
 class UncurseDialog : public ItemRenderer {
 private:
-  Scourge *scourge;
-  Creature *creature;
-  Window *win;
-  int tradeA;
-  std::map<Item*, int> prices;
-  
-  Label *labelA;
-  Label *totalA;
-  ItemList *listA;
-  Button *closeButton, *infoButtonA, *uncurseButton;
-  Label *coinAvailA;
-  
+	Scourge *scourge;
+	Creature *creature;
+	Window *win;
+	int tradeA;
+	std::map<Item*, int> prices;
+
+	Label *labelA;
+	Label *totalA;
+	ItemList *listA;
+	Button *closeButton, *infoButtonA, *uncurseButton;
+	Label *coinAvailA;
+
 public:
-  UncurseDialog( Scourge *scourge );
-  ~UncurseDialog();
-  void setCreature( Creature *creature );
-  void updateUI();
-  inline Window *getWindow() { return win; }
-  void handleEvent( Widget *widget, SDL_Event *event );
-  
-  void render( const Widget *widget, const Item *item, std::string& buffer );
-  
+	UncurseDialog( Scourge *scourge );
+	~UncurseDialog();
+	void setCreature( Creature *creature );
+	void updateUI();
+	inline Window *getWindow() {
+		return win;
+	}
+	void handleEvent( Widget *widget, SDL_Event *event );
+
+	void render( const Widget *widget, const Item *item, std::string& buffer );
+
 protected:
-  void updateLabels();
-  void uncurse();
-  int getSelectedTotal( ItemList *list );
-  bool validateInventory();
+	void updateLabels();
+	void uncurse();
+	int getSelectedTotal( ItemList *list );
+	bool validateInventory();
 };
 
 #endif

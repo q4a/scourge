@@ -17,8 +17,8 @@ identifydialog.h  -  The identify item dialog
 
 #ifndef IDENTIFY_DIALOG_H
 #define IDENTIFY_DIALOG_H
+#pragma once
 
-#include "common/constants.h"
 #include "itemlist.h"
 #include "pcui.h"
 #include <map>
@@ -34,33 +34,35 @@ class PcUi;
 /// The "identify item" dialog.
 class IdentifyDialog : public ItemRenderer {
 private:
-  Scourge *scourge;
-  Creature *creature;
-  Window *win;
-  int tradeA;
-  std::map<Item*, int> prices;
-  
-  Label *labelA;
-  Label *totalA;
-  ItemList *listA;
-  Button *closeButton, *infoButtonA, *identifyButton;
-  Label *coinAvailA;
-  
+	Scourge *scourge;
+	Creature *creature;
+	Window *win;
+	int tradeA;
+	std::map<Item*, int> prices;
+
+	Label *labelA;
+	Label *totalA;
+	ItemList *listA;
+	Button *closeButton, *infoButtonA, *identifyButton;
+	Label *coinAvailA;
+
 public:
-  IdentifyDialog( Scourge *scourge );
-  ~IdentifyDialog();
-  void setCreature( Creature *creature );
-  void updateUI();
-  inline Window *getWindow() { return win; }
-  void handleEvent( Widget *widget, SDL_Event *event );
-  
-  void render( const Widget *widget, const Item *item, std::string& buffer );
-  
+	IdentifyDialog( Scourge *scourge );
+	~IdentifyDialog();
+	void setCreature( Creature *creature );
+	void updateUI();
+	inline Window *getWindow() {
+		return win;
+	}
+	void handleEvent( Widget *widget, SDL_Event *event );
+
+	void render( const Widget *widget, const Item *item, std::string& buffer );
+
 protected:
-  void updateLabels();
-  void identify();
-  int getSelectedTotal( ItemList *list );
-  bool validateInventory();
+	void updateLabels();
+	void identify();
+	int getSelectedTotal( ItemList *list );
+	bool validateInventory();
 };
 
 #endif

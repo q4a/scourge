@@ -17,6 +17,7 @@
 
 #ifndef SHAPE_H
 #define SHAPE_H
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,9 +49,9 @@ protected:
 	int width, height, depth;
 	float offsetX, offsetY, offsetZ;
 
-public: 
+public:
 	enum {
-		TOP_SIDE=0,
+		TOP_SIDE = 0,
 		BOTTOM_SIDE,
 		E_SIDE,
 		S_SIDE,
@@ -58,101 +59,179 @@ public:
 		N_SIDE
 	};
 
-	Shape(int width, int depth, int height, char *name, int descriptionGroup);
-	Shape(Shape *shape);
+	Shape( int width, int depth, int height, char *name, int descriptionGroup );
+	Shape( Shape *shape );
 	virtual ~Shape();
 
 	void setOccludedSides( bool *sides );
-	inline bool *getOccludedSides() { return occludedSides; }
+	inline bool *getOccludedSides() {
+		return occludedSides;
+	}
 
-	inline void setDebugGroundPos( int sx, int sy, int ex, int ey ) { 
+	inline void setDebugGroundPos( int sx, int sy, int ex, int ey ) {
 		this->groundSX = sx;
 		this->groundSY = sy;
 		this->groundEX = ex;
 		this->groundEY = ey;
 	}
 
-	inline int getGroundSX() { return groundSX; }
-	inline int getGroundSY() { return groundSY; }
-	inline int getGroundEX() { return groundEX; }
-	inline int getGroundEY() { return groundEY; }
-	
-	inline float getOffsX() { return offsetX; }
-	inline float getOffsY() { return offsetY; }
-	inline float getOffsZ() { return offsetZ; }
-	inline void setOffset( float x, float y, float z ) { offsetX = x; offsetY = y; offsetZ = z; }
+	inline int getGroundSX() {
+		return groundSX;
+	}
+	inline int getGroundSY() {
+		return groundSY;
+	}
+	inline int getGroundEX() {
+		return groundEX;
+	}
+	inline int getGroundEY() {
+		return groundEY;
+	}
 
-  /**
-    Call this once before the shape is to be displayed.
-  */
-  virtual inline void intialize() { }
+	inline float getOffsX() {
+		return offsetX;
+	}
+	inline float getOffsY() {
+		return offsetY;
+	}
+	inline float getOffsZ() {
+		return offsetZ;
+	}
+	inline void setOffset( float x, float y, float z ) {
+		offsetX = x; offsetY = y; offsetZ = z;
+	}
 
-  /**
-    The widht (x) of the shape-block's base
-  */
-  inline int getWidth() { return width; }
-  /**
-    The depth (y) of the shape-block's base
-  */
-  inline int getDepth() { return depth; }
-  /**
-    The height (z) of the shape-block
-  */
-  inline int getHeight() { return height; }
+	/**
+	  Call this once before the shape is to be displayed.
+	*/
+	virtual inline void intialize() { }
 
-  inline char *getName() { return name; }
-  inline int getDescriptionGroup() { return descriptionGroup; }
+	/**
+	  The widht (x) of the shape-block's base
+	*/
+	inline int getWidth() {
+		return width;
+	}
+	/**
+	  The depth (y) of the shape-block's base
+	*/
+	inline int getDepth() {
+		return depth;
+	}
+	/**
+	  The height (z) of the shape-block
+	*/
+	inline int getHeight() {
+		return height;
+	}
 
-  virtual void draw() = 0;
-	virtual inline void drawHeightMap( float ground[][MAP_DEPTH], int groundX, int groundY ) { draw(); }
-  virtual void outline( const Color *color ) { outline( color->r, color->g, color->b ); };
-  virtual void outline( float r, float g, float b ) {};
-  virtual void setupToDraw() = 0;
+	inline char *getName() {
+		return name;
+	}
+	inline int getDescriptionGroup() {
+		return descriptionGroup;
+	}
 
-  inline void setIndex(Uint8 index) { this->index = index; }
+	virtual void draw() = 0;
+	virtual inline void drawHeightMap( float ground[][MAP_DEPTH], int groundX, int groundY ) {
+		draw();
+	}
+	virtual void outline( const Color *color ) {
+		outline( color->r, color->g, color->b );
+	};
+	virtual void outline( float r, float g, float b ) {};
+	virtual void setupToDraw() = 0;
 
-  inline Uint8 getIndex() { return index; }
+	inline void setIndex( Uint8 index ) {
+		this->index = index;
+	}
 
-  /**
-    Draw after all the others?
-    */
-  virtual bool drawFirst() = 0;
-  // if true, the next two functions are called
-  virtual bool drawLater() = 0;
-  virtual void setupBlending() = 0;
-  virtual void endBlending() = 0;
+	inline Uint8 getIndex() {
+		return index;
+	}
+
+	/**
+	  Draw after all the others?
+	  */
+	virtual bool drawFirst() = 0;
+	// if true, the next two functions are called
+	virtual bool drawLater() = 0;
+	virtual void setupBlending() = 0;
+	virtual void endBlending() = 0;
 
 
-  inline void setStencil(bool b) { stencil = b; }
-  inline bool isStencil() { return stencil; }
+	inline void setStencil( bool b ) {
+		stencil = b;
+	}
+	inline bool isStencil() {
+		return stencil;
+	}
 
-  inline void setOutlineColor( Color *color ) { this->outlineColor = color; }
-  inline Color *getOutlineColor() { return this->outlineColor; }
+	inline void setOutlineColor( Color *color ) {
+		this->outlineColor = color;
+	}
+	inline Color *getOutlineColor() {
+		return this->outlineColor;
+	}
 
-  virtual inline void setInteractive( bool b ) { interactive = b; }
-  virtual inline bool isInteractive() { return interactive; }
+	virtual inline void setInteractive( bool b ) {
+		interactive = b;
+	}
+	virtual inline bool isInteractive() {
+		return interactive;
+	}
 
-	virtual inline void setOutdoorWeight( float f ) { outdoorWeight = f; }
-  virtual inline float getOutdoorWeight() { return outdoorWeight; }
+	virtual inline void setOutdoorWeight( float f ) {
+		outdoorWeight = f;
+	}
+	virtual inline float getOutdoorWeight() {
+		return outdoorWeight;
+	}
 
-	virtual inline void setOutdoorShadow( bool b ) { outdoorShadow = b; }
-	virtual inline bool isOutdoorShadow() { return outdoorShadow; }
+	virtual inline void setOutdoorShadow( bool b ) {
+		outdoorShadow = b;
+	}
+	virtual inline bool isOutdoorShadow() {
+		return outdoorShadow;
+	}
 
-	virtual inline void setWind( bool b ) { wind = b; }
-	virtual inline bool isWind() { return wind; }
-	virtual inline float getWindValue() { return 0; }
+	virtual inline void setWind( bool b ) {
+		wind = b;
+	}
+	virtual inline bool isWind() {
+		return wind;
+	}
+	virtual inline float getWindValue() {
+		return 0;
+	}
 
-  virtual inline bool isFlatCaveshape() { return false; }
+	virtual inline bool isFlatCaveshape() {
+		return false;
+	}
 
-	inline void setTextureCount( int count ) { this->textureCount = count; }
-	inline int getTextureCount() { return textureCount; }
-	inline void setTextureIndex( int index ) { this->textureIndex = index; }
-	inline int getTextureIndex() { return textureIndex; }
-	
-	virtual inline bool isVirtual() { return false; }
-	
-	inline void setRoof( bool b ) { this->roof = b; }
-	inline bool isRoof() { return roof; }
+	inline void setTextureCount( int count ) {
+		this->textureCount = count;
+	}
+	inline int getTextureCount() {
+		return textureCount;
+	}
+	inline void setTextureIndex( int index ) {
+		this->textureIndex = index;
+	}
+	inline int getTextureIndex() {
+		return textureIndex;
+	}
+
+	virtual inline bool isVirtual() {
+		return false;
+	}
+
+	inline void setRoof( bool b ) {
+		this->roof = b;
+	}
+	inline bool isRoof() {
+		return roof;
+	}
 };
 
 #endif

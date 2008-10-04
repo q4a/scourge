@@ -17,11 +17,11 @@
 
 #ifndef BATTLE_H
 #define BATTLE_H
+#pragma once
 
 #include <iostream>
 #include <string>
 #include <vector>
-#include "common/constants.h"
 #include "session.h"
 #include "spellcaster.h"
 
@@ -38,107 +38,125 @@ class Spell;
 /// This class represents a single battle turn.
 
 class Battle {
-	enum { 
+	enum {
 		MESSAGE_SIZE = 200
 	};
- private:
-  Session *session;
-  Creature *creature;
-  Item* item;
-  char message[MESSAGE_SIZE];
-  int creatureInitiative;
-  bool initiativeCheck;
-  int speed;
-  float dist;
-  bool empty;
-  bool projectileHit;
-  Spell *spell;
-  int weaponWait;
-  float range;
+private:
+	Session *session;
+	Creature *creature;
+	Item* item;
+	char message[MESSAGE_SIZE];
+	int creatureInitiative;
+	bool initiativeCheck;
+	int speed;
+	float dist;
+	bool empty;
+	bool projectileHit;
+	Spell *spell;
+	int weaponWait;
+	float range;
 
-  int ap, startingAp;
-  bool paused;
-  int steps;
-  bool needsReset;
-  int nextTurn;
+	int ap, startingAp;
+	bool paused;
+	int steps;
+	bool needsReset;
+	int nextTurn;
 
-  // sounds
-  static int handheldSwishSoundStart, handheldSwishSoundCount;
-  static int bowSwishSoundStart, bowSwishSoundCount;
-  static int potionSoundStart, potionSoundCount;
-  static char *sound[];
+	// sounds
+	static int handheldSwishSoundStart, handheldSwishSoundCount;
+	static int bowSwishSoundStart, bowSwishSoundCount;
+	static int potionSoundStart, potionSoundCount;
+	static char *sound[];
 
- public:
+public:
 
-   static bool debugBattle;
+	static bool debugBattle;
 
-   inline int getAP() { return ap; }
-   inline int decrAP() { return --ap; }
-   inline int getStartingAP() { return startingAp; }
-  
-   void endTurn();
+	inline int getAP() {
+		return ap;
+	}
+	inline int decrAP() {
+		return --ap;
+	}
+	inline int getStartingAP() {
+		return startingAp;
+	}
 
-  static void setupBattles(Session *session, Battle *battle[], int count, std::vector<Battle *> *turns);
+	void endTurn();
 
-  static void projectileHitTurn(Session *session, Projectile *proj, Creature *target);
-  static void projectileHitTurn(Session *session, Projectile *proj, int x, int y);
+	static void setupBattles( Session *session, Battle *battle[], int count, std::vector<Battle *> *turns );
 
-  Battle();
+	static void projectileHitTurn( Session *session, Projectile *proj, Creature *target );
+	static void projectileHitTurn( Session *session, Projectile *proj, int x, int y );
 
-  Battle(Session *session, Creature *creature);
-  ~Battle();
+	Battle();
 
-  void reset( bool keepPaused = false, bool keepAP = false );
-  Creature *getAvailableTarget();
-  Creature *getAvailablePartyTarget();
+	Battle( Session *session, Creature *creature );
+	~Battle();
 
-  inline bool isEmpty() { return empty; }
-  bool fightTurn();
+	void reset( bool keepPaused = false, bool keepAP = false );
+	Creature *getAvailableTarget();
+	Creature *getAvailablePartyTarget();
 
-  void dealDamage( float damage, int effect=Constants::EFFECT_GLOW, bool magical=false, GLuint delay=0 );
+	inline bool isEmpty() {
+		return empty;
+	}
+	bool fightTurn();
 
-  inline Creature *getCreature() { return creature; }
-  inline Session *getSession() { return session; }
+	void dealDamage( float damage, int effect = Constants::EFFECT_GLOW, bool magical = false, GLuint delay = 0 );
 
-  void invalidate();
+	inline Creature *getCreature() {
+		return creature;
+	}
+	inline Session *getSession() {
+		return session;
+	}
 
-  static inline int getSoundCount() { return handheldSwishSoundCount + bowSwishSoundCount + potionSoundCount; }
-  static inline char *getSound(int index) { return sound[index]; }
+	void invalidate();
 
-  void castSpell( bool alwaysSucceeds = false );
+	static inline int getSoundCount() {
+		return handheldSwishSoundCount + bowSwishSoundCount + potionSoundCount;
+	}
+	static inline char *getSound( int index ) {
+		return sound[index];
+	}
 
-  void useSkill();
+	void castSpell( bool alwaysSucceeds = false );
 
-  int calculateRange( Item *item=NULL );
+	void useSkill();
 
-  bool describeAttack( Creature *target, char *buff, size_t buffSize, Color *color, bool includeActions );
+	int calculateRange( Item *item = NULL );
 
-  inline float getRange() { return range; }
+	bool describeAttack( Creature *target, char *buff, size_t buffSize, Color *color, bool includeActions );
+
+	inline float getRange() {
+		return range;
+	}
 
 	bool isInRangeOfTarget();
 
- protected:
-  void launchProjectile();
-  //void initTurn();
-  void hitWithItem();
-  float applyMagicItemSpellDamage();
-  void applyMagicItemDamage( float *damage );
-  void applyHighAttackRoll( float *damage, float attack, float min, float max );
-  bool handleLowAttackRoll( float attack, float min, float max );
-  void prepareToHitMessage();
-  void initItem(Item *item);
-  
-  void executeEatDrinkAction();
-  // return true if game paused
-  bool pauseBeforePlayerTurn();
-  void initTurnStep( bool callScript=false );
-	int getAdjustedWait( int originalWait );
-  void executeAction();
-  void stepCloserToTarget();
-  bool selectNewTarget();
-  bool moveCreature();
+protected:
+	void launchProjectile();
+	//void initTurn();
+	void hitWithItem();
+	float applyMagicItemSpellDamage();
+	void applyMagicItemDamage( float *damage );
+	void applyHighAttackRoll( float *damage, float attack, float min, float max );
+	bool handleLowAttackRoll( float attack, float min, float max );
+	void prepareToHitMessage();
+	void initItem( Item *item );
 
-  static char *getRandomSound(int start, int count);
+	void executeEatDrinkAction();
+	// return true if game paused
+	bool pauseBeforePlayerTurn();
+	void initTurnStep( bool callScript = false );
+	int getAdjustedWait( int originalWait );
+	void executeAction();
+	void stepCloserToTarget();
+	bool selectNewTarget();
+	bool moveCreature();
+
+	static char *getRandomSound( int start, int count );
 };
 
 #endif

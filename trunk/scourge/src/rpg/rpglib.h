@@ -17,11 +17,12 @@
 
 #ifndef RPG_LIB_H
 #define RPG_LIB_H
+#pragma once
 
 /**
  * A way for external classes to this dir to get everything in one include file.
  */
-            
+
 #include "rpg.h"
 #include "character.h"
 #include "monster.h"

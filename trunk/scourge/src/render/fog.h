@@ -17,11 +17,12 @@
 
 #ifndef FOG_H
 #define FOG_H
+#pragma once
 
 #include "render.h"
 #include <set>
 
-class CFrustum;                
+class CFrustum;
 class Shape;
 class Map;
 class RenderedCreature;
@@ -30,42 +31,42 @@ class RenderedCreature;
 class Fog {
 private:
 	float lampRadiusSquared;
-  int fog[MAP_WIDTH][MAP_DEPTH];
-  std::set<RenderedCreature *> *players;
-  Map *map;
+	int fog[MAP_WIDTH][MAP_DEPTH];
+	std::set<RenderedCreature *> *players;
+	Map *map;
 
 #define OVERLAY_SIZE 16
-  GLuint overlay_tex;
-  unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 4];
+	GLuint overlay_tex;
+	unsigned char overlay_data[OVERLAY_SIZE * OVERLAY_SIZE * 4];
 
-  GLuint shade_tex;
-  unsigned char shade_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
+	GLuint shade_tex;
+	unsigned char shade_data[OVERLAY_SIZE * OVERLAY_SIZE * 3];
 
 public:
 
-  enum {
-    FOG_UNVISITED=0,
-    FOG_VISITED,
-    FOG_CLEAR
-  };
+	enum {
+		FOG_UNVISITED = 0,
+		FOG_VISITED,
+		FOG_CLEAR
+	};
 
-  Fog( Map *map, float lampRadiusSquared = 36.0f );
-  ~Fog();
+	Fog( Map *map, float lampRadiusSquared = 36.0f );
+	~Fog();
 
-  int getValue( int mapx, int mapy );
-  void visit( RenderedCreature *player );
-  void hideDeadParty();
-  void reset();
-  void draw( int sx, int sy, int w, int h, CFrustum *frustum );
-  int getVisibility( int xp, int yp, Shape *shape );
+	int getValue( int mapx, int mapy );
+	void visit( RenderedCreature *player );
+	void hideDeadParty();
+	void reset();
+	void draw( int sx, int sy, int w, int h, CFrustum *frustum );
+	int getVisibility( int xp, int yp, Shape *shape );
 	void load( FogInfo *fogInfo );
 	void save( FogInfo *fogInfo );
 protected:
-  void getScreenXY( GLdouble mapx, GLdouble mapy, GLdouble mapz,
-                    GLdouble *screenx, GLdouble *screeny );
-  int getHighestZ( int sx, int sy, int w, int h );
-  void createOverlayTexture();
-  void createShadeTexture();
+	void getScreenXY( GLdouble mapx, GLdouble mapy, GLdouble mapz,
+	                  GLdouble *screenx, GLdouble *screeny );
+	int getHighestZ( int sx, int sy, int w, int h );
+	void createOverlayTexture();
+	void createShadeTexture();
 };
 
 #endif

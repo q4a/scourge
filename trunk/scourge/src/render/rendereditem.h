@@ -17,33 +17,33 @@
 
 #ifndef RENDERED_ITEM_H
 #define RENDERED_ITEM_H
+#pragma once
 
-#include "../common/constants.h"
 #include "../persist.h"
 
 class GLShape;
 
 /**
  * @author Gabor Torok
- * 
+ *
  * An item rendered on the map.
  */
 
 class RenderedItem {
 public:
-  RenderedItem() {}
-  virtual ~RenderedItem() {}
+	RenderedItem() {}
+	virtual ~RenderedItem() {}
 
-  virtual GLShape *getShape() = 0;
-  virtual bool isMagicItem() = 0;
-  virtual bool isSpecial() = 0;
-  virtual int getMagicLevel() = 0;
-  virtual bool getContainsMagicItem() = 0;
-  virtual bool isBlocking() = 0;
-  virtual char *getItemName() = 0;
-  virtual ItemInfo *save() = 0;
+	virtual GLShape *getShape() = 0;
+	virtual bool isMagicItem() = 0;
+	virtual bool isSpecial() = 0;
+	virtual int getMagicLevel() = 0;
+	virtual bool getContainsMagicItem() = 0;
+	virtual bool isBlocking() = 0;
+	virtual char *getItemName() = 0;
+	virtual ItemInfo *save() = 0;
 	virtual char *getType() = 0;
-  virtual int getRange() = 0;
+	virtual int getRange() = 0;
 };
 
 

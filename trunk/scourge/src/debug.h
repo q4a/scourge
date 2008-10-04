@@ -17,31 +17,32 @@
 
 #ifndef DEBUG_VALUES_H
 #define DEBUG_VALUES_H
+#pragma once
 
 /**
  * This is where debug flags go.
- * 
+ *
  * Include this file as needed but do not add to makefile.
  * Do not include this file in a .h file.
  * This way it will only recompile the affected .cpp files.
  */
 
 #define SHOW_FPS true
- 
+
 // battle.cpp
 #define DEBUG_BATTLE false
 
 // calendar.cpp
 #define CALENDAR_DEBUG 0
 
-// creature.cpp             
+// creature.cpp
 #define GOD_MODE 1
 #define MONSTER_IMORTALITY 0
-                       
+
 // partyeditor.cpp (if non-1, defaults are added)
 #define STARTING_PARTY_LEVEL 1
 
-// scourge.cpp                     
+// scourge.cpp
 //#define CAVE_TEST 1
 #define CAVE_TEST_LEVEL 4
 #define BATTLES_ENABLED 1
@@ -50,10 +51,10 @@
 #define DEBUG_KEYS 1
 //#define BASE_DEBUG 1
 
-// comment out to unset														 
+// comment out to unset
 //#define DEBUG_IDENTIFY_ITEM 1
 
-// sqbinding.cpp                        
+// sqbinding.cpp
 #define DEBUG_SQUIRREL 0
 
 // show secret doors

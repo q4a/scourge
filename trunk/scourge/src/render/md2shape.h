@@ -4,9 +4,9 @@
  * Look up his other great tutorials at:
  * http://www.gametutorials.com
  *
- * glCommands (and thus simplification of this file) is implemented 
- * thanks to David Henry tutorial : 
- *   http://tfc.duke.free.fr/us/tutorials/models/md2.htm 
+ * glCommands (and thus simplification of this file) is implemented
+ * thanks to David Henry tutorial :
+ *   http://tfc.duke.free.fr/us/tutorials/models/md2.htm
  */
 
 
@@ -29,6 +29,7 @@
 
 #ifndef MD2SHAPE_H
 #define MD2SHAPE_H
+#pragma once
 
 #include <iostream>
 #include <stdio.h>
@@ -48,38 +49,40 @@ class MD2Shape : public AnimatedShape  {
 //#define DEBUG_MD2 1
 
 private:
-  float div;
-  GLuint textureId;
-  t3DModel * g_3DModel;                 // This holds the 3D Model info that we load in
-  vect3d *vect;     
-      
-  // Animation stuff
-  float elapsedTime;
-  float lastTime;  
-  int currentFrame;     
+	float div;
+	GLuint textureId;
+	t3DModel * g_3DModel;                 // This holds the 3D Model info that we load in
+	vect3d *vect;
 
-  // This draws and animates the .md2 model by interpoloated key frame animation
-  void AnimateMD2Model();
-  
-  // This returns time t for the interpolation between the current and next key frame
-  float ReturnCurrentTime(int nextFrame);
+	// Animation stuff
+	float elapsedTime;
+	float lastTime;
+	int currentFrame;
+
+	// This draws and animates the .md2 model by interpoloated key frame animation
+	void AnimateMD2Model();
+
+	// This returns time t for the interpolation between the current and next key frame
+	float ReturnCurrentTime( int nextFrame );
 
 protected:
-  void commonInit(t3DModel * g_3DModel, GLuint textureId, float div);           
+	void commonInit( t3DModel * g_3DModel, GLuint textureId, float div );
 
-public:     
-  MD2Shape(t3DModel * g_3DModel, GLuint textureId, float div,
-           GLuint texture[], int width, int depth, int height,
-           char *name, int descriptionGroup,
-           Uint32 color, Uint8 shapePalIndex=0);
+public:
+	MD2Shape( t3DModel * g_3DModel, GLuint textureId, float div,
+	          GLuint texture[], int width, int depth, int height,
+	          char *name, int descriptionGroup,
+	          Uint32 color, Uint8 shapePalIndex = 0 );
 
 	virtual ~MD2Shape();
 
-  void setModelAnimation();
-  void draw();
-  void outline( float r, float g, float b );
-  void setupToDraw();
-  inline GLuint getTextureId() { return textureId; }
+	void setModelAnimation();
+	void draw();
+	void outline( float r, float g, float b );
+	void setupToDraw();
+	inline GLuint getTextureId() {
+		return textureId;
+	}
 
 
 };

@@ -17,8 +17,8 @@
 
 #ifndef SAVEGAME_DIALOG_H
 #define SAVEGAME_DIALOG_H
+#pragma once
 
-#include "common/constants.h"
 #include <map>
 #include <vector>
 #include <set>
@@ -48,22 +48,24 @@ public:
 /// The save/load game dialog.
 class SavegameDialog {
 private:
-  Scourge *scourge;
-  Window *win;
-  ScrollingList *files;
-  Button *cancel, *save, *load, *newSave, *deleteSave;
+	Scourge *scourge;
+	Window *win;
+	ScrollingList *files;
+	Button *cancel, *save, *load, *newSave, *deleteSave;
 	std::vector<SavegameInfo*> fileInfos;
 	std::vector<std::string> filenames;
 	std::vector<GLuint> screens;
 	ConfirmDialog *confirm;
 
-	bool matches_save_(std::string& match);
+	bool matches_save_( std::string& match );
 
 public:
-  SavegameDialog( Scourge *scourge );
-  ~SavegameDialog();
-  inline Window *getWindow() { return win; }
-  void handleEvent( Widget *widget, SDL_Event *event );
+	SavegameDialog( Scourge *scourge );
+	~SavegameDialog();
+	inline Window *getWindow() {
+		return win;
+	}
+	void handleEvent( Widget *widget, SDL_Event *event );
 	void show( bool inSaveMode = true );
 
 	bool createNewSaveGame();

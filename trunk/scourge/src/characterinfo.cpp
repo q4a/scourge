@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "common/constants.h"
 #include "characterinfo.h"
 #include "item.h"
 #include "creature.h"
@@ -25,42 +26,42 @@
 using namespace std;
 
 CharacterInfoUI::CharacterInfoUI( Scourge *scourge ) {
-  this->scourge = scourge;
-  creature = NULL;
-  win = NULL;
+	this->scourge = scourge;
+	creature = NULL;
+	win = NULL;
 }
 
 CharacterInfoUI::~CharacterInfoUI() {
 }
 
 void CharacterInfoUI::drawWidgetContents( Widget *w ) {
-  if( !( win && creature ) ) return;
+	if ( !( win && creature ) ) return;
 
-  //GuiTheme *theme = win->getTheme();
-  Creature *p = creature;
+	//GuiTheme *theme = win->getTheme();
+	Creature *p = creature;
 	glDisable( GL_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 
-  int y = 0;
+	int y = 0;
 	glColor4f( 1, 0.35f, 0, 1 );
 	scourge->getSDLHandler()->texPrint( 10, y + 15, _( "Basic Statistics:" ) );
 
 	glColor4f( 1, 1, 1, 1 );
 	scourge->getSDLHandler()->texPrint( 10, y + 30, "%s: %d", _( "HP" ), p->getMaxHp() );
-  scourge->getSDLHandler()->texPrint( 10, y + 45, "%s: %d", _( "MP" ), p->getMaxMp() );
-  scourge->getSDLHandler()->texPrint( 10, y + 60, "%s: %d", _( "AP" ), toint( p->getMaxAP() ) );
-  
+	scourge->getSDLHandler()->texPrint( 10, y + 45, "%s: %d", _( "MP" ), p->getMaxMp() );
+	scourge->getSDLHandler()->texPrint( 10, y + 60, "%s: %d", _( "AP" ), toint( p->getMaxAP() ) );
+
 	glColor4f( 1, 0.35f, 0, 1 );
 	scourge->getSDLHandler()->texPrint( 10, y + 75, _( "Attack:" ) );
-  scourge->describeAttacks( p, 10, y + 90, true );
+	scourge->describeAttacks( p, 10, y + 90, true );
 
 	glColor4f( 1, 0.35f, 0, 1 );
 	scourge->getSDLHandler()->texPrint( 160, y + 75, _( "Unarmed Defense:" ) );
 	scourge->describeDefense( p, 160, y + 90 );
 }
 
-void CharacterInfoUI::setCreature( Window *win, 
-																	 Creature *creature ) { 
+void CharacterInfoUI::setCreature( Window *win,
+    Creature *creature ) {
 	this->win = win;
 	this->creature = creature;
 }

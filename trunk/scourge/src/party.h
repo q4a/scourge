@@ -17,10 +17,10 @@
 
 #ifndef PARTY_H
 #define PARTY_H
+#pragma once
 
 #include <iostream>
 #include <string>
-#include "common/constants.h"
 #include "calendar.h"
 #include "events/thirsthungerevent.h"
 
@@ -31,129 +31,151 @@ class Item;
 /// Small utility class.
 class CreatureGroupInfo {
 public:
-  CreatureGroupInfo() {
-  }
-  
-  virtual ~CreatureGroupInfo() {
-  }
+	CreatureGroupInfo() {
+	}
 
-  virtual Creature *getHighestSkillPC( int skill ) = 0;
+	virtual ~CreatureGroupInfo() {
+	}
+
+	virtual Creature *getHighestSkillPC( int skill ) = 0;
 };
 
 /// A party of characters.
 class Party : public CreatureGroupInfo {
- private:
-    
-  Session *session;
-  Creature *player;
-  Creature *party[MAX_PARTY_SIZE];
-  bool partyDead;
-  bool player_only;
-  int formation;
-  Calendar * calendar;
-  bool startRound;
-  int partySize;
-  Creature *savedPlayer;
-  bool savedPlayerOnly;
-  int storylineIndex;
+private:
 
-  static Creature *lastPlayer;
+	Session *session;
+	Creature *player;
+	Creature *party[MAX_PARTY_SIZE];
+	bool partyDead;
+	bool player_only;
+	int formation;
+	Calendar * calendar;
+	bool startRound;
+	int partySize;
+	Creature *savedPlayer;
+	bool savedPlayerOnly;
+	int storylineIndex;
 
-  Creature *loadedParty[MAX_PARTY_SIZE];
-  int loadedCount;
-  std::map<int,Creature*> maxSkills;
+	static Creature *lastPlayer;
+
+	Creature *loadedParty[MAX_PARTY_SIZE];
+	int loadedCount;
+	std::map<int, Creature*> maxSkills;
 	std::set<Creature*> partySet;
 
- public:
+public:
 
-  Party(Session *session);
-  virtual ~Party();
+	Party( Session *session );
+	virtual ~Party();
 
-  inline Creature *getHighestSkillPC( int skill ) { return ( maxSkills.find( skill ) != maxSkills.end() ? maxSkills[ skill ] : NULL ); }
-  void recomputeMaxSkills();
+	inline Creature *getHighestSkillPC( int skill ) {
+		return ( maxSkills.find( skill ) != maxSkills.end() ? maxSkills[ skill ] : NULL );
+	}
+	void recomputeMaxSkills();
 
-	inline bool isPartyMember( Creature *c ) { return( partySet.find( c ) != partySet.end() ); }
+	inline bool isPartyMember( Creature *c ) {
+		return( partySet.find( c ) != partySet.end() );
+	}
 
-  void regainMp();
+	void regainMp();
 
 	void applyRecurringSpecialSkills();
 
-  inline int getStorylineIndex() { return storylineIndex; }
+	inline int getStorylineIndex() {
+		return storylineIndex;
+	}
 
-  void reset();
-  void resetMultiplayer(Creature *c);
+	void reset();
+	void resetMultiplayer( Creature *c );
 
-  void deleteParty();
+	void deleteParty();
 
-  inline Calendar *getCalendar() { return calendar; } 
+	inline Calendar *getCalendar() {
+		return calendar;
+	}
 
-  inline Creature *getPlayer() { return player; }
+	inline Creature *getPlayer() {
+		return player;
+	}
 
-  void setPlayer(int n, bool updateui=true);
+	void setPlayer( int n, bool updateui = true );
 
-  void setPartyMotion(int motion);
-  
-  void setFormation(int formation);
+	void setPartyMotion( int motion );
 
-  inline int getFormation() { return formation; }
+	void setFormation( int formation );
 
-  inline Creature *getParty(int i) { return party[i]; } 
+	inline int getFormation() {
+		return formation;
+	}
 
-  // move the party
-  bool setSelXY( Uint16 mapx, Uint16 mapy, bool cancelIfNotPossible=false );
-  void movePlayers();
+	inline Creature *getParty( int i ) {
+		return party[i];
+	}
 
-  // returns false if the switch could not be made,
-  // because the entire party is dead (the mission failed)
-  bool switchToNextLivePartyMember();
+	// move the party
+	bool setSelXY( Uint16 mapx, Uint16 mapy, bool cancelIfNotPossible = false );
+	void movePlayers();
+
+	// returns false if the switch could not be made,
+	// because the entire party is dead (the mission failed)
+	bool switchToNextLivePartyMember();
 
 	bool nextPartyMember();
 	bool previousPartyMember();
 	int getPlayerIndex();
 
-  void togglePlayerOnly(bool keepTargets = false);
+	void togglePlayerOnly( bool keepTargets = false );
 
-  void forceStopRound();
-  void toggleRound(bool test);
-  void toggleRound();
-  inline bool isRealTimeMode() { return startRound; }
+	void forceStopRound();
+	void toggleRound( bool test );
+	void toggleRound();
+	inline bool isRealTimeMode() {
+		return startRound;
+	}
 
-  void startPartyOnMission();
+	void startPartyOnMission();
 
-  void setFirstLivePlayer();
-  int getFirstLivePlayer();
+	void setFirstLivePlayer();
+	int getFirstLivePlayer();
 
-  void setTargetCreature(Creature *creature);
-  inline bool isPartyDead() { return partyDead; }
-  inline bool isPlayerOnly() { return player_only; }
-  inline int getPartySize() { return partySize; }
-  
-  int getTotalLevel();
+	void setTargetCreature( Creature *creature );
+	inline bool isPartyDead() {
+		return partyDead;
+	}
+	inline bool isPlayerOnly() {
+		return player_only;
+	}
+	inline int getPartySize() {
+		return partySize;
+	}
 
-  /** 
-	  Return the closest live player within the given radius or null if none can be found.
-  */
-  Creature *getClosestPlayer(int x, int y, int w, int h, int radius);
+	int getTotalLevel();
 
-  void startEffect(int effect_type, int duration=Constants::DAMAGE_DURATION);
+	/**
+	 Return the closest live player within the given radius or null if none can be found.
+	*/
+	Creature *getClosestPlayer( int x, int y, int w, int h, int radius );
 
-  static void createHardCodedParty(Session *session, Creature **party, int *partySize);
+	void startEffect( int effect_type, int duration = Constants::DAMAGE_DURATION );
 
-  void savePlayerSettings();
-  void restorePlayerSettings();
+	static void createHardCodedParty( Session *session, Creature **party, int *partySize );
 
-  void setParty(int count, Creature **creatures, int storylineIndex);
+	void savePlayerSettings();
+	void restorePlayerSettings();
 
-  bool isEquipped( Item *item );
+	void setParty( int count, Creature **creatures, int storylineIndex );
+
+	bool isEquipped( Item *item );
 
 	int getAverageLevel();
 
 	void hire( Creature *creature );
 	void dismiss( int index );
 
-  void rollPerception();
+	void rollPerception();
 protected:
-  void resetPartyUI();  
+	void resetPartyUI();
 	bool isPartyInRange();
 };
 

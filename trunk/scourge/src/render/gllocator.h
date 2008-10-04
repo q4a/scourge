@@ -18,6 +18,7 @@
 
 #ifndef GLLOCATOR_H
 #define GLLOCATOR_H
+#pragma once
 
 #include "glshape.h"
 
@@ -30,23 +31,29 @@ class GLShape;
 /// This shape is unused in the game.
 class GLLocator : public GLShape  {
 private:
-  
+
 public:
-	GLLocator(GLuint texture[], 
-          int width, int depth, int height,
-          char *name, int descriptionGroup,
-          Uint32 color, Uint8 shapePalIndex=0);
+	GLLocator( GLuint texture[],
+	           int width, int depth, int height,
+	           char *name, int descriptionGroup,
+	           Uint32 color, Uint8 shapePalIndex = 0 );
 
-  ~GLLocator();
-  
-  void draw();
+	~GLLocator();
 
-  inline bool drawFirst() { return false; }
-  // if true, the next two functions are called
-  inline bool drawLater() { return true; }
-  inline void setupBlending() { glBlendFunc(GL_SRC_ALPHA, GL_ONE); }
+	void draw();
 
-          
+	inline bool drawFirst() {
+		return false;
+	}
+	// if true, the next two functions are called
+	inline bool drawLater() {
+		return true;
+	}
+	inline void setupBlending() {
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	}
+
+
 protected:
 };
 

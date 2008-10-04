@@ -17,8 +17,8 @@
 
 #ifndef THIRST_HUNGER_EVENT_H
 #define THIRST_HUNGER_EVENT_H
+#pragma once
 
-#include "../common/constants.h"
 #include "../scourge.h"
 #include "event.h"
 
@@ -26,30 +26,34 @@
 /**
   *@author Daroth-U
   */
-  
+
 class Creature;
 class Scourge;
-  
+
 /// Thirst and hunger event.
 class ThirstHungerEvent : public Event  {
 
 private:
-  Creature * creature;
-  Scourge * scourge;          
+	Creature * creature;
+	Scourge * scourge;
 
 public:
 
-  void execute();    
-  
-  ThirstHungerEvent(Date currentDate, Date timeOut, Creature *c, Scourge *scourge, int nbExecutionsToDo);  
-  ThirstHungerEvent();
-  virtual ~ThirstHungerEvent();  
+	void execute();
+
+	ThirstHungerEvent( Date currentDate, Date timeOut, Creature *c, Scourge *scourge, int nbExecutionsToDo );
+	ThirstHungerEvent();
+	virtual ~ThirstHungerEvent();
 
 	virtual bool doesReferenceCreature( Creature *creature );
 
-  inline const char *getName() { return "ThirstHungerEvent"; }
-	virtual inline Creature *getCreature() { return creature; }
-  
+	inline const char *getName() {
+		return "ThirstHungerEvent";
+	}
+	virtual inline Creature *getCreature() {
+		return creature;
+	}
+
 };
 
 #endif

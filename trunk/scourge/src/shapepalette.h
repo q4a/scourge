@@ -17,11 +17,11 @@
 
 #ifndef SHAPEPALETTE_H
 #define SHAPEPALETTE_H
+#pragma once
 
 #include <string>
 #include <vector>
 #include <map>
-#include "common/constants.h"
 #include "render/shapes.h"
 
 /**
@@ -39,10 +39,10 @@ class SDLScreenView;
 
 /// A location on the world map.
 struct MapGridLocation {
-  char name[80];
-  int x, y;
-  bool random;
-  char type;
+	char name[80];
+	int x, y;
+	bool random;
+	char type;
 };
 
 /// An outdoor texture that can be referenced by name.
@@ -57,145 +57,213 @@ class ShapePalette : public Shapes {
 private:
 	ModelLoader *loader;
 
-  GLuint gui_texture, gui_wood_texture, gui_texture2, hand_attack_icon;
-  std::map<int, GLuint> statModIcons;
+	GLuint gui_texture, gui_wood_texture, gui_texture2, hand_attack_icon;
+	std::map<int, GLuint> statModIcons;
 	GLuint thirstIcon, hungerIcon;
 
-  Session *session;
-  
-  std::vector<GLuint> portraitTextures[2];
-  GLuint deathPortraitTexture;
-  GLuint progressTexture, progressHighlightTexture;
+	Session *session;
 
-  char aboutText[3000];
+	std::vector<GLuint> portraitTextures[2];
+	GLuint deathPortraitTexture;
+	GLuint progressTexture, progressHighlightTexture;
 
-  GLuint mapGrid[ Constants::MAP_GRID_TILE_WIDTH ][ Constants::MAP_GRID_TILE_HEIGHT ];
-  std::map<char, std::vector<MapGridLocation*>*> mapGridLocationByType;
+	char aboutText[3000];
 
-	std::map<std::string,GLuint> namedTextures;
-	std::map<std::string,NamedOutdoorTexture> outdoorNamedTextures;
+	GLuint mapGrid[ Constants::MAP_GRID_TILE_WIDTH ][ Constants::MAP_GRID_TILE_HEIGHT ];
+	std::map<char, std::vector<MapGridLocation*>*> mapGridLocationByType;
+
+	std::map<std::string, GLuint> namedTextures;
+	std::map<std::string, NamedOutdoorTexture> outdoorNamedTextures;
 	SDL_Rect inventoryHoles[ Constants::INVENTORY_COUNT ];
 
-public: 
-  ShapePalette( Session *session );
-  ~ShapePalette();
-  
-  inline Session *getSession() { return session; }
+public:
+	ShapePalette( Session *session );
+	~ShapePalette();
 
-  inline GLuint getProgressTexture() { return progressTexture; }
-  inline GLuint getProgressHighlightTexture() { return progressHighlightTexture; }
+	inline Session *getSession() {
+		return session;
+	}
 
-  inline GLuint getMapGridTile( int x, int y ) { return mapGrid[ x ][ y ]; }
+	inline GLuint getProgressTexture() {
+		return progressTexture;
+	}
+	inline GLuint getProgressHighlightTexture() {
+		return progressHighlightTexture;
+	}
 
-	inline GLuint getHandsAttackIcon() { return hand_attack_icon; }
+	inline GLuint getMapGridTile( int x, int y ) {
+		return mapGrid[ x ][ y ];
+	}
 
-  void initMapGrid();
+	inline GLuint getHandsAttackIcon() {
+		return hand_attack_icon;
+	}
 
-  /**
-   * Find a random location on the scourge map.
-   * @param type a char depicting an arbitrary map type (eg.: C-city, D-dungeon, etc.)
-   * @param name will point to the name of the location found
-   * @param x the x coordinate
-   * @param y the y coordinate
-   * @return true if a location of type was found.
-   */
-  bool getRandomMapLocation( char type, char **name, int *x, int *y );
-  
-  inline char *getAboutText() { return aboutText; }
+	void initMapGrid();
 
-  void preInitialize();
-  void initialize();
+	/**
+	 * Find a random location on the scourge map.
+	 * @param type a char depicting an arbitrary map type (eg.: C-city, D-dungeon, etc.)
+	 * @param name will point to the name of the location found
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @return true if a location of type was found.
+	 */
+	bool getRandomMapLocation( char type, char **name, int *x, int *y );
 
-  void loadNpcPortraits();
+	inline char *getAboutText() {
+		return aboutText;
+	}
 
-  GLuint formationTexIndex;
+	void preInitialize();
+	void initialize();
 
-  inline GLuint getStatModIcon(int statModIndex) { if(statModIcons.find(statModIndex) == statModIcons.end()) return (GLuint)0; else return statModIcons[statModIndex]; }
-	inline GLuint getThirstIcon() { return thirstIcon; }
-	inline GLuint getHungerIcon() { return hungerIcon; }
+	void loadNpcPortraits();
 
-  // cursor
-  SDL_Surface *tiles, *spells;
-  GLuint tilesTex[20][20], spellsTex[20][20];
+	GLuint formationTexIndex;
 
-  GLuint logo_texture;
-  GLuint chain_texture;
-  GLuint scourgeBackdrop_texture;
+	inline GLuint getStatModIcon( int statModIndex ) {
+		if ( statModIcons.find( statModIndex ) == statModIcons.end() ) return ( GLuint )0; else return statModIcons[statModIndex];
+	}
+	inline GLuint getThirstIcon() {
+		return thirstIcon;
+	}
+	inline GLuint getHungerIcon() {
+		return hungerIcon;
+	}
 
-  GLuint cloud, candle, highlight;
-  GLuint border, border2, gargoyle;
-  GLuint minimap, minimapMask, dismiss, exitTexture, options, group, inventory;
-  GLuint waitTexture, startTexture, realTimeTexture, pausedTexture;
-  GLuint systemTexture;
-  GLuint ioTexture;
+	// cursor
+	SDL_Surface *tiles, *spells;
+	GLuint tilesTex[20][20], spellsTex[20][20];
 
-  GLuint raindropTexture, lightningTexture;
+	GLuint logo_texture;
+	GLuint chain_texture;
+	GLuint scourgeBackdrop_texture;
 
-  inline GLuint getGuiTexture() { return gui_texture; }
-  inline GLuint getGuiTexture2() { return gui_texture2; }
-  inline GLuint getGuiWoodTexture() { return gui_wood_texture; }
-  //inline GLuint getPaperDollTexture() { return paper_doll_texture; }
-  inline GLuint getHighlightTexture() { return highlight; }
-  inline GLuint getBorderTexture() { return border; }
-  inline GLuint getBorder2Texture() { return border2; }
-  inline GLuint getGargoyleTexture() { return gargoyle; }
-  inline GLuint getMinimapTexture() { return minimap; }
-  inline GLuint getMinimapMaskTexture() { return minimapMask; }
-  inline GLuint getDismissTexture() { return dismiss; }
-  inline GLuint getExitTexture() { return exitTexture; }
-  inline GLuint getOptionsTexture() { return options; }
-  inline GLuint getGroupTexture() { return group; }
-  inline GLuint getInventoryTexture() { return inventory; }
-	
-  inline GLuint getPausedTexture() { return pausedTexture; }	
-  inline GLuint getRealTimeTexture() { return realTimeTexture; }	
-  inline GLuint getStartTexture() { return startTexture; }	
-  inline GLuint getWaitTexture() { return waitTexture; }	
+	GLuint cloud, candle, highlight;
+	GLuint border, border2, gargoyle;
+	GLuint minimap, minimapMask, dismiss, exitTexture, options, group, inventory;
+	GLuint waitTexture, startTexture, realTimeTexture, pausedTexture;
+	GLuint systemTexture;
+	GLuint ioTexture;
 
-  inline GLuint getIoTexture() { return ioTexture; }	
+	GLuint raindropTexture, lightningTexture;
 
-  inline GLuint getSystemIconTexture() { return systemTexture; }
+	inline GLuint getGuiTexture() {
+		return gui_texture;
+	}
+	inline GLuint getGuiTexture2() {
+		return gui_texture2;
+	}
+	inline GLuint getGuiWoodTexture() {
+		return gui_wood_texture;
+	}
+	//inline GLuint getPaperDollTexture() { return paper_doll_texture; }
+	inline GLuint getHighlightTexture() {
+		return highlight;
+	}
+	inline GLuint getBorderTexture() {
+		return border;
+	}
+	inline GLuint getBorder2Texture() {
+		return border2;
+	}
+	inline GLuint getGargoyleTexture() {
+		return gargoyle;
+	}
+	inline GLuint getMinimapTexture() {
+		return minimap;
+	}
+	inline GLuint getMinimapMaskTexture() {
+		return minimapMask;
+	}
+	inline GLuint getDismissTexture() {
+		return dismiss;
+	}
+	inline GLuint getExitTexture() {
+		return exitTexture;
+	}
+	inline GLuint getOptionsTexture() {
+		return options;
+	}
+	inline GLuint getGroupTexture() {
+		return group;
+	}
+	inline GLuint getInventoryTexture() {
+		return inventory;
+	}
 
-  inline GLuint getRaindropTexture() { return raindropTexture; }
-  inline GLuint getLightningTexture() { return lightningTexture; }
+	inline GLuint getPausedTexture() {
+		return pausedTexture;
+	}
+	inline GLuint getRealTimeTexture() {
+		return realTimeTexture;
+	}
+	inline GLuint getStartTexture() {
+		return startTexture;
+	}
+	inline GLuint getWaitTexture() {
+		return waitTexture;
+	}
 
-  inline int getPortraitCount( int sex ) { return portraitTextures[sex].size(); }
-  inline GLuint getPortraitTexture( int sex, int index ) { return portraitTextures[sex][ index ]; }
-  inline GLuint getDeathPortraitTexture() { return deathPortraitTexture; }
+	inline GLuint getIoTexture() {
+		return ioTexture;
+	}
 
-  // Md2 shapes
-  GLShape *getCreatureShape(char *model_name, char *skin_name, float scale=0.0f, 
-                            Monster *monster=NULL);
-  void decrementSkinRefCountAndDeleteShape( char *model_name, 
-																						char *skin_name, 
-																						GLShape *shape,
-																						Monster *monster=NULL );
+	inline GLuint getSystemIconTexture() {
+		return systemTexture;
+	}
+
+	inline GLuint getRaindropTexture() {
+		return raindropTexture;
+	}
+	inline GLuint getLightningTexture() {
+		return lightningTexture;
+	}
+
+	inline int getPortraitCount( int sex ) {
+		return portraitTextures[sex].size();
+	}
+	inline GLuint getPortraitTexture( int sex, int index ) {
+		return portraitTextures[sex][ index ];
+	}
+	inline GLuint getDeathPortraitTexture() {
+		return deathPortraitTexture;
+	}
+
+	// Md2 shapes
+	GLShape *getCreatureShape( char *model_name, char *skin_name, float scale = 0.0f,
+	                           Monster *monster = NULL );
+	void decrementSkinRefCountAndDeleteShape( char *model_name,
+	                                          char *skin_name,
+	                                          GLShape *shape,
+	                                          Monster *monster = NULL );
 	void debugLoadedModels();
 
 	inline GLuint getNamedTexture( std::string name ) {
 		return( namedTextures.find( name ) == namedTextures.end() ? 0 : namedTextures[ name ] );
 	}
 	inline NamedOutdoorTexture *getOutdoorNamedTexture( std::string name ) {
-		return( outdoorNamedTextures.find( name ) == outdoorNamedTextures.end() ? NULL : &(outdoorNamedTextures[ name ]) );
+		return( outdoorNamedTextures.find( name ) == outdoorNamedTextures.end() ? NULL : &( outdoorNamedTextures[ name ] ) );
 	}
-	inline std::map<std::string,NamedOutdoorTexture> *getOutdoorNamedTextures() {
+	inline std::map<std::string, NamedOutdoorTexture> *getOutdoorNamedTextures() {
 		return &outdoorNamedTextures;
 	}
 	inline SDL_Rect *getInventoryHole( int inventoryLocation ) {
-		return( inventoryLocation >= 0 && 
-						inventoryLocation < Constants::INVENTORY_COUNT ? 
-						&( inventoryHoles[ inventoryLocation ] ) : 
-						NULL );
+		return( inventoryLocation >= 0 &&
+		        inventoryLocation < Constants::INVENTORY_COUNT ?
+		        &( inventoryHoles[ inventoryLocation ] ) :
+		        NULL );
 	}
 
 protected:
-  void initFonts( ConfigLang *config );
+	void initFonts( ConfigLang *config );
 	void initCursor( ConfigLang *config );
-  void initAbout( ConfigLang *config );
+	void initAbout( ConfigLang *config );
 	void initPcPortraits( ConfigLang *config );
 	void initPcModels( ConfigLang *config );
-  void initRugs( ConfigLang *config );
-  void initSystemTextures( ConfigLang *config );
+	void initRugs( ConfigLang *config );
+	void initSystemTextures( ConfigLang *config );
 	void initNativeShapes( ConfigLang *config );
 	void initVirtualShapes( ConfigLang *config );
 	void init3dsShapes( ConfigLang *config );

@@ -17,10 +17,10 @@
 
 #ifndef INVEN_H
 #define INVEN_H
+#pragma once
 
 #include <iostream>
 #include <vector>
-#include "common/constants.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/draganddrop.h"
@@ -44,9 +44,9 @@ class Inven : public DragAndDropHandler, WidgetView {
 private:
 	Creature *creature;
 	GLuint backgroundTexture;
-  int currentHole;
+	int currentHole;
 	PcUi *pcUi;
-  Canvas *canvas;
+	Canvas *canvas;
 	int x, y, w, h;
 	Item *lastItem;
 	Storable *storable;
@@ -55,27 +55,33 @@ public:
 	Inven( PcUi *pcUi, int x, int y, int w, int h );
 	~Inven();
 
-	inline Storable *getStorable() { return storable; }
-	inline void clearStorable() { storable = NULL; }
+	inline Storable *getStorable() {
+		return storable;
+	}
+	inline void clearStorable() {
+		storable = NULL;
+	}
 
-  inline Widget *getWidget() { return canvas; }
+	inline Widget *getWidget() {
+		return canvas;
+	}
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
 
 	//receive by other means
-	bool receive(Item *item, bool atCursor);
+	bool receive( Item *item, bool atCursor );
 	// drag-n-drop
 	void receive( Widget *widget );
-	bool startDrag( Widget *widget, int x=0, int y=0 );
+	bool startDrag( Widget *widget, int x = 0, int y = 0 );
 
 
 
 	void drawWidgetContents( Widget *w );
 
 protected:
-  Item *getItemAtPos( int x, int y );
-	bool findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem=true );
+	Item *getItemAtPos( int x, int y );
+	bool findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem = true );
 	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
 	void convertMousePos( int x, int y, int *invX, int *invY );
 	void showInfo( Item *item );

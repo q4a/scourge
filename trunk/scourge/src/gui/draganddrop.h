@@ -17,6 +17,7 @@
 
 #ifndef DRAG_AND_DROP_H
 #define DRAG_AND_DROP_H
+#pragma once
 
 #include "widget.h"
 
@@ -29,7 +30,7 @@
    items.
 */
 class DragAndDropHandler {
-public: 
+public:
 	DragAndDropHandler();
 	virtual ~DragAndDropHandler();
 
@@ -37,16 +38,16 @@ public:
 	// so a casual click doesn't start a drag
 	static const int DRAG_START_DISTANCE = 10;
 
-  /**
-    The widget received a dragged item
-  */
-  virtual void receive(Widget *widget) = 0;
+	/**
+	  The widget received a dragged item
+	*/
+	virtual void receive( Widget *widget ) = 0;
 
-  /**
-	 The widget initiated a drag
-   * return true if there's something to drag at x,y
-   */
-  virtual bool startDrag(Widget *widget, int x=0, int y=0) = 0;
+	/**
+	The widget initiated a drag
+	 * return true if there's something to drag at x,y
+	 */
+	virtual bool startDrag( Widget *widget, int x = 0, int y = 0 ) = 0;
 
 };
 

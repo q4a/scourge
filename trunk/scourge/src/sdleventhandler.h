@@ -17,8 +17,8 @@
 
 #ifndef SDLEVENTHANDLER_H
 #define SDLEVENTHANDLER_H
+#pragma once
 
-#include "common/constants.h"
 #include "gui/widget.h"
 
 /**
@@ -29,19 +29,19 @@ class Widget;
 
 /// Handles events triggered by SDL or a GUI widget.
 class SDLEventHandler {
-public: 
+public:
 	SDLEventHandler();
 	virtual ~SDLEventHandler();
 
-  /**
-    Handle the SDL_Event. Return true to quit, false otherwise
-  */
-  virtual bool handleEvent(SDL_Event *event) = 0;
+	/**
+	  Handle the SDL_Event. Return true to quit, false otherwise
+	*/
+	virtual bool handleEvent( SDL_Event *event ) = 0;
 
-  /**
-	 Handle an event, fired by a widget
-   */
-  virtual bool handleEvent(Widget *widget, SDL_Event *event) = 0;
+	/**
+	Handle an event, fired by a widget
+	 */
+	virtual bool handleEvent( Widget *widget, SDL_Event *event ) = 0;
 
 };
 

@@ -17,6 +17,7 @@
 
 #ifndef MODEL_WRAPPER_H
 #define MODEL_WRAPPER_H
+#pragma once
 
 #include "render.h"
 #include <map>
@@ -35,27 +36,31 @@ private:
 	CModelMD3 *md3;
 
 public:
-	inline t3DModel *getMd2() { return md2; }
-	inline CModelMD3 *getMd3() { return md3; }
+	inline t3DModel *getMd2() {
+		return md2;
+	}
+	inline CModelMD3 *getMd3() {
+		return md3;
+	}
 
 	void loadModel( const std::string& path, char *name, ModelLoader *loader );
 	void unloadModel();
 	AnimatedShape *createShape( GLuint textureId, float div,
-															GLuint texture[], char *name, int descriptionGroup,
-															Uint32 color, Uint8 shapePalIndex,
-															char *model_name, char *skin_name,
-                              ModelLoader *loader );
+	                            GLuint texture[], char *name, int descriptionGroup,
+	                            Uint32 color, Uint8 shapePalIndex,
+	                            char *model_name, char *skin_name,
+	                            ModelLoader *loader );
 
 	void normalizeModel( int *width, int *depth, int *height, float div, char *name );
-	
+
 };
 
 /// Basic info for .md2 models.
 struct Md2ModelInfo {
 	ModelWrapper wrapper;
-  char name[100];
-  char filename[100];
-  float scale;	
+	char name[100];
+	char filename[100];
+	float scale;
 };
 
 /// Manages the character model pool.
@@ -74,14 +79,14 @@ public:
 	ModelLoader( ShapePalette *shapePal, bool headless, GLuint *textureGroup );
 
 	virtual ~ModelLoader();
-  
-  static void clearModel( t3DModel *pModel );
 
-	virtual GLShape *getCreatureShape( char *model_name, 
-																		 char *skin_name, 
-																		 float scale=0.0f );
-	virtual void decrementSkinRefCount( char *model_name, 
-																			char *skin_name );
+	static void clearModel( t3DModel *pModel );
+
+	virtual GLShape *getCreatureShape( char *model_name,
+	                                   char *skin_name,
+	                                   float scale = 0.0f );
+	virtual void decrementSkinRefCount( char *model_name,
+	                                    char *skin_name );
 	GLuint loadSkinTexture( const std::string& skin_name );
 	void unloadSkinTexture( const std::string& skin_name );
 	void debugModelLoader();

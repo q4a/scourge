@@ -17,6 +17,7 @@
 
 #ifndef WIDGETVIEW_H
 #define WIDGETVIEW_H
+#pragma once
 
 #include "gui.h"
 #include "widget.h"
@@ -27,12 +28,12 @@
 
 /// This class lets you draw a widget.
 class WidgetView {
- public: 
-  WidgetView();
-  virtual ~WidgetView();
-  
-  /** Draw the widget. */
-  virtual void drawWidgetContents(Widget *w) = 0;
+public:
+	WidgetView();
+	virtual ~WidgetView();
+
+	/** Draw the widget. */
+	virtual void drawWidgetContents( Widget *w ) = 0;
 };
 
 #endif

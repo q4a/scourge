@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "common/constants.h"
 #include "date.h"
 #include <sstream>
 
@@ -25,38 +26,38 @@ int Date::dayInMonth[13] = {
 };
 
 const char * Date::monthName[13] = {
-	NULL, 
-	N_( "January" ), 
-	N_( "February" ), 
-	N_( "March" ), 
-	N_( "April" ), 
-	N_( "May" ), 
-	N_( "June" ), 
-	N_( "July" ), 
-	N_( "August" ), 
-	N_( "September" ), 
-	N_( "October" ), 
-	N_( "November" ), 
+	NULL,
+	N_( "January" ),
+	N_( "February" ),
+	N_( "March" ),
+	N_( "April" ),
+	N_( "May" ),
+	N_( "June" ),
+	N_( "July" ),
+	N_( "August" ),
+	N_( "September" ),
+	N_( "October" ),
+	N_( "November" ),
 	N_( "December" )
 };
 
 const char * Date::dayName[8] = {
-	NULL, 
-	N_( "Monday" ), 
-	N_( "Tuesday" ), 
-	N_( "Wednesday" ), 
-	N_( "Thursday" ), 
-	N_( "Friday" ), 
-	N_( "Saturday" ), 
+	NULL,
+	N_( "Monday" ),
+	N_( "Tuesday" ),
+	N_( "Wednesday" ),
+	N_( "Thursday" ),
+	N_( "Friday" ),
+	N_( "Saturday" ),
 	N_( "Sunday" )
 };
- 
-Date::Date(){
+
+Date::Date() {
 	reset();
 }
 
-Date::Date(int sec, int min, int hour, int day, int month, int year){           
-	setDate(sec, min, hour, day, month, year);           
+Date::Date( int sec, int min, int hour, int day, int month, int year ) {
+	setDate( sec, min, hour, day, month, year );
 }
 
 Date::Date( char *shortString ) {
@@ -68,7 +69,7 @@ char *Date::getShortString() {
 	return shortString;
 }
 
-void Date::setDate(int s, int m, int h, int day, int month, int year){
+void Date::setDate( int s, int m, int h, int day, int month, int year ) {
 	this->sec = s;
 	this->min = m;
 	this->hour = h;
@@ -101,8 +102,8 @@ void Date::setDate( char *shortString ) {
 	free( p );
 }
 
-void Date::reset( char *shortString ){
-	if( shortString && strlen( shortString ) ) {
+void Date::reset( char *shortString ) {
+	if ( shortString && strlen( shortString ) ) {
 		setDate( shortString );
 	} else {
 		setDate( 0, 0, 0, 1, 1, 1128 );   // 01/01/1128, 00:00:00
@@ -111,7 +112,7 @@ void Date::reset( char *shortString ){
 
 void Date::addSec( int n ) {
 	sec += n;
-	if( sec > 59 ) {
+	if ( sec > 59 ) {
 		sec -= 60;
 		addMin( 1 );
 	}
@@ -119,7 +120,7 @@ void Date::addSec( int n ) {
 
 void Date::addMin( int n ) {
 	min += n;
-	if( min > 59 ) {
+	if ( min > 59 ) {
 		min -= 60;
 		addHour( 1 );
 	}
@@ -127,7 +128,7 @@ void Date::addMin( int n ) {
 
 void Date::addHour( int n ) {
 	hour += n;
-	if( hour > 23 ) {
+	if ( hour > 23 ) {
 		hour -= 24;
 		addDay( 1 );
 	}
@@ -135,7 +136,7 @@ void Date::addHour( int n ) {
 
 void Date::addDay( int n ) {
 	day += n;
-	if( day >= dayInMonth[ month + 1 ] ) {
+	if ( day >= dayInMonth[ month + 1 ] ) {
 		day -= dayInMonth[ month + 1 ];
 		addMonth( 1 );
 	}
@@ -143,12 +144,12 @@ void Date::addDay( int n ) {
 
 void Date::addMonth( int n ) {
 	month += n;
-	if( month > 11 ) {
-		month -= 12;		
+	if ( month > 11 ) {
+		month -= 12;
 		addYear( 1 );
 	}
 	// FIXME?
-	if( day >= dayInMonth[ month + 1 ] ) {
+	if ( day >= dayInMonth[ month + 1 ] ) {
 		day = dayInMonth[ month + 1 ] - 1;
 	}
 }
@@ -162,7 +163,7 @@ void Date::addDate( Date d ) {
 	cout << "addDate :";
 	d.print();
 	cout << " TO ";
-	this->print(); 
+	this->print();
 	cout << endl;
 #endif
 
@@ -172,42 +173,42 @@ void Date::addDate( Date d ) {
 	addDay( d.getDay() );
 	addMonth( d.getMonth() );
 	addYear( d.getYear() );
-	
+
 #ifdef DEBUG_DATE
 	cout << "final RESULT: ";
-	this->print(); 
+	this->print();
 	cout << endl;
 #endif
 }
 
 
-bool Date::isInferiorTo(Date d) {
+bool Date::isInferiorTo( Date d ) {
 
-	if(d == *this) return false;
+	if ( d == *this ) return false;
 
-	if(year < d.getYear()) return true;
-	else if(month < d.getMonth()) return true;
-	else if(month > d.getMonth()) return false;
-	else if(day < d.getDay()) return true;
-	else if(day > d.getDay()) return false;
-	else if(hour < d.getHour()) return true;
-	else if(hour > d.getHour()) return false;
-	else if(min < d.getMin()) return true;
-	else if(min > d.getMin()) return false;
-	else if(sec < d.getSec()) return true;
-	else if(sec > d.getSec()) return false;
+	if ( year < d.getYear() ) return true;
+	else if ( month < d.getMonth() ) return true;
+	else if ( month > d.getMonth() ) return false;
+	else if ( day < d.getDay() ) return true;
+	else if ( day > d.getDay() ) return false;
+	else if ( hour < d.getHour() ) return true;
+	else if ( hour > d.getHour() ) return false;
+	else if ( min < d.getMin() ) return true;
+	else if ( min > d.getMin() ) return false;
+	else if ( sec < d.getSec() ) return true;
+	else if ( sec > d.getSec() ) return false;
 	return false;
 }
 
-bool Date::operator==(const Date& d) const {
+bool Date::operator==( const Date& d ) const {
 	return year == d.year && month == d.month && day == d.day && hour == d.hour && min == d.min && sec == d.sec;
 }
 
-void Date::print(){
-	cout << day << "/" << month << "/" << year << " "<< hour << "h" << min << ":" << sec << " ";
+void Date::print() {
+	cout << day << "/" << month << "/" << year << " " << hour << "h" << min << ":" << sec << " ";
 }
 
-void Date::buildDateString(){
+void Date::buildDateString() {
 
 	string formatString, monthString;
 	stringstream yearString, monthdayString, hourString, minuteString, secondString;
@@ -220,29 +221,29 @@ void Date::buildDateString(){
 	minuteString << ( min < 10 ? "0" : "" ) << min;
 	secondString << ( sec < 10 ? "0" : "" ) << sec;
 
-	if( formatString.find( "YEA" ) != string::npos ) formatString.replace( formatString.find( "YEA" ), 3, yearString.str(), 0, 3 );
-	if( formatString.find( "MON" ) != string::npos ) formatString.replace( formatString.find( "MON" ), 3, monthString, 0, 3 );
-	if( formatString.find( "DAY" ) != string::npos ) formatString.replace( formatString.find( "DAY" ), 3, monthdayString.str() );
-	if( formatString.find( "HOU" ) != string::npos ) formatString.replace( formatString.find( "HOU" ), 3, hourString.str() );
-	if( formatString.find( "MIN" ) != string::npos ) formatString.replace( formatString.find( "MIN" ), 3, minuteString.str() );
-	if( formatString.find( "SEC" ) != string::npos ) formatString.replace( formatString.find( "SEC" ), 3, secondString.str(), 0, 3 );
+	if ( formatString.find( "YEA" ) != string::npos ) formatString.replace( formatString.find( "YEA" ), 3, yearString.str(), 0, 3 );
+	if ( formatString.find( "MON" ) != string::npos ) formatString.replace( formatString.find( "MON" ), 3, monthString, 0, 3 );
+	if ( formatString.find( "DAY" ) != string::npos ) formatString.replace( formatString.find( "DAY" ), 3, monthdayString.str() );
+	if ( formatString.find( "HOU" ) != string::npos ) formatString.replace( formatString.find( "HOU" ), 3, hourString.str() );
+	if ( formatString.find( "MIN" ) != string::npos ) formatString.replace( formatString.find( "MIN" ), 3, minuteString.str() );
+	if ( formatString.find( "SEC" ) != string::npos ) formatString.replace( formatString.find( "SEC" ), 3, secondString.str(), 0, 3 );
 
-	snprintf(dateString, DATE_SIZE, "%s", formatString.c_str());
+	snprintf( dateString, DATE_SIZE, "%s", formatString.c_str() );
 
 }
 
-Date::~Date(){
+Date::~Date() {
 }
 
-bool Date::isADayLater(Date date) {
-	return(date.getYear() < getYear() || (date.getYear() == getYear() && date.getMonth() < getMonth()) ||
-         (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() < getDay()));
+bool Date::isADayLater( Date date ) {
+	return( date.getYear() < getYear() || ( date.getYear() == getYear() && date.getMonth() < getMonth() ) ||
+	        ( date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() < getDay() ) );
 }
 
-bool Date::isAnHourLater(Date date) {
-	return(date.getYear() < getYear() || (date.getYear() == getYear() && date.getMonth() < getMonth()) ||
-         (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() < getDay()) ||
-				 (date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() == getDay() && date.getHour() < getHour()));
+bool Date::isAnHourLater( Date date ) {
+	return( date.getYear() < getYear() || ( date.getYear() == getYear() && date.getMonth() < getMonth() ) ||
+	        ( date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() < getDay() ) ||
+	        ( date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() == getDay() && date.getHour() < getHour() ) );
 }
 
 

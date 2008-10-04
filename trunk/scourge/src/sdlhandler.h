@@ -17,6 +17,7 @@
 
 #ifndef SDLHANDLER_H
 #define SDLHANDLER_H
+#pragma once
 
 #include <iostream>
 #include <stdlib.h>
@@ -51,187 +52,221 @@ class FontMgr;
 /// Interface to SDL.
 class SDLHandler : public ScourgeGui {
 private:
-  GameAdapter *gameAdapter;
+	GameAdapter *gameAdapter;
 
-  /* These are to calculate our fps */
-  GLint T0, Frames;
-  double fps;
-  SDL_Surface *screen;
-  SDLEventHandler *eventHandler;
-  SDLScreenView *screenView;
-  /* Flags to pass to SDL_SetVideoMode */
-  int videoFlags;
-  bool invertMouse;
-  int cursorMode;
+	/* These are to calculate our fps */
+	GLint T0, Frames;
+	double fps;
+	SDL_Surface *screen;
+	SDLEventHandler *eventHandler;
+	SDLScreenView *screenView;
+	/* Flags to pass to SDL_SetVideoMode */
+	int videoFlags;
+	bool invertMouse;
+	int cursorMode;
 	float orthoDepthMin, orthoDepthMax;
 
-  // rotation for test draw view
-  GLfloat rtri, rquad;
-  int lastWidth, lastHeight;
+	// rotation for test draw view
+	GLfloat rtri, rquad;
+	int lastWidth, lastHeight;
 
-  SDLEventHandler *eventHandlers[10];
-  SDLScreenView *screenViews[10];
-  int handlerCount;
+	SDLEventHandler *eventHandlers[10];
+	SDLScreenView *screenViews[10];
+	int handlerCount;
 
-  // the last event fired by a widget
-  Widget *storedWidget;
-  SDL_Event *storedEvent; 
-  
-  // truetype font  
-  bool font_initialized;
-  int fontType;
+	// the last event fired by a widget
+	Widget *storedWidget;
+	SDL_Event *storedEvent;
 
-  char *debugStr;
+	// truetype font
+	bool font_initialized;
+	int fontType;
 
-  bool attackCursor;
+	char *debugStr;
 
-  // only do stencil buffer ops if this is true
-  static bool stencilBufferUsed;
-  
-  // mouse locking
-  Widget *mouseLock;
-  bool willUnlockMouse;
+	bool attackCursor;
 
-  bool willBlockEvent;
+	// only do stencil buffer ops if this is true
+	static bool stencilBufferUsed;
 
-  Uint32 forbiddenTimer;
+	// mouse locking
+	Widget *mouseLock;
+	bool willUnlockMouse;
 
-  float fadeoutStartAlpha, fadeoutEndAlpha;
-  Uint32 fadeoutTimer;
-  int fadeoutSteps, fadeoutCurrentStep;
+	bool willBlockEvent;
+
+	Uint32 forbiddenTimer;
+
+	float fadeoutStartAlpha, fadeoutEndAlpha;
+	Uint32 fadeoutTimer;
+	int fadeoutSteps, fadeoutCurrentStep;
 
 	bool running;
 	bool cursorVisible;
-	
+
 	std::string continueFunc;
 	Uint32 continueTimeout, continueStart;
 
-  void getVideoModes();
+	void getVideoModes();
 
-public: 
+public:
 
-  struct FontInfo {
-    std::string path;
-    int size;
-    int style;
-    int yoffset;
+	struct FontInfo {
+		std::string path;
+		int size;
+		int style;
+		int yoffset;
 		int shadowX, shadowY;
 
-    TTF_Font *font;
-    FontMgr *fontMgr;
-  };
-  static std::vector<FontInfo*> fontInfos;
+		TTF_Font *font;
+		FontMgr *fontMgr;
+	};
+	static std::vector<FontInfo*> fontInfos;
 
-  static bool showDebugInfo;
+	static bool showDebugInfo;
 
-  bool dontUpdateScreen;
+	bool dontUpdateScreen;
 
-  SDLHandler( GameAdapter *gameAdapter );
-  virtual ~SDLHandler();
+	SDLHandler( GameAdapter *gameAdapter );
+	virtual ~SDLHandler();
 
 	virtual void playSound( const std::string& file, int panning );
 
-	inline void setCursorVisible( bool b ) { cursorVisible = b; }
-	inline void endMainLoop() { running = false; }
+	inline void setCursorVisible( bool b ) {
+		cursorVisible = b;
+	}
+	inline void endMainLoop() {
+		running = false;
+	}
 
-  void fade( float startAlpha, float endAlpha, int steps = 50 );
+	void fade( float startAlpha, float endAlpha, int steps = 50 );
 
-  inline void blockEvent() { willBlockEvent = true; }
+	inline void blockEvent() {
+		willBlockEvent = true;
+	}
 
-  inline void lockMouse( Widget *widget ) { mouseLock = widget; }
-  inline void unlockMouse() { willUnlockMouse = true; }
+	inline void lockMouse( Widget *widget ) {
+		mouseLock = widget;
+	}
+	inline void unlockMouse() {
+		willUnlockMouse = true;
+	}
 
-  void drawTooltip( float xpos2, float ypos2, float zpos2, 
-                    float zrot, float yrot, 
-                    char *message,
-                    float r=0, float g=0.15f, float b=0.05f,
-										float zoom=1.0f );
+	void drawTooltip( float xpos2, float ypos2, float zpos2,
+	                  float zrot, float yrot,
+	                  char *message,
+	                  float r = 0, float g = 0.15f, float b = 0.05f,
+	                  float zoom = 1.0f );
 
-  inline void setDebugStr(char *s) { debugStr = s; }
-  
-  Uint16 mouseX, mouseY, lastMouseX, lastMouseY;
-  Uint16 mouseFocusX, mouseFocusY;
-  Uint8 mouseButton, mouseEvent;
-  bool mouseDragging;
-  bool mouseIsMovingOverMap;
-  Uint32 lastMouseMoveTime;
-  Uint32 lastLeftClick;
-  bool isDoubleClick;
+	inline void setDebugStr( char *s ) {
+		debugStr = s;
+	}
 
-  // for ScourgeGui
-  inline Uint16 getMouseX() { return mouseX; }
-  inline Uint16 getMouseY() { return mouseY; }
-  inline int getScreenWidth() { return getScreen()->w; }
-  inline int getScreenHeight() { return getScreen()->h; }
-  GLuint getHighlightTexture();
+	Uint16 mouseX, mouseY, lastMouseX, lastMouseY;
+	Uint16 mouseFocusX, mouseFocusY;
+	Uint8 mouseButton, mouseEvent;
+	bool mouseDragging;
+	bool mouseIsMovingOverMap;
+	Uint32 lastMouseMoveTime;
+	Uint32 lastLeftClick;
+	bool isDoubleClick;
+
+	// for ScourgeGui
+	inline Uint16 getMouseX() {
+		return mouseX;
+	}
+	inline Uint16 getMouseY() {
+		return mouseY;
+	}
+	inline int getScreenWidth() {
+		return getScreen()->w;
+	}
+	inline int getScreenHeight() {
+		return getScreen()->h;
+	}
+	GLuint getHighlightTexture();
 	GLuint getGuiTexture();
 	GLuint getGuiTexture2();
-  GLuint loadSystemTexture( char *line );
-  void allWindowsClosed();
+	GLuint loadSystemTexture( char *line );
+	void allWindowsClosed();
 
-  void setCursorMode(int n, bool useTimer=false );
-  int getCursorMode() { return cursorMode; }
-  void applyMouseOffset(int x, int y, int *newX, int *newY);
+	void setCursorMode( int n, bool useTimer = false );
+	int getCursorMode() {
+		return cursorMode;
+	}
+	void applyMouseOffset( int x, int y, int *newX, int *newY );
 
-  /**
-   * Add a new set of handlers and push the old ones on the stack.
-   * When the eventHandler returns true, the stack will be popped.
-   * If the stack is empty the game will quit.
-   */
-  void pushHandlers(SDLEventHandler *eventHandler, SDLScreenView *screenView);
+	/**
+	 * Add a new set of handlers and push the old ones on the stack.
+	 * When the eventHandler returns true, the stack will be popped.
+	 * If the stack is empty the game will quit.
+	 */
+	void pushHandlers( SDLEventHandler *eventHandler, SDLScreenView *screenView );
 
-  /**
-   * Replace the current handlers with the new ones
-   */
-  void setHandlers(SDLEventHandler *eventHandler, SDLScreenView *screenView);
+	/**
+	 * Replace the current handlers with the new ones
+	 */
+	void setHandlers( SDLEventHandler *eventHandler, SDLScreenView *screenView );
 
-  /**
-	 Get the current event handler.
-  */
-  inline SDLEventHandler *getEventHandler() { return eventHandler; }
+	/**
+	Get the current event handler.
+	*/
+	inline SDLEventHandler *getEventHandler() {
+		return eventHandler;
+	}
 
-  // 
-  int getVideoModeCount();
-  std::string getVideoMode(int mode);
-  void setVideoMode(Preferences *uc);
-  void mainLoop();
-  void drawScreen();
-  bool processEvents( bool *isActive=NULL );
-  void processEventsAndRepaint();
-  void fireEvent(Widget *widget, SDL_Event *event);
-  bool firedEventWaiting();
+	//
+	int getVideoModeCount();
+	std::string getVideoMode( int mode );
+	void setVideoMode( Preferences *uc );
+	void mainLoop();
+	void drawScreen();
+	bool processEvents( bool *isActive = NULL );
+	void processEventsAndRepaint();
+	void fireEvent( Widget *widget, SDL_Event *event );
+	bool firedEventWaiting();
 
-  inline void setFontType( int fontType ) { this->fontType = fontType; }
-  inline int getFontType() { return fontType; }
-  void texPrint(GLfloat x, GLfloat y, const char *fmt, ...);
-  int textWidth( const char *fmt, ... );
-  TTF_Font *getCurrentTTFFont();
+	inline void setFontType( int fontType ) {
+		this->fontType = fontType;
+	}
+	inline int getFontType() {
+		return fontType;
+	}
+	void texPrint( GLfloat x, GLfloat y, const char *fmt, ... );
+	int textWidth( const char *fmt, ... );
+	TTF_Font *getCurrentTTFFont();
 	FontMgr *getCurrentFontManager();
-  void initFonts();
+	void initFonts();
 
-  GLvoid glPrint( const char *fmt, ... );
+	GLvoid glPrint( const char *fmt, ... );
 
-  static bool intersects( int x, int y, int w, int h,
-                          int x2, int y2, int w2, int h2 );
-  static bool intersects(SDL_Rect *r1, SDL_Rect *r2);
-  static bool sectionIntersects(int a1, int a2, int b1, int b2);
+	static bool intersects( int x, int y, int w, int h,
+	                        int x2, int y2, int w2, int h2 );
+	static bool intersects( SDL_Rect *r1, SDL_Rect *r2 );
+	static bool sectionIntersects( int a1, int a2, int b1, int b2 );
 
 
-  inline double getFps() { return fps; }
+	inline double getFps() {
+		return fps;
+	}
 
-  inline SDL_Surface *getScreen() { return screen; }  
+	inline SDL_Surface *getScreen() {
+		return screen;
+	}
 
-  void testDrawView();
+	void testDrawView();
 
-  void quit( int returnCode );
+	void quit( int returnCode );
 
-  inline double getFPS() { return fps; }
+	inline double getFPS() {
+		return fps;
+	}
 
 	void saveScreen( std::string& path );
 	void saveScreenNow( std::string& path );
 
-	void setUpdate( char *message, int n=-1, int total=-1 );
-	
+	void setUpdate( char *message, int n = -1, int total = -1 );
+
 	void setContinueAt( char *func, int timeout );
 
 	void setDepthLimits( float min, float max );
@@ -239,10 +274,10 @@ public:
 
 	void setOrthoView();
 
-protected:	
+protected:
 	bool popHandlers();
 	int resizeWindow( int width, int height );
-	int initGL();  
+	int initGL();
 	void drawCursor();
 
 	void drawScreenInternal();

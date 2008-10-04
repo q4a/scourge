@@ -17,7 +17,7 @@
 
 #ifndef MAP_EDITOR_H
 #define MAP_EDITOR_H
-#include "common/constants.h"
+#pragma once
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
 #include "text.h"
@@ -47,112 +47,114 @@ class Monster;
 /// The (highly unofficial so far) map editor.
 class MapEditor : public SDLEventHandler, SDLScreenView {
 private:
-  Scourge *scourge;
-  MapSettings *mapSettings;
+	Scourge *scourge;
+	MapSettings *mapSettings;
 
-  // map settings
-  int level, depth;
-  
-  // outdoor texture editing
-  float outdoorTextureAngle;
-  bool outdoorTextureHorizFlip, outdoorTextureVertFlip;
-  
-  // UI
-  Window *mainWin;
-  Button *wallButton;
-  Button *doorButton;
-  Button *eraseButton;
-  Button *shapeButton;
-  Button *itemButton;
-  Button *furnitureButton;
-  Button *creatureButton;
-  Button *startPosButton;
-  Button *floorType;
-  Button *rugButton, *secretButton, *trapButton, *roofButton;
-  std::vector<Button *> toggleButtonList;
+	// map settings
+	int level, depth;
+
+	// outdoor texture editing
+	float outdoorTextureAngle;
+	bool outdoorTextureHorizFlip, outdoorTextureVertFlip;
+
+	// UI
+	Window *mainWin;
+	Button *wallButton;
+	Button *doorButton;
+	Button *eraseButton;
+	Button *shapeButton;
+	Button *itemButton;
+	Button *furnitureButton;
+	Button *creatureButton;
+	Button *startPosButton;
+	Button *floorType;
+	Button *rugButton, *secretButton, *trapButton, *roofButton;
+	std::vector<Button *> toggleButtonList;
 	Button *lowerButton, *raiseButton;
 	Button *outdoorTexturesButton;
-                                                                                             
-  TextField *nameText;
-  Button *loadButton, *saveButton;
-  Button *newButton;
 
-  // new map gui
-  Window *newMapWin;
-  Button *cancelButton;
-  Button *okButton;
-  Button *applyButton;
+	TextField *nameText;
+	Button *loadButton, *saveButton;
+	Button *newButton;
+
+	// new map gui
+	Window *newMapWin;
+	Button *cancelButton;
+	Button *okButton;
+	Button *applyButton;
 	Button *outdoorMapButton;
 	Button *dungeonMapButton;
-  TextField *levelText, *depthText;
-  ScrollingList *themeList;
-  std::string* themeNames;
-  MapWidget *mapWidget;	
-  
-  // lists
-  ScrollingList *shapeList, *itemList, *creatureList, *furnitureList, *outdoorTexturesList;
+	TextField *levelText, *depthText;
+	ScrollingList *themeList;
+	std::string* themeNames;
+	MapWidget *mapWidget;
+
+	// lists
+	ScrollingList *shapeList, *itemList, *creatureList, *furnitureList, *outdoorTexturesList;
 	enum { NAME_SIZE = 120 };
 	typedef char NAME[NAME_SIZE];
-	std::string* shapeNames; 
-	std::string* itemNames; 
-	std::string* creatureNames; 
+	std::string* shapeNames;
+	std::string* itemNames;
+	std::string* creatureNames;
 	std::string* furnitureNames;
 	std::string* outdoorTextureNames;
 	std::map<std::string, Monster*> creatures;
 
-  std::map<Monster*,GLShape*> creatureOutlines;
+	std::map<Monster*, GLShape*> creatureOutlines;
 
-  MiniMap * miniMap;
-  
+	MiniMap * miniMap;
+
 public:
 
-  MapEditor( Scourge *scourge );
-  ~MapEditor();
+	MapEditor( Scourge *scourge );
+	~MapEditor();
 
-  void drawView();
-  void drawAfter();
-  bool handleEvent(SDL_Event *event);
-  bool handleEvent(Widget *widget, SDL_Event *event);
+	void drawView();
+	void drawAfter();
+	bool handleEvent( SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
 
-  void show();
-  void hide();
-  inline bool isVisible() { return mainWin->isVisible(); }
+	void show();
+	void hide();
+	inline bool isVisible() {
+		return mainWin->isVisible();
+	}
 
 protected:
 	void flattenChunk( Sint16 mapx, Sint16 mapy );
-	void changePathChunk( Sint16 mapx, Sint16 mapy, bool lower=true );
+	void changePathChunk( Sint16 mapx, Sint16 mapy, bool lower = true );
 	void createNewMapDialog();
-  void processMouseMotion( Uint8 button, int editorZ );
-  bool getShape( GLShape **shape,
-                 Item **item = NULL,
-                 Creature **creature = NULL );
+	void processMouseMotion( Uint8 button, int editorZ );
+	bool getShape( GLShape **shape,
+	               Item **item = NULL,
+	               Creature **creature = NULL );
 	void addNewItem( char const* name,
-									 GLShape **shape, 
-									 Item **item, 
-									 Creature **creature );
+	                 GLShape **shape,
+	                 Item **item,
+	                 Creature **creature );
 
-  void addWall( Sint16 mapx, Sint16 mapy, int dir );
-  void addDoor( Sint16 mapx, Sint16 mapy, int dir );
-  void removeWall( Sint16 mapx, Sint16 mapy, int dir );
-  
-  void addRug( Sint16 mapx, Sint16 mapy );
-  void addSecret( Sint16 mapx, Sint16 mapy );
-  void removeSecret( Sint16 mapx, Sint16 mapy );  
-  void addTrap( Sint16 mapx, Sint16 mapy );
-  void removeTrap( Sint16 mapx, Sint16 mapy );  
+	void addWall( Sint16 mapx, Sint16 mapy, int dir );
+	void addDoor( Sint16 mapx, Sint16 mapy, int dir );
+	void removeWall( Sint16 mapx, Sint16 mapy, int dir );
 
-  void addEWDoor( Sint16 mapx, Sint16 mapy, int dir );
-  void addNSDoor( Sint16 mapx, Sint16 mapy, int dir );
-  void addEWWall( Sint16 mapx, Sint16 mapy, int dir );
-  void addNSWall( Sint16 mapx, Sint16 mapy, int dir );
-  void removeEWWall( Sint16 mapx, Sint16 mapy, int dir );
-  void removeNSWall( Sint16 mapx, Sint16 mapy, int dir );
-  void addFloor( Sint16 mapx, Sint16 mapy, bool doFlattenChunk=true );
+	void addRug( Sint16 mapx, Sint16 mapy );
+	void addSecret( Sint16 mapx, Sint16 mapy );
+	void removeSecret( Sint16 mapx, Sint16 mapy );
+	void addTrap( Sint16 mapx, Sint16 mapy );
+	void removeTrap( Sint16 mapx, Sint16 mapy );
+
+	void addEWDoor( Sint16 mapx, Sint16 mapy, int dir );
+	void addNSDoor( Sint16 mapx, Sint16 mapy, int dir );
+	void addEWWall( Sint16 mapx, Sint16 mapy, int dir );
+	void addNSWall( Sint16 mapx, Sint16 mapy, int dir );
+	void removeEWWall( Sint16 mapx, Sint16 mapy, int dir );
+	void removeNSWall( Sint16 mapx, Sint16 mapy, int dir );
+	void addFloor( Sint16 mapx, Sint16 mapy, bool doFlattenChunk = true );
 	void lowerGroundHeight( Sint16 mapx, Sint16 mapy );
 	void raiseGroundHeight( Sint16 mapx, Sint16 mapy );
-  void removeFloor( Sint16 mapx, Sint16 mapy );
-  void blendCorners( Sint16 mapx, Sint16 mapy );
-  bool isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name );
+	void removeFloor( Sint16 mapx, Sint16 mapy );
+	void blendCorners( Sint16 mapx, Sint16 mapy );
+	bool isShape( Sint16 mapx, Sint16 mapy, Sint16 mapz, const char *name );
 };
 
 #endif

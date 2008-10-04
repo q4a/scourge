@@ -16,11 +16,11 @@
  ***************************************************************************/
 #ifndef CELLULAR_AUTOMATON_H
 #define CELLULAR_AUTOMATON_H
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <map>
-#include "common/constants.h"
 
 #define CELL_GROWTH_CYCLES 3
 
@@ -30,58 +30,70 @@
 
 /// A generated node.
 struct NodePoint {
-  bool wall, island;
-  int room;
-  bool seen;
+	bool wall, island;
+	int room;
+	bool seen;
 };
 
 /// A generated room.
 struct Room {
-  int size;
-  int x,y;
+	int size;
+	int x, y;
 };
 
 
 /// A cellular automaton, used in map generation
 class CellularAutomaton {
 private:
-  int w, h;
-  int phase;
-  NodePoint **node;
-  int roomCounter, biggestRoom;
-  Room room[ MAX_ROOM_COUNT ];
+	int w, h;
+	int phase;
+	NodePoint **node;
+	int roomCounter, biggestRoom;
+	Room room[ MAX_ROOM_COUNT ];
 
 public:
-  CellularAutomaton( int w, int h );
-  virtual ~CellularAutomaton();
+	CellularAutomaton( int w, int h );
+	virtual ~CellularAutomaton();
 
-  void generate( bool islandsEnabled = false, 
-                 bool removeSinglesEnabled = false,
-								 int pathWidth = 1 );
+	void generate( bool islandsEnabled = false,
+	               bool removeSinglesEnabled = false,
+	               int pathWidth = 1 );
 
-  inline int getWidth() { return this->w; }
-  inline int getHeight() { return this->h; }
-  inline NodePoint *getNode( int x, int y ) { return &node[ x ][ y ]; }
-  inline int getRoomCount() { return roomCounter; }
-  inline int getBiggestRoom() { return biggestRoom; }
-  inline Room* getRoom( int n ) { return &room[ n ]; }
+	inline int getWidth() {
+		return this->w;
+	}
+	inline int getHeight() {
+		return this->h;
+	}
+	inline NodePoint *getNode( int x, int y ) {
+		return &node[ x ][ y ];
+	}
+	inline int getRoomCount() {
+		return roomCounter;
+	}
+	inline int getBiggestRoom() {
+		return biggestRoom;
+	}
+	inline Room* getRoom( int n ) {
+		return &room[ n ];
+	}
 
 	void print();
 	void makeAccessible( int x, int y );
 	void makeMinSpace( int width );
 
 protected:
-  void randomize();
-  void growCells();
-  void setSeen( bool b );
-  bool canReach( int sx, int sy, int ex, int ey );
-  void findRooms();
-  void connectPoints( int sx, int sy, int ex, int ey, bool isBiggestRoom );
-  void connectRooms( int pathWidth = 1 );
-  void removeSingles();
-  void addIslands();
-  void growCellsIsland();
-  void addIslandLand();
+	void randomize();
+	void growCells();
+	void setSeen( bool b );
+	bool canReach( int sx, int sy, int ex, int ey );
+	void findRooms();
+	void connectPoints( int sx, int sy, int ex, int ey, bool isBiggestRoom );
+	void connectRooms( int pathWidth = 1 );
+	void removeSingles();
+	void addIslands();
+	void growCellsIsland();
+	void addIslandLand();
 };
 
 #endif

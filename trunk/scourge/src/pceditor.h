@@ -17,8 +17,8 @@
 
 #ifndef PC_EDITOR_H
 #define PC_EDITOR_H
+#pragma once
 
-#include "common/constants.h"
 #include "gui/widgetview.h"
 #include "rpg/rpg.h"
 
@@ -42,7 +42,7 @@ private:
 	Window *win;
 	Scourge *scourge;
 	Creature *creature;
-  bool deleteCreature;
+	bool deleteCreature;
 	CardContainer *cards;
 	Button *nameButton, *profButton, *statsButton, *deityButton;
 	Button *imageButton, *okButton, *cancelButton;
@@ -54,23 +54,23 @@ private:
 	Button *skillPlus[10], *skillMinus[10];
 	Label *remainingCaptionLabel, *remainingLabel;
 	CharacterInfoUI *detailsInfo;
-  Canvas *detailsCanvas;
-  ScrollingLabel *deityTypeDescription;
-  ScrollingList *deityType;
-  Canvas *portrait;
-  Button *prevPortrait, *nextPortrait;
-  Button *male, *female;
-  Canvas *model;
-  Button *prevModel, *nextModel;
-  Button *reroll;
-  std::string* charTypeStr;
-  std::string* deityTypeStr;
-  int portraitIndex;
-  int modelIndex;
+	Canvas *detailsCanvas;
+	ScrollingLabel *deityTypeDescription;
+	ScrollingList *deityType;
+	Canvas *portrait;
+	Button *prevPortrait, *nextPortrait;
+	Button *male, *female;
+	Canvas *model;
+	Button *prevModel, *nextModel;
+	Button *reroll;
+	std::string* charTypeStr;
+	std::string* deityTypeStr;
+	int portraitIndex;
+	int modelIndex;
 	int availableSkillMod;
 
 	enum {
-		NAME_TAB=0,
+		NAME_TAB = 0,
 		CLASS_TAB,
 		STAT_TAB,
 		DEITY_TAB,
@@ -81,24 +81,32 @@ public:
 	PcEditor( Scourge *scourge );
 	~PcEditor();
 
-	inline Window *getWindow() { return win; }
+	inline Window *getWindow() {
+		return win;
+	}
 
 	void handleEvent( Widget *widget, SDL_Event *event );
 
-  virtual void drawWidgetContents( Widget *w );
+	virtual void drawWidgetContents( Widget *w );
 
-	inline Button *getOkButton() { return okButton; }
-	inline Button *getCancelButton() { return cancelButton; }
+	inline Button *getOkButton() {
+		return okButton;
+	}
+	inline Button *getCancelButton() {
+		return cancelButton;
+	}
 
 	void saveUI();
 	void rollSkills();
 	void rollSkillsForCreature( Creature *c );
 	Creature *createPartyMember();
 
-  void setCreature( Creature *creature=NULL, bool isEditable=true );
-  inline Creature *getCreature() { return creature; }
+	void setCreature( Creature *creature = NULL, bool isEditable = true );
+	inline Creature *getCreature() {
+		return creature;
+	}
 
-protected:  
+protected:
 	void deleteLoadedShapes();
 	void loadUI();
 	void setCharType( int charIndex );

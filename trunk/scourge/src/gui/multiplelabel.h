@@ -17,6 +17,7 @@
 
 #ifndef MULTIPLE_LABEL_H
 #define MULTIPLE_LABEL_H
+#pragma once
 
 #include <vector>
 #include "gui.h"
@@ -32,30 +33,38 @@ class Label;
 
 /// A multistate push button widget that displays different text for each state.
 class MultipleLabel : public Widget {
- private:
-  int x2, y2;
-  int dynWidth;
-  std::vector<char *> vText;
-  Label *staticLabel;
-  Label *dynamicLabel;
-  bool inside;
-  int currentTextInd;   
-  
- public: 
+private:
+	int x2, y2;
+	int dynWidth;
+	std::vector<char *> vText;
+	Label *staticLabel;
+	Label *dynamicLabel;
+	bool inside;
+	int currentTextInd;
 
-  MultipleLabel(int x1, int y1, int x2, int y2, char *staticText, int dynWidth);
-  ~MultipleLabel();
-  bool isInside(int x, int y);
-  void addText(char *s);
-  void setText(int i);  
-  void setNextText();
-  inline char * getText(int i) { if ( i >= 0 && i < getNbText() ) return vText[i]; return NULL; }
-  inline int getCurrentTextInd() { return currentTextInd; }
-  inline char * getCurrentText() { return vText[currentTextInd]; }
-  inline int getNbText() { return vText.size(); }
-        
-  bool handleEvent(Widget *parent, SDL_Event *event, int x, int y);
-  void drawWidget(Widget *parent);
+public:
+
+	MultipleLabel( int x1, int y1, int x2, int y2, char *staticText, int dynWidth );
+	~MultipleLabel();
+	bool isInside( int x, int y );
+	void addText( char *s );
+	void setText( int i );
+	void setNextText();
+	inline char * getText( int i ) {
+		if ( i >= 0 && i < getNbText() ) return vText[i]; return NULL;
+	}
+	inline int getCurrentTextInd() {
+		return currentTextInd;
+	}
+	inline char * getCurrentText() {
+		return vText[currentTextInd];
+	}
+	inline int getNbText() {
+		return vText.size();
+	}
+
+	bool handleEvent( Widget *parent, SDL_Event *event, int x, int y );
+	void drawWidget( Widget *parent );
 };
 
 #endif

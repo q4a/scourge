@@ -17,9 +17,9 @@
 
 #ifndef OPTIONSMENU_H
 #define OPTIONSMENU_H
+#pragma once
 
 #include <string.h>
-#include "common/constants.h"
 #include "sdlhandler.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
@@ -47,73 +47,75 @@ class UserConfiguration;
 class OptionsMenu {
 private:
 
-  Scourge *scourge;
-  UserConfiguration * uc;
-  bool showDebug;
-  bool controlsLoaded;
-  bool videoLoaded; 
-  bool gameSettingsLoaded;
-  bool waitingForNewKey;
-  bool ignoreKeyUp;
-    
-  enum modeOptions {
-    CONTROLS = 0, VIDEO, AUDIO, GAME_SETTINGS
-  };
-  int selectedMode; 
-  
-  Window *mainWin;  
-  Button *controlsButton, *videoButton, *audioButton, *gameSettingsButton;
-  Button *changeControlButton, *saveButton, *closeButton;
-  Label * keyBindingsLabel; 
-  Label * waitingLabel;  
-  Label * changeTakeEffectLabel;
-  
-  MultipleLabel * gameSpeedML; 
-  Checkbox * alwaysCenterMapCheckbox;
-  Checkbox * keepMapSize;
-  Checkbox * frameOnFullScreen;
-  Checkbox * turnBasedBattle;
-  Checkbox *ovalCutoutShown;
-  Checkbox *outlineInteractiveItems;
-  Checkbox * alwaysShowPath;
-  Checkbox *tooltipEnabled;
-  Slider *tooltipInterval;
-  MultipleLabel * logLevelML;
-  MultipleLabel * pathFindingQualityML;
-  
-  MultipleLabel * videoResolutionML;  
-  Checkbox * fullscreenCheckbox;
-  Checkbox * doublebufCheckbox;   
-  Checkbox * hwpalCheckbox;
-  Checkbox * resizeableCheckbox;
-  Checkbox * forceHwsurfCheckbox;
-  Checkbox * forceSwsurfCheckbox;
-  Checkbox * hwaccelCheckbox;
-  Checkbox * stencilbufCheckbox;
-  Checkbox * multitexturingCheckbox;
-  MultipleLabel * shadowsML;
-     
-  CardContainer *cards;
-  ScrollingList *controlBindingsList;
+	Scourge *scourge;
+	UserConfiguration * uc;
+	bool showDebug;
+	bool controlsLoaded;
+	bool videoLoaded;
+	bool gameSettingsLoaded;
+	bool waitingForNewKey;
+	bool ignoreKeyUp;
 
-  Slider *musicVolume;
-  Slider *effectsVolume;
+	enum modeOptions {
+		CONTROLS = 0, VIDEO, AUDIO, GAME_SETTINGS
+	};
+	int selectedMode;
 
-  void setSelectedMode();
-  void loadControls(); 
-  void loadVideo();
-  void loadGameSettings();
-  
+	Window *mainWin;
+	Button *controlsButton, *videoButton, *audioButton, *gameSettingsButton;
+	Button *changeControlButton, *saveButton, *closeButton;
+	Label * keyBindingsLabel;
+	Label * waitingLabel;
+	Label * changeTakeEffectLabel;
+
+	MultipleLabel * gameSpeedML;
+	Checkbox * alwaysCenterMapCheckbox;
+	Checkbox * keepMapSize;
+	Checkbox * frameOnFullScreen;
+	Checkbox * turnBasedBattle;
+	Checkbox *ovalCutoutShown;
+	Checkbox *outlineInteractiveItems;
+	Checkbox * alwaysShowPath;
+	Checkbox *tooltipEnabled;
+	Slider *tooltipInterval;
+	MultipleLabel * logLevelML;
+	MultipleLabel * pathFindingQualityML;
+
+	MultipleLabel * videoResolutionML;
+	Checkbox * fullscreenCheckbox;
+	Checkbox * doublebufCheckbox;
+	Checkbox * hwpalCheckbox;
+	Checkbox * resizeableCheckbox;
+	Checkbox * forceHwsurfCheckbox;
+	Checkbox * forceSwsurfCheckbox;
+	Checkbox * hwaccelCheckbox;
+	Checkbox * stencilbufCheckbox;
+	Checkbox * multitexturingCheckbox;
+	MultipleLabel * shadowsML;
+
+	CardContainer *cards;
+	ScrollingList *controlBindingsList;
+
+	Slider *musicVolume;
+	Slider *effectsVolume;
+
+	void setSelectedMode();
+	void loadControls();
+	void loadVideo();
+	void loadGameSettings();
+
 public:
-  OptionsMenu(Scourge *scourge);
-  ~OptionsMenu();
+	OptionsMenu( Scourge *scourge );
+	~OptionsMenu();
 
-  bool handleEvent(SDL_Event *event);
-  bool handleEvent(Widget *widget, SDL_Event *event);
-  //inline void show() { mainWin->setVisible(true); }
-  void show();
-  void hide();
-  inline bool isVisible() { return mainWin->isVisible(); }    
+	bool handleEvent( SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
+	//inline void show() { mainWin->setVisible(true); }
+	void show();
+	void hide();
+	inline bool isVisible() {
+		return mainWin->isVisible();
+	}
 };
 
 #endif

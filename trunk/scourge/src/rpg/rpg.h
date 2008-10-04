@@ -17,8 +17,8 @@
 
 #ifndef RPG_H
 #define RPG_H
+#pragma once
 
-#include "../common/constants.h"
 #include "../configlang.h"
 #include "../util.h"
 #include <vector>
@@ -33,7 +33,7 @@ private:
 	static std::vector<char*> midSyl;
 	static std::vector<char*> endSyl;
 
-public:	
+public:
 	static void initRpg();
 	static char *createName();
 
@@ -47,7 +47,7 @@ protected:
 class Skill {
 private:
 	char name[80];
-  char displayName[255];
+	char displayName[255];
 	char description[120];
 	char symbol[80];
 	std::vector<Skill*> preReqStats;
@@ -62,7 +62,7 @@ public:
 	// Note: order must match that in world/rpg.txt!
 	// =======================================
 	enum {
-		SPEED=0,
+		SPEED = 0,
 		COORDINATION,
 		POWER,
 		IQ,
@@ -70,34 +70,34 @@ public:
 		LUCK,
 		PIETY,
 		LORE,
-		
+
 		MELEE_WEAPON,
 		RANGED_WEAPON,
 		LARGE_WEAPON,
 		HAND_TO_HAND_COMBAT,
-		
+
 		SHIELD_DEFEND,
 		ARMOR_DEFEND,
 		DODGE_ATTACK,
-		
+
 		LIFE_AND_DEATH_MAGIC,
 		DECEIT_MAGIC,
 		CONFRONTATION_MAGIC,
 		RESIST_LIFE_AND_DEATH_MAGIC,
 		RESIST_DECEIT_MAGIC,
 		RESIST_CONFRONTATION_MAGIC,
-		
+
 		NATURE_MAGIC,
 		AWARENESS_MAGIC,
 		RESIST_NATURE_MAGIC,
 		RESIST_AWARENESS_MAGIC,
-		
+
 		HISTORY_MAGIC,
 		RESIST_HISTORY_MAGIC,
 		ENCHANT_ITEM,
 		IDENTIFY_ITEM,
 		IDENTIFY_CREATURE,
-		
+
 		OPEN_LOCK,
 		FIND_TRAP,
 		FIND_SECRET_DOOR,
@@ -110,18 +110,40 @@ public:
 	Skill( char *name, char *displayName, char *description, char *symbol, SkillGroup *group );
 	~Skill();
 
-	inline void setPreReqMultiplier( int n ) { preReqStatMultiplier = n; }
-	inline int getPreReqMultiplier() { return preReqStatMultiplier; }
-	inline void addPreReqStat( Skill *stat ) { preReqStats.push_back( stat ); }
-	inline int getPreReqStatCount() { return preReqStats.size(); }
-	inline Skill *getPreReqStat( int index ) { return preReqStats[ index ]; }
+	inline void setPreReqMultiplier( int n ) {
+		preReqStatMultiplier = n;
+	}
+	inline int getPreReqMultiplier() {
+		return preReqStatMultiplier;
+	}
+	inline void addPreReqStat( Skill *stat ) {
+		preReqStats.push_back( stat );
+	}
+	inline int getPreReqStatCount() {
+		return preReqStats.size();
+	}
+	inline Skill *getPreReqStat( int index ) {
+		return preReqStats[ index ];
+	}
 
-	inline char *getName() { return name; }
-	inline char const* getDisplayName() { return displayName; }
-	inline char *getDescription() { return description; }
-	inline char *getSymbol() { return symbol; }
-	inline SkillGroup *getGroup() { return group; }
-	inline int getIndex() { return index; }
+	inline char *getName() {
+		return name;
+	}
+	inline char const* getDisplayName() {
+		return displayName;
+	}
+	inline char *getDescription() {
+		return description;
+	}
+	inline char *getSymbol() {
+		return symbol;
+	}
+	inline SkillGroup *getGroup() {
+		return group;
+	}
+	inline int getIndex() {
+		return index;
+	}
 
 	static std::map<std::string, Skill*> skillsByName;
 
@@ -136,7 +158,7 @@ public:
 	}
 
 	// fast access
-	static std::vector<Skill*> skills;	
+	static std::vector<Skill*> skills;
 };
 
 /// A group of related skills.
@@ -153,17 +175,35 @@ public:
 	SkillGroup( char *name, char *displayName, char *description );
 	~SkillGroup();
 
-	inline bool isStat() { return isStatSkill; }
-	inline char *getName() { return name; }
-	inline char *getDisplayName() { return displayName; }
-	inline char *getDescription() { return description; }
-	inline int getIndex() { return index; }
+	inline bool isStat() {
+		return isStatSkill;
+	}
+	inline char *getName() {
+		return name;
+	}
+	inline char *getDisplayName() {
+		return displayName;
+	}
+	inline char *getDescription() {
+		return description;
+	}
+	inline int getIndex() {
+		return index;
+	}
 
-	inline int getSkillCount() { return skills.size(); }
-	inline Skill *getSkill( int index ) { return skills[ index ]; }
-	inline void addSkill( Skill *skill ) { skills.push_back( skill ); }
-	inline Skill *getRandomSkill() { return getSkill( Util::dice( getSkillCount() ) ); }
-	
+	inline int getSkillCount() {
+		return skills.size();
+	}
+	inline Skill *getSkill( int index ) {
+		return skills[ index ];
+	}
+	inline void addSkill( Skill *skill ) {
+		skills.push_back( skill );
+	}
+	inline Skill *getRandomSkill() {
+		return getSkill( Util::dice( getSkillCount() ) );
+	}
+
 	static SkillGroup *stats;
 	static std::map<std::string, SkillGroup *> groupsByName;
 	static inline SkillGroup *getGroupByName( char const* name ) {
@@ -188,7 +228,7 @@ private:
 
 public:
 	enum {
-		blessed=0,
+		blessed = 0,
 		empowered,
 		enraged,
 		ac_protected,
@@ -203,19 +243,19 @@ public:
 		overloaded,
 		dead,
 		asleep,
-  
-  	// must be last
+
+		// must be last
 		STATE_MOD_COUNT
 	};
 
 	enum {
-		NEITHER=0,
+		NEITHER = 0,
 		BAD,
 		GOOD
 	};
 
 	StateMod( char const* name, char const* displayName, char const* symbol
-	        , char const* setState, char const* unsetState, int type, int index );
+	          , char const* setState, char const* unsetState, int type, int index );
 	~StateMod();
 
 	static std::map<std::string, StateMod*> stateModsByName;
@@ -232,13 +272,27 @@ public:
 
 	bool isStateModTransitionWanted( bool setting );
 
-	inline char *getName() { return name; }
-	inline char *getDisplayName() { return displayName; }
-	inline char *getSetState() { return setState; }
-	inline char *getUnsetState() { return unsetState; }
-	inline int getType() { return type; }
-	inline char *getSymbol() { return symbol; }
-	inline int getIndex() { return index; }
+	inline char *getName() {
+		return name;
+	}
+	inline char *getDisplayName() {
+		return displayName;
+	}
+	inline char *getSetState() {
+		return setState;
+	}
+	inline char *getUnsetState() {
+		return unsetState;
+	}
+	inline int getType() {
+		return type;
+	}
+	inline char *getSymbol() {
+		return symbol;
+	}
+	inline int getIndex() {
+		return index;
+	}
 };
 
 #endif

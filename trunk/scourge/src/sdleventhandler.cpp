@@ -15,11 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "common/constants.h"
 #include "sdleventhandler.h"
 
 using namespace std;
 
-SDLEventHandler::SDLEventHandler(){
+SDLEventHandler::SDLEventHandler() {
 }
-SDLEventHandler::~SDLEventHandler(){
+SDLEventHandler::~SDLEventHandler() {
 }

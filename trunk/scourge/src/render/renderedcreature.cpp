@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "../common/constants.h"
 #include "renderedcreature.h"
 #include "effect.h"
 #include "map.h"
@@ -22,67 +23,67 @@
 
 using namespace std;
 
-RenderedCreature::RenderedCreature( Preferences *preferences, 
-                                    Shapes *shapes, 
-                                    Map *levelMap ) {
-  this->preferences = preferences;
-  this->shapes = shapes;
-  this->levelMap = levelMap;
-  x = y = z = 0; 
-  damageEffectCounter = 0;
-  effectDuration = Constants::DAMAGE_DURATION;
-  effect = NULL;
-  effectType = Constants::EFFECT_FLAMES;
-  recentDamagesCount = 0;
-  this->offsX = this->offsY = this->offsZ = 0.0f;
-  talkStartTime = 0;
+RenderedCreature::RenderedCreature( Preferences *preferences,
+    Shapes *shapes,
+    Map *levelMap ) {
+	this->preferences = preferences;
+	this->shapes = shapes;
+	this->levelMap = levelMap;
+	x = y = z = 0;
+	damageEffectCounter = 0;
+	effectDuration = Constants::DAMAGE_DURATION;
+	effect = NULL;
+	effectType = Constants::EFFECT_FLAMES;
+	recentDamagesCount = 0;
+	this->offsX = this->offsY = this->offsZ = 0.0f;
+	talkStartTime = 0;
 }
 
 RenderedCreature::~RenderedCreature() {
-  if( effect ) delete effect;
+	if ( effect ) delete effect;
 }
 
 void RenderedCreature::startEffect( int effect_type, int duration, GLuint delay ) {
-  // show an effect
-  if( isEffectOn() && effect_type == getEffectType() ) {
-    return;
-  }  
-  getEffect()->deleteParticles();
-  resetDamageEffect();
-  setEffectType( effect_type );
-  effectDuration = duration;
+	// show an effect
+	if ( isEffectOn() && effect_type == getEffectType() ) {
+		return;
+	}
+	getEffect()->deleteParticles();
+	resetDamageEffect();
+	setEffectType( effect_type );
+	effectDuration = duration;
 
-  // need to do this to make sure effect shows up
-  levelMap->refresh();
+	// need to do this to make sure effect shows up
+	levelMap->refresh();
 }
 
 Effect *RenderedCreature::getEffect() {
-  if( !effect ) {
-    effect = 
-      new Effect( levelMap, preferences, shapes, getShape() );
-  }
-  return effect;
+	if ( !effect ) {
+		effect =
+		  new Effect( levelMap, preferences, shapes, getShape() );
+	}
+	return effect;
 }
 
-bool RenderedCreature::addRecentDamage( int damage ) { 
-if( recentDamagesCount < MAX_RECENT_DAMAGE - 1 ) {
-  recentDamages[ recentDamagesCount ].damage = damage;
-    recentDamages[ recentDamagesCount ].pos = 0.0f;
-    recentDamages[ recentDamagesCount ].lastTime = SDL_GetTicks();
-    recentDamagesCount++;
-    return true;
-  } else {
-    return false;
-  }
+bool RenderedCreature::addRecentDamage( int damage ) {
+	if ( recentDamagesCount < MAX_RECENT_DAMAGE - 1 ) {
+		recentDamages[ recentDamagesCount ].damage = damage;
+		recentDamages[ recentDamagesCount ].pos = 0.0f;
+		recentDamages[ recentDamagesCount ].lastTime = SDL_GetTicks();
+		recentDamagesCount++;
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void RenderedCreature::removeRecentDamage( int i ) {
-  for( int t = i; t < recentDamagesCount - 1; t++ ) {
-    recentDamages[ t ].damage = recentDamages[ t + 1 ].damage;
-    recentDamages[ t ].pos = recentDamages[ t + 1 ].pos;
-    recentDamages[ t ].lastTime = recentDamages[ t + 1 ].lastTime;
-  }
-  recentDamagesCount--;
+	for ( int t = i; t < recentDamagesCount - 1; t++ ) {
+		recentDamages[ t ].damage = recentDamages[ t + 1 ].damage;
+		recentDamages[ t ].pos = recentDamages[ t + 1 ].pos;
+		recentDamages[ t ].lastTime = recentDamages[ t + 1 ].lastTime;
+	}
+	recentDamagesCount--;
 }
 
 
@@ -92,15 +93,15 @@ void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *fina
 	int sx = startx;
 	int sy = starty;
 	set<int> seen;
-	if( doFindStart( &sx, &sy ) ) {
-		if( !doFindPlace( sx, sy, &fx, &fy, &seen ) ) {
+	if ( doFindStart( &sx, &sy ) ) {
+		if ( !doFindPlace( sx, sy, &fx, &fy, &seen ) ) {
 			cerr << "Warning: can't find place for creature." << endl;
 		} else {
 			moveTo( fx, fy, 0 );
 			setSelXY( fx, fy );
 			levelMap->setCreature( fx, fy, 0, this );
-			if( finalX ) *finalX = fx;
-			if( finalY ) *finalY = fy;
+			if ( finalX ) *finalX = fx;
+			if ( finalY ) *finalY = fy;
 		}
 	} else {
 		cerr << "Warning: can't find starting place." << endl;
@@ -113,65 +114,65 @@ bool RenderedCreature::doFindStart( int *startx, int *starty ) {
 		cerr << "Error: placing shapeless creature." << endl;
 		return false;
 	}
-  int xx;
-  int yy;
-  for ( yy = *starty; yy >= MAP_OFFSET; --yy ) {
-	for ( xx = *startx; xx >= MAP_OFFSET; ) {
-	  Location *pos = levelMap->getLocation( xx, yy, 0 );
-	  if( !pos ) {
-		*startx = xx;
-		*starty = yy;
-		return true;
-	  } else {
-		xx = pos->x - 1;
-	  }
+	int xx;
+	int yy;
+	for ( yy = *starty; yy >= MAP_OFFSET; --yy ) {
+		for ( xx = *startx; xx >= MAP_OFFSET; ) {
+			Location *pos = levelMap->getLocation( xx, yy, 0 );
+			if ( !pos ) {
+				*startx = xx;
+				*starty = yy;
+				return true;
+			} else {
+				xx = pos->x - 1;
+			}
+		}
+		for ( xx = *startx; xx < MAP_WIDTH - MAP_OFFSET; ) {
+			Location *pos = levelMap->getLocation( xx, yy, 0 );
+			if ( !pos ) {
+				*startx = xx;
+				*starty = yy;
+				return true;
+			} else {
+				xx = pos->x + pos->shape->getWidth();
+			}
+		}
 	}
-	for( xx = *startx; xx < MAP_WIDTH - MAP_OFFSET; ) {
-	  Location *pos = levelMap->getLocation( xx, yy, 0 );
-	  if( !pos ) {
-		*startx = xx;
-		*starty = yy;
-		return true;
-	  } else {
-		xx = pos->x + pos->shape->getWidth();
-	  }
+	for ( yy = *starty; yy < MAP_DEPTH - MAP_OFFSET; ++yy ) {
+		for ( xx = *startx; xx >= MAP_OFFSET; ) {
+			Location *pos = levelMap->getLocation( xx, yy, 0 );
+			if ( !pos ) {
+				*startx = xx;
+				*starty = yy;
+				return true;
+			} else {
+				xx = pos->x - 1;
+			}
+		}
+		for ( xx = *startx; xx < MAP_WIDTH - MAP_OFFSET; ) {
+			Location *pos = levelMap->getLocation( xx, yy, 0 );
+			if ( !pos ) {
+				*startx = xx;
+				*starty = yy;
+				return true;
+			} else {
+				xx = pos->x + pos->shape->getWidth();
+			}
+		}
 	}
-  }
-  for ( yy = *starty; yy < MAP_DEPTH - MAP_OFFSET; ++yy ) {
-	for ( xx = *startx; xx >= MAP_OFFSET; ) {
-	  Location *pos = levelMap->getLocation( xx, yy, 0 );
-	  if( !pos ) {
-		*startx = xx;
-		*starty = yy;
-		return true;
-	  } else {
-		xx = pos->x - 1;
-	  }
-	}
-	for ( xx = *startx; xx < MAP_WIDTH - MAP_OFFSET; ) {
-	  Location *pos = levelMap->getLocation( xx, yy, 0 );
-	  if( !pos ) {
-		*startx = xx;
-		*starty = yy;
-		return true;
-	  } else {
-		xx = pos->x + pos->shape->getWidth();
-	  }
-	}
-  }
-  return false;
+	return false;
 }
 
 
 bool RenderedCreature::isEmptyUnSeenPlace( int x, int y, set<int> *seen ) {
-	return levelMap->isEmpty( x, y ) 
+	return levelMap->isEmpty( x, y )
 	       && seen->find( x + y * MAP_WIDTH ) == seen->end();
 }
 
 bool RenderedCreature::doFindPlace( int startx, int starty, int *finalX, int *finalY, set<int> *seen ) {
-	if( *finalX ) return true;
+	if ( *finalX ) return true;
 
-	if( levelMap->canFit( startx, starty, getShape() ) ) {
+	if ( levelMap->canFit( startx, starty, getShape() ) ) {
 		*finalX = startx;
 		*finalY = starty;
 		return true;
@@ -179,19 +180,19 @@ bool RenderedCreature::doFindPlace( int startx, int starty, int *finalX, int *fi
 
 	seen->insert( startx + starty * MAP_WIDTH );
 
-	if( isEmptyUnSeenPlace( startx + 1, starty, seen ) ) {
-		if( doFindPlace( startx + 1, starty, finalX, finalY, seen ) ) return true;
+	if ( isEmptyUnSeenPlace( startx + 1, starty, seen ) ) {
+		if ( doFindPlace( startx + 1, starty, finalX, finalY, seen ) ) return true;
 	}
-	if( isEmptyUnSeenPlace( startx, starty + 1, seen ) ) {
-		if( doFindPlace( startx, starty + 1, finalX, finalY, seen ) ) return true;
+	if ( isEmptyUnSeenPlace( startx, starty + 1, seen ) ) {
+		if ( doFindPlace( startx, starty + 1, finalX, finalY, seen ) ) return true;
 	}
-	if( isEmptyUnSeenPlace( startx - 1, starty, seen ) ) {
-		if( doFindPlace( startx - 1, starty, finalX, finalY, seen ) ) return true;
+	if ( isEmptyUnSeenPlace( startx - 1, starty, seen ) ) {
+		if ( doFindPlace( startx - 1, starty, finalX, finalY, seen ) ) return true;
 	}
-	if( isEmptyUnSeenPlace( startx, starty - 1, seen ) ) {
-		if( doFindPlace( startx, starty - 1, finalX, finalY, seen ) ) return true;
+	if ( isEmptyUnSeenPlace( startx, starty - 1, seen ) ) {
+		if ( doFindPlace( startx, starty - 1, finalX, finalY, seen ) ) return true;
 	}
-	
+
 	return false;
 }
 
@@ -203,59 +204,59 @@ bool RenderedCreature::doFindPlace( int startx, int starty, int *finalX, int *fi
 #define FIND_PLACE_LIMIT 100
 
 void RenderedCreature::findPlace_old( int startx, int starty, int *finalX, int *finalY ) {
-  int dir = Constants::MOVE_UP;
-  int ox = startx;
-  int oy = starty;
-  int xx = ox;
-  int yy = oy;
-  int r = 6;
-  
-  if( finalX ) *finalX = -1;
-  if( finalY ) *finalY = -1;  
-  
-  // it assumes there is free space "somewhere" on this map...
-  map<int,bool> seen;
-  for( int count = 0; count < FIND_PLACE_LIMIT; count++ ) {
-    seen.clear();
+	int dir = Constants::MOVE_UP;
+	int ox = startx;
+	int oy = starty;
+	int xx = ox;
+	int yy = oy;
+	int r = 6;
 
-    // can player fit here?
-    if( levelMap->canFit( xx, yy, getShape() ) && 
-        canReach( startx, starty, startx, starty, xx, yy, &seen ) ) {
-      //cerr << "Placed party member: " << t << " at: " << xx << "," << yy << endl;
-      moveTo( xx, yy, 0 );
-      setSelXY( xx, yy );
-      levelMap->setCreature( xx, yy, 0, this );
+	if ( finalX ) *finalX = -1;
+	if ( finalY ) *finalY = -1;
 
-      if( finalX ) *finalX = xx;
-      if( finalY ) *finalY = yy;
+	// it assumes there is free space "somewhere" on this map...
+	map<int, bool> seen;
+	for ( int count = 0; count < FIND_PLACE_LIMIT; count++ ) {
+		seen.clear();
 
-      return;
-    }
-    //if( seen.size() ) cerr << "seen size=" << seen.size() << " pos=" << xx << "," << yy << " r=" << r << endl;
+		// can player fit here?
+		if ( levelMap->canFit( xx, yy, getShape() ) &&
+		        canReach( startx, starty, startx, starty, xx, yy, &seen ) ) {
+			//cerr << "Placed party member: " << t << " at: " << xx << "," << yy << endl;
+			moveTo( xx, yy, 0 );
+			setSelXY( xx, yy );
+			levelMap->setCreature( xx, yy, 0, this );
 
-    // try radially around the player
-    switch( dir ) {
-    case Constants::MOVE_UP:
-      yy--; 
-    if( yy <= MAP_OFFSET || abs( oy - yy ) > r ) dir = Constants::MOVE_RIGHT;
-    break;
-    case Constants::MOVE_RIGHT:
-      xx++; 
-    if( xx >= MAP_WIDTH - MAP_OFFSET || abs( ox - xx ) > r ) dir = Constants::MOVE_DOWN;
-    break;
-    case Constants::MOVE_DOWN:
-      yy++; 
-    if( yy >= MAP_DEPTH - MAP_OFFSET || abs( oy - yy ) > r ) dir = Constants::MOVE_LEFT;
-    break;
-    case Constants::MOVE_LEFT:
-      xx--; 
-    if( xx <= MAP_OFFSET || abs( ox - xx ) > r ) {
-      dir = Constants::MOVE_UP;
-      r += getShape()->getWidth();
-    }
-    break;
-    }
-  }
+			if ( finalX ) *finalX = xx;
+			if ( finalY ) *finalY = yy;
+
+			return;
+		}
+		//if( seen.size() ) cerr << "seen size=" << seen.size() << " pos=" << xx << "," << yy << " r=" << r << endl;
+
+		// try radially around the player
+		switch ( dir ) {
+		case Constants::MOVE_UP:
+			yy--;
+			if ( yy <= MAP_OFFSET || abs( oy - yy ) > r ) dir = Constants::MOVE_RIGHT;
+			break;
+		case Constants::MOVE_RIGHT:
+			xx++;
+			if ( xx >= MAP_WIDTH - MAP_OFFSET || abs( ox - xx ) > r ) dir = Constants::MOVE_DOWN;
+			break;
+		case Constants::MOVE_DOWN:
+			yy++;
+			if ( yy >= MAP_DEPTH - MAP_OFFSET || abs( oy - yy ) > r ) dir = Constants::MOVE_LEFT;
+			break;
+		case Constants::MOVE_LEFT:
+			xx--;
+			if ( xx <= MAP_OFFSET || abs( ox - xx ) > r ) {
+				dir = Constants::MOVE_UP;
+				r += getShape()->getWidth();
+			}
+			break;
+		}
+	}
 }
 
 /**
@@ -263,44 +264,44 @@ void RenderedCreature::findPlace_old( int startx, int starty, int *finalX, int *
  * it ensures that their proposed location is reachable from the original
  * location w/o going thru walls.
  */
-bool RenderedCreature::canReach( int startx, int starty, int firstx, int firsty, int xx, int yy, map<int,bool> *seen ) {
+bool RenderedCreature::canReach( int startx, int starty, int firstx, int firsty, int xx, int yy, map<int, bool> *seen ) {
 	// make sure we're not recursing too much
-	if( ( ( startx - xx ) * ( startx - xx ) ) + ( ( starty - yy ) * ( starty - yy ) ) > ( 50 * 50 ) ) {
+	if ( ( ( startx - xx ) * ( startx - xx ) ) + ( ( starty - yy ) * ( starty - yy ) ) > ( 50 * 50 ) ) {
 		cerr << "warning: RenderedCreature::canReach recursion limit." << endl;
 		return true;
 	}
 
-  if( startx == xx && starty == yy ) return true;
-  if( startx < 0 || startx >= MAP_WIDTH || starty < 0 || starty >= MAP_DEPTH ) return false;
+	if ( startx == xx && starty == yy ) return true;
+	if ( startx < 0 || startx >= MAP_WIDTH || starty < 0 || starty >= MAP_DEPTH ) return false;
 
-  int pos = startx + starty * MAP_WIDTH;
-  if( seen->find( pos ) != seen->end() ) return false;
-  (*seen)[ pos ] = true;
+	int pos = startx + starty * MAP_WIDTH;
+	if ( seen->find( pos ) != seen->end() ) return false;
+	( *seen )[ pos ] = true;
 
-  Location *location = levelMap->getLocation( startx, starty, 0 );
-  if( location && 
-      !( location->item || location->creature ) &&
-      !( location->x == firstx && location->y == firsty ) &&
-      !( location->x == xx && location->y == yy ) ) {
-    return false;
-  }
+	Location *location = levelMap->getLocation( startx, starty, 0 );
+	if ( location &&
+	        !( location->item || location->creature ) &&
+	        !( location->x == firstx && location->y == firsty ) &&
+	        !( location->x == xx && location->y == yy ) ) {
+		return false;
+	}
 
-  if( canReach( startx - 1, starty, firstx, firsty, xx, yy, seen ) ) return true;
-  if( canReach( startx + 1, starty, firstx, firsty, xx, yy, seen ) ) return true;
-  if( canReach( startx, starty - 1, firstx, firsty, xx, yy, seen ) ) return true;
-  if( canReach( startx, starty + 1, firstx, firsty, xx, yy, seen ) ) return true;
-  return false;
+	if ( canReach( startx - 1, starty, firstx, firsty, xx, yy, seen ) ) return true;
+	if ( canReach( startx + 1, starty, firstx, firsty, xx, yy, seen ) ) return true;
+	if ( canReach( startx, starty - 1, firstx, firsty, xx, yy, seen ) ) return true;
+	if ( canReach( startx, starty + 1, firstx, firsty, xx, yy, seen ) ) return true;
+	return false;
 }
 
 void RenderedCreature::say( char const* text ) {
-  talkStartTime = SDL_GetTicks();
-  strncpy( speech, text, 2000 );
+	talkStartTime = SDL_GetTicks();
+	strncpy( speech, text, 2000 );
 
-  clearSpeech();
+	clearSpeech();
 
-  char tmp[3000];
-  Util::addLineBreaks( speech, tmp, 45 );
-  Util::getLines( tmp, &speechWrapped );
+	char tmp[3000];
+	Util::addLineBreaks( speech, tmp, 45 );
+	Util::getLines( tmp, &speechWrapped );
 }
 
 void RenderedCreature::clearSpeech() {
@@ -310,14 +311,22 @@ void RenderedCreature::clearSpeech() {
 #define TALK_DURATION 5000
 
 bool RenderedCreature::isTalking() {
-  //if( SDL_GetTicks() > ( talkStartTime + TALK_DURATION ) ) { return false; } else { return true; }
+	//if( SDL_GetTicks() > ( talkStartTime + TALK_DURATION ) ) { return false; } else { return true; }
 	return speechWrapped.size() > 0 ? true : false;
 }
 
 char *RenderedCreature::getSpeech() {
-  if( isTalking() ) { return speech; } else { return NULL; }
+	if ( isTalking() ) {
+		return speech;
+	} else {
+		return NULL;
+	}
 }
 
 std::vector<std::string> *RenderedCreature::getSpeechWrapped() {
-  if( isTalking() ) { return &speechWrapped; } else { return NULL; }
+	if ( isTalking() ) {
+		return &speechWrapped;
+	} else {
+		return NULL;
+	}
 }

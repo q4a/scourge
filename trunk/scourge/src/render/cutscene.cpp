@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "../common/constants.h"
 #include "cutscene.h"
 #include "map.h"
 
@@ -22,133 +23,133 @@ using namespace std;
 
 #define LETTERBOX_DURATION 300
 
-Cutscene::Cutscene( Session *session ){
-  this->session = session;
+Cutscene::Cutscene( Session *session ) {
+	this->session = session;
 
-  // fixme: perhaps this should be the hdtv aspect ration given the current pixel width?
-  letterboxHeight = (int)( (float)session->getPreferences()->getH() / 8 );
+	// FIXME: perhaps this should be the hdtv aspect ration given the current pixel width?
+	letterboxHeight = ( int )( ( float )session->getPreferences()->getH() / 8 );
 
-  inMovieMode = false;
-  endingMovie = false;
-  cameraMoving = false;
+	inMovieMode = false;
+	endingMovie = false;
+	cameraMoving = false;
 }
 
-Cutscene::~Cutscene(){
+Cutscene::~Cutscene() {
 }
 
 void Cutscene::startMovieMode() {
-  fromX = originalX = session->getMap()->getMapX();
-  fromY = originalY = session->getMap()->getMapY();
-  fromZ = originalZ = 0;
+	fromX = originalX = session->getMap()->getMapX();
+	fromY = originalY = session->getMap()->getMapY();
+	fromZ = originalZ = 0;
 
-  fromXRot = originalXRot = session->getMap()->getXRot();
-  fromYRot = originalYRot = session->getMap()->getYRot();
-  fromZRot = originalZRot = session->getMap()->getZRot();
+	fromXRot = originalXRot = session->getMap()->getXRot();
+	fromYRot = originalYRot = session->getMap()->getYRot();
+	fromZRot = originalZRot = session->getMap()->getZRot();
 
-  fromZoom = originalZoom = session->getMap()->getZoom();
+	fromZoom = originalZoom = session->getMap()->getZoom();
 
-  inMovieMode = true;
-  endingMovie = false;
-  cameraMoving = false;
+	inMovieMode = true;
+	endingMovie = false;
+	cameraMoving = false;
 
-  cameraStartTime = cameraDuration = letterboxStartTime = letterboxEndTime = 0;
+	cameraStartTime = cameraDuration = letterboxStartTime = letterboxEndTime = 0;
 
-  startLetterbox();
+	startLetterbox();
 }
 
 void Cutscene::endMovieMode() {
-  // Initiate end of the movie. Note that movie mode does
-  // not end until the letterbox has faded out completely.
-  endingMovie = true;
+	// Initiate end of the movie. Note that movie mode does
+	// not end until the letterbox has faded out completely.
+	endingMovie = true;
 	// reset the camera
-	animateCamera( originalX, originalY, originalZ, 
-								 originalXRot, originalYRot, originalZRot, 
-								 originalZoom, 
-								 LETTERBOX_DURATION );
-  endLetterbox();
+	animateCamera( originalX, originalY, originalZ,
+	               originalXRot, originalYRot, originalZRot,
+	               originalZoom,
+	               LETTERBOX_DURATION );
+	endLetterbox();
 }
 
 void Cutscene::startLetterbox() {
-  letterboxStartTime = SDL_GetTicks();
+	letterboxStartTime = SDL_GetTicks();
 }
 
 void Cutscene::endLetterbox() {
-  letterboxEndTime = SDL_GetTicks();
+	letterboxEndTime = SDL_GetTicks();
 }
 
 bool Cutscene::isInMovieMode() {
-  if( inMovieMode && endingMovie ) {
-    Uint32 now = SDL_GetTicks();
-      if( now > ( letterboxEndTime + LETTERBOX_DURATION ) ) {
-        inMovieMode = false; endingMovie = false;
-        //TODO: restore pre-cutscene camera position
-      }
-  }
+	if ( inMovieMode && endingMovie ) {
+		Uint32 now = SDL_GetTicks();
+		if ( now > ( letterboxEndTime + LETTERBOX_DURATION ) ) {
+			inMovieMode = false; endingMovie = false;
+			//TODO: restore pre-cutscene camera position
+		}
+	}
 
-  return inMovieMode;
+	return inMovieMode;
 }
 
 int Cutscene::getCurrentLetterboxHeight() {
-  Uint32 now = SDL_GetTicks();
-  int h;
+	Uint32 now = SDL_GetTicks();
+	int h;
 
-  if( endingMovie ) {
+	if ( endingMovie ) {
 
-    if( ( now - letterboxEndTime ) > LETTERBOX_DURATION ) {
-      h = letterboxHeight;
-    } else {
-      float percent = (float)( now - letterboxEndTime ) / LETTERBOX_DURATION;
-      h = (float)letterboxHeight * ( 1.0f - percent );
-    }
+		if ( ( now - letterboxEndTime ) > LETTERBOX_DURATION ) {
+			h = letterboxHeight;
+		} else {
+			float percent = ( float )( now - letterboxEndTime ) / LETTERBOX_DURATION;
+			h = ( float )letterboxHeight * ( 1.0f - percent );
+		}
 
-  } else {
+	} else {
 
-    if( ( now - letterboxStartTime ) > LETTERBOX_DURATION ) {
-      h = letterboxHeight;
-    } else {
-      float percent = (float)( now - letterboxStartTime ) / LETTERBOX_DURATION;
-      h = (float)letterboxHeight * ( percent );
-    }
+		if ( ( now - letterboxStartTime ) > LETTERBOX_DURATION ) {
+			h = letterboxHeight;
+		} else {
+			float percent = ( float )( now - letterboxStartTime ) / LETTERBOX_DURATION;
+			h = ( float )letterboxHeight * ( percent );
+		}
 
-  }
+	}
 
-  return h;
+	return h;
 }
 
 void Cutscene::placeCamera( float x, float y, float z, float xRot, float yRot, float zRot, float zoom ) {
-  Uint32 now = SDL_GetTicks();
+	Uint32 now = SDL_GetTicks();
 
-  fromX = toX = x;
-  fromY = toY = y;
-  fromZ = toZ = z;
+	fromX = toX = x;
+	fromY = toY = y;
+	fromZ = toZ = z;
 
-  fromXRot = toXRot = xRot;
-  fromYRot = toYRot = yRot;
-  fromZRot = toZRot = zRot;
+	fromXRot = toXRot = xRot;
+	fromYRot = toYRot = yRot;
+	fromZRot = toZRot = zRot;
 
-  fromZoom = toZoom = zoom;
+	fromZoom = toZoom = zoom;
 
-  cameraStartTime = now;
-  cameraDuration = 0;
-  cameraMoving = false;
+	cameraStartTime = now;
+	cameraDuration = 0;
+	cameraMoving = false;
 }
 
 void Cutscene::animateCamera( float targetX, float targetY, float targetZ, float targetXRot, float targetYRot, float targetZRot, float targetZoom, Uint32 duration ) {
-  Uint32 now = SDL_GetTicks();
+	Uint32 now = SDL_GetTicks();
 
-  toX = targetX;
-  toY = targetY;
-  toZ = targetZ;
+	toX = targetX;
+	toY = targetY;
+	toZ = targetZ;
 
-  toXRot = targetXRot;
-  toYRot = targetYRot;
-  toZRot = targetZRot;
+	toXRot = targetXRot;
+	toYRot = targetYRot;
+	toZRot = targetZRot;
 
-  toZoom = targetZoom;
+	toZoom = targetZoom;
 
-  cameraStartTime = now;
-  cameraDuration = duration;
-  cameraMoving = true;
+	cameraStartTime = now;
+	cameraDuration = duration;
+	cameraMoving = true;
 }
 
 void Cutscene::updateCameraPosition() {
@@ -158,205 +159,205 @@ void Cutscene::updateCameraPosition() {
 }
 
 bool Cutscene::isCameraMoving() {
-  Uint32 now = SDL_GetTicks();
+	Uint32 now = SDL_GetTicks();
 
-  if( cameraMoving ) {
-    if( ( now - cameraStartTime ) > cameraDuration ) {
-      placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
-    }
-  }
+	if ( cameraMoving ) {
+		if ( ( now - cameraStartTime ) > cameraDuration ) {
+			placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
+		}
+	}
 
-  return cameraMoving;
+	return cameraMoving;
 }
 
 float Cutscene::getCameraX() {
-  Uint32 now = SDL_GetTicks();
-  float x;
+	Uint32 now = SDL_GetTicks();
+	float x;
 
-  if( cameraMoving ) {
+	if ( cameraMoving ) {
 
-    if( ( now - cameraStartTime ) > cameraDuration ) {
-      placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
-      x = fromX;
-    } else {
-      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
-      x = fromX + ( percent * ( toX - fromX ) );
-    }
+		if ( ( now - cameraStartTime ) > cameraDuration ) {
+			placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
+			x = fromX;
+		} else {
+			float percent = ( float )( now - cameraStartTime ) / ( float )cameraDuration;
+			x = fromX + ( percent * ( toX - fromX ) );
+		}
 
-  } else {
-    x = fromX;
-  }
+	} else {
+		x = fromX;
+	}
 
-  return x;
+	return x;
 }
 
 float Cutscene::getCameraY() {
-  Uint32 now = SDL_GetTicks();
-  float y;
+	Uint32 now = SDL_GetTicks();
+	float y;
 
-  if( cameraMoving ) {
+	if ( cameraMoving ) {
 
-    if( ( now - cameraStartTime ) > cameraDuration ) {
-      placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
-      y = fromY;
-    } else {
-      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
-      y = fromY + ( percent * ( toY - fromY ) );
-    }
+		if ( ( now - cameraStartTime ) > cameraDuration ) {
+			placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
+			y = fromY;
+		} else {
+			float percent = ( float )( now - cameraStartTime ) / ( float )cameraDuration;
+			y = fromY + ( percent * ( toY - fromY ) );
+		}
 
-  } else {
-    y = fromY;
-  }
+	} else {
+		y = fromY;
+	}
 
-  return y;
+	return y;
 }
 
 float Cutscene::getCameraZ() {
-  Uint32 now = SDL_GetTicks();
-  float z;
+	Uint32 now = SDL_GetTicks();
+	float z;
 
-  if( cameraMoving ) {
+	if ( cameraMoving ) {
 
-    if( ( now - cameraStartTime ) > cameraDuration ) {
-      placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
-      z = fromZ;
-    } else {
-      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
-      z = fromZ + ( percent * ( toZ - fromZ ) );
-    }
+		if ( ( now - cameraStartTime ) > cameraDuration ) {
+			placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
+			z = fromZ;
+		} else {
+			float percent = ( float )( now - cameraStartTime ) / ( float )cameraDuration;
+			z = fromZ + ( percent * ( toZ - fromZ ) );
+		}
 
-  } else {
-    z = fromZ;
-  }
+	} else {
+		z = fromZ;
+	}
 
-  return z;
+	return z;
 }
 
 float Cutscene::getCameraXRot() {
-  Uint32 now = SDL_GetTicks();
-  float r;
+	Uint32 now = SDL_GetTicks();
+	float r;
 
-  if( cameraMoving ) {
+	if ( cameraMoving ) {
 
-    if( ( now - cameraStartTime ) > cameraDuration ) {
-      placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
-      r = fromXRot;
-    } else {
-      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
-      float diff = Util::diffAngle( toXRot, fromXRot );
-      r = fromXRot + ( diff * percent );
-			while( r >= 360 ) r -= 360;
-    }
+		if ( ( now - cameraStartTime ) > cameraDuration ) {
+			placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
+			r = fromXRot;
+		} else {
+			float percent = ( float )( now - cameraStartTime ) / ( float )cameraDuration;
+			float diff = Util::diffAngle( toXRot, fromXRot );
+			r = fromXRot + ( diff * percent );
+			while ( r >= 360 ) r -= 360;
+		}
 
-  } else {
-    r = fromXRot;
-  }
+	} else {
+		r = fromXRot;
+	}
 
-  return r;
+	return r;
 }
 
 float Cutscene::getCameraYRot() {
-  Uint32 now = SDL_GetTicks();
-  float r;
+	Uint32 now = SDL_GetTicks();
+	float r;
 
-  if( cameraMoving ) {
+	if ( cameraMoving ) {
 
-    if( ( now - cameraStartTime ) > cameraDuration ) {
-      placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
-      r = fromYRot;
-    } else {
-      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
-      float diff = Util::diffAngle( toYRot, fromYRot );
-      r = fromYRot + ( diff * percent );
-			while( r >= 360 ) r -= 360;
-    }
+		if ( ( now - cameraStartTime ) > cameraDuration ) {
+			placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
+			r = fromYRot;
+		} else {
+			float percent = ( float )( now - cameraStartTime ) / ( float )cameraDuration;
+			float diff = Util::diffAngle( toYRot, fromYRot );
+			r = fromYRot + ( diff * percent );
+			while ( r >= 360 ) r -= 360;
+		}
 
-  } else {
-    r = fromYRot;
-  }
+	} else {
+		r = fromYRot;
+	}
 
-  return r;
+	return r;
 }
 
 float Cutscene::getCameraZRot() {
-  Uint32 now = SDL_GetTicks();
-  float r;
+	Uint32 now = SDL_GetTicks();
+	float r;
 
-  if( cameraMoving ) {
+	if ( cameraMoving ) {
 
-    if( ( now - cameraStartTime ) > cameraDuration ) {
-      placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
-      r = fromZRot;
-    } else {
-      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
-      float diff = Util::diffAngle( toZRot, fromZRot );
-      r = fromZRot + ( diff * percent );
-			while( r >= 360 ) r -= 360;
-    }
+		if ( ( now - cameraStartTime ) > cameraDuration ) {
+			placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
+			r = fromZRot;
+		} else {
+			float percent = ( float )( now - cameraStartTime ) / ( float )cameraDuration;
+			float diff = Util::diffAngle( toZRot, fromZRot );
+			r = fromZRot + ( diff * percent );
+			while ( r >= 360 ) r -= 360;
+		}
 
-  } else {
-    r = fromZRot;
-  }
+	} else {
+		r = fromZRot;
+	}
 
-  return r;
+	return r;
 }
 
 float Cutscene::getCameraZoom() {
-  Uint32 now = SDL_GetTicks();
-  float m;
+	Uint32 now = SDL_GetTicks();
+	float m;
 
-  if( cameraMoving ) {
+	if ( cameraMoving ) {
 
-    if( ( now - cameraStartTime ) > cameraDuration ) {
-      placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
-      m = fromZoom;
-    } else {
-      float percent = (float)( now - cameraStartTime ) / (float)cameraDuration;
-      m = fromZoom + ( percent * ( toZoom - fromZoom ) );
-    }
+		if ( ( now - cameraStartTime ) > cameraDuration ) {
+			placeCamera( toX, toY, toZ, toXRot, toYRot, toZRot, toZoom );
+			m = fromZoom;
+		} else {
+			float percent = ( float )( now - cameraStartTime ) / ( float )cameraDuration;
+			m = fromZoom + ( percent * ( toZoom - fromZoom ) );
+		}
 
-  } else {
-    m = fromZoom;
-  }
+	} else {
+		m = fromZoom;
+	}
 
-  return m;
+	return m;
 }
 
 void Cutscene::drawLetterbox() {
-  int w = session->getGameAdapter()->getScreenWidth();
-  int h = getCurrentLetterboxHeight();
+	int w = session->getGameAdapter()->getScreenWidth();
+	int h = getCurrentLetterboxHeight();
 
-  glDisable( GL_TEXTURE_2D );
-  glDisable( GL_CULL_FACE );
-  glDisable( GL_DEPTH_TEST );
-  glDisable( GL_BLEND );
+	glDisable( GL_TEXTURE_2D );
+	glDisable( GL_CULL_FACE );
+	glDisable( GL_DEPTH_TEST );
+	glDisable( GL_BLEND );
 
-  glColor3f( 0.0f, 0.0f, 0.0f );
+	glColor3f( 0.0f, 0.0f, 0.0f );
 
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef( 0, 0, 0 );
-  glBegin( GL_TRIANGLE_STRIP );
-  glVertex2i( 0, 0 );
-  glVertex2i( w, 0 );
-  glVertex2i( 0, h );
-  glVertex2i( w, h );
-  glEnd();
-  glPopMatrix();
+	glPushMatrix();
+	glLoadIdentity();
+	glTranslatef( 0, 0, 0 );
+	glBegin( GL_TRIANGLE_STRIP );
+	glVertex2i( 0, 0 );
+	glVertex2i( w, 0 );
+	glVertex2i( 0, h );
+	glVertex2i( w, h );
+	glEnd();
+	glPopMatrix();
 
-  glPushMatrix();
-  glLoadIdentity();
-  glTranslatef( 0, session->getGameAdapter()->getScreenHeight() - h, 0 );
-  glBegin( GL_TRIANGLE_STRIP );
-  glVertex2i( 0, 0 );
-  glVertex2i( w, 0 );
-  glVertex2i( 0, h );
-  glVertex2i( w, h );
-  glEnd();
-  glPopMatrix();
+	glPushMatrix();
+	glLoadIdentity();
+	glTranslatef( 0, session->getGameAdapter()->getScreenHeight() - h, 0 );
+	glBegin( GL_TRIANGLE_STRIP );
+	glVertex2i( 0, 0 );
+	glVertex2i( w, 0 );
+	glVertex2i( 0, h );
+	glVertex2i( w, h );
+	glEnd();
+	glPopMatrix();
 
-  glEnable( GL_TEXTURE_2D );
-  glColor4f( 1, 1, 1, 1 );
-  glEnable( GL_DEPTH_TEST );
-  glEnable( GL_CULL_FACE );
+	glEnable( GL_TEXTURE_2D );
+	glColor4f( 1, 1, 1, 1 );
+	glEnable( GL_DEPTH_TEST );
+	glEnable( GL_CULL_FACE );
 }

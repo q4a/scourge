@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "common/constants.h"
 #include "shapepalette.h"
 #include "session.h"
 #include "rpg/rpglib.h"
@@ -26,230 +27,229 @@ using namespace std;
 
 #define UPDATE_MESSAGE N_("Loading Shapes")
 
-ShapePalette::ShapePalette( Session *session ) 
-             : Shapes( session ) 
-{
-  this->session = session;
+ShapePalette::ShapePalette( Session *session )
+		: Shapes( session ) {
+	this->session = session;
 	this->loader = NULL;
-  strcpy( aboutText, "" );
+	strcpy( aboutText, "" );
 }
 
 void ShapePalette::preInitialize() {
-  progressTexture = loadTexture("/textures/process.png");
-  progressHighlightTexture = loadTexture("/textures/bar.png");
-  highlight = loadTexture("/textures/highlight.png");
+	progressTexture = loadTexture( "/textures/process.png" );
+	progressHighlightTexture = loadTexture( "/textures/bar.png" );
+	highlight = loadTexture( "/textures/highlight.png" );
 
-  // configure
-  ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );  
-  initAbout( config );  
-  delete config;
+	// configure
+	ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );
+	initAbout( config );
+	delete config;
 
-	config = ConfigLang::load( "config/ui.cfg" );  
+	config = ConfigLang::load( "config/ui.cfg" );
 	initFonts( config );
 	initCursor( config );
 	initNamedTextures( config );
 	initInventory( config );
 	delete config;
 
-  // set up the logo
-  logo_texture = loadTexture("/textures/logo2.png");
-  GLclampf pri = 0.1f; glPrioritizeTextures(1, &logo_texture, &pri);
+	// set up the logo
+	logo_texture = loadTexture( "/textures/logo2.png" );
+	GLclampf pri = 0.1f; glPrioritizeTextures( 1, &logo_texture, &pri );
 
-  chain_texture = loadTexture("/textures/chain.png");
-  pri = 0.1f; glPrioritizeTextures(1, &chain_texture, &pri);
+	chain_texture = loadTexture( "/textures/chain.png" );
+	pri = 0.1f; glPrioritizeTextures( 1, &chain_texture, &pri );
 
-  // set up the scourge
-  //setupAlphaBlendedBMP("/textures/scourge.bmp", scourge, scourgeImage);
-  //scourge_texture = getTileTexture(scourge, scourgeImage, GL_LINEAR);
+	// set up the scourge
+	//setupAlphaBlendedBMP("/textures/scourge.bmp", scourge, scourgeImage);
+	//scourge_texture = getTileTexture(scourge, scourgeImage, GL_LINEAR);
 
-  // set up the backdrop image
-  scourgeBackdrop_texture = loadTexture("/textures/scourge-backdrop.png");
-  pri = 0.1f; glPrioritizeTextures(1, &scourgeBackdrop_texture, &pri);
+	// set up the backdrop image
+	scourgeBackdrop_texture = loadTexture( "/textures/scourge-backdrop.png" );
+	pri = 0.1f; glPrioritizeTextures( 1, &scourgeBackdrop_texture, &pri );
 
-  gui_texture = loadTexture("/textures/gui.png");
-  gui_texture2 = loadTexture("/textures/gui2.png");
+	gui_texture = loadTexture( "/textures/gui.png" );
+	gui_texture2 = loadTexture( "/textures/gui2.png" );
 //  paper_doll_texture = loadGLTextures("/paperdoll.bmp");
-  cloud = loadTexture("/textures/cloud.png");
-  candle = loadTexture("/textures/candle.png");
+	cloud = loadTexture( "/textures/cloud.png" );
+	candle = loadTexture( "/textures/candle.png" );
 
-  border = loadTexture("/textures/border.png");
-  border2 = loadTexture("/textures/border2.png");
+	border = loadTexture( "/textures/border.png" );
+	border2 = loadTexture( "/textures/border2.png" );
 
-  gui_wood_texture = this->findTextureByName( "gui-wood.png", true );
+	gui_wood_texture = this->findTextureByName( "gui-wood.png", true );
 }
 
 void ShapePalette::initialize() {
-  ConfigLang *config = ConfigLang::load( "config/pcmodel.cfg" );
+	ConfigLang *config = ConfigLang::load( "config/pcmodel.cfg" );
 	initPcPortraits( config );
 	initPcModels( config );
-  delete config;
+	delete config;
 
-  config = ConfigLang::load( "config/map.cfg" );
+	config = ConfigLang::load( "config/map.cfg" );
 	initRugs( config );
-  initSystemTextures( config );
+	initSystemTextures( config );
 	initDescriptions( config );
 	initNativeShapes( config );
 	init3dsShapes( config );
 	//initVirtualShapes( config );
 	initSounds( config );
-  delete config;
+	delete config;
 
 	config = ConfigLang::load( "config/themes.cfg" );
 	initThemes( config );
 	delete config;
 
-  // call "super"
-  Shapes::initialize();
+	// call "super"
+	Shapes::initialize();
 
-  loader = new ModelLoader( this, isHeadless(), textureGroup[ 14 ] );
+	loader = new ModelLoader( this, isHeadless(), textureGroup[ 14 ] );
 
-  // load textures
-  gargoyle = loadTexture("/textures/dragon.png");
+	// load textures
+	gargoyle = loadTexture( "/textures/dragon.png" );
 
-  minimap = loadTexture("/textures/minimap.png");
-  GLclampf pri = 0.9f; glPrioritizeTextures(1, &minimap, &pri);
+	minimap = loadTexture( "/textures/minimap.png" );
+	GLclampf pri = 0.9f; glPrioritizeTextures( 1, &minimap, &pri );
 
-  minimapMask = loadTexture("/textures/minimask.png");
-  pri = 0.9f; glPrioritizeTextures(1, &minimapMask, &pri);
+	minimapMask = loadTexture( "/textures/minimask.png" );
+	pri = 0.9f; glPrioritizeTextures( 1, &minimapMask, &pri );
 
-  exitTexture = loadTexture("/textures/exit.png");
-  dismiss = loadTexture( "/textures/dismiss.png" );
-  options = loadTexture( "/textures/options.png" );
-  group = loadTexture( "/textures/group.png" );
-  inventory = loadTexture( "/textures/inventory.png" );
-  waitTexture = loadTexture( "/textures/wait.png" );
-  ioTexture = loadTexture( "/textures/io.png" );
-  systemTexture = loadTexture( "/textures/system.png" );
-  startTexture = loadTexture( "/textures/start.png" );
-  pausedTexture = loadTexture( "/textures/paused.png" );
-  realTimeTexture = loadTexture( "/textures/realtime.png" );
-  raindropTexture = loadTexture( "/textures/raindrop.png", false, false );
-  lightningTexture = loadTexture( "/textures/lightning.png" );
-  hand_attack_icon = loadTexture( "/textures/hands.png" );
+	exitTexture = loadTexture( "/textures/exit.png" );
+	dismiss = loadTexture( "/textures/dismiss.png" );
+	options = loadTexture( "/textures/options.png" );
+	group = loadTexture( "/textures/group.png" );
+	inventory = loadTexture( "/textures/inventory.png" );
+	waitTexture = loadTexture( "/textures/wait.png" );
+	ioTexture = loadTexture( "/textures/io.png" );
+	systemTexture = loadTexture( "/textures/system.png" );
+	startTexture = loadTexture( "/textures/start.png" );
+	pausedTexture = loadTexture( "/textures/paused.png" );
+	realTimeTexture = loadTexture( "/textures/realtime.png" );
+	raindropTexture = loadTexture( "/textures/raindrop.png", false, false );
+	lightningTexture = loadTexture( "/textures/lightning.png" );
+	hand_attack_icon = loadTexture( "/textures/hands.png" );
 
-  // load map textures
-  initMapGrid();
+	// load map textures
+	initMapGrid();
 
-  // FIXME: do something with these...
-  formationTexIndex = texture_count;
-  textures[texture_count++].filename = "textures/formation1.png";
-  textures[texture_count++].filename = "textures/formation2.png";
-  textures[texture_count++].filename = "textures/formation3.png";
-  textures[texture_count++].filename = "textures/formation4.png";
-  textures[texture_count++].filename = "textures/formation5.png";
-  textures[texture_count++].filename = "textures/formation6.png";
+	// FIXME: do something with these...
+	formationTexIndex = texture_count;
+	textures[texture_count++].filename = "textures/formation1.png";
+	textures[texture_count++].filename = "textures/formation2.png";
+	textures[texture_count++].filename = "textures/formation3.png";
+	textures[texture_count++].filename = "textures/formation4.png";
+	textures[texture_count++].filename = "textures/formation5.png";
+	textures[texture_count++].filename = "textures/formation6.png";
 
-  // load the status modifier icons
-  for(int i = 0; i < StateMod::STATE_MOD_COUNT; i++) {
-    stringstream path;
-    path << "/icons/i" << i << ".png";
-    GLuint icon = loadTexture(path.str());
+	// load the status modifier icons
+	for ( int i = 0; i < StateMod::STATE_MOD_COUNT; i++ ) {
+		stringstream path;
+		path << "/icons/i" << i << ".png";
+		GLuint icon = loadTexture( path.str() );
 //    cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
-    if(icon) statModIcons[i] = icon;
-  }
+		if ( icon ) statModIcons[i] = icon;
+	}
 
 	thirstIcon = loadTexture( "/icons/t.png" );
 	hungerIcon = loadTexture( "/icons/h.png" );
 
-  // set up the inventory tiles
-  loadTiles( "/textures/tiles.png", &tiles );
-  for( int x = 0; x < 20; x++ ) {
-    for( int y = 0; y < 18; y++ ) {
-      tilesTex[x][y] = createTileTexture( &tiles, x, y, 32, 32 );
-    }
-  }
+	// set up the inventory tiles
+	loadTiles( "/textures/tiles.png", &tiles );
+	for ( int x = 0; x < 20; x++ ) {
+		for ( int y = 0; y < 18; y++ ) {
+			tilesTex[x][y] = createTileTexture( &tiles, x, y, 32, 32 );
+		}
+	}
 
-  // set up the spell tiles
-  loadTiles( "/textures/spells.png", &spells );
-  for( int x = 0; x < 20; x++ ) {
-    for( int y = 0; y < 18; y++ ) {
-      spellsTex[x][y] = createTileTexture( &spells, x, y, 32, 32 );
-    }
-  }
-  
-  //setupAlphaBlendedBMP("/textures/paperdoll.bmp", paperDoll, paperDollImage);
+	// set up the spell tiles
+	loadTiles( "/textures/spells.png", &spells );
+	for ( int x = 0; x < 20; x++ ) {
+		for ( int y = 0; y < 18; y++ ) {
+			spellsTex[x][y] = createTileTexture( &spells, x, y, 32, 32 );
+		}
+	}
+
+	//setupAlphaBlendedBMP("/textures/paperdoll.bmp", paperDoll, paperDollImage);
 }
 
 ShapePalette::~ShapePalette() {
 	delete loader;
-  //    for(int i =0; i < static_cast<int>(creature_models.size()); i++){
-  //        delete creature_models[i];    
-  //    }
+	//    for(int i =0; i < static_cast<int>(creature_models.size()); i++){
+	//        delete creature_models[i];
+	//    }
 }
 
 void ShapePalette::initFonts( ConfigLang *config ) {
-  vector<ConfigNode*> *fonts = config->getDocument()->getChildrenByName( "fonts" );
-  ConfigNode *fontsNode = (*fonts)[0];
+	vector<ConfigNode*> *fonts = config->getDocument()->getChildrenByName( "fonts" );
+	ConfigNode *fontsNode = ( *fonts )[0];
 
-  string fontNames[] = { "normal", "ui", "mono", "large" };
-  for( int i = 0; i < 4; i++ ) {
-    vector<ConfigNode*> *faces = fontsNode->getChildrenByName( fontNames[i] );
-    if( faces ) {
-    	ConfigNode *faceNode = (*faces)[0];
-    	
-    	// find the current locale or "all"
-    	vector<ConfigNode*> *locales = faceNode->getChildrenByName( "locale" );
-    	ConfigNode *specific = NULL;
-    	ConfigNode *all = NULL;    	    	
-    	for( unsigned int loc = 0; loc < locales->size(); loc++ ) {
-    		ConfigNode *current = (*locales)[loc];    		
-    		string locale = current->getValueAsString( "locale" );
-    		if( locale == "" || locale == "all" || locale == "*" ) {
-    			all = current;
-    		} else if( Constants::scourgeLocaleName.find( locale, 0 ) == 0 ) {
-    			specific = current;
-    		}
-    	}
-    		
-    	ConfigNode *node = ( specific ? specific : all );
-    	if( node ) {
-    		cerr << "For font >" << fontNames[i] << "< using locale >" << node->getValueAsString( "locale" ) << "<" << endl;
+	string fontNames[] = { "normal", "ui", "mono", "large" };
+	for ( int i = 0; i < 4; i++ ) {
+		vector<ConfigNode*> *faces = fontsNode->getChildrenByName( fontNames[i] );
+		if ( faces ) {
+			ConfigNode *faceNode = ( *faces )[0];
+
+			// find the current locale or "all"
+			vector<ConfigNode*> *locales = faceNode->getChildrenByName( "locale" );
+			ConfigNode *specific = NULL;
+			ConfigNode *all = NULL;
+			for ( unsigned int loc = 0; loc < locales->size(); loc++ ) {
+				ConfigNode *current = ( *locales )[loc];
+				string locale = current->getValueAsString( "locale" );
+				if ( locale == "" || locale == "all" || locale == "*" ) {
+					all = current;
+				} else if ( Constants::scourgeLocaleName.find( locale, 0 ) == 0 ) {
+					specific = current;
+				}
+			}
+
+			ConfigNode *node = ( specific ? specific : all );
+			if ( node ) {
+				cerr << "For font >" << fontNames[i] << "< using locale >" << node->getValueAsString( "locale" ) << "<" << endl;
 				SDLHandler::FontInfo *info = new SDLHandler::FontInfo();
 				info->path = node->getValueAsString( "path" );
-				info->size = static_cast<int>(node->getValueAsFloat( "size" ));
-				info->style = static_cast<int>(node->getValueAsFloat( "style" ));
-				info->yoffset = static_cast<int>(node->getValueAsFloat( "yoffset" ));
-				info->shadowX = static_cast<int>(node->getValueAsFloat( "shadowX" ));
-				info->shadowY = static_cast<int>(node->getValueAsFloat( "shadowY" ));
-	      info->font = NULL;
-	      info->fontMgr = NULL;
-	  
-	      SDLHandler::fontInfos.push_back( info );
-    	}
-    }
-  }
+				info->size = static_cast<int>( node->getValueAsFloat( "size" ) );
+				info->style = static_cast<int>( node->getValueAsFloat( "style" ) );
+				info->yoffset = static_cast<int>( node->getValueAsFloat( "yoffset" ) );
+				info->shadowX = static_cast<int>( node->getValueAsFloat( "shadowX" ) );
+				info->shadowY = static_cast<int>( node->getValueAsFloat( "shadowY" ) );
+				info->font = NULL;
+				info->fontMgr = NULL;
+
+				SDLHandler::fontInfos.push_back( info );
+			}
+		}
+	}
 }
 
 void ShapePalette::initNamedTextures( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "texture" );
-	for( unsigned int i = 0; v && i < v->size(); i++ ) {
-		ConfigNode *node = (*v)[i];
+	for ( unsigned int i = 0; v && i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
 		string name = node->getValueAsString( "name" );
 		string value = node->getValueAsString( "value" );
 		bool grayscale = node->getValueAsBool( "grayscale" );
 		bool outdoors = node->getValueAsBool( "outdoors" );
-			if( outdoors ) {
-				NamedOutdoorTexture ot;
-				ot.tex = loadTexture( value );
-				ot.width = node->getValueAsInt( "width" );
-				ot.height = node->getValueAsInt( "width" );
-				outdoorNamedTextures[ name ] = ot;
-			} else {
-				namedTextures[ name ] = loadTexture( value );
-			}
+		if ( outdoors ) {
+			NamedOutdoorTexture ot;
+			ot.tex = loadTexture( value );
+			ot.width = node->getValueAsInt( "width" );
+			ot.height = node->getValueAsInt( "width" );
+			outdoorNamedTextures[ name ] = ot;
+		} else {
+			namedTextures[ name ] = loadTexture( value );
+		}
 	}
 }
 
 void ShapePalette::initInventory( ConfigLang *config ) {
-	for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+	for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
 		inventoryHoles[ i ].x = inventoryHoles[ i ].y = inventoryHoles[ i ].w = inventoryHoles[ i ].h = 0;
 	}
 	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "inventory" );
-	if( v ) {
+	if ( v ) {
 		char tmp[255];
-		for( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
-			char const* s = (*v)[0]->getValueAsString( Constants::inventoryTags[ i ] );
-			if( s ) {
+		for ( int i = 0; i < Constants::INVENTORY_COUNT; i++ ) {
+			char const* s = ( *v )[0]->getValueAsString( Constants::inventoryTags[ i ] );
+			if ( s ) {
 				strcpy( tmp, s );
 				char *p = strtok( tmp, "," );
 				inventoryHoles[ i ].x = atoi( p );
@@ -268,14 +268,14 @@ void ShapePalette::initInventory( ConfigLang *config ) {
 
 void ShapePalette::initCursor( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "cursor" );
-	strcpy( cursorDir, (*v)[0]->getValueAsString( "path" ) );
+	strcpy( cursorDir, ( *v )[0]->getValueAsString( "path" ) );
 
-	cursorWidth = static_cast<int>((*v)[0]->getValueAsFloat( "width" ));
-	if( cursorWidth <= 0 )
+	cursorWidth = static_cast<int>( ( *v )[0]->getValueAsFloat( "width" ) );
+	if ( cursorWidth <= 0 )
 		cursorWidth = 48;
 
-	cursorHeight = static_cast<int>((*v)[0]->getValueAsFloat( "height" ));
-	if( cursorHeight <= 0 )
+	cursorHeight = static_cast<int>( ( *v )[0]->getValueAsFloat( "height" ) );
+	if ( cursorHeight <= 0 )
 		cursorHeight = 48;
 
 	loadCursors();
@@ -284,32 +284,32 @@ void ShapePalette::initCursor( ConfigLang *config ) {
 void ShapePalette::initAbout( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "about" );
 	string about;
-	about += (*v)[0]->getValueAsString( "text1" );
-	about += (*v)[0]->getValueAsString( "text2" );
-	about += (*v)[0]->getValueAsString( "text3" );
-	about += (*v)[0]->getValueAsString( "text4" );
-  strcpy( aboutText, about.c_str() );
+	about += ( *v )[0]->getValueAsString( "text1" );
+	about += ( *v )[0]->getValueAsString( "text2" );
+	about += ( *v )[0]->getValueAsString( "text3" );
+	about += ( *v )[0]->getValueAsString( "text4" );
+	strcpy( aboutText, about.c_str() );
 }
 
 void ShapePalette::initPcPortraits( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "portraits" );
-	vector<ConfigNode*> *vv = (*v)[0]->
-		getChildrenByName( "portrait" );
+	                         getChildrenByName( "portraits" );
+	vector<ConfigNode*> *vv = ( *v )[0]->
+	                          getChildrenByName( "portrait" );
 
-	for( unsigned int i = 0; i < vv->size(); i++ ) {
-		ConfigNode *node = (*vv)[i];
+	for ( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = ( *vv )[i];
 
 		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
 		string image = node->getValueAsString( "image" );
 		string sex = node->getValueAsString( "sex" );
-		if( strstr( image.c_str(), "death" ) ) {
+		if ( strstr( image.c_str(), "death" ) ) {
 			deathPortraitTexture = loadTexture( image );
 		} else {
-			int sexNum = ( sex == "M" ? 
-										 Constants::SEX_MALE : 
-										 Constants::SEX_FEMALE );
+			int sexNum = ( sex == "M" ?
+			               Constants::SEX_MALE :
+			               Constants::SEX_FEMALE );
 			portraitTextures[sexNum].push_back( loadTexture( image ) );
 		}
 	}
@@ -317,35 +317,35 @@ void ShapePalette::initPcPortraits( ConfigLang *config ) {
 
 void ShapePalette::initPcModels( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "models" );
-	vector<ConfigNode*> *vv = (*v)[0]->
-		getChildrenByName( "model" );
+	                         getChildrenByName( "models" );
+	vector<ConfigNode*> *vv = ( *v )[0]->
+	                          getChildrenByName( "model" );
 
-	for( unsigned int i = 0; i < vv->size(); i++ ) {
-		ConfigNode *node = (*vv)[i];
+	for ( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = ( *vv )[i];
 
 		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
-		CharacterModelInfo *cmi = (CharacterModelInfo*)malloc( sizeof( CharacterModelInfo ) );
+		CharacterModelInfo *cmi = ( CharacterModelInfo* )malloc( sizeof( CharacterModelInfo ) );
 		strcpy( cmi->model_name, node->getValueAsString( "path" ) );
 		strcpy( cmi->skin_name, node->getValueAsString( "skin" ) );
 		cmi->scale = node->getValueAsFloat( "scale" );
 		string sex = node->getValueAsString( "sex" );
-		int sexNum = ( sex == "M" ? 
-									 Constants::SEX_MALE : 
-									 Constants::SEX_FEMALE );
+		int sexNum = ( sex == "M" ?
+		               Constants::SEX_MALE :
+		               Constants::SEX_FEMALE );
 		character_models[sexNum].push_back( cmi );
 	}
 }
 
 void ShapePalette::initRugs( ConfigLang *config ) {
-  vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "rugs" );
-	vector<ConfigNode*> *vv = (*v)[0]->
-		getChildrenByName( "rug" );
+	vector<ConfigNode*> *v = config->getDocument()->
+	                         getChildrenByName( "rugs" );
+	vector<ConfigNode*> *vv = ( *v )[0]->
+	                          getChildrenByName( "rug" );
 
-	for( unsigned int i = 0; i < vv->size(); i++ ) {
-		ConfigNode *node = (*vv)[i];
+	for ( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = ( *vv )[i];
 
 		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
@@ -356,29 +356,29 @@ void ShapePalette::initRugs( ConfigLang *config ) {
 		rugs.push_back( loadTexture( node->getValueAsString( "path" ), false, false ) );
 		//delete [] tmpImage;
 		//if( tmpSurface ) SDL_FreeSurface( tmpSurface );
-  }
+	}
 }
 
 void ShapePalette::initSystemTextures( ConfigLang *config ) {
-  vector<ConfigNode*> *v = config->getDocument()->
-    getChildrenByName( "system_textures" );
-  ConfigNode *node = (*v)[0];
-  
-  char tmp[3000];
-  strcpy( tmp, node->getValueAsString( "path" ) );
+	vector<ConfigNode*> *v = config->getDocument()->
+	                         getChildrenByName( "system_textures" );
+	ConfigNode *node = ( *v )[0];
 
-  char *p = strtok( tmp, "," );
-  while( p ) {
-    loadSystemTexture( p );
-    p = strtok( NULL, "," );
-  }
+	char tmp[3000];
+	strcpy( tmp, node->getValueAsString( "path" ) );
+
+	char *p = strtok( tmp, "," );
+	while ( p ) {
+		loadSystemTexture( p );
+		p = strtok( NULL, "," );
+	}
 }
 
 void ShapePalette::initThemes( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "theme" );
-	for( unsigned int i = 0; i < v->size(); i++ ) {
-		ConfigNode *node = (*v)[i];
+	                         getChildrenByName( "theme" );
+	for ( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
 
 		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, v->size() );
 
@@ -388,28 +388,28 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 		WallTheme *theme = new WallTheme( node->getValueAsString( "name" ), this );
 		theme->setSpecial( special );
 		theme->setCave( cave );
-		
+
 		// read the shape ref-s
 		char line[1000];
-		for(int ref = 0; ref < WallTheme::THEME_REF_COUNT; ref++) {
+		for ( int ref = 0; ref < WallTheme::THEME_REF_COUNT; ref++ ) {
 			strcpy( line, node->getValueAsString( WallTheme::themeRefName[ ref ] ) );
 
 			char *p = strtok( line, "," );
 			int i = 0;
-			while( p && i < MAX_TEXTURE_COUNT ) {
-				theme->addTextureName( ref, i, (const char *)p );
+			while ( p && i < MAX_TEXTURE_COUNT ) {
+				theme->addTextureName( ref, i, ( const char * )p );
 				p = strtok( NULL, "," );
 				i++;
 			}
-			if( i < 3 ) {
-				cerr << "*** Error: theme=" << theme->getName() << " has wrong number of textures for line=" << (ref + 1) << endl;
+			if ( i < 3 ) {
+				cerr << "*** Error: theme=" << theme->getName() << " has wrong number of textures for line=" << ( ref + 1 ) << endl;
 			}
 			theme->setFaceCount( ref, i );
 		}
 
 		// read the multitexture info
-		for(int i = 0; i < WallTheme::MULTI_TEX_COUNT; i++) {
-			if( i == 0 ) strcpy( line, node->getValueAsString( "medium_multitexture" ) );
+		for ( int i = 0; i < WallTheme::MULTI_TEX_COUNT; i++ ) {
+			if ( i == 0 ) strcpy( line, node->getValueAsString( "medium_multitexture" ) );
 			else strcpy( line, node->getValueAsString( "dark_multitexture" ) );
 
 			char *p = strtok( line, "," );
@@ -426,11 +426,11 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 
 		// read the outdoor theme info
 		vector<ConfigNode*> *outv = node->getChildrenByName( "outdoors" );
-		if( outv && outv->size() ) {
+		if ( outv && outv->size() ) {
 			theme->setHasOutdoor( true );
-			ConfigNode *outnode = (*outv)[0];
-			for(int ref = 0; ref < WallTheme::OUTDOOR_THEME_REF_COUNT; ref++) {
-				if( !outnode->hasValue( WallTheme::outdoorThemeRefName[ ref ] ) ) {
+			ConfigNode *outnode = ( *outv )[0];
+			for ( int ref = 0; ref < WallTheme::OUTDOOR_THEME_REF_COUNT; ref++ ) {
+				if ( !outnode->hasValue( WallTheme::outdoorThemeRefName[ ref ] ) ) {
 					cerr << "Error: can't find outdoor line for ref=" << WallTheme::outdoorThemeRefName[ ref ] << endl;
 					continue;
 				}
@@ -441,7 +441,7 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 				theme->setOutdoorTextureDimensions( ref, w, h );
 				p = strtok( NULL, "," );
 				int face;
-				for( face = 0; face < MAX_TEXTURE_COUNT && p; face++ ) {
+				for ( face = 0; face < MAX_TEXTURE_COUNT && p; face++ ) {
 					theme->addOutdoorTextureName( ref, face, p );
 					p = strtok( NULL, "," );
 				}
@@ -449,20 +449,20 @@ void ShapePalette::initThemes( ConfigLang *config ) {
 			}
 		}
 
-		if( node->hasValue( "alt_walls" ) ) {
+		if ( node->hasValue( "alt_walls" ) ) {
 			strcpy( line, node->getValueAsString( "alt_walls" ) );
 			char *p = strtok( line, "," );
-			while( p ) {
+			while ( p ) {
 				theme->addAltWallTheme( p );
 				p = strtok( NULL, "," );
 			}
 		}
-		
-		if( theme->getHasOutdoor() ) {
+
+		if ( theme->getHasOutdoor() ) {
 			outdoorThemes.push_back( theme );
-		} else if( cave ) {
-			caveThemes[ caveThemeCount++ ] = theme;			
-		} else if( !special ) {
+		} else if ( cave ) {
+			caveThemes[ caveThemeCount++ ] = theme;
+		} else if ( !special ) {
 			themes[ themeCount++ ] = theme;
 		}
 		allThemes[ allThemeCount++ ] = theme;
@@ -484,7 +484,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->m3ds_name = "";
 	sv->m3ds_scale = 0;
 	sv->m3ds_x = sv->m3ds_y = sv->m3ds_z = 0;
-	sv->o3ds_x = sv->o3ds_y = sv->o3ds_z = 0;  
+	sv->o3ds_x = sv->o3ds_y = sv->o3ds_z = 0;
 	sv->teleporter = 0;
 	sv->xrot = sv->yrot = sv->zrot = 0;
 	sv->xrot3d = sv->yrot3d = sv->zrot3d = 0;
@@ -496,7 +496,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->outdoorShadow = false;
 	sv->wind = false;
 	sv->ambient = node->getValueAsString( "ambient" );
-	if( sv->ambient != "" ) {
+	if ( sv->ambient != "" ) {
 		session->getSound()->storeAmbientObjectSound( sv->ambient );
 	}
 	sv->draws = false;
@@ -504,10 +504,10 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 
 	// load some common values
 	strcpy( sv->name, node->getValueAsString( "name" ) );
-	
+
 	string id = node->getValueAsString( "description" );
-	if( id.length() > 0 ) {
-		if( descriptionIndex.find( id ) != descriptionIndex.end() ) {
+	if ( id.length() > 0 ) {
+		if ( descriptionIndex.find( id ) != descriptionIndex.end() ) {
 			sv->descriptionIndex = descriptionIndex[ id ];
 		} else {
 			cerr << "*** Warning: could not find description id=" << id << endl;
@@ -518,25 +518,25 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	sv->interactive = node->getValueAsBool( "interactive" );
 	sv->ignoreHeightMap = node->getValueAsBool( "ignores_height_map" );
 
-	if( node->hasValue( "rotate" ) ) {
+	if ( node->hasValue( "rotate" ) ) {
 		char rotation[128];
 		strcpy( rotation, node->getValueAsString( "rotate" ) );
 		sv->xrot = atof( strtok( rotation, "," ) );
 		sv->yrot = atof( strtok( NULL, "," ) );
 		sv->zrot = atof( strtok( NULL, "," ) );
 	}
-	
-	if( node->hasValue( "effect" ) ) {
+
+	if ( node->hasValue( "effect" ) ) {
 		char effect[128];
 		strcpy( effect, node->getValueAsString( "effect" ) );
 		char *p = strtok( effect, "," );
-		for( int i = 0; i < Constants::EFFECT_COUNT; i++ ) {
-			if( !strcmp( p, Constants::EFFECT_NAMES[ i ] ) ) {
+		for ( int i = 0; i < Constants::EFFECT_COUNT; i++ ) {
+			if ( !strcmp( p, Constants::EFFECT_NAMES[ i ] ) ) {
 				sv->effectType = i;
 				break;
 			}
 		}
-		if( sv->effectType > -1 ) {
+		if ( sv->effectType > -1 ) {
 			sv->effectWidth = atoi( strtok( NULL, "," ) );
 			sv->effectDepth = atoi( strtok( NULL, "," ) );
 			sv->effectHeight = atoi( strtok( NULL, "," ) );
@@ -546,9 +546,9 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 		}
 	}
 
-	sv->outdoorsWeight = node->getValueAsFloat( "outdoors_weight" );	
+	sv->outdoorsWeight = node->getValueAsFloat( "outdoors_weight" );
 	sv->outdoorShadow = node->getValueAsBool( "outdoor_shadow" );
-	sv->wind = node->getValueAsBool( "wind" );	
+	sv->wind = node->getValueAsBool( "wind" );
 	sv->lighting = GLShape::NORMAL_LIGHTING;
 	sv->base_w = sv->base_h = 0;
 
@@ -557,10 +557,10 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	strcpy( sv->occurs.placement, "center" );
 	strcpy( sv->occurs.use_function, "" );
 	strcpy( sv->occurs.theme, "" );
-	
+
 	char temp[100];
 	strcpy( temp, node->getValueAsString( "icon_rotate" ) );
-	if( strlen( temp ) ) {
+	if ( strlen( temp ) ) {
 		sv->iconRotX = atoi( strtok( temp, "," ) );
 		sv->iconRotY = atoi( strtok( NULL, "," ) );
 		sv->iconRotZ = atoi( strtok( NULL, "," ) );
@@ -569,40 +569,40 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	}
 
 	strcpy( temp, node->getValueAsString( "icon" ) );
-	if( strlen( temp ) ) {
-	  string s = temp;
-	  sv->icon = loadTexture( s );
-	  sv->iconWidth = lastTextureWidth / 32;
-	  sv->iconHeight = lastTextureHeight / 32;
+	if ( strlen( temp ) ) {
+		string s = temp;
+		sv->icon = loadTexture( s );
+		sv->iconWidth = lastTextureWidth / 32;
+		sv->iconHeight = lastTextureHeight / 32;
 	} else {
-	  sv->icon = sv->iconWidth = sv->iconHeight = 0;
+		sv->icon = sv->iconWidth = sv->iconHeight = 0;
 	}
 	sv->roof = node->getValueAsBool( "roof" );
-	
+
 	sv->usesAlpha = node->getValueAsBool( "uses_alpha" );
-	
+
 	return sv;
 }
 
 void ShapePalette::initDescriptions( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "descriptions" );
-	vector<ConfigNode*> *vv = (*v)[0]->
-		getChildrenByName( "description_group" );
-	for( unsigned int i = 0; i < vv->size(); i++ ) {
-		ConfigNode *node = (*vv)[i];
+	                         getChildrenByName( "descriptions" );
+	vector<ConfigNode*> *vv = ( *v )[0]->
+	                          getChildrenByName( "description_group" );
+	for ( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = ( *vv )[i];
 
 		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
-		
+
 		string id = node->getValueAsString( "id" );
 		descriptionIndex[ id ] = descriptions.size();
 		vector<string> *list = new vector<string>();
 		descriptions.push_back( list );
 
-		vector<ConfigNode*> *vvv = 
-			node->getChildrenByName( "description" );
-		for( unsigned int t = 0; t < vvv->size(); t++ ) {
-			ConfigNode *node = (*vvv)[t];
+		vector<ConfigNode*> *vvv =
+		  node->getChildrenByName( "description" );
+		for ( unsigned int t = 0; t < vvv->size(); t++ ) {
+			ConfigNode *node = ( *vvv )[t];
 			string s = node->getValueAsString( "text" );
 			list->push_back( s );
 		}
@@ -611,14 +611,14 @@ void ShapePalette::initDescriptions( ConfigLang *config ) {
 
 void ShapePalette::initSounds( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "sounds" );
-	vector<ConfigNode*> *vv = (*v)[0]->
-		getChildrenByName( "sound" );
-	for( unsigned int i = 0; i < vv->size(); i++ ) {
-		ConfigNode *node = (*vv)[i];
+	                         getChildrenByName( "sounds" );
+	vector<ConfigNode*> *vv = ( *v )[0]->
+	                          getChildrenByName( "sound" );
+	for ( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = ( *vv )[i];
 
 		session->getGameAdapter()->setUpdate( _( "Loading Sounds" ), i, vv->size() );
-		
+
 		string name = node->getValueAsString( "name" );
 		string sound = node->getValueAsString( "sound" );
 		getSession()->getSound()->storeSound( name, sound );
@@ -627,13 +627,13 @@ void ShapePalette::initSounds( ConfigLang *config ) {
 
 void ShapePalette::initVirtualShapes( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "3ds_shapes" );
-	vector<ConfigNode*> *vv = (*v)[0]->
-		getChildrenByName( "virtual_shape" );
+	                         getChildrenByName( "3ds_shapes" );
+	vector<ConfigNode*> *vv = ( *v )[0]->
+	                          getChildrenByName( "virtual_shape" );
 
-	for( unsigned int i = 0; i < vv->size(); i++ ) {
-		ConfigNode *node = (*vv)[i];
-		
+	for ( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = ( *vv )[i];
+
 		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
 		ShapeValues *sv = createShapeValues( node );
@@ -647,28 +647,28 @@ void ShapePalette::initVirtualShapes( ConfigLang *config ) {
 
 		// hack: reuse 3ds offsets for map offset of virtual shapes
 		strcpy( tmp, node->getValueAsString( "offset" ) );
-    if( strlen( tmp ) ) {
-      sv->o3ds_x = atof( strtok( tmp, "," ) );
-      sv->o3ds_y = atof( strtok( NULL, "," ) );
-      sv->o3ds_z = atof( strtok( NULL, "," ) );
-    }
-    
-    strcpy( sv->refs, node->getValueAsString( "refs" ) );
-    sv->draws = node->getValueAsBool( "draws" );
+		if ( strlen( tmp ) ) {
+			sv->o3ds_x = atof( strtok( tmp, "," ) );
+			sv->o3ds_y = atof( strtok( NULL, "," ) );
+			sv->o3ds_z = atof( strtok( NULL, "," ) );
+		}
 
-    // store it for now
-    shapeValueVector.push_back(sv);
-	}	
+		strcpy( sv->refs, node->getValueAsString( "refs" ) );
+		sv->draws = node->getValueAsBool( "draws" );
+
+		// store it for now
+		shapeValueVector.push_back( sv );
+	}
 }
 
 void ShapePalette::init3dsShapes( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "3ds_shapes" );
-	vector<ConfigNode*> *vv = (*v)[0]->
-		getChildrenByName( "3ds_shape" );
+	                         getChildrenByName( "3ds_shapes" );
+	vector<ConfigNode*> *vv = ( *v )[0]->
+	                          getChildrenByName( "3ds_shape" );
 
-	for( unsigned int i = 0; i < vv->size(); i++ ) {
-		ConfigNode *node = (*vv)[i];
+	for ( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = ( *vv )[i];
 
 		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
@@ -682,57 +682,57 @@ void ShapePalette::init3dsShapes( ConfigLang *config ) {
 		sv->m3ds_x = atof( strtok( tmp, "," ) );
 		sv->m3ds_y = atof( strtok( NULL, "," ) );
 		sv->m3ds_z = atof( strtok( NULL, "," ) );
-    
-		strcpy( tmp, node->getValueAsString( "offset" ) );
-    if( strlen( tmp ) ) {
-      sv->o3ds_x = atof( strtok( tmp, "," ) );
-      sv->o3ds_y = atof( strtok( NULL, "," ) );
-      sv->o3ds_z = atof( strtok( NULL, "," ) );
-    }
 
-		if( node->hasValue( "rotate_3d" ) ) {
+		strcpy( tmp, node->getValueAsString( "offset" ) );
+		if ( strlen( tmp ) ) {
+			sv->o3ds_x = atof( strtok( tmp, "," ) );
+			sv->o3ds_y = atof( strtok( NULL, "," ) );
+			sv->o3ds_z = atof( strtok( NULL, "," ) );
+		}
+
+		if ( node->hasValue( "rotate_3d" ) ) {
 			strcpy( tmp, node->getValueAsString( "rotate_3d" ) );
-			if( strlen( tmp ) ) {
+			if ( strlen( tmp ) ) {
 				sv->xrot3d = atof( strtok( tmp, "," ) );
 				sv->yrot3d = atof( strtok( NULL, "," ) );
 				sv->zrot3d = atof( strtok( NULL, "," ) );
 			}
 		}
 
-		if( node->hasValue( "lighting" ) ) {
+		if ( node->hasValue( "lighting" ) ) {
 			strcpy( tmp, node->getValueAsString( "lighting" ) );
-			if( strlen( tmp ) ) {
-				if( !strcmp( tmp, "outdoors" ) ) {
+			if ( strlen( tmp ) ) {
+				if ( !strcmp( tmp, "outdoors" ) ) {
 					sv->lighting = GLShape::OUTDOOR_LIGHTING;
 				}
 			}
 		}
-		if( node->hasValue( "base" ) ) {
+		if ( node->hasValue( "base" ) ) {
 			strcpy( tmp, node->getValueAsString( "base" ) );
-			if( strlen( tmp ) ) {
+			if ( strlen( tmp ) ) {
 				sv->base_w = atof( strtok( tmp, "," ) );
 				sv->base_h = atof( strtok( NULL, "," ) );
 			}
 		}
-		
+
 		sv->stencil = toint( node->getValueAsFloat( "stencil" ) );
 
 		initOccurance( node, sv );
-    
-    // store it for now
-    shapeValueVector.push_back(sv);
+
+		// store it for now
+		shapeValueVector.push_back( sv );
 	}
 }
 
 void ShapePalette::initNativeShapes( ConfigLang *config ) {
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "native_shapes" );
-	vector<ConfigNode*> *vv = (*v)[0]->
-		getChildrenByName( "native_shape" );
+	                         getChildrenByName( "native_shapes" );
+	vector<ConfigNode*> *vv = ( *v )[0]->
+	                          getChildrenByName( "native_shape" );
 
-	for( unsigned int i = 0; i < vv->size(); i++ ) {
-		ConfigNode *node = (*vv)[i];
-		
+	for ( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = ( *vv )[i];
+
 		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
 		ShapeValues *sv = createShapeValues( node );
@@ -748,26 +748,26 @@ void ShapePalette::initNativeShapes( ConfigLang *config ) {
 		strcpy( sv->textures, node->getValueAsString( "textures" ) );
 		sv->wallShape = ( !strcmp( node->getValueAsString( "wall_shape" ), "true" ) ? true : false );
 
-    // extra for torches:
+		// extra for torches:
 		sv->torch = toint( node->getValueAsFloat( "torch" ) ) - 1;
 		sv->teleporter = toint( node->getValueAsFloat( "teleporter" ) );
 		sv->m3ds_name[0] = '\0';
 
-    sv->skipSide = toint( node->getValueAsFloat( "skip_side" ) );
-    sv->stencil = toint( node->getValueAsFloat( "stencil" ) );
-    sv->blocksLight = toint( node->getValueAsFloat( "light_blocking" ) );
+		sv->skipSide = toint( node->getValueAsFloat( "skip_side" ) );
+		sv->stencil = toint( node->getValueAsFloat( "stencil" ) );
+		sv->blocksLight = toint( node->getValueAsFloat( "light_blocking" ) );
 
 		initOccurance( node, sv );
 
-    // store it for now
-    shapeValueVector.push_back(sv);
+		// store it for now
+		shapeValueVector.push_back( sv );
 	}
 }
 
 void ShapePalette::initOccurance( ConfigNode *parent_node, ShapeValues *sv ) {
 	vector<ConfigNode*> *v = parent_node->getChildrenByName( "occurs" );
-	if( v && !v->empty() ) {
-		ConfigNode *node = (*v)[0];
+	if ( v && !v->empty() ) {
+		ConfigNode *node = ( *v )[0];
 		sv->occurs.rooms_only = node->getValueAsBool( "rooms_only" );
 		sv->occurs.max_count = node->getValueAsInt( "max_count" );
 		strcpy( sv->occurs.placement, node->getValueAsString( "placement" ) );
@@ -782,35 +782,35 @@ void ShapePalette::initOccurance( ConfigNode *parent_node, ShapeValues *sv ) {
 	}
 }
 
-GLShape *ShapePalette::getCreatureShape( char *model_name, 
-                                         char *skin_name, 
-                                         float scale, 
-                                         Monster *monster ) {
+GLShape *ShapePalette::getCreatureShape( char *model_name,
+    char *skin_name,
+    float scale,
+    Monster *monster ) {
 	// load monster sounds
-	if( monster ) {
-    session->getGameAdapter()->
-      loadMonsterSounds( model_name, 
-                         monster->getSoundMap( model_name ) );
-  } else {
-    session->getGameAdapter()->loadCharacterSounds( model_name );
-  }
-  return loader->getCreatureShape( model_name, skin_name, scale );
+	if ( monster ) {
+		session->getGameAdapter()->
+		loadMonsterSounds( model_name,
+		                   monster->getSoundMap( model_name ) );
+	} else {
+		session->getGameAdapter()->loadCharacterSounds( model_name );
+	}
+	return loader->getCreatureShape( model_name, skin_name, scale );
 }
 
-void ShapePalette::decrementSkinRefCountAndDeleteShape( char *model_name, 
-																												char *skin_name,
-																												GLShape *shape,
-																												Monster *monster ) {
+void ShapePalette::decrementSkinRefCountAndDeleteShape( char *model_name,
+    char *skin_name,
+    GLShape *shape,
+    Monster *monster ) {
 	shape->cleanup();
-  loader->decrementSkinRefCount( model_name, skin_name );
-  // unload monster sounds
-  if( monster ) {
-    session->getGameAdapter()->
-      unloadMonsterSounds( model_name, 
-                           monster->getSoundMap( model_name ) );
-  } else {
-    session->getGameAdapter()->unloadCharacterSounds( model_name );
-  }
+	loader->decrementSkinRefCount( model_name, skin_name );
+	// unload monster sounds
+	if ( monster ) {
+		session->getGameAdapter()->
+		unloadMonsterSounds( model_name,
+		                     monster->getSoundMap( model_name ) );
+	} else {
+		session->getGameAdapter()->unloadCharacterSounds( model_name );
+	}
 	delete shape;
 	shape = NULL;
 }
@@ -820,53 +820,53 @@ void ShapePalette::debugLoadedModels() {
 }
 
 void ShapePalette::loadNpcPortraits() {
-  for( map<string, Monster*>::iterator i = Monster::monstersByName.begin(); 
-       i != Monster::monstersByName.end(); ++i ) {
-    Monster *m = i->second;
-    if( m->getPortrait() ) {
-      //m->setPortraitTexture( this->loadGLTextures( m->getPortrait(), true ) );
-      m->setPortraitTexture( this->loadTexture( m->getPortrait() ) );
-      if( !m->getPortraitTexture() ) {
-        cerr << "*** Warning: couldn't load monster portrait: " << m->getPortrait() << endl;
-      }
-    }
-  }
+	for ( map<string, Monster*>::iterator i = Monster::monstersByName.begin();
+	        i != Monster::monstersByName.end(); ++i ) {
+		Monster *m = i->second;
+		if ( m->getPortrait() ) {
+			//m->setPortraitTexture( this->loadGLTextures( m->getPortrait(), true ) );
+			m->setPortraitTexture( this->loadTexture( m->getPortrait() ) );
+			if ( !m->getPortraitTexture() ) {
+				cerr << "*** Warning: couldn't load monster portrait: " << m->getPortrait() << endl;
+			}
+		}
+	}
 }
 
 void ShapePalette::initMapGrid() {
-  // load the textures
-  for( int x = 0; x < Constants::MAP_GRID_TILE_WIDTH; x++ ) {
-    for( int y = 0; y < Constants::MAP_GRID_TILE_HEIGHT; y++ ) {
-      char textureName[80];
-      snprintf( textureName, 80, "/mapgrid/map%d-%d.png", x, y );
-      //cerr << "loading: " << textureName << endl;
-      mapGrid[ x ][ y ] = loadTexture( textureName );
-    }
-  }
+	// load the textures
+	for ( int x = 0; x < Constants::MAP_GRID_TILE_WIDTH; x++ ) {
+		for ( int y = 0; y < Constants::MAP_GRID_TILE_HEIGHT; y++ ) {
+			char textureName[80];
+			snprintf( textureName, 80, "/mapgrid/map%d-%d.png", x, y );
+			//cerr << "loading: " << textureName << endl;
+			mapGrid[ x ][ y ] = loadTexture( textureName );
+		}
+	}
 
-  char tmp[200];
+	char tmp[200];
 	ConfigLang *config = ConfigLang::load( "config/location.cfg" );
 	vector<ConfigNode*> *v = config->getDocument()->
-		getChildrenByName( "location" );
+	                         getChildrenByName( "location" );
 
-	for( unsigned int i = 0; i < v->size(); i++ ) {
-		ConfigNode *node = (*v)[i];
+	for ( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
 
-		config->setUpdate( _("Loading Locations"), i, v->size() );
+		config->setUpdate( _( "Loading Locations" ), i, v->size() );
 
-    MapGridLocation *loc = (MapGridLocation*)malloc( sizeof( MapGridLocation ) );
-    strcpy( loc->name, node->getValueAsString( "name" ) );
-    strcpy( tmp, node->getValueAsString( "position" ) );
-    loc->x = atoi( strtok( tmp, "," ) );                   
-    loc->y = atoi( strtok( NULL, "," ) );
-    loc->type = node->getValueAsString( "type" )[0] + ( 'A' - 'a' );
-    loc->random = node->getValueAsBool( "random" );
-    
-    if( mapGridLocationByType.find( loc->type ) == mapGridLocationByType.end() ) {
-      mapGridLocationByType[ loc->type ] = new vector<MapGridLocation*>();
-    }
-    mapGridLocationByType[ loc->type ]->push_back( loc );
-  }
+		MapGridLocation *loc = ( MapGridLocation* )malloc( sizeof( MapGridLocation ) );
+		strcpy( loc->name, node->getValueAsString( "name" ) );
+		strcpy( tmp, node->getValueAsString( "position" ) );
+		loc->x = atoi( strtok( tmp, "," ) );
+		loc->y = atoi( strtok( NULL, "," ) );
+		loc->type = node->getValueAsString( "type" )[0] + ( 'A' - 'a' );
+		loc->random = node->getValueAsBool( "random" );
+
+		if ( mapGridLocationByType.find( loc->type ) == mapGridLocationByType.end() ) {
+			mapGridLocationByType[ loc->type ] = new vector<MapGridLocation*>();
+		}
+		mapGridLocationByType[ loc->type ]->push_back( loc );
+	}
 }
 
 /**
@@ -878,17 +878,17 @@ void ShapePalette::initMapGrid() {
  * @return true if a location of type was found.
  */
 bool ShapePalette::getRandomMapLocation( char type, char **name, int *x, int *y ) {
-  if( mapGridLocationByType.find( type ) == mapGridLocationByType.end() ) {
-    return false;
-  } else {
-    vector<MapGridLocation*> *positions = mapGridLocationByType[ type ];
-    MapGridLocation *pos = (*positions)[ Util::dice( positions->size() ) ];
-    if( name ) {
-      *name = pos->name;
-    }
-    *x = pos->x;
-    *y = pos->y;
-    return true;
-  }
+	if ( mapGridLocationByType.find( type ) == mapGridLocationByType.end() ) {
+		return false;
+	} else {
+		vector<MapGridLocation*> *positions = mapGridLocationByType[ type ];
+		MapGridLocation *pos = ( *positions )[ Util::dice( positions->size() ) ];
+		if ( name ) {
+			*name = pos->name;
+		}
+		*x = pos->x;
+		*y = pos->y;
+		return true;
+	}
 }
 

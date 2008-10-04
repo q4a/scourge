@@ -17,10 +17,10 @@
 
 #ifndef EQUIP_H
 #define EQUIP_H
+#pragma once
 
 #include <iostream>
 #include <vector>
-#include "common/constants.h"
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/draganddrop.h"
@@ -50,9 +50,9 @@ class Equip : public DragAndDropHandler, WidgetView {
 private:
 	Creature *creature;
 	GLuint backgroundTexture, scrollTexture;
-  int currentHole;
+	int currentHole;
 	PcUi *pcUi;
-  Canvas *canvas;
+	Canvas *canvas;
 	int x, y, w, h;
 	Item *lastItem;
 	int mode;
@@ -64,7 +64,7 @@ private:
 public:
 
 	enum {
-		EQUIP_MODE=0,
+		EQUIP_MODE = 0,
 		SPELLS_MODE,
 		CAPABILITIES_MODE,
 		MISSION_MODE
@@ -73,25 +73,35 @@ public:
 	Equip( PcUi *pcUi, int x, int y, int w, int h );
 	~Equip();
 
-  inline Widget *getWidget() { return canvas; }
+	inline Widget *getWidget() {
+		return canvas;
+	}
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	void setCreature( Creature *creature );
-	inline void setMode( int mode ) { this->mode = mode; }
-	inline int getMode() { return mode; }
+	inline void setMode( int mode ) {
+		this->mode = mode;
+	}
+	inline int getMode() {
+		return mode;
+	}
 
 	// drag-n-drop
 	void receive( Widget *widget );
-	bool startDrag( Widget *widget, int x=0, int y=0 );
+	bool startDrag( Widget *widget, int x = 0, int y = 0 );
 
 	void drawWidgetContents( Widget *w );
 
-	inline Storable *getStorable() { return storable; }
-	inline void clearStorable() { storable = NULL; }
+	inline Storable *getStorable() {
+		return storable;
+	}
+	inline void clearStorable() {
+		storable = NULL;
+	}
 
 protected:
-  Item *getItemAtPos( int x, int y );
-  int getHoleAtPos( int x, int y );
+	Item *getItemAtPos( int x, int y );
+	int getHoleAtPos( int x, int y );
 	Item *getItemInHole( int hole );
 	int getSchoolIndex( int x, int y );
 	int getSpellIndex( int x, int y, int schoolIndex );
@@ -124,7 +134,9 @@ public:
 	void show();
 	void hide();
 
-	inline Button *getConsoleButton() { return consoleButton; }
+	inline Button *getConsoleButton() {
+		return consoleButton;
+	}
 };
 
 #endif
