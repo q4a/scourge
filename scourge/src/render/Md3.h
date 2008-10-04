@@ -163,6 +163,7 @@ struct tMd3Skin
 
 
 /// This class handles all of the main .md3 loading code.
+
 class CLoadMD3
 {
 
@@ -209,6 +210,7 @@ private:
 };
 
 /// This is our model class that we use to load and draw and free the Quake3 characters.
+
 class CModelMD3
 {
 

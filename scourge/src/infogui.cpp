@@ -26,6 +26,7 @@
 using namespace std;
 
 /// Unused.
+
 struct ColorMark {
   char c;
   Color color;

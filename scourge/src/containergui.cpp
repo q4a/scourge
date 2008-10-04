@@ -191,6 +191,8 @@ bool ContainerGui::startDrag(Widget *widget, int x, int y) {
   return true;
 }
 
+/// Drops an item from a container.
+
 void ContainerGui::dropItem() {
   int n = list->getSelectedLine();
   if(n > -1) {

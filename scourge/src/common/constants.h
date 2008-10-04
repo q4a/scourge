@@ -251,6 +251,7 @@ typedef union NetValue NetValue;
 }
 
 /// GL color in float
+
 class Color {
  public:
   float r, g, b, a;
@@ -304,6 +305,7 @@ struct ParticleStruct {
 #define MIN_DISTANCE 1.0f
 
 /// A progress display.
+
 class StatusReport {
 public:
   StatusReport() {
@@ -314,6 +316,7 @@ public:
 };
 
 /// Encapsulates most of the game's constants, and a few utility functions.
+
 class Constants {
 private:
 	static int maxMissionId;
@@ -717,11 +720,15 @@ public:
   // returns the next char after the EOL.
   static int readLine(char *line, FILE *fp);
 
+  /// Converts degrees to radians.
+
   inline static float toRadians(float angle) {
 		// 2.13.3(1) The type of a floating literal is double unless explicitly specified by a suffix.
 		// explicit float conversion to silence warning
 		return static_cast<float>(3.14159 * (angle / 180.0f));
   }
+
+  /// Converts radians to degrees.
 
   inline static float toAngle(float rad) {
 		return static_cast<float>((180.0f * rad) / 3.14159);

@@ -36,6 +36,7 @@ class Label;
 class Button;
 
 /// A two-state checkbox widget.
+
 class Checkbox : public Widget {
  private:
   int x2, y2;

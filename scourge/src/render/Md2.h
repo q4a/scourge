@@ -98,6 +98,7 @@ enum md2_action{
 };
 
 /// Loader for .md2 files.
+
 class CLoadMD2
 {
  

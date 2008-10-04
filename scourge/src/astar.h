@@ -38,9 +38,8 @@ class Creature;
   *@author Gabor Torok
   */
 
-/**
-  A path class used by A* algorithm
-*/
+/// A path class used by A* algorithm
+
 class CPathNode{
 public:
   double f, gone, heuristic; // f = gone + heuristic
@@ -53,9 +52,8 @@ public:
 //    Comparison functions for sorting CPathNodes
 //////////////////////////////////////////////////////
 
-/**
- * Used to sort nodes by x and y location. Good for searching for equivalence.
- **/
+/// Used to sort nodes by x and y location. Good for searching for equivalence.
+
 struct XYNodeComparitor
 {
   bool operator()(const CPathNode* a, const CPathNode* b) const
@@ -66,11 +64,11 @@ struct XYNodeComparitor
   }
 };
 
-/**
- * Used to sort nodes by f value.
- * If f values are equal, then sort by h value (so we'll expand good looking
- * paths that rely on less of a guess first).
- **/
+/// Used to sort nodes by f value.
+
+/// If f values are equal, then sort by h value (so we'll expand good looking
+/// paths that rely on less of a guess first).
+
 struct FValueNodeComparitor
 {
  bool operator()(const CPathNode* a, const CPathNode* b) const
@@ -79,9 +77,8 @@ struct FValueNodeComparitor
   }
 };
 
-/**
- * Used to sort locations by x and y.
- **/
+/// Used to sort locations by x and y.
+
 struct LocationComparitor
 {
   bool operator()(const Location a, const Location b) const
@@ -96,9 +93,8 @@ struct LocationComparitor
 //         Heuristics for guiding the search
 //////////////////////////////////////////////////////
 
-/**
- * A class to represent the heuristic used in a search.
- **/
+/// A class to represent the heuristic used in a search.
+
 class Heuristic {
   public:
     Heuristic();
@@ -106,10 +102,8 @@ class Heuristic {
     virtual double heuristic( CPathNode* node) = 0;
 };
 
-/**
- * Standard "moving toward a single location" heuristic.
- * This one assumes that diagonal moves are allowed.
- **/
+/// Standard "moving toward a single location" heuristic. This one assumes that diagonal moves are allowed.
+
 class DiagonalDistanceHeuristic : public Heuristic
 {
   private:
@@ -127,6 +121,7 @@ class DiagonalDistanceHeuristic : public Heuristic
  * This is still a valid heuristic as it always underestimates the distance left and
  * is consistent.
  **/
+
 class DistanceAwayHeuristic : public Heuristic
 {
   private:
@@ -142,6 +137,7 @@ class DistanceAwayHeuristic : public Heuristic
  * A "no distance left to goal" heuristic.
  * This results in a Dijkstra (for us, essentially breadth-first) search.
  **/
+
 class NoHeuristic : public Heuristic
 {
   public:
@@ -159,6 +155,7 @@ class NoHeuristic : public Heuristic
  * A class used to wrap goal functions to be checked in a search.
  * Goal functions must implement the fulfills goal method.
  **/
+
 class GoalFunction {
   public:
     GoalFunction();
@@ -166,9 +163,8 @@ class GoalFunction {
     virtual bool fulfilledBy( CPathNode* node) = 0;
 };
 
-/**
- * The basic "get to this node" goal.
- **/
+/// The basic "get to this node" goal.
+
 class SingleNodeGoal : public GoalFunction {
   private:
     int x,y;
@@ -179,9 +175,8 @@ class SingleNodeGoal : public GoalFunction {
     virtual bool fulfilledBy( CPathNode * node);
 };
 
-/**
- * Get within a given range of the target creature.
- **/
+/// Get within a given range of the target creature.
+
 class GetCloseGoal : public GoalFunction {
   private:
     Creature* searcher; //the one who is looking for a path. We want their width and depth.
@@ -195,9 +190,8 @@ class GetCloseGoal : public GoalFunction {
     virtual bool fulfilledBy( CPathNode * node);
 };
 
-/**
- * Get a certain distance from a location.
- **/
+/// Get a certain distance from a location.
+
 class GetAwayGoal : public GoalFunction {
   private:
     int x,y;
@@ -209,9 +203,8 @@ class GetAwayGoal : public GoalFunction {
     virtual bool fulfilledBy( CPathNode * node);
 };
 
-/**
- * Ensures that the goal leaves every provided location clear.
- **/
+/// Ensures that the goal leaves every provided location clear.
+
 class ClearLocationsGoal : public GoalFunction {
   private:
     Creature* searcher; //the creature that is finding a path
@@ -223,10 +216,8 @@ class ClearLocationsGoal : public GoalFunction {
     virtual bool fulfilledBy( CPathNode * node);
 };
 
-/**
- * Aim for the x,y coordinates of the creature, but any
- * node that it occupies can be the goal.
- **/
+/// Aim for the x,y coordinates of the creature, but any node that it occupies can be the goal.
+
 class SingleCreatureGoal : public GoalFunction {
   private:
     Creature* target;

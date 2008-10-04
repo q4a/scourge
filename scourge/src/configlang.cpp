@@ -203,6 +203,12 @@ void ConfigLang::debug( ConfigNode *node, string indent, ostream &out ) {
 }
 
 #define WHITESPACE " \t\n\r"
+
+/// Parses a list of strings from a configuration file.
+
+/// This function takes a vector of strings as input and
+/// creates a hierarchy of key/value pairs from it.
+
 void ConfigLang::parse( vector<string> *lines ) {
 	bool inValue = false;
 	string name, value, extends;
@@ -402,6 +408,8 @@ ConfigLang *ConfigLang::fromString( vector<string> *lines ) {
 
 #define LINE_PARSER 1
 
+/// Loads and parses a configuration file.
+
 ConfigLang *ConfigLang::load( const string& file, bool absolutePath ) {
 	string rootDirString;
 	if( absolutePath ) rootDirString = "";
@@ -445,6 +453,8 @@ ConfigLang *ConfigLang::load( const string& file, bool absolutePath ) {
 	
 	return NULL;
 }
+
+/// Sets an onscreen message and progress value.
 
 void ConfigLang::setUpdate( char *message, int n, int total ) {
 	Session::instance->getGameAdapter()->setUpdate( message, n, total );
