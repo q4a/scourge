@@ -1977,7 +1977,7 @@ void Map::findOccludedSides( DrawLater *later, bool *sides ) {
 
 	int x, y;
 	Location *pos;
-	for ( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
+	for ( x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
 		y = later->y - later->pos->shape->getDepth();
 		pos = getLocation( x, y, later->pos->z );
 		if ( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
@@ -1996,7 +1996,7 @@ void Map::findOccludedSides( DrawLater *later, bool *sides ) {
 	}
 
 
-	for ( int y = later->pos->y - later->pos->shape->getDepth() + 1; y <= later->pos->y; y++ ) {
+	for ( y = later->pos->y - later->pos->shape->getDepth() + 1; y <= later->pos->y; y++ ) {
 		x = later->x - 1;
 		pos = getLocation( x, y, later->pos->z );
 		if ( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
@@ -2015,8 +2015,8 @@ void Map::findOccludedSides( DrawLater *later, bool *sides ) {
 	}
 
 
-	for ( int x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
-		for ( int y = later->pos->y - later->pos->shape->getDepth() + 1; !sides[Shape::TOP_SIDE] && y <= later->pos->y; y++ ) {
+	for ( x = later->pos->x; x < later->pos->x + later->pos->shape->getWidth(); x++ ) {
+		for ( y = later->pos->y - later->pos->shape->getDepth() + 1; !sides[Shape::TOP_SIDE] && y <= later->pos->y; y++ ) {
 			pos = getLocation( x, y, later->pos->z + later->pos->shape->getHeight() );
 			if ( !pos || !pos->shape->isStencil() || ( !isLocationInLight( x, y, pos->shape ) && !isDoorType( pos->shape ) ) ) {
 				sides[Shape::TOP_SIDE] = true;

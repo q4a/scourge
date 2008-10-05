@@ -884,7 +884,7 @@ void SqBinding::unregisterScript( const string& file ) {
 }
 
 void SqBinding::reloadScripts() {
-	if ( DEBUG_SQUIRREL ) cerr << "Checking loaded scripts" << endl;
+	/*if ( DEBUG_SQUIRREL )*/ cerr << "SqBinding::reloadScripts started WASTING TIME" << endl;
 	for ( map<string, time_t>::iterator i = loadedScripts.begin();
 	        i != loadedScripts.end(); ++i ) {
 		string file = i->first;
@@ -903,10 +903,11 @@ void SqBinding::reloadScripts() {
 			sq_pop( vm, 1 ); //pops the root table
 		}
 	}
-	if ( DEBUG_SQUIRREL ) cerr << "----------------------" << endl;
 
 	// re-init the virtual shapes
 	callInitCode();
+
+	/*if ( DEBUG_SQUIRREL )*/ cerr << "SqBinding::reloadScripts stopped WASTING TIME" << endl;
 }
 
 void SqBinding::callInitCode() {

@@ -36,14 +36,20 @@
 # pragma warning(disable : 4267 4244) //4800) but not odd usage of bool
 // to be sure that these are included *before* following defines
 # include <string.h>
+# include <stdio.h>
 # include <cstdio>
-// some common string ops have different names under MSVC 8
+  // some common string ops have different names under MSVC 8
 # define strcasecmp _stricmp
-# define snprintf _sprintf_p
+# if _MSC_VER < 1400
+#   define snprintf _snprintf
+#   define vsnprintf _vsnprintf
+# else
+#   define snprintf _sprintf_p
+    // just to avoid using sprintf
+#   define sprintf please_use_snprintf
+# endif
 # define strdup _strdup
-// just to avoid using sprintf
-# define sprintf please_use_snprintf
-// somewhere was error: unknown identifier "time"
+  // somewhere was error: unknown identifier "time"
 # include <time.h>
 // MSVC 8 has no rint so i improvise one
 template<class T>
@@ -55,6 +61,15 @@ T rint( T v ) {
 // To ease debugging
 # include <assert.h>
 #endif // MSVC 8 portability
+
+#include <stdlib.h>
+#include <math.h>
+#include <vector>
+#include <queue>
+#include <map>
+#include <iostream>
+#include <errno.h>
+#include <string>
 
 // include sdl, opengl and glut
 #include <SDL.h>
@@ -86,14 +101,6 @@ typedef void ( APIENTRY * PFNGLMULTITEXCOORD2FARBPROC ) ( GLenum target, GLfloat
 typedef void ( APIENTRY * PFNGLMULTITEXCOORD2IARBPROC ) ( GLenum target, GLint s, GLint t );
 #endif
 #endif
-#include <stdlib.h>
-#include <math.h>
-#include <vector>
-#include <queue>
-#include <map>
-#include <iostream>
-#include <errno.h>
-#include <string>
 
 #if defined( COMPILER_IS_UNIX_COMPATIBLE )
 #   include <unistd.h>
