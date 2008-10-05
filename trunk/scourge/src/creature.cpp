@@ -469,6 +469,8 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 	return creature;
 }
 
+/// Returns the UNLOCALIZED name of a character/monster/NPC.
+
 char *Creature::getType() {
 	return( monster ? monster->getType() : character->getName() );
 }
@@ -568,9 +570,7 @@ void Creature::setTargetCreature( Creature *c, bool findPath, float range ) {
 	}
 }
 
-bool Creature::isWanderingHero() {
-	return( !session->getParty()->isPartyMember( this ) && ( character != NULL ) );
-}
+/// Makes the creature follow another creature. Returns true for success.
 
 bool Creature::follow( Creature *leader ) {
 	float dist = getDistance( leader );
@@ -929,6 +929,8 @@ bool Creature::anyMovesLeft() {
 }
 
 
+/// Returns the weight the creature can carry before being overloaded.
+
 float Creature::getMaxInventoryWeight() {
 	return static_cast<float>( getSkill( Skill::POWER ) ) * 2.5f;
 }
@@ -973,6 +975,8 @@ bool Creature::addInventory( Item *item, bool force ) {
 		return false;
 	}
 }
+
+/// Returns the inventory index and equip index of an item.
 
 InventoryInfo *Creature::getInventoryInfo( Item *item, bool createIfMissing ) {
 	if ( invInfos.find( item ) == invInfos.end() ) {
@@ -1352,7 +1356,7 @@ int Creature::doff( int index ) {
 	return 0;
 }
 
-/// Get item at equipped index. (What is at equipped location?)
+/// Get the item at an equip index. (What is at equipped location?)
 
 Item *Creature::getEquippedInventory( int index ) {
 	int n = equipped[index];
@@ -1362,11 +1366,15 @@ Item *Creature::getEquippedInventory( int index ) {
 	return NULL;
 }
 
+/// Returns whether the item at an equip index is a weapon.
+
 bool Creature::isEquippedWeapon( int location ) {
 	Item *item = getItemAtLocation( location );
 	return( item && item->getRpgItem()->isWeapon() );
 }
 
+
+/// Returns whether the creature has an item currently equipped.
 
 bool Creature::isEquipped( Item *item ) {
 	InventoryInfo *info = getInventoryInfo( item );
@@ -1379,6 +1387,8 @@ bool Creature::isEquipped( Item *item ) {
 	 return false;
 	*/
 }
+
+/// Returns whether an item at an inventory location is currently equipped somewhere.
 
 bool Creature::isEquipped( int inventoryIndex ) {
 	if ( inventoryIndex < 0 || inventoryIndex >= inventory_count ) return false;
@@ -1403,7 +1413,7 @@ bool Creature::removeCursedItems() {
 	return found;
 }
 
-/// Get equipped index of inventory index. (Where is the item worn?)
+/// Gets the equip index of the item stored at an inventory index. (Where is the item worn?)
 
 int Creature::getEquippedIndex( int index ) {
 	if ( index < 0 || index >= inventory_count ) return -1;
@@ -1416,6 +1426,8 @@ int Creature::getEquippedIndex( int index ) {
 	 return -1;
 	*/
 }
+
+/// Returns whether an item is worn in the inventory (also recurses containers).
 
 bool Creature::isItemInInventory( Item *item ) {
 	// -=K=-: reverting that back; carried container contents get deleted in Session::cleanUpAfterMission otherwise
@@ -1508,6 +1520,8 @@ bool Creature::nextPreferredWeapon() {
 	return false;
 }
 
+/// Returns an equipped weapon with an action radius >= dist, or NULL otherwise.
+
 Item *Creature::getBestWeapon( float dist, bool callScript ) {
 
 	Item *ret = NULL;
@@ -1539,16 +1553,19 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
 	return ret;
 }
 
-// return the initiative for a battle round, the higher the faster the attack
+/// Returns the initiative for a battle round, the higher, the faster the attack.
+
 int Creature::getInitiative( int *max ) {
 	float n = ( getSkill( Skill::SPEED ) + ( getSkill( Skill::LUCK ) / 5.0f ) );
 	if ( max ) *max = toint( n );
 	return toint( Util::roll( 0.0f, n ) );
 }
 
-// return number of projectiles that can be launched simultaniously
-// it is a function of speed, level, and weapon skill
-// this method returns a number from 1-10
+/// Returns the number of projectiles that can be launched simultaneously.
+
+/// it is a function of speed, level, and weapon skill
+/// this method returns a number from 1-10
+
 int Creature::getMaxProjectileCount( Item *item ) {
 	int n = static_cast<int>( static_cast<double>( getSkill( Skill::SPEED ) + ( getLevel() * 10 ) +
 	                          getSkill( item->getRpgItem()->getDamageSkill() ) ) / 30.0f );
@@ -1556,6 +1573,8 @@ int Creature::getMaxProjectileCount( Item *item ) {
 		n = 1;
 	return n;
 }
+
+/// Returns the projectiles that have been fired by the creature.
 
 vector<RenderedProjectile*> *Creature::getProjectiles() {
 	map<RenderedCreature*, vector<RenderedProjectile*>*> *m = RenderedProjectile::getProjectileMap();
@@ -1659,6 +1678,10 @@ int Creature::addExperience( int delta ) {
 }
 
 /// Gives experience points and adds an appropriate message to the log scroller.
+
+/// Add experience and show message in map window. Also shows
+/// message if creature leveled up. Use generally for party
+/// characters only.
 
 int Creature::addExperienceWithMessage( int exp ) {
 	int n = 0;
@@ -1781,6 +1804,8 @@ void Creature::monsterInit() {
 	                  monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxHpMpBase ) );
 }
 
+/// Returns the max hit points of the creature.
+
 int Creature::getMaxHp() {
 	if ( isMonster() ) {
 		return startingHp;
@@ -1788,6 +1813,8 @@ int Creature::getMaxHp() {
 		return( character->getStartingHp() * ( getLevel() + 1 ) );
 	}
 }
+
+/// Returns the max magic points of the creature.
 
 int Creature::getMaxMp() {
 	if ( isMonster() ) {
@@ -1797,6 +1824,8 @@ int Creature::getMaxMp() {
 	}
 }
 
+/// Returns the angle between the creature and its target.
+
 float Creature::getTargetAngle() {
 	//if(!targetCreature) return -1.0f;
 	if ( !targetCreature ) return angle;
@@ -1805,6 +1834,8 @@ float Creature::getTargetAngle() {
 	                       getTargetCreature()->getShape()->getWidth(),
 	                       getTargetCreature()->getShape()->getHeight() );
 }
+
+/// Returns whether the creature knows a specific spell.
 
 // FIXME: O(n) but there aren't that many spells...
 bool Creature::isSpellMemorized( Spell *spell ) {
@@ -1891,9 +1922,8 @@ void Creature::cancelTarget() {
 	}
 }
 
-/**
- * Does the spell's prerequisite apply to this creature?
- */
+/// Does the spell's prerequisite apply to this creature?
+
 bool Creature::isWithPrereq( Spell *spell ) {
 	if ( spell->isStateModPrereqAPotionSkill() ) {
 		switch ( spell->getStateModPrereq() ) {
@@ -1921,6 +1951,8 @@ bool Creature::isWithPrereq( Spell *spell ) {
 		return getStateMod( spell->getStateModPrereq() );
 	}
 }
+
+/// Finds the closest possible target creature for a spell.
 
 Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 
@@ -2114,6 +2146,8 @@ bool Creature::useOffensiveSpell( Spell *spell, float dist, Creature *possibleTa
 	return false;
 }
 
+/// Returns the distance to the selected target spot.
+
 float Creature::getDistanceToSel() {
 	if ( selX > -1 && selY > -1 ) {
 		return Constants::distance( getX(),  getY(), getShape()->getWidth(), getShape()->getDepth(),
@@ -2123,6 +2157,8 @@ float Creature::getDistanceToSel() {
 	}
 }
 
+/// Returns the distance to another creature.
+
 float Creature::getDistance( RenderedCreature *other ) {
 	return Constants::distance( getX(),  getY(),
 	                            getShape()->getWidth(), getShape()->getDepth(),
@@ -2131,6 +2167,8 @@ float Creature::getDistance( RenderedCreature *other ) {
 	                            other->getShape()->getWidth(),
 	                            other->getShape()->getDepth() );
 }
+
+/// Returns the distance to a creature or if not given, the selected target.
 
 float Creature::getDistanceToTarget( RenderedCreature *creature ) {
 	if ( creature ) return getDistance( creature );
@@ -2155,7 +2193,8 @@ float Creature::getDistanceToTarget( RenderedCreature *creature ) {
 	}
 }
 
-// sets min exp for current level
+/// Sets the experience required for the character to level up.
+
 void Creature::setExp() {
 	if ( isMonster() ) return;
 	expOfNextLevel = 0;
@@ -2163,6 +2202,8 @@ void Creature::setExp() {
 		expOfNextLevel += ( ( i + 1 ) * character->getLevelProgression() );
 	}
 }
+
+/// Calculates how far the creature has moved since the last frame.
 
 GLfloat Creature::getStep() {
 	GLfloat fps = session->getGameAdapter()->getFps();
@@ -2179,6 +2220,8 @@ GLfloat Creature::getStep() {
 	return step;
 }
 
+/// Returns a brief description of the creature.
+
 void Creature::getDetailedDescription( std::string& s ) {
 
 	char tempdesc[256] = {0};
@@ -2188,10 +2231,10 @@ void Creature::getDetailedDescription( std::string& s ) {
 	s = tempdesc;
 
 	if ( session->getCurrentMission() && session->getCurrentMission()->isMissionCreature( this ) ) {
-		s += _( "*Mission*" );
+		s += _( " *Mission*" );
 	}
 	if ( boss ) {
-		s += _( "*Boss*" );
+		s += _( " *Boss*" );
 	}
 
 }
@@ -2257,6 +2300,8 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
 		}
 	}
 }
+
+/// Sets up the special capabilities of the creature.
 
 void Creature::evalSpecialSkills() {
 	//if( !isMonster() ) cerr << "In Creature::evalSpecialSkills for " << getName() << endl;
@@ -2327,9 +2372,8 @@ void Creature::setSkillMod( int index, int value ) {
 	session->getParty()->recomputeMaxSkills();
 }
 
-/**
- * Recalculate skills when stats change.
- */
+/// Recalculate skills when stats change.
+
 void Creature::skillChanged( int index, int oldValue, int newValue ) {
 	// while loading don't update skill values.
 	if ( loading ) return;
@@ -2487,6 +2531,8 @@ char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
 // base weapon damage of an attack with bare hands
 #define HAND_ATTACK_DAMAGE Dice(1,4,0)
 
+/// Returns the creature's chance to dogde the specified attack.
+
 float Creature::getDodge( Creature *attacker, Item *weapon ) {
 	// the target's dodge if affected by angle of attack
 	bool inFOV =
@@ -2509,6 +2555,8 @@ float Creature::getDodge( Creature *attacker, Item *weapon ) {
 	}
 	return dodge;
 }
+
+/// Returns the chance the creature's armor deflects the damage from the specified attack.
 
 float Creature::getArmor( float *armorP, float *dodgePenaltyP,
                           int damageType, Item *vsWeapon ) {
@@ -2660,6 +2708,8 @@ float Creature::getInfluenceBonus( Item *weapon,
 	return bonus;
 }
 
+/// Returns the chance to hit with a weapon, as well as the skill used for the weapon.
+
 void Creature::getCth( Item *weapon, float *cth, float *skill, bool showDebug ) {
 	// the attacker's skill
 	*skill = getSkill( weapon ?
@@ -2698,6 +2748,8 @@ void Creature::getCth( Item *weapon, float *cth, float *skill, bool showDebug ) 
 		session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_SYSTEM );
 	}
 }
+
+/// Returns the chance to successfully attack with a weapon, as well as the min and max damage.
 
 float Creature::getAttack( Item *weapon,
                            float *maxP,
@@ -2767,6 +2819,8 @@ float Creature::getAttack( Item *weapon,
 	return roll;
 }
 
+/// The chance to parry a successful attack before it hits armor.
+
 float Creature::getParry( Item **parryItem ) {
 	int location[] = {
 		Constants::EQUIP_LOCATION_RIGHT_HAND,
@@ -2807,9 +2861,8 @@ float Creature::getParry( Item **parryItem ) {
 	return ret;
 }
 
-/**
- * Apply this to the damage caused to the defender.
- */
+/// Modifies the attack roll according to the attacked creature's active state mods.
+
 float Creature::getDefenderStateModPercent( bool magical ) {
 	/*
 	  apply state_mods:
@@ -2874,9 +2927,8 @@ float Creature::getDefenderStateModPercent( bool magical ) {
 	return delta;
 }
 
-/**
- * Apply this to the attack roll.
- */
+/// Modifies the attack roll according to the creature's active state mods.
+
 float Creature::getAttackerStateModPercent() {
 	/*
 	  apply state_mods:
@@ -2929,13 +2981,19 @@ float Creature::rollMagicDamagePercent( Item *item ) {
 	return item->rollMagicDamage() + itemLevel;
 }
 
+/// Returns the number of action points the creature receives at each battle turn.
+
 float Creature::getMaxAP( ) {
 	return( static_cast<float>( getSkill( Skill::COORDINATION ) ) + static_cast<float>( getSkill( Skill::SPEED ) ) ) / 2.0f;
 }
 
+/// Returns the attacks per round possible with item.
+
 float Creature::getAttacksPerRound( Item *item ) {
 	return( getMaxAP() / getWeaponAPCost( item, false ) );
 }
+
+/// Returns the action point cost of using a specific item.
 
 float Creature::getWeaponAPCost( Item *item, bool showDebug ) {
 	float baseAP = ( item ?
@@ -3085,6 +3143,8 @@ void Creature::rollPerception() {
 		}
 	}
 }
+
+/// Checks whether the creature has stepped into a trap and handles the effects.
 
 void Creature::evalTrap() {
 	int trapIndex = session->getMap()->getTrapAtLoc( toint( getX() ), toint( getY() ) );

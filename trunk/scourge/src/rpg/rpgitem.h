@@ -60,6 +60,7 @@ enum {
 };
 
 /// A special weapon bonus etc.
+
 struct WeaponInfluence {
 	int limit;
 	char type;
