@@ -58,9 +58,8 @@ public:
 	std::vector<std::string> npc_answers;
 };
 
-/**
- * Extra info associated with npc-s on an edited level.
- */
+/// Extra info associated with npc-s on an edited level.
+
 class NpcInfo {
 public:
 	int x, y, level, type;

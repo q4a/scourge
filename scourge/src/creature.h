@@ -185,12 +185,14 @@ public:
 	inline int getScriptedAnimation() {
 		return this->scriptedAnim;
 	}
+	/// Will the creature stay visible in movie mode?
 	inline bool isScripted() {
 		return this->scripted;
 	}
 	inline void setBoss( bool b ) {
 		this->boss = b;
 	}
+	/// Is it a level boss?
 	virtual inline bool isBoss() {
 		return this->boss;
 	}
@@ -217,10 +219,12 @@ public:
 	inline void setSex( int n ) {
 		this->sex = n;
 	}
+	/// Male/female?
 	inline int getSex() {
 		return this->sex;
 	}
 
+	/// Currently moving?
 	inline bool isMoving() {
 		return moving;
 	}
@@ -228,6 +232,7 @@ public:
 		moving = b;
 	}
 
+	/// Is it a non-hostile NPC? (this excludes wandering heroes, which are in fact auto controlled characters)
 	inline bool isNpc() {
 		return( monster ? monster->isNpc() : false );
 	}
@@ -235,14 +240,19 @@ public:
 		if ( monster ) monster->setNpc( b );
 		if ( !b ) npcInfo = NULL;
 	}
-	bool isWanderingHero();
+	/// Is it a wandering hero (recruitable character)?
+	bool isWanderingHero() {
+		return( !session->getParty()->isPartyMember( this ) && ( character != NULL ) );
+	}
+
+	/// Is it a NPC/monster? (Yes, Scourge handles them the same way)
 	inline bool isMonster() {
 		return( monster != NULL );
 	}
+	/// Is it a "real" monster (not a friendly/neutral NPC)?
 	inline bool isNonNPCMonster() {
 		return( ( monster != NULL ) && !monster->isNpc() );
 	}
-
 
 	inline GLfloat getAngle() {
 		return angle;
@@ -250,10 +260,12 @@ public:
 
 	void applyRecurringSpecialSkills();
 	void evalSpecialSkills();
+	/// Does it have this special capability?
 	inline bool hasCapability( char *name ) {
 		std::string skillName = name;
 		return specialSkillNames.find( skillName ) != specialSkillNames.end();
 	}
+	/// Does it have this special capability?
 	inline bool hasSpecialSkill( SpecialSkill *ss ) {
 		return specialSkills.find( ss ) != specialSkills.end();
 	}
@@ -272,6 +284,7 @@ public:
 		}
 		quickSpell[ index ] = storable;
 	}
+	/// Returns the storable in a given quickspell slot.
 	inline Storable *getQuickSpell( int index ) {
 		return quickSpell[ index ];
 	}
@@ -280,6 +293,7 @@ public:
 	inline void setDeityIndex( int n ) {
 		deityIndex = n;
 	}
+	/// Deity of the creature.
 	inline int getDeityIndex() {
 		return deityIndex;
 	}
@@ -301,16 +315,19 @@ public:
 	inline void setLastEnchantDate( Date date ) {
 		lastEnchantDate = date;
 	}
+	/// Last point in time when the creature tried to enchant something.
 	inline Date getLastEnchantDate() {
 		return lastEnchantDate;
 	}
 
+	/// The current battle turn.
 	inline Battle *getBattle() {
 		return battle;
 	}
 	inline PathManager* getPathManager() {
 		return pathManager;
 	}
+	/// The session object used to create this class instance.
 	inline Session* getSession() {
 		return session;
 	}
@@ -327,34 +344,41 @@ public:
 		return lastTurn;
 	}
 
+	/// Map X coordinate of currently selected target.
 	inline int getTargetX() {
 		if ( targetCreature ) return toint( targetCreature->getX() ); else return targetX;
 	}
+	/// Map Y coordinate of currently selected target.
 	inline int getTargetY() {
 		if ( targetCreature ) return toint( targetCreature->getY() ); else return targetY;
 	}
+	/// Map Z coordinate of currently selected target.
 	inline int getTargetZ() {
 		if ( targetCreature ) return toint( targetCreature->getZ() ); else return targetZ;
 	}
 
 	void setTargetCreature( Creature *c, bool findPath = false , float range = static_cast<float>( MIN_DISTANCE ) );
+	/// The creature that is currently set as a target.
 	inline Creature *getTargetCreature() {
 		return targetCreature;
 	}
 	inline void setTargetLocation( int x, int y, int z ) {
 		targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z;
 	}
+	/// The map location that is currently set as a target.
 	inline void getTargetLocation( int *x, int *y, int *z ) {
 		*x = targetX; *y = targetY; *z = targetZ;
 	}
 	inline void setTargetItem( int x, int y, int z, Item *item ) {
 		setTargetLocation( x, y, z ); targetItem = item;
 	}
+	/// The item that is currently set as a target.
 	inline Item *getTargetItem() {
 		return targetItem;
 	}
 
 	void setMotion( int motion );
+	/// The current mode of motion (stand, run, loiter around...)
 	inline int getMotion() {
 		return this->motion;
 	}
@@ -364,6 +388,7 @@ public:
 	inline void setFacingDirection( int direction ) {
 		this->facingDirection = direction;
 	}
+	/// The angle the creature faces.
 	inline int getFacingDirection() {
 		return this->facingDirection;
 	}
@@ -391,12 +416,14 @@ public:
 	Location *moveToLocator();
 	void stopMoving();
 
+	/// The name of the 3D model used for the creature.
 	inline char *getModelName() {
 		return model_name;
 	}
 	inline char *getSkinName() {
 		return skin_name;
 	}
+	/// The 3D shape of the creature.
 	inline GLShape *getShape() {
 		return shape;
 	}
@@ -421,9 +448,11 @@ public:
 		selX = x; selY = y;
 	}
 
+	/// Map X coordinate of selection target.
 	inline int getSelX() {
 		return selX;
 	}
+	/// Map Y coordinate of selection target.
 	inline int getSelY() {
 		return selY;
 	}
@@ -436,6 +465,7 @@ public:
 
 	// inventory
 	float inventoryWeight;
+	/// Total weight of the inventory.
 	inline float getInventoryWeight() {
 		return inventoryWeight;
 	}
@@ -443,15 +473,18 @@ public:
 	Item *getEquippedInventory( int index );
 	bool isEquippedWeapon( int index );
 
+	/// The item at a specified inventory index.
 	inline Item *getInventory( int index ) {
 		return inventory[index];
 	}
+	/// Number of items carried in inventory.
 	inline int getInventoryCount() {
 		return inventory_count;
 	}
 	inline void setInventory( int index, Item *item ) {
 		if ( index < inventory_count ) inventory[index] = item;
 	}
+	/// The default weapon.
 	inline int getPreferredWeapon() {
 		return preferredWeapon;
 	}
@@ -489,52 +522,66 @@ public:
 	float getWeaponAPCost( Item *item, bool showDebug = true );
 
 	void setNpcInfo( NpcInfo *npcInfo );
+	/// Extra info for edited NPCs.
 	inline NpcInfo *getNpcInfo() {
 		return npcInfo;
 	}
 
-
+	/// The creature's name.
 	inline char *getName() {
 		return name;
 	}
+	/// Gets character info.
 	inline Character *getCharacter() {
 		return character;
 	}
+	/// Gets monster/NPC info.
 	inline Monster *getMonster() {
 		return monster;
 	}
+	/// The creature's level.
 	inline int getLevel() {
 		return level;
 	}
+	/// Experience points needed for next level.
 	inline int getExpOfNextLevel() {
 		return expOfNextLevel;
 	}
+	/// Experience points.
 	inline int getExp() {
 		return experience;
 	}
+	/// Amount of money the creature holds.
 	inline int getMoney() {
 		return money;
 	}
+	/// Current hit points.
 	inline int getHp() {
 		return hp;
 	}
+	/// Starting HP for level 1.
 	inline int getStartingHp() {
 		return hp;
 	}
 	int getMaxHp();
+	/// Current magic points.
 	inline int getMp() {
 		return mp;
 	}
+	/// Starting MP for level 1.
 	inline int getStartingMp() {
 		return mp;
 	}
 	int getMaxMp();
+	/// Current thirst level.
 	inline int getThirst() {
 		return thirst;
 	}
+	/// Current hunger level.
 	inline int getHunger() {
 		return hunger;
 	}
+	/// Returns the value of the specified skill.
 	inline int getSkill( int index, bool includeMod = true ) {
 		return skills[index] + skillBonus[index] + ( includeMod ? skillMod[index] : 0 );
 	}
@@ -580,13 +627,16 @@ public:
 		return skillBonus[index];
 	}
 	void setSkillMod( int index, int value );
+	/// Skill modification (after levelup) that has not yet been applied.
 	inline int getSkillMod( int index ) {
 		return skillMod[index];
 	}
 	void applySkillMods();
+	/// Still skill points left?
 	bool getHasAvailableSkillPoints() {
 		return hasAvailableSkillPoints;
 	}
+
 	inline int getAvailableSkillMod() {
 		return availableSkillMod;
 	}
@@ -611,11 +661,6 @@ public:
 
 	int addExperience( int exp );
 
-	/**
-	 * Add experience and show message in map window. Also shows
-	 * message if creature leveled up. Use generally for party
-	 * characters only.
-	 */
 	int addExperienceWithMessage( int exp );
 
 	// get angle to target creature
@@ -639,11 +684,9 @@ public:
 		return bonusArmor;
 	}
 
-	// FIXME: O(n) but there aren't that many spells...
-	// return true if spell was added, false if creature already had this spell
 	bool addSpell( Spell *spell );
-	// FIXME: O(n) but there aren't that many spells...
 	bool isSpellMemorized( Spell *spell );
+	/// Number of spells the creature knows.
 	inline int getSpellCount() {
 		return static_cast<int>( spells.size() );
 	}
@@ -652,15 +695,19 @@ public:
 	}
 
 	void setAction( int action, Item *item = NULL, Spell *spell = NULL, SpecialSkill *skill = NULL );
+	/// Current creature action (item, spell, capability).
 	inline int getAction() {
 		return action;
 	}
+	/// The item used for the current action.
 	inline Item *getActionItem() {
 		return actionItem;
 	}
+	/// The spell used for the current action.
 	inline Spell *getActionSpell() {
 		return actionSpell;
 	}
+	/// The capability used for the current action.
 	inline SpecialSkill *getActionSkill() {
 		return actionSkill;
 	}
