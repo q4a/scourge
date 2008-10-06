@@ -971,6 +971,7 @@ protected:
 	void calculateChunkInfo( int *chunkOffsetX, int *chunkOffsetY,
 	                         int *chunkStartX, int *chunkStartY,
 	                         int *chunkEndX, int *chunkEndY );
+	void getChunk( int mapX, int mapY, int *chunkX, int *chunkY );
 	void calculateLocationInfo( Location *location,
 	                            int chunkStartX, int chunkStartY,
 	                            int chunkOffsetX, int chunkOffsetY,

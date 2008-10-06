@@ -2888,8 +2888,26 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 					effect->y = posY;
 				}
 			}
+		} else if( helper && helper->isVisible( toint( creature->getX() ), toint( creature->getY() ), creature->getShape() ) ) {
+			Location *pos = getLocation( toint( creature->getX() ), toint( creature->getY() ), toint( creature->getZ() ) );
+			if( pos ) {
+				int chunkX, chunkY;
+				getChunk( pos->x, pos->y, &chunkX, &chunkY );
+				if( checkLightMap( chunkX, chunkY ) ) {
+					// If this creature has no creatureMap entry but should now be visible, 
+					// it means the creature wondered into the visible area: repaint everything.
+					// An optimization here would be to restrict setupShapes to the creatures that changed.
+					resortShapes = mapChanged = true;	
+//					cerr << "!!! " << creature->getName() << " " << SDL_GetTicks() << endl;
+				}
+			}
 		}
 	}
+}
+	
+void Map::getChunk( int mapX, int mapY, int *chunkX, int *chunkY ) {
+	*chunkX = ( mapX - MAP_OFFSET ) / MAP_UNIT;
+	*chunkY = ( mapY - 1 - MAP_OFFSET ) / MAP_UNIT;
 }
 
 void Map::calculateLocationInfo( Location *location,
@@ -2903,8 +2921,9 @@ void Map::calculateLocationInfo( Location *location,
 	*posX = location->x;
 	*posY = location->y;
 	*posZ = location->z;
-	*chunkX = ( *posX - MAP_OFFSET ) / MAP_UNIT;
-	*chunkY = ( *posY - 1 - MAP_OFFSET ) / MAP_UNIT;
+	getChunk( location->x, location->y, &(*chunkX), &(*chunkY) );
+	//*chunkX = ( *posX - MAP_OFFSET ) / MAP_UNIT;
+	//*chunkY = ( *posY - 1 - MAP_OFFSET ) / MAP_UNIT;
 	int xp = ( *posX - MAP_OFFSET ) % MAP_UNIT;
 	int yp = ( *posY - 1 - MAP_OFFSET ) % MAP_UNIT;
 	int zp = *posZ;
