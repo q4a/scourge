@@ -69,7 +69,7 @@ void ShapePalette::preInitialize() {
 	gui_texture = loadTexture( "/textures/gui.png" );
 	gui_texture2 = loadTexture( "/textures/gui2.png" );
 //  paper_doll_texture = loadGLTextures("/paperdoll.bmp");
-	cloud = loadTexture( "/textures/cloud.png" );
+	cloud = loadTexture( "/textures/cloud.png", false, false );
 	candle = loadTexture( "/textures/candle.png" );
 
 	border = loadTexture( "/textures/border.png" );
@@ -124,7 +124,6 @@ void ShapePalette::initialize() {
 	pausedTexture = loadTexture( "/textures/paused.png" );
 	realTimeTexture = loadTexture( "/textures/realtime.png" );
 	raindropTexture = loadTexture( "/textures/raindrop.png", false, false );
-	lightningTexture = loadTexture( "/textures/lightning.png" );
 	hand_attack_icon = loadTexture( "/textures/hands.png" );
 
 	// load map textures
