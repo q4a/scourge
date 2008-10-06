@@ -159,7 +159,7 @@ void Creature::commonInit() {
 	this->targetItem = NULL;
 	this->lastTick = 0;
 	this->lastTurn = 0;
-	this-> = Constants::MOVE_UP; // good init ?
+	this->facingDirection = Constants::MOVE_UP; // good init ?
 	this->failedToMoveWithinRangeAttemptCount = 0;
 	this->action = Constants::ACTION_NO_ACTION;
 	this->actionItem = NULL;
@@ -184,7 +184,7 @@ void Creature::commonInit() {
 	lastEnchantDate.setDate( -1, -1, -1, -1, -1, -1 );
 
 	this->npcInfo = NULL;
-	this-> = false;
+	this->mapChanged = false;
 	this->moving = false;
 
 	evalSpecialSkills();
