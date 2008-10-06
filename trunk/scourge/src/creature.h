@@ -146,7 +146,7 @@ private:
 	std::set<SpecialSkill*> specialSkills;
 	std::set<std::string> specialSkillNames;
 
-	bool ;
+	bool mapChanged;
 
 	std::map<Location*, Uint32> secretDoorAttempts;
 	std::map<Trap*, Uint32> trapFindAttempts;
