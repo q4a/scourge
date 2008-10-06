@@ -82,6 +82,7 @@ public:
 	inline void setMode( int mode ) {
 		this->mode = mode;
 	}
+	/// Which page is showing?
 	inline int getMode() {
 		return mode;
 	}

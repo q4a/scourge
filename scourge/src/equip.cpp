@@ -228,10 +228,14 @@ SpecialSkill *Equip::findSpecialSkill( int x, int y ) {
 }
 */
 
+/// Converts screen coordinates to a magic school (aka row in the spell list).
+
 int Equip::getSchoolIndex( int x, int y ) {
 	int n = ( y - 20 ) / 47;
 	return( n >= 0 && n < MagicSchool::getMagicSchoolCount() ? n : -1 );
 }
+
+/// Converts screen coordinates to a spell index.
 
 int Equip::getSpellIndex( int x, int y, int schoolIndex ) {
 	int n = ( x - 20 ) / ( SPELL_SIZE + 2 );
@@ -240,14 +244,20 @@ int Equip::getSpellIndex( int x, int y, int schoolIndex ) {
 	        n < MagicSchool::getMagicSchool( schoolIndex )->getSpellCount() ? n : -1 );
 }
 
+/// Returns the item at an equip index.
+
 Item *Equip::getItemInHole( int hole ) {
 	return( hole > -1 && creature ? creature->getEquippedInventory( hole ) : NULL );
 }
+
+/// Takes screen coordinates and determines which equipped item these point at.
 
 Item *Equip::getItemAtPos( int x, int y ) {
 	int hole = getHoleAtPos( x, y );
 	return getItemInHole( hole );
 }
+
+/// Converts a screen coordinate to an equip index.
 
 int Equip::getHoleAtPos( int x, int y ) {
 	SDL_Rect point;
@@ -262,6 +272,8 @@ int Equip::getHoleAtPos( int x, int y ) {
 	}
 	return -1;
 }
+
+/// Handles dragging items onto the paperdoll.
 
 void Equip::receive( Widget *widget ) {
 	if ( mode == EQUIP_MODE && creature ) {
@@ -292,6 +304,8 @@ void Equip::receive( Widget *widget ) {
 		}
 	}
 }
+
+/// Handles picking up of items from the paperdoll.
 
 bool Equip::startDrag( Widget *widget, int x, int y ) {
 	if ( mode == EQUIP_MODE && creature ) {
@@ -372,6 +386,8 @@ void Equip::drawWidgetContents( Widget *widget ) {
 	}
 }
 
+/// Draws the paperdoll with the equipped items.
+
 void Equip::drawEquipment() {
 	for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
 		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
@@ -415,6 +431,8 @@ void Equip::drawEquipment() {
 		glEnd();
 	}
 }
+
+/// Draws the spell list.
 
 void Equip::drawSpells() {
 	int startX = 20;
@@ -500,6 +518,8 @@ void Equip::drawSpells() {
 	}
 	glDisable( GL_BLEND );
 }
+
+/// Draws the list of special capabilities.
 
 void Equip::drawCapabilities() {
 	int startX = 20;
@@ -602,6 +622,8 @@ void Equip::drawCapabilities() {
 	glDisable( GL_BLEND );
 }
 
+/// Using a special capability from the list.
+
 void Equip::useSpecialSkill( SpecialSkill *ss ) {
 	if ( ss && ( DEBUG_SPECIAL_SKILL || creature->hasSpecialSkill( ss ) ) ) {
 		if ( ss->getType() != SpecialSkill::SKILL_TYPE_MANUAL ) {
@@ -621,6 +643,8 @@ void Equip::useSpecialSkill( SpecialSkill *ss ) {
 		}
 	}
 }
+
+/// Casting a spell from the spell list.
 
 void Equip::castSpell( Spell *spell ) {
 	if ( spell ) {
@@ -645,11 +669,15 @@ void Equip::castSpell( Spell *spell ) {
 	}
 }
 
+/// Handles storing a spell in a quickspell slot.
+
 void Equip::storeSpell( Spell *spell ) {
 	if ( spell ) {
 		storeStorable( ( Storable* )spell );
 	}
 }
+
+/// Handles storing a special capability in a quickspell slot.
 
 void Equip::storeSpecialSkill( SpecialSkill *ss ) {
 	if ( ss && ( DEBUG_SPECIAL_SKILL || creature->hasSpecialSkill( ss ) ) ) {
@@ -660,6 +688,8 @@ void Equip::storeSpecialSkill( SpecialSkill *ss ) {
 		}
 	}
 }
+
+/// Stores a spell or special capability in a quickspell slot.
 
 void Equip::storeStorable( Storable *storable ) {
 	this->storable = NULL;

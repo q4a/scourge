@@ -24,6 +24,7 @@
 class Session;
 
 /// A "movie" object that controls camera movement, widescreen effect etc.
+
 class Cutscene {
 private:
 	Session *session;
@@ -73,6 +74,7 @@ public:
 	float getCameraZRot();
 	float getCameraZoom();
 
+	/// Maximum height of the black bars.
 	inline int getLetterboxHeight() {
 		return letterboxHeight;
 	};

@@ -79,6 +79,7 @@ public:
 	inline int getSec()         {
 		return sec;
 	}
+	/// Returns date as a localized string.
 	inline char * getDateString()   {
 		buildDateString();return dateString;
 	}

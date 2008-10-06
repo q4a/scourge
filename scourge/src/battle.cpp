@@ -1520,6 +1520,8 @@ void Battle::executeEatDrinkAction() {
 	if ( !IS_AUTO_CONTROL( creature ) ) creature->setSelXY( -1, -1 );
 }
 
+/// Ends a battle turn.
+
 void Battle::invalidate() {
 	if ( debugBattle ) cerr << "*** invalidate: creature=" << getCreature()->getName() << endl;
 	nextTurn = weaponWait = 0;

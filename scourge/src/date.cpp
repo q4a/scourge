@@ -69,6 +69,8 @@ char *Date::getShortString() {
 	return shortString;
 }
 
+/// Sets the ingame date and time.
+
 void Date::setDate( int s, int m, int h, int day, int month, int year ) {
 	this->sec = s;
 	this->min = m;
@@ -77,6 +79,8 @@ void Date::setDate( int s, int m, int h, int day, int month, int year ) {
 	this->month = month;
 	this->year = year;
 }
+
+/// Sets the ingame date and time from a slash-separated string.
 
 void Date::setDate( char *shortString ) {
 	char *p = strdup( shortString );
@@ -101,6 +105,8 @@ void Date::setDate( char *shortString ) {
 
 	free( p );
 }
+
+/// Resets the date to 1128-01-01, midnight.
 
 void Date::reset( char *shortString ) {
 	if ( shortString && strlen( shortString ) ) {
@@ -182,6 +188,8 @@ void Date::addDate( Date d ) {
 }
 
 
+/// Is it earlier than the supplied date?
+
 bool Date::isInferiorTo( Date d ) {
 
 	if ( d == *this ) return false;
@@ -207,6 +215,8 @@ bool Date::operator==( const Date& d ) const {
 void Date::print() {
 	cout << day << "/" << month << "/" << year << " " << hour << "h" << min << ":" << sec << " ";
 }
+
+/// Prints the date into a string, in a localizeable time format.
 
 void Date::buildDateString() {
 
@@ -235,10 +245,14 @@ void Date::buildDateString() {
 Date::~Date() {
 }
 
+/// Is it at least a day later than date?
+
 bool Date::isADayLater( Date date ) {
 	return( date.getYear() < getYear() || ( date.getYear() == getYear() && date.getMonth() < getMonth() ) ||
 	        ( date.getYear() == getYear() && date.getMonth() == getMonth() && date.getDay() < getDay() ) );
 }
+
+/// Is it at least an hour later than date?
 
 bool Date::isAnHourLater( Date date ) {
 	return( date.getYear() < getYear() || ( date.getYear() == getYear() && date.getMonth() < getMonth() ) ||

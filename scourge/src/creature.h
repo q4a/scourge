@@ -146,7 +146,7 @@ private:
 	std::set<SpecialSkill*> specialSkills;
 	std::set<std::string> specialSkillNames;
 
-	bool mapChanged;
+	bool ;
 
 	std::map<Location*, Uint32> secretDoorAttempts;
 	std::map<Trap*, Uint32> trapFindAttempts;
@@ -236,6 +236,7 @@ public:
 	inline bool isNpc() {
 		return( monster ? monster->isNpc() : false );
 	}
+	/// Sets whether the creature is a (non-hostile) NPC.
 	inline void setNpc( bool b ) {
 		if ( monster ) monster->setNpc( b );
 		if ( !b ) npcInfo = NULL;
@@ -275,6 +276,7 @@ public:
 	                                   char *varName,
 	                                   float value );
 
+	/// Stores an item/spell etc. in a specified quickspell slot.
 	inline void setQuickSpell( int index, Storable *storable ) {
 		for ( int i = 0; storable && i < 12; i++ ) {
 			if ( quickSpell[ i ] == storable ) {
@@ -388,7 +390,7 @@ public:
 	inline void setFacingDirection( int direction ) {
 		this->facingDirection = direction;
 	}
-	/// The angle the creature faces.
+	/// The direction the creature faces (U, D, L, R).
 	inline int getFacingDirection() {
 		return this->facingDirection;
 	}
@@ -430,12 +432,14 @@ public:
 	inline void setFormation( int formation ) {
 		this->formation = formation;
 	}
+	/// Formations are currently unused.
 	inline int getFormation() {
 		return formation;
 	}
 	inline Uint16 getDir() {
 		return dir;
 	}
+	/// Direction of movement (U, D, L, R).
 	inline void setDir( Uint16 dir ) {
 		this->dir = dir;
 	}
@@ -444,6 +448,7 @@ public:
 
 	bool setSelXY( int x, int y, bool cancelIfNotPossible = false );
 	bool setSelCreature( Creature* creature, float range, bool cancelIfNotPossible = false );
+	/// Set target without performing pathfinding.
 	inline void setSelXYNoPath( int x, int y ) {
 		selX = x; selY = y;
 	}
@@ -456,10 +461,12 @@ public:
 	inline int getSelY() {
 		return selY;
 	}
+	/// Unused.
 	inline void setMapChanged() {
 		mapChanged = true;
 	}
 	bool anyMovesLeft();
+	/// Makes the creature move out of another creature's path.
 	void moveAway( Creature *other );
 	//void cancelMoveAway();
 
@@ -481,10 +488,11 @@ public:
 	inline int getInventoryCount() {
 		return inventory_count;
 	}
+	/// Adds an item to the inventory at the specified index.
 	inline void setInventory( int index, Item *item ) {
 		if ( index < inventory_count ) inventory[index] = item;
 	}
-	/// The default weapon.
+	/// The active weapon.
 	inline int getPreferredWeapon() {
 		return preferredWeapon;
 	}
@@ -527,7 +535,7 @@ public:
 		return npcInfo;
 	}
 
-	/// The creature's name.
+	/// The creature's UNLOCALIZED name.
 	inline char *getName() {
 		return name;
 	}
@@ -585,9 +593,11 @@ public:
 	inline int getSkill( int index, bool includeMod = true ) {
 		return skills[index] + skillBonus[index] + ( includeMod ? skillMod[index] : 0 );
 	}
+	/// Returns the active state of a state mod.
 	inline bool getStateMod( int mod ) {
 		return ( stateMod & ( 1 << mod ) ? true : false );
 	}
+	/// Returns whether the specified state mod is protected (by an item etc.)
 	inline bool getProtectedStateMod( int mod ) {
 		return ( protStateMod & ( 1 << mod ) ? true : false );
 	}
@@ -596,25 +606,32 @@ public:
 		strncpy( name, s, 254 ); name[254] = '\0';
 	}
 	void setCharacter( Character *c );
+	/// Sets the character's level.
 	inline void setLevel( int n ) {
 		level = ( n < 0 ? 0 : n ); evalSpecialSkills();
 	}
 	void setExp();
+	/// Amount of experience points.
 	inline void setExp( int n ) {
 		experience = ( n < 0 ? 0 : n ); evalSpecialSkills();
 	}
+	/// Amount of gold.
 	inline void setMoney( int n ) {
 		money = n; evalSpecialSkills();
 	}
+	/// Sets amount of hit points.
 	inline void setHp( int n ) {
 		hp = ( n < 0 ? 0 : n ); evalSpecialSkills();
 	}
+	/// Sets amount of magic points.
 	inline void setMp( int n ) {
 		mp = ( n < 0 ? 0 : n ); evalSpecialSkills();
 	}
+	/// Sets thirst level.
 	inline void setThirst( int n )  {
 		if ( n < 0 )n = 0; if ( n > 10 )n = 10; thirst = n; evalSpecialSkills();
 	}
+	/// Sets hunger level.
 	inline void setHunger( int n )  {
 		if ( n < 0 )n = 0; if ( n > 10 )n = 10; hunger = n; evalSpecialSkills();
 	}
@@ -623,6 +640,7 @@ public:
 
 	void setSkill( int index, int value );
 	void setSkillBonus( int index, int value );
+	/// Additional skill bonus.
 	inline int getSkillBonus( int index ) {
 		return skillBonus[index];
 	}
@@ -724,9 +742,6 @@ public:
 	//void makeTargetRetaliate();
 	void decideMonsterAction();
 
-	/**
-	 * Try to heal someone; returns true if someone was found.
-	 */
 	bool castHealingSpell();
 
 	float getDistanceToTarget( RenderedCreature *creature = NULL );
@@ -737,6 +752,7 @@ public:
 	Creature *findClosestTargetWithPrereq( Spell *spell );
 	bool useOffensiveSpell( Spell *spell, float dist, Creature *possibleTarget );
 
+	/// Schedules state mod effects.
 	inline void setStateModEvent( int mod, Event *event ) {
 		stateModEventMap[mod] = event;
 	}
