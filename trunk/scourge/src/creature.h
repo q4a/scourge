@@ -34,9 +34,9 @@
 #include "render/renderedcreature.h"
 #include "storable.h"
 #include "rpg/rpglib.h"
+#include "session.h"
 
 class Map;
-class Session;
 class Effect;
 class Location;
 class Battle;
