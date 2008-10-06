@@ -159,7 +159,7 @@ void Creature::commonInit() {
 	this->targetItem = NULL;
 	this->lastTick = 0;
 	this->lastTurn = 0;
-	this->facingDirection = Constants::MOVE_UP; // good init ?
+	this-> = Constants::MOVE_UP; // good init ?
 	this->failedToMoveWithinRangeAttemptCount = 0;
 	this->action = Constants::ACTION_NO_ACTION;
 	this->actionItem = NULL;
@@ -184,7 +184,7 @@ void Creature::commonInit() {
 	lastEnchantDate.setDate( -1, -1, -1, -1, -1, -1 );
 
 	this->npcInfo = NULL;
-	this->mapChanged = false;
+	this-> = false;
 	this->moving = false;
 
 	evalSpecialSkills();
@@ -485,6 +485,8 @@ void Creature::calculateExpOfNextLevel() {
 	}
 }
 
+/// Selects (with a 1/10 chance) a random new movement direction.
+
 void Creature::switchDirection( bool force ) {
 	int n = Util::dice( 10 );
 	if ( n == 0 || force ) {
@@ -498,7 +500,8 @@ void Creature::switchDirection( bool force ) {
 	}
 }
 
-// moving monsters only
+/// Moves the creature 1 step into the specified direction.
+
 bool Creature::move( Uint16 dir ) {
 	//if(character) return false;
 
@@ -554,6 +557,8 @@ bool Creature::move( Uint16 dir ) {
 		return false;
 	}
 }
+
+/// Searches for a creature target within the specified range.
 
 void Creature::setTargetCreature( Creature *c, bool findPath, float range ) {
 	targetCreature = c;
@@ -641,10 +646,8 @@ bool Creature::setSelXY( int x, int y, bool cancelIfNotPossible ) {
 	return ret;
 }
 
-/**
- * Use this instead of setSelXY when targetting creatures so that it will check all locations
- * occupied by large creatures.
- **/
+/// Use this instead of setSelXY when targetting creatures so that it will check all locations occupied by large creatures.
+
 bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNotPossible ) {
 	bool ignoreParty = session->getParty()->getPlayer() == this && !session->getGameAdapter()->inTurnBasedCombat();
 	int oldSelX = selX;
@@ -767,9 +770,11 @@ Location *Creature::moveToLocator() {
 	return pos;
 }
 
-/**
- * Returns the blocking shape or NULL if move is possible.
- */
+/// Move the creature one step along its path. Handles blocking objects.
+
+/// Returns the blocking shape or NULL
+/// if move is possible.
+
 Location *Creature::takeAStepOnPath() {
 	Location *position = NULL;
 	int a = ( ( AnimatedShape* )getShape() )->getCurrentAnimation();
@@ -903,6 +908,8 @@ void Creature::showWaterEffect( GLfloat newX, GLfloat newY ) {
 	}
 }
 
+/// Stops movement.
+
 void Creature::stopMoving() {
 	cantMoveCounter = 0;
 	pathManager->clearPath();
@@ -911,6 +918,8 @@ void Creature::stopMoving() {
 	getShape()->setCurrentAnimation( MD2_STAND );
 	if ( session->getParty()->getPlayer() == this ) session->getSound()->stopFootsteps();
 }
+
+/// Plays the footstep sound.
 
 Uint32 lastFootstepTime = 0;
 void Creature::playFootstep() {
@@ -1005,6 +1014,8 @@ int Creature::findInInventory( Item *item ) {
 	 return -1;
 	*/
 }
+
+/// Removes an item from the inventory at index.
 
 Item *Creature::removeInventory( int index ) {
 	Item *item = NULL;
@@ -1132,6 +1143,8 @@ bool Creature::eatDrink( Item *item ) {
 	}
 }
 
+/// Uses a potion.
+
 void Creature::usePotion( Item *item ) {
 	// nothing to do?
 	if ( item->getRpgItem()->getPotionSkill() == -1 ) return;
@@ -1195,6 +1208,8 @@ void Creature::usePotion( Item *item ) {
 		session->getParty()->getCalendar()->scheduleEvent( ( Event* )e );   // It's important to cast!!
 	}
 }
+
+/// Set the creature's next action (carried out at begin of next battle turn).
 
 void Creature::setAction( int action, Item *item, Spell *spell, SpecialSkill *skill ) {
 	this->action = action;
@@ -1401,6 +1416,8 @@ bool Creature::isEquipped( int inventoryIndex ) {
 	*/
 }
 
+/// Unequips cursed items.
+
 bool Creature::removeCursedItems() {
 	bool found = false;
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
@@ -1458,7 +1475,8 @@ Item *Creature::getItemAtLocation( int location ) {
 	return NULL;
 }
 
-// calculate the aggregate values based on equipped items
+/// Calculates the aggregate values based on equipped items.
+
 void Creature::recalcAggregateValues() {
 	armorChanged = true;
 
@@ -1501,6 +1519,8 @@ void Creature::recalcAggregateValues() {
 		}
 	}
 }
+
+/// Selects the next equipped weapon as the active weapon.
 
 bool Creature::nextPreferredWeapon() {
 	int pos = preferredWeapon;
@@ -1581,9 +1601,8 @@ vector<RenderedProjectile*> *Creature::getProjectiles() {
 	return( m->find( this ) == m->end() ? NULL : ( *m )[ ( RenderedCreature* )this ] );
 }
 
-/**
- take some damage
-*/
+/// Take some damage and show a nice damage effect.
+
 bool Creature::takeDamage( float damage,
                            int effect_type,
                            GLuint delay ) {
@@ -1613,6 +1632,8 @@ bool Creature::takeDamage( float damage,
 		return false;
 	}
 }
+
+/// Raises the creature from the dead.
 
 void Creature::resurrect( int rx, int ry ) {
 	// remove all state mod effects
@@ -2131,6 +2152,8 @@ void Creature::decideMonsterAction() {
 	}
 }
 
+/// Tries to cast a specified spell onto a specified creature within range.
+
 bool Creature::useOffensiveSpell( Spell *spell, float dist, Creature *possibleTarget ) {
 	if ( spell->getMp() < getMp() && !( spell->isFriendly() ) ) {
 
@@ -2239,9 +2262,13 @@ void Creature::getDetailedDescription( std::string& s ) {
 
 }
 
+/// Sets the full amount of hit points.
+
 void Creature::setHp() {
 	hp = ( getLevel() + 1 ) * getCharacter()->getStartingHp();
 }
+
+/// Sets the full amount of magic points.
 
 void Creature::setMp() {
 	mp = ( getLevel() + 1 ) * getCharacter()->getStartingMp();
@@ -2252,6 +2279,8 @@ void Creature::setMp() {
 void Creature::draw() {
 	getShape()->draw();
 }
+
+/// Adds additional NPC-only info.
 
 void Creature::setNpcInfo( NpcInfo *npcInfo ) {
 	this->npcInfo = npcInfo;
@@ -2350,6 +2379,8 @@ void Creature::evalSpecialSkills() {
 	}
 }
 
+/// Sets the value of a skill.
+
 void Creature::setSkill( int index, int value ) {
 	int oldValue = getSkill( index );
 	skills[index] = ( value < 0 ? 0 : value > 100 ? 100 : value );
@@ -2358,12 +2389,16 @@ void Creature::setSkill( int index, int value ) {
 	session->getParty()->recomputeMaxSkills();
 }
 
+/// Sets the additional skill bonus (on top of the base value).
+
 void Creature::setSkillBonus( int index, int value ) {
 	int oldValue = getSkill( index );
 	skillBonus[index] = value;
 	skillChanged( index, oldValue, getSkill( index ) );
 	session->getParty()->recomputeMaxSkills();
 }
+
+/// Sets the not yet applied skill amount.
 
 void Creature::setSkillMod( int index, int value ) {
 	int oldValue = getSkill( index );
@@ -2372,7 +2407,7 @@ void Creature::setSkillMod( int index, int value ) {
 	session->getParty()->recomputeMaxSkills();
 }
 
-/// Recalculate skills when stats change.
+/// Recalculates skills when stats change.
 
 void Creature::skillChanged( int index, int oldValue, int newValue ) {
 	// while loading don't update skill values.
@@ -2417,11 +2452,15 @@ void Creature::applySkillMods() {
 	hasAvailableSkillPoints = false;
 }
 
+/// Sets the active state of a state mod.
+
 void Creature::setStateMod( int mod, bool setting ) {
 	if ( setting ) stateMod |= ( 1 << mod );
 	else stateMod &= ( ( GLuint )0xffff - ( GLuint )( 1 << mod ) );
 	evalSpecialSkills();
 }
+
+/// Sets the "protected" state of a state mod (not influenceable by spells etc.)
 
 void Creature::setProtectedStateMod( int mod, bool setting ) {
 	if ( setting ) protStateMod |= ( 1 << mod );
@@ -2472,6 +2511,8 @@ float Creature::applyAutomaticSpecialSkills( int event,
 #endif
 	return varValue;
 }
+
+/// Uses a special capability.
 
 char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
     bool manualOnly ) {
@@ -2976,6 +3017,8 @@ float Creature::getAttackerStateModPercent() {
 	return delta;
 }
 
+/// Returns a semi-random amount of magical damage for an item.
+
 float Creature::rollMagicDamagePercent( Item *item ) {
 	float itemLevel = ( item->getLevel() - 1 ) / ITEM_LEVEL_DIVISOR;
 	return item->rollMagicDamage() + itemLevel;
@@ -3044,15 +3087,21 @@ char *Creature::canEquipItem( Item *item, bool interactive ) {
 	return NULL;
 }
 
+/// Sets character info (if not monster/NPC).
+
 void Creature::setCharacter( Character *c ) {
 	assert( !isMonster() );
 	character = c;
 }
 
+/// Plays a character sound of the specified type.
+
 void Creature::playCharacterSound( int soundType, int panning ) {
 	if ( !monster )
 		session->getSound()->playCharacterSound( model_name, soundType, panning );
 }
+
+/// Does a roll against a skill, optionally with a luck modifier.
 
 bool Creature::rollSkill( int skill, float luckDiv ) {
 	float f = static_cast<float>( getSkill( skill ) );
@@ -3060,6 +3109,8 @@ bool Creature::rollSkill( int skill, float luckDiv ) {
 		f += static_cast<float>( getSkill( Skill::LUCK ) ) / luckDiv;
 	return( Util::roll( 0.0f, 100.0f ) <= f );
 }
+
+/// Does a secret door discovery roll, returns true if successful.
 
 #define SECRET_DOOR_ATTEMPT_INTERVAL 5000
 bool Creature::rollSecretDoor( Location *pos ) {
@@ -3078,6 +3129,8 @@ void Creature::resetSecretDoorAttempts() {
 	secretDoorAttempts.clear();
 }
 
+/// Unused.
+
 #define TRAP_FIND_ATTEMPT_INTERVAL 500
 bool Creature::rollTrapFind( Trap *trap ) {
 	if ( trapFindAttempts.find( trap ) != trapFindAttempts.end() ) {
@@ -3094,6 +3147,8 @@ bool Creature::rollTrapFind( Trap *trap ) {
 void Creature::resetTrapFindAttempts() {
 	trapFindAttempts.clear();
 }
+
+/// Does a perception roll, discovers secret doors and traps if successful.
 
 void Creature::rollPerception() {
 
@@ -3199,9 +3254,13 @@ void Creature::disableTrap( Trap *trap ) {
 	}
 }
 
+/// Sets the motion type (stand, run, loiter around...) for the creature.
+
 void Creature::setMotion( int motion ) {
 	this->motion = motion;
 }
+
+/// Will this creature stay visible in movie mode?
 
 void Creature::setScripted( bool b ) {
 	this->scripted = b;

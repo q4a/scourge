@@ -37,6 +37,8 @@ Cutscene::Cutscene( Session *session ) {
 Cutscene::~Cutscene() {
 }
 
+/// Enters movie mode.
+
 void Cutscene::startMovieMode() {
 	fromX = originalX = session->getMap()->getMapX();
 	fromY = originalY = session->getMap()->getMapY();
@@ -57,9 +59,12 @@ void Cutscene::startMovieMode() {
 	startLetterbox();
 }
 
+/// Starts leaving movie mode.
+
+/// Initiates end of the movie. Note that movie mode does
+/// not end until the letterbox has faded out completely.
+
 void Cutscene::endMovieMode() {
-	// Initiate end of the movie. Note that movie mode does
-	// not end until the letterbox has faded out completely.
 	endingMovie = true;
 	// reset the camera
 	animateCamera( originalX, originalY, originalZ,
@@ -69,25 +74,32 @@ void Cutscene::endMovieMode() {
 	endLetterbox();
 }
 
+/// Starts fading in the black bars.
+
 void Cutscene::startLetterbox() {
 	letterboxStartTime = SDL_GetTicks();
 }
 
+/// Starts fading out the black bars.
+
 void Cutscene::endLetterbox() {
 	letterboxEndTime = SDL_GetTicks();
 }
+
+/// Check whether in movie mode (fading of the black bars counts too).
 
 bool Cutscene::isInMovieMode() {
 	if ( inMovieMode && endingMovie ) {
 		Uint32 now = SDL_GetTicks();
 		if ( now > ( letterboxEndTime + LETTERBOX_DURATION ) ) {
 			inMovieMode = false; endingMovie = false;
-			//TODO: restore pre-cutscene camera position
 		}
 	}
 
 	return inMovieMode;
 }
+
+/// Returns current height of the black bars.
 
 int Cutscene::getCurrentLetterboxHeight() {
 	Uint32 now = SDL_GetTicks();
@@ -115,6 +127,8 @@ int Cutscene::getCurrentLetterboxHeight() {
 
 	return h;
 }
+
+/// Place the camera within the scene (level map coordinates).
 
 void Cutscene::placeCamera( float x, float y, float z, float xRot, float yRot, float zRot, float zoom ) {
 	Uint32 now = SDL_GetTicks();
@@ -152,11 +166,15 @@ void Cutscene::animateCamera( float targetX, float targetY, float targetZ, float
 	cameraMoving = true;
 }
 
+/// Synchronizes the ingame camera with the scripted camera.
+
 void Cutscene::updateCameraPosition() {
 	session->getMap()->setPos( getCameraX(), getCameraY(), getCameraZ() );
 	session->getMap()->setRot( getCameraXRot(), getCameraYRot(), getCameraZRot() );
 	session->getMap()->setZoom( getCameraZoom() );
 }
+
+/// Returns whether the camera currently, well, moves.
 
 bool Cutscene::isCameraMoving() {
 	Uint32 now = SDL_GetTicks();
@@ -322,6 +340,8 @@ float Cutscene::getCameraZoom() {
 
 	return m;
 }
+
+/// Draws the black bars at the top and bottom of the screen.
 
 void Cutscene::drawLetterbox() {
 	int w = session->getGameAdapter()->getScreenWidth();
