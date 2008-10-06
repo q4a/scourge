@@ -63,12 +63,12 @@ private:
 	GLUquadric *quadric;
 	Progress *turnProgress;
 
-#define RAIN_DROP_COUNT 500
+#define RAIN_DROP_COUNT 300
 #define RAIN_DROP_SIZE 32
 	float rainDropX[RAIN_DROP_COUNT];
 	float rainDropY[RAIN_DROP_COUNT];
 	float rainDropZ[RAIN_DROP_COUNT];
-#define CLOUD_COUNT 50
+#define CLOUD_COUNT 15
 	float cloudX[CLOUD_COUNT];
 	float cloudY[CLOUD_COUNT];
 	float cloudSize[CLOUD_COUNT];

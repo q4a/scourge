@@ -147,7 +147,7 @@ public:
 	GLuint systemTexture;
 	GLuint ioTexture;
 
-	GLuint raindropTexture, lightningTexture;
+	GLuint raindropTexture;
 
 	inline GLuint getGuiTexture() {
 		return gui_texture;
@@ -216,9 +216,6 @@ public:
 
 	inline GLuint getRaindropTexture() {
 		return raindropTexture;
-	}
-	inline GLuint getLightningTexture() {
-		return lightningTexture;
 	}
 
 	inline int getPortraitCount( int sex ) {
