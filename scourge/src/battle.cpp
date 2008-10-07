@@ -416,6 +416,13 @@ void Battle::executeAction() {
 	}
 	creature->getShape()->setCurrentAnimation( static_cast<int>( MD2_ATTACK ), true );
 	( ( AnimatedShape* )( creature->getShape() ) )->setAngle( creature->getTargetAngle() );
+	
+	// fight back!
+	if( !session->getPreferences()->isBattleTurnBased() && creature->getTargetCreature() ) {
+		if( !( creature->getTargetCreature()->anyMovesLeft() || creature->getTargetCreature()->isBusy() ) ) {
+			creature->getTargetCreature()->setTargetCreature( creature );
+		}
+	}
 
 	// pause after each hit
 	steps = 0;
