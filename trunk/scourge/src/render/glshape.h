@@ -280,6 +280,7 @@ protected:
 	void createShadowList( GLuint listName );
 	void createBodyList( int side, GLuint listName );
 	void createTopList( GLuint listName );
+	DECLARE_NOISY_OPENGL_SUPPORT()
 };
 
 #endif

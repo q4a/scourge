@@ -82,6 +82,7 @@ public:
 	inline GLuint getTextureId() {
 		return textureId;
 	}
+	DECLARE_NOISY_OPENGL_SUPPORT()
 
 
 };
