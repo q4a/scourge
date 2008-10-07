@@ -28,6 +28,7 @@
   */
 
 /// A single element of a GUI theme.
+
 class ThemeElement {
 public:
 	char textureFileName[40], north[40], south[40], east[40], west[40];
@@ -45,6 +46,7 @@ public:
 };
 
 /// A theme for the game's GUI.
+
 class GuiTheme {
 private:
 	std::string nameX;

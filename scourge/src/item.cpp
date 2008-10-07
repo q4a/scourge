@@ -195,6 +195,8 @@ Item *Item::load( Session *session, ItemInfo *info ) {
 	return item;
 }
 
+/// Puts another item inside this item.
+
 bool Item::addContainedItem( Item *item, bool force ) {
 	if ( containedItemCount < MAX_CONTAINED_ITEMS &&
 	        ( force || !item->isBlocking() || getShape()->fitsInside( item->getShape() ) ) ) {
@@ -553,7 +555,8 @@ const string Item::getRandomSound() {
 	return s;
 }
 
-// return true if the item is used up
+/// Decrements the number of charges/uses. Returns true if the item is used up.
+
 bool Item::decrementCharges() {
 	float f1;
 	int oldCharges;
@@ -638,6 +641,8 @@ void Item::commonInit( bool loading ) {
 		describeMagic( rpgItem->getDisplayName() );
 	}
 }
+
+/// Enchants the item.
 
 void Item::enchant( int newMagicLevel ) {
 	if ( magicLevel != -1 ) return;
@@ -765,6 +770,8 @@ int Item::getMagicResistance() {
 
 #define DEBUG_ITEM_ID 0
 
+/// Adds the magical properties, symbols etc. to the item's name.
+
 void Item::describeMagic( char const* displayName ) {
 
 	// not for scrolls :-(
@@ -864,6 +871,8 @@ bool Item::isSpecial() {
 int Item::rollMagicDamage() {
 	return ( magicDamage ? magicDamage->roll() : 0 );
 }
+
+/// Returns the bonus damage (e.g. "+3") as a string.
 
 char *Item::describeMagicDamage() {
 	return ( magicDamage ? magicDamage->toString() : NULL );
@@ -1119,6 +1128,8 @@ GLuint Item::getItemIconTexture( bool smallIcon ) {
 	return ( !smallIcon && getShape()->getIcon() > 0 ? getShape()->getIcon() : 
 		session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] );
 }
+
+/// Creates an icon texture from a 3D view of the item.
 
 void Item::create3dTex( Scourge *scourge, float w, float h ) {
 	if ( textureInMemory ) return;

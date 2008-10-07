@@ -41,15 +41,21 @@ bool GameAdapter::isMissionCreature( RenderedCreature *creature ) {
 	return( getSession()->getCurrentMission()->isMissionCreature( creature ) );
 }
 
+/// Does a party currently exist?
+
 bool GameAdapter::hasParty() {
 	return( getSession()->getParty() != NULL );
 }
+
+/// Number of party members.
 
 int GameAdapter::getPartySize() {
 	return( getSession()->getParty() == NULL ?
 	        0 :
 	        getSession()->getParty()->getPartySize() );
 }
+
+/// Wrapper function for loading a saved map.
 
 void GameAdapter::loadMapData( const string& name ) {
 	Mission::loadMapData( this, name );
@@ -58,6 +64,8 @@ void GameAdapter::loadMapData( const string& name ) {
 void GameAdapter::saveMapData( const string& name ) {
 	Mission::saveMapData( this, name );
 }
+
+/// Creates a new item of the specified type and level.
 
 RenderedItem *GameAdapter::createItem( char *item_name, int level, int depth ) {
 	RpgItem *rpgItem = RpgItem::getItemByName( item_name );
@@ -78,13 +86,19 @@ RenderedItem *GameAdapter::createItem( char *item_name, int level, int depth ) {
 	return item;
 }
 
+/// Creates a new item (detailed version).
+
 RenderedItem *GameAdapter::createItem( ItemInfo *info ) {
 	return Item::load( session, info );
 }
 
+/// Creates a new NPC/monster (detailed version).
+
 RenderedCreature *GameAdapter::createMonster( CreatureInfo *info ) {
 	return Creature::load( session, info );
 }
+
+/// Fills a container with random goodness.
 
 void GameAdapter::fillContainer( Item *container, int level, int depth ) {
 	// some items
@@ -107,6 +121,8 @@ void GameAdapter::fillContainer( Item *container, int level, int depth ) {
 		}
 	}
 }
+
+/// Creates a new random item of the specified level.
 
 Item *GameAdapter::createRandomItem( int level, int depth ) {
 	// special items
@@ -131,6 +147,8 @@ Item *GameAdapter::createRandomItem( int level, int depth ) {
 	// Make a random level object
 	return session->newItem( rpgItem, level );
 }
+
+/// Creates a new monster by its internal name.
 
 RenderedCreature *GameAdapter::createMonster( char *monster_name ) {
 	Creature *creature = NULL;
@@ -168,9 +186,13 @@ RenderedCreature *GameAdapter::createMonster( char *monster_name ) {
 	return creature;
 }
 
+/// Returns the player character.
+
 RenderedCreature *GameAdapter::getPlayer() {
 	return ( RenderedCreature* )( getSession()->getParty()->getPlayer() );
 }
+
+/// Returns the specified party member.
 
 RenderedCreature *GameAdapter::getParty( int index ) {
 	return ( RenderedCreature* )( getSession()->getParty()->getParty( index ) );
@@ -216,11 +238,15 @@ SDLOpenGLAdapter::~SDLOpenGLAdapter() {
 	if ( sdlHandler ) delete sdlHandler;
 }
 
+/// Sets the screen mode and initializes OpenGL.
+
 void SDLOpenGLAdapter::initVideo() {
 	// Initialize the video mode
 	sdlHandler = new SDLHandler( this );
 	sdlHandler->setVideoMode( preferences );
 }
+
+/// Checks whether two rectangles intersect.
 
 bool SDLOpenGLAdapter::intersects( int x, int y, int w, int h,
     int x2, int y2, int w2, int h2 ) {

@@ -39,11 +39,12 @@ class Scourge;
 
 /**
   *@author Gabor Torok
-
-  This class is both the UI representation (shape) of the rpgItem and it's state (for example, wear).
-  All instances of the RpgItem point to the same RpgItem, but a new Item is created for each.
-
   */
+
+/// This class defines attributes and appearance of an item.
+
+/// This class is both the UI representation (shape) of the rpgItem and it's state (for example, wear).
+/// All instances of the RpgItem point to the same RpgItem, but a new Item is created for each.
 
 class Item : public RenderedItem, Storable {
 public:
