@@ -528,6 +528,7 @@ void Scourge::resetGame( bool resetParty ) {
 
 		Calendar *cal = getSession()->getParty()->getCalendar();
 		{
+#if DEBUG_SQUIRREL			
 			// Schedule an event to keep reloading scripts if they change on disk
 			Date d( 0, 0, 1, 0, 0, 0 ); // (format : sec, min, hours, days, months, years)
 			Event *event = new ReloadEvent( cal->getCurrentDate(),
@@ -536,6 +537,7 @@ void Scourge::resetGame( bool resetParty ) {
 			    getSession(),
 			    ReloadEvent::MODE_RELOAD_SCRIPTS );
 			cal->scheduleEvent( event );
+#endif			
 		}
 
 		{

@@ -730,9 +730,12 @@ public:
 		return actionSkill;
 	}
 
+	inline bool isBusy() {
+		return hasTarget() || getAction() > Constants::ACTION_NO_ACTION || getActionItem() || getActionSkill() || getActionSpell();
+	}
+	
 
-
-	// handling battle targets (which in the future may be more than targetCreature)
+	// handling battle targets
 	inline bool hasTarget() {
 		return targetCreature || targetItem || targetX || targetY || targetZ;
 	}
