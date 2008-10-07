@@ -78,6 +78,9 @@ T rint( T v ) {
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 
+// include some gl noise
+#include "glnoise.h"
+
 #ifdef HAVE_SDL_NET
 #include <SDL_net.h>
 #include <SDL_thread.h>

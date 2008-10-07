@@ -115,6 +115,7 @@ public:
 	inline float getAngle() {
 		return angle;
 	}
+	DECLARE_NOISY_OPENGL_SUPPORT()
 };
 
 #endif

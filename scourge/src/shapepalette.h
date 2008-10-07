@@ -272,6 +272,7 @@ protected:
 	void initInventory( ConfigLang *config );
 
 	ShapeValues *createShapeValues( ConfigNode *node );
+	DECLARE_NOISY_OPENGL_SUPPORT()
 };
 
 #endif

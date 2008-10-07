@@ -55,6 +55,7 @@ public:
 
 
 protected:
+	DECLARE_NOISY_OPENGL_SUPPORT()
 };
 
 #endif

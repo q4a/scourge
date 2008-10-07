@@ -182,6 +182,7 @@ private:
 	static void calculateLight();
 	static void createFloorTexture( Shapes *shapes, int stencilIndex );
 	static void createLavaTexture( int index, int stencilIndex, int rot );
+	DECLARE_NOISY_OPENGL_SUPPORT()
 };
 
 #endif

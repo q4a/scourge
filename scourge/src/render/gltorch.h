@@ -66,6 +66,7 @@ public:
 
 protected:
 	void initParticles();
+	DECLARE_NOISY_OPENGL_SUPPORT()
 };
 
 #endif

@@ -527,6 +527,7 @@ protected:
 	void loadStencil( const std::string& filename, int index );
 	void loadCursors();
 	GLuint *findOrMakeTextureGroup( char *s );
+	DECLARE_NOISY_OPENGL_SUPPORT()
 };
 
 #endif
