@@ -3363,6 +3363,9 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		//glDisable( GL_ALPHA_TEST );
 		glDisable( GL_TEXTURE_2D );
 	} else if ( getMonster() ) {
+		
+		glPushAttrib( GL_ALL_ATTRIB_BITS );
+		glEnable( GL_DEPTH_TEST );
 
 		GLuint *textureGroup = session->getMap()->getShapes()->getCurrentTheme()->getTextureGroup( WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ] );
 		GLuint texture = textureGroup[ GLShape::FRONT_SIDE ];
@@ -3384,81 +3387,25 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		glEnd();
 		glDisable( GL_TEXTURE_2D );
 		glPopMatrix();
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-		glPushMatrix();
-		glEnable( GL_TEXTURE_2D );
-		glColor4f( 1, 1, 1, 1 );
-		glBindTexture( GL_TEXTURE_2D, texture );
 
-		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex2i( -130, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex2i( 20, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex2i( -130, 150 );
-		glTexCoord2f( 1, 1 );
-		glVertex2i( 20, 150 );
-		glEnd();
-		glDisable( GL_TEXTURE_2D );
-		glPopMatrix();
-
-		shape = session->getShapePalette()->getCreatureShape( getModelName(), getSkinName(), 1 );
-		shape->setCurrentAnimation( MD2_STAND );
+		shape = getShape();
+		shape->setCurrentAnimation( MD2_STAND, true );
+		
+		// seems to have no effect...
+		((AnimatedShape*)shape)->setAlpha( 180.0f );
 
 		glPushMatrix();
-		glEnable( GL_DEPTH_TEST );
-		glEnable( GL_BLEND );
-		glTranslatef( 125, 190, 0 );
+		glTranslatef( 135, 190, 100 );
 		glRotatef( 90, 1, 0, 0 );
 		glRotatef( 180, 0, 0, 1 );
-		glScalef( 2.75f, 2.75f, 2.75f );
-		glColor4f( 0, 0, 0, 0.7f );
-		shape->draw();
-		glDisable( GL_BLEND );
-		glPopMatrix();
-
-		glPushMatrix();
-		glTranslatef( 135, 190, 500 );
-		glRotatef( 90, 1, 0, 0 );
-		glRotatef( 180, 0, 0, 1 );
-		glScalef( 2.8f, 2.8f, 2.8f );
+		glScalef( 2.0f, 2.0f, 2.0f );
 		glColor4f( 1, 1, 1, 1 );
 		shape->draw();
-		glDisable( GL_DEPTH_TEST );
 		glPopMatrix();
+		glScalef( 1, 1, 1 );
+		
+		glPopAttrib();
 	}
-
-	// This is a bit of a hack: the "conv" texture covers up the rectangular edges of the portrait
-	// in order to make it look oval... Otherwise we'd need to use the stencil buffer... :-/
-	/*
-	 if( inFrame ) {
-	  glDisable( GL_DEPTH_TEST );
-	  glEnable( GL_TEXTURE_2D );
-	  glBindTexture( GL_TEXTURE_2D, session->getShapePalette()->getNamedTexture( "conv" ) );
-	    glColor4f(1, 1, 1, 1);
-	  glEnable( GL_BLEND );
-	  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-	  glPushMatrix();
-	  glTranslatef( -10, -20, 0 );
-	    glBegin( GL_QUADS );
-
-	    glTexCoord2f( 0, 0 );
-	    glVertex3f( 0, 0, 0 );
-	    glTexCoord2f( 0, 1 );
-	    glVertex3f( 0, height + 40, 0 );
-	    glTexCoord2f( 1, 1 );
-	    glVertex3f( width + 25, height + 40, 0 );
-	    glTexCoord2f( 1, 0 );
-	    glVertex3f( width + 25, 0, 0 );
-	    glEnd();
-	  glPopMatrix();
-
-	  glDisable( GL_BLEND );
-	  glEnable( GL_DEPTH_TEST );
-	 }
-	*/
 }
 
 
