@@ -159,6 +159,11 @@ void Party::setPartyMotion( int motion ) {
 	}
 }
 
+/// Switches to the next alive party member.
+
+/// returns false if the switch could not be made,
+/// because the entire party is dead (the mission failed)
+
 bool Party::switchToNextLivePartyMember() {
 	Creature *oldPlayer = player;
 	// find the player's index
@@ -550,9 +555,8 @@ void Party::setParty( int count, Creature **creatures, int storylineIndex ) {
 	this->storylineIndex = storylineIndex;
 }
 
-/**
- Return the closest live player within the given radius or null if none can be found.
-*/
+/// Return the closest live player within the given radius or null if none can be found.
+
 Creature *Party::getClosestPlayer( int x, int y, int w, int h, int radius ) {
 	float minDist = 0;
 	Creature *p = NULL;

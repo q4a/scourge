@@ -124,11 +124,15 @@ bool Inven::handleEvent( Widget *widget, SDL_Event *event ) {
 	return false;
 }
 
+/// Shows the info window for an item.
+
 void Inven::showInfo( Item *item ) {
 	pcUi->getScourge()->getInfoGui()->setItem( item );
 	if ( !pcUi->getScourge()->getInfoGui()->getWindow()->isVisible() )
 		pcUi->getScourge()->getInfoGui()->getWindow()->setVisible( true );
 }
+
+/// Adds an item that has been dragged here from another GUI widget.
 
 void Inven::receive( Widget *widget ) {
 	if ( creature ) {
@@ -141,6 +145,7 @@ void Inven::receive( Widget *widget ) {
 	}
 }
 
+/// Adds an item to the inventory.
 
 bool Inven::receive( Item *item, bool atCursor ) {
 	//Put item in the most left/top availabel position
@@ -175,6 +180,8 @@ bool Inven::receive( Item *item, bool atCursor ) {
 	}
 	return true;
 }
+
+/// Initiates mouse drag from screen pos x,y.
 
 bool Inven::startDrag( Widget *widget, int x, int y ) {
 	if ( creature && !pcUi->getScourge()->getMovingItem() ) {
@@ -217,12 +224,18 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
 	return false;
 }
 
+/// Converts a screen pos to an inventory pos.
+
 void Inven::convertMousePos( int x, int y, int *invX, int *invY ) {
 	*invX = ( x - OFFSET_X ) / GRID_SIZE;
 	*invY = ( y - OFFSET_Y ) / GRID_SIZE;
 }
 
-// Note: this is O(n)
+/// Returns the item at screen pos x,y.
+
+/// Note: this
+/// is O(n)
+
 Item *Inven::getItemAtPos( int x, int y ) {
 	for ( int i = 0; creature && i < creature->getInventoryCount(); i++ ) {
 		if ( !creature->isEquipped( i ) ) {
@@ -240,7 +253,11 @@ Item *Inven::getItemAtPos( int x, int y ) {
 	return NULL;
 }
 
-// note: optimize this, current O(n^2)
+/// Find an inventory position for an item dropped at screen pos x,y.
+
+/// note: optimize this,
+/// current O(n^2)
+
 bool Inven::findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem ) {
 	if ( creature && item ) {
 		int colCount = canvas->getWidth() / GRID_SIZE;
@@ -276,6 +293,8 @@ bool Inven::findInventoryPosition( Item *item, int x, int y, bool useExistingLoc
 	}
 	return false;
 }
+
+/// Checks whether an item fits into the inventory at screen pos xx,yy.
 
 bool Inven::checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy ) {
 	SDL_Rect itemRect;
@@ -396,6 +415,8 @@ void Inven::drawWidgetContents( Widget *widget ) {
 	glDisable( GL_TEXTURE_2D );
 }
 
+/// Which creature's inventory will we display?
+
 void Inven::setCreature( Creature *creature ) {
 	this->creature = creature;
 	if ( !creature->isInventoryArranged() ) {
@@ -408,6 +429,8 @@ void Inven::setCreature( Creature *creature ) {
 		creature->setInventoryArranged( true );
 	}
 }
+
+/// Initiates "store in quickspell slot" mode.
 
 void Inven::storeItem( Item *item ) {
 	this->storable = NULL;

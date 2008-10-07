@@ -29,6 +29,7 @@ class Creature;
 class Item;
 
 /// Small utility class.
+
 class CreatureGroupInfo {
 public:
 	CreatureGroupInfo() {
@@ -41,6 +42,7 @@ public:
 };
 
 /// A party of characters.
+
 class Party : public CreatureGroupInfo {
 private:
 
@@ -117,8 +119,6 @@ public:
 	bool setSelXY( Uint16 mapx, Uint16 mapy, bool cancelIfNotPossible = false );
 	void movePlayers();
 
-	// returns false if the switch could not be made,
-	// because the entire party is dead (the mission failed)
 	bool switchToNextLivePartyMember();
 
 	bool nextPartyMember();
@@ -152,9 +152,6 @@ public:
 
 	int getTotalLevel();
 
-	/**
-	 Return the closest live player within the given radius or null if none can be found.
-	*/
 	Creature *getClosestPlayer( int x, int y, int w, int h, int radius );
 
 	void startEffect( int effect_type, int duration = Constants::DAMAGE_DURATION );

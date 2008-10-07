@@ -32,6 +32,7 @@ class RenderedCreature;
   */
 
 /// extra display information
+
 class DisplayInfo {
 public:
 	GLfloat red, green, blue;
@@ -64,6 +65,7 @@ public:
 };
 
 /// The ground texture on an outdoor map location.
+
 class OutdoorTexture {
 public:
 	float offsetX, offsetY, width, height; // measured in map units
@@ -83,6 +85,7 @@ public:
 };
 
 /// A location on the level map and its contents.
+
 class Location {
 public:
 	// shapes
@@ -110,6 +113,7 @@ public:
 };
 
 /// Controls effects on a specific map location.
+
 class EffectLocation {
 public:
 	Uint16 x, y, z;

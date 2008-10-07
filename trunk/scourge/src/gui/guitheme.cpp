@@ -70,6 +70,8 @@ GuiTheme::~GuiTheme() {
 	delete windowBorderTexture;
 }
 
+/// Loads and inits the GUI themes.
+
 void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
 	ConfigLang *config = ConfigLang::load( "config/ui.cfg" );
 
@@ -170,6 +172,8 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
 
 	delete config;
 }
+
+/// Loads the theme's textures.
 
 void GuiTheme::loadTextures( ScourgeGui *scourgeGui ) {
 //  cerr << "----------------------------------------" << endl;
@@ -281,6 +285,8 @@ Color *GuiTheme::parseColor( const char *s ) {
 		return NULL;
 	}
 }
+
+/// Loads a single theme element's textures.
 
 void ThemeElement::loadTextures( ScourgeGui *scourgeGui ) {
 	texture = scourgeGui->loadSystemTexture( textureFileName );

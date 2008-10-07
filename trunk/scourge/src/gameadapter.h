@@ -38,6 +38,10 @@ class RenderedItem;
 class RenderedCreature;
 
 /// This class encapsulates functions that should be callable from everywhere.
+
+/// Note that most of the members of this class are actually defined elsewhere.
+/// GameAdapter is just a kind of wrapper, so to say.
+
 class GameAdapter : public MapAdapter {
 protected:
 	Preferences *preferences;
@@ -196,9 +200,7 @@ public:
 
 	virtual inline void shapeAdded( const char *shapeName, int x, int y, int z ) {}
 
-	/**
-	 * Set up the opengl view.
-	 */
+	/// Set up the opengl view.
 	virtual void setView() {}
 
 	virtual bool isLevelShaded() {
@@ -257,6 +259,7 @@ public:
 };
 
 /// SDL/OpenGL related extensions to GameAdapter.
+
 class SDLOpenGLAdapter : public GameAdapter {
 protected:
 	SDLHandler *sdlHandler;
@@ -320,7 +323,6 @@ public:
 	}
 
 	/// Set up the opengl view.
-
 	virtual void setView() {
 		getSDLHandler()->setOrthoView();
 	}
