@@ -18,15 +18,14 @@
 #include "glnoise.h"
 
 /// puts any positive glGetError() result to cerr
-void noiseGL( void )
-{
+void noiseGL( void ) {
 	GLenum ret = glGetError();
-	if (ret ==  GL_NO_ERROR)
+	if ( ret == GL_NO_ERROR )
 		return;
 
 	std::cerr << "glGetError() said: ";
 
-	switch (ret) {
+	switch ( ret ) {
 	default:
 		std::cerr << "Error #" << ret;
 		break;
