@@ -103,7 +103,7 @@ void WallTheme::load() {
 // Overlay the current 'grass' texture on the alpha-blended edge texture to create a theme-specific blend.
 void WallTheme::createOutdoorEdgeTexture( int ref ) {
 	GLuint tex = shapePal->createAlphaTexture( outdoorTextureGroup[ ref ][ 0 ],
-	             outdoorTextureGroup[ OUTDOOR_THEME_REF_GRASS ][ 0 ] );
+	                                           outdoorTextureGroup[ OUTDOOR_THEME_REF_GRASS ][ 0 ] );
 	GLclampf pri = 0.9f; glPrioritizeTextures( 1, &tex, &pri );
 	glDeleteTextures( 1, outdoorTextureGroup[ ref ] );
 	outdoorTextureGroup[ ref ][ 0 ] = tex;
@@ -604,8 +604,8 @@ void Shapes::loadShape( const char *name ) {
 
 		// set the effect
 		shapes[ ( i + 1 ) ]->setEffectType( sv->effectType,
-		    sv->effectWidth, sv->effectDepth, sv->effectHeight,
-		    sv->effectX, sv->effectY, sv->effectZ );
+		                                    sv->effectWidth, sv->effectDepth, sv->effectHeight,
+		                                    sv->effectX, sv->effectY, sv->effectZ );
 
 		shapes[ ( i + 1 ) ]->setInteractive( sv->interactive );
 
@@ -702,10 +702,9 @@ GLuint Shapes::createTileTexture( SDL_Surface **surface, int tileX, int tileY, i
 
 	// The raw data of the source image.
 	unsigned char * data = ( unsigned char * ) ( ( *surface ) -> pixels );
-	GLubyte *image[1];
-
 	// The destination image (a single tile)
-	image[0] = ( unsigned char* )malloc( tileWidth * tileHeight * 4 );
+	std::vector<GLubyte> image( tileWidth * tileHeight * 4 );
+
 	int count = 0;
 	// where the tile starts in a line
 	int offs = tileX * tileWidth * 4;
@@ -725,7 +724,7 @@ GLuint Shapes::createTileTexture( SDL_Surface **surface, int tileX, int tileY, i
 		}
 
 		for ( int p = 0; p < 4; p++ ) {
-			image[0][count++] = data[c++];
+			image[count++] = data[c++];
 		}
 
 	}
@@ -747,7 +746,7 @@ GLuint Shapes::createTileTexture( SDL_Surface **surface, int tileX, int tileY, i
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-	gluBuild2DMipmaps( GL_TEXTURE_2D, ( bpp > 16 ? GL_RGBA : GL_RGBA4 ), tileWidth, tileHeight, GL_RGBA, GL_UNSIGNED_BYTE, image[0] );
+	gluBuild2DMipmaps( GL_TEXTURE_2D, ( bpp > 16 ? GL_RGBA : GL_RGBA4 ), tileWidth, tileHeight, GL_RGBA, GL_UNSIGNED_BYTE, &image[0] );
 
 	return texture[0];
 }
@@ -812,7 +811,7 @@ GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool isSp
 	// Enable anisotropic filtering if requested, mipmapping is enabled
 	// and the hardware supports it.
 	if ( anisotropy && !format->Amask && strstr( ( char* )glGetString( GL_EXTENSIONS ),
-	        "GL_EXT_texture_filter_anisotropic" ) && session->getPreferences()->getAnisoFilter() ) {
+	                                             "GL_EXT_texture_filter_anisotropic" ) && session->getPreferences()->getAnisoFilter() ) {
 		float maxAnisotropy;
 		glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy );
