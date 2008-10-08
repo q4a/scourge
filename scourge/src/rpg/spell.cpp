@@ -220,17 +220,25 @@ const char *MagicSchool::getRandomString( vector<string> *v ) {
 	return ( *v )[ Util::dice( v->size() ) ].c_str();
 }
 
+/// Message when you donated a small sum to the school's deity.
+
 const char *MagicSchool::getLowDonateMessage() {
 	return getRandomString( &lowDonate );
 }
+
+/// Message when you donated a moderate sum to the school's deity.
 
 const char *MagicSchool::getNeutralDonateMessage() {
 	return getRandomString( &neutralDonate );
 }
 
+/// Message when you donated a high sum to the school's deity.
+
 const char *MagicSchool::getHighDonateMessage() {
 	return getRandomString( &highDonate );
 }
+
+/// Returns a random spell from a random school.
 
 Spell *MagicSchool::getRandomSpell( int level ) {
 	int n = Util::dice( getMagicSchoolCount() );
@@ -281,6 +289,8 @@ Spell::Spell( char *name, char *displayName, char *symbol, int level, int mp, in
 
 Spell::~Spell() {
 }
+
+/// Returns a spell by its name.
 
 Spell *Spell::getSpellByName( char *name ) {
 	string s = name;

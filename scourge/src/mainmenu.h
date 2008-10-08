@@ -80,6 +80,9 @@ private:
 	int lastMenuTick; // this is when the program last drew the main menu (to make the sleep a bit more sensible)
 
 #define MAX_LOGOS 100
+
+	/// The sliding logo at the upper left.
+
 	struct LogoSprite {
 		float x, y, angle, rot;
 		int quadrant, steps;
@@ -88,15 +91,22 @@ private:
 	LogoSprite logoSprite[MAX_LOGOS];
 
 
+	/// A background cloud.
+
 	struct Cloud {
 		int x, y, w, h, speed;
 	};
+
 	Cloud cloud[100];
 	int cloudCount;
 	int starCount;
+
+	/// A star. Yeah.
+
 	struct Star {
 		int x, y;
 	};
+
 	Star star[500];
 
 	SavegameDialog *savegameDialog;

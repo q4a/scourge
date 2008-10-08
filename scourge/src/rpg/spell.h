@@ -100,6 +100,7 @@ public:
 	       int iconTileX, int iconTileY, bool friendly, int stateModPrereq );
 	~Spell();
 
+	/// The "symbol" of the spell (used in various descriptions).
 	inline char *getSymbol() {
 		return symbol;
 	}
@@ -110,74 +111,97 @@ public:
 		return NULL;
 	}
 
+	/// Is it for friendly or hostile targets?
 	inline bool isFriendly() {
 		return friendly;
 	}
+	/// Does it affect a state mod?
 	inline bool hasStateModPrereq() {
 		return( stateModPrereq != -1 );
 	}
+	/// Which state mod/potion skill is affected?
 	inline int getStateModPrereq() {
 		return( stateModPrereq < -1 ?
 		        ( -stateModPrereq ) - 2 : // potion skill
 		        stateModPrereq ); // regular state mod
 	}
+	/// Does it affect a "potion skill" (HP, MP, armor)?
 	inline bool isStateModPrereqAPotionSkill() {
 		return( stateModPrereq < -1 );
 	}
+	/// Icon tile within spells.png.
 	inline int getIconTileX() {
 		return iconTileX;
 	}
+	/// Icon tile within spells.png.
 	inline int getIconTileY() {
 		return iconTileY;
 	}
+	/// Unlocalized internal name of the spell.
 	inline const char *getName() {
 		return ( const char* )name;
 	}
+	/// Localized name of the spell.
 	inline const char *getDisplayName() {
 		return ( const char* )displayName;
 	}
+	/// Returns a random "effectiveness" or "extra" value.
 	inline int getAction() {
 		return action->roll();
 	}
+	/// The spell's level.
 	inline int getLevel()  {
 		return level;
 	}
+	/// Magic point cost.
 	inline int getMp() {
 		return mp;
 	}
+	/// Experience gained by successfully casting the spell.
 	inline int getExp() {
 		return exp;
 	}
+	/// Probability of failure.
 	inline int getFailureRate() {
 		return failureRate;
 	}
+	/// Action radius of the spell.
 	inline int getDistance() {
 		return distance;
 	}
+	/// Which type of target is allowed?
 	inline int getTargetType() {
 		return targetType;
 	}
+	/// The spell's long description.
 	inline char const* getNotes() {
 		return notes;
 	}
+	/// How fast can it be cast?
 	inline int getSpeed() {
 		return speed;
 	}
+	/// The visual effect displayed for the spell.
 	inline int getEffect() {
 		return effect;
 	}
+	/// The spell's magic school.
 	inline MagicSchool *getSchool() {
 		return school;
 	}
+	/// Unused.
 	inline bool isRangedSpell() {
 		return distance > 1;
 	}
+	/// Short one-line description of the spell.
 	inline void describe( char *s, size_t count ) {
 		snprintf( s, count, _( "%s (L:%d)(M:%d)" ), _( name ), level, mp );
 	}
+	/// Adds a string to the long description.
 	inline void addNotes( char *s ) {
 		strcat( notes, s );
 	}
+	/// The sound to play when the spell is cast.
 	inline void setSound( char *s ) {
 		sound = s;
 	}
@@ -185,19 +209,23 @@ public:
 		return sound;
 	}
 
-	// what kind of target is allowed for this spell
+	/// Can it target creatures?
 	inline bool isCreatureTargetAllowed() {
 		return creatureTarget;
 	}
+	/// Can it target a map location (some point on the floor etc.)?
 	inline bool isLocationTargetAllowed() {
 		return locationTarget;
 	}
+	/// Can it target items?
 	inline bool isItemTargetAllowed() {
 		return itemTarget;
 	}
+	/// Can it target a party member?
 	inline bool isPartyTargetAllowed() {
 		return partyTarget;
 	}
+	/// Can it target doors?
 	inline bool isDoorTargetAllowed() {
 		return doorTarget;
 	}
@@ -228,36 +256,46 @@ public:
 	MagicSchool( char *name, char *displayName, char *deity, int skill, int resistSkill, float red, float green, float blue, char *symbol );
 	~MagicSchool();
 
+	/// The school's internal, unlocalized name.
 	inline char *getName() {
 		return name;
 	}
+	/// The school's localized name.
 	inline char *getDisplayName() {
 		return displayName;
 	}
 	inline char *getShortName() {
 		return shortName;
 	}
+	/// Returns the deity associated to the school.
 	inline char *getDeity() {
 		return deity;
 	}
+	/// The associated deity's localized name.
 	inline char *getDeityDescription() {
 		return deityDescription;
 	}
+	/// The school's associated skill.
 	inline int getSkill() {
 		return skill;
 	}
+	/// The skill used to resist spells from this school.
 	inline int getResistSkill() {
 		return resistSkill;
 	}
+	/// Number of spells in this school.
 	inline int getSpellCount() {
 		return spells.size();
 	}
+	/// Returns a spell from the school by index.
 	inline Spell *getSpell( int index ) {
 		return spells[index];
 	}
+	/// Adds a string to the description of the school's associated deity.
 	inline void addToDeityDescription( char *s ) {
 		if ( strlen( deityDescription ) ) strcat( deityDescription, " " ); strcat( deityDescription, s );
 	}
+	/// The deity's color. Used to color the effect above pools for example.
 	inline float getDeityRed() {
 		return red;
 	}
@@ -267,24 +305,30 @@ public:
 	inline float getDeityBlue() {
 		return blue;
 	}
+	/// The "symbol" of the school (used in various descriptions).
 	inline char *getSymbol() {
 		return symbol;
 	}
 
 	static void initMagic();
+	/// Number of magic schools in the game.
 	inline static int getMagicSchoolCount() {
 		return schoolCount;
 	}
+	/// Gets magic school by index.
 	inline static MagicSchool *getMagicSchool( int index ) {
 		return schools[index];
 	}
 	static Spell *getRandomSpell( int level );
+	/// Gets magic school by its internal name.
 	static MagicSchool *getMagicSchoolByName( char *s ) {
 		std::string name = s; return ( schoolMap.find( name ) == schoolMap.end() ? NULL : schoolMap[name] );
 	}
+	/// Returns a random magic school.
 	static MagicSchool *getRandomSchool() {
 		return getMagicSchool( getRandomSchoolIndex() );
 	}
+	/// Returns an index to a random magic school.
 	static int getRandomSchoolIndex() {
 		return Util::dice( schoolCount );
 	}
@@ -294,6 +338,7 @@ public:
 	const char *getHighDonateMessage();
 
 protected:
+	/// Adds a spell to this school.
 	inline void addSpell( Spell *spell ) {
 		spells.push_back( spell );
 	}

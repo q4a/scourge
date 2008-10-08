@@ -154,6 +154,8 @@ MainMenu::~MainMenu() {
 	textEffects.clear();
 }
 
+/// Draws the whole main menu view.
+
 void MainMenu::drawView() {
 	int tickNow = SDL_GetTicks();
 	if ( ( tickNow - lastMenuTick ) < 15 )
@@ -313,6 +315,8 @@ void MainMenu::drawView() {
 	scourge->getSession()->initData();
 }
 
+/// Draws the loading screen if still loading data.
+
 void MainMenu::drawAfter() {
 	if ( strlen( getUpdate() ) ) {
 		glPushMatrix();
@@ -369,6 +373,8 @@ void MainMenu::hide() {
 	musicStarted = false;
 }
 
+/// Draws the menu.
+
 void MainMenu::drawMenu() {
 
 	if ( textEffects.empty() && openingTop <= top ) {
@@ -405,6 +411,8 @@ void MainMenu::drawMenu() {
 		}
 	}
 }
+
+/// Draws the logo in the upper left.
 
 void MainMenu::drawLogo() {
 
@@ -499,6 +507,8 @@ void MainMenu::drawLogo() {
 	glDisable( GL_BLEND );
 }
 
+/// Draws the stars.
+
 void MainMenu::drawStars() {
 	glDisable( GL_TEXTURE_2D );
 	for ( int i = 0; i < starCount; i++ ) {
@@ -520,6 +530,8 @@ void MainMenu::drawStars() {
 	glEnable( GL_TEXTURE_2D );
 
 }
+
+/// Draws the scourge (the house entrance to the right).
 
 void MainMenu::drawScourge() {
 
@@ -552,6 +564,8 @@ void MainMenu::drawScourge() {
 	glDisable( GL_TEXTURE_2D );
 	glDisable( GL_BLEND );
 }
+
+/// Draws the mountains in the back.
 
 void MainMenu::drawBackdrop() {
 
@@ -587,6 +601,8 @@ void MainMenu::drawBackdrop() {
 	glDisable( GL_BLEND );
 
 }
+
+/// Draws the clouds.
 
 void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 	// draw clouds
@@ -632,6 +648,8 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 	glDisable( GL_BLEND );
 	glDisable( GL_TEXTURE_2D );
 }
+
+/// Draws the water.
 
 void MainMenu::drawWater() {
 	float w, h;
@@ -825,6 +843,8 @@ bool MainMenu::handleEvent( SDL_Event *event ) {
 	}
 	return false;
 }
+
+/// Returns the selected menu entry.
 
 int MainMenu::getValue() {
 	return value;
