@@ -3998,6 +3998,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 			movingDoors.push_back( movingDoor );
 			int panning = getSession()->getMap()->getPanningFromMapXY( movingDoor.x, movingDoor.y );
 			getSession()->getSound()->playSound( Sound::OPEN_DOOR, panning );
+			return true;
 		} else {
 			// switch door
 			Sint16 ox = pos->x;
