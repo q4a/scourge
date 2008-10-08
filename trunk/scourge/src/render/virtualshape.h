@@ -64,7 +64,7 @@ public:
 	virtual inline bool isDrawn() {
 		return this->draws;
 	}
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif /*VIRTUALSHAPE_H_*/

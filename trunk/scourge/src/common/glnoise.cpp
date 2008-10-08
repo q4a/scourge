@@ -51,3 +51,11 @@ void noiseGL( void ) {
 	std::cerr << std::endl;
 
 }
+
+/// puts gluErrorString of any positive ret to cerr
+void noiseGlu( GLenum err ) {
+	if ( err == 0 )
+		return;
+
+	std::cerr << "glu error #" << err <<":" << gluErrorString(err) << std::endl;
+}

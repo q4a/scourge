@@ -153,7 +153,7 @@ public:
 
 protected:
 	void createOverlayTexture();
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 
 };
 

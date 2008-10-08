@@ -83,7 +83,7 @@ public:
 	virtual inline float getOffsetZ() {
 		return 7;
 	}
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #define MAX_EFFECT_COUNT 100
@@ -111,7 +111,7 @@ public:
 	virtual inline float getOffsetZ() {
 		return 1;
 	}
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif

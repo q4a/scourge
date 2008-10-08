@@ -79,7 +79,7 @@ public:
 
 protected:
 	void commonInit( GLuint flameTex );
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 
 };
 

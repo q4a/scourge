@@ -102,7 +102,7 @@ private:
 	// These are used through the loading process to hold the chunk information
 	tChunk *m_CurrentChunk;
 	tChunk *m_TempChunk;
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 

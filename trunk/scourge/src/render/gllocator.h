@@ -55,7 +55,7 @@ public:
 
 
 protected:
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif

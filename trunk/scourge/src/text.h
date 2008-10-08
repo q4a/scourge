@@ -135,6 +135,7 @@ public:
 private:
 	TexGlyphVertexInfo *getTCVI( int c );
 	int txfInFont( int c );
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif

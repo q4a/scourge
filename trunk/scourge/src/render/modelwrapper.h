@@ -90,7 +90,7 @@ public:
 	GLuint loadSkinTexture( const std::string& skin_name );
 	void unloadSkinTexture( const std::string& skin_name );
 	void debugModelLoader();
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif

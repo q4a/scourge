@@ -109,7 +109,7 @@ protected:
 	void drawBlast( bool proceed, float percent );
 
 	void drawParticle( Particle *particle );
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif

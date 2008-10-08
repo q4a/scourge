@@ -21,6 +21,9 @@
 /// puts any positive glGetError() result to cerr
 void noiseGL( void );
 
+/// puts gluErrorString of any positive ret to cerr
+void noiseGlu( GLenum err );
+
 /// use  DECLARE_NOISY_OPENGL_SUPPORT() macro with defined NOISY_OPENGL 
 /// to generate lots of noisy member functions that hide most OpenGL functions. 
 
@@ -221,7 +224,20 @@ void noiseGL( void );
 	static void glViewport( GLint x, GLint y, GLsizei width, GLsizei height ) {     \
 		::glViewport( x, y, width, height ); noiseGL();    \
 	}                                                      \
-	 
+	static int gluBuild2DMipmaps( GLenum target, GLint components, GLint width, GLint height, GLenum format, GLenum type, const void *data ) { \
+		int ret = ::gluBuild2DMipmaps( target, components, width, height, format, type, data ); noiseGlu( ret ); return ret; \
+	}                                                      \
+	static int gluProject( GLdouble objx, GLdouble objy, GLdouble objz, const GLdouble modelMatrix[16], const GLdouble projMatrix[16], const GLint viewport[4], GLdouble *winx, GLdouble *winy, GLdouble *winz) { \
+		int ret = ::gluProject( objx, objy, objz, modelMatrix, projMatrix, viewport, winx, winy, winz); if ( ret == GL_FALSE ) {std::cerr << "gluProject() FAILURE" << std::endl;} return ret; \
+	}                                                      \
+	static GLUquadric* gluNewQuadric( void ) {             \
+	GLUquadric* ret = ::gluNewQuadric(); if ( ret == NULL ) {std::cerr << "gluNewQuadric() FAILURE" << std::endl;} return ret;   \
+	}                                                      \
+	static int gluUnProject( GLdouble winx, GLdouble winy, GLdouble winz, const GLdouble modelMatrix[16], const GLdouble projMatrix[16], const GLint viewport[4], GLdouble *objx, GLdouble *objy, GLdouble *objz) { \
+		int ret = ::gluUnProject( winx, winy, winz, modelMatrix, projMatrix, viewport, objx, objy, objz); if ( ret == GL_FALSE ) {std::cerr << "gluUnProject() FAILURE" << std::endl;} return ret; \
+	}                                                      \
+
+
 #endif //NOISY_OPENGL
 
 #endif //GLNOISE_H
