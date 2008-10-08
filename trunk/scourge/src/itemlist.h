@@ -28,10 +28,11 @@ class Item;
 class Window;
 class Label;
 
-/**
-Add arbitrary rendering to displaying items in the list. For example, the trade
- dialog displays the item's price next to the name.
- */
+/// Custom list entry renderer.
+
+/// Add arbitrary rendering to displaying items in the list. For example, the trade
+/// dialog displays the item's price next to the name.
+
 class ItemRenderer {
 public:
 	ItemRenderer() {
@@ -43,11 +44,12 @@ public:
 	virtual void render( const Widget *widget, const Item *item, std::string& buffer ) = 0;
 };
 
-/**
-A special scrolling list that shows a list of items. It can be used to show a creature's
- inventory or the contents of a container. The class shows items with the right color and
- icon. It also supports showing the item info dialog when right-clicking an item.
- */
+/// Extended version of ScrollingList for items.
+
+/// A special scrolling list that shows a list of items. It can be used to show a creature's
+/// inventory or the contents of a container. The class shows items with the right color and
+/// icon. It also supports showing the item info dialog when right-clicking an item.
+
 class ItemList : public ScrollingList {
 private:
 	Scourge *scourge;
@@ -79,18 +81,23 @@ public:
 		return container;
 	}
 
+	/// Only show unidentified items?
 	inline void setUnidentifiedOnly( bool b ) {
 		unidentifiedOnly = b;
 	}
+	/// Only show magical items that are not fully charged?
 	inline void setNeedsRechargeOnly( bool b ) {
 		needsRechargeOnly = b;
 	}
+	/// Only show cursed items?
 	inline void setCursedOnly( bool b ) {
 		cursedOnly = b; allowCursed = true;
 	}
+	/// Display cursed items?
 	inline void setAllowCursed( bool b ) {
 		allowCursed = b;
 	}
+	/// Display equipped items?
 	inline void setAllowEquipped( bool b ) {
 		allowEquipped = b;
 	}
