@@ -153,7 +153,7 @@ public:
 	inline GLuint getEffectDelay() {
 		return effectDelay;
 	}
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif

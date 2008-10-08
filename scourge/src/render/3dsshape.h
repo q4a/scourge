@@ -158,7 +158,7 @@ protected:
 	inline GLfloat getZRot3d() {
 		return zrot3d;
 	}
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif

@@ -286,6 +286,7 @@ protected:
 	void drawDebugInfo();
 	void drawFadeout();
 
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif

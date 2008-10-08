@@ -67,7 +67,7 @@ protected:
 	int getHighestZ( int sx, int sy, int w, int h );
 	void createOverlayTexture();
 	void createShadeTexture();
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif

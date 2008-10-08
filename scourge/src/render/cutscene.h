@@ -81,7 +81,7 @@ public:
 	int getCurrentLetterboxHeight();
 
 	void drawLetterbox();
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif

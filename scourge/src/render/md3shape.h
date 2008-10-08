@@ -85,7 +85,7 @@ public:
 protected:
 	void unloadSkinTextures( int count, std::vector<tMaterialInfo> *materials );
 	void setCurrentAnimation( int numAnim, bool force, int whichPart );
-	DECLARE_NOISY_OPENGL_SUPPORT()
+	DECLARE_NOISY_OPENGL_SUPPORT();
 
 };
 

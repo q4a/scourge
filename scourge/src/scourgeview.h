@@ -125,6 +125,7 @@ protected:
 	void drawWeather();
 	void endScissorToMap();
 	void showMovieConversation( Creature *creature );
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 #endif
