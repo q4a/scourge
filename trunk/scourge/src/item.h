@@ -84,9 +84,11 @@ public:
 		inventoryX = x;
 		inventoryY = y;
 	}
+	/// x position in the inventory.
 	inline int getInventoryX() {
 		return inventoryX;
 	}
+	/// y position in the inventory.
 	inline int getInventoryY() {
 		return inventoryY;
 	}
@@ -97,11 +99,12 @@ public:
 		if ( value ) identifiedBits |= ( 1 << bit );
 		else identifiedBits &= ( ( Uint32 )0xffff - ( Uint32 )( 1 << bit ) );
 	}
+	/// Checks whether a special item property has been identified.
 	inline bool getIdentifiedBit( int bit ) {
 		return( identifiedBits & ( 1 << bit ) ? true : false );
 	}
 	void identify( int infoDetailLevel );
-	//Returns true if all bits in identifiedBits are set to true
+	/// Returns true if all bits in identifiedBits are set to true, i.e. fully identified.
 	inline bool isIdentified() {
 		return( isMagicItem() && identifiedBits >= ( 1 << ID_COUNT ) - 1 );
 	}
@@ -114,18 +117,22 @@ public:
 
 	static std::map<int, std::vector<std::string> *> soundMap;
 
+	/// Unused.
 	inline Color *getColor() {
 		return color;
 	}
+	/// Unused.
 	inline void setColor( Color *c ) {
 		color = c;
 	}
 	inline void setShape( GLShape *s ) {
 		shape = s;
 	}
+	/// The item's 3D model.
 	inline GLShape *getShape() {
 		return shape;
 	}
+	/// This specific item's base item.
 	inline RpgItem *getRpgItem() {
 		return rpgItem;
 	}
@@ -135,6 +142,7 @@ public:
 	inline void setBlocking( bool b ) {
 		blocking = b;
 	}
+	/// Number of remaining charges/uses.
 	inline int getCurrentCharges() {
 		return currentCharges;
 	}
@@ -147,6 +155,7 @@ public:
 		return spell;
 	}
 
+	/// Sets whether the item's cursed status should be hidden or not.
 	inline void setShowCursed( bool b ) {
 		showCursed = b;
 	}
@@ -155,25 +164,24 @@ public:
 	}
 
 	void getDetailedDescription( std::string& s, bool precise = true );
+	/// The item's localized name.
 	inline char *getItemName() {
 		return itemName;
 	}
 
+	/// Number of other items this item contains.
 	inline int getContainedItemCount() {
 		return containedItemCount;
 	}
-	// return true if successful
 	bool addContainedItem( Item *item, bool force = false );
-	// return removed item, or NULL
 	Item *removeContainedItem( int index );
 	Item *getContainedItem( int index );
 	bool isContainedItem( Item *item );
+	/// Returns true if the item contains magical items.
 	inline bool getContainsMagicItem() {
 		return containsMagicItem;
 	}
 
-	// return true if the item is used up
-	// this method also adjusts weight
 	bool decrementCharges();
 
 	const std::string getRandomSound();
@@ -186,15 +194,19 @@ public:
 
 
 	// level-based attributes
+	/// The item's level.
 	inline int getLevel() {
 		return level;
 	}
+	/// The item's weight.
 	inline float getWeight() {
 		return weight;
 	}
+	/// Price of the item without trade boni/mali.
 	inline int getPrice() {
 		return price;
 	}
+	/// Unused.
 	inline int getQuality() {
 		return quality;
 	}
@@ -206,36 +218,44 @@ public:
 	inline std::map<int, int> *getSkillBonusMap() {
 		return &skillBonus;
 	}
+	/// The bonus the item gives for the specified skill.
 	inline int getSkillBonus( int skill ) {
 		return ( skillBonus.find( skill ) == skillBonus.end() ? 0 : skillBonus[skill] );
 	}
+	/// The magic level (none, lesser, greater, champion, divine)
 	inline int getMagicLevel() {
 		return magicLevel;
 	}
 	inline int getBonus() {
 		return bonus;
 	}
+	/// Returns the "x times damage against ..." bonus.
 	inline int getDamageMultiplier() {
 		return damageMultiplier;
 	}
+	/// The monster type the damage multiplier applies to.
 	inline char const* getMonsterType() {
 		return monsterType;
 	}
+	/// Magic school of the attached spell.
 	inline MagicSchool *getSchool() {
 		return school;
 	}
 	int rollMagicDamage();
 	int getMagicResistance();
 	char *describeMagicDamage();
+	/// "Cursed" state of the item.
 	inline bool isCursed() {
 		return cursed;
 	}
 	inline void setCursed( bool b ) {
 		this->cursed = b;
 	}
+	/// Does it set the specified state mod?
 	inline bool isStateModSet( int mod ) {
 		return( stateMod[mod] == 1 );
 	}
+	/// Does it protect against the specified state mod?
 	inline bool isStateModProtected( int mod ) {
 		return( stateMod[mod] == 2 );
 	}
