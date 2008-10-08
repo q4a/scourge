@@ -129,6 +129,8 @@ DiceInfo *Item::saveEmptyDice() {
 	return info;
 }
 
+/// The item's damage dice (number of dices, sides per dice, modifier; example: 2d6+2 )
+
 Dice *Item::loadDice( Session *session, DiceInfo *info ) {
 	if ( !info->count ) return NULL;
 	return new Dice( info->count, info->sides, info->mod );
@@ -209,6 +211,8 @@ bool Item::addContainedItem( Item *item, bool force ) {
 	}
 }
 
+/// Removes a contained item by index.
+
 Item *Item::removeContainedItem( int index ) {
 	Item *item = NULL;
 	if ( index >= 0 && index < containedItemCount ) {
@@ -225,9 +229,13 @@ Item *Item::removeContainedItem( int index ) {
 	return item;
 }
 
+/// Returns a contained item by index.
+
 Item *Item::getContainedItem( int index ) {
 	return( ( index >= 0 && index < containedItemCount ) ? containedItems[index] : NULL );
 }
+
+/// Returns whether the item is inside a container.
 
 bool Item::isContainedItem( Item *item ) {
 	for ( int i = 0; i < containedItemCount; i++ ) {
@@ -237,6 +245,8 @@ bool Item::isContainedItem( Item *item ) {
 	}
 	return false;
 }
+
+/// Creates a brief one-line description of the item.
 
 void Item::getDetailedDescription( std::string& s, bool precise ) {
 	RpgItem * rpgItem  = getRpgItem();
@@ -864,9 +874,13 @@ void Item::describeMagic( char const* displayName ) {
 	}
 }
 
+/// Is this a special (mission or story related) item?
+
 bool Item::isSpecial() {
 	return getRpgItem()->isSpecial();
 }
+
+/// Rolls additional magical damage.
 
 int Item::rollMagicDamage() {
 	return ( magicDamage ? magicDamage->roll() : 0 );
@@ -898,12 +912,16 @@ void Item::debugMagic( char *s ) {
 	cerr << "-----------" << endl;
 }
 
+/// Sets the number of remaining charges/uses.
+
 void Item::setCurrentCharges( int n ) {
 	if ( n < 0 ) n = 0;
 	if ( n > rpgItem->getMaxCharges() )
 		n = rpgItem->getMaxCharges();
 	currentCharges = n;
 }
+
+/// Sets the item's attached spell. Can create spell scrolls.
 
 void Item::setSpell( Spell *spell ) {
 	this->spell = spell;
@@ -914,21 +932,31 @@ void Item::setSpell( Spell *spell ) {
 	}
 }
 
+/// The item's localized name.
+
 const char *Item::getName() {
 	return getItemName();
 }
+
+/// Which icon tile from tiles.png to use? (deprecated)
 
 int Item::getIconTileX() {
 	return rpgItem->getIconTileX();
 }
 
+/// Which icon tile from tiles.png to use? (deprecated)
+
 int Item::getIconTileY() {
 	return rpgItem->getIconTileY();
 }
 
+/// Max shooting distance for ranged weapons.
+
 int Item::getRange() {
 	return getRpgItem()->getRange();
 }
+
+/// Items are always storable (in a quickspell slot).
 
 int Item::getStorableType() {
 	return Storable::ITEM_STORABLE;
@@ -938,19 +966,21 @@ const char *Item::isStorable() {
 	return NULL;
 }
 
+/// The type of item (weapon, armor, special etc.).
+
 char *Item::getType() {
 	// how is an item saved in a map? (this is not displayName)
 	return getRpgItem()->getName();
 }
 
+/// Tries to identify an unidentified item property.
 
-/**
- * Sets identification bit to true if random function eveluates more than infoDetailLevel
- * with specified cap modifier.
- * @param bit
- * @param modifier
- * @param infoDetailLevel
- */
+/// Sets identification bit to true if random function eveluates more than infoDetailLevel
+/// with specified cap modifier.
+/// @param bit
+/// @param modifier
+/// @param infoDetailLevel
+
 void Item::trySetIDBit( int bit, float modifier, int infoDetailLevel ) {
 	//If not yet set
 	if ( !getIdentifiedBit( bit ) ) {
@@ -961,6 +991,11 @@ void Item::trySetIDBit( int bit, float modifier, int infoDetailLevel ) {
 		}
 	}
 }
+
+/// Tries to identify unidentified item properties.
+
+/// A higher value of infoDetailLevel decreases the success
+/// rate.
 
 void Item::identify( int infoDetailLevel ) {
 #ifdef DEBUG_IDENTIFY_ITEM
@@ -1038,13 +1073,19 @@ void Item::identify( int infoDetailLevel ) {
 	// fprintf( stderr, "skill=%d id=%x\n", infoDetailLevel, identifiedBits );
 }
 
+/// Inventory x size.
+
 int Item::getInventoryWidth() {
 	return ( getShape()->getIcon() > 0 ? getShape()->getIconWidth() : rpgItem->getInventoryWidth() );
 }
 
+/// Inventory y size.
+
 int Item::getInventoryHeight() {
 	return ( getShape()->getIcon() > 0 ? getShape()->getIconHeight() : rpgItem->getInventoryHeight() );
 }
+
+/// Renders the item's icon and any overlaid effects.
 
 void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
 	GLuint tex;
@@ -1070,6 +1111,12 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallI
 //	}
 	glPopMatrix();
 }
+
+/// Returns the item's icon with additional info.
+
+/// The following is returned: The OpenGL texture, width and height of the texture,
+/// and the top left corner of the item graphic within the texture.
+/// When smallIcon is false, it returns the inventory graphic, else the small icon.
 
 void Item::getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon ) {
 	GLuint tex;
@@ -1105,6 +1152,8 @@ void Item::getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp
 	*oyp = oy;
 }
 
+/// Renders the item's icon (in lists, the inventory etc.)
+
 void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
 	glColor4f( 1, 1, 1, 1 );
 	glEnable( GL_BLEND );
@@ -1123,6 +1172,8 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool sm
 	glEnd();
 	glDisable( GL_BLEND );
 }
+
+/// Returns the item's icon texture.
 
 GLuint Item::getItemIconTexture( bool smallIcon ) {
 	return ( !smallIcon && getShape()->getIcon() > 0 ? getShape()->getIcon() : 
@@ -1256,6 +1307,8 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 	glColor4f( 1, 1, 1, 1 );
 }
 
+/// Renders the "blinking stars" effect for magical items.
+
 void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih ) {
 	// draw an effect
 	Uint32 t = SDL_GetTicks();
@@ -1312,6 +1365,8 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 	glColor4f( 1, 1, 1, 1 );
 }
 
+/// Renders the effect for unidentified items. Currently only prints "?"
+
 void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h ) {
 	if ( isIdentified() ) {
 		/*
@@ -1333,6 +1388,8 @@ void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, i
 		scourge->getSDLHandler()->texPrint( x + 2, y + 12, "?" );
 	}
 }
+
+/// Item's tooltip text (for the inventory).
 
 void Item::getTooltip( char *tooltip ) {
 	enum { TMP_SIZE = 500 };
