@@ -232,8 +232,10 @@ void Fog::draw( int sx, int sy, int w, int h, CFrustum *frustum ) {
 			p[pCount][3] = maxScY - minScY;
 
 			e[pCount] = false;
-			if ( v != fog[ fx + x ][ fy + y - 1 ] || v != fog[ fx + x - 1 ][ fy + y ] ||
-			        v != fog[ fx + x + 1 ][ fy + y ] || v != fog[ fx + x ][ fy + y + 1 ] ) {
+			if ( ( fy + y > 0 && v != fog[ fx + x ][ fy + y - 1 ] )
+			        || ( fx + x > 0 && v != fog[ fx + x - 1 ][ fy + y ] )
+			        || ( fx + x < FOG_WIDTH - 1 && v != fog[ fx + x + 1 ][ fy + y ] )
+			        || ( fy + y < FOG_DEPTH - 1 &&  v != fog[ fx + x ][ fy + y + 1 ] ) ) {
 				e[pCount] = true;
 			}
 
