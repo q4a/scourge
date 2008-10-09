@@ -190,11 +190,14 @@ private:
 	signed int nbPosCache;
 	Rug rugPos[MAP_CHUNKS_X][MAP_CHUNKS_Y];
 	Shape *floorPositions[MAP_WIDTH][MAP_DEPTH];
+
+	/// An indoor water tile.
 	struct WaterTile {
 		float z[WATER_TILE_X][WATER_TILE_Y];
 		float step[WATER_TILE_X][WATER_TILE_Y];
 		Uint32 lastTime[WATER_TILE_X][WATER_TILE_Y];
 	};
+
 	std::map<Uint32, WaterTile*> water;
 	bool debugGridFlag;
 	bool drawGridFlag;
@@ -232,7 +235,9 @@ private:
 
 	static int dir_index[];
 
+	/// Unused.
 	void drawGrid( SDL_Surface *surface );
+	/// Unused.
 	void debugGrid( SDL_Surface *surface );
 
 	int mapViewWidth, mapViewDepth;
@@ -303,6 +308,7 @@ public:
 		return this->gridEnabled;
 	}
 
+	/// Levels can have occasional quakes.
 	inline void setQuakesEnabled( bool b ) {
 		quakesEnabled = b;
 	}
@@ -312,10 +318,12 @@ public:
 	void quake();
 
 	void setRoofShowing( bool b );
+	/// Unused.
 	inline bool getRoofShowing() {
 		return isRoofShowing;
 	}
 
+	/// Are we under a roof (inside a house)?
 	inline bool getCurrentlyUnderRoof() {
 		return isCurrentlyUnderRoof;
 	}
@@ -353,6 +361,7 @@ public:
 		return adapter;
 	}
 
+	/// Gets the game's user-set preferences.
 	inline Preferences *getPreferences() {
 		return preferences;
 	}
@@ -369,6 +378,7 @@ public:
 		return settings;
 	}
 
+	/// Returns the frustum (the viewing area).
 	inline CFrustum *getFrustum() {
 		return frustum;
 	}
@@ -397,6 +407,7 @@ public:
 	void loadMapLocation( const std::string& name, std::string& result, int *gridX, int *gridY, int depth = 0 );
 	void initForCave( char *themeName = NULL );
 
+	/// Returns the mouse cursor's map position.
 	inline Uint16 getCursorMapX() {
 		return cursorMapX;
 	}
@@ -407,6 +418,7 @@ public:
 		return cursorMapZ;
 	}
 
+	/// Returns the mouse cursor's map position (using flat map math).
 	inline Uint16 getCursorFlatMapX() {
 		return cursorFlatMapX;
 	}
@@ -446,6 +458,7 @@ public:
 		return settings;
 	}
 
+	/// Is this a flooded level (indoors only)?
 	inline bool getHasWater() {
 		return hasWater;
 	}
@@ -462,6 +475,7 @@ public:
 	inline void setSelectedDropTarget( Location *loc ) {
 		selectedDropTarget = loc;
 	}
+	/// A location where an item is to be dropped by the player.
 	inline Location *getSelectedDropTarget() {
 		return selectedDropTarget;
 	}
@@ -497,12 +511,15 @@ public:
 		return zrot;
 	}
 
+	/// Move the camera one tile east.
 	inline void addXPos( float f ) {
 		xpos += f;
 	}
+	/// Move the camera one tile south.
 	inline void addYPos( float f ) {
 		ypos += f;
 	}
+	/// Make the camera point at a higher z pos.
 	inline void addZPos( float f ) {
 		zpos += f;
 	}
@@ -534,18 +551,15 @@ public:
 	void preDraw();
 	void postDraw();
 
+	/// Unused.
 	void drawBorder();
 
-	/**
-	The map top left x coordinate
-	*/
+	/// The map top left x coordinate
 	inline int getX() {
 		return x;
 	}
 
-	/**
-	The map top left y coordinate
-	*/
+	/// The map top left y coordinate
 	inline int getY() {
 		return y;
 	}
@@ -589,10 +603,6 @@ public:
 	void setCreature( Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature );
 	RenderedCreature *removeCreature( Sint16 x, Sint16 y, Sint16 z );
 
-	/**
-	 * if you can't move to this spot (blocked) returns the blocking shape,
-	 * otherwise returns NULL and moves the shape.
-	 */
 	Location *moveCreature( Sint16 x, Sint16 y, Sint16 z, Uint16 dir,
 	                        RenderedCreature *newCreature );
 	Location *moveCreature( Sint16 x, Sint16 y, Sint16 z,
@@ -608,27 +618,22 @@ public:
 		return rugPos[x][y].texture != 0;
 	}
 
-	/**
-	 * Can shape at shapeX, shapeY, shapeZ move to location x, y, z?
-	 * returns NULL if ok, or the blocking Shape* otherwise.
-	 * if newz is not null, it will ignore blocking "item"-s and instead stack the new
-	 * shape on top, returning the new z position in newz.
-	 */
 	Location *isBlocked( Sint16 x, Sint16 y, Sint16 z,
 	                     Sint16 shapex, Sint16 shapey, Sint16 shapez,
 	                     Shape *shape,
 	                     int *newz = NULL,
 	                     bool useItemPos = false );
 
-	/** This one only returns if the shape originates at xyz. */
 	Location *getPosition( Sint16 x, Sint16 y, Sint16 z );
-	/** This one returns even if shape doesn't originate at xyz */
+	/// Returns a position struct for the specified map tile.
 	inline Location *getLocation( Sint16 x, Sint16 y, Sint16 z ) {
 		return pos[x][y][z];
 	}
+	/// Returns an item position struct for the x,y map tile.
 	inline Location *getItemLocation( Sint16 x, Sint16 y ) {
 		return itemPos[x][y];
 	}
+	/// Gets the shape that is on the floor at x,y.
 	inline Shape *getFloorPosition( Sint16 x, Sint16 y ) {
 		if ( x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_DEPTH ) return NULL; else return floorPositions[x][y];
 	}
@@ -652,7 +657,6 @@ public:
 
 	bool shapeFitsOutdoors( GLShape *shape, int x, int y, int z );
 
-	// like shapefits, but returns the blocking location or, NULL if there's nothing there
 	Location *getBlockingLocation( Shape *shape, int x, int y, int z );
 
 	Location *getDropLocation( Shape *shape, int x, int y, int z );
@@ -675,14 +679,8 @@ public:
 		return viewHeight;
 	}
 
-	// drop items above this one
 	void dropItemsAbove( int x, int y, int z, RenderedItem *item );
 
-	/**
-	 * Find the creatures in this area and add them to the targets array.
-	 * Returns the number of creatures found. (0 if none.)
-	 * It's the caller responsibility to create the targets array.
-	*/
 	int getCreaturesInArea( int x, int y, int radius, RenderedCreature *targets[] );
 
 	bool isOnScreen( Uint16 mapx, Uint16 mapy, Uint16 mapz );
@@ -708,6 +706,7 @@ public:
 		}
 	}
 
+	/// Clear the locked objects (doors and levers).
 	inline void clearLocked() {
 		if ( !locked.empty() ) locked.clear();
 		if ( !doorToKey.empty() ) doorToKey.clear();
@@ -719,6 +718,7 @@ public:
 		return ( locked.find( door ) != locked.end() ? locked[door] : false );
 	}
 
+	/// Gets the position of the door that is connected to the lever at x,y,z.
 	inline void getDoorLocation( int keyX, int keyY, int keyZ,
 	                             int *doorX, int *doorY, int *doorZ ) {
 		Uint32 key = createTripletKey( keyX, keyY, keyZ );
@@ -729,6 +729,7 @@ public:
 		}
 	}
 
+	/// Gets the position of the lever that is connected to the door at x,y,z.
 	inline void getKeyLocation( int doorX, int doorY, int doorZ,
 	                            int *keyX, int *keyY, int *keyZ ) {
 		Uint32 key = createTripletKey( doorX, doorY, doorZ );
@@ -784,6 +785,7 @@ public:
 	inline void setGroundHeight( int x, int y, float h ) {
 		this->ground[x][y] = h; refreshGroundPos = true;
 	}
+	/// Gets the ground height at x,y.
 	inline float getGroundHeight( int x, int y ) {
 		return this->ground[x][y];
 	}
@@ -802,16 +804,13 @@ public:
 	inline void setGroundTex( int x, int y, GLuint tex ) {
 		this->groundTex[x][y] = tex;
 	}
+	/// Returns the ground texture of tile x,y.
 	inline GLuint getGroundTex( int x, int y ) {
 		return this->groundTex[x][y];
 	}
 
 	float findMaxHeightPos( float x, float y, float z, bool findMax = false );
 
-	/**
-	 * Draw a texture on top of the ground map. This is useful for drawing shadows or
-	 * selection circles on top of un-even terrain.
-	 */
 	void drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, float angle = 0 );
 
 	void drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, float angle = 0 );
@@ -828,13 +827,11 @@ public:
 	inline std::set<Uint8> *getTrapsShown() {
 		return &trapSet;
 	}
+	/// The currently selected trap (mouse cursor is over it).
 	inline int getSelectedTrapIndex() {
 		return selectedTrapIndex;
 	}
 
-	/**
-	 * Is it safe to put a create here? (ie. has floor, etc.)
-	 */
 	bool canFit( int x, int y, Shape *shape );
 	bool isEmpty( int x, int y );
 
@@ -894,7 +891,10 @@ protected:
 		move &= ( 0xffff - n );
 	}
 
-	// This assumes that MAP_WIDTH >= MAP_HEIGHT and that MAP_WIDTH^3 < 2^32.
+	/// Creates a unique key from a x,y,z map position.
+
+	/// This assumes that MAP_WIDTH >= MAP_HEIGHT
+	/// and that MAP_WIDTH^3 < 2^32.
 	inline Uint32 createTripletKey( int x, int y, int z ) {
 		Uint32 key =
 		  ( ( Uint32 )x * ( Uint32 )MAP_WIDTH * ( Uint32 )MAP_WIDTH ) +
@@ -904,6 +904,7 @@ protected:
 		return key;
 	}
 
+	/// Decodes a triplet key to a x,y,z map position.
 	inline void decodeTripletKey( Uint32 key, int *x, int *y, int *z ) {
 		*x = static_cast<int>( key / ( ( Uint32 )MAP_WIDTH * ( Uint32 )MAP_WIDTH ) );
 		*y = static_cast<int>( ( key % ( ( Uint32 )MAP_WIDTH * ( Uint32 )MAP_WIDTH ) ) / ( Uint32 )MAP_WIDTH );
@@ -911,6 +912,7 @@ protected:
 		//cerr << "DEBUG: decodeTripletKey, key=" << key << " x=" << (*x) << " y=" << (*y) << " z=" << (*z) << endl;
 	}
 
+	/// Creates a unique key from a map position.
 	inline Uint32 createPairKey( int x, int y ) {
 		Uint32 key =
 		  ( ( Uint32 )x * ( Uint32 )MAP_WIDTH ) +
@@ -918,26 +920,26 @@ protected:
 		return key;
 	}
 
+	/// Decodes a pair key to a map position.
 	inline void decodePairKey( Uint32 key, int *x, int *y ) {
 		*x = static_cast<int>( key / ( ( Uint32 )MAP_WIDTH ) );
 		*y = static_cast<int>( key % ( ( Uint32 )MAP_WIDTH ) );
 	}
 
 	CFrustum *frustum;
+
+	/// A chunk (of several tiles).
 	struct ChunkInfo {
 		float x, y;
 		int cx, cy;
 	};
+
 	ChunkInfo chunks[100];
 	int chunkCount;
 	DrawLater later[100], stencil[1000], other[1000], damage[1000], roof[1000];
 	int laterCount, stencilCount, otherCount, damageCount, roofCount;
 	std::map<Uint32, EffectLocation*> currentEffectsMap;
 
-	/**
-	If 'ground' is true, it draws the ground layer.
-	Otherwise the shape arrays (other, stencil, later) are populated.
-	 */
 	void setupShapes( bool forGround, bool forWater, int *csx = NULL, int *cex = NULL, int *csy = NULL, int *cey = NULL );
 	void setupPosition( int posX, int posY, int posZ,
 	                    float xpos2, float ypos2, float zpos2,
@@ -982,6 +984,7 @@ protected:
 	                            bool *lightEdge );
 	bool checkUnderRoof();
 
+	/// Unused.
 	void drawWater();
 
 	void removeCurrentEffects();
