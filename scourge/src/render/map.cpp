@@ -255,6 +255,8 @@ Map::~Map() {
 	delete helper;
 }
 
+/// After work is done, reset everything.
+
 void Map::reset() {
 	creatureMap.clear();
 	creatureEffectMap.clear();
@@ -410,6 +412,8 @@ void Map::reset() {
 	gridEnabled = true;
 }
 
+/// Sets the size and position of the viewport.
+
 void Map::setViewArea( int x, int y, int w, int h ) {
 	//viewX = x;
 //  viewY = y;
@@ -441,6 +445,8 @@ void Map::center( Sint16 x, Sint16 y, bool force ) {
 		this->mapy = ny;
 	}
 }
+
+/// Removes effects that are done playing.
 
 void Map::removeCurrentEffects() {
 	for ( map<Uint32, EffectLocation*>::iterator i = currentEffectsMap.begin();
@@ -691,6 +697,8 @@ bool Map::checkUnderRoof() {
 	return ( isCurrentlyUnderRoof != oldRoof );
 }
 
+/// Sets up a map location and checks whether it is visible/accessible.
+
 void Map::setupLocation( Location *location, Uint16 drawSide, int chunkStartX, int chunkStartY, int chunkOffsetX, int chunkOffsetY ) {
 
 	int posX, posY, posZ;
@@ -886,6 +894,7 @@ void Map::drawWaterPosition( int posX, int posY,
 	glTranslatef( -xpos2, -ypos2, 0.0f );
 }
 
+
 void Map::setupPosition( int posX, int posY, int posZ,
     float xpos2, float ypos2, float zpos2,
     Shape *shape, RenderedItem *item, RenderedCreature *creature,
@@ -986,9 +995,13 @@ void Map::setupPosition( int posX, int posY, int posZ,
 	}
 }
 
+/// Current camera zoom as a percentage value.
+
 float Map::getZoomPercent() {
 	return ( zoom - settings->getMinZoomIn() ) / ( settings->getMaxZoomOut() - settings->getMinZoomIn() );
 }
+
+/// Initialization before doing the actual drawing.
 
 void Map::preDraw() {
 	if ( refreshGroundPos ) {
@@ -1066,6 +1079,8 @@ void Map::preDraw() {
 #endif
 	}
 }
+
+/// Draws traps, and cleans up after drawing the main 3D view.
 
 void Map::postDraw() {
 	drawTraps();
@@ -1614,13 +1629,14 @@ void Map::willDrawGrid() {
 	glEnable( GL_DEPTH_TEST );
 }
 
-/*
-  Since rooms are rectangular, we can do this hack... a wall horizontal
-  wall piece will use the player's x coord. and its y coord.
-  A vertical one will use its X and the player's Y.
-  This is so that even if the wall extends below the player the entire
-  length has the same characteristics.
-*/
+/// Sorts the shapes in respect to the player's position.
+
+/// Since rooms are rectangular, we can do this hack... a wall horizontal
+/// wall piece will use the player's x coord. and its y coord.
+/// A vertical one will use its X and the player's Y.
+/// This is so that even if the wall extends below the player the entire
+/// length has the same characteristics.
+
 void Map::sortShapes( DrawLater *playerDrawLater, DrawLater *shapes, int shapeCount ) {
 	GLdouble mm[16];
 	glGetDoublev( GL_MODELVIEW_MATRIX, mm );
@@ -1667,6 +1683,8 @@ void Map::sortShapes( DrawLater *playerDrawLater, DrawLater *shapes, int shapeCo
 		}
 	}
 }
+
+/// Is there a shape in front of the player, obscuring him/her?
 
 bool Map::isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, map< string, bool > *cache, GLdouble *mm, GLdouble *pm, GLint *vp ) {
 
@@ -2051,6 +2069,8 @@ void Map::findOccludedSides( DrawLater *later, bool *sides ) {
 	}
 }
 
+/// Is the x,y,z location currently on the screen?
+
 bool Map::isOnScreen( Uint16 mapx, Uint16 mapy, Uint16 mapz ) {
 	glPushMatrix();
 
@@ -2143,6 +2163,8 @@ void Map::showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message)
 }
 */
 
+/// Positions the "camera".
+
 void Map::setPos( float x, float y, float z ) {
 	this->x = ( int )x;
 	this->y = ( int )y;
@@ -2151,9 +2173,8 @@ void Map::setPos( float x, float y, float z ) {
 	mapChanged = true;
 }
 
-/**
- * Initialize the map view (translater, rotate)
- */
+/// Initializes the map view (translate, rotate)
+
 void Map::initMapView( bool ignoreRot ) {
 	glLoadIdentity();
 
@@ -2225,6 +2246,8 @@ void Map::initMapView( bool ignoreRot ) {
 	}
 }
 
+/// Trigger a quake (the screen shivers for a while).
+
 void Map::quake() {
 	quakesEnabled = true;
 	nextQuakeStartTime = SDL_GetTicks() + 2 * QUAKE_DELAY;
@@ -2232,10 +2255,10 @@ void Map::quake() {
 	quakeOnce = true;
 }
 
-/**
- * if you can't move to this spot (blocked) returns the blocking shape,
- * otherwise returns NULL and moves the shape.
- */
+/// Moves a creature (instantly) by 1 tile into the specified direction.
+
+/// if you can't move to this spot (blocked) returns the blocking shape,
+/// otherwise returns NULL and moves the shape.
 
 Location *Map::moveCreature( Sint16 x, Sint16 y, Sint16 z, Uint16 dir, RenderedCreature *newCreature ) {
 	Sint16 nx = x;
@@ -2249,6 +2272,8 @@ Location *Map::moveCreature( Sint16 x, Sint16 y, Sint16 z, Uint16 dir, RenderedC
 	}
 	return moveCreature( x, y, z, nx, ny, nz, newCreature );
 }
+
+/// Moves a creature (instantly).
 
 Location *Map::moveCreature( Sint16 x, Sint16 y, Sint16 z, Sint16 nx, Sint16 ny, Sint16 nz, RenderedCreature *newCreature ) {
 
@@ -2270,6 +2295,8 @@ Location *Map::moveCreature( Sint16 x, Sint16 y, Sint16 z, Sint16 nx, Sint16 ny,
 void Map::setRugPosition( Sint16 xchunk, Sint16 ychunk, Rug *rug ) {
 	memcpy( &( rugPos[ xchunk ][ ychunk ] ), rug, sizeof( Rug ) );
 }
+
+/// Creates a shape on the floor (indoors).
 
 void Map::setFloorPosition( Sint16 x, Sint16 y, Shape *shape ) {
 	if ( x < MAP_OFFSET || y < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
@@ -2294,6 +2321,8 @@ void Map::removeRugPosition( Sint16 xchunk, Sint16 ychunk ) {
 	rugPos[ xchunk ][ ychunk ].texture = 0;
 }
 
+/// Removes items lying on the floor and water at the specified location.
+
 Shape *Map::removeFloorPosition( Sint16 x, Sint16 y ) {
 	Shape *shape = NULL;
 	if ( floorPositions[x][y] ) {
@@ -2308,12 +2337,12 @@ Shape *Map::removeFloorPosition( Sint16 x, Sint16 y ) {
 	return shape;
 }
 
-/**
- * Can shape at shapeX, shapeY, shapeZ move to location x, y, z?
- * returns NULL if ok, or the blocking Shape* otherwise.
- * if newz is not null, it will ignore blocking "item"-s and instead stack the new
- * shape on top, returning the new z position in newz.
- */
+/// Can the specified shape be moved from one x,y,z position to another x,y,z position?
+
+/// Can shape at shapeX, shapeY, shapeZ move to location x, y, z?
+/// returns NULL if ok, or the blocking Shape* otherwise.
+/// if newz is not null, it will ignore blocking "item"-s and instead stack the new
+/// shape on top, returning the new z position in newz.
 
 Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z, Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, Shape *s, int *newz, bool useItemPos ) {
 	int zz = z;
@@ -2379,9 +2408,13 @@ Location *Map::getPosition( Sint16 x, Sint16 y, Sint16 z ) {
 	return NULL;
 }
 
+/// Stops a visual effect.
+
 void Map::stopEffect( Sint16 x, Sint16 y, Sint16 z ) {
 	removeEffect( x, y, z );
 }
+
+/// Starts a visual effect.
 
 void Map::startEffect( Sint16 x, Sint16 y, Sint16 z, int effect_type, GLuint duration, int width, int height, GLuint delay, bool forever, DisplayInfo *di ) {
 
@@ -2419,6 +2452,8 @@ void Map::startEffect( Sint16 x, Sint16 y, Sint16 z, int effect_type, GLuint dur
 	resortShapes = mapChanged = true;
 }
 
+/// Removes the visual effect at x,y,z.
+
 void Map::removeEffect( Sint16 x, Sint16 y, Sint16 z ) {
 
 	if ( x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
@@ -2431,6 +2466,8 @@ void Map::removeEffect( Sint16 x, Sint16 y, Sint16 z ) {
 		effect[x][y][z] = NULL;
 	}
 }
+
+/// Removes all special visual effects (spells, etc.)
 
 void Map::removeAllEffects() {
 	for ( int x = 0; x < MAP_WIDTH; x++ ) {
@@ -2490,6 +2527,8 @@ float Map::findMaxHeightPos( float x, float y, float z, bool findMax ) {
 	return pos;
 }
 
+/// Returns true if any of the tiles in the specified area is textured.
+
 bool Map::hasOutdoorTexture( int x, int y, int width, int height ) {
 	for ( int xx = x; xx < x + width; xx++ ) {
 		for ( int yy = y - height - 1; yy <= y; yy++ ) {
@@ -2502,6 +2541,8 @@ bool Map::hasOutdoorTexture( int x, int y, int width, int height ) {
 	}
 	return false;
 }
+
+/// Sets the outdoor ground texture for a given map position (detailed version).
 
 void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref,
     float angle, bool horizFlip, bool vertFlip, int z ) {
@@ -2532,6 +2573,8 @@ void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref
 	mapChanged = true;
 }
 
+/// Deletes the outdoor ground texture at the specified coordinates.
+
 void Map::removeOutdoorTexture( int x, int y, float width, float height, int z ) {
 	int tx = x / OUTDOORS_STEP;
 	int ty = ( y - height - 1 ) / OUTDOORS_STEP;
@@ -2539,6 +2582,7 @@ void Map::removeOutdoorTexture( int x, int y, float width, float height, int z )
 	outdoorTex[tx][ty][z].texture = 0;
 	mapChanged = true;
 }
+
 
 void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
     Shape *shape,
@@ -2611,6 +2655,8 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	}
 }
 
+/// Places a shape at a x,y,z position (extended version).
+
 void Map::setPosition( Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *di ) {
 	GLShape* gls = dynamic_cast<GLShape*>( shape );
 	if ( gls ) {
@@ -2642,6 +2688,8 @@ void Map::setPosition( Sint16 x, Sint16 y, Sint16 z, Shape *shape, DisplayInfo *
 		adapter->shapeAdded( shape->getName(), x, y, z );
 	}
 }
+
+/// Deletes the shape at the specified map position.
 
 Shape *Map::removePosition( Sint16 x, Sint16 y, Sint16 z ) {
 	Shape *shape = NULL;
@@ -2691,6 +2739,8 @@ Shape *Map::removePosition( Sint16 x, Sint16 y, Sint16 z ) {
 	return shape;
 }
 
+/// Deletes an item at x,y.
+
 Shape *Map::removeItemPosition( Sint16 x, Sint16 y ) {
 	Shape *shape = NULL;
 	if ( itemPos[x][y] && itemPos[x][y]->shape && itemPos[x][y]->x == x && itemPos[x][y]->y == y ) {
@@ -2728,18 +2778,23 @@ Shape *Map::removeItemPosition( Sint16 x, Sint16 y ) {
 	return shape;
 }
 
-// like getLocation, you can specify any position in the shape to remove it.
+/// Deletes the shape at x,y,z.
+
 Shape *Map::removeLocation( Sint16 x, Sint16 y, Sint16 z ) {
 	if ( pos[x][y][z] && pos[x][y][z]->shape )
 		return removePosition( pos[x][y][z]->x, pos[x][y][z]->y, pos[x][y][z]->z );
 	else return NULL;
 }
 
+/// Places an item at x,y,z.
+
 void Map::setItem( Sint16 x, Sint16 y, Sint16 z, RenderedItem *item ) {
 	if ( item && item->getShape() ) {
 		setPositionInner( x, y, z, item->getShape(), item, NULL );
 	}
 }
+
+/// Deletes the item at x,y,z.
 
 RenderedItem *Map::removeItem( Sint16 x, Sint16 y, Sint16 z ) {
 	RenderedItem *item = NULL;
@@ -2780,6 +2835,8 @@ void Map::dropItemsAbove( int x, int y, int z, RenderedItem *item ) {
 	}
 }
 
+/// Makes the specified creature appear at x,y,z.
+
 void Map::setCreature( Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature ) {
 	if ( creature && creature->getShape() ) {
 		if ( helper && !creature->isMonster() ) helper->visit( creature );
@@ -2805,6 +2862,8 @@ void Map::setCreature( Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature 
 		setPositionInner( x, y, z, creature->getShape(), NULL, creature );
 	}
 }
+
+/// Moves a creature instantly to a new position. Picks up any items at the new position.
 
 void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy, Sint16 oz, RenderedCreature *creature ) {
 	Location *p = pos[ox][oy][oz];
@@ -3008,11 +3067,15 @@ void Map::calculateChunkInfo( int *chunkOffsetX, int *chunkOffsetY,
 	*chunkEndY = mapViewDepth / MAP_UNIT + *chunkStartY;
 }
 
+/// Removes a creature from the map.
+
 RenderedCreature *Map::removeCreature( Sint16 x, Sint16 y, Sint16 z ) {
 	RenderedCreature *creature = ( pos[x][y][z] ? pos[x][y][z]->creature : NULL );
 	removePosition( x, y, z );
 	return creature;
 }
+
+/// Is there a wall between the two given shapes?
 
 // FIXME: only uses x,y for now
 // return false if there is any hole in the walls
@@ -3030,6 +3093,8 @@ bool Map::isWallBetweenShapes( int x1, int y1, int z1, Shape *shape1, int x2, in
 	}
 	return true;
 }
+
+/// Is there a wall between the two given positions?
 
 // FIXME: only uses x,y for now
 Shape *Map::isWallBetween( int x1, int y1, int z1, int x2, int y2, int z2 ) {
@@ -3096,11 +3161,15 @@ Shape *Map::isWallBetween( int x1, int y1, int z1, int x2, int y2, int z2 ) {
 	return shape;
 }
 
+/// Is there a wall at the given position?
+
 Shape *Map::isWall( int x, int y, int z ) {
 	Location *loc = getLocation( static_cast<int>( x ), static_cast<int>( y ), z );
 	return( loc && ( !loc->item || loc->item->getShape() != loc->shape ) &&
 	        ( !loc->creature || loc->creature->getShape() != loc->shape ) ? loc->shape : NULL );
 }
+
+/// Is there enough room for the shape at the specified position?
 
 bool Map::shapeFits( Shape *shape, int x, int y, int z ) {
 	for ( int tx = 0; tx < shape->getWidth(); tx++ ) {
@@ -3114,6 +3183,8 @@ bool Map::shapeFits( Shape *shape, int x, int y, int z ) {
 	}
 	return true;
 }
+
+/// Checks whether a shape can be placed at x,y,z (outdoors version).
 
 bool Map::shapeFitsOutdoors( GLShape *shape, int x, int y, int z ) {
 	bool b = shapeFits( shape, x, y, z ) && !coversDoor( shape, x, y );
@@ -3192,6 +3263,8 @@ void Map::configureLightMap() {
 	traceLight( chunkX, chunkY, lightMap, false );
 }
 
+/// Can the given position currently be reached?
+
 bool Map::isPositionAccessible( int atX, int atY ) {
 	// interpret the results: see if the target is "in light"
 	int chunkX = ( atX - MAP_OFFSET ) / MAP_UNIT;
@@ -3212,6 +3285,8 @@ void Map::configureAccessMap( int fromX, int fromY ) {
 	int chunkY = ( fromY - MAP_OFFSET ) / MAP_UNIT;
 	traceLight( chunkX, chunkY, accessMap, true );
 }
+
+/// Determines (in indoor areas) which parts of the map are currently visible.
 
 void Map::traceLight( int chunkX, int chunkY, int lm[MAP_CHUNKS_X][MAP_CHUNKS_Y], bool onlyLockedDoors ) {
 	if ( chunkX < 0 || chunkX >= MAP_CHUNKS_X || chunkY < 0 || chunkY >= MAP_CHUNKS_Y )
@@ -3280,6 +3355,8 @@ void Map::traceLight( int chunkX, int chunkY, int lm[MAP_CHUNKS_X][MAP_CHUNKS_Y]
 	if ( !blocked )
 		traceLight( chunkX - 1, chunkY, lm, onlyLockedDoors );
 }
+
+/// Is the location blocked by something you can't walk through (except creatures)?
 
 bool Map::isLocationBlocked( int x, int y, int z, bool onlyLockedDoors ) {
 	if ( x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_DEPTH && z >= 0 && z < MAP_VIEW_HEIGHT ) {
@@ -3377,6 +3454,8 @@ int Map::getCreaturesInArea( int x, int y, int radius, RenderedCreature *targets
 	return count;
 }
 
+/// Is there a door at tx,ty?
+
 bool Map::isDoor( int tx, int ty ) {
 	if ( tx >= 0 && tx < MAP_WIDTH && ty >= 0 && ty < MAP_DEPTH ) {
 		Location *loc = getLocation( tx, ty, 0 );
@@ -3385,15 +3464,21 @@ bool Map::isDoor( int tx, int ty ) {
 	return false;
 }
 
+/// Is this shape a door?
+
 bool Map::isDoor( Shape *shape ) {
 	return( shape == shapes->findShapeByName( "EW_DOOR" ) || shape == shapes->findShapeByName( "NS_DOOR" ) );
 }
+
+/// Is this shape a door or door frame?
 
 bool Map::isDoorType( Shape *shape, bool includeCorner ) {
 	return( shape == shapes->findShapeByName( "EW_DOOR" ) || shape == shapes->findShapeByName( "NS_DOOR" ) ||
 	        shape == shapes->findShapeByName( "EW_DOOR_TOP" ) || shape == shapes->findShapeByName( "NS_DOOR_TOP" ) ||
 	        shape == shapes->findShapeByName( "DOOR_SIDE" ) || ( includeCorner && shape == shapes->findShapeByName( "CORNER" ) ) );
 }
+
+/// Sets the locked state of the door at x,y,z.
 
 void Map::setLocked( int doorX, int doorY, int doorZ, bool value ) {
 	locked[createTripletKey( doorX, doorY, doorZ )] = value;
@@ -3406,9 +3491,13 @@ int Map::toggleLightMap() {
 	return LIGHTMAP_ENABLED;
 }
 
+/// Is the location currently within the screen borders?
+
 bool Map::isLocationVisible( int x, int y ) {
 	return ( x >= getX() && x < getX() + mapViewWidth && y >= getY() && y < getY() + mapViewDepth );
 }
+
+/// Is the location/shape currently visible on an indoor map?
 
 bool Map::isLocationInLight( int x, int y, Shape *shape ) {
 	int chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
@@ -3417,14 +3506,15 @@ bool Map::isLocationInLight( int x, int y, Shape *shape ) {
 	return ( helper && helper->isVisible( x, y, shape ) );
 }
 
-/**
-   Move and rotate map.
-   Modifiers:
-   -CTRL + arrow keys / mouse at edge of screen: rotate map
-   -arrow keys / mouse at edge of screen: move map fast
-   -SHIFT + arrow keys / mouse at edge of screen: slow move map
-   -SHIFT + CTRL + arrow keys / mouse at edge of screen: slow rotate map
- */
+/// Map view move handler.
+
+/// Move and rotate map.
+/// Modifiers:
+/// -CTRL + arrow keys / mouse at edge of screen: rotate map
+/// -arrow keys / mouse at edge of screen: move map fast
+/// -SHIFT + arrow keys / mouse at edge of screen: slow move map
+/// -SHIFT + CTRL + arrow keys / mouse at edge of screen: slow rotate map
+
 void Map::moveMap( int dir ) {
 	if ( SDL_GetModState() & KMOD_CTRL ) {
 		float rot;
@@ -3929,6 +4019,8 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 	result += "Map saved: ";
 	result += name;
 }
+
+/// Initializes the textures for cave levels.
 
 void Map::initForCave( char *themeName ) {
 	if ( !themeName ) {
@@ -4527,6 +4619,8 @@ void Map::addSecretDoor( int x, int y ) {
 	resortShapes = mapChanged = true;
 }
 
+/// Deletes the secret door at x,y.
+
 void Map::removeSecretDoor( int x, int y ) {
 	int index = y * MAP_WIDTH + x;
 	if ( secretDoors.find( index ) != secretDoors.end() ) {
@@ -4535,17 +4629,25 @@ void Map::removeSecretDoor( int x, int y ) {
 	}
 }
 
+/// Is here a secret door?
+
 bool Map::isSecretDoor( Location *pos ) {
 	return isSecretDoor( pos->x, pos->y );
 }
+
+/// Is there a secret door at x,y?
 
 bool Map::isSecretDoor( int x, int y ) {
 	return( secretDoors.find( y * MAP_WIDTH + x ) != secretDoors.end() ? true : false );
 }
 
+/// Did we detect this secret door?
+
 bool Map::isSecretDoorDetected( Location *pos ) {
 	return isSecretDoorDetected( pos->x, pos->y );
 }
+
+/// Did we detect the secret door at x,y?
 
 bool Map::isSecretDoorDetected( int x, int y ) {
 	int index = y * MAP_WIDTH + x;
@@ -4556,9 +4658,13 @@ bool Map::isSecretDoorDetected( int x, int y ) {
 	}
 }
 
+/// Mark a secret door as detected.
+
 void Map::setSecretDoorDetected( Location *pos ) {
 	setSecretDoorDetected( pos->x, pos->y );
 }
+
+/// Mark a secret door as detected.
 
 void Map::setSecretDoorDetected( int x, int y ) {
 	int index = y * MAP_WIDTH + x;
@@ -4566,6 +4672,8 @@ void Map::setSecretDoorDetected( int x, int y ) {
 		secretDoors[ index ] = true;
 	}
 }
+
+/// Draws the floor/ground of the map.
 
 void Map::renderFloor() {
 	glEnable( GL_TEXTURE_2D );
@@ -5070,6 +5178,8 @@ void Map::drawFlatFloor() {
 	glEnd();
 }
 
+/// Initializes the outdoor ground textures. Takes height into account.
+
 void Map::initOutdoorsGroundTexture() {
 	// set ground texture
 
@@ -5178,6 +5288,8 @@ void Map::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
 	}
 }
 
+/// Returns a random variation of the outdoor texture specified by ref.
+
 GLuint Map::getThemeTex( int ref ) {
 	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
 	GLuint *textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
@@ -5207,6 +5319,8 @@ void Map::addHighVariation( int ref, int z ) {
 	}
 }
 
+/// Should a rock texture be applied to this map position due to its height?
+
 bool Map::isRockTexture( int x, int y ) {
 	bool high = false;
 	for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE + 1; xx++ ) {
@@ -5220,6 +5334,7 @@ bool Map::isRockTexture( int x, int y ) {
 	return high;
 }
 
+
 bool Map::isLakebedTexture( int x, int y ) {
 	bool low = false;
 	for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE + 1; xx++ ) {
@@ -5232,6 +5347,8 @@ bool Map::isLakebedTexture( int x, int y ) {
 	}
 	return low;
 }
+
+/// Are all map tiles in the specified area high above "sea level"?
 
 bool Map::isAllHigh( int x, int y, int w, int h ) {
 	bool high = true;
@@ -5299,6 +5416,8 @@ void Map::clearTraps() {
 	selectedTrapIndex = -1;
 }
 
+/// Removes the trap specified by index.
+
 void Map::removeTrap( int trapIndex ) {
 	if ( static_cast<int>( trapList.size() ) > trapIndex ) {
 		Trap trap = trapList[ trapIndex ];
@@ -5312,11 +5431,15 @@ void Map::removeTrap( int trapIndex ) {
 	}
 }
 
+/// Returns the trap at map pos x,y, or -1 if no trap found.
+
 int Map::getTrapAtLoc( int x, int y ) {
 	Uint32 key = ( x * ( Uint32 )MAP_WIDTH ) + y;
 	if ( trapPos.find( key ) == trapPos.end() ) return -1;
 	else return trapPos[ key ];
 }
+
+/// Returns the map location of the trap specified by index.
 
 Trap *Map::getTrapLoc( int trapIndex ) {
 	if ( static_cast<int>( trapList.size() ) <= trapIndex || trapIndex < 0 ) return NULL;
@@ -5418,10 +5541,14 @@ int Map::generateWeather() {
 	return weather;
 }
 
+/// Sets whether house roofs should be shown.
+
 void Map::setRoofShowing( bool b ) {
 	isRoofShowing = b;
 	mapChanged = true;
 }
+
+/// Forces a refresh of the map state.
 
 void Map::refresh() {
 	mapChanged = lightMapChanged = resortShapes = true;
