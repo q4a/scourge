@@ -127,6 +127,7 @@ bool Portrait::handleEvent( SDL_Event *event ) {
 		} else {
 			if ( mode == SKILLS_MODE ) {
 				findCurrentSkill( mx, my );
+				canvas->setTooltip( currentSkill ? currentSkill->getDescription() : "" );
 			} else if ( mode == STATS_MODE ) {
 				int index = -1;
 				if ( my >= 250 ) {
