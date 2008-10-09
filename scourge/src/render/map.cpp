@@ -428,6 +428,8 @@ void Map::setViewArea( int x, int y, int w, int h ) {
 	refresh();
 }
 
+/// Centers view on map position x,y.
+
 void Map::center( Sint16 x, Sint16 y, bool force ) {
 	Sint16 nx = x - mapViewWidth / 2;
 	Sint16 ny = y - mapViewDepth / 2;
@@ -507,10 +509,13 @@ bool Map::checkLightMap( int chunkX, int chunkY ) {
 	return !helper->isLightMapEnabled() || lightMap[chunkX][chunkY];
 }
 
-/**
-   If 'ground' is true, it draws the ground layer.
-   Otherwise the shape arrays (other, stencil, later) are populated.
-*/
+/// Sets up the shapes array for a specified layer.
+
+/// The position and dimensions of the map chunk to draw are to be provided.
+/// If forGround is true, it sets up the ground layer.
+/// If forWater is true, it sets up the indoors water layer.
+/// Otherwise it populates the shapes array.
+
 void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *csy, int *cey ) {
 	if ( !forGround && !forWater ) {
 		laterCount = stencilCount = otherCount = damageCount = roofCount = 0;
@@ -667,10 +672,8 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 	}
 }
 
-/**
- * Update the "under the roof" status.
- * Return true if the "under the roof" status has changed.
- */
+/// Update the "under the roof" status. Return true if the "under the roof" status has changed.
+
 bool Map::checkUnderRoof() {
 	// skip roofs if inside
 	bool oldRoof = isCurrentlyUnderRoof;
@@ -711,6 +714,8 @@ void Map::setupLocation( Location *location, Uint16 drawSide, int chunkStartX, i
 	}
 
 }
+
+/// Draws the rugs in Scourge HQ.
 
 void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) {
 	glPushMatrix();
@@ -762,6 +767,8 @@ void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) 
 	glPopMatrix();
 }
 
+/// Draws a shape sitting on the ground at the specified map coordinates.
+
 void Map::drawGroundPosition( int posX, int posY,
     float xpos2, float ypos2,
     Shape *shape ) {
@@ -781,6 +788,8 @@ void Map::drawGroundPosition( int posX, int posY,
 
 	glTranslatef( -xpos2, -ypos2, 0.0f );
 }
+
+/// Draws a shape placed on an indoor water tile.
 
 void Map::drawWaterPosition( int posX, int posY,
     float xpos2, float ypos2,
@@ -1076,6 +1085,8 @@ void Map::postDraw() {
 	}
 }
 
+/// Draws the complete 3D view.
+
 void Map::draw() {
 	if ( helper->isIndoors() ) {
 		drawIndoors();
@@ -1091,7 +1102,7 @@ void Map::draw() {
 		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ, &pos );
 		cursorFlatMapX = cursorMapX;
 		cursorFlatMapY = cursorMapY;
-		cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+		cursorChunkX = (cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
 		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
 		if ( pos ) {
 			cursorMapX = pos->x;
@@ -1104,6 +1115,8 @@ void Map::draw() {
 		willDrawGrid();
 	}
 }
+
+/// Renders the 3D view for indoor levels.
 
 void Map::drawIndoors() {
 	if ( preferences->getStencilbuf() && preferences->getStencilBufInitialized() ) {
@@ -1324,6 +1337,8 @@ void Map::drawIndoors() {
 	glDepthMask( GL_TRUE );
 }
 
+/// Renders the 3D view for outdoor levels.
+
 void Map::drawOutdoors() {
 	// draw the ground
 	renderFloor();
@@ -1371,6 +1386,8 @@ void Map::drawOutdoors() {
 	glDepthMask( GL_TRUE );
 }
 
+/// Draws creature effects and damage counters.
+
 void Map::drawEffects() {
 	for ( int i = 0; i < laterCount; i++ ) {
 		later[i].shape->setupBlending();
@@ -1382,6 +1399,8 @@ void Map::drawEffects() {
 		doDrawShape( &damage[i], 1 );
 	}
 }
+
+/// Draws the roofs on outdoor levels, including the fading.
 
 void Map::drawRoofs() {
 	// draw the roofs
@@ -1667,6 +1686,8 @@ bool Map::isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, map
 	return b;
 }
 
+/// Draws the projectiles.
+
 void Map::drawProjectiles() {
 	for ( map<RenderedCreature*, vector<RenderedProjectile*>*>::iterator i = RenderedProjectile::getProjectileMap()->begin();
 	      i != RenderedProjectile::getProjectileMap()->end(); ++i ) {
@@ -1688,6 +1709,8 @@ void Map::drawProjectiles() {
 		}
 	}
 }
+
+/// Draws a shape stored in a DrawLater object.
 
 void Map::doDrawShape( DrawLater *later, int effect ) {
 	doDrawShape( later->xpos, later->ypos, later->zpos, later->shape, effect, later );
@@ -1964,6 +1987,8 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 		( ( GLShape* )shape )->useShadow = false;
 }
 
+/// Determines which sides of a shape are not visible for various reasons.
+
 void Map::findOccludedSides( DrawLater *later, bool *sides ) {
 	if ( colorAlreadySet || !later || !later->pos || !later->shape || !later->shape->isStencil() || ( later->shape && isDoor( later->shape ) ) ) {
 		sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = sides[Shape::S_SIDE] =
@@ -2057,6 +2082,8 @@ bool Map::isOnScreen( Uint16 mapx, Uint16 mapy, Uint16 mapz ) {
 	}
 	return false;
 }
+
+/// Converts a map position to a screen coordinate (where on the screen is tile x,y?)
 
 void Map::getScreenXYAtMapXY( Uint16 mapx, Uint16 mapy, Uint16 *screenx, Uint16 *screeny ) {
 	glPushMatrix();
@@ -2205,6 +2232,11 @@ void Map::quake() {
 	quakeOnce = true;
 }
 
+/**
+ * if you can't move to this spot (blocked) returns the blocking shape,
+ * otherwise returns NULL and moves the shape.
+ */
+
 Location *Map::moveCreature( Sint16 x, Sint16 y, Sint16 z, Uint16 dir, RenderedCreature *newCreature ) {
 	Sint16 nx = x;
 	Sint16 ny = y;
@@ -2276,6 +2308,13 @@ Shape *Map::removeFloorPosition( Sint16 x, Sint16 y ) {
 	return shape;
 }
 
+/**
+ * Can shape at shapeX, shapeY, shapeZ move to location x, y, z?
+ * returns NULL if ok, or the blocking Shape* otherwise.
+ * if newz is not null, it will ignore blocking "item"-s and instead stack the new
+ * shape on top, returning the new z position in newz.
+ */
+
 Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z, Sint16 shapeX, Sint16 shapeY, Sint16 shapeZ, Shape *s, int *newz, bool useItemPos ) {
 	int zz = z;
 	for ( int sx = 0; sx < s->getWidth(); sx++ ) {
@@ -2331,6 +2370,8 @@ Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z, Sint16 shapeX, Sint16 sh
 		*newz = zz;
 	return NULL;
 }
+
+/** This one only returns if the shape originates at xyz. */
 
 Location *Map::getPosition( Sint16 x, Sint16 y, Sint16 z ) {
 	if ( pos[x][y][z] && ( ( pos[x][y][z]->shape && pos[x][y][z]->x == x && pos[x][y][z]->y == y && pos[x][y][z]->z == z ) ) )
@@ -2712,7 +2753,8 @@ RenderedItem *Map::removeItem( Sint16 x, Sint16 y, Sint16 z ) {
 	return item;
 }
 
-// drop items above this one
+/// Drops all items above the specified item.
+
 void Map::dropItemsAbove( int x, int y, int z, RenderedItem *item ) {
 	int count = 0;
 	Location drop[100];
@@ -2910,6 +2952,8 @@ void Map::getChunk( int mapX, int mapY, int *chunkX, int *chunkY ) {
 	*chunkY = ( mapY - 1 - MAP_OFFSET ) / MAP_UNIT;
 }
 
+/// Sets up map location info.
+
 void Map::calculateLocationInfo( Location *location,
     int chunkStartX, int chunkStartY,
     int chunkOffsetX, int chunkOffsetY,
@@ -2941,6 +2985,8 @@ void Map::calculateLocationInfo( Location *location,
 	*ypos = static_cast<float>( ( *chunkY - chunkStartY ) * MAP_UNIT + yp - location->shape->getDepth() + chunkOffsetY ) * MUL;
 	*zpos = static_cast<float>( zp ) * MUL;
 }
+
+/// Sets up chunk info.
 
 void Map::calculateChunkInfo( int *chunkOffsetX, int *chunkOffsetY,
     int *chunkStartX, int *chunkStartY,
@@ -3083,6 +3129,8 @@ bool Map::shapeFitsOutdoors( GLShape *shape, int x, int y, int z ) {
 	return b;
 }
 
+/// Does this shape placed at x,y cover a door so it can't open?
+
 bool Map::coversDoor( Shape *shape, int x, int y ) {
 	for ( int ty = y - shape->getDepth() - 6; ty < y + 6; ty++ ) {
 		for ( int tx = x - 6; tx < x + shape->getWidth() + 6; tx++ ) {
@@ -3091,6 +3139,8 @@ bool Map::coversDoor( Shape *shape, int x, int y ) {
 	}
 	return false;
 }
+
+/// Returns whether the shape would be blocked by something else when placed here.
 
 // FIXME: only uses x, y for now
 Location *Map::getBlockingLocation( Shape *shape, int x, int y, int z ) {
@@ -3104,9 +3154,8 @@ Location *Map::getBlockingLocation( Shape *shape, int x, int y, int z ) {
 	return NULL;
 }
 
-/**
- * Return the drop location, or NULL if none
- */
+/// If the shape can be dropped at x,y,z, return the location.
+
 Location *Map::getDropLocation( Shape *shape, int x, int y, int z ) {
 	for ( int tx = 0; tx < shape->getWidth(); tx++ ) {
 		for ( int ty = 0; ty < shape->getDepth(); ty++ ) {
@@ -3119,7 +3168,11 @@ Location *Map::getDropLocation( Shape *shape, int x, int y, int z ) {
 	return NULL;
 }
 
-// the world has changed...
+/// Sets up the light map.
+
+/// The light map is used indoors and determines which tiles on the level
+/// are currently visible or not (because sight is blocked by a door etc.)
+
 void Map::configureLightMap() {
 	lightMapChanged = false;
 	groundVisible = false;
@@ -3145,6 +3198,8 @@ bool Map::isPositionAccessible( int atX, int atY ) {
 	int chunkY = ( atY - MAP_OFFSET ) / MAP_UNIT;
 	return ( accessMap[chunkX][chunkY] != 0 );
 }
+
+/// Configures the "access map" (it stores which map tiles are accessible).
 
 void Map::configureAccessMap( int fromX, int fromY ) {
 	// create the access map
@@ -3244,6 +3299,8 @@ bool Map::isLocationBlocked( int x, int y, int z, bool onlyLockedDoors ) {
 	return true;
 }
 
+/// It draws... a cube. Unused.
+
 void Map::drawCube( float x, float y, float z, float r ) {
 	glBegin( GL_QUADS );
 	// front
@@ -3292,11 +3349,12 @@ void Map::drawCube( float x, float y, float z, float r ) {
 
 }
 
-/**
- * Find the creatures in this area and add them to the targets array.
- * Returns the number of creatures found. (0 if none.)
- * It's the caller responsibility to create the targets array.
- */
+/// Finds creatures in a specified area and adds them to a targets array.
+
+/// Find the creatures in this area and add them to the targets array.
+/// Returns the number of creatures found. (0 if none.)
+/// It's the caller responsibility to create the targets array.
+
 int Map::getCreaturesInArea( int x, int y, int radius, RenderedCreature *targets[] ) {
 	int count = 0;
 	for ( int xx = x - radius; xx < x + radius && xx < MAP_WIDTH; xx++ ) {
@@ -4461,6 +4519,8 @@ void Map::setMapRenderHelper( MapRenderHelper *helper ) {
 	//lightMapChanged = true;
 }
 
+/// Adds a secret door at x,y.
+
 void Map::addSecretDoor( int x, int y ) {
 	int index = y * MAP_WIDTH + x;
 	secretDoors[ index ] = false;
@@ -4532,6 +4592,8 @@ void Map::renderFloor() {
 		setupShapes( true, false );
 	}
 }
+
+/// Draws the ground on outdoor maps.
 
 bool Map::drawHeightMapFloor() {
 	CVectorTex *p[4];
@@ -4629,7 +4691,8 @@ bool Map::drawHeightMapFloor() {
 	return ret;
 }
 
-// this one uses OUTDOORS_STEP coordinates
+/// Draws a ground texture on outdoor maps. Uses OUTDOORS_STEP coordinates.
+
 void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, float angle ) {
 	glBindTexture( GL_TEXTURE_2D, tex );
 
@@ -4697,8 +4760,13 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 #endif
 }
 
+/// Draws a ground texture on outdoor maps. Uses map coordinates.
+
+/// Draw a texture on top of the ground map. This is useful for drawing shadows or
+/// selection circles on top of un-even terrain.
+
 #define GROUND_TEX_Z_OFFSET 0.26f
-// this one uses map coordinates
+
 void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, float angle ) {
 
 	//glEnable( GL_DEPTH_TEST );
@@ -4846,6 +4914,8 @@ void Map::debugGround( int sx, int sy, int ex, int ey ) {
 	glEnable( GL_TEXTURE_2D );
 }
 
+/// Sets up the outdoor ground heightfield including texturing and lighting.
+
 void Map::createGroundMap() {
 	float w, d, h;
 	for ( int xx = 0; xx < MAP_TILES_X; xx++ ) {
@@ -4916,6 +4986,8 @@ void Map::createGroundMap() {
 	}
 }
 
+/// Adds a light source.
+
 void Map::addLight( CVectorTex *pt, CVectorTex *a, CVectorTex *b ) {
 	float v[3], u[3], normal[3];
 
@@ -4941,6 +5013,8 @@ Uint32 waterMoveTick = 0;
 #define WATER_MOVE_DELTA 0.005f
 GLfloat waterTexX = 0;
 GLfloat waterTexY = 0;
+
+/// Draws the water level on outdoor maps.
 
 void Map::drawWaterLevel() {
 	Uint32 t = SDL_GetTicks();
@@ -4975,6 +5049,8 @@ void Map::drawWaterLevel() {
 	glEnd();
 	//glDisable( GL_BLEND );
 }
+
+/// Draws the indoors floor as a single quad.
 
 void Map::drawFlatFloor() {
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
@@ -5040,6 +5116,11 @@ void Map::initOutdoorsGroundTexture() {
 
 }
 
+/// Sets up a smoothly blended grass edge.
+
+/// It takes a couple of parameters: The x,y map position and four parameters
+/// that specify in which direction(s) to apply the blending.
+
 void Map::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
 	int angle = 0;
 	int sx = x;
@@ -5103,6 +5184,11 @@ GLuint Map::getThemeTex( int ref ) {
 	return textureGroup[ Util::dice( faceCount ) ];
 }
 
+/// Adds semi-random height variation to an outdoor map.
+
+/// Higher parts of the map are randomly selected, their height value
+/// set to z and textured with the referenced theme specific texture.
+
 void Map::addHighVariation( int ref, int z ) {
 	int width = getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
 	int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
@@ -5160,6 +5246,8 @@ bool Map::isAllHigh( int x, int y, int w, int h ) {
 	return high;
 }
 
+/// Adds a trap of size w,h at x,y.
+
 int Map::addTrap( int x, int y, int w, int h ) {
 	Trap trap;
 	trap.r.x = x;
@@ -5194,6 +5282,8 @@ int Map::addTrap( int x, int y, int w, int h ) {
 	mapChanged = true;
 	return trapIndex;
 }
+
+/// Clears the traps.
 
 void Map::clearTraps() {
 	for ( unsigned int i = 0; i < trapList.size(); i++ ) {
@@ -5232,6 +5322,8 @@ Trap *Map::getTrapLoc( int trapIndex ) {
 	if ( static_cast<int>( trapList.size() ) <= trapIndex || trapIndex < 0 ) return NULL;
 	else return &( trapList[ trapIndex ] );
 }
+
+/// Draws the traps.
 
 void Map::drawTraps() {
 	for ( set<Uint8>::iterator i = trapSet.begin(); i != trapSet.end(); i++ ) {
@@ -5277,6 +5369,8 @@ void Map::drawTraps() {
 	}
 }
 
+/// Is it safe to put the shape on this map tile?
+
 bool Map::canFit( int x, int y, Shape *shape ) {
 	if ( x < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET ||
 	     y < MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
@@ -5299,6 +5393,8 @@ bool Map::canFit( int x, int y, Shape *shape ) {
 	return false;
 }
 
+/// Nothing on this map tile?
+
 bool Map::isEmpty( int x, int y ) {
 	if ( x < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET ||
 	     y < MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
@@ -5310,6 +5406,8 @@ bool Map::isEmpty( int x, int y ) {
 bool Map::inMapEditor() {
 	return settings->isGridShowing();
 }
+
+/// Determines which type of weather the map will have.
 
 int Map::generateWeather() {
 	if ( Util::dice( 3 ) == 0 && heightMapEnabled ) {
