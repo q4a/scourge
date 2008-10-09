@@ -328,9 +328,11 @@ public:
 		return isCurrentlyUnderRoof;
 	}
 
+	/// Which weather will the map have?
 	inline void setWeather( int i ) {
 		weather = i;
 	}
+	/// The current weather conditions.
 	inline int getWeather() {
 		return weather;
 	}
@@ -345,9 +347,11 @@ public:
 	void setSecretDoorDetected( Location *pos );
 	void setSecretDoorDetected( int x, int y );
 
+	/// The creature on which the main view should be centered.
 	inline void setMapCenterCreature( RenderedCreature *c ) {
 		mapCenterCreature = c;
 	}
+	/// The creature on which the main view should be centered.
 	inline RenderedCreature *getMapCenterCreature() {
 		return mapCenterCreature;
 	}
@@ -383,10 +387,12 @@ public:
 		return frustum;
 	}
 
+	/// Which floor texture will we use (indoors)?
 	inline void setFloor( int tw, int th, GLuint texture ) {
 		floorTexWidth = tw; floorTexHeight = th; floorTex = texture;
 	}
 
+	/// Is this an edited (instead of randomly generated) map?
 	inline bool isEdited() {
 		return edited;
 	}
@@ -437,16 +443,20 @@ public:
 
 	void reset();
 
+	/// Stops moving the view.
 	inline void resetMove() {
 		move = 0;
 	}
 
+	/// Do we currently rotate the view?
 	inline bool isMouseRotating() {
 		return mouseRot;
 	}
+	/// Do we currently zoom the view?
 	inline bool isMouseZooming() {
 		return mouseZoom;
 	}
+	/// Do we currently scroll the view?
 	inline bool isMapMoving() {
 		return move != 0;
 	}
@@ -462,6 +472,7 @@ public:
 	inline bool getHasWater() {
 		return hasWater;
 	}
+	/// Make this a "flooded" level (indoors).
 	inline void setHasWater( bool b ) {
 		hasWater = b;
 	}
@@ -472,6 +483,7 @@ public:
 
 	bool floorOnly;
 
+	/// A location where an item is to be dropped by the player.
 	inline void setSelectedDropTarget( Location *loc ) {
 		selectedDropTarget = loc;
 	}
@@ -486,11 +498,13 @@ public:
 	inline void setZoomOut( bool b ) {
 		zoomOut = b;
 	}
+	/// Current camera zoom.
 	inline float getZoom() {
 		return zoom;
 	}
 	float getZoomPercent();
 
+	/// Camera rotation.
 	inline void setXRot( float b ) {
 		xRotating = b;
 	}
@@ -524,18 +538,22 @@ public:
 		zpos += f;
 	}
 
+	/// X position of tile the view is centered on.
 	inline float getXPos() {
 		return xpos;
 	}
+	/// Y position of tile the view is centered on.
 	inline float getYPos() {
 		return ypos;
 	}
+	/// Z position of tile the view is centered on.
 	inline float getZPos() {
 		return zpos;
 	}
 
 	// camera control
 	void setPos( float x, float y, float z );
+	/// Sets the camera rotation.
 	inline void setRot( float x, float y, float z ) {
 		xrot = x; yrot = y; zrot = z;
 	}
@@ -639,6 +657,7 @@ public:
 	}
 
 	//void showInfoAtMapPos(Uint16 mapx, Uint16 mapy, Uint16 mapz, char *message);
+	/// Unused.
 	void showCreatureInfo( RenderedCreature *creature, bool player, bool selected, bool groupMode );
 
 	void initMapView( bool ignoreRot = false );
@@ -661,20 +680,24 @@ public:
 
 	Location *getDropLocation( Shape *shape, int x, int y, int z );
 
+	/// Forces an update of the light map (indoor visibility map).
 	inline void updateLightMap() {
 		lightMapChanged = resortShapes = true;
 	}
 
 	void refresh();
 
+	/// Force to resort the shapes so transparency will work.
 	inline void refreshTransparency() {
 		resortShapes = true;
 	}
 
 	void setViewArea( int x, int y, int w, int h );
+	/// Width of the 3D view (usually equal to screen width)
 	inline int getViewWidth() {
 		return viewWidth;
 	}
+	/// Height of the 3D view (usually equal to screen height)
 	inline int getViewHeight() {
 		return viewHeight;
 	}
@@ -696,6 +719,7 @@ public:
 	// ====================================================================
 	// Locked doors/chests code
 	void setLocked( int doorX, int doorY, int doorZ, bool value );
+	/// Unlocks the door at x,y,z.
 	inline void removeLocked( int doorX, int doorY, int doorZ ) {
 		Uint32 door = createTripletKey( doorX, doorY, doorZ );
 		locked.erase( door );
@@ -713,6 +737,7 @@ public:
 		if ( !keyToDoor.empty() ) keyToDoor.clear();
 	}
 
+	/// Is the door at x,y,z locked?
 	inline bool isLocked( int doorX, int doorY, int doorZ ) {
 		Uint32 door = createTripletKey( doorX, doorY, doorZ );
 		return ( locked.find( door ) != locked.end() ? locked[door] : false );
@@ -740,6 +765,7 @@ public:
 		}
 	}
 
+	/// Moves a door and tries to keep it connected to its unlock lever.
 	inline void updateDoorLocation( int oldDoorX, int oldDoorY, int oldDoorZ,
 	                                int newDoorX, int newDoorY, int newDoorZ ) {
 		//cerr << "**********************" << endl;
@@ -765,6 +791,7 @@ public:
 		//cerr << "**********************" << endl;
 	}
 
+	/// Creates a door/unlock lever pair.
 	void setKeyLocation( int doorX, int doorY, int doorZ,
 	                     int keyX, int keyY, int keyZ ) {
 		Uint32 door = createTripletKey( doorX, doorY, doorZ );
@@ -782,6 +809,7 @@ public:
 	void getScreenXYAtMapXY( Uint16 mapx, Uint16 mapy, Uint16 *screenx, Uint16 *screeny );
 	int getPanningFromMapXY( Uint16 mapx, Uint16 mapy );
 
+	/// Sets the ground height at x,y (outdoors).
 	inline void setGroundHeight( int x, int y, float h ) {
 		this->ground[x][y] = h; refreshGroundPos = true;
 	}
@@ -789,18 +817,23 @@ public:
 	inline float getGroundHeight( int x, int y ) {
 		return this->ground[x][y];
 	}
+	/// Does this map have an uneven floor (e.g. is it outdoors)?
 	inline void setHeightMapEnabled( bool b ) {
 		this->heightMapEnabled = b;
 	}
+	/// Does this map have an uneven floor (e.g is it outdoors)?
 	inline bool isHeightMapEnabled() {
 		return this->heightMapEnabled;
 	}
+	/// Do we need to setup the ground textures?
 	inline void setRefreshGroundPos( bool b ) {
 		this->refreshGroundPos = b;
 	}
+	/// Do we need to setup the ground textures?
 	inline bool isRefreshGroundPos() {
 		return this->refreshGroundPos;
 	}
+	/// Sets the ground texture at x,y (outdoors).
 	inline void setGroundTex( int x, int y, GLuint tex ) {
 		this->groundTex[x][y] = tex;
 	}
@@ -824,6 +857,7 @@ public:
 	void removeTrap( int trap );
 	int getTrapAtLoc( int x, int y );
 	Trap *getTrapLoc( int trap );
+	/// Returns an array of trap indices.
 	inline std::set<Uint8> *getTrapsShown() {
 		return &trapSet;
 	}
@@ -875,18 +909,18 @@ protected:
 	                       RenderedItem *item,
 	                       RenderedCreature *creature );
 
-	/**
-	Set which direction to move in.
-	@param n is a bitfield. See constants for direction values.
-	*/
+	/// Set which direction to move the map in.
+
+	/// @param n is a bitfield.
+	/// See constants for direction values.
 	inline void setMove( Uint16 n ) {
 		move |= n;
 	};
 
-	/**
-	  Stop moving in the given direction(s).
-	  @param n is a bitfield. See constants for directions values.
-	*/
+	/// Stop moving the map in the given direction(s).
+
+	/// @param n is a bitfield.
+	/// See constants for directions values.
 	inline void removeMove( Uint16 n ) {
 		move &= ( 0xffff - n );
 	}
