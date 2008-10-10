@@ -312,17 +312,19 @@ int MondrianGenerator::subdivideMaze( Sint16 x_start, Sint16 y_start, Sint16 wid
 		}
 
 //  printf("horizontal, div %d, w2 %d, h %d\n", div, width - div, height  );
-		roomA.x = x_start;
-		roomA.y = y_start;
-		roomA.w = div;
-		roomA.h = height;
+		roomA.x = offset + x_start * unitSide;
+		roomA.y = offset + y_start * unitSide;
+		roomA.w = div * unitSide;
+		roomA.h = height * unitSide;
+		roomA.valueBonus = depth / 2;
 
-		roomB.x = x_start + div;
-		roomB.y = y_start;
-		roomB.w = width - div;
-		roomB.h = height;
+		roomB.x = offset + ( x_start + div ) * unitSide;
+		roomB.y = offset + y_start * unitSide;
+		roomB.w = ( width - div ) * unitSide;
+		roomB.h = height * unitSide;
+		roomB.valueBonus = depth / 2;
 
-		passage_x = x_start + ( div - 1 );
+		passage_x = x_start + div - 1;
 		passage_y = y_start + ( height / 2 );
 
 		passage = E_PASS;
@@ -335,16 +337,18 @@ int MondrianGenerator::subdivideMaze( Sint16 x_start, Sint16 y_start, Sint16 wid
 			div = Util::dice( height );
 		}
 
+//  printf("vertical, div %d, w2 %d, h %d\n", div, width - div, height  );
+		roomA.x = offset + x_start * unitSide;
+		roomA.y = offset + y_start * unitSide;
+		roomA.w = width * unitSide;
+		roomA.h = div * unitSide;
+		roomA.valueBonus = depth / 2;
 
-		roomA.x = x_start;
-		roomA.y = y_start;
-		roomA.w = width;
-		roomA.h = div;
-
-		roomB.x = x_start;
-		roomB.y = y_start + div;
-		roomB.w = width;
-		roomB.h = height - div;
+		roomB.x = offset + x_start * unitSide;
+		roomB.y = offset + ( y_start + div ) * unitSide;
+		roomB.w = width * unitSide;
+		roomB.h = ( height - div ) * unitSide;
+		roomB.valueBonus = depth / 2;
 
 		passage_x = x_start + ( width / 2 );
 		passage_y = y_start + ( div - 1 );
@@ -355,47 +359,50 @@ int MondrianGenerator::subdivideMaze( Sint16 x_start, Sint16 y_start, Sint16 wid
 	}
 
 	int r = roomCount; //this->roomCount;
-	if ( !subdivideMaze( roomA.x, roomA.y, roomA.w, roomA.h, false ) ) {
+	if ( !subdivideMaze( ( roomA.x - offset ) / unitSide, ( roomA.y - offset ) / unitSide, roomA.w / unitSide, roomA.h / unitSide, false ) ) {
 		// if we cannot divide the space once more, make a room
 		room[r].x = roomA.x;
 		room[r].y = roomA.y;
 		room[r].w = roomA.w;
 		room[r].h = roomA.h;
+		room[r].valueBonus = roomA.valueBonus;
 
 		// alternate floor tile style
 		if ( roomCount % 2 == 0 ) {
 			for ( int x = 0; x < room[r].w; x++ ) {
 				for ( int y = 0; y < room[r].h; y++ ) {
-					nodes[x + ( room[r].x - offset ) / unitSide][y + ( room[r].y - offset ) / unitSide] -= ROOM;
+					//nodes[x + ( room[r].x - offset ) / unitSide][y + ( room[r].y - offset ) / unitSide] -= ROOM;
 				}
 			}
 		}
 
-		//printf("N: %d x/y %d/%d w/h %d/%d\n", r, roomA.x, roomA.y, roomA.w, roomA.h);
+//		printf("N: %d x/y %d/%d w/h %d/%d\n", r, roomA.x, roomA.y, roomA.w, roomA.h);
 
 		roomCount++;//this->roomCount++;
 	}
 	assert( roomCount < 200 );
 
 
+	
 	r = roomCount;//this->roomCount;
-	if ( !subdivideMaze( roomB.x, roomB.y, roomB.w, roomB.h, false ) ) {
+	if ( !subdivideMaze( ( roomB.x - offset ) / unitSide, ( roomB.y - offset ) / unitSide, roomB.w / unitSide, roomB.h / unitSide, false ) ) {
 		//if we cannot divice the space once more, make a room
 		room[r].x = roomB.x;
 		room[r].y = roomB.y;
 		room[r].w = roomB.w;
 		room[r].h = roomB.h;
+		room[r].valueBonus = roomB.valueBonus;
 
 		// alternate floor tile style
 		if ( roomCount % 2 == 0 ) {
 			for ( int x = 0; x < room[r].w; x++ ) {
 				for ( int y = 0; y < room[r].h; y++ ) {
-					nodes[x + ( room[r].x - offset ) / unitSide][y + ( room[r].y - offset ) / unitSide] -= ROOM;
+					//nodes[x + ( room[r].x - offset ) / unitSide][y + ( room[r].y - offset ) / unitSide] -= ROOM;
 				}
 			}
 		}
 
-		//printf("N: %d x/y %d/%d w/h %d/%d\n", r, roomB.x, roomB.y, roomB.w, roomB.h);
+//		printf("N: %d x/y %d/%d w/h %d/%d\n", r, roomB.x, roomB.y, roomB.w, roomB.h);
 
 		roomCount ++;//this->roomCount++;
 	}
@@ -404,25 +411,25 @@ int MondrianGenerator::subdivideMaze( Sint16 x_start, Sint16 y_start, Sint16 wid
 
 	if ( horizontal ) {
 		for ( int y = 0; y < height; y++ ) {
-			assert( x_start + div - 1 >= 0 &&
-			        x_start + div - 1 < totalWidth &&
-			        y_start + y >= 0 &&
-			        y_start + y < totalHeight );
-			nodes[x_start + div - 1][y_start + y ] -= E_PASS;
+			assert( ( x_start + ( div - 1 ) ) >= 0 &&
+			        ( x_start + ( div - 1 ) ) < totalWidth &&
+			        ( y_start + y ) >= 0 &&
+			        ( y_start + y ) < totalHeight );
+			nodes[( x_start + ( div - 1 ) )][ ( y_start + y ) ] -= E_PASS;
 		}
 	} else {
 		for ( int x = 0; x < width; x++ ) {
 			assert( x_start + x >= 0 &&
 			        x_start + x < totalWidth &&
-			        y_start + div - 1 >= 0 &&
-			        y_start + div - 1 < totalHeight );
-			nodes[x_start + x][y_start + div - 1] -= S_PASS;
+			        y_start + ( div - 1 ) >= 0 &&
+			        y_start + ( div - 1 ) < totalHeight );
+			nodes[ ( x_start + x )][ ( y_start + ( div - 1 ) ) ] -= S_PASS;
 		}
 	}
 
 	//connect the rooms
 	assert( passage_x >= 0 && passage_x < totalWidth && passage_y >= 0 && passage_y < totalHeight );
-	nodes[passage_x][passage_y] |= passage;
+	nodes[ passage_x ][passage_y ] |= passage;
 
 	// the space has been subdivided successfully
 	return 1;
@@ -480,6 +487,16 @@ void MondrianGenerator::generate( Map *map, ShapePalette *shapePal ) {
 	totalWidth = width;
 	totalHeight = height;
 	subdivideMaze( 0, 0, width, height, true );
+
+	/*
+	int i = 0;
+	room[i].x = offset + 0 * unitSide;
+	room[i].y = offset + 0 * unitSide;
+	room[i].w = width * unitSide;
+	room[i].h = height * unitSide;
+	room[i].valueBonus = depth / 2;
+	roomCount = 1;
+	*/
 
 	//printMaze();
 	//for( int i = 0; i < roomCount; i++ ) {
