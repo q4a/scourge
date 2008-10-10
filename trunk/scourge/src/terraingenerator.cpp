@@ -52,15 +52,15 @@ TerrainGenerator *TerrainGenerator::getGenerator( Scourge *scourge, int depth ) 
 		                    ( depth > 0 ),
 		                    mission );
 	} else {
-//		if ( Util::dice( 5 ) == 0 ) {
-//			dg = new MondrianGenerator( scourge,
-//			                            mission->getLevel(),
-//			                            depth,
-//			                            mission->getDepth(),
-//			                            ( depth < mission->getDepth() - 1 ),
-//			                            ( depth > 0 ),
-//			                            mission );
-//		} else {
+		if ( Util::dice( 5 ) == 0 ) {
+			dg = new MondrianGenerator( scourge,
+			                            mission->getLevel(),
+			                            depth,
+			                            mission->getDepth(),
+			                            ( depth < mission->getDepth() - 1 ),
+			                            ( depth > 0 ),
+			                            mission );
+		} else {
 			dg = new DungeonGenerator( scourge,
 			                           mission->getLevel(),
 			                           depth,
@@ -68,8 +68,8 @@ TerrainGenerator *TerrainGenerator::getGenerator( Scourge *scourge, int depth ) 
 			                           ( depth < mission->getDepth() - 1 ),
 			                           ( depth > 0 ),
 			                           mission );
-//		}
-	}
+		}		
+	}	
 	return dg;
 }
 
