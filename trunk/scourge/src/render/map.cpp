@@ -3752,6 +3752,8 @@ GameMapSettings::GameMapSettings() {
 GameMapSettings::~GameMapSettings() {
 }
 
+/// Does it have a "light map" (stores which parts of the level are visible)?
+
 bool GameMapSettings::isLightMapEnabled() {
 	return true;
 }
@@ -3768,13 +3770,19 @@ bool GameMapSettings::isItemPosEnabled() {
 	return true;
 }
 
+/// How far can the camera zoom in?
+
 float GameMapSettings::getMinZoomIn() {
 	return 0.85f;
 }
 
+/// How far can the camera zoom out?
+
 float GameMapSettings::getMaxZoomOut() {
 	return 2.8f;
 }
+
+/// How "high" can the camera be (degrees)?
 
 float GameMapSettings::getMaxYRot() {
 	return 55.0f;
@@ -4521,6 +4529,8 @@ MapMemoryManager::~MapMemoryManager() {
 	unusedEffect.clear();
 }
 
+/// Creates a new, empty map location. Reuses an unused location if possible.
+
 Location *MapMemoryManager::newLocation() {
 	Location *pos;
 	if ( !unused.empty() ) {
@@ -4544,6 +4554,8 @@ Location *MapMemoryManager::newLocation() {
 
 	return pos;
 }
+
+/// Creates a new, empty effect location. Reuses an unused location if possible.
 
 EffectLocation *MapMemoryManager::newEffectLocation( Map *theMap, Preferences *preferences, Shapes *shapes, int width, int height ) {
 	EffectLocation *pos;
@@ -4572,6 +4584,8 @@ EffectLocation *MapMemoryManager::newEffectLocation( Map *theMap, Preferences *p
 	return pos;
 }
 
+/// Deletes a map location and adds it to the "unused" array.
+
 void MapMemoryManager::deleteLocation( Location *pos ) {
 	if ( !maxSize || static_cast<int>( unused.size() ) < maxSize ) {
 		unused.push_back( pos );
@@ -4581,6 +4595,8 @@ void MapMemoryManager::deleteLocation( Location *pos ) {
 	usedCount--;
 	printStatus();
 }
+
+/// Deletes the special effect at a location and adds it to the "unused" array.
 
 void MapMemoryManager::deleteEffectLocation( EffectLocation *pos ) {
 	if ( !maxSize || static_cast<int>( unusedEffect.size() ) < maxSize ) {
@@ -4592,6 +4608,8 @@ void MapMemoryManager::deleteEffectLocation( EffectLocation *pos ) {
 	printStatus();
 }
 
+/// Outputs memory status to stderr.
+
 void MapMemoryManager::printStatus() {
 	if ( ++accessCount > 5000 ) {
 		cerr << "Map size: " << usedCount << " Kb:" << ( static_cast<float>( sizeof( Location )*usedCount ) / 1024.0f ) <<
@@ -4601,6 +4619,8 @@ void MapMemoryManager::printStatus() {
 		accessCount = 0;
 	}
 }
+
+/// Defines the render helper that should be used (dungeon, cave, outdoor...).
 
 void Map::setMapRenderHelper( MapRenderHelper *helper ) {
 	this->helper = helper;

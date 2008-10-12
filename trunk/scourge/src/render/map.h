@@ -59,6 +59,7 @@ public:
 };
 
 /// General map settings.
+
 class MapSettings {
 
 public:
@@ -78,6 +79,7 @@ public:
 };
 
 /// General map settings (ingame).
+
 class GameMapSettings : public MapSettings {
 
 public:
@@ -94,6 +96,7 @@ public:
 };
 
 /// General map settings for the map editor.
+
 class EditorMapSettings : public MapSettings {
 
 public:
@@ -110,6 +113,7 @@ public:
 };
 
 /// Stores the state and contents of a level map location for later drawing.
+
 struct DrawLater {
 	float xpos, ypos, zpos;
 	Shape *shape;
@@ -130,7 +134,8 @@ struct DrawLater {
 
 class Map;
 
-/// Utilities for cleaning up on level maps.
+/// Utilities for cleaning up on level maps, and managing memory use.
+
 class MapMemoryManager {
 private:
 	std::vector<Location*> unused;
@@ -154,6 +159,7 @@ private:
 
 
 /// A nice, fluffy rug.
+
 struct Rug {
 	GLuint texture;
 	bool isHorizontal;
@@ -169,6 +175,7 @@ struct Rug {
  */
 
 /// This huge class contains a level map.
+
 class Map {
 private:
 	MapAdapter *adapter;

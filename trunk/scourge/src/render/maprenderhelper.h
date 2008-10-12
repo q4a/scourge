@@ -26,9 +26,8 @@ class Shape;
 class Map;
 class  RenderedCreature;
 
-/**
- * Used to handle map-type-specific rendering, for example light.
- */
+/// A class used to handle map-type-specific rendering, for example light.
+
 class MapRenderHelper {
 private:
 	Map *map;
@@ -82,6 +81,7 @@ public:
 };
 
 /// Helper functions for caves.
+
 class CaveRenderHelper : public MapRenderHelper {
 private:
 	Fog *fog;
@@ -106,6 +106,7 @@ public:
 };
 
 /// Helper functions for outdoors.
+
 class OutdoorRenderHelper : public CaveRenderHelper {
 public:
 	OutdoorRenderHelper();
@@ -128,6 +129,7 @@ public:
 };
 
 /// Outdoor render helper (debug version).
+
 class DebugOutdoorRenderHelper : public MapRenderHelper {
 public:
 	DebugOutdoorRenderHelper();
@@ -140,6 +142,7 @@ public:
 #define OVERLAY_SIZE 16
 
 /// Helper functions for dungeons.
+
 class RoomRenderHelper : public MapRenderHelper {
 private:
 	GLuint overlay_tex;

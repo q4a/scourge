@@ -98,6 +98,8 @@ GLCaveShape::GLCaveShape( Shapes *shapes, GLuint texture[]
 GLCaveShape::~GLCaveShape() {
 }
 
+/// Sets up the level texture theme.
+
 void GLCaveShape::initialize() {
 	assert( shapes->getCurrentTheme() &&
 	        shapes->getCurrentTheme()->isCave() );
@@ -108,6 +110,8 @@ void GLCaveShape::initialize() {
 	ref = WallTheme::themeRefName[ WallTheme::THEME_REF_PASSAGE_FLOOR ];
 	floorTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
 }
+
+/// Draws the layer specified by the private variable "mode".
 
 void GLCaveShape::draw() {
 
@@ -140,6 +144,8 @@ void GLCaveShape::draw() {
 	glDisable( GL_CULL_FACE );
 
 }
+
+/// Draws the walls.
 
 void GLCaveShape::drawFaces() {
 	vector<CaveFace*>* face = polys[ caveIndex ];
@@ -196,6 +202,8 @@ void GLCaveShape::drawFaces() {
 #endif
 }
 
+/// Draws a rectangular tile using the wall top texture.
+
 void GLCaveShape::drawBlock( float w, float h, float d ) {
 	if ( useShadow ) return;
 	glBindTexture( GL_TEXTURE_2D, wallTextureGroup[ GLShape::TOP_SIDE ] );
@@ -212,6 +220,8 @@ void GLCaveShape::drawBlock( float w, float h, float d ) {
 	glEnd();
 }
 
+/// Draws a rectangular tile using the floor texture.
+
 void GLCaveShape::drawFloor( float w, float h, float d ) {
 	if ( useShadow ) return;
 	glBindTexture( GL_TEXTURE_2D, floorTextureGroup[ GLShape::TOP_SIDE ] );
@@ -227,6 +237,8 @@ void GLCaveShape::drawFloor( float w, float h, float d ) {
 	glVertex3f( w, d, h );
 	glEnd();
 }
+
+/// Draws a lava tile.
 
 void GLCaveShape::drawLava( float w, float h, float d ) {
 	if ( useShadow ) return;
@@ -288,6 +300,8 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 	glEnable( GL_DEPTH_TEST );
 }
 
+/// Calculates the normals (for lighting) for all the polygons.
+
 void GLCaveShape::calculateNormals() {
 	for ( int i = 0; i < ( int )polys.size(); i++ ) {
 		vector<CaveFace*> *face = polys[i];
@@ -300,6 +314,8 @@ void GLCaveShape::calculateNormals() {
 		}
 	}
 }
+
+/// Calculates the lighting (shading) for all the polygons.
 
 void GLCaveShape::calculateLight() {
 	for ( int i = 0; i < ( int )polys.size(); i++ ) {
@@ -375,6 +391,8 @@ void GLCaveShape::updatePointIndexes( int oldIndex, int newIndex ) {
 	}
 }
 
+/// Removes duplicate points from the points array.
+
 void GLCaveShape::removeDupPoints() {
 	vector<CVector3*> newPoints;
 	for ( int i = 0; i < ( int )points.size(); i++ ) {
@@ -409,6 +427,8 @@ void GLCaveShape::removeDupPoints() {
 	}
 }
 
+/// Used by dividePolys().
+
 CVector3 *GLCaveShape::divideSegment( CVector3 *v1, CVector3 *v2 ) {
 	CVector3 *v = new CVector3();
 	v->x = ( v1->x + v2->x ) / 2.0f;
@@ -416,6 +436,8 @@ CVector3 *GLCaveShape::divideSegment( CVector3 *v1, CVector3 *v2 ) {
 	v->z = ( v1->z + v2->z ) / 2.0f;
 	return v;
 }
+
+/// Warps a subdivided polygon so it's not all flat.
 
 void GLCaveShape::bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 ) {
 
@@ -462,6 +484,8 @@ void GLCaveShape::bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 ) {
 		}
 	}
 }
+
+/// Subdivides all polygons for more detail.
 
 void GLCaveShape::dividePolys() {
 	for ( int i = 0; i < ( int )polys.size(); i++ ) {
@@ -519,6 +543,8 @@ GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
 #define _poly(_index,_p1,_p2,_p3,_u1,_v1,_u2,_v2,_u3,_v3,_tt) do {\
 		polys[_index]->push_back(new CaveFace(_p1,_p2,_p3,_u1,_v1,_u2,_v2,_u3,_v3,_tt));\
 	} while(false)
+
+/// Sets up the shapes that are used in caves.
 
 void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes ) {
 	for ( int i = 0; i < Shapes::STENCIL_COUNT; i++ ) {
@@ -762,6 +788,8 @@ void GLCaveShape::createShapes( GLuint texture[], int shapeCount, Shapes *shapes
 	}
 }
 
+/// Creates the special cave textures.
+
 void GLCaveShape::initializeShapes( Shapes *shapes ) {
 	for ( int i = 0; i < CAVE_INDEX_COUNT; i++ ) {
 		//if( !headless )
@@ -797,6 +825,8 @@ void GLCaveShape::initializeShapes( Shapes *shapes ) {
 	createFloorTexture( shapes, Shapes::STENCIL_OUTSIDE_TURN );
 	createFloorTexture( shapes, Shapes::STENCIL_SIDES );
 }
+
+/// Creates a floor/lava border texture from a floor texture and a stencil texture.
 
 void GLCaveShape::createFloorTexture( Shapes *shapes, int stencilIndex ) {
 	if ( floorTex[ stencilIndex ] ) {
@@ -842,6 +872,8 @@ void GLCaveShape::createFloorTexture( Shapes *shapes, int stencilIndex ) {
 	glTexImage2D( GL_TEXTURE_2D, 0, ( shapes->getSession()->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ] );
 	gluBuild2DMipmaps( GL_TEXTURE_2D, ( shapes->getSession()->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, &floorData[ stencilIndex ][ 0 ] );
 }
+
+/// Stores a floor/lava border texture in the shapes array.
 
 void GLCaveShape::createLavaTexture( int index, int stencilIndex, int rot ) {
 
