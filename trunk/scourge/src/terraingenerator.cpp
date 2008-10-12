@@ -68,19 +68,19 @@ TerrainGenerator *TerrainGenerator::getGenerator( Scourge *scourge, int depth ) 
 			                           ( depth < mission->getDepth() - 1 ),
 			                           ( depth > 0 ),
 			                           mission );
-		}		
-	}	
+		}
+	}
 	return dg;
 }
 
 TerrainGenerator::TerrainGenerator( Scourge *scourge,
-    int level,
-    int depth,
-    int maxDepth,
-    bool stairsDown,
-    bool stairsUp,
-    Mission *mission,
-    int progressSteps ) {
+                                    int level,
+                                    int depth,
+                                    int maxDepth,
+                                    bool stairsDown,
+                                    bool stairsUp,
+                                    Mission *mission,
+                                    int progressSteps ) {
 	this->scourge = scourge;
 	this->level = level;
 	this->depth = depth;
@@ -463,9 +463,9 @@ void TerrainGenerator::addMonsters( Map *levelMap, ShapePalette *shapePal ) {
 				}
 				GLShape *shape =
 				  scourge->getShapePalette()->getCreatureShape( monster->getModelName(),
-				      monster->getSkinName(),
-				      monster->getScale(),
-				      monster );
+				                                                monster->getSkinName(),
+				                                                monster->getScale(),
+				                                                monster );
 				int x, y;
 				bool fits = getLocationInRoom( levelMap, i, shape, &x, &y );
 
@@ -505,9 +505,9 @@ void TerrainGenerator::addMonsters( Map *levelMap, ShapePalette *shapePal ) {
 			}
 			GLShape *shape =
 			  scourge->getShapePalette()->getCreatureShape( monster->getModelName(),
-			      monster->getSkinName(),
-			      monster->getScale(),
-			      monster );
+			                                                monster->getSkinName(),
+			                                                monster->getScale(),
+			                                                monster );
 			Creature *creature = scourge->getSession()->newCreature( monster, shape );
 			int x, y;
 			getRandomLocation( levelMap, creature->getShape(), &x, &y );
@@ -553,9 +553,9 @@ void TerrainGenerator::addMonsters( Map *levelMap, ShapePalette *shapePal ) {
 				}
 				GLShape *shape =
 				  scourge->getShapePalette()->getCreatureShape( monster->getModelName(),
-				      monster->getSkinName(),
-				      monster->getScale(),
-				      monster );
+				                                                monster->getSkinName(),
+				                                                monster->getScale(),
+				                                                monster );
 				int x, y;
 				bool fits = getLocationInRoom( levelMap, i, shape, &x, &y );
 
@@ -586,9 +586,9 @@ void TerrainGenerator::addHarmlessCreatures( Map *levelMap, ShapePalette *shapeP
 		}
 		GLShape *shape =
 		  scourge->getShapePalette()->getCreatureShape( monster->getModelName(),
-		      monster->getSkinName(),
-		      monster->getScale(),
-		      monster );
+		                                                monster->getSkinName(),
+		                                                monster->getScale(),
+		                                                monster );
 		Creature *creature = scourge->getSession()->newCreature( monster, shape );
 		int x, y;
 		getRandomLocation( levelMap, creature->getShape(), &x, &y );
@@ -780,10 +780,9 @@ void TerrainGenerator::deleteFreeSpaceMap( Map *map, ShapePalette *shapePal ) {
 
 // =================================================================
 // Utilities
-// FIXME: low likelyhood of infinite loop
 void TerrainGenerator::getRandomLocation( Map *map, Shape *shape,
-    int *xpos, int *ypos,
-    bool accessible, int fromX, int fromY ) {
+                                          int *xpos, int *ypos,
+                                          bool accessible, int fromX, int fromY ) {
 
 	if ( accessible ) {
 		map->configureAccessMap( fromX, fromY );
@@ -792,32 +791,28 @@ void TerrainGenerator::getRandomLocation( Map *map, Shape *shape,
 	int maxCount = 500; // max # of tries to find accessible location
 	int count = 0;
 	int x, y;
-	while ( 1 ) {
-		// get a random location
-		int n = static_cast<int>( Util::roll( 0, ffCount - 1 ) );
+	// make the location-checking sequence start from random position
+	int randomShift = Util::dice( ffCount );
+
+	for ( int i = 0; i < ffCount; ++i ) {
+		// try sequences in "rotated" by randomShift order
+		int n = ( i + randomShift ) % ffCount;
 		x = ff[n * 2];
 		y = ff[n * 2 + 1];
-
 		// can it fit?
 		bool fits = map->shapeFits( shape, x, y, 0 );
-		// doesn't fit? try again (could be inf. loop)
-		if ( fits &&
-		        !map->coversDoor( shape, x, y ) ) {
-
+		// doesn't fit? try again 
+		if ( fits && !map->coversDoor( shape, x, y ) ) {
 			// check if location is accessible
-			if ( accessible ) {
-				if ( !map->isPositionAccessible( x, y ) ) {
-					count++;
-					if ( count >= maxCount ) {
-						// we failed.
-						*xpos = *ypos = MAP_WIDTH;
-						return;
-					}
-					continue;
+			if ( accessible && !map->isPositionAccessible( x, y ) ) {
+				count++;
+				if ( count >= maxCount ) {
+					// we failed.
+					*xpos = *ypos = MAP_WIDTH;
+					return;
 				}
+				continue;
 			}
-
-
 
 			// remove from ff list
 			for ( int i = n + 1; i < ffCount - 1; i++ ) {
@@ -831,10 +826,15 @@ void TerrainGenerator::getRandomLocation( Map *map, Shape *shape,
 			return;
 		}
 	}
+
+	// well ... above for() checked EVERY available location
+	// FIXME: make callers to handle this case
+    cerr << "TerrainGenerator::getRandomLocation() is sorry and clueless" << endl;
+	*xpos = *ypos = MAP_WIDTH;
 }
 
 void TerrainGenerator::getRandomLocationSimple( Map *map, Shape *shape,
-    int *xpos, int *ypos ) {
+                                                int *xpos, int *ypos ) {
 	int x, y;
 	for ( int i = 0; i < 500; i++ ) {
 		// get a random location
@@ -898,8 +898,8 @@ Location *TerrainGenerator::addShapeInRoom( Shape *shape, int room, DisplayInfo 
 
 // return false if the creature won't fit in the room
 bool TerrainGenerator::getLocationInRoom( Map *map, int roomIndex, Shape *shape,
-    int *xpos, int *ypos,
-    bool startMiddle ) {
+                                          int *xpos, int *ypos,
+                                          bool startMiddle ) {
 
 	int startx = room[roomIndex].x + unitOffset;
 	int endx = room[roomIndex].x + room[roomIndex].w;
@@ -1000,11 +1000,11 @@ bool TerrainGenerator::isAccessible( Map *map, int x, int y, int fromX, int from
 }
 
 void TerrainGenerator::addItem( Map *map,
-    Creature *creature,
-    Item *item,
-    Shape *shape,
-    int x, int y, int z,
-    DisplayInfo *di ) {
+                                Creature *creature,
+                                Item *item,
+                                Shape *shape,
+                                int x, int y, int z,
+                                DisplayInfo *di ) {
 	if ( creature ) map->setCreature( x, y, z, creature );
 	else if ( item ) map->setItem( x, y, z, item );
 	else map->setPosition( x, y, z, shape, di );
