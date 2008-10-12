@@ -59,7 +59,8 @@ public:
 	}
 };
 
-/// Creates the shapes (walls, lava, floor etc.) that are used inside caves
+/// Creates the shapes (walls, lava, floor etc.) that are used inside caves.
+
 class GLCaveShape : public GLShape {
 private:
 	int mode;

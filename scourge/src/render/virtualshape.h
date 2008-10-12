@@ -26,6 +26,7 @@
   */
 
 /// Helper functions for virtual shapes.
+
 class VirtualShape : public GLShape  {
 private:
 	int offsetX, offsetY, offsetZ;

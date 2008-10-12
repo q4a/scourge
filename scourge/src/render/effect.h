@@ -55,6 +55,7 @@ public:
 };
 
 /// A special particle effect, like spells and teleporters.
+
 class Effect {
 private:
 	Map *levelMap;
