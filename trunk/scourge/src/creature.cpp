@@ -3364,7 +3364,7 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		glDisable( GL_TEXTURE_2D );
 	} else if ( getMonster() ) {
 		
-		glPushAttrib( GL_ALL_ATTRIB_BITS );
+		glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT );
 		glEnable( GL_DEPTH_TEST );
 
 		GLuint *textureGroup = session->getMap()->getShapes()->getCurrentTheme()->getTextureGroup( WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ] );
