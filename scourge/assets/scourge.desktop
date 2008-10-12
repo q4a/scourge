@@ -1,11 +1,13 @@
 [Desktop Entry]
-Version=0.10
-Type=Application
-Encoding=UTF-8
 Name=S.C.O.U.R.G.E.: Heroes of Lesser Renown
+Type=Application
+GenericName=Roguelike 3D game
+GenericName[de]=Rogue-artiges 3D-Spiel
 Comment=A 3D, roguelike game of not quite epic proportions.
+Comment[de]= Ein Rogue-artiges 3D-Spiel von nicht ganz so epischem Ausmaß.
 TryExec=scourge
 Exec=scourge
-Categories=Game;RolePlaying
-Icon=scourge.png
-
+Icon=scourge
+Terminal=false
+Encoding=UTF-8
+Categories=Game;ArcadeGame;RolePlaying;
