@@ -3502,7 +3502,7 @@ bool Map::isLocationVisible( int x, int y ) {
 bool Map::isLocationInLight( int x, int y, Shape *shape ) {
 	int chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
 	int chunkY = ( y - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
-	if ( !lightMap[chunkX][chunkY] ) return false;
+	if( !checkLightMap( chunkX, chunkY ) ) return false;
 	return ( helper && helper->isVisible( x, y, shape ) );
 }
 
