@@ -1085,8 +1085,16 @@ int Item::getInventoryHeight() {
 	return ( getShape()->getIcon() > 0 ? getShape()->getIconHeight() : rpgItem->getInventoryHeight() );
 }
 
-/// Renders the item's icon and any overlaid effects.
+void Item::renderIcon( Scourge *scourge, SDL_Rect *rect, bool smallIcon ) {
+	int iw = getInventoryWidth() * GRID_SIZE;
+	int ih = getInventoryHeight() * GRID_SIZE;
+	
+	int iy = rect->y;
+	if ( rect->h - ih > GRID_SIZE ) iy += rect->h - ih - GRID_SIZE;
+	renderIcon( scourge, rect->x + ( rect->w - iw ) / 2, iy, iw, ih, smallIcon );
+}
 
+/// Renders the item's icon and any overlaid effects
 void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
 	GLuint tex;
 	int rw, rh, ox, oy, iw, ih;
