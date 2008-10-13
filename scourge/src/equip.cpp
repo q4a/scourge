@@ -47,7 +47,6 @@ using namespace std;
 
 #define SPELL_SIZE 30
 #define DEBUG_SPECIAL_SKILL 0
-#define GRID_SIZE 32
 
 // fixme: this should be a property of the magicschool and should come from the .cfg file.
 char *schoolIcons[] = {
@@ -395,29 +394,9 @@ void Equip::drawEquipment() {
 		if ( item ) {
 			if ( rect && rect->w && rect->h ) {
 				glEnable( GL_TEXTURE_2D );
-				//int ix = item->getInventoryX() * GRID_SIZE;
-				//int iy = item->getInventoryY() * GRID_SIZE;
-				int iw = item->getInventoryWidth() * GRID_SIZE;
-				int ih = item->getInventoryHeight() * GRID_SIZE;
-
-				int iy = rect->y;
-				if ( rect->h - ih > GRID_SIZE ) iy += rect->h - ih - GRID_SIZE;
-				item->renderIcon( pcUi->getScourge(), rect->x + ( rect->w - iw ) / 2, iy, iw, ih );
-				//    item->renderIcon( pcUi->getScourge(), rect->x, rect->y, rect->w, rect->h );
+				item->renderIcon( pcUi->getScourge(), rect );
 			}
 		}
-		/*
-		if( ( 1 << i ) == creature->getPreferredWeapon() ) {
-		 glDisable( GL_TEXTURE_2D );
-		 glColor4f( 1, 0.35f, 0, 1 );
-		 glBegin( GL_LINE_LOOP );
-		 glVertex2d( rect->x, rect->y + rect->h );
-		 glVertex2d( rect->x, rect->y );
-		 glVertex2d( rect->x + rect->w, rect->y );
-		 glVertex2d( rect->x + rect->w, rect->y + rect->h );
-		 glEnd();
-		}
-		*/
 	}
 	if ( currentHole > -1 ) {
 		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( currentHole );

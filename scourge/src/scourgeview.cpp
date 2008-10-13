@@ -1218,7 +1218,11 @@ void ScourgeView::drawDraggedItem() {
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef( scourge->getSDLHandler()->mouseX - 25, scourge->getSDLHandler()->mouseY - 25, 500 );
-		scourge->drawItemIcon( scourge->getMovingItem(), 32 );
+		//scourge->drawItemIcon( scourge->getMovingItem(), 32 );
+		SDL_Rect rect;
+		rect.x = rect.y = 0;
+		rect.w = rect.h = 64;
+		scourge->getMovingItem()->renderIcon( scourge, &rect );
 		glPopMatrix();
 		glEnable( GL_DEPTH_TEST );
 	}

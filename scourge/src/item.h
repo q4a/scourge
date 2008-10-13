@@ -49,6 +49,8 @@ class Scourge;
 class Item : public RenderedItem, Storable {
 public:
 
+	#define GRID_SIZE 32
+
 	enum {
 		ID_BONUS = 0,
 		ID_DAMAGE_MUL,
@@ -76,6 +78,7 @@ public:
 		return missionObjectiveIndex;
 	}
 
+	void renderIcon( Scourge *scourge, SDL_Rect *rect, bool smallIcon = false );
 	void renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon = false );
 	GLuint getItemIconTexture( bool smallIcon = false );
 	void getTooltip( char *tooltip );
