@@ -279,9 +279,7 @@ void PathManager::moveNPCsOffPath( Creature* player, Map* map ) {
 	while ( setItr != allPathLocations.end() ) {
 		Location loc = *setItr;
 		Location* mapLoc = map->getLocation( loc.x, loc.y, 0 );
-		if ( mapLoc && mapLoc->creature && mapLoc->creature != owner &&
-		        mapLoc->creature != player &&
-		        ( !mapLoc->creature->isMonster() || mapLoc->creature->isNpc() ) ) {
+		if ( mapLoc && mapLoc->creature && mapLoc->creature != owner && mapLoc->creature != player && !mapLoc->creature->isNonNPCMonster() ) {
 			Creature* blocker = ( Creature* )mapLoc->creature;
 #if PATH_DEBUG
 			cout << blocker->getName() << " is in the way.\n";

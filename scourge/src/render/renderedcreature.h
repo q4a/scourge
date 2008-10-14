@@ -117,7 +117,9 @@ public:
 	virtual void pickUpOnMap( RenderedItem *item ) = 0;
 	virtual GLShape *getShape() = 0;
 	virtual char *getName() = 0;
+	virtual bool isWanderingHero() = 0;
 	virtual bool isMonster() = 0;
+	virtual bool isNonNPCMonster() = 0;
 	virtual char *getType() = 0;
 	virtual CreatureInfo *save() = 0;
 	virtual bool canAttack( RenderedCreature *creature, int *cursor = NULL ) = 0;

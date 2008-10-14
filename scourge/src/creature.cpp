@@ -668,15 +668,13 @@ bool Creature::setSelCreature( Creature* creature, float range, bool cancelIfNot
 	tx = selX;
 	ty = selY;
 	// Does the path lead close enough to the destination?
-	bool ret = pathManager->findPathToCreature( creature,
-	           session->getParty()->getPlayer(),
-	           session->getMap(),
-	           range, ignoreParty );
+//	bool ret = pathManager->findPathToCreature( creature, session->getParty()->getPlayer(), session->getMap(), range, ignoreParty );
+	bool ret = pathManager->findPathToCreature( creature, this, session->getMap(), range, ignoreParty );
 
 	/**
 	 * For pc-s cancel the move.
 	 */
-	if ( !ret && character && cancelIfNotPossible ) {
+	if ( !ret && session->getParty()->isPartyMember(this) && cancelIfNotPossible ) {
 		pathManager->clearPath();
 		selX = oldSelX;
 		selY = oldSelY;
@@ -1246,7 +1244,7 @@ void Creature::setAction( int action, Item *item, Spell *spell, SpecialSkill *sk
 	}
 
 	if ( strlen( msg ) ) {
-		if ( getCharacter() ) {
+		if ( session->getParty()->isPartyMember(this) ) {
 			session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERBATTLE );
 		} else {
 			session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_NPCBATTLE );
@@ -2055,18 +2053,9 @@ bool Creature::castHealingSpell() {
 /// Basic NPC/monster AI.
 
 void Creature::decideMonsterAction() {
-	if( !isNpc() && isMonster() ) {
-		cerr << "Creature::decideMonsterAction " << getMonster()->getType() << " scripted:" << scripted << " monster: " << isMonster() << " motion: " << getMotion() << endl;
-	}
-
 	//CASE 1: A possessed non-aggressive creature
-	if ( !isMonster() && getStateMod( StateMod::possessed ) ) {
-		if( !isNpc() && isMonster() ) cerr << "\tcase 1" << endl;
-		Creature *p =
-		  session->getParty()->getClosestPlayer( toint( getX() ), toint( getY() ),
-		      getShape()->getWidth(),
-		      getShape()->getDepth(),
-		      20 );
+	if ( !isNonNPCMonster() && getStateMod( StateMod::possessed ) ) {
+		Creature *p = session->getParty()->getClosestPlayer( toint( getX() ), toint( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 );
 		// attack with item
 		setMotion( Constants::MOTION_MOVE_TOWARDS );
 		setTargetCreature( p );
@@ -2076,9 +2065,8 @@ void Creature::decideMonsterAction() {
 	//CASE 2: Loiterers and standers
 	//aggressives loitering have only 1/20 chance of breaking the cycle. That's a slight pause.
 	int n = Util::dice( 20 );
-	if ( ( getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND ) &&
-	        ( !isMonster() || isNpc() || n != 0 ) ) {
-		if( !isNpc() && isMonster() ) cerr << "\tcase 2 n=" << n << endl;
+	if ( ( getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND ) && ( !isNonNPCMonster() || n != 0 ) ) {
+		if ( attackClosestTarget() ) return;
 		if ( getMotion() == Constants::MOTION_STAND ) {
 			//if standing, there is a 1/500 chance to start loitering. Has to be a slim chance because
 			//this gets checked so often..
@@ -2112,51 +2100,48 @@ void Creature::decideMonsterAction() {
 	}
 	//CASE 3: Other monsters (aggressive)
 	else {
-		if( !isNpc() && isMonster() ) cerr << "\tcase 3" << endl;
-		if ( castHealingSpell() ) return;
-
-		// try to attack someone
-		Creature *p;
-		if ( getStateMod( StateMod::possessed ) ) {
-			p = session->getClosestVisibleMonster( toint( getX() ), toint( getY() ),
-			    getShape()->getWidth(),
-			    getShape()->getDepth(),
-			    20 );
-		} else {
-			p = session->getParty()->getClosestPlayer( toint( getX() ), toint( getY() ),
-			    getShape()->getWidth(),
-			    getShape()->getDepth(),
-			    20 );
-		}
-		if ( p ) {
-			float dist =
-			  Constants::distance( getX(),  getY(),
-			                       getShape()->getWidth(), getShape()->getDepth(),
-			                       p->getX(), p->getY(),
-			                       p->getShape()->getWidth(),
-			                       p->getShape()->getDepth() );
-
-			// can monster use magic?
-			if ( getSpellCount() ) {
-				for ( int i = 0; i < getSpellCount(); i++ ) {
-					Spell *spell = getSpell( i );
-
-					if ( useOffensiveSpell( spell, dist, p ) ) {
-						setAction( Constants::ACTION_CAST_SPELL,
-						           NULL,
-						           spell );
-						setMotion( Constants::MOTION_MOVE_TOWARDS );
-						setTargetCreature( p );
-						return;
-					}
-				}
-			}
-
-			// attack with item
-			setMotion( Constants::MOTION_MOVE_TOWARDS );
-			setTargetCreature( p );
-		}
+		attackClosestTarget();
 	}
+}
+
+/// Makes the creature attack the closest suitable target. Returns true if target found.
+
+bool Creature::attackClosestTarget() {
+  if ( castHealingSpell() ) return false;
+
+  Creature *p;
+  bool possessed = getStateMod( StateMod::possessed );
+
+  if ( isNonNPCMonster() ) {
+    p = ( possessed ? session->getClosestVisibleMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getParty()->getClosestPlayer ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
+  } else {
+    //setAction ( Constants::ACTION_NO_ACTION );
+    p = ( possessed ? session->getParty()->getClosestPlayer ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getClosestVisibleMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
+  }
+
+  if ( p ) {
+    float dist = Constants::distance ( getX(),  getY(), getShape()->getWidth(), getShape()->getDepth(), p->getX(), p->getY(), p->getShape()->getWidth(), p->getShape()->getDepth() );
+
+    // can we use magic?
+    if ( getSpellCount() ) {
+      for ( int i = 0; i < getSpellCount(); i++ ) {
+        Spell *spell = getSpell ( i );
+
+        if ( useOffensiveSpell ( spell, dist, p ) ) {
+          setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+          setMotion ( Constants::MOTION_MOVE_TOWARDS );
+          setTargetCreature ( p );
+          return true;
+        }
+      }
+    }
+
+    // attack with item
+    setMotion ( Constants::MOTION_MOVE_TOWARDS );
+    setTargetCreature ( p );
+  }
+
+  return ( p );
 }
 
 /// Tries to cast a specified spell onto a specified creature within range.

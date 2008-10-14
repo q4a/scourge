@@ -942,7 +942,7 @@ void Scourge::endMission() {
 
 bool Scourge::inTurnBasedCombatPlayerTurn() {
 	return ( inTurnBasedCombat() &&
-	         !battleRound[battleTurn]->getCreature()->isMonster() );
+	         !battleRound[battleTurn]->getCreature()->isNonNPCMonster() );
 }
 
 void Scourge::cancelTargetSelection() {
@@ -1050,7 +1050,7 @@ bool Scourge::handleTargetSelectionOfCreature( Creature *potentialTarget ) {
 		//no need to get paths to the target creature, the battle should handle this
 		char msg[ 80 ];
 		snprintf( msg, 80, _( "%1$s will target %2$s" ), c->getName(), c->getTargetCreature()->getName() );
-		if ( c->getCharacter() ) {
+		if ( session->getParty()->isPartyMember( c ) ) {
 			getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_PLAYERMAGIC );
 		} else {
 			getDescriptionScroller()->writeLogMessage( msg, Constants::MSGTYPE_NPCMAGIC );
@@ -1690,9 +1690,16 @@ bool Scourge::createBattleTurns() {
 		}
 	}
 	for ( int i = 0; i < session->getCreatureCount(); i++ ) {
-		if ( !session->getCreature( i )->getStateMod( StateMod::dead ) &&
-		        session->getCreature( i )->getMonster() &&
-		        !session->getCreature( i )->getMonster()->isNpc() &&
+// 		if ( !session->getCreature( i )->getStateMod( StateMod::dead ) &&
+// 		        session->getCreature( i )->getMonster() &&
+// 		        !session->getCreature( i )->getMonster()->isNpc() &&
+// 		        levelMap->isLocationVisible( toint( session->getCreature( i )->getX() ),
+// 		                                     toint( session->getCreature( i )->getY() ) ) &&
+// 		        levelMap->isLocationInLight( toint( session->getCreature( i )->getX() ),
+// 		                                     toint( session->getCreature( i )->getY() ),
+// 		                                     session->getCreature( i )->getShape() ) ) {
+
+		if ( !session->getCreature( i )->getStateMod( StateMod::dead ) && !session->getParty()->isPartyMember( session->getCreature( i ) ) &&
 		        levelMap->isLocationVisible( toint( session->getCreature( i )->getX() ),
 		                                     toint( session->getCreature( i )->getY() ) ) &&
 		        levelMap->isLocationInLight( toint( session->getCreature( i )->getX() ),
