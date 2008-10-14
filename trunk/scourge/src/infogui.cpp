@@ -39,11 +39,14 @@ ColorMark colors[] = {
 	{ 0, Color( 0, 0, 0 ) }
 };
 
+#define WIN_WIDTH 350
+#define WIN_HEIGHT 400
+
 InfoGui::InfoGui( Scourge *scourge ) {
 	this->scourge = scourge;
 
-	int width = 350;
-	int height = 400;
+	int width = WIN_WIDTH;
+	int height = WIN_HEIGHT;
 
 	int x = ( scourge->getSDLHandler()->getScreen()->w - width ) / 2;
 	int y = ( scourge->getSDLHandler()->getScreen()->h - height ) / 2;
@@ -87,7 +90,7 @@ InfoGui::InfoGui( Scourge *scourge ) {
 	    _( "Transcribe" ) );
 	win->addWidget( ( Widget* )transcribeButton );
 
-	int n = 64;
+	int n = GRID_SIZE * 2;
 	image = new Canvas( width - n - 10, 5, width - 10, 15 + 128, this );
 	win->addWidget( image );
 
@@ -204,14 +207,14 @@ void InfoGui::setItem( Item *item ) {
 		skillButton->move( 0, 0 );
 	}
 	
-	int n = 32;
-	int width = 350;
-	int height = 400;
-	image->resize( item->getInventoryWidth() * n, item->getInventoryHeight() * n );
-	image->move( width - item->getInventoryWidth() * n - 10, 5 );
+	int n = GRID_SIZE;
+	int width = WIN_WIDTH;
+	int height = WIN_HEIGHT;
 	nameLabel->resize( width - item->getInventoryWidth() * n - 25, item->getInventoryHeight() * n );
 	label->resize( width - 20, height - item->getInventoryHeight() * n - 80 );
 	label->move( 10, item->getInventoryHeight() * n + 5 + 10 );
+	image->move( width - item->getInventoryWidth() * n - 10, 5 );
+	image->resize( item->getInventoryWidth() * n, item->getInventoryHeight() * n );	
 }
 
 void InfoGui::setSpell( Spell *spell ) {
