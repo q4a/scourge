@@ -78,7 +78,7 @@ public:
 		return missionObjectiveIndex;
 	}
 
-	void renderIcon( Scourge *scourge, SDL_Rect *rect, bool smallIcon = false );
+	void renderIcon( Scourge *scourge, SDL_Rect *rect, int gridSize = GRID_SIZE, bool smallIcon = false );
 	void renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon = false );
 	GLuint getItemIconTexture( bool smallIcon = false );
 	void getTooltip( char *tooltip );

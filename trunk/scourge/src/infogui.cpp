@@ -87,18 +87,18 @@ InfoGui::InfoGui( Scourge *scourge ) {
 	    _( "Transcribe" ) );
 	win->addWidget( ( Widget* )transcribeButton );
 
-	int n = 48;
-	image = new Canvas( width - n - 10, 15, width - 10, 15 + 50, this );
+	int n = 64;
+	image = new Canvas( width - n - 10, 5, width - 10, 15 + 128, this );
 	win->addWidget( image );
 
-	win->createLabel( 10, 10, _( "Name:" ), Constants::RED_COLOR );
+	// win->createLabel( 10, 10, _( "Name:" ), Constants::RED_COLOR );
 	strcpy( name, "" );
-	nameLabel = new ScrollingLabel( 10, 15, width - n - 25, 50, name );
+	nameLabel = new ScrollingLabel( 10, 5, width - n - 25, 128, name );
 	win->addWidget( nameLabel );
 
-	win->createLabel( 10, 80, _( "Detailed Description:" ), Constants::RED_COLOR );
+//	win->createLabel( 10, 133, _( "Detailed Description:" ), Constants::RED_COLOR );
 	strcpy( description, "" );
-	label = new ScrollingLabel( 10, 95, width - 20, by - 105, description );
+	label = new ScrollingLabel( 10, 148, width - 20, by - 105 - 53, description );
 	for ( int i = 0; colors[i].c; i++ ) {
 		label->addColoring( colors[i].c, colors[i].color );
 	}
@@ -203,6 +203,15 @@ void InfoGui::setItem( Item *item ) {
 		castButton->move( 0, 0 );
 		skillButton->move( 0, 0 );
 	}
+	
+	int n = 32;
+	int width = 350;
+	int height = 400;
+	image->resize( item->getInventoryWidth() * n, item->getInventoryHeight() * n );
+	image->move( width - item->getInventoryWidth() * n - 10, 5 );
+	nameLabel->resize( width - item->getInventoryWidth() * n - 25, item->getInventoryHeight() * n );
+	label->resize( width - 20, height - item->getInventoryHeight() * n - 80 );
+	label->move( 10, item->getInventoryHeight() * n + 5 + 10 );
 }
 
 void InfoGui::setSpell( Spell *spell ) {
@@ -328,30 +337,36 @@ void InfoGui::drawWidgetContents( Widget *w ) {
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable( GL_TEXTURE_2D );
-
-		glPushMatrix();
-		//    glTranslatef( x, y, 0 );
-		if ( hasItem() ) {
-			glBindTexture( GL_TEXTURE_2D, item->getItemIconTexture() ); 
-		} else if ( hasSpell() ) {
-			glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
-		} else if ( hasSkill() ) {
-			glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->spellsTex[ skill->getIconTileX() ][ skill->getIconTileY() ] );
+		
+		if( hasItem() ) {
+			// glBindTexture( GL_TEXTURE_2D, item->getItemIconTexture() );
+			SDL_Rect rect;
+			rect.x = rect.y = 0;
+			rect.w = image->getWidth();
+			rect.h = image->getHeight();
+			item->renderIcon( scourge, &rect );
+		} else {
+			glPushMatrix();
+			if ( hasSpell() ) {
+				glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
+			} else if ( hasSkill() ) {
+				glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->spellsTex[ skill->getIconTileX() ][ skill->getIconTileY() ] );
+			}
+	
+			glColor4f( 1, 1, 1, 1 );
+	
+			glBegin( GL_TRIANGLE_STRIP );
+			glTexCoord2f( 0, 0 );
+			glVertex3f( 0, 0, 0 );
+			glTexCoord2f( 1, 0 );
+			glVertex3f( image->getWidth(), 0, 0 );
+			glTexCoord2f( 0, 1 );
+			glVertex3f( 0, image->getHeight(), 0 );
+			glTexCoord2f( 1, 1 );
+			glVertex3f( image->getWidth(), image->getHeight(), 0 );
+			glEnd();
+			glPopMatrix();
 		}
-
-		glColor4f( 1, 1, 1, 1 );
-
-		glBegin( GL_TRIANGLE_STRIP );
-		glTexCoord2f( 0, 0 );
-		glVertex3f( 0, 0, 0 );
-		glTexCoord2f( 1, 0 );
-		glVertex3f( image->getWidth(), 0, 0 );
-		glTexCoord2f( 0, 1 );
-		glVertex3f( 0, image->getHeight(), 0 );
-		glTexCoord2f( 1, 1 );
-		glVertex3f( image->getWidth(), image->getHeight(), 0 );
-		glEnd();
-		glPopMatrix();
 
 		glDisable( GL_TEXTURE_2D );
 		glDisable( GL_BLEND );

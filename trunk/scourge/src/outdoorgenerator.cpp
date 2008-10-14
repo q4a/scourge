@@ -785,6 +785,7 @@ void OutdoorGenerator::addMonsters( Map *levelMap, ShapePalette *shapePal ) {
 		      monster->getScale(),
 		      monster );
 		Creature *creature = scourge->getSession()->newCreature( monster, shape );
+		cerr << "Added monster " << monster->getType() << endl;
 		int x, y;
 		getRandomLocation( levelMap, creature->getShape(), &x, &y );
 		addItem( levelMap, creature, NULL, NULL, x, y );

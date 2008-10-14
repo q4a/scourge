@@ -2055,9 +2055,13 @@ bool Creature::castHealingSpell() {
 /// Basic NPC/monster AI.
 
 void Creature::decideMonsterAction() {
+	if( !isNpc() && isMonster() ) {
+		cerr << "Creature::decideMonsterAction " << getMonster()->getType() << " scripted:" << scripted << " monster: " << isMonster() << " motion: " << getMotion() << endl;
+	}
 
 	//CASE 1: A possessed non-aggressive creature
 	if ( !isMonster() && getStateMod( StateMod::possessed ) ) {
+		if( !isNpc() && isMonster() ) cerr << "\tcase 1" << endl;
 		Creature *p =
 		  session->getParty()->getClosestPlayer( toint( getX() ), toint( getY() ),
 		      getShape()->getWidth(),
@@ -2071,8 +2075,10 @@ void Creature::decideMonsterAction() {
 
 	//CASE 2: Loiterers and standers
 	//aggressives loitering have only 1/20 chance of breaking the cycle. That's a slight pause.
+	int n = Util::dice( 20 );
 	if ( ( getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND ) &&
-	        ( !isMonster() || isNpc() || Util::dice( 20 ) != 0 ) ) {
+	        ( !isMonster() || isNpc() || n != 0 ) ) {
+		if( !isNpc() && isMonster() ) cerr << "\tcase 2 n=" << n << endl;
 		if ( getMotion() == Constants::MOTION_STAND ) {
 			//if standing, there is a 1/500 chance to start loitering. Has to be a slim chance because
 			//this gets checked so often..
@@ -2106,6 +2112,7 @@ void Creature::decideMonsterAction() {
 	}
 	//CASE 3: Other monsters (aggressive)
 	else {
+		if( !isNpc() && isMonster() ) cerr << "\tcase 3" << endl;
 		if ( castHealingSpell() ) return;
 
 		// try to attack someone
