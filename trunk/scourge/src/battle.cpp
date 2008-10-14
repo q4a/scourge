@@ -31,7 +31,7 @@ using namespace std;
 
 #define MIN_FUMBLE_RANGE 4.0f
 
-#define IS_AUTO_CONTROL( creature ) ( ( creature->isMonster() || creature->getStateMod( StateMod::possessed ) ) )
+#define IS_AUTO_CONTROL( creature ) ( ( creature->isMonster() || creature->isWanderingHero() || creature->getStateMod( StateMod::possessed ) ) )
 
 bool Battle::debugBattle = DEBUG_BATTLE;
 
@@ -1445,7 +1445,7 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 				creature->getShape()->setCurrentAnimation( static_cast<int>( MD2_TAUNT ) );
 
 			snprintf( message, MESSAGE_SIZE, _( "...%s is killed!" ), tc->getName() );
-			if ( creature->getCharacter() ) {
+			if ( session->getParty()->isPartyMember( creature ) ) {
 				session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERDEATH );
 			} else {
 				session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_NPCDEATH );

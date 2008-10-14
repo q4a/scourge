@@ -242,7 +242,7 @@ public:
 		if ( !b ) npcInfo = NULL;
 	}
 	/// Is it a wandering hero (recruitable character)?
-	bool isWanderingHero() {
+	inline bool isWanderingHero() {
 		return( !session->getParty()->isPartyMember( this ) && ( character != NULL ) );
 	}
 
@@ -745,6 +745,7 @@ public:
 	//void makeTargetRetaliate();
 	void decideMonsterAction();
 
+	bool attackClosestTarget();
 	bool castHealingSpell();
 
 	float getDistanceToTarget( RenderedCreature *creature = NULL );
