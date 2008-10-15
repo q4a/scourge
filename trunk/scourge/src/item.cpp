@@ -1318,11 +1318,12 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 /// Renders the "blinking stars" effect for magical items.
 
 void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih ) {
+	int particleCount = 3 * ( getMagicLevel() + 1 );
 	// draw an effect
 	Uint32 t = SDL_GetTicks();
 	if ( t - iconEffectTimer > 5 ) {
 		iconEffectTimer = t;
-		for ( int i = 0; i < PARTICLE_COUNT / 5; i++ ) {
+		for ( int i = 0; i < particleCount; i++ ) {
 			if ( iconEffectParticle[i]->life < 0 ||
 			        iconEffectParticle[i]->life >= iconEffectParticle[i]->maxLife ) {
 				iconEffectParticle[i]->life = 0;
@@ -1345,7 +1346,7 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
-	for ( int i = 0; i < PARTICLE_COUNT / 5; i++ ) {
+	for ( int i = 0; i < particleCount; i++ ) {
 		float a = ( iconEffectParticle[i]->life / static_cast<float>( iconEffectParticle[i]->maxLife ) );
 		if ( a >= 0.5 ) a = 1 - a;
 		a = a * 2.0f;
@@ -1354,9 +1355,11 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 		           Constants::MAGIC_ITEM_COLOR[ getMagicLevel() ]->b * a,
 		           1 );
 		glPushMatrix();
-		//glRotatef( 45, 0, 0, 1 );
 		glTranslatef( iconEffectParticle[i]->x - iconEffectParticle[i]->zoom / 2,
 		              iconEffectParticle[i]->y - iconEffectParticle[i]->zoom / 2, 0 );
+		if( getMagicLevel() >= Constants::DIVINE_MAGIC_ITEM ) {
+			glRotatef( 360.0f * a, 0, 0, 1 );
+		}		
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2d( 0, 0 );
 		glVertex2d( x, y );

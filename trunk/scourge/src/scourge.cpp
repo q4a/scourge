@@ -1845,7 +1845,6 @@ void Scourge::addGameSpeed( int speedFactor ) {
 void Scourge::moveMonster( Creature *monster ) {
 	// set running animation (currently move or attack)
 	if ( ( ( AnimatedShape* )( monster->getShape() ) )->getAttackEffect() ) {
-		if ( monster->getCharacter() ) cerr << "111" << endl;
 		//monster->getShape()->setCurrentAnimation(static_cast<int>(MD2_ATTACK));
 		//((AnimatedShape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
 		// don't move when attacking
