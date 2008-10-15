@@ -62,9 +62,9 @@ private:
 	Map *levelMap;
 	Preferences *preferences;
 	Shapes *shapePal;
-	Texture* flameTex;
-	Texture* ringTex;
-	Texture* rippleTex;
+	Texture const* flameTex;
+	Texture const* ringTex;
+	Texture const* rippleTex;
 	GLShape *shape;
 	bool deleteShape;
 	float ringRadius, ringRotate, rippleRadius, rippleAlpha;

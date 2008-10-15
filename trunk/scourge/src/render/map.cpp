@@ -177,9 +177,9 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	for ( int x = 0; x < MAP_WIDTH; x++ ) {
 		for ( int y = 0; y < MAP_DEPTH; y++ ) {
 			floorPositions[x][y] = NULL;
+			itemPos[x][y] = NULL;
 			for ( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
 				pos[x][y][z] = NULL;
-				itemPos[x][y] = NULL;
 				effect[x][y][z] = NULL;
 			}
 		}
@@ -356,10 +356,10 @@ void Map::reset() {
 	for ( int x = 0; x < MAP_WIDTH; x++ ) {
 		for ( int y = 0; y < MAP_DEPTH; y++ ) {
 			floorPositions[x][y] = NULL;
+			itemPos[x][y] = NULL;
 			for ( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
 				pos[x][y][z] = NULL;
 				effect[x][y][z] = NULL;
-				itemPos[x][y] = NULL;
 			}
 		}
 	}

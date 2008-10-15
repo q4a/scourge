@@ -56,7 +56,7 @@ void CardContainer::addWidget( Widget *w, int card, bool addToWindow ) {
 }
 
 
-Button *CardContainer::createButton( int x1, int y1, int x2, int y2, char *label, int card, bool toggle, Texture* texture ) {
+Button *CardContainer::createButton( int x1, int y1, int x2, int y2, char *label, int card, bool toggle, Texture const* texture ) {
 	if ( widgetCount[card] < MAX_WIDGETS ) {
 		Button *b;
 		b = window->createButton( x1, y1, x2, y2, label, toggle, texture );

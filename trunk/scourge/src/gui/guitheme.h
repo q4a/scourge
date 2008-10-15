@@ -33,15 +33,15 @@ class ThemeElement {
 public:
 	char textureFileName[40], north[40], south[40], east[40], west[40];
 	char ne[40], nw[40], se[40], sw[40];
-	Texture* texture;
-	Texture* tex_north;
-	Texture* tex_south;
-	Texture* tex_east;
-	Texture* tex_west;
-	Texture* tex_nw;
-	Texture* tex_ne;
-	Texture* tex_sw;
-	Texture* tex_se;
+	Texture const* texture;
+	Texture const* tex_north;
+	Texture const* tex_south;
+	Texture const* tex_east;
+	Texture const* tex_west;
+	Texture const* tex_nw;
+	Texture const* tex_ne;
+	Texture const* tex_sw;
+	Texture const* tex_se;
 	Color color;
 	int width;
 	int rep_h, rep_v;

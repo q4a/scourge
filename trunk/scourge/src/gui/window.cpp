@@ -55,7 +55,7 @@ Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title,
 	commonInit( scourgeGui, x, y, w, h, title, hasCloseButton, type );
 }
 
-Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, Texture* texture, bool hasCloseButton, int type, Texture* texture2 ) : Widget( x, y, w, h ) {
+Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, Texture const* texture, bool hasCloseButton, int type, Texture const* texture2 ) : Widget( x, y, w, h ) {
 	theme = GuiTheme::getThemeByName( GuiTheme::DEFAULT_THEME );
 	/*
 	this->texture = texture;
@@ -897,7 +897,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 }
 
 
-Button *Window::createButton( int x1, int y1, int x2, int y2, char *label, bool toggle, Texture* texture ) {
+Button *Window::createButton( int x1, int y1, int x2, int y2, char *label, bool toggle, Texture const* texture ) {
 	if ( widgetCount < MAX_WIDGET ) {
 		Button * theButton;
 		theButton = new Button( x1, y1, x2, y2, scourgeGui->getHighlightTexture(), label, texture );
@@ -1114,7 +1114,7 @@ void Window::prevWindowToTop( Window *win, bool includeLocked ) {
 
 void Window::showMessageDialog( ScourgeGui *scourgeGui,
     int x, int y, int w, int h,
-    char *title, Texture* texture,
+    char *title, Texture const* texture,
     char const* message,
     char *buttonLabel ) {
 	if ( message_dialog && message_dialog->isVisible() ) {

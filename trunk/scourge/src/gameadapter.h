@@ -162,16 +162,16 @@ public:
 	virtual inline int getCursorHeight() {
 		return 0;
 	}
-	virtual inline Texture* getHighlightTexture() {
+	virtual inline Texture const* getHighlightTexture() {
 		return 0;
 	}
-	virtual inline Texture* getGuiTexture() {
+	virtual inline Texture const* getGuiTexture() {
 		return 0;
 	}
-	virtual inline Texture* getGuiTexture2() {
+	virtual inline Texture const* getGuiTexture2() {
 		return 0;
 	}
-	virtual inline Texture* loadSystemTexture( char *line ) {
+	virtual inline Texture const* loadSystemTexture( char *line ) {
 		return 0;
 	}
 	virtual inline void showTextMessage( char *message ) {}

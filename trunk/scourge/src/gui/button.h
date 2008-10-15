@@ -37,11 +37,11 @@ private:
 	int labelPos;
 	bool toggle;
 	bool selected;
-	Texture* highlight;
+	Texture const* highlight;
 	bool glowing;
 	bool inverse;
 	int fontType;
-	Texture* texture;
+	Texture const* texture;
 
 public:
 
@@ -51,7 +51,7 @@ public:
 		BOTTOM
 	};
 
-	Button( int x1, int y1, int x2, int y2, Texture* highlight, char *label = NULL, Texture* texture = NULL );
+	Button( int x1, int y1, int x2, int y2, Texture const* highlight, char *label = NULL, Texture const* texture = NULL );
 	~Button();
 
 	inline void setInside( bool b ) {
@@ -67,7 +67,7 @@ public:
 		return toggle;
 	}
 
-	inline void setTexture( Texture* texture ) {
+	inline void setTexture( Texture const* texture ) {
 		this->texture = texture;
 	}
 	inline void setGlowing( bool b ) {

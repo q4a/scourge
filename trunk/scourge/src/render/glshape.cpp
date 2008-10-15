@@ -475,8 +475,8 @@ void GLShape::createDarkTexture( WallTheme *theme ) {
 
 	// delete the previous texture
 	if ( lightmap_tex_num != 0 ) {
-		glDeleteTextures( 1, ( GLuint* )&lightmap_tex_num );
-		glDeleteTextures( 1, ( GLuint* )&lightmap_tex_num2 );
+		glDeleteTextures( 1, &lightmap_tex_num );
+		glDeleteTextures( 1, &lightmap_tex_num2 );
 		lightmap_tex_num = lightmap_tex_num2 = 0;
 	}
 

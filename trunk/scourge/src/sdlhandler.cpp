@@ -1233,19 +1233,19 @@ void SDLHandler::testDrawView() {
 	rquad -= 0.15f;
 }
 
-Texture* SDLHandler::getHighlightTexture() {
+Texture const* SDLHandler::getHighlightTexture() {
 	return gameAdapter->getHighlightTexture();
 }
 
-Texture* SDLHandler::getGuiTexture() {
+Texture const* SDLHandler::getGuiTexture() {
 	return gameAdapter->getGuiTexture();
 }
 
-Texture* SDLHandler::getGuiTexture2() {
+Texture const* SDLHandler::getGuiTexture2() {
 	return gameAdapter->getGuiTexture2();
 }
 
-Texture* SDLHandler::loadSystemTexture( char *line ) {
+Texture const* SDLHandler::loadSystemTexture( char *line ) {
 	return gameAdapter->loadSystemTexture( line );
 }
 

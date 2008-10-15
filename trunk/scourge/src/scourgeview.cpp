@@ -1334,10 +1334,8 @@ void ScourgeView::drawWeather() {
 				// It prevents them sometimes aligning in horizontal "waves".
 				rainDropY[i] = -Util::pickOne( RAIN_DROP_SIZE, screenH );
 			}
-
-			glPopMatrix();
-
 		}
+		glPopMatrix();
 	}
 
 	glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );

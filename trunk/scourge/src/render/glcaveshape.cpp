@@ -830,9 +830,9 @@ void GLCaveShape::initializeShapes( Shapes *shapes ) {
 
 void GLCaveShape::createFloorTexture( Shapes *shapes, int stencilIndex ) {
 	if ( floorTex[ stencilIndex ] ) {
-		glDeleteTextures( 1, &( floorTex[ stencilIndex ] ) );
+		glDeleteTextures( 1, &floorTex[ stencilIndex ] );
 	}
-	glGenTextures( 1, ( GLuint* )&( floorTex[ stencilIndex ] ) );
+	glGenTextures( 1, &floorTex[ stencilIndex ] );
 	GLubyte *stencil = shapes->getStencilImage( stencilIndex );
 	TextureData& floorThemeData = shapes->getCurrentTheme()->getFloorData();
 

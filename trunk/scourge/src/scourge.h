@@ -665,11 +665,11 @@ public:
 		getSDLHandler()->lockMouse( widget );
 	}
 
-	Texture* getHighlightTexture();
-	Texture* getGuiTexture();
-	Texture* getGuiTexture2();
+	Texture const* getHighlightTexture();
+	Texture const* getGuiTexture();
+	Texture const* getGuiTexture2();
 
-	Texture* loadSystemTexture( char *line );
+	Texture const* loadSystemTexture( char *line );
 
 	inline TradeDialog *getTradeDialog() {
 		return tradeDialog;

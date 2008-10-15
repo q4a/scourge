@@ -151,17 +151,17 @@ public:
 
 	Texture raindropTexture;
 
-	inline Texture* getGuiTexture() {
+	inline Texture const* getGuiTexture() {
 		return &gui_texture;
 	}
-	inline Texture* getGuiTexture2() {
+	inline Texture const* getGuiTexture2() {
 		return &gui_texture2;
 	}
 	inline Texture* getGuiWoodTexture() {
 		return gui_wood_texture;
 	}
 	//inline GLuint getPaperDollTexture() { return paper_doll_texture; }
-	inline Texture* getHighlightTexture() {
+	inline Texture const* getHighlightTexture() {
 		return &highlight;
 	}
 	inline Texture* getBorderTexture() {

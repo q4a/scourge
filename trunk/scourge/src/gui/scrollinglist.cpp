@@ -26,7 +26,7 @@ using namespace std;
 /**
   *@author Gabor Torok
   */
-ScrollingList::ScrollingList( int x, int y, int w, int h, Texture* highlight, DragAndDropHandler *dragAndDropHandler, int lineHeight )
+ScrollingList::ScrollingList( int x, int y, int w, int h, Texture const* highlight, DragAndDropHandler *dragAndDropHandler, int lineHeight )
 		: Widget( x, y, w, h ) {
 	value = 0;
 	scrollerWidth = 15;
