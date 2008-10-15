@@ -541,7 +541,7 @@ public:
 	*/
 	Window *createWindow( int x, int y, int w, int h, char *title );
 
-	virtual GLuint getNamedTexture( char *name );
+	virtual Texture* getNamedTexture( char *name );
 
 	/**
 	  Called when the mission was completed (monster killed, item bagged, etc.). This
@@ -579,7 +579,7 @@ public:
 
 	ShapePalette *getShapePalette();
 
-	GLuint getCursorTexture( int cursorMode );
+	Texture* getCursorTexture( int cursorMode );
 	int getCursorWidth();
 	int getCursorHeight();
 
@@ -665,11 +665,11 @@ public:
 		getSDLHandler()->lockMouse( widget );
 	}
 
-	GLuint getHighlightTexture();
-	GLuint getGuiTexture();
-	GLuint getGuiTexture2();
+	Texture* getHighlightTexture();
+	Texture* getGuiTexture();
+	Texture* getGuiTexture2();
 
-	GLuint loadSystemTexture( char *line );
+	Texture* loadSystemTexture( char *line );
 
 	inline TradeDialog *getTradeDialog() {
 		return tradeDialog;
@@ -766,7 +766,7 @@ public:
 
 	void drawPortrait( Creature *p, int width, int height, int offs_x = 0, int offs_y = 0 );
 
-	bool getStateModIcon( GLuint *icon, char *name, Color *color, Creature *p, int stateMod, bool protect = false );
+	bool getStateModIcon( Texture** icon, char *name, Color *color, Creature *p, int stateMod, bool protect = false );
 
 	void describeAttacks( Creature *p, int x, int y, bool currentOnly = false );
 	void describeDefense( Creature *p, int x, int y );

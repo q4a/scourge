@@ -26,7 +26,7 @@
 using namespace std;
 
 C3DSShape::C3DSShape( const string& file_name, float div, Shapes *shapePal,
-                      GLuint texture[],
+                      Texture* texture[],
                       char *name, int descriptionGroup,
                       Uint32 color, Uint8 shapePalIndex,
                       float size_x, float size_y, float size_z,
@@ -370,7 +370,7 @@ void C3DSShape::drawShape( bool isShadow, float alpha ) {
 		if ( pObject->bHasTexture && !isShadow ) {
 			// Bind the texture map to the object by it's materialID
 			glEnable( GL_TEXTURE_2D );
-			glBindTexture( GL_TEXTURE_2D, g_Texture[pObject->materialID] );
+			g_Texture[pObject->materialID]->glBind();
 			//if (!isShadow) glColor3ub(255, 255, 255);
 		} else {
 			// Turn off texture mapping and turn on color

@@ -52,7 +52,7 @@ private:
 	float scale;
 	bool npc;
 	char *portrait;
-	GLuint portraitTexture;
+	Texture* portraitTexture;
 	float baseAttackBonus;
 	GLuint statemod;
 	bool harmless;
@@ -149,10 +149,10 @@ public:
 	inline char *getPortrait() {
 		return portrait;
 	}
-	inline GLuint getPortraitTexture() {
+	inline Texture* getPortraitTexture() {
 		return portraitTexture;
 	}
-	inline void setPortraitTexture( GLuint n ) {
+	inline void setPortraitTexture( Texture* n ) {
 		portraitTexture = n;
 	}
 	inline float getBaseAttackBonus() {

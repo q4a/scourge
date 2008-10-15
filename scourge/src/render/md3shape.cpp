@@ -27,7 +27,7 @@ using namespace std;
 //#define DEBUG_MD2 1
 
 MD3Shape::MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div,
-                    GLuint texture[], int width, int depth, int height,
+                    Texture* texture[], int width, int depth, int height,
                     char *name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
 		AnimatedShape( width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
 	// clone the md3 so we have our own animation data

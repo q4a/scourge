@@ -18,11 +18,11 @@
 #include "../common/constants.h"
 #include "gltorch.h"
 
-GLTorch::GLTorch( GLuint texture[], GLuint flameTex,
+GLTorch::GLTorch( Texture* texture[], Texture* flameTex,
                   int width, int depth, int height,
                   char *name, int descriptionGroup,
                   Uint32 color, Uint8 shapePalIndex,
-                  GLuint torchback, int torch_dir ) :
+                  Texture* torchback, int torch_dir ) :
 		GLShape( texture, width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
 	this->flameTex = flameTex;
 	this->torchback = torchback;
@@ -98,7 +98,7 @@ void GLTorch::draw() {
 			glRotatef( -zrot, 0.0f, 0.0f, 1.0f );
 			glRotatef( -( 90.0 + yrot ), 1.0f, 0.0f, 0.0f );
 
-			if ( flameTex ) glBindTexture( GL_TEXTURE_2D, flameTex );
+			if ( flameTex ) flameTex->glBind();
 
 			if ( color == 0xffffffff ) {
 				float color = 1.0f / ( ( GLfloat )particle[i]->height / ( GLfloat )particle[i]->z );

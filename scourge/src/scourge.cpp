@@ -2016,7 +2016,7 @@ int Scourge::initMultiplayer() {
 		                      atoi( multiplayer->getServerPort() ),
 		                      multiplayer->getUserName() );
 	}
-	Progress *progress = new Progress( this->getSDLHandler(), 12, getSession()->getShapePalette()->getProgressTexture(), getSession()->getShapePalette()->getProgressHighlightTexture() );
+	Progress *progress = new Progress( this->getSDLHandler(), getSession()->getShapePalette()->getProgressTexture(), getSession()->getShapePalette()->getProgressHighlightTexture(), 12 );
 	progress->updateStatus( _( "Connecting to server" ) );
 	if ( !session->getClient()->login() ) {
 		cerr << Constants::getMessage( Constants::CLIENT_CANT_CONNECT_ERROR ) << endl;
@@ -2265,9 +2265,9 @@ void Scourge::drawWidgetContents( Widget *w ) {
 						glPushMatrix();
 						//    glTranslatef( x, y, 0 );
 						if ( storable->getStorableType() == Storable::ITEM_STORABLE ) {
-							glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->tilesTex[ storable->getIconTileX() ][ storable->getIconTileY() ] );
+							getSession()->getShapePalette()->tilesTex[ storable->getIconTileX() ][ storable->getIconTileY() ].glBind();
 						} else {
-							glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->spellsTex[ storable->getIconTileX() ][ storable->getIconTileY() ] );
+							getSession()->getShapePalette()->spellsTex[ storable->getIconTileX() ][ storable->getIconTileY() ].glBind();
 						}
 						glColor4f( 1, 1, 1, 1 );
 
@@ -2301,7 +2301,7 @@ void Scourge::drawItemIcon( Item *item, int n ) {
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glBindTexture( GL_TEXTURE_2D, item->getItemIconTexture() );
+	item->getItemIconTexture()->glBind();
 
 	glColor4f( 1, 1, 1, 1 );
 
@@ -2362,11 +2362,11 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 	if ( p == NULL ) {
-		glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getNamedTexture( "nobody" ) );
+		getSession()->getShapePalette()->getNamedTexture( "nobody" )->glBind();
 	} else if ( p->getStateMod( StateMod::dead ) ) {
-		glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getDeathPortraitTexture() );
+		getSession()->getShapePalette()->getDeathPortraitTexture()->glBind();
 	} else {
-		glBindTexture( GL_TEXTURE_2D, getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() ) );
+		getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() )->glBind();
 	}
 //  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -2471,12 +2471,12 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 		int yp = 1;
 		int n = 12;
 		int row = ( width / static_cast<int>( n + 1 ) );
-		GLuint icon;
+		Texture* icon;
 		char name[255];
 		Color color;
 		for ( int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++ ) {
 			if ( getStateModIcon( &icon, name, &color, p, i ) ) {
-				glBindTexture( GL_TEXTURE_2D, icon );
+				icon->glBind();
 				glColor4f( color.r, color.g, color.b, color.a );
 				glPushMatrix();
 				glTranslatef( 5 + xp * ( n + 1 ), height - ( yp * ( n + 1 ) ) - n, 0 );
@@ -2503,7 +2503,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 	glDisable( GL_TEXTURE_2D );
 }
 
-bool Scourge::getStateModIcon( GLuint *icon, char *name, Color *color, Creature *p, int stateMod, bool protect ) {
+bool Scourge::getStateModIcon( Texture** icon, char *name, Color *color, Creature *p, int stateMod, bool protect ) {
 	*icon = 0;
 	if ( !protect && stateMod == StateMod::STATE_MOD_COUNT && !p->isMonster() && p->getThirst() <= 5 ) {
 		*icon = getSession()->getShapePalette()->getThirstIcon();
@@ -2868,7 +2868,7 @@ ShapePalette *Scourge::getShapePalette() {
 	return getSession()->getShapePalette();
 }
 
-GLuint Scourge::getCursorTexture( int cursorMode ) {
+Texture* Scourge::getCursorTexture( int cursorMode ) {
 	return session->getShapePalette()->getCursorTexture( cursorMode );
 }
 
@@ -2880,19 +2880,19 @@ int Scourge::getCursorHeight() {
 	return session->getShapePalette()->getCursorHeight();
 }
 
-GLuint Scourge::getHighlightTexture() {
+Texture* Scourge::getHighlightTexture() {
 	return getShapePalette()->getHighlightTexture();
 }
 
-GLuint Scourge::getGuiTexture() {
+Texture* Scourge::getGuiTexture() {
 	return getShapePalette()->getGuiTexture();
 }
 
-GLuint Scourge::getGuiTexture2() {
+Texture* Scourge::getGuiTexture2() {
 	return getShapePalette()->getGuiTexture2();
 }
 
-GLuint Scourge::loadSystemTexture( char *line ) {
+Texture* Scourge::loadSystemTexture( char *line ) {
 	return getShapePalette()->loadSystemTexture( line );
 }
 
@@ -3570,7 +3570,7 @@ void Scourge::renderHandAttackIcon( int x, int y, int size ) {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
-	glBindTexture( GL_TEXTURE_2D, getShapePalette()->getHandsAttackIcon() );
+	getShapePalette()->getHandsAttackIcon()->glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( x, y );
@@ -3828,7 +3828,7 @@ void Scourge::endChapterIntro() {
 	preMainLoop();
 }
 
-GLuint Scourge::getNamedTexture( char *name ) {
+Texture* Scourge::getNamedTexture( char *name ) {
 	return getShapePalette()->getNamedTexture( name );
 }
 

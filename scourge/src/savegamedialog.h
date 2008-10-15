@@ -33,6 +33,7 @@ class Widget;
 class Button;
 class TextField;
 class ConfirmDialog;
+class Texture;
 
 using namespace std;
 
@@ -54,7 +55,7 @@ private:
 	Button *cancel, *save, *load, *newSave, *deleteSave;
 	std::vector<SavegameInfo*> fileInfos;
 	std::vector<std::string> filenames;
-	std::vector<GLuint> screens;
+	std::vector<Texture*> screens; // owns the textures
 	ConfirmDialog *confirm;
 
 	bool matches_save_( std::string& match );
@@ -84,7 +85,7 @@ protected:
 	void saveScreenshot( const string& dirName );
 	bool copyMaps( const string& fromDirName, const string& toDirName );
 	bool copyFile( const string& fromDirName, const string& toDirName, const string& fileName );
-	GLuint loadScreenshot( const string& path );
+	// unused: terror GLuint loadScreenshot( const string& path );
 	bool saveGameInternal( SavegameInfo *info );
 	bool createSaveGame( SavegameInfo *info );
 	void loadGame( int n );

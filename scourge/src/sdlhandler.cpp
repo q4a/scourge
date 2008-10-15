@@ -29,9 +29,11 @@
 #include "sound.h"
 #include "sqbinding/sqbinding.h"
 #include "render/cutscene.h"
+#include "render/texture.h"
 
 using namespace std;
 
+// FIXME: use static member variable, std::string is clear by default 
 string willSavePath = "";
 
 vector<SDLHandler::FontInfo*> SDLHandler::fontInfos;
@@ -495,12 +497,9 @@ void SDLHandler::mainLoop() {
 	running = true;
 	while ( true ) {
 		if ( processEvents( &isActive ) ) return;
-		if ( !running ) {
-			if ( popHandlers() ) {
-				return;
-			}
-		}
-		if ( isActive ) drawScreen();
+		if ( !running && popHandlers() ) return;
+
+		/*if ( isActive )*/ drawScreen();
 		gameAdapter->getSession()->getSound()->checkMusic( gameAdapter->inTurnBasedCombat() );
 		Uint32 now = SDL_GetTicks();
 		if ( !gameAdapter->getAmbientPaused() && now - lastAmbientTime > AMBIENT_PAUSE_MIN ) {
@@ -673,8 +672,7 @@ void SDLHandler::drawCursor() {
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef( mouseX - mouseFocusX, mouseY - mouseFocusY, 0 );
-	glBindTexture( GL_TEXTURE_2D,
-	               gameAdapter->getCursorTexture( cursorMode ) );
+	gameAdapter->getCursorTexture( cursorMode )->glBind();
 	glColor4f( 1, 1, 1, 1 );
 //  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -719,16 +717,16 @@ void SDLHandler::processEventsAndRepaint() {
 
 void SDLHandler::drawScreen() {
 
-	if ( !eventHandler ) {
-		SDL_GL_SwapBuffers( );
+	if ( eventHandler == NULL ) { // it's never set to NULL
+		SDL_GL_SwapBuffers();
 		return;
 	}
 
 	drawScreenInternal();
 
-	if ( willSavePath.length() ) {
+	if ( !willSavePath.empty() ) { // it's always empty
 		saveScreenInternal( willSavePath );
-		willSavePath = "";
+		willSavePath.clear();
 	}
 
 	/* Gather our frames per second */
@@ -1235,19 +1233,19 @@ void SDLHandler::testDrawView() {
 	rquad -= 0.15f;
 }
 
-GLuint SDLHandler::getHighlightTexture() {
+Texture* SDLHandler::getHighlightTexture() {
 	return gameAdapter->getHighlightTexture();
 }
 
-GLuint SDLHandler::getGuiTexture() {
+Texture* SDLHandler::getGuiTexture() {
 	return gameAdapter->getGuiTexture();
 }
 
-GLuint SDLHandler::getGuiTexture2() {
+Texture* SDLHandler::getGuiTexture2() {
 	return gameAdapter->getGuiTexture2();
 }
 
-GLuint SDLHandler::loadSystemTexture( char *line ) {
+Texture* SDLHandler::loadSystemTexture( char *line ) {
 	return gameAdapter->loadSystemTexture( line );
 }
 

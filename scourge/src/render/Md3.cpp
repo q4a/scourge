@@ -22,6 +22,7 @@
 #include <math.h>
 #include "modelwrapper.h"
 #include "md3shape.h"
+#include "texture.h"
 
 using namespace std;
 
@@ -1269,7 +1270,7 @@ void CModelMD3::RenderModel( t3DModel *pModel, MD3Shape *shape ) {
 			int textureID = shape->getMaterialInfos( pModel )->at( pObject->materialID ).texureId;
 
 			// Bind the texture index that we got from the material textureID
-			glBindTexture( GL_TEXTURE_2D, shape->getTextures()->at( textureID ) );
+			shape->getTextures()->at( textureID )->glBind();
 		} else {
 			// Turn off texture mapping
 			glDisable( GL_TEXTURE_2D );

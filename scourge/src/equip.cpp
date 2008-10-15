@@ -357,9 +357,9 @@ void Equip::drawWidgetContents( Widget *widget ) {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	if ( mode == EQUIP_MODE ) {
-		glBindTexture( GL_TEXTURE_2D, backgroundTexture );
+		backgroundTexture->glBind();
 	} else {
-		glBindTexture( GL_TEXTURE_2D, scrollTexture );
+		scrollTexture->glBind();
 	}
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -440,7 +440,7 @@ void Equip::drawSpells() {
 		glEnd();
 		glEnable( GL_TEXTURE_2D );
 
-		glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ) );
+		pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] )->glBind();
 		glColor4f( 1, 1, 1, 1 );
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2d( 0, 0 );
@@ -464,7 +464,7 @@ void Equip::drawSpells() {
 		for ( int t = 0; t < school->getSpellCount(); t++, xx += SPELL_SIZE + 2 ) {
 			Spell *spell = school->getSpell( t );
 			if ( creature && creature->isSpellMemorized( spell ) ) {
-				glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
+				pcUi->getScourge()->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ].glBind();
 				glColor4f( 1, 1, 1, 1 );
 				glBegin( GL_TRIANGLE_STRIP );
 				glTexCoord2d( 0, 0 );
@@ -560,7 +560,7 @@ void Equip::drawCapabilities() {
 				found = true;
 			}
 
-			glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ] );
+			pcUi->getScourge()->getShapePalette()->spellsTex[ ss->getIconTileX() ][ ss->getIconTileY() ].glBind();
 			glColor4f( 1, 1, 1, 1 );
 			glBegin( GL_TRIANGLE_STRIP );
 			glTexCoord2d( 0, 0 );

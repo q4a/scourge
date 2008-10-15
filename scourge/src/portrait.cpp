@@ -191,7 +191,7 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glBindTexture( GL_TEXTURE_2D, backgroundTexture );
+	backgroundTexture->glBind();
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
@@ -303,7 +303,7 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 	glPushMatrix();
 	glColor4f( 1, 1, 1, 1 );
 	glTranslatef( x, y, 0 );
-	glBindTexture( GL_TEXTURE_2D, pcUi->getScourge()->getShapePalette()->getNamedTexture( icon ) );
+	pcUi->getScourge()->getShapePalette()->getNamedTexture( icon )->glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
@@ -457,7 +457,7 @@ void Portrait::showStateMods() {
 	y += 15;
 	int x = 10;
 
-	GLuint icon;
+	Texture* icon;
 	char name[255];
 	Color color;
 	int size = 12;
@@ -509,9 +509,9 @@ void Portrait::showStateMods() {
 	y += 15;
 }
 
-void Portrait::drawStateModIcon( GLuint icon, char *name, Color color, int x, int y, int size ) {
+void Portrait::drawStateModIcon( Texture* icon, char *name, Color color, int x, int y, int size ) {
 	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D, icon );
+	icon->glBind();
 	glColor4f( color.r, color.g, color.b, color.a );
 	glPushMatrix();
 	glTranslatef( x, y - size, 0 );
@@ -535,7 +535,7 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	glPushMatrix();
 	glEnable( GL_TEXTURE_2D );
 	glTranslatef( x, y, 0 );
-	glBindTexture( GL_TEXTURE_2D, barTexture );
+	barTexture->glBind();
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );

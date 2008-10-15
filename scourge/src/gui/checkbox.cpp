@@ -22,7 +22,7 @@
   *@author Daroth-U
   */
 
-Checkbox::Checkbox( int x1, int y1, int x2, int y2, GLuint highlight, char *staticText ) :
+Checkbox::Checkbox( int x1, int y1, int x2, int y2, Texture* highlight, char *staticText ) :
 		Widget( x1, y1, x2 - x1, y2 - y1 ) {
 
 	this->x2 = x2;

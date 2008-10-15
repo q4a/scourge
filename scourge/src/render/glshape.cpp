@@ -31,13 +31,13 @@ static GLuint lightmap_tex_num2 = 0;
 static unsigned char data[LIGHTMAP_SIZE * LIGHTMAP_SIZE * 3];
 static unsigned char data2[LIGHTMAP_SIZE * LIGHTMAP_SIZE * 3];
 
-GLShape::GLShape( GLuint tex[], int width, int depth, int height, char *name, int descriptionGroup,
+GLShape::GLShape( Texture* tex[], int width, int depth, int height, char *name, int descriptionGroup,
                   Uint32 color, Uint8 shapePalIndex )
 		: Shape( width, depth, height, name, descriptionGroup ) {
 	commonInit( tex, color, shapePalIndex );
 }
 
-void GLShape::commonInit( GLuint tex[], Uint32 color, Uint8 shapePalIndex ) {
+void GLShape::commonInit( Texture* tex[], Uint32 color, Uint8 shapePalIndex ) {
 	this->alpha = 1.0f;
 	this->tex = tex;
 	this->color = color;
@@ -71,7 +71,7 @@ void GLShape::commonInit( GLuint tex[], Uint32 color, Uint8 shapePalIndex ) {
 	initialize();
 }
 
-void GLShape::setTexture( GLuint *textureGroup ) {
+void GLShape::setTexture( Texture** textureGroup ) {
 	this->tex = textureGroup;
 	setTextureIndex( -1 );
 }
@@ -377,19 +377,19 @@ void GLShape::draw() {
 	int textureIndexSide = ( !isFloorShape && depth > width && getTextureIndex() > -1 ? getTextureIndex() : GLShape::LEFT_RIGHT_SIDE );
 
 	if ( sides[Shape::TOP_SIDE] ) {
-		glBindTexture( GL_TEXTURE_2D, tex[textureIndexTop] );
+		tex[textureIndexTop]->glBind();
 		glCallList( displayListStart + 1 );
 	}
 	if ( sides[Shape::N_SIDE] ) {
 		if ( Constants::multitexture ) {
 			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
 			glEnable( GL_TEXTURE_2D );
-			glBindTexture( GL_TEXTURE_2D, tex[textureIndexFront] );
+			tex[textureIndexFront]->glBind();
 			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
 			glEnable( GL_TEXTURE_2D );
 			glBindTexture( GL_TEXTURE_2D, lightmap_tex_num );
 		} else {
-			glBindTexture( GL_TEXTURE_2D, tex[textureIndexFront] );
+			tex[textureIndexFront]->glBind();
 		}
 		glCallList( displayListStart + 2 + Shape::N_SIDE );
 	}
@@ -397,12 +397,12 @@ void GLShape::draw() {
 		if ( Constants::multitexture ) {
 			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
 			glEnable( GL_TEXTURE_2D );
-			glBindTexture( GL_TEXTURE_2D, tex[textureIndexFront] );
+			tex[textureIndexFront]->glBind();
 			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
 			glEnable( GL_TEXTURE_2D );
 			glBindTexture( GL_TEXTURE_2D, lightmap_tex_num );
 		} else {
-			glBindTexture( GL_TEXTURE_2D, tex[textureIndexFront] );
+			tex[textureIndexFront]->glBind();
 		}
 		glCallList( displayListStart + 2 + Shape::S_SIDE );
 	}
@@ -410,17 +410,17 @@ void GLShape::draw() {
 		if ( Constants::multitexture ) {
 			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
 			glEnable( GL_TEXTURE_2D );
-			glBindTexture( GL_TEXTURE_2D, tex[textureIndexSide] );
+			tex[textureIndexSide]->glBind();
 			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
 			glEnable( GL_TEXTURE_2D );
 			glBindTexture( GL_TEXTURE_2D, lightmap_tex_num2 );
 		} else {
-			glBindTexture( GL_TEXTURE_2D, tex[textureIndexSide] );
+			tex[textureIndexSide]->glBind();
 		}
 		glCallList( displayListStart + 2 + Shape::E_SIDE );
 	}
 	if ( sides[Shape::W_SIDE] ) {
-		glBindTexture( GL_TEXTURE_2D, tex[textureIndexSide] );
+		tex[textureIndexSide]->glBind();
 		glCallList( displayListStart + 2 + Shape::W_SIDE );
 	}
 
@@ -496,8 +496,8 @@ void GLShape::createDarkTexture( WallTheme *theme ) {
 
 	// create the dark texture
 	unsigned int i, j;
-	glGenTextures( 1, ( GLuint* )&lightmap_tex_num );
-	glGenTextures( 1, ( GLuint* )&lightmap_tex_num2 );
+	glGenTextures( 1, &lightmap_tex_num );
+	glGenTextures( 1, &lightmap_tex_num2 );
 	float tmp = ( theme ? theme->getMultiTexInt( 0 ) : 0.95f );
 	float tmp2 = ( theme ? theme->getMultiTexInt( 1 ) : 0.8f );
 	for ( i = 0; i < LIGHTMAP_SIZE; i++ ) {

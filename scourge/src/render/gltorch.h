@@ -30,20 +30,20 @@ class GLShape;
 /// A torch 3D shape.
 class GLTorch : public GLShape  {
 private:
-	GLuint flameTex;
+	Texture* flameTex;
 
 	int PARTICLE_COUNT;
 	ParticleStruct *particle[200];
 
-	GLuint torchback;
+	Texture* torchback;
 	int torch_dir;
 
 public:
-	GLTorch( GLuint texture[], GLuint flameTex,
+	GLTorch( Texture* texture[], Texture* flameTex,
 	         int width, int depth, int height,
 	         char *name, int descriptionGroup,
 	         Uint32 color, Uint8 shapePalIndex = 0,
-	         GLuint torchback = 0, int torch_dir = Constants::NORTH );
+	         Texture* torchback = NULL, int torch_dir = Constants::NORTH );
 
 	~GLTorch();
 

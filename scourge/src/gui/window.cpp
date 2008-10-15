@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "../common/constants.h"
 #include "window.h"
+#include "../render/texture.h"
 
 using namespace std;
 
@@ -54,7 +55,7 @@ Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title,
 	commonInit( scourgeGui, x, y, w, h, title, hasCloseButton, type );
 }
 
-Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, GLuint texture, bool hasCloseButton, int type, GLuint texture2 ) : Widget( x, y, w, h ) {
+Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, Texture* texture, bool hasCloseButton, int type, Texture* texture2 ) : Widget( x, y, w, h ) {
 	theme = GuiTheme::getThemeByName( GuiTheme::DEFAULT_THEME );
 	/*
 	this->texture = texture;
@@ -567,7 +568,7 @@ void Window::drawWidget( Widget *parent ) {
 
 void Window::drawBackground( int topY, int openHeight ) {
 	if ( theme->getWindowBackground() && !theme->getWindowBackground()->rep_h ) {
-		glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
+		theme->getWindowBackground()->texture->glBind();
 		glBegin ( GL_TRIANGLE_STRIP );
 		glTexCoord2f ( 0.0f, 0.0f );
 		glVertex2i ( 0, topY );
@@ -580,7 +581,7 @@ void Window::drawBackground( int topY, int openHeight ) {
 		glEnd ();
 	} else if ( type == SIMPLE_WINDOW ) {
 		if ( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
-			glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
+			theme->getWindowBackground()->texture->glBind();
 		}
 		glBegin ( GL_TRIANGLE_STRIP );
 		glTexCoord2f ( 0.0f, 0.0f );
@@ -600,7 +601,7 @@ void Window::drawBackground( int topY, int openHeight ) {
 		}
 		*/
 		if ( theme->getWindowBackground() && theme->getWindowBackground()->texture ) {
-			glBindTexture( GL_TEXTURE_2D, theme->getWindowBackground()->texture );
+			theme->getWindowBackground()->texture->glBind();
 		} else {
 			glDisable( GL_TEXTURE_2D );
 		}
@@ -754,7 +755,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 	           theme->getWindowBorderTexture()->color.b,
 	           theme->getWindowBorderTexture()->color.a );
 	glPushMatrix();
-	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_nw );
+	theme->getWindowBorderTexture()->tex_nw->glBind();
 	glTranslatef( theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width,
 	              0 );
@@ -771,7 +772,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glPopMatrix();
 
 	glPushMatrix();
-	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_ne );
+	theme->getWindowBorderTexture()->tex_ne->glBind();
 	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width,
 	              0 );
@@ -788,7 +789,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glPopMatrix();
 
 	glPushMatrix();
-	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_se );
+	theme->getWindowBorderTexture()->tex_se->glBind();
 	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
 	              0 );
@@ -805,7 +806,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glPopMatrix();
 
 	glPushMatrix();
-	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_sw );
+	theme->getWindowBorderTexture()->tex_sw->glBind();
 	glTranslatef( theme->getWindowBorderTexture()->width,
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
 	              0 );
@@ -823,7 +824,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	int h = openHeight - 2 * ( n + theme->getWindowBorderTexture()->width );
 	glPushMatrix();
-	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_west );
+	theme->getWindowBorderTexture()->tex_west->glBind();
 	glTranslatef( theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width + n,
 	              0 );
@@ -840,7 +841,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glPopMatrix();
 
 	glPushMatrix();
-	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_east );
+	theme->getWindowBorderTexture()->tex_east->glBind();
 	glTranslatef( getWidth() - n - theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width + n,
 	              0 );
@@ -858,7 +859,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 
 	int w = getWidth() - 2 * ( n + theme->getWindowBorderTexture()->width );
 	glPushMatrix();
-	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_north );
+	theme->getWindowBorderTexture()->tex_north->glBind();
 	glTranslatef( n + theme->getWindowBorderTexture()->width,
 	              topY + theme->getWindowBorderTexture()->width,
 	              0 );
@@ -875,7 +876,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 	glPopMatrix();
 
 	glPushMatrix();
-	glBindTexture( GL_TEXTURE_2D, theme->getWindowBorderTexture()->tex_south );
+	theme->getWindowBorderTexture()->tex_south->glBind();
 	glTranslatef( n + theme->getWindowBorderTexture()->width,
 	              topY + openHeight - n - theme->getWindowBorderTexture()->width,
 	              0 );
@@ -896,7 +897,7 @@ void Window::drawBorder( int topY, int openHeight ) {
 }
 
 
-Button *Window::createButton( int x1, int y1, int x2, int y2, char *label, bool toggle, GLuint texture ) {
+Button *Window::createButton( int x1, int y1, int x2, int y2, char *label, bool toggle, Texture* texture ) {
 	if ( widgetCount < MAX_WIDGET ) {
 		Button * theButton;
 		theButton = new Button( x1, y1, x2, y2, scourgeGui->getHighlightTexture(), label, texture );
@@ -1113,7 +1114,7 @@ void Window::prevWindowToTop( Window *win, bool includeLocked ) {
 
 void Window::showMessageDialog( ScourgeGui *scourgeGui,
     int x, int y, int w, int h,
-    char *title, GLuint texture,
+    char *title, Texture* texture,
     char const* message,
     char *buttonLabel ) {
 	if ( message_dialog && message_dialog->isVisible() ) {

@@ -26,6 +26,7 @@ class Effect;
 class RenderedItem;
 class Shape;
 class RenderedCreature;
+class Texture;
 
 /**
   *@author Gabor Torok
@@ -71,16 +72,19 @@ public:
 	float offsetX, offsetY, width, height; // measured in map units
 	float angle;
 	bool horizFlip, vertFlip;
-	GLuint texture;
+	Texture* texture;
 	int outdoorThemeRef;
 
-	OutdoorTexture() {
-		angle = 0;
-		horizFlip = vertFlip = false;
-		texture = 0;
-		offsetX = offsetY = 0;
-		width = height = 2;
-		outdoorThemeRef = -1;
+	OutdoorTexture()
+			: offsetX( 0 )
+			, offsetY( 0 )
+			, width( 2 )
+			, height( 2 )
+			, angle( 0 )
+			, horizFlip( false )
+			, vertFlip( false )
+			, texture( NULL )
+			, outdoorThemeRef( -1 ) {
 	}
 };
 

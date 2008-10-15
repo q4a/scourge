@@ -29,6 +29,8 @@
 #include "../sqbinding/sqbinding.h"
 #include <fstream>
 #include <iostream>
+#include "texture.h"
+
 
 using namespace std;
 
@@ -63,6 +65,9 @@ WallTheme::WallTheme( char const* name, Shapes *shapePal ) {
 	for ( int i = 0; i < OUTDOOR_THEME_REF_COUNT; i++ ) {
 		outdoorThemeRefMap[ outdoorThemeRefName[ i ] ] = i;
 		outdoorFaceCount[ i ] = 0;
+		for (int j = 0; j < MAX_TEXTURE_COUNT; ++j ) {
+			outdoorTextureGroup[i][j] = NULL;
+		}
 	}
 }
 
@@ -79,7 +84,7 @@ void WallTheme::load() {
 			continue;
 		}
 		for ( int face = 0; face < faceCount[ ref ]; face++ ) {
-			loadTextureGroup( ref, face, textures[ ref ][ face ] );
+			loadTextureGroup( ref, face, textureNames[ ref ][ face ] );
 		}
 	}
 	if ( getHasOutdoor() ) {
@@ -91,29 +96,30 @@ void WallTheme::load() {
 			for ( int face = 0; face < outdoorFaceCount[ ref ]; face++ ) {
 				loadTextureGroup( ref, face, outdoorTextures[ ref ][ face ], true );
 			}
-			// create edge textures
-			createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_CORNER );
-			createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_EDGE );
-			createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_NARROW );
-			createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_TIP );
 		}
+		// create edge textures
+		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_CORNER );
+		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_EDGE );
+		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_NARROW );
+		createOutdoorEdgeTexture( OUTDOOR_THEME_REF_GRASS_TIP );
 	}
 }
 
 // Overlay the current 'grass' texture on the alpha-blended edge texture to create a theme-specific blend.
 void WallTheme::createOutdoorEdgeTexture( int ref ) {
-	GLuint tex = shapePal->createAlphaTexture( outdoorTextureGroup[ ref ][ 0 ],
-	                                           outdoorTextureGroup[ OUTDOOR_THEME_REF_GRASS ][ 0 ] );
-	GLclampf pri = 0.9f; glPrioritizeTextures( 1, &tex, &pri );
-	glDeleteTextures( 1, outdoorTextureGroup[ ref ] );
+	Texture* tex = new Texture;
+	tex->createAlpha(outdoorTextureGroup[ ref ][ 0 ],outdoorTextureGroup[ OUTDOOR_THEME_REF_GRASS ][ 0 ]);
+	GLclampf pri = 0.9f;
+	tex->glPrioritize(pri);
+	// the overloaded image is deleted by WallTheme::unload() later 
+	// LEAKS: this tex however leaks GPU resources later
 	outdoorTextureGroup[ ref ][ 0 ] = tex;
-
 }
 
 void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor ) {
 	//cerr << "Loading theme texture. Theme: " << getName() << " ref=" << ( outdoor ? outdoorThemeRefName[ ref ] : themeRefName[ ref ] ) << " face=" << face << " texture=" << texture << endl;
 	string path;
-	GLuint id = 0;
+	Texture *id = NULL;
 	if ( texture && strcmp( texture, "null" ) ) {
 		string s = texture;
 		if ( loadedTextures.find( s ) == loadedTextures.end() ) {
@@ -138,9 +144,10 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 			}
 
 			id = shapePal->findTextureByName( bmp );
-			if ( id == 0 ) {
-				id = shapePal->loadTexture( path, false, false, true );
-				GLclampf pri = 0.9f; glPrioritizeTextures( 1, &id, &pri );
+			if ( id == NULL ) {
+				id = new Texture;
+				id->load( path, false, false, true );
+				GLclampf pri = 0.9f; id->glPrioritize( pri );
 				loadedTextures[s] = id;
 			}
 		} else {
@@ -156,25 +163,24 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 
 void WallTheme::unload() {
 //  cerr << "*** Dumping theme: " << getName() << endl;
-	for ( map<string, GLuint>::iterator i = loadedTextures.begin(); i != loadedTextures.end(); ++i ) {
+	for ( map<string, Texture*>::iterator i = loadedTextures.begin(); i != loadedTextures.end(); ++i ) {
 		string s = i->first;
-		GLuint id = i->second;
+		Texture* id = i->second;
 
 		// don't delete system textures!
 		string bmp = s;
 		if ( bmp.find( ".", 0 ) == string::npos ) {
 			bmp += string( ".png" );
 		}
-		id = shapePal->findTextureByName( bmp );
-		if ( id == 0 ) {
+		if ( shapePal->findTextureByName( bmp ) == NULL ) {
 			//cerr << "Unloading texture: " << bmp << endl;
-			glDeleteTextures( 1, &id );
+			delete(id);
 		}
 	}
 	loadedTextures.clear();
 }
 
-GLuint *WallTheme::getTextureGroup( string themeRefName ) {
+Texture** WallTheme::getTextureGroup( string themeRefName ) {
 	int ref = themeRefMap[ themeRefName ];
 	return textureGroup[ ref ];
 }
@@ -194,7 +200,7 @@ void WallTheme::debug() {
 	for ( int ref = 0; ref < THEME_REF_COUNT; ref++ ) {
 		cerr << "\tref=" << themeRefName[ref] << endl;
 		for ( int face = 0; face < faceCount[ref]; face++ ) {
-			cerr << "\t\t" << textures[ref][face] << endl;
+			cerr << "\t\t" << textureNames[ref][face] << endl;
 		}
 	}
 }
@@ -211,7 +217,7 @@ Shapes::Shapes( Session *session ) {
 	if ( !instance ) instance = this;
 }
 
-GLuint *Shapes::findOrMakeTextureGroup( char *s ) {
+Texture** Shapes::findOrMakeTextureGroup( char *s ) {
 
 	if ( !strlen( s ) ) {
 		return textureGroup[ 0 ];
@@ -220,7 +226,7 @@ GLuint *Shapes::findOrMakeTextureGroup( char *s ) {
 	char tmp[255];
 	strcpy( tmp, s );
 
-	GLuint tg[3];
+	Texture* tg[3];
 
 	int c = 0;
 	char *token = strtok( tmp, "," );
@@ -251,14 +257,14 @@ GLuint *Shapes::findOrMakeTextureGroup( char *s ) {
 
 void Shapes::initialize() {
 	// load textures
-	ripple_texture = loadTexture( "/textures/ripple.png" );
-	torchback = loadTexture( "/textures/torchback.png" );
+	ripple_texture.load( "/textures/ripple.png" );
+	torchback.load( "/textures/torchback.png" );
 
-	areaTex = loadTexture( "/textures/area.png", false, false );
+	areaTex.load( "/textures/area.png", false, false );
 	//areaTex = loadGLTextures("/area.bmp");
 
 	// load as a grayscale (use gray value as alpha)
-	selection = loadTexture( "/textures/sel.png", false, false );
+	selection.load( "/textures/sel.png", false, false );
 
 	// default to textures
 	strcpy( cursorDir, "/textures" );
@@ -266,7 +272,7 @@ void Shapes::initialize() {
 	// resolve texture groups
 	for ( int i = 0; i < textureGroupCount; i++ ) {
 		for ( int c = 0; c < 3; c++ ) {
-			textureGroup[i][c] = textures[textureGroup[i][c]].id;
+			textureGroup[i][c] = &textures[0].texture;
 		}
 	}
 
@@ -294,7 +300,7 @@ void Shapes::initialize() {
 	               0,
 	               strtoul( "6070ffff", NULL, 16 ),
 	               shapeCount,
-	               torchback, Constants::SOUTH ); // Hack: use SOUTH for a spell
+	               &torchback, Constants::SOUTH ); // Hack: use SOUTH for a spell
 	shapes[shapeCount]->setSkipSide( false );
 	shapes[shapeCount]->setStencil( false );
 	shapes[shapeCount]->setLightBlocking( false );
@@ -325,8 +331,7 @@ void Shapes::loadCursors() {
 	for ( int i = 0; i < Constants::CURSOR_COUNT; i++ ) {
 		string path = string( cursorDir ) + "/" + string( Constants::cursorTextureName[ i ] );
 		//cursorTexture[i] = loadAlphaTexture( path, NULL, NULL, true );
-		cursorTexture[i] = loadTexture( path );
-
+		cursorTexture[i].load( path );
 	}
 }
 
@@ -399,7 +404,7 @@ void Shapes::loadTheme( WallTheme *theme ) {
 				string name = themeShapes[i];
 				GLShape *shape = findShapeByName( name.c_str() );
 				string ref = themeShapeRef[i];
-				GLuint *textureGroup = currentTheme->getTextureGroup( ref );
+				Texture** textureGroup = currentTheme->getTextureGroup( ref );
 				//      cerr << "\tshape=" << shape->getName() << " ref=" << ref <<
 				//        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;
 				if ( !isHeadless() ) {
@@ -423,10 +428,10 @@ char const* Shapes::getRandomDescription( int descriptionGroup ) {
 }
 
 // the next two methods are slow, only use during initialization
-GLuint Shapes::findTextureByName( const string& filename, bool loadIfMissing ) {
+Texture* Shapes::findTextureByName( const string& filename, bool loadIfMissing ) {
 	for ( int i = 0; i < texture_count; i++ ) {
 		if ( Util::StringCaseCompare( textures[i].filename, filename ) )
-			return textures[i].id;
+			return &textures[i].texture;
 	}
 	if ( loadIfMissing ) {
 		return loadSystemTexture( filename );
@@ -517,7 +522,7 @@ void Shapes::loadShape( const char *name ) {
 
 		// Resolve the texture group.
 		// For theme-based shapes, leave texture NULL, they will be resolved later.
-		GLuint *texture = textureGroup[ 0 ];
+		Texture** texture = textureGroup[ 0 ];
 		if ( !strlen( sv->theme ) ) {
 			texture = findOrMakeTextureGroup( sv->textures );
 		}
@@ -565,7 +570,7 @@ void Shapes::loadShape( const char *name ) {
 				               sv->descriptionIndex,
 				               sv->color,
 				               ( i + 1 ),
-				               torchback, sv->torch );
+				               &torchback, sv->torch );
 			}
 		} else if ( strlen( sv->refs ) ) {
 			// recursive call:
@@ -615,7 +620,7 @@ void Shapes::loadShape( const char *name ) {
 
 		shapes[ ( i + 1 ) ]->setOccurs( &( sv->occurs ) );
 		shapes[ ( i + 1 ) ]->setIconRotation( sv->iconRotX, sv->iconRotY, sv->iconRotZ );
-		shapes[ ( i + 1 ) ]->setIcon( sv->icon, sv->iconWidth, sv->iconHeight );
+		shapes[ ( i + 1 ) ]->setIcon( &sv->icon, sv->iconWidth, sv->iconHeight );
 		shapes[ ( i + 1 ) ]->setAmbientName( sv->ambient );
 		shapes[ ( i + 1 ) ]->setRoof( sv->roof );
 
@@ -696,7 +701,7 @@ GLuint Shapes::getBMPData( const string& filename, TextureData& data, int *imgwi
 
 /// This function allows you to define the size of a tile and which tile you want. It
 /// is then created as a texture from the appropriate part of the SDL surface.
-
+/* unused:
 GLuint Shapes::createTileTexture( SDL_Surface **surface, int tileX, int tileY, int tileWidth, int tileHeight ) {
 	if ( isHeadless() ) return 0;
 
@@ -737,10 +742,10 @@ GLuint Shapes::createTileTexture( SDL_Surface **surface, int tileX, int tileY, i
 
 	GLuint texture[1];
 
-	/* Create The Texture */
+	// Create The Texture 
 	glGenTextures( 1, &texture[0] );
 
-	/* Typical Texture Generation Using Data From The Bitmap */
+	// Typical Texture Generation Using Data From The Bitmap 
 	glBindTexture( GL_TEXTURE_2D, texture[0] );
 
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
@@ -749,7 +754,7 @@ GLuint Shapes::createTileTexture( SDL_Surface **surface, int tileX, int tileY, i
 	gluBuild2DMipmaps( GL_TEXTURE_2D, ( bpp > 16 ? GL_RGBA : GL_RGBA4 ), tileWidth, tileHeight, GL_RGBA, GL_UNSIGNED_BYTE, &image[0] );
 
 	return texture[0];
-}
+}*/
 
 void Shapes::swap( unsigned char & a, unsigned char & b ) {
 	unsigned char temp;
@@ -767,6 +772,7 @@ void Shapes::swap( unsigned char & a, unsigned char & b ) {
 /// correctly according to the properties of the source image.
 /// Returns an OpenGL texture name.
 
+/* unused:
 GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool isSprite, bool anisotropy ) {
 	string fn = ( absolutePath ? filename : rootDir + filename );
 	GLuint destFormat;
@@ -826,6 +832,7 @@ GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool isSp
 	SDL_FreeSurface( surface );
 	return texture;
 }
+*/
 
 void Shapes::loadStencil( const string& filename, int index ) {
 	if ( isHeadless() ) return;
@@ -879,7 +886,7 @@ void Shapes::loadTiles( const string& filename, SDL_Surface **surface ) {
 // places to look for system textures (must end in "")
 char *textureDirs[] = { "/textures/", "/cave/default/", "/objects/houses/", "" };
 
-GLuint Shapes::loadSystemTexture( const string& line ) {
+Texture* Shapes::loadSystemTexture( const string& line ) {
 	if ( isHeadless() ) return 0;
 
 	if ( line == "none.png" ) {
@@ -891,9 +898,8 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 		return 0;
 	}
 
-	GLuint id = findTextureByName( line );
-	if ( !id ) {
-		id = textures[ texture_count ].id = 0;
+	Texture* id = findTextureByName( line );
+	if ( id == NULL ) {
 		textures[texture_count].filename = line;
 		int dirCount = 0;
 		while ( strlen( textureDirs[dirCount] ) ) {
@@ -906,12 +912,12 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 				fclose( fp );
 				// FIXME: Anisotropic filtering for system textures freezes X for some reason.
 				// id = loadTexture( path, false, false, true );
-				id = loadTexture( path, false, false );
-				textures[ texture_count ].id = id;
+				textures[ texture_count ].texture.load( path, false, false );
+				id = &textures[ texture_count ].texture;
 			}
 			dirCount++;
 		}
-		if ( !id ) {
+		if ( id == NULL ) {
 			cerr << "*** Error: Unable to find texture: " << line << endl;
 		}
 
@@ -920,12 +926,13 @@ GLuint Shapes::loadSystemTexture( const string& line ) {
 	return id;
 }
 
-GLuint Shapes::getCursorTexture( int cursorMode ) {
-	return cursorTexture[ cursorMode ];
+Texture* Shapes::getCursorTexture( int cursorMode ) {
+	return &cursorTexture[ cursorMode ];
 }
 
 /// Adds the alpha channel of the alphaTex texture to the sampleTex texture.
 
+/* unused
 GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW, int textureSizeH, int width, int height ) {
 	// todo: should be next power of 2 after width/height (maybe cap-ed at 256)
 //  int textureSizeW = 256;
@@ -940,9 +947,9 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
 	glBindTexture( GL_TEXTURE_2D, tex[ 0 ] );
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
-	/**
-	 * This method should not create mip-maps. They don't work well with alpha-tested textures and cause flickering.
-	 */
+	//
+	// This method should not create mip-maps. They don't work well with alpha-tested textures and cause flickering.
+	//
 	//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_NEAREST : GL_LINEAR_MIPMAP_NEAREST );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
@@ -1054,5 +1061,6 @@ GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textur
 	free( texInMem );
 	return tex[0];
 }
+*/
 
 

@@ -328,7 +328,7 @@ void Inven::drawWidgetContents( Widget *widget ) {
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glBindTexture( GL_TEXTURE_2D, backgroundTexture );
+	backgroundTexture->glBind();
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );

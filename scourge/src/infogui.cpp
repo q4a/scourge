@@ -351,9 +351,9 @@ void InfoGui::drawWidgetContents( Widget *w ) {
 		} else {
 			glPushMatrix();
 			if ( hasSpell() ) {
-				glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ] );
+				scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ].glBind();
 			} else if ( hasSkill() ) {
-				glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->spellsTex[ skill->getIconTileX() ][ skill->getIconTileY() ] );
+				scourge->getShapePalette()->spellsTex[ skill->getIconTileX() ][ skill->getIconTileY() ].glBind();
 			}
 	
 			glColor4f( 1, 1, 1, 1 );

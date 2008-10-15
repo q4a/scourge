@@ -42,6 +42,8 @@
 #include "render.h"
 #include "animatedshape.h"
 
+class Texture;
+
 /// .md2 specific rendering functions
 class MD2Shape : public AnimatedShape  {
 
@@ -50,7 +52,7 @@ class MD2Shape : public AnimatedShape  {
 
 private:
 	float div;
-	GLuint textureId;
+	Texture* textureId;
 	t3DModel * g_3DModel;                 // This holds the 3D Model info that we load in
 	vect3d *vect;
 
@@ -66,11 +68,11 @@ private:
 	float ReturnCurrentTime( int nextFrame );
 
 protected:
-	void commonInit( t3DModel * g_3DModel, GLuint textureId, float div );
+	void commonInit( t3DModel * g_3DModel, Texture* textureId, float div );
 
 public:
-	MD2Shape( t3DModel * g_3DModel, GLuint textureId, float div,
-	          GLuint texture[], int width, int depth, int height,
+	MD2Shape( t3DModel * g_3DModel, Texture* textureId, float div,
+	          Texture* texture[], int width, int depth, int height,
 	          char *name, int descriptionGroup,
 	          Uint32 color, Uint8 shapePalIndex = 0 );
 
@@ -79,7 +81,7 @@ public:
 	void setModelAnimation();
 	void draw();
 	void outline( float r, float g, float b );
-	inline GLuint getTextureId() {
+	inline Texture* getTextureId() {
 		return textureId;
 	}
 	DECLARE_NOISY_OPENGL_SUPPORT();

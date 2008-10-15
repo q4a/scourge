@@ -29,6 +29,7 @@
 #include "net/commands.h"
 #include "gameadapter.h"
 #include "terraingenerator.h"
+#include "render/texture.h"
 
 #ifdef HAVE_SDL_NET
 class Server;
@@ -74,7 +75,7 @@ private:
 	bool multiplayerGame;
 	Mission *currentMission;
 	TextureData chapterImage;
-	GLuint chapterImageTexture;
+	Texture chapterImageTexture;
 	int chapterImageWidth, chapterImageHeight;
 	bool showChapterIntro;
 	std::vector<Item*> newItems;
@@ -239,8 +240,8 @@ public:
 	inline TextureData const& getChapterImage() {
 		return chapterImage;
 	}
-	inline GLuint const& getChapterImageTexture() {
-		return chapterImageTexture;
+	inline Texture const* getChapterImageTexture() {
+		return &chapterImageTexture;
 	}
 	inline int getChapterImageWidth() {
 		return chapterImageWidth;

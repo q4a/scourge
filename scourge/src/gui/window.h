@@ -120,8 +120,8 @@ public:
 	static const int SCREEN_GUTTER = 0;
 
 	Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title = NULL,
-	        GLuint texture = 0, bool hasCloseButton = true, int type = BASIC_WINDOW,
-	        GLuint texture2 = 0 );
+	        Texture* texture = NULL, bool hasCloseButton = true, int type = BASIC_WINDOW,
+	        Texture* texture2 = NULL );
 
 	Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title = NULL,
 	        bool hasCloseButton = true, int type = BASIC_WINDOW, const char *themeName = NULL );
@@ -192,7 +192,7 @@ public:
 	void scissorToWindow( bool insideOnly = true );
 
 	// widget managment functions
-	Button    * createButton( int x1, int y1, int x2, int y2, char *label, bool toggle = false, GLuint texture = 0 );
+	Button    * createButton( int x1, int y1, int x2, int y2, char *label, bool toggle = false, Texture* texture = NULL );
 	Label     * createLabel( int x1, int x2, char const* label, int color = Constants::DEFAULT_COLOR );
 	Checkbox  * createCheckbox( int x1, int y1, int x2, int y2, char *label );
 	TextField * createTextField( int x, int y, int numChars );
@@ -224,7 +224,7 @@ public:
 	static Button *message_button; // so you can check for it in other classes
 	static void showMessageDialog( ScourgeGui *scourgeGui,
 	                               int x, int y, int w, int h,
-	                               char *title, GLuint texture,
+	                               char *title, Texture* texture,
 	                               char const* message,
 	                               char *buttonLabel = _( Constants::messages[Constants::OK_LABEL][0] ) );
 

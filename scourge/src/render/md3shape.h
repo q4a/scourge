@@ -31,6 +31,7 @@
 #include "Md3.h"
 
 class ModelLoader;
+class Texture;
 
 /// Info about a shape's current animation status.
 /// This has to be unique per model instance (so we can reuse md3-s).
@@ -56,14 +57,14 @@ private:
 	AnimInfo aiUpper, aiLower, aiHead;
 
 	// This stores the texture array for each of the textures assigned to this model
-	std::vector<Uint32> m_Textures;
+	std::vector<Texture*> m_Textures;
 	// The list of material information (Textures and colors)
 	std::vector<tMaterialInfo> pMaterialUpper, pMaterialLower, pMaterialHead;
 	int numOfMaterialsUpper, numOfMaterialsLower, numOfMaterialsHead;
 
 public:
 	MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div,
-	          GLuint texture[], int width, int depth, int height,
+	          Texture* texture[], int width, int depth, int height,
 	          char *name, int descriptionGroup,
 	          Uint32 color, Uint8 shapePalIndex = 0 );
 
@@ -75,7 +76,7 @@ public:
 	void outline( float r, float g, float b );
 	AnimInfo *getAnimInfo( t3DModel *model );
 
-	inline std::vector<Uint32> *getTextures() {
+	inline std::vector<Texture*> *getTextures() {
 		return &m_Textures;
 	}
 	std::vector<tMaterialInfo> *getMaterialInfos( t3DModel *pModel );

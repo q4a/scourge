@@ -42,14 +42,14 @@ ItemList::ItemList( Scourge *scourge, Window *win, int x, int y, int width, int 
 	this->allowEquipped = true;
 
 	color = ( Color* )malloc( MAX_INVENTORY_SIZE * sizeof( Color ) );
-	icon = ( GLuint* )malloc( MAX_INVENTORY_SIZE * sizeof( GLuint ) );
+	//icon = ( GLuint* )malloc( MAX_INVENTORY_SIZE * sizeof( GLuint ) );
 
 	setAllowMultipleSelection( true );
 }
 
 ItemList::~ItemList() {
 	free( color );
-	free( icon );
+	//free( icon );
 }
 
 void ItemList::setCreature( Creature *creature, set<int> *filter ) {

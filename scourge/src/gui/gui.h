@@ -22,6 +22,7 @@
 #include "../configlang.h"
 
 class Widget;
+class Texture;
 
 /**
  * This is the only class thru which the gui interacts with the rest of scourge.
@@ -45,9 +46,9 @@ public:
 	virtual int getScreenHeight() = 0;
 	virtual void setCursorMode( int n, bool useTimer = false ) = 0;
 	virtual int getCursorMode() = 0;
-	virtual GLuint getHighlightTexture() = 0;
-	virtual GLuint getGuiTexture() = 0;
-	virtual GLuint getGuiTexture2() = 0;
+	virtual Texture* getHighlightTexture() = 0;
+	virtual Texture* getGuiTexture() = 0;
+	virtual Texture* getGuiTexture2() = 0;
 	virtual Uint16 getMouseX() = 0;
 	virtual Uint16 getMouseY() = 0;
 	virtual void drawTooltip( float xpos2, float ypos2, float zpos2,
@@ -55,7 +56,7 @@ public:
 	                          char *message,
 	                          float r = 0, float g = 0.15f, float b = 0.05f, float zoom = 1.0f ) = 0;
 	virtual void setFontType( int fontType ) = 0;
-	virtual GLuint loadSystemTexture( char *line ) = 0;
+	virtual Texture* loadSystemTexture( char *line ) = 0;
 	virtual void unlockMouse() = 0;
 	virtual void lockMouse( Widget *widget ) = 0;
 	virtual void allWindowsClosed() = 0;

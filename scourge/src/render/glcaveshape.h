@@ -66,9 +66,9 @@ private:
 	int mode;
 	int dir;
 	Shapes *shapes;
-	GLuint *wallTextureGroup;
-	GLuint *topTextureGroup;
-	GLuint *floorTextureGroup;
+	Texture** wallTextureGroup;
+	Texture** topTextureGroup;
+	Texture** floorTextureGroup;
 	int caveIndex;
 	int stencilIndex;
 	int stencilAngle;
@@ -104,7 +104,7 @@ private:
 
 public:
 
-	GLCaveShape( Shapes *shapes, GLuint texture[], int width, int depth, int height, char *name, int index,
+	GLCaveShape( Shapes *shapes, Texture* texture[], int width, int depth, int height, char *name, int index,
 	             int mode, int dir, int caveIndex, int stencilIndex = 0, int stencilAngle = 0 );
 	virtual ~GLCaveShape();
 
@@ -157,7 +157,7 @@ public:
 	static GLuint floorTex[];
 	static TextureData floorData[];
 
-	static void createShapes( GLuint texture[], int shapeCount, Shapes *shapes );
+	static void createShapes( Texture* texture[], int shapeCount, Shapes *shapes );
 	static void initializeShapes( Shapes *shapes );
 	static inline GLCaveShape *getShape( int index ) {
 		return shapeList[ index ];

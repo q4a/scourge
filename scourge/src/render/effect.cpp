@@ -534,7 +534,7 @@ void Effect::drawRing( bool proceed ) {
 		glColor4f( Util::roll( 0.85f, 1.0f ),
 		           Util::roll( 0.85f, 1.0f ),
 		           1.0f, 0.7f );
-		if ( ringTex ) glBindTexture( GL_TEXTURE_2D, ringTex );
+		if ( ringTex ) ringTex->glBind();
 		glScalef( n, n, n );
 
 		glBegin( GL_TRIANGLE_STRIP );
@@ -565,7 +565,7 @@ void Effect::drawRipple( bool proceed ) {
 	glDisable( GL_CULL_FACE );
 	glPushMatrix();
 	glColor4f( 0.3f, 0.25f, 0.17f, rippleAlpha );
-	if ( rippleTex ) glBindTexture( GL_TEXTURE_2D, rippleTex );
+	if ( rippleTex ) rippleTex->glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
 	// front
@@ -730,7 +730,7 @@ void Effect::drawParticle( Particle *particle ) {
 		glRotatef( -levelMap->getZRot(), 0.0f, 0.0f, 1.0f );
 		glRotatef( -levelMap->getYRot(), 1.0f, 0.0f, 0.0f );
 
-		if ( flameTex ) glBindTexture( GL_TEXTURE_2D, flameTex );
+		if ( flameTex ) flameTex->glBind();
 
 		// rotate particles
 		glRotatef( particle->rotate, 0, 0, 1 );

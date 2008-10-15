@@ -107,7 +107,7 @@ Creature::Creature( Session *session, Monster *monster, GLShape *shape, bool ini
 }
 
 void Creature::commonInit() {
-	this->portrait[0] = 0;
+	this->portrait.clear();
 
 	this->scripted = false;
 	this->scriptedAnim = MD2_STAND;
@@ -191,9 +191,7 @@ void Creature::commonInit() {
 }
 
 Creature::~Creature() {
-	if ( portrait[0] > 0 ) {
-		glDeleteTextures( 1, portrait );
-	}
+	portrait.clear();
 
 	// cancel this creature's events
 	session->getParty()->getCalendar()->cancelEventsForCreature( this );
@@ -2140,7 +2138,7 @@ bool Creature::attackClosestTarget() {
     setTargetCreature ( p );
   }
 
-  return ( p );
+  return ( p != NULL );
 }
 
 /// Tries to cast a specified spell onto a specified creature within range.
@@ -3265,12 +3263,14 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	int textureSizeW = 128;
 	int textureSizeH = 128;
 
-	if ( portrait[0] == 0 ) {
-		glBindTexture( GL_TEXTURE_2D,
-		               ( getCharacter() ?
-		                 getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() ) :
-		                 getMonster()->getPortraitTexture() ) );
-		portrait[0] = session->getShapePalette()->createAlphaTexture( session->getShapePalette()->getNamedTexture( "conv_filter" ),
+	if ( !portrait.isSpecified() ) {
+		if ( getCharacter() != NULL ) {
+			getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() )->glBind();
+		} else {
+			getMonster()->getPortraitTexture()->glBind();
+		}
+
+		portrait.createAlpha( session->getShapePalette()->getNamedTexture( "conv_filter" ),
 		              getCharacter() ? getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() ) :
 		              getMonster()->getPortraitTexture(), 128, 128, width, height );
 	}
@@ -3283,7 +3283,7 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	glEnable( GL_BLEND );
 // glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glBlendFunc( Scourge::blendA, Scourge::blendB );
-	glBindTexture( GL_TEXTURE_2D, portrait[0] );
+	portrait.glBind();
 	glColor4f( 1, 1, 1, 1 );
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -3297,7 +3297,7 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	glVertex3f( textureSizeW, textureSizeH, 0 );
 	glEnd();
 
-	glBindTexture( GL_TEXTURE_2D, session->getShapePalette()->getNamedTexture( "conv" ) );
+	session->getShapePalette()->getNamedTexture( "conv" )->glBind();
 	glColor4f( 1, 1, 1, 1 );
 
 	glPushMatrix();
@@ -3332,10 +3332,12 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		glEnable( GL_TEXTURE_2D );
 		glPushMatrix();
 		//    glTranslatef( x, y, 0 );
-		glBindTexture( GL_TEXTURE_2D,
-		               ( getCharacter() ?
-		                 getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() ) :
-		                 getMonster()->getPortraitTexture() ) );
+		if (getCharacter() != NULL) {
+			getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() )->glBind();
+		} else {
+			getMonster()->getPortraitTexture()->glBind();
+		}
+
 		glColor4f( 1, 1, 1, 1 );
 
 
@@ -3358,13 +3360,13 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT );
 		glEnable( GL_DEPTH_TEST );
 
-		GLuint *textureGroup = session->getMap()->getShapes()->getCurrentTheme()->getTextureGroup( WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ] );
-		GLuint texture = textureGroup[ GLShape::FRONT_SIDE ];
+		Texture** textureGroup = session->getMap()->getShapes()->getCurrentTheme()->getTextureGroup( WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ] );
+		Texture* texture = textureGroup[ GLShape::FRONT_SIDE ];
 
 		glPushMatrix();
 		glEnable( GL_TEXTURE_2D );
 		glColor4f( 1, 1, 1, 1 );
-		glBindTexture( GL_TEXTURE_2D, texture );
+		texture->glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );

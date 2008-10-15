@@ -184,10 +184,10 @@ public:
 	inline int getScreenHeight() {
 		return getScreen()->h;
 	}
-	GLuint getHighlightTexture();
-	GLuint getGuiTexture();
-	GLuint getGuiTexture2();
-	GLuint loadSystemTexture( char *line );
+	Texture* getHighlightTexture();
+	Texture* getGuiTexture();
+	Texture* getGuiTexture2();
+	Texture* loadSystemTexture( char *line );
 	void allWindowsClosed();
 
 	void setCursorMode( int n, bool useTimer = false );

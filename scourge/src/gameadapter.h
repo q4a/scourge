@@ -153,7 +153,7 @@ public:
 	virtual inline void updateBoardUI( int count, std::string const missionText[], Color *missionColor ) {}
 	virtual inline void setMissionDescriptionUI( char *s, int mapx, int mapy ) {}
 	virtual inline void showItemInfoUI( Item *item, int level ) {}
-	virtual inline GLuint getCursorTexture( int cursorMode ) {
+	virtual inline Texture* getCursorTexture( int cursorMode ) {
 		return 0;
 	}
 	virtual inline int getCursorWidth() {
@@ -162,16 +162,16 @@ public:
 	virtual inline int getCursorHeight() {
 		return 0;
 	}
-	virtual inline GLuint getHighlightTexture() {
+	virtual inline Texture* getHighlightTexture() {
 		return 0;
 	}
-	virtual inline GLuint getGuiTexture() {
+	virtual inline Texture* getGuiTexture() {
 		return 0;
 	}
-	virtual inline GLuint getGuiTexture2() {
+	virtual inline Texture* getGuiTexture2() {
 		return 0;
 	}
-	virtual inline GLuint loadSystemTexture( char *line ) {
+	virtual inline Texture* loadSystemTexture( char *line ) {
 		return 0;
 	}
 	virtual inline void showTextMessage( char *message ) {}
@@ -245,8 +245,8 @@ public:
 	virtual inline void addDescription( char const* description, float r = 1.0f, float g = 1.0f, float b = 0.4f, int logLevel = Constants::LOGLEVEL_FULL ) {}
 	virtual inline void writeLogMessage( char const* message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel = Constants::LOGLEVEL_FULL ) {}
 
-	virtual GLuint getNamedTexture( char *name ) {
-		return 0;
+	virtual Texture* getNamedTexture( char *name ) {
+		return NULL;
 	}
 
 	virtual void startMovieMode() {}

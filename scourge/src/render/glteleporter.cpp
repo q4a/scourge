@@ -22,7 +22,7 @@
   *@author Gabor Torok
   */
 
-GLTeleporter::GLTeleporter( GLuint texture[], GLuint flameTex,
+GLTeleporter::GLTeleporter( Texture* texture[], Texture* flameTex,
                             int width, int depth, int height,
                             char *name, int descriptionGroup,
                             Uint32 color, Uint8 shapePalIndex,
@@ -32,7 +32,7 @@ GLTeleporter::GLTeleporter( GLuint texture[], GLuint flameTex,
 	this->teleporterType = teleporterType;
 }
 
-void GLTeleporter::commonInit( GLuint flameTex ) {
+void GLTeleporter::commonInit( Texture* flameTex ) {
 	this->flameTex = flameTex;
 	for ( int i = 0; i < MAX_RINGS; i++ ) {
 		ring[i] = 0;
@@ -66,7 +66,7 @@ void GLTeleporter::draw() {
 		float d = ( static_cast<float>( depth ) * MUL ) / 10.0f;
 		float h = 1.25f * MUL;
 
-		if ( flameTex ) glBindTexture( GL_TEXTURE_2D, flameTex );
+		if ( flameTex ) flameTex->glBind();
 
 		glColor4f( 1, 1, 1, 1 );
 
@@ -106,7 +106,7 @@ void GLTeleporter::draw() {
 		float h = ring[i];
 		//      if(h == 0) h = 0.25 * MUL;
 
-		if ( flameTex ) glBindTexture( GL_TEXTURE_2D, flameTex );
+		if ( flameTex ) flameTex->glBind();
 
 		float red = static_cast<float>( ( this->color & 0xff000000 ) >> ( 3 * 8 ) ) / static_cast<float>( 0xff );
 		float green = static_cast<float>( ( this->color & 0x00ff0000 ) >> ( 2 * 8 ) ) / static_cast<float>( 0xff );

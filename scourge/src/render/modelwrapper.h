@@ -22,6 +22,7 @@
 #include "render.h"
 #include <map>
 #include <string>
+#include "texture.h"
 
 class CModelMD3;
 class AnimatedShape;
@@ -45,8 +46,8 @@ public:
 
 	void loadModel( const std::string& path, char *name, ModelLoader *loader );
 	void unloadModel();
-	AnimatedShape *createShape( GLuint textureId, float div,
-	                            GLuint texture[], char *name, int descriptionGroup,
+	AnimatedShape *createShape( Texture* textureId, float div,
+	                            Texture* texture[], char *name, int descriptionGroup,
 	                            Uint32 color, Uint8 shapePalIndex,
 	                            char *model_name, char *skin_name,
 	                            ModelLoader *loader );
@@ -67,16 +68,16 @@ struct Md2ModelInfo {
 class ModelLoader {
 private:
 	bool headless;
-	GLuint *textureGroup;
-	std::map<std::string, GLuint> creature_skins;
-	std::map<GLuint, int> loaded_skins;
+	Texture** textureGroup;
+	std::map<std::string, Texture*> creature_skins;
+	std::map<Texture*, int> loaded_skins;
 	std::map<std::string, Md2ModelInfo*> creature_models;
 	std::map<Md2ModelInfo*, int> loaded_models;
 
 	ShapePalette *shapePal;
 
 public:
-	ModelLoader( ShapePalette *shapePal, bool headless, GLuint *textureGroup );
+	ModelLoader( ShapePalette *shapePal, bool headless, Texture** textureGroup );
 
 	virtual ~ModelLoader();
 
@@ -87,7 +88,7 @@ public:
 	                                   float scale = 0.0f );
 	virtual void decrementSkinRefCount( char *model_name,
 	                                    char *skin_name );
-	GLuint loadSkinTexture( const std::string& skin_name );
+	Texture* loadSkinTexture( const std::string& skin_name );
 	void unloadSkinTexture( const std::string& skin_name );
 	void debugModelLoader();
 	DECLARE_NOISY_OPENGL_SUPPORT();
