@@ -77,5 +77,8 @@
 // Set to 0 or 1 to always rerun movies. Useful to debug movies that only occur once.
 #define RERUN_MOVIES 0
 
+// use squirrel calls in combar (special abilities, etc.)
+#define SQUIRREL_ENABLED true
+
 #endif
 

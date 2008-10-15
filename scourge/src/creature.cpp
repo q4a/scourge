@@ -107,6 +107,7 @@ Creature::Creature( Session *session, Monster *monster, GLShape *shape, bool ini
 }
 
 void Creature::commonInit() {
+	this->lastDecision = 0;
 	this->portrait.clear();
 
 	this->scripted = false;
@@ -1562,7 +1563,7 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
 			}
 		}
 	}
-	if ( !monster && ret && callScript ) {
+	if ( !monster && ret && callScript && SQUIRREL_ENABLED ) {
 		session->getSquirrel()->callItemEvent( this, ret, "startBattleWithItem" );
 	}
 
@@ -2051,6 +2052,10 @@ bool Creature::castHealingSpell() {
 /// Basic NPC/monster AI.
 
 void Creature::decideMonsterAction() {
+	Uint32 now = SDL_GetTicks();
+	if( now - lastDecision < 2000 ) return;
+	lastDecision = now;
+	
 	//CASE 1: A possessed non-aggressive creature
 	if ( !isNonNPCMonster() && getStateMod( StateMod::possessed ) ) {
 		Creature *p = session->getParty()->getClosestPlayer( toint( getX() ), toint( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 );
@@ -2065,9 +2070,8 @@ void Creature::decideMonsterAction() {
 	if ( ( getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND ) && ( !isNonNPCMonster() || Util::dice( 20 ) != 0 ) ) {
 		if ( attackClosestTarget() ) return;
 		if ( getMotion() == Constants::MOTION_STAND ) {
-			//if standing, there is a 1/500 chance to start loitering. Has to be a slim chance because
-			//this gets checked so often..
-			if ( Util::dice( 500 ) == 0 && !scripted ) {
+			//if standing, there is a 1/3 chance to start loitering.
+			if ( Util::dice( 3 ) == 0 && !scripted ) {
 				//need to make a path to wander on
 				pathManager->findWanderingPath( 10, session->getParty()->getPlayer(), session->getMap() );
 				setMotion( Constants::MOTION_LOITER );
@@ -2323,6 +2327,9 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
 
 void Creature::evalSpecialSkills() {
 	//if( !isMonster() ) cerr << "In Creature::evalSpecialSkills for " << getName() << endl;
+	
+	if( isMonster() || !SQUIRREL_ENABLED ) return;
+	
 	set<SpecialSkill*> oldSpecialSkills;
 	for ( int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++ ) {
 		SpecialSkill *ss = SpecialSkill::getSpecialSkill( t );
@@ -2471,9 +2478,9 @@ void Creature::applyRecurringSpecialSkills() {
 
 /// Applies the effects of automatic special capabilities.
 
-float Creature::applyAutomaticSpecialSkills( int event,
-    char *varName,
-    float varValue ) {
+float Creature::applyAutomaticSpecialSkills( int event, char *varName, float varValue ) {
+	if( isMonster() || !SQUIRREL_ENABLED ) return varValue;
+	
 #ifdef DEBUG_CAPABILITIES
 	cerr << "Using automatic capabilities for event type: " << event << endl;
 #endif
@@ -2503,8 +2510,9 @@ float Creature::applyAutomaticSpecialSkills( int event,
 
 /// Uses a special capability.
 
-char *Creature::useSpecialSkill( SpecialSkill *specialSkill,
-    bool manualOnly ) {
+char *Creature::useSpecialSkill( SpecialSkill *specialSkill, bool manualOnly ) {
+	if( monster || !SQUIRREL_ENABLED ) return NULL;
+	
 	if ( !hasSpecialSkill( specialSkill ) ) {
 		return Constants::getMessage( Constants::UNMET_CAPABILITY_PREREQ_ERROR );
 	} else if ( manualOnly &&
@@ -2600,7 +2608,7 @@ float Creature::getArmor( float *armorP, float *dodgePenaltyP,
 	          armorMisfuction ) ) {
 		// 3.0f * rand() / RAND_MAX < 1.0f ) {
 		armor = Util::roll( 0.0f, armor / 2.0f );
-	} else {
+	} else if( !monster && SQUIRREL_ENABLED ) {
 		// apply any armor enhancing capabilities
 		if ( vsWeapon ) {
 			session->getSquirrel()->setCurrentWeapon( vsWeapon );
@@ -2635,7 +2643,7 @@ void Creature::calcArmor( int damageType,
 						          item->getRpgItem()->getDefense( t ) :
 						          item->getBonus() );
 
-						if ( callScript && !monster ) {
+						if ( callScript && !monster && SQUIRREL_ENABLED ) {
 							session->getSquirrel()->setGlobalVariable( "armor", lastArmor[ t ] );
 							session->getSquirrel()->callItemEvent( this, item, "useItemInDefense" );
 							lastArmor[ t ] = session->getSquirrel()->getGlobalVariable( "armor" );
@@ -2836,11 +2844,11 @@ float Creature::getAttack( Item *weapon,
 	roll = ( roll / 100.0f ) * damagePercent;
 
 	// apply damage enhancing capabilities
-	if ( callScript ) {
+	if ( callScript && !monster && SQUIRREL_ENABLED ) {
 		session->getSquirrel()->setCurrentWeapon( weapon );
 		roll = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
 		       "damage", roll );
-		if ( weapon && !monster )
+		if ( weapon )
 			session->getSquirrel()->setGlobalVariable( "damage", roll );
 		session->getSquirrel()->callItemEvent( this, weapon, "useItemInAttack" );
 		roll = session->getSquirrel()->getGlobalVariable( "damage" );

@@ -316,25 +316,29 @@ int Battle::calculateRange( Item *item ) {
 }
 
 int Battle::getAdjustedWait( int originalWait ) {
-	getSession()->getSquirrel()->setGlobalVariable( "turnWait", originalWait );
-	if ( creature->getActionSkill() ) {
-		getSession()->getSquirrel()->callSkillEvent( creature,
-		    creature->getActionSkill()->getName(),
-		    "waitHandlerSkill" );
-	} else if ( creature->getActionSpell() ) {
-		getSession()->getSquirrel()->callSpellEvent( creature,
-		    creature->getActionSpell(),
-		    "waitHandlerSpell" );
+	if( creature->getCharacter() && SQUIRREL_ENABLED ) {
+		getSession()->getSquirrel()->setGlobalVariable( "turnWait", originalWait );
+		if ( creature->getActionSkill() ) {
+			getSession()->getSquirrel()->callSkillEvent( creature,
+			    creature->getActionSkill()->getName(),
+			    "waitHandlerSkill" );
+		} else if ( creature->getActionSpell() ) {
+			getSession()->getSquirrel()->callSpellEvent( creature,
+			    creature->getActionSpell(),
+			    "waitHandlerSpell" );
+		} else {
+			getSession()->getSquirrel()->callItemEvent( creature,
+			    item,
+			    "waitHandlerItem" );
+		}
+		int newWait = static_cast<int>( getSession()->getSquirrel()->getGlobalVariable( "turnWait" ) );
+		//if( originalWait != newWait ) {
+		//cerr << "turnWait was " << originalWait << " and now is " << newWait << endl;
+		//}
+		return newWait;
 	} else {
-		getSession()->getSquirrel()->callItemEvent( creature,
-		    item,
-		    "waitHandlerItem" );
+		return originalWait;
 	}
-	int newWait = static_cast<int>( getSession()->getSquirrel()->getGlobalVariable( "turnWait" ) );
-	//if( originalWait != newWait ) {
-	//cerr << "turnWait was " << originalWait << " and now is " << newWait << endl;
-	//}
-	return newWait;
 }
 
 /// Initializes a creature's battle turn.
@@ -473,7 +477,7 @@ void Battle::stepCloserToTarget() {
 			if ( !creature->setSelCreature( creature->getTargetCreature(), range, false ) &&
 			        IS_AUTO_CONTROL( creature ) ) {
 				creature->cancelTarget();
-				creature->decideMonsterAction();
+				//creature->decideMonsterAction();
 				ap--;
 				if ( debugBattle )
 					cerr << "*** " << creature->getName() <<
@@ -1323,7 +1327,7 @@ void Battle::hitWithItem() {
 				}
 
 				// item attack event handler
-				if ( item ) {
+				if ( item && creature->getCharacter() && SQUIRREL_ENABLED ) {
 					getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
 					getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
 					damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
