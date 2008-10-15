@@ -162,6 +162,7 @@ private:
 	int scriptedAnim;
 
 	Texture portrait;
+	Uint32 lastDecision;
 
 public:
 	static const int DIAMOND_FORMATION = 0;

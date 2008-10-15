@@ -3203,18 +3203,20 @@ bool Scourge::isLevelShaded() {
 
 void Scourge::printToConsole( const char *s ) {
 	if ( squirrelLabel ) {
-		//cerr << s << endl;
-		char *q = strdup( s );
-		// replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
-		char *p = strpbrk( q, "\n\r" );
-		while ( p ) {
-			*p = '|';
-			if ( !*( p + 1 ) ) break;
-			p = strpbrk( p + 1, "\n\r" );
+		if( squirrelWin->isVisible() ) {
+			//cerr << s << endl;
+			char *q = strdup( s );
+			// replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
+			char *p = strpbrk( q, "\n\r" );
+			while ( p ) {
+				*p = '|';
+				if ( !*( p + 1 ) ) break;
+				p = strpbrk( p + 1, "\n\r" );
+			}
+			// cerr << s << endl;
+			squirrelLabel->appendText( q );
+			free( q );
 		}
-		// cerr << s << endl;
-		squirrelLabel->appendText( q );
-		free( q );
 	} else {
 		cerr << s << endl;
 	}
