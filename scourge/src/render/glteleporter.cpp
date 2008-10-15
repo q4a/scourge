@@ -22,7 +22,7 @@
   *@author Gabor Torok
   */
 
-GLTeleporter::GLTeleporter( Texture* texture[], Texture* flameTex,
+GLTeleporter::GLTeleporter( Texture* texture[], Texture const* flameTex,
                             int width, int depth, int height,
                             char *name, int descriptionGroup,
                             Uint32 color, Uint8 shapePalIndex,
@@ -32,7 +32,7 @@ GLTeleporter::GLTeleporter( Texture* texture[], Texture* flameTex,
 	this->teleporterType = teleporterType;
 }
 
-void GLTeleporter::commonInit( Texture* flameTex ) {
+void GLTeleporter::commonInit( Texture const* flameTex ) {
 	this->flameTex = flameTex;
 	for ( int i = 0; i < MAX_RINGS; i++ ) {
 		ring[i] = 0;

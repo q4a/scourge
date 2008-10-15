@@ -73,8 +73,8 @@ Fog::Fog( Map *map, float lampRadiusSquared ) {
 }
 
 Fog::~Fog() {
-	glDeleteTextures( 1, ( GLuint* )&overlay_tex );
-	glDeleteTextures( 1, ( GLuint* )&shade_tex );
+	glDeleteTextures( 1, &overlay_tex );
+	glDeleteTextures( 1, &shade_tex );
 	delete [] players;
 }
 
@@ -439,7 +439,7 @@ void Fog::createOverlayTexture() {
 	int minP = 75;
 
 	// create the dark texture
-	glGenTextures( 1, ( GLuint* )&overlay_tex );
+	glGenTextures( 1, &overlay_tex );
 	for ( unsigned int i = 0; i < OVERLAY_SIZE; i++ ) {
 		for ( unsigned int j = 0; j < OVERLAY_SIZE; j++ ) {
 
@@ -488,7 +488,7 @@ void Fog::createShadeTexture() {
 	int minP = 70;
 
 	// create the dark texture
-	glGenTextures( 1, ( GLuint* )&shade_tex );
+	glGenTextures( 1, &shade_tex );
 	for ( unsigned int i = 0; i < OVERLAY_SIZE; i++ ) {
 		for ( unsigned int j = 0; j < OVERLAY_SIZE; j++ ) {
 

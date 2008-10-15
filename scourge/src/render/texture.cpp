@@ -69,6 +69,9 @@ bool Texture::load( const string& filename, bool absolutePath, bool isSprite, bo
 
 	_hasAbsolutePath = absolutePath;
 	_filename = filename;
+	while (_filename[0] == '/' ) {
+		_filename = &_filename[1];
+	}
 
 	if ( !loadImage() ) return false;
 
@@ -149,7 +152,7 @@ bool Texture::loadImage() {
 	// just silently unload or make noise?
 	unloadImage();
 
-	string path = ( _hasAbsolutePath ? _filename : rootDir + _filename );
+	string path = ( _hasAbsolutePath ? _filename : rootDir + "/" + _filename );
 
 	_surface = IMG_Load( path.c_str() );
 	if ( _surface == NULL ) {

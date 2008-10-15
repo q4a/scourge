@@ -24,7 +24,7 @@
   *@author Gabor Torok
   */
 
-Button::Button( int x1, int y1, int x2, int y2, Texture* highlight, char *label, Texture* texture ) :
+Button::Button( int x1, int y1, int x2, int y2, Texture const* highlight, char *label, Texture const* texture ) :
 		Widget( x1, y1, x2 - x1, y2 - y1 ) {
 	this->x2 = x2;
 	this->y2 = y2;

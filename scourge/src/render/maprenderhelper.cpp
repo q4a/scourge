@@ -110,12 +110,12 @@ RoomRenderHelper::RoomRenderHelper() {
 
 RoomRenderHelper::~RoomRenderHelper() {
 	// delete the overlay texture
-	glDeleteTextures( 1, ( GLuint* )&overlay_tex );
+	glDeleteTextures( 1, &overlay_tex );
 }
 
 void RoomRenderHelper::setMap( Map *map ) {
 	MapRenderHelper::setMap( map );
-	if ( overlay_tex ) glDeleteTextures( 1, ( GLuint* )&overlay_tex );
+	if ( overlay_tex ) glDeleteTextures( 1, &overlay_tex );
 	createOverlayTexture();
 }
 

@@ -38,7 +38,7 @@ private:
 	static const int MAX_RINGS = 20;
 	float ring[MAX_RINGS];
 	float delta[MAX_RINGS];
-	Texture* flameTex;
+	Texture const* flameTex;
 
 	int teleporterType;
 
@@ -53,7 +53,7 @@ public:
 	Passing 0 for texture disables the creation of
 	shapes. (eg. torch, md2 shape)
 	*/
-	GLTeleporter( Texture* texture[], Texture* flameTex,
+	GLTeleporter( Texture* texture[], Texture const* flameTex,
 	              int width, int depth, int height,
 	              char *name, int descriptionGroup,
 	              Uint32 color, Uint8 shapePalIndex = 0,
@@ -78,7 +78,7 @@ public:
 	inline void outline( float r, float g, float b ) {}
 
 protected:
-	void commonInit( Texture* flameTex );
+	void commonInit( Texture const* flameTex );
 	DECLARE_NOISY_OPENGL_SUPPORT();
 
 };

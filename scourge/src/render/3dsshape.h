@@ -95,7 +95,7 @@ class C3DSShape : public GLShape  {
 private:
 	float divx, divy, divz;
 	// This holds the texture info, referenced by an ID
-	Texture* g_Texture[MAX_TEXTURES];
+	Texture const* g_Texture[MAX_TEXTURES];
 	// This is 3DS class.  This should go in a good model class.
 	CLoad3DS g_Load3ds;
 	// This holds the 3D Model info that we load in

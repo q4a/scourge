@@ -127,7 +127,7 @@ void Widget::drawButton( Widget *parent, int x, int y, int x2, int y2,
 	}
 
 	int n = 0;
-	Texture* tex;
+	Texture const* tex;
 	if ( toggle && selected ) {
 		if ( theme->getButtonSelectionBackground() ) {
 			glEnable( GL_TEXTURE_2D );
@@ -448,7 +448,7 @@ void Widget::drawTooltip( Widget *parent ) {
  * the height changes of the quad is not as important as stretching
  * it horizontally. This is generally true for buttons, progress bars, etc.
  */
-void Widget::drawBorderedTexture( Texture* texture, int x, int y, int width, int height,
+void Widget::drawBorderedTexture( Texture const* texture, int x, int y, int width, int height,
                                   int left, int right, int textureWidth, bool inverse ) {
 
 	glEnable( GL_BLEND );

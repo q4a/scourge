@@ -2880,19 +2880,19 @@ int Scourge::getCursorHeight() {
 	return session->getShapePalette()->getCursorHeight();
 }
 
-Texture* Scourge::getHighlightTexture() {
+Texture const* Scourge::getHighlightTexture() {
 	return getShapePalette()->getHighlightTexture();
 }
 
-Texture* Scourge::getGuiTexture() {
+Texture const* Scourge::getGuiTexture() {
 	return getShapePalette()->getGuiTexture();
 }
 
-Texture* Scourge::getGuiTexture2() {
+Texture const* Scourge::getGuiTexture2() {
 	return getShapePalette()->getGuiTexture2();
 }
 
-Texture* Scourge::loadSystemTexture( char *line ) {
+Texture const* Scourge::loadSystemTexture( char *line ) {
 	return getShapePalette()->loadSystemTexture( line );
 }
 

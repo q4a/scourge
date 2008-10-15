@@ -24,7 +24,8 @@
 
 #define BUTTON_SIZE 20
 
-Slider::Slider( int x1, int y1, int x2, Texture* highlight, int minValue, int maxValue, char *label ) :
+// FIXME: slider does not use highlight texture but demands it in constructor
+Slider::Slider( int x1, int y1, int x2, Texture const* highlight, int minValue, int maxValue, char *label ) :
 		Widget( x1, y1, x2 - x1, 30 ) {
 	this->x2 = x2;
 	this->minValue = minValue;

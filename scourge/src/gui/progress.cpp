@@ -22,7 +22,7 @@
 #define TEXTURE_BORDER 100
 #define HIGHLIGHT_BORDER 24
 
-Progress::Progress( ScourgeGui *scourgeGui, Texture* texture, Texture* highlight,
+Progress::Progress( ScourgeGui *scourgeGui, Texture const* texture, Texture const* highlight,
                     int maxStatus, bool clearScreen, bool center, bool opaque ) {
 	this->scourgeGui = scourgeGui;
 	this->texture = texture;

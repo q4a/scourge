@@ -18,11 +18,11 @@
 #include "../common/constants.h"
 #include "gltorch.h"
 
-GLTorch::GLTorch( Texture* texture[], Texture* flameTex,
+GLTorch::GLTorch( Texture* texture[], Texture const* flameTex,
                   int width, int depth, int height,
                   char *name, int descriptionGroup,
                   Uint32 color, Uint8 shapePalIndex,
-                  Texture* torchback, int torch_dir ) :
+                  Texture const* torchback, int torch_dir ) :
 		GLShape( texture, width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
 	this->flameTex = flameTex;
 	this->torchback = torchback;
