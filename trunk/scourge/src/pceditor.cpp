@@ -657,9 +657,7 @@ void PcEditor::drawWidgetContents( Widget *w ) {
 		glEnable( GL_TEXTURE_2D );
 		glDisable( GL_CULL_FACE );
 		glColor4f( 1, 1, 1, 1 );
-		glBindTexture( GL_TEXTURE_2D,
-		               scourge->getShapePalette()->
-		               getPortraitTexture( getSex(), portraitIndex ) );
+		scourge->getShapePalette()->getPortraitTexture( getSex(), portraitIndex )->glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );

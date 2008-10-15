@@ -749,7 +749,7 @@ void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) 
 	glDisable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
-	glBindTexture( GL_TEXTURE_2D, rug->texture );
+	rug->texture->glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 	if ( rug->isHorizontal ) {
 		glTexCoord2f( 1.0f, 0.0f );
@@ -2551,7 +2551,7 @@ void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref
 		//cerr << "Map Error: no textures for outdoor theme! ref=" << WallTheme::outdoorThemeRefName[ref] << endl;
 		return;
 	}
-	GLuint *textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
+	Texture** textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
 	int width = getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
 	int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
 
@@ -3933,7 +3933,7 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 				info->rugPos[ info->rug_count ] = Persist::createRugInfo( x, y );
 				info->rugPos[ info->rug_count ]->angle = toint( rugPos[x][y].angle * 100.0f );
 				info->rugPos[ info->rug_count ]->isHorizontal = ( rugPos[x][y].isHorizontal ? 1 : 0 );
-				info->rugPos[ info->rug_count ]->texture = rugPos[x][y].texture;
+				info->rugPos[ info->rug_count ]->texture = 666; // -=K=-: no point to store any GPU texture names? rugPos[x][y].texture;
 				info->rug_count++;
 			}
 		}
@@ -4038,7 +4038,7 @@ void Map::initForCave( char *themeName ) {
 	}
 
 	string ref = WallTheme::themeRefName[ WallTheme::THEME_REF_PASSAGE_FLOOR ];
-	GLuint *floorTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
+	Texture** floorTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
 	setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, floorTextureGroup[ GLShape::TOP_SIDE ] );
 }
 
@@ -4698,7 +4698,7 @@ void Map::setSecretDoorDetected( int x, int y ) {
 void Map::renderFloor() {
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
-	glBindTexture( GL_TEXTURE_2D, floorTex );
+	if ( floorTex != NULL ) floorTex->glBind();
 	glPushMatrix();
 	if ( isHeightMapEnabled() ) {
 		if ( groundVisible || settings->isGridShowing() ) {
@@ -4743,7 +4743,7 @@ bool Map::drawHeightMapFloor() {
 			//int chunkX = ( ( xx * OUTDOORS_STEP ) - MAP_OFFSET ) / MAP_UNIT;
 			//int chunkY = ( ( ( yy + 1 ) * OUTDOORS_STEP ) - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
 			//if( lightMap[chunkX][chunkY] ) {
-			glBindTexture( GL_TEXTURE_2D, groundPos[ xx ][ yy ].tex );
+			groundPos[ xx ][ yy ].tex->glBind();
 			//} else {
 			//glDisable( GL_TEXTURE_2D );
 			//}
@@ -4821,8 +4821,8 @@ bool Map::drawHeightMapFloor() {
 
 /// Draws a ground texture on outdoor maps. Uses OUTDOORS_STEP coordinates.
 
-void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, float angle ) {
-	glBindTexture( GL_TEXTURE_2D, tex );
+void Map::drawOutdoorTex( Texture* tex, float tx, float ty, float tw, float th, float angle ) {
+	tex->glBind();
 
 	glMatrixMode( GL_TEXTURE );
 	glPushMatrix();
@@ -4895,7 +4895,7 @@ void Map::drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, fl
 
 #define GROUND_TEX_Z_OFFSET 0.26f
 
-void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, float angle ) {
+void Map::drawGroundTex( Texture* tex, float tx, float ty, float tw, float th, float angle ) {
 
 	//glEnable( GL_DEPTH_TEST );
 	glDepthMask( GL_FALSE );
@@ -4903,7 +4903,7 @@ void Map::drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, flo
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glDisable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D, tex );
+	tex->glBind();
 
 	//glColor4f( 1, 0, 0, 1 );
 	//glDepthMask( GL_FALSE );
@@ -5155,7 +5155,7 @@ void Map::drawWaterLevel() {
 	}
 
 	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D, getShapes()->getCurrentTheme()->getOutdoorTextureGroup( WallTheme::OUTDOOR_THEME_REF_WATER )[0] );
+	getShapes()->getCurrentTheme()->getOutdoorTextureGroup( WallTheme::OUTDOOR_THEME_REF_WATER )[0]->glBind();
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
@@ -5217,7 +5217,7 @@ void Map::initOutdoorsGroundTexture() {
 			int r = high ? WallTheme::OUTDOOR_THEME_REF_ROCK :
 			        ( low ? WallTheme::OUTDOOR_THEME_REF_LAKEBED :
 			          WallTheme::OUTDOOR_THEME_REF_GRASS );
-			GLuint tex = getThemeTex( r );
+			Texture* tex = getThemeTex( r );
 			for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
 				for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
 					refs[x + xx][y + yy] = r;
@@ -5310,9 +5310,9 @@ void Map::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
 
 /// Returns a random variation of the outdoor texture specified by ref.
 
-GLuint Map::getThemeTex( int ref ) {
+Texture* Map::getThemeTex( int ref ) {
 	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
-	GLuint *textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
+	Texture** textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
 	return textureGroup[ Util::dice( faceCount ) ];
 }
 

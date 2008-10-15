@@ -25,6 +25,7 @@
 /**
   *@author Gabor Torok
   */
+class Texture;
 
 /// A push button widget.
 class Button : public Widget {
@@ -36,11 +37,11 @@ private:
 	int labelPos;
 	bool toggle;
 	bool selected;
-	GLuint highlight;
+	Texture* highlight;
 	bool glowing;
 	bool inverse;
 	int fontType;
-	GLuint texture;
+	Texture* texture;
 
 public:
 
@@ -50,7 +51,7 @@ public:
 		BOTTOM
 	};
 
-	Button( int x1, int y1, int x2, int y2, GLuint highlight, char *label = NULL, GLuint texture = 0 );
+	Button( int x1, int y1, int x2, int y2, Texture* highlight, char *label = NULL, Texture* texture = NULL );
 	~Button();
 
 	inline void setInside( bool b ) {
@@ -66,7 +67,7 @@ public:
 		return toggle;
 	}
 
-	inline void setTexture( GLuint texture ) {
+	inline void setTexture( Texture* texture ) {
 		this->texture = texture;
 	}
 	inline void setGlowing( bool b ) {

@@ -35,6 +35,7 @@
 #include "storable.h"
 #include "rpg/rpglib.h"
 #include "session.h"
+#include "render/texture.h"
 
 class Map;
 class Effect;
@@ -48,6 +49,7 @@ class RenderedItem;
 class NpcInfo;
 class RenderedProjectile;
 class Trap;
+
 
 /**
   *@author Gabor Torok
@@ -159,7 +161,7 @@ private:
 	bool boss, savedMissionObjective, scripted;
 	int scriptedAnim;
 
-	GLuint portrait[1];
+	Texture portrait;
 
 public:
 	static const int DIAMOND_FORMATION = 0;

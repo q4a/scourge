@@ -1096,7 +1096,7 @@ void Item::renderIcon( Scourge *scourge, SDL_Rect *rect, int gridSize, bool smal
 
 /// Renders the item's icon and any overlaid effects
 void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
-	GLuint tex;
+	Texture const* tex;
 	int rw, rh, ox, oy, iw, ih;
 	// getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, smallIcon );
 	getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, false );	
@@ -1126,8 +1126,8 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallI
 /// and the top left corner of the item graphic within the texture.
 /// When smallIcon is false, it returns the inventory graphic, else the small icon.
 
-void Item::getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon ) {
-	GLuint tex;
+void Item::getItemIconInfo( Texture const** texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon ) {
+	Texture const* tex;
 	int rw, rh, ox, oy;
 	if ( !smallIcon && getShape()->getIcon() > 0 ) {
 		tex = getShape()->getIcon();
@@ -1145,8 +1145,7 @@ void Item::getItemIconInfo( GLuint *texp, int *rwp, int *rhp, int *oxp, int *oyp
 			ox = ( w - rw ) / 2;
 		}
 	} else {
-		tex = session->getShapePalette()->
-		      tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ];
+		tex = &session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ];
 		*iw = w;
 		*ih = h;
 		rw = w;
@@ -1167,7 +1166,7 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool sm
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D, getItemIconTexture( smallIcon ) );
+	getItemIconTexture( smallIcon )->glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( x, y );
@@ -1183,13 +1182,14 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool sm
 
 /// Returns the item's icon texture.
 
-GLuint Item::getItemIconTexture( bool smallIcon ) {
-	return ( !smallIcon && getShape()->getIcon() > 0 ? getShape()->getIcon() : 
-		session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] );
+Texture const* Item::getItemIconTexture( bool smallIcon ) {
+	return ( !smallIcon && getShape()->getIcon()->isSpecified() ? getShape()->getIcon() : 
+		&session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] );
 }
 
 /// Creates an icon texture from a 3D view of the item.
 
+/* unused
 void Item::create3dTex( Scourge *scourge, float w, float h ) {
 	if ( textureInMemory ) return;
 
@@ -1260,6 +1260,7 @@ void Item::create3dTex( Scourge *scourge, float w, float h ) {
 	glDisable( GL_TEXTURE_2D );
 	glPopAttrib();
 }
+*/
 
 void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih ) {
 	Uint32 t = SDL_GetTicks();
@@ -1281,8 +1282,7 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 		}
 	}
 	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D,
-	               scourge->getSession()->getShapePalette()->getNamedTexture( "flame" ) );
+	scourge->getSession()->getShapePalette()->getNamedTexture( "flame" )->glBind();
 	glEnable( GL_BLEND );
 	//glBlendFunc( GL_ONE, GL_ONE );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
@@ -1339,8 +1339,7 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 		}
 	}
 	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D,
-	               scourge->getSession()->getShapePalette()->getNamedTexture( "bling" ) );
+	scourge->getSession()->getShapePalette()->getNamedTexture( "bling" )->glBind();
 	glEnable( GL_BLEND );
 	//glBlendFunc( GL_ONE, GL_ONE );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );

@@ -25,6 +25,7 @@
 #include <map>
 #include "modelwrapper.h"
 #include "../session.h" // -=K=-: can't declare inline bool Shapes::isHeadless() without
+#include "texture.h"
 
 /**
   *@author Gabor Torok
@@ -77,7 +78,7 @@ public:
 	int iconRotX;
 	int iconRotY;
 	int iconRotZ;
-	GLuint icon;
+	Texture icon;
 	int iconWidth, iconHeight;
 	std::string ambient;
 	int lighting;
@@ -146,10 +147,10 @@ public:
 private:
 	static const int NAME_LENGTH = 40;
 	char name[80];
-	char textures[THEME_REF_COUNT][MAX_TEXTURE_COUNT][NAME_LENGTH]; // holds the text of a theme
-	GLuint textureGroup[THEME_REF_COUNT][MAX_TEXTURE_COUNT];
+	char textureNames[THEME_REF_COUNT][MAX_TEXTURE_COUNT][NAME_LENGTH]; // holds the text of a theme
+	Texture* textureGroup[THEME_REF_COUNT][MAX_TEXTURE_COUNT];
 	int faceCount[THEME_REF_COUNT];
-	std::map<std::string, GLuint> loadedTextures;
+	std::map<std::string, Texture*> loadedTextures;
 	std::map<std::string, int> themeRefMap;
 	GLfloat r[MULTI_TEX_COUNT], g[MULTI_TEX_COUNT], b[MULTI_TEX_COUNT], intensity[MULTI_TEX_COUNT];
 	bool smooth[MULTI_TEX_COUNT];
@@ -162,7 +163,7 @@ private:
 	int outdoorTextureWidth[OUTDOOR_THEME_REF_COUNT];
 	int outdoorTextureHeight[OUTDOOR_THEME_REF_COUNT];
 	char outdoorTextures[OUTDOOR_THEME_REF_COUNT][MAX_TEXTURE_COUNT][NAME_LENGTH];
-	GLuint outdoorTextureGroup[OUTDOOR_THEME_REF_COUNT][MAX_TEXTURE_COUNT];
+	Texture* outdoorTextureGroup[OUTDOOR_THEME_REF_COUNT][MAX_TEXTURE_COUNT];
 	int outdoorFaceCount[OUTDOOR_THEME_REF_COUNT];
 	std::map<std::string, int> outdoorThemeRefMap;
 	std::vector<std::string> altWallThemes;
@@ -201,8 +202,8 @@ public:
 		if ( themeRef < 0 || themeRef > THEME_REF_COUNT ) {
 			std::cerr << "*** Error: theme ref is out of bounds: theme=" << getName() << std::endl;
 		} else {
-			strncpy( textures[themeRef][face], name, NAME_LENGTH - 1 );
-			textures[themeRef][face][NAME_LENGTH - 1] = '\0';
+			strncpy( textureNames[themeRef][face], name, NAME_LENGTH - 1 );
+			textureNames[themeRef][face][NAME_LENGTH - 1] = '\0';
 			/*
 			cerr <<
 			  "\ttheme: " << getName() <<
@@ -238,7 +239,7 @@ public:
 		return outdoorTextureHeight[ ref ];
 	}
 
-	GLuint *getOutdoorTextureGroup( int ref ) {
+	Texture** getOutdoorTextureGroup( int ref ) {
 		return outdoorTextureGroup[ ref ];
 	}
 
@@ -288,7 +289,7 @@ public:
 		return smooth[index];
 	}
 
-	GLuint *getTextureGroup( std::string themeRefName );
+	Texture** getTextureGroup( std::string themeRefName );
 	inline char *getName() {
 		return name;
 	}
@@ -323,24 +324,25 @@ protected:
 	std::map<std::string, GLShape *> shapeMap;
 	int shapeCount;
 
-	struct Texture {
-		GLuint id;
+	// TODO: can be probably replaced by Texture class itself
+	struct ExtraTexture {
+		Texture texture;
 		std::string filename;
 	};
 
-	Texture textures[ MAX_SYSTEM_TEXTURE_COUNT ]; // store textures
+	ExtraTexture textures[ MAX_SYSTEM_TEXTURE_COUNT ]; // store textures
 	int texture_count;
 	GLShape *shapeNameArray[256];
 
 	// native texture groups
-	GLuint textureGroup[256][3];
+	Texture* textureGroup[256][3];
 	int textureGroupCount;
 
 	GLuint md2_tex[6];
 
 	// Info about the texture most recently loaded by loadTexture().
-	int lastTextureWidth, lastTextureHeight;
-	bool lastTextureAlpha;
+	// unused: int lastTextureWidth, lastTextureHeight;
+	// unused: bool lastTextureAlpha;
 
 	// how big to make the walls
 	const static Sint16 unitSide = MAP_UNIT;
@@ -368,21 +370,21 @@ protected:
 	// cursor
 	SDL_Surface *cursor, *crosshair, *attackCursor, *talkCursor, *useCursor, *forbiddenCursor, *rangedCursor, *moveCursor;
 	GLubyte *cursorImage, *crosshairImage, *attackImage, *talkImage, *useImage, *forbiddenImage, *rangedImage, *moveImage;
-	GLuint cursor_texture, crosshair_texture, attack_texture, talk_texture, use_texture, forbidden_texture, ranged_texture, move_texture;
-	GLuint ripple_texture, torchback;
+	Texture cursor_texture, crosshair_texture, attack_texture, talk_texture, use_texture, forbidden_texture, ranged_texture, move_texture;
+	Texture ripple_texture, torchback;
 
 	// stencils for lava
 	SDL_Surface *stencil[ STENCIL_COUNT ];
 	GLubyte *stencilImage[ STENCIL_COUNT ];
 
-	GLuint areaTex;
+	Texture areaTex;
 
-	std::vector<GLuint> rugs;
+	std::vector<Texture*> rugs;
 	char cursorDir[255];
 	int cursorWidth, cursorHeight;
-	GLuint cursorTexture[ Constants::CURSOR_COUNT ];
+	Texture cursorTexture[ Constants::CURSOR_COUNT ];
 
-	GLuint selection;
+	Texture selection;
 
 	static bool debugFileLoad;
 
@@ -400,11 +402,11 @@ public:
 	inline int getRugCount() {
 		return rugs.size();
 	}
-	inline GLuint getRug( int index ) {
+	inline Texture const* getRug( int index ) {
 		return rugs[ index ];
 	}
-	inline GLuint getRandomRug() {
-		if ( rugs.empty() ) return ~0; return getRug( Util::dice( getRugCount() ) );
+	inline Texture const* getRandomRug() {
+		if ( rugs.empty() ) return NULL; return getRug( Util::dice( getRugCount() ) );
 	}
 
 	inline SDL_Surface *getStencilSurface( int index ) {
@@ -439,7 +441,7 @@ public:
 	}
 
 	virtual void initialize();
-	GLuint loadSystemTexture( const std::string& line );
+	Texture* loadSystemTexture( const std::string& line );
 
 	inline int getCharacterModelInfoCount( int sex ) {
 		return character_models[sex].size();
@@ -456,8 +458,8 @@ public:
 	void loadCaveTheme( char *name );
 	void loadDebugTheme();
 
-	inline GLuint getTexture( int index ) {
-		return textures[index].id;
+	inline Texture* getTexture( int index ) {
+		return &textures[index].texture;
 	}
 
 	// 1-based!
@@ -480,14 +482,14 @@ public:
 		return wallHeight;
 	}
 
-	inline GLuint getRippleTexture() {
-		return ripple_texture;
+	inline Texture* getRippleTexture() {
+		return &ripple_texture;
 	}
-	inline GLuint getAreaTexture() {
-		return areaTex;
+	inline Texture* getAreaTexture() {
+		return &areaTex;
 	}
 
-	GLuint findTextureByName( const std::string& filename, bool loadIfMissing = false );
+	Texture* findTextureByName( const std::string& filename, bool loadIfMissing = false );
 	GLShape *findShapeByName( const char *name );
 	int findShapeIndexByName( const char *name );
 	void getShapeDimensions( const char *name, int *w, int *d, int *h );
@@ -498,9 +500,9 @@ public:
 
 	GLuint getBMPData( const std::string& filename, TextureData& data, int *width = NULL, int *height = NULL );
 
-	GLuint getCursorTexture( int cursorMode );
+	Texture* getCursorTexture( int cursorMode );
 
-	GLuint loadTexture( const std::string& filename, bool absolutePath = false, bool isSprite = true, bool anisotropy = false );
+	// unused: GLuint loadTexture( const std::string& filename, bool absolutePath = false, bool isSprite = true, bool anisotropy = false );
 
 	inline int getCursorWidth() {
 		return cursorWidth;
@@ -509,11 +511,11 @@ public:
 		return cursorHeight;
 	}
 
-	inline GLuint getSelection() {
-		return selection;
+	inline Texture* getSelection() {
+		return &selection;
 	}
 
-	GLuint createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW = 256, int textureSizeH = 256, int width = 256, int height = 256 );
+	// unused: GLuint createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW = 256, int textureSizeH = 256, int width = 256, int height = 256 );
 
 	void loadAllShapes();
 
@@ -521,12 +523,12 @@ protected:
 	static Shapes *instance;
 	void loadShape( const char *name );
 	ShapeValues *getShapeValueByName( const char *name, int *index );
-	GLuint createTileTexture( SDL_Surface **surface, int tileX, int tileY, int tileWidth, int tileHeight );
+	// unused: GLuint createTileTexture( SDL_Surface **surface, int tileX, int tileY, int tileWidth, int tileHeight );
 	void loadTiles( const std::string& filename, SDL_Surface **surface );
 	void swap( unsigned char & a, unsigned char & b );
 	void loadStencil( const std::string& filename, int index );
 	void loadCursors();
-	GLuint *findOrMakeTextureGroup( char *s );
+	Texture** findOrMakeTextureGroup( char *s );
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 

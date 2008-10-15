@@ -26,6 +26,7 @@
 #include "glshape.h"
 #include "shapes.h"
 #include "../shapepalette.h"
+#include "texture.h"
 
 using namespace std;
 
@@ -38,7 +39,7 @@ enum {
 	LOAD_MD3
 };
 
-ModelLoader::ModelLoader( ShapePalette *shapePal, bool headless, GLuint *textureGroup ) {
+ModelLoader::ModelLoader( ShapePalette *shapePal, bool headless, Texture** textureGroup ) {
 	this->shapePal = shapePal;
 	this->headless = headless;
 	this->textureGroup = textureGroup;
@@ -108,7 +109,7 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 	return shape;
 }
 
-GLuint ModelLoader::loadSkinTexture( const string& skin_name ) {
+Texture* ModelLoader::loadSkinTexture( const string& skin_name ) {
 	// md3-s load their own
 #ifdef DEBUG_LOADING
 	cerr << "&&&&&&&&&& Trying texture: " << skin_name << endl;
@@ -122,19 +123,20 @@ GLuint ModelLoader::loadSkinTexture( const string& skin_name ) {
 
 	// find or load the skin
 	string skin = skin_name;
-	GLuint skin_texture;
+	Texture* skin_texture = NULL;
 	if ( creature_skins.find( skin ) == creature_skins.end() ) {
 		if ( !headless ) {
 #ifdef DEBUG_LOADING
 			cerr << "&&&&&&&&&& Loading texture: " << skin_name << endl;
 #endif
 
-			skin_texture = shapePal->loadTexture( skin, true, false );
+			creature_skins[skin] = new Texture;
+			creature_skins[skin]->load( skin, true, false );
 
 #ifdef DEBUG_LOADING
 			cerr << "\t&&&&&&&&&& Loaded texture: " << skin_texture << endl;
 #endif
-			creature_skins[skin] = skin_texture;
+			skin_texture = creature_skins[skin];
 		}
 	} else {
 		skin_texture = creature_skins[skin];
@@ -165,7 +167,7 @@ void ModelLoader::unloadSkinTexture( const string& skin_name ) {
 	}
 
 	string skin = skin_name;
-	GLuint skin_texture;
+	Texture* skin_texture = NULL;
 	if ( creature_skins.find( skin ) == creature_skins.end() ) {
 		cerr << "&&&&&&&&&& WARNING: could not find skin: " << skin << endl;
 		return;
@@ -190,7 +192,7 @@ void ModelLoader::unloadSkinTexture( const string& skin_name ) {
 #endif
 		loaded_skins.erase( skin_texture );
 		creature_skins.erase( skin );
-		glDeleteTextures( 1, &skin_texture );
+		delete( skin_texture );
 	}
 
 }
@@ -247,10 +249,10 @@ void ModelLoader::debugModelLoader() {
 		cerr << "\t" << key << " " << loaded_models[ model_info ] << " references." << endl;
 	}
 	cerr << "Loaded skins: " << endl;
-	for ( map<string, GLuint>::iterator i = creature_skins.begin();
+	for ( map<string, Texture*>::iterator i = creature_skins.begin();
 	        i != creature_skins.end(); ++i ) {
 		string key = i->first;
-		GLuint id = i->second;
+		Texture* id = i->second;
 		cerr << "\t" << key << " " << loaded_skins[ id ] << " references." << endl;
 	}
 	cerr << "****************************************" << endl;
@@ -315,8 +317,8 @@ void ModelWrapper::unloadModel() {
 }
 
 // factory method to create shape
-AnimatedShape *ModelWrapper::createShape( GLuint textureId, float div,
-    GLuint texture[], char *name,
+AnimatedShape *ModelWrapper::createShape( Texture* textureId, float div,
+    Texture* texture[], char *name,
     int descriptionGroup,
     Uint32 color, Uint8 shapePalIndex,
     char *model_name, char *skin_name,

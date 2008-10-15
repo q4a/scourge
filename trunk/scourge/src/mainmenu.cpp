@@ -227,12 +227,12 @@ void MainMenu::drawView() {
 		float TILE_W = 256.0f;
 		float TILE_H = 256.0f;
 		glEnable( GL_TEXTURE_2D );
-		GLuint yellow = scourge->getShapePalette()->getNamedTexture( "menu" );
+		Texture* yellow = scourge->getShapePalette()->getNamedTexture( "menu" );
 
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef( 0, openingTop, 0 );
-		glBindTexture( GL_TEXTURE_2D, yellow );
+		yellow->glBind();
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, scourge->getSDLHandler()->getScreen()->h / TILE_H );
 		glVertex2i( 0, 0 );
@@ -248,7 +248,7 @@ void MainMenu::drawView() {
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef( 0, scourge->getSDLHandler()->getScreen()->h - openingTop, 0 );
-		glBindTexture( GL_TEXTURE_2D, yellow );
+		yellow->glBind();
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -429,7 +429,7 @@ void MainMenu::drawLogo() {
 	float w = 352.0f;
 	float h = 173.0f;
 	glColor4f( 1, 1, 1, 1 );
-	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->logo_texture );
+	scourge->getShapePalette()->logo_texture.glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0.0f, 0.0f );
@@ -456,7 +456,7 @@ void MainMenu::drawLogo() {
 		float w = 32.0f;
 		float h = 256.0f;
 		glColor4f( 1, 1, 1, 1 );
-		glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->chain_texture );
+		scourge->getShapePalette()->chain_texture.glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0.0f, 0.0f );
@@ -483,7 +483,7 @@ void MainMenu::drawLogo() {
 
 	glBlendFunc( GL_SRC_COLOR, GL_ONE );
 
-	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->candle );
+	scourge->getShapePalette()->candle.glBind();
 	glColor4f( 0.7f, 0.7f, 0.3f, 0.5f );
 	glPushMatrix();
 	glLoadIdentity();
@@ -547,7 +547,7 @@ void MainMenu::drawScourge() {
 	glLoadIdentity();
 	glTranslatef( scourge->getSDLHandler()->getScreen()->w - w, top, 0 );
 	glColor4f( 1, 1, 1, 1 );
-	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getNamedTexture( "scourge" ) );
+	scourge->getShapePalette()->getNamedTexture( "scourge" )->glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0.0f, 0.0f );
@@ -583,7 +583,7 @@ void MainMenu::drawBackdrop() {
 	glLoadIdentity();
 	glTranslatef( 0, top + ( 600 - WATER_HEIGHT - h ), 0 );
 	glColor4f( 1, 1, 1, 1 );
-	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->scourgeBackdrop_texture );
+	scourge->getShapePalette()->scourgeBackdrop_texture.glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0.0f, 0.0f );
@@ -612,7 +612,7 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
 
-	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->cloud );
+	scourge->getShapePalette()->cloud.glBind();
 
 	if ( flipped )
 		glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );

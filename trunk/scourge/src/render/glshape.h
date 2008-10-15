@@ -49,7 +49,7 @@ protected:
 	  Represents an array of 3 addresses for textures. If tex[i]==NULL, no texture is given,
 	  only a color.
 	*/
-	GLuint *tex;
+	Texture** tex;
 	Uint8 shapePalIndex;
 	int skipside;
 	bool useTexture;
@@ -61,7 +61,7 @@ protected:
 	int iconRotX;
 	int iconRotY;
 	int iconRotZ;
-	GLuint icon;
+	Texture const* icon;
 	int iconWidth, iconHeight;
 	std::string ambient;
 	float alpha;
@@ -139,7 +139,7 @@ public:
 	   Passing 0 for texture disables the creation of
 	   shapes. (eg. torch, md2 shape)
 	*/
-	GLShape( GLuint texture[], int width, int depth, int height, char *name, int descriptionGroup,
+	GLShape( Texture* texture[], int width, int depth, int height, char *name, int descriptionGroup,
 	         Uint32 color, Uint8 shapePalIndex = 0 );
 
 	virtual ~GLShape();
@@ -148,7 +148,7 @@ public:
 	virtual inline void cleanup() {}
 
 	static void createDarkTexture( WallTheme *theme );
-	void setTexture( GLuint *textureGroup );
+	void setTexture( Texture** textureGroup );
 
 	inline void setSkipSide( int n ) {
 		skipside = n;
@@ -195,10 +195,10 @@ public:
 	inline void applyIconRotation() {
 		glRotatef( xIconRot, 1, 0, 0 ); glRotatef( yIconRot, 0, 1, 0 ); glRotatef( zIconRot, 0, 0, 1 );
 	}
-	inline void setIcon( GLuint n, int w, int h ) {
+	inline void setIcon( Texture const* n, int w, int h ) {
 		icon = n; iconWidth = w; iconHeight = h;
 	}
-	inline GLuint getIcon() {
+	inline Texture const* getIcon() {
 		return icon;
 	}
 	inline void setAmbientName( std::string const& s ) {
@@ -275,7 +275,7 @@ protected:
 	bool locked;
 	GLfloat xrot, yrot, zrot;
 	GLfloat xpos, ypos, zpos, xpos2, ypos2, zpos2;
-	void commonInit( GLuint tex[], Uint32 color, Uint8 shapePalIndex );
+	void commonInit( Texture* tex[], Uint32 color, Uint8 shapePalIndex );
 	static Surface *new_surface( float vertices[4][3] );
 	void initSurfaces();
 	void drawShadow();

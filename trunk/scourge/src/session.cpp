@@ -711,15 +711,15 @@ void Session::setCurrentMission( Mission *mission ) {
 	if ( oldMission != currentMission && currentMission && currentMission->isStoryLine() && !currentMission->isReplay() ) {
 		char filename[300];
 		snprintf( filename, 300, "/chapters/chapter%d.png", currentMission->getChapter() );
-		chapterImageTexture = shapePal->loadTexture( filename );
-		if ( !chapterImageTexture ) {
+		chapterImageTexture.load( filename );
+		if ( !chapterImageTexture.isSpecified() ) {
 			cerr << "Error loading image for chapter " << currentMission->getChapter() << endl;
 			chapterImage.clear();
-			chapterImageTexture = 0;
+			chapterImageTexture.clear();
 			chapterImageWidth = chapterImageHeight = 0;
 		} else {
 			//chapterImageTexture = shapePal->loadGLTextures(filename, true);
-			GLclampf pri = 0.1f; glPrioritizeTextures( 1, &chapterImageTexture, &pri );
+			GLclampf pri = 0.1f; chapterImageTexture.glPrioritize( pri );
 			chapterImageWidth = 1000;
 			chapterImageHeight = 458;
 			cerr << "***********************************" << endl;

@@ -49,7 +49,8 @@ class Storable;
 class Equip : public DragAndDropHandler, WidgetView {
 private:
 	Creature *creature;
-	GLuint backgroundTexture, scrollTexture;
+	Texture* backgroundTexture;
+	Texture* scrollTexture;
 	int currentHole;
 	PcUi *pcUi;
 	Canvas *canvas;

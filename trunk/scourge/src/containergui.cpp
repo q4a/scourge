@@ -52,7 +52,7 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 
 	// allocate memory for the contained item descriptions
 	this->itemColor = ( Color* )malloc( MAX_INVENTORY_SIZE * sizeof( Color ) );
-	this->itemIcon = ( GLuint* )malloc( MAX_INVENTORY_SIZE * sizeof( GLuint ) );
+	//this->itemIcon = ( GLuint* )malloc( MAX_INVENTORY_SIZE * sizeof( GLuint ) );
 
 	showContents();
 
@@ -61,7 +61,7 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 
 ContainerGui::~ContainerGui() {
 	free( itemColor );
-	free( itemIcon );
+	//free( itemIcon );
 
 	//delete label;
 	//delete list;

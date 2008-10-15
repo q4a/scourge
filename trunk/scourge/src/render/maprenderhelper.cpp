@@ -125,7 +125,7 @@ void RoomRenderHelper::setMap( Map *map ) {
 void RoomRenderHelper::createOverlayTexture() {
 	// create the dark texture
 	unsigned int i, j;
-	glGenTextures( 1, ( GLuint* )&overlay_tex );
+	glGenTextures( 1, &overlay_tex );
 //  float tmp = 0.7f;
 	for ( i = 0; i < OVERLAY_SIZE; i++ ) {
 		for ( j = 0; j < OVERLAY_SIZE; j++ ) {

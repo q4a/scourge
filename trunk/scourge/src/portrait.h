@@ -60,7 +60,8 @@ class Portrait : public WidgetView {
 private:
 	PcUi *pcUi;
 	Creature *creature;
-	GLuint backgroundTexture, barTexture;
+	Texture* backgroundTexture;
+	Texture* barTexture;
 	Canvas *canvas;
 	int x, y, w, h;
 	int mode;
@@ -105,7 +106,7 @@ protected:
 	void showStateMods();
 	void drawSkill( Skill *skill, int yy );
 	bool findCurrentSkill( int px, int py );
-	void drawStateModIcon( GLuint icon, char *name, Color color, int x, int y, int size );
+	void drawStateModIcon( Texture* icon, char *name, Color color, int x, int y, int size );
 	void drawResistance( int x, int y, char *icon, int skill );
 	void setCurrentWeaponTooltip();
 };

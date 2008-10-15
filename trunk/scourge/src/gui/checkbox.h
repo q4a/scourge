@@ -49,7 +49,7 @@ private:
 
 public:
 
-	Checkbox( int x1, int y1, int x2, int y2, GLuint highlight, char *staticText );
+	Checkbox( int x1, int y1, int x2, int y2, Texture* highlight, char *staticText );
 	~Checkbox();
 	bool isInside( int x, int y );
 	inline bool isChecked() {

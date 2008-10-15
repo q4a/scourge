@@ -213,14 +213,14 @@ void ScourgeView::drawChapterIntro() {
 		scourge->setChapterTextPos( textHeight );
 	}
 
-	GLuint const& image = scourge->getSession()->getChapterImageTexture();
-	if ( image ) {
+	Texture const* image = scourge->getSession()->getChapterImageTexture();
+	if ( image->isSpecified() ) {
 		glEnable( GL_TEXTURE_2D );
 		glDisable( GL_BLEND );
 
 		glPushMatrix();
 
-		glBindTexture( GL_TEXTURE_2D, image );
+		image->glBind();
 		glColor4f( 1, 1, 1, 1 );
 
 		glLoadIdentity();
@@ -314,7 +314,7 @@ void ScourgeView::drawOutsideMap() {
 		glEnable( GL_TEXTURE_2D );
 		glPushMatrix();
 		glColor3f( 1, 1, 1 );
-		glBindTexture( GL_TEXTURE_2D, scourge->getSession()->getShapePalette()->getGuiWoodTexture() );
+		scourge->getSession()->getShapePalette()->getGuiWoodTexture()->glBind();
 
 		//    float TILE_W = 510 / 2.0f;
 		float TILE_H = 270 / 2.0f;
@@ -591,7 +591,7 @@ void ScourgeView::drawBorder() {
 	float TILE_W = 20.0f;
 	float TILE_H = 120.0f;
 
-	glBindTexture( GL_TEXTURE_2D, scourge->getSession()->getShapePalette()->getBorderTexture() );
+	scourge->getSession()->getShapePalette()->getBorderTexture()->glBind();
 	glBegin( GL_QUADS );
 	// left
 	glTexCoord2f ( 0.0f, 0.0f );
@@ -617,7 +617,7 @@ void ScourgeView::drawBorder() {
 
 	TILE_W = 120.0f;
 	TILE_H = 20.0f;
-	glBindTexture( GL_TEXTURE_2D, scourge->getSession()->getShapePalette()->getBorder2Texture() );
+	scourge->getSession()->getShapePalette()->getBorder2Texture()->glBind();
 	glBegin( GL_QUADS );
 	// top
 	glTexCoord2f ( 0.0f, 0.0f );
@@ -645,7 +645,7 @@ void ScourgeView::drawBorder() {
 
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glBindTexture( GL_TEXTURE_2D, scourge->getSession()->getShapePalette()->getGargoyleTexture() );
+	scourge->getSession()->getShapePalette()->getGargoyleTexture()->glBind();
 
 	glPushMatrix();
 	glLoadIdentity();
@@ -766,7 +766,7 @@ void ScourgeView::drawDisk( float w, float diff ) {
 	glDisable( GL_CULL_FACE );
 
 	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getSelection() );
+	scourge->getShapePalette()->getSelection()->glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 // glNormal3f( 0, 0, 1 );
 	glTexCoord2f( 0, 0 );
@@ -931,7 +931,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		glEnable( GL_TEXTURE_2D );
 		int n = 16;
 		int count = 0;
-		GLuint icon;
+		Texture* icon;
 		char name[255];
 		Color color;
 		for ( int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++ ) {
@@ -945,7 +945,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 				glRotatef( ( count * 30 ) + 180, 0, 0, 1 );
 				glTranslatef( -7, -7, 0 );
 
-				glBindTexture( GL_TEXTURE_2D, icon );
+				icon->glBind();
 //        glNormal3f( 0, 0, 1 );
 				glBegin( GL_TRIANGLE_STRIP );
 				if ( icon ) glTexCoord2f( 0, 0 );
@@ -1300,7 +1300,7 @@ void ScourgeView::drawWeather() {
 		else if ( rainDropCount < MIN_RAIN_DROP_COUNT ) rainDropCount = MIN_RAIN_DROP_COUNT;
 
 		glPushMatrix();
-		glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->getRaindropTexture() );
+		scourge->getShapePalette()->getRaindropTexture()->glBind();
 
 		for ( int i = 0; i < rainDropCount; i++ ) {
 			if ( lightningTime < 501 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {
@@ -1345,7 +1345,7 @@ void ScourgeView::drawWeather() {
 	// Draw the fog clouds
 	if ( shouldDrawWeather && scourge->getMap()->getWeather() & WEATHER_FOG ) {
 
-		glBindTexture( GL_TEXTURE_2D, scourge->getShapePalette()->cloud );
+		scourge->getShapePalette()->cloud.glBind();
 		glColor4f( 1.0f, 1.0f, 0.7f, 0.8f );
 		glPushMatrix();
 

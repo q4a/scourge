@@ -35,9 +35,9 @@ ShapePalette::ShapePalette( Session *session )
 }
 
 void ShapePalette::preInitialize() {
-	progressTexture = loadTexture( "/textures/process.png" );
-	progressHighlightTexture = loadTexture( "/textures/bar.png" );
-	highlight = loadTexture( "/textures/highlight.png" );
+	progressTexture.load( "/textures/process.png" );
+	progressHighlightTexture.load( "/textures/bar.png" );
+	highlight.load( "/textures/highlight.png" );
 
 	// configure
 	ConfigLang *config = ConfigLang::load( "config/scourge.cfg" );
@@ -52,28 +52,28 @@ void ShapePalette::preInitialize() {
 	delete config;
 
 	// set up the logo
-	logo_texture = loadTexture( "/textures/logo2.png" );
-	GLclampf pri = 0.1f; glPrioritizeTextures( 1, &logo_texture, &pri );
+	logo_texture.load( "/textures/logo2.png" );
+	GLclampf pri = 0.1f; logo_texture.glPrioritize( pri );
 
-	chain_texture = loadTexture( "/textures/chain.png" );
-	pri = 0.1f; glPrioritizeTextures( 1, &chain_texture, &pri );
+	chain_texture.load( "/textures/chain.png" );
+	pri = 0.1f; chain_texture.glPrioritize( pri );
 
 	// set up the scourge
 	//setupAlphaBlendedBMP("/textures/scourge.bmp", scourge, scourgeImage);
 	//scourge_texture = getTileTexture(scourge, scourgeImage, GL_LINEAR);
 
 	// set up the backdrop image
-	scourgeBackdrop_texture = loadTexture( "/textures/scourge-backdrop.png" );
-	pri = 0.1f; glPrioritizeTextures( 1, &scourgeBackdrop_texture, &pri );
+	scourgeBackdrop_texture.load( "/textures/scourge-backdrop.png" );
+	pri = 0.1f; scourgeBackdrop_texture.glPrioritize( pri );
 
-	gui_texture = loadTexture( "/textures/gui.png" );
-	gui_texture2 = loadTexture( "/textures/gui2.png" );
+	gui_texture.load( "/textures/gui.png" );
+	gui_texture2.load( "/textures/gui2.png" );
 //  paper_doll_texture = loadGLTextures("/paperdoll.bmp");
-	cloud = loadTexture( "/textures/cloud.png", false, false );
-	candle = loadTexture( "/textures/candle.png" );
+	cloud.load( "/textures/cloud.png", false, false );
+	candle.load( "/textures/candle.png" );
 
-	border = loadTexture( "/textures/border.png" );
-	border2 = loadTexture( "/textures/border2.png" );
+	border.load( "/textures/border.png" );
+	border2.load( "/textures/border2.png" );
 
 	gui_wood_texture = this->findTextureByName( "gui-wood.png", true );
 }
@@ -104,27 +104,27 @@ void ShapePalette::initialize() {
 	loader = new ModelLoader( this, isHeadless(), textureGroup[ 14 ] );
 
 	// load textures
-	gargoyle = loadTexture( "/textures/dragon.png" );
+	gargoyle.load( "/textures/dragon.png" );
 
-	minimap = loadTexture( "/textures/minimap.png" );
-	GLclampf pri = 0.9f; glPrioritizeTextures( 1, &minimap, &pri );
+	minimap.load( "/textures/minimap.png" );
+	GLclampf pri = 0.9f; minimap.glPrioritize( pri );
 
-	minimapMask = loadTexture( "/textures/minimask.png" );
-	pri = 0.9f; glPrioritizeTextures( 1, &minimapMask, &pri );
+	minimapMask.load( "/textures/minimask.png" );
+	pri = 0.9f; minimapMask.glPrioritize( pri );
 
-	exitTexture = loadTexture( "/textures/exit.png" );
-	dismiss = loadTexture( "/textures/dismiss.png" );
-	options = loadTexture( "/textures/options.png" );
-	group = loadTexture( "/textures/group.png" );
-	inventory = loadTexture( "/textures/inventory.png" );
-	waitTexture = loadTexture( "/textures/wait.png" );
-	ioTexture = loadTexture( "/textures/io.png" );
-	systemTexture = loadTexture( "/textures/system.png" );
-	startTexture = loadTexture( "/textures/start.png" );
-	pausedTexture = loadTexture( "/textures/paused.png" );
-	realTimeTexture = loadTexture( "/textures/realtime.png" );
-	raindropTexture = loadTexture( "/textures/raindrop.png", false, false );
-	hand_attack_icon = loadTexture( "/textures/hands.png" );
+	exitTexture.load( "/textures/exit.png" );
+	dismiss.load( "/textures/dismiss.png" );
+	options.load( "/textures/options.png" );
+	group.load( "/textures/group.png" );
+	inventory.load( "/textures/inventory.png" );
+	waitTexture.load( "/textures/wait.png" );
+	ioTexture.load( "/textures/io.png" );
+	systemTexture.load( "/textures/system.png" );
+	startTexture.load( "/textures/start.png" );
+	pausedTexture.load( "/textures/paused.png" );
+	realTimeTexture.load( "/textures/realtime.png" );
+	raindropTexture.load( "/textures/raindrop.png", false, false );
+	hand_attack_icon.load( "/textures/hands.png" );
 
 	// load map textures
 	initMapGrid();
@@ -142,27 +142,31 @@ void ShapePalette::initialize() {
 	for ( int i = 0; i < StateMod::STATE_MOD_COUNT; i++ ) {
 		stringstream path;
 		path << "/icons/i" << i << ".png";
-		GLuint icon = loadTexture( path.str() );
+		Texture* icon = new Texture; 
+		icon->load( path.str() );
 //    cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
-		if ( icon ) statModIcons[i] = icon;
+		if ( icon->isSpecified() ) statModIcons[i] = icon;
+		else delete (icon); 
 	}
 
-	thirstIcon = loadTexture( "/icons/t.png" );
-	hungerIcon = loadTexture( "/icons/h.png" );
+	thirstIcon.load( "/icons/t.png" );
+	hungerIcon.load( "/icons/h.png" );
 
-	// set up the inventory tiles
-	loadTiles( "/textures/tiles.png", &tiles );
-	for ( int x = 0; x < 20; x++ ) {
-		for ( int y = 0; y < 18; y++ ) {
-			tilesTex[x][y] = createTileTexture( &tiles, x, y, 32, 32 );
+	if ( !isHeadless() ) {
+		// set up the inventory tiles
+		loadTiles( "/textures/tiles.png", &tiles );
+		for ( int x = 0; x < 20; x++ ) {
+			for ( int y = 0; y < 18; y++ ) {
+				tilesTex[x][y].createTile( &tiles, x, y, 32, 32 );
+			}
 		}
-	}
 
-	// set up the spell tiles
-	loadTiles( "/textures/spells.png", &spells );
-	for ( int x = 0; x < 20; x++ ) {
-		for ( int y = 0; y < 18; y++ ) {
-			spellsTex[x][y] = createTileTexture( &spells, x, y, 32, 32 );
+		// set up the spell tiles
+		loadTiles( "/textures/spells.png", &spells );
+		for ( int x = 0; x < 20; x++ ) {
+			for ( int y = 0; y < 18; y++ ) {
+				spellsTex[x][y].createTile( &spells, x, y, 32, 32 );
+			}
 		}
 	}
 
@@ -229,12 +233,16 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 		bool outdoors = node->getValueAsBool( "outdoors" );
 		if ( outdoors ) {
 			NamedOutdoorTexture ot;
-			ot.tex = loadTexture( value );
+			// LEAKS: no one deletes/unloads
+			ot.tex = new Texture;
+			ot.tex->load( value );
 			ot.width = node->getValueAsInt( "width" );
 			ot.height = node->getValueAsInt( "width" );
 			outdoorNamedTextures[ name ] = ot;
 		} else {
-			namedTextures[ name ] = loadTexture( value );
+			// LEAKS: no one deletes/unloads
+			namedTextures[ name ] = new Texture;
+			namedTextures[ name ]->load( value );
 		}
 	}
 }
@@ -304,12 +312,14 @@ void ShapePalette::initPcPortraits( ConfigLang *config ) {
 		string image = node->getValueAsString( "image" );
 		string sex = node->getValueAsString( "sex" );
 		if ( strstr( image.c_str(), "death" ) ) {
-			deathPortraitTexture = loadTexture( image );
+			deathPortraitTexture.load( image );
 		} else {
 			int sexNum = ( sex == "M" ?
 			               Constants::SEX_MALE :
 			               Constants::SEX_FEMALE );
-			portraitTextures[sexNum].push_back( loadTexture( image ) );
+			Texture* tex = new Texture; 
+			tex->load( image );
+			portraitTextures[sexNum].push_back( tex );
 		}
 	}
 }
@@ -352,7 +362,10 @@ void ShapePalette::initRugs( ConfigLang *config ) {
 		//GLubyte *tmpImage = NULL;
 		//setupAlphaBlendedBMP( node->getValueAsString( "path" ), tmpSurface, tmpImage );
 		//rugs.push_back( getTileTexture( tmpSurface, tmpImage ) );
-		rugs.push_back( loadTexture( node->getValueAsString( "path" ), false, false ) );
+		// LEAKS: rugs are nowhere deleted
+		Texture* rug = new Texture; 
+		rug->load( node->getValueAsString( "path" ), false, false );
+		rugs.push_back( rug );
 		//delete [] tmpImage;
 		//if( tmpSurface ) SDL_FreeSurface( tmpSurface );
 	}
@@ -570,11 +583,12 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 	strcpy( temp, node->getValueAsString( "icon" ) );
 	if ( strlen( temp ) ) {
 		string s = temp;
-		sv->icon = loadTexture( s );
-		sv->iconWidth = lastTextureWidth / 32;
-		sv->iconHeight = lastTextureHeight / 32;
+		sv->icon.load( s );
+		sv->iconWidth = sv->icon.width() / 32;
+		sv->iconHeight = sv->icon.height() / 32;
 	} else {
-		sv->icon = sv->iconWidth = sv->iconHeight = 0;
+		sv->icon.clear(); 
+		sv->iconWidth = sv->iconHeight = 0;
 	}
 	sv->roof = node->getValueAsBool( "roof" );
 
@@ -824,8 +838,11 @@ void ShapePalette::loadNpcPortraits() {
 		Monster *m = i->second;
 		if ( m->getPortrait() ) {
 			//m->setPortraitTexture( this->loadGLTextures( m->getPortrait(), true ) );
-			m->setPortraitTexture( this->loadTexture( m->getPortrait() ) );
-			if ( !m->getPortraitTexture() ) {
+			// LEAKS: this one is owned by no one
+			Texture* tex = new Texture;
+			tex->load( m->getPortrait() );
+			m->setPortraitTexture( tex );
+			if ( !m->getPortraitTexture()->isSpecified() ) {
 				cerr << "*** Warning: couldn't load monster portrait: " << m->getPortrait() << endl;
 			}
 		}
@@ -839,7 +856,7 @@ void ShapePalette::initMapGrid() {
 			char textureName[80];
 			snprintf( textureName, 80, "/mapgrid/map%d-%d.png", x, y );
 			//cerr << "loading: " << textureName << endl;
-			mapGrid[ x ][ y ] = loadTexture( textureName );
+			mapGrid[ x ][ y ].load( textureName );
 		}
 	}
 

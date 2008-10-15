@@ -66,7 +66,7 @@ private:
 	bool allowEquipped;
 	std::string name[MAX_INVENTORY_SIZE];
 	Color *color;
-	GLuint *icon;
+	Texture const* icon[MAX_INVENTORY_SIZE];
 
 public:
 	ItemList( Scourge *scourge, Window *win, int x, int y, int width, int height, ItemRenderer *itemRenderer = NULL );

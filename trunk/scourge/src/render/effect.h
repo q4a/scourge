@@ -30,6 +30,7 @@ class Preferences;
 class Shapes;
 class GLShape;
 class Map;
+class Texture;
 
 /// A single particle.
 class Particle {
@@ -61,7 +62,9 @@ private:
 	Map *levelMap;
 	Preferences *preferences;
 	Shapes *shapePal;
-	GLuint flameTex, ringTex, rippleTex;
+	Texture* flameTex;
+	Texture* ringTex;
+	Texture* rippleTex;
 	GLShape *shape;
 	bool deleteShape;
 	float ringRadius, ringRotate, rippleRadius, rippleAlpha;

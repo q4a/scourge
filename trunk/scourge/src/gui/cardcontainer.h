@@ -47,7 +47,7 @@ public:
 	virtual ~CardContainer();
 
 	// widget managment functions
-	Button    * createButton( int x1, int y1, int x2, int y2, char *label, int card, bool toggle = false, GLuint texture = 0 );
+	Button    * createButton( int x1, int y1, int x2, int y2, char *label, int card, bool toggle = false, Texture* texture = NULL );
 	Label     * createLabel( int x1, int x2, char const* label, int card, int color = Constants::DEFAULT_COLOR );
 	Checkbox  * createCheckbox( int x1, int y1, int x2, int y2, char *label, int card );
 

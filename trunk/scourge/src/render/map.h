@@ -58,6 +58,14 @@ public:
 	std::vector<CVector2*> hull;
 };
 
+/// A 3D point with texture coordinates and color.
+class CVectorTex {
+public:
+	float x, y, z, u, v, r, g, b, a;
+	Texture* tex;
+};
+
+
 /// General map settings.
 
 class MapSettings {
@@ -161,7 +169,7 @@ private:
 /// A nice, fluffy rug.
 
 struct Rug {
-	GLuint texture;
+	Texture const* texture;
 	bool isHorizontal;
 	float angle;
 };
@@ -266,7 +274,7 @@ private:
 	Uint16 cursorChunkX, cursorChunkY;
 
 	int floorTexWidth, floorTexHeight;
-	GLuint floorTex;
+	Texture* floorTex;
 
 	RenderedCreature *mapCenterCreature;
 	std::map<int, bool> secretDoors;
@@ -276,11 +284,13 @@ private:
 	bool heightMapEnabled;
 	OutdoorTexture outdoorTex[MAP_TILES_X][MAP_TILES_Y][MAX_OUTDOOR_LAYER];
 	float ground[MAP_WIDTH][MAP_DEPTH];
-	GLuint groundTex[MAP_WIDTH][MAP_DEPTH];
+	Texture* groundTex[MAP_WIDTH][MAP_DEPTH];
 	bool refreshGroundPos;
 	int debugHeightPosXX[4], debugHeightPosYY[4];
 	CVectorTex groundPos[MAP_WIDTH][MAP_DEPTH];
-	GLuint outdoorShadow, outdoorShadowTree, waterTexture;
+	Texture* outdoorShadow;
+	Texture* outdoorShadowTree;
+	Texture* waterTexture;
 	Location *hackBlockingPos;
 
 	std::map<Uint32, Uint8> trapPos;
@@ -395,7 +405,7 @@ public:
 	}
 
 	/// Which floor texture will we use (indoors)?
-	inline void setFloor( int tw, int th, GLuint texture ) {
+	inline void setFloor( int tw, int th, Texture* texture ) {
 		floorTexWidth = tw; floorTexHeight = th; floorTex = texture;
 	}
 
@@ -841,19 +851,19 @@ public:
 		return this->refreshGroundPos;
 	}
 	/// Sets the ground texture at x,y (outdoors).
-	inline void setGroundTex( int x, int y, GLuint tex ) {
+	inline void setGroundTex( int x, int y, Texture* tex ) {
 		this->groundTex[x][y] = tex;
 	}
 	/// Returns the ground texture of tile x,y.
-	inline GLuint getGroundTex( int x, int y ) {
+	inline Texture* getGroundTex( int x, int y ) {
 		return this->groundTex[x][y];
 	}
 
 	float findMaxHeightPos( float x, float y, float z, bool findMax = false );
 
-	void drawGroundTex( GLuint tex, float tx, float ty, float tw, float th, float angle = 0 );
+	void drawGroundTex( Texture* tex, float tx, float ty, float tw, float th, float angle = 0 );
 
-	void drawOutdoorTex( GLuint tex, float tx, float ty, float tw, float th, float angle = 0 );
+	void drawOutdoorTex( Texture* tex, float tx, float ty, float tw, float th, float angle = 0 );
 
 	void debugGround( int sx, int sy, int ex, int ey );
 
@@ -893,7 +903,7 @@ protected:
 	void drawRoofs();
 	bool checkLightMap( int chunkX, int chunkY );
 	void applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n );
-	GLuint getThemeTex( int ref );
+	Texture* getThemeTex( int ref );
 	void addHighVariation( int ref, int z );
 	bool isRockTexture( int x, int y );
 	bool isLakebedTexture( int x, int y );

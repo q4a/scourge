@@ -42,7 +42,7 @@ private:
 	Label *label;
 	std::string containedItemNames[MAX_CONTAINED_ITEMS];
 	Color *itemColor;
-	GLuint *itemIcon;
+	Texture const* itemIcon[MAX_INVENTORY_SIZE];
 
 public:
 	ContainerGui( Scourge *scourge, Item *container, int x, int y );

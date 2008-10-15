@@ -34,7 +34,7 @@ class ScrollingList : public Widget {
 protected:
 	std::vector<std::string> list;
 	const Color *colors;
-	const GLuint *icons;
+	const Texture **icons;
 	int value;
 	int scrollerWidth, scrollerHeight;
 	int listHeight;
@@ -50,7 +50,7 @@ protected:
 	bool innerDrag;
 	int innerDragX, innerDragY;
 	bool highlightBorders;
-	GLuint highlight;
+	Texture* highlight;
 	bool canGetFocusVar;
 	int lineHeight;
 	int eventType;
@@ -68,7 +68,7 @@ public:
 
 	bool debug;
 
-	ScrollingList( int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler = NULL, int lineHeight = 15 );
+	ScrollingList( int x, int y, int w, int h, Texture* highlight, DragAndDropHandler *dragAndDropHandler = NULL, int lineHeight = 15 );
 	virtual ~ScrollingList();
 
 	inline void setTextLinewrap( bool b ) {
@@ -85,8 +85,8 @@ public:
 		return allowMultipleSelection;
 	}
 	//unused: inline int getLineCount() { return list.size(); }
-	void setLines( int count, std::string const s[], const Color *colors = NULL, const GLuint *icon = NULL );
-	void setLines( const std::vector<std::string>::iterator begin, const std::vector<std::string>::iterator end, const Color *colors = NULL, const GLuint *icon = NULL );
+	void setLines( int count, std::string const s[], const Color *colors = NULL, const Texture** icons = NULL );
+	void setLines( const std::vector<std::string>::iterator begin, const std::vector<std::string>::iterator end, const Color *colors = NULL, Texture const** icons = NULL );
 	void setLine( const std::string& toPush );
 	void setLine( size_t pos, const std::string& toPush );
 	inline const std::string& getLine( int index ) {
@@ -146,7 +146,7 @@ public:
 
 private:
 	void selectLine( int x, int y, bool addToSelection = false, bool mouseDown = false );
-	void drawIcon( int x, int y, GLuint icon, Widget *parent );
+	void drawIcon( int x, int y, Texture const* icon, Widget *parent );
 	void moveSelectionUp();
 	void moveSelectionDown();
 

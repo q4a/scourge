@@ -17,6 +17,7 @@
 #include "../common/constants.h"
 #include "scrollinglist.h"
 #include "../util.h"
+#include "../render/texture.h"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ using namespace std;
 /**
   *@author Gabor Torok
   */
-ScrollingList::ScrollingList( int x, int y, int w, int h, GLuint highlight, DragAndDropHandler *dragAndDropHandler, int lineHeight )
+ScrollingList::ScrollingList( int x, int y, int w, int h, Texture* highlight, DragAndDropHandler *dragAndDropHandler, int lineHeight )
 		: Widget( x, y, w, h ) {
 	value = 0;
 	scrollerWidth = 15;
@@ -59,7 +60,8 @@ ScrollingList::~ScrollingList() {
 	delete [] selectedLine;
 }
 
-void ScrollingList::setLines( int count, string const s[], const Color *colors, const GLuint *icons ) {
+
+void ScrollingList::setLines( int count, string const s[], const Color *colors, const Texture** icons ) {
 	textWidthCache.clear();
 	list.clear();
 	for ( int i = 0; i < count; i++ )
@@ -69,7 +71,7 @@ void ScrollingList::setLines( int count, string const s[], const Color *colors, 
 	setupHeight();
 }
 
-void ScrollingList::setLines( const vector<string>::iterator begin, const vector<string>::iterator end, const Color *colors, const GLuint *icons ) {
+void ScrollingList::setLines( const vector<string>::iterator begin, const vector<string>::iterator end, const Color *colors, Texture const** icons ) {
 	textWidthCache.clear();
 	list.clear();
 	list.insert( list.end(), begin, end );
@@ -300,7 +302,7 @@ void ScrollingList::printLine( Widget *parent, int x, int y, const std::string& 
 	}
 }
 
-void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
+void ScrollingList::drawIcon( int x, int y, Texture const* icon, Widget *parent ) {
 	float n = lineHeight - 3;
 
 	glEnable( GL_BLEND );
@@ -309,7 +311,7 @@ void ScrollingList::drawIcon( int x, int y, GLuint icon, Widget *parent ) {
 
 	glPushMatrix();
 	glTranslatef( x, y, 0 );
-	if ( icon ) glBindTexture( GL_TEXTURE_2D, icon );
+	if ( icon ) icon->glBind();
 	glColor4f( 1, 1, 1, 1 );
 
 

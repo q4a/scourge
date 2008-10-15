@@ -18,12 +18,13 @@
 #include "button.h"
 #include "window.h"
 #include "guitheme.h"
+#include "../render/texture.h"
 
 /**
   *@author Gabor Torok
   */
 
-Button::Button( int x1, int y1, int x2, int y2, GLuint highlight, char *label, GLuint texture ) :
+Button::Button( int x1, int y1, int x2, int y2, Texture* highlight, char *label, Texture* texture ) :
 		Widget( x1, y1, x2 - x1, y2 - y1 ) {
 	this->x2 = x2;
 	this->y2 = y2;
@@ -54,7 +55,7 @@ void Button::drawWidget( Widget *parent ) {
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable( GL_TEXTURE_2D );
 		glPushMatrix();
-		glBindTexture( GL_TEXTURE_2D, texture );
+		texture->glBind();
 
 		if ( isEnabled() ) {
 			glColor4f( 1, 1, 1, ( glowing || inside ? getAlpha() + 0.3f : 1 ) );
