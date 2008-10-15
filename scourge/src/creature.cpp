@@ -2064,8 +2064,7 @@ void Creature::decideMonsterAction() {
 
 	//CASE 2: Loiterers and standers
 	//aggressives loitering have only 1/20 chance of breaking the cycle. That's a slight pause.
-	int n = Util::dice( 20 );
-	if ( ( getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND ) && ( !isNonNPCMonster() || n != 0 ) ) {
+	if ( ( getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND ) && ( !isNonNPCMonster() || Util::dice( 20 ) != 0 ) ) {
 		if ( attackClosestTarget() ) return;
 		if ( getMotion() == Constants::MOTION_STAND ) {
 			//if standing, there is a 1/500 chance to start loitering. Has to be a slim chance because
