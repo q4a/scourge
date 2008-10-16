@@ -83,6 +83,8 @@ private:
 	int minLevel; // if >0 the item is "special" and only one instance exists
 	int maxCharges; // max, how many uses?
 	int iconTileX, iconTileY; // its graphic (1-based)
+	int containerWidth, containerHeight; // the container window size
+	char containerTexture[255];
 	std::set<std::string> tags; // the tags of this object
 
 	// weapon
@@ -236,6 +238,24 @@ public:
 	}
 	inline int getIconTileY() {
 		return this->iconTileY;
+	}
+	inline int getContainerWidth() {
+		return this->containerWidth;
+	}
+	inline int getContainerHeight() {
+		return this->containerHeight;
+	}
+	inline void setContainerWidth(int n) {
+		this->containerWidth = n;
+	}
+	inline void setContainerHeight(int n) {
+		this->containerHeight = n;
+	}
+	inline void setContainerTexture(char *s) {
+		strcpy( this->containerTexture, s );
+	}
+	inline char *getContainerTexture() {
+		return this->containerTexture;
 	}
 
 	// weapon

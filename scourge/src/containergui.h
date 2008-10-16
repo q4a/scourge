@@ -27,11 +27,13 @@
 #include "gui/button.h"
 #include "gui/scrollinglist.h"
 #include "gui/draganddrop.h"
+#include "gui/widgetview.h"
+#include "gui/canvas.h"
 
 class Item;
 
 /// The "container contents" window (for open chests etc.)
-class ContainerGui : public DragAndDropHandler {
+class ContainerGui : public DragAndDropHandler, WidgetView {
 
 private:
 	Scourge *scourge;
@@ -43,6 +45,7 @@ private:
 	std::string containedItemNames[MAX_CONTAINED_ITEMS];
 	Color *itemColor;
 	Texture const* itemIcon[MAX_INVENTORY_SIZE];
+	Canvas *canvas;
 
 public:
 	ContainerGui( Scourge *scourge, Item *container, int x, int y );
@@ -64,6 +67,8 @@ public:
 	// drag and drop handling
 	void receive( Widget *widget );
 	bool startDrag( Widget *widget, int x = 0, int y = 0 );
+	
+	void drawWidgetContents( Widget *w );
 
 private:
 	void showContents();

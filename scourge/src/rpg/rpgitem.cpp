@@ -65,6 +65,9 @@ RpgItem::RpgItem( char *name, char *displayName,
 	this->maxCharges = maxCharges;
 	this->iconTileX = iconTileX;
 	this->iconTileY = iconTileY;
+	this->containerWidth = 0;
+	this->containerHeight = 0;
+	this->containerTexture[0] = 0;
 
 	// initialize the rest to default values
 
