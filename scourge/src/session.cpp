@@ -430,7 +430,7 @@ Creature *Session::getClosestVisibleMonster( int x, int y, int w, int h, int rad
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
 		if ( !getCreature( i )->getStateMod( StateMod::dead ) &&
 		        !getCreature( i )->getStateMod( StateMod::possessed ) &&
-		        !( getCreature( i )->getMonster() && getCreature( i )->getMonster()->isNpc() ) &&
+		        getCreature( i )->isMonster() &&
 		        map->isLocationVisible( toint( getCreature( i )->getX() ),
 		                                toint( getCreature( i )->getY() ) ) &&
 		        map->isLocationInLight( toint( getCreature( i )->getX() ),
@@ -455,7 +455,7 @@ Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {
 	float minDist = 0;
 	Creature *p = NULL;
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
-		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && ( getCreature( i )->isMonster() ) ) {
+		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && getCreature( i )->isMonster() ) {
 			float dist = Constants::distance( x, y, w, h,
 			             getCreature( i )->getX(),
 			             getCreature( i )->getY(),
@@ -471,6 +471,25 @@ Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {
 }
 
 Creature *Session::getClosestNPC( int x, int y, int w, int h, int radius ) {
+	float minDist = 0;
+	Creature *p = NULL;
+	for ( int i = 0; i < getCreatureCount(); i++ ) {
+		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && getCreature( i )->isNpc() ) {
+			float dist = Constants::distance( x, y, w, h,
+			             getCreature( i )->getX(),
+			             getCreature( i )->getY(),
+			             getCreature( i )->getShape()->getWidth(),
+			             getCreature( i )->getShape()->getDepth() );
+			if ( dist <= static_cast<float>( radius ) && ( !p || dist < minDist ) ) {
+				p = getCreature( i );
+				minDist = dist;
+			}
+		}
+	}
+	return p;
+}
+
+Creature *Session::getClosestGoodGuy( int x, int y, int w, int h, int radius ) {
 	float minDist = 0;
 	Creature *p = NULL;
 	for ( int i = 0; i < getCreatureCount(); i++ ) {

@@ -2113,10 +2113,10 @@ bool Creature::attackClosestTarget() {
   bool possessed = getStateMod( StateMod::possessed );
 
   if ( isMonster() ) {
-    p = ( possessed ? session->getClosestVisibleMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getParty()->getClosestPlayer ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
+    p = ( possessed ? session->getClosestVisibleMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
   } else {
     //setAction ( Constants::ACTION_NO_ACTION );
-    p = ( possessed ? session->getParty()->getClosestPlayer ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getClosestVisibleMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
+    p = ( possessed ? session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getClosestVisibleMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
   }
 
   if ( p ) {
