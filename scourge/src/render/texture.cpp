@@ -26,7 +26,7 @@ Texture::Texture()
 		, _filename()
 		, _width( 0 )
 		, _height( 0 )
-		, _hasAbsolutePath( false )
+		// unused: , _hasAbsolutePath( false )
 		, _hasAlpha( false )
 		, _isSprite( false )
 		, _wantsAnisotropy( false )
@@ -67,13 +67,8 @@ bool Texture::load( const string& filename, bool absolutePath, bool isSprite, bo
 		clear();
 	}
 
-	_hasAbsolutePath = absolutePath;
-	_filename = filename;
-	if( !absolutePath ) {
-		while (_filename[0] == '/' ) {
-			_filename = &_filename[1];
-		}
-	}
+	// unused:_hasAbsolutePath = absolutePath;
+	_filename = ( absolutePath ? filename : rootDir + filename );
 
 	if ( !loadImage() ) return false;
 
@@ -154,11 +149,9 @@ bool Texture::loadImage() {
 	// just silently unload or make noise?
 	unloadImage();
 
-	string path = ( _hasAbsolutePath ? _filename : rootDir + "/" + _filename );
-
-	_surface = IMG_Load( path.c_str() );
+	_surface = IMG_Load( _filename.c_str() );
 	if ( _surface == NULL ) {
-		cerr << "*** Error loading image (" << path << "): " << IMG_GetError() << endl;
+		cerr << "*** Error loading image (" << _filename << "): " << IMG_GetError() << endl;
 		return false;
 	}
 
