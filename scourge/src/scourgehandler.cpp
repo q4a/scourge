@@ -602,8 +602,7 @@ bool ScourgeHandler::handleCreatureClick( Uint16 mapx, Uint16 mapy, Uint16 mapz 
 			if ( scourge->getTargetSelectionFor() ) {
 				scourge->handleTargetSelectionOfCreature( ( ( Creature* )loc->creature ) );
 				return true;
-			} else if ( loc->creature->isMonster() &&
-			            ( ( Creature* )( loc->creature ) )->getMonster()->isNpc() ) {
+			} else if ( loc->creature->isNpc() ) {
 				// start a conversation
 				scourge->getConversationGui()->start( ( ( Creature* )( loc->creature ) ) );
 				return true;

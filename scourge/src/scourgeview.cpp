@@ -297,7 +297,7 @@ void ScourgeView::centerOnMonsterInTB() {
 	if ( scourge->inTurnBasedCombat() ) {
 		Battle *battle = scourge->getCurrentBattle();
 		Creature *c = battle->getCreature();
-		if ( c->isMonster() || c->getStateMod( StateMod::possessed ) ) {
+		if ( !c->isPartyMember() || c->getStateMod( StateMod::possessed ) ) {
 			scourge->getMap()->setMapCenterCreature( c );
 			scourge->getMap()->center( toint( c->getX() ), toint( c->getY() ), true );
 		}
@@ -374,7 +374,7 @@ void ScourgeView::checkForInfo() {
 				else {
 					int cursor;
 					if ( pos->creature && scourge->getParty()->getPlayer()->canAttack( pos->creature, &cursor ) ) {
-						if ( ( ( Creature* )( pos->creature ) )->isMonster() && ( ( Creature* )( pos->creature ) )->getMonster()->isNpc() )
+						if ( pos->creature->isNpc() )
 							scourge->getSDLHandler()->setCursorMode( Constants::CURSOR_TALK );
 						else
 							scourge->getSDLHandler()->setCursorMode( cursor );
@@ -920,14 +920,14 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		glColor4f( 0.7f, 0.7f, 0.7f, 0.25f );
 	}
 
-	if ( !creature->getStateMod( StateMod::dead ) && ( groupMode || player || creature->isMonster() || wanderingHero ) ) {
+	if ( !creature->getStateMod( StateMod::dead ) && ( groupMode || player || !creature->isPartyMember() || wanderingHero ) ) {
 		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
 		    creature->getX(), creature->getY() + creature->getShape()->getDepth() / 2.0f - 1,
 		    creature->getShape()->getWidth(), creature->getShape()->getDepth() );
 	}
 
 	// draw state mods
-	if ( !creature->getStateMod( StateMod::dead ) && ( groupMode || player || creature->isMonster() || wanderingHero ) ) {
+	if ( !creature->getStateMod( StateMod::dead ) && ( groupMode || player || !creature->isPartyMember() || wanderingHero ) ) {
 		glEnable( GL_TEXTURE_2D );
 		int n = 16;
 		int count = 0;
@@ -989,7 +989,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		  glPushMatrix();
 		glTranslatef( xpos2, ypos2 - w * 2 - 1 * MUL, zpos2 + 5);
 		*/
-		if ( groupMode || player || creature->isMonster() || wanderingHero ) {
+		if ( groupMode || player || !creature->isPartyMember() || wanderingHero ) {
 			//gluDisk(quadric, w - s, w, 12, 1);
 			//drawDisk( w, 0 );
 

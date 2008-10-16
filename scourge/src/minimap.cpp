@@ -191,11 +191,9 @@ void MiniMap::drawMap() {
 					} else {
 
 						if ( pos->creature->isMonster() ) {
-							if ( ( ( Creature* )pos->creature )->getMonster()->isNpc() ) {
-								glColor4f( 0.8f, 0.8f, 0, 0.5f );
-							} else {
-								glColor4f( 1, 0, 0, 0.5f );
-							}
+							glColor4f( 1, 0, 0, 0.5f );
+						} else if ( pos->creature->isNpc() ) {
+							glColor4f( 0.8f, 0.8f, 0, 0.5f );
 						} else {
 							if ( pos->creature == scourge->getSession()->getParty()->getPlayer() ) {
 								glColor4f( 0, 1, 0, 0.5f );

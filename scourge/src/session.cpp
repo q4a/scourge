@@ -455,7 +455,7 @@ Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {
 	float minDist = 0;
 	Creature *p = NULL;
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
-		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && ( getCreature( i )->isMonster() || !getCreature( i )->isNpc() ) ) {
+		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && ( getCreature( i )->isMonster() ) ) {
 			float dist = Constants::distance( x, y, w, h,
 			             getCreature( i )->getX(),
 			             getCreature( i )->getY(),
@@ -474,7 +474,7 @@ Creature *Session::getClosestNPC( int x, int y, int w, int h, int radius ) {
 	float minDist = 0;
 	Creature *p = NULL;
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
-		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && ( !getCreature( i )->isMonster() || getCreature( i )->isNpc() || getCreature( i )->getCharacter() ) ) {
+		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && !( getCreature( i )->isMonster() || getCreature( i )->isHarmlessAnimal() ) ) {
 			float dist = Constants::distance( x, y, w, h,
 			             getCreature( i )->getX(),
 			             getCreature( i )->getY(),
@@ -524,7 +524,7 @@ void Session::creatureDeath( Creature *creature ) {
 	// cancel target, otherwise segfaults on resurrection
 	creature->cancelTarget();
 
-	if ( !( creature->isMonster() ) ) {
+	if ( creature->isPartyMember() ) {
 		char message[255];
 		snprintf( message, 255, _( "  %s dies!" ), creature->getName() );
 		getGameAdapter()->startTextEffect( message );

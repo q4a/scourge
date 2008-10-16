@@ -2839,7 +2839,7 @@ void Map::dropItemsAbove( int x, int y, int z, RenderedItem *item ) {
 
 void Map::setCreature( Sint16 x, Sint16 y, Sint16 z, RenderedCreature *creature ) {
 	if ( creature && creature->getShape() ) {
-		if ( helper && !creature->isMonster() ) helper->visit( creature );
+		if ( helper && creature->isPartyMember() ) helper->visit( creature );
 
 		// pick up any objects in the way
 		for ( int xp = 0; xp < creature->getShape()->getWidth(); xp++ ) {
@@ -2886,7 +2886,7 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 			}
 		}
 
-		if ( helper && !creature->isMonster() ) helper->visit( creature );
+		if ( helper && creature->isPartyMember() ) helper->visit( creature );
 
 		// pick up any items in the way
 		for ( int xp = 0; xp < creature->getShape()->getWidth(); xp++ ) {
@@ -3882,7 +3882,7 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 			for ( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
 				if ( pos[x][y][z] && pos[x][y][z]->x == x && pos[x][y][z]->y == y && pos[x][y][z]->z == z &&
 				     !( pos[x][y][z]->shape && pos[x][y][z]->shape->isVirtual() && !( ( VirtualShape* )pos[x][y][z]->shape )->isDrawn() ) &&
-				     !( pos[x][y][z]->creature && !( pos[x][y][z]->creature->isMonster() ) ) ) {
+				     !pos[x][y][z]->creature->isPartyMember() ) {
 
 					info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, z );
 

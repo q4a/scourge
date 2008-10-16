@@ -1069,8 +1069,7 @@ void Mission::initNpcs( ConfigLang *config, GameAdapter *adapter ) {
 		Location *pos = adapter->getSession()->getMap()->getLocation( x, y, 0 );
 		if ( !( pos &&
 		        pos->creature &&
-		        pos->creature->isMonster() &&
-		        ( ( Creature* )( pos->creature ) )->getMonster()->isNpc() ) ) {
+		        ( Creature* )( pos->creature )->isNpc() ) ) {
 
 			// the creature moved, try to find it by name
 			bool found = false;

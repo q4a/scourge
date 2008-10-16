@@ -421,8 +421,7 @@ bool AStar::isBlocked( Sint16 x, Sint16 y,
         if( ignoreParty && 
           loc->creature && 
           loc->creature != player &&
-          ( !loc->creature->isMonster() ||
-          loc->creature->isNpc() ) ) continue;
+          loc->creature->isPartyMember() ) continue;
         //if there is a creature there and it is us or our target creature then we are ok
         if(loc->creature && 
              ( loc->creature == creature || 
