@@ -24,6 +24,7 @@
 #include "storable.h"
 #include "rpg/rpg.h"
 #include <vector>
+#include <map>
 
 class RpgItem;
 class Color;
@@ -36,6 +37,7 @@ class ShapePalette;
 class ConfigLang;
 class ConfigNode;
 class Scourge;
+class Texture;
 
 /**
   *@author Gabor Torok
@@ -272,6 +274,8 @@ public:
 	int getIconTileY();
 	int getStorableType();
 	const char *isStorable();
+	
+	Texture const* getContainerTexture();
 
 private:
 	RpgItem *rpgItem;
@@ -318,6 +322,7 @@ private:
 	int inventoryX, inventoryY;
 	int missionId;
 	int missionObjectiveIndex;
+	std::map<RpgItem*, Texture*> containerTextures;
 
 protected:
 	void commonInit( bool loading );

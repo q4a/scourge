@@ -30,11 +30,19 @@ using namespace std;
 ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 	this->scourge = scourge;
 	this->container = container;
-
-	//win = scourge->createWoodWindow( x, y, 320, 300, container->getItemName() );
-	win = new Window( scourge->getSDLHandler(),
-	                  x, y, 345, 300, container->getItemName(), true,
-	                  Window::SIMPLE_WINDOW, "wood" );
+	
+	win = new Window( scourge->getSDLHandler(), 
+	                  x, y, 
+	                  20 + container->getRpgItem()->getContainerWidth() * GRID_SIZE, 
+	                  70 + container->getRpgItem()->getContainerHeight() * GRID_SIZE, 
+	                  container->getItemName(),
+                    scourge->getShapePalette()->getGuiTexture(), 
+                    true,
+                    Window::BASIC_WINDOW,
+                    scourge->getShapePalette()->getGuiTexture2() );
+//	win = new Window( scourge->getSDLHandler(),
+//	                  x, y, 345, 300, container->getItemName(), true,
+//	                  Window::SIMPLE_WINDOW, "wood" );
 	openButton = new Button( 5, 5, 85, 25, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage( Constants::OPEN_CONTAINER_LABEL ) );
 	win->addWidget( ( Widget* )openButton );
 	infoButton = new Button( 90, 5, 170, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Info" ) );
@@ -46,7 +54,15 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 
 	list = new ScrollingList( 10, 35, 320, 245 - 30,
 	                          scourge->getShapePalette()->getHighlightTexture(), this, 30 );
-	win->addWidget( ( Widget* )list );
+	//win->addWidget( ( Widget* )list );
+	
+	canvas = new Canvas( 10, 35, 
+	                     10 + container->getRpgItem()->getContainerWidth() * GRID_SIZE, 
+	                     35 + container->getRpgItem()->getContainerHeight() * GRID_SIZE, 
+	                     this, this );
+	canvas->setDrawBorders( false );
+	win->addWidget( canvas );
+	
 	label = new Label( 5, 270, Constants::getMessage( Constants::EXPLAIN_DRAG_AND_DROP ) );
 	win->addWidget( label );
 
@@ -67,6 +83,27 @@ ContainerGui::~ContainerGui() {
 	//delete list;
 	//delete openButton;
 	delete win;
+}
+
+void ContainerGui::drawWidgetContents( Widget *widget ) {
+	int w = container->getRpgItem()->getContainerWidth() * GRID_SIZE;
+	int h = container->getRpgItem()->getContainerHeight() * GRID_SIZE;
+	glEnable( GL_TEXTURE_2D );
+	glDisable( GL_BLEND );
+	//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	container->getContainerTexture()->glBind();
+	glColor4f( 1, 1, 1, 1 );
+	glBegin( GL_TRIANGLE_STRIP );
+	glTexCoord2d( 0, 0 );
+	glVertex2d( 0, 0 );
+	glTexCoord2d( 1, 0 );
+	glVertex2d( w, 0 );
+	glTexCoord2d( 0, 1 );
+	glVertex2d( 0, h );
+	glTexCoord2d( 1, 1 );
+	glVertex2d( w, h );
+	glEnd();
+	glDisable( GL_BLEND );
 }
 
 void ContainerGui::showContents() {

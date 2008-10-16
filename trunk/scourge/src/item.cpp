@@ -316,6 +316,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 
 	char name[255], displayName[255], type[255], shape[255];
 	char long_description[500], short_description[120];
+	char containerTexture[255];
 	char temp[1000];
 	for ( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = ( *v )[i];
@@ -338,6 +339,10 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 
 		strcpy( long_description, node->getValueAsString( "description" ) );
 		strcpy( short_description, node->getValueAsString( "short_description" ) );
+		
+		int containerWidth = toint( node->getValueAsFloat( "container_width" ) );		
+		int containerHeight = toint( node->getValueAsFloat( "container_height" ) );
+		strcpy( containerTexture, node->getValueAsString( "container_texture" ) );
 
 		// I:tileX,tileY ( from data/tiles.bmp, count is 1-based )
 		strcpy( temp, node->getValueAsString( "icon" ) );
@@ -354,6 +359,9 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		                             strdup( long_description ), strdup( short_description ),
 		                             inventory_location, shape_index,
 		                             minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
+		last->setContainerWidth( containerWidth );
+		last->setContainerHeight( containerHeight );
+		last->setContainerTexture( containerTexture );
 		//GLShape *s = shapePal->findShapeByName(shape);
 		//RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );
 
@@ -1465,5 +1473,13 @@ bool Item::isFullyIdentified() {
 		}
 
 	return id;
+}
 
+Texture const* Item::getContainerTexture() {
+	if( containerTextures.find( getRpgItem() ) == containerTextures.end() ) {
+		Texture *texture = new Texture();
+		texture->load( getRpgItem()->getContainerTexture() );
+		containerTextures[getRpgItem()] = texture;
+	}
+	return containerTextures[getRpgItem()];
 }
