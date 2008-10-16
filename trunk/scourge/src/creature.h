@@ -235,11 +235,11 @@ public:
 		moving = b;
 	}
 
-	/// Is it a non-hostile NPC? (this excludes wandering heroes, which are in fact auto controlled characters)
+	/// Is it an NPC? (this excludes wandering heroes, which are in fact auto controlled characters)
 	inline bool isNpc() {
 		return( monster ? monster->isNpc() : false );
 	}
-	/// Sets whether the creature is a (non-hostile) NPC.
+	/// Sets whether the creature is an NPC.
 	inline void setNpc( bool b ) {
 		if ( monster ) monster->setNpc( b );
 		if ( !b ) npcInfo = NULL;
@@ -249,13 +249,24 @@ public:
 		return( !session->getParty()->isPartyMember( this ) && ( character != NULL ) );
 	}
 
-	/// Is it a NPC/monster? (Yes, Scourge handles them the same way)
+	/// Is it a monster?
 	inline bool isMonster() {
-		return( monster != NULL );
-	}
-	/// Is it a "real" monster (not a friendly/neutral NPC)?
-	inline bool isNonNPCMonster() {
 		return( ( monster != NULL ) && !monster->isNpc() );
+	}
+
+	/// Is it harmless critter?
+	inline bool isHarmlessAnimal() {
+		return( ( monster != NULL ) && monster->isHarmless() );
+	}
+
+	/// Is it a party member?
+	inline bool isPartyMember() {
+		return( session->getParty()->isPartyMember( this ) );
+	}
+
+	/// Is it the currently active party member?
+	inline bool isPlayer() {
+		return( this == session->getParty()->getPlayer() );
 	}
 
 	inline GLfloat getAngle() {

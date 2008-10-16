@@ -258,7 +258,7 @@ CreatureInfo *Creature::save() {
 	info->version = PERSIST_VERSION;
 	strncpy( ( char* )info->name, getName(), 254 );
 	info->name[254] = 0;
-	if ( isMonster() ) {
+	if ( isMonster() || isNpc() ) {
 		strcpy( ( char* )info->character_name, "" );
 		strcpy( ( char* )info->monster_name, monster->getType() );
 		info->character_model_info_index = 0;
@@ -477,7 +477,7 @@ char *Creature::getType() {
 /// Gets the number of experience points required to level up.
 
 void Creature::calculateExpOfNextLevel() {
-	if ( isMonster() ) return;
+	if ( !( isPartyMember() || isWanderingHero() ) ) return;
 	expOfNextLevel = 0;
 	for ( int i = 0; i < level; i++ ) {
 		expOfNextLevel += ( ( i + 1 ) * character->getLevelProgression() );
@@ -961,7 +961,7 @@ bool Creature::addInventory( Item *item, bool force ) {
 		inventoryWeight += item->getWeight();
 
 		if ( inventoryWeight > getMaxInventoryWeight() ) {
-			if ( !isMonster() ) {
+			if ( isPartyMember() ) {
 				char msg[80];
 				snprintf( msg, 80, _( "%s is overloaded." ), getName() );
 				session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_STATS );
@@ -970,7 +970,7 @@ bool Creature::addInventory( Item *item, bool force ) {
 		}
 
 		// check if the mission is over
-		if ( !isMonster() &&
+		if ( isPartyMember() &&
 		        session->getCurrentMission() &&
 		        session->getCurrentMission()->itemFound( item ) ) {
 			session->getGameAdapter()->missionCompleted();
@@ -1041,7 +1041,7 @@ Item *Creature::removeInventory( int index ) {
 
 		inventoryWeight -= item->getWeight();
 		if ( getStateMod( StateMod::overloaded ) && inventoryWeight < getMaxInventoryWeight() ) {
-			if ( !isMonster() ) {
+			if ( isPartyMember() ) {
 				char msg[80];
 				snprintf( msg, 80, _( "%s is not overloaded anymore." ), getName() );
 				session->getGameAdapter()->writeLogMessage( msg, Constants::MSGTYPE_STATS );
@@ -1544,7 +1544,7 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
 	Item *ret = NULL;
 
 	// for TB combat for players, respect the current weapon
-	if ( session->getPreferences()->isBattleTurnBased() && !isMonster() ) {
+	if ( session->getPreferences()->isBattleTurnBased() && isPartyMember() ) {
 		ret = ( preferredWeapon > -1 ? getItemAtLocation( preferredWeapon ) : NULL );
 	} else {
 		int location[] = {
@@ -1825,7 +1825,7 @@ void Creature::monsterInit() {
 /// Returns the max hit points of the creature.
 
 int Creature::getMaxHp() {
-	if ( isMonster() ) {
+	if ( !( isPartyMember() || isWanderingHero() ) ) {
 		return startingHp;
 	} else {
 		return( character->getStartingHp() * ( getLevel() + 1 ) );
@@ -1835,7 +1835,7 @@ int Creature::getMaxHp() {
 /// Returns the max magic points of the creature.
 
 int Creature::getMaxMp() {
-	if ( isMonster() ) {
+	if ( !( isPartyMember() || isWanderingHero() ) ) {
 		return startingMp;
 	} else {
 		return( character->getStartingMp() * ( getLevel() + 1 ) );
@@ -1934,7 +1934,7 @@ void Creature::cancelTarget() {
 	if ( preActionTargetCreature ) setTargetCreature( preActionTargetCreature );
 	preActionTargetCreature = NULL;
 	setAction( Constants::ACTION_NO_ACTION );
-	if ( isMonster() && !scripted ) {
+	if ( !isPartyMember() && !scripted ) {
 		setMotion( Constants::MOTION_LOITER );
 		pathManager->findWanderingPath( 10, session->getParty()->getPlayer(), session->getMap() );
 	}
@@ -1988,7 +1988,6 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 	} else {
 		for ( int i = 0; i < session->getCreatureCount(); i++ ) {
 			if ( session->getCreature( i )->isMonster() &&
-			        !session->getCreature( i )->getMonster()->isNpc() &&
 			        !session->getCreature( i )->getStateMod( StateMod::dead ) &&
 			        session->getCreature( i )->isWithPrereq( spell ) )
 				possibleTargets.push_back( session->getCreature( i ) );
@@ -2017,7 +2016,7 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 /// Try to heal someone; returns true if someone was found.
 
 bool Creature::castHealingSpell() {
-	if ( !isMonster() ) return false;
+	if ( isPartyMember() ) return false;
 
 	// are we in the middle of casting a healing spell already?
 	//if( getAction() == Constants::ACTION_CAST_SPELL ) return false;
@@ -2057,7 +2056,7 @@ void Creature::decideMonsterAction() {
 	lastDecision = now;
 	
 	//CASE 1: A possessed non-aggressive creature
-	if ( !isNonNPCMonster() && getStateMod( StateMod::possessed ) ) {
+	if ( !isMonster() && getStateMod( StateMod::possessed ) ) {
 		Creature *p = session->getParty()->getClosestPlayer( toint( getX() ), toint( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 );
 		// attack with item
 		setMotion( Constants::MOTION_MOVE_TOWARDS );
@@ -2067,7 +2066,7 @@ void Creature::decideMonsterAction() {
 
 	//CASE 2: Loiterers and standers
 	//aggressives loitering have only 1/20 chance of breaking the cycle. That's a slight pause.
-	if ( ( getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND ) && ( !isNonNPCMonster() || Util::dice( 20 ) != 0 ) ) {
+	if ( ( getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND ) && ( !isMonster() || Util::dice( 20 ) != 0 ) ) {
 		if ( attackClosestTarget() ) return;
 		if ( getMotion() == Constants::MOTION_STAND ) {
 			//if standing, there is a 1/3 chance to start loitering.
@@ -2113,7 +2112,7 @@ bool Creature::attackClosestTarget() {
   Creature *p;
   bool possessed = getStateMod( StateMod::possessed );
 
-  if ( isNonNPCMonster() ) {
+  if ( isMonster() ) {
     p = ( possessed ? session->getClosestVisibleMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getParty()->getClosestPlayer ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
   } else {
     //setAction ( Constants::ACTION_NO_ACTION );
@@ -2212,7 +2211,7 @@ float Creature::getDistanceToTarget( RenderedCreature *creature ) {
 /// Sets the experience required for the character to level up.
 
 void Creature::setExp() {
-	if ( isMonster() ) return;
+	if ( !( isPartyMember() || isWanderingHero() ) ) return;
 	expOfNextLevel = 0;
 	for ( int i = 0; i < level - 1; i++ ) {
 		expOfNextLevel += ( ( i + 1 ) * character->getLevelProgression() );
@@ -2326,9 +2325,8 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
 /// Sets up the special capabilities of the creature.
 
 void Creature::evalSpecialSkills() {
-	//if( !isMonster() ) cerr << "In Creature::evalSpecialSkills for " << getName() << endl;
 	
-	if( isMonster() || !SQUIRREL_ENABLED ) return;
+	if( !( isPartyMember() || isWanderingHero() ) || !SQUIRREL_ENABLED ) return;
 	
 	set<SpecialSkill*> oldSpecialSkills;
 	for ( int t = 0; t < SpecialSkill::getSpecialSkillCount(); t++ ) {
@@ -2479,7 +2477,7 @@ void Creature::applyRecurringSpecialSkills() {
 /// Applies the effects of automatic special capabilities.
 
 float Creature::applyAutomaticSpecialSkills( int event, char *varName, float varValue ) {
-	if( isMonster() || !SQUIRREL_ENABLED ) return varValue;
+	if( !( isPartyMember() || isWanderingHero() ) || !SQUIRREL_ENABLED ) return varValue;
 	
 #ifdef DEBUG_CAPABILITIES
 	cerr << "Using automatic capabilities for event type: " << event << endl;
@@ -3087,7 +3085,7 @@ char *Creature::canEquipItem( Item *item, bool interactive ) {
 /// Sets character info (if not monster/NPC).
 
 void Creature::setCharacter( Character *c ) {
-	assert( !isMonster() );
+	assert( isPartyMember() || isWanderingHero() );
 	character = c;
 }
 

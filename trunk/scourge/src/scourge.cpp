@@ -942,7 +942,7 @@ void Scourge::endMission() {
 
 bool Scourge::inTurnBasedCombatPlayerTurn() {
 	return ( inTurnBasedCombat() &&
-	         !battleRound[battleTurn]->getCreature()->isNonNPCMonster() );
+	         !battleRound[battleTurn]->getCreature()->isMonster() );
 }
 
 void Scourge::cancelTargetSelection() {
@@ -2505,7 +2505,7 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 
 bool Scourge::getStateModIcon( Texture** icon, char *name, Color *color, Creature *p, int stateMod, bool protect ) {
 	*icon = 0;
-	if ( !protect && stateMod == StateMod::STATE_MOD_COUNT && !p->isMonster() && p->getThirst() <= 5 ) {
+	if ( !protect && stateMod == StateMod::STATE_MOD_COUNT && p->isPartyMember() && p->getThirst() <= 5 ) {
 		*icon = getSession()->getShapePalette()->getThirstIcon();
 		strcpy( name, _( "Thirst" ) );
 		if ( p->getThirst() <= 3 ) {
@@ -2519,7 +2519,7 @@ bool Scourge::getStateModIcon( Texture** icon, char *name, Color *color, Creatur
 			color->b = 1;
 			color->a = 0.5f;
 		}
-	} else if ( !protect && stateMod == StateMod::STATE_MOD_COUNT + 1 && !p->isMonster() && p->getHunger() <= 5 ) {
+	} else if ( !protect && stateMod == StateMod::STATE_MOD_COUNT + 1 && p->isPartyMember() && p->getHunger() <= 5 ) {
 		*icon = getSession()->getShapePalette()->getHungerIcon();
 		strcpy( name, _( "Hunger" ) );
 		if ( p->getHunger() <= 3 ) {
@@ -2690,14 +2690,12 @@ void Scourge::setPlayerUI( int index ) {
 void Scourge::toggleRoundUI( bool startRound ) {
 	char tooltip[255];
 	if ( battleTurn < static_cast<int>( battleRound.size() ) && getUserConfiguration()->isBattleTurnBased() ) {
-		if ( !startRound && !battleRound[battleTurn]->getCreature()->isMonster() ) {
-			//roundButton->setLabel("Begin Turn");
+		if ( !startRound && battleRound[battleTurn]->getCreature()->isPartyMember() ) {
 			roundButton->setTexture( getShapePalette()->getStartTexture() );
 			roundButton->setGlowing( true );
 			snprintf( tooltip, 255, _( "Begin Turn [%s]" ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_NEXT_ROUND ) );
 			roundButton->setTooltip( tooltip );
 		} else {
-			//roundButton->setLabel("...in Turn...");
 			roundButton->setTexture( getShapePalette()->getWaitTexture() );
 			roundButton->setGlowing( false );
 			roundButton->setTooltip( _( "...In Turn..." ) );
@@ -3921,7 +3919,7 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
 			}
 		}
 		return;
-	} else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
+	} else if ( blocker->creature && blocker->creature->isPartyMember() ) {
 		int panning = getSession()->getMap()->getPanningFromMapXY( ox, oy );
 		getSession()->getSound()->playSound( Window::DROP_FAILED, panning );
 		// rollback if blocked by a player
@@ -4034,7 +4032,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 					}
 				}
 				return true;
-			} else if ( blocker->creature && !( blocker->creature->isMonster() ) ) {
+			} else if ( blocker->creature && blocker->creature->isPartyMember() ) {
 				// rollback if blocked by a player
 				levelMap->setPosition( ox, oy, toint( party->getPlayer()->getZ() ), oldDoorShape );
 				getDescriptionScroller()->writeLogMessage( Constants::getMessage( Constants::DOOR_BLOCKED ) );
