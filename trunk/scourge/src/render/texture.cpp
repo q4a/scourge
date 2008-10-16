@@ -69,8 +69,10 @@ bool Texture::load( const string& filename, bool absolutePath, bool isSprite, bo
 
 	_hasAbsolutePath = absolutePath;
 	_filename = filename;
-	while (_filename[0] == '/' ) {
-		_filename = &_filename[1];
+	if( !absolutePath ) {
+		while (_filename[0] == '/' ) {
+			_filename = &_filename[1];
+		}
 	}
 
 	if ( !loadImage() ) return false;
