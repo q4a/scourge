@@ -290,8 +290,8 @@ private:
 	char itemName[ ITEM_NAME_SIZE ];
 	bool containsMagicItem;
 	bool showCursed;
-	GLuint tex3d[1];
-	unsigned char * textureInMemory;
+	// unused: GLuint tex3d[1];
+	// unused: unsigned char * textureInMemory;
 	void trySetIDBit( int bit, float modifier, int infoDetailLevel );
 
 	static const int PARTICLE_COUNT = 30;

@@ -54,11 +54,13 @@ Item::Item( Session *session, RpgItem *rpgItem, int level, bool loading ) {
 }
 
 Item::~Item() {
+	/* unused: 
 	if ( textureInMemory != NULL ) {
 		free( textureInMemory );
 		textureInMemory = NULL;
 		glDeleteTextures( 1, tex3d );
 	}
+	*/
 
 	for ( int i = 0; i < PARTICLE_COUNT; i++ ) {
 		delete iconUnderEffectParticle[i];
@@ -601,8 +603,8 @@ bool Item::decrementCharges() {
 
 
 void Item::commonInit( bool loading ) {
-	tex3d[0] = 0;
-	textureInMemory = NULL;
+	// unused: tex3d[0] = 0;
+	// unused: textureInMemory = NULL;
 	iconEffectTimer = 0;
 	iconUnderEffectTimer = 0;
 	for ( int i = 0; i < PARTICLE_COUNT; i++ ) {
@@ -1084,13 +1086,13 @@ void Item::identify( int infoDetailLevel ) {
 /// Inventory x size.
 
 int Item::getInventoryWidth() {
-	return ( getShape()->getIcon() > 0 ? getShape()->getIconWidth() : rpgItem->getInventoryWidth() );
+	return ( getShape()->getIcon()->isSpecified() ? getShape()->getIconWidth() : rpgItem->getInventoryWidth() );
 }
 
 /// Inventory y size.
 
 int Item::getInventoryHeight() {
-	return ( getShape()->getIcon() > 0 ? getShape()->getIconHeight() : rpgItem->getInventoryHeight() );
+	return ( getShape()->getIcon()->isSpecified() ? getShape()->getIconHeight() : rpgItem->getInventoryHeight() );
 }
 
 void Item::renderIcon( Scourge *scourge, SDL_Rect *rect, int gridSize, bool smallIcon ) {
@@ -1137,7 +1139,7 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallI
 void Item::getItemIconInfo( Texture const** texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon ) {
 	Texture const* tex;
 	int rw, rh, ox, oy;
-	if ( !smallIcon && getShape()->getIcon() > 0 ) {
+	if ( !smallIcon && getShape()->getIcon()->isSpecified() ) {
 		tex = getShape()->getIcon();
 		*iw = getShape()->getIconWidth() * 32;
 		*ih = getShape()->getIconHeight() * 32;

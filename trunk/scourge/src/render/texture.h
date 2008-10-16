@@ -62,7 +62,7 @@ private:
 	string _filename;
 	GLint _width;
 	GLint _height;
-	bool _hasAbsolutePath; // seems like eternal false in our current code
+	// unused: bool _hasAbsolutePath;
 	bool _hasAlpha;
 	bool _isSprite;
 	bool _wantsAnisotropy;
