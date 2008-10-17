@@ -269,6 +269,11 @@ public:
 		return( this == session->getParty()->getPlayer() );
 	}
 
+	/// Is it controlled by the computer?
+	inline bool isAutoControlled() {
+		return( !isPartyMember() || getStateMod( StateMod::possessed ) );
+	}
+
 	inline GLfloat getAngle() {
 		return angle;
 	}

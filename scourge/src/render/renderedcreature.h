@@ -122,6 +122,7 @@ public:
 	virtual bool isHarmlessAnimal() = 0;
 	virtual bool isPartyMember() = 0;
 	virtual bool isPlayer() = 0;
+	virtual bool isAutoControlled() = 0;
 	virtual char *getType() = 0;
 	virtual CreatureInfo *save() = 0;
 	virtual bool canAttack( RenderedCreature *creature, int *cursor = NULL ) = 0;
