@@ -912,7 +912,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		glColor4f( 0, 1, 1, 0.5f );
 	} else if ( player ) {
 		glColor4f( 0.0f, 1.0f, 0.0f, 0.5f );
-	} else if ( creature->getMonster() && creature->getMonster()->isNpc() ) {
+	} else if ( creature->isNpc() ) {
 		glColor4f( 0.75f, 1.0f, 0.0f, 0.5f );
 	} else if ( wanderingHero ) {
 		glColor4f( 0, 1.0f, 0.75f, 0.5f );

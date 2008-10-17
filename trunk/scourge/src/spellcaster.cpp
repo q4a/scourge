@@ -70,7 +70,7 @@ void SpellCaster::spellFailed() {
 		Creature *tmpTarget;
 		if ( battle->getCreature()->isMonster() ||
 		        battle->getCreature()->getStateMod( StateMod::possessed ) ) {
-			tmpTarget = battle->getSession()->getClosestVisibleMonster( toint( battle->getCreature()->getX() ),
+			tmpTarget = battle->getSession()->getClosestMonster( toint( battle->getCreature()->getX() ),
 			            toint( battle->getCreature()->getY() ),
 			            battle->getCreature()->getShape()->getWidth(),
 			            battle->getCreature()->getShape()->getDepth(),

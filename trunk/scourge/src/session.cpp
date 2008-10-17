@@ -421,10 +421,9 @@ void Session::deleteCreaturesAndItems( bool missionItemsOnly ) {
 	getShapePalette()->debugLoadedModels();
 }
 
-/**
- Return the closest live player within the given radius or null if none can be found.
-*/
-Creature *Session::getClosestVisibleMonster( int x, int y, int w, int h, int radius ) {
+/// Return the closest (visible) monster within the given radius or null if none can be found.
+
+Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {
 	float minDist = 0;
 	Creature *p = NULL;
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
@@ -437,25 +436,6 @@ Creature *Session::getClosestVisibleMonster( int x, int y, int w, int h, int rad
 		                                toint( getCreature( i )->getY() ),
 		                                getCreature( i )->getShape() ) &&
 		        getCreature( i )->isMonster() ) {
-			float dist = Constants::distance( x, y, w, h,
-			             getCreature( i )->getX(),
-			             getCreature( i )->getY(),
-			             getCreature( i )->getShape()->getWidth(),
-			             getCreature( i )->getShape()->getDepth() );
-			if ( dist <= static_cast<float>( radius ) && ( !p || dist < minDist ) ) {
-				p = getCreature( i );
-				minDist = dist;
-			}
-		}
-	}
-	return p;
-}
-
-Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {
-	float minDist = 0;
-	Creature *p = NULL;
-	for ( int i = 0; i < getCreatureCount(); i++ ) {
-		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && getCreature( i )->isMonster() ) {
 			float dist = Constants::distance( x, y, w, h,
 			             getCreature( i )->getX(),
 			             getCreature( i )->getY(),
