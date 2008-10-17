@@ -1598,7 +1598,7 @@ vector<RenderedProjectile*> *Creature::getProjectiles() {
 	return( m->find( this ) == m->end() ? NULL : ( *m )[ ( RenderedCreature* )this ] );
 }
 
-/// Take some damage and show a nice damage effect.
+/// Take some damage and show a nice damage effect. Return true if the creature is killed.
 
 bool Creature::takeDamage( float damage,
                            int effect_type,
@@ -1621,7 +1621,7 @@ bool Creature::takeDamage( float damage,
 
 	// creature death here so it can be used from script
 	if ( hp <= 0 ) {
-		if ( ( isMonster() && !MONSTER_IMORTALITY ) || !GOD_MODE ) {
+		if ( !( ( isMonster() && MONSTER_IMORTALITY ) || ( isPartyMember() && GOD_MODE ) ) ) {
 			session->creatureDeath( this );
 		}
 		return true;
