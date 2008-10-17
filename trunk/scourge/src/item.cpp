@@ -1467,12 +1467,13 @@ bool Item::isFullyIdentified() {
 
 	bool id = true;
 
-	if ( magicLevel > -1 )
+	if ( magicLevel > -1 ) {
 		if ( DEBUG_ITEM_ID || isIdentified() ) {
 			id = true;
 		} else {
 			id = false;
 		}
+	}
 
 	return id;
 }
