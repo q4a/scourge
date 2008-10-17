@@ -757,7 +757,7 @@ public:
 	bool canAttack( RenderedCreature *creature, int *cursor = NULL );
 	void cancelTarget();
 	//void makeTargetRetaliate();
-	void decideMonsterAction();
+	void decideAction();
 
 	bool attackClosestTarget();
 	bool castHealingSpell();

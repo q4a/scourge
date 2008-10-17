@@ -618,7 +618,7 @@ public:
 	void setMissionDescriptionUI( char *s, int mapx, int mapy );
 
 	// move a creature
-	void moveMonster( Creature *monster );
+	void moveCreature( Creature *creature );
 
 	void removeBattle( Battle *battle );
 
@@ -848,8 +848,6 @@ protected:
 	int initMultiplayer();
 
 	void createUI();
-
-	void decideMonsterAction( Creature *monster );
 
 	void refreshContainerGui( Item *container = NULL );
 

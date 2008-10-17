@@ -477,7 +477,7 @@ void Battle::stepCloserToTarget() {
 			if ( !creature->setSelCreature( creature->getTargetCreature(), range, false ) &&
 			        IS_AUTO_CONTROL( creature ) ) {
 				creature->cancelTarget();
-				//creature->decideMonsterAction();
+				//creature->decideAction();
 				ap--;
 				if ( debugBattle )
 					cerr << "*** " << creature->getName() <<
@@ -567,7 +567,7 @@ bool Battle::moveCreature() {
 	GLfloat oldX = creature->getX();
 	GLfloat oldY = creature->getY();
 	if ( IS_AUTO_CONTROL( creature ) ) {
-		session->getGameAdapter()->moveMonster( creature );
+		session->getGameAdapter()->moveCreature( creature );
 		if ( !( toint( oldX ) == toint( creature->getX() ) &&
 		        toint( oldY ) == toint( creature->getY() ) ) ) {
 			ap--;
@@ -585,8 +585,8 @@ bool Battle::moveCreature() {
 		// (ie. they are running away)
 		bool playerHasTarget =
 		  ( session->getPreferences()->isBattleTurnBased() ||
-		    session->getParty()->getPlayer()->hasTarget() &&
-		    session->getParty()->getPlayer()->isTargetValid() ? true : false );
+		    ( session->getParty()->getPlayer()->hasTarget() &&
+		    session->getParty()->getPlayer()->isTargetValid() ) ? true : false );
 		if ( playerHasTarget ) {
 
 			// someone killed our target, try to pick another one
@@ -689,7 +689,7 @@ Creature *Battle::getAvailableTarget() {
 		         creature->getShape()->getDepth(),
 		         20 );
 	} else {
-		target = session->getClosestVisibleMonster( toint( creature->getX() ),
+		target = session->getClosestMonster( toint( creature->getX() ),
 		         toint( creature->getY() ),
 		         creature->getShape()->getWidth(),
 		         creature->getShape()->getDepth(),
@@ -1048,7 +1048,7 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
 			Creature *tmpTarget;
 			if ( IS_AUTO_CONTROL( creature ) ) {
 				tmpTarget = session->
-				            getClosestVisibleMonster( toint( creature->getX() ),
+				            getClosestMonster( toint( creature->getX() ),
 				                                      toint( creature->getY() ),
 				                                      creature->getShape()->getWidth(),
 				                                      creature->getShape()->getDepth(),

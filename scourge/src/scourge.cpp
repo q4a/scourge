@@ -1690,15 +1690,6 @@ bool Scourge::createBattleTurns() {
 		}
 	}
 	for ( int i = 0; i < session->getCreatureCount(); i++ ) {
-// 		if ( !session->getCreature( i )->getStateMod( StateMod::dead ) &&
-// 		        session->getCreature( i )->getMonster() &&
-// 		        !session->getCreature( i )->getMonster()->isNpc() &&
-// 		        levelMap->isLocationVisible( toint( session->getCreature( i )->getX() ),
-// 		                                     toint( session->getCreature( i )->getY() ) ) &&
-// 		        levelMap->isLocationInLight( toint( session->getCreature( i )->getX() ),
-// 		                                     toint( session->getCreature( i )->getY() ),
-// 		                                     session->getCreature( i )->getShape() ) ) {
-
 		if ( !session->getCreature( i )->getStateMod( StateMod::dead ) && !session->getParty()->isPartyMember( session->getCreature( i ) ) &&
 		        levelMap->isLocationVisible( toint( session->getCreature( i )->getX() ),
 		                                     toint( session->getCreature( i )->getY() ) ) &&
@@ -1786,11 +1777,6 @@ void Scourge::resetUIAfterBattle() {
 	// animate monsters again after TB combat (see resetNonParticipantAnimation() )
 	for ( int i = 0; i < session->getCreatureCount(); i++ ) {
 		if ( !session->getCreature( i )->getStateMod( StateMod::dead ) ) {
-			/*
-			if( !session->getCreature(i)->getStateMod( Constants::dead ) &&
-			      !( session->getCreature(i)->getMonster() &&
-			    session->getCreature(i)->getMonster()->isNpc() ) ) {
-			 */
 			session->getCreature( i )->setMotion( session->getCreature( i )->isScripted() ? Constants::MOTION_STAND : Constants::MOTION_LOITER );
 			( ( AnimatedShape* )session->getCreature( i )->getShape() )->setPauseAnimation( false );
 		}
@@ -1827,7 +1813,7 @@ void Scourge::moveCreatures( bool allCreatures ) {
 			// otherwise move is in Battle::moveCreature()
 			if ( allCreatures ||
 			        !( c->hasTarget() && c->isTargetValid() ) ) {
-				moveMonster( c );
+				moveCreature( c );
 			}
 		}
 	}
@@ -1842,48 +1828,48 @@ void Scourge::addGameSpeed( int speedFactor ) {
 
 //#define MONSTER_FLEE_IF_LOW_HP
 
-void Scourge::moveMonster( Creature *monster ) {
+void Scourge::moveCreature( Creature *creature ) {
 	// set running animation (currently move or attack)
-	if ( ( ( AnimatedShape* )( monster->getShape() ) )->getAttackEffect() ) {
-		//monster->getShape()->setCurrentAnimation(static_cast<int>(MD2_ATTACK));
-		//((AnimatedShape*)(monster->getShape()))->setAngle(monster->getTargetAngle());
+	if ( ( ( AnimatedShape* )( creature->getShape() ) )->getAttackEffect() ) {
+		//creature->getShape()->setCurrentAnimation(static_cast<int>(MD2_ATTACK));
+		//((AnimatedShape*)(creature->getShape()))->setAngle(creature->getTargetAngle());
 		// don't move when attacking
 		return;
 	} else {
-		monster->getShape()->setCurrentAnimation( monster->getMotion() == Constants::MOTION_LOITER
-		    || monster->getMotion() == Constants::MOTION_MOVE_TOWARDS
-		    || monster->getMotion() == Constants::MOTION_MOVE_AWAY
-		    || monster->getMotion() == Constants::MOTION_CLEAR_PATH ?
+		creature->getShape()->setCurrentAnimation( creature->getMotion() == Constants::MOTION_LOITER
+		    || creature->getMotion() == Constants::MOTION_MOVE_TOWARDS
+		    || creature->getMotion() == Constants::MOTION_MOVE_AWAY
+		    || creature->getMotion() == Constants::MOTION_CLEAR_PATH ?
 		    static_cast<int>( MD2_RUN ) :
 		    static_cast<int>( MD2_STAND ) );
 	}
 	//CASE 1: Fleeing or clearing a path
-	if ( monster->getMotion() == Constants::MOTION_MOVE_AWAY || monster->getMotion() == Constants::MOTION_CLEAR_PATH ) {
-		monster->moveToLocator(); //don't think, just move
+	if ( creature->getMotion() == Constants::MOTION_MOVE_AWAY || creature->getMotion() == Constants::MOTION_CLEAR_PATH ) {
+		creature->moveToLocator(); //don't think, just move
 	}
 	//CASE 2: Monsters with targets
-	else if ( monster->hasTarget() ) {
+	else if ( creature->hasTarget() ) {
 #ifdef MONSTER_FLEE_IF_LOW_HP
-		// monster gives up when low on hp or bored
+		// creature gives up when low on hp or bored
 		// FIXME: when low on hp, it should run away not loiter
-		if ( monster->getAction() == Constants::ACTION_NO_ACTION &&
-		        monster->getHp() < static_cast<int>( static_cast<float>( monster->getStartingHp() ) * 0.2f ) ) {
-			monster->setMotion( Constants::MOTION_LOITER );//the monster will plan a path to wander on next decision cycle
-			monster->cancelTarget();
+		if ( creature->getAction() == Constants::ACTION_NO_ACTION &&
+		        creature->getHp() < static_cast<int>( static_cast<float>( creature->getStartingHp() ) * 0.2f ) ) {
+			creature->setMotion( Constants::MOTION_LOITER );//the creature will plan a path to wander on next decision cycle
+			creature->cancelTarget();
 			return;
 		}
 #endif
 		// see if there's another target that's closer
-		if ( monster->getAction() == Constants::ACTION_NO_ACTION ) {
-			monster->decideMonsterAction();
+		if ( creature->getAction() == Constants::ACTION_NO_ACTION ) {
+			creature->decideAction();
 		}
-		monster->moveToLocator(); //required here to make them move?
+		creature->moveToLocator(); //required here to make them move?
 	}
 	//CASE 3: any other characters, NPCs or monsters
 	else {
-		monster->decideMonsterAction();
-		// if(monster->getMotion() == Constants::MOTION_LOITER){ //even after deciding an action they are loitering..
-		monster->moveToLocator(); //this now handles wandering as well
+		creature->decideAction();
+		// if(creature->getMotion() == Constants::MOTION_LOITER){ //even after deciding an action they are loitering..
+		creature->moveToLocator(); //this now handles wandering as well
 		// }
 	}
 }
