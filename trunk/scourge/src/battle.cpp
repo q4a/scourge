@@ -212,7 +212,7 @@ bool Battle::fightTurn() {
 		              toint( creature->getY() ),
 		              creature->getShape()->getWidth(),
 		              creature->getShape()->getDepth(),
-		              20 );
+		              CREATURE_SIGHT_RADIUS );
 		if ( p ) {
 			for ( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
 				if ( p == session->getParty()->getParty( i ) &&
@@ -684,13 +684,13 @@ Creature *Battle::getAvailableTarget() {
 		         toint( creature->getY() ),
 		         creature->getShape()->getWidth(),
 		         creature->getShape()->getDepth(),
-		         20 );
+		         CREATURE_SIGHT_RADIUS );
 	} else {
 		target = session->getClosestMonster( toint( creature->getX() ),
 		         toint( creature->getY() ),
 		         creature->getShape()->getWidth(),
 		         creature->getShape()->getDepth(),
-		         20 );
+		         CREATURE_SIGHT_RADIUS );
 	}
 	return target;
 }
@@ -1049,14 +1049,14 @@ bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
 				                                      toint( creature->getY() ),
 				                                      creature->getShape()->getWidth(),
 				                                      creature->getShape()->getDepth(),
-				                                      20 );
+				                                      CREATURE_SIGHT_RADIUS );
 			} else {
 				tmpTarget = session->getParty()->
 				            getClosestPlayer( toint( creature->getX() ),
 				                              toint( creature->getY() ),
 				                              creature->getShape()->getWidth(),
 				                              creature->getShape()->getDepth(),
-				                              20 );
+				                              CREATURE_SIGHT_RADIUS );
 			}
 			if ( tmpTarget ) {
 				// play item sound

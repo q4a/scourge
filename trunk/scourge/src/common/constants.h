@@ -315,6 +315,9 @@ struct ParticleStruct {
 
 #define MIN_DISTANCE 1.0f
 
+// The radius in map tiles in which a fighting creature searches for a target.
+#define CREATURE_SIGHT_RADIUS 32
+
 /// A progress display.
 
 class StatusReport {

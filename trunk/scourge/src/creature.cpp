@@ -2057,7 +2057,7 @@ void Creature::decideAction() {
 	
 	//CASE 1: A possessed non-aggressive creature
 	if ( !isMonster() && getStateMod( StateMod::possessed ) ) {
-		Creature *p = session->getParty()->getClosestPlayer( toint( getX() ), toint( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 );
+		Creature *p = session->getParty()->getClosestPlayer( toint( getX() ), toint( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS );
 		// attack with item
 		setMotion( Constants::MOTION_MOVE_TOWARDS );
 		setTargetCreature( p );
@@ -2113,9 +2113,9 @@ bool Creature::attackClosestTarget() {
   bool possessed = getStateMod( StateMod::possessed );
 
   if ( isMonster() ) {
-    p = ( possessed ? session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
+    p = ( possessed ? session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
   } else {
-    p = ( possessed ? session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
+    p = ( possessed ? session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
   }
 
   if ( p ) {
