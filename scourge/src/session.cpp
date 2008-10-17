@@ -424,6 +424,7 @@ void Session::deleteCreaturesAndItems( bool missionItemsOnly ) {
 /// Return the closest (visible) monster within the given radius or null if none can be found.
 
 Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {
+	float dist;
 	float minDist = 0;
 	Creature *p = NULL;
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
@@ -436,7 +437,7 @@ Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {
 		                                toint( getCreature( i )->getY() ),
 		                                getCreature( i )->getShape() ) &&
 		        getCreature( i )->isMonster() ) {
-			float dist = Constants::distance( x, y, w, h,
+			dist = Constants::distance( x, y, w, h,
 			             getCreature( i )->getX(),
 			             getCreature( i )->getY(),
 			             getCreature( i )->getShape()->getWidth(),
@@ -451,11 +452,12 @@ Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {
 }
 
 Creature *Session::getClosestNPC( int x, int y, int w, int h, int radius ) {
+	float dist;
 	float minDist = 0;
 	Creature *p = NULL;
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
 		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && getCreature( i )->isNpc() ) {
-			float dist = Constants::distance( x, y, w, h,
+			dist = Constants::distance( x, y, w, h,
 			             getCreature( i )->getX(),
 			             getCreature( i )->getY(),
 			             getCreature( i )->getShape()->getWidth(),
@@ -469,12 +471,17 @@ Creature *Session::getClosestNPC( int x, int y, int w, int h, int radius ) {
 	return p;
 }
 
+/// Return the closest (visible) non-monster creature within the given radius or null if none can be found.
+
 Creature *Session::getClosestGoodGuy( int x, int y, int w, int h, int radius ) {
+	float dist;
 	float minDist = 0;
 	Creature *p = NULL;
+
+	// Search for the nearest non-monster, non-harmless creature.
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
 		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && !( getCreature( i )->isMonster() || getCreature( i )->isHarmlessAnimal() ) ) {
-			float dist = Constants::distance( x, y, w, h,
+			dist = Constants::distance( x, y, w, h,
 			             getCreature( i )->getX(),
 			             getCreature( i )->getY(),
 			             getCreature( i )->getShape()->getWidth(),
@@ -485,6 +492,18 @@ Creature *Session::getClosestGoodGuy( int x, int y, int w, int h, int radius ) {
 			}
 		}
 	}
+
+	// Check whether any party members are nearer.
+	for ( int i = 0; i < getParty()->getPartySize(); i++ ) {
+		if ( !getParty()->getParty(i)->getStateMod( StateMod::dead ) && !getParty()->getParty(i)->getStateMod( StateMod::possessed ) ) {
+			dist = Constants::distance( x, y, w, h, getParty()->getParty(i)->getX(), getParty()->getParty(i)->getY(), getParty()->getParty(i)->getShape()->getWidth(), getParty()->getParty(i)->getShape()->getDepth() );
+			if ( dist <= static_cast<float>( radius ) && ( !p || dist < minDist ) ) {
+				p = getParty()->getParty(i);
+				minDist = dist;
+			}
+		}
+	}
+
 	return p;
 }
 
@@ -665,8 +684,7 @@ int Session::getCountForDate( char *key, bool withinLastHour ) {
 			Date *lastUsed = new Date( p );
 			Date now = getParty()->getCalendar()->getCurrentDate();
 
-			bool withinDate = ( withinLastHour && now.isAnHourLater( *lastUsed ) ||
-			                    !withinLastHour && now.isADayLater( *lastUsed ) );
+			bool withinDate = ( ( withinLastHour && now.isAnHourLater( *lastUsed ) ) || ( !withinLastHour && now.isADayLater( *lastUsed ) ) );
 
 			// did specified amount of time pass?
 			if ( !withinDate ) {

@@ -2115,7 +2115,6 @@ bool Creature::attackClosestTarget() {
   if ( isMonster() ) {
     p = ( possessed ? session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
   } else {
-    //setAction ( Constants::ACTION_NO_ACTION );
     p = ( possessed ? session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) : session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), 20 ) );
   }
 
