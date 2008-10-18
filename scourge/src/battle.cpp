@@ -1038,46 +1038,34 @@ void Battle::prepareToHitMessage() {
 /// roll to see if there is a fumble.
 
 bool Battle::handleLowAttackRoll( float attack, float min, float max ) {
-	if ( max - min >= MIN_FUMBLE_RANGE &&
-	        creature->getTargetCreature() &&
-	        attack - min < ( ( ( max - min ) / 100.0f ) * 5.0f ) ) {
+	if ( max - min >= MIN_FUMBLE_RANGE && creature->getTargetCreature() && attack - min < ( ( ( max - min ) / 100.0f ) * 5.0f ) ) {
 		if ( 0 == Util::dice( 3 ) ) {
-			Creature *tmpTarget;
-			if ( creature->isAutoControlled() ) {
-				tmpTarget = session->
-				            getClosestMonster( toint( creature->getX() ),
-				                                      toint( creature->getY() ),
-				                                      creature->getShape()->getWidth(),
-				                                      creature->getShape()->getDepth(),
-				                                      CREATURE_SIGHT_RADIUS );
+
+			Creature *fumbleTarget;
+			if ( creature->isMonster() ) {
+				fumbleTarget = session->getClosestMonster( toint( creature->getX() ), toint( creature->getY() ), creature->getShape()->getWidth(), creature->getShape()->getDepth(), CREATURE_SIGHT_RADIUS );
 			} else {
-				tmpTarget = session->getParty()->
-				            getClosestPlayer( toint( creature->getX() ),
-				                              toint( creature->getY() ),
-				                              creature->getShape()->getWidth(),
-				                              creature->getShape()->getDepth(),
-				                              CREATURE_SIGHT_RADIUS );
+				fumbleTarget = session->getClosestGoodGuy( toint( creature->getX() ), toint( creature->getY() ), creature->getShape()->getWidth(), creature->getShape()->getDepth(), CREATURE_SIGHT_RADIUS );
 			}
-			if ( tmpTarget ) {
+
+			if ( fumbleTarget ) {
 				// play item sound
 				int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
 				if ( item ) session->playSound( item->getRandomSound(), panning );
-				snprintf( message, MESSAGE_SIZE, _( "...fumble: hits %s instead!" ), tmpTarget->getName() );
+				snprintf( message, MESSAGE_SIZE, _( "...fumble: hits %s instead!" ), fumbleTarget->getName() );
 				session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
 				Creature *oldTarget = creature->getTargetCreature();
-				creature->setTargetCreature( tmpTarget );
+				creature->setTargetCreature( fumbleTarget );
 
 				char tmp[255];
-				snprintf( tmp, 255,
-				          ( creature->getSex() == Constants::SEX_MALE ? _( "%s his own fumbling hands" ) : _( "%s her fumbling hands" ) ),
-				          Constants::getMessage( Constants::CAUSE_OF_DEATH )
-				        );
+				snprintf( tmp, 255, ( creature->getSex() == Constants::SEX_MALE ? _( "%s his own fumbling hands" ) : _( "%s her fumbling hands" ) ), Constants::getMessage( Constants::CAUSE_OF_DEATH ) );
 				creature->setPendingCauseOfDeath( tmp );
 
 				dealDamage( Util::roll( 0.5f * MIN_FUMBLE_RANGE, 1.5f * MIN_FUMBLE_RANGE ) );
 				creature->setTargetCreature( oldTarget );
 				return true;
 			}
+
 		}
 	}
 	return false;

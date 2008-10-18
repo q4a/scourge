@@ -921,7 +921,7 @@ void Creature::stopMoving() {
 Uint32 lastFootstepTime = 0;
 void Creature::playFootstep() {
 	Uint32 now = SDL_GetTicks();
-	if ( now - lastFootstepTime > ( Uint32 )( session->getPreferences()->getGameSpeedTicks() * 4 ) ) {
+	if ( now - lastFootstepTime > ( Uint32 ) ( session->getPreferences()->getGameSpeedTicks() * 4 ) && getMotion() != Constants::MOTION_STAND ) {
 		int panning = session->getMap()->getPanningFromMapXY( this->x, this->y );
 		session->getSound()->startFootsteps( session->getAmbientSoundName(), session->getGameAdapter()->getCurrentDepth(), panning );
 		lastFootstepTime = now;
