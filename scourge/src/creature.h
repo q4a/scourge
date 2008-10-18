@@ -773,7 +773,7 @@ public:
 
 	bool isWithPrereq( Spell *spell );
 	Creature *findClosestTargetWithPrereq( Spell *spell );
-	bool useOffensiveSpell( Spell *spell, float dist, Creature *possibleTarget );
+	bool castOffensiveSpell();
 
 	/// Schedules state mod effects.
 	inline void setStateModEvent( int mod, Event *event ) {
