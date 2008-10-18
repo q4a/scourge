@@ -1952,7 +1952,7 @@ bool Creature::isWithPrereq( Spell *spell ) {
 			return( getMp() <= static_cast<int>( static_cast<float>( getMaxMp() ) * 0.25f ) );
 		case Constants::AC:
 			/*
-			Even if needed only cast it 1 out of 4 times.
+			FIXME: Even if needed only cast it 1 out of 4 times.
 			Really need some AI here to remember if the spell helped or not. (or some way
 			to predict if casting a spell will help.) Otherwise the monster keeps casting
 			Body of Stone to no effect.
@@ -1980,17 +1980,20 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 	// who are the possible targets?
 	vector<Creature*> possibleTargets;
 	if ( getStateMod( StateMod::possessed ) ) {
-		for ( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-			if ( !session->getParty()->getParty( i )->getStateMod( StateMod::dead ) &&
-			        session->getParty()->getParty( i )->isWithPrereq( spell ) )
+		if ( !isMonster() ) {
+			for ( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
+				if ( !session->getParty()->getParty( i )->getStateMod( StateMod::dead ) && session->getParty()->getParty( i )->isWithPrereq( spell ) )
 				possibleTargets.push_back( session->getParty()->getParty( i ) );
+			}
+		}
+		for ( int i = 0; i < session->getCreatureCount(); i++ ) {
+			if ( ( !isMonster() ? session->getCreature( i )->isMonster() : ( session->getCreature( i )->isNpc() || session->getCreature( i )->isWanderingHero() ) ) && !session->getCreature( i )->getStateMod( StateMod::dead ) && session->getCreature( i )->isWithPrereq( spell ) )
+			possibleTargets.push_back( session->getCreature( i ) );
 		}
 	} else {
 		for ( int i = 0; i < session->getCreatureCount(); i++ ) {
-			if ( session->getCreature( i )->isMonster() &&
-			        !session->getCreature( i )->getStateMod( StateMod::dead ) &&
-			        session->getCreature( i )->isWithPrereq( spell ) )
-				possibleTargets.push_back( session->getCreature( i ) );
+			if ( ( isMonster() ? session->getCreature( i )->isMonster() : ( session->getCreature( i )->isNpc() || session->getCreature( i )->isWanderingHero() ) ) && !session->getCreature( i )->getStateMod( StateMod::dead ) && session->getCreature( i )->isWithPrereq( spell ) )
+			possibleTargets.push_back( session->getCreature( i ) );
 		}
 	}
 
@@ -2010,42 +2013,50 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 			closestDist = dist;
 		}
 	}
-	return( closest && closestDist < 20.0f ? closest : NULL );
+	return( closest && closestDist < (float)CREATURE_SIGHT_RADIUS ? closest : NULL );
 }
 
 /// Try to heal someone; returns true if someone was found.
 
 bool Creature::castHealingSpell() {
-	if ( isPartyMember() ) return false;
+  // are we in the middle of casting a spell already?
+  //if( getAction() == Constants::ACTION_CAST_SPELL ) return false;
 
-	// are we in the middle of casting a healing spell already?
-	//if( getAction() == Constants::ACTION_CAST_SPELL ) return false;
+  vector<Spell*> healingSpells;
 
-	// try to heal someone
-	for ( int i = 0; i < getSpellCount(); i++ ) {
-		Spell *spell = getSpell( i );
-		// can it be cast and is it a "friendly" (healing) spell?
-		if ( spell->getMp() < getMp() &&
-		        spell->isFriendly() &&
-		        spell->hasStateModPrereq() ) {
-			//cerr << "Looking to heal a creature:" << endl;
-			Creature *p = findClosestTargetWithPrereq( spell );
-			if ( p ) {
+  for ( int i = 0; i < getSpellCount(); i++ ) {
+    Spell *spell = getSpell ( i );
+    if ( spell->isFriendly() ) {
+      healingSpells.push_back ( spell );
+    }
+  }
 
-				// is this needed?
-				// getBattle()->reset();
+  // We don't have healing spells, exit
+  if ( healingSpells.empty() ) return false;
 
-				//cerr << "\t*** Selected: " << p->getName() << endl;
-				setAction( Constants::ACTION_CAST_SPELL,
-				           NULL,
-				           spell );
-				setMotion( Constants::MOTION_MOVE_TOWARDS );
-				setTargetCreature( p );
-				return true;
-			}
-		}
-	}
-	return false;
+  Spell *spell = healingSpells[ Util::pickOne ( 0, healingSpells.size() - 1 ) ];
+
+  // Find a suitable target
+  Creature *p;
+  if ( spell->getMp() < getMp() ) {
+    if ( spell->hasStateModPrereq() ) {
+      p = findClosestTargetWithPrereq ( spell );
+    } else {
+      p = ( isMonster() ? session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
+    }
+  } else {
+    return false;
+  }
+
+  // Cast the spell
+  if ( p ) {
+    setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+    setMotion ( Constants::MOTION_MOVE_TOWARDS );
+    setTargetCreature ( p );
+    return true;
+  }
+
+  return false;
 }
 
 /// Basic NPC/monster AI.
@@ -2107,11 +2118,14 @@ void Creature::decideAction() {
 /// Makes the creature attack the closest suitable target. Returns true if target found.
 
 bool Creature::attackClosestTarget() {
+  // Try spells first.
   if ( castHealingSpell() ) return false;
+  if ( castOffensiveSpell() ) return false;
 
   Creature *p;
   bool possessed = getStateMod( StateMod::possessed );
 
+  // Select a suitable target.
   if ( isMonster() ) {
     p = ( possessed ? session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
   } else {
@@ -2119,22 +2133,6 @@ bool Creature::attackClosestTarget() {
   }
 
   if ( p ) {
-    float dist = Constants::distance ( getX(),  getY(), getShape()->getWidth(), getShape()->getDepth(), p->getX(), p->getY(), p->getShape()->getWidth(), p->getShape()->getDepth() );
-
-    // can we use magic?
-    if ( getSpellCount() ) {
-      for ( int i = 0; i < getSpellCount(); i++ ) {
-        Spell *spell = getSpell ( i );
-
-        if ( useOffensiveSpell ( spell, dist, p ) ) {
-          setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
-          setMotion ( Constants::MOTION_MOVE_TOWARDS );
-          setTargetCreature ( p );
-          return true;
-        }
-      }
-    }
-
     // attack with item
     setMotion ( Constants::MOTION_MOVE_TOWARDS );
     setTargetCreature ( p );
@@ -2145,19 +2143,41 @@ bool Creature::attackClosestTarget() {
 
 /// Tries to cast a specified spell onto a specified creature within range.
 
-bool Creature::useOffensiveSpell( Spell *spell, float dist, Creature *possibleTarget ) {
-	if ( spell->getMp() < getMp() && !( spell->isFriendly() ) ) {
+bool Creature::castOffensiveSpell() {
+  // are we in the middle of casting a spell already?
+  //if( getAction() == Constants::ACTION_CAST_SPELL ) return false;
 
-		// if there is a prereq. and the target already has it, skip this spell.
-		if ( spell->hasStateModPrereq() &&
-		        possibleTarget->isWithPrereq( spell ) ) return false;
+  vector<Spell*> offensiveSpells;
 
-		if ( ( spell->getDistance() == 1 && dist <= MIN_DISTANCE ) ||
-		        ( spell->getDistance() > 1 && dist > MIN_DISTANCE ) ) {
-			return true;
-		}
-	}
-	return false;
+  for ( int i = 0; i < getSpellCount(); i++ ) {
+    Spell *spell = getSpell ( i );
+    if ( !spell->isFriendly() ) {
+      offensiveSpells.push_back ( spell );
+    }
+  }
+
+  // We don't have offensive spells, exit
+  if ( offensiveSpells.empty() ) return false;
+
+  Spell *spell = offensiveSpells[ Util::pickOne ( 0, offensiveSpells.size() - 1 ) ];
+
+  // Find a suitable target
+  Creature *p;
+  if ( spell->getMp() < getMp() ) {
+      p = ( isMonster() ? session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
+  } else {
+    return false;
+  }
+
+  // Cast the spell
+  if ( p ) {
+    setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+    setMotion ( Constants::MOTION_MOVE_TOWARDS );
+    setTargetCreature ( p );
+    return true;
+  }
+
+  return false;
 }
 
 /// Returns the distance to the selected target spot.
