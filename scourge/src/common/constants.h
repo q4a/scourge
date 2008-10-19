@@ -58,8 +58,20 @@ T rint( T v ) {
 	T c = ceil( v );  // c >= v
 	return ( v -f > c - v ) ? c : f; //what's closer is rint(v)
 }
-// To ease debugging
+// MS Visual C++ related debug stuff  
 # include <assert.h>
+// The following macros set and clear, given bits of debug flag.
+# if defined(_DEBUG)
+#   define  SET_CRT_DEBUG_FIELD(a) \
+				_CrtSetDbgFlag((a) | _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG))
+#   define  CLEAR_CRT_DEBUG_FIELD(a) \
+				_CrtSetDbgFlag(~(a) & _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG))
+#   define DEBUG_NEW new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+# else
+#   define  SET_CRT_DEBUG_FIELD(a)   ((void) 0)
+#   define  CLEAR_CRT_DEBUG_FIELD(a) ((void) 0)
+# endif
+
 #endif // MSVC 8 portability
 
 #include <stdlib.h>

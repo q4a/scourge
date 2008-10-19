@@ -29,6 +29,22 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+// When running with _CRTDBG_LEAK_CHECK_DF flag set you get tons of 
+// reports about memory leaks. Usually you want to know where the leaked
+// memory block was allocated. Take following block and paste it to every
+// .cpp file that uses new. It makes the reports to contain the info.
+// It will attach the data to each and every memory block allocated 
+// so go buy more memory too. ;) 
+#if defined(_MSC_VER)
+# ifdef _DEBUG
+#   define DEBUG_NEW new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
+#   define new DEBUG_NEW
+#   undef THIS_FILE
+    static char THIS_FILE[] = __FILE__;
+# endif
+#endif 
+
 GameAdapter *createGameAdapter( UserConfiguration *config ) {
 	GameAdapter *adapter;
 	if ( config->getStandAloneMode() == UserConfiguration::SERVER ) {
@@ -43,10 +59,9 @@ GameAdapter *createGameAdapter( UserConfiguration *config ) {
 	return adapter;
 }
 
-// -=K=-: MSVC does lose all console i/o to void; i noticed scourge
-// uses console i/o; so lets create a console and redirect i/o there
-// RedirectIOToConsole should be called once/app so inline is OK
-inline void RedirectIOToConsole( void ) {
+// This works against MSVC from losing all console i/o to void; 
+//	it creates a console and redirects all standard i/o there
+void RedirectIOToConsole( void ) {
 //define WANT_CONSOLE if you want it to work
 #if defined(_MSC_VER) && defined(WANT_CONSOLE)
 	int const MAX_CONSOLE_LINES( 500 );
@@ -82,6 +97,32 @@ inline void RedirectIOToConsole( void ) {
 	*stderr = *fp;
 	setvbuf( stderr, NULL, _IONBF, 0 );
 #endif //defined(_MSC_VER) && defined(WANT_CONSOLE)
+#if defined(_MSC_VER) && defined(_DEBUG)
+	// More MS Visual C++ specific debug crap  
+	// Send all reports to STDOUT
+	_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG );
+	_CrtSetReportFile( _CRT_WARN, _CRTDBG_FILE_STDERR );
+	_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG );
+	_CrtSetReportFile( _CRT_ERROR, _CRTDBG_FILE_STDERR );
+	_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG );
+	_CrtSetReportFile( _CRT_ASSERT, _CRTDBG_FILE_STDERR );
+	// Following things can be used all around code to hunt down bugs.
+	// Here they set default behaviour.
+	// Uncomment if you want to check corrupts once for every 1024 mem ops. 
+	// Values like EVERY_128, EVERY_16 or ALWAYS make your software real SLOW.
+	SET_CRT_DEBUG_FIELD( _CRTDBG_CHECK_EVERY_1024_DF );
+
+	// Uncomment to make above _CRTDBG_CHECK_sometimes_DFs reports readable.
+	// It does not really free freed memory so better dont use here!!! 
+	// SET_CRT_DEBUG_FIELD( _CRTDBG_DELAY_FREE_MEM_DF );
+
+	// Uncomment if you also want to check memory used by crt internally.
+	// Usually its not needed but never say never, MS staff are also human beings.
+	// SET_CRT_DEBUG_FIELD( _CRTDBG_CHECK_CRT_DF );
+
+	// Uncomment if you want to see leaks at application end (there are lots.)
+	// SET_CRT_DEBUG_FIELD( _CRTDBG_LEAK_CHECK_DF );
+#endif
 }
 
 /// Everything begins here.
