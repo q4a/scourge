@@ -397,26 +397,44 @@ Texture::~Texture() {
 	}
 }
 
-Texture& Texture::operator=( Texture const& that ) {
+Texture& Texture::operator=( Texture const & that ) {
 	Texture tmp( that );
-	Swap( tmp );
+	swap( tmp );
 	return *this;
 }
 
 
 void Texture::clear() {
 	Texture tmp( &emptyNode );
-	Swap( tmp );
+	swap( tmp );
 }
 
 
-void Texture::Swap( Texture& that ) {
+void Texture::swap( Texture& that ) {
 	Actual* tmp( that._ref );
 	that._ref = _ref;
 	_ref = tmp;
 }
 
 
+/// search for named texture
+/// @return  iterator to texture if found
+/// @return  iterator where to insert it if not found
+Texture::NodeVec::iterator Texture::search( const string& path ) {
+	// search quickly assuming the mainList is sorted
+	int first = -1; // one before where we search 
+	int last = mainList.size(); // one after where we search
+	for ( ;; ) {
+		int step = ( last - first ) / 2; // step into middle
+		if ( step < 1 ) return mainList.begin() + last; // insert after
+		int middle = first + step; // take step into middle
+		int diff = path.compare( mainList[middle]->_filename );
+
+		if ( diff == 0 ) return mainList.begin() + middle; // found
+		else if ( diff > 0 ) first = middle;
+		else last = middle;
+	}
+}
 
 
 /// Grand unified generic texture loader.
@@ -427,18 +445,14 @@ void Texture::Swap( Texture& that ) {
 /// original was Shapes::loadTexture()
 
 bool Texture::load( const string& filename, bool absolutePath, bool isSprite, bool anisotropy ) {
-	// set the path
+	// search for existing with the path
 	std::string path = ( absolutePath ? filename : rootDir + filename );
-	// search if there are textures with same name
-	NodeVec::iterator it = mainList.begin();
-	while ( it != mainList.end() && path.compare( ( *it )->_filename ) > 0 ) {
-		++it;
-	}
-	// not found? 
+	NodeVec::iterator it = search( path );
+	// not found?
 	if ( it == mainList.end() || path.compare( ( *it )->_filename ) != 0 ) {
 		Actual* node = new Actual;
 		// not loadable? refuse
-		if (!node->load( path, isSprite, anisotropy )) {
+		if ( !node->load( path, isSprite, anisotropy ) ) {
 			delete node;
 			return false;
 		}
@@ -447,7 +461,7 @@ bool Texture::load( const string& filename, bool absolutePath, bool isSprite, bo
 	}
 	// found it or created it ... now swap it out and done
 	Texture tmp( *it );
-	Swap( tmp );
+	swap( tmp );
 	return isSpecified();
 }
 
@@ -462,7 +476,7 @@ bool Texture::createTile( SDL_Surface const* surface, int tileX, int tileY, int 
 	Actual* node = new Actual;
 	node->createTile( surface, tileX, tileY, tileWidth, tileHeight );
 	Texture tmp( node );
-	Swap( tmp );
+	swap( tmp );
 	return isSpecified();
 }
 
@@ -475,7 +489,7 @@ bool Texture::createAlpha( Texture const& alpha, Texture const& sample, int text
 	Actual* node = new Actual;
 	node->createAlpha( alpha._ref, sample._ref, textureSizeW, textureSizeH, width, height );
 	Texture tmp( node );
-	Swap( tmp );
+	swap( tmp );
 	return isSpecified();
 }
 
@@ -486,15 +500,12 @@ bool Texture::createAlpha( Texture const& alpha, Texture const& sample, int text
 bool Texture::loadShot( const string& dirName ) {
 	std::string path = get_file_name( dirName + "/screen.bmp" );
 	// search if there are textures with same name
-	NodeVec::iterator it = mainList.begin();
-	while ( it != mainList.end() && path.compare( ( *it )->_filename ) > 0 ) {
-		++it;
-	}
+	NodeVec::iterator it = search( path );
 	// not found?
 	if ( it == mainList.end() || path.compare( ( *it )->_filename ) != 0 ) {
 		Actual* node = new Actual;
 		// not loadable? refuse
-		if (!node->loadShot( path )) {
+		if ( !node->loadShot( path ) ) {
 			delete node;
 			return false;
 		}
@@ -503,7 +514,7 @@ bool Texture::loadShot( const string& dirName ) {
 	}
 	// found it or created it ... now swap to it
 	Texture tmp( *it );
-	Swap( tmp );
+	swap( tmp );
 	return isSpecified();
 }
 

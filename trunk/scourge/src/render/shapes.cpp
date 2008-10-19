@@ -126,12 +126,13 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 			}
 			path = "/" + bmp;
 
+			/* lavaData is nowhere used
 			// keep lava texture data
 			if ( isCave() &&
 			        ref == THEME_REF_PASSAGE_FLOOR &&
 			        face == GLShape::FRONT_SIDE ) {
-				shapePal->getBMPData( path, lavaData );
-			}
+					shapePal->getBMPData( path, lavaData );
+			} */
 			if ( isCave() &&
 			        ref == THEME_REF_PASSAGE_FLOOR &&
 			        face == GLShape::TOP_SIDE ) {

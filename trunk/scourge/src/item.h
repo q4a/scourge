@@ -322,7 +322,7 @@ private:
 	int inventoryX, inventoryY;
 	int missionId;
 	int missionObjectiveIndex;
-	std::map<RpgItem*, Texture> containerTextures;
+	// unused: std::map<RpgItem*, Texture> containerTextures;
 
 protected:
 	void commonInit( bool loading );

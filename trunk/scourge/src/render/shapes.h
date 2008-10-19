@@ -157,7 +157,7 @@ private:
 	Shapes *shapePal;
 	bool special;
 	bool cave;
-	TextureData lavaData;
+	// unused: TextureData lavaData;
 	TextureData floorData;
 	bool hasOutdoor;
 	int outdoorTextureWidth[OUTDOOR_THEME_REF_COUNT];

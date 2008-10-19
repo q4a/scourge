@@ -732,7 +732,7 @@ void Session::setCurrentMission( Mission *mission ) {
 		if ( !chapterImageTexture.isSpecified() ) {
 			cerr << "Error loading image for chapter " << currentMission->getChapter() << endl;
 			chapterImage.clear();
-			//chapterImageTexture.clear();
+			// its clear anyway, chapterImageTexture.clear();
 			chapterImageWidth = chapterImageHeight = 0;
 		} else {
 			//chapterImageTexture = shapePal->loadGLTextures(filename, true);
