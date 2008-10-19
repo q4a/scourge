@@ -124,7 +124,7 @@ private:
 	typedef std::vector<Actual*> NodeVec;
 	static NodeVec mainList;
 	// private constructor
-	Texture::Texture( Actual* node );
+	Texture( Actual* node );
 	// private operations
 	void Swap( Texture& that );
 	void SwapRef( Actual*& thatRef );
