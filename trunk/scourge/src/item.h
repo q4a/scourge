@@ -179,7 +179,7 @@ public:
 		return containedItemCount;
 	}
 	bool addContainedItem( Item *item, bool force = false );
-	Item *removeContainedItem( int index );
+	void removeContainedItem( Item *item );
 	Item *getContainedItem( int index );
 	bool isContainedItem( Item *item );
 	/// Returns true if the item contains magical items.
