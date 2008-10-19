@@ -27,22 +27,26 @@
 
 using namespace std;
 
+#define OFFSET_X 1
+#define OFFSET_Y 0
+
 ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 	this->scourge = scourge;
 	this->container = container;
-
-	win = new Window( scourge->getSDLHandler(),
-	                  x, y,
-	                  20 + container->getRpgItem()->getContainerWidth() * GRID_SIZE,
-	                  70 + container->getRpgItem()->getContainerHeight() * GRID_SIZE,
+	this->x = 10;
+	this->y = 35;
+	this->lastItem = NULL;
+	this->selectedItem = NULL;
+	
+	win = new Window( scourge->getSDLHandler(), 
+	                  x, y, 
+	                  30 + container->getRpgItem()->getContainerWidth() * GRID_SIZE, 
+	                  80 + container->getRpgItem()->getContainerHeight() * GRID_SIZE, 
 	                  container->getItemName(),
-	                  scourge->getShapePalette()->getGuiTexture(),
-	                  true,
-	                  Window::BASIC_WINDOW,
-	                  scourge->getShapePalette()->getGuiTexture2() );
-// win = new Window( scourge->getSDLHandler(),
-//                   x, y, 345, 300, container->getItemName(), true,
-//                   Window::SIMPLE_WINDOW, "wood" );
+                    scourge->getShapePalette()->getGuiTexture(), 
+                    true,
+                    Window::BASIC_WINDOW,
+                    scourge->getShapePalette()->getGuiTexture2() );
 	openButton = new Button( 5, 5, 85, 25, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage( Constants::OPEN_CONTAINER_LABEL ) );
 	win->addWidget( ( Widget* )openButton );
 	infoButton = new Button( 90, 5, 170, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Info" ) );
@@ -52,23 +56,12 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 	closeButton = new Button( 260, 5, 340, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Close" ) );
 	win->addWidget( ( Widget* )closeButton );
 
-	list = new ScrollingList( 10, 35, 320, 245 - 30,
-	                          scourge->getShapePalette()->getHighlightTexture(), this, 30 );
-	//win->addWidget( ( Widget* )list );
-
-	canvas = new Canvas( 10, 35,
-	                     10 + container->getRpgItem()->getContainerWidth() * GRID_SIZE,
-	                     35 + container->getRpgItem()->getContainerHeight() * GRID_SIZE,
+	canvas = new Canvas( 10, 35, 
+	                     10 + container->getRpgItem()->getContainerWidth() * GRID_SIZE, 
+	                     35 + container->getRpgItem()->getContainerHeight() * GRID_SIZE, 
 	                     this, this );
 	canvas->setDrawBorders( false );
 	win->addWidget( canvas );
-
-	label = new Label( 5, 270, Constants::getMessage( Constants::EXPLAIN_DRAG_AND_DROP ) );
-	win->addWidget( label );
-
-	// allocate memory for the contained item descriptions
-	this->itemColor = ( Color* )malloc( MAX_INVENTORY_SIZE * sizeof( Color ) );
-	//this->itemIcon = ( GLuint* )malloc( MAX_INVENTORY_SIZE * sizeof( GLuint ) );
 
 	showContents();
 
@@ -76,13 +69,12 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 }
 
 ContainerGui::~ContainerGui() {
-	free( itemColor );
-	//free( itemIcon );
-
-	//delete label;
-	//delete list;
-	//delete openButton;
 	delete win;
+}
+
+void ContainerGui::convertMousePos( int x, int y, int *invX, int *invY ) {
+	*invX = ( x - OFFSET_X ) / GRID_SIZE;
+	*invY = ( y - OFFSET_Y ) / GRID_SIZE;
 }
 
 void ContainerGui::drawWidgetContents( Widget *widget ) {
@@ -104,83 +96,165 @@ void ContainerGui::drawWidgetContents( Widget *widget ) {
 	glVertex2d( w, h );
 	glEnd();
 	glDisable( GL_BLEND );
+	
+	glPushMatrix();
+	glTranslatef( OFFSET_X, OFFSET_Y, 0 );
+
+	glDisable( GL_TEXTURE_2D );
+	win->setTopWindowBorderColor();
+
+	glEnable( GL_BLEND );
+	//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+
+	int colCount = container->getRpgItem()->getContainerWidth();
+	int rowCount = container->getRpgItem()->getContainerHeight();
+
+	if ( scourge->getMovingItem() ) {
+		int currentX, currentY;
+		convertMousePos( scourge->getSDLHandler()->mouseX - win->getX() - x,
+		                 scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT,
+		                 &currentX, &currentY );
+		int px = currentX;
+		int py = currentY;
+		if ( px >= 0 && px + scourge->getMovingItem()->getInventoryWidth() <= colCount &&
+		        py >= 0 && py + scourge->getMovingItem()->getInventoryHeight() <= rowCount ) {
+			px *= GRID_SIZE;
+			py *= GRID_SIZE;
+			int pw = scourge->getMovingItem()->getInventoryWidth() * GRID_SIZE;
+			int ph = scourge->getMovingItem()->getInventoryHeight() * GRID_SIZE;
+			//cerr << "pw=" << pw << " ph=" << ph << endl;
+			glBegin( GL_TRIANGLE_STRIP );
+			glVertex2d( px, py );
+			glVertex2d( px + pw, py );
+			glVertex2d( px, py + ph );
+			glVertex2d( px + pw, py + ph );
+			glEnd();
+		}
+	} else if( getSelectedItem() ) {
+		int px = getSelectedItem()->getInventoryX() * GRID_SIZE - OFFSET_X;
+		int py = getSelectedItem()->getInventoryY() * GRID_SIZE - OFFSET_Y;
+		int pw = getSelectedItem()->getInventoryWidth() * GRID_SIZE;
+		int ph = getSelectedItem()->getInventoryHeight() * GRID_SIZE;
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glColor4f( 0, 0, 0, 0.5f );
+		glBegin( GL_TRIANGLE_STRIP );
+		glVertex2d( px, py );
+		glVertex2d( px + pw, py );
+		glVertex2d( px, py + ph );
+		glVertex2d( px + pw, py + ph );
+		glEnd();
+		win->setTopWindowBorderColor();
+		glBlendFunc( GL_SRC_COLOR, GL_DST_COLOR );
+	}
+
+	for ( int yy = 0; yy <= rowCount; yy++ ) {
+		glBegin( GL_LINE_LOOP );
+		glVertex2d( 0, yy * GRID_SIZE );
+		glVertex2d( colCount * GRID_SIZE, yy * GRID_SIZE );
+		glEnd();
+	}
+	for ( int xx = 0; xx <= colCount; xx++ ) {
+		glBegin( GL_LINE_LOOP );
+		glVertex2d( xx * GRID_SIZE, 0 );
+		glVertex2d( xx * GRID_SIZE, rowCount * GRID_SIZE );
+		glEnd();
+	}
+	glBegin( GL_LINE_LOOP );
+	glVertex2d( 0, 0 );
+	glVertex2d( colCount * GRID_SIZE - 1, 0 );
+	glVertex2d( colCount * GRID_SIZE - 1, rowCount * GRID_SIZE - 1 );
+	glVertex2d( 0, rowCount * GRID_SIZE - 1 );
+	glEnd();
+	glDisable( GL_BLEND );
+
+	glEnable( GL_TEXTURE_2D );
+	glColor4f( 1, 1, 1, 1 );
+
+	for ( int i = 0; i < container->getContainedItemCount(); i++ ) {
+		Item *item = container->getContainedItem( i );
+
+		int ix = item->getInventoryX() * GRID_SIZE;
+		int iy = item->getInventoryY() * GRID_SIZE;
+		int iw = item->getInventoryWidth() * GRID_SIZE;
+		int ih = item->getInventoryHeight() * GRID_SIZE;
+
+		item->renderIcon( scourge, ix, iy, iw, ih );
+	}
+
+	glPopMatrix();
+	glDisable( GL_TEXTURE_2D );	
 }
 
 void ContainerGui::showContents() {
-	for ( int i = 0; i < container->getContainedItemCount(); i++ ) {
-		container->getContainedItem( i )->getDetailedDescription( containedItemNames[i] );
-		if ( !container->getContainedItem( i )->isMagicItem() ) {
-			itemColor[i].r = 1;
-			itemColor[i].g = 1;
-			itemColor[i].b = 1;
-		} else {
-			itemColor[i].r = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem( i )->getMagicLevel() ]->r;
-			itemColor[i].g = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem( i )->getMagicLevel() ]->g;
-			itemColor[i].b = Constants::MAGIC_ITEM_COLOR[ container->getContainedItem( i )->getMagicLevel() ]->b;
+	for( int i = 0; container && i < container->getContainedItemCount(); i++ ) {
+		Item *item = container->getContainedItem( i );
+		if( item->getInventoryX() <= 0 && item->getInventoryY() <= 0 ) {
+			findInventoryPosition( item, item->getInventoryX(), item->getInventoryY(), false );			
 		}
-		itemColor[i].a = 1;
-		itemIcon[i] = container->getContainedItem( i )->getItemIconTexture();
 	}
-	list->setLines( container->getContainedItemCount(),
-	                containedItemNames,
-	                itemColor,
-	                itemIcon );
 }
 
 bool ContainerGui::handleEvent( SDL_Event *event ) {
-	/* -=K=-: commented out to silence "code that does nothing" warning
-	switch(event->type) {
-	case SDL_MOUSEBUTTONUP:
+	if ( event->type == SDL_MOUSEMOTION ) {
+			Item *item = getItemAtPos( event->motion.x - win->getX() - x,
+			                           event->motion.y - win->getY() - y - TITLE_HEIGHT );
+			if ( item != lastItem ) {
+				lastItem = item;
+				if ( item ) {
+					char tooltip[ 500 ];
+					item->getTooltip( tooltip );
+					canvas->setTooltip( tooltip );
+				} else {
+					canvas->setTooltip( NULL );
+				}
+			}
+		}
+		return false;	
+}
 
-	break;
-	case SDL_KEYUP:
-	switch(event->key.keysym.sym) {
-	 // case SDLK_ESCAPE:
-	 //   win->setVisible(false);
-	 //   return true;
-	default: break;
+Item *ContainerGui::getItemAtPos( int x, int y ) {
+	for ( int i = 0; container && i < container->getContainedItemCount(); i++ ) {
+		Item *item = container->getContainedItem( i );
+		int posX, posY;
+		convertMousePos( x, y, &posX, &posY );
+		if ( posX >= item->getInventoryX() &&
+				posX < item->getInventoryX() + item->getInventoryWidth() &&
+				posY >= item->getInventoryY() &&
+				posY < item->getInventoryY() + item->getInventoryHeight() ) {
+			return item;
+		}
 	}
-	default: break;
-	}*/
-	return false;
+	return NULL;
+}
+
+void ContainerGui::showInfo( Item *item ) {
+	scourge->getInfoGui()->setItem( item );
+	if ( !scourge->getInfoGui()->getWindow()->isVisible() )
+		scourge->getInfoGui()->getWindow()->setVisible( true );
 }
 
 bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == win->closeButton || widget == closeButton ) {
 		win->setVisible( false );
 		return true;
-	} else if ( widget == list && scourge->getTargetSelectionFor() ) {
-		int itemIndex = list->getSelectedLine();
-		if ( itemIndex > -1 ) {
-			Item *item = container->getContainedItem( itemIndex );
-			scourge->handleTargetSelectionOfItem( item );
-		}
-	} else if ( widget == infoButton ||
-	            ( widget == list && scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) ) {
-		int itemIndex;
-		if ( widget == infoButton ) {
-			itemIndex = list->getSelectedLine();
-		} else {
-			itemIndex = list->getLineAtPoint( scourge->getSDLHandler()->mouseX - list->getX(), scourge->getSDLHandler()->mouseY - list->getY() );
-		}
-		if ( itemIndex > -1 ) {
-			Item *item = container->getContainedItem( itemIndex );
-			scourge->getInfoGui()->setItem( item );
-			if ( !scourge->getInfoGui()->getWindow()->isVisible() )
-				scourge->getInfoGui()->getWindow()->setVisible( true );
+	} else if ( widget == infoButton ) {
+		if( getSelectedItem() ) {
+			showInfo( getSelectedItem() );
 		}
 	} else if ( widget == openButton ) {
-		int n = list->getSelectedLine();
-		if ( n > -1 &&
-		        container->getContainedItem( n )->getRpgItem()->getType() == RpgItem::CONTAINER ) {
-			scourge->openContainerGui( container->getContainedItem( n ) );
+		if ( getSelectedItem() && getSelectedItem()->getRpgItem()->getType() == RpgItem::CONTAINER ) {
+			scourge->openContainerGui( getSelectedItem() );
 		}
 	} else if ( widget == getAllButton ) {
 		while ( container->getContainedItemCount() > 0 ) {
 			Item *item = container->getContainedItem( 0 );
 			// try to add it
 			if ( scourge->getPcUi()->receiveInventory( item ) ) {
-				container->removeContainedItem( 0 );
+				if( item == getSelectedItem() ) {
+					selectedItem = NULL;
+				}
+				container->removeContainedItem( 0 );				
 			} else {
 				scourge->showMessageDialog( _( "There is not enough room in your backpack for everything." ) );
 				break;
@@ -188,16 +262,37 @@ bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 		}
 		showContents();
 	} else if ( scourge->getSDLHandler()->isDoubleClick ) {
-		int itemIndex = list->getSelectedLine();
-		if ( itemIndex > -1 ) {
-			Item *item = container->getContainedItem( itemIndex );
+		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
+		                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );		
+		if ( item ) {
 			if ( scourge->getPcUi()->receiveInventory( item ) ) {
-				container->removeContainedItem( itemIndex );
+				if( item == getSelectedItem() ) {
+					selectedItem = NULL;
+				}
+				container->removeContainedItem( item );
+				showContents();				
 			} else {
 				scourge->showMessageDialog( _( "There is not enough room in your backpack for everything." ) );
 			}
 		}
-		showContents();
+	} else 	if ( scourge->getSDLHandler()->isDoubleClick ) {
+		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
+		                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );
+		if ( item && item->getRpgItem()->isContainer() ) {
+			scourge->openContainerGui( item );
+		}
+	} else if ( scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
+		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
+		                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );
+		if ( item ) {
+			showInfo( item );
+		}
+	} else if ( scourge->getSDLHandler()->mouseButton == SDL_BUTTON_LEFT ) {
+			Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
+			                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );
+			if ( item ) {
+				selectedItem = item;
+			}
 	}
 	return false;
 }
@@ -205,9 +300,9 @@ bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 void ContainerGui::receive( Widget *widget ) {
 	enum { MSG_SIZE = 120 };
 	char message[ MSG_SIZE ];
-	if ( scourge->getMovingItem() &&
-	        scourge->getMovingItem() != container ) {
-		if ( container->addContainedItem( scourge->getMovingItem() ) ) {
+	if ( scourge->getMovingItem() && scourge->getMovingItem() != container ) {
+		if ( receive( scourge->getMovingItem(), true ) && 
+				container->addContainedItem( scourge->getMovingItem() ) ) {
 			// message: the container accepted the item
 			snprintf( message, MSG_SIZE, _( "%1$s is placed in %2$s." ),
 			          scourge->getMovingItem()->getItemName(),
@@ -224,21 +319,111 @@ void ContainerGui::receive( Widget *widget ) {
 	}
 }
 
-bool ContainerGui::startDrag( Widget *widget, int x, int y ) {
-	dropItem();
+bool ContainerGui::receive( Item *item, bool atCursor ) {
+	//Put item in the most left/top availabel position
+	int xPos = 0;
+	int yPos = 0;
+	//If dialog visible put item on the mouse position
+	if ( atCursor ) {
+		xPos = scourge->getSDLHandler()->mouseX - win->getX() - x;
+		yPos = scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT;
+	}
+
+	// try to fit it
+	return findInventoryPosition( item, xPos, yPos );
+}
+
+/// Find an inventory position for an item dropped at screen pos x,y.
+
+/// note: optimize this,
+/// current O(n^2)
+
+bool ContainerGui::findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem ) {
+	if ( container && item ) {
+		int colCount = canvas->getWidth() / GRID_SIZE;
+		int rowCount = canvas->getHeight() / GRID_SIZE;
+
+		int selX = -1;
+		int selY = -1;
+
+		int posX, posY;
+		convertMousePos( x, y, &posX, &posY );
+
+		for ( int xx = 0; xx < colCount; xx++ ) {
+			for ( int yy = 0; yy < rowCount; yy++ ) {
+				if ( xx + item->getInventoryWidth() <= colCount &&
+				        yy + item->getInventoryHeight() <= rowCount &&
+				        checkInventoryLocation( item, useExistingLocationForSameItem, xx, yy ) ) {
+					if ( posX == xx && posY == yy ) {
+						selX = xx;
+						selY = yy;
+						break;
+					} else if ( selX == -1 ) {
+						selX = xx;
+						selY = yy;
+					}
+				}
+			}
+		}
+
+		if ( selX > -1 ) {
+			item->setInventoryLocation( selX, selY );
+			return true;
+		}
+	}
+	return false;
+}
+
+/// Checks whether an item fits into the inventory at screen pos xx,yy.
+
+bool ContainerGui::checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy ) {
+	SDL_Rect itemRect;
+	itemRect.x = xx;
+	itemRect.y = yy;
+	itemRect.w = item->getInventoryWidth();
+	itemRect.h = item->getInventoryHeight();
+	for ( int t = 0; container && t < container->getContainedItemCount(); t++ ) {
+		Item *i = container->getContainedItem( t );
+		if ( i == item ) {
+			if ( useExistingLocationForSameItem ) {
+				return true;
+			} else {
+				continue;
+			}
+		}
+
+		SDL_Rect iRect;
+		iRect.x = i->getInventoryX();
+		iRect.y = i->getInventoryY();
+		iRect.w = i->getInventoryWidth();
+		iRect.h = i->getInventoryHeight();
+
+		if ( SDLHandler::intersects( &itemRect, &iRect ) ) return false;
+	}
 	return true;
+}
+
+bool ContainerGui::startDrag( Widget *widget, int x, int y ) {
+	if( !scourge->getMovingItem() ) {
+		dropItem();
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /// Drops an item from a container.
 
 void ContainerGui::dropItem() {
-	int n = list->getSelectedLine();
-	if ( n > -1 ) {
-		Item *item = container->removeContainedItem( n );
-		if ( item ) {
-			scourge->startItemDragFromGui( item );
-			showContents();
+	Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
+	                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );
+	if( item ) {
+		if( item == getSelectedItem() ) {
+			selectedItem = NULL;
 		}
+		container->removeContainedItem( item );
+		scourge->startItemDragFromGui( item );
+		showContents();
 	}
 }
 

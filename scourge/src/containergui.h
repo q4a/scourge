@@ -38,14 +38,11 @@ class ContainerGui : public DragAndDropHandler, WidgetView {
 private:
 	Scourge *scourge;
 	Item *container;
+	int x, y;
 	Window *win;
 	Button *openButton, *infoButton, *closeButton, *getAllButton;
-	ScrollingList *list;
-	Label *label;
-	std::string containedItemNames[MAX_CONTAINED_ITEMS];
-	Color *itemColor;
-	Texture itemIcon[MAX_INVENTORY_SIZE];
 	Canvas *canvas;
+	Item *lastItem, *selectedItem;
 
 public:
 	ContainerGui( Scourge *scourge, Item *container, int x, int y );
@@ -63,6 +60,9 @@ public:
 	inline void refresh() {
 		showContents();
 	}
+	inline Item *getSelectedItem() {
+		return selectedItem;
+	}	
 
 	// drag and drop handling
 	void receive( Widget *widget );
@@ -73,7 +73,12 @@ public:
 private:
 	void showContents();
 	void dropItem();
-
+	void convertMousePos( int x, int y, int *invX, int *invY ); 
+	Item *getItemAtPos( int x, int y );
+	void showInfo( Item *item );
+	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
+	bool findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem = true );
+	bool receive( Item *item, bool atCursor );
 };
 
 #endif

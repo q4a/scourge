@@ -215,20 +215,20 @@ bool Item::addContainedItem( Item *item, bool force ) {
 
 /// Removes a contained item by index.
 
-Item *Item::removeContainedItem( int index ) {
-	Item *item = NULL;
-	if ( index >= 0 && index < containedItemCount ) {
-		item = containedItems[index];
-		containedItemCount--;
-		for ( int i = index; i < containedItemCount; i++ ) {
-			containedItems[i] = containedItems[i + 1];
-		}
-		containsMagicItem = false;
-		for ( int i = 0; i < containedItemCount; i++ ) {
-			if ( containedItems[i]->isMagicItem() ) containsMagicItem = true;
+void Item::removeContainedItem( Item *item ) {
+	for( int t = 0; t < containedItemCount; t++ ) {
+		if( item == containedItems[ t ] ) {
+			containedItemCount--;
+			for ( int i = t; i < containedItemCount; i++ ) {
+				containedItems[i] = containedItems[i + 1];
+			}
+			containsMagicItem = false;
+			for ( int i = 0; i < containedItemCount; i++ ) {
+				if ( containedItems[i]->isMagicItem() ) containsMagicItem = true;
+			}
+			return;
 		}
 	}
-	return item;
 }
 
 /// Returns a contained item by index.
