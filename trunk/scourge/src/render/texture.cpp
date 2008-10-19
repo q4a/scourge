@@ -34,7 +34,6 @@ Texture::Actual::Actual()
 		, _height( 0 )
 		, _hasAlpha( false )
 		, _isSprite( false )
-		, _isDestroyed( false )
 		// TODO: think through member/polymorphing candidates here:
 		//, _wantsAnisotropy( false )
 		//, _wantsMipmapping( false )
@@ -45,10 +44,6 @@ Texture::Actual::Actual()
 
 Texture::Actual::~Actual() {
 	// debug checks
-	if ( _isDestroyed ) {
-		cerr << "*** Texture::Actual::~Actual() destroyed multiple times." << endl;
-		return; // actually should exit() here
-	}
 
 	clear();
 
@@ -57,16 +52,10 @@ Texture::Actual::~Actual() {
 		++it;
 	}
 	if ( it != mainList.end() ) mainList.erase( it );
-
-	_isDestroyed = true;
 }
 
 void Texture::Actual::clear() {
 	// debug checks
-	if ( _isDestroyed ) {
-		cerr << "*** Texture::Actual::clear() on destroyed texture." << endl;
-		return; // actually should exit() here
-	}
 
 	unloadImage();
 
@@ -83,10 +72,6 @@ void Texture::Actual::clear() {
 
 bool Texture::Actual::load( const string& path, bool isSprite, bool anisotropy ) {
 	// debug checks
-	if ( _isDestroyed ) {
-		cerr << "*** Texture::Actual::load() on destroyed texture." << endl;
-		return false; // actually should exit() here
-	}
 
 	_filename = path;
 	if ( !loadImage() ) return false;
@@ -142,12 +127,10 @@ bool Texture::Actual::load( const string& path, bool isSprite, bool anisotropy )
 
 bool Texture::Actual::loadImage() {
 	// debug checks
-	if ( _isDestroyed ) {
-		cerr << "*** Texture::Actual::loadImage() on destroyed texture." << endl;
-		return false; // actually should exit() here
+	if ( _surface != NULL ) {
+		// just silently unload or make noise?
+		unloadImage();
 	}
-	// just silently unload or make noise?
-	unloadImage();
 
 	_surface = IMG_Load( _filename.c_str() );
 	if ( _surface == NULL ) {
@@ -176,10 +159,6 @@ void Texture::Actual::unloadImage() {
 
 bool Texture::Actual::createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight ) {
 	// debug checks
-	if ( _isDestroyed ) {
-		cerr << "*** Texture::Actual::createTile() on destroyed texture." << endl;
-		return false; // actually should exit() here
-	}
 
 	// The raw data of the source image.
 	unsigned char * data = ( unsigned char * ) ( surface->pixels );
@@ -236,10 +215,6 @@ bool Texture::Actual::createTile( SDL_Surface const* surface, int tileX, int til
 
 bool Texture::Actual::createAlpha( Actual const* alpha, Actual const* sample, int textureSizeW, int textureSizeH, int width, int height ) {
 	// debug checks
-	if ( _isDestroyed ) {
-		cerr << "*** Texture::Actual::createAlpha() on destroyed texture." << endl;
-		return false; // actually should exit() here
-	}
 
 // todo: should be next power of 2 after width/height (maybe cap-ed at 256)
 //  int textureSizeW = 256;
@@ -369,12 +344,7 @@ bool Texture::Actual::createAlpha( Actual const* alpha, Actual const* sample, in
 }
 
 bool Texture::Actual::loadShot( const string& dirName ) {
-
 	// debug checks
-	if ( _isDestroyed ) {
-		cerr << "*** Texture::Actual::loadShot() on destroyed texture." << endl;
-		return false; // actually should exit() here
-	}
 	if ( _surface != NULL ) {
 		// just unload like this?
 		unloadImage();

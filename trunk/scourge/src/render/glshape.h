@@ -45,11 +45,7 @@ struct Surface {
 
 class GLShape : public Shape  {
 protected:
-	/**
-	  Represents an array of 3 addresses for textures. If tex[i]==NULL, no texture is given,
-	  only a color.
-	*/
-	Texture* tex;
+	Texture* tex; // Represents an array of 3 Textures. 
 	Uint8 shapePalIndex;
 	int skipside;
 	bool useTexture;

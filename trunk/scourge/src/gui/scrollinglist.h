@@ -34,7 +34,7 @@ class ScrollingList : public Widget {
 protected:
 	std::vector<std::string> list;
 	const Color *colors;
-	Texture* icons;
+	Texture* icons; // pointer to array of icon textures
 	int value;
 	int scrollerWidth, scrollerHeight;
 	int listHeight;

@@ -86,15 +86,13 @@ private:
 	// all member data is in refcounted Actual
 	class Actual {
 	public:
-		GLuint _id; //OpenGL texture name
+		GLuint _id; // OpenGL texture name
 		int _cntr; // Intrusive counter
 		string _filename;
 		GLint _width;
 		GLint _height;
 		bool _hasAlpha;
 		bool _isSprite;
-		// Debug member to check we do not destroy nodes multiple times (UDB).
-		bool _isDestroyed;
 		// TODO: think through member/polymorphing candidates here:
 		// bool _wantsAnisotropy;
 		// bool _wantsMipmapping;
@@ -113,6 +111,7 @@ private:
 		void clear();
 		bool loadImage();
 		void unloadImage();
+	private:
 		// undefined default copying 
 		Actual( Actual const& that ); // copy construction
 		Actual& operator=( Actual const& that ); // copy assignment
