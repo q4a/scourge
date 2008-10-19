@@ -21,59 +21,77 @@
 using std::cerr;
 using std::endl;
 
-Texture::Texture()
+Texture::NodeVec Texture::mainList;
+Texture::Actual Texture::emptyNode;
+Texture Texture::empty;
+
+
+Texture::Actual::Actual()
 		: _id( INVALID )
+		, _cntr( 0 )
 		, _filename()
 		, _width( 0 )
 		, _height( 0 )
-		// unused: , _hasAbsolutePath( false )
 		, _hasAlpha( false )
 		, _isSprite( false )
-		, _wantsAnisotropy( false )
-		, _isDestoyed( false )
+		, _isDestroyed( false )
 		// TODO: think through member/polymorphing candidates here:
+		//, _wantsAnisotropy( false )
 		//, _wantsMipmapping( false )
 		//, _isMipmapped( false )
 		//, _pixels( NULL )
 		, _surface( NULL ) {
 }
 
-Texture::~Texture() {
+Texture::Actual::~Actual() {
 	// debug checks
-	if ( _isDestoyed ) {
-		cerr << "*** Texture::~Texture() destroyed multiple times." << endl;
+	if ( _isDestroyed ) {
+		cerr << "*** Texture::Actual::~Actual() destroyed multiple times." << endl;
 		return; // actually should exit() here
 	}
 
 	clear();
-	_isDestoyed = true;
+
+	NodeVec::iterator it = mainList.begin();
+	while ( it != mainList.end() && *it != this ) {
+		++it;
+	}
+	if ( it != mainList.end() ) mainList.erase( it );
+
+	_isDestroyed = true;
 }
 
-/// Grand unified generic texture loader.
-
-/// Creates an OpenGL texture from a file and tries to set up everything
-/// correctly according to the properties of the source image.
-/// @return true on success.
-/// original was Shapes::loadTexture()
-
-bool Texture::load( const string& filename, bool absolutePath, bool isSprite, bool anisotropy ) {
+void Texture::Actual::clear() {
 	// debug checks
-	if ( _isDestoyed ) {
-		cerr << "*** Texture::load() on destroyed texture." << endl;
+	if ( _isDestroyed ) {
+		cerr << "*** Texture::Actual::clear() on destroyed texture." << endl;
+		return; // actually should exit() here
+	}
+
+	unloadImage();
+
+	if ( _id != INVALID ) {
+		glDeleteTextures( 1, &_id );
+		_id = INVALID;
+	}
+
+	_filename.clear();
+	_width = 0;
+	_height = 0;
+}
+
+
+bool Texture::Actual::load( const string& path, bool isSprite, bool anisotropy ) {
+	// debug checks
+	if ( _isDestroyed ) {
+		cerr << "*** Texture::Actual::load() on destroyed texture." << endl;
 		return false; // actually should exit() here
 	}
-	if ( isSpecified() ) {
-		cerr << "*** Texture::load() generating texture (" << _filename << ") without releasing old image." << endl;
-		clear();
-	}
 
-	// unused:_hasAbsolutePath = absolutePath;
-	_filename = ( absolutePath ? filename : rootDir + filename );
-
+	_filename = path;
 	if ( !loadImage() ) return false;
 
 	_isSprite = isSprite;
-	_wantsAnisotropy = anisotropy;
 	Preferences *prefs = Session::instance->getPreferences();
 
 	GLuint destFormat;
@@ -99,7 +117,7 @@ bool Texture::load( const string& filename, bool absolutePath, bool isSprite, bo
 
 	// Enable anisotropic filtering if requested, mipmapping is enabled
 	// and the hardware supports it.
-	if ( _wantsAnisotropy && !_hasAlpha
+	if ( anisotropy && !_hasAlpha
 	        && strstr( ( char* )glGetString( GL_EXTENSIONS ), "GL_EXT_texture_filter_anisotropic" )
 	        && prefs->getAnisoFilter() ) {
 		float maxAnisotropy;
@@ -118,32 +136,14 @@ bool Texture::load( const string& filename, bool absolutePath, bool isSprite, bo
 	return true;
 }
 
-void Texture::clear() {
-	// debug checks
-	if ( _isDestoyed ) {
-		cerr << "*** Texture::clear() on destroyed texture." << endl;
-		return; // actually should exit() here
-	}
-
-	unloadImage();
-
-	if ( isSpecified() ) {
-		glDeleteTextures( 1, &_id );
-		_id = INVALID;
-		_filename.clear();
-		_width = 0;
-		_height = 0;
-	}
-}
-
 /// Loads image using SDL_image and extracts all interesting data from it
 /// assumes _filename is set
 /// @return true on success
 
-bool Texture::loadImage() {
+bool Texture::Actual::loadImage() {
 	// debug checks
-	if ( _isDestoyed ) {
-		cerr << "*** Texture::loadImage() on destroyed texture." << endl;
+	if ( _isDestroyed ) {
+		cerr << "*** Texture::Actual::loadImage() on destroyed texture." << endl;
 		return false; // actually should exit() here
 	}
 	// just silently unload or make noise?
@@ -151,7 +151,7 @@ bool Texture::loadImage() {
 
 	_surface = IMG_Load( _filename.c_str() );
 	if ( _surface == NULL ) {
-		cerr << "*** Error loading image (" << _filename << "): " << IMG_GetError() << endl;
+		cerr << "*** Texture::Actual::loadImage() error (" << _filename << "): " << IMG_GetError() << endl;
 		return false;
 	}
 
@@ -160,29 +160,29 @@ bool Texture::loadImage() {
 	_hasAlpha = _surface->format->Amask != 0;
 
 	// TODO: refactor Constants::checkTexture into Texture::check
-	Constants::checkTexture( "Texture::load", _width, _height );
+	Constants::checkTexture( "Texture::Actual::loadImage", _width, _height );
 	return true;
 }
 
-/// Creatres a tile of an SDL surface as a texture.
-/// This function allows you to define the size of a tile and which tile you want. It
-/// is then created as a texture from the appropriate part of the SDL surface.
-/// @return true on success.
-/// used to be Shapes::createTileTexture()
+/// Unloads loaded image if any
 
-bool Texture::createTile( SDL_Surface **surface, int tileX, int tileY, int tileWidth, int tileHeight ) {
-	// debug checks
-	if ( _isDestoyed ) {
-		cerr << "*** Texture::createTile() on destroyed texture." << endl;
-		return false; // actually should exit() here
+void Texture::Actual::unloadImage() {
+	if ( _surface != NULL ) {
+		SDL_FreeSurface( _surface );
+		_surface = NULL;
 	}
-	if ( isSpecified() ) {
-		cerr << "*** Texture::createTile() generating texture (" << tileX << "," << tileY << ") without releasing old image." << endl;
-		clear();
+}
+
+
+bool Texture::Actual::createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight ) {
+	// debug checks
+	if ( _isDestroyed ) {
+		cerr << "*** Texture::Actual::createTile() on destroyed texture." << endl;
+		return false; // actually should exit() here
 	}
 
 	// The raw data of the source image.
-	unsigned char * data = ( unsigned char * ) ( ( *surface ) -> pixels );
+	unsigned char * data = ( unsigned char * ) ( surface->pixels );
 	// The destination image (a single tile)
 	std::vector<GLubyte> image( tileWidth * tileHeight * 4 );
 
@@ -192,14 +192,14 @@ bool Texture::createTile( SDL_Surface **surface, int tileX, int tileY, int tileW
 	// where the tile ends in a line
 	int rest = ( tileX + 1 ) * tileWidth * 4;
 	// Current position in the source data
-	int c = offs + ( tileY * tileHeight * ( *surface )->pitch );
+	int c = offs + ( tileY * tileHeight * surface->pitch );
 	// the following lines extract R,G and B values from any bitmap
 
 	for ( int i = 0; i < tileWidth * tileHeight; ++i ) {
 
 		if ( i > 0 && i % tileWidth == 0 ) {
 			// skip the rest of the line
-			c += ( ( *surface )->pitch - rest );
+			c += ( surface->pitch - rest );
 			// skip the offset (go to where the tile starts)
 			c += offs;
 		}
@@ -230,37 +230,15 @@ bool Texture::createTile( SDL_Surface **surface, int tileX, int tileY, int tileW
 	return true;
 }
 
-
-/// Unloads loaded image if any
-
-void Texture::unloadImage() {
-	if ( _surface != NULL ) {
-		SDL_FreeSurface( _surface );
-		_surface = NULL;
-	}
-}
-
-
 /// Adds the alpha channel of the alphaTex texture to the sampleTex texture.
 /// @return true on success.
 /// used to be Shapes::createAlphaTexture()
 
-bool Texture::createAlpha( Texture const* alpha, Texture const* sample, int textureSizeW, int textureSizeH, int width, int height ) {
+bool Texture::Actual::createAlpha( Actual const* alpha, Actual const* sample, int textureSizeW, int textureSizeH, int width, int height ) {
 	// debug checks
-	if ( _isDestoyed ) {
-		cerr << "*** Texture::createAlpha() on destroyed texture." << endl;
+	if ( _isDestroyed ) {
+		cerr << "*** Texture::Actual::createAlpha() on destroyed texture." << endl;
 		return false; // actually should exit() here
-	}
-	if ( isSpecified() ) {
-		cerr << "*** Texture::createAlpha() generating texture without releasing old image." << endl;
-		clear();
-	}
-	if ( alpha == NULL ) {
-		cerr << "*** Texture::createAlpha() called with alpha texture == NULL." << endl;
-	}
-
-	if ( sample == NULL ) {
-		cerr << "*** Texture::createAlpha() called with sample texture == NULL." << endl;
 	}
 
 // todo: should be next power of 2 after width/height (maybe cap-ed at 256)
@@ -314,7 +292,7 @@ bool Texture::createAlpha( Texture const* alpha, Texture const* sample, int text
 	glEnable( GL_TEXTURE_2D );
 
 	//    glTranslatef( x, y, 0 );
-	if ( sample != NULL ) sample->glBind();
+	glBindTexture( GL_TEXTURE_2D, sample->_id );
 	glColor4f( 1, 1, 1, 1 );
 //  glNormal3f( 0, 0, 1 );
 
@@ -339,7 +317,7 @@ bool Texture::createAlpha( Texture const* alpha, Texture const* sample, int text
 	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
 	glColor4f( 1, 1, 1, 1 );
 
-	if ( alpha != NULL ) alpha->glBind();
+	glBindTexture( GL_TEXTURE_2D, alpha->_id );
 //  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
@@ -358,18 +336,15 @@ bool Texture::createAlpha( Texture const* alpha, Texture const* sample, int text
 	glLoadIdentity();
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture( GL_TEXTURE_2D, _id );
-	glCopyTexSubImage2D(
-	  GL_TEXTURE_2D,
-	  0,      // MIPMAP level
-	  0,      // x texture offset
-	  0,      // y texture offset
-	  0,              // x window coordinates
-	  Session::instance->getGameAdapter()->getScreenHeight() - textureSizeH,   // y window coordinates
-	  textureSizeW,    // width
-	  textureSizeH     // height
-	);
-	//cerr << "OpenGl result for minimap texture building: " << Util::getOpenGLError() << endl;
-	//  glPopAttrib();
+	glCopyTexSubImage2D( GL_TEXTURE_2D,
+	                     0,      // MIPMAP level
+	                     0,      // x texture offset
+	                     0,      // y texture offset
+	                     0,              // x window coordinates
+	                     Session::instance->getGameAdapter()->getScreenHeight() - textureSizeH,   // y window coordinates
+	                     textureSizeW,    // width
+	                     textureSizeH     // height
+	                   );
 
 	// cover with black
 	// todo: this should be the original background, not black
@@ -393,27 +368,25 @@ bool Texture::createAlpha( Texture const* alpha, Texture const* sample, int text
 	return true;
 }
 
-/// loads texture from screen.bmp file in given directory
-/// @return true on success.
-/// used to be SavegameDialog::loadScreenshot()
-
-bool Texture::loadShot( const string& dirName ) {
+bool Texture::Actual::loadShot( const string& dirName ) {
 
 	// debug checks
-	if ( _isDestoyed ) {
-		cerr << "*** Texture::loadShot() on destroyed texture." << endl;
+	if ( _isDestroyed ) {
+		cerr << "*** Texture::Actual::loadShot() on destroyed texture." << endl;
 		return false; // actually should exit() here
 	}
-	if ( isSpecified() ) {
-		cerr << "*** Texture::loadShot() generating texture without releasing old image (" << _filename << ")." << endl;
-		clear();
+	if ( _surface != NULL ) {
+		// just unload like this?
+		unloadImage();
 	}
 
-	_filename = get_file_name( dirName + "/screen.bmp" );
-	SDL_Surface* surface = SDL_LoadBMP( _filename.c_str() );
+	_filename = dirName;
+	_surface = SDL_LoadBMP( _filename.c_str() );
+	_width = _surface->w;
+	_height = _surface->h;
 
-	if ( surface == NULL ) {
-		cerr << "*** Error loading screenshot image (" << _filename << "): " << IMG_GetError() << endl;
+	if ( _surface == NULL ) {
+		cerr << "*** Texture::Actual::loadShot() Error (" << _filename << "): " << IMG_GetError() << endl;
 		return false;
 	}
 
@@ -424,9 +397,144 @@ bool Texture::loadShot( const string& dirName ) {
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-	gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGB, surface->w, surface->h, GL_BGR, GL_UNSIGNED_BYTE, surface->pixels );
+	gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGB, _width, _height, GL_BGR, GL_UNSIGNED_BYTE, _surface->pixels );
 
-	SDL_FreeSurface( surface );
+	unloadImage();
 	return true;
 }
+
+/// Texture construction
+
+Texture::Texture()
+		: _ref( &emptyNode ) {
+	++( _ref->_cntr );
+}
+
+Texture::Texture( Texture const& that )
+		: _ref( that._ref ) {
+	++( _ref->_cntr );
+}
+
+Texture::Texture( Actual* node )
+		: _ref( node ) {
+	++( _ref->_cntr );
+}
+
+Texture::~Texture() {
+	--( _ref->_cntr );
+	if ( _ref->_cntr == 0 && _ref != &emptyNode ) {
+		delete _ref;
+	}
+}
+
+Texture& Texture::operator=( Texture const& that ) {
+	Texture tmp( that );
+	Swap( tmp );
+	return *this;
+}
+
+
+void Texture::clear() {
+	Texture tmp( &emptyNode );
+	Swap( tmp );
+}
+
+
+void Texture::Swap( Texture& that ) {
+	Actual* tmp( that._ref );
+	that._ref = _ref;
+	_ref = tmp;
+}
+
+
+
+
+/// Grand unified generic texture loader.
+
+/// Creates an OpenGL texture from a file and tries to set up everything
+/// correctly according to the properties of the source image.
+/// @return true on success.
+/// original was Shapes::loadTexture()
+
+bool Texture::load( const string& filename, bool absolutePath, bool isSprite, bool anisotropy ) {
+	// set the path
+	std::string path = ( absolutePath ? filename : rootDir + filename );
+	// search if there are textures with same name
+	NodeVec::iterator it = mainList.begin();
+	while ( it != mainList.end() && path.compare( ( *it )->_filename ) > 0 ) {
+		++it;
+	}
+	// not found? 
+	if ( it == mainList.end() || path.compare( ( *it )->_filename ) != 0 ) {
+		Actual* node = new Actual;
+		// not loadable? refuse
+		if (!node->load( path, isSprite, anisotropy )) {
+			delete node;
+			return false;
+		}
+		// create
+		it = mainList.insert( it, node );
+	}
+	// found it or created it ... now swap it out and done
+	Texture tmp( *it );
+	Swap( tmp );
+	return isSpecified();
+}
+
+/// Creates a tile of an SDL surface as a texture.
+/// This function allows you to define the size of a tile and which tile you want. It
+/// is then created as a texture from the appropriate part of the SDL surface.
+/// @return true on success.
+/// used to be Shapes::createTileTexture()
+
+bool Texture::createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight ) {
+	// this one adds new node always
+	Actual* node = new Actual;
+	node->createTile( surface, tileX, tileY, tileWidth, tileHeight );
+	Texture tmp( node );
+	Swap( tmp );
+	return isSpecified();
+}
+
+/// Adds the alpha channel of the alphaTex texture to the sampleTex texture.
+/// @return true on success.
+/// used to be Shapes::createAlphaTexture()
+
+bool Texture::createAlpha( Texture const& alpha, Texture const& sample, int textureSizeW, int textureSizeH, int width, int height ) {
+	// this one adds new node always
+	Actual* node = new Actual;
+	node->createAlpha( alpha._ref, sample._ref, textureSizeW, textureSizeH, width, height );
+	Texture tmp( node );
+	Swap( tmp );
+	return isSpecified();
+}
+
+/// loads texture from screen.bmp file in given directory
+/// @return true on success.
+/// used to be SavegameDialog::loadScreenshot()
+
+bool Texture::loadShot( const string& dirName ) {
+	std::string path = get_file_name( dirName + "/screen.bmp" );
+	// search if there are textures with same name
+	NodeVec::iterator it = mainList.begin();
+	while ( it != mainList.end() && path.compare( ( *it )->_filename ) > 0 ) {
+		++it;
+	}
+	// not found?
+	if ( it == mainList.end() || path.compare( ( *it )->_filename ) != 0 ) {
+		Actual* node = new Actual;
+		// not loadable? refuse
+		if (!node->loadShot( path )) {
+			delete node;
+			return false;
+		}
+		// create
+		it = mainList.insert( it, node );
+	}
+	// found it or created it ... now swap to it
+	Texture tmp( *it );
+	Swap( tmp );
+	return isSpecified();
+}
+
 

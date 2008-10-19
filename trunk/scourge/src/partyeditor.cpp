@@ -230,7 +230,7 @@ void PartyEditor::setVisible( bool b ) {
 }
 
 Creature *PartyEditor::getHighestSkillPC( int skill ) {
-	return( maxSkills.find( skill ) == maxSkills.end() ? NULL : maxSkills[ skill ] );
+	return NULL; // never filled: ( maxSkills.find( skill ) == maxSkills.end() ? NULL : maxSkills[ skill ] );
 }
 
 Button *PartyEditor::getStartGameButton() {

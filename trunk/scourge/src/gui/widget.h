@@ -221,7 +221,7 @@ public:
 
 	void drawTooltip( Widget *parent );
 
-	static void drawBorderedTexture( Texture const* texture, int x, int y, int w, int h,
+	static void drawBorderedTexture( Texture texture, int x, int y, int w, int h,
 	                                 int left, int right, int textureWidth,
 	                                 bool inverse = false );
 

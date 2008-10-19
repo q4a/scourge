@@ -54,11 +54,11 @@ Item::Item( Session *session, RpgItem *rpgItem, int level, bool loading ) {
 }
 
 Item::~Item() {
-	/* unused: 
+	/* unused:
 	if ( textureInMemory != NULL ) {
-		free( textureInMemory );
-		textureInMemory = NULL;
-		glDeleteTextures( 1, tex3d );
+	 free( textureInMemory );
+	 textureInMemory = NULL;
+	 glDeleteTextures( 1, tex3d );
 	}
 	*/
 
@@ -149,9 +149,9 @@ Item *Item::load( Session *session, ItemInfo *info ) {
 		return NULL;
 	}
 	Item *item = session->newItem( rpgItem,
-	             info->level,
-	             spell,
-	             true );
+	                               info->level,
+	                               spell,
+	                               true );
 	item->blocking = ( info->blocking == 1 );
 	item->currentCharges = info->currentCharges;
 	item->weight = static_cast<float>( info->weight ) / 100.0f;
@@ -341,8 +341,8 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 
 		strcpy( long_description, node->getValueAsString( "description" ) );
 		strcpy( short_description, node->getValueAsString( "short_description" ) );
-		
-		int containerWidth = toint( node->getValueAsFloat( "container_width" ) );		
+
+		int containerWidth = toint( node->getValueAsFloat( "container_width" ) );
 		int containerHeight = toint( node->getValueAsFloat( "container_height" ) );
 		strcpy( containerTexture, node->getValueAsString( "container_texture" ) );
 
@@ -468,9 +468,9 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 }
 
 void Item::decodeInfluenceBlock( RpgItem *item
-    , int skill
-    , vector<ConfigNode*> *nodes
-    , int influenceType ) {
+                                 , int skill
+                                 , vector<ConfigNode*> *nodes
+                                 , int influenceType ) {
 	char tmp[300];
 	if ( nodes ) {
 		ConfigNode *node = ( *nodes )[0];
@@ -1086,19 +1086,19 @@ void Item::identify( int infoDetailLevel ) {
 /// Inventory x size.
 
 int Item::getInventoryWidth() {
-	return ( getShape()->getIcon()->isSpecified() ? getShape()->getIconWidth() : rpgItem->getInventoryWidth() );
+	return ( getShape()->getIcon().isSpecified() ? getShape()->getIconWidth() : rpgItem->getInventoryWidth() );
 }
 
 /// Inventory y size.
 
 int Item::getInventoryHeight() {
-	return ( getShape()->getIcon()->isSpecified() ? getShape()->getIconHeight() : rpgItem->getInventoryHeight() );
+	return ( getShape()->getIcon().isSpecified() ? getShape()->getIconHeight() : rpgItem->getInventoryHeight() );
 }
 
 void Item::renderIcon( Scourge *scourge, SDL_Rect *rect, int gridSize, bool smallIcon ) {
 	int iw = getInventoryWidth() * gridSize;
 	int ih = getInventoryHeight() * gridSize;
-	
+
 	int iy = rect->y;
 	if ( rect->h - ih > gridSize ) iy += rect->h - ih - gridSize;
 	renderIcon( scourge, rect->x + ( rect->w - iw ) / 2, iy, iw, ih, smallIcon );
@@ -1106,27 +1106,27 @@ void Item::renderIcon( Scourge *scourge, SDL_Rect *rect, int gridSize, bool smal
 
 /// Renders the item's icon and any overlaid effects
 void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
-	Texture const* tex;
+	Texture tex;
 	int rw, rh, ox, oy, iw, ih;
 	// getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, smallIcon );
-	getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, false );	
+	getItemIconInfo( &tex, &rw, &rh, &ox, &oy, &iw, &ih, w, h, false );
 	glPushMatrix();
 	glTranslatef( x + ox, y + oy, 0 );
-//	if ( !smallIcon ) {
-		if ( w > 0 && h > 0 ) glScalef( rw / static_cast<float>( w ), rh / static_cast<float>( h ), 1 );
-		if ( isMagicItem() ) {
-			renderUnderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
-		}
-//	}
+// if ( !smallIcon ) {
+	if ( w > 0 && h > 0 ) glScalef( rw / static_cast<float>( w ), rh / static_cast<float>( h ), 1 );
+	if ( isMagicItem() ) {
+		renderUnderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
+	}
+// }
 	// renderItemIcon( scourge, 0, 0, rw, rh, smallIcon );
 	renderItemIcon( scourge, 0, 0, rw, rh, false );
-//	if ( !smallIcon ) {
-		if ( isMagicItem() ) {
-			renderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
-			renderItemIconIdentificationEffect( scourge, 0, 0, rw, rh );
-		}
-		glScalef( 1, 1, 1 );
-//	}
+// if ( !smallIcon ) {
+	if ( isMagicItem() ) {
+		renderItemIconEffect( scourge, 0, 0, rw, rh, iw, ih );
+		renderItemIconIdentificationEffect( scourge, 0, 0, rw, rh );
+	}
+	glScalef( 1, 1, 1 );
+// }
 	glPopMatrix();
 }
 
@@ -1136,10 +1136,10 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallI
 /// and the top left corner of the item graphic within the texture.
 /// When smallIcon is false, it returns the inventory graphic, else the small icon.
 
-void Item::getItemIconInfo( Texture const** texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon ) {
-	Texture const* tex;
+void Item::getItemIconInfo( Texture* texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon ) {
+	Texture tex;
 	int rw, rh, ox, oy;
-	if ( !smallIcon && getShape()->getIcon()->isSpecified() ) {
+	if ( !smallIcon && getShape()->getIcon().isSpecified() ) {
 		tex = getShape()->getIcon();
 		*iw = getShape()->getIconWidth() * 32;
 		*ih = getShape()->getIconHeight() * 32;
@@ -1155,7 +1155,7 @@ void Item::getItemIconInfo( Texture const** texp, int *rwp, int *rhp, int *oxp, 
 			ox = ( w - rw ) / 2;
 		}
 	} else {
-		tex = &session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ];
+		tex = session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ];
 		*iw = w;
 		*ih = h;
 		rw = w;
@@ -1176,7 +1176,7 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool sm
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
-	getItemIconTexture( smallIcon )->glBind();
+	getItemIconTexture( smallIcon ).glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( x, y );
@@ -1192,83 +1192,83 @@ void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool sm
 
 /// Returns the item's icon texture.
 
-Texture const* Item::getItemIconTexture( bool smallIcon ) {
-	return ( !smallIcon && getShape()->getIcon()->isSpecified() ? getShape()->getIcon() : 
-		&session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] );
+Texture Item::getItemIconTexture( bool smallIcon ) {
+	return ( !smallIcon && getShape()->getIcon().isSpecified() ? getShape()->getIcon() :
+	         session->getShapePalette()->tilesTex[ getRpgItem()->getIconTileX() ][ getRpgItem()->getIconTileY() ] );
 }
 
 /// Creates an icon texture from a 3D view of the item.
 
 /* unused
 void Item::create3dTex( Scourge *scourge, float w, float h ) {
-	if ( textureInMemory ) return;
+ if ( textureInMemory ) return;
 
-	// clear the error flags
-	Util::getOpenGLError();
+ // clear the error flags
+ Util::getOpenGLError();
 
-	// Create texture and copy minimap date from backbuffer on it
-	unsigned int textureSizeW = 32;
-	unsigned int textureSizeH = 32;
-	textureInMemory = ( unsigned char * ) malloc( textureSizeW * textureSizeH * 4 );
+ // Create texture and copy minimap date from backbuffer on it
+ unsigned int textureSizeW = 32;
+ unsigned int textureSizeH = 32;
+ textureInMemory = ( unsigned char * ) malloc( textureSizeW * textureSizeH * 4 );
 
-	glPushAttrib( GL_ALL_ATTRIB_BITS );
+ glPushAttrib( GL_ALL_ATTRIB_BITS );
 
-	glDisable( GL_CULL_FACE );
-	glEnable( GL_DEPTH_TEST );
-	glDepthMask( GL_TRUE );
-	glEnable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
-	glDisable( GL_SCISSOR_TEST );
-	glDisable( GL_STENCIL_TEST );
+ glDisable( GL_CULL_FACE );
+ glEnable( GL_DEPTH_TEST );
+ glDepthMask( GL_TRUE );
+ glEnable( GL_TEXTURE_2D );
+ glDisable( GL_BLEND );
+ glDisable( GL_SCISSOR_TEST );
+ glDisable( GL_STENCIL_TEST );
 
-	glGenTextures( 1, tex3d );
-	glBindTexture( GL_TEXTURE_2D, tex3d[0] );
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );                                      // filtre appliqu� a la texture
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-	glTexImage2D( GL_TEXTURE_2D, 0, ( scourge->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0,
-	              GL_RGBA, GL_UNSIGNED_BYTE, textureInMemory );
-	fprintf( stderr, "OpenGl result for item(%s) glTexImage2D : %s\n", getName(), Util::getOpenGLError() );
+ glGenTextures( 1, tex3d );
+ glBindTexture( GL_TEXTURE_2D, tex3d[0] );
+ glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );                                      // filtre appliqu� a la texture
+ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+ glTexImage2D( GL_TEXTURE_2D, 0, ( scourge->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0,
+               GL_RGBA, GL_UNSIGNED_BYTE, textureInMemory );
+ fprintf( stderr, "OpenGl result for item(%s) glTexImage2D : %s\n", getName(), Util::getOpenGLError() );
 
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	glClearColor( 0, 0, 0, 0 );
-	glClearDepth( 1 );
+ glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+ glClearColor( 0, 0, 0, 0 );
+ glClearDepth( 1 );
 
-	glScalef( ( this->getShape()->getWidth() ) / w,
-	          ( this->getShape()->getHeight() ) / h,
-	          1 );
-	glPushMatrix();
-	glLoadIdentity();
-	this->getShape()->rotateIcon();
-	glColor4f( 1, 1, 1, 1 );
-	this->getShape()->draw();
-	glPopMatrix();
-	glScalef( 1, 1, 1 );
+ glScalef( ( this->getShape()->getWidth() ) / w,
+           ( this->getShape()->getHeight() ) / h,
+           1 );
+ glPushMatrix();
+ glLoadIdentity();
+ this->getShape()->rotateIcon();
+ glColor4f( 1, 1, 1, 1 );
+ this->getShape()->draw();
+ glPopMatrix();
+ glScalef( 1, 1, 1 );
 
-	//SDL_GL_SwapBuffers( );
+ //SDL_GL_SwapBuffers( );
 
 
-	// Copy to a texture
-	glPushMatrix();
-	glLoadIdentity();
-	glBindTexture( GL_TEXTURE_2D, tex3d[0] );
-	glCopyTexSubImage2D(
-	  GL_TEXTURE_2D,
-	  0,      // MIPMAP level
-	  0,      // x texture offset
-	  0,      // y texture offset
-	  0,              // x window coordinates
-	  scourge->getScreenHeight() - textureSizeH,   // y window coordinates
-	  textureSizeW,    // width
-	  textureSizeH     // height
-	);
-	glPopMatrix();
-	fprintf( stderr, "OpenGl result for item(%s) glCopyTexSubImage2D: %s\n", getName(), Util::getOpenGLError() );
+ // Copy to a texture
+ glPushMatrix();
+ glLoadIdentity();
+ glBindTexture( GL_TEXTURE_2D, tex3d[0] );
+ glCopyTexSubImage2D(
+   GL_TEXTURE_2D,
+   0,      // MIPMAP level
+   0,      // x texture offset
+   0,      // y texture offset
+   0,              // x window coordinates
+   scourge->getScreenHeight() - textureSizeH,   // y window coordinates
+   textureSizeW,    // width
+   textureSizeH     // height
+ );
+ glPopMatrix();
+ fprintf( stderr, "OpenGl result for item(%s) glCopyTexSubImage2D: %s\n", getName(), Util::getOpenGLError() );
 
-	glDisable( GL_TEXTURE_2D );
-	glPopAttrib();
+ glDisable( GL_TEXTURE_2D );
+ glPopAttrib();
 }
 */
 
@@ -1292,7 +1292,7 @@ void Item::renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int
 		}
 	}
 	glEnable( GL_TEXTURE_2D );
-	scourge->getSession()->getShapePalette()->getNamedTexture( "flame" )->glBind();
+	scourge->getSession()->getShapePalette()->getNamedTexture( "flame" ).glBind();
 	glEnable( GL_BLEND );
 	//glBlendFunc( GL_ONE, GL_ONE );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
@@ -1349,7 +1349,7 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 		}
 	}
 	glEnable( GL_TEXTURE_2D );
-	scourge->getSession()->getShapePalette()->getNamedTexture( "bling" )->glBind();
+	scourge->getSession()->getShapePalette()->getNamedTexture( "bling" ).glBind();
 	glEnable( GL_BLEND );
 	//glBlendFunc( GL_ONE, GL_ONE );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
@@ -1366,9 +1366,9 @@ void Item::renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, i
 		glPushMatrix();
 		glTranslatef( iconEffectParticle[i]->x - iconEffectParticle[i]->zoom / 2,
 		              iconEffectParticle[i]->y - iconEffectParticle[i]->zoom / 2, 0 );
-		if( getMagicLevel() >= Constants::DIVINE_MAGIC_ITEM ) {
+		if ( getMagicLevel() >= Constants::DIVINE_MAGIC_ITEM ) {
 			glRotatef( 360.0f * a, 0, 0, 1 );
-		}		
+		}
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2d( 0, 0 );
 		glVertex2d( x, y );
@@ -1478,10 +1478,10 @@ bool Item::isFullyIdentified() {
 	return id;
 }
 
-Texture const* Item::getContainerTexture() {
-	if( containerTextures.find( getRpgItem() ) == containerTextures.end() ) {
-		Texture *texture = new Texture();
-		texture->load( getRpgItem()->getContainerTexture() );
+Texture Item::getContainerTexture() {
+	if ( containerTextures.find( getRpgItem() ) == containerTextures.end() ) {
+		Texture texture;
+		texture.load( getRpgItem()->getContainerTexture() );
 		containerTextures[getRpgItem()] = texture;
 	}
 	return containerTextures[getRpgItem()];

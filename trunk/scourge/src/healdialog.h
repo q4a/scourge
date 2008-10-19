@@ -20,6 +20,7 @@
 #pragma once
 
 #include <map>
+#include "render/texture.h"
 
 class Scourge;
 class Creature;
@@ -30,7 +31,6 @@ class ScrollingLabel;
 class Widget;
 class Button;
 class Spell;
-class Texture;
 
 using namespace std;
 
@@ -48,7 +48,7 @@ private:
 	ScrollingLabel *spellDescription;
 	Button *closeButton, *applyButton;
 	std::string spellText[ MAX_INVENTORY_SIZE ];
-	Texture const* spellIcons[MAX_INVENTORY_SIZE];
+	Texture spellIcons[MAX_INVENTORY_SIZE];
 
 public:
 	HealDialog( Scourge *scourge );

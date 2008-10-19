@@ -44,7 +44,7 @@ class Storable;
 class Inven : public DragAndDropHandler, WidgetView {
 private:
 	Creature *creature;
-	Texture* backgroundTexture;
+	Texture backgroundTexture;
 	int currentHole;
 	PcUi *pcUi;
 	Canvas *canvas;

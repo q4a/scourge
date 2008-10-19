@@ -26,63 +26,109 @@ public:
 		INVALID = 0,
 	};
 
-	// construction / destruction
+	// construction / destruction / copying
 	Texture();
+	Texture( Texture const& that );
 	~Texture();
+	Texture& operator=( Texture const& that );
+
+	// comparision
+	bool operator == ( Texture const& that ) const {
+		return _ref == that._ref;
+	}
+
+	bool operator != ( Texture const& that ) const {
+		return !(*this == that);
+	}
+	// '<' does not make sense but is needed for sorted std containers
+	// TODO: get rid of any external sorted containers 
+	bool operator < ( Texture const& that ) const { 
+		return _ref < that._ref;
+	}
 
 	// loading / unloading
 	bool load( const string& filename, bool absolutePath = false, bool isSprite = true, bool anisotropy = false );
-	bool createAlpha(  Texture const* alpha, Texture const* sample, int textureSizeW = 256, int textureSizeH = 256, int width = 256, int height = 256 );
-	bool createTile( SDL_Surface **surface, int tileX, int tileY, int tileWidth, int tileHeight );
+	bool createAlpha(  Texture const& alpha, Texture const& sample, int textureSizeW = 256, int textureSizeH = 256, int width = 256, int height = 256 );
+	bool createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight );
 	bool loadShot( const string& dirName );
 	void clear();
 
 	// OpenGL operations
-	void glBind() const {/*assert(isSpecified());*/
-		glBindTexture( GL_TEXTURE_2D, _id );
+	void glBind() const {
+		assert( isSpecified() );
+		glBindTexture( GL_TEXTURE_2D, _ref->_id );
 	}
 	void glPrioritize( GLclampf pri ) const {
-		assert( isSpecified() ); glPrioritizeTextures( 1, &_id, &pri );
+		assert( isSpecified() );
+		glPrioritizeTextures( 1, &_ref->_id, &pri );
 	}
 
 	// getters
 	bool isSpecified() const {
-		return _id != INVALID;
+		return _ref->_id != INVALID;
 	}
 	GLint width() const {
-		return _width;
+		return _ref->_width;
 	}
 	GLint height() const {
-		return _height;
+		return _ref->_height;
+	}
+	GLuint id() const {
+		return _ref->_id;
 	}
 
+	static Texture const& none() {
+		return empty;
+	}
+
+
 private:
-	// member data
-	GLuint _id; //OpenGL texture name
-	string _filename;
-	GLint _width;
-	GLint _height;
-	// unused: bool _hasAbsolutePath;
-	bool _hasAlpha;
-	bool _isSprite;
-	bool _wantsAnisotropy;
-	// Debug member to check we do not destroy textures multiple times (UDB).
-	bool _isDestoyed;
-	// TODO: think through member/polymorphing candidates here:
-	// bool _wantsMipmapping;
-	// bool _isMipmapped;
-	// unsigned char* _pixels;
-	SDL_Surface* _surface;
+	// all member data is in refcounted Actual
+	class Actual {
+	public:
+		GLuint _id; //OpenGL texture name
+		int _cntr; // Intrusive counter
+		string _filename;
+		GLint _width;
+		GLint _height;
+		bool _hasAlpha;
+		bool _isSprite;
+		// Debug member to check we do not destroy nodes multiple times (UDB).
+		bool _isDestroyed;
+		// TODO: think through member/polymorphing candidates here:
+		// bool _wantsAnisotropy;
+		// bool _wantsMipmapping;
+		// bool _isMipmapped;
+		// unsigned char* _pixels;
+		SDL_Surface* _surface;
 
-	// undefine default copying since this class "owns" GPU resources
-	Texture( Texture const& that ); // copy construction
-	Texture& operator=( Texture const& that ); // copy assignment
+		// construction / destruction
+		Actual();
+		~Actual();
+		// members
+		bool load( const string& path, bool isSprite, bool anisotropy );
+		bool createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight );
+		bool createAlpha( Actual const* alpha, Actual const* sample, int textureSizeW, int textureSizeH, int width, int height );
+		bool loadShot( const string& dirName );
+		void clear();
+		bool loadImage();
+		void unloadImage();
+		// undefined default copying 
+		Actual( Actual const& that ); // copy construction
+		Actual& operator=( Actual const& that ); // copy assignment
+	};
 
-	// private member functions
-	bool loadImage();
-	void unloadImage();
+	Actual* _ref; // should never be NULL
 
-
+	static Actual emptyNode;
+	static Texture empty;
+	typedef std::vector<Actual*> NodeVec;
+	static NodeVec mainList;
+	// private constructor
+	Texture::Texture( Actual* node );
+	// private operations
+	void Swap( Texture& that );
+	void SwapRef( Actual*& thatRef );
 };
 
 

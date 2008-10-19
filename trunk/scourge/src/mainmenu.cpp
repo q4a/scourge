@@ -128,15 +128,15 @@ MainMenu::MainMenu( Scourge *scourge ) {
 	                          _( "About S.c.o.u.r.g.e." ),
 	                          scourge->getShapePalette()->getGuiTexture(), true );
 	aboutText = new ScrollingLabel( 8, 0,
-	    w - 18,
-	    h - 65,
-	    scourge->getShapePalette()->getAboutText() );
+	                                w - 18,
+	                                h - 65,
+	                                scourge->getShapePalette()->getAboutText() );
 	aboutDialog->addWidget( aboutText );
 	aboutOK = aboutDialog->createButton( ( w / 2 ) - 40,
-	          ( h - 55 ),
-	          ( w / 2 ) + 40,
-	          ( h - 35 ),
-	          Constants::getMessage( Constants::OK_LABEL ) );
+	                                     ( h - 55 ),
+	                                     ( w / 2 ) + 40,
+	                                     ( h - 35 ),
+	                                     Constants::getMessage( Constants::OK_LABEL ) );
 	aboutDialog->setVisible( false );
 
 
@@ -227,12 +227,12 @@ void MainMenu::drawView() {
 		float TILE_W = 256.0f;
 		float TILE_H = 256.0f;
 		glEnable( GL_TEXTURE_2D );
-		Texture* yellow = scourge->getShapePalette()->getNamedTexture( "menu" );
+		Texture const& yellow = scourge->getShapePalette()->getNamedTexture( "menu" );
 
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef( 0, openingTop, 0 );
-		yellow->glBind();
+		yellow.glBind();
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, scourge->getSDLHandler()->getScreen()->h / TILE_H );
 		glVertex2i( 0, 0 );
@@ -248,7 +248,7 @@ void MainMenu::drawView() {
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef( 0, scourge->getSDLHandler()->getScreen()->h - openingTop, 0 );
-		yellow->glBind();
+		yellow.glBind();
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );
 		glVertex2i( 0, 0 );
@@ -547,7 +547,7 @@ void MainMenu::drawScourge() {
 	glLoadIdentity();
 	glTranslatef( scourge->getSDLHandler()->getScreen()->w - w, top, 0 );
 	glColor4f( 1, 1, 1, 1 );
-	scourge->getShapePalette()->getNamedTexture( "scourge" )->glBind();
+	scourge->getShapePalette()->getNamedTexture( "scourge" ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0.0f, 0.0f );

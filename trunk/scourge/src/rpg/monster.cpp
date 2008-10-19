@@ -55,7 +55,6 @@ Monster::Monster( char *type, char *displayName, char* descriptiveType, int leve
 	this->scale = scale;
 	this->npc = npc;
 	this->portrait = portrait;
-	this->portraitTexture = 0;
 	this->statemod = 0;
 	this->harmless = harmless;
 

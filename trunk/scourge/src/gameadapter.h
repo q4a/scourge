@@ -22,6 +22,7 @@
 #include "persist.h"
 #include "sdlhandler.h"
 #include "render/mapadapter.h"
+#include "render/texture.h"
 
 class Party;
 class Map;
@@ -153,8 +154,8 @@ public:
 	virtual inline void updateBoardUI( int count, std::string const missionText[], Color *missionColor ) {}
 	virtual inline void setMissionDescriptionUI( char *s, int mapx, int mapy ) {}
 	virtual inline void showItemInfoUI( Item *item, int level ) {}
-	virtual inline Texture* getCursorTexture( int cursorMode ) {
-		return 0;
+	virtual inline Texture const& getCursorTexture( int cursorMode ) {
+		return Texture::none();
 	}
 	virtual inline int getCursorWidth() {
 		return 0;
@@ -162,17 +163,17 @@ public:
 	virtual inline int getCursorHeight() {
 		return 0;
 	}
-	virtual inline Texture const* getHighlightTexture() {
-		return 0;
+	virtual inline Texture const& getHighlightTexture() {
+		return Texture::none();
 	}
-	virtual inline Texture const* getGuiTexture() {
-		return 0;
+	virtual inline Texture const& getGuiTexture() {
+		return Texture::none();
 	}
-	virtual inline Texture const* getGuiTexture2() {
-		return 0;
+	virtual inline Texture const& getGuiTexture2() {
+		return Texture::none();
 	}
-	virtual inline Texture const* loadSystemTexture( char *line ) {
-		return 0;
+	virtual inline Texture const& loadSystemTexture( char *line ) {
+		return Texture::none();
 	}
 	virtual inline void showTextMessage( char *message ) {}
 	virtual void showMessageDialog( char *message ) {}
@@ -245,8 +246,8 @@ public:
 	virtual inline void addDescription( char const* description, float r = 1.0f, float g = 1.0f, float b = 0.4f, int logLevel = Constants::LOGLEVEL_FULL ) {}
 	virtual inline void writeLogMessage( char const* message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel = Constants::LOGLEVEL_FULL ) {}
 
-	virtual Texture* getNamedTexture( char *name ) {
-		return NULL;
+	virtual Texture const& getNamedTexture( char *name ) {
+		return Texture::none();
 	}
 
 	virtual void startMovieMode() {}

@@ -263,7 +263,7 @@ int Equip::getHoleAtPos( int x, int y ) {
 	point.x = x;
 	point.y = y;
 	point.w = point.h = 1;
-  for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
+	for ( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
 		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
 		if ( SDLHandler::intersects( rect, &point ) ) {
 			return i;
@@ -357,9 +357,9 @@ void Equip::drawWidgetContents( Widget *widget ) {
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	if ( mode == EQUIP_MODE ) {
-		backgroundTexture->glBind();
+		backgroundTexture.glBind();
 	} else {
-		scrollTexture->glBind();
+		scrollTexture.glBind();
 	}
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -388,7 +388,7 @@ void Equip::drawWidgetContents( Widget *widget ) {
 /// Draws the paperdoll with the equipped items.
 
 void Equip::drawEquipment() {
-	for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
+	for ( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
 		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
 		Item *item = creature->getEquippedInventory( i );
 		if ( item ) {
@@ -440,7 +440,7 @@ void Equip::drawSpells() {
 		glEnd();
 		glEnable( GL_TEXTURE_2D );
 
-		pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] )->glBind();
+		pcUi->getScourge()->getShapePalette()->getNamedTexture( schoolIcons[ i ] ).glBind();
 		glColor4f( 1, 1, 1, 1 );
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2d( 0, 0 );

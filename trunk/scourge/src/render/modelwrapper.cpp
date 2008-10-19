@@ -39,7 +39,7 @@ enum {
 	LOAD_MD3
 };
 
-ModelLoader::ModelLoader( ShapePalette *shapePal, bool headless, Texture** textureGroup ) {
+ModelLoader::ModelLoader( ShapePalette *shapePal, bool headless, Texture* textureGroup ) {
 	this->shapePal = shapePal;
 	this->headless = headless;
 	this->textureGroup = textureGroup;
@@ -97,11 +97,15 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 		loaded_models[model_info] = loaded_models[model_info] + 1;
 	}
 
+	Texture tex;
+	 // test loadability just to avoid Textures debug message
+	if (skinPath[skinPath.length()-4] == '.') {
+		tex.load( skinPath, true, false ); 
+	}
 	// create the shape.
 	// FIXME: shapeindex is always FIGHTER. Does it matter?
 	AnimatedShape *shape =
-	  model_info->wrapper.createShape( loadSkinTexture( skinPath ),
-	                                   ( scale == 0.0f ? model_info->scale : scale ),
+	  model_info->wrapper.createShape( tex, ( scale == 0.0f ? model_info->scale : scale ),
 	                                   textureGroup, model_info->name,
 	                                   -1, 0xf0f0ffff, 0,
 	                                   model_name, skin_name,
@@ -109,7 +113,8 @@ GLShape *ModelLoader::getCreatureShape( char *model_name,
 	return shape;
 }
 
-Texture* ModelLoader::loadSkinTexture( const string& skin_name ) {
+/* unused: 
+Texture ModelLoader::loadSkinTexture( const string& skin_name ) {
 	// md3-s load their own
 #ifdef DEBUG_LOADING
 	cerr << "&&&&&&&&&& Trying texture: " << skin_name << endl;
@@ -118,20 +123,19 @@ Texture* ModelLoader::loadSkinTexture( const string& skin_name ) {
 #ifdef DEBUG_LOADING
 		cerr << "\t&&&&&&&&&& skipping it." << endl;
 #endif
-		return 0;
+		return Texture::none();
 	}
 
 	// find or load the skin
 	string skin = skin_name;
-	Texture* skin_texture = NULL;
+	Texture skin_texture;
 	if ( creature_skins.find( skin ) == creature_skins.end() ) {
 		if ( !headless ) {
 #ifdef DEBUG_LOADING
 			cerr << "&&&&&&&&&& Loading texture: " << skin_name << endl;
 #endif
 
-			creature_skins[skin] = new Texture;
-			creature_skins[skin]->load( skin, true, false );
+			creature_skins[skin].load( skin, true, false );
 
 #ifdef DEBUG_LOADING
 			cerr << "\t&&&&&&&&&& Loaded texture: " << skin_texture << endl;
@@ -155,7 +159,9 @@ Texture* ModelLoader::loadSkinTexture( const string& skin_name ) {
 
 	return skin_texture;
 }
+*/
 
+/* unused: 
 void ModelLoader::unloadSkinTexture( const string& skin_name ) {
 
 	// md3-s unload their own
@@ -167,7 +173,7 @@ void ModelLoader::unloadSkinTexture( const string& skin_name ) {
 	}
 
 	string skin = skin_name;
-	Texture* skin_texture = NULL;
+	Texture skin_texture;
 	if ( creature_skins.find( skin ) == creature_skins.end() ) {
 		cerr << "&&&&&&&&&& WARNING: could not find skin: " << skin << endl;
 		return;
@@ -176,7 +182,7 @@ void ModelLoader::unloadSkinTexture( const string& skin_name ) {
 	}
 
 	if ( loaded_skins.find( skin_texture ) == loaded_skins.end() ) {
-		cerr << "&&&&&&&&&& WARNING: could not find skin id=" << skin_texture << endl;
+		cerr << "&&&&&&&&&& WARNING: could not find skin id=" << skin_texture.id() << endl;
 		return;
 	}
 
@@ -192,10 +198,10 @@ void ModelLoader::unloadSkinTexture( const string& skin_name ) {
 #endif
 		loaded_skins.erase( skin_texture );
 		creature_skins.erase( skin );
-		delete( skin_texture );
 	}
 
 }
+*/
 
 void ModelLoader::decrementSkinRefCount( char *model_name, char *skin_name ) {
 
@@ -206,7 +212,7 @@ void ModelLoader::decrementSkinRefCount( char *model_name, char *skin_name ) {
 #endif
 
 	string skinPath = rootDir + model_name + "/" + skin_name;
-	unloadSkinTexture( skinPath );
+	// unloadSkinTexture( skinPath );
 
 	string model = model_name;
 	Md2ModelInfo *model_info;
@@ -249,10 +255,10 @@ void ModelLoader::debugModelLoader() {
 		cerr << "\t" << key << " " << loaded_models[ model_info ] << " references." << endl;
 	}
 	cerr << "Loaded skins: " << endl;
-	for ( map<string, Texture*>::iterator i = creature_skins.begin();
+	for ( map<string, Texture>::iterator i = creature_skins.begin();
 	        i != creature_skins.end(); ++i ) {
 		string key = i->first;
-		Texture* id = i->second;
+		Texture id = i->second;
 		cerr << "\t" << key << " " << loaded_skins[ id ] << " references." << endl;
 	}
 	cerr << "****************************************" << endl;
@@ -317,12 +323,12 @@ void ModelWrapper::unloadModel() {
 }
 
 // factory method to create shape
-AnimatedShape *ModelWrapper::createShape( Texture* textureId, float div,
-    Texture* texture[], char *name,
-    int descriptionGroup,
-    Uint32 color, Uint8 shapePalIndex,
-    char *model_name, char *skin_name,
-    ModelLoader *loader ) {
+AnimatedShape *ModelWrapper::createShape( Texture textureId, float div,
+                                          Texture texture[], char *name,
+                                          int descriptionGroup,
+                                          Uint32 color, Uint8 shapePalIndex,
+                                          char *model_name, char *skin_name,
+                                          ModelLoader *loader ) {
 	int width, depth, height;
 	normalizeModel( &width, &depth, &height, div, name );
 

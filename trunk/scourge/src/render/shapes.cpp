@@ -65,9 +65,6 @@ WallTheme::WallTheme( char const* name, Shapes *shapePal ) {
 	for ( int i = 0; i < OUTDOOR_THEME_REF_COUNT; i++ ) {
 		outdoorThemeRefMap[ outdoorThemeRefName[ i ] ] = i;
 		outdoorFaceCount[ i ] = 0;
-		for (int j = 0; j < MAX_TEXTURE_COUNT; ++j ) {
-			outdoorTextureGroup[i][j] = NULL;
-		}
 	}
 }
 
@@ -107,19 +104,17 @@ void WallTheme::load() {
 
 // Overlay the current 'grass' texture on the alpha-blended edge texture to create a theme-specific blend.
 void WallTheme::createOutdoorEdgeTexture( int ref ) {
-	Texture* tex = new Texture;
-	tex->createAlpha(outdoorTextureGroup[ ref ][ 0 ],outdoorTextureGroup[ OUTDOOR_THEME_REF_GRASS ][ 0 ]);
+	Texture tex;
+	tex.createAlpha( outdoorTextureGroup[ ref ][ 0 ], outdoorTextureGroup[ OUTDOOR_THEME_REF_GRASS ][ 0 ] );
 	GLclampf pri = 0.9f;
-	tex->glPrioritize(pri);
-	// the overloaded image is deleted by WallTheme::unload() later 
-	// LEAKS: this tex however leaks GPU resources later
+	tex.glPrioritize( pri );
 	outdoorTextureGroup[ ref ][ 0 ] = tex;
 }
 
 void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor ) {
 	//cerr << "Loading theme texture. Theme: " << getName() << " ref=" << ( outdoor ? outdoorThemeRefName[ ref ] : themeRefName[ ref ] ) << " face=" << face << " texture=" << texture << endl;
 	string path;
-	Texture *id = NULL;
+	Texture id;
 	if ( texture && strcmp( texture, "null" ) ) {
 		string s = texture;
 		if ( loadedTextures.find( s ) == loadedTextures.end() ) {
@@ -144,10 +139,9 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 			}
 
 			id = shapePal->findTextureByName( bmp );
-			if ( id == NULL ) {
-				id = new Texture;
-				id->load( path, false, false, true );
-				GLclampf pri = 0.9f; id->glPrioritize( pri );
+			if ( !id.isSpecified() ) {
+				id.load( path, false, false, true );
+				GLclampf pri = 0.9f; id.glPrioritize( pri );
 				loadedTextures[s] = id;
 			}
 		} else {
@@ -163,24 +157,25 @@ void WallTheme::loadTextureGroup( int ref, int face, char *texture, bool outdoor
 
 void WallTheme::unload() {
 //  cerr << "*** Dumping theme: " << getName() << endl;
-	for ( map<string, Texture*>::iterator i = loadedTextures.begin(); i != loadedTextures.end(); ++i ) {
-		string s = i->first;
-		Texture* id = i->second;
+	/* just let them go
+	for ( map<string, Texture>::iterator i = loadedTextures.begin(); i != loadedTextures.end(); ++i ) {
+	 string s = i->first;
+	 Texture id = i->second;
 
-		// don't delete system textures!
-		string bmp = s;
-		if ( bmp.find( ".", 0 ) == string::npos ) {
-			bmp += string( ".png" );
-		}
-		if ( shapePal->findTextureByName( bmp ) == NULL ) {
-			//cerr << "Unloading texture: " << bmp << endl;
-			delete(id);
-		}
-	}
+	 // don't delete system textures!
+	 string bmp = s;
+	 if ( bmp.find( ".", 0 ) == string::npos ) {
+	  bmp += string( ".png" );
+	 }
+	 if ( !shapePal->findTextureByName( bmp ).isSpecified() ) {
+	  //cerr << "Unloading texture: " << bmp << endl;
+	  delete(id);
+	 }
+	}*/
 	loadedTextures.clear();
 }
 
-Texture** WallTheme::getTextureGroup( string themeRefName ) {
+Texture* WallTheme::getTextureGroup( string themeRefName ) {
 	int ref = themeRefMap[ themeRefName ];
 	return textureGroup[ ref ];
 }
@@ -210,14 +205,13 @@ Shapes *Shapes::instance = NULL;
 Shapes::Shapes( Session *session ) {
 	texture_count = 0;
 	textureGroupCount = 1;
-	textureGroup[0][0] = textureGroup[0][1] = textureGroup[0][2] = 0;
 	themeCount = allThemeCount = caveThemeCount = 0;
 	currentTheme = NULL;
 	this->session = session;
 	if ( !instance ) instance = this;
 }
 
-Texture** Shapes::findOrMakeTextureGroup( char *s ) {
+Texture* Shapes::findOrMakeTextureGroup( char *s ) {
 
 	if ( !strlen( s ) ) {
 		return textureGroup[ 0 ];
@@ -226,7 +220,7 @@ Texture** Shapes::findOrMakeTextureGroup( char *s ) {
 	char tmp[255];
 	strcpy( tmp, s );
 
-	Texture* tg[3];
+	Texture tg[3];
 
 	int c = 0;
 	char *token = strtok( tmp, "," );
@@ -272,7 +266,7 @@ void Shapes::initialize() {
 	// resolve texture groups
 	for ( int i = 0; i < textureGroupCount; i++ ) {
 		for ( int c = 0; c < 3; c++ ) {
-			textureGroup[i][c] = &textures[0].texture;
+			textureGroup[i][c] = textures[0].texture;
 		}
 	}
 
@@ -300,7 +294,7 @@ void Shapes::initialize() {
 	               0,
 	               strtoul( "6070ffff", NULL, 16 ),
 	               shapeCount,
-	               &torchback, Constants::SOUTH ); // Hack: use SOUTH for a spell
+	               torchback, Constants::SOUTH ); // Hack: use SOUTH for a spell
 	shapes[shapeCount]->setSkipSide( false );
 	shapes[shapeCount]->setStencil( false );
 	shapes[shapeCount]->setLightBlocking( false );
@@ -404,7 +398,7 @@ void Shapes::loadTheme( WallTheme *theme ) {
 				string name = themeShapes[i];
 				GLShape *shape = findShapeByName( name.c_str() );
 				string ref = themeShapeRef[i];
-				Texture** textureGroup = currentTheme->getTextureGroup( ref );
+				Texture* textureGroup = currentTheme->getTextureGroup( ref );
 				//      cerr << "\tshape=" << shape->getName() << " ref=" << ref <<
 				//        " tex=" << textureGroup[0] << "," << textureGroup[1] << "," << textureGroup[2] << endl;
 				if ( !isHeadless() ) {
@@ -428,15 +422,15 @@ char const* Shapes::getRandomDescription( int descriptionGroup ) {
 }
 
 // the next two methods are slow, only use during initialization
-Texture* Shapes::findTextureByName( const string& filename, bool loadIfMissing ) {
+Texture const& Shapes::findTextureByName( const string& filename, bool loadIfMissing ) {
 	for ( int i = 0; i < texture_count; i++ ) {
 		if ( Util::StringCaseCompare( textures[i].filename, filename ) )
-			return &textures[i].texture;
+			return textures[i].texture;
 	}
 	if ( loadIfMissing ) {
 		return loadSystemTexture( filename );
 	}
-	return 0;
+	return Texture::none();
 }
 
 GLShape *Shapes::getShape( int index ) {
@@ -522,7 +516,7 @@ void Shapes::loadShape( const char *name ) {
 
 		// Resolve the texture group.
 		// For theme-based shapes, leave texture NULL, they will be resolved later.
-		Texture** texture = textureGroup[ 0 ];
+		Texture* texture = textureGroup[ 0 ];
 		if ( !strlen( sv->theme ) ) {
 			texture = findOrMakeTextureGroup( sv->textures );
 		}
@@ -570,7 +564,7 @@ void Shapes::loadShape( const char *name ) {
 				               sv->descriptionIndex,
 				               sv->color,
 				               ( i + 1 ),
-				               &torchback, sv->torch );
+				               torchback, sv->torch );
 			}
 		} else if ( strlen( sv->refs ) ) {
 			// recursive call:
@@ -620,7 +614,7 @@ void Shapes::loadShape( const char *name ) {
 
 		shapes[ ( i + 1 ) ]->setOccurs( &( sv->occurs ) );
 		shapes[ ( i + 1 ) ]->setIconRotation( sv->iconRotX, sv->iconRotY, sv->iconRotZ );
-		shapes[ ( i + 1 ) ]->setIcon( &sv->icon, sv->iconWidth, sv->iconHeight );
+		shapes[ ( i + 1 ) ]->setIcon( sv->icon, sv->iconWidth, sv->iconHeight );
 		shapes[ ( i + 1 ) ]->setAmbientName( sv->ambient );
 		shapes[ ( i + 1 ) ]->setRoof( sv->roof );
 
@@ -703,57 +697,57 @@ GLuint Shapes::getBMPData( const string& filename, TextureData& data, int *imgwi
 /// is then created as a texture from the appropriate part of the SDL surface.
 /* unused:
 GLuint Shapes::createTileTexture( SDL_Surface **surface, int tileX, int tileY, int tileWidth, int tileHeight ) {
-	if ( isHeadless() ) return 0;
+ if ( isHeadless() ) return 0;
 
-	// The raw data of the source image.
-	unsigned char * data = ( unsigned char * ) ( ( *surface ) -> pixels );
-	// The destination image (a single tile)
-	std::vector<GLubyte> image( tileWidth * tileHeight * 4 );
+ // The raw data of the source image.
+ unsigned char * data = ( unsigned char * ) ( ( *surface ) -> pixels );
+ // The destination image (a single tile)
+ std::vector<GLubyte> image( tileWidth * tileHeight * 4 );
 
-	int count = 0;
-	// where the tile starts in a line
-	int offs = tileX * tileWidth * 4;
-	// where the tile ends in a line
-	int rest = ( tileX + 1 ) * tileWidth * 4;
-	// Current position in the source data
-	int c = offs + ( tileY * tileHeight * ( *surface )->pitch );
-	// the following lines extract R,G and B values from any bitmap
+ int count = 0;
+ // where the tile starts in a line
+ int offs = tileX * tileWidth * 4;
+ // where the tile ends in a line
+ int rest = ( tileX + 1 ) * tileWidth * 4;
+ // Current position in the source data
+ int c = offs + ( tileY * tileHeight * ( *surface )->pitch );
+ // the following lines extract R,G and B values from any bitmap
 
-	for ( int i = 0; i < tileWidth * tileHeight; ++i ) {
+ for ( int i = 0; i < tileWidth * tileHeight; ++i ) {
 
-		if ( i > 0 && i % tileWidth == 0 ) {
-			// skip the rest of the line
-			c += ( ( *surface )->pitch - rest );
-			// skip the offset (go to where the tile starts)
-			c += offs;
-		}
+  if ( i > 0 && i % tileWidth == 0 ) {
+   // skip the rest of the line
+   c += ( ( *surface )->pitch - rest );
+   // skip the offset (go to where the tile starts)
+   c += offs;
+  }
 
-		for ( int p = 0; p < 4; p++ ) {
-			image[count++] = data[c++];
-		}
+  for ( int p = 0; p < 4; p++ ) {
+   image[count++] = data[c++];
+  }
 
-	}
+ }
 
-	int bpp = session->getPreferences()->getBpp();
+ int bpp = session->getPreferences()->getBpp();
 
-	lastTextureWidth = tileWidth;
-	lastTextureHeight = tileHeight;
-	lastTextureAlpha = true;
+ lastTextureWidth = tileWidth;
+ lastTextureHeight = tileHeight;
+ lastTextureAlpha = true;
 
-	GLuint texture[1];
+ GLuint texture[1];
 
-	// Create The Texture 
-	glGenTextures( 1, &texture[0] );
+ // Create The Texture
+ glGenTextures( 1, &texture[0] );
 
-	// Typical Texture Generation Using Data From The Bitmap 
-	glBindTexture( GL_TEXTURE_2D, texture[0] );
+ // Typical Texture Generation Using Data From The Bitmap
+ glBindTexture( GL_TEXTURE_2D, texture[0] );
 
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-	gluBuild2DMipmaps( GL_TEXTURE_2D, ( bpp > 16 ? GL_RGBA : GL_RGBA4 ), tileWidth, tileHeight, GL_RGBA, GL_UNSIGNED_BYTE, &image[0] );
+ gluBuild2DMipmaps( GL_TEXTURE_2D, ( bpp > 16 ? GL_RGBA : GL_RGBA4 ), tileWidth, tileHeight, GL_RGBA, GL_UNSIGNED_BYTE, &image[0] );
 
-	return texture[0];
+ return texture[0];
 }*/
 
 void Shapes::swap( unsigned char & a, unsigned char & b ) {
@@ -774,63 +768,63 @@ void Shapes::swap( unsigned char & a, unsigned char & b ) {
 
 /* unused:
 GLuint Shapes::loadTexture( const string& filename, bool absolutePath, bool isSprite, bool anisotropy ) {
-	string fn = ( absolutePath ? filename : rootDir + filename );
-	GLuint destFormat;
-	GLuint srcFormat;
-	GLuint minFilter;
-	int bpp = session->getPreferences()->getBpp();
+ string fn = ( absolutePath ? filename : rootDir + filename );
+ GLuint destFormat;
+ GLuint srcFormat;
+ GLuint minFilter;
+ int bpp = session->getPreferences()->getBpp();
 
-	lastTextureWidth = lastTextureHeight = 0;
-	lastTextureAlpha = false;
+ lastTextureWidth = lastTextureHeight = 0;
+ lastTextureAlpha = false;
 
-	SDL_Surface* surface = IMG_Load( fn.c_str() );
-	if ( surface == NULL ) {
-		cerr << "*** Error loading image (" << fn << "): " << IMG_GetError() << endl;
-		return NULL;
-	}
+ SDL_Surface* surface = IMG_Load( fn.c_str() );
+ if ( surface == NULL ) {
+  cerr << "*** Error loading image (" << fn << "): " << IMG_GetError() << endl;
+  return NULL;
+ }
 
-	Constants::checkTexture( "Shapes::loadTexture", surface->w, surface->h );
+ Constants::checkTexture( "Shapes::loadTexture", surface->w, surface->h );
 
-	GLuint texture;
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
-	glGenTextures( 1, &texture );
-	glBindTexture( GL_TEXTURE_2D, texture );
+ GLuint texture;
+ glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+ glGenTextures( 1, &texture );
+ glBindTexture( GL_TEXTURE_2D, texture );
 
-	SDL_PixelFormat *format = surface->format;
+ SDL_PixelFormat *format = surface->format;
 
-	lastTextureWidth = surface->w; lastTextureHeight = surface->h;
-	lastTextureAlpha = format->Amask != 0;
+ lastTextureWidth = surface->w; lastTextureHeight = surface->h;
+ lastTextureAlpha = format->Amask != 0;
 
-	if ( format->Amask ) {
-		srcFormat = GL_RGBA;
-		destFormat = ( bpp > 16 ? GL_RGBA : GL_RGBA4 );
-		minFilter = ( isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_LINEAR );
-	} else {
-		srcFormat = GL_RGB;
-		destFormat = ( bpp > 16 ? GL_RGB : GL_RGB5 );
-		minFilter = GL_LINEAR_MIPMAP_NEAREST;
-	}
+ if ( format->Amask ) {
+  srcFormat = GL_RGBA;
+  destFormat = ( bpp > 16 ? GL_RGBA : GL_RGBA4 );
+  minFilter = ( isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_LINEAR );
+ } else {
+  srcFormat = GL_RGB;
+  destFormat = ( bpp > 16 ? GL_RGB : GL_RGB5 );
+  minFilter = GL_LINEAR_MIPMAP_NEAREST;
+ }
 
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter );
+ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-	// Enable anisotropic filtering if requested, mipmapping is enabled
-	// and the hardware supports it.
-	if ( anisotropy && !format->Amask && strstr( ( char* )glGetString( GL_EXTENSIONS ),
-	                                             "GL_EXT_texture_filter_anisotropic" ) && session->getPreferences()->getAnisoFilter() ) {
-		float maxAnisotropy;
-		glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy );
-	} else {
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
-	}
+ // Enable anisotropic filtering if requested, mipmapping is enabled
+ // and the hardware supports it.
+ if ( anisotropy && !format->Amask && strstr( ( char* )glGetString( GL_EXTENSIONS ),
+                                              "GL_EXT_texture_filter_anisotropic" ) && session->getPreferences()->getAnisoFilter() ) {
+  float maxAnisotropy;
+  glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy );
+ } else {
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
+ }
 
 //  glTexImage2D( GL_TEXTURE_2D, 0, destFormat, surface->w, surface->h, 0, srcFormat, GL_UNSIGNED_BYTE, surface->pixels );
 
-	gluBuild2DMipmaps( GL_TEXTURE_2D, destFormat, surface->w, surface->h, srcFormat, GL_UNSIGNED_BYTE, surface->pixels );
+ gluBuild2DMipmaps( GL_TEXTURE_2D, destFormat, surface->w, surface->h, srcFormat, GL_UNSIGNED_BYTE, surface->pixels );
 
-	SDL_FreeSurface( surface );
-	return texture;
+ SDL_FreeSurface( surface );
+ return texture;
 }
 */
 
@@ -886,181 +880,51 @@ void Shapes::loadTiles( const string& filename, SDL_Surface **surface ) {
 // places to look for system textures (must end in "")
 char *textureDirs[] = { "/textures/", "/cave/default/", "/objects/houses/", "" };
 
-Texture* Shapes::loadSystemTexture( const string& line ) {
-	if ( isHeadless() ) return 0;
+Texture const& Shapes::loadSystemTexture( const string& line ) {
+	if ( isHeadless() ) return Texture::none();
 
 	if ( line == "none.png" ) {
-		return 0;
+		return Texture::none();
 	}
 
 	if ( texture_count >= MAX_SYSTEM_TEXTURE_COUNT ) {
 		cerr << "Error: *** no more room for system textures!. Not loading: " << line << endl;
-		return 0;
+		return Texture::none();
 	}
 
-	Texture* id = findTextureByName( line );
-	if ( id == NULL ) {
-		textures[texture_count].filename = line;
-		int dirCount = 0;
-		while ( strlen( textureDirs[dirCount] ) ) {
-			string path = textureDirs[dirCount] + textures[texture_count].filename;
-
-			// file exists?
-			string fn( rootDir + path );
-			FILE *fp = fopen( fn.c_str(), "rb" );
-			if ( fp ) {
-				fclose( fp );
-				// FIXME: Anisotropic filtering for system textures freezes X for some reason.
-				// id = loadTexture( path, false, false, true );
-				textures[ texture_count ].texture.load( path, false, false );
-				id = &textures[ texture_count ].texture;
-			}
-			dirCount++;
-		}
-		if ( id == NULL ) {
-			cerr << "*** Error: Unable to find texture: " << line << endl;
-		}
-
-		texture_count++;
+	Texture const& existing = findTextureByName( line );
+	if ( existing.isSpecified() ) {
+		return existing;
 	}
-	return id;
+
+	textures[texture_count].filename = line;
+	int dirCount = 0;
+	while ( strlen( textureDirs[dirCount] ) ) {
+		string path = textureDirs[dirCount] + textures[texture_count].filename;
+		// file exists?
+		string fn( rootDir + path );
+		FILE *fp = fopen( fn.c_str(), "rb" );
+		if ( fp ) {
+			fclose( fp );
+			// FIXME: Anisotropic filtering for system textures freezes X for some reason.
+			// id = loadTexture( path, false, false, true );
+			textures[ texture_count ].texture.load( path, false, false );
+		}
+		dirCount++;
+	}
+
+	if ( !textures[ texture_count ].texture.isSpecified() ) {
+		cerr << "*** Error: Unable to find texture: " << line << endl;
+		return Texture::none();
+	}
+
+	texture_count++;
+	return textures[ texture_count-1 ].texture;
 }
 
-Texture* Shapes::getCursorTexture( int cursorMode ) {
-	return &cursorTexture[ cursorMode ];
+Texture const& Shapes::getCursorTexture( int cursorMode ) {
+	return cursorTexture[ cursorMode ];
 }
 
-/// Adds the alpha channel of the alphaTex texture to the sampleTex texture.
-
-/* unused
-GLuint Shapes::createAlphaTexture( GLuint alphaTex, GLuint sampleTex, int textureSizeW, int textureSizeH, int width, int height ) {
-	// todo: should be next power of 2 after width/height (maybe cap-ed at 256)
-//  int textureSizeW = 256;
-//  int textureSizeH = 256;
-//  int width = 256;
-//  int height = 256;
-
-	unsigned char *texInMem = ( unsigned char * ) malloc( textureSizeW * textureSizeH * 4 );
-	GLuint tex[1];
-
-	glGenTextures( 1, tex );
-	glBindTexture( GL_TEXTURE_2D, tex[ 0 ] );
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-	//
-	// This method should not create mip-maps. They don't work well with alpha-tested textures and cause flickering.
-	//
-	//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, isSprite ? GL_NEAREST : GL_LINEAR_MIPMAP_NEAREST );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-	glTexImage2D( GL_TEXTURE_2D, 0, ( session->getPreferences()->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, texInMem );
-	//if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_BGRA, GL_UNSIGNED_BYTE, texInMem);
-
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
-
-	glPushMatrix();
-	glLoadIdentity();
-
-	glDisable( GL_TEXTURE_2D );
-	glColor4f( 0, 0, 0, 0 );
-
-	glBegin( GL_TRIANGLE_STRIP );
-	glVertex3f( 0, 0, 0 );
-	glVertex3f( textureSizeW, 0, 0 );
-	glVertex3f( 0, textureSizeH, 0 );
-	glVertex3f( textureSizeW, textureSizeH, 0 );
-	glEnd();
-
-	glEnable( GL_TEXTURE_2D );
-	glColor4f( 1, 1, 1, 1 );
-
-	// draw the grass
-	//glEnable( GL_ALPHA_TEST );
-	//glAlphaFunc( GL_EQUAL, 0xff );
-	glEnable( GL_TEXTURE_2D );
-
-	//    glTranslatef( x, y, 0 );
-	glBindTexture( GL_TEXTURE_2D, sampleTex );
-	glColor4f( 1, 1, 1, 1 );
-//  glNormal3f( 0, 0, 1 );
-
-	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1, 0 );
-	glVertex3f( width, 0, 0 );
-	glTexCoord2f( 0, 1 );
-	glVertex3f( 0, height, 0 );
-	glTexCoord2f( 1, 1 );
-	glVertex3f( width, height, 0 );
-	glEnd();
-
-	//glDisable( GL_ALPHA_TEST );
-	glDisable( GL_TEXTURE_2D );
-
-	// draw the alpha pixels only
-	glDisable( GL_CULL_FACE );
-	glDisable( GL_DEPTH_TEST );
-	glEnable( GL_TEXTURE_2D );
-	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE );
-	glColor4f( 1, 1, 1, 1 );
-
-	glBindTexture( GL_TEXTURE_2D, alphaTex );
-//  glNormal3f( 0, 0, 1 );
-	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0, 0 );
-	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1, 0 );
-	glVertex3f( width, 0, 0 );
-	glTexCoord2f( 0, 1 );
-	glVertex3f( 0, height, 0 );
-	glTexCoord2f( 1, 1 );
-	glVertex3f( width, height, 0 );
-	glEnd();
-
-	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-
-	// Copy to a texture
-	glLoadIdentity();
-	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D, tex[0] );
-	glCopyTexSubImage2D(
-	  GL_TEXTURE_2D,
-	  0,      // MIPMAP level
-	  0,      // x texture offset
-	  0,      // y texture offset
-	  0,              // x window coordinates
-	  getSession()->getGameAdapter()->getScreenHeight() - textureSizeH,   // y window coordinates
-	  textureSizeW,    // width
-	  textureSizeH     // height
-	);
-	//cerr << "OpenGl result for minimap texture building: " << Util::getOpenGLError() << endl;
-	//  glPopAttrib();
-
-	// cover with black
-	// todo: this should be the original background, not black
-	glDisable( GL_TEXTURE_2D );
-	glColor4f( 0, 0, 0, 0 );
-	glBegin( GL_TRIANGLE_STRIP );
-	glVertex3f( 0, 0, 0 );
-	glVertex3f( width, 0, 0 );
-	glVertex3f( 0, height, 0 );
-	glVertex3f( width, height, 0 );
-	glEnd();
-	glPopMatrix();
-
-	glDisable( GL_BLEND );
-	glEnable( GL_CULL_FACE );
-	glEnable( GL_DEPTH_TEST );
-	glEnable( GL_TEXTURE_2D );
-
-	// copy texture to theme and clean up
-	free( texInMem );
-	return tex[0];
-}
-*/
 
 

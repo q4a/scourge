@@ -33,7 +33,7 @@
 
 using namespace std;
 
-// FIXME: use static member variable, std::string is clear by default 
+// FIXME: use static member variable, std::string is clear by default
 string willSavePath = "";
 
 vector<SDLHandler::FontInfo*> SDLHandler::fontInfos;
@@ -97,7 +97,7 @@ SDLHandler::~SDLHandler() {
 }
 
 void SDLHandler::pushHandlers( SDLEventHandler *eventHandler,
-    SDLScreenView *screenView ) {
+                               SDLScreenView *screenView ) {
 	if ( handlerCount == 10 ) {
 		fprintf( stderr, "Error: can't push any more handlers." );
 		exit( 1 );
@@ -672,7 +672,7 @@ void SDLHandler::drawCursor() {
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef( mouseX - mouseFocusX, mouseY - mouseFocusY, 0 );
-	gameAdapter->getCursorTexture( cursorMode )->glBind();
+	gameAdapter->getCursorTexture( cursorMode ).glBind();
 	glColor4f( 1, 1, 1, 1 );
 //  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -874,10 +874,10 @@ void SDLHandler::drawFadeout() {
 
 	if ( fadeoutStartAlpha < fadeoutEndAlpha ) {
 		glColor4f( 0, 0, 0, ( fadeoutStartAlpha + ( ( ( fadeoutEndAlpha - fadeoutStartAlpha ) *
-		                      fadeoutCurrentStep ) / static_cast<float>( fadeoutSteps ) ) ) );
+		                                              fadeoutCurrentStep ) / static_cast<float>( fadeoutSteps ) ) ) );
 	} else {
 		glColor4f( 0, 0, 0, ( fadeoutStartAlpha - ( ( ( fadeoutStartAlpha - fadeoutEndAlpha ) *
-		                      fadeoutCurrentStep ) / static_cast<float>( fadeoutSteps ) ) ) );
+		                                              fadeoutCurrentStep ) / static_cast<float>( fadeoutSteps ) ) ) );
 	}
 	glLoadIdentity();
 	glBegin( GL_TRIANGLE_STRIP );
@@ -968,8 +968,8 @@ void SDLHandler::texPrint( GLfloat x, GLfloat y,
 
 //  freetype_print_simple( *(getCurrentFont()), x, y, str );
 	fontInfos[ fontType ]->fontMgr->drawTextUTF8( str,
-	    toint( x ),
-	    toint( y + fontInfos[ fontType ]->yoffset ) );
+	                                              toint( x ),
+	                                              toint( y + fontInfos[ fontType ]->yoffset ) );
 }
 
 void SDLHandler::initFonts() {
@@ -1233,19 +1233,19 @@ void SDLHandler::testDrawView() {
 	rquad -= 0.15f;
 }
 
-Texture const* SDLHandler::getHighlightTexture() {
+Texture const& SDLHandler::getHighlightTexture() {
 	return gameAdapter->getHighlightTexture();
 }
 
-Texture const* SDLHandler::getGuiTexture() {
+Texture const& SDLHandler::getGuiTexture() {
 	return gameAdapter->getGuiTexture();
 }
 
-Texture const* SDLHandler::getGuiTexture2() {
+Texture const& SDLHandler::getGuiTexture2() {
 	return gameAdapter->getGuiTexture2();
 }
 
-Texture const* SDLHandler::loadSystemTexture( char *line ) {
+Texture const& SDLHandler::loadSystemTexture( char *line ) {
 	return gameAdapter->loadSystemTexture( line );
 }
 

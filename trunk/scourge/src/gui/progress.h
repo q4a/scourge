@@ -20,6 +20,7 @@
 #pragma once
 
 #include "gui.h"
+#include "../render/texture.h"
 
 /**
   *@author Gabor Torok
@@ -34,11 +35,11 @@ private:
 	bool clearScreen;
 	bool center;
 	bool opaque;
-	Texture const* texture;
-	Texture const* highlight;
+	Texture texture;
+	Texture highlight;
 
 public:
-	Progress( ScourgeGui *scourgeGui, Texture const* texture, Texture const* highlight, int maxStatus, bool clearScreen = false, bool center = false, bool opaque = true );
+	Progress( ScourgeGui *scourgeGui, Texture texture, Texture highlight, int maxStatus, bool clearScreen = false, bool center = false, bool opaque = true );
 	virtual ~Progress();
 	void updateStatus( const char *message, bool updateScreen = true, int status = -1, int maxStatus = -1, int altStatus = -1, bool drawScreen = false );
 	void updateStatusLight( const char *message, int n, int max );

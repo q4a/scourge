@@ -22,7 +22,7 @@
   *@author Gabor Torok
   */
 
-GLTeleporter::GLTeleporter( Texture* texture[], Texture const* flameTex,
+GLTeleporter::GLTeleporter( Texture texture[], Texture flameTex,
                             int width, int depth, int height,
                             char *name, int descriptionGroup,
                             Uint32 color, Uint8 shapePalIndex,
@@ -32,7 +32,7 @@ GLTeleporter::GLTeleporter( Texture* texture[], Texture const* flameTex,
 	this->teleporterType = teleporterType;
 }
 
-void GLTeleporter::commonInit( Texture const* flameTex ) {
+void GLTeleporter::commonInit( Texture flameTex ) {
 	this->flameTex = flameTex;
 	for ( int i = 0; i < MAX_RINGS; i++ ) {
 		ring[i] = 0;
@@ -66,19 +66,19 @@ void GLTeleporter::draw() {
 		float d = ( static_cast<float>( depth ) * MUL ) / 10.0f;
 		float h = 1.25f * MUL;
 
-		if ( flameTex ) flameTex->glBind();
+		if ( flameTex.isSpecified() ) flameTex.glBind();
 
 		glColor4f( 1, 1, 1, 1 );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		// front
-		if ( flameTex ) glTexCoord2f( 0.0f, 0.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
 		glVertex3f( star[i][0], star[i][1], h );
-		if ( flameTex ) glTexCoord2f( 1.0f, 0.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
 		glVertex3f( star[i][0] + w, star[i][1], h );
-		if ( flameTex ) glTexCoord2f( 0.0f, 1.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
 		glVertex3f( star[i][0], star[i][1] + d, h );
-		if ( flameTex ) glTexCoord2f( 1.0f, 1.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
 		glVertex3f( star[i][0] + w, star[i][1] + d, h );
 		glEnd();
 
@@ -106,7 +106,7 @@ void GLTeleporter::draw() {
 		float h = ring[i];
 		//      if(h == 0) h = 0.25 * MUL;
 
-		if ( flameTex ) flameTex->glBind();
+		if ( flameTex.isSpecified() ) flameTex.glBind();
 
 		float red = static_cast<float>( ( this->color & 0xff000000 ) >> ( 3 * 8 ) ) / static_cast<float>( 0xff );
 		float green = static_cast<float>( ( this->color & 0x00ff0000 ) >> ( 2 * 8 ) ) / static_cast<float>( 0xff );
@@ -118,13 +118,13 @@ void GLTeleporter::draw() {
 
 		glBegin( GL_TRIANGLE_STRIP );
 		// front
-		if ( flameTex ) glTexCoord2f( 0.0f, 0.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
 		glVertex3f( 0, 0, h );
-		if ( flameTex ) glTexCoord2f( 1.0f, 0.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
 		glVertex3f( w, 0, h );
-		if ( flameTex ) glTexCoord2f( 0.0f, 1.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
 		glVertex3f( 0, d, h );
-		if ( flameTex ) glTexCoord2f( 1.0f, 1.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
 		glVertex3f( w, d, h );
 		glEnd();
 

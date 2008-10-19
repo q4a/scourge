@@ -62,7 +62,7 @@ public:
 class CVectorTex {
 public:
 	float x, y, z, u, v, r, g, b, a;
-	Texture* tex;
+	Texture tex;
 };
 
 
@@ -169,7 +169,7 @@ private:
 /// A nice, fluffy rug.
 
 struct Rug {
-	Texture const* texture;
+	Texture texture;
 	bool isHorizontal;
 	float angle;
 };
@@ -274,7 +274,7 @@ private:
 	Uint16 cursorChunkX, cursorChunkY;
 
 	int floorTexWidth, floorTexHeight;
-	Texture* floorTex;
+	Texture floorTex;
 
 	RenderedCreature *mapCenterCreature;
 	std::map<int, bool> secretDoors;
@@ -284,13 +284,13 @@ private:
 	bool heightMapEnabled;
 	OutdoorTexture outdoorTex[MAP_TILES_X][MAP_TILES_Y][MAX_OUTDOOR_LAYER];
 	float ground[MAP_WIDTH][MAP_DEPTH];
-	Texture* groundTex[MAP_WIDTH][MAP_DEPTH];
+	Texture groundTex[MAP_WIDTH][MAP_DEPTH];
 	bool refreshGroundPos;
 	int debugHeightPosXX[4], debugHeightPosYY[4];
 	CVectorTex groundPos[MAP_WIDTH][MAP_DEPTH];
-	Texture* outdoorShadow;
-	Texture* outdoorShadowTree;
-	Texture* waterTexture;
+	Texture outdoorShadow;
+	Texture outdoorShadowTree;
+	Texture waterTexture;
 	Location *hackBlockingPos;
 
 	std::map<Uint32, Uint8> trapPos;
@@ -405,7 +405,7 @@ public:
 	}
 
 	/// Which floor texture will we use (indoors)?
-	inline void setFloor( int tw, int th, Texture* texture ) {
+	inline void setFloor( int tw, int th, Texture texture ) {
 		floorTexWidth = tw; floorTexHeight = th; floorTex = texture;
 	}
 
@@ -650,7 +650,7 @@ public:
 	void setRugPosition( Sint16 x, Sint16 y, Rug *rug );
 	void removeRugPosition( Sint16 x, Sint16 y );
 	inline bool hasRugAtPosition( Sint16 x, Sint16 y ) {
-		return rugPos[x][y].texture != 0;
+		return rugPos[x][y].texture.isSpecified();
 	}
 
 	Location *isBlocked( Sint16 x, Sint16 y, Sint16 z,
@@ -851,19 +851,19 @@ public:
 		return this->refreshGroundPos;
 	}
 	/// Sets the ground texture at x,y (outdoors).
-	inline void setGroundTex( int x, int y, Texture* tex ) {
+	inline void setGroundTex( int x, int y, Texture tex ) {
 		this->groundTex[x][y] = tex;
 	}
 	/// Returns the ground texture of tile x,y.
-	inline Texture* getGroundTex( int x, int y ) {
+	inline Texture getGroundTex( int x, int y ) {
 		return this->groundTex[x][y];
 	}
 
 	float findMaxHeightPos( float x, float y, float z, bool findMax = false );
 
-	void drawGroundTex( Texture* tex, float tx, float ty, float tw, float th, float angle = 0 );
+	void drawGroundTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );
 
-	void drawOutdoorTex( Texture* tex, float tx, float ty, float tw, float th, float angle = 0 );
+	void drawOutdoorTex( Texture tex, float tx, float ty, float tw, float th, float angle = 0 );
 
 	void debugGround( int sx, int sy, int ex, int ey );
 
@@ -903,7 +903,7 @@ protected:
 	void drawRoofs();
 	bool checkLightMap( int chunkX, int chunkY );
 	void applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n );
-	Texture* getThemeTex( int ref );
+	Texture getThemeTex( int ref );
 	void addHighVariation( int ref, int z );
 	bool isRockTexture( int x, int y );
 	bool isLakebedTexture( int x, int y );

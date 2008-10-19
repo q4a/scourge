@@ -26,7 +26,7 @@
 using namespace std;
 
 C3DSShape::C3DSShape( const string& file_name, float div, Shapes *shapePal,
-                      Texture* texture[],
+                      Texture texture[],
                       char *name, int descriptionGroup,
                       Uint32 color, Uint8 shapePalIndex,
                       float size_x, float size_y, float size_z,
@@ -59,7 +59,7 @@ C3DSShape::~C3DSShape() {
 
 void C3DSShape::commonInit( const string& file_name, float div, Shapes *shapePal, float size_x, float size_y, float size_z, float offs_x, float offs_y, float offs_z, float xrot3d, float yrot3d, float zrot3d, int lighting, float base_w, float base_h ) {
 
-	g_Texture[0] = 0;
+	g_Texture[0].clear();
 	g_ViewMode = GL_TRIANGLES;
 	this->divx = this->divy = this->divz = div;
 	this->shapePal = shapePal;
@@ -265,7 +265,7 @@ void C3DSShape::resolveTextures() {
 			// instead of loading the texture, get one of the already loaded textures
 			string s = g_3DModel.pMaterials[i].strFile;
 			g_Texture[i] = shapePal->findTextureByName( s, true );
-			if ( !g_Texture[i] ) cerr << "*** error: can't find 3ds texture reference: " << g_3DModel.pMaterials[i].strFile << endl;
+			if ( !g_Texture[i].isSpecified() ) cerr << "*** error: can't find 3ds texture reference: " << g_3DModel.pMaterials[i].strFile << endl;
 			//cerr << "\tTexture: " << g_3DModel.pMaterials[i].strFile << " found? " << g_Texture[i] << endl;
 		}
 		// Set the texture ID for this material
@@ -370,7 +370,7 @@ void C3DSShape::drawShape( bool isShadow, float alpha ) {
 		if ( pObject->bHasTexture && !isShadow ) {
 			// Bind the texture map to the object by it's materialID
 			glEnable( GL_TEXTURE_2D );
-			g_Texture[pObject->materialID]->glBind();
+			g_Texture[pObject->materialID].glBind();
 			//if (!isShadow) glColor3ub(255, 255, 255);
 		} else {
 			// Turn off texture mapping and turn on color

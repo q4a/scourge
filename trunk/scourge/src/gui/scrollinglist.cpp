@@ -26,7 +26,7 @@ using namespace std;
 /**
   *@author Gabor Torok
   */
-ScrollingList::ScrollingList( int x, int y, int w, int h, Texture const* highlight, DragAndDropHandler *dragAndDropHandler, int lineHeight )
+ScrollingList::ScrollingList( int x, int y, int w, int h, Texture highlight, DragAndDropHandler *dragAndDropHandler, int lineHeight )
 		: Widget( x, y, w, h ) {
 	value = 0;
 	scrollerWidth = 15;
@@ -61,7 +61,7 @@ ScrollingList::~ScrollingList() {
 }
 
 
-void ScrollingList::setLines( int count, string const s[], const Color *colors, const Texture** icons ) {
+void ScrollingList::setLines( int count, string const s[], const Color *colors, Texture* icons ) {
 	textWidthCache.clear();
 	list.clear();
 	for ( int i = 0; i < count; i++ )
@@ -71,7 +71,7 @@ void ScrollingList::setLines( int count, string const s[], const Color *colors, 
 	setupHeight();
 }
 
-void ScrollingList::setLines( const vector<string>::iterator begin, const vector<string>::iterator end, const Color *colors, Texture const** icons ) {
+void ScrollingList::setLines( const vector<string>::iterator begin, const vector<string>::iterator end, const Color *colors, Texture* icons ) {
 	textWidthCache.clear();
 	list.clear();
 	list.insert( list.end(), begin, end );
@@ -302,7 +302,7 @@ void ScrollingList::printLine( Widget *parent, int x, int y, const std::string& 
 	}
 }
 
-void ScrollingList::drawIcon( int x, int y, Texture const* icon, Widget *parent ) {
+void ScrollingList::drawIcon( int x, int y, Texture icon, Widget *parent ) {
 	float n = lineHeight - 3;
 
 	glEnable( GL_BLEND );
@@ -311,18 +311,18 @@ void ScrollingList::drawIcon( int x, int y, Texture const* icon, Widget *parent 
 
 	glPushMatrix();
 	glTranslatef( x, y, 0 );
-	if ( icon ) icon->glBind();
+	if ( icon.isSpecified() ) icon.glBind();
 	glColor4f( 1, 1, 1, 1 );
 
 
 	glBegin( GL_TRIANGLE_STRIP );
-	if ( icon ) glTexCoord2f( 0, 0 );
+	if ( icon.isSpecified() ) glTexCoord2f( 0, 0 );
 	glVertex3f( 0, 0, 0 );
-	if ( icon ) glTexCoord2f( 1, 0 );
+	if ( icon.isSpecified() ) glTexCoord2f( 1, 0 );
 	glVertex3f( n, 0, 0 );
-	if ( icon ) glTexCoord2f( 0, 1 );
+	if ( icon.isSpecified() ) glTexCoord2f( 0, 1 );
 	glVertex3f( 0, n, 0 );
-	if ( icon ) glTexCoord2f( 1, 1 );
+	if ( icon.isSpecified() ) glTexCoord2f( 1, 1 );
 	glVertex3f( n, n, 0 );
 	glEnd();
 

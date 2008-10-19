@@ -158,9 +158,9 @@ void ScourgeView::ambientObjectSounds() {
 				Location *pos = scourge->getMap()->getPosition( xx, yy, zz );
 				if ( pos && pos->shape && ( ( GLShape* )pos->shape )->getAmbientName() != "" ) {
 					float dist = Constants::distance( scourge->getPlayer()->getX(), scourge->getPlayer()->getY(),
-					             scourge->getPlayer()->getShape()->getWidth(),
-					             scourge->getPlayer()->getShape()->getDepth(),
-					             pos->x, pos->y, pos->shape->getWidth(), pos->shape->getDepth() );
+					                                  scourge->getPlayer()->getShape()->getWidth(),
+					                                  scourge->getPlayer()->getShape()->getDepth(),
+					                                  pos->x, pos->y, pos->shape->getWidth(), pos->shape->getDepth() );
 					if ( dist <= MAX_AMBIENT_OBJECT_DISTANCE ) {
 						float percent = 100 - ( dist / static_cast<float>( MAX_AMBIENT_OBJECT_DISTANCE ) ) * 100.0f + 20;
 						if ( percent > 100 )
@@ -213,14 +213,14 @@ void ScourgeView::drawChapterIntro() {
 		scourge->setChapterTextPos( textHeight );
 	}
 
-	Texture const* image = scourge->getSession()->getChapterImageTexture();
-	if ( image->isSpecified() ) {
+	Texture image = scourge->getSession()->getChapterImageTexture();
+	if ( image.isSpecified() ) {
 		glEnable( GL_TEXTURE_2D );
 		glDisable( GL_BLEND );
 
 		glPushMatrix();
 
-		image->glBind();
+		image.glBind();
 		glColor4f( 1, 1, 1, 1 );
 
 		glLoadIdentity();
@@ -314,7 +314,7 @@ void ScourgeView::drawOutsideMap() {
 		glEnable( GL_TEXTURE_2D );
 		glPushMatrix();
 		glColor3f( 1, 1, 1 );
-		scourge->getSession()->getShapePalette()->getGuiWoodTexture()->glBind();
+		scourge->getSession()->getShapePalette()->getGuiWoodTexture().glBind();
 
 		//    float TILE_W = 510 / 2.0f;
 		float TILE_H = 270 / 2.0f;
@@ -443,7 +443,7 @@ void ScourgeView::checkForInfo() {
 						}
 						if ( !found ) {
 							InfoMessage *message = new InfoMessage( s.c_str(), obj, pos->x + pos->shape->getWidth() / 2,
-							    pos->y - 1 - pos->shape->getDepth() / 2, pos->z + pos->shape->getHeight() / 2 );
+							                                        pos->y - 1 - pos->shape->getDepth() / 2, pos->z + pos->shape->getHeight() / 2 );
 
 							infos[ message ] = SDL_GetTicks();
 						}
@@ -490,10 +490,10 @@ void ScourgeView::drawCreatureInfos() {
 	for ( int i = 0; i < scourge->getSession()->getCreatureCount(); i++ ) {
 		//if(!session->getCreature(i)->getStateMod(Constants::dead) &&
 		if ( scourge->getMap()->isLocationVisible( toint( scourge->getSession()->getCreature( i )->getX() ),
-		        toint( scourge->getSession()->getCreature( i )->getY() ) ) &&
+		                                           toint( scourge->getSession()->getCreature( i )->getY() ) ) &&
 		        scourge->getMap()->isLocationInLight( toint( scourge->getSession()->getCreature( i )->getX() ),
-		            toint( scourge->getSession()->getCreature( i )->getY() ),
-		            scourge->getSession()->getCreature( i )->getShape() ) ) {
+		                                              toint( scourge->getSession()->getCreature( i )->getY() ),
+		                                              scourge->getSession()->getCreature( i )->getShape() ) ) {
 			showCreatureInfo( scourge->getSession()->getCreature( i ), false, false, false,
 			                  ( scourge->getSession()->getCreature( i )->getCharacter() ? true : false ) );
 		}
@@ -524,7 +524,7 @@ void ScourgeView::drawInfos() {
 		zpos2 = ( static_cast<float>( message->z ) * MUL );
 
 		scourge->getSDLHandler()->drawTooltip( xpos2, ypos2, zpos2, -( scourge->getMap()->getZRot() ), -( scourge->getMap()->getYRot() ),
-		    message->message, 0, 0.15f, 0.05f, 1.0f / scourge->getSession()->getMap()->getZoom() );
+		                                       message->message, 0, 0.15f, 0.05f, 1.0f / scourge->getSession()->getMap()->getZoom() );
 	}
 
 	glEnable( GL_DEPTH_TEST );
@@ -552,7 +552,7 @@ void ScourgeView::checkForDropTarget() {
 				if ( mapx < MAP_WIDTH ) {
 					dropTarget = scourge->getMap()->getLocation( mapx, mapy, mapz );
 					if ( !( dropTarget && ( dropTarget->creature || ( dropTarget->item &&
-					                        ( ( Item* )( dropTarget->item ) )->getRpgItem()->getType() == RpgItem::CONTAINER ) ) ) ) {
+					                                                  ( ( Item* )( dropTarget->item ) )->getRpgItem()->getType() == RpgItem::CONTAINER ) ) ) ) {
 						dropTarget = NULL;
 					}
 				}
@@ -591,7 +591,7 @@ void ScourgeView::drawBorder() {
 	float TILE_W = 20.0f;
 	float TILE_H = 120.0f;
 
-	scourge->getSession()->getShapePalette()->getBorderTexture()->glBind();
+	scourge->getSession()->getShapePalette()->getBorderTexture().glBind();
 	glBegin( GL_QUADS );
 	// left
 	glTexCoord2f ( 0.0f, 0.0f );
@@ -617,7 +617,7 @@ void ScourgeView::drawBorder() {
 
 	TILE_W = 120.0f;
 	TILE_H = 20.0f;
-	scourge->getSession()->getShapePalette()->getBorder2Texture()->glBind();
+	scourge->getSession()->getShapePalette()->getBorder2Texture().glBind();
 	glBegin( GL_QUADS );
 	// top
 	glTexCoord2f ( 0.0f, 0.0f );
@@ -645,7 +645,7 @@ void ScourgeView::drawBorder() {
 
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	scourge->getSession()->getShapePalette()->getGargoyleTexture()->glBind();
+	scourge->getSession()->getShapePalette()->getGargoyleTexture().glBind();
 
 	glPushMatrix();
 	glLoadIdentity();
@@ -766,7 +766,7 @@ void ScourgeView::drawDisk( float w, float diff ) {
 	glDisable( GL_CULL_FACE );
 
 	glEnable( GL_TEXTURE_2D );
-	scourge->getShapePalette()->getSelection()->glBind();
+	scourge->getShapePalette()->getSelection().glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 // glNormal3f( 0, 0, 1 );
 	glTexCoord2f( 0, 0 );
@@ -837,8 +837,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 			zpos2 = scourge->getMap()->getGroundHeight( i->x / OUTDOORS_STEP, i->y / OUTDOORS_STEP ) * MUL;
 
 			scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getNamedTexture( "path" ),
-			    i->x + creature->getShape()->getWidth() / 2,
-			    i->y - creature->getShape()->getWidth() / 2 - 1, 0.4f, 0.4f );
+			                                  i->x + creature->getShape()->getWidth() / 2,
+			                                  i->y - creature->getShape()->getWidth() / 2 - 1, 0.4f, 0.4f );
 
 			/*
 			   glPushMatrix();
@@ -858,8 +858,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		glColor4f( 1.0f, 0.75f, 0.0f, 0.5f );
 
 		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(), creature->getSelX() - targetWidth / 2,
-		    creature->getSelY() + targetWidth / 2, creature->getShape()->getWidth() + targetWidth,
-		    creature->getShape()->getDepth() + targetWidth );
+		                                  creature->getSelY() + targetWidth / 2, creature->getShape()->getWidth() + targetWidth,
+		                                  creature->getShape()->getDepth() + targetWidth );
 
 		xpos2 = ( static_cast<float>( creature->getSelX() - scourge->getMap()->getX() ) * MUL );
 		ypos2 = ( static_cast<float>( creature->getSelY() - scourge->getMap()->getY() ) * MUL );
@@ -880,7 +880,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 			char cost[40];
 			snprintf( cost, 40, "%s: %d", _( "Move" ), static_cast<int>( creature->getPathManager()->getPathRemainingSize() ) );
 			scourge->getSDLHandler()->drawTooltip( 0, 0, 0, -( scourge->getMap()->getZRot() ), -( scourge->getMap()->getYRot() ),
-			    cost, 0.5f, 0.2f, 0.0f, 1.0f / scourge->getMap()->getZoom() );
+			                                       cost, 0.5f, 0.2f, 0.0f, 1.0f / scourge->getMap()->getZoom() );
 		}
 		glPopMatrix();
 		glEnable( GL_DEPTH_TEST );
@@ -893,10 +893,10 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		glColor4f( 1.0f, 0.15f, 0.0f, 0.5f );
 
 		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
-		    creature->getTargetCreature()->getX(),
-		    creature->getTargetCreature()->getY() + creature->getTargetCreature()->getShape()->getDepth() / 2.0f - 1,
-		    creature->getTargetCreature()->getShape()->getWidth(),
-		    creature->getTargetCreature()->getShape()->getDepth() );
+		                                  creature->getTargetCreature()->getX(),
+		                                  creature->getTargetCreature()->getY() + creature->getTargetCreature()->getShape()->getDepth() / 2.0f - 1,
+		                                  creature->getTargetCreature()->getShape()->getWidth(),
+		                                  creature->getTargetCreature()->getShape()->getDepth() );
 
 	}
 
@@ -922,8 +922,8 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
 	if ( !creature->getStateMod( StateMod::dead ) && ( groupMode || player || !creature->isPartyMember() || wanderingHero ) ) {
 		scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getSelection(),
-		    creature->getX(), creature->getY() + creature->getShape()->getDepth() / 2.0f - 1,
-		    creature->getShape()->getWidth(), creature->getShape()->getDepth() );
+		                                  creature->getX(), creature->getY() + creature->getShape()->getDepth() / 2.0f - 1,
+		                                  creature->getShape()->getWidth(), creature->getShape()->getDepth() );
 	}
 
 	// draw state mods
@@ -931,7 +931,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 		glEnable( GL_TEXTURE_2D );
 		int n = 16;
 		int count = 0;
-		Texture* icon;
+		Texture icon;
 		char name[255];
 		Color color;
 		for ( int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++ ) {
@@ -945,16 +945,16 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 				glRotatef( ( count * 30 ) + 180, 0, 0, 1 );
 				glTranslatef( -7, -7, 0 );
 
-				icon->glBind();
+				icon.glBind();
 //        glNormal3f( 0, 0, 1 );
 				glBegin( GL_TRIANGLE_STRIP );
-				if ( icon ) glTexCoord2f( 0, 0 );
+				if ( icon.isSpecified() ) glTexCoord2f( 0, 0 );
 				glVertex3f( 0, 0, 0 );
-				if ( icon ) glTexCoord2f( 1, 0 );
+				if ( icon.isSpecified() ) glTexCoord2f( 1, 0 );
 				glVertex3f( n, 0, 0 );
-				if ( icon ) glTexCoord2f( 0, 1 );
+				if ( icon.isSpecified() ) glTexCoord2f( 0, 1 );
 				glVertex3f( 0, n, 0 );
-				if ( icon ) glTexCoord2f( 1, 1 );
+				if ( icon.isSpecified() ) glTexCoord2f( 1, 1 );
 				glVertex3f( n, n, 0 );
 				glEnd();
 				glPopMatrix();
@@ -1012,9 +1012,9 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 
 					glColor4f( 0.85f, 0.25f, 0.15f, 0.4f );
 					scourge->getMap()->drawGroundTex( scourge->getShapePalette()->getAreaTexture(),
-					    creature->getX() - ( nn - creature->getShape()->getWidth() ) / 2.0f,
-					    creature->getY() + ( nn - creature->getShape()->getWidth() ) / 2.0f,
-					    nn, nn, areaRot );
+					                                  creature->getX() - ( nn - creature->getShape()->getWidth() ) / 2.0f,
+					                                  creature->getY() + ( nn - creature->getShape()->getWidth() ) / 2.0f,
+					                                  nn, nn, areaRot );
 					/*
 					     glPushMatrix();
 
@@ -1068,7 +1068,7 @@ void ScourgeView::showCreatureInfo( Creature *creature, bool player, bool select
 				Color color;
 				if ( scourge->getParty()->getPlayer()->getBattle()->describeAttack( creature, cost, 40, &color, player ) ) {
 					scourge->getSDLHandler()->drawTooltip( 0, 0, 0, -( scourge->getMap()->getZRot() ), -( scourge->getMap()->getYRot() ),
-					    cost, color.r, color.g, color.b, 1.0f / scourge->getMap()->getZoom() );
+					                                       cost, color.r, color.g, color.b, 1.0f / scourge->getMap()->getZoom() );
 					glEnable( GL_DEPTH_TEST );
 				}
 
@@ -1300,7 +1300,7 @@ void ScourgeView::drawWeather() {
 		else if ( rainDropCount < MIN_RAIN_DROP_COUNT ) rainDropCount = MIN_RAIN_DROP_COUNT;
 
 		glPushMatrix();
-		scourge->getShapePalette()->getRaindropTexture()->glBind();
+		scourge->getShapePalette()->getRaindropTexture().glBind();
 
 		for ( int i = 0; i < rainDropCount; i++ ) {
 			if ( lightningTime < 501 && ( scourge->getMap()->getWeather() & WEATHER_THUNDER ) ) {

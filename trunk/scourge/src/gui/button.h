@@ -21,6 +21,7 @@
 
 #include "gui.h"
 #include "widget.h"
+#include "../render/texture.h"
 
 /**
   *@author Gabor Torok
@@ -37,11 +38,11 @@ private:
 	int labelPos;
 	bool toggle;
 	bool selected;
-	Texture const* highlight;
+	Texture highlight;
 	bool glowing;
 	bool inverse;
 	int fontType;
-	Texture const* texture;
+	Texture texture;
 
 public:
 
@@ -51,7 +52,7 @@ public:
 		BOTTOM
 	};
 
-	Button( int x1, int y1, int x2, int y2, Texture const* highlight, char *label = NULL, Texture const* texture = NULL );
+	Button( int x1, int y1, int x2, int y2, Texture const& highlight, char *label = NULL, Texture const& texture = Texture::none() );
 	~Button();
 
 	inline void setInside( bool b ) {
@@ -67,7 +68,7 @@ public:
 		return toggle;
 	}
 
-	inline void setTexture( Texture const* texture ) {
+	inline void setTexture( Texture texture ) {
 		this->texture = texture;
 	}
 	inline void setGlowing( bool b ) {
