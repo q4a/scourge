@@ -2026,7 +2026,7 @@ bool Creature::castHealingSpell() {
 
   for ( int i = 0; i < getSpellCount(); i++ ) {
     Spell *spell = getSpell ( i );
-    if ( spell->isFriendly() ) {
+    if ( spell->isFriendly() && spell->hasStateModPrereq() ) {
       healingSpells.push_back ( spell );
     }
   }
@@ -2039,11 +2039,7 @@ bool Creature::castHealingSpell() {
   // Find a suitable target
   Creature *p;
   if ( spell->getMp() < getMp() ) {
-    if ( spell->hasStateModPrereq() ) {
       p = findClosestTargetWithPrereq ( spell );
-    } else {
-      p = ( isMonster() ? session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
-    }
   } else {
     return false;
   }
@@ -2115,13 +2111,9 @@ void Creature::decideAction() {
 	}
 }
 
-/// Makes the creature attack the closest suitable target. Returns true if target found.
+/// Returns the closest suitable battle target, NULL if no target found.
 
-bool Creature::attackClosestTarget() {
-  // Try spells first.
-  if ( castHealingSpell() ) return false;
-  if ( castOffensiveSpell() ) return false;
-
+Creature *Creature::getClosestTarget() {
   Creature *p;
   bool possessed = getStateMod( StateMod::possessed );
 
@@ -2131,6 +2123,18 @@ bool Creature::attackClosestTarget() {
   } else {
     p = ( possessed ? session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
   }
+
+  return p;
+}
+
+/// Makes the creature attack the closest suitable target. Returns true if target found.
+
+bool Creature::attackClosestTarget() {
+  // Try spells first.
+  if ( castHealingSpell() ) return false;
+  if ( castOffensiveSpell() ) return false;
+
+  Creature *p = getClosestTarget();
 
   if ( p ) {
     // attack with item
@@ -2164,7 +2168,7 @@ bool Creature::castOffensiveSpell() {
   // Find a suitable target
   Creature *p;
   if ( spell->getMp() < getMp() ) {
-      p = ( isMonster() ? session->getClosestGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getClosestMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
+    p = ( spell->hasStateModPrereq() ? findClosestTargetWithPrereq( spell ) : getClosestTarget() );
   } else {
     return false;
   }
