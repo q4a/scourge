@@ -764,6 +764,7 @@ public:
 	//void makeTargetRetaliate();
 	void decideAction();
 
+	Creature *getClosestTarget();
 	bool attackClosestTarget();
 	bool castHealingSpell();
 
