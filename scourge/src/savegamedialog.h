@@ -55,7 +55,7 @@ private:
 	Button *cancel, *save, *load, *newSave, *deleteSave;
 	std::vector<SavegameInfo*> fileInfos;
 	std::vector<std::string> filenames;
-	std::vector<Texture*> screens; // owns the textures
+	std::vector<Texture> screens; // owns the textures
 	ConfirmDialog *confirm;
 
 	bool matches_save_( std::string& match );

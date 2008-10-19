@@ -21,6 +21,7 @@
 #pragma once
 
 #include "render.h"
+#include "texture.h"
 
 class Effect;
 class RenderedItem;
@@ -72,7 +73,7 @@ public:
 	float offsetX, offsetY, width, height; // measured in map units
 	float angle;
 	bool horizFlip, vertFlip;
-	Texture* texture;
+	Texture texture;
 	int outdoorThemeRef;
 
 	OutdoorTexture()
@@ -83,7 +84,7 @@ public:
 			, angle( 0 )
 			, horizFlip( false )
 			, vertFlip( false )
-			, texture( NULL )
+			, texture()
 			, outdoorThemeRef( -1 ) {
 	}
 };

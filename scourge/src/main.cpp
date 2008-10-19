@@ -38,7 +38,6 @@ using namespace std;
 // so go buy more memory too. ;) 
 #if defined(_MSC_VER)
 # ifdef _DEBUG
-#   define DEBUG_NEW new(_NORMAL_BLOCK, THIS_FILE, __LINE__)
 #   define new DEBUG_NEW
 #   undef THIS_FILE
     static char THIS_FILE[] = __FILE__;
@@ -102,9 +101,9 @@ void RedirectIOToConsole( void ) {
 	// Send all reports to STDOUT
 	_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG );
 	_CrtSetReportFile( _CRT_WARN, _CRTDBG_FILE_STDERR );
-	_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG );
+	_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_FILE | _CRTDBG_MODE_WNDW );
 	_CrtSetReportFile( _CRT_ERROR, _CRTDBG_FILE_STDERR );
-	_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG );
+	_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_WNDW );
 	_CrtSetReportFile( _CRT_ASSERT, _CRTDBG_FILE_STDERR );
 	// Following things can be used all around code to hunt down bugs.
 	// Here they set default behaviour.

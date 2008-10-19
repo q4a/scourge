@@ -63,7 +63,7 @@ private:
 
 	Creature *loadedParty[MAX_PARTY_SIZE];
 	int loadedCount;
-	std::map<int, Creature*> maxSkills;
+	std::vector<Creature*> maxSkills;
 	std::set<Creature*> partySet;
 
 public:
@@ -72,7 +72,7 @@ public:
 	virtual ~Party();
 
 	inline Creature *getHighestSkillPC( int skill ) {
-		return ( maxSkills.find( skill ) != maxSkills.end() ? maxSkills[ skill ] : NULL );
+		return ( skill >= 0 && skill < (int)maxSkills.size() ? maxSkills[ skill ] : NULL );
 	}
 	void recomputeMaxSkills();
 

@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "rpgitem.h"
 #include "spell.h"
+#include "../render/texture.h"
 
 class ConfigLang;
 
@@ -52,7 +53,7 @@ private:
 	float scale;
 	bool npc;
 	char *portrait;
-	Texture* portraitTexture;
+	Texture portraitTexture;
 	float baseAttackBonus;
 	GLuint statemod;
 	bool harmless;
@@ -149,10 +150,10 @@ public:
 	inline char *getPortrait() {
 		return portrait;
 	}
-	inline Texture* getPortraitTexture() {
+	inline Texture getPortraitTexture() {
 		return portraitTexture;
 	}
-	inline void setPortraitTexture( Texture* n ) {
+	inline void setPortraitTexture( Texture n ) {
 		portraitTexture = n;
 	}
 	inline float getBaseAttackBonus() {

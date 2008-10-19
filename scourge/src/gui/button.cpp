@@ -24,7 +24,7 @@
   *@author Gabor Torok
   */
 
-Button::Button( int x1, int y1, int x2, int y2, Texture const* highlight, char *label, Texture const* texture ) :
+Button::Button( int x1, int y1, int x2, int y2, Texture const& highlight, char *label, Texture const& texture ) :
 		Widget( x1, y1, x2 - x1, y2 - y1 ) {
 	this->x2 = x2;
 	this->y2 = y2;
@@ -49,13 +49,13 @@ void Button::drawWidget( Widget *parent ) {
 
 	drawButton( parent, 0, 0, x2 - x, y2 - y, toggle, selected, inverse, glowing, inside );
 
-	if ( texture ) {
+	if ( texture.isSpecified() ) {
 		glDisable( GL_CULL_FACE );
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable( GL_TEXTURE_2D );
 		glPushMatrix();
-		texture->glBind();
+		texture.glBind();
 
 		if ( isEnabled() ) {
 			glColor4f( 1, 1, 1, ( glowing || inside ? getAlpha() + 0.3f : 1 ) );

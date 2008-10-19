@@ -240,8 +240,8 @@ public:
 	inline TextureData const& getChapterImage() {
 		return chapterImage;
 	}
-	inline Texture const* getChapterImageTexture() {
-		return &chapterImageTexture;
+	inline Texture getChapterImageTexture() {
+		return chapterImageTexture;
 	}
 	inline int getChapterImageWidth() {
 		return chapterImageWidth;

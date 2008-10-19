@@ -98,7 +98,7 @@ public:
 	virtual void writeLogMessage( char const* message, int messageType = Constants::MSGTYPE_NORMAL, int logLevel = Constants::LOGLEVEL_FULL ) = 0;
 
 	/// Gets a texture from the shape palette by name.
-	virtual Texture* getNamedTexture( char *name ) = 0;
+	virtual Texture const& getNamedTexture( char *name ) = 0;
 
 	/// Are we in movie mode?
 	virtual bool isInMovieMode() = 0;

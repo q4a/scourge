@@ -31,13 +31,13 @@ static GLuint lightmap_tex_num2 = 0;
 static unsigned char data[LIGHTMAP_SIZE * LIGHTMAP_SIZE * 3];
 static unsigned char data2[LIGHTMAP_SIZE * LIGHTMAP_SIZE * 3];
 
-GLShape::GLShape( Texture* tex[], int width, int depth, int height, char *name, int descriptionGroup,
+GLShape::GLShape( Texture tex[], int width, int depth, int height, char *name, int descriptionGroup,
                   Uint32 color, Uint8 shapePalIndex )
 		: Shape( width, depth, height, name, descriptionGroup ) {
 	commonInit( tex, color, shapePalIndex );
 }
 
-void GLShape::commonInit( Texture* tex[], Uint32 color, Uint8 shapePalIndex ) {
+void GLShape::commonInit( Texture tex[], Uint32 color, Uint8 shapePalIndex ) {
 	this->alpha = 1.0f;
 	this->tex = tex;
 	this->color = color;
@@ -50,7 +50,7 @@ void GLShape::commonInit( Texture* tex[], Uint32 color, Uint8 shapePalIndex ) {
 	this->effectType = -1;
 	this->wallShape = false;
 	this->iconRotX = this->iconRotY = this->iconRotZ = 0;
-	this->icon = 0;
+	this->icon.clear();
 	this->iconWidth = this->iconHeight = 0;
 	this->ambient = "";
 	this->ignoreHeightMap = false;
@@ -71,7 +71,7 @@ void GLShape::commonInit( Texture* tex[], Uint32 color, Uint8 shapePalIndex ) {
 	initialize();
 }
 
-void GLShape::setTexture( Texture** textureGroup ) {
+void GLShape::setTexture( Texture* textureGroup ) {
 	this->tex = textureGroup;
 	setTextureIndex( -1 );
 }
@@ -377,19 +377,19 @@ void GLShape::draw() {
 	int textureIndexSide = ( !isFloorShape && depth > width && getTextureIndex() > -1 ? getTextureIndex() : GLShape::LEFT_RIGHT_SIDE );
 
 	if ( sides[Shape::TOP_SIDE] ) {
-		tex[textureIndexTop]->glBind();
+		tex[textureIndexTop].glBind();
 		glCallList( displayListStart + 1 );
 	}
 	if ( sides[Shape::N_SIDE] ) {
 		if ( Constants::multitexture ) {
 			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
 			glEnable( GL_TEXTURE_2D );
-			tex[textureIndexFront]->glBind();
+			tex[textureIndexFront].glBind();
 			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
 			glEnable( GL_TEXTURE_2D );
 			glBindTexture( GL_TEXTURE_2D, lightmap_tex_num );
 		} else {
-			tex[textureIndexFront]->glBind();
+			tex[textureIndexFront].glBind();
 		}
 		glCallList( displayListStart + 2 + Shape::N_SIDE );
 	}
@@ -397,12 +397,12 @@ void GLShape::draw() {
 		if ( Constants::multitexture ) {
 			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
 			glEnable( GL_TEXTURE_2D );
-			tex[textureIndexFront]->glBind();
+			tex[textureIndexFront].glBind();
 			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
 			glEnable( GL_TEXTURE_2D );
 			glBindTexture( GL_TEXTURE_2D, lightmap_tex_num );
 		} else {
-			tex[textureIndexFront]->glBind();
+			tex[textureIndexFront].glBind();
 		}
 		glCallList( displayListStart + 2 + Shape::S_SIDE );
 	}
@@ -410,17 +410,17 @@ void GLShape::draw() {
 		if ( Constants::multitexture ) {
 			glSDLActiveTextureARB( GL_TEXTURE0_ARB );
 			glEnable( GL_TEXTURE_2D );
-			tex[textureIndexSide]->glBind();
+			tex[textureIndexSide].glBind();
 			glSDLActiveTextureARB( GL_TEXTURE1_ARB );
 			glEnable( GL_TEXTURE_2D );
 			glBindTexture( GL_TEXTURE_2D, lightmap_tex_num2 );
 		} else {
-			tex[textureIndexSide]->glBind();
+			tex[textureIndexSide].glBind();
 		}
 		glCallList( displayListStart + 2 + Shape::E_SIDE );
 	}
 	if ( sides[Shape::W_SIDE] ) {
-		tex[textureIndexSide]->glBind();
+		tex[textureIndexSide].glBind();
 		glCallList( displayListStart + 2 + Shape::W_SIDE );
 	}
 

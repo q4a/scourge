@@ -528,26 +528,26 @@ void Scourge::resetGame( bool resetParty ) {
 
 		Calendar *cal = getSession()->getParty()->getCalendar();
 		{
-#if DEBUG_SQUIRREL			
+#if DEBUG_SQUIRREL
 			// Schedule an event to keep reloading scripts if they change on disk
 			Date d( 0, 0, 1, 0, 0, 0 ); // (format : sec, min, hours, days, months, years)
 			Event *event = new ReloadEvent( cal->getCurrentDate(),
-			    d,
-			    Event::INFINITE_EXECUTIONS,
-			    getSession(),
-			    ReloadEvent::MODE_RELOAD_SCRIPTS );
+			                                d,
+			                                Event::INFINITE_EXECUTIONS,
+			                                getSession(),
+			                                ReloadEvent::MODE_RELOAD_SCRIPTS );
 			cal->scheduleEvent( event );
-#endif			
+#endif
 		}
 
 		{
 			// Schedule an event to regain MP now and then
 			Date d( 0, 10, 0, 0, 0, 0 ); // (format : sec, min, hours, days, months, years)
 			Event *event = new ReloadEvent( cal->getCurrentDate(),
-			    d,
-			    Event::INFINITE_EXECUTIONS,
-			    getSession(),
-			    ReloadEvent::MODE_REGAIN_POINTS );
+			                                d,
+			                                Event::INFINITE_EXECUTIONS,
+			                                getSession(),
+			                                ReloadEvent::MODE_REGAIN_POINTS );
 			cal->scheduleEvent( event );
 		}
 
@@ -925,9 +925,9 @@ void Scourge::addWanderingHeroes() {
 		}
 		GLShape *shape =
 		  getShapePalette()->getCreatureShape( monster->getModelName(),
-		      monster->getSkinName(),
-		      monster->getScale(),
-		      monster );
+		                                       monster->getSkinName(),
+		                                       monster->getScale(),
+		                                       monster );
 		Creature *creature = getSession()->newCreature( monster, shape );
 		creature->findPlace( cx, cy );
 	}
@@ -1159,11 +1159,11 @@ bool Scourge::useItem( int x, int y, int z ) {
 	if ( pos ) {
 		Shape *shape = ( pos->item ? pos->item->getShape() : pos->shape );
 		if ( levelMap->isWallBetweenShapes( toint( party->getPlayer()->getX() ),
-		        toint( party->getPlayer()->getY() ),
-		        toint( party->getPlayer()->getZ() ),
-		        party->getPlayer()->getShape(),
-		        x, y, z,
-		        shape ) ) {
+		                                    toint( party->getPlayer()->getY() ),
+		                                    toint( party->getPlayer()->getZ() ),
+		                                    party->getPlayer()->getShape(),
+		                                    x, y, z,
+		                                    shape ) ) {
 			getDescriptionScroller()->writeLogMessage( Constants::getMessage( Constants::ITEM_OUT_OF_REACH ), Constants::MSGTYPE_FAILURE );
 			getParty()->setSelXY( x, y, false ); // get as close as possible to location
 			return true;
@@ -1276,9 +1276,9 @@ int Scourge::dropItem( int x, int y ) {
 	} else {
 		// see if it's blocked and get the value of z (stacking items)
 		Location *pos = levelMap->isBlocked( x, y, 0,
-		                movingX, movingY, movingZ,
-		                movingItem->getShape(), &z,
-		                true );
+		                                     movingX, movingY, movingZ,
+		                                     movingItem->getShape(), &z,
+		                                     true );
 		if ( !pos &&
 		        !levelMap->isWallBetween( toint( party->getPlayer()->getX() ),
 		                                  toint( party->getPlayer()->getY() ),
@@ -1667,10 +1667,10 @@ bool Scourge::createBattleTurns() {
 //         party->getParty(i)->getStateMod(Constants::possessed)) {
 			if ( party->getParty( i )->getStateMod( StateMod::possessed ) ) {
 				Creature *target = session->getParty()->getClosestPlayer( toint( party->getParty( i )->getX() ),
-				                   toint( party->getParty( i )->getY() ),
-				                   party->getParty( i )->getShape()->getWidth(),
-				                   party->getParty( i )->getShape()->getDepth(),
-				                   20 );
+				                                                          toint( party->getParty( i )->getY() ),
+				                                                          party->getParty( i )->getShape()->getWidth(),
+				                                                          party->getParty( i )->getShape()->getDepth(),
+				                                                          20 );
 				if ( target ) {
 					party->getParty( i )->setTargetCreature( target );
 				}
@@ -1678,7 +1678,7 @@ bool Scourge::createBattleTurns() {
 			bool hasTarget = ( party->getParty( i )->hasTarget() ||
 			                   party->getParty( i )->getAction() > -1 );
 			bool visible = ( levelMap->isLocationVisible( toint( party->getParty( i )->getX() ),
-			                 toint( party->getParty( i )->getY() ) ) );
+			                                              toint( party->getParty( i )->getY() ) ) );
 			if ( hasTarget ) {
 				if ( party->getParty( i )->isTargetValid() && visible ) {
 					if ( Battle::debugBattle ) cerr << "*** init party target" << endl;
@@ -1724,7 +1724,7 @@ bool Scourge::createBattleTurns() {
 		// add other movement
 		for ( int i = 0; i < party->getPartySize(); i++ ) {
 			bool visible = ( levelMap->isLocationVisible( toint( party->getParty( i )->getX() ),
-			                 toint( party->getParty( i )->getY() ) ) );
+			                                              toint( party->getParty( i )->getY() ) ) );
 			if ( visible && !party->getParty( i )->getStateMod( StateMod::dead ) ) {
 				bool found = false;
 				for ( int t = 0; t < battleCount; t++ ) {
@@ -1886,8 +1886,8 @@ void Scourge::openContainerGui( Item *container ) {
 	if ( containerGuiCount < MAX_CONTAINER_GUI ) {
 		getSession()->getSound()->playSound( Sound::OPEN_BOX, 127 );
 		containerGui[containerGuiCount++] = new ContainerGui( this, container,
-		    10 + containerGuiCount * 15,
-		    10 + containerGuiCount * 15 );
+		                                                      10 + containerGuiCount * 15,
+		                                                      10 + containerGuiCount * 15 );
 	}
 }
 
@@ -2121,13 +2121,13 @@ void Scourge::createPartyUI() {
 			                            this, NULL, true );
 			cards->addWidget( playerHpMp[i], 0 );
 			dismissButton[i] = cards->createButton( offsetX + playerButtonWidth * ( i + 1 ) - 25,
-			                   yy + playerInfoHeight - 50,
-			                   offsetX + playerButtonWidth * ( i + 1 ),
-			                   yy + playerInfoHeight - 25,
-			                   "",
-			                   0,
-			                   false,
-			                   getShapePalette()->getDismissTexture() );
+			                                        yy + playerInfoHeight - 50,
+			                                        offsetX + playerButtonWidth * ( i + 1 ),
+			                                        yy + playerInfoHeight - 25,
+			                                        "",
+			                                        0,
+			                                        false,
+			                                        getShapePalette()->getDismissTexture() );
 			dismissButton[i]->setTooltip( _( "Dismiss this character" ) );
 		}
 		playerWeapon[i] = new Canvas( offsetX + playerButtonWidth * ( i + 1 ) - 25,
@@ -2287,7 +2287,7 @@ void Scourge::drawItemIcon( Item *item, int n ) {
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	item->getItemIconTexture()->glBind();
+	item->getItemIconTexture().glBind();
 
 	glColor4f( 1, 1, 1, 1 );
 
@@ -2348,11 +2348,11 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
 	if ( p == NULL ) {
-		getSession()->getShapePalette()->getNamedTexture( "nobody" )->glBind();
+		getSession()->getShapePalette()->getNamedTexture( "nobody" ).glBind();
 	} else if ( p->getStateMod( StateMod::dead ) ) {
-		getSession()->getShapePalette()->getDeathPortraitTexture()->glBind();
+		getSession()->getShapePalette()->getDeathPortraitTexture().glBind();
 	} else {
-		getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() )->glBind();
+		getSession()->getShapePalette()->getPortraitTexture( p->getSex(), p->getPortraitTextureIndex() ).glBind();
 	}
 //  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
@@ -2457,12 +2457,12 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 		int yp = 1;
 		int n = 12;
 		int row = ( width / static_cast<int>( n + 1 ) );
-		Texture* icon;
+		Texture icon;
 		char name[255];
 		Color color;
 		for ( int i = 0; i < StateMod::STATE_MOD_COUNT + 2; i++ ) {
 			if ( getStateModIcon( &icon, name, &color, p, i ) ) {
-				icon->glBind();
+				icon.glBind();
 				glColor4f( color.r, color.g, color.b, color.a );
 				glPushMatrix();
 				glTranslatef( 5 + xp * ( n + 1 ), height - ( yp * ( n + 1 ) ) - n, 0 );
@@ -2489,8 +2489,8 @@ void Scourge::drawPortrait( Creature *p, int width, int height, int offs_x, int 
 	glDisable( GL_TEXTURE_2D );
 }
 
-bool Scourge::getStateModIcon( Texture** icon, char *name, Color *color, Creature *p, int stateMod, bool protect ) {
-	*icon = 0;
+bool Scourge::getStateModIcon( Texture* icon, char *name, Color *color, Creature *p, int stateMod, bool protect ) {
+	*icon = Texture::none();
 	if ( !protect && stateMod == StateMod::STATE_MOD_COUNT && p->isPartyMember() && p->getThirst() <= 5 ) {
 		*icon = getSession()->getShapePalette()->getThirstIcon();
 		strcpy( name, _( "Thirst" ) );
@@ -2528,7 +2528,7 @@ bool Scourge::getStateModIcon( Texture** icon, char *name, Color *color, Creatur
 		color->b = 1;
 		color->a = 0.5f;
 	}
-	return( *icon > 0 );
+	return( icon->isSpecified() );
 }
 
 void Scourge::resetPartyUI() {
@@ -2619,7 +2619,8 @@ void Scourge::refreshInventoryUI( int playerIndex ) {
 
 void Scourge::refreshInventoryUI() {
 	if ( getPcUi() ) {
-		getPcUi()->setCreature( party->getPlayer() );
+		if ( party->getPlayer() )
+			getPcUi()->setCreature( party->getPlayer() );
 		if ( getTradeDialog()->getWindow()->isVisible() )
 			getTradeDialog()->updateUI();
 		if ( getUncurseDialog()->getWindow()->isVisible() )
@@ -2746,8 +2747,8 @@ void Scourge::createBoardUI() {
 	boardWin->addWidget( mapWidget );
 	//missionDescriptionLabel = new Label(5, 210, "", 67);
 	missionDescriptionLabel = new ScrollingLabel( 5, 30 + colHeight + 5,
-	    colWidth,
-	    colHeight - 5, "" );
+	                                              colWidth,
+	                                              colHeight - 5, "" );
 	boardWin->addWidget( missionDescriptionLabel );
 	playMission = new Button( 5, 5, 125, 25, getSession()->getShapePalette()->getHighlightTexture(), Constants::getMessage( Constants::PLAY_MISSION_LABEL ) );
 	boardWin->addWidget( playMission );
@@ -2852,7 +2853,7 @@ ShapePalette *Scourge::getShapePalette() {
 	return getSession()->getShapePalette();
 }
 
-Texture* Scourge::getCursorTexture( int cursorMode ) {
+Texture const& Scourge::getCursorTexture( int cursorMode ) {
 	return session->getShapePalette()->getCursorTexture( cursorMode );
 }
 
@@ -2864,19 +2865,19 @@ int Scourge::getCursorHeight() {
 	return session->getShapePalette()->getCursorHeight();
 }
 
-Texture const* Scourge::getHighlightTexture() {
+Texture const& Scourge::getHighlightTexture() {
 	return getShapePalette()->getHighlightTexture();
 }
 
-Texture const* Scourge::getGuiTexture() {
+Texture const& Scourge::getGuiTexture() {
 	return getShapePalette()->getGuiTexture();
 }
 
-Texture const* Scourge::getGuiTexture2() {
+Texture const& Scourge::getGuiTexture2() {
 	return getShapePalette()->getGuiTexture2();
 }
 
-Texture const* Scourge::loadSystemTexture( char *line ) {
+Texture const& Scourge::loadSystemTexture( char *line ) {
 	return getShapePalette()->loadSystemTexture( line );
 }
 
@@ -3187,7 +3188,7 @@ bool Scourge::isLevelShaded() {
 
 void Scourge::printToConsole( const char *s ) {
 	if ( squirrelLabel ) {
-		if( squirrelWin->isVisible() ) {
+		if ( squirrelWin->isVisible() ) {
 			//cerr << s << endl;
 			char *q = strdup( s );
 			// replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
@@ -3357,8 +3358,8 @@ void Scourge::mouseClickWhileExiting() {
 		exitConfirmationDialog->setVisible( true );
 	} else if ( changingStory && !exitConfirmationDialog->isVisible() ) {
 		exitConfirmationDialog->setText( oldStory < currentStory ?
-		    _( Constants::messages[Constants::USE_GATE_LABEL][0] ) :
-		    _( Constants::messages[Constants::USE_GATE_LABEL][1] ) );
+		                                 _( Constants::messages[Constants::USE_GATE_LABEL][0] ) :
+		                                 _( Constants::messages[Constants::USE_GATE_LABEL][1] ) );
 		party->toggleRound( true );
 		exitConfirmationDialog->setVisible( true );
 	}
@@ -3556,7 +3557,7 @@ void Scourge::renderHandAttackIcon( int x, int y, int size ) {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1, 1, 1, 1 );
-	getShapePalette()->getHandsAttackIcon()->glBind();
+	getShapePalette()->getHandsAttackIcon().glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
 	glVertex2d( x, y );
@@ -3590,15 +3591,15 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
 			          _( "ATK" ),
 			          toint( min ), toint( max ),
 			          RpgItem::getDamageTypeLetter( ( item ?
-			                                        item->getRpgItem()->getDamageType() :
-			                                        RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
+			                                          item->getRpgItem()->getDamageType() :
+			                                          RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
 		} else {
 			snprintf( line1, LINE_SIZE, "%s:%d(%c)",
 			          _( "ATK" ),
 			          toint( min ),
 			          RpgItem::getDamageTypeLetter( ( item ?
-			                                        item->getRpgItem()->getDamageType() :
-			                                        RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
+			                                          item->getRpgItem()->getDamageType() :
+			                                          RpgItem::DAMAGE_TYPE_CRUSHING ) ) );
 		}
 		snprintf( line2, LINE_SIZE, "%s:%d", _( "CTH" ), toint( skill ) );
 		snprintf( line3, LINE_SIZE, "%s:%s", _( "APR" ), getAPRDescription( p, item, buff, LINE_SIZE ) );
@@ -3613,32 +3614,32 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
 }
 
 void Scourge::describeAttacks( Creature *p, int x, int y, bool currentOnly ) {
-  Item *left = p->getItemAtLocation( Constants::EQUIP_LOCATION_LEFT_HAND );
-  Item *right = p->getItemAtLocation( Constants::EQUIP_LOCATION_RIGHT_HAND );
-  Item *ranged = p->getItemAtLocation( Constants::EQUIP_LOCATION_WEAPON_RANGED );
+	Item *left = p->getItemAtLocation( Constants::EQUIP_LOCATION_LEFT_HAND );
+	Item *right = p->getItemAtLocation( Constants::EQUIP_LOCATION_RIGHT_HAND );
+	Item *ranged = p->getItemAtLocation( Constants::EQUIP_LOCATION_WEAPON_RANGED );
 
 	int row = 0;
 	int col = 0;
 	int colWidth = 120;
 	int rowHeight = 37;
-	if( ( Constants::EQUIP_LOCATION_LEFT_HAND == p->getPreferredWeapon() || !currentOnly ) && 
-			describeWeapon( p, left, x + col * colWidth, y + row * rowHeight, Constants::EQUIP_LOCATION_LEFT_HAND, false ) ) {
+	if ( ( Constants::EQUIP_LOCATION_LEFT_HAND == p->getPreferredWeapon() || !currentOnly ) &&
+	        describeWeapon( p, left, x + col * colWidth, y + row * rowHeight, Constants::EQUIP_LOCATION_LEFT_HAND, false ) ) {
 		col++;
 		if ( col > 1 ) {
 			col = 0;
 			row++;
 		}
 	}
-	if( ( Constants::EQUIP_LOCATION_RIGHT_HAND == p->getPreferredWeapon() || !currentOnly ) && 
-			describeWeapon( p, right, x + col * colWidth, y + row * rowHeight, Constants::EQUIP_LOCATION_RIGHT_HAND, false ) ) {
+	if ( ( Constants::EQUIP_LOCATION_RIGHT_HAND == p->getPreferredWeapon() || !currentOnly ) &&
+	        describeWeapon( p, right, x + col * colWidth, y + row * rowHeight, Constants::EQUIP_LOCATION_RIGHT_HAND, false ) ) {
 		col++;
 		if ( col > 1 ) {
 			col = 0;
 			row++;
 		}
 	}
-	if( ( Constants::EQUIP_LOCATION_WEAPON_RANGED == p->getPreferredWeapon() || !currentOnly ) &&  
-			describeWeapon( p, ranged, x + col * colWidth, y + row * rowHeight, Constants::EQUIP_LOCATION_WEAPON_RANGED, false ) ) {
+	if ( ( Constants::EQUIP_LOCATION_WEAPON_RANGED == p->getPreferredWeapon() || !currentOnly ) &&
+	        describeWeapon( p, ranged, x + col * colWidth, y + row * rowHeight, Constants::EQUIP_LOCATION_WEAPON_RANGED, false ) ) {
 		col++;
 		if ( col > 1 ) {
 			col = 0;
@@ -3814,7 +3815,7 @@ void Scourge::endChapterIntro() {
 	preMainLoop();
 }
 
-Texture* Scourge::getNamedTexture( char *name ) {
+Texture const& Scourge::getNamedTexture( char *name ) {
 	return getShapePalette()->getNamedTexture( name );
 }
 
@@ -3886,7 +3887,7 @@ void Scourge::openDoor( MovingDoor *movingDoor ) {
 	//  Shape *oldDoorShape = levelMap->removePosition(ox, oy, toint(party->getPlayer()->getZ()));
 	levelMap->removePosition( ox, oy, toint( party->getPlayer()->getZ() ) );
 	Location *blocker = levelMap->isBlocked( nx, ny, toint( party->getPlayer()->getZ() ), ox, oy, toint( party->getPlayer()->getZ() ),
-	                    movingDoor->newDoorShape );
+	                                         movingDoor->newDoorShape );
 
 	if ( !blocker ) {
 		// there is a chance that the door will be destroyed
@@ -3939,8 +3940,8 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 		// door. If there's something there and the orientation (NS vs. EW) matches, the
 		// door is closed. I know it's a hack.
 		Location *above = levelMap->getLocation( doorX,
-		                  doorY,
-		                  doorZ + pos->shape->getHeight() );
+		                                         doorY,
+		                                         doorZ + pos->shape->getHeight() );
 		//if(above && above->shape) cerr << "ABOVE: shape=" << above->shape->getName() << endl;
 		//else cerr << "Nothing above!" << endl;
 		bool closed = ( ( pos->shape == getSession()->getShapePalette()->findShapeByName( "EW_DOOR" ) &&
@@ -4000,7 +4001,7 @@ bool Scourge::useDoor( Location *pos, bool openLocked ) {
 
 			Shape *oldDoorShape = levelMap->removePosition( ox, oy, toint( party->getPlayer()->getZ() ) );
 			Location *blocker = levelMap->isBlocked( nx, ny, toint( party->getPlayer()->getZ() ), ox, oy, toint( party->getPlayer()->getZ() ),
-			                    newDoorShape );
+			                                         newDoorShape );
 			if ( !blocker ) {
 
 				// there is a chance that the door will be destroyed

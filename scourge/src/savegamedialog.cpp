@@ -59,10 +59,9 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
 }
 
 SavegameDialog::~SavegameDialog() {
-	for ( std::vector<Texture*>::iterator i = screens.begin(); i != screens.end(); i++ ) {
-		delete ( *i );
-	}
 	delete win;
+	delete files;
+	delete confirm;
 }
 
 #define SAVE_MODE 1
@@ -166,9 +165,6 @@ void SavegameDialog::show( bool inSaveMode ) {
 
 bool SavegameDialog::findFiles() {
 	fileInfos.clear();
-	for ( std::vector<Texture*>::iterator i = screens.begin(); i != screens.end(); i++ ) {
-		delete ( *i );
-	}
 	screens.clear();
 	filenames.clear();
 
@@ -179,8 +175,8 @@ bool SavegameDialog::findFiles() {
 	for ( vector<string>::reverse_iterator i = fileNameList.rbegin(); i != fileNameList.rend(); i++ ) {
 		if ( i->substr( 0, 5 ) == "save_" && readFileDetails( *i ) ) {
 			filenames.push_back( fileInfos.back()->title );
-			Texture* tex = new Texture;
-			tex->loadShot( fileInfos.back()->path );
+			Texture tex;
+			tex.loadShot( fileInfos.back()->path );
 			screens.push_back( tex );
 
 			int n = static_cast<int>( strtol( i->c_str() + 5, ( char** )NULL, 16 ) );
@@ -188,33 +184,33 @@ bool SavegameDialog::findFiles() {
 				maxFileSuffix = n;
 		}
 	}
-	files->setLines( filenames.begin(), filenames.end(), NULL, const_cast<Texture const**>(&screens[0]) );
+	files->setLines( filenames.begin(), filenames.end(), NULL, &screens[0] );
 	savegamesChanged = false;
 	return( filenames.size() > 0 );
 }
 
-/* unused:  
+/* unused:
 GLuint SavegameDialog::loadScreenshot( const string& dirName ) {
-	string path = get_file_name( dirName + "/screen.bmp" );
-	SDL_Surface* surface = SDL_LoadBMP( path.c_str() );
+ string path = get_file_name( dirName + "/screen.bmp" );
+ SDL_Surface* surface = SDL_LoadBMP( path.c_str() );
 
-	if ( surface == NULL ) {
-		cerr << "*** Error loading screenshot image (" << path << "): " << IMG_GetError() << endl;
-		return NULL;
-	}
+ if ( surface == NULL ) {
+  cerr << "*** Error loading screenshot image (" << path << "): " << IMG_GetError() << endl;
+  return NULL;
+ }
 
-	GLuint texture;
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
-	glGenTextures( 1, &texture );
-	glBindTexture( GL_TEXTURE_2D, texture );
+ GLuint texture;
+ glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+ glGenTextures( 1, &texture );
+ glBindTexture( GL_TEXTURE_2D, texture );
 
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-	gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGB, surface->w, surface->h, GL_BGR, GL_UNSIGNED_BYTE, surface->pixels );
+ gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGB, surface->w, surface->h, GL_BGR, GL_UNSIGNED_BYTE, surface->pixels );
 
-	SDL_FreeSurface( surface );
-	return texture;
+ SDL_FreeSurface( surface );
+ return texture;
 }
 */
 bool SavegameDialog::readFileDetails( const string& dirname ) {

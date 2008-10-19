@@ -55,7 +55,9 @@
 //#define DEBUG_IDENTIFY_ITEM 1
 
 // sqbinding.cpp
-#define DEBUG_SQUIRREL 0
+#ifndef DEBUG_SQUIRREL
+# define DEBUG_SQUIRREL 0
+#endif
 
 // show secret doors
 //#define DEBUG_SECRET_DOORS 1

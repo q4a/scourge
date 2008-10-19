@@ -534,18 +534,18 @@ void Effect::drawRing( bool proceed ) {
 		glColor4f( Util::roll( 0.85f, 1.0f ),
 		           Util::roll( 0.85f, 1.0f ),
 		           1.0f, 0.7f );
-		if ( ringTex ) ringTex->glBind();
+		if ( ringTex.isSpecified() ) ringTex.glBind();
 		glScalef( n, n, n );
 
 		glBegin( GL_TRIANGLE_STRIP );
 		// front
-		if ( ringTex ) glTexCoord2f( 0.0f, 1.0f );
+		if ( ringTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
 		glVertex3f( -r, -r, 0 );
-		if ( ringTex ) glTexCoord2f( 1.0f, 1.0f );
+		if ( ringTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
 		glVertex3f( r, -r, 0 );
-		if ( ringTex ) glTexCoord2f( 0.0f, 0.0f );
+		if ( ringTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
 		glVertex3f( -r, r, 0 );
-		if ( ringTex ) glTexCoord2f( 1.0f, 0.0f );
+		if ( ringTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
 		glVertex3f( r, r, 0 );
 		glEnd();
 		glPopMatrix();
@@ -565,17 +565,17 @@ void Effect::drawRipple( bool proceed ) {
 	glDisable( GL_CULL_FACE );
 	glPushMatrix();
 	glColor4f( 0.3f, 0.25f, 0.17f, rippleAlpha );
-	if ( rippleTex ) rippleTex->glBind();
+	if ( rippleTex.isSpecified() ) rippleTex.glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
 	// front
-	if ( ringTex ) glTexCoord2f( 0.0f, 1.0f );
+	if ( rippleTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
 	glVertex3f( -r, -r, z );
-	if ( ringTex ) glTexCoord2f( 1.0f, 1.0f );
+	if ( rippleTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
 	glVertex3f( r, -r, z );
-	if ( ringTex ) glTexCoord2f( 0.0f, 0.0f );
+	if ( rippleTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
 	glVertex3f( -r, r, z );
-	if ( ringTex ) glTexCoord2f( 1.0f, 0.0f );
+	if ( rippleTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
 	glVertex3f( r, r, z );
 	glEnd();
 	glPopMatrix();
@@ -730,7 +730,7 @@ void Effect::drawParticle( Particle *particle ) {
 		glRotatef( -levelMap->getZRot(), 0.0f, 0.0f, 1.0f );
 		glRotatef( -levelMap->getYRot(), 1.0f, 0.0f, 0.0f );
 
-		if ( flameTex ) flameTex->glBind();
+		if ( flameTex.isSpecified() ) flameTex.glBind();
 
 		// rotate particles
 		glRotatef( particle->rotate, 0, 0, 1 );
@@ -741,26 +741,25 @@ void Effect::drawParticle( Particle *particle ) {
 		if ( particle->tail ) {
 			glColor4f( particle->tailColor.r, particle->tailColor.g, particle->tailColor.b, particle->tailColor.a );
 
-
 			glBegin( GL_TRIANGLE_STRIP );
-			if ( flameTex ) glTexCoord2f( 0.0f, 1.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
 			glVertex2f( -w / 2.0f, -sh );
-			if ( flameTex ) glTexCoord2f( 1.0f, 1.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
 			glVertex2f( w / 2.0f, -sh );
-			if ( flameTex ) glTexCoord2f( 0.0f, 0.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
 			glVertex2f( -w / 2.0f, 0 );
-			if ( flameTex ) glTexCoord2f( 1.0f, 0.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
 			glVertex2f( w / 2.0f, 0 );
 			glEnd();
 		}
 		glBegin( GL_TRIANGLE_STRIP );
-		if ( flameTex ) glTexCoord2f( 0.0f, 1.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
 		glVertex2f( -w / 2.0f, -h / 2.0f );
-		if ( flameTex ) glTexCoord2f( 1.0f, 1.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
 		glVertex2f( w / 2.0f, -h / 2.0f );
-		if ( flameTex ) glTexCoord2f( 0.0f, 0.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
 		glVertex2f( -w / 2.0f, h / 2.0f );
-		if ( flameTex ) glTexCoord2f( 1.0f, 0.0f );
+		if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
 		glVertex2f( w / 2.0f, h / 2.0f );
 		glEnd();
 

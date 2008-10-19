@@ -38,8 +38,8 @@ HealDialog::HealDialog( Scourge *scourge ) {
 	creatureLabel = win->createLabel( 10, 15, "" );
 	coinLabel = win->createLabel( 10, 30, _( "Coins Available:" ) );
 	spellList = new ScrollingList( 10, 40, w - 20, 160,
-	    scourge->getHighlightTexture(),
-	    NULL, 30 );
+	                               scourge->getHighlightTexture(),
+	                               NULL, 30 );
 	win->addWidget( spellList );
 	spellDescription = new ScrollingLabel( 10, 210, w - 20, 70, "" );
 	win->addWidget( spellDescription );
@@ -98,7 +98,7 @@ void HealDialog::updateUI() {
 				if ( spells.empty() ) {
 					showSpellDescription( spell );
 				}
-				spellIcons[ spells.size() ] = &scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ];
+				spellIcons[ spells.size() ] = scourge->getShapePalette()->spellsTex[ spell->getIconTileX() ][ spell->getIconTileY() ];
 
 				// must be last op.
 				spells.push_back( spell );

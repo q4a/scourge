@@ -22,7 +22,7 @@
 #define TEXTURE_BORDER 100
 #define HIGHLIGHT_BORDER 24
 
-Progress::Progress( ScourgeGui *scourgeGui, Texture const* texture, Texture const* highlight,
+Progress::Progress( ScourgeGui *scourgeGui, Texture texture, Texture highlight,
                     int maxStatus, bool clearScreen, bool center, bool opaque ) {
 	this->scourgeGui = scourgeGui;
 	this->texture = texture;
@@ -107,7 +107,7 @@ void Progress::updateStatus( const char *message, bool updateScreen, int n, int 
 		width = maxWidth;
 	}
 
-	int x = ( center ? scourgeGui->getScreenWidth() / 2 - width / 2 : ( texture ? TEXTURE_BORDER : 0 ) );
+	int x = ( center ? scourgeGui->getScreenWidth() / 2 - width / 2 : ( texture.isSpecified() ? TEXTURE_BORDER : 0 ) );
 	//int y = (center ? scourgeGui->getScreenHeight() / 3 - height / 2 : ( texture ? TEXTURE_BUFFER_TOP : 0 ));
 	int y = 0;
 	glTranslatef( x, y, 0 );

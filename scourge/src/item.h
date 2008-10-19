@@ -82,7 +82,7 @@ public:
 
 	void renderIcon( Scourge *scourge, SDL_Rect *rect, int gridSize = GRID_SIZE, bool smallIcon = false );
 	void renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon = false );
-	Texture const* getItemIconTexture( bool smallIcon = false );
+	Texture getItemIconTexture( bool smallIcon = false );
 	void getTooltip( char *tooltip );
 
 	inline void setInventoryLocation( int x, int y ) {
@@ -275,7 +275,7 @@ public:
 	int getStorableType();
 	const char *isStorable();
 	
-	Texture const* getContainerTexture();
+	Texture getContainerTexture();
 
 private:
 	RpgItem *rpgItem;
@@ -322,7 +322,7 @@ private:
 	int inventoryX, inventoryY;
 	int missionId;
 	int missionObjectiveIndex;
-	std::map<RpgItem*, Texture*> containerTextures;
+	std::map<RpgItem*, Texture> containerTextures;
 
 protected:
 	void commonInit( bool loading );
@@ -346,7 +346,7 @@ protected:
 	void renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, int w, int h );
 	void renderUnderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih );
 	// unused: void create3dTex( Scourge *scourge, float w, float h );
-	void getItemIconInfo( Texture const** texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon = false );
+	void getItemIconInfo( Texture* texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon = false );
 };
 
 #endif

@@ -3290,9 +3290,9 @@ void Creature::drawMoviePortrait( int width, int height ) {
 
 	if ( !portrait.isSpecified() ) {
 		if ( getCharacter() != NULL ) {
-			getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() )->glBind();
+			getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() ).glBind();
 		} else {
-			getMonster()->getPortraitTexture()->glBind();
+			getMonster()->getPortraitTexture().glBind();
 		}
 
 		portrait.createAlpha( session->getShapePalette()->getNamedTexture( "conv_filter" ),
@@ -3322,7 +3322,7 @@ void Creature::drawMoviePortrait( int width, int height ) {
 	glVertex3f( textureSizeW, textureSizeH, 0 );
 	glEnd();
 
-	session->getShapePalette()->getNamedTexture( "conv" )->glBind();
+	session->getShapePalette()->getNamedTexture( "conv" ).glBind();
 	glColor4f( 1, 1, 1, 1 );
 
 	glPushMatrix();
@@ -3351,16 +3351,16 @@ void Creature::drawMoviePortrait( int width, int height ) {
 /// Draws the creature's portrait, if it exists, else it draws a little 3D view of the creature.
 
 void Creature::drawPortrait( int width, int height, bool inFrame ) {
-	if ( getCharacter() || ( getMonster() && getMonster()->getPortraitTexture() ) ) {
+	if ( getCharacter() || ( getMonster() && getMonster()->getPortraitTexture().isSpecified() ) ) {
 		//glEnable( GL_ALPHA_TEST );
 		//glAlphaFunc( GL_EQUAL, 0xff );
 		glEnable( GL_TEXTURE_2D );
 		glPushMatrix();
 		//    glTranslatef( x, y, 0 );
 		if (getCharacter() != NULL) {
-			getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() )->glBind();
+			getSession()->getShapePalette()->getPortraitTexture( getSex(), getPortraitTextureIndex() ).glBind();
 		} else {
-			getMonster()->getPortraitTexture()->glBind();
+			getMonster()->getPortraitTexture().glBind();
 		}
 
 		glColor4f( 1, 1, 1, 1 );
@@ -3385,13 +3385,13 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 		glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT );
 		glEnable( GL_DEPTH_TEST );
 
-		Texture** textureGroup = session->getMap()->getShapes()->getCurrentTheme()->getTextureGroup( WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ] );
-		Texture* texture = textureGroup[ GLShape::FRONT_SIDE ];
+		Texture* textureGroup = session->getMap()->getShapes()->getCurrentTheme()->getTextureGroup( WallTheme::themeRefName[ WallTheme::THEME_REF_WALL ] );
+		Texture texture = textureGroup[ GLShape::FRONT_SIDE ];
 
 		glPushMatrix();
 		glEnable( GL_TEXTURE_2D );
 		glColor4f( 1, 1, 1, 1 );
-		texture->glBind();
+		texture.glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );

@@ -58,6 +58,7 @@ void Party::deleteParty() {
 		party[i] = NULL;
 	}
 	partySize = 0;
+	player = NULL;
 	lastPlayer = NULL;
 }
 
@@ -664,7 +665,7 @@ void Party::recomputeMaxSkills() {
 				maxValue = value;
 			}
 		}
-		maxSkills[ skill ] = maxPC;
+		maxSkills.push_back(maxPC);
 	}
 }
 

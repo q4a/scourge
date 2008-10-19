@@ -144,7 +144,7 @@ void MapWidget::drawWidgetContents( Widget *w ) {
 			glTranslatef( xp, yp, 0 );
 //      cerr << "\txx=" << xx << " yy=" << yy <<
 //        " gird=" << ( gx + xx ) << "," << ( gy + yy ) << endl;
-			scourge->getShapePalette()->getMapGridTile( gx + xx, gy + yy )->glBind();
+			scourge->getShapePalette()->getMapGridTile( gx + xx, gy + yy ).glBind();
 			glColor4f( 1, 1, 1, 1 );
 
 			glBegin( GL_TRIANGLE_STRIP );

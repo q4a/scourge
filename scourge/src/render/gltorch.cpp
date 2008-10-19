@@ -18,11 +18,11 @@
 #include "../common/constants.h"
 #include "gltorch.h"
 
-GLTorch::GLTorch( Texture* texture[], Texture const* flameTex,
+GLTorch::GLTorch( Texture texture[], Texture flameTex,
                   int width, int depth, int height,
                   char *name, int descriptionGroup,
                   Uint32 color, Uint8 shapePalIndex,
-                  Texture const* torchback, int torch_dir ) :
+                  Texture const& torchback, int torch_dir ) :
 		GLShape( texture, width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
 	this->flameTex = flameTex;
 	this->torchback = torchback;
@@ -98,7 +98,7 @@ void GLTorch::draw() {
 			glRotatef( -zrot, 0.0f, 0.0f, 1.0f );
 			glRotatef( -( 90.0 + yrot ), 1.0f, 0.0f, 0.0f );
 
-			if ( flameTex ) flameTex->glBind();
+			if ( flameTex.isSpecified() ) flameTex.glBind();
 
 			if ( color == 0xffffffff ) {
 				float color = 1.0f / ( ( GLfloat )particle[i]->height / ( GLfloat )particle[i]->z );
@@ -119,13 +119,13 @@ void GLTorch::draw() {
 			glBegin( GL_QUADS );
 			// front
 
-			if ( flameTex ) glTexCoord2f( 1.0f, 1.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 1.0f );
 			glVertex3f( w / 2.0f, 0, -h / 2.0f );
-			if ( flameTex ) glTexCoord2f( 0.0f, 1.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 1.0f );
 			glVertex3f( -w / 2.0f, 0, -h / 2.0f );
-			if ( flameTex ) glTexCoord2f( 0.0f, 0.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2f( 0.0f, 0.0f );
 			glVertex3f( -w / 2.0f, 0, h / 2.0f );
-			if ( flameTex ) glTexCoord2f( 1.0f, 0.0f );
+			if ( flameTex.isSpecified() ) glTexCoord2f( 1.0f, 0.0f );
 			glVertex3f( w / 2.0f, 0, h / 2.0f );
 
 			glEnd();
@@ -135,7 +135,7 @@ void GLTorch::draw() {
 		}
 	}
 
-	if ( !torchback ) return;
+	if ( !torchback.isSpecified() ) return;
 
 	// add the flickering reflection on the wall behind
 	// max. amount of movement

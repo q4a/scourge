@@ -34,8 +34,8 @@ using namespace std;
 
 //#define DEBUG_MD2 1
 
-MD2Shape::MD2Shape( t3DModel * g_3DModel, Texture* textureId, float div,
-                    Texture* texture[], int width, int depth, int height,
+MD2Shape::MD2Shape( t3DModel * g_3DModel, Texture textureId, float div,
+                    Texture texture[], int width, int depth, int height,
                     char *name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
 		AnimatedShape( width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
 	commonInit( g_3DModel, textureId, div );
@@ -45,7 +45,7 @@ MD2Shape::~MD2Shape() {
 	delete [] vect;
 }
 
-void MD2Shape::commonInit( t3DModel * g_3DModel, Texture* textureId,  float div ) {
+void MD2Shape::commonInit( t3DModel * g_3DModel, Texture textureId,  float div ) {
 	this->g_3DModel = g_3DModel;
 	this->div = div;
 	this->textureId = textureId;
@@ -138,7 +138,7 @@ void MD2Shape::outline( float r, float g, float b ) {
 }
 
 void MD2Shape::setModelAnimation() {
-	if ( currentAnim >= g_3DModel->pAnimations.size() ) {
+	if ( currentAnim >= (int)g_3DModel->pAnimations.size() ) {
 		currentAnim = g_3DModel->pAnimations.size() - 1;
 	}
 	currentFrame = g_3DModel->pAnimations[ currentAnim ].startFrame;
@@ -187,7 +187,7 @@ void MD2Shape::AnimateMD2Model() {
 	// t = [0, 1] => 0 : beginning of the animation, 1 : end of the animation
 	float t = ReturnCurrentTime( nextFrame );
 
-	if ( !useShadow ) textureId->glBind();
+	if ( !useShadow ) textureId.glBind();
 
 	// Compute interpolated vertices
 	vect3d * currVertices, * nextVertices;

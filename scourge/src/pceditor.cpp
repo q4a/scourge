@@ -107,8 +107,8 @@ void PcEditor::deleteLoadedShapes() {
 		// delete the md2/3 shape
 		scourge->getShapePalette()->
 		decrementSkinRefCountAndDeleteShape( cmi->model_name,
-		    cmi->skin_name,
-		    shape );
+		                                     cmi->skin_name,
+		                                     shape );
 	}
 	shapesMap.clear();
 }
@@ -457,10 +457,10 @@ void PcEditor::createUI() {
 	                              _( "Accept" ) );
 	okButton->setEnabled( false );
 	cancelButton = win->createButton( x + firstColWidth + buttonSpace,
-	               h - x - buttonHeight - win->getGutter(),
-	               firstColWidth + buttonSpace + firstColWidth,
-	               h - x - win->getGutter(),
-	               _( "Dismiss" ) );
+	                                  h - x - buttonHeight - win->getGutter(),
+	                                  firstColWidth + buttonSpace + firstColWidth,
+	                                  h - x - win->getGutter(),
+	                                  _( "Dismiss" ) );
 
 	cards = new CardContainer( win );
 
@@ -517,8 +517,8 @@ void PcEditor::createUI() {
 	int charIndex = Util::dice( Character::rootCharacters.size() );
 	charType->setSelectedLine( charIndex );
 	charTypeDescription = new ScrollingLabel( secondColStart, 230,
-	    secondColWidth, 130,
-	    Character::rootCharacters[charIndex]->getDescription() );
+	                                          secondColWidth, 130,
+	                                          Character::rootCharacters[charIndex]->getDescription() );
 	cards->addWidget( charTypeDescription, CLASS_TAB );
 
 
@@ -535,19 +535,19 @@ void PcEditor::createUI() {
 			y = 60 + n * buttonHeight;
 			cards->createLabel( secondColStart, y, skill->getDisplayName(), STAT_TAB );
 			skillValue[n] = cards->createLabel( secondColStart + 105, y,
-			                "",
-			                STAT_TAB );
+			                                    "",
+			                                    STAT_TAB );
 			skillPlus[n] = cards->createButton( secondColStart + 150, y - 10,
-			               secondColStart + 150 + 25, y - 10 + buttonHeight,
-			               "+",
-			               STAT_TAB );
+			                                    secondColStart + 150 + 25, y - 10 + buttonHeight,
+			                                    "+",
+			                                    STAT_TAB );
 			skillPlus[n]->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 			Util::addLineBreaks( skill->getDescription(), statDesc );
 			skillPlus[n]->setTooltip( statDesc ) ;
 			skillMinus[n] = cards->createButton( secondColStart + 180, y - 10,
-			                secondColStart + 180 + 25, y - 10 + buttonHeight,
-			                "-",
-			                STAT_TAB );
+			                                     secondColStart + 180 + 25, y - 10 + buttonHeight,
+			                                     "-",
+			                                     STAT_TAB );
 			skillMinus[n]->setFontType( Constants::SCOURGE_DEFAULT_FONT );
 			skillMinus[n]->setTooltip( statDesc ) ;
 
@@ -583,8 +583,8 @@ void PcEditor::createUI() {
 
 	int deityHeight = 100;
 	deityType = new ScrollingList( secondColStart, 130,
-	    secondColWidth, deityHeight,
-	    scourge->getShapePalette()->getHighlightTexture() );
+	                               secondColWidth, deityHeight,
+	                               scourge->getShapePalette()->getHighlightTexture() );
 	cards->addWidget( deityType, DEITY_TAB );
 	deityTypeStr = new string[ MagicSchool::getMagicSchoolCount()];
 	for ( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
@@ -595,8 +595,8 @@ void PcEditor::createUI() {
 	deityType->setSelectedLine( deityIndex );
 
 	deityTypeDescription = new ScrollingLabel( secondColStart, 130 + 10 + deityHeight,
-	    secondColWidth, 120,
-	    MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
+	                                           secondColWidth, 120,
+	                                           MagicSchool::getMagicSchool( deityIndex )->getDeityDescription() );
 	cards->addWidget( deityTypeDescription, DEITY_TAB );
 
 
@@ -622,11 +622,11 @@ void PcEditor::createUI() {
 	rollApperance();
 
 	prevPortrait = cards->createButton( secondColStart, yy + PORTRAIT_SIZE + 10,
-	               secondColStart + imageWidth / 2 - 5, yy + PORTRAIT_SIZE + 10 + buttonHeight,
-	               "<<", IMAGE_TAB );
+	                                    secondColStart + imageWidth / 2 - 5, yy + PORTRAIT_SIZE + 10 + buttonHeight,
+	                                    "<<", IMAGE_TAB );
 	nextPortrait = cards->createButton( secondColStart + imageWidth / 2 + 5, yy + PORTRAIT_SIZE + 10,
-	               secondColStart + imageWidth, yy + PORTRAIT_SIZE + 10 + buttonHeight,
-	               "    >>", IMAGE_TAB );
+	                                    secondColStart + imageWidth, yy + PORTRAIT_SIZE + 10 + buttonHeight,
+	                                    "    >>", IMAGE_TAB );
 	// model
 	int modelStart = secondColStart + imageWidth + 25;
 	//int modelWidth = w - 10 - modelStart;
@@ -635,11 +635,11 @@ void PcEditor::createUI() {
 	                    modelStart + modelWidth, yy + MODEL_SIZE, this );
 	cards->addWidget( model, IMAGE_TAB );
 	prevModel = cards->createButton( modelStart, yy + MODEL_SIZE + 10,
-	            modelStart + modelWidth / 2 - 5, yy + MODEL_SIZE + 10 + buttonHeight,
-	            "<<", IMAGE_TAB );
+	                                 modelStart + modelWidth / 2 - 5, yy + MODEL_SIZE + 10 + buttonHeight,
+	                                 "<<", IMAGE_TAB );
 	nextModel = cards->createButton( modelStart + modelWidth / 2 + 5, yy + MODEL_SIZE + 10,
-	            modelStart + modelWidth, yy + MODEL_SIZE + 10 + buttonHeight,
-	            "    >>", IMAGE_TAB );
+	                                 modelStart + modelWidth, yy + MODEL_SIZE + 10 + buttonHeight,
+	                                 "    >>", IMAGE_TAB );
 }
 
 void PcEditor::rollApperance() {
@@ -657,7 +657,7 @@ void PcEditor::drawWidgetContents( Widget *w ) {
 		glEnable( GL_TEXTURE_2D );
 		glDisable( GL_CULL_FACE );
 		glColor4f( 1, 1, 1, 1 );
-		scourge->getShapePalette()->getPortraitTexture( getSex(), portraitIndex )->glBind();
+		scourge->getShapePalette()->getPortraitTexture( getSex(), portraitIndex ).glBind();
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glTexCoord2f( 0, 0 );
@@ -679,8 +679,8 @@ void PcEditor::drawWidgetContents( Widget *w ) {
 		if ( shapesMap.find( cmi ) == shapesMap.end() ) {
 			shape =
 			  scourge->getShapePalette()->getCreatureShape( cmi->model_name,
-			      cmi->skin_name,
-			      cmi->scale );
+			                                                cmi->skin_name,
+			                                                cmi->scale );
 			shapesMap[ cmi ] = shape;
 			shape->setCurrentAnimation( MD2_STAND );
 		} else {

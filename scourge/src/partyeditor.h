@@ -51,7 +51,7 @@ class PartyEditor : public CreatureGroupInfo {
 private:
 
 	Scourge *scourge;
-	std::map<int, Creature*> maxSkills;
+	// never filled: std::map<int, Creature*> maxSkills;
 	PcEditor *pcEditor;
 
 public:

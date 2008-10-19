@@ -33,7 +33,7 @@ class GLLocator : public GLShape  {
 private:
 
 public:
-	GLLocator( Texture* texture[],
+	GLLocator( Texture texture[],
 	           int width, int depth, int height,
 	           char *name, int descriptionGroup,
 	           Uint32 color, Uint8 shapePalIndex = 0 );

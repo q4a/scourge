@@ -747,7 +747,9 @@ void CModelMD3::LoadModelTextures( t3DModel *pModel, const string& strPath, MD3S
 	for ( int i = 0; i < shape->getNumOfMaterials( pModel ); i++ ) {
 		string& filename = shape->getMaterialInfos( pModel )->at( i ).strFile;
 		if ( filename.length() > 0 ) {
-			shape->getTextures()->push_back( loader->loadSkinTexture( filename ) );
+			Texture tex;
+			tex.load( filename, true, false );
+			shape->getTextures()->push_back( tex );
 			shape->getMaterialInfos( pModel )->at( i ).texureId = shape->getTextures()->size() - 1;
 		}
 	}
@@ -1270,7 +1272,7 @@ void CModelMD3::RenderModel( t3DModel *pModel, MD3Shape *shape ) {
 			int textureID = shape->getMaterialInfos( pModel )->at( pObject->materialID ).texureId;
 
 			// Bind the texture index that we got from the material textureID
-			shape->getTextures()->at( textureID )->glBind();
+			shape->getTextures()->at( textureID ).glBind();
 		} else {
 			// Turn off texture mapping
 			glDisable( GL_TEXTURE_2D );

@@ -48,7 +48,7 @@ struct MapGridLocation {
 /// An outdoor texture that can be referenced by name.
 struct NamedOutdoorTexture {
 	char name[80];
-	Texture* tex;
+	Texture tex;
 	int width, height;
 };
 
@@ -58,13 +58,13 @@ private:
 	ModelLoader *loader;
 
 	Texture gui_texture, gui_texture2, hand_attack_icon;
-	Texture* gui_wood_texture;
-	std::map<int, Texture*> statModIcons;
+	Texture gui_wood_texture;
+	std::map<int, Texture> statModIcons;
 	Texture thirstIcon, hungerIcon;
 
 	Session *session;
 
-	std::vector<Texture*> portraitTextures[2];
+	std::vector<Texture> portraitTextures[2];
 	Texture deathPortraitTexture;
 	Texture progressTexture, progressHighlightTexture;
 
@@ -73,7 +73,7 @@ private:
 	Texture mapGrid[ Constants::MAP_GRID_TILE_WIDTH ][ Constants::MAP_GRID_TILE_HEIGHT ];
 	std::map<char, std::vector<MapGridLocation*>*> mapGridLocationByType;
 
-	std::map<std::string, Texture*> namedTextures;
+	std::map<std::string, Texture> namedTextures;
 	std::map<std::string, NamedOutdoorTexture> outdoorNamedTextures;
 	SDL_Rect equipLocationHoles[ Constants::EQUIP_LOCATION_COUNT ];
 
@@ -85,19 +85,19 @@ public:
 		return session;
 	}
 
-	inline  Texture* getProgressTexture() {
-		return &progressTexture;
+	inline  Texture getProgressTexture() {
+		return progressTexture;
 	}
-	inline Texture* getProgressHighlightTexture() {
-		return &progressHighlightTexture;
-	}
-
-	inline Texture const* getMapGridTile( int x, int y ) {
-		return &mapGrid[ x ][ y ];
+	inline Texture getProgressHighlightTexture() {
+		return progressHighlightTexture;
 	}
 
-	inline Texture* getHandsAttackIcon() {
-		return &hand_attack_icon;
+	inline Texture getMapGridTile( int x, int y ) {
+		return mapGrid[ x ][ y ];
+	}
+
+	inline Texture getHandsAttackIcon() {
+		return hand_attack_icon;
 	}
 
 	void initMapGrid();
@@ -123,14 +123,14 @@ public:
 
 	GLuint formationTexIndex;
 
-	inline Texture* getStatModIcon( int statModIndex ) {
-		if ( statModIcons.find( statModIndex ) == statModIcons.end() ) return NULL; else return statModIcons[statModIndex];
+	inline Texture const& getStatModIcon( int statModIndex ) {
+		if ( statModIcons.find( statModIndex ) == statModIcons.end() ) return Texture::none(); else return statModIcons[statModIndex];
 	}
-	inline Texture* getThirstIcon() {
-		return &thirstIcon;
+	inline Texture getThirstIcon() {
+		return thirstIcon;
 	}
-	inline Texture* getHungerIcon() {
-		return &hungerIcon;
+	inline Texture getHungerIcon() {
+		return hungerIcon;
 	}
 
 	// cursor
@@ -151,83 +151,83 @@ public:
 
 	Texture raindropTexture;
 
-	inline Texture const* getGuiTexture() {
-		return &gui_texture;
+	inline Texture const& getGuiTexture() {
+		return gui_texture;
 	}
-	inline Texture const* getGuiTexture2() {
-		return &gui_texture2;
+	inline Texture const& getGuiTexture2() {
+		return gui_texture2;
 	}
-	inline Texture* getGuiWoodTexture() {
+	inline Texture getGuiWoodTexture() {
 		return gui_wood_texture;
 	}
 	//inline GLuint getPaperDollTexture() { return paper_doll_texture; }
-	inline Texture const* getHighlightTexture() {
-		return &highlight;
+	inline Texture const& getHighlightTexture() {
+		return highlight;
 	}
-	inline Texture* getBorderTexture() {
-		return &border;
+	inline Texture getBorderTexture() {
+		return border;
 	}
-	inline Texture* getBorder2Texture() {
-		return &border2;
+	inline Texture getBorder2Texture() {
+		return border2;
 	}
-	inline Texture* getGargoyleTexture() {
-		return &gargoyle;
+	inline Texture getGargoyleTexture() {
+		return gargoyle;
 	}
-	inline Texture* getMinimapTexture() {
-		return &minimap;
+	inline Texture getMinimapTexture() {
+		return minimap;
 	}
-	inline Texture* getMinimapMaskTexture() {
-		return &minimapMask;
+	inline Texture getMinimapMaskTexture() {
+		return minimapMask;
 	}
-	inline Texture* getDismissTexture() {
-		return &dismiss;
+	inline Texture getDismissTexture() {
+		return dismiss;
 	}
-	inline Texture* getExitTexture() {
-		return &exitTexture;
+	inline Texture getExitTexture() {
+		return exitTexture;
 	}
-	inline Texture* getOptionsTexture() {
-		return &options;
+	inline Texture getOptionsTexture() {
+		return options;
 	}
-	inline Texture* getGroupTexture() {
-		return &group;
+	inline Texture getGroupTexture() {
+		return group;
 	}
-	inline Texture* getInventoryTexture() {
-		return &inventory;
-	}
-
-	inline Texture* getPausedTexture() {
-		return &pausedTexture;
-	}
-	inline Texture* getRealTimeTexture() {
-		return &realTimeTexture;
-	}
-	inline Texture* getStartTexture() {
-		return &startTexture;
-	}
-	inline Texture* getWaitTexture() {
-		return &waitTexture;
+	inline Texture getInventoryTexture() {
+		return inventory;
 	}
 
-	inline Texture* getIoTexture() {
-		return &ioTexture;
+	inline Texture getPausedTexture() {
+		return pausedTexture;
+	}
+	inline Texture getRealTimeTexture() {
+		return realTimeTexture;
+	}
+	inline Texture getStartTexture() {
+		return startTexture;
+	}
+	inline Texture getWaitTexture() {
+		return waitTexture;
 	}
 
-	inline Texture* getSystemIconTexture() {
-		return &systemTexture;
+	inline Texture getIoTexture() {
+		return ioTexture;
 	}
 
-	inline Texture* getRaindropTexture() {
-		return &raindropTexture;
+	inline Texture getSystemIconTexture() {
+		return systemTexture;
+	}
+
+	inline Texture getRaindropTexture() {
+		return raindropTexture;
 	}
 
 	inline int getPortraitCount( int sex ) {
 		return portraitTextures[sex].size();
 	}
-	inline Texture* getPortraitTexture( int sex, int index ) {
+	inline Texture getPortraitTexture( int sex, int index ) {
 		return portraitTextures[sex][ index ];
 	}
-	inline Texture* getDeathPortraitTexture() {
-		return &deathPortraitTexture;
+	inline Texture getDeathPortraitTexture() {
+		return deathPortraitTexture;
 	}
 
 	// Md2 shapes
@@ -239,8 +239,8 @@ public:
 	                                          Monster *monster = NULL );
 	void debugLoadedModels();
 
-	inline Texture* getNamedTexture( std::string name ) {
-		return( namedTextures.find( name ) == namedTextures.end() ? 0 : namedTextures[ name ] );
+	inline Texture const& getNamedTexture( std::string name ) {
+		return( namedTextures.find( name ) == namedTextures.end() ? Texture::none() : namedTextures[ name ] );
 	}
 	inline NamedOutdoorTexture *getOutdoorNamedTexture( std::string name ) {
 		return( outdoorNamedTextures.find( name ) == outdoorNamedTextures.end() ? NULL : &( outdoorNamedTextures[ name ] ) );
@@ -250,8 +250,8 @@ public:
 	}
 	inline SDL_Rect *getInventoryHole( int inventoryLocation ) {
 		return( inventoryLocation >= 0 &&
-						inventoryLocation < Constants::EQUIP_LOCATION_COUNT ? 
-						&( equipLocationHoles[ inventoryLocation ] ) : 
+		        inventoryLocation < Constants::EQUIP_LOCATION_COUNT ?
+		        &( equipLocationHoles[ inventoryLocation ] ) :
 		        NULL );
 	}
 

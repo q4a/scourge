@@ -19,7 +19,7 @@
 #include "../common/constants.h"
 #include "gllocator.h"
 
-GLLocator::GLLocator( Texture* texture[],
+GLLocator::GLLocator( Texture texture[],
                       int width, int depth, int height,
                       char *name, int descriptionGroup,
                       Uint32 color, Uint8 shapePalIndex ) :

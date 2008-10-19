@@ -146,8 +146,7 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	groundVisible = true;
 
 	floorTexWidth = floorTexHeight = 0;
-	floorTex = 0;
-
+	
 	mapCenterCreature = NULL;
 
 	this->xrot = 0.0f;
@@ -167,11 +166,6 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	this->debugGridFlag = false;
 	this->drawGridFlag = false;
 
-	for ( int x = 0; x < MAP_CHUNKS_X; x++ ) {
-		for ( int y = 0; y < MAP_CHUNKS_Y; y++ ) {
-			rugPos[x][y].texture = 0;
-		}
-	}
 
 	// initialize shape graph of "in view shapes"
 	for ( int x = 0; x < MAP_WIDTH; x++ ) {
@@ -193,12 +187,6 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	for ( int x = 0; x < MAP_WIDTH; x++ ) {
 		for ( int y = 0; y < MAP_DEPTH; y++ ) {
 			ground[x][y] = 0;
-			groundTex[x][y] = 0;
-			for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
-				int tx = x / OUTDOORS_STEP;
-				int ty = y / OUTDOORS_STEP;
-				outdoorTex[tx][ty][z].texture = 0;
-			}
 		}
 	}
 	heightMapEnabled = false;
@@ -258,6 +246,7 @@ Map::~Map() {
 /// After work is done, reset everything.
 
 void Map::reset() {
+
 	creatureMap.clear();
 	creatureEffectMap.clear();
 
@@ -323,7 +312,7 @@ void Map::reset() {
 	resortShapes = true;
 	lastOutlinedX = lastOutlinedY = lastOutlinedZ = MAP_WIDTH;
 	floorTexWidth = floorTexHeight = 0;
-	floorTex = 0;
+	floorTex.clear();
 	mapCenterCreature = NULL;
 	secretDoors.clear();
 
@@ -348,7 +337,7 @@ void Map::reset() {
 
 	for ( int x = 0; x < MAP_CHUNKS_X; x++ ) {
 		for ( int y = 0; y < MAP_CHUNKS_Y; y++ ) {
-			rugPos[x][y].texture = 0;
+			rugPos[x][y].texture.clear();
 		}
 	}
 
@@ -388,11 +377,11 @@ void Map::reset() {
 	for ( int x = 0; x < MAP_WIDTH; x++ ) {
 		for ( int y = 0; y < MAP_DEPTH; y++ ) {
 			ground[x][y] = 0;
-			groundTex[x][y] = 0;
+			groundTex[x][y].clear();
 			for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 				int tx = x / OUTDOORS_STEP;
 				int ty = y / OUTDOORS_STEP;
-				outdoorTex[tx][ty][z].texture = 0;
+				outdoorTex[tx][ty][z].texture.clear();
 			}
 		}
 	}
@@ -450,7 +439,7 @@ void Map::center( Sint16 x, Sint16 y, bool force ) {
 
 void Map::removeCurrentEffects() {
 	for ( map<Uint32, EffectLocation*>::iterator i = currentEffectsMap.begin();
-	      i != currentEffectsMap.end(); ) {
+	        i != currentEffectsMap.end(); ) {
 		Uint32 key = i->first;
 		EffectLocation *pos = i->second;
 		if ( !pos->isEffectOn() ) {
@@ -603,7 +592,7 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 			}
 
 			// draw rugs
-			if ( ( forGround || forWater ) && rugPos[ chunkX ][ chunkY ].texture > 0 ) {
+			if ( ( forGround || forWater ) && hasRugAtPosition( chunkX, chunkY ) ) {
 				xpos2 = static_cast<float>( ( chunkX - chunkStartX ) * MAP_UNIT + chunkOffsetX ) * MUL;
 				ypos2 = static_cast<float>( ( chunkY - chunkStartY ) * MAP_UNIT + chunkOffsetY ) * MUL;
 				drawRug( &rugPos[ chunkX ][ chunkY ], xpos2, ypos2, chunkX, chunkY );
@@ -642,7 +631,7 @@ void Map::setupShapes( bool forGround, bool forWater, int *csx, int *cex, int *c
 					} else {
 
 						if ( checkLightMap( chunkX, chunkY ) && itemPos[posX][posY] &&
-						     itemPos[posX][posY]->x == posX && itemPos[posX][posY]->y == posY ) {
+						        itemPos[posX][posY]->x == posX && itemPos[posX][posY]->y == posY ) {
 
 							shape = itemPos[posX][posY]->shape;
 
@@ -706,14 +695,14 @@ void Map::setupLocation( Location *location, Uint16 drawSide, int chunkStartX, i
 	float xpos2, ypos2, zpos2;
 	int chunkX, chunkY;
 	calculateLocationInfo( location, chunkStartX, chunkStartY, chunkOffsetX, chunkOffsetY, drawSide,
-	    &posX, &posY, &posZ, &xpos2, &ypos2, &zpos2, &chunkX, &chunkY, &lightEdge );
+	                       &posX, &posY, &posZ, &xpos2, &ypos2, &zpos2, &chunkX, &chunkY, &lightEdge );
 
 	// visible or on the edge or a roof piece
 	if ( checkLightMap( chunkX, chunkY ) || lightEdge ) {
 		if ( location->creature ) {
 			location->heightPos = findMaxHeightPos( location->creature->getX(),
-			    location->creature->getY(),
-			    location->creature->getZ() );
+			                                        location->creature->getY(),
+			                                        location->creature->getZ() );
 		}
 
 		//if( !useFrustum || frustum->ShapeInFrustum( xpos2, ypos2, zpos2, shape ) ) {
@@ -749,7 +738,7 @@ void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) 
 	glDisable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
-	rug->texture->glBind();
+	rug->texture.glBind();
 	glBegin( GL_TRIANGLE_STRIP );
 	if ( rug->isHorizontal ) {
 		glTexCoord2f( 1.0f, 0.0f );
@@ -778,8 +767,8 @@ void Map::drawRug( Rug *rug, float xpos2, float ypos2, int xchunk, int ychunk ) 
 /// Draws a shape sitting on the ground at the specified map coordinates.
 
 void Map::drawGroundPosition( int posX, int posY,
-    float xpos2, float ypos2,
-    Shape *shape ) {
+                              float xpos2, float ypos2,
+                              Shape *shape ) {
 	GLuint name;
 	// encode this shape's map location in its name
 	name = posX + ( MAP_WIDTH * posY );
@@ -800,8 +789,8 @@ void Map::drawGroundPosition( int posX, int posY,
 /// Draws a shape placed on an indoor water tile.
 
 void Map::drawWaterPosition( int posX, int posY,
-    float xpos2, float ypos2,
-    Shape *shape ) {
+                             float xpos2, float ypos2,
+                             Shape *shape ) {
 	GLuint name;
 	// encode this shape's map location in its name
 	name = posX + ( MAP_WIDTH * posY );
@@ -850,7 +839,7 @@ void Map::drawWaterPosition( int posX, int posY,
 
 						w->z[xx][yy] += w->step[xx][yy];
 						if ( w->z[xx][yy] > WATER_AMP ||
-						     w->z[xx][yy] < -WATER_AMP ) w->step[xx][yy] *= -1.0f;
+						        w->z[xx][yy] < -WATER_AMP ) w->step[xx][yy] *= -1.0f;
 
 						w->lastTime[xx][yy] = time;
 					}
@@ -896,10 +885,10 @@ void Map::drawWaterPosition( int posX, int posY,
 
 
 void Map::setupPosition( int posX, int posY, int posZ,
-    float xpos2, float ypos2, float zpos2,
-    Shape *shape, RenderedItem *item, RenderedCreature *creature,
-    EffectLocation *effect,
-    bool itemPos ) {
+                         float xpos2, float ypos2, float zpos2,
+                         Shape *shape, RenderedItem *item, RenderedCreature *creature,
+                         EffectLocation *effect,
+                         bool itemPos ) {
 
 	// This really doesn't make a difference unfortunately.
 	//if(!isOnScreen(posX, posY, posZ)) return;
@@ -1117,7 +1106,7 @@ void Map::draw() {
 		getMapXYZAtScreenXY( &cursorMapX, &cursorMapY, &cursorMapZ, &pos );
 		cursorFlatMapX = cursorMapX;
 		cursorFlatMapY = cursorMapY;
-		cursorChunkX = (cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
+		cursorChunkX = ( cursorFlatMapX - MAP_OFFSET ) / MAP_UNIT;
 		cursorChunkY = ( cursorFlatMapY - MAP_OFFSET ) / MAP_UNIT;
 		if ( pos ) {
 			cursorMapX = pos->x;
@@ -1151,7 +1140,7 @@ void Map::drawIndoors() {
 
 		// shadows
 		if ( preferences->getShadows() >= Constants::OBJECT_SHADOWS &&
-		     helper->drawShadow() ) {
+		        helper->drawShadow() ) {
 			glStencilFunc( GL_EQUAL, 1, 0xffffffff );
 			glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
 			glDisable( GL_TEXTURE_2D );
@@ -1196,7 +1185,7 @@ void Map::drawIndoors() {
 				playerDrawLater = &( other[i] );
 		}
 		if ( selectedDropTarget && ( ( selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature ) ||
-		     ( selectedDropTarget->item && selectedDropTarget->item == other[i].item ) ) ) {
+		                             ( selectedDropTarget->item && selectedDropTarget->item == other[i].item ) ) ) {
 			colorAlreadySet = true;
 			glColor4f( 0.0f, 1.0f, 1.0f, 1.0f );
 		}
@@ -1361,7 +1350,7 @@ void Map::drawOutdoors() {
 	// draw the creatures/objects/doors/etc.
 	for ( int i = 0; i < otherCount; i++ ) {
 		if ( selectedDropTarget && ( ( selectedDropTarget->creature && selectedDropTarget->creature == other[i].creature ) ||
-		     ( selectedDropTarget->item && selectedDropTarget->item == other[i].item ) ) ) {
+		                             ( selectedDropTarget->item && selectedDropTarget->item == other[i].item ) ) ) {
 			colorAlreadySet = true;
 			glColor4f( 0.0f, 1.0f, 1.0f, 1.0f );
 		}
@@ -1708,7 +1697,7 @@ bool Map::isShapeInFront( GLdouble playerWinY, GLdouble objX, GLdouble objY, map
 
 void Map::drawProjectiles() {
 	for ( map<RenderedCreature*, vector<RenderedProjectile*>*>::iterator i = RenderedProjectile::getProjectileMap()->begin();
-	      i != RenderedProjectile::getProjectileMap()->end(); ++i ) {
+	        i != RenderedProjectile::getProjectileMap()->end(); ++i ) {
 		//RenderedCreature *creature = i->first;
 		vector<RenderedProjectile*> *p = i->second;
 		for ( vector<RenderedProjectile*>::iterator e = p->begin(); e != p->end(); ++e ) {
@@ -1761,7 +1750,7 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 	} else if ( later && later->effect ) {
 		heightPos = later->effect->heightPos;
 	}
-	
+
 	float xdiff = 0;
 	float ydiff = 0;
 	if ( later && later->creature ) {
@@ -1834,11 +1823,11 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 			// translate hack for md2 models... see: md2shape::draw()
 			//glTranslatef( 0, -1 * MUL, 0 );
 			later->creature->getEffect()->draw( later->creature->getEffectType(),
-			    later->creature->getDamageEffect() );
+			                                    later->creature->getDamageEffect() );
 			//glTranslatef( 0, 1 * MUL, 0 );
 		} else if ( later->effect ) {
 			later->effect->getEffect()->draw( later->effect->getEffectType(),
-			    later->effect->getDamageEffect() );
+			                                  later->effect->getDamageEffect() );
 		}
 	} else if ( later && later->creature && !useShadow ) {
 		if ( later->creature->getStateMod( StateMod::invisible ) ) {
@@ -2010,13 +1999,13 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 void Map::findOccludedSides( DrawLater *later, bool *sides ) {
 	if ( colorAlreadySet || !later || !later->pos || !later->shape || !later->shape->isStencil() || ( later->shape && isDoor( later->shape ) ) ) {
 		sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] = sides[Shape::S_SIDE] =
-		      sides[Shape::E_SIDE] = sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
+		                                                     sides[Shape::E_SIDE] = sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = true;
 		return;
 	}
 
 	sides[Shape::BOTTOM_SIDE] = sides[Shape::N_SIDE] =
-	      sides[Shape::S_SIDE] = sides[Shape::E_SIDE] =
-	            sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = false;
+	                              sides[Shape::S_SIDE] = sides[Shape::E_SIDE] =
+	                                                       sides[Shape::W_SIDE] = sides[Shape::TOP_SIDE] = false;
 
 	int x, y;
 	Location *pos;
@@ -2293,7 +2282,7 @@ Location *Map::moveCreature( Sint16 x, Sint16 y, Sint16 z, Sint16 nx, Sint16 ny,
 }
 
 void Map::setRugPosition( Sint16 xchunk, Sint16 ychunk, Rug *rug ) {
-	memcpy( &( rugPos[ xchunk ][ ychunk ] ), rug, sizeof( Rug ) );
+	rugPos[ xchunk ][ ychunk ] = *rug;
 }
 
 /// Creates a shape on the floor (indoors).
@@ -2318,7 +2307,7 @@ void Map::setFloorPosition( Sint16 x, Sint16 y, Shape *shape ) {
 }
 
 void Map::removeRugPosition( Sint16 xchunk, Sint16 ychunk ) {
-	rugPos[ xchunk ][ ychunk ].texture = 0;
+	rugPos[ xchunk ][ ychunk ].texture.clear();
 }
 
 /// Removes items lying on the floor and water at the specified location.
@@ -2358,7 +2347,7 @@ Location *Map::isBlocked( Sint16 x, Sint16 y, Sint16 z, Sint16 shapeX, Sint16 sh
 			while ( sz < zz + s->getHeight() ) {
 				Location *loc = pos[x + sx][y - sy][z + sz];
 				if ( loc && loc->shape && !loc->shape->isRoof() &&
-				     !( loc->x == shapeX && loc->y == shapeY && loc->z == shapeZ ) ) {
+				        !( loc->x == shapeX && loc->y == shapeY && loc->z == shapeZ ) ) {
 					if ( newz && ( loc->item || loc->creature ) ) {
 						int tz = loc->z + loc->shape->getHeight();
 						if ( tz > zz ) zz = tz;
@@ -2545,13 +2534,13 @@ bool Map::hasOutdoorTexture( int x, int y, int width, int height ) {
 /// Sets the outdoor ground texture for a given map position (detailed version).
 
 void Map::setOutdoorTexture( int x, int y, float offsetX, float offsetY, int ref,
-    float angle, bool horizFlip, bool vertFlip, int z ) {
+                             float angle, bool horizFlip, bool vertFlip, int z ) {
 	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
 	if ( faceCount == 0 ) {
 		//cerr << "Map Error: no textures for outdoor theme! ref=" << WallTheme::outdoorThemeRefName[ref] << endl;
 		return;
 	}
-	Texture** textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
+	Texture* textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
 	int width = getShapes()->getCurrentTheme()->getOutdoorTextureWidth( ref );
 	int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( ref );
 
@@ -2579,17 +2568,17 @@ void Map::removeOutdoorTexture( int x, int y, float width, float height, int z )
 	int tx = x / OUTDOORS_STEP;
 	int ty = ( y - height - 1 ) / OUTDOORS_STEP;
 	outdoorTex[tx][ty][z].outdoorThemeRef = -1;
-	outdoorTex[tx][ty][z].texture = 0;
+	outdoorTex[tx][ty][z].texture.clear();
 	mapChanged = true;
 }
 
 
 void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
-    Shape *shape,
-    RenderedItem *item,
-    RenderedCreature *creature ) {
+                            Shape *shape,
+                            RenderedItem *item,
+                            RenderedCreature *creature ) {
 	if ( x < MAP_OFFSET || y < MAP_OFFSET || z < 0 ||
-	     x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET || z >= MAP_VIEW_HEIGHT ) {
+	        x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET || z >= MAP_VIEW_HEIGHT ) {
 		cerr << "*** Error can't set position outside bounds:" << x << "," << y << "," << z << endl;
 		//((RenderedCreature*)NULL)->getName();
 		return;
@@ -2647,8 +2636,8 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 
 	// remember gates and teleporters
 	if ( shape == shapes->findShapeByName( "GATE_UP" ) ||
-	     shape == shapes->findShapeByName( "GATE_DOWN" ) ||
-	     shape == shapes->findShapeByName( "GATE_DOWN_OUTDOORS" ) ) {
+	        shape == shapes->findShapeByName( "GATE_DOWN" ) ||
+	        shape == shapes->findShapeByName( "GATE_DOWN_OUTDOORS" ) ) {
 		gates.insert( p );
 	} else if ( shape == shapes->findShapeByName( "TELEPORTER" ) ) {
 		teleporters.insert( p );
@@ -2729,8 +2718,8 @@ Shape *Map::removePosition( Sint16 x, Sint16 y, Sint16 z ) {
 
 		// forget gates and teleporters
 		if ( shape == shapes->findShapeByName( "GATE_UP" ) ||
-		     shape == shapes->findShapeByName( "GATE_DOWN" ) ||
-		     shape == shapes->findShapeByName( "GATE_DOWN_OUTDOORS" ) ) {
+		        shape == shapes->findShapeByName( "GATE_DOWN" ) ||
+		        shape == shapes->findShapeByName( "GATE_DOWN_OUTDOORS" ) ) {
 			gates.erase( p );
 		} else if ( shape == shapes->findShapeByName( "TELEPORTER" ) ) {
 			teleporters.erase( p );
@@ -2967,8 +2956,8 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 				float xpos2, ypos2, zpos2;
 				int chunkX, chunkY;
 				calculateLocationInfo( location, chunkStartX, chunkStartY, chunkOffsetX, chunkOffsetY, 0,
-				    &posX, &posY, &posZ, &xpos2, &ypos2, &zpos2,
-				    &chunkX, &chunkY, &lightEdge );
+				                       &posX, &posY, &posZ, &xpos2, &ypos2, &zpos2,
+				                       &chunkX, &chunkY, &lightEdge );
 
 				location->heightPos = findMaxHeightPos( location->creature->getX(), location->creature->getY(), location->creature->getZ() );
 				later->xpos = xpos2;
@@ -2981,7 +2970,7 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 
 				// also move the creature's effect
 				DrawLater *effect = creatureEffectMap[creature];
-				if( effect ) {
+				if ( effect ) {
 					effect->xpos = xpos2;
 					effect->ypos = ypos2;
 					effect->zpos = zpos2;
@@ -2989,23 +2978,23 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 					effect->y = posY;
 				}
 			}
-		} else if( helper && helper->isVisible( toint( creature->getX() ), toint( creature->getY() ), creature->getShape() ) ) {
+		} else if ( helper && helper->isVisible( toint( creature->getX() ), toint( creature->getY() ), creature->getShape() ) ) {
 			Location *pos = getLocation( toint( creature->getX() ), toint( creature->getY() ), toint( creature->getZ() ) );
-			if( pos ) {
+			if ( pos ) {
 				int chunkX, chunkY;
 				getChunk( pos->x, pos->y, &chunkX, &chunkY );
-				if( checkLightMap( chunkX, chunkY ) ) {
-					// If this creature has no creatureMap entry but should now be visible, 
+				if ( checkLightMap( chunkX, chunkY ) ) {
+					// If this creature has no creatureMap entry but should now be visible,
 					// it means the creature wondered into the visible area: repaint everything.
 					// An optimization here would be to restrict setupShapes to the creatures that changed.
-					resortShapes = mapChanged = true;	
-//					cerr << "!!! " << creature->getName() << " " << SDL_GetTicks() << endl;
+					resortShapes = mapChanged = true;
+//     cerr << "!!! " << creature->getName() << " " << SDL_GetTicks() << endl;
 				}
 			}
 		}
 	}
 }
-	
+
 void Map::getChunk( int mapX, int mapY, int *chunkX, int *chunkY ) {
 	*chunkX = ( mapX - MAP_OFFSET ) / MAP_UNIT;
 	*chunkY = ( mapY - 1 - MAP_OFFSET ) / MAP_UNIT;
@@ -3014,17 +3003,17 @@ void Map::getChunk( int mapX, int mapY, int *chunkX, int *chunkY ) {
 /// Sets up map location info.
 
 void Map::calculateLocationInfo( Location *location,
-    int chunkStartX, int chunkStartY,
-    int chunkOffsetX, int chunkOffsetY,
-    Uint16 drawSide,
-    int *posX, int *posY, int *posZ,
-    float *xpos, float *ypos, float *zpos,
-    int *chunkX, int *chunkY,
-    bool *lightEdge ) {
+                                 int chunkStartX, int chunkStartY,
+                                 int chunkOffsetX, int chunkOffsetY,
+                                 Uint16 drawSide,
+                                 int *posX, int *posY, int *posZ,
+                                 float *xpos, float *ypos, float *zpos,
+                                 int *chunkX, int *chunkY,
+                                 bool *lightEdge ) {
 	*posX = location->x;
 	*posY = location->y;
 	*posZ = location->z;
-	getChunk( location->x, location->y, &(*chunkX), &(*chunkY) );
+	getChunk( location->x, location->y, &( *chunkX ), &( *chunkY ) );
 	//*chunkX = ( *posX - MAP_OFFSET ) / MAP_UNIT;
 	//*chunkY = ( *posY - 1 - MAP_OFFSET ) / MAP_UNIT;
 	int xp = ( *posX - MAP_OFFSET ) % MAP_UNIT;
@@ -3048,8 +3037,8 @@ void Map::calculateLocationInfo( Location *location,
 /// Sets up chunk info.
 
 void Map::calculateChunkInfo( int *chunkOffsetX, int *chunkOffsetY,
-    int *chunkStartX, int *chunkStartY,
-    int *chunkEndX, int *chunkEndY ) {
+                              int *chunkStartX, int *chunkStartY,
+                              int *chunkEndX, int *chunkEndY ) {
 	*chunkOffsetX = 0;
 	*chunkStartX = ( getX() - MAP_OFFSET ) / MAP_UNIT;
 	int mod = ( getX() - MAP_OFFSET ) % MAP_UNIT;
@@ -3502,7 +3491,7 @@ bool Map::isLocationVisible( int x, int y ) {
 bool Map::isLocationInLight( int x, int y, Shape *shape ) {
 	int chunkX = ( x - MAP_OFFSET ) / MAP_UNIT;
 	int chunkY = ( y - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
-	if( !checkLightMap( chunkX, chunkY ) ) return false;
+	if ( !checkLightMap( chunkX, chunkY ) ) return false;
 	return ( helper && helper->isVisible( x, y, shape ) );
 }
 
@@ -3927,7 +3916,7 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 	info->rug_count = 0;
 	for ( int x = 0; x < MAP_CHUNKS_X; x++ ) {
 		for ( int y = 0; y < MAP_CHUNKS_Y; y++ ) {
-			if ( rugPos[x][y].texture > 0 ) {
+			if ( rugPos[x][y].texture.isSpecified() ) {
 				info->rugPos[ info->rug_count ] = Persist::createRugInfo( x, y );
 				info->rugPos[ info->rug_count ]->angle = toint( rugPos[x][y].angle * 100.0f );
 				info->rugPos[ info->rug_count ]->isHorizontal = ( rugPos[x][y].isHorizontal ? 1 : 0 );
@@ -3973,7 +3962,7 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 			Uint32 base = ( ground[ gx ][ gy ] < 0 ? NEG_GROUND_HEIGHT : 0x00000000 );
 			info->ground[ gx ][ gy ] = ( Uint32 )( fabs( ground[ gx ][ gy ] ) * 100 ) + base;
 			for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
-				if ( outdoorTex[ gx ][ gy ][ z ].texture > 0 ) {
+				if ( outdoorTex[ gx ][ gy ][ z ].texture.isSpecified() ) {
 					OutdoorTextureInfo *oti = ( OutdoorTextureInfo* )malloc( sizeof( OutdoorTextureInfo ) );
 					int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( outdoorTex[ gx ][ gy ][z].outdoorThemeRef );
 					int mx = gx * OUTDOORS_STEP;
@@ -4036,7 +4025,7 @@ void Map::initForCave( char *themeName ) {
 	}
 
 	string ref = WallTheme::themeRefName[ WallTheme::THEME_REF_PASSAGE_FLOOR ];
-	Texture** floorTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
+	Texture* floorTextureGroup = shapes->getCurrentTheme()->getTextureGroup( ref );
 	setFloor( CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, floorTextureGroup[ GLShape::TOP_SIDE ] );
 }
 
@@ -4231,8 +4220,8 @@ bool Map::loadMap( const string& name, std::string& result, StatusReport *report
 				setPosition( info->pos[i]->x, info->pos[i]->y, info->pos[i]->z, shape, ( ms ? &di : NULL ) );
 				if ( settings->isPlayerEnabled() ) {
 					if ( ( goingUp && !strcmp( ( char* )info->pos[i]->shape_name, "GATE_DOWN" ) ) ||
-					     ( goingDown && !strcmp( ( char* )info->pos[i]->shape_name, "GATE_UP" ) ) ||
-					     ( goingUp && !strcmp( ( char* )info->pos[i]->shape_name, "GATE_DOWN_OUTDOORS" ) ) ) {
+					        ( goingDown && !strcmp( ( char* )info->pos[i]->shape_name, "GATE_UP" ) ) ||
+					        ( goingUp && !strcmp( ( char* )info->pos[i]->shape_name, "GATE_DOWN_OUTDOORS" ) ) ) {
 						float d = ( info->pos[i]->x - adapter->getPlayer()->getX() ) * ( info->pos[i]->x - adapter->getPlayer()->getX() ) +
 						          ( info->pos[i]->y - adapter->getPlayer()->getY() ) * ( info->pos[i]->y - adapter->getPlayer()->getY() );
 						if ( start_dist == -1 || d < start_dist ) {
@@ -4462,17 +4451,17 @@ void Map::getMapXYZAtScreenXY( Uint16 *mapx, Uint16 *mapy, Uint16 *mapz, Locatio
 					float fz = mz + zz;
 
 					if ( fx >= 0 && fx < MAP_WIDTH &&
-					     fy >= 0 && fy < MAP_DEPTH &&
-					     fz >= 0 && fz < MAP_VIEW_HEIGHT ) {
+					        fy >= 0 && fy < MAP_DEPTH &&
+					        fz >= 0 && fz < MAP_VIEW_HEIGHT ) {
 						Location *location = getLocation( ( int )fx, ( int )fy, ( int )fz );
 						if ( location && ( location )->shape && ( ( location )->creature || ( location )->item || ( location )->shape->isInteractive() || isSecretDoor( location ) ) ) {
 							Shape *shape = ( location )->shape;
 							if ( mx >= ( location )->x + shape->getOffsX() / MUL &&
-							     mx < ( location )->x + shape->getOffsX() / MUL + shape->getWidth() &&
-							     my >= ( location )->y + shape->getOffsY() / MUL - shape->getDepth() &&
-							     my < ( location )->y + shape->getOffsY() / MUL + 1 &&
-							     mz >= ( location )->z + shape->getOffsZ() / MUL &&
-							     mz < ( location )->z + shape->getOffsZ() / MUL + shape->getHeight() ) {
+							        mx < ( location )->x + shape->getOffsX() / MUL + shape->getWidth() &&
+							        my >= ( location )->y + shape->getOffsY() / MUL - shape->getDepth() &&
+							        my < ( location )->y + shape->getOffsY() / MUL + 1 &&
+							        mz >= ( location )->z + shape->getOffsZ() / MUL &&
+							        mz < ( location )->z + shape->getOffsZ() / MUL + shape->getHeight() ) {
 								*pos = location;
 								*mapx = fx;
 								*mapy = fy;
@@ -4696,7 +4685,7 @@ void Map::setSecretDoorDetected( int x, int y ) {
 void Map::renderFloor() {
 	glEnable( GL_TEXTURE_2D );
 	glColor4f( 1.0f, 1.0f, 1.0f, 0.9f );
-	if ( floorTex != NULL ) floorTex->glBind();
+	if ( floorTex.isSpecified() ) floorTex.glBind();
 	glPushMatrix();
 	if ( isHeightMapEnabled() ) {
 		if ( groundVisible || settings->isGridShowing() ) {
@@ -4741,7 +4730,7 @@ bool Map::drawHeightMapFloor() {
 			//int chunkX = ( ( xx * OUTDOORS_STEP ) - MAP_OFFSET ) / MAP_UNIT;
 			//int chunkY = ( ( ( yy + 1 ) * OUTDOORS_STEP ) - ( MAP_OFFSET + 1 ) ) / MAP_UNIT;
 			//if( lightMap[chunkX][chunkY] ) {
-			groundPos[ xx ][ yy ].tex->glBind();
+			groundPos[ xx ][ yy ].tex.glBind();
 			//} else {
 			//glDisable( GL_TEXTURE_2D );
 			//}
@@ -4776,7 +4765,7 @@ bool Map::drawHeightMapFloor() {
 	for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 		for ( int yy = startY; yy < endY; yy++ ) {
 			for ( int xx = startX; xx < endX; xx++ ) {
-				if ( outdoorTex[xx][yy][z].texture != 0 ) {
+				if ( outdoorTex[xx][yy][z].texture.isSpecified() ) {
 					drawOutdoorTex( outdoorTex[xx][yy][z].texture, xx + outdoorTex[xx][yy][z].offsetX, yy + outdoorTex[xx][yy][z].offsetY, outdoorTex[xx][yy][z].width, outdoorTex[xx][yy][z].height, outdoorTex[xx][yy][z].angle );
 				}
 			}
@@ -4819,8 +4808,8 @@ bool Map::drawHeightMapFloor() {
 
 /// Draws a ground texture on outdoor maps. Uses OUTDOORS_STEP coordinates.
 
-void Map::drawOutdoorTex( Texture* tex, float tx, float ty, float tw, float th, float angle ) {
-	tex->glBind();
+void Map::drawOutdoorTex( Texture tex, float tx, float ty, float tw, float th, float angle ) {
+	tex.glBind();
 
 	glMatrixMode( GL_TEXTURE );
 	glPushMatrix();
@@ -4893,7 +4882,7 @@ void Map::drawOutdoorTex( Texture* tex, float tx, float ty, float tw, float th, 
 
 #define GROUND_TEX_Z_OFFSET 0.26f
 
-void Map::drawGroundTex( Texture* tex, float tx, float ty, float tw, float th, float angle ) {
+void Map::drawGroundTex( Texture tex, float tx, float ty, float tw, float th, float angle ) {
 
 	//glEnable( GL_DEPTH_TEST );
 	glDepthMask( GL_FALSE );
@@ -4901,7 +4890,7 @@ void Map::drawGroundTex( Texture* tex, float tx, float ty, float tw, float th, f
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glDisable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
-	tex->glBind();
+	tex.glBind();
 
 	//glColor4f( 1, 0, 0, 1 );
 	//glDepthMask( GL_FALSE );
@@ -5153,7 +5142,7 @@ void Map::drawWaterLevel() {
 	}
 
 	glEnable( GL_TEXTURE_2D );
-	getShapes()->getCurrentTheme()->getOutdoorTextureGroup( WallTheme::OUTDOOR_THEME_REF_WATER )[0]->glBind();
+	getShapes()->getCurrentTheme()->getOutdoorTextureGroup( WallTheme::OUTDOOR_THEME_REF_WATER )[0].glBind();
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	GLfloat ratio = MAP_UNIT / CAVE_CHUNK_SIZE;
@@ -5215,7 +5204,7 @@ void Map::initOutdoorsGroundTexture() {
 			int r = high ? WallTheme::OUTDOOR_THEME_REF_ROCK :
 			        ( low ? WallTheme::OUTDOOR_THEME_REF_LAKEBED :
 			          WallTheme::OUTDOOR_THEME_REF_GRASS );
-			Texture* tex = getThemeTex( r );
+			Texture tex = getThemeTex( r );
 			for ( int xx = 0; xx < OUTDOOR_FLOOR_TEX_SIZE; xx++ ) {
 				for ( int yy = 0; yy < OUTDOOR_FLOOR_TEX_SIZE; yy++ ) {
 					refs[x + xx][y + yy] = r;
@@ -5308,9 +5297,9 @@ void Map::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
 
 /// Returns a random variation of the outdoor texture specified by ref.
 
-Texture* Map::getThemeTex( int ref ) {
+Texture Map::getThemeTex( int ref ) {
 	int faceCount = getShapes()->getCurrentTheme()->getOutdoorFaceCount( ref );
-	Texture** textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
+	Texture* textureGroup = getShapes()->getCurrentTheme()->getOutdoorTextureGroup( ref );
 	return textureGroup[ Util::dice( faceCount ) ];
 }
 
@@ -5329,7 +5318,7 @@ void Map::addHighVariation( int ref, int z ) {
 	for ( int x = 0; x < ex; x += outdoor_w ) {
 		for ( int y = 0; y < ey; y += outdoor_h ) {
 			if ( isAllHigh( x, y, outdoor_w, outdoor_h ) && !Util::dice( 10 ) &&
-			     !hasOutdoorTexture( x, y, width, height ) ) {
+			        !hasOutdoorTexture( x, y, width, height ) ) {
 				setOutdoorTexture( x * OUTDOORS_STEP, ( y + outdoor_h + 1 ) * OUTDOORS_STEP,
 				                   0, 0, ref, Util::dice( 4 ) * 90.0f, false, false, z );
 			}
@@ -5514,7 +5503,7 @@ void Map::drawTraps() {
 
 bool Map::canFit( int x, int y, Shape *shape ) {
 	if ( x < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET ||
-	     y < MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+	        y < MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
 		return false;
 	}
 	int fx = ( ( x - MAP_OFFSET ) / MAP_UNIT ) * MAP_UNIT + MAP_OFFSET;
@@ -5538,7 +5527,7 @@ bool Map::canFit( int x, int y, Shape *shape ) {
 
 bool Map::isEmpty( int x, int y ) {
 	if ( x < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET ||
-	     y < MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+	        y < MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
 		return false;
 	}
 	return( getLocation( x, y, 0 ) == NULL ? true : false );

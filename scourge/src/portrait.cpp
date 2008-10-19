@@ -178,9 +178,9 @@ void Portrait::setCurrentWeaponTooltip() {
 		char tmp[ 1000 ];
 		snprintf( tmp, 1000, "%s:%s (%s)",
 		          _( "Current attack" ),
-						 ( Constants::EQUIP_LOCATION_LEFT_HAND == creature->getPreferredWeapon() ? _( "Left Hand" ) :
-							 ( Constants::EQUIP_LOCATION_RIGHT_HAND == creature->getPreferredWeapon() ? _( "Right Hand" ) :
-								 ( Constants::EQUIP_LOCATION_WEAPON_RANGED == creature->getPreferredWeapon() ? _( "Ranged Weapon" ) :
+		          ( Constants::EQUIP_LOCATION_LEFT_HAND == creature->getPreferredWeapon() ? _( "Left Hand" ) :
+		            ( Constants::EQUIP_LOCATION_RIGHT_HAND == creature->getPreferredWeapon() ? _( "Right Hand" ) :
+		              ( Constants::EQUIP_LOCATION_WEAPON_RANGED == creature->getPreferredWeapon() ? _( "Ranged Weapon" ) :
 		                _( "Bare Hands" ) ) ) ),
 		          _( "Click to change" ) );
 		canvas->setTooltip( tmp );
@@ -191,7 +191,7 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	backgroundTexture->glBind();
+	backgroundTexture.glBind();
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
@@ -227,8 +227,8 @@ void Portrait::drawWidgetContents( Widget *widget ) {
 	glColor4f( 1, 1, 1, 1 );
 	y = 35 + 17;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s %s",
-	    ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
-	    creature->getCharacter()->getDisplayName() );
+	                                               ( creature->getSex() == Constants::SEX_FEMALE ? _( "Female" ) : _( "Male" ) ),
+	                                               creature->getCharacter()->getDisplayName() );
 	y += 12;
 	pcUi->getScourge()->getSDLHandler()->texPrint( 80, y, "%s:%d (%s: %d)", _( "Level" ), creature->getLevel(), _( "XP" ), creature->getExp() );
 	y += 12;
@@ -303,7 +303,7 @@ void Portrait::drawResistance( int x, int y, char *icon, int skill ) {
 	glPushMatrix();
 	glColor4f( 1, 1, 1, 1 );
 	glTranslatef( x, y, 0 );
-	pcUi->getScourge()->getShapePalette()->getNamedTexture( icon )->glBind();
+	pcUi->getScourge()->getShapePalette()->getNamedTexture( icon ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );
@@ -345,8 +345,8 @@ void Portrait::showSkills() {
 	if ( creature->getHasAvailableSkillPoints() ) glColor3f( 1, 0, 0 );
 	else glColor3f( 1, 1, 1 );
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, "%s:%d",
-	    _( "Available Skill Points" ),
-	    creature->getAvailableSkillMod() );
+	                                               _( "Available Skill Points" ),
+	                                               creature->getAvailableSkillMod() );
 	drawHorizontalLine( y + 4 );
 	y += 18;
 
@@ -457,7 +457,7 @@ void Portrait::showStateMods() {
 	y += 15;
 	int x = 10;
 
-	Texture* icon;
+	Texture icon;
 	char name[255];
 	Color color;
 	int size = 12;
@@ -509,9 +509,9 @@ void Portrait::showStateMods() {
 	y += 15;
 }
 
-void Portrait::drawStateModIcon( Texture* icon, char *name, Color color, int x, int y, int size ) {
+void Portrait::drawStateModIcon( Texture icon, char *name, Color color, int x, int y, int size ) {
 	glEnable( GL_TEXTURE_2D );
-	icon->glBind();
+	icon.glBind();
 	glColor4f( color.r, color.g, color.b, color.a );
 	glPushMatrix();
 	glTranslatef( x, y - size, 0 );
@@ -535,7 +535,7 @@ void Portrait::drawBar( int x, int y, int value, int maxValue, int r, int g, int
 	glPushMatrix();
 	glEnable( GL_TEXTURE_2D );
 	glTranslatef( x, y, 0 );
-	barTexture->glBind();
+	barTexture.glBind();
 	glColor4f( 1, 1, 1, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2d( 0, 0 );

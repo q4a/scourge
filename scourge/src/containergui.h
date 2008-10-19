@@ -44,7 +44,7 @@ private:
 	Label *label;
 	std::string containedItemNames[MAX_CONTAINED_ITEMS];
 	Color *itemColor;
-	Texture const* itemIcon[MAX_INVENTORY_SIZE];
+	Texture itemIcon[MAX_INVENTORY_SIZE];
 	Canvas *canvas;
 
 public:

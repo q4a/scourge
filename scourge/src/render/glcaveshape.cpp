@@ -81,7 +81,7 @@ GLfloat lavaTexY = 0;
 GLuint GLCaveShape::floorTex[ Shapes::STENCIL_COUNT ];
 TextureData GLCaveShape::floorData[ Shapes::STENCIL_COUNT ];
 
-GLCaveShape::GLCaveShape( Shapes *shapes, Texture* texture[]
+GLCaveShape::GLCaveShape( Shapes *shapes, Texture texture[]
                           , int width, int depth, int height
                           , char *name, int index
                           , int mode, int dir, int caveIndex
@@ -166,13 +166,13 @@ void GLCaveShape::drawFaces() {
 			}
 			switch ( p->textureType ) {
 			case CaveFace::WALL:
-				wallTextureGroup[ GLShape::FRONT_SIDE ]->glBind();
+				wallTextureGroup[ GLShape::FRONT_SIDE ].glBind();
 				break;
 			case CaveFace::TOP:
-				wallTextureGroup[ GLShape::TOP_SIDE ]->glBind();
+				wallTextureGroup[ GLShape::TOP_SIDE ].glBind();
 				break;
 			case CaveFace::FLOOR:
-				floorTextureGroup[ GLShape::TOP_SIDE ]->glBind();
+				floorTextureGroup[ GLShape::TOP_SIDE ].glBind();
 				break;
 			}
 #ifdef DEBUG_CAVE_SHAPE
@@ -206,7 +206,7 @@ void GLCaveShape::drawFaces() {
 
 void GLCaveShape::drawBlock( float w, float h, float d ) {
 	if ( useShadow ) return;
-	wallTextureGroup[ GLShape::TOP_SIDE ]->glBind();
+	wallTextureGroup[ GLShape::TOP_SIDE ].glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
@@ -224,7 +224,7 @@ void GLCaveShape::drawBlock( float w, float h, float d ) {
 
 void GLCaveShape::drawFloor( float w, float h, float d ) {
 	if ( useShadow ) return;
-	floorTextureGroup[ GLShape::TOP_SIDE ]->glBind();
+	floorTextureGroup[ GLShape::TOP_SIDE ].glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
 	glTexCoord2f( 0, 0 );
@@ -259,7 +259,7 @@ void GLCaveShape::drawLava( float w, float h, float d ) {
 	// draw the lava
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	floorTextureGroup[ GLShape::FRONT_SIDE ]->glBind();
+	floorTextureGroup[ GLShape::FRONT_SIDE ].glBind();
 	glColor4f(  1, 1, 1, 0.75f );
 
 	glBegin( GL_TRIANGLE_STRIP );
@@ -546,7 +546,7 @@ GLCaveShape *GLCaveShape::shapeList[ CAVE_INDEX_COUNT ];
 
 /// Sets up the shapes that are used in caves.
 
-void GLCaveShape::createShapes( Texture* texture[], int shapeCount, Shapes *shapes ) {
+void GLCaveShape::createShapes( Texture texture[], int shapeCount, Shapes *shapes ) {
 	for ( int i = 0; i < Shapes::STENCIL_COUNT; i++ ) {
 		floorTex[i] = 0;
 		floorData[i].resize( 4 * 256 * 256 );

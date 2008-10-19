@@ -142,11 +142,10 @@ void ShapePalette::initialize() {
 	for ( int i = 0; i < StateMod::STATE_MOD_COUNT; i++ ) {
 		stringstream path;
 		path << "/icons/i" << i << ".png";
-		Texture* icon = new Texture; 
-		icon->load( path.str() );
+		Texture icon;
+		icon.load( path.str() );
 //    cerr << "Loading stat mod icon: " << path << " found it? " << (icon ? "yes" : "no") << endl;
-		if ( icon->isSpecified() ) statModIcons[i] = icon;
-		else delete (icon); 
+		if ( icon.isSpecified() ) statModIcons[i] = icon;
 	}
 
 	thirstIcon.load( "/icons/t.png" );
@@ -157,7 +156,7 @@ void ShapePalette::initialize() {
 		loadTiles( "/textures/tiles.png", &tiles );
 		for ( int x = 0; x < 20; x++ ) {
 			for ( int y = 0; y < 18; y++ ) {
-				tilesTex[x][y].createTile( &tiles, x, y, 32, 32 );
+				tilesTex[x][y].createTile( tiles, x, y, 32, 32 );
 			}
 		}
 
@@ -165,7 +164,7 @@ void ShapePalette::initialize() {
 		loadTiles( "/textures/spells.png", &spells );
 		for ( int x = 0; x < 20; x++ ) {
 			for ( int y = 0; y < 18; y++ ) {
-				spellsTex[x][y].createTile( &spells, x, y, 32, 32 );
+				spellsTex[x][y].createTile( spells, x, y, 32, 32 );
 			}
 		}
 	}
@@ -233,29 +232,25 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 		bool outdoors = node->getValueAsBool( "outdoors" );
 		if ( outdoors ) {
 			NamedOutdoorTexture ot;
-			// LEAKS: no one deletes/unloads
-			ot.tex = new Texture;
-			ot.tex->load( value );
+			ot.tex.load( value );
 			ot.width = node->getValueAsInt( "width" );
 			ot.height = node->getValueAsInt( "width" );
 			outdoorNamedTextures[ name ] = ot;
 		} else {
-			// LEAKS: no one deletes/unloads
-			namedTextures[ name ] = new Texture;
-			namedTextures[ name ]->load( value );
+			namedTextures[ name ].load( value );
 		}
 	}
 }
 
 void ShapePalette::initInventory( ConfigLang *config ) {
-	for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
+	for ( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
 		equipLocationHoles[ i ].x = equipLocationHoles[ i ].y = equipLocationHoles[ i ].w = equipLocationHoles[ i ].h = 0;
 	}
 	vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "inventory" );
 	if ( v ) {
 		char tmp[255];
-		for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
-			char const* s = (*v)[0]->getValueAsString( Constants::equipLocationTags[ i ] );
+		for ( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
+			char const* s = ( *v )[0]->getValueAsString( Constants::equipLocationTags[ i ] );
 			if ( s ) {
 				strcpy( tmp, s );
 				char *p = strtok( tmp, "," );
@@ -317,8 +312,8 @@ void ShapePalette::initPcPortraits( ConfigLang *config ) {
 			int sexNum = ( sex == "M" ?
 			               Constants::SEX_MALE :
 			               Constants::SEX_FEMALE );
-			Texture* tex = new Texture; 
-			tex->load( image );
+			Texture tex;
+			tex.load( image );
 			portraitTextures[sexNum].push_back( tex );
 		}
 	}
@@ -362,9 +357,8 @@ void ShapePalette::initRugs( ConfigLang *config ) {
 		//GLubyte *tmpImage = NULL;
 		//setupAlphaBlendedBMP( node->getValueAsString( "path" ), tmpSurface, tmpImage );
 		//rugs.push_back( getTileTexture( tmpSurface, tmpImage ) );
-		// LEAKS: rugs are nowhere deleted
-		Texture* rug = new Texture; 
-		rug->load( node->getValueAsString( "path" ), false, false );
+		Texture rug;
+		rug.load( node->getValueAsString( "path" ), false, false );
 		rugs.push_back( rug );
 		//delete [] tmpImage;
 		//if( tmpSurface ) SDL_FreeSurface( tmpSurface );
@@ -587,7 +581,7 @@ ShapeValues *ShapePalette::createShapeValues( ConfigNode *node ) {
 		sv->iconWidth = sv->icon.width() / 32;
 		sv->iconHeight = sv->icon.height() / 32;
 	} else {
-		sv->icon.clear(); 
+		//sv->icon.clear();
 		sv->iconWidth = sv->iconHeight = 0;
 	}
 	sv->roof = node->getValueAsBool( "roof" );
@@ -796,9 +790,9 @@ void ShapePalette::initOccurance( ConfigNode *parent_node, ShapeValues *sv ) {
 }
 
 GLShape *ShapePalette::getCreatureShape( char *model_name,
-    char *skin_name,
-    float scale,
-    Monster *monster ) {
+                                         char *skin_name,
+                                         float scale,
+                                         Monster *monster ) {
 	// load monster sounds
 	if ( monster ) {
 		session->getGameAdapter()->
@@ -811,9 +805,9 @@ GLShape *ShapePalette::getCreatureShape( char *model_name,
 }
 
 void ShapePalette::decrementSkinRefCountAndDeleteShape( char *model_name,
-    char *skin_name,
-    GLShape *shape,
-    Monster *monster ) {
+                                                        char *skin_name,
+                                                        GLShape *shape,
+                                                        Monster *monster ) {
 	shape->cleanup();
 	loader->decrementSkinRefCount( model_name, skin_name );
 	// unload monster sounds
@@ -838,11 +832,10 @@ void ShapePalette::loadNpcPortraits() {
 		Monster *m = i->second;
 		if ( m->getPortrait() ) {
 			//m->setPortraitTexture( this->loadGLTextures( m->getPortrait(), true ) );
-			// LEAKS: this one is owned by no one
-			Texture* tex = new Texture;
-			tex->load( m->getPortrait() );
+			Texture tex;
+			tex.load( m->getPortrait() );
 			m->setPortraitTexture( tex );
-			if ( !m->getPortraitTexture()->isSpecified() ) {
+			if ( !m->getPortraitTexture().isSpecified() ) {
 				cerr << "*** Warning: couldn't load monster portrait: " << m->getPortrait() << endl;
 			}
 		}
