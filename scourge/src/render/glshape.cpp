@@ -666,7 +666,7 @@ void GLShape::initSurfaces() {
 }
 
 void GLShape::setOccurs( Occurs *o ) {
-	memcpy( &occurs, o, sizeof( Occurs ) );
+	occurs = *o;
 }
 
 void GLShape::addVirtualShape( int x, int y, int z, int w, int d, int h, bool draws ) {
