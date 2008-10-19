@@ -597,7 +597,7 @@ public:
 
 	void resetPartyUI();
 
-	void refreshInventoryUI( int playerIndex );
+	virtual void refreshInventoryUI( int playerIndex );
 
 	void refreshInventoryUI();
 
