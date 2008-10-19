@@ -81,7 +81,6 @@ public:
 		return empty;
 	}
 
-
 private:
 	// all member data is in refcounted Actual
 	class Actual {
@@ -119,15 +118,16 @@ private:
 
 	Actual* _ref; // should never be NULL
 
-	static Actual emptyNode;
-	static Texture empty;
-	typedef std::vector<Actual*> NodeVec;
-	static NodeVec mainList;
+	// some static things to speed and help
+	static Actual emptyNode; // Actual texture that is always empty. For speeding up construction and clearing.
+	static Texture empty; // Texture that is always empty. To avoid constructing empty textures.
+	typedef std::vector<Actual*> NodeVec;  
+	static NodeVec mainList; // List of named textures. To avoid reloading already loaded textures.
 	// private constructor
 	Texture( Actual* node );
 	// private operations
-	void Swap( Texture& that );
-	void SwapRef( Actual*& thatRef );
+	void swap( Texture& that );
+	static NodeVec::iterator search( const string& path );
 };
 
 
