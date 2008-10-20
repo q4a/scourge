@@ -1386,16 +1386,16 @@ void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) 
 
 		// play hit sound
 		if ( damage > 0 ) {
-			if ( creature->getTargetCreature()->isMonster() ) {
+			if ( creature->getTargetCreature()->isPartyMember() || creature->getTargetCreature()->isWanderingHero() ) {
+				//session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
+				int panning = session->getMap()->getPanningFromMapXY( creature->getTargetCreature()->getX(), creature->getTargetCreature()->getY() );
+				creature->getTargetCreature()->playCharacterSound( GameAdapter::HIT_SOUND, panning );
+			} else {
 				char const*soundname = creature->getTargetCreature()->getMonster()->getRandomSound( Constants::SOUND_TYPE_HIT );
 				if ( soundname ) {
 					int panning = session->getMap()->getPanningFromMapXY( creature->getTargetCreature()->getX(), creature->getTargetCreature()->getY() );
 					session->playSound( soundname, panning );
 				}
-			} else {
-				//session->playSound(creature->getTargetCreature()->getCharacter()->getRandomSound(Constants::SOUND_TYPE_HIT));
-				int panning = session->getMap()->getPanningFromMapXY( creature->getTargetCreature()->getX(), creature->getTargetCreature()->getY() );
-				creature->getTargetCreature()->playCharacterSound( GameAdapter::HIT_SOUND, panning );
 			}
 		}
 

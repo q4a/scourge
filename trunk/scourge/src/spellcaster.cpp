@@ -70,27 +70,27 @@ void SpellCaster::spellFailed() {
 	        !strcasecmp( spell->getName(), "Unholy Decimator" ) ||
 	        !strcasecmp( spell->getName(), "Blast of Fury" ) ) {
 
-		Creature *tmpTarget;
+		Creature *fumbleTarget;
 		if ( battle->getCreature()->isMonster() ||
 		        battle->getCreature()->getStateMod( StateMod::possessed ) ) {
-			tmpTarget = battle->getSession()->getClosestMonster( toint( battle->getCreature()->getX() ),
+			fumbleTarget = battle->getSession()->getRandomNearbyMonster( toint( battle->getCreature()->getX() ),
 			            toint( battle->getCreature()->getY() ),
 			            battle->getCreature()->getShape()->getWidth(),
 			            battle->getCreature()->getShape()->getDepth(),
-			            20 );
+			            CREATURE_SIGHT_RADIUS );
 		} else {
-			tmpTarget = battle->getSession()->getParty()->getClosestPlayer( toint( battle->getCreature()->getX() ),
+			fumbleTarget = battle->getSession()->getRandomNearbyGoodGuy( toint( battle->getCreature()->getX() ),
 			            toint( battle->getCreature()->getY() ),
 			            battle->getCreature()->getShape()->getWidth(),
 			            battle->getCreature()->getShape()->getDepth(),
-			            20 );
+			            CREATURE_SIGHT_RADIUS );
 		}
-		if ( tmpTarget ) {
+		if ( fumbleTarget ) {
 			char message[200];
-			snprintf( message, 200, _( "...fumble: hits %s instead!" ), tmpTarget->getName() );
+			snprintf( message, 200, _( "...fumble: hits %s instead!" ), fumbleTarget->getName() );
 			battle->getSession()->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
 			Creature *oldTarget = battle->getCreature()->getTargetCreature();
-			battle->getCreature()->setTargetCreature( tmpTarget );
+			battle->getCreature()->setTargetCreature( fumbleTarget );
 
 			causeDamage( true, 0, 0.5 );
 
