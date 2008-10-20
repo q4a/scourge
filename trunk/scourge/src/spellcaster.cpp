@@ -59,6 +59,9 @@ void SpellCaster::spellFailed() {
 	// print patronizing message...
 	battle->getSession()->getGameAdapter()->writeLogMessage( Constants::getMessage( Constants::SPELL_FAILED_MESSAGE ), Constants::MSGTYPE_FAILURE );
 
+	int panning = battle->getSession()->getMap()->getPanningFromMapXY( battle->getCreature()->getX(), battle->getCreature()->getY() );
+	battle->getSession()->playSound( spell->getSound(), panning );
+
 	// put code here for spells with something spectacular when they fail...
 	// (fouled fireball decimates party, etc.)
 	if ( !strcasecmp( spell->getName(), "Burning stare" ) ||
