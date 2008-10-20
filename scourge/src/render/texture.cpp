@@ -1,5 +1,5 @@
 /***************************************************************************
-                     texture.cpp  -  Class for 2D textures
+                     texture.cpp  -  Class for 2D OpenGL textures
                              -------------------
     created              : Mon Oct 13 2008
     author               : Vambola Kotkas
@@ -422,17 +422,19 @@ void Texture::swap( Texture& that ) {
 /// @return  iterator where to insert it if not found
 Texture::NodeVec::iterator Texture::search( const string& path ) {
 	// search quickly assuming the mainList is sorted
-	int first = -1; // one before where we search 
-	int last = mainList.size(); // one after where we search
+	int before = -1; 
+	int after = mainList.size(); 
 	for ( ;; ) {
-		int step = ( last - first ) / 2; // step into middle
-		if ( step < 1 ) return mainList.begin() + last; // insert after
-		int middle = first + step; // take step into middle
+		// middle is between after and before
+		int middle = ( before + after ) / 2; 
+		// when stuck tell to insert after
+		if ( middle == before || middle == after ) return mainList.begin() + after; 
+		// evaluate middle
 		int diff = path.compare( mainList[middle]->_filename );
-
-		if ( diff == 0 ) return mainList.begin() + middle; // found
-		else if ( diff > 0 ) first = middle;
-		else last = middle;
+		// get closer if not found
+		if ( diff > 0 ) before = middle;
+		else if ( diff < 0 ) after = middle;
+		else return mainList.begin() + middle; // found
 	}
 }
 

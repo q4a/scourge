@@ -57,6 +57,14 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+// -=K=-: sometimes i may feel like fixing some of what Scourge leaks 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 #define MOUSE_ROT_DELTA 2
 
 #define HQ_MAP_NAME "hq"
@@ -119,6 +127,8 @@ Scourge::Scourge( UserConfiguration *config ) : SDLOpenGLAdapter( config ) {
 	view = new ScourgeView( this );
 	handler = new ScourgeHandler( this );
 	chapterTextPos = 0;
+
+	progress = NULL;
 }
 
 void Scourge::initUI() {
@@ -165,6 +175,7 @@ void Scourge::initUI() {
 	getSession()->getSound()->loadSounds( getUserConfiguration() );
 	view->initUI();
 	// re-create progress bar for map loading (recreate with different options)
+	delete progress; 
 	progress = new Progress( this->getSDLHandler(),
 	                         getSession()->getShapePalette()->getProgressTexture(),
 	                         getSession()->getShapePalette()->getProgressHighlightTexture(),
@@ -305,11 +316,15 @@ void Scourge::start() {
 Scourge::~Scourge() {
 	delete mainMenu;
 	delete optionsMenu;
-	delete multiplayer;
+	delete pcui;
+	delete progress; 
+	// FIXME: uncomment and fix segfault
+	// delete multiplayer;
 	delete miniMap;
 	delete netPlay;
 	delete infoGui;
-	delete conversationGui;
+	// FIXME: uncomment and fix segfault
+	// delete conversationGui;
 	delete tradeDialog;
 	delete healDialog;
 	delete donateDialog;
@@ -318,7 +333,8 @@ Scourge::~Scourge() {
 	delete identifyDialog;
 	delete rechargeDialog;
 	delete pcEditor;
-	delete saveDialog;
+	// FIXME: uncomment and fix segfault
+	// delete saveDialog;
 	delete view;
 	delete handler;
 	delete descriptionScroller;
@@ -2014,7 +2030,6 @@ int Scourge::initMultiplayer() {
 	SDL_Delay( 3000 );
 
 	delete progress;
-
 	return 1;
 }
 

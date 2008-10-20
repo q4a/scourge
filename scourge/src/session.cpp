@@ -72,15 +72,17 @@ Session::Session( GameAdapter *adapter )
 Session::~Session() {
 	if ( squirrel ) delete squirrel;
 	deleteCreaturesAndItems();
-	if ( shapePal ) delete shapePal;
 	if ( sound ) delete sound;
-	if ( party ) delete party;
+	// FIXME: uncomment and it segfaults sometimes at exit  
+	// if ( party ) delete party;
 	if ( board ) delete board;
 	if ( cutscene ) delete cutscene;
 #ifdef HAVE_SDL_NET
 	delete server;
 	delete client;
 #endif
+	if ( map ) delete map;
+	if ( shapePal ) delete shapePal;
 	delete adapter;
 }
 
@@ -647,14 +649,14 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 #ifdef TESTING_SAVEGAME
 	adapter = new GameAdapter( adapter->getPreferences() );
 #endif
-
-	Session *session = new Session( adapter );
-	session->initialize();
+	// -=K=-: its sole session ... so i make it static
+	static Session session( adapter );
+	session.initialize();
 	if ( argc >= 2 && !strcmp( argv[1], "--run-tests" ) ) {
 		char const* path = ( argc >= 3 ?
 		                     argv[2] :
 		                     "/home/gabor/sourceforge/scourge/api/tests" );
-		if ( CombatTest::executeTests( session, path ) ) {
+		if ( CombatTest::executeTests( &session, path ) ) {
 			cout << "Tests were succesfully written to: " << path << endl;
 			return 0;
 		} else {
@@ -664,9 +666,9 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 		return 0;
 	}
 #ifndef TESTING_SAVEGAME
-	session->start();
+	session.start();
 #else
-	testSaveGame( session );
+	testSaveGame( &session );
 #endif
 
 	return EXIT_SUCCESS;
