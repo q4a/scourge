@@ -2181,7 +2181,7 @@ bool Creature::attackRandomTarget() {
   return ( p != NULL );
 }
 
-/// Tries to cast a specified spell onto a specified creature within range.
+/// Tries to cast an offensive spell onto a creature within range.
 
 bool Creature::castOffensiveSpell() {
   // are we in the middle of casting a spell already?
@@ -2205,6 +2205,16 @@ bool Creature::castOffensiveSpell() {
   Creature *p;
   if ( spell->getMp() < getMp() ) {
     p = ( spell->hasStateModPrereq() ? findClosestTargetWithPrereq( spell ) : getClosestTarget() );
+    // Don't waste mana casting über-spells on weak enemies.
+    if ( p && ( spell->getLevel() > p->getLevel() ) ) {
+      // Try to find a weaker spell.
+      bool found = false;
+      for ( int i = 0; i < ( offensiveSpells.size() - 1 ); i++ ) {
+        spell = offensiveSpells[ Util::pickOne ( 0, offensiveSpells.size() - 1 ) ];
+        if ( spell->getLevel() <= p->getLevel() ) { found = true; break; }
+      }
+      if ( !found ) return false;
+    }
   } else {
     return false;
   }
