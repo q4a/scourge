@@ -50,11 +50,12 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 	openButton = new Button( 5, 5, 85, 25, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage( Constants::OPEN_CONTAINER_LABEL ) );
 	win->addWidget( ( Widget* )openButton );
 	infoButton = new Button( 90, 5, 170, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Info" ) );
+	infoButton->setEnabled( false );
 	win->addWidget( ( Widget* )infoButton );
 	getAllButton = new Button( 175, 5, 255, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Get All" ) );
 	win->addWidget( ( Widget* )getAllButton );
-	closeButton = new Button( 260, 5, 340, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Close" ) );
-	win->addWidget( ( Widget* )closeButton );
+	//closeButton = new Button( 260, 5, 340, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Close" ) );
+	//win->addWidget( ( Widget* )closeButton );
 
 	canvas = new Canvas( 10, 35, 
 	                     10 + container->getRpgItem()->getContainerWidth() * GRID_SIZE, 
@@ -252,7 +253,7 @@ bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 			// try to add it
 			if ( scourge->getPcUi()->receiveInventory( item ) ) {
 				if( item == getSelectedItem() ) {
-					selectedItem = NULL;
+					setSelectedItem( NULL );
 				}
 				container->removeContainedItem( 0 );				
 			} else {
@@ -267,7 +268,7 @@ bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 		if ( item ) {
 			if ( scourge->getPcUi()->receiveInventory( item ) ) {
 				if( item == getSelectedItem() ) {
-					selectedItem = NULL;
+					setSelectedItem( NULL );
 				}
 				container->removeContainedItem( item );
 				showContents();				
@@ -291,7 +292,7 @@ bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 			Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
 			                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );
 			if ( item ) {
-				selectedItem = item;
+				setSelectedItem( item );
 			}
 	}
 	return false;
@@ -419,7 +420,7 @@ void ContainerGui::dropItem() {
 	                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );
 	if( item ) {
 		if( item == getSelectedItem() ) {
-			selectedItem = NULL;
+			setSelectedItem( NULL );
 		}
 		container->removeContainedItem( item );
 		scourge->startItemDragFromGui( item );
@@ -427,3 +428,7 @@ void ContainerGui::dropItem() {
 	}
 }
 
+void ContainerGui::setSelectedItem( Item *item ) {
+	selectedItem = item;
+	infoButton->setEnabled( selectedItem != NULL );
+}

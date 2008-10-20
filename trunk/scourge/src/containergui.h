@@ -63,6 +63,7 @@ public:
 	inline Item *getSelectedItem() {
 		return selectedItem;
 	}	
+	void setSelectedItem( Item *item );	
 
 	// drag and drop handling
 	void receive( Widget *widget );
