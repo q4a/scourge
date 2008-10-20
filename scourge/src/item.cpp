@@ -1479,13 +1479,8 @@ bool Item::isFullyIdentified() {
 }
 
 Texture Item::getContainerTexture() {
-	Texture texture;
-	texture.load( getRpgItem()->getContainerTexture() );
-	return texture;
-	/*if ( containerTextures.find( getRpgItem() ) == containerTextures.end() ) {
-		Texture texture;
-		texture.load( getRpgItem()->getContainerTexture() );
-		containerTextures[getRpgItem()] = texture;
+	if( !containerTexture.isSpecified() ) {
+		containerTexture.load( getRpgItem()->getContainerTexture() );
 	}
-	return containerTextures[getRpgItem()];*/
+	return containerTexture;
 }

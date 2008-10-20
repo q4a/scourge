@@ -323,6 +323,7 @@ private:
 	int missionId;
 	int missionObjectiveIndex;
 	// unused: std::map<RpgItem*, Texture> containerTextures;
+	Texture containerTexture;
 
 protected:
 	void commonInit( bool loading );
