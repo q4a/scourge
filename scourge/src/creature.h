@@ -766,6 +766,8 @@ public:
 
 	Creature *getClosestTarget();
 	bool attackClosestTarget();
+	Creature *getRandomTarget();
+	bool attackRandomTarget();
 	bool castHealingSpell();
 
 	float getDistanceToTarget( RenderedCreature *creature = NULL );

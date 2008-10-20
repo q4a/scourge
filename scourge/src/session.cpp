@@ -430,40 +430,8 @@ Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {
 	float minDist = 0;
 	Creature *p = NULL;
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
-		if ( !getCreature( i )->getStateMod( StateMod::dead ) &&
-		        !getCreature( i )->getStateMod( StateMod::possessed ) &&
-		        getCreature( i )->isMonster() &&
-		        map->isLocationVisible( toint( getCreature( i )->getX() ),
-		                                toint( getCreature( i )->getY() ) ) &&
-		        map->isLocationInLight( toint( getCreature( i )->getX() ),
-		                                toint( getCreature( i )->getY() ),
-		                                getCreature( i )->getShape() ) &&
-		        getCreature( i )->isMonster() ) {
-			dist = Constants::distance( x, y, w, h,
-			             getCreature( i )->getX(),
-			             getCreature( i )->getY(),
-			             getCreature( i )->getShape()->getWidth(),
-			             getCreature( i )->getShape()->getDepth() );
-			if ( dist <= static_cast<float>( radius ) && ( !p || dist < minDist ) ) {
-				p = getCreature( i );
-				minDist = dist;
-			}
-		}
-	}
-	return p;
-}
-
-Creature *Session::getClosestNPC( int x, int y, int w, int h, int radius ) {
-	float dist;
-	float minDist = 0;
-	Creature *p = NULL;
-	for ( int i = 0; i < getCreatureCount(); i++ ) {
-		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && getCreature( i )->isNpc() ) {
-			dist = Constants::distance( x, y, w, h,
-			             getCreature( i )->getX(),
-			             getCreature( i )->getY(),
-			             getCreature( i )->getShape()->getWidth(),
-			             getCreature( i )->getShape()->getDepth() );
+		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && getCreature( i )->isMonster() && map->isLocationVisible( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ) ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && getCreature( i )->isMonster() ) {
+			dist = Constants::distance( x, y, w, h, getCreature( i )->getX(), getCreature( i )->getY(), getCreature( i )->getShape()->getWidth(), getCreature( i )->getShape()->getDepth() );
 			if ( dist <= static_cast<float>( radius ) && ( !p || dist < minDist ) ) {
 				p = getCreature( i );
 				minDist = dist;
@@ -483,11 +451,7 @@ Creature *Session::getClosestGoodGuy( int x, int y, int w, int h, int radius ) {
 	// Search for the nearest non-monster, non-harmless creature.
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
 		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && !( getCreature( i )->isMonster() || getCreature( i )->isHarmlessAnimal() ) ) {
-			dist = Constants::distance( x, y, w, h,
-			             getCreature( i )->getX(),
-			             getCreature( i )->getY(),
-			             getCreature( i )->getShape()->getWidth(),
-			             getCreature( i )->getShape()->getDepth() );
+			dist = Constants::distance( x, y, w, h, getCreature( i )->getX(), getCreature( i )->getY(), getCreature( i )->getShape()->getWidth(), getCreature( i )->getShape()->getDepth() );
 			if ( dist <= static_cast<float>( radius ) && ( !p || dist < minDist ) ) {
 				p = getCreature( i );
 				minDist = dist;
@@ -506,6 +470,50 @@ Creature *Session::getClosestGoodGuy( int x, int y, int w, int h, int radius ) {
 		}
 	}
 
+	return p;
+}
+
+/// Return a random (visible) monster within the given radius or null if none can be found.
+
+Creature *Session::getRandomNearbyMonster( int x, int y, int w, int h, int radius ) {
+	vector<Creature*> possibleTargets;
+	Creature *p = NULL;
+
+	for ( int i = 0; i < getCreatureCount(); i++ ) {
+		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && getCreature( i )->isMonster() && map->isLocationVisible( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ) ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && getCreature( i )->isMonster() ) {
+			if ( Constants::distance( x, y, w, h, getCreature( i )->getX(), getCreature( i )->getY(), getCreature( i )->getShape()->getWidth(), getCreature( i )->getShape()->getDepth() ) <= (float)radius ) {
+				possibleTargets.push_back ( getCreature( i ) );
+			}
+		}
+	}
+
+	if ( !possibleTargets.empty() ) p = possibleTargets [ Util::pickOne( 0, possibleTargets.size() - 1 ) ];
+	return p;
+}
+
+/// Return a random (visible) non-monster within the given radius or null if none can be found.
+
+Creature *Session::getRandomNearbyGoodGuy( int x, int y, int w, int h, int radius ) {
+	vector<Creature*> possibleTargets;
+	Creature *p = NULL;
+
+	for ( int i = 0; i < getCreatureCount(); i++ ) {
+		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && getCreature( i )->isMonster() && map->isLocationVisible( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ) ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && !( getCreature( i )->isMonster() || getCreature( i )->isHarmlessAnimal() ) ) {
+			if ( Constants::distance( x, y, w, h, getCreature( i )->getX(), getCreature( i )->getY(), getCreature( i )->getShape()->getWidth(), getCreature( i )->getShape()->getDepth() ) <= (float)radius ) {
+				possibleTargets.push_back ( getCreature( i ) );
+			}
+		}
+	}
+
+	for ( int i = 0; i < getParty()->getPartySize(); i++ ) {
+		if ( !getParty()->getParty(i)->getStateMod( StateMod::dead ) && !getParty()->getParty(i)->getStateMod( StateMod::possessed ) ) {
+			if ( Constants::distance( x, y, w, h, getParty()->getParty(i)->getX(), getParty()->getParty(i)->getY(), getParty()->getParty(i)->getShape()->getWidth(), getParty()->getParty(i)->getShape()->getDepth() ) <= (float)radius ) {
+				possibleTargets.push_back ( getParty()->getParty( i ) );
+			}
+		}
+	}
+
+	if ( !possibleTargets.empty() ) p = possibleTargets [ Util::pickOne( 0, possibleTargets.size() - 1 ) ];
 	return p;
 }
 

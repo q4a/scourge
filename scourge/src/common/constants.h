@@ -330,6 +330,9 @@ struct ParticleStruct {
 // The radius in map tiles in which a fighting creature searches for a target.
 #define CREATURE_SIGHT_RADIUS 32
 
+// Maximum length of a random loitering path.
+#define CREATURE_LOITERING_RADIUS 16
+
 /// A progress display.
 
 class StatusReport {

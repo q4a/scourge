@@ -714,7 +714,7 @@ Location *Creature::moveToLocator() {
 				//some wandering heroes won't get their paths made elsewhere - HACK: put their logic here
 				if ( getCharacter() ) {
 					if ( Util::dice( 4 ) == 0 ) //wandering heroes don't wander that much
-						pathManager->findWanderingPath( 10, session->getParty()->getPlayer(), session->getMap() );
+						pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
 					else {
 						stopMoving();
 						setMotion( Constants::MOTION_STAND );
@@ -748,7 +748,7 @@ Location *Creature::moveToLocator() {
 					setMotion( Constants::MOTION_STAND );
 					cantMoveCounter = 0;
 				} else if ( cantMoveCounter > 5 ) {
-					pathManager->findWanderingPath( 10, session->getParty()->getPlayer(), session->getMap() );
+					pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
 				}
 			}
 		} else if ( !pos ) {
@@ -1936,7 +1936,7 @@ void Creature::cancelTarget() {
 	setAction( Constants::ACTION_NO_ACTION );
 	if ( !isPartyMember() && !scripted ) {
 		setMotion( Constants::MOTION_LOITER );
-		pathManager->findWanderingPath( 10, session->getParty()->getPlayer(), session->getMap() );
+		pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
 	}
 }
 
@@ -2058,57 +2058,59 @@ bool Creature::castHealingSpell() {
 /// Basic NPC/monster AI.
 
 void Creature::decideAction() {
-	Uint32 now = SDL_GetTicks();
-	if( now - lastDecision < 2000 ) return;
-	lastDecision = now;
-	
-	//CASE 1: A possessed non-aggressive creature
-	if ( !isMonster() && getStateMod( StateMod::possessed ) ) {
-		Creature *p = session->getParty()->getClosestPlayer( toint( getX() ), toint( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS );
-		// attack with item
-		setMotion( Constants::MOTION_MOVE_TOWARDS );
-		setTargetCreature( p );
-		return;
-	}
+  Uint32 now = SDL_GetTicks();
+  if( now - lastDecision < 2000 ) return;
+  lastDecision = now;
 
-	//CASE 2: Loiterers and standers
-	//aggressives loitering have only 1/20 chance of breaking the cycle. That's a slight pause.
-	if ( ( getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND ) && ( !isMonster() || Util::dice( 20 ) != 0 ) ) {
-		if ( attackClosestTarget() ) return;
-		if ( getMotion() == Constants::MOTION_STAND ) {
-			//if standing, there is a 1/3 chance to start loitering.
-			if ( Util::dice( 3 ) == 0 && !scripted ) {
-				//need to make a path to wander on
-				pathManager->findWanderingPath( 10, session->getParty()->getPlayer(), session->getMap() );
-				setMotion( Constants::MOTION_LOITER );
-			} else if ( !isMonster() || isNpc() ) {
-				if ( scripted ) {
-					getShape()->setCurrentAnimation( getScriptedAnimation() );
-				} else {
-					//friendlies also have a chance to wave etc.
-					int n = Util::dice( 600 );
-					switch ( n ) {
-					case 0 : getShape()->setCurrentAnimation( MD2_WAVE ); break;
-					case 1 : getShape()->setCurrentAnimation( MD2_POINT ); break;
-					case 2 : getShape()->setCurrentAnimation( MD2_SALUTE ); break;
-					default : getShape()->setCurrentAnimation( MD2_STAND ); break;
-					}
-				}
-			}
-		} else if ( getMotion() == Constants::MOTION_LOITER && pathManager->atEndOfPath() ) {
-			//a 2/3 chance of stopping walking at the end of a wandering path
-			if ( Util::dice( 3 ) > 0 ) {
-				setMotion( Constants::MOTION_STAND );
-				stopMoving();
-			} else
-				pathManager->findWanderingPath( 10, session->getParty()->getPlayer(), session->getMap() );
-		}
-		return;
-	}
-	//CASE 3: Other monsters (aggressive)
-	else {
-		attackClosestTarget();
-	}
+  if ( scripted ) {
+    getShape()->setCurrentAnimation( getScriptedAnimation() );
+    return;
+  }
+
+  // Are we currently loitering around?
+  // Continue loitering, stop or attack someone
+  if ( getMotion() == Constants::MOTION_LOITER ) {
+
+    if ( pathManager->atEndOfPath() ) {
+      if ( Util::dice( 3 ) == 0 ) {
+        pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
+        setMotion( Constants::MOTION_LOITER );
+      } else {
+        setMotion( Constants::MOTION_STAND );
+        stopMoving();
+      }
+    } else {
+      if ( Util::dice( 10 ) == 0 ) {
+        setMotion( Constants::MOTION_STAND );
+        stopMoving();
+      } else {
+        Util::dice(6) == 0 ? attackRandomTarget() : attackClosestTarget();
+      }
+    }
+
+  // Are we standing around doing nothing?
+  } else if ( getMotion() == Constants::MOTION_STAND ) {
+
+    // Start loitering or attack someone
+    if ( !getTargetCreature() ) {
+      if ( Util::dice( 3 ) == 0 ) { 
+        pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
+        setMotion( Constants::MOTION_LOITER );
+      } else {
+        Util::dice(6) == 0 ? attackRandomTarget() : attackClosestTarget();
+      }
+    } else {
+      Util::dice(6) == 0 ? attackRandomTarget() : attackClosestTarget();
+    }
+
+  // Are we moving towards someone/something?
+  // Slim chance to spontaneously select another target
+  } else if ( getMotion() == Constants::MOTION_MOVE_TOWARDS ) {
+    if ( Util::dice( 12 ) == 0 ) attackRandomTarget();
+  }
+
+return;
+
 }
 
 /// Returns the closest suitable battle target, NULL if no target found.
@@ -2127,6 +2129,22 @@ Creature *Creature::getClosestTarget() {
   return p;
 }
 
+/// Returns a random suitable battle target, NULL if no target found.
+
+Creature *Creature::getRandomTarget() {
+  Creature *p;
+  bool possessed = getStateMod( StateMod::possessed );
+
+  // Select a suitable target.
+  if ( isMonster() ) {
+    p = ( possessed ? session->getRandomNearbyMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getRandomNearbyGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
+  } else {
+    p = ( possessed ? session->getRandomNearbyGoodGuy ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) : session->getRandomNearbyMonster ( toint ( getX() ), toint ( getY() ), getShape()->getWidth(), getShape()->getDepth(), CREATURE_SIGHT_RADIUS ) );
+  }
+
+  return p;
+}
+
 /// Makes the creature attack the closest suitable target. Returns true if target found.
 
 bool Creature::attackClosestTarget() {
@@ -2135,6 +2153,24 @@ bool Creature::attackClosestTarget() {
   if ( castOffensiveSpell() ) return false;
 
   Creature *p = getClosestTarget();
+
+  if ( p ) {
+    // attack with item
+    setMotion ( Constants::MOTION_MOVE_TOWARDS );
+    setTargetCreature ( p );
+  }
+
+  return ( p != NULL );
+}
+
+/// Makes the creature attack a random suitable target. Returns true if target found.
+
+bool Creature::attackRandomTarget() {
+  // Try spells first.
+  if ( castHealingSpell() ) return false;
+  if ( castOffensiveSpell() ) return false;
+
+  Creature *p = getRandomTarget();
 
   if ( p ) {
     // attack with item

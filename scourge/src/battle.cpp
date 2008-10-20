@@ -385,16 +385,6 @@ void Battle::initTurnStep( bool callScript ) {
 /// Simple action script for auto-controlled creatures.
 
 void Battle::executeAction() {
-	// try to heal someone
-	if ( !creature->getActionSpell() ) {
-		if ( creature->castHealingSpell() ) {
-			if ( debugBattle ) cerr << "Stopping executeAction: Creature: " << creature->getName() <<
-				" will heal " << creature->getTargetCreature()->getName() << endl;
-			weaponWait = nextTurn = 0;
-			return;
-		}
-	}
-
 	ap--;
 	if ( weaponWait > 0 ) {
 		weaponWait--;
@@ -433,16 +423,6 @@ void Battle::executeAction() {
 /// Handles moving towards a target creature.
 
 void Battle::stepCloserToTarget() {
-	// try to heal someone
-	if ( !creature->getActionSpell() ) {
-		if ( creature->castHealingSpell() ) {
-			if ( debugBattle ) cerr << "Stopping stepCloserToTarget: Creature: " << creature->getName() <<
-				" will heal " << creature->getTargetCreature()->getName() << endl;
-			weaponWait = nextTurn = 0;
-			return;
-		}
-	}
-
 	// out of range: take 1 step closer
 
 	// re-select the best weapon
