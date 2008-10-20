@@ -132,10 +132,10 @@ int main( int argc, char *argv[] ) {
 		printf( "Will fallback to hardcoded default path.\n" );
 	}
 
-	UserConfiguration *userConfiguration = new UserConfiguration();
-	userConfiguration->loadConfiguration();
-	userConfiguration->parseCommandLine( argc, argv );
+	UserConfiguration userConfiguration;
+	userConfiguration.loadConfiguration();
+	userConfiguration.parseCommandLine( argc, argv );
 	RedirectIOToConsole();
-	return Session::runGame( createGameAdapter( userConfiguration ), argc, argv );
+	return Session::runGame( createGameAdapter( &userConfiguration ), argc, argv );
 }
 

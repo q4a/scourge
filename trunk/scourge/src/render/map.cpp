@@ -38,6 +38,7 @@
 
 using namespace std;
 
+
 // set to 1 to enable bounding box and ground grid drawing
 #define DEBUG_MOUSE_POS 0
 
@@ -95,7 +96,7 @@ const float Map::shadowTransformMatrix[16] = {
 	0, 0, 0, 1
 };
 
-MapMemoryManager *Map::mapMemoryManager = new MapMemoryManager();
+MapMemoryManager Map::mapMemoryManager;
 
 Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 	roofAlphaUpdate = 0;
@@ -294,7 +295,7 @@ void Map::reset() {
 	}
 	for ( set<Location*>::iterator i = deleted.begin(); i != deleted.end(); ++i ) {
 		Location *p = *i;
-		mapMemoryManager->deleteLocation( p );
+		mapMemoryManager.deleteLocation( p );
 	}
 	water.clear();
 
@@ -2415,7 +2416,7 @@ void Map::startEffect( Sint16 x, Sint16 y, Sint16 z, int effect_type, GLuint dur
 	// show an effect
 	if ( effect[x][y][z] ) return;
 
-	effect[x][y][z] = mapMemoryManager->newEffectLocation( this, preferences, shapes, width, height );
+	effect[x][y][z] = mapMemoryManager.newEffectLocation( this, preferences, shapes, width, height );
 	/*
 	effect[x][y][z]->effect = new Effect( preferences,
 	                                      shapes,
@@ -2451,7 +2452,7 @@ void Map::removeEffect( Sint16 x, Sint16 y, Sint16 z ) {
 	}
 
 	if ( effect[x][y][z] ) {
-		mapMemoryManager->deleteEffectLocation( effect[x][y][z] );
+		mapMemoryManager.deleteEffectLocation( effect[x][y][z] );
 		effect[x][y][z] = NULL;
 	}
 }
@@ -2463,7 +2464,7 @@ void Map::removeAllEffects() {
 		for ( int y = 0; y < MAP_DEPTH; y++ ) {
 			for ( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
 				if ( effect[x][y][z] ) {
-					mapMemoryManager->deleteEffectLocation( effect[x][y][z] );
+					mapMemoryManager.deleteEffectLocation( effect[x][y][z] );
 					effect[x][y][z] = NULL;
 				}
 			}
@@ -2589,7 +2590,7 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	bool isNonBlockingItem = ( item && !item->isBlocking() && !z && settings->isItemPosEnabled() );
 	Location *p = ( isNonBlockingItem ? itemPos[ x ][ y ] : pos[ x ][ y ][ z ] );
 	if ( !p ) {
-		p = mapMemoryManager->newLocation();
+		p = mapMemoryManager.newLocation();
 	}
 
 	p->shape = shape;
@@ -2714,7 +2715,7 @@ Shape *Map::removePosition( Sint16 x, Sint16 y, Sint16 z ) {
 		}
 
 		// Actually free the shape
-		mapMemoryManager->deleteLocation( p );
+		mapMemoryManager.deleteLocation( p );
 
 		// forget gates and teleporters
 		if ( shape == shapes->findShapeByName( "GATE_UP" ) ||
@@ -2762,7 +2763,7 @@ Shape *Map::removeItemPosition( Sint16 x, Sint16 y ) {
 		}
 
 		// Actually free the shape
-		mapMemoryManager->deleteLocation( p );
+		mapMemoryManager.deleteLocation( p );
 	}
 	return shape;
 }
@@ -4551,7 +4552,7 @@ EffectLocation *MapMemoryManager::newEffectLocation( Map *theMap, Preferences *p
 		unusedEffect.pop_back();
 		pos->effect->reset();
 	} else {
-		pos = new EffectLocation();
+		pos = new EffectLocation;
 		//pos->effect = new Effect( theMap, preferences, shapes, 4, 4 );
 		pos->effect = new Effect( theMap, preferences, shapes, width, height );
 		pos->effect->deleteParticles();
@@ -5393,7 +5394,7 @@ int Map::addTrap( int x, int y, int w, int h ) {
 	for ( int xx = x; xx <= x + w; xx++ ) {
 		for ( int yy = y - 2; yy <= y + h - 2; yy++ ) {
 			if ( !isWall( static_cast<int>( xx ), static_cast<int>( yy ), 0 ) ) {
-				CVector2 *p = new CVector2();
+				CVector2 *p = new CVector2;
 				p->x = xx;
 				p->y = yy;
 				points.push_back( p );

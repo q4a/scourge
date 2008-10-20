@@ -1,5 +1,5 @@
 /***************************************************************************
-                     texture.h  -  Class for 2D textures
+                     texture.h  -  Class for 2D OpenGL textures
                              -------------------
     created              : Mon Oct 13 2008
     author               : Vambola Kotkas

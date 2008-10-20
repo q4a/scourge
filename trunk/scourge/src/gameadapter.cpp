@@ -33,7 +33,8 @@ GameAdapter::GameAdapter( Preferences *config ) {
 }
 
 GameAdapter::~GameAdapter() {
-	delete preferences;
+	// who didn't 'new' should not 'delete'
+	// delete preferences;
 }
 
 bool GameAdapter::isMissionCreature( RenderedCreature *creature ) {

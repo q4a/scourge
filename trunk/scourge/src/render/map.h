@@ -189,7 +189,7 @@ private:
 	MapAdapter *adapter;
 	Preferences *preferences;
 	Shapes *shapes;
-	static MapMemoryManager *mapMemoryManager;
+	static MapMemoryManager mapMemoryManager;
 	bool mapChanged;
 	bool resortShapes;
 	float zoom;
