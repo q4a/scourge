@@ -2229,7 +2229,7 @@ bool Creature::castOffensiveSpell() {
     } else if ( enoughMp ) {
       p = ( Util::dice(6) == 0 ? getRandomTarget() : getClosestTarget() );
       // Ensure the spell does enough damage, but avoid overkill.
-      if ( p && ( maxSpellDamage > ( maxWeaponDamage * 0.7f ) ) && ( maxSpellDamage < ( p->getHp() * 2.0f ) ) ) {
+      if ( p && ( maxSpellDamage > ( maxWeaponDamage * 0.7f ) ) && ( maxSpellDamage < ( p->getMaxHp() * 2.0f ) ) ) {
         found = true;
         break;
       }
