@@ -98,8 +98,7 @@ private:
 	GLfloat angle, wantedAngle, angleStep;
 
 	// inventory
-	Item *inventory[MAX_INVENTORY_SIZE];
-	int inventory_count;
+	Item *backpack;
   int equipped[Constants::EQUIP_LOCATION_COUNT];
 	int preferredWeapon;
 
@@ -500,17 +499,13 @@ public:
 	bool isEquippedWeapon( int index );
 
 	/// The item at a specified inventory index.
-	inline Item *getInventory( int index ) {
-		return inventory[index];
-	}
+	Item *getInventory( int index );
 	/// Number of items carried in inventory.
-	inline int getInventoryCount() {
-		return inventory_count;
-	}
+	int getInventoryCount();
 	/// Adds an item to the inventory at the specified index.
-	inline void setInventory( int index, Item *item ) {
-		if ( index < inventory_count ) inventory[index] = item;
-	}
+//	inline void setInventory( int index, Item *item ) {
+//		if ( index < inventory_count ) inventory[index] = item;
+//	}
 	/// The active weapon.
 	inline int getPreferredWeapon() {
 		return preferredWeapon;

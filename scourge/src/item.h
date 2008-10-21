@@ -181,6 +181,7 @@ public:
 	bool addContainedItem( Item *item, bool force = false );
 	void removeContainedItem( Item *item );
 	Item *getContainedItem( int index );
+	void setContainedItem( int index, Item *item );
 	bool isContainedItem( Item *item );
 	/// Returns true if the item contains magical items.
 	inline bool getContainsMagicItem() {

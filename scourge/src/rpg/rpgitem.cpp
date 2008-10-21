@@ -149,7 +149,7 @@ void RpgItem::addItem( RpgItem *item, int width, int depth, int height ) {
 
 	// HACK: do not include "corpse" as a valid container...
 	// It should really have a container exclusion flag.
-	if ( item->type == CONTAINER && strcmp( item->name, "Corpse" ) ) {
+	if ( item->type == CONTAINER && ( strcmp( item->name, "Corpse" ) || strcmp( item->name, "Backpack" ) ) ) {
 		if ( width >= depth ) {
 			containersNS.push_back( item );
 		}

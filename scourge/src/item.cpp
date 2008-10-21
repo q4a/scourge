@@ -237,6 +237,12 @@ Item *Item::getContainedItem( int index ) {
 	return( ( index >= 0 && index < containedItemCount ) ? containedItems[index] : NULL );
 }
 
+void Item::setContainedItem( int index, Item *item ) {
+	if( index >= 0 && index < containedItemCount ) {
+		containedItems[ index ] = item;
+	}
+}
+
 /// Returns whether the item is inside a container.
 
 bool Item::isContainedItem( Item *item ) {
