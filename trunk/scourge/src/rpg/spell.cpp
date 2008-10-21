@@ -301,4 +301,12 @@ Spell *Spell::getSpellByName( char *name ) {
 	return spellMap[s];
 }
 
+/// Min and max damage the spell does.
 
+void Spell::getAttack( int casterLevel, float *maxP, float *minP ) {
+	*minP = 0; *maxP = 0;
+	for ( int i = 0; i <= ( casterLevel / 2 ); i++ ) {
+		*minP += action->getMin();
+		*maxP += action->getMax();
+	}
+}

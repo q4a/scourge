@@ -145,10 +145,13 @@ public:
 	inline const char *getDisplayName() {
 		return ( const char* )displayName;
 	}
-	/// Returns a random "effectiveness" or "extra" value.
+	/// Returns a damage roll (without further modifiers).
 	inline int getAction() {
 		return action->roll();
 	}
+
+	void getAttack( int casterLevel, float *maxP, float *minP );
+
 	/// The spell's level.
 	inline int getLevel()  {
 		return level;
