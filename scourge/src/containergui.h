@@ -23,26 +23,20 @@
 #include <string>
 #include "scourge.h"
 #include "gui/window.h"
-#include "gui/widget.h"
 #include "gui/button.h"
-#include "gui/scrollinglist.h"
-#include "gui/draganddrop.h"
-#include "gui/widgetview.h"
-#include "gui/canvas.h"
 
 class Item;
+class ContainerView;
 
 /// The "container contents" window (for open chests etc.)
-class ContainerGui : public DragAndDropHandler, WidgetView {
+class ContainerGui {
 
 private:
 	Scourge *scourge;
 	Item *container;
-	int x, y;
 	Window *win;
-	Button *openButton, *infoButton, *closeButton, *getAllButton;
-	Canvas *canvas;
-	Item *lastItem, *selectedItem;
+	ContainerView *view;
+	Button *openButton, *infoButton, *getAllButton;
 
 public:
 	ContainerGui( Scourge *scourge, Item *container, int x, int y );
@@ -57,29 +51,9 @@ public:
 	inline Window *getWindow() {
 		return win;
 	}
-	inline void refresh() {
-		showContents();
-	}
-	inline Item *getSelectedItem() {
-		return selectedItem;
-	}	
+	void refresh();
+	inline Item *getSelectedItem();	
 	void setSelectedItem( Item *item );	
-
-	// drag and drop handling
-	void receive( Widget *widget );
-	bool startDrag( Widget *widget, int x = 0, int y = 0 );
-	
-	void drawWidgetContents( Widget *w );
-
-private:
-	void showContents();
-	void dropItem();
-	void convertMousePos( int x, int y, int *invX, int *invY ); 
-	Item *getItemAtPos( int x, int y );
-	void showInfo( Item *item );
-	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
-	bool findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem = true );
-	bool receive( Item *item, bool atCursor );
 };
 
 #endif

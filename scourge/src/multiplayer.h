@@ -25,6 +25,7 @@
 #include "gui/label.h"
 #include "gui/button.h"
 #include "gui/textfield.h"
+#include "gui/scrollinglist.h"
 #include "party.h"
 
 /**
