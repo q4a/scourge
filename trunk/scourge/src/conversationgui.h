@@ -29,6 +29,7 @@
 #include "gui/canvas.h"
 #include "gui/widgetview.h"
 #include "gui/scrollinglabel.h"
+#include "gui/scrollinglist.h"
 
 class Creature;
 class CardContainer;

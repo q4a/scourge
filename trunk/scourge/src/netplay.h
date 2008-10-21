@@ -24,6 +24,7 @@
 #include "scourge.h"
 #include "net/gamestatehandler.h"
 #include "net/commands.h"
+#include "gui/scrollinglist.h"
 
 
 /**

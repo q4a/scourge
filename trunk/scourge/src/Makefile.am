@@ -57,6 +57,8 @@ scourge_SOURCES = \
 	mapwidget.h\
 	netplay.cpp\
 	netplay.h\
+	containerview.cpp\
+	containerview.h\
 	containergui.cpp\
 	containergui.h\
 	conversationgui.cpp\

@@ -46,6 +46,7 @@
 #include "conversationgui.h"
 #include "gui/guitheme.h"
 #include "gui/scrollinglabel.h"
+#include "gui/scrollinglist.h"
 
 class Item;
 class Creature;
