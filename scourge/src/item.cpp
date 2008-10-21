@@ -332,28 +332,28 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		Session::instance->getGameAdapter()->setUpdate( _( "Loading Items" ), i, v->size() );
 
 		// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
-		strcpy( name, node->getValueAsString( "name" ) );
-		strcpy( displayName, node->getValueAsString( "display_name" ) );
+		snprintf( name, 255, node->getValueAsString( "name" ) );
+		snprintf( displayName, 255, node->getValueAsString( "display_name" ) );
 		int rareness = toint( node->getValueAsFloat( "rareness" ) );
-		strcpy( type, node->getValueAsString( "type" ) );
+		snprintf( type, 255, node->getValueAsString( "type" ) );
 		float weight = node->getValueAsFloat( "weight" );
 		int price = toint( node->getValueAsFloat( "price" ) );
 
-		strcpy( shape, node->getValueAsString( "shape" ) );
+		snprintf( shape, 255, node->getValueAsString( "shape" ) );
 		int inventory_location = toint( node->getValueAsFloat( "inventory_location" ) );
 		int minDepth = toint( node->getValueAsFloat( "min_depth" ) );
 		int minLevel = toint( node->getValueAsFloat( "min_level" ) );
 		int maxCharges = toint( node->getValueAsFloat( "max_charges" ) );
 
-		strcpy( long_description, node->getValueAsString( "description" ) );
-		strcpy( short_description, node->getValueAsString( "short_description" ) );
+		snprintf( long_description, 500, node->getValueAsString( "description" ) );
+		snprintf( short_description, 120, node->getValueAsString( "short_description" ) );
 
 		int containerWidth = toint( node->getValueAsFloat( "container_width" ) );
 		int containerHeight = toint( node->getValueAsFloat( "container_height" ) );
-		strcpy( containerTexture, node->getValueAsString( "container_texture" ) );
+		snprintf( containerTexture, 255, node->getValueAsString( "container_texture" ) );
 
 		// I:tileX,tileY ( from data/tiles.bmp, count is 1-based )
-		strcpy( temp, node->getValueAsString( "icon" ) );
+		snprintf( temp, 1000, node->getValueAsString( "icon" ) );
 		int tileX = atoi( strtok( temp, "," ) );
 		int tileY = atoi( strtok( NULL, "," ) );
 
@@ -379,7 +379,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 
 		last->setSpellLevel( toint( node->getValueAsFloat( "spell_level" ) ) );
 
-		strcpy( temp, node->getValueAsString( "tags" ) );
+		snprintf( temp, 1000, node->getValueAsString( "tags" ) );
 		char *p = strtok( temp, "," );
 		while ( p ) {
 			string s = strdup( p );

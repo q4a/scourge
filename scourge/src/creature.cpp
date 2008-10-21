@@ -1828,21 +1828,23 @@ void Creature::monsterInit() {
 /// Returns the max hit points of the creature.
 
 int Creature::getMaxHp() {
-	if ( !( isPartyMember() || isWanderingHero() ) ) {
-		return startingHp;
-	} else {
-		return( character->getStartingHp() * ( getLevel() + 1 ) );
+	if ( getCharacter() ) {
+		return( getStartingHp() * ( getLevel() + 1 ) );
+	} else if ( getMonster() ){
+		return monster->getHp();
 	}
+return 0;
 }
 
 /// Returns the max magic points of the creature.
 
 int Creature::getMaxMp() {
-	if ( !( isPartyMember() || isWanderingHero() ) ) {
-		return startingMp;
-	} else {
-		return( character->getStartingMp() * ( getLevel() + 1 ) );
+	if ( getCharacter() ) {
+		return( getStartingMp() * ( getLevel() + 1 ) );
+	} else if ( getMonster() ){
+		return monster->getMp();
 	}
+return 0;
 }
 
 /// Returns the angle between the creature and its target.
@@ -2050,7 +2052,6 @@ bool Creature::castHealingSpell() {
   // Cast the spell
   if ( p ) {
     setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
-    setMotion ( Constants::MOTION_MOVE_TOWARDS );
     setTargetCreature ( p );
     return true;
   }
@@ -2159,7 +2160,6 @@ bool Creature::attackClosestTarget() {
 
   if ( p ) {
     // attack with item
-    setMotion ( Constants::MOTION_MOVE_TOWARDS );
     setTargetCreature ( p );
   }
 
@@ -2177,7 +2177,6 @@ bool Creature::attackRandomTarget() {
 
   if ( p ) {
     // attack with item
-    setMotion ( Constants::MOTION_MOVE_TOWARDS );
     setTargetCreature ( p );
   }
 
@@ -2192,9 +2191,10 @@ bool Creature::castOffensiveSpell() {
 
   vector<Spell*> offensiveSpells;
 
+  // Gather spells that are suitable for auto-casting.
   for ( int i = 0; i < getSpellCount(); i++ ) {
     Spell *spell = getSpell ( i );
-    if ( !spell->isFriendly() ) {
+    if ( !spell->isFriendly() && ( spell->isCreatureTargetAllowed() || spell->isLocationTargetAllowed() ) ) {
       offensiveSpells.push_back ( spell );
     }
   }
@@ -2202,30 +2202,46 @@ bool Creature::castOffensiveSpell() {
   // We don't have offensive spells, exit
   if ( offensiveSpells.empty() ) return false;
 
-  Spell *spell = offensiveSpells[ Util::pickOne ( 0, offensiveSpells.size() - 1 ) ];
-
-  // Find a suitable target
   Creature *p;
-  if ( spell->getMp() < getMp() ) {
-    p = ( spell->hasStateModPrereq() ? findClosestTargetWithPrereq( spell ) : getClosestTarget() );
-    // Don't waste mana casting über-spells on weak enemies.
-    if ( p && ( spell->getLevel() > p->getLevel() ) ) {
-      // Try to find a weaker spell.
-      bool found = false;
-      for ( unsigned int i = 0; i < ( offensiveSpells.size() - 1 ); i++ ) {
-        spell = offensiveSpells[ Util::pickOne ( 0, offensiveSpells.size() - 1 ) ];
-        if ( spell->getLevel() <= p->getLevel() ) { found = true; break; }
+  Spell *spell;
+
+  float minSpellDamage, maxSpellDamage;
+  float minWeaponDamage, maxWeaponDamage;
+  getAttack( getEquippedInventory( getPreferredWeapon() ), &maxWeaponDamage, &minWeaponDamage );
+
+  bool enoughMp, found;
+  enoughMp = found = false;
+
+  // Get a few chances to pick a good spell.
+  for ( unsigned int i = 0; i < ( offensiveSpells.size() - 1 ); i++ ) {
+    spell = offensiveSpells[ Util::pickOne ( 0, offensiveSpells.size() - 1 ) ];
+    enoughMp = ( spell->getMp() < getMp() );
+    spell->getAttack( getLevel(), &maxSpellDamage, &minSpellDamage );
+
+    // Is it a state mod affecting spell?
+    if ( spell->hasStateModPrereq() && enoughMp ) {
+      p = findClosestTargetWithPrereq ( spell );
+      if ( p ) {
+        found = true;
+        break;
       }
-      if ( !found ) return false;
+    // Is it a damage spell?
+    } else if ( enoughMp ) {
+      p = ( Util::dice(6) == 0 ? getRandomTarget() : getClosestTarget() );
+      // Ensure the spell does enough damage, but avoid overkill.
+      if ( p && ( maxSpellDamage > ( maxWeaponDamage * 0.7f ) ) && ( maxSpellDamage < ( p->getHp() * 2.0f ) ) ) {
+        found = true;
+        break;
+      }
     }
-  } else {
-    return false;
+
   }
+
+  if ( !found ) return false;
 
   // Cast the spell
   if ( p ) {
     setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
-    setMotion ( Constants::MOTION_MOVE_TOWARDS );
     setTargetCreature ( p );
     return true;
   }
