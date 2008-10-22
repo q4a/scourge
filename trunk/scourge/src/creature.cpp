@@ -1945,6 +1945,29 @@ void Creature::cancelTarget() {
 	}
 }
 
+/// Does the item's prerequisite apply to this creature?
+
+bool Creature::isWithPrereq ( Item *item ) {
+  // If the item is non-magical or used up, get out.
+  if ( !item->isMagicItem() || ( item->getCurrentCharges() < 1 ) ) return false;
+
+  // Is it a potion?
+  if ( item->getRpgItem()->getPotionSkill() < 0 ) {
+    int potionSkill = ( ( item->getRpgItem()->getPotionSkill() < 0 ) ? ( -item->getRpgItem()->getPotionSkill() - 2 ) : 0 ) ;
+    float remainingHP = getHp() / ( getStartingHp() ? getStartingHp() : 1 );
+    float remainingMP = getMp() / ( getStartingMp() ? getStartingMp() : 1 );
+    if ( ( potionSkill == Constants::HP ) && ( remainingHP <= LOW_HP ) ) return true;
+    if ( ( potionSkill == Constants::MP ) && ( remainingMP <= LOW_MP ) ) return true;
+  }
+
+  // Is it an item holding a spell?
+  if ( item->getSpell() ) {
+    if ( isWithPrereq( item->getSpell() ) ) return true;
+  }
+
+return false;
+}
+
 /// Does the spell's prerequisite apply to this creature?
 
 bool Creature::isWithPrereq( Spell *spell ) {
@@ -1952,20 +1975,20 @@ bool Creature::isWithPrereq( Spell *spell ) {
 		switch ( spell->getStateModPrereq() ) {
 		case Constants::HP:
 			//cerr << "\tisWithPrereq: " << getName() << " max hp=" << getMaxHp() << " hp=" << getHp() << endl;
-			return( getHp() <= static_cast<int>( static_cast<float>( getMaxHp() ) * 0.25f ) );
+			return( getHp() <= static_cast<int>( static_cast<float>( getMaxHp() ) * LOW_HP ) );
 		case Constants::MP:
-			return( getMp() <= static_cast<int>( static_cast<float>( getMaxMp() ) * 0.25f ) );
+			return( getMp() <= static_cast<int>( static_cast<float>( getMaxMp() ) * LOW_MP ) );
 		case Constants::AC:
 			/*
 			FIXME: Even if needed only cast it 1 out of 4 times.
 			Really need some AI here to remember if the spell helped or not. (or some way
 			to predict if casting a spell will help.) Otherwise the monster keeps casting
 			Body of Stone to no effect.
-			Also: 10 should not be hard-coded...
+			Also: HIGH_AC should not be hard-coded...
 			*/
 			float armor, dodgePenalty;
 			getArmor( &armor, &dodgePenalty, 0 );
-			return( armor >= 10 ? false
+			return( armor >= HIGH_AC ? false
 			        : ( Util::dice( 4 ) == 0 ? true
 			            : false ) );
 		default: return false;
@@ -2019,44 +2042,6 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 		}
 	}
 	return( closest && closestDist < (float)CREATURE_SIGHT_RADIUS ? closest : NULL );
-}
-
-/// Try to heal someone; returns true if someone was found.
-
-bool Creature::castHealingSpell() {
-  // are we in the middle of casting a spell already?
-  //if( getAction() == Constants::ACTION_CAST_SPELL ) return false;
-
-  vector<Spell*> healingSpells;
-
-  for ( int i = 0; i < getSpellCount(); i++ ) {
-    Spell *spell = getSpell ( i );
-    if ( spell->isFriendly() && spell->hasStateModPrereq() ) {
-      healingSpells.push_back ( spell );
-    }
-  }
-
-  // We don't have healing spells, exit
-  if ( healingSpells.empty() ) return false;
-
-  Spell *spell = healingSpells[ Util::pickOne ( 0, healingSpells.size() - 1 ) ];
-
-  // Find a suitable target
-  Creature *p;
-  if ( spell->getMp() < getMp() ) {
-      p = findClosestTargetWithPrereq ( spell );
-  } else {
-    return false;
-  }
-
-  // Cast the spell
-  if ( p ) {
-    setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
-    setTargetCreature ( p );
-    return true;
-  }
-
-  return false;
 }
 
 /// Basic NPC/monster AI.
@@ -2154,6 +2139,7 @@ Creature *Creature::getRandomTarget() {
 bool Creature::attackClosestTarget() {
   // Try spells first.
   if ( castHealingSpell() ) return false;
+  if ( useMagicItem() ) return false;
   if ( castOffensiveSpell() ) return false;
 
   Creature *p = getClosestTarget();
@@ -2171,6 +2157,7 @@ bool Creature::attackClosestTarget() {
 bool Creature::attackRandomTarget() {
   // Try spells first.
   if ( castHealingSpell() ) return false;
+  if ( useMagicItem() ) return false;
   if ( castOffensiveSpell() ) return false;
 
   Creature *p = getRandomTarget();
@@ -2181,6 +2168,44 @@ bool Creature::attackRandomTarget() {
   }
 
   return ( p != NULL );
+}
+
+/// Try to heal someone; returns true if someone was found.
+
+bool Creature::castHealingSpell() {
+  // are we in the middle of casting a spell already?
+  //if( getAction() == Constants::ACTION_CAST_SPELL ) return false;
+
+  vector<Spell*> healingSpells;
+
+  for ( int i = 0; i < getSpellCount(); i++ ) {
+    Spell *spell = getSpell ( i );
+    if ( spell->isFriendly() && spell->hasStateModPrereq() ) {
+      healingSpells.push_back ( spell );
+    }
+  }
+
+  // We don't have healing spells, exit
+  if ( healingSpells.empty() ) return false;
+
+  Spell *spell = healingSpells[ Util::pickOne ( 0, healingSpells.size() - 1 ) ];
+
+  // Find a suitable target
+  Creature *p;
+  if ( spell->getMp() < getMp() ) {
+      p = findClosestTargetWithPrereq ( spell );
+  } else {
+    return false;
+  }
+
+  // Cast the spell
+  if ( p ) {
+    setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+    setTargetCreature ( p );
+    return true;
+  }
+
+  return false;
 }
 
 /// Tries to cast an offensive spell onto a creature within range.
@@ -2247,6 +2272,31 @@ bool Creature::castOffensiveSpell() {
   }
 
   return false;
+}
+
+/// Tries to use a healing magical item from the backpack on oneself.
+
+bool Creature::useMagicItem() {
+
+  // If there are no magical items in the backpack, get outta here.
+  if ( !backpack->getContainedItemCount() || !backpack->getContainsMagicItem() ) return false;
+
+  vector<Item*> usefulItems;
+  Item *item;
+
+  // Search the backpack for potions and items with healing spells.
+  for ( int i = 0; i < backpack->getContainedItemCount(); i++ ) {
+    item = backpack->getContainedItem( i );
+    if ( isWithPrereq( item ) ) {
+      usefulItems.push_back( item );
+    }
+  }
+
+  // If no items found, leave.
+  if ( usefulItems.empty() ) return false;
+
+  item = usefulItems [ Util::pickOne( 0, usefulItems.size() - 1 ) ];
+  setAction( ( ( item->getRpgItem()->getPotionSkill() < 0 ) ? Constants::ACTION_EAT_DRINK : Constants::ACTION_CAST_SPELL ), item, item->getSpell() );
 }
 
 /// Returns the distance to the selected target spot.

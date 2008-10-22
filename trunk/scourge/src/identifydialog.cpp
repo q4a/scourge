@@ -112,7 +112,7 @@ void IdentifyDialog::render( const Widget *widget, const Item *item, std::string
 	if ( rareness < 1 ) rareness = 1;
 	int price = ( ( ( Item* )item )->getPrice() / 20 ) * rareness;
 	// 25% variance based on leadership skill.
-	int percentage = static_cast<int>( static_cast<float>( price ) * ( 100.0f - skill ) / 100.0f * 0.25f );
+	int percentage = static_cast<int>( static_cast<float>( price ) * ( 100.0f - skill ) / 100.0f * MAX_DISCOUNT );
 	int total = price + percentage;
 	prices[ ( Item* )item ] = total;
 

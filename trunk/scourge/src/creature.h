@@ -769,9 +769,11 @@ public:
 	float getDistance( RenderedCreature *other );
 	float getDistanceToSel();
 
+	bool isWithPrereq( Item *item );
 	bool isWithPrereq( Spell *spell );
 	Creature *findClosestTargetWithPrereq( Spell *spell );
 	bool castOffensiveSpell();
+	bool useMagicItem();
 
 	/// Schedules state mod effects.
 	inline void setStateModEvent( int mod, Event *event ) {

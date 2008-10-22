@@ -88,7 +88,7 @@ void HealDialog::updateUI() {
 
 				// 25% variance based on leadership skill.
 				float skill = static_cast<float>( scourge->getParty()->getPlayer()->getSkill( Skill::LEADERSHIP ) );
-				int percentage = static_cast<int>( static_cast<float>( price ) * ( 100.0f - skill ) / 100.0f * 0.25f );
+				int percentage = static_cast<int>( static_cast<float>( price ) * ( 100.0f - skill ) / 100.0f * MAX_DISCOUNT );
 				prices[ spell ] = price + percentage;
 				char priceStr[20];
 				snprintf( priceStr, 20, _( "$%d " ), prices[ spell ] );

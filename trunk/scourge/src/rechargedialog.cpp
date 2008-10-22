@@ -112,7 +112,7 @@ void RechargeDialog::render( const Widget *widget, const Item *item, std::string
 	int pricePerCharge = ( ( Item* )item )->getPrice() / ( ( Item* )item )->getRpgItem()->getMaxCharges() / 2;
 	int price = reqCharges * pricePerCharge;
 	// 25% variance based on leadership skill.
-	int percentage = static_cast<int>( static_cast<float>( price ) * ( 100.0f - skill ) / 100.0f * 0.25f );
+	int percentage = static_cast<int>( static_cast<float>( price ) * ( 100.0f - skill ) / 100.0f * MAX_DISCOUNT );
 	int total = price + percentage;
 	prices[ ( Item* )item ] = total;
 

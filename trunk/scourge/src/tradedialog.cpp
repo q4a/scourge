@@ -143,7 +143,7 @@ void TradeDialog::render( const Widget *widget, const Item *item, std::string& b
 	// level-based mark-up is already included and price is randomized
 	int price = ( ( Item* )item )->getPrice();
 	// 25% variance based on leadership skill.
-	int percentage = static_cast<int>( static_cast<float>( price ) * ( 100.0f - skill ) / 100.0f * 0.25f );
+	int percentage = static_cast<int>( static_cast<float>( price ) * ( 100.0f - skill ) / 100.0f * MAX_DISCOUNT );
 	int total = price + ( widget == playerList ? ( -1 * percentage ) : percentage );
 	prices[ ( Item* )item ] = total;
 	char priceStr[20];
