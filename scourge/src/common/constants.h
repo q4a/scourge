@@ -528,9 +528,15 @@ public:
 
 		POTION_SKILL_COUNT
 	};
+
 	static const char *POTION_SKILL_NAMES[];
 	// return -1 on failure, or (-2 - i) on success
 	static int getPotionSkillByName( char const* p );
+
+	// Some threshold values for potions.
+	#define LOW_HP 0.25f
+	#define LOW_MP 0.25f
+	#define HIGH_AC 10
 
 	enum {
 		LESSER_MAGIC_ITEM = 0,
@@ -640,12 +646,12 @@ public:
 		MSGTYPE_SKILL  // Skill related messages
 	};
 
-// Weather modifiers
-#define WEATHER_CLEAR 0x00
-#define WEATHER_RAIN 0x01
-#define WEATHER_THUNDER 0x02
-#define WEATHER_FOG 0x04
-#define MAX_WEATHER 0x08
+	// Weather modifiers
+	#define WEATHER_CLEAR 0x00
+	#define WEATHER_RAIN 0x01
+	#define WEATHER_THUNDER 0x02
+	#define WEATHER_FOG 0x04
+	#define MAX_WEATHER 0x08
 
 	enum {
 		ACTION_NO_ACTION = -1,
@@ -687,6 +693,9 @@ public:
 		// must be the last one
 		NPC_TYPE_COUNT
 	};
+
+	// Maximum variance when trading, based on leadership skill.
+	#define MAX_DISCOUNT 0.25f
 
 	// engine actions
 	enum {

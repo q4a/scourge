@@ -1869,7 +1869,7 @@ void Scourge::moveCreature( Creature *creature ) {
 		// creature gives up when low on hp or bored
 		// FIXME: when low on hp, it should run away not loiter
 		if ( creature->getAction() == Constants::ACTION_NO_ACTION &&
-		        creature->getHp() < static_cast<int>( static_cast<float>( creature->getStartingHp() ) * 0.2f ) ) {
+		        creature->getHp() < static_cast<int>( static_cast<float>( creature->getStartingHp() ) * LOW_HP ) ) {
 			creature->setMotion( Constants::MOTION_LOITER );//the creature will plan a path to wander on next decision cycle
 			creature->cancelTarget();
 			return;
