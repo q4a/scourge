@@ -31,7 +31,7 @@ Item::Item( Session *session, RpgItem *rpgItem, int level, bool loading ) {
 	this->session = session;
 	this->rpgItem = rpgItem;
 	this->level = level;
-	this->shapeIndex = this->rpgItem->getShapeIndex();
+	this->shapeIndex = ( rpgItem ? this->rpgItem->getShapeIndex() : 0 );
 	this->color = NULL;
 	this->shape = session->getShapePalette()->getShape( shapeIndex );
 	// for now objects larger than 1 height will block (we can change this later)
