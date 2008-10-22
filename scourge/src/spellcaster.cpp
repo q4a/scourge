@@ -427,7 +427,7 @@ void SpellCaster::causeDamage( bool multiplyByLevel, GLuint delay, GLfloat mult 
 	}
 
 	// script spell resistance
-	if( battle->getCreature()->getCharacter() && SQUIRREL_ENABLED ) {
+	if( battle->getCreature()->isPartyMember() && SQUIRREL_ENABLED ) {
 		battle->getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
 		battle->getSession()->getSquirrel()->callSpellEvent( creature, spell, "spellDamageHandler" );
 		damage = battle->getSession()->getSquirrel()->getGlobalVariable( "damage" );

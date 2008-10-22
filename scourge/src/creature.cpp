@@ -1312,7 +1312,7 @@ void Creature::equipInventory( int index, int locationHint ) {
 		recalcAggregateValues();
 
 		// call script
-		if ( !monster ) session->getSquirrel()->callItemEvent( this, item, "equipItem" );
+		if ( isPartyMember() ) session->getSquirrel()->callItemEvent( this, item, "equipItem" );
 
 		return;
 	}
@@ -1363,7 +1363,7 @@ int Creature::doff( int index ) {
 			recalcAggregateValues();
 
 			// call script
-			if ( !monster ) session->getSquirrel()->callItemEvent( this, item, "doffItem" );
+			if ( isPartyMember() ) session->getSquirrel()->callItemEvent( this, item, "doffItem" );
 
 			return 1;
 		}
@@ -1566,7 +1566,7 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
 			}
 		}
 	}
-	if ( !monster && ret && callScript && SQUIRREL_ENABLED ) {
+	if ( isPartyMember() && ret && callScript && SQUIRREL_ENABLED ) {
 		session->getSquirrel()->callItemEvent( this, ret, "startBattleWithItem" );
 	}
 
@@ -2980,7 +2980,7 @@ float Creature::getAttack( Item *weapon,
 	roll = ( roll / 100.0f ) * damagePercent;
 
 	// apply damage enhancing capabilities
-	if ( callScript && !monster && SQUIRREL_ENABLED ) {
+	if ( callScript && isPartyMember() && SQUIRREL_ENABLED ) {
 		session->getSquirrel()->setCurrentWeapon( weapon );
 		roll = applyAutomaticSpecialSkills( SpecialSkill::SKILL_EVENT_DAMAGE,
 		       "damage", roll );
