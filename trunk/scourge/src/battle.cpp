@@ -314,7 +314,7 @@ int Battle::calculateRange( Item *item ) {
 }
 
 int Battle::getAdjustedWait( int originalWait ) {
-	if( creature->getCharacter() && SQUIRREL_ENABLED ) {
+	if( creature->isPartyMember() && SQUIRREL_ENABLED ) {
 		getSession()->getSquirrel()->setGlobalVariable( "turnWait", originalWait );
 		if ( creature->getActionSkill() ) {
 			getSession()->getSquirrel()->callSkillEvent( creature,
@@ -1292,7 +1292,7 @@ void Battle::hitWithItem() {
 				}
 
 				// item attack event handler
-				if ( item && creature->getCharacter() && SQUIRREL_ENABLED ) {
+				if ( item && creature->isPartyMember() && SQUIRREL_ENABLED ) {
 					getSession()->getSquirrel()->setGlobalVariable( "damage", damage );
 					getSession()->getSquirrel()->callItemEvent( creature, item, "damageHandler" );
 					damage = getSession()->getSquirrel()->getGlobalVariable( "damage" );
