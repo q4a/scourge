@@ -550,13 +550,13 @@ void MainMenu::drawScourge() {
 	scourge->getShapePalette()->getNamedTexture( "scourge" ).glBind();
 
 	glBegin( GL_TRIANGLE_STRIP );
-	glTexCoord2f( 0.0f, 0.0f );
+	glTexCoord2f( 0.005f, 0.005f );
 	glVertex3f( 0, 0, 0 );
-	glTexCoord2f( 1.0f, 0.0f );
+	glTexCoord2f( 0.995f, 0.005f );
 	glVertex3f( w, 0, 0 );
-	glTexCoord2f( 0.0f, 1.0f );
+	glTexCoord2f( 0.005f, 0.995f );
 	glVertex3f( 0, h, 0 );
-	glTexCoord2f( 1.0f, 1.0f );
+	glTexCoord2f( 0.995f, 0.995f );
 	glVertex3f( w, h, 0 );
 	glEnd();
 	glPopMatrix();
