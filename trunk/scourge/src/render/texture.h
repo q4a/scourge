@@ -24,6 +24,7 @@ class Texture {
 public:
 	enum {
 		INVALID = 0,
+		INPROGRESS = ~0,
 	};
 
 	// construction / destruction / copying
@@ -55,26 +56,29 @@ public:
 
 	// OpenGL operations
 	void glBind() const {
-		assert( isSpecified() );
-		glBindTexture( GL_TEXTURE_2D, _ref->_id );
+		if ( _ref->letsToBind() )	glBindTexture( GL_TEXTURE_2D, _ref->_id );
 	}
+
 	void glPrioritize( GLclampf pri ) const {
-		assert( isSpecified() );
-		glPrioritizeTextures( 1, &_ref->_id, &pri );
+		_ref->prioritize( pri ); 
+	}
+
+	// Stop the lazyness (some textures do not show up)
+	void goDiligent() const {
+		_ref->letsToBind(); 
 	}
 
 	// getters
 	bool isSpecified() const {
 		return _ref->_id != INVALID;
 	}
+
 	GLint width() const {
-		return _ref->_width;
+		return _ref->width();
 	}
+
 	GLint height() const {
-		return _ref->_height;
-	}
-	GLuint id() const {
-		return _ref->_id;
+		return _ref->height();
 	}
 
 	static Texture const& none() {
@@ -92,8 +96,10 @@ private:
 		GLint _height;
 		bool _hasAlpha;
 		bool _isSprite;
+		GLclampf _priority;
+		bool _isComplete;
+		bool _wantsAnisotropy;
 		// TODO: think through member/polymorphing candidates here:
-		// bool _wantsAnisotropy;
 		// bool _wantsMipmapping;
 		// bool _isMipmapped;
 		// unsigned char* _pixels;
@@ -105,15 +111,20 @@ private:
 		// members
 		bool load( const string& path, bool isSprite, bool anisotropy );
 		bool createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight );
-		bool createAlpha( Actual const* alpha, Actual const* sample, int textureSizeW, int textureSizeH, int width, int height );
+		bool createAlpha( Actual* alpha, Actual* sample, int textureSizeW, int textureSizeH, int width, int height );
 		bool loadShot( const string& dirName );
-		void clear();
+		GLint width();
+		GLint height();
+		bool letsToBind();
+		void prioritize( GLclampf pri );
+	private:
+		void clear(); 
 		bool loadImage();
 		void unloadImage();
-	private:
 		// undefined default copying 
 		Actual( Actual const& that ); // copy construction
 		Actual& operator=( Actual const& that ); // copy assignment
+		DECLARE_NOISY_OPENGL_SUPPORT();
 	};
 
 	Actual* _ref; // should never be NULL
@@ -128,6 +139,7 @@ private:
 	// private operations
 	void swap( Texture& that );
 	static NodeVec::iterator search( const string& path );
+	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
 

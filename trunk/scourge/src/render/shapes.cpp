@@ -226,7 +226,9 @@ Texture* Shapes::findOrMakeTextureGroup( char *s ) {
 	int c = 0;
 	char *token = strtok( tmp, "," );
 	while ( token && c < 3 ) {
-		tg[ c++ ] = findTextureByName( token, true );
+		tg[ c ] = findTextureByName( token, true );
+		tg[ c ].goDiligent();
+		++c;
 		token = strtok( NULL, "," );
 	}
 
