@@ -497,8 +497,10 @@ Texture& Texture::operator=( Texture const & that ) {
 
 
 void Texture::clear() {
-	Texture tmp( &emptyNode );
-	swap( tmp );
+	if ( _ref != &emptyNode ) { // if not already clear
+		Texture tmp( &emptyNode );
+		swap( tmp );
+	}
 }
 
 
