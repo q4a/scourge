@@ -34,8 +34,10 @@ Texture::Actual::Actual()
 		, _height( 0 )
 		, _hasAlpha( false )
 		, _isSprite( false )
+		, _priority( -1.0F )
+		, _isComplete( false )
+		, _wantsAnisotropy( false )
 		// TODO: think through member/polymorphing candidates here:
-		//, _wantsAnisotropy( false )
 		//, _wantsMipmapping( false )
 		//, _isMipmapped( false )
 		//, _pixels( NULL )
@@ -43,8 +45,6 @@ Texture::Actual::Actual()
 }
 
 Texture::Actual::~Actual() {
-	// debug checks
-
 	clear();
 
 	NodeVec::iterator it = mainList.begin();
@@ -54,100 +54,24 @@ Texture::Actual::~Actual() {
 	if ( it != mainList.end() ) mainList.erase( it );
 }
 
-void Texture::Actual::clear() {
-	// debug checks
+/// Clears Texture::Actual into unspecified state.
 
+void Texture::Actual::clear() {
 	unloadImage();
 
-	if ( _id != INVALID ) {
+	if ( _isComplete ) {
 		glDeleteTextures( 1, &_id );
 		_id = INVALID;
+		_isComplete = false;
 	}
 
 	_filename.clear();
 	_width = 0;
 	_height = 0;
+	_priority = -1.0F;
 }
 
-
-bool Texture::Actual::load( const string& path, bool isSprite, bool anisotropy ) {
-	// debug checks
-
-	_filename = path;
-	if ( !loadImage() ) return false;
-
-	_isSprite = isSprite;
-	Preferences *prefs = Session::instance->getPreferences();
-
-	GLuint destFormat;
-	GLuint srcFormat;
-	GLuint minFilter;
-
-	if ( _hasAlpha ) {
-		srcFormat = GL_RGBA;
-		destFormat = ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 );
-		minFilter = ( _isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_LINEAR );
-	} else {
-		srcFormat = GL_RGB;
-		destFormat = ( prefs->getBpp() > 16 ? GL_RGB : GL_RGB5 );
-		minFilter = GL_LINEAR_MIPMAP_NEAREST;
-	}
-
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
-	glGenTextures( 1, &_id );
-	glBindTexture( GL_TEXTURE_2D, _id );
-
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
-	// Enable anisotropic filtering if requested, mipmapping is enabled
-	// and the hardware supports it.
-	if ( anisotropy && !_hasAlpha
-	        && strstr( ( char* )glGetString( GL_EXTENSIONS ), "GL_EXT_texture_filter_anisotropic" )
-	        && prefs->getAnisoFilter() ) {
-		float maxAnisotropy;
-		glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy );
-	} else {
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
-	}
-
-	// lordthoran said glTexImage2D causes white textures
-	// glTexImage2D( GL_TEXTURE_2D, 0, destFormat, _width, _height, 0, srcFormat, GL_UNSIGNED_BYTE, surface->pixels );
-
-	gluBuild2DMipmaps( GL_TEXTURE_2D, destFormat, _width, _height, srcFormat, GL_UNSIGNED_BYTE, _surface->pixels );
-
-	unloadImage();
-	return true;
-}
-
-/// Loads image using SDL_image and extracts all interesting data from it
-/// assumes _filename is set
-/// @return true on success
-
-bool Texture::Actual::loadImage() {
-	// debug checks
-	if ( _surface != NULL ) {
-		// just silently unload or make noise?
-		unloadImage();
-	}
-
-	_surface = IMG_Load( _filename.c_str() );
-	if ( _surface == NULL ) {
-		cerr << "*** Texture::Actual::loadImage() error (" << _filename << "): " << IMG_GetError() << endl;
-		return false;
-	}
-
-	_width = _surface->w;
-	_height = _surface->h;
-	_hasAlpha = _surface->format->Amask != 0;
-
-	// TODO: refactor Constants::checkTexture into Texture::check
-	Constants::checkTexture( "Texture::Actual::loadImage", _width, _height );
-	return true;
-}
-
-/// Unloads loaded image if any
+/// Unloads loaded image (if there is).
 
 void Texture::Actual::unloadImage() {
 	if ( _surface != NULL ) {
@@ -156,9 +80,46 @@ void Texture::Actual::unloadImage() {
 	}
 }
 
+/// Checks if file at path exists, sets Texture::Actual into INPROGRESS state
+
+bool Texture::Actual::load( const string& path, bool isSprite, bool anisotropy ) {
+	// debug checks
+	if ( _filename.compare( "" ) != 0 ) {
+		cerr << "*** Texture::Actual::load() over (" << _filename << ") with (" << path << ") refused." << endl;
+		return false;
+	}
+	FILE* fp = fopen( path.c_str(), "rb" );
+	if ( fp == NULL) {
+		cerr << "*** Texture::Actual::load() cannot open (" << path << ")." << endl;
+		return false;
+	}
+	fclose( fp );
+
+	_filename = path;
+	_id = INPROGRESS;
+	_width = -1;
+	_height = -1;
+	_isSprite = isSprite;
+	_wantsAnisotropy = anisotropy;
+//	if ( _filename == "scourge_data/textures/wood.png" )
+//		return letsToBind();
+
+	return true;
+}
+		
 
 bool Texture::Actual::createTile( SDL_Surface const* surface, int tileX, int tileY, int tileWidth, int tileHeight ) {
 	// debug checks
+	if ( _filename.compare( "" ) != 0 ) {
+		cerr << "*** Texture::Actual::createTile() over (" << _filename << ") refused." << endl;
+		return false;
+	}
+
+	_filename = "a tile";
+	_width = tileWidth;
+	_height = tileHeight;
+	_hasAlpha = true;
+
 
 	// The raw data of the source image.
 	unsigned char * data = ( unsigned char * ) ( surface->pixels );
@@ -188,11 +149,6 @@ bool Texture::Actual::createTile( SDL_Surface const* surface, int tileX, int til
 		}
 	}
 
-
-	_width = tileWidth;
-	_height = tileHeight;
-	_hasAlpha = true;
-
 	Preferences *prefs = Session::instance->getPreferences();
 
 	// Create The Texture
@@ -206,23 +162,36 @@ bool Texture::Actual::createTile( SDL_Surface const* surface, int tileX, int til
 
 	gluBuild2DMipmaps( GL_TEXTURE_2D, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), tileWidth, tileHeight, GL_RGBA, GL_UNSIGNED_BYTE, &image[0] );
 
+	assert( _id != INVALID && _id != INPROGRESS );  
+	_isComplete = true;
 	return true;
 }
 
-/// Adds the alpha channel of the alphaTex texture to the sampleTex texture.
+/// Adds the alpha channel of the alpha texture to the sample texture.
 /// @return true on success.
 /// used to be Shapes::createAlphaTexture()
 
-bool Texture::Actual::createAlpha( Actual const* alpha, Actual const* sample, int textureSizeW, int textureSizeH, int width, int height ) {
+bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSizeW, int textureSizeH, int width, int height ) {
 	// debug checks
+	if ( _filename.compare( "" ) != 0 ) {
+		cerr << "*** Texture::Actual::createAlpha() over (" << _filename << ") refused." << endl;
+		return false;
+	}
+	if ( alpha == NULL || !alpha->letsToBind() ) {
+		cerr << "*** Texture::Actual::createAlpha() with missing alpha texture." << endl;
+		return false;
+	}
+	if ( sample == NULL || !sample->letsToBind() ) {
+		cerr << "*** Texture::Actual::createAlpha() with missing sample texture." << endl;
+		return false;
+	}
 
-// todo: should be next power of 2 after width/height (maybe cap-ed at 256)
-//  int textureSizeW = 256;
-//  int textureSizeH = 256;
-//  int width = 256;
-//  int height = 256;
+	_filename = sample->_filename + " with added alpha";
+	_width = width; 
+	_height = height;
+	_hasAlpha = true;
 
-	unsigned char *texInMem = ( unsigned char * ) malloc( textureSizeW * textureSizeH * 4 );
+	std::vector<unsigned char*> texInMem( textureSizeW * textureSizeH * 4 );
 	//GLuint tex[1];
 
 	glGenTextures( 1, &_id );
@@ -239,7 +208,7 @@ bool Texture::Actual::createAlpha( Actual const* alpha, Actual const* sample, in
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, texInMem );
+	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, &texInMem[0] );
 	//if( !isSprite ) gluBuild2DMipmaps(GL_TEXTURE_2D, 4, textureSizeW, textureSizeH, GL_BGRA, GL_UNSIGNED_BYTE, texInMem);
 
 	glDisable( GL_CULL_FACE );
@@ -338,27 +307,28 @@ bool Texture::Actual::createAlpha( Actual const* alpha, Actual const* sample, in
 	glEnable( GL_DEPTH_TEST );
 	glEnable( GL_TEXTURE_2D );
 
-	// copy texture to theme and clean up
-	free( texInMem );
+	assert( _id != INVALID && _id != INPROGRESS );  
+	_isComplete = true;
 	return true;
 }
 
 bool Texture::Actual::loadShot( const string& dirName ) {
 	// debug checks
-	if ( _surface != NULL ) {
-		// just unload like this?
-		unloadImage();
+	if ( _filename.compare( "" ) != 0 ) {
+		cerr << "*** Texture::Actual::loadShot() over (" << _filename << ") refused." << endl;
+		return false;
+	}
+
+	_surface = SDL_LoadBMP( dirName.c_str() );
+
+	if ( _surface == NULL ) {
+		cerr << "*** Texture::Actual::loadShot() Error (" << dirName << "): " << IMG_GetError() << endl;
+		return false;
 	}
 
 	_filename = dirName;
-	_surface = SDL_LoadBMP( _filename.c_str() );
 	_width = _surface->w;
 	_height = _surface->h;
-
-	if ( _surface == NULL ) {
-		cerr << "*** Texture::Actual::loadShot() Error (" << _filename << "): " << IMG_GetError() << endl;
-		return false;
-	}
 
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
 	glGenTextures( 1, &_id );
@@ -370,7 +340,129 @@ bool Texture::Actual::loadShot( const string& dirName ) {
 	gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGB, _width, _height, GL_BGR, GL_UNSIGNED_BYTE, _surface->pixels );
 
 	unloadImage();
+
+	assert( _id != INVALID && _id != INPROGRESS );  
+	_isComplete = true;
 	return true;
+}
+
+GLint Texture::Actual::width()
+{
+	if ( _width == -1 && !loadImage() ) {
+		clear();
+	}
+	
+	return _width;
+}
+
+GLint Texture::Actual::height()
+{
+	if ( _height == -1 && !loadImage() ) {
+		clear();
+	}
+	
+	return _height;
+}
+
+
+/// Loads image using SDL_image and extracts all interesting data from it
+/// assumes _filename is set
+/// @return true on success
+
+bool Texture::Actual::loadImage() {
+	// debug checks
+	assert( _surface == NULL && _width == -1 && _height == -1 && _filename.compare( "" ) != 0  );
+
+	_surface = IMG_Load( _filename.c_str() );
+	if ( _surface == NULL ) {
+		cerr << "*** Texture::Actual::loadImage() error (" << _filename << "): " << IMG_GetError() << endl;
+		return false; // caller must clear up
+	}
+
+	_width = _surface->w;
+	_height = _surface->h;
+	_hasAlpha = _surface->format->Amask != 0;
+
+	// TODO: refactor Constants::checkTexture into Texture::check
+	Constants::checkTexture( "Texture::Actual::loadImage", _width, _height );
+	return true;
+}
+
+
+bool Texture::Actual::letsToBind() {
+	if ( _isComplete ) return true;
+	if ( _id == INVALID ) return false;
+
+	if ( _width == -1 && !loadImage() ) {
+		clear();
+		return false;
+	}
+
+	assert( _surface != NULL );
+
+	Preferences *prefs = Session::instance->getPreferences();
+
+	GLuint destFormat;
+	GLuint srcFormat;
+	GLuint minFilter;
+
+	if ( _hasAlpha ) {
+		srcFormat = GL_RGBA;
+		destFormat = ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 );
+		minFilter = ( _isSprite ? GL_LINEAR : GL_LINEAR_MIPMAP_LINEAR );
+	} else {
+		srcFormat = GL_RGB;
+		destFormat = ( prefs->getBpp() > 16 ? GL_RGB : GL_RGB5 );
+		minFilter = GL_LINEAR_MIPMAP_NEAREST;
+	}
+
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+	glGenTextures( 1, &_id );
+	glBindTexture( GL_TEXTURE_2D, _id );
+
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+	// Enable anisotropic filtering if requested, mipmapping is enabled
+	// and the hardware supports it.
+	if ( _wantsAnisotropy && !_hasAlpha
+	        && strstr( ( char* )glGetString( GL_EXTENSIONS ), "GL_EXT_texture_filter_anisotropic" )
+	        && prefs->getAnisoFilter() ) {
+		float maxAnisotropy;
+		glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
+		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy );
+	} else {
+		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
+	}
+
+	// lordthoran said glTexImage2D causes white textures
+	// glTexImage2D( GL_TEXTURE_2D, 0, destFormat, _width, _height, 0, srcFormat, GL_UNSIGNED_BYTE, surface->pixels );
+
+	gluBuild2DMipmaps( GL_TEXTURE_2D, destFormat, _width, _height, srcFormat, GL_UNSIGNED_BYTE, _surface->pixels );
+
+	unloadImage();
+
+	if ( _priority > 0 ) glPrioritizeTextures( 1, &_id, &_priority );
+
+	assert( _id != INVALID && _id != INPROGRESS );  
+	_isComplete = true;
+	return true;
+}
+
+void Texture::Actual::prioritize( GLclampf pri ) {
+	// debug checks
+	if ( _id == INVALID ) {
+		cerr << "*** Texture::Actual::prioritize() unexisting texture." << endl;
+		return;
+	}
+	if ( pri <= 0 ) {
+		cerr << "*** Texture::Actual::prioritize() negative priority." << endl;
+		return;
+	}
+
+	_priority = pri;
+
+	if ( _isComplete )  glPrioritizeTextures( 1, &_id, &_priority );
 }
 
 /// Texture construction
@@ -418,8 +510,8 @@ void Texture::swap( Texture& that ) {
 
 
 /// search for named texture
-/// @return  iterator to texture if found
-/// @return  iterator where to insert it if not found
+/// @return  iterator to texture when found
+/// @return  iterator where to insert it when not found
 Texture::NodeVec::iterator Texture::search( const string& path ) {
 	// search quickly assuming the mainList is sorted
 	int before = -1; 
