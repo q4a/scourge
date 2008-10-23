@@ -87,10 +87,10 @@ struct CreatureInfo {
 	Uint32 skillsUsed[Skill::SKILL_COUNT];
 	Uint32 portraitTextureIndex;
 
-	// inventory
-	Uint32 inventory_count;
-	ItemInfo *inventory[MAX_INVENTORY_SIZE];
-	//ContainedItemInfo containedItems[MAX_INVENTORY_SIZE];
+	// backpack
+	Uint32 backpack_count;
+	ItemInfo *backpack[MAX_BACKPACK_SIZE];
+	//ContainedItemInfo containedItems[MAX_BACKPACK_SIZE];
   Uint32 equipped[Constants::EQUIP_LOCATION_COUNT];
 
 	// spells memorized ([school][spell]

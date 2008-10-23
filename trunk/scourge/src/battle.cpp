@@ -742,7 +742,7 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 	} else {
 		casterLevel = creature->getActionItem()->getLevel();
 		// try to destroy the scroll or use up a charge
-		int itemIndex = creature->findInInventory( creature->getActionItem() );
+		int itemIndex = creature->findInBackpack( creature->getActionItem() );
 		if ( itemIndex > -1 ) {
 			if ( creature->getActionItem()->getRpgItem()->getMaxCharges() > 0 ) {
 				if ( creature->getActionItem()->getCurrentCharges() <= 0 ) {
@@ -759,14 +759,14 @@ void Battle::castSpell( bool alwaysSucceeds ) {
 					session->getGameAdapter()->writeLogMessage( message );
 				}
 			} else {
-				creature->removeInventory( itemIndex );
+				creature->removeFromBackpack( itemIndex );
 				snprintf( message, MESSAGE_SIZE, _( "%s crumbles into dust." ), creature->getActionItem()->getItemName() );
 				session->getGameAdapter()->writeLogMessage( message );
 			}
 			if ( !session->getGameAdapter()->isHeadless() )
-				session->getGameAdapter()->refreshInventoryUI();
+				session->getGameAdapter()->refreshBackpackUI();
 		} else {
-			// scroll was removed from inventory before casting
+			// scroll was removed from backpack before casting
 			snprintf( message, MESSAGE_SIZE, _( "Couldn't find scroll, cancelled spell." ) );
 			session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_FAILURE );
 			creature->cancelTarget();
@@ -1479,15 +1479,15 @@ void Battle::initItem(Item *item) {
 /// Makes a creature eat or drink the action item.
 
 void Battle::executeEatDrinkAction() {
-	// is it still in the inventory?
-	int index = creature->findInInventory( creature->getActionItem() );
+	// is it still in the backpack?
+	int index = creature->findInBackpack( creature->getActionItem() );
 	if ( index > -1 ) {
 		int panning = session->getMap()->getPanningFromMapXY( creature->getX(), creature->getY() );
 		session->playSound( getRandomSound( potionSoundStart, potionSoundCount ), panning );
 		if ( creature->eatDrink( creature->getActionItem() ) ) {
-			creature->removeInventory( index );
+			creature->removeFromBackpack( index );
 			if ( !session->getGameAdapter()->isHeadless() )
-				session->getGameAdapter()->refreshInventoryUI();
+				session->getGameAdapter()->refreshBackpackUI();
 		}
 	}
 	// cancel action

@@ -122,7 +122,7 @@ void IdentifyDialog::render( const Widget *widget, const Item *item, std::string
 }
 
 void IdentifyDialog::identify() {
-	if ( !validateInventory() ) {
+	if ( !validateBackpack() ) {
 		scourge->showMessageDialog( _( "Inventories changed." ) );
 		return;
 	}
@@ -148,15 +148,15 @@ void IdentifyDialog::identify() {
 	scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() - totalA );
 
 	updateUI();
-	scourge->refreshInventoryUI();
+	scourge->refreshBackpackUI();
 	scourge->showMessageDialog( _( "Selected items identified." ) );
 }
 
-bool IdentifyDialog::validateInventory() {
+bool IdentifyDialog::validateBackpack() {
 	for ( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
 		Item *item = listA->getSelectedItem( i );
-		cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInInventory( item ) << endl;
-		if ( scourge->getParty()->getPlayer()->findInInventory( item ) == -1 ) return false;
+		cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInBackpack( item ) << endl;
+		if ( scourge->getParty()->getPlayer()->findInBackpack( item ) == -1 ) return false;
 	}
 	return true;
 }

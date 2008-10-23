@@ -73,14 +73,14 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "bool", "isOfRootClass", SqCreature::_isOfRootClass, SQ_MATCHTYPEMASKSTRING, "xs", "Returns a boolean if the character's root class is the argument. This function is slow because it does a string compare on the class's name." },
 	{ "string", "getDeity", SqCreature::_getDeity, 0, 0, "Return the character's chosen deity's name." },
 	{ "Creature", "getTargetCreature", SqCreature::_getTargetCreature, 0, 0, "Return the creature's target creature of NULL if there isn't one." },
-	{ "Item", "getItemAtLocation", SqCreature::_getItemAtLocation, SQ_MATCHTYPEMASKSTRING, "xn", "Return the item currently equipped at the specified location. (location is left-hand, right-hand, etc.)" },
-	{ "int", "getInventoryCount", SqCreature::_getInventoryCount, 0, 0, "Return the number of inventory items in this character's backpack." },
-	{ "Item", "getInventoryItem", SqCreature::_getInventoryItem, SQ_MATCHTYPEMASKSTRING, "xn", "Return the inventory item at this index in this character's backpack." },
+	{ "Item", "getEquippedItem", SqCreature::_getEquippedItem, SQ_MATCHTYPEMASKSTRING, "xn", "Return the item currently equipped at the specified location. (location is left-hand, right-hand, etc.)" },
+	{ "int", "getBackpackContentsCount", SqCreature::_getBackpackContentsCount, 0, 0, "Return the number of backpack items in this character's backpack." },
+	{ "Item", "getBackpackItem", SqCreature::_getBackpackItem, SQ_MATCHTYPEMASKSTRING, "xn", "Return the backpack item at this index in this character's backpack." },
 
 	{ "void", "startConversation", SqCreature::_startConversation, 0, 0, "Start a conversation with this creature." },
 	{ "void", "startConversationAbout", SqCreature::_startConversationAbout, 0, 0, "Start a conversation with this creature about a specific topic." },
 	{ "void", "setIntro", SqCreature::_setIntro, 0, 0, "Set this NPC's intro text to the text referenced by this keyphrase in the <map>.txt file." },
-	{ "void", "addInventoryByName", SqCreature::_addInventoryByName, 0, 0, "Add a new item of this name to the creature's inventory." },
+	{ "void", "addToBackpackByName", SqCreature::_addToBackpackByName, 0, 0, "Add a new item of this name to the creature's backpack." },
 	{ "void", "moveTo", SqCreature::_moveTo, 0, 0, "Move creature to this location." },
 	{ "bool", "isScripted", SqCreature::_isScripted, 0, 0, "Is this creature scripted? (being moved by script)" },
 	{ "void", "setScripted", SqCreature::_setScripted, 0, 0, "Set the value of whether this creature is being moved by script." },
@@ -510,10 +510,10 @@ int SqCreature::_getTargetCreature( HSQUIRRELVM vm ) {
 	return 1;
 }
 
-int SqCreature::_getItemAtLocation( HSQUIRRELVM vm ) {
+int SqCreature::_getEquippedItem( HSQUIRRELVM vm ) {
 	GET_INT( location )
 	GET_OBJECT( Creature* )
-	Item *item = object->getItemAtLocation( location );
+	Item *item = object->getEquippedItem( location );
 	if ( item ) {
 		sq_pushobject( vm, *( SqBinding::binding->itemMap[ item ] ) );
 	} else {
@@ -522,10 +522,10 @@ int SqCreature::_getItemAtLocation( HSQUIRRELVM vm ) {
 	return 1;
 }
 
-int SqCreature::_getInventoryItem( HSQUIRRELVM vm ) {
+int SqCreature::_getBackpackItem( HSQUIRRELVM vm ) {
 	GET_INT( index )
 	GET_OBJECT( Creature* )
-	Item *item = object->getInventory( index );
+	Item *item = object->getBackpackItem( index );
 	if ( item ) {
 		sq_pushobject( vm, *( SqBinding::binding->itemMap[ item ] ) );
 	} else {
@@ -534,9 +534,9 @@ int SqCreature::_getInventoryItem( HSQUIRRELVM vm ) {
 	return 1;
 }
 
-int SqCreature::_getInventoryCount( HSQUIRRELVM vm ) {
+int SqCreature::_getBackpackContentsCount( HSQUIRRELVM vm ) {
 	GET_OBJECT( Creature* )
-	sq_pushinteger( vm, object->getInventoryCount() );
+	sq_pushinteger( vm, object->getBackpackContentsCount() );
 	return 1;
 }
 
@@ -549,7 +549,7 @@ int SqCreature::_setIntro( HSQUIRRELVM vm ) {
 	return 0;
 }
 
-int SqCreature::_addInventoryByName( HSQUIRRELVM vm ) {
+int SqCreature::_addToBackpackByName( HSQUIRRELVM vm ) {
 	GET_STRING( itemName, 255 )
 	GET_OBJECT( Creature* )
 
@@ -558,7 +558,7 @@ int SqCreature::_addInventoryByName( HSQUIRRELVM vm ) {
 		cerr << "*** Can't find RpgItem for name=" << itemName << endl;
 		return sq_throwerror( vm, "Can't find RpgItem by this name." );
 	}
-	object->addInventory( SqBinding::sessionRef->newItem( rpgItem ), true );
+	object->addToBackpack( SqBinding::sessionRef->newItem( rpgItem ), true );
 	return 0;
 }
 

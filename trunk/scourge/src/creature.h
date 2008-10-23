@@ -54,7 +54,7 @@ class Trap;
 /**
   *@author Gabor Torok
 
-  This class is both the UI representation (shape) and state (inventory, etc.) of a character or monster.
+  This class is both the UI representation (shape) and state (backpack, etc.) of a character or monster.
   All creatures of the same type (character or monster) share the same instance of the prototype class (Character of Monster)
 
   */
@@ -62,11 +62,11 @@ class Trap;
 // how many times to attempt to move to range
 #define MAX_FAILED_MOVE_ATTEMPTS 10
 
-/// Contains the location of an item in the inventory or where it is equipped.
+/// Contains the location of an item in the backpack or where it is equipped.
 
-class InventoryInfo {
+class BackpackInfo {
 public:
-	int inventoryIndex;
+	int backpackIndex;
 	int equipIndex;
 };
 
@@ -97,7 +97,7 @@ private:
 	int portraitTextureIndex;
 	GLfloat angle, wantedAngle, angleStep;
 
-	// inventory
+	// backpack
 	Item *backpack;
   int equipped[Constants::EQUIP_LOCATION_COUNT];
 	int preferredWeapon;
@@ -154,8 +154,8 @@ private:
 	bool moving;
 
 	char causeOfDeath[255], pendingCauseOfDeath[255];
-	bool inventoryArranged;
-	std::map<Item*, InventoryInfo*> invInfos;
+	bool backpackSorted;
+	std::map<Item*, BackpackInfo*> invInfos;
 	Uint32 lastPerceptionCheck;
 	bool boss, savedMissionObjective, scripted;
 	int scriptedAnim;
@@ -730,54 +730,53 @@ public:
 	// #### BACKPACK ####
 	// ##################
 
-	float inventoryWeight;
+	float backpackWeight;
 
-	/// Total weight of the inventory.
-	inline float getInventoryWeight() {
-		return inventoryWeight;
+	/// Total weight of the backpack.
+	inline float getBackpackWeight() {
+		return backpackWeight;
 	}
 
-	float getMaxInventoryWeight();
-	/// Number of items carried in inventory.
-	int getInventoryCount();
+	float getMaxBackpackWeight();
+	/// Number of items carried in backpack.
+	int getBackpackContentsCount();
 
-	/// The item at a specified inventory index.
-	Item *getInventory( int inventoryIndex );
+	/// The item at a specified backpack index.
+	Item *getBackpackItem( int backpackIndex );
 
-	bool addInventory( Item *item, bool force = false );
-	Item *removeInventory( int index );
-	int findInInventory( Item *item );
-	bool isItemInInventory( Item *item );
+	bool addToBackpack( Item *item, bool force = false );
+	Item *removeFromBackpack( int backpackIndex );
+	int findInBackpack( Item *item );
+	bool isItemInBackpack( Item *item );
 
-	Item *getEquippedInventory( int equipIndex );
-	Item *getItemAtLocation( int equipIndex );
-	void equipInventory( int inventoryIndex, int equipIndexHint = -1 );
-	int doff( int inventoryIndex );
+	Item *getEquippedItem( int equipIndex );
+	void equipFromBackpack( int backpackIndex, int equipIndexHint = -1 );
+	int doff( int backpackIndex );
 	bool isEquippedWeapon( int equipIndex );
 
 	bool isEquipped( Item *item );
-	bool isEquipped( int inventoryIndex );
-	int getEquippedIndex( int inventoryIndex );
+	bool isEquipped( int backpackIndex );
+	int getEquippedIndex( int backpackIndex );
 
 	char *canEquipItem( Item *item, bool interactive = true );
 
-	inline bool isInventoryArranged() {
-		return inventoryArranged;
+	inline bool isBackpackSorted() {
+		return backpackSorted;
 	}
 
-	inline void setInventoryArranged( bool b ) {
-		inventoryArranged = b;
+	inline void setBackpackSorted( bool b ) {
+		backpackSorted = b;
 	}
 
 	void pickUpOnMap( RenderedItem *item );
 
-	bool eatDrink( int inventoryIndex );
+	bool eatDrink( int backpackIndex );
 	bool eatDrink( Item *item );
 	void usePotion( Item *item );
 
 	bool removeCursedItems();
 
-	InventoryInfo *getInventoryInfo( Item *item, bool createIfMissing = false );
+	BackpackInfo *getBackpackInfo( Item *item, bool createIfMissing = false );
 
 	/// Stores an item/spell etc. in a specified quickspell slot.
 	inline void setQuickSpell( int index, Storable *storable ) {
@@ -813,7 +812,7 @@ public:
 	float getMaxAP();
 	// return the initiative for a battle round, the lower the faster the attack
 	int getInitiative( int *max = NULL );
-	// FIXME: should be modified by inventory (boots of speed, etc.)
+	// FIXME: should be modified by equipped items (boots of speed, etc.)
 
 	inline int getSpeed() {
 		return speed;

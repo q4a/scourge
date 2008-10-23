@@ -134,8 +134,8 @@ public:
 		PARTY_GUI_WIDTH = 486,
 		PARTY_GUI_HEIGHT = 150,
 		PARTY_MIN_GUI_WIDTH = 100,
-		INVENTORY_WIDTH = 420,
-		INVENTORY_HEIGHT = 460,
+		BACKPACK_WIDTH = 420,
+		BACKPACK_HEIGHT = 460,
 		INFO_SIZE = 2000,
 		VER_SIZE = 100,
 		MINVER_SIZE = 20
@@ -158,8 +158,8 @@ public:
 	}
 	//inline Button *getYesExitConfirm() { return yesExitConfirm; }
 	//inline Button *getNoExitConfirm() { return noExitConfirm; }
-	inline Button *getInventoryButton() {
-		return inventoryButton;
+	inline Button *getBackpackButton() {
+		return backpackButton;
 	}
 	inline Button *getEndTurnButton() {
 		return endTurnButton;
@@ -361,7 +361,7 @@ public:
 	}
 
 	/**
-	  When dropping an item from the inventory this method sets up the parameters so
+	  When dropping an item from the backpack this method sets up the parameters so
 	  the cursor can drag it around the screen and eventually deposit it at a location
 	  or in a container.
 
@@ -406,7 +406,7 @@ public:
 	}
 
 	/**
-	  @return the inventory
+	  @return the backpack
 	*/
 	inline PcUi* getPcUi() {
 		return pcui;
@@ -493,7 +493,7 @@ public:
 
 	/**
 	  A creature has died, mark it dead (via state_mod), and create a "skull and bones"
-	  container for it containing the items from the dead creature's inventory.
+	  container for it containing the items from the dead creature's backpack.
 	  Additionally, if the creature was a party member perform some other things like
 	  transferring control to another (still living) player.
 	  @param creature the ex-creature
@@ -507,7 +507,7 @@ public:
 
 	void togglePlayerOnly();
 
-	void toggleInventoryWindow();
+	void toggleBackpackWindow();
 
 	void toggleOptionsWindow();
 
@@ -598,9 +598,9 @@ public:
 
 	void resetPartyUI();
 
-	virtual void refreshInventoryUI( int playerIndex );
+	virtual void refreshBackpackUI( int playerIndex );
 
-	void refreshInventoryUI();
+	void refreshBackpackUI();
 
 	void toggleRoundUI( bool startRound );
 
@@ -929,7 +929,7 @@ private:
 	int oldX;
 	char version[ VER_SIZE ], min_version[ MINVER_SIZE ];
 	Window *mainWin, *tbCombatWin;
-	Button *inventoryButton;
+	Button *backpackButton;
 	Button *endTurnButton;
 	Button *optionsButton;
 	Button *quitButton;

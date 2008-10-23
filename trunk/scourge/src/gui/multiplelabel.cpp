@@ -83,7 +83,7 @@ bool MultipleLabel::handleEvent( Widget *parent, SDL_Event *event, int x, int y 
 	case SDL_MOUSEMOTION:
 		break;
 	case SDL_MOUSEBUTTONUP:
-		if ( event->button.button = SDL_BUTTON_LEFT && inside ) {
+		if ( ( event->button.button == SDL_BUTTON_LEFT ) && inside ) {
 			setNextText(); return inside;
 		}
 	case SDL_MOUSEBUTTONDOWN:

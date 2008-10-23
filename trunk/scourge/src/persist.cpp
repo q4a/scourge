@@ -624,8 +624,8 @@ void Persist::deleteMapInfo( MapInfo *info ) {
 }
 
 void Persist::deleteCreatureInfo( CreatureInfo *info ) {
-	for ( int i = 0; i < static_cast<int>( info->inventory_count ); i++ ) {
-		deleteItemInfo( info->inventory[i] );
+	for ( int i = 0; i < static_cast<int>( info->backpack_count ); i++ ) {
+		deleteItemInfo( info->backpack[i] );
 	}
 	if ( info->npcInfo ) {
 		deleteNpcInfoInfo( info->npcInfo );
@@ -669,9 +669,9 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
 	file->write( info->skillMod, Skill::SKILL_COUNT );
 	file->write( info->skillBonus, Skill::SKILL_COUNT );
 	file->write( &info->portraitTextureIndex );
-	file->write( &( info->inventory_count ) );
-	for ( int i = 0; i < static_cast<int>( info->inventory_count ); i++ ) {
-		saveItem( file, info->inventory[i] );
+	file->write( &( info->backpack_count ) );
+	for ( int i = 0; i < static_cast<int>( info->backpack_count ); i++ ) {
+		saveItem( file, info->backpack[i] );
 	}
   file->write( info->equipped, Constants::EQUIP_LOCATION_COUNT );
 	file->write( &( info->spell_count ) );
@@ -728,9 +728,9 @@ CreatureInfo *Persist::loadCreature( File *file ) {
 	file->read( info->skillMod, Skill::SKILL_COUNT );
 	file->read( info->skillBonus, Skill::SKILL_COUNT );
 	file->read( &info->portraitTextureIndex );
-	file->read( &( info->inventory_count ) );
-	for ( int i = 0; i < static_cast<int>( info->inventory_count ); i++ ) {
-		info->inventory[i] = loadItem( file );
+	file->read( &( info->backpack_count ) );
+	for ( int i = 0; i < static_cast<int>( info->backpack_count ); i++ ) {
+		info->backpack[i] = loadItem( file );
 	}
 	file->read( info->equipped, Constants::EQUIP_LOCATION_COUNT );
 	file->read( &( info->spell_count ) );

@@ -45,7 +45,7 @@ class Label;
 class Button;
 class Storable;
 
-/// The widget showing equipped inventory, available spells and special abilities.
+/// The widget showing equipped gear, available spells and special abilities.
 class Equip : public DragAndDropHandler, WidgetView {
 private:
 	Creature *creature;

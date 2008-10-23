@@ -85,20 +85,20 @@ public:
 	Texture getItemIconTexture( bool smallIcon = false );
 	void getTooltip( char *tooltip );
 
-	inline void setInventoryLocation( int x, int y ) {
-		inventoryX = x;
-		inventoryY = y;
+	inline void setBackpackLocation( int x, int y ) {
+		backpackX = x;
+		backpackY = y;
 	}
-	/// x position in the inventory.
-	inline int getInventoryX() {
-		return inventoryX;
+	/// x position in the backpack.
+	inline int getBackpackX() {
+		return backpackX;
 	}
-	/// y position in the inventory.
-	inline int getInventoryY() {
-		return inventoryY;
+	/// y position in the backpack.
+	inline int getBackpackY() {
+		return backpackY;
 	}
-	int getInventoryWidth();
-	int getInventoryHeight();
+	int getBackpackWidth();
+	int getBackpackHeight();
 
 	inline void setIdentifiedBit( int bit, bool value ) {
 		if ( value ) identifiedBits |= ( 1 << bit );
@@ -320,7 +320,7 @@ private:
 	std::map<int, int> skillBonus;
 	Session *session;
 	Uint32 identifiedBits;
-	int inventoryX, inventoryY;
+	int backpackX, backpackY;
 	int missionId;
 	int missionObjectiveIndex;
 	// unused: std::map<RpgItem*, Texture> containerTextures;

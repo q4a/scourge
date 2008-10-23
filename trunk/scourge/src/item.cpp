@@ -45,7 +45,7 @@ Item::Item( Session *session, RpgItem *rpgItem, int level, bool loading ) {
 	this->containsMagicItem = false;
 	this->showCursed = false;
 	snprintf( this->itemName, ITEM_NAME_SIZE, "%s", rpgItem->getDisplayName() );
-	inventoryX = inventoryY = 0;
+	backpackX = backpackY = 0;
 
 	commonInit( loading );
 
@@ -305,10 +305,10 @@ void Item::initItemTypes( ConfigLang *config ) {
 		strcpy( tmp, node->getValueAsString( "defaultDimension" ) );
 		char *p = strtok( tmp, "," );
 		if ( p ) {
-			itemType.inventoryWidth = atoi( p );
-			itemType.inventoryHeight = atoi( strtok( NULL, "," ) );
+			itemType.backpackWidth = atoi( p );
+			itemType.backpackHeight = atoi( strtok( NULL, "," ) );
 		} else {
-			itemType.inventoryWidth = itemType.inventoryHeight = 1;
+			itemType.backpackWidth = itemType.backpackHeight = 1;
 		}
 		RpgItem::itemTypes.push_back( itemType );
 
@@ -331,7 +331,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 
 		Session::instance->getGameAdapter()->setUpdate( _( "Loading Items" ), i, v->size() );
 
-		// I:rareness,type,weight,price[,shape_index,[inventory_location[,maxCharges[,min_depth[,min_level]]]]]
+		// I:rareness,type,weight,price[,shape_index,[backpack_location[,maxCharges[,min_depth[,min_level]]]]]
 		snprintf( name, 255, node->getValueAsString( "name" ) );
 		snprintf( displayName, 255, node->getValueAsString( "display_name" ) );
 		int rareness = toint( node->getValueAsFloat( "rareness" ) );
@@ -340,7 +340,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		int price = toint( node->getValueAsFloat( "price" ) );
 
 		snprintf( shape, 255, node->getValueAsString( "shape" ) );
-		int inventory_location = toint( node->getValueAsFloat( "inventory_location" ) );
+		int backpack_location = toint( node->getValueAsFloat( "inventory_location" ) );
 		int minDepth = toint( node->getValueAsFloat( "min_depth" ) );
 		int minLevel = toint( node->getValueAsFloat( "min_level" ) );
 		int maxCharges = toint( node->getValueAsFloat( "max_charges" ) );
@@ -365,7 +365,7 @@ void Item::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 
 		RpgItem *last = new RpgItem( strdup( name ), strdup( displayName ), rareness, type_index, weight, price,
 		                             strdup( long_description ), strdup( short_description ),
-		                             inventory_location, shape_index,
+		                             backpack_location, shape_index,
 		                             minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
 		last->setContainerWidth( containerWidth );
 		last->setContainerHeight( containerHeight );
@@ -1080,7 +1080,7 @@ void Item::identify( int infoDetailLevel ) {
 			describeMagic( rpgItem->getDisplayName() );
 			session->getGameAdapter()->writeLogMessage( _( "An item was fully identified!" ) );
 			// update ui
-			session->getGameAdapter()->refreshInventoryUI();
+			session->getGameAdapter()->refreshBackpackUI();
 		}
 	} else {
 		//No need for identification - item not magical
@@ -1089,21 +1089,21 @@ void Item::identify( int infoDetailLevel ) {
 	// fprintf( stderr, "skill=%d id=%x\n", infoDetailLevel, identifiedBits );
 }
 
-/// Inventory x size.
+/// Backpack x size.
 
-int Item::getInventoryWidth() {
-	return ( getShape()->getIcon().isSpecified() ? getShape()->getIconWidth() : rpgItem->getInventoryWidth() );
+int Item::getBackpackWidth() {
+	return ( getShape()->getIcon().isSpecified() ? getShape()->getIconWidth() : rpgItem->getBackpackWidth() );
 }
 
-/// Inventory y size.
+/// Backpack y size.
 
-int Item::getInventoryHeight() {
-	return ( getShape()->getIcon().isSpecified() ? getShape()->getIconHeight() : rpgItem->getInventoryHeight() );
+int Item::getBackpackHeight() {
+	return ( getShape()->getIcon().isSpecified() ? getShape()->getIconHeight() : rpgItem->getBackpackHeight() );
 }
 
 void Item::renderIcon( Scourge *scourge, SDL_Rect *rect, int gridSize, bool smallIcon ) {
-	int iw = getInventoryWidth() * gridSize;
-	int ih = getInventoryHeight() * gridSize;
+	int iw = getBackpackWidth() * gridSize;
+	int ih = getBackpackHeight() * gridSize;
 
 	int iy = rect->y;
 	if ( rect->h - ih > gridSize ) iy += rect->h - ih - gridSize;
@@ -1140,7 +1140,7 @@ void Item::renderIcon( Scourge *scourge, int x, int y, int w, int h, bool smallI
 
 /// The following is returned: The OpenGL texture, width and height of the texture,
 /// and the top left corner of the item graphic within the texture.
-/// When smallIcon is false, it returns the inventory graphic, else the small icon.
+/// When smallIcon is false, it returns the backpack graphic, else the small icon.
 
 void Item::getItemIconInfo( Texture* texp, int *rwp, int *rhp, int *oxp, int *oyp, int *iw, int *ih, int w, int h, bool smallIcon ) {
 	Texture tex;
@@ -1175,7 +1175,7 @@ void Item::getItemIconInfo( Texture* texp, int *rwp, int *rhp, int *oxp, int *oy
 	*oyp = oy;
 }
 
-/// Renders the item's icon (in lists, the inventory etc.)
+/// Renders the item's icon (in lists, the backpack etc.)
 
 void Item::renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon ) {
 	glColor4f( 1, 1, 1, 1 );
@@ -1415,7 +1415,7 @@ void Item::renderItemIconIdentificationEffect( Scourge *scourge, int x, int y, i
 	}
 }
 
-/// Item's tooltip text (for the inventory).
+/// Item's tooltip text (for the backpack).
 
 void Item::getTooltip( char *tooltip ) {
 	enum { TMP_SIZE = 500 };

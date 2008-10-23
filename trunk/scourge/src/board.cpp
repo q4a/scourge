@@ -182,7 +182,7 @@ void Board::reset() {
 /// Handles completed missions.
 
 /// This function removes completed missions from the board and
-/// items from completed missions from the party's inventory.
+/// items from completed missions from the party's backpack.
 
 void Board::removeCompletedMissionsAndItems() {
 	// remove completed missions
@@ -190,7 +190,7 @@ void Board::removeCompletedMissionsAndItems() {
 		Mission *mission = *e;
 		if ( mission->isCompleted() ) {
 
-			// remove mission items from the party's inventory
+			// remove mission items from the party's backpack
 			mission->removeMissionItems();
 
 			// delete mission if not storyline
@@ -660,7 +660,7 @@ void Mission::checkMissionCompleted() {
 			return;
 		}
 	}
-	board->getSession()->getGameAdapter()->refreshInventoryUI();
+	board->getSession()->getGameAdapter()->refreshBackpackUI();
 	if ( storyLine ) board->storylineMissionCompleted( this );
 }
 
@@ -685,9 +685,9 @@ void Mission::deleteMonsterInstances() {
 void Mission::removeMissionItems() {
 	for ( int i = 0; i < board->getSession()->getParty()->getPartySize(); i++ ) {
 		Creature *c = board->getSession()->getParty()->getParty( i );
-		for ( int t = 0; t < c->getInventoryCount(); t++ ) {
-			if ( c->getInventory( t )->getMissionId() == getMissionId() ) {
-				c->removeInventory( t );
+		for ( int t = 0; t < c->getBackpackContentsCount(); t++ ) {
+			if ( c->getBackpackItem( t )->getMissionId() == getMissionId() ) {
+				c->removeFromBackpack( t );
 			}
 		}
 	}

@@ -158,7 +158,7 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 				scourge->getParty()->getPlayer()->setLevel( scourge->getParty()->getPlayer()->getLevel() + 1 );
 				scourge->getParty()->getPlayer()->setAvailableSkillMod( scourge->getParty()->getPlayer()->getAvailableSkillMod() + 10 );
 				scourge->updatePartyUI();
-				scourge->refreshInventoryUI();
+				scourge->refreshBackpackUI();
 			}
 			return false;
 		} else if ( event->key.keysym.sym == SDLK_e ) {
@@ -282,8 +282,8 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 		else if ( event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_7 ) {
 			scourge->blendB++; if ( scourge->blendB >= 11 ) scourge->blendB = 0;
 			fprintf( stderr, "blend: a=%d b=%d\n", scourge->blendA, scourge->blendB );
-		} else if ( ea == SHOW_INVENTORY ) {
-			scourge->toggleInventoryWindow();
+		} else if ( ea == SHOW_BACKPACK ) {
+			scourge->toggleBackpackWindow();
 		} else if ( ea == SHOW_OPTIONS_MENU ) {
 			scourge->toggleOptionsWindow();
 		} else if ( ea == SET_NEXT_FORMATION_STOP ) {
@@ -636,8 +636,8 @@ bool ScourgeHandler::handleCreatureClick( Uint16 mapx, Uint16 mapy, Uint16 mapz 
 }
 
 bool ScourgeHandler::handlePartyEvent( Widget *widget, SDL_Event *event ) {
-	if ( widget == scourge->getInventoryButton() ) {
-		scourge->toggleInventoryWindow();
+	if ( widget == scourge->getBackpackButton() ) {
+		scourge->toggleBackpackWindow();
 	} else if ( widget == scourge->getEndTurnButton() &&
 	            scourge->inTurnBasedCombatPlayerTurn() ) {
 		scourge->endCurrentBattle();
@@ -665,7 +665,7 @@ bool ScourgeHandler::handlePartyEvent( Widget *widget, SDL_Event *event ) {
 						scourge->setPlayer( t );
 					} else if ( event->button.button == SDL_BUTTON_RIGHT ) {
 						scourge->setPlayer( t );
-						scourge->toggleInventoryWindow();
+						scourge->toggleBackpackWindow();
 					}
 				}
 			} else if ( widget == scourge->getPlayerHpMp( t ) ) {
@@ -674,9 +674,9 @@ bool ScourgeHandler::handlePartyEvent( Widget *widget, SDL_Event *event ) {
 				          scourge->getCurrentBattle()->getCreature() == scourge->getParty()->getParty( t ) ) ) {
 					if ( scourge->getParty()->getPlayer() != scourge->getParty()->getParty( t ) ) {
 						scourge->getParty()->setPlayer( t );
-						if ( !scourge->getPcUi()->getWindow()->isVisible() ) scourge->toggleInventoryWindow();
+						if ( !scourge->getPcUi()->getWindow()->isVisible() ) scourge->toggleBackpackWindow();
 					} else {
-						scourge->toggleInventoryWindow();
+						scourge->toggleBackpackWindow();
 					}
 				}
 			} else if ( widget == scourge->getPlayerWeapon( t ) ) {
@@ -740,7 +740,7 @@ void ScourgeHandler::quickSpellAction( int index, int button ) {
 				cerr << "*** Error: unknown storable type: " << storable->getStorableType() << endl;
 			}
 		} else {
-			if ( !scourge->getPcUi()->getWindow()->isVisible() ) scourge->toggleInventoryWindow();
+			if ( !scourge->getPcUi()->getWindow()->isVisible() ) scourge->toggleBackpackWindow();
 		}
 	}
 }

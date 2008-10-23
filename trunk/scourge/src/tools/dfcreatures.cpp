@@ -42,7 +42,7 @@ bool DFCreatures::LoadSingle(std::ifstream *fin, Creature *creature)
 	while ( key == 'I' )
 	{
 		fin->getline(buffer, 256, '\n');
-		creature->inventory.push_back(buffer+2);
+		creature->backpack.push_back(buffer+2);
 
 		key = fin->peek();
 	}
@@ -75,7 +75,7 @@ void DFCreatures::Save()
 		 << "# M:monster\n"
 		 << "#   name[,(descriptive type for monsters | portrait for npcs)]\n"
 		 << "#   md2 model, skin, level,hp,mp,natural armor,rareness,speed[,scale(overrides shapes.txt's scale),npc[,startX,startY]]\n"
-		 << "# I:inventory (1 line per item ref. by name from items.txt)\n"
+		 << "# I:backpack (1 line per item ref. by name from items.txt)\n"
 		 << "# S:spell\n"
 		 << "# P:skill_name,percentage (skill level; used mainly for magic resistance)\n"
 		 << "#\n"
@@ -110,7 +110,7 @@ void DFCreatures::Save()
 			fout << "," << (*itr)->npcStartX << "," << (*itr)->npcStartY;
 
 		std::vector<std::string>::iterator strVecItr;
-		for ( strVecItr = (*itr)->inventory.begin(); strVecItr != (*itr)->inventory.end(); strVecItr++ )
+		for ( strVecItr = (*itr)->backpack.begin(); strVecItr != (*itr)->backpack.end(); strVecItr++ )
 			fout << "\nI:" << *strVecItr;
 		for ( strVecItr = (*itr)->spells.begin(); strVecItr != (*itr)->spells.end(); strVecItr++ )
 			fout << "\nS:" << *strVecItr;

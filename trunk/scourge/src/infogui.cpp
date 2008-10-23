@@ -156,7 +156,7 @@ void InfoGui::setItem( Item *item ) {
 		transcribeButton->move( 0, 0 );
 		castButton->move( 0, 0 );
 		skillButton->move( 0, 0 );
-	} else if ( item->getRpgItem()->isScroll() && !( scourge->getParty()->getPlayer()->findInInventory( item ) == -1 ) ) {
+	} else if ( item->getRpgItem()->isScroll() && !( scourge->getParty()->getPlayer()->findInBackpack( item ) == -1 ) ) {
 		openButton->setVisible( false );
 		idButton->setVisible( false );
 		castButton->setVisible( false );
@@ -177,7 +177,7 @@ void InfoGui::setItem( Item *item ) {
 			useButton->move( bx - 50, by );
 			transcribeButton->move( bx + 55, by );
 		}
-	} else if ( ( item->getCurrentCharges() > 0 ) && !( scourge->getParty()->getPlayer()->findInInventory( item ) == -1 ) )  {
+	} else if ( ( item->getCurrentCharges() > 0 ) && !( scourge->getParty()->getPlayer()->findInBackpack( item ) == -1 ) )  {
 		idButton->setVisible( false );
 		transcribeButton->setVisible( false );
 		openButton->setVisible( false );
@@ -210,11 +210,11 @@ void InfoGui::setItem( Item *item ) {
 	int n = GRID_SIZE;
 	int width = WIN_WIDTH;
 	int height = WIN_HEIGHT;
-	nameLabel->resize( width - item->getInventoryWidth() * n - 25, item->getInventoryHeight() * n );
-	label->resize( width - 20, height - item->getInventoryHeight() * n - 80 );
-	label->move( 10, item->getInventoryHeight() * n + 5 + 10 );
-	image->move( width - item->getInventoryWidth() * n - 10, 5 );
-	image->resize( item->getInventoryWidth() * n, item->getInventoryHeight() * n );	
+	nameLabel->resize( width - item->getBackpackWidth() * n - 25, item->getBackpackHeight() * n );
+	label->resize( width - 20, height - item->getBackpackHeight() * n - 80 );
+	label->move( 10, item->getBackpackHeight() * n + 5 + 10 );
+	image->move( width - item->getBackpackWidth() * n - 10, 5 );
+	image->resize( item->getBackpackWidth() * n, item->getBackpackHeight() * n );	
 }
 
 void InfoGui::setSpell( Spell *spell ) {

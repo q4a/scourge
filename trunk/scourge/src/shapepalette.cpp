@@ -48,7 +48,7 @@ void ShapePalette::preInitialize() {
 	initFonts( config );
 	initCursor( config );
 	initNamedTextures( config );
-	initInventory( config );
+	initBackpack( config );
 	delete config;
 
 	// set up the logo
@@ -116,7 +116,7 @@ void ShapePalette::initialize() {
 	dismiss.load( "/textures/dismiss.png" );
 	options.load( "/textures/options.png" );
 	group.load( "/textures/group.png" );
-	inventory.load( "/textures/inventory.png" );
+	backpack.load( "/textures/inventory.png" );
 	waitTexture.load( "/textures/wait.png" );
 	ioTexture.load( "/textures/io.png" );
 	systemTexture.load( "/textures/system.png" );
@@ -152,7 +152,7 @@ void ShapePalette::initialize() {
 	hungerIcon.load( "/icons/h.png" );
 
 	if ( !isHeadless() ) {
-		// set up the inventory tiles
+		// set up the backpack tiles
 		loadTiles( "/textures/tiles.png", &tiles );
 		for ( int x = 0; x < 20; x++ ) {
 			for ( int y = 0; y < 18; y++ ) {
@@ -242,7 +242,7 @@ void ShapePalette::initNamedTextures( ConfigLang *config ) {
 	}
 }
 
-void ShapePalette::initInventory( ConfigLang *config ) {
+void ShapePalette::initBackpack( ConfigLang *config ) {
 	for ( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
 		equipLocationHoles[ i ].x = equipLocationHoles[ i ].y = equipLocationHoles[ i ].w = equipLocationHoles[ i ].h = 0;
 	}

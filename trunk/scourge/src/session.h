@@ -159,7 +159,7 @@ public:
 	/**
 	  Creat a new item for use on this story. Calling this method instead of new Item()
 	  directly ensures that the item will be cleaned up properly when the story is
-	  exited. Only items in a party member's inventory are not deleted.
+	  exited. Only items in a party member's backpack are not deleted.
 
 	  @param rpgItem if not NULL, the RpgItem template for the item to create.
 	  @param spell if not NULL, the spell to associate with the created scroll.

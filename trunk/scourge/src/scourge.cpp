@@ -567,7 +567,7 @@ void Scourge::resetGame( bool resetParty ) {
 			cal->scheduleEvent( event );
 		}
 
-		// inventory needs the party
+		// backpack needs the party
 		if ( !pcui ) {
 			pcui = new PcUi( this );
 		}
@@ -644,7 +644,7 @@ bool Scourge::createLevelMap( Mission *lastMission, bool fromRandomMap ) {
 		if ( lastMission ) {
 			createMissionInfoMessage( lastMission );
 
-			// if we just finished a mission delete it and remove mission items from party inventory
+			// if we just finished a mission delete it and remove mission items from party backpack
 			if ( lastMission->isCompleted() ) {
 				board->removeCompletedMissionsAndItems();
 			}
@@ -835,7 +835,7 @@ void Scourge::hideGui() {
 	closeAllContainerGuis();
 	if ( pcui->getWindow()->isVisible() ) {
 		pcui->hide();
-		inventoryButton->setSelected( false );
+		backpackButton->setSelected( false );
 	}
 	if ( optionsMenu->isVisible() ) {
 		optionsMenu->hide();
@@ -1244,7 +1244,7 @@ bool Scourge::getItem( Location *pos ) {
 	return false;
 }
 
-// drop an item from the inventory
+// drop an item from the backpack
 void Scourge::setMovingItem( Item *item, int x, int y, int z ) {
 	movingX = x;
 	movingY = y;
@@ -1259,10 +1259,10 @@ int Scourge::dropItem( int x, int y ) {
 		char message[120];
 		Creature *c = ( ( Creature* )( levelMap->getSelectedDropTarget()->creature ) );
 		if ( c ) {
-			pcui->receiveInventory();
+			pcui->addToBackpack();
 			return z;
 			/*
-			   if(c->addInventory(movingItem)) {
+			   if(c->addToBackpack(movingItem)) {
 			     snprintf(message, 120, _( "%1$s picks up %2$s." ),
 			             c->getName(),
 			             movingItem->getItemName());
@@ -1486,13 +1486,13 @@ bool Scourge::useSecretDoor( Location *pos ) {
 	return ret;
 }
 
-void Scourge::toggleInventoryWindow() {
+void Scourge::toggleBackpackWindow() {
 	if ( pcui->getWindow()->isVisible() ) {
 		pcui->hide();
 	} else {
 		pcui->show();
 	}
-	inventoryButton->setSelected( pcui->getWindow()->isVisible() );
+	backpackButton->setSelected( pcui->getWindow()->isVisible() );
 }
 
 void Scourge::toggleOptionsWindow() {
@@ -2153,21 +2153,21 @@ void Scourge::createPartyUI() {
 		cards->addWidget( playerWeapon[i], 0 );
 	}
 
-	int inventoryButtonWidth = 2 * quickButtonWidth;
-	inventoryButton =
+	int backpackButtonWidth = 2 * quickButtonWidth;
+	backpackButton =
 	  cards->createButton( offsetX, 0,
-	                       offsetX + inventoryButtonWidth, quickButtonWidth,
+	                       offsetX + backpackButtonWidth, quickButtonWidth,
 	                       "", 0, true,
-	                       getShapePalette()->getInventoryTexture() );
-	inventoryButton->setToggle( true );
-	inventoryButton->setSelected( false );
-	snprintf( tooltip, 255, _( "Inventory and party info [%s]" ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_INVENTORY ) );
-	inventoryButton->setTooltip( tooltip );
+	                       getShapePalette()->getBackpackTexture() );
+	backpackButton->setToggle( true );
+	backpackButton->setSelected( false );
+	snprintf( tooltip, 255, _( "Backpack and party info [%s]" ), getUserConfiguration()->getEngineActionKeyName( Constants::ENGINE_ACTION_BACKPACK ) );
+	backpackButton->setTooltip( tooltip );
 
 
 	int gap = 0;
 	for ( int i = 0; i < 12; i++ ) {
-		int xx = inventoryButtonWidth + offsetX + quickButtonWidth * i + ( i / 4 ) * gap;
+		int xx = backpackButtonWidth + offsetX + quickButtonWidth * i + ( i / 4 ) * gap;
 		quickSpell[i] = new Canvas( xx, 0, xx + quickButtonWidth, quickButtonWidth,
 		                            this, NULL, true );
 		quickSpell[i]->setTooltip( _( "Click to assign a spell, capability or magic item." ) );
@@ -2193,8 +2193,8 @@ void Scourge::receive( Widget *widget ) {
 		        inTurnBasedCombat() ) return;
 
 		getParty()->setPlayer( selected );
-		//Put items to the new inventory so location would be assigned
-		pcui->receiveInventory();
+		//Put items to the new backpack so location would be assigned
+		pcui->addToBackpack();
 	}
 }
 
@@ -2228,7 +2228,7 @@ void Scourge::drawWidgetContents( Widget *w ) {
 				w->setTooltip( _( "Current Weapon: Bare Hands" ) );
 				renderHandAttackIcon( 0, 0, 32 );
 			} else {
-				Item *item = party->getParty( i )->getItemAtLocation( party->getParty( i )->getPreferredWeapon() );
+				Item *item = party->getParty( i )->getEquippedItem( party->getParty( i )->getPreferredWeapon() );
 				if ( item &&
 				        item->getRpgItem()->isWeapon() ) {
 					char msg[80];
@@ -2617,7 +2617,7 @@ void Scourge::executeQuickSpell( Spell *spell ) {
 	}
 }
 
-void Scourge::refreshInventoryUI( int playerIndex ) {
+void Scourge::refreshBackpackUI( int playerIndex ) {
 	if ( getPcUi() ) {
 		getPcUi()->setCreature( party->getParty( playerIndex ) );
 		if ( getTradeDialog()->getWindow()->isVisible() )
@@ -2632,7 +2632,7 @@ void Scourge::refreshInventoryUI( int playerIndex ) {
 	}
 }
 
-void Scourge::refreshInventoryUI() {
+void Scourge::refreshBackpackUI() {
 	if ( getPcUi() ) {
 		if ( party->getPlayer() )
 			getPcUi()->setCreature( party->getPlayer() );
@@ -3629,9 +3629,9 @@ bool Scourge::describeWeapon( Creature *p, Item *item, int x, int y, int invento
 }
 
 void Scourge::describeAttacks( Creature *p, int x, int y, bool currentOnly ) {
-	Item *left = p->getItemAtLocation( Constants::EQUIP_LOCATION_LEFT_HAND );
-	Item *right = p->getItemAtLocation( Constants::EQUIP_LOCATION_RIGHT_HAND );
-	Item *ranged = p->getItemAtLocation( Constants::EQUIP_LOCATION_WEAPON_RANGED );
+	Item *left = p->getEquippedItem( Constants::EQUIP_LOCATION_LEFT_HAND );
+	Item *right = p->getEquippedItem( Constants::EQUIP_LOCATION_RIGHT_HAND );
+	Item *ranged = p->getEquippedItem( Constants::EQUIP_LOCATION_WEAPON_RANGED );
 
 	int row = 0;
 	int col = 0;
@@ -3720,7 +3720,7 @@ bool Scourge::transcribeItem( Creature *creature, Item *item ) {
 				if ( res ) {
 					showMessageDialog( _( "Spell was entered into your spellbook." ) );
 					// destroy the scroll
-					creature->removeInventory( creature->findInInventory( item ) );
+					creature->removeFromBackpack( creature->findInBackpack( item ) );
 					char msg[120];
 					snprintf( msg, 120, _( "%s crumbles into dust." ), item->getItemName() );
 					writeLogMessage( msg );

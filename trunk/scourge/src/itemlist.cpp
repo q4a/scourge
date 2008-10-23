@@ -41,8 +41,8 @@ ItemList::ItemList( Scourge *scourge, Window *win, int x, int y, int width, int 
 	this->allowCursed = true;
 	this->allowEquipped = true;
 
-	color = ( Color* )malloc( MAX_INVENTORY_SIZE * sizeof( Color ) );
-	//icon = ( GLuint* )malloc( MAX_INVENTORY_SIZE * sizeof( GLuint ) );
+	color = ( Color* )malloc( MAX_BACKPACK_SIZE * sizeof( Color ) );
+	//icon = ( GLuint* )malloc( MAX_BACKPACK_SIZE * sizeof( GLuint ) );
 
 	setAllowMultipleSelection( true );
 }
@@ -122,7 +122,7 @@ void ItemList::commonInit() {
 		icon[count] = item->getItemIconTexture();
 		count++;
 	}
-	for ( int t = count; t < MAX_INVENTORY_SIZE; t++ ) {
+	for ( int t = count; t < MAX_BACKPACK_SIZE; t++ ) {
 		name[t].clear();
 	}
 	setLines( count, name, color, icon );
@@ -133,11 +133,11 @@ char *ItemList::getName() {
 }
 
 int ItemList::getItemCount() {
-	return( creature ? creature->getInventoryCount() : container->getContainedItemCount() );
+	return( creature ? creature->getBackpackContentsCount() : container->getContainedItemCount() );
 }
 
 Item *ItemList::getItem( int index ) {
-	return( creature ? creature->getInventory( index ) : container->getContainedItem( index ) );
+	return( creature ? creature->getBackpackItem( index ) : container->getContainedItem( index ) );
 }
 
 bool ItemList::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {

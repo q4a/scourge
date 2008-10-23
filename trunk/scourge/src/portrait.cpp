@@ -446,8 +446,8 @@ void Portrait::showStateMods() {
 	y += 15;
 
 	pcUi->getScourge()->getSDLHandler()->texPrint( 10, y, _( "Carrying (kg)" ) );
-	drawBar( 100, y - 10, static_cast<int>( creature->getInventoryWeight() * 100 ), static_cast<int>( creature->getMaxInventoryWeight() * 100 ) );
-	pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%2.1f/%2.1f", creature->getInventoryWeight(), creature->getMaxInventoryWeight() );
+	drawBar( 100, y - 10, static_cast<int>( creature->getBackpackWeight() * 100 ), static_cast<int>( creature->getMaxBackpackWeight() * 100 ) );
+	pcUi->getScourge()->getSDLHandler()->texPrint( 215, y, "%2.1f/%2.1f", creature->getBackpackWeight(), creature->getMaxBackpackWeight() );
 	drawHorizontalLine( y + 4 );
 	y += 18;
 

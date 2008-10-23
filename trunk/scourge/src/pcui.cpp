@@ -1,5 +1,5 @@
 /***************************************************************************
-                 pcui.cpp  -  the character/inventory window
+                 pcui.cpp  -  the character/backpack window
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -61,7 +61,7 @@ PcUi::PcUi( Scourge *scourge ) {
 	int y = 5;
 	equipButton = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "equipButton" ) );
 	equipButton->setSelected( true );
-	equipButton->setTooltip( _( "Show paperdoll inventory" ) );
+	equipButton->setTooltip( _( "Show equipped items" ) );
 	y += 33;
 	spellsButton = mainWin->createButton( x, y, x + 32, y + 32, NULL, true, scourge->getShapePalette()->getNamedTexture( "spellsButton" ) );
 	spellsButton->setSelected( false );
@@ -164,7 +164,7 @@ bool PcUi::handleEvent( Widget *widget, SDL_Event *event ) {
 	portrait->handleEvent( widget, event );
 
 	if ( widget == mainWin->closeButton ) {
-		scourge->toggleInventoryWindow();
+		scourge->toggleBackpackWindow();
 	} else if ( widget == info ) {
 		toggleButtons( info );
 	} else if ( widget == use ) {
@@ -339,7 +339,7 @@ bool PcUi::handleEvent( SDL_Event *event ) {
 	case SDL_KEYUP:
 		switch ( event->key.keysym.sym ) {
 		case SDLK_ESCAPE:
-			scourge->toggleInventoryWindow();
+			scourge->toggleBackpackWindow();
 			return true;
 		default: break;
 		}
@@ -362,12 +362,12 @@ void PcUi::setCreature( Creature *creature ) {
 	refresh();
 }
 
-void PcUi::receiveInventory() {
+void PcUi::addToBackpack() {
 	inven->receive( inven->getWidget() );
 	missionInfo->refresh();
 }
 
-bool PcUi::receiveInventory( Item *item ) {
+bool PcUi::addToBackpack( Item *item ) {
 	bool b = inven->receive( item, false );
 	missionInfo->refresh();
 	return b;

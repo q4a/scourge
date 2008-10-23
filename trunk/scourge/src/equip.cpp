@@ -246,7 +246,7 @@ int Equip::getSpellIndex( int x, int y, int schoolIndex ) {
 /// Returns the item at an equip index.
 
 Item *Equip::getItemInHole( int hole ) {
-	return( hole > -1 && creature ? creature->getEquippedInventory( hole ) : NULL );
+	return( hole > -1 && creature ? creature->getEquippedItem( hole ) : NULL );
 }
 
 /// Takes screen coordinates and determines which equipped item these point at.
@@ -264,7 +264,7 @@ int Equip::getHoleAtPos( int x, int y ) {
 	point.y = y;
 	point.w = point.h = 1;
 	for ( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
-		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
+		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getEquipHole( i );
 		if ( SDLHandler::intersects( rect, &point ) ) {
 			return i;
 		}
@@ -283,7 +283,7 @@ void Equip::receive( Widget *widget ) {
 				pcUi->getScourge()->showMessageDialog( err );
 				pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_FAILED, 127 );
 			} else {
-				if ( creature->addInventory( item ) ) {
+				if ( creature->addToBackpack( item ) ) {
 					// message: the player accepted the item
 					char message[120];
 					snprintf( message, 119, _( "%s picks up %s." ),
@@ -291,11 +291,11 @@ void Equip::receive( Widget *widget ) {
 					          item->getItemName() );
 					pcUi->getScourge()->writeLogMessage( message );
 					pcUi->getScourge()->endItemDrag();
-					int index = creature->findInInventory( item );
-					creature->equipInventory( index, currentHole );
+					int index = creature->findInBackpack( item );
+					creature->equipFromBackpack( index, currentHole );
 					pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_SUCCESS, 127 );
 				} else {
-					// message: the player's inventory is full
+					// message: the player's backpack is full
 					pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_FAILED, 127 );
 					pcUi->getScourge()->showMessageDialog( _( "You can't fit the item!" ) );
 				}
@@ -310,20 +310,20 @@ bool Equip::startDrag( Widget *widget, int x, int y ) {
 	if ( mode == EQUIP_MODE && creature ) {
 
 		if ( pcUi->getScourge()->getTradeDialog()->getWindow()->isVisible() ) {
-			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while trading." ) );
+			pcUi->getScourge()->showMessageDialog( _( "Can't change backpack while trading." ) );
 			return false;
 		} else if ( pcUi->getScourge()->getUncurseDialog()->getWindow()->isVisible() ) {
-			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while employing a sage's services." ) );
+			pcUi->getScourge()->showMessageDialog( _( "Can't change backpack while employing a sage's services." ) );
 			return false;
 		} else if ( pcUi->getScourge()->getIdentifyDialog()->getWindow()->isVisible() ) {
-			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while employing a sage's services." ) );
+			pcUi->getScourge()->showMessageDialog( _( "Can't change backpack while employing a sage's services." ) );
 			return false;
 		} else if ( pcUi->getScourge()->getRechargeDialog()->getWindow()->isVisible() ) {
-			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while employing a sage's services." ) );
+			pcUi->getScourge()->showMessageDialog( _( "Can't change backpack while employing a sage's services." ) );
 			return false;
 		}
 
-		// what's equiped at this inventory slot?
+		// what's equipped at this slot?
 		currentHole = getHoleAtPos( x, y );
 		Item *item = getItemAtPos( x, y );
 		if ( item ) {
@@ -331,7 +331,7 @@ bool Equip::startDrag( Widget *widget, int x, int y ) {
 				pcUi->getScourge()->showMessageDialog( _( "Can't remove cursed item!" ) );
 				return false;
 			} else {
-				creature->removeInventory( creature->findInInventory( item ) );
+				creature->removeFromBackpack( creature->findInBackpack( item ) );
 				pcUi->getScourge()->startItemDragFromGui( item );
 				char message[120];
 				snprintf( message, 119, _( "%s drops %s." ),
@@ -389,8 +389,8 @@ void Equip::drawWidgetContents( Widget *widget ) {
 
 void Equip::drawEquipment() {
 	for ( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
-		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( i );
-		Item *item = creature->getEquippedInventory( i );
+		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getEquipHole( i );
+		Item *item = creature->getEquippedItem( i );
 		if ( item ) {
 			if ( rect && rect->w && rect->h ) {
 				glEnable( GL_TEXTURE_2D );
@@ -399,7 +399,7 @@ void Equip::drawEquipment() {
 		}
 	}
 	if ( currentHole > -1 ) {
-		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getInventoryHole( currentHole );
+		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getEquipHole( currentHole );
 		glDisable( GL_TEXTURE_2D );
 		pcUi->getWindow()->setTopWindowBorderColor();
 		glBegin( GL_LINE_LOOP );
