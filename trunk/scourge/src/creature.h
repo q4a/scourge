@@ -176,73 +176,39 @@ public:
 	Creature( Session *session, Monster *monster, GLShape *shape, bool initMonster = true );
 	~Creature();
 
-	void drawMoviePortrait( int width, int height );
-	void drawPortrait( int width, int height, bool inFrame = false );
-	void playFootstep();
+	// #################
+	// #### GETTERS ####
+	// #################
 
-	inline void setScriptedAnimation( int n ) {
-		this->scriptedAnim = n;
-	}
-	void setScripted( bool b );
-	inline int getScriptedAnimation() {
-		return this->scriptedAnim;
-	}
-	/// Will the creature stay visible in movie mode?
-	inline bool isScripted() {
-		return this->scripted;
-	}
-	inline void setBoss( bool b ) {
-		this->boss = b;
-	}
-	/// Is it a level boss?
-	virtual inline bool isBoss() {
-		return this->boss;
-	}
-	inline bool isSavedMissionObjective() {
-		return savedMissionObjective;
-	}
-	inline void setSavedMissionObjective( bool b ) {
-		savedMissionObjective = b;
+	/// The session object used to create this class instance.
+	inline Session* getSession() {
+		return session;
 	}
 
-	inline void setCauseOfDeath( char *s ) {
-		strncpy( this->causeOfDeath, s, 254 ); this->causeOfDeath[254] = 0;
-	}
-	inline char *getCauseOfDeath() {
-		return this->causeOfDeath;
-	}
-	inline void setPendingCauseOfDeath( char *s ) {
-		strncpy( this->pendingCauseOfDeath, s, 254 ); this->pendingCauseOfDeath[254] = 0;
-	}
-	inline char *getPendingCauseOfDeath() {
-		return this->pendingCauseOfDeath;
+	/// The current battle turn.
+	inline Battle *getBattle() {
+		return battle;
 	}
 
-	inline void setSex( int n ) {
-		this->sex = n;
-	}
-	/// Male/female?
-	inline int getSex() {
-		return this->sex;
+	inline PathManager* getPathManager() {
+		return pathManager;
 	}
 
-	/// Currently moving?
-	inline bool isMoving() {
-		return moving;
-	}
-	inline void setMoving( bool b ) {
-		moving = b;
-	}
+	// #######################
+	// #### CREATURE TYPE ####
+	// #######################
 
 	/// Is it an NPC? (this excludes wandering heroes, which are in fact auto controlled characters)
 	inline bool isNpc() {
 		return( monster ? monster->isNpc() : false );
 	}
+
 	/// Sets whether the creature is an NPC.
 	inline void setNpc( bool b ) {
 		if ( monster ) monster->setNpc( b );
 		if ( !b ) npcInfo = NULL;
 	}
+
 	/// Is it a wandering hero (recruitable character)?
 	inline bool isWanderingHero() {
 		return( !session->getParty()->isPartyMember( this ) && ( character != NULL ) );
@@ -273,26 +239,545 @@ public:
 		return( !isPartyMember() || getStateMod( StateMod::possessed ) );
 	}
 
+	inline void setBoss( bool b ) {
+		this->boss = b;
+	}
+
+	/// Is it a level boss?
+	virtual inline bool isBoss() {
+		return this->boss;
+	}
+
+	inline bool isSavedMissionObjective() {
+		return savedMissionObjective;
+	}
+
+	inline void setSavedMissionObjective( bool b ) {
+		savedMissionObjective = b;
+	}
+
+	// ####################
+	// #### APPEARANCE ####
+	// ####################
+
+	/// The name of the 3D model used for the creature.
+	inline char *getModelName() {
+		return model_name;
+	}
+
+	/// The 3D shape of the creature.
+	inline GLShape *getShape() {
+		return shape;
+	}
+
+	inline char *getSkinName() {
+		return skin_name;
+	}
+
+	inline int getCharacterModelInfoIndex() {
+		return character_model_info_index;
+	}
+
+	void draw();
+
+	void drawMoviePortrait( int width, int height );
+	void drawPortrait( int width, int height, bool inFrame = false );
+
+	inline void setPortraitTextureIndex( int n ) {
+		this->portraitTextureIndex = n;
+	}
+
+	inline int getPortraitTextureIndex() {
+		return portraitTextureIndex;
+	}
+
+	inline void setSex( int n ) {
+		this->sex = n;
+	}
+
+	/// Male/female?
+	inline int getSex() {
+		return this->sex;
+	}
+
+	// ###################
+	// #### ANIMATION ####
+	// ###################
+
+	inline void setScriptedAnimation( int n ) {
+		this->scriptedAnim = n;
+	}
+
+	void setScripted( bool b );
+
+	inline int getScriptedAnimation() {
+		return this->scriptedAnim;
+	}
+
+	/// Will the creature stay visible in movie mode?
+	inline bool isScripted() {
+		return this->scripted;
+	}
+
+	/// Currently moving?
+	inline bool isMoving() {
+		return moving;
+	}
+
+	inline void setMoving( bool b ) {
+		moving = b;
+	}
+
 	inline GLfloat getAngle() {
 		return angle;
 	}
 
-	void applyRecurringSpecialSkills();
-	void evalSpecialSkills();
+	inline void setFacingDirection( int direction ) {
+		this->facingDirection = direction;
+	}
+
+	/// The direction the creature faces (U, D, L, R).
+	inline int getFacingDirection() {
+		return this->facingDirection;
+	}
+
+	inline Uint16 getDir() {
+		return dir;
+	}
+
+	/// Direction of movement (U, D, L, R).
+	inline void setDir( Uint16 dir ) {
+		this->dir = dir;
+	}
+
+	// ########################
+	// #### MAP NAVIGATION ####
+	// ########################
+
+	/**
+	The movement functions return true if movement has occured, false if it has not.
+	 */
+
+	bool move( Uint16 dir );
+	void switchDirection( bool force );
+	bool follow( Creature *leader );
+
+	/// Makes the creature move out of another creature's path.
+	void moveAway( Creature *other );
+	Location *moveToLocator();
+
+	void stopMoving();
+	bool anyMovesLeft();
+
+	void setMotion( int motion );
+
+	/// The current mode of motion (stand, run, loiter around...)
+	inline int getMotion() {
+		return this->motion;
+	}
+
+	inline void setFormation( int formation ) {
+		this->formation = formation;
+	}
+
+	/// Formations are currently unused.
+	inline int getFormation() {
+		return formation;
+	}
+
+	/// Map X coordinate of currently selected target.
+	inline int getTargetX() {
+		if ( targetCreature ) return toint( targetCreature->getX() ); else return targetX;
+	}
+
+	/// Map Y coordinate of currently selected target.
+	inline int getTargetY() {
+		if ( targetCreature ) return toint( targetCreature->getY() ); else return targetY;
+	}
+
+	/// Map Z coordinate of currently selected target.
+	inline int getTargetZ() {
+		if ( targetCreature ) return toint( targetCreature->getZ() ); else return targetZ;
+	}
+
+	void setTargetCreature( Creature *c, bool findPath = false , float range = static_cast<float>( MIN_DISTANCE ) );
+
+	/// The creature that is currently set as a target.
+	inline Creature *getTargetCreature() {
+		return targetCreature;
+	}
+
+	bool setSelCreature( Creature* creature, float range, bool cancelIfNotPossible = false );
+
+	inline void setTargetLocation( int x, int y, int z ) {
+		targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z;
+	}
+
+	/// The map location that is currently set as a target.
+	inline void getTargetLocation( int *x, int *y, int *z ) {
+		*x = targetX; *y = targetY; *z = targetZ;
+	}
+
+	inline void setTargetItem( int x, int y, int z, Item *item ) {
+		setTargetLocation( x, y, z ); targetItem = item;
+	}
+
+	/// The item that is currently set as a target.
+	inline Item *getTargetItem() {
+		return targetItem;
+	}
+
+	bool setSelXY( int x, int y, bool cancelIfNotPossible = false );
+
+	/// Set target without performing pathfinding.
+	inline void setSelXYNoPath( int x, int y ) {
+		selX = x; selY = y;
+	}
+
+	/// Map X coordinate of selection target.
+	inline int getSelX() {
+		return selX;
+	}
+
+	/// Map Y coordinate of selection target.
+	inline int getSelY() {
+		return selY;
+	}
+
+	float getDistanceToTarget( RenderedCreature *creature = NULL );
+	float getDistanceToSel();
+	float getDistance( RenderedCreature *other );
+
+	// get angle to target creature
+	float getTargetAngle();
+
+	/// Unused.
+	inline void setMapChanged() {
+		mapChanged = true;
+	}
+
+	// ###############
+	// #### AUDIO ####
+	// ###############
+
+	void playCharacterSound( int soundType, int panning );
+	void playFootstep();
+
+	// ##########################
+	// #### BASIC ATTRIBUTES ####
+	// ##########################
+
+	/// The creature's UNLOCALIZED name.
+	inline char *getName() {
+		return name;
+	}
+
+	inline void setName( char *s ) {
+		strncpy( name, s, 254 ); name[254] = '\0';
+	}
+
+	char *getType();
+	void getDetailedDescription( std::string& s );
+
+	/// The creature's level.
+	inline int getLevel() {
+		return level;
+	}
+
+	inline void setLevel( int n ) {
+		level = ( n < 0 ? 0 : n ); evalSpecialSkills();
+	}
+
+	/// Experience points needed for next level.
+	inline int getExpOfNextLevel() {
+		return expOfNextLevel;
+	}
+
+	/// Experience points.
+	inline int getExp() {
+		return experience;
+	}
+
+	void setExp();
+
+	/// Amount of experience points.
+	inline void setExp( int n ) {
+		experience = ( n < 0 ? 0 : n ); evalSpecialSkills();
+	}
+
+	int addExperience( int exp );
+	int addExperienceWithMessage( int exp );
+
+	void changeProfession( Character *character );
+
+	/// Amount of money the creature holds.
+	inline int getMoney() {
+		return money;
+	}
+
+	inline void setMoney( int n ) {
+		money = n; evalSpecialSkills();
+	}
+
+	/// Current hit points.
+	inline int getHp() {
+		return hp;
+	}
+
+	void setHp();
+
+	inline void setHp( int n ) {
+		hp = ( n < 0 ? 0 : n ); evalSpecialSkills();
+	}
+
+	/// Starting HP for level 1.
+	inline int getStartingHp() {
+		return hp;
+	}
+
+	int getMaxHp();
+
+	/// Current magic points.
+	inline int getMp() {
+		return mp;
+	}
+
+	void setMp();
+
+	inline void setMp( int n ) {
+		mp = ( n < 0 ? 0 : n ); evalSpecialSkills();
+	}
+
+	/// Starting MP for level 1.
+	inline int getStartingMp() {
+		return mp;
+	}
+
+	int getMaxMp();
+
+	/// Current thirst level.
+	inline int getThirst() {
+		return thirst;
+	}
+
+	inline void setThirst( int n )  {
+		if ( n < 0 )n = 0; if ( n > 10 )n = 10; thirst = n; evalSpecialSkills();
+	}
+
+	/// Current hunger level.
+	inline int getHunger() {
+		return hunger;
+	}
+
+	inline void setHunger( int n )  {
+		if ( n < 0 )n = 0; if ( n > 10 )n = 10; hunger = n; evalSpecialSkills();
+	}
+
+	//#### INTERNAL creature types ####
+
+	void setNpcInfo( NpcInfo *npcInfo );
+
+	/// Extra info for edited NPCs.
+	inline NpcInfo *getNpcInfo() {
+		return npcInfo;
+	}
+
+	/// Gets character info.
+	inline Character *getCharacter() {
+		return character;
+	}
+
+	void setCharacter( Character *c );
+
+	/// Gets monster/NPC info.
+	inline Monster *getMonster() {
+		return monster;
+	}
+
+	// ################
+	// #### SKILLS ####
+	// ################
+
+	/// Returns the value of the specified skill.
+	inline int getSkill( int index, bool includeMod = true ) {
+		return skills[index] + skillBonus[index] + ( includeMod ? skillMod[index] : 0 );
+	}
+
+	void setSkill( int index, int value );
+
+	/// Additional skill bonus.
+	inline int getSkillBonus( int index ) {
+		return skillBonus[index];
+	}
+
+	void setSkillBonus( int index, int value );
+
+	/// Skill modification (after levelup) that has not yet been applied.
+	inline int getSkillMod( int index ) {
+		return skillMod[index];
+	}
+
+	void setSkillMod( int index, int value );
+
+	inline int getAvailableSkillMod() {
+		return availableSkillMod;
+	}
+
+	inline void setAvailableSkillMod( int n ) {
+		availableSkillMod = n;
+		if ( !hasAvailableSkillPoints && n > 0 ) hasAvailableSkillPoints = true;
+	}
+
+	void applySkillMods();
+
+	/// Still skill points left?
+	bool getHasAvailableSkillPoints() {
+		return hasAvailableSkillPoints;
+	}
+
+	bool rollSkill( int skill, float luckDiv = 0.0f );
+	void rollPerception();
+
+	bool rollSecretDoor( Location *pos );
+	void resetSecretDoorAttempts();
+
+	bool rollTrapFind( Trap *trap );
+	void resetTrapFindAttempts();
+	void disableTrap( Trap *trap );
+
+	// ##############################
+	// #### SPECIAL CAPABILITIES ####
+	// ##############################
+
 	/// Does it have this special capability?
 	inline bool hasCapability( char *name ) {
 		std::string skillName = name;
 		return specialSkillNames.find( skillName ) != specialSkillNames.end();
 	}
+
 	/// Does it have this special capability?
 	inline bool hasSpecialSkill( SpecialSkill *ss ) {
 		return specialSkills.find( ss ) != specialSkills.end();
 	}
-	char *useSpecialSkill( SpecialSkill *specialSkill,
-	                       bool manualOnly );
-	float applyAutomaticSpecialSkills( int event,
-	                                   char *varName,
-	                                   float value );
+
+	char *useSpecialSkill( SpecialSkill *specialSkill, bool manualOnly );
+	void evalSpecialSkills();
+
+	void applyRecurringSpecialSkills();
+	float applyAutomaticSpecialSkills( int event, char *varName, float value );
+
+	// ####################
+	// #### STATE MODS ####
+	// ####################
+
+	/// Returns the active state of a state mod.
+	inline bool getStateMod( int mod ) {
+		return ( stateMod & ( 1 << mod ) ? true : false );
+	}
+
+	void setStateMod( int mod, bool setting );
+
+	/// Returns whether the specified state mod is protected (by an item etc.)
+	inline bool getProtectedStateMod( int mod ) {
+		return ( protStateMod & ( 1 << mod ) ? true : false );
+	}
+
+	void setProtectedStateMod( int mod, bool setting );
+
+	/// Schedules state mod effects.
+	inline void setStateModEvent( int mod, Event *event ) {
+		stateModEventMap[mod] = event;
+	}
+
+	inline Event *getStateModEvent( int mod ) {
+		return( stateModEventMap.find( mod ) == stateModEventMap.end() ? NULL : stateModEventMap[mod] );
+	}
+
+	// ###############
+	// #### MAGIC ####
+	// ###############
+
+	bool addSpell( Spell *spell );
+	bool isSpellMemorized( Spell *spell );
+
+	/// Number of spells the creature knows.
+	inline int getSpellCount() {
+		return static_cast<int>( spells.size() );
+	}
+
+	inline Spell *getSpell( int index ) {
+		return spells[index];
+	}
+
+	inline void setDeityIndex( int n ) {
+		deityIndex = n;
+	}
+	/// Deity of the creature.
+	inline int getDeityIndex() {
+		return deityIndex;
+	}
+
+	inline void setLastEnchantDate( Date date ) {
+		lastEnchantDate = date;
+	}
+
+	/// Last point in time when the creature tried to enchant something.
+	inline Date getLastEnchantDate() {
+		return lastEnchantDate;
+	}
+
+	// ##################
+	// #### BACKPACK ####
+	// ##################
+
+	float inventoryWeight;
+
+	/// Total weight of the inventory.
+	inline float getInventoryWeight() {
+		return inventoryWeight;
+	}
+
+	float getMaxInventoryWeight();
+	/// Number of items carried in inventory.
+	int getInventoryCount();
+
+	/// The item at a specified inventory index.
+	Item *getInventory( int inventoryIndex );
+
+	bool addInventory( Item *item, bool force = false );
+	Item *removeInventory( int index );
+	int findInInventory( Item *item );
+	bool isItemInInventory( Item *item );
+
+	Item *getEquippedInventory( int equipIndex );
+	Item *getItemAtLocation( int equipIndex );
+	void equipInventory( int inventoryIndex, int equipIndexHint = -1 );
+	int doff( int inventoryIndex );
+	bool isEquippedWeapon( int equipIndex );
+
+	bool isEquipped( Item *item );
+	bool isEquipped( int inventoryIndex );
+	int getEquippedIndex( int inventoryIndex );
+
+	char *canEquipItem( Item *item, bool interactive = true );
+
+	inline bool isInventoryArranged() {
+		return inventoryArranged;
+	}
+
+	inline void setInventoryArranged( bool b ) {
+		inventoryArranged = b;
+	}
+
+	void pickUpOnMap( RenderedItem *item );
+
+	bool eatDrink( int inventoryIndex );
+	bool eatDrink( Item *item );
+	void usePotion( Item *item );
+
+	bool removeCursedItems();
+
+	InventoryInfo *getInventoryInfo( Item *item, bool createIfMissing = false );
 
 	/// Stores an item/spell etc. in a specified quickspell slot.
 	inline void setQuickSpell( int index, Storable *storable ) {
@@ -304,427 +789,84 @@ public:
 		}
 		quickSpell[ index ] = storable;
 	}
+
 	/// Returns the storable in a given quickspell slot.
 	inline Storable *getQuickSpell( int index ) {
 		return quickSpell[ index ];
 	}
-	void playCharacterSound( int soundType, int panning );
 
-	inline void setDeityIndex( int n ) {
-		deityIndex = n;
-	}
-	/// Deity of the creature.
-	inline int getDeityIndex() {
-		return deityIndex;
-	}
-
-	inline void setPortraitTextureIndex( int n ) {
-		this->portraitTextureIndex = n;
-	}
-	inline int getPortraitTextureIndex() {
-		return portraitTextureIndex;
-	}
-
-// inline std::vector<Location> *getPath() { return &bestPath; }
-// inline int getPathIndex() { return bestPathPos; }
-
-	inline int getCharacterModelInfoIndex() {
-		return character_model_info_index;
-	}
-
-	inline void setLastEnchantDate( Date date ) {
-		lastEnchantDate = date;
-	}
-	/// Last point in time when the creature tried to enchant something.
-	inline Date getLastEnchantDate() {
-		return lastEnchantDate;
-	}
-
-	/// The current battle turn.
-	inline Battle *getBattle() {
-		return battle;
-	}
-	inline PathManager* getPathManager() {
-		return pathManager;
-	}
-	/// The session object used to create this class instance.
-	inline Session* getSession() {
-		return session;
-	}
-
-	void changeProfession( Character *character );
-
-	CreatureInfo *save();
-	static Creature *load( Session *session, CreatureInfo *info );
+	// ################
+	// #### BATTLE ####
+	// ################
 
 	inline void setLastTurn( int n ) {
 		lastTurn = n;
 	}
+
 	inline int getLastTurn() {
 		return lastTurn;
 	}
 
-	/// Map X coordinate of currently selected target.
-	inline int getTargetX() {
-		if ( targetCreature ) return toint( targetCreature->getX() ); else return targetX;
-	}
-	/// Map Y coordinate of currently selected target.
-	inline int getTargetY() {
-		if ( targetCreature ) return toint( targetCreature->getY() ); else return targetY;
-	}
-	/// Map Z coordinate of currently selected target.
-	inline int getTargetZ() {
-		if ( targetCreature ) return toint( targetCreature->getZ() ); else return targetZ;
-	}
+	// speed/initiative related stuff.
 
-	void setTargetCreature( Creature *c, bool findPath = false , float range = static_cast<float>( MIN_DISTANCE ) );
-	/// The creature that is currently set as a target.
-	inline Creature *getTargetCreature() {
-		return targetCreature;
-	}
-	inline void setTargetLocation( int x, int y, int z ) {
-		targetItem = NULL; targetCreature = NULL; targetX = x; targetY = y; targetZ = z;
-	}
-	/// The map location that is currently set as a target.
-	inline void getTargetLocation( int *x, int *y, int *z ) {
-		*x = targetX; *y = targetY; *z = targetZ;
-	}
-	inline void setTargetItem( int x, int y, int z, Item *item ) {
-		setTargetLocation( x, y, z ); targetItem = item;
-	}
-	/// The item that is currently set as a target.
-	inline Item *getTargetItem() {
-		return targetItem;
-	}
-
-	void setMotion( int motion );
-	/// The current mode of motion (stand, run, loiter around...)
-	inline int getMotion() {
-		return this->motion;
-	}
-
-//  bool Creature::isInRange();
-
-	inline void setFacingDirection( int direction ) {
-		this->facingDirection = direction;
-	}
-	/// The direction the creature faces (U, D, L, R).
-	inline int getFacingDirection() {
-		return this->facingDirection;
-	}
-
-
-	inline void setLastTick( GLint n ) {
-		this->lastTick = n;
-	}
-	inline GLint getLastTick() {
-		return lastTick;
-	}
-
+	float getAttacksPerRound( Item *item = NULL );
+	float getMaxAP();
+	// return the initiative for a battle round, the lower the faster the attack
+	int getInitiative( int *max = NULL );
 	// FIXME: should be modified by inventory (boots of speed, etc.)
+
 	inline int getSpeed() {
 		return speed;
 	}
 
-	/**
-	The movement functions return true if movement has occured, false if it has not.
-	 */
-
-	bool move( Uint16 dir );
-	void switchDirection( bool force );
-	bool follow( Creature *leader );
-	Location *moveToLocator();
-	void stopMoving();
-
-	/// The name of the 3D model used for the creature.
-	inline char *getModelName() {
-		return model_name;
-	}
-	inline char *getSkinName() {
-		return skin_name;
-	}
-	/// The 3D shape of the creature.
-	inline GLShape *getShape() {
-		return shape;
-	}
-	inline void setFormation( int formation ) {
-		this->formation = formation;
-	}
-	/// Formations are currently unused.
-	inline int getFormation() {
-		return formation;
-	}
-	inline Uint16 getDir() {
-		return dir;
-	}
-	/// Direction of movement (U, D, L, R).
-	inline void setDir( Uint16 dir ) {
-		this->dir = dir;
-	}
-
-	void draw();
-
-	bool setSelXY( int x, int y, bool cancelIfNotPossible = false );
-	bool setSelCreature( Creature* creature, float range, bool cancelIfNotPossible = false );
-	/// Set target without performing pathfinding.
-	inline void setSelXYNoPath( int x, int y ) {
-		selX = x; selY = y;
-	}
-
-	/// Map X coordinate of selection target.
-	inline int getSelX() {
-		return selX;
-	}
-	/// Map Y coordinate of selection target.
-	inline int getSelY() {
-		return selY;
-	}
-	/// Unused.
-	inline void setMapChanged() {
-		mapChanged = true;
-	}
-	bool anyMovesLeft();
-	/// Makes the creature move out of another creature's path.
-	void moveAway( Creature *other );
-	//void cancelMoveAway();
-
-	// inventory
-	float inventoryWeight;
-	/// Total weight of the inventory.
-	inline float getInventoryWeight() {
-		return inventoryWeight;
-	}
-	float getMaxInventoryWeight();
-	Item *getEquippedInventory( int index );
-	bool isEquippedWeapon( int index );
-
-	/// The item at a specified inventory index.
-	Item *getInventory( int index );
-	/// Number of items carried in inventory.
-	int getInventoryCount();
-	/// Adds an item to the inventory at the specified index.
-//	inline void setInventory( int index, Item *item ) {
-//		if ( index < inventory_count ) inventory[index] = item;
-//	}
-	/// The active weapon.
-	inline int getPreferredWeapon() {
-		return preferredWeapon;
-	}
-	inline void setPreferredWeapon( int n ) {
-		preferredWeapon = n;
-	}
-	bool nextPreferredWeapon();
-
-	void pickUpOnMap( RenderedItem *item );
-	bool addInventory( Item *item, bool force = false );
-	Item *removeInventory( int index );
-	int findInInventory( Item *item );
-
-	bool eatDrink( int index );
-	bool eatDrink( Item *item );
-
-	void equipInventory( int index, int locationHint = -1 );
-	int doff( int index );
-
-	int getEquippedIndex( int index );
-	bool isItemInInventory( Item *item );
-
-	Item *getItemAtLocation( int location );
-	bool isEquipped( Item *item );
-	bool isEquipped( int inventoryIndex );
-	bool removeCursedItems();
-	InventoryInfo *getInventoryInfo( Item *item, bool createIfMissing = false );
-
+	float getWeaponAPCost( Item *item, bool showDebug = true );
 
 	// return the best equipped weapon that works on this distance,
 	// or NULL if none are available
 	Item *getBestWeapon( float dist, bool callScript = false );
 
-	float getAttacksPerRound( Item *item = NULL );
-	float getWeaponAPCost( Item *item, bool showDebug = true );
+	// Attack related.
 
-	void setNpcInfo( NpcInfo *npcInfo );
-	/// Extra info for edited NPCs.
-	inline NpcInfo *getNpcInfo() {
-		return npcInfo;
+	/// The active weapon.
+	inline int getPreferredWeapon() {
+		return preferredWeapon;
 	}
 
-	/// The creature's UNLOCALIZED name.
-	inline char *getName() {
-		return name;
-	}
-	/// Gets character info.
-	inline Character *getCharacter() {
-		return character;
-	}
-	/// Gets monster/NPC info.
-	inline Monster *getMonster() {
-		return monster;
-	}
-	/// The creature's level.
-	inline int getLevel() {
-		return level;
-	}
-	/// Experience points needed for next level.
-	inline int getExpOfNextLevel() {
-		return expOfNextLevel;
-	}
-	/// Experience points.
-	inline int getExp() {
-		return experience;
-	}
-	/// Amount of money the creature holds.
-	inline int getMoney() {
-		return money;
-	}
-	/// Current hit points.
-	inline int getHp() {
-		return hp;
-	}
-	/// Starting HP for level 1.
-	inline int getStartingHp() {
-		return hp;
-	}
-	int getMaxHp();
-	/// Current magic points.
-	inline int getMp() {
-		return mp;
-	}
-	/// Starting MP for level 1.
-	inline int getStartingMp() {
-		return mp;
-	}
-	int getMaxMp();
-	/// Current thirst level.
-	inline int getThirst() {
-		return thirst;
-	}
-	/// Current hunger level.
-	inline int getHunger() {
-		return hunger;
-	}
-	/// Returns the value of the specified skill.
-	inline int getSkill( int index, bool includeMod = true ) {
-		return skills[index] + skillBonus[index] + ( includeMod ? skillMod[index] : 0 );
-	}
-	/// Returns the active state of a state mod.
-	inline bool getStateMod( int mod ) {
-		return ( stateMod & ( 1 << mod ) ? true : false );
-	}
-	/// Returns whether the specified state mod is protected (by an item etc.)
-	inline bool getProtectedStateMod( int mod ) {
-		return ( protStateMod & ( 1 << mod ) ? true : false );
+	inline void setPreferredWeapon( int n ) {
+		preferredWeapon = n;
 	}
 
-	inline void setName( char *s ) {
-		strncpy( name, s, 254 ); name[254] = '\0';
-	}
-	void setCharacter( Character *c );
-	/// Sets the character's level.
-	inline void setLevel( int n ) {
-		level = ( n < 0 ? 0 : n ); evalSpecialSkills();
-	}
-	void setExp();
-	/// Amount of experience points.
-	inline void setExp( int n ) {
-		experience = ( n < 0 ? 0 : n ); evalSpecialSkills();
-	}
-	/// Amount of gold.
-	inline void setMoney( int n ) {
-		money = n; evalSpecialSkills();
-	}
-	/// Sets amount of hit points.
-	inline void setHp( int n ) {
-		hp = ( n < 0 ? 0 : n ); evalSpecialSkills();
-	}
-	/// Sets amount of magic points.
-	inline void setMp( int n ) {
-		mp = ( n < 0 ? 0 : n ); evalSpecialSkills();
-	}
-	/// Sets thirst level.
-	inline void setThirst( int n )  {
-		if ( n < 0 )n = 0; if ( n > 10 )n = 10; thirst = n; evalSpecialSkills();
-	}
-	/// Sets hunger level.
-	inline void setHunger( int n )  {
-		if ( n < 0 )n = 0; if ( n > 10 )n = 10; hunger = n; evalSpecialSkills();
-	}
-	void setHp();
-	void setMp();
+	bool nextPreferredWeapon();
 
-	void setSkill( int index, int value );
-	void setSkillBonus( int index, int value );
-	/// Additional skill bonus.
-	inline int getSkillBonus( int index ) {
-		return skillBonus[index];
+	bool canAttack( RenderedCreature *creature, int *cursor = NULL );
+	float getAttack( Item *weapon, float *maxP = NULL, float *minP = NULL, bool callScript = false );
+	void getCth( Item *weapon, float *cth, float *skill, bool showDebug = true );
+	float getAttackerStateModPercent();
+	float rollMagicDamagePercent( Item *item );
+
+	std::vector<RenderedProjectile*> *getProjectiles();
+	int getMaxProjectileCount( Item *item );
+
+	// Defense related.
+
+	float getParry( Item **parryItem );
+	float getDodge( Creature *attacker, Item *weapon = NULL );
+
+	float getArmor( float *armor, float *dodgePenalty, int damageType, Item *vsWeapon = NULL );
+	inline int getBonusArmor() {
+		return bonusArmor;
 	}
-	void setSkillMod( int index, int value );
-	/// Skill modification (after levelup) that has not yet been applied.
-	inline int getSkillMod( int index ) {
-		return skillMod[index];
-	}
-	void applySkillMods();
-	/// Still skill points left?
-	bool getHasAvailableSkillPoints() {
-		return hasAvailableSkillPoints;
+	inline void setBonusArmor( int n ) {
+		bonusArmor = n; if ( bonusArmor < 0 ) bonusArmor = 0; recalcAggregateValues();
 	}
 
-	inline int getAvailableSkillMod() {
-		return availableSkillMod;
-	}
-	inline void setAvailableSkillMod( int n ) {
-		availableSkillMod = n;
-		if ( !hasAvailableSkillPoints && n > 0 ) hasAvailableSkillPoints = true;
-	}
-	void setStateMod( int mod, bool setting );
-	void setProtectedStateMod( int mod, bool setting );
-
-	// return the initiative for a battle round, the lower the faster the attack
-	int getInitiative( int *max = NULL );
+	float getDefenderStateModPercent( bool magical );
 
 	// take damage
 	// return true if the creature dies
 	bool takeDamage( float damage, int effect_type = Constants::EFFECT_GLOW, GLuint delay = 0 );
 
-	void resurrect( int rx, int ry );
-
-	// returns exp gained
-	int addExperience( Creature *creature_killed );
-
-	int addExperience( int exp );
-
-	int addExperienceWithMessage( int exp );
-
-	// get angle to target creature
-	float getTargetAngle();
-
-	// returns coins gained
-	int addMoney( Creature *creature_killed );
-
-	void getDetailedDescription( std::string& s );
-
-	int getMaxProjectileCount( Item *item );
-
-	std::vector<RenderedProjectile*> *getProjectiles();
-
-	void usePotion( Item *item );
-
-	inline void setBonusArmor( int n ) {
-		bonusArmor = n; if ( bonusArmor < 0 ) bonusArmor = 0; recalcAggregateValues();
-	}
-	inline int getBonusArmor() {
-		return bonusArmor;
-	}
-
-	bool addSpell( Spell *spell );
-	bool isSpellMemorized( Spell *spell );
-	/// Number of spells the creature knows.
-	inline int getSpellCount() {
-		return static_cast<int>( spells.size() );
-	}
-	inline Spell *getSpell( int index ) {
-		return spells[index];
-	}
+	// Action scheduler.
 
 	void setAction( int action, Item *item = NULL, Spell *spell = NULL, SpecialSkill *skill = NULL );
 	/// Current creature action (item, spell, capability).
@@ -744,80 +886,83 @@ public:
 		return actionSkill;
 	}
 
-	inline bool isBusy() {
-		return hasTarget() || getAction() > Constants::ACTION_NO_ACTION || getActionItem() || getActionSkill() || getActionSpell();
-	}
-	
+	// Target handling.
 
-	// handling battle targets
+	bool isTargetValid();
+
 	inline bool hasTarget() {
 		return targetCreature || targetItem || targetX || targetY || targetZ;
 	}
-	bool isTargetValid();
-	bool canAttack( RenderedCreature *creature, int *cursor = NULL );
+
 	void cancelTarget();
-	//void makeTargetRetaliate();
+
+	/// Are we doing something (not being idle?)
+	inline bool isBusy() {
+		return hasTarget() || getAction() > Constants::ACTION_NO_ACTION || getActionItem() || getActionSkill() || getActionSpell();
+	}
+
+	// The descriptions of why you died.
+
+	inline void setCauseOfDeath( char *s ) {
+		strncpy( this->causeOfDeath, s, 254 ); this->causeOfDeath[254] = 0;
+	}
+
+	inline char *getCauseOfDeath() {
+		return this->causeOfDeath;
+	}
+
+	inline void setPendingCauseOfDeath( char *s ) {
+		strncpy( this->pendingCauseOfDeath, s, 254 ); this->pendingCauseOfDeath[254] = 0;
+	}
+
+	inline char *getPendingCauseOfDeath() {
+		return this->pendingCauseOfDeath;
+	}
+
+	// Misc. methods.
+
+	// returns exp gained
+	int addExperience( Creature *creature_killed );
+
+	// returns coins gained
+	int addMoney( Creature *creature_killed );
+
+	// ###################
+	// #### AI BATTLE ####
+	// ###################
+
 	void decideAction();
 
 	Creature *getClosestTarget();
 	bool attackClosestTarget();
+
 	Creature *getRandomTarget();
 	bool attackRandomTarget();
-	bool castHealingSpell();
-
-	float getDistanceToTarget( RenderedCreature *creature = NULL );
-	float getDistance( RenderedCreature *other );
-	float getDistanceToSel();
 
 	bool isWithPrereq( Item *item );
 	bool isWithPrereq( Spell *spell );
 	Creature *findClosestTargetWithPrereq( Spell *spell );
+
+	bool castHealingSpell();
 	bool castOffensiveSpell();
 	bool useMagicItem();
 
-	/// Schedules state mod effects.
-	inline void setStateModEvent( int mod, Event *event ) {
-		stateModEventMap[mod] = event;
+	// ##############
+	// #### MISC ####
+	// ##############
+
+	CreatureInfo *save();
+	static Creature *load( Session *session, CreatureInfo *info );
+
+	void resurrect( int rx, int ry );
+
+	/// Unused.
+	inline void setLastTick( GLint n ) {
+		this->lastTick = n;
 	}
-	inline Event *getStateModEvent( int mod ) {
-		return( stateModEventMap.find( mod ) == stateModEventMap.end() ? NULL : stateModEventMap[mod] );
-	}
-
-
-	// ======================================
-	// Combat methods
-	void getCth( Item *weapon, float *cth, float *skill, bool showDebug = true );
-
-	float getDodge( Creature *attacker, Item *weapon = NULL );
-
-	float getAttack( Item *weapon,
-	                 float *maxP = NULL,
-	                 float *minP = NULL,
-	                 bool callScript = false );
-
-	float getParry( Item **parryItem );
-
-	float getArmor( float *armor, float *dodgePenalty, int damageType, Item *vsWeapon = NULL );
-
-	float getAttackerStateModPercent();
-	float getDefenderStateModPercent( bool magical );
-	float rollMagicDamagePercent( Item *item );
-	float getMaxAP();
-	char *canEquipItem( Item *item, bool interactive = true );
-	bool rollSkill( int skill, float luckDiv = 0.0f );
-	bool rollSecretDoor( Location *pos );
-	void resetSecretDoorAttempts();
-	bool rollTrapFind( Trap *trap );
-	void resetTrapFindAttempts();
-	void rollPerception();
-	void disableTrap( Trap *trap );
-	char *getType();
-
-	inline bool isInventoryArranged() {
-		return inventoryArranged;
-	}
-	inline void setInventoryArranged( bool b ) {
-		inventoryArranged = b;
+	/// Unused.
+	inline GLint getLastTick() {
+		return lastTick;
 	}
 
 protected:

@@ -1014,14 +1014,14 @@ int Creature::findInInventory( Item *item ) {
 
 /// Removes an item from the inventory at index.
 
-Item *Creature::removeInventory( int index ) {
+Item *Creature::removeInventory( int inventoryIndex ) {
 	Item *item = NULL;
 	if ( index < backpack->getContainedItemCount() ) {
 		// drop item if carrying it
-		doff( index );
+		doff( inventoryIndex );
 		
 		// drop from inventory
-		item = backpack->getContainedItem( index );		
+		item = backpack->getContainedItem( inventoryIndex );		
 
 		InventoryInfo *info = getInventoryInfo( item );
 		invInfos.erase( item );
@@ -1070,8 +1070,8 @@ Item *Creature::removeInventory( int index ) {
 
 /// returns true if ate/drank item completely and false else
 
-bool Creature::eatDrink( int index ) {
-	return eatDrink( getInventory( index ) );
+bool Creature::eatDrink( int inventoryIndex ) {
+	return eatDrink( getInventory( inventoryIndex ) );
 }
 
 bool Creature::eatDrink( Item *item ) {
@@ -1256,13 +1256,13 @@ void Creature::setAction( int action, Item *item, Spell *spell, SpecialSkill *sk
 
 /// equip or doff if already equipped
 
-void Creature::equipInventory( int index, int locationHint ) {
+void Creature::equipInventory( int inventoryIndex, int equipIndexHint ) {
 	this->battle->invalidate();
 	// doff
-	if ( doff( index ) ) return;
+	if ( doff( inventoryIndex ) ) return;
 	// don
 	// FIXME: take into account: two-handed weapons, min skill req-s., etc.
-	Item *item = getInventory( index );
+	Item *item = getInventory( inventoryIndex );
 
 	int place = -1;
 	vector<int> places;
@@ -1270,7 +1270,7 @@ void Creature::equipInventory( int index, int locationHint ) {
 		// if the slot is empty and the item can be worn here
 		if ( item->getRpgItem()->getEquip() & ( 1 << i ) &&
 		        equipped[i] == MAX_INVENTORY_SIZE ) {
-			if ( i == locationHint ) {
+			if ( i == equipIndexHint ) {
 				place = i;
 				break;
 			}
@@ -1285,7 +1285,7 @@ void Creature::equipInventory( int index, int locationHint ) {
 		InventoryInfo *info = getInventoryInfo( item );
 		info->equipIndex = place;
 
-		equipped[ place ] = index;
+		equipped[ place ] = inventoryIndex;
 
 		// once worn, show if it's cursed
 		item->setShowCursed( true );
@@ -1320,11 +1320,11 @@ void Creature::equipInventory( int index, int locationHint ) {
 
 /// Unequips an item.
 
-int Creature::doff( int index ) {
+int Creature::doff( int inventoryIndex ) {
 	// doff
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-		if ( equipped[i] == index ) {
-			Item *item = getInventory( index );
+		if ( equipped[i] == inventoryIndex ) {
+			Item *item = getInventory( inventoryIndex );
 			equipped[i] = MAX_INVENTORY_SIZE;
 			InventoryInfo *info = getInventoryInfo( item );
 			info->equipIndex = -1;
@@ -1373,8 +1373,8 @@ int Creature::doff( int index ) {
 
 /// Get the item at an equip index. (What is at equipped location?)
 
-Item *Creature::getEquippedInventory( int index ) {
-	int n = equipped[index];
+Item *Creature::getEquippedInventory( int equipIndex ) {
+	int n = equipped[equipIndex];
 	if ( n < MAX_INVENTORY_SIZE ) {
 		return getInventory( n );
 	}
@@ -1383,8 +1383,8 @@ Item *Creature::getEquippedInventory( int index ) {
 
 /// Returns whether the item at an equip index is a weapon.
 
-bool Creature::isEquippedWeapon( int location ) {
-	Item *item = getItemAtLocation( location );
+bool Creature::isEquippedWeapon( int equipIndex ) {
+	Item *item = getItemAtLocation( equipIndex );
 	return( item && item->getRpgItem()->isWeapon() );
 }
 
@@ -1432,9 +1432,9 @@ bool Creature::removeCursedItems() {
 
 /// Gets the equip index of the item stored at an inventory index. (Where is the item worn?)
 
-int Creature::getEquippedIndex( int index ) {
-	if ( index < 0 || index >= backpack->getContainedItemCount() ) return -1;
-	InventoryInfo *info = getInventoryInfo( backpack->getContainedItem( index ) );
+int Creature::getEquippedIndex( int inventoryIndex ) {
+	if ( inventoryIndex < 0 || inventoryIndex >= backpack->getContainedItemCount() ) return -1;
+	InventoryInfo *info = getInventoryInfo( backpack->getContainedItem( inventoryIndex ) );
 	return info->equipIndex;
 	/*
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
@@ -1461,10 +1461,10 @@ bool Creature::isItemInInventory( Item *item ) {
 
 /// Return the item at an equip location.
 
-Item *Creature::getItemAtLocation( int location ) {
+Item *Creature::getItemAtLocation( int equipIndex ) {
 	int i;
   for(i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-		if ( ( 1 << i ) == location ) {
+		if ( ( 1 << i ) == equipIndex ) {
 			if ( equipped[i] < MAX_INVENTORY_SIZE ) {
 				return getInventory( equipped[i] );
 			} else {
@@ -2297,17 +2297,18 @@ bool Creature::useMagicItem() {
 
   item = usefulItems [ Util::pickOne( 0, usefulItems.size() - 1 ) ];
   setAction( ( ( item->getRpgItem()->getPotionSkill() < 0 ) ? Constants::ACTION_EAT_DRINK : Constants::ACTION_CAST_SPELL ), item, item->getSpell() );
+
+  return true;
 }
 
 /// Returns the distance to the selected target spot.
 
 float Creature::getDistanceToSel() {
 	if ( selX > -1 && selY > -1 ) {
-		return Constants::distance( getX(),  getY(), getShape()->getWidth(), getShape()->getDepth(),
-		                            selX, selY, 1, 1 );
-	} else {
-		return 0;
+		return Constants::distance( getX(),  getY(), getShape()->getWidth(), getShape()->getDepth(), selX, selY, 1, 1 );
 	}
+
+return 0;
 }
 
 /// Returns the distance to another creature.
@@ -3546,8 +3547,8 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 }
 
 /// The item at a specified inventory index.
-Item *Creature::getInventory( int index ) {
-	return backpack->getContainedItem( index );
+Item *Creature::getInventory( int inventoryIndex ) {
+	return backpack->getContainedItem( inventoryIndex );
 }
 /// Number of items carried in inventory.
 int Creature::getInventoryCount() {
