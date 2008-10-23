@@ -66,13 +66,13 @@ public:
 	Button *getStartGameButton();
 	Button *getCancelButton();
 	void handleEvent( Widget *widget, SDL_Event *event );
-	void createParty( Creature **pc, int *partySize = NULL, bool addRandomInventory = true );
+	void createParty( Creature **pc, int *partySize = NULL, bool addRandomBackpack = true );
 	RenderedCreature *createWanderingHero( int level );
 
 protected:
 	void saveUI( Creature **pc );
-	void addStartingInventory( Creature **pc, int partySize );
-	void addStartingInventory( Creature *pc );
+	void addStartingBackpack( Creature **pc, int partySize );
+	void addStartingBackpack( Creature *pc );
 	//void setCharType( int pcIndex, int charIndex );
 	//void setDeityType( int pcIndex, int deityIndex );
 

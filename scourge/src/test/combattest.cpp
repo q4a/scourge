@@ -79,7 +79,7 @@ bool CombatTest::executeTests( Session *session, char const* path ) {
   char filename[ FILE_NAME_SIZE ];
   for( int i = 0; i < RpgItem::itemCount; i++ ) {
     if( !RpgItem::getItem( i )->isWeapon() ) continue;
-    attacker->removeInventory( 0 );
+    attacker->removeFromBackpack( 0 );
     weapon = equipItem( session, attacker, RpgItem::getItem( i )->getName(), 1 );
     items.push_back( weapon );
     snprintf( filename, FILE_NAME_SIZE, "weapon_%s.html", RpgItem::getItem( i )->getName() );
@@ -87,7 +87,7 @@ bool CombatTest::executeTests( Session *session, char const* path ) {
   }
 
   // Test all character classes with long sword vs. leather armor
-  attacker->removeInventory( 0 );
+  attacker->removeFromBackpack( 0 );
   weapon = equipItem( session, attacker, "Long sword", 1 );
   items.push_back( weapon );
   for( int i = 0; i < static_cast<int>(Character::character_list.size()); i++ ) {
@@ -223,13 +223,13 @@ bool CombatTest::fight( char const* path,
            attacker->getCharacter()->getName(),
            weapon->getRpgItem()->getName(),
            attacker->getLevel() );
-  printInventory( fp, attacker );
+  printBackpack( fp, attacker );
   
   fprintf( fp, "</td><td style='border: none;' valign=top>" );
   fprintf( fp, "Defender: <b>%s</b><br>Level: %d<br>\n",
            defender->getCharacter()->getName(),
            defender->getLevel() );
-  printInventory( fp, defender );
+  printBackpack( fp, defender );
   fprintf( fp, "</td></tr></table>" );
 
   fclose( fp );
@@ -247,7 +247,7 @@ void CombatTest::computeHighLow( float value, float *sum, float *low, float *hig
   *sum += value;
 }
 
-void CombatTest::printInventory( FILE *fp, Creature *creature ) {  
+void CombatTest::printBackpack( FILE *fp, Creature *creature ) {  
   fprintf( fp, "<b>Skills:</b><table><tr><td>Name</td>\
            <td>Value</td><td>MIN-MAX</td></tr>\n" );
   char color[20];
@@ -267,11 +267,11 @@ void CombatTest::printInventory( FILE *fp, Creature *creature ) {
   }
   fprintf( fp, "</table>\n" );
 
-  fprintf( fp, "<b>Inventory:</b><ul>\n" );
-  for( int i = 0; i < creature->getInventoryCount(); i++ ) {
+  fprintf( fp, "<b>Backpack:</b><ul>\n" );
+  for( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
     fprintf( fp, "<li>%s A:%d %s<br>\n", 
-             creature->getInventory( i )->getRpgItem()->getName(),
-             creature->getInventory( i )->getRpgItem()->getDamage(),
+             creature->getBackpackItem( i )->getRpgItem()->getName(),
+             creature->getBackpackItem( i )->getRpgItem()->getDamage(),
              ( creature->isEquipped( i ) ? "<i>Equipped</i>" : "" ) );
   }
   fprintf( fp, "</ul>\n" );
@@ -321,8 +321,8 @@ Item *CombatTest::equipItem( Session *session,
                              char *itemName, 
                              int itemLevel ) {
   Item *item = new Item( session, RpgItem::getItemByName( itemName ), itemLevel );
-  c->addInventory( item, true );
-  c->equipInventory( c->getInventoryCount() - 1 );
+  c->addToBackpack( item, true );
+  c->equipFromBackpack( c->getBackpackContentsCount() - 1 );
   return item;
 }
 

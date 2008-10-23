@@ -47,8 +47,8 @@ private:
 	ScrollingList *spellList;
 	ScrollingLabel *spellDescription;
 	Button *closeButton, *applyButton;
-	std::string spellText[ MAX_INVENTORY_SIZE ];
-	Texture spellIcons[MAX_INVENTORY_SIZE];
+	std::string spellText[ MAX_BACKPACK_SIZE ];
+	Texture spellIcons[MAX_BACKPACK_SIZE];
 
 public:
 	HealDialog( Scourge *scourge );

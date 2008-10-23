@@ -152,7 +152,7 @@ void TradeDialog::render( const Widget *widget, const Item *item, std::string& b
 }
 
 void TradeDialog::trade() {
-	if ( !validateInventory() ) {
+	if ( !validateBackpack() ) {
 		scourge->showMessageDialog( _( "Inventories changed." ) );
 		return;
 	}
@@ -173,23 +173,23 @@ void TradeDialog::trade() {
 	// move items
 	for ( int i = 0; i < playerList->getSelectedLineCount(); i++ ) {
 		Item *item = playerList->getSelectedItem( i );
-		scourge->getParty()->getPlayer()->removeInventory( scourge->getParty()->getPlayer()->findInInventory( item ) );
-		creature->addInventory( item, true );
+		scourge->getParty()->getPlayer()->removeFromBackpack( scourge->getParty()->getPlayer()->findInBackpack( item ) );
+		creature->addToBackpack( item, true );
 		scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() + prices[ ( Item* )item ] );
 	}
 
 	for ( int i = 0; i < creatureList->getSelectedLineCount(); i++ ) {
 		Item *item = creatureList->getSelectedItem( i );
-		if ( !scourge->getPcUi()->receiveInventory( item ) ) {
-			scourge->showMessageDialog( _( "Can't fit item in inventory." ) );
+		if ( !scourge->getPcUi()->addToBackpack( item ) ) {
+			scourge->showMessageDialog( _( "Can't fit item in backpack." ) );
 			return;
 		}
-		creature->removeInventory( creature->findInInventory( item ) );
+		creature->removeFromBackpack( creature->findInBackpack( item ) );
 		scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() - prices[ ( Item* )item ] );
 	}
 
 	updateUI();
-	scourge->refreshInventoryUI();
+	scourge->refreshBackpackUI();
 	scourge->showMessageDialog( _( "Selected items traded." ) );
 }
 
@@ -210,7 +210,7 @@ void TradeDialog::trade() {
  * FIXME: larger items should be harder to steal.
  */
 void TradeDialog::steal() {
-	if ( !validateInventory() ) {
+	if ( !validateBackpack() ) {
 		scourge->showMessageDialog( _( "Inventories changed." ) );
 		return;
 	}
@@ -250,9 +250,9 @@ void TradeDialog::steal() {
 		// move items
 		for ( int i = 0; i < creatureList->getSelectedLineCount(); i++ ) {
 			Item *item = creatureList->getSelectedItem( i );
-			//scourge->getParty()->getPlayer()->addInventory( item, true );
-			if ( scourge->getPcUi()->receiveInventory( item ) ) {
-				creature->removeInventory( creature->findInInventory( item ) );
+			//scourge->getParty()->getPlayer()->addToBackpack( item, true );
+			if ( scourge->getPcUi()->addToBackpack( item ) ) {
+				creature->removeFromBackpack( creature->findInBackpack( item ) );
 			} else {
 				p = _( "You succesfully burgled the items but some did not fit in your backpack!" );
 			}
@@ -279,11 +279,11 @@ void TradeDialog::steal() {
 		scourge->writeLogMessage( s );
 
 		// remove some items
-		for ( int i = 0; i < scourge->getParty()->getPlayer()->getInventoryCount(); i++ ) {
-			Item *item = scourge->getParty()->getPlayer()->getInventory( i );
+		for ( int i = 0; i < scourge->getParty()->getPlayer()->getBackpackContentsCount(); i++ ) {
+			Item *item = scourge->getParty()->getPlayer()->getBackpackItem( i );
 			if ( price - prices[ item ] > 0 ) {
-				scourge->getParty()->getPlayer()->removeInventory( i );
-				creature->addInventory( item, true );
+				scourge->getParty()->getPlayer()->removeFromBackpack( i );
+				creature->addToBackpack( item, true );
 				price -= prices[ item ];
 				snprintf( s, S_SIZE, _( "Item confiscated: %s" ), item->getRpgItem()->getDisplayName() );
 				scourge->writeLogMessage( s );
@@ -294,19 +294,19 @@ void TradeDialog::steal() {
 	}
 
 	updateUI();
-	scourge->refreshInventoryUI();
+	scourge->refreshBackpackUI();
 	scourge->showMessageDialog( p );
 }
 
-bool TradeDialog::validateInventory() {
+bool TradeDialog::validateBackpack() {
 	for ( int i = 0; i < playerList->getSelectedLineCount(); i++ ) {
 		Item *item = playerList->getSelectedItem( i );
-		cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInInventory( item ) << endl;
-		if ( scourge->getParty()->getPlayer()->findInInventory( item ) == -1 ) return false;
+		cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInBackpack( item ) << endl;
+		if ( scourge->getParty()->getPlayer()->findInBackpack( item ) == -1 ) return false;
 	}
 	for ( int i = 0; i < creatureList->getSelectedLineCount(); i++ ) {
 		Item *item = creatureList->getSelectedItem( i );
-		if ( creature->findInInventory( item ) == -1 ) return false;
+		if ( creature->findInBackpack( item ) == -1 ) return false;
 	}
 	return true;
 }

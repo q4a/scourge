@@ -1,5 +1,5 @@
 /***************************************************************************
-                        inven.h  -  Inventory widget
+                        inven.h  -  Backpack widget
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -39,7 +39,7 @@ class Item;
 class PcUi;
 class Storable;
 
-/// Inventory widget and manager.
+/// Backpack widget and manager.
 
 class Inven : public DragAndDropHandler, WidgetView {
 private:
@@ -82,8 +82,8 @@ public:
 
 protected:
 	Item *getItemAtPos( int x, int y );
-	bool findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem = true );
-	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
+	bool findBackpackPosition( Item *item, int x, int y, bool useExistingLocationForSameItem = true );
+	bool checkBackpackLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
 	void convertMousePos( int x, int y, int *invX, int *invY );
 	void showInfo( Item *item );
 	void storeItem( Item *item );

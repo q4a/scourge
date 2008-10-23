@@ -43,7 +43,7 @@ class GameAdapter;
 struct ItemType {
 	char name[40];
 	bool isWeapon, isArmor, isRandom, isRanged, hasSpell, isEnchantable;
-	int inventoryWidth, inventoryHeight;
+	int backpackWidth, backpackHeight;
 };
 
 enum {
@@ -365,11 +365,11 @@ public:
 		return( type == OTHER ? true : false );
 	}
 
-	inline int getInventoryWidth() {
-		return itemTypes[ type ].inventoryWidth;
+	inline int getBackpackWidth() {
+		return itemTypes[ type ].backpackWidth;
 	}
-	inline int getInventoryHeight() {
-		return itemTypes[ type ].inventoryHeight;
+	inline int getBackpackHeight() {
+		return itemTypes[ type ].backpackHeight;
 	}
 
 

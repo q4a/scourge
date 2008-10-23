@@ -117,7 +117,7 @@ void Creature::commonInit() {
 	this->boss = false;
 	this->savedMissionObjective = false;
 
-	this->inventoryArranged = false;
+	this->backpackSorted = false;
 
 	this->causeOfDeath[0] = 0;
 	( ( AnimatedShape* )shape )->setCreatureSpeed( speed );
@@ -139,7 +139,7 @@ void Creature::commonInit() {
 
 	this->preferredWeapon = -1;
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-		equipped[i] = MAX_INVENTORY_SIZE;
+		equipped[i] = MAX_BACKPACK_SIZE;
 	}
 	for ( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
 		skillBonus[i] = skillsUsed[i] = skillMod[i] = 0;
@@ -173,10 +173,10 @@ void Creature::commonInit() {
 	this->availableSkillMod = 0;
 	this->hasAvailableSkillPoints = false;
 
-	// Yes, monsters have inventory weight issues too
-	inventoryWeight =  0.0f;
+	// Yes, monsters have backpack weight issues too
+	backpackWeight =  0.0f;
 	for ( int i = 0; i < backpack->getContainedItemCount(); i++ ) {
-		inventoryWeight += backpack->getContainedItem( i )->getWeight();
+		backpackWeight += backpack->getContainedItem( i )->getWeight();
 	}
 	this->money = this->level * Util::dice( 10 );
 	calculateExpOfNextLevel();
@@ -207,9 +207,9 @@ Creature::~Creature() {
 	    skin_name,
 	    shape,
 	    monster );
-	// delete the inventory infos
-	for ( map<Item*, InventoryInfo*>::iterator e = invInfos.begin(); e != invInfos.end(); ++e ) {
-		InventoryInfo *info = e->second;
+	// delete the backpack infos
+	for ( map<Item*, BackpackInfo*>::iterator e = invInfos.begin(); e != invInfos.end(); ++e ) {
+		BackpackInfo *info = e->second;
 		delete info;
 	}
 	delete backpack;	
@@ -236,7 +236,7 @@ void Creature::changeProfession( Character *c ) {
 
 	// remove forbidden items
 	for( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
-		if ( equipped[i] < MAX_INVENTORY_SIZE ) {
+		if ( equipped[i] < MAX_BACKPACK_SIZE ) {
 			Item *item = backpack->getContainedItem( equipped[i] );
 			if ( !c->canEquip( item->getRpgItem() ) ) {
 				doff( equipped[i] );
@@ -299,10 +299,10 @@ CreatureInfo *Creature::save() {
 	}
 	info->portraitTextureIndex = portraitTextureIndex;
 
-	// inventory
-	info->inventory_count = backpack->getContainedItemCount();
+	// backpack
+	info->backpack_count = backpack->getContainedItemCount();
 	for ( int i = 0; i < backpack->getContainedItemCount(); i++ ) {
-		info->inventory[i] = backpack->getContainedItem( i )->save();
+		info->backpack[i] = backpack->getContainedItem( i )->save();
 	}
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		info->equipped[i] = equipped[i];
@@ -391,7 +391,7 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 
 	for ( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
 		creature->skills[i] = info->skills[i];
-		// Don't set skillBonus: it's reconstructed via the inventory.
+		// Don't set skillBonus: it's reconstructed via the backpack.
 		//creature->skillBonus[i] = info->skillBonus[i];
 		// Don't set skillUsed: it's not used.
 		//creature->skillsUsed[i] = info->skillsUsed[i];
@@ -405,15 +405,15 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 	if ( info->stateMod & ( 1 << StateMod::dead ) ) creature->setStateMod( StateMod::dead, true );
 	//if(info->stateMod & (1 << Constants::leveled)) creature->setStateMod(Constants::leveled, true);
 
-	// inventory
-	//creature->inventory_count = info->inventory_count;
-	for ( int i = 0; i < static_cast<int>( info->inventory_count ); i++ ) {
-		Item *item = Item::load( session, info->inventory[i] );
-		if ( item ) creature->addInventory( item, true );
+	// backpack
+	//creature->backpack_count = info->backpack_count;
+	for ( int i = 0; i < static_cast<int>( info->backpack_count ); i++ ) {
+		Item *item = Item::load( session, info->backpack[i] );
+		if ( item ) creature->addToBackpack( item, true );
 	}
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-		if ( info->equipped[i] < MAX_INVENTORY_SIZE ) {
-			creature->equipInventory( info->equipped[i], i );
+		if ( info->equipped[i] < MAX_BACKPACK_SIZE ) {
+			creature->equipFromBackpack( info->equipped[i], i );
 		} else {
 			creature->equipped[i] = info->equipped[i];
 		}
@@ -438,8 +438,8 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 				if ( special ) creature->setQuickSpell( i, special );
 				else {
 					// it's an item. Find it
-					for ( int t = 0; t < creature->getInventoryCount(); t++ ) {
-						Item *item = creature->getInventory( t );
+					for ( int t = 0; t < creature->getBackpackContentsCount(); t++ ) {
+						Item *item = creature->getBackpackItem( t );
 						if ( !strcmp( item->getName(), ( char* )info->quick_spell[ i ] ) ) {
 							creature->setQuickSpell( i, ( Storable* )item );
 							break;
@@ -937,30 +937,30 @@ bool Creature::anyMovesLeft() {
 
 /// Returns the weight the creature can carry before being overloaded.
 
-float Creature::getMaxInventoryWeight() {
+float Creature::getMaxBackpackWeight() {
 	return static_cast<float>( getSkill( Skill::POWER ) ) * 2.5f;
 }
 
 void Creature::pickUpOnMap( RenderedItem *item ) {
-	addInventory( ( Item* )item );
+	addToBackpack( ( Item* )item );
 }
 
-/// Adds an item to the creature's inventory.
+/// Adds an item to the creature's backpack.
 
-bool Creature::addInventory( Item *item, bool force ) {
-	if ( backpack->getContainedItemCount() < MAX_INVENTORY_SIZE &&
+bool Creature::addToBackpack( Item *item, bool force ) {
+	if ( backpack->getContainedItemCount() < MAX_BACKPACK_SIZE &&
 	        ( force || !item->isBlocking() ||
 	          item->getRpgItem()->getEquip() ||
 	          getShape()->fitsInside( item->getShape(), true ) ) ) {
 
-		InventoryInfo *info = getInventoryInfo( item, true );
+		BackpackInfo *info = getBackpackInfo( item, true );
 		info->equipIndex = -1;
-		info->inventoryIndex = backpack->getContainedItemCount();
+		info->backpackIndex = backpack->getContainedItemCount();
 
 		backpack->addContainedItem( item, true );
-		inventoryWeight += item->getWeight();
+		backpackWeight += item->getWeight();
 
-		if ( inventoryWeight > getMaxInventoryWeight() ) {
+		if ( backpackWeight > getMaxBackpackWeight() ) {
 			if ( isPartyMember() ) {
 				char msg[80];
 				snprintf( msg, 80, _( "%s is overloaded." ), getName() );
@@ -982,12 +982,12 @@ bool Creature::addInventory( Item *item, bool force ) {
 	}
 }
 
-/// Returns the inventory index and equip index of an item.
+/// Returns the backpack index and equip index of an item.
 
-InventoryInfo *Creature::getInventoryInfo( Item *item, bool createIfMissing ) {
+BackpackInfo *Creature::getBackpackInfo( Item *item, bool createIfMissing ) {
 	if ( invInfos.find( item ) == invInfos.end() ) {
 		if ( createIfMissing ) {
-			InventoryInfo *info = new InventoryInfo();
+			BackpackInfo *info = new BackpackInfo();
 			invInfos[ item ] = info;
 			return info;
 		} else {
@@ -998,32 +998,32 @@ InventoryInfo *Creature::getInventoryInfo( Item *item, bool createIfMissing ) {
 	}
 }
 
-/// Returns the inventory index of an item.
+/// Returns the backpack index of an item.
 
-int Creature::findInInventory( Item *item ) {
-	InventoryInfo *info = getInventoryInfo( item );
-	return( info ? info->inventoryIndex : -1 );
+int Creature::findInBackpack( Item *item ) {
+	BackpackInfo *info = getBackpackInfo( item );
+	return( info ? info->backpackIndex : -1 );
 	/*
-	 for(int i = 0; i < inventory_count; i++) {
-	   Item *invItem = inventory[i];
+	 for(int i = 0; i < backpack_count; i++) {
+	   Item *invItem = backpack[i];
 	   if(item == invItem) return i;
 	 }
 	 return -1;
 	*/
 }
 
-/// Removes an item from the inventory at index.
+/// Removes an item from the backpack at index.
 
-Item *Creature::removeInventory( int inventoryIndex ) {
+Item *Creature::removeFromBackpack( int backpackIndex ) {
 	Item *item = NULL;
 	if ( index < backpack->getContainedItemCount() ) {
 		// drop item if carrying it
-		doff( inventoryIndex );
+		doff( backpackIndex );
 		
-		// drop from inventory
-		item = backpack->getContainedItem( inventoryIndex );		
+		// drop from backpack
+		item = backpack->getContainedItem( backpackIndex );		
 
-		InventoryInfo *info = getInventoryInfo( item );
+		BackpackInfo *info = getBackpackInfo( item );
 		invInfos.erase( item );
 		delete info;
 
@@ -1039,8 +1039,8 @@ Item *Creature::removeInventory( int inventoryIndex ) {
 			}
 		}
 
-		inventoryWeight -= item->getWeight();
-		if ( getStateMod( StateMod::overloaded ) && inventoryWeight < getMaxInventoryWeight() ) {
+		backpackWeight -= item->getWeight();
+		if ( getStateMod( StateMod::overloaded ) && backpackWeight < getMaxBackpackWeight() ) {
 			if ( isPartyMember() ) {
 				char msg[80];
 				snprintf( msg, 80, _( "%s is not overloaded anymore." ), getName() );
@@ -1052,14 +1052,14 @@ Item *Creature::removeInventory( int inventoryIndex ) {
 		// remove it from the backpack
 		backpack->removeContainedItem( item );
 
-		// update the inventory infos of items higher than the removed item... (HACK!)
+		// update the backpack infos of items higher than the removed item... (HACK!)
 		for ( int i = index; i < backpack->getContainedItemCount(); i++ ) {
-			InventoryInfo *info = getInventoryInfo( backpack->getContainedItem( i ) );
-			info->inventoryIndex--;
+			BackpackInfo *info = getBackpackInfo( backpack->getContainedItem( i ) );
+			info->backpackIndex--;
 		}
 		// adjust equipped indexes too
     for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-			if ( equipped[i] > index && equipped[i] < MAX_INVENTORY_SIZE ) {
+			if ( equipped[i] > index && equipped[i] < MAX_BACKPACK_SIZE ) {
 				equipped[i]--;
 			}
 		}
@@ -1070,8 +1070,8 @@ Item *Creature::removeInventory( int inventoryIndex ) {
 
 /// returns true if ate/drank item completely and false else
 
-bool Creature::eatDrink( int inventoryIndex ) {
-	return eatDrink( getInventory( inventoryIndex ) );
+bool Creature::eatDrink( int backpackIndex ) {
+	return eatDrink( getBackpackItem( backpackIndex ) );
 }
 
 bool Creature::eatDrink( Item *item ) {
@@ -1256,20 +1256,20 @@ void Creature::setAction( int action, Item *item, Spell *spell, SpecialSkill *sk
 
 /// equip or doff if already equipped
 
-void Creature::equipInventory( int inventoryIndex, int equipIndexHint ) {
+void Creature::equipFromBackpack( int backpackIndex, int equipIndexHint ) {
 	this->battle->invalidate();
 	// doff
-	if ( doff( inventoryIndex ) ) return;
+	if ( doff( backpackIndex ) ) return;
 	// don
 	// FIXME: take into account: two-handed weapons, min skill req-s., etc.
-	Item *item = getInventory( inventoryIndex );
+	Item *item = getBackpackItem( backpackIndex );
 
 	int place = -1;
 	vector<int> places;
 	for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		// if the slot is empty and the item can be worn here
 		if ( item->getRpgItem()->getEquip() & ( 1 << i ) &&
-		        equipped[i] == MAX_INVENTORY_SIZE ) {
+		        equipped[i] == MAX_BACKPACK_SIZE ) {
 			if ( i == equipIndexHint ) {
 				place = i;
 				break;
@@ -1282,10 +1282,10 @@ void Creature::equipInventory( int inventoryIndex, int equipIndexHint ) {
 	}
 	if ( place > -1 ) {
 
-		InventoryInfo *info = getInventoryInfo( item );
+		BackpackInfo *info = getBackpackInfo( item );
 		info->equipIndex = place;
 
-		equipped[ place ] = inventoryIndex;
+		equipped[ place ] = backpackIndex;
 
 		// once worn, show if it's cursed
 		item->setShowCursed( true );
@@ -1320,13 +1320,13 @@ void Creature::equipInventory( int inventoryIndex, int equipIndexHint ) {
 
 /// Unequips an item.
 
-int Creature::doff( int inventoryIndex ) {
+int Creature::doff( int backpackIndex ) {
 	// doff
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-		if ( equipped[i] == inventoryIndex ) {
-			Item *item = getInventory( inventoryIndex );
-			equipped[i] = MAX_INVENTORY_SIZE;
-			InventoryInfo *info = getInventoryInfo( item );
+		if ( equipped[i] == backpackIndex ) {
+			Item *item = getBackpackItem( backpackIndex );
+			equipped[i] = MAX_BACKPACK_SIZE;
+			BackpackInfo *info = getBackpackInfo( item );
 			info->equipIndex = -1;
 
 			// handle magic attrib settings
@@ -1373,10 +1373,10 @@ int Creature::doff( int inventoryIndex ) {
 
 /// Get the item at an equip index. (What is at equipped location?)
 
-Item *Creature::getEquippedInventory( int equipIndex ) {
+Item *Creature::getEquippedItem( int equipIndex ) {
 	int n = equipped[equipIndex];
-	if ( n < MAX_INVENTORY_SIZE ) {
-		return getInventory( n );
+	if ( n < MAX_BACKPACK_SIZE ) {
+		return getBackpackItem( n );
 	}
 	return NULL;
 }
@@ -1384,7 +1384,7 @@ Item *Creature::getEquippedInventory( int equipIndex ) {
 /// Returns whether the item at an equip index is a weapon.
 
 bool Creature::isEquippedWeapon( int equipIndex ) {
-	Item *item = getItemAtLocation( equipIndex );
+	Item *item = getEquippedItem( equipIndex );
 	return( item && item->getRpgItem()->isWeapon() );
 }
 
@@ -1392,25 +1392,25 @@ bool Creature::isEquippedWeapon( int equipIndex ) {
 /// Returns whether the creature has an item currently equipped.
 
 bool Creature::isEquipped( Item *item ) {
-	InventoryInfo *info = getInventoryInfo( item );
+	BackpackInfo *info = getBackpackInfo( item );
 	return( info && info->equipIndex > -1 );
 	/*
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-	   if(equipped[i] < MAX_INVENTORY_SIZE &&
-	      inventory[ equipped[i] ] == item ) return true;
+	   if(equipped[i] < MAX_BACKPACK_SIZE &&
+	      backpack[ equipped[i] ] == item ) return true;
 	 }
 	 return false;
 	*/
 }
 
-/// Returns whether an item at an inventory location is currently equipped somewhere.
+/// Returns whether an item at an backpack location is currently equipped somewhere.
 
-bool Creature::isEquipped( int inventoryIndex ) {
-	if ( inventoryIndex < 0 || inventoryIndex >= backpack->getContainedItemCount() ) return false;
-	return isEquipped( backpack->getContainedItem( inventoryIndex ) );
+bool Creature::isEquipped( int backpackIndex ) {
+	if ( backpackIndex < 0 || backpackIndex >= backpack->getContainedItemCount() ) return false;
+	return isEquipped( backpack->getContainedItem( backpackIndex ) );
 	/*
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-	   if( equipped[i] == inventoryIndex ) return true;
+	   if( equipped[i] == backpackIndex ) return true;
 	 }
 	 return false;
 	*/
@@ -1421,7 +1421,7 @@ bool Creature::isEquipped( int inventoryIndex ) {
 bool Creature::removeCursedItems() {
 	bool found = false;
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-		if ( equipped[i] < MAX_INVENTORY_SIZE && backpack->getContainedItem( equipped[i] )->isCursed() ) {
+		if ( equipped[i] < MAX_BACKPACK_SIZE && backpack->getContainedItem( equipped[i] )->isCursed() ) {
 			found = true;
 			// not the most efficient way to do this, but it works...
 			doff( equipped[i] );
@@ -1430,11 +1430,11 @@ bool Creature::removeCursedItems() {
 	return found;
 }
 
-/// Gets the equip index of the item stored at an inventory index. (Where is the item worn?)
+/// Gets the equip index of the item stored at an backpack index. (Where is the item worn?)
 
-int Creature::getEquippedIndex( int inventoryIndex ) {
-	if ( inventoryIndex < 0 || inventoryIndex >= backpack->getContainedItemCount() ) return -1;
-	InventoryInfo *info = getInventoryInfo( backpack->getContainedItem( inventoryIndex ) );
+int Creature::getEquippedIndex( int backpackIndex ) {
+	if ( backpackIndex < 0 || backpackIndex >= backpack->getContainedItemCount() ) return -1;
+	BackpackInfo *info = getBackpackInfo( backpack->getContainedItem( backpackIndex ) );
 	return info->equipIndex;
 	/*
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
@@ -1444,11 +1444,11 @@ int Creature::getEquippedIndex( int inventoryIndex ) {
 	*/
 }
 
-/// Returns whether an item is worn in the inventory (also recurses containers).
+/// Returns whether an item is worn in the backpack (also recurses containers).
 
-bool Creature::isItemInInventory( Item *item ) {
+bool Creature::isItemInBackpack( Item *item ) {
 	// -=K=-: reverting that back; carried container contents get deleted in Session::cleanUpAfterMission otherwise
-	// return( getInventoryInfo( item ) ? true : false );
+	// return( getBackpackInfo( item ) ? true : false );
 
 	for ( int i = 0; i < backpack->getContainedItemCount(); i++ ) {
 		if ( backpack->getContainedItem( i ) == item || ( backpack->getContainedItem( i )->getRpgItem()->getType() == RpgItem::CONTAINER &&
@@ -1457,22 +1457,6 @@ bool Creature::isItemInInventory( Item *item ) {
 	}
 	return false;
 
-}
-
-/// Return the item at an equip location.
-
-Item *Creature::getItemAtLocation( int equipIndex ) {
-	int i;
-  for(i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-		if ( ( 1 << i ) == equipIndex ) {
-			if ( equipped[i] < MAX_INVENTORY_SIZE ) {
-				return getInventory( equipped[i] );
-			} else {
-				return NULL;
-			}
-		}
-	}
-	return NULL;
 }
 
 /// Calculates the aggregate values based on equipped items.
@@ -1498,7 +1482,7 @@ void Creature::recalcAggregateValues() {
 	}
 
 	for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-		Item *item = getEquippedInventory( i );
+		Item *item = getEquippedItem( i );
 		// handle magic attrib settings
 		if ( item != NULL && item->isMagicItem() ) {
 
@@ -1548,7 +1532,7 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
 
 	// for TB combat for players, respect the current weapon
 	if ( session->getPreferences()->isBattleTurnBased() && isPartyMember() ) {
-		ret = ( preferredWeapon > -1 ? getItemAtLocation( preferredWeapon ) : NULL );
+		ret = ( preferredWeapon > -1 ? getEquippedItem( preferredWeapon ) : NULL );
 	} else {
 		int location[] = {
       Constants::EQUIP_LOCATION_RIGHT_HAND,
@@ -1557,7 +1541,7 @@ Item *Creature::getBestWeapon( float dist, bool callScript ) {
 			-1
 		};
 		for ( int i = 0; location[i] > -1; i++ ) {
-			Item *item = getItemAtLocation( location[i] );
+			Item *item = getEquippedItem( location[i] );
 			if ( item &&
 			        item->getRpgItem()->isWeapon() &&
 			        item->getRange() >= dist ) {
@@ -1690,7 +1674,7 @@ int Creature::addExperience( int delta ) {
 		char message[255];
 		snprintf( message, 255, _( "  %s levels up!" ), getName() );
 		session->getGameAdapter()->startTextEffect( message );
-		session->getGameAdapter()->refreshInventoryUI();
+		session->getGameAdapter()->refreshBackpackUI();
 	}
 
 	evalSpecialSkills();
@@ -1782,13 +1766,13 @@ void Creature::monsterInit() {
 		stateMod = monster->getStartingStateMod();
 	}
 
-	// equip starting inventory
+	// equip starting backpack
 	for ( int i = 0; i < getMonster()->getStartingItemCount(); i++ ) {
 		int itemLevel = getMonster()->getLevel() - Util::dice(  2 );
 		if ( itemLevel < 1 ) itemLevel = 1;
 		Item *item = session->newItem( getMonster()->getStartingItem( i ), itemLevel );
-		addInventory( item, true );
-		equipInventory( backpack->getContainedItemCount() - 1 );
+		addToBackpack( item, true );
+		equipFromBackpack( backpack->getContainedItemCount() - 1 );
 	}
 
 	// add some loot
@@ -1807,7 +1791,7 @@ void Creature::monsterInit() {
 		}
 		//cerr << "\t" << loot->getRpgItem()->getName() << endl;
 		// make it contain all items, no matter what size
-		addInventory( loot, true );
+		addToBackpack( loot, true );
 	}
 
 	// add spells
@@ -2232,7 +2216,7 @@ bool Creature::castOffensiveSpell() {
 
   float minSpellDamage, maxSpellDamage;
   float minWeaponDamage, maxWeaponDamage;
-  getAttack( getEquippedInventory( getPreferredWeapon() ), &maxWeaponDamage, &minWeaponDamage );
+  getAttack( getEquippedItem( getPreferredWeapon() ), &maxWeaponDamage, &minWeaponDamage );
 
   bool enoughMp, found;
   enoughMp = found = false;
@@ -2417,11 +2401,11 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
 	this->npcInfo = npcInfo;
 	setName( npcInfo->name );
 
-	// for merchants, re-create inventory with the correct types
+	// for merchants, re-create backpack with the correct types
 	if ( npcInfo->type == Constants::NPC_TYPE_MERCHANT ) {
-		// drop everything beyond the basic inventory
-		for ( int i = getMonster()->getStartingItemCount(); i < this->getInventoryCount(); i++ ) {
-			this->removeInventory( getMonster()->getStartingItemCount() );
+		// drop everything beyond the basic backpack
+		for ( int i = getMonster()->getStartingItemCount(); i < this->getBackpackContentsCount(); i++ ) {
+			this->removeFromBackpack( getMonster()->getStartingItemCount() );
 		}
 
 		std::vector<int> types( npcInfo->getSubtype()->size() + 1 );
@@ -2456,7 +2440,7 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
 			}
 			//cerr << "\t" << loot->getRpgItem()->getName() << endl;
 			// make it contain all items, no matter what size
-			addInventory( loot, true );
+			addToBackpack( loot, true );
 		}
 	}
 }
@@ -2771,7 +2755,7 @@ void Creature::calcArmor( int damageType,
 			lastDodgePenalty[ t ] = 0;
 			int armorCount = 0;
 			for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-				if ( equipped[i] != MAX_INVENTORY_SIZE ) {
+				if ( equipped[i] != MAX_BACKPACK_SIZE ) {
 					Item *item = backpack->getContainedItem( equipped[ i ] );
 					if ( item->getRpgItem()->getType() == RpgItem::ARMOR ||
 					        ( item->isMagicItem() && item->getBonus() > 0 && !item->getRpgItem()->isWeapon() ) ) {
@@ -3006,7 +2990,7 @@ float Creature::getParry( Item **parryItem ) {
 	float ret = 0;
 	float maxParry = 0;
 	for ( int i = 0; location[i] > -1; i++ ) {
-		Item *item = getItemAtLocation( location[i] );
+		Item *item = getEquippedItem( location[i] );
 		if ( !item ) continue;
 		if ( item->getRpgItem()->getDefenseSkill() == Skill::SHIELD_DEFEND ) {
 			// parry using a shield: use shield skill to parry
@@ -3203,8 +3187,8 @@ char *Creature::canEquipItem( Item *item, bool interactive ) {
 	// two handed weapon violations
   if( item->getRpgItem()->getEquip() & Constants::EQUIP_LOCATION_LEFT_HAND ||
       item->getRpgItem()->getEquip() & Constants::EQUIP_LOCATION_RIGHT_HAND ) {
-    Item *leftHandWeapon = getItemAtLocation( Constants::EQUIP_LOCATION_LEFT_HAND );
-    Item *rightHandWeapon = getItemAtLocation( Constants::EQUIP_LOCATION_RIGHT_HAND );
+    Item *leftHandWeapon = getEquippedItem( Constants::EQUIP_LOCATION_LEFT_HAND );
+    Item *rightHandWeapon = getEquippedItem( Constants::EQUIP_LOCATION_RIGHT_HAND );
 		bool bothHandsFree = !( leftHandWeapon || rightHandWeapon );
 		bool holdsTwoHandedWeapon =
 		  ( ( leftHandWeapon && leftHandWeapon->getRpgItem()->getTwoHanded() == RpgItem::ONLY_TWO_HANDED ) ||
@@ -3546,12 +3530,12 @@ void Creature::drawPortrait( int width, int height, bool inFrame ) {
 	}
 }
 
-/// The item at a specified inventory index.
-Item *Creature::getInventory( int inventoryIndex ) {
-	return backpack->getContainedItem( inventoryIndex );
+/// The item at a specified backpack index.
+Item *Creature::getBackpackItem( int backpackIndex ) {
+	return backpack->getContainedItem( backpackIndex );
 }
-/// Number of items carried in inventory.
-int Creature::getInventoryCount() {
+/// Number of items carried in backpack.
+int Creature::getBackpackContentsCount() {
 	return backpack->getContainedItemCount();
 }
 

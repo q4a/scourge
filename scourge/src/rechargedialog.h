@@ -62,7 +62,7 @@ protected:
 	void updateLabels();
 	void recharge();
 	int getSelectedTotal( ItemList *list );
-	bool validateInventory();
+	bool validateBackpack();
 };
 
 #endif

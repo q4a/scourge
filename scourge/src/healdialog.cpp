@@ -49,7 +49,7 @@ HealDialog::HealDialog( Scourge *scourge ) {
 	applyButton = win->createButton( w - 160, y, w - 90, y + h, _( "Buy" ) );
 	closeButton = win->createButton( w - 80, y, w - 10, y + h, _( "Close" ) );
 
-	//this->spellIcons = ( GLuint* )malloc( MAX_INVENTORY_SIZE * sizeof( GLuint ) );
+	//this->spellIcons = ( GLuint* )malloc( MAX_BACKPACK_SIZE * sizeof( GLuint ) );
 }
 
 HealDialog::~HealDialog() {

@@ -82,8 +82,8 @@ void PageCreatures::Init(wxNotebook *notebook, DF *dataFile)
 	npcStartXSpin = new wxSpinCtrl(page, -1, L"", wxPoint(500,90),wxSize(45,-1), wxSP_ARROW_KEYS, -1,500, atoi(creature->npcStartX.c_str()));
 	npcStartYSpin = new wxSpinCtrl(page, -1, L"", wxPoint(550,90),wxSize(45,-1), wxSP_ARROW_KEYS, -1,500, atoi(creature->npcStartY.c_str()));
 
-	// inventory
-	invList->Init(page, L"Inventory", creature->inventory, 10,120, 150);
+	// backpack
+	invList->Init(page, L"Backpack", creature->backpack, 10,120, 150);
 	// spells
 	spellList->Init(page, L"Spells", creature->spells, 170,120, 170);
 
@@ -133,7 +133,7 @@ void PageCreatures::GetCurrent()
 	npcStartXSpin->SetValue( atoi(creature->npcStartX.c_str()) );
 	npcStartYSpin->SetValue( atoi(creature->npcStartY.c_str()) );
 
-	invList->Get( creature->inventory );
+	invList->Get( creature->backpack );
 	spellList->Get( creature->spells );
 
 	skillList->DeleteAllItems();
@@ -176,7 +176,7 @@ void PageCreatures::SetCurrent()
 	sprintf(buffer, "%i", npcStartYSpin->GetValue());
 	creature->npcStartY = buffer;
 
-	invList->Set( creature->inventory );
+	invList->Set( creature->backpack );
 	spellList->Set( creature->spells );
 
 	creature->skills.clear();
@@ -213,7 +213,7 @@ void PageCreatures::ClearCurrent()
 	creature->npcStartX = "";
 	creature->npcStartY = "";
 
-	creature->inventory.clear();
+	creature->backpack.clear();
 	creature->spells.clear();
 	creature->skills.clear();
 }

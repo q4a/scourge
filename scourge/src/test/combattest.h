@@ -43,7 +43,7 @@ protected:
                      Item *weapon,
                      Creature *defender, 
                      int count=100 );
-  static void printInventory( FILE *fp, Creature *creature );
+  static void printBackpack( FILE *fp, Creature *creature );
   static Creature *createCharacter( Session *session, 
                                     char *characterShortName,
                                     char *name,

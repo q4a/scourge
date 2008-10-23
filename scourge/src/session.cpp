@@ -135,7 +135,7 @@ void Session::doInitData() {
 	board = new Board( this );
 
 
-	// do this before the inventory and optionsdialog (so Z is less than of those)
+	// do this before the backpack and optionsdialog (so Z is less than of those)
 	adapter->setUpdate( _( "Initializing Party" ) );
 	party = new Party( this );
 
@@ -288,8 +288,8 @@ Creature *Session::addCreatureFromScript( char *creatureType, int cx, int cy, in
 
 	// register with squirrel
 	getSquirrel()->registerCreature( replacement );
-	for ( int i = 0; i < replacement->getInventoryCount(); i++ ) {
-		getSquirrel()->registerItem( replacement->getInventory( i ) );
+	for ( int i = 0; i < replacement->getBackpackContentsCount(); i++ ) {
+		getSquirrel()->registerItem( replacement->getBackpackItem( i ) );
 	}
 
 	if ( fx && fy ) {
@@ -375,7 +375,7 @@ void Session::addCreatureRef( Creature *creature, int index ) {
 
 void Session::deleteCreaturesAndItems( bool missionItemsOnly ) {
 	// delete the items and creatures created for this mission
-	// (except items in inventory)
+	// (except items in backpack)
 	if ( !missionItemsOnly ) {
 		for ( int i = 0; i < static_cast<int>( newItems.size() ); i++ ) {
 			if ( newItems[i]->isSpecial() ) {
@@ -387,14 +387,14 @@ void Session::deleteCreaturesAndItems( bool missionItemsOnly ) {
 		newItems.clear();
 	} else {
 		for ( int i = 0; i < static_cast<int>( newItems.size() ); i++ ) {
-			bool inInventory = false;
+			bool inBackpack = false;
 			for ( int t = 0; t < getParty()->getPartySize(); t++ ) {
-				if ( getParty()->getParty( t )->isItemInInventory( newItems[i] ) ) {
-					inInventory = true;
+				if ( getParty()->getParty( t )->isItemInBackpack( newItems[i] ) ) {
+					inBackpack = true;
 					break;
 				}
 			}
-			if ( !inInventory ) {
+			if ( !inBackpack ) {
 				if ( newItems[i]->isSpecial() ) {
 					// put special item back into play
 					special.erase( newItems[i]->getRpgItem() );
@@ -536,14 +536,14 @@ void Session::creatureDeath( Creature *creature ) {
 	// add a container object instead
 	//if(battleRound.size() > 0) creature->getShape()->setCurrentAnimation(MD2_DEATH1);
 	Item *item = newItem( RpgItem::getItemByName( "Corpse" ) );
-	// add creature's inventory to container
+	// add creature's backpack to container
 	map->setItem( toint( creature->getX() ),
 	              toint( creature->getY() ),
 	              toint( creature->getZ() ), item );
-	int n = creature->getInventoryCount();
+	int n = creature->getBackpackContentsCount();
 	for ( int i = 0; i < n; i++ ) {
 		// make it contain all items, no matter what size
-		item->addContainedItem( creature->removeInventory( 0 ), true );
+		item->addContainedItem( creature->removeFromBackpack( 0 ), true );
 	}
 	creature->setStateMod( StateMod::dead, true );
 
@@ -734,7 +734,7 @@ Creature *Session::getCreatureByName( char const* name ) {
 void Session::setCurrentMission( Mission *mission ) {
 	Mission *oldMission = currentMission;
 	currentMission = mission;
-	getGameAdapter()->refreshInventoryUI();
+	getGameAdapter()->refreshBackpackUI();
 	if ( oldMission != currentMission && currentMission && currentMission->isStoryLine() && !currentMission->isReplay() ) {
 		char filename[300];
 		snprintf( filename, 300, "/chapters/chapter%d.png", currentMission->getChapter() );

@@ -122,7 +122,7 @@ void RechargeDialog::render( const Widget *widget, const Item *item, std::string
 }
 
 void RechargeDialog::recharge() {
-	if ( !validateInventory() ) {
+	if ( !validateBackpack() ) {
 		scourge->showMessageDialog( _( "Inventories changed." ) );
 		return;
 	}
@@ -146,15 +146,15 @@ void RechargeDialog::recharge() {
 	scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() - totalA );
 
 	updateUI();
-	scourge->refreshInventoryUI();
+	scourge->refreshBackpackUI();
 	scourge->showMessageDialog( _( "Selected items recharged." ) );
 }
 
-bool RechargeDialog::validateInventory() {
+bool RechargeDialog::validateBackpack() {
 	for ( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
 		Item *item = listA->getSelectedItem( i );
-		cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInInventory( item ) << endl;
-		if ( scourge->getParty()->getPlayer()->findInInventory( item ) == -1 ) return false;
+		cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInBackpack( item ) << endl;
+		if ( scourge->getParty()->getPlayer()->findInBackpack( item ) == -1 ) return false;
 	}
 	return true;
 }

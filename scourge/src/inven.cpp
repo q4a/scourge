@@ -1,5 +1,5 @@
 /***************************************************************************
-                       inven.cpp  -  Inventory widget
+                       inven.cpp  -  Backpack widget
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -138,13 +138,13 @@ void Inven::receive( Widget *widget ) {
 		Item *item = pcUi->getScourge()->getMovingItem();
 		if ( item ) {
 			if ( !receive( item, pcUi->getWindow()->isVisible() ) ) {
-				pcUi->getScourge()->showMessageDialog( _( "Can't fit item in inventory." ) );
+				pcUi->getScourge()->showMessageDialog( _( "Can't fit item in backpack." ) );
 			}
 		}
 	}
 }
 
-/// Adds an item to the inventory.
+/// Adds an item to the backpack.
 
 bool Inven::receive( Item *item, bool atCursor ) {
 	//Put item in the most left/top availabel position
@@ -157,12 +157,12 @@ bool Inven::receive( Item *item, bool atCursor ) {
 	}
 
 	// try to fit it
-	if ( !findInventoryPosition( item,
+	if ( !findBackpackPosition( item,
 	                             xPos,
 	                             yPos ) ) {
 		return false;
 	} else {
-		if ( creature->addInventory( item ) ) {
+		if ( creature->addToBackpack( item ) ) {
 			// message: the player accepted the item
 			char message[120];
 			snprintf( message, 119, _( "%s picks up %s." ),
@@ -172,7 +172,7 @@ bool Inven::receive( Item *item, bool atCursor ) {
 			pcUi->getScourge()->endItemDrag();
 			pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_SUCCESS, 127 );
 		} else {
-			// message: the player's inventory is full
+			// message: the player's backpack is full
 			pcUi->getScourge()->getSession()->getSound()->playSound( Window::DROP_FAILED, 127 );
 			return false;
 		}
@@ -186,20 +186,20 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
 	if ( creature && !pcUi->getScourge()->getMovingItem() ) {
 
 		if ( pcUi->getScourge()->getTradeDialog()->getWindow()->isVisible() ) {
-			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while trading." ) );
+			pcUi->getScourge()->showMessageDialog( _( "Can't change backpack while trading." ) );
 			return false;
 		} else if ( pcUi->getScourge()->getUncurseDialog()->getWindow()->isVisible() ) {
-			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while employing a sage's services." ) );
+			pcUi->getScourge()->showMessageDialog( _( "Can't change backpack while employing a sage's services." ) );
 			return false;
 		} else if ( pcUi->getScourge()->getIdentifyDialog()->getWindow()->isVisible() ) {
-			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while employing a sage's services." ) );
+			pcUi->getScourge()->showMessageDialog( _( "Can't change backpack while employing a sage's services." ) );
 			return false;
 		} else if ( pcUi->getScourge()->getRechargeDialog()->getWindow()->isVisible() ) {
-			pcUi->getScourge()->showMessageDialog( _( "Can't change inventory while employing a sage's services." ) );
+			pcUi->getScourge()->showMessageDialog( _( "Can't change backpack while employing a sage's services." ) );
 			return false;
 		}
 
-		// what's equiped at this inventory slot?
+		// what's equipped at this slot?
 		Item *item = getItemAtPos( x, y );
 		if ( item ) {
 			/*
@@ -208,7 +208,7 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
 			 return false;
 			} else {
 			 */
-			creature->removeInventory( creature->findInInventory( item ) );
+			creature->removeFromBackpack( creature->findInBackpack( item ) );
 			pcUi->getScourge()->startItemDragFromGui( item );
 			char message[120];
 			snprintf( message, 119, _( "%s drops %s." ),
@@ -223,7 +223,7 @@ bool Inven::startDrag( Widget *widget, int x, int y ) {
 	return false;
 }
 
-/// Converts a screen pos to an inventory pos.
+/// Converts a screen pos to an backpack pos.
 
 void Inven::convertMousePos( int x, int y, int *invX, int *invY ) {
 	*invX = ( x - OFFSET_X ) / GRID_SIZE;
@@ -236,15 +236,15 @@ void Inven::convertMousePos( int x, int y, int *invX, int *invY ) {
 /// is O(n)
 
 Item *Inven::getItemAtPos( int x, int y ) {
-	for ( int i = 0; creature && i < creature->getInventoryCount(); i++ ) {
+	for ( int i = 0; creature && i < creature->getBackpackContentsCount(); i++ ) {
 		if ( !creature->isEquipped( i ) ) {
-			Item *item = creature->getInventory( i );
+			Item *item = creature->getBackpackItem( i );
 			int posX, posY;
 			convertMousePos( x, y, &posX, &posY );
-			if ( posX >= item->getInventoryX() &&
-			        posX < item->getInventoryX() + item->getInventoryWidth() &&
-			        posY >= item->getInventoryY() &&
-			        posY < item->getInventoryY() + item->getInventoryHeight() ) {
+			if ( posX >= item->getBackpackX() &&
+			        posX < item->getBackpackX() + item->getBackpackWidth() &&
+			        posY >= item->getBackpackY() &&
+			        posY < item->getBackpackY() + item->getBackpackHeight() ) {
 				return item;
 			}
 		}
@@ -252,12 +252,12 @@ Item *Inven::getItemAtPos( int x, int y ) {
 	return NULL;
 }
 
-/// Find an inventory position for an item dropped at screen pos x,y.
+/// Find an backpack position for an item dropped at screen pos x,y.
 
 /// note: optimize this,
 /// current O(n^2)
 
-bool Inven::findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem ) {
+bool Inven::findBackpackPosition( Item *item, int x, int y, bool useExistingLocationForSameItem ) {
 	if ( creature && item ) {
 		int colCount = canvas->getWidth() / GRID_SIZE;
 		int rowCount = canvas->getHeight() / GRID_SIZE;
@@ -270,9 +270,9 @@ bool Inven::findInventoryPosition( Item *item, int x, int y, bool useExistingLoc
 
 		for ( int xx = 0; xx < colCount; xx++ ) {
 			for ( int yy = 0; yy < rowCount; yy++ ) {
-				if ( xx + item->getInventoryWidth() <= colCount &&
-				        yy + item->getInventoryHeight() <= rowCount &&
-				        checkInventoryLocation( item, useExistingLocationForSameItem, xx, yy ) ) {
+				if ( xx + item->getBackpackWidth() <= colCount &&
+				        yy + item->getBackpackHeight() <= rowCount &&
+				        checkBackpackLocation( item, useExistingLocationForSameItem, xx, yy ) ) {
 					if ( posX == xx && posY == yy ) {
 						selX = xx;
 						selY = yy;
@@ -286,24 +286,24 @@ bool Inven::findInventoryPosition( Item *item, int x, int y, bool useExistingLoc
 		}
 
 		if ( selX > -1 ) {
-			item->setInventoryLocation( selX, selY );
+			item->setBackpackLocation( selX, selY );
 			return true;
 		}
 	}
 	return false;
 }
 
-/// Checks whether an item fits into the inventory at screen pos xx,yy.
+/// Checks whether an item fits into the backpack at screen pos xx,yy.
 
-bool Inven::checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy ) {
+bool Inven::checkBackpackLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy ) {
 	SDL_Rect itemRect;
 	itemRect.x = xx;
 	itemRect.y = yy;
-	itemRect.w = item->getInventoryWidth();
-	itemRect.h = item->getInventoryHeight();
-	for ( int t = 0; creature && t < creature->getInventoryCount(); t++ ) {
+	itemRect.w = item->getBackpackWidth();
+	itemRect.h = item->getBackpackHeight();
+	for ( int t = 0; creature && t < creature->getBackpackContentsCount(); t++ ) {
 		if ( !creature->isEquipped( t ) ) {
-			Item *i = creature->getInventory( t );
+			Item *i = creature->getBackpackItem( t );
 			if ( i == item ) {
 				if ( useExistingLocationForSameItem ) {
 					return true;
@@ -313,10 +313,10 @@ bool Inven::checkInventoryLocation( Item *item, bool useExistingLocationForSameI
 			}
 
 			SDL_Rect iRect;
-			iRect.x = i->getInventoryX();
-			iRect.y = i->getInventoryY();
-			iRect.w = i->getInventoryWidth();
-			iRect.h = i->getInventoryHeight();
+			iRect.x = i->getBackpackX();
+			iRect.y = i->getBackpackY();
+			iRect.w = i->getBackpackWidth();
+			iRect.h = i->getBackpackHeight();
 
 			if ( SDLHandler::intersects( &itemRect, &iRect ) ) return false;
 		}
@@ -362,12 +362,12 @@ void Inven::drawWidgetContents( Widget *widget ) {
 		                 &currentX, &currentY );
 		int px = currentX;
 		int py = currentY;
-		if ( px >= 0 && px + pcUi->getScourge()->getMovingItem()->getInventoryWidth() <= colCount &&
-		        py >= 0 && py + pcUi->getScourge()->getMovingItem()->getInventoryHeight() <= rowCount ) {
+		if ( px >= 0 && px + pcUi->getScourge()->getMovingItem()->getBackpackWidth() <= colCount &&
+		        py >= 0 && py + pcUi->getScourge()->getMovingItem()->getBackpackHeight() <= rowCount ) {
 			px *= GRID_SIZE;
 			py *= GRID_SIZE;
-			int pw = pcUi->getScourge()->getMovingItem()->getInventoryWidth() * GRID_SIZE;
-			int ph = pcUi->getScourge()->getMovingItem()->getInventoryHeight() * GRID_SIZE;
+			int pw = pcUi->getScourge()->getMovingItem()->getBackpackWidth() * GRID_SIZE;
+			int ph = pcUi->getScourge()->getMovingItem()->getBackpackHeight() * GRID_SIZE;
 			//cerr << "pw=" << pw << " ph=" << ph << endl;
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2d( px, py );
@@ -396,14 +396,14 @@ void Inven::drawWidgetContents( Widget *widget ) {
 	glColor4f( 1, 1, 1, 1 );
 
 	if ( creature ) {
-		for ( int i = 0; i < creature->getInventoryCount(); i++ ) {
+		for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
 			if ( !creature->isEquipped( i ) ) {
-				Item *item = creature->getInventory( i );
+				Item *item = creature->getBackpackItem( i );
 
-				int ix = item->getInventoryX() * GRID_SIZE;
-				int iy = item->getInventoryY() * GRID_SIZE;
-				int iw = item->getInventoryWidth() * GRID_SIZE;
-				int ih = item->getInventoryHeight() * GRID_SIZE;
+				int ix = item->getBackpackX() * GRID_SIZE;
+				int iy = item->getBackpackY() * GRID_SIZE;
+				int iw = item->getBackpackWidth() * GRID_SIZE;
+				int ih = item->getBackpackHeight() * GRID_SIZE;
 
 				item->renderIcon( pcUi->getScourge(), ix, iy, iw, ih );
 			}
@@ -414,18 +414,18 @@ void Inven::drawWidgetContents( Widget *widget ) {
 	glDisable( GL_TEXTURE_2D );
 }
 
-/// Which creature's inventory will we display?
+/// Which creature's backpack will we display?
 
 void Inven::setCreature( Creature *creature ) {
 	this->creature = creature;
-	if ( !creature->isInventoryArranged() ) {
-		for ( int t = 0; creature && t < creature->getInventoryCount(); t++ ) {
+	if ( !creature->isBackpackSorted() ) {
+		for ( int t = 0; creature && t < creature->getBackpackContentsCount(); t++ ) {
 			if ( !creature->isEquipped( t ) ) {
-				Item *item = creature->getInventory( t );
-				findInventoryPosition( item, -1, -1, false );
+				Item *item = creature->getBackpackItem( t );
+				findBackpackPosition( item, -1, -1, false );
 			}
 		}
-		creature->setInventoryArranged( true );
+		creature->setBackpackSorted( true );
 	}
 }
 

@@ -225,7 +225,7 @@ void Party::setPlayer( int n, bool updateui ) {
 		session->getMap()->refresh();
 		session->getMap()->center( toint( player->getX() ), toint( player->getY() ), true );
 		if ( !session->getGameAdapter()->isHeadless() ) {
-			session->getGameAdapter()->refreshInventoryUI( n );
+			session->getGameAdapter()->refreshBackpackUI( n );
 			session->getGameAdapter()->setPlayerUI( n );
 		}
 
@@ -284,16 +284,16 @@ void Party::setTargetCreature( Creature *creature ) {
 	if ( player_only ) {
 		range = MIN_DISTANCE;
 		if ( player->getPreferredWeapon() > -1 &&
-		        player->getItemAtLocation( player->getPreferredWeapon() ) ) {
-			range = player->getItemAtLocation( player->getPreferredWeapon() )->getRange();
+		        player->getEquippedItem( player->getPreferredWeapon() ) ) {
+			range = player->getEquippedItem( player->getPreferredWeapon() )->getRange();
 		}
 		player->setTargetCreature( creature, true, range );
 	} else {
 		for ( int i = 0; i < getPartySize(); i++ ) {
 			range = MIN_DISTANCE;
 			if ( party[i]->getPreferredWeapon() > -1 &&
-			        party[i]->getItemAtLocation( party[i]->getPreferredWeapon() ) ) {
-				range = party[i]->getItemAtLocation( party[i]->getPreferredWeapon() )->getRange();
+			        party[i]->getEquippedItem( party[i]->getPreferredWeapon() ) ) {
+				range = party[i]->getEquippedItem( party[i]->getPreferredWeapon() )->getRange();
 			}
 			party[i]->setTargetCreature( creature, true, range );
 		}
@@ -455,43 +455,43 @@ void Party::createHardCodedParty( Session *session, Creature **pc, int *partySiz
 	}
 
 	// add some items
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Bastard sword" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Horned helmet" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Dagger" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Liquid armor" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Potion of Speed" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Potion of Coordination" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Potion of Power" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Potion of IQ" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Potion of Leadership" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Potion of Luck" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Potion of Piety" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Potion of Lore" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
-	pc[0]->addInventory( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Bastard sword" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Horned helmet" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Dagger" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Liquid armor" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Potion of Speed" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Potion of Coordination" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Potion of Power" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Potion of IQ" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Potion of Leadership" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Potion of Luck" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Potion of Piety" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Potion of Lore" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
+	pc[0]->addToBackpack( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
 
-	pc[1]->addInventory( session->newItem( RpgItem::getItemByName( "Smallbow" ), level ) );
-	pc[1]->addInventory( session->newItem( RpgItem::getItemByName( "Apple" ), level ) );
-	pc[1]->addInventory( session->newItem( RpgItem::getItemByName( "Bread" ), level ) );
-	pc[1]->addInventory( session->newItem( RpgItem::getItemByName( "Mushroom" ), level ) );
-	pc[1]->addInventory( session->newItem( RpgItem::getItemByName( "Big egg" ), level ) );
-	pc[1]->addInventory( session->newItem( RpgItem::getItemByName( "Mutton meat" ), level ) );
-	pc[1]->addInventory( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
-	pc[1]->addInventory( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
-	pc[1]->addInventory( session->newItem( RpgItem::getItemByName( "Liquid armor" ), level ) );
+	pc[1]->addToBackpack( session->newItem( RpgItem::getItemByName( "Smallbow" ), level ) );
+	pc[1]->addToBackpack( session->newItem( RpgItem::getItemByName( "Apple" ), level ) );
+	pc[1]->addToBackpack( session->newItem( RpgItem::getItemByName( "Bread" ), level ) );
+	pc[1]->addToBackpack( session->newItem( RpgItem::getItemByName( "Mushroom" ), level ) );
+	pc[1]->addToBackpack( session->newItem( RpgItem::getItemByName( "Big egg" ), level ) );
+	pc[1]->addToBackpack( session->newItem( RpgItem::getItemByName( "Mutton meat" ), level ) );
+	pc[1]->addToBackpack( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
+	pc[1]->addToBackpack( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
+	pc[1]->addToBackpack( session->newItem( RpgItem::getItemByName( "Liquid armor" ), level ) );
 
-	pc[2]->addInventory( session->newItem( RpgItem::getItemByName( "Dagger" ), level ) );
-	pc[2]->addInventory( session->newItem( RpgItem::getItemByName( "Smallbow" ), level ) );
-	pc[2]->addInventory( session->newItem( RpgItem::getItemByName( "Long sword" ), level ) );
-	pc[2]->addInventory( session->newItem( RpgItem::getItemByName( "Wine barrel" ), level ) );
-	pc[2]->addInventory( session->newItem( RpgItem::getItemByName( "Mutton meat" ), level ) );
-	pc[2]->addInventory( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
-	pc[2]->addInventory( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
-	pc[2]->addInventory( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
-	pc[2]->addInventory( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
-	pc[2]->addInventory( session->newItem( RpgItem::getItemByName( "Liquid armor" ), level ) );
+	pc[2]->addToBackpack( session->newItem( RpgItem::getItemByName( "Dagger" ), level ) );
+	pc[2]->addToBackpack( session->newItem( RpgItem::getItemByName( "Smallbow" ), level ) );
+	pc[2]->addToBackpack( session->newItem( RpgItem::getItemByName( "Long sword" ), level ) );
+	pc[2]->addToBackpack( session->newItem( RpgItem::getItemByName( "Wine barrel" ), level ) );
+	pc[2]->addToBackpack( session->newItem( RpgItem::getItemByName( "Mutton meat" ), level ) );
+	pc[2]->addToBackpack( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
+	pc[2]->addToBackpack( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
+	pc[2]->addToBackpack( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
+	pc[2]->addToBackpack( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
+	pc[2]->addToBackpack( session->newItem( RpgItem::getItemByName( "Liquid armor" ), level ) );
 
 	// add some scrolls
 	for ( int i = 0; i < 10; i++ ) {
@@ -500,29 +500,29 @@ void Party::createHardCodedParty( Session *session, Creature **pc, int *partySiz
 			RpgItem *rpgItem = RpgItem::getItemByName( "Scroll" );
 			Item *scroll = session->newItem( rpgItem, level );
 			scroll->setSpell( spell );
-			pc[2]->addInventory( scroll );
+			pc[2]->addToBackpack( scroll );
 		}
 	}
 	pc[2]->setMp( 50 );
-	pc[3]->addInventory( session->newItem( RpgItem::getItemByName( "Dagger" ), level ) );
-	pc[3]->addInventory( session->newItem( RpgItem::getItemByName( "Great sword" ), level ) );
-	pc[3]->addInventory( session->newItem( RpgItem::getItemByName( "Battleaxe" ), level ) );
-	pc[3]->addInventory( session->newItem( RpgItem::getItemByName( "Throwing axe" ), level ) );
-	pc[3]->addInventory( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
-	pc[3]->addInventory( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
-	pc[3]->addInventory( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
-	pc[3]->addInventory( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
-	pc[3]->addInventory( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
-	pc[3]->addInventory( session->newItem( RpgItem::getItemByName( "Liquid armor" ), level ) );
+	pc[3]->addToBackpack( session->newItem( RpgItem::getItemByName( "Dagger" ), level ) );
+	pc[3]->addToBackpack( session->newItem( RpgItem::getItemByName( "Great sword" ), level ) );
+	pc[3]->addToBackpack( session->newItem( RpgItem::getItemByName( "Battleaxe" ), level ) );
+	pc[3]->addToBackpack( session->newItem( RpgItem::getItemByName( "Throwing axe" ), level ) );
+	pc[3]->addToBackpack( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
+	pc[3]->addToBackpack( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
+	pc[3]->addToBackpack( session->newItem( RpgItem::getItemByName( "Health potion" ), level ) );
+	pc[3]->addToBackpack( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
+	pc[3]->addToBackpack( session->newItem( RpgItem::getItemByName( "Magic potion" ), level ) );
+	pc[3]->addToBackpack( session->newItem( RpgItem::getItemByName( "Liquid armor" ), level ) );
 	pc[3]->setMp( 500 );
 
 	// equip weapons
-	pc[0]->equipInventory( 0 );
-	pc[0]->equipInventory( 1 );
-	pc[1]->equipInventory( 0 );
-	pc[2]->equipInventory( 0 );
-	pc[2]->equipInventory( 1 );
-	pc[3]->equipInventory( 0 );
+	pc[0]->equipFromBackpack( 0 );
+	pc[0]->equipFromBackpack( 1 );
+	pc[1]->equipFromBackpack( 0 );
+	pc[2]->equipFromBackpack( 0 );
+	pc[2]->equipFromBackpack( 1 );
+	pc[3]->equipFromBackpack( 0 );
 
 	// add some spells
 	pc[2]->addSpell( Spell::getSpellByName( "Flame of Azun" ) );

@@ -47,7 +47,7 @@ public:
 /// Extended version of ScrollingList for items.
 
 /// A special scrolling list that shows a list of items. It can be used to show a creature's
-/// inventory or the contents of a container. The class shows items with the right color and
+/// backpack or the contents of a container. The class shows items with the right color and
 /// icon. It also supports showing the item info dialog when right-clicking an item.
 
 class ItemList : public ScrollingList {
@@ -64,9 +64,9 @@ private:
 	bool cursedOnly;
 	bool allowCursed;
 	bool allowEquipped;
-	std::string name[MAX_INVENTORY_SIZE];
+	std::string name[MAX_BACKPACK_SIZE];
 	Color *color;
-	Texture icon[MAX_INVENTORY_SIZE];
+	Texture icon[MAX_BACKPACK_SIZE];
 
 public:
 	ItemList( Scourge *scourge, Window *win, int x, int y, int width, int height, ItemRenderer *itemRenderer = NULL );

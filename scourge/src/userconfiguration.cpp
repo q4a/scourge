@@ -61,7 +61,7 @@ const char UserConfiguration::default_key[][40] = {
 	"4",
 	"0",
 
-	/*    SHOW_INVENTORY,
+	/*    SHOW_BACKPACK,
 	    SHOW_OPTIONS_MENU,
 	    SET_NEXT_FORMATION,
 	*/
@@ -172,7 +172,7 @@ const char * UserConfiguration::ENGINE_ACTION_NAMES[] = {
 	"SET_PLAYER_3",
 	"SET_PLAYER_ONLY",
 
-	"SHOW_INVENTORY",
+	"SHOW_BACKPACK",
 	"SHOW_OPTIONS_MENU",
 	"SET_NEXT_FORMATION",
 
@@ -247,7 +247,7 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[] = {
 	_( "Select player 3" ),
 	_( "Toggle group mode" ),
 
-	_( "Show inventory" ),
+	_( "Show backpack" ),
 	_( "Show options" ),
 	_( "Choose next formation" ),
 
@@ -986,8 +986,8 @@ int UserConfiguration::getEngineAction( SDL_Event *event ) {
 	/* case SDL_MOUSEBUTTONUP:
 	   if(event->button.button) {
 	       int region = gui->testActiveRegions(event->button.x, event->button.y);
-	       if(region == Constants::SHOW_INVENTORY) {
-	           inventory->show();
+	       if(region == Constants::SHOW_BACKPACK) {
+	           backpack->show();
 	       } else if(region == Constants::SHOW_OPTIONS) {
 	           // do something
 	       } else if(region == Constants::ESCAPE) {
@@ -1124,7 +1124,7 @@ void UserConfiguration::createDefaultConfigFile() {
 	configFile << "bind 3 set_player_2" << endl;
 	configFile << "bind 4 set_player_3" << endl;
 	configFile << "bind 0 set_player_only" << endl;
-	configFile << "bind i show_inventory" << endl;
+	configFile << "bind i show_backpack" << endl;
 	configFile << "bind o show_options_menu" << endl;
 	configFile << "bind u use_item" << endl;
 	configFile << "bind f set_next_formation" << endl;

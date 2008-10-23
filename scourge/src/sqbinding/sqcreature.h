@@ -86,9 +86,9 @@ public:
 	static int _startConversation( HSQUIRRELVM vm );
 	static int _startConversationAbout( HSQUIRRELVM vm );
 	static int _getTargetCreature( HSQUIRRELVM vm );
-	static int _getItemAtLocation( HSQUIRRELVM vm );
-	static int _getInventoryItem( HSQUIRRELVM vm );
-	static int _getInventoryCount( HSQUIRRELVM vm );
+	static int _getEquippedItem( HSQUIRRELVM vm );
+	static int _getBackpackItem( HSQUIRRELVM vm );
+	static int _getBackpackContentsCount( HSQUIRRELVM vm );
 
 	// setters
 	static int _setLevel( HSQUIRRELVM vm );
@@ -109,7 +109,7 @@ public:
 	static int _setIntro( HSQUIRRELVM vm );
 
 	// other
-	static int _addInventoryByName( HSQUIRRELVM vm );
+	static int _addToBackpackByName( HSQUIRRELVM vm );
 
 	// movement and movie mode
 	static int _moveTo( HSQUIRRELVM vm );

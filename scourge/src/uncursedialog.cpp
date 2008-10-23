@@ -120,7 +120,7 @@ void UncurseDialog::render( const Widget *widget, const Item *item, std::string&
 }
 
 void UncurseDialog::uncurse() {
-	if ( !validateInventory() ) {
+	if ( !validateBackpack() ) {
 		scourge->showMessageDialog( _( "Inventories changed." ) );
 		return;
 	}
@@ -144,15 +144,15 @@ void UncurseDialog::uncurse() {
 	scourge->getParty()->getPlayer()->setMoney( scourge->getParty()->getPlayer()->getMoney() - totalA );
 
 	updateUI();
-	scourge->refreshInventoryUI();
+	scourge->refreshBackpackUI();
 	scourge->showMessageDialog( _( "Selected items uncursed." ) );
 }
 
-bool UncurseDialog::validateInventory() {
+bool UncurseDialog::validateBackpack() {
 	for ( int i = 0; i < listA->getSelectedLineCount(); i++ ) {
 		Item *item = listA->getSelectedItem( i );
-		cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInInventory( item ) << endl;
-		if ( scourge->getParty()->getPlayer()->findInInventory( item ) == -1 ) return false;
+		cerr << "item=" << item->getRpgItem()->getDisplayName() << " index=" << scourge->getParty()->getPlayer()->findInBackpack( item ) << endl;
+		if ( scourge->getParty()->getPlayer()->findInBackpack( item ) == -1 ) return false;
 	}
 	return true;
 }

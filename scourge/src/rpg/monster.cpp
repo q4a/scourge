@@ -200,7 +200,7 @@ void Monster::initCreatures( ConfigLang *config ) {
 			addMd2Sounds( m->getModelName(), currentSoundMap );
 		}
 
-		// inventory
+		// backpack
 		strcpy( tmp, node->getValueAsString( "inventory" ) );
 		char *p = strtok( tmp, "," );
 		while ( p ) {

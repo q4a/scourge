@@ -63,7 +63,7 @@ protected:
 	void trade();
 	void steal();
 	int getSelectedTotal( ItemList *list );
-	bool validateInventory();
+	bool validateBackpack();
 };
 
 #endif

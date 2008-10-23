@@ -255,7 +255,7 @@ function useItemInDefense( creature, item ) {
 // Note: item can be null if attack is with bare hands
 function damageHandler( attacker, item ) {
   if( attacker.getTargetCreature() != null ) {
-    equippedItem <- attacker.getTargetCreature().getItemAtLocation( 4 );
+    equippedItem <- attacker.getTargetCreature().getEquippedItem( 4 );
     if( equippedItem != null ) {
       if( equippedItem.getName() == "Cloak of Safe Passage" ) damageHandlerCloakSafePass( attacker, item );
     }
@@ -268,7 +268,7 @@ function damageHandler( attacker, item ) {
 // held/equipped by the caster or the target.
 function spellDamageHandler( caster, spell ) {
   if( caster.getTargetCreature() != null ) {
-    item <- caster.getTargetCreature().getItemAtLocation( 4 );
+    item <- caster.getTargetCreature().getEquippedItem( 4 );
     if( item != null ) {
       if( item.getName() == "Cloak of Hateful Vengeance" ) spellDamageHandlerCloakHateVen( caster, spell );
     }
@@ -521,7 +521,7 @@ function initChapter10() {
 	for( i = 0; i < scourgeGame.getPartySize(); i++ ) {
 		found = false;
 		for( t = 0; t < antimagicItemLocations.len(); t++ ) {
-			equippedItem = scourgeGame.getPartyMember( i ).getItemAtLocation( antimagicItemLocations[ t ] );
+			equippedItem = scourgeGame.getPartyMember( i ).getEquippedItem( antimagicItemLocations[ t ] );
 			if( equippedItem != null ) {
 				if( equippedItem.getName() == antimagicItems[ t ] ) {
 					found = true;
@@ -567,7 +567,7 @@ function assignAntimagicItems() {
 			if( i == 0 ) n = n + ( 4 - scourgeGame.getPartySize() );
 			r <- 0;
 			for( r = 0; r < n; r++ ) {
-				scourgeGame.getPartyMember( i ).addInventoryByName( antimagicItems[ t++ ] );
+				scourgeGame.getPartyMember( i ).addToBackpackByName( antimagicItems[ t++ ] );
 				if( t >= antimagicItems.len() ) t = 0;
 			}
 			scourgeGame.setValue( key, "true" );
@@ -680,8 +680,8 @@ function handleTreeOfEmeril() {
 	print( "Looking for cronostar...\n" );
 	for( i = 0; hasCronostar == false && i < scourgeGame.getPartySize(); i++ ) {
 		print( "\tparty member=" + i + "...\n" );
-		for( t = 0; t < scourgeGame.getPartyMember( i ).getInventoryCount(); t++ ) {
-			item = scourgeGame.getPartyMember( i ).getInventoryItem( t );
+		for( t = 0; t < scourgeGame.getPartyMember( i ).getBackpackContentsCount(); t++ ) {
+			item = scourgeGame.getPartyMember( i ).getBackpackItem( t );
 			if( item.getName() == "Cronostar" ) {
 				hasCronostar = true;
 				break;	

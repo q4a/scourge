@@ -84,10 +84,10 @@ void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( pcEditor->getWindow()->isVisible() ) pcEditor->handleEvent( widget, event );
 }
 
-void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomInventory ) {
+void PartyEditor::createParty( Creature **pc, int *partySize, bool addRandomBackpack ) {
 	for ( int i = 0; i < STARTING_PARTY_SIZE; i++ )
 		pc[i] = pcEditor->createPartyMember();
-	if ( addRandomInventory ) addStartingInventory( pc, STARTING_PARTY_SIZE );
+	if ( addRandomBackpack ) addStartingBackpack( pc, STARTING_PARTY_SIZE );
 	if ( partySize ) *partySize = STARTING_PARTY_SIZE;
 }
 
@@ -114,24 +114,24 @@ RenderedCreature *PartyEditor::createWanderingHero( int level ) {
 	// compute starting skill levels
 	pcEditor->rollSkillsForCreature( pc );
 
-	addStartingInventory( pc );
+	addStartingBackpack( pc );
 
 	pc->setMotion( Constants::MOTION_LOITER );
 
 	return pc;
 }
 
-void PartyEditor::addStartingInventory( Creature **pc, int partySize ) {
+void PartyEditor::addStartingBackpack( Creature **pc, int partySize ) {
 	for ( int i = 0; i < partySize; i++ ) {
-		addStartingInventory( pc[i] );
+		addStartingBackpack( pc[i] );
 		if ( LEVEL > 1 && i == 0 ) {
 			// add all special items
 			for ( int t = 0; t < RpgItem::getSpecialCount(); t++ ) {
-				pc[i]->addInventory( scourge->getSession()->newItem( RpgItem::getSpecial( t ) ), true );
+				pc[i]->addToBackpack( scourge->getSession()->newItem( RpgItem::getSpecial( t ) ), true );
 			}
 			// add some spell-containing items
 			for ( int t = 0; t < 5; t++ ) {
-				pc[i]->addInventory(
+				pc[i]->addToBackpack(
 				  scourge->getSession()->newItem(
 				    RpgItem::getItemByName( "Dwarven steel ring" ),
 				    1,
@@ -141,49 +141,49 @@ void PartyEditor::addStartingInventory( Creature **pc, int partySize ) {
 	}
 }
 
-void PartyEditor::addStartingInventory( Creature *pc ) {
+void PartyEditor::addStartingBackpack( Creature *pc ) {
 	// add a weapon anyone can wield
 	int n = Util::dice( 5 );
 	switch ( n ) {
-	case 0: pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Smallbow" ), LEVEL, NULL, true ), true ); break;
-	case 1: pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Short sword" ), LEVEL, NULL, true ), true ); break;
-	case 2: pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Dagger" ), LEVEL, NULL, true ), true ); break;
-	case 3: pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Wooden club" ), LEVEL, NULL, true ), true ); break;
-	case 4: pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Quarter Staff" ), LEVEL, NULL, true ), true ); break;
+	case 0: pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Smallbow" ), LEVEL, NULL, true ), true ); break;
+	case 1: pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Short sword" ), LEVEL, NULL, true ), true ); break;
+	case 2: pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Dagger" ), LEVEL, NULL, true ), true ); break;
+	case 3: pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Wooden club" ), LEVEL, NULL, true ), true ); break;
+	case 4: pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Quarter Staff" ), LEVEL, NULL, true ), true ); break;
 	}
 	int invIndex = 0;
-	pc->equipInventory( invIndex++ );
+	pc->equipFromBackpack( invIndex++ );
 
 	// add some armor
 	if ( 0 == Util::dice( 4 ) ) {
-		pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Horned helmet" ), LEVEL, NULL, true ), true );
-		pc->equipInventory( invIndex++ );
+		pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Horned helmet" ), LEVEL, NULL, true ), true );
+		pc->equipFromBackpack( invIndex++ );
 	}
 	if ( 0 == Util::dice( 3 ) ) {
-		pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Buckler" ), LEVEL, NULL, true ), true );
-		pc->equipInventory( invIndex++ );
+		pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Buckler" ), LEVEL, NULL, true ), true );
+		pc->equipFromBackpack( invIndex++ );
 	}
 
 	// some potions
 	if ( 0 == Util::dice( 4 ) )
-		pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Health potion" ), LEVEL ), true );
+		pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Health potion" ), LEVEL ), true );
 	if ( 0 == Util::dice( 4 ) )
-		pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Magic potion" ), LEVEL ), true );
+		pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Magic potion" ), LEVEL ), true );
 	if ( 0 == Util::dice( 4 ) )
-		pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Liquid armor" ), LEVEL ), true );
+		pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Liquid armor" ), LEVEL ), true );
 
 	// some food
 	for ( int t = 0; t < Util::dice( 6 ); t++ ) {
 		if ( 0 == Util::dice( 4 ) )
-			pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Apple" ) ), true );
+			pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Apple" ) ), true );
 		if ( 0 == Util::dice( 4 ) )
-			pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Bread" ) ), true );
+			pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Bread" ) ), true );
 		if ( 0 == Util::dice( 4 ) )
-			pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Mushroom" ) ), true );
+			pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Mushroom" ) ), true );
 		if ( 0 == Util::dice( 4 ) )
-			pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Big egg" ) ), true );
+			pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Big egg" ) ), true );
 		if ( 0 == Util::dice( 4 ) )
-			pc->addInventory( scourge->getSession()->newItem( RpgItem::getItemByName( "Mutton meat" ) ), true );
+			pc->addToBackpack( scourge->getSession()->newItem( RpgItem::getItemByName( "Mutton meat" ) ), true );
 	}
 
 	// some spells

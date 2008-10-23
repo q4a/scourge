@@ -144,7 +144,7 @@ public:
 
 	Texture cloud, candle, highlight;
 	Texture border, border2, gargoyle;
-	Texture minimap, minimapMask, dismiss, exitTexture, options, group, inventory;
+	Texture minimap, minimapMask, dismiss, exitTexture, options, group, backpack;
 	Texture waitTexture, startTexture, realTimeTexture, pausedTexture;
 	Texture systemTexture;
 	Texture ioTexture;
@@ -191,8 +191,8 @@ public:
 	inline Texture getGroupTexture() {
 		return group;
 	}
-	inline Texture getInventoryTexture() {
-		return inventory;
+	inline Texture getBackpackTexture() {
+		return backpack;
 	}
 
 	inline Texture getPausedTexture() {
@@ -248,10 +248,10 @@ public:
 	inline std::map<std::string, NamedOutdoorTexture> *getOutdoorNamedTextures() {
 		return &outdoorNamedTextures;
 	}
-	inline SDL_Rect *getInventoryHole( int inventoryLocation ) {
-		return( inventoryLocation >= 0 &&
-		        inventoryLocation < Constants::EQUIP_LOCATION_COUNT ?
-		        &( equipLocationHoles[ inventoryLocation ] ) :
+	inline SDL_Rect *getEquipHole( int equipIndex ) {
+		return( equipIndex >= 0 &&
+		        equipIndex < Constants::EQUIP_LOCATION_COUNT ?
+		        &( equipLocationHoles[ equipIndex ] ) :
 		        NULL );
 	}
 
@@ -271,7 +271,7 @@ protected:
 	void initDescriptions( ConfigLang *config );
 	void initSounds( ConfigLang *config );
 	void initNamedTextures( ConfigLang *config );
-	void initInventory( ConfigLang *config );
+	void initBackpack( ConfigLang *config );
 
 	ShapeValues *createShapeValues( ConfigNode *node );
 	DECLARE_NOISY_OPENGL_SUPPORT();

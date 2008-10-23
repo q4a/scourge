@@ -83,7 +83,7 @@ bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 		while ( view->getContainer()->getContainedItemCount() > 0 ) {
 			Item *item = view->getContainer()->getContainedItem( 0 );
 			// try to add it
-			if ( scourge->getPcUi()->receiveInventory( item ) ) {
+			if ( scourge->getPcUi()->addToBackpack( item ) ) {
 				if( item == view->getSelectedItem() ) {
 					view->setSelectedItem( NULL );
 				}

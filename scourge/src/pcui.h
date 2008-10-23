@@ -1,5 +1,5 @@
 /***************************************************************************
-                  pcui.h  -  The character/inventory window
+                  pcui.h  -  The character/backpack window
                              -------------------
     begin                : Sat May 3 2003
     copyright            : (C) 2003 by Gabor Torok
@@ -42,7 +42,7 @@ class Portrait;
 class MissionInfoUI;
 class CardContainer;
 
-/// The window that displays a character's inventory, attributes etc.
+/// The window that displays a character's backpack, attributes etc.
 class PcUi : public WindowListener {
 private:
 	Scourge *scourge;
@@ -88,8 +88,8 @@ public:
 	bool isCastSelected();
 	bool isStoreSpellSelected();
 	void unselectSpellButtons();
-	void receiveInventory();
-	bool receiveInventory( Item *item );
+	void addToBackpack();
+	bool addToBackpack( Item *item );
 	Storable *getStorable();
 	void clearStorable();
 

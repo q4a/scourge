@@ -90,12 +90,12 @@ void ContainerView::drawWidgetContents( Widget *widget ) {
 		                 &currentX, &currentY );
 		int px = currentX;
 		int py = currentY;
-		if ( px >= 0 && px + scourge->getMovingItem()->getInventoryWidth() <= colCount &&
-		        py >= 0 && py + scourge->getMovingItem()->getInventoryHeight() <= rowCount ) {
+		if ( px >= 0 && px + scourge->getMovingItem()->getBackpackWidth() <= colCount &&
+		        py >= 0 && py + scourge->getMovingItem()->getBackpackHeight() <= rowCount ) {
 			px *= GRID_SIZE;
 			py *= GRID_SIZE;
-			int pw = scourge->getMovingItem()->getInventoryWidth() * GRID_SIZE;
-			int ph = scourge->getMovingItem()->getInventoryHeight() * GRID_SIZE;
+			int pw = scourge->getMovingItem()->getBackpackWidth() * GRID_SIZE;
+			int ph = scourge->getMovingItem()->getBackpackHeight() * GRID_SIZE;
 			//cerr << "pw=" << pw << " ph=" << ph << endl;
 			glBegin( GL_TRIANGLE_STRIP );
 			glVertex2d( px, py );
@@ -105,10 +105,10 @@ void ContainerView::drawWidgetContents( Widget *widget ) {
 			glEnd();
 		}
 	} else if( getSelectedItem() ) {
-		int px = getSelectedItem()->getInventoryX() * GRID_SIZE - OFFSET_X;
-		int py = getSelectedItem()->getInventoryY() * GRID_SIZE - OFFSET_Y;
-		int pw = getSelectedItem()->getInventoryWidth() * GRID_SIZE;
-		int ph = getSelectedItem()->getInventoryHeight() * GRID_SIZE;
+		int px = getSelectedItem()->getBackpackX() * GRID_SIZE - OFFSET_X;
+		int py = getSelectedItem()->getBackpackY() * GRID_SIZE - OFFSET_Y;
+		int pw = getSelectedItem()->getBackpackWidth() * GRID_SIZE;
+		int ph = getSelectedItem()->getBackpackHeight() * GRID_SIZE;
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glColor4f( 0, 0, 0, 0.5f );
 		glBegin( GL_TRIANGLE_STRIP );
@@ -147,10 +147,10 @@ void ContainerView::drawWidgetContents( Widget *widget ) {
 	for ( int i = 0; i < container->getContainedItemCount(); i++ ) {
 		Item *item = container->getContainedItem( i );
 
-		int ix = item->getInventoryX() * GRID_SIZE;
-		int iy = item->getInventoryY() * GRID_SIZE;
-		int iw = item->getInventoryWidth() * GRID_SIZE;
-		int ih = item->getInventoryHeight() * GRID_SIZE;
+		int ix = item->getBackpackX() * GRID_SIZE;
+		int iy = item->getBackpackY() * GRID_SIZE;
+		int iw = item->getBackpackWidth() * GRID_SIZE;
+		int ih = item->getBackpackHeight() * GRID_SIZE;
 
 		item->renderIcon( scourge, ix, iy, iw, ih );
 	}
@@ -162,8 +162,8 @@ void ContainerView::drawWidgetContents( Widget *widget ) {
 void ContainerView::showContents() {
 	for( int i = 0; container && i < container->getContainedItemCount(); i++ ) {
 		Item *item = container->getContainedItem( i );
-		if( item->getInventoryX() <= 0 && item->getInventoryY() <= 0 ) {
-			findInventoryPosition( item, item->getInventoryX(), item->getInventoryY(), false );			
+		if( item->getBackpackX() <= 0 && item->getBackpackY() <= 0 ) {
+			findInventoryPosition( item, item->getBackpackX(), item->getBackpackY(), false );			
 		}
 	}
 }
@@ -191,10 +191,10 @@ Item *ContainerView::getItemAtPos( int x, int y ) {
 		Item *item = container->getContainedItem( i );
 		int posX, posY;
 		convertMousePos( x, y, &posX, &posY );
-		if ( posX >= item->getInventoryX() &&
-				posX < item->getInventoryX() + item->getInventoryWidth() &&
-				posY >= item->getInventoryY() &&
-				posY < item->getInventoryY() + item->getInventoryHeight() ) {
+		if ( posX >= item->getBackpackX() &&
+				posX < item->getBackpackX() + item->getBackpackWidth() &&
+				posY >= item->getBackpackY() &&
+				posY < item->getBackpackY() + item->getBackpackHeight() ) {
 			return item;
 		}
 	}
@@ -212,7 +212,7 @@ bool ContainerView::handleEvent( Widget *widget, SDL_Event *event ) {
 		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
 		                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );		
 		if ( item ) {
-			if ( scourge->getPcUi()->receiveInventory( item ) ) {
+			if ( scourge->getPcUi()->addToBackpack( item ) ) {
 				if( item == getSelectedItem() ) {
 					setSelectedItem( NULL );
 				}
@@ -298,8 +298,8 @@ bool ContainerView::findInventoryPosition( Item *item, int x, int y, bool useExi
 
 		for ( int xx = 0; xx < colCount; xx++ ) {
 			for ( int yy = 0; yy < rowCount; yy++ ) {
-				if ( xx + item->getInventoryWidth() <= colCount &&
-				        yy + item->getInventoryHeight() <= rowCount &&
+				if ( xx + item->getBackpackWidth() <= colCount &&
+				        yy + item->getBackpackHeight() <= rowCount &&
 				        checkInventoryLocation( item, useExistingLocationForSameItem, xx, yy ) ) {
 					if ( posX == xx && posY == yy ) {
 						selX = xx;
@@ -314,7 +314,7 @@ bool ContainerView::findInventoryPosition( Item *item, int x, int y, bool useExi
 		}
 
 		if ( selX > -1 ) {
-			item->setInventoryLocation( selX, selY );
+			item->setBackpackLocation( selX, selY );
 			return true;
 		}
 	}
@@ -327,8 +327,8 @@ bool ContainerView::checkInventoryLocation( Item *item, bool useExistingLocation
 	SDL_Rect itemRect;
 	itemRect.x = xx;
 	itemRect.y = yy;
-	itemRect.w = item->getInventoryWidth();
-	itemRect.h = item->getInventoryHeight();
+	itemRect.w = item->getBackpackWidth();
+	itemRect.h = item->getBackpackHeight();
 	for ( int t = 0; container && t < container->getContainedItemCount(); t++ ) {
 		Item *i = container->getContainedItem( t );
 		if ( i == item ) {
@@ -340,10 +340,10 @@ bool ContainerView::checkInventoryLocation( Item *item, bool useExistingLocation
 		}
 
 		SDL_Rect iRect;
-		iRect.x = i->getInventoryX();
-		iRect.y = i->getInventoryY();
-		iRect.w = i->getInventoryWidth();
-		iRect.h = i->getInventoryHeight();
+		iRect.x = i->getBackpackX();
+		iRect.y = i->getBackpackY();
+		iRect.w = i->getBackpackWidth();
+		iRect.h = i->getBackpackHeight();
 
 		if ( SDLHandler::intersects( &itemRect, &iRect ) ) return false;
 	}
