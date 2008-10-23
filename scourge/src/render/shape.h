@@ -133,7 +133,7 @@ public:
 	}
 
 	virtual void draw() = 0;
-	virtual inline void drawHeightMap( float ground[][MAP_DEPTH], int groundX, int groundY ) {
+	void drawHeightMap( float ground[][MAP_DEPTH], int groundX, int groundY ) {
 		draw();
 	}
 	virtual void outline( const Color *color ) {
@@ -173,31 +173,31 @@ public:
 		return this->outlineColor;
 	}
 
-	virtual inline void setInteractive( bool b ) {
+	void setInteractive( bool b ) {
 		interactive = b;
 	}
-	virtual inline bool isInteractive() {
+	bool isInteractive() {
 		return interactive;
 	}
 
-	virtual inline void setOutdoorWeight( float f ) {
+	void setOutdoorWeight( float f ) {
 		outdoorWeight = f;
 	}
-	virtual inline float getOutdoorWeight() {
+	float getOutdoorWeight() {
 		return outdoorWeight;
 	}
 
-	virtual inline void setOutdoorShadow( bool b ) {
+	void setOutdoorShadow( bool b ) {
 		outdoorShadow = b;
 	}
-	virtual inline bool isOutdoorShadow() {
+	bool isOutdoorShadow() {
 		return outdoorShadow;
 	}
 
-	virtual inline void setWind( bool b ) {
+	void setWind( bool b ) {
 		wind = b;
 	}
-	virtual inline bool isWind() {
+	bool isWind() {
 		return wind;
 	}
 	virtual inline float getWindValue() {
