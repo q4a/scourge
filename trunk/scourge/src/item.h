@@ -25,6 +25,8 @@
 #include "rpg/rpg.h"
 #include <vector>
 #include <map>
+#include "rpg/rpgitem.h"
+
 
 class RpgItem;
 class Color;
@@ -120,8 +122,6 @@ public:
 	//ContainedItemInfo saveContainedItems();
 	static Item *load( Session *session, ItemInfo *info );
 
-	static std::map<int, std::vector<std::string> *> soundMap;
-
 	/// Unused.
 	inline Color *getColor() {
 		return color;
@@ -190,9 +190,9 @@ public:
 
 	bool decrementCharges();
 
-	const std::string getRandomSound();
-
-	static void initItems( ShapePalette *shapePal );
+	const std::string getRandomSound() {
+		return rpgItem->getRandomSound();
+	}
 
 	void enchant( int level );
 
@@ -333,15 +333,6 @@ protected:
 	DiceInfo *saveDice( Dice *dice );
 	static DiceInfo *saveEmptyDice();
 	static Dice *loadDice( Session *session, DiceInfo *info );
-
-	static void initItemTypes( ConfigLang *config );
-	static void initItemEntries( ConfigLang *config, ShapePalette *shapePal );
-	static void initSounds( ConfigLang *config );
-	static void initTags( ConfigLang *config );
-	static void decodeInfluenceBlock( RpgItem *item,
-	                                  int skill,
-	                                  std::vector<ConfigNode*> *nodes,
-	                                  int influenceType );
 
 	void renderItemIcon( Scourge *scourge, int x, int y, int w, int h, bool smallIcon = false );
 	void renderItemIconEffect( Scourge *scourge, int x, int y, int w, int h, int iw, int ih );

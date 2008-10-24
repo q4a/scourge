@@ -18,6 +18,8 @@
 #include "rpgitem.h"
 #include "spell.h"
 #include "monster.h"
+#include "../session.h"
+#include "../shapepalette.h"
 
 using namespace std;
 
@@ -43,6 +45,7 @@ char *RpgItem::DAMAGE_TYPE_NAME[] = {
 };
 char RpgItem::DAMAGE_TYPE_LETTER[] = { 'S', 'P', 'C' };
 //char *RpgItem::influenceTypeName[] = { "AP", "CTH", "DAM" };
+map<int, vector<string> *> RpgItem::soundMap;
 
 RpgItem::RpgItem( char *name, char *displayName,
                   int rareness, int type, float weight, int price,
@@ -102,6 +105,300 @@ RpgItem::~RpgItem() {
 	free( name );
 	free( desc );
 	free( shortDesc );
+}
+
+// was in Item with following confusing comment:
+// this should really be in RpgItem but that class can't reference ShapePalette and shapes.
+void RpgItem::initItems( ShapePalette *shapePal ) {
+	ConfigLang *config = ConfigLang::load( "config/item.cfg" );
+	initItemTypes( config );
+	initSounds( config );
+	initTags( config );
+	delete config;
+
+	config = ConfigLang::load( "config/weapon.cfg" );
+	initItemEntries( config, shapePal );
+	delete config;
+
+	config = ConfigLang::load( "config/armor.cfg" );
+	initItemEntries( config, shapePal );
+	delete config;
+
+	config = ConfigLang::load( "config/magicitem.cfg" );
+	initItemEntries( config, shapePal );
+	delete config;
+
+	config = ConfigLang::load( "config/otheritem.cfg" );
+	initItemEntries( config, shapePal );
+	delete config;
+}
+
+
+void RpgItem::initItemTypes( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+	                         getChildrenByName( "types" );
+	vector<ConfigNode*> *vv = ( *v )[0]->
+	                          getChildrenByName( "type" );
+
+	char tmp[20];
+	for ( unsigned int i = 0; i < vv->size(); i++ ) {
+		ConfigNode *node = ( *vv )[i];
+
+		Session::instance->getGameAdapter()->setUpdate( _( "Loading Items" ), i, vv->size() );
+
+		ItemType itemType;
+		strcpy( itemType.name, node->getValueAsString( "name" ) );
+		itemType.isWeapon = node->getValueAsBool( "isWeapon" );
+		itemType.isArmor = node->getValueAsBool( "isArmor" );
+		itemType.isRandom = node->getValueAsBool( "isRandom" );
+		itemType.isRanged = node->getValueAsBool( "isRanged" );
+		itemType.hasSpell = node->getValueAsBool( "hasSpell" );
+		itemType.isEnchantable = node->getValueAsBool( "isEnchantable" );
+		strcpy( tmp, node->getValueAsString( "defaultDimension" ) );
+		char *p = strtok( tmp, "," );
+		if ( p ) {
+			itemType.backpackWidth = atoi( p );
+			itemType.backpackHeight = atoi( strtok( NULL, "," ) );
+		} else {
+			itemType.backpackWidth = itemType.backpackHeight = 1;
+		}
+		RpgItem::itemTypes.push_back( itemType );
+
+		if ( itemType.isRandom ) {
+			RpgItem::randomTypes[ RpgItem::randomTypeCount++ ] = RpgItem::itemTypes.size() - 1;
+		}
+	}
+}
+
+void RpgItem::initSounds( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+	                         getChildrenByName( "sounds" );
+	char tmp[1000];
+	for ( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
+
+		Session::instance->getGameAdapter()->setUpdate( _( "Loading Items" ), i, v->size() );
+
+		strcpy( tmp, node->getValueAsString( "sounds" ) );
+		char *p = strtok( tmp, "," );
+		int type_index = RpgItem::getTypeByName( p );
+		vector<string> *sounds = NULL;
+		if ( soundMap.find( type_index ) != soundMap.end() ) {
+			sounds = soundMap[type_index];
+		} else {
+			sounds = new vector<string>;
+			soundMap[type_index] = sounds;
+		}
+		p = strtok( NULL, "," );
+		while ( p ) {
+			string f = p;
+			sounds->push_back( f );
+			p = strtok( NULL, "," );
+		}
+	}
+}
+
+void RpgItem::initTags( ConfigLang *config ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+	                         getChildrenByName( "tags" );
+	if ( v ) {
+		ConfigNode *node = ( *v )[0];
+		map<string, ConfigValue*> *values = node->getValues();
+		for ( map<string, ConfigValue*>::iterator e = values->begin(); e != values->end(); ++e ) {
+			string name = e->first;
+			ConfigValue *value = e->second;
+			RpgItem::tagsDescriptions[ name ] = value->getAsString();
+		}
+	}
+}
+
+void RpgItem::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
+	vector<ConfigNode*> *v = config->getDocument()->
+	                         getChildrenByName( "item" );
+
+	char name[255], displayName[255], type[255], shape[255];
+	char long_description[500], short_description[120];
+	char containerTexture[255];
+	char temp[1000];
+	for ( unsigned int i = 0; i < v->size(); i++ ) {
+		ConfigNode *node = ( *v )[i];
+
+		Session::instance->getGameAdapter()->setUpdate( _( "Loading Items" ), i, v->size() );
+
+		// I:rareness,type,weight,price[,shape_index,[backpack_location[,maxCharges[,min_depth[,min_level]]]]]
+		snprintf( name, 255, node->getValueAsString( "name" ) );
+		snprintf( displayName, 255, node->getValueAsString( "display_name" ) );
+		int rareness = toint( node->getValueAsFloat( "rareness" ) );
+		snprintf( type, 255, node->getValueAsString( "type" ) );
+		float weight = node->getValueAsFloat( "weight" );
+		int price = toint( node->getValueAsFloat( "price" ) );
+
+		snprintf( shape, 255, node->getValueAsString( "shape" ) );
+		int backpack_location = toint( node->getValueAsFloat( "inventory_location" ) );
+		int minDepth = toint( node->getValueAsFloat( "min_depth" ) );
+		int minLevel = toint( node->getValueAsFloat( "min_level" ) );
+		int maxCharges = toint( node->getValueAsFloat( "max_charges" ) );
+
+		snprintf( long_description, 500, node->getValueAsString( "description" ) );
+		snprintf( short_description, 120, node->getValueAsString( "short_description" ) );
+
+		int containerWidth = toint( node->getValueAsFloat( "container_width" ) );
+		int containerHeight = toint( node->getValueAsFloat( "container_height" ) );
+		snprintf( containerTexture, 255, node->getValueAsString( "container_texture" ) );
+
+		// I:tileX,tileY ( from data/tiles.bmp, count is 1-based )
+		snprintf( temp, 1000, node->getValueAsString( "icon" ) );
+		int tileX = atoi( strtok( temp, "," ) );
+		int tileY = atoi( strtok( NULL, "," ) );
+
+		// resolve strings
+		int type_index = RpgItem::getTypeByName( type );
+		//cerr << "item: looking for shape: " << shape << endl;
+		int shape_index = shapePal->findShapeIndexByName( shape );
+		//cerr << "\tindex=" << shape_index << endl;
+
+		RpgItem *last = new RpgItem( strdup( name ), strdup( displayName ), rareness, type_index, weight, price,
+		                             strdup( long_description ), strdup( short_description ),
+		                             backpack_location, shape_index,
+		                             minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
+		last->setContainerWidth( containerWidth );
+		last->setContainerHeight( containerHeight );
+		last->setContainerTexture( containerTexture );
+		//GLShape *s = shapePal->findShapeByName(shape);
+		//RpgItem::addItem(last, s->getWidth(), s->getDepth(), s->getHeight() );
+
+		int w, d, h;
+		shapePal->getShapeDimensions( shape, &w, &d, &h );
+		RpgItem::addItem( last, w, d, h );
+
+		last->setSpellLevel( toint( node->getValueAsFloat( "spell_level" ) ) );
+
+		snprintf( temp, 1000, node->getValueAsString( "tags" ) );
+		char *p = strtok( temp, "," );
+		while ( p ) {
+			string s = strdup( p );
+			last->addTag( s );
+			p = strtok( NULL, "," );
+		}
+
+		vector<ConfigNode*> *weapons = node->getChildrenByName( "weapon" );
+		if ( weapons != NULL && !weapons->empty() ) {
+			ConfigNode *weapon = ( *weapons )[0];
+
+			int baseDamage = toint( weapon->getValueAsFloat( "damage" ) );
+			const char *p = weapon->getValueAsString( "damage_type" );
+			int damageType = 0;
+			if ( strlen( p ) ) damageType = RpgItem::getDamageTypeForLetter( p[0] );
+			int skill = Skill::getSkillIndexByName( weapon->getValueAsString( "skill" ) );
+			int parry = toint( weapon->getValueAsFloat( "parry" ) );
+			int ap = toint( weapon->getValueAsFloat( "ap" ) );
+			int range = toint( weapon->getValueAsFloat( "range" ) );
+			if ( range < static_cast<int>( MIN_DISTANCE ) ) range = static_cast<int>( MIN_DISTANCE );
+			int twoHanded = toint( weapon->getValueAsFloat( "two_handed" ) );
+			last->setWeapon( baseDamage, damageType, skill, parry, ap, range, twoHanded );
+		}
+
+		vector<ConfigNode*> *armors = node->getChildrenByName( "armor" );
+		if ( armors != NULL && !armors->empty() ) {
+			ConfigNode *armor = ( *armors )[0];
+
+			// A:defense_vs_slashing,defense_vs_piercing,defense_vs_crushing,skill,dodge_penalty
+			int defense[ RpgItem::DAMAGE_TYPE_COUNT ];
+			defense[ RpgItem::DAMAGE_TYPE_SLASHING ] =
+			  toint( armor->getValueAsFloat( "slash_defense" ) );
+			defense[ RpgItem::DAMAGE_TYPE_PIERCING ] =
+			  toint( armor->getValueAsFloat( "pierce_defense" ) );
+			defense[ RpgItem::DAMAGE_TYPE_CRUSHING ] =
+			  toint( armor->getValueAsFloat( "crush_defense" ) );
+			int skill = Skill::getSkillIndexByName( armor->getValueAsString( "skill" ) );
+			int dodgePenalty = toint( armor->getValueAsFloat( "dodge_penalty" ) );
+			last->setArmor( defense, skill, dodgePenalty );
+		}
+
+		vector<ConfigNode*> *potions = node->getChildrenByName( "potion" );
+		if ( potions != NULL && !potions->empty() ) {
+			ConfigNode *potion = ( *potions )[0];
+
+			// power,potionSkill,[potionTimeInMinutes]
+			int power = toint( potion->getValueAsFloat( "power" ) );
+
+
+			char const* potionSkill = potion->getValueAsString( "skill" );
+			int skill = -1;
+			if ( potionSkill != NULL && strlen( potionSkill ) ) {
+				skill = Skill::getSkillIndexByName( potionSkill );
+				if ( skill < 0 ) {
+					// try special potion 'skills' like HP, AC boosts
+					skill = Constants::getPotionSkillByName( potionSkill );
+					if ( skill == -1 ) {
+						cerr << "*** WARNING: cannot find potion_skill: " << potionSkill << endl;
+					}
+				}
+			}
+
+			int time = toint( potion->getValueAsFloat( "time" ) );
+			last->setPotion( power, skill, time );
+		}
+
+		vector<ConfigNode*> *adjustments = node->getChildrenByName( "skill_adjustment" );
+		for ( unsigned int t = 0; adjustments != NULL && t < adjustments->size(); t++ ) {
+			ConfigNode *adjustment = ( *adjustments )[t];
+
+			int skill = Skill::
+			            getSkillByName( adjustment-> getValueAsString( "skill" ) )->getIndex();
+
+			last->decodeInfluenceBlock( skill
+			                      , adjustment->getChildrenByName( "ap" )
+			                      , AP_INFLUENCE );
+			last->decodeInfluenceBlock( skill
+			                      , adjustment->getChildrenByName( "armor" )
+			                      , AP_INFLUENCE );
+			last->decodeInfluenceBlock( skill
+			                      , adjustment->getChildrenByName( "cth" )
+			                      , CTH_INFLUENCE );
+			last->decodeInfluenceBlock( skill
+			                      , adjustment->getChildrenByName( "damage" )
+			                      , DAM_INFLUENCE );
+		}
+	}
+}
+
+void RpgItem::decodeInfluenceBlock( int skill, vector<ConfigNode*> *nodes, int influenceType ) {
+	char tmp[300];
+	if ( nodes ) {
+		ConfigNode *node = ( *nodes )[0];
+		for ( int t = 0; t < INFLUENCE_LIMIT_COUNT; t++ ) {
+			strcpy( tmp, node->getValueAsString( t == MIN_INFLUENCE ? "min" : "max" ) );
+			char *p = strtok( tmp, "," );
+			if ( p ) {
+				WeaponInfluence wi;
+				wi.limit = atoi( p ); // ignore (
+				p = strtok( NULL, "," );
+				wi.type = ( !strcmp( p, "linear" ) ? 'L' : 'E' );
+				p = strtok( NULL, "," );
+				wi.base = atof( p );
+				/*
+				cerr << item->getName() << " skill:" << Skill::skills[skill]->getName() <<
+				 " influence: "<<
+				 ( influenceType == AP_INFLUENCE ? "ap" : ( influenceType == CTH_INFLUENCE ? "cth" : "dam" ) ) <<
+				 " " << ( t == MIN_INFLUENCE ? "min" : "max" ) << " " <<
+				 "limie=" << wi.limit << " type=" << wi.type << " base=" << wi.base << endl;
+				*/
+				setWeaponInfluence( skill, influenceType, t, wi );
+			}
+		}
+	}
+}
+
+const string RpgItem::getRandomSound() {
+	vector<string> *sounds = NULL;
+	if ( soundMap.find( getType() ) != soundMap.end() ) {
+		sounds = soundMap[getType()];
+	}
+	if ( !sounds || sounds->empty() )
+		return string( "" );
+	string s = ( *sounds )[ Util::dice( sounds->size() ) ];
+	return s;
 }
 
 void RpgItem::addItem( RpgItem *item, int width, int depth, int height ) {
