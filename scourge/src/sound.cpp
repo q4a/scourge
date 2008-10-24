@@ -21,7 +21,7 @@
 #include "battle.h"
 #include "render/renderlib.h"
 #include "rpg/rpglib.h"
-#include "item.h"
+#include "rpg/rpgitem.h"
 #include "creature.h"
 
 using namespace std;
@@ -301,8 +301,8 @@ void Sound::loadSounds( Preferences *preferences ) {
 	}
 
 	//cerr << "Loading item sounds..." << endl;
-	for ( map<int, vector<string>*>::iterator i = Item::soundMap.begin();
-	        i != Item::soundMap.end(); ++i ) {
+	for ( map<int, vector<string>*>::iterator i = RpgItem::soundMap.begin();
+	        i != RpgItem::soundMap.end(); ++i ) {
 		//Creature *creature = i->first;
 		vector<string> *v = i->second;
 		for ( vector<string>::iterator r = v->begin(); r != v->end(); r++ ) {

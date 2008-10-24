@@ -38,6 +38,7 @@ class MagicSchool;
 class Spell;
 class RpgItem;
 class GameAdapter;
+class ShapePalette;
 
 /// Describes a type or class of items.
 struct ItemType {
@@ -121,6 +122,12 @@ private:
 	// in a type->depth map.
 	static std::vector<RpgItem*> special;
 
+	static void initItemTypes( ConfigLang *config );
+	static void initSounds( ConfigLang *config );
+	static void initTags( ConfigLang *config );
+	static void initItemEntries( ConfigLang *config, ShapePalette *shapePal );
+	void decodeInfluenceBlock( int skill, std::vector<ConfigNode*> *nodes, int influenceType );
+
 public:
 
 	enum {
@@ -145,6 +152,7 @@ public:
 		ITEM_TYPE_COUNT
 	};
 
+	static std::map<int, std::vector<std::string> *> soundMap;
 	static std::vector<ItemType> itemTypes;
 	static int randomTypes[ITEM_TYPE_COUNT];
 	static int randomTypeCount;
@@ -171,6 +179,8 @@ public:
 
 	static std::map<std::string, std::string> tagsDescriptions;
 	static const char *getTagDescription( std::string tag );
+
+	static void initItems( ShapePalette *shapePal );
 
 	//static char *influenceTypeName[ INFLUENCE_TYPE_COUNT ];
 
@@ -373,6 +383,7 @@ public:
 	}
 
 
+	const std::string getRandomSound();
 
 	static RpgItem *getRandomItem( int depth );
 	static RpgItem *getRandomItemFromTypes( int level, int types[], int typeCount );

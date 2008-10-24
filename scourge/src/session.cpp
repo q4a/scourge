@@ -72,8 +72,8 @@ Session::Session( GameAdapter *adapter )
 Session::~Session() {
 	if ( squirrel ) delete squirrel;
 	deleteCreaturesAndItems();
-	if ( sound ) delete sound;
 	delete party;
+	delete sound;
 	if ( board ) delete board;
 	if ( cutscene ) delete cutscene;
 #ifdef HAVE_SDL_NET
@@ -110,7 +110,7 @@ void Session::doInitData() {
 
 	// initialize the items
 	adapter->setUpdate( _( "Loading Items" ) );
-	Item::initItems( shapePal );
+	RpgItem::initItems( shapePal );
 
 	// initialize magic
 	adapter->setUpdate( _( "Loading Spells" ) );
