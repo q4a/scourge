@@ -24,8 +24,8 @@
 #include "gui/window.h"
 #include "gui/button.h"
 #include "gui/draganddrop.h"
-#include "gui/canvas.h"
 #include "gui/widgetview.h"
+#include "containerview.h"
 
 /**
   *@author Gabor Torok
@@ -41,13 +41,13 @@ class Storable;
 
 /// Backpack widget and manager.
 
-class Inven : public DragAndDropHandler, WidgetView {
+class Inven {
 private:
 	Creature *creature;
 	Texture backgroundTexture;
 	int currentHole;
 	PcUi *pcUi;
-	Canvas *canvas;
+	ContainerView *view;
 	int x, y, w, h;
 	Item *lastItem;
 	Storable *storable;
@@ -64,7 +64,7 @@ public:
 	}
 
 	inline Widget *getWidget() {
-		return canvas;
+		return view;
 	}
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
@@ -72,20 +72,10 @@ public:
 
 	//receive by other means
 	bool receive( Item *item, bool atCursor );
-	// drag-n-drop
+	// drag+drop 
 	void receive( Widget *widget );
-	bool startDrag( Widget *widget, int x = 0, int y = 0 );
-
-
-
-	void drawWidgetContents( Widget *w );
 
 protected:
-	Item *getItemAtPos( int x, int y );
-	bool findBackpackPosition( Item *item, int x, int y, bool useExistingLocationForSameItem = true );
-	bool checkBackpackLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
-	void convertMousePos( int x, int y, int *invX, int *invY );
-	void showInfo( Item *item );
 	void storeItem( Item *item );
 };
 
