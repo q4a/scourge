@@ -405,6 +405,8 @@ public:
 	inline static RpgItem *getSpecial( int index ) {
 		return special[index];
 	}
+
+	static void DestroyStatics();
 };
 
 #endif

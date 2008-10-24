@@ -23,6 +23,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 RpgItem *RpgItem::items[1000];
 
 // the smaller this number the more likely a container will show up in a room
@@ -46,6 +53,22 @@ char *RpgItem::DAMAGE_TYPE_NAME[] = {
 char RpgItem::DAMAGE_TYPE_LETTER[] = { 'S', 'P', 'C' };
 //char *RpgItem::influenceTypeName[] = { "AP", "CTH", "DAM" };
 map<int, vector<string> *> RpgItem::soundMap;
+
+namespace {
+
+class Mop {
+public:
+	Mop() {}
+	~Mop() {
+		RpgItem::DestroyStatics();
+	}
+};
+
+Mop mop;
+
+}
+
+
 
 RpgItem::RpgItem( char *name, char *displayName,
                   int rareness, int type, float weight, int price,
@@ -552,4 +575,30 @@ int RpgItem::getDamageTypeForLetter( char c ) {
 
 char RpgItem::getDamageTypeLetter( int type ) {
 	return _( DAMAGE_TYPE_NAME[ type ] )[0];
+}
+
+
+void RpgItem::DestroyStatics() {
+	// typesMap clear.
+	typedef std::vector<const RpgItem*> ItemVec;
+	typedef std::map<int, ItemVec*> TypeMap;
+	typedef std::map<int, TypeMap*> TypeMapMap;
+	for ( TypeMapMap::iterator itmm = typesMap.begin(); itmm != typesMap.end(); ++itmm ) {
+		for ( TypeMap::iterator itm = itmm->second->begin(); itm != itmm->second->end(); ++itm ) {
+			delete itm->second;
+		}
+		delete itmm->second;
+	}
+	typesMap.clear();
+	// items clear.
+	for ( int i = 0; i < itemCount; ++i ) {
+		delete items[i];
+	}
+	// soundMap clear.
+	typedef std::vector<std::string> StrVec;
+	typedef std::map<int, StrVec *> SoundMap;
+	for ( SoundMap::iterator ism = soundMap.begin(); ism != soundMap.end(); ++ism ) {
+		delete ism->second;
+	}
+	soundMap.clear();
 }
