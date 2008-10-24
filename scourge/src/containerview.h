@@ -30,6 +30,7 @@
 #include "gui/canvas.h"
 
 class Item;
+class Creature;
 
 /// The "container contents" window (for open chests etc.)
 class ContainerView : public Canvas, DragAndDropHandler, WidgetView {
@@ -40,6 +41,7 @@ private:
 	int x, y;
 	Window *win;
 	Item *lastItem, *selectedItem;
+	Creature *creature;
 
 public:
 	ContainerView( Scourge *scourge, Item *container, Window *win, int x, int y );
@@ -62,6 +64,7 @@ public:
 	}	
 	void setSelectedItem( Item *item );	
 
+	bool receive( Item *item, bool atCursor );	
 	// drag and drop handling
 	void receive( Widget *widget );
 	bool startDrag( Widget *widget, int x = 0, int y = 0 );
@@ -69,6 +72,8 @@ public:
 	void drawWidgetContents( Widget *w );
 	
 	void showInfo( Item *item );
+	
+	void setItem( Item *item, Creature *creature=NULL );
 
 private:
 	void showContents();
@@ -77,7 +82,8 @@ private:
 	Item *getItemAtPos( int x, int y );
 	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
 	bool findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem = true );
-	bool receive( Item *item, bool atCursor );
+	bool addToContainer( Item *item );
+	bool removeFromContainer( Item *item );
 };
 
 #endif

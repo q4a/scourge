@@ -176,10 +176,6 @@ public:
 	Creature( Session *session, Monster *monster, GLShape *shape, bool initMonster = true );
 	~Creature();
 
-	// #################
-	// #### GETTERS ####
-	// #################
-
 	/// The session object used to create this class instance.
 	inline Session* getSession() {
 		return session;
@@ -197,6 +193,8 @@ public:
 	// #######################
 	// #### CREATURE TYPE ####
 	// #######################
+	
+	inline Item *getBackpack() { return backpack; }	
 
 	/// Is it an NPC? (this excludes wandering heroes, which are in fact auto controlled characters)
 	inline bool isNpc() {

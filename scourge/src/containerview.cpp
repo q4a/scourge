@@ -24,6 +24,10 @@
 #include "creature.h"
 #include "shapepalette.h"
 #include "pcui.h"
+#include "tradedialog.h"
+#include "uncursedialog.h"
+#include "identifydialog.h"
+#include "rechargedialog.h"
 
 using namespace std;
 
@@ -38,11 +42,18 @@ ContainerView::ContainerView( Scourge *scourge, Item *container, Window *win, in
 	this->x = x;
 	this->y = y;
 	this->lastItem = NULL;
-	this->selectedItem = NULL;	
+	this->selectedItem = NULL;
+	this->creature = NULL;
 	showContents();
 }
 
 ContainerView::~ContainerView() {
+}
+
+void ContainerView::setItem( Item *item, Creature *creature ) {
+	this->container = item;
+	this->creature = creature;
+	showContents();
 }
 
 void ContainerView::convertMousePos( int x, int y, int *invX, int *invY ) {
@@ -146,6 +157,9 @@ void ContainerView::drawWidgetContents( Widget *widget ) {
 
 	for ( int i = 0; i < container->getContainedItemCount(); i++ ) {
 		Item *item = container->getContainedItem( i );
+		if( creature && creature->isEquipped( item ) ) {
+			continue;
+		}
 
 		int ix = item->getBackpackX() * GRID_SIZE;
 		int iy = item->getBackpackY() * GRID_SIZE;
@@ -162,6 +176,9 @@ void ContainerView::drawWidgetContents( Widget *widget ) {
 void ContainerView::showContents() {
 	for( int i = 0; container && i < container->getContainedItemCount(); i++ ) {
 		Item *item = container->getContainedItem( i );
+		if( creature && creature->isEquipped( item ) ) {
+			continue;
+		}
 		if( item->getBackpackX() <= 0 && item->getBackpackY() <= 0 ) {
 			findInventoryPosition( item, item->getBackpackX(), item->getBackpackY(), false );			
 		}
@@ -189,6 +206,9 @@ bool ContainerView::handleEvent( SDL_Event *event ) {
 Item *ContainerView::getItemAtPos( int x, int y ) {
 	for ( int i = 0; container && i < container->getContainedItemCount(); i++ ) {
 		Item *item = container->getContainedItem( i );
+		if( creature && creature->isEquipped( item ) ) {
+			continue;
+		}
 		int posX, posY;
 		convertMousePos( x, y, &posX, &posY );
 		if ( posX >= item->getBackpackX() &&
@@ -210,8 +230,10 @@ void ContainerView::showInfo( Item *item ) {
 bool ContainerView::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( scourge->getSDLHandler()->isDoubleClick ) {
 		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
-		                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );		
-		if ( item ) {
+		                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );
+		if ( item && item->getRpgItem()->isContainer() ) {
+			scourge->openContainerGui( item );
+		} else if( item && !creature ) {
 			if ( scourge->getPcUi()->addToBackpack( item ) ) {
 				if( item == getSelectedItem() ) {
 					setSelectedItem( NULL );
@@ -221,12 +243,6 @@ bool ContainerView::handleEvent( Widget *widget, SDL_Event *event ) {
 			} else {
 				scourge->showMessageDialog( _( "There is not enough room in your backpack for everything." ) );
 			}
-		}
-	} else 	if ( scourge->getSDLHandler()->isDoubleClick ) {
-		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
-		                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );
-		if ( item && item->getRpgItem()->isContainer() ) {
-			scourge->openContainerGui( item );
 		}
 	} else if ( scourge->getSDLHandler()->mouseButton == SDL_BUTTON_RIGHT ) {
 		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
@@ -245,16 +261,8 @@ bool ContainerView::handleEvent( Widget *widget, SDL_Event *event ) {
 }
 
 void ContainerView::receive( Widget *widget ) {
-	enum { MSG_SIZE = 120 };
-	char message[ MSG_SIZE ];
 	if ( scourge->getMovingItem() && scourge->getMovingItem() != container ) {
-		if ( receive( scourge->getMovingItem(), true ) && 
-				container->addContainedItem( scourge->getMovingItem() ) ) {
-			// message: the container accepted the item
-			snprintf( message, MSG_SIZE, _( "%1$s is placed in %2$s." ),
-			          scourge->getMovingItem()->getItemName(),
-			          container->getItemName() );
-			scourge->writeLogMessage( message );
+		if ( receive( scourge->getMovingItem(), true ) && addToContainer( scourge->getMovingItem() ) ) {
 			scourge->endItemDrag();
 			showContents();
 			scourge->getSession()->getSound()->playSound( Window::DROP_SUCCESS, 127 );
@@ -331,6 +339,9 @@ bool ContainerView::checkInventoryLocation( Item *item, bool useExistingLocation
 	itemRect.h = item->getBackpackHeight();
 	for ( int t = 0; container && t < container->getContainedItemCount(); t++ ) {
 		Item *i = container->getContainedItem( t );
+		if( creature && creature->isEquipped( i ) ) {
+			continue;
+		}
 		if ( i == item ) {
 			if ( useExistingLocationForSameItem ) {
 				return true;
@@ -368,13 +379,58 @@ void ContainerView::dropItem() {
 		if( item == getSelectedItem() ) {
 			setSelectedItem( NULL );
 		}
-		container->removeContainedItem( item );
-		scourge->startItemDragFromGui( item );
-		showContents();
+		if( removeFromContainer( item ) ) {
+			scourge->startItemDragFromGui( item );
+			showContents();
+		}
 	}
 }
 
 void ContainerView::setSelectedItem( Item *item ) {
 	selectedItem = item;
 	//infoButton->setEnabled( selectedItem != NULL );
+}
+
+bool ContainerView::addToContainer( Item *item ) {
+	bool b = ( creature ? creature->addToBackpack( item ) : container->addContainedItem( item ) );
+	if( b ) {
+		// message: the container accepted the item
+		enum { MSG_SIZE = 120 };
+		char message[ MSG_SIZE ];		
+		if( creature ) {
+			snprintf( message, MSG_SIZE, _( "%s picks up %s." ),
+			          creature->getName(),
+			          item->getItemName() );
+		} else {
+			snprintf( message, MSG_SIZE, _( "%1$s is placed in %2$s." ),
+			          scourge->getMovingItem()->getItemName(),
+			          container->getItemName() );
+		}
+		scourge->writeLogMessage( message );
+	}
+	return b;
+}
+
+bool ContainerView::removeFromContainer( Item *item ) {
+	if( creature ) {
+		
+		if ( scourge->getTradeDialog()->getWindow()->isVisible() ) {
+			scourge->showMessageDialog( _( "Can't change inventory while trading." ) );
+			return false;
+		} else if ( scourge->getUncurseDialog()->getWindow()->isVisible() ) {
+			scourge->showMessageDialog( _( "Can't change inventory while employing a sage's services." ) );
+			return false;
+		} else if ( scourge->getIdentifyDialog()->getWindow()->isVisible() ) {
+			scourge->showMessageDialog( _( "Can't change inventory while employing a sage's services." ) );
+			return false;
+		} else if ( scourge->getRechargeDialog()->getWindow()->isVisible() ) {
+			scourge->showMessageDialog( _( "Can't change inventory while employing a sage's services." ) );
+			return false;
+		}
+		
+		creature->removeFromBackpack( creature->findInBackpack( item ) );
+	} else {
+		container->removeContainedItem( item );
+	}
+	return true;
 }
