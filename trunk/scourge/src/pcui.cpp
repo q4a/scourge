@@ -153,6 +153,7 @@ PcUi::PcUi( Scourge *scourge ) {
 }
 
 PcUi::~PcUi() {
+	delete mainWin;
 	delete equip;
 	delete inven;
 	delete portrait;

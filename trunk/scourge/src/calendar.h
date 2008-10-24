@@ -38,7 +38,7 @@ class Date;
 class Calendar {
 private:
 
-	static Calendar *instance;
+	// moved inside getInstance(): static Calendar *instance;
 
 	Date currentDate;
 	int timeMultiplicator;
@@ -47,6 +47,14 @@ private:
 	char nextResetDate[40];
 
 	std::vector<Event*> scheduledEvents;
+
+	// private, since calendar is singleton
+	Calendar();
+	~Calendar();
+	// undefine default copying
+	Calendar( Calendar const& that );
+	Calendar& operator=( Calendar const& that );
+
 
 public:
 
@@ -73,8 +81,6 @@ public:
 		                     currentDate.getMonth(), currentDate.getYear() );
 	}
 
-	Calendar();
-	~Calendar();
 
 protected:
 };

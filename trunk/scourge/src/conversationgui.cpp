@@ -114,7 +114,8 @@ ConversationGui::ConversationGui( Scourge *scourge ) {
 }
 
 ConversationGui::~ConversationGui() {
-	scourge->getShapePalette()->decrementSkinRefCountAndDeleteShape( creature->getModelName(), creature->getSkinName(), shape );
+	// FIXME: uncomment and fix segfault
+	// scourge->getShapePalette()->decrementSkinRefCountAndDeleteShape( creature->getModelName(), creature->getSkinName(), shape );
 	delete win;
 }
 

@@ -73,8 +73,7 @@ Session::~Session() {
 	if ( squirrel ) delete squirrel;
 	deleteCreaturesAndItems();
 	if ( sound ) delete sound;
-	// FIXME: uncomment and it segfaults sometimes at exit  
-	// if ( party ) delete party;
+	delete party;
 	if ( board ) delete board;
 	if ( cutscene ) delete cutscene;
 #ifdef HAVE_SDL_NET

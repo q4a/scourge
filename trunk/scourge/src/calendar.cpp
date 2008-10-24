@@ -22,14 +22,10 @@
 
 using namespace std;
 
-Calendar *Calendar::instance = NULL;
-
 
 Calendar *Calendar::getInstance() {
-	if ( !Calendar::instance ) {
-		Calendar::instance = new Calendar();
-	}
-	return Calendar::instance;
+	static Calendar instance;
+	return &instance;
 }
 
 Calendar::Calendar() {
@@ -45,8 +41,13 @@ void Calendar::reset( bool resetTime ) {
 	if ( resetTime ) {
 		currentDate.reset( nextResetDate );
 		strcpy( nextResetDate, "" );
-		if ( !scheduledEvents.empty() )
+		if ( !scheduledEvents.empty() ) {
+			// delete the events
+			for ( int i = 0; i < scheduledEvents.size(); ++i ) {
+				delete scheduledEvents[i];
+			}
 			scheduledEvents.clear();
+		}
 	}
 	timeFrozen = false;
 }
@@ -56,6 +57,10 @@ void Calendar::reset( bool resetTime ) {
 void Calendar::scheduleEvent( Event *e ) {
 	if ( scheduledEvents.size() < MAX_SCHEDULED_EVENTS ) {
 		scheduledEvents.push_back( e );
+	}
+	else {
+		cerr << "*** Calendar::scheduleEvent() too much events." << endl;
+		delete e;
 	}
 }
 
@@ -171,6 +176,5 @@ void Calendar::setTimeMultiplicator( int t ) {
 }
 
 Calendar::~Calendar() {
-	Calendar::instance = NULL;
-	//if(currentDate) delete currentDate;
+	reset( true );
 }

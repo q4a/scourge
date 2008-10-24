@@ -314,27 +314,50 @@ void Scourge::start() {
 }
 
 Scourge::~Scourge() {
-	delete mainMenu;
-	delete optionsMenu;
+	// from resetGame():
 	delete pcui;
+
+	// from initUI(3):
 	delete progress; 
-	// FIXME: uncomment and fix segfault
-	// delete multiplayer;
-	delete miniMap;
-	delete netPlay;
-	delete infoGui;
-	// FIXME: uncomment and fix segfault
-	// delete conversationGui;
-	delete tradeDialog;
-	delete healDialog;
-	delete donateDialog;
-	delete trainDialog;
-	delete uncurseDialog;
-	delete identifyDialog;
-	delete rechargeDialog;
+	delete textDialog;
+	delete confirmAutoloadDialog;
+	delete confirmQuickloadDialog;
+	delete confirmQuicksaveDialog;
+	delete confirmUpload;
+	delete dismissHeroDialog;
+	delete chapterIntroWin;
+	// from createPartyUI():
+	delete cards;
+	delete mainWin;
+	delete tbCombatWin;
+	// from createUI():
+	delete squirrelWin;
+	delete exitConfirmationDialog;
 	delete pcEditor;
-	// FIXME: uncomment and fix segfault
-	// delete saveDialog;
+	delete rechargeDialog;
+	delete identifyDialog;
+	delete uncurseDialog;
+	delete trainDialog;
+	delete donateDialog;
+	delete healDialog;
+	delete tradeDialog;
+	delete conversationGui;
+	delete infoGui;
+	// from initUI(2):
+	delete netPlay;
+	// from createBoardUI():
+	delete boardWin;
+	// from initUI(1):
+	delete miniMap;
+	delete mapSettings;
+
+	// from start():
+	delete saveDialog;
+	delete multiplayer;
+	delete optionsMenu;
+	delete mainMenu;
+
+	// from constructor:
 	delete view;
 	delete handler;
 	delete descriptionScroller;
