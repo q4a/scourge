@@ -152,6 +152,7 @@ MainMenu::~MainMenu() {
 		delete textEffect;
 	}
 	textEffects.clear();
+	delete savegameDialog;
 }
 
 /// Draws the whole main menu view.

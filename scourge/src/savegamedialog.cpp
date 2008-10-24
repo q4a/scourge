@@ -60,7 +60,7 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
 
 SavegameDialog::~SavegameDialog() {
 	delete win;
-	delete files;
+	// win deletes it as widget: delete files;
 	delete confirm;
 }
 

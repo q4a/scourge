@@ -78,14 +78,9 @@ MultiplayerDialog::MultiplayerDialog( Scourge *scourge ) {
 }
 
 MultiplayerDialog::~MultiplayerDialog() {
-	delete startServer;
-	delete joinServer;
-	delete userName;
-	delete serverName;
-	delete serverPort;
 	delete mainWin;
 
-	// FIXME: delete charStr
+	// FIXME: delete charStr;
 }
 
 Creature *MultiplayerDialog::getCreature() {

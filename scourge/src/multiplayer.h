@@ -49,7 +49,7 @@ private:
 	TextField *userName;
 	ScrollingList *characterList;
 	int value;
-	char **charStr;
+	// unused: char **charStr;
 	Creature *pc[MAX_PARTY_SIZE];
 	int pcCount;
 

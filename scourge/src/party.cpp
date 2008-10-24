@@ -47,7 +47,7 @@ Party::Party( Session *session ) {
 }
 
 Party::~Party() {
-	delete calendar;
+	// its static instance: delete calendar;
 	deleteParty();
 }
 
