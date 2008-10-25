@@ -84,7 +84,6 @@ private:
 	int failedToMoveWithinRangeAttemptCount;
 	int facingDirection;
 	int formation;
-	int index;
 	int tx, ty;
 	int selX, selY;
 	int cantMoveCounter;
@@ -744,6 +743,7 @@ public:
 
 	bool addToBackpack( Item *item, bool force = false );
 	Item *removeFromBackpack( int backpackIndex );
+	void debugBackpack();
 	int findInBackpack( Item *item );
 	bool isItemInBackpack( Item *item );
 
