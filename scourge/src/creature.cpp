@@ -131,7 +131,6 @@ void Creature::commonInit() {
 	this->x = this->y = this->z = 0;
 	this->dir = Constants::MOVE_UP;
 	this->formation = DIAMOND_FORMATION;
-	this->index = 0;
 	this->tx = this->ty = -1;
 	this->selX = this->selY = -1;
 	this->cantMoveCounter = 0;
@@ -1003,20 +1002,27 @@ BackpackInfo *Creature::getBackpackInfo( Item *item, bool createIfMissing ) {
 int Creature::findInBackpack( Item *item ) {
 	BackpackInfo *info = getBackpackInfo( item );
 	return( info ? info->backpackIndex : -1 );
-	/*
-	 for(int i = 0; i < backpack_count; i++) {
-	   Item *invItem = backpack[i];
-	   if(item == invItem) return i;
-	 }
-	 return -1;
-	*/
+}
+
+void Creature::debugBackpack() {
+	cerr << "**************************************" << endl;
+	cerr << "backpack size=" << backpack->getContainedItemCount() << endl;
+	for( int i = 0; i < backpack->getContainedItemCount(); i++ ) {
+		cerr << "\titem: "  << backpack->getContainedItem( i )->getName() << " address=" << backpack->getContainedItem( i ) << endl;
+	}
+	cerr << "InvInfos size=" << invInfos.size() << endl;
+	for( map<Item*, BackpackInfo*>::iterator e = invInfos.begin(); e != invInfos.end(); ++e ) {
+		Item *item = e->first;
+		BackpackInfo *bpi = e->second;
+		cerr << "\titem: " << item->getName() << " address=" << item << " backpack info: " << bpi->backpackIndex << "," << bpi->equipIndex << endl;
+	}
 }
 
 /// Removes an item from the backpack at index.
 
 Item *Creature::removeFromBackpack( int backpackIndex ) {
 	Item *item = NULL;
-	if ( index < backpack->getContainedItemCount() ) {
+	if ( backpackIndex < backpack->getContainedItemCount() ) {
 		// drop item if carrying it
 		doff( backpackIndex );
 		
@@ -1053,13 +1059,13 @@ Item *Creature::removeFromBackpack( int backpackIndex ) {
 		backpack->removeContainedItem( item );
 
 		// update the backpack infos of items higher than the removed item... (HACK!)
-		for ( int i = index; i < backpack->getContainedItemCount(); i++ ) {
+		for ( int i = backpackIndex; i < backpack->getContainedItemCount(); i++ ) {
 			BackpackInfo *info = getBackpackInfo( backpack->getContainedItem( i ) );
 			info->backpackIndex--;
 		}
 		// adjust equipped indexes too
     for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-			if ( equipped[i] > index && equipped[i] < MAX_BACKPACK_SIZE ) {
+			if ( equipped[i] > backpackIndex && equipped[i] < MAX_BACKPACK_SIZE ) {
 				equipped[i]--;
 			}
 		}
