@@ -130,7 +130,7 @@ int SqCreature::_getName( HSQUIRRELVM vm ) {
 
 int SqCreature::_getMonsterType( HSQUIRRELVM vm ) {
 	GET_OBJECT( Creature* )
-	if ( object->isMonster() ) {
+	if ( object->isMonster() || object->isNpc() ) {
 		sq_pushstring( vm, _SC( object->getMonster()->getType() ), -1 );
 	} else {
 		sq_pushstring( vm, _SC( "" ), -1 );
@@ -488,7 +488,7 @@ int SqCreature::_startConversationAbout( HSQUIRRELVM vm ) {
 int SqCreature::_getTargetCreature( HSQUIRRELVM vm ) {
 	GET_OBJECT( Creature* )
 	if ( object->getTargetCreature() ) {
-		if ( object->getTargetCreature()->isMonster() ) {
+		if ( object->getTargetCreature()->isMonster() || object->getTargetCreature()->isNpc() ) {
 			sq_pushobject( vm, *( SqBinding::binding->creatureMap[object->getTargetCreature()] ) );
 		} else {
 			bool found = false;
