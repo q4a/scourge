@@ -3870,7 +3870,10 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 
 			// for virtual shapes, only save the reference shape pointed to by the virutal shape that is actually drawn
 			for ( int z = 0; z < MAP_VIEW_HEIGHT; z++ ) {
-				if ( pos[x][y][z] && pos[x][y][z]->x == x && pos[x][y][z]->y == y && pos[x][y][z]->z == z && !( pos[x][y][z]->shape && pos[x][y][z]->shape->isVirtual() && !( ( VirtualShape* )pos[x][y][z]->shape )->isDrawn() ) ) {
+				if ( pos[x][y][z] && 
+						pos[x][y][z]->x == x && pos[x][y][z]->y == y && pos[x][y][z]->z == z && 
+						!( pos[x][y][z]->shape && pos[x][y][z]->shape->isVirtual() && !( ( VirtualShape* )pos[x][y][z]->shape )->isDrawn() ) &&
+						!( pos[x][y][z]->creature && pos[x][y][z]->creature->isPartyMember() ) ) {
 
 					info->pos[ info->pos_count ] = Persist::createLocationInfo( x, y, z );
 
