@@ -37,22 +37,22 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 	
 	win = new Window( scourge->getSDLHandler(), 
 	                  x, y, 
-	                  30 + container->getRpgItem()->getContainerWidth() * GRID_SIZE, 
-	                  80 + container->getRpgItem()->getContainerHeight() * GRID_SIZE, 
+	                  105 + container->getRpgItem()->getContainerWidth() * GRID_SIZE, 
+	                  40 + container->getRpgItem()->getContainerHeight() * GRID_SIZE, 
 	                  container->getItemName(),
                     scourge->getShapePalette()->getGuiTexture(), 
                     true,
                     Window::BASIC_WINDOW,
                     scourge->getShapePalette()->getGuiTexture2() );
-	openButton = new Button( 5, 5, 85, 25, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage( Constants::OPEN_CONTAINER_LABEL ) );
+	openButton = new Button( 10, 5, 90, 25, scourge->getShapePalette()->getHighlightTexture(), Constants::getMessage( Constants::OPEN_CONTAINER_LABEL ) );
 	win->addWidget( ( Widget* )openButton );
-	infoButton = new Button( 90, 5, 170, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Info" ) );
+	infoButton = new Button( 10, 30, 90, 50, scourge->getShapePalette()->getHighlightTexture(), _( "Info" ) );
 	infoButton->setEnabled( false );
 	win->addWidget( ( Widget* )infoButton );
-	getAllButton = new Button( 175, 5, 255, 25, scourge->getShapePalette()->getHighlightTexture(), _( "Get All" ) );
+	getAllButton = new Button( 10, 55, 90, 75, scourge->getShapePalette()->getHighlightTexture(), _( "Get All" ) );
 	win->addWidget( ( Widget* )getAllButton );
 
-	view = new ContainerView( scourge, container, win, 10, 35 );
+	view = new ContainerView( scourge, container, win, 95, 5 );
 	win->addWidget( (Canvas*)view );
 
 	win->setVisible( true );
