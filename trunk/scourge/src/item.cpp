@@ -360,13 +360,13 @@ void Item::commonInit( bool loading ) {
 	stateModSet = false;
 	for ( int i = 0; i < StateMod::STATE_MOD_COUNT; i++ ) stateMod[i] = 0;
 
-	if ( rpgItem->isEnchantable() && !loading ) {
+	if ( rpgItem->isEnchantable() && !loading && session->getGameAdapter()->getCurrentDepth() > 0 ) {
 		// roll for magic
 		int n = Util::dice( static_cast<int>( 200.0f - ( level * 1.5f ) ) );
-		if ( n < 5 ) enchant( Constants::DIVINE_MAGIC_ITEM );
-		else if ( n < 15 ) enchant( Constants::CHAMPION_MAGIC_ITEM );
-		else if ( n < 30 ) enchant( Constants::GREATER_MAGIC_ITEM );
-		else if ( n < 50 ) enchant( Constants::LESSER_MAGIC_ITEM );
+		if ( n < 5 && session->getGameAdapter()->getCurrentDepth() >= 4 ) enchant( Constants::DIVINE_MAGIC_ITEM );
+		else if ( n < 10 && session->getGameAdapter()->getCurrentDepth() >= 3 ) enchant( Constants::CHAMPION_MAGIC_ITEM );
+		else if ( n < 20 && session->getGameAdapter()->getCurrentDepth() >= 2 ) enchant( Constants::GREATER_MAGIC_ITEM );
+		else if ( n < 30 && session->getGameAdapter()->getCurrentDepth() >= 1 ) enchant( Constants::LESSER_MAGIC_ITEM );
 	}
 
 	// describe spell-holding items also
