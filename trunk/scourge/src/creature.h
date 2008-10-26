@@ -747,10 +747,11 @@ public:
 	int findInBackpack( Item *item );
 	bool isItemInBackpack( Item *item );
 
-	Item *getEquippedItem( int equipIndex );
+	Item *getEquippedItem( int equipLocation );
+	Item *getEquippedItemByIndex( int equipIndex );
 	void equipFromBackpack( int backpackIndex, int equipIndexHint = -1 );
 	int doff( int backpackIndex );
-	bool isEquippedWeapon( int equipIndex );
+	bool isEquippedWeapon( int equipLocation );
 
 	bool isEquipped( Item *item );
 	bool isEquipped( int backpackIndex );

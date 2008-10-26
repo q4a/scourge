@@ -246,7 +246,7 @@ int Equip::getSpellIndex( int x, int y, int schoolIndex ) {
 /// Returns the item at an equip index.
 
 Item *Equip::getItemInHole( int hole ) {
-	return( hole > -1 && creature ? creature->getEquippedItem( hole ) : NULL );
+	return( hole > -1 && creature ? creature->getEquippedItemByIndex( hole ) : NULL );
 }
 
 /// Takes screen coordinates and determines which equipped item these point at.
@@ -390,7 +390,7 @@ void Equip::drawWidgetContents( Widget *widget ) {
 void Equip::drawEquipment() {
 	for ( int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++ ) {
 		SDL_Rect *rect = pcUi->getScourge()->getShapePalette()->getEquipHole( i );
-		Item *item = creature->getEquippedItem( i );
+		Item *item = creature->getEquippedItemByIndex( i );
 		if ( item ) {
 			if ( rect && rect->w && rect->h ) {
 				glEnable( GL_TEXTURE_2D );

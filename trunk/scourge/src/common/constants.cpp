@@ -25,6 +25,8 @@ const char *Constants::adminUserName = "admin";
 int Constants::maxMissionId = 1;
 std::string Constants::scourgeLocaleName = "";
 
+map<int, int> Constants::EQUIP_LOCATION_LOOKUP;
+
 // assign the data dir
 //char rootDir[300] = DATA_DIR;
 string rootDir;
@@ -242,6 +244,17 @@ Constants::Constants() {
 }
 
 Constants::~Constants() {
+}
+
+int Constants::getLocationIndex( int locationValue ) {
+	if( Constants::EQUIP_LOCATION_LOOKUP.empty() ) {
+		// is there a better way to initialize this? Like a java static initializer block?
+		// also using Constant::EQUIP_LOCATION_COUNT instead of 15 fails to link...
+		for( int i = 0; i < 15; i++ ) {
+			Constants::EQUIP_LOCATION_LOOKUP[ ( 1 << i ) ] = i;
+		}
+	}
+	return Constants::EQUIP_LOCATION_LOOKUP[ locationValue ];
 }
 
 /// Returns a string from the messages[] table.
