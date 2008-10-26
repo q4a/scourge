@@ -51,6 +51,8 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 	win->addWidget( ( Widget* )infoButton );
 	getAllButton = new Button( 10, 55, 90, 75, scourge->getShapePalette()->getHighlightTexture(), _( "Get All" ) );
 	win->addWidget( ( Widget* )getAllButton );
+	closeButton = new Button( 10, win->getHeight() - 55, 90, win->getHeight() - 35, scourge->getShapePalette()->getHighlightTexture(), _( "Close" ) );
+	win->addWidget( ( Widget* )closeButton );
 
 	view = new ContainerView( scourge, container, win, 95, 5 );
 	win->addWidget( (Canvas*)view );
@@ -68,7 +70,7 @@ bool ContainerGui::handleEvent( SDL_Event *event ) {
 }
 
 bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
-	if ( widget == win->closeButton ) {
+	if ( widget == win->closeButton || widget == closeButton ) {
 		win->setVisible( false );
 		return true;
 	} else if ( widget == infoButton ) {

@@ -36,7 +36,7 @@ private:
 	Item *container;
 	Window *win;
 	ContainerView *view;
-	Button *openButton, *infoButton, *getAllButton;
+	Button *openButton, *infoButton, *getAllButton, *closeButton;
 
 public:
 	ContainerGui( Scourge *scourge, Item *container, int x, int y );
