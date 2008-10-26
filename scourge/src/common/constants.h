@@ -374,6 +374,10 @@ public:
   static const int EQUIP_LOCATION_WEAPON_RANGED = 8192;
   static const int EQUIP_LOCATION_GLOVE = 16384;
   static const int EQUIP_LOCATION_COUNT = 15;
+  
+  static std::map<int, int> EQUIP_LOCATION_LOOKUP;
+  
+  static int getLocationIndex( int locationValue );
 
 	static const char *equipLocationTags[];
 

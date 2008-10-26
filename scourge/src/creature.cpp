@@ -32,6 +32,8 @@
 
 using namespace std;
 
+//#define DEBUG_INVENTORY 1
+
 #define PERCEPTION_DELTA 2000
 
 bool loading = false;
@@ -974,6 +976,13 @@ bool Creature::addToBackpack( Item *item, bool force ) {
 		        session->getCurrentMission()->itemFound( item ) ) {
 			session->getGameAdapter()->missionCompleted();
 		}
+		
+#ifdef DEBUG_INVENTORY
+	if( this == session->getParty()->getPlayer() ) {
+		cerr << "Creature::addToBackpack: " << item->getName() << endl;
+		debugBackpack();
+	}
+#endif		
 
 		return true;
 	} else {
@@ -1000,8 +1009,21 @@ BackpackInfo *Creature::getBackpackInfo( Item *item, bool createIfMissing ) {
 /// Returns the backpack index of an item.
 
 int Creature::findInBackpack( Item *item ) {
+#ifdef DEBUG_INVENTORY
+	if( this == session->getParty()->getPlayer() ) {
+		cerr << "findInBackpack: item=" << item->getName() << " address=" << item << endl;
+		debugBackpack();
+	}
+#endif	
 	BackpackInfo *info = getBackpackInfo( item );
 	return( info ? info->backpackIndex : -1 );
+	/*
+	 for(int i = 0; i < backpack_count; i++) {
+	   Item *invItem = backpack[i];
+	   if(item == invItem) return i;
+	 }
+	 return -1;
+	*/
 }
 
 void Creature::debugBackpack() {
@@ -1016,11 +1038,25 @@ void Creature::debugBackpack() {
 		BackpackInfo *bpi = e->second;
 		cerr << "\titem: " << item->getName() << " address=" << item << " backpack info: " << bpi->backpackIndex << "," << bpi->equipIndex << endl;
 	}
+	cerr << "Equipped: " << endl;
+	for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
+		if(equipped[i] < MAX_BACKPACK_SIZE) {
+			cerr << "\tat: " << i << " location: " << (1 << i) << " index: " << equipped[i] << " item: " << getBackpackItem(equipped[i])->getName() << " address: " << getBackpackItem(equipped[i]) << endl;
+		}	
+	}	
+	cerr << "**************************************" << endl;	
 }
 
 /// Removes an item from the backpack at index.
 
 Item *Creature::removeFromBackpack( int backpackIndex ) {
+#ifdef DEBUG_INVENTORY
+	if( this == session->getParty()->getPlayer() ) {
+		cerr << "Creature::removeFromBackpack: " << backpackIndex << endl;
+		if( this == session->getParty()->getPlayer() ) debugBackpack();
+	}
+#endif
+	
 	Item *item = NULL;
 	if ( backpackIndex < backpack->getContainedItemCount() ) {
 		// drop item if carrying it
@@ -1377,20 +1413,33 @@ int Creature::doff( int backpackIndex ) {
 	return 0;
 }
 
-/// Get the item at an equip index. (What is at equipped location?)
 
-Item *Creature::getEquippedItem( int equipIndex ) {
+/// Get the item at an equip index. (What is at equipped location?)
+/// The parameter is an int from 0 - EQUIP_LOCATION_COUNT
+Item *Creature::getEquippedItemByIndex( int equipIndex ) {
 	int n = equipped[equipIndex];
 	if ( n < MAX_BACKPACK_SIZE ) {
 		return getBackpackItem( n );
 	}
 	return NULL;
+}	
+
+
+/// Get the item at an equip index. (What is at equipped location?)
+/// The parameter is a power of 2 (see constants for EQUIP_LOCATION values
+Item *Creature::getEquippedItem( int equipLocation ) {
+	
+	// find out which power of 2 it is
+	int equipIndex = Constants::getLocationIndex( equipLocation );
+	
+	return getEquippedItemByIndex( equipIndex );
 }
 
 /// Returns whether the item at an equip index is a weapon.
+/// The parameter is a power of 2 (see constants for EQUIP_LOCATION values
 
-bool Creature::isEquippedWeapon( int equipIndex ) {
-	Item *item = getEquippedItem( equipIndex );
+bool Creature::isEquippedWeapon( int equipLocation ) {
+	Item *item = getEquippedItem( equipLocation );
 	return( item && item->getRpgItem()->isWeapon() );
 }
 
@@ -1488,7 +1537,7 @@ void Creature::recalcAggregateValues() {
 	}
 
 	for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
-		Item *item = getEquippedItem( i );
+		Item *item = getEquippedItemByIndex( i );
 		// handle magic attrib settings
 		if ( item != NULL && item->isMagicItem() ) {
 
@@ -1513,6 +1562,10 @@ void Creature::recalcAggregateValues() {
 /// Selects the next equipped weapon as the active weapon.
 
 bool Creature::nextPreferredWeapon() {
+#ifdef DEBUG_INVENTORY
+	cerr << "nextPreferredWeapon" << endl;
+	debugBackpack();
+#endif	
 	int pos = preferredWeapon;
 	for ( int i = 0; i < 4; i++ ) {
 		switch ( pos ) {
@@ -1521,6 +1574,13 @@ bool Creature::nextPreferredWeapon() {
     case Constants::EQUIP_LOCATION_WEAPON_RANGED: pos = -1; break;
     case -1: pos = Constants::EQUIP_LOCATION_LEFT_HAND; break;
 		}
+#ifdef DEBUG_INVENTORY
+		if( this == session->getParty()->getPlayer() ) {
+			if( pos != -1 ) {
+				cerr << "\tchecking pos=" << pos << " equipped=" << getEquippedItem( pos ) << " weapon: " << isEquippedWeapon( pos ) << endl;
+			}
+		}
+#endif
 		if ( pos == -1 || isEquippedWeapon( pos ) ) {
 			preferredWeapon = pos;
 			return true;
