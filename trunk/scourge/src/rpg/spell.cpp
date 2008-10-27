@@ -67,7 +67,7 @@ Dice::~Dice() {
 
 
 
-MagicSchool::MagicSchool( char const* name, char const* displayName, char const* deity, int skill, int resistSkill, float red, float green, float blue, char const* symbol ) {
+MagicSchool::MagicSchool( char const* name, char const* displayName, char const* deity, int skill, int resistSkill, float alignment, float red, float green, float blue, char const* symbol ) {
 	this->name = name;
 	this->displayName = displayName;
 	this->shortName = this->name.substr(0, this->name.find(' '));
@@ -78,6 +78,7 @@ MagicSchool::MagicSchool( char const* name, char const* displayName, char const*
 	this->red = red;
 	this->green = green;
 	this->blue = blue;
+	this->baseAlignment = alignment;
 	this->symbol = symbol;
 }
 
@@ -94,7 +95,9 @@ void MagicSchool::initMagic() {
 	MagicSchool *current = NULL;
 	Spell *currentSpell = NULL;
 	char name[255], displayName[255], notes[255], dice[255];
-	char line[2000], symbol[255], targetTypeStr[255] /*, prereqName[255]*/;
+	char line[2000], symbol[255], targetTypeStr[255], align[255] /*, prereqName[255]*/;
+	float alignment;
+
 	for ( unsigned int i = 0; i < v->size(); i++ ) {
 		ConfigNode *node = ( *v )[i];
 
@@ -106,17 +109,20 @@ void MagicSchool::initMagic() {
 		int skill = Skill::getSkillIndexByName( node->getValueAsString( "skill" ) );
 		int resistSkill = Skill::getSkillIndexByName( node->getValueAsString( "resist_skill" ) );
 		strcpy( line, node->getValueAsString( "rgb" ) );
+		strcpy( align, node->getValueAsString( "base_alignment" ) );
+		if ( strcmp( align, "chaotic" ) == 0 ) {
+			alignment = ALIGNMENT_CHAOTIC;
+		} else if ( strcmp( align, "neutral" ) == 0 ) {
+			alignment = ALIGNMENT_NEUTRAL;
+		} else if ( strcmp( align, "lawful" ) == 0 ) {
+			alignment = ALIGNMENT_LAWFUL;
+		}
 		float red = static_cast<float>( strtod( strtok( line, "," ), NULL ) );
 		float green = static_cast<float>( strtod( strtok( NULL, "," ), NULL ) );
 		float blue = static_cast<float>( strtod( strtok( NULL, "," ), NULL ) );
 		strcpy( symbol, node->getValueAsString( "symbol" ) );
-		current = new MagicSchool( name,
-		                           displayName,
-		                           notes,
-		                           skill,
-		                           resistSkill,
-		                           red, green, blue,
-		                           symbol );
+
+		current = new MagicSchool( name, displayName, notes, skill, resistSkill, alignment, red, green, blue, symbol );
 
 		strcpy( line, node->getValueAsString( "deity_description" ) );
 		if ( strlen( line ) ) current->addToDeityDescription( line );
