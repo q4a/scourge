@@ -2318,10 +2318,24 @@ GLfloat Creature::getStep() {
 /// Returns a brief description of the creature.
 
 void Creature::getDetailedDescription( std::string& s ) {
-
 	char tempdesc[256] = {0};
 
-	snprintf( tempdesc, 255, _( "%s (L:%d HP:%d/%d MP:%d/%d)" ), _( getName() ), getLevel(), getHp(), getMaxHp(), getMp(), getMaxMp() );
+	int alignmentPercent = (int)( getAlignment() * 100 );
+	char alignmentDesc[32];
+
+	if ( alignmentPercent < 20 ) {
+		snprintf( alignmentDesc, 32, _( "Utterly chaotic" ) );
+	} else if ( alignmentPercent >= 20 && alignmentPercent < 40 ) {
+		snprintf( alignmentDesc, 32, _( "Chaotic" ) );
+	} else if ( alignmentPercent >= 40 && alignmentPercent < 60 ) {
+		snprintf( alignmentDesc, 32, _( "Neutral" ) );
+	} else if ( alignmentPercent >= 60 && alignmentPercent < 80 ) {
+		snprintf( alignmentDesc, 32, _( "Lawful" ) );
+	} else if ( alignmentPercent >= 80 ) {
+		snprintf( alignmentDesc, 32, _( "Overly lawful" ) );
+	}
+
+	snprintf( tempdesc, 255, _( "%s (L:%d HP:%d/%d MP:%d/%d AL:%d\%(%s))" ), _( getName() ), getLevel(), getHp(), getMaxHp(), getMp(), getMaxMp(), alignmentPercent, alignmentDesc );
 
 	s = tempdesc;
 
