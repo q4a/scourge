@@ -482,7 +482,7 @@ public:
 	}
 
 	inline void setLevel( int n ) {
-		level = ( n < 0 ? 0 : n ); evalSpecialSkills();
+		level = ( n < 1 ? 1 : n ); evalSpecialSkills();
 	}
 
 	/// Experience points needed for next level.
@@ -527,11 +527,6 @@ public:
 		hp = ( n < 0 ? 0 : n ); evalSpecialSkills();
 	}
 
-	/// Starting HP for level 1.
-	inline int getStartingHp() {
-		return hp;
-	}
-
 	int getMaxHp();
 
 	/// Current magic points.
@@ -544,11 +539,12 @@ public:
 	inline void setMp( int n ) {
 		mp = ( n < 0 ? 0 : n ); evalSpecialSkills();
 	}
+	
+	/// Starting HP for level 1.
+	int getStartingHp();
 
 	/// Starting MP for level 1.
-	inline int getStartingMp() {
-		return mp;
-	}
+	int getStartingMp();
 
 	int getMaxMp();
 
