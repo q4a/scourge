@@ -34,6 +34,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 #define LOGO_DELTA 0.05f
 #define LOGO_ROT_POS 30.0f
 #define LOGO_ROT_NEG 0
@@ -153,6 +160,9 @@ MainMenu::~MainMenu() {
 	}
 	textEffects.clear();
 	delete savegameDialog;
+	delete newGameConfirm;
+	delete aboutDialog;
+	delete progress;
 }
 
 /// Draws the whole main menu view.

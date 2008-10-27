@@ -25,6 +25,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 #define UPDATE_MESSAGE N_("Loading Shapes")
 
 ShapePalette::ShapePalette( Session *session )
@@ -174,9 +181,28 @@ void ShapePalette::initialize() {
 
 ShapePalette::~ShapePalette() {
 	delete loader;
-	//    for(int i =0; i < static_cast<int>(creature_models.size()); i++){
-	//        delete creature_models[i];
-	//    }
+	typedef vector<MapGridLocation*> MglVec; 
+	for ( map<char, MglVec*>::iterator itm=mapGridLocationByType.begin(); itm != mapGridLocationByType.end(); ++itm ) {
+		for ( MglVec::iterator itv = itm->second->begin(); itv != itm->second->end(); ++itv ) {
+			delete *itv;
+		}
+		delete itm->second;
+	}
+	for ( int i = 0; i < allThemeCount; ++i ) {
+		delete allThemes[ i ];
+	}
+	for ( size_t i = 0; i < shapeValueVector.size(); ++i ) {
+		delete shapeValueVector[ i ];
+	}
+	for ( size_t i = 0; i < descriptions.size(); ++i ) {
+		delete descriptions[ i ];
+	}
+	for ( size_t i = 0; i < character_models[ Constants::SEX_MALE ].size(); ++i ) {
+		delete character_models[ Constants::SEX_MALE ][ i ];
+	}
+	for ( size_t i = 0; i < character_models[ Constants::SEX_FEMALE ].size(); ++i ) {
+		delete character_models[ Constants::SEX_FEMALE ][ i ];
+	}
 }
 
 void ShapePalette::initFonts( ConfigLang *config ) {

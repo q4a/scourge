@@ -22,6 +22,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 #define XPOS 10
 #define SPACING 18
 #define MINOR_SPACING 4
@@ -126,9 +133,7 @@ OptionsMenu::OptionsMenu( Scourge *scourge ) {
 	nbModes = scourge->getSDLHandler()->getVideoModeCount();
 	for ( i = 0; i < nbModes; i++ ) {
 		std::string s = scourge->getSDLHandler()->getVideoMode( i );
-		vm = new char[s.size() + 1];
-		strcpy( vm, s.c_str() );
-		videoResolutionML->addText( vm );
+		videoResolutionML->addText( s.c_str() );
 	}
 	cards->addWidget( videoResolutionML, VIDEO );
 
@@ -440,13 +445,9 @@ bool OptionsMenu::handleEvent( SDL_Event *event ) {
 }
 
 OptionsMenu::~OptionsMenu() {
-
-	// Only delete ML, scrollingLists and cardContainers.
-	// Other widgets are deleted by window.cpp
-	delete gameSpeedML;
-	delete videoResolutionML;
-	delete controlBindingsList;
+	// widgets are deleted by mainWin
 	delete cards;
+	delete mainWin;
 }
 
 void OptionsMenu::show() {
