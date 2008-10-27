@@ -12,15 +12,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-10-24 00:19+0200\n"
-"PO-Revision-Date: 2008-10-24 01:57+0200\n"
+"POT-Creation-Date: 2008-10-27 22:54+0100\n"
+"PO-Revision-Date: 2008-10-27 23:11+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
-"Language-Team:  <de@li.org>\n"
+"Language-Team: German <kde-i18n-de@lists.kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2007-12-30 04:44+0000\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 0.2\n"
 "X-Poedit-Language: German\n"
 "X-Poedit-Basepath: /home/lordtoran/scourge/scourge/\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
@@ -86,397 +86,397 @@ msgstr "Möchtet Ihr das aktuelle Spiel wirklich neu laden?"
 msgid "Do you really want to load the autosave game?"
 msgstr "Möchtet Ihr wirklich den automatisch gespeicherten Spielstand laden?"
 
-#: src/scourge.cpp:405
+#: src/scourge.cpp:428
 msgid "Error saving the auto save game."
 msgstr "Fehler beim Speichern des Autosave-Spielstands."
 
-#: src/scourge.cpp:408
+#: src/scourge.cpp:431
 msgid "Error saving current map."
 msgstr "Fehler beim Speichern der aktuellen Karte."
 
-#: src/scourge.cpp:419
+#: src/scourge.cpp:442
 msgid "Error #666: Failed to create map."
 msgstr "Fehler #666: Karte konnte nicht erstellt werden."
 
-#: src/scourge.cpp:611
+#: src/scourge.cpp:634
 #, c-format
 msgid "For returning alive, the party receives %d experience points."
 msgstr ""
 "Dafür dass die Gruppe lebend zurückgekehrt ist, erhält sie %d "
 "Erfahrungspunkte."
 
-#: src/scourge.cpp:622
+#: src/scourge.cpp:645
 #, c-format
 msgid " %s gains a level! "
 msgstr " %s steigt eine Stufe auf! "
 
-#: src/scourge.cpp:771
+#: src/scourge.cpp:794
 #, c-format
 msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
 msgstr "Willkommen im S.C.O.U.R.G.E. -Hauptquartier"
 
-#: src/scourge.cpp:774
+#: src/scourge.cpp:797
 #, c-format
 msgid "Teleport spell failed!! Entering level %d"
 msgstr "Der Teleportzauber versagte!! Betrete Ebene %d"
 
-#: src/scourge.cpp:776
+#: src/scourge.cpp:799
 #, c-format
 msgid "Entering dungeon level %d"
 msgstr "Betrete Dungeon-Ebene %d"
 
-#: src/scourge.cpp:967
+#: src/scourge.cpp:990
 #, c-format
 msgid "%s cancelled a pending action."
 msgstr "%s hat eine anstehende Aktion abgebrochen."
 
-#: src/scourge.cpp:972
+#: src/scourge.cpp:995
 msgid "Select a creature for this spell."
 msgstr "Wählt eine Kreatur für den Zauber aus."
 
-#: src/scourge.cpp:977
+#: src/scourge.cpp:1000
 msgid "Select an item for this spell."
 msgstr "Wählt einen Gegenstand für den Zauber aus."
 
-#: src/scourge.cpp:982
+#: src/scourge.cpp:1005
 msgid "Select a location for this spell."
 msgstr "Wählt einen Ort für den Zauber aus."
 
-#: src/scourge.cpp:987
+#: src/scourge.cpp:1010
 msgid "Select a door for this spell."
 msgstr "Wählt eine Tür für den Zauber aus."
 
-#: src/scourge.cpp:992
+#: src/scourge.cpp:1015
 msgid "Select the party for this spell."
 msgstr "Wählt eine Gruppe für den Zauber aus."
 
-#: src/scourge.cpp:1014 src/scourge.cpp:1040
+#: src/scourge.cpp:1037 src/scourge.cpp:1063
 #, c-format
 msgid "%s selected a target"
 msgstr "%s hat ein Ziel gewählt"
 
-#: src/scourge.cpp:1068
+#: src/scourge.cpp:1091
 #, c-format
 msgid "%1$s will target %2$s"
 msgstr "%1$s wird %2$s als Ziel wählen"
 
-#: src/scourge.cpp:1094
+#: src/scourge.cpp:1117
 #, c-format
 msgid "%1$s targeted %2$s."
 msgstr "%1$s hat %2$s als Ziel gewählt."
 
-#: src/scourge.cpp:1278 src/containerview.cpp:264
+#: src/scourge.cpp:1301 src/containerview.cpp:272
 msgid "The item won't fit in that container!"
 msgstr "Dieser Gegenstand passt nicht in den Behälter!"
 
-#: src/scourge.cpp:1281 src/containerview.cpp:254
+#: src/scourge.cpp:1304 src/containerview.cpp:405
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr "%1$s wurde in %2$s gelegt."
 
-#: src/scourge.cpp:1475
+#: src/scourge.cpp:1498
 msgid "Something is blocking the door from closing."
 msgstr "Etwas blockiert die Tür, so dass sie nicht schließen kann."
 
-#: src/scourge.cpp:1523
+#: src/scourge.cpp:1546
 msgid "Leave level?"
 msgstr "Ebene verlassen?"
 
-#: src/scourge.cpp:1547
+#: src/scourge.cpp:1570
 msgid "Squirrel Console"
 msgstr "Squirrel-Konsole"
 
-#: src/scourge.cpp:1555
+#: src/scourge.cpp:1578
 msgid "Run"
 msgstr "Ausführen"
 
-#: src/scourge.cpp:1556
+#: src/scourge.cpp:1579
 msgid "Clear"
 msgstr "Löschen"
 
-#: src/scourge.cpp:1557
+#: src/scourge.cpp:1580
 msgid "Reload"
 msgstr "Neu laden"
 
-#: src/scourge.cpp:1841
+#: src/scourge.cpp:1864
 #, c-format
 msgid "Speed set to %d\n"
 msgstr "Geschwindigkeit auf %d gesetzt\n"
 
-#: src/scourge.cpp:1983
+#: src/scourge.cpp:2006
 msgid "Congratulations, mission accomplished!"
 msgstr "Glückwunsch, Mission abgeschlossen!"
 
-#: src/scourge.cpp:1994
+#: src/scourge.cpp:2017
 msgid "For completing the mission"
 msgstr "Für das Abschließen der Mission ..."
 
-#: src/scourge.cpp:1996
+#: src/scourge.cpp:2019
 #, c-format
 msgid "The party receives %d points."
 msgstr "... erhält die Gruppe %d Erfahrungspunkte."
 
-#: src/scourge.cpp:2022
+#: src/scourge.cpp:2045
 msgid "Connecting to server"
 msgstr "Verbinde zum Server"
 
-#: src/scourge.cpp:2029
+#: src/scourge.cpp:2052
 msgid "Connected!"
 msgstr "Verbunden!"
 
-#: src/scourge.cpp:2050
+#: src/scourge.cpp:2073
 msgid "Combat"
 msgstr "Kampf"
 
-#: src/scourge.cpp:2051
+#: src/scourge.cpp:2074
 msgid "End Turn"
 msgstr "Runde beenden"
 
-#: src/scourge.cpp:2075
+#: src/scourge.cpp:2098
 #, c-format
 msgid "Pause game [%s]"
 msgstr "Spielpause [%s]"
 
-#: src/scourge.cpp:2080
+#: src/scourge.cpp:2103
 msgid "Load or Save Game"
 msgstr "Spiel laden oder speichern"
 
-#: src/scourge.cpp:2090
+#: src/scourge.cpp:2113
 msgid "Exit game"
 msgstr "Spiel verlassen"
 
-#: src/scourge.cpp:2097
+#: src/scourge.cpp:2120
 #, c-format
 msgid "Game options [%s]"
 msgstr "Spieleinstellungen [%s]"
 
-#: src/scourge.cpp:2105
+#: src/scourge.cpp:2128
 #, c-format
 msgid "Move as a group [%s]"
 msgstr "Als Gruppe bewegen [%s]"
 
-#: src/scourge.cpp:2146
+#: src/scourge.cpp:2169
 msgid "Dismiss this character"
 msgstr "Diesen Charakter entlassen"
 
-#: src/scourge.cpp:2164
+#: src/scourge.cpp:2187
 #, c-format
 msgid "Backpack and party info [%s]"
 msgstr "Rucksack und Gruppeninformation [%s]"
 
-#: src/scourge.cpp:2173
+#: src/scourge.cpp:2196
 msgid "Click to assign a spell, capability or magic item."
 msgstr ""
 "Klicken, um einen Zauber, eine Fähigkeit oder einen magischen Gegenstand "
 "zuzuweisen."
 
-#: src/scourge.cpp:2211 src/tools/pageclasses.cpp:49
+#: src/scourge.cpp:2234 src/tools/pageclasses.cpp:49
 #: src/tools/pagecreatures.cpp:53 src/portrait.cpp:257
 #: src/characterinfo.cpp:50
 msgid "HP"
 msgstr "LP"
 
-#: src/scourge.cpp:2213 src/tools/pageclasses.cpp:52
+#: src/scourge.cpp:2236 src/tools/pageclasses.cpp:52
 #: src/tools/pagecreatures.cpp:57 src/portrait.cpp:262
 #: src/characterinfo.cpp:51
 msgid "MP"
 msgstr "MP"
 
-#: src/scourge.cpp:2228
+#: src/scourge.cpp:2251
 msgid "Current Weapon: Bare Hands"
 msgstr "Aktuelle Waffe: Bloße Hände"
 
-#: src/scourge.cpp:2235
+#: src/scourge.cpp:2258
 #, c-format
 msgid "Current Weapon: %s"
 msgstr "Aktuelle Waffe: %s"
 
-#: src/scourge.cpp:2511 src/portrait.cpp:438
+#: src/scourge.cpp:2534 src/portrait.cpp:438
 msgid "Thirst"
 msgstr "Durst"
 
-#: src/scourge.cpp:2525 src/portrait.cpp:443
+#: src/scourge.cpp:2548 src/portrait.cpp:443
 msgid "Hunger"
 msgstr "Hunger"
 
-#: src/scourge.cpp:2607 src/equip.cpp:631
+#: src/scourge.cpp:2630 src/equip.cpp:631
 msgid "Not enough Magic Points to cast this spell!"
 msgstr "Nicht genug Magiepunkte, um diesen Zauber zu sprechen!"
 
-#: src/scourge.cpp:2698
+#: src/scourge.cpp:2721
 #, c-format
 msgid "Begin Turn [%s]"
 msgstr "Runde beginnen [%s]"
 
-#: src/scourge.cpp:2703
+#: src/scourge.cpp:2726
 msgid "...In Turn..."
 msgstr "...Zug läuft..."
 
-#: src/scourge.cpp:2709
+#: src/scourge.cpp:2732
 #, c-format
 msgid "Pause Game [%s]"
 msgstr "Spielpause [%s]"
 
-#: src/scourge.cpp:2714
+#: src/scourge.cpp:2737
 #, c-format
 msgid "Unpause game. [%s]"
 msgstr "Spiel fortsetzen [%s]"
 
-#: src/scourge.cpp:2750
+#: src/scourge.cpp:2773
 msgid "Available Missions"
 msgstr "Verfügbare Missionen"
 
-#: src/scourge.cpp:2756
+#: src/scourge.cpp:2779
 msgid "Drag map to look around."
 msgstr "Zieht die Karte mit der Maus, um Euch umzusehen"
 
-#: src/scourge.cpp:2825
+#: src/scourge.cpp:2848
 msgid "This spell has no effect here..."
 msgstr "Dieser Zauberspruch ist hier unwirksam..."
 
-#: src/scourge.cpp:3003
+#: src/scourge.cpp:3026
 msgid "Game loaded successfully."
 msgstr "Spiel erfolgreich geladen."
 
-#: src/scourge.cpp:3026
+#: src/scourge.cpp:3049
 msgid "Error: Saved game version is too old."
 msgstr "Fehler: Der Spielstand wurde mit einer zu alten Spielversion erstellt."
 
-#: src/scourge.cpp:3389
+#: src/scourge.cpp:3410
 msgid "You cannot hire more party members."
 msgstr "Ihr könnt keine weiteren Gruppenmitglieder anwerben."
 
-#: src/scourge.cpp:3409
+#: src/scourge.cpp:3430
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr "Möchtet Ihr %s, den %s, entlassen?"
 
-#: src/scourge.cpp:3444
+#: src/scourge.cpp:3465
 #, c-format
 msgid "%s the level %d %s"
 msgstr "%s, der Stufe %d %s"
 
-#: src/scourge.cpp:3452
+#: src/scourge.cpp:3473
 #, c-format
 msgid "in a cave on level %d"
 msgstr "in einer Höhle auf Ebene %d"
 
-#: src/scourge.cpp:3455
+#: src/scourge.cpp:3476
 #, c-format
 msgid "in dungeon level %d at %s"
 msgstr "auf der Dungeon-Ebene %d in %s"
 
-#: src/scourge.cpp:3460
+#: src/scourge.cpp:3481
 msgid " while attempting to "
 msgstr " bei "
 
-#: src/scourge.cpp:3464
+#: src/scourge.cpp:3485
 msgid " kill "
 msgstr " der Jagd auf "
 
-#: src/scourge.cpp:3470
+#: src/scourge.cpp:3491
 msgid " recover "
 msgstr " der Suche nach "
 
-#: src/scourge.cpp:3479
+#: src/scourge.cpp:3500
 msgid "suddenly, while resting at HQ"
 msgstr "unerwartet während des Aufenthalts im Hauptquartier"
 
-#: src/scourge.cpp:3483
+#: src/scourge.cpp:3504
 #, c-format
 msgid "Expired %s. Cause of demise: %s. Reached chapter %d of the story."
 msgstr "Verstarb %s. Todesursache: %s. Erreichte Kapitel %d der Handlung."
 
-#: src/scourge.cpp:3508
+#: src/scourge.cpp:3529
 msgid "Score was successfully uploaded."
 msgstr "Die Punktzahl wurde erfolgreich hochgeladen."
 
-#: src/scourge.cpp:3553
+#: src/scourge.cpp:3574
 msgid "Initiative"
 msgstr "Initiative"
 
-#: src/scourge.cpp:3557 src/item.cpp:1439
+#: src/scourge.cpp:3578 src/item.cpp:1146
 msgid "DEF"
 msgstr "VRT"
 
-#: src/scourge.cpp:3606 src/scourge.cpp:3613 src/infogui.cpp:615
+#: src/scourge.cpp:3627 src/scourge.cpp:3634 src/infogui.cpp:615
 #: src/infogui.cpp:620 src/infogui.cpp:625
 msgid "ATK"
 msgstr "ANG"
 
-#: src/scourge.cpp:3619 src/creature.cpp:2900
+#: src/scourge.cpp:3640 src/creature.cpp:2859
 msgid "CTH"
 msgstr "TRC"
 
-#: src/scourge.cpp:3620 src/infogui.cpp:617 src/infogui.cpp:623
+#: src/scourge.cpp:3641 src/infogui.cpp:617 src/infogui.cpp:623
 msgid "APR"
 msgstr "APR"
 
-#: src/scourge.cpp:3672
+#: src/scourge.cpp:3693
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: src/scourge.cpp:3674
+#: src/scourge.cpp:3695
 #, c-format
 msgid "per %.2f R"
 msgstr "alle %.2f R"
 
-#: src/scourge.cpp:3683
+#: src/scourge.cpp:3704
 msgid "This item is already enchanted."
 msgstr "Dieser Gegenstand ist bereits verzaubert."
 
-#: src/scourge.cpp:3685
+#: src/scourge.cpp:3706
 msgid "This item cannot be enchanted."
 msgstr "Dieser Gegenstand kann nicht verzaubert werden."
 
-#: src/scourge.cpp:3693
+#: src/scourge.cpp:3714
 msgid "You succesfully enchanted an item!"
 msgstr "Ihr habt erfolgreich einen Gegenstand verzaubert!"
 
-#: src/scourge.cpp:3697
+#: src/scourge.cpp:3718
 #, c-format
 msgid "You created: %s."
 msgstr "Ihr erschuft: %s."
 
-#: src/scourge.cpp:3702
+#: src/scourge.cpp:3723
 msgid "You failed to enchant the item."
 msgstr "Ihr habt es nicht geschafft, den Gegenstand zu verzaubern."
 
-#: src/scourge.cpp:3706
+#: src/scourge.cpp:3727
 msgid "You can only enchant one item per day."
 msgstr "Ihr könnt nur einen Gegenstand pro Tag verzaubern."
 
-#: src/scourge.cpp:3721
+#: src/scourge.cpp:3742
 msgid "Spell was entered into your spellbook."
 msgstr "Der Zauber wurde in Euer Zauberbuch aufgenommen."
 
-#: src/scourge.cpp:3725 src/battle.cpp:763
+#: src/scourge.cpp:3746 src/battle.cpp:763
 #, c-format
 msgid "%s crumbles into dust."
 msgstr "%s zerfällt zu Staub."
 
-#: src/scourge.cpp:3729
+#: src/scourge.cpp:3750
 msgid "You already know this spell"
 msgstr "Ihr kennt diesen Zauber bereits."
 
-#: src/scourge.cpp:3732
+#: src/scourge.cpp:3753
 msgid "You are not proficient enough to transcribe this scroll."
 msgstr "Ihr seid nicht erfahren genug, um diese Spruchrolle abzuschreiben."
 
-#: src/scourge.cpp:3735
+#: src/scourge.cpp:3756
 msgid "You can only transcribe scrolls!"
 msgstr "Ihr könnt nur Spruchrollen abschreiben!"
 
-#: src/scourge.cpp:3766
+#: src/scourge.cpp:3787
 msgid "This item is out of charges."
 msgstr "Dieser Gegenstand ist aufgebraucht."
 
-#: src/scourge.cpp:3779
+#: src/scourge.cpp:3800
 msgid "You cannot use this item."
 msgstr "Ihr könnt diesen Gegenstand nicht benutzen."
 
-#: src/scourge.cpp:4054
+#: src/scourge.cpp:4075
 msgid "The door splinters into many, tiny pieces!"
 msgstr "Die Tür zerspringt in unzählige kleine Teile!"
 
@@ -489,9 +489,9 @@ msgid "Talk about:"
 msgstr "Rede über:"
 
 #: src/conversationgui.cpp:86 src/traindialog.cpp:56 src/donatedialog.cpp:51
-#: src/rechargedialog.cpp:50 src/healdialog.cpp:50 src/uncursedialog.cpp:50
-#: src/tradedialog.cpp:58 src/common/constants.cpp:88
-#: src/identifydialog.cpp:50 src/optionsmenu.cpp:61
+#: src/rechargedialog.cpp:50 src/containergui.cpp:54 src/healdialog.cpp:50
+#: src/uncursedialog.cpp:50 src/tradedialog.cpp:58 src/common/constants.cpp:90
+#: src/identifydialog.cpp:50 src/optionsmenu.cpp:68
 msgid "Close"
 msgstr "Schließen"
 
@@ -531,7 +531,7 @@ msgstr "Spenden"
 msgid "Trainer:"
 msgstr "Trainer:"
 
-#: src/conversationgui.cpp:107 src/common/constants.cpp:135
+#: src/conversationgui.cpp:107 src/common/constants.cpp:137
 msgid "Train"
 msgstr "Trainieren"
 
@@ -539,29 +539,45 @@ msgstr "Trainieren"
 msgid "Merchant:"
 msgstr "Händler:"
 
-#: src/conversationgui.cpp:111 src/common/constants.cpp:134
+#: src/conversationgui.cpp:111 src/common/constants.cpp:136
 msgid "Trade"
 msgstr "Handeln"
 
-#: src/conversationgui.cpp:170
+#: src/conversationgui.cpp:171
 #, c-format
 msgid "Talking to %s"
 msgstr "Gespräch mit %s"
 
-#: src/containerview.cpp:222 src/containergui.cpp:92
+#: src/containerview.cpp:244 src/containergui.cpp:94
 msgid "There is not enough room in your backpack for everything."
 msgstr "Es ist nicht genug Platz in Eurem Rucksack für das alles."
+
+#: src/containerview.cpp:401 src/equip.cpp:289 src/render/map.cpp:2852
+#: src/render/map.cpp:2904
+#, c-format
+msgid "%s picks up %s."
+msgstr "%s hebt %s auf."
+
+#: src/containerview.cpp:418
+msgid "Can't change inventory while trading."
+msgstr "Kann während des Handelns nichts am Inventar ändern."
+
+#: src/containerview.cpp:421 src/containerview.cpp:424
+#: src/containerview.cpp:427
+msgid "Can't change inventory while employing a sage's services."
+msgstr ""
+"Kann nichts am Inventar ändern, während Dienste in Anspruch genommen werden."
 
 #: src/sqbinding/sqcreature.cpp:403 src/spellcaster.cpp:524
 #, c-format
 msgid "%s resists the spell with magic item!"
 msgstr "%s widersteht dem Spruch mit einem magischen Gegenstand!"
 
-#: src/scourgeview.cpp:881
+#: src/scourgeview.cpp:894
 msgid "Move"
 msgstr "Bewegen"
 
-#: src/scourgeview.cpp:1154
+#: src/scourgeview.cpp:1167
 msgid "cost"
 msgstr "Kosten"
 
@@ -573,11 +589,11 @@ msgstr "Bestätigung"
 msgid "Ok"
 msgstr "OK"
 
-#: src/gui/confirmdialog.cpp:39 src/common/constants.cpp:98
+#: src/gui/confirmdialog.cpp:39 src/common/constants.cpp:100
 msgid "No"
 msgstr "Nein"
 
-#: src/gui/textdialog.cpp:32 src/common/constants.cpp:128
+#: src/gui/textdialog.cpp:32 src/common/constants.cpp:130
 msgid "Information"
 msgstr "Informationen"
 
@@ -626,7 +642,7 @@ msgstr "Zauber"
 #: src/tools/subpageschools.cpp:30 src/tools/pagelocations.cpp:34
 #: src/tools/subpageskills.cpp:32 src/tools/pagecreatures.cpp:33
 #: src/tools/pageskills.cpp:29 src/tools/subpagespells.cpp:46
-#: src/pceditor.cpp:443
+#: src/pceditor.cpp:439
 msgid "Name"
 msgstr "Name"
 
@@ -772,7 +788,7 @@ msgstr "Linienbreite"
 msgid "GUI"
 msgstr "GUI"
 
-#: src/tools/subpageschools.cpp:34 src/pceditor.cpp:449
+#: src/tools/subpageschools.cpp:34 src/pceditor.cpp:445
 msgid "Deity"
 msgstr "Gottheit"
 
@@ -822,7 +838,7 @@ msgid "Skin"
 msgstr "Skin"
 
 #: src/tools/pagecreatures.cpp:49 src/tools/subpagespells.cpp:54
-#: src/equip.cpp:199 src/portrait.cpp:233 src/item.cpp:1450
+#: src/equip.cpp:199 src/portrait.cpp:233 src/item.cpp:1157
 msgid "Level"
 msgstr "Stufe"
 
@@ -915,27 +931,32 @@ msgstr "Anmerkungen"
 msgid "Item Tags"
 msgstr "Gegenst.-Tags"
 
-#: src/rpg/rpgitem.cpp:40
+#: src/rpg/rpgitem.cpp:49
 msgid "Slashing"
 msgstr "Schlag"
 
-#: src/rpg/rpgitem.cpp:41
+#: src/rpg/rpgitem.cpp:50
 msgid "Piercing"
 msgstr "Stich"
 
-#: src/rpg/rpgitem.cpp:42
+#: src/rpg/rpgitem.cpp:51
 msgid "Crushing"
 msgstr "Wucht"
 
-#: src/rpg/monster.cpp:27 src/session.cpp:126 src/render/map.cpp:4292
+#: src/rpg/rpgitem.cpp:165 src/rpg/rpgitem.cpp:198 src/rpg/rpgitem.cpp:244
+#: src/session.cpp:112
+msgid "Loading Items"
+msgstr "Lade Gegenstände"
+
+#: src/rpg/monster.cpp:27 src/session.cpp:125 src/render/map.cpp:4302
 msgid "Loading Creatures"
 msgstr "Lade Kreaturen"
 
-#: src/rpg/spell.cpp:90 src/session.cpp:117
+#: src/rpg/spell.cpp:88 src/session.cpp:116
 msgid "Loading Spells"
 msgstr "Lade Zauber"
 
-#: src/rpg/rpg.cpp:52 src/session.cpp:145
+#: src/rpg/rpg.cpp:52 src/session.cpp:144
 msgid "Loading Skills"
 msgstr "Lade Fertigkeiten"
 
@@ -947,59 +968,59 @@ msgstr "Lade Statusänderungen"
 msgid "Loading Abilities"
 msgstr "Lade Fähigkeiten"
 
-#: src/rpg/character.cpp:43 src/session.cpp:109
+#: src/rpg/character.cpp:43 src/session.cpp:108
 msgid "Loading Professions"
 msgstr "Lade Professionen"
 
-#: src/rpg/character.cpp:179
+#: src/rpg/character.cpp:177
 msgid "Skill bonuses to:"
 msgstr "Fertigkeitsbonus auf:"
 
-#: src/rpg/character.cpp:229
+#: src/rpg/character.cpp:227
 msgid "Can use any weapons, except:"
 msgstr "Kann alle Waffen benutzen, außer:"
 
-#: src/rpg/character.cpp:232
+#: src/rpg/character.cpp:230
 msgid "Can use any armor, except:"
 msgstr "Kann alle Rüstungen tragen, außer:"
 
-#: src/rpg/character.cpp:244
+#: src/rpg/character.cpp:242
 msgid "Can use any weapons."
 msgstr "Kann alle Waffen benutzen."
 
-#: src/rpg/character.cpp:247
+#: src/rpg/character.cpp:245
 msgid "Can use any armor."
 msgstr "Kann alle Rüstungen tragen."
 
-#: src/rpg/character.cpp:254
+#: src/rpg/character.cpp:252
 msgid "Not allowed to use any weapons, except:"
 msgstr "Kann keine Waffen benutzen, außer:"
 
-#: src/rpg/character.cpp:257
+#: src/rpg/character.cpp:255
 msgid "Not allowed to use any armor, except:"
 msgstr "Kann keine Rüstungen tragen, außer:"
 
-#: src/rpg/character.cpp:269
+#: src/rpg/character.cpp:267
 msgid "Not allowed to use any weapons."
 msgstr "Kann keine Waffen benutzen."
 
-#: src/rpg/character.cpp:272
+#: src/rpg/character.cpp:270
 msgid "Not allowed to use any armor."
 msgstr "Kann keine Rüstungen tragen."
 
-#: src/rpg/character.cpp:281
+#: src/rpg/character.cpp:279
 msgid "Can use weapons:"
 msgstr "Kann Waffen benutzen:"
 
-#: src/rpg/character.cpp:283
+#: src/rpg/character.cpp:281
 msgid "Can use armor:"
 msgstr "Kann Rüstungen tragen:"
 
-#: src/rpg/character.cpp:293
+#: src/rpg/character.cpp:291
 msgid "Not allowed to use weapons:"
 msgstr "Kann Waffen nicht benutzen:"
 
-#: src/rpg/character.cpp:295
+#: src/rpg/character.cpp:293
 msgid "Not allowed to use armor:"
 msgstr "Darf keine Rüstungen tragen:"
 
@@ -1079,7 +1100,7 @@ msgstr "Samstag"
 msgid "Sunday"
 msgstr "Sonntag"
 
-#: src/date.cpp:226
+#: src/date.cpp:225
 msgid "MON DAY HOU:MIN"
 msgstr "DAY. MON HOU:MIN"
 
@@ -1087,22 +1108,15 @@ msgstr "DAY. MON HOU:MIN"
 msgid "MP Cost"
 msgstr "MP-Kosten"
 
-#: src/equip.cpp:289 src/render/map.cpp:2845 src/render/map.cpp:2897
-#: src/inven.cpp:168
-#, c-format
-msgid "%s picks up %s."
-msgstr "%s hebt %s auf."
-
 #: src/equip.cpp:300
 msgid "You can't fit the item!"
 msgstr "Der Gegenstand passt dort nicht hin!"
 
-#: src/equip.cpp:313 src/inven.cpp:189
+#: src/equip.cpp:313
 msgid "Can't change backpack while trading."
 msgstr "Kann während des Handelns nichts am Rucksack ändern."
 
-#: src/equip.cpp:316 src/equip.cpp:319 src/equip.cpp:322 src/inven.cpp:192
-#: src/inven.cpp:195 src/inven.cpp:198
+#: src/equip.cpp:316 src/equip.cpp:319 src/equip.cpp:322
 msgid "Can't change backpack while employing a sage's services."
 msgstr ""
 "Kann nichts am Rucksack ändern, während Dienste in Anspruch genommen werden."
@@ -1111,7 +1125,7 @@ msgstr ""
 msgid "Can't remove cursed item!"
 msgstr "Verfluchte Gegenstände können nicht entfernt werden!"
 
-#: src/equip.cpp:337 src/inven.cpp:214
+#: src/equip.cpp:337
 #, c-format
 msgid "%s drops %s."
 msgstr "%s lässt %s fallen."
@@ -1158,7 +1172,7 @@ msgstr "Tiefe: %d von %d."
 msgid "Find %s"
 msgstr "Finde %s"
 
-#: src/equip.cpp:720 src/equip.cpp:731 src/equip.cpp:740 src/board.cpp:320
+#: src/equip.cpp:720 src/equip.cpp:731 src/equip.cpp:740 src/board.cpp:346
 msgid "(completed)"
 msgstr "(abgeschlossen)"
 
@@ -1307,7 +1321,7 @@ msgstr "Karte hineinzoomen"
 msgid "Zoom out map"
 msgstr "Karte herauszoomen"
 
-#: src/userconfiguration.cpp:259 src/optionsmenu.cpp:88
+#: src/userconfiguration.cpp:259 src/optionsmenu.cpp:95
 msgid "Always center map"
 msgstr "Karte immer zentrieren"
 
@@ -1403,12 +1417,12 @@ msgstr "Schnellladen"
 msgid "Load autosave"
 msgstr "Autosave laden"
 
-#: src/userconfiguration.cpp:897
+#: src/userconfiguration.cpp:896
 #, c-format
 msgid "S.C.O.U.R.G.E.: Heroes of Lesser Renown\n"
 msgstr "S.C.O.U.R.G.E.: Heroes of Lesser Renown\n"
 
-#: src/userconfiguration.cpp:898
+#: src/userconfiguration.cpp:897
 #, c-format
 msgid ""
 "A 3D, roguelike game of not quite epic proportions.\n"
@@ -1417,34 +1431,34 @@ msgstr ""
 "Ein Rogue-artiges 3D-Rollenspiel von halbwegs epischem Ausmaß.\n"
 "\n"
 
-#: src/userconfiguration.cpp:899
+#: src/userconfiguration.cpp:898
 #, c-format
 msgid "Usage:\n"
 msgstr "Aufruf:\n"
 
-#: src/userconfiguration.cpp:900
+#: src/userconfiguration.cpp:899
 #, c-format
 msgid ""
 "scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n"
 msgstr ""
 "scourge [-fdprHSa?hsm] [--test] [--bppXX] [--help] [--version] [--shadowX]\n"
 
-#: src/userconfiguration.cpp:901
+#: src/userconfiguration.cpp:900
 #, c-format
 msgid "version: %s\n"
 msgstr "Version: %s\n"
 
-#: src/userconfiguration.cpp:903
+#: src/userconfiguration.cpp:902
 #, c-format
 msgid "[Multiplayer support]\n"
 msgstr "[Multiplayer-Unterstützung]\n"
 
-#: src/userconfiguration.cpp:906
+#: src/userconfiguration.cpp:905
 #, c-format
 msgid "[Sound support]\n"
 msgstr "[Sound-Unterstützung]\n"
 
-#: src/userconfiguration.cpp:908
+#: src/userconfiguration.cpp:907
 #, c-format
 msgid ""
 "\n"
@@ -1453,67 +1467,67 @@ msgstr ""
 "\n"
 "Optionen:\n"
 
-#: src/userconfiguration.cpp:909
+#: src/userconfiguration.cpp:908
 #, c-format
 msgid "\tf - disable fullscreen mode\n"
 msgstr "\tf - Vollbildmodus deaktivieren\n"
 
-#: src/userconfiguration.cpp:910
+#: src/userconfiguration.cpp:909
 #, c-format
 msgid "\td - disable double buffering\n"
 msgstr "\td - Doppelpufferung deaktivieren\n"
 
-#: src/userconfiguration.cpp:911
+#: src/userconfiguration.cpp:910
 #, c-format
 msgid "\tp - disable hardware palette\n"
 msgstr "\tp - Hardwarepalette deaktivieren\n"
 
-#: src/userconfiguration.cpp:912
+#: src/userconfiguration.cpp:911
 #, c-format
 msgid "\tr - disable resizable window\n"
 msgstr "\tr - Änderbare Fenstergröße deaktivieren\n"
 
-#: src/userconfiguration.cpp:913
+#: src/userconfiguration.cpp:912
 #, c-format
 msgid "\tH - force hardware surface\n"
 msgstr "\tH - Hardware-Surfaces erzwingen\n"
 
-#: src/userconfiguration.cpp:914
+#: src/userconfiguration.cpp:913
 #, c-format
 msgid "\tS - force software surface\n"
 msgstr "\tS - Software-Surfaces erzwingen\n"
 
-#: src/userconfiguration.cpp:915
+#: src/userconfiguration.cpp:914
 #, c-format
 msgid "\ta - disable hardware acceleration\n"
 msgstr "\ta - Hardwarebeschleunigung deaktivieren\n"
 
-#: src/userconfiguration.cpp:916
+#: src/userconfiguration.cpp:915
 #, c-format
 msgid "\th,?,--help - show this info\n"
 msgstr "\th,?,--help - Diese Hilfe anzeigen\n"
 
-#: src/userconfiguration.cpp:917
+#: src/userconfiguration.cpp:916
 #, c-format
 msgid "\ts - disable stencil buffer\n"
 msgstr "\ts - Stencil-Puffer deaktivieren\n"
 
-#: src/userconfiguration.cpp:918
+#: src/userconfiguration.cpp:917
 #, c-format
 msgid "\tm - disable multitexturing\n"
 msgstr "\tm - Multitexturing deaktivieren\n"
 
-#: src/userconfiguration.cpp:919
+#: src/userconfiguration.cpp:918
 #, c-format
 msgid "\t--test - list card's supported video modes\n"
 msgstr "\t--test - Unterstützte Bildschirmauflösungen auflisten\n"
 
-#: src/userconfiguration.cpp:920
+#: src/userconfiguration.cpp:919
 #, c-format
 msgid "\t--test-config - print out the file configuration and exit\n"
 msgstr "\t--test-config - Konfiguration ausgeben\n"
 
-#: src/userconfiguration.cpp:921
+#: src/userconfiguration.cpp:920
 #, c-format
 msgid ""
 "\t--run-tests [path] - run internal tests of the rpg engine and save the "
@@ -1522,50 +1536,50 @@ msgstr ""
 "\t--run-tests [path] - Interne Tests der RPG-Engine durchführen und Ergebnis "
 "als HTML-Datei in $path speichern\n"
 
-#: src/userconfiguration.cpp:922
+#: src/userconfiguration.cpp:921
 #, c-format
 msgid "\t--version - print the build version\n"
 msgstr "\t--version - Build-Version ausgeben\n"
 
-#: src/userconfiguration.cpp:923
+#: src/userconfiguration.cpp:922
 #, c-format
 msgid "\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n"
 msgstr "\t--bppXX - Zu verwendende Farbtiefe: (8,15,16,24,32) bpp\n"
 
-#: src/userconfiguration.cpp:924
+#: src/userconfiguration.cpp:923
 #, c-format
 msgid "\t--widthXX - use XX pixels for the screen width\n"
 msgstr "\t--widthXX - Horizontale Bildschirmauflösung\n"
 
-#: src/userconfiguration.cpp:925
+#: src/userconfiguration.cpp:924
 #, c-format
 msgid "\t--heightXX - use XX pixels for the screen height\n"
 msgstr "\t--heightXX - Vertikale Bildschirmauflösung\n"
 
-#: src/userconfiguration.cpp:926
+#: src/userconfiguration.cpp:925
 #, c-format
 msgid ""
 "\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-"
 "everything\n"
 msgstr "\t--shadowX - Schatten: 0-Keine, 1-Objekte/Kreaturen, 2-Alle\n"
 
-#: src/userconfiguration.cpp:927
+#: src/userconfiguration.cpp:926
 #, c-format
 msgid "\t--themeXYZ - use gui theme XYZ to draw the ui.\n"
 msgstr "\t--themeXYZ - Angegebenes GUI-Theme verwenden.\n"
 
-#: src/userconfiguration.cpp:928
+#: src/userconfiguration.cpp:927
 #, c-format
 msgid "\t--debugtheme - use the debug theme only to for wall textures.\n"
 msgstr "\t--debugtheme - Debug-Theme verwenden.\n"
 
-#: src/userconfiguration.cpp:929
+#: src/userconfiguration.cpp:928
 #, c-format
 msgid "\t--flaky - disable some graphic effects for flaky video cards.\n"
 msgstr ""
 "\t--flaky - Schaltet auf inkompatiblen Grafikkarten einige Effekte ab.\n"
 
-#: src/userconfiguration.cpp:930
+#: src/userconfiguration.cpp:929
 #, c-format
 msgid ""
 "\n"
@@ -1596,17 +1610,17 @@ msgstr ""
 "\tHöchste Einstellung für Schatten.\n"
 "\n"
 
-#: src/userconfiguration.cpp:932
+#: src/userconfiguration.cpp:931
 #, c-format
 msgid "Multiplayer options:\n"
 msgstr "Multiplayer-Optionen:\n"
 
-#: src/userconfiguration.cpp:933
+#: src/userconfiguration.cpp:932
 #, c-format
 msgid "\t--serverPORT - run a standalone server w/o a ui on PORT\n"
 msgstr "\t--serverPORT - Standalone-Server ohne GUI auf PORT laufen lassen\n"
 
-#: src/userconfiguration.cpp:934
+#: src/userconfiguration.cpp:933
 #, c-format
 msgid ""
 "\t--clientHOST:PORT,USERNAME - run a standalone admin client w/o a ui. "
@@ -1615,12 +1629,12 @@ msgstr ""
 "\t--clientHOST:PORT,USERNAME - Standalone-Adminclient ohne GUI laufen "
 "lassen. Verbinde zu HOST:PORT als USERNAME.\n"
 
-#: src/userconfiguration.cpp:937
+#: src/userconfiguration.cpp:936
 #, c-format
 msgid "Sound options:\n"
 msgstr "Sound-Optionen:\n"
 
-#: src/userconfiguration.cpp:938
+#: src/userconfiguration.cpp:937
 #, c-format
 msgid "\t--nosound - run without sound\n"
 msgstr "\t--nosound - Ohne Sound starten\n"
@@ -1647,39 +1661,39 @@ msgstr "Tempel von %s"
 msgid "Enter the amount you want to donate."
 msgstr "Gebt den zu spendenden Betrag ein."
 
-#: src/pceditor.cpp:428
+#: src/pceditor.cpp:424
 msgid "Character Details"
 msgstr "Charakterdetails"
 
-#: src/pceditor.cpp:445
+#: src/pceditor.cpp:441
 msgid "Profession"
 msgstr "Profession"
 
-#: src/pceditor.cpp:447
+#: src/pceditor.cpp:443
 msgid "Stats"
 msgstr "Werte"
 
-#: src/pceditor.cpp:451
+#: src/pceditor.cpp:447
 msgid "Image"
 msgstr "Bild"
 
-#: src/pceditor.cpp:457
+#: src/pceditor.cpp:453
 msgid "Accept"
 msgstr "Annehmen"
 
-#: src/pceditor.cpp:463
+#: src/pceditor.cpp:459
 msgid "Dismiss"
 msgstr "Verwerfen"
 
-#: src/pceditor.cpp:470 src/mapeditor.cpp:93
+#: src/pceditor.cpp:466 src/mapeditor.cpp:93
 msgid "Name:"
 msgstr "Name:"
 
-#: src/pceditor.cpp:473
+#: src/pceditor.cpp:469
 msgid "Change"
 msgstr "Ändern"
 
-#: src/pceditor.cpp:479
+#: src/pceditor.cpp:473
 msgid ""
 "What is your name, great hero? Enter it here, but choose wisely! You will "
 "not be able to change it again."
@@ -1687,15 +1701,15 @@ msgstr ""
 "Wie lautet Euer Name, oh großer Held? Gebt ihn hier ein, aber entscheidet "
 "weise! Ihr werdet ihn später nicht mehr ändern können."
 
-#: src/pceditor.cpp:484 src/portrait.cpp:230
+#: src/pceditor.cpp:478 src/portrait.cpp:230
 msgid "Male"
 msgstr "Männl."
 
-#: src/pceditor.cpp:485 src/portrait.cpp:230
+#: src/pceditor.cpp:479 src/portrait.cpp:230
 msgid "Female"
 msgstr "Weibl."
 
-#: src/pceditor.cpp:489
+#: src/pceditor.cpp:483
 msgid ""
 "Select the sex of your hero. Besides some visual effects, it has no other "
 "impact on game mechanics."
@@ -1703,11 +1717,11 @@ msgstr ""
 "Wählt das Geschlecht Eures Helden. Abgesehen von einigen grafischen Effekten "
 "wird sich das nicht weiter auf das Spiel auswirken."
 
-#: src/pceditor.cpp:496
+#: src/pceditor.cpp:490
 msgid "Profession:"
 msgstr "Profession:"
 
-#: src/pceditor.cpp:500
+#: src/pceditor.cpp:494
 msgid ""
 "Which starting profession most closely resembles your hero? "
 "\t                                Your character will evolve into a more "
@@ -1720,23 +1734,23 @@ msgstr ""
 "weiterentwickeln. Unten ist eine kurze Beschreibung der Stärken und "
 "Schwächen der verschiedenen Professionen."
 
-#: src/pceditor.cpp:527
+#: src/pceditor.cpp:521
 msgid "Statistics:"
 msgstr "Statistiken:"
 
-#: src/pceditor.cpp:557
+#: src/pceditor.cpp:551
 msgid "Points Remaining:"
 msgstr "Verbleibende Punkte:"
 
-#: src/pceditor.cpp:561
+#: src/pceditor.cpp:555
 msgid "Reroll"
 msgstr "Neu würfeln"
 
-#: src/pceditor.cpp:574
+#: src/pceditor.cpp:568
 msgid "Patron Deity:"
 msgstr "Schutzgottheit:"
 
-#: src/pceditor.cpp:578
+#: src/pceditor.cpp:572
 msgid ""
 "At times on your journey you may be reduced to nothing but a prayer. "
 "\t                                Therefore it is important to keep in mind "
@@ -1749,11 +1763,11 @@ msgstr ""
 "befindet sich eine Liste der bekannten Gottheiten des Landes mit jeweils "
 "einer kurzen Beschreibung."
 
-#: src/pceditor.cpp:605
+#: src/pceditor.cpp:599
 msgid "Appearance:"
 msgstr "Aussehen:"
 
-#: src/pceditor.cpp:609
+#: src/pceditor.cpp:603
 msgid ""
 "You may now choose a portrait and a character model "
 "\t                                to represent your hero. Your appearance is "
@@ -1813,112 +1827,112 @@ msgid "Selected items recharged."
 msgstr "Gewählte Gegenstände aufgeladen."
 
 #: src/outdoorgenerator.cpp:112 src/mondrian.cpp:513
-#: src/dungeongenerator.cpp:595 src/render/map.cpp:4069
+#: src/dungeongenerator.cpp:595 src/render/map.cpp:4079
 msgid "Loading theme"
 msgstr "Lade Thema"
 
-#: src/board.cpp:69 src/shapepalette.cpp:627
+#: src/board.cpp:88 src/shapepalette.cpp:653
 msgid "Loading Sounds"
 msgstr "Lade Soundeffekte"
 
-#: src/board.cpp:82 src/board.cpp:99 src/session.cpp:134
+#: src/board.cpp:101 src/board.cpp:118 src/session.cpp:133
 msgid "Loading Missions"
 msgstr "Lade Missionen"
 
-#: src/board.cpp:312
+#: src/board.cpp:338
 #, c-format
 msgid "L:%d, "
 msgstr "E:%d, "
 
-#: src/board.cpp:314
+#: src/board.cpp:340
 #, c-format
 msgid "S:%d, "
 msgstr "T:%d, "
 
-#: src/board.cpp:316
+#: src/board.cpp:342
 msgid "(EXCURSION)"
 msgstr "(AUSFLUG)"
 
-#: src/board.cpp:316
+#: src/board.cpp:342
 msgid "(STORY)"
 msgstr "(HANDLUNG)"
 
-#: src/board.cpp:316
+#: src/board.cpp:342
 msgid "(CAVE)"
 msgstr "(HÖHLE)"
 
-#: src/board.cpp:1323
+#: src/board.cpp:1349
 msgid "Magic Merchant"
 msgstr "Magiehändler"
 
-#: src/board.cpp:1324
+#: src/board.cpp:1350
 msgid "Armor Merchant"
 msgstr "Rüstungshändler"
 
-#: src/board.cpp:1325
+#: src/board.cpp:1351
 msgid "Rations Merchant"
 msgstr "Provianthändler"
 
-#: src/board.cpp:1326
+#: src/board.cpp:1352
 msgid "Scrolls Merchant"
 msgstr "Spruchrollenhändler"
 
-#: src/board.cpp:1327
+#: src/board.cpp:1353
 msgid "Weapons Merchant"
 msgstr "Waffenhändler"
 
-#: src/board.cpp:1332
+#: src/board.cpp:1358
 #, c-format
 msgid "Trainer for %s"
 msgstr "Trainer für %s"
 
-#: src/board.cpp:1337
+#: src/board.cpp:1363
 #, c-format
 msgid "%s the %s"
 msgstr "%s, der %s"
 
-#: src/mainmenu.cpp:56
+#: src/mainmenu.cpp:63
 msgid "New Game"
 msgstr "Neues Spiel"
 
-#: src/mainmenu.cpp:57
+#: src/mainmenu.cpp:64
 msgid "Continue Game"
 msgstr "Spiel fortsetzen"
 
-#: src/mainmenu.cpp:58
+#: src/mainmenu.cpp:65
 msgid "Multiplayer Game"
 msgstr "Multiplayer-Spiel"
 
-#: src/mainmenu.cpp:59 src/optionsmenu.cpp:44
+#: src/mainmenu.cpp:66 src/optionsmenu.cpp:51
 msgid "Options"
 msgstr "Einstellungen"
 
-#: src/mainmenu.cpp:60 src/mainmenu.cpp:128
+#: src/mainmenu.cpp:67 src/mainmenu.cpp:135
 msgid "About S.c.o.u.r.g.e."
 msgstr "Über S.c.o.u.r.g.e."
 
-#: src/mainmenu.cpp:61
+#: src/mainmenu.cpp:68
 msgid "Quit"
 msgstr "Beenden"
 
-#: src/mainmenu.cpp:111
+#: src/mainmenu.cpp:118
 msgid "New Game Confirmation"
 msgstr "Neues Spiel bestätigen"
 
-#: src/mainmenu.cpp:278
+#: src/mainmenu.cpp:289
 #, c-format
 msgid "Scourge version %s"
 msgstr "Scourge-Version %s"
 
-#: src/mainmenu.cpp:283
+#: src/mainmenu.cpp:294
 msgid "Optionally compiled modules:"
 msgstr "Optional kompilierte Module:"
 
-#: src/mainmenu.cpp:286
+#: src/mainmenu.cpp:297
 msgid "[Network]"
 msgstr "[Netzwerk]"
 
-#: src/mainmenu.cpp:290
+#: src/mainmenu.cpp:301
 msgid "[Sound]"
 msgstr "[Sound]"
 
@@ -1966,7 +1980,7 @@ msgstr "Karteneditor"
 msgid "Load"
 msgstr "Laden"
 
-#: src/mapeditor.cpp:98 src/savegamedialog.cpp:53 src/optionsmenu.cpp:59
+#: src/mapeditor.cpp:98 src/savegamedialog.cpp:53 src/optionsmenu.cpp:66
 msgid "Save"
 msgstr "Speichern"
 
@@ -2062,7 +2076,7 @@ msgstr "Ort auf Karte wählen: (Klicken, zum Bewegen ziehen)"
 msgid "Apply"
 msgstr "Anwenden"
 
-#: src/mapeditor.cpp:322 src/common/constants.cpp:96 src/savegamedialog.cpp:56
+#: src/mapeditor.cpp:322 src/common/constants.cpp:98 src/savegamedialog.cpp:56
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -2101,7 +2115,7 @@ msgstr "Wählt die zu handelnden Gegenstände."
 msgid "You can't afford this deal!"
 msgstr "Ihr könnt Euch diesen Handel nicht leisten!"
 
-#: src/tradedialog.cpp:184 src/inven.cpp:141
+#: src/tradedialog.cpp:184
 msgid "Can't fit item in backpack."
 msgstr "Der Gegenstand passt nicht in den Rucksack."
 
@@ -2139,14 +2153,14 @@ msgid "Your burgling attempt failed. Items and ex. were confiscated."
 msgstr ""
 "Euer Diebstahlsversuch flog auf. Einige Gegenstände wurden konfisziert."
 
-#: src/shapepalette.cpp:28 src/shapepalette.cpp:305 src/shapepalette.cpp:331
-#: src/shapepalette.cpp:354 src/shapepalette.cpp:389 src/shapepalette.cpp:602
-#: src/shapepalette.cpp:644 src/shapepalette.cpp:680 src/shapepalette.cpp:743
-#: src/session.cpp:105
+#: src/shapepalette.cpp:35 src/shapepalette.cpp:331 src/shapepalette.cpp:357
+#: src/shapepalette.cpp:380 src/shapepalette.cpp:415 src/shapepalette.cpp:628
+#: src/shapepalette.cpp:670 src/shapepalette.cpp:706 src/shapepalette.cpp:769
+#: src/session.cpp:104
 msgid "Loading Shapes"
 msgstr "Lade Objekte"
 
-#: src/shapepalette.cpp:864
+#: src/shapepalette.cpp:890
 msgid "Loading Locations"
 msgstr "Lade Orte"
 
@@ -2372,12 +2386,12 @@ msgstr "%s entdeckt eine Geheimtür!"
 msgid "%s discovers a trap!"
 msgstr "%s entdeckt eine Falle!"
 
-#: src/spellcaster.cpp:288 src/creature.cpp:1164
+#: src/spellcaster.cpp:288 src/creature.cpp:1206
 #, c-format
 msgid "%s heals %d points."
 msgstr "%s heilt %d Punkte."
 
-#: src/spellcaster.cpp:309 src/creature.cpp:1180
+#: src/spellcaster.cpp:309 src/creature.cpp:1222
 #, c-format
 msgid "%s feels impervious to damage!"
 msgstr "%s fühlt sich unverwundbar!"
@@ -2435,7 +2449,7 @@ msgstr "Zum Ändern klicken"
 msgid "XP"
 msgstr "EP"
 
-#: src/portrait.cpp:267 src/item.cpp:1430 src/characterinfo.cpp:52
+#: src/portrait.cpp:267 src/item.cpp:1137 src/characterinfo.cpp:52
 msgid "AP"
 msgstr "AP"
 
@@ -2467,192 +2481,216 @@ msgstr "Immun gegen Verfassungen:"
 msgid "Chat"
 msgstr "Chat"
 
-#: src/creature.cpp:232
+#: src/creature.cpp:233
 #, c-format
 msgid "%1$s's skill in %2$s has increased."
 msgstr "%1$ss %2$s-Fähigkeit hat sich verbessert."
 
-#: src/creature.cpp:243
+#: src/creature.cpp:244
 #, c-format
 msgid "%1$s is not allowed to equip %2$s."
 msgstr "%1$s kann %2$s nicht anlegen."
 
-#: src/creature.cpp:570
+#: src/creature.cpp:571
 msgid "Can't find path to target. Sorry!"
 msgstr "Kann den Weg zum Ziel nicht finden. 'Tschuldigung!"
 
-#: src/creature.cpp:966
+#: src/creature.cpp:967
 #, c-format
 msgid "%s is overloaded."
 msgstr "%s ist überladen."
 
-#: src/creature.cpp:1046
+#: src/creature.cpp:1088
 #, c-format
 msgid "%s is not overloaded anymore."
 msgstr "%s ist nicht mehr überladen."
 
-#: src/creature.cpp:1088
+#: src/creature.cpp:1130
 #, c-format
 msgid "%s is not hungry at the moment."
 msgstr "%s hat gerade keinen Hunger."
 
-#: src/creature.cpp:1099
+#: src/creature.cpp:1141
 #, c-format
 msgid "%1$s eats %2$s."
 msgstr "%1$s isst %2$s."
 
-#: src/creature.cpp:1103 src/creature.cpp:1121 src/creature.cpp:1136
+#: src/creature.cpp:1145 src/creature.cpp:1163 src/creature.cpp:1178
 #, c-format
 msgid "%s is used up."
 msgstr "%s ist aufgebraucht."
 
-#: src/creature.cpp:1109
+#: src/creature.cpp:1151
 #, c-format
 msgid "%s is not thirsty at the moment."
 msgstr "%s hat gerade keinen Durst."
 
-#: src/creature.cpp:1116
+#: src/creature.cpp:1158
 #, c-format
 msgid "%1$s drinks %2$s."
 msgstr "%1$s trinkt %2$s."
 
-#: src/creature.cpp:1131
+#: src/creature.cpp:1173
 #, c-format
 msgid "%1$s drinks from %2$s."
 msgstr "%1$s trinkt aus %2$s."
 
-#: src/creature.cpp:1141
+#: src/creature.cpp:1183
 msgid "You cannot eat or drink that!"
 msgstr "Ihr könnt das nicht essen oder trinken!"
 
-#: src/creature.cpp:1173
+#: src/creature.cpp:1215
 #, c-format
 msgid "%s receives %d magic points."
 msgstr "%s erhält %d Magiepunkte."
 
-#: src/creature.cpp:1200
+#: src/creature.cpp:1242
 #, c-format
 msgid "%s feels at peace."
 msgstr "%s fühlt sich friedvoll."
 
-#: src/creature.cpp:1228
+#: src/creature.cpp:1270
 #, c-format
 msgid "%1$s will consume %2$s."
 msgstr "%1$s wird %2$s zu sich nehmen."
 
-#: src/creature.cpp:1232
+#: src/creature.cpp:1274
 #, c-format
 msgid "%1$s will cast %2$s."
 msgstr "%1$s wird %2$s sprechen."
 
-#: src/creature.cpp:1236
+#: src/creature.cpp:1278
 #, c-format
 msgid "%1$s will use capability %2$s."
 msgstr "%1$s wird Fähigkeit %2$s benutzen."
 
-#: src/creature.cpp:1637
+#: src/creature.cpp:1703
 #, c-format
 msgid "%s is raised from the dead!"
 msgstr "%s ersteht von den Toten auf!"
 
-#: src/creature.cpp:1675
+#: src/creature.cpp:1741
 #, c-format
 msgid "  %s levels up!"
 msgstr "  %s steigt eine Stufe auf!"
 
-#: src/creature.cpp:1699
+#: src/creature.cpp:1765
 #, c-format
 msgid "%s gains %d experience points."
 msgstr "%s erhält %d Erfahrungspunkte."
 
-#: src/creature.cpp:1702
+#: src/creature.cpp:1768
 #, c-format
 msgid "%s gains a level!"
 msgstr "%s erreicht eine neue Stufe!"
 
-#: src/creature.cpp:1706
+#: src/creature.cpp:1772
 #, c-format
 msgid "%s looses %d experience points!"
 msgstr "%s verliert %d Erfahrungspunkte."
 
-#: src/creature.cpp:2367
+#: src/creature.cpp:2327
 #, c-format
-msgid "%s (L:%d HP:%d/%d MP:%d/%d)"
-msgstr "%s (S:%d LP:%d/%d MP:%d/%d)"
+msgid "Utterly chaotic"
+msgstr "Vollkommen chaotisch"
 
-#: src/creature.cpp:2372 src/item.cpp:273
+#: src/creature.cpp:2329
+#, c-format
+msgid "Chaotic"
+msgstr "Chaotisch"
+
+#: src/creature.cpp:2331
+#, c-format
+msgid "Neutral"
+msgstr "Neutral"
+
+#: src/creature.cpp:2333
+#, c-format
+msgid "Lawful"
+msgstr "Rechtschaffen"
+
+#: src/creature.cpp:2335
+#, c-format
+msgid "Overly lawful"
+msgstr "Überaus rechtschaffen"
+
+#: src/creature.cpp:2338
+msgid "%s (L:%d HP:%d/%d MP:%d/%d AL:%d\\%(%s))"
+msgstr "%s (S:%d LP:%d/%d MP:%d/%d GS:%d\\%(%s))"
+
+#: src/creature.cpp:2343 src/item.cpp:279
 msgid " *Mission*"
 msgstr " *Mission*"
 
-#: src/creature.cpp:2375
+#: src/creature.cpp:2346
 msgid " *Boss*"
 msgstr " *Endgegner*"
 
-#: src/creature.cpp:2480
+#: src/creature.cpp:2439
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr "%1$s erhält die Spezialfähigkeit %2$s!"
 
-#: src/creature.cpp:2492
+#: src/creature.cpp:2451
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr "%1$s verliert die Spezialfähigkeit %2$s!"
 
-#: src/creature.cpp:2710 src/creature.cpp:2712
+#: src/creature.cpp:2669 src/creature.cpp:2671
 msgid "...Attack from blind-spot!"
 msgstr "...Angriff aus dem toten Winkel!"
 
-#: src/creature.cpp:2854 src/creature.cpp:2905
+#: src/creature.cpp:2813 src/creature.cpp:2864
 msgid "skill"
 msgstr "Fertigkeit"
 
-#: src/creature.cpp:2858 src/creature.cpp:2904 src/infogui.cpp:680
+#: src/creature.cpp:2817 src/creature.cpp:2863 src/infogui.cpp:680
 msgid "vs."
 msgstr "gegen"
 
-#: src/creature.cpp:2860
+#: src/creature.cpp:2819
 msgid "bonus"
 msgstr "Bonus"
 
-#: src/creature.cpp:2902
+#: src/creature.cpp:2861
 msgid "max"
 msgstr "max."
 
-#: src/creature.cpp:3289
+#: src/creature.cpp:3248
 #, c-format
 msgid "%s notices a trap!"
 msgstr "%s bemerkt eine Falle!"
 
-#: src/creature.cpp:3309
+#: src/creature.cpp:3268
 #, c-format
 msgid "%s notices a secret door!"
 msgstr "%s bemerkt eine Geheimtür!"
 
-#: src/creature.cpp:3331
+#: src/creature.cpp:3290
 #, c-format
 msgid "%1$s blunders into a trap and takes %2$d points of damage!"
 msgstr "%1$s stolpert in eine Falle und nimmt %2$d Punkte Schaden!"
 
-#: src/creature.cpp:3352
+#: src/creature.cpp:3311
 #, c-format
 msgid "%s attempts to disable the trap:"
 msgstr "%s versucht die Falle zu entschärfen:"
 
-#: src/creature.cpp:3356
+#: src/creature.cpp:3315
 msgid "   and succeeds!"
 msgstr "   und ist erfolgreich!"
 
-#: src/creature.cpp:3364
+#: src/creature.cpp:3323
 #, c-format
 msgid "    and fails! %1$s takes %2$d points of damage!"
 msgstr "    und versagt! %1$s nimmt %2$d Punkte Schaden!"
 
-#: src/creature.cpp:3371
+#: src/creature.cpp:3330
 msgid "This trap is already disabled."
 msgstr "Diese Falle wurde bereits entschärft."
 
 #: src/mondrian.cpp:465 src/dungeongenerator.cpp:575
-#: src/terraingenerator.cpp:133
+#: src/terraingenerator.cpp:134
 msgid "Assembling Dungeon Level"
 msgstr "Generiere Dungeon-Ebene"
 
@@ -2750,346 +2788,346 @@ msgstr "Geschoss hat das Ziel nicht erreicht (max. Schritte)."
 msgid "Projectile did not reach the target (blocked)."
 msgstr "Geschoss hat das Ziel nicht erreicht (blockiert)."
 
-#: src/common/constants.cpp:74
+#: src/common/constants.cpp:76
 msgid "Infamy awaits in the dungeons of Scourge!"
 msgstr "Niedertracht erwartet Euch im Dungeon von Scourge!"
 
-#: src/common/constants.cpp:75
+#: src/common/constants.cpp:77
 msgid "Another day, another sewer! Welcome to Scourge!"
 msgstr "Ein neuer Tag, ein neuer Abwasserkanal! Willkommen bei Scourge!"
 
-#: src/common/constants.cpp:76
+#: src/common/constants.cpp:78
 msgid "Happy hunting; welcome to Scourge!"
 msgstr "Die Jagdsaison ist eröffnet; willkommen bei Scourge!"
 
-#: src/common/constants.cpp:77
+#: src/common/constants.cpp:79
 msgid "That item is out of your reach"
 msgstr "Dieser Gegenstand ist außerhalb Eurer Reichweite"
 
-#: src/common/constants.cpp:78
+#: src/common/constants.cpp:80
 msgid "You can't touch that"
 msgstr "Das könnt Ihr nicht anfassen."
 
-#: src/common/constants.cpp:79
+#: src/common/constants.cpp:81
 msgid "You have to be closer to get that"
 msgstr "Ihr müsst näher heran, um es zu nehmen."
 
-#: src/common/constants.cpp:80
+#: src/common/constants.cpp:82
 msgid "You are too far to reach it"
 msgstr "Ihr seid zu weit weg, um es zu erreichen."
 
-#: src/common/constants.cpp:81
+#: src/common/constants.cpp:83
 msgid "The door is blocked"
 msgstr "Die Tür ist blockiert."
 
-#: src/common/constants.cpp:82
+#: src/common/constants.cpp:84
 msgid "Something is blocking that door"
 msgstr "Etwas blockiert diese Tür."
 
-#: src/common/constants.cpp:83
+#: src/common/constants.cpp:85
 msgid "You can't use that door; something is in the way"
 msgstr "Ihr könnt nicht durch diese Tür; etwas ist im Weg."
 
-#: src/common/constants.cpp:84
+#: src/common/constants.cpp:86
 msgid "You are now in single-step mode"
 msgstr "Ihr seid jetzt im Einzelmodus"
 
-#: src/common/constants.cpp:85
+#: src/common/constants.cpp:87
 msgid "You are now in group mode"
 msgstr "Ihr seid jetzt im Gruppenmodus."
 
-#: src/common/constants.cpp:86
+#: src/common/constants.cpp:88
 msgid "Paused: you have entered turn-based mode"
 msgstr "Pause: Ihr seid jetzt im rundenbasierten Modus."
 
-#: src/common/constants.cpp:87
+#: src/common/constants.cpp:89
 msgid "Un-paused: you are in real-time mode"
 msgstr "Pause beendet: Ihr seid jetzt im Echtzeitmodus."
 
-#: src/common/constants.cpp:89
+#: src/common/constants.cpp:91
 msgid "Drop Item"
 msgstr "Gegenstand fallenlassen"
 
-#: src/common/constants.cpp:90
+#: src/common/constants.cpp:92
 msgid "Open Item"
 msgstr "Öffnen"
 
-#: src/common/constants.cpp:91
+#: src/common/constants.cpp:93
 msgid "Drag items to/from the list, Right click for info"
 msgstr "Gegenstände hierhin oder heraus ziehen, RKlick für Info"
 
-#: src/common/constants.cpp:92
+#: src/common/constants.cpp:94
 msgid "Play Mission"
 msgstr "Mission spielen"
 
-#: src/common/constants.cpp:93
+#: src/common/constants.cpp:95
 msgid "Do you really want to exit this mission?"
 msgstr "Möchtet Ihr diese Mission wirklich verlassen?"
 
-#: src/common/constants.cpp:94
+#: src/common/constants.cpp:96
 msgid "Teleport back to base?"
 msgstr "Zurück zur Basis teleportieren?"
 
-#: src/common/constants.cpp:95
+#: src/common/constants.cpp:97
 msgid "OK"
 msgstr "Ok"
 
-#: src/common/constants.cpp:97
+#: src/common/constants.cpp:99
 msgid "Yes"
 msgstr "Ja"
 
-#: src/common/constants.cpp:99
+#: src/common/constants.cpp:101
 msgid "Select a character who is alive and has leveled up."
 msgstr "Wählt einen Charakter, der lebt und aufgestiegen ist."
 
-#: src/common/constants.cpp:100
+#: src/common/constants.cpp:102
 msgid "No skill points available."
 msgstr "Keine Fertigkeitspunkte verfügbar."
 
-#: src/common/constants.cpp:101
+#: src/common/constants.cpp:103
 msgid "Select a skill first."
 msgstr "Wählt erst eine Fertigkeit."
 
-#: src/common/constants.cpp:102
+#: src/common/constants.cpp:104
 msgid "S.C.O.U.R.G.E. dialog"
 msgstr "S.C.O.U.R.G.E.-Dialog"
 
-#: src/common/constants.cpp:103
+#: src/common/constants.cpp:105
 msgid "Use gate to descend a level?"
 msgstr "Durch das Tor eine Ebene hinabsteigen?"
 
-#: src/common/constants.cpp:104
+#: src/common/constants.cpp:106
 msgid "Use gate to ascend a level?"
 msgstr "Durch das Tor eine Ebene emporsteigen?"
 
-#: src/common/constants.cpp:105
+#: src/common/constants.cpp:107
 msgid "A dead character cannot perform this action."
 msgstr "Ein toter Charakter kann diese Aktion nicht durchführen."
 
-#: src/common/constants.cpp:106
+#: src/common/constants.cpp:108
 msgid "hp:"
 msgstr "LP:"
 
-#: src/common/constants.cpp:107
+#: src/common/constants.cpp:109
 msgid "ac:"
 msgstr "RK:"
 
-#: src/common/constants.cpp:108
+#: src/common/constants.cpp:110
 msgid "Your magic fizzles and dies."
 msgstr "Eure Magie verläuft sich und scheitert."
 
-#: src/common/constants.cpp:109
+#: src/common/constants.cpp:111
 msgid "Only the roaches are impressed by your mumbled words."
 msgstr "Nur die Kakerlaken sind von Euren gemurmelten Worten beeindruckt."
 
-#: src/common/constants.cpp:110
+#: src/common/constants.cpp:112
 msgid "The silence is broken only by some crickets nearby."
 msgstr "Die Stille wird nur durch ein paar zirpende Grillen unterbrochen."
 
-#: src/common/constants.cpp:111
+#: src/common/constants.cpp:113
 msgid "Bazzoomm! A small cloud of smoke rises to the ceiling."
 msgstr "Kawwuumm! Eine kleine Rauchwolke steigt zur Decke auf."
 
-#: src/common/constants.cpp:112
+#: src/common/constants.cpp:114
 msgid "Your character cannot equip that item."
 msgstr "Euer Charakter kann diesen Gegenstand nicht anlegen."
 
-#: src/common/constants.cpp:113
+#: src/common/constants.cpp:115
 msgid "Fill out the server details, first."
 msgstr "Tragt zuerst die Serverdetails ein."
 
-#: src/common/constants.cpp:114
+#: src/common/constants.cpp:116
 msgid "Unable to connect to server."
 msgstr "Verbindung zum Server nicht möglich."
 
-#: src/common/constants.cpp:115
+#: src/common/constants.cpp:117
 msgid "You hear a very loud, metallic sound nearby."
 msgstr "Ihr hört ein sehr lautes, metallisches Geräusch in der Nähe."
 
-#: src/common/constants.cpp:116
+#: src/common/constants.cpp:118
 msgid "Something clicks."
 msgstr "Etwas klickt."
 
-#: src/common/constants.cpp:117
+#: src/common/constants.cpp:119
 msgid "The loud twang doesn't help; this is freaky enough already."
 msgstr "Der Krach bringt nichts; es ist schon so gruselig genug."
 
-#: src/common/constants.cpp:118
+#: src/common/constants.cpp:120
 msgid "A muffled, metalic, grating noise echoes from the dark."
 msgstr "Ein dumpfes, metallisches Knirschen hallt durch die Dunkelheit."
 
-#: src/common/constants.cpp:119
+#: src/common/constants.cpp:121
 msgid ""
 "You've done something... you're not sure what but you hope it's had dinner."
 msgstr ""
 "Ihr habt irgendetwas bewirkt... Ihr seid nicht sicher was, aber hoffentlich "
 "ist es gerade nicht hungrig."
 
-#: src/common/constants.cpp:120
+#: src/common/constants.cpp:122
 msgid "You feel the resonance of an almost sub-tonal bass note."
 msgstr "Ihr fühlt die Vibrationen eines sehr tiefen Basstons."
 
-#: src/common/constants.cpp:121
+#: src/common/constants.cpp:123
 msgid "An omnious sound floats from a distant corner."
 msgstr "Ein unheilverkündendes Geräusch ertönt aus der Ferne."
 
-#: src/common/constants.cpp:122
+#: src/common/constants.cpp:124
 msgid "Suck! It is locked shut!"
 msgstr "Verdammt! Sie ist fest verschlossen!"
 
-#: src/common/constants.cpp:123
+#: src/common/constants.cpp:125
 msgid "Try as you might, you can't open it."
 msgstr "Versucht was Ihr wollt, Ihr könnt sie nicht öffnen."
 
-#: src/common/constants.cpp:124
+#: src/common/constants.cpp:126
 msgid "Perhaps it's locked."
 msgstr "Vielleicht ist sie verschlossen."
 
-#: src/common/constants.cpp:125
+#: src/common/constants.cpp:127
 msgid "This teleporter is off-line."
 msgstr "Dieser Teleporter ist außer Betrieb."
 
-#: src/common/constants.cpp:126
+#: src/common/constants.cpp:128
 msgid "Nothing happens."
 msgstr "Nichts passiert."
 
-#: src/common/constants.cpp:127
+#: src/common/constants.cpp:129
 msgid "The teleporter blinks unimpressively."
 msgstr "Der Teleporter blinkt unscheinbar vor sich hin."
 
-#: src/common/constants.cpp:129
+#: src/common/constants.cpp:131
 msgid "Delete old saved game?"
 msgstr "Alten Spielstand löschen?"
 
-#: src/common/constants.cpp:130
+#: src/common/constants.cpp:132
 msgid "You're not experienced enough to equip it yet."
 msgstr "Ihr seid noch nicht erfahren genug, um diesen Gegenstand anzulegen."
 
-#: src/common/constants.cpp:131
+#: src/common/constants.cpp:133
 msgid "Change key"
 msgstr "Neue Taste zuweisen"
 
-#: src/common/constants.cpp:132
+#: src/common/constants.cpp:134
 msgid "Waiting for new key (Esc to cancel)"
 msgstr "Warte auf Tastendruck (Esc zum Abbrechen)"
 
-#: src/common/constants.cpp:133
+#: src/common/constants.cpp:135
 msgid "Conversation"
 msgstr "Gespräch"
 
-#: src/common/constants.cpp:136
+#: src/common/constants.cpp:138
 msgid "Healing Services"
 msgstr "Heildienste"
 
-#: src/common/constants.cpp:137
+#: src/common/constants.cpp:139
 msgid "Donate to Temple"
 msgstr "An Tempel spenden"
 
-#: src/common/constants.cpp:138
+#: src/common/constants.cpp:140
 msgid "You don't meet the prerequisites for this capability."
 msgstr "Euch fehlen die Voraussetzungen für diese Fähigkeit."
 
-#: src/common/constants.cpp:139
+#: src/common/constants.cpp:141
 msgid "You cannot activate an automatic capability."
 msgstr "Ihr könnt automatische Fähigkeiten nicht aktivieren."
 
-#: src/common/constants.cpp:140
+#: src/common/constants.cpp:142
 msgid "A two handed item requires two free hands."
 msgstr "Ein zweihändiger Gegenstand benötigt zwei freie Hände."
 
-#: src/common/constants.cpp:141
+#: src/common/constants.cpp:143
 msgid "TRAIN"
 msgstr "TRAINIEREN"
 
-#: src/common/constants.cpp:142
+#: src/common/constants.cpp:144
 msgid "SKILL"
 msgstr "FERTIGKEIT"
 
-#: src/common/constants.cpp:143
+#: src/common/constants.cpp:145
 msgid "A magical force turns the lock's tumbles to open."
 msgstr "Eine magische Kraft manipuliert das Schloss, so dass es sich öffnet."
 
-#: src/common/constants.cpp:144
+#: src/common/constants.cpp:146
 msgid "Some kind of summoned energy opens the lock."
 msgstr "Eine heraufbeschworene Kraft öffnet das Schloss."
 
-#: src/common/constants.cpp:145
+#: src/common/constants.cpp:147
 msgid "Killed by"
 msgstr "Getötet von"
 
-#: src/common/constants.cpp:146
+#: src/common/constants.cpp:148
 msgid "Annihilated by"
 msgstr "Vernichtet von"
 
-#: src/common/constants.cpp:147
+#: src/common/constants.cpp:149
 msgid "Slain by"
 msgstr "Erschlagen von"
 
-#: src/common/constants.cpp:148
+#: src/common/constants.cpp:150
 msgid "Brought low by"
 msgstr "Niedergestreckt von"
 
-#: src/common/constants.cpp:149
+#: src/common/constants.cpp:151
 msgid "Dropped by"
 msgstr "Zu Boden gebracht von"
 
-#: src/common/constants.cpp:150
+#: src/common/constants.cpp:152
 msgid "Ruined by"
 msgstr "Zugrunde gerichtet von"
 
-#: src/common/constants.cpp:151
+#: src/common/constants.cpp:153
 msgid "Extinguished by"
 msgstr "Ausgelöscht von"
 
-#: src/common/constants.cpp:152
+#: src/common/constants.cpp:154
 msgid "Laid low by"
 msgstr "Umgelegt von"
 
-#: src/common/constants.cpp:153
+#: src/common/constants.cpp:155
 msgid "Uncurse items"
 msgstr "Gegenstände entfluchen"
 
-#: src/common/constants.cpp:154
+#: src/common/constants.cpp:156
 msgid "Recharge items"
 msgstr "Gegenstände aufladen"
 
-#: src/common/constants.cpp:155
+#: src/common/constants.cpp:157
 msgid "Identify items"
 msgstr "Gegenstände identifizieren"
 
-#: src/common/constants.cpp:175
+#: src/common/constants.cpp:177
 msgid "Lesser"
 msgstr "Niederer"
 
-#: src/common/constants.cpp:176
+#: src/common/constants.cpp:178
 msgid "Greater"
 msgstr "Höherer"
 
-#: src/common/constants.cpp:177
+#: src/common/constants.cpp:179
 msgid "Champion"
 msgstr "Champion"
 
-#: src/common/constants.cpp:178
+#: src/common/constants.cpp:180
 msgid "Divine"
 msgstr "Göttlicher"
 
-#: src/common/constants.cpp:217
+#: src/common/constants.cpp:219
 msgid "commoner"
 msgstr "Bürger"
 
-#: src/common/constants.cpp:218
+#: src/common/constants.cpp:220
 msgid "merchant"
 msgstr "Händler"
 
-#: src/common/constants.cpp:219
+#: src/common/constants.cpp:221
 msgid "healer"
 msgstr "Heiler"
 
-#: src/common/constants.cpp:220
+#: src/common/constants.cpp:222
 msgid "sage"
 msgstr "Weiser"
 
-#: src/common/constants.cpp:221
+#: src/common/constants.cpp:223
 msgid "trainer"
 msgstr "Trainer"
 
@@ -3346,156 +3384,152 @@ msgstr ""
 "Ihr habt das Gefühl, dass dieser Gegenstand mehr an sich hat, als Ihr "
 "herausfinden konntet..."
 
-#: src/terraingenerator.cpp:152
+#: src/terraingenerator.cpp:153
 msgid "Compressing free space"
 msgstr "Komprimiere freien Platz"
 
-#: src/terraingenerator.cpp:156
+#: src/terraingenerator.cpp:157
 msgid "Adding gates"
 msgstr "Erstelle Tore"
 
-#: src/terraingenerator.cpp:164
+#: src/terraingenerator.cpp:165
 msgid "Adding party"
 msgstr "Erstelle Gruppe"
 
-#: src/terraingenerator.cpp:172
+#: src/terraingenerator.cpp:173
 msgid "Adding teleporters"
 msgstr "Erstelle Teleporter"
 
-#: src/terraingenerator.cpp:179
+#: src/terraingenerator.cpp:180
 msgid "Adding mission objectives"
 msgstr "Erstelle Missionsziele"
 
-#: src/terraingenerator.cpp:185
+#: src/terraingenerator.cpp:186
 msgid "Adding traps"
 msgstr "Erstelle Fallen"
 
-#: src/terraingenerator.cpp:188
+#: src/terraingenerator.cpp:189
 msgid "Adding shapes"
 msgstr "Erstelle Objekte"
 
-#: src/terraingenerator.cpp:191
+#: src/terraingenerator.cpp:192
 msgid "Adding containers"
 msgstr "Erstelle Behälter"
 
-#: src/terraingenerator.cpp:195
+#: src/terraingenerator.cpp:196
 msgid "Locking doors and chests"
 msgstr "Verriegele Türen und Truhen"
 
-#: src/terraingenerator.cpp:198
+#: src/terraingenerator.cpp:199
 msgid "Calculating room values"
 msgstr "Berechne Räume"
 
-#: src/terraingenerator.cpp:201
+#: src/terraingenerator.cpp:202
 msgid "Adding monsters"
 msgstr "Erstelle Monster"
 
-#: src/terraingenerator.cpp:206
+#: src/terraingenerator.cpp:207
 msgid "Adding items"
 msgstr "Erstelle Gegenstände"
 
-#: src/terraingenerator.cpp:209
+#: src/terraingenerator.cpp:210
 msgid "Adding furniture"
 msgstr "Erstelle Mobiliar"
 
-#: src/terraingenerator.cpp:213
+#: src/terraingenerator.cpp:214
 msgid "Cleaning up"
 msgstr "Räume auf"
 
-#: src/session.cpp:113 src/item.cpp:295 src/item.cpp:332 src/item.cpp:513
-msgid "Loading Items"
-msgstr "Lade Gegenstände"
-
-#: src/session.cpp:121
+#: src/session.cpp:120
 msgid "Loading Characters"
 msgstr "Lade Charaktere"
 
-#: src/session.cpp:129
+#: src/session.cpp:128
 msgid "Loading Portraits"
 msgstr "Lade Portraits"
 
-#: src/session.cpp:139
+#: src/session.cpp:138
 msgid "Initializing Party"
 msgstr "Initialisiere Gruppe"
 
-#: src/session.cpp:142
+#: src/session.cpp:141
 msgid "Initializing Scripting"
 msgstr "Initialisiere Scripting"
 
-#: src/session.cpp:148
+#: src/session.cpp:147
 msgid "Creating Map"
 msgstr "Erstelle Karte"
 
-#: src/session.cpp:151
+#: src/session.cpp:150
 msgid "Initializing UI"
 msgstr "Initialisiere Benutzeroberfläche"
 
-#: src/session.cpp:325
+#: src/session.cpp:324
 #, c-format
 msgid "%s transforms into another shape in front of your very eyes!"
 msgstr "%s verwandelt sich vor Euren Augen in eine andere Form!"
 
-#: src/session.cpp:557
+#: src/session.cpp:556
 #, c-format
 msgid "  %s dies!"
 msgstr "  %s stirbt!"
 
-#: src/item.cpp:263
+#: src/item.cpp:269
 #, c-format
 msgid "(L:%d) "
 msgstr "(S:%d) "
 
-#: src/item.cpp:265
+#: src/item.cpp:271
 msgid "*Cursed* "
 msgstr "*Verflucht* "
 
-#: src/item.cpp:820
+#: src/item.cpp:527
 msgid "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $symbol"
 msgstr "$spellsymbol $magiclevel $protective $slaying $itemname $bonus $symbol"
 
-#: src/item.cpp:838
+#: src/item.cpp:545
 msgid "Protective"
 msgstr "Schützendes"
 
-#: src/item.cpp:843
+#: src/item.cpp:550
 msgid "Slaying"
 msgstr "Erschlagendes"
 
-#: src/item.cpp:945
+#: src/item.cpp:652
 #, c-format
 msgid "Scroll of %s"
 msgstr "Zauberspruchrolle: %s"
 
-#: src/item.cpp:1081
+#: src/item.cpp:788
 msgid "An item was fully identified!"
 msgstr "Ein Gegenstand wurde komplett identifiziert!"
 
-#: src/item.cpp:1426
+#: src/item.cpp:1133
 msgid "DAM"
 msgstr "SCH"
 
-#: src/item.cpp:1434
+#: src/item.cpp:1141
 msgid "RANGE"
 msgstr "REICHWEITE"
 
-#: src/item.cpp:1442
+#: src/item.cpp:1149
 #, c-format
 msgid " %d(%c)"
 msgstr " %d(%c)"
 
-#: src/item.cpp:1454 ../scourge_data/config/rpg.cfg:137
+#: src/item.cpp:1161 ../scourge_data/config/rpg.cfg:137
 msgid "Power"
 msgstr "Kraft"
 
-#: src/item.cpp:1459
+#: src/item.cpp:1166
 msgid "Charges"
 msgstr "Anwendungen"
 
-#: src/item.cpp:1462
+#: src/item.cpp:1169
 msgid "Spell"
 msgstr "Zauber"
 
-#: src/item.cpp:1467
+#: src/item.cpp:1174
 msgid "Duration"
 msgstr "Dauer"
 
@@ -3511,51 +3545,51 @@ msgstr "Angriff:"
 msgid "Unarmed Defense:"
 msgstr "Waffenlose Verteidigung:"
 
-#: src/render/map.cpp:2217
+#: src/render/map.cpp:2224
 msgid "A tremor shakes the earth..."
 msgstr "Ein Beben lässt die Erde erzittern..."
 
-#: src/render/map.cpp:3823
+#: src/render/map.cpp:3830
 msgid "You need to name the map first."
 msgstr "Ihr müsst die Karte erst benennen."
 
-#: src/render/map.cpp:4042 src/render/map.cpp:4338
+#: src/render/map.cpp:4052 src/render/map.cpp:4348
 msgid "Enter a name of a map to load."
 msgstr "Gebt den Namen der Karte ein, die Ihr laden möchtet."
 
-#: src/render/map.cpp:4064
+#: src/render/map.cpp:4074
 msgid "Loading map"
 msgstr "Lade Karte"
 
-#: src/render/map.cpp:4127
+#: src/render/map.cpp:4137
 msgid "Starting map"
 msgstr "Starte Karte"
 
-#: src/render/map.cpp:4150
+#: src/render/map.cpp:4160
 msgid "Initializing map"
 msgstr "Karte wird initialisiert"
 
-#: src/render/map.cpp:4286
+#: src/render/map.cpp:4296
 msgid "Finishing map"
 msgstr "Stelle Karte fertig"
 
-#: src/render/map.cpp:4310
+#: src/render/map.cpp:4320
 msgid "Starting party"
 msgstr "Starte Gruppe"
 
-#: src/render/map.cpp:4330
+#: src/render/map.cpp:4340
 msgid "Map loaded: "
 msgstr "Karte geladen: "
 
-#: src/render/map.cpp:4352
+#: src/render/map.cpp:4362
 msgid "Can't find map: "
 msgstr "Karte nicht gefunden: "
 
-#: src/render/map.cpp:4362
+#: src/render/map.cpp:4372
 msgid "Map header loaded: "
 msgstr "Kartenkopf geladen: "
 
-#: src/inven.cpp:442
+#: src/inven.cpp:111
 msgid "Click a quickspell slot to store this item."
 msgstr ""
 "Klickt auf einen Schnellauswahl-Slot, um den Gegenstand dort abzulegen."
@@ -3660,24 +3694,24 @@ msgstr "Änderungen der Fertigkeiten übernehmen"
 msgid "Store spell or capability in a quickspell slot"
 msgstr "Zauber oder Fähigkeit in einen Schnellwahl-Slot legen"
 
-#: src/pcui.cpp:216
+#: src/pcui.cpp:217
 #, c-format
 msgid "Party members give all their money to %s."
 msgstr "Die Gruppe gibt ihr gesamtes Geld %s."
 
-#: src/pcui.cpp:225
+#: src/pcui.cpp:226
 msgid "You still have skill points to distribute."
 msgstr "Ihr habt noch weitere Fertigkeitspunkte zu verteilen."
 
-#: src/pcui.cpp:228
+#: src/pcui.cpp:229
 msgid "All available skill points have been applied."
 msgstr "Alle verfügbaren Fertigkeitspunkte wurden schon verwendet."
 
-#: src/pcui.cpp:277
+#: src/pcui.cpp:278
 msgid "Click on an item to select it..."
 msgstr "Klickt auf einen Gegenstand, um ihn auszuwählen..."
 
-#: src/pcui.cpp:325
+#: src/pcui.cpp:326
 msgid "Click on a spell or capability to select it..."
 msgstr "Klickt auf einen Zauberspruch oder eine Fähigkeit zum Auswählen..."
 
@@ -3780,183 +3814,183 @@ msgstr "Im Hauptquartier."
 msgid "Party of %s the %s level %s."
 msgstr "Gruppe von %s, dem Stufe %s %s."
 
-#: src/optionsmenu.cpp:50
+#: src/optionsmenu.cpp:57
 msgid "Gameplay"
 msgstr "Spiel"
 
-#: src/optionsmenu.cpp:52
+#: src/optionsmenu.cpp:59
 msgid "Video"
 msgstr "Video"
 
-#: src/optionsmenu.cpp:54
+#: src/optionsmenu.cpp:61
 msgid "Audio"
 msgstr "Audio"
 
-#: src/optionsmenu.cpp:56
+#: src/optionsmenu.cpp:63
 msgid "Controls"
 msgstr "Steuerung"
 
-#: src/optionsmenu.cpp:67
+#: src/optionsmenu.cpp:74
 msgid "Key bindings"
 msgstr "Tastenbelegung"
 
-#: src/optionsmenu.cpp:80
+#: src/optionsmenu.cpp:87
 msgid "Game speed"
 msgstr "Spielgeschwindigkeit"
 
-#: src/optionsmenu.cpp:81
+#: src/optionsmenu.cpp:88
 msgid "Very slow"
 msgstr "Sehr langsam"
 
-#: src/optionsmenu.cpp:82
+#: src/optionsmenu.cpp:89
 msgid "Slow"
 msgstr "Langsam"
 
-#: src/optionsmenu.cpp:83
+#: src/optionsmenu.cpp:90
 msgid "Normal"
 msgstr "Normal"
 
-#: src/optionsmenu.cpp:84
+#: src/optionsmenu.cpp:91
 msgid "Fast"
 msgstr "Schnell"
 
-#: src/optionsmenu.cpp:85
+#: src/optionsmenu.cpp:92
 msgid "Fastest"
 msgstr "Sehr schnell"
 
-#: src/optionsmenu.cpp:90
+#: src/optionsmenu.cpp:97
 msgid "Keep zoom when switching layouts"
 msgstr "Zoom beibehalten bei Layout-Wechsel"
 
-#: src/optionsmenu.cpp:92
+#: src/optionsmenu.cpp:99
 msgid "Frame map in fullscreen mode"
 msgstr "Karte im Vollbildmodus umrahmen"
 
-#: src/optionsmenu.cpp:94
+#: src/optionsmenu.cpp:101
 msgid "Is battle turn-based?"
 msgstr "Rundenbasierter Kampf?"
 
-#: src/optionsmenu.cpp:96
+#: src/optionsmenu.cpp:103
 msgid "Shadow overlay?"
 msgstr "Schatten-Overlay?"
 
-#: src/optionsmenu.cpp:98
+#: src/optionsmenu.cpp:105
 msgid "Outline items?"
 msgstr "Rahmen um Gegenstände?"
 
-#: src/optionsmenu.cpp:102
+#: src/optionsmenu.cpp:109
 msgid "Show tooltips"
 msgstr "Tooltipps anzeigen"
 
-#: src/optionsmenu.cpp:104
+#: src/optionsmenu.cpp:111
 msgid "Tooltip Delay:"
 msgstr "Tooltipp-Verzögerung:"
 
-#: src/optionsmenu.cpp:107
+#: src/optionsmenu.cpp:114
 msgid "Log level"
 msgstr "Logausgaben"
 
-#: src/optionsmenu.cpp:108
+#: src/optionsmenu.cpp:115
 msgid "Minimal"
 msgstr "Minimal"
 
-#: src/optionsmenu.cpp:109
+#: src/optionsmenu.cpp:116
 msgid "Partial"
 msgstr "Einige"
 
-#: src/optionsmenu.cpp:110
+#: src/optionsmenu.cpp:117
 msgid "Verbose"
 msgstr "Viele"
 
-#: src/optionsmenu.cpp:111
+#: src/optionsmenu.cpp:118
 msgid "Full"
 msgstr "Alle"
 
-#: src/optionsmenu.cpp:115
+#: src/optionsmenu.cpp:122
 msgid "Path finding quality"
 msgstr "Wegfindungs-Qualität"
 
-#: src/optionsmenu.cpp:116
+#: src/optionsmenu.cpp:123
 msgid "Basic"
 msgstr "Einfach"
 
-#: src/optionsmenu.cpp:117
+#: src/optionsmenu.cpp:124
 msgid "Advanced"
 msgstr "Erweitert"
 
-#: src/optionsmenu.cpp:118
+#: src/optionsmenu.cpp:125
 msgid "Excellent"
 msgstr "Hervorragend"
 
-#: src/optionsmenu.cpp:123
+#: src/optionsmenu.cpp:130
 msgid "Screen resolution"
 msgstr "Bildschirmauflösung"
 
-#: src/optionsmenu.cpp:136
+#: src/optionsmenu.cpp:141
 msgid "Fullscreen"
 msgstr "Vollbildmodus"
 
-#: src/optionsmenu.cpp:138
+#: src/optionsmenu.cpp:143
 msgid "Window resizeable"
 msgstr "Fenstergröße veränderbar"
 
-#: src/optionsmenu.cpp:140
+#: src/optionsmenu.cpp:145
 msgid "Use double buffering"
 msgstr "Double Buffering nutzen"
 
-#: src/optionsmenu.cpp:142
+#: src/optionsmenu.cpp:147
 msgid "Use stencil buffer"
 msgstr "Stencil Buffer nutzen"
 
-#: src/optionsmenu.cpp:144
+#: src/optionsmenu.cpp:149
 msgid "Force hardware surfaces"
 msgstr "Hardware-Surfaces erzwingen"
 
-#: src/optionsmenu.cpp:146
+#: src/optionsmenu.cpp:151
 msgid "Force software surfaces"
 msgstr "Software-Surfaces erzwingen"
 
-#: src/optionsmenu.cpp:148
+#: src/optionsmenu.cpp:153
 msgid "Use multitexturing"
 msgstr "Multitexturing nutzen"
 
-#: src/optionsmenu.cpp:150
+#: src/optionsmenu.cpp:155
 msgid "Use hardware palette"
 msgstr "Hardwarepalette nutzen"
 
-#: src/optionsmenu.cpp:152
+#: src/optionsmenu.cpp:157
 msgid "Use hardware acceleration"
 msgstr "Hardwarebeschleunigung nutzen"
 
-#: src/optionsmenu.cpp:154
+#: src/optionsmenu.cpp:159
 msgid "Shadows"
 msgstr "Schatten"
 
-#: src/optionsmenu.cpp:155
+#: src/optionsmenu.cpp:160
 msgid "None"
 msgstr "Keine"
 
-#: src/optionsmenu.cpp:156
+#: src/optionsmenu.cpp:161
 msgid "Some"
 msgstr "Einige"
 
-#: src/optionsmenu.cpp:157
+#: src/optionsmenu.cpp:162
 msgid "All"
 msgstr "Alle"
 
-#: src/optionsmenu.cpp:164
+#: src/optionsmenu.cpp:169
 msgid "Music Volume:"
 msgstr "Musiklautstärke:"
 
-#: src/optionsmenu.cpp:167
+#: src/optionsmenu.cpp:172
 msgid "Effects Volume:"
 msgstr "Geräuschlautstärke"
 
-#: src/optionsmenu.cpp:379
+#: src/optionsmenu.cpp:384
 msgid "Some changes will only take effect upon restart"
 msgstr "Einige Änderungen werden erst nach einem Neustart des Spiels wirksam."
 
-#: src/optionsmenu.cpp:382
+#: src/optionsmenu.cpp:387
 msgid "Saved: some options require a restart to take effect."
 msgstr ""
 "Gespeichert: Einige Optionen benötigen einen Neustart des Spiels, um wirksam "
@@ -3975,20 +4009,20 @@ msgstr "Nur manuelle Fähigkeiten können abgelegt werden."
 msgid "Nature"
 msgstr "Natur"
 
-#: ../scourge_data/config/spell.cfg:41
+#: ../scourge_data/config/spell.cfg:42
 msgid "of the Lake"
 msgstr "des Sees"
 
-#: ../scourge_data/config/spell.cfg:44
+#: ../scourge_data/config/spell.cfg:45
 msgid "Lesser healing touch"
 msgstr "Niedere Heilung"
 
-#: ../scourge_data/config/spell.cfg:45 ../scourge_data/config/spell.cfg:228
-#: ../scourge_data/config/spell.cfg:314
+#: ../scourge_data/config/spell.cfg:46 ../scourge_data/config/spell.cfg:230
+#: ../scourge_data/config/spell.cfg:317
 msgid "Healing"
 msgstr "Heilender"
 
-#: ../scourge_data/config/spell.cfg:60
+#: ../scourge_data/config/spell.cfg:61
 msgid ""
 " Increases the target's HP by a minimal amount. The spell's power increases "
 "with the caster's level."
@@ -3996,15 +4030,15 @@ msgstr ""
 " Erhöht die LP des Ziels geringfügig. Die Wirkung dieses Zaubers erhöht sich "
 "mit der Stufe des Zaubernden."
 
-#: ../scourge_data/config/spell.cfg:64
+#: ../scourge_data/config/spell.cfg:65
 msgid "Bless group"
 msgstr "Gruppe segnen"
 
-#: ../scourge_data/config/spell.cfg:65
+#: ../scourge_data/config/spell.cfg:66
 msgid "Blessing"
 msgstr "Segnender"
 
-#: ../scourge_data/config/spell.cfg:80
+#: ../scourge_data/config/spell.cfg:81
 msgid ""
 " Drawing on the ancient spirits of nature the caster raises the party's "
 "ability to succeed in vanquishing their foes."
@@ -4012,15 +4046,15 @@ msgstr ""
 " Die uralten Geister der Natur heranziehend, steigert der Zaubernde die "
 "Fähigkeit der Gruppe, ihre Gegner zu überwinden."
 
-#: ../scourge_data/config/spell.cfg:84
+#: ../scourge_data/config/spell.cfg:85
 msgid "Cursed ways"
 msgstr "Verfluchte Wege"
 
-#: ../scourge_data/config/spell.cfg:85
+#: ../scourge_data/config/spell.cfg:86
 msgid "Encursing"
 msgstr "Verfluchender"
 
-#: ../scourge_data/config/spell.cfg:99
+#: ../scourge_data/config/spell.cfg:100
 msgid ""
 " Nature's wraith hampers the target creatures in endeavors great and small. "
 "Every activity they attempt seems ill fated, ripe with strife.  The more "
@@ -4032,15 +4066,15 @@ msgstr ""
 "widersetzen, desto stärker bricht der Fluch über sie herein. Die Effekte des "
 "Zaubers klingen nach einer Weile ab."
 
-#: ../scourge_data/config/spell.cfg:103
+#: ../scourge_data/config/spell.cfg:104
 msgid "Remove curse"
 msgstr "Fluch brechen"
 
-#: ../scourge_data/config/spell.cfg:104
+#: ../scourge_data/config/spell.cfg:105
 msgid "Curse Removing"
 msgstr "Fluchbrechender"
 
-#: ../scourge_data/config/spell.cfg:119
+#: ../scourge_data/config/spell.cfg:120
 msgid ""
 " The caster draws from the well of ordered peace that drifts in the void of "
 "Earth's creations. With urgency the target's spiritual balance is restored "
@@ -4051,15 +4085,15 @@ msgstr ""
 "des Ziels wiederhergestellt und Flüche nichtig gemacht. Dieser Zauber legt "
 "gerade getragene, verfluchte Gegenstände ab."
 
-#: ../scourge_data/config/spell.cfg:123
+#: ../scourge_data/config/spell.cfg:124
 msgid "Gust of wind"
 msgstr "Windstoß"
 
-#: ../scourge_data/config/spell.cfg:124
+#: ../scourge_data/config/spell.cfg:125
 msgid "Windy"
 msgstr "Windiger"
 
-#: ../scourge_data/config/spell.cfg:137
+#: ../scourge_data/config/spell.cfg:138
 msgid ""
 " With the wave of an arm in an age-long predescribed sacred motion, the "
 "weaver communes with the elemental forces of the wind to create a protective "
@@ -4071,7 +4105,7 @@ msgstr ""
 "Erschaffung einer ihn umgebenden Schutzaura. Der dabei aufkommende Wind "
 "wirft alle Gegner zurück und verursacht etwas Schaden durch Schall."
 
-#: ../scourge_data/config/spell.cfg:139
+#: ../scourge_data/config/spell.cfg:140
 msgid ""
 "The god of nature is an unpredictable fellow, even for a god. If you've ever "
 "experienced a sunny day suddenly ruined by the tidal wave from hell, you "
@@ -4084,55 +4118,55 @@ msgstr ""
 "einfachen Dingen: Eine gute Geschichte am Lagerfeuer oder ein kräftiges Bier "
 "unter Freunden."
 
-#: ../scourge_data/config/spell.cfg:141
+#: ../scourge_data/config/spell.cfg:142
 msgid "A quick breeze flutters as if in annoyance."
 msgstr "Eine kurze, unruhige Brise weht wie verärgert vorbei."
 
-#: ../scourge_data/config/spell.cfg:144
+#: ../scourge_data/config/spell.cfg:145
 msgid ""
 "The smell around you reminds you of a sewer. Oh wait, you are in the sewers!"
 msgstr ""
 "Der Geruch um Euch herum erinnert an einen Abwasserkanal. Oh, wartet, genau "
 "da seid Ihr ja auch!"
 
-#: ../scourge_data/config/spell.cfg:147
+#: ../scourge_data/config/spell.cfg:148
 msgid "All grows quiet for a moment. You hear water dripping nearby."
 msgstr ""
 "Einen Augenblick lang wird es völlig still. In der Nähe hört Ihr das Tropfen "
 "von Wasser."
 
-#: ../scourge_data/config/spell.cfg:150
+#: ../scourge_data/config/spell.cfg:151
 msgid ""
 "You hear a simple bird call. It's like a half-wakened dream; brief and gone."
 msgstr ""
 "Ihr hört den Ruf eines Vogels. Es ist wie ein Tagtraum; kurz und vergänglich."
 
-#: ../scourge_data/config/spell.cfg:153
+#: ../scourge_data/config/spell.cfg:154
 msgid "There is a floral scent to the air: fragrant and delicate."
 msgstr "Es liegt ein Duft nach Blumen in der Luft; wohlriechend und zart."
 
-#: ../scourge_data/config/spell.cfg:156
+#: ../scourge_data/config/spell.cfg:157
 msgid "The air warms around you and you feel elated and strong."
 msgstr "Die Luft um Euch erwärmt sich und Ihr fühlt Euch ermutigt und kräftig."
 
-#: ../scourge_data/config/spell.cfg:161
+#: ../scourge_data/config/spell.cfg:162
 msgid "Divine Awareness"
 msgstr "Göttliche Erkenntnis"
 
-#: ../scourge_data/config/spell.cfg:166
+#: ../scourge_data/config/spell.cfg:168
 msgid "of the Specter"
 msgstr "des Zepters"
 
-#: ../scourge_data/config/spell.cfg:169
+#: ../scourge_data/config/spell.cfg:171
 msgid "Body of stone"
 msgstr "Steinhaut"
 
-#: ../scourge_data/config/spell.cfg:170 ../scourge_data/config/spell.cfg:334
-#: ../scourge_data/config/spell.cfg:460
+#: ../scourge_data/config/spell.cfg:172 ../scourge_data/config/spell.cfg:337
+#: ../scourge_data/config/spell.cfg:464
 msgid "Protecting"
 msgstr "Schützender"
 
-#: ../scourge_data/config/spell.cfg:185
+#: ../scourge_data/config/spell.cfg:187
 msgid ""
 " Temporarily increase target's AC.  Spell power and interval increase with "
 "caster's level."
@@ -4140,15 +4174,15 @@ msgstr ""
 " Erhöht vorübergehend die RK des Ziels. Wirkung und Dauer des Zaubers erhöht "
 "sich mit der Stufe des Zaubernden."
 
-#: ../scourge_data/config/spell.cfg:189
+#: ../scourge_data/config/spell.cfg:191
 msgid "Empower friend"
 msgstr "Freund bemächtigen"
 
-#: ../scourge_data/config/spell.cfg:190
+#: ../scourge_data/config/spell.cfg:192
 msgid "Empowering"
 msgstr "Bemächtigender"
 
-#: ../scourge_data/config/spell.cfg:205
+#: ../scourge_data/config/spell.cfg:207
 msgid ""
 " A party member is empowered for a period of time after the caster embarks "
 "to spiritually understand the divine nature of the target being."
@@ -4157,15 +4191,15 @@ msgstr ""
 "Zaubernde begonnen hat, die göttliche Natur des Zielwesens spirituell zu "
 "erfassen."
 
-#: ../scourge_data/config/spell.cfg:209
+#: ../scourge_data/config/spell.cfg:211
 msgid "Burning stare"
 msgstr "Brennender Blick"
 
-#: ../scourge_data/config/spell.cfg:210
+#: ../scourge_data/config/spell.cfg:212
 msgid "Burning"
 msgstr "Verbrennender"
 
-#: ../scourge_data/config/spell.cfg:223
+#: ../scourge_data/config/spell.cfg:225
 msgid ""
 " Simply by looking at the target the caster charges the surrounding air with "
 "spiritual energy which delivers a hot blast of burning matter and thus "
@@ -4177,11 +4211,11 @@ msgstr ""
 "entsteht und das Ziel in Mitleidenschaft zieht. Mit einiger Übung steigt die "
 "Schadenswirkung dieses Zaubers."
 
-#: ../scourge_data/config/spell.cfg:227
+#: ../scourge_data/config/spell.cfg:229
 msgid "Divine healing touch"
 msgstr "Göttliche Heilung"
 
-#: ../scourge_data/config/spell.cfg:243
+#: ../scourge_data/config/spell.cfg:245
 msgid ""
 " Heals a large amount of damaged hit points. The spell's power increases "
 "with the caster's level."
@@ -4189,15 +4223,15 @@ msgstr ""
 " Stellt eine große Menge Lebenspunkte wieder her. Die Wirkung des Zaubers "
 "erhöht sich mit der Stufe des Zaubernden."
 
-#: ../scourge_data/config/spell.cfg:247
+#: ../scourge_data/config/spell.cfg:249
 msgid "Dori's Tumblers"
 msgstr "Dori's Schlossknacker"
 
-#: ../scourge_data/config/spell.cfg:248
+#: ../scourge_data/config/spell.cfg:250
 msgid "Opening"
 msgstr "Öffnender"
 
-#: ../scourge_data/config/spell.cfg:262
+#: ../scourge_data/config/spell.cfg:264
 msgid ""
 " The caster is briefly able to manipulate all manners of closed objects. "
 "Locked doors and crates snap open when this spell is cast."
@@ -4206,7 +4240,7 @@ msgstr ""
 "Objekte zu manipulieren. Verriegelte Türen und Truhen springen auf, wenn der "
 "Zauber gesprochen wird."
 
-#: ../scourge_data/config/spell.cfg:264
+#: ../scourge_data/config/spell.cfg:266
 msgid ""
 "Achieving awareness beyond the needs of the self is the reason followers of "
 "Minirmuir meditate for hours each day. She is basically a peaceful deity who "
@@ -4219,68 +4253,68 @@ msgstr ""
 "als gleichwertig betrachtet. Unnötiges Töten und mutwillige Zerstörung sind "
 "jedoch das beste Mittel, ihren Zorn heraufzubeschwören."
 
-#: ../scourge_data/config/spell.cfg:266
+#: ../scourge_data/config/spell.cfg:268
 msgid ""
 "Suddenly you loose focus, a reptilian ego rising to overtake your senses."
 msgstr ""
 "Plötzlich lässt Eure Konzentration nach; ein reptilisches Ich steigt auf, "
 "Eure Sinne einzuholen."
 
-#: ../scourge_data/config/spell.cfg:269
+#: ../scourge_data/config/spell.cfg:271
 msgid "The room sways momentarily and you struggle to stay upright."
 msgstr ""
 "Einen Moment lang schwankt der Raum und Ihr habt Mühe, Euch auf den Beinen "
 "zu halten."
 
-#: ../scourge_data/config/spell.cfg:272
+#: ../scourge_data/config/spell.cfg:274
 msgid "You feel nothing; all is at peace."
 msgstr "Ihr fühlt nichts; alles ist friedvoll."
 
-#: ../scourge_data/config/spell.cfg:275
+#: ../scourge_data/config/spell.cfg:277
 msgid "Strain as you might, the peace of the void is not within your grasp."
 msgstr ""
 "Strengt Euch an, wie Ihr wollt, die friedliche Leere ist außerhalb Eurer "
 "Reichweite."
 
-#: ../scourge_data/config/spell.cfg:278
+#: ../scourge_data/config/spell.cfg:280
 msgid "Your movements grow catlike, balanced and easy, yet sinuous with power."
 msgstr ""
 "Eure Bewegungen werden katzenartig, behände und leicht, doch voll "
 "geschmeidiger Kraft."
 
-#: ../scourge_data/config/spell.cfg:281
+#: ../scourge_data/config/spell.cfg:283
 msgid "A flower blooms in your mind and you soar over an unknown landscape."
 msgstr ""
 "Eine Blume erstrahlt in Eurem Geist und Ihr segelt über eine unbekannte "
 "Landschaft."
 
-#: ../scourge_data/config/spell.cfg:286
+#: ../scourge_data/config/spell.cfg:288
 msgid "Life and Death"
 msgstr "Leben und Tod"
 
-#: ../scourge_data/config/spell.cfg:291
+#: ../scourge_data/config/spell.cfg:294
 msgid "of Karma"
 msgstr "des Karmas"
 
-#: ../scourge_data/config/spell.cfg:294
+#: ../scourge_data/config/spell.cfg:297
 msgid "Flame of Azun"
 msgstr "Flamme von Azun"
 
-#: ../scourge_data/config/spell.cfg:295
+#: ../scourge_data/config/spell.cfg:298
 msgid "Flaming"
 msgstr "Entflammender"
 
-#: ../scourge_data/config/spell.cfg:309
+#: ../scourge_data/config/spell.cfg:312
 msgid " Temporarily blind a group of enemies contained within a 5' cube."
 msgstr ""
 " Blendet vorübergehend eine Gruppe von Gegnern innerhalb eines Würfels von "
 "1,50 m Kantenlänge."
 
-#: ../scourge_data/config/spell.cfg:313
+#: ../scourge_data/config/spell.cfg:316
 msgid "Greater healing touch"
 msgstr "Höhere Heilung"
 
-#: ../scourge_data/config/spell.cfg:329
+#: ../scourge_data/config/spell.cfg:332
 msgid ""
 " Increases the target's HP by a medium amount. The spell's power increases "
 "with the caster's level."
@@ -4288,11 +4322,11 @@ msgstr ""
 " Erhöht die LP des Ziels um einen moderaten Wert. Die Wirkung des Zaubers "
 "erhöht sich mit der Stufe des Zaubernden."
 
-#: ../scourge_data/config/spell.cfg:333
+#: ../scourge_data/config/spell.cfg:336
 msgid "Protective clay"
 msgstr "Schützender Schlamm"
 
-#: ../scourge_data/config/spell.cfg:349
+#: ../scourge_data/config/spell.cfg:352
 msgid ""
 " The party's armor is augmented by the caster drawing a ward from nearby "
 "rocks, clay and roots. "
@@ -4300,15 +4334,15 @@ msgstr ""
 " Die Rüstung der Gruppe wird verbessert, indem der Zaubernde Materie von "
 "nahen Felsen, Erdschichten und Wurzeln anzieht. "
 
-#: ../scourge_data/config/spell.cfg:353
+#: ../scourge_data/config/spell.cfg:356
 msgid "Enthrall fiend"
 msgstr "Kreatur bezaubern"
 
-#: ../scourge_data/config/spell.cfg:354
+#: ../scourge_data/config/spell.cfg:357
 msgid "Possessing"
 msgstr "Beherrschender"
 
-#: ../scourge_data/config/spell.cfg:368
+#: ../scourge_data/config/spell.cfg:371
 msgid ""
 " The caster attempts to control the target creature's subconscious. This is "
 "done by concentrating on extinguishing the flame of perceived self-control "
@@ -4323,15 +4357,15 @@ msgstr ""
 "auf derselben Stufe wie reine Lebenserhaltungsfunktionen, und eine geistige "
 "Kontrolle wird möglich."
 
-#: ../scourge_data/config/spell.cfg:372
+#: ../scourge_data/config/spell.cfg:375
 msgid "Break from possession"
 msgstr "Beherrschung brechen"
 
-#: ../scourge_data/config/spell.cfg:373
+#: ../scourge_data/config/spell.cfg:376
 msgid "Possession Breaking"
 msgstr "Beherrschungsbrechender"
 
-#: ../scourge_data/config/spell.cfg:388
+#: ../scourge_data/config/spell.cfg:391
 msgid ""
 " The caster attempts to break another magic user's thought-control of the "
 "target creature. To break the link of possession, the new caster will have "
@@ -4345,15 +4379,15 @@ msgstr ""
 "derselben unterwerfen. Die Götter benötigen diesen Heldenmut, um die "
 "Kontrolle des Ziels über sein Unbewusstes wiederherzustellen."
 
-#: ../scourge_data/config/spell.cfg:392
+#: ../scourge_data/config/spell.cfg:395
 msgid "Recall to life"
 msgstr "Wiederbeleben"
 
-#: ../scourge_data/config/spell.cfg:393
+#: ../scourge_data/config/spell.cfg:396
 msgid "Resurrecting"
 msgstr "Wiederbelebender"
 
-#: ../scourge_data/config/spell.cfg:408
+#: ../scourge_data/config/spell.cfg:411
 msgid ""
 " Reaching across the very fabric of the realm of shadows the caster attempts "
 "to resurrect any dead comrades. This spell is rumored to have a very high "
@@ -4363,7 +4397,7 @@ msgstr ""
 "versucht der Zaubernde gefallene Kampfgefährten wiederzuerwecken. Es wird "
 "erzählt, dass dieser Zauber eine sehr hohe Chance des Misslingens hat."
 
-#: ../scourge_data/config/spell.cfg:410
+#: ../scourge_data/config/spell.cfg:413
 msgid ""
 "Absolute neutrality and nihilistic certainty best characterize Garzul. All "
 "beings that live are drifting slowly towards their unavoidable end in his "
@@ -4376,14 +4410,14 @@ msgstr ""
 "friedenserfüllten Hallen und warten auf die richtige Beschwörung, welche sie "
 "aus ihrem kalten Schlummer erwachen lässt."
 
-#: ../scourge_data/config/spell.cfg:412
+#: ../scourge_data/config/spell.cfg:415
 msgid ""
 "Decay is all about you. Your mood is dragged low by a terrible certainty."
 msgstr ""
 "Um Euch herum ist nichts als Verfall. Eine schreckliche Gewissheit nagt an "
 "Eurem Gemüt."
 
-#: ../scourge_data/config/spell.cfg:415
+#: ../scourge_data/config/spell.cfg:418
 msgid ""
 "Death suddenly feels very near. Faint lights suggest the ghosts of those "
 "before you wailing in the walls."
@@ -4391,41 +4425,41 @@ msgstr ""
 "Ihr fühlt Euch plötzlich dem Tode sehr nahe. Fahles Licht an der Wand deutet "
 "die klagenden Geister derer an, die vor Euch hier waren."
 
-#: ../scourge_data/config/spell.cfg:418
+#: ../scourge_data/config/spell.cfg:421
 msgid "You sense that perhaps you will live another day."
 msgstr ""
 "Ihr fühlt, dass Ihr vielleicht noch einen weiteren Tag lang leben werdet."
 
-#: ../scourge_data/config/spell.cfg:421
+#: ../scourge_data/config/spell.cfg:424
 msgid "A loud boom travels up from the bowels of the earth."
 msgstr "Ein lauter Knall entringt sich den Tiefen der Erde."
 
-#: ../scourge_data/config/spell.cfg:424
+#: ../scourge_data/config/spell.cfg:427
 msgid "Small animals scurry off at the edges of your vision."
 msgstr "Kleine Tiere huschen am Rande Eures Gesichtsfeldes umher."
 
-#: ../scourge_data/config/spell.cfg:427
+#: ../scourge_data/config/spell.cfg:430
 msgid "The smell of fresh air fills your mind with hope and perseverance."
 msgstr ""
 "Der Geruch von frischer Luft erfüllt Euch mit neuer Hoffnung und Kraft."
 
-#: ../scourge_data/config/spell.cfg:432
+#: ../scourge_data/config/spell.cfg:435
 msgid "History and Lore"
 msgstr "Geschichte und Weisheit"
 
-#: ../scourge_data/config/spell.cfg:437
+#: ../scourge_data/config/spell.cfg:441
 msgid "of Lore"
 msgstr "der Weisheit"
 
-#: ../scourge_data/config/spell.cfg:440
+#: ../scourge_data/config/spell.cfg:444
 msgid "Ole Taffy's purty colors"
 msgstr "Taffys hübsche Farben"
 
-#: ../scourge_data/config/spell.cfg:441
+#: ../scourge_data/config/spell.cfg:445
 msgid "Identifying"
 msgstr "Identifizierender"
 
-#: ../scourge_data/config/spell.cfg:455
+#: ../scourge_data/config/spell.cfg:459
 msgid ""
 " Ole Taffy's parting gift to the world of magic was this spell which he "
 "used  to briefly glimpse information about his surroundings. When used with "
@@ -4438,25 +4472,25 @@ msgstr ""
 "Natur von Gegenständen und Kreaturen enthüllen. Er kann sogar Fallen "
 "entdecken."
 
-#: ../scourge_data/config/spell.cfg:459
+#: ../scourge_data/config/spell.cfg:463
 msgid "Art of protection"
 msgstr "Magieabwehr"
 
-#: ../scourge_data/config/spell.cfg:475
+#: ../scourge_data/config/spell.cfg:479
 msgid ""
 " Resistance to magic is increased when the caster's lore of magics is "
 "explored."
 msgstr " Der Widerstand des Zaubernden gegen Magie wird erhöht."
 
-#: ../scourge_data/config/spell.cfg:479
+#: ../scourge_data/config/spell.cfg:483
 msgid "Invisibility"
 msgstr "Unsichtbarkeit"
 
-#: ../scourge_data/config/spell.cfg:480
+#: ../scourge_data/config/spell.cfg:484
 msgid "Invisible"
 msgstr "Unsichtbarer"
 
-#: ../scourge_data/config/spell.cfg:495
+#: ../scourge_data/config/spell.cfg:499
 msgid ""
 " The target's mortal shell is temporarily stripped from the soul, resulting "
 "in partial invisibility. The strength of the connection of body and soul is "
@@ -4468,15 +4502,15 @@ msgstr ""
 "zwischen Körper und Seele ist jedoch nicht zu vernachlässigen, was eine "
 "baldige Wiederverschmelzung zur Folge hat."
 
-#: ../scourge_data/config/spell.cfg:499
+#: ../scourge_data/config/spell.cfg:503
 msgid "Teleportation"
 msgstr "Teleportation"
 
-#: ../scourge_data/config/spell.cfg:500
+#: ../scourge_data/config/spell.cfg:504
 msgid "Teleporting"
 msgstr "Teleportierender"
 
-#: ../scourge_data/config/spell.cfg:514
+#: ../scourge_data/config/spell.cfg:518
 msgid ""
 " By focusing to remember details about another location (HQ in this case) "
 "the caster is able teleport the entire party to that location. Use this "
@@ -4491,7 +4525,7 @@ msgstr ""
 "werden. Behaltet jedoch in Erinnerung, dass Ihr bei einem Versagen des "
 "Zaubers an einen noch weniger angenehmen Ort versetzt werden könntet..."
 
-#: ../scourge_data/config/spell.cfg:516
+#: ../scourge_data/config/spell.cfg:520
 msgid ""
 "Xelphate broods over the unending cycles of human history. Under her "
 "watchful eye the greatest of human triumphs and the saddest of tragedies "
@@ -4504,13 +4538,13 @@ msgstr ""
 "allein hütet das größte aller Mysterien: Den Grund unseres Daseins in der "
 "Welt, und unser Ende."
 
-#: ../scourge_data/config/spell.cfg:518
+#: ../scourge_data/config/spell.cfg:522
 msgid "The room suddenly grows dark. You feel the very walls edge towards you."
 msgstr ""
 "Der Raum verdunkelt sich plötzlich. Ihr fühlt, dass die Wände sich Euch "
 "entgegen schieben."
 
-#: ../scourge_data/config/spell.cfg:521
+#: ../scourge_data/config/spell.cfg:525
 msgid ""
 "An ominous sound floats up from the dark. Your mind trembles before its "
 "might."
@@ -4518,11 +4552,11 @@ msgstr ""
 "Ein unheilvolles Geräusch entringt sich der Dunkelheit. Euer Geist erzittert "
 "vor seiner Macht."
 
-#: ../scourge_data/config/spell.cfg:524
+#: ../scourge_data/config/spell.cfg:528
 msgid "You smell... cabbage?!"
 msgstr "Ihr riecht... Kohl?!"
 
-#: ../scourge_data/config/spell.cfg:527
+#: ../scourge_data/config/spell.cfg:531
 msgid ""
 "Beneath your feet, the earth cracks suddenly. Before you could react, the "
 "cracks heal and the ground smooths out again."
@@ -4530,13 +4564,13 @@ msgstr ""
 "Unter Euren Füßen spaltet sich unvermittelt die Erde. Bevor Ihr reagieren "
 "könnt, schließt sich der Spalt wieder zu glatter Erde."
 
-#: ../scourge_data/config/spell.cfg:530
+#: ../scourge_data/config/spell.cfg:534
 msgid "Trumpets sound. The noise is glorious as if a victory occurred."
 msgstr ""
 "Trompeten erschallen. Es hört sich glorreich an, als wäre eine Schlacht "
 "gewonnen worden."
 
-#: ../scourge_data/config/spell.cfg:533
+#: ../scourge_data/config/spell.cfg:537
 msgid ""
 "Warm air rises all around you. It comforts your tired limbs and seems to aid "
 "your recovery."
@@ -4544,23 +4578,23 @@ msgstr ""
 "Um Euch herum steigt warme Luft auf. Sie schmeichelt Euren müden Gliedern "
 "und scheint Eure Genesung zu unterstützen."
 
-#: ../scourge_data/config/spell.cfg:538
+#: ../scourge_data/config/spell.cfg:542
 msgid "Ambush Trickery and Deceit"
 msgstr "Hinterhalt, Gaunerei und Täuschung"
 
-#: ../scourge_data/config/spell.cfg:543
+#: ../scourge_data/config/spell.cfg:548
 msgid "of Chaos"
 msgstr "des Chaos"
 
-#: ../scourge_data/config/spell.cfg:546
+#: ../scourge_data/config/spell.cfg:551
 msgid "Silent knives"
 msgstr "Lautlose Messer"
 
-#: ../scourge_data/config/spell.cfg:547
+#: ../scourge_data/config/spell.cfg:552
 msgid "Attacking"
 msgstr "Angreifender"
 
-#: ../scourge_data/config/spell.cfg:560
+#: ../scourge_data/config/spell.cfg:565
 msgid ""
 " The caster summons a knife which is magically hurled at the target.  The "
 "power of this spell increases with caster's level."
@@ -4569,15 +4603,15 @@ msgstr ""
 "geschleudert wird. Die Wirkung dieses Zaubers erhöht sich mit der Stufe des "
 "Zaubernden."
 
-#: ../scourge_data/config/spell.cfg:564
+#: ../scourge_data/config/spell.cfg:569
 msgid "Poison of ignorance"
 msgstr "Gift der Ignoranz"
 
-#: ../scourge_data/config/spell.cfg:565
+#: ../scourge_data/config/spell.cfg:570
 msgid "Poisoning"
 msgstr "Vergiftender"
 
-#: ../scourge_data/config/spell.cfg:579
+#: ../scourge_data/config/spell.cfg:584
 msgid ""
 " The caster entices the bile from the world's ignorants to damage a group of "
 "creatures near the target."
@@ -4585,15 +4619,15 @@ msgstr ""
 " Der Zaubernde beschwört die Galle aller Ignoranten dieser Welt, um einer "
 "Gruppe von Kreaturen Schaden zuzufügen."
 
-#: ../scourge_data/config/spell.cfg:583
+#: ../scourge_data/config/spell.cfg:588
 msgid "Transmute poison"
 msgstr "Gift neutralisieren"
 
-#: ../scourge_data/config/spell.cfg:584
+#: ../scourge_data/config/spell.cfg:589
 msgid "Poison Neutralizing"
 msgstr "Entgiftender"
 
-#: ../scourge_data/config/spell.cfg:599
+#: ../scourge_data/config/spell.cfg:604
 msgid ""
 " Drawing upon the strength of the soul the caster fools the target "
 "creature's body into processing poison as if it were a harmless substance. "
@@ -4602,15 +4636,15 @@ msgstr ""
 "Zielkreatur dazu, Gift wie jede andere Substanz abzubauen und zu "
 "neutralisieren. "
 
-#: ../scourge_data/config/spell.cfg:603
+#: ../scourge_data/config/spell.cfg:608
 msgid "Blast of Fury"
 msgstr "Furiose Detonation"
 
-#: ../scourge_data/config/spell.cfg:604
+#: ../scourge_data/config/spell.cfg:609
 msgid "Blasting"
 msgstr "Detonierender"
 
-#: ../scourge_data/config/spell.cfg:617
+#: ../scourge_data/config/spell.cfg:622
 msgid ""
 " After some time spent in meditation upon pain and carnage, the caster "
 "unleashes her thought's physical manifestation as a wide cone of anti-matter "
@@ -4620,7 +4654,7 @@ msgstr ""
 "der Zaubernde eine physische Manifestation seiner Gedanken in Form einer "
 "kegelförmigen Antimaterie-Hasswelle."
 
-#: ../scourge_data/config/spell.cfg:619
+#: ../scourge_data/config/spell.cfg:624
 msgid ""
 "If gods can be said to have a sense of humor, surely Soroughoz is the  "
 "jester among them all. He delights in unexpected endings and endless twists "
@@ -4635,23 +4669,23 @@ msgstr ""
 "Garzul zu schicken, in diabolisches Gelächter ausbrechen. Er ist auch ein "
 "Spieler, der Vorstreiter der Benachteiligten und der Fluch der Mächtigen."
 
-#: ../scourge_data/config/spell.cfg:623
+#: ../scourge_data/config/spell.cfg:628
 msgid "Confrontation"
 msgstr "Konfrontation"
 
-#: ../scourge_data/config/spell.cfg:628
+#: ../scourge_data/config/spell.cfg:633
 msgid "of the Abyss"
 msgstr "der Hölle"
 
-#: ../scourge_data/config/spell.cfg:631
+#: ../scourge_data/config/spell.cfg:636
 msgid "Stinging light"
 msgstr "Stechendes Licht"
 
-#: ../scourge_data/config/spell.cfg:632
+#: ../scourge_data/config/spell.cfg:637
 msgid "Stinging"
 msgstr "Stechender"
 
-#: ../scourge_data/config/spell.cfg:645
+#: ../scourge_data/config/spell.cfg:650
 msgid ""
 " The caster hurls a number of projectiles of light at the target.  Upon "
 "contact with a creature the projectiles cause searing damage. The number of "
@@ -4661,15 +4695,15 @@ msgstr ""
 "Kontakt mit einer Kreatur verursachen die Geschosse Brandschaden. Die Anzahl "
 "der Geschosse steigt mit der Stufe des Zaubernden."
 
-#: ../scourge_data/config/spell.cfg:649
+#: ../scourge_data/config/spell.cfg:654
 msgid "Divine Aggressor"
 msgstr "Göttlicher Angriff"
 
-#: ../scourge_data/config/spell.cfg:650
+#: ../scourge_data/config/spell.cfg:655
 msgid "Aggressive"
 msgstr "Aggressiver"
 
-#: ../scourge_data/config/spell.cfg:665
+#: ../scourge_data/config/spell.cfg:670
 msgid ""
 " Arhareim, the hammer of gods in conjured to envelop the party in seething "
 "warlust for a period of time."
@@ -4677,15 +4711,15 @@ msgstr ""
 " Arhareim, der Gotteshammer wird beschworen und umschließt die Gruppe eine "
 "Zeitlang mit siedender Blutlust."
 
-#: ../scourge_data/config/spell.cfg:669
+#: ../scourge_data/config/spell.cfg:674
 msgid "Malice Storm"
 msgstr "Bösartiger Sturm"
 
-#: ../scourge_data/config/spell.cfg:670
+#: ../scourge_data/config/spell.cfg:675
 msgid "Storming"
 msgstr "Stürmender"
 
-#: ../scourge_data/config/spell.cfg:683
+#: ../scourge_data/config/spell.cfg:688
 msgid ""
 " The caster summons vast energies of the astral plains. These appear as "
 "tendrils of malicious energy penetrating the material plane."
@@ -4693,15 +4727,15 @@ msgstr ""
 " Der Zaubernde beschwört gewaltige Energien der astralen Ebene. Diese treten "
 "als Ranken übelwollender Energie in die materielle Ebene über."
 
-#: ../scourge_data/config/spell.cfg:687
+#: ../scourge_data/config/spell.cfg:692
 msgid "Ring of Harm"
 msgstr "Ring des Leids"
 
-#: ../scourge_data/config/spell.cfg:688
+#: ../scourge_data/config/spell.cfg:693
 msgid "Harming"
 msgstr "Schädigender"
 
-#: ../scourge_data/config/spell.cfg:701
+#: ../scourge_data/config/spell.cfg:706
 msgid ""
 " Enraged with hatred for his foes, the caster becomes a focus of conduit for "
 "Unamoin's earthly manifestation. Intense waves of malevolent energy spreads "
@@ -4712,15 +4746,15 @@ msgstr ""
 "Energie entspringen dem Körper des Zaubernden, um feindlich gesinnte "
 "Lebensformen in seiner Umgebung auszulöschen."
 
-#: ../scourge_data/config/spell.cfg:705
+#: ../scourge_data/config/spell.cfg:710
 msgid "Unholy Decimator"
 msgstr "Unheilige Auslöschung"
 
-#: ../scourge_data/config/spell.cfg:706
+#: ../scourge_data/config/spell.cfg:711
 msgid "Decimating"
 msgstr "Dahinraffender"
 
-#: ../scourge_data/config/spell.cfg:719
+#: ../scourge_data/config/spell.cfg:724
 msgid ""
 " Spoken of only in hushed tones, the Unholy Decimator is the creation of the "
 "undead baul wizard, Shamoul the Morbid. A vortex of unholy energy  drains a "
@@ -4730,7 +4764,7 @@ msgstr ""
 "des Baul-Zauberers Shamoul des Düsteren, gesprochen. Ein Wirbel unheiliger "
 "Energie beraubt ein einzelnes Opfer seiner Lebenskraft."
 
-#: ../scourge_data/config/spell.cfg:721
+#: ../scourge_data/config/spell.cfg:726
 msgid ""
 "The clamor of battle is music to the ears of the god of confrontation.  "
 "Nothing pleases her more than a good plague or years of war between "
@@ -4743,7 +4777,7 @@ msgstr ""
 "Bevölkerung umher, zetteln Aufstände an, vergiften Brunnen und dominieren "
 "die Geister der Schwachen."
 
-#: ../scourge_data/config/spell.cfg:723
+#: ../scourge_data/config/spell.cfg:728
 msgid ""
 "A wall of wind in an angry gust, sweeps you off your feet. You scramble to "
 "regain your footing."
@@ -4751,7 +4785,7 @@ msgstr ""
 "Eine wütende Mauer aus Wind stößt Euch von den Füßen. Krabbelnd erhebt Ihr "
 "Euch wieder."
 
-#: ../scourge_data/config/spell.cfg:726
+#: ../scourge_data/config/spell.cfg:731
 msgid ""
 "A towering giant oppresses your mind. You ego cracks under the weight like "
 "an eggshell."
@@ -4759,7 +4793,7 @@ msgstr ""
 "Ein turmhoher Gigant drückt auf Euren Geist. Euer Ich zerbricht unter der "
 "Last wie eine Eierschale."
 
-#: ../scourge_data/config/spell.cfg:729
+#: ../scourge_data/config/spell.cfg:734
 msgid ""
 "An attempt is made to comfort you, yet why does it feel like is delivered "
 "with a warhammer?"
@@ -4767,7 +4801,7 @@ msgstr ""
 "Da ist ein Versuch, Euch zu ermutigen, doch warum fühlt es sich an wie ein "
 "malträtierender Kriegshammer?"
 
-#: ../scourge_data/config/spell.cfg:732
+#: ../scourge_data/config/spell.cfg:737
 msgid ""
 "Colors bloom in your field of vision. The hues are mostly reds and purples. "
 "They quickly fade to darkness."
@@ -4775,7 +4809,7 @@ msgstr ""
 "Farben erblühen in Eurem Blickfeld, vornehmlich rot und violett. Rasch "
 "verblassen sie in der Dunkelheit."
 
-#: ../scourge_data/config/spell.cfg:735
+#: ../scourge_data/config/spell.cfg:740
 msgid ""
 "You're seized by a rise of warlust. Your hear your heart in your ears like "
 "the drumming of a marching army."
@@ -4783,7 +4817,7 @@ msgstr ""
 "Ihr werdet von plötzlicher Kampflust befallen. Ihr vernehmt den Herzschlag "
 "in Euren Ohren wie das Dröhnen einer marschierenden Armee."
 
-#: ../scourge_data/config/spell.cfg:738
+#: ../scourge_data/config/spell.cfg:743
 msgid ""
 "Your vision suddenly focuses to a red tunnel. Air whistles in your ears as "
 "if you're moving at a high speed."
