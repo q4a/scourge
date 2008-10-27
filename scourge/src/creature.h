@@ -477,6 +477,8 @@ public:
 	virtual char const* getType();
 	void getDetailedDescription( std::string& s );
 
+	float getAlignment();
+
 	/// The creature's level.
 	inline int getLevel() {
 		return level;

@@ -250,13 +250,14 @@ private:
 	int skill, resistSkill;
 	std::vector<Spell*> spells;
 	std::vector<std::string> lowDonate, neutralDonate, highDonate;
+	float baseAlignment;
 
 	static MagicSchool *schools[10];
 	static int schoolCount;
 	static std::map<std::string, MagicSchool*> schoolMap;
 
 public:
-	MagicSchool( char const* name, char const* displayName, char const* deity, int skill, int resistSkill, float red, float green, float blue, char const* symbol );
+	MagicSchool( char const* name, char const* displayName, char const* deity, int skill, int resistSkill, float alignment, float red, float green, float blue, char const* symbol );
 	~MagicSchool();
 
 	/// The school's internal, unlocalized name.
@@ -313,7 +314,13 @@ public:
 		return symbol.c_str();
 	}
 
+	/// The base alignment (chaotic, neutral or lawful) of the school.
+	inline float getBaseAlignment() {
+		return baseAlignment;
+	}
+
 	static void initMagic();
+
 	/// Number of magic schools in the game.
 	inline static int getMagicSchoolCount() {
 		return schoolCount;

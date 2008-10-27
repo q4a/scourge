@@ -3620,3 +3620,34 @@ void Creature::monsterInit() {
 		mp = static_cast<int>( n * Util::roll( mt.minHpMpBase, mt.maxHpMpBase ) );
 	}
 }
+
+/// Returns the alignment of the creature as a float between 0.0 (fully chaotic) and 1.0 (totally lawful).
+
+float Creature::getAlignment() {
+  int totalSpellCount, chaoticSpellCount, neutralSpellCount, lawfulSpellCount;
+  Spell *spell;
+
+  totalSpellCount = getSpellCount();
+  if ( totalSpellCount == 0 ) return 0.5f;
+
+  chaoticSpellCount = neutralSpellCount = lawfulSpellCount = 0;
+
+  for ( int i = 0; i < totalSpellCount; i++ ) {
+    spell = getSpell( i );
+
+    if ( spell->getSchool()->getBaseAlignment() == ALIGNMENT_CHAOTIC ) {
+      chaoticSpellCount ++;
+    } else if ( spell->getSchool()->getBaseAlignment() == ALIGNMENT_NEUTRAL ) {
+      neutralSpellCount ++;
+    } else if ( spell->getSchool()->getBaseAlignment() == ALIGNMENT_LAWFUL ) {
+      lawfulSpellCount ++;
+    }
+
+  }
+
+  float chaoticness = (float)chaoticSpellCount / (float)totalSpellCount;
+  float neutralness = (float)neutralSpellCount / (float)totalSpellCount;
+  float lawfulness = (float)lawfulSpellCount / (float)totalSpellCount;
+
+  return ( ( -chaoticness + lawfulness ) + 1 ) / 2;
+}

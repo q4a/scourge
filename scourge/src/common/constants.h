@@ -585,6 +585,11 @@ public:
 		return EFFECT_FLAMES;
 	}
 
+	// Magic school base alignments
+	#define ALIGNMENT_CHAOTIC 0.0f
+	#define ALIGNMENT_NEUTRAL 0.5f
+	#define ALIGNMENT_LAWFUL 1.0f
+
 	// glColor for texts
 	enum {
 		RED_COLOR = 0,
