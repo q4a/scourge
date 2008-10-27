@@ -18,7 +18,7 @@
 #include "../common/constants.h"
 #include "virtualshape.h"
 
-VirtualShape::VirtualShape( char *name,
+VirtualShape::VirtualShape( char const* name,
                             int width, int depth, int height,
                             int offsetX, int offsetY, int offsetZ,
                             bool draws, GLShape *refShape,

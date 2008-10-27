@@ -95,7 +95,7 @@ void Server::initTCPConnection( TCPsocket socket ) {
 		// add a new client if space is available
 		if ( !stopThread &&
 		        strstr( text, "LOGIN," ) == text && clientCount < MAX_CLIENT_COUNT ) {
-			char *username = strdup( text + 6 );
+			char const* username = text + 6;
 			int id = clientCount;
 			clients[clientCount] = new ClientInfo( this, socket, id, username );
 			cerr << "* New user logged in: id=" << clients[clientCount]->describe() << endl;

@@ -278,7 +278,7 @@ void CombatTest::printBackpack( FILE *fp, Creature *creature ) {
 }
 
 Creature *CombatTest::createCharacter( Session *session, 
-                                       char *characterShortName,
+                                       char const* characterShortName,
                                        char *name,
                                        int level ) {
   Character *character = 
@@ -286,8 +286,8 @@ Creature *CombatTest::createCharacter( Session *session,
   Creature *c = 
     new Creature( session, 
                   character, 
-                  strdup( name ), 
-									Constants::SEX_MALE,
+                  name, 
+	              Constants::SEX_MALE,
                   0 );
   //c->setDeityIndex( info[i].deityType->getSelectedLine() );
   c->setLevel( level ); 
@@ -318,7 +318,7 @@ void CombatTest::setMinSkills( Creature *c ) {
 
 Item *CombatTest::equipItem( Session *session, 
                              Creature *c, 
-                             char *itemName, 
+                             char const* itemName, 
                              int itemLevel ) {
   Item *item = new Item( session, RpgItem::getItemByName( itemName ), itemLevel );
   c->addToBackpack( item, true );

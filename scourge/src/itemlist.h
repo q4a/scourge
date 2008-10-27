@@ -65,7 +65,7 @@ private:
 	bool allowCursed;
 	bool allowEquipped;
 	std::string name[MAX_BACKPACK_SIZE];
-	Color *color;
+	Color color[MAX_BACKPACK_SIZE];
 	Texture icon[MAX_BACKPACK_SIZE];
 
 public:
@@ -102,7 +102,7 @@ public:
 		allowEquipped = b;
 	}
 
-	char *getName();
+	char const* getName();
 	int getItemCount();
 	Item *getItem( int index );
 

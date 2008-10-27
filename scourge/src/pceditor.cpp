@@ -119,14 +119,12 @@ void PcEditor::deleteLoadedShapes() {
 void PcEditor::saveUI() {
 	// name
 	char *s = nameField->getText();
-	bool deleteS = false;
-	if ( !s || !strlen( s ) ) {
-		//s = presets[i].name;
-		s = Rpg::createName();
-		deleteS = true;
+	if ( s != NULL && strlen( s ) != 0 ) {
+		creature->setName( s );
+	} else {
+		creature->setName( Rpg::createName().c_str() );
 	}
-	creature->setName( s );
-	if ( deleteS ) free( s );
+	
 	// character type
 	int index = charType->getSelectedLine();
 	Character *c = Character::rootCharacters[ index ];
@@ -243,7 +241,7 @@ void PcEditor::rollSkillsForCreature( Creature *c ) {
 Creature *PcEditor::createPartyMember() {
 	Creature *c = new Creature( scourge->getSession(),
 	                            Character::rootCharacters[ charType->getSelectedLine() ],
-	                            strdup( nameField->getText() ),
+	                            nameField->getText(),
 	                            getSex(),
 	                            modelIndex );
 	c->setLevel( STARTING_PARTY_LEVEL );
@@ -361,9 +359,7 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		rollApperance();
 		saveUI();
 	} else if ( widget == nameChangeButton ) {
-		char *s = Rpg::createName();
-		nameField->setText( s );
-		free( s );
+		nameField->setText( Rpg::createName().c_str() );
 	} else {
 		int n = 0;
 		for ( int i = 0; n < 10 && i < static_cast<int>( Skill::skills.size() ); i++ ) {
@@ -471,9 +467,7 @@ void PcEditor::createUI() {
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 	nameField = new TextField( secondColStart, 50, 22 );
 	nameChangeButton = cards->createButton( w - 80, 50, w - 20, 70, _( "Change" ), NAME_TAB );
-	char *s = Rpg::createName();
-	nameField->setText( s );
-	free( s );
+	nameField->setText( Rpg::createName().c_str() );
 	cards->addWidget( nameField, NAME_TAB );
 	cards->addWidget( new Label( secondColStart, 90,
 	                             _( "What is your name, great hero? Enter it here, but choose wisely! You will not be able to change it again." ),

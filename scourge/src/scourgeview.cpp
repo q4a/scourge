@@ -37,6 +37,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 #define INFO_INTERVAL 3000
 
 Uint32 areaTicks = 0;
@@ -59,6 +66,7 @@ ScourgeView::ScourgeView( Scourge *scourge ) {
 	lastTargetTick = SDL_GetTicks();
 	lastWeatherUpdate = SDL_GetTicks();
 	thunderOnce = false;
+	turnProgress = NULL;
 }
 
 void ScourgeView::initUI() {
@@ -68,6 +76,11 @@ void ScourgeView::initUI() {
 }
 
 ScourgeView::~ScourgeView() {
+	delete turnProgress;
+	delete debugTrapColor;
+	delete enabledTrapColor;
+	delete disabledTrapColor;
+	delete outlineColor;
 }
 
 void ScourgeView::drawView() {

@@ -41,7 +41,7 @@ private:
 public:
 	GLTorch( Texture texture[], Texture flameTex,
 	         int width, int depth, int height,
-	         char *name, int descriptionGroup,
+	         char const* name, int descriptionGroup,
 	         Uint32 color, Uint8 shapePalIndex = 0,
 			 Texture const& torchback = Texture::none(), int torch_dir = Constants::NORTH );
 

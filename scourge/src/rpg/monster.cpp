@@ -36,7 +36,7 @@ vector<Monster*> Monster::harmlessCreatures;
 map<string, Monster*> Monster::npcPos;
 map<string, string> Monster::modelToDescriptiveType;
 
-Monster::Monster( char *type, char *displayName, char* descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait, bool harmless ) {
+Monster::Monster( char const* type, char const* displayName, char const* descriptiveType, int level, int hp, int mp, char const* model, char const* skin, int rareness, int speed, int baseArmor, float scale, bool npc, char const* portrait, bool harmless ) {
 	this->type = type;
 	this->displayName = displayName;
 	if ( descriptiveType ) {
@@ -151,12 +151,12 @@ void Monster::initCreatures( ConfigLang *config ) {
 		GLuint statemod = node->getValueAsInt( "statemod" );
 
 		Monster *m =
-		  new Monster( strdup( name ), strdup( displayName ),
-		               ( strlen( type ) ? strdup( type ) : NULL ),
+		  new Monster( name, displayName,
+		               type,
 		               level, hp, mp,
-		               strdup( model_name ), strdup( skin_name ),
+		               model_name, skin_name,
 		               rareness, speed, armor,
-		               scale, npc, ( strlen( portrait ) ? strdup( portrait ) : NULL ),
+		               scale, npc, portrait,
 		               harmless );
 		if ( npc ) {
 			npcs.push_back( m );
@@ -245,7 +245,7 @@ void Monster::initMonsters() {
 	delete config;
 }
 
-void Monster::addMd2Sounds( char *model_name, map<int, vector<string>*>* currentSoundMap ) {
+void Monster::addMd2Sounds( char const* model_name, map<int, vector<string>*>* currentSoundMap ) {
 	enum { TXT_SIZE = 1000 };
 	char soundFile[ TXT_SIZE ];
 
@@ -310,7 +310,7 @@ Monster *Monster::getMonsterByName( char const* name ) {
 	return monstersByName[s];
 }
 
-map<int, vector<string>*>* Monster::getSoundMap( char *monsterType ) {
+map<int, vector<string>*>* Monster::getSoundMap( char const* monsterType ) {
 	string type_str = monsterType;
 	if ( soundMap.find( type_str ) != soundMap.end() ) {
 		return soundMap[ type_str ];

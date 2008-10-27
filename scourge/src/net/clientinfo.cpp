@@ -6,7 +6,7 @@ using namespace std;
 
 #define DEBUG_CLIENT_INFO 0
 
-ClientInfo::ClientInfo( Server *server, TCPsocket socket, int id, char *username ) {
+ClientInfo::ClientInfo( Server *server, TCPsocket socket, int id, char const* username ) {
 	this->server = server;
 	this->socket = socket;
 	this->dead = false;
@@ -57,7 +57,6 @@ ClientInfo::~ClientInfo() {
 	// close the socket
 	SDLNet_TCP_Close( socket );
 	// misc. other stuff
-	free( username );
 	delete commands;
 	delete characterInfo;
 	cerr << "* Client stopped: " << describe() << endl;
@@ -70,7 +69,7 @@ char *ClientInfo::describe() {
 
 void ClientInfo::chat( char *message ) {
 	char s[1024];
-	Commands::buildChat( s, 1024, username, message );
+	Commands::buildChat( s, 1024, getUsername(), message );
 	server->sendToAllTCP( s );
 }
 
@@ -158,7 +157,7 @@ void ClientInfo::receiveTCP() {
 	if ( TCPUtil::receive( socket, &text, &length ) ) {
 		commands->interpret( text, length );
 	}
-	free( text );
+	delete text;
 }
 
 void ClientInfo::sendTCP( char *message, int length ) {

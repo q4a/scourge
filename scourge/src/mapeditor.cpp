@@ -529,10 +529,10 @@ bool MapEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 			scourge->getMap()->reset();
 			int line = themeList->getSelectedLine();
 			if ( line > -1 ) {
-				char *p = strdup( themeNames[ line ].c_str() );
-				if ( !strcmp( p + strlen( p ) - 3, "(S)" ) ) *( p + strlen( p ) - 3 ) = 0;
-				scourge->getShapePalette()->loadTheme( p );
-				free( p );
+				string str = themeNames[ line ];
+				int pos = str.rfind( "(S)" );
+				if ( pos == str.size() - 3 ) str.erase( pos );
+				scourge->getShapePalette()->loadTheme( str.c_str() );
 			}
 
 			if ( outdoorMapButton->isSelected() ) {

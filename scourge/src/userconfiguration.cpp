@@ -851,14 +851,13 @@ void UserConfiguration::parseCommandLine( int argc, char *argv[] ) {
 			standAloneMode = SERVER;
 			port = atoi( argv[i] + 8 );
 		} else if ( !strncmp( argv[i], "--client", 8 ) ) {
-			char *p = strdup( argv[i] + 8 );
-			host = strdup( strtok( p, ":" ) );
-			port = atoi( strtok( NULL, "," ) );
-			userName = strdup( strtok( NULL, "," ) );
+			string s( argv[i] + 8 );
+			size_t colonPos = s.find( ':' );
+			host = s.substr( 0, colonPos );
+			size_t commaPos = s.find( ',', colonPos );
+			port = atoi( s.substr(colonPos+1, commaPos ).c_str() );
+			userName = s.substr( commaPos+1 );
 			standAloneMode = CLIENT;
-			//free(host);
-			//free(userName);
-			free( p );
 #endif
 		} else if ( !strcmp( argv[i], "--test" ) ) {
 			test = true;

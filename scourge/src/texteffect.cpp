@@ -41,7 +41,7 @@ TextEffect::TextEffect( Scourge *scourge, int x, int y, char const* text ) {
 TextEffect::~TextEffect() {
 	if ( textureInMemory ) {
 		glDeleteTextures( 1, texture );
-		free( textureInMemory );
+		delete [] textureInMemory;
 	}
 }
 
@@ -187,7 +187,7 @@ void TextEffect::buildTextures() {
 	//int width = scourge->getSDLHandler()->textWidth( text );
 
 	// Create texture and copy minimap date from backbuffer on it
-	textureInMemory = ( unsigned char * )malloc( width * height * 4 );
+	textureInMemory = new unsigned char[width * height * 4];
 
 	glGenTextures( 1, texture );
 	glBindTexture( GL_TEXTURE_2D, texture[0] );

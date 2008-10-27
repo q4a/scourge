@@ -28,7 +28,7 @@ using namespace std;
 
 MD3Shape::MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div,
                     Texture texture[], int width, int depth, int height,
-                    char *name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
+                    char const* name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
 		AnimatedShape( width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
 	// clone the md3 so we have our own animation data
 	this->md3 = md3;

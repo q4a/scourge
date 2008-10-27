@@ -31,7 +31,7 @@ static GLuint lightmap_tex_num2 = 0;
 static unsigned char data[LIGHTMAP_SIZE * LIGHTMAP_SIZE * 3];
 static unsigned char data2[LIGHTMAP_SIZE * LIGHTMAP_SIZE * 3];
 
-GLShape::GLShape( Texture tex[], int width, int depth, int height, char *name, int descriptionGroup,
+GLShape::GLShape( Texture tex[], int width, int depth, int height, char const* name, int descriptionGroup,
                   Uint32 color, Uint8 shapePalIndex )
 		: Shape( width, depth, height, name, descriptionGroup ) {
 	commonInit( tex, color, shapePalIndex );
@@ -673,7 +673,7 @@ void GLShape::addVirtualShape( int x, int y, int z, int w, int d, int h, bool dr
 	int const TMPLEN = 255;
 	char tmp[TMPLEN];
 	snprintf( tmp, TMPLEN, "%s_%d", getName(), ( int )virtualShapes.size() );
-	GLShape *shape = new VirtualShape( strdup( tmp ), w, d, h, x, y, z, draws, this, getShapePalIndex() );
+	GLShape *shape = new VirtualShape( tmp, w, d, h, x, y, z, draws, this, getShapePalIndex() );
 	virtualShapes.push_back( shape );
 }
 

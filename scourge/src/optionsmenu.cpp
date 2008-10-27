@@ -78,11 +78,11 @@ OptionsMenu::OptionsMenu( Scourge *scourge ) {
 	// Game settings tab
 	y = YPOS;
 	gameSpeedML = new MultipleLabel( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Game speed" ), 100 );
-	gameSpeedML -> addText( strdup( _( "Very slow" ) ) );
-	gameSpeedML -> addText( strdup( _( "Slow" ) ) );
-	gameSpeedML -> addText( strdup( _( "Normal" ) ) );
-	gameSpeedML -> addText( strdup( _( "Fast" ) ) );
-	gameSpeedML -> addText( strdup( _( "Fastest" ) ) );
+	gameSpeedML -> addText( _( "Very slow" ) );
+	gameSpeedML -> addText( _( "Slow" ) );
+	gameSpeedML -> addText( _( "Normal" ) );
+	gameSpeedML -> addText( _( "Fast" ) );
+	gameSpeedML -> addText( _( "Fastest" ) );
 	cards->addWidget( gameSpeedML, GAME_SETTINGS );
 	y += SPACING + MINOR_SPACING;
 	alwaysCenterMapCheckbox = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Always center map" ), GAME_SETTINGS );
@@ -105,17 +105,17 @@ OptionsMenu::OptionsMenu( Scourge *scourge ) {
 	cards->addWidget( tooltipInterval, GAME_SETTINGS );
 	y += SPACING + SPACING;
 	logLevelML = new MultipleLabel( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Log level" ), 100 );
-	logLevelML->addText( strdup( _( "Minimal" ) ) );
-	logLevelML->addText( strdup( _( "Partial" ) ) );
-	logLevelML->addText( strdup( _( "Verbose" ) ) );
-	logLevelML->addText( strdup( _( "Full" ) ) );
+	logLevelML->addText( _( "Minimal" ) );
+	logLevelML->addText( _( "Partial" ) );
+	logLevelML->addText( _( "Verbose" ) );
+	logLevelML->addText( _( "Full" ) );
 	cards->addWidget( logLevelML, GAME_SETTINGS );
 
 	y += SPACING + MINOR_SPACING;
 	pathFindingQualityML = new MultipleLabel( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Path finding quality" ), 100 );
-	pathFindingQualityML->addText( strdup( _( "Basic" ) ) );
-	pathFindingQualityML->addText( strdup( _( "Advanced" ) ) );
-	pathFindingQualityML->addText( strdup( _( "Excellent" ) ) );
+	pathFindingQualityML->addText( _( "Basic" ) );
+	pathFindingQualityML->addText( _( "Advanced" ) );
+	pathFindingQualityML->addText( _( "Excellent" ) );
 	cards->addWidget( pathFindingQualityML, GAME_SETTINGS );
 
 	// Video settings tabs

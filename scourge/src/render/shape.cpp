@@ -18,11 +18,11 @@
 #include "../common/constants.h"
 #include "shape.h"
 
-Shape::Shape( int width, int depth, int height, char *name, int descriptionGroup ) {
+Shape::Shape( int width, int depth, int height, char const* name, int descriptionGroup ) {
 	this->width = width;
 	this->depth = depth;
 	this->height = height;
-	this->name = name;
+	if ( name != NULL ) this->name = name;
 	this->descriptionGroup = descriptionGroup;
 	this->stencil = false;
 	this->outlineColor = NULL;

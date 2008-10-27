@@ -292,7 +292,7 @@ int SqGame::_getDeityLocation( HSQUIRRELVM vm ) {
 
 	Location *pos = SqBinding::sessionRef->getMap()->getLocation( x, y, z );
 	if ( pos ) {
-		char *deity = SqBinding::sessionRef->getGameAdapter()->getDeityLocation( pos );
+		char const* deity = SqBinding::sessionRef->getGameAdapter()->getDeityLocation( pos );
 		if ( deity ) {
 			sq_pushstring( vm, _SC( deity ), -1 );
 			return 1;

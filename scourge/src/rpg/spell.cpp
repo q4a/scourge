@@ -27,7 +27,7 @@ map<string, MagicSchool*> MagicSchool::schoolMap;
 
 
 // FIXME: move this to some other location if needed elsewhere (rpg/dice.cpp?)
-Dice::Dice( char *s ) {
+Dice::Dice( char const* s ) {
 	strcpy( this->s, s );
 
 	char tmp[ S_SIZE ];
@@ -67,11 +67,10 @@ Dice::~Dice() {
 
 
 
-MagicSchool::MagicSchool( char *name, char *displayName, char *deity, int skill, int resistSkill, float red, float green, float blue, char *symbol ) {
+MagicSchool::MagicSchool( char const* name, char const* displayName, char const* deity, int skill, int resistSkill, float red, float green, float blue, char const* symbol ) {
 	this->name = name;
 	this->displayName = displayName;
-	this->shortName = strdup( name );
-	shortName = strtok( shortName, " " );
+	this->shortName = this->name.substr(0, this->name.find(' '));
 	this->deity = deity;
 	strcpy( this->deityDescription, "" );
 	this->skill = skill;
@@ -83,8 +82,6 @@ MagicSchool::MagicSchool( char *name, char *displayName, char *deity, int skill,
 }
 
 MagicSchool::~MagicSchool() {
-	free( shortName );
-	shortName = NULL;
 }
 
 #define UPDATE_MESSAGE N_("Loading Spells")
@@ -113,13 +110,13 @@ void MagicSchool::initMagic() {
 		float green = static_cast<float>( strtod( strtok( NULL, "," ), NULL ) );
 		float blue = static_cast<float>( strtod( strtok( NULL, "," ), NULL ) );
 		strcpy( symbol, node->getValueAsString( "symbol" ) );
-		current = new MagicSchool( strdup( name ),
-		                           strdup( displayName ),
-		                           strdup( notes ),
+		current = new MagicSchool( name,
+		                           displayName,
+		                           notes,
 		                           skill,
 		                           resistSkill,
 		                           red, green, blue,
-		                           strdup( symbol ) );
+		                           symbol );
 
 		strcpy( line, node->getValueAsString( "deity_description" ) );
 		if ( strlen( line ) ) current->addToDeityDescription( line );
@@ -156,9 +153,7 @@ void MagicSchool::initMagic() {
 			int exp = node2->getValueAsInt( "mp" );
 			int failureRate = node2->getValueAsInt( "failureRate" );
 			strcpy( dice, node2->getValueAsString( "action" ) );
-			Dice *action = new Dice( strdup( dice ) );
-
-
+			
 			int distance = node2->getValueAsInt( "distance" );
 			if ( distance < static_cast<int>( MIN_DISTANCE ) )
 				distance = static_cast<int>( MIN_DISTANCE );
@@ -198,15 +193,15 @@ void MagicSchool::initMagic() {
 				}
 			}
 
-			currentSpell = new Spell( strdup( name ), strdup( displayName ), strdup( symbol ), level, mp, exp, failureRate,
-			                          action, distance, targetType, speed, effect,
+			currentSpell = new Spell( name, displayName, symbol, level, mp, exp, failureRate,
+			                          dice, distance, targetType, speed, effect,
 			                          creatureTarget, locationTarget, itemTarget, partyTarget, doorTarget,
 			                          current, iconTileX, iconTileY,
 			                          friendly, stateModPrereq );
 			current->addSpell( currentSpell );
 
 			strcpy( line, node2->getValueAsString( "sound" ) );
-			if ( strlen( line ) ) currentSpell->setSound( strdup( line ) );
+			if ( strlen( line ) ) currentSpell->setSound( line );
 
 			strcpy( line, node2->getValueAsString( "notes" ) );
 			if ( strlen( notes ) ) currentSpell->addNotes( line );
@@ -252,20 +247,20 @@ Spell *MagicSchool::getRandomSpell( int level ) {
 
 
 
-Spell::Spell( char *name, char *displayName, char *symbol, int level, int mp, int exp, int failureRate, Dice *action,
+Spell::Spell( char const* name, char const* displayName, char const* symbol, int level, int mp, int exp, int failureRate, char const* action,
               int distance, int targetType, int speed, int effect, bool creatureTarget,
               bool locationTarget, bool itemTarget, bool partyTarget, bool doorTarget,
               MagicSchool *school,
-              int iconTileX, int iconTileY, bool friendly, int stateModPrereq ) {
+              int iconTileX, int iconTileY, bool friendly, int stateModPrereq ) 
+		: action( action )
+		, sound() {
 	this->name = name;
 	this->displayName = displayName;
 	this->symbol = symbol;
-	this->sound = NULL;
 	this->level = level;
 	this->mp = mp;
 	this->exp = exp;
 	this->failureRate = failureRate;
-	this->action = action;
 	this->distance = distance;
 	this->targetType = targetType;
 	this->speed = speed;
@@ -306,7 +301,7 @@ Spell *Spell::getSpellByName( char *name ) {
 void Spell::getAttack( int casterLevel, float *maxP, float *minP ) {
 	*minP = 0; *maxP = 0;
 	for ( int i = 0; i <= ( casterLevel / 2 ); i++ ) {
-		*minP += action->getMin();
-		*maxP += action->getMax();
+		*minP += action.getMin();
+		*maxP += action.getMax();
 	}
 }

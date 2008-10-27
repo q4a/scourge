@@ -36,7 +36,7 @@ public:
 	bool dead;
 	TCPsocket socket;
 	int id;
-	char *username;
+	std::string username;
 	char desc[ DESC_SIZE ];
 	bool threadRunning;
 	SDL_Thread *thread;
@@ -52,7 +52,7 @@ public:
 	// if this many messages are not acknowledged, the client is disconnected
 	static const int MAX_SCHEDULED_LAG_MESSAGES = 25;
 
-	ClientInfo( Server *server, TCPsocket socket, int id, char *username );
+	ClientInfo( Server *server, TCPsocket socket, int id, char const* username );
 	virtual ~ClientInfo();
 	inline int getId() {
 		return id;
@@ -60,8 +60,8 @@ public:
 	inline void setId( int id ) {
 		this->id = id;
 	}
-	inline char *getUsername() {
-		return username;
+	inline char const* getUsername() {
+		return username.c_str();
 	}
 	char *describe();
 	void sendMessageAsync( char *s, int length = 0 );

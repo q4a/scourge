@@ -293,7 +293,7 @@ void Shapes::initialize() {
 	shapes[shapeCount] =
 	  new GLTorch( textureGroup[ 0 ], findTextureByName( "flame.png", true ),
 	               1, 1, 2,
-	               strdup( "SPELL_FIREBALL" ),
+	               "SPELL_FIREBALL",
 	               0,
 	               strtoul( "6070ffff", NULL, 16 ),
 	               shapeCount,
@@ -528,7 +528,7 @@ void Shapes::loadShape( const char *name ) {
 			shapes[( i + 1 )] =
 			  new GLTeleporter( texture, findTextureByName( "flame.png", true ),
 			                    sv->width, sv->depth, sv->height,
-			                    strdup( sv->name ),
+			                    sv->name,
 			                    sv->descriptionIndex,
 			                    sv->color,
 			                    ( i + 1 ),
@@ -537,7 +537,7 @@ void Shapes::loadShape( const char *name ) {
 			shapes[( i + 1 )] =
 			  new C3DSShape( sv->m3ds_name, sv->m3ds_scale, this,
 			                 texture,
-			                 strdup( sv->name ),
+			                 sv->name,
 			                 sv->descriptionIndex,
 			                 sv->color,
 			                 ( i + 1 ),
@@ -554,7 +554,7 @@ void Shapes::loadShape( const char *name ) {
 				  new GLTorch( texture, findTextureByName( "flame.png", true ),
 				               //textures[9].id,
 				               sv->width, sv->depth, sv->height,
-				               strdup( sv->name ),
+				               sv->name,
 				               sv->descriptionIndex,
 				               sv->color,
 				               ( i + 1 ) );
@@ -563,7 +563,7 @@ void Shapes::loadShape( const char *name ) {
 				  new GLTorch( texture, findTextureByName( "flame.png", true ),
 				               //textures[9].id,
 				               sv->width, sv->depth, sv->height,
-				               strdup( sv->name ),
+				               sv->name,
 				               sv->descriptionIndex,
 				               sv->color,
 				               ( i + 1 ),
@@ -576,7 +576,7 @@ void Shapes::loadShape( const char *name ) {
 				cerr << "*** Error: can't find referenced shape: " << sv->refs << " for shape " << sv->name << endl;
 			}
 			shapes[( i + 1 )] =
-			  new VirtualShape( strdup( sv->name ),
+			  new VirtualShape( sv->name,
 			                    sv->width, sv->height, sv->depth,
 			                    sv->o3ds_x, sv->o3ds_y, sv->o3ds_z,
 			                    sv->draws,
@@ -586,7 +586,7 @@ void Shapes::loadShape( const char *name ) {
 			shapes[( i + 1 )] =
 			  new GLShape( texture,
 			               sv->width, sv->depth, sv->height,
-			               strdup( sv->name ),
+			               sv->name,
 			               sv->descriptionIndex,
 			               sv->color,
 			               ( i + 1 ) );

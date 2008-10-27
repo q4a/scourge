@@ -170,7 +170,7 @@ public:
 
 	void getDetailedDescription( std::string& s, bool precise = true );
 	/// The item's localized name.
-	inline char *getItemName() {
+	inline char const* getItemName() {
 		return itemName;
 	}
 
@@ -196,7 +196,7 @@ public:
 
 	void enchant( int level );
 
-	char *getType();
+	char const* getType();
 
 
 	// level-based attributes

@@ -49,7 +49,7 @@ TexturedText::~TexturedText() {
 
 
 TexFont *TexturedText::txfLoadFont( string& filename ) {
-	TexFont *txf;
+	TexFont *txf = NULL;
 	FILE *file;
 	GLfloat w, h, xstep, ystep;
 	char fileid[4], tmp;
@@ -58,17 +58,12 @@ TexFont *TexturedText::txfLoadFont( string& filename ) {
 	int endianness, swap, format, stride, width, height;
 	int i, j, got;
 
-	txf = NULL;
 	file = fopen( filename.c_str(), "rb" );
 	if ( file == NULL ) {
 		lastError = "file open failed.";
 		goto error;
 	}
-	txf = ( TexFont * ) malloc( sizeof( TexFont ) );
-	if ( txf == NULL ) {
-		lastError = "out of memory.";
-		goto error;
-	}
+	txf = new TexFont;
 	/* For easy cleanup in error case. */
 	txf->tgi = NULL;
 	txf->tgvi = NULL;
@@ -112,11 +107,7 @@ TexFont *TexturedText::txfLoadFont( string& filename ) {
 		SWAPL( &txf->max_descent, tmp );
 		SWAPL( &txf->num_glyphs, tmp );
 	}
-	txf->tgi = ( TexGlyphInfo * ) malloc( txf->num_glyphs * sizeof( TexGlyphInfo ) );
-	if ( txf->tgi == NULL ) {
-		lastError = "out of memory.";
-		goto error;
-	}
+	txf->tgi = new TexGlyphInfo[txf->num_glyphs];
 	assert( sizeof( TexGlyphInfo ) == 12 );  /* Ensure external file format size. */
 	got = fread( txf->tgi, sizeof( TexGlyphInfo ), txf->num_glyphs, file );
 	EXPECT( txf->num_glyphs );
@@ -128,12 +119,7 @@ TexFont *TexturedText::txfLoadFont( string& filename ) {
 			SWAPS( &txf->tgi[i].y, tmp );
 		}
 	}
-	txf->tgvi = ( TexGlyphVertexInfo * )
-	            malloc( txf->num_glyphs * sizeof( TexGlyphVertexInfo ) );
-	if ( txf->tgvi == NULL ) {
-		lastError = "out of memory.";
-		goto error;
-	}
+	txf->tgvi = new TexGlyphVertexInfo[txf->num_glyphs];
 	w = txf->tex_width;
 	h = txf->tex_height;
 	xstep = 0.5 / w;
@@ -174,12 +160,8 @@ TexFont *TexturedText::txfLoadFont( string& filename ) {
 	txf->min_glyph = min_glyph;
 	txf->range = max_glyph - min_glyph + 1;
 
-	txf->lut = ( TexGlyphVertexInfo ** )
-	           calloc( txf->range, sizeof( TexGlyphVertexInfo * ) );
-	if ( txf->lut == NULL ) {
-		lastError = "out of memory.";
-		goto error;
-	}
+	txf->lut = new TexGlyphVertexInfo*[txf->range];
+	memset(txf->lut, 0, txf->range * sizeof(TexGlyphVertexInfo*));
 	for ( i = 0; i < txf->num_glyphs; i++ ) {
 		txf->lut[txf->tgi[i].c - txf->min_glyph] = &txf->tgvi[i];
 	}
@@ -187,33 +169,17 @@ TexFont *TexturedText::txfLoadFont( string& filename ) {
 	switch ( format ) {
 	case TXF_FORMAT_BYTE:
 		if ( useLuminanceAlpha ) {
-			unsigned char *orig;
-
-			orig = ( unsigned char * ) malloc( txf->tex_width * txf->tex_height );
-			if ( orig == NULL ) {
-				lastError = "out of memory.";
-				goto error;
-			}
+			unsigned char *orig = new unsigned char[txf->tex_width * txf->tex_height];
 			got = fread( orig, 1, txf->tex_width * txf->tex_height, file );
 			EXPECT( txf->tex_width * txf->tex_height );
-			txf->teximage = ( unsigned char * )
-			                malloc( 2 * txf->tex_width * txf->tex_height );
-			if ( txf->teximage == NULL ) {
-				lastError = "out of memory.";
-				goto error;
-			}
+			txf->teximage = new unsigned char[2 * txf->tex_width * txf->tex_height];
 			for ( i = 0; i < txf->tex_width * txf->tex_height; i++ ) {
 				txf->teximage[i * 2] = orig[i];
 				txf->teximage[i * 2 + 1] = orig[i];
 			}
-			free( orig );
+			delete [] orig;
 		} else {
-			txf->teximage = ( unsigned char * )
-			                malloc( txf->tex_width * txf->tex_height );
-			if ( txf->teximage == NULL ) {
-				lastError = "out of memory.";
-				goto error;
-			}
+			txf->teximage = new unsigned char[txf->tex_width * txf->tex_height];
 			got = fread( txf->teximage, 1, txf->tex_width * txf->tex_height, file );
 			EXPECT( txf->tex_width * txf->tex_height );
 		}
@@ -222,19 +188,12 @@ TexFont *TexturedText::txfLoadFont( string& filename ) {
 		width = txf->tex_width;
 		height = txf->tex_height;
 		stride = ( width + 7 ) >> 3;
-		texbitmap = ( unsigned char * ) malloc( stride * height );
-		if ( texbitmap == NULL ) {
-			lastError = "out of memory.";
-			goto error;
-		}
+		texbitmap = new unsigned char[stride * height];
 		got = fread( texbitmap, 1, stride * height, file );
 		EXPECT( stride * height );
 		if ( useLuminanceAlpha ) {
-			txf->teximage = ( unsigned char * ) calloc( width * height * 2, 1 );
-			if ( txf->teximage == NULL ) {
-				lastError = "out of memory.";
-				goto error;
-			}
+			txf->teximage = new unsigned char[width * height * 2];
+			memset( txf->teximage, 0, width * height * 2 * sizeof(char) );
 			for ( i = 0; i < height; i++ ) {
 				for ( j = 0; j < width; j++ ) {
 					if ( texbitmap[i * stride + ( j >> 3 )] & ( 1 << ( j & 7 ) ) ) {
@@ -244,11 +203,8 @@ TexFont *TexturedText::txfLoadFont( string& filename ) {
 				}
 			}
 		} else {
-			txf->teximage = ( unsigned char * ) calloc( width * height, 1 );
-			if ( txf->teximage == NULL ) {
-				lastError = "out of memory.";
-				goto error;
-			}
+			txf->teximage = new unsigned char[width * height];
+			memset( txf->teximage, 0, width * height * sizeof(char) );
 			for ( i = 0; i < height; i++ ) {
 				for ( j = 0; j < width; j++ ) {
 					if ( texbitmap[i * stride + ( j >> 3 )] & ( 1 << ( j & 7 ) ) ) {
@@ -257,7 +213,7 @@ TexFont *TexturedText::txfLoadFont( string& filename ) {
 				}
 			}
 		}
-		free( texbitmap );
+		delete [] texbitmap;
 		break;
 	}
 
@@ -268,14 +224,14 @@ error:
 
 	if ( txf ) {
 		if ( txf->tgi )
-			free( txf->tgi );
+			delete txf->tgi;
 		if ( txf->tgvi )
-			free( txf->tgvi );
+			delete txf->tgvi;
 		if ( txf->lut )
-			free( txf->lut );
+			delete txf->lut;
 		if ( txf->teximage )
-			free( txf->teximage );
-		free( txf );
+			delete txf->teximage;
+		delete txf;
 	}
 	if ( file )
 		fclose( file );
@@ -320,13 +276,14 @@ GLuint TexturedText::txfEstablishTexture( GLuint texobj,
 				int i;
 
 				useLuminanceAlpha = 1;
-				latex = ( unsigned char * ) calloc( width * height * 2, 1 );
+				latex = new unsigned char[width * height * 2];
+				memset(latex, 0, width * height * 2 * sizeof(char));
 				/* XXX unprotected alloc. */
 				for ( i = 0; i < height * width; i++ ) {
 					latex[i * 2] = txf->teximage[i];
 					latex[i * 2 + 1] = txf->teximage[i];
 				}
-				free( txf->teximage );
+				delete txf->teximage;
 				txf->teximage = latex;
 			}
 		}
@@ -379,12 +336,13 @@ void TexturedText::txfBindFontTexture() {
 
 void TexturedText::txfUnloadFont() {
 	if ( txf->teximage ) {
-		free( txf->teximage );
+		delete txf->teximage;
 	}
-	free( txf->tgi );
-	free( txf->tgvi );
-	free( txf->lut );
-	free( txf );
+	delete [] txf->tgi;
+	delete [] txf->tgvi;
+	delete [] txf->lut;
+	delete txf;
+	txf = NULL;
 }
 
 void TexturedText::txfGetStringMetrics( char *string,

@@ -156,8 +156,8 @@ public:
 	virtual int getTooltipInterval() = 0;
 	virtual int getGameSpeedTicks() = 0;
 	virtual int getStandAloneMode() = 0;
-	virtual char *getHost() = 0;
-	virtual char *getUserName() = 0;
+	virtual char const* getHost() = 0;
+	virtual char const* getUserName() = 0;
 	virtual int getPort() = 0;
 	virtual int getLogLevel() = 0;
 	virtual int getPathFindingQuality() = 0;

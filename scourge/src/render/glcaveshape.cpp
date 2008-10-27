@@ -83,7 +83,7 @@ TextureData GLCaveShape::floorData[ Shapes::STENCIL_COUNT ];
 
 GLCaveShape::GLCaveShape( Shapes *shapes, Texture texture[]
                           , int width, int depth, int height
-                          , char *name, int index
+                          , char const* name, int index
                           , int mode, int dir, int caveIndex
                           , int stencilIndex, int stencilAngle )
 		:  GLShape( texture, width, depth, height, name, 0, color, index ) {
@@ -702,69 +702,69 @@ void GLCaveShape::createShapes( Texture texture[], int shapeCount, Shapes *shape
 
 	shapeList[CAVE_INDEX_N] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_N ] ), shapeCount++,
+	                   names[ CAVE_INDEX_N ], shapeCount++,
 	                   MODE_FLAT, DIR_N, CAVE_INDEX_N );
 	shapeList[CAVE_INDEX_E] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_E ] ), shapeCount++,
+	                   names[ CAVE_INDEX_E ], shapeCount++,
 	                   MODE_FLAT, DIR_E, CAVE_INDEX_E );
 	shapeList[CAVE_INDEX_S] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_S ] ), shapeCount++,
+	                   names[ CAVE_INDEX_S ], shapeCount++,
 	                   MODE_FLAT, DIR_S, CAVE_INDEX_S );
 	shapeList[CAVE_INDEX_W] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_W ] ), shapeCount++,
+	                   names[ CAVE_INDEX_W ], shapeCount++,
 	                   MODE_FLAT, DIR_W, CAVE_INDEX_W );
 	shapeList[CAVE_INDEX_NE] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_NE ] ), shapeCount++,
+	                   names[ CAVE_INDEX_NE ], shapeCount++,
 	                   MODE_CORNER, DIR_NE, CAVE_INDEX_NE );
 	shapeList[CAVE_INDEX_SE] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_SE ] ), shapeCount++,
+	                   names[ CAVE_INDEX_SE ], shapeCount++,
 	                   MODE_CORNER, DIR_SE, CAVE_INDEX_SE );
 	shapeList[CAVE_INDEX_SW] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_SW ] ), shapeCount++,
+	                   names[ CAVE_INDEX_SW ], shapeCount++,
 	                   MODE_CORNER, DIR_SW, CAVE_INDEX_SW );
 	shapeList[CAVE_INDEX_NW] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_NW ] ), shapeCount++,
+	                   names[ CAVE_INDEX_NW ], shapeCount++,
 	                   MODE_CORNER, DIR_NW, CAVE_INDEX_NW );
 	shapeList[CAVE_INDEX_INV_NE] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_INV_NE ] ), shapeCount++,
+	                   names[ CAVE_INDEX_INV_NE ], shapeCount++,
 	                   MODE_INV, DIR_NE, CAVE_INDEX_INV_NE );
 	shapeList[CAVE_INDEX_INV_SE] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_INV_SE ] ), shapeCount++,
+	                   names[ CAVE_INDEX_INV_SE ], shapeCount++,
 	                   MODE_INV, DIR_SE, CAVE_INDEX_INV_SE );
 	shapeList[CAVE_INDEX_INV_SW] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_INV_SW ] ), shapeCount++,
+	                   names[ CAVE_INDEX_INV_SW ], shapeCount++,
 	                   MODE_INV, DIR_SW, CAVE_INDEX_INV_SW );
 	shapeList[CAVE_INDEX_INV_NW] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_INV_NW ] ), shapeCount++,
+	                   names[ CAVE_INDEX_INV_NW ], shapeCount++,
 	                   MODE_INV, DIR_NW, CAVE_INDEX_INV_NW );
 	shapeList[CAVE_INDEX_CROSS_NE] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_CROSS_NE ] ), shapeCount++,
+	                   names[ CAVE_INDEX_CROSS_NE ], shapeCount++,
 	                   MODE_INV, DIR_CROSS_NE, CAVE_INDEX_CROSS_NE );
 	shapeList[CAVE_INDEX_CROSS_NW] =
 	  new GLCaveShape( shapes, texture,
 	                   CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_CROSS_NW ] ), shapeCount++,
+	                   names[ CAVE_INDEX_CROSS_NW ], shapeCount++,
 	                   MODE_INV, DIR_CROSS_NW, CAVE_INDEX_CROSS_NW );
 	shapeList[CAVE_INDEX_BLOCK] =
 	  new GLCaveShape( shapes, texture,
 	                   CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, MAP_WALL_HEIGHT,
-	                   strdup( names[ CAVE_INDEX_BLOCK ] ), shapeCount++,
+	                   names[ CAVE_INDEX_BLOCK ], shapeCount++,
 	                   MODE_BLOCK, 0, CAVE_INDEX_BLOCK );
 	shapeList[CAVE_INDEX_FLOOR] =
 	  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE, 0,
-	                   strdup( names[ CAVE_INDEX_FLOOR ] ), shapeCount++,
+	                   names[ CAVE_INDEX_FLOOR ], shapeCount++,
 	                   MODE_FLOOR, 0, CAVE_INDEX_FLOOR );
 
 	for ( int i = LAVA_SIDE_W; i < CAVE_INDEX_COUNT; i++ ) {
@@ -772,7 +772,7 @@ void GLCaveShape::createShapes( Texture texture[], int shapeCount, Shapes *shape
 		  new GLCaveShape( shapes, texture, CAVE_CHUNK_SIZE, CAVE_CHUNK_SIZE,
 		                   1,
 		                   //MAP_WALL_HEIGHT,
-		                   strdup( names[ i ] ), shapeCount++,
+		                   names[ i ], shapeCount++,
 		                   MODE_LAVA, 0, i );
 	}
 

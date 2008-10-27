@@ -231,10 +231,10 @@ public:
 	}
 
 	// Md2 shapes
-	GLShape *getCreatureShape( char *model_name, char *skin_name, float scale = 0.0f,
+	GLShape *getCreatureShape( char const* model_name, char const* skin_name, float scale = 0.0f,
 	                           Monster *monster = NULL );
-	void decrementSkinRefCountAndDeleteShape( char *model_name,
-	                                          char *skin_name,
+	void decrementSkinRefCountAndDeleteShape( char const* model_name,
+	                                          char const* skin_name,
 	                                          GLShape *shape,
 	                                          Monster *monster = NULL );
 	void debugLoadedModels();

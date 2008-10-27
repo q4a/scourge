@@ -101,7 +101,8 @@ private:
 	int effectsVolume;
 
 	int standAloneMode;
-	char *host, *userName;
+	std::string host;
+	std::string userName;
 	int port;
 	int monsterToughness;
 	bool debugTheme;
@@ -355,11 +356,11 @@ public:
 	inline int getStandAloneMode() {
 		return standAloneMode;
 	}
-	inline char *getHost() {
-		return host;
+	inline char const* getHost() {
+		return host.c_str();
 	}
-	inline char *getUserName() {
-		return userName;
+	inline char const* getUserName() {
+		return userName.c_str();
 	}
 	inline int getPort() {
 		return port;

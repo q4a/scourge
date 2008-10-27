@@ -36,9 +36,9 @@ class SkillGroup;
 /// A playable character.
 class Character  {
 private:
-	char *name;
-	char *displayName;
-	char *parentName;
+	std::string name;
+	std::string displayName;
+	std::string parentName;
 	int startingHp, startingMp, level_progression;
 	int minLevelReq;
 	char description[3000];
@@ -53,16 +53,16 @@ private:
 	std::set<std::string> forbiddenArmorTags;
 
 public:
-	Character( char *name, char *displayName, char *parentName,
+	Character(  char const* name, char const* displayName, char const* parentName,
 	           int startingHp, int startingMp,
 	           int level_progression, int minLevelReq );
 	~Character();
 
-	inline char *getName() {
-		return name;
+	inline char const* getName() {
+		return name.c_str();
 	};
-	inline char *getDisplayName() {
-		return displayName;
+	inline char const* getDisplayName() {
+		return displayName.c_str();
 	};
 	inline int getStartingHp() {
 		return startingHp;
@@ -79,8 +79,8 @@ public:
 	inline int getMinLevelReq() {
 		return minLevelReq;
 	}
-	inline char *getParentName() {
-		return parentName;
+	inline char const* getParentName() {
+		return parentName.c_str();
 	}
 	inline Character *getParent() {
 		return parent;
@@ -109,14 +109,14 @@ public:
 	static std::map<std::string, Character*> character_class;
 	static std::vector<Character*> character_list;
 	static std::vector<Character*> rootCharacters;
-	static Character *getCharacterByName( char *p ) {
+	static Character *getCharacterByName( char const* p ) {
 		std::string s = p; return character_class[s];
 	}
 	inline static Character *getRandomCharacter() {
 		return rootCharacters[ Util::dice( rootCharacters.size() ) ];
 	}
 	static Character *getRandomCharacter( int level );
-	inline static int getRootCharacterIndexByName( char *p ) {
+	inline static int getRootCharacterIndexByName( char const* p ) {
 		for ( int i = 0; i < static_cast<int>( rootCharacters.size() ); i++ ) {
 			if ( !strcmp( rootCharacters[i]->getName(), p ) )
 				return i;

@@ -72,8 +72,8 @@ public:
 	/// Saves the map to disk.
 	virtual void saveMapData( const std::string& name ) = 0;
 	/// Return the magic school name for a location (typically a pool).
-	virtual char *getMagicSchoolIndexForLocation( Location *pos ) = 0;
-	virtual void setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolName ) = 0;
+	virtual char const* getMagicSchoolIndexForLocation( Location *pos ) = 0;
+	virtual void setMagicSchoolIndexForLocation( Location *pos, char const* magicSchoolName ) = 0;
 	/// Prints text to the screen.
 	virtual void texPrint( GLfloat x, GLfloat y, const char *fmt, ... ) = 0;
 	/// Notifies Squirrel that a shape has been added to a map pos.

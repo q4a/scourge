@@ -36,7 +36,7 @@ class MultipleLabel : public Widget {
 private:
 	int x2, y2;
 	int dynWidth;
-	std::vector<char *> vText;
+	std::vector<std::string> vText;
 	Label *staticLabel;
 	Label *dynamicLabel;
 	bool inside;
@@ -47,17 +47,17 @@ public:
 	MultipleLabel( int x1, int y1, int x2, int y2, char *staticText, int dynWidth );
 	~MultipleLabel();
 	bool isInside( int x, int y );
-	void addText( char *s );
+	void addText( char const* s );
 	void setText( int i );
 	void setNextText();
-	inline char * getText( int i ) {
-		if ( i >= 0 && i < getNbText() ) return vText[i]; return NULL;
+	inline char const* getText( int i ) {
+		if ( i >= 0 && i < getNbText() ) return vText[i].c_str(); return NULL;
 	}
 	inline int getCurrentTextInd() {
 		return currentTextInd;
 	}
-	inline char * getCurrentText() {
-		return vText[currentTextInd];
+	inline char const* getCurrentText() {
+		return vText[currentTextInd].c_str();
 	}
 	inline int getNbText() {
 		return vText.size();

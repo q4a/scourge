@@ -71,9 +71,9 @@ DungeonGenerator::DungeonGenerator( Scourge *scourge, int level, int depth, int 
 
 	initByLevel();
 
-	this->nodes = ( Uint16** )malloc( sizeof( void* ) * width );
+	nodes = new Uint16*[ width ];
 	for ( int i = 0; i < width; i++ ) {
-		nodes[i] = ( Uint16* )malloc( sizeof( void* ) * height );
+		nodes[i] = new Uint16[ height ];
 	}
 
 	for ( int x = 0; x < width; x++ ) {
@@ -83,21 +83,21 @@ DungeonGenerator::DungeonGenerator( Scourge *scourge, int level, int depth, int 
 	}
 
 	notVisitedCount = width * height;
-	notVisited = ( int* )new int[notVisitedCount];
+	notVisited = new int[notVisitedCount];
 	for ( int i = 0; i < notVisitedCount; i++ ) {
 		notVisited[i] = i;
 	}
 	visitedCount = 0;
-	visited = ( int* )new int[notVisitedCount];
+	visited = new int[notVisitedCount];
 
 	doorCount = 0;
 }
 
 DungeonGenerator::~DungeonGenerator() {
 	for ( int i = 0; i < width; i++ ) {
-		free( nodes[i] );
+		delete [] nodes[i];
 	}
-	free( nodes );
+	delete [] nodes;
 	delete[] notVisited;
 	delete[] visited;
 }

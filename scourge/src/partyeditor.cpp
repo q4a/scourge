@@ -95,7 +95,7 @@ RenderedCreature *PartyEditor::createWanderingHero( int level ) {
 	int sex = Util::dice( 2 ) ? Constants::SEX_MALE : Constants::SEX_FEMALE;
 	Creature *pc = scourge->getSession()->
 	               newCreature( Character::getRandomCharacter( level ),
-	                            Rpg::createName(),
+				                Rpg::createName().c_str(),
 	                            sex,
 	                            Util::dice( scourge->getShapePalette()->getCharacterModelInfoCount( sex ) ) );
 	pc->setLevel( LEVEL );

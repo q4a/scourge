@@ -77,7 +77,7 @@ Item::~Item() {
 }
 
 ItemInfo *Item::save() {
-	ItemInfo *info = ( ItemInfo* )malloc( sizeof( ItemInfo ) );
+	ItemInfo *info = new ItemInfo;
 	info->version = PERSIST_VERSION;
 	info->level = getLevel();
 	strcpy( ( char* )info->rpgItem_name, getRpgItem()->getName() );
@@ -120,7 +120,7 @@ ItemInfo *Item::save() {
 }
 
 DiceInfo *Item::saveDice( Dice *dice ) {
-	DiceInfo *info = ( DiceInfo* )malloc( sizeof( DiceInfo ) );
+	DiceInfo *info = new DiceInfo;
 	info->version = PERSIST_VERSION;
 	info->count = dice->getCount();
 	info->sides = dice->getSides();
@@ -129,7 +129,7 @@ DiceInfo *Item::saveDice( Dice *dice ) {
 }
 
 DiceInfo *Item::saveEmptyDice() {
-	DiceInfo *info = ( DiceInfo* )malloc( sizeof( DiceInfo ) );
+	DiceInfo *info = new DiceInfo;
 	info->version = PERSIST_VERSION;
 	info->count = 0;
 	info->sides = 0;
@@ -691,7 +691,7 @@ const char *Item::isStorable() {
 
 /// The type of item (weapon, armor, special etc.).
 
-char *Item::getType() {
+char const* Item::getType() {
 	// how is an item saved in a map? (this is not displayName)
 	return getRpgItem()->getName();
 }

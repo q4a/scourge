@@ -74,9 +74,9 @@ MondrianGenerator::MondrianGenerator( Scourge *scourge, int level, int depth, in
 
 	initByLevel();
 
-	this->nodes = ( Uint16** )malloc( sizeof( void* ) * width );
+	nodes = new Uint16*[ width ];
 	for ( int i = 0; i < width; i++ ) {
-		nodes[i] = ( Uint16* )malloc( sizeof( void* ) * height );
+		nodes[i] = new Uint16[ height ];
 	}
 
 	for ( int x = 0; x < width; x++ ) {
@@ -91,9 +91,9 @@ MondrianGenerator::MondrianGenerator( Scourge *scourge, int level, int depth, in
 
 MondrianGenerator::~MondrianGenerator() {
 	for ( int i = 0; i < width; i++ ) {
-		free( nodes[i] );
+		delete [] nodes[i];
 	}
-	free( nodes );
+	delete [] nodes;
 
 }
 

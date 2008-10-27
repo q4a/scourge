@@ -135,7 +135,7 @@ public:
 	   Passing 0 for texture disables the creation of
 	   shapes. (eg. torch, md2 shape)
 	*/
-	GLShape( Texture texture[], int width, int depth, int height, char *name, int descriptionGroup,
+	GLShape( Texture texture[], int width, int depth, int height, char const* name, int descriptionGroup,
 	         Uint32 color, Uint8 shapePalIndex = 0 );
 
 	virtual ~GLShape();
