@@ -5255,16 +5255,16 @@ void Map::applyGrassEdges( int x, int y, bool w, bool e, bool s, bool n ) {
 	int sy = y + 1 + OUTDOOR_FLOOR_TEX_SIZE;
 	int ref = -1;
 	if ( !w && !s && !e ) {
-		angle = 0;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-	} else if ( !e && !s && !n ) {
-		angle = 90;
-		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-	} else if ( !e && !n && !w ) {
 		angle = 180;
 		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
-	} else if ( !w && !n && !s ) {
+	} else if ( !e && !s && !n ) {
 		angle = 270;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+	} else if ( !e && !n && !w ) {
+		angle = 0;
+		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
+	} else if ( !w && !n && !s ) {
+		angle = 90;
 		ref = WallTheme::OUTDOOR_THEME_REF_GRASS_TIP;
 
 	} else if ( !w && !e ) {
