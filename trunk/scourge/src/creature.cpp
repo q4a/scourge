@@ -1733,8 +1733,8 @@ int Creature::addExperience( int delta ) {
 	// level up?
 	if ( experience >= expOfNextLevel ) {
 		level++;
-		hp += character->getStartingHp();
-		mp += character->getStartingMp();
+		hp += getStartingHp();
+		mp += getStartingMp();
 		calculateExpOfNextLevel();
 		setAvailableSkillMod( getAvailableSkillMod() + character->getSkillBonus() );
 		char message[255];
@@ -1787,115 +1787,6 @@ int Creature::addMoney( Creature *creature_killed ) {
 	return delta;
 }
 
-void Creature::monsterInit() {
-
-	this->level = monster->getLevel();
-
-
-	//cerr << "------------------------------------" << endl << "Creature: " << monster->getType() << endl;
-	for ( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
-
-		//int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );
-		int n;
-		if ( Skill::skills[i]->getGroup()->isStat() ) {
-			MonsterToughness *mt = &( monsterToughness[ session->getPreferences()->getMonsterToughness() ] );
-			n = static_cast<int>( 20.0f * Util::roll( mt->minSkillBase, mt->maxSkillBase ) );
-		} else {
-
-			// create the starting value as a function of the stats
-			n = 0;
-			for ( int t = 0; t < Skill::skills[i]->getPreReqStatCount(); t++ ) {
-				int index = Skill::skills[i]->getPreReqStat( t )->getIndex();
-				n += getSkill( index );
-			}
-			n = static_cast<int>( ( n / static_cast<float>( Skill::skills[i]->getPreReqStatCount() ) ) *
-			                      static_cast<float>( Skill::skills[i]->getPreReqMultiplier() ) );
-		}
-
-		// special: adjust magic resistance... makes game too hard otherwise
-		if ( i == Skill::RESIST_AWARENESS_MAGIC ||
-		        i == Skill::RESIST_CONFRONTATION_MAGIC ||
-		        i == Skill::RESIST_DECEIT_MAGIC ||
-		        i == Skill::RESIST_HISTORY_MAGIC ||
-		        i == Skill::RESIST_LIFE_AND_DEATH_MAGIC ||
-		        i == Skill::RESIST_NATURE_MAGIC ) {
-			n /= 2;
-		}
-
-		// apply monster settings
-		int minSkill = monster->getSkillLevel( Skill::skills[i]->getName() );
-		if ( minSkill > n ) n = minSkill;
-
-		setSkill( i, n );
-		//cerr << "\t" << Skill::skills[ i ]->getName() << "=" << getSkill( i ) << endl;
-
-		stateMod = monster->getStartingStateMod();
-	}
-
-	// equip starting backpack
-	for ( int i = 0; i < getMonster()->getStartingItemCount(); i++ ) {
-		int itemLevel = getMonster()->getLevel() - Util::dice(  2 );
-		if ( itemLevel < 1 ) itemLevel = 1;
-		Item *item = session->newItem( getMonster()->getStartingItem( i ), itemLevel );
-		addToBackpack( item, true );
-		equipFromBackpack( backpack->getContainedItemCount() - 1 );
-	}
-
-	// add some loot
-	int nn = Util::pickOne( 3, 7 );
-	//cerr << "Adding loot:" << nn << endl;
-	for ( int i = 0; i < nn; i++ ) {
-		Item *loot;
-		if ( 0 == Util::dice(  10 ) ) {
-			Spell *spell = MagicSchool::getRandomSpell( getLevel() );
-			loot = session->newItem( RpgItem::getItemByName( "Scroll" ),
-			                         getLevel(),
-			                         spell );
-		} else {
-			loot = session->newItem( RpgItem::getRandomItem( session->getGameAdapter()->getCurrentDepth() ),
-			                         getLevel() );
-		}
-		//cerr << "\t" << loot->getRpgItem()->getName() << endl;
-		// make it contain all items, no matter what size
-		addToBackpack( loot, true );
-	}
-
-	// add spells
-	for ( int i = 0; i < getMonster()->getStartingSpellCount(); i++ ) {
-		addSpell( getMonster()->getStartingSpell( i ) );
-	}
-
-	// add some hp and mp
-	float n = static_cast<float>( monster->getHp() * ( level + 2 ) );
-	startingHp = hp = static_cast<int>( n * Util::roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
-	                  monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxHpMpBase ) );
-
-	n = static_cast<float>( monster->getMp() * ( level + 2 ) );
-	startingMp = mp = static_cast<int>( n * Util::roll( monsterToughness[ session->getPreferences()->getMonsterToughness() ].minHpMpBase,
-	                  monsterToughness[ session->getPreferences()->getMonsterToughness() ].maxHpMpBase ) );
-}
-
-/// Returns the max hit points of the creature.
-
-int Creature::getMaxHp() {
-	if ( getCharacter() ) {
-		return( getStartingHp() * ( getLevel() + 1 ) );
-	} else if ( getMonster() ){
-		return monster->getHp();
-	}
-return 0;
-}
-
-/// Returns the max magic points of the creature.
-
-int Creature::getMaxMp() {
-	if ( getCharacter() ) {
-		return( getStartingMp() * ( getLevel() + 1 ) );
-	} else if ( getMonster() ){
-		return monster->getMp();
-	}
-return 0;
-}
 
 /// Returns the angle between the creature and its target.
 
@@ -2441,18 +2332,6 @@ void Creature::getDetailedDescription( std::string& s ) {
 		s += _( " *Boss*" );
 	}
 
-}
-
-/// Sets the full amount of hit points.
-
-void Creature::setHp() {
-	hp = ( getLevel() + 1 ) * getCharacter()->getStartingHp();
-}
-
-/// Sets the full amount of magic points.
-
-void Creature::setMp() {
-	mp = ( getLevel() + 1 ) * getCharacter()->getStartingMp();
 }
 
 /// Draws the creature.
@@ -3605,3 +3484,139 @@ int Creature::getBackpackContentsCount() {
 	return backpack->getContainedItemCount();
 }
 
+
+
+
+
+/// Returns the max hit points of the creature.
+
+int Creature::getMaxHp() {
+	return getStartingHp() * getLevel();
+}
+
+/// Returns the max magic points of the creature.
+
+int Creature::getMaxMp() {
+	return getStartingMp() * getLevel();
+}
+
+/// Sets the full amount of hit points.
+
+void Creature::setHp() {
+	int total = getLevel() * getStartingHp();
+	hp = Util::pickOne( (int)( total * 0.75f ), total );
+}
+
+/// Sets the full amount of magic points.
+
+void Creature::setMp() {
+	int total = getLevel() * getStartingMp();
+	mp = Util::pickOne( (int)( total * 0.75f ), total );
+}
+
+int Creature::getStartingHp() {
+	return getCharacter() ? getCharacter()->getStartingHp() : startingHp;
+}
+
+int Creature::getStartingMp() {
+	return getCharacter() ? getCharacter()->getStartingMp() : startingMp;
+}
+
+void Creature::monsterInit() {
+
+	setLevel( monster->getLevel() );
+
+
+	//cerr << "------------------------------------" << endl << "Creature: " << monster->getType() << endl;
+	for ( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
+
+		//int n = Creature::rollStartingSkill( scourge->getSession(), LEVEL, i );
+		int n;
+		if ( Skill::skills[i]->getGroup()->isStat() ) {
+			MonsterToughness *mt = &( monsterToughness[ session->getPreferences()->getMonsterToughness() ] );
+			n = static_cast<int>( 20.0f * Util::roll( mt->minSkillBase, mt->maxSkillBase ) );
+		} else {
+
+			// create the starting value as a function of the stats
+			n = 0;
+			for ( int t = 0; t < Skill::skills[i]->getPreReqStatCount(); t++ ) {
+				int index = Skill::skills[i]->getPreReqStat( t )->getIndex();
+				n += getSkill( index );
+			}
+			n = static_cast<int>( ( n / static_cast<float>( Skill::skills[i]->getPreReqStatCount() ) ) *
+			                      static_cast<float>( Skill::skills[i]->getPreReqMultiplier() ) );
+		}
+
+		// special: adjust magic resistance... makes game too hard otherwise
+		if ( i == Skill::RESIST_AWARENESS_MAGIC ||
+		        i == Skill::RESIST_CONFRONTATION_MAGIC ||
+		        i == Skill::RESIST_DECEIT_MAGIC ||
+		        i == Skill::RESIST_HISTORY_MAGIC ||
+		        i == Skill::RESIST_LIFE_AND_DEATH_MAGIC ||
+		        i == Skill::RESIST_NATURE_MAGIC ) {
+			n /= 2;
+		}
+
+		// apply monster settings
+		int minSkill = monster->getSkillLevel( Skill::skills[i]->getName() );
+		if ( minSkill > n ) n = minSkill;
+
+		setSkill( i, n );
+		//cerr << "\t" << Skill::skills[ i ]->getName() << "=" << getSkill( i ) << endl;
+
+		stateMod = monster->getStartingStateMod();
+	}
+
+	// equip starting backpack
+	for ( int i = 0; i < getMonster()->getStartingItemCount(); i++ ) {
+		int itemLevel = getMonster()->getLevel() - Util::dice(  2 );
+		if ( itemLevel < 1 ) itemLevel = 1;
+		Item *item = session->newItem( getMonster()->getStartingItem( i ), itemLevel );
+		addToBackpack( item, true );
+		equipFromBackpack( backpack->getContainedItemCount() - 1 );
+	}
+
+	// add some loot
+	int nn = Util::pickOne( 3, 7 );
+	//cerr << "Adding loot:" << nn << endl;
+	for ( int i = 0; i < nn; i++ ) {
+		Item *loot;
+		if ( 0 == Util::dice(  10 ) ) {
+			Spell *spell = MagicSchool::getRandomSpell( getLevel() );
+			loot = session->newItem( RpgItem::getItemByName( "Scroll" ),
+			                         getLevel(),
+			                         spell );
+		} else {
+			loot = session->newItem( RpgItem::getRandomItem( session->getGameAdapter()->getCurrentDepth() ),
+			                         getLevel() );
+		}
+		//cerr << "\t" << loot->getRpgItem()->getName() << endl;
+		// make it contain all items, no matter what size
+		addToBackpack( loot, true );
+	}
+
+	// add spells
+	for ( int i = 0; i < getMonster()->getStartingSpellCount(); i++ ) {
+		addSpell( getMonster()->getStartingSpell( i ) );
+	}
+
+	// add some hp and mp
+	if( monster->isNpc() ) {
+		// npc-s are initialized to be similar to pc-s
+		startingHp = monster->getHp();
+		startingMp = monster->getMp();
+		setHp();
+		setMp();
+	} else {
+		// monsters initialization
+		MonsterToughness mt = monsterToughness[ session->getPreferences()->getMonsterToughness() ];
+		
+		startingHp = monster->getHp();
+		float n = static_cast<float>( startingHp * level );
+		hp = static_cast<int>( n * Util::roll( mt.minHpMpBase, mt.maxHpMpBase ) );
+	
+		startingMp = monster->getMp();
+		n = static_cast<float>( startingMp * level );
+		mp = static_cast<int>( n * Util::roll( mt.minHpMpBase, mt.maxHpMpBase ) );
+	}
+}
