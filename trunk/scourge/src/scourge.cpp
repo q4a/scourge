@@ -2867,23 +2867,23 @@ void Scourge::teleport( bool toHQ ) {
 	}
 }
 
-void Scourge::loadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
+void Scourge::loadMonsterSounds( char const* type, map<int, vector<string>*> *soundMap ) {
 	getSession()->getSound()->loadMonsterSounds( type, soundMap, getUserConfiguration() );
 }
 
-void Scourge::unloadMonsterSounds( char *type, map<int, vector<string>*> *soundMap ) {
+void Scourge::unloadMonsterSounds( char const* type, map<int, vector<string>*> *soundMap ) {
 	getSession()->getSound()->unloadMonsterSounds( type, soundMap );
 }
 
-void Scourge::loadCharacterSounds( char *type ) {
+void Scourge::loadCharacterSounds( char const* type ) {
 	getSession()->getSound()->loadCharacterSounds( type );
 }
 
-void Scourge::unloadCharacterSounds( char *type ) {
+void Scourge::unloadCharacterSounds( char const* type ) {
 	getSession()->getSound()->unloadCharacterSounds( type );
 }
 
-void Scourge::playCharacterSound( char *type, int soundType, int panning ) {
+void Scourge::playCharacterSound( char const* type, int soundType, int panning ) {
 	getSession()->getSound()->playCharacterSound( type, soundType, panning );
 }
 
@@ -3228,34 +3228,32 @@ void Scourge::printToConsole( const char *s ) {
 	if ( squirrelLabel ) {
 		if ( squirrelWin->isVisible() ) {
 			//cerr << s << endl;
-			char *q = strdup( s );
+			string q( s );
 			// replace eol with a | (pipe). This renders as an eol in ScrollingLabel.
-			char *p = strpbrk( q, "\n\r" );
-			while ( p ) {
-				*p = '|';
-				if ( !*( p + 1 ) ) break;
-				p = strpbrk( p + 1, "\n\r" );
+			size_t pos = q.find_first_of( "\n\r" );
+			while ( pos != string::npos ) {
+				q[pos] = '|';
+				pos = q.find_first_of( "\n\r", pos );
 			}
 			// cerr << s << endl;
-			squirrelLabel->appendText( q );
-			free( q );
+			squirrelLabel->appendText( q.c_str() );
 		}
 	} else {
 		cerr << s << endl;
 	}
 }
 
-char *Scourge::getDeityLocation( Location *pos ) {
+char const* Scourge::getDeityLocation( Location *pos ) {
 	MagicSchool *ms = getMagicSchoolLocation( pos );
 	return( ms ? ms->getDeity() : NULL );
 }
 
-char *Scourge::getMagicSchoolIndexForLocation( Location *pos ) {
+char const* Scourge::getMagicSchoolIndexForLocation( Location *pos ) {
 	MagicSchool *ms = getMagicSchoolLocation( pos );
 	return( ms ? ms->getName() : NULL );
 }
 
-void Scourge::setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolName ) {
+void Scourge::setMagicSchoolIndexForLocation( Location *pos, char const* magicSchoolName ) {
 	MagicSchool *ms = MagicSchool::getMagicSchoolByName( magicSchoolName );
 	addDeityLocation( pos, ms );
 }
@@ -3485,13 +3483,13 @@ void Scourge::uploadScore() {
 			strcat( mission, getSession()->getCurrentMission()->getSpecial() );
 		} else if ( getSession()->getCurrentMission()->getCreatureCount() > 0 ) {
 			strcat( mission, _( " kill " ) );
-			char *p = getSession()->getCurrentMission()->getCreature( 0 )->getType();
+			char const* p = getSession()->getCurrentMission()->getCreature( 0 )->getType();
 			strcat( mission, getAn( p ) );
 			strcat( mission, " " );
 			strcat( mission, p );
 		} else if ( getSession()->getCurrentMission()->getItemCount() > 0 ) {
 			strcat( mission, _( " recover " ) );
-			char *p = getSession()->getCurrentMission()->getItem( 0 )->getName();
+			char const* p = getSession()->getCurrentMission()->getItem( 0 )->getName();
 			strcat( mission, getAn( p ) );
 			strcat( mission, " " );
 			strcat( mission, p );

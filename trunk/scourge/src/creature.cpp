@@ -69,7 +69,7 @@ MonsterToughness monsterToughness[] = {
 };
 
 
-Creature::Creature( Session *session, Character *character, char *name, int sex, int character_model_info_index ) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
+Creature::Creature( Session *session, Character *character, char const* name, int sex, int character_model_info_index ) : RenderedCreature( session->getPreferences(), session->getShapePalette(), session->getMap() ) {
 	this->session = session;
 	this->character = character;
 	this->monster = NULL;
@@ -84,7 +84,7 @@ Creature::Creature( Session *session, Character *character, char *name, int sex,
 	this->bonusArmor = 0;
 	this->thirst = 10;
 	this->hunger = 10;
-	this->shape = session->getShapePalette()->getCreatureShape( model_name, skin_name, session->getShapePalette()->getCharacterModelInfo( sex, character_model_info_index )->scale );
+	this->shape = session->getShapePalette()->getCreatureShape( model_name.c_str(), skin_name.c_str(), session->getShapePalette()->getCharacterModelInfo( sex, character_model_info_index )->scale );
 	this->sex = sex;
 	commonInit();
 }
@@ -204,8 +204,8 @@ Creature::~Creature() {
 	delete pathManager;
 	// delete the md2/3 shape
 	session->getShapePalette()->
-	decrementSkinRefCountAndDeleteShape( model_name,
-	    skin_name,
+	decrementSkinRefCountAndDeleteShape( model_name.c_str(),
+	    skin_name.c_str(),
 	    shape,
 	    monster );
 	// delete the backpack infos
@@ -256,7 +256,7 @@ void Creature::changeProfession( Character *c ) {
 }
 
 CreatureInfo *Creature::save() {
-	CreatureInfo *info = ( CreatureInfo* )malloc( sizeof( CreatureInfo ) );
+	CreatureInfo *info =  new CreatureInfo;
 	info->version = PERSIST_VERSION;
 	strncpy( ( char* )info->name, getName(), 254 );
 	info->name[254] = 0;
@@ -361,7 +361,7 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 	} else {
 		creature = new Creature( session,
 		                         Character::getCharacterByName( ( char* )info->character_name ),
-		                         strdup( ( char* )info->name ),
+		                         ( char* )info->name,
 		                         info->sex,
 		                         info->character_model_info_index );
 	}
@@ -471,7 +471,7 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 
 /// Returns the UNLOCALIZED name of a character/monster/NPC.
 
-char *Creature::getType() {
+char const* Creature::getType() {
 	return( monster ? monster->getType() : character->getName() );
 }
 
@@ -3161,7 +3161,7 @@ void Creature::setCharacter( Character *c ) {
 
 void Creature::playCharacterSound( int soundType, int panning ) {
 	if ( !monster )
-		session->getSound()->playCharacterSound( model_name, soundType, panning );
+		session->getSound()->playCharacterSound( model_name.c_str(), soundType, panning );
 }
 
 /// Does a roll against a skill, optionally with a luck modifier.

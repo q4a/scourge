@@ -44,15 +44,15 @@ public:
 		return md3;
 	}
 
-	void loadModel( const std::string& path, char *name, ModelLoader *loader );
+	void loadModel( const std::string& path, char const* name, ModelLoader *loader );
 	void unloadModel();
 	AnimatedShape *createShape( Texture textureId, float div,
-	                            Texture texture[], char *name, int descriptionGroup,
+	                            Texture texture[], char const* name, int descriptionGroup,
 	                            Uint32 color, Uint8 shapePalIndex,
-	                            char *model_name, char *skin_name,
+	                            char const* model_name, char const* skin_name,
 	                            ModelLoader *loader );
 
-	void normalizeModel( int *width, int *depth, int *height, float div, char *name );
+	void normalizeModel( int *width, int *depth, int *height, float div, char const* name );
 
 };
 
@@ -83,11 +83,11 @@ public:
 
 	static void clearModel( t3DModel *pModel );
 
-	virtual GLShape *getCreatureShape( char *model_name,
-	                                   char *skin_name,
+	virtual GLShape *getCreatureShape( char const* model_name,
+	                                   char const* skin_name,
 	                                   float scale = 0.0f );
-	virtual void decrementSkinRefCount( char *model_name,
-	                                    char *skin_name );
+	virtual void decrementSkinRefCount( char const* model_name,
+	                                    char const* skin_name );
 	//unused:  Texture loadSkinTexture( const std::string& skin_name );
 	//unused:  void unloadSkinTexture( const std::string& skin_name );
 	void debugModelLoader();

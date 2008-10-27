@@ -29,6 +29,25 @@
 #include "persist.h"
 
 using namespace std;
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+namespace {
+
+class Mop {
+public:
+	Mop() {}
+	~Mop() {
+		//Something::DestroyStatics();
+	}
+};
+
+Mop mop;
+
+}
 
 vector<string> Mission::intros;
 vector<string> Mission::unknownPhrases;
@@ -152,13 +171,20 @@ Board::Board( Session *session )
 }
 
 Board::~Board() {
+	reset();
+	for ( size_t i = 0; i < storylineMissions.size(); ++i ) {
+		delete storylineMissions[i];
+	}
+	for ( size_t i = 0; i < templates.size(); ++i ) {
+		delete templates[i];
+	}
 	freeListText();
 }
 
 void Board::freeListText() {
 	if ( missionListCount ) {
 		delete[] missionText;
-		free( missionColor );
+		delete[] missionColor;
 	}
 }
 
@@ -306,7 +332,7 @@ void Board::initMissions() {
 	if ( !availableMissions.empty() ) {
 		missionListCount = availableMissions.size();
 		missionText = new string[availableMissions.size()];
-		missionColor = ( Color* )malloc( availableMissions.size() * sizeof( Color ) );
+		missionColor = new Color[availableMissions.size()];
 		for ( int i = 0; i < static_cast<int>( availableMissions.size() ); i++ ) {
 			char str[20];
 			snprintf( str, 20, _( "L:%d, " ), availableMissions[i]->getLevel() );
@@ -885,7 +911,7 @@ void Mission::initConversations( ConfigLang *config, GameAdapter *adapter, bool 
 	map<string, string> keyphrases;
 	map<string, map<string, vector<string>*>*> answers;
 
-	char *currentNpc;
+	char const* currentNpc;
 	vector<ConfigNode*> *v = config->getDocument()->
 	                         getChildrenByName( "conversation" );
 	for ( unsigned int i = 0; v && i < v->size(); i++ ) {
@@ -981,9 +1007,9 @@ void Mission::initConversations( ConfigLang *config, GameAdapter *adapter, bool 
 		        e2 != m->end(); ++e2 ) {
 			//string key = e2->first;
 			vector<string> *v = e2->second;
-			free( v );
+			delete v;
 		}
-		free( m );
+		delete m;
 	}
 }
 
@@ -1218,7 +1244,7 @@ void Mission::saveMapData( GameAdapter *adapter, const string& filename ) {
 }
 
 MissionInfo *Mission::save() {
-	MissionInfo *info = ( MissionInfo* )malloc( sizeof( MissionInfo ) );
+	MissionInfo *info = new  MissionInfo;
 	info->version = PERSIST_VERSION;
 	strncpy( ( char* )info->templateName, ( isStoryLine() ? "storyline" : getTemplateName() ), 79 );
 	info->templateName[79] = 0;
@@ -1334,7 +1360,7 @@ void Mission::createTypedNpc( Creature *creature, int level, int fx, int fy ) {
 		strcpy( npcSubType, MagicSchool::getRandomSchool()->getName() );
 	}
 	char name[NAME_LEN+1] = {0};
-	snprintf( name, NAME_LEN, _( "%s the %s" ), Rpg::createName(), npcTypeName );
+	snprintf( name, NAME_LEN, _( "%s the %s" ), Rpg::createName().c_str(), npcTypeName );
 	// don't add it to the mission, just create the objects. They're added later in scourge.cpp.
 	NpcInfo *npcInfo = new NpcInfo( fx, fy, name, level, ( char* )Constants::npcTypeName[ npcType ], npcSubType );
 	creature->setNpcInfo( npcInfo );
@@ -1384,7 +1410,7 @@ NpcInfo::~NpcInfo() {
 }
 
 NpcInfoInfo *NpcInfo::save() {
-	NpcInfoInfo *info = ( NpcInfoInfo* )malloc( sizeof( NpcInfoInfo ) );
+	NpcInfoInfo *info = new NpcInfoInfo;
 	info->x = x;
 	info->y = y;
 	strcpy( ( char* )info->name, name );

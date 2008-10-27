@@ -45,12 +45,12 @@ protected:
                      int count=100 );
   static void printBackpack( FILE *fp, Creature *creature );
   static Creature *createCharacter( Session *session, 
-                                    char *characterShortName,
+                                    char const* characterShortName,
                                     char *name,
                                     int level );
   static Item *equipItem( Session *session, 
                           Creature *c, 
-                          char *itemName, 
+                          char const* itemName, 
                           int itemLevel );
   static void computeHighLow( float value, float *sum, float *low, float *high );
   static void setMinSkills( Creature *c );

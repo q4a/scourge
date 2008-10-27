@@ -34,7 +34,7 @@ private:
 	int mod;
 
 public:
-	Dice( char *s );
+	Dice( char const* s );
 	Dice( int count, int sides, int mod );
 	~Dice();
 	inline char *toString() {
@@ -69,14 +69,14 @@ class MagicSchool;
 /// A magical spell.
 class Spell : public Storable {
 private:
-	char *name;
-	char *displayName;
-	char *sound;
+	std::string name;
+	std::string displayName;
+	std::string sound;
 	int level;
 	int mp;
 	int exp;
 	int failureRate;
-	Dice *action;
+	Dice action;
 	int distance;
 	int targetType;
 	char notes[1000];
@@ -87,13 +87,13 @@ private:
 	int iconTileX, iconTileY;
 	bool friendly;
 	int stateModPrereq;
-	char *symbol;
+	std::string symbol;
 
 	static std::map<std::string, Spell*> spellMap;
 
 public:
 
-	Spell( char *name, char *displayName, char *symbol, int level, int mp, int exp, int failureRate, Dice *action,
+	Spell( char const* name, char const* displayName, char const* symbol, int level, int mp, int exp, int failureRate, char const* action,
 	       int distance, int targetType, int speed, int effect, bool creatureTarget,
 	       bool locationTarget, bool itemTarget, bool partyTarget, bool doorTarget,
 	       MagicSchool *school,
@@ -101,8 +101,8 @@ public:
 	~Spell();
 
 	/// The "symbol" of the spell (used in various descriptions).
-	inline char *getSymbol() {
-		return symbol;
+	inline char const* getSymbol() {
+		return symbol.c_str();
 	}
 	inline int getStorableType() {
 		return Storable::SPELL_STORABLE;
@@ -139,15 +139,15 @@ public:
 	}
 	/// Unlocalized internal name of the spell.
 	inline const char *getName() {
-		return ( const char* )name;
+		return name.c_str();
 	}
 	/// Localized name of the spell.
 	inline const char *getDisplayName() {
-		return ( const char* )displayName;
+		return displayName.c_str();
 	}
 	/// Returns a damage roll (without further modifiers).
 	inline int getAction() {
-		return action->roll();
+		return action.roll();
 	}
 
 	void getAttack( int casterLevel, float *maxP, float *minP );
@@ -205,11 +205,11 @@ public:
 		strcat( notes, s );
 	}
 	/// The sound to play when the spell is cast.
-	inline void setSound( char *s ) {
+	inline void setSound( char const* s ) {
 		sound = s;
 	}
-	inline char *getSound() {
-		return sound;
+	inline char const* getSound() {
+		return sound.c_str();
 	}
 
 	/// Can it target creatures?
@@ -240,13 +240,13 @@ public:
 /// A magic school.
 class MagicSchool {
 private:
-	char *name;
-	char *displayName;
-	char *shortName;
-	char *deity;
+	std::string name;
+	std::string displayName;
+	std::string shortName;
+	std::string deity;
 	char deityDescription[3000];
 	float red, green, blue;
-	char *symbol;
+	std::string symbol;
 	int skill, resistSkill;
 	std::vector<Spell*> spells;
 	std::vector<std::string> lowDonate, neutralDonate, highDonate;
@@ -256,23 +256,23 @@ private:
 	static std::map<std::string, MagicSchool*> schoolMap;
 
 public:
-	MagicSchool( char *name, char *displayName, char *deity, int skill, int resistSkill, float red, float green, float blue, char *symbol );
+	MagicSchool( char const* name, char const* displayName, char const* deity, int skill, int resistSkill, float red, float green, float blue, char const* symbol );
 	~MagicSchool();
 
 	/// The school's internal, unlocalized name.
-	inline char *getName() {
-		return name;
+	inline char const* getName() {
+		return name.c_str();
 	}
 	/// The school's localized name.
-	inline char *getDisplayName() {
-		return displayName;
+	inline char const* getDisplayName() {
+		return displayName.c_str();
 	}
-	inline char *getShortName() {
-		return shortName;
+	inline char const* getShortName() {
+		return shortName.c_str();
 	}
 	/// Returns the deity associated to the school.
-	inline char *getDeity() {
-		return deity;
+	inline char const* getDeity() {
+		return deity.c_str();
 	}
 	/// The associated deity's localized name.
 	inline char *getDeityDescription() {
@@ -309,8 +309,8 @@ public:
 		return blue;
 	}
 	/// The "symbol" of the school (used in various descriptions).
-	inline char *getSymbol() {
-		return symbol;
+	inline char const* getSymbol() {
+		return symbol.c_str();
 	}
 
 	static void initMagic();
@@ -324,7 +324,7 @@ public:
 	}
 	static Spell *getRandomSpell( int level );
 	/// Gets magic school by its internal name.
-	static MagicSchool *getMagicSchoolByName( char *s ) {
+	static MagicSchool *getMagicSchoolByName( char const* s ) {
 		std::string name = s; return ( schoolMap.find( name ) == schoolMap.end() ? NULL : schoolMap[name] );
 	}
 	/// Returns a random magic school.

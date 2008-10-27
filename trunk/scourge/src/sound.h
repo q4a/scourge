@@ -107,13 +107,13 @@ public:
 
 	void loadSounds( Preferences *preferences );
 	void loadUISounds( Preferences *preferences );
-	void loadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m,
+	void loadMonsterSounds( char const* monsterType, std::map<int, std::vector<std::string>*> *m,
 	                        Preferences *preferences );
-	void unloadMonsterSounds( char *monsterType, std::map<int, std::vector<std::string>*> *m );
+	void unloadMonsterSounds( char const* monsterType, std::map<int, std::vector<std::string>*> *m );
 
-	void loadCharacterSounds( char *type );
-	void unloadCharacterSounds( char *type );
-	void playCharacterSound( char *type, int soundType, int panning );
+	void loadCharacterSounds( char const* type );
+	void unloadCharacterSounds( char const* type );
+	void playCharacterSound( char const* type, int soundType, int panning );
 
 	void storeSound( const std::string& name, const std::string& file );
 	void storeSound( int type, const std::string& file );
@@ -145,7 +145,7 @@ protected:
 #ifdef HAVE_SDL_MIXER
 	void playMusic( Mix_Music *music, int ms = 2000, int loopCount = -1 );
 	void storeCharacterSounds( std::map<int, std::vector<Mix_Chunk*>*> *charSoundMap,
-	                           char *type, int soundType, char *filePrefix );
+	                           char const* type, int soundType, char const* filePrefix );
 #endif
 };
 

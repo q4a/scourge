@@ -43,7 +43,7 @@ void saveNpcInfoInfo( File *file, NpcInfoInfo *info ) {
 }
 
 NpcInfoInfo *loadNpcInfoInfo( File *file ) {
-	NpcInfoInfo *info = ( NpcInfoInfo* )malloc( sizeof( NpcInfoInfo ) );
+	NpcInfoInfo *info =  new NpcInfoInfo;
 	file->read( &( info->version ) );
 	file->read( &( info->x ) );
 	file->read( &( info->y ) );
@@ -55,7 +55,7 @@ NpcInfoInfo *loadNpcInfoInfo( File *file ) {
 }
 
 void deleteNpcInfoInfo( NpcInfoInfo *info ) {
-	free( info );
+	delete info;
 }
 
 void saveItem( File *file, ItemInfo *info ) {
@@ -93,7 +93,7 @@ void saveItem( File *file, ItemInfo *info ) {
 }
 
 DiceInfo* loadDice( File* file ) {
-	DiceInfo *info = ( DiceInfo* )malloc( sizeof( DiceInfo ) );
+	DiceInfo *info = new DiceInfo;
 	file->read( &( info->version ) );
 	file->read( &( info->count ) );
 	file->read( &( info->sides ) );
@@ -103,7 +103,7 @@ DiceInfo* loadDice( File* file ) {
 
 
 ItemInfo* loadItem( File* file ) {
-	ItemInfo *info = ( ItemInfo* )malloc( sizeof( ItemInfo ) );
+	ItemInfo *info = new ItemInfo;
 	file->read( &( info->version ) );
 	file->read( &( info->level ) );
 	file->read( info->rpgItem_name, 255 );
@@ -153,7 +153,7 @@ void deleteItemInfo( ItemInfo *info ) {
 	for ( int i = 0; i < static_cast<int>( info->containedItemCount ); i++ ) {
 		deleteItemInfo( info->containedItems[i] );
 	}
-	free( info );
+	delete info;
 }
 
 void saveTrap( File *file, TrapInfo *info ) {
@@ -168,7 +168,7 @@ void saveTrap( File *file, TrapInfo *info ) {
 }
 
 TrapInfo *loadTrap( File *file ) {
-	TrapInfo *info = ( TrapInfo* )malloc( sizeof( TrapInfo ) );
+	TrapInfo *info = new TrapInfo;
 	file->read( &( info->version ) );
 	file->read( &( info->x ) );
 	file->read( &( info->y ) );
@@ -181,17 +181,17 @@ TrapInfo *loadTrap( File *file ) {
 }
 
 void deleteTrapInfo( TrapInfo *info ) {
-	free( info );
+	delete info;
 }
 
 void deleteDiceInfo( DiceInfo *info ) {
-	free( info );
+	delete info;
 }
 } // anonymous namespace
 
 
 LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
-	LocationInfo *info = ( LocationInfo* )malloc( sizeof( LocationInfo ) );
+	LocationInfo *info = new LocationInfo;
 
 	info->x = x;
 	info->y = y;
@@ -213,7 +213,7 @@ LocationInfo *Persist::createLocationInfo( Uint16 x, Uint16 y, Uint16 z ) {
 }
 
 RugInfo *Persist::createRugInfo( Uint16 cx, Uint16 cy ) {
-	RugInfo *info = ( RugInfo* )malloc( sizeof( RugInfo ) );
+	RugInfo *info = new RugInfo;
 	info->cx = cx;
 	info->cy = cy;
 	info->angle = 0;
@@ -223,7 +223,7 @@ RugInfo *Persist::createRugInfo( Uint16 cx, Uint16 cy ) {
 }
 
 TrapInfo *Persist::createTrapInfo( int x, int y, int w, int h, int type, bool discovered, bool enabled ) {
-	TrapInfo *info = ( TrapInfo* )malloc( sizeof( TrapInfo ) );
+	TrapInfo *info = new TrapInfo;
 	info->version = PERSIST_VERSION;
 	info->x = ( Uint16 )x;
 	info->y = ( Uint16 )y;
@@ -236,14 +236,14 @@ TrapInfo *Persist::createTrapInfo( int x, int y, int w, int h, int type, bool di
 }
 
 LockedInfo *Persist::createLockedInfo( Uint32 key, Uint8 value ) {
-	LockedInfo *info = ( LockedInfo* )malloc( sizeof( LockedInfo ) );
+	LockedInfo *info = new LockedInfo;
 	info->key = key;
 	info->value = value;
 	return info;
 }
 
 DoorInfo *Persist::createDoorInfo( Uint32 key, Uint32 value ) {
-	DoorInfo *info = ( DoorInfo* )malloc( sizeof( DoorInfo ) );
+	DoorInfo *info = new DoorInfo;
 	info->key = key;
 	info->value = value;
 	return info;
@@ -391,7 +391,7 @@ void Persist::loadMapHeader( File *file, Uint16 *gridX, Uint16 *gridY ) {
 /// or a map that is stored together with a savegame.
 
 MapInfo *Persist::loadMap( File *file ) {
-	MapInfo *info = ( MapInfo* )malloc( sizeof( MapInfo ) );
+	MapInfo *info = new  MapInfo;
 	file->read( &( info->version ) );
 	if ( info->version < PERSIST_VERSION ) {
 		cerr << "*** Warning: loading older map file: v" << info->version <<
@@ -424,7 +424,7 @@ MapInfo *Persist::loadMap( File *file ) {
 	}
 	file->read( &( info->pos_count ) );
 	for ( int i = 0; i < static_cast<int>( info->pos_count ); i++ ) {
-		info->pos[i] = ( LocationInfo* )malloc( sizeof( LocationInfo ) );
+		info->pos[i] = new LocationInfo;
 		file->read( &( info->pos[i]->x ) );
 		file->read( &( info->pos[i]->y ) );
 		file->read( &( info->pos[i]->z ) );
@@ -499,7 +499,7 @@ MapInfo *Persist::loadMap( File *file ) {
 	if ( info->version >= 20 ) {
 		file->read( &( info->rug_count ) );
 		for ( int i = 0; i < static_cast<int>( info->rug_count ); i++ ) {
-			info->rugPos[i] = ( RugInfo* )malloc( sizeof( RugInfo ) );
+			info->rugPos[i] = new RugInfo;
 			file->read( &( info->rugPos[i]->cx ) );
 			file->read( &( info->rugPos[i]->cy ) );
 			file->read( &( info->rugPos[i]->texture ) );
@@ -512,13 +512,13 @@ MapInfo *Persist::loadMap( File *file ) {
 	if ( info->version >= 22 ) {
 		file->read( &( info->locked_count ) );
 		for ( int i = 0; i < static_cast<int>( info->locked_count ); i++ ) {
-			info->locked[i] = ( LockedInfo* )malloc( sizeof( LockedInfo ) );
+			info->locked[i] = new LockedInfo;
 			file->read( &( info->locked[i]->key ) );
 			file->read( &( info->locked[i]->value ) );
 		}
 		file->read( &( info->door_count ) );
 		for ( int i = 0; i < static_cast<int>( info->door_count ); i++ ) {
-			info->door[i] = ( DoorInfo* )malloc( sizeof( DoorInfo ) );
+			info->door[i] = new DoorInfo;
 			file->read( &( info->door[i]->key ) );
 			file->read( &( info->door[i]->value ) );
 		}
@@ -528,7 +528,7 @@ MapInfo *Persist::loadMap( File *file ) {
 	if ( info->version >= 23 ) {
 		file->read( &( info->secret_count ) );
 		for ( int i = 0; i < static_cast<int>( info->secret_count ); i++ ) {
-			info->secret[i] = ( LockedInfo* )malloc( sizeof( LockedInfo ) );
+			info->secret[i] = new LockedInfo;
 			file->read( &( info->secret[i]->key ) );
 			file->read( &( info->secret[i]->value ) );
 		}
@@ -573,7 +573,7 @@ MapInfo *Persist::loadMap( File *file ) {
 	if ( info->version >= 40 ) {
 		file->read( &( info->outdoorTextureInfoCount ) );
 		for ( int x = 0; x < static_cast<int>( info->outdoorTextureInfoCount ); x++ ) {
-			OutdoorTextureInfo *oti = ( OutdoorTextureInfo* )malloc( sizeof( OutdoorTextureInfo ) );
+			OutdoorTextureInfo *oti = new OutdoorTextureInfo;
 			file->read( &( oti->x ) );
 			file->read( &( oti->y ) );
 			file->read( &( oti->angle ) );
@@ -597,30 +597,30 @@ MapInfo *Persist::loadMap( File *file ) {
 
 void Persist::deleteMapInfo( MapInfo *info ) {
 	for ( int i = 0; i < static_cast<int>( info->pos_count ); i++ ) {
-		if ( info->pos[i]->item_pos ) free( info->pos[i]->item_pos );
-		if ( info->pos[i]->item ) free( info->pos[i]->item );
-		if ( info->pos[i]->creature ) free( info->pos[i]->creature );
-		free( info->pos[i] );
+		if ( info->pos[i]->item_pos ) delete info->pos[i]->item_pos;
+		if ( info->pos[i]->item ) delete info->pos[i]->item;
+		if ( info->pos[i]->creature ) delete info->pos[i]->creature;
+		delete info->pos[i];
 	}
 	for ( int i = 0; i < static_cast<int>( info->rug_count ); i++ ) {
-		free( info->rugPos[i] );
+		delete info->rugPos[i];
 	}
 	for ( int i = 0; i < static_cast<int>( info->locked_count ); i++ ) {
-		free( info->locked[i] );
+		delete info->locked[i];
 	}
 	for ( int i = 0; i < static_cast<int>( info->door_count ); i++ ) {
-		free( info->door[i] );
+		delete info->door[i];
 	}
 	for ( int i = 0; i < static_cast<int>( info->secret_count ); i++ ) {
-		free( info->secret[i] );
+		delete info->secret[i];
 	}
 	for ( int i = 0; i < static_cast<int>( info->trapCount ); i++ ) {
 		deleteTrapInfo( info->trap[i] );
 	}
 	for ( int i = 0; i < static_cast<int>( info->outdoorTextureInfoCount ); i++ ) {
-		free( info->outdoorTexture[i] );
+		delete info->outdoorTexture[i];
 	}
-	free( info );
+	delete info;
 }
 
 void Persist::deleteCreatureInfo( CreatureInfo *info ) {
@@ -630,13 +630,13 @@ void Persist::deleteCreatureInfo( CreatureInfo *info ) {
 	if ( info->npcInfo ) {
 		deleteNpcInfoInfo( info->npcInfo );
 	}
-	free( info );
+	delete info;
 }
 
 
 
 void Persist::deleteMissionInfo( MissionInfo *info ) {
-	free( info );
+	delete info;
 }
 
 void Persist::saveCreature( File *file, CreatureInfo *info ) {
@@ -694,7 +694,7 @@ void Persist::saveCreature( File *file, CreatureInfo *info ) {
 }
 
 CreatureInfo *Persist::loadCreature( File *file ) {
-	CreatureInfo *info = ( CreatureInfo* )malloc( sizeof( CreatureInfo ) );
+	CreatureInfo *info = new CreatureInfo;
 	file->read( &( info->version ) );
 	file->read( info->name, 255 );
 	file->read( info->character_name, 255 );
@@ -783,7 +783,7 @@ void Persist::saveMission( File *file, MissionInfo *info ) {
 }
 
 MissionInfo *Persist::loadMission( File *file ) {
-	MissionInfo *info = ( MissionInfo* )malloc( sizeof( MissionInfo ) );
+	MissionInfo *info = new MissionInfo;
 	file->read( &( info->version ) );
 	file->read( &( info->level ) );
 	file->read( &( info->depth ) );

@@ -87,13 +87,13 @@ void SpecialSkill::initSkills() {
 
 		//cerr << "Storing special skill: " << name << " (" << prereq << "," << action << ")" << endl;
 		SpecialSkill *ss =
-		  new SpecialSkill( strdup( name ),
-		                    strdup( displayName ),
-		                    strdup( description ),
+		  new SpecialSkill( name,
+		                    displayName,
+		                    description,
 		                    type,
 		                    event,
-		                    strdup( prereq ),
-		                    strdup( action ),
+		                    prereq,
+		                    action,
 		                    iconTileX,
 		                    iconTileY );
 		skills.push_back( ss );

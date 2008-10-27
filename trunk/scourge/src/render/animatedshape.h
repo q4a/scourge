@@ -55,7 +55,7 @@ protected:
 	bool playedOnce;
 
 	AnimatedShape( int width, int depth, int height,
-	               char *name, int descriptionGroup,
+	               char const* name, int descriptionGroup,
 	               Uint32 color, Uint8 shapePalIndex = 0 );
 
 public:

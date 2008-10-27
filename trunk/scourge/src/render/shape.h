@@ -31,7 +31,7 @@ class Shape {
 
 private:
 	Uint8 index;
-	char *name;
+	std::string name;
 	int descriptionGroup;
 	bool stencil;
 	Color *outlineColor;
@@ -59,7 +59,7 @@ public:
 		N_SIDE
 	};
 
-	Shape( int width, int depth, int height, char *name, int descriptionGroup );
+	Shape( int width, int depth, int height, char const* name, int descriptionGroup );
 	Shape( Shape *shape );
 	virtual ~Shape();
 
@@ -125,8 +125,8 @@ public:
 		return height;
 	}
 
-	inline char *getName() {
-		return name;
+	inline char const* getName() {
+		return name.c_str();
 	}
 	inline int getDescriptionGroup() {
 		return descriptionGroup;

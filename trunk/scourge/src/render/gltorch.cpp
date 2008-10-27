@@ -20,7 +20,7 @@
 
 GLTorch::GLTorch( Texture texture[], Texture flameTex,
                   int width, int depth, int height,
-                  char *name, int descriptionGroup,
+                  char const* name, int descriptionGroup,
                   Uint32 color, Uint8 shapePalIndex,
                   Texture const& torchback, int torch_dir ) :
 		GLShape( texture, width, depth, height, name, descriptionGroup, color, shapePalIndex ) {

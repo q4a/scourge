@@ -34,7 +34,7 @@ private:
 	GLShape *refShape;
 
 public:
-	VirtualShape( char *name,
+	VirtualShape( char const* name,
 	              int width, int height, int depth,
 	              int offsetX, int offsetY, int offsetZ,
 	              bool draws, GLShape *refShape,

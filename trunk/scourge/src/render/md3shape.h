@@ -65,7 +65,7 @@ private:
 public:
 	MD3Shape( CModelMD3 *md3, ModelLoader *loader, float div,
 	          Texture texture[], int width, int depth, int height,
-	          char *name, int descriptionGroup,
+	          char const* name, int descriptionGroup,
 	          Uint32 color, Uint8 shapePalIndex = 0 );
 
 	virtual ~MD3Shape();

@@ -36,7 +36,7 @@ using namespace std;
 
 MD2Shape::MD2Shape( t3DModel * g_3DModel, Texture textureId, float div,
                     Texture texture[], int width, int depth, int height,
-                    char *name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
+                    char const* name, int descriptionGroup, Uint32 color, Uint8 shapePalIndex ) :
 		AnimatedShape( width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
 	commonInit( g_3DModel, textureId, div );
 }

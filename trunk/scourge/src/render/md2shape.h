@@ -73,7 +73,7 @@ protected:
 public:
 	MD2Shape( t3DModel * g_3DModel, Texture textureId, float div,
 	          Texture texture[], int width, int depth, int height,
-	          char *name, int descriptionGroup,
+	          char const* name, int descriptionGroup,
 	          Uint32 color, Uint8 shapePalIndex = 0 );
 
 	virtual ~MD2Shape();

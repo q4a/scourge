@@ -362,7 +362,7 @@ void Sound::playObjectSound( std::string& name, int percent, int panning ) {
 #endif
 }
 
-void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m, Preferences *preferences ) {
+void Sound::loadMonsterSounds( char const* monsterType, map<int, vector<string>*> *m, Preferences *preferences ) {
 	//  cerr << "Loading monster sounds for " << monsterType << "..." << endl;
 	if ( m ) {
 		for ( map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2 ) {
@@ -375,7 +375,7 @@ void Sound::loadMonsterSounds( char *monsterType, map<int, vector<string>*> *m, 
 	setEffectsVolume( preferences->getEffectsVolume() );
 }
 
-void Sound::unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m ) {
+void Sound::unloadMonsterSounds( char const* monsterType, map<int, vector<string>*> *m ) {
 	//  cerr << "Unloading monster sounds for " << monsterType << "..." << endl;
 	if ( m ) {
 		for ( map<int, vector<string>*>::iterator i2 = m->begin(); i2 != m->end(); ++i2 ) {
@@ -387,7 +387,7 @@ void Sound::unloadMonsterSounds( char *monsterType, map<int, vector<string>*> *m
 	}
 }
 
-void Sound::loadCharacterSounds( char *type ) {
+void Sound::loadCharacterSounds( char const* type ) {
 #ifdef HAVE_SDL_MIXER
 	if ( haveSound ) {
 		//std::map<std::string, std::map<int, std::vector<Mix_Chunk*>* >* > characterSounds;
@@ -410,7 +410,7 @@ void Sound::loadCharacterSounds( char *type ) {
 
 #ifdef HAVE_SDL_MIXER
 void Sound::storeCharacterSounds( map<int, vector<Mix_Chunk*>*> *charSoundMap,
-    char *type, int soundType, char *filePrefix ) {
+    char const* type, int soundType, char const* filePrefix ) {
 	stringstream filename;
 	vector<Mix_Chunk*> *v;
 	if ( charSoundMap->find( soundType ) == charSoundMap->end() ) {
@@ -430,7 +430,7 @@ void Sound::storeCharacterSounds( map<int, vector<Mix_Chunk*>*> *charSoundMap,
 }
 #endif
 
-void Sound::playCharacterSound( char *type, int soundType, int panning ) {
+void Sound::playCharacterSound( char const* type, int soundType, int panning ) {
 #ifdef HAVE_SDL_MIXER
 	if ( haveSound ) {
 		string typeStr = type;
@@ -454,7 +454,7 @@ void Sound::playCharacterSound( char *type, int soundType, int panning ) {
 #endif
 }
 
-void Sound::unloadCharacterSounds( char *type ) {
+void Sound::unloadCharacterSounds( char const* type ) {
 #ifdef HAVE_SDL_MIXER
 	if ( haveSound ) {
 		string typeStr = type;

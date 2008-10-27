@@ -43,7 +43,7 @@ void Calendar::reset( bool resetTime ) {
 		strcpy( nextResetDate, "" );
 		if ( !scheduledEvents.empty() ) {
 			// delete the events
-			for ( int i = 0; i < scheduledEvents.size(); ++i ) {
+			for ( size_t i = 0; i < scheduledEvents.size(); ++i ) {
 				delete scheduledEvents[i];
 			}
 			scheduledEvents.clear();

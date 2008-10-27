@@ -330,7 +330,7 @@ void ShapePalette::initPcModels( ConfigLang *config ) {
 
 		session->getGameAdapter()->setUpdate( _( "Loading Shapes" ), i, vv->size() );
 
-		CharacterModelInfo *cmi = ( CharacterModelInfo* )malloc( sizeof( CharacterModelInfo ) );
+		CharacterModelInfo *cmi = new CharacterModelInfo;
 		strcpy( cmi->model_name, node->getValueAsString( "path" ) );
 		strcpy( cmi->skin_name, node->getValueAsString( "skin" ) );
 		cmi->scale = node->getValueAsFloat( "scale" );
@@ -789,8 +789,8 @@ void ShapePalette::initOccurance( ConfigNode *parent_node, ShapeValues *sv ) {
 	}
 }
 
-GLShape *ShapePalette::getCreatureShape( char *model_name,
-                                         char *skin_name,
+GLShape *ShapePalette::getCreatureShape( char const* model_name,
+                                         char const* skin_name,
                                          float scale,
                                          Monster *monster ) {
 	// load monster sounds
@@ -804,8 +804,8 @@ GLShape *ShapePalette::getCreatureShape( char *model_name,
 	return loader->getCreatureShape( model_name, skin_name, scale );
 }
 
-void ShapePalette::decrementSkinRefCountAndDeleteShape( char *model_name,
-                                                        char *skin_name,
+void ShapePalette::decrementSkinRefCountAndDeleteShape( char const* model_name,
+                                                        char const* skin_name,
                                                         GLShape *shape,
                                                         Monster *monster ) {
 	shape->cleanup();
@@ -830,7 +830,7 @@ void ShapePalette::loadNpcPortraits() {
 	for ( map<string, Monster*>::iterator i = Monster::monstersByName.begin();
 	        i != Monster::monstersByName.end(); ++i ) {
 		Monster *m = i->second;
-		if ( m->getPortrait() ) {
+		if ( strlen( m->getPortrait() ) > 0 ) {
 			//m->setPortraitTexture( this->loadGLTextures( m->getPortrait(), true ) );
 			Texture tex;
 			tex.load( m->getPortrait() );
@@ -863,7 +863,7 @@ void ShapePalette::initMapGrid() {
 
 		config->setUpdate( _( "Loading Locations" ), i, v->size() );
 
-		MapGridLocation *loc = ( MapGridLocation* )malloc( sizeof( MapGridLocation ) );
+		MapGridLocation *loc = new MapGridLocation;
 		strcpy( loc->name, node->getValueAsString( "name" ) );
 		strcpy( tmp, node->getValueAsString( "position" ) );
 		loc->x = atoi( strtok( tmp, "," ) );

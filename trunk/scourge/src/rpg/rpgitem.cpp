@@ -110,7 +110,6 @@ RpgItem::RpgItem( char *name, char *displayName,
 	}
 
 	// armor
-	defense = ( int* )malloc( sizeof( int ) * DAMAGE_TYPE_COUNT );
 	for ( int i = 0; i < DAMAGE_TYPE_COUNT; i++ ) {
 		defense[ i ] = 0;
 	}
@@ -124,10 +123,6 @@ RpgItem::RpgItem( char *name, char *displayName,
 }
 
 RpgItem::~RpgItem() {
-	free( defense );
-	free( name );
-	free( desc );
-	free( shortDesc );
 }
 
 // was in Item with following confusing comment:
@@ -280,8 +275,8 @@ void RpgItem::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		int shape_index = shapePal->findShapeIndexByName( shape );
 		//cerr << "\tindex=" << shape_index << endl;
 
-		RpgItem *last = new RpgItem( strdup( name ), strdup( displayName ), rareness, type_index, weight, price,
-		                             strdup( long_description ), strdup( short_description ),
+		RpgItem *last = new RpgItem( name, displayName, rareness, type_index, weight, price,
+		                             long_description, short_description,
 		                             backpack_location, shape_index,
 		                             minDepth, minLevel, maxCharges, tileX - 1, tileY - 1 );
 		last->setContainerWidth( containerWidth );
@@ -299,7 +294,7 @@ void RpgItem::initItemEntries( ConfigLang *config, ShapePalette *shapePal ) {
 		snprintf( temp, 1000, node->getValueAsString( "tags" ) );
 		char *p = strtok( temp, "," );
 		while ( p ) {
-			string s = strdup( p );
+			string s = p;
 			last->addTag( s );
 			p = strtok( NULL, "," );
 		}
@@ -469,7 +464,7 @@ void RpgItem::addItem( RpgItem *item, int width, int depth, int height ) {
 
 	// HACK: do not include "corpse" as a valid container...
 	// It should really have a container exclusion flag.
-	if ( item->type == CONTAINER && ( strcmp( item->name, "Corpse" ) || strcmp( item->name, "Backpack" ) ) ) {
+	if ( item->type == CONTAINER && ( item->name != "Corpse"  || item->name != "Backpack" ) ) {
 		if ( width >= depth ) {
 			containersNS.push_back( item );
 		}

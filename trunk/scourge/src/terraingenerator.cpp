@@ -109,6 +109,7 @@ TerrainGenerator::TerrainGenerator( Scourge *scourge,
 
 	// register
 	scourge->getSession()->setTerrainGenerator( this );
+	ff = NULL;
 }
 
 TerrainGenerator::~TerrainGenerator() {
@@ -747,11 +748,8 @@ void TerrainGenerator::calculateRoomValues( Map *map, ShapePalette *shapePal ) {
 
 void TerrainGenerator::createFreeSpaceMap( Map *map, ShapePalette *shapePal ) {
 	// Collapse the free space and put objects in the available spots
-	ff = ( Sint16* )malloc( 2 * sizeof( Sint16 ) * MAP_WIDTH * MAP_DEPTH );
-	if ( !ff ) {
-		fprintf( stderr, "out of mem\n" );
-		exit( 0 );
-	}
+	delete [] ff;
+	ff = new Sint16[2 * MAP_WIDTH * MAP_DEPTH];
 	ffCount = 0;
 	for ( int fx = offset; fx < MAP_WIDTH; fx += unitSide ) {
 		for ( int fy = offset; fy < MAP_DEPTH; fy += unitSide ) {
@@ -775,7 +773,8 @@ void TerrainGenerator::createFreeSpaceMap( Map *map, ShapePalette *shapePal ) {
 
 void TerrainGenerator::deleteFreeSpaceMap( Map *map, ShapePalette *shapePal ) {
 	// free empty space container
-	free( ff );
+	delete [] ff;
+	ff = NULL;
 }
 
 // =================================================================
@@ -906,7 +905,7 @@ bool TerrainGenerator::getLocationInRoom( Map *map, int roomIndex, Shape *shape,
 	int starty = room[roomIndex].y + unitOffset;
 	int endy = room[roomIndex].y + room[roomIndex].h;
 
-	Sint16* fff = ( Sint16* )malloc( 2 * sizeof( Sint16 ) * ( endx - startx ) * ( endy - starty ) );
+	Sint16* fff = new Sint16[ 2 * ( endx - startx ) * ( endy - starty ) ];
 
 	int count = 0;
 	for ( int n = 0; n < ffCount; n++ ) {
@@ -952,7 +951,7 @@ bool TerrainGenerator::getLocationInRoom( Map *map, int roomIndex, Shape *shape,
 		}
 	}
 
-	free( fff );
+	delete [] fff;
 	return fits;
 }
 

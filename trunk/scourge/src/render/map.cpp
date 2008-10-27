@@ -38,6 +38,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 
 // set to 1 to enable bounding box and ground grid drawing
 #define DEBUG_MOUSE_POS 0
@@ -3904,7 +3911,7 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 					}
 
 					// save the deity locations
-					char *p = adapter->getMagicSchoolIndexForLocation( pos[x][y][z] );
+					char const* p = adapter->getMagicSchoolIndexForLocation( pos[x][y][z] );
 					if ( p ) {
 						strncpy( ( char* )info->pos[ info->pos_count ]->magic_school_name, p, 254 );
 						info->pos[ info->pos_count ]->magic_school_name[254] = 0;
@@ -3967,7 +3974,7 @@ void Map::saveMap( const string& name, string& result, bool absolutePath, int re
 			info->ground[ gx ][ gy ] = ( Uint32 )( fabs( ground[ gx ][ gy ] ) * 100 ) + base;
 			for ( int z = 0; z < MAX_OUTDOOR_LAYER; z++ ) {
 				if ( outdoorTex[ gx ][ gy ][ z ].texture.isSpecified() ) {
-					OutdoorTextureInfo *oti = ( OutdoorTextureInfo* )malloc( sizeof( OutdoorTextureInfo ) );
+					OutdoorTextureInfo *oti = new OutdoorTextureInfo;
 					int height = getShapes()->getCurrentTheme()->getOutdoorTextureHeight( outdoorTex[ gx ][ gy ][z].outdoorThemeRef );
 					int mx = gx * OUTDOORS_STEP;
 					int my = gy * OUTDOORS_STEP + height + 1;

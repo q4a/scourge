@@ -77,7 +77,8 @@ class Creature : public RenderedCreature {
 private:
 	// gui information
 	GLShape *shape;
-	char *model_name, *skin_name;
+	std::string model_name;
+	std::string skin_name;
 	Uint16 dir;
 	Session *session;
 	int motion;
@@ -171,7 +172,7 @@ public:
 	static const int CROSS_FORMATION = 5;
 	static const int FORMATION_COUNT = 6;
 
-	Creature( Session *session, Character *character, char *name, int sex, int character_model_info_index );
+	Creature( Session *session, Character *character, char const* name, int sex, int character_model_info_index );
 	Creature( Session *session, Monster *monster, GLShape *shape, bool initMonster = true );
 	~Creature();
 
@@ -258,8 +259,8 @@ public:
 	// ####################
 
 	/// The name of the 3D model used for the creature.
-	inline char *getModelName() {
-		return model_name;
+	inline char const* getModelName() {
+		return model_name.c_str();
 	}
 
 	/// The 3D shape of the creature.
@@ -267,8 +268,8 @@ public:
 		return shape;
 	}
 
-	inline char *getSkinName() {
-		return skin_name;
+	inline char const* getSkinName() {
+		return skin_name.c_str();
 	}
 
 	inline int getCharacterModelInfoIndex() {
@@ -469,11 +470,11 @@ public:
 		return name;
 	}
 
-	inline void setName( char *s ) {
+	inline void setName( char const* s ) {
 		strncpy( name, s, 254 ); name[254] = '\0';
 	}
 
-	char *getType();
+	virtual char const* getType();
 	void getDetailedDescription( std::string& s );
 
 	/// The creature's level.

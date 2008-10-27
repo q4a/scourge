@@ -70,64 +70,6 @@ struct WeaponInfluence {
 
 /// Describes a specific "base item".
 class RpgItem {
-private:
-
-	// the basics
-	char *name, *desc, *shortDesc, *displayName;
-	int rareness;
-	int type;
-	float weight;
-	int price;
-	int shape_index;
-	int equip; // where can it be worn?
-	int minDepth; // 0-based min. depth where the item occurs
-	int minLevel; // if >0 the item is "special" and only one instance exists
-	int maxCharges; // max, how many uses?
-	int iconTileX, iconTileY; // its graphic (1-based)
-	int containerWidth, containerHeight; // the container window size
-	char containerTexture[255];
-	std::set<std::string> tags; // the tags of this object
-
-	// weapon
-	int damage; // % of strength bonus
-	int damageType; // a damageType value
-	int damageSkill; // which skill to check when using the item
-	int parry; // what % of the damage skill to use to parry
-	int ap; // ap cost
-	int range; // weapon range
-	int twohanded; // a twoHandedType value
-	WeaponInfluence weaponInfluence[200][3][2]; // influence values
-
-	// armor
-	int *defense;
-	int defenseSkill; // the defense skill used
-	int dodgePenalty; // dodge penalty
-
-	// potion
-	int potionPower; // how strong is the brew?
-	int potionSkill; // which skill does this potion effect?
-	int potionTime; // how long does it last (in minutes)
-
-	// spells
-	int spellLevel;
-
-
-
-	static std::map<int, std::map<int, std::vector<const RpgItem*>*>*> typesMap;
-	static std::map<std::string, const RpgItem *> itemsByName;
-	static std::vector<RpgItem*> containers;
-	static std::vector<RpgItem*> containersNS;
-
-	// linear for now... if there are too many of these we can organize them
-	// in a type->depth map.
-	static std::vector<RpgItem*> special;
-
-	static void initItemTypes( ConfigLang *config );
-	static void initSounds( ConfigLang *config );
-	static void initTags( ConfigLang *config );
-	static void initItemEntries( ConfigLang *config, ShapePalette *shapePal );
-	void decodeInfluenceBlock( int skill, std::vector<ConfigNode*> *nodes, int influenceType );
-
 public:
 
 	enum {
@@ -204,11 +146,11 @@ public:
 		return( tags.find( s ) != tags.end() );
 	}
 
-	inline char *getName() {
-		return name;
+	inline char const* getName() {
+		return name.c_str();
 	}
-	inline char *getDisplayName() {
-		return displayName;
+	inline char const* getDisplayName() {
+		return displayName.c_str();
 	}
 	inline int getRareness()  {
 		return rareness;
@@ -225,11 +167,11 @@ public:
 	inline int getShapeIndex() {
 		return shape_index;
 	}
-	inline char *getShortDesc() {
-		return shortDesc;
+	inline char const* getShortDesc() {
+		return shortDesc.c_str();
 	}
-	inline char *getLongDesc() {
-		return desc;
+	inline char const* getLongDesc() {
+		return desc.c_str();
 	}
 	inline int getEquip() {
 		return equip;
@@ -407,6 +349,68 @@ public:
 	}
 
 	static void DestroyStatics();
+
+private:
+
+	// the basics
+	std::string name;
+	std::string desc;
+	std::string shortDesc;
+	std::string displayName;
+	int rareness;
+	int type;
+	float weight;
+	int price;
+	int shape_index;
+	int equip; // where can it be worn?
+	int minDepth; // 0-based min. depth where the item occurs
+	int minLevel; // if >0 the item is "special" and only one instance exists
+	int maxCharges; // max, how many uses?
+	int iconTileX, iconTileY; // its graphic (1-based)
+	int containerWidth, containerHeight; // the container window size
+	char containerTexture[255];
+	std::set<std::string> tags; // the tags of this object
+
+	// weapon
+	int damage; // % of strength bonus
+	int damageType; // a damageType value
+	int damageSkill; // which skill to check when using the item
+	int parry; // what % of the damage skill to use to parry
+	int ap; // ap cost
+	int range; // weapon range
+	int twohanded; // a twoHandedType value
+	WeaponInfluence weaponInfluence[200][3][2]; // influence values
+
+	// armor
+	int defense[DAMAGE_TYPE_COUNT];
+	int defenseSkill; // the defense skill used
+	int dodgePenalty; // dodge penalty
+
+	// potion
+	int potionPower; // how strong is the brew?
+	int potionSkill; // which skill does this potion effect?
+	int potionTime; // how long does it last (in minutes)
+
+	// spells
+	int spellLevel;
+
+
+
+	static std::map<int, std::map<int, std::vector<const RpgItem*>*>*> typesMap;
+	static std::map<std::string, const RpgItem *> itemsByName;
+	static std::vector<RpgItem*> containers;
+	static std::vector<RpgItem*> containersNS;
+
+	// linear for now... if there are too many of these we can organize them
+	// in a type->depth map.
+	static std::vector<RpgItem*> special;
+
+	static void initItemTypes( ConfigLang *config );
+	static void initSounds( ConfigLang *config );
+	static void initTags( ConfigLang *config );
+	static void initItemEntries( ConfigLang *config, ShapePalette *shapePal );
+	void decodeInfluenceBlock( int skill, std::vector<ConfigNode*> *nodes, int influenceType );
+
 };
 
 #endif

@@ -26,7 +26,7 @@
 using namespace std;
 
 AnimatedShape::AnimatedShape( int width, int depth, int height,
-                              char *name, int descriptionGroup,
+                              char const* name, int descriptionGroup,
                               Uint32 color, Uint8 shapePalIndex ) :
 		GLShape( 0, width, depth, height / 2, name, descriptionGroup, color, shapePalIndex ) {
 

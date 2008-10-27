@@ -253,7 +253,7 @@ public:
 	inline void addDeityLocation( Location *pos, MagicSchool *ms ) {
 		deityLocation[pos] = ms;
 	}
-	char *getDeityLocation( Location *pos );
+	char const* getDeityLocation( Location *pos );
 	inline MagicSchool *getMagicSchoolLocation( Location *pos ) {
 		if ( deityLocation.find( pos ) != deityLocation.end() ) {
 			return deityLocation[ pos ];
@@ -296,8 +296,8 @@ public:
 	 */
 	Color *getOutlineColor( Location *pos );
 
-	virtual char *getMagicSchoolIndexForLocation( Location *pos );
-	virtual void setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolName );
+	virtual char const* getMagicSchoolIndexForLocation( Location *pos );
+	virtual void setMagicSchoolIndexForLocation( Location *pos, char const* magicSchoolName );
 
 	inline int getCurrentDepth() {
 		return currentStory;
@@ -584,11 +584,11 @@ public:
 	int getCursorWidth();
 	int getCursorHeight();
 
-	void loadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap );
-	void unloadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap );
-	void loadCharacterSounds( char *type );
-	void unloadCharacterSounds( char *type );
-	void playCharacterSound( char *type, int soundType, int panning );
+	virtual void loadMonsterSounds( char const* type, std::map<int, std::vector<std::string>*> *soundMap );
+	virtual void unloadMonsterSounds( char const* type, std::map<int, std::vector<std::string>*> *soundMap );
+	virtual void loadCharacterSounds( char const* type );
+	virtual void unloadCharacterSounds( char const* type );
+	virtual void playCharacterSound( char const* type, int soundType, int panning );
 
 	void fightProjectileHitTurn( Projectile *proj, RenderedCreature *creature );
 

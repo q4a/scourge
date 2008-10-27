@@ -25,18 +25,18 @@ CellularAutomaton::CellularAutomaton( int w, int h ) {
 	this->h = h;
 	this->roomCounter = 0;
 	this->biggestRoom = 0;
-	node = ( NodePoint** )malloc( w * sizeof( NodePoint* ) );
+	node = new NodePoint*[ w ];
 	for ( int x = 0; x < w; x++ ) {
-		node[ x ] = ( NodePoint* )malloc( h * sizeof( NodePoint ) );
+		node[ x ] =  new NodePoint[ h ];
 	}
 	phase = 1;
 }
 
 CellularAutomaton::~CellularAutomaton() {
 	for ( int x = 0; x < w; x++ ) {
-		free( node[ x ] );
+		delete [] node[ x ];
 	}
-	free( node );
+	delete [] node;
 }
 
 void CellularAutomaton::generate( bool islandsEnabled,

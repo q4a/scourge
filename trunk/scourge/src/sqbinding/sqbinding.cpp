@@ -159,7 +159,7 @@ void SqBinding::partyChanged() {
 		if ( creatureMap.find( session->getCreature( i ) ) == creatureMap.end() ) {
 			if ( DEBUG_SQUIRREL ) cerr << "&&& Adding creature ref for dismissed hero: " <<
 				session->getCreature( i )->getName() << endl;
-			obj = ( HSQOBJECT* )malloc( sizeof( HSQOBJECT ) );
+			obj = new HSQOBJECT;
 			if ( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), obj ) ) ) {
 				// Set a token in the class so we can resolve the squirrel instance to a native creature.
 				// The value is the address of the native creature object.
@@ -222,7 +222,7 @@ void SqBinding::startGame() {
 	for ( int i = 0; i < MagicSchool::getMagicSchoolCount(); i++ ) {
 		MagicSchool *ms = MagicSchool::getMagicSchool( i );
 		for ( int t = 0; t < ms->getSpellCount(); t++ ) {
-			obj = ( HSQOBJECT* )malloc( sizeof( HSQOBJECT ) );
+			obj = new HSQOBJECT;
 			if ( SQ_SUCCEEDED( instantiateClass( _SC( spell->getClassName() ), obj ) ) ) {
 				// Set a token in the class so we can resolve the squirrel instance to a native creature.
 				// The value is the address of the native creature object.
@@ -249,7 +249,7 @@ void SqBinding::endGame() {
 	// destroy the spell references
 	for ( int i = 0; i < static_cast<int>( refSpell.size() ); i++ ) {
 		sq_release( vm, refSpell[ i ] );
-		free( refSpell[ i ] );
+		delete refSpell[ i ];
 		refSpell[ i ] = NULL;
 	}
 	refSpell.clear();
@@ -274,7 +274,7 @@ void SqBinding::endGame() {
 
 
 void SqBinding::registerCreature( Creature *ptr ) {
-	HSQOBJECT *obj = ( HSQOBJECT* )malloc( sizeof( HSQOBJECT ) );
+	HSQOBJECT *obj = new HSQOBJECT;
 	if ( SQ_SUCCEEDED( instantiateClass( _SC( creature->getClassName() ), obj ) ) ) {
 		// Set a token in the class so we can resolve the squirrel instance to a native creature.
 		// The value is the address of the native creature object.
@@ -287,7 +287,7 @@ void SqBinding::registerCreature( Creature *ptr ) {
 }
 
 void SqBinding::registerItem( Item *ptr ) {
-	HSQOBJECT *obj = ( HSQOBJECT* )malloc( sizeof( HSQOBJECT ) );
+	HSQOBJECT *obj = new HSQOBJECT;
 	if ( SQ_SUCCEEDED( instantiateClass( _SC( item->getClassName() ), obj ) ) ) {
 		// Set a token in the class so we can resolve the squirrel instance to a native creature.
 		// The value is the address of the native creature object.
@@ -330,7 +330,7 @@ bool SqBinding::endLevel( bool callMapEvents ) {
 	// destroy the creatures of the level
 	for ( int i = 0; i < static_cast<int>( refCreature.size() ); i++ ) {
 		sq_release( vm, refCreature[ i ] );
-		free( refCreature[ i ] );
+		delete refCreature[ i ];
 		refCreature[ i ] = NULL;
 	}
 	refCreature.clear();
@@ -339,7 +339,7 @@ bool SqBinding::endLevel( bool callMapEvents ) {
 	// destroy the items of the level
 	for ( int i = 0; i < static_cast<int>( refItem.size() ); i++ ) {
 		sq_release( vm, refItem[ i ] );
-		free( refItem[ i ] );
+		delete refItem[ i ];
 		refItem[ i ] = NULL;
 	}
 	refItem.clear();

@@ -83,7 +83,8 @@ void Date::setDate( int s, int m, int h, int day, int month, int year ) {
 /// Sets the ingame date and time from a slash-separated string.
 
 void Date::setDate( char *shortString ) {
-	char *p = strdup( shortString );
+	char p[100];
+	strcpy( p, shortString );
 
 	char *q = strtok( p, "/" );
 	this->year = atoi( q );
@@ -102,8 +103,6 @@ void Date::setDate( char *shortString ) {
 
 	q = strtok( NULL, "/" );
 	this->sec = atoi( q );
-
-	free( p );
 }
 
 /// Resets the date to 1128-01-01, midnight.

@@ -63,8 +63,8 @@ void ModelLoader::clearModel( t3DModel *pModel ) {
 	pModel->pGlCommands = NULL;
 }
 
-GLShape *ModelLoader::getCreatureShape( char *model_name,
-                                        char *skin_name,
+GLShape *ModelLoader::getCreatureShape( char const* model_name,
+                                        char const* skin_name,
                                         float scale ) {
 
 #ifdef DEBUG_LOADING
@@ -203,7 +203,7 @@ void ModelLoader::unloadSkinTexture( const string& skin_name ) {
 }
 */
 
-void ModelLoader::decrementSkinRefCount( char *model_name, char *skin_name ) {
+void ModelLoader::decrementSkinRefCount( char const* model_name, char const* skin_name ) {
 
 #ifdef DEBUG_LOADING
 	cerr << "=====================================================" << endl <<
@@ -273,7 +273,7 @@ void ModelLoader::debugModelLoader() {
 
 
 
-void ModelWrapper::loadModel( const string& path, char *name, ModelLoader *loader ) {
+void ModelWrapper::loadModel( const string& path, char const* name, ModelLoader *loader ) {
 	int load = -1;
 	string full = rootDir + path;
 	// if name ends in .bmp (or other image extension) it's an md2
@@ -324,10 +324,10 @@ void ModelWrapper::unloadModel() {
 
 // factory method to create shape
 AnimatedShape *ModelWrapper::createShape( Texture textureId, float div,
-                                          Texture texture[], char *name,
+                                          Texture texture[], char const* name,
                                           int descriptionGroup,
                                           Uint32 color, Uint8 shapePalIndex,
-                                          char *model_name, char *skin_name,
+                                          char const* model_name, char const* skin_name,
                                           ModelLoader *loader ) {
 	int width, depth, height;
 	normalizeModel( &width, &depth, &height, div, name );
@@ -348,7 +348,7 @@ AnimatedShape *ModelWrapper::createShape( Texture textureId, float div,
 	}
 }
 
-void ModelWrapper::normalizeModel( int *width, int *depth, int *height, float div, char *name ) {
+void ModelWrapper::normalizeModel( int *width, int *depth, int *height, float div, char const* name ) {
 	vect3d min, max;
 	min[0] = min[1] = min[2] = 100000.0f; // BAD!!
 	max[0] = max[1] = max[2] = 0.0f;

@@ -29,13 +29,13 @@ class SkillGroup;
 /// Inits the RPG framework.
 class Rpg {
 private:
-	static std::vector<char*> firstSyl;
-	static std::vector<char*> midSyl;
-	static std::vector<char*> endSyl;
+	static std::vector<std::string> firstSyl;
+	static std::vector<std::string> midSyl;
+	static std::vector<std::string> endSyl;
 
 public:
 	static void initRpg();
-	static char *createName();
+	static std::string createName();
 
 protected:
 	static void initSkills( ConfigLang *config );

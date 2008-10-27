@@ -40,16 +40,10 @@ ItemList::ItemList( Scourge *scourge, Window *win, int x, int y, int width, int 
 	this->cursedOnly = false;
 	this->allowCursed = true;
 	this->allowEquipped = true;
-
-	color = ( Color* )malloc( MAX_BACKPACK_SIZE * sizeof( Color ) );
-	//icon = ( GLuint* )malloc( MAX_BACKPACK_SIZE * sizeof( GLuint ) );
-
 	setAllowMultipleSelection( true );
 }
 
 ItemList::~ItemList() {
-	free( color );
-	//free( icon );
 }
 
 void ItemList::setCreature( Creature *creature, set<int> *filter ) {
@@ -128,7 +122,7 @@ void ItemList::commonInit() {
 	setLines( count, name, color, icon );
 }
 
-char *ItemList::getName() {
+char const* ItemList::getName() {
 	return( creature ? creature->getName() : container->getRpgItem()->getDisplayName() );
 }
 

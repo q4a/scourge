@@ -104,7 +104,7 @@ private:
 
 public:
 
-	GLCaveShape( Shapes *shapes, Texture texture[], int width, int depth, int height, char *name, int index,
+	GLCaveShape( Shapes *shapes, Texture texture[], int width, int depth, int height, char const* name, int index,
 	             int mode, int dir, int caveIndex, int stencilIndex = 0, int stencilAngle = 0 );
 	virtual ~GLCaveShape();
 

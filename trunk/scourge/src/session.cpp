@@ -179,7 +179,7 @@ void Session::runServer( int port ) {
 	delete gsh;
 }
 
-void Session::runClient( char *host, int port, char *userName ) {
+void Session::runClient( char const* host, int port, char const* userName ) {
 	CommandInterpreter *ci = new TestCommandInterpreter();
 	GameStateHandler *gsh = new TestGameStateHandler();
 	client = new Client( host, port, userName, ci );
@@ -351,7 +351,7 @@ Creature *Session::newCreature( Monster *monster, GLShape *shape, bool loaded ) 
 	return c;
 }
 
-Creature *Session::newCreature( Character *character, char *name, int sex, int model ) {
+Creature *Session::newCreature( Character *character, char const* name, int sex, int model ) {
 	Creature *c = new Creature( this, character, name, sex, model );
 	creatures.push_back( c );
 	return c;

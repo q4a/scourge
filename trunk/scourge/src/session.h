@@ -124,7 +124,7 @@ public:
 	virtual void start();
 	virtual void quit( int value );
 #ifdef HAVE_SDL_NET
-	virtual void runClient( char *host, int port, char *userName );
+	virtual void runClient( char const* host, int port, char const* userName );
 	virtual void runServer( int port );
 	virtual inline Server *getServer() {
 		return server;
@@ -189,7 +189,7 @@ public:
 	  @return the creature created.
 	*/
 	virtual Creature *newCreature( Monster *monster, GLShape *shape, bool loaded = false );
-	virtual Creature *newCreature( Character *character, char *name, int sex, int model );
+	virtual Creature *newCreature( Character *character, char const* name, int sex, int model );
 	virtual Creature *replaceCreature( Creature *creature, char *newCreatureType );
 	virtual Creature *addCreatureFromScript( char *creatureType, int cx, int cy, int *fx = NULL, int *fy = NULL );
 	virtual bool removeCreatureRef( Creature *creature, int index );

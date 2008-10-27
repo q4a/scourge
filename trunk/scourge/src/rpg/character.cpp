@@ -52,9 +52,7 @@ void Character::initCharacters() {
 		int mp = node->getValueAsInt( "mp" );
 		int levelProgression = node->getValueAsInt( "level_progression" );
 
-		last = new Character( strdup( name ),
-		                      strdup( displayName ),
-		                      ( strlen( parent ) ? strdup( parent ) : NULL ),
+		last = new Character( name, displayName, parent,
 		                      hp, mp,
 		                      levelProgression, minLevelReq );
 		string s = name;
@@ -104,7 +102,7 @@ void Character::addItemTags( const char *s, set<string> *list ) {
 	while ( p ) {
 		//char *lastChar = p + strlen( p ) - 1;
 		//*lastChar = '\0';
-		string s = strdup( p );
+		string s = p;
 		if ( !( *p == '*' ) && RpgItem::tagsDescriptions.find( s ) == RpgItem::tagsDescriptions.end() ) {
 			cerr << "*** Warning: item tag has no description: " << s << endl;
 		}
@@ -113,7 +111,7 @@ void Character::addItemTags( const char *s, set<string> *list ) {
 	}
 }
 
-Character::Character( char *name, char *displayName, char *parentName,
+Character::Character( char const* name, char const* displayName, char const* parentName,
                       int startingHp, int startingMp,
                       int level_progression, int minLevelReq ) {
 	this->name = name;
@@ -135,7 +133,7 @@ void Character::buildTree() {
 	for ( int i = 0; i < static_cast<int>( character_list.size() ); i++ ) {
 		Character *c = character_list[i];
 		c->describeProfession();
-		if ( c->getParentName() ) {
+		if ( strlen(c->getParentName()) > 0 ) {
 			c->parent = getCharacterByName( c->getParentName() );
 			if ( !c->parent ) {
 				cerr << "Error: Can't find parent: " << c->getParentName() << " for character " << c->getName() << endl;

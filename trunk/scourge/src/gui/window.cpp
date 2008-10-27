@@ -50,12 +50,12 @@ Label *Window::message_label = NULL;
 Button *Window::message_button = NULL;
 bool Window::windowWasClosed = false;
 
-Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type, const char *themeName ) : Widget( x, y, w, h ) {
+Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char const* title, bool hasCloseButton, int type, const char *themeName ) : Widget( x, y, w, h ) {
 	theme = GuiTheme::getThemeByName( themeName );
 	commonInit( scourgeGui, x, y, w, h, title, hasCloseButton, type );
 }
 
-Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, Texture const& texture, bool hasCloseButton, int type, Texture const& texture2 ) : Widget( x, y, w, h ) {
+Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char const* title, Texture const& texture, bool hasCloseButton, int type, Texture const& texture2 ) : Widget( x, y, w, h ) {
 	theme = GuiTheme::getThemeByName( GuiTheme::DEFAULT_THEME );
 	/*
 	this->texture = texture;
@@ -67,7 +67,7 @@ Window::Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title,
 	commonInit( scourgeGui, x, y, w, h, title, hasCloseButton, type );
 }
 
-void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type ) {
+void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, char const* title, bool hasCloseButton, int type ) {
 	this->opening = false;
 	this->animation = DEFAULT_ANIMATION;
 	this->lastWidget = NULL;

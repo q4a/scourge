@@ -161,7 +161,7 @@ int clientLoop( void *data ) {
 
 	// free stuff
 	SDLNet_FreeSocketSet( set );
-	if ( str ) free( str );
+	delete ( str );
 
 	return 0;
 }

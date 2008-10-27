@@ -27,9 +27,9 @@ SkillGroup *SkillGroup::stats;
 map<string, SkillGroup *> SkillGroup::groupsByName;
 vector<SkillGroup*> SkillGroup::groups;
 
-vector<char*> Rpg::firstSyl;
-vector<char*> Rpg::midSyl;
-vector<char*> Rpg::endSyl;
+vector<std::string> Rpg::firstSyl;
+vector<std::string> Rpg::midSyl;
+vector<std::string> Rpg::endSyl;
 
 map<string, StateMod*> StateMod::stateModsByName;
 vector<StateMod*> StateMod::stateMods;
@@ -97,21 +97,21 @@ void Rpg::initNames( ConfigLang *config ) {
 		strcpy( line, node ->getValueAsString( "first" ) );
 		char *p = strtok( line, "," );
 		while ( p != NULL ) {
-			firstSyl.push_back( strdup( p ) );
+			firstSyl.push_back( p );
 			//cerr << "first: " << firstSyl[ firstSyl.size() - 1 ] << endl;
 			p = strtok( NULL, "," );
 		}
 		strcpy( line, node ->getValueAsString( "middle" ) );
 		p = strtok( line, "," );
 		while ( p != NULL ) {
-			midSyl.push_back( strdup( p ) );
+			midSyl.push_back( p );
 			//cerr << "mid: " << midSyl[ midSyl.size() - 1 ] << endl;
 			p = strtok( NULL, "," );
 		}
 		strcpy( line, node ->getValueAsString( "last" ) );
 		p = strtok( line, "," );
 		while ( p != NULL ) {
-			endSyl.push_back( strdup( p ) );
+			endSyl.push_back( p );
 			//cerr << "last: " << endSyl[ endSyl.size() - 1 ] << endl;
 			p = strtok( NULL, "," );
 		}
@@ -156,17 +156,16 @@ void Rpg::initRpg() {
 }
 
 // Create a random, cheeseball, fantasy name
-char *Rpg::createName() {
-	char tmp[200];
-	strcpy( tmp, firstSyl[ Util::dice( firstSyl.size() ) ] );
+std::string Rpg::createName() {
+	string ret = firstSyl[ Util::dice( firstSyl.size() ) ];
 	int sylCount = Util::dice( 3 );
 	for ( int i = 0; i < sylCount; i++ ) {
-		strcat( tmp, midSyl[ Util::dice( midSyl.size() ) ] );
+		ret += midSyl[ Util::dice( midSyl.size() ) ];
 	}
 	if ( 0 == Util::dice( 2 ) ) {
-		strcat( tmp, endSyl[ Util::dice( endSyl.size() ) ] );
+		ret += endSyl[ Util::dice( endSyl.size() ) ];
 	}
-	return strdup( tmp );
+	return ret;
 }
 
 

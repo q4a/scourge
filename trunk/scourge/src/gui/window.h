@@ -119,11 +119,11 @@ public:
 
 	static const int SCREEN_GUTTER = 0;
 
-	Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title = NULL,
+	Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char const* title = NULL,
 		Texture const& texture = Texture::none(), bool hasCloseButton = true, int type = BASIC_WINDOW,
 		Texture const& texture2 = Texture::none() );
 
-	Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title = NULL,
+	Window( ScourgeGui *scourgeGui, int x, int y, int w, int h, char const* title = NULL,
 	        bool hasCloseButton = true, int type = BASIC_WINDOW, const char *themeName = NULL );
 
 	~Window();
@@ -145,7 +145,7 @@ public:
 		return theme;
 	}
 
-	inline void setTitle( char *s ) {
+	inline void setTitle( char const* s ) {
 		strncpy( title, ( s ? s : "" ), 255 ); title[254] = '\0';
 	}
 
@@ -240,7 +240,7 @@ public:
 	void setWindowBorderColor();
 
 protected:
-	void commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, char *title, bool hasCloseButton, int type );
+	void commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, char const* title, bool hasCloseButton, int type );
 	void drawBorder( int topY, int openHeight );
 	void drawLineBorder( int topY, int openHeight );
 	void drawTitle( int topY, int openHeight );

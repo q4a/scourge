@@ -52,13 +52,13 @@ void MultipleLabel::drawWidget( Widget *parent ) {
 	glPopMatrix();
 }
 
-void MultipleLabel::addText( char * s ) {
+void MultipleLabel::addText( char const* s ) {
 	vText.push_back( s );
 }
 
 void MultipleLabel::setText( int i ) {
 	if ( i >= 0 && i < static_cast<int>( vText.size() ) ) {
-		dynamicLabel->setText( vText[i] );
+		dynamicLabel->setText( vText[i].c_str() );
 		currentTextInd = i;
 	}
 }

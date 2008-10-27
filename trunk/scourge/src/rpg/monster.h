@@ -37,14 +37,14 @@ class Monster  {
 
 private:
 	enum { DESCR_SIZE = 300 };
-	char *type;
-	char *displayName;
-	char *descriptiveType;
+	std::string type;
+	std::string displayName;
+	std::string descriptiveType;
 	int hp;
 	int mp;
 	int level;
-	char *model_name;
-	char *skin_name;
+	std::string model_name;
+	std::string skin_name;
 	char description[ DESCR_SIZE ];
 	int money;
 	int speed;
@@ -52,7 +52,7 @@ private:
 	int rareness;
 	float scale;
 	bool npc;
-	char *portrait;
+	std::string portrait;
 	Texture portraitTexture;
 	float baseAttackBonus;
 	GLuint statemod;
@@ -69,7 +69,7 @@ private:
 	static std::map<std::string, std::string> modelToDescriptiveType;
 
 public:
-	Monster( char *type, char *displayName, char *descriptiveType, int level, int hp, int mp, char *model, char *skin, int rareness, int speed, int baseArmor, float scale, bool npc, char *portrait, bool harmless );
+	Monster( char const* type, char const* displayName, char const* descriptiveType, int level, int hp, int mp, char const* model, char const* skin, int rareness, int speed, int baseArmor, float scale, bool npc, char const* portrait, bool harmless );
 	~Monster();
 
 	static std::map<std::string, std::map<int, std::vector<std::string>*>*> soundMap;
@@ -91,11 +91,11 @@ public:
 	inline int getSpeed() {
 		return speed;
 	}
-	inline char *getType() {
-		return type;
+	inline char const* getType() {
+		return type.c_str();
 	};
-	inline char *getDisplayName() {
-		return displayName;
+	inline char const* getDisplayName() {
+		return displayName.c_str();
 	};
 	inline static char const* getDescriptiveType( char const* modelName ) {
 		std::string modelStr = modelName;
@@ -112,11 +112,11 @@ public:
 	inline int getLevel() {
 		return level;
 	}
-	inline char *getModelName() {
-		return model_name;
+	inline char const* getModelName() {
+		return model_name.c_str();
 	}
-	inline char *getSkinName() {
-		return skin_name;
+	inline char const* getSkinName() {
+		return skin_name.c_str();
 	}
 	inline char *getDescription() {
 		return description;
@@ -147,8 +147,8 @@ public:
 	inline void setNpc( bool b ) {
 		npc = b;
 	}
-	inline char *getPortrait() {
-		return portrait;
+	inline char const* getPortrait() {
+		return portrait.c_str();
 	}
 	inline Texture getPortraitTexture() {
 		return portraitTexture;
@@ -169,7 +169,7 @@ public:
 	static void initMonsters();
 	static Monster *getRandomMonster( int level );
 	static Monster *getMonsterByName( char const* name );
-	static std::map<int, std::vector<std::string>*>* getSoundMap( char *monsterType );
+	static std::map<int, std::vector<std::string>*>* getSoundMap( char const* monsterType );
 
 	/**
 	 * Finds the index of a monster or a monster by an index:
@@ -185,7 +185,7 @@ public:
 	static const Monster *getRandomHarmless();
 
 protected:
-	static void addMd2Sounds( char *model_name, std::map<int, std::vector<std::string>*>* currentSoundMap );
+	static void addMd2Sounds( char const* model_name, std::map<int, std::vector<std::string>*>* currentSoundMap );
 	/**
 	 * add a coma-delimited list of sound files
 	 */

@@ -113,11 +113,11 @@ public:
 	virtual inline void cancelBattle( Creature *creature ) {}
 	virtual inline void moveCreature( Creature *creature ) {}
 	virtual inline void removeBattle( Battle *battle ) {}
-	virtual inline void loadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap ) {}
-	virtual inline void unloadMonsterSounds( char *type, std::map<int, std::vector<std::string>*> *soundMap ) {}
-	virtual inline void loadCharacterSounds( char *type ) {}
-	virtual inline void playCharacterSound( char *type, int soundType, int panning ) {}
-	virtual inline void unloadCharacterSounds( char *type ) {}
+	virtual inline void loadMonsterSounds( char const* type, std::map<int, std::vector<std::string>*> *soundMap ) {}
+	virtual inline void unloadMonsterSounds( char const* type, std::map<int, std::vector<std::string>*> *soundMap ) {}
+	virtual inline void loadCharacterSounds( char const* type ) {}
+	virtual inline void playCharacterSound( char const* type, int soundType, int panning ) {}
+	virtual inline void unloadCharacterSounds( char const* type ) {}
 	virtual inline void createParty( Creature **pc, int *partySize ) {}
 	virtual inline void teleport( bool toHQ = true ) {}
 	virtual inline int getCurrentDepth() {
@@ -139,7 +139,7 @@ public:
 		return true;
 	}
 
-	virtual inline char *getDeityLocation( Location *pos ) {
+	virtual inline char const* getDeityLocation( Location *pos ) {
 		return NULL;
 	}
 
@@ -190,10 +190,10 @@ public:
 	virtual inline bool inTurnBasedCombat() {
 		return false;
 	}
-	virtual char *getMagicSchoolIndexForLocation( Location *pos ) {
+	virtual char const* getMagicSchoolIndexForLocation( Location *pos ) {
 		return NULL;
 	}
-	virtual void setMagicSchoolIndexForLocation( Location *pos, char *magicSchoolName ) {}
+	virtual void setMagicSchoolIndexForLocation( Location *pos, char const* magicSchoolName ) {}
 
 	virtual inline void completeCurrentMission() {}
 

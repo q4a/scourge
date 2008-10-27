@@ -31,12 +31,12 @@
 /// A special ability (the type you can put into quickspell slots).
 class SpecialSkill : public Storable {
 private:
-	const char *name;
-	const char *displayName;
-	const char *description;
+	std::string name;
+	std::string displayName;
+	std::string description;
 	int type, event;
-	const char *squirrelFuncPrereq;
-	const char *squirrelFuncAction;
+	std::string squirrelFuncPrereq;
+	std::string squirrelFuncAction;
 	int iconTileX, iconTileY;
 
 public:
@@ -93,19 +93,19 @@ public:
 	}
 
 	inline const char *getName() {
-		return name;
+		return name.c_str();
 	}
 	inline const char *getDisplayName() {
-		return displayName;
+		return displayName.c_str();
 	}
 	inline const char *getDescription() {
-		return description;
+		return description.c_str();
 	}
 	inline const char *getSquirrelFunctionPrereq() {
-		return squirrelFuncPrereq;
+		return squirrelFuncPrereq.c_str();
 	}
 	inline const char *getSquirrelFunctionAction() {
-		return squirrelFuncAction;
+		return squirrelFuncAction.c_str();
 	}
 	inline int getType() {
 		return type;

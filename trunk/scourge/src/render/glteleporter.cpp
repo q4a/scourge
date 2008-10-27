@@ -24,7 +24,7 @@
 
 GLTeleporter::GLTeleporter( Texture texture[], Texture flameTex,
                             int width, int depth, int height,
-                            char *name, int descriptionGroup,
+                            char const* name, int descriptionGroup,
                             Uint32 color, Uint8 shapePalIndex,
                             int teleporterType ) :
 		GLShape( texture, width, depth, height, name, descriptionGroup, color, shapePalIndex ) {
