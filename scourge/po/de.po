@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-10-27 22:54+0100\n"
-"PO-Revision-Date: 2008-10-27 23:11+0100\n"
+"POT-Creation-Date: 2008-10-28 18:32+0100\n"
+"PO-Revision-Date: 2008-10-28 18:35+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <kde-i18n-de@lists.kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -2615,8 +2615,9 @@ msgid "Overly lawful"
 msgstr "Überaus rechtschaffen"
 
 #: src/creature.cpp:2338
-msgid "%s (L:%d HP:%d/%d MP:%d/%d AL:%d\\%(%s))"
-msgstr "%s (S:%d LP:%d/%d MP:%d/%d GS:%d\\%(%s))"
+#, c-format
+msgid "%s (L:%d HP:%d/%d MP:%d/%d AL:%d%%(%s))"
+msgstr "%s (S:%d LP:%d/%d MP:%d/%d GS:%d%%(%s))"
 
 #: src/creature.cpp:2343 src/item.cpp:279
 msgid " *Mission*"

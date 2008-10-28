@@ -2335,7 +2335,7 @@ void Creature::getDetailedDescription( std::string& s ) {
 		snprintf( alignmentDesc, 32, _( "Overly lawful" ) );
 	}
 
-	snprintf( tempdesc, 255, _( "%s (L:%d HP:%d/%d MP:%d/%d AL:%d\%(%s))" ), _( getName() ), getLevel(), getHp(), getMaxHp(), getMp(), getMaxMp(), alignmentPercent, alignmentDesc );
+	snprintf( tempdesc, 255, _( "%s (L:%d HP:%d/%d MP:%d/%d AL:%d%%(%s))" ), _( getName() ), getLevel(), getHp(), getMaxHp(), getMp(), getMaxMp(), alignmentPercent, alignmentDesc );
 
 	s = tempdesc;
 
