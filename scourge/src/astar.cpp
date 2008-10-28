@@ -320,40 +320,41 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
     
     for (int i=-1; i < 2; i++){
       for(int j = -1; j < 2; j++){
-        if(i == 0 && j == 0) continue;
+        if (i == 0 && j == 0 ) continue;
 
         x = bestNode->x + i;
         y = bestNode->y + j;
 
         if ((x < 0) || (x >= MAP_WIDTH) || (y < 0) || (y >= MAP_DEPTH)) continue;
         
-        CPathNode * next = new CPathNode();
-        next->x = x;
-        next->y = y;
+        // assign:            f    gone                h    x  y  parent
+        CPathNode tryNode = { 0.0, bestNode->gone + 1, 0.0, x, y, bestNode };
 
         // Check to see if already in the open queue by checking openContents
-        if((setItr = openContents.find(next)) != openContents.end()){
-          delete next;
+		setItr = openContents.find( &tryNode );
+        if ( setItr != openContents.end() ) {
           continue;
         }
+        
+        if( isBlocked( x, y, creature, player, map, ignoreParty ) ) {
+          continue;
+          // was ~'tryNode.gone = 1000;' well if it is blocked then ... why to consider it?
+          // even following seems quicker:
+          // tryNode.gone += 999;
+          // if ( tryNode.gone > 1900 ) continue; 
+        }
 
-        // Determine cost of distance travelled
-        if( isBlocked( x, y, creature, player, map, ignoreParty ) )
-          next->gone = 1000;
-        else 
-          next->gone = bestNode->gone + 1;
-        
-        
+        CPathNode* next = new CPathNode( tryNode );
+
         //heuristic calculation
-        double h = heuristic->heuristic(next);
+        double h = heuristic->heuristic( next );
 
         if(abs(i+j) == 1) //a non-diagonal move
           next->heuristic = h;
         else
-          next->heuristic = h+0.5; //we discourage diagonals to remove zig-zagging
+          next->heuristic = h+0.4; //we discourage diagonals to remove zig-zagging
 
         next->f = next->gone + next->heuristic;
-        next->parent = bestNode;
         open.push(next);           // Insert into the open queue
         openContents.insert(next);
         
@@ -383,9 +384,9 @@ void AStar::findPath( Sint16 sx, Sint16 sy,
     
     //and delete any left over nodes in OPEN
     while(!open.empty()){
-        CPathNode* next = open.top();
-	open.pop();         
-        delete next;
+      CPathNode* next = open.top();
+      open.pop();         
+      delete next;
     }
     //I'm unsure whether this is required to free up the memory. Better safe than sorry though.
     openContents.clear(); 
