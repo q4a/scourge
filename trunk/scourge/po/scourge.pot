@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-10-27 22:54+0100\n"
+"POT-Creation-Date: 2008-10-28 18:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2558,7 +2558,8 @@ msgid "Overly lawful"
 msgstr ""
 
 #: src/creature.cpp:2338
-msgid "%s (L:%d HP:%d/%d MP:%d/%d AL:%d\\%(%s))"
+#, c-format
+msgid "%s (L:%d HP:%d/%d MP:%d/%d AL:%d%%(%s))"
 msgstr ""
 
 #: src/creature.cpp:2343 src/item.cpp:279
