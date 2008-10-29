@@ -1364,8 +1364,8 @@ void Battle::hitWithItem() {
 
 void Battle::dealDamage( float damage, int effect, bool magical, GLuint delay ) {
 
-	// monsters fight back
-	if ( creature->getTargetCreature() && creature->getTargetCreature()->isAutoControlled() && !creature->getTargetCreature()->hasTarget() ) {
+	// AI creatures fight back if not occupied with something else.
+	if ( creature->getTargetCreature() && creature->getTargetCreature()->isAutoControlled() && !creature->getTargetCreature()->isBusy() ) {
 		if ( debugBattle )
 			cerr << creature->getTargetCreature()->getName() << " fights back!" << endl;
 		creature->getTargetCreature()->setTargetCreature( creature );
