@@ -2585,11 +2585,14 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
                             Shape *shape,
                             RenderedItem *item,
                             RenderedCreature *creature ) {
-	if ( x < MAP_OFFSET || y < MAP_OFFSET || z < 0 ||
-	        x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET || z >= MAP_VIEW_HEIGHT ) {
+	if ( x < 0 || y < 0 || z < 0 ||
+	        x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
 		cerr << "*** Error can't set position outside bounds:" << x << "," << y << "," << z << endl;
-		//((RenderedCreature*)NULL)->getName();
 		return;
+	}
+	if ( x < MAP_OFFSET || y < MAP_OFFSET 
+		||   x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+		cerr << "*** Map::setPositionInner() goes outside bounds:" << x << "," << y << "," << z << endl;
 	}
 
 	resortShapes = mapChanged = true;
