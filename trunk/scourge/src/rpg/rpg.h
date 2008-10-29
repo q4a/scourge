@@ -50,6 +50,7 @@ private:
 	char displayName[255];
 	char description[120];
 	char symbol[80];
+	float alignment;
 	std::vector<Skill*> preReqStats;
 	int preReqStatMultiplier;
 	int index;
@@ -107,7 +108,7 @@ public:
 		SKILL_COUNT
 	};
 
-	Skill( char *name, char *displayName, char *description, char *symbol, SkillGroup *group );
+	Skill( char *name, char *displayName, char *description, char *symbol, float alignment, SkillGroup *group );
 	~Skill();
 
 	inline void setPreReqMultiplier( int n ) {
@@ -137,6 +138,9 @@ public:
 	}
 	inline char *getSymbol() {
 		return symbol;
+	}
+	inline float getAlignment() {
+		return alignment;
 	}
 	inline SkillGroup *getGroup() {
 		return group;

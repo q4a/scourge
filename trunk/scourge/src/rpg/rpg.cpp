@@ -40,8 +40,9 @@ void Rpg::initSkills( ConfigLang *config ) {
 	Skill *lastSkill = NULL;
 	SkillGroup *lastGroup = NULL;
 	char line[255];
-	char skillName[80], skillDisplayName[255], skillSymbol[80], skillDescription[255];
+	char skillName[80], skillDisplayName[255], skillSymbol[80], skillDescription[255], skillAlign[32];
 	char groupName[80], groupDisplayName[255], groupDescription[255];
+	float alignment;
 
 	vector<ConfigNode*> *v = config->getDocument()->
 	                         getChildrenByName( "group" );
@@ -65,12 +66,15 @@ void Rpg::initSkills( ConfigLang *config ) {
 			strcpy( skillDisplayName, skillNode->getValueAsString( "display_name" ) );
 			strcpy( skillSymbol, skillNode->getValueAsString( "symbol" ) );
 			strcpy( skillDescription, skillNode->getValueAsString( "description" ) );
-			lastSkill =
-			  new Skill( skillName,
-			             skillDisplayName,
-			             skillDescription,
-			             skillSymbol,
-			             lastGroup );
+			strcpy( skillAlign, node->getValueAsString( "alignment" ) );
+			if ( strcmp( skillAlign, "chaotic" ) == 0 ) {
+				alignment = ALIGNMENT_CHAOTIC;
+			} else if ( strcmp( skillAlign, "lawful" ) == 0 ) {
+				alignment = ALIGNMENT_LAWFUL;
+			} else {
+				alignment = ALIGNMENT_NEUTRAL;
+			}
+			lastSkill = new Skill( skillName, skillDisplayName, skillDescription, skillSymbol, alignment, lastGroup );
 
 			lastSkill->setPreReqMultiplier( skillNode->getValueAsInt( "prereq_multiplier" ) );
 			strcpy( line, skillNode->getValueAsString( "prereq_skills" ) );
@@ -169,11 +173,12 @@ std::string Rpg::createName() {
 }
 
 
-Skill::Skill( char *name, char *displayName, char *description, char *symbol, SkillGroup *group ) {
+Skill::Skill( char *name, char *displayName, char *description, char *symbol, float alignment, SkillGroup *group ) {
 	strcpy( this->name, name );
 	strcpy( this->displayName, displayName );
 	strcpy( this->description, description );
 	strcpy( this->symbol, symbol );
+	this->alignment = alignment;
 	this->group = group;
 
 	// store the skill

@@ -3550,15 +3550,13 @@ void Creature::monsterInit() {
 			MonsterToughness *mt = &( monsterToughness[ session->getPreferences()->getMonsterToughness() ] );
 			n = static_cast<int>( 20.0f * Util::roll( mt->minSkillBase, mt->maxSkillBase ) );
 		} else {
-
 			// create the starting value as a function of the stats
 			n = 0;
 			for ( int t = 0; t < Skill::skills[i]->getPreReqStatCount(); t++ ) {
 				int index = Skill::skills[i]->getPreReqStat( t )->getIndex();
 				n += getSkill( index );
 			}
-			n = static_cast<int>( ( n / static_cast<float>( Skill::skills[i]->getPreReqStatCount() ) ) *
-			                      static_cast<float>( Skill::skills[i]->getPreReqMultiplier() ) );
+			n = static_cast<int>( ( n / static_cast<float>( Skill::skills[i]->getPreReqStatCount() ) ) * static_cast<float>( Skill::skills[i]->getPreReqMultiplier() ) );
 		}
 
 		// special: adjust magic resistance... makes game too hard otherwise
@@ -3642,25 +3640,52 @@ float Creature::getAlignment() {
   Spell *spell;
 
   totalSpellCount = getSpellCount();
-  // TODO: Determine alignment by other means when creature has no spells.
-  if ( totalSpellCount == 0 ) return 0.5f;
 
-  chaoticSpellCount = lawfulSpellCount = 0;
+  // If the creture has spells, determine alignment by their selection.
+  if ( totalSpellCount > 0 ) {
 
-  for ( int i = 0; i < totalSpellCount; i++ ) {
-    spell = getSpell( i );
+    chaoticSpellCount = lawfulSpellCount = 0;
 
-    if ( spell->getSchool()->getBaseAlignment() == ALIGNMENT_CHAOTIC ) {
-      chaoticSpellCount ++;
-    } else if ( spell->getSchool()->getBaseAlignment() == ALIGNMENT_LAWFUL ) {
-      lawfulSpellCount ++;
+    for ( int i = 0; i < totalSpellCount; i++ ) {
+      spell = getSpell( i );
+
+      if ( spell->getSchool()->getBaseAlignment() == ALIGNMENT_CHAOTIC ) {
+        chaoticSpellCount ++;
+      } else if ( spell->getSchool()->getBaseAlignment() == ALIGNMENT_LAWFUL ) {
+        lawfulSpellCount ++;
+      }
+
+    }
+
+    // We don't need a neutralness value because it is already implied by the math done here.
+    float chaoticness = (float)chaoticSpellCount / (float)totalSpellCount;
+    float lawfulness = (float)lawfulSpellCount / (float)totalSpellCount;
+
+    return ( ( -chaoticness + lawfulness ) + 1 ) / 2;
+  }
+
+  // If the creature has no spells, determine alignment by the distribution of basic stats.
+  int totalSkillPointCount, chaoticSkillPointCount, lawfulSkillPointCount;
+
+  totalSkillPointCount = chaoticSkillPointCount = lawfulSkillPointCount = 0;
+
+  for ( int i = 0; i < Skill::SKILL_COUNT; i++ ) {
+
+    if ( Skill::skills[ i ]->getGroup()->isStat() ) {
+      totalSkillPointCount += getSkill( i, false );
+
+      if ( Skill::skills[ i ]->getAlignment() == ALIGNMENT_CHAOTIC ) {
+        chaoticSkillPointCount += getSkill( i, false );
+      } else if ( Skill::skills[ i ]->getAlignment() == ALIGNMENT_LAWFUL ) {
+        lawfulSkillPointCount += getSkill( i, false );
+      }
+
     }
 
   }
 
-  // We don't need a neutralness value because it is already implied by the math done here.
-  float chaoticness = (float)chaoticSpellCount / (float)totalSpellCount;
-  float lawfulness = (float)lawfulSpellCount / (float)totalSpellCount;
+  float chaoticness = (float)chaoticSkillPointCount / (float)totalSkillPointCount;
+  float lawfulness = (float)lawfulSkillPointCount / (float)totalSkillPointCount;
 
   return ( ( -chaoticness + lawfulness ) + 1 ) / 2;
 }
