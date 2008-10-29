@@ -53,6 +53,8 @@ ContainerView::~ContainerView() {
 void ContainerView::setItem( Item *item, Creature *creature ) {
 	this->container = item;
 	this->creature = creature;
+	this->lastItem = NULL;
+	this->selectedItem = NULL;
 	showContents();
 }
 
