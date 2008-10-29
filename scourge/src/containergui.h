@@ -53,7 +53,7 @@ public:
 	}
 	void refresh();
 	inline Item *getSelectedItem();	
-	void setSelectedItem( Item *item );	
+	//void setSelectedItem( Item *item );	
 };
 
 #endif
