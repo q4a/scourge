@@ -95,20 +95,15 @@ private:
 		DIR_CROSS_NE
 	};
 
-	static char *names[];
-
-	static GLCaveShape *shapeList[];
-
-	static std::vector<CVector3*> points;
-	static std::vector<std::vector<CaveFace*>*> polys;
-
-public:
 
 	GLCaveShape( Shapes *shapes, Texture texture[], int width, int depth, int height, char const* name, int index,
 	             int mode, int dir, int caveIndex, int stencilIndex = 0, int stencilAngle = 0 );
 	virtual ~GLCaveShape();
 
 	virtual void initialize();
+
+public:
+
 
 	void draw();
 
@@ -154,13 +149,11 @@ public:
 		CAVE_INDEX_COUNT
 	};
 
-	static GLuint floorTex[];
-	static TextureData floorData[];
 
 	static void createShapes( Texture texture[], int shapeCount, Shapes *shapes );
 	static void initializeShapes( Shapes *shapes );
 	static inline GLCaveShape *getShape( int index ) {
-		return shapeList[ index ];
+		return our.shapeList[ index ];
 	}
 
 	virtual inline bool isShownInMapEditor() {
@@ -174,15 +167,32 @@ protected:
 	void drawLava( float w, float h, float d );
 
 private:
-	static void removeDupPoints();
-	static void updatePointIndexes( int oldIndex, int newIndex );
-	static void dividePolys();
-	static CVector3 *divideSegment( CVector3 *v1, CVector3 *v2 );
-	static void bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 );
-	static void calculateNormals();
-	static void calculateLight();
-	static void createFloorTexture( Shapes *shapes, int stencilIndex );
-	static void createLavaTexture( int index, int stencilIndex, int rot );
+	static char const* names[CAVE_INDEX_COUNT];
+	class Common {
+	public:
+		Common();
+		~Common();
+		void poly( int index, int p1, int p2, int p3, GLfloat u1, GLfloat v1, GLfloat u2, GLfloat v2, GLfloat u3, GLfloat v3, int textureType ) {
+			CaveFace* cf = new CaveFace( p1, p2, p3, u1, v1, u2, v2, u3, v3, textureType );
+			polys[index]->push_back( cf );
+		}
+		void removeDupPoints();
+		void updatePointIndexes( int oldIndex, int newIndex );
+		void dividePolys();
+		CVector3 *divideSegment( CVector3 *v1, CVector3 *v2 );
+		void bulgePoints( CVector3 *n1, CVector3 *n2, CVector3 *n3 );
+		void calculateNormals();
+		void calculateLight();
+		void createFloorTexture( Shapes *shapes, int stencilIndex );
+		void createLavaTexture( int index, int stencilIndex, int rot );
+
+		GLuint floorTex[Shapes::STENCIL_COUNT];
+		TextureData floorData[Shapes::STENCIL_COUNT];
+		GLCaveShape* shapeList[CAVE_INDEX_COUNT];
+		std::vector<CVector3*> points;
+		std::vector<std::vector<CaveFace*>*> polys;
+	};
+	static Common our; 
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 
