@@ -198,7 +198,7 @@ public:
 	}
 	/// Short one-line description of the spell.
 	inline void describe( char *s, size_t count ) {
-		snprintf( s, count, _( "%s (L:%d)(M:%d)" ), _( name.c_str() ), level, mp );
+		snprintf( s, count, _( "%s (L:%d)(M:%d)" ), displayName.c_str(), level, mp );
 	}
 	/// Adds a string to the long description.
 	inline void addNotes( char *s ) {

@@ -416,7 +416,7 @@ void Scourge::startMission( bool startInHq ) {
 			} else {
 				preMainLoop();
 			}
-
+			
 			// run mission
 			getSDLHandler()->mainLoop();
 
@@ -1818,7 +1818,10 @@ void Scourge::resetUIAfterBattle() {
 		if ( !session->getCreature( i )->getStateMod( StateMod::dead ) ) {
 			session->getCreature( i )->setMotion( session->getCreature( i )->isScripted() ? Constants::MOTION_STAND : Constants::MOTION_LOITER );
 			( ( AnimatedShape* )session->getCreature( i )->getShape() )->setPauseAnimation( false );
-		}
+			if( session->getCreature( i )->isSummoned() ) {
+				session->getCreature( i )->dismissSummonedCreature();
+			}
+		}		
 	}
 }
 

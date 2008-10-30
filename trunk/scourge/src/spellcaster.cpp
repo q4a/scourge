@@ -98,6 +98,8 @@ void SpellCaster::spellFailed() {
 		}
 	} else if ( !strcasecmp( spell->getName(), "Teleportation" ) ) {
 		battle->getSession()->getGameAdapter()->teleport( false );
+	} else if ( !strcasecmp( spell->getName(), "Call for Help" ) ) {
+		summonCreature( false );		
 	}
 }
 
@@ -193,6 +195,8 @@ void SpellCaster::spellSucceeded() {
 		openLocked();
 	} else if ( !strcasecmp( spell->getName(), "Gust of wind" ) ) {
 		windAttack();
+	} else if ( !strcasecmp( spell->getName(), "Call for Help" ) ) {
+		summonCreature();
 	} else {
 		// default
 		cerr << "*** ERROR: Implement spell " << spell->getName() << endl;
@@ -591,6 +595,13 @@ void SpellCaster::openLocked() {
 	if ( pos ) {
 		battle->getSession()->getGameAdapter()->useDoor( pos, true );
 	}
+}
+
+void SpellCaster::summonCreature( bool friendly ) {
+	if( !friendly ) {
+		battle->getSession()->getGameAdapter()->writeLogMessage( _( "Something goes horribly wrong! The summoned monster breaks free and attacks!" ), Constants::MSGTYPE_PLAYERMAGIC );
+	}
+	battle->getCreature()->summonCreature( friendly );
 }
 
 void SpellCaster::windAttack() {

@@ -109,6 +109,7 @@ Creature::Creature( Session *session, Monster *monster, GLShape *shape, bool ini
 }
 
 void Creature::commonInit() {
+	this->summoner = NULL;
 	this->backpack = new Item( session, RpgItem::getItemByName( "Backpack" ), 1 );
 	this->lastDecision = 0;
 	this->portrait.clear();
@@ -3630,6 +3631,64 @@ void Creature::monsterInit() {
 		startingMp = monster->getMp();
 		n = static_cast<float>( startingMp * level );
 		mp = static_cast<int>( n * Util::roll( mt.minHpMpBase, mt.maxHpMpBase ) );
+	}
+}
+
+Creature *Creature::summonCreature( bool friendly ) {
+	Creature *creature = NULL;
+	if( (int)(getSummoned()->size()) >= getMaxSummonedCreatures() ) {
+		session->getGameAdapter()->writeLogMessage( _( "You may not summon any more creatures." ), Constants::MSGTYPE_STATS );
+	} else {
+		Monster *monster = Monster::getRandomMonster( Util::pickOne( (int)( getLevel() * 0.5f ), (int)( getLevel() * 0.75f ) ) );
+		if( monster ) {
+			GLShape *shape = session->getShapePalette()->
+			                 getCreatureShape( monster->getModelName(),
+			                                   monster->getSkinName(),
+			                                   monster->getScale(),
+			                                   monster );
+			creature = session->newCreature( monster, shape );
+			
+			addSummoned( creature );
+			creature->setSummoner( this );
+
+			// monster summons friendly or pc summons friendly: possess it
+			if( isMonster() != friendly ) {
+					// maybe make a new state mod for 'summonned'? Maybe not... all the battle code to update... argh
+					creature->setStateMod( StateMod::possessed, true );
+			}
+			
+			// register with squirrel
+			session->getSquirrel()->registerCreature( creature );
+			for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
+				session->getSquirrel()->registerItem( creature->getBackpackItem( i ) );
+			}
+	
+			int x, y;
+			creature->findPlace( toint( getX() ), toint( getY() ), &x, &y );
+			creature->startEffect( Constants::EFFECT_TELEPORT, ( Constants::DAMAGE_DURATION * 4 ) );
+			
+			char message[200];
+			snprintf( message, 200, _( "%s calls for help: a %s appears!" ), getName(), monster->getType() );
+			session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERMAGIC );		
+		}
+	}
+	return creature;
+}
+
+void Creature::dismissSummonedCreature() {
+	if( isSummoned() ) {
+		// remove from the map; the object will be cleaned up at the end of the mission
+		session->getMap()->removeCreature( toint( getX() ), toint( getY() ), toint( getZ() ) );
+		setStateMod( StateMod::dead, true );
+		// cancel target, otherwise segfaults on resurrection
+		cancelTarget();
+		
+		session->getMap()->startEffect( toint( getX() ), toint( getY() ), toint( getZ() ), 
+		                                Constants::EFFECT_DUST, ( Constants::DAMAGE_DURATION * 4 ) );
+		
+		char message[200];
+		snprintf( message, 200, _( "%s turns to vapors and disappears!" ), getName() );
+		session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERMAGIC );
 	}
 }
 
