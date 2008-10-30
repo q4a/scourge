@@ -1896,8 +1896,8 @@ bool Creature::isWithPrereq ( Item *item ) {
   // Is it a potion?
   if ( item->getRpgItem()->getPotionSkill() < 0 ) {
     int potionSkill = ( ( item->getRpgItem()->getPotionSkill() < 0 ) ? ( -item->getRpgItem()->getPotionSkill() - 2 ) : 0 ) ;
-    float remainingHP = getHp() / ( getStartingHp() ? getStartingHp() : 1 );
-    float remainingMP = getMp() / ( getStartingMp() ? getStartingMp() : 1 );
+    float remainingHP = getHp() / ( getMaxHp() ? getMaxHp() : 1 );
+    float remainingMP = getMp() / ( getMaxMp() ? getMaxMp() : 1 );
     if ( ( potionSkill == Constants::HP ) && ( remainingHP <= LOW_HP ) ) return true;
     if ( ( potionSkill == Constants::MP ) && ( remainingMP <= LOW_MP ) ) return true;
   }
@@ -1952,17 +1952,17 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 	if ( getStateMod( StateMod::possessed ) ) {
 		if ( !isMonster() ) {
 			for ( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-				if ( !session->getParty()->getParty( i )->getStateMod( StateMod::dead ) && session->getParty()->getParty( i )->isWithPrereq( spell ) )
+				if ( !session->getParty()->getParty( i )->getStateMod( StateMod::dead ) && session->getMap()->isLocationVisible( toint( session->getParty()->getParty( i )->getX() ), toint( session->getParty()->getParty( i )->getY() ) ) && session->getMap()->isLocationInLight( toint( session->getParty()->getParty( i )->getX() ), toint( session->getParty()->getParty( i )->getY() ), session->getParty()->getParty( i )->getShape() ) &&  session->getParty()->getParty( i )->isWithPrereq( spell ) )
 				possibleTargets.push_back( session->getParty()->getParty( i ) );
 			}
 		}
 		for ( int i = 0; i < session->getCreatureCount(); i++ ) {
-			if ( ( !isMonster() ? session->getCreature( i )->isMonster() : ( session->getCreature( i )->isNpc() || session->getCreature( i )->isWanderingHero() ) ) && !session->getCreature( i )->getStateMod( StateMod::dead ) && session->getCreature( i )->isWithPrereq( spell ) )
+			if ( ( !isMonster() ? session->getCreature( i )->isMonster() : ( session->getCreature( i )->isNpc() || session->getCreature( i )->isWanderingHero() ) ) && !session->getCreature( i )->getStateMod( StateMod::dead ) && session->getMap()->isLocationVisible( toint( session->getCreature( i )->getX() ), toint( session->getCreature( i )->getY() ) ) && session->getMap()->isLocationInLight( toint( session->getCreature( i )->getX() ), toint( session->getCreature( i )->getY() ), session->getCreature( i )->getShape() ) &&  session->getCreature( i )->isWithPrereq( spell ) )
 			possibleTargets.push_back( session->getCreature( i ) );
 		}
 	} else {
 		for ( int i = 0; i < session->getCreatureCount(); i++ ) {
-			if ( ( isMonster() ? session->getCreature( i )->isMonster() : ( session->getCreature( i )->isNpc() || session->getCreature( i )->isWanderingHero() ) ) && !session->getCreature( i )->getStateMod( StateMod::dead ) && session->getCreature( i )->isWithPrereq( spell ) )
+			if ( ( isMonster() ? session->getCreature( i )->isMonster() : ( session->getCreature( i )->isNpc() || session->getCreature( i )->isWanderingHero() ) ) && !session->getCreature( i )->getStateMod( StateMod::dead ) && session->getMap()->isLocationVisible( toint( session->getCreature( i )->getX() ), toint( session->getCreature( i )->getY() ) ) && session->getMap()->isLocationInLight( toint( session->getCreature( i )->getX() ), toint( session->getCreature( i )->getY() ), session->getCreature( i )->getShape() ) &&  session->getCreature( i )->isWithPrereq( spell ) )
 			possibleTargets.push_back( session->getCreature( i ) );
 		}
 	}
@@ -1998,49 +1998,238 @@ void Creature::decideAction() {
     return;
   }
 
-  // Are we currently loitering around?
-  // Continue loitering, stop or attack someone
-  if ( getMotion() == Constants::MOTION_LOITER ) {
+  #define DECISION_STATE_COUNT 14
+  #define DECISION_ACTION_COUNT 9
 
-    if ( pathManager->atEndOfPath() ) {
-      if ( Util::dice( 3 ) == 0 ) {
-        pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
-        setMotion( Constants::MOTION_LOITER );
-      } else {
-        setMotion( Constants::MOTION_STAND );
-        stopMoving();
-      }
-    } else {
-      if ( Util::dice( 10 ) == 0 ) {
-        setMotion( Constants::MOTION_STAND );
-        stopMoving();
-      } else {
-        Util::dice(6) == 0 ? attackRandomTarget() : attackClosestTarget();
-      }
+  // This is the AI's decision matrix. On every decision cycle, it is walked
+  // top to bottom and averages the weights between all rows (states) that
+  // currently apply to the situation. The result is an array of
+  // (DECISION_ACTION_COUNT) averaged weights. A dice is thrown against
+  // random indices until the roll is <= the weight saved there. The associated
+  // action is then executed.
+
+  // For the sake of correct averaging, the sum of the weights in a row should
+  // always be 1.
+
+  // Actions (from left to right):
+  // AtkClosest, Cast, AreaCast, Heal, ACCast, AtkRandom, StartLoiter, StopMoving, GoOn
+
+  float decisionMatrix[ DECISION_STATE_COUNT ][ DECISION_ACTION_COUNT ] = {
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.75f, // Hanging around, no enemies
+    0.7f, 0.15f, 0.0f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.0f, // Hanging around, enemies near
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.9f, // Loitering, no enemies
+    0.7f, 0.15f, 0.0f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.0f, // Loitering, enemies near
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.9f, 0.0f, // Loitering, end of path
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.8f, // Moving towards target
+    0.0f, 0.0f, 0.0f, 0.9f, 0.0f, 0.1f, 0.0f, 0.0f, 0.0f, // Low HP
+    0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.8f, // Target has low HP
+    0.0f, 0.0f, 0.0f, 0.9f, 0.0f, 0.1f, 0.0f, 0.0f, 0.0f, // Low MP
+    0.0f, 0.3f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.7f, // Target has low MP
+    0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.75f, // No nice AC boost
+    0.0f, 0.0f, 0.4f, 0.0f, 0.2f, 0.2f, 0.0f, 0.0f, 0.2f, // Surrounded (min. 3 attackers)
+    0.0f, 0.3f, 0.2f, 0.0f, 0.15f, 0.15f, 0.0f, 0.0f, 0.2f, // Friendlies outnumbered by enemy
+    0.0f, 0.15f, 0.1f, 0.0f, 0.05f, 0.1f, 0.0f, 0.0f, 0.0f // Friendlies outnumbering enemy
+  };
+
+  int stateCount = 0;
+  float decisionAccum[ DECISION_ACTION_COUNT ];
+
+  // STEP 1: Collect the weights of the active states.
+
+  // Collect the standing and loitering states.
+
+  Creature *closestTarget = getClosestTarget();
+
+  if ( ( getMotion() == Constants::MOTION_STAND ) && !closestTarget ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 0 ][ i ];
     }
-
-  // Are we standing around doing nothing?
-  } else if ( getMotion() == Constants::MOTION_STAND ) {
-
-    // Start loitering or attack someone
-    if ( !getTargetCreature() ) {
-      if ( Util::dice( 3 ) == 0 ) { 
-        pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
-        setMotion( Constants::MOTION_LOITER );
-      } else {
-        Util::dice(6) == 0 ? attackRandomTarget() : attackClosestTarget();
-      }
-    } else {
-      Util::dice(6) == 0 ? attackRandomTarget() : attackClosestTarget();
+    stateCount++;
+  } else if ( ( getMotion() == Constants::MOTION_STAND ) && closestTarget ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 1 ][ i ];
     }
-
-  // Are we moving towards someone/something?
-  // Slim chance to spontaneously select another target
-  } else if ( getMotion() == Constants::MOTION_MOVE_TOWARDS ) {
-    if ( Util::dice( 12 ) == 0 ) attackRandomTarget();
+    stateCount++;
+  } else if ( ( getMotion() == Constants::MOTION_LOITER ) && !closestTarget && !getPathManager()->atEndOfPath() ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 2 ][ i ];
+    }
+    stateCount++;
+  } else if ( ( getMotion() == Constants::MOTION_LOITER ) && closestTarget ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 3 ][ i ];
+    }
+    stateCount++;
+  } else if ( ( getMotion() == Constants::MOTION_LOITER ) && getPathManager()->atEndOfPath() ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 4 ][ i ];
+    }
+    stateCount++;
+  } else if ( ( getMotion() == Constants::MOTION_MOVE_TOWARDS ) && hasTarget() ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 5 ][ i ];
+    }
+    stateCount++;
   }
 
-return;
+  // Collect the HP/MP states.
+
+  float remainingHP = getHp() / ( getMaxHp() ? getMaxHp() : 1 );
+
+  if ( remainingHP <= LOW_HP ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 6 ][ i ];
+    }
+    stateCount++;
+  }
+
+  if ( getTargetCreature() ) {
+   remainingHP = getTargetCreature()->getHp() / ( getTargetCreature()->getMaxHp() ? getTargetCreature()->getMaxHp() : 1 );
+
+    if ( remainingHP <= LOW_HP ) {
+      for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+        decisionAccum[ i ] += decisionMatrix[ 7 ][ i ];
+      }
+      stateCount++;
+    }
+  }
+
+  float remainingMP = getMp() / ( getMaxMp() ? getMaxMp() : 1 );
+
+  if ( remainingMP <= LOW_MP ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 8 ][ i ];
+    }
+    stateCount++;
+  }
+
+  if ( getTargetCreature() ) {
+   remainingMP = getTargetCreature()->getMp() / ( getTargetCreature()->getMaxMp() ? getTargetCreature()->getMaxMp() : 1 );
+
+    if ( remainingMP <= LOW_MP ) {
+      for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+        decisionAccum[ i ] += decisionMatrix[ 9 ][ i ];
+      }
+      stateCount++;
+    }
+  }
+
+  // Collect the "I love to pimp my armor class" state.
+
+  float armor, dodgePenalty;
+  getArmor( &armor, &dodgePenalty, 0 );
+
+  if ( armor < HIGH_AC ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 10 ][ i ];
+    }
+    stateCount++;
+  }
+
+  // Get information for the last 3 states.
+
+  Creature *c;
+  int numAttackers = 0;
+  int numFriendlies = 0;
+  int numFoes = 0;
+  float dist;
+
+  for ( int i = 0; i < session->getCreatureCount(); i++ ) {
+    c = session->getCreature( i );
+
+    if ( c->getTargetCreature() == this ) numAttackers++;
+
+    dist = Constants::distance( getX(),  getY(), getShape()->getWidth(), getShape()->getDepth(), c->getX(), c->getY(), c->getShape()->getWidth(), c->getShape()->getDepth() );
+
+    if ( dist <= CREATURE_SIGHT_RADIUS ) {
+      if ( isFriendly( c ) ) {
+        numFriendlies++;
+      } else {
+        numFoes++;
+      }
+    }
+
+  }
+
+  // Collect the "surrounded" state.
+
+  if ( numAttackers > 2 ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 11 ][ i ];
+    }
+    stateCount++;
+  }
+
+  // Collect the "outnumbered" states.
+
+  if ( numFoes > ( numFriendlies * 2 ) ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 12 ][ i ];
+    }
+    stateCount++;
+  } else if ( numFriendlies > ( numFoes * 2 ) ) {
+    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ 13 ][ i ];
+    }
+    stateCount++;
+  }
+
+  // STEP 2: Process the accumulated weights.
+
+  // Calculate the average of the collected weights.
+
+  float decisionAverage[ DECISION_ACTION_COUNT ];
+
+  for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+    decisionAverage[ i ] = decisionAccum[ i ] / stateCount;
+  }
+
+  // TODO:Shift the weights towards their average for chaotic creatures.
+
+  // STEP 3: Determine the action to do.
+
+  int action;
+
+  // Throw a dice against randomly picked nonzero weights.
+  // NOTE: This will result in an endless loop if all weights are zero!
+
+  while ( true ) {
+    action = Util::pickOne( 0, DECISION_ACTION_COUNT - 1 );
+    if ( decisionAverage[ action ] > 0.0f ) {
+      if ( Util::roll( 0.0f, 1.0f ) <= decisionAverage[ action ] ) break;
+    }
+  }
+
+  switch ( action ) {
+    case 0:
+      attackClosestTarget();
+      break;
+    case 1:
+      castOffensiveSpell();
+      break;
+    case 2: // TODO: Implement castAreaSpell().
+      castOffensiveSpell();
+      break;
+    case 3:
+      if ( !castHealingSpell() ) useMagicItem();
+      break;
+    case 4: // TODO: Implement castACSpell().
+      castHealingSpell();
+      break;
+    case 5:
+      attackRandomTarget();
+      break;
+    case 6:
+      pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
+      setMotion( Constants::MOTION_LOITER );
+      break;
+    case 7:
+      setMotion( Constants::MOTION_STAND );
+      stopMoving();
+      break;
+    case 8: // GoOn (a no-op!)
+      break;
+  }
 
 }
 
