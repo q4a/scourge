@@ -71,6 +71,7 @@ protected:
 	void openLocked();
 	void hailAttack();
 	void resurrect();
+	void summonCreature( bool friendly=true );
 
 	int getRadius( int spellEffectSize, float *sx, float *sy );
 };

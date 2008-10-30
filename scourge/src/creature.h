@@ -162,6 +162,8 @@ private:
 
 	Texture portrait;
 	Uint32 lastDecision;
+	Creature *summoner;
+	std::vector<Creature *> summoned;
 
 public:
 	static const int DIAMOND_FORMATION = 0;
@@ -961,6 +963,16 @@ public:
 	inline GLint getLastTick() {
 		return lastTick;
 	}
+	
+	inline int getMaxSummonedCreatures() {
+		return getLevel() / ( isSummoned() ? 6 : 3 );
+	}
+	Creature *summonCreature( bool friendly=true );
+	void dismissSummonedCreature();
+	inline void setSummoner( Creature *summoner ) { this->summoner = summoner; }
+	inline void addSummoned( Creature *summonee ) { this->summoned.push_back( summonee ); }
+	inline bool isSummoned() { return summoner != NULL; }
+	inline std::vector<Creature*> *getSummoned() { return &summoned; }
 
 protected:
 
