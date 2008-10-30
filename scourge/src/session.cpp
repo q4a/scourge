@@ -479,7 +479,7 @@ Creature *Session::getRandomNearbyMonster( int x, int y, int w, int h, int radiu
 	Creature *p = NULL;
 
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
-		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && getCreature( i )->isMonster() && map->isLocationVisible( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ) ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && getCreature( i )->isMonster() ) {
+		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationVisible( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ) ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && getCreature( i )->isMonster() ) {
 			if ( Constants::distance( x, y, w, h, getCreature( i )->getX(), getCreature( i )->getY(), getCreature( i )->getShape()->getWidth(), getCreature( i )->getShape()->getDepth() ) <= (float)radius ) {
 				possibleTargets.push_back ( getCreature( i ) );
 			}
@@ -497,7 +497,7 @@ Creature *Session::getRandomNearbyGoodGuy( int x, int y, int w, int h, int radiu
 	Creature *p = NULL;
 
 	for ( int i = 0; i < getCreatureCount(); i++ ) {
-		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && getCreature( i )->isMonster() && map->isLocationVisible( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ) ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && !( getCreature( i )->isMonster() || getCreature( i )->isHarmlessAnimal() ) ) {
+		if ( !getCreature( i )->getStateMod( StateMod::dead ) && !getCreature( i )->getStateMod( StateMod::possessed ) && map->isLocationVisible( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ) ) && map->isLocationInLight( toint( getCreature( i )->getX() ), toint( getCreature( i )->getY() ), getCreature( i )->getShape() ) && !( getCreature( i )->isMonster() || getCreature( i )->isHarmlessAnimal() ) ) {
 			if ( Constants::distance( x, y, w, h, getCreature( i )->getX(), getCreature( i )->getY(), getCreature( i )->getShape()->getWidth(), getCreature( i )->getShape()->getDepth() ) <= (float)radius ) {
 				possibleTargets.push_back ( getCreature( i ) );
 			}

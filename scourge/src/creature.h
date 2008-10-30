@@ -239,6 +239,11 @@ public:
 		return( !isPartyMember() || getStateMod( StateMod::possessed ) );
 	}
 
+	inline bool isFriendly( Creature *c ) {
+		bool f = ( ( isMonster() && c->isMonster() ) || ( !isMonster() && !c->isMonster() ) );
+		return ( getStateMod( StateMod::possessed ) ? !f : f );
+	}
+
 	inline void setBoss( bool b ) {
 		this->boss = b;
 	}
