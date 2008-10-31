@@ -2115,7 +2115,7 @@ void Creature::decideAction() {
   if ( getTargetCreature() ) {
    remainingMP = getTargetCreature()->getMp() / ( getTargetCreature()->getMaxMp() ? getTargetCreature()->getMaxMp() : 1 );
 
-    if ( ( remainingMP <= LOW_MP ) && getMaxMp() ) {
+    if ( ( remainingMP <= LOW_MP ) && getTargetCreature()->getMaxMp() ) {
       for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
         decisionAccum[ i ] += decisionMatrix[ AI_STATE_ENEMY_LOW_MP ][ i ];
       }
