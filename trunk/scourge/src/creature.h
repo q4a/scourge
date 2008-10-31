@@ -984,6 +984,9 @@ public:
 
 	bool castHealingSpell();
 	bool castOffensiveSpell();
+	bool castAreaSpell();
+	bool castACSpell();
+
 	bool useMagicItem();
 
 	// ##############
