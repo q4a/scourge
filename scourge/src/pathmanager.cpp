@@ -24,6 +24,13 @@
 #include "render/map.h"
 #include "render/glshape.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 #define FAST_SPEED 1
@@ -81,7 +88,7 @@ bool PathManager::findPath( int x, int y, Creature* player, Map* map, bool ignor
  * Move within a certain distance of the target creature
  **/
 bool PathManager::findPathToCreature( Creature* target, Creature* player, Map* map, float distance, bool ignoreParty ) {
-	long maxNodes = map->getPreferences()->getMaxPathNodes();
+	long maxNodes =  max(abs(target->getX() - player->getX()),abs(target->getY() - player->getY()))*4; //map->getPreferences()->getMaxPathNodes();
 
 	GoalFunction * goal = new GetCloseGoal( owner, target, distance );
 	Heuristic * heuristic = new DiagonalDistanceHeuristic( toint( target->getX() + target->getShape()->getWidth() / 2.0f ), toint( target->getY() - target->getShape()->getDepth() / 2.0f ) );
@@ -265,6 +272,8 @@ void PathManager::calculateAllPathLocations() {
 		//add every location our body would fill
 		for ( int k = 0; k < owner->getShape()->getWidth(); k++ )
 			for ( int m = 0; m < owner->getShape()->getDepth(); m++ ) {
+				if ( !owner->getShape()->isInside( k, m ) ) continue;
+
 				loc.x = x + k;
 				loc.y = y - m;
 				allPathLocations.insert( loc );
@@ -317,6 +326,7 @@ bool PathManager::isBlockingPath( Creature* blocker, int x, int y ) {
 	loc.z = 0;
 	for ( int i = 0; i < blocker->getShape()->getWidth(); i++ )
 		for ( int j = 0; j < blocker->getShape()->getDepth(); j++ ) {
+			if ( !blocker->getShape()->isInside( i, j ) ) continue;
 			loc.x = x + i;
 			loc.y = y - j;
 			if ( ( containsItr = allPathLocations.find( loc ) ) != allPathLocations.end() ) {
