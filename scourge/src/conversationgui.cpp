@@ -36,6 +36,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 #define TRADE_WORD "trade"
 #define TRAIN_WORD "train"
 #define UNCURSE_WORD "uncurse"
@@ -117,6 +124,7 @@ ConversationGui::~ConversationGui() {
 	// FIXME: uncomment and fix segfault
 	// scourge->getShapePalette()->decrementSkinRefCountAndDeleteShape( creature->getModelName(), creature->getSkinName(), shape );
 	delete win;
+	delete cards;
 }
 
 bool ConversationGui::handleEvent( Widget *widget, SDL_Event *event ) {

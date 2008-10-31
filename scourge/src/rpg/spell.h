@@ -320,6 +320,7 @@ public:
 	}
 
 	static void initMagic();
+	static void unInitMagic();
 
 	/// Number of magic schools in the game.
 	inline static int getMagicSchoolCount() {

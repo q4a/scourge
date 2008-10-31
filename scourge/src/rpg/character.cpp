@@ -21,6 +21,13 @@
 #include "rpgitem.h"
 #include "spell.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 map<string, Character*> Character::character_class;
@@ -95,6 +102,14 @@ void Character::initCharacters() {
 	buildTree();
 }
 
+void Character::unInitCharacters() {
+	for ( size_t i = 0; i < character_list.size(); ++i ) {
+		delete character_list[i];
+	}
+	character_list.clear();
+
+}
+	
 void Character::addItemTags( const char *s, set<string> *list ) {
 	char line[1000];
 	strcpy( line, s );

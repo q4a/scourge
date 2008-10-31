@@ -18,6 +18,13 @@
 #include "rpg.h"
 #include "rpgitem.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 map<string, Skill*> Skill::skillsByName;
@@ -159,6 +166,19 @@ void Rpg::initRpg() {
 	delete config;
 }
 
+void Rpg::unInitRpg() {
+	for ( size_t i = 0; i < StateMod::stateMods.size(); ++i ) {
+		delete StateMod::stateMods[i];
+	}
+	StateMod::stateMods.clear();
+	StateMod::stateModsByName.clear();
+	for ( size_t i = 0; i < SkillGroup::groups.size(); ++i ) {
+		delete SkillGroup::groups[i];
+	}
+	SkillGroup::groups.clear();
+
+}
+
 // Create a random, cheeseball, fantasy name
 std::string Rpg::createName() {
 	string ret = firstSyl[ Util::dice( firstSyl.size() ) ];
@@ -208,6 +228,10 @@ SkillGroup::SkillGroup( char *name, char *displayName, char *description ) {
 }
 
 SkillGroup::~SkillGroup() {
+	for ( size_t i = 0; i < skills.size(); ++i ) {
+		delete skills[i];
+	}
+	skills.clear();
 }
 
 StateMod::StateMod( char const* name, char const* displayName

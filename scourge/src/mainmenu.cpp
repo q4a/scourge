@@ -159,6 +159,7 @@ MainMenu::~MainMenu() {
 		delete textEffect;
 	}
 	textEffects.clear();
+	delete partyEditor;
 	delete savegameDialog;
 	delete newGameConfirm;
 	delete aboutDialog;

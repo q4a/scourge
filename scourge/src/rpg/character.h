@@ -126,6 +126,7 @@ public:
 	}
 
 	static void initCharacters();
+	static void unInitCharacters();
 	static void addItemTags( const char *s, std::set<std::string> *list );
 
 	void finishProfessionTag();

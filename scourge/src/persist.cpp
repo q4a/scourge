@@ -19,6 +19,13 @@
 #include "render/renderlib.h"
 #include "io/file.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 // since Persist is namespace now the former protected members of it
@@ -153,6 +160,7 @@ void deleteItemInfo( ItemInfo *info ) {
 	for ( int i = 0; i < static_cast<int>( info->containedItemCount ); i++ ) {
 		deleteItemInfo( info->containedItems[i] );
 	}
+	delete info->magicDamage;
 	delete info;
 }
 
@@ -597,9 +605,9 @@ MapInfo *Persist::loadMap( File *file ) {
 
 void Persist::deleteMapInfo( MapInfo *info ) {
 	for ( int i = 0; i < static_cast<int>( info->pos_count ); i++ ) {
-		if ( info->pos[i]->item_pos ) delete info->pos[i]->item_pos;
-		if ( info->pos[i]->item ) delete info->pos[i]->item;
-		if ( info->pos[i]->creature ) delete info->pos[i]->creature;
+		if ( info->pos[i]->item_pos ) deleteItemInfo( info->pos[i]->item_pos );
+		if ( info->pos[i]->item ) deleteItemInfo( info->pos[i]->item );
+		if ( info->pos[i]->creature ) deleteCreatureInfo( info->pos[i]->creature );
 		delete info->pos[i];
 	}
 	for ( int i = 0; i < static_cast<int>( info->rug_count ); i++ ) {

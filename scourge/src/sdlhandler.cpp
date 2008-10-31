@@ -31,6 +31,13 @@
 #include "render/cutscene.h"
 #include "render/texture.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 // FIXME: use static member variable, std::string is clear by default
@@ -93,7 +100,12 @@ SDLHandler::SDLHandler( GameAdapter *gameAdapter ) {
 }
 
 SDLHandler::~SDLHandler() {
-	// close fonts, etc.
+	// undoing XXX by ShapePalette::initFonts() + SDLHandler::initFonts()
+	for ( size_t i = 0; i < fontInfos.size(); ++i ) {
+		delete fontInfos[ i ]->fontMgr;
+		delete fontInfos[ i ];
+	}
+	fontInfos.clear();
 }
 
 void SDLHandler::pushHandlers( SDLEventHandler *eventHandler,
@@ -972,6 +984,7 @@ void SDLHandler::texPrint( GLfloat x, GLfloat y,
 	                                              toint( y + fontInfos[ fontType ]->yoffset ) );
 }
 
+// XXX: second-half-initializing first half is done by ShapePalette 
 void SDLHandler::initFonts() {
 	if ( !font_initialized ) {
 		//cerr << "Loading " << fontInfos.size() << " fonts: " << endl;

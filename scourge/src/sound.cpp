@@ -24,6 +24,13 @@
 #include "rpg/rpgitem.h"
 #include "creature.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 #define MISSION_MUSIC_COUNT 6
@@ -109,6 +116,9 @@ Sound::~Sound() {
 			Mix_Chunk *sample = i->second;
 			Mix_FreeChunk( sample );
 			sample = NULL;
+		}
+		for ( std::map<std::string, AmbientSound*>::iterator i = ambients.begin(); i != ambients.end(); ++i ) {
+			delete i->second;
 		}
 		// stop audio system
 		Mix_CloseAudio();

@@ -23,13 +23,27 @@
 #include "shapes.h"
 #include "mapadapter.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
+namespace {
+CaveRenderHelper caveRenderHelper;
+RoomRenderHelper roomRenderHelper;
+OutdoorRenderHelper outdoorRenderHelper;
+DebugOutdoorRenderHelper debugOutdoorRenderHelper;
+}
+
 MapRenderHelper *MapRenderHelper::helpers[] = {
-	new CaveRenderHelper(),
-	new RoomRenderHelper(),
-	new OutdoorRenderHelper(),
-	new DebugOutdoorRenderHelper()
+	&caveRenderHelper,
+	&roomRenderHelper,
+	&outdoorRenderHelper,
+	&debugOutdoorRenderHelper
 };
 
 MapRenderHelper::MapRenderHelper() {

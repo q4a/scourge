@@ -18,6 +18,13 @@
 #include "../common/constants.h"
 #include "guitheme.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 /**
@@ -43,6 +50,7 @@ GuiTheme::GuiTheme( char const* name ) {
 	listBackground = NULL;
 	inputBackground = NULL;
 	inputText = NULL;
+	selectionText = NULL;
 	selectionBackground = NULL;
 	selectedBorder = NULL;
 	selectedCharacterBorder = NULL;
@@ -64,6 +72,7 @@ GuiTheme::~GuiTheme() {
 	delete listBackground;
 	delete inputBackground;
 	delete inputText;
+	delete selectionText;
 	delete selectionBackground;
 	delete selectedBorder;
 	delete selectedCharacterBorder;
@@ -172,6 +181,14 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
 
 	delete config;
 }
+
+void GuiTheme::unInitThemes() {
+	for ( map<string, GuiTheme*>::iterator i = themes.begin(); i != themes.end(); ++i ) {
+		delete i->second;
+	}
+	themes.clear();
+}
+
 
 /// Loads the theme's textures.
 

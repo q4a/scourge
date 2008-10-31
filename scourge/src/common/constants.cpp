@@ -18,6 +18,13 @@
 #include "constants.h"
 #include "../util.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 const char *Constants::localhost = "localhost";
@@ -180,14 +187,20 @@ const char *Constants::MAGIC_ITEM_NAMES[] = {
 	N_( "Divine" )
 };
 
+Color MAGIC_ITEM_COLOR0( 0.6f, 1, 0.7f, 1 );
+Color MAGIC_ITEM_COLOR1( 0.6f, 0.7f, 1, 1 );
+Color MAGIC_ITEM_COLOR2( 1, 0.6f, 0.7f, 1 );
+Color MAGIC_ITEM_COLOR3( 1, 0.6f, 1, 1 );
+
 const Color *Constants::MAGIC_ITEM_COLOR[] = {
-	new Color( 0.6f, 1, 0.7f, 1 ),
-	new Color( 0.6f, 0.7f, 1, 1 ),
-	new Color( 1, 0.6f, 0.7f, 1 ),
-	new Color( 1, 0.6f, 1, 1 )
+	&MAGIC_ITEM_COLOR0,
+	&MAGIC_ITEM_COLOR1,
+	&MAGIC_ITEM_COLOR2,
+	&MAGIC_ITEM_COLOR3
 };
 
-const Color *Constants::SPECIAL_ITEM_COLOR = new Color( 1, 1, 0.5, 1 );
+Color daEspeziale( 1, 1, 0.5, 1 );
+const Color *Constants::SPECIAL_ITEM_COLOR = &daEspeziale;
 
 const char *Constants::EFFECT_NAMES[] = {
 	"EFFECT_FLAMES",

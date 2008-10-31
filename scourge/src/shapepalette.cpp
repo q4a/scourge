@@ -205,6 +205,7 @@ ShapePalette::~ShapePalette() {
 	}
 }
 
+// XXX: initializing something somewhere far
 void ShapePalette::initFonts( ConfigLang *config ) {
 	vector<ConfigNode*> *fonts = config->getDocument()->getChildrenByName( "fonts" );
 	ConfigNode *fontsNode = ( *fonts )[0];
@@ -902,6 +903,7 @@ void ShapePalette::initMapGrid() {
 		}
 		mapGridLocationByType[ loc->type ]->push_back( loc );
 	}
+	delete config;
 }
 
 /**

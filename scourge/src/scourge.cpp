@@ -89,14 +89,46 @@ void Scourge::setBlendFuncStatic() {
 	glBlendFunc( blend[blendA], blend[blendB] );
 }
 
-Scourge::Scourge( UserConfiguration *config ) : SDLOpenGLAdapter( config ) {
+Scourge::Scourge( UserConfiguration *config ) 
+		: SDLOpenGLAdapter( config ) 
+		, pcui( NULL )
+		, progress( NULL )
+		, textDialog( NULL )
+		, confirmAutoloadDialog( NULL )
+		, confirmQuickloadDialog( NULL )
+		, confirmQuicksaveDialog( NULL )
+		, confirmUpload( NULL )
+		, dismissHeroDialog( NULL )
+		, chapterIntroWin( NULL )
+		, cards( NULL )
+		, mainWin( NULL )
+		, tbCombatWin( NULL )
+		, squirrelWin( NULL )
+		, exitConfirmationDialog( NULL )
+		, pcEditor( NULL )
+		, rechargeDialog( NULL )
+		, identifyDialog( NULL )
+		, uncurseDialog( NULL )
+		, trainDialog( NULL )
+		, donateDialog( NULL )
+		, healDialog( NULL )
+		, tradeDialog( NULL )
+		, conversationGui( NULL )
+		, infoGui( NULL )
+		, netPlay( NULL )
+		, boardWin( NULL )
+		, miniMap( NULL )
+		, mapSettings( NULL )
+		, saveDialog( NULL )
+		, multiplayer( NULL )
+		, optionsMenu( NULL )
+		, mainMenu( NULL ) {
 	// init the random number generator
 	srand( ( unsigned int )time( ( time_t* )NULL ) );
 	Util::mt_srand( ( unsigned long )time( ( time_t* )NULL ) );
 
 	oldStory = currentStory = 0;
 	lastTick = 0;
-	textDialog = NULL;
 	movingX = movingY = movingZ = MAP_WIDTH + 1;
 	movingItem = NULL;
 	nextMission = -1;
@@ -112,7 +144,6 @@ Scourge::Scourge( UserConfiguration *config ) : SDLOpenGLAdapter( config ) {
 	targetSelectionFor = NULL;
 
 	battleCount = 0;
-	pcui = NULL;
 	descriptionScroller = new TextScroller( this );
 	containerGuiCount = 0;
 	changingStory = goingDown = goingUp = false;
@@ -127,8 +158,6 @@ Scourge::Scourge( UserConfiguration *config ) : SDLOpenGLAdapter( config ) {
 	view = new ScourgeView( this );
 	handler = new ScourgeHandler( this );
 	chapterTextPos = 0;
-
-	progress = NULL;
 }
 
 void Scourge::initUI() {

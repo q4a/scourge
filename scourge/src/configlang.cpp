@@ -24,12 +24,19 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 ConfigValue::ConfigValue( ConfigValue const& that )
 		: type( that.type )
 		, translatable( that.translatable )
 		, valueStr( that.valueStr )
 		, translateStr( that.translateStr )
-		, original( "" ) //-=K=-: original was left uninitialized?
+		, original( "" ) 
 		, valueNum( that.valueNum ) { }
 
 ConfigValue::ConfigValue( char const* value ) {
@@ -110,6 +117,7 @@ void ConfigNode::addChild( ConfigNode *node ) {
 }
 
 void ConfigNode::addValue( std::string name, ConfigValue *value ) {
+	if ( values.find( name ) != values.end() ) delete values[ name ];
 	values[ name ] = value;
 	if ( name == "id" ) {
 		this->id = value->getAsString();

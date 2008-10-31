@@ -34,6 +34,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 #define ALWAYS_RELOAD_THEME 1
 
 bool Shapes::debugFileLoad = false;
@@ -210,6 +217,20 @@ Shapes::Shapes( Session *session ) {
 	currentTheme = NULL;
 	this->session = session;
 	if ( !instance ) instance = this;
+	shapeCount = 0;
+	shapes[0] = NULL;
+	for (int i = 0; i < STENCIL_COUNT; ++i ) {
+		stencilImage[ i ] = NULL;
+	}
+}
+
+Shapes::~Shapes() {
+	for (int i = 0; i < STENCIL_COUNT; ++i ) {
+		delete stencilImage[ i ];
+	}
+	for ( int i = 0; i < shapeCount; i++ ) {
+		delete shapes[i];
+	}
 }
 
 Texture* Shapes::findOrMakeTextureGroup( char *s ) {
@@ -306,6 +327,7 @@ void Shapes::initialize() {
 	shapeMap[nameStr] = shapes[shapeCount];
 	shapeCount++;
 
+	// maybe Shapes should contain the statics in GLCaveShape? 
 	// add cave shapes (1 per dimension, flat and corner each)
 	GLCaveShape::createShapes( textureGroup[0], shapeCount, this );
 	for ( int i = 0; i < GLCaveShape::CAVE_INDEX_COUNT; i++ ) {
@@ -330,9 +352,6 @@ void Shapes::loadCursors() {
 		//cursorTexture[i] = loadAlphaTexture( path, NULL, NULL, true );
 		cursorTexture[i].load( path );
 	}
-}
-
-Shapes::~Shapes() {
 }
 
 void Shapes::loadDebugTheme() {

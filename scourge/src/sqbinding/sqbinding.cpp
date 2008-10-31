@@ -38,6 +38,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 #ifdef SQUNICODE
 #define scvprintf vswprintf
 #else
@@ -125,6 +132,11 @@ SqBinding::SqBinding( Session *session ) {
 SqBinding::~SqBinding() {
 	sq_pop( vm, 1 ); //pops the root table
 	sq_close( vm );
+	delete game;
+	delete creature;
+	delete mission;
+	delete item;
+	delete spell;
 }
 
 

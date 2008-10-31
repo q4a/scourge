@@ -35,19 +35,6 @@ using namespace std;
 # undef THIS_FILE
   static char THIS_FILE[] = __FILE__;
 #endif 
-namespace {
-
-class Mop {
-public:
-	Mop() {}
-	~Mop() {
-		//Something::DestroyStatics();
-	}
-};
-
-Mop mop;
-
-}
 
 vector<string> Mission::intros;
 vector<string> Mission::unknownPhrases;
