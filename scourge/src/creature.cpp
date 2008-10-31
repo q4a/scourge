@@ -2022,19 +2022,19 @@ void Creature::decideAction() {
   // AtkClosest, Cast, AreaCast, Heal, ACCast, AtkRandom, StartLoiter, StopMoving, GoOn
   float decisionMatrix[ AI_STATE_COUNT ][ AI_ACTION_COUNT ] = {
     0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.75f, // Hanging around, no enemies
-    0.7f, 0.15f, 0.0f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.0f, // Hanging around, enemies near
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.9f, // Loitering, no enemies
-    0.7f, 0.15f, 0.0f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.0f, // Loitering, enemies near
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.9f, 0.0f, // Loitering, end of path
+    0.8f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Hanging around, enemies near
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.8f, // Loitering, no enemies
+    0.8f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Loitering, enemies near
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.8f, 0.0f, // Loitering, end of path
     0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.8f, // Moving towards target
-    0.0f, 0.0f, 0.0f, 0.9f, 0.0f, 0.1f, 0.0f, 0.0f, 0.0f, // Low HP
-    0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.8f, // Target has low HP
-    0.0f, 0.0f, 0.0f, 0.9f, 0.0f, 0.1f, 0.0f, 0.0f, 0.0f, // Low MP
-    0.0f, 0.3f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.7f, // Target has low MP
+    0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Low HP
+    0.0f, 0.35f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, // Target has low HP
+    0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Low MP
+    0.0f, 0.35f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, // Target has low MP
     0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.75f, // No nice AC boost
-    0.0f, 0.0f, 0.4f, 0.0f, 0.2f, 0.2f, 0.0f, 0.0f, 0.2f, // Surrounded (min. 3 attackers)
-    0.0f, 0.3f, 0.2f, 0.0f, 0.15f, 0.15f, 0.0f, 0.0f, 0.2f, // Friendlies outnumbered by enemy
-    0.0f, 0.15f, 0.1f, 0.0f, 0.05f, 0.1f, 0.0f, 0.0f, 0.0f // Friendlies outnumbering enemy
+    0.0f, 0.1f, 0.5f, 0.0f, 0.2f, 0.2f, 0.0f, 0.0f, 0.0f, // Surrounded (min. 3 attackers)
+    0.0f, 0.4f, 0.25f, 0.0f, 0.2f, 0.15f, 0.0f, 0.0f, 0.0f, // Friendlies outnumbered by enemy
+    0.0f, 0.2f, 0.15f, 0.0f, 0.1f, 0.2f, 0.0f, 0.0f, 0.35f // Friendlies outnumbering enemy
   };
 
   int stateCount = 0;
