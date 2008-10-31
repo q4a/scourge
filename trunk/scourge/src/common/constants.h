@@ -662,6 +662,7 @@ public:
 	#define WEATHER_FOG 0x04
 	#define MAX_WEATHER 0x08
 
+	// Creature actions
 	enum {
 		ACTION_NO_ACTION = -1,
 		ACTION_EAT_DRINK = 0,

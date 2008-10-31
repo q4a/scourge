@@ -1998,14 +1998,11 @@ void Creature::decideAction() {
     return;
   }
 
-  #define DECISION_STATE_COUNT 14
-  #define DECISION_ACTION_COUNT 9
-
   // This is the AI's decision matrix. On every decision cycle, it is walked
   // top to bottom and averages the weights between all rows (states) that
   // currently apply to the situation. The result is an array of
-  // (DECISION_ACTION_COUNT) averaged weights. A dice is thrown against
-  // random indices until the roll is <= the weight saved there. The associated
+  // (AI_ACTION_COUNT) averaged weights. A dice is thrown against random
+  // indices until the roll is <= the weight saved there. The associated
   // action is then executed.
 
   // For the sake of correct averaging, the sum of the weights in a row should
@@ -2014,7 +2011,7 @@ void Creature::decideAction() {
   // Actions (from left to right):
   // AtkClosest, Cast, AreaCast, Heal, ACCast, AtkRandom, StartLoiter, StopMoving, GoOn
 
-  float decisionMatrix[ DECISION_STATE_COUNT ][ DECISION_ACTION_COUNT ] = {
+  float decisionMatrix[ AI_STATE_COUNT ][ AI_ACTION_COUNT ] = {
     0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.75f, // Hanging around, no enemies
     0.7f, 0.15f, 0.0f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.0f, // Hanging around, enemies near
     0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.9f, // Loitering, no enemies
@@ -2032,7 +2029,7 @@ void Creature::decideAction() {
   };
 
   int stateCount = 0;
-  float decisionAccum[ DECISION_ACTION_COUNT ];
+  float decisionAccum[ AI_ACTION_COUNT ];
 
   // STEP 1: Collect the weights of the active states.
 
@@ -2041,33 +2038,33 @@ void Creature::decideAction() {
   Creature *closestTarget = getClosestTarget();
 
   if ( ( getMotion() == Constants::MOTION_STAND ) && !closestTarget ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 0 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_STANDING_NO_ENEMY ][ i ];
     }
     stateCount++;
   } else if ( ( getMotion() == Constants::MOTION_STAND ) && closestTarget ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 1 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_STANDING_ENEMY_AROUND ][ i ];
     }
     stateCount++;
   } else if ( ( getMotion() == Constants::MOTION_LOITER ) && !closestTarget && !getPathManager()->atEndOfPath() ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 2 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOITERING_NO_ENEMY ][ i ];
     }
     stateCount++;
   } else if ( ( getMotion() == Constants::MOTION_LOITER ) && closestTarget ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 3 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOITERING_ENEMY_AROUND ][ i ];
     }
     stateCount++;
   } else if ( ( getMotion() == Constants::MOTION_LOITER ) && getPathManager()->atEndOfPath() ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 4 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOITERING_END_OF_PATH ][ i ];
     }
     stateCount++;
   } else if ( ( getMotion() == Constants::MOTION_MOVE_TOWARDS ) && hasTarget() ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 5 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_MOVING_TOWARDS_ENEMY ][ i ];
     }
     stateCount++;
   }
@@ -2077,8 +2074,8 @@ void Creature::decideAction() {
   float remainingHP = getHp() / ( getMaxHp() ? getMaxHp() : 1 );
 
   if ( remainingHP <= LOW_HP ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 6 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOW_HP ][ i ];
     }
     stateCount++;
   }
@@ -2087,8 +2084,8 @@ void Creature::decideAction() {
    remainingHP = getTargetCreature()->getHp() / ( getTargetCreature()->getMaxHp() ? getTargetCreature()->getMaxHp() : 1 );
 
     if ( remainingHP <= LOW_HP ) {
-      for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-        decisionAccum[ i ] += decisionMatrix[ 7 ][ i ];
+      for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+        decisionAccum[ i ] += decisionMatrix[ AI_STATE_ENEMY_LOW_HP ][ i ];
       }
       stateCount++;
     }
@@ -2097,8 +2094,8 @@ void Creature::decideAction() {
   float remainingMP = getMp() / ( getMaxMp() ? getMaxMp() : 1 );
 
   if ( remainingMP <= LOW_MP ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 8 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOW_MP ][ i ];
     }
     stateCount++;
   }
@@ -2107,8 +2104,8 @@ void Creature::decideAction() {
    remainingMP = getTargetCreature()->getMp() / ( getTargetCreature()->getMaxMp() ? getTargetCreature()->getMaxMp() : 1 );
 
     if ( remainingMP <= LOW_MP ) {
-      for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-        decisionAccum[ i ] += decisionMatrix[ 9 ][ i ];
+      for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+        decisionAccum[ i ] += decisionMatrix[ AI_STATE_ENEMY_LOW_MP ][ i ];
       }
       stateCount++;
     }
@@ -2120,8 +2117,8 @@ void Creature::decideAction() {
   getArmor( &armor, &dodgePenalty, 0 );
 
   if ( armor < HIGH_AC ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 10 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_AC_NEEDS_PIMPING ][ i ];
     }
     stateCount++;
   }
@@ -2154,8 +2151,8 @@ void Creature::decideAction() {
   // Collect the "surrounded" state.
 
   if ( numAttackers > 2 ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 11 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_SURROUNDED ][ i ];
     }
     stateCount++;
   }
@@ -2163,13 +2160,13 @@ void Creature::decideAction() {
   // Collect the "outnumbered" states.
 
   if ( numFoes > ( numFriendlies * 2 ) ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 12 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_OUTNUMBERED ][ i ];
     }
     stateCount++;
   } else if ( numFriendlies > ( numFoes * 2 ) ) {
-    for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ 13 ][ i ];
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      decisionAccum[ i ] += decisionMatrix[ AI_STATE_FEW_ENEMIES ][ i ];
     }
     stateCount++;
   }
@@ -2178,9 +2175,9 @@ void Creature::decideAction() {
 
   // Calculate the average of the collected weights.
 
-  float decisionAverage[ DECISION_ACTION_COUNT ];
+  float decisionAverage[ AI_ACTION_COUNT ];
 
-  for ( int i = 0; i < DECISION_ACTION_COUNT; i++ ) {
+  for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
     decisionAverage[ i ] = decisionAccum[ i ] / stateCount;
   }
 
@@ -2194,40 +2191,40 @@ void Creature::decideAction() {
   // NOTE: This will result in an endless loop if all weights are zero!
 
   while ( true ) {
-    action = Util::pickOne( 0, DECISION_ACTION_COUNT - 1 );
+    action = Util::pickOne( 0, AI_ACTION_COUNT - 1 );
     if ( decisionAverage[ action ] > 0.0f ) {
       if ( Util::roll( 0.0f, 1.0f ) <= decisionAverage[ action ] ) break;
     }
   }
 
   switch ( action ) {
-    case 0:
+    case AI_ACTION_ATTACK_CLOSEST_ENEMY:
       attackClosestTarget();
       break;
-    case 1:
+    case AI_ACTION_CAST_ATTACK_SPELL:
       castOffensiveSpell();
       break;
-    case 2: // TODO: Implement castAreaSpell().
+    case AI_ACTION_CAST_AREA_SPELL: // TODO: Implement castAreaSpell().
       castOffensiveSpell();
       break;
-    case 3:
+    case AI_ACTION_HEAL:
       if ( !castHealingSpell() ) useMagicItem();
       break;
-    case 4: // TODO: Implement castACSpell().
+    case AI_ACTION_CAST_AC_SPELL: // TODO: Implement castACSpell().
       castHealingSpell();
       break;
-    case 5:
+    case AI_ACTION_ATTACK_RANDOM_ENEMY:
       attackRandomTarget();
       break;
-    case 6:
+    case AI_ACTION_START_LOITERING:
       pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
       setMotion( Constants::MOTION_LOITER );
       break;
-    case 7:
+    case AI_ACTION_STOP_MOVING:
       setMotion( Constants::MOTION_STAND );
       stopMoving();
       break;
-    case 8: // GoOn (a no-op!)
+    case AI_ACTION_GO_ON: // GoOn (a no-op!)
       break;
   }
 
