@@ -34,6 +34,13 @@
 #include "configlang.h"
 #include "sound.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 Session *Session::instance = NULL;
@@ -70,6 +77,12 @@ Session::Session( GameAdapter *adapter )
 }
 
 Session::~Session() {
+	SpecialSkill::unInitSkills();
+	Monster::unInitMonsters();
+	Character::unInitCharacters();
+	MagicSchool::unInitMagic();
+	Rpg::unInitRpg();
+	GuiTheme::unInitThemes();
 	if ( squirrel ) delete squirrel;
 	deleteCreaturesAndItems();
 	delete party;

@@ -28,6 +28,13 @@
 #include "../common/constants.h"
 #include "fontmgr.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 int FontMgr::initCounter = 0;
@@ -53,7 +60,10 @@ FontMgr::FontMgr( TTF_Font *font, int shadowX, int shadowY ) :
 
 FontMgr::~FontMgr() {
 
-	// FIXME: should de-allocate glyphs and their textures...
+	for ( map<Uint16, GlyphInfo*>::iterator i = glyphs.begin(); i != glyphs.end(); ++i ) {
+		delete i->second;
+	}
+	glyphs.clear();
 
 	initCounter--;
 	if ( 0 == initCounter ) {

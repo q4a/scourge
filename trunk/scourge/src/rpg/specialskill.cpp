@@ -18,6 +18,13 @@
 #include "specialskill.h"
 #include "rpg.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 /**
   *@author Gabor Torok
   */
@@ -102,6 +109,13 @@ void SpecialSkill::initSkills() {
 	}
 
 	delete config;
+}
+
+void SpecialSkill::unInitSkills() {
+	for ( size_t i = 0; i < skills.size(); ++i ) {
+		delete skills[i];
+	}
+	skills.clear();
 }
 
 SpecialSkill::SpecialSkill( const char *name,

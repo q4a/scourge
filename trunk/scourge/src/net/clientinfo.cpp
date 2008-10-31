@@ -2,6 +2,13 @@
 #ifdef HAVE_SDL_NET
 #include "clientinfo.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 #define DEBUG_CLIENT_INFO 0
@@ -63,7 +70,7 @@ ClientInfo::~ClientInfo() {
 }
 
 char *ClientInfo::describe() {
-	snprintf( desc, DESC_SIZE, "id=%d name=%s", id, username );
+	snprintf( desc, DESC_SIZE, "id=%d name=%s", id, username.c_str() );
 	return desc;
 }
 

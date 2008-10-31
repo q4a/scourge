@@ -35,6 +35,7 @@ private:
 
 public:
 	static void initRpg();
+	static void unInitRpg();
 	static std::string createName();
 
 protected:

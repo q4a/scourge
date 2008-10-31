@@ -88,6 +88,7 @@ public:
 	static char DEFAULT_THEME[255];
 
 	static void initThemes( ScourgeGui *scourgeGui );
+	static void unInitThemes();
 	static inline GuiTheme *getThemeByName( const char *name ) {
 		std::string s = name;
 		if ( themes.find( s ) != themes.end() ) return themes[ s ];

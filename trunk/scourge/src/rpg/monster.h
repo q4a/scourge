@@ -167,6 +167,7 @@ public:
 	}
 
 	static void initMonsters();
+	static void unInitMonsters();
 	static Monster *getRandomMonster( int level );
 	static Monster *getMonsterByName( char const* name );
 	static std::map<int, std::vector<std::string>*>* getSoundMap( char const* monsterType );

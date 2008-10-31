@@ -71,6 +71,7 @@ public:
 	}
 
 	static void initSkills();
+	static void unInitSkills();
 
 	SpecialSkill( const char *name,
 	              const char *displayName,

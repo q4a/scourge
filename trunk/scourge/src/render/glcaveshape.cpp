@@ -784,7 +784,7 @@ GLCaveShape::Common::Common()
 
 GLCaveShape::Common::~Common() {
 	for ( int i = 0; i < CAVE_INDEX_COUNT; ++i ) {
-		delete shapeList[i];
+		// deleted in Shapes: delete shapeList[i];
 		for ( size_t j = 0; j < polys[i]->size(); ++j ) {
 			delete (*polys[i])[j];
 		}

@@ -21,6 +21,13 @@
 #include "render/map.h"
 #include "shapepalette.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 #define LINE_HEIGHT 15
@@ -43,6 +50,9 @@ TextScroller::TextScroller( Scourge *scourge ) {
 }
 
 TextScroller::~TextScroller() {
+	for ( size_t i = 0; i < color.size(); ++i ) {
+		delete color[i];
+	}
 }
 
 void TextScroller::addDescription( char const* description, float r, float g, float b, int logLevel ) {

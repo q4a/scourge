@@ -115,10 +115,6 @@ private:
 	int missionId;
 	int locationX, locationY;
 	std::string ambientSoundName;
-public:
-
-#define INTRO_PHRASE "_INTRO_"
-#define UNKNOWN_PHRASE "_UNKNOWN_"
 
 	static std::vector<std::string> intros;
 	static std::vector<std::string> unknownPhrases;
@@ -127,6 +123,12 @@ public:
 	static std::vector<std::string> answers;
 	static std::map<std::string, NpcConversation*> npcConversations;
 	static std::map<std::string, NpcInfo*> npcInfos;
+
+public:
+
+#define INTRO_PHRASE "_INTRO_"
+#define UNKNOWN_PHRASE "_UNKNOWN_"
+
 
 	static char const* getIntro();
 	static char const* getAnswer( char const* keyphrase );

@@ -18,6 +18,13 @@
 #include "slider.h"
 #include "window.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 /**
   *@author Gabor Torok
   */
@@ -41,6 +48,7 @@ Slider::Slider( int x1, int y1, int x2, Texture highlight, int minValue, int max
 }
 
 Slider::~Slider() {
+	delete label;
 }
 
 void Slider::drawWidget( Widget *parent ) {

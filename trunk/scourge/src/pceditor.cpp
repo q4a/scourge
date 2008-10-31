@@ -33,6 +33,13 @@
 #include "render/glshape.h"
 #include "render/Md2.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 #define AVAILABLE_SKILL_POINTS 5
@@ -62,6 +69,8 @@ PcEditor::~PcEditor() {
 	delete[] charTypeStr;
 	delete[] deityTypeStr;
 	deleteLoadedShapes();
+	delete detailsInfo;
+	delete cards;
 }
 
 void PcEditor::setCreature( Creature *c, bool isEditable ) {

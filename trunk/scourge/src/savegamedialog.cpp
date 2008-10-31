@@ -30,6 +30,13 @@
 #include "gui/confirmdialog.h"
 #include "gui/canvas.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 bool savegamesChanged = true;
 int maxFileSuffix = 0;
 
@@ -62,6 +69,9 @@ SavegameDialog::~SavegameDialog() {
 	delete win;
 	// win deletes it as widget: delete files;
 	delete confirm;
+	for ( size_t i = 0; i != fileInfos.size(); ++i ) {
+		delete fileInfos[i];
+	}
 }
 
 #define SAVE_MODE 1

@@ -18,6 +18,13 @@
 #include "spell.h"
 #include "rpg.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 MagicSchool *MagicSchool::schools[10];
@@ -83,6 +90,10 @@ MagicSchool::MagicSchool( char const* name, char const* displayName, char const*
 }
 
 MagicSchool::~MagicSchool() {
+	for ( size_t i = 0; i < spells.size(); ++i ) {
+		delete spells[i];
+	}
+	spells.clear(); 
 }
 
 #define UPDATE_MESSAGE N_("Loading Spells")
@@ -215,6 +226,16 @@ void MagicSchool::initMagic() {
 	}
 
 	delete config;
+}
+
+
+void MagicSchool::unInitMagic() {
+	for ( int i = 0; i < schoolCount; ++i ) {
+		delete schools[i];
+		schools[i] = NULL;
+	}
+	schoolCount = 0;
+
 }
 
 const char *MagicSchool::getRandomString( vector<string> *v ) {

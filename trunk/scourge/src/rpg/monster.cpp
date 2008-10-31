@@ -17,6 +17,14 @@
 #include "../common/constants.h"
 #include "monster.h"
 #include "../configlang.h"
+#include <sstream>
+
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
 
 using namespace std;
 
@@ -177,6 +185,12 @@ void Monster::initCreatures( ConfigLang *config ) {
 			list->push_back( m );
 		}
 		string s = name;
+		for ( int i = 0; monstersByName.find( s ) != monstersByName.end(); ++i ) {
+			cerr << "*** Monster::initCreatures() '" << s << "' occurs multiple times." << endl;
+			stringstream numbered;
+			numbered << name << " " << i+2;
+			s = numbered.str();
+		}
 		monstersByName[s] = m;
 
 		// store type and add sounds
@@ -244,6 +258,29 @@ void Monster::initMonsters() {
 	//config->save( "config/monster2.cfg" );
 	delete config;
 }
+
+void Monster::unInitMonsters() {
+	typedef vector<Monster*> MonVec;
+	for ( map<int, MonVec* >::iterator i = monsters.begin(); i != monsters.end(); ++i ) {
+		delete i->second;
+	}
+	monsters.clear();
+	typedef map<int, vector<string>*> StrVecMap;
+	for ( map<string, StrVecMap*>::iterator i = soundMap.begin(); i != soundMap.end(); ++i ) { 
+		for ( StrVecMap::iterator j = i->second->begin(); j != i->second->end(); ++j ) {
+			delete j->second;
+		}
+		delete i->second;
+	}
+	soundMap.clear();
+	npcs.clear();
+	harmlessCreatures.clear();
+	for ( map<string, Monster*>::iterator i = monstersByName.begin(); i != monstersByName.end(); ++i ) {
+		delete i->second;
+	}
+	monstersByName.clear();
+}
+	
 
 void Monster::addMd2Sounds( char const* model_name, map<int, vector<string>*>* currentSoundMap ) {
 	enum { TXT_SIZE = 1000 };
