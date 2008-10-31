@@ -2029,7 +2029,7 @@ void Creature::decideAction() {
     0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.8f, // Moving towards target
     0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Low HP
     0.0f, 0.35f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, // Target has low HP
-    0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Low MP
+    0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.1f, 0.0f, 0.0f, 0.1f, // Low MP
     0.0f, 0.35f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, // Target has low MP
     0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.75f, // No nice AC boost
     0.0f, 0.1f, 0.5f, 0.0f, 0.2f, 0.2f, 0.0f, 0.0f, 0.0f, // Surrounded (min. 3 attackers)
@@ -2054,7 +2054,7 @@ void Creature::decideAction() {
       decisionAccum[ i ] += decisionMatrix[ AI_STATE_STANDING_NO_ENEMY ][ i ];
     }
     stateCount++;
-  } else if ( ( getMotion() == Constants::MOTION_STAND ) && closestTarget ) {
+  } else if ( ( getMotion() == Constants::MOTION_STAND ) && closestTarget && !hasTarget() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
       decisionAccum[ i ] += decisionMatrix[ AI_STATE_STANDING_ENEMY_AROUND ][ i ];
     }
@@ -2064,7 +2064,7 @@ void Creature::decideAction() {
       decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOITERING_NO_ENEMY ][ i ];
     }
     stateCount++;
-  } else if ( ( getMotion() == Constants::MOTION_LOITER ) && closestTarget ) {
+  } else if ( ( getMotion() == Constants::MOTION_LOITER ) && closestTarget && !hasTarget() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
       decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOITERING_ENEMY_AROUND ][ i ];
     }
@@ -2289,10 +2289,6 @@ Creature *Creature::getRandomTarget() {
 /// Makes the creature attack the closest suitable target. Returns true if target found.
 
 bool Creature::attackClosestTarget() {
-  // Try spells first.
-  if ( castHealingSpell() ) return false;
-  if ( useMagicItem() ) return false;
-  if ( castOffensiveSpell() ) return false;
 
   Creature *p = getClosestTarget();
 
@@ -2307,11 +2303,6 @@ bool Creature::attackClosestTarget() {
 /// Makes the creature attack a random suitable target. Returns true if target found.
 
 bool Creature::attackRandomTarget() {
-  // Try spells first.
-  if ( castHealingSpell() ) return false;
-  if ( useMagicItem() ) return false;
-  if ( castOffensiveSpell() ) return false;
-
   Creature *p = getRandomTarget();
 
   if ( p ) {
