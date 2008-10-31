@@ -88,7 +88,7 @@ bool PathManager::findPath( int x, int y, Creature* player, Map* map, bool ignor
  * Move within a certain distance of the target creature
  **/
 bool PathManager::findPathToCreature( Creature* target, Creature* player, Map* map, float distance, bool ignoreParty ) {
-	long maxNodes =  max(abs(target->getX() - player->getX()),abs(target->getY() - player->getY()))*4; //map->getPreferences()->getMaxPathNodes();
+	long maxNodes =  max(abs( (int)target->getX() - (int)player->getX() ), abs( (int)target->getY() - (int)player->getY() ) ) * 4; //map->getPreferences()->getMaxPathNodes();
 
 	GoalFunction * goal = new GetCloseGoal( owner, target, distance );
 	Heuristic * heuristic = new DiagonalDistanceHeuristic( toint( target->getX() + target->getShape()->getWidth() / 2.0f ), toint( target->getY() - target->getShape()->getDepth() / 2.0f ) );
