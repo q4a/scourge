@@ -2890,10 +2890,11 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 					int oldY = oy - yp;
 					int oldZ = oz + zp;
 					tmp[xp][yp][zp] = pos[oldX][oldY][oldZ];
-					tmp[xp][yp][zp]->outlineColor = NULL;
 					pos[oldX][oldY][oldZ] = NULL;
 					if ( !( tmp[xp][yp][zp] ) )
 						cerr << "*** tmp is null!" << endl;
+					else
+						tmp[xp][yp][zp]->outlineColor = NULL;
 				}
 			}
 		}
