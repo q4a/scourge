@@ -1899,7 +1899,7 @@ bool Creature::isWithPrereq ( Item *item ) {
     float remainingHP = getHp() / ( getMaxHp() ? getMaxHp() : 1 );
     float remainingMP = getMp() / ( getMaxMp() ? getMaxMp() : 1 );
     if ( ( potionSkill == Constants::HP ) && ( remainingHP <= LOW_HP ) ) return true;
-    if ( ( potionSkill == Constants::MP ) && ( remainingMP <= LOW_MP ) ) return true;
+    if ( ( potionSkill == Constants::MP ) && ( ( remainingMP <= LOW_MP ) && getMaxMp() ) ) return true;
   }
 
   // Is it an item holding a spell?
@@ -2105,7 +2105,7 @@ void Creature::decideAction() {
 
   float remainingMP = getMp() / ( getMaxMp() ? getMaxMp() : 1 );
 
-  if ( remainingMP <= LOW_MP ) {
+  if ( ( remainingMP <= LOW_MP ) && getMaxMp() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
       decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOW_MP ][ i ];
     }
@@ -2115,7 +2115,7 @@ void Creature::decideAction() {
   if ( getTargetCreature() ) {
    remainingMP = getTargetCreature()->getMp() / ( getTargetCreature()->getMaxMp() ? getTargetCreature()->getMaxMp() : 1 );
 
-    if ( remainingMP <= LOW_MP ) {
+    if ( ( remainingMP <= LOW_MP ) && getMaxMp() ) {
       for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
         decisionAccum[ i ] += decisionMatrix[ AI_STATE_ENEMY_LOW_MP ][ i ];
       }
