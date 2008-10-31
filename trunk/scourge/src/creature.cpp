@@ -1987,7 +1987,17 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 }
 
 /// Basic NPC/monster AI.
-
+string actionNames[] = {
+	"AI_ACTION_ATTACK_CLOSEST_ENEMY",
+		"AI_ACTION_CAST_ATTACK_SPELL",
+		"AI_ACTION_CAST_AREA_SPELL",
+		"AI_ACTION_HEAL",
+		"AI_ACTION_CAST_AC_SPELL",
+		"AI_ACTION_ATTACK_RANDOM_ENEMY",
+		"AI_ACTION_START_LOITERING",
+		"AI_ACTION_STOP_MOVING",
+		"AI_ACTION_GO_ON"                                       
+};
 void Creature::decideAction() {
   Uint32 now = SDL_GetTicks();
   if( now - lastDecision < 2000 ) return;
@@ -2010,7 +2020,6 @@ void Creature::decideAction() {
 
   // Actions (from left to right):
   // AtkClosest, Cast, AreaCast, Heal, ACCast, AtkRandom, StartLoiter, StopMoving, GoOn
-
   float decisionMatrix[ AI_STATE_COUNT ][ AI_ACTION_COUNT ] = {
     0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.75f, // Hanging around, no enemies
     0.7f, 0.15f, 0.0f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.0f, // Hanging around, enemies near
@@ -2030,6 +2039,9 @@ void Creature::decideAction() {
 
   int stateCount = 0;
   float decisionAccum[ AI_ACTION_COUNT ];
+  for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+    decisionAccum[ i ] = 0.0f;
+  }
 
   // STEP 1: Collect the weights of the active states.
 
@@ -2196,7 +2208,11 @@ void Creature::decideAction() {
       if ( Util::roll( 0.0f, 1.0f ) <= decisionAverage[ action ] ) break;
     }
   }
-
+  
+#ifdef DEBUG_CREATURE_AI  
+  cerr << getName() << " action=" << actionNames[action] << endl;
+#endif
+  
   switch ( action ) {
     case AI_ACTION_ATTACK_CLOSEST_ENEMY:
       attackClosestTarget();
@@ -2205,12 +2221,18 @@ void Creature::decideAction() {
       castOffensiveSpell();
       break;
     case AI_ACTION_CAST_AREA_SPELL: // TODO: Implement castAreaSpell().
+    	setMotion( Constants::MOTION_STAND );
+    	stopMoving();
       castOffensiveSpell();
       break;
     case AI_ACTION_HEAL:
+    	setMotion( Constants::MOTION_STAND );
+    	stopMoving();
       if ( !castHealingSpell() ) useMagicItem();
       break;
     case AI_ACTION_CAST_AC_SPELL: // TODO: Implement castACSpell().
+    	setMotion( Constants::MOTION_STAND );
+    	stopMoving();
       castHealingSpell();
       break;
     case AI_ACTION_ATTACK_RANDOM_ENEMY:
