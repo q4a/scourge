@@ -125,6 +125,13 @@ public:
 		return height;
 	}
 
+	/// check if position is cowered by shape 
+	/// Shape has rectangular base by default
+	virtual bool isInside( int x, int y ) {
+		assert( x >= 0 && x < width && y >= 0 && y < depth );
+		return true;
+	}
+
 	inline char const* getName() {
 		return name.c_str();
 	}

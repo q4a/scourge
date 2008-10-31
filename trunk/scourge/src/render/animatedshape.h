@@ -115,6 +115,19 @@ public:
 	inline float getAngle() {
 		return angle;
 	}
+
+	/// check if position is cowered by shape 
+	/// AnimatedShape has circular base by default
+	virtual bool isInside( int x, int y ) {
+		assert( x >= 0 && x < width && y >= 0 && y < depth );
+		int cut = width / 3;
+		return ( // may not cut (0,0) corner: x + y >= cut &&   
+		        width - x + y > cut && 
+		        x + depth - y > cut && 
+		        width - x + depth - y - 2 >= cut );
+	}
+
+
 	DECLARE_NOISY_OPENGL_SUPPORT();
 };
 

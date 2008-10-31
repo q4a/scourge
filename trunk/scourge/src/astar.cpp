@@ -24,6 +24,13 @@
 
 using namespace std;
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+  static char THIS_FILE[] = __FILE__;
+#endif 
+
 #define MAX_CLOSED_NODES 180
 #define FAST_MAX_CLOSED_NODES 80
 
@@ -411,6 +418,7 @@ bool AStar::isBlocked( Sint16 x, Sint16 y,
                       bool ignoreParty) {
   for( int sx = 0; sx < creature->getShape()->getWidth(); sx++ ) {
     for( int sy = 0; sy < creature->getShape()->getDepth(); sy++ ) {
+      if ( !creature->getShape()->isInside( sx, sy ) ) continue;
 
       if( fabs( map->getGroundHeight( ( x + sx ) / OUTDOORS_STEP, ( y - sy ) / OUTDOORS_STEP ) ) > 10.0f ) {
         return true;
