@@ -437,7 +437,7 @@ bool AStar::isBlocked( Sint16 x, Sint16 y,
                loc->creature == creature->getTargetCreature() )) continue;
         // friendly creatures will get out of each others' way (note: this won't work for monsters)
         if( creature->isPartyMember() && loc->creature && 
-        		( loc->creature->isNpc() || loc->creature->isPartyMember() || loc->creature->isWanderingHero() ) ) continue;
+        		( loc->creature->isNpc() || loc->creature->isWanderingHero() ) ) continue;
 
         //if there is some other shape there then we are blocked by it
         if( loc->shape && !loc->shape->isRoof() ) {
