@@ -2343,6 +2343,7 @@ bool Creature::castHealingSpell() {
   // Cast the spell
   setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
   setTargetCreature ( findClosestTargetWithPrereq( spell ) );
+  setMotion( Constants::MOTION_MOVE_TOWARDS );
   return true;
 }
 
@@ -2369,6 +2370,7 @@ bool Creature::castOffensiveSpell() {
   spell = offensiveSpells[ Util::pickOne ( 0, offensiveSpells.size() - 1 ) ];
   setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
   if ( spell->hasStateModPrereq() ) setTargetCreature( findClosestTargetWithPrereq( spell ) );
+  setMotion( Constants::MOTION_MOVE_TOWARDS );
   return true;
 }
 
@@ -2395,6 +2397,7 @@ bool Creature::castAreaSpell() {
   spell = areaSpells[ Util::pickOne ( 0, areaSpells.size() - 1 ) ];
   setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
   if ( spell->hasStateModPrereq() ) setTargetCreature( findClosestTargetWithPrereq( spell ) );
+  setMotion( Constants::MOTION_MOVE_TOWARDS );
   return true;
 }
 
@@ -2419,6 +2422,7 @@ bool Creature::castACSpell() {
   // Cast the spell
   setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
   setTargetCreature ( findClosestTargetWithPrereq( spell ) );
+  setMotion( Constants::MOTION_MOVE_TOWARDS );
   return true;
 }
 
