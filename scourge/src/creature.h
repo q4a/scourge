@@ -174,6 +174,40 @@ public:
 	static const int CROSS_FORMATION = 5;
 	static const int FORMATION_COUNT = 6;
 
+	// The creature AI
+	enum {
+		AI_STATE_STANDING_NO_ENEMY = 0,
+		AI_STATE_STANDING_ENEMY_AROUND,
+		AI_STATE_LOITERING_NO_ENEMY,
+		AI_STATE_LOITERING_ENEMY_AROUND,
+		AI_STATE_LOITERING_END_OF_PATH,
+		AI_STATE_MOVING_TOWARDS_ENEMY,
+		AI_STATE_LOW_HP,
+		AI_STATE_ENEMY_LOW_HP,
+		AI_STATE_LOW_MP,
+		AI_STATE_ENEMY_LOW_MP,
+		AI_STATE_AC_NEEDS_PIMPING,
+		AI_STATE_SURROUNDED,
+		AI_STATE_OUTNUMBERED,
+		AI_STATE_FEW_ENEMIES,
+
+		AI_STATE_COUNT
+	};
+
+	enum {
+		AI_ACTION_ATTACK_CLOSEST_ENEMY = 0,
+		AI_ACTION_CAST_ATTACK_SPELL,
+		AI_ACTION_CAST_AREA_SPELL,
+		AI_ACTION_HEAL,
+		AI_ACTION_CAST_AC_SPELL,
+		AI_ACTION_ATTACK_RANDOM_ENEMY,
+		AI_ACTION_START_LOITERING,
+		AI_ACTION_STOP_MOVING,
+		AI_ACTION_GO_ON,
+
+		AI_ACTION_COUNT
+	};
+
 	Creature( Session *session, Character *character, char const* name, int sex, int character_model_info_index );
 	Creature( Session *session, Monster *monster, GLShape *shape, bool initMonster = true );
 	~Creature();
@@ -239,6 +273,7 @@ public:
 		return( !isPartyMember() || getStateMod( StateMod::possessed ) );
 	}
 
+	/// Is creature c of friendly alignment?
 	inline bool isFriendly( Creature *c ) {
 		bool f = ( ( isMonster() && c->isMonster() ) || ( !isMonster() && !c->isMonster() ) );
 		return ( getStateMod( StateMod::possessed ) ? !f : f );
