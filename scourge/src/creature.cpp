@@ -2000,7 +2000,7 @@ string actionNames[] = {
 };
 void Creature::decideAction() {
   Uint32 now = SDL_GetTicks();
-  if( now - lastDecision < 2000 ) return;
+  if( now - lastDecision < 1000 ) return;
   lastDecision = now;
 
   if ( scripted ) {
@@ -2218,22 +2218,24 @@ void Creature::decideAction() {
       attackClosestTarget();
       break;
     case AI_ACTION_CAST_ATTACK_SPELL:
-      castOffensiveSpell();
-      break;
-    case AI_ACTION_CAST_AREA_SPELL: // TODO: Implement castAreaSpell().
     	setMotion( Constants::MOTION_STAND );
     	stopMoving();
       castOffensiveSpell();
+      break;
+    case AI_ACTION_CAST_AREA_SPELL:
+    	setMotion( Constants::MOTION_STAND );
+    	stopMoving();
+      castAreaSpell();
       break;
     case AI_ACTION_HEAL:
     	setMotion( Constants::MOTION_STAND );
     	stopMoving();
       if ( !castHealingSpell() ) useMagicItem();
       break;
-    case AI_ACTION_CAST_AC_SPELL: // TODO: Implement castACSpell().
+    case AI_ACTION_CAST_AC_SPELL:
     	setMotion( Constants::MOTION_STAND );
     	stopMoving();
-      castHealingSpell();
+      castACSpell();
       break;
     case AI_ACTION_ATTACK_RANDOM_ENEMY:
       attackRandomTarget();
@@ -2323,105 +2325,101 @@ bool Creature::attackRandomTarget() {
 /// Try to heal someone; returns true if someone was found.
 
 bool Creature::castHealingSpell() {
-  // are we in the middle of casting a spell already?
-  //if( getAction() == Constants::ACTION_CAST_SPELL ) return false;
-
   vector<Spell*> healingSpells;
+  Spell *spell;
 
   for ( int i = 0; i < getSpellCount(); i++ ) {
-    Spell *spell = getSpell ( i );
-    if ( spell->isFriendly() && spell->hasStateModPrereq() ) {
+    spell = getSpell ( i );
+    if ( spell->isFriendly() && ( spell->getMp() < getMp() ) && spell->hasStateModPrereq() && ( findClosestTargetWithPrereq( spell ) != NULL ) && ( spell->isStateModPrereqAPotionSkill() ? ( spell->getStateModPrereq() != Constants::AC ) : true ) ) {
       healingSpells.push_back ( spell );
     }
   }
 
-  // We don't have healing spells, exit
+  // We can't cast a healing spell, exit
   if ( healingSpells.empty() ) return false;
 
-  Spell *spell = healingSpells[ Util::pickOne ( 0, healingSpells.size() - 1 ) ];
-
-  // Find a suitable target
-  Creature *p;
-  if ( spell->getMp() < getMp() ) {
-      p = findClosestTargetWithPrereq ( spell );
-  } else {
-    return false;
-  }
+  spell = healingSpells[ Util::pickOne ( 0, healingSpells.size() - 1 ) ];
 
   // Cast the spell
-  if ( p ) {
-    setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
-    setTargetCreature ( p );
-    return true;
-  }
-
-  return false;
+  setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+  setTargetCreature ( findClosestTargetWithPrereq( spell ) );
+  return true;
 }
 
-/// Tries to cast an offensive spell onto a creature within range.
+/// Tries to cast an offensive spell onto the targetted or nearest suitable creature.
 
 bool Creature::castOffensiveSpell() {
-  // are we in the middle of casting a spell already?
-  //if( getAction() == Constants::ACTION_CAST_SPELL ) return false;
-
   vector<Spell*> offensiveSpells;
+  Spell *spell;
+
+  if ( !hasTarget() ) return false;
 
   // Gather spells that are suitable for auto-casting.
+
   for ( int i = 0; i < getSpellCount(); i++ ) {
-    Spell *spell = getSpell ( i );
-    if ( !spell->isFriendly() && ( spell->isCreatureTargetAllowed() || spell->isLocationTargetAllowed() ) ) {
+    spell = getSpell ( i );
+    if ( !spell->isFriendly() && ( spell->getMp() < getMp() ) && spell->isCreatureTargetAllowed() && ( spell->hasStateModPrereq() ? ( findClosestTargetWithPrereq( spell ) != NULL ) : true ) ) {
       offensiveSpells.push_back ( spell );
     }
   }
 
-  // We don't have offensive spells, exit
+  // We can't cast an offensive spell, exit
   if ( offensiveSpells.empty() ) return false;
 
-  Creature *p;
+  spell = offensiveSpells[ Util::pickOne ( 0, offensiveSpells.size() - 1 ) ];
+  setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+  if ( spell->hasStateModPrereq() ) setTargetCreature( findClosestTargetWithPrereq( spell ) );
+  return true;
+}
+
+/// Tries to cast an area-affecting spell near the targetted or nearest suitable creature.
+
+bool Creature::castAreaSpell() {
+  vector<Spell*> areaSpells;
   Spell *spell;
 
-  float minSpellDamage, maxSpellDamage;
-  float minWeaponDamage, maxWeaponDamage;
-  getAttack( getEquippedItem( getPreferredWeapon() ), &maxWeaponDamage, &minWeaponDamage );
+  if ( !hasTarget() ) return false;
 
-  bool enoughMp, found;
-  enoughMp = found = false;
+  // Gather spells that are suitable for auto-casting.
 
-  // Get a few chances to pick a good spell.
-  for ( unsigned int i = 0; i < ( offensiveSpells.size() - 1 ); i++ ) {
-    spell = offensiveSpells[ Util::pickOne ( 0, offensiveSpells.size() - 1 ) ];
-    enoughMp = ( spell->getMp() < getMp() );
-    spell->getAttack( getLevel(), &maxSpellDamage, &minSpellDamage );
-
-    // Is it a state mod affecting spell?
-    if ( spell->hasStateModPrereq() && enoughMp ) {
-      p = findClosestTargetWithPrereq ( spell );
-      if ( p ) {
-        found = true;
-        break;
-      }
-    // Is it a damage spell?
-    } else if ( enoughMp ) {
-      p = ( Util::dice(6) == 0 ? getRandomTarget() : getClosestTarget() );
-      // Ensure the spell does enough damage, but avoid overkill.
-      if ( p && ( maxSpellDamage > ( maxWeaponDamage * 0.7f ) ) && ( maxSpellDamage < ( p->getMaxHp() * 2.0f ) ) ) {
-        found = true;
-        break;
-      }
+  for ( int i = 0; i < getSpellCount(); i++ ) {
+    spell = getSpell ( i );
+    if ( !spell->isFriendly() && ( spell->getMp() < getMp() ) && spell->isLocationTargetAllowed() && ( spell->hasStateModPrereq() ? ( findClosestTargetWithPrereq( spell ) != NULL ) : true ) ) {
+      areaSpells.push_back ( spell );
     }
-
   }
 
-  if ( !found ) return false;
+  // We can't cast an offensive spell, exit
+  if ( areaSpells.empty() ) return false;
+
+  spell = areaSpells[ Util::pickOne ( 0, areaSpells.size() - 1 ) ];
+  setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+  if ( spell->hasStateModPrereq() ) setTargetCreature( findClosestTargetWithPrereq( spell ) );
+  return true;
+}
+
+/// Try to raise someone's AC using a spell; returns true if someone was found.
+
+bool Creature::castACSpell() {
+  vector<Spell*> acSpells;
+  Spell *spell;
+
+  for ( int i = 0; i < getSpellCount(); i++ ) {
+    spell = getSpell ( i );
+    if ( spell->isFriendly() && ( spell->getMp() < getMp() ) && spell->hasStateModPrereq() && ( findClosestTargetWithPrereq( spell ) != NULL ) && ( spell->isStateModPrereqAPotionSkill() ? ( spell->getStateModPrereq() == Constants::AC ) : false ) ) {
+      acSpells.push_back ( spell );
+    }
+  }
+
+  // We can't cast an AC raising spell, exit
+  if ( acSpells.empty() ) return false;
+
+  spell = acSpells[ Util::pickOne ( 0, acSpells.size() - 1 ) ];
 
   // Cast the spell
-  if ( p ) {
-    setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
-    setTargetCreature ( p );
-    return true;
-  }
-
-  return false;
+  setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+  setTargetCreature ( findClosestTargetWithPrereq( spell ) );
+  return true;
 }
 
 /// Tries to use a healing magical item from the backpack on oneself.
