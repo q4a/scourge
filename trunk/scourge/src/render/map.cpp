@@ -245,7 +245,38 @@ Map::Map( MapAdapter *adapter, Preferences *preferences, Shapes *shapes ) {
 }
 
 Map::~Map() {
-	reset();
+	removeAllEffects();
+	// can't just call reset() since it consults with external objects
+	set<Location*> deleted;
+	for ( int xp = 0; xp < MAP_WIDTH; xp++ ) {
+		for ( int yp = 0; yp < MAP_DEPTH; yp++ ) {
+			if ( floorPositions[xp][yp] ) {
+				Uint32 key = createPairKey( xp, yp );
+				if ( water.find( key ) != water.end() ) {
+					delete water[ key ];
+					water.erase( key );
+				}
+			}
+			if ( itemPos[xp][yp] ) {
+				Location *p = itemPos[xp][yp];
+				if ( deleted.find( p ) == deleted.end() ) deleted.insert( p );
+				itemPos[xp][yp] = NULL;
+			}
+			for ( int zp = 0; zp < MAP_VIEW_HEIGHT; zp++ ) {
+				if ( pos[xp][yp][zp] ) {
+					Location *p = pos[xp][yp][zp];
+					if ( deleted.find( p ) == deleted.end() ) deleted.insert( p );
+					pos[xp][yp][zp] = NULL;
+				}
+			}
+		}
+	}
+	for ( set<Location*>::iterator i = deleted.begin(); i != deleted.end(); ++i ) {
+		Location *p = *i;
+		mapMemoryManager.deleteLocation( p );
+	}
+	water.clear();
+
 	delete hackBlockingPos;
 	delete frustum;
 	// did not create it: delete helper;
