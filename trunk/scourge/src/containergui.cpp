@@ -85,16 +85,19 @@ bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 		while ( view->getContainer()->getContainedItemCount() > 0 ) {
 			Item *item = view->getContainer()->getContainedItem( 0 );
 			// try to add it
+			//if( scourge->getParty()->getPlayer()->addToBackpack( item ) ) {
+			scourge->getPcUi()->setCreature( scourge->getParty()->getPlayer() );
 			if ( scourge->getPcUi()->addToBackpack( item ) ) {
 				if( item == view->getSelectedItem() ) {
 					view->setSelectedItem( NULL );
 				}
-				view->getContainer()->removeContainedItem( 0 );				
+				view->getContainer()->removeContainedItem( item );
 			} else {
 				scourge->showMessageDialog( _( "There is not enough room in your backpack for everything." ) );
 				break;
 			}
 		}
+		scourge->getPcUi()->refresh();
 		view->refresh();
 	} else {
 		bool b = view->handleEvent( widget, event );

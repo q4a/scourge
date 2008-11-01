@@ -264,19 +264,25 @@ bool ContainerView::handleEvent( Widget *widget, SDL_Event *event ) {
 
 void ContainerView::receive( Widget *widget ) {
 	if ( scourge->getMovingItem() && scourge->getMovingItem() != container ) {
-		if ( receive( scourge->getMovingItem(), true ) && addToContainer( scourge->getMovingItem() ) ) {
-			scourge->endItemDrag();
-			showContents();
-			scourge->getSession()->getSound()->playSound( Window::DROP_SUCCESS, 127 );
-		} else {
-			// message: the container is full
-			scourge->getSession()->getSound()->playSound( Window::DROP_FAILED, 127 );
-			scourge->showMessageDialog( _( "The item won't fit in that container!" ) );
-		}
+		receiveItem( scourge->getMovingItem(), true );
 	}
 }
 
-bool ContainerView::receive( Item *item, bool atCursor ) {
+bool ContainerView::receiveItem( Item *item, bool atCursor ) {
+	if ( receiveInternal( item, atCursor ) && addToContainer( item ) ) {
+		scourge->endItemDrag();
+		showContents();
+		scourge->getSession()->getSound()->playSound( Window::DROP_SUCCESS, 127 );
+		return true;
+	} else {
+		// message: the container is full
+		scourge->getSession()->getSound()->playSound( Window::DROP_FAILED, 127 );
+		scourge->showMessageDialog( _( "The item won't fit in that container!" ) );
+		return false;
+	}
+}
+
+bool ContainerView::receiveInternal( Item *item, bool atCursor ) {
 	//Put item in the most left/top availabel position
 	int xPos = 0;
 	int yPos = 0;

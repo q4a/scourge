@@ -215,6 +215,11 @@ bool Item::addContainedItem( Item *item, bool force ) {
 		return true;
 	} else {
 		cerr << "Warning: unable to add to container. Container=" << getRpgItem()->getName() << " item=" << item->getRpgItem()->getName() << endl;
+		cerr << "\tcontainer: " << getName() << endl;
+		cerr << "\tcontainedItemCount " << containedItemCount << " < " << MAX_CONTAINED_ITEMS << endl;
+		cerr << "\tforce: " << force << endl;
+		cerr << "\titem->isBlocking(): " << item->isBlocking() << endl;
+		cerr << "\tgetShape()->fitsInside( item->getShape() ): " << getShape()->fitsInside( item->getShape() ) << endl;
 		return false;
 	}
 }
