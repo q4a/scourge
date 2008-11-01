@@ -116,7 +116,7 @@ void Inven::storeItem( Item *item ) {
 /// Receive an item other than drag + drop
 
 bool Inven::receive( Item *item, bool atCursor ) {
-	return view->receive( item, atCursor );
+	return view->receiveItem( item, atCursor );
 }
 
 void Inven::receive( Widget *widget ) {

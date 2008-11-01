@@ -64,7 +64,7 @@ public:
 	}	
 	void setSelectedItem( Item *item );	
 
-	bool receive( Item *item, bool atCursor );	
+	bool receiveItem( Item *item, bool atCursor );	
 	// drag and drop handling
 	void receive( Widget *widget );
 	bool startDrag( Widget *widget, int x = 0, int y = 0 );
@@ -76,6 +76,7 @@ public:
 	void setItem( Item *item, Creature *creature=NULL );
 
 private:
+	bool receiveInternal( Item *item, bool atCursor );
 	void showContents();
 	void dropItem();
 	void convertMousePos( int x, int y, int *invX, int *invY ); 
