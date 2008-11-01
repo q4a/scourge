@@ -2009,13 +2009,13 @@ void Creature::decideAction() {
   }
 
   // This is the AI's decision matrix. On every decision cycle, it is walked
-  // top to bottom and averages the weights between all rows (states) that
+  // top to bottom and collects the max weights between all rows (states) that
   // currently apply to the situation. The result is an array of
-  // (AI_ACTION_COUNT) averaged weights. A dice is thrown against random
-  // indices until the roll is <= the weight saved there. The associated
-  // action is then executed.
+  // (AI_ACTION_COUNT) weights which are then normalized. A dice is thrown
+  // against random indices until the roll is <= the weight saved there. The
+  // associated action is then executed.
 
-  // For the sake of correct averaging, the sum of the weights in a row should
+  // For the sake of consistency, the sum of the weights in a row should
   // always be 1.
 
   // Actions (from left to right):
@@ -2037,10 +2037,9 @@ void Creature::decideAction() {
     0.0f, 0.2f, 0.15f, 0.0f, 0.1f, 0.2f, 0.0f, 0.0f, 0.35f // Friendlies outnumbering enemy
   };
 
-  int stateCount = 0;
-  float decisionAccum[ AI_ACTION_COUNT ];
+  float decisionWeights[ AI_ACTION_COUNT ];
   for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-    decisionAccum[ i ] = 0.0f;
+    decisionWeights[ i ] = 0.0f;
   }
 
   // STEP 1: Collect the weights of the active states.
@@ -2051,34 +2050,28 @@ void Creature::decideAction() {
 
   if ( ( getMotion() == Constants::MOTION_STAND ) && !closestTarget ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_STANDING_NO_ENEMY ][ i ];
+      if ( decisionMatrix[ AI_STATE_STANDING_NO_ENEMY ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_STANDING_NO_ENEMY ][ i ];
     }
-    stateCount++;
   } else if ( ( getMotion() == Constants::MOTION_STAND ) && closestTarget && !hasTarget() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_STANDING_ENEMY_AROUND ][ i ];
+      if ( decisionMatrix[ AI_STATE_STANDING_ENEMY_AROUND ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_STANDING_ENEMY_AROUND ][ i ];
     }
-    stateCount++;
   } else if ( ( getMotion() == Constants::MOTION_LOITER ) && !closestTarget && !getPathManager()->atEndOfPath() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOITERING_NO_ENEMY ][ i ];
+      if ( decisionMatrix[ AI_STATE_LOITERING_NO_ENEMY ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_LOITERING_NO_ENEMY ][ i ];
     }
-    stateCount++;
   } else if ( ( getMotion() == Constants::MOTION_LOITER ) && closestTarget && !hasTarget() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOITERING_ENEMY_AROUND ][ i ];
+      if ( decisionMatrix[ AI_STATE_LOITERING_ENEMY_AROUND ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_LOITERING_ENEMY_AROUND ][ i ];
     }
-    stateCount++;
   } else if ( ( getMotion() == Constants::MOTION_LOITER ) && getPathManager()->atEndOfPath() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOITERING_END_OF_PATH ][ i ];
+      if ( decisionMatrix[ AI_STATE_LOITERING_END_OF_PATH ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_LOITERING_END_OF_PATH ][ i ];
     }
-    stateCount++;
   } else if ( ( getMotion() == Constants::MOTION_MOVE_TOWARDS ) && hasTarget() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_MOVING_TOWARDS_ENEMY ][ i ];
+      if ( decisionMatrix[ AI_STATE_MOVING_TOWARDS_ENEMY ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_MOVING_TOWARDS_ENEMY ][ i ];
     }
-    stateCount++;
   }
 
   // Collect the HP/MP states.
@@ -2087,9 +2080,8 @@ void Creature::decideAction() {
 
   if ( remainingHP <= LOW_HP ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOW_HP ][ i ];
+      if ( decisionMatrix[ AI_STATE_LOW_HP ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_LOW_HP ][ i ];
     }
-    stateCount++;
   }
 
   if ( getTargetCreature() ) {
@@ -2097,9 +2089,8 @@ void Creature::decideAction() {
 
     if ( remainingHP <= LOW_HP ) {
       for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-        decisionAccum[ i ] += decisionMatrix[ AI_STATE_ENEMY_LOW_HP ][ i ];
+      if ( decisionMatrix[ AI_STATE_ENEMY_LOW_HP ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_ENEMY_LOW_HP ][ i ];
       }
-      stateCount++;
     }
   }
 
@@ -2107,9 +2098,8 @@ void Creature::decideAction() {
 
   if ( ( remainingMP <= LOW_MP ) && getMaxMp() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_LOW_MP ][ i ];
+      if ( decisionMatrix[ AI_STATE_LOW_MP ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_LOW_MP ][ i ];
     }
-    stateCount++;
   }
 
   if ( getTargetCreature() ) {
@@ -2117,9 +2107,8 @@ void Creature::decideAction() {
 
     if ( ( remainingMP <= LOW_MP ) && getTargetCreature()->getMaxMp() ) {
       for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-        decisionAccum[ i ] += decisionMatrix[ AI_STATE_ENEMY_LOW_MP ][ i ];
+      if ( decisionMatrix[ AI_STATE_ENEMY_LOW_MP ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_ENEMY_LOW_MP ][ i ];
       }
-      stateCount++;
     }
   }
 
@@ -2130,9 +2119,8 @@ void Creature::decideAction() {
 
   if ( armor < HIGH_AC ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_AC_NEEDS_PIMPING ][ i ];
+      if ( decisionMatrix[ AI_STATE_AC_NEEDS_PIMPING ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_AC_NEEDS_PIMPING ][ i ];
     }
-    stateCount++;
   }
 
   // Get information for the last 3 states.
@@ -2164,33 +2152,33 @@ void Creature::decideAction() {
 
   if ( numAttackers > 2 ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_SURROUNDED ][ i ];
+      if ( decisionMatrix[ AI_STATE_SURROUNDED ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_SURROUNDED ][ i ];
     }
-    stateCount++;
   }
 
   // Collect the "outnumbered" states.
 
   if ( numFoes > ( numFriendlies * 2 ) ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_OUTNUMBERED ][ i ];
+      if ( decisionMatrix[ AI_STATE_OUTNUMBERED ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_OUTNUMBERED ][ i ];
     }
-    stateCount++;
   } else if ( numFriendlies > ( numFoes * 2 ) ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-      decisionAccum[ i ] += decisionMatrix[ AI_STATE_FEW_ENEMIES ][ i ];
+      if ( decisionMatrix[ AI_STATE_FEW_ENEMIES ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_FEW_ENEMIES ][ i ];
     }
-    stateCount++;
   }
 
   // STEP 2: Process the accumulated weights.
 
-  // Calculate the average of the collected weights.
+  // Normalize the collected weights so their sum is 1.
 
-  float decisionAverage[ AI_ACTION_COUNT ];
+  float weightSum = 0.0f;
 
   for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
-    decisionAverage[ i ] = decisionAccum[ i ] / stateCount;
+    weightSum += decisionWeights[ i ];
+  }
+  for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+    decisionWeights[ i ] /= weightSum;
   }
 
   // TODO:Shift the weights towards their average for chaotic creatures.
@@ -2204,8 +2192,8 @@ void Creature::decideAction() {
 
   while ( true ) {
     action = Util::pickOne( 0, AI_ACTION_COUNT - 1 );
-    if ( decisionAverage[ action ] > 0.0f ) {
-      if ( Util::roll( 0.0f, 1.0f ) <= decisionAverage[ action ] ) break;
+    if ( decisionWeights[ action ] > 0.0f ) {
+      if ( Util::roll( 0.0f, 1.0f ) <= decisionWeights[ action ] ) break;
     }
   }
   
