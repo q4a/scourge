@@ -331,21 +331,28 @@ AnimatedShape *ModelWrapper::createShape( Texture textureId, float div,
                                           ModelLoader *loader ) {
 	int width, depth, height;
 	normalizeModel( &width, &depth, &height, div, name );
-
+	
+	// make the base smaller than the model
+	int d = width / 3;
+	int cw = width - d;
+	int cd = depth - d;
+	
+	AnimatedShape *shape = NULL;
 	if ( md2 ) {
-		return new MD2Shape( md2, textureId, div, texture, width, depth, height,
-		                     name, descriptionGroup, color, shapePalIndex );
+		shape = new MD2Shape( md2, textureId, div, texture, cw, cd, height,
+		                      name, descriptionGroup, color, shapePalIndex );
 	} else if ( md3 ) {
-		MD3Shape *shape =
-		  new MD3Shape( md3, loader, div, texture, width, depth, height,
+		shape =
+		  new MD3Shape( md3, loader, div, texture, cw, cd, height,
 		                name, descriptionGroup, color, shapePalIndex );
 		string full = rootDir + model_name;
-		md3->loadSkins( full, skin_name, shape );
-		return shape;
+		md3->loadSkins( full, skin_name, (MD3Shape *)shape );
 	} else {
 		cerr << "*** Error: Can't create animated shape." << endl;
-		return NULL;
 	}
+	
+	shape->setOffset( d / 0.5f, -d / 0.5f, 0 );
+	return shape;
 }
 
 void ModelWrapper::normalizeModel( int *width, int *depth, int *height, float div, char const* name ) {
