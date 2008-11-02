@@ -54,6 +54,7 @@
 #include "pcui.h"
 #include "textscroller.h"
 #include "outdoorgenerator.h"
+#include "containerview.h"
 
 using namespace std;
 
@@ -1326,16 +1327,20 @@ int Scourge::dropItem( int x, int y ) {
 			*/
 		} else if ( levelMap->getSelectedDropTarget()->item &&
 		            ( ( Item* )( levelMap->getSelectedDropTarget()->item ) )->getRpgItem()->getType() == RpgItem::CONTAINER ) {
-			if ( !( ( Item* )( levelMap->getSelectedDropTarget()->item ) )->addContainedItem( movingItem ) ) {
+			Item *container = ( Item* )( levelMap->getSelectedDropTarget()->item );
+			Item *item = movingItem;
+			
+			// open the container's ui
+			//ContainerGui *gui = openContainerGui( container );
+			//if( !gui->getView()->receiveItem( item, false ) ) {
+			if ( !container->addContainedItem( movingItem ) ) {
 				showMessageDialog( _( "The item won't fit in that container!" ) );
 				replace = true;
 			} else {
-				snprintf( message, sizeof( message ), _( "%1$s is placed in %2$s." ),
-				          movingItem->getItemName(),
-				          levelMap->getSelectedDropTarget()->item->getItemName() );
+				snprintf( message, sizeof( message ), _( "%1$s is placed in %2$s." ), item->getItemName(), container->getItemName() );
 				getDescriptionScroller()->writeLogMessage( message );
 				// if this container's gui is open, update it
-				refreshContainerGui( ( ( Item* )( levelMap->getSelectedDropTarget()->item ) ) );
+				refreshContainerGui( container );
 			}
 		} else {
 			replace = true;
@@ -1945,12 +1950,12 @@ void Scourge::moveCreature( Creature *creature ) {
 	}
 }
 
-void Scourge::openContainerGui( Item *container ) {
+ContainerGui *Scourge::openContainerGui( Item *container ) {
 	// is it already open?
 	for ( int i = 0; i < containerGuiCount; i++ ) {
 		if ( containerGui[i]->getContainer() == container ) {
 			containerGui[i]->getWindow()->toTop();
-			return;
+			return containerGui[i];
 		}
 	}
 	// open new window
@@ -1959,6 +1964,9 @@ void Scourge::openContainerGui( Item *container ) {
 		containerGui[containerGuiCount++] = new ContainerGui( this, container,
 		                                                      10 + containerGuiCount * 15,
 		                                                      10 + containerGuiCount * 15 );
+		return containerGui[containerGuiCount - 1];
+	} else {
+		return NULL;
 	}
 }
 

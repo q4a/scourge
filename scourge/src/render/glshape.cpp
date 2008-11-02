@@ -558,13 +558,13 @@ void GLShape::setLightBlocking( bool b ) {
 	lightBlocking = b;
 }
 
-// loosely interpreted...
-bool GLShape::fitsInside( GLShape *smaller, bool relaxedRules ) {
-	return ( smaller->getHeight() < 2 ||
-	         ( width + 1 > ( relaxedRules ? smaller->getWidth() / 2 : smaller->getWidth() ) &&
-	           depth + 1 > ( relaxedRules ? smaller->getDepth() / 2 : smaller->getDepth() ) &&
-	           height + 1 > ( relaxedRules ? smaller->getHeight() / 2 : smaller->getHeight() ) ) );
-}
+//// loosely interpreted...
+//bool GLShape::fitsInside( GLShape *smaller, bool relaxedRules ) {
+//	return ( smaller->getHeight() < 2 ||
+//	         ( width + 1 > ( relaxedRules ? smaller->getWidth() / 2 : smaller->getWidth() ) &&
+//	           depth + 1 > ( relaxedRules ? smaller->getDepth() / 2 : smaller->getDepth() ) &&
+//	           height + 1 > ( relaxedRules ? smaller->getHeight() / 2 : smaller->getHeight() ) ) );
+//}
 
 void GLShape::setCurrentAnimation ( int numAnim, bool force ) {
 	cout << "GLShape::setCurrentAnimation : Hey this should call MD2Shape function!" << endl;

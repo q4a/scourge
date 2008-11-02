@@ -782,7 +782,7 @@ public:
 	/// The item at a specified backpack index.
 	Item *getBackpackItem( int backpackIndex );
 
-	bool addToBackpack( Item *item, bool force = false );
+	bool addToBackpack( Item *item, int itemX=0, int itemY=0 );
 	Item *removeFromBackpack( int backpackIndex );
 	void debugBackpack();
 	int findInBackpack( Item *item );

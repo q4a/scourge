@@ -76,14 +76,13 @@ public:
 	void setItem( Item *item, Creature *creature=NULL );
 
 private:
-	bool receiveInternal( Item *item, bool atCursor );
 	void showContents();
 	void dropItem();
 	void convertMousePos( int x, int y, int *invX, int *invY ); 
 	Item *getItemAtPos( int x, int y );
 	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy );
 	bool findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem = true );
-	bool addToContainer( Item *item );
+	bool addToContainer( Item *item, int itemX, int itemY );
 	bool removeFromContainer( Item *item );
 };
 

@@ -51,6 +51,9 @@ public:
 	inline Window *getWindow() {
 		return win;
 	}
+	inline ContainerView *getView() {
+		return view;
+	}
 	void refresh();
 	inline Item *getSelectedItem();	
 	//void setSelectedItem( Item *item );	

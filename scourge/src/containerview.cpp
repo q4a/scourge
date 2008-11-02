@@ -176,15 +176,15 @@ void ContainerView::drawWidgetContents( Widget *widget ) {
 }
 
 void ContainerView::showContents() {
-	for( int i = 0; container && i < container->getContainedItemCount(); i++ ) {
-		Item *item = container->getContainedItem( i );
-		if( creature && creature->isEquipped( item ) ) {
-			continue;
-		}
-		if( item->getBackpackX() <= 0 && item->getBackpackY() <= 0 ) {
-			findInventoryPosition( item, item->getBackpackX(), item->getBackpackY(), false );			
-		}
-	}
+//	for( int i = 0; container && i < container->getContainedItemCount(); i++ ) {
+//		Item *item = container->getContainedItem( i );
+//		if( creature && creature->isEquipped( item ) ) {
+//			continue;
+//		}
+//		if( item->getBackpackX() <= 0 && item->getBackpackY() <= 0 ) {
+//			findInventoryPosition( item, item->getBackpackX(), item->getBackpackY(), false );			
+//		}
+//	}
 }
 
 bool ContainerView::handleEvent( SDL_Event *event ) {
@@ -269,7 +269,19 @@ void ContainerView::receive( Widget *widget ) {
 }
 
 bool ContainerView::receiveItem( Item *item, bool atCursor ) {
-	if ( receiveInternal( item, atCursor ) && addToContainer( item ) ) {
+	//Put item in the most left/top availabel position
+	int xPos = 0;
+	int yPos = 0;
+	//If dialog visible put item on the mouse position
+	if ( atCursor ) {
+		xPos = scourge->getSDLHandler()->mouseX - win->getX() - x;
+		yPos = scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT;
+	}
+	
+	int itemX, itemY;
+	convertMousePos( xPos, yPos, &itemX, &itemY );
+	
+	if ( addToContainer( item, itemX, itemY ) ) {
 		scourge->endItemDrag();
 		showContents();
 		scourge->getSession()->getSound()->playSound( Window::DROP_SUCCESS, 127 );
@@ -280,93 +292,6 @@ bool ContainerView::receiveItem( Item *item, bool atCursor ) {
 		scourge->showMessageDialog( _( "The item won't fit in that container!" ) );
 		return false;
 	}
-}
-
-bool ContainerView::receiveInternal( Item *item, bool atCursor ) {
-	//Put item in the most left/top availabel position
-	int xPos = 0;
-	int yPos = 0;
-	//If dialog visible put item on the mouse position
-	if ( atCursor ) {
-		xPos = scourge->getSDLHandler()->mouseX - win->getX() - x;
-		yPos = scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT;
-	}
-
-	// try to fit it
-	return findInventoryPosition( item, xPos, yPos );
-}
-
-/// Find an inventory position for an item dropped at screen pos x,y.
-
-/// note: optimize this,
-/// current O(n^2)
-
-bool ContainerView::findInventoryPosition( Item *item, int x, int y, bool useExistingLocationForSameItem ) {
-	if ( container && item ) {
-		int colCount = getWidth() / GRID_SIZE;
-		int rowCount = getHeight() / GRID_SIZE;
-
-		int selX = -1;
-		int selY = -1;
-
-		int posX, posY;
-		convertMousePos( x, y, &posX, &posY );
-
-		for ( int xx = 0; xx < colCount; xx++ ) {
-			for ( int yy = 0; yy < rowCount; yy++ ) {
-				if ( xx + item->getBackpackWidth() <= colCount &&
-				        yy + item->getBackpackHeight() <= rowCount &&
-				        checkInventoryLocation( item, useExistingLocationForSameItem, xx, yy ) ) {
-					if ( posX == xx && posY == yy ) {
-						selX = xx;
-						selY = yy;
-						break;
-					} else if ( selX == -1 ) {
-						selX = xx;
-						selY = yy;
-					}
-				}
-			}
-		}
-
-		if ( selX > -1 ) {
-			item->setBackpackLocation( selX, selY );
-			return true;
-		}
-	}
-	return false;
-}
-
-/// Checks whether an item fits into the inventory at screen pos xx,yy.
-
-bool ContainerView::checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy ) {
-	SDL_Rect itemRect;
-	itemRect.x = xx;
-	itemRect.y = yy;
-	itemRect.w = item->getBackpackWidth();
-	itemRect.h = item->getBackpackHeight();
-	for ( int t = 0; container && t < container->getContainedItemCount(); t++ ) {
-		Item *i = container->getContainedItem( t );
-		if( creature && creature->isEquipped( i ) ) {
-			continue;
-		}
-		if ( i == item ) {
-			if ( useExistingLocationForSameItem ) {
-				return true;
-			} else {
-				continue;
-			}
-		}
-
-		SDL_Rect iRect;
-		iRect.x = i->getBackpackX();
-		iRect.y = i->getBackpackY();
-		iRect.w = i->getBackpackWidth();
-		iRect.h = i->getBackpackHeight();
-
-		if ( SDLHandler::intersects( &itemRect, &iRect ) ) return false;
-	}
-	return true;
 }
 
 bool ContainerView::startDrag( Widget *widget, int x, int y ) {
@@ -399,8 +324,8 @@ void ContainerView::setSelectedItem( Item *item ) {
 	//infoButton->setEnabled( selectedItem != NULL );
 }
 
-bool ContainerView::addToContainer( Item *item ) {
-	bool b = ( creature ? creature->addToBackpack( item ) : container->addContainedItem( item ) );
+bool ContainerView::addToContainer( Item *item, int itemX, int itemY ) {
+	bool b = ( creature ? creature->addToBackpack( item, itemX, itemY ) : container->addContainedItem( item, itemX, itemY ) );
 	if( b ) {
 		// message: the container accepted the item
 		enum { MSG_SIZE = 120 };

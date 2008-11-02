@@ -22,6 +22,7 @@
 #include "session.h"
 #include "shapepalette.h"
 #include "configlang.h"
+#include "creature.h"
 
 using namespace std;
 
@@ -52,6 +53,7 @@ Item::Item( Session *session, RpgItem *rpgItem, int level, bool loading ) {
 	this->showCursed = false;
 	snprintf( this->itemName, ITEM_NAME_SIZE, "%s", rpgItem->getDisplayName() );
 	backpackX = backpackY = 0;
+	inventoryOf = NULL;
 
 	commonInit( loading );
 
@@ -167,15 +169,16 @@ Item *Item::load( Session *session, ItemInfo *info ) {
 
 	// container
 	item->containedItemCount = info->containedItemCount;
-	int realCount = 0;
+//	int realCount = 0;
 	for ( int i = 0; i < static_cast<int>( info->containedItemCount ); i++ ) {
 		Item *containedItem = Item::load( session, info->containedItems[i] );
 		if ( containedItem ) {
-			item->containedItems[ realCount++ ] = containedItem;
-			if ( containedItem->isMagicItem() ) item->containsMagicItem = true;
+			item->addContainedItem( containedItem );
+//			item->containedItems[ realCount++ ] = containedItem;
+//			if ( containedItem->isMagicItem() ) item->containsMagicItem = true;
 		}
 	}
-	item->containedItemCount = realCount;
+//	item->containedItemCount = realCount;
 
 	// magic item
 	item->bonus = info->bonus;
@@ -207,9 +210,8 @@ Item *Item::load( Session *session, ItemInfo *info ) {
 
 /// Puts another item inside this item.
 
-bool Item::addContainedItem( Item *item, bool force ) {
-	if ( containedItemCount < MAX_CONTAINED_ITEMS &&
-	        ( force || !item->isBlocking() || getShape()->fitsInside( item->getShape() ) ) ) {
+bool Item::addContainedItem( Item *item, int itemX, int itemY ) {
+	if ( containedItemCount < MAX_CONTAINED_ITEMS && findInventoryPosition( item, itemX, itemY, true ) ) {
 		containedItems[containedItemCount++] = item;
 		if ( item->isMagicItem() ) containsMagicItem = true;
 		return true;
@@ -217,11 +219,79 @@ bool Item::addContainedItem( Item *item, bool force ) {
 		cerr << "Warning: unable to add to container. Container=" << getRpgItem()->getName() << " item=" << item->getRpgItem()->getName() << endl;
 		cerr << "\tcontainer: " << getName() << endl;
 		cerr << "\tcontainedItemCount " << containedItemCount << " < " << MAX_CONTAINED_ITEMS << endl;
-		cerr << "\tforce: " << force << endl;
-		cerr << "\titem->isBlocking(): " << item->isBlocking() << endl;
-		cerr << "\tgetShape()->fitsInside( item->getShape() ): " << getShape()->fitsInside( item->getShape() ) << endl;
+//		cerr << "\tforce: " << force << endl;
 		return false;
 	}
+}
+
+/// Find an inventory position for an item
+
+/// note: optimize this,
+/// current O(n^2)
+
+bool Item::findInventoryPosition( Item *item, int posX, int posY, bool useExistingLocationForSameItem ) {
+	if ( item ) {
+		int colCount = getRpgItem()->getContainerWidth();
+		int rowCount = getRpgItem()->getContainerHeight();
+
+		int selX = -1;
+		int selY = -1;
+
+		for ( int xx = 0; xx < colCount; xx++ ) {
+			for ( int yy = 0; yy < rowCount; yy++ ) {
+				if ( xx + item->getBackpackWidth() <= colCount &&
+				        yy + item->getBackpackHeight() <= rowCount &&
+				        checkInventoryLocation( item, useExistingLocationForSameItem, xx, yy ) ) {
+					if ( posX == xx && posY == yy ) {
+						selX = xx;
+						selY = yy;
+						break;
+					} else if ( selX == -1 ) {
+						selX = xx;
+						selY = yy;
+					}
+				}
+			}
+		}
+
+		if ( selX > -1 ) {
+			item->setBackpackLocation( selX, selY );
+			return true;
+		}
+	}
+	return false;
+}
+
+/// Checks whether an item fits into the inventory at pos xx,yy.
+
+bool Item::checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int xx, int yy ) {
+	SDL_Rect itemRect;
+	itemRect.x = xx;
+	itemRect.y = yy;
+	itemRect.w = item->getBackpackWidth();
+	itemRect.h = item->getBackpackHeight();
+	for ( int t = 0; t < getContainedItemCount(); t++ ) {
+		Item *i = getContainedItem( t );
+		if( inventoryOf && inventoryOf->isEquipped( i ) ) {
+			continue;
+		}
+		if ( i == item ) {
+			if ( useExistingLocationForSameItem ) {
+				return true;
+			} else {
+				continue;
+			}
+		}
+
+		SDL_Rect iRect;
+		iRect.x = i->getBackpackX();
+		iRect.y = i->getBackpackY();
+		iRect.w = i->getBackpackWidth();
+		iRect.h = i->getBackpackHeight();
+
+		if ( SDLHandler::intersects( &itemRect, &iRect ) ) return false;
+	}
+	return true;
 }
 
 /// Removes a contained item by index.
