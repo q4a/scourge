@@ -125,6 +125,11 @@ Window::~Window() {
 		delete this->widget[i];
 	}
 	removeWindow( this );
+	if (message_dialog != NULL) {
+		Window *tmp = message_dialog; // to avoid recursion of ~Window
+		message_dialog = NULL;
+		delete tmp;
+	}
 }
 
 void Window::addWindow( Window *win ) {

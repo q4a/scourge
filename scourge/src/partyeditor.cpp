@@ -39,6 +39,13 @@
 #include "skillsview.h"
 #include "pceditor.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 /**
@@ -73,6 +80,7 @@ PartyEditor::PartyEditor( Scourge *scourge ) {
 }
 
 PartyEditor::~PartyEditor() {
+	delete pcEditor;
 }
 
 void PartyEditor::handleEvent( Widget *widget, SDL_Event *event ) {
