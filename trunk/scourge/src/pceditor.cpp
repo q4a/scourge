@@ -500,10 +500,7 @@ void PcEditor::createUI() {
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 	cards->addWidget( new Label( secondColStart, 50,
-	                             _( "Which starting profession most closely resembles your hero? \
-	                                Your character will evolve into a more powerful and refined practicer \
-	                                of the chosen art. Below is a brief description of the strengths and \
-	                                weaknesses of each profession." ),
+	                             _( "Which starting profession most closely resembles your hero? Your character will evolve into a more powerful and refined practicer of the chosen art. Below is a brief description of the strengths and weaknesses of each profession." ),
 	                             TEXT_WIDTH ),
 	                  CLASS_TAB );
 

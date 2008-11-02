@@ -79,6 +79,7 @@ function creatureDeath( creature ) {
 
 // return true if the click was handled from squirrel
 function useShape( x, y, z ) {
+	print( "useShape:: x=" + x + " y=" + y + " z=" + z + " chapter=" + scourgeGame.getMission().getChapter() + " depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
 	shape <- scourgeGame.getMission().getShape( x, y, z );
 	if( shape != null ) {
 		print( "Shape used: " + shape + "\n" );

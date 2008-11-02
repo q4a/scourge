@@ -1227,6 +1227,7 @@ bool Scourge::useItem( int x, int y, int z ) {
 	if ( !pos ) pos = levelMap->getItemLocation( x, y );
 	if ( pos ) {
 		Shape *shape = ( pos->item ? pos->item->getShape() : pos->shape );
+		cerr << "using item: " << shape->getName() << endl;
 		if ( levelMap->isWallBetweenShapes( toint( party->getPlayer()->getX() ),
 		                                    toint( party->getPlayer()->getY() ),
 		                                    toint( party->getPlayer()->getZ() ),
@@ -1237,7 +1238,13 @@ bool Scourge::useItem( int x, int y, int z ) {
 			getParty()->setSelXY( x, y, false ); // get as close as possible to location
 			return true;
 		} else {
-			if ( useLever( pos ) ) {
+			if ( session->getSquirrel()->
+						            callMapPosMethod( "useShape",
+						                              pos->x,
+						                              pos->y,
+						                              pos->z ) ) {
+							return true;
+			} else if ( useLever( pos ) ) {
 				return true;
 			} else if ( useDoor( pos ) ) {
 				return true;
@@ -1258,12 +1265,6 @@ bool Scourge::useItem( int x, int y, int z ) {
 				//} else {
 				//getParty()->setSelXY( x, y, false ); // get as close as possible to location
 				//}
-				return true;
-			} else if ( session->getSquirrel()->
-			            callMapPosMethod( "useShape",
-			                              pos->x,
-			                              pos->y,
-			                              pos->z ) ) {
 				return true;
 			}
 		}

@@ -168,17 +168,13 @@ Item *Item::load( Session *session, ItemInfo *info ) {
 	item->identifiedBits = info->identifiedBits;
 
 	// container
-	item->containedItemCount = info->containedItemCount;
-//	int realCount = 0;
+	item->containedItemCount = 0;
 	for ( int i = 0; i < static_cast<int>( info->containedItemCount ); i++ ) {
 		Item *containedItem = Item::load( session, info->containedItems[i] );
 		if ( containedItem ) {
 			item->addContainedItem( containedItem );
-//			item->containedItems[ realCount++ ] = containedItem;
-//			if ( containedItem->isMagicItem() ) item->containsMagicItem = true;
 		}
 	}
-//	item->containedItemCount = realCount;
 
 	// magic item
 	item->bonus = info->bonus;
