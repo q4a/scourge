@@ -477,8 +477,10 @@ void Sound::unloadCharacterSounds( char const* type ) {
 					Mix_Chunk *sample = *i2;
 					Mix_FreeChunk( sample );
 				}
-				v->clear();
+				delete v;
 			}
+			delete charSoundMap;
+			characterSounds.erase( typeStr );
 		}
 	}
 #endif
