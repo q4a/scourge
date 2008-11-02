@@ -467,7 +467,7 @@ public:
 	  Open the container UI for the given container item.
 	  @param container the container item whose contents to show in the window.
 	*/
-	void openContainerGui( Item *container );
+	ContainerGui *openContainerGui( Item *container );
 
 	/**
 	  Close the specified container gui.

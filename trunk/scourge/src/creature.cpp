@@ -111,6 +111,7 @@ Creature::Creature( Session *session, Monster *monster, GLShape *shape, bool ini
 void Creature::commonInit() {
 	this->summoner = NULL;
 	this->backpack = new Item( session, RpgItem::getItemByName( "Backpack" ), 1 );
+	this->backpack->setInventoryOf( this );
 	this->lastDecision = 0;
 	this->portrait.clear();
 
@@ -411,7 +412,11 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 	//creature->backpack_count = info->backpack_count;
 	for ( int i = 0; i < static_cast<int>( info->backpack_count ); i++ ) {
 		Item *item = Item::load( session, info->backpack[i] );
-		if ( item ) creature->addToBackpack( item, true );
+		if ( item ) {
+			if( !creature->addToBackpack( item ) ) {
+				cerr << "Warning: could not add item to backpack: " << item->getName() << endl;
+			}
+		}
 	}
   for(int i = 0; i < Constants::EQUIP_LOCATION_COUNT; i++) {
 		if ( info->equipped[i] < MAX_BACKPACK_SIZE ) {
@@ -949,17 +954,13 @@ void Creature::pickUpOnMap( RenderedItem *item ) {
 
 /// Adds an item to the creature's backpack.
 
-bool Creature::addToBackpack( Item *item, bool force ) {
-	if ( backpack->getContainedItemCount() < MAX_BACKPACK_SIZE &&
-	        ( force || !item->isBlocking() ||
-	          item->getRpgItem()->getEquip() ||
-	          getShape()->fitsInside( item->getShape(), true ) ) ) {
+bool Creature::addToBackpack( Item *item, int itemX, int itemY ) {
+	BackpackInfo *info = getBackpackInfo( item, true );
+	if ( backpack->addContainedItem( item, itemX, itemY ) ) {
 
-		BackpackInfo *info = getBackpackInfo( item, true );
 		info->equipIndex = -1;
 		info->backpackIndex = backpack->getContainedItemCount();
 
-		backpack->addContainedItem( item, true );
 		backpackWeight += item->getWeight();
 
 		if ( backpackWeight > getMaxBackpackWeight() ) {
@@ -2589,7 +2590,7 @@ void Creature::setNpcInfo( NpcInfo *npcInfo ) {
 			}
 			//cerr << "\t" << loot->getRpgItem()->getName() << endl;
 			// make it contain all items, no matter what size
-			addToBackpack( loot, true );
+			addToBackpack( loot );
 		}
 	}
 }
@@ -3774,8 +3775,9 @@ void Creature::monsterInit() {
 		int itemLevel = getMonster()->getLevel() - Util::dice(  2 );
 		if ( itemLevel < 1 ) itemLevel = 1;
 		Item *item = session->newItem( getMonster()->getStartingItem( i ), itemLevel );
-		addToBackpack( item, true );
-		equipFromBackpack( backpack->getContainedItemCount() - 1 );
+		if( addToBackpack( item ) ) {
+			equipFromBackpack( backpack->getContainedItemCount() - 1 );
+		}
 	}
 
 	// add some loot
@@ -3794,7 +3796,7 @@ void Creature::monsterInit() {
 		}
 		//cerr << "\t" << loot->getRpgItem()->getName() << endl;
 		// make it contain all items, no matter what size
-		addToBackpack( loot, true );
+		addToBackpack( loot );
 	}
 
 	// add spells

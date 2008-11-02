@@ -40,6 +40,7 @@ class ConfigLang;
 class ConfigNode;
 class Scourge;
 class Texture;
+class Creature;
 
 /**
   *@author Gabor Torok
@@ -70,6 +71,9 @@ public:
 
 	Item( Session *session, RpgItem *rpgItem, int level = 1, bool loading = false );
 	~Item();
+	
+	inline void setInventoryOf( Creature *creature ) { inventoryOf = creature; }
+	inline Creature *getInventoryOf() { return inventoryOf; }
 
 	inline void setMissionObjectInfo( int missionId, int objectiveIndex ) {
 		this->missionId = missionId;
@@ -178,7 +182,7 @@ public:
 	inline int getContainedItemCount() {
 		return containedItemCount;
 	}
-	bool addContainedItem( Item *item, bool force = false );
+	bool addContainedItem( Item *item, int itemX=0, int itemY=0 );
 	void removeContainedItem( Item *item );
 	Item *getContainedItem( int index );
 	void setContainedItem( int index, Item *item );
@@ -279,6 +283,7 @@ public:
 	Texture getContainerTexture();
 
 private:
+	Creature *inventoryOf;
 	RpgItem *rpgItem;
 	int shapeIndex;
 	Color *color;
@@ -327,6 +332,9 @@ private:
 	Texture containerTexture;
 
 protected:
+	bool findInventoryPosition( Item *item, int posX, int posY, bool useExistingLocationForSameItem );
+	bool checkInventoryLocation( Item *item, bool useExistingLocationForSameItem, int posX, int posY );
+	
 	void commonInit( bool loading );
 	void describeMagic( char const* displayName );
 

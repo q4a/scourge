@@ -107,7 +107,7 @@ void GameAdapter::fillContainer( Item *container, int level, int depth ) {
 	for ( int i = 0; i < n; i++ ) {
 		Item *containedItem = createRandomItem( level, depth );
 		if ( containedItem ) {
-			container->addContainedItem( containedItem, true );
+			container->addContainedItem( containedItem );
 		}
 	}
 	// some spells
@@ -117,7 +117,7 @@ void GameAdapter::fillContainer( Item *container, int level, int depth ) {
 			Spell *spell = MagicSchool::getRandomSpell( level );
 			if ( spell ) {
 				Item *scroll = session->newItem( RpgItem::getItemByName( "Scroll" ), level, spell );
-				container->addContainedItem( scroll, true );
+				container->addContainedItem( scroll );
 			}
 		}
 	}
