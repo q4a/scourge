@@ -643,6 +643,48 @@ function initChapter12() {
 				                                       0, 0, 0, 														// offset
 				                                       0.2, 0.2, 0.5 														// color
 																							);
+	} else if( scourgeGame.getMission().getDungeonDepth() == 2 ) {
+		//print( "chapter 12 map\n" );
+		scourgeGame.getMission().setMapEffect( 296, 264, 2, // map location 
+		                                       "EFFECT_SMOKE",  												// effect 
+		                                       3, 3, 																	// base size
+		                                       0,																			// delay
+		                                       true,																	// forever 
+		                                       0, 0, 0, 														// offset
+		                                       0.3, 0.7, 0.3 														// color
+																					);
+		scourgeGame.getMission().setMapEffect( 326, 264, 2, // map location 
+				                                       "EFFECT_SMOKE",  												// effect 
+				                                       3, 3, 																	// base size
+				                                       0,																			// delay
+				                                       true,																	// forever 
+				                                       0, 0, 0, 														// offset
+				                                       0.7, 0.3, 0.3 														// color
+																							);
+		scourgeGame.getMission().setMapEffect( 311, 271, 2, // map location 
+						                                       "EFFECT_SMOKE",  												// effect 
+						                                       3, 3, 																	// base size
+						                                       0,																			// delay
+						                                       true,																	// forever 
+						                                       0, 0, 0, 														// offset
+						                                       0.3, 0.3, 0.7 														// color
+																									);
+		scourgeGame.getMission().setMapEffect( 296, 278, 2, // map location 
+						                                       "EFFECT_SMOKE",  												// effect 
+						                                       3, 3, 																	// base size
+						                                       0,																			// delay
+						                                       true,																	// forever 
+						                                       0, 0, 0, 														// offset
+						                                       0.3, 0.7, 0.7 														// color
+																									);
+		scourgeGame.getMission().setMapEffect( 326, 279, 2, // map location 
+						                                       "EFFECT_SMOKE",  												// effect 
+						                                       3, 3, 																	// base size
+						                                       0,																			// delay
+						                                       true,																	// forever 
+						                                       0, 0, 0, 														// offset
+						                                       0.7, 0.3, 0.7 														// color
+																									);
 	}
 }
 
