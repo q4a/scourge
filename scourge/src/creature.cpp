@@ -192,6 +192,7 @@ void Creature::commonInit() {
 	this->moving = false;
 
 	evalSpecialSkills();
+
 }
 
 Creature::~Creature() {
@@ -1991,20 +1992,10 @@ Creature *Creature::findClosestTargetWithPrereq( Spell *spell ) {
 }
 
 /// Basic NPC/monster AI.
-string actionNames[] = {
-	"AI_ACTION_ATTACK_CLOSEST_ENEMY",
-		"AI_ACTION_CAST_ATTACK_SPELL",
-		"AI_ACTION_CAST_AREA_SPELL",
-		"AI_ACTION_HEAL",
-		"AI_ACTION_CAST_AC_SPELL",
-		"AI_ACTION_ATTACK_RANDOM_ENEMY",
-		"AI_ACTION_START_LOITERING",
-		"AI_ACTION_STOP_MOVING",
-		"AI_ACTION_GO_ON"                                       
-};
+
 void Creature::decideAction() {
   Uint32 now = SDL_GetTicks();
-  if( now - lastDecision < 1000 ) return;
+  if( now - lastDecision < AI_DECISION_INTERVAL ) return;
   lastDecision = now;
 
   if ( scripted ) {
@@ -2031,6 +2022,7 @@ void Creature::decideAction() {
     0.8f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Loitering, enemies near
     0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.8f, 0.0f, // Loitering, end of path
     0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.8f, // Moving towards target
+    0.0f, 0.3f, 0.1f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.4f, // Engaging target
     0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, // Low HP
     0.0f, 0.35f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, // Target has low HP
     0.0f, 0.0f, 0.0f, 0.8f, 0.0f, 0.1f, 0.0f, 0.0f, 0.1f, // Low MP
@@ -2075,6 +2067,10 @@ void Creature::decideAction() {
   } else if ( ( getMotion() == Constants::MOTION_MOVE_TOWARDS ) && hasTarget() ) {
     for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
       if ( decisionMatrix[ AI_STATE_MOVING_TOWARDS_ENEMY ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_MOVING_TOWARDS_ENEMY ][ i ];
+    }
+  } else if ( ( getMotion() == Constants::MOTION_STAND ) && hasTarget() ) {
+    for ( int i = 0; i < AI_ACTION_COUNT; i++ ) {
+      if ( decisionMatrix[ AI_STATE_ENGAGING_ENEMY ][ i ] > decisionWeights[ i ] ) decisionWeights[ i ] = decisionMatrix[ AI_STATE_ENGAGING_ENEMY ][ i ];
     }
   }
 
@@ -2210,23 +2206,15 @@ void Creature::decideAction() {
       attackClosestTarget();
       break;
     case AI_ACTION_CAST_ATTACK_SPELL:
-    	setMotion( Constants::MOTION_STAND );
-    	stopMoving();
       castOffensiveSpell();
       break;
     case AI_ACTION_CAST_AREA_SPELL:
-    	setMotion( Constants::MOTION_STAND );
-    	stopMoving();
       castAreaSpell();
       break;
     case AI_ACTION_HEAL:
-    	setMotion( Constants::MOTION_STAND );
-    	stopMoving();
       if ( !castHealingSpell() ) useMagicItem();
       break;
     case AI_ACTION_CAST_AC_SPELL:
-    	setMotion( Constants::MOTION_STAND );
-    	stopMoving();
       castACSpell();
       break;
     case AI_ACTION_ATTACK_RANDOM_ENEMY:
@@ -2307,7 +2295,7 @@ bool Creature::attackRandomTarget() {
 
 /// Try to heal someone; returns true if someone was found.
 
-bool Creature::castHealingSpell() {
+bool Creature::castHealingSpell( bool checkOnly ) {
   vector<Spell*> healingSpells;
   Spell *spell;
 
@@ -2321,28 +2309,27 @@ bool Creature::castHealingSpell() {
   // We can't cast a healing spell, exit
   if ( healingSpells.empty() ) return false;
 
-  spell = healingSpells[ Util::pickOne ( 0, healingSpells.size() - 1 ) ];
+  if ( !checkOnly ) {
+    spell = healingSpells[ Util::pickOne ( 0, healingSpells.size() - 1 ) ];
+    setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+    setTargetCreature ( findClosestTargetWithPrereq( spell ) );
+    setMotion( Constants::MOTION_MOVE_TOWARDS );
+  }
 
-  // Cast the spell
-  setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
-  setTargetCreature ( findClosestTargetWithPrereq( spell ) );
-  setMotion( Constants::MOTION_MOVE_TOWARDS );
   return true;
 }
 
 /// Tries to cast an offensive spell onto the targetted or nearest suitable creature.
 
-bool Creature::castOffensiveSpell() {
+bool Creature::castOffensiveSpell( bool checkOnly ) {
   vector<Spell*> offensiveSpells;
   Spell *spell;
-
-  if ( !hasTarget() ) return false;
 
   // Gather spells that are suitable for auto-casting.
 
   for ( int i = 0; i < getSpellCount(); i++ ) {
     spell = getSpell ( i );
-    if ( !spell->isFriendly() && ( spell->getMp() < getMp() ) && spell->isCreatureTargetAllowed() && ( spell->hasStateModPrereq() ? ( findClosestTargetWithPrereq( spell ) != NULL ) : true ) ) {
+    if ( !spell->isFriendly() && ( spell->getMp() < getMp() ) && spell->isCreatureTargetAllowed() && ( spell->hasStateModPrereq() ? findClosestTargetWithPrereq( spell ) != NULL : getClosestTarget() != NULL ) ) {
       offensiveSpells.push_back ( spell );
     }
   }
@@ -2350,26 +2337,27 @@ bool Creature::castOffensiveSpell() {
   // We can't cast an offensive spell, exit
   if ( offensiveSpells.empty() ) return false;
 
-  spell = offensiveSpells[ Util::pickOne ( 0, offensiveSpells.size() - 1 ) ];
-  setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
-  if ( spell->hasStateModPrereq() ) setTargetCreature( findClosestTargetWithPrereq( spell ) );
-  setMotion( Constants::MOTION_MOVE_TOWARDS );
+  if ( !checkOnly ) {
+    spell = offensiveSpells[ Util::pickOne ( 0, offensiveSpells.size() - 1 ) ];
+    setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+    if ( spell->hasStateModPrereq() ) setTargetCreature( findClosestTargetWithPrereq( spell ) ); else setTargetCreature( getClosestTarget() );
+    setMotion( Constants::MOTION_MOVE_TOWARDS );
+  }
+
   return true;
 }
 
 /// Tries to cast an area-affecting spell near the targetted or nearest suitable creature.
 
-bool Creature::castAreaSpell() {
+bool Creature::castAreaSpell( bool checkOnly ) {
   vector<Spell*> areaSpells;
   Spell *spell;
-
-  if ( !hasTarget() ) return false;
 
   // Gather spells that are suitable for auto-casting.
 
   for ( int i = 0; i < getSpellCount(); i++ ) {
     spell = getSpell ( i );
-    if ( !spell->isFriendly() && ( spell->getMp() < getMp() ) && spell->isLocationTargetAllowed() && ( spell->hasStateModPrereq() ? ( findClosestTargetWithPrereq( spell ) != NULL ) : true ) ) {
+    if ( !spell->isFriendly() && ( spell->getMp() < getMp() ) && spell->isLocationTargetAllowed() && ( spell->hasStateModPrereq() ? findClosestTargetWithPrereq( spell ) != NULL : getClosestTarget() != NULL ) ) {
       areaSpells.push_back ( spell );
     }
   }
@@ -2377,16 +2365,19 @@ bool Creature::castAreaSpell() {
   // We can't cast an offensive spell, exit
   if ( areaSpells.empty() ) return false;
 
-  spell = areaSpells[ Util::pickOne ( 0, areaSpells.size() - 1 ) ];
-  setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
-  if ( spell->hasStateModPrereq() ) setTargetCreature( findClosestTargetWithPrereq( spell ) );
-  setMotion( Constants::MOTION_MOVE_TOWARDS );
+  if ( !checkOnly ) {
+    spell = areaSpells[ Util::pickOne ( 0, areaSpells.size() - 1 ) ];
+    setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+    if ( spell->hasStateModPrereq() ) setTargetCreature( findClosestTargetWithPrereq( spell ) ); else setTargetCreature( getClosestTarget() );
+    setMotion( Constants::MOTION_MOVE_TOWARDS );
+  }
+
   return true;
 }
 
 /// Try to raise someone's AC using a spell; returns true if someone was found.
 
-bool Creature::castACSpell() {
+bool Creature::castACSpell( bool checkOnly ) {
   vector<Spell*> acSpells;
   Spell *spell;
 
@@ -2400,18 +2391,19 @@ bool Creature::castACSpell() {
   // We can't cast an AC raising spell, exit
   if ( acSpells.empty() ) return false;
 
-  spell = acSpells[ Util::pickOne ( 0, acSpells.size() - 1 ) ];
+  if ( !checkOnly ) {
+    spell = acSpells[ Util::pickOne ( 0, acSpells.size() - 1 ) ];
+    setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+    setTargetCreature ( findClosestTargetWithPrereq( spell ) );
+    setMotion( Constants::MOTION_MOVE_TOWARDS );
+  }
 
-  // Cast the spell
-  setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
-  setTargetCreature ( findClosestTargetWithPrereq( spell ) );
-  setMotion( Constants::MOTION_MOVE_TOWARDS );
   return true;
 }
 
 /// Tries to use a healing magical item from the backpack on oneself.
 
-bool Creature::useMagicItem() {
+bool Creature::useMagicItem( bool checkOnly ) {
 
   // If there are no magical items in the backpack, get outta here.
   if ( !backpack->getContainedItemCount() || !backpack->getContainsMagicItem() ) return false;
@@ -2430,8 +2422,10 @@ bool Creature::useMagicItem() {
   // If no items found, leave.
   if ( usefulItems.empty() ) return false;
 
-  item = usefulItems [ Util::pickOne( 0, usefulItems.size() - 1 ) ];
-  setAction( ( ( item->getRpgItem()->getPotionSkill() < 0 ) ? Constants::ACTION_EAT_DRINK : Constants::ACTION_CAST_SPELL ), item, item->getSpell() );
+  if ( !checkOnly ) {
+    item = usefulItems [ Util::pickOne( 0, usefulItems.size() - 1 ) ];
+    setAction( ( ( item->getRpgItem()->getPotionSkill() < 0 ) ? Constants::ACTION_EAT_DRINK : Constants::ACTION_CAST_SPELL ), item, item->getSpell() );
+  }
 
   return true;
 }

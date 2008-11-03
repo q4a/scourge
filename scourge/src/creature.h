@@ -175,6 +175,8 @@ public:
 	static const int FORMATION_COUNT = 6;
 
 	// The creature AI
+	#define AI_DECISION_INTERVAL 1000
+
 	enum {
 		AI_STATE_STANDING_NO_ENEMY = 0,
 		AI_STATE_STANDING_ENEMY_AROUND,
@@ -182,6 +184,7 @@ public:
 		AI_STATE_LOITERING_ENEMY_AROUND,
 		AI_STATE_LOITERING_END_OF_PATH,
 		AI_STATE_MOVING_TOWARDS_ENEMY,
+		AI_STATE_ENGAGING_ENEMY,
 		AI_STATE_LOW_HP,
 		AI_STATE_ENEMY_LOW_HP,
 		AI_STATE_LOW_MP,
@@ -982,12 +985,12 @@ public:
 	bool isWithPrereq( Spell *spell );
 	Creature *findClosestTargetWithPrereq( Spell *spell );
 
-	bool castHealingSpell();
-	bool castOffensiveSpell();
-	bool castAreaSpell();
-	bool castACSpell();
+	bool castHealingSpell( bool checkOnly = false );
+	bool castOffensiveSpell( bool checkOnly = false );
+	bool castAreaSpell( bool checkOnly = false );
+	bool castACSpell( bool checkOnly = false );
 
-	bool useMagicItem();
+	bool useMagicItem( bool checkOnly = false );
 
 	// ##############
 	// #### MISC ####
