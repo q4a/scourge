@@ -69,6 +69,7 @@ ScriptClassMemberDecl SqGame::members[] = {
 	{ "void", "addRoom", SqGame::_addRoom, 0, 0, "Tell the terrain generator where a room is." },
 	{ "void", "addVirtualShape", SqGame::_addVirtualShape, 0, 0, "Add a virtual shape." },
 	{ "void", "clearVirtualShapes", SqGame::_clearVirtualShapes, 0, 0, "Clear all virtual shapes." },
+	{ "void", "ascendToSurface", SqGame::_ascendToSurface, 0, 0, "Return party to the surface level of the current mission." },
 	{ 0, 0, 0, 0, 0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members,
@@ -396,5 +397,10 @@ int SqGame::_clearVirtualShapes( HSQUIRRELVM vm ) {
 	GET_STRING( shapeName, 255 )
 	GLShape *shape = SqBinding::sessionRef->getShapePalette()->findShapeByName( shapeName );
 	shape->clearVirtualShapes( false );
+	return 0;
+}
+
+int SqGame::_ascendToSurface( HSQUIRRELVM vm ) {
+	SqBinding::sessionRef->getGameAdapter()->ascendToSurface( NULL );
 	return 0;
 }

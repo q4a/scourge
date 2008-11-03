@@ -209,6 +209,10 @@ void ConversationGui::wordClicked( std::string const& pWord ) {
 
 	char answerStr[255];
 	scourge->getSession()->getSquirrel()->callConversationMethod( "converse", creature, first, answerStr );
+	
+	// squirrel may have ended the conversation
+	if( !win->isVisible() ) return;
+	
 	if ( !strlen( answerStr ) ) {
 		// Get the answer the usual way
 		if ( creature ) {

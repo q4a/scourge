@@ -344,8 +344,23 @@ function converse( creature, question ) {
 				question == "SQ_KARZUL" ) {
 			scourgeGame.getMission().setCompleted();
 		}
+	} else if( creature.getName() == "Nightlord" && question == "ready" ) {
+		teleportPartyToSurface();
 	}
   return null;
+}
+
+function teleportPartyToSurface() {
+	// conversation ends
+	scourgeGame.endConversation();
+	
+	// summon help. todo: use this value once on the surface
+	scourgeGame.setValue( "guardians_summoned", "true" );
+	
+	// nightwards depart
+	
+	// ascend!
+	scourgeGame.ascendToSurface();
 }
 
 function mothrazuTransforms( creature ) {

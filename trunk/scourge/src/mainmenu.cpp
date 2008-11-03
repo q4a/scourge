@@ -626,10 +626,6 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 
 	scourge->getShapePalette()->cloud.glBind();
 
-	if ( flipped )
-		glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );
-	else
-		glColor4f( 1, 1, 1, 1 );
 	for ( int i = 0; i < cloudCount; i++ ) {
 		w = cloud[i].w;
 		h = cloud[i].h;
@@ -639,12 +635,27 @@ void MainMenu::drawClouds( bool moveClouds, bool flipped ) {
 		              0 );
 
 		glBegin( GL_TRIANGLE_STRIP );
+		if ( flipped ) {
+			glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );
+		} else {
+			glColor4f( 1, 1, 1, 1 );
+		}
 		glTexCoord2f( 0.0f, ( flipped ? 1.0f : 0.0f ) );
 		glVertex3f( 0, 0, 0 );
+
+		if ( flipped ) {
+			glColor4f( 0.1f, 0.1f, 0.3f, 0.5f );
+		} else {
+			glColor4f( 1, 1, 1, 1 );
+		}		
 		glTexCoord2f( 1.0f, ( flipped ? 1.0f : 0.0f ) );
 		glVertex3f( w, 0, 0 );
+		
+		glColor4f( 1, 0.3f, 0, 0.5f );
 		glTexCoord2f( 0.0f, ( flipped ? 0.0f : 1.0f ) );
 		glVertex3f( 0, ( flipped ? h / 2.0 : h ), 0 );
+		
+		glColor4f( 1, 0.3f, 0, 0.5f );
 		glTexCoord2f( 1.0f, ( flipped ? 0.0f : 1.0f ) );
 		glVertex3f( w, ( flipped ? h / 2.0 : h ), 0 );
 		glEnd();
