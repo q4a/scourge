@@ -588,7 +588,7 @@ void MainMenu::drawBackdrop() {
 //  float w = scourge->getShapePalette()->scourgeBackdrop->w;
 	float w = scourge->getSDLHandler()->getScreen()->w;
 	//float h = scourge->getShapePalette()->scourgeBackdrop->h;
-	float h = 160.0f;
+	float h = 256.0f;
 
 	//Draw the backdrop image
 	glPushMatrix();
