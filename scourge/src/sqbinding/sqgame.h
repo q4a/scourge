@@ -108,6 +108,8 @@ public:
 	static int _addRoom( HSQUIRRELVM vm );
 	static int _addVirtualShape( HSQUIRRELVM vm );
 	static int _clearVirtualShapes( HSQUIRRELVM vm );
+	
+	static int _ascendToSurface( HSQUIRRELVM vm );	
 };
 
 #endif

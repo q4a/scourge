@@ -304,6 +304,7 @@ public:
 	}
 	void descendDungeon( Location *pos );
 	void ascendDungeon( Location *pos );
+	void ascendToSurface( Location *pos );
 
 	//inline Session *getSession() { return session; }
 

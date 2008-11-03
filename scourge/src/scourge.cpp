@@ -3494,6 +3494,18 @@ void Scourge::ascendDungeon( Location *pos ) {
 	gatepos = pos;
 }
 
+void Scourge::ascendToSurface( Location *pos ) {
+	oldStory = currentStory;
+	currentStory = 0;
+	changingStory = true;
+	goingDown = false;
+	goingUp = true;
+	gatepos = ( pos == NULL ? session->getMap()->getLocation( toint( session->getParty()->getPlayer()->getX() ), 
+	                                                          toint( session->getParty()->getPlayer()->getY() ), 
+	                                                          toint( session->getParty()->getPlayer()->getZ() ) ) : 
+	                                                          	pos );
+}
+
 void Scourge::showTextMessage( char *message ) {
 	textDialog->setText( message );
 	textDialog->setVisible( true );

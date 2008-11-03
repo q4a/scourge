@@ -125,6 +125,7 @@ public:
 	}
 	virtual inline void descendDungeon( Location *pos ) {}
 	virtual inline void ascendDungeon( Location *pos ) {}
+	virtual inline void ascendToSurface( Location *pos ) {}
 
 	// initialization status events
 	virtual inline void initStart( int statusCount, char *message ) {
