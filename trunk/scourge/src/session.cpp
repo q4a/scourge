@@ -86,6 +86,7 @@ Session::~Session() {
 	if ( squirrel ) delete squirrel;
 	deleteCreaturesAndItems();
 	delete party;
+	party = NULL; // adapter destruction may need it
 	delete sound;
 	if ( board ) delete board;
 	if ( cutscene ) delete cutscene;
@@ -94,7 +95,8 @@ Session::~Session() {
 	delete client;
 #endif
 	if ( map ) delete map;
-	if ( shapePal ) delete shapePal;
+	delete shapePal;
+	shapePal = NULL; // adapter destruction may need it
 	delete adapter;
 }
 

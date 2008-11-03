@@ -198,18 +198,21 @@ Creature::~Creature() {
 	portrait.clear();
 
 	// cancel this creature's events
-	session->getParty()->getCalendar()->cancelEventsForCreature( this );
+	Party* party = session->getParty();
+	if ( party != NULL ) party->getCalendar()->cancelEventsForCreature( this );
 
 	// now delete the creature
 	session->getGameAdapter()->removeBattle( battle );
 	delete battle;
 	delete pathManager;
 	// delete the md2/3 shape
-	session->getShapePalette()->
-	decrementSkinRefCountAndDeleteShape( model_name.c_str(),
-	    skin_name.c_str(),
-	    shape,
-	    monster );
+	ShapePalette* shapepal = session->getShapePalette();
+	if ( shapepal != NULL ) {
+		shapepal->decrementSkinRefCountAndDeleteShape( model_name.c_str(),
+		                                               skin_name.c_str(),
+		                                               shape,
+		                                               monster );
+	}
 	// delete the backpack infos
 	for ( map<Item*, BackpackInfo*>::iterator e = invInfos.begin(); e != invInfos.end(); ++e ) {
 		BackpackInfo *info = e->second;
