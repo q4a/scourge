@@ -77,8 +77,7 @@ bool PathManager::findPath( int x, int y, Creature* player, Map* map, bool ignor
 
 	positionOnPath = 0;
 
-	calculateAllPathLocations();
-	moveNPCsOffPath( player, map );
+	if ( player->isPartyMember() ) moveNPCsOffPath( player, map );
 	if ( path.empty() ) return x == toint( owner->getX() ) && y == toint( owner->getY() );
 	Location last = path[path.size()-1];
 	return last.x == x && last.y == y;
@@ -98,8 +97,7 @@ bool PathManager::findPathToCreature( Creature* target, Creature* player, Map* m
 
 	positionOnPath = 0;
 
-	calculateAllPathLocations();
-	moveNPCsOffPath( player, map );
+	if ( player->isPartyMember() ) moveNPCsOffPath( player, map );
 
 	return isPathTowardTargetCreature( distance );
 }
