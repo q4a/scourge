@@ -29,6 +29,13 @@
 #include "portrait.h"
 #include "shapepalette.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 /**
@@ -157,6 +164,7 @@ PcUi::~PcUi() {
 	delete equip;
 	delete inven;
 	delete portrait;
+	delete missionInfo;
 }
 
 bool PcUi::handleEvent( Widget *widget, SDL_Event *event ) {
