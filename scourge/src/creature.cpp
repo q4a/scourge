@@ -720,53 +720,25 @@ Location *Creature::moveToLocator() {
 
 		// if we've no more steps
 		if ( pathManager->atEndOfPath() ) {
-			if ( !session->getParty()->isPartyMember( this ) && !scripted ) {
-				setMotion( Constants::MOTION_LOITER ); //All NPCs and monsters should loiter.
-				//some wandering heroes won't get their paths made elsewhere - HACK: put their logic here
-				if ( getCharacter() ) {
-					if ( Util::dice( 4 ) == 0 ) //wandering heroes don't wander that much
-						pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
-					else {
-						stopMoving();
-						setMotion( Constants::MOTION_STAND );
-					}
-				}
-
-			} else {
+			stopMoving();
+			setMotion( Constants::MOTION_STAND );
+		} else if ( pos ) {
+			cantMoveCounter++;
+			if ( isPartyMember() ) {
+				pathManager->moveNPCsOffPath( this, session->getMap() );
+			}
+			if ( cantMoveCounter > 5 ) {
 				stopMoving();
 				setMotion( Constants::MOTION_STAND );
-			}
-			// stop move-away-s
-			/* if( this == session->getParty()->getPlayer() ) {
-			   for( int i = 0; i < session->getParty()->getPartySize(); i++ ) {
-			     session->getParty()->getParty( i )->cancelMoveAway();
-			   }
-			   for( int i = 0; i < session->getCreatureCount(); i++ ) {
-			     if( session->getCreature( i )->isNpc() ) {
-			       session->getCreature( i )->cancelMoveAway();
-			     }
-			   }
-			 }*/
-		} else if ( pos ) {
-			if ( getMotion() != Constants::MOTION_LOITER )
-				pathManager->moveNPCsOffPath( session->getParty()->getPlayer(), session->getMap() );
-
-			cantMoveCounter++;
-			//loiterers can just wander off
-			if ( getMotion() == Constants::MOTION_LOITER ) {
-				if ( cantMoveCounter > 15 ) {
-					stopMoving();
-					setMotion( Constants::MOTION_STAND );
-					cantMoveCounter = 0;
-				} else if ( cantMoveCounter > 5 ) {
-					pathManager->findWanderingPath( CREATURE_LOITERING_RADIUS, session->getParty()->getPlayer(), session->getMap() );
-				}
+				cantMoveCounter = 0;
 			}
 		} else if ( !pos ) {
 			cantMoveCounter = 0;
 			setMoving( true );
 		}
+
 	} else {
+
 		if ( !( getMotion() == Constants::MOTION_LOITER || getMotion() == Constants::MOTION_STAND ) ) {
 #if PATH_DEBUG
 			cerr << "Creature stuck: " << getName() << endl;
@@ -774,7 +746,9 @@ Location *Creature::moveToLocator() {
 			stopMoving();
 			setMotion( Constants::MOTION_STAND );
 		}
+
 	}
+
 	return pos;
 }
 
@@ -824,8 +798,7 @@ Location *Creature::takeAStepOnPath() {
 			                         nx, ny, toint( getZ() ),
 			                         this );
 
-			if ( position && cx != location.x && cy != location.y
-			        && ( ( cx != nx && cy == ny ) || ( cx == nx && cy != ny ) ) ) {
+			if ( position && cx != location.x && cy != location.y && ( ( cx != nx && cy == ny ) || ( cx == nx && cy != ny ) ) ) {
 #if PATH_DEBUG
 				cerr << "Popping: " << this->getName() << endl;
 #endif
@@ -841,38 +814,21 @@ Location *Creature::takeAStepOnPath() {
 			}
 		}
 
-		/* cout << getName() << " stepping (" << getX() << "," << getY() << ") to (" << newX << "," << newY << ")  towards (" << location.x << "," << location.y << ")\n";
-		 if(position){
-		   cout << "but is blocked.\n";
-		   if(position->creature) cout << "blocked by " << position->creature->getName() << "\n";
-		 }*/
-
-
 		if ( !position ) {
 			computeAngle( newX, newY );
 			showWaterEffect( newX, newY );
 			moveTo( newX, newY, getZ() );
 			if ( toint( newX ) == location.x && toint( newY ) == location.y ) {
 				pathManager->incrementPositionOnPath();
-				//we'll clear the path every so often - each time we move a step is ok
-				if ( getMotion() != Constants::MOTION_LOITER )
-					pathManager->moveNPCsOffPath( session->getParty()->getPlayer(), session->getMap() ); //this clears the path infront
 			}
 		} else {
 #if PATH_DEBUG
 			cerr << "Blocked, stopping: " << this->getName() << endl;
 #endif
-			// if we can't get to the destination, stop trying
-			// do this so the animation switches to "stand"
-			if ( session->getParty()->getPlayer() != this ) {
-				stopMoving();
-				setMotion( Constants::MOTION_STAND );
-			}
-			//clear the path infront incase an NPC is what is blocking us
-			if ( getMotion() != Constants::MOTION_LOITER )
-				pathManager->moveNPCsOffPath( session->getParty()->getPlayer(), session->getMap() );
 		}
+
 	}
+
 	return position;
 }
 
