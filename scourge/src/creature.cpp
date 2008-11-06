@@ -919,7 +919,7 @@ bool Creature::addToBackpack( Item *item, int itemX, int itemY ) {
 	if ( backpack->addContainedItem( item, itemX, itemY ) ) {
 
 		info->equipIndex = -1;
-		info->backpackIndex = backpack->getContainedItemCount();
+		info->backpackIndex = backpack->getContainedItemCount() - 1;
 
 		backpackWeight += item->getWeight();
 
@@ -1267,6 +1267,10 @@ void Creature::equipFromBackpack( int backpackIndex, int equipIndexHint ) {
 	// don
 	// FIXME: take into account: two-handed weapons, min skill req-s., etc.
 	Item *item = getBackpackItem( backpackIndex );
+#ifdef DEBUG_INVENTORY
+	cerr << "item at pos " << backpackIndex << " item=" << item << endl;
+	debugBackpack();
+#endif
 
 	int place = -1;
 	vector<int> places;
