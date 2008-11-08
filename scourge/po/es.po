@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-11-06 18:18+0100\n"
-"PO-Revision-Date: 2008-11-07 20:07+0100\n"
+"POT-Creation-Date: 2008-11-08 02:30+0100\n"
+"PO-Revision-Date: 2008-11-08 02:43+0100\n"
 "Last-Translator: Diego J. <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgid "*Cursed* "
 msgstr "*Maldito* "
 
 #: src/item.cpp:350
-#: src/creature.cpp:2487
+#: src/creature.cpp:2491
 msgid " *Mission*"
 msgstr " *Misión*"
 
@@ -718,7 +718,7 @@ msgid "ATK"
 msgstr "ATA"
 
 #: src/scourge.cpp:3693
-#: src/creature.cpp:3003
+#: src/creature.cpp:3007
 msgid "CTH"
 msgstr "PDA"
 
@@ -894,142 +894,142 @@ msgstr "%1$s lanzará %2$s."
 msgid "%1$s will use capability %2$s."
 msgstr "%1$s usará su capacidad %2$s."
 
-#: src/creature.cpp:1665
+#: src/creature.cpp:1669
 #, c-format
 msgid "%s is raised from the dead!"
 msgstr "¡%s ha vuelto a la vida!"
 
-#: src/creature.cpp:1703
+#: src/creature.cpp:1707
 #, c-format
 msgid "  %s levels up!"
 msgstr "  ¡%s sube de nivel!"
 
-#: src/creature.cpp:1727
+#: src/creature.cpp:1731
 #, c-format
 msgid "%s gains %d experience points."
 msgstr "%s gana %d puntos de experiencia."
 
-#: src/creature.cpp:1730
+#: src/creature.cpp:1734
 #, c-format
 msgid "%s gains a level!"
 msgstr "¡%s gana un nivel!"
 
-#: src/creature.cpp:1734
+#: src/creature.cpp:1738
 #, c-format
 msgid "%s looses %d experience points!"
 msgstr "¡%s pierde %d puntos de experiencia!"
 
-#: src/creature.cpp:2471
+#: src/creature.cpp:2475
 #, c-format
 msgid "Utterly chaotic"
 msgstr "Totalmente caótico"
 
-#: src/creature.cpp:2473
+#: src/creature.cpp:2477
 #, c-format
 msgid "Chaotic"
 msgstr "Caótico"
 
-#: src/creature.cpp:2475
+#: src/creature.cpp:2479
 #, c-format
 msgid "Neutral"
 msgstr "Neutral"
 
-#: src/creature.cpp:2477
+#: src/creature.cpp:2481
 #, c-format
 msgid "Lawful"
 msgstr "Legal"
 
-#: src/creature.cpp:2479
+#: src/creature.cpp:2483
 #, c-format
 msgid "Overly lawful"
 msgstr "Demasiado malvado"
 
-#: src/creature.cpp:2482
+#: src/creature.cpp:2486
 #, c-format
 msgid "%s (L:%d HP:%d/%d MP:%d/%d AL:%d%%(%s))"
 msgstr "%s (L:%d PG:%d/%d PM:%d/%d AL:%d%%(%s))"
 
-#: src/creature.cpp:2490
+#: src/creature.cpp:2494
 msgid " *Boss*"
 msgstr " *Jefe*"
 
-#: src/creature.cpp:2583
+#: src/creature.cpp:2587
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr "¡%1$s gana la habilidad especial de %2$s!"
 
-#: src/creature.cpp:2595
+#: src/creature.cpp:2599
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr "¡%1$s pierde la habilidad especial de %2$s!"
 
-#: src/creature.cpp:2813
-#: src/creature.cpp:2815
+#: src/creature.cpp:2817
+#: src/creature.cpp:2819
 msgid "...Attack from blind-spot!"
 msgstr "... ¡Ataque por el punto ciego!"
 
-#: src/creature.cpp:2957
-#: src/creature.cpp:3008
+#: src/creature.cpp:2961
+#: src/creature.cpp:3012
 msgid "skill"
 msgstr "habilidad"
 
-#: src/creature.cpp:2961
-#: src/creature.cpp:3007
+#: src/creature.cpp:2965
+#: src/creature.cpp:3011
 #: src/infogui.cpp:680
 msgid "vs."
 msgstr "vs."
 
-#: src/creature.cpp:2963
+#: src/creature.cpp:2967
 msgid "bonus"
 msgstr "extra"
 
-#: src/creature.cpp:3005
+#: src/creature.cpp:3009
 msgid "max"
 msgstr "máx"
 
-#: src/creature.cpp:3392
+#: src/creature.cpp:3396
 #, c-format
 msgid "%s notices a trap!"
 msgstr "¡%s ve una trampa!"
 
-#: src/creature.cpp:3412
+#: src/creature.cpp:3416
 #, c-format
 msgid "%s notices a secret door!"
 msgstr "¡%s ve una puerta secreta!"
 
-#: src/creature.cpp:3434
+#: src/creature.cpp:3438
 #, c-format
 msgid "%1$s blunders into a trap and takes %2$d points of damage!"
 msgstr "%1$s cae en la trampa y sufre %2$d puntos de daño!"
 
-#: src/creature.cpp:3455
+#: src/creature.cpp:3459
 #, c-format
 msgid "%s attempts to disable the trap:"
 msgstr "%s intenta desactivar la trampa:"
 
-#: src/creature.cpp:3459
+#: src/creature.cpp:3463
 msgid "   and succeeds!"
 msgstr "   y tiene éxito!"
 
-#: src/creature.cpp:3467
+#: src/creature.cpp:3471
 #, c-format
 msgid "    and fails! %1$s takes %2$d points of damage!"
 msgstr "    y falla! ¡%1$s sufre %2$d puntos de daño!"
 
-#: src/creature.cpp:3474
+#: src/creature.cpp:3478
 msgid "This trap is already disabled."
 msgstr "La trampa ya está desactivada."
 
-#: src/creature.cpp:3784
+#: src/creature.cpp:3788
 msgid "You may not summon any more creatures."
 msgstr "No puedes invocar más criaturas."
 
-#: src/creature.cpp:3815
+#: src/creature.cpp:3819
 #, c-format
 msgid "%s calls for help: a %s appears!"
 msgstr "%s pide ayuda: ¡un %s aparece!"
 
-#: src/creature.cpp:3834
+#: src/creature.cpp:3838
 #, c-format
 msgid "%s turns to vapors and disappears!"
 msgstr "¡%s se convierte en vapor y desaparece!"
@@ -4736,17 +4736,17 @@ msgid "Spawn of Arcanex"
 msgstr "Progenie de Arcanex"
 
 #: ../scourge_data/config/npc.cfg:870
-#: ../scourge_data/maps/chapter122.cfg:41
-#: ../scourge_data/maps/chapter122.cfg:48
-#: ../scourge_data/maps/chapter122.cfg:55
-#: ../scourge_data/maps/chapter122.cfg:62
-#: ../scourge_data/maps/chapter122.cfg:69
-#: ../scourge_data/maps/chapter122.cfg:76
+#: ../scourge_data/maps/chapter122.cfg:47
+#: ../scourge_data/maps/chapter122.cfg:54
+#: ../scourge_data/maps/chapter122.cfg:61
+#: ../scourge_data/maps/chapter122.cfg:68
+#: ../scourge_data/maps/chapter122.cfg:75
+#: ../scourge_data/maps/chapter122.cfg:82
 msgid "Nightward"
 msgstr "Pupilo nocturno"
 
 #: ../scourge_data/config/npc.cfg:889
-#: ../scourge_data/maps/chapter122.cfg:83
+#: ../scourge_data/maps/chapter122.cfg:89
 msgid "Nightlord"
 msgstr "Señor de la noche"
 
@@ -10378,35 +10378,43 @@ msgstr "Nosotros,Nuestro,nuestro"
 msgid "We are servants of the most mighty... Leaders of men who hundreds of years ago, after many decades of service to humanity, saw betrayal and treachery within their own ranks!||Yet  they knew this time would come and these catacombs were built earlier in preparation for ...the long night.||We Nightwards were part of the construction of the crypt. Magical beings called from the dimension of night to loan our talents to the safe-keeping of their sleep, until such time...||Well, until now, that is. Hurry, the Nightlord awaits!"
 msgstr "Somos sirvientes del más poderoso... Líderes de hombres que hace centurias, después de muchas décadas de servicio a la humanidad, ¡vimos la traición en nuestras propias filas!||Todavía sabían que ese tiempo llegaría y estas catacumbas fueron construidas pronto en preparación de la... Larga noche.||Nosotros pupilos de la noche tomamos parte en la construcción de la cripta. Seres mágicos llamados de la dimensión de la noche para prestar nuestros talentos a los guardianes de su sueño, hasta esta hora...||Bueno, hasta ahora, esto es. ¡Daros prisa el Señor de la noche espera!"
 
-#: ../scourge_data/maps/chapter122.cfg:23
-msgid "Ah, here you are finally. I will spare you the flowery metaphors of my minions and get directly to the point. (As an aside I always did love humanity's pragmatism... perhaps I'm the only such one of my kind.)||I assume you know in $whose crypts of hibernation you tread? I assume you understand $what is expected of you?||The unholy presence of the demon Karzul is clear to me, even though the dark Lord gave a wide berth to these sacred halls on his way up. I have finished the incantations and the tombs of the $Guardians are ready for the awakening.||All that remains is your $consent. Therefore, I must urge you to act quickly, and if you have any $questions, ask them now. Once the events of the awakening are underway, you will not find us here. With our charter finished the nightwards will return home."
-msgstr "Ah, aquí estáis al fin. Voy a escatimar las floridos metáforas de mi siervos y voy a ir directo al grano. Adicionalmente te diré que yo siempre amé el pragmatismo de la humanidad... Quizás soy el único de esa clase.||Supongo que sabéis qué criptas de hibernación pisáis? Supongo que entendéis $qué se espera de vosotros?||La nefaria presencia del demonio Karzul está clara, incluso cuando el Señor oscuro eludió estas salas sagradas en su camino. He acabado los encantamientos y las tumbas de los $Guardianes están listas para el despertar.||Todo lo que queda es tu $consentimiento. Por lo tanto, debo instaros a actuar con rapidez, y si tienes alguna $pregunta, házmelas ahora. Una vez que los acontecimientos del despertar están en marcha, ya no nos encontrarás aquí. Con nuestra misión terminada, los pupilos nocturnos volverán a su hogar."
+#: ../scourge_data/maps/chapter122.cfg:20
+msgid "Melathor,Melathor of Allovium"
+msgstr "Melathor,Melathor de Allovium"
 
-#: ../scourge_data/maps/chapter122.cfg:24
+#: ../scourge_data/maps/chapter122.cfg:21
+msgid "Our charter is not confined to these halls... $they made sure our agents are well positioned... like the black roots of the Shade-lilly, $our network of servants is wide and long reaching..."
+msgstr "Nuestro fuero no está confinado en estos salones... $ellos se han asegurado de que nuestros agentes estén bien posicionados... Como esas raíces negras de Shade-lilly, $nuestra red de sirvientes es ancha y de largo alcance..."
+
+#: ../scourge_data/maps/chapter122.cfg:25
+msgid "Ah, here you are finally. I will spare you the flowery metaphors of my minions and get directly to the point. (As an aside I always did love humanity's pragmatism... perhaps I'm the only such one of my $kind.)||I assume you know in $whose crypts of hibernation you tread? I assume you understand $what is expected of you?||The unholy presence of the demon Karzul is clear to me, even though the dark Lord gave a wide berth to these sacred halls on his way up. I have finished the incantations and the tombs of the $Guardians are ready for the awakening.||All that remains is your $consent. Therefore, I must urge you to act quickly, and if you have any $questions, ask them now. Once the events of the awakening are underway, you will not find $us here. With our charter finished the $nightwards will return home."
+msgstr "Ah, aquí estáis al fin. Voy a escatimar las floridas metáforas de mi siervos y voy a ir directo al grano. Adicionalmente te diré que yo siempre amé el pragmatismo de la humanidad... Quizás soy el único de esa clase.||Supongo que sabéis qué criptas de hibernación pisáis? Supongo que entendéis $qué se espera de vosotros?||La nefaria presencia del demonio Karzul está clara, incluso cuando el Señor oscuro eludió estas salas sagradas en su camino. He acabado los encantamientos y las tumbas de los $Guardianes están listas para el despertar.||Todo lo que queda es tu $consentimiento. Por lo tanto, debo instaros a actuar con rapidez, y si tienes alguna $pregunta, házmelas ahora. Una vez que los acontecimientos del despertar están en marcha, ya no nos encontrarás aquí. Con nuestra misión terminada, los $pupilos nocturnos volverán a su hogar."
+
+#: ../scourge_data/maps/chapter122.cfg:26
 msgid "I haven't time for idle chatter."
 msgstr "No tengo tiempo para charlas intrascendentes."
 
-#: ../scourge_data/maps/chapter122.cfg:26
+#: ../scourge_data/maps/chapter122.cfg:28
 msgid "The story goes something like this:||Hundreds of years ago, after the defeat of an invasion of demons, a group of heroes banded together to form the order that came to be called the Guardians of the Realm.||Though mostly a peace-keeping force, they also concerned themselves with the preservation of all knowledge of their age. Among other things, they build several libraries around the world to house the rare books in which the Guardians recorded known history, astronomy and all other sciences and magic they learned. Their hope was to pass on their vast body of knowledge and let future generations know how to deal with another war should the $Abyss invade again.||Sadly, before their work could be completed, in a final and cataclysmic battle, the demons destroyed them all...||However, the guardians have long prophesied their doom and took precautions against such events. With their destruction all but assured they retired to these halls and entered a death-like state of frozen $preservation."
 msgstr "Su leyenda es una penosa... Hace miles de años, después de la derrota de una invasión de demonios, un grupo de héroes unidos, formaron la orden que llegaría a ser los Guardianes del Reino. Aunque eran una fuerza pacificadora, también estaban ocupados en al conservación de la sabiduría de su época. Esta $biblioteca es una de las pocas que construyeron por el mundo para almacenar libros raros en los que los Guardianes escribían su historia, astronomía y todas las otras ciencias de la magia que ellos habían aprendido. Su esperanza estaba en pasar su vasto legado para dejar a las generaciones futuras una guía de cómo lugar en otra guerra si el $Abismo nos invadía otra vez. Lamentablemente, antes de que su trabajo estuviera completado, en una batalla de proporciones catastróficas los demonios los destruyeron a todos... Se habla de que una traición causada por problemas con los mandos en la Orden causó su caída."
 
-#: ../scourge_data/maps/chapter122.cfg:28
+#: ../scourge_data/maps/chapter122.cfg:30
 msgid "The Abyss? Why, it's humanities ancient foe... the home of all that is evil, the land of demons.||Rest assured the demon lord Karzul is not here on some kind of sight-seeing tour from his native planes. He will not stop until his powers of corruption brought humanity to its knees. Years of war, anarchy and famine will follow unless he is stopped."
 msgstr "¿El Abismo? Porque es un antiguo enemigo de la humanidad... El hogar de todo lo que es malo, la tierra de los demonios.||Ten seguro que el señor demonio Karzul no está aquí en algún tipo de tour de visitas desde sus planos natales. Él no se detendrá hasta que sus poderes de la corrupción tiren a la humanidad de rodillas. Años de guerra, anarquía y hambre le seguirán a menos que se le pare."
 
-#: ../scourge_data/maps/chapter122.cfg:30
+#: ../scourge_data/maps/chapter122.cfg:32
 msgid "Centuries passed, while $Guardians of the Realm slept in their tombs. It was a difficult choice to make, but in the face of overwhelming odds there was no better solution.||The demonic horde, thought to have destroyed their most feared foes, moved on and after many years of destruction turned on itself.||Battles erupted among the Abyssal troops, as ancient fears and jealousies flared. While campaigning on the material plane, the relatively weakly defended home base of the demon generals was assailed by other even more ancient chaotic beings that the demons displaced many eons ago to win their thrones in the Abyss. Finally keeping two fronts running became such a burden that their hosts were called home where the battle for dominance continues to this day. Such is the nature of evil...||Here life slowly returned to its normal, peaceful pace. The Guardians stayed interred since there was no reason for their resurrection in a now tame world.||But all that changed with rise of the demon lord Karzul.||It is not clear to me how he managed to bring so much of his infernal power forth into your land... Nevertheless, the time is now. The Guardians are ready to come to life again. All we need is a group of heroes to $call on them."
 msgstr "Siglos pasaron mientras los $Guardianes del Reino dormían en sus tumbas. Era difícil la elección a hacer, pero en vista de los acontecimientos no había otra solución mejor.||La horda demoníaca aunque se habían destruido sus más fieros líderes, se mudó y después de muchos años de destrucción se atacó a sí misma.||Las batallas emergieron de entre las tropas Abismales conforme los miedos y envidias germinaban. Mientras estaban de campaña en el plano material, la base relativamente débil de los generales demonios fue asaltada por otros seres más antiguos y caóticos que los demonios echaron hace eones de sus tronos en el Abismo. Finalmente se mantuvieron dos frentes que se convirtieron en una carga cuando sus integrantes fueron llamados desde su casa donde la batalla por el control continua hasta este día. Esa es la naturaleza del mal...||Aquí la vida lentamente vuelve a ser apacible. Los Guardianes se quedaron inhumados dado que no había motivo para resucitarlos en un mundo ahora domado.||Pero todo lo que cambió con el alzamiento del señor demonio Karzul.||No está claro cómo se las arregló para acumular tanto poder infernal y usarlo en tu tierra... No obstante, la hora ha llegado. Los Guardianes está preparados para volver a la vida otra vez. Todo lo que necesitamos es un grupo de héroes para despertarlos."
 
-#: ../scourge_data/maps/chapter122.cfg:32
+#: ../scourge_data/maps/chapter122.cfg:34
 msgid "Your world is in mortal danger. Karzul even now is preparing... scheming to bring civilization to an end. He will not rest until all of the world's leader serve him. And to this end he will do anything: start wars, incite religious riots, burn towns, fail crops, anything. Your only chance is to defeat him while he is gathering his might, here at the monastery.||I would think you have maybe an hour... maybe less. Soon he will use whatever conduit he has established to his native plane of the $Abyss to refuel on infernal energies and begin to spread darkness and pain.||However, powerful as you are, you cannot hope to defeat him. The $Guardians of the Realm foresaw this and built these crypts to while away their time, until heroes like yourself call on them in their hour of need. If summoned, they will return from their long night of death-like rest to fight on your side against Karzul.||In order for the $Guardians to reappear all I need is for you to $call on them."
 msgstr "Mortal tu mundo peligra. Karzul está ahora preparado... Planificando cómo llevar la civilización a su final. No descansará hasta que todos los líderes de los mundos le sirvan a él. Y para esto hará lo que sea: empezar guerras, incitar revueltas religiosas, quemar ciudades, arrasar cultivos, lo que sea. Tu única posibilidad es vencerle mientras esté reuniendo su poder, aquí, en el monasterios.||Creo que tendrás quizás una hora... Quizás menos. Pronto usará el conducto que ha establecido con su plano nativo del $Abismo para recargarse de energías infernales y empezar a llevar oscuridad y dolor.||Sea como sea, poderoso como eres, no puedes esperar vencerle. Los $Guardianes del Reino previeron esto y construyeron estas criptas hace mucho tiempo, para que héroes como tú los despertaran en un momento de necesidad. Si se les convoca, volverán de su larga noche de descanso casi muerte para pelear en tu bando contra Karzul.||Para hacer que los $Guardianes reaparezcan todo lo que tienes que hacer es llamarlos."
 
-#: ../scourge_data/maps/chapter122.cfg:34
+#: ../scourge_data/maps/chapter122.cfg:36
 msgid "Here is how this works: as you may already know, pending their destruction the $Guardians of the Realm willingly entered hibernation.||In reality a deal with Death was struck. Death being eternal miser grants no escape only delays... Therefore it was decided that should the $Guardians ever need to return, given their past record of heroism (a fact that even wowed Death a bit) will be granted one leave of absence with the understanding that they will voluntarily return to Death's domain once their work was done.||However, in order for Death to agree to this rather unusual pact, he required that the reasons for calling the Guardians back be a genuine, honest-to-god end-of-world scenario. (As I'm sure you can see, for rather obvious reasons the end of the world would profit Death's business greatly but would not be grounds for a sustainable venture.) As such, he required that a new group of heroes consent to putting their own lives in escrow for the duration of the Guardian's stay. Were they to somehow break their promise, Death would claim you in their stead.||The $Guardians made me promise to impress upon you their resolve to remain true to their word. As they once willingly entered hibernation, so will they again stand under Death's banner when the time comes.||So what say you? $Consent now and call on the $Guardians of the Realm to aid your battle against humanity's greatest foe."
 msgstr "Así es como funciona: como ya sabrás, estando pendiente su destrucción, los $Guardianes del Reino, entraron en hibernación a voluntad.||En realidad, el acuerdo con La Muerte se había roto. La Muerte es avara, y nadie escapa sólo se retrasa... Aun así, se decidió que los $Guardianes serían necesitados en un futuro, dado su pasado de heroísmo (un hecho que incluso asombró a La Muerte) se les permitió estar ausentes entendiendo que ellos voluntariamente volverían a los dominios de La Muerte una vez que el trabajo estuviera finalizado.||Sin embargo, para que La Muerte pudiera estar de acuerdo con este pacto inusual, requirió que las razones para despertar a los Guardianes fueran genuinas, honestas y con un escenario del juicio final. Como estoy seguro que ves, por razones obvias el fin del mundo sería un gran negocio para La Muerte pero no sería terreno para una empresas sostenible. Así, requirió que un nuevo grupo de héroes consintieran en poner sus propias vidas como depósito durante el tiempo que se tardase en despertar a los Guardianes restantes. Si se les ocurría romper su promesa, La Muerte clamaría vuestras vidas.||Los $Guardianes hicieron la promesa de permanecer fieles a su palabra. Así como una vez entraron en hibernación, una vez que el tiempo llegue, estarán en los dominios de La Muerte.||Entonces ¿qué dices? Da tu $consentimiento y despierta a los $Guardianes del Reino para ayudarte a la batalla contra el mayor enemigo de la humanidad."
 
-#: ../scourge_data/maps/chapter122.cfg:36
+#: ../scourge_data/maps/chapter122.cfg:38
 msgid "Good... good... just as I expected. Your names have been recorded and your lives have been bound to the $Guardians'.||I will now release them from their long years of slumber, and then my Nightwards and I will return home. ||May Regbreon the Greatest Shade aid you in combat!...||When you are $ready I can teleport you back to the surface where even now the $Guardians await your final command."
 msgstr "Bien... Bien... Justo como esperaba. Vuestros nombres han sido grabados y vuestras vidas han sido añadidas a las de los $Guardianes.||Los sacaré de su sueño y entonces mis pupilos de la noche y yo volveremos a casa. ||¡Quizás Regbreon la gran forma te ayude en el combate!...||Cuando estés $preparado, te puedo teletransportar de vuelta a la superficie donde hasta los $Guardianes esperan sus órdenes finales."
 
