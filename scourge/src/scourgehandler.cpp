@@ -484,6 +484,7 @@ bool ScourgeHandler::handleEvent( Widget *widget, SDL_Event *event ) {
 	} else if ( widget == scourge->getTextDialog()->win->closeButton ||
 	            widget == scourge->getTextDialog()->okButton ) {
 		scourge->getTextDialog()->setVisible( false );
+		scourge->getParty()->toggleRound( false );
 	} else if ( widget == scourge->getPcEditor()->getOkButton() ) {
 		scourge->getSession()->getParty()->
 		hire( scourge->getPcEditor()->getCreature() );

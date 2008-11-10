@@ -3507,6 +3507,7 @@ void Scourge::ascendToSurface( Location *pos ) {
 }
 
 void Scourge::showTextMessage( char *message ) {
+	getParty()->toggleRound( true );
 	textDialog->setText( message );
 	textDialog->setVisible( true );
 }
