@@ -341,7 +341,7 @@ bool ScourgeHandler::handleEvent( Widget *widget, SDL_Event *event ) {
 	            scourge->isInfoDialogShowing() ) {
 		scourge->getParty()->toggleRound( false );
 		scourge->setInfoDialogShowing( false );
-		scourge->getSession()->getSquirrel()->startLevel( "enterMap" );
+		scourge->getSession()->getSquirrel()->startLevel( "mapStarting" );
 		scourge->evalSpecialSkills();
 		scourge->getParty()->startEffect( Constants::EFFECT_TELEPORT,
 		    ( Constants::DAMAGE_DURATION * 4 ) );

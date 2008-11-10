@@ -426,6 +426,7 @@ void Session::deleteCreaturesAndItems( bool missionItemsOnly ) {
 		delete creatures[i];
 	}
 	creatures.clear();
+	nonVisibleCreatures.clear();
 
 	/*
 	cerr << "***************************************" << endl;

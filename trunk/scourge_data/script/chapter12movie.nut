@@ -168,3 +168,56 @@ function drawEffects() {
 																					);
 	}
 }
+
+
+
+// ***********************************************************
+// ***********************************************************
+// ***********************************************************
+
+
+
+
+function startGameEndMovie() {
+	scourgeGame.setMovieMode( true );
+	scourgeGame.setInterruptFunction( "gameEndMovieInterrupt" )
+
+	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 30, 0.8, 4500 );
+	
+	c1 <- findCreatureByType( "Norill" );
+	if( c1 != null ) {
+		c1.setScripted( true );
+		c1.moveTo( 325, 445 );
+	}
+	c2 <- findCreatureByType( "Sarrez" );
+	if( c2 != null ) {
+		c2.setScripted( true );
+		c2.moveTo( 330, 448 );
+	}
+	c3 <- findCreatureByType( "Rolan" );
+	if( c3 != null ) {
+		c3.setScripted( true );
+		c3.moveTo( 325, 451 );
+	}
+	
+	player <- scourgeGame.getPartyMember( 0 );
+	player.moveTo( 325, 448 );
+	player.say( _( "The clouds part and the sun shines again... NOT FINAL TEXT" ) );
+	
+	scourgeGame.continueAt( "gameEndPart2", 5000 );
+}
+
+function gameEndPart2() {
+	karzul <- findCreatureByType( "Karzul Agmordexu" );
+	karzul.say( _( "Curse you!... NOT FINAL TEXT" ) );	
+	scourgeGame.continueAt( "gameEndPartLast", 5000 );
+}
+
+function gameEndPartLast() {
+	scourgeGame.setMovieMode( false );
+	scourgeGame.getMission().setCompleted( true );	
+}
+
+function gameEndMovieInterrupt() {
+	scourgeGame.getMission().setCompleted( true );
+}

@@ -497,6 +497,9 @@ void Scourge::preMainLoop() {
 	// Set up the weather
 	getMap()->generateWeather();
 	if ( getMap()->getWeather() & WEATHER_RAIN ) getSession()->getSound()->startRain();
+	
+	// adjust the map from script
+	getSession()->getSquirrel()->startLevel( "enterMap" );
 
 	getSDLHandler()->fade( 1, 0, 20 );
 }

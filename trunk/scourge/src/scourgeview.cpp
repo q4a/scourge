@@ -502,11 +502,10 @@ void ScourgeView::drawCreatureInfos() {
 	// creatures first
 	for ( int i = 0; i < scourge->getSession()->getCreatureCount(); i++ ) {
 		//if(!session->getCreature(i)->getStateMod(Constants::dead) &&
-		if ( scourge->getMap()->isLocationVisible( toint( scourge->getSession()->getCreature( i )->getX() ),
-		                                           toint( scourge->getSession()->getCreature( i )->getY() ) ) &&
-		        scourge->getMap()->isLocationInLight( toint( scourge->getSession()->getCreature( i )->getX() ),
-		                                              toint( scourge->getSession()->getCreature( i )->getY() ),
-		                                              scourge->getSession()->getCreature( i )->getShape() ) ) {
+		Creature *creature = scourge->getSession()->getCreature( i );
+		if ( scourge->getMap()->isLocationVisible( toint( creature->getX() ), toint( creature->getY() ) ) && 
+				scourge->getMap()->isLocationInLight( toint( creature->getX() ), toint( creature->getY() ), creature->getShape() ) &&
+				scourge->getSession()->isVisible( creature ) ) {
 			showCreatureInfo( scourge->getSession()->getCreature( i ), false, false, false,
 			                  ( scourge->getSession()->getCreature( i )->getCharacter() ? true : false ) );
 		}

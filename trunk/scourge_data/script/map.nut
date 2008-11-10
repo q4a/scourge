@@ -25,7 +25,7 @@ MD2_DEATH1 <- 17;
 MD2_DEATH2 <- 18;
 MD2_DEATH3 <- 19;
 
-// Called when entering map                    
+// Called when entering map (before pressing ok)
 function enterMap( mapName ) {
   print( "Welcome to S.C.O.U.R.G.E.: Heroes of Lesser Renown\n" );
   // print( "v" + scourgeGame.getVersion() + "\n" );
@@ -33,10 +33,6 @@ function enterMap( mapName ) {
   print( "You are on the " + mapName + " map.\n" );
 	print( "Chapter=" + scourgeGame.getMission().getChapter() + " Depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );
 	
-	if( mapName == "hq" ) {
-		startHqMovie();
-	}
-
 	if( scourgeGame.getMission().isStoryLineMission() && !scourgeGame.getMission().isReplayMap() ) {
 		switch( scourgeGame.getMission().getChapter() ) {
 		case 5: initChapter6(); break;
@@ -46,6 +42,13 @@ function enterMap( mapName ) {
 		case 10: initChapter11(); break;
 		case 11: initChapter12(); break;
 		}
+	}
+}
+
+// Called when entering map (after pressing ok)
+function mapStarting( mapName ) {
+	if( mapName == "hq" ) {
+		startHqMovie();
 	}
 }
 
@@ -73,6 +76,8 @@ function creatureDeath( creature ) {
   } else if( creature.getMonsterType() == "Mothrazu Pain Incarnate" ) {
 		scourgeGame.getMission().setCompleted( true );
 		scourgeGame.showTextMessage( _( "The creature once known as Mothrazu sinks to one knee... Her breath comes in sharp gasps, as she growls:||\"I curse you humans...You may have defeated me but by Amod's grace, I still have one task left...\"||She reaches into a pouch and throws something small and silvery into the grove of trees at the center of the room.||\"You will never find it... Karzul's gift will mature and continue where I failed. May the plants be merciful to your malevolent souls... Amod! I am close...\"||With that Mothrazu passes from this world." ) );
+	} else if( creature.getMonsterType() == "Karzul Agmordexu" ) {
+		startGameEndMovie();
 	}
   return true;
 }
@@ -713,6 +718,19 @@ function initChapter12() {
 						                                       0, 0, 0, 														// offset
 						                                       0.7, 0.3, 0.7 														// color
 																									);
+
+		// the nightwards depart
+		if( scourgeGame.getValue( "guardians_summoned" ) == "true" ) {
+			creature <- null;
+			i <- 0;
+			for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+				creature = scourgeGame.getMission().getCreature( i );
+				if( creature.isNpc() ) {
+					creature.setVisible( false );
+				}
+			}
+		}
+		
 	}
 }
 
