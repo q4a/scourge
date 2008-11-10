@@ -253,6 +253,7 @@ void Scourge::start() {
 		// forget all the known maps
 		visitedMaps.clear();
 
+		// If not about to load a game, show the main menu
 		if ( !session->willLoadGame() ) {
 			if ( initMainMenu ) {
 				initMainMenu = false;
@@ -268,7 +269,6 @@ void Scourge::start() {
 			value = mainMenu->getValue();
 		}
 
-
 		if ( value == NEW_GAME_START ||
 		        value == MULTIPLAYER_START ||
 		        value == CONTINUE_GAME ||
@@ -276,10 +276,13 @@ void Scourge::start() {
 
 			// fade away
 			getSession()->getSound()->stopMusic();
-			// FIXME: Also fade out when continuing a saved game.
-			if ( !session->willLoadGame() ) {
+
+			//HACK: Set the SDL handlers for a manually loaded game.
+			if ( !session->willLoadGame() || ( value == CONTINUE_GAME && !initMainMenu ) ) {
+				getSDLHandler()->setHandlers( ( SDLEventHandler * )mainMenu, ( SDLScreenView * )mainMenu );
 				getSDLHandler()->fade( 0, 1, 20 );
 			}
+
 			mainMenu->hide();
 
 			initMainMenu = true;
@@ -338,6 +341,8 @@ void Scourge::start() {
 		} else if ( value == MULTIPLAYER ) {
 			multiplayer->show();
 		} else if ( value == QUIT ) {
+			getSession()->getSound()->stopMusic( 200 );
+			getSDLHandler()->fade( 0, 1, 10 );
 			getSDLHandler()->quit( 0 );
 		}
 	}
