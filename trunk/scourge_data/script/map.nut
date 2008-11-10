@@ -618,6 +618,7 @@ function initChapter11() {
 
 function initChapter12() {
 	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
+				
 		scourgeGame.getMission().setMapEffect( 312, 446, 1, // map location 
 		                                       "EFFECT_SMOKE",  												// effect 
 		                                       1, 1, 																	// base size
@@ -658,6 +659,18 @@ function initChapter12() {
 				                                       0, 0, 0, 														// offset
 				                                       0.2, 0.2, 0.5 														// color
 																							);
+		
+		karzul <- findCreatureByType( "Karzul Agmordexu" );
+		if( karzul != null ) {
+			// karzul, bad!
+			karzul.setNpc( false );
+			// enter the three musketeers
+			scourgeGame.getMission().addCreature( 338, 454, 0, "Norill" );
+			scourgeGame.getMission().addCreature( 305,454, 0, "Sarrez" );
+			scourgeGame.getMission().addCreature( 332,416, 0, "Rolan" );
+			scourgeGame.showTextMessage( _( "Under the pale sky like the blackened husk of a burned tree stands the demon. He calmly awaits your charge fully aware of its futility.||But a red streak lines the mountain tops to the east... is it dawn? Or is it a sign of hope from the gods? Looking around you notice you are no longer alone on the charred battlefield. Three tall warriors in archaic clothing appear as if from nowhere. The tallest one - their leader? - silently bows his head to you.||After this briefest of courtesies, he turns to face Karzul with a steely resolve." ) );
+		}
+		
 	} else if( scourgeGame.getMission().getDungeonDepth() == 2 ) {
 		//print( "chapter 12 map\n" );
 		scourgeGame.getMission().setMapEffect( 296, 264, 2, // map location 
