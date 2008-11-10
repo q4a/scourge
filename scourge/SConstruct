@@ -75,7 +75,7 @@ if env['PLATFORM'] == 'cygwin' and not int(env['no_mingw']):
 	env.Replace(CXX = [mingw_cygdir + '/bin/g++'])
 	env.Replace(LINK = [mingw_cygdir + '/bin/g++'])
 	env.Append(CXXFLAGS = ['-I"' + mingw_windir + '/include/SDL"'])
-	env.Append(CXXFLAGS = ['-O2', '-D_REENTRANT', '-mwindows'])
+	env.Append(CXXFLAGS = ['-O3', '-D_REENTRANT', '-mwindows'])
 	env.Append(LIBS = ['mingw32', 'SDLmain', 'SDL'])
 	env.Append(LINKFLAGS = ['-mwindows'])
 
@@ -86,7 +86,7 @@ else:
 	env.ParseConfig('sdl-config --libs')
 	# add additional compiler flags
 	if not int(env['debug']):
-		env.Append(CXXFLAGS = ['-O2'])
+		env.Append(CXXFLAGS = ['-O3'])
 
 # env.Append(LINKFLAGS = ['-lm'])
 # env.Append(LINKFLAGS = ['-lz'])
