@@ -77,6 +77,8 @@ private:
 	std::map<std::string, NamedOutdoorTexture> outdoorNamedTextures;
 	SDL_Rect equipLocationHoles[ Constants::EQUIP_LOCATION_COUNT ];
 
+	std::vector<Texture> slides;
+
 public:
 	ShapePalette( Session *session );
 	~ShapePalette();
@@ -98,6 +100,10 @@ public:
 
 	inline Texture getHandsAttackIcon() {
 		return hand_attack_icon;
+	}
+
+	inline Texture getRandomSlide() {
+		return slides[ Util::pickOne( 0, slides.size() - 1 ) ];
 	}
 
 	void initMapGrid();
@@ -272,6 +278,7 @@ protected:
 	void initSounds( ConfigLang *config );
 	void initNamedTextures( ConfigLang *config );
 	void initBackpack( ConfigLang *config );
+	void initSlides( ConfigLang *config );
 
 	ShapeValues *createShapeValues( ConfigNode *node );
 	DECLARE_NOISY_OPENGL_SUPPORT();

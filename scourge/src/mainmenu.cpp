@@ -95,6 +95,7 @@ MainMenu::MainMenu( Scourge *scourge ) {
 	logoTicksDelta = 50;
 	logoSpriteCount = 0;
 	candleFlameX = candleFlameY = 0;
+	slideMode = false;
 
 	top = ( scourge->getSDLHandler()->getScreen()->h - 600 ) / 2;
 	openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
@@ -284,33 +285,57 @@ void MainMenu::drawView() {
 			glEnd();
 		}
 
-		glLoadIdentity();
-		glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
-		char version[100];
-		snprintf( version, 100, _( "Scourge version %s" ), SCOURGE_VERSION );
-		scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
-		scourge->getSDLHandler()->texPrint( 0, 0, version );
-		glColor3f( 0.8f, 0.75f, 0.65f );
-		int y = 14;
-		scourge->getSDLHandler()->texPrint( 0, y, _( "Optionally compiled modules:" ) );
-		y += 14;
+		if ( slideMode ) {
+			Texture slide = scourge->getShapePalette()->getRandomSlide();
+			int w = scourge->getSDLHandler()->getScreen()->w;
+			int h = ( scourge->getSDLHandler()->getScreen()->w / 2 ) - 1;
+
+			glEnable( GL_TEXTURE_2D );
+			//glPushMatrix();
+			glLoadIdentity();
+			glTranslatef( 0, openingTop + 1, 0 );
+			slide.glBind();
+			glBegin( GL_TRIANGLE_STRIP );
+			glTexCoord2f( 0, 0 );
+			glVertex3f( 0, 0, 0 );
+			glTexCoord2f( 1, 0 );
+			glVertex3f( w, 0, 0 );
+			glTexCoord2f( 0, 1 );
+			glVertex3f( 0, h, 0 );
+			glTexCoord2f( 1, 1 );
+			glVertex3f( w, h, 0 );
+			glEnd();
+			//glPopMatrix();
+			glDisable( GL_TEXTURE_2D );
+		} else {
+			glLoadIdentity();
+			glTranslatef( 10, scourge->getSDLHandler()->getScreen()->h - openingTop + 12, 0 );
+			char version[100];
+			snprintf( version, 100, _( "Scourge version %s" ), SCOURGE_VERSION );
+			scourge->getSDLHandler()->setFontType( Constants::SCOURGE_DEFAULT_FONT );
+			scourge->getSDLHandler()->texPrint( 0, 0, version );
+			glColor3f( 0.8f, 0.75f, 0.65f );
+			int y = 14;
+			scourge->getSDLHandler()->texPrint( 0, y, _( "Optionally compiled modules:" ) );
+			y += 14;
 #ifdef HAVE_SDL_NET
-		scourge->getSDLHandler()->texPrint( 0, y, _( "[Network]" ) );
-		y += 14;
+			scourge->getSDLHandler()->texPrint( 0, y, _( "[Network]" ) );
+			y += 14;
 #endif
 #ifdef HAVE_SDL_MIXER
-		scourge->getSDLHandler()->texPrint( 0, y, _( "[Sound]" ) );
-		y += 14;
+			scourge->getSDLHandler()->texPrint( 0, y, _( "[Sound]" ) );
+			y += 14;
 #endif
-		glPopMatrix();
+			glPopMatrix();
 
-		if ( openingTop > top && scourge->getSession()->isDataInitialized() ) {
-			Uint32 t = SDL_GetTicks();
-			if ( t - lastTick > 40 ) {
-				int d = ( scourge->getSDLHandler()->getScreen()->h - openingTop ) / 20;
-				openingTop -= ( 10 + static_cast<int>( d * 1.2 ) );
-				if ( openingTop < top ) openingTop = top;
-				lastTick = t;
+			if ( openingTop > top && scourge->getSession()->isDataInitialized() ) {
+				Uint32 t = SDL_GetTicks();
+				if ( t - lastTick > 40 ) {
+					int d = ( scourge->getSDLHandler()->getScreen()->h - openingTop ) / 20;
+					openingTop -= ( 10 + static_cast<int>( d * 1.2 ) );
+					if ( openingTop < top ) openingTop = top;
+					lastTick = t;
+				}
 			}
 		}
 	}
@@ -381,7 +406,7 @@ void MainMenu::show() {
 }
 
 void MainMenu::hide() {
-	openingTop = scourge->getSDLHandler()->getScreen()->h / 2;
+	setSlideMode( false );
 	musicStarted = false;
 }
 
@@ -896,3 +921,12 @@ RenderedCreature *MainMenu::createWanderingHero( int level ) {
 	return partyEditor->createWanderingHero( level );
 }
 
+void MainMenu::setSlideMode( bool b ) {
+  slideMode = b;
+
+  if ( slideMode ) {
+    openingTop = ( scourge->getSDLHandler()->getScreenHeight() / 2 ) - ( scourge->getSDLHandler()->getScreenWidth() / 4 );
+  } else {
+    openingTop = scourge->getSDLHandler()->getScreenHeight() / 2;
+  }
+}

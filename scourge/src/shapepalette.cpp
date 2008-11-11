@@ -56,6 +56,7 @@ void ShapePalette::preInitialize() {
 	initCursor( config );
 	initNamedTextures( config );
 	initBackpack( config );
+	initSlides( config );
 	delete config;
 
 	// set up the logo
@@ -308,6 +309,28 @@ void ShapePalette::initCursor( ConfigLang *config ) {
 		cursorHeight = 48;
 
 	loadCursors();
+}
+
+void ShapePalette::initSlides( ConfigLang *config ) {
+  char slidesPath[255];
+  char slidesPrefix[255];
+  int slidesCount;
+
+  vector<ConfigNode*> *v = config->getDocument()->getChildrenByName( "slides" );
+  strcpy( slidesPath, ( *v )[0]->getValueAsString( "path" ) );
+  strcpy( slidesPrefix, ( *v )[0]->getValueAsString( "prefix" ) );
+  slidesCount = ( *v )[0]->getValueAsInt( "count" );
+
+  GLclampf pri = 0.1f;
+
+  for ( int i = 1; i < ( slidesCount + 1 ); i++ ) {
+    stringstream image;
+    image << string( slidesPath ) << "/" << string( slidesPrefix ) << i << ".png";
+    Texture tex;
+    tex.load( image.str() );
+    tex.glPrioritize( pri );
+    slides.push_back( tex );
+  }
 }
 
 void ShapePalette::initAbout( ConfigLang *config ) {
