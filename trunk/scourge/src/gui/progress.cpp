@@ -69,7 +69,6 @@ void Progress::updateStatusLight( const char *message, int n, int max ) {
 		                             HIGHLIGHT_BORDER, HIGHLIGHT_BORDER, 255 );
 	}
 	//status++;
-
 }
 
 void Progress::updateStatus( const char *message, bool updateScreen, int n, int max, int alt, bool drawScreen ) {

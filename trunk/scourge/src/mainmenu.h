@@ -78,6 +78,7 @@ private:
 	ScrollingLabel *aboutText;
 	Button *aboutOK;
 	int lastMenuTick; // this is when the program last drew the main menu (to make the sleep a bit more sensible)
+	bool slideMode;
 
 #define MAX_LOGOS 100
 
@@ -149,6 +150,8 @@ public:
 	void showPartyEditor();
 	void createParty( Creature **pc, int *partySize );
 	RenderedCreature *createWanderingHero( int level );
+
+	void setSlideMode( bool b );
 
 protected:
 	void drawClouds( bool moveClouds, bool flipped );

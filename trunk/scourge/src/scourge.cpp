@@ -283,6 +283,8 @@ void Scourge::start() {
 				getSDLHandler()->fade( 0, 1, 20 );
 			}
 
+			mainMenu->setSlideMode( true );
+			mainMenu->drawView();
 			mainMenu->hide();
 
 			initMainMenu = true;
@@ -423,7 +425,6 @@ void Scourge::startMission( bool startInHq ) {
 		bool mapCreated = createLevelMap( lastMission, fromRandomMap );
 		//if( inHq ) lastMission = NULL;
 		if ( mapCreated ) {
-
 			changingStory = goingDown = goingUp = false;
 
 			if ( inHq ) addWanderingHeroes();
