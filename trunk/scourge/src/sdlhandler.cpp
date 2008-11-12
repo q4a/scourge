@@ -745,9 +745,9 @@ void SDLHandler::drawScreen() {
 	calculateFps();
 }
 
-void SDLHandler::saveScreenNow( string& path ) {
+void SDLHandler::saveScreen( string& path, bool thumbnail ) {
 	drawScreenInternal();
-	saveScreenInternal( path );
+	saveScreenInternal( path, thumbnail );
 }
 
 void SDLHandler::drawScreenInternal() {
@@ -783,63 +783,53 @@ void SDLHandler::drawScreenInternal() {
 #define SCREEN_SHOT_WIDTH 160
 #define SCREEN_SHOT_HEIGHT 120
 
-void SDLHandler::saveScreenInternal( string& path ) {
+void SDLHandler::saveScreenInternal( string& path, bool thumbnail ) {
 	if ( !gameAdapter->getPreferences()->getEnableScreenshots() ) {
 		cerr << "*** Screenshots disabled in options. Not saving: " << path << endl;
 		return;
 	}
 
-#ifdef DEBUG_SCREENSHOT
-	cerr << "*** Preparing for screenshot." << endl;
-#endif
-	SDL_Surface *surface =
-	  SDL_CreateRGBSurface( SDL_SWSURFACE, screen->w, screen->h, 24,
+	SDL_Surface *surface = SDL_CreateRGBSurface( SDL_SWSURFACE, screen->w, screen->h, 24,
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 	                        0x00FF0000, 0x0000FF00, 0x000000FF, 0 );
 #else
 	                        0x000000FF, 0x0000FF00, 0x00FF0000, 0 );
 #endif
-	//glReadBuffer( GL_BACK );
 
 	// read the center of the screen
 	int sx = ( screen->w - surface->w ) / 2;
 	int sy = ( screen->h - surface->h ) / 2;
-#ifdef DEBUG_SCREENSHOT
-	cerr << "*** Taking screenshot." << endl;
-#endif
+
 	glReadPixels( sx, sy, surface->w, surface->h, GL_BGR, GL_UNSIGNED_BYTE, surface->pixels );
 
-	// scale to desired size (also flip image at the same time)
-#ifdef DEBUG_SCREENSHOT
-	cerr << "*** Prepating for scaling image." << endl;
-#endif
-	SDL_Surface *scaled =
-	  SDL_CreateRGBSurface( SDL_SWSURFACE, SCREEN_SHOT_WIDTH, SCREEN_SHOT_HEIGHT, 24,
+	int w, h;
+	if ( thumbnail ) {
+		w = SCREEN_SHOT_WIDTH; h = SCREEN_SHOT_HEIGHT;
+	} else {
+		w = surface->w; h = surface->h;
+	}
+
+	SDL_Surface *scaled = SDL_CreateRGBSurface( SDL_SWSURFACE, w, h, 24,
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 	                        0x00FF0000, 0x0000FF00, 0x000000FF, 0 );
 #else
 	                        0x000000FF, 0x0000FF00, 0x00FF0000, 0 );
 #endif
 
-#ifdef DEBUG_SCREENSHOT
-	cerr << "*** Scaling and flipping image." << endl;
-#endif
+	// scale to desired size (also flip image at the same time)
 	Uint8 *src = ( Uint8* )surface->pixels;
 	Uint8 *dst = ( Uint8* )scaled->pixels;
 	float dx = ( static_cast<float>( surface->w ) / static_cast<float>( scaled->w ) );
 	float dy = ( static_cast<float>( surface->h ) / static_cast<float>( scaled->h ) );
-	for ( int x = 0; x < SCREEN_SHOT_WIDTH; x++ ) {
-		for ( int y = 0; y < SCREEN_SHOT_HEIGHT; y++ ) {
-			memcpy( dst + ( scaled->pitch * y + x * scaled->format->BytesPerPixel ),
-			        src + ( surface->pitch * ( surface->h - 1 - static_cast<int>( y * dy ) ) + static_cast<int>( x * dx ) * surface->format->BytesPerPixel ),
-			        scaled->format->BytesPerPixel );
+
+	for ( int x = 0; x < w; x++ ) {
+		for ( int y = 0; y < h; y++ ) {
+			memcpy( dst + ( scaled->pitch * y + x * scaled->format->BytesPerPixel ), src + ( surface->pitch * ( surface->h - 1 - static_cast<int>( y * dy ) ) + static_cast<int>( x * dx ) * surface->format->BytesPerPixel ), scaled->format->BytesPerPixel );
 		}
 	}
 
-#ifdef DEBUG_SCREENSHOT
-	cerr << "*** Saving image." << endl;
-#endif
 	SDL_SaveBMP( scaled, path.c_str() );
+
 	SDL_FreeSurface( surface );
 	SDL_FreeSurface( scaled );
 }
@@ -1276,10 +1266,6 @@ void SDLHandler::setCursorMode( int n, bool useTimer ) {
 	if ( cursorMode == Constants::CURSOR_FORBIDDEN && useTimer ) {
 		forbiddenTimer = SDL_GetTicks();
 	}
-}
-
-void SDLHandler::saveScreen( string& path ) {
-	willSavePath = path;
 }
 
 void SDLHandler::setUpdate( char *message, int n, int total ) {
