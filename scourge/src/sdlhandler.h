@@ -262,8 +262,7 @@ public:
 		return fps;
 	}
 
-	void saveScreen( std::string& path );
-	void saveScreenNow( std::string& path );
+	void saveScreen( std::string& path, bool thumbnail = false );
 
 	void setUpdate( char *message, int n = -1, int total = -1 );
 
@@ -281,7 +280,7 @@ protected:
 	void drawCursor();
 
 	void drawScreenInternal();
-	void saveScreenInternal( std::string& path );
+	void saveScreenInternal( std::string& path, bool thumbnail = false );
 	void calculateFps();
 	void drawDebugInfo();
 	void drawFadeout();

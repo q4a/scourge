@@ -247,6 +247,8 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 			return false;
 		} else if ( event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_BACKSPACE ) {
 			SDLHandler::showDebugInfo = ( SDLHandler::showDebugInfo ? 0 : 1 );
+		} else if ( event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_PRINT && ( SDL_GetModState() & KMOD_CTRL ) ) {
+			saveScreenshot();
 		}
 
 		// xxx_yyy_stop means : "do xxx_yyy action when the corresponding key is up"
@@ -764,3 +766,37 @@ int ScourgeHandler::handleBoardEvent( Widget *widget, SDL_Event *event ) {
 	return -1;
 }
 
+void ScourgeHandler::saveScreenshot() {
+  string path = get_config_dir_name() + "/screenshots/";
+
+#ifdef WIN32
+  CreateDirectory( path.c_str(), NULL );
+#else
+  int err = mkdir( path.c_str(), S_IRWXU | S_IRGRP | S_IXGRP );
+  if ( err && ( err != -1 ) ) {
+    cerr << "Error creating config directory: " << path << endl;
+    cerr << "Error: " << err << endl;
+    perror( "ScourgeHandler::saveScreenshot: " );
+    exit( 1 );
+  }
+#endif
+
+  int count = 1;
+
+  while ( true ) {
+    stringstream image;
+    image << "screen" << count << ".bmp";
+    string imagefile = path + image.str();
+
+    if ( !Constants::checkFile( path, image.str() ) ) {
+      cerr << "Saving screenshot: " << imagefile << endl;
+      scourge->getSDLHandler()->saveScreen( imagefile );
+      char tmp[255];
+      snprintf( tmp, 256, _( "Saving screenshot to %s." ), image.str().c_str() );
+      scourge->getDescriptionScroller()->writeLogMessage( tmp, Constants::MSGTYPE_SYSTEM, Constants::LOGLEVEL_FULL );
+      break;
+    }
+
+    count++;
+  }
+}

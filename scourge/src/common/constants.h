@@ -789,6 +789,7 @@ public:
 	static int initRootDir( int argc, char *argv[] );
 
 	static int findLocaleDir();
+	static bool checkFile( const std::string& dir, const std::string& file );
 
 	static void generateTrigTables();
 	static float sinFromAngle( int angle );
@@ -796,7 +797,6 @@ public:
 	static float windFromAngle( float angle );
 
 private:
-	static bool checkFile( const std::string& dir, const std::string& file );
 	// used to run scourge with local resources
 	static std::string findLocalResources( const std::string& appPath );
 };

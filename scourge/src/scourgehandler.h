@@ -48,6 +48,7 @@ public:
 	  @return true to exit from the current screen, false otherwise
 	*/
 	bool handleEvent( Widget *widget, SDL_Event *event );
+	void saveScreenshot();
 
 protected:
 	void processGameMouseClick( Uint16 x, Uint16 y, Uint8 button, bool wasMapMoving );

@@ -485,7 +485,7 @@ void SavegameDialog::saveScreenshot( const string& dirName ) {
 	string path = get_file_name( dirName + "/screen.bmp" );
 	cerr << "Saving: " << path << endl;
 
-	scourge->getSDLHandler()->saveScreenNow( path );
+	scourge->getSDLHandler()->saveScreen( path, true );
 }
 
 void SavegameDialog::makeDirectory( const string& path ) {
