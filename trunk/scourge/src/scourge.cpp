@@ -257,6 +257,7 @@ void Scourge::start() {
 		if ( !session->willLoadGame() ) {
 			if ( initMainMenu ) {
 				initMainMenu = false;
+				mainMenu->setSlideMode( false );
 				mainMenu->show();
 			}
 
@@ -283,7 +284,15 @@ void Scourge::start() {
 				getSDLHandler()->fade( 0, 1, 20 );
 			}
 
+			// Display the loading screen slide.
 			mainMenu->setSlideMode( true );
+
+			// We need to do a buffer clear here to prevent visual
+			// artifacts when loading from ingame.
+			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+			glClearColor( 0, 0, 0, 0 );
+
+			// After that is done, just draw the slide.
 			mainMenu->drawView();
 			mainMenu->hide();
 
