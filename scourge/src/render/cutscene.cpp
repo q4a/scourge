@@ -96,6 +96,7 @@ bool Cutscene::isInMovieMode() {
 			placeCamera( originalX, originalY, originalZ,
 	                             originalXRot, originalYRot, originalZRot,
 	                             originalZoom );
+			updateCameraPosition();
 		}
 	}
 
@@ -150,6 +151,8 @@ void Cutscene::placeCamera( float x, float y, float z, float xRot, float yRot, f
 	cameraDuration = 0;
 	cameraMoving = false;
 }
+
+/// Starts moving/rotating the camera towards a target position/orientation.
 
 void Cutscene::animateCamera( float targetX, float targetY, float targetZ, float targetXRot, float targetYRot, float targetZRot, float targetZoom, Uint32 duration ) {
 	Uint32 now = SDL_GetTicks();
