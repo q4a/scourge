@@ -275,6 +275,7 @@ public:
 
 	void printToConsole( const char *s );
 
+	void showLoadingScreen();
 	void updateStatus( int status, int maxStatus, const char *message = NULL );
 
 	/**

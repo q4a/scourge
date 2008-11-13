@@ -279,22 +279,11 @@ void Scourge::start() {
 			getSession()->getSound()->stopMusic();
 
 			//HACK: Set the SDL handlers for a manually loaded game.
+			// Else the game will crash on next load.
 			if ( !session->willLoadGame() || ( value == CONTINUE_GAME && !initMainMenu ) ) {
 				getSDLHandler()->setHandlers( ( SDLEventHandler * )mainMenu, ( SDLScreenView * )mainMenu );
 				getSDLHandler()->fade( 0, 1, 20 );
 			}
-
-			// Display the loading screen slide.
-			mainMenu->setSlideMode( true );
-
-			// We need to do a buffer clear here to prevent visual
-			// artifacts when loading from ingame.
-			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-			glClearColor( 0, 0, 0, 0 );
-
-			// After that is done, just draw the slide.
-			mainMenu->drawView();
-			mainMenu->hide();
 
 			initMainMenu = true;
 			bool failed = false;
@@ -352,8 +341,11 @@ void Scourge::start() {
 		} else if ( value == MULTIPLAYER ) {
 			multiplayer->show();
 		} else if ( value == QUIT ) {
-			getSession()->getSound()->stopMusic( 200 );
+			#define EXIT_DELAY 1000
+			getSession()->getSound()->stopMusic( EXIT_DELAY );
+			Uint32 now = SDL_GetTicks();
 			getSDLHandler()->fade( 0, 1, 10 );
+			while ( true ) { if ( SDL_GetTicks() > ( now + EXIT_DELAY ) ) break; }
 			getSDLHandler()->quit( 0 );
 		}
 	}
@@ -431,6 +423,8 @@ void Scourge::startMission( bool startInHq ) {
 		resetParty = false;
 
 		bool fromHq = inHq;
+
+		showLoadingScreen();
 		bool mapCreated = createLevelMap( lastMission, fromRandomMap );
 		//if( inHq ) lastMission = NULL;
 		if ( mapCreated ) {
@@ -4199,4 +4193,20 @@ void Scourge::shapeAdded( const char *shapeName, int x, int y, int z ) {
 
 void Scourge::thunder() {
 	view->thunder();
+}
+
+/// Displays the loading screen background.
+
+void Scourge::showLoadingScreen() {
+  // Set up the letterbox for the loading slide.
+  mainMenu->setSlideMode( true );
+
+  // We need to do a buffer clear here to prevent visual
+  // artifacts when loading from ingame.
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+  glClearColor( 0, 0, 0, 0 );
+
+  // After that is done, just draw the slide.
+  mainMenu->drawView();
+  mainMenu->hide();
 }
