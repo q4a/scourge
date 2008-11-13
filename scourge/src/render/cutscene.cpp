@@ -66,11 +66,10 @@ void Cutscene::startMovieMode() {
 
 void Cutscene::endMovieMode() {
 	endingMovie = true;
-	// reset the camera
+	// start resetting the camera
 	animateCamera( originalX, originalY, originalZ,
 	               originalXRot, originalYRot, originalZRot,
-	               originalZoom,
-	               LETTERBOX_DURATION );
+	               originalZoom, LETTERBOX_DURATION );
 	endLetterbox();
 }
 
@@ -91,8 +90,12 @@ void Cutscene::endLetterbox() {
 bool Cutscene::isInMovieMode() {
 	if ( inMovieMode && endingMovie ) {
 		Uint32 now = SDL_GetTicks();
+		// Did the movie end?
 		if ( now > ( letterboxEndTime + LETTERBOX_DURATION ) ) {
 			inMovieMode = false; endingMovie = false;
+			placeCamera( originalX, originalY, originalZ,
+	                             originalXRot, originalYRot, originalZRot,
+	                             originalZoom );
 		}
 	}
 

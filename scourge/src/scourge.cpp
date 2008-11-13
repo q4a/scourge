@@ -253,6 +253,8 @@ void Scourge::start() {
 		// forget all the known maps
 		visitedMaps.clear();
 
+		getSDLHandler()->setHandlers( ( SDLEventHandler * )mainMenu, ( SDLScreenView * )mainMenu );
+
 		// If not about to load a game, show the main menu
 		if ( !session->willLoadGame() ) {
 			if ( initMainMenu ) {
@@ -261,7 +263,6 @@ void Scourge::start() {
 				mainMenu->show();
 			}
 
-			getSDLHandler()->setHandlers( ( SDLEventHandler * )mainMenu, ( SDLScreenView * )mainMenu );
 			getSDLHandler()->mainLoop();
 			session->deleteCreaturesAndItems( false );
 			getBoard()->setStorylineIndex( 0 );
@@ -278,10 +279,8 @@ void Scourge::start() {
 			// fade away
 			getSession()->getSound()->stopMusic();
 
-			//HACK: Set the SDL handlers for a manually loaded game.
-			// Else the game will crash on next load.
-			if ( !session->willLoadGame() || ( value == CONTINUE_GAME && !initMainMenu ) ) {
-				getSDLHandler()->setHandlers( ( SDLEventHandler * )mainMenu, ( SDLScreenView * )mainMenu );
+			// Fade out if not auto-loading a game.
+			if ( !session->willLoadGame() || value == CONTINUE_GAME ) {
 				getSDLHandler()->fade( 0, 1, 20 );
 			}
 
@@ -345,7 +344,7 @@ void Scourge::start() {
 			getSession()->getSound()->stopMusic( EXIT_DELAY );
 			Uint32 now = SDL_GetTicks();
 			getSDLHandler()->fade( 0, 1, 10 );
-			while ( true ) { if ( SDL_GetTicks() > ( now + EXIT_DELAY ) ) break; }
+			while ( true ) { if ( SDL_GetTicks() > ( now + EXIT_DELAY + 100 ) ) break; }
 			getSDLHandler()->quit( 0 );
 		}
 	}
