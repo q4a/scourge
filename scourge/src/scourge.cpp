@@ -253,12 +253,11 @@ void Scourge::start() {
 		// forget all the known maps
 		visitedMaps.clear();
 
-		getSDLHandler()->setHandlers( ( SDLEventHandler * )mainMenu, ( SDLScreenView * )mainMenu );
-
 		// If not about to load a game, show the main menu
 		if ( !session->willLoadGame() ) {
 			if ( initMainMenu ) {
 				initMainMenu = false;
+				getSDLHandler()->setHandlers( ( SDLEventHandler * )mainMenu, ( SDLScreenView * )mainMenu );
 				mainMenu->setSlideMode( false );
 				mainMenu->show();
 			}
@@ -280,7 +279,10 @@ void Scourge::start() {
 			getSession()->getSound()->stopMusic();
 
 			// Fade out if not auto-loading a game.
-			if ( !session->willLoadGame() || value == CONTINUE_GAME ) {
+			if ( !session->willLoadGame() || ( value == CONTINUE_GAME && !initMainMenu ) ) {
+				// We need to set the handlers again for a manually loaded game.
+				// Else the game will crash on next load from ingame.
+				getSDLHandler()->setHandlers( ( SDLEventHandler * )mainMenu, ( SDLScreenView * )mainMenu );
 				getSDLHandler()->fade( 0, 1, 20 );
 			}
 

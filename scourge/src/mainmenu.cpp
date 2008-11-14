@@ -75,6 +75,8 @@ const int MainMenu::values[] = {
 	NEW_GAME, CONTINUE_GAME, MULTIPLAYER, OPTIONS, ABOUT, QUIT, 0
 };
 
+Texture slide;
+
 MainMenu::MainMenu( Scourge *scourge ) {
 	this->scourge = scourge;
 	this->cloudCount = 30;
@@ -288,7 +290,6 @@ void MainMenu::drawView() {
 		}
 
 		if ( slideMode ) {
-			Texture slide = scourge->getShapePalette()->getRandomSlide();
 			int w = scourge->getSDLHandler()->getScreen()->w;
 			int h = ( scourge->getSDLHandler()->getScreen()->w / 2 ) - 1;
 
@@ -927,6 +928,8 @@ void MainMenu::setSlideMode( bool b ) {
 
   if ( slideMode ) {
     openingTop = ( scourge->getSDLHandler()->getScreenHeight() / 2 ) - ( scourge->getSDLHandler()->getScreenWidth() / 4 );
+    slide = scourge->getShapePalette()->getRandomSlide();
+
   } else {
     openingTop = scourge->getSDLHandler()->getScreenHeight() / 2;
   }
