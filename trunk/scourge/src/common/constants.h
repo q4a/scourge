@@ -71,7 +71,12 @@ T rint( T v ) {
 #   define  SET_CRT_DEBUG_FIELD(a)   ((void) 0)
 #   define  CLEAR_CRT_DEBUG_FIELD(a) ((void) 0)
 # endif
-
+// MSVC asserts with POSIX style LC_MESSAGES 
+// most simple workaround is to use LC_CTYPE as LC_MESSAGES 
+# include <locale.h>
+# ifndef LC_MESSAGES
+#   define LC_MESSAGES LC_CTYPE
+# endif
 #endif // MSVC 8 portability
 
 #include <stdlib.h>
