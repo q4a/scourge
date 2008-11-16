@@ -104,7 +104,8 @@ int SqMission::_getCreature( HSQUIRRELVM vm ) {
 		return sq_throwerror( vm, _SC( "Creature index is out of range." ) );
 	}
 
-	sq_pushobject( vm, *( SqBinding::binding->refCreature[index] ) );
+	sq_pushobject( vm, *( SqBinding::binding->creatureMap[ SqBinding::sessionRef->getCreature( index ) ] ) );
+	//sq_pushobject( vm, *( SqBinding::binding->refCreature[index] ) );
 	return 1;
 }
 

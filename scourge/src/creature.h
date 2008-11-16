@@ -1014,11 +1014,13 @@ public:
 		return getLevel() / ( isSummoned() ? 6 : 3 );
 	}
 	Creature *summonCreature( bool friendly=true );
+	Creature *doSummon( Monster *monster, int x, int y, int z, bool friendly=true );
 	void dismissSummonedCreature();
 	inline void setSummoner( Creature *summoner ) { this->summoner = summoner; }
 	inline void addSummoned( Creature *summonee ) { this->summoned.push_back( summonee ); }
 	inline bool isSummoned() { return summoner != NULL; }
 	inline std::vector<Creature*> *getSummoned() { return &summoned; }
+	inline Creature *getSummoner() { return summoner; }
 
 protected:
 

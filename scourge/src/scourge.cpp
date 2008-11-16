@@ -1950,10 +1950,10 @@ void Scourge::moveCreature( Creature *creature ) {
 		}
 #endif
 		// see if there's another target that's closer
-		if ( creature->getAction() == Constants::ACTION_NO_ACTION ) {
+		//if ( creature->getAction() == Constants::ACTION_NO_ACTION ) {
 			creature->decideAction();
-		}
-		creature->moveToLocator(); //required here to make them move?
+		//}
+		//creature->moveToLocator(); //required here to make them move?
 	}
 	//CASE 3: any other characters, NPCs or monsters
 	else {

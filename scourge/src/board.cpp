@@ -1074,7 +1074,7 @@ void Mission::initNpcs( ConfigLang *config, GameAdapter *adapter ) {
 		level = node->getValueAsInt( "level" );
 		strcpy( npcType, node->getValueAsString( "type" ) );
 		strcpy( npcSubType, node->getValueAsString( "subtype" ) );
-
+		
 		// store npc info
 		NpcInfo *npcInfo = addNpcInfo( x, y, npcName, level, npcType, npcSubType );
 
@@ -1390,6 +1390,8 @@ NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype
 			}
 			p = strtok( NULL, ";" );
 		}
+	} else {
+		strcpy( this->subtypeStr, "" );
 	}
 }
 
@@ -1403,10 +1405,11 @@ NpcInfoInfo *NpcInfo::save() {
 	strcpy( ( char* )info->name, name );
 	info->level = level;
 	info->type = type;
-	strcpy( ( char* )info->subtype, subtypeStr );
+	strcpy( ( char* )info->subtype, ( subtypeStr ? subtypeStr : "" ) );
 	return info;
 }
 
 NpcInfo *NpcInfo::load( NpcInfoInfo *info ) {
-	return new NpcInfo( info->x, info->y, ( char* )info->name, info->level, ( char* )Constants::npcTypeName[info->type], ( char* )info->subtype );
+	char *s = ( char* )info->subtype;
+	return new NpcInfo( info->x, info->y, ( char* )info->name, info->level, ( char* )Constants::npcTypeName[info->type], strlen( s ) > 0 ? s : NULL );
 }

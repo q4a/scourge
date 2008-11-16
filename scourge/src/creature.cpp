@@ -32,6 +32,8 @@
 
 using namespace std;
 
+#define DEBUG_CREATURE_AI 1
+
 //#define DEBUG_INVENTORY 1
 
 #define PERCEPTION_DELTA 2000
@@ -1962,7 +1964,20 @@ void Creature::decideAction() {
     getShape()->setCurrentAnimation( getScriptedAnimation() );
     return;
   }
+  
+  cerr << "decideAction for " << getName() << endl;
 
+  // override from squirrel
+  if( SQUIRREL_ENABLED ) {
+  	bool result;
+  	session->getSquirrel()->callBoolMethod( "decideAction", 
+  	                                        session->getSquirrel()->getCreatureRef( this ), 
+  	                                        &result );
+  	if( result ) {
+  		return;
+  	}
+  }
+  
   // This is the AI's decision matrix. On every decision cycle, it is walked
   // top to bottom and collects the max weights between all rows (states) that
   // currently apply to the situation. The result is an array of
@@ -2158,12 +2173,12 @@ void Creature::decideAction() {
   }
   
 #ifdef DEBUG_CREATURE_AI  
-  cerr << getName() << " action=" << actionNames[action] << endl;
+  cerr << getName() << " action=" << action << endl;
 #endif
   
   switch ( action ) {
     case AI_ACTION_ATTACK_CLOSEST_ENEMY:
-      attackClosestTarget();
+    	attackClosestTarget();
       break;
     case AI_ACTION_CAST_ATTACK_SPELL:
       castOffensiveSpell();
@@ -2705,7 +2720,6 @@ void Creature::applyRecurringSpecialSkills() {
 }
 
 /// Applies the effects of automatic special capabilities.
-
 float Creature::applyAutomaticSpecialSkills( int event, char *varName, float varValue ) {
 	if( !( isPartyMember() || isWanderingHero() ) || !SQUIRREL_ENABLED ) return varValue;
 	
@@ -3789,37 +3803,44 @@ Creature *Creature::summonCreature( bool friendly ) {
 	} else {
 		Monster *monster = Monster::getRandomMonster( Util::pickOne( (int)( getLevel() * 0.5f ), (int)( getLevel() * 0.75f ) ) );
 		if( monster ) {
-			GLShape *shape = session->getShapePalette()->
-			                 getCreatureShape( monster->getModelName(),
-			                                   monster->getSkinName(),
-			                                   monster->getScale(),
-			                                   monster );
-			creature = session->newCreature( monster, shape );
-			
-			addSummoned( creature );
-			creature->setSummoner( this );
-
-			// monster summons friendly or pc summons friendly: possess it
-			if( isMonster() != friendly ) {
-					// maybe make a new state mod for 'summonned'? Maybe not... all the battle code to update... argh
-					creature->setStateMod( StateMod::possessed, true );
-			}
-			
-			// register with squirrel
-			session->getSquirrel()->registerCreature( creature );
-			for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
-				session->getSquirrel()->registerItem( creature->getBackpackItem( i ) );
-			}
-	
-			int x, y;
-			creature->findPlace( toint( getX() ), toint( getY() ), &x, &y );
-			creature->startEffect( Constants::EFFECT_TELEPORT, ( Constants::DAMAGE_DURATION * 4 ) );
-			
-			char message[200];
-			snprintf( message, 200, _( "%s calls for help: a %s appears!" ), getName(), monster->getType() );
-			session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERMAGIC );		
+			creature = doSummon( monster, toint( getX() ), toint( getY() ), 0, friendly );
 		}
 	}
+	return creature;
+}
+
+Creature *Creature::doSummon( Monster *monster, int cx, int cy, int cz, bool friendly ) {
+	GLShape *shape = session->getShapePalette()->
+	                 getCreatureShape( monster->getModelName(),
+	                                   monster->getSkinName(),
+	                                   monster->getScale(),
+	                                   monster );
+	Creature *creature = session->newCreature( monster, shape );
+	creature->cancelTarget();
+	
+	addSummoned( creature );
+	creature->setSummoner( this );
+
+	// monster summons friendly or pc summons friendly: possess it
+	if( isMonster() != friendly ) {
+			// maybe make a new state mod for 'summonned'? Maybe not... all the battle code to update... argh
+			creature->setStateMod( StateMod::possessed, true );
+	}
+	
+	// register with squirrel
+	session->getSquirrel()->registerCreature( creature );
+	for ( int i = 0; i < creature->getBackpackContentsCount(); i++ ) {
+		session->getSquirrel()->registerItem( creature->getBackpackItem( i ) );
+	}
+
+	int x, y;
+	creature->findPlace( cx, cy, &x, &y );
+	creature->startEffect( Constants::EFFECT_TELEPORT, ( Constants::DAMAGE_DURATION * 4 ) );
+	
+	char message[200];
+	snprintf( message, 200, _( "%s calls for help: a %s appears!" ), getName(), monster->getType() );
+	session->getGameAdapter()->writeLogMessage( message, Constants::MSGTYPE_PLAYERMAGIC );
+	
 	return creature;
 }
 

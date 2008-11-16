@@ -123,6 +123,14 @@ public:
 	static int _say( HSQUIRRELVM vm );
 	static int _clearSpeech( HSQUIRRELVM vm );
 	static int _setOffset( HSQUIRRELVM vm );
+	
+	// combat
+	static int _castSpell( HSQUIRRELVM vm );
+	static int _getSummoner( HSQUIRRELVM vm );
+	static int _summon( HSQUIRRELVM vm );
+	
+protected:	
+	static void push_creature( HSQUIRRELVM vm, Creature *summoner );
 
 };
 #endif
