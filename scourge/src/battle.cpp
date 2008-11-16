@@ -139,6 +139,24 @@ void Battle::setupBattles( Session *session, Battle *battle[], int count, vector
 	*/
 }
 
+bool Battle::waitingOnAnimation( Creature *creature ) {
+	if( creature ) {
+		// in TB battle, wait for the animations to end before ending turn
+		if ( session->getPreferences()->isBattleTurnBased() ) {
+			int a = ( ( AnimatedShape* )( creature->getShape() ) )->getCurrentAnimation();
+			if ( !( a == MD2_STAND || a == MD2_RUN ) ) {
+				return true;
+			}
+		} else {
+			int a = ( ( AnimatedShape* )( creature->getShape() ) )->getCurrentAnimation();
+			if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 /// Executes a creature's battle turn.
 
 bool Battle::fightTurn() {
@@ -169,19 +187,8 @@ bool Battle::fightTurn() {
 			if ( debugBattle ) cerr << "Carries over into next turn." << endl;
 		}
 		// in TB battle, wait for the animations to end before ending turn
-		int a;
-		if ( session->getPreferences()->isBattleTurnBased() ) {
-			a = ( ( AnimatedShape* )( creature->getShape() ) )->getCurrentAnimation();
-			if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) {
-				return false;
-			}
-			if ( creature->getTargetCreature() &&
-			        !creature->getTargetCreature()->getStateMod( StateMod::dead ) ) {
-				a = ( ( AnimatedShape* )( creature->getTargetCreature()->getShape() ) )->getCurrentAnimation();
-				if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) {
-					return false;
-				}
-			}
+		if( waitingOnAnimation( creature ) || waitingOnAnimation( creature->getTargetCreature() ) ) {
+			return false;
 		}
 		if ( debugBattle ) cerr << "*** Reset 3" << endl;
 		reset();
@@ -193,8 +200,7 @@ bool Battle::fightTurn() {
 	        !creature->getProjectiles()->empty() ) return false;
 
 	// wait for the animation to finish
-	int a = ( ( AnimatedShape* )creature->getShape() )->getCurrentAnimation();
-	if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) return false;
+	if ( waitingOnAnimation( creature ) ) return false;
 
 
 	// waiting to cast a spell?
@@ -482,8 +488,7 @@ void Battle::stepCloserToTarget() {
 	}
 
 	// wait for animation to end
-	int a = ( ( AnimatedShape* )( creature->getShape() ) )->getCurrentAnimation();
-	if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) {
+	if ( waitingOnAnimation( creature ) ) {
 		if ( debugBattle ) cerr << "\t\t\tWaiting for animation to end." << endl;
 		return;
 	}
@@ -580,8 +585,7 @@ bool Battle::moveCreature() {
 			}
 
 			// wait for animation to end
-			int a = ( ( AnimatedShape* )( creature->getShape() ) )->getCurrentAnimation();
-			if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) return false;
+			if ( waitingOnAnimation( creature ) ) return false;
 
 			if ( creature->getSelX() != -1 ) {
 				bool moved = ( creature->moveToLocator() == NULL );

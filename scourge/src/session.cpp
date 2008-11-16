@@ -438,6 +438,14 @@ void Session::deleteCreaturesAndItems( bool missionItemsOnly ) {
 	getShapePalette()->debugLoadedModels();
 }
 
+bool Session::removeCreature( Creature *creature ) {
+	getMap()->removeCreature( toint( creature->getX() ), toint( creature->getY() ), toint( creature->getZ() ) );
+	creature->moveTo( -1, -1, 0 ); // remove its marker
+	creature->setStateMod( StateMod::dead, true ); // make sure it doesn't move
+	return removeCreatureRef( creature, 0 );
+}
+
+
 /// Return the closest (visible) monster within the given radius or null if none can be found.
 
 Creature *Session::getClosestMonster( int x, int y, int w, int h, int radius ) {
@@ -540,7 +548,7 @@ void Session::creatureDeath( Creature *creature ) {
 	                          &result );
 	// FIXME: not used currently
 	//if( !result ) return;
-
+	
 	if ( creature == party->getPlayer() ) {
 		party->switchToNextLivePartyMember();
 	}

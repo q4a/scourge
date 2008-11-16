@@ -136,6 +136,7 @@ public:
 	bool isInRangeOfTarget();
 
 protected:
+	bool waitingOnAnimation( Creature *creature ); 
 	void launchProjectile();
 	//void initTurn();
 	void hitWithItem();

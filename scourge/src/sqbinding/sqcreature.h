@@ -128,6 +128,7 @@ public:
 	static int _castSpell( HSQUIRRELVM vm );
 	static int _getSummoner( HSQUIRRELVM vm );
 	static int _summon( HSQUIRRELVM vm );
+	static int _remove( HSQUIRRELVM vm );
 	
 protected:	
 	static void push_creature( HSQUIRRELVM vm, Creature *summoner );

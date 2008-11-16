@@ -84,36 +84,48 @@ function creatureDeath( creature ) {
 
 function decideAction( creature ) {
 	if( creature.getMonsterType() == "Karzul Agmordexu" ) {
-		print( "health=" + creature.getHp().tostring() + "\n" );
 		if( creature.getHp().tofloat() <= 150 ) {
-			// heal self via the conduit
-			scourgeGame.printMessage( _( "Karzul uses his infernal conduit and heals his wounds!" ) );
-			creature.setHp( creature.getHp() + ( rand() * 50.0 / RAND_MAX ).tointeger() );
+			// karzul can save 6 times
+			key <- encodeKeyForCreature( creature, "Karzul.save" );
+		  value <- scourgeGame.getValue( key );
+		  if( value == null ) value = "0";
+		  
+		  numValue <- value.tointeger();
+		  print( "numValue=" + numValue.tostring() + "\n" );
+		  
+		  if( numValue < 10 ) {
+		  	print( "healing!\n" );
+		  	scourgeGame.setValue( key, ( numValue + 1 ).tostring() );
 			
-			i <- 0;
-			minion_count <- 0;
-			minion_type <- "Cerxezu Demon Lord";
-			max_minion_count <- 3;
-			minion <- null;
-			print( "Summoning!\n");
-			for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
-					minion = scourgeGame.getMission().getCreature( i );
-					print( "  creature=" + minion.getName() + " summoner=" + (minion.getSummoner() == null ? "null" : minion.getSummoner().getName()) + "\n" );
-					if( minion.getSummoner() == creature ) {
-						minion_count++;
-					}
-			}
-			print( "minion count=" + minion_count.tostring() + " creatures=" + scourgeGame.getMission().getCreatureCount().tostring() + "\n" );
-			
-			if( minion_count < max_minion_count ) {
-				// fixme: should count number of helpers
-				scourgeGame.printMessage( _( "Karzul commands his minions to surge forth and destroy his attackers!" ) );
-				for( i = 0; i < max_minion_count - minion_count; i++ ) {
-					minion = creature.summon( minion_type, 310, 440, 0 );
-					print( "*** Just called. summoner=" + (minion.getSummoner() == null ? "null" : minion.getSummoner().getName() ) + "\n" );
+				// heal self via the conduit
+				scourgeGame.printMessage( _( "Karzul uses his infernal conduit and heals his wounds!" ) );
+				creature.setHp( creature.getHp() + ( rand() * 50.0 / RAND_MAX ).tointeger() );
+				
+				i <- 0;
+				minion_count <- 0;
+				minion_type <- "Cerxezu Demon Lord";
+				max_minion_count <- 3;
+				minion <- null;
+				dead_mod <- scourgeGame.getStateModByName( "dead" );
+				for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+						minion = scourgeGame.getMission().getCreature( i );
+						if( minion.getSummoner() == creature && !minion.getStateMod( dead_mod ) ) {
+							minion_count++;
+						}
 				}
-			}
-			return true;
+				
+				print( "minions=" + minion_count.tostring() + "\n" );
+				if( minion_count < max_minion_count ) {
+					print( "summoning!\n" );
+					// fixme: should count number of helpers
+					scourgeGame.printMessage( _( "Karzul commands his minions to surge forth and destroy his attackers!" ) );
+					for( i = 0; i < max_minion_count - minion_count; i++ ) {
+						minion = creature.summon( minion_type, 320, 448, 0 );
+						print( "new minion at: " + minion.getX().tostring() + "," + minion.getY().tostring() + "\n");
+					}
+				}
+				return true;
+		  }
 		}
 	}
 	return false;
@@ -702,17 +714,42 @@ function initChapter12() {
 				                                       0.2, 0.2, 0.5 														// color
 																							);
 		
+		
+		// reset some creatures
 		karzul <- findCreatureByType( "Karzul Agmordexu" );
 		if( karzul != null ) {
-			// karzul, bad!
-			karzul.setNpc( false );
-			// enter the three musketeers
-			scourgeGame.getMission().addCreature( 338, 454, 0, "Norill" );
-			scourgeGame.getMission().addCreature( 305,454, 0, "Sarrez" );
-			scourgeGame.getMission().addCreature( 332,416, 0, "Rolan" );
-			scourgeGame.showTextMessage( _( "Under the pale sky like the blackened husk of a burned tree stands the demon. He calmly awaits your charge fully aware of its futility.||But a red streak lines the mountain tops to the east... is it dawn? Or is it a sign of hope from the gods? Looking around you notice you are no longer alone on the charred battlefield. Three tall warriors in archaic clothing appear as if from nowhere. The tallest one - their leader? - silently bows his head to you.||After this briefest of courtesies, he turns to face Karzul with a steely resolve." ) );
+			while( karzul != null ) {
+				karzul.remove();
+				karzul = findCreatureByType( "Karzul Agmordexu" );
+			}
+			karzul <- scourgeGame.getMission().addCreature( 320, 449, 0, "Karzul Agmordexu" );
+			karzul.setNpc( false ); // karzul attacks			
+	
+			if( scourgeGame.getValue( "guardians_summoned" ) == "true" ) {
+				norill <- findCreatureByType( "Norill" );
+				while( norill != null ) {
+					norill.remove();
+					norill = findCreatureByType( "Norill" );
+				}
+				scourgeGame.getMission().addCreature( 338, 454, 0, "Norill" );
+				
+				sarrez <- findCreatureByType( "Sarrez" );
+				while( sarrez != null ) {
+					sarrez.remove();
+					sarrez = findCreatureByType( "Sarrez" );
+				}
+				scourgeGame.getMission().addCreature( 305,454, 0, "Sarrez" );
+				
+				rolan <- findCreatureByType( "Rolan" );
+				while( rolan != null ) {
+					rolan.remove();
+					rolan = findCreatureByType( "Rolan" );
+				}			
+				scourgeGame.getMission().addCreature( 332,416, 0, "Rolan" );
+	
+				scourgeGame.showTextMessage( _( "Under the pale sky like the blackened husk of a burned tree stands the demon. He calmly awaits your charge fully aware of its futility.||But a red streak lines the mountain tops to the east... is it dawn? Or is it a sign of hope from the gods? Looking around you notice you are no longer alone on the charred battlefield. Three tall warriors in archaic clothing appear as if from nowhere. The tallest one - their leader? - silently bows his head to you.||After this briefest of courtesies, he turns to face Karzul with a steely resolve." ) );
+			}
 		}
-		
 	} else if( scourgeGame.getMission().getDungeonDepth() == 2 ) {
 		//print( "chapter 12 map\n" );
 		scourgeGame.getMission().setMapEffect( 296, 264, 2, // map location 
