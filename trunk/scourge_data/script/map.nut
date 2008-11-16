@@ -82,6 +82,43 @@ function creatureDeath( creature ) {
   return true;
 }
 
+function decideAction( creature ) {
+	if( creature.getMonsterType() == "Karzul Agmordexu" ) {
+		print( "health=" + creature.getHp().tostring() + "\n" );
+		if( creature.getHp().tofloat() <= 150 ) {
+			// heal self via the conduit
+			scourgeGame.printMessage( _( "Karzul uses his infernal conduit and heals his wounds!" ) );
+			creature.setHp( creature.getHp() + ( rand() * 50.0 / RAND_MAX ).tointeger() );
+			
+			i <- 0;
+			minion_count <- 0;
+			minion_type <- "Cerxezu Demon Lord";
+			max_minion_count <- 3;
+			minion <- null;
+			print( "Summoning!\n");
+			for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+					minion = scourgeGame.getMission().getCreature( i );
+					print( "  creature=" + minion.getName() + " summoner=" + (minion.getSummoner() == null ? "null" : minion.getSummoner().getName()) + "\n" );
+					if( minion.getSummoner() == creature ) {
+						minion_count++;
+					}
+			}
+			print( "minion count=" + minion_count.tostring() + " creatures=" + scourgeGame.getMission().getCreatureCount().tostring() + "\n" );
+			
+			if( minion_count < max_minion_count ) {
+				// fixme: should count number of helpers
+				scourgeGame.printMessage( _( "Karzul commands his minions to surge forth and destroy his attackers!" ) );
+				for( i = 0; i < max_minion_count - minion_count; i++ ) {
+					minion = creature.summon( minion_type, 310, 440, 0 );
+					print( "*** Just called. summoner=" + (minion.getSummoner() == null ? "null" : minion.getSummoner().getName() ) + "\n" );
+				}
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
 // return true if the click was handled from squirrel
 function useShape( x, y, z ) {
 	//print( "useShape:: x=" + x + " y=" + y + " z=" + z + " chapter=" + scourgeGame.getMission().getChapter() + " depth=" + scourgeGame.getMission().getDungeonDepth() + "\n" );

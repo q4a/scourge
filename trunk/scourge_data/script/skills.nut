@@ -42,7 +42,7 @@ function actionMissileDefense( creature ) {
 
   // is it a ranged weapon?
   if( weapon != null ) {
-  	print( "*** weapon=" + weapon.getName() + " ranged=" + weapon.isRanged().tostring() + "\n" );
+  	//print( "*** weapon=" + weapon.getName() + " ranged=" + weapon.isRanged().tostring() + "\n" );
     if( weapon.isRanged() ) {
       causeDefense( 25, _( "Dodging missiles" ) );
     }
@@ -59,24 +59,21 @@ function prereqWarrage( creature ) {
 }
 
 function actionWarrage( creature ) {
-
-  print( "damage=" + damage + " type=" + typeof( damage ) + "\n" );
-
   // the weapon this player is using
   weapon <- scourgeGame.getMission().getCurrentWeapon();
 
   // check that the weapon's skill is more than 90%
   skillCheck <- false;
   if( weapon != null ) {
-    print( "*** weapon=" + weapon.getName() + "\n" );
+    //print( "*** weapon=" + weapon.getName() + "\n" );
     skillCheck = ( !( weapon.isRanged() ) && 
                    creature.getSkill( weapon.getDamageSkill() ) >= 30 );
   } else {
-    print( "*** hand-to-hand combat.\n" );
+    //print( "*** hand-to-hand combat.\n" );
     skillCheck = ( creature.getSkillByName( "HAND_TO_HAND_COMBAT" ) >= 30 );
   }
 
-  print( "*** skillCheck=" + skillCheck.tostring() + "\n" );
+  //print( "*** skillCheck=" + skillCheck.tostring() + "\n" );
 
   if( skillCheck ) {
     causeDamage( 15, _( "War rage" ) );
@@ -241,7 +238,7 @@ function actionSmallArmMastery( creature ) {
 
     isSmall <- weapon.hasTag( "SMALL" );
 
-    print( "*** weapon=" + weapon.getName() + " is small=" + isSmall.tostring() + "\n" );
+//    print( "*** weapon=" + weapon.getName() + " is small=" + isSmall.tostring() + "\n" );
     
     if( isSmall ) {
       causeDamage( 10, _( "Small Arms Mastery" ) );
@@ -297,8 +294,8 @@ function actionBowMastery( creature ) {
 
   // is it a ranged weapon?
   if( weapon != null ) {
-    print( "*** weapon=" + weapon.getName() + " is ranged=" + 
-           weapon.isRanged().tostring() + "\n" );  
+//    print( "*** weapon=" + weapon.getName() + " is ranged=" + 
+//           weapon.isRanged().tostring() + "\n" );  
     if( weapon.isRanged() ) {
       causeDamage( 10, _( "masterful bow handling" ) );
     }
@@ -354,18 +351,18 @@ function incrementDailyCount( creature, key, maxCount ) {
   today <- scourgeGame.getDateString();
   todayKey <- encodeKeyForCreature( creature, today );
   if( lastDateUsed == null ) {
-    print( "First use of this capability ever.\n" );
+//    print( "First use of this capability ever.\n" );
 
     // and save today's count of 1
     scourgeGame.setValue( mainKey, today )
     scourgeGame.setValue( todayKey, "1" );
   } else {
-    print( "lastDateUsed=" + lastDateUsed + "\n" );
+//    print( "lastDateUsed=" + lastDateUsed + "\n" );
     lastDateUsedKey <- encodeKeyForCreature( creature, lastDateUsed );
     
     // is now a day later?
     if( scourgeGame.isADayLater( lastDateUsed ) ) {
-      print( "Last use was more than a day ago.\n" );
+//      print( "Last use was more than a day ago.\n" );
       // if so, erase the count
       scourgeGame.eraseValue( lastDateUsedKey );
       
@@ -373,16 +370,16 @@ function incrementDailyCount( creature, key, maxCount ) {
       scourgeGame.setValue( mainKey, today )
       scourgeGame.setValue( todayKey, "1" );
     } else {
-      print( "Last use was less than a day ago.\n" );
+//      print( "Last use was less than a day ago.\n" );
       // otherwise get the count
       count <- scourgeGame.getValue( lastDateUsedKey );
       if( count == null ) count = 0;
       else count = count.tointeger();
-      print( "count=" + count + "\n" );
+//      print( "count=" + count + "\n" );
   
       if( count.tointeger() >= maxCount ) {
         // Used it too many times.
-        print( "Reached max count: count=" + count + " max=" + maxCount + ".\n" );
+//        print( "Reached max count: count=" + count + " max=" + maxCount + ".\n" );
         return false;
       } else {
         // increment the count

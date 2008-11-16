@@ -172,13 +172,13 @@ bool Battle::fightTurn() {
 		int a;
 		if ( session->getPreferences()->isBattleTurnBased() ) {
 			a = ( ( AnimatedShape* )( creature->getShape() ) )->getCurrentAnimation();
-			if ( !( a == MD2_STAND || a == MD2_RUN ) ) {
+			if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) {
 				return false;
 			}
 			if ( creature->getTargetCreature() &&
 			        !creature->getTargetCreature()->getStateMod( StateMod::dead ) ) {
 				a = ( ( AnimatedShape* )( creature->getTargetCreature()->getShape() ) )->getCurrentAnimation();
-				if ( !( a == MD2_STAND || a == MD2_RUN ) ) {
+				if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) {
 					return false;
 				}
 			}
@@ -194,7 +194,7 @@ bool Battle::fightTurn() {
 
 	// wait for the animation to finish
 	int a = ( ( AnimatedShape* )creature->getShape() )->getCurrentAnimation();
-	if ( !( a == MD2_STAND || a == MD2_RUN ) ) return false;
+	if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) return false;
 
 
 	// waiting to cast a spell?
@@ -239,6 +239,13 @@ bool Battle::fightTurn() {
 	} else {
 		moveCreature();
 	}
+	
+	
+	if( creature->isAutoControlled() ) {
+		creature->decideAction();
+	}
+
+	
 	// not done yet with creature's turn
 	return false;
 }
@@ -476,7 +483,7 @@ void Battle::stepCloserToTarget() {
 
 	// wait for animation to end
 	int a = ( ( AnimatedShape* )( creature->getShape() ) )->getCurrentAnimation();
-	if ( !( a == MD2_STAND || a == MD2_RUN ) ) {
+	if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) {
 		if ( debugBattle ) cerr << "\t\t\tWaiting for animation to end." << endl;
 		return;
 	}
@@ -574,7 +581,7 @@ bool Battle::moveCreature() {
 
 			// wait for animation to end
 			int a = ( ( AnimatedShape* )( creature->getShape() ) )->getCurrentAnimation();
-			if ( !( a == MD2_STAND || a == MD2_RUN ) ) return false;
+			if ( !( a == MD2_STAND || a == MD2_RUN || a == MD2_PAIN1 || a == MD2_PAIN2 || a == MD2_PAIN3 ) ) return false;
 
 			if ( creature->getSelX() != -1 ) {
 				bool moved = ( creature->moveToLocator() == NULL );
@@ -1288,7 +1295,7 @@ void Battle::hitWithItem() {
 
 					applyMagicItemDamage( &damage );
 
-					applyHighAttackRoll( &damage, attack, min, max );
+					//applyHighAttackRoll( &damage, attack, min, max );
 				}
 
 				// item attack event handler

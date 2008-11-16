@@ -95,6 +95,10 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "bool", "isNpc", SqCreature::_isNpc, 0, 0, "Is this creature an npc?" },
 	{ "void", "setNpc", SqCreature::_setNpc, 0, 0, "Toggle if this creature is an npc or a monster." },
 	{ "void", "setOffset", SqCreature::_setOffset, 0, 0, "Set the creature's offset on the map." },
+	
+	{ "void", "castSpell", SqCreature::_castSpell, 0, 0, "Cast a spell." },
+	{ "Creature", "getSummoner", SqCreature::_getSummoner, 0, 0, "Get the summoner of this creature." },
+	{ "void", "summon", SqCreature::_summon, 0, 0, "Summon another creature." },
 
 	{ 0, 0, 0, 0, 0 } // terminator
 };
@@ -485,29 +489,54 @@ int SqCreature::_startConversationAbout( HSQUIRRELVM vm ) {
 	return 0;
 }
 
-int SqCreature::_getTargetCreature( HSQUIRRELVM vm ) {
+int SqCreature::_summon( HSQUIRRELVM vm ) {
+	GET_INT( z )
+	GET_INT( y )
+	GET_INT( x )
+	GET_STRING( creatureType, 200 )
 	GET_OBJECT( Creature* )
-	if ( object->getTargetCreature() ) {
-		if ( object->getTargetCreature()->isMonster() || object->getTargetCreature()->isNpc() ) {
-			sq_pushobject( vm, *( SqBinding::binding->creatureMap[object->getTargetCreature()] ) );
-		} else {
-			bool found = false;
-			for ( int i = 0; i < SqBinding::sessionRef->getParty()->getPartySize(); i++ ) {
-				if ( object->getTargetCreature() == SqBinding::sessionRef->getParty()->getParty( i ) ) {
-					sq_pushobject( vm, SqBinding::binding->refParty[ i ] );
-					found = true;
-					break;
-				}
-			}
-			if ( !found ) {
-				cerr << "SqCreature::_getTargetCreature did not find party member: " << object->getTargetCreature()->getName() << endl;
-				sq_pushnull( vm );
-			}
-		}
-	} else {
+	//Creature *c = SqBinding::sessionRef->addCreatureFromScript( creatureType, toint( object->getX() ), toint( object->getY() ) );
+	Monster *monster = Monster::getMonsterByName( creatureType );
+	if ( !monster ) {
+		cerr << "*** Error: no monster named " << creatureType << endl;
 		sq_pushnull( vm );
+	} else {
+		Creature *c = object->doSummon( monster, x, y, z );
+		sq_pushobject( vm, *( SqBinding::binding->creatureMap[ c ] ) );
 	}
 	return 1;
+}
+
+int SqCreature::_getSummoner( HSQUIRRELVM vm ) {
+	GET_OBJECT( Creature* )
+	push_creature( vm, object->getSummoner() );
+	return 1;
+}
+
+int SqCreature::_getTargetCreature( HSQUIRRELVM vm ) {
+	GET_OBJECT( Creature* )
+	push_creature( vm, object->getTargetCreature() );
+	return 1;
+}
+
+void SqCreature::push_creature( HSQUIRRELVM vm, Creature *creature ) {
+	if( !creature ) {
+		sq_pushnull( vm );
+	} else if ( creature->isMonster() || creature->isNpc() ) {
+		sq_pushobject( vm, *( SqBinding::binding->creatureMap[creature] ) );
+	} else {
+		bool found = false;
+		for ( int i = 0; i < SqBinding::sessionRef->getParty()->getPartySize(); i++ ) {
+			if ( creature == SqBinding::sessionRef->getParty()->getParty( i ) ) {
+				sq_pushobject( vm, SqBinding::binding->refParty[ i ] );
+				found = true;
+				break;
+			}
+		}
+		if ( !found ) {
+			sq_pushnull( vm );
+		}
+	}	
 }
 
 int SqCreature::_getEquippedItem( HSQUIRRELVM vm ) {
@@ -677,5 +706,21 @@ int SqCreature::_setOffset( HSQUIRRELVM vm ) {
 	GET_FLOAT( ox )
 	GET_OBJECT( Creature* )
 	object->setOffset( ox * MUL, oy * MUL, oz * MUL );
+	return 0;
+}
+
+int SqCreature::_castSpell( HSQUIRRELVM vm ) {
+	GET_STRING( spellName, 2000 )
+	GET_OBJECT( Creature* )
+	Spell *spell;
+	cerr << "Will try to cast " << spellName << endl;
+	for ( int i = 0; i < object->getSpellCount(); i++ ) {
+    spell = object->getSpell ( i );
+    if( !strcmp( spell->getName(), spellName ) ) {
+    	cerr << "\tCasting spell!!!" << endl;
+    	object->setAction ( Constants::ACTION_CAST_SPELL, NULL, spell );
+    	break;
+    }
+	}
 	return 0;
 }
