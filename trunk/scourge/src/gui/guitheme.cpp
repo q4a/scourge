@@ -31,57 +31,12 @@ using namespace std;
   *@author Gabor Torok
   */
 
-map<string, GuiTheme*> GuiTheme::themes;
-char GuiTheme::DEFAULT_THEME[255] = "default";
+GuiThemes* GuiThemes::instance = NULL;
 
-GuiTheme::GuiTheme( char const* name ) {
-	this->nameX = name;
-	windowBack = NULL;
-	windowTop = NULL;
-	windowBorder = NULL;
-	windowTitleText = NULL;
-	windowText = NULL;
-	buttonBackground = NULL;
-	buttonSelectionBackground = NULL;
-	buttonHighlight = NULL;
-	buttonBorder = NULL;
-	buttonText = NULL;
-	buttonSelectionText = NULL;
-	listBackground = NULL;
-	inputBackground = NULL;
-	inputText = NULL;
-	selectionText = NULL;
-	selectionBackground = NULL;
-	selectedBorder = NULL;
-	selectedCharacterBorder = NULL;
-	windowBorderTexture = NULL;
-}
+/// GuiThemes constructor loads and inits the GUI themes.
 
-GuiTheme::~GuiTheme() {
-	delete windowBack;
-	delete windowTop;
-	delete windowBorder;
-	delete windowTitleText;
-	delete windowText;
-	delete buttonBackground;
-	delete buttonSelectionBackground;
-	delete buttonHighlight;
-	delete buttonBorder;
-	delete buttonText;
-	delete buttonSelectionText;
-	delete listBackground;
-	delete inputBackground;
-	delete inputText;
-	delete selectionText;
-	delete selectionBackground;
-	delete selectedBorder;
-	delete selectedCharacterBorder;
-	delete windowBorderTexture;
-}
-
-/// Loads and inits the GUI themes.
-
-void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
+GuiThemes::GuiThemes( ScourgeGui *scourgeGui ) 
+		: themes() {
 	ConfigLang *config = ConfigLang::load( "config/ui.cfg" );
 
 	vector<ConfigNode*> *v = config->getDocument()->
@@ -180,13 +135,64 @@ void GuiTheme::initThemes( ScourgeGui *scourgeGui ) {
 	}
 
 	delete config;
+	instance = this;
 }
 
-void GuiTheme::unInitThemes() {
+GuiThemes::~GuiThemes() {
+	instance = NULL;
 	for ( map<string, GuiTheme*>::iterator i = themes.begin(); i != themes.end(); ++i ) {
 		delete i->second;
 	}
 	themes.clear();
+}
+
+	
+
+char GuiTheme::DEFAULT_THEME[255] = "default";
+
+GuiTheme::GuiTheme( char const* name ) {
+	this->nameX = name;
+	windowBack = NULL;
+	windowTop = NULL;
+	windowBorder = NULL;
+	windowTitleText = NULL;
+	windowText = NULL;
+	buttonBackground = NULL;
+	buttonSelectionBackground = NULL;
+	buttonHighlight = NULL;
+	buttonBorder = NULL;
+	buttonText = NULL;
+	buttonSelectionText = NULL;
+	listBackground = NULL;
+	inputBackground = NULL;
+	inputText = NULL;
+	selectionText = NULL;
+	selectionBackground = NULL;
+	selectedBorder = NULL;
+	selectedCharacterBorder = NULL;
+	windowBorderTexture = NULL;
+}
+
+GuiTheme::~GuiTheme() {
+	delete windowBack;
+	delete windowTop;
+	delete windowBorder;
+	delete windowTitleText;
+	delete windowText;
+	delete buttonBackground;
+	delete buttonSelectionBackground;
+	delete buttonHighlight;
+	delete buttonBorder;
+	delete buttonText;
+	delete buttonSelectionText;
+	delete listBackground;
+	delete inputBackground;
+	delete inputText;
+	delete selectionText;
+	delete selectionBackground;
+	delete selectedBorder;
+	delete selectedCharacterBorder;
+	delete windowBorderTexture;
 }
 
 
@@ -209,7 +215,7 @@ void GuiTheme::loadTextures( ScourgeGui *scourgeGui ) {
 //  cerr << "----------------------------------------" << endl;
 }
 
-ThemeElement *GuiTheme::parseElement( const char *s ) {
+ThemeElement *GuiThemes::parseElement( const char *s ) {
 //  cerr << "parseElement: line=" << line << endl;
 
 	// need to copy incoming string so we don't modify shared string memory (std::string)
@@ -282,7 +288,7 @@ ThemeElement *GuiTheme::parseElement( const char *s ) {
 	}
 }
 
-Color *GuiTheme::parseColor( const char *s ) {
+Color *GuiThemes::parseColor( const char *s ) {
 //  cerr << "parseColor: line=" << line << endl;
 
 	// need to copy incoming string so we don't modify shared string memory (std::string)

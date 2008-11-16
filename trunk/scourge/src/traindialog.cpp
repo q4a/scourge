@@ -98,7 +98,7 @@ void TrainDialog::updateUI() {
 	while ( rc->getParent() ) {
 		rc = rc->getParent();
 	}
-	int index = Character::getRootCharacterIndexByName( rc->getName() );
+	int index = Characters::getRootIndexByName( rc->getName() );
 	if ( creature->getNpcInfo()->getSubtype()->find( index ) ==
 	        creature->getNpcInfo()->getSubtype()->end() ) {
 		errorLabel->setColor( 1, 0, 0 );

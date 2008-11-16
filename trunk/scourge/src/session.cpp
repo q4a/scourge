@@ -49,7 +49,8 @@ Session *Session::instance = NULL;
  *@author Gabor Torok
  */
 Session::Session( GameAdapter *adapter )
-		: chapterImage() {
+		: chapterImage()
+		, characters( NULL ) {
 	this->adapter = adapter;
 	sound = NULL;
 	shapePal = NULL;
@@ -79,10 +80,9 @@ Session::Session( GameAdapter *adapter )
 Session::~Session() {
 	SpecialSkill::unInitSkills();
 	Monster::unInitMonsters();
-	Character::unInitCharacters();
+	delete characters;
 	MagicSchool::unInitMagic();
 	Rpg::unInitRpg();
-	GuiTheme::unInitThemes();
 	if ( squirrel ) delete squirrel;
 	deleteCreaturesAndItems();
 	delete party;
@@ -133,8 +133,7 @@ void Session::doInitData() {
 
 	// init professions
 	adapter->setUpdate( _( "Loading Characters" ) );
-	Character::initCharacters();
-
+	characters = new Characters;
 
 	// initialize the monsters (they use items, magic)
 	adapter->setUpdate( _( "Loading Creatures" ) );

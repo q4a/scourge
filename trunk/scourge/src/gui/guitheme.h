@@ -53,6 +53,38 @@ public:
 	void loadTextures( ScourgeGui *scourgeGui );
 };
 
+/// collection of all GUI themes.
+
+class GuiTheme;
+class GuiThemes {
+public:
+	GuiThemes( ScourgeGui *scourgeGui );
+	~GuiThemes();
+	
+	GuiTheme* getByName( std::string const& s ) {
+		if ( themes.find( s ) == themes.end() ) {
+			std::cerr << "*** error: can't find theme: " << s << std::endl;
+			return NULL;
+		}
+			
+		return themes[ s ];
+	}
+private:
+	std::map<std::string, GuiTheme*> themes;
+	// GuiTheme is designed to know all of its kind 
+	static GuiThemes* instance;
+	friend class GuiTheme;
+	// moved here, others don't use these 
+	static ThemeElement* parseElement( const char* line );
+	static Color* parseColor( const char* line );
+	// undefine all unused implicits
+	GuiThemes(); // undefined
+	GuiThemes( GuiThemes const& that ); // undefined
+	GuiThemes& operator=( GuiThemes const& that ); // undefined
+};
+
+
+
 /// A theme for the game's GUI.
 
 class GuiTheme {
@@ -78,8 +110,7 @@ private:
 	ThemeElement *selectedCharacterBorder;
 	ThemeElement *windowBorderTexture;
 
-
-	static std::map<std::string, GuiTheme*> themes;
+	friend class GuiThemes;
 
 public:
 	GuiTheme( char const* name );
@@ -87,17 +118,15 @@ public:
 
 	static char DEFAULT_THEME[255];
 
-	static void initThemes( ScourgeGui *scourgeGui );
-	static void unInitThemes();
-	static inline GuiTheme *getThemeByName( const char *name ) {
+	static GuiTheme* getThemeByName( const char *name ) {
 		std::string s = name;
-		if ( themes.find( s ) != themes.end() ) return themes[ s ];
-		else {
-			std::cerr << "*** error: can't find theme: " << s << std::endl;
+		if ( GuiThemes::instance == NULL ) { 
+			std::cerr << "*** error: no GUI themes: " << s << std::endl;
 			return NULL;
 		}
+		return GuiThemes::instance->getByName( s );
 	}
-
+ 
 	char const* getName() {
 		return nameX.c_str();
 	}
@@ -160,9 +189,6 @@ public:
 	}
 
 protected:
-	static ThemeElement *parseElement( const char *line );
-	static Color *parseColor( const char *line );
-
 	void loadTextures( ScourgeGui *scourgeGui );
 
 	inline void setWindowBackground( ThemeElement *element ) {
@@ -223,6 +249,9 @@ protected:
 		windowBorderTexture = element;
 	}
 };
+
+
+
 
 #endif
 

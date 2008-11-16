@@ -32,9 +32,66 @@
 class RpgItem;
 class Skill;
 class SkillGroup;
+class Character;
+
+/// Collection of all characters.
+
+class Characters {
+public:
+	Characters(); // was Character::initCharacters()
+	~Characters(); // was Character::unInitCharacters()
+
+	Character* getRandom() {
+		return rootCharacters[ Util::dice( rootCharacters.size() ) ];
+	}
+
+	static int getRootIndexByName( char const* p );
+	static Character* getByName( char const* p ) {
+		if ( instance == NULL ) { 
+			std::cerr << "*** Characters::getByName() Characters uninitialized" << std::endl;
+			return NULL;
+		}
+		return instance->getCharacterByName( p );
+	}
+	static Character* getRootByIndex( int i ) {
+		if ( instance == NULL ) { 
+			std::cerr << "*** Characters::getRootByIndex() Characters uninitialized" << std::endl;
+			return NULL;
+		}
+		return instance->rootCharacters[i];
+	}
+	static int getRootCount() {
+		if ( instance == NULL ) { 
+			std::cerr << "*** Characters::getRootCount() Characters uninitialized" << std::endl;
+			return NULL;
+		}
+		return instance->rootCharacters.size();
+	}
+
+private:
+	std::map<std::string, Character*> character_class;
+	std::vector<Character*> character_list;
+	std::vector<Character*> rootCharacters;
+	// Character is designed to know all of its kind 
+	friend class Character;
+	static Characters* instance;
+
+	void addItemTags( const char *s, std::set<std::string> *list );
+	void buildTree();
+	
+	Character* getCharacterByName( char const* p ) {
+		std::string s = p; return character_class[s];
+	}
+	
+	// undefine all unused implicits
+	Characters( Characters const& that ); // undefined
+	Characters& operator=( Characters const& that ); // undefined
+
+};
 
 /// A playable character.
 class Character  {
+	friend Characters;
 private:
 	std::string name;
 	std::string displayName;
@@ -57,6 +114,9 @@ public:
 	           int startingHp, int startingMp,
 	           int level_progression, int minLevelReq );
 	~Character();
+
+	static Character *getRandomCharacter();
+	static Character *getRandomCharacter( int level );
 
 	inline char const* getName() {
 		return name.c_str();
@@ -106,32 +166,8 @@ public:
 		return 5;
 	}
 
-	static std::map<std::string, Character*> character_class;
-	static std::vector<Character*> character_list;
-	static std::vector<Character*> rootCharacters;
-	static Character *getCharacterByName( char const* p ) {
-		std::string s = p; return character_class[s];
-	}
-	inline static Character *getRandomCharacter() {
-		return rootCharacters[ Util::dice( rootCharacters.size() ) ];
-	}
-	static Character *getRandomCharacter( int level );
-	inline static int getRootCharacterIndexByName( char const* p ) {
-		for ( int i = 0; i < static_cast<int>( rootCharacters.size() ); i++ ) {
-			if ( !strcmp( rootCharacters[i]->getName(), p ) )
-				return i;
-		}
-		std::cerr << "*** Error: cannot find root profession: " << p << std::endl;
-		return -1;
-	}
-
-	static void initCharacters();
-	static void unInitCharacters();
-	static void addItemTags( const char *s, std::set<std::string> *list );
-
 	void finishProfessionTag();
 	void printSet( std::set<std::string> *s, char *tagName );
-	static void buildTree();
 protected:
 	void describeProfession();
 	bool canEquip( RpgItem *item, std::set<std::string> *allowed, std::set<std::string> *forbidden );

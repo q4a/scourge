@@ -1384,7 +1384,7 @@ NpcInfo::NpcInfo( int x, int y, char *name, int level, char *type, char *subtype
 				this->subtype.insert( RpgItem::getTypeByName( p ) );
 			} else if ( this->type == Constants::NPC_TYPE_TRAINER ) {
 				// subtype is a root profession
-				this->subtype.insert( Character::getRootCharacterIndexByName( p ) );
+				this->subtype.insert( Characters::getRootIndexByName( p ) );
 			} else {
 				break;
 			}
