@@ -99,6 +99,7 @@ ScriptClassMemberDecl SqCreature::members[] = {
 	{ "void", "castSpell", SqCreature::_castSpell, 0, 0, "Cast a spell." },
 	{ "Creature", "getSummoner", SqCreature::_getSummoner, 0, 0, "Get the summoner of this creature." },
 	{ "void", "summon", SqCreature::_summon, 0, 0, "Summon another creature." },
+	{ "void", "remove", SqCreature::_remove, 0, 0, "Remove this creature from the map." },
 
 	{ 0, 0, 0, 0, 0 } // terminator
 };
@@ -505,6 +506,12 @@ int SqCreature::_summon( HSQUIRRELVM vm ) {
 		sq_pushobject( vm, *( SqBinding::binding->creatureMap[ c ] ) );
 	}
 	return 1;
+}
+
+int SqCreature::_remove( HSQUIRRELVM vm ) {
+	GET_OBJECT( Creature* )
+	SqBinding::sessionRef->removeCreature( object );
+	return 0;
 }
 
 int SqCreature::_getSummoner( HSQUIRRELVM vm ) {

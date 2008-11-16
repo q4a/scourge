@@ -193,6 +193,7 @@ public:
 	virtual Creature *replaceCreature( Creature *creature, char *newCreatureType );
 	virtual Creature *addCreatureFromScript( char *creatureType, int cx, int cy, int *fx = NULL, int *fy = NULL );
 	virtual bool removeCreatureRef( Creature *creature, int index );
+	virtual bool removeCreature( Creature *creature );
 	virtual void addCreatureRef( Creature *creature, int index );
 	void setVisible( Creature *creature, bool b );
 	bool isVisible( Creature *creature );
