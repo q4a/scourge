@@ -90,6 +90,7 @@ bool CombatTest::executeTests( Session *session, char const* path ) {
   attacker->removeFromBackpack( 0 );
   weapon = equipItem( session, attacker, "Long sword", 1 );
   items.push_back( weapon );
+  /* -=K=-: Character does not work like that anymore 
   for( int i = 0; i < static_cast<int>(Character::character_list.size()); i++ ) {
     Creature *c = createCharacter( session, Character::character_list[i]->getName(), "Defender", 1 );
     creatures.push_back( c );
@@ -97,7 +98,7 @@ bool CombatTest::executeTests( Session *session, char const* path ) {
     items.push_back( equipItem( session, c, "Leather Armor", 1 ) );
     snprintf( filename, FILE_NAME_SIZE, "character_%s.html", Character::character_list[i]->getName() );
     if( !fight( path, filename, session, attacker, weapon, c ) ) break;
-  }
+  }*/
 
   // Test random skill values
   for( int i = 0; i < 20; i++ ) {
@@ -281,8 +282,7 @@ Creature *CombatTest::createCharacter( Session *session,
                                        char const* characterShortName,
                                        char *name,
                                        int level ) {
-  Character *character = 
-    Character::getRandomCharacter();
+  Character *character = Character::getRandomCharacter();
   Creature *c = 
     new Creature( session, 
                   character, 

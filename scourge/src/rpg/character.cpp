@@ -30,11 +30,12 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace std;
 
-map<string, Character*> Character::character_class;
-vector<Character*> Character::character_list;
-vector<Character*> Character::rootCharacters;
+Characters* Characters::instance = NULL;
 
-void Character::initCharacters() {
+Characters::Characters()
+		: character_class()
+		, character_list()
+		, rootCharacters() {
 	Character *last = NULL;
 	char name[255];
 	char displayName[255];
@@ -100,17 +101,22 @@ void Character::initCharacters() {
 	delete config;
 
 	buildTree();
+	if ( Characters::instance != NULL ) {
+		std::cerr << "*** error: Characters initialized multiple times." << std::endl;
+	}
+	Characters::instance = this;
 }
 
-void Character::unInitCharacters() {
+Characters::~Characters() {
+	Characters::instance = NULL;
+
 	for ( size_t i = 0; i < character_list.size(); ++i ) {
 		delete character_list[i];
 	}
 	character_list.clear();
-
 }
 	
-void Character::addItemTags( const char *s, set<string> *list ) {
+void Characters::addItemTags( const char *s, set<string> *list ) {
 	char line[1000];
 	strcpy( line, s );
 	char *p = strtok( line, "," );
@@ -126,25 +132,8 @@ void Character::addItemTags( const char *s, set<string> *list ) {
 	}
 }
 
-Character::Character( char const* name, char const* displayName, char const* parentName,
-                      int startingHp, int startingMp,
-                      int level_progression, int minLevelReq ) {
-	this->name = name;
-	this->displayName = displayName;
-	this->parentName = parentName;
-	this->startingHp = startingHp;
-	this->startingMp = startingMp;
-	this->level_progression = level_progression;
-	this->minLevelReq = minLevelReq;
-	this->parent = NULL;
-	strcpy( description, "" );
-}
-
-Character::~Character() {
-}
-
 #define MIN_STARTING_MP 2
-void Character::buildTree() {
+void Characters::buildTree() {
 	for ( int i = 0; i < static_cast<int>( character_list.size() ); i++ ) {
 		Character *c = character_list[i];
 		c->describeProfession();
@@ -177,6 +166,36 @@ void Character::buildTree() {
 		}
 	}
 }
+
+int Characters::getRootIndexByName( char const* p ) {
+	if ( instance != NULL ) {
+		for ( size_t i = 0; i < instance->rootCharacters.size(); i++ ) {
+			if ( !strcmp( instance->rootCharacters[i]->getName(), p ) )
+				return static_cast<int>(i);
+		}
+	}
+	std::cerr << "*** Error: cannot find root profession: " << p << std::endl;
+	return -1;
+}
+
+
+Character::Character( char const* name, char const* displayName, char const* parentName,
+                      int startingHp, int startingMp,
+                      int level_progression, int minLevelReq ) {
+	this->name = name;
+	this->displayName = displayName;
+	this->parentName = parentName;
+	this->startingHp = startingHp;
+	this->startingMp = startingMp;
+	this->level_progression = level_progression;
+	this->minLevelReq = minLevelReq;
+	this->parent = NULL;
+	strcpy( description, "" );
+}
+
+Character::~Character() {
+}
+
 
 #define ITEM_TYPE_WEAPON 0
 #define ITEM_TYPE_ARMOR 1
@@ -349,8 +368,18 @@ bool Character::canEquip( RpgItem *item, set<string> *allowed, set<string> *forb
 	}
 }
 
-Character *Character::getRandomCharacter( int level ) {
-	Character *c = getRandomCharacter();
+Character* Character::getRandomCharacter() {
+	if ( Characters::instance == NULL ) { 
+		std::cerr << "*** error: Character::getRandomCharacter() Characters uninitialized" << std::endl;
+		return NULL;
+	}
+
+	Character* c = Characters::instance->getRandom();
+	return c;
+}
+
+Character* Character::getRandomCharacter( int level ) {
+	Character* c = getRandomCharacter();
 	while ( c && c->getChildCount() &&
 	        c->getChild( 0 )->getMinLevelReq() <= level ) {
 		int index = Util::dice( c->getChildCount() );

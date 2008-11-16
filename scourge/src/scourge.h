@@ -879,6 +879,7 @@ private:
 	int level;
 	MapEditor *mapEditor;
 	MainMenu *mainMenu;
+	GuiThemes* guiThemes;
 	OptionsMenu *optionsMenu;
 	MultiplayerDialog *multiplayer;
 	bool isInfoShowing;

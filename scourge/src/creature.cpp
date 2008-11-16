@@ -368,7 +368,7 @@ Creature *Creature::load( Session *session, CreatureInfo *info ) {
 		creature->stateMod = monster->getStartingStateMod();
 	} else {
 		creature = new Creature( session,
-		                         Character::getCharacterByName( ( char* )info->character_name ),
+		                         Characters::getByName( ( char* )info->character_name ),
 		                         ( char* )info->name,
 		                         info->sex,
 		                         info->character_model_info_index );

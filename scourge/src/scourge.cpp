@@ -123,7 +123,8 @@ Scourge::Scourge( UserConfiguration *config )
 		, saveDialog( NULL )
 		, multiplayer( NULL )
 		, optionsMenu( NULL )
-		, mainMenu( NULL ) {
+		, mainMenu( NULL )
+		, guiThemes( NULL ) {
 	// init the random number generator
 	srand( ( unsigned int )time( ( time_t* )NULL ) );
 	Util::mt_srand( ( unsigned long )time( ( time_t* )NULL ) );
@@ -216,7 +217,7 @@ void Scourge::initUI() {
 void Scourge::start() {
 
 	// init UI themes
-	GuiTheme::initThemes( getSDLHandler() );
+	guiThemes = new GuiThemes( getSDLHandler() );
 	mainMenu = new MainMenu( this );
 	optionsMenu = new OptionsMenu( this );
 	multiplayer = new MultiplayerDialog( this );
@@ -395,6 +396,7 @@ Scourge::~Scourge() {
 	delete multiplayer;
 	delete optionsMenu;
 	delete mainMenu;
+	delete guiThemes;
 
 	// from constructor:
 	delete view;

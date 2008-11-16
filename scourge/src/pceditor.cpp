@@ -136,7 +136,7 @@ void PcEditor::saveUI() {
 	
 	// character type
 	int index = charType->getSelectedLine();
-	Character *c = Character::rootCharacters[ index ];
+	Character *c = Characters::getRootByIndex( index );
 	creature->setCharacter( c );
 	creature->setLevel( STARTING_PARTY_LEVEL );
 	creature->setExp( 0 );
@@ -160,15 +160,11 @@ void PcEditor::loadUI() {
 		male->setSelected( creature->getSex() == Constants::SEX_MALE ? true : false );
 		female->setSelected( male->isSelected() ? false : true );
 
-		for ( int i = 0; i < static_cast<int>( Character::rootCharacters.size() ); i++ ) {
-			if ( Character::rootCharacters[i] == creature->getCharacter() ) {
-				charType->setSelectedLine( i );
-				break;
-			}
-		}
+		int i = Characters::getRootIndexByName( creature->getCharacter()->getName() );
+		charType->setSelectedLine( i );
+		if ( i > -1 )
+			charTypeDescription->setText( Characters::getRootByIndex( i )->getDescription() );
 
-		if ( charType->getSelectedLine() > -1 )
-			charTypeDescription->setText( Character::rootCharacters[charType->getSelectedLine()]->getDescription() );
 		enum { MSG_SIZE = 300 };
 		char message[ MSG_SIZE ];
 		int n = 0;
@@ -249,7 +245,7 @@ void PcEditor::rollSkillsForCreature( Creature *c ) {
 
 Creature *PcEditor::createPartyMember() {
 	Creature *c = new Creature( scourge->getSession(),
-	                            Character::rootCharacters[ charType->getSelectedLine() ],
+	                            Characters::getRootByIndex( charType->getSelectedLine() ),
 	                            nameField->getText(),
 	                            getSex(),
 	                            modelIndex );
@@ -399,7 +395,7 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 
 void PcEditor::setCharType( int charIndex ) {
 	if ( charIndex > -1 ) {
-		Character *character = Character::rootCharacters[ charIndex ];
+		Character *character = Characters::getRootByIndex( charIndex );
 		if ( character ) {
 			charTypeDescription->setText( character->getDescription() );
 			saveUI();
@@ -509,16 +505,16 @@ void PcEditor::createUI() {
 	                              secondColWidth, 80,
 	                              scourge->getShapePalette()->getHighlightTexture() );
 	cards->addWidget( charType, CLASS_TAB );
-	charTypeStr = new string[ Character::rootCharacters.size() ];
-	for ( int i = 0; i < static_cast<int>( Character::rootCharacters.size() ); i++ ) {
-		charTypeStr[i] = Character::rootCharacters[i]->getDisplayName();
+	charTypeStr = new string[ Characters::getRootCount() ];
+	for ( int i = 0; i < Characters::getRootCount(); i++ ) {
+		charTypeStr[i] = Characters::getRootByIndex( i )->getDisplayName();
 	}
-	charType->setLines( static_cast<int>( Character::rootCharacters.size() ), charTypeStr );
-	int charIndex = Util::dice( Character::rootCharacters.size() );
+	charType->setLines( Characters::getRootCount(), charTypeStr );
+	int charIndex = Util::dice( Characters::getRootCount() );
 	charType->setSelectedLine( charIndex );
 	charTypeDescription = new ScrollingLabel( secondColStart, 230,
 	                                          secondColWidth, 130,
-	                                          Character::rootCharacters[charIndex]->getDescription() );
+	                                          Characters::getRootByIndex( charIndex )->getDescription() );
 	cards->addWidget( charTypeDescription, CLASS_TAB );
 
 

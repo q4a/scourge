@@ -45,6 +45,7 @@ class GameAdapter;
 class Preferences;
 class RpgItem;
 class Spell;
+class Characters;
 class Character;
 class Monster;
 class GLShape;
@@ -92,6 +93,7 @@ private:
 	bool autosave;
 
 	char interruptFunction[255];
+	Characters* characters;
 
 	// private constructor: call startGame instead.
 	Session( GameAdapter *adapter );
