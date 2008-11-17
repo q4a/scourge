@@ -90,8 +90,9 @@ private:
 };
 
 /// A playable character.
+
 class Character  {
-	friend Characters;
+	friend class Characters;
 private:
 	std::string name;
 	std::string displayName;
