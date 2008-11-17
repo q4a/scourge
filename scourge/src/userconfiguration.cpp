@@ -27,6 +27,13 @@ using namespace std;
 
 #include "gui/guitheme.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 
 // TODO : - warn if there is an unknown parameter in the config file ?
 //        - manage doubled keynames -> must be impossible in optionsmenu
@@ -289,83 +296,88 @@ const char * UserConfiguration::ENGINE_ACTION_DESCRIPTION[] = {
 };
 
 
-UserConfiguration::UserConfiguration() {
-	unsigned int i, j;
-	string temp;
-
-	flaky = false;
-	standAloneMode = NONE;
-	debugTheme = false;
-
-	stencilBufInitialized = false;
-	configurationChanged = false;
-
-	// default settings for video mode (are overridden by command line)
-	fullscreen = true;
-	doublebuf = true;
-	hwpal = true;
-	resizeable = true;
-	force_hwsurf = false;
-	force_swsurf = false;
-	hwaccel = true;
-	test = false;
-	multitexturing = true;
-	stencilbuf = true;
-	bpp = -1;
-	w = 800;
-	h = 600;
-	shadows = 0;
-	alwaysShowPath = true;
-	tooltipEnabled = true;
-	enableScreenshots = true;
-	tooltipInterval = 50;
-	aniso_filter = false;
-
-	// game settings
-	gamespeed = 1;  // fast speed
-	centermap = true;
-	keepMapSize = true;
-	frameOnFullScreen = true;
-	turnBasedBattle = true;
-	ovalCutoutShown = true;
-	outlineInteractiveItems = true;
-	combatInfoDetail = 0;
-	monsterToughness = 0;
-	hideInventoriesOnMove = true;
-	logLevel = 3;
-	pathFindingQuality = 0;
-	maxPathNodes = 500;
-
-	// audio settings
-	soundEnabled = true;
-	soundFreq = 5;
-	musicVolume = 64;
-	effectsVolume = 128;
-
+UserConfiguration::UserConfiguration() 
+		: Preferences()
+		, configurationChanged( false )
+		, keyDownBindings()
+		, keyUpBindings()
+		, mouseDownBindings()
+		, mouseUpBindings()
+		, engineActionUpNumber()
+		, engineActionNumber()
+		, keyForEngineAction()
+		, engineActionName()
+		// default settings for video mode (are overridden by command line)
+		, fullscreen( true )
+		, doublebuf( true )
+		, hwpal( true )
+		, resizeable( true )
+		, force_hwsurf( false )
+		, force_swsurf( false )
+		, hwaccel( true )
+		, test( false )
+		, multitexturing( true )
+		, stencilbuf( true )
+		, bpp( -1 )
+		, w( 800 )
+		, h( 600 )
+		, shadows( 0 )
+		, alwaysShowPath( true )
+		, tooltipEnabled( true )
+		, enableScreenshots( true )
+		, tooltipInterval( 50 )
+		, aniso_filter( false )
+		// game settings
+		, gamespeed( 1 )  // fast speed
+		, centermap( true )
+		, keepMapSize( true )
+		, frameOnFullScreen( true )
+		, turnBasedBattle( true )
+		, ovalCutoutShown( true )
+		, outlineInteractiveItems( true )
+		, combatInfoDetail( 0 )
+		, hideInventoriesOnMove( true )
+		, logLevel( 3 )
+		, pathFindingQuality( 0 )
+		, maxPathNodes( 500 )
+		// audio settings
+		, soundEnabled( true )
+		, soundFreq( 5 )
+		, musicVolume( 64 )
+		, effectsVolume( 128 )
+		// others
+		, standAloneMode( NONE )
+		, host()
+		, userName()
+		, port( 0 )
+		, monsterToughness( 0 )
+		, debugTheme( false )
+		, flaky( false ) {
 	// Build (string engineAction -> int engineAction ) lookup table
 	// and   (int ea -> string ea) lookup table
-	for ( i = 0; i < ENGINE_ACTION_COUNT ; i++ ) {
-		temp = ENGINE_ACTION_NAMES[i];
-		for ( j = 0; j < temp.length(); j++ ) {
+	for ( int i = 0; i < ENGINE_ACTION_COUNT ; i++ ) {
+		string temp( ENGINE_ACTION_NAMES[i] );
+		for ( size_t j = 0; j < temp.length(); j++ ) {
 			temp[j] = tolower( temp[j] );
 		}
+		//engineActionNumber.insert( std::pair<string,int>( temp, i ) );
+		//engineActionName.insert( std::pair<int,string>( i, temp ) );
+
 		engineActionNumber[temp] = i;
 		engineActionName[i] = temp;
 	}
 
 	// Build (string engineActionUp -> int engineActionUp ) lookup table
-	for ( i = SET_MOVE_DOWN_STOP; i < ENGINE_ACTION_UP_COUNT ; i++ ) {
-		temp = ENGINE_ACTION_UP_NAMES[i - SET_MOVE_DOWN_STOP];
-		for ( j = 0; j < temp.length(); j++ ) {
+	for ( int i = SET_MOVE_DOWN_STOP; i < ENGINE_ACTION_UP_COUNT ; i++ ) {
+		string temp = ENGINE_ACTION_UP_NAMES[i - SET_MOVE_DOWN_STOP];
+		for ( size_t j = 0; j < temp.length(); j++ ) {
 			temp[j] = tolower( temp[j] );
 		}
 		engineActionUpNumber[temp] = i;
 	}
 
 	if ( DEBUG_USER_CONFIG ) {
-		map<string, int>::iterator p;
-
-		p = engineActionUpNumber.begin();
+		map<string, int>::iterator p = engineActionUpNumber.begin();
 		cout << "Engine Action Up list : " << endl;
 		while ( p != engineActionUpNumber.end() ) {
 			cout << " '" << p->first << "' associated to  '" << p->second << "'" << endl;
