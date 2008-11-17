@@ -334,6 +334,8 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 
 bool ScourgeHandler::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == scourge->getBeginChapter() ) {
+		scourge->getSession()->getSound()->stopMusic();
+		scourge->getSDLHandler()->fade( 0, 1, 20 );
 		scourge->endChapterIntro();
 		return false;
 	} else if ( widget == scourge->getReplayIntro() ) {

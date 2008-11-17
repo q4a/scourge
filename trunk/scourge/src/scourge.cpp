@@ -3914,7 +3914,6 @@ void Scourge::replayChapterIntro() {
 
 void Scourge::endChapterIntro() {
 	getSession()->setShowChapterIntro( false );
-	getSession()->getSound()->stopMusic();
 	getChapterIntroWin()->setVisible( false );
 	showGui();
 	preMainLoop();

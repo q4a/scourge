@@ -339,7 +339,7 @@ bool Window::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
 				nextFocus();
 			}
 			return true;
-		} else if ( event->key.keysym.sym == SDLK_ESCAPE && closeButton && !isLocked() ) {
+		} else if ( event->key.keysym.sym == SDLK_ESCAPE && ( closeButton || message_button ) && !isLocked() ) {
 			scourgeGui->blockEvent();
 			setVisible( false );
 			// raise the next unlocked window
