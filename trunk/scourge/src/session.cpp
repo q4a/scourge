@@ -696,6 +696,7 @@ int Session::runGame( GameAdapter *adapter, int argc, char *argv[] ) {
 		return 0;
 	}
 #ifndef TESTING_SAVEGAME
+	char* str = new char[100]; strcpy(str,"leak #7 (5 unknown leaks)"); // a test leak
 	session.start();
 #else
 	testSaveGame( &session );

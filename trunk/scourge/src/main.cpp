@@ -132,10 +132,13 @@ int main( int argc, char *argv[] ) {
 		printf( "Will fallback to hardcoded default path.\n" );
 	}
 
-	UserConfiguration userConfiguration;
+	// Session::runGame() seemingly never returns (so local UserConfiguration leaks). 
+	// static is possibly most safe (no destruction order dependencies).  
+	static UserConfiguration userConfiguration;
 	userConfiguration.loadConfiguration();
 	userConfiguration.parseCommandLine( argc, argv );
 	RedirectIOToConsole();
+	char* str = new char[100]; strcpy(str,"leak #1 (no leaks before)"); // a test leak
 	return Session::runGame( createGameAdapter( &userConfiguration ), argc, argv );
 }
 
