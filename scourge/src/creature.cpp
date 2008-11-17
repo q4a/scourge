@@ -1964,20 +1964,19 @@ void Creature::decideAction() {
     getShape()->setCurrentAnimation( getScriptedAnimation() );
     return;
   }
-  
+
   cerr << "decideAction for " << getName() << endl;
 
   // override from squirrel
   if( SQUIRREL_ENABLED ) {
-  	bool result;
-  	session->getSquirrel()->callBoolMethod( "decideAction", 
-  	                                        session->getSquirrel()->getCreatureRef( this ), 
-  	                                        &result );
-  	if( result ) {
-  		return;
-  	}
+    HSQOBJECT *cref = session->getSquirrel()->getCreatureRef( this );
+    if ( cref ) {
+      bool result;
+      session->getSquirrel()->callBoolMethod( "decideAction", cref, &result );
+      if ( result ) return;
+    }
   }
-  
+
   // This is the AI's decision matrix. On every decision cycle, it is walked
   // top to bottom and collects the max weights between all rows (states) that
   // currently apply to the situation. The result is an array of
