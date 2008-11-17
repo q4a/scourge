@@ -21,6 +21,13 @@
 #include "../util.h"
 #include "virtualshape.h"
 
+// ###### MS Visual C++ specific ###### 
+#if defined(_MSC_VER) && defined(_DEBUG)
+# define new DEBUG_NEW
+# undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif 
+
 using namespace std;
 
 class Map;
@@ -575,7 +582,7 @@ void GLShape::setPauseAnimation ( bool pause ) {
 }
 
 Surface *GLShape::new_surface( float vertices[4][3] ) {
-
+	// FIXME: sometimes this one leaks; possibly connected to leak in addVirtualShape() 
 	Surface *surf = new Surface;
 
 	if ( !surf ) {
@@ -673,6 +680,7 @@ void GLShape::addVirtualShape( int x, int y, int z, int w, int d, int h, bool dr
 	int const TMPLEN = 255;
 	char tmp[TMPLEN];
 	snprintf( tmp, TMPLEN, "%s_%d", getName(), ( int )virtualShapes.size() );
+	// FIXME: sometimes this one leaks; see clearVirtualShapes()... there it's by design
 	GLShape *shape = new VirtualShape( tmp, w, d, h, x, y, z, draws, this, getShapePalIndex() );
 	virtualShapes.push_back( shape );
 }
