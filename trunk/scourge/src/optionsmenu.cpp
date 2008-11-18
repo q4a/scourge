@@ -94,18 +94,10 @@ OptionsMenu::OptionsMenu( Scourge *scourge ) {
 	y += SPACING + MINOR_SPACING;
 	alwaysCenterMapCheckbox = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Always center map" ), GAME_SETTINGS );
 	y += SPACING + MINOR_SPACING;
-	keepMapSize = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Keep zoom when switching layouts" ), GAME_SETTINGS );
-	y += SPACING + MINOR_SPACING;
-	frameOnFullScreen = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Frame map in fullscreen mode" ), GAME_SETTINGS );
-	y += SPACING + MINOR_SPACING;
 	turnBasedBattle = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Is battle turn-based?" ), GAME_SETTINGS );
-	y += SPACING + MINOR_SPACING;
-	ovalCutoutShown = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Shadow overlay?" ), GAME_SETTINGS );
 	y += SPACING + MINOR_SPACING;
 	outlineInteractiveItems = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Outline items?" ), GAME_SETTINGS );
 	y += SPACING + MINOR_SPACING;
-	//alwaysShowPath = cards->createCheckbox(XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Show path in TB battle?" ), GAME_SETTINGS);
-	//y += SPACING + MINOR_SPACING;
 	tooltipEnabled = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Show tooltips" ), GAME_SETTINGS );
 	y += SPACING + MINOR_SPACING;
 	tooltipInterval = new Slider( XPOS, y, XPOS + X_SIZE, scourge->getShapePalette()->getHighlightTexture(), 0, 200, _( "Tooltip Delay:" ) );
@@ -140,21 +132,15 @@ OptionsMenu::OptionsMenu( Scourge *scourge ) {
 	y += SPACING + MINOR_SPACING;
 	fullscreenCheckbox = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Fullscreen" ), VIDEO );
 	y += SPACING + MINOR_SPACING;
-	resizeableCheckbox = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Window resizeable" ), VIDEO );
-	y += SPACING + MINOR_SPACING;
 	doublebufCheckbox  = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use double buffering" ), VIDEO );
 	y += SPACING + MINOR_SPACING;
 	stencilbufCheckbox = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use stencil buffer" ), VIDEO );
 	y += SPACING + MINOR_SPACING;
-	forceHwsurfCheckbox = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Force hardware surfaces" ), VIDEO );
-	y += SPACING + MINOR_SPACING;
-	forceSwsurfCheckbox = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Force software surfaces" ), VIDEO );
-	y += SPACING + MINOR_SPACING;
 	multitexturingCheckbox = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use multitexturing" ), VIDEO );
 	y += SPACING + MINOR_SPACING;
-	hwpalCheckbox   = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use hardware palette" ), VIDEO );
-	y += SPACING + MINOR_SPACING;
 	hwaccelCheckbox = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use hardware acceleration" ), VIDEO );
+	y += SPACING + MINOR_SPACING;
+	anisofilterCheckbox = cards->createCheckbox( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Use anisotropic filtering" ), VIDEO );
 	y += SPACING + MINOR_SPACING;
 	shadowsML = new MultipleLabel( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Shadows" ), 100 );
 	shadowsML -> addText( _( "None" ) );
@@ -180,12 +166,8 @@ void OptionsMenu::loadGameSettings() {
 
 	gameSpeedML->setText( gameSpeedML->getNbText() - uc->getGameSpeedLevel() - 1 );
 	alwaysCenterMapCheckbox->setCheck( uc->getAlwaysCenterMap() );
-	keepMapSize->setCheck( uc->getKeepMapSize() );
-	frameOnFullScreen->setCheck( uc->getFrameOnFullScreen() );
 	turnBasedBattle->setCheck( uc->isBattleTurnBased() );
-	ovalCutoutShown->setCheck( uc->isOvalCutoutShown() );
 	outlineInteractiveItems->setCheck( uc->isOutlineInteractiveItems() );
-//    alwaysShowPath->setCheck(uc->getAlwaysShowPath());
 	musicVolume->setValue( scourge->getUserConfiguration()->getMusicVolume() );
 	effectsVolume->setValue( scourge->getUserConfiguration()->getEffectsVolume() );
 	tooltipEnabled->setCheck( uc->getTooltipEnabled() );
@@ -236,15 +218,12 @@ void OptionsMenu::loadVideo() {
 	shadowsML->setText( uc->getShadows() );
 
 	// Checkboxes
-	fullscreenCheckbox->setCheck( uc -> getFullscreen() );
+	fullscreenCheckbox->setCheck( uc->getFullscreen() );
 	doublebufCheckbox->setCheck( uc->getDoublebuf() );
 	stencilbufCheckbox->setCheck( uc->getStencilbuf() );
-	hwpalCheckbox->setCheck( uc->getHwpal() );
-	resizeableCheckbox->setCheck( uc->getResizeable() );
-	forceHwsurfCheckbox->setCheck( uc->getForce_hwsurf() );
-	forceSwsurfCheckbox->setCheck( uc->getForce_swsurf() );
 	multitexturingCheckbox->setCheck( uc->getMultitexturing() );
 	hwaccelCheckbox->setCheck( uc->getHwaccel() );
+	anisofilterCheckbox->setCheck( uc->getAnisoFilter() );
 }
 
 void OptionsMenu::setSelectedMode() {
@@ -295,28 +274,18 @@ bool OptionsMenu::handleEvent( Widget *widget, SDL_Event *event ) {
 		selectedMode = AUDIO;
 	} else if ( widget == controlsButton ) {
 		selectedMode = CONTROLS;
-	} else if ( widget == changeControlButton ) { // && selectedMode== Controls?
-		//   waitingLabel->setText("Waiting for new key ... Press ESCAPE to cancel");
+	} else if ( widget == changeControlButton ) {
 		changeControlButton->setLabel( Constants::getMessage( Constants::WAITING_FOR_KEY ) );
 		waitingForNewKey = true;
 	} else if ( widget == gameSpeedML ) {
 		uc -> setGameSpeedLevel( gameSpeedML->getNbText() - gameSpeedML->getCurrentTextInd() - 1 );
 	} else if ( widget == alwaysCenterMapCheckbox ) {
 		uc -> setAlwaysCenterMap( alwaysCenterMapCheckbox->isChecked() );
-	} else if ( widget == keepMapSize ) {
-		uc ->setKeepMapSize( keepMapSize->isChecked() );
-	} else if ( widget == frameOnFullScreen ) {
-		uc ->setFrameOnFullScreen( frameOnFullScreen->isChecked() );
 	} else if ( widget == turnBasedBattle ) {
 		uc ->setBattleTurnBased( turnBasedBattle->isChecked() );
 		scourge->getTBCombatWin()->setVisible( scourge->inTurnBasedCombat(), false );
-	} else if ( widget == ovalCutoutShown ) {
-		uc ->setOvalCutoutShown( ovalCutoutShown->isChecked() );
 	} else if ( widget == outlineInteractiveItems ) {
 		uc ->setOutlineInteractiveItems( outlineInteractiveItems->isChecked() );
-	} else if ( widget == alwaysShowPath ) {
-		uc ->setAlwaysShowPath( alwaysShowPath->isChecked() );
-		//scourge->setShowPath(alwaysShowPath->isChecked());
 	} else if ( widget == tooltipEnabled ) {
 		uc ->setTooltipEnabled( tooltipEnabled->isChecked() );
 		if ( !( uc ->getTooltipEnabled() ) ) scourge->resetInfos();
@@ -336,43 +305,17 @@ bool OptionsMenu::handleEvent( Widget *widget, SDL_Event *event ) {
 		uc-> setW( atoi( s1.c_str() ) );
 		uc-> setH( atoi( s2.c_str() ) );
 	} else if ( widget == fullscreenCheckbox ) {
-		// if fullscreen checked -> not resizeable
-		if ( fullscreenCheckbox->isChecked() ) {
-			resizeableCheckbox->setCheck( false );
-			uc->setResizeable( false );
-		}
 		uc->setFullscreen( fullscreenCheckbox->isChecked() );
-	} else if ( widget == resizeableCheckbox ) {
-		// if resizeable checked -> not fullscreen
-		if ( resizeableCheckbox->isChecked() ) {
-			fullscreenCheckbox->setCheck( false );
-			uc->setFullscreen( false );
-		}
-		uc->setResizeable( resizeableCheckbox->isChecked() );
 	} else if ( widget == doublebufCheckbox ) {
 		uc->setDoublebuf( doublebufCheckbox->isChecked() );
-	} else if ( widget == hwpalCheckbox ) {
-		uc->setHwpal( hwpalCheckbox->isChecked() );
-	} else if ( widget == forceSwsurfCheckbox ) {
-		// Hardware or software surfaces but not both
-		if ( forceSwsurfCheckbox->isChecked() ) {
-			forceHwsurfCheckbox->setCheck( false );
-			uc->setForce_hwsurf( false );
-		}
-		uc->setForce_swsurf( forceSwsurfCheckbox->isChecked() );
-	} else if ( widget == forceHwsurfCheckbox ) {
-		// Hardware or software surfaces but not both
-		if ( forceHwsurfCheckbox->isChecked() ) {
-			forceSwsurfCheckbox->setCheck( false );
-			uc->setForce_swsurf( false );
-		}
-		uc->setForce_hwsurf( forceHwsurfCheckbox->isChecked() );
 	} else if ( widget == hwaccelCheckbox ) {
 		uc->setHwaccel( hwaccelCheckbox->isChecked() );
 	} else if ( widget == stencilbufCheckbox ) {
 		uc->setStencilbuf( stencilbufCheckbox->isChecked() );
 	} else if ( widget == multitexturingCheckbox ) {
 		uc->setMultitexturing( multitexturingCheckbox->isChecked() );
+	} else if ( widget == anisofilterCheckbox ) {
+		uc->setAnisoFilter( anisofilterCheckbox->isChecked() );
 	} else if ( widget == shadowsML ) {
 		uc->setShadows( shadowsML->getCurrentTextInd() );
 	} else if ( widget == closeButton ) {
@@ -424,7 +367,6 @@ bool OptionsMenu::handleEvent( SDL_Event *event ) {
 				controlBindingsList->setLine( ind, s1 + "           " + s2 );
 				controlBindingsList->setSelectedLine( ind );
 			} else ignoreKeyUp = true;
-			//waitingLabel->setText(" ");
 			changeControlButton->setLabel( Constants::getMessage( Constants::CHANGE_KEY ) );
 			waitingForNewKey = false;
 		} else {
@@ -457,4 +399,3 @@ void OptionsMenu::show() {
 void OptionsMenu::hide() {
 	mainWin->setVisible( false );
 }
-

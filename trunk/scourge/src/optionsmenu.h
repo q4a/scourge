@@ -70,12 +70,8 @@ private:
 
 	MultipleLabel * gameSpeedML;
 	Checkbox * alwaysCenterMapCheckbox;
-	Checkbox * keepMapSize;
-	Checkbox * frameOnFullScreen;
 	Checkbox * turnBasedBattle;
-	Checkbox *ovalCutoutShown;
 	Checkbox *outlineInteractiveItems;
-	Checkbox * alwaysShowPath;
 	Checkbox *tooltipEnabled;
 	Slider *tooltipInterval;
 	MultipleLabel * logLevelML;
@@ -84,13 +80,10 @@ private:
 	MultipleLabel * videoResolutionML;
 	Checkbox * fullscreenCheckbox;
 	Checkbox * doublebufCheckbox;
-	Checkbox * hwpalCheckbox;
-	Checkbox * resizeableCheckbox;
-	Checkbox * forceHwsurfCheckbox;
-	Checkbox * forceSwsurfCheckbox;
 	Checkbox * hwaccelCheckbox;
 	Checkbox * stencilbufCheckbox;
 	Checkbox * multitexturingCheckbox;
+	Checkbox * anisofilterCheckbox;
 	MultipleLabel * shadowsML;
 
 	CardContainer *cards;
@@ -110,7 +103,6 @@ public:
 
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
-	//inline void show() { mainWin->setVisible(true); }
 	void show();
 	void hide();
 	inline bool isVisible() {
