@@ -176,13 +176,13 @@ function drawEffects() {
 // ***********************************************************
 
 
-
+game_end_pause <- 8000
 
 function startGameEndMovie() {
 	scourgeGame.setMovieMode( true );
 	scourgeGame.setInterruptFunction( "gameEndMovieInterrupt" )
 
-	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 30, 0.8, 4500 );
+	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 30, 0.8, game_end_pause - 500 );
 	
 	c1 <- findCreatureByType( "Norill" );
 	if( c1 != null ) {
@@ -202,22 +202,73 @@ function startGameEndMovie() {
 	
 	player <- scourgeGame.getPartyMember( 0 );
 	player.moveTo( 325, 448 );
-	player.say( _( "The clouds part and the sun shines again... NOT FINAL TEXT" ) );
+	player.say( _( "The demon was vanquished with the aid of the Guardians of the Realm!" ) );
 	
-	scourgeGame.continueAt( "gameEndPart2", 5000 );
+	scourgeGame.continueAt( "gameEndPart2", game_end_pause );
 }
 
 function gameEndPart2() {
+	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 30, 0.8, game_end_pause - 600 );
+	player <- scourgeGame.getPartyMember( 0 );
+	player.say( _( "...and yet I feel it will take another century for the stench of corruption to leave this place." ) );
+	scourgeGame.continueAt( "gameEndPart3", game_end_pause );
+}
+
+function gameEndPart3() {
+	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 35, 0.82, game_end_pause - 600 );
+	player <- scourgeGame.getPartyMember( 0 );
+	player.say( _( "I sense a foreboding that the events that occured here are just the beginning of another tale..." ) );
+	scourgeGame.continueAt( "gameEndPart4", game_end_pause );
+}
+
+function gameEndPart4() {
+	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 40, 0.84, game_end_pause - 600 );
 	karzul <- findCreatureByType( "Karzul Agmordexu" );
-	karzul.say( _( "Curse you!... NOT FINAL TEXT" ) );	
-	scourgeGame.continueAt( "gameEndPartLast", 5000 );
+	karzul.say( _( "Yes mortal... you bested me in your realm. For this you deserve my admiration. Not many can claim victory over Karzul the mighty..." ) );	
+	scourgeGame.continueAt( "gameEndPart5", game_end_pause );
+}
+
+function gameEndPart5() {
+	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 45, 0.86, game_end_pause - 600 );
+	karzul <- findCreatureByType( "Karzul Agmordexu" );
+	karzul.say( _( "However with great deeds come great responsibilities. For know that my spirit is immortal. You have thwarted my designs on your realm, a fact I did not foresee..." ) );	
+	scourgeGame.continueAt( "gameEndPart6", game_end_pause );
+}
+
+function gameEndPart6() {
+	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 50, 0.88, game_end_pause - 600 );
+	karzul <- findCreatureByType( "Karzul Agmordexu" );
+	karzul.say( _( "Rest now mortal and I will see you soon enough... I will leave you with a question to ponder until we meet again:" ) );	
+	scourgeGame.continueAt( "gameEndPart7", game_end_pause );
+}
+
+function gameEndPart7() {
+	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 55, 0.9, game_end_pause - 600 );
+	karzul <- findCreatureByType( "Karzul Agmordexu" );
+	karzul.say( _( "With your precious Guardians gone... who will you hide behind the next time we meet?" ) );	
+	scourgeGame.continueAt( "gameEndPart8", game_end_pause );
+}
+
+function gameEndPart8() {
+	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 60, 0.92, game_end_pause - 600 );
+	rolan <- findCreatureByType( "Rolan" );
+	rolan.say( _( "Begone fiend! Naught have you become, bringer of ails as of naught you were conceived in your cold lair of void." ) );	
+	scourgeGame.continueAt( "gameEndPart9", game_end_pause );
+}
+
+function gameEndPart9() {
+	scourgeGame.moveCamera( ch12_x, ch12_y, 0, 0, 50, 65, 0.94, game_end_pause - 600 );
+	rolan <- findCreatureByType( "Rolan" );
+	rolan.say( _( "Pay no heed to that chaotic windbag! Celebrate instead for the land has new heroes tonight: ...you!" ) );	
+	scourgeGame.continueAt( "gameEndPartLast", game_end_pause );
 }
 
 function gameEndPartLast() {
 	scourgeGame.setMovieMode( false );
-	scourgeGame.getMission().setCompleted( true );	
+	scourgeGame.getMission().setCompleted( true );
+	scourgeGame.showTextMessage( _( "You notice the sun rising in the east. Around you the land slowly wakes, unaware of the catastrophy the most unlikely heroes have just averted. Truly you are heroes of lesser renown.||The demon's corpse disintegrates in front of your eyes. Its corrupted flesh becomes sand which the wind quickly scatters.||The monastery's walls stand like quiet sentinels, the aged stones showing no understanding of the monks' sins finally atoned.||As promised, the Guardians depart without another word.||Congratulations! You have completed the game!" ) );
 }
 
 function gameEndMovieInterrupt() {
-	scourgeGame.getMission().setCompleted( true );
+	gameEndPartLast();
 }
