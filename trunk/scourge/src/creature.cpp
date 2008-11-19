@@ -32,7 +32,7 @@
 
 using namespace std;
 
-#define DEBUG_CREATURE_AI 1
+//#define DEBUG_CREATURE_AI 1
 
 //#define DEBUG_INVENTORY 1
 
@@ -1965,8 +1965,6 @@ void Creature::decideAction() {
     return;
   }
 
-  cerr << "decideAction for " << getName() << endl;
-
   // override from squirrel
   if( SQUIRREL_ENABLED ) {
     HSQOBJECT *cref = session->getSquirrel()->getCreatureRef( this );
@@ -3802,13 +3800,13 @@ Creature *Creature::summonCreature( bool friendly ) {
 	} else {
 		Monster *monster = Monster::getRandomMonster( Util::pickOne( (int)( getLevel() * 0.5f ), (int)( getLevel() * 0.75f ) ) );
 		if( monster ) {
-			creature = doSummon( monster, toint( getX() ), toint( getY() ), 0, friendly );
+			creature = doSummon( monster, toint( getX() ), toint( getY() ), 0, 0, friendly );
 		}
 	}
 	return creature;
 }
 
-Creature *Creature::doSummon( Monster *monster, int cx, int cy, int cz, bool friendly ) {
+Creature *Creature::doSummon( Monster *monster, int cx, int cy, int ex, int ey, bool friendly ) {
 	GLShape *shape = session->getShapePalette()->
 	                 getCreatureShape( monster->getModelName(),
 	                                   monster->getSkinName(),
@@ -3832,8 +3830,14 @@ Creature *Creature::doSummon( Monster *monster, int cx, int cy, int cz, bool fri
 		session->getSquirrel()->registerItem( creature->getBackpackItem( i ) );
 	}
 
-	int x, y;
-	creature->findPlace( cx, cy, &x, &y );
+	if( ex > 0 ) {
+		int x, y;
+		creature->findPlace( cx, cy, &x, &y );
+	} else {
+		creature->findPlaceBounded( cx, cy, ex, ey );
+		cerr << "*** warning: unable to place summoned creature." << endl;
+		return NULL;
+	}
 	creature->startEffect( Constants::EFFECT_TELEPORT, ( Constants::DAMAGE_DURATION * 4 ) );
 	
 	char message[200];
@@ -3843,8 +3847,25 @@ Creature *Creature::doSummon( Monster *monster, int cx, int cy, int cz, bool fri
 	return creature;
 }
 
+void Creature::dismissSummonedCreatures() {
+	while( summoned.size() > 0 ) {
+		Creature *c = summoned[0];
+		c->dismissSummonedCreature();
+	}
+}
+
 void Creature::dismissSummonedCreature() {
 	if( isSummoned() ) {
+		// remove from summoner's list
+		for( vector<Creature*>::iterator e = getSummoner()->getSummoned()->begin(); e != getSummoner()->getSummoned()->end(); ++e ) { 
+			Creature *c = *e;
+			if( c == this ) {
+				getSummoner()->getSummoned()->erase( e );
+				break;
+			}
+		}
+		setSummoner( NULL );
+		
 		// remove from the map; the object will be cleaned up at the end of the mission
 		session->getMap()->removeCreature( toint( getX() ), toint( getY() ), toint( getZ() ) );
 		setStateMod( StateMod::dead, true );

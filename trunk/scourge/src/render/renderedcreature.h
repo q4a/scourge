@@ -149,8 +149,7 @@ public:
 	}
 
 	virtual void findPlace( int x, int y, int *finalX = NULL, int *finalY = NULL );
-	virtual void findPlace_old( int x, int y, int *finalX = NULL, int *finalY = NULL );
-
+	virtual bool findPlaceBounded( int sx, int sy, int ex, int ey );
 
 protected:
 	bool doFindStart( int *startx, int *starty );

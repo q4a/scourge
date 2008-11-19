@@ -491,19 +491,23 @@ int SqCreature::_startConversationAbout( HSQUIRRELVM vm ) {
 }
 
 int SqCreature::_summon( HSQUIRRELVM vm ) {
-	GET_INT( z )
-	GET_INT( y )
-	GET_INT( x )
+	GET_INT( ey )
+	GET_INT( ex )
+	GET_INT( sy )
+	GET_INT( sx )
 	GET_STRING( creatureType, 200 )
 	GET_OBJECT( Creature* )
-	//Creature *c = SqBinding::sessionRef->addCreatureFromScript( creatureType, toint( object->getX() ), toint( object->getY() ) );
 	Monster *monster = Monster::getMonsterByName( creatureType );
 	if ( !monster ) {
 		cerr << "*** Error: no monster named " << creatureType << endl;
 		sq_pushnull( vm );
 	} else {
-		Creature *c = object->doSummon( monster, x, y, z );
-		sq_pushobject( vm, *( SqBinding::binding->creatureMap[ c ] ) );
+		Creature *c = object->doSummon( monster, sx, sy, ex, ey );
+		if( c ) {
+			sq_pushobject( vm, *( SqBinding::binding->creatureMap[ c ] ) );
+		} else {
+			sq_pushnull( vm );
+		}
 	}
 	return 1;
 }

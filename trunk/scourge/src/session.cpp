@@ -540,13 +540,15 @@ Creature *Session::getRandomNearbyGoodGuy( int x, int y, int w, int h, int radiu
 }
 
 void Session::creatureDeath( Creature *creature ) {
-
 	bool result;
 	squirrel->callBoolMethod( "creatureDeath",
 	                          squirrel->getCreatureRef( creature ),
 	                          &result );
 	// FIXME: not used currently
 	//if( !result ) return;
+	
+	// dismiss summoned creatures
+	creature->dismissSummonedCreatures();	
 	
 	if ( creature == party->getPlayer() ) {
 		party->switchToNextLivePartyMember();

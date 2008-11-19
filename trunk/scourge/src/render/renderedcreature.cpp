@@ -86,7 +86,22 @@ void RenderedCreature::removeRecentDamage( int i ) {
 	recentDamagesCount--;
 }
 
+// use this for small bounded areas
+bool RenderedCreature::findPlaceBounded( int startx, int starty, int endx, int endy ) {
+	for( int x = startx; x < endx; x++ ) {
+		for( int y = starty; y < endy; y++ ) {
+			if ( levelMap->canFit( x, y, getShape() ) ) {
+				moveTo( x, y, 0 );
+				setSelXY( x, y );
+				levelMap->setCreature( x, y, 0, this );
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
+// use this for large areas
 void RenderedCreature::findPlace( int startx, int starty, int *finalX, int *finalY ) {
 	int fx = 0;
 	int fy = 0;
@@ -197,67 +212,6 @@ bool RenderedCreature::doFindPlace( int startx, int starty, int *finalX, int *fi
 }
 
 
-
-/**
- * This can be a pretty slow method...
- */
-#define FIND_PLACE_LIMIT 100
-
-void RenderedCreature::findPlace_old( int startx, int starty, int *finalX, int *finalY ) {
-	int dir = Constants::MOVE_UP;
-	int ox = startx;
-	int oy = starty;
-	int xx = ox;
-	int yy = oy;
-	int r = 6;
-
-	if ( finalX ) *finalX = -1;
-	if ( finalY ) *finalY = -1;
-
-	// it assumes there is free space "somewhere" on this map...
-	map<int, bool> seen;
-	for ( int count = 0; count < FIND_PLACE_LIMIT; count++ ) {
-		seen.clear();
-
-		// can player fit here?
-		if ( levelMap->canFit( xx, yy, getShape() ) &&
-		        canReach( startx, starty, startx, starty, xx, yy, &seen ) ) {
-			//cerr << "Placed party member: " << t << " at: " << xx << "," << yy << endl;
-			moveTo( xx, yy, 0 );
-			setSelXY( xx, yy );
-			levelMap->setCreature( xx, yy, 0, this );
-
-			if ( finalX ) *finalX = xx;
-			if ( finalY ) *finalY = yy;
-
-			return;
-		}
-		//if( seen.size() ) cerr << "seen size=" << seen.size() << " pos=" << xx << "," << yy << " r=" << r << endl;
-
-		// try radially around the player
-		switch ( dir ) {
-		case Constants::MOVE_UP:
-			yy--;
-			if ( yy <= MAP_OFFSET || abs( oy - yy ) > r ) dir = Constants::MOVE_RIGHT;
-			break;
-		case Constants::MOVE_RIGHT:
-			xx++;
-			if ( xx >= MAP_WIDTH - MAP_OFFSET || abs( ox - xx ) > r ) dir = Constants::MOVE_DOWN;
-			break;
-		case Constants::MOVE_DOWN:
-			yy++;
-			if ( yy >= MAP_DEPTH - MAP_OFFSET || abs( oy - yy ) > r ) dir = Constants::MOVE_LEFT;
-			break;
-		case Constants::MOVE_LEFT:
-			xx--;
-			if ( xx <= MAP_OFFSET || abs( ox - xx ) > r ) {
-				dir = Constants::MOVE_UP;
-				r += getShape()->getWidth();
-			}
-			break;
-		}
-	}
-}
 
 /**
  *  This method makes sure that players are not placed outside of walls

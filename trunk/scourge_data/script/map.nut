@@ -100,6 +100,14 @@ function decideAction( creature ) {
 				// heal self via the conduit
 				scourgeGame.printMessage( _( "Karzul uses his infernal conduit and heals his wounds!" ) );
 				creature.setHp( creature.getHp() + ( rand() * 50.0 / RAND_MAX ).tointeger() );
+				scourgeGame.getMission().setMapEffect( creature.getX(), creature.getY(), 3, // map location 
+				                                       "EFFECT_TELEPORT",  												// effect 
+				                                       4, 4, 																	// base size
+				                                       0,																			// delay
+				                                       false,																	// forever 
+				                                       0, 0, 0, 														// offset
+				                                       1.0, 0.05, 0.25 														// color
+																							);
 				
 				i <- 0;
 				minion_count <- 0;
@@ -120,7 +128,7 @@ function decideAction( creature ) {
 					// fixme: should count number of helpers
 					scourgeGame.printMessage( _( "Karzul commands his minions to surge forth and destroy his attackers!" ) );
 					for( i = 0; i < max_minion_count - minion_count; i++ ) {
-						minion = creature.summon( minion_type, 320, 448, 0 );
+						minion = creature.summon( minion_type, 304, 433, 351, 464 );
 						print( "new minion at: " + minion.getX().tostring() + "," + minion.getY().tostring() + "\n");
 					}
 				}
