@@ -70,6 +70,8 @@ ScriptClassMemberDecl SqGame::members[] = {
 	{ "void", "addVirtualShape", SqGame::_addVirtualShape, 0, 0, "Add a virtual shape." },
 	{ "void", "clearVirtualShapes", SqGame::_clearVirtualShapes, 0, 0, "Clear all virtual shapes." },
 	{ "void", "ascendToSurface", SqGame::_ascendToSurface, 0, 0, "Return party to the surface level of the current mission." },
+	{ "void", "setWeather", SqGame::_setWeather, 0, 0, "Set the weather. Outdoors only." },
+	{ "void", "getWeather", SqGame::_getWeather, 0, 0, "Get the weather. Outdoors only." },
 	{ 0, 0, 0, 0, 0 } // terminator
 };
 SquirrelClassDecl SqGame::classDecl = { SqGame::className, 0, members,
@@ -403,4 +405,16 @@ int SqGame::_clearVirtualShapes( HSQUIRRELVM vm ) {
 int SqGame::_ascendToSurface( HSQUIRRELVM vm ) {
 	SqBinding::sessionRef->getGameAdapter()->ascendToSurface( NULL );
 	return 0;
+}
+
+int SqGame::_setWeather( HSQUIRRELVM vm ) {
+	GET_INT( w )
+	SqBinding::sessionRef->getMap()->setWeather( w );
+	return 0;
+}
+
+int SqGame::_getWeather( HSQUIRRELVM vm ) {
+	int w = SqBinding::sessionRef->getMap()->getWeather();
+	sq_pushinteger( vm, w );
+	return 1;
 }

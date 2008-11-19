@@ -25,6 +25,12 @@ MD2_DEATH1 <- 17;
 MD2_DEATH2 <- 18;
 MD2_DEATH3 <- 19;
 
+// weather constants
+WEATHER_CLEAR <- 0
+WEATHER_RAIN <- 1
+WEATHER_THUNDER <- 2
+WEATHER_FOG <- 4
+
 // Called when entering map (before pressing ok)
 function enterMap( mapName ) {
   print( "Welcome to S.C.O.U.R.G.E.: Heroes of Lesser Renown\n" );
@@ -754,6 +760,8 @@ function initChapter12() {
 					rolan = findCreatureByType( "Rolan" );
 				}			
 				scourgeGame.getMission().addCreature( 332,416, 0, "Rolan" );
+				
+				scourgeGame.setWeather( WEATHER_RAIN | WEATHER_THUNDER );
 	
 				scourgeGame.showTextMessage( _( "Under the pale sky like the blackened husk of a burned tree stands the demon. He calmly awaits your charge fully aware of its futility.||But a red streak lines the mountain tops to the east... is it dawn? Or is it a sign of hope from the gods? Looking around you notice you are no longer alone on the charred battlefield. Three tall warriors in archaic clothing appear as if from nowhere. The tallest one - their leader? - silently bows his head to you.||After this briefest of courtesies, he turns to face Karzul with a steely resolve." ) );
 			}
