@@ -179,6 +179,7 @@ function drawEffects() {
 game_end_pause <- 8000
 
 function startGameEndMovie() {
+	scourgeGame.setWeather( WEATHER_CLEAR );
 	scourgeGame.setMovieMode( true );
 	scourgeGame.setInterruptFunction( "gameEndMovieInterrupt" )
 

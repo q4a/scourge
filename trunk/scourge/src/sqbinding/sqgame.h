@@ -109,7 +109,9 @@ public:
 	static int _addVirtualShape( HSQUIRRELVM vm );
 	static int _clearVirtualShapes( HSQUIRRELVM vm );
 	
-	static int _ascendToSurface( HSQUIRRELVM vm );	
+	static int _ascendToSurface( HSQUIRRELVM vm );
+	static int _setWeather( HSQUIRRELVM vm );
+	static int _getWeather( HSQUIRRELVM vm );	
 };
 
 #endif
