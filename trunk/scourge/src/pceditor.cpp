@@ -571,9 +571,7 @@ void PcEditor::createUI() {
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 	cards->addWidget( new Label( secondColStart, 50,
-	                             _( "At times on your journey you may be reduced to nothing but a prayer. \
-	                                Therefore it is important to keep in mind to whom such requests are directed. Given below is a list \
-	                                of known deities of the land with a brief description for each." ),
+	                             _( "At times on your journey you may be reduced to nothing but a prayer. |Therefore it is important to keep in mind to whom such requests are directed. Given below is a list of known deities of the land with a brief description for each." ),
 	                             TEXT_WIDTH ),
 	                  DEITY_TAB );
 
