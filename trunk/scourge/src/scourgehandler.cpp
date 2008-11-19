@@ -792,10 +792,10 @@ void ScourgeHandler::saveScreenshot() {
 
     if ( !Constants::checkFile( path, image.str() ) ) {
       cerr << "Saving screenshot: " << imagefile << endl;
-      scourge->getSDLHandler()->saveScreen( imagefile );
       char tmp[255];
       snprintf( tmp, 256, _( "Saving screenshot to %s." ), image.str().c_str() );
-      scourge->getDescriptionScroller()->writeLogMessage( tmp, Constants::MSGTYPE_SYSTEM, Constants::LOGLEVEL_FULL );
+      scourge->getDescriptionScroller()->writeLogMessage( tmp, Constants::MSGTYPE_SYSTEM );
+      scourge->getSDLHandler()->saveScreen( imagefile );
       break;
     }
 
