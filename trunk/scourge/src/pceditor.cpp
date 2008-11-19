@@ -703,7 +703,7 @@ void PcEditor::drawWidgetContents( Widget *w ) {
 		glDisable( GL_BLEND );
 		glDepthMask( GL_TRUE );
 		glEnable( GL_TEXTURE_2D );
-		glTranslatef( 130, MODEL_SIZE + 10, 500 );
+		glTranslatef( 105, MODEL_SIZE + 10, 500 );
 		glRotatef( 90, 1, 0, 0 );
 		glRotatef( 180, 0, 0, 1 );
 		glScalef( 2, 2, 2 );
