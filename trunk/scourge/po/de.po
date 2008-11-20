@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-11-19 16:38+0100\n"
-"PO-Revision-Date: 2008-11-19 17:41+0100\n"
+"POT-Creation-Date: 2008-11-20 20:37+0100\n"
+"PO-Revision-Date: 2008-11-20 20:40+0100\n"
 "Last-Translator: Dennis Murczak <dmurczak@versanet.de>\n"
 "Language-Team: German <kde-i18n-de@lists.kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -1540,50 +1540,50 @@ msgstr ""
 "\t--run-tests [path] - Interne Tests der RPG-Engine durchführen und Ergebnis "
 "als HTML-Datei in $path speichern\n"
 
-#: src/userconfiguration.cpp:933
+#: src/userconfiguration.cpp:935
 #, c-format
 msgid "\t--version - print the build version\n"
 msgstr "\t--version - Build-Version ausgeben\n"
 
-#: src/userconfiguration.cpp:934
+#: src/userconfiguration.cpp:936
 #, c-format
 msgid "\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n"
 msgstr "\t--bppXX - Zu verwendende Farbtiefe: (8,15,16,24,32) bpp\n"
 
-#: src/userconfiguration.cpp:935
+#: src/userconfiguration.cpp:937
 #, c-format
 msgid "\t--widthXX - use XX pixels for the screen width\n"
 msgstr "\t--widthXX - Horizontale Bildschirmauflösung\n"
 
-#: src/userconfiguration.cpp:936
+#: src/userconfiguration.cpp:938
 #, c-format
 msgid "\t--heightXX - use XX pixels for the screen height\n"
 msgstr "\t--heightXX - Vertikale Bildschirmauflösung\n"
 
-#: src/userconfiguration.cpp:937
+#: src/userconfiguration.cpp:939
 #, c-format
 msgid ""
 "\t--shadowX - shadow's cast by: 0-nothing, 1-objects and creatures, 2-"
 "everything\n"
 msgstr "\t--shadowX - Schatten: 0-Keine, 1-Objekte/Kreaturen, 2-Alle\n"
 
-#: src/userconfiguration.cpp:938
+#: src/userconfiguration.cpp:940
 #, c-format
 msgid "\t--themeXYZ - use gui theme XYZ to draw the ui.\n"
 msgstr "\t--themeXYZ - Angegebenes GUI-Theme verwenden.\n"
 
-#: src/userconfiguration.cpp:939
+#: src/userconfiguration.cpp:941
 #, c-format
 msgid "\t--debugtheme - use the debug theme only to for wall textures.\n"
 msgstr "\t--debugtheme - Debug-Theme verwenden.\n"
 
-#: src/userconfiguration.cpp:940
+#: src/userconfiguration.cpp:942
 #, c-format
 msgid "\t--flaky - disable some graphic effects for flaky video cards.\n"
 msgstr ""
 "\t--flaky - Schaltet auf inkompatiblen Grafikkarten einige Effekte ab.\n"
 
-#: src/userconfiguration.cpp:941
+#: src/userconfiguration.cpp:943
 #, c-format
 msgid ""
 "\n"
@@ -1614,17 +1614,17 @@ msgstr ""
 "\tHöchste Einstellung für Schatten.\n"
 "\n"
 
-#: src/userconfiguration.cpp:943
+#: src/userconfiguration.cpp:950
 #, c-format
 msgid "Multiplayer options:\n"
 msgstr "Multiplayer-Optionen:\n"
 
-#: src/userconfiguration.cpp:944
+#: src/userconfiguration.cpp:951
 #, c-format
 msgid "\t--serverPORT - run a standalone server w/o a ui on PORT\n"
 msgstr "\t--serverPORT - Standalone-Server ohne GUI auf PORT laufen lassen\n"
 
-#: src/userconfiguration.cpp:945
+#: src/userconfiguration.cpp:952
 #, c-format
 msgid ""
 "\t--clientHOST:PORT,USERNAME - run a standalone admin client w/o a ui. "
@@ -1633,12 +1633,12 @@ msgstr ""
 "\t--clientHOST:PORT,USERNAME - Standalone-Adminclient ohne GUI laufen "
 "lassen. Verbinde zu HOST:PORT als USERNAME.\n"
 
-#: src/userconfiguration.cpp:948
+#: src/userconfiguration.cpp:957
 #, c-format
 msgid "Sound options:\n"
 msgstr "Sound-Optionen:\n"
 
-#: src/userconfiguration.cpp:949
+#: src/userconfiguration.cpp:958
 #, c-format
 msgid "\t--nosound - run without sound\n"
 msgstr "\t--nosound - Ohne Sound starten\n"
@@ -1705,15 +1705,15 @@ msgstr ""
 "Wie lautet Euer Name, oh großer Held? Gebt ihn hier ein, aber entscheidet "
 "weise! Ihr werdet ihn später nicht mehr ändern können."
 
-#: src/pceditor.cpp:483 src/portrait.cpp:230
+#: src/pceditor.cpp:484 src/portrait.cpp:230
 msgid "Male"
 msgstr "Männl."
 
-#: src/pceditor.cpp:484 src/portrait.cpp:230
+#: src/pceditor.cpp:485 src/portrait.cpp:230
 msgid "Female"
 msgstr "Weibl."
 
-#: src/pceditor.cpp:488
+#: src/pceditor.cpp:489
 msgid ""
 "Select the sex of your hero. Besides some visual effects, it has no other "
 "impact on game mechanics."
@@ -1721,11 +1721,11 @@ msgstr ""
 "Wählt das Geschlecht Eures Helden. Abgesehen von einigen grafischen Effekten "
 "wird sich das nicht weiter auf das Spiel auswirken."
 
-#: src/pceditor.cpp:495
+#: src/pceditor.cpp:497
 msgid "Profession:"
 msgstr "Profession:"
 
-#: src/pceditor.cpp:499
+#: src/pceditor.cpp:501
 msgid ""
 "Which starting profession most closely resembles your hero? Your character "
 "will evolve into a more powerful and refined practicer of the chosen art. "
@@ -1737,44 +1737,43 @@ msgstr ""
 "weiterentwickeln. Unten ist eine kurze Beschreibung der Stärken und "
 "Schwächen der verschiedenen Professionen."
 
-#: src/pceditor.cpp:523
+#: src/pceditor.cpp:528
 msgid "Statistics:"
 msgstr "Statistiken:"
 
-#: src/pceditor.cpp:553
+#: src/pceditor.cpp:558
 msgid "Points Remaining:"
 msgstr "Verbleibende Punkte:"
 
-#: src/pceditor.cpp:557
+#: src/pceditor.cpp:562
 msgid "Reroll"
 msgstr "Neu würfeln"
 
-#: src/pceditor.cpp:570
+#: src/pceditor.cpp:575
 msgid "Patron Deity:"
 msgstr "Schutzgottheit:"
 
-#: src/pceditor.cpp:574
+#: src/pceditor.cpp:579
 msgid ""
-"At times on your journey you may be reduced to nothing but a prayer. |"
+"At times on your journey you may be reduced to nothing but a prayer.|"
 "Therefore it is important to keep in mind to whom such requests are "
 "directed. Given below is a list of known deities of the land with a brief "
 "description for each."
 msgstr ""
-"Manchmal wird auf Euren Reisen nichts als ein Gebet von Euch bleiben. |Es "
-"ist daher wichtig, im Auge zu behalten, an wen sich Eure Bitten richten. "
-"Unten befindet sich eine Liste der bekannten Gottheiten des Landes mit "
-"jeweils einer kurzen Beschreibung."
+"Manchmal wird auf Euren Reisen nichts als ein Gebet von Euch bleiben.|Es ist "
+"daher wichtig, im Auge zu behalten, an wen sich Eure Bitten richten. Unten "
+"befindet sich eine Liste der bekannten Gottheiten des Landes mit jeweils "
+"einer kurzen Beschreibung."
 
-#: src/pceditor.cpp:599
+#: src/pceditor.cpp:607
 msgid "Appearance:"
 msgstr "Aussehen:"
 
-#: src/pceditor.cpp:603
+#: src/pceditor.cpp:611
 msgid ""
-"You may now choose a portrait and a character model "
-"\t                                to represent your hero. Your appearance is "
-"only a matter of personal choice, it will \t                                "
-"not affect the game in any way."
+"You may now choose a portrait and a character model to represent your hero. "
+"Your appearance is only a matter of personal choice, it will not affect the "
+"game in any way."
 msgstr ""
 "Ihr könnt jetzt ein Porträt und ein Modell wählen, das Euren Helden "
 "repräsentiert. Euer Aussehen ist eine persönliche Geschmacksfrage, es wird "
@@ -7712,7 +7711,7 @@ msgstr ""
 "Versagens... werde ich Euch auffordern müssen, Eure Leben (oder hieß es "
 "Seelen?) der Verteidigung der Gerechtigkeit, der Freiheit und des gesunden "
 "Verstandes zu verschreiben.||Es tut mir sehr leid, dass es so weit kommen "
-"musste, aber die $Inhaber möchten Blut sehen. Irgendjemandes Blut... und da "
+"musste, aber die Inhaber möchten Blut sehen. Irgendjemandes Blut... und da "
 "unsere Welt, falls Ihr Karzul nicht besiegt, mit höchster Wahrscheinlichkeit "
 "einem ziemlich plötzlichen - und ich fürchte auch endgültigen - Ende "
 "entgegensehen wird, könnt Ihr ebenso gut seine höllischen Lakaien bis zum "
@@ -8700,32 +8699,32 @@ msgstr ""
 "Die Präsenz dieses Stabes trifft Euch wie ein plötzlicher, kalter Windstoß. "
 "Eine seltsame Stimme flüstert chaotische Botschaften in Euer Ohr."
 
-#: ../scourge_data/config/magicitem.cfg:82
+#: ../scourge_data/config/magicitem.cfg:83
 msgid "The wand of the Secret Flame"
 msgstr "Stab der Heimlichen Flamme"
 
-#: ../scourge_data/config/magicitem.cfg:91
+#: ../scourge_data/config/magicitem.cfg:92
 msgid "A white wand whose many branches end in hooked bloody claws."
 msgstr ""
 "Ein weißer Stab, dessen viele Verflechtungen in blutverschmierten Klauen "
 "enden."
 
-#: ../scourge_data/config/magicitem.cfg:97
+#: ../scourge_data/config/magicitem.cfg:98
 msgid ""
 "This grayish-blue steel ring is favored by the dwarven miners of Thuzgol."
 msgstr ""
 "Dieser gräulich-blaue Stahlring wird von den zwergischen Bergleuten von "
 "Thuzgol geschätzt."
 
-#: ../scourge_data/config/magicitem.cfg:98
+#: ../scourge_data/config/magicitem.cfg:99
 msgid "Dwarven steel ring"
 msgstr "Zwergischer Stahlring"
 
-#: ../scourge_data/config/magicitem.cfg:106
+#: ../scourge_data/config/magicitem.cfg:107
 msgid "An unadorned gray steel ring"
 msgstr "Ein schmuckloser grauer Stahlring"
 
-#: ../scourge_data/config/magicitem.cfg:112
+#: ../scourge_data/config/magicitem.cfg:113
 msgid ""
 "A green ring adorned by a leaf motif that runs around both its inner and "
 "outer sides."
@@ -8733,15 +8732,15 @@ msgstr ""
 "Der grüne Ring ist mit einem Blattmotiv verziert, das sich sowohl über die "
 "Außen- wie auch Innenseite zieht."
 
-#: ../scourge_data/config/magicitem.cfg:113
+#: ../scourge_data/config/magicitem.cfg:114
 msgid "Elven leaf ring"
 msgstr "Elfen-Blattring"
 
-#: ../scourge_data/config/magicitem.cfg:121
+#: ../scourge_data/config/magicitem.cfg:122
 msgid "A green ring with leaves etched on its surface."
 msgstr "Ein grüner Ring mit eingravierten Blättern."
 
-#: ../scourge_data/config/magicitem.cfg:127
+#: ../scourge_data/config/magicitem.cfg:128
 msgid ""
 "This red ring has clearly seen its share of action. Its surface is marred by "
 "countless chips and dings."
@@ -8749,15 +8748,15 @@ msgstr ""
 "Dieser rote Ring hat mit Sicherheit einiges hinter sich. Er ist von "
 "Splittern und Macken verunstaltet."
 
-#: ../scourge_data/config/magicitem.cfg:128
+#: ../scourge_data/config/magicitem.cfg:129
 msgid "Orc war-ring"
 msgstr "Orken-Kriegsring"
 
-#: ../scourge_data/config/magicitem.cfg:137
+#: ../scourge_data/config/magicitem.cfg:138
 msgid "A red ring that looks like it was used in place of a knife."
 msgstr "Ein roter Ring, der aussieht, als wäre er als Messer benutzt worden."
 
-#: ../scourge_data/config/magicitem.cfg:143
+#: ../scourge_data/config/magicitem.cfg:144
 msgid ""
 "This gold ring with bright green stone was worn by Count Uluf the late Court "
 "Astronomer."
@@ -8765,15 +8764,15 @@ msgstr ""
 "Dieser Goldring mit hellgrünem Stein wurde vom ehemaligen Hofastronomen Graf "
 "Uluf getragen."
 
-#: ../scourge_data/config/magicitem.cfg:144
+#: ../scourge_data/config/magicitem.cfg:145
 msgid "Ceremonial ring of Count Uluf"
 msgstr "Zeremonieller Ring von Graf Uluf"
 
-#: ../scourge_data/config/magicitem.cfg:153
+#: ../scourge_data/config/magicitem.cfg:154
 msgid "A small gold ring with a green gem."
 msgstr "Ein kleiner Goldring mit einem grünen Edelstein."
 
-#: ../scourge_data/config/magicitem.cfg:159
+#: ../scourge_data/config/magicitem.cfg:160
 msgid ""
 "A strange sygil is etched into the precious gem embedded in the mouth of a "
 "dragon on top of this ring."
@@ -8781,15 +8780,15 @@ msgstr ""
 "Ein seltsamer Marker ist in den kostbaren Edelstein geritzt, der sich im "
 "Maul eines Drachens auf diesem Ring befindet."
 
-#: ../scourge_data/config/magicitem.cfg:160
+#: ../scourge_data/config/magicitem.cfg:161
 msgid "Zarnan's Sealer"
 msgstr "Zarnans Siegel"
 
-#: ../scourge_data/config/magicitem.cfg:169
+#: ../scourge_data/config/magicitem.cfg:170
 msgid "This ring is clearly a seal of some sort."
 msgstr "Dieser Ring stellt mit Sicherheit eine Art Siegel dar."
 
-#: ../scourge_data/config/magicitem.cfg:175
+#: ../scourge_data/config/magicitem.cfg:176
 msgid ""
 "This powerful ring was one of the few crafted by the elven jewelers of "
 "Arthel."
@@ -8797,40 +8796,40 @@ msgstr ""
 "Dieser mächtige Ring war einer der wenigen, der von den elfischen "
 "Feinschmieden von Arthel hergestellt wurde."
 
-#: ../scourge_data/config/magicitem.cfg:176
+#: ../scourge_data/config/magicitem.cfg:177
 msgid "Ring of Arthel's Pride"
 msgstr "Ring von Arthels Stolz"
 
-#: ../scourge_data/config/magicitem.cfg:185
+#: ../scourge_data/config/magicitem.cfg:186
 msgid "A blue metal ring with a sparkling stone."
 msgstr "Ein blauer Metallring mit einem funkelnden Stein."
 
-#: ../scourge_data/config/magicitem.cfg:191
+#: ../scourge_data/config/magicitem.cfg:192
 msgid "A cheap mountain quartz is framed in copper on a strip of leather."
 msgstr ""
 "Ein billiger Bergquarz sitzt in einer Kupferfassung auf einem Lederstreifen."
 
-#: ../scourge_data/config/magicitem.cfg:192
+#: ../scourge_data/config/magicitem.cfg:193
 msgid "Crystal amulet"
 msgstr "Kristallamulett"
 
-#: ../scourge_data/config/magicitem.cfg:200
+#: ../scourge_data/config/magicitem.cfg:201
 msgid "A clear stone adorns this necklace."
 msgstr "Ein durchsichtiger Stein schmückt diese Halskette."
 
-#: ../scourge_data/config/magicitem.cfg:206
+#: ../scourge_data/config/magicitem.cfg:207
 msgid "The full face of the red sun smiles reassuringly from its golden chain."
 msgstr "Das Antlitz der roten Sonne lächelt beruhigend von der Goldkette."
 
-#: ../scourge_data/config/magicitem.cfg:207
+#: ../scourge_data/config/magicitem.cfg:208
 msgid "Talizman of the Sun"
 msgstr "Talisman der Sonne"
 
-#: ../scourge_data/config/magicitem.cfg:215
+#: ../scourge_data/config/magicitem.cfg:216
 msgid "A golden necklace with a carving of the sun."
 msgstr "Eine goldene Halskette mit einer Sonnenschnitzerei."
 
-#: ../scourge_data/config/magicitem.cfg:221
+#: ../scourge_data/config/magicitem.cfg:222
 msgid ""
 "The mysterious forest spirit Dhiki is the patron entity of the Torunga "
 "people who crafted this amulet in her likeness."
@@ -8838,15 +8837,15 @@ msgstr ""
 "Der geheimnisvolle Waldgeist Dhiki ist der Schutzpatron der Torunga, welches "
 "dieses Amulett nach ihrem Ebenbild fertigten."
 
-#: ../scourge_data/config/magicitem.cfg:222
+#: ../scourge_data/config/magicitem.cfg:223
 msgid "Amulet of Dhiki the Forest Spirit"
 msgstr "Amulett des Waldgeistes Dhiki"
 
-#: ../scourge_data/config/magicitem.cfg:230
+#: ../scourge_data/config/magicitem.cfg:231
 msgid "A green stone shines in this amulet."
 msgstr "Ein grüner Stein strahlt in diesem Amulett."
 
-#: ../scourge_data/config/magicitem.cfg:236
+#: ../scourge_data/config/magicitem.cfg:237
 msgid ""
 "A mysterious single eye peers embedded in purple stone, hanging from a "
 "silver chain."
@@ -8854,85 +8853,85 @@ msgstr ""
 "Ein geheimnisvolles Auge starrt aus seiner Fassung aus violettem Stein, an "
 "einer Silberkette hängend."
 
-#: ../scourge_data/config/magicitem.cfg:237
+#: ../scourge_data/config/magicitem.cfg:238
 msgid "Amulet of Watcher"
 msgstr "Amulett der Beobachtung"
 
-#: ../scourge_data/config/magicitem.cfg:246
+#: ../scourge_data/config/magicitem.cfg:247
 msgid "The eye of this amulet watches you."
 msgstr "Das Auge des Amuletts beobachtet Euch."
 
-#: ../scourge_data/config/magicitem.cfg:252
+#: ../scourge_data/config/magicitem.cfg:253
 msgid "A healing hand faces palm out on the pendant of this hanging talisman."
 msgstr ""
 "Das Gehänge des Talismans zeigt eine heilende Hand, die Handfläche Euch "
 "zugewandt."
 
-#: ../scourge_data/config/magicitem.cfg:253
+#: ../scourge_data/config/magicitem.cfg:254
 msgid "Amulet of Guiding Hand"
 msgstr "Amulett der Helfenden Hand"
 
-#: ../scourge_data/config/magicitem.cfg:262
+#: ../scourge_data/config/magicitem.cfg:263
 msgid "A talisman with the etching of a hand."
 msgstr "Ein Talisman, in den eine Hand eingraviert ist."
 
-#: ../scourge_data/config/magicitem.cfg:268
+#: ../scourge_data/config/magicitem.cfg:269
 msgid "Ragnar the dwarven usurper is portrayed on this rare hanging charm."
 msgstr ""
 "Ragnar, der zwergische Thronräuber, wird auf diesem seltenen Amulett "
 "dargestellt."
 
-#: ../scourge_data/config/magicitem.cfg:269
+#: ../scourge_data/config/magicitem.cfg:270
 msgid "Token of Ragnar"
 msgstr "Zeichen von Ragnar"
 
-#: ../scourge_data/config/magicitem.cfg:278
+#: ../scourge_data/config/magicitem.cfg:279
 msgid "A picture of a dwarven warrior shows on this amulet."
 msgstr "Das Bild eines Zwergenkriegers prangt von diesem Amulett."
 
-#: ../scourge_data/config/magicitem.cfg:284
+#: ../scourge_data/config/magicitem.cfg:285
 msgid ""
 "When near you feel a calming sensation emanate from the stone of this "
 "talisman."
 msgstr "Ihr fühlt etwas Beruhigendes vom Gehänge dieses Talismans ausgehen."
 
-#: ../scourge_data/config/magicitem.cfg:285
+#: ../scourge_data/config/magicitem.cfg:286
 msgid "Amulet of Shielding Aura"
 msgstr "Amulett der Schildaura"
 
-#: ../scourge_data/config/magicitem.cfg:294
+#: ../scourge_data/config/magicitem.cfg:295
 msgid "This rare amulet has a calming feel to it."
 msgstr "Dieses seltene Amulett fühlt sich irgendwie beruhigend an."
 
-#: ../scourge_data/config/magicitem.cfg:300
+#: ../scourge_data/config/magicitem.cfg:301
 msgid "A simple wooden staff, yet tendrils of magic intrigue your senses."
 msgstr ""
 "Ein einfacher hölzerner Stab, und doch fasziniert die ihn umrankende "
 "magische Energie Eure Sinne."
 
-#: ../scourge_data/config/magicitem.cfg:301
+#: ../scourge_data/config/magicitem.cfg:302
 msgid "Wooden Staff"
 msgstr "Holzstab"
 
-#: ../scourge_data/config/magicitem.cfg:309
+#: ../scourge_data/config/magicitem.cfg:310
 msgid "A simple wooden staff."
 msgstr "Ein einfacher Holzstab."
 
-#: ../scourge_data/config/magicitem.cfg:361
+#: ../scourge_data/config/magicitem.cfg:362
 msgid "The snake worshipping halfling mages of Orn crafted this steel staff."
 msgstr ""
 "Die schlangenanbetenden Halblingsmagier von Orn haben diesen stählernen Stab "
 "hergestellt."
 
-#: ../scourge_data/config/magicitem.cfg:362
+#: ../scourge_data/config/magicitem.cfg:363
 msgid "Snake Staff"
 msgstr "Schlangenstab"
 
-#: ../scourge_data/config/magicitem.cfg:370
+#: ../scourge_data/config/magicitem.cfg:371
 msgid "A metal staff with the leering head of a cobra."
 msgstr "Ein Metallstab mit dem grinsenden Kopf einer Kobra."
 
-#: ../scourge_data/config/magicitem.cfg:422
+#: ../scourge_data/config/magicitem.cfg:423
 msgid ""
 "The tale of Zordok is one of caution. It's rumored, the hapless lizard mage "
 "managed to trap himself in a staff such as this one."
@@ -8941,17 +8940,17 @@ msgstr ""
 "unglückselige Echsenmagier es fertig brachte, sich selbst in solch einem "
 "Stab einzusperren."
 
-#: ../scourge_data/config/magicitem.cfg:423
+#: ../scourge_data/config/magicitem.cfg:424
 msgid "Staff of Zordok the Clumsy"
 msgstr "Stab von Zordok dem Ungeschickten"
 
-#: ../scourge_data/config/magicitem.cfg:432
+#: ../scourge_data/config/magicitem.cfg:433
 msgid "The wooden staff emits quiet whimpering noises when held."
 msgstr ""
 "Der Holzstab gibt wimmernde Geräusche von sich, während Ihr ihn in den "
 "Händen haltet."
 
-#: ../scourge_data/config/magicitem.cfg:484
+#: ../scourge_data/config/magicitem.cfg:485
 msgid ""
 "Don't pick up this staff. Get Zoran's instead... yes, Zoran's staff is much "
 "better made."
@@ -8959,15 +8958,15 @@ msgstr ""
 "Nehmt diesen Stab nicht an Euch. Nehmt stattdessen Zorans Stab... Ja, "
 "Zoran's Stab ist von viel besserer Machart."
 
-#: ../scourge_data/config/magicitem.cfg:485
+#: ../scourge_data/config/magicitem.cfg:486
 msgid "Staff of Resentful Thoughts"
 msgstr "Stab der Übelnehmenden Gedanken"
 
-#: ../scourge_data/config/magicitem.cfg:494
+#: ../scourge_data/config/magicitem.cfg:495
 msgid "A staff made of a gray wood."
 msgstr "Ein aus grauem Holz angefertigter Stab."
 
-#: ../scourge_data/config/magicitem.cfg:546
+#: ../scourge_data/config/magicitem.cfg:547
 msgid ""
 "Magical runes run the entire length of this staff. It is unmistakeably to be "
 "used for something magical."
@@ -8975,15 +8974,15 @@ msgstr ""
 "Magische Runen ziehen sich über die ganze Länge des Stabs. Er wird "
 "unzweifelhaft für irgend etwas Magisches benutzt."
 
-#: ../scourge_data/config/magicitem.cfg:547
+#: ../scourge_data/config/magicitem.cfg:548
 msgid "Staff of the Magus"
 msgstr "Stab des Magus"
 
-#: ../scourge_data/config/magicitem.cfg:556
+#: ../scourge_data/config/magicitem.cfg:557
 msgid "A black staff with golden runes."
 msgstr "Ein schwarzer Stab mit goldenen Runen."
 
-#: ../scourge_data/config/magicitem.cfg:608
+#: ../scourge_data/config/magicitem.cfg:609
 msgid ""
 "Pure evil emanates from the horned skull head set atop this staff. The "
 "ornamental top appears to suggest you rid yourself of your party members."
@@ -8992,11 +8991,11 @@ msgstr ""
 "Er scheint Euch mitteilen zu wollen, Euch der anderen Gruppenmitglieder zu "
 "entledigen."
 
-#: ../scourge_data/config/magicitem.cfg:609
+#: ../scourge_data/config/magicitem.cfg:610
 msgid "Horned Staff of the Shade"
 msgstr "Gehörnter Stab der Schatten"
 
-#: ../scourge_data/config/magicitem.cfg:618
+#: ../scourge_data/config/magicitem.cfg:619
 msgid "A red pole with a horned skull attached to its top."
 msgstr "Ein roter Stab mit einem gehörnten Totenschädel auf seiner Spitze."
 
@@ -17611,7 +17610,7 @@ msgstr "...%s verursacht %d Bonusschaden!"
 msgid "...%s causes %d armor bonus!"
 msgstr "...%s verursacht %d Rüstungs-Bonus!"
 
-#: ../scourge_data/script/map.nut:78
+#: ../scourge_data/script/map.nut:84
 msgid ""
 "The creature once known as Mothrazu sinks to one knee... Her breath comes in "
 "sharp gasps, as she growls:||\"I curse you humans...You may have defeated me "
@@ -17631,75 +17630,75 @@ msgstr ""
 "Seelen gnädig sein... Amod! Ich bin nahe...\"||Mit diesen Worten scheidet "
 "Mothrazu dahin."
 
-#: ../scourge_data/script/map.nut:101
+#: ../scourge_data/script/map.nut:107
 msgid "Karzul uses his infernal conduit and heals his wounds!"
 msgstr "Karzul nutzt seinen höllischen Kanal und heilt seine Wunden!"
 
-#: ../scourge_data/script/map.nut:129
+#: ../scourge_data/script/map.nut:135
 msgid "Karzul commands his minions to surge forth and destroy his attackers!"
 msgstr ""
 "Karzul gebietet seinen Ergebenen, vorzustürmen und seine Angreifer "
 "auszutilgen!"
 
-#: ../scourge_data/script/map.nut:216
+#: ../scourge_data/script/map.nut:222
 #, c-format
 msgid "The mighty lord %s reaches towards you,"
 msgstr "Der großmächtige Gott %s greift nach Euch."
 
-#: ../scourge_data/script/map.nut:219
+#: ../scourge_data/script/map.nut:225
 msgid "...alas, the deity can aid you no more today."
 msgstr "...leider kann die Gottheit Euch heute nicht mehr beistehen."
 
-#: ../scourge_data/script/map.nut:227
+#: ../scourge_data/script/map.nut:233
 msgid "...and fills your spirit with energy."
 msgstr "...und füllt Euren Geist mit neuer Energie."
 
-#: ../scourge_data/script/map.nut:230
+#: ../scourge_data/script/map.nut:236
 #, c-format
 msgid "Your presence angers the mighty lord %s!"
 msgstr "Eure Anwesenheit erzürnt den großmächtigen Gott %s!"
 
-#: ../scourge_data/script/map.nut:235
+#: ../scourge_data/script/map.nut:241
 msgid "...the deity's wrath scours your flesh!"
 msgstr "...der Zorn der Gottheit reibt an Eurem Fleisch!"
 
-#: ../scourge_data/script/map.nut:238
+#: ../scourge_data/script/map.nut:244
 #, c-format
 msgid "The mighty lord %s ignores you."
 msgstr "Der großmächtige Gott %s ignoriert Euch."
 
-#: ../scourge_data/script/map.nut:353
+#: ../scourge_data/script/map.nut:359
 #, c-format
 msgid "%s conjures up magic with blinding speed!"
 msgstr "%s beschwört die Magie mit atemberaubender Geschwindigkeit!"
 
-#: ../scourge_data/script/map.nut:379
+#: ../scourge_data/script/map.nut:385
 msgid "Yes, yes... quite so... carry on!"
 msgstr "Ja, ja... so ungefähr... fahrt fort!"
 
-#: ../scourge_data/script/map.nut:447
+#: ../scourge_data/script/map.nut:453
 msgid "...Brand of Iconoclast growls in a low tone..."
 msgstr "...Der Todesbringer von Iconoclast brummt in einer tiefen Tonlage..."
 
-#: ../scourge_data/script/map.nut:451
+#: ../scourge_data/script/map.nut:457
 #, c-format
 msgid "...damage is increased by %d pts!"
 msgstr "...Schaden wurde um %d Punkte erhöht!"
 
-#: ../scourge_data/script/map.nut:463
+#: ../scourge_data/script/map.nut:469
 #, c-format
 msgid "...damage is reduced by %d pts! (Cloak of Hateful Vengeance)"
 msgstr ""
 "...Schaden wurde um %d Punkte verringert! (Umhang der Hasserfüllten "
 "Vergeltung)"
 
-#: ../scourge_data/script/map.nut:489
+#: ../scourge_data/script/map.nut:495
 #, c-format
 msgid "...damage is reduced by %d pts! (Cloak of Safe Passage)"
 msgstr ""
 "...Schaden wurde um %d Punkte verringert! (Umhang des Sicheren Durchgangs)"
 
-#: ../scourge_data/script/map.nut:541
+#: ../scourge_data/script/map.nut:547
 msgid ""
 "You find yourself on a barren plain. The air is thick with moisture and very "
 "still. The bleak ground appears to emit a cancerous odor like the smell of "
@@ -17717,7 +17716,7 @@ msgstr ""
 "dieser geschmolzenen Landschaft voller Hoffnungslosigkeit und Grauen scheint "
 "sogar das Umhergehen mühsam zu sein."
 
-#: ../scourge_data/script/map.nut:591
+#: ../scourge_data/script/map.nut:597
 msgid ""
 "The ancient walls appear to cave inward as if pushed on by the very roots of "
 "the forest from above. A metallic smell cuts the air and the noises echoing "
@@ -17735,12 +17734,12 @@ msgstr ""
 "infernalischem Plan sein?||Und als wäre das nicht schon schlimm genug, "
 "erschüttern auch noch ständige Beben die Höhle..."
 
-#: ../scourge_data/script/map.nut:611
+#: ../scourge_data/script/map.nut:617
 #, c-format
 msgid "%s feels very ill suddenly."
 msgstr "%s fühlt sich plötzlich sehr krank."
 
-#: ../scourge_data/script/map.nut:671
+#: ../scourge_data/script/map.nut:677
 msgid ""
 "A baleful wind blows bringing the scent of slow vegetative decay. Off in the "
 "distance you glance a mighty tree, standing in the center of a barren plane "
@@ -17755,7 +17754,7 @@ msgstr ""
 "Geäst.||Über Euch verfinstern Wolken den Himmel, wie um das Eintreten des "
 "bevorstehenden Untergangs anzukündigen."
 
-#: ../scourge_data/script/map.nut:758
+#: ../scourge_data/script/map.nut:766
 msgid ""
 "Under the pale sky like the blackened husk of a burned tree stands the "
 "demon. He calmly awaits your charge fully aware of its futility.||But a red "
@@ -17821,11 +17820,11 @@ msgstr ""
 "Belohnung werde ich persönlich darauf achten, dass eure Seelen schonend "
 "behandelt werden... von meinen Leuten dort unten."
 
-#: ../scourge_data/script/chapter12movie.nut:205
+#: ../scourge_data/script/chapter12movie.nut:206
 msgid "The demon was vanquished with the aid of the Guardians of the Realm!"
 msgstr "Der Dämon wurde mit dem Beistand der Hüter des Reiches bezwungen!"
 
-#: ../scourge_data/script/chapter12movie.nut:213
+#: ../scourge_data/script/chapter12movie.nut:214
 msgid ""
 "...and yet I feel it will take another century for the stench of corruption "
 "to leave this place."
@@ -17833,7 +17832,7 @@ msgstr ""
 "... und doch glaube ich, dass es ein weiteres Jahrhundert dauern wird, bis "
 "dieser Ort frei von Fäulnisgestank ist."
 
-#: ../scourge_data/script/chapter12movie.nut:220
+#: ../scourge_data/script/chapter12movie.nut:221
 msgid ""
 "I sense a foreboding that the events that occured here are just the "
 "beginning of another tale..."
@@ -17841,7 +17840,7 @@ msgstr ""
 "Mich befällt die bange Ahnung, dass die Ereignisse, die sich hier zugetragen "
 "haben, nur der Beginn einer anderen Geschichte sind..."
 
-#: ../scourge_data/script/chapter12movie.nut:227
+#: ../scourge_data/script/chapter12movie.nut:228
 msgid ""
 "Yes mortal... you bested me in your realm. For this you deserve my "
 "admiration. Not many can claim victory over Karzul the mighty..."
@@ -17850,7 +17849,7 @@ msgstr ""
 "verdient Ihr meine Bewunderung. Nicht viele können einen Sieg über Karzul "
 "den Mächtigen für sich beanspruchen..."
 
-#: ../scourge_data/script/chapter12movie.nut:234
+#: ../scourge_data/script/chapter12movie.nut:235
 msgid ""
 "However with great deeds come great responsibilities. For know that my "
 "spirit is immortal. You have thwarted my designs on your realm, a fact I did "
@@ -17860,7 +17859,7 @@ msgstr ""
 "Geist unsterblich ist. Ihr habt meine Pläne für Eure Welt vereitelt, eine "
 "Tatsache, die ich nicht kommen sah..."
 
-#: ../scourge_data/script/chapter12movie.nut:241
+#: ../scourge_data/script/chapter12movie.nut:242
 msgid ""
 "Rest now mortal and I will see you soon enough... I will leave you with a "
 "question to ponder until we meet again:"
@@ -17869,7 +17868,7 @@ msgstr ""
 "werde Euch mit einer Frage zurücklassen, über die Ihr nachsinnen sollt, bis "
 "wir uns wiedersehen:"
 
-#: ../scourge_data/script/chapter12movie.nut:248
+#: ../scourge_data/script/chapter12movie.nut:249
 msgid ""
 "With your precious Guardians gone... who will you hide behind the next time "
 "we meet?"
@@ -17877,7 +17876,7 @@ msgstr ""
 "Ohne Eure geschätzten Hüter... hinter wem werdet Ihr Euch verstecken, wenn "
 "wir das nächste Mal aufeinandertreffen?"
 
-#: ../scourge_data/script/chapter12movie.nut:255
+#: ../scourge_data/script/chapter12movie.nut:256
 msgid ""
 "Begone fiend! Naught have you become, bringer of ails as of naught you were "
 "conceived in your cold lair of void."
@@ -17886,7 +17885,7 @@ msgstr ""
 "denn aus dem Nichts heraus wurdet Ihr in Eurem kalten, leeren Unterschlupf "
 "gezeugt."
 
-#: ../scourge_data/script/chapter12movie.nut:262
+#: ../scourge_data/script/chapter12movie.nut:263
 msgid ""
 "Pay no heed to that chaotic windbag! Celebrate instead for the land has new "
 "heroes tonight: ...you!"
@@ -17894,7 +17893,7 @@ msgstr ""
 "Schenkt dem wirren Schwätzer keine Beachtung! Feiert stattdessen, denn heute "
 "hat das Land neue Helden: ...Euch!"
 
-#: ../scourge_data/script/chapter12movie.nut:269
+#: ../scourge_data/script/chapter12movie.nut:270
 msgid ""
 "You notice the sun rising in the east. Around you the land slowly wakes, "
 "unaware of the catastrophy the most unlikely heroes have just averted. Truly "
