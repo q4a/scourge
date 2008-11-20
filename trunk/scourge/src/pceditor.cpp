@@ -475,7 +475,8 @@ void PcEditor::createUI() {
 	nameField->setText( Rpg::createName().c_str() );
 	cards->addWidget( nameField, NAME_TAB );
 	cards->addWidget( new Label( secondColStart, 90,
-	                             _( "What is your name, great hero? Enter it here, but choose wisely! You will not be able to change it again." ),
+	                             _( "What is your name, great hero? Enter it here, but choose wisely!"
+	                                " You will not be able to change it again." ),
 	                             TEXT_WIDTH ),
 	                  NAME_TAB );
 
@@ -485,7 +486,8 @@ void PcEditor::createUI() {
 	male->setSelected( true );
 	female->setSelected( false );
 	cards->addWidget( new Label( secondColStart, 200,
-	                             _( "Select the sex of your hero. Besides some visual effects, it has no other impact on game mechanics." ),
+	                             _( "Select the sex of your hero. Besides some visual effects, it has no other"
+	                                " impact on game mechanics." ),
 	                             TEXT_WIDTH ),
 	                  NAME_TAB );
 
@@ -496,7 +498,10 @@ void PcEditor::createUI() {
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 	cards->addWidget( new Label( secondColStart, 50,
-	                             _( "Which starting profession most closely resembles your hero? Your character will evolve into a more powerful and refined practicer of the chosen art. Below is a brief description of the strengths and weaknesses of each profession." ),
+	                             _( "Which starting profession most closely resembles your hero?"
+	                                " Your character will evolve into a more powerful and refined practicer"
+	                                " of the chosen art. Below is a brief description of the strengths and"
+	                                " weaknesses of each profession." ),
 	                             TEXT_WIDTH ),
 	                  CLASS_TAB );
 
@@ -571,7 +576,10 @@ void PcEditor::createUI() {
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 	cards->addWidget( new Label( secondColStart, 50,
-	                             _( "At times on your journey you may be reduced to nothing but a prayer. |Therefore it is important to keep in mind to whom such requests are directed. Given below is a list of known deities of the land with a brief description for each." ),
+	                             _( "At times on your journey you may be reduced to nothing but a prayer."
+	                                "|Therefore it is important to keep in mind to whom such requests are directed."
+	                                " Given below is a list of known deities of the land with a brief description"
+	                                " for each." ),
 	                             TEXT_WIDTH ),
 	                  DEITY_TAB );
 
@@ -600,9 +608,9 @@ void PcEditor::createUI() {
 	p->setFontType( Constants::SCOURGE_LARGE_FONT );
 
 	cards->addWidget( new Label( secondColStart, 50,
-	                             _( "You may now choose a portrait and a character model \
-	                                to represent your hero. Your appearance is only a matter of personal choice, it will \
-	                                not affect the game in any way." ),
+	                             _( "You may now choose a portrait and a character model"
+	                                " to represent your hero. Your appearance is only a matter of personal choice,"
+	                                " it will not affect the game in any way." ),
 	                             TEXT_WIDTH ),
 	                  IMAGE_TAB );
 

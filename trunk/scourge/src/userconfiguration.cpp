@@ -929,7 +929,9 @@ void UserConfiguration::parseCommandLine( int argc, char *argv[] ) {
 		printf( _( "\tm - disable multitexturing\n" ) );
 		printf( _( "\t--test - list card's supported video modes\n" ) );
 		printf( _( "\t--test-config - print out the file configuration and exit\n" ) );
-		printf( _( "\t--run-tests [path] - run internal tests of the rpg engine and save the result in html in the $path dir\n" ) );
+		printf( _( "\t--run-tests [path] - run internal tests of the rpg engine and save the result in html"
+		           " in the $path dir\n" ) 
+		      );
 		printf( _( "\t--version - print the build version\n" ) );
 		printf( _( "\t--bppXX - use XX bits per pixel (8,15,16,24,32)\n" ) );
 		printf( _( "\t--widthXX - use XX pixels for the screen width\n" ) );
@@ -938,11 +940,18 @@ void UserConfiguration::parseCommandLine( int argc, char *argv[] ) {
 		printf( _( "\t--themeXYZ - use gui theme XYZ to draw the ui.\n" ) );
 		printf( _( "\t--debugtheme - use the debug theme only to for wall textures.\n" ) );
 		printf( _( "\t--flaky - disable some graphic effects for flaky video cards.\n" ) );
-		printf( _( "\nBy default (with no options):\n\tbpp is the highest possible value\n\tfullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\tresizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\thardware acceleration is used if available\n\tstencil buffer is used if available\n\tmultitexturing is used if available\n\tshadows are cast by everything.\n\n" ) );
+		printf( _( "\nBy default (with no options):\n\tbpp is the highest possible value\n\t"
+		           "fullscreen mode is on\n\tdouble buffering is on\n\thwpal is used if available\n\t"
+		           "resizeable is on (no effect in fullscreen mode)\n\thardware surface is used if available\n\t"
+		           "hardware acceleration is used if available\n\tstencil buffer is used if available\n\t"
+		           "multitexturing is used if available\n\tshadows are cast by everything.\n\n" ) 
+		      );
 #ifdef HAVE_SDL_NET
 		printf( _( "Multiplayer options:\n" ) );
 		printf( _( "\t--serverPORT - run a standalone server w/o a ui on PORT\n" ) );
-		printf( _( "\t--clientHOST:PORT,USERNAME - run a standalone admin client w/o a ui. Connect to server HOST:PORT as USERNAME.\n" ) );
+		printf( _( "\t--clientHOST:PORT,USERNAME - run a standalone admin client w/o a ui."
+		           " Connect to server HOST:PORT as USERNAME.\n" ) 
+		      );
 #endif
 #ifdef HAVE_SDL_MIXER
 		printf( _( "Sound options:\n" ) );
