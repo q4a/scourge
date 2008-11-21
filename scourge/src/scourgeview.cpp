@@ -206,7 +206,7 @@ void ScourgeView::drawChapterIntro() {
 
 	scourge->getSDLHandler()->setFontType( Constants::SCOURGE_LARGE_FONT );
 	glColor4f( 1, 0.35f, 0, 1 );
-	scourge->getSDLHandler()->texPrint( 10, 36, scourge->getSession()->getCurrentMission()->getDisplayName() );
+	scourge->getSDLHandler()->texPrint( 10, 36, scourge->getMissionTitle() );
 	glColor4f( 1, 1, 1, 1 );
 
 // int px = ( scourge->getScreenWidth() - scourge->getSession()->getChapterImageWidth() ) / 2;

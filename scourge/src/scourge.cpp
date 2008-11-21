@@ -3881,7 +3881,14 @@ void Scourge::writeLogMessage( char const* message, int messageType, int logLeve
 	descriptionScroller->writeLogMessage( message, messageType, logLevel );
 }
 
-void Scourge::initChapterIntro() {
+void Scourge::finale( char *text, char *image ) {
+	getSession()->setChapterImage( image );
+	initChapterIntro( text );
+}
+
+void Scourge::initChapterIntro( char *text, char *missionTitle ) {
+	strcpy( chapterIntroMissionTitle, missionTitle ? missionTitle : getSession()->getCurrentMission()->getDisplayName() );
+	
 	session->setShowChapterIntro( true );
 	hideGui();
 	chapterIntroWin->setVisible( true );
@@ -3890,7 +3897,7 @@ void Scourge::initChapterIntro() {
 	// Try to add line breaks fitting the screen resolution
 	int charsPerRow = ( getScreenWidth() - 300 ) / 14 + 1;
 	char tmp[3000];
-	Util::addLineBreaks( ( strlen( session->getCurrentMission()->getIntroDescription() ) ?
+	Util::addLineBreaks( text ? text : ( strlen( session->getCurrentMission()->getIntroDescription() ) ?
 	                       session->getCurrentMission()->getIntroDescription() :
 	                       session->getCurrentMission()->getDescription() ),
 	                     tmp, charsPerRow );

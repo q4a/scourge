@@ -792,6 +792,9 @@ public:
 
 	void replayChapterIntro();
 	void endChapterIntro();
+	void finale( char *text, char *image );
+	
+	inline char *getMissionTitle() { return chapterIntroMissionTitle; }
 
 	void camp();
 
@@ -837,7 +840,7 @@ protected:
 
 protected:
 
-	void initChapterIntro();
+	void initChapterIntro( char *text = NULL, char *missionTitle = NULL );
 
 	bool describeWeapon( Creature *p, Item *item, int x, int y, int inventoryLocation, bool handleNull );
 	void renderHandAttackIcon( int x, int y, int size );
@@ -996,6 +999,7 @@ private:
 	Button *beginChapter, *replayIntro;
 
 	std::vector<MovingDoor> movingDoors;
+	char chapterIntroMissionTitle[255];
 
 };
 

@@ -111,7 +111,8 @@ public:
 	
 	static int _ascendToSurface( HSQUIRRELVM vm );
 	static int _setWeather( HSQUIRRELVM vm );
-	static int _getWeather( HSQUIRRELVM vm );	
+	static int _getWeather( HSQUIRRELVM vm );
+	static int _finale( HSQUIRRELVM vm );
 };
 
 #endif

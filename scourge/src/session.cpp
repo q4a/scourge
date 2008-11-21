@@ -762,27 +762,33 @@ void Session::setCurrentMission( Mission *mission ) {
 	getGameAdapter()->refreshBackpackUI();
 	if ( oldMission != currentMission && currentMission && currentMission->isStoryLine() && !currentMission->isReplay() ) {
 		char filename[300];
-		snprintf( filename, 300, "/chapters/chapter%d.png", currentMission->getChapter() );
-		chapterImageTexture.load( filename );
-		if ( !chapterImageTexture.isSpecified() ) {
-			cerr << "Error loading image for chapter " << currentMission->getChapter() << endl;
-			chapterImage.clear();
-			// its clear anyway, chapterImageTexture.clear();
-			chapterImageWidth = chapterImageHeight = 0;
-		} else {
-			//chapterImageTexture = shapePal->loadGLTextures(filename, true);
-			GLclampf pri = 0.1f; chapterImageTexture.glPrioritize( pri );
-			chapterImageWidth = 1000;
-			chapterImageHeight = 458;
-			cerr << "***********************************" << endl;
-			cerr << "Loaded chapter art: " << filename <<
-			" dimensions=" << chapterImageWidth << "," << chapterImageHeight << endl;
-			cerr << "***********************************" << endl;
-		}
+		snprintf( filename, 300, "chapter%d.png", currentMission->getChapter() );
+		setChapterImage( filename );
 	}
 
 	// initialize script objects
 	getSquirrel()->initLevelObjects();
+}
+
+void Session::setChapterImage( char *image ) {
+	char filename[300];
+	snprintf( filename, 300, "/chapters/%s", image );
+	chapterImageTexture.load( filename );
+	if ( !chapterImageTexture.isSpecified() ) {
+		cerr << "Error loading chapter image " << image << endl;
+		chapterImage.clear();
+		// its clear anyway, chapterImageTexture.clear();
+		chapterImageWidth = chapterImageHeight = 0;
+	} else {
+		//chapterImageTexture = shapePal->loadGLTextures(filename, true);
+		GLclampf pri = 0.1f; chapterImageTexture.glPrioritize( pri );
+		chapterImageWidth = 1000;
+		chapterImageHeight = 458;
+		cerr << "***********************************" << endl;
+		cerr << "Loaded chapter art: " << filename <<
+		" dimensions=" << chapterImageWidth << "," << chapterImageHeight << endl;
+		cerr << "***********************************" << endl;
+	}
 }
 
 std::string HQ_AMBIENT_SOUND = "hq";
