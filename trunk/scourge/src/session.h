@@ -240,6 +240,7 @@ public:
 		return cutscene;
 	}
 	void setCurrentMission( Mission *mission );
+	void setChapterImage( char *image );
 	inline TextureData const& getChapterImage() {
 		return chapterImage;
 	}

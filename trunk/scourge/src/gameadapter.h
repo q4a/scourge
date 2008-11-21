@@ -123,6 +123,7 @@ public:
 	virtual inline int getCurrentDepth() {
 		return 0;
 	}
+	virtual inline void finale( char *text, char *image ) {}
 	virtual inline void descendDungeon( Location *pos ) {}
 	virtual inline void ascendDungeon( Location *pos ) {}
 	virtual inline void ascendToSurface( Location *pos ) {}
