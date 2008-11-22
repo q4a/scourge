@@ -121,7 +121,8 @@ Sound::~Sound() {
 			delete i->second;
 		}
 		for ( std::map<string, Mix_Music*>::iterator i = bossCombatMusics.begin(); i != bossCombatMusics.end(); ++i ) {
-			delete i->second;
+			Mix_Music *mm = i->second;
+			Mix_FreeMusic( mm );
 		}
 		// stop audio system
 		Mix_CloseAudio();
