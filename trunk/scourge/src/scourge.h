@@ -628,6 +628,10 @@ public:
 	inline bool inTurnBasedCombat() {
 		return ( battleTurn < static_cast<int>( battleRound.size() ) && getUserConfiguration()->isBattleTurnBased() );
 	}
+	
+	inline const char *getCurrentCombatMusic() {
+		return currentCombatMusic;
+	}
 
 	inline UserConfiguration *getUserConfiguration() {
 		return ( UserConfiguration* )getPreferences();
@@ -1000,7 +1004,7 @@ private:
 
 	std::vector<MovingDoor> movingDoors;
 	char chapterIntroMissionTitle[255];
-
+	const char *currentCombatMusic;
 };
 
 #endif

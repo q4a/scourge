@@ -192,6 +192,9 @@ public:
 	virtual inline bool inTurnBasedCombat() {
 		return false;
 	}
+	virtual inline const char *getCurrentCombatMusic() {
+		return NULL;
+	}
 	virtual char const* getMagicSchoolIndexForLocation( Location *pos ) {
 		return NULL;
 	}

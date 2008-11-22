@@ -70,7 +70,7 @@ Sound::Sound( Preferences *preferences ) {
 
 		lastChapter = -1;
 		missionMusicIndex = -1;
-		currentMusic = currentLevelMusic = menuMusic = hqMusic = missionMusic = fightMusic = chapterMusic = NULL;
+		currentMusic = currentLevelMusic = menuMusic = hqMusic = missionMusic = fightMusic = currentFightMusic = chapterMusic = NULL;
 		musicStartTime = 0;
 		musicPosition = 0;
 		if ( haveSound ) {
@@ -118,6 +118,9 @@ Sound::~Sound() {
 			sample = NULL;
 		}
 		for ( std::map<std::string, AmbientSound*>::iterator i = ambients.begin(); i != ambients.end(); ++i ) {
+			delete i->second;
+		}
+		for ( std::map<string, Mix_Music*>::iterator i = bossCombatMusics.begin(); i != bossCombatMusics.end(); ++i ) {
 			delete i->second;
 		}
 		// stop audio system
@@ -223,6 +226,26 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 				cerr << "\t" << Mix_GetError() << endl;
 			}
 		}
+		
+		// load the boss combat musics
+		if( bossCombatMusics.empty() ) {
+			for( map<string, Monster*>::iterator i = Monster::monstersByName.begin(); i != Monster::monstersByName.end(); ++i ) {
+				Monster *monster = i->second;
+				if( strlen( monster->getCombatMusic() ) ) {
+					string musicName = monster->getCombatMusic();
+					if( bossCombatMusics.find( musicName ) == bossCombatMusics.end() ) {
+						stringstream filename3;
+						filename3 << rootDir << "/sound/music/" << musicName;
+						string fn;
+						filename3 >> fn;
+						//cerr << "+++ loading combat music for " << monster->getType() << ": " << fn << endl;
+						bossCombatMusics[ musicName ] = Mix_LoadMUS( fn.c_str() );	
+					} else {
+						//cerr << "+++ reusing combat music for " << monster->getType() << ": " << endl;
+					}					 
+				}
+			}
+		}
 
 		setMusicVolume( preferences->getMusicVolume() );
 	}
@@ -234,7 +257,7 @@ void Sound::playMusic( Mix_Music *music, int ms, int loopCount ) {
 #ifdef HAVE_SDL_MIXER
 	if ( haveSound && music ) {
 		currentMusic = music;
-		if ( currentMusic != fightMusic ) {
+		if ( currentMusic != currentFightMusic ) {
 			if ( currentLevelMusic != currentMusic ) {
 				currentLevelMusic = currentMusic;
 				musicStartTime = SDL_GetTicks();
@@ -257,7 +280,7 @@ void Sound::stopMusic( int ms ) {
 	if ( haveSound ) {
 
 		// remember where the level music is stopped
-		if ( currentMusic != fightMusic ) {
+		if ( currentMusic != currentFightMusic ) {
 			musicPosition = static_cast<double>( SDL_GetTicks() - musicStartTime );
 		}
 
@@ -271,10 +294,18 @@ void Sound::stopMusic( int ms ) {
 }
 
 
-void Sound::checkMusic( bool inCombat ) {
+void Sound::checkMusic( bool inCombat, const char *currentCombatMusic ) {
 #ifdef HAVE_SDL_MIXER
 	if ( haveSound ) {
-		Mix_Music *should = ( inCombat ? fightMusic : currentLevelMusic );
+		currentFightMusic = fightMusic;
+		if( currentCombatMusic && strlen( currentCombatMusic ) ) {
+			string s = currentCombatMusic;
+			currentFightMusic = bossCombatMusics[ s ];
+			if( !currentFightMusic ) {
+				currentFightMusic = fightMusic;
+			}
+		}
+		Mix_Music *should = ( inCombat ? currentFightMusic : currentLevelMusic );
 		if ( should != currentMusic ) {
 			if ( currentMusic )
 				stopMusic( 500 );

@@ -65,6 +65,7 @@ Monster::Monster( char const* type, char const* displayName, char const* descrip
 	this->portrait = portrait;
 	this->statemod = 0;
 	this->harmless = harmless;
+	this->combatMusic = "";
 
 	// approximate the base attack bonus: magic users get less than warriors
 	baseAttackBonus = ( !mp ? 1.0f : 0.75f );
@@ -130,6 +131,7 @@ void Monster::initCreatures( ConfigLang *config ) {
 	char name[255], model_name[255], skin_name[255];
 	char portrait[255], type[255], tmp[3000];
 	char displayName[255];
+	char combatMusic[255];
 
 	vector<ConfigNode*> *v = config->getDocument()->
 	                         getChildrenByName( "creature" );
@@ -145,6 +147,7 @@ void Monster::initCreatures( ConfigLang *config ) {
 		strcpy( type, node->getValueAsString( "type" ) );
 		strcpy( model_name, node->getValueAsString( "model" ) );
 		strcpy( skin_name, node->getValueAsString( "skin" ) );
+		strcpy( combatMusic, node->getValueAsString( "combat_music" ) );
 		if ( !strcmp( skin_name, "*" ) ) strcpy( skin_name, "" );
 		int level = node->getValueAsInt( "level" );
 		int hp = node->getValueAsInt( "hp" );
@@ -166,6 +169,11 @@ void Monster::initCreatures( ConfigLang *config ) {
 		               rareness, speed, armor,
 		               scale, npc, portrait,
 		               harmless );
+		
+		if( strlen( combatMusic ) ) {
+			m->setCombatMusic( combatMusic );
+		}
+		
 		if ( npc ) {
 			npcs.push_back( m );
 			m->setStartingStateMod( statemod );

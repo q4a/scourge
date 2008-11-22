@@ -55,7 +55,8 @@ private:
 	Mix_Music *menuMusic;
 	Mix_Music *hqMusic;
 	Mix_Music *missionMusic;
-	Mix_Music *fightMusic;
+	Mix_Music *fightMusic, *currentFightMusic;
+	std::map<string, Mix_Music*> bossCombatMusics;
 	Mix_Music *currentMusic;
 	Mix_Music *currentLevelMusic;
 	Mix_Music *chapterMusic;
@@ -125,7 +126,7 @@ public:
 
 	void selectMusic( Preferences *preferences, Mission *mission = NULL );
 
-	void checkMusic( bool inCombat );
+	void checkMusic( bool inCombat, const char *currentCombatMusic );
 
 	void startFootsteps( std::string& name, int depth, int panning );
 	void stopFootsteps();

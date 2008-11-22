@@ -512,7 +512,8 @@ void SDLHandler::mainLoop() {
 		if ( !running && popHandlers() ) return;
 
 		/*if ( isActive )*/ drawScreen();
-		gameAdapter->getSession()->getSound()->checkMusic( gameAdapter->inTurnBasedCombat() );
+		gameAdapter->getSession()->getSound()->checkMusic( gameAdapter->inTurnBasedCombat(), 
+		                                                   gameAdapter->getCurrentCombatMusic() );
 		Uint32 now = SDL_GetTicks();
 		if ( !gameAdapter->getAmbientPaused() && now - lastAmbientTime > AMBIENT_PAUSE_MIN ) {
 			lastAmbientTime = now;
