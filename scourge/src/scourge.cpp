@@ -136,6 +136,7 @@ Scourge::Scourge( UserConfiguration *config )
 	movingItem = NULL;
 	nextMission = -1;
 	teleportFailure = false;
+	gameCompleted = false;
 
 	// in HQ map
 	inHq = true;
@@ -186,6 +187,8 @@ void Scourge::initUI() {
 	                              getSession()->getShapePalette()->getGuiTexture2() );
 	beginChapter = chapterIntroWin->createButton( 10, 10, 140, 30, _( "Begin Chapter" ) );
 	replayIntro = chapterIntroWin->createButton( 10, 40, 140, 60, _( "Replay" ) );
+	uploadScoreButton = chapterIntroWin->createButton( 10, 70, 140, 90, _( "Upload Score" ) );
+	uploadScoreButton->setVisible( false );
 	chapterIntroWin->setVisible( false );
 	// show the main menu
 	//mainMenu = new MainMenu(this);
@@ -3578,10 +3581,17 @@ void Scourge::uploadScore() {
 	}
 
 	char desc[2000];
-	snprintf( desc, 2000, _( "Expired %s. Cause of demise: %s. Reached chapter %d of the story." ),
-	          place,
-	          getParty()->getParty( 0 )->getCauseOfDeath(),
-	          ( getSession()->getBoard()->getStorylineIndex() + 1 ) );
+	if( gameCompleted ) {
+		snprintf( desc, 2000, _( "Successfully completed the game and saved the world!!!" ),
+		          place,
+		          getParty()->getParty( 0 )->getCauseOfDeath(),
+		          ( getSession()->getBoard()->getStorylineIndex() + 1 ) );		
+	} else {
+		snprintf( desc, 2000, _( "Expired %s. Cause of demise: %s. Reached chapter %d of the story." ),
+		          place,
+		          getParty()->getParty( 0 )->getCauseOfDeath(),
+		          ( getSession()->getBoard()->getStorylineIndex() + 1 ) );
+	}
 
 	char score[5000];
 	snprintf( score, 5000, "mode=add&user=%s&score=%d&desc=%s",
@@ -3890,8 +3900,12 @@ void Scourge::writeLogMessage( char const* message, int messageType, int logLeve
 }
 
 void Scourge::finale( char *text, char *image ) {
+	gameCompleted = true;
 	getSession()->setChapterImage( image );
-	initChapterIntro( text );
+	getSession()->getSound()->pauseAmbientSounds();
+	beginChapter->setLabel( _( "Resume Game" ) );
+	uploadScoreButton->setVisible( true );
+	initChapterIntro( text, _( "Congratulations!" ) );
 }
 
 void Scourge::initChapterIntro( char *text, char *missionTitle ) {
@@ -3900,7 +3914,7 @@ void Scourge::initChapterIntro( char *text, char *missionTitle ) {
 	session->setShowChapterIntro( true );
 	hideGui();
 	chapterIntroWin->setVisible( true );
-	getSession()->getSound()->playMusicChapter();
+	getSession()->getSound()->playMusicChapter( gameCompleted );
 
 	// Try to add line breaks fitting the screen resolution
 	int charsPerRow = ( getScreenWidth() - 300 ) / 14 + 1;
@@ -3924,14 +3938,21 @@ void Scourge::initChapterIntro( char *text, char *missionTitle ) {
 
 void Scourge::replayChapterIntro() {
 	chapterTextPos = -2000;
-	getSession()->getSound()->playMusicChapter();
+	getSession()->getSound()->playMusicChapter( gameCompleted );
 }
 
 void Scourge::endChapterIntro() {
 	getSession()->setShowChapterIntro( false );
 	getChapterIntroWin()->setVisible( false );
 	showGui();
-	preMainLoop();
+	getSession()->getSound()->unpauseAmbientSounds();
+	beginChapter->setLabel( _( "Begin Chapter" ) );
+	uploadScoreButton->setVisible( false );
+	if( !gameCompleted ) {
+		preMainLoop();
+	} else if( getSession()->getCurrentMission() ) {
+		getSession()->getCurrentMission()->setCompleted( true );
+	}
 }
 
 Texture const& Scourge::getNamedTexture( char *name ) {

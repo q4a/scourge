@@ -50,6 +50,7 @@ private:
 	int missionMusicIndex;
 	int fightMusicIndex;
 	bool haveSound;
+	bool ambientPause;
 	std::map<std::string, AmbientSound*> ambients;
 #ifdef HAVE_SDL_MIXER
 	Mix_Music *menuMusic;
@@ -60,6 +61,7 @@ private:
 	Mix_Music *currentMusic;
 	Mix_Music *currentLevelMusic;
 	Mix_Music *chapterMusic;
+	Mix_Music *outroMusic;
 	int lastChapter;
 	Uint32 musicStartTime;
 	double musicPosition;
@@ -98,9 +100,13 @@ public:
 #endif
 	}
 
-	inline void playMusicChapter() {
+	inline void playMusicChapter( bool gameCompleted ) {
 #ifdef HAVE_SDL_MIXER
-		playMusic( chapterMusic, 2000, 1 );
+		if( gameCompleted ) {
+			playMusic( outroMusic, 2000, 1 );
+		} else {
+			playMusic( chapterMusic, 2000, 1 );
+		}
 #endif
 	}
 
@@ -134,6 +140,9 @@ public:
 	void addAmbientSound( std::string& name, std::string& ambient, std::string& footsteps, std::string& afterFirstLevel );
 	void startAmbientSound( std::string& name, int depth );
 	void stopAmbientSound();
+	
+	void pauseAmbientSounds();
+	void unpauseAmbientSounds();
 
 	void playObjectSound( std::string& name, int percent, int panning );
 	void storeAmbientObjectSound( std::string const& sound );

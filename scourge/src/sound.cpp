@@ -42,6 +42,7 @@ char *Sound::OPEN_BOX = "open box";
 
 Sound::Sound( Preferences *preferences ) {
 	haveSound = false;
+	ambientPause = false;
 
 	if ( preferences->isSoundEnabled() ) {
 #ifdef HAVE_SDL_MIXER
@@ -70,7 +71,7 @@ Sound::Sound( Preferences *preferences ) {
 
 		lastChapter = -1;
 		missionMusicIndex = -1;
-		currentMusic = currentLevelMusic = menuMusic = hqMusic = missionMusic = fightMusic = currentFightMusic = chapterMusic = NULL;
+		currentMusic = currentLevelMusic = menuMusic = hqMusic = missionMusic = fightMusic = currentFightMusic = chapterMusic = outroMusic = NULL;
 		musicStartTime = 0;
 		musicPosition = 0;
 		if ( haveSound ) {
@@ -104,6 +105,10 @@ Sound::~Sound() {
 			Mix_FreeMusic( chapterMusic );
 			chapterMusic = NULL;
 		}
+		if ( !outroMusic ) {
+					Mix_FreeMusic( outroMusic );
+					outroMusic = NULL;
+				}
 		// delete sounds
 		for ( map<string, Mix_Chunk*>::iterator i = soundMap.begin(); i != soundMap.end(); ++i ) {
 			Mix_Chunk *sample = i->second;
@@ -176,6 +181,12 @@ void Sound::selectMusic( Preferences *preferences, Mission * mission ) {
 			}
 		}
 
+		if( !outroMusic ) {
+			stringstream filename;
+			filename << rootDir << "/sound/music/outro.ogg";
+			string fn = filename.str();
+			outroMusic = Mix_LoadMUS( fn.c_str() );
+		}
 
 		//select mission music
 		// unload the current one
@@ -567,6 +578,21 @@ void Sound::unloadSound( int type, const string& file ) {
 }
 
 // ######################################
+void Sound::pauseAmbientSounds() {
+#ifdef HAVE_SDL_MIXER
+	ambientPause = true;
+	Mix_HaltChannel( Constants::RAIN_CHANNEL );
+	Mix_HaltChannel( Constants::FOOTSTEP_CHANNEL );
+	Mix_HaltChannel( Constants::AMBIENT_CHANNEL );
+#endif
+}
+
+void Sound::unpauseAmbientSounds() {
+#ifdef HAVE_SDL_MIXER
+	ambientPause = false;
+#endif
+}
+
 int Sound::playSound( const string& file, int panning ) {
 #ifdef HAVE_SDL_MIXER
 	if ( haveSound ) {
@@ -588,7 +614,7 @@ int Sound::playSound( const string& file, int panning ) {
 
 void Sound::startRain() {
 #ifdef HAVE_SDL_MIXER
-	if ( haveSound ) {
+	if ( haveSound && !ambientPause ) {
 		int panning = 127;
 		//cerr << "*** Playing WAV: " << file << endl;
 		string s = soundNameMap["rain"];
@@ -614,7 +640,7 @@ void Sound::stopRain() {
 
 void Sound::startFootsteps( std::string& name, int depth, int panning ) {
 #ifdef HAVE_SDL_MIXER
-	if ( haveSound ) {
+	if ( haveSound && !ambientPause ) {
 		AmbientSound *as = getAmbientSound( name, depth );
 		if ( as ) as->playFootsteps( panning );
 	}
@@ -638,7 +664,7 @@ void Sound::addAmbientSound( std::string& name, std::string& ambient, std::strin
 }
 void Sound::startAmbientSound( std::string& name, int depth ) {
 #ifdef HAVE_SDL_MIXER
-	if ( haveSound ) {
+	if ( haveSound && !ambientPause ) {
 		//cerr << "Playing " << name << " depth=" << depth << endl;
 		AmbientSound *as = getAmbientSound( name, depth );
 		if ( as ) as->playRandomAmbientSample();

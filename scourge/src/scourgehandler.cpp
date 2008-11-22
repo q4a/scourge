@@ -338,6 +338,9 @@ bool ScourgeHandler::handleEvent( Widget *widget, SDL_Event *event ) {
 		scourge->getSDLHandler()->fade( 0, 1, 20 );
 		scourge->endChapterIntro();
 		return false;
+	} else if ( widget == scourge->getUploadScore() ) {
+		scourge->getUploadScore()->setEnabled( false );
+		scourge->uploadScore();
 	} else if ( widget == scourge->getReplayIntro() ) {
 		scourge->replayChapterIntro();
 		return false;
