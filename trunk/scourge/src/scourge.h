@@ -215,6 +215,9 @@ public:
 	inline Button *getBeginChapter() {
 		return beginChapter;
 	}
+	inline Button *getUploadScore() {
+		return uploadScoreButton;
+	}
 	inline Button *getReplayIntro() {
 		return replayIntro;
 	}
@@ -894,6 +897,7 @@ private:
 	Board *board;
 	int nextMission;
 	bool teleportFailure;
+	bool gameCompleted;
 	bool inHq;
 	bool missionWillAwardExpPoints;
 	char infoMessage[ INFO_SIZE ];
@@ -1000,7 +1004,7 @@ private:
 	int chapterTextPos;
 	int chapterTextWidth;
 	Window *chapterIntroWin;
-	Button *beginChapter, *replayIntro;
+	Button *beginChapter, *replayIntro, *uploadScoreButton;
 
 	std::vector<MovingDoor> movingDoors;
 	char chapterIntroMissionTitle[255];

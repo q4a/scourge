@@ -266,7 +266,7 @@ function gameEndPart9() {
 
 function gameEndPartLast() {
 	scourgeGame.setMovieMode( false );
-	scourgeGame.getMission().setCompleted( true );
+	//scourgeGame.getMission().setCompleted( true );
 	scourgeGame.finale( _( "You notice the sun rising in the east. Around you the land slowly wakes, unaware of the catastrophy the most unlikely heroes have just averted. Truly you are heroes of lesser renown.||The demon's corpse disintegrates in front of your eyes. Its corrupted flesh becomes sand which the wind quickly scatters.||The monastery's walls stand like quiet sentinels, the aged stones showing no understanding of the monks' sins finally atoned.||As promised, the Guardians depart without another word.||Congratulations! You have completed the game!" ),
 	                   "finale.png" );
 	//scourgeGame.showTextMessage( _( "You notice the sun rising in the east. Around you the land slowly wakes, unaware of the catastrophy the most unlikely heroes have just averted. Truly you are heroes of lesser renown.||The demon's corpse disintegrates in front of your eyes. Its corrupted flesh becomes sand which the wind quickly scatters.||The monastery's walls stand like quiet sentinels, the aged stones showing no understanding of the monks' sins finally atoned.||As promised, the Guardians depart without another word.||Congratulations! You have completed the game!" ) );
