@@ -60,6 +60,7 @@ private:
 	std::vector<RpgItem*> items;
 	std::vector<Spell*> spells;
 	std::map<std::string, int> skills;
+	std::string combatMusic;
 
 	static std::map<int, std::vector<Monster*>* > monsters;
 	static std::map<int, std::vector<std::string>*>* currentSoundMap;
@@ -90,6 +91,13 @@ public:
 	}
 	inline int getSpeed() {
 		return speed;
+	}
+	inline char const* getCombatMusic() {
+		return combatMusic.c_str();
+	}
+	
+	inline void setCombatMusic( char *s ) {
+		this->combatMusic = s;
 	}
 	inline char const* getType() {
 		return type.c_str();

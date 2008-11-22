@@ -124,7 +124,8 @@ Scourge::Scourge( UserConfiguration *config )
 		, multiplayer( NULL )
 		, optionsMenu( NULL )
 		, mainMenu( NULL )
-		, guiThemes( NULL ) {
+		, guiThemes( NULL )
+		, currentCombatMusic( NULL ) {
 	// init the random number generator
 	srand( ( unsigned int )time( ( time_t* )NULL ) );
 	Util::mt_srand( ( unsigned long )time( ( time_t* )NULL ) );
@@ -1747,6 +1748,7 @@ bool Scourge::createBattleTurns() {
 
 	// set up battles
 	battleCount = 0;
+	currentCombatMusic = NULL;
 
 	// anybody doing anything?
 	for ( int i = 0; i < party->getPartySize(); i++ ) {
@@ -1797,7 +1799,13 @@ bool Scourge::createBattleTurns() {
 						if ( Battle::debugBattle )
 							cerr << "*** not starting combat: possible is false." << endl;
 						session->getCreature( i )->cancelTarget();
-					} else battle[battleCount++] = session->getCreature( i )->getBattle();
+					} else {
+						battle[battleCount++] = session->getCreature( i )->getBattle();
+						if( !currentCombatMusic && session->getCreature( i )->isMonster() && 
+								strlen( session->getCreature( i )->getMonster()->getCombatMusic() ) ) {
+							currentCombatMusic = session->getCreature( i )->getMonster()->getCombatMusic();
+						}
+					}
 				} else {
 					session->getCreature( i )->cancelTarget();
 				}
