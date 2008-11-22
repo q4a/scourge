@@ -114,10 +114,10 @@ void PcEditor::deleteLoadedShapes() {
 		CharacterModelInfo *cmi = i->first;
 		GLShape *shape = i->second;
 		// delete the md2/3 shape
-		scourge->getShapePalette()->
-		decrementSkinRefCountAndDeleteShape( cmi->model_name,
-		                                     cmi->skin_name,
-		                                     shape );
+		ShapePalette *pal = scourge->getShapePalette();
+		if ( pal != NULL ) {
+			pal->decrementSkinRefCountAndDeleteShape( cmi->model_name, cmi->skin_name, shape );
+		}
 	}
 	shapesMap.clear();
 }
