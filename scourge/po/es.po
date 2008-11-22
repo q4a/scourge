@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scourge\n"
 "Report-Msgid-Bugs-To: cctorok@yahoo.com\n"
-"POT-Creation-Date: 2008-11-10 01:32+0100\n"
-"PO-Revision-Date: 2008-11-16 19:30+0100\n"
+"POT-Creation-Date: 2008-11-16 23:07+0100\n"
+"PO-Revision-Date: 2008-11-22 18:16+0100\n"
 "Last-Translator: Diego J. <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,11 +17,11 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-11-05 16:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/scourgeview.cpp:894
+#: src/scourgeview.cpp:893
 msgid "Move"
 msgstr "Mover"
 
-#: src/scourgeview.cpp:1167
+#: src/scourgeview.cpp:1166
 msgid "cost"
 msgstr "coste"
 
@@ -35,7 +35,7 @@ msgid "*Cursed* "
 msgstr "*Maldito* "
 
 #: src/item.cpp:350
-#: src/creature.cpp:2491
+#: src/creature.cpp:2506
 msgid " *Mission*"
 msgstr " *Misión*"
 
@@ -75,7 +75,7 @@ msgid "RANGE"
 msgstr "RANGO"
 
 #: src/item.cpp:1217
-#: src/scourge.cpp:3631
+#: src/scourge.cpp:3647
 msgid "DEF"
 msgstr "DEF"
 
@@ -224,7 +224,7 @@ msgid "Basic Statistics:"
 msgstr "Estadísticas básicas:"
 
 #: src/characterinfo.cpp:50
-#: src/scourge.cpp:2275
+#: src/scourge.cpp:2290
 #: src/portrait.cpp:257
 #: src/tools/pagecreatures.cpp:53
 #: src/tools/pageclasses.cpp:49
@@ -232,7 +232,7 @@ msgid "HP"
 msgstr "PG"
 
 #: src/characterinfo.cpp:51
-#: src/scourge.cpp:2277
+#: src/scourge.cpp:2292
 #: src/portrait.cpp:262
 #: src/tools/pagecreatures.cpp:57
 #: src/tools/pageclasses.cpp:52
@@ -369,667 +369,667 @@ msgstr "Añadiendo muebles"
 msgid "Cleaning up"
 msgstr "Limpiando"
 
-#: src/scourge.cpp:185
+#: src/scourge.cpp:186
 msgid "Begin Chapter"
 msgstr "Empezar capítulo"
 
-#: src/scourge.cpp:186
+#: src/scourge.cpp:187
 msgid "Replay"
 msgstr "Repetir"
 
-#: src/scourge.cpp:194
+#: src/scourge.cpp:195
 msgid "Dismiss Party Member"
 msgstr "Expulsar miembro del grupo"
 
-#: src/scourge.cpp:195
+#: src/scourge.cpp:196
 msgid "Need permission to upload score to web"
 msgstr "Necesitas permiso para subir la puntuación a la web"
 
-#: src/scourge.cpp:196
+#: src/scourge.cpp:197
 msgid "Upload your score to the internet?"
 msgstr "¿Subir puntuación a internet?"
 
-#: src/scourge.cpp:197
+#: src/scourge.cpp:198
 msgid "Save game"
 msgstr "Guardar juego"
 
-#: src/scourge.cpp:198
+#: src/scourge.cpp:199
 msgid "Do you want to quicksave the game now?"
 msgstr "¿Quieres salvar rápidamente el juego ahora?"
 
-#: src/scourge.cpp:199
-#: src/scourge.cpp:201
+#: src/scourge.cpp:200
+#: src/scourge.cpp:202
 msgid "Load game"
 msgstr "Cargar juego"
 
-#: src/scourge.cpp:200
+#: src/scourge.cpp:201
 msgid "Do you really want to reload the current game?"
 msgstr "¿Realmente quieres recargar la partida actual?"
 
-#: src/scourge.cpp:202
+#: src/scourge.cpp:203
 msgid "Do you really want to load the autosave game?"
 msgstr "¿Realmente quieres recargar el juego autoguardado?"
 
-#: src/scourge.cpp:458
+#: src/scourge.cpp:470
 msgid "Error saving the auto save game."
 msgstr "Error guardando automáticamente la partida."
 
-#: src/scourge.cpp:461
+#: src/scourge.cpp:473
 msgid "Error saving current map."
 msgstr "Error salvando el mapa actual."
 
-#: src/scourge.cpp:472
+#: src/scourge.cpp:484
 msgid "Error #666: Failed to create map."
 msgstr "Error #666: Falló al crear el mapa."
 
-#: src/scourge.cpp:664
+#: src/scourge.cpp:679
 #, c-format
 msgid "For returning alive, the party receives %d experience points."
 msgstr "Por volver con vida, el grupo recibe %d puntos de experiencia."
 
-#: src/scourge.cpp:675
+#: src/scourge.cpp:690
 #, c-format
 msgid " %s gains a level! "
 msgstr " ¡%s gana un nivel! "
 
-#: src/scourge.cpp:824
+#: src/scourge.cpp:839
 #, c-format
 msgid "Welcome to the S.C.O.U.R.G.E. Head Quarters"
 msgstr "Bienvenido al centro de mando de S.C.O.U.R.G.E."
 
-#: src/scourge.cpp:827
+#: src/scourge.cpp:842
 #, c-format
 msgid "Teleport spell failed!! Entering level %d"
 msgstr "¡El hechizo de teletransportación ha fallado! Entrando en nivel %d"
 
-#: src/scourge.cpp:829
+#: src/scourge.cpp:844
 #, c-format
 msgid "Entering dungeon level %d"
 msgstr "Entrando en el nivel de mazmorra %d"
 
-#: src/scourge.cpp:1020
+#: src/scourge.cpp:1035
 #, c-format
 msgid "%s cancelled a pending action."
 msgstr "%s canceló la acción pendiente."
 
-#: src/scourge.cpp:1025
+#: src/scourge.cpp:1040
 msgid "Select a creature for this spell."
 msgstr "Selecciona una criatura para este hechizo."
 
-#: src/scourge.cpp:1030
+#: src/scourge.cpp:1045
 msgid "Select an item for this spell."
 msgstr "Selecciona un objeto para este hechizo."
 
-#: src/scourge.cpp:1035
+#: src/scourge.cpp:1050
 msgid "Select a location for this spell."
 msgstr "Selecciona un lugar para este hechizo."
 
-#: src/scourge.cpp:1040
+#: src/scourge.cpp:1055
 msgid "Select a door for this spell."
 msgstr "Selecciona una puerta para este hechizo."
 
-#: src/scourge.cpp:1045
+#: src/scourge.cpp:1060
 msgid "Select the party for this spell."
 msgstr "Selecciona un grupo para este hechizo."
 
-#: src/scourge.cpp:1067
-#: src/scourge.cpp:1093
+#: src/scourge.cpp:1082
+#: src/scourge.cpp:1108
 #, c-format
 msgid "%s selected a target"
 msgstr "%s seleccionó a un objetivo"
 
-#: src/scourge.cpp:1121
+#: src/scourge.cpp:1136
 #, c-format
 msgid "%1$s will target %2$s"
 msgstr "%1$s apuntará %2$s"
 
-#: src/scourge.cpp:1147
+#: src/scourge.cpp:1162
 #, c-format
 msgid "%1$s targeted %2$s."
 msgstr "%1$s apuntó a %2$s."
 
-#: src/scourge.cpp:1338
+#: src/scourge.cpp:1353
 #: src/containerview.cpp:292
 msgid "The item won't fit in that container!"
 msgstr "¡El objeto no cabe en tu contenedor!"
 
-#: src/scourge.cpp:1341
+#: src/scourge.cpp:1356
 #: src/containerview.cpp:338
 #, c-format
 msgid "%1$s is placed in %2$s."
 msgstr "%1$s está en %2$s."
 
-#: src/scourge.cpp:1533
+#: src/scourge.cpp:1548
 msgid "Something is blocking the door from closing."
 msgstr "Algo está impidiendo a la puerta cerrarse."
 
-#: src/scourge.cpp:1581
+#: src/scourge.cpp:1596
 msgid "Leave level?"
 msgstr "¿Salir del nivel?"
 
-#: src/scourge.cpp:1605
+#: src/scourge.cpp:1620
 msgid "Squirrel Console"
 msgstr "Consola Squirrel"
 
-#: src/scourge.cpp:1613
+#: src/scourge.cpp:1628
 msgid "Run"
 msgstr "Correr"
 
-#: src/scourge.cpp:1614
+#: src/scourge.cpp:1629
 msgid "Clear"
 msgstr "Limpiar"
 
-#: src/scourge.cpp:1615
+#: src/scourge.cpp:1630
 msgid "Reload"
 msgstr "Recargar"
 
-#: src/scourge.cpp:1902
+#: src/scourge.cpp:1917
 #, c-format
 msgid "Speed set to %d\n"
 msgstr "Velocidad a %d\n"
 
-#: src/scourge.cpp:2047
+#: src/scourge.cpp:2062
 msgid "Congratulations, mission accomplished!"
 msgstr "¡Enhorabuena, misión cumplida!"
 
-#: src/scourge.cpp:2058
+#: src/scourge.cpp:2073
 msgid "For completing the mission"
 msgstr "Por completar la misión"
 
-#: src/scourge.cpp:2060
+#: src/scourge.cpp:2075
 #, c-format
 msgid "The party receives %d points."
 msgstr "El grupo recibe %d puntos."
 
-#: src/scourge.cpp:2086
+#: src/scourge.cpp:2101
 msgid "Connecting to server"
 msgstr "Conectando con el servidor"
 
-#: src/scourge.cpp:2093
+#: src/scourge.cpp:2108
 msgid "Connected!"
 msgstr "¡Conectado!"
 
-#: src/scourge.cpp:2114
+#: src/scourge.cpp:2129
 msgid "Combat"
 msgstr "Combate"
 
-#: src/scourge.cpp:2115
+#: src/scourge.cpp:2130
 msgid "End Turn"
 msgstr "Terminar turno"
 
-#: src/scourge.cpp:2139
+#: src/scourge.cpp:2154
 #, c-format
 msgid "Pause game [%s]"
 msgstr "Pausar juego [%s]"
 
-#: src/scourge.cpp:2144
+#: src/scourge.cpp:2159
 msgid "Load or Save Game"
 msgstr "Cargar o salvar juego"
 
-#: src/scourge.cpp:2154
+#: src/scourge.cpp:2169
 msgid "Exit game"
 msgstr "Salir del juego"
 
-#: src/scourge.cpp:2161
+#: src/scourge.cpp:2176
 #, c-format
 msgid "Game options [%s]"
 msgstr "Opciones de juego [%s]"
 
-#: src/scourge.cpp:2169
+#: src/scourge.cpp:2184
 #, c-format
 msgid "Move as a group [%s]"
 msgstr "Mover como grupo [%s]"
 
-#: src/scourge.cpp:2210
+#: src/scourge.cpp:2225
 msgid "Dismiss this character"
 msgstr "Expulsar este personaje"
 
-#: src/scourge.cpp:2228
+#: src/scourge.cpp:2243
 #, c-format
 msgid "Backpack and party info [%s]"
 msgstr "Mochila e información de grupo [%s]"
 
-#: src/scourge.cpp:2237
+#: src/scourge.cpp:2252
 msgid "Click to assign a spell, capability or magic item."
 msgstr "Haz clic para asignar un hechozo, capacidad o objeto mágico."
 
-#: src/scourge.cpp:2292
+#: src/scourge.cpp:2307
 msgid "Current Weapon: Bare Hands"
 msgstr "Arma actual: manos desnudas"
 
-#: src/scourge.cpp:2299
+#: src/scourge.cpp:2314
 #, c-format
 msgid "Current Weapon: %s"
 msgstr "Arma actual: %s"
 
-#: src/scourge.cpp:2575
+#: src/scourge.cpp:2590
 #: src/portrait.cpp:438
 msgid "Thirst"
 msgstr "Sediento"
 
-#: src/scourge.cpp:2589
+#: src/scourge.cpp:2604
 #: src/portrait.cpp:443
 msgid "Hunger"
 msgstr "Hambriento"
 
-#: src/scourge.cpp:2671
+#: src/scourge.cpp:2686
 #: src/equip.cpp:631
 msgid "Not enough Magic Points to cast this spell!"
 msgstr "¡No hay sufientes puntos de magia para lanzar este hechizo!"
 
-#: src/scourge.cpp:2762
+#: src/scourge.cpp:2777
 #, c-format
 msgid "Begin Turn [%s]"
 msgstr "Empiezar turno [%s]"
 
-#: src/scourge.cpp:2767
+#: src/scourge.cpp:2782
 msgid "...In Turn..."
 msgstr "... En turno..."
 
-#: src/scourge.cpp:2773
+#: src/scourge.cpp:2788
 #, c-format
 msgid "Pause Game [%s]"
 msgstr "Pausar juego [%s]"
 
-#: src/scourge.cpp:2778
+#: src/scourge.cpp:2793
 #, c-format
 msgid "Unpause game. [%s]"
 msgstr "Quitar pausa [%s]"
 
-#: src/scourge.cpp:2814
+#: src/scourge.cpp:2829
 msgid "Available Missions"
 msgstr "Misiones disponibles"
 
-#: src/scourge.cpp:2820
+#: src/scourge.cpp:2835
 msgid "Drag map to look around."
 msgstr "Arrastra el mapa para mirar alrededor."
 
-#: src/scourge.cpp:2889
+#: src/scourge.cpp:2904
 msgid "This spell has no effect here..."
 msgstr "Este hechizo no tiene efecto aquí..."
 
-#: src/scourge.cpp:3067
+#: src/scourge.cpp:3082
 msgid "Game loaded successfully."
 msgstr "Juego cargado con éxito."
 
-#: src/scourge.cpp:3090
+#: src/scourge.cpp:3105
 msgid "Error: Saved game version is too old."
 msgstr "Error: la versión del juego salvado es muy vieja."
 
-#: src/scourge.cpp:3451
+#: src/scourge.cpp:3466
 msgid "You cannot hire more party members."
 msgstr "No puedes añadir nuevos miembros al grupo."
 
-#: src/scourge.cpp:3471
+#: src/scourge.cpp:3486
 #, c-format
 msgid "Would you like to dismiss %s the %s?"
 msgstr "¿Quieres expulsar %s el %s?"
 
-#: src/scourge.cpp:3518
+#: src/scourge.cpp:3534
 #, c-format
 msgid "%s the level %d %s"
 msgstr "%s el nivel %d %s."
 
-#: src/scourge.cpp:3526
+#: src/scourge.cpp:3542
 #, c-format
 msgid "in a cave on level %d"
 msgstr "En una caverna, en el nivel %d."
 
-#: src/scourge.cpp:3529
+#: src/scourge.cpp:3545
 #, c-format
 msgid "in dungeon level %d at %s"
 msgstr "En el nivel %d de la mazmorra, en %s."
 
-#: src/scourge.cpp:3534
+#: src/scourge.cpp:3550
 msgid " while attempting to "
 msgstr " al intentar "
 
-#: src/scourge.cpp:3538
+#: src/scourge.cpp:3554
 msgid " kill "
 msgstr " mata "
 
-#: src/scourge.cpp:3544
+#: src/scourge.cpp:3560
 msgid " recover "
 msgstr " recuperar"
 
-#: src/scourge.cpp:3553
+#: src/scourge.cpp:3569
 msgid "suddenly, while resting at HQ"
 msgstr "de repente, mientras estáis descansando en el cuartel"
 
-#: src/scourge.cpp:3557
+#: src/scourge.cpp:3573
 #, c-format
 msgid "Expired %s. Cause of demise: %s. Reached chapter %d of the story."
 msgstr "%s vencido. Causa del fracaso: %s. Capítulo de la historia %d alcanzado."
 
-#: src/scourge.cpp:3582
+#: src/scourge.cpp:3598
 msgid "Score was successfully uploaded."
 msgstr "La puntuación se ha subido con éxito."
 
-#: src/scourge.cpp:3627
+#: src/scourge.cpp:3643
 msgid "Initiative"
 msgstr "Iniciativa"
 
-#: src/scourge.cpp:3680
-#: src/scourge.cpp:3687
+#: src/scourge.cpp:3696
+#: src/scourge.cpp:3703
 #: src/infogui.cpp:615
 #: src/infogui.cpp:620
 #: src/infogui.cpp:625
 msgid "ATK"
 msgstr "ATQ"
 
-#: src/scourge.cpp:3693
-#: src/creature.cpp:3007
+#: src/scourge.cpp:3709
+#: src/creature.cpp:3021
 msgid "CTH"
 msgstr "PrDA"
 
-#: src/scourge.cpp:3694
+#: src/scourge.cpp:3710
 #: src/infogui.cpp:617
 #: src/infogui.cpp:623
 msgid "APR"
 msgstr "AcPA"
 
-#: src/scourge.cpp:3746
+#: src/scourge.cpp:3762
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: src/scourge.cpp:3748
+#: src/scourge.cpp:3764
 #, c-format
 msgid "per %.2f R"
 msgstr "per %.2f R"
 
-#: src/scourge.cpp:3757
+#: src/scourge.cpp:3773
 msgid "This item is already enchanted."
 msgstr "Este objeto ya está encantado."
 
-#: src/scourge.cpp:3759
+#: src/scourge.cpp:3775
 msgid "This item cannot be enchanted."
 msgstr "Este objeto no puede encantarse."
 
-#: src/scourge.cpp:3767
+#: src/scourge.cpp:3783
 msgid "You succesfully enchanted an item!"
 msgstr "¡Encantaste un objeto con éxito!"
 
-#: src/scourge.cpp:3771
+#: src/scourge.cpp:3787
 #, c-format
 msgid "You created: %s."
 msgstr "Has creado: %s."
 
-#: src/scourge.cpp:3776
+#: src/scourge.cpp:3792
 msgid "You failed to enchant the item."
 msgstr "Has fracasado al encantar el objeto."
 
-#: src/scourge.cpp:3780
+#: src/scourge.cpp:3796
 msgid "You can only enchant one item per day."
 msgstr "Sólo puedes encantar un objeto por día."
 
-#: src/scourge.cpp:3795
+#: src/scourge.cpp:3811
 msgid "Spell was entered into your spellbook."
 msgstr "Has copiado el hechizo a tu libro de magia."
 
-#: src/scourge.cpp:3799
-#: src/battle.cpp:763
+#: src/scourge.cpp:3815
+#: src/battle.cpp:774
 #, c-format
 msgid "%s crumbles into dust."
 msgstr "%s se desmorona en el polvo."
 
-#: src/scourge.cpp:3803
+#: src/scourge.cpp:3819
 msgid "You already know this spell"
 msgstr "Ya sabías este hechizo"
 
-#: src/scourge.cpp:3806
+#: src/scourge.cpp:3822
 msgid "You are not proficient enough to transcribe this scroll."
 msgstr "No eres lo suficientemente bueno para transcribir este pergamino."
 
-#: src/scourge.cpp:3809
+#: src/scourge.cpp:3825
 msgid "You can only transcribe scrolls!"
 msgstr "¡Sólo puedes copiar pergaminos!"
 
-#: src/scourge.cpp:3840
+#: src/scourge.cpp:3856
 msgid "This item is out of charges."
 msgstr "Este objeto no tiene cargas."
 
-#: src/scourge.cpp:3853
+#: src/scourge.cpp:3869
 msgid "You cannot use this item."
 msgstr "No puedes usar este objeto."
 
-#: src/scourge.cpp:4128
+#: src/scourge.cpp:4144
 msgid "The door splinters into many, tiny pieces!"
 msgstr "¡La puerta revienta en muchas piezas pequeñas!"
 
-#: src/creature.cpp:239
+#: src/creature.cpp:241
 #, c-format
 msgid "%1$s's skill in %2$s has increased."
 msgstr "%1$s incrementa su capacidad para %2$s."
 
-#: src/creature.cpp:250
+#: src/creature.cpp:252
 #, c-format
 msgid "%1$s is not allowed to equip %2$s."
 msgstr "%1$s no puede llevar %2$s."
 
-#: src/creature.cpp:581
+#: src/creature.cpp:583
 msgid "Can't find path to target. Sorry!"
 msgstr "No se puede encontrar una ruta al objetivo. ¡Lo siento!"
 
-#: src/creature.cpp:929
+#: src/creature.cpp:931
 #, c-format
 msgid "%s is overloaded."
 msgstr "%s está sobrecargado."
 
-#: src/creature.cpp:1050
+#: src/creature.cpp:1052
 #, c-format
 msgid "%s is not overloaded anymore."
 msgstr "%s ya no está sobrecargado."
 
-#: src/creature.cpp:1092
+#: src/creature.cpp:1094
 #, c-format
 msgid "%s is not hungry at the moment."
 msgstr "%s no tiene hambre."
 
-#: src/creature.cpp:1103
+#: src/creature.cpp:1105
 #, c-format
 msgid "%1$s eats %2$s."
 msgstr "%1$s come %2$s."
 
-#: src/creature.cpp:1107
-#: src/creature.cpp:1125
-#: src/creature.cpp:1140
+#: src/creature.cpp:1109
+#: src/creature.cpp:1127
+#: src/creature.cpp:1142
 #, c-format
 msgid "%s is used up."
 msgstr "%s está consumido."
 
-#: src/creature.cpp:1113
+#: src/creature.cpp:1115
 #, c-format
 msgid "%s is not thirsty at the moment."
 msgstr "%s no tiene sed."
 
-#: src/creature.cpp:1120
+#: src/creature.cpp:1122
 #, c-format
 msgid "%1$s drinks %2$s."
 msgstr "%1$s bebe %2$s."
 
-#: src/creature.cpp:1135
+#: src/creature.cpp:1137
 #, c-format
 msgid "%1$s drinks from %2$s."
 msgstr "%1$s bebe de %2$s."
 
-#: src/creature.cpp:1145
+#: src/creature.cpp:1147
 msgid "You cannot eat or drink that!"
 msgstr "¡No puedes comer o beber eso!"
 
-#: src/creature.cpp:1168
+#: src/creature.cpp:1170
 #: src/spellcaster.cpp:292
 #, c-format
 msgid "%s heals %d points."
 msgstr "%s sana %d puntos."
 
-#: src/creature.cpp:1177
+#: src/creature.cpp:1179
 #, c-format
 msgid "%s receives %d magic points."
 msgstr "%s recibe %d puntos de magia."
 
-#: src/creature.cpp:1184
+#: src/creature.cpp:1186
 #: src/spellcaster.cpp:313
 #, c-format
 msgid "%s feels impervious to damage!"
 msgstr "¡%s se siente insensible al daño!"
 
-#: src/creature.cpp:1204
+#: src/creature.cpp:1206
 #, c-format
 msgid "%s feels at peace."
 msgstr "%s se siente en paz."
 
-#: src/creature.cpp:1232
+#: src/creature.cpp:1234
 #, c-format
 msgid "%1$s will consume %2$s."
 msgstr "%1$s gastará %2$s."
 
-#: src/creature.cpp:1236
+#: src/creature.cpp:1238
 #, c-format
 msgid "%1$s will cast %2$s."
 msgstr "%1$s lanzará %2$s."
 
-#: src/creature.cpp:1240
+#: src/creature.cpp:1242
 #, c-format
 msgid "%1$s will use capability %2$s."
 msgstr "%1$s usará su capacidad %2$s."
 
-#: src/creature.cpp:1669
+#: src/creature.cpp:1671
 #, c-format
 msgid "%s is raised from the dead!"
 msgstr "¡%s ha vuelto a la vida!"
 
-#: src/creature.cpp:1707
+#: src/creature.cpp:1709
 #, c-format
 msgid "  %s levels up!"
 msgstr "  ¡%s sube de nivel!"
 
-#: src/creature.cpp:1731
+#: src/creature.cpp:1733
 #, c-format
 msgid "%s gains %d experience points."
 msgstr "%s gana %d puntos de experiencia."
 
-#: src/creature.cpp:1734
+#: src/creature.cpp:1736
 #, c-format
 msgid "%s gains a level!"
 msgstr "¡%s gana un nivel!"
 
-#: src/creature.cpp:1738
+#: src/creature.cpp:1740
 #, c-format
 msgid "%s looses %d experience points!"
 msgstr "¡%s pierde %d puntos de experiencia!"
 
-#: src/creature.cpp:2475
+#: src/creature.cpp:2490
 #, c-format
 msgid "Utterly chaotic"
 msgstr "Totalmente caótico"
 
-#: src/creature.cpp:2477
+#: src/creature.cpp:2492
 #, c-format
 msgid "Chaotic"
 msgstr "Caótico"
 
-#: src/creature.cpp:2479
+#: src/creature.cpp:2494
 #, c-format
 msgid "Neutral"
 msgstr "Neutral"
 
-#: src/creature.cpp:2481
+#: src/creature.cpp:2496
 #, c-format
 msgid "Lawful"
 msgstr "Legal"
 
-#: src/creature.cpp:2483
+#: src/creature.cpp:2498
 #, c-format
 msgid "Overly lawful"
 msgstr "Demasiado malvado"
 
-#: src/creature.cpp:2486
+#: src/creature.cpp:2501
 #, c-format
 msgid "%s (L:%d HP:%d/%d MP:%d/%d AL:%d%%(%s))"
 msgstr "%s (N:%d PG:%d/%d PM:%d/%d AL:%d%%(%s))"
 
-#: src/creature.cpp:2494
+#: src/creature.cpp:2509
 msgid " *Boss*"
 msgstr " *Jefe*"
 
-#: src/creature.cpp:2587
+#: src/creature.cpp:2602
 #, c-format
 msgid "%1$s gains the %2$s special ability!"
 msgstr "¡%1$s gana la habilidad especial de %2$s!"
 
-#: src/creature.cpp:2599
+#: src/creature.cpp:2614
 #, c-format
 msgid "%1$s looses the %2$s special ability!"
 msgstr "¡%1$s pierde la habilidad especial de %2$s!"
 
-#: src/creature.cpp:2817
-#: src/creature.cpp:2819
+#: src/creature.cpp:2831
+#: src/creature.cpp:2833
 msgid "...Attack from blind-spot!"
 msgstr "... ¡Ataque por el punto ciego!"
 
-#: src/creature.cpp:2961
-#: src/creature.cpp:3012
+#: src/creature.cpp:2975
+#: src/creature.cpp:3026
 msgid "skill"
 msgstr "habilidad"
 
-#: src/creature.cpp:2965
-#: src/creature.cpp:3011
+#: src/creature.cpp:2979
+#: src/creature.cpp:3025
 #: src/infogui.cpp:680
 msgid "vs."
 msgstr "vs."
 
-#: src/creature.cpp:2967
+#: src/creature.cpp:2981
 msgid "bonus"
 msgstr "extra"
 
-#: src/creature.cpp:3009
+#: src/creature.cpp:3023
 msgid "max"
 msgstr "máx"
 
-#: src/creature.cpp:3396
+#: src/creature.cpp:3410
 #, c-format
 msgid "%s notices a trap!"
 msgstr "¡%s ve una trampa!"
 
-#: src/creature.cpp:3416
+#: src/creature.cpp:3430
 #, c-format
 msgid "%s notices a secret door!"
 msgstr "¡%s ve una puerta secreta!"
 
-#: src/creature.cpp:3438
+#: src/creature.cpp:3452
 #, c-format
 msgid "%1$s blunders into a trap and takes %2$d points of damage!"
 msgstr "%1$s cae en la trampa y sufre %2$d puntos de daño!"
 
-#: src/creature.cpp:3459
+#: src/creature.cpp:3473
 #, c-format
 msgid "%s attempts to disable the trap:"
 msgstr "%s intenta desactivar la trampa:"
 
-#: src/creature.cpp:3463
+#: src/creature.cpp:3477
 msgid "   and succeeds!"
 msgstr "   y tiene éxito!"
 
-#: src/creature.cpp:3471
+#: src/creature.cpp:3485
 #, c-format
 msgid "    and fails! %1$s takes %2$d points of damage!"
 msgstr "    y falla! ¡%1$s sufre %2$d puntos de daño!"
 
-#: src/creature.cpp:3478
+#: src/creature.cpp:3492
 msgid "This trap is already disabled."
 msgstr "La trampa ya está desactivada."
 
-#: src/creature.cpp:3788
+#: src/creature.cpp:3802
 msgid "You may not summon any more creatures."
 msgstr "No puedes invocar más criaturas."
 
-#: src/creature.cpp:3819
+#: src/creature.cpp:3841
 #, c-format
 msgid "%s calls for help: a %s appears!"
 msgstr "%s pide ayuda: ¡un %s aparece!"
 
-#: src/creature.cpp:3838
+#: src/creature.cpp:3859
 #, c-format
 msgid "%s turns to vapors and disappears!"
 msgstr "¡%s se convierte en vapor y desaparece!"
@@ -1445,7 +1445,7 @@ msgid "Finishing map"
 msgstr "Terminando mapa"
 
 #: src/render/map.cpp:4354
-#: src/session.cpp:140
+#: src/session.cpp:139
 #: src/rpg/monster.cpp:35
 msgid "Loading Creatures"
 msgstr "Cargando Criaturas"
@@ -1484,7 +1484,7 @@ msgid "Ranged Weapon"
 msgstr "Arma de largo alcance"
 
 #: src/portrait.cpp:184
-#: src/battle.cpp:1604
+#: src/battle.cpp:1615
 msgid "Bare Hands"
 msgstr "Manos desnudas"
 
@@ -1493,12 +1493,12 @@ msgid "Click to change"
 msgstr "Haz clic para cambiar"
 
 #: src/portrait.cpp:230
-#: src/pceditor.cpp:488
+#: src/pceditor.cpp:484
 msgid "Female"
 msgstr "Mujer"
 
 #: src/portrait.cpp:230
-#: src/pceditor.cpp:487
+#: src/pceditor.cpp:483
 msgid "Male"
 msgstr "Hombre"
 
@@ -1532,19 +1532,19 @@ msgstr "Inmune a condiciones:"
 
 #: src/session.cpp:119
 #: src/shapepalette.cpp:35
-#: src/shapepalette.cpp:332
-#: src/shapepalette.cpp:358
+#: src/shapepalette.cpp:355
 #: src/shapepalette.cpp:381
-#: src/shapepalette.cpp:416
-#: src/shapepalette.cpp:629
-#: src/shapepalette.cpp:671
-#: src/shapepalette.cpp:707
-#: src/shapepalette.cpp:770
+#: src/shapepalette.cpp:404
+#: src/shapepalette.cpp:439
+#: src/shapepalette.cpp:652
+#: src/shapepalette.cpp:694
+#: src/shapepalette.cpp:730
+#: src/shapepalette.cpp:793
 msgid "Loading Shapes"
 msgstr "Cargando formas"
 
 #: src/session.cpp:123
-#: src/rpg/character.cpp:50
+#: src/rpg/character.cpp:51
 msgid "Loading Professions"
 msgstr "Cargando Profesiones"
 
@@ -1564,43 +1564,43 @@ msgstr "Cargando Hechizos"
 msgid "Loading Characters"
 msgstr "Cargando personajes"
 
-#: src/session.cpp:143
+#: src/session.cpp:142
 msgid "Loading Portraits"
 msgstr "Cargando retratos"
 
-#: src/session.cpp:148
+#: src/session.cpp:147
 #: src/board.cpp:88
 #: src/board.cpp:105
 msgid "Loading Missions"
 msgstr "Cargando misiones"
 
-#: src/session.cpp:153
+#: src/session.cpp:152
 msgid "Initializing Party"
 msgstr "Inicializando la fiesta"
 
-#: src/session.cpp:156
+#: src/session.cpp:155
 msgid "Initializing Scripting"
 msgstr "Inicializando scripting"
 
-#: src/session.cpp:159
+#: src/session.cpp:158
 #: src/rpg/rpg.cpp:60
 msgid "Loading Skills"
 msgstr "Cargando habilidades"
 
-#: src/session.cpp:162
+#: src/session.cpp:161
 msgid "Creating Map"
 msgstr "Creando mapa"
 
-#: src/session.cpp:165
+#: src/session.cpp:164
 msgid "Initializing UI"
 msgstr "Inicializando IU"
 
-#: src/session.cpp:339
+#: src/session.cpp:338
 #, c-format
 msgid "%s transforms into another shape in front of your very eyes!"
 msgstr "¡%s se transforma en otra forma delante de tus ojos!"
 
-#: src/session.cpp:571
+#: src/session.cpp:579
 #, c-format
 msgid "  %s dies!"
 msgstr "  ¡%s muere!"
@@ -1693,7 +1693,7 @@ msgstr "veneno %s."
 #: src/tools/pageclasses.cpp:35
 #: src/tools/pagelocations.cpp:34
 #: src/tools/subpagespells.cpp:46
-#: src/pceditor.cpp:448
+#: src/pceditor.cpp:444
 msgid "Name"
 msgstr "Nombre"
 
@@ -1877,7 +1877,7 @@ msgid "Icon (x,y)"
 msgstr "Icono (x,y)"
 
 #: src/tools/subpageschools.cpp:34
-#: src/pceditor.cpp:454
+#: src/pceditor.cpp:450
 msgid "Deity"
 msgstr "Deidad"
 
@@ -2154,7 +2154,7 @@ msgid "Enter the amount you want to donate."
 msgstr "Introduce la cantidad que quieres donar."
 
 #: src/board.cpp:75
-#: src/shapepalette.cpp:654
+#: src/shapepalette.cpp:677
 msgid "Loading Sounds"
 msgstr "Cargando sonidos"
 
@@ -2235,7 +2235,7 @@ msgid "Options"
 msgstr "Opciones"
 
 #: src/mainmenu.cpp:67
-#: src/mainmenu.cpp:135
+#: src/mainmenu.cpp:138
 msgid "About S.c.o.u.r.g.e."
 msgstr "Sobre S.c.o.u.r.g.e."
 
@@ -2243,24 +2243,24 @@ msgstr "Sobre S.c.o.u.r.g.e."
 msgid "Quit"
 msgstr "Salir"
 
-#: src/mainmenu.cpp:118
+#: src/mainmenu.cpp:121
 msgid "New Game Confirmation"
 msgstr "Confirmación para nueva partida"
 
-#: src/mainmenu.cpp:290
+#: src/mainmenu.cpp:317
 #, c-format
 msgid "Scourge version %s"
 msgstr "Versión %s de Scourge"
 
-#: src/mainmenu.cpp:295
+#: src/mainmenu.cpp:322
 msgid "Optionally compiled modules:"
 msgstr "Módulos compilados opcionalmente:"
 
-#: src/mainmenu.cpp:298
+#: src/mainmenu.cpp:325
 msgid "[Network]"
 msgstr "[Red]"
 
-#: src/mainmenu.cpp:302
+#: src/mainmenu.cpp:329
 msgid "[Sound]"
 msgstr "[Sonido]"
 
@@ -2303,7 +2303,7 @@ msgstr "¿Sobreescribir archivo existente?"
 
 #: src/savegamedialog.cpp:87
 #: src/savegamedialog.cpp:117
-#: src/scourgehandler.cpp:468
+#: src/scourgehandler.cpp:470
 msgid "Game saved successfully."
 msgstr "Partida salvada con éxito."
 
@@ -2753,80 +2753,80 @@ msgstr "¡No te puedes permitir el entrenamiento!"
 msgid "Congratulation %1$s, you are now a %2$s."
 msgstr "Felicidades %1$s, eres ahora un %2$s."
 
-#: src/pceditor.cpp:433
+#: src/pceditor.cpp:429
 msgid "Character Details"
 msgstr "Detalles del personaje"
 
-#: src/pceditor.cpp:450
+#: src/pceditor.cpp:446
 msgid "Profession"
 msgstr "Profesión"
 
-#: src/pceditor.cpp:452
+#: src/pceditor.cpp:448
 msgid "Stats"
 msgstr "Estadísticas"
 
-#: src/pceditor.cpp:456
+#: src/pceditor.cpp:452
 msgid "Image"
 msgstr "Imagen"
 
-#: src/pceditor.cpp:462
+#: src/pceditor.cpp:458
 msgid "Accept"
 msgstr "Aceptar"
 
-#: src/pceditor.cpp:468
+#: src/pceditor.cpp:464
 msgid "Dismiss"
 msgstr "Rechazar"
 
-#: src/pceditor.cpp:475
+#: src/pceditor.cpp:471
 #: src/mapeditor.cpp:93
 msgid "Name:"
 msgstr "Nombre:"
 
-#: src/pceditor.cpp:478
+#: src/pceditor.cpp:474
 msgid "Change"
 msgstr "Cambiar"
 
-#: src/pceditor.cpp:482
+#: src/pceditor.cpp:478
 msgid "What is your name, great hero? Enter it here, but choose wisely! You will not be able to change it again."
 msgstr "¿Cómo te llamas gran héroe? Introduce tu nombre aquí, pero ¡escógelo sabiamente! No podrás cambiarlo nunca más."
 
-#: src/pceditor.cpp:492
+#: src/pceditor.cpp:488
 msgid "Select the sex of your hero. Besides some visual effects, it has no other impact on game mechanics."
 msgstr "Selecciona el sexo de tu héroe. Aparte de la diferencia estética, no tiene ningún otro impacto en la mecánica del juego."
 
-#: src/pceditor.cpp:499
+#: src/pceditor.cpp:495
 msgid "Profession:"
 msgstr "Profesión:"
 
-#: src/pceditor.cpp:503
+#: src/pceditor.cpp:499
 msgid "Which starting profession most closely resembles your hero? Your character will evolve into a more powerful and refined practicer of the chosen art. Below is a brief description of the strengths and weaknesses of each profession."
 msgstr "¿Cuál es la primera profesión de tu héroe? Tu personaje podrá evolucionar y ser más poderoso en la disciplina escogida. Debajo hay una breve descrición de las bondades y defectos de cada profesión."
 
-#: src/pceditor.cpp:527
+#: src/pceditor.cpp:523
 msgid "Statistics:"
 msgstr "Estadísticas:"
 
-#: src/pceditor.cpp:557
+#: src/pceditor.cpp:553
 msgid "Points Remaining:"
 msgstr "Puntos restantes:"
 
-#: src/pceditor.cpp:561
+#: src/pceditor.cpp:557
 msgid "Reroll"
 msgstr "Volver a lanzar"
 
-#: src/pceditor.cpp:574
+#: src/pceditor.cpp:570
 msgid "Patron Deity:"
 msgstr "Deidad protectora:"
 
-#: src/pceditor.cpp:578
+#: src/pceditor.cpp:574
 msgid "At times on your journey you may be reduced to nothing but a prayer. \t                                Therefore it is important to keep in mind to whom such requests are directed. Given below is a list \t                                of known deities of the land with a brief description for each."
 msgstr "A veces en tu viaje puedes acabar sin nada, salvo con tus oraciones. Por esto, es importante tener en cuenta a quién van dirigidas tus peticiones. Abajo hay una lista de deidades de la tierra con una breve descripción para cada una."
 
-#: src/pceditor.cpp:605
+#: src/pceditor.cpp:601
 msgid "Appearance:"
 msgstr "Aparencia:"
 
-#: src/pceditor.cpp:609
+#: src/pceditor.cpp:605
 msgid "You may now choose a portrait and a character model \t                                to represent your hero. Your appearance is only a matter of personal choice, it will \t                                not affect the game in any way."
 msgstr "Puedes elegir un retrato y un modelo para representar a tu héroe. Tu apariencia sólo depende de a tu elección personal, y no afectará al transcurso del juego de ninguna forma."
 
@@ -2925,21 +2925,26 @@ msgstr "Objeto confiscado: %s"
 msgid "Your burgling attempt failed. Items and ex. were confiscated."
 msgstr "Tu intento de robo fall. Pierdes los objetos y experiencia."
 
-#: src/scourgehandler.cpp:259
+#: src/scourgehandler.cpp:261
 msgid "Combat is now Turn-based."
 msgstr "El combate es ahora basado en turnos."
 
-#: src/scourgehandler.cpp:261
+#: src/scourgehandler.cpp:263
 msgid "Combat is now Real-time."
 msgstr "El combate es ahora en tiempo real."
 
-#: src/scourgehandler.cpp:354
+#: src/scourgehandler.cpp:356
 msgid "Error saving game!"
 msgstr "¡Error guardando el juego!"
 
-#: src/scourgehandler.cpp:468
+#: src/scourgehandler.cpp:470
 msgid "Error saving the game."
 msgstr "Error salvando partida."
+
+#: src/scourgehandler.cpp:795
+#, c-format
+msgid "Saving screenshot to %s."
+msgstr "Salvando captura de pantalla a %s."
 
 #: src/uncursedialog.cpp:130
 msgid "Select items to uncurse."
@@ -3034,7 +3039,7 @@ msgid "MON DAY HOU:MIN"
 msgstr "MON DAY HOU:MIN"
 
 #: src/spellcaster.cpp:90
-#: src/battle.cpp:1035
+#: src/battle.cpp:1046
 #, c-format
 msgid "...fumble: hits %s instead!"
 msgstr "... Pifia: ¡golpea a %s!"
@@ -3050,7 +3055,7 @@ msgid "%s discovers a trap!"
 msgstr "¡%s descubre una trampa!"
 
 #: src/spellcaster.cpp:365
-#: src/battle.cpp:881
+#: src/battle.cpp:892
 #, c-format
 msgid "...%s has finished firing a volley"
 msgstr "... %s ha terminado disparando una descarga"
@@ -3081,7 +3086,7 @@ msgid "%s resists the spell! [%d]"
 msgstr "¡%s se resiste al hechizo! [%d]"
 
 #: src/spellcaster.cpp:528
-#: src/sqbinding/sqcreature.cpp:403
+#: src/sqbinding/sqcreature.cpp:408
 #, c-format
 msgid "%s resists the spell with magic item!"
 msgstr "¡%s resiste el conjuro con objeto mágico!"
@@ -3434,7 +3439,7 @@ msgstr "salvia"
 msgid "trainer"
 msgstr "entrenador"
 
-#: src/shapepalette.cpp:891
+#: src/shapepalette.cpp:914
 msgid "Loading Locations"
 msgstr "Cargando lugares"
 
@@ -3454,55 +3459,55 @@ msgstr "Perforante"
 msgid "Crushing"
 msgstr "Contundente"
 
-#: src/rpg/character.cpp:192
+#: src/rpg/character.cpp:211
 msgid "Skill bonuses to:"
 msgstr "Bonificaciones de habilidades para:"
 
-#: src/rpg/character.cpp:242
+#: src/rpg/character.cpp:261
 msgid "Can use any weapons, except:"
 msgstr "Puede usar cualquier arma, excepto:"
 
-#: src/rpg/character.cpp:245
+#: src/rpg/character.cpp:264
 msgid "Can use any armor, except:"
 msgstr "Puede llevar cualquier armadura, excepto:"
 
-#: src/rpg/character.cpp:257
+#: src/rpg/character.cpp:276
 msgid "Can use any weapons."
 msgstr "Puede usar cualquier arma."
 
-#: src/rpg/character.cpp:260
+#: src/rpg/character.cpp:279
 msgid "Can use any armor."
 msgstr "Puede llevar cualquier armadura."
 
-#: src/rpg/character.cpp:267
+#: src/rpg/character.cpp:286
 msgid "Not allowed to use any weapons, except:"
 msgstr "No puede usar armas, excepto:"
 
-#: src/rpg/character.cpp:270
+#: src/rpg/character.cpp:289
 msgid "Not allowed to use any armor, except:"
 msgstr "No puede llevar ninguna armadura, excepto:"
 
-#: src/rpg/character.cpp:282
+#: src/rpg/character.cpp:301
 msgid "Not allowed to use any weapons."
 msgstr "No puede usar ninguna arma."
 
-#: src/rpg/character.cpp:285
+#: src/rpg/character.cpp:304
 msgid "Not allowed to use any armor."
 msgstr "No puede llevar ninguna armadura."
 
-#: src/rpg/character.cpp:294
+#: src/rpg/character.cpp:313
 msgid "Can use weapons:"
 msgstr "Puede usar armas:"
 
-#: src/rpg/character.cpp:296
+#: src/rpg/character.cpp:315
 msgid "Can use armor:"
 msgstr "Puede llevar armadura:"
 
-#: src/rpg/character.cpp:306
+#: src/rpg/character.cpp:325
 msgid "Not allowed to use weapons:"
 msgstr "No puede usar armas:"
 
-#: src/rpg/character.cpp:308
+#: src/rpg/character.cpp:327
 msgid "Not allowed to use armor:"
 msgstr "No puede llevar armadura:"
 
@@ -3622,201 +3627,201 @@ msgstr "Aplicar"
 msgid "Click a quickspell slot to store this item."
 msgstr "Haz clic en un sitio de hechizo rápido para guardar este objeto."
 
-#: src/battle.cpp:708
+#: src/battle.cpp:719
 #, c-format
 msgid "%1$s uses capability %2$s!"
 msgstr "¡%1$s usa la capacidad de %2$s!"
 
-#: src/battle.cpp:749
+#: src/battle.cpp:760
 #, c-format
 msgid "Your %s is out of charges."
 msgstr "Tu %s está fuera de cargas."
 
-#: src/battle.cpp:758
+#: src/battle.cpp:769
 #, c-format
 msgid "Your %s feels lighter."
 msgstr "Tu %s se siente ligero."
 
-#: src/battle.cpp:770
+#: src/battle.cpp:781
 #, c-format
 msgid "Couldn't find scroll, cancelled spell."
 msgstr "No se puede encontrar el pergamino, el hechizo se cancela."
 
-#: src/battle.cpp:779
+#: src/battle.cpp:790
 #, c-format
 msgid "%1$s casts %2$s!"
 msgstr "¡%1$s convoca %2$s!"
 
-#: src/battle.cpp:846
+#: src/battle.cpp:857
 #, c-format
 msgid "...%s needs more practice."
 msgstr "...%s necesita más práctica."
 
-#: src/battle.cpp:850
+#: src/battle.cpp:861
 msgid "...the magic fails inexplicably!"
 msgstr "... ¡la magia falla inexplicablemente!"
 
-#: src/battle.cpp:888
+#: src/battle.cpp:899
 #, c-format
 msgid "...%s shoots a projectile"
 msgstr "... %s dispara un proyectil"
 
-#: src/battle.cpp:975
-#: src/battle.cpp:980
+#: src/battle.cpp:986
+#: src/battle.cpp:991
 #, c-format
 msgid "%1$s attacks %2$s with %3$s!"
 msgstr "¡%1$s ataca a %2$s con %3$s!"
 
-#: src/battle.cpp:1002
+#: src/battle.cpp:1013
 #, c-format
 msgid "%1$s attacks %2$s with bare hands!"
 msgstr "¡%1$s ataca a %2$s con las manos desnudas!"
 
-#: src/battle.cpp:1041
+#: src/battle.cpp:1052
 #, c-format
 msgid "%s his own fumbling hands"
 msgstr "%s de sus manos temblorosas"
 
-#: src/battle.cpp:1041
+#: src/battle.cpp:1052
 #, c-format
 msgid "%s her fumbling hands"
 msgstr "%s de sus manos temblorosas"
 
-#: src/battle.cpp:1064
+#: src/battle.cpp:1075
 msgid "...precise hit: double damage!"
 msgstr "... golpe crítico: ¡doble de daño!"
 
-#: src/battle.cpp:1074
+#: src/battle.cpp:1085
 msgid "...precise hit: triple damage!"
 msgstr "... golpe crítico: ¡triple de daño!"
 
-#: src/battle.cpp:1084
+#: src/battle.cpp:1095
 msgid "...precise hit: quad damage!"
 msgstr "... golpe crítico: ¡cuádruple de daño!"
 
-#: src/battle.cpp:1095
+#: src/battle.cpp:1106
 msgid "...precise hit: instant kill!"
 msgstr "... golpe crítico: ¡muerte instantánea!"
 
-#: src/battle.cpp:1126
+#: src/battle.cpp:1137
 msgid "...double damage!"
 msgstr "... ¡doble daño!"
 
-#: src/battle.cpp:1133
+#: src/battle.cpp:1144
 msgid "...triple damage!"
 msgstr "... ¡triple daño!"
 
-#: src/battle.cpp:1140
+#: src/battle.cpp:1151
 msgid "...quad damage!"
 msgstr "... ¡cuádruple daño!"
 
-#: src/battle.cpp:1147
+#: src/battle.cpp:1158
 #, c-format
 msgid "...%d-times damage!"
 msgstr "... ¡daño amplificado %d-veces!"
 
-#: src/battle.cpp:1181
+#: src/battle.cpp:1192
 #, c-format
 msgid "...%1$s attacks %2$s with %3$s magic."
 msgstr "...%1$s ataca a %2$s con la magia de %3$s."
 
-#: src/battle.cpp:1191
+#: src/battle.cpp:1202
 #, c-format
 msgid "%s resists the magic with %d."
 msgstr "%s resiste el conjuro con %d."
 
-#: src/battle.cpp:1223
+#: src/battle.cpp:1234
 #, c-format
 msgid "...%1$s blocks attack with %2$s!"
 msgstr "... ¡%1$s para el ataque con %2$s!"
 
-#: src/battle.cpp:1243
+#: src/battle.cpp:1254
 msgid "...Using cursed item!"
 msgstr "... ¡Usa un objeto maldito!"
 
-#: src/battle.cpp:1247
+#: src/battle.cpp:1258
 #, c-format
 msgid "...%s attacks for %d points."
 msgstr "... %s ataca y causa %d puntos."
 
-#: src/battle.cpp:1255
+#: src/battle.cpp:1266
 #, c-format
 msgid "...DAM:%.2f-%.2f extra:%.2f"
 msgstr "... DAÑO:%.2f-%.2f extra:%.2f"
 
-#: src/battle.cpp:1274
+#: src/battle.cpp:1285
 #, c-format
 msgid "...%s's armor blocks %d points"
 msgstr "... La armadura de %s's para %d puntos"
 
-#: src/battle.cpp:1312
+#: src/battle.cpp:1323
 msgid " weilding "
 msgstr "blandiendo"
 
-#: src/battle.cpp:1317
+#: src/battle.cpp:1328
 msgid " in a flurry of blows"
 msgstr " en una ráfaga de viento"
 
-#: src/battle.cpp:1332
+#: src/battle.cpp:1343
 msgid " magical damage by "
 msgstr "daño mágico por "
 
-#: src/battle.cpp:1348
+#: src/battle.cpp:1359
 #, c-format
 msgid "...%s dodges the attack."
 msgstr "... %s esquiva el ataque."
 
-#: src/battle.cpp:1358
+#: src/battle.cpp:1369
 #, c-format
 msgid "...%s misses the target."
 msgstr "... %s falla el blanco."
 
-#: src/battle.cpp:1380
+#: src/battle.cpp:1391
 #, c-format
 msgid "...%s hits for %d points of damage"
 msgstr "... %s golpea y causa %d puntos de daño"
 
-#: src/battle.cpp:1415
+#: src/battle.cpp:1426
 #, c-format
 msgid "...%s is killed!"
 msgstr "... ¡%s ha sido asesinado!"
 
-#: src/battle.cpp:1438
+#: src/battle.cpp:1449
 #, c-format
 msgid "%s finds %d coins!"
 msgstr "¡%s encuentra %d monedas!"
 
-#: src/battle.cpp:1446
+#: src/battle.cpp:1457
 msgid "You have defeated the dungeon boss!"
 msgstr "¡Has vencido al jefe de la calabozo!"
 
-#: src/battle.cpp:1447
+#: src/battle.cpp:1458
 msgid "...the news spreads quickly and his minions cower before you."
 msgstr "... Las noticias vuelan y sus lacayos se acobardan ante ti."
 
-#: src/battle.cpp:1457
+#: src/battle.cpp:1468
 #, c-format
 msgid "...no damaged caused."
 msgstr "... no se ha causado daño."
 
-#: src/battle.cpp:1552
-#: src/battle.cpp:1558
+#: src/battle.cpp:1563
+#: src/battle.cpp:1569
 #, c-format
 msgid "Targeted"
 msgstr "Apuntado"
 
-#: src/battle.cpp:1583
+#: src/battle.cpp:1594
 #, c-format
 msgid "Out of Range. Move: %d"
 msgstr "Fuera de rango. Muévete: %d"
 
-#: src/battle.cpp:1585
-#: src/battle.cpp:1592
+#: src/battle.cpp:1596
+#: src/battle.cpp:1603
 #, c-format
 msgid "Out of Range"
 msgstr "Fuera de rango"
 
-#: src/battle.cpp:1592
+#: src/battle.cpp:1603
 #, c-format
 msgid "In Range"
 msgstr "En rango"
@@ -4701,54 +4706,66 @@ msgstr "Sabien Gartu"
 msgid "Karzul Agmordexu"
 msgstr "Karzul Agmordexu"
 
-#: ../scourge_data/config/npc.cfg:719
+#: ../scourge_data/config/npc.cfg:727
 #: ../scourge_data/maps/library31.cfg:74
 msgid "Quegazu the Reformed"
 msgstr "Quegazu el Reformado"
 
-#: ../scourge_data/config/npc.cfg:733
+#: ../scourge_data/config/npc.cfg:741
 #: ../scourge_data/maps/library31.cfg:82
 msgid "Narzegg the Vain"
 msgstr "Narzegg el Vano"
 
-#: ../scourge_data/config/npc.cfg:747
+#: ../scourge_data/config/npc.cfg:755
 msgid "Positive Energy of Hornaxx"
 msgstr "Energía positiva de Hornaxx"
 
-#: ../scourge_data/config/npc.cfg:772
+#: ../scourge_data/config/npc.cfg:780
 msgid "Negative Energy of Hornaxx"
 msgstr "Energía negativa de Hornaxx"
 
-#: ../scourge_data/config/npc.cfg:797
+#: ../scourge_data/config/npc.cfg:805
 #: ../scourge_data/maps/hq.cfg:170
 #: ../scourge_data/maps/tree.cfg:22
 #: ../scourge_data/maps/emeril2.cfg:4
 msgid "Mothrazu"
 msgstr "Mothrazu"
 
-#: ../scourge_data/config/npc.cfg:822
+#: ../scourge_data/config/npc.cfg:830
 msgid "Mothrazu Pain Incarnate"
 msgstr "Dolor de Mothrazu encarnado"
 
-#: ../scourge_data/config/npc.cfg:845
+#: ../scourge_data/config/npc.cfg:853
 #: ../scourge_data/maps/tree.cfg:4
 msgid "Spawn of Arcanex"
 msgstr "Progenie de Arcanex"
 
-#: ../scourge_data/config/npc.cfg:870
-#: ../scourge_data/maps/chapter122.cfg:47
-#: ../scourge_data/maps/chapter122.cfg:54
-#: ../scourge_data/maps/chapter122.cfg:61
-#: ../scourge_data/maps/chapter122.cfg:68
-#: ../scourge_data/maps/chapter122.cfg:75
-#: ../scourge_data/maps/chapter122.cfg:82
+#: ../scourge_data/config/npc.cfg:878
+#: ../scourge_data/maps/chapter122.cfg:3
+#: ../scourge_data/maps/chapter122.cfg:10
+#: ../scourge_data/maps/chapter122.cfg:17
+#: ../scourge_data/maps/chapter122.cfg:24
+#: ../scourge_data/maps/chapter122.cfg:31
+#: ../scourge_data/maps/chapter122.cfg:38
 msgid "Nightward"
 msgstr "Pupilo nocturno"
 
-#: ../scourge_data/config/npc.cfg:889
-#: ../scourge_data/maps/chapter122.cfg:89
+#: ../scourge_data/config/npc.cfg:897
+#: ../scourge_data/maps/chapter122.cfg:45
 msgid "Nightlord"
 msgstr "Señor de la noche"
+
+#: ../scourge_data/config/npc.cfg:917
+msgid "Norill Lamath, Guardian of the Realm"
+msgstr "Norill Lamath, Guardián del Reino"
+
+#: ../scourge_data/config/npc.cfg:937
+msgid "Sarrez Magron, Guardian of the Realm"
+msgstr "Sarrez Magron, Guardián del Reino"
+
+#: ../scourge_data/config/npc.cfg:957
+msgid "Rolan Welheit, Guardian of the Realm"
+msgstr "Rolan Welheit, Guardián del Reino"
 
 #: ../scourge_data/config/profession.cfg:7
 msgid "Man-at-arms"
@@ -8186,7 +8203,7 @@ msgstr "Gelatina verde rezumante"
 
 #: ../scourge_data/config/monster.cfg:54
 msgid "Buggerling"
-msgstr "Buggerling"
+msgstr "Carroñero goblinoide"
 
 #: ../scourge_data/config/monster.cfg:68
 msgid "Red Bauul"
@@ -10380,101 +10397,109 @@ msgstr "autorización"
 msgid "Remember traveler, this is an $ancient place... $Sabien's residence here is but a drop in the vast river of time... All of us are watched over by divine guardians, but for us in the $library their gaze comes from much closer..."
 msgstr "Recuerda viajero, este es un lugar $antiguo... La residencia de $Sabien no es más que una gota del río del tiempo... Todos nosotros somos vigilados por sus guardianes divinos, pero para nosotros, en la $biblioteca, su mirada se torna mucho más cercana..."
 
-#: ../scourge_data/maps/chapter122.cfg:5
+#: ../scourge_data/maps/chapter122.cfg:54
 msgid "The fabric of $night lightens.||Our duty is soon at an end.||We have been $waiting for you."
 msgstr "La tela de $noche se dispersa.||Nuestro deber pronto llegará a su fin.||Te hemos estado $esperando."
 
-#: ../scourge_data/maps/chapter122.cfg:7
+#: ../scourge_data/maps/chapter122.cfg:56
 msgid "I am at a loss for words."
 msgstr "No me puedo creer esto."
 
-#: ../scourge_data/maps/chapter122.cfg:8
+#: ../scourge_data/maps/chapter122.cfg:57
 msgid "The endless patience of Amod is like echoing crash of a waterfall."
 msgstr "La paciencia infinita de Amod es como el eco de un golpe en una cascada."
 
-#: ../scourge_data/maps/chapter122.cfg:9
+#: ../scourge_data/maps/chapter122.cfg:58
 msgid "Your world... it's too bright."
 msgstr "Tu mundo... Es demasiado brillante."
 
-#: ../scourge_data/maps/chapter122.cfg:10
+#: ../scourge_data/maps/chapter122.cfg:59
 msgid "night"
 msgstr "noche"
 
-#: ../scourge_data/maps/chapter122.cfg:11
+#: ../scourge_data/maps/chapter122.cfg:60
 msgid "We keep watch in the night while $they sleep.||Disturbances are not tolarated.||All $intruders have been nutralized."
 msgstr "Seguimos vigilando por la noche mientras $they duermen.||No se permiten los disturbios.||Todos los $intrusos han sido neutralizados."
 
-#: ../scourge_data/maps/chapter122.cfg:12
+#: ../scourge_data/maps/chapter122.cfg:61
 msgid "waiting,wait"
 msgstr "esperando,esperar"
 
-#: ../scourge_data/maps/chapter122.cfg:13
+#: ../scourge_data/maps/chapter122.cfg:62
 msgid "Yes. $Our charter in your world is to ensure nothing disturbs $their slumber. When the time has come for the awakening, new heroes would come searching for help.||Now the winding threads of knowledge speak of a new spring in the spaces of Arcanum. The time is here..."
 msgstr "Sí. $Nuestro fuero en tu mundo es velar porque nada perturbe $su sueño. Cuando haya llegado el momento de despertar, nuevos héroes vendrán en busca de ayuda.||Ahora, las sinuosas hebras de la sabiduría hablan de una nueva primavera en los espacios de Arcanum. La hora ha llegado..."
 
-#: ../scourge_data/maps/chapter122.cfg:14
+#: ../scourge_data/maps/chapter122.cfg:63
 msgid "they,They,their"
 msgstr "ellos,Ellos,su"
 
-#: ../scourge_data/maps/chapter122.cfg:15
+#: ../scourge_data/maps/chapter122.cfg:64
 msgid "You know who stirs even now beyond those doors...||Many years have they spent frozen in the voids of death. All the while, hope glimmered like a distant star above their black sea of sleep.||Their time is now, and $our return to the homelands is near."
 msgstr "Sabes quién se despierta ahora detrás de esas puertas...||Muchos años han pasado congelados en los vacíos de la muerte. Mientras que la esperanza brillaba con luz trémula como una estrella distante sobre su negro mar de sueño.||Su hora ha llegado, y $nuestro retorno a nuestras tierras natales está cerca."
 
-#: ../scourge_data/maps/chapter122.cfg:16
+#: ../scourge_data/maps/chapter122.cfg:65
 msgid "intruder,intruders"
 msgstr "intruso,intrusos"
 
-#: ../scourge_data/maps/chapter122.cfg:17
+#: ../scourge_data/maps/chapter122.cfg:66
 msgid "...there have been a few who tried... through the years...||...our records are incomplete, I'm afraid... but let's just say, all attempts have been unsuccessful.||$They sleep in the same peace now as when they first entered their voluntary entombment.||$We watch and serve. That is our duty."
 msgstr "... Ha habido unos pocos que han intentado... Durante los años...||... Temo que nuestros registros estén incompletos... Pero digamos que todos nuestros intentos han sido infructuosos.||Duermen ahora con la misma paz que cuando se sepultaron voluntariamente.||Vigilamos y servimos. Es nuestro deber."
 
-#: ../scourge_data/maps/chapter122.cfg:18
+#: ../scourge_data/maps/chapter122.cfg:67
 msgid "We,Our,our"
 msgstr "Nosotros,Nuestro,nuestro"
 
-#: ../scourge_data/maps/chapter122.cfg:19
+#: ../scourge_data/maps/chapter122.cfg:68
 msgid "We are servants of the most mighty... Leaders of men who hundreds of years ago, after many decades of service to humanity, saw betrayal and treachery within their own ranks!||Yet  they knew this time would come and these catacombs were built earlier in preparation for ...the long night.||We Nightwards were part of the construction of the crypt. Magical beings called from the dimension of night to loan our talents to the safe-keeping of their sleep, until such time...||Well, until now, that is. Hurry, the Nightlord awaits!"
 msgstr "Somos sirvientes del más poderoso... Líderes de hombres que hace centurias, después de muchas décadas de servicio a la humanidad, ¡vimos la traición en nuestras propias filas!||Todavía sabían que ese tiempo llegaría y estas catacumbas fueron construidas pronto en preparación de la... Larga noche.||Nosotros pupilos de la noche tomamos parte en la construcción de la cripta. Seres mágicos llamados de la dimensión de la noche para prestar nuestros talentos a los guardianes de su sueño, hasta esta hora...||Bueno, hasta ahora, esto es. ¡Daros prisa el Señor de la noche espera!"
 
-#: ../scourge_data/maps/chapter122.cfg:20
+#: ../scourge_data/maps/chapter122.cfg:69
 msgid "Melathor,Melathor of Allovium"
 msgstr "Melathor,Melathor de Allovium"
 
-#: ../scourge_data/maps/chapter122.cfg:21
+#: ../scourge_data/maps/chapter122.cfg:70
 msgid "Our charter is not confined to these halls... $they made sure our agents are well positioned... like the black roots of the Shade-lilly, $our network of servants is wide and long reaching..."
 msgstr "Nuestro fuero no está confinado en estos salones... $ellos se han asegurado de que nuestros agentes estén bien posicionados... Como esas raíces negras de Shade-lilly, $nuestra red de sirvientes es ancha y de largo alcance..."
 
-#: ../scourge_data/maps/chapter122.cfg:25
-msgid "Ah, here you are finally. I will spare you the flowery metaphors of my minions and get directly to the point. (As an aside I always did love humanity's pragmatism... perhaps I'm the only such one of my $kind.)||I assume you know in $whose crypts of hibernation you tread? I assume you understand $what is expected of you?||The unholy presence of the demon Karzul is clear to me, even though the dark Lord gave a wide berth to these sacred halls on his way up. I have finished the incantations and the tombs of the $Guardians are ready for the awakening.||All that remains is your $consent. Therefore, I must urge you to act quickly, and if you have any $questions, ask them now. Once the events of the awakening are underway, you will not find $us here. With our charter finished the $nightwards will return home."
-msgstr "Ah, aquí estáis al fin. Voy a escatimar las floridas metáforas de mi siervos y voy a ir directo al grano. Adicionalmente te diré que yo siempre amé el pragmatismo de la humanidad... Quizás soy el único de esa clase.||Supongo que sabéis qué criptas de hibernación pisáis? Supongo que entendéis $qué se espera de vosotros?||La nefaria presencia del demonio Karzul está clara, incluso cuando el Señor oscuro eludió estas salas sagradas en su camino. He acabado los encantamientos y las tumbas de los $Guardianes están listas para el despertar.||Todo lo que queda es tu $consentimiento. Por lo tanto, debo instaros a actuar con rapidez, y si tienes alguna $pregunta, házmelas ahora. Una vez que los acontecimientos del despertar están en marcha, ya no nos encontrarás aquí. Con nuestra misión terminada, los $pupilos nocturnos volverán a su hogar."
+#: ../scourge_data/maps/chapter122.cfg:74
+msgid "Ah, here you are finally. I will spare you the flowery metaphors of my minions and get directly to the point. - As an aside I always did love humanity's pragmatism... perhaps I'm the only such one of my $kind.||I assume you know in $whose crypts of hibernation you tread? I assume you understand $what is expected of you?||The unholy presence of the demon Karzul is clear to me, even though the dark Lord gave a wide berth to these sacred halls on his way up. I have finished the incantations and the tombs of the $Guardians are ready for the awakening.||All that remains is your $consent. Therefore, I must urge you to act quickly, and if you have any $questions, ask them now. Once the events of the awakening are underway, you will not find $us here. With our charter finished the $nightwards will return home."
+msgstr "Ah, aquí estáis al fin. Voy a escatimar las floridas metáforas de mi siervos y voy a ir directo al grano. Adicionalmente te diré que yo siempre amé el pragmatismo de la humanidad... Quizás soy el único de esa clase.||Supongo que sabéis qué criptas de hibernación pisáis? Supongo que entendéis $qué se espera de vosotros?||La nefaria presencia del demonio Karzul está clara, incluso cuando el Señor oscuro eludió estas salas sagradas en su camino. He acabado los encantamientos y las tumbas de los $Guardianes están listas para el despertar.||Todo lo que queda es tu $consentimiento. Por lo tanto, debo instaros a actuar con rapidez, y si tienes alguna $pregunta, házmelas ahora. Una vez que los acontecimientos del despertar estén en marcha, ya no nos encontrarás aquí. Con nuestra misión terminada, los $pupilos nocturnos volverán a su hogar."
 
-#: ../scourge_data/maps/chapter122.cfg:26
+#: ../scourge_data/maps/chapter122.cfg:75
 msgid "I haven't time for idle chatter."
 msgstr "No tengo tiempo para charlas intrascendentes."
 
-#: ../scourge_data/maps/chapter122.cfg:28
+#: ../scourge_data/maps/chapter122.cfg:77
 msgid "The story goes something like this:||Hundreds of years ago, after the defeat of an invasion of demons, a group of heroes banded together to form the order that came to be called the Guardians of the Realm.||Though mostly a peace-keeping force, they also concerned themselves with the preservation of all knowledge of their age. Among other things, they build several libraries around the world to house the rare books in which the Guardians recorded known history, astronomy and all other sciences and magic they learned. Their hope was to pass on their vast body of knowledge and let future generations know how to deal with another war should the $Abyss invade again.||Sadly, before their work could be completed, in a final and cataclysmic battle, the demons destroyed them all...||However, the guardians have long prophesied their doom and took precautions against such events. With their destruction all but assured they retired to these halls and entered a death-like state of frozen $preservation."
 msgstr "Su leyenda es una penosa... Hace miles de años, después de la derrota de una invasión de demonios, un grupo de héroes unidos, formaron la orden que llegaría a ser los Guardianes del Reino. Aunque eran una fuerza pacificadora, también estaban ocupados en al conservación de la sabiduría de su época. Esta $biblioteca es una de las pocas que construyeron por el mundo para almacenar libros raros en los que los Guardianes escribían su historia, astronomía y todas las otras ciencias de la magia que ellos habían aprendido. Su esperanza estaba en pasar su vasto legado para dejar a las generaciones futuras una guía de cómo lugar en otra guerra si el $Abismo nos invadía otra vez. Lamentablemente, antes de que su trabajo estuviera completado, en una batalla de proporciones catastróficas los demonios los destruyeron a todos... Se habla de que una traición causada por problemas con los mandos en la Orden causó su caída."
 
-#: ../scourge_data/maps/chapter122.cfg:30
+#: ../scourge_data/maps/chapter122.cfg:79
 msgid "The Abyss? Why, it's humanities ancient foe... the home of all that is evil, the land of demons.||Rest assured the demon lord Karzul is not here on some kind of sight-seeing tour from his native planes. He will not stop until his powers of corruption brought humanity to its knees. Years of war, anarchy and famine will follow unless he is stopped."
 msgstr "¿El Abismo? Porque es un antiguo enemigo de la humanidad... El hogar de todo lo que es malo, la tierra de los demonios.||Ten seguro que el señor demonio Karzul no está aquí en algún tipo de tour de visitas desde sus planos natales. Él no se detendrá hasta que sus poderes de la corrupción tiren a la humanidad de rodillas. Años de guerra, anarquía y hambre le seguirán a menos que se le pare."
 
-#: ../scourge_data/maps/chapter122.cfg:32
+#: ../scourge_data/maps/chapter122.cfg:81
 msgid "Centuries passed, while $Guardians of the Realm slept in their tombs. It was a difficult choice to make, but in the face of overwhelming odds there was no better solution.||The demonic horde, thought to have destroyed their most feared foes, moved on and after many years of destruction turned on itself.||Battles erupted among the Abyssal troops, as ancient fears and jealousies flared. While campaigning on the material plane, the relatively weakly defended home base of the demon generals was assailed by other even more ancient chaotic beings that the demons displaced many eons ago to win their thrones in the Abyss. Finally keeping two fronts running became such a burden that their hosts were called home where the battle for dominance continues to this day. Such is the nature of evil...||Here life slowly returned to its normal, peaceful pace. The Guardians stayed interred since there was no reason for their resurrection in a now tame world.||But all that changed with rise of the demon lord Karzul.||It is not clear to me how he managed to bring so much of his infernal power forth into your land... Nevertheless, the time is now. The Guardians are ready to come to life again. All we need is a group of heroes to $call on them."
 msgstr "Siglos pasaron mientras los $Guardianes del Reino dormían en sus tumbas. Era difícil la elección a hacer, pero en vista de los acontecimientos no había otra solución mejor.||La horda demoníaca aunque se habían destruido sus más fieros líderes, se mudó y después de muchos años de destrucción se atacó a sí misma.||Las batallas emergieron de entre las tropas Abismales conforme los miedos y envidias germinaban. Mientras estaban de campaña en el plano material, la base relativamente débil de los generales demonios fue asaltada por otros seres más antiguos y caóticos que los demonios echaron hace eones de sus tronos en el Abismo. Finalmente se mantuvieron dos frentes que se convirtieron en una carga cuando sus integrantes fueron llamados desde su casa donde la batalla por el control continua hasta este día. Esa es la naturaleza del mal...||Aquí la vida lentamente vuelve a ser apacible. Los Guardianes se quedaron inhumados dado que no había motivo para resucitarlos en un mundo ahora domado.||Pero todo lo que cambió con el alzamiento del señor demonio Karzul.||No está claro cómo se las arregló para acumular tanto poder infernal y usarlo en tu tierra... No obstante, la hora ha llegado. Los Guardianes está preparados para volver a la vida otra vez. Todo lo que necesitamos es un grupo de héroes para despertarlos."
 
-#: ../scourge_data/maps/chapter122.cfg:34
+#: ../scourge_data/maps/chapter122.cfg:83
 msgid "Your world is in mortal danger. Karzul even now is preparing... scheming to bring civilization to an end. He will not rest until all of the world's leader serve him. And to this end he will do anything: start wars, incite religious riots, burn towns, fail crops, anything. Your only chance is to defeat him while he is gathering his might, here at the monastery.||I would think you have maybe an hour... maybe less. Soon he will use whatever conduit he has established to his native plane of the $Abyss to refuel on infernal energies and begin to spread darkness and pain.||However, powerful as you are, you cannot hope to defeat him. The $Guardians of the Realm foresaw this and built these crypts to while away their time, until heroes like yourself call on them in their hour of need. If summoned, they will return from their long night of death-like rest to fight on your side against Karzul.||In order for the $Guardians to reappear all I need is for you to $call on them."
 msgstr "Mortal tu mundo peligra. Karzul está ahora preparado... Planificando cómo llevar la civilización a su final. No descansará hasta que todos los líderes de los mundos le sirvan a él. Y para esto hará lo que sea: empezar guerras, incitar revueltas religiosas, quemar ciudades, arrasar cultivos, lo que sea. Tu única posibilidad es vencerle mientras esté reuniendo su poder, aquí, en el monasterios.||Creo que tendrás quizás una hora... Quizás menos. Pronto usará el conducto que ha establecido con su plano nativo del $Abismo para recargarse de energías infernales y empezar a llevar oscuridad y dolor.||Sea como sea, poderoso como eres, no puedes esperar vencerle. Los $Guardianes del Reino previeron esto y construyeron estas criptas hace mucho tiempo, para que héroes como tú los despertaran en un momento de necesidad. Si se les convoca, volverán de su larga noche de descanso casi muerte para pelear en tu bando contra Karzul.||Para hacer que los $Guardianes reaparezcan todo lo que tienes que hacer es llamarlos."
 
-#: ../scourge_data/maps/chapter122.cfg:36
-msgid "Here is how this works: as you may already know, pending their destruction the $Guardians of the Realm willingly entered hibernation.||In reality a deal with Death was struck. Death being eternal miser grants no escape only delays... Therefore it was decided that should the $Guardians ever need to return, given their past record of heroism (a fact that even wowed Death a bit) will be granted one leave of absence with the understanding that they will voluntarily return to Death's domain once their work was done.||However, in order for Death to agree to this rather unusual pact, he required that the reasons for calling the Guardians back be a genuine, honest-to-god end-of-world scenario. (As I'm sure you can see, for rather obvious reasons the end of the world would profit Death's business greatly but would not be grounds for a sustainable venture.) As such, he required that a new group of heroes consent to putting their own lives in escrow for the duration of the Guardian's stay. Were they to somehow break their promise, Death would claim you in their stead.||The $Guardians made me promise to impress upon you their resolve to remain true to their word. As they once willingly entered hibernation, so will they again stand under Death's banner when the time comes.||So what say you? $Consent now and call on the $Guardians of the Realm to aid your battle against humanity's greatest foe."
+#: ../scourge_data/maps/chapter122.cfg:85
+msgid "Here is how this works: as you may already know, pending their destruction the $Guardians of the Realm willingly entered hibernation.||In reality a deal with Death was struck. Death being eternal miser grants no escape only delays... Therefore it was decided that should the $Guardians ever need to return, given their past record of heroism - a fact that even wowed Death a bit - will be granted one leave of absence with the understanding that they will voluntarily return to Death's domain once their work was done.||However, in order for Death to agree to this rather unusual pact, he required that the reasons for calling the Guardians back be a genuine, honest-to-god end-of-world scenario. - As I'm sure you can see, for rather obvious reasons the end of the world would profit Death's business greatly but would not be grounds for a sustainable venture. - As such, he required that a new group of heroes consent to putting their own lives in escrow for the duration of the Guardian's stay. Were they to somehow break their promise, Death would claim you in their stead.||The $Guardians made me promise to impress upon you their resolve to remain true to their word. As they once willingly entered hibernation, so will they again stand under Death's banner when the time comes.||So what say you? $Consent now and call on the $Guardians of the Realm to aid your battle against humanity's greatest foe."
 msgstr "Así es como funciona: como ya sabrás, estando pendiente su destrucción, los $Guardianes del Reino, entraron en hibernación a voluntad.||En realidad, el acuerdo con La Muerte se había roto. La Muerte es avara, y nadie escapa sólo se retrasa... Aun así, se decidió que los $Guardianes serían necesitados en un futuro, dado su pasado de heroísmo (un hecho que incluso asombró a La Muerte) se les permitió estar ausentes entendiendo que ellos voluntariamente volverían a los dominios de La Muerte una vez que el trabajo estuviera finalizado.||Sin embargo, para que La Muerte pudiera estar de acuerdo con este pacto inusual, requirió que las razones para despertar a los Guardianes fueran genuinas, honestas y con un escenario del juicio final. Como estoy seguro que ves, por razones obvias el fin del mundo sería un gran negocio para La Muerte pero no sería terreno para una empresas sostenible. Así, requirió que un nuevo grupo de héroes consintieran en poner sus propias vidas como depósito durante el tiempo que se tardase en despertar a los Guardianes restantes. Si se les ocurría romper su promesa, La Muerte clamaría vuestras vidas.||Los $Guardianes hicieron la promesa de permanecer fieles a su palabra. Así como una vez entraron en hibernación, una vez que el tiempo llegue, estarán en los dominios de La Muerte.||Entonces ¿qué dices? Da tu $consentimiento y despierta a los $Guardianes del Reino para ayudarte a la batalla contra el mayor enemigo de la humanidad."
 
-#: ../scourge_data/maps/chapter122.cfg:38
+#: ../scourge_data/maps/chapter122.cfg:87
 msgid "Good... good... just as I expected. Your names have been recorded and your lives have been bound to the $Guardians'.||I will now release them from their long years of slumber, and then my Nightwards and I will return home. ||May Regbreon the Greatest Shade aid you in combat!...||When you are $ready I can teleport you back to the surface where even now the $Guardians await your final command."
 msgstr "Bien... Bien... Justo como esperaba. Vuestros nombres han sido grabados y vuestras vidas han sido añadidas a las de los $Guardianes.||Los sacaré de su sueño y entonces mis pupilos de la noche y yo volveremos a casa. ||¡Quizás Regbreon la gran forma te ayude en el combate!...||Cuando estés $preparado, te puedo teletransportar de vuelta a la superficie donde hasta los $Guardianes esperan sus órdenes finales."
+
+#: ../scourge_data/maps/chapter122.cfg:91
+msgid "We are Nightwards... magical beings from the realm of shades. We are crafters and artists who draw our inspiration from the sublime ambiguity of the shifting shadows of our world. - You may have noticed my kind's inability to arrive at a concrete answer...||Once, centuries ago a small team of merchants became lost in a trans-dimensional storm and ended up shipwrecked in your world, the material realm. It seemed we would spend the rest of our long lives here, as we had no means to travel back home. It was the $Guardians who came to our aid and stationed us in one of their libraries...||Together we spent many years in joint study and finally after many false leads researched a way to travel across the planes of existence. In this way both of our races benefited, yet humanity today seldom remember our ancient alliance.||Still we nightwards always wanted to repay the kindness we were shown. In my land, it is said, the only thing longer than the lifespan of a nightward, is our ability to remember deeds - be it good or evil. When we heard how the $Guardians planned to enter suspended animation on the eve of their unavoidable catastrophy, we journeyed back and were honored to be chosen as the keepers of their peace.||Most of us stayed here to guard the crypts from invaders, however a few of us were stationed around your world as information gatherers wearing a variety of disguises... perhaps you met $some of us?"
+msgstr ""
+
+#: ../scourge_data/maps/chapter122.cfg:93
+msgid "Yes, yes... you know of whom I speak...||That's right Melathor of Allovium is in fact not a deep-elf, but a disguised nightward. He is one of our oldest and best agents in the field. Melathor, or Narglum as he is really called, was part of the original team of nightwards who spent time with the $Guardians. He is much more ancient than he admits... he claims it is his potions that give him this unnatural longevity, though most of us doubt the truth of this.||Narglum notified us of your progress through your various ordeals. Even early on he claimed to know that you were the ones... the ones to reawaken the $Guardians.||So don't prove him wrong! The time is now for your $consent and the reawakening of the $Guardians of the Realm, our ancient protectors."
+msgstr ""
 
 #: ../scourge_data/maps/tree.cfg:12
 msgid "I have not felt that scent for nearly a thousand years... ||How did you come to hold a deep-elven artifact $human? ||Its ancient presence holds the breath of centuries..."
@@ -12300,159 +12325,179 @@ msgstr "¡Tu búsqueda ha dejado de tener existencia porque el principio de una 
 msgid "Mothrazu served me well. Hells! YOU have served me well! As a reward I will personally see that your souls are well taken care of... by my people below."
 msgstr "Mothrazu me sirvió bien. ¡Demonios! ¡TÚ me has servido bien! Como recompensa haré que vuestras almas tengan su merecido de... Por mis sirvientes de abajo."
 
+#: ../scourge_data/script/chapter12movie.nut:205
+msgid "The clouds part and the sun shines again... NOT FINAL TEXT"
+msgstr "Las nubes parten y el sol brilla otra vez... INACABADO"
+
+#: ../scourge_data/script/chapter12movie.nut:212
+msgid "Curse you!... NOT FINAL TEXT"
+msgstr "¡Te maldigo!... INACABADO"
+
 #: ../scourge_data/script/skills.nut:47
 msgid "Dodging missiles"
 msgstr "Misiles de elusión"
 
-#: ../scourge_data/script/skills.nut:82
+#: ../scourge_data/script/skills.nut:79
 msgid "War rage"
 msgstr "Ira de guerra"
 
-#: ../scourge_data/script/skills.nut:94
+#: ../scourge_data/script/skills.nut:91
 msgid "The terrible blow"
 msgstr "El soplo terrible"
 
-#: ../scourge_data/script/skills.nut:109
+#: ../scourge_data/script/skills.nut:106
 msgid "...but already used this capability twice today."
 msgstr "... Pero ya ha usado esta capacidad dos veces hoy."
 
-#: ../scourge_data/script/skills.nut:121
+#: ../scourge_data/script/skills.nut:118
 msgid "...and heals 1 hit point."
 msgstr "... Y cura 1 punto de vida."
 
-#: ../scourge_data/script/skills.nut:123
+#: ../scourge_data/script/skills.nut:120
 #, c-format
 msgid "...and heals %d hit points."
 msgstr "... y cura %d puntos de vida."
 
-#: ../scourge_data/script/skills.nut:150
+#: ../scourge_data/script/skills.nut:147
 #, c-format
 msgid "%s's holy innocence sooths your pains."
 msgstr "La sagrada inocencia de %s suaviza tu dolor."
 
-#: ../scourge_data/script/skills.nut:181
+#: ../scourge_data/script/skills.nut:178
 msgid "...but already used this capability three times today."
 msgstr "... Pero ya ha usado esta capacidad tres veces hoy."
 
-#: ../scourge_data/script/skills.nut:195
+#: ../scourge_data/script/skills.nut:192
 msgid "...the divine healing affects all party members."
 msgstr "... La curación divina afecta a todos los miembros del grupo."
 
-#: ../scourge_data/script/skills.nut:212
+#: ../scourge_data/script/skills.nut:209
 #, c-format
 msgid "...nearing death, %s gains %d MP (Terminal Energy)."
 msgstr "... Cerca de la muerte, %s gana %d puntos de magia (Energía terminal)."
 
-#: ../scourge_data/script/skills.nut:226
+#: ../scourge_data/script/skills.nut:223
 msgid "Chanelling mystic energies"
 msgstr "Canalizar energías mísiticas"
 
-#: ../scourge_data/script/skills.nut:247
+#: ../scourge_data/script/skills.nut:244
 msgid "Small Arms Mastery"
 msgstr "Maestro en armas cortas"
 
-#: ../scourge_data/script/skills.nut:263
+#: ../scourge_data/script/skills.nut:260
 msgid "This character is not currently poisoned."
 msgstr "Este personaje no está envenenado."
 
-#: ../scourge_data/script/skills.nut:268
+#: ../scourge_data/script/skills.nut:265
 msgid "You already used this capability thrice today."
 msgstr "Ya has usado esta capacidad tres veces en esta jornada."
 
-#: ../scourge_data/script/skills.nut:284
+#: ../scourge_data/script/skills.nut:281
 #, c-format
 msgid "%s uses an Arcane Stance which"
 msgstr "%s usa un Recinto arcano, el cual"
 
-#: ../scourge_data/script/skills.nut:303
+#: ../scourge_data/script/skills.nut:300
 msgid "masterful bow handling"
 msgstr "maestro en manejo de arco"
 
-#: ../scourge_data/script/skills.nut:321
+#: ../scourge_data/script/skills.nut:318
 #, c-format
 msgid "...%s causes %d bonus damage!"
 msgstr "... ¡%s causa %d daño extra!"
 
-#: ../scourge_data/script/skills.nut:330
+#: ../scourge_data/script/skills.nut:327
 #, c-format
 msgid "...%s causes %d armor bonus!"
 msgstr "... ¡%s causa %d bonus en armadura!"
 
-#: ../scourge_data/script/map.nut:75
+#: ../scourge_data/script/map.nut:78
 msgid "The creature once known as Mothrazu sinks to one knee... Her breath comes in sharp gasps, as she growls:||\"I curse you humans...You may have defeated me but by Amod's grace, I still have one task left...\"||She reaches into a pouch and throws something small and silvery into the grove of trees at the center of the room.||\"You will never find it... Karzul's gift will mature and continue where I failed. May the plants be merciful to your malevolent souls... Amod! I am close...\"||With that Mothrazu passes from this world."
 msgstr "La criatura una vez conocida como Mothrazu cae sobre una rodilla... Su aliento son jadeos afilados mientras gruñe:||\"Maldigo a todos los humanos... Puedes haberme vencido pero por la gracia de Amod, todavía me queda una tarea...\"||Alcanza una bolsa y lanza algo plateado a la arboleda del centro de la habitación.||\"Nunca lo encontrarás... El regalo de Karzul madurará y continuará donde yo he fallado. Puede que las plantas sean misericordiosas con nuestras almas malevolentes... ¡Amod! Estoy tan cerca...\"||Con esas últimas palagras, Mothrazu fallece en este mundo."
 
-#: ../scourge_data/script/map.nut:154
+#: ../scourge_data/script/map.nut:101
+msgid "Karzul uses his infernal conduit and heals his wounds!"
+msgstr "¡Karzul usa su conexión infernal para curar sus heridas!"
+
+#: ../scourge_data/script/map.nut:121
+msgid "Karzul commands his minions to surge forth and destroy his attackers!"
+msgstr "¡Karzul manda a sus lacayos levantarse y destruir a sus atacantes!"
+
+#: ../scourge_data/script/map.nut:208
 #, c-format
 msgid "The mighty lord %s reaches towards you,"
 msgstr "El poderoso señor %s te alcanza."
 
-#: ../scourge_data/script/map.nut:157
+#: ../scourge_data/script/map.nut:211
 msgid "...alas, the deity can aid you no more today."
 msgstr "... ¡Uy! La dedida no te puede ayudar más hoy."
 
-#: ../scourge_data/script/map.nut:165
+#: ../scourge_data/script/map.nut:219
 msgid "...and fills your spirit with energy."
 msgstr "... Y llena tu espíritu de energía."
 
-#: ../scourge_data/script/map.nut:168
+#: ../scourge_data/script/map.nut:222
 #, c-format
 msgid "Your presence angers the mighty lord %s!"
 msgstr "¡Tu presencia cabrea el poderoso señor %s!"
 
-#: ../scourge_data/script/map.nut:173
+#: ../scourge_data/script/map.nut:227
 msgid "...the deity's wrath scours your flesh!"
 msgstr "... ¡La furia de la deidad se restriega con tu carne!"
 
-#: ../scourge_data/script/map.nut:176
+#: ../scourge_data/script/map.nut:230
 #, c-format
 msgid "The mighty lord %s ignores you."
 msgstr "El señor potente de %s te ignora."
 
-#: ../scourge_data/script/map.nut:291
+#: ../scourge_data/script/map.nut:345
 #, c-format
 msgid "%s conjures up magic with blinding speed!"
 msgstr "¡%s conjura su magia con velocidad cegadora!"
 
-#: ../scourge_data/script/map.nut:317
+#: ../scourge_data/script/map.nut:371
 msgid "Yes, yes... quite so... carry on!"
 msgstr "Sí, sí... Así... ¡Sigue!"
 
-#: ../scourge_data/script/map.nut:385
+#: ../scourge_data/script/map.nut:439
 msgid "...Brand of Iconoclast growls in a low tone..."
 msgstr "... El sello de Iconoclast gruñe en un tono grave..."
 
-#: ../scourge_data/script/map.nut:389
+#: ../scourge_data/script/map.nut:443
 #, c-format
 msgid "...damage is increased by %d pts!"
 msgstr "... ¡El daño se incrementa en %d puntos!"
 
-#: ../scourge_data/script/map.nut:401
+#: ../scourge_data/script/map.nut:455
 #, c-format
 msgid "...damage is reduced by %d pts! (Cloak of Hateful Vengeance)"
 msgstr "... ¡El daño se reduce en %d puntos! (Capa de la odiosa venganza)"
 
-#: ../scourge_data/script/map.nut:427
+#: ../scourge_data/script/map.nut:481
 #, c-format
 msgid "...damage is reduced by %d pts! (Cloak of Safe Passage)"
 msgstr "... ¡El daño se reduce en %d puntos! (Capa del pasaje seguro)"
 
-#: ../scourge_data/script/map.nut:479
+#: ../scourge_data/script/map.nut:533
 msgid "You find yourself on a barren plain. The air is thick with moisture and very still. The bleak ground appears to emit a cancerous odor like the smell of death on a roadside cadaver. A sudden rush of despair hangs over you, clouding your senses... Is this the end? The tortured screams of unseen thousands drifts from beyond the nearest door. On this molten landscape filled with hopelessness and horror, even moving around seems to require an extra effort."
 msgstr "Te encuentras en un plano yermo. El aire está cargado de humedad y muy calmado. El suelo descolorido parece emitir un olor cancerígeno como de muerte de un cadáver en una cuneta. Una súbita sensación de desesperanza te alcanza, nublando tus sentidos.. ¿Es el final? Unos gritos de miles de almas torturadas se escuchan de más allá de la puerta más cercana. En este paisaje fundido lleno de horror sin fin, incluso moverse por los alrededores requiere un esfuerzo extra."
 
-#: ../scourge_data/script/map.nut:529
+#: ../scourge_data/script/map.nut:583
 msgid "The ancient walls appear to cave inward as if pushed on by the very roots of the forest from above. A metallic smell cuts the air and the noises echoing from the deep chill your bones. ||A grinding sound wells from beneath your feet as if the wheels of a great machine are turning. Could this be the contdown to Mothrazu's infernal plans? ||And as if that wasn't freeky enough, frequent quakes shake the dungeon..."
 msgstr "Los muros añejos parecen cavar abajo como si fueran empujados por raíces del bosque de arriba. Un olor metálico corta el aire y los fuertes ecos de la profundidad te calan los huesos. ||Un rechinar fluye de debajo de tus pies como si fueran las ruedas de una gran máquina girando. ¿Podría ser la cuenta atrás de los planes infernales de Mothrazu? ||Como si no fuera suficientemente raro, temblores frecuentes sacuden las catacumbas."
 
-#: ../scourge_data/script/map.nut:549
+#: ../scourge_data/script/map.nut:603
 #, c-format
 msgid "%s feels very ill suddenly."
 msgstr "De repente, %s se siente muy enfermo."
 
-#: ../scourge_data/script/map.nut:609
+#: ../scourge_data/script/map.nut:663
 msgid "A baleful wind blows bringing the scent of slow vegetative decay. Off in the distance you glance a mighty tree, standing in the center of a barren plane of ashen stone.||No other plants dare intrude upon its territory and no animal life stirs near its accursed branches.||Above, clouds darken the sky as if to signal the long awaited fulfillment of a pending doom."
 msgstr "Un pernicioso viento fluye trayendo un perfume de lenta descomposición vegetal.En la distancia contemplas un árbol poderoso, que se mantiene en el centro de este yermo plano de piedra cenicienta.||Ninguna planta se atreve a introducirse en su territorio y no hay vida animal que se bata cerca de sus malditas ramas.||Arriba, nubes oscurecen el cielo como si fueran la señal del cumplimiento largo tiempo esperado de un ruina final."
+
+#: ../scourge_data/script/map.nut:750
+msgid "Under the pale sky like the blackened husk of a burned tree stands the demon. He calmly awaits your charge fully aware of its futility.||But a red streak lines the mountain tops to the east... is it dawn? Or is it a sign of hope from the gods? Looking around you notice you are no longer alone on the charred battlefield. Three tall warriors in archaic clothing appear as if from nowhere. The tallest one - their leader? - silently bows his head to you.||After this briefest of courtesies, he turns to face Karzul with a steely resolve."
+msgstr ""
 
 #~ msgid "(OUTDOORS)"
 #~ msgstr "(EXTERIORES)"
