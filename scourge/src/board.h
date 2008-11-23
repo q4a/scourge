@@ -239,9 +239,9 @@ public:
 	inline bool isCompleted() {
 		return completed;
 	}
-	inline void setCompleted( bool b ) {
-		completed = b;
-	}
+	
+	void setCompleted( bool b );
+
 	inline char *getName() {
 		return name;
 	}
