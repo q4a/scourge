@@ -46,7 +46,7 @@ Sound::Sound( Preferences *preferences ) {
 
 	if ( preferences->isSoundEnabled() ) {
 #ifdef HAVE_SDL_MIXER
-		if ( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 1024 ) ) {
+		if ( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 4096 ) ) {
 			cerr << "*** Error opening audio: " << Mix_GetError() << endl;
 			cerr << "\tDisabling sound." << endl;
 		} else {
