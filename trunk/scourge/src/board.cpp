@@ -622,6 +622,14 @@ Mission::~Mission() {
 	monsterInstanceMap.clear();
 }
 
+void Mission::setCompleted( bool b ) {
+	completed = b;
+	if( completed ) {
+		// show mission completed in the ui
+		board->getSession()->getGameAdapter()->refreshBackpackUI();
+	}
+}
+
 bool Mission::itemFound( Item *item ) {
 	if ( !completed ) {
 		if ( item->getMissionId() == getMissionId() ) {
