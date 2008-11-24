@@ -897,7 +897,6 @@ private:
 	Board *board;
 	int nextMission;
 	bool teleportFailure;
-	bool gameCompleted;
 	bool inHq;
 	bool missionWillAwardExpPoints;
 	char infoMessage[ INFO_SIZE ];
