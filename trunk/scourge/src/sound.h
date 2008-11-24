@@ -103,7 +103,7 @@ public:
 	inline void playMusicChapter( bool gameCompleted ) {
 #ifdef HAVE_SDL_MIXER
 		if( gameCompleted ) {
-			playMusic( outroMusic, 2000, 1 );
+			playMusic( outroMusic, 2000 );
 		} else {
 			playMusic( chapterMusic, 2000, 1 );
 		}

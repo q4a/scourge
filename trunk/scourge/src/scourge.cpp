@@ -136,7 +136,6 @@ Scourge::Scourge( UserConfiguration *config )
 	movingItem = NULL;
 	nextMission = -1;
 	teleportFailure = false;
-	gameCompleted = false;
 
 	// in HQ map
 	inHq = true;
@@ -3581,7 +3580,7 @@ void Scourge::uploadScore() {
 	}
 
 	char desc[2000];
-	if( gameCompleted ) {
+	if( getSession()->getSquirrel()->getValue( "gameCompleted" ) != NULL ) {
 		snprintf( desc, 2000, _( "Successfully completed the game and saved the world!!!" ),
 		          place,
 		          getParty()->getParty( 0 )->getCauseOfDeath(),
@@ -3900,7 +3899,7 @@ void Scourge::writeLogMessage( char const* message, int messageType, int logLeve
 }
 
 void Scourge::finale( char *text, char *image ) {
-	gameCompleted = true;
+	getSession()->getSquirrel()->setValue( "gameCompleted", "true" );
 	getSession()->setChapterImage( image );
 	getSession()->getSound()->pauseAmbientSounds();
 	beginChapter->setLabel( _( "Resume Game" ) );
@@ -3914,7 +3913,7 @@ void Scourge::initChapterIntro( char *text, char *missionTitle ) {
 	session->setShowChapterIntro( true );
 	hideGui();
 	chapterIntroWin->setVisible( true );
-	getSession()->getSound()->playMusicChapter( gameCompleted );
+	getSession()->getSound()->playMusicChapter( getSession()->getSquirrel()->getValue( "gameCompleted" ) );
 
 	// Try to add line breaks fitting the screen resolution
 	int charsPerRow = ( getScreenWidth() - 300 ) / 14 + 1;
@@ -3938,7 +3937,7 @@ void Scourge::initChapterIntro( char *text, char *missionTitle ) {
 
 void Scourge::replayChapterIntro() {
 	chapterTextPos = -2000;
-	getSession()->getSound()->playMusicChapter( gameCompleted );
+	getSession()->getSound()->playMusicChapter( getSession()->getSquirrel()->getValue( "gameCompleted" ) );
 }
 
 void Scourge::endChapterIntro() {
@@ -3948,9 +3947,10 @@ void Scourge::endChapterIntro() {
 	getSession()->getSound()->unpauseAmbientSounds();
 	beginChapter->setLabel( _( "Begin Chapter" ) );
 	uploadScoreButton->setVisible( false );
-	if( !gameCompleted ) {
+	if( getSession()->getSquirrel()->getValue( "gameCompleted" ) == NULL ) {
 		preMainLoop();
 	} else if( getSession()->getCurrentMission() ) {
+		getSession()->getSound()->playMusicMission();
 		getSession()->getCurrentMission()->setCompleted( true );
 	}
 }
