@@ -1118,8 +1118,8 @@ void Mission::loadMapDataFile( GameAdapter *adapter, const string& filename, boo
 	string tmp = getMapConfigFile( filename );
 	ConfigLang *config = ConfigLang::load( tmp, true );
 	if ( config ) {
-		initConversations( config, adapter, generalOnly );
 		if ( !generalOnly ) initNpcs( config, adapter );
+		initConversations( config, adapter, generalOnly );
 		delete config;
 	}
 }
