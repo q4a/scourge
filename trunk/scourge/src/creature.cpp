@@ -3813,7 +3813,6 @@ Creature *Creature::doSummon( Monster *monster, int cx, int cy, int ex, int ey, 
 	                                   monster->getScale(),
 	                                   monster );
 	Creature *creature = session->newCreature( monster, shape );
-	creature->cancelTarget();
 	
 	addSummoned( creature );
 	creature->setSummoner( this );
@@ -3838,6 +3837,7 @@ Creature *Creature::doSummon( Monster *monster, int cx, int cy, int ex, int ey, 
 		cerr << "*** warning: unable to place summoned creature." << endl;
 		return NULL;
 	}
+	creature->cancelTarget();
 	creature->startEffect( Constants::EFFECT_TELEPORT, ( Constants::DAMAGE_DURATION * 4 ) );
 	
 	char message[200];
