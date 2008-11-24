@@ -2333,7 +2333,7 @@ void Map::setRugPosition( Sint16 xchunk, Sint16 ychunk, Rug *rug ) {
 /// Creates a shape on the floor (indoors).
 
 void Map::setFloorPosition( Sint16 x, Sint16 y, Shape *shape ) {
-	if ( x < MAP_OFFSET || y < MAP_OFFSET || x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
+	if ( x < 0 || y < 0 || x >= MAP_WIDTH || y >= MAP_DEPTH ) {
 		cerr << "*** floor position out of bounds: " << x << "," << y << endl;
 		//((RenderedCreature*)NULL)->getName();
 		return;
@@ -2627,10 +2627,6 @@ void Map::setPositionInner( Sint16 x, Sint16 y, Sint16 z,
 	        x >= MAP_WIDTH || y >= MAP_DEPTH || z >= MAP_VIEW_HEIGHT ) {
 		cerr << "*** Error can't set position outside bounds:" << x << "," << y << "," << z << endl;
 		return;
-	}
-	if ( x < MAP_OFFSET || y < MAP_OFFSET 
-		||   x >= MAP_WIDTH - MAP_OFFSET || y >= MAP_DEPTH - MAP_OFFSET ) {
-		cerr << "*** Map::setPositionInner() goes outside bounds:" << x << "," << y << "," << z << endl;
 	}
 
 	resortShapes = mapChanged = true;
