@@ -184,18 +184,6 @@ public:
 		std::string skey = key;
 		std::string svalue = value;
 		values[ skey ] = svalue;
-
-		/*
-		// debug
-		std::cerr << "SqBinding::setValue size=" << values.size() << std::endl;
-		for( std::map<std::string,std::string>::iterator i = values.begin(); i != values.end(); ++i ) {
-		  std::string k = i->first;
-		  std::string v = i->second;
-		  std::cerr << "\t" << k << "=" << v << std::endl;
-		}
-		std::cerr << "============================================" << std::endl;
-		// end of debug
-		*/
 	}
 
 	inline char const* getValue( char *key ) {
@@ -210,6 +198,15 @@ public:
 	}
 	void saveValues( File *file );
 	void loadValues( File *file );
+	inline void dumpValues() {
+		std::cerr << "SqBinding::setValue size=" << values.size() << std::endl;
+		for( std::map<std::string,std::string>::iterator i = values.begin(); i != values.end(); ++i ) {
+		  std::string k = i->first;
+		  std::string v = i->second;
+		  std::cerr << "\t" << k << "=" << v << std::endl;
+		}
+		std::cerr << "============================================" << std::endl;
+	}
 
 	// events
 	void startGame();

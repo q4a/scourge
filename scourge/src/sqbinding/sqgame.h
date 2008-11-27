@@ -85,6 +85,7 @@ public:
 	static int _getValue( HSQUIRRELVM vm );
 	static int _setValue( HSQUIRRELVM vm );
 	static int _eraseValue( HSQUIRRELVM vm );
+	static int _dumpValues( HSQUIRRELVM vm );
 
 	static int _printMessage( HSQUIRRELVM vm );
 	static int _reloadNuts( HSQUIRRELVM vm );
