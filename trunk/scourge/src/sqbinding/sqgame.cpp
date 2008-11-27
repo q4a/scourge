@@ -51,6 +51,7 @@ ScriptClassMemberDecl SqGame::members[] = {
 	{ "string", "getValue", SqGame::_getValue, 2, "xs", "Get the value associated with a given key from the value map. The first parameter is the key." },
 	{ "void", "setValue", SqGame::_setValue, 3, "xss", "Add a new or set an existing key and its value in the value map. The first parameter is the key, the second is its value." },
 	{ "void", "eraseValue", SqGame::_eraseValue, 2, "xs", "Remove a key and its value from the value map. The first parameter is the key to be removed." },
+	{ "void", "dumpValues", SqGame::_dumpValues, 0, 0, "Print every key and stored value. Used for debugging." },
 	{ "void", "printMessage", SqGame::_printMessage, 2, "xs", "Print a message in the scourge message window. The resulting message will always be displayed in a refreshing shade of cyan." },
 	{ "void", "reloadNuts", SqGame::_reloadNuts, 0, 0, "Reload all currently used squirrel (.nut) files. The game engine will also do this for you automatically every 5 game minutes." },
 	{ "void", "documentSOM", SqGame::_documentSOM, 2, "xs", "Produce this documentation. The first argument is the location where the html files will be placed." },
@@ -246,6 +247,11 @@ int SqGame::_setValue( HSQUIRRELVM vm ) {
 int SqGame::_eraseValue( HSQUIRRELVM vm ) {
 	GET_STRING( key, 80 )
 	SqBinding::binding->eraseValue( key );
+	return 0;
+}
+
+int SqGame::_dumpValues( HSQUIRRELVM vm ) {
+	SqBinding::binding->dumpValues();
 	return 0;
 }
 
