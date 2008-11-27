@@ -950,6 +950,7 @@ bool Creature::addToBackpack( Item *item, int itemX, int itemY ) {
 
 		return true;
 	} else {
+		cerr << "*** error: unable to add to inventory of creature=" << getName() << " item=" << item->getName() << endl;
 		return false;
 	}
 }
