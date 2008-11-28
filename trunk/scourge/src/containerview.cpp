@@ -230,6 +230,8 @@ void ContainerView::showInfo( Item *item ) {
 }
 
 bool ContainerView::handleEvent( Widget *widget, SDL_Event *event ) {
+	if( widget != this ) return false;
+	
 	if ( scourge->getSDLHandler()->isDoubleClick ) {
 		Item *item = getItemAtPos( scourge->getSDLHandler()->mouseX - win->getX() - x,
 		                           scourge->getSDLHandler()->mouseY - win->getY() - y - TITLE_HEIGHT );
