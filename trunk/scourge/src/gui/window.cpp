@@ -27,6 +27,8 @@ using namespace std;
   static char THIS_FILE[] = __FILE__;
 #endif 
 
+//#define DEBUG_WINDOWS  
+  
 #define OPEN_STEPS 10
 
 // should come from theme
@@ -199,6 +201,9 @@ Widget *Window::delegateEvent( SDL_Event *event, int x, int y ) {
 	// find the active widget
 	Widget *widget = NULL;
 	if ( win ) {
+#ifdef DEBUG_WINDOWS
+		cerr << "handled by window: " << win->getZ() << endl;
+#endif		
 		widget = win->handleWindowEvent( event, x, y );
 	}
 
@@ -1035,6 +1040,7 @@ void Window::setVisible( bool b, bool animate ) {
 		}
 		y = currentY;
 		windowWasClosed = true;
+		if( currentWin == this ) currentWin = NULL;
 		nextWindowToTop( this );
 
 		// Any windows open?
