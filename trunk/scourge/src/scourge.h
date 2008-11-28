@@ -629,7 +629,11 @@ public:
 	void removeBattle( Battle *battle );
 
 	inline bool inTurnBasedCombat() {
-		return ( battleTurn < static_cast<int>( battleRound.size() ) && getUserConfiguration()->isBattleTurnBased() );
+		return ( inCombat() && getUserConfiguration()->isBattleTurnBased() );
+	}
+	
+	inline bool inCombat() {
+		return ( battleTurn < static_cast<int>( battleRound.size() ) );
 	}
 	
 	inline const char *getCurrentCombatMusic() {

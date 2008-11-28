@@ -192,6 +192,9 @@ public:
 	virtual inline bool inTurnBasedCombat() {
 		return false;
 	}
+	virtual inline bool inCombat() {
+		return false;
+	}
 	virtual inline const char *getCurrentCombatMusic() {
 		return NULL;
 	}
