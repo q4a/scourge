@@ -21,6 +21,7 @@
 
 #include <map>
 #include "render/texture.h"
+#include "gui/eventhandler.h"
 
 class Scourge;
 class Creature;
@@ -35,7 +36,7 @@ class Spell;
 using namespace std;
 
 /// The heal dialog.
-class HealDialog {
+class HealDialog : public EventHandler {
 private:
 	Scourge *scourge;
 	Creature *creature;
@@ -58,7 +59,7 @@ public:
 	inline Window *getWindow() {
 		return win;
 	}
-	void handleEvent( Widget *widget, SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
 
 protected:
 	void heal( Spell *spell, int price );

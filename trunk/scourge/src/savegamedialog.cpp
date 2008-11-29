@@ -63,6 +63,7 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
 	cancel = win->createButton( w - 105, 210, w - 15, 230, _( "Cancel" ) );
 
 	confirm = new ConfirmDialog( scourge->getSDLHandler(), _( "Overwrite existing file?" ) );
+	win->registerEventHandler( this );
 }
 
 SavegameDialog::~SavegameDialog() {
@@ -78,7 +79,7 @@ SavegameDialog::~SavegameDialog() {
 #define LOAD_MODE 2
 #define DELETE_MODE 3
 
-void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
+bool SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	static int selectedFile;
 	if ( widget == confirm->okButton ) {
 		confirm->setVisible( false );
@@ -143,6 +144,7 @@ void SavegameDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 			}
 		}
 	}
+	return false;
 }
 
 void SavegameDialog::loadGame( int n ) {

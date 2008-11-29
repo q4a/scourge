@@ -30,6 +30,7 @@ class SDLEventHandler;
 class SDLScreenView;
 class Preferences;
 class FontMgr;
+class EventHandler;
 
 /**
   *@author Gabor Torok
@@ -106,6 +107,8 @@ private:
 
 	std::string continueFunc;
 	Uint32 continueTimeout, continueStart;
+	
+	std::map<Widget*, EventHandler*> widgetEventHandlers;
 
 	void getVideoModes();
 
@@ -272,6 +275,22 @@ public:
 	void resetDepthLimits();
 
 	void setOrthoView();
+	
+	inline void registerEventHandler( Widget *w, EventHandler *eh ) { 
+		widgetEventHandlers[w] = eh;
+	}
+	inline void unregisterEventHandler( Widget *w ) {
+		if( widgetEventHandlers.find( w ) != widgetEventHandlers.end() ) {
+			widgetEventHandlers.erase( w );
+		}
+	}
+	inline EventHandler *getEventHandler( Widget *w ) {
+		if( widgetEventHandlers.find( w ) != widgetEventHandlers.end() ) {
+			return widgetEventHandlers[w];
+		} else {
+			return NULL;
+		}
+	}
 
 protected:
 	bool popHandlers();

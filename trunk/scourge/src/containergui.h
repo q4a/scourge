@@ -24,12 +24,13 @@
 #include "scourge.h"
 #include "gui/window.h"
 #include "gui/button.h"
+#include "gui/eventhandler.h"
 
 class Item;
 class ContainerView;
 
 /// The "container contents" window (for open chests etc.)
-class ContainerGui {
+class ContainerGui : public EventHandler {
 
 private:
 	Scourge *scourge;

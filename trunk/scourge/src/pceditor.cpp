@@ -59,6 +59,7 @@ PcEditor::PcEditor( Scourge *scourge ) {
 	availableSkillMod = AVAILABLE_SKILL_POINTS;
 
 	createUI();
+	win->registerEventHandler( this );
 
 	deleteLoadedShapes();
 }
@@ -277,7 +278,7 @@ Creature *PcEditor::createPartyMember() {
 	return c;
 }
 
-void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
+bool PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == cancelButton ) {
 		win->setVisible( false );
 	} else if ( widget == okButton ) {
@@ -391,6 +392,7 @@ void PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 			}
 		}
 	}
+	return false;
 }
 
 void PcEditor::setCharType( int charIndex ) {

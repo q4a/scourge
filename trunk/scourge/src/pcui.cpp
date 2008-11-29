@@ -157,6 +157,8 @@ PcUi::PcUi( Scourge *scourge ) {
 	applyMods->setEnabled( false );
 	cast->setEnabled( false );
 	storeSpell->setEnabled( false );
+	
+	mainWin->registerEventHandler( this );
 }
 
 PcUi::~PcUi() {

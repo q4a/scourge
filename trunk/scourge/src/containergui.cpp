@@ -57,7 +57,8 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 	view = new ContainerView( scourge, container, win, 95, 5 );
 	win->addWidget( (Canvas*)view );
 
-	win->setVisible( true );
+	win->registerEventHandler( this );
+	win->setVisible( true );	
 }
 
 ContainerGui::~ContainerGui() {
@@ -71,6 +72,7 @@ bool ContainerGui::handleEvent( SDL_Event *event ) {
 
 bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == win->closeButton || widget == closeButton ) {
+		scourge->closeContainerGui( this );
 		win->setVisible( false );
 		return true;
 	} else if ( widget == infoButton ) {

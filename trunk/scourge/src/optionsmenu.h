@@ -33,6 +33,7 @@
 #include "gui/multiplelabel.h"
 #include "gui/checkbox.h"
 #include "gui/slider.h"
+#include "gui/eventhandler.h"
 
 /**
   *@author Gabor Torok
@@ -44,7 +45,7 @@ class Scourge;
 class UserConfiguration;
 
 /// The options menu.
-class OptionsMenu {
+class OptionsMenu : public EventHandler {
 private:
 
 	Scourge *scourge;

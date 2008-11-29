@@ -50,6 +50,7 @@ HealDialog::HealDialog( Scourge *scourge ) {
 	closeButton = win->createButton( w - 80, y, w - 10, y + h, _( "Close" ) );
 
 	//this->spellIcons = ( GLuint* )malloc( MAX_BACKPACK_SIZE * sizeof( GLuint ) );
+	win->registerEventHandler( this );
 }
 
 HealDialog::~HealDialog() {
@@ -111,7 +112,7 @@ void HealDialog::updateUI() {
 	spellList->setLines( spells.size(), spellText, NULL, spellIcons );
 }
 
-void HealDialog::handleEvent( Widget *widget, SDL_Event *event ) {
+bool HealDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == closeButton || widget == win->closeButton ) {
 		win->setVisible( false );
 	} else if ( widget == applyButton ) {
@@ -127,6 +128,7 @@ void HealDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 			showSpellDescription( spell );
 		}
 	}
+	return false;
 }
 
 void HealDialog::heal( Spell *spell, int price ) {

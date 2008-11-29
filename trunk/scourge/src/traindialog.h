@@ -20,6 +20,7 @@
 #pragma once
 
 #include <vector>
+#include "gui/eventhandler.h"
 
 class Scourge;
 class Creature;
@@ -33,7 +34,7 @@ class TextField;
 class Character;
 
 /// The train dialog.
-class TrainDialog {
+class TrainDialog : public EventHandler {
 private:
 	Scourge *scourge;
 	Creature *creature;
@@ -56,7 +57,7 @@ public:
 	inline Window *getWindow() {
 		return win;
 	}
-	void handleEvent( Widget *widget, SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
 
 protected:
 	void train( Character *newProfession );

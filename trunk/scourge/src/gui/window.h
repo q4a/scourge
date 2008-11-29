@@ -37,6 +37,7 @@ class Button;
 class Label;
 class Checkbox;
 class TextField;
+class EventHandler;
 
 #define TITLE_HEIGHT 21
 
@@ -127,6 +128,9 @@ public:
 	        bool hasCloseButton = true, int type = BASIC_WINDOW, const char *themeName = NULL );
 
 	~Window();
+	
+	void registerEventHandler( EventHandler *eventHandler );
+	void unregisterEventHandler(); 
 
 	void addWindowListener( WindowListener *listener ) {
 		listeners.push_back( listener );

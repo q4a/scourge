@@ -124,6 +124,7 @@ Window::~Window() {
 	// Delete all widgets, may cause problem if someday we use same widgets for
 	// multiple windows. For now, no problem.
 	for ( int i = 0; i < widgetCount ; i++ ) {
+		scourgeGui->unregisterEventHandler( widget[i] );
 		delete this->widget[i];
 	}
 	removeWindow( this );
@@ -131,6 +132,19 @@ Window::~Window() {
 		Window *tmp = message_dialog; // to avoid recursion of ~Window
 		message_dialog = NULL;
 		delete tmp;
+	}
+}
+
+// convenience method to register the same handler for all the window's widgets
+void Window::registerEventHandler( EventHandler *eventHandler ) {
+	for ( int i = 0; i < widgetCount ; i++ ) {
+		scourgeGui->registerEventHandler( widget[i], eventHandler );
+	}
+}
+
+void Window::unregisterEventHandler() {
+	for ( int i = 0; i < widgetCount ; i++ ) {
+		scourgeGui->unregisterEventHandler( widget[i] );
 	}
 }
 

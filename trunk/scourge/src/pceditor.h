@@ -20,6 +20,7 @@
 #pragma once
 
 #include "gui/widgetview.h"
+#include "gui/eventhandler.h"
 #include "rpg/rpg.h"
 
 class Window;
@@ -37,7 +38,7 @@ class CharacterInfoUI;
 class Character;
 
 /// The window that lets you edit a character's skills before recruiting him/her.
-class PcEditor : public WidgetView {
+class PcEditor : public WidgetView, EventHandler {
 private:
 	Window *win;
 	Scourge *scourge;
@@ -85,7 +86,7 @@ public:
 		return win;
 	}
 
-	void handleEvent( Widget *widget, SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
 
 	virtual void drawWidgetContents( Widget *w );
 

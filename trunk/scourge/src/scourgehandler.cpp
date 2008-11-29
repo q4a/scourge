@@ -363,73 +363,8 @@ bool ScourgeHandler::handleEvent( Widget *widget, SDL_Event *event ) {
 		}
 	}
 
-	for ( int i = 0; i < scourge->getContainerGuiCount(); i++ ) {
-		if ( scourge->getContainerGui( i )->handleEvent( widget, event ) ) {
-			scourge->closeContainerGui( i );
-		}
-	}
 
-	if ( scourge->getPcUi()->getWindow()->isVisible() ) {
-		scourge->getPcUi()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getOptionsMenu()->isVisible() ) {
-		scourge->getOptionsMenu()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getNetPlay()->getWindow()->isVisible() ) {
-		scourge->getNetPlay()->handleEvent( widget, event );
-	}
-
-	//if(multiplayer->isVisible()) {
-	//    multiplayer->handleEvent(widget, event);
-	//return false;
-	//}
-
-	if ( scourge->getInfoGui()->getWindow()->isVisible() ) {
-		scourge->getInfoGui()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getConversationGui()->getWindow()->isVisible() ) {
-		scourge->getConversationGui()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getTradeDialog()->getWindow()->isVisible() ) {
-		scourge->getTradeDialog()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getHealDialog()->getWindow()->isVisible() ) {
-		scourge->getHealDialog()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getDonateDialog()->getWindow()->isVisible() ) {
-		scourge->getDonateDialog()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getTrainDialog()->getWindow()->isVisible() ) {
-		scourge->getTrainDialog()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getUncurseDialog()->getWindow()->isVisible() ) {
-		scourge->getUncurseDialog()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getIdentifyDialog()->getWindow()->isVisible() ) {
-		scourge->getIdentifyDialog()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getRechargeDialog()->getWindow()->isVisible() ) {
-		scourge->getRechargeDialog()->handleEvent( widget, event );
-	}
-	if ( scourge->getPcEditor()->getWindow()->isVisible() ) {
-		scourge->getPcEditor()->handleEvent( widget, event );
-	}
-
-	if ( scourge->getSaveDialog()->getWindow()->isVisible() ) {
-		scourge->getSaveDialog()->handleEvent( widget, event );
-	}
-
-	// FIXME: this is hacky...
+	// FIXME: this is hacky... (there should be classes for the party ui, board ui, etc.)
 	if ( handlePartyEvent( widget, event ) ) return true;
 	int n = handleBoardEvent( widget, event );
 	if ( n == Board::EVENT_HANDLED ) return false;

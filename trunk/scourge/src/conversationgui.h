@@ -30,13 +30,14 @@
 #include "gui/widgetview.h"
 #include "gui/scrollinglabel.h"
 #include "gui/scrollinglist.h"
+#include "gui/eventhandler.h"
 
 class Creature;
 class CardContainer;
 
 /// The conversation window.
 
-class ConversationGui : public WordClickedHandler, WidgetView {
+class ConversationGui : public WordClickedHandler, WidgetView, EventHandler {
 
 private:
 	Scourge *scourge;

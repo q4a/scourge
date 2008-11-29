@@ -50,6 +50,8 @@ IdentifyDialog::IdentifyDialog( Scourge *scourge ) {
 	closeButton = win->createButton( w - xStart - 72, 274, w - xStart, 294, _( "Close" ) );
 
 	coinAvailA = win->createLabel( xStart, 260, _( "Available Coins:" ) );
+	
+	win->registerEventHandler( this );
 }
 
 IdentifyDialog::~IdentifyDialog() {
@@ -88,7 +90,7 @@ int IdentifyDialog::getSelectedTotal( ItemList *list ) {
 	return total;
 }
 
-void IdentifyDialog::handleEvent( Widget *widget, SDL_Event *event ) {
+bool IdentifyDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == win->closeButton || widget == closeButton ) {
 		win->setVisible( false );
 	} else if ( widget == infoButtonA && listA->getSelectedLineCount() ) {
@@ -101,6 +103,7 @@ void IdentifyDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	} else if ( widget == identifyButton ) {
 		identify();
 	}
+	return false;
 }
 
 void IdentifyDialog::render( const Widget *widget, const Item *item, std::string& buffer ) {

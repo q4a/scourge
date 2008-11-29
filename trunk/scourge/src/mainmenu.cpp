@@ -737,10 +737,10 @@ bool MainMenu::handleEvent( Widget *widget, SDL_Event *event ) {
 		return false;
 	}
 
-	if ( scourge->getOptionsMenu()->isVisible() ) {
-		scourge->getOptionsMenu()->handleEvent( widget, event );
-		return false;
-	}
+//	if ( scourge->getOptionsMenu()->isVisible() ) {
+//		scourge->getOptionsMenu()->handleEvent( widget, event );
+//		return false;
+//	}
 
 	if ( partyEditor && partyEditor->isVisible() ) {
 		partyEditor->handleEvent( widget, event );

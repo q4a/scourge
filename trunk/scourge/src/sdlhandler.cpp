@@ -19,6 +19,7 @@
 #include "sdlhandler.h"
 #include "gameadapter.h"
 #include "gui/window.h"
+#include "gui/eventhandler.h"
 #include "preferences.h"
 #include "sdleventhandler.h"
 #include "sdlscreenview.h"
@@ -647,7 +648,14 @@ bool SDLHandler::processEvents( bool *isActive ) {
 		if ( fadeoutTimer <= 0 ) {
 			if ( widget ) {
 				if ( !mouseLock || mouseLock == widget ) {
-					res = eventHandler->handleEvent( widget, &event );
+					EventHandler *eh = getEventHandler( widget );
+					if( eh ) {
+						// new-style event handling
+						eh->handleEvent( widget, &event );
+					} else {
+						// old-style event handling
+						res = eventHandler->handleEvent( widget, &event );
+					}
 					// this is so that moving the cursor over a
 					// window doesn't scroll the map forever
 					if ( event.type == SDL_MOUSEMOTION ) {

@@ -49,6 +49,7 @@ DonateDialog::DonateDialog( Scourge *scourge ) {
 	h = 20;
 	int y = win->getHeight() - h - 30;
 	closeButton = win->createButton( w - 80, y, w - 10, y + h, _( "Close" ) );
+	win->registerEventHandler( this );
 }
 
 DonateDialog::~DonateDialog() {
@@ -83,12 +84,13 @@ void DonateDialog::updateUI() {
 	result->setText( "" );
 }
 
-void DonateDialog::handleEvent( Widget *widget, SDL_Event *event ) {
+bool DonateDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == closeButton || widget == win->closeButton ) {
 		win->setVisible( false );
 	} else if ( widget == applyButton ) {
 		donate( atoi( amount->getText() ) );
 	}
+	return false;
 }
 
 void DonateDialog::donate( int amount ) {
