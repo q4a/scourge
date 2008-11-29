@@ -265,6 +265,8 @@ public:
 	}
 	virtual void setContinueAt( char *func, int timeout ) {}
 	virtual void setDepthLimits( float minLimit, float maxLimit ) {}
+	
+	virtual void forceRepaint() {}
 };
 
 /// SDL/OpenGL related extensions to GameAdapter.
@@ -339,6 +341,9 @@ public:
 	bool intersects( int x, int y, int w, int h,
 	                 int x2, int y2, int w2, int h2 );
 
+	virtual void forceRepaint() {
+		sdlHandler->drawScreen();
+	}
 protected:
 	void decodeName( int name, Uint16* mapx, Uint16* mapy, Uint16* mapz );
 };
