@@ -40,4 +40,6 @@ libScourgeGui_a_SOURCES = \
 	textdialog.cpp\
 	textdialog.h\
 	progress.cpp\
-	progress.h
+	progress.h\
+	eventhandler.cpp\
+	eventhandler.h

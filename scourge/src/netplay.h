@@ -25,6 +25,7 @@
 #include "net/gamestatehandler.h"
 #include "net/commands.h"
 #include "gui/scrollinglist.h"
+#include "gui/eventhandler.h"
 
 
 /**
@@ -32,7 +33,7 @@
 */
 
 /// Handles online play.
-class NetPlay : public GameStateHandler, CommandInterpreter {
+class NetPlay : public GameStateHandler, CommandInterpreter, EventHandler {
 private:
 	Scourge *scourge;
 	Window *mainWin;

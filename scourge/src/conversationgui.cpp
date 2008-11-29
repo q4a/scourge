@@ -118,6 +118,7 @@ ConversationGui::ConversationGui( Scourge *scourge ) {
 	tradeButton = cards->createButton( x + 70, y, x + 160, y + 20, _( "Trade" ), Constants::NPC_TYPE_MERCHANT );
 
 	win->setVisible( false );
+	win->registerEventHandler( this );
 }
 
 ConversationGui::~ConversationGui() {

@@ -107,6 +107,7 @@ InfoGui::InfoGui( Scourge *scourge ) {
 	}
 	label->setInteractive( false );
 	win->addWidget( label );
+	win->registerEventHandler( this );
 }
 
 InfoGui::~InfoGui() {

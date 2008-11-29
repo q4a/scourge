@@ -56,6 +56,7 @@ TrainDialog::TrainDialog( Scourge *scourge ) {
 	closeButton = win->createButton( w - 80, y, w - 10, y + h, _( "Close" ) );
 	applyButton = win->createButton( w - 160, y, w - 90, y + h, _( "Train!" ) );
 
+	win->registerEventHandler( this );
 }
 
 TrainDialog::~TrainDialog() {
@@ -150,7 +151,7 @@ void TrainDialog::updateUI() {
 	}
 }
 
-void TrainDialog::handleEvent( Widget *widget, SDL_Event *event ) {
+bool TrainDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == closeButton || widget == win->closeButton ) {
 		win->setVisible( false );
 	} else if ( widget == list ) {
@@ -164,6 +165,7 @@ void TrainDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 			train( scourge->getParty()->getPlayer()->getCharacter()->getChild( n ) );
 		}
 	}
+	return false;
 }
 
 void TrainDialog::train( Character *newProfession ) {

@@ -51,6 +51,7 @@ NetPlay::NetPlay( Scourge *scourge ) {
 
 	chatText = new TextField( 10, 10, 70 );
 	mainWin->addWidget( chatText );
+	mainWin->registerEventHandler( this );
 }
 
 NetPlay::~NetPlay() {

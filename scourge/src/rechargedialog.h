@@ -22,6 +22,7 @@ rechargedialog.h  -  The recharge item dialog
 #include "itemlist.h"
 #include "pcui.h"
 #include <map>
+#include "gui/eventhandler.h"
 
 class Scourge;
 class Creature;
@@ -32,7 +33,7 @@ class Item;
 class PcUi;
 
 /// The "recharge item" dialog.
-class RechargeDialog : public ItemRenderer {
+class RechargeDialog : public ItemRenderer, EventHandler {
 private:
 	Scourge *scourge;
 	Creature *creature;
@@ -54,7 +55,7 @@ public:
 	inline Window *getWindow() {
 		return win;
 	}
-	void handleEvent( Widget *widget, SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
 
 	void render( const Widget *widget, const Item *item, std::string& buffer );
 

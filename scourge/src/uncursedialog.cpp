@@ -50,6 +50,8 @@ UncurseDialog::UncurseDialog( Scourge *scourge ) {
 	closeButton = win->createButton( w - xStart - 72, 274, w - xStart, 294, _( "Close" ) );
 
 	coinAvailA = win->createLabel( xStart, 260, _( "Available Coins:" ) );
+	
+	win->registerEventHandler( this );
 }
 
 UncurseDialog::~UncurseDialog() {
@@ -88,7 +90,7 @@ int UncurseDialog::getSelectedTotal( ItemList *list ) {
 	return total;
 }
 
-void UncurseDialog::handleEvent( Widget *widget, SDL_Event *event ) {
+bool UncurseDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == win->closeButton || widget == closeButton ) {
 		win->setVisible( false );
 	} else if ( widget == infoButtonA && listA->getSelectedLineCount() ) {
@@ -101,6 +103,7 @@ void UncurseDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	} else if ( widget == uncurseButton ) {
 		uncurse();
 	}
+	return false;
 }
 
 void UncurseDialog::render( const Widget *widget, const Item *item, std::string& buffer ) {

@@ -160,6 +160,9 @@ OptionsMenu::OptionsMenu( Scourge *scourge ) {
 
 	selectedMode = GAME_SETTINGS;
 	cards->setActiveCard( GAME_SETTINGS );
+	
+	// register this class as the event handler for ever widget in mainWin
+	mainWin->registerEventHandler( this );
 }
 
 void OptionsMenu::loadGameSettings() {

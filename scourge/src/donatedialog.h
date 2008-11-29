@@ -20,6 +20,7 @@
 #pragma once
 
 #include <map>
+#include "gui/eventhandler.h"
 
 class Scourge;
 class Creature;
@@ -31,7 +32,7 @@ class Button;
 class TextField;
 
 /// The donate window.
-class DonateDialog {
+class DonateDialog : public EventHandler {
 private:
 	Scourge *scourge;
 	Creature *creature;
@@ -50,7 +51,7 @@ public:
 	inline Window *getWindow() {
 		return win;
 	}
-	void handleEvent( Widget *widget, SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
 
 protected:
 	void donate( int amount );

@@ -23,6 +23,7 @@
 
 class Widget;
 class Texture;
+class EventHandler;
 
 /**
  * This is the only class thru which the gui interacts with the rest of scourge.
@@ -61,6 +62,9 @@ public:
 	virtual void lockMouse( Widget *widget ) = 0;
 	virtual void allWindowsClosed() = 0;
 	virtual void blockEvent() = 0;
+	virtual void registerEventHandler( Widget *w, EventHandler *eh ) = 0; 
+	virtual void unregisterEventHandler( Widget *w ) = 0;
+	virtual EventHandler *getEventHandler( Widget *w ) = 0;
 };
 
 #endif

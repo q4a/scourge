@@ -26,6 +26,7 @@
 #include "gui/draganddrop.h"
 #include "gui/canvas.h"
 #include "gui/widgetview.h"
+#include "gui/eventhandler.h"
 
 /**
   *@author Gabor Torok
@@ -43,7 +44,7 @@ class MissionInfoUI;
 class CardContainer;
 
 /// The window that displays a character's backpack, attributes etc.
-class PcUi : public WindowListener {
+class PcUi : public WindowListener, EventHandler {
 private:
 	Scourge *scourge;
 	Creature *creature;

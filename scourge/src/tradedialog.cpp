@@ -61,6 +61,7 @@ TradeDialog::TradeDialog( Scourge *scourge ) {
 	tradeInfo->setSpecialColor();
 
 	win->createLabel( xStart, 310, _( "Shift+click to select multiple items, right click to get info." ) );
+	win->registerEventHandler( this );
 }
 
 TradeDialog::~TradeDialog() {
@@ -113,7 +114,7 @@ int TradeDialog::getSelectedTotal( ItemList *list ) {
 	return total;
 }
 
-void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
+bool TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == win->closeButton || widget == closeButton ) {
 		win->setVisible( false );
 	} else if ( widget == infoButtonA && playerList->getSelectedLineCount() ) {
@@ -134,6 +135,7 @@ void TradeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	} else if ( widget == stealButton ) {
 		steal();
 	}
+	return false;
 }
 
 void TradeDialog::render( const Widget *widget, const Item *item, std::string& buffer ) {

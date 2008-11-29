@@ -23,6 +23,7 @@
 #include <vector>
 #include <set>
 #include <sstream>
+#include "gui/eventhandler.h"
 
 class Scourge;
 class Window;
@@ -47,7 +48,7 @@ public:
 };
 
 /// The save/load game dialog.
-class SavegameDialog {
+class SavegameDialog : public EventHandler {
 private:
 	Scourge *scourge;
 	Window *win;
@@ -66,7 +67,7 @@ public:
 	inline Window *getWindow() {
 		return win;
 	}
-	void handleEvent( Widget *widget, SDL_Event *event );
+	bool handleEvent( Widget *widget, SDL_Event *event );
 	void show( bool inSaveMode = true );
 
 	bool createNewSaveGame();

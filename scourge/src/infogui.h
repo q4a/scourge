@@ -31,13 +31,14 @@
 #include "gui/canvas.h"
 #include "gui/widgetview.h"
 #include "gui/scrollinglabel.h"
+#include "gui/eventhandler.h"
 
 class Item;
 class Spell;
 class SpecialSkill;
 
 /// The window that appears when you right click on items, spells etc.
-class InfoGui : public WidgetView {
+class InfoGui : public WidgetView, EventHandler {
 
 private:
 	Scourge *scourge;

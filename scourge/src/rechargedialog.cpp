@@ -50,6 +50,8 @@ RechargeDialog::RechargeDialog( Scourge *scourge ) {
 	closeButton = win->createButton( w - xStart - 72, 274, w - xStart, 294, _( "Close" ) );
 
 	coinAvailA = win->createLabel( xStart, 260, _( "Available Coins:" ) );
+	
+	win->registerEventHandler( this );
 }
 
 RechargeDialog::~RechargeDialog() {
@@ -88,7 +90,7 @@ int RechargeDialog::getSelectedTotal( ItemList *list ) {
 	return total;
 }
 
-void RechargeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
+bool RechargeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == win->closeButton || widget == closeButton ) {
 		win->setVisible( false );
 	} else if ( widget == infoButtonA && listA->getSelectedLineCount() ) {
@@ -101,6 +103,7 @@ void RechargeDialog::handleEvent( Widget *widget, SDL_Event *event ) {
 	} else if ( widget == rechargeButton ) {
 		recharge();
 	}
+	return false;
 }
 
 void RechargeDialog::render( const Widget *widget, const Item *item, std::string& buffer ) {
