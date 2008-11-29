@@ -545,6 +545,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 		isDoubleClick = false;
 		mouseEvent = mouseButton = 0;
 		Widget *widget = NULL;
+		Window *win = NULL;
 		switch ( event.type ) {
 		case SDL_MOUSEMOTION:
 			if ( invertMouse ) event.motion.y = screen->h - event.motion.y;
@@ -554,7 +555,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 			mouseButton = event.button.button;
 			mouseEvent = SDL_MOUSEMOTION;
 			// don't process events during a fade
-			if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mouseX, mouseY );
+			if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mouseX, mouseY, &win );
 			if ( !widget ) {
 				mouseIsMovingOverMap = true;
 				lastMouseMoveTime = now;
@@ -572,7 +573,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 				                  abs( lastMouseY - event.button.y ) < DOUBLE_CLICK_TOLERANCE );
 				lastLeftClick = now;
 				// don't process events during a fade
-				if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my );
+				if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my, &win );
 			}
 			lastMouseX = event.button.x;
 			lastMouseY = event.button.y;
@@ -585,7 +586,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 			mouseDragging = ( event.button.button == SDL_BUTTON_LEFT );
 			//if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT) {
 			// don't process events during a fade
-			if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my );
+			if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my, &win );
 			//}
 			break;
 		case SDL_ACTIVEEVENT:
@@ -618,7 +619,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 		case SDL_KEYDOWN:
 			applyMouseOffset( mouseX, mouseY, &mx, &my );
 			// don't process events during a fade
-			if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my );
+			if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mx, my, &win );
 			break;
 		case SDL_QUIT:
 			quit( 0 ); // handle quit requests
@@ -663,7 +664,13 @@ bool SDLHandler::processEvents( bool *isActive ) {
 					}
 				}
 			} else {
-				if ( !mouseLock ) res = eventHandler->handleEvent( &event );
+				if ( !mouseLock ) {
+					if( win && win->getRawEventHandler() ) {
+						res = win->getRawEventHandler()->handleEvent( &event );
+					} else {
+						res = eventHandler->handleEvent( &event );
+					}
+				}
 			}
 			if ( res ) {
 				if ( popHandlers() ) {

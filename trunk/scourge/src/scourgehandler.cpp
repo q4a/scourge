@@ -71,27 +71,6 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 		return false;
 	}
 
-	for ( int i = 0; i < scourge->getContainerGuiCount(); i++ ) {
-		if ( scourge->getContainerGui( i )->handleEvent( event ) ) {
-			scourge->closeContainerGui( i );
-		}
-	}
-
-	if ( scourge->getPcUi()->getWindow()->isVisible() &&
-	        scourge->getPcUi()->handleEvent( event ) ) {
-		return false;
-	}
-
-	if ( scourge->getOptionsMenu()->isVisible() ) {
-		scourge->getOptionsMenu()->handleEvent( event );
-		//    return false;
-	}
-
-	//if(multiplayer->isVisible()) {
-//    multiplayer->handleEvent(event);
-	//return false;
-	//}
-
 	bool wasMapMoving = scourge->getMap()->isMapMoving();
 	scourge->getMap()->handleEvent( event );
 
@@ -366,12 +345,9 @@ bool ScourgeHandler::handleEvent( Widget *widget, SDL_Event *event ) {
 
 	// FIXME: this is hacky... (there should be classes for the party ui, board ui, etc.)
 	if ( handlePartyEvent( widget, event ) ) return true;
-	int n = handleBoardEvent( widget, event );
-	if ( n == Board::EVENT_HANDLED ) return false;
-	else if ( n == Board::EVENT_PLAY_MISSION ) {
-		if ( scourge->playSelectedMission() ) return true;
-	}
+	if( handleBoardEvent( widget, event ) ) return true;
 
+	// assorted random events
 	if ( widget == scourge->getExitConfirmationDialog()->okButton ) {
 		scourge->movePartyToGateAndEndMission();
 		return true;
@@ -688,22 +664,19 @@ void ScourgeHandler::quickSpellAction( int index, int button ) {
 	}
 }
 
-int ScourgeHandler::handleBoardEvent( Widget *widget, SDL_Event *event ) {
+bool ScourgeHandler::handleBoardEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == scourge->getBoardWin()->closeButton ||
 	        widget == scourge->getCloseBoard() ) {
 		scourge->getBoardWin()->setVisible( false );
-		return Board::EVENT_HANDLED;
 	} else if ( widget == scourge->getMissionList() ) {
 		scourge->updateBoard();
-		return Board::EVENT_HANDLED;
 	} else if ( widget == scourge->getPlayMission() ) {
 		int selected = scourge->getMissionList()->getSelectedLine();
 		if ( selected != -1 && selected < scourge->getBoard()->getMissionCount() ) {
-			return Board::EVENT_PLAY_MISSION;
+			if ( scourge->playSelectedMission() ) return true;
 		}
-		return Board::EVENT_HANDLED;
 	}
-	return -1;
+	return false;
 }
 
 void ScourgeHandler::saveScreenshot() {

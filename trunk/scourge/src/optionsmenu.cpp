@@ -121,7 +121,6 @@ OptionsMenu::OptionsMenu( Scourge *scourge ) {
 	y = YPOS;
 	videoResolutionML = new MultipleLabel( XPOS, y, XPOS + X_SIZE, y + SPACING, _( "Screen resolution" ), 100 );
 	int nbModes, i;
-	char * vm;
 	nbModes = scourge->getSDLHandler()->getVideoModeCount();
 	for ( i = 0; i < nbModes; i++ ) {
 		std::string s = scourge->getSDLHandler()->getVideoMode( i );
@@ -163,6 +162,7 @@ OptionsMenu::OptionsMenu( Scourge *scourge ) {
 	
 	// register this class as the event handler for ever widget in mainWin
 	mainWin->registerEventHandler( this );
+	mainWin->setRawEventHandler( this );
 }
 
 void OptionsMenu::loadGameSettings() {
