@@ -185,6 +185,32 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSiz
 		cerr << "*** Texture::Actual::createAlpha() with missing sample texture." << endl;
 		return false;
 	}
+	
+	Preferences *prefs = Session::instance->getPreferences();
+	
+	// Copy to a texture the original image
+	glLoadIdentity();
+	glEnable( GL_TEXTURE_2D );
+	GLuint background;
+	std::vector<unsigned char*> backgroundInMem( textureSizeW * textureSizeH * 4 );
+	glGenTextures( 1, &background );
+	glBindTexture( GL_TEXTURE_2D, background );
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+	glTexImage2D( GL_TEXTURE_2D, 0, ( prefs->getBpp() > 16 ? GL_RGBA : GL_RGBA4 ), textureSizeW, textureSizeH, 0, GL_RGBA, GL_UNSIGNED_BYTE, &backgroundInMem[0] );
+	glBindTexture( GL_TEXTURE_2D, background );
+	glCopyTexSubImage2D( GL_TEXTURE_2D,
+	                     0,      // MIPMAP level
+	                     0,      // x texture offset
+	                     0,      // y texture offset
+	                     0,              // x window coordinates
+	                     Session::instance->getGameAdapter()->getScreenHeight() - textureSizeH,   // y window coordinates
+	                     textureSizeW,    // width
+	                     textureSizeH     // height
+	                   );
 
 	_filename = sample->_filename + " with added alpha";
 	_width = width; 
@@ -197,8 +223,6 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSiz
 	glGenTextures( 1, &_id );
 	glBindTexture( GL_TEXTURE_2D, _id );
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-	Preferences *prefs = Session::instance->getPreferences();
 
 	/**
 	 * This method should not create mip-maps. They don't work well with alpha-tested textures and cause flickering.
@@ -290,17 +314,24 @@ bool Texture::Actual::createAlpha( Actual* alpha, Actual* sample, int textureSiz
 	                     textureSizeH     // height
 	                   );
 
-	// cover with black
+	// cover with the original
 	// todo: this should be the original background, not black
-	glDisable( GL_TEXTURE_2D );
-	glColor4f( 0, 0, 0, 0 );
+	//glDisable( GL_TEXTURE_2D );	
+	//glColor4f( 0, 0, 0, 0 );
+	glBindTexture( GL_TEXTURE_2D, background );
+//  glNormal3f( 0, 0, 1 );
 	glBegin( GL_TRIANGLE_STRIP );
+	glTexCoord2f( 0, 0 );
 	glVertex3f( 0, 0, 0 );
+	glTexCoord2f( 1, 0 );
 	glVertex3f( width, 0, 0 );
+	glTexCoord2f( 0, 1 );
 	glVertex3f( 0, height, 0 );
+	glTexCoord2f( 1, 1 );
 	glVertex3f( width, height, 0 );
-	glEnd();
+	glEnd();	
 	glPopMatrix();
+	glDeleteTextures( 1, &background );
 
 	glDisable( GL_BLEND );
 	glEnable( GL_CULL_FACE );
