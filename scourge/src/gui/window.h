@@ -38,6 +38,7 @@ class Label;
 class Checkbox;
 class TextField;
 class EventHandler;
+class RawEventHandler;
 
 #define TITLE_HEIGHT 21
 
@@ -80,6 +81,7 @@ private:
 	GuiTheme *theme;
 	bool opening;
 	int gutter;
+	RawEventHandler *rawEventHandler;
 
 	static Window *window[];
 	static int windowCount;
@@ -130,7 +132,14 @@ public:
 	~Window();
 	
 	void registerEventHandler( EventHandler *eventHandler );
-	void unregisterEventHandler(); 
+	void unregisterEventHandler();
+	inline void setRawEventHandler( RawEventHandler *rawEventHandler ) {
+		this->rawEventHandler = rawEventHandler;
+	}
+	inline RawEventHandler *getRawEventHandler() {
+		return rawEventHandler;
+	}
+
 
 	void addWindowListener( WindowListener *listener ) {
 		listeners.push_back( listener );
@@ -217,7 +226,7 @@ public:
 	static void drawVisibleWindows();
 	static void addWindow( Window *win );
 	static void removeWindow( Window *win );
-	static Widget *delegateEvent( SDL_Event *event, int x, int y );
+	static Widget *delegateEvent( SDL_Event *event, int x, int y, Window **selectedWindow );
 	static void toTop( Window *win );
 	static void toBottom( Window *win );
 	static void nextWindowToTop( Window *win, bool includeLocked = true );

@@ -103,6 +103,7 @@ void Window::commonInit( ScourgeGui *scourgeGui, int x, int y, int w, int h, cha
 	openHeight = INSET * 2;
 	this->type = type;
 	this->locked = false;
+	this->rawEventHandler = NULL;
 
 	// FIXME: should come from gui.txt
 	if ( type == SIMPLE_WINDOW ) {
@@ -180,7 +181,7 @@ void Window::drawVisibleWindows() {
 	glEnable( GL_DEPTH_TEST );
 }
 
-Widget *Window::delegateEvent( SDL_Event *event, int x, int y ) {
+Widget *Window::delegateEvent( SDL_Event *event, int x, int y, Window **selectedWindow ) {
 
 	if ( mouseLockWindow ) {
 		return mouseLockWindow->handleWindowEvent( event, x, y );
@@ -230,6 +231,10 @@ Widget *Window::delegateEvent( SDL_Event *event, int x, int y ) {
 				window[i]->widget[t]->removeEffects( window[i] );
 			}
 		}
+	}
+	
+	if( selectedWindow ) {
+		*selectedWindow = win;
 	}
 	return widget;
 }

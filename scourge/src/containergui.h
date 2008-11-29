@@ -30,7 +30,7 @@ class Item;
 class ContainerView;
 
 /// The "container contents" window (for open chests etc.)
-class ContainerGui : public EventHandler {
+class ContainerGui : public EventHandler, RawEventHandler {
 
 private:
 	Scourge *scourge;

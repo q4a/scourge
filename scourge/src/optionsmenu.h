@@ -45,7 +45,7 @@ class Scourge;
 class UserConfiguration;
 
 /// The options menu.
-class OptionsMenu : public EventHandler {
+class OptionsMenu : public EventHandler, RawEventHandler {
 private:
 
 	Scourge *scourge;

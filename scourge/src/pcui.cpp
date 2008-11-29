@@ -159,6 +159,7 @@ PcUi::PcUi( Scourge *scourge ) {
 	storeSpell->setEnabled( false );
 	
 	mainWin->registerEventHandler( this );
+	mainWin->setRawEventHandler( this );
 }
 
 PcUi::~PcUi() {

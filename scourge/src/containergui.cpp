@@ -58,6 +58,7 @@ ContainerGui::ContainerGui( Scourge *scourge, Item *container, int x, int y ) {
 	win->addWidget( (Canvas*)view );
 
 	win->registerEventHandler( this );
+	win->setRawEventHandler( this );
 	win->setVisible( true );	
 }
 

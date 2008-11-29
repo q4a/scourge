@@ -55,7 +55,7 @@ protected:
 	bool handleCreatureClick( Uint16 mapx, Uint16 mapy, Uint16 mapz );
 	bool handlePartyEvent( Widget *widget, SDL_Event *event );
 	void quickSpellAction( int index, int button = SDL_BUTTON_LEFT );
-	int handleBoardEvent( Widget *widget, SDL_Event *event );
+	bool handleBoardEvent( Widget *widget, SDL_Event *event );
 };
 
 #endif

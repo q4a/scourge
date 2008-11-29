@@ -44,7 +44,7 @@ class MissionInfoUI;
 class CardContainer;
 
 /// The window that displays a character's backpack, attributes etc.
-class PcUi : public WindowListener, EventHandler {
+class PcUi : public WindowListener, EventHandler, RawEventHandler {
 private:
 	Scourge *scourge;
 	Creature *creature;
