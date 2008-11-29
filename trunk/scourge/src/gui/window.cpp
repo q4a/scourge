@@ -140,12 +140,14 @@ void Window::registerEventHandler( EventHandler *eventHandler ) {
 	for ( int i = 0; i < widgetCount ; i++ ) {
 		scourgeGui->registerEventHandler( widget[i], eventHandler );
 	}
+	if( closeButton ) scourgeGui->registerEventHandler( closeButton, eventHandler );
 }
 
 void Window::unregisterEventHandler() {
 	for ( int i = 0; i < widgetCount ; i++ ) {
 		scourgeGui->unregisterEventHandler( widget[i] );
 	}
+	if( closeButton ) scourgeGui->unregisterEventHandler( closeButton );
 }
 
 void Window::addWindow( Window *win ) {
