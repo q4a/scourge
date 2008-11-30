@@ -397,6 +397,7 @@ OptionsMenu::~OptionsMenu() {
 
 void OptionsMenu::show() {
 	mainWin->setVisible( true );
+	setSelectedMode();
 }
 
 void OptionsMenu::hide() {
