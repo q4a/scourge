@@ -3032,8 +3032,11 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 				}
 			}
 		} else if ( helper && helper->isVisible( toint( creature->getX() ), toint( creature->getY() ), creature->getShape() ) ) {
-			Location *pos = getLocation( toint( creature->getX() ), toint( creature->getY() ), toint( creature->getZ() ) );
+//			cerr << "!!! 1" << creature->getName() << " " << SDL_GetTicks() << " pos=" << 
+//				toint( creature->getX() ) << "," << toint( creature->getY() ) << "," << toint( creature->getZ() ) << endl;
+			Location *pos = getLocation( (int)( creature->getX() ), (int)( creature->getY() ), (int)( creature->getZ() ) );
 			if ( pos ) {
+//				cerr << "!!! 2" << creature->getName() << " " << SDL_GetTicks() << endl;
 				int chunkX, chunkY;
 				getChunk( pos->x, pos->y, &chunkX, &chunkY );
 				if ( checkLightMap( chunkX, chunkY ) ) {
@@ -3041,7 +3044,7 @@ void Map::moveCreaturePos( Sint16 nx, Sint16 ny, Sint16 nz, Sint16 ox, Sint16 oy
 					// it means the creature wondered into the visible area: repaint everything.
 					// An optimization here would be to restrict setupShapes to the creatures that changed.
 					resortShapes = mapChanged = true;
-//     cerr << "!!! " << creature->getName() << " " << SDL_GetTicks() << endl;
+//					cerr << "!!! 3" << creature->getName() << " " << SDL_GetTicks() << endl;
 				}
 			}
 		}
