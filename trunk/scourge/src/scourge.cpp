@@ -1240,7 +1240,7 @@ bool Scourge::useItem( int x, int y, int z ) {
 		dropItem( levelMap->getCursorFlatMapX(), levelMap->getCursorFlatMapY() );
 		return true;
 	}
-
+	
 	Location *pos = levelMap->getPosition( x, y, z );
 	if ( !pos ) pos = levelMap->getItemLocation( x, y );
 	if ( pos ) {
@@ -1256,6 +1256,11 @@ bool Scourge::useItem( int x, int y, int z ) {
 			getParty()->setSelXY( x, y, false ); // get as close as possible to location
 			return true;
 		} else {
+			// do nothing when paused
+			if( !party->isRealTimeMode() ) {
+				return true;
+			}
+			
 			if ( session->getSquirrel()->
 						            callMapPosMethod( "useShape",
 						                              pos->x,
