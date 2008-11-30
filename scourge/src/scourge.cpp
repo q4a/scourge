@@ -237,7 +237,7 @@ void Scourge::start() {
 	srand( ( unsigned int )time( ( time_t * )NULL ) );
 	Util::mt_srand( ( unsigned long )time( ( time_t* )NULL ) );
 
-	cerr << "Creating lookup tables... ";
+//	cerr << "Creating lookup tables... ";
 	Uint32 now = SDL_GetTicks();
 
 	// Precalculate trigonometry
@@ -247,7 +247,7 @@ void Scourge::start() {
 	view->generateRain();
 	view->generateClouds();
 
-	cerr << "done in " << ( SDL_GetTicks() - now ) << " millis." << endl;
+//	cerr << "done in " << ( SDL_GetTicks() - now ) << " millis." << endl;
 
 	bool initMainMenu = true;
 	int value = CONTINUE_GAME;
@@ -3586,10 +3586,7 @@ void Scourge::uploadScore() {
 
 	char desc[2000];
 	if( getSession()->getSquirrel()->getValue( "gameCompleted" ) != NULL ) {
-		snprintf( desc, 2000, _( "Successfully completed the game and saved the world!!!" ),
-		          place,
-		          getParty()->getParty( 0 )->getCauseOfDeath(),
-		          ( getSession()->getBoard()->getStorylineIndex() + 1 ) );		
+		snprintf( desc, 2000, _( "Successfully completed the game and saved the world!!!" ) );		
 	} else {
 		snprintf( desc, 2000, _( "Expired %s. Cause of demise: %s. Reached chapter %d of the story." ),
 		          place,

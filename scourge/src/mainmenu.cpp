@@ -62,7 +62,7 @@ bool eventsEnabled = false;
 const char *MainMenu::menuText[] = {
 	N_( "New Game" ),
 	N_( "Continue Game" ),
-	N_( "Multiplayer Game" ),
+//	N_( "Multiplayer Game" ), ...skip multiplayer for now
 	N_( "Options" ),
 	N_( "About S.c.o.u.r.g.e." ),
 	N_( "Quit" ),
@@ -72,7 +72,9 @@ const char *MainMenu::menuText[] = {
 int activeMenuItem = -1;
 
 const int MainMenu::values[] = {
-	NEW_GAME, CONTINUE_GAME, MULTIPLAYER, OPTIONS, ABOUT, QUIT, 0
+	NEW_GAME, CONTINUE_GAME, 
+	// MULTIPLAYER, ...skip multiplayer for now
+	OPTIONS, ABOUT, QUIT, 0
 };
 
 Texture slide;
