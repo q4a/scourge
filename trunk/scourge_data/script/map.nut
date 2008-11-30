@@ -379,11 +379,11 @@ function converse( creature, question ) {
   print( "Creature=" + creature.getName() + " question:" + question + "\n" );
 
   // Orhithales will not give you information until the armor has been recovered
-  if( creature.getName() == "Orhithales Grimwise" &&
+  if( creature.getMonsterType() == "Orhithales Grimwise" &&
       !( scourgeGame.getMission().isCompleted() ) &&
       question == "SQ_DRAGONSCALE_ARMOR" ) {
     return _( "Yes, yes... quite so... carry on!" );
-  } else if( creature.getName() == "Sabien Gartu" ) {
+  } else if( creature.getMonsterType() == "Sabien Gartu" ) {
 		if( !( scourgeGame.getMission().isCompleted() ) &&
 			scourgeGame.getMission().getChapter() != 7 &&
 			question == "SQ_LOCKED_DOOR" ) {	
@@ -394,25 +394,25 @@ function converse( creature, question ) {
         scourgeGame.getMission().removeMapPosition( 294, 223, 0 );
       }
     }
-  } else if( creature.getName() == "Karzul Agmordexu" &&
+  } else if( creature.getMonsterType() == "Karzul Agmordexu" &&
              !( scourgeGame.getMission().isCompleted() ) &&
              question == "SQ_SERVES" ) {
     scourgeGame.getMission().setCompleted();
-  }	else if( creature.getName() == "Positive Energy of Hornaxx" ) {
+  }	else if( creature.getMonsterType() == "Positive Energy of Hornaxx" ) {
 		if( question == "SQ_UNAMOIN" ) {
 			storePartyLevel();
 		} else if( question == "SQ_TOKENS" ) {
 			assignAntimagicItems();
 		}
-	} else if( creature.getName() == "Mothrazu" &&
+	} else if( creature.getMonsterType() == "Mothrazu" &&
 						 question == "SQ_DOOM" ) {
 		mothrazuTransforms( creature );
-	} else if( creature.getName() == "Spawn of Arcanex" ) {
+	} else if( creature.getMonsterType() == "Spawn of Arcanex" ) {
 		if( !( scourgeGame.getMission().isCompleted() ) && 
 				question == "SQ_KARZUL" ) {
 			scourgeGame.getMission().setCompleted();
 		}
-	} else if( creature.getName() == "Nightlord" && question == "ready" ) {
+	} else if( creature.getMonsterType() == "Nightlord" && question == "ready" ) {
 		teleportPartyToSurface();
 	}
   return null;
@@ -510,6 +510,15 @@ function findCreatureByType( name ) {
 	return null;
 }
 
+function dumpCreatures() {
+	i <- 0;
+	creature <- null;
+	for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
+		creature = scourgeGame.getMission().getCreature( i );
+		print("i=" + i.tostring() + " creature=" + creature.getName() + " type=" + creature.getMonsterType() + "\n");
+	}
+}
+
 function initChapter6() {
 	// lock the door
 	if( scourgeGame.getMission().getDungeonDepth() == 3 ) {
@@ -526,7 +535,7 @@ function initChapter8() {
 		scourgeGame.getMission().setDoorLocked( 292, 209, 0, false );
 
 		for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
-			if( scourgeGame.getMission().getCreature( i ).getName() == "Sabien Gartu" ) {
+			if( scourgeGame.getMission().getCreature( i ).getMonsterType() == "Sabien Gartu" ) {
 				scourgeGame.getMission().getCreature( i ).setIntro( "SQ_CHAPTER_8" );
 				break;
 			}
@@ -555,9 +564,9 @@ function initChapter9() {
 		s <- getChapter9Intro();
 		if( s != null ) {
 			for( i = 0; i < scourgeGame.getMission().getCreatureCount(); i++ ) {
-				if( scourgeGame.getMission().getCreature( i ).getName() == "Positive Energy of Hornaxx" ) {
+				if( scourgeGame.getMission().getCreature( i ).getMonsterType() == "Positive Energy of Hornaxx" ) {
 					scourgeGame.getMission().getCreature( i ).setIntro( s );
-				} else if( scourgeGame.getMission().getCreature( i ).getName() == "Negative Energy of Hornaxx" ) {
+				} else if( scourgeGame.getMission().getCreature( i ).getMonsterType() == "Negative Energy of Hornaxx" ) {
 					scourgeGame.getMission().getCreature( i ).setIntro( "SQ_RETURN" );
 				}
 			}
