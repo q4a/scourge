@@ -85,9 +85,8 @@ ScourgeView::~ScourgeView() {
 
 void ScourgeView::drawView() {
 	if ( scourge->getSession()->isShowingChapterIntro() ) {
-
 		endScissorToMap();
-
+		scourge->hideGui(); // HACK: Hide party UI in the final chapter "outro".
 		drawChapterIntro();
 		return;
 	}
