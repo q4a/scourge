@@ -556,7 +556,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 			mouseEvent = SDL_MOUSEMOTION;
 			// don't process events during a fade
 			if ( fadeoutTimer <= 0 && cursorVisible ) widget = Window::delegateEvent( &event, mouseX, mouseY, &win );
-			if ( !widget ) {
+			if ( !widget && !win ) {
 				mouseIsMovingOverMap = true;
 				lastMouseMoveTime = now;
 			}
@@ -634,9 +634,9 @@ bool SDLHandler::processEvents( bool *isActive ) {
 			setCursorMode( Constants::CURSOR_NORMAL );
 		}
 
-		if ( !mouseIsMovingOverMap &&
-		        getCursorMode() != Constants::CURSOR_CROSSHAIR )
+		if ( !mouseIsMovingOverMap && getCursorMode() != Constants::CURSOR_CROSSHAIR ) {
 			setCursorMode( Constants::CURSOR_NORMAL );
+		}
 
 		// swallow this event
 		if ( willBlockEvent ) {
@@ -660,7 +660,11 @@ bool SDLHandler::processEvents( bool *isActive ) {
 					// this is so that moving the cursor over a
 					// window doesn't scroll the map forever
 					if ( event.type == SDL_MOUSEMOTION ) {
-						res = eventHandler->handleEvent( &event );
+						if( win && win->getRawEventHandler() ) {
+							res = win->getRawEventHandler()->handleEvent( &event );
+						} else {
+							res = eventHandler->handleEvent( &event );
+						}
 					}
 				}
 			} else {
