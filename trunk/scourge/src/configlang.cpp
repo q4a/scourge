@@ -455,7 +455,7 @@ ConfigLang *ConfigLang::load( const string& file, bool absolutePath ) {
 	ConfigLang *config = fromString( ss.str().c_str() );
 #endif
 
-	cerr << "Parsed " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
+	//cerr << "Parsed " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
 	in.close();
 	return config;
 
@@ -483,6 +483,6 @@ void ConfigLang::save( string& file, bool absolutePath ) {
 		Uint32 now = SDL_GetTicks();
 		debug( getDocument(), "", out );
 		out.close();
-		cerr << "Saved " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
+		//cerr << "Saved " << file << " in " << ( SDL_GetTicks() - now ) << " millis." << endl;
 	}
 }
