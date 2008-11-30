@@ -64,6 +64,7 @@ SavegameDialog::SavegameDialog( Scourge *scourge ) {
 
 	confirm = new ConfirmDialog( scourge->getSDLHandler(), _( "Overwrite existing file?" ) );
 	win->registerEventHandler( this );
+	confirm->win->registerEventHandler( this );
 }
 
 SavegameDialog::~SavegameDialog() {
