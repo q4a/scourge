@@ -408,6 +408,7 @@ void MainMenu::drawAfter() {
 void MainMenu::show() {
 	//logoRot = -scourge->getShapePalette()->logo->h;
 	logoRot = -173;
+	setValue( -1 );
 }
 
 void MainMenu::hide() {
@@ -734,26 +735,6 @@ bool MainMenu::handleEvent( Widget *widget, SDL_Event *event ) {
 
 	if ( !eventsEnabled ) return false;
 
-	if ( scourge->getSaveDialog()->getWindow()->isVisible() ) {
-		scourge->getSaveDialog()->handleEvent( widget, event );
-		return false;
-	}
-
-//	if ( scourge->getOptionsMenu()->isVisible() ) {
-//		scourge->getOptionsMenu()->handleEvent( widget, event );
-//		return false;
-//	}
-
-	if ( partyEditor && partyEditor->isVisible() ) {
-		partyEditor->handleEvent( widget, event );
-		//return false;
-	}
-
-	if ( savegameDialog->getWindow()->isVisible() ) {
-		savegameDialog->handleEvent( widget, event );
-		return false;
-	}
-
 	if ( aboutDialog->isVisible() ) {
 		if ( widget == aboutOK || widget == aboutDialog->closeButton ) {
 			aboutDialog->setVisible( false );
@@ -761,41 +742,26 @@ bool MainMenu::handleEvent( Widget *widget, SDL_Event *event ) {
 		return false;
 	}
 
-	if ( scourge->getMultiplayerDialog()->isVisible() ) {
-		scourge->getMultiplayerDialog()->handleEvent( widget, event );
-		if ( !scourge->getMultiplayerDialog()->isVisible() ) {
-			if ( scourge->getMultiplayerDialog()->getValue() == MultiplayerDialog::START_SERVER ) {
-				value = MULTIPLAYER_START;
-				return true;
-			} else if ( scourge->getMultiplayerDialog()->getValue() == MultiplayerDialog::JOIN_SERVER ) {
-				if ( !( strlen( scourge->getMultiplayerDialog()->getServerName() ) &&
-				        strlen( scourge->getMultiplayerDialog()->getServerPort() ) &&
-				        strlen( scourge->getMultiplayerDialog()->getUserName() ) ) ) {
-					scourge->showMessageDialog( Constants::getMessage( Constants::JOIN_SERVER_ERROR ) );
-				} else {
-					value = MULTIPLAYER_START;
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+//	if ( scourge->getMultiplayerDialog()->isVisible() ) {
+//		scourge->getMultiplayerDialog()->handleEvent( widget, event );
+//		if ( !scourge->getMultiplayerDialog()->isVisible() ) {
+//			if ( scourge->getMultiplayerDialog()->getValue() == MultiplayerDialog::START_SERVER ) {
+//				value = MULTIPLAYER_START;
+//				return true;
+//			} else if ( scourge->getMultiplayerDialog()->getValue() == MultiplayerDialog::JOIN_SERVER ) {
+//				if ( !( strlen( scourge->getMultiplayerDialog()->getServerName() ) &&
+//				        strlen( scourge->getMultiplayerDialog()->getServerPort() ) &&
+//				        strlen( scourge->getMultiplayerDialog()->getUserName() ) ) ) {
+//					scourge->showMessageDialog( Constants::getMessage( Constants::JOIN_SERVER_ERROR ) );
+//				} else {
+//					value = MULTIPLAYER_START;
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
 
-	if ( partyEditor && widget == partyEditor->getCancelButton() ) {
-		partyEditor->setVisible( false );
-		return false;
-	} else if ( partyEditor && widget == partyEditor->getStartGameButton() ) {
-		partyEditor->setVisible( false );
-		value = NEW_GAME_START;
-		return true;
-	} else if ( widget == newGameConfirmOK ) {
-		newGameConfirm->setVisible( false );
-		showPartyEditor();
-		return false;
-	} else if ( widget == newGameConfirmCancel ) {
-		newGameConfirm->setVisible( false );
-		return false;
-	}
 	return false;
 }
 
@@ -812,22 +778,22 @@ bool MainMenu::handleEvent( SDL_Event *event ) {
 	}
 
 	if ( savegameDialog->getWindow()->isVisible() ) {
-		savegameDialog->handleEvent( NULL, event );
+//		savegameDialog->handleEvent( NULL, event );
 		return false;
 	}
 
 	if ( scourge->getOptionsMenu()->isVisible() ) {
-		scourge->getOptionsMenu()->handleEvent( event );
+//		scourge->getOptionsMenu()->handleEvent( event );
 		return false;
 	}
 
 	if ( scourge->getMultiplayerDialog()->isVisible() ) {
-		scourge->getMultiplayerDialog()->handleEvent( event );
+//		scourge->getMultiplayerDialog()->handleEvent( event );
 		return false;
 	}
 
 	if ( partyEditor && partyEditor->isVisible() ) {
-		partyEditor->handleEvent( NULL, event );
+//		partyEditor->handleEvent( NULL, event );
 		return false;
 	}
 

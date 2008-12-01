@@ -285,6 +285,9 @@ bool PcEditor::handleEvent( Widget *widget, SDL_Event *event ) {
 		saveUI();
 		if ( creature ) creature->applySkillMods();
 		win->setVisible( false );
+		
+		// call to generic event handling
+		scourge->pcApproved();
 	} else if ( widget == nameButton ) {
 		cards->setActiveCard( NAME_TAB );
 		nameButton->setSelected( true );

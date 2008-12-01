@@ -403,15 +403,6 @@ bool ScourgeHandler::handleEvent( Widget *widget, SDL_Event *event ) {
 	            widget == scourge->getTextDialog()->okButton ) {
 		scourge->getTextDialog()->setVisible( false );
 		scourge->getParty()->toggleRound( false );
-	} else if ( widget == scourge->getPcEditor()->getOkButton() ) {
-		scourge->getSession()->getParty()->
-		hire( scourge->getPcEditor()->getCreature() );
-		//scourge->getDismissButton( scourge->getSession()->getParty()->
-		//getPartySize() - 1 )->
-		//setTexture( scourge->getShapePalette()->getDismissTexture() );
-		scourge->getPcEditor()->getWindow()->setVisible( false );
-	} else if ( widget == scourge->getPcEditor()->getCancelButton() ) {
-		scourge->getPcEditor()->getWindow()->setVisible( false );
 	}
 
 	return false;

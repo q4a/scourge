@@ -652,7 +652,7 @@ bool SDLHandler::processEvents( bool *isActive ) {
 					EventHandler *eh = getEventHandler( widget );
 					if( eh ) {
 						// new-style event handling
-						eh->handleEvent( widget, &event );
+						res = eh->handleEvent( widget, &event );
 					} else {
 						// old-style event handling
 						res = eventHandler->handleEvent( widget, &event );
