@@ -284,7 +284,6 @@ bool InfoGui::handleEvent( Widget *widget, SDL_Event *event ) {
 
 	if ( widget == win->closeButton ) {
 		win->setVisible( false );
-		return true;
 	} else if ( widget == closeButton ) {
 		win->setVisible( false );
 	} else if ( widget == idButton ) {

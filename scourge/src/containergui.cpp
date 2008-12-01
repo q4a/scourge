@@ -75,7 +75,6 @@ bool ContainerGui::handleEvent( Widget *widget, SDL_Event *event ) {
 	if ( widget == win->closeButton || widget == closeButton ) {
 		scourge->closeContainerGui( this );
 		win->setVisible( false );
-		return true;
 	} else if ( widget == infoButton ) {
 		if( view->getSelectedItem() ) {
 			view->showInfo( view->getSelectedItem() );
