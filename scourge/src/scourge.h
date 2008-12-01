@@ -821,6 +821,7 @@ public:
 	void endMovieMode();
 	bool isInMovieMode();
 	void setContinueAt( char *func, int timeout );
+	void pcApproved();
 
 protected:
 	void preMainLoop();
@@ -848,8 +849,6 @@ protected:
 	std::string getSavedMapName();
 	bool loadMap( const std::string& mapName, bool fromRandomMap, bool absolutePath, char *templateMapName = NULL );
 	void linkMissionObjectives( std::vector< RenderedItem* > *items, std::vector< RenderedCreature* > *creatures );
-
-protected:
 
 	void initChapterIntro( char *text = NULL, char *missionTitle = NULL );
 

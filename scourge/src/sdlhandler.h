@@ -291,9 +291,9 @@ public:
 			return NULL;
 		}
 	}
-
-protected:
 	bool popHandlers();
+
+protected:	
 	int resizeWindow( int width, int height );
 	int initGL();
 	void drawCursor();

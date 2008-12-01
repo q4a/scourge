@@ -266,9 +266,8 @@ void OptionsMenu::setSelectedMode() {
 
 
 bool OptionsMenu::handleEvent( Widget *widget, SDL_Event *event ) {
-	if ( widget == mainWin->closeButton ) {
+	if ( widget == mainWin->closeButton || widget == closeButton ) {
 		scourge->toggleOptionsWindow();
-		return true;
 	} else if ( widget == gameSettingsButton ) {
 		selectedMode = GAME_SETTINGS;
 	} else if ( widget == videoButton ) {
@@ -321,9 +320,6 @@ bool OptionsMenu::handleEvent( Widget *widget, SDL_Event *event ) {
 		uc->setAnisoFilter( anisofilterCheckbox->isChecked() );
 	} else if ( widget == shadowsML ) {
 		uc->setShadows( shadowsML->getCurrentTextInd() );
-	} else if ( widget == closeButton ) {
-		scourge->toggleOptionsWindow();
-		return true;
 	} else if ( widget == saveButton ) {
 		uc->saveConfiguration();
 		if ( selectedMode == VIDEO ) {

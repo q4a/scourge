@@ -343,6 +343,7 @@ void Scourge::start() {
 			}
 		} else if ( value == OPTIONS ) {
 			toggleOptionsWindow();
+			mainMenu->setValue( -1 );
 		} else if ( value == MULTIPLAYER ) {
 			multiplayer->show();
 		} else if ( value == QUIT ) {
@@ -4249,4 +4250,16 @@ void Scourge::showLoadingScreen() {
   // After that is done, just draw the slide.
   mainMenu->drawView();
   mainMenu->hide();
+}
+
+void Scourge::pcApproved() {
+	if( getSDLHandler()->getEventHandler() == handler ) {
+		// in game, a wandering hero was hired
+		getSession()->getParty()->hire( getPcEditor()->getCreature() );
+		//getPcEditor()->getWindow()->setVisible( false );
+	} else {
+		// in main menu: start the frickin' game!
+		getMainMenu()->setValue( NEW_GAME_START );
+		getSDLHandler()->endMainLoop();
+	}
 }

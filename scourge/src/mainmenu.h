@@ -142,6 +142,9 @@ public:
 	bool handleEvent( SDL_Event *event );
 	bool handleEvent( Widget *widget, SDL_Event *event );
 	int getValue();
+	inline void setValue( int value ) {
+		this->value = value;
+	}
 	void showNewGameConfirmationDialog();
 	void showSavegameDialog( bool inSaveMode = true );
 
