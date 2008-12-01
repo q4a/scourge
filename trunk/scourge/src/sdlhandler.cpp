@@ -657,23 +657,25 @@ bool SDLHandler::processEvents( bool *isActive ) {
 						// old-style event handling
 						res = eventHandler->handleEvent( widget, &event );
 					}
-					// this is so that moving the cursor over a
-					// window doesn't scroll the map forever
 					if ( event.type == SDL_MOUSEMOTION ) {
 						if( win && win->getRawEventHandler() ) {
 							res = win->getRawEventHandler()->handleEvent( &event );
-						} else {
-							res = eventHandler->handleEvent( &event );
 						}
+						
+						// also run the generic event handler.
+						// this is so that moving the cursor over a
+						// window doesn't scroll the map forever
+						res = eventHandler->handleEvent( &event );
 					}
 				}
 			} else {
 				if ( !mouseLock ) {
 					if( win && win->getRawEventHandler() ) {
 						res = win->getRawEventHandler()->handleEvent( &event );
-					} else {
-						res = eventHandler->handleEvent( &event );
 					}
+					
+					// also run the generic event handler
+					res = eventHandler->handleEvent( &event );
 				}
 			}
 			if ( res ) {
