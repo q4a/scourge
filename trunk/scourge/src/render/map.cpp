@@ -1875,15 +1875,6 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 			                                  later->effect->getDamageEffect() );
 		}
 	} else if ( later && later->creature && !useShadow ) {
-		if ( later->creature->getStateMod( StateMod::invisible ) ) {
-			glColor4f( 0.3f, 0.8f, 1.0f, 0.5f );
-			glEnable( GL_BLEND );
-			//glDepthMask( GL_FALSE );
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		} else if ( later->creature->getStateMod( StateMod::possessed ) ) {
-			glColor4f( 1.0, 0.3f, 0.8f, 1.0f );
-		}
-
 		// outline mission creatures
 		if ( adapter->isMissionCreature( later->creature ) ) {
 			//if( session->getCurrentMission() &&
@@ -1895,6 +1886,15 @@ void Map::doDrawShape( float xpos2, float ypos2, float zpos2, Shape *shape, int 
 		            later->pos->outlineColor ) {
 			shape->outline( later->pos->outlineColor );
 		}
+		
+		if ( later->creature->getStateMod( StateMod::invisible ) ) {
+			glColor4f( 0.3f, 0.8f, 1.0f, 0.5f );
+			glEnable( GL_BLEND );
+			//glDepthMask( GL_FALSE );
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		} else if ( later->creature->getStateMod( StateMod::possessed ) ) {
+			glColor4f( 1.0, 0.3f, 0.8f, 1.0f );
+		}		
 		shape->draw();
 
 		if ( later->creature->getStateMod( StateMod::invisible ) ) {
