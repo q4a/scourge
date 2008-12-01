@@ -14,7 +14,7 @@ function startChapter12Movie() {
 	if( scourgeGame.getMission().getDungeonDepth() == 0 ) {
 		key <- "chapter12Movie";
 		value <- scourgeGame.getValue( key );
-		//if( value == null || scourgeGame.getRerunMovies() ) {
+		if( value == null || scourgeGame.getRerunMovies() ) {
 			scourgeGame.setValue( key, "true" );
 			
 			// start movie mode
@@ -29,7 +29,7 @@ function startChapter12Movie() {
 			
 			scourgeGame.continueAt( "chapter12_part2", 5000 );
 			
-		//}
+		}
 	}
 }
 
