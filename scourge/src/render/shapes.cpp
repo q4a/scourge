@@ -282,7 +282,7 @@ void Shapes::initialize() {
 	//areaTex = loadGLTextures("/area.bmp");
 
 	// load as a grayscale (use gray value as alpha)
-	selection.load( "/textures/sel.png", false, false );
+	selection.load( "/textures/sel.png", false, true);
 
 	// default to textures
 	strcpy( cursorDir, "/textures" );
