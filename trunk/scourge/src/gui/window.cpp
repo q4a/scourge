@@ -370,7 +370,7 @@ bool Window::handleEvent( Widget *parent, SDL_Event *event, int x, int y ) {
 			setVisible( false );
 			// raise the next unlocked window
 			currentWin = NULL;
-			nextWindowToTop( this, false );
+			nextWindowToTop( NULL, false );
 			return true;
 		} else {
 			return false;
@@ -1062,7 +1062,7 @@ void Window::setVisible( bool b, bool animate ) {
 		y = currentY;
 		windowWasClosed = true;
 		if( currentWin == this ) currentWin = NULL;
-		nextWindowToTop( this );
+		nextWindowToTop( NULL, false );
 
 		// Any windows open?
 		if ( !anyFloatingWindowsOpen() ) scourgeGui->allWindowsClosed();
@@ -1123,15 +1123,17 @@ void Window::toBottom( Window *win ) {
 void Window::nextWindowToTop( Window *win, bool includeLocked ) {
 	int nextWindow = -1;
 	int nextZ;
-
+	
 	for ( int i = 0; i < windowCount; i++ ) {
-		if ( window[i]->isVisible() && ( window[i]->getZ() < win->getZ() ) && ( nextWindow == -1 || window[i]->getZ() > nextZ ) ) {
+		if ( window[i]->isVisible() && ( !win || window[i]->getZ() < win->getZ() ) && ( nextWindow == -1 || window[i]->getZ() > nextZ ) ) {
 			if ( !includeLocked && window[i]->isLocked() ) continue;
 			nextWindow = i;
 			nextZ = window[i]->getZ();
 		}
 	}
-	if ( nextWindow == -1 ) return;
+	if ( nextWindow == -1 ) {
+		return;
+	}
 	currentWin = window[nextWindow];
 	currentWin->toTop();
 }
@@ -1221,4 +1223,8 @@ void Window::setMouseLock( Widget *widget ) {
 		mouseLockWidget = NULL;
 		getScourgeGui()->unlockMouse();
 	}
+}
+
+Window *Window::getTopWindow() {
+	return currentWin;
 }

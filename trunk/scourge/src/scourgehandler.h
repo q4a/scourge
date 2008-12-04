@@ -56,6 +56,7 @@ protected:
 	bool handlePartyEvent( Widget *widget, SDL_Event *event );
 	void quickSpellAction( int index, int button = SDL_BUTTON_LEFT );
 	bool handleBoardEvent( Widget *widget, SDL_Event *event );
+	bool processEscapeKey();
 };
 
 #endif
