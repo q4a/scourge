@@ -232,6 +232,7 @@ public:
 	static void nextWindowToTop( Window *win, bool includeLocked = true );
 	static void prevWindowToTop( Window *win, bool includeLocked = true );
 	static bool anyFloatingWindowsOpen();
+	static Window *getTopWindow();
 
 	// static message dialog
 	static Button *message_button; // so you can check for it in other classes

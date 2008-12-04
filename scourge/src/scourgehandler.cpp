@@ -206,24 +206,7 @@ bool ScourgeHandler::handleEvent( SDL_Event *event ) {
 	case SDL_KEYUP:
 
 		if ( event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_ESCAPE ) {
-			if ( scourge->getChapterIntroWin()->isVisible() ) {
-				scourge->endChapterIntro();
-				return false;
-			} else if ( scourge->getPcUi()->getStorable() ) {
-				scourge->getPcUi()->clearStorable();
-				return false;
-			} else if ( scourge->getTargetSelectionFor() ) {
-				// cancel target selection ( cross cursor )
-				scourge->getTargetSelectionFor()->cancelTarget();
-				scourge->getTargetSelectionFor()->getBattle()->reset( false, true );
-				scourge->setTargetSelectionFor( NULL );
-				return false;
-			} else if ( scourge->getExitConfirmationDialog()->isVisible() ) {
-				scourge->closeExitConfirmationDialog();
-			} else if ( !Window::anyFloatingWindowsOpen() ) {
-				scourge->showExitConfirmationDialog();
-			}
-			return false;
+			return processEscapeKey();
 		} else if ( event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_BACKSPACE ) {
 			SDLHandler::showDebugInfo = ( SDLHandler::showDebugInfo ? 0 : 1 );
 		} else if ( event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_PRINT && ( SDL_GetModState() & KMOD_CTRL ) ) {
@@ -703,4 +686,30 @@ void ScourgeHandler::saveScreenshot() {
 
     count++;
   }
+}
+
+bool ScourgeHandler::processEscapeKey() {
+	if ( scourge->getChapterIntroWin()->isVisible() ) {
+		scourge->endChapterIntro();
+	} else if ( scourge->getPcUi()->getStorable() ) {
+		scourge->getPcUi()->clearStorable();
+	} else if ( scourge->getTargetSelectionFor() ) {
+		// cancel target selection ( cross cursor )
+		scourge->getTargetSelectionFor()->cancelTarget();
+		scourge->getTargetSelectionFor()->getBattle()->reset( false, true );
+		scourge->setTargetSelectionFor( NULL );
+		return false;
+	} else if ( scourge->getExitConfirmationDialog()->isVisible() ) {
+		scourge->closeExitConfirmationDialog();
+	} else if ( Window::anyFloatingWindowsOpen() ) {
+		Window *win = Window::getTopWindow();
+		if( win ) {
+			win->setVisible( false );
+		} else {
+			cerr << "*** Error: top window is null." << endl;
+		}
+	} else {
+		scourge->showExitConfirmationDialog();
+	}
+	return false;	
 }
