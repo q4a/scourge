@@ -545,11 +545,11 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 	for ( int i = 0; i < VILLAGE_HEIGHT; i++ ) {
 		int vy = y + ( i * MAP_UNIT );
 		if ( i == 0 ) {
-			addOutdoorTexture( map, shapePal, roadX, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END, 270 );
+			addOutdoorTexture( map, shapePal, roadX, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_270, 0 );
 		} else if ( i == VILLAGE_WIDTH - 1 ) {
-			addOutdoorTexture( map, shapePal, roadX, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END, 90 );
+			addOutdoorTexture( map, shapePal, roadX, vy, WallTheme::OUTDOOR_THEME_REF_STREET_END_90, 0 );
 		} else {
-			addOutdoorTexture( map, shapePal, roadX, vy, WallTheme::OUTDOOR_THEME_REF_STREET, 90.0f );
+			addOutdoorTexture( map, shapePal, roadX, vy, WallTheme::OUTDOOR_THEME_REF_STREET_90, 0 );
 		}
 	}
 
@@ -561,7 +561,7 @@ void OutdoorGenerator::createRoads( Map *map, ShapePalette *shapePal, int x, int
 		} else if ( i == 0 ) {
 			addOutdoorTexture( map, shapePal, vx, roadY, WallTheme::OUTDOOR_THEME_REF_STREET_END );
 		} else if ( i == VILLAGE_WIDTH - 1 ) {
-			addOutdoorTexture( map, shapePal, vx, roadY, WallTheme::OUTDOOR_THEME_REF_STREET_END, 180 );
+			addOutdoorTexture( map, shapePal, vx, roadY, WallTheme::OUTDOOR_THEME_REF_STREET_END_180, 0 );
 		} else {
 			addOutdoorTexture( map, shapePal, vx, roadY, WallTheme::OUTDOOR_THEME_REF_STREET );
 		}
