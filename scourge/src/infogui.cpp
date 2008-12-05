@@ -215,7 +215,8 @@ void InfoGui::setItem( Item *item ) {
 	label->resize( width - 20, height - item->getBackpackHeight() * n - 80 );
 	label->move( 10, item->getBackpackHeight() * n + 5 + 10 );
 	image->move( width - item->getBackpackWidth() * n - 10, 5 );
-	image->resize( item->getBackpackWidth() * n, item->getBackpackHeight() * n );	
+	image->resize( item->getBackpackWidth() * n, item->getBackpackHeight() * n );
+	this->getWindow()->toTop();
 }
 
 void InfoGui::setSpell( Spell *spell ) {
