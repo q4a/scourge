@@ -226,26 +226,26 @@ void GLShape::createBodyList( int side, GLuint listName ) {
 		//glNormal3f(1.0f, 0.0f, 0.0f);
 		glBegin( GL_TRIANGLE_STRIP );
 		if ( Constants::multitexture ) {
-			glSDLMultiTexCoord2fARB( GL_TEXTURE0_ARB, 0.0f, 0.0f );
-			glSDLMultiTexCoord2fARB( GL_TEXTURE1_ARB, 0.0f, 0.0f );
-			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[1] );
-			glSDLMultiTexCoord2fARB( GL_TEXTURE0_ARB, 1.0f, 0.0f );
-			glSDLMultiTexCoord2fARB( GL_TEXTURE1_ARB, 1.0f, 0.0f );
-			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[2] );
 			glSDLMultiTexCoord2fARB( GL_TEXTURE0_ARB, 0.0f, 1.0f );
 			glSDLMultiTexCoord2fARB( GL_TEXTURE1_ARB, 0.0f, 1.0f );
-			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[0] );
+			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[1] );
 			glSDLMultiTexCoord2fARB( GL_TEXTURE0_ARB, 1.0f, 1.0f );
 			glSDLMultiTexCoord2fARB( GL_TEXTURE1_ARB, 1.0f, 1.0f );
+			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[2] );
+			glSDLMultiTexCoord2fARB( GL_TEXTURE0_ARB, 0.0f, 0.0f );
+			glSDLMultiTexCoord2fARB( GL_TEXTURE1_ARB, 0.0f, 0.0f );
+			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[0] );
+			glSDLMultiTexCoord2fARB( GL_TEXTURE0_ARB, 1.0f, 0.0f );
+			glSDLMultiTexCoord2fARB( GL_TEXTURE1_ARB, 1.0f, 0.0f );
 			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[3] );
 		} else {
-			glTexCoord2f( 0.0f, 0.0f );
-			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[1] );
-			glTexCoord2f( 1.0f, 0.0f );
-			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[2] );
 			glTexCoord2f( 0.0f, 1.0f );
-			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[0] );
+			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[1] );
 			glTexCoord2f( 1.0f, 1.0f );
+			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[2] );
+			glTexCoord2f( 0.0f, 0.0f );
+			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[0] );
+			glTexCoord2f( 1.0f, 0.0f );
 			glVertex3fv( surfaces[RIGHT_SURFACE]->vertices[3] );
 		}
 		glEnd( );
