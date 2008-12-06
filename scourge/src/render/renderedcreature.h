@@ -148,7 +148,7 @@ public:
 		return ( SDL_GetTicks() - damageEffectCounter < effectDuration ? true : false );
 	}
 
-	virtual void findPlace( int x, int y, int *finalX = NULL, int *finalY = NULL );
+	virtual bool findPlace( int x, int y, int *finalX = NULL, int *finalY = NULL );
 	virtual bool findPlaceBounded( int sx, int sy, int ex, int ey );
 
 protected:
